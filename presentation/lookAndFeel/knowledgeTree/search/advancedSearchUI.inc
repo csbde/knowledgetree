@@ -1,23 +1,13 @@
 <?php
-
 /**
-* Presentation logic used by advancedSearchBL.php
-*
-* @author Rob Cherry, Jam Warehouse South Africa (Pty) Ltd
-* @date 26 February 2003 
-* @package presentation.lookAndFeel.knowledgeTree.search
-* 
-*/
-
-/*function renderHeading() {
-    global $default;
-    $sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
-    $sColor = $default->siteMap->getSectionColour($sSectionName, "th");
-    $sToRender .= "<tr align=\"left\"><th class=\"sectionHeading\" bgcolor=\"$sColor\"><font color=\"ffffff\">Advanced Search</font></th></tr>\n";
-    $sToRender .= "<tr/>\n";
-    $sToRender .= "<tr/>\n";
-    return $sToRender;
-}*/
+ * $Id$
+ *
+ * Presentation logic used by advancedSearchBL.php
+ *
+ * @author Rob Cherry, Jam Warehouse South Africa (Pty) Ltd
+ * @date 26 February 2003 
+ * @package presentation.lookAndFeel.knowledgeTree.search
+ */
 
 function getMetaData($aMetaTagIDs) {
 	global $default;	
@@ -50,11 +40,10 @@ function getMetaData($aMetaTagIDs) {
 
 function getSearchPage($sSearchString = "", $aMetaTagIDs = array()) {
 	global $default;
-	$sToRender = "<table width=\"600\">\n";
-    $sToRender .= renderHeading("Advanced Search");
+    $sToRender  = renderHeading("Advanced Search");	
+	$sToRender .= "<table width=\"600\">\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>Search text: <input type=\"text\" size=\"60\" name=\"fSearchString\" value=\"$sSearchString\" />\n";
-	//$sToRender .= "<td><input type=\"button\" src=\"$default->graphicsUrl/search.gif\" value=\"search\" onClick=\"validateAdvancedSearchText()\"/></td>\n";
 	$sToRender .= "<input type=\"button\" value=\"search\" onClick=\"validateAdvancedSearch()\"/></td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
@@ -71,7 +60,6 @@ function getSearchPage($sSearchString = "", $aMetaTagIDs = array()) {
 	return $sToRender . getSearchValidationJavaScript();;
 }
 
-//function getSearchResults($sSQLSearchString, $iStartIndex, $sSearchText, $sMetaTagIDs) {
 function getSearchResults($sMetaTagIDs, $sSQLSearchString, $iStartIndex) {
 	global $default;	
 	$sQuery = "SELECT '" . "$default->graphicsUrl/widgets/dfolder.gif" . "' AS folder_image_url, F.id folder_id, D.id document_id, D.name AS document_name, COUNT(D.id) AS doc_count " .
@@ -79,15 +67,12 @@ function getSearchResults($sMetaTagIDs, $sSQLSearchString, $iStartIndex) {
 			"INNER JOIN document_fields_link AS DFL ON DFL.document_id = D.id " .
 			"INNER JOIN document_fields AS DF ON DF.id = DFL.document_field_id " . 
 			"INNER JOIN search_document_user_link AS SDUL ON SDUL.document_id = D.ID " .			
-			//"WHERE D.id IN ($sSQLSearchString) " .
 			"WHERE DF.ID IN ($sMetaTagIDs) " .
 			"AND " . $sSQLSearchString . " " .
 			"AND SDUL.user_id = " . $_SESSION["userID"] . " " .
 			"GROUP BY D.id ";
-			"ORDER BY doc_count DESC ";
-			
-	//echo $sQuery;	
-		
+			"ORDER BY doc_count DESC ";		
+	
 	$aColumns = array("folder_image_url", "document_name", "doc_count");
 	$aColumnTypes = array(4,3,3);
 	$aColumnHeaders = array("<font color=\"ffffff\">Folder</font>","<font color=\"ffffff\">Document</font>", "<font color=\"ffffff\">Matches</font>");
@@ -99,7 +84,7 @@ function getSearchResults($sMetaTagIDs, $sSQLSearchString, $iStartIndex) {
 	$oPatternBrowse->setStartIndex($iStartIndex);
     
     $sRefreshMessage = "<table><tr><td align=\"center\">If your browser displays a 'Warning: Page has Expired' message when you attempt to return to these search results, please click your browser's 'Refresh' button</td></tr></table>";
-	return "<table width=\"600\">" . renderHeading("Advanced Search") . "</table>" . $oPatternBrowse->render() . $sRefreshMessage . getSearchVariablesHtml($sSearchText, $sMetaTagIDs);
+	return renderHeading("Advanced Search") . $oPatternBrowse->render() . $sRefreshMessage . getSearchVariablesHtml($sSearchText, $sMetaTagIDs);
 }
 
 function getSearchValidationJavaScript() {
@@ -133,6 +118,4 @@ function getSearchVariablesHtml($sSearchText, $sMetaTagIDs) {
 	$sToRender .= "<input type=\"hidden\" name=\"adv_search_end\" value=\"\" />\n";
 	return $sToRender;
 }
-
 ?>
-
