@@ -28,6 +28,7 @@
 require_once("../../../../../config/dmsDefaults.php");
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternListBox.inc");
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCreate.inc");
+require_once("$default->fileSystemRoot/lib/groups/Group.inc");
 require_once("$default->fileSystemRoot/lib/groups/GroupUnitLink.inc");
 require_once("$default->fileSystemRoot/lib/security/Permission.inc");
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");	
@@ -41,9 +42,28 @@ if (checkSession()) {
 
 	require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");			
 	$oPatternCustom = & new PatternCustom();
-	$oPatternCustom->setHtml(getPage());
+    if (isset($fGroupName) && isset($fUnitID)) {
+        // add new group
+        $oGroup = new Group($fGroupName);
+        if($oGroup->create()) {
+            // now set the group's unit
+            $default->log->info("set group (id=" . $oGroup->getID() . ") to unit id=$fUnitID"); 
+            $oGroupUnit = new GroupUnitLink($oGroup->getID(), $fUnitID);
+            if ($oGroupUnit->create()) {
+                // redirect to list page
+                controllerRedirect("listGroups");
+            } else {
+                $oPatternCustom->setHtml(statusPage("Add A New Group", "Addition Unsuccessful!", "There was an error associating the new group with the specified unit.", "addGroup"));
+            }
+        } else {
+            $oPatternCustom->setHtml(statusPage("Add A New Group", "Addition Unsuccessful!", "There was an error creating the new group (Check that a group with this name doesn't already exist).", "addGroup"));
+        }
+    } else {
+       // display form
+	   $oPatternCustom->setHtml(getPage());
+    }
 	$main->setCentralPayload($oPatternCustom);
-	$main->setFormAction("$default->rootUrl/presentation/lookAndFeel/knowledgeTree/create.php?fRedirectURL=".urlencode("$default->rootUrl/control.php?action=editGroup&fFromCreate=1&fGroupID="));
+    $main->setFormAction($_SERVER["PHP_SELF"]);
     $main->setHasRequiredFields(true);
 	$main->render();
 }

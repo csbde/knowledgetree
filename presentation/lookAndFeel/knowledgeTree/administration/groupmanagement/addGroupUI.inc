@@ -25,38 +25,46 @@
  * @package administration.groupmanagement
  */
 
-// get add pages
+/**
+ * Builds the group addition form
+ */
 function getPage() {
-
 	global $default;
-	$aDisplayRowNames = array("Group Name:");
-	$aParameterNumbers = array(0);
-	$aDisplayColumnTypes = array(1);
-	$aRequired = array(1);
-
-	// create a text field that is required 
-	$oPatternCreate = & new PatternCreate("Group", "groups/Group.inc", $aDisplayRowNames, $aParameterNumbers, $aDisplayColumnTypes, $aRequired);
-	$oPatternCreate->setUniqueName("group");
-	
-	$sToRender .= renderHeading("Add Group");
-	
+	$sToRender .= renderHeading("Add A New Group");
 	$sToRender .= "<table>\n";
-    $sToRender .= "<tr><td>Add a New Group to the System</td></tr>\n";
-	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>" . $oPatternCreate->render() . "</td>\n";
+	$sToRender .= "<td>Group Name:</td>\n";
+    $sToRender .= "<td><input size = \"40\" type=\"text\" name=\"fGroupName\" \"> </td>\n";    
 	$sToRender .= "</tr>\n";
-	$sToRender .= "<tr>\n";
-	$sToRender .= "</tr>\n";
-	$sToRender .= "<tr>\n";
-	$sToRender .= "</tr>\n";
+	$sToRender .= "<tr/>\n";
+    $sToRender .= "<tr><td><b>Unit</b></td><td>" . getUnitListBox() . "</td></tr>\n";    
 	$sToRender .= "<td align=\"right\"><input type=\"image\" src=\"$default->graphicsUrl/widgets/add.gif\" value=\"Submit\" border=\"0\"/>";
 	$sToRender .= getCancelButton("listGroups") . "</td>\n";	
-	$sToRender .= "</table>\n";
-	
+	$sToRender .= "</table>\n";	
 	return $sToRender;
-	
-	
-	
+}
+
+/**
+ * Builds the unit selection list box
+ */
+function getUnitListBox() {
+    global $default;
+    if (Permission::userIsSystemAdministrator()) {
+        // if this is the system administrator, show all the units
+        $oPatternListBox = & new PatternListBox($default->units_table, "name", "id", "fUnitID");
+    } else if (Permission::userIsUnitAdministrator()) {
+        // else if this is a unit administrator, only display the units you're an administrator for
+        $oPatternListBox = & new PatternListBox($default->units_table, "name", "id", "fUnitID");
+        $oPatternListBox->setWhereClause("ST.id in (" .  implode(",", User::getUnitIDs($_SESSION["userID"])) . ")");
+    }
+
+    // javascript validation
+    $sToRender .= "\n\n<script language=\"javascript\">\n<!--\n";
+    $sToRender .= "function validateForm(theForm) {\n";
+    $sToRender .= "\tif (!(validRequired(theForm.fUnitID, 'Initial Unit'))) {\n";
+    $sToRender .= "\t\treturn false;\n\t}\n";    
+    $sToRender .= "return true;\n}\n";
+    $sToRender .= "//-->\n</script>\n\n";    
+    return $oPatternListBox->render() . $sToRender;  
 }
 ?>
