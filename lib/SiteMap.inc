@@ -1,12 +1,15 @@
 <?php
+
+require_once("$default->owl_fs_root/lib/security/permission.inc");
+
 /**
  * $Id$
  * 
  * Maintains (page, access) access map, as well as (section, page) map.
  * 
  * @version $Revision$ 
- * @author michael@jamwarehouse.com
- * @package dms
+ * @author Michael Joseph <michael@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
+ * @package lib.session
  */
 class SiteMap {
 
@@ -25,10 +28,10 @@ class SiteMap {
     /**
      * Adds a site page mapping entry.
      *
-     * @param $action        the controller action
-     * @param $page          the corresponding page for this action
-     * @param $sectionName   the section this page falls under
-     * @param $groupName     the user group with access to this page
+     * @param string the controller action
+     * @param string the corresponding page for this action
+     * @param string the section this page falls under
+     * @param string the user group with access to this page
      */
     function addPage($action, $page, $sectionName, $groupName) {
         // add to map
@@ -36,53 +39,104 @@ class SiteMap {
     }
     
     /**
+     * Adds a site page mapping entry- the default page for the section.
+     *
+     * @param string the controller action
+     * @param string the corresponding page for this action
+     * @param string the section this page falls under
+     * @param string the user group with access to this page
+     */    
+    function addDefaultPage($action, $page, $sectionName, $groupName) {
+    }
+    
+    /**
+     * Returns the section name of the supplied page
+     *
+     * @param string the page to lookup the section for
+     */
+    function getSectionName($sRequiredPage) {
+        global $default;
+        // for each section
+        foreach ($this->siteMapArray as $section => $valArr) {
+            $default->log->debug("Sitemap::getSectionName section=$section; arr=" . arrayToString($valArr));
+            // for each group, page array combination
+            foreach ($valArr as $requiredGroupName => $pageArr) {
+                $default->log->debug("Sitemap::getSectionName ($requiredGroupName, " . arrayToString($pageArr) . ")");
+                // now loop through pages until we find the right one
+                foreach ($pageArr as $action => $page) {
+                    $default->log->debug("Sitemap::getSectionName ($sRequiredPage == $page)");
+                    if ($sRequiredPage == $page) {
+                        return $section;
+                    }
+                }
+            }
+        }        
+    }
+    
+    /**
+     * Returns controller links for a section
+     *
+     * @param string the section to return links for
+     */
+    function getSectionLinks($sSectionName) {
+        global $default;
+        // check if the section exists
+        if (is_array($this->siteMapArray[$sSectionName])) {
+            // initialise result array
+            $results = array();
+            // need to loop through all (groupName, page) arrays in this section
+            foreach ($this->siteMapArray[$sSectionName] as $requiredGroupName => $pages) {
+                $default->log->debug("Sitemap::getSectionLinks: requiredGroup=$requiredGroupName, pages=" . arrayToString($pages));
+                // if anonymous
+                // or the user is in the required group or the user is the SA
+                if ( ($requiredGroupName == "Anonymous") ||
+                     ( Permission::userIsInGroupName($requiredGroupName) || 
+                       Permission::userIsInGroupName("System Administrators") ) ) {
+                    // add this array to the resultset array
+                    $default->log->debug("Sitemap::getSectionLinks: about to add " . arrayToString($pages));
+                    //$results = array_merge($results, $this->siteMapArray[$sectionName][$requiredGroupName]);
+                    $results = array_merge($results, $pages);
+                }
+            }
+            // now check if we have anything in the results array before returning it
+            if (count($results) > 0) {
+                return $results;
+            } else {
+                return false;
+            }            
+        } else {
+            $_SESSION["errorMessage"] = "No such section name ($sSectionName) in the sitemap";
+            return false;
+        }
+    }
+    
+    /**
      * Returns the page mapped to the (action, groupName) pair.
      *
-     * @param $action        the action to lookup pages for
-     * @param $userID        the user requesting the action
+     * @param string the action to lookup pages for
      * @return string the page to redirect to, or false if the user doesn't have access to the page
      */
-    function getPage($action, $userID) {
+    function getPage($action) {
         global $default;
         
+        $default->log->info("SiteMap::getPage: checking ($action, " . $_SESSION["userID"] . ")");
         $groupIDs = array();
-        
-        // if there is no session (ie. requesting login page)
-        // then userID will be "" or unset or something
-        if (!$userID) {
-            // no session, so set groupID to Anonymous group
-            $groupIDs[] = lookupID($default->owl_groups_table, "name", "Anonymous");
-        } else {
-            // lookup the groups this user is in
-            $groupIDs = lookupGroupIDs($userID);
-        }
-        
-        $default->log->debug("Sitemap::getPage function start; action=$action; userID=$userID; groupIDs=" . arrayToString($groupIDs));
         
         // for each section
         foreach ($this->siteMapArray as $section => $valArr) {
             $default->log->debug("Sitemap::getPage section=$section");
             // for each group, page array combination
             foreach ($valArr as $requiredGroupName => $pageArr) {
-                // lookup the id of the group with access to this page
-                $reqGrpID = lookupID($default->owl_groups_table, "name", "$requiredGroupName");
-                $default->log->debug("Sitemap::getPage requiredGroupName=$requiredGroupName; id=$reqGrpID");
                 // now loop through pages until we find the right one
                 foreach ($pageArr as $ackshin => $page) {
                     if ($ackshin == $action) {
-                        // FIXME: this won't work once we have lots of groups will it??
-                        // we're assuming that the default groups will be created in the right
-                        // order, so that groups with sys and unit access have lower ids than
-                        // the required ones!
-                        
-                        // now check if we have the right group access by
-                        // looping through the groupID array and returning the page
-                        // if the current groupID <= $reqGrpID
-                        for ($i = 0; $i<count($groupIDs); $i++) {
-                            $default->log->debug("Sitemap::getPage current groupid=" . $groupIDs[$i] . "; reqGrpID=$reqGrpID"); 
-                            if ($groupIDs[$i] <= $reqGrpID) {
-                                return $page;
-                            }
+                        $default->log->debug("Sitemap::getPage current requiredGroup=$requiredGroupName, action=$ackshin");
+                        // if anonymous
+                        // or the user is in the required group or the user is the SA
+                        if ( ($requiredGroupName == "Anonymous") ||
+                             ( Permission::userIsInGroupName($requiredGroupName) || 
+                               Permission::userIsInGroupName("System Administrators") ) ) {
+                            return $page;
                         }
                     }
                 }
@@ -90,7 +144,7 @@ class SiteMap {
         }
         // if the function hasn't returned already then the specified
         // userGroup does not have access to the action
-        $default->log->info("Sitemap::getPage access denied for ($action, $userID)");
+        $default->log->info("Sitemap::getPage: access denied for ($action, " . $_SESSION["userID"] . ")");
         return false;
     }
     
@@ -98,11 +152,10 @@ class SiteMap {
      * Returns the pages in the specified section accessible to the 
      * specified userClass.
      *
-     * @param $sectionName   the section to retrieve pages for
-     * @param $userID        the user class to return pages for
+     * @param string the section to retrieve pages for
      * @return array the actions for the specified section
      */
-    function getSection($sectionName, $userID) {
+    function getSection($sectionName) {
         // check if the section exists
         if (is_array($this->siteMapArray[$sectionName])) {
             // initialise result array
@@ -112,7 +165,7 @@ class SiteMap {
                 // lookup groupID for requiredGroupName
                 $reqGrpID = lookupID($default->owl_groups_table, "name", "$requiredGroupName");
                 // lookup groupIDs for the user
-                $groupIDs = lookupGroupIDs($userID);
+                $groupIDs = lookupGroupIDs($_SESSION["userID"]);
                 // loop through the user's groups and check against the requiredGroup
                 for ($i = 0; $i<count($groupIDs); $i++) {
                     $default->log->debug("getPage current groupid=" . $groupIDs[$i] . "; reqGrpID=$reqGrpID"); 
