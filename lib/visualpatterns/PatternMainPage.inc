@@ -212,11 +212,8 @@ class PatternMainPage {
 			"window.open ('" . generateControllerUrl("help", "fAction=" . urlencode($default->siteMap->getActionFromPage((substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"]))))) . "&fSection=" . urlencode($default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"]))))) . "', 'newwindow', config='height=400,width=600,left=400,top=300, toolbar=no, menubar=no, scrollbars=yes, resizable=no,location=no, directories=no, status=no');\n" .
 			"return false;\n" .
 		"}\n" .
-		"-->\n" .
+		"//-->\n" .
 		"</SCRIPT>\n\n";
 	}
-
-
 }
-
 ?>
