@@ -81,12 +81,7 @@ class PhysicalDocumentManager {
 		//get the path to the document on the server
         $sDocumentFileSystemPath = $oDocument->getPath();
 		//set the correct headers
-		if (strstr($_SERVER["HTTP_USER_AGENT"], "MSIE")) {
-			Header ("Content-type: application/" . PhysicalDocumentManager::getMimeTypeName($oDocument->getMimeTypeID()));
-		} else {
-			Header ("Content-type: application/octect-stream");
-		}
-								
+        Header("Content-type: " . PhysicalDocumentManager::getMimeTypeName($oDocument->getMimeTypeID()));
 		Header("Content-Length: ". $oDocument->getFileSize());
 		Header("Content-Disposition: attachment; filename=" . $oDocument->getFileName());        
         Header("Pragma: no-store");
@@ -107,12 +102,7 @@ class PhysicalDocumentManager {
 		//get the path to the document on the server
         $sDocumentFileSystemPath = $oDocument->getPath() . "-$sVersion";
 		//set the correct headers
-		if (strstr($_SERVER["HTTP_USER_AGENT"], "MSIE")) {
-			header ("Content-type: application/" . PhysicalDocumentManager::getMimeTypeName($oDocument->getMimeTypeID()));
-		} else {
-			header ("Content-type: application/octect-stream");
-		}
-								
+        Header("Content-type: " . PhysicalDocumentManager::getMimeTypeName($oDocument->getMimeTypeID()));
 		header("Content-Length: ". $oDocument->getFileSize());
 		header("Content-Disposition: attachment; filename=" . "$sVersion-" . $oDocument->getFileName());
         header("Pragma: no-store");
@@ -155,11 +145,7 @@ class PhysicalDocumentManager {
         $sDocumentFileSystemPath = $oDocument->getPath();
 		$total=$url . $files[$i];		
 		
-		if (strstr($_SERVER["HTTP_USER_AGENT"], "MSIE")) {		
-			Header ("Content-type: application/" . PhysicalDocumentManager::getMimeTypeName($oDocument->getMimeTypeID()));
-		} else {
-			Header ("Content-type: application/octect-stream");
-		}					
+        Header ("Content-type: " . PhysicalDocumentManager::getMimeTypeName($oDocument->getMimeTypeID()));
 		Header("Content-Length: " . $oDocument->getFileSize() * 1024);
 		Header("Content-Disposition: inline; filename=" . $oDocument->getName());
         header("Pragma: no-store");
@@ -235,7 +221,7 @@ class PhysicalDocumentManager {
 		if ($sql->next_record()) {
 			return $sql->f("mimetypes");			
 		}
-		return "text/plain";
+		return "application/octect-stream";
 	}
 	
 }
