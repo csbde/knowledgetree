@@ -58,7 +58,6 @@ class Browser {
      */
     function Browser($sNewSortField, $sNewSortDirection, $aNewSortCriteria = array()) {
     	// default sort criteria
-    	global $browse_folder_sort_title, $browse_folder_sort_description, $browse_folder_sort_creator, $browse_folder_sort_date_created, $browse_folder_sort_document_type;
     	if (count($aNewSortCriteria) == 0) {
 	    	$aNewSortCriteria = array ( "name"       		=> array ("display" => _("Title")), 	
 		 					  	 	    "filename"   		=> array ("display" => _("Description")),
