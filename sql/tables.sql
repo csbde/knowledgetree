@@ -964,3 +964,9 @@ INSERT INTO help VALUES (39,'addSubscription','addSubscriptionHelp.html');
 INSERT INTO help VALUES (40,'removeSubscription','removeSubscriptionHelp.html');
 INSERT INTO help VALUES (41,'preferences','preferencesHelp.html');
 INSERT INTO help VALUES (42,'editPrefsSuccess','preferencesHelp.html');
+INSERT INTO help VALUES (43,'modifyDocumentGenericMetaData','modifyDocumentGenericMetaDataHelp.html');
+INSERT INTO help VALUES (44,'viewHistory','viewHistoryHelp.html');
+INSERT INTO help VALUES (45,'checkInDocument','checkInDocumentHelp.html');
+INSERT INTO help VALUES (46,'checkOutDocument','checkOutDocumentHelp.html');
+INSERT INTO help VALUES (47,'advancedSearch','advancedSearchHelp.html');
+
