@@ -122,8 +122,12 @@ class AuthLdap {
         foreach ($this->server as $key => $host) {
             $this->connection = ldap_connect( $host);
             if ( $this->connection) {
-                // Connected, now try binding anonymously and store result
-                $this->supportsAnonymousBinding = ($this->result=@ldap_bind( $this->connection));
+                if ($this->serverType == "ActiveDirectory") {
+                    return true;
+                } else {
+                    // Connected, now try binding anonymously
+                    $this->result=@ldap_bind( $this->connection);
+                }
                 return true;
             }
         }
@@ -152,9 +156,6 @@ class AuthLdap {
      * queries and searches can be done - but read-only.
      */
     function bind() {
-        //??: should only try this if its supported?
-        if (!$this->supportsAnonymousBinding) return false;
-        
         if ( !$this->result=@ldap_bind( $this->connection)) {
             $this->ldapErrorCode = ldap_errno( $this->connection);
             $this->ldapErrorText = ldap_error( $this->connection);
@@ -421,7 +422,7 @@ class AuthLdap {
         if ($this->serverType == "ActiveDirectory") {
             $this->authBind($this->searchUser, $this->searchPassword);
         }
-        $this->result = ldap_search( $this->connection, $checkDn, $this->getUserIdentifier() . $search);
+        $this->result = ldap_search( $this->connection, $checkDn, $this->getUserIdentifier() . "=$search");
         
         $info = ldap_get_entries( $this->connection, $this->result);
         for( $i = 0; $i < $info["count"]; $i++) {
