@@ -55,9 +55,10 @@ if (checkSession()) {
 					$iNumMax = $oThread->getNumberOfReplies();						
 					
 					$sQuery = 	"SELECT 1 as ForView, subject, username, date, discussion_comments.id as com_id, discussion_threads.document_id as doc_id " .
-					 			"FROM  (discussion_comments INNER JOIN users ON discussion_comments.user_id = users.id) INNER JOIN discussion_threads ON discussion_threads.id = discussion_comments.thread_id  " .
+					 			"FROM (discussion_comments INNER JOIN users ON discussion_comments.user_id = users.id) " .
+					 			"INNER JOIN discussion_threads ON discussion_threads.id = discussion_comments.thread_id  " .
 					 			"WHERE discussion_threads.id = " . $iThreadID .
-					 			" ORDER BY date DESC";
+					 			" ORDER BY discussion_comments.thread_id ASC";
 
 				    $aColumns = array("subject", "username", "date");
 				    $aColumnNames = array("<font color=white>Subject </font>", "<font color=white>User</font>", "<font color=white>Date</font>");
