@@ -39,7 +39,6 @@ function renderNewsTable() {
                        7=> "$default->rootUrl/control.php?action=removeNews");
 
     $oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaders, "100%", $aLinkURLs,$aDBColumnArray,$aQueryStringVariableNames);
-    $oPatternTableSqlQuery->setTableHeading("Dashboard News");
     $oPatternTableSqlQuery->setDisplayColumnHeadings(true);        
     return $oPatternTableSqlQuery->render();
 }
@@ -79,7 +78,7 @@ function renderEditAddNewsForm($oDashboardNews) {
 	$sToRender .= ($oDashboardNews ? "<input type=\"hidden\" name=\"fNewsID\" value=\"" . $oDashboardNews->getID() . "\">" : "");
 			
 	$sToRender .= "<tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/submit.gif\" border=\"0\">\n";
-	$sToRender .= "<a href=\"$default->rootUrl/control.php?action=listNews\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></a></td></tr>\n";    
+	$sToRender .= getCancelButton("listNews") . "</td></tr>\n";    
 	$sToRender .= "</table>";
 	
 	$sToRender .= "\n\n<script language=\"javascript\">\n<!--\n";
@@ -134,6 +133,7 @@ function renderListNewsPage() {
 	global $default;
 	
 	$sToRender .= renderHeading("List Dashboard News");
+	$sToRender .= getAddLink("addNews", "Add Dashboard News Item");	
     $sToRender .= "<table>\n";
 	$sToRender .= renderNewsTable();
 	$sToRender .= "</table>\n";
@@ -169,7 +169,7 @@ function renderDeleteNewsConfirmationPage($oDashboardNews) {
 	
 	$sToRender .= "<input type=\"hidden\" name=\"fDeleteConfirmed\" value=\"1\">";	
 	$sToRender .= "<tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/delete.gif\" border=\"0\">\n";
-	$sToRender .= "<a href=\"$default->rootUrl/control.php?action=listNews\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></a></td></tr>\n";    
+	$sToRender .= getCancelButton("listNews") . "</td></tr>\n";    
 	
 	$sToRender .= "</table>\n";
 	return $sToRender;	
