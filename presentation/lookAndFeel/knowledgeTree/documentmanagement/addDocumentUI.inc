@@ -56,20 +56,21 @@ function getBrowseAddPage($fFolderID) {
 	$sToRender .= "</table>\n";
 	$sToRender .= "<table border=\"0\">\n";
 	$sToRender .= "<tr>\n";
+	$sToRender .= "<td colspan=\"2\"><b>Document to add:<b></td>\n";
+	$sToRender .= "</tr>\n";
+	$sToRender .= "<td><input type=\"file\" name=\"fFile\"></td>\n";
+	$sToRender .= "<td><input type=\"image\" src=\"$default->graphicsUrl/widgets/add.gif\" border=\"0\" value=\"Add\"></td>\n";    
+	$sToRender .= "<td><a href=\"$default->rootUrl/control.php?action=browse&fFolderID=$fFolderID\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></a></td>\n";    
+	$sToRender .= "</tr>\n";
+	$sToRender .= "</table>\n";    
+	$sToRender .= "<table border=\"0\">\n";
+	$sToRender .= "<tr>\n";
 	$sToRender .= "\t<td>" . renderFolderList($fFolderID, "control.php?action=addDocument") . "<td>\n";
 	$sToRender .= "</tr>\n";	
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>" . getDocumentListForFolder($fFolderID) . "</td>\n";
 	$sToRender .= "</tr>";
 	$sToRender .= "</table><br>\n";
-	$sToRender .= "<table border=\"0\">\n";
-	$sToRender .= "<tr>\n";
-	$sToRender .= "<td colspan=\"2\"><b>Document to add:<b></td>\n";
-	$sToRender .= "</tr>\n";
-	$sToRender .= "<td><input type=\"file\" name=\"fFile\"></td>\n";
-	$sToRender .= "<td><input type=\"image\" src=\"$default->graphicsUrl/widgets/add.gif\" border=\"0\" value=\"Add\"></td>\n";
-	$sToRender .= "</tr>\n";
-	$sToRender .= "</table>\n";
 	
 	return $sToRender;
 }
