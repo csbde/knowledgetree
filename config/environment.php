@@ -16,6 +16,7 @@ $default->serverName = "change.to.your.hostname";
 // whether ssl is enabled or not
 $default->sslEnabled = true;
 // Change this to reflect the authentication method you are using
+// valid choices are: DBAuthenticator, LDAPAuthenticator
 $default->authenticationClass = "DBAuthenticator";
 require_once("$default->fileSystemRoot/lib/authentication/$default->authenticationClass.inc");
 
