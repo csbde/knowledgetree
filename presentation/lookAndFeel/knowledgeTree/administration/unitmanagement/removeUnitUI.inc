@@ -30,14 +30,14 @@ function getConfirmDeletePage($oUnit, $oOrg) {
 
     $sToRender .= renderHeading("Remove Unit");
     $sToRender .= "<table>\n";
-    $sToRender .= "<tr><td><b>Are you sure you wish to Remove this Unit:</b></td></tr>\n";
+    $sToRender .= "<tr><td><b>" . _("Are you sure you wish to Remove this Unit:") . "</b></td></tr>\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "<td>Unit Name: " . getUnitDisplay($oUnit) . "</td>\n";
+    $sToRender .= "<td>" . _("Unit Name") . ": " . getUnitDisplay($oUnit) . "</td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "<tr>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "<td>Organisation Name: " . getOrgDisplay($oOrg) . "</td>\n";
+    $sToRender .= "<td>" . _("Organisation Name") . ": " . getOrgDisplay($oOrg) . "</td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "<tr>\n";
     $sToRender .= "</tr>\n";
@@ -87,7 +87,7 @@ function getOrgDisplay($oOrg) {
         return "<input type=\"hidden\" name=\"fOrgID\" value=\"" . $oOrg->iId . "\">\n" .
                "<b>" . $oOrg->getName() . "</b>";
     } else {
-    	return "<b>* Not Assigned to an Organisation<b>";
+    	return "<b>* " . _("Not Assigned to an Organisation") . "<b>";
     }
 }
 

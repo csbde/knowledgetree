@@ -31,17 +31,17 @@ function getDeletePage($iOrgID) {
     $oOrg = null;
     if (isset($iOrgID)) {
         $oOrg = Organisation::get($iOrgID);
-        $sHeading .= "<b>Are you sure you wish to Remove this Organisation?</b>\n";
+        $sHeading .= "<b>" . _("Are you sure you wish to Remove this Organisation?") . "</b>\n";
     } else {
         $oOrg = null;
-        $sHeading .= "Please select a Organisation:";
+        $sHeading .= _("Please select an Organisation") . ":";
     }
 
     $sToRender .= renderHeading("Remove Organisation");
     $sToRender .= "<table>\n";
     $sToRender .= "<tr><td>$sHeading</td></tr>\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "<td>Organisation Name: " . getOrgDisplay($oOrg) . "</td>\n";
+    $sToRender .= "<td>" . _("Organisation Name") . ": " . getOrgDisplay($oOrg) . "</td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "<tr>\n";
     $sToRender .= "</tr>\n";
@@ -65,7 +65,7 @@ function getDeleteSuccessPage() {
     $sToRender .= renderHeading("Remove Organisation");
     $sToRender .= "<table>\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "<td><b>Organisation SuccessFully Removed!</b></td>\n";
+    $sToRender .= "<td><b>" . _("Organisation Successfully Removed!") . "</b></td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr></tr>\n";
@@ -87,11 +87,11 @@ function getDeleteFailPage() {
     $sToRender .= renderHeading("Remove Organisation");
     $sToRender .= "<table>\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "<td><b>Deletion Failed!</b></td>\n";
+    $sToRender .= "<td><b>" . _("Deletion Failed!") . "</b></td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr></tr>\n";
-    $sToRender .= "<tr><td>Please Ensure that ALL Units has been Removed the Organisation it belongs to</td></tr>\n";
+    $sToRender .= "<tr><td>" . _("Please Ensure that ALL Units has been Removed the Organisation it belongs to") . "</td></tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "<tr><td align = right><a href=\"$default->rootUrl/control.php?action=listOrg\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td></tr>\n";

@@ -50,11 +50,11 @@ if(checkSession()) {
     $Center .= "<TABLE BORDER=\"0\" CELLSPACING=\"2\" CELLPADDING=\"2\">\n";
     $Center .= "<tr>\n";
     if ($fDocFieldID == -1) {
-        $Center .= "<td><b>Document Field addition Unsuccessful!</b></td>\n";
+        $Center .= "<td><b>" . _("Document Field addition Unsuccessful!") . "</b></td>\n";
         $Center .= "</tr>\n";
         $Center .= "<tr></tr>\n";
     } else {
-        $Center .= "<td><b>Document Field added Successfully!</b></td>\n";
+        $Center .= "<td><b>" . _("Document Field added Successfully!") . "</b></td>\n";
         $Center .= "</tr>\n";
     }
     $Center .= "<tr></tr>\n";

@@ -31,16 +31,16 @@ function getDeletePage($iDocTypeID) {
     $oDocType = null;
     if (isset($iDocTypeID)) {
         $oDocType = DocumentType::get($iDocTypeID);
-        $sHeading .= "<b>Are you sure you wish to Remove this Document Type?:</b>\n";
+        $sHeading .= "<b>" . _("Are you sure you wish to Remove this Document Type?") . ":</b>\n";
     } else {
-        $sHeading .= "Please select a Document Type:";
+        $sHeading .= _("Please select a Document Type") . ":";
     }
 
     $sToRender .= renderHeading("Remove Document Type");
     $sToRender .= "<table>\n";
     $sToRender .= "<tr><td>$sHeading</td></tr>\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "<td>Document Type Name: " . getDocTypeDisplay($oDocType) . "</td>\n";
+    $sToRender .= "<td>" . _("Document Type Name:") . " " . getDocTypeDisplay($oDocType) . "</td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "<tr>\n";
     $sToRender .= "</tr>\n";
@@ -64,7 +64,7 @@ function getDeleteSuccessPage() {
     $sToRender .= renderHeading("Remove Document Type");
     $sToRender .= "<TABLE BORDER=\"0\" CELLSPACING=\"2\" CELLPADDING=\"2\">\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "<td><b>DocumentType SuccessFully Removed!</b></td>\n";
+    $sToRender .= "<td><b>" . _("DocumentType SuccessFully Removed!") . "</b></td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr></tr>\n";
@@ -86,11 +86,11 @@ function getDeleteFailPage() {
     $sToRender .= renderHeading("Remove Document Type");
     $sToRender .= "<TABLE BORDER=\"0\" CELLSPACING=\"2\" CELLPADDING=\"2\">\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "<td><b>Deletion Failed!</b></td>\n";
+    $sToRender .= "<td><b>" . _("Deletion Failed!") . "</b></td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr></tr>\n";
-    $sToRender .= "<tr><td>Please Ensure that the Document Type has been Removed from ALL Folders</td></tr>\n";
+    $sToRender .= "<tr><td>" . _("Please Ensure that the Document Type has been Removed from ALL Folders") . "</td></tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "<tr><td align = right><a href=\"$default->rootUrl/control.php?action=listDocTypes\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td></tr>\n";

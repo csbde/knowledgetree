@@ -65,7 +65,7 @@ if (checkSession()) {
     			if (!$aSize) {
     				$default->log->error("editNewsBL.php attempted to upload a non-image:" . $_FILES['fImage']['name']);
 		    		// display the edit form, with error message    		
-		    		$oContent->setHtml(renderEditNewsPage($oDashboardNews, "You may only upload an image."));
+		    		$oContent->setHtml(renderEditNewsPage($oDashboardNews, _("You may only upload an image.")));
     				
     			} else {
     				// we have an image, now check the size
@@ -84,12 +84,13 @@ if (checkSession()) {
 			    			// update failed
 			    			$default->log->error("editNewsBL.php DB error updating dashboard news id=$fNewsID; ($fSynopsis, $fBody, $fRank)");
 				    		// display the edit form, with error message    		
-				    		$oContent->setHtml(renderEditNewsPage($oDashboardNews, "An error occurred while updating this news item."));
+				    		$oContent->setHtml(renderEditNewsPage($oDashboardNews, _("An error occurred while updating this news item.")));
 			    		}    		
 												
     				} else {
     					// the image is too big
-			    		$oContent->setHtml(renderEditNewsPage($oDashboardNews, "The image you have submitted is too big (" . $iImgWidth . "x" . $iImgHeight . " > " . $oDashboardNews->getMaxImageDimensions() . "), please correct and retry"));    					
+					$oContent->setHtml(renderEditNewsPage($oDashboardNews,
+						sprintf(_("The image you have submitted is too big (%sx%s > %s), please correct and retry"), $iImgWidth, $iImgHeight, $oDashboardNews->getMaxImageDimensions())));
     				}    			
     			}
     		} else {
@@ -101,7 +102,7 @@ if (checkSession()) {
 	    		} else {
 	    			// update failed
 	    			$default->log->error("editNewsBL.php DB error updating dashboard news id=$fNewsID; ($fSynopsis, $fBody, $fRank)");
-	    			$oContent->setHtml(renderErrorMessage("An error occurred while updating this news item."));
+	    			$oContent->setHtml(renderErrorMessage(_("An error occurred while updating this news item.")));
 	    		}    		
     		}    			    		
     		
@@ -111,7 +112,7 @@ if (checkSession()) {
     	}
     } else {
     	// no news id, so display an error message
-    	$oContent->setHtml(renderErrorMessage("No news item was selected for editing"));
+    	$oContent->setHtml(renderErrorMessage(_("No news item was selected for editing")));
     }        
 
 	// build the page

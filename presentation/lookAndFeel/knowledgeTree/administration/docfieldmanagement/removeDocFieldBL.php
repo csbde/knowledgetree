@@ -68,11 +68,11 @@ if (checkSession()) {
 				}
 			} else {
 				// couldn't retrieve document field from db
-				$oPatternCustom->setHtml(getStatusPage("Read-only document field", "The 'Category' document field cannot be deleted."));
+				$oPatternCustom->setHtml(getStatusPage(_("Read-only document field"), _("The 'Category' document field cannot be deleted.")));
 			}
 		} else {
 			// couldn't retrieve document field from db
-			$oPatternCustom->setHtml(getStatusPage("Non-existent document field", "This document field does not exist in the database"));
+			$oPatternCustom->setHtml(getStatusPage(_("Non-existent document field"), _("This document field does not exist in the database")));
 		}
 	} else {
 		// prompt for a field to delete

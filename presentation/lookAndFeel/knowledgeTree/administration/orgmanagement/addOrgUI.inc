@@ -28,7 +28,7 @@
 function getPage() {
 
 	global $default;
-	$aDisplayRowNames = array("Organisation Name:");
+	$aDisplayRowNames = array(_("Organisation Name") . ":");
 	$aParameterNumbers = array(0);
 	$aDisplayColumnTypes = array(1);
 	$aRequired = array(1);

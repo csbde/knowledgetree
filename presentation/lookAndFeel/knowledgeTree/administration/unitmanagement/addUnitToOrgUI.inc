@@ -47,7 +47,7 @@ function getAddSuccessPage(){
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>\n";
 	
-	$sToRender .= "Unit has been successfully added to the Organisation.\n";
+	$sToRender .= _("Unit has been successfully added to the Organisation."). "\n";
 	$sToRender .= "<a href=\"$default->rootUrl/control.php?action=listUnits\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a>\n";
 	
 	$sToRender .= "</td>\n";
@@ -65,7 +65,7 @@ function getAddUnitsPage($oUnit) {
 	$sToRender .= "<th></th>\n";
 	$sToRender .= "<tr>\n"; 
 	$sToRender .= "<td>\n"; 
-	$sToRender .= "<b>Unit Name: </b>";
+	$sToRender .= "<b>" . _("Unit Name") . ": </b>";
 	$sToRender .= "</td>\n";
 	$sToRender .= "<td>\n"; 
 	$sToRender .= $oUnit->getName();
@@ -75,7 +75,7 @@ function getAddUnitsPage($oUnit) {
 	$sToRender .= "<th></th>\n";
 	$sToRender .= "<tr>\n"; 
 	$sToRender .= "<td>\n"; 
-	$sToRender .= "<b>Organisations: </b>";
+	$sToRender .= "<b>" . _("Organisations") . ": </b>";
 	$sToRender .= "</td>\n";
 	$sToRender .= "<td valign=top>\n"; 
 	$sToRender .= getOrgDropdown();	
@@ -114,10 +114,10 @@ function getAddPage($unitID) {
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>Unit Name: </td><td><input size = \"40\" type=\"text\" name=\"fUnitName\"> </td>\n";
+	$sToRender .= "<td>" . _("Unit Name") . ": </td><td><input size = \"40\" type=\"text\" name=\"fUnitName\"> </td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>Select an Organisation: </td><td>" . getOrgDisplay($oOrg) ;
+	$sToRender .= "<td>" . _("Select an Organisation") . ": </td><td>" . getOrgDisplay($oOrg) ;
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "</tr>\n";
@@ -133,9 +133,9 @@ function getAddPageSuccess() {
 			
 	$sToRender .= renderHeading("Add Unit");
 	$sToRender .= "<table>\n";
-	$sToRender .= "<tr><td><b>Addition Successful!</b></td></tr>\n";
+	$sToRender .= "<tr><td><b>" . _("Addition Successful!") . "</b></td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
-	$sToRender .= "<tr><td>New Unit was successfully added</td></tr>\n";
+	$sToRender .= "<tr><td>" . _("New Unit was successfully added") . "</td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
@@ -152,9 +152,9 @@ function getAddPageFail() {
 			
     $sToRender .= renderHeading("Add Unit");
 	$sToRender .= "<table>\n";
-	$sToRender .= "<tr><td><b>Addition Unsuccessful</b></td></tr>\n";
+	$sToRender .= "<tr><td><b>" . _("Addition Unsuccessful") . "</b></td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
-	$sToRender .= "<tr><td>The Unit was not added. Unit Name Already exists!</td></tr>\n";
+	$sToRender .= "<tr><td>" . _("The Unit was not added. Unit Name Already exists!") . "</td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
@@ -174,7 +174,7 @@ function getPageFail() {
     $sToRender .= renderHeading("Add Unit");
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr></tr>\n";
-	$sToRender .= "<tr><td>Please enter a name AND Select the Organisation</td></tr>\n";
+	$sToRender .= "<tr><td>" . _("Please enter a name AND Select the Organisation") . "</td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
@@ -191,9 +191,9 @@ function getAddPageToOrgFail() {
 			
     $sToRender .= renderHeading("Add Unit");
     $sToRender .= "<table>\n";
-    $sToRender .= "<tr><td><b>Addition to Organisation Unsuccessful</b></td></tr>\n";
+    $sToRender .= "<tr><td><b>" . _("Addition to Organisation Unsuccessful") . "</b></td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
-	$sToRender .= "<tr><td>The Unit was not added to the Organisation.</td></tr>\n";
+	$sToRender .= "<tr><td>" . _("The Unit was not added to the Organisation.") . "</td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";

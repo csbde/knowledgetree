@@ -34,14 +34,14 @@ function renderStatusPage($aSuccessDocuments, $aErrorDocuments) {
 	$sToRender  = renderHeading("Archived Documents Restoration Status");
 	$sToRender .= "<table>";
 	if (count($aSuccessDocuments) > 0) {
-	    $sToRender .= "<tr><td>The following documents were successfully restored:</td></tr>\n";
+	    $sToRender .= "<tr><td>" . _("The following documents were successfully restored:") . "</td></tr>\n";
 	    $sToRender .= "<tr/><tr/>";
 	    for ($i=0; $i<count($aSuccessDocuments); $i++) {
 			$sToRender .= "<tr><td>" . generateControllerLink("viewDocument", "fDocumentID=" . $aSuccessDocuments[$i]->getID(), $aSuccessDocuments[$i]->getDisplayPath()) . "</td></tr>\n";
 	    }
 	}
 	if (count($aErrorDocuments) > 0) {
-    	$sToRender .= "<tr><td>There were errors restoring the following documents:</td></tr>\n";
+    	$sToRender .= "<tr><td>" . _("There were errors restoring the following documents:") . "</td></tr>\n";
 	    $sToRender .= "<tr/><tr/>";    	
 	    for ($i=0; $i<count($aErrorDocuments); $i++) {    	
     		$sToRender .= "<tr><td>" . $aErrorDocuments[$i]->getDisplayPath(true) . "</td></tr>\n";
@@ -61,8 +61,8 @@ function renderRestoreConfirmationPage($aDocuments) {
 	
 	$sToRender  = renderHeading("Restore Archived Documents");
 	$sToRender .= "<table>";
-    $sToRender .= "<tr><td>The documents you have chosen to restore from the archive are listed below.</td></tr>\n";
-    $sToRender .= "<tr><td>Click 'Restore' to confirm restoration, or 'Cancel' to abort.</td></tr>\n";
+    $sToRender .= "<tr><td>" . _("The documents you have chosen to restore from the archive are listed below.") . "</td></tr>\n";
+    $sToRender .= "<tr><td>" . _("Click 'Restore' to confirm restoration, or 'Cancel' to abort.") . "</td></tr>\n";
     $sToRender .= "<tr/><tr/>";
 
     // loop through them    
@@ -91,7 +91,7 @@ function renderSearchPage($aMetaTagIDs = array()) {
     
 	$sToRender .= "<table width=\"600\">\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>Search text: <input type=\"text\" size=\"60\" name=\"fSearchString\" value=\"$sSearchString\" />\n";
+	$sToRender .= "<td>" . _("Search text:") . " <input type=\"text\" size=\"60\" name=\"fSearchString\" value=\"$sSearchString\" />\n";
 	$sToRender .= "<input type=\"image\" src=\"$default->graphicsUrl/widgets/submit.gif\" border=\"0\"></td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
@@ -125,7 +125,7 @@ function renderArchivedDocumentsResultsPage($aDocuments) {
 
 	$sToRender  = renderHeading("Archived Documents Search Results");
 	$sToRender .= "<table>";			
-    $sToRender .= "<tr><td>Select the archived documents you'd like to restore, and click 'Restore', or 'Cancel' to abort</td></tr>\n";
+    $sToRender .= "<tr><td>" . _("Select the archived documents you'd like to restore, and click 'Restore', or 'Cancel' to abort") . "</td></tr>\n";
 	for ($i=0; $i<count($aDocuments); $i++) {
 		// and print document paths with checkboxes
         $sToRender .= "\t<tr>\n";

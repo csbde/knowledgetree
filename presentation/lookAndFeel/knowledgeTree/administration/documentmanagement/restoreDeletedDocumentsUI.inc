@@ -33,7 +33,7 @@ function renderStatusPage($oDocument) {
 	
 	$sToRender  = renderHeading("Restore Deleted Document Status");
 	$sToRender .= "<table>";
-    $sToRender .= "<tr><td>The document <strong>" . $oDocument->getName() . "</strong> was successfully restored:</td></tr>\n";
+    $sToRender .= "<tr><td>" . _("The document") . " <strong>" . $oDocument->getName() . "</strong> " . _("was successfully restored:") . "</td></tr>\n";
     $sToRender .= "<tr><td>" . generateControllerLink("viewDocument", "fDocumentID=" . $oDocument->getID(), $oDocument->getDisplayPath(true)) . "\n";
     $sToRender .= "<tr/><tr/>";
 	
@@ -49,8 +49,10 @@ function renderConfirmationPage($iDocumentID, $iFolderID) {
 	global $default;
     $sToRender = renderHeading("Restore Deleted Document");
 	$sToRender .= "<table>\n";
-	$sToRender .= "<tr>\n<td>Are you sure you want to restore deleted document <strong>" . Document::getDocumentName($iDocumentID) . "</strong></td></tr>";
-	$sToRender .= "<tr><td>to folder <strong>" . Folder::getFolderDisplayPath($iFolderID) . "</strong>?</td></tr>\n";
+	$sToRender .= "<tr>\n<td>" . 
+		sprintf(_("Are you sure you want to restore deleted document <strong>%s</strong>"),Document::getDocumentName($iDocumentID)) .
+		"</td></tr>";
+	$sToRender .= "<tr><td>" . _("to folder") . " <strong>" . Folder::getFolderDisplayPath($iFolderID) . "</strong>?</td></tr>\n";
 	$sToRender .= "</tr><tr/><tr/>\n";
 	$sToRender .= "<tr><td>" . generateControllerLink("restoreDeletedDocument", "fDocumentID=$iDocumentID&fFolderID=$iFolderID&fForMove=1&fConfirmed=1", "<img src=\"$default->graphicsUrl/widgets/restore.gif\" border=\"0\"/>") . "&nbsp;";
 	$sToRender .= generateControllerLink("restoreDeletedDocument", "fDocumentID=$iDocumentID&fFolderID=$iFolderID", "<img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"/>") . "</td></tr>\n";
@@ -73,7 +75,7 @@ function renderFolderBrowsePage($iDocumentID, $iFolderID) {
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>" . renderFolderList($iFolderID, generateControllerUrl("restoreDeletedDocument", "fDocumentID=$iDocumentID", false)) . "</td>\n";
 	$sToRender .= "</tr>\n";	
-	$sToRender .= "<tr><td><table><tr><td colspan=\"3\">Select the folder you would like to restore deleted document <strong>" . Document::getDocumentName($iDocumentID) . "</strong> to.</td></tr>";
+	$sToRender .= "<tr><td><table><tr><td colspan=\"3\">" . _("Select the folder you would like to restore deleted document") . " <strong>" . Document::getDocumentName($iDocumentID) . "</strong> to.</td></tr>";
 	$sToRender .= "<tr/><tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/restorehere.gif\" border=\"0\"/>&nbsp;" . generateControllerLink("deletedDocuments", "", "<img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\">") . "</td></tr></table></td>\n";
 	$sToRender .= "</table>\n";
 	return $sToRender;

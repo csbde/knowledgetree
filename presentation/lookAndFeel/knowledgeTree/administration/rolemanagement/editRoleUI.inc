@@ -32,7 +32,7 @@ function getCreatePage($iRoleID) {
 	$sQuery =  "SELECT * FROM $default->roles_table WHERE id = $iRoleID";
 	$aDisplayColumns = array("name", "can_read", "can_write");
 	$aStoreColumns = array("name", "can_read","can_write");
-	$aColumnNames = array("Name", "Read", "Write");
+	$aColumnNames = array(_("Name"), _("Read"), _("Write"));
 	$aDisplayColumnTypes = array(1,2,2);
 	$aDatabaseColumnTypes = array(1,2,2);
 	
@@ -66,7 +66,7 @@ function getAddFailPage() {
     $sToRender .= renderHeading("Edit Role");
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>Sorry, Role Already Exists!</td>\n";
+	$sToRender .= "<td>" . _("Sorry, Role Already Exists!") . "</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "</tr>\n";
@@ -90,7 +90,7 @@ function getEditPage($iRoleID) {
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>Role Name: </td><td>" . getRoleDisplay($oRole) . "</td>\n";
+	$sToRender .= "<td>" . _("Role Name:") . " </td><td>" . getRoleDisplay($oRole) . "</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "</tr>\n";
@@ -100,10 +100,10 @@ function getEditPage($iRoleID) {
 	if (isset($iRoleID)) {
 		$sToRender .= "</tr>\n";
 		$sToRender .= "<tr>\n";
-		$sToRender .= "<td>Readable: </td><td>" . getReadableCheckBox($oRole) . "</td>\n";
+		$sToRender .= "<td>" . _("Readable:") . " </td><td>" . getReadableCheckBox($oRole) . "</td>\n";
 		$sToRender .= "</tr>\n";
 		$sToRender .= "<tr>\n";
-		$sToRender .= "<td>Writable: </td><td>" . getWriteableCheckBox($oRole) . "</td>\n";
+		$sToRender .= "<td>" . _("Writable:") . " </td><td>" . getWriteableCheckBox($oRole) . "</td>\n";
 		$sToRender .= "</tr>\n";
 		$sToRender .= "<tr>\n";
 		$sToRender .= "</tr>\n";
@@ -131,11 +131,11 @@ function getEditPageSuccess() {
 	global $default;
 			
     $sToRender .= renderHeading("Edit Role");
-	$sToRender .= "<b>Success!</b>\n";
+	$sToRender .= "<b>" . _("Success") . "!</b>\n";
 	$sToRender .= "<table>\n";
 	$sToRender .= "<br></br>\n";
 	$sToRender .= "<tr></tr>\n";
-	$sToRender .= "<tr><td>The Role was successfully modified</td></tr>\n";
+	$sToRender .= "<tr><td>" . _("The Role was successfully modified") . "</td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
@@ -153,11 +153,11 @@ function getEditPageFail() {
 	global $default;
 			
     $sToRender .= renderHeading("Edit Role");
-	$sToRender .= "<b>Success!</b>\n";
+	$sToRender .= "<b>" . _("Success") . "!</b>\n";
 	$sToRender .= "<table>\n";
 	$sToRender .= "<br></br>\n";
 	$sToRender .= "<tr></tr>\n";
-	$sToRender .= "<tr><td>The Role modification Failed!</td></tr>\n";
+	$sToRender .= "<tr><td>" . _("The Role modification Failed!") . "</td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
@@ -217,7 +217,7 @@ function getWriteableCheckBox($oRole) {
 function getUpdateButton($oRole) {
 	global $default;
 	if (!isset($oRole)) {
-		return "Please select a Role: ";
+		return _("Please select a Role:") . " ";
 	} else {
 		return "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/update.gif\" value=\"submit\" border=\"0\"/></td>\n";
 	}

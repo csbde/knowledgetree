@@ -35,7 +35,7 @@ function getPage($iUserID) {
     if (isset($iUserID)) {
         $oUser = User::get($iUserID);
     } else {
-        $heading = "<tr><td>Please select a User:</td></tr>\n";
+        $heading = "<tr><td>" . _("Please select a User") . ":</td></tr>\n";
     }
 
     $sToRender .= renderHeading("Edit User Groups");
@@ -43,7 +43,7 @@ function getPage($iUserID) {
     $sToRender .= $heading;
     $sToRender .= "<tr>\n";
     $sToRender .= "</tr>\n";
-    $sToRender .= "<td>User Name: " . getUserDisplay($oUser) . "</td>\n";
+    $sToRender .= "<td>" . _("User Name") . ": " . getUserDisplay($oUser) . "</td>\n";
     $sToRender .= "<tr>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "<tr>\n";
@@ -65,7 +65,7 @@ function getGroupUnitsList($fGroupID){
     
 
     $aColumns = array("name");
-    $aColumnNames = array("Current Units");
+    $aColumnNames = array(_("Current Units"));
     $aColumnTypes = array(1);
     $aDBColumnArray = array("UnitID");
     $aQueryStringVariableNames = array("fUnitID");
@@ -100,7 +100,7 @@ function getUnitPage($iGroupID) {
 	$sToRender .= renderHeading("Edit Group Units");
 	
     $sToRender .= "<table width=\"600\" border=0>";
-    $sToRender .= "<tr><td width=100%><b>Group Name: </b>" . $oGroup->getName() . "</td><td>";
+    $sToRender .= "<tr><td width=100%><b>" . _("Group Name") . ": </b>" . $oGroup->getName() . "</td><td>";
     $sToRender .= "<a href=\"$default->rootUrl/control.php?action=listGroups\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a>";
     $sToRender .= "</td></tr>\n";
     $sToRender .= "</table>";    
@@ -114,13 +114,13 @@ function getUnitPage($iGroupID) {
 	$sToRender .= "</td><td valign=top>\n";
     
     $sToRender .= "<table border=0 cellspacing=7>\n";
-    $sToRender .= "<tr><td><b><font size=2 >Options</font></b></td></tr>";
+    $sToRender .= "<tr><td><b><font size=2 >" . _("Options") . "</font></b></td></tr>";
     $sToRender .= "<tr><td width=200 bgcolor=$sBgColor>";
-    $sToRender .= "<br><a href=\"$default->rootUrl/control.php?action=assignGroupToUnit&fGroupID=$iGroupID\">&nbsp;&nbsp;Add Group to a Unit</a><br><br>";
+    $sToRender .= "<br><a href=\"$default->rootUrl/control.php?action=assignGroupToUnit&fGroupID=$iGroupID\">&nbsp;&nbsp;" . _("Add Group to a Unit") . "</a><br><br>";
     $sToRender .= "</td><td>";    
     $sToRender .= "</td></tr>";
     $sToRender .= "<tr><td width=200 bgcolor=$sBgColor>";
-    $sToRender .= "<br><a href=\"$default->rootUrl/control.php?action=removeGroupFromUnit&fGroupSet=1&fGroupID=$iGroupID\">&nbsp;&nbsp;Remove Group from a Unit</a><br><br>";
+    $sToRender .= "<br><a href=\"$default->rootUrl/control.php?action=removeGroupFromUnit&fGroupSet=1&fGroupID=$iGroupID\">&nbsp;&nbsp;" . _("Remove Group from a Unit") . "</a><br><br>";
     $sToRender .= "</td><td>";    
     $sToRender .= "</td></tr>";
     $sToRender .= "</table>\n";
@@ -140,13 +140,13 @@ function getDeleteConfirmedPage($iUserID,$fGroupID) {
     // change headings if User selected
     if (isset($iUserID)) {
         $oUser = User::get($iUserID);
-        $heading = "<tr><td>Are you sure you wish to remove this user from the Group?</td></tr>";
+        $heading = "<tr><td>" . _("Are you sure you wish to remove this user from the Group?") . "</td></tr>";
     }
 
     // change headings if User selected
     if (isset($fGroupID)) {
         $oGroup = Group::get($fGroupID);
-        $Groupdisplay = "<td>Group Name: " . $oGroup->getName() . "</td>\n";
+        $Groupdisplay = "<td>" . _("Group Name") . ": " . $oGroup->getName() . "</td>\n";
     }
 
     $sToRender .= "<table width=\"600\">" . renderHeading("Edit User Groups") . "</table>";
@@ -154,7 +154,7 @@ function getDeleteConfirmedPage($iUserID,$fGroupID) {
     $sToRender .= "<tr>\n";
     $sToRender .= $heading;
     $sToRender .= "</tr>\n";
-    $sToRender .= "<td>User Name: " . getUserDisplay($oUser) . "</td>\n";
+    $sToRender .= "<td>" . _("User Name") . ": " . getUserDisplay($oUser) . "</td>\n";
     $sToRender .= "<tr>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "<tr>\n";
@@ -178,7 +178,7 @@ function getPageFail() {
 
     $sToRender .= "<table width=\"600\">" . renderHeading("Edit User Groups") . "</table>";
     $sToRender .= "<table>\n";
-    $sToRender .= "<tr><td><b>Sorry, Removal Failed</b></td></tr>\n";
+    $sToRender .= "<tr><td><b>" . _("Sorry, Removal Failed") . "</b></td></tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "<tr>\n";
@@ -199,9 +199,9 @@ function getPageSuccess() {
 
     $sToRender .= "<table width=\"600\">" . renderHeading("Edit User Groups") . "</table>";
     $sToRender .= "<table>\n";
-    $sToRender .= "<tr><td><b>Success!</b></td></tr>\n";
+    $sToRender .= "<tr><td><b>" . _("Success") . "!</b></td></tr>\n";
     $sToRender .= "<tr></tr>\n";
-    $sToRender .= "<tr><td>The User was successfully removed from the Group</td></tr>\n";
+    $sToRender .= "<tr><td>" . _("The User was successfully removed from the Group") . "</td></tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr>\n";

@@ -62,10 +62,10 @@ function renderNewsTable() {
 function renderNewsItem($oDashboardNews) {
 	global $default;
 	
-	$sToRender .= "<tr><td>Synopsis:</td><td>" . $oDashboardNews->getSynopsis() . "</td></tr>";
+	$sToRender .= "<tr><td>" . _("Synopsis") . ":</td><td>" . $oDashboardNews->getSynopsis() . "</td></tr>";
 	
-	$sToRender .= "<tr><td>Body:</td><td>" . $oDashboardNews->getBody() . "</td></tr>";
-	$sToRender .= "<tr><td>Rank:</td><td>" . $oDashboardNews->getRank() . "</td></tr>";	
+	$sToRender .= "<tr><td>" . _("Body") . ":</td><td>" . $oDashboardNews->getBody() . "</td></tr>";
+	$sToRender .= "<tr><td>" . _("Rank") . ":</td><td>" . $oDashboardNews->getRank() . "</td></tr>";	
 	$sToRender .= "<tr><td colspan=\"2\">" . $oDashboardNews->getImageLink() . "</td></tr>";	
 		
 	$sToRender .= "<input type=\"hidden\" name=\"fNewsID\" value=\"" . $oDashboardNews->getID() . "\">";
@@ -82,11 +82,11 @@ function renderEditAddNewsForm($oDashboardNews) {
 	
 	$sToRender  = "<table>";
 	
-	$sToRender .= "<tr><td>Synopsis:</td><td><input type=\"text\" name=\"fSynopsis\" value=\"" . ($oDashboardNews ? $oDashboardNews->getSynopsis() : "") . "\"></td></tr>";
-	$sToRender .= "<tr><td>Body:</td><td><textarea name=\"fBody\" cols=\"35\" rows=\"10\">" . ($oDashboardNews ? $oDashboardNews->getBody() : "") . "</textarea></td></tr>";
-	$sToRender .= "<tr><td>Rank:</td><td><input type=\"text\" name=\"fRank\" value=\"" . ($oDashboardNews ? $oDashboardNews->getRank() : "") . "\"></td></tr>";	
-	$sToRender .= "<tr><td>Image:</td><td><input type=\"file\" name=\"fImage\"></td></tr>";
-	$sToRender .= "<tr><td>Active:</td><td><input type=\"checkbox\" name=\"fActive\" " . ($oDashboardNews ? ($oDashboardNews->getActive() ? "checked" : "") : "") . "></td></tr>";
+	$sToRender .= "<tr><td>" . _("Synopsis") . ":</td><td><input type=\"text\" name=\"fSynopsis\" value=\"" . ($oDashboardNews ? $oDashboardNews->getSynopsis() : "") . "\"></td></tr>";
+	$sToRender .= "<tr><td>" . _("Body") . ":</td><td><textarea name=\"fBody\" cols=\"35\" rows=\"10\">" . ($oDashboardNews ? $oDashboardNews->getBody() : "") . "</textarea></td></tr>";
+	$sToRender .= "<tr><td>" . _("Rank") . ":</td><td><input type=\"text\" name=\"fRank\" value=\"" . ($oDashboardNews ? $oDashboardNews->getRank() : "") . "\"></td></tr>";	
+	$sToRender .= "<tr><td>" . _("Image") . ":</td><td><input type=\"file\" name=\"fImage\"></td></tr>";
+	$sToRender .= "<tr><td>" . _("Active") . ":</td><td><input type=\"checkbox\" name=\"fActive\" " . ($oDashboardNews ? ($oDashboardNews->getActive() ? "checked" : "") : "") . "></td></tr>";
 	
 	$sToRender .= ($oDashboardNews ? "<input type=\"hidden\" name=\"fNewsID\" value=\"" . $oDashboardNews->getID() . "\">" : "");
 			
@@ -176,7 +176,7 @@ function renderDeleteNewsConfirmationPage($oDashboardNews) {
 	
 	$sToRender .= renderHeading("Delete Dashboard News");
     $sToRender .= "<table>\n";
-	$sToRender .= "<tr><td colspan=\"2\">Are you sure you wish to delete this news item?</td></tr>";
+	$sToRender .= "<tr><td colspan=\"2\">" . _("Are you sure you wish to delete this news item?") . "</td></tr>";
 	
 	$sToRender .= renderNewsItem($oDashboardNews);	
 	

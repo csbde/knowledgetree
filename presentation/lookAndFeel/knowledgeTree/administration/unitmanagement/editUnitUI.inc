@@ -34,9 +34,9 @@ function getEditPage($iUnitID) {
 	
 	$sToRender .= renderHeading("Edit Unit");
 	$sToRender .= "<table>\n";
-	$sToRender .= "<tr><td><strong>Please edit the Unit name</strong></td></tr>\n";
+	$sToRender .= "<tr><td><strong>" . _("Please edit the Unit name") . "</strong></td></tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>Unit Name: </td><td>" . getUnitDisplay($oUnit) . "</td>\n";
+	$sToRender .= "<td>" . _("Unit Name") . ": </td><td>" . getUnitDisplay($oUnit) . "</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "</tr>\n";
@@ -55,9 +55,9 @@ function getEditPageSuccess() {
 			
 	$sToRender .= renderHeading("Edit Unit");
 	$sToRender .= "<table>\n";
-	$sToRender .= "<tr><td><b>Success!</b></td></tr>\n";
+	$sToRender .= "<tr><td><b>" . _("Success") . "!</b></td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
-	$sToRender .= "<tr><td>The Unit was successfully modified</td></tr>\n";
+	$sToRender .= "<tr><td>" . _("The Unit was successfully modified") . "</td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
@@ -76,9 +76,9 @@ function getEditPageFail() {
 			
 	$sToRender .= renderHeading("Edit Unit");
 	$sToRender .= "<table>\n";
-	$sToRender .= "<tr><td><b>FAILED!</b></td></tr>\n";
+	$sToRender .= "<tr><td><b>" . strtoupper(_("Failure")) . "!</b></td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
-	$sToRender .= "<tr><td>Unit modification Failed!</td></tr>\n";
+	$sToRender .= "<tr><td>" . _("Unit modification Failed!") . "</td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";

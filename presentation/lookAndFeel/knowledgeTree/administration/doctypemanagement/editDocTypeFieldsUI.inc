@@ -38,15 +38,15 @@ function getDetailsPage($iDocTypeID) {
     $sToRender .= "<table border=0 width=100%>\n";
     
     $sToRender .= "<tr>\n";
-    $sToRender .= "<td width=\"45%\">Document Type Name: </td><td>" . $oDocType->getName() . "</td>\n";
+    $sToRender .= "<td width=\"45%\">" . _("Document Type Name:") . " </td><td>" . $oDocType->getName() . "</td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "<tr><input type=hidden name=\"fDocTypeID\"  value=\"" . $iDocTypeID . "\"></tr>\n";
     $sToRender .= "<tr></tr>\n";
-    $sToRender .= "<tr><td valign=\"top\">Generic Document Fields: </td><td>" . getGenericFieldsList() . "</td></tr>\n";
+    $sToRender .= "<tr><td valign=\"top\">" . _("Generic Document Fields:") . " </td><td>" . getGenericFieldsList() . "</td></tr>\n";
     $sToRender .= "<tr></tr>\n";
-    $sToRender .= "<tr><td valign=\"top\">Document Type Specific Fields: </td>";    
+    $sToRender .= "<tr><td valign=\"top\">" . _("Document Type Specific Fields:") . " </td>";    
     $sToRender .= "<td>" . getDocumentTypeFieldsList($iDocTypeID) . "</td></tr>\n";	
-    $sToRender .= "<tr><td >" . generateControllerLink("addDocTypeFieldsLink", "fDocTypeID=$iDocTypeID", "Add new Type Specific Field &nbsp; <img border=0 src=\"$default->graphicsUrl/widgets/add.gif\"/>");
+    $sToRender .= "<tr><td >" . generateControllerLink("addDocTypeFieldsLink", "fDocTypeID=$iDocTypeID", _("Add new Type Specific Field") . " &nbsp; <img border=0 src=\"$default->graphicsUrl/widgets/add.gif\"/>");
     $sToRender .= generateControllerLink("listDocTypes", "", "<img border=0 src=\"$default->graphicsUrl/widgets/back.gif\"/>"). "</td></tr>\n";    
     $sToRender .= "</table>\n";
 
@@ -61,9 +61,11 @@ function getDeleteConfirmationPage($iDocTypeID, $iDocFieldID) {
 	
     $sToRender .= renderHeading("Edit Document Type - Delete Document Field Link");
     $sToRender .= "<table border=\"0\" cellspacing=\"2\" cellpadding=\"2\">\n";
-    $sToRender .= "<tr><td>Are you sure you want to remove field '" . $oDocField->getName(). "' from document type '" . $oDocType->getName() ."'?</td></tr>\n";
+    $sToRender .= "<tr><td>" . 
+	sprintf(_("Are you sure you want to remove field '%s' from document type '%s'?"), $oDocField->getName(), $oDocType->getName()) .
+	"</td></tr>\n";
     $sToRender .= "<tr/><tr/>\n";
-    $sToRender .= "<tr><td>Click 'Remove' to remove the link, or 'Cancel' to abort.</td></tr>\n";
+    $sToRender .= "<tr><td>" . _("Click 'Remove' to remove the link, or 'Cancel' to abort.") . "</td></tr>\n";
     $sToRender .= "<tr/><tr/>\n";
 	$sToRender .= "<td align=\"right\">" . generateControllerLink("editDocTypeFields", "fConfirm=1&fRemove=1&fDocFieldID=$iDocFieldID&fDocTypeID=$iDocTypeID", "<img src =\"$default->graphicsUrl/widgets/remove.gif\" border = \"0\" />");
 	$sToRender .= generateControllerLink("editDocTypeFields", "fDocTypeID=$iDocTypeID", "<img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" />") . "</td>\n";
@@ -82,11 +84,11 @@ function getEditDocumentFieldLinkPage($oDocTypeFieldLink) {
     $sToRender .= "<input type=\"hidden\" name=\"fDocTypeID\" value=\"" . $oDocTypeFieldLink->getDocumentTypeID() . "\">\n";
     $sToRender .= "<input type=\"hidden\" name=\"fDocFieldID\" value=\"" . $oDocTypeFieldLink->getFieldID() . "\">\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "<td>Document Field Name: </td><td>" . $oDocField->getName() . "</td>\n";
+    $sToRender .= "<td>" . _("Document Field Name:") . " </td><td>" . $oDocField->getName() . "</td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "<tr/>\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "<td>Mandatory:  </td><td><input type=\"checkbox\" name=\"fIsMandatory\" value=\"1\" " . ($oDocTypeFieldLink->getIsMandatory() ? "CHECKED" : "") . "></td>\n";
+    $sToRender .= "<td>" . _("Mandatory") . ":  </td><td><input type=\"checkbox\" name=\"fIsMandatory\" value=\"1\" " . ($oDocTypeFieldLink->getIsMandatory() ? "CHECKED" : "") . "></td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "<tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/update.gif\"/>";
     $sToRender .= generateControllerLink("editDocTypeFields", "fDocTypeID=" . $oDocTypeFieldLink->getDocumentTypeID(), "<img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" />") . "</td></tr>\n";
@@ -113,12 +115,12 @@ function getStatusPage($sHeading, $sText = "", $iDocTypeID) {
 
 // if addition is successful print otu success page
 function getSuccessPage($sMessage, $iDocTypeID) {
-	return getStatusPage("Success!", $sMessage, $iDocTypeID);
+	return getStatusPage(_("Success") . "!", $sMessage, $iDocTypeID);
 }
 
 // gets the page if editing fails
 function getFailurePage($sMessage, $iDocTypeID) {
-	return getStatusPage("Failure!", $sMessage, $iDocTypeID);
+	return getStatusPage(_("Failure") . "!", $sMessage, $iDocTypeID);
 }
 
 function getGenericFieldsList() {

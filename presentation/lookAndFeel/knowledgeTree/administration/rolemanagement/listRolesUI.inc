@@ -32,7 +32,7 @@ function getRoles() {
 				"ORDER BY name";				
 	
     $aColumns = array("name", "reader", "writer", "Edit", "Delete");
-    $aColumnNames = array("Name", "Read", "Write", "Edit", "Delete");
+    $aColumnNames = array(_("Name"), _("Read"), _("Write"), _("Edit"), _("Delete"));
     $aColumnTypes = array(1,2,2,3,3);
     $aDBColumnArray = array("roleID");
     $aQueryStringVariableNames = array("fRoleID");
@@ -51,7 +51,7 @@ function getPage() {
 	$sToRender .= renderHeading("Role Management");
 
 	// add user link
-	$sToRender .= getAddLink("addRole", "Add A Role");
+	$sToRender .= getAddLink("addRole", _("Add A Role"));
 	$sToRender .= getRoles();
 	return $sToRender;
 }

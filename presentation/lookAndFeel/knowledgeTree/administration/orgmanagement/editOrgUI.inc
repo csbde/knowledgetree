@@ -35,9 +35,9 @@ function getEditPage($iOrgID) {
 	
 	$sToRender .= renderHeading("Edit Organisation");
 	$sToRender .= "<table>\n";
-	$sToRender .= "<tr><td>Please select an organisation:</td></tr>\n";
+	$sToRender .= "<tr><td>" . _("Please select an Organisation") . ":</td></tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>Organisation Name: </td><td>" . getOrgDisplay($oOrg) . "</td>\n";
+	$sToRender .= "<td>" . _("Organisation Name") . ": </td><td>" . getOrgDisplay($oOrg) . "</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "</tr>\n";
@@ -57,9 +57,9 @@ function getEditPageSuccess() {
 			
 	$sToRender .= renderHeading("Edit Organisation");
 	$sToRender .= "<table>\n";
-	$sToRender .= "<tr><td><b>Success!</b></td></tr>\n";
+	$sToRender .= "<tr><td><b>" . _("Success") . "!</b></td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
-	$sToRender .= "<tr><td>The Organisation was successfully modified</td></tr>\n";
+	$sToRender .= "<tr><td>" . _("The Organisation was successfully modified") . "</td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
@@ -78,9 +78,9 @@ function getEditPageFail() {
 			
     $sToRender .= renderHeading("Edit Organisation");
 	$sToRender .= "<table>\n";
-	$sToRender .= "<tr><td><b>Failure!</b>>/td></tr>\n";
+	$sToRender .= "<tr><td><b>" . strtoupper(_("Failure")) . "!</b>>/td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
-	$sToRender .= "<tr><td>Organisation modification Failed!</td></tr>\n";
+	$sToRender .= "<tr><td>" . _("Organisation modification Failed!") . "</td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";

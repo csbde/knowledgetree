@@ -29,7 +29,7 @@ function getSelectUserPage($aResults) {
 	global $default;
     $sToRender .= renderHeading("Add User To System");
 	$sToRender .= "<table>\n";
-	$sToRender .= "<tr><td>Select the User to add to the System:</td></tr>\n";
+	$sToRender .= "<tr><td>" . _("Select the User to add to the System:") . "</td></tr>\n";
 	$sToRender .= "<tr><td><select name=\"fName\">\n";
     foreach ($aResults as $sName => $aAttributes) {
         $sToRender .= "<option value=\"$sName\">$sName</option>";
@@ -45,9 +45,9 @@ function getSearchPage($unitID) {
 	global $default;
     $sToRender .= renderHeading("Search For A User To Add");
 	$sToRender .= "<table>\n";
-	$sToRender .= "<tr><td colspan=\"2\">Please enter a VALID Username to search for in the text box below</td></tr>\n";
+	$sToRender .= "<tr><td colspan=\"2\">" . _("Please enter a VALID Username to search for in the text box below") . "</td></tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>Username: </td><td><input size = \"40\" type=\"text\" name=\"fName\"> </td>\n";
+	$sToRender .= "<td>" . _("Username") . ": </td><td><input size = \"40\" type=\"text\" name=\"fName\"> </td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "</tr>\n";
@@ -63,26 +63,26 @@ function getDetailsDBPage($sUserName, $aAttributes) {
     $sToRender .= renderHeading("Add User To System");
     foreach ($aAttributes as $sUserName => $aUserAttributes) {
         $sToRender .= "<table>\n";
-        $sToRender .= "<tr><td><b>User Details: </b></td></tr>\n";
+        $sToRender .= "<tr><td><b>" . _("User Details") . ": </b></td></tr>\n";
         $sToRender .= "<tr>\n";
-        $sToRender .= "<td>Username: </td><td><input size = \"40\" type=\"text\" name=\"fUsername\" value = \"". $aUserAttributes["username"]. "\"> </td>\n";
+        $sToRender .= "<td>" . _("Username") . ": </td><td><input size = \"40\" type=\"text\" name=\"fUsername\" value = \"". $aUserAttributes["username"]. "\"> </td>\n";
         $sToRender .= "</tr>\n";
         $sToRender .= "<tr>\n";
-        $sToRender .= "<td>Password: </td><td><input size = \"40\" type=\"password\" name=\"fPassword\"></td>\n";
+        $sToRender .= "<td>" . _("Password") . ": </td><td><input size = \"40\" type=\"password\" name=\"fPassword\"></td>\n";
         $sToRender .= "</tr>\n";        
         $sToRender .= "<tr>\n";
-        $sToRender .= "<td>Name: </td><td><input size = \"40\" type=\"text\" name=\"fName\" value = \"" . $aUserAttributes["name"] ."\"> </td>\n";
+        $sToRender .= "<td>" . _("Name") . ": </td><td><input size = \"40\" type=\"text\" name=\"fName\" value = \"" . $aUserAttributes["name"] ."\"> </td>\n";
         $sToRender .= "</tr>\n";
         $sToRender .= "<tr>\n";
-        $sToRender .= "<td>Email: </td><td><input size = \"40\" type=\"text\" name=\"fEmail\" value = \"" . $aUserAttributes["email"] ."\"> </td>\n";
+        $sToRender .= "<td>" . _("Email Address") . ": </td><td><input size = \"40\" type=\"text\" name=\"fEmail\" value = \"" . $aUserAttributes["email"] ."\"> </td>\n";
         $sToRender .= "</tr>\n";
         $sToRender .= "<tr>\n";
-        $sToRender .= "<td>Mobile: </td><td><input size = \"40\" type=\"text\" name=\"fMobile\" value = \"" . $aUserAttributes["mobile"] ."\"> </td>\n";
+        $sToRender .= "<td>" . _("Mobile Number") . ": </td><td><input size = \"40\" type=\"text\" name=\"fMobile\" value = \"" . $aUserAttributes["mobile"] ."\"> </td>\n";
         $sToRender .= "</tr>\n";
         $sToRender .= "<tr>\n";
-        $sToRender .= "<td>Email Notification: </td><td><input type=\"checkbox\" name=\"fEmailNotification\" " . (isset($aUserAttributes["email_notification"]) ? "value=\"" . $aUserAttributes["email_notification"] . "\" " : "") . ($aUserAttributes["email_notification"] == "1" ? "checked" : "") . "> </td>\n";
+        $sToRender .= "<td>" . _("Email Notification") . ": </td><td><input type=\"checkbox\" name=\"fEmailNotification\" " . (isset($aUserAttributes["email_notification"]) ? "value=\"" . $aUserAttributes["email_notification"] . "\" " : "") . ($aUserAttributes["email_notification"] == "1" ? "checked" : "") . "> </td>\n";
         $sToRender .= "</tr>\n";
-        $sToRender .= "<tr><td><b>Initial Group</b></td><td>" . getGroupListBox() . "</td></tr>\n";        
+        $sToRender .= "<tr><td><b>" . _("Initial Group") . "</b></td><td>" . getGroupListBox() . "</td></tr>\n";        
         $sToRender .= "<tr>\n";
         $sToRender .= "<td colspan=\"2\" align=\"right\">" . getAddButton() . getCancelButton("listUsers") . "</td>";
         $sToRender .= "</tr>\n";
@@ -97,31 +97,31 @@ function getDetailsLDAPPage($sUserName, $aAttributes, $sUserIdentifier) {
     $sToRender .= renderHeading("Add User To System");
 	foreach ($aAttributes as $sUserName => $aUserAttributes) {
         $sToRender .= "<table>\n";
-        $sToRender .= "<tr><td><b>User Details: </b></td></tr>\n";
+        $sToRender .= "<tr><td><b>" . _("User Details") . ": </b></td></tr>\n";
         $sToRender .= "<tr>\n";
-        $sToRender .= "<td>LDAP DN: </td><td><input " . ($default->bNN4 ? "onblur=\"disable(document.MainForm.fLdap)" : "DISABLED") . " size = \"40\" type=\"text\" name=\"fLdap\" value = \"". $aUserAttributes["dn"]. "\"> </td>\n";
+        $sToRender .= "<td>" . _("LDAP DN") . ": </td><td><input " . ($default->bNN4 ? "onblur=\"disable(document.MainForm.fLdap)" : "DISABLED") . " size = \"40\" type=\"text\" name=\"fLdap\" value = \"". $aUserAttributes["dn"]. "\"> </td>\n";
         $sToRender .= "<input type=\"hidden\" name=\"fLdap\" value = \"". $aUserAttributes["dn"]. "\">\n";
         $sToRender .= "</tr>\n";
         $sToRender .= "<tr>\n";
-        $sToRender .= "<td>Username: </td><td><input " . ($default->bNN4 ? "onblur=\"disable(document.MainForm.fUsername)" : "DISABLED") . " size = \"40\" type=\"text\" name=\"fUsername\" value = \"" . $aUserAttributes[$sUserIdentifier] ."\"> </td>\n";
+        $sToRender .= "<td>" . _("Username") . ": </td><td><input " . ($default->bNN4 ? "onblur=\"disable(document.MainForm.fUsername)" : "DISABLED") . " size = \"40\" type=\"text\" name=\"fUsername\" value = \"" . $aUserAttributes[$sUserIdentifier] ."\"> </td>\n";
         $sToRender .= "<input type=\"hidden\" name=\"fUsername\" value = \"" . $aUserAttributes[$sUserIdentifier] ."\">\n";
         $sToRender .= "</tr>\n";
         $sToRender .= "<tr>\n";
-        $sToRender .= "<td>Name: </td><td><input size = \"40\" type=\"text\" name=\"fName\" value = \"" . $aUserAttributes["givenname"] ." " . $aUserAttributes["sn"] ."\"> </td>\n";
+        $sToRender .= "<td>" . _("Name") . ": </td><td><input size = \"40\" type=\"text\" name=\"fName\" value = \"" . $aUserAttributes["givenname"] ." " . $aUserAttributes["sn"] ."\"> </td>\n";
         $sToRender .= "</tr>\n";
         $sToRender .= "<tr>\n";
-        $sToRender .= "<td>Email: </td><td><input size = \"40\" type=\"text\" name=\"fEmail\" value = \"" . $aUserAttributes["userPrincipalName"] ."\"> </td>\n";
+        $sToRender .= "<td>" . _("Email Address") . ": </td><td><input size = \"40\" type=\"text\" name=\"fEmail\" value = \"" . $aUserAttributes["userPrincipalName"] ."\"> </td>\n";
         $sToRender .= "</tr>\n";
         $sToRender .= "<tr>\n";
-        $sToRender .= "<td>Mobile Number: </td><td><input size = \"40\" type=\"text\" name=\"fMobile\" value = \"" . $aUserAttributes["mobile"] ."\"> </td>\n";
+        $sToRender .= "<td>" . _("Mobile Number") . ": </td><td><input size = \"40\" type=\"text\" name=\"fMobile\" value = \"" . $aUserAttributes["mobile"] ."\"> </td>\n";
         $sToRender .= "</tr>\n";
         $sToRender .= "<tr>\n";        
-        $sToRender .= "<td>Email Notification: </td><td><input type=\"checkbox\" name=\"fEmailNotification\" CHECKED/> </td>\n";
+        $sToRender .= "<td>" . _("Email Notification") . ": </td><td><input type=\"checkbox\" name=\"fEmailNotification\" CHECKED/> </td>\n";
         $sToRender .= "</tr>\n";
         $sToRender .= "<tr>\n";
-        $sToRender .= "<td>Sms Notification: </td><td><input type=\"checkbox\" name=\"fSmsNotification\"/> </td>\n";
+        $sToRender .= "<td>" . _("Sms Notification") . ": </td><td><input type=\"checkbox\" name=\"fSmsNotification\"/> </td>\n";
         $sToRender .= "</tr>\n";
-        $sToRender .= "<tr><td><b>Initial Group</b></td><td>" . getGroupListBox() . "</td></tr>\n";        
+        $sToRender .= "<tr><td><b>" . _("Initial Group") . "</b></td><td>" . getGroupListBox() . "</td></tr>\n";        
         $sToRender .= "<tr>\n";
         $sToRender .= "<td colspan=\"2\" align=\"right\">" . getAddButton() . getCancelButton("listUsers") . "</td>";
         $sToRender .= "</tr>\n";
@@ -154,19 +154,19 @@ function getJavascriptValidation($bLdap = false) {
 }	
 
 function getPageSuccess() {
-	return statusPage("Add User To System", "Addition Successful!", "The User was successfully added to the System.", "addUser");
+	return statusPage(_("Add User To System"), _("Addition Successful!"), _("The User was successfully added to the System."), "addUser");
 }
 
 function getPageGroupFail() {
-	return statusPage("Add User To System", "Group Addition Unsuccessful!", "The user was succesfully added, but could not be assigned to the selected group.", "addUser");
+	return statusPage(_("Add User To System"), _("Group Addition Unsuccessful!"), _("The user was succesfully added, but could not be assigned to the selected group."), "addUser");
 }	
 
 function getPageFail() {
-	return statusPage("Add User To System", "Addition Unsuccessful!", "The user was not added because the selected User Name already exists.", "addUser");
+	return statusPage(_("Add User To System"), _("Addition Unsuccessful") . "!", _("The user was not added because the selected User Name already exists."), "addUser");
 }
 
 function getPageUsernameNotFound() {
-	return statusPage("Add User To System", "Username not found!", "Your user search string did not match any users in the user directory.", "addUser");
+	return statusPage(_("Add User To System"), _("Username not found!"), _("Your user search string did not match any users in the user directory."), "addUser");
 }
 
 function getAddButton() {

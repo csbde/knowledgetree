@@ -62,12 +62,12 @@ if (checkSession()) {
 						} else {
 							$default->log->error("restoreDeletedDocumentBL.php couldn't update db for " . arrayToString($oDocument));
 							// TODO: display error
-							$oContent->setHtml(renderErrorPage("The document could not be restored.  Please try again later"));
+							$oContent->setHtml(renderErrorPage(_("The document could not be restored.  Please try again later")));
 						}
 					} else {
 						$default->log->error("restoreDeletedDocumentBL.php filesystem restore failed for " . arrayToString($oDocument));
 						// TODO: display error
-						$oContent->setHtml(renderErrorPage("The document could not be restored.  Please try again later"));
+						$oContent->setHtml(renderErrorPage(_("The document could not be restored.  Please try again later")));
 					}
 				} else {
 					require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
@@ -77,11 +77,12 @@ if (checkSession()) {
 							$oContent->setHtml(renderConfirmationPage($fDocumentID, $fFolderID));
 			    		} else {
 			    			// there is already a document with that filename here
-			    			$oContent->setHtml(statusPage("Restore Deleted Document", "", "A document with this file name (" . $oDocument->getFileName() . ") already exists in that folder.", "restoreDeletedDocument", "fDocumentID=$fDocumentID&fFolderID=$fFolderID"));
+			    			$oContent->setHtml(statusPage(_("Restore Deleted Document"), "", 
+							sprintf(_("A document with this file name (%s) already exists in that folder."), $oDocument->getFileName()), "restoreDeletedDocument", "fDocumentID=$fDocumentID&fFolderID=$fFolderID"));
 			    		}
 					} else {
 						// the right document type isn't mapped
-						$oContent->setHtml(statusPage("Restored Deleted Document", "", "You can't restore the document to this folder because it cannot store the document type of your document.  Please choose another directory.", "restoreDeletedDocument", "fDocumentID=$fDocumentID&fFolderID=$fFolderID"));
+						$oContent->setHtml(statusPage(_("Restored Deleted Document"), "", _("You can't restore the document to this folder because it cannot store the document type of your document.  Please choose another directory."), "restoreDeletedDocument", "fDocumentID=$fDocumentID&fFolderID=$fFolderID"));
 					}
 				}
 			} else {

@@ -34,7 +34,7 @@ function getDocumentFields() {
 				"ORDER BY name";
 	
     $aColumns = array("DocFieldName", "data_type", "is_generic", "has_lookup","Edit", "Delete", "Edit Lookups" );
-    $aColumnNames = array("Name", "Data type", "Generic?", "Lookup?", "Edit", "Delete", "Edit Lookups");
+    $aColumnNames = array(_("Name"), _("Data Type"), _("Generic?"), _("Lookup") . "?", _("Edit"), _("Delete"), _("Edit Lookups"));
     $aColumnTypes = array(1,1,2,2,3,3,3);
     $aDBColumnArray = array("DocFieldID");
     $aQueryStringVariableNames = array("fDocFieldID");
@@ -53,7 +53,7 @@ function getPage() {
 	$sToRender .= renderHeading("Document Field Management");
 
 	// add user link
-	$sToRender .= getAddLink("addDocField", "Add A Document Field");
+	$sToRender .= getAddLink("addDocField", _("Add A Document Field"));
 	$sToRender .= getDocumentFields();
 	return $sToRender;
 }

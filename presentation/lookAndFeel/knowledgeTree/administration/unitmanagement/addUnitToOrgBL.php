@@ -46,7 +46,7 @@ if (checkSession()) {
     
     if (isset($fUnitID)) {    	    
     	if ($fOrgID == "" && $fAdd == 1){
-	    	$main->setErrorMessage("Please choose an Organisation.");	
+	    	$main->setErrorMessage(_("Select an Organisation"));	
     		$main->setFormAction($_SERVER["PHP_SELF"] . "?fUnitID=$fUnitID&fAdd=1" );
     	}	
 		if ($fOrgID > 0) {    	
@@ -54,7 +54,7 @@ if (checkSession()) {
 			if ($oUnitOrgLink->create()) {
 				$oPatternCustom->addHtml(getAddSuccessPage());
 			}else{
-				$main->setErrorMessage("Unit cannot be linked to the Organisation.");
+				$main->setErrorMessage(_("Unit cannot be linked to the Organisation."));
 				$oPatternCustom->addHtml(getAddFailPage());
 			}   	    	    	   
 	    } else{

@@ -34,7 +34,7 @@ function getDocumentTypes() {
 				"ORDER BY name";
 	
     $aColumns = array("DocTypeName", "Edit", "Delete", "Edit Fields");
-    $aColumnNames = array("Name", "Edit", "Delete", "Edit Fields");
+    $aColumnNames = array(_("Name"), _("Edit"), _("Delete"), _("Edit Fields"));
     $aColumnTypes = array(1,3,3,3);
     $aDBColumnArray = array("DocTypeID");
     $aQueryStringVariableNames = array("fDocTypeID");
@@ -53,7 +53,7 @@ function getPage() {
 	$sToRender .= renderHeading("Document Type Management");
 
 	// add user link
-	$sToRender .= getAddLink("addDocType", "Add A Document Type");
+	$sToRender .= getAddLink("addDocType", _("Add A Document Type"));
 	$sToRender .= getDocumentTypes();
 	return $sToRender;
 }

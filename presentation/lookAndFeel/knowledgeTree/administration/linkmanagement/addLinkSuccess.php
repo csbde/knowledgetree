@@ -38,17 +38,17 @@ if(checkSession()) {
     $Center .= "<TABLE BORDER=\"0\" CELLSPACING=\"2\" CELLPADDING=\"2\">\n";
     $Center .= "<tr>\n";
     if ($fLinkID != -1) {
-        $Center .= "<td><b>New QuickLink Added SuccessFully!<b></td></tr>\n";
+        $Center .= "<td><b>" . _("New QuickLink Added SuccessFully!") . "<b></td></tr>\n";
     } else {
-        $Center .= "<td><b>Addition Unsuccessful</b>...</td>\n";
+        $Center .= "<td><b>" . _("Addition Unsuccessful") . "</b>...</td>\n";
         $Center .= "</tr>\n";
         $Center .= "<tr></tr>\n";
         $Center .= "<tr></tr>\n";
         $Center .= "<tr>\n";
-        $Center .= "<td>Please Check Name and Rank for duplicates!</td>\n";
+        $Center .= "<td>" . _("Please Check Name and Rank for duplicates!") . "</td>\n";
         $Center .= "</tr>\n";
         $Center .= "<tr>\n";
-        $Center .="<td>Only a maximum of 5 Quicklinks are allowed</td>\n";
+        $Center .="<td>" . _("Only a maximum of 5 Quicklinks are allowed") . "</td>\n";
     }
 
     $Center .= "<tr></tr>\n";

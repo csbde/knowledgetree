@@ -72,12 +72,13 @@ if (checkSession()) {
 			    		} else {
 			    			// insert failed
 			    			$default->log->error("addNewsBL.php DB error inserting dashboard news ($fSynopsis, $fBody, $fRank, with image)");
-			    			$oContent->setHtml(renderAddNewsPage($oDashboardNews, "An error occurred while creating this news item."));
+			    			$oContent->setHtml(renderAddNewsPage($oDashboardNews, _("An error occurred while creating this news item.")));
 			    		}	    		
 						
 					} else {
 						// the image is too big
-						$oContent->setHtml(renderAddNewsPage($oDashboardNews, "The image you have submitted is too big (" . $iImgWidth . "x" . $iImgHeight . " > " . $oDashboardNews->getMaxImageDimensions() . "), please correct and retry"));
+						$oContent->setHtml(renderAddNewsPage($oDashboardNews, 
+							sprintf(_("The image you have submitted is too big (%sx%s > %s), please correct and retry"), $iImgWidth, $iImgHeight, $oDashboardNews->getMaxImageDimensions())));
 					}    			
 				}
 			} else {
@@ -92,12 +93,12 @@ if (checkSession()) {
 				} else {					
 					// insert failed
 	    			$default->log->error("addNewsBL.php DB error inserting dashboard news ($fSynopsis, $fBody, $fRank, no image)");
-	    			$oContent->setHtml(renderAddNewsPage($oDashboardNews, "An error occurred while creating this news item."));					
+	    			$oContent->setHtml(renderAddNewsPage($oDashboardNews, _("An error occurred while creating this news item.")));					
 				}
 			}
 	    } else {
 	    	// all params not present, so display an error message
-	    	$oContent->setHtml(renderAddNewsPage($oDashboardNews, "Please complete the form before submitting."));
+	    	$oContent->setHtml(renderAddNewsPage($oDashboardNews, _("Please complete the form before submitting.")));
 	    }
     } else {
     	// display the form

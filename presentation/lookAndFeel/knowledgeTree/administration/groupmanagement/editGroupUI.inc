@@ -37,13 +37,13 @@ function getCreatePage($iGroupID) {
 	if (Permission::userIsSystemAdministrator()) {
 		$aDisplayColumns = array("name","is_sys_admin","is_unit_admin");
 		$aStoreColumns = array("name","is_sys_admin","is_unit_admin");
-		$aColumnNames = array("Name:","System admin:", "Unit admin:");
+		$aColumnNames = array(_("Name") . ":", _("System Administrator") . ":", _("Unit Administrator") . ":");
 		$aDisplayColumnTypes = array(1,2,2);
 		$aDatabaseColumnTypes = array(1,2,2);
 	} else {
 		$aDisplayColumns = array("name","is_unit_admin");
 		$aStoreColumns = array("name","is_unit_admin");
-		$aColumnNames = array("Name:","Unit admin:");
+		$aColumnNames = array(_("Name") . ":", _("Unit Administrator") . ":");
 		$aDisplayColumnTypes = array(1,2);
 		$aDatabaseColumnTypes = array(1,2);		
 	}
@@ -77,9 +77,9 @@ function getAddFailPage() {
     
 	$sToRender .= renderHeading("Edit Group Properties");
 	$sToRender .= "<table>\n";
-	$sToRender .= "<tr><td><b>Add Group Failed:</b></td></tr>\n";
+	$sToRender .= "<tr><td><b>" . _("Add Group Failed") . ":</b></td></tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>Sorry, Group Already Exists!</td>\n";
+	$sToRender .= "<td>" . _("Sorry, Group Already Exists!") . "</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "</tr>\n";
@@ -105,7 +105,7 @@ function getEditPage($iGroupID) {
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>Group Name: </td><td>" . getGroupDisplay($oGroup) . "</td>\n";
+	$sToRender .= "<td>" . _("Group Name") . ": </td><td>" . getGroupDisplay($oGroup) . "</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "</tr>\n";
@@ -115,11 +115,11 @@ function getEditPage($iGroupID) {
 	if (isset($iGroupID)) {
 		$sToRender .= "</tr>\n";
 		$sToRender .= "<tr>\n";
-		$sToRender .= "<td>Unit Administrator: </td><td>" . getUnitAdminCheckBox($oGroup) . "</td>\n";
+		$sToRender .= "<td>" . _("Unit Administrator") . ": </td><td>" . getUnitAdminCheckBox($oGroup) . "</td>\n";
 		$sToRender .= "</tr>\n";
 		if (Permission::userIsSystemAdministrator()) {
 			$sToRender .= "<tr>\n";
-			$sToRender .= "<td>System Administrator: </td><td>" . getSysAdminCheckBox($oGroup) . "</td>\n";
+			$sToRender .= "<td>" . _("System Administrator") . ": </td><td>" . getSysAdminCheckBox($oGroup) . "</td>\n";
 			$sToRender .= "</tr>\n";
 		}
 		$sToRender .= "<tr>\n";
@@ -143,9 +143,9 @@ function getEditPageSuccess() {
 			
 	$sToRender .= renderHeading("Edit Group Properties");
 	$sToRender .= "<table>\n";
-	$sToRender .= "<tr><td><b>Success!</b></td></tr>\n";
+	$sToRender .= "<tr><td><b>" . _("Success") . "!</b></td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
-	$sToRender .= "<tr><td>The Group was successfully modified</td></tr>\n";
+	$sToRender .= "<tr><td>" . _("The Group was successfully modified") . "</td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
@@ -165,9 +165,9 @@ function getEditPageFail() {
     $sToRender .= renderHeading("Edit Group Properties");
 
 	$sToRender .= "<table>\n";
-	$sToRender .= "<tr><td><b>Failure!</b></td></tr>\n";
+	$sToRender .= "<tr><td><b>" . _("Failure") . "!</b></td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
-	$sToRender .= "<tr><td>The Group modification Failed!</td></tr>\n";
+	$sToRender .= "<tr><td>" . _("The Group modification Failed!") . "</td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
@@ -235,7 +235,7 @@ function getSysAdminCheckBox($oGroup) {
 function getUpdateButton($oGroup) {
 	global $default;
 	if (!isset($oGroup)) {
-		return "Please select a group: ";
+		return _("Please select a Group") . ": ";
 	} else {
 		return "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/update.gif\" value=\"submit\" border=\"0\"/></td>\n";
 	}

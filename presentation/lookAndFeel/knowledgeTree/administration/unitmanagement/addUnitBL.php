@@ -47,7 +47,7 @@ if (checkSession()) {
         if($fUnitName != "" and $fOrgID != "") {
         	// #2944 a folder will be created for this unit, so check if there is already a folder with the name
         	// of the unit before creating the unit
-        	$oFolder = new Folder($fUnitName, $fUnitName . " Unit Root Folder", 1, $_SESSION["userID"], 0);
+        	$oFolder = new Folder($fUnitName, $fUnitName . " " . _("Unit Root Folder"), 1, $_SESSION["userID"], 0);
 			if (!$oFolder->exists()) {
                     	
 	            $oUnit = new Unit($fUnitName);
@@ -66,11 +66,11 @@ if (checkSession()) {
 	                }
 	            } else {
 	                // if fail print out fail message
-	                $oPatternCustom->setHtml(getAddPageFail("The Unit was not added. Unit Name Already exists!"));
+	                $oPatternCustom->setHtml(getAddPageFail(_("The Unit was not added. Unit Name Already exists!")));
 	            }
 			} else {
 				// #2944 failed with duplicate folder error message
-				$oPatternCustom->setHtml(getAddPageFail("The folder $fUnitName already exists, please rename folder before creating this unit."));
+				$oPatternCustom->setHtml(getAddPageFail(_("The folder") . $fUnitName . _("already exists, please rename folder before creating this unit.")));
 			}
         } else {
             $oPatternCustom->setHtml(getPageFail());

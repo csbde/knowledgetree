@@ -25,8 +25,6 @@
 require_once("environment.php");
 // table mapping entries
 include("tableMappings.inc");
-// site map definition
-include("siteMap.inc");
 // instantiate log
 require_once("$default->fileSystemRoot/lib/Log.inc");
 $default->log = new Log($default->fileSystemRoot . "/log", INFO);
@@ -53,6 +51,10 @@ if (in_array("gettext", get_loaded_extensions()) && function_exists('gettext') &
 		return $sString;
 	}
 }
+
+// site map definition
+include("siteMap.inc");
+
 require_once("$default->fileSystemRoot/phpmailer/class.phpmailer.php");
 require_once("$default->fileSystemRoot/lib/session/Session.inc");
 require_once("$default->fileSystemRoot/lib/session/control.inc");

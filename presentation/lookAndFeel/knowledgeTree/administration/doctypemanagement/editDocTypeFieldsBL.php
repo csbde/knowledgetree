@@ -50,10 +50,10 @@ if (checkSession()) {
 					$oDocTypeFieldLink = DocumentTypeFieldLink::getByFieldAndTypeIDs($fDocTypeID, $fDocFieldID);
 					if ($oDocTypeFieldLink->delete()) {
 						// success
-						$oPatternCustom->setHtml(getSuccessPage("Document field successfully deleted.", $fDocTypeID));
+						$oPatternCustom->setHtml(getSuccessPage(_("Document field successfully deleted."), $fDocTypeID));
 					} else {
 						// failure
-						$oPatternCustom->setHtml(getSuccessPage("Error deleting document field.", $fDocTypeID));
+						$oPatternCustom->setHtml(getSuccessPage(_("Error deleting document field."), $fDocTypeID));
 					}
 				} else {
 					// ask for confirmation

@@ -34,9 +34,9 @@ function getSelectFieldPage($iDocFieldID) {
 
     $sToRender .= renderHeading("Add Document Field Lookup");
     $sToRender .= "<table>\n";
-    $sToRender .= "<tr>Please Select a Field</tr>\n";
+    $sToRender .= "<tr>" . _("Please Select a Field") . "</tr>\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "<td>Document Field: </td><td>" . getDocFieldDisplay($oDocField) . "</td>\n";
+    $sToRender .= "<td>" . _("Document Field") . ": </td><td>" . getDocFieldDisplay($oDocField) . "</td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "<tr>\n";
     $sToRender .= "</tr>\n";
@@ -58,16 +58,16 @@ function getAddMetaDataPage($iDocFieldID) {
 
     $sToRender .= renderHeading("Add Document Field Lookup");
     $sToRender .= "<table>\n";
-    $sToRender .= "<tr>Please Enter a new lookup value to add to the Selected Field</tr>\n";
+    $sToRender .= "<tr>" . _("Please Enter a new lookup value to add to the Selected Field") . "</tr>\n";
     $sToRender .= "<tr>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "<tr>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "<td>Document Field: </td><td><b>" . getDocFieldDisplay($oDocField) . "</br></td>\n";
+    $sToRender .= "<td>" . _("Document Field") . ": </td><td><b>" . getDocFieldDisplay($oDocField) . "</br></td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "<td>Lookup: </td><td><input type=\"text\" name=\"fMetaDataName\">\n" ;
+    $sToRender .= "<td>" . _("Lookup") . ": </td><td><input type=\"text\" name=\"fMetaDataName\">\n" ;
     $sToRender .= "</tr>\n";
     $sToRender .= "<tr>\n";
     $sToRender .= "</tr>\n";
@@ -94,8 +94,8 @@ function getSuccessPage($iDocFieldID = null) {
 
     $sToRender .= renderHeading("Add Document Field Lookup");
     $sToRender .= "<table>\n";
-    $sToRender .= "<tr><td><b>Success!</b></td></tr>\n";
-    $sToRender .= "<tr><td>The lookup value was successfully added</td></tr>\n";
+    $sToRender .= "<tr><td><b>" . _("Success") . "!</b></td></tr>\n";
+    $sToRender .= "<tr><td>" . _("The lookup value was successfully added") . "</td></tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr>\n";
@@ -112,8 +112,8 @@ function getFailPage($iDocFieldID = null) {
 
     $sToRender .= renderHeading("Add Document Field Lookup");
     $sToRender .= "<table>\n";
-    $sToRender .= "<tr><td><b>FAILURE!</b></td></tr>\n";
-    $sToRender .= "<tr><td>The lookup value was not added</td></tr>\n";
+    $sToRender .= "<tr><td><b>" . strtoupper(_("Failure")) . "!</b></td></tr>\n";
+    $sToRender .= "<tr><td>" . _("The lookup value was not added") . "</td></tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr>\n";
@@ -131,8 +131,8 @@ function getTextPage($iDocFieldID = null) {
 
     $sToRender .= renderHeading("Add Document Field Lookup");
     $sToRender .= "<table>\n";
-    $sToRender .= "<tr><td><b>FAILURE!</b></td></tr>\n";
-    $sToRender .= "<tr><td>Please Enter a Value in the Text Box</td></tr>\n";
+    $sToRender .= "<tr><td><b>" . strtoupper(_("Failure")) . "!</b></td></tr>\n";
+    $sToRender .= "<tr><td>" . _("Please Enter a Value in the Text Box") . "</td></tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr>\n";
@@ -147,7 +147,7 @@ function getTextPage($iDocFieldID = null) {
 function getAddButton($oDocField) {
     global $default;
     if (!isset($oDocField)) {
-        return "Please select a Document Field: ";
+        return "Please select a Document Field:";
     } else {
         return "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/add.gif\" value=\"submit\" border=\"0\"/></td>\n";
     }

@@ -44,11 +44,11 @@ function getGroupDisplay($iGroupID) {
 		$oPatternListBox->setSelectedValue($iGroupID);
 	}
 	        
-	return "<table><tr><td><b>Filter By Group </b></td><td>" . $oPatternListBox->render() . "</td></tr></table>";	        
+	return "<table><tr><td><b>" . _("Filter By Group") . " </b></td><td>" . $oPatternListBox->render() . "</td></tr></table>";	        
 }
 
 function getNameDisplay($sName) {
-       return "<table><tr><td><b>Filter By Name </b></td><td><input type=\"text\" size=\"20\" name=\"fName\" value=\"$sName\" /> <input type=\"button\" value=\"Go\" onCLick=\"document.MainForm.submit()\"></td></tr></table>";
+       return "<table><tr><td><b>" . _("Filter By Name") . " </b></td><td><input type=\"text\" size=\"20\" name=\"fName\" value=\"$sName\" /> <input type=\"button\" value=\"Go\" onCLick=\"document.MainForm.submit()\"></td></tr></table>";
 }
 
 function getUsers($fGroupID, $sName) {
@@ -78,8 +78,8 @@ function getUsers($fGroupID, $sName) {
 	}
 	$sQuery .= $sWhereClause . "ORDER BY U.username";
 	
-    $aColumns = array("name", "username",  "Edit", "Delete", "Edit Groups");
-    $aColumnNames = array("Name", "Username", "Edit", "Delete", "Edit Groups");
+    $aColumns = array("name", "username",  _("Edit"), _("Delete"), _("Edit Groups"));
+    $aColumnNames = array(_("Name"), _("Username"), _("Edit"), _("Delete"), _("Edit Groups"));
     $aColumnTypes = array(1,1,3,3,3);
     $aDBColumnArray = array("userID");
     $aQueryStringVariableNames = array("fUserID");
@@ -95,11 +95,11 @@ function getUsers($fGroupID, $sName) {
 
 function getPage($fGroupID, $sName) {
 	global $default;
-	$sToRender .= renderHeading("User Management");
+	$sToRender .= renderHeading(_("User Management"));
 
 	// add user link if you're a sysadmin
 	if (Permission::userIsSystemAdministrator()) {
-		$sToRender .= getAddLink("addUser", "Add A User");
+		$sToRender .= getAddLink("addUser", _("Add A User"));
 	}
 	$sToRender .= getGroupDisplay($fGroupID);
 	$sToRender .= getNameDisplay($sName);

@@ -99,7 +99,7 @@ if ($loginAction == "loginForm") {
         switch ($userDetails["status"]) {
             // bad credentials
         case 0:
-                $url = $url . "&errorMessage=" . urlencode("Login failure");
+                $url = $url . "&errorMessage=" . urlencode(_("Login failure"));
             break;
             // successfully authenticated
         case 1:

@@ -38,7 +38,7 @@ function renderAdminHeading($sHeading, $sSectionName = "") {
     $sCenter .= renderHeading($default->siteMap->getPageLinkText($sAction));
     
     $sCenter .= "<table width=\"600\">\n";
-    $sCenter .=	"<tr><td>Please make a selection from the sidemenu.</td></tr>\n";
+    $sCenter .=	"<tr><td>" . _("Please make a selection from the sidemenu.") . "</td></tr>\n";
     $sCenter .=	"</table>\n";
     return $sCenter;	
 }
