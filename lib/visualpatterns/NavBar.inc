@@ -28,6 +28,7 @@ class NavBar
 	//variable used to pass highlighting
 	var $home;
 	var $mdocs;
+	var $subscriptions;
 	var $asearch;
 	var $admin;
 	var $prefs;
@@ -40,6 +41,7 @@ class NavBar
 		global $default;
 		$this->mdocs = "$default->owl_graphics_url/mdocs/norm.gif";
 		$this->home = "$default->owl_graphics_url/home/norm.gif";
+		$this->subscriptions = "$default->owl_graphics_url/subscriptions/norm.gif";
 		$this->asearch = "$default->owl_graphics_url/asearch/norm.gif";
 		$this->admin = "$default->owl_graphics_url/admin/norm.gif";
 		$this->prefs = "$default->owl_graphics_url/prefs/norm.gif";
@@ -81,6 +83,12 @@ class NavBar
 		{
 			$this->mdocs = "$default->owl_graphics_url/mdocs/over.gif";
 			$this->nwColourBar = "$default->owl_graphics_url/mdocs/def.gif";
+		}
+		
+		if($section == "Subscriptions")
+		{
+			$this->subscriptions = "$default->owl_graphics_url/subscriptions/over.gif";
+			$this->nwColourBar = "$default->owl_graphics_url/subscriptions/def.gif";
 		}
 		
 		if($section == "Advanced Search")
@@ -135,6 +143,7 @@ class NavBar
 		// set colour pics for row 4 of navbar
 		$colourHome = "$default->owl_graphics_url/home/colour.gif";
 		$colourmdocs = "$default->owl_graphics_url/mdocs/colour.gif";
+		$coloursubscriptions = "$default->owl_graphics_url/subscriptions/colour.gif";
 		$colourasearch = "$default->owl_graphics_url/asearch/colour.gif";
 		$colouradmin = "$default->owl_graphics_url/admin/colour.gif";
 		$colourprefs = "$default->owl_graphics_url/prefs/colour.gif";
@@ -145,6 +154,7 @@ class NavBar
       // get list of sections
         $aTopMenuLinks = array(generateControllerUrl("dashboard"),
         		       generateControllerUrl($default->siteMap->getDefaultAction("Manage Documents")), 
+        		       generateControllerUrl($default->siteMap->getDefaultAction("Subscriptions")),
         		       generateControllerUrl($default->siteMap->getDefaultAction("Advanced Search")),
                                generateControllerUrl($default->siteMap->getDefaultAction("Administration")), 
                                generateControllerUrl($default->siteMap->getDefaultAction("Preferences")),
@@ -155,6 +165,7 @@ class NavBar
 	// create array of images for navbar sections         	      
         $aTopMenuImages = array($this->home,
         			$this->mdocs,
+        			$this->subscriptions,
         			$this->asearch,
         			$this->admin,
         			$this->prefs,
@@ -163,11 +174,11 @@ class NavBar
 
 	  
 	// create array of menu colour images
-        $row4MenuImages = array($colourHome,$colourmdocs,$colourasearch,$colouradmin,$colourprefs,$colourhelp,$colourlogout);
+        $row4MenuImages = array($colourHome,$colourmdocs,$coloursubscriptions,$colourasearch,$colouradmin,$colourprefs,$colourhelp,$colourlogout);
         
         //set up the links
-        $oPatternTableLinks = new PatternTableLinks($aTopMenuLinks, null, 1, 7,2,$aTopMenuImages);
-	$oColourTableLinks = new PatternTableLinks($aTopMenuLinks, null, 1, 7,2,$row4MenuImages);
+        $oPatternTableLinks = new PatternTableLinks($aTopMenuLinks, null, 1, 8,2,$aTopMenuImages);
+	$oColourTableLinks = new PatternTableLinks($aTopMenuLinks, null, 1, 8,2,$row4MenuImages);
 	
 	// set up rows
 	//row one image
