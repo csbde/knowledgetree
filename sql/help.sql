@@ -68,3 +68,7 @@ INSERT INTO help VALUES (66,'editUser','editUserHelp.html');
 INSERT INTO help VALUES (67,'removeUser','removeUserHelp.html');
 INSERT INTO help VALUES (68,'addUserToGroup','addUserToGroupHelp.html');
 INSERT INTO help VALUES (69,'removeUserFromGroup','removeUserFromGroupHelp.html');
+INSERT INTO help VALUES (70,'viewDiscussionThread','viewDiscussionThread.html');
+INSERT INTO help VALUES (71,'addDiscussionComment','addDiscussionComment.html');
+INSERT INTO help VALUES (72,'createDiscussionThread','createDiscussionThread.html');
+INSERT INTO help VALUES (73,'viewDiscussionComment','viewDiscussionComment.html');
