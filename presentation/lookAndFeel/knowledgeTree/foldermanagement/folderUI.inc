@@ -77,7 +77,7 @@ function renderFolderList($fFolderID, $sLinkURL) {
 	$sQuery = "SELECT F.id AS id, F.name AS name " .
 				"FROM $default->owl_folders_table AS F " .
 				"WHERE F.parent_id = " . $fFolderID . " " .
-				"ORDER BY name ASC";
+				"ORDER BY F.name ASC";
 	
 	$aColumns = array("name");
 	$aColumnTypes = array(3);
