@@ -64,7 +64,7 @@ function getGroupPage($fDocFieldID) {
     global $default;
     
     $oDocField = DocumentField::get($fDocFieldID);    
-        
+           
     $LookupDisplay .= "<b>Current Lookups</b><br>\n";	
 	$sQuery = 	" Select * " .	
 				" From " . $default->owl_document_fields_lookup_tables .
@@ -108,15 +108,19 @@ function getGroupPage($fDocFieldID) {
     $sToRender .= "</td><td>"; 	
     $sToRender .= "</td></tr>";
 	
-	$sToRender .= "<tr><td width=200 bgcolor=$sBgColor>";
-    $sToRender .= "<br><a href=\"$default->rootUrl/control.php?action=editMetadataForField&fDocFieldID=$fDocFieldID\">&nbsp;&nbsp;Edit Docuemnt Field Lookups</a><br><br>";
-    $sToRender .= "</td><td>"; 	
-    $sToRender .= "</td></tr>";
-    
-    $sToRender .= "<tr><td width=200 bgcolor=$sBgColor>";
-    $sToRender .= "<br><a href=\"$default->rootUrl/control.php?action=removeMetaDataFromField&fDocFieldID=$fDocFieldID\">&nbsp;&nbsp;Remove Document Field Lookups</a><br><br>";
-    $sToRender .= "</td><td>";    
-    $sToRender .= "</td></tr>";
+	$iDocFieldLookupCount = DocumentField::getLookupCount($fDocFieldID);
+	if ($iDocFieldLookupCount > 0) {
+		
+		$sToRender .= "<tr><td width=200 bgcolor=$sBgColor>";
+	    $sToRender .= "<br><a href=\"$default->rootUrl/control.php?action=editMetadataForField&fDocFieldID=$fDocFieldID\">&nbsp;&nbsp;Edit Docuemnt Field Lookups</a><br><br>";
+	    $sToRender .= "</td><td>"; 	
+	    $sToRender .= "</td></tr>";
+	    
+	    $sToRender .= "<tr><td width=200 bgcolor=$sBgColor>";
+	    $sToRender .= "<br><a href=\"$default->rootUrl/control.php?action=removeMetaDataFromField&fDocFieldID=$fDocFieldID\">&nbsp;&nbsp;Remove Document Field Lookups</a><br><br>";
+	    $sToRender .= "</td><td>";    
+	    $sToRender .= "</td></tr>";
+	}
     $sToRender .= "</table>\n";
     
     $sToRender .= "</td></tr>";
@@ -258,16 +262,8 @@ function getGroupDisplay($aGroup) {
         $Options .=  "<tr><td>" . ($i+1) . "</td><td bgcolor=$sBgColor>". $oGroup->getName() ."</td></tr>\n";
     }
     $sGroup .= $Options . "</table>";
-    return $sGroup;
-    
-    /*$oGroup= null;
-    $sGroup = "<select name=\"fGroupID\">";
-    for ($i=0;$i < count($aGroup);$i++) {
-        $oGroup= Group::get($aGroup[$i]);
-        $Options .=  "<OPTION value= \"". $oGroup->iId . "\">". $oGroup->getName() ."</OPTION>\n";
-    }
-    $sGroup .= $Options . "</SELECT>";
-    return $sGroup;*/
+    return $sGroup; 
+   
 }
 
 
