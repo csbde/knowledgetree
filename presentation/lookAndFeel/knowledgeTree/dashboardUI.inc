@@ -130,7 +130,7 @@ function renderDependantDocuments($aDependantDocumentList) {
         $oTemplateDocument = Document::get($oDependantDocument->getTemplateDocumentID());                
         
         $sToRender .= "\t\t\t<tr>\n";
-        $sToRender .= "\t\t\t\t<td>" . $oDependantDocument->getDocumentTitle() . "</td>";
+        $sToRender .= "\t\t\t\t<td>" . generateControllerLink("addDocument", "fFolderID=" . User::getUserRootFolder() . "&fDependantDocumentID=" . $oDependantDocument->getID(), $oDependantDocument->getDocumentTitle()) . "</td>";
         if (!($oTemplateDocument === false)) {        
 	        $sToRender .= "<td>" . generateControllerLink("viewDocument", "fDocumentID=" . $oTemplateDocument->getID(), "<img src=\"$default->graphicsUrl/widgets/dstatus.gif\" border=\"0\"/>&nbsp;" . $oTemplateDocument->getName()) . "</td>\n";	     
         } else {
