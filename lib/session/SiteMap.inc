@@ -193,6 +193,7 @@ class SiteMap {
      */
     function getActionFromPage($sPage) {
         global $default;
+        $default->log->debug("Sitemap::getActionFromPage: page=$sPage");
         // for each section
         foreach ($this->siteMapArray as $section => $valArr) {
             $default->log->debug("Sitemap::getActionFromPage section=$section");
@@ -201,7 +202,7 @@ class SiteMap {
                 $default->log->debug("Sitemap::getActionFromPage grp=$requiredGroupName");
                 // now loop through pages until we find the right one
                 foreach ($pageArr as $action => $page) {
-                    $default->log->debug("Sitemap::getActionFromPage action=$action, page=" . $page["page"]);
+                    $default->log->debug("Sitemap::getActionFromPage action=$action, reqPage=$sPage; page=" . $page["page"]);
                     if ($sPage == $page["page"]) {
                         $default->log->debug("Sitemap::getActionFromPage found action=$action for page=$sPage");
                         return $action;
