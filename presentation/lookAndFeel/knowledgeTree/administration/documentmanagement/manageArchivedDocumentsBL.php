@@ -8,6 +8,8 @@ require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternBrowsableSearchResults.inc");
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternListBox.inc");
 require_once("$default->uiDirectory/documentmanagement/documentUI.inc");
+require_once("$default->uiDirectory/search/advancedSearchUI.inc");
+require_once("$default->uiDirectory/search/advancedSearchUtil.inc");
 require_once("archivedDocumentsUI.inc");
 require_once("$default->fileSystemRoot/presentation/Html.inc");
 
@@ -31,8 +33,21 @@ if (checkSession()) {
 
 	if (strlen($fSearchString) > 0) {
 		// perform the search and display the results
-		$fStartIndex = isset($fStartIndex) ? $fStartIndex : 0;		
-		$oContent->setHtml(renderArchivedDocumentsResultsPage($fSearchString, $fStartIndex));
+		$sMetaTagIDs = getChosenMetaDataTags();				
+		if (strlen($sMetaTagIDs) > 0) {
+			$sSQLSearchString = getSQLSearchString($fSearchString);
+			$sDocumentIDs = getApprovedDocumentString($sMetaTagIDs, $sSQLSearchString, "Archived");
+			if (strlen($sDocumentIDs) > 0) {
+				// display the documents
+				$oContent->setHtml(renderArchivedDocumentsResultsPage($sDocumentIDs));
+			} else {
+				$oContent->setHtml(getSearchPage($fSearchString, explode(",",$sMetaTagIDs), "Archived Documents Search", true));				
+				$sErrorMessage = "No documents matched your search criteria";                              
+			}				
+		} else {
+			$oContent->setHtml(getSearchPage($fSearchString, array(), "Archived Documents Search", true));
+			$sErrorMessage = "Please select at least one criteria to search by";
+		}
 	} else if ($fDocumentIDs) {
 		// got some documents to restore
 
@@ -72,12 +87,16 @@ if (checkSession()) {
 			$oContent->setHtml(renderRestoreConfirmationPage($aDocuments));
 		}
 	} else {	
-		// display the search form
-		$oContent->setHtml(renderSearchPage());
+		// display the advanced search form, but specify that only archived documents must be returned
+		//getSearchPage($sSearchString = "", $aMetaTagIDs = array(), $sHeading = "Advanced Search", $bSearchArchive = false) {
+		$oContent->setHtml(getSearchPage("", array(), "Archived Documents Search", true));
 	}
 
 	// build the page
-	require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");    
+	require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
+	if (isset($sErrorMessage)) {
+		$main->setErrorMessage($sErrorMessage);
+	}    
 	$main->setCentralPayload($oContent);
 	$main->setFormAction($_SERVER['PHP_SELF']);	
 	$main->setHasRequiredFields(true);			
