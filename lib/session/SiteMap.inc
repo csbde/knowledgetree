@@ -35,7 +35,7 @@ class SiteMap {
      */
     function addPage($action, $page, $sectionName, $groupName) {
         // add to map
-        $this->siteMapArray[$sectionName][$groupName][$action] = $page;
+        $this->siteMapArray[$sectionName][$groupName][$action] = array ("page" =>$page, "default" => false);
     }
     
     /**
@@ -47,8 +47,9 @@ class SiteMap {
      * @param string the user group with access to this page
      */    
     function addDefaultPage($action, $page, $sectionName, $groupName) {
+        $this->siteMapArray[$sectionName][$groupName][$action] = array ("page" =>$page, "default" => true);
     }
-    
+
     /**
      * Returns the section name of the supplied page
      *
@@ -136,7 +137,7 @@ class SiteMap {
                         if ( ($requiredGroupName == "Anonymous") ||
                              ( Permission::userIsInGroupName($requiredGroupName) || 
                                Permission::userIsInGroupName("System Administrators") ) ) {
-                            return $page;
+                            return $page["page"];
                         }
                     }
                 }
@@ -148,6 +149,39 @@ class SiteMap {
         return false;
     }
     
+    
+    /**
+     * Returns the default action for the supplied section
+     *
+     * @param string the section name to return the default action for
+     * @return string the controller action for the default page for this section
+     */
+    function getDefaultAction($sectionName) {
+        global $default;
+        // check if the section exists
+        if (is_array($this->siteMapArray[$sectionName])) {
+            // initialise result array
+            $results = array();
+            // need to loop through all (groupName, page) arrays in this section
+            foreach ($this->siteMapArray[$sectionName] as $requiredGroupName => $pages) {
+                // don't need to check the permissions here, when the controller tries to
+                // retrieve the page from the action, the perms will be checked
+                $default->log->debug("Sitemap::getDefaultAction: (section=$sectionName, reqGrp=$requiredGroupName); pages=" . arrayToString($pages));
+                foreach ($pages as $action => $pageArray) {
+                    $default->log->debug("Sitemap::getDefaultAction: action=$action; pageArray" . arrayToString($pageArray));
+                    if ($pageArray["default"]) {
+                        return $action;
+                    }
+                }
+            }
+        } else {
+            // supplied section not in sitemap
+            // TODO: internal error code?
+            $_SESSION["errorMessage"] = "$sectionName not in SiteMap!";
+            return false;
+        }        
+    }
+      
     /**
      * Returns the pages in the specified section accessible to the 
      * specified userClass.
