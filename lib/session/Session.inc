@@ -72,7 +72,7 @@ class Session {
         
         // remove the session information from the database
         $sql = $default->db;
-        $query = "DELETE FROM $default->sessions_table WHERE session_id = '$sSessionID' AND user_id=$iUserID";
+        $query = "DELETE FROM $default->sessions_table WHERE session_id = '$sSessionID'" . ($iUserID ? " AND user_id=$iUserID" : "");
         $default->log->info("Session::destroy $query");
         $sql->query($query);
 
