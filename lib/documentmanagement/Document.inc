@@ -224,7 +224,7 @@ class Document {
 
     /** set the document check out status */
     function setIsCheckedOut($bNewValue) {
-        $this->bIsCheckedOut = anyToBool($bNewValue);
+        $this->bIsCheckedOut = KTUtil::anyToBool($bNewValue);
     }
 	
     /** get the user id that has the document checked out **/
