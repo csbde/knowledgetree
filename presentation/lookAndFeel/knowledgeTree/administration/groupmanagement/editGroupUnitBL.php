@@ -12,8 +12,7 @@ require_once("../../../../../config/dmsDefaults.php");
 if (checkSession()) {
     require_once("$default->fileSystemRoot/lib/visualpatterns/PatternListBox.inc");
     require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCreate.inc");
-    require_once("editGroupUnitUI.inc");
-    require_once("../adminUI.inc");    
+    require_once("editGroupUnitUI.inc");        
     require_once("$default->fileSystemRoot/lib/groups/Group.inc");
     require_once("$default->fileSystemRoot/lib/users/User.inc");
     require_once("$default->fileSystemRoot/lib/groups/GroupUnitLink.inc");
