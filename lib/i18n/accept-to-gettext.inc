@@ -54,6 +54,10 @@
  *   and nl.ISO-8859-15, then nl_BE.UTF-8 will be picked.
  * 
  * $Log$
+ * Revision 1.2  2004/11/04 09:55:00  nbm
+ * Be wildly unfair, and if the character set hasn't been detected
+ * properly, assume iso-8859-1.
+ *
  * Revision 1.1  2004/05/10 15:58:37  michael
  * Type:			i18n Framework.
  * Description:		Added i18n support functions.
@@ -88,6 +92,7 @@ function find_match($curlscore,$curcscore,$curgtlang,$langval,$charval,
 }
 
 function al2gt($gettextlangs, $mime) {
+  global $default;
   /* default to "everything is acceptable", as RFC2616 specifies */
   $acceptLang=(($_SERVER["HTTP_ACCEPT_LANGUAGE"] == '') ? '*' :
   	$_SERVER["HTTP_ACCEPT_LANGUAGE"]);
@@ -174,10 +179,17 @@ function al2gt($gettextlangs, $mime) {
   /* We must re-parse the gettext-string now, since we may have found it
    * through a "*" qualifier.*/
   
+  $default->log->debug("Current gtlang is $curgtlang");
   $gtparts=@preg_split("/\./",$curgtlang);
   $tmp=strtolower($gtparts[0]);
   $lang=preg_replace("/\_/", "-", $tmp);
   $charset=$gtparts[1];
+
+  $default->log->debug("gtparts: " .  print_r($aInstalledLocalesgtparts, true));
+
+  if (is_null($charset) || ($charset === "")) {
+    $charset = "iso-8859-1";
+  }
 
   header("Content-Language: $lang");
   header("Content-Type: $mime; charset=$charset");
