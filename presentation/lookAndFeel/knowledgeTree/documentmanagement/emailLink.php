@@ -1,4 +1,14 @@
 <?php
+/**
+*  emailLink.php	
+*
+*  Creates the form and functionaility for emailing a link to some1
+*
+*
+* @author Mukhtar Dharsey
+* @date 22 January 2003
+*/
+
 
 require_once("../../../../config/dmsDefaults.php");
 
