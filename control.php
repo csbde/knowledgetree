@@ -36,6 +36,17 @@ if (checkSessionAndRedirect(false)) {
     }
 }
 
+// need to strip query string params from action before attempting to retrieve from sitemap
+
+// check for the presence of additional params
+if (strstr($action, "?")) {
+    // strip them off
+    $queryString = substr($action, strpos($action, "?")+1, strlen($action));
+    // crop the action
+    $action = substr($action, 0, strpos($action, "?"));
+    $default->log->info("control.php qs=$queryString; action=$action");
+}
+    
 // retrieve the page from the sitemap (checks whether this user has access to the requested page)
 $page = $default->siteMap->getPage($action, $_SESSION["userID"]);
 
@@ -62,7 +73,12 @@ if (!$page) {
     }
     
     $_SESSION["pageAccess"][$accessPage] = true;
-    $default->log->debug("control.php: just set SESSION[\"pageAccess\"][$accessPage]=" . $_SESSION["pageAccess"][$accessPage]); 
+    $default->log->debug("control.php: just set SESSION[\"pageAccess\"][$accessPage]=" . $_SESSION["pageAccess"][$accessPage]);
+    // if we have a querystring add it on
+    if (strlen($queryString) > 0) {
+        $page = $page . (strstr($page, "?") ? "&$queryString" : "?$queryString");
+        $default->log->info("control.php: about to redirect to $page");
+    }
     redirect($page);
 }
 ?>
