@@ -74,7 +74,7 @@ function getUnitOrgEdit($bNoOrg, $fUnitID = null){
     $sToRender .= "  <tr><td><b>Options</b></td></tr>";
     if ($bNoOrg) {
 	    $sToRender .= "  <tr><td width=200 bgcolor=$sBgColor>";
-	    $sToRender .= "  <br>&nbsp;&nbsp;<a href=\"$default->rootUrl/control.php?action=addUnitToOrg&fUnitID=" . $fUnitID . "\">Add Unit to an Orgaisation</a><br><br>";
+	    $sToRender .= "  <br>&nbsp;&nbsp;<a href=\"$default->rootUrl/control.php?action=addUnitToOrg&fUnitID=" . $fUnitID . "\">Add Unit to an Organisation</a><br><br>";
 	    $sToRender .= "  </td><td>";	    
 	    $sToRender .= "  </td></tr>";
     } else {

@@ -50,7 +50,7 @@ function getRemoveUnitsPage($oLink) {
 		$oUnit = Unit::get($oLink->getUnitID());			
 	
 		$sToRender .= "<table>\n";
-		$sToRender .= "<th colspan=2> Do you wish to remove the Unit from the Orgaisation?</th>\n";
+		$sToRender .= "<th colspan=2> Do you wish to remove the Unit from the Organisation?</th>\n";
 		$sToRender .= "<tr colspan=2> &nbsp;</tr>\n";
 		$sToRender .= "<th colspan=2> </th>\n";
 		$sToRender .= "<tr>\n"; 
