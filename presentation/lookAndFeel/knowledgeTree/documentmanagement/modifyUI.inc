@@ -25,11 +25,6 @@
  * @package documentmanagement
  */
 
-function renderDocumentPath($oDocument) {
-    $sDocumentPath = displayFolderPathLink(Folder::getFolderPathAsArray($oDocument->getFolderID()), Folder::getFolderPathNamesAsArray($oDocument->getFolderID())) . " > " . $oDocument->getName();
-    return "<table border=1 width = 100%><tr><td>$sDocumentPath</td></tr></table>\n";
-}
-
 function renderEditableDocumentData($oDocument, $iDocumentTypeID) {
     global $default;
 	$sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
