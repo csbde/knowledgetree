@@ -14,6 +14,8 @@ if (checkSession()) {
     require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCreate.inc");
     require_once("addUserUI.inc");
     require_once("$default->fileSystemRoot/lib/users/User.inc");
+    require_once("$default->fileSystemRoot/lib/groups/Group.inc");
+	require_once("$default->fileSystemRoot/lib/groups/GroupUserLink.inc");    
     require_once("$default->fileSystemRoot/lib/security/permission.inc");
     require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
     require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
@@ -30,9 +32,9 @@ if (checkSession()) {
         $bLdap = false;
     } else {
         //if its using LDAP get these attributes
-        // TODO: make these user defined
+        // FIXME: move these to $default(ldapSettings.inc) and map them to DN, username, display name, email, mobile
         if ($default->ldapServerType == "ActiveDirectory") {
-            $aAttributes = array ("dn", "samaccountname", "givenname", "sn", "mail", "telephonenumber");
+            $aAttributes = array ("dn", "samaccountname", "givenname", "sn", "userPrincipalName", "telephonenumber");
         } else {
             $aAttributes = array ("dn", "uid", "givenname", "sn", "mail", "mobile");
         }
@@ -59,7 +61,7 @@ if (checkSession()) {
                     if($bLdap) {
                         $oPatternCustom->setHtml(getDetailsLDAPPage($sSearch,$aResults, $oAuth->oLdap->getUserIdentifier()));
 						if ($default->bNN4) {
-                        	$main->setOnLoadJavaScript("disable(document.MainForm.fLdap)");
+                        	$main->setOnLoadJavaScript("disable(document.MainForm.fLdap);disable(document.MainForm.fUsername)");
 						}
                         $main->setFormAction($_SERVER["PHP_SELF"]. "?fAddToDb=1");
                     } else {
@@ -81,7 +83,7 @@ if (checkSession()) {
         if ($bLdap) {
             $oPatternCustom->setHtml(getDetailsLDAPPage($fName,$aResult, $oAuth->oLdap->getUserIdentifier()));
 			if ($default->bNN4) {
-            	$main->setOnLoadJavaScript("disable(document.MainForm.fLdap)");
+            	$main->setOnLoadJavaScript("disable(document.MainForm.fLdap);disable(document.MainForm.fUsername)");
 			}
             $main->setFormAction($_SERVER["PHP_SELF"]. "?fAddToDb=1");
         } else {
@@ -93,13 +95,19 @@ if (checkSession()) {
         // if db authentication
         if(isset($fFromDb)) {
             $oUser = new User($fUsername,$fName,$fPassword,0,$fEmail,$fMobile,$fEmailNotification,$fSmsNotification,0,1,0);
-
         } else {
             $oUser = new User($fUsername,$fName,0,0,$fEmail,$fMobile,$fEmailNotification,$fSmsNotification,$fLdap,1,0);
         }
 
         if($oUser->create()) {
-            $oPatternCustom->setHtml(getPageSuccess());
+        	// now add the user to the initial group
+        	$default->log->info("adding user id " . $oUser->getID() . " to group id $fGroupID"); 
+        	$oUserGroup = new GroupUserLink($fGroupID,$oUser->getID());
+        	if ($oUserGroup->create()) {
+            	$oPatternCustom->setHtml(getPageSuccess());
+        	} else {
+        		$oPatternCustom->setHtml(getPageGroupFail());
+        	}
         } else {
             $oPatternCustom->setHtml(getPageFail());
         }
@@ -116,6 +124,7 @@ if (checkSession()) {
     }
 
     $main->setCentralPayload($oPatternCustom);
+    $main->setHasRequiredFields(true);
     $main->render();
 }
 ?>
