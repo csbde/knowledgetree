@@ -256,13 +256,27 @@ class GroupUserLink {
      *   
      */
      
-	function setUserGroupID($iUserId)
+	function setUserGroupID($iGroupId, $iUserId)
 	 {
-	       global $default;
-	
-	        $id = lookupID($default->owl_users_groups_table, "user_id",  $iUserId);
-	        
-	        $this->iId= $id;
+	   	global $default;
+		$sql = $default->db;
+		$result = $sql->query("SELECT id FROM $default->owl_users_groups_table WHERE user_id = $iUserId and group_id = $iGroupId");
+		if ($result) {
+			if ($sql->next_record()) {
+				$id = $sql->f("id");
+				
+			}else{
+				$_SESSION["errorMessage"] = $lang_err_database;
+				return false;
+			}
+		
+		}else{	
+			$_SESSION["errorMessage"] = $lang_err_database;
+			return false;
+		}
+		
+		$this->iId = $id;
+		
 	}
 }
 ?>
