@@ -12,7 +12,7 @@
 
 if (checkSession()) {    
     require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCreate.inc");    
-    require_once("ListUsersUI.inc"); 
+    require_once("listUsersUI.inc"); 
     require_once("../adminUI.inc");    
 	require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
     require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
@@ -32,11 +32,8 @@ if (checkSession()) {
     $oPatternCustom = & new PatternCustom();
 
 if(checkSession()) {	
-				
-		$oPatternCustom->addHtml("<table width=600>");		// Create the Heading
-		$oPatternCustom->addHtml(renderHeading("Current System Users"));		// Create the Heading		
-		$oPatternCustom->addHtml("</table>");		// Create the Heading
-		
+
+		$oPatternCustom->addHtml(renderHeading("Current System Users"));		// Create the Heading				
 		$oPatternCustom->addHtml("<table align='left' border=0><tr><td><b>Filter by group </b></td><td>");	// 
 		if (isset($fGroupID)) {  // Check if should use the query string OR ...	
 			$sFilterOptions = getFilterOptions($fGroupID);

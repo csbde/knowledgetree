@@ -15,7 +15,7 @@ function getAddPage($unitID) {
         $oOrg = Organisation::get($iOrgID);
 	}
 	
-    $sToRender .= "<table width=\"600\">" . renderHeading("Add Unit") . "</table>";
+    $sToRender .= renderHeading("Add Unit");
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
@@ -36,7 +36,7 @@ function getAddPage($unitID) {
 function getAddPageSuccess() {	
 	global $default;
 			
-	$sToRender .= "<table width=\"600\">" . renderHeading("Add Unit") . "</table>";
+	$sToRender .= renderHeading("Add Unit");
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr><td><b>Addition Successful!</b></td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
@@ -55,7 +55,7 @@ function getAddPageSuccess() {
 function getAddPageFail() {	
 	global $default;
 			
-    $sToRender .= "<table width=\"600\">" . renderHeading("Add Unit") . "</table>";
+    $sToRender .= renderHeading("Add Unit");
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr><td><b>Addition Unsuccessful</b></td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
@@ -76,7 +76,7 @@ function getAddPageFail() {
 function getPageFail() {	
 	global $default;
 			
-    $sToRender .= "<table width=\"600\">" . renderHeading("Add Unit") . "</table>";
+    $sToRender .= renderHeading("Add Unit");
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr><td>Please enter a name AND Select the Organisation</td></tr>\n";
@@ -94,7 +94,7 @@ function getPageFail() {
 function getAddPageToOrgFail() {	
 	global $default;
 			
-    $sToRender .= "<table width=\"600\">" . renderHeading("Add Unit") . "</table>";
+    $sToRender .= renderHeading("Add Unit");
     $sToRender .= "<table>\n";
     $sToRender .= "<tr><td><b>Addition to Organisation Unsuccessful</b></td></tr>\n";
 	$sToRender .= "<tr></tr>\n";

@@ -24,7 +24,7 @@ function getCreatePage($iRoleID) {
 	$oPattern->setUniqueName("roleEdit");
 	$oPattern->setColumnsRequired(array(1,0,0));
 		
-    $sToRender .= "<table width=\"600\">" . renderHeading("Edit Role") . "</table>";
+    $sToRender .= renderHeading("Edit Role");
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
@@ -46,7 +46,7 @@ function getAddFailPage() {
 	
 	global $default;
 			
-    $sToRender .= "<table width=\"600\">" . renderHeading("Edit Role") . "</table>";
+    $sToRender .= renderHeading("Edit Role");
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>Sorry, Role Already Exists!</td>\n";
@@ -69,7 +69,7 @@ function getEditPage($iRoleID) {
 		$oRole = Role::get($iRoleID);
 	}
 	
-    $sToRender .= "<table width=\"600\">" . renderHeading("Edit Role") . "</table>";
+    $sToRender .= renderHeading("Edit Role");
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
@@ -113,7 +113,7 @@ function getEditPage($iRoleID) {
 function getEditPageSuccess() {	
 	global $default;
 			
-    $sToRender .= "<table width=\"600\">" . renderHeading("Edit Role") . "</table>";
+    $sToRender .= renderHeading("Edit Role");
 	$sToRender .= "<b>Success!</b>\n";
 	$sToRender .= "<table>\n";
 	$sToRender .= "<br></br>\n";
@@ -135,7 +135,7 @@ function getEditPageSuccess() {
 function getEditPageFail() {	
 	global $default;
 			
-    $sToRender .= "<table width=\"600\">" . renderHeading("Edit Role") . "</table>";
+    $sToRender .= renderHeading("Edit Role");
 	$sToRender .= "<b>Success!</b>\n";
 	$sToRender .= "<table>\n";
 	$sToRender .= "<br></br>\n";

@@ -19,7 +19,7 @@ function getDeletePage($iWebSiteID) {
         $sHeading .= "Select a WebSite:\n";
     }
 
-    $sToRender .= "<table width=\"600\">" . renderHeading("Remove Website") . "</table>";
+    $sToRender .= renderHeading("Remove Website");
     $sToRender .= "<table>\n";
     $sToRender .= "<table>\n";
     $sToRender .= "<tr><td colspan=\"2\">$sHeading</td></tr>\n";
@@ -48,7 +48,7 @@ function getDeletePage($iWebSiteID) {
 function getDeleteSuccessPage() {
     global $default;
 
-    $sToRender .= "<table width=\"600\">" . renderHeading("Remove Website") . "</table>";
+    $sToRender .= renderHeading("Remove Website");
     $sToRender .= "<table>\n";
     $sToRender .= "<TABLE BORDER=\"0\" CELLSPACING=\"2\" CELLPADDING=\"2\">\n";
     $sToRender .= "<tr>\n";
@@ -71,7 +71,7 @@ function getDeleteFailPage() {
 
     global $default;
 
-    $sToRender .= "<table width=\"600\">" . renderHeading("Remove Website") . "</table>";	$sToRender .= "<table>\n";
+    $sToRender .= renderHeading("Remove Website");	$sToRender .= "<table>\n";
     $sToRender .= "<TABLE BORDER=\"0\" CELLSPACING=\"2\" CELLPADDING=\"2\">\n";
     $sToRender .= "<tr>\n";
     $sToRender .= "<td><b>Deletion Failed!</b></td>\n";

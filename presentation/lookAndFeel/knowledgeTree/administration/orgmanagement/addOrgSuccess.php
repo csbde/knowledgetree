@@ -18,7 +18,7 @@ if(checkSession()) {
     // include the page template (with navbar)
     require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 
-    $sToRender .= "<table width=\"600\">" . renderHeading("Add Unit") . "</table>";
+    $sToRender .= renderHeading("Add Unit");
     $sToRender .= "<table>\n";
     $sToRender .= "<tr>\n";
     $sToRender .= "<td>Organisation added Successfully!</td>\n";

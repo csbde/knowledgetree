@@ -25,7 +25,7 @@ function getPage($iDocTypeID, $iDocFieldID) {
         $oDocField = DocumentField::get($iDocFieldID);
     }
 
-    $sToRender .= "<table width=\"600\">" . renderHeading("Assign Document Field to Document Type") . "</table>";
+    $sToRender .= renderHeading("Assign Document Field to Document Type");
     $sToRender .= "<table>\n";
     $sToRender .= $heading;
     $sToRender .= "<tr>\n";
@@ -53,7 +53,7 @@ function getPage($iDocTypeID, $iDocFieldID) {
 function getPageNotSelected() {
     global $default;
 
-    $sToRender .= "<table width=\"600\">" . renderHeading("Assign Document Field to Document Type") . "</table>";
+    $sToRender .= renderHeading("Assign Document Field to Document Type");
     $sToRender .= "<table>\n";
     $sToRender .= "<tr><td><b>Sorry, Selection Failed</b></td></tr>\n";
     $sToRender .= "<tr><td>Please select BOTH a Document Type AND a Document Field</td></tr>\n";
@@ -72,7 +72,7 @@ function getPageNotSelected() {
 function getPageSuccess() {
     global $default;
 
-    $sToRender .= "<table width=\"600\">" . renderHeading("Assign Document Field to Document Type") . "</table>";
+    $sToRender .= renderHeading("Assign Document Field to Document Type");
     $sToRender .= "<table>\n";
     $sToRender .= "<tr><td><b>Success!</b></td></tr>\n";
     $sToRender .= "<tr><td>The Document Field was successfully assigned to the specified Document Type</td></tr>\n";
@@ -91,7 +91,7 @@ function getPageSuccess() {
 function getPageFail() {
     global $default;
 
-    $sToRender .= "<table width=\"600\">" . renderHeading("Assign Document Field to Document Type") . "</table>";
+    $sToRender .= renderHeading("Assign Document Field to Document Type");
     $sToRender .= "<table>\n";
     $sToRender .= "<tr><td><b>Failure!</b></td></tr>\n";
     $sToRender .= "<tr><td>The Document Field already belongs to that Document Type</td></tr>\n";

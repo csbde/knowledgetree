@@ -18,7 +18,7 @@ if(checkSession()) {
     // include the page template (with navbar)
     require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 
-    $Center .= "<table width=\"600\">" . renderHeading("Add Document Field") . "</table>";
+    $Center .= renderHeading("Add Document Field");
     $Center .= "<TABLE BORDER=\"0\" CELLSPACING=\"2\" CELLPADDING=\"2\">\n";
     $Center .= "<tr>\n";
     if ($fDocTypeID == -1) {

@@ -19,7 +19,7 @@ function getDeletePage($iGroupID) {
         $sHeading = "Please select a group: ";
     }
 	
-    $sToRender .= "<table width=\"600\">" . renderHeading("Remove Group") . "</table>";
+    $sToRender .= renderHeading("Remove Group");
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr><td>$sHeading</td></tr>\n";
 	$sToRender .= "<tr>\n";
@@ -49,7 +49,7 @@ function getDeleteSuccessPage() {
 	
 global $default;
 
-$sToRender .= "<table width=\"600\">" . renderHeading("Remove Group") . "</table>";
+$sToRender .= renderHeading("Remove Group");
 $sToRender .= "<table>\n";
 $sToRender .= "<tr>\n";
 $sToRender .= "<td><b>Group SuccessFully Removed!</b></td>\n";
@@ -71,7 +71,7 @@ function getDeleteFailPage() {
 
 global $default;	
 
-$sToRender .= "<table width=\"600\">" . renderHeading("Remove Group") . "</table>";
+$sToRender .= renderHeading("Remove Group");
 $sToRender .= "<table>\n";
 $sToRender .= "<tr>\n";
 $sToRender .= "<td><b>Deletion Failed!</b></td>\n";

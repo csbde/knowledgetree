@@ -21,7 +21,7 @@ function getPage($iUserID) {
         $heading = "<tr><td>Please select a User:</td></tr>\n";
     }
 
-    $sToRender .= "<table width=\"600\">" . renderHeading("Edit User Groups") . "</table>";
+    $sToRender .= renderHeading("Edit User Groups");
     $sToRender .= "<table>\n";
     $sToRender .= $heading;
     $sToRender .= "<tr>\n";
@@ -69,11 +69,7 @@ function getGroupPage($iUserID, $aGroup) {
 	$sTableTag .= "<table width=100% border=0 cellspacing=0>";
 	$sBgColor = "#F5F6EE";
 	
-	
-	
-    $sToRender .= "<table width=\"600\">";
-    $sToRender .= renderHeading("Edit User Groups");   
-    $sToRender .= "</table>";    
+    $sToRender .= renderHeading("Edit User Groups");
 
     $sToRender .= "<table width=\"600\" border=0>";
     $sToRender .= "<tr><td width=100%><b>User Name: </b>" . getUserDisplay($oUser) . "</td><td>";

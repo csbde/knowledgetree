@@ -8,7 +8,7 @@ function getSelectFieldPage($iDocFieldID) {
 		$oDocField = DocumentField::get($iDocFieldID);
 	}
 	
-    $sToRender .= "<table width=\"600\">" . renderHeading("Remove Document Field Lookup") . "</table>";
+    $sToRender .= renderHeading("Remove Document Field Lookup");
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr>Please Select a Field</tr>\n";
 	$sToRender .= "<tr>\n";
@@ -39,7 +39,7 @@ function getSelectMetaDataPage($iDocFieldID, $iMetaDataID) {
 		$oMetaData = MetaData::get($iMetaDataID);
 	}
 	
-    $sToRender .= "<table width=\"600\">" . renderHeading("Remove Document Field Lookup") . "</table>";
+    $sToRender .= renderHeading("Remove Document Field Lookup");
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr>Please Select the Lookup value you wish to remove</tr>\n";
 	$sToRender .= "<tr>\n";
@@ -70,7 +70,7 @@ function getDeleteConfirmedPage($iDocFieldID, $iMetaDataID) {
 		$oMetaData = MetaData::get($iMetaDataID);
 	}
 	
-    $sToRender .= "<table width=\"600\">" . renderHeading("Remove Document Field Lookup") . "</table>";
+    $sToRender .= renderHeading("Remove Document Field Lookup");
 	$sToRender .= "<table border=1>\n";
 	$sToRender .= "<tr><td colspan=\"2\">Are you sure you wish to Remove the specified lookup from the Field?</td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
@@ -96,7 +96,7 @@ function getDeleteConfirmedPage($iDocFieldID, $iMetaDataID) {
 function getSuccessPage() {	
 	global $default;
 			
-    $sToRender .= "<table width=\"600\">" . renderHeading("Remove Document Field Lookup") . "</table>";
+    $sToRender .= renderHeading("Remove Document Field Lookup");
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr><td><b>Success!</b></td></tr>\n";
 	$sToRender .= "<tr><td>The lookup was successfully deleted</td></tr>\n";
@@ -114,7 +114,7 @@ function getSuccessPage() {
 function getFailPage() {	
 	global $default;
 			
-    $sToRender .= "<table width=\"600\">" . renderHeading("Remove Document Field Lookup") . "</table>";
+    $sToRender .= renderHeading("Remove Document Field Lookup");
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr><td><b>FAILURE!</b></td></tr>\n";
 	$sToRender .= "<tr><td>The lookup was not deleted</td></tr>\n";

@@ -105,7 +105,7 @@ function renderEditAddNewsForm($oDashboardNews) {
 function renderEditNewsPage($oDashboardNews, $sErrorMessage = "") {
 	global $default;
 	
-	$sToRender .= "<table width=\"600\">" . renderHeading("Edit Dashboard News") . "</table>";
+	$sToRender .= renderHeading("Edit Dashboard News");
 	if (strlen($sErrorMessage) > 0) {
 		$sToRender .= renderErrorMessage($sErrorMessage);
 	}
@@ -121,7 +121,7 @@ function renderEditNewsPage($oDashboardNews, $sErrorMessage = "") {
 function renderAddNewsPage($oDashboardNews, $sErrorMessage = "") {
 	global $default;
 	
-	$sToRender .= "<table width=\"600\">" . renderHeading("Add Dashboard News") . "</table>";
+	$sToRender .= renderHeading("Add Dashboard News");
 	if (strlen($sErrorMessage) > 0) {
 		$sToRender .= renderErrorMessage($sErrorMessage);
 	}	
@@ -136,7 +136,7 @@ function renderAddNewsPage($oDashboardNews, $sErrorMessage = "") {
 function renderListNewsPage() {
 	global $default;
 	
-	$sToRender .= "<table width=\"600\">" . renderHeading("List Dashboard News") . "</table>";
+	$sToRender .= renderHeading("List Dashboard News");
     $sToRender .= "<table>\n";
 	$sToRender .= renderNewsTable();
 	$sToRender .= "</table>\n";
@@ -164,7 +164,7 @@ function renderPreviewNewsPage($oDashboardNews) {
 function renderDeleteNewsConfirmationPage($oDashboardNews) {
 	global $default;
 	
-	$sToRender .= "<table width=\"600\">" . renderHeading("Delete Dashboard News") . "</table>";
+	$sToRender .= renderHeading("Delete Dashboard News");
     $sToRender .= "<table>\n";
 	$sToRender .= "<tr><td colspan=\"2\">Are you sure you wish to delete this news item?</td></tr>";
 	

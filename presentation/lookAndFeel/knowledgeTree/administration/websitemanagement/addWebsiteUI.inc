@@ -24,7 +24,7 @@ function getPage() {
 	$oPatternCreate->setUniqueName("website");
     $oPatternCreate->setDefaultValues(array(1=>"http://"));
 	
-    $sToRender .= "<table width=\"600\">" . renderHeading("Add Website") . "</table>";
+    $sToRender .= renderHeading("Add Website");
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<tr>\n";
@@ -43,7 +43,7 @@ function getPage() {
 function getAddPageFail() {	
 	global $default;
 			
-    $sToRender .= "<table width=\"600\">" . renderHeading("Add Website") . "</table>";
+    $sToRender .= renderHeading("Add Website");
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr><td><b>Addition Unsuccessful</b></td></tr>\n";
 	$sToRender .= "<tr></tr>\n";

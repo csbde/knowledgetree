@@ -20,7 +20,7 @@ function getDeletePage($iOrgID) {
         $sHeading .= "Please select a Organisation:";
     }
 
-    $sToRender .= "<table width=\"600\">" . renderHeading("Remove Organisation") . "</table>";
+    $sToRender .= renderHeading("Remove Organisation");
     $sToRender .= "<table>\n";
     $sToRender .= "<tr><td>$sHeading</td></tr>\n";
     $sToRender .= "<tr>\n";
@@ -45,7 +45,7 @@ function getDeleteSuccessPage() {
 
     global $default;
 
-    $sToRender .= "<table width=\"600\">" . renderHeading("Remove Organisation") . "</table>";
+    $sToRender .= renderHeading("Remove Organisation");
     $sToRender .= "<table>\n";
     $sToRender .= "<tr>\n";
     $sToRender .= "<td><b>Organisation SuccessFully Removed!</b></td>\n";
@@ -67,7 +67,7 @@ function getDeleteFailPage() {
 
     global $default;
 
-    $sToRender .= "<table width=\"600\">" . renderHeading("Remove Organisation") . "</table>";
+    $sToRender .= renderHeading("Remove Organisation");
     $sToRender .= "<table>\n";
     $sToRender .= "<tr>\n";
     $sToRender .= "<td><b>Deletion Failed!</b></td>\n";

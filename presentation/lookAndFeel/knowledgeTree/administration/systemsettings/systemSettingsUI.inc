@@ -57,7 +57,7 @@ function getPage() {
     // then loop a database entry to add everything...
     // and then when submit...run a set thingy..
 
-    $sToRender .= "<table width=\"600\">" . renderHeading("System Settings") . "</table>";
+    $sToRender .= renderHeading("System Settings");
     $sToRender .= "<table>\n";
     $sToRender .= "<tr><b>Current System Settings: </b></tr>\n";
     $sToRender .= "<tr>\n";
@@ -99,7 +99,7 @@ function getPage() {
 function getPageSuccess() {
     global $default;
 
-    $sToRender .= "<table width=\"600\">" . renderHeading("System Settings") . "</table>";
+    $sToRender .= renderHeading("System Settings");
     $sToRender .= "<table>\n";
     $sToRender .= "<tr><td><b>Success!</b></td></tr>\n";
     $sToRender .= "<tr><td>The Settings were successfully modified</td></tr>\n";

@@ -20,7 +20,7 @@ function getPage() {
 	$oPatternCreate = & new PatternCreate("Group", "groups/Group.inc",$aDisplayRowNames, $aParameterNumbers, $aDisplayColumnTypes, $aRequired);
 	$oPatternCreate->setUniqueName("group");
 	
-	$sToRender .= "<table width=\"600\">" . renderHeading("Add Group") . "</table>";
+	$sToRender .= renderHeading("Add Group");
 	
 	$sToRender .= "<table>\n";
     $sToRender .= "<tr><td>Add a New Group to the System</td></tr>\n";
