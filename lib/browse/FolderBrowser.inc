@@ -47,11 +47,14 @@ class FolderBrowser extends Browser {
      * @return array folders and documents
      */
     function browse() {
-        global $default, $fFolderID;
+        global $default;
+
+        // XXX: Shouldn't be getting this from $_REQUEST
+        $iFolderID = $_REQUEST['fFolderID'];
 
 		// we're browsing folders
-		$this->setBrowseStart($fFolderID);
-		$iFolderID = $fFolderID;
+		$this->setBrowseStart($iFolderID);
+		$iFolderID = $iFolderID;
 		
         // instantiate and initialise
         $results = array();

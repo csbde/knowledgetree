@@ -46,11 +46,14 @@ class DocumentTypeBrowser extends Browser {
      * @return array document types and documents     
      */    
     function browse() {
-        global $default, $fDocumentTypeID;
+        global $default;
+
+        // XXX: Shouldn't be getting this from $_REQUEST
+        $iDocumentTypeID = $_REQUEST['fDocumentTypeID'];
 
         // browsing by document type id
-        $this->setBrowseStart($fDocumentTypeID);
-        $iDocumentTypeID = $fDocumentTypeID;
+        $this->setBrowseStart($iDocumentTypeID);
+        $iDocumentTypeID = $iDocumentTypeID;
         
         $results = array();
         $sql = $default->db;

@@ -212,7 +212,8 @@ class SiteMap {
      * @param string the section to return links for
      */
     function getSectionLinksDB($sSectionName, $bSortLinks) {
-        global $default, $lang_err_database, $fFolderID;
+        global $default, $lang_err_database;
+        $iFolderID = $_REQUEST['fFolderID'];
         $sql = $default->db;
         // lookup sectionID
         $sectionID = lookupID($default->site_sections_table, "name", $sSectionName);
@@ -231,7 +232,7 @@ class SiteMap {
                             $results["descriptions"][] = $sql->f("link_text");
                             // if fFolderID is set and fFolderID is in the page string
                             // append folderID to the controller link                            
-                            $results["links"][] = isset($fFolderID) ? generateControllerLink($sql->f("action"), "fFolderID=$fFolderID") : generateControllerLink($sql->f("action"), "");
+                            $results["links"][] = isset($iFolderID) ? generateControllerLink($sql->f("action"), "fFolderID=$iFolderID") : generateControllerLink($sql->f("action"), "");
                         }
                     }
                 }
@@ -257,7 +258,8 @@ class SiteMap {
      * @param string the section to return links for
      */
     function getSectionLinksArray($sSectionName, $bSortLinks) {
-        global $default, $fFolderID;
+        global $default;
+        $iFolderID = $_REQUEST['fFolderID'];
 
         // check if the section exists
         if (is_array($this->aSiteMap[$sSectionName])) {
@@ -279,11 +281,11 @@ class SiteMap {
                             if (!$bSortLinks) {
 	                            $results["descriptions"][$pages[$action]["order"]] = $pages[$action]["description"];
 	                            
-	                            $results["links"][$pages[$action]["order"]] = isset($fFolderID) ? generateControllerLink($action, "fFolderID=$fFolderID") : generateControllerLink($action, "");
+	                            $results["links"][$pages[$action]["order"]] = isset($iFolderID) ? generateControllerLink($action, "fFolderID=$iFolderID") : generateControllerLink($action, "");
                             } else {
 	                            $results["descriptions"][] = $pages[$action]["description"];
 	                            
-	                            $results["links"][] = isset($fFolderID) ? generateControllerLink($action, "fFolderID=$fFolderID") : generateControllerLink($action, "");
+	                            $results["links"][] = isset($iFolderID) ? generateControllerLink($action, "fFolderID=$iFolderID") : generateControllerLink($action, "");
                             }
                         }
                     }

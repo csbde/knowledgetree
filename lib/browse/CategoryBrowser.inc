@@ -47,11 +47,14 @@ class CategoryBrowser extends Browser {
      * @return array categories and documents     
      */    
     function browse() {
-        global $default, $fCategoryName;
+        global $default;
+
+        // XXX: Shouldn't be picking it out of $_REQUEST
+        $sCategoryName = $_REQUEST['fCategoryName'];
         
         // browsing by category
-        $this->setBrowseStart($fCategoryName);
-        $sCategoryName = $fCategoryName;
+        $this->setBrowseStart($sCategoryName);
+        $sCategoryName = $sCategoryName;
         
         // TODO: add this to default inserts
         $categoryField = "Category";
