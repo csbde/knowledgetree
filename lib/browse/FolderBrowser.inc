@@ -1,6 +1,6 @@
 <?php
 require_once("$default->fileSystemRoot/lib/browse/Browser.inc");
-require_once("$default->fileSystemRoot/lib/security/permission.inc");
+require_once("$default->fileSystemRoot/lib/security/Permission.inc");
 require_once("$default->fileSystemRoot/lib/users/User.inc");
 require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
 require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
