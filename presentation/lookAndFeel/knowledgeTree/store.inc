@@ -25,8 +25,6 @@
  */
 
 function constructQuery($aKeys, $aSuppliedValues = null) {
-    global $default;
-
     $aQuery = array();
     for ($i = 0; $i < count($aKeys); $i++) {
         $sRowStart = $aKeys[$i];
@@ -62,41 +60,39 @@ function constructQuery($aKeys, $aSuppliedValues = null) {
 
             //get all the values for the table
             while ((strncasecmp("unique_end", $sRowStart, 10) != 0) && ($i <= count($aKeys)))  {
-                $aColumns[$iColumnCount] = $_POST[$aKeys[$i]];
-                if (!in_array($aColumns[$iColumnCount], $aColumnNames)) {
-                    print "Hack attempt! $aColumns[$iColumnCount] is not in "; var_dump($aColumnNames);
+                //$aColumns[$iColumnCount] = $_POST[$aKeys[$i]];
+
+                $sColumnName = $_POST[$aKeys[$i]];
+                if (!in_array($sColumnName, $aColumnNames)) {
+                    print "Hack attempt! $sColumnName is not in "; var_dump($aColumnNames);
                     return false;
                 }
-                $aTypes[$iColumnCount]= $_POST[$aKeys[++$i]];
+                // $aTypes[$iColumnCount]= $_POST[$aKeys[++$i]];
 
-                switch ($aTypes[$iColumnCount]) {
-                    case 0:
-                        //id's
-                        $aValues[$iColumnCount] = $_POST[$aKeys[++$i]];
-                        break;
-                    case 1:
-                        //normal text
-                        $aValues[$iColumnCount] = $_POST[$aKeys[++$i]];
-                        break;
+                $iType = $_POST[$aKeys[++$i]];
+
+                switch ($iType) {
                     case 2:
                         //uncheck checkboxes don't generate any name/value pairs
                         //so if the next key doesn't contain the word "value" and it's type
                         //is checkbox, then we have an unchecked check box
                         if (strpos($aKeys[$i + 1], "value") === false) {
-                            $aValues[$iColumnCount] = false;
+                            $mValue = false;
                         } else {
                             $i++;
-                            $aValues[$iColumnCount] = true;
+                            $mValue = true;
                         }
                         //check box
                         break;
-                    case 3:
-                        //drop down
                     case 4:
-                        // user supplied values
-                        $aValues[$iColumnCount] = $_POST[$aKeys[++$i]];
+                        $mValue = $aSuppliedValues[$sColumnName];
+                        $i++;
+                        break;
+                    default:
+                        $mValue = $_POST[$aKeys[++$i]];
                         break;
                 }
+                $aValues[$sColumnName] = $mValue;
 
                 $sRowStart = $aKeys[++$i];
                 $iColumnCount++;
@@ -104,108 +100,10 @@ function constructQuery($aKeys, $aSuppliedValues = null) {
 
             if ($iPrimaryKey < 0) {
                 //perform an insert
-                $sQuery = "INSERT INTO $sTableName (";
-                for ($j = 0; $j < count($aColumns) - 1; $j++) {
-                    $sQuery .= $aColumns[$j] . ", ";
-                }
-                $sQuery .= $aColumns[count($aColumns) -1] . ") VALUES (";
-
-                for ($j = 0; $j < count($aColumns) - 1; $j++) {
-                    switch ($aTypes[$j]) {
-                        case 0 :
-                            $sQuery .= $aValues[$j] . ", ";
-                            break;
-                        case 1:
-                            //text
-                            $sQuery .= "'" . $aValues[$j] . "', ";
-                            break;
-                        case 2:
-                            //boolean
-                            $sQuery .= $aValues[$j] . ", ";
-                            break;
-                        case 3:
-                            //drop down list
-                            $sQuery .= $aValues[$j] . ", ";
-                            break;
-                        case 4:
-                            // user supplied values
-                            $sQuery .= $aSuppliedValues[$aColumns[$j]] . ", ";
-                            break;
-                        default:
-                            break;
-                    }
-                }
-                switch ($aTypes[count($aColumns) - 1]) {
-                    case 0:
-                            //id
-                            $sQuery .= $aValues[count($aColumns) - 1] . ") ";
-                            break;
-                    case 1:
-                            //text
-                            $sQuery .= "'" . $aValues[count($aColumns) - 1] . "') ";
-                            break;
-                        case 2:
-                            //boolean
-                            $sQuery .= ($aValues[count($aColumns) - 1] ? 1 : 0) . ") ";
-                            break;
-                        case 3:
-                            //drop down list
-                            $sQuery .= $aValues[count($aColumns) - 1] . ") ";
-                            break;
-                        case 4:
-                            // user supplied values
-                            $sQuery .= $aSuppliedValues[$aColumns[count($aColumns) - 1]] . ", ";
-                            break;
-                        default:
-                            break;
-                }
                 // add query to array
-                $aQuery[] = $sQuery;
+                $id = DBUtil::autoInsert($sTableName, $aValues);
             } else {
-                //perform an update
-                $sQuery = "UPDATE $sTableName SET ";
-                for ($j = 0; $j < count($aColumns) -1; $j++) {
-                    $sQuery .= $aColumns[$j] . " = ";
-                    switch ($aTypes[$j]) {
-                        case 0:
-                            //id
-                            $sQuery .= $aValues[$j] . ", ";
-                            break;
-                        case 1:
-                            $sQuery .= "'" . $aValues[$j] . "', ";
-                            break;
-                        case 2:
-                            $sQuery .= ($aValues[$j] ? 1 : 0) . ", ";
-                            break;
-                        case 3:
-                            $sQuery .= $aValues[$j] . ", ";
-                            break;
-                        default:
-                            break;
-                    }
-
-                }
-                $sQuery .= $aColumns[count($aTypes) -1] . " = ";
-                switch ($aTypes[count($aTypes) -1]) {
-                    case 0:
-                            //id
-                            $sQuery .= $aValues[count($aTypes) -1] . " ";
-                            break;
-                        case 1:
-                            $sQuery .= "'" . $aValues[count($aTypes) -1] . "' ";
-                            break;
-                        case 2:
-                            $sQuery .= ($aValues[count($aTypes) -1] ? 1 : 0) . " ";
-                            break;
-                        case 3:
-                            $sQuery .= $aValues[count($aTypes) -1] . " ";
-                            break;
-                        default:
-                            break;
-                    }
-                $sQuery .= "WHERE id = $iPrimaryKey";
-                // add query to array
-                $aQuery[] = $sQuery;
+                $res = DBUtil::autoUpdate($sTableName, $aValues, $iPrimaryKey);
             }
         }
     }
