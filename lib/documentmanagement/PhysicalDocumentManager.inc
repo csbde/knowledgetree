@@ -89,7 +89,7 @@ class PhysicalDocumentManager {
 								
 		Header("Content-Length: ". $oDocument->getFileSize());
 		Header("Content-Disposition: attachment; filename=" . $oDocument->getFileName());        
-        Header("Pragma: no-cache");
+        Header("Pragma: no-store");
         Header("Expires: 0");
 		readfile($sDocumentFileSystemPath);
 	}
@@ -115,7 +115,7 @@ class PhysicalDocumentManager {
 								
 		header("Content-Length: ". $oDocument->getFileSize());
 		header("Content-Disposition: attachment; filename=" . "$sVersion-" . $oDocument->getFileName());
-        header("Pragma: no-cache");
+        header("Pragma: no-store");
         header("Expires: 0");
 		readfile($sDocumentFileSystemPath);
     }
