@@ -4,7 +4,8 @@
 * Class DocumentLink
 *
 * Represents a document link as per the database document_link table
-* Used to chain documents together in the collaboration process
+* Links a child document to a parent document.  Direction of relationship
+* is defined through document collaboration
 *
 * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
 * @date 14 May 2003
@@ -17,11 +18,10 @@ class DocumentLink {
 	/** primary key value */
 	var $iId;
 	/** primary key of user responsible for creating document */
-	var $iUserID;
+	var $iParentDocumentID;
 	/** document title name */	
-	var $sDocumentTitle;
-	/** primary key of document to use as template */
-	var $iTemplateDocumentID;	
+	var $iChildDocumentID;
+	
 
 	/**
 	* Default constructor
@@ -30,14 +30,12 @@ class DocumentLink {
 	* @param 	Document field data type
 	*
 	*/
-	function DocumentLink($sNewDocumentTitle, $iUserID, $iNewTemplateDocumentID) {
+	function DocumentLink($iNewParentDocumentID, $iNewChildDocumentID) {
 		//object not created yet
 		global $default;
 		$this->iID = -1;
-		$this->iUserID = $iUserID;
-		$this->iTemplateDocumentID = $iNewTemplateDocumentID;
-		
-
+		$this->iParentDocumentID = $iNewParentDocumentID;
+		$this->iChildDocumentID = $iNewChildDocumentID;
 	}
 
 	/**
@@ -47,87 +45,44 @@ class DocumentLink {
 	*
 	*/
 	function getID() {
-		return $this -> iId;
+		return $this->iId;
 	}
 
 	/**
-	* Get the document field's name
-	*
-	* @return String document field's name
-	*
+	* Get the primary key of the parent document
 	*/
-	function getName() {
-		return $this -> sName;
+	function getParentDocumentID() {
+		return $this->iParentDocumentID;
 	}
 
 	/**
-	* Set the document field's name
+	* Set the primary key of the parent document
 	*
-	* @param 	Document field's new name
+	* @param 	Primary key of parent document
 	*
 	*/
-	function setName($sNewValue) {
-		$this -> sName = $sNewValue;
+	function setParentDocumentID($iNewValue) {
+		$this -> iParentDocumentID = $iNewValue;
 	}
 
 	/**
-	* Get the document field's data type
+	* Get the child document's primary key
 	*
-	* @return String document field's data type
+	* @return int primary key of child document
 	*
 	*/
-	function getDataType() {
-		return $this -> sDataType;
+	function getChildDocumentID() {
+		return $this->iChildDocumentID;
 	}
 
 	/**
-	* Set the document field's data type
+	* Set the child document's primary key
 	*
-	* @param 	Document field's new data type
-	*
-	*/
-	function setDataType($sNewValue) {
-		$this -> sDataType = $sNewValue;
-	}
-
-	/**
-	* Get the document field's generic or not
-	*
-	* @return String document field's data type
+	* @param 	Primary key of child document
 	*
 	*/
-	function getIsGeneric() {
-		return $this -> bIsGeneric;
-	}
-
-	/**
-	* Set the document field's genericness
-	*
-	* @param 	Document field's new data type
-	*
-	*/
-	function setIsGeneric($sNewValue) {
-		$this -> bIsGeneric = $sNewValue;
-	}
-
-	/**
-	* Get the document field's lookup or not
-	*
-	* @return String document field's data type
-	*
-	*/
-	function getHasLookup() {
-		return $this -> bHasLookup;
-	}
-
-	/**
-	* Set the document field's lookup
-	*
-	* @param 	Document field's new data type
-	*
-	*/
-	function setHasLookup($sNewValue) {
-		$this -> bHasLookup = $sNewValue;
+	function setChildDocumentID($iNewValue) {
+		$this -> iChildDocumentID = $iNewValue;
 	}
 
 	/**
@@ -141,7 +96,7 @@ class DocumentLink {
 		//if the object hasn't been created
 		if ($this -> iId < 0) {
 			$sql = $default -> db;
-			$result = $sql -> query("INSERT INTO ".$default -> owl_fields_table." (name, data_type,is_generic,has_lookup) VALUES ('".addslashes($this -> sName)."', '".addslashes($this -> sDataType)."', '".$this -> bIsGeneric."', '".$this -> bHasLookup."')");
+			$result = $sql -> query("INSERT INTO " . $default -> owl_document_link_table . " (parent_document_id, child_document_id) VALUES ($this->iParentDocumentID, $this->iChildDocumentID)");
 			if ($result) {
 				$this -> iId = $sql -> insert_id();
 				return true;
@@ -164,7 +119,7 @@ class DocumentLink {
 		//only update if the object has been stored
 		if ($this -> iId > 0) {
 			$sql = $default -> db;
-			$result = $sql -> query("UPDATE ".$default -> owl_fields_table." SET name = '".addslashes($this -> sName)."', data_type = '".addslashes($this -> sDataType)."', is_generic = '".$this -> bIsGeneric."', has_lookup = '".$this -> bHasLookup."' WHERE id = $this->iId");
+			$result = $sql -> query("UPDATE ".$default -> owl_document_link_table." SET parent_document_id = $this->iParentDocumentID, child_document_id = $this->iChildDocumentID WHERE id = $this->iId");
 			if ($result) {
 				return true;
 			}
@@ -186,7 +141,7 @@ class DocumentLink {
 		//only delete the object if it exists in the database
 		if ($this -> iId >= 0) {
 			$sql = $default -> db;
-			$result = $sql -> query("DELETE FROM $default->owl_fields_table WHERE id = $this->iId");
+			$result = $sql -> query("DELETE FROM $default->owl_document_link_table WHERE id = $this->iId");
 			if ($result) {
 				return true;
 			}
@@ -205,118 +160,21 @@ class DocumentLink {
 	*
 	* @return DocumentField populated DocumentField object on successful query, false otherwise and set $_SESSION["errorMessage"]
 	*/
-	function & get($iDocumentFieldsID) {
+	function & get($iDocumentLinkID) {
 		global $default;
 		$sql = $default -> db;
-		$result = $sql -> query("SELECT * FROM $default->owl_fields_table WHERE id = $iDocumentFieldsID");
+		$result = $sql -> query("SELECT * FROM $default->owl_document_link_table WHERE id = $iDocumentLinkID");
 		if ($result) {
 			if ($sql -> next_record()) {
-				$oDocumentField = & new DocumentField(stripslashes($sql -> f("name")), stripslashes($sql -> f("data_type")), $sql -> f("is_generic"), $sql -> f("has_lookup"));
-				$oDocumentField -> iId = $sql -> f("id");
-				return $oDocumentField;
+				$oDocumentLink = & new DocumentLink($sql -> f("parent_document_id"), $sql -> f("parent_document_id"));
+				$oDocumentLink -> iId = $sql -> f("id");
+				return $oDocumentLink;
 			}
-			$_SESSION["errorMessage"] = $lang_err_object_not_exist."id = ".$iDocumentID." table = $default->owl_fields_table";
+			$_SESSION["errorMessage"] = $lang_err_object_not_exist."id = ".$iDocumentLinkID." table = $default->owl_document_link_table";
 			return false;
-		}
-		$_SESSION["errorMessage"] = $lang_err_database;
-		return false;
-	}
-
-	/**
-	* Static function.
-	* Gets all generic fields
-	* DocumentFields object and populate it with the 
-	* corresponding database values
-	*
-	* @return DocumentField populated DocumentField object on successful query, false otherwise and set $_SESSION["errorMessage"]
-	*/
-	function getGenericFields() {
-		global $default, $lang_err_database;
-		$aFields;
-		settype($aFields, "array");
-		$sql = $default -> db;
-		$result = $sql -> query("SELECT name, id FROM ".$default -> owl_fields_table." Where is_generic = 1");
-		if ($result) {
-			$iCount = 0;
-			while ($sql -> next_record()) {
-
-				$aFields[$iCount]["id"] = $sql -> f("id");
-				$aFields[$iCount]["name"] = $sql -> f("name");
-				$iCount ++;
-			}
-			return $aFields;
-		}
-		$_SESSION["errorMessage"] = $lang_err_database;
-		return false;
-	}
-
-	/* Static function.  Given a documenttype...will find all fields belongin to it
-	*
-	* @return DocumentFieldLink populated DocumentFieldLink object on success, false otherwise and set $_SESSION["errorMessage"]
-	*/
-	function getAllSpecificFields() {
-		global $default, $lang_err_database;
-		$aFields;
-		settype($aFields, "array");
-		$sql = $default -> db;
-		$result = $sql -> query("SELECT id, name FROM ".$default -> owl_fields_table." Where is_generic = 0");
-		if ($result) {
-			$iCount = 0;
-			while ($sql -> next_record()) {
-
-				$aFields[$iCount]["id"] = $sql -> f("id");
-				$aFields[$iCount]["name"] = $sql -> f("name");
-				$iCount ++;
-			}
-			return $aFields;
-		}
-		$_SESSION["errorMessage"] = $lang_err_database;
-		return false;
-	}
-
-	/* Static function.  Given a documenttype...will find all fields belongin to it
-	*
-	* @return DocumentFieldLink populated DocumentFieldLink object on success, false otherwise and set $_SESSION["errorMessage"]
-	*/
-	function isFieldLinkedToType() {
-		global $default, $lang_err_database;
-		$sql = $default -> db;
-		$query = "SELECT * FROM ".$default -> owl_document_type_fields_table." Where field_id = $this->iId";
-		$sql -> query($query);
-		$rows = $sql -> num_rows($sql);
-
-		if ($rows > 0) {
-			return true;
-		} else {
-			return false;
-		}
-		$_SESSION["errorMessage"] = $lang_err_database;
-		return false;
-	}
-
-	/* Static function.  Given a documenttype...will find all fields belongin to it
-	*
-	* @return DocumentFieldLink populated DocumentFieldLink object on success, false otherwise and set $_SESSION["errorMessage"]
-	*/
-	function getAllDataTypes() {
-		global $default, $lang_err_database;
-		$aDataTypes;
-		settype($aDataTypes, "array");
-		$sql = $default -> db;
-		$result = $sql -> query("SELECT id, name FROM ".$default -> owl_data_types_table);
-		if ($result) {
-			$iCount = 0;
-			while ($sql -> next_record()) {
-
-				$aDataTypes[$iCount]["id"] = $sql -> f("id");
-				$aDataTypes[$iCount]["name"] = $sql -> f("name");
-				$iCount ++;
-			}
-			return $aDataTypes;
 		}
 		$_SESSION["errorMessage"] = $lang_err_database;
 		return false;
 	}
 }
-
 ?>
