@@ -43,8 +43,13 @@ if (checkSession()) {
 
     echo "<b>Testing LDAP authentication</b>";
     // user credentials to authenticate
-    $sUserName = "michael";
-    $sPassword = "pass123";
+    $sUserName = "michael"; $sPassword = "pass123";
+    echo "<ul><li>Authenticating ($sUserName, $sPassword) : " . ($oLdapAuth->checkPassword($sUserName, $sPassword) ? "true" : "false") . "</li></ul>";
+
+    $sUserName = "rob"; $sPassword = "rob123";
+    echo "<ul><li>Authenticating ($sUserName, $sPassword) : " . ($oLdapAuth->checkPassword($sUserName, $sPassword) ? "true" : "false") . "</li></ul>";
+
+    $sUserName = "mukhtar"; $sPassword = "mukhtar123";
     echo "<ul><li>Authenticating ($sUserName, $sPassword) : " . ($oLdapAuth->checkPassword($sUserName, $sPassword) ? "true" : "false") . "</li></ul>";
 }
 ?>
