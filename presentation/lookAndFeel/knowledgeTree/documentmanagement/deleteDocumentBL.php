@@ -72,11 +72,9 @@ if (checkSession()) {
                                 }
 								
 								//remove any document word links that this document may have
-								Document::removeDocumentWordLinks($fDocumentID);
+								Document::deleteFromDocumentText($fDocumentID);
 								
-								//delete all fields associated with the document
-								Document::deleteDocumentFieldsLinks($fDocumentID);
-								
+																
                                 // delete the corresponding web document entry
                                 $oWebDocument = WebDocument::get(lookupID($default->owl_web_documents_table, "document_id", $fDocumentID));
                                 $oWebDocument->delete();
