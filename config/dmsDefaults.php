@@ -110,8 +110,8 @@ require_once("$default->owl_fs_root/phplib/db_mysql.inc");
 // Change this to reflect the authentication method you are using
 //require_once("$default->owl_fs_root/lib/LDAPAuthenticator.inc");
 //require_once("$default->owl_fs_root/lib/Authenticator.inc");
-$default->authentication_class = "DBAuthenticator";
-require_once("$default->owl_fs_root/lib/authentication/$default->authentication_class.inc");
+//$default->authentication_class = "DBAuthenticator";
+//require_once("$default->owl_fs_root/lib/authentication/$default->authentication_class.inc");
 
 // logo file that must reside inside lang/graphics directory
 $default->logo = "kt.jpg";
