@@ -786,7 +786,7 @@ class Folder extends KTEntity {
         // Then, we update the documents in our subfolders
         $sFolderIDs = $this->generateFolderIDs($this->getID());
         $sFolderIDs .= '%';
-        $sQuery = "SELECT D.id AS id FROM documents AS D JOIN folders AS F on D.folder_id = F.id WHERE F.parent_folder_ids LIKE ?";
+        $sQuery = "SELECT D.id AS id FROM documents AS D INNER JOIN folders AS F on D.folder_id = F.id WHERE F.parent_folder_ids LIKE ?";
         $aParams = array($sFolderIDs);
         $aDocumentIDs = DBUtil::getResultArrayKey(array($sQuery, $aParams), 'id');
 
