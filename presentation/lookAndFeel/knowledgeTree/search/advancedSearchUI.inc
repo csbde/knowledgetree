@@ -23,7 +23,7 @@ function getMetaData($aMetaTagIDs) {
     $sCheckAllJavascript = "";
 	while ($sql->next_record()) {
 		$sCheckAllJavascript .= "document.MainForm.f_adv_$iRecordCount.checked=value;\n"; 
-        $sMetaDataCheckBox = "<input type=\"checkbox\" " . wasSelected($sql->f("id"), $aMetaTagIDs) . " name=\"f_adv_$iRecordCount\" value=\"" . $sql->f("id") . "\"></td><td>" . $sql->f("name");
+        $sMetaDataCheckBox = "<input type=\"checkbox\" " . wasSelected($sql->f("id"), $aMetaTagIDs) . " name=\"f_adv_$iRecordCount\" value=\"" . $sql->f("id") . "\"></td><td>" . stripslashes($sql->f("name"));
         $iRecordCount++;
         if (($iRecordCount % 3) == 1) {
             $sToRender .= "<tr><td>$sMetaDataCheckBox</td>\n";
