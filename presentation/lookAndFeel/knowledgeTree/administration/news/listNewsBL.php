@@ -7,6 +7,7 @@ require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternTableSqlQuery.inc");
 require_once("$default->uiDirectory/administration/news/newsUI.inc");
 require_once("$default->fileSystemRoot/presentation/Html.inc");
+require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/administration/adminUI.inc");
 
 /**
  * $Id$
