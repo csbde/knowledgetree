@@ -239,42 +239,7 @@ class WebSite {
         $_SESSION["errorMessage"] = $lang_err_database;
         return false;
     }
-
-
-    /*
-         * static function
-         *
-         * sets the id of the groupunit using their groupid
-         *
-         * @param   String
-         *   The unit_ID
-         *   
-         */
-
-    function setWebSiteID($iWebMasterID,$sWebSiteName) {
-        global $default;
-        $sql = $default->db;
-        $result = $sql->query("SELECT id FROM $default->owl_web_sites_table WHERE web_master_id = $iWebMasterID and web_site_name = '" . $sWebSiteName . "' ");
-        if ($result) {
-            if ($sql->next_record()) {
-                $id = $sql->f("id");
-
-            } else {
-                $_SESSION["errorMessage"] = $lang_err_database;
-                return false;
-            }
-
-        } else {
-            $_SESSION["errorMessage"] = $lang_err_database;
-            return false;
-        }
-
-        $this->iId = $id;
-
-    }
 }
-
-
 
 /**
 * Static function
