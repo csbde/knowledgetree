@@ -44,8 +44,7 @@ function getDeletePage($oGroupFolderLink, $iFolderID) {
 	$sToRender .= "<td><table><tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/delete.gif\" /></td><td><a href=\"$default->rootUrl/control.php?action=editFolder&fFolderID=" . $oGroupFolderLink->getFolderID() . "\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\" /></a></td></tr></table></td>\n";
 	$sToRender .= "</tr>\n";	
 	$sToRender .= "<table>\n";
-	
-	
+
 	$sToRender .= "\n\n<script language=\"javascript\">\n<!--\n";
 	$sToRender .= "function validateForm(theForm) {\n";	
 	$sToRender .= "\t return confirm('Are you sure you wish to delete this folder access entry?');}\n";	
@@ -84,6 +83,7 @@ function getAddPage($iFolderID) {
 	global $default;
     $sToRender  = renderHeading("Add Folder Access");
     $sToRender .= getFolderPath($iFolderID);
+    
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>Group</td><td>" . getGroupDropDown() . "</td>\n";
@@ -92,9 +92,9 @@ function getAddPage($iFolderID) {
 	$sToRender .= "<td>Access</td><td>" . getAccessCheckBoxes(false) . "</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td><table><tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/add.gif\" /></td><td><a href=\"$default->rootUrl/control.php?action=editFolder&fFolderID=$iFolderID\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\" /></a></td></tr></table></td>\n";
+	$sToRender .= "<td><table><tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/add.gif\" border=\"0\"/></td><td><a href=\"$default->rootUrl/control.php?action=editFolder&fFolderID=$iFolderID\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\" /></a></td></tr></table></td>\n";
 	$sToRender .= "</tr>\n";	
-	$sToRender .= "<table>\n";
+	$sToRender .= "</table>\n";
 	
 	$sToRender .= "\n\n<script language=\"javascript\">\n<!--\n";
 	$sToRender .= "function validateForm(theForm) {\n";	
