@@ -31,40 +31,53 @@ if (checkSession()) {
             //user has permission to add document to this folder
             if (isset($fForStore)) {
                 //user wants to store a document
+                
+                // check that the folder has a default document type
+                if (Folder::getDefaultFolderDocumentType($fFolderID)) {
                 //make sure the user actually selected a file first
-                if (strlen($_FILES['fFile']['name']) > 0) {
-                    //if the user selected a file to upload
-                    //create the document in the database
-                    $oDocument = & PhysicalDocumentManager::createDocumentFromUploadedFile($_FILES['fFile'], $fFolderID);
-                    if (!(Document::documentExists($oDocument->getFileName(), $oDocument->getFolderID()))) {
-                        if ($oDocument->create()) {
-                            //if the document was successfully created in the db, then store it on the file system
-                            if (PhysicalDocumentManager::uploadPhysicalDocument($oDocument, $fFolderID, "None", $_FILES['fFile']['tmp_name'])) {
-                                //create the web document link
-                                $oWebDocument = & new WebDocument($oDocument->getID(), -1, 1, NOT_PUBLISHED, getCurrentDateTime());
-                                $oWebDocument->create();
-                                //create the document transaction record
-                                $oDocumentTransaction = & new DocumentTransaction($oDocument->getID(), "Document created", CREATE);
-                                $oDocumentTransaction->create();
-                                
-                                // fire subscription alerts for the new document
-                                $count = SubscriptionEngine::fireSubscription($fFolderID, SubscriptionConstants::subscriptionAlertType("AddDocument"),
-                                         SubscriptionConstants::subscriptionType("FolderSubscription"),
-                                         array( "newDocumentName" => $oDocument->getName(),
-                                                "folderName" => Folder::getFolderName($fFolderID)));
-                                $default->log->info("addDocumentBL.php fired $count subscription alerts for new document " . $oDocument->getName());
-                                
-                                //redirect to the document view page
-                                redirect("$default->rootUrl/control.php?action=modifyDocument&fDocumentID=" . $oDocument->getID(). "&fFirstEdit=1");
+                    if (strlen($_FILES['fFile']['name']) > 0) {
+                        //if the user selected a file to upload
+                        //create the document in the database
+                        $oDocument = & PhysicalDocumentManager::createDocumentFromUploadedFile($_FILES['fFile'], $fFolderID);
+                        if (!(Document::documentExists($oDocument->getFileName(), $oDocument->getFolderID()))) {
+                            if ($oDocument->create()) {
+                                //if the document was successfully created in the db, then store it on the file system
+                                if (PhysicalDocumentManager::uploadPhysicalDocument($oDocument, $fFolderID, "None", $_FILES['fFile']['tmp_name'])) {
+                                    //create the web document link
+                                    $oWebDocument = & new WebDocument($oDocument->getID(), -1, 1, NOT_PUBLISHED, getCurrentDateTime());
+                                    $oWebDocument->create();
+                                    //create the document transaction record
+                                    $oDocumentTransaction = & new DocumentTransaction($oDocument->getID(), "Document created", CREATE);
+                                    $oDocumentTransaction->create();
+                                    
+                                    // fire subscription alerts for the new document
+                                    $count = SubscriptionEngine::fireSubscription($fFolderID, SubscriptionConstants::subscriptionAlertType("AddDocument"),
+                                             SubscriptionConstants::subscriptionType("FolderSubscription"),
+                                             array( "newDocumentName" => $oDocument->getName(),
+                                                    "folderName" => Folder::getFolderName($fFolderID)));
+                                    $default->log->info("addDocumentBL.php fired $count subscription alerts for new document " . $oDocument->getName());
+                                    
+                                    //redirect to the document view page
+                                    redirect("$default->rootUrl/control.php?action=modifyDocument&fDocumentID=" . $oDocument->getID(). "&fFirstEdit=1");
+                                } else {
+                                    require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
+                                    $oDocument->delete();
+                                    $oPatternCustom = & new PatternCustom();
+                                    $oPatternCustom->setHtml(getBrowseAddPage($fFolderID));
+                                    $main->setCentralPayload($oPatternCustom);
+                                    $main->setFormAction($_SERVER["PHP_SELF"] . "?fFolderID=$fFolderID&fForStore=1");
+                                    $main->setFormEncType("multipart/form-data");
+                                    $main->setErrorMessage("An error occured while storing the document on the file system");
+                                    $main->render();
+                                }
                             } else {
                                 require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
-                                $oDocument->delete();
                                 $oPatternCustom = & new PatternCustom();
                                 $oPatternCustom->setHtml(getBrowseAddPage($fFolderID));
                                 $main->setCentralPayload($oPatternCustom);
                                 $main->setFormAction($_SERVER["PHP_SELF"] . "?fFolderID=$fFolderID&fForStore=1");
                                 $main->setFormEncType("multipart/form-data");
-                                $main->setErrorMessage("An error occured while storing the document on the file system");
+                                $main->setErrorMessage("An error occured while storing the document in the database");
                                 $main->render();
                             }
                         } else {
@@ -74,7 +87,7 @@ if (checkSession()) {
                             $main->setCentralPayload($oPatternCustom);
                             $main->setFormAction($_SERVER["PHP_SELF"] . "?fFolderID=$fFolderID&fForStore=1");
                             $main->setFormEncType("multipart/form-data");
-                            $main->setErrorMessage("An error occured while storing the document in the database");
+                            $main->setErrorMessage("A document with this file name already exists in this folder");
                             $main->render();
                         }
                     } else {
@@ -84,19 +97,20 @@ if (checkSession()) {
                         $main->setCentralPayload($oPatternCustom);
                         $main->setFormAction($_SERVER["PHP_SELF"] . "?fFolderID=$fFolderID&fForStore=1");
                         $main->setFormEncType("multipart/form-data");
-                        $main->setErrorMessage("A document with this file name already exists in this folder");
+                        $main->setErrorMessage("Please select a document by first clicking on 'Browse'.  Then click 'Add'");
                         $main->render();
                     }
                 } else {
+                    // the folder doesn't have a default document type
                     require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
                     $oPatternCustom = & new PatternCustom();
-                    $oPatternCustom->setHtml(getBrowseAddPage($fFolderID));
+                    $oPatternCustom->setHtml(getBrowsePage($fFolderID));
                     $main->setCentralPayload($oPatternCustom);
                     $main->setFormAction($_SERVER["PHP_SELF"] . "?fFolderID=$fFolderID&fForStore=1");
                     $main->setFormEncType("multipart/form-data");
-                    $main->setErrorMessage("Please select a document by first clicking on 'Browse'.  Then click 'Add'");
+                    $main->setErrorMessage("The folder you're attempting to add the document to doesn't have a default document type.<br>Please correct this and try again.</td><td><a href=\"$default->rootUrl/control.php?action=browse&fFolderID=$fFolderID\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></a>");
                     $main->render();
-                }
+                }                
 
             } else {
                 //we're still just browsing
