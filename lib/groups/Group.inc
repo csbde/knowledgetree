@@ -173,7 +173,7 @@ class Group {
 		return false;
 	}
 
-/**
+   /**
 	* Static function
 	* Get a list of web documents
 	*
@@ -200,7 +200,20 @@ class Group {
 		return false;
 	}
 	
-	
+    /**
+     * static function
+     *
+     * gets the name of a unit using their id
+     *
+     * @param   String
+     *   The name
+     *   
+     */
+	function getGroupName($id) {
+        global $default;
+        $sName = lookupField("$default->owl_groups_table", "name", "id", $id );
+        return $sName;
+	}
 }
 /*
      * static function
