@@ -35,12 +35,12 @@ class DocumentManager {
 			$sql = new Owl_DB();
 			$result = $sql->query("INSERT INTO  " . $default->owl_document_types_table . "  (name) values ('" . $sName . "')");
 			if (!$result) {
-				$default->errorMessage = "Database Error. Failed to insert document type " . $sName;
+				$_SESSION["errorMessage"] = "Database Error. Failed to insert document type " . $sName;
 				return false;
 			}
 			return true;
 		}
-		$default->errorMessage = "A document type with this name already exists";
+		$_SESSION["errorMessage"] = "A document type with this name already exists";
 		return false;
 	}
 	
@@ -61,12 +61,12 @@ class DocumentManager {
 			$sql = new Owl_DB();
 			$result = $sql->query("DELETE FROM  " . $default->owl_document_types_table . "  WHERE name = '" . $sName . "'");
 			if (!$result) {
-				$default->errorMessage = "Database Error.  Failed to delete document type " . $sName;
+				$_SESSION["errorMessage"] = "Database Error.  Failed to delete document type " . $sName;
 				return false;
 			}			
 			return true;
 		}
-		$default->errorMessage = "There is no document type with this name";
+		$_SESSION["errorMessage"] = "There is no document type with this name";
 		return false;		
 	}
 
@@ -101,7 +101,7 @@ class DocumentManager {
 			$sql->next_record();
 			return $sql->f("ID");
 		}
-		$default->errorMessage = $lang_err_document_type_does_not_exist . $sName;
+		$_SESSION["errorMessage"] = $lang_err_document_type_does_not_exist . $sName;
 		return false;
 	}
 	
@@ -140,12 +140,12 @@ class DocumentManager {
 			$sql = new Owl_DB();
 			$result = $sql->query("INSERT INTO  " . $default->owl_document_type_fields_table . "  (document_type_id, field_id, is_mandatory) VALUES (" . $iDocumentTypeID . ", " . $iDocumentTypeFieldID . ", " . $bIsMandatory . ")");
 			if (!$result) {
-				$default->errorMessage =  "Database Error.  Failed to insert document field type with ID " . $iDocumentTypeFieldID;
+				$_SESSION["errorMessage"] =  "Database Error.  Failed to insert document field type with ID " . $iDocumentTypeFieldID;
 				return false;
 			}
 			return true;
 		}
-		$default->errorMessage = "This field type is already linked to this document type";
+		$_SESSION["errorMessage"] = "This field type is already linked to this document type";
 		return false;
 	}
 	
@@ -163,12 +163,12 @@ class DocumentManager {
 			$sql = new Owl_DB();
 			$result = $sql->query("DELETE FROM  " . $default->owl_document_type_fields_table . "  where document_type_id = " . $iDocumentTypeID . " AND field_id = " . $iDocumentTypeFieldID);
 			if (!result) {
-				$default->errorMessage = "Database Error. Failed to deleted document type field with document_type_id " . $iDocumentTypeID . " and field_id " . $iDocumentTypeFieldID;
+				$_SESSION["errorMessage"] = "Database Error. Failed to deleted document type field with document_type_id " . $iDocumentTypeID . " and field_id " . $iDocumentTypeFieldID;
 				return false;
 			}
 			return true;
 		}
-		$default->errorMessage = "A dcoument field type with document_type_id " . $iDocumentTypeID . " and a document_id " . $iDocumentTypeID . " does not exist";
+		$_SESSION["errorMessage"] = "A dcoument field type with document_type_id " . $iDocumentTypeID . " and a document_id " . $iDocumentTypeID . " does not exist";
 		return false;		
 	}
 	
@@ -207,12 +207,12 @@ class DocumentManager {
 			$sql = new Owl_DB();
 			$result = $sql->query("INSERT INTO " . $default->owl_fields_table . " (name, data_type) VALUES ('" . $sName . "', '" . $sDataType . "')");			
 			if (!$result) {
-				$default->errorMessage = "Database Error.  Could not insert document field " . $sName . " with data type " . $sDataType . " into table " . $default->owl_fields_table;
+				$_SESSION["errorMessage"] = "Database Error.  Could not insert document field " . $sName . " with data type " . $sDataType . " into table " . $default->owl_fields_table;
 				return false;
 			}
 			return true;
 		}
-		$default->errorMessage = "A document type field with this name already exists";
+		$_SESSION["errorMessage"] = "A document type field with this name already exists";
 		return false;
 	}
 	
@@ -232,12 +232,12 @@ class DocumentManager {
 			$sql = new Owl_DB();
 			$result = $sql->query("DELETE FROM " . $default->owl_fields_table . " WHERE Name = '" . $sName . "'");
 			if (!$result) {
-				$default->errorMessage = "Database Error.  Could not delete document type field " . $sName . " from table " . $default->owl_field_table;
+				$_SESSION["errorMessage"] = "Database Error.  Could not delete document type field " . $sName . " from table " . $default->owl_field_table;
 				return false;
 			}
 			return true;
 		}
-		$default->errorMessage = "A document type field with the name " . $sName . " does not exist";
+		$_SESSION["errorMessage"] = "A document type field with the name " . $sName . " does not exist";
 		return false;
 	}
 	
@@ -257,7 +257,7 @@ class DocumentManager {
 			$sql->next_record();
 			return $sql->f("id");
 		}
-		$default->errorMessage = $lang_err_document_type_field_does_not_exist . $sName;
+		$_SESSION["errorMessage"] = $lang_err_document_type_field_does_not_exist . $sName;
 		return false;
 	}
 	
