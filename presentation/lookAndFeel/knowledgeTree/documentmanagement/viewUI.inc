@@ -94,11 +94,10 @@ function renderEditableDocumentRouting($oDocument) {
     $sQuery = "SELECT D.id as document_id, GFAL.id as id, R.name AS role_name, COALESCE(U.Name, 'Not assigned') AS name, GFAL.precedence AS precedence, COALESCE(FURL.active,0) AS active, COALESCE(FURL.done, 0) AS done, 'Edit' as edit " .
               "FROM documents AS D INNER JOIN $default->owl_groups_folders_approval_table AS GFAL ON D.folder_id = GFAL.folder_id " .
               "INNER JOIN roles AS R ON GFAL.role_id = R.id " .
-              "LEFT OUTER JOIN folders_users_roles_link AS FURL ON FURL.group_folder_approval_id = GFAL.id " .
-              "LEFT OUTER JOIN users AS U ON FURL.user_id = U.id AND FURL.document_id = D.id " .
+              "LEFT OUTER JOIN folders_users_roles_link AS FURL ON FURL.group_folder_approval_id = GFAL.id AND FURL.document_id = D.id " .
+              "LEFT OUTER JOIN users AS U ON FURL.user_id = U.id " .
               "WHERE D.id = " . $oDocument->getID() . " " .
               "ORDER BY GFAL.precedence, role_name ASC";
-
     $aColumns = array("role_name", "name", "precedence", "active", "done", "edit");
     $aColumnHeaders = array("Role", "User", "Seq", "Active", "Done", "");
     $aColumnTypes = array(1,1,1,1,1,3);
@@ -118,7 +117,7 @@ function renderNonEditableDocumentRouting($oDocument) {
     $sQuery = "SELECT D.id as document_id, GFAL.id as id, R.name AS role_name, COALESCE(U.Name, 'Not assigned') AS name, GFAL.precedence AS precedence, COALESCE(FURL.active,0) AS active, COALESCE(FURL.done, 0) AS done " .
               "FROM documents AS D INNER JOIN $default->owl_groups_folders_approval_table AS GFAL ON D.folder_id = GFAL.folder_id " .
               "INNER JOIN roles AS R ON GFAL.role_id = R.id " .
-              "LEFT OUTER JOIN folders_users_roles_link AS FURL ON FURL.group_folder_approval_id = GFAL.id " .
+              "LEFT OUTER JOIN folders_users_roles_link AS FURL ON FURL.group_folder_approval_id = GFAL.id AND FURL.document_id = D.id " .
               "LEFT OUTER JOIN users AS U ON FURL.user_id = U.id " .
               "WHERE D.id = " . $oDocument->getID() . " " .
               "ORDER BY GFAL.precedence, role_name ASC";
@@ -170,13 +169,10 @@ function getEditPage($oDocument) {
     $sToRender .= "\t\t<td>" . renderEditableDocumentRouting($oDocument) . "</td>\n";
     $sToRender .= "\t</tr>";
     $sToRender .= "\t<tr>\n";
-	if ((!Document::documentCollaborationStarted($oDocument->getID())) && ($_SESSION["userID"] == $oDocument->getCreatorID())) {
+	if ($oDocument->hasCollaboration() && (!Document::documentCollaborationStarted($oDocument->getID())) && ($_SESSION["userID"] == $oDocument->getCreatorID())) {
 		//if not all collaboration steps have been set, then you cannot start the collaboration process
 		//only the creator of the document can start the collaboration process		
 		$sToRender .= "\t\t<td><a href=" . $_SERVER['PHP_SELF'] . "?fDocumentID=" . $oDocument->getID() . "&fBeginCollaboration=1><img src=\"$default->graphicsUrl/widgets/begin.gif\" border=\"0\"/></a>";
-		if (!Document::documentIsPendingWebPublishing($iDocumentID)) {
-			$sToRender .= "<a href=" . $_SERVER['PHP_SELF'] . "?fDocumentID=" . $oDocument->getID() . "&fForPublish=1><img src=\"$default->graphicsUrl/widgets/publish.gif\" border=\"0\"/></a>\n";
-		}
 		$sToRender .= "</td>\n";
 	} else if (Document::userIsPerformingCurrentCollaborationStep($oDocument->getID())) {
 		//if the current user is responsible for an active step in the collaboration process		
@@ -185,7 +181,12 @@ function getEditPage($oDocument) {
 		$sToRender .= "\t\t<td align=\"center\"><a href=" . $_SERVER['PHP_SELF'] . "?fDocumentID=" . $oDocument->getID() . "&fCollaborationStepComplete=1><img src=\"$default->graphicsUrl/widgets/approve.gif\" border=\"0\"/></a></td>\n";
 		$sToRender .= "\t\t<td align=\"center\"><a href=\"$default->rootUrl/control.php?action=collaborationStepReject&fDocumentID=$iDocumentID\"><img src=\"$default->graphicsUrl/widgets/reject.gif\" border=\"0\"/></a></td>\n";
 		$sToRender .= "\t\t</tr></table></td>\n";
-	}
+	} else if (!$oDocument->hasCollaboration() || Document::documentCollaborationDone($oDocument->getID())) {
+        // only display publish button if there is no collaboration or collaboration is complete
+		if (!Document::documentIsPendingWebPublishing($iDocumentID) && ($_SESSION["userID"] == $oDocument->getCreatorID())) {
+			$sToRender .= "<td><a href=" . $_SERVER['PHP_SELF'] . "?fDocumentID=" . $oDocument->getID() . "&fForPublish=1><img src=\"$default->graphicsUrl/widgets/publish.gif\" border=\"0\"/></a></td>\n";
+		}    
+    }
     $sToRender .= "\t</tr>";
     $sToRender .= "\t</table>";
     $sToRender .= "</td>\n";
@@ -202,6 +203,7 @@ function getEditPage($oDocument) {
         $sToRender .= "<td><a href=\"" . generateControllerLink("checkOutDocument", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/checkout.gif\" border=\"0\" /></a></td>\n";
     }
     
+    // IE ssl download hack- don't use ssl to download
     if ($default->phpSniff->property("browser") == "ie") {
         $sToRender .= "<td><a href=\"http://" . $default->serverName . $_SERVER["PHP_SELF"] . "?fDocumentID=" . $oDocument->getID() . "&fForDownload=1\"><img src=\"$default->graphicsUrl/widgets/download.gif\" border=\"0\" /></a></td>\n";
     } else {
@@ -362,6 +364,51 @@ function getCheckInEditPage($oDocument) {
     $sToRender .= "\t<tr>\n";
     $sToRender .= "\t\t<td>" . renderCheckInPage($oDocument) . "</td>\n";
     $sToRender .= "\t</tr>";
+    $sToRender .= "\t</table>";
+    $sToRender .= "</td>\n";
+    $sToRender .= "</tr>\n";
+    $sToRender .= "</table>";
+
+    return $sToRender;
+}
+
+function getWebPublishPage($oDocument) {
+    global $default;
+    
+    $oPatternListBox = & new PatternListBox($default->owl_web_sites_table, "web_site_name", "id", "fWebSiteID");
+    
+    $sToRender = renderHeading() . renderDocumentPath($oDocument) . "\n<br>\n";
+    $sToRender .= "<table border = 0>\n";
+    $sToRender .= "<tr>\n";
+    $sToRender .= "<td>\n";
+    $sToRender .= "\t<table border = 0 width = 280>\n";
+    $sToRender .= "\t<tr width>\n";
+    $sToRender .= "\t\t<td>" . renderDocumentData($oDocument) . "</td>\n";
+    $sToRender .= "\t</tr>\n";
+    $sToRender .= "\t<tr>\n";
+    $sToRender .= "\t<td>" . renderGenericMetaData($oDocument) . "</td>\n";
+    $sToRender .= "\t<tr>\n";
+    $sToRender .= "\t<tr>\n";
+    $sToRender .= "\t\t<td>" . renderTypeSpecificMetaData($oDocument) . "</td>\n";
+    $sToRender .= "\t</tr>\n";
+    $sToRender .= "\t</table>\n";
+    $sToRender .= "</td>\n";
+    $sToRender .= "<td valign=top>\n";
+    $sToRender .= "\t<table border = 0, width = 230>\n";
+    $sToRender .= "\t<tr>\n";
+    $sToRender .= "\t\t<td>" . renderNonEditableDocumentRouting($oDocument) . "</td>\n";
+    $sToRender .= "\t<tr>\n";
+    $sToRender .= "\t<tr>\n";
+    $sToRender .= "\t\t<th>Choose the website to publish to:</th>\n";
+    $sToRender .= "\t</tr>";
+    $sToRender .= "\t<tr>\n";
+    $sToRender .= "\t\t<td>" . $oPatternListBox->render() . "</td>\n";
+    $sToRender .= "\t\t<input type=\"hidden\" name=\"fForPublish\" value=\"1\" />\n";
+    $sToRender .= "\t</tr>";
+    $sToRender .= "\t<tr>\n";
+    $sToRender .= "\t\t<td><input type=\"image\" src=\"$default->graphicsUrl/widgets/publish.gif\" border=\"0\"/></a>";
+    $sToRender .= "\t\t<a href=\"$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $oDocument->getID() . "\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\" /></a></td>\n";
+    $sToRender .= "\t</tr>";    
     $sToRender .= "\t</table>";
     $sToRender .= "</td>\n";
     $sToRender .= "</tr>\n";
