@@ -93,6 +93,11 @@ class DocumentTransaction {
 	function getVersion() {
 		return $this->sVersion;
 	}
+
+        function _table() {
+            global $default;
+            return $default->document_transactions_table;
+        }
 	
 	/**
 	* Create the document transaction in the database
@@ -104,18 +109,17 @@ class DocumentTransaction {
 		global $default, $lang_err_object_exists;
 		//if the object hasn't been stored yet
 		if ($this->iId < 0) {
-            $sTable = $default->document_transactions_table;
             $aFieldValues = array(
-                document_id => $this->iDocumentID,
-                version => $this->sVersion,
-                user_id => $this->iUserID,
-                datetime => $this->dDateTime,
-                ip => $this->sIP,
-                filename => $this->sFileName,
-                comment => $this->sComment,
-                transaction_id => $this->iTransactionID,
+                'document_id' => $this->iDocumentID,
+                'version' => $this->sVersion,
+                'user_id' => $this->iUserID,
+                'datetime' => $this->dDateTime,
+                'ip' => $this->sIP,
+                'filename' => $this->sFileName,
+                'comment' => $this->sComment,
+                'transaction_id' => $this->iTransactionID,
             );
-            $id =& DBUtil::autoInsert($sTable, $aFieldValues);
+            $id =& DBUtil::autoInsert($this->_table(), $aFieldValues);
 
             if (PEAR::isError($id)) {
                 $_SESSION["errorMessage"] = $id->toString();
