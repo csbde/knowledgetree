@@ -17,6 +17,19 @@ require_once("$default->uiDirectory/foldermanagement/addFolderUI.inc");
  * @package presentation.lookAndFeel.knowledgeTree.documentmanagement
  */
 
+ 
+function renderHeading($sHeading) {
+    global $default;
+    $sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
+    $sColor = $default->siteMap->getSectionColour($sSectionName, "th");
+    $sToRender  = "<table border=\"0\" width=\"600\">\n";
+    $sToRender .= "<tr align=\"left\"><th class=\"sectionHeading\" bgcolor=\"$sColor\">$sHeading</th></tr>\n";
+    $sToRender .= "<tr/>\n";
+    $sToRender .= "<tr/>\n";
+    $sToRender .= "</table>\n";
+    return $sToRender;
+}
+ 
 /**
  * Generates radio button selects for document browse by type
  * Javascript refreshes the form when it changes
@@ -163,10 +176,8 @@ function renderPage($aResults, $sBrowseType) {
 	$sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
 	$sTDBGColour = $default->siteMap->getSectionColour($sSectionName, "td");
     
-    // browse type select
-   	$sToRender =  "<table border=\"0\" width=\"600\">\n";
-    $sToRender .= "\t<tr><td bgcolor=\"$sTDBGColour\">" . renderBrowseTypeSelect($sBrowseType) . "</td></tr>";
-    $sToRender .= "\t</table>";
+
+    $sToRender = renderHeading("Browse Collection");
     
     $sToRender .= "<table border=\"0\" cellpadding=\"5\" width=\"100%\"><tr><td bgcolor=\"$sTDBGColour\">"; 
     switch ($sBrowseType) {
@@ -176,6 +187,11 @@ function renderPage($aResults, $sBrowseType) {
     }
     $sToRender .= "</td></tr></table>\n";
     
+    // browse type select 
+   	$sToRender .=  "<table border=\"0\" width=\"600\">\n";
+    $sToRender .= "\t<tr><td bgcolor=\"$sTDBGColour\">" . renderBrowseTypeSelect($sBrowseType) . "</td></tr>";
+    $sToRender .= "\t</table>";
+        
     // display folders|documents
 	$sToRender .= "<table border=\"0\" width=\"100%\">\n";
 	$sToRender .= "<tr><td>\n";    
