@@ -5,7 +5,6 @@
 
 function redirTimer(redirTime, redirURL) { 
 	self.setTimeout("self.location.href = redirURL;",redirTime); 
-	alert("set redirect time=" + redirTime + ", url=" + redirURL);
 }
 
 /**
