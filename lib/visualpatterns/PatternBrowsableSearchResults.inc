@@ -205,14 +205,14 @@ class PatternBrowseableSearchResults {
 			$sToRender .= "<tr>\n";		
 			$sToRender .= "<input type=\"hidden\" name=\"fStartIndex\" value=\"$iEndIndex\" />\n";
 			// Display only the next button
-			if (($this->iStartIndex + $this->iResultsToDisplay) < $iTotalResults && $this->iStartIndex == 1) {
+			if (($this->iStartIndex + $this->iResultsToDisplay - 1) < $iTotalResults && $this->iStartIndex == 1) {
 				$sToRender .= "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>";
 				$sToRender .= "<td align=\"left\">";
 				$sToRender .= "<input type=\"image\" src=\"" . KTHtml::getNextButton() . "\" onClick=\"setActionAndSubmit('" . $_SERVER["PHP_SELF"] . "?fStartIndex=" . ($this->iStartIndex +  $this->iResultsToDisplay) . $this->sQueryString . "')\" />";
 				$sToRender .= "</td>\n";
 			}
 			// Display both the next and the previous buttons		
-			else if (($this->iStartIndex + $this->iResultsToDisplay) < $iTotalResults && $this->iStartIndex > 1) {
+			else if (($this->iStartIndex + $this->iResultsToDisplay - 1) < $iTotalResults && $this->iStartIndex > 1) {
 				$sToRender .= "<td>";
 				$sToRender .= "<input type=\"image\" src=\"$default->graphicsUrl/widgets/previous.gif\" onClick=\"setActionAndSubmit('" . $_SERVER["PHP_SELF"] . "?fStartIndex=" . ($this->iStartIndex -  $this->iResultsToDisplay) . $this->sQueryString . "')\" />";
 				$sToRender .= "</td>";
