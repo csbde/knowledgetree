@@ -21,14 +21,14 @@ class Session {
         
         session_start();
         
-        // bind userID to session
+        // bind user details to session
         $_SESSION["userID"] = $userDetails["userID"];
-        
-        // lookup group id and add to session
+        /*
         $_SESSION["groupID"] = $userDetails["groupID"];
         $_SESSION["unitID"] = $userDetails["unitID"];
+        $_SESSION["organisationID"] = $userDetails["organisationID"];
         $_SESSION["username"] = $userDetails["username"];
-        
+        */
         $default->log->debug("Session::create session variables=" . arrayToString($_SESSION));
         
         // use the PHP generated session id
@@ -104,6 +104,7 @@ class Session {
             
             // found one match
             if ($numrows == 1) {
+                $userID = $sql->f("user_id");
                 $default->log->debug("Session::verify found session in db");
                 while($sql->next_record()) {
                     $ip = $this->getClientIP();
@@ -115,9 +116,11 @@ class Session {
                         $default->log->debug("Session::verify current time=" . time());
                         $diff = time() - strtotime($lastused);
                         $default->log->debug("Session::verify timeout = " . $default->owl_timeout . "; diff=$diff");                        
-                        if((time() - strtotime($lastused)) <= $default->owl_timeout) {
+                        if($diff <= $default->owl_timeout) {
                             // session has been verified, update status
                             $sessionStatus = 1;
+                            // use userID to refresh user details and set on session
+                            
                             // ??: will this change during a user session?
                             // only set the userID if its not in the array already 
                             if (!$_SESSION["userID"]) {
@@ -140,12 +143,14 @@ class Session {
                         } else {
                             // session timed out status
                             $sessionStatus = 2;
-                            $default->errorMessage = $lang_sesstimeout;
+                            // remove old sessions
+                            Session::removeStaleSessions($userID);
+                            $_SESSION["errorMessage"] = $lang_sesstimeout;
                         }
                     } else {
                         // session in use status
                         $sessionStatus = 3;
-                        $default->errorMessage = $lang_sessinuse;
+                        $_SESSION["errorMessage"] = $lang_sessinuse;
                     }
                 }
             }                         
