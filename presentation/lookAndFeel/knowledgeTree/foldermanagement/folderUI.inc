@@ -63,7 +63,7 @@ function renderFolderPath($fFolderID) {
 	return "<table border=1 width = 100%><tr><td>$sFolderPath</td></tr></table>\n";	
 }
 
-function renderFolderList($fFolderID) {
+function renderFolderList($fFolderID, $sLinkURL) {
 	global $default;
 	$sQuery = "SELECT F.id AS id, F.name AS name " .
 				"FROM $default->owl_folders_table AS F " .
@@ -73,7 +73,7 @@ function renderFolderList($fFolderID) {
 	$aColumnTypes = array(3);
 	$aColumnHeaderNames = array("Folder");
 	
-	$oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaderNames, "100%", "$default->owl_root_url/control.php?action=addFolder&fFolderID=", "id");
+	$oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaderNames, "100%", "$default->owl_root_url/$sLinkURL", "id");
 	$oPatternTableSqlQuery->setImageURL("$default->owl_fs_root/graphics/widgets/dfolder.gif");
 	$oPatternTableSqlQuery->setEmptyTableMessage("This folder contains no sub folders");
 	return $oPatternTableSqlQuery->render();
