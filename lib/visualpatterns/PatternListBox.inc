@@ -22,23 +22,26 @@ class PatternListBox {
 	var $sValueColumn;
 	/** Select name */
 	var $sSelectName;
+	/** Where clause */
+	var $sWhereClause;
 	/** Order columns ascending*/
 	var $bOrderAsc;
 	
 	/**
 	* Constructor
 	*
-	* @param $sNewTableName			Table in database that information will come from
-	* @param $sNewDisplayColumn		Column in table that will be display in list box
-	* @param $sNewValueColumn		Column in table that will be assigned to the 'option' attribute
-	* @param $sNewSelectName		'name' attribute of 'select' tab
-	* @param $iNewWidth				Width of list box
+	* @param	Table in database that information will come from
+	* @param	Column in table that will be display in list box
+	* @param	Column in table that will be assigned to the 'option' attribute
+	* @param	'name' attribute of 'select' tab
+	* @param	Where clause	
 	*/
-	function PatternListBox($sNewTableName, $sNewDisplayColumn, $sNewValueColumn, $sNewSelectName, $bNewOrderAsc = true) {
+	function PatternListBox($sNewTableName, $sNewDisplayColumn, $sNewValueColumn, $sNewSelectName, $sNewWhereClause = null, $bNewOrderAsc = true) {
 		$this->sTableName = $sNewTableName;
 		$this->sDisplayColumn = $sNewDisplayColumn;
 		$this->sValueColumn = $sNewValueColumn;
 		$this->sSelectName = $sNewSelectName;
+		$this->sWhereClause = $sNewWhereClause;
 		$this->bOrderAsc = $bNewOrderAsc;
 	}
 	
@@ -50,7 +53,13 @@ class PatternListBox {
 	*/
 	function & render() {
 		$sql = new Owl_DB();
-		$sql->query("SELECT DISTINCT $this->sDisplayColumn AS display, $this->sValueColumn AS value FROM $this->sTableName ORDER BY $this->sDisplayColumn " . ($this->bOrderAsc ? "ASC" : "DESC"));
+		$sQuery = "SELECT DISTINCT $this->sDisplayColumn AS display, $this->sValueColumn AS value FROM $this->sTableName ";
+		if (isset($this->sWhereClause)) {
+			$sQuery .= "WHERE " . $this->sWhereClause . " ";
+		}
+		
+		$sQuery .= "ORDER BY $this->sDisplayColumn " . ($this->bOrderAsc ? "ASC" : "DESC");
+		$sql->query($sQuery);
 		$sToRender = "<SELECT NAME = \"$this->sSelectName\">\n";
 		while ($sql->next_record()) {
 			$sToRender .= "<OPTION value=\"" . $sql->f("value") . "\">" . $sql->f("display") . "</OPTION>\n";

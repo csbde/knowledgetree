@@ -161,8 +161,8 @@ class Document {
 		if ($sql->next_record()) {
 			$doc = & new Document(stripslashes($sql->f("name")), $sql->f("size"), $sql->f("creator_id"), stripslashes($sql->f("description")), $sql->f("mime_id"), $sql->f("folder_id"));			
 			$doc->setDocumentTypeID($sql->f("document_type_id"));
-			$doc->setMajorRevision($sql->f("major_revision"));
-			$doc->setMinorRevision($sql->f("minor_revision"));
+			$doc->setMajorVersionNumber($sql->f("major_version"));
+			$doc->setMinorVersionNumber($sql->f("minor_version"));
 			$doc->setIsCheckedOut($sql->f("is_checked_out"));
 			return $doc;
 		}
