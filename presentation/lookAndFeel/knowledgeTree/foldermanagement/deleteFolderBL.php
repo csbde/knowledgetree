@@ -40,6 +40,7 @@ if (checkSession()) {
 					if ($oFolder->delete()) {
 						if (PhysicalFolderManagement::deleteFolder($sFolderPath)) {
 							// successfully deleted the folder from the file system
+							$default->log->info("deleteFolderBL.php successfully deleted folder " . $oFolder->getName() . " from parent folder " . Folder::getFolderPath($oFolder->getParentID()) . " id=" . $oFolder->getParentID());
                             
                             // delete folder collaboration entries
                             $aFolderCollaboration = FolderCollaboration::getList("WHERE folder_id=$fFolderID");
@@ -77,7 +78,9 @@ if (checkSession()) {
 							// redirect to the browse folder page with the parent folder id 
 							redirect("$default->rootUrl/control.php?action=browse&fFolderID=" . $oFolder->getParentID());
 						} else {
-							// could not delete the folder from the file system, so reverse the folder deletion
+							// could not delete the folder from the file system
+							$default->log->error("deleteFolderBL.php Filesystem error deleting folder " . $oFolder->getName() . " from parent folder " . Folder::getFolderPath($oFolder->getParentID()) . " id=" . $oFolder->getParentID());
+							// so reverse the folder deletion
 							$oFolder->create();
 							require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");																	
 							$oPatternCustom->setHtml("");
@@ -87,6 +90,7 @@ if (checkSession()) {
 						}
 					} else {
 						// could not delete the folder in the db
+						$default->log->error("deleteFolderBL.php DB error deleting folder " . $oFolder->getName() . " from parent folder " . Folder::getFolderPath($oFolder->getParentID()) . " id=" . $oFolder->getParentID());
 						require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");			
 						$oPatternCustom->setHtml("");
 						$main->setCentralPayload($oPatternCustom);

@@ -48,6 +48,7 @@ if (checkSession()) {
                         if ($oDocument->delete()) {
                             if (unlink($sDocumentPath)) {
                                 // successfully deleted the document from the file system
+                                $default->log->info("deleteDocumentBL.php successfully deleted document " . $oDocument->getFileName() . " from folder " . Folder::getFolderPath($oDocument->getFolderID()) . " id=" . $oDocument->getFolderID());
                                 
                                 // delete all collaboration roles
                                 for ($i=0; $i<count($aFolderUserRoles); $i++) {
@@ -84,6 +85,7 @@ if (checkSession()) {
                                 redirect("$default->rootUrl/control.php?action=browse&fFolderID=" . $oDocument->getFolderID());
                             } else {
                                 //could not delete the document from the file system
+                                $default->log->error("deleteDocumentBL.php Filesystem error deleting document " . $oDocument->getFileName() . " from folder " . Folder::getFolderPath($oDocument->getFolderID()) . " id=" . $oDocument->getFolderID());
                                 //reverse the document deletion
                                 $oDocument->create();
                                 //get rid of the document transaction
@@ -96,6 +98,8 @@ if (checkSession()) {
                             }
                         } else {
                             //could not delete the document in the db
+                            $default->log->error("deleteDocumentBL.php DB error deleting document " . $oDocument->getFileName() . " from folder " . Folder::getFolderPath($oDocument->getFolderID()) . " id=" . $oDocument->getFolderID());
+                            
                             $oDocumentTransaction->delete();
                             require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");			
                             $oPatternCustom = & new PatternCustom();							
