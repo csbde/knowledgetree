@@ -9,174 +9,158 @@
 *
 */
 // gets the delete stuff
-function getDeletePage($iUnitID) {	
-	global $default;
-	$oUnit = null;
-	if (isset($iUnitID)) {
-		$oUnit = Unit::get($iUnitID);
-		$sToRender .= "<br></br>\n";
-		$sToRender .= "<b>Are you sure you wish to Remove this Unit?:</b>\n";
-	}
-	else{
-		$sToRender .= "<br></br>\n";		
-		$sToRender .= "<b>Remove Unit From System:</b>\n";
-	}
-	
-	$sToRender .= "<table>\n";
-	$sToRender .= "<br></br>\n";
-	$sToRender .= "<tr></tr>\n";
-	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>Unit Name: " . getUnitDisplay($oUnit) . "</td>\n";
-	$sToRender .= "</tr>\n";
-	$sToRender .= "<tr>\n";
-	$sToRender .= "</tr>\n";
-	$sToRender .= "<tr>\n";
-	$sToRender .= "</tr>\n";
-	$sToRender .= "<tr>\n";
-	$sToRender .= "</tr>\n";
-	$sToRender .= "<tr>\n";
+function getDeletePage($iUnitID) {
+    global $default;
+    $oUnit = null;
+    if (isset($iUnitID)) {
+        $oUnit = Unit::get($iUnitID);
+        $sHeading .= "<b>Are you sure you wish to Remove this Unit?:</b>\n";
+    } else {
+        $sHeading .= "Please select a Unit: ";
+    }
 
-	$sToRender .= getDeleteButton($oUnit);	
-	$sToRender .= "</tr>\n";
-	$sToRender .= "</table>\n";
-	
-	
-	return $sToRender;
+    $sToRender .= "<table width=\"600\">" . renderHeading("Remove Unit") . "</table>";
+    $sToRender .= "<table>\n";
+    $sToRender .= "<tr><td>$sHeading</td></tr>\n";
+    $sToRender .= "<tr>\n";
+    $sToRender .= "<td>Unit Name: " . getUnitDisplay($oUnit) . "</td>\n";
+    $sToRender .= "</tr>\n";
+    $sToRender .= "<tr>\n";
+    $sToRender .= "</tr>\n";
+    $sToRender .= "<tr>\n";
+    $sToRender .= "</tr>\n";
+    $sToRender .= "<tr>\n";
+    $sToRender .= "</tr>\n";
+    $sToRender .= "<tr>\n";
+
+    $sToRender .= getDeleteButton($oUnit);
+    $sToRender .= "</tr>\n";
+    $sToRender .= "</table>\n";
+
+
+    return $sToRender;
 }
 
 // get successfully deletion page
-function getDeleteSuccessPage() {	
-	
-global $default;
+function getDeleteSuccessPage() {
 
-$sToRender  = "<br></br>\n" ;
-$sToRender .= "<TABLE BORDER=\"0\" CELLSPACING=\"2\" CELLPADDING=\"2\">\n";
-$sToRender .= "<tr>\n";
-$sToRender .= "<td><b>Unit SuccessFully Removed!</b></td>\n";
-$sToRender .= "</tr>\n";	
-$sToRender .= "<tr></tr>\n";
-$sToRender .= "<tr></tr>\n";
-$sToRender .= "<tr></tr>\n";
-$sToRender .= "<tr></tr>\n";
-$sToRender .= "<tr>\n";
-$sToRender .= "<td align = right><a href=\"$default->rootUrl/control.php?action=removeUnit\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
-$sToRender .= "</tr>\n";
-$sToRender .= "</table>\n";
-		
-return $sToRender;
+    global $default;
+
+    $sToRender .= "<table width=\"600\">" . renderHeading("Remove Unit") . "</table>";
+    $sToRender .= "<table>\n";
+    $sToRender .= "<tr>\n";
+    $sToRender .= "<td><b>Unit SuccessFully Removed!</b></td>\n";
+    $sToRender .= "</tr>\n";
+    $sToRender .= "<tr></tr>\n";
+    $sToRender .= "<tr></tr>\n";
+    $sToRender .= "<tr></tr>\n";
+    $sToRender .= "<tr></tr>\n";
+    $sToRender .= "<tr>\n";
+    $sToRender .= "<td align = right><a href=\"$default->rootUrl/control.php?action=removeUnit\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
+    $sToRender .= "</tr>\n";
+    $sToRender .= "</table>\n";
+
+    return $sToRender;
 }
 
 // get deletion failed page
-function getDeleteFailPage() {	
+function getDeleteFailPage() {
 
-global $default;	
+    global $default;
 
-$sToRender  = "<br></br>\n" ;
-$sToRender .= "<TABLE BORDER=\"0\" CELLSPACING=\"2\" CELLPADDING=\"2\">\n";
-$sToRender .= "<tr>\n";
-$sToRender .= "<td><b>Deletion Failed!</b></td>\n";
-$sToRender .= "</tr>\n";	
-$sToRender .= "<tr></tr>\n";
-$sToRender .= "<tr></tr>\n";
-$sToRender .= "<tr><td>Please Ensure that the unit has no groups belonging to it</td></tr>\n";
-$sToRender .= "<tr></tr>\n";
-$sToRender .= "</tr>\n";
-$sToRender .= "<tr><td align = right><a href=\"$default->rootUrl/control.php?action=removeUnit\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td></tr>\n";
-$sToRender .= "</table>\n";
-		
-return $sToRender;
+    $sToRender .= "<table width=\"600\">" . renderHeading("Remove Unit") . "</table>";
+    $sToRender .= "<table>\n";
+    $sToRender .= "<tr>\n";
+    $sToRender .= "<td><b>Deletion Failed!</b></td>\n";
+    $sToRender .= "</tr>\n";
+    $sToRender .= "<tr></tr>\n";
+    $sToRender .= "<tr></tr>\n";
+    $sToRender .= "<tr><td>Please Ensure that the unit has no groups belonging to it</td></tr>\n";
+    $sToRender .= "<tr></tr>\n";
+    $sToRender .= "</tr>\n";
+    $sToRender .= "<tr><td align = right><a href=\"$default->rootUrl/control.php?action=removeUnit\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td></tr>\n";
+    $sToRender .= "</table>\n";
+
+    return $sToRender;
 }
 
 
-function getDeleteConfirmedPage($iUnitID,$iOrgID) {	
-	global $default;
-	$oUnit = null;
-	if (isset($iUnitID)) {
-		$oUnit = Unit::get($iUnitID);
-		$sToRender .= "<br></br>\n";
-		$sToRender .= "<b>Are you sure you wish to Remove this Unit?:</b>\n";
-	}
-	else{
-		$sToRender .= "<br></br>\n";		
-		$sToRender .= "<b>Remove Unit From System:</b>\n";
-	}
-	
-	if (isset($iOrgID)) {
-		$oOrg = Organisation::get($iOrgID);
-	
-	}
-	
-	$sToRender .= "<table>\n";
-	$sToRender .= "<br></br>\n";
-	$sToRender .= "<tr></tr>\n";
-	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>Unit Name: " . getUnitDisplay($oUnit) . "</td>\n";
-	$sToRender .= "</tr>\n";
-	$sToRender .= "<tr>\n";
-	$sToRender .= "</tr>\n";
-	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>Organisation Name: " . getOrgDisplay($oOrg) . "</td>\n";
-	$sToRender .= "</tr>\n";
-	$sToRender .= "<tr>\n";
-	$sToRender .= "</tr>\n";
-	$sToRender .= "<tr>\n";
-	$sToRender .= getDeleteButton($oUnit);	
-	$sToRender .= "</tr>\n";
-	$sToRender .= "</table>\n";
-	
-	
-	return $sToRender;
+function getDeleteConfirmedPage($iUnitID,$iOrgID) {
+    global $default;
+    $oUnit = null;
+    if (isset($iUnitID)) {
+        $oUnit = Unit::get($iUnitID);
+    }
+
+    if (isset($iOrgID)) {
+        $oOrg = Organisation::get($iOrgID);
+    }
+
+    $sToRender .= "<table width=\"600\">" . renderHeading("Remove Unit") . "</table>";
+    $sToRender .= "<table>\n";
+    $sToRender .= "<tr><td><b>Are you sure you wish to Remove this Unit?:</b></td></tr>\n";
+    $sToRender .= "<tr>\n";
+    $sToRender .= "<td>Unit Name: " . getUnitDisplay($oUnit) . "</td>\n";
+    $sToRender .= "</tr>\n";
+    $sToRender .= "<tr>\n";
+    $sToRender .= "</tr>\n";
+    $sToRender .= "<tr>\n";
+    $sToRender .= "<td>Organisation Name: " . getOrgDisplay($oOrg) . "</td>\n";
+    $sToRender .= "</tr>\n";
+    $sToRender .= "<tr>\n";
+    $sToRender .= "</tr>\n";
+    $sToRender .= "<tr>\n";
+    $sToRender .= getDeleteButton($oUnit);
+    $sToRender .= "</tr>\n";
+    $sToRender .= "</table>\n";
+
+    return $sToRender;
 }
 
 
 // show listbox...or the text name
 function getUnitDisplay($oUnit) {
-	global $default;
-	if (!isset($oUnit)) {
-		$oPatternListBox = & new PatternListBox($default->owl_units_table, "name", "id", "fUnitID");
-		$oPatternListBox->setIncludeDefaultValue(true);
-		$oPatternListBox->setPostBackOnChange(true);		
-		return $oPatternListBox->render();
-	} else {
-		return "<input type=\"hidden\" name=\"fUnitID\" value=\"" . $oUnit->iId . "\">\n" .
-		"<b>" . $oUnit->getName() . "</b>";
-	}
-	
+    global $default;
+    if (!isset($oUnit)) {
+        $oPatternListBox = & new PatternListBox($default->owl_units_table, "name", "id", "fUnitID");
+        $oPatternListBox->setIncludeDefaultValue(true);
+        $oPatternListBox->setPostBackOnChange(true);
+        return $oPatternListBox->render();
+    } else {
+        return "<input type=\"hidden\" name=\"fUnitID\" value=\"" . $oUnit->iId . "\">\n" .
+               "<b>" . $oUnit->getName() . "</b>";
+    }
+
 }
 
 // show listbox...or the text name
 function getOrgDisplay($oOrg) {
-	global $default;
-	if (!isset($oOrg)) {
-		
-	} else {
-		return "<input type=\"hidden\" name=\"fOrgID\" value=\"" . $oOrg->iId . "\">\n" .
-		"<b>" . $oOrg->getName() . "</b>";
-	}
-	
+    global $default;
+    if (isset($oOrg)) {
+        return "<input type=\"hidden\" name=\"fOrgID\" value=\"" . $oOrg->iId . "\">\n" .
+               "<b>" . $oOrg->getName() . "</b>";
+    }
 }
 
 
 // show delete button
 function getDeleteButton($oUnit) {
-	global $default;
-	if (!isset($oUnit)) {
-		return "Please select a Unit: ";
-	} else {
-		return "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/delete.gif\" value=\"submit\" border=\"0\"/></td>\n".
-		"<td align = right><a href=\"$default->rootUrl/control.php?action=removeUnit\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" /></a></td>\n";
-	}
+    global $default;
+    if (isset($oUnit)) {
+        return "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/delete.gif\" value=\"submit\" border=\"0\"/></td>\n".
+               "<td align = right><a href=\"$default->rootUrl/control.php?action=removeUnit\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" /></a></td>\n";
+    }
 }
 
 
 // show cancel button
 function getCancelButton($oUnit) {
-	global $default;
-	if (!isset($oUnit)) {
-		//return "<td align = right><a href=\"$default->rootUrl/control.php?action=groupManagement\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" value=\"cancel\" /></a></td>\n";
-	} else {
-		return "<td align = right><a href=\"$default->rootUrl/control.php?action=removeUnit\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" /></a></td>\n";
-	}
+    global $default;
+    if (!isset($oUnit)) {
+        return "<td align = right><a href=\"$default->rootUrl/control.php?action=unitManagement\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" value=\"cancel\" /></a></td>\n";
+    } else {
+        return "<td align = right><a href=\"$default->rootUrl/control.php?action=removeUnit\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" /></a></td>\n";
+    }
 }
 
 ?>
