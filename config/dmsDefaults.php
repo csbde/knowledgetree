@@ -10,7 +10,7 @@
  */
 
 // include the environment settings
-require_once("myEnvironment.php");
+require_once("Environment.php");
 
 $default->owl_graphics_url = $default->owl_root_url . "/graphics";
 $default->owl_LangDir  = $default->owl_fs_root . "/locale";
@@ -181,12 +181,12 @@ $default->siteMap->addPage("deleteFolderCollaboration", "/presentation/lookAndFe
 
 // pages for administration section
 $default->siteMap->addDefaultPage("administration", "/admin.php", "Administration", UnitAdmin, "Administration");
-$default->siteMap->addPage("userManagement", "/admin.php?sectionName=UserAdministration", "Administration", UnitAdmin, "User Management");
+$default->siteMap->addPage("userManagement", "/admin.php?sectionName=userAdministration", "Administration", UnitAdmin, "User Management");
 $default->siteMap->addPage("groupManagement", "/admin.php?sectionName=groupAdministration", "Administration", UnitAdmin, "Group Management");
 $default->siteMap->addPage("unitManagement", "/admin.php?sectionName=unitAdministration", "Administration", SysAdmin, "Unit Management");
 $default->siteMap->addPage("orgManagement", "/admin.php?sectionName=orgAdministration", "Administration", SysAdmin, "Organisation Management");
-$default->siteMap->addPage("roleManagement", "/admin.php?sectionName=SystemAdministration", "Administration", SysAdmin, "Role Management");
-$default->siteMap->addPage("systemAdministration", "/presentation/admin.php?sectionName=SystemAdministration", "Administration", SysAdmin, "System Settings");
+$default->siteMap->addPage("roleManagement", "/admin.php?sectionName=roleAdministration", "Administration", SysAdmin, "Role Management");
+$default->siteMap->addPage("systemAdministration", "/presentation/lookAndFeel/knowledgeTree/administration/systemsettings/systemSettingsBL.php", "Administration", SysAdmin, "System Settings");
 
 /////////// pages for administration section
 //$default->siteMap->addDefaultPage("unitadministration", "/presentation/unitadmin.php", "UnitAdministration", UnitAdmin, "groAdministration");
@@ -218,7 +218,7 @@ $default->siteMap->addPage("editUser", "/tests/groups/adduser.php", "UserAdminis
 $default->siteMap->addPage("removeUser", "/tests/groups/adduser.php", "UserAdministration", UnitAdmin, "Remove User from System");
 $default->siteMap->addPage("addUsersToGroup", "/tests/groups/adduser.php", "UserAdministration", UnitAdmin, "Add User to A Group");
 
-$default->siteMap->addPage("systemAdministration", "/presentation/blah.php", "UnitAdministration", SysAdmin, "systemBlaaah");
+//$default->siteMap->addPage("systemSettings", "/presentation/lookAndFeel/knowledgeTree/administration/systemsettings/systemSettingsBL.php", "systemAdministration", SysAdmin, "System Settings");
 
 /////// pages for subscriptions section
 $default->siteMap->addDefaultPage("subscriptions", "/subscriptions.php", "Subscriptions", Guest, "SubScriptions", false);
