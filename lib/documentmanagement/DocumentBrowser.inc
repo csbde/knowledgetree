@@ -1,6 +1,8 @@
 <?php
 
 require_once("$default->owl_fs_root/lib/security/permission.inc");
+require_once("$default->owl_fs_root/lib/documentmanagement/Document.inc");
+require_once("$default->owl_fs_root/lib/foldermanagement/Folder.inc");
 
 /**
  * 
@@ -76,7 +78,9 @@ class DocumentBrowser {
             }
         } else {
             // start from the specified folder
-            $folderQuery = "SELECT * FROM $default->owl_folders_table WHERE id=$folderID";
+            //$folderQuery = "SELECT * FROM $default->owl_folders_table WHERE id=$folderID";
+            $folder = Folder::get($folderID);
+            // TODO: error check
         }
         
         // retrieve folder details
@@ -292,13 +296,17 @@ class DocumentBrowser {
                $folderID = $folderSql->f("id");
 
                // set folder attributes
+               /*
                $folders[$folderName] = array("id" => $folderID,
                                              "description" => $folderSql->f("description"),
                                              "parent_id" => $folderSql->f("parent_id"),
                                              "creator_id" => $folderSql->f("creator_id"),
                                              "document_type_id" => $folderSql->f("document_type_id"),
                                              "unit_id" => $folderSql->f("unit_id"),
-                                             "is_public" => $folderSql->f("is_public"));
+                                             "is_public" => $folderSql->f("is_public"));*/
+               $folders[$folderName] = new Folder($folderName, $folderSql->f("description"), $folderSql->f("parent_id"),
+                                                  $folderSql->f("creator_id"), $folderSql->f("document_type_id"),
+                                                  $folderSql->f("unit_id"), $folderSql->f("is_public"));
             } else {
                 $_SESSION["errorMessage"] = "could not retrieve folder details: $folderQuery";
                 $default->log->debug("DocumentBrowser::retrieveFolderDetails error=" . $_SESSION["errorMessage"]);
@@ -331,7 +339,7 @@ class DocumentBrowser {
             // TODO: check return status of query and die appropriately
             while ($sql->next_record()) {
                 // set attributes
-                $documents[$sql->f("name")] = array("id" => $sql->f("id"),
+                /*$documents[$sql->f("name")] = array("id" => $sql->f("id"),
                                                   "document_type_id" => $sql->f("id"),
                                                   "name" => $sql->f("name"),
                                                   "filename" => $sql->f("filename"),
@@ -343,7 +351,8 @@ class DocumentBrowser {
                                                   "folder_id" => $sql->f("folder_id"),
                                                   "major_version" => $sql->f("major_version"),
                                                   "minor_version" => $sql->f("minor_version"),                                                            
-                                                  "is_checked_out" => $sql->f("is_checked_out")); 
+                                                  "is_checked_out" => $sql->f("is_checked_out"));*/
+                $documents[$sql->f("name")] &= Document::get($sql->f("id"));
             }
         } else {
             $_SESSION["errorMessage"] = "document query failed";
