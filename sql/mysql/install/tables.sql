@@ -672,4 +672,43 @@ INSERT INTO help VALUES (94,'removeUnitFromOrg','removeUnitFromOrgHelp.html');
 INSERT INTO help VALUES (95,'addUnitToOrg','addUnitToOrgHelp.html'); 
 INSERT INTO help VALUES (96,'listUsers','listUsersHelp.html'); 
 INSERT INTO help VALUES (97,'editUserGroups','editUserGroupsHelp.html'); 
-INSERT INTO help VALUES (98,'listWebsites','listWebsitesHelp.html'); 
+INSERT INTO help VALUES (98,'listWebsites','listWebsitesHelp.html');
+
+-- setup default information
+-- organisation
+INSERT INTO organisations_lookup (name) VALUES ("Default Organisation");
+
+-- units
+INSERT INTO units_lookup (name) VALUES ("Default Unit");
+
+INSERT INTO units_organisations_link (unit_id, organisation_id) VALUES (1, 1);
+
+-- setup groups
+INSERT INTO groups_lookup (name, is_sys_admin, is_unit_admin) VALUES ("System Administrators", 1, 0); -- id=1
+INSERT INTO groups_lookup (name, is_sys_admin, is_unit_admin) VALUES ("Unit Administrators", 0, 1); -- id=2
+INSERT INTO groups_lookup (name, is_sys_admin, is_unit_admin) VALUES ("Anonymous", 0, 0); -- id=3
+
+-- unit administrators
+INSERT INTO groups_units_link (group_id, unit_id) VALUES (2, 1);
+
+-- system administrator
+-- passwords are md5'ed
+INSERT INTO users (username, name, password, quota_max, quota_current, email, mobile, email_notification, sms_notification, ldap_dn, max_sessions, language_id)
+            VALUES ("admin", "Administrator", "21232f297a57a5a743894a0e4a801fc3", "0", "0", "", "", 1, 1, "", 1, 1);
+INSERT INTO users_groups_link (group_id, user_id) VALUES (1, 1);
+
+-- unit administrator
+INSERT INTO users (username, name, password, quota_max, quota_current, email, mobile, email_notification, sms_notification, ldap_dn, max_sessions, language_id)
+            VALUES ("unitAdmin", "Unit Administrator", "21232f297a57a5a743894a0e4a801fc3", "0", "0", "", "", 1, 1, "", 1, 1);
+INSERT INTO users_groups_link (group_id, user_id) VALUES (2, 2);
+                        
+-- guest user
+INSERT INTO users (username, name, password, quota_max, quota_current, email, mobile, email_notification, sms_notification, ldap_dn, max_sessions, language_id)
+            VALUES ("guest", "Anonymous", "084e0343a0486ff05530df6c705c8bb4", "0", "0", "", "", 0, 0, "", 19, 1);
+INSERT INTO users_groups_link (group_id, user_id) VALUES (3, 3);
+            
+-- define folder structure
+INSERT INTO folders (name, description, parent_id, creator_id, unit_id, is_public)
+             VALUES ("Root Folder", "Root Document Folder", 0, 1, 0, 0);
+INSERT INTO folders (name, description, parent_id, creator_id, unit_id, is_public)
+             VALUES ("Default Unit", "Default Unit Root Folder", 1, 1, 1, 0);
