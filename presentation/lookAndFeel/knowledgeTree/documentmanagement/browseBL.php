@@ -15,11 +15,11 @@ require_once("$default->owl_ui_directory/foldermanagement/folderUI.inc");
  * layer to retrieve the details of the documents to view are made and the user
  * interface is contructed.
  *
- * Licensed under the GNU GPL. For full terms see the file COPYING.
+ * Licensed under the GNU GPL. For full terms see the file DOCS/COPYING.
  *
  * @version $Revision$
  * @author Michael Joseph <michael@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
- * @package presentation
+ * @package presentation.lookAndFeel.knowledgeTree.documentmanagement
  */
  
 /*
@@ -77,7 +77,8 @@ if (checkSession()) {
                         
                             // the first folder in the list is the folder we're in so display the path to this folder
                             // as the heading
-                            $oContent->addHtml(tableRow("", "", tableData(displayFolderPathLink(Folder::getFolderPathAsArray($results["folders"][0]->getID())))));
+                            $default->log->debug("browseBL.php: folder path array for folderID=$folderID=" . arrayToString(Folder::getFolderPathAsArray($folderID)));
+                            $oContent->addHtml(tableRow("", "", tableData(displayFolderPathLink(Folder::getFolderPathAsArray($folderID)))));
                             
                             // empty row for spacing
                             $oContent->addHtml(tableRow("", "", tableData("&nbsp;")));
