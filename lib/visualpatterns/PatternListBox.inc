@@ -62,7 +62,7 @@ class PatternListBox {
     var $sCompositeDisplayColumnName;
     /** override query */
     var $sQuery;
-	
+    
 	/**
 	* Constructor
 	*
@@ -153,7 +153,7 @@ class PatternListBox {
 			$sQuery .= "ORDER BY ST.$this->sDisplayColumn " . ($this->bOrderAsc ? "ASC" : "DESC");
 		}
 		$sql->query($sQuery);
-		if ($sql->num_rows() > 0 || $this->bIncludeDefaultValue) {			
+		if ($sql->num_rows() > 0 || $this->bIncludeDefaultValue && (strlen($this->sEmptyErrorMessage) == 0)) {			
 			if (isset($this->sOnChangeAction)) {
 				$sToRender = "<SELECT NAME=\"$this->sSelectName\" ". ($this->bPostBackOnChange ? "onChange=\"$this->sOnChangeAction\" " : " ") . ">\n";
 			} else {
