@@ -1,0 +1,150 @@
+<?php
+/**
+* Represents a Group as per the database table groups
+*
+* @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
+* @date 23 January 2003
+* @package lib.groups
+*
+*/
+
+class Group {
+	
+	/** primary key of current object */
+	var $iId;
+	/** group name */
+	var $sName;
+	/** is the group a unit admin */
+	var $bIsUnitAdmin;
+	/** is the group a sys admin */
+	var $bIsSysAdmin;
+	
+	function Group($sNewName, $bNewIsUnitAdmin = false, $bNewIsSysAdmin = false) {
+		$this->iId = -1;
+		$this->sName = $sNewName;
+		$this->bIsUnitAdmin = $bNewIsUnitAdmin;
+		$this->bIsSysAdmin = $bNewIsSysAdmin;
+	}
+	
+	/**
+	* Create the current object in the database
+	*
+	* @return boolean on successful store, false otherwise and set $_SESSION["errorMessage"]
+	*
+	*/
+	function create() {
+		global $default, $lang_err_database, $lang_err_object_exists;
+		//if the object hasn't been created
+		if ($this->iId < 0) {
+			$sql = new Owl_DB();
+			$result = $sql->query("INSERT INTO " . $default->owl_groups_table . " (name, is_sys_admin, is_unit_admin) VALUES ('" . addslashes($this->sName) . "', " . ($this->bIsSysAdmin ? 1 : 0) . ", " . ($this->bIsUnitAdmin ? 1 : 0) . ")");
+			if ($result) {
+				$this->iId = $sql->insert_id();
+				return  true;
+			}
+			$_SESSION["errorMessage"] = $lang_err_database;
+			return false;
+		}
+		$_SESSION["errorMessage"] = $lang_err_object_exists . "id = " . $this->iId . " table = document_fields";
+		return false;
+	}
+	
+	/**
+	* Update the values in the database table with the object's current values
+	*
+	* @return boolean true on successful update, false otherwise and set $_SESSION["errorMessage"]
+	*
+	*/
+	function update() {
+		global $default, $lang_err_database, $lang_err_object_key;
+		//only update if the object has been stored
+		if ($this->iId > 0) {
+			$sql = new Owl_DB();
+			$result = $sql->query("UPDATE " . $default->owl_groups_table . " SET name = '" . addslashes($this->sName) . "', is_sys_admin = " . ($this->bIsSysAdmin ? 1 : 0) . ", is_unit_admin = " . ($this->bIsUnitAdmin ? 1 : 0) . " WHERE id = $this->iId");
+			if ($result) {
+				return true;
+			}
+			$_SESSION["errorMessage"] = $lang_err_database;
+			return false;
+		}
+		$_SESSION["errorMessage"] = $lang_err_object_key;
+		return false;
+	}
+	
+	/**
+	* Delete the current object from the database
+	*
+	* @return boolean true on successful deletion, false otherwise and set $_SESSION["errorMessage"]
+	*
+	*/
+	function delete() {
+		global $default, $lang_err_database, $lang_err_object_key;
+		//only delete the object if it exists in the database
+		if ($this->iId >= 0) {
+			$sql = new Owl_DB();
+			$result = $sql->query("DELETE FROM $default->owl_groups_table WHERE id = $this->iId");
+			if ($result) {
+				return true;
+			}
+			$_SESSION["errorMessage"] = $lang_err_database;
+			return false;
+		}
+		$_SESSION["errorMessage"] = $lang_err_object_key;
+		return false;
+	}
+	
+	/**
+	* Static function.
+	* Given a groups primary key it will create a 
+	* Group object and populate it with the 
+	* corresponding database values
+	*
+	* @return Group populated Group object on successful query, false otherwise and set $_SESSION["errorMessage"]
+	*/
+	function & get($iGroupID) {
+		global $default;
+		$sql = new Owl_DB();
+		$result = $sql->query("SELECT * FROM $default->owl_groups_table WHERE id = $iGroupID");
+		if ($result) {
+			if ($sql->next_record()) {
+				$oGroup = & new Group(stripslashes($sql->f("name")), $sql->f("is_unit_admin"), $sql->f("is_sys_admin"));
+				$oGroup->iId = $iGroupID;
+				return $oGroup;
+			}
+			$_SESSION["errorMessage"] = $lang_err_object_not_exist . "id = " . $iGroupID . " table = $default->owl_groups_table";
+			return false;
+		}
+		$_SESSION["errorMessage"] = $lang_err_database;
+		return false;
+	}
+
+/**
+	* Static function
+	* Get a list of web documents
+	*
+	* @param 	String		Where clause (not required)
+	*
+	* @return Array array of Group objects, false otherwise and set $_SESSION["errorMessage"]
+	*/
+	function getList($sWhereClause = null) {
+		global $default, $lang_err_database;
+		$aGroupArray;
+		settype($aGroupArray, "array");
+		$sql = new Owl_DB();
+		$result = $sql->query("SELECT * FROM " . $default->owl_groups_table  . (isset($sWhereClause) ? " " . $sWhereClause : ""));
+		if ($result) {			
+			$iCount = 0;
+			while ($sql->next_record()) {
+				$oGroup = & Group::get($sql->f("id"));
+				$aGroupArray[$iCount] = $oGroup;
+				$iCount++;
+			}
+			return $aGroupArray;
+		}
+		$_SESSION["errorMessage"] = $lang_err_database;
+		return false;
+	}
+	
+	
+}
+?>
