@@ -14,6 +14,7 @@ require_once("$default->owl_fs_root/lib/foldermanagement/Folder.inc");
 require_once("$default->owl_fs_root/lib/users/User.inc");
 require_once("$default->owl_fs_root/lib/documentmanagement/Document.inc");
 require_once("$default->owl_fs_root/lib/documentmanagement/DocumentTransaction.inc");
+require_once("$default->owl_fs_root/lib/subscriptions/SubscriptionEngine.inc");
 
 require_once("$default->owl_fs_root/presentation/Html.inc");
 
@@ -33,7 +34,17 @@ if (checkSession()) {
 					$oDocumentTransaction->create();
 					if ($oDocument->delete()) {
 						if (unlink($sDocumentPath)) {
-							//successfully deleted the document from the file system							
+							// successfully deleted the document from the file system
+                            
+                            // fire subscription alerts for the deleted document
+                            $count = SubscriptionEngine::fireSubscription($oDocument->getFolderID(), SubscriptionConstants::subscriptionAlertType("RemoveDocument"),
+                                     SubscriptionConstants::subscriptionType("FolderSubscription"),
+                                     array( "removedDocumentName" => $oDocument->getName(),
+                                            "folderName" => Folder::getFolderName($oDocument->getFolderID())));
+                            $default->log->info("deleteDocumentBL.php fired $count subscription alerts for removed document " . $oDocument->getName());
+                            
+
+							// redirect to the browse folder page							
 							redirect("$default->owl_root_url/control.php?action=browse&fFolderID=" . $oDocument->getFolderID());
 						} else {
 							//could not delete the document from the file system
