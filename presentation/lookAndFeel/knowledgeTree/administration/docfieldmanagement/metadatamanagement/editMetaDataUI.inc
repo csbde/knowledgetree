@@ -1,5 +1,19 @@
 <?php
 
+function getEditMetaDataFailPage($iDocFieldID){
+    global $default;
+    
+
+    $sToRender .= renderHeading("Edit Document Field Lookup");
+    $sToRender .= "<table width=300>\n";
+    $sToRender .= "<tr><td>Document has no lookups to edit.</td></tr>\n";
+    $sToRender .= "<tr>\n";
+    $sToRender .= "<td></td><td><a href=\"$default->rootUrl/control.php?action=editDocFieldLookups&fDocFieldID=$iDocFieldID\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
+    $sToRender .= "</tr>\n";    
+    $sToRender .= "</table>\n";
+
+    return $sToRender;
+}
 // if its the manual edit page..then display normally
 function getSelectFieldPage($iDocFieldID) {
     global $default;
@@ -38,6 +52,8 @@ function getSelectMetaDataPage($iDocFieldID, $iMetaDataID) {
     if (isset($iMetaDataID)) {
         $oMetaData = MetaData::get($iMetaDataID);
     }
+
+	getMetaDataDisplay($oMetaData,$iDocFieldID);
 
     $sToRender .= renderHeading("Edit Document Field Lookup");
     $sToRender .= "<table>\n";
