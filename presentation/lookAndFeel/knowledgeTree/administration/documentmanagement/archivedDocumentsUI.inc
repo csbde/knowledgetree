@@ -22,7 +22,7 @@
  *
  * @version $Revision$
  * @author Michael Joseph <michael@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
- * @package presentation.lookAndFeel.knowledgeTree.administration.documentmanagement
+ * @package administration.documentmanagement
  */
 
 /**
