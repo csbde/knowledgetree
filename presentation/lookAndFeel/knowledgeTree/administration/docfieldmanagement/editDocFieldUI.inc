@@ -17,8 +17,10 @@ function getEditPage($iDocFieldID) {
 	$oDocField = null;
 	if (isset($iDocFieldID)) {
 		$oDocField = DocumentField::get($iDocFieldID);
+		$checkBox = $oDocField->isFieldLinkedToType();
 		
 	}
+		
 	
 	
 	$sToRender .= "<br></br>\n";
@@ -40,10 +42,16 @@ function getEditPage($iDocFieldID) {
 		$sToRender .= "<td>Data Type: </td><td><input size = \"20\" type=\"text\" name=\"fDocFieldDataType\" value=\"" . $oDocField->getDataType() . "\">";
 		$sToRender .= "</tr>\n";
 		$sToRender .= "<tr>\n";
-		$sToRender .= "<td>Is Generic: </td><td>" . getIsGenericCheckBox($oDocField) . "</td>\n";
+		
+		if($checkBox == false)
+		{	$sToRender .= "<td>Is Generic: </td><td>" . getIsGenericCheckBox($oDocField) . "</td>\n";
+		}else{
+			$sToRender .= "<input type=\"hidden\" name=\"fDocFieldIsGeneric\" value=\"" . $oDocField->getIsGeneric() . "\">\n";
+		}
+		
 		$sToRender .= "</tr>\n";
 		$sToRender .= "<tr>\n";
-		$sToRender .= "<td>Has Lookup: </td><td>" . getHasLookupCheckBox($oDocField) . "</td>\n";
+		$sToRender .= "<td>Has MetaData_lookup: </td><td>" . getHasLookupCheckBox($oDocField) . "</td>\n";
 		$sToRender .= "</tr>\n";
 		$sToRender .= "<tr>\n";
 		$sToRender .= "</tr>\n";
