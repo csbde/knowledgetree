@@ -373,26 +373,12 @@ class AuthLdap {
     for( $i = 0; $i < $info["count"]; $i++){
       // Get the username, and create an array indexed by it...
       // Modify these as you see fit.
-<<<<<<< class.AuthLdap.php
       $uname			              = $info[$i]["uid"][0];
+      // add to the array for each attribute in my list
       // add to the array for each attribute in my list
       for ( $i = 0; $i < count( $attributeArray); $i++) {
           $userslist["$uname"]["$attributeArray[$i]"]      = $info[$i][strtolower($attributeArra[$i])][0];
       }
-      /*
-      $userslist["$uname"]["uid"]     = $info[$i]["uid"][0];      
-      $userslist["$uname"]["mail"]    = $info[$i]["mail"][0];
-      $userslist["$uname"]["phone"]   = $info[$i]["telephonenumber"][0];
-      $userslist["$uname"]["job"]     = $info[$i]["employeetype"][0];
-      $userslist["$uname"]["entryid"] = $info[$i]["entryid"][0];
-      */
-=======
-      $uname			              = $info[$i]["uid"][0];
-      // add to the array for each attribute in my list
-      for ( $i = 0; $i < count( $attributeArray); $i++) {
-          $userslist["$uname"]["$attributeArray[$i]"]      = $info[$i][strtolower($attributeArra[$i])][0];
-      }
->>>>>>> 1.2
     }
 
     if ( !@asort( $userslist)) {
