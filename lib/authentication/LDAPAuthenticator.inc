@@ -79,6 +79,33 @@ class LDAPAuthenticator extends Authenticator {
 
 
     /**
+     * Searched the directory for a specific user
+     *
+     * @param string the username to search for
+     * @param array the attributes to return from the search
+     * @return array containing the users found
+     */ 
+    function getUser($sUserName, $aAttributes) {
+        global $default;
+        // connect and search
+        if ( $this->oLdap->connect() ) {
+            // search for the users
+            // append and prepend wildcards
+            $aUserResults = $this->oLdap->getUsers($sUserName, $aAttributes);
+            if ($aUserResults) {
+                // return the array
+                return $aUserResults;
+            } else {
+                // the search failed, return empty array
+                return array();
+            }
+        } else {
+            $_SESSION["errorMessage"] = "LDAP error: (" . $this->oLdap->ldapErrorCode . ") " . $this->oLdap->ldapErrorText;
+            return false;
+        }
+    }
+    
+    /**
      * Searches the LDAP directory for users matching the supplied search string.
      * 
      * @param string the username to search for
@@ -92,7 +119,6 @@ class LDAPAuthenticator extends Authenticator {
             // search for the users
             // append and prepend wildcards
             $aUserResults = $this->oLdap->getUsers("*" . $sUserNameSearch . "*", $aAttributes);
-            //return $aUserResults;
             if ($aUserResults) {
                 // return the array
                 return $aUserResults;
