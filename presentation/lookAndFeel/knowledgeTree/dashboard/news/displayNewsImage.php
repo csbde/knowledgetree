@@ -19,4 +19,4 @@ if (isset($fNewsID)) {
 	$oNews = DashboardNews::get($fNewsID);
 	$oNews->displayImage();
 }
-	?>
+?>
