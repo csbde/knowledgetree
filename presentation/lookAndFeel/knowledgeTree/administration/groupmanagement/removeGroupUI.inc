@@ -62,7 +62,7 @@ $sToRender .= "<tr></tr>\n";
 $sToRender .= "<tr></tr>\n";
 $sToRender .= "<tr></tr>\n";
 $sToRender .= "<tr>\n";
-$sToRender .= "<td align = right><a href=\"$default_rootUrl/control.php?action=removeGroup\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
+$sToRender .= "<td align = right><a href=\"$default->rootUrl/control.php?action=removeGroup\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
 $sToRender .= "</tr>\n";
 $sToRender .= "</table>\n";
 		
@@ -85,7 +85,7 @@ $sToRender .= "<tr><td>Please Ensure that The Group has been Removed from any Un
 $sToRender .= "<tr></tr>\n";
 $sToRender .= "<tr></tr>\n";
 $sToRender .= "</tr>\n";
-$sToRender .= "<tr><td align = right><a href=\"$default_rootUrl/control.php?action=removeGroup\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td></tr>\n";
+$sToRender .= "<tr><td align = right><a href=\"$default->rootUrl/control.php?action=removeGroup\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td></tr>\n";
 $sToRender .= "</table>\n";
 		
 return $sToRender;
@@ -132,7 +132,7 @@ function getDeleteButton($oGroup) {
 		return "Please select a group: ";
 	} else {
 		return "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/Delete.gif\" value=\"submit\" /></td>\n".
-		"<td align = right><a href=\"$default_rootUrl/control.php?action=removeGroup\"><img src =\"$default->graphicsUrl/widgets/Cancel.gif\" border = \"0\" /></a></td>\n";
+		"<td align = right><a href=\"$default->rootUrl/control.php?action=removeGroup\"><img src =\"$default->graphicsUrl/widgets/Cancel.gif\" border = \"0\" /></a></td>\n";
 	}
 }
 ?>

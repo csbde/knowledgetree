@@ -59,7 +59,7 @@ $sToRender .= "<tr></tr>\n";
 $sToRender .= "<tr></tr>\n";
 $sToRender .= "<tr></tr>\n";
 $sToRender .= "<tr>\n";
-$sToRender .= "<td align = right><a href=\"$default_rootUrl/control.php?action=removeUnit\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
+$sToRender .= "<td align = right><a href=\"$default->rootUrl/control.php?action=removeUnit\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
 $sToRender .= "</tr>\n";
 $sToRender .= "</table>\n";
 		
@@ -81,7 +81,7 @@ $sToRender .= "<tr></tr>\n";
 $sToRender .= "<tr><td>Please Ensure that the unit has no groups belonging to it</td></tr>\n";
 $sToRender .= "<tr></tr>\n";
 $sToRender .= "</tr>\n";
-$sToRender .= "<tr><td align = right><a href=\"$default_rootUrl/control.php?action=removeUnit\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td></tr>\n";
+$sToRender .= "<tr><td align = right><a href=\"$default->rootUrl/control.php?action=removeUnit\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td></tr>\n";
 $sToRender .= "</table>\n";
 		
 return $sToRender;
@@ -164,7 +164,7 @@ function getDeleteButton($oUnit) {
 		return "Please select a Unit: ";
 	} else {
 		return "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/Delete.gif\" value=\"submit\" /></td>\n".
-		"<td align = right><a href=\"$default_rootUrl/control.php?action=removeUnit\"><img src =\"$default->graphicsUrl/widgets/Cancel.gif\" border = \"0\" /></a></td>\n";
+		"<td align = right><a href=\"$default->rootUrl/control.php?action=removeUnit\"><img src =\"$default->graphicsUrl/widgets/Cancel.gif\" border = \"0\" /></a></td>\n";
 	}
 }
 
@@ -173,9 +173,9 @@ function getDeleteButton($oUnit) {
 function getCancelButton($oUnit) {
 	global $default;
 	if (!isset($oUnit)) {
-		//return "<td align = right><a href=\"$default_rootUrl/control.php?action=groupManagement\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" value=\"cancel\" /></a></td>\n";
+		//return "<td align = right><a href=\"$default->rootUrl/control.php?action=groupManagement\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" value=\"cancel\" /></a></td>\n";
 	} else {
-		return "<td align = right><a href=\"$default_rootUrl/control.php?action=removeUnit\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" /></a></td>\n";
+		return "<td align = right><a href=\"$default->rootUrl/control.php?action=removeUnit\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" /></a></td>\n";
 	}
 }
 
