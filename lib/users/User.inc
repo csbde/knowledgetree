@@ -116,7 +116,21 @@ class User {
     function setQuotaMax($iNewValue) {
         $this->iQuotaMax = $iNewValue;
     }
-
+  /**
+    * Set the user's name
+    *
+    * @param  String  User's email address
+    *
+    */
+    function setName($sNewValue) {
+        $this->sName = $sNewValue;
+    }
+/**
+    * gets the user's name
+    *
+    * @param  String  User's email address
+    *
+    */
     function getName() {
         return $this->sName;
     }
@@ -316,14 +330,27 @@ class User {
     function update() {
         global $default, $lang_err_database, $lang_err_object_key;
         //only update if the object has been stored
-        if ($this->iId > 0) {
+         if ($this->iId < 0) {
+            //check to see if name exsits
             $sql = $default->db;
-            $result = $sql->query("UPDATE " . $default->owl_users_table . " SET username = '" . addslashes($this->sUserName) . "', name = '" . addslashes($this->sName) . "', " . ($this->bPasswordChanged ? "password = '" . addslashes(md5($this->sPassword)) . "', " : " ") . " quota_max = $this->iQuotaMax, email = '" . addslashes($this->sEmail) . "', mobile = '" . addslashes($this->sMobile) . "', email_notification = " . ($this->bEmailNotification ? 1 : 0) . ", sms_notification = " . ($this->bSmsNotification ? 1 : 0) . ", ldap_dn = '" . addslashes($this->sLdapDn) . "', max_sessions = $this->iMaxSessions, language_id = $this->iLanguageID WHERE id = $this->iId");
-            if ($result) {
-                return true;
+            $query = "SELECT username FROM ". $default->owl_users_table ." WHERE username = '" . $this->sUserName . "'";
+            $sql->query($query);
+            $rows = $sql->num_rows($sql);
+
+            if ($rows > 0) {
+                // duplicate username
+                $_SESSION["errorMessage"] = "User::The username " . $this->sUserName . " is already in use!";
+                return false;
             }
+            else {
+            	$sql = $default->db;
+            	$result = $sql->query("UPDATE " . $default->owl_users_table . " SET username = '" . addslashes($this->sUserName) . "', name = '" . addslashes($this->sName) . "', " . ($this->bPasswordChanged ? "password = '" . addslashes(md5($this->sPassword)) . "', " : " ") . " quota_max = $this->iQuotaMax, email = '" . addslashes($this->sEmail) . "', mobile = '" . addslashes($this->sMobile) . "', email_notification = " . ($this->bEmailNotification ? 1 : 0) . ", sms_notification = " . ($this->bSmsNotification ? 1 : 0) . ", ldap_dn = '" . addslashes($this->sLdapDn) . "', max_sessions = $this->iMaxSessions, language_id = $this->iLanguageID WHERE id = $this->iId");
+            	if ($result) {
+              	  return true;
+            	}
             $_SESSION["errorMessage"] = $lang_err_database;
             return false;
+        }
         }
         $_SESSION["errorMessage"] = $lang_err_object_key;
         return false;
