@@ -1,19 +1,33 @@
 <?php
-
 /**
-* Class Permission
-*
-* Contains static functions used to determine whether the current user:
-* 	o has permission to perform certain actions
-*  	o has a certain role
-*	o is assigned to a certain group
-*	o has read/write access for a specific folder/directory
-*
-*	@author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
-*	@date 14 January 2003
-* @package lib.roles 
-*/
-
+ * $Id$
+ *
+ * Contains static functions used to determine whether the current user:
+ * 	o has permission to perform certain actions
+ *  o has a certain role
+ *	o is assigned to a certain group
+ *	o has read/write access for a specific folder/directory
+ *
+ * Copyright (c) 2003 Jam Warehouse http://www.jamwarehouse.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ * @version $Revision$
+ * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
+ * @package lib.security
+ */
 class Permission {
 	
 	/**
@@ -125,7 +139,7 @@ class Permission {
 	function folderIsPublic($iFolderID) {
 		global $default, $lang_err_folder_not_public;
 		$sql = $default->db;
-		$sql->query("SELECT * FROM " . $default->owl_folders_table . " WHERE id = " . $iFolderID . " AND is_public = 1");
+		$sql->query("SELECT * FROM " . $default->folders_table . " WHERE id = " . $iFolderID . " AND is_public = 1");
 		if ($sql->next_record()) {
 			return true;
 		}
@@ -198,7 +212,7 @@ class Permission {
 			$default->log->info("Failed to retrieve folder with ID $iFolderID from database");
 			return false;
 		}
-		//$sql->query("SELECT * FROM " . $default->owl_groups_folders_table = "groups_folders_link" . " WHERE folder_id = " . $iFolderID . " AND user_id = " . $_SESSION["userID"] . " AND can_read = 1");
+		//$sql->query("SELECT * FROM " . $default->groups_folders_table = "groups_folders_link" . " WHERE folder_id = " . $iFolderID . " AND user_id = " . $_SESSION["userID"] . " AND can_read = 1");
         $sql->query("SELECT GFL.folder_id " .
 						"FROM groups_folders_link AS GFL INNER JOIN users_groups_link AS UGL ON GFL.group_id = UGL.group_id " .
 						"WHERE UGL.user_id =  " . $_SESSION["userID"] . " " .
@@ -221,7 +235,7 @@ class Permission {
 	function userIsInGroupID($iGroupID) {		
 		global $default, $lang_err_user_group;
 		$sql = $default->db;
-		$sql->query("SELECT id FROM " . $default->owl_groups_users_table . " WHERE id = " . $iGroupID . " AND user_id = " . $_SESSION["userID"]);
+		$sql->query("SELECT id FROM " . $default->users_groups_table . " WHERE group_id = " . $iGroupID . " AND user_id = " . $_SESSION["userID"]);
 		if ($sql->next_record()) {
 			return true;
 		}
@@ -239,7 +253,7 @@ class Permission {
 	function userIsInGroupName($sGroupName) {		
 		global $default, $lang_err_user_group;
 		$sql = $default->db;
-		$sql->query("SELECT GULT.id FROM " . $default->owl_users_groups_table . " AS GULT INNER JOIN " . $default->owl_groups_table . " AS G ON GULT.group_id = G.ID WHERE G.name = '" . $sGroupName . "' AND user_id = " . $_SESSION["userID"]);
+		$sql->query("SELECT GULT.id FROM " . $default->users_groups_table . " AS GULT INNER JOIN " . $default->groups_table . " AS G ON GULT.group_id = G.ID WHERE G.name = '" . $sGroupName . "' AND user_id = " . $_SESSION["userID"]);
 		if ($sql->next_record()) {
 			return true;
 		}
@@ -258,8 +272,8 @@ class Permission {
 	function userHasWriteRoleForDocument($iDocumentID) {
 		global $default, $lang_err_user_role;	
 		$sql = $default->db;
-		$sql->query("SELECT FURL.id FROM $default->owl_folders_user_roles_table AS FURL INNER JOIN $default->owl_groups_folders_approval_table AS GFAL ON FURL.group_folder_approval_id = GFAL.id " .
-					"INNER JOIN $default->owl_roles_table AS R ON GFAL.role_id = R.id " .					
+		$sql->query("SELECT FURL.id FROM $default->folders_user_roles_table AS FURL INNER JOIN $default->groups_folders_approval_table AS GFAL ON FURL.group_folder_approval_id = GFAL.id " .
+					"INNER JOIN $default->roles_table AS R ON GFAL.role_id = R.id " .					
 					"WHERE FURL.user_id = " . $_SESSION["userID"] . " " .
 					"AND FURL.document_id = $iDocumentID " .
 					"AND R.can_write = 1 " . 
@@ -281,8 +295,8 @@ class Permission {
 	function userHasReadRoleForDocument($iDocumentID) {
 		global $default, $lang_err_user_role;	
 		$sql = $default->db;
-		$sql->query("SELECT * FROM $default->owl_folders_user_roles_table AS FURL INNER JOIN $default->owl_groups_folders_approval_table AS GFAL ON FURL.group_folder_approval_id = GFAL.id " .
-					"INNER JOIN $default->owl_roles_table AS R ON GFAL.role_id = R.id " .					
+		$sql->query("SELECT * FROM $default->folders_user_roles_table AS FURL INNER JOIN $default->groups_folders_approval_table AS GFAL ON FURL.group_folder_approval_id = GFAL.id " .
+					"INNER JOIN $default->roles_table AS R ON GFAL.role_id = R.id " .					
 					"WHERE FURL.user_id = " . $_SESSION["userID"] . " " .
 					"AND FURL.document_id = $iDocumentID " .
 					"AND R.can_read = 1");
@@ -301,7 +315,7 @@ class Permission {
 	function documentIsTemplateForDependantDocument($iDocumentID) {
 		global $default;
 		$sql = $default->db;
-		$sql->query("SELECT id FROM $default->owl_dependant_document_instance_table WHERE template_document_id = $iDocumentID and user_id = " . $_SESSION["userID"]);
+		$sql->query("SELECT id FROM $default->dependant_document_instance_table WHERE template_document_id = $iDocumentID and user_id = " . $_SESSION["userID"]);
 		if ($sql->next_record()) {
 			return true;
 		}
@@ -318,7 +332,7 @@ class Permission {
 	function roleIDExists($iRoleID) {
 		global $default, $lang_err_role_not_exist;
 		$sql = $default->db;
-		$sql->query("SELECT id FROM " . $default->owl_roles_table . " WHERE id = " . $iRoleID);
+		$sql->query("SELECT id FROM " . $default->roles_table . " WHERE id = " . $iRoleID);
 		if ($sql->next_record()) {
 			return true;	
 		}
@@ -336,7 +350,7 @@ class Permission {
 	function roleNameExists($sRoleName) {
 		global $default, $lang_err_role_not_exist;
 		$sql = $default->db;
-		$sql->query("SELECT id FROM " . $default->owl_roles_table . " WHERE name = '" . $sRoleName . "'");
+		$sql->query("SELECT id FROM " . $default->roles_table . " WHERE name = '" . $sRoleName . "'");
 		if ($sql->next_record()) {
 			return true;	
 		}
@@ -355,7 +369,7 @@ class Permission {
 		global $default, $lang_err_database;
 		if (roleExists($sRoleName)) {
 			$sql = $default->db;
-			$sql->query("SELECT id FROM " . $default->owl_roles_table . " WHERE name = '" . $sRoleName . "'");
+			$sql->query("SELECT id FROM " . $default->roles_table . " WHERE name = '" . $sRoleName . "'");
 			$sql->next_record();
 			return $sql->f("id");	
 		}
@@ -376,7 +390,7 @@ class Permission {
         }
 		$sql = $default->db;
 		$sql->query("SELECT UGL.group_id " . 
-					"FROM $default->owl_users_groups_table AS UGL INNER JOIN $default->owl_groups_table AS GL ON UGL.group_id = GL.id " .
+					"FROM $default->users_groups_table AS UGL INNER JOIN $default->groups_table AS GL ON UGL.group_id = GL.id " .
 					"WHERE UGL.user_id = $iUserID " .
 					"AND is_sys_admin = 1");
 		if ($sql->next_record()) {
@@ -397,8 +411,8 @@ class Permission {
         }        
 		$sql = $default->db;
 		$sql->query("SELECT UGL.group_id " .
-			"FROM $default->owl_users_groups_table AS UGL INNER JOIN $default->owl_groups_units_table AS GUL ON GUL.group_id = UGL.group_id " .
-			"INNER JOIN $default->owl_groups_table AS GL ON GL.id = UGL.group_id " .
+			"FROM $default->users_groups_table AS UGL INNER JOIN $default->groups_units_table AS GUL ON GUL.group_id = UGL.group_id " .
+			"INNER JOIN $default->groups_table AS GL ON GL.id = UGL.group_id " .
 			"WHERE UGL.user_id = $iUserID " .
 			"AND GL.is_unit_admin = 1");
 		return $sql->next_record();
@@ -414,10 +428,10 @@ class Permission {
 		$sql = $default->db;
 		        	
         $sql->query("SELECT * " .
-				"FROM $default->owl_groups_folders_table AS GFL INNER JOIN $default->owl_folders_table AS F ON GFL.folder_id = F.id " .
-				"INNER JOIN $default->owl_groups_units_table AS GUL ON GUL.unit_id = F.unit_id " .
-				"INNER JOIN $default->owl_groups_table AS GL ON GUL.group_id = GL.id " .
-				"INNER JOIN $default->owl_users_groups_table AS UGL ON UGL.group_id = GL.id " .
+				"FROM $default->groups_folders_table AS GFL INNER JOIN $default->folders_table AS F ON GFL.folder_id = F.id " .
+				"INNER JOIN $default->groups_units_table AS GUL ON GUL.unit_id = F.unit_id " .
+				"INNER JOIN $default->groups_table AS GL ON GUL.group_id = GL.id " .
+				"INNER JOIN $default->users_groups_table AS UGL ON UGL.group_id = GL.id " .
 				"WHERE GL.is_unit_admin = 1 "  .
 				"AND GFL.folder_id = $iFolderID " .
 				"AND UGL.user_id = " . $_SESSION["userID"]);
@@ -437,7 +451,7 @@ class Permission {
 		$sql = $default->db;
         // you're a guest user if you're in the Anonymous group
 		$sql->query("SELECT UGL.group_id 
-                     FROM $default->owl_users_groups_table AS UGL INNER JOIN $default->owl_groups_table AS GL ON GL.id = UGL.group_id
+                     FROM $default->users_groups_table AS UGL INNER JOIN $default->groups_table AS GL ON GL.id = UGL.group_id
                      WHERE GL.name = 'Anonymous'
                      AND UGL.user_id = $iUserID");
 		return $sql->next_record();        
