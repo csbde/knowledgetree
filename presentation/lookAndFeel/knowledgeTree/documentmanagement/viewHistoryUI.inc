@@ -52,22 +52,25 @@ function getDocumentHistory($iDocumentID) {
         $i = 0;
         while ($sql->next_record()) {
             if ($sql->f("transaction_name") == "Check Out") {
-                // IE ssl download hack- don't use ssl to download
-                if ($default->phpSniff->property("browser") == "ie") {
-                    $sVersion = "<a href=\"http://" . $default->serverName . "$default->rootUrl/control.php?action=viewDocument&fDocumentID=$iDocumentID&fForDownload=1&fVersion=" . $sql->f("version") . "\">" . $sql->f("version") . "</a>";
-                } else {
-                    $sVersion = generateControllerLink("viewDocument", "fDocumentID=$iDocumentID&fForDownload=1&fVersion=" . $sql->f("version"), "<strong>" . $sql->f("version") . "</strong>");
-                }
+	        	$sVersion = generateControllerLink("viewDocument", "fDocumentID=$iDocumentID&fForDownload=1&fVersion=" . $sql->f("version"), "<strong>" . $sql->f("version") . "</strong>");
             } else {
                 $sVersion = $sql->f("version");
             }
             $sToRender .= "<tr bgcolor=\"" . getColour($i++) . "\">\n";
             $sToRender .= "<td>" . $sql->f("transaction_name") . "</td><td>" . $sql->f("user_name") . "</td><td>$sVersion</td>\n";
-            $sToRender .= "<td>" . $sql->f("comment") . "</td><td>" . $sql->f("datetime") . "</td></tr>\n";
+            $sToRender .= "<td>" . displaySpace($sql->f("comment")) . "</td><td>" . $sql->f("datetime") . "</td></tr>\n";
         }
         $sToRender .= "</table>\n";
     }
     return $sToRender;
+}
+
+function displaySpace($sHtml) {
+	if ($sHtml == "") {
+		return "&nbsp;";
+	} else {
+		return $sHtml;
+	}
 }
 
 function getPage($iDocumentID, $iFolderID, $sDocumentName) {
