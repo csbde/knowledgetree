@@ -215,13 +215,13 @@ class NavBar {
 			  if ((strcmp($this->sSection,"Standard Search") == 0) || (strcmp($this->sSection,"Advanced Search") == 0)) {
 				  $bar .= "<INPUT type=\"hidden\" name=\"fSearchText\" width=\"30\" height = \"10\" align = \"absmiddle\" />\n ";
 			  } else {
-				  $bar .= "<INPUT type=\"text\" name=\"fSearchText\" width=\"30\" height = \"10\" align = \"absmiddle\" />\n " .
+				  $bar .= "<INPUT type=\"text\" name=\"fStandardSearchString\" width=\"30\" height = \"10\" align = \"absmiddle\" />\n " .
 						"<INPUT type=\"hidden\" name=\"fBrowseType\" value=\"" . $this->sBrowseType . "\"  />\n " .
 						"<INPUT type=\"hidden\" name=\"fFolderID\"  value=\"" . $this->iFolderID . "\"  />\n " .
 						"<INPUT type=\"hidden\" name=\"fDocumentID\" value=\"" . $this->iDocumentID . "\"  />\n " .
 						"<INPUT type=\"hidden\" name=\"fCategoryName\" value=\"" . $this->sCategoryName . "\"  />\n " .
 						"<INPUT type=\"hidden\" name=\"fDocTypeID\"  value=\"" . $this->iDocTypeID . "\"  />\n " .
-						"<INPUT type=\"image\" onClick=\"setActionAndSubmitSearch('" . $default->rootUrl . "/control.php')\" src=\"$default->graphicsUrl/search.gif\" align = \"absmiddle\" border=\"0\" />\n ";
+						"<INPUT type=\"image\" onClick=\"return validateStandardSearch('" . $default->rootUrl . "/control.php')\" src=\"$default->graphicsUrl/search.gif\" align = \"absmiddle\" border=\"0\" />\n ";
 			  }			  
               $bar .= "</td>\n " .
 				  "</tr>\n" .
@@ -233,7 +233,23 @@ class NavBar {
         $toRender->setHtml($bar);
 
         //render the object
-        return $toRender->render();
+        return $toRender->render() . $this->getSearchValidationJavaScript();
     }
+	
+	function getSearchValidationJavaScript() {
+		$sToRender = "\n\n<SCRIPT LANGUAGE=\"javascript\">\n ";
+		$sToRender .= "<!--\n";		
+		$sToRender .= "function validateStandardSearch(newAction) {\n";		
+		$sToRender .= "\tif (!(validRequired(document.MainForm.fStandardSearchString, 'Search text'))) {\n";
+		$sToRender .= "\t\treturn false;\n\t}\n";
+		$sToRender .= "\telse {\n";
+		$sToRender .= "\t\tsetActionAndSubmitSearch(newAction);\n";
+		$sToRender .= "\t}\n";
+		$sToRender .= "}\n";
+		$sToRender .= "-->\n";
+		$sToRender .= "</SCRIPT>\n\n";
+		return $sToRender;
+	
+	}
 }
 ?>
