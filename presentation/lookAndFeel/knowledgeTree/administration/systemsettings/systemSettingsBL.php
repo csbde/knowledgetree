@@ -30,6 +30,7 @@ if (checkSession()) {
 
         $aNames = array("ldapServer",
                         "ldapRootDn",
+                        "ldapServerType",
                         "emailServer",
                         "emailAdmin",
                         "emailAdminName",
@@ -46,6 +47,7 @@ if (checkSession()) {
 
         $aValues = array($fldapServer,
                          $fldapRootDn,
+                         $fldapServerType,
                          $femailServer,
                          $femailAdmin,
                          $femailAdminName,
