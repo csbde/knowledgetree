@@ -42,6 +42,12 @@ if (checkSession()) {
         $oRole->setName($fRoleName);
 
         //check if checkbox checked
+        if (isset($fActive)) {
+            $oRole->setActive(true);
+        } else {
+            $oRole->setActive(false);
+        }        
+        //check if checkbox checked
         if (isset($fReadable)) {
             $oRole->setReadable(true);
         } else {
