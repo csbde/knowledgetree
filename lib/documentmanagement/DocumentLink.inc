@@ -33,7 +33,7 @@ class DocumentLink {
 	function DocumentLink($iNewParentDocumentID, $iNewChildDocumentID) {
 		//object not created yet
 		global $default;
-		$this->iID = -1;
+		$this->iId = -1;
 		$this->iParentDocumentID = $iNewParentDocumentID;
 		$this->iChildDocumentID = $iNewChildDocumentID;
 	}
