@@ -277,8 +277,8 @@ ADD CONSTRAINT PK_groups
 PRIMARY KEY (id) 
 ;
 
-ALTER TABLE groups_users_link 
-ADD CONSTRAINT PK_users_unit 
+ALTER TABLE groups_units_link 
+ADD CONSTRAINT PK_groups_units_link 
 PRIMARY KEY (id) 
 ;
 
