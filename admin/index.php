@@ -1,25 +1,23 @@
 <?php
 
 /**
- * index.php
+ * $Id$
  *
  * This is the index page for the admin
  *
  * Copyright (c) 1999-2002 The Owl Project Team
  * Licensed under the GNU GPL. For full terms see the file COPYING.
- * @version v 1.1.1.1 2002/12/04
+ * @version $Revision$
  * @author michael
  * @package Owl
  */
- 
 
 require("../config/owl.php");
 require("../lib/owl.lib.php");
 require("../config/html.php");
 
 // action selected is to backup then doBackup function is called
-if($action == "backup") 
-{
+if($action == "backup") {
 	dobackup();
 }
 
@@ -27,15 +25,13 @@ include("../lib/header.inc");
 print("<CENTER>");
 
 // if usergroupid invalid then unauthorised view and exit
-if($usergroupid != "0")
-{
-	 die("$lang_err_unauthorized");
+if($usergroupid != "0") {
+    die("$lang_err_unauthorized");
 }
 
 // if not action set ..set action to users
-if(!isset($action))
-{
-	 $action = "users";
+if(!isset($action)) {
+    $action = "users";
 }
 
 //-------------------------------------------------------------
