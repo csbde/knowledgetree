@@ -29,9 +29,9 @@ graphics/      This is where the user interface graphics live.
 lib/           This is where the object model/backend KnowledgeTre classes live.
 locale/        Language specific files..
 log/           The application log files live here
-phpSniff/      phpSniff v 2.1.1..
+phpSniff/      phpSniff v 2.1.3
 phplib/        Database handler classes.
-phpmailer/     phpmailer v 1.62..
+phpmailer/     phpmailer v 1.62
 presentation/  the presentation and business logic scripts
 sql/           Database table creation and population files.
 sync/          Scripts to synchronise the knowledgeTree
@@ -41,6 +41,12 @@ INSTALLATION
 ------------
 
 *  Ensure that you have PHP, MySQL and Apache installed and configured.
+   - Ensure that the following PHP configuration options are set appropriately in php.ini:
+		error_reporting  =  E_ALL & ~E_NOTICE
+		file_uploads = On
+		upload_tmp_dir = C:\PHP\uploadtemp
+		upload_max_filesize = 2M
+		session.use_cookies = 1
 
 *  Move the knowledgeTree folder to the directory it is going to be served from:
    $ mv knowledgeTree /path/to/your/html/directory/
@@ -54,7 +60,7 @@ INSTALLATION
 *  Configure your installation by changing the following attributes in config/environment.php:
    - $default->fileSystemRoot
    - $default->serverName
-   - $default->sslEnabled = true;
+   - $default->sslEnabled
    - $default->authenticationClass
    - $default->dbUser
    - $default->dbPass
@@ -73,8 +79,6 @@ INSTALLATION
    - in a web browser goto http://$default->serverName/$default->rootUrl/
    - default user is "admin" with password "admin"
 
-*  Customise:
-   - in the Administration section, click on System Settings and modify the default values in the database.
    
 - The KnowledgeTree Team
 $Id$
