@@ -1,4 +1,11 @@
 <?php
+
+// document statuses
+DEFINE("LIVE", 1);
+DEFINE("PUBLISHED", 2);
+DEFINE("DELETED", 3);
+DEFINE("ARCHIVED", 4);
+
 require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
 
 /**
@@ -74,7 +81,7 @@ class Document {
         $this->bIsCheckedOut = false;
         $this->iCheckedOutUserID = -1;
         // FIXME: statuses
-        $this->iStatusID = lookupStatusID("Live");
+        $this->iStatusID = LIVE;
     }
 
     /** Get the document primary key */
@@ -226,14 +233,14 @@ class Document {
      * Returns the live status of the document
      */
     function isLive() {
-    	return $this->getStatusID() == lookupStatusID("Live");
+    	return $this->getStatusID() == LIVE;
     }
     
     /**
      * Get status ID wrapper for archived status
      */
     function isArchived() {
-    	return $this->getStatusID() == lookupStatusID("Archived");
+    	return $this->getStatusID() == ARCHIVED;
     }
     
     /** returns the number of days since this document has been last modified **/
@@ -493,7 +500,7 @@ class Document {
 				$oDocument->sFullPath = stripslashes($sql->f("full_path"));
 	            $oDocument->setCheckedOutUserID($sql->f("checked_out_user_id"));
 	            // FIXME: nasty hack- paying the penalty for adding status_id late in phase 2
-	            $oDocument->setStatusID( ($sql->f("status_id") == "" ? lookupStatusID("Live") : $sql->f("status_id")) );
+	            $oDocument->setStatusID( ($sql->f("status_id") == "" ? LIVE : $sql->f("status_id")) );
 	            $oDocument->iId = $iDocumentID;
 	            return $oDocument;
 	        }
@@ -608,6 +615,14 @@ class Document {
             return false;
         }
     }
+
+    /**
+     * Returns the html to display the document icon image
+     */
+    function getIcon() {
+    	global $default;
+    	return generateImage($this->getMimeTypeIconUrl() ? $this->getMimeTypeIconUrl() : "$default->graphicsUrl/unknown.gif");
+    } 
     
     /**
      * Get the full path for a document
@@ -623,8 +638,8 @@ class Document {
     * 
     * @return string full path to document
     */
-    function getDisplayPath() {
-        return Folder::getFolderDisplayPath($this->iFolderID) . " > " . $this->sName;
+    function getDisplayPath($bDisplayIcon = false) {
+        return ($bDisplayIcon ? $this->getIcon() : "") . Folder::getFolderDisplayPath($this->iFolderID) . " > " . $this->sName;
     }
     
     /**
