@@ -54,13 +54,13 @@ if (checkSession()) {
 	                $oPatternCustom->setHtml(getStatusPage($fFolderID, "You cannot edit this folder collaboration process as a document is currently undergoing this collaboration process"));
 	                
 	                $main->setHasRequiredFields(true);
-	                $main->setFormAction("../store.php?fReturnURL=" . urlencode("$default->rootUrl/control.php?action=browse&fFolderID=$fFolderID"));
+	                $main->setFormAction("$default->rootUrl/presentation/lookAndFeel/knowledgeTree/store.php?fReturnURL=" . urlencode("$default->rootUrl/control.php?action=browse&fFolderID=$fFolderID"));
 	            } else if (isset($fCollaborationDelete)) {
 	                //user attempted to delete the folder collaboration process but could not because there is
 	                //a document currently in this process
 	                $oPatternCustom->setHtml(getStatusPage($fFolderID, "You cannot delete this folder collaboration process as a document is currently undergoing this collaboration process"));
 	                $main->setHasRequiredFields(true);
-	                $main->setFormAction("../store.php?fReturnURL=" . urlencode("$default->rootUrl/control.php?action=browse&fFolderID=$fFolderID"));
+	                $main->setFormAction("$default->rootUrl/presentation/lookAndFeel/knowledgeTree/store.php?fReturnURL=" . urlencode("$default->rootUrl/control.php?action=browse&fFolderID=$fFolderID"));
 	            } else {
 	                // does this folder have a document in it that has started collaboration?
 	                $bCollaboration = Folder::hasDocumentInCollaboration($fFolderID);
@@ -69,7 +69,7 @@ if (checkSession()) {
 	                    
 	                $oPatternCustom->setHtml(getPage($fFolderID, "", $bCollaboration));
 	                $main->setHasRequiredFields(true);
-	                $main->setFormAction("../store.php?fReturnURL=" . urlencode("$default->rootUrl/control.php?action=browse&fFolderID=$fFolderID"));
+	                $main->setFormAction("$default->rootUrl/presentation/lookAndFeel/knowledgeTree/store.php?fReturnURL=" . urlencode("$default->rootUrl/control.php?action=browse&fFolderID=$fFolderID"));
 	            }
 	        } else {
 	            //user does not have write permission for this folder,
@@ -80,13 +80,13 @@ if (checkSession()) {
     		// folder doesn't exist
 	        $oPatternCustom->setHtml("<a href=\"javascript:history.go(-1)\"><img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\" /></a>\n");
 	        $main->setErrorMessage("The folder you're trying to modify does not exist in the DMS");
-	        $main->setFormAction("../store.php?fReturnURL=" . urlencode("$default->rootUrl/control.php?action=browse&fFolderID=$fFolderID"));
+	        $main->setFormAction("$default->rootUrl/presentation/lookAndFeel/knowledgeTree/store.php?fReturnURL=" . urlencode("$default->rootUrl/control.php?action=browse&fFolderID=$fFolderID"));
     	}
     } else {
         //else display an error message
         $oPatternCustom->setHtml("<a href=\"javascript:history.go(-1)\"><img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\" /></a>\n");
         $main->setErrorMessage("No folder currently selected");
-        $main->setFormAction("../store.php?fReturnURL=" . urlencode("$default->rootUrl/control.php?action=browse&fFolderID=$fFolderID"));
+        $main->setFormAction("$default->rootUrl/presentation/lookAndFeel/knowledgeTree/store.php?fReturnURL=" . urlencode("$default->rootUrl/control.php?action=browse&fFolderID=$fFolderID"));
     }
 	$main->setCentralPayload($oPatternCustom);						
 	$main->render();
