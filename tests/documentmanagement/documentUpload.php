@@ -1,14 +1,15 @@
 <?php
+
+require_once("../../config/dmsDefaults.php");
+
 /**
 * Contains unit test functionality for upload function of class PhysicalDocumentManager found in 
 * /lib/documentmanagement/PhysicalDocumentManager.inc
 *
 * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
 * @date 17 January 2003
-*
+* @package tests.documentmanagement
 */
-
-require_once("../../config/dmsDefaults.php");
 
 if (checkSession()) {
 	require_once("$default->owl_fs_root/lib/documentmanagement/PhysicalDocumentManager.inc");

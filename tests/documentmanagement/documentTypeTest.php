@@ -1,16 +1,17 @@
 <?php
 
-/**
-* Unit tests for ./lib/documentmanagement/DocumentManager class, 
-* document type functionality
-*
-*/
-
 require_once ("../../config/owl.php");
 require_once ($default->owl_fs_root . "/config/environment.php");
 require_once ($default->owl_fs_root . "/config/dmsDefaults.php");
 require_once ($default->owl_fs_root . "/lib/owl.lib.php");
 require_once ($default->owl_fs_root . "/lib/documentmanagement/DocumentManager.inc");
+
+/**
+* Unit tests for ./lib/documentmanagement/DocumentManager class, 
+* document type functionality
+* @package tests.documentmanagement
+*/
+
 
 /**
 * Database backend unit tests for:

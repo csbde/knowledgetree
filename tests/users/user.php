@@ -1,4 +1,7 @@
 <?php
+
+require_once("../../config/dmsDefaults.php");
+
 /**
 *
 * Unit tests for User class found in /lib/users/User.inc
@@ -8,7 +11,6 @@
 * @package tests.users
 */
 
-require_once("../../config/dmsDefaults.php");
 
 if (checkSession) {
 	require_once("$default->owl_fs_root/lib/users/User.inc");

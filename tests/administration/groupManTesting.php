@@ -3,6 +3,12 @@
 
 <?php
 
+
+require ("./config/dmsDefaults.php");
+//require ("$default->owl_fs_root/lib/db.inc");
+require ("$default->owl_fs_root/lib/dms.inc");
+require ("$default->owl_fs_root/lib/administration/GroupManager.inc");
+
 /*-----------------------------------------------------------------*/
 /**
  * $Id: UserManTesting.php
@@ -25,11 +31,6 @@
  */
 /*-----------------------------------------------------------------*/
 
-
-require ("./config/dmsDefaults.php");
-//require ("$default->owl_fs_root/lib/db.inc");
-require ("$default->owl_fs_root/lib/dms.inc");
-require ("$default->owl_fs_root/lib/administration/GroupManager.inc");
 
 $group = new groupManager;
 

@@ -1,14 +1,15 @@
 <?php
 
+require_once("../../config/dmsDefaults.php");
+
 /**
 * Unit test for class DocumentField found in /lib/documentmanagement/DocumentField.inc
 *
 * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
 * @date 19 January 2003
-*
+* @package tests.web
 */
 
-require_once("../../config/dmsDefaults.php");
 
 if (checkSession) {
 	require_once("$default->owl_fs_root/lib/web/WebDocument.inc");

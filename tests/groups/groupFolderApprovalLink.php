@@ -1,4 +1,7 @@
 <?php
+
+require_once("../../config/dmsDefaults.php");
+
 /**
 * Unit test for class GroupFolderApprovalLink found in /lib/groups/GroupFolderApprovalLink.inc
 *
@@ -8,7 +11,6 @@
 *
 */
 
-require_once("../../config/dmsDefaults.php");
 
 if (checkSession) {
 	require_once("$default->owl_fs_root/lib/groups/GroupFolderApprovalLink.inc");

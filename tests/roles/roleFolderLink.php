@@ -1,4 +1,7 @@
 <?php
+
+require_once("../../config/dmsDefaults.php");
+
 /**
 * @package tests.roles
 *
@@ -6,9 +9,9 @@
 *
 * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
 * @date 20 January 2003
+* @package tests.roles
 */
 
-require_once("../../config/dmsDefaults.php");
 
 if (checkSession) {
 	require_once("$default->owl_fs_root/lib/roles/RoleFolderLink.inc");

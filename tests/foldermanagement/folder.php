@@ -1,4 +1,7 @@
 <?php
+
+require_once("../../config/dmsDefaults.php");
+
 /**
 * Contains unit test code for class Folder in /lib/foldermanagement/Folder.inc
 *
@@ -8,9 +11,9 @@
 *	o storing of object
 *	o updating of object
 *	o deletion of object
+* @package tests.foldermanagement
 */
 
-require_once("../../config/dmsDefaults.php");
 
 if (checkSession()) {
 	require_once("$default->owl_fs_root/lib/foldermanagement/Folder.inc");
