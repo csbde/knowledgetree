@@ -32,7 +32,7 @@ class SubscriptionEngine {
      */
     function fireSubscription($iExternalID, $iSubscriptionAlertType, $iSubscriptionType, $aValues) {
         global $default;
-
+        $default->log->info("fireSubscription ($iExternalID, $iSubscriptionAlertType, $iSubscriptionType, values)");
         // get the list of subscriber addresses that we need to alert
         $aSubscribers = SubscriptionEngine::retrieveSubscribers($iExternalID, $iSubscriptionType);
 
@@ -41,18 +41,13 @@ class SubscriptionEngine {
 
         // if the subscription type is document, fire the folder subscriptions also
         if ($iSubscriptionType == SubscriptionConstants::subscriptionType("DocumentSubscription")) {
-            $oDocument = & Document::get($iExternalID);
-            if ($oDocument) {
-                $default->log->debug("document=$oDocument");
-                $iSubscriptionsSent = SubscriptionEngine::fireSubscription($oDocument->getFolderID(),
-                                      $iSubscriptionAlertType,
-                                      SubscriptionConstants::subscriptionType("FolderSubscription"),
-                                      $aValues);
-                $default->log->info("fired folder subscribers, count=$iSubscriptionsSent");
-            } else {
-                $default->log->error("SubscriptionEngine::fireSubscription could not retrieve document from db, id=$iExternalID");
-                $default->log->error("SubscriptionEngine::fireSubscription not firing folder subscriptions for the parent folder of this document");
-            }
+            $iSubscriptionsSent = SubscriptionEngine::fireSubscription($aValues["folderID"],
+                                  ($iSubscriptionAlertType == SubscriptionConstants::subscriptionAlertType("RemoveSubscribedDocument") ?
+                                  SubscriptionConstants::subscriptionAlertType("RemoveChildDocument") :
+                                  $iSubscriptionAlertType),
+                                  SubscriptionConstants::subscriptionType("FolderSubscription"),
+                                  $aValues);
+            $default->log->info("SubscriptionEngine::fireSubscription fired folder subscribers, count=$iSubscriptionsSent");
         }
 
         // for each subscriber, construct an address based on their notification preferences
