@@ -663,6 +663,7 @@ INSERT INTO system_settings (name, value) values ("useFs", "true");
 INSERT INTO system_settings (name, value) values ("defaultLanguage", "NewEnglish");
 --INSERT INTO system_settings (name, value) values ("notificationLink", "http://$_SERVER[SERVER_NAME]$default->rootUrl/");
 INSERT INTO system_settings (name, value) values ("sessionTimeout", "1200");
+INSERT INTO system_settings (name, value) values ("lastIndexUpdate", "'2002-01-01'");
 
 
 -- document statuses
