@@ -22,10 +22,14 @@ function getViewFailPage($sMessage)
 	return $sToRender;
 }
 
+/** 
+ *	Page to create a new thread
+ *
+ *	@param $fDocumentID -> a valid document ID
+ */
 function getNewThreadOption($fDocumentID) {
-	   global $default;
+	   global $default;   
 	   
-	   $sToRender .= "No discussion thread is currently available.<br><br>";
 	   $sToRender .= "Would you like to create a new Discussion thread for this document?";
 	   $sToRender .= "&nbsp;&nbsp;&nbsp;";
 	   $sToRender .= "<a href=\"" . generateControllerLink("addComment", "fDocumentID=" . $fDocumentID . "&fNewThread=1") . "\"><img src=\"$default->graphicsUrl/widgets/new.gif\" border=\"0\"></a>";
@@ -34,6 +38,11 @@ function getNewThreadOption($fDocumentID) {
 	   return $sToRender;
 }
 
+/** 
+ *	Renders the heading for the page
+ *
+ *	@param $sHeading -> text heading for the page
+ */
 function renderHeading($sHeading) {
     global $default;
         
@@ -47,6 +56,11 @@ function renderHeading($sHeading) {
     return $sToRender;
 }
 
+/** 
+ *	Renders the path for the document
+ *
+ *	@param $fDocumentID -> a valid document ID
+ */
 function renderDocumentPath($iDocumentID) {
     global $default;
 	
@@ -58,6 +72,16 @@ function renderDocumentPath($iDocumentID) {
     return "<table border=0 cellpadding=\"5\" width = 100%><tr><td bgcolor=\"$sTDBGColour\">$sDocumentPath</td></tr></table>\n";
 }
 
+/** 
+ *	Views the list of comments for a document
+ *  Prints out 1 comment 
+ *  User needs to call this function many times to list all comments  
+ *
+ *	@param $iNum -> its the iterative index of the current comment
+ *	@param $iThread -> a valid Thread Object
+ *	@param $oComment -> a valid Comment Object
+ *	@param $oUser -> a valid User Object (Logged in user)
+ */
 function getViewComment($iNum,$oThread,$oComment,$oUser) {
 	global $default;
 		
@@ -98,7 +122,13 @@ function getViewComment($iNum,$oThread,$oComment,$oUser) {
 	return $sToRender; 
 }
 
-//function getCommentBody($sCommentBody, $sCommentSubject,$dDate,$iDocumentID, $sUserName) {
+/** 
+ *	Views a single thread comment with its text body  
+ * 
+ *	@param $iDocumentID -> a valid Document ID
+ *	@param $oComment -> a valid Comment Object
+ *	@param $oUser -> a valid User Object (Logged in user)
+ */
 function getCommentBody($oComment, $iDocumentID, $oUser) {
 	global $default;
 	
@@ -112,21 +142,14 @@ function getCommentBody($oComment, $iDocumentID, $oUser) {
 	$sToRender .= "<input onmouseover=\"this.style.cursor='hand'\" type=\"submit\" style=\"BORDER-RIGHT: 0px groove; BORDER-TOP: 0px groove; BACKGROUND-IMAGE: url($default->graphicsUrl/widgets/reply.gif); BORDER-LEFT: 0px groove; WIDTH: 40px; BORDER-BOTTOM: 0px groove; HEIGHT: 18; BACKGROUND-COLOR: white\" height=\"20\" value=\" \" width=\"200\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 	$sToRender .= "</td></tr>\n"; 
 	$sToRender .= "<tr><td width=\"1\" style=\"background-color:#F5F6EE;\" valign=\"top\"><b>Subject: </b></td><td width=405 style=\"background-color:#F5F6EE;\">";
-	$sToRender .= "<input name=\"CommentSubject\" id=\"CommentSubject\" style=\"background-color:#F5F6EE;BORDER-TOP-WIDTH: 0px; BORDER-LEFT-WIDTH: 0px; BORDER-BOTTOM-WIDTH: 0px; WIDTH: 100%; BORDER-RIGHT-WIDTH: 0px\" readOnly width=0 value=\"" . $oComment->getSubject() . "\">";	
+	$sToRender .= "<input name=\"CommentSubject\" id=\"CommentSubject\" style=\"background-color:#F5F6EE;BORDER-TOP-WIDTH: 0px; BORDER-LEFT-WIDTH: 0px; BORDER-BOTTOM-WIDTH: 0px; WIDTH: 100%; BORDER-RIGHT-WIDTH: 0px;width=80%\" readOnly  value=\"" . $oComment->getSubject() . "\">";
 	$sToRender .= "</td><td><b>Date: </b><font color=\"#056DCE\">" . $oComment->getDate() . "</font>&nbsp;&nbsp;&nbsp;</td></tr><tr><td colspan=3 valign=top>";	
 	$sToRender .= "<TEXTAREA readOnly name=\"Comment\" id=\"Comment\"  rows=40 cols=100 style=\"BORDER-WIDTH: 0px;FONT-FAMILY: sans-serif;\"> ";
 	$sToRender .= urldecode($oComment->getBody());
 	$sToRender .= "</textarea></td>";
-	$sToRender .= "</tr></table> ";
-			
+	$sToRender .= "</tr></table> ";		
 	
 	return $sToRender;	
 }
 
-function viewDiscussionPage() {
-	global $default;
-	
-	$sToRender = "";
-	return $sToRender;	
-}
 ?>
