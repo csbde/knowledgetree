@@ -336,6 +336,9 @@ function renderNonEditableLinkedDocuments($oDocument) {
 
 function displayActionButtons($oDocument, $bEdit) {
     global $default;
+    
+    // TODO: change to view
+    $sToRender .= "<tr><td align=\"left\"><a onClick=\"alert('This will download a copy of the document and is not the same as Checking Out a document.  Changes to this downloaded file will not be managed in the DMS.'); return true;\" href=\"" . generateControllerLink("downloadDocument", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/docactions/download.gif\" border=\"0\" /></a></td></tr>\n";    
     if ($bEdit) {
          // display the check in button if the document is checked out and you checked the document out
         if ($oDocument->getIsCheckedOut() && ($oDocument->getCheckedOutUserID() == $_SESSION["userID"])) {
@@ -361,15 +364,22 @@ function displayActionButtons($oDocument, $bEdit) {
     // otherwise display the subscribe button
     } else {
         $sToRender .= "<tr><td align=\"left\"><a href=\"" . generateControllerLink("addSubscription", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/docactions/subscribe.gif\" border=\"0\" /></a></td></tr>\n";
-    }
-    $sToRender .= "<tr><td align=\"left\"><a onClick=\"alert('This will download a copy of the document and is not the same as Checking Out a document.  Changes to this downloaded file will not be managed in the DMS.'); return true;\" href=\"" . generateControllerLink("downloadDocument", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/docactions/download.gif\" border=\"0\" /></a></td></tr>\n";    
+    }   
     $sToRender .= "<tr><td align=\"left\"><a href=\"" . generateControllerLink("viewDiscussion", "fDocumentID=" . $oDocument->getID() . "&fForDiscussion=1") . "\"><img src=\"$default->graphicsUrl/widgets/docactions/discussion.gif\" border=\"0\" /></a></td></tr>\n";
     // only display the archive button for available documents
     if (!$oDocument->getIsCheckedOut() || !$oDocument->hasCollaboration() || (!DocumentCollaboration::documentCollaborationStarted($oDocument->getID()))) {
     	$sToRender .= "<tr><td align=\"left\"><a href=\"" . generateControllerLink("archiveDocument", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/docactions/archive.gif\" border=\"0\" /></a></td></tr>\n";
     }
     $sToRender .= "<td align=\"left\"><a href=\"" . generateControllerLink("createDependantDocument", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/docactions/dependentdoc.gif\" border=\"0\" /></a></td>\n";
-    			
+
+	// spacing hack
+	if (!$bEdit) {
+		$sToRender .= "<tr><td align=\"left\">&nbsp;</td></tr>\n";
+		$sToRender .= "<tr><td align=\"left\">&nbsp;</td></tr>\n";
+		$sToRender .= "<tr><td align=\"left\">&nbsp;</td></tr>\n";
+		$sToRender .= "<tr><td align=\"left\">&nbsp;</td></tr>\n";
+	}
+	    			
     return $sToRender;
 }
 
