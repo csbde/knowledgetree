@@ -41,7 +41,7 @@ if (checkSession()) {
 				$oPatternCustom->setHtml(getPage($oParentDocument->getName(), $oChildDocument->getName(), $fParentDocumentID));
 				$main->setCentralPayload($oPatternCustom);
 				$main->setFormAction($_SERVER["PHP_SELF"] . "?fDocumentLinkID=$fDocumentLinkID&fParentDocumentID=$fParentDocumentID&fChildDocumentID=$fChildDocumentID&fForDelete=1");
-				$mail->setErrorMessage("An error occured whilst attempting to delete the link between the two documents");	
+				$main->setErrorMessage("An error occured whilst attempting to delete the link between the two documents");	
 				$main->render();				
 			}			
 		} else {
