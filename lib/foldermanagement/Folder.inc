@@ -485,7 +485,9 @@ class Folder extends KTEntity {
             return false;
         }
 		if (strlen($oFolder->sParentFolderIDs) > 0) {
-			if (strlen($oFolder->sParentFolderIDs) > 1) {				
+            if ($oFolder->iParentID == 0) {
+                $aPathArray = array();
+            } else if (strlen($oFolder->sParentFolderIDs) > 1) {				
 				$aPathArray = explode(",",$oFolder->sParentFolderIDs);				
 			} else {
 				$aPathArray = array($oFolder->sParentFolderIDs);
