@@ -343,9 +343,11 @@ $default->siteMap->addDefaultPage("help", "/presentation/lookAndFeel/knowledgeTr
 $default->siteMap->addDefaultPage("logout", "/presentation/logout.php", "Logout", Guest, "Logout");
 
 // pages for discussion threads
-$default->siteMap->addDefaultPage("viewDiscussion", "/presentation/lookAndFeel/knowledgeTree/discussions/viewDiscussionBL.php", "Manage Documents", User, "viewDiscussion");
-//$default->siteMap->addDefaultPage("editPrefsSuccess", "/presentation/lookAndFeel/knowledgeTree/preferences/editPrefsSuccess.php", "Preferences", User, "Preferences",false);
+$default->siteMap->addDefaultPage("viewDiscussion", "/presentation/lookAndFeel/knowledgeTree/discussions/viewDiscussionBL.php", "Discussion Threads", User, "viewDiscussion"); 
+$default->siteMap->addDefaultPage("addComment", "/presentation/lookAndFeel/knowledgeTree/discussions/addCommentBL.php", "Discussion Threads", User, "addComment"); 
 
+$default->siteMap->addSectionColour("Discussion Threads", "td", "BDDFE0");
+$default->siteMap->addSectionColour("Discussion Threads", "th", "57AFAE");
 
 // test pages
 $default->siteMap->addPage("scratchPad", "/tests/scratchPad.php", "Tests", Guest, "scratch", false);
