@@ -78,7 +78,7 @@ function checkSession() {
         $url = "/login.php?loginAction=loginForm";
         
         $redirect = $_SERVER[PHP_SELF];
-        if (strlen($redirect) > 1) {
+        if ((strlen($redirect) > 1) && ($redirect != "/control.php")) {
             $default->log->debug("checkSession:: redirect url=$redirect");
             // this session verification failure represents either the first visit to 
             // the site OR a session timeout etc. (in which case we still want to bounce
