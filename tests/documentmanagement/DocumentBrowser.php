@@ -1,4 +1,8 @@
 <?php
+
+require_once ("../../config/dmsDefaults.php");
+require_once ("$default->owl_fs_root/lib/documentmanagement/DocumentBrowser.inc");
+
 /**
  * $Id$
  * 
@@ -8,13 +12,12 @@
  *      browseByCategory($category)
  *      browseByDocumentType($documentTypeID) 
  *
+ * Licensed under the GNU GPL. For full terms see the file COPYING.
+ * 
  * @version $Revision$ 
- * @author <a href="mailto:michael@jamwarehouse.com">Michael Joseph</a>, Jam Warehouse (Pty) Ltd, South Africa
+ * @author Michael Joseph <michael@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
  * @package tests/documentmanagement
  */
-
-require_once ("../../config/dmsDefaults.php");
-require_once ("$default->owl_fs_root/lib/documentmanagement/DocumentBrowser.inc");
 
 // -------------------------------
 // page start
