@@ -144,9 +144,12 @@ class PatternEditableTableSqlQuery {
 			$iRowCount = 0;
 			while ($sql->next_record()) {				
 				$sToRender .= "<tr>\n";
+                $_SESSION["pelfq_" . $this->sUniqueName . $iRowCount . "_id"] = $sql->f("id");
+                $_SESSION["pelfq_" . $this->sUniqueName . $iRowCount . "_tn"] = $this->sTableName;
+                $_SESSION["pelfq_" . $this->sUniqueName . $iRowCount . "_columns"] = $this->aStoreColumnNames;
 				$sToRender .= "<input type=\"hidden\" name=\"unique_start_" . $this->sUniqueName . $iRowCount . "\" value=\"\" />\n";
-				$sToRender .= "<input type=\"hidden\" name=\"" . $this->sUniqueName . "_" . $iRowCount . "\" value=\"" . $sql->f("id") . "\" />\n";
-				$sToRender .= "<input type=\"hidden\" name=\"" . $this->sUniqueName . "_" . $iRowCount . "_tn\" value=\"" . $this->sTableName . "\" />\n";
+				// $sToRender .= "<input type=\"hidden\" name=\"" . $this->sUniqueName . "_" . $iRowCount . "\" value=\"" . $sql->f("id") . "\" />\n";
+				// $sToRender .= "<input type=\"hidden\" name=\"" . $this->sUniqueName . "_" . $iRowCount . "_tn\" value=\"" . $this->sTableName . "\" />\n";
                 
                 // check for is_mandatory field validation
                 if ($sql->f("is_mandatory") == "1") {
