@@ -18,7 +18,6 @@ require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentTransactio
 require_once("$default->fileSystemRoot/lib/documentmanagement/PhysicalDocumentManager.inc");
 require_once("$default->fileSystemRoot/lib/subscriptions/SubscriptionEngine.inc");
 require_once("$default->fileSystemRoot/lib/subscriptions/SubscriptionManager.inc");
-require_once("$default->fileSystemRoot/lib/web/WebDocument.inc");
 
 require_once("$default->fileSystemRoot/presentation/Html.inc");
 
@@ -75,15 +74,6 @@ if (checkSession()) {
                                 } else {
                                     $default->log->error("deleteDocumentBL.php couldn't remove document subscriptions");
                                 }
-
-								// TODO: move to expunge								
-								//remove any document word links that this document may have
-								//Document::deleteFromDocumentText($fDocumentID);
-								
-								// TODO: move to expunge																
-                                // delete the corresponding web document entry
-//                                $oWebDocument = WebDocument::get(lookupID($default->owl_web_documents_table, "document_id", $fDocumentID));
-//                                $oWebDocument->delete();
                                 
                                 // redirect to the browse folder page							
                                 redirect("$default->rootUrl/control.php?action=browse&fFolderID=" . $oDocument->getFolderID());
