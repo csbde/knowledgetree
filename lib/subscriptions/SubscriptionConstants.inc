@@ -36,7 +36,9 @@ class SubscriptionConstants {
                              "RemoveFolder" => 2,
                              "AddDocument" => 3,
                              "RemoveDocument" => 4,
-                             "ModifyDocument" => 5);
+                             "ModifyDocument" => 5,
+                             "CheckInDocument" => 6,
+                             "CheckOutDocument" => 7);
         return $aChangeType[$sType];
     }
 }
