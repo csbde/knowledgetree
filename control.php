@@ -39,7 +39,6 @@ if (checkSessionAndRedirect(false)) {
 // need to strip query string params from action before attempting to retrieve from sitemap
 
 // check for the presence of additional params
-$default->log->info("control.php qs=" . $_SERVER["QUERY_STRING"]);
 if (strstr($_SERVER["QUERY_STRING"], "&")) {
     // strip and save the querystring
     $queryString = substr($_SERVER["QUERY_STRING"], strpos($_SERVER["QUERY_STRING"], "&")+1, strlen($_SERVER["QUERY_STRING"]));
@@ -49,19 +48,16 @@ if (strstr($_SERVER["QUERY_STRING"], "&")) {
     // update
     $action = substr($_SERVER["QUERY_STRING"], 0, strpos($_SERVER["QUERY_STRING"], "?"));
 }
-$default->log->info("control.php qs=$queryString; action=$action");
     
 // retrieve the page from the sitemap (checks whether this user has access to the requested page)
 $page = $default->siteMap->getPage($action, $_SESSION["userID"]);
 
-$default->log->debug("retrieved page=$page from SiteMap");
 if (!$page) {
     // this user doesn't have permission to access the page
     // or there is no page mapping for the requested action
     // redirect to no permission page
     redirect("$default->owl_ui_url/noAccess.php");
 } else {
-    $default->log->debug("control.php redirect=$redirect");
     $page = $default->owl_root_url . $page;
     // set authorised flag and redirect
     // strip querystring from the page returned from the sitemap
@@ -69,7 +65,6 @@ if (!$page) {
     // access by checking $_SESSION["pageAccess"][$_SERVER["PHP_SELF"] ie. without querystring(?)
     if (strstr($page, "?")) {
         $accessPage = substr($page, 0, strpos($page, "?"));
-        $default->log->debug("control.php: page without querystring=$accessPage; with=$page");
     } else {
         $accessPage = $page;
     }
@@ -80,7 +75,6 @@ if (!$page) {
     }
     
     $_SESSION["pageAccess"][$accessPage] = true;
-    $default->log->debug("control.php: just set SESSION[\"pageAccess\"][$accessPage]=" . $_SESSION["pageAccess"][$accessPage]);
     // if we have a querystring add it on
     if (strlen($queryString) > 0) {
         $page = $page . (strstr($page, "?") ? "&$queryString" : "?$queryString");
