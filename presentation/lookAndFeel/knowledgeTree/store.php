@@ -80,7 +80,8 @@ for ($i = 0; $i < count($aKeys); $i++) {
 			$sRowStart = $aKeys[$i];			
 			
 			$iColumnCount++;
-		}
+		}		
+		
 		
 		if ($iPrimaryKey < 0) {
 			//perform an insert
@@ -138,7 +139,7 @@ for ($i = 0; $i < count($aKeys); $i++) {
 			//perform an update
 			$sQuery = "UPDATE $sTableName SET ";
 			for ($j = 0; $j < count($aColumns) -1; $j++) {
-				$sQuery .= $aColumns[$j] . " = ";
+				$sQuery .= $aColumns[$j] . " = ";				
 				switch ($aTypes[$j]) {
 					case 0:
 						//id
@@ -147,15 +148,15 @@ for ($i = 0; $i < count($aKeys); $i++) {
 					case 1:
 						$sQuery .= "'" . addslashes($aValues[$j]) . "', ";
 						break;
-					case 2:
-						$sQuery .= $aValues[$j] . ", ";
+					case 2:						
+						$sQuery .= ($aValues[count($aTypes) -1] ? 1 : 0) . ", ";
 						break;
 					case 3:
 						$sQuery .= $aValues[$j] . ", ";
 						break;
 					default:
 						break;
-				}
+				}				
 			}
 			$sQuery .= $aColumns[count($aTypes) -1] . " = ";
 			switch ($aTypes[count($aTypes) -1]) {
