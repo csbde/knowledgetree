@@ -19,10 +19,17 @@ id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 name CHAR(255) NOT NULL
 )TYPE = InnoDB;
 
-CREATE TABLE dependant_documents ( 
+CREATE TABLE dependant_document_instance ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 document_title TEXT,
 user_id INTEGER,
+template_document_id INTEGER
+) TYPE = InnoDB;
+
+CREATE TABLE dependant_document_template ( 
+id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
+document_title TEXT,
+default_user_id INTEGER,
 template_document_id INTEGER
 ) TYPE = InnoDB;
 
@@ -442,8 +449,13 @@ PRIMARY KEY (id)
 ;
 
 
-ALTER TABLE dependant_documents 
-ADD CONSTRAINT PK_new_documents 
+ALTER TABLE dependant_document_instance
+ADD CONSTRAINT PK_new_documents_instance
+PRIMARY KEY (id) 
+;
+
+ALTER TABLE dependant_document_template
+ADD CONSTRAINT PK_new_document_template
 PRIMARY KEY (id) 
 ;
 
