@@ -143,7 +143,7 @@ function renderArchiveSettingsForm($iDocumentID, $oArchiveSettings, $iArchivingT
 			
 			$sToRender .= "<tr><th align=\"left\" colspan=\"2\">Archive By Date</th></tr>";						
 			$sToRender .= "<tr><td>Expiration Date:</td></tr>";
-			$sToRender .= "<tr><td valign=bottom><input type=\"text\" name=\"fExpirationDate\" size=\"11\" " . ($oArchiveSettings ? "value=\"" . ($oArchiveSettings->getExpirationDate() == "0000-00-00" ? "" : $oArchiveSettings->getExpirationDate()) : "") . "\">";
+			$sToRender .= "<tr><td valign=bottom><input type=\"text\" name=\"fExpirationDate\" size=\"11\" " . ($oArchiveSettings ? "value=\"" . ($oArchiveSettings->getExpirationDate() == "0000-00-00" ? "" : $oArchiveSettings->getExpirationDate()) . "\"" : "") . ">";			
 			$sToRender .= "&nbsp;&nbsp;<a href=\"javascript:show_calendar('MainForm.fExpirationDate',null,null,'YYYY-MM-DD');\" onmouseover=\"window.status='Date Picker';return true;\" onmouseout=\"window.status='';return true;\"><img src=\"$default->graphicsUrl/calendar/calendar.gif\" name=\"imgCalendar\" width=\"34\" height=\"21\" border=\"0\" alt=\"\"></a>";
 			$sToRender .= "&nbsp;&nbsp;<a href=\"javascript:void();\" onclick=\"document.MainForm.fExpirationDate.value=''\"><img src=\"$default->graphicsUrl/widgets/reset.gif\" border=\"0\"></a></td></tr>";
 					
