@@ -73,6 +73,8 @@ $default->owl_groups_table = "groups_lookup";
 $default->owl_groups_units_table = "groups_units_link";
 // links
 $default->owl_links_table = "links";
+// Table with metadata
+$default->owl_metadata_table = "metadata_lookup";
 // Table with mime info
 $default->owl_mime_table = "mime_types";
 // organisation information
@@ -213,8 +215,8 @@ $default->siteMap->addPage("removeUserFromGroup", "/presentation/lookAndFeel/kno
 //document type management
 $default->siteMap->addPage("doctype", "/presentation/lookAndFeel/knowledgeTree/administration/admin.php?sectionName=documentTypeAdministration", "doctypeAdministration", SysAdmin, "Document Type Management");
 $default->siteMap->addPage("docfield", "/presentation/lookAndFeel/knowledgeTree/administration/admin.php?sectionName=documentFieldAdministration", "doctypeAdministration", SysAdmin, "Document Field Management");
-$default->siteMap->addPage("assignDocTypeToField", "/presentation/lookAndFeel/knowledgeTree/administration/doctypefieldmanagement/assignDocTypeToFieldBL.php", "doctypeAdministration", SysAdmin, "Assign Document Type To Field");
-$default->siteMap->addPage("removeDocTypeFromField", "/presentation/lookAndFeel/knowledgeTree/administration/doctypefieldmanagement/removeDocTypeFromFieldBL.php", "doctypeAdministration", SysAdmin, "Remove Document Type From Field");
+$default->siteMap->addPage("assignDocTypeToField", "/presentation/lookAndFeel/knowledgeTree/administration/doctypefieldmanagement/assignDocTypeToFieldBL.php", "doctypeAdministration", SysAdmin, "Assign Field To Type");
+$default->siteMap->addPage("removeDocTypeFromField", "/presentation/lookAndFeel/knowledgeTree/administration/doctypefieldmanagement/removeDocTypeFromFieldBL.php", "doctypeAdministration", SysAdmin, "Remove Field from Type");
 // document type stuff
 $default->siteMap->addPage("addDocType", "/presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/addDocTypeBL.php", "documentTypeAdministration", SysAdmin, "Add a Document Type");
 $default->siteMap->addPage("addDocTypeSuccess", "/presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/addDocTypeSuccess.php", "documentTypeAdministration", SysAdmin, "Add a Document Type success", False);
@@ -225,7 +227,12 @@ $default->siteMap->addPage("addDocField", "/presentation/lookAndFeel/knowledgeTr
 $default->siteMap->addPage("addDocFieldSuccess", "/presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/addDocFieldSuccess.php", "documentFieldAdministration", SysAdmin, "Add a Document Field success", False);
 $default->siteMap->addPage("editDocField", "/presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/editDocFieldBL.php", "documentFieldAdministration", SysAdmin, "Edit a Document Field");
 $default->siteMap->addPage("removeDocField", "/presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/removeDocFieldBL.php", "documentFieldAdministration", SysAdmin, "Remove a Document Field");
+$default->siteMap->addPage("metadata", "/presentation/lookAndFeel/knowledgeTree/administration/admin.php?sectionName=metaDataAdministration", "documentFieldAdministration", SysAdmin, "MetaData Management");
 
+//metadata
+$default->siteMap->addPage("addMetaData", "/presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/metadatamanagement/addMetaDataBL.php", "metaDataAdministration", SysAdmin, "Add New MetaData");
+$default->siteMap->addPage("editMetaData", "/presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/metadatamanagement/editMetaDataBL.php", "metaDataAdministration", SysAdmin, "Edit MetaData");
+$default->siteMap->addPage("removeMetaData", "/presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/metadatamanagement/removeMetaDataBL.php", "metaDataAdministration", SysAdmin, "Remove MetaData from Field");
 // rolemanagement
 $default->siteMap->addPage("addRole", "/presentation/lookAndFeel/knowledgeTree/administration/rolemanagement/addRoleBL.php", "roleAdministration", SysAdmin, "Add New Role");
 $default->siteMap->addPage("editRole", "/presentation/lookAndFeel/knowledgeTree/administration/rolemanagement/editRoleBL.php", "roleAdministration", SysAdmin, "Edit Role Properties");
