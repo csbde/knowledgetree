@@ -28,6 +28,7 @@ if (checkSession()) {
     if(!isset($fGroupSet)) {
         // build first page
         $oPatternCustom->setHtml(getPage(null,null));
+        $main->setHasRequiredFields(true);
         $main->setFormAction($_SERVER["PHP_SELF"] . "?fGroupSet=1");
     } else {
         // do a check to see both drop downs selected
@@ -38,6 +39,7 @@ if (checkSession()) {
             // if it does'nt ..then go to normal page
             if($unitLink == false) {
                 $oPatternCustom->setHtml(getPage($fGroupID,$fUnitID));
+                $main->setHasRequiredFields(true);
                 $main->setFormAction($_SERVER["PHP_SELF"] . "?fGroupSet=1&fGroupAssign=1");
             } else {
                 //if it does...then go to failure page
