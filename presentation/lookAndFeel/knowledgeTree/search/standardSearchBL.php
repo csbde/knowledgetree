@@ -24,6 +24,8 @@ if (checkSession()) {
 	if (!isset($fStartIndex)) {
 		$fStartIndex = 0;
 	}
+	//escape the search string
+	$fStandardSearchString = addslashes($fStandardSearchString);
 	
 		if (strlen($fBrowseType) > 0) {
 			//the user was browsing by a specific type
