@@ -38,6 +38,8 @@
 
 require_once("../../../../config/dmsDefaults.php");
 
+KTUtil::extractGPC('fBeginCollaboration', 'fCheckedOut', 'fCollaborationEdit', 'fCollaborationStepComplete', 'fComment', 'fDocumentID', 'fFireSubscription', 'fFolderName', 'fForPublish', 'fShowSection', 'fSubmit', 'fWebSiteID');
+
 require_once("$default->fileSystemRoot/lib/security/Permission.inc");
 
 require_once("$default->fileSystemRoot/lib/email/Email.inc");

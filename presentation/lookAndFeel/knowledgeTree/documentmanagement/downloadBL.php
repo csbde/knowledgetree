@@ -30,6 +30,8 @@
 
 require_once("../../../../config/dmsDefaults.php");
 
+KTUtil::extractGPC('fDocumentID', 'fForInlineView', 'fVersion');
+
 require_once("$default->fileSystemRoot/lib/security/Permission.inc");
 require_once("$default->fileSystemRoot/lib/documentmanagement/PhysicalDocumentManager.inc");
 require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentTransaction.inc");

@@ -31,6 +31,8 @@
 
 require_once("../../../../config/dmsDefaults.php");
 
+KTUtil::extractGPC('fFolderID', 'fStore', 'fDocumentTypeID', 'fName', 'fDependantDocumentID');
+
 if (checkSession()) {
     require_once("$default->fileSystemRoot/lib/visualpatterns/PatternTableSqlQuery.inc");
     require_once("$default->fileSystemRoot/lib/visualpatterns/PatternMetaData.inc");

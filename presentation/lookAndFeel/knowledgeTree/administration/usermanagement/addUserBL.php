@@ -26,6 +26,11 @@
  */
  
 require_once("../../../../../config/dmsDefaults.php");
+
+KTUtil::extractGPC('fAddToDb', 'fEmail', 'fEmailNotification', 'fFromDb');
+KTUtil::extractGPC('fGroupID', 'fLdap', 'fMobile', 'fName', 'fPassword');
+KTUtil::extractGPC('fSearch', 'fSelectedUser', 'fUsername');
+
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternListBox.inc");
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCreate.inc");
 require_once("$default->fileSystemRoot/lib/users/User.inc");

@@ -30,6 +30,9 @@
  */
 
 require_once("../../../../config/dmsDefaults.php");
+
+KTUtil::extractGPC('fDocumentTypeID', 'fFolderID', 'fFolderName');
+
 require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
     
 if (checkSession()) {

@@ -27,6 +27,8 @@
 
 require_once("../../../../../config/dmsDefaults.php");
 
+KTUtil::extractGPC('fGroupAssign', 'fGroupID', 'fGroupSet', 'fUnitID');
+
 if (checkSession()) {
     require_once("$default->fileSystemRoot/lib/visualpatterns/PatternListBox.inc");
     require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCreate.inc");

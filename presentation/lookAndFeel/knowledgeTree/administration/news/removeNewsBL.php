@@ -1,6 +1,9 @@
 <?php
 
 require_once("../../../../../config/dmsDefaults.php");
+
+KTUtil::extractGPC('fDeleteConfirmed', 'fNewsID');
+
 require_once("$default->fileSystemRoot/lib/dashboard/DashboardNews.inc");
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternMainPage.inc");
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");

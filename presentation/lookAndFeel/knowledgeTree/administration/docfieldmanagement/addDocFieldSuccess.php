@@ -27,6 +27,8 @@
 
 require_once("../../../../../config/dmsDefaults.php");
 
+KTUtil::extractGPC('fDocFieldID');
+
 if(checkSession()) {
 	require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentField.inc");
 	

@@ -51,7 +51,7 @@ function getNameDisplay($sName) {
        return "<table><tr><td><b>" . _("Filter By Name") . " </b></td><td><input type=\"text\" size=\"20\" name=\"fName\" value=\"$sName\" /> <input type=\"button\" value=\"Go\" onCLick=\"document.MainForm.submit()\"></td></tr></table>";
 }
 
-function getUsers($fGroupID, $sName) {
+function getUsers($iGroupID, $sName) {
 	global $default;
 	// changed from inner to outer joins to include users that aren't in any groups (Stefano Ciancio [s.ciancio@pisa.iol.it]) 
 	$sQuery = 	"SELECT DISTINCT U.id as userID, U.name as name, U.username, " . 
@@ -60,8 +60,8 @@ function getUsers($fGroupID, $sName) {
 				"LEFT OUTER JOIN $default->users_groups_table UGL ON U.id = UGL.user_id " .
 				"LEFT OUTER JOIN $default->groups_table GL ON UGL.group_id = GL.id ";
 	// filter by group				
-	if ($fGroupID) {
-		$sWhereClause = "WHERE UGL.group_id = $fGroupID ";
+	if ($iGroupID) {
+		$sWhereClause = "WHERE UGL.group_id = $iGroupID ";
 	}
 	// filter by name				
 	if ($sName) {
@@ -93,7 +93,7 @@ function getUsers($fGroupID, $sName) {
     return $oSearchResults->render() ;	
 }
 
-function getPage($fGroupID, $sName) {
+function getPage($iGroupID, $sName) {
 	global $default;
 	$sToRender .= renderHeading(_("User Management"));
 
@@ -101,9 +101,9 @@ function getPage($fGroupID, $sName) {
 	if (Permission::userIsSystemAdministrator()) {
 		$sToRender .= getAddLink("addUser", _("Add A User"));
 	}
-	$sToRender .= getGroupDisplay($fGroupID);
+	$sToRender .= getGroupDisplay($iGroupID);
 	$sToRender .= getNameDisplay($sName);
-	$sToRender .= getUsers($fGroupID, $sName);
+	$sToRender .= getUsers($iGroupID, $sName);
 	return $sToRender;
 }
 ?>

@@ -27,6 +27,9 @@
  */
 
 require_once("../../../../config/dmsDefaults.php");
+
+KTUtil::extractGPC('fDeleteConfirmed', 'fFolderID'); 
+
 require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
 require_once("$default->fileSystemRoot/lib/foldermanagement/FolderCollaboration.inc");
 require_once("$default->fileSystemRoot/lib/foldermanagement/FolderDocTypeLink.inc");

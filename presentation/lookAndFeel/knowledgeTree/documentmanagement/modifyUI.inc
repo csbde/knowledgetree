@@ -71,7 +71,7 @@ function getDocumentType($iFolderID, $iDocumentTypeID) {
 
 
 
-function renderPage($oDocument, $iDocumentTypeID, $fFirstEdit) {
+function renderPage($oDocument, $iDocumentTypeID, $bFirstEdit) {
     global $default;	
 	$sToRender = renderHeading(_("Edit Document Details"));
 	$sToRender .= displayDocumentPath($oDocument->getID());	
@@ -84,7 +84,7 @@ function renderPage($oDocument, $iDocumentTypeID, $fFirstEdit) {
     $sToRender .= "<table>\n";
     $sToRender .= "<tr>\n";
     $sToRender .= "<td><input type=\"image\" src=\"" . KTHtml::getUpdateButton() . "\" border=\"0\"/><td>\n";	
-	if (!isset($fFirstEdit)) {
+	if (!isset($bFirstEdit)) {
 		//can't this action on a first time upload, you must fill out the necessary fields
 		$sToRender .= "<td><a href=\"$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $oDocument->getID() . "\"><img src=\"" . KTHtml::getCancelButton() . "\" border=\"0\" /></a><td>\n";
 	}

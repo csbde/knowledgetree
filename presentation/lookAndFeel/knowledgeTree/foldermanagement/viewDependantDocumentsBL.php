@@ -31,6 +31,10 @@
 
 require_once("../../../../config/dmsDefaults.php");
 
+KTUtil::extractGPC('fDependantDocumentTemplateID', 'fDocument', 'fDocumentTitle');
+KTUtil::extractGPC('fFolderCollaborationID', 'fFolderID', 'fForAdd', 'fForEdit');
+KTUtil::extractGPC('fForStore', 'fForUpdate', 'fTargetDocumentID', 'fUnitID', 'fUserID');
+
 if (checkSession()) {	
 	if (isset($fFolderID) && isset($fFolderCollaborationID)) {
 		

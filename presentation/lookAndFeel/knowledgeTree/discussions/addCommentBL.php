@@ -26,6 +26,9 @@
  */
  
 require_once("../../../../config/dmsDefaults.php");
+
+KTUtil::extractGPC('fAddCommentSubmit', 'fComment', 'fCommentID', 'fDocumentID', 'fInReplyTo', 'fNewComment', 'fNewThread', 'fReplyComment', 'fSubject', 'fThreadID');
+
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCreate.inc");
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternMainPage.inc");    
 require_once("addCommentUI.inc"); //###    

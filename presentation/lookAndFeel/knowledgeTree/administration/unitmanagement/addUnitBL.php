@@ -25,6 +25,9 @@
  * @package administration.unitmanagement
  */
 require_once("../../../../../config/dmsDefaults.php");
+
+KTUtil::extractGPC('fForStore', 'fOrgID', 'fUnitName');
+
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternListBox.inc");
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCreate.inc");
 require_once("$default->fileSystemRoot/lib/unitmanagement/Unit.inc");

@@ -26,6 +26,9 @@
  */
 require_once("../../../../../config/dmsDefaults.php");
 
+KTUtil::extractGPC('fSuccess');
+
+// XXX: copious default
 global $default;
 
 if(checkSession()) {

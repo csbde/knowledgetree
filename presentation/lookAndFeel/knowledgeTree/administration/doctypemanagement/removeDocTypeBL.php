@@ -27,6 +27,8 @@
  
 require_once("../../../../../config/dmsDefaults.php");
 
+KTUtil::extractGPC('fDocTypeID', 'fDocTypeName', 'fForDelete');
+
 if (checkSession()) {
 	require_once("$default->fileSystemRoot/lib/visualpatterns/PatternListBox.inc");
 	require_once("$default->fileSystemRoot/lib/visualpatterns/PatternEditableListFromQuery.inc");

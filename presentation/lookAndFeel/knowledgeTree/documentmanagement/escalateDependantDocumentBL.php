@@ -28,6 +28,8 @@
 
 require_once("../../../../config/dmsDefaults.php");
 
+KTUtil::extractGPC('fInstanceID', 'fReminderMessage', 'fSendMessage', 'fUserID');
+
 if (checkSession()) {
 	require_once("escalateDependantDocumentUI.inc");
 	require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");

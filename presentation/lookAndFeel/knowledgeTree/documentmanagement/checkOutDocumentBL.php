@@ -30,6 +30,8 @@
 
 require_once("../../../../config/dmsDefaults.php");
 
+KTUtil::extractGPC('fDocumentID', 'fForStore', 'fCheckOutComment');
+
 if (checkSession()) {
     
     require_once("$default->fileSystemRoot/lib/email/Email.inc");

@@ -30,6 +30,8 @@
  
 require_once("../../../../config/dmsDefaults.php");
 
+KTUtil::extractGPC('fCollaborationDelete', 'fCollaborationEdit', 'fFolderID', 'fShowSection');
+
 if (checkSession()) {
     require_once("$default->fileSystemRoot/lib/visualpatterns/PatternListBox.inc");
     require_once("$default->fileSystemRoot/lib/visualpatterns/PatternEditableListFromQuery.inc");

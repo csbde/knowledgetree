@@ -59,13 +59,13 @@ function getRole($iRoleID) {
 	return $oPatternListBox->render();*/
 }
 
-function getDocumentRoutingPage($iGroupID, $iUserID, $iRoleID, $iSequenceNumber, $fDocumentID) {
+function getDocumentRoutingPage($iGroupID, $iUserID, $iRoleID, $iSequenceNumber, $iDocumentID) {
 	global $default;
 	$sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
 	$sTDBGColour = $default->siteMap->getSectionColour($sSectionName, "td");
 	$sTHBGColour = $default->siteMap->getSectionColour($sSectionName, "th");
 	return 	renderHeading(_("Edit Document Approval Routing")) .
-			displayDocumentPath($fDocumentID) .
+			displayDocumentPath($iDocumentID) .
 			"<table cellspacing=2, cellpadding=2, border=0>\n" .
 			"<caption><b>" . _("Document Routing") . "</b></caption>\n" .
 			"<tr>\n" .
@@ -85,7 +85,7 @@ function getDocumentRoutingPage($iGroupID, $iUserID, $iRoleID, $iSequenceNumber,
 			"<td colspan=\"2\">&nbsp</td>\n" .
 			"</tr>\n" .
 			"<tr>\n" .
-			"<td><b><input type=\"image\" src=\"" . KTHtml::getUpdateButton() . "\" border=\"0\"/></b></td><td>" . generateControllerLink("viewDocument", "fDocumentID=$fDocumentID&fShowSection=documentRouting", "<img src=\"" . KTHtml::getCancelButton() . "\" border=\"0\"/>") . "</td>\n" .
+			"<td><b><input type=\"image\" src=\"" . KTHtml::getUpdateButton() . "\" border=\"0\"/></b></td><td>" . generateControllerLink("viewDocument", "fDocumentID=$iDocumentID&fShowSection=documentRouting", "<img src=\"" . KTHtml::getCancelButton() . "\" border=\"0\"/>") . "</td>\n" .
 			"</tr>\n" .
 			"</table>\n";
 }

@@ -25,10 +25,10 @@
  * @package administration.unitmanagement
  */
 
-function getOrgPage($fUnitID = null){
+function getOrgPage($iUnitID = null){
 	global $default;
 	
-	$aUnitOrgLink = UnitOrganisationLink::getList("WHERE unit_id = $fUnitID");
+	$aUnitOrgLink = UnitOrganisationLink::getList("WHERE unit_id = $iUnitID");
 	
 	if (count($aUnitOrgLink) > 0 ){
 		$oLink = $aUnitOrgLink[0];
@@ -73,7 +73,7 @@ function getOrgPage($fUnitID = null){
 
 	$sToRender .= "</td>\n";
 	$sToRender .= "<td>\n";
-	$sToRender .= getUnitOrgEdit($bNoOrg, $fUnitID);
+	$sToRender .= getUnitOrgEdit($bNoOrg, $iUnitID);
 	$sToRender .= "</td>\n";        
     $sToRender .= "</table>\n";
    	
@@ -82,7 +82,7 @@ function getOrgPage($fUnitID = null){
 
 }
 
-function getUnitOrgEdit($bNoOrg, $fUnitID = null){
+function getUnitOrgEdit($bNoOrg, $iUnitID = null){
 	global $default;
 	
 	$sBgColor = "#F5F6EE";
@@ -91,12 +91,12 @@ function getUnitOrgEdit($bNoOrg, $fUnitID = null){
     $sToRender .= "  <tr><td><b>" . _("Options") . "</b></td></tr>";
     if ($bNoOrg) {
 	    $sToRender .= "  <tr><td bgcolor=$sBgColor>";
-	    $sToRender .= "  <br>&nbsp;&nbsp;<a href=\"$default->rootUrl/control.php?action=addUnitToOrg&fUnitID=" . $fUnitID . "\">" . _("Add Unit to an Organisation") . "</a><br><br>";
+	    $sToRender .= "  <br>&nbsp;&nbsp;<a href=\"$default->rootUrl/control.php?action=addUnitToOrg&fUnitID=" . $iUnitID . "\">" . _("Add Unit to an Organisation") . "</a><br><br>";
 	    $sToRender .= "  </td><td>";	    
 	    $sToRender .= "  </td></tr>";
     } else {
 	    $sToRender .= "  <tr><td bgcolor=$sBgColor>";
-	    $sToRender .= "  <br>&nbsp;&nbsp;<a href=\"$default->rootUrl/control.php?action=removeUnitFromOrg&fUnitID=" . $fUnitID  . "\">" . _("Remove Unit from an Organisation") . "</a><br><br>";
+	    $sToRender .= "  <br>&nbsp;&nbsp;<a href=\"$default->rootUrl/control.php?action=removeUnitFromOrg&fUnitID=" . $iUnitID  . "\">" . _("Remove Unit from an Organisation") . "</a><br><br>";
 	    $sToRender .= "  </td><td>";	    
 	    $sToRender .= "  </td></tr>";
     }

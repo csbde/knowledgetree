@@ -27,6 +27,8 @@
  
 require_once("../../../../../config/dmsDefaults.php");
 
+KTUtil::extractGPC('fForUpdate', 'fNewPassword', 'fNewPasswordConfirm', 'fUserID');
+
 if (checkSession()) {	
 	require_once("$default->fileSystemRoot/lib/security/Permission.inc");	
 	require_once("$default->fileSystemRoot/lib/users/User.inc");

@@ -26,6 +26,8 @@
  */
 require_once("../../../../../config/dmsDefaults.php");
 
+KTUtil::extractGPC('fForStore');
+
 if (checkSession()) {
 	require_once("$default->fileSystemRoot/lib/System.inc");
     require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");

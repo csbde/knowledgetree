@@ -32,6 +32,8 @@
 
 require_once("../../../../config/dmsDefaults.php");
 
+KTUtil::extractGPC('fFolderCollaborationID', 'fFolderID', 'fForUpdate', 'fGroupID', 'fRoleID', 'fSequenceNumber', 'fUserID');
+
 if (checkSession()) {	
 	require_once("$default->fileSystemRoot/lib/visualpatterns/PatternListBox.inc");
 	require_once("$default->fileSystemRoot/lib/visualpatterns/PatternEditableListFromQuery.inc");

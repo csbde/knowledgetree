@@ -27,6 +27,9 @@
 
 require_once("../../../../../config/dmsDefaults.php");
 
+KTUtil::extractGPC('fLinkID');
+
+// XXX: huh?
 global $default;
 
 if(checkSession()) {

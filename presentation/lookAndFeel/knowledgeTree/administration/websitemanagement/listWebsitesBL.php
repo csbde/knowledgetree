@@ -37,7 +37,7 @@ require_once("listWebsitesUI.inc");
 
 if (checkSession()) {	
     $oPatternCustom = & new PatternCustom();
-    $oPatternCustom->setHtml(getPage($fGroupID));
+    $oPatternCustom->setHtml(getPage($_REQUEST['fGroupID']));
 	require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 	$main->setCentralPayload($oPatternCustom);
 	$main->setFormAction($_SERVER['PHP_SELF']);	

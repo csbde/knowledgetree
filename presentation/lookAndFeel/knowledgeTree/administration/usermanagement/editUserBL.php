@@ -27,6 +27,8 @@
  
 require_once("../../../../../config/dmsDefaults.php");
 
+KTUtil::extractGPC('fSuccess', 'fUserID');
+
 if (checkSession()) {
 	require_once("$default->fileSystemRoot/lib/visualpatterns/PatternListBox.inc");
 	require_once("$default->fileSystemRoot/lib/visualpatterns/PatternEditableListFromQuery.inc");

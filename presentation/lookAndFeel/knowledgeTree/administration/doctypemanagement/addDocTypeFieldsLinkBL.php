@@ -27,6 +27,9 @@
  
 require_once("../../../../../config/dmsDefaults.php");
 
+KTUtil::extractGPC('fAdd', 'fDataType', 'fDocTypeID', 'fFieldID', 'fFromList', 'fNewField');
+
+// XXX: huh?
 global $default;
 
 if (checkSession()) {

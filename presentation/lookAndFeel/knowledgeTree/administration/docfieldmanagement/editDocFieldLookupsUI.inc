@@ -77,15 +77,15 @@ function getPage($iUserID) {
 
 
 // get page for removal
-function getGroupPage($fDocFieldID) {
+function getGroupPage($iDocFieldID) {
     global $default;
     
-    $oDocField = DocumentField::get($fDocFieldID);    
+    $oDocField = DocumentField::get($iDocFieldID);    
            
     $LookupDisplay .= "<b>" . _("Current Lookups") . "</b><br>\n";	
 	$sQuery = 	" Select * " .	
 				" From " . $default->metadata_table .
-				" WHERE document_field_id=" . $fDocFieldID;        
+				" WHERE document_field_id=" . $iDocFieldID;        
 
  	$aColumns = array("name");
     $aColumnNames = array(_("Lookup name"));
@@ -122,20 +122,20 @@ function getGroupPage($fDocFieldID) {
     $sToRender .= "<table border=0 cellspacing=1>\n";
     $sToRender .= "<tr><td><b>Options</b></td></tr>";
     $sToRender .= "<tr><td width=200 bgcolor=$sBgColor>";
-    $sToRender .= "<br><a href=\"$default->rootUrl/control.php?action=addMetaDataForField&fDocFieldID=$fDocFieldID\">&nbsp;&nbsp;" . _("Add Document Field Lookups") . "</a><br><br>";
+    $sToRender .= "<br><a href=\"$default->rootUrl/control.php?action=addMetaDataForField&fDocFieldID=$iDocFieldID\">&nbsp;&nbsp;" . _("Add Document Field Lookups") . "</a><br><br>";
     $sToRender .= "</td><td>"; 	
     $sToRender .= "</td></tr>";
 	
-	$iDocFieldLookupCount = DocumentField::getLookupCount($fDocFieldID);
+	$iDocFieldLookupCount = DocumentField::getLookupCount($iDocFieldID);
 	if ($iDocFieldLookupCount > 0) {
 		
 		$sToRender .= "<tr><td width=200 bgcolor=$sBgColor>";
-	    $sToRender .= "<br><a href=\"$default->rootUrl/control.php?action=editMetadataForField&fDocFieldID=$fDocFieldID\">&nbsp;&nbsp;" . _("Edit Document Field Lookups") . "</a><br><br>";
+	    $sToRender .= "<br><a href=\"$default->rootUrl/control.php?action=editMetadataForField&fDocFieldID=$iDocFieldID\">&nbsp;&nbsp;" . _("Edit Document Field Lookups") . "</a><br><br>";
 	    $sToRender .= "</td><td>"; 	
 	    $sToRender .= "</td></tr>";
 	    
 	    $sToRender .= "<tr><td width=200 bgcolor=$sBgColor>";
-	    $sToRender .= "<br><a href=\"$default->rootUrl/control.php?action=removeMetaDataFromField&fDocFieldID=$fDocFieldID\">&nbsp;&nbsp;" . _("Remove Document Field Lookups") . "</a><br><br>";
+	    $sToRender .= "<br><a href=\"$default->rootUrl/control.php?action=removeMetaDataFromField&fDocFieldID=$iDocFieldID\">&nbsp;&nbsp;" . _("Remove Document Field Lookups") . "</a><br><br>";
 	    $sToRender .= "</td><td>";    
 	    $sToRender .= "</td></tr>";
 	}
@@ -148,7 +148,7 @@ function getGroupPage($fDocFieldID) {
 }
 
 // get page for removal
-function getDeleteConfirmedPage($iUserID,$fGroupID) {
+function getDeleteConfirmedPage($iUserID,$iGroupID) {
     global $default;
     $oUser = null;
     $oGroup = null;
@@ -160,8 +160,8 @@ function getDeleteConfirmedPage($iUserID,$fGroupID) {
     }
 
     // change headings if User selected
-    if (isset($fGroupID)) {
-        $oGroup = Group::get($fGroupID);
+    if (isset($iGroupID)) {
+        $oGroup = Group::get($iGroupID);
         $Groupdisplay = "<td>" . _("Group Name") . ": " . $oGroup->getName() . "</td>\n";
     }
 

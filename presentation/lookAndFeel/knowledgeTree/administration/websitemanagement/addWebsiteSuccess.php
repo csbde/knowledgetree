@@ -36,7 +36,7 @@ if(checkSession()) {
     $Center .= renderHeading(_("Add Website"));
     $Center .= "<TABLE BORDER=\"0\" CELLSPACING=\"2\" CELLPADDING=\"2\">\n";
     $Center .= "<tr>\n";
-    if($fWebSiteID != -1) {
+    if($_REQUEST['fWebSiteID'] != -1) {
         $Center .= "<td><b>" . _("New Website Added SuccessFully") . "!<b></td>\n";
     } else {
         $Center .= "<td><b>" . _("Addition Unsuccessful") . "</b>...</td>\n";

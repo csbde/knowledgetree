@@ -26,6 +26,9 @@
  */
 
 require_once("../../../../config/dmsDefaults.php");
+
+KTUtil::extractGPC('fFolderDocTypeID', 'fFolderID');
+
 if (checkSession()) {
     require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
     require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");

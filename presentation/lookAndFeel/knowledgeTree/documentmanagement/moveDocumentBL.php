@@ -27,6 +27,8 @@
  
 require_once("../../../../config/dmsDefaults.php");
 
+KTUtil::extractGPC('fConfirmed', 'fDocumentIDs', 'fFolderID', 'fForMove');
+
 require_once("$default->fileSystemRoot/lib/security/Permission.inc");
 
 require_once("$default->fileSystemRoot/lib/users/User.inc");

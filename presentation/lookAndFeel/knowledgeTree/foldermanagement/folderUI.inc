@@ -88,17 +88,17 @@ function renderFolderPath($iFolderID, $sLinkURL, $bDisplayLinks = true) {
 }
 
 /**
-* Renders a the list of folders found in $fFolderID as
+* Renders a the list of folders found in $iFolderID as
 * and HTML table.  &fFolderID=<folder_id> is automatically
 * appended to the query string
 *
 * @return String HTML table
 */
-function renderFolderList($fFolderID, $sLinkURL) {
+function renderFolderList($iFolderID, $sLinkURL) {
     global $default;
     $sQuery = "SELECT F.id AS id, F.name AS name " .
               "FROM $default->folders_table AS F " .
-              "WHERE F.parent_id = " . $fFolderID . " " .
+              "WHERE F.parent_id = " . $iFolderID . " " .
               "ORDER BY F.name ASC";
      	
     $aColumns = array("name");

@@ -27,6 +27,8 @@
 
 require_once("../../../../config/dmsDefaults.php");
 
+KTUtil::extractGPC('fDescription', 'fFolderID', 'fFolderName', 'fForUpdate', 'fIsPublic');
+
 if (checkSession()) {
     require_once("$default->fileSystemRoot/lib/visualpatterns/PatternListBox.inc");
     require_once("$default->fileSystemRoot/lib/visualpatterns/PatternEditableListFromQuery.inc");

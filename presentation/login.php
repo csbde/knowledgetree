@@ -32,7 +32,7 @@ require_once("Html.inc");
 
 global $default;
 
-if ($loginAction == "loginForm") {
+if ($_REQUEST['loginAction'] == "loginForm") {
     // TODO: build login form using PatternMainPage
     print "<html>
     <head>
@@ -86,16 +86,16 @@ if ($loginAction == "loginForm") {
     </body>
     </html>";
 
-} elseif ($loginAction == "login") {
+} elseif ($_REQUEST['loginAction'] == "login") {
     // set default url for login failure
     // with redirect appended if set
     $url = $url . "login.php?loginAction=loginForm" . (isset($redirect) ? "&redirect=" . urlencode($redirect) : "");
     
     // if requirements are met and we have a username and password to authenticate
-    if( isset($fUserName) && isset($fPassword) ) {
+    if (isset($_REQUEST['fUserName']) && isset($_REQUEST['fPassword']) ) {
         // verifies the login and password of the user
         $dbAuth = new $default->authenticationClass;
-        $userDetails = $dbAuth->login($fUserName, $fPassword);
+        $userDetails = $dbAuth->login($_REQUEST['fUserName'], $_REQUEST['fPassword']);
 
         switch ($userDetails["status"]) {
             // bad credentials

@@ -43,12 +43,12 @@ if (checkSession()) {
 	$oPatternCustom = & new PatternCustom();	
 	
 	// get main page
-	if (isset($fWebSiteID)) {
-		$oWebSite = Website::get($fWebSiteID);
+	if (isset($_REQUEST['fWebSiteID'])) {
+		$oWebSite = Website::get($_REQUEST['fWebSiteID']);
 	    // if delete entry
-		if (isset($fForDelete)) {
+		if (array_key_exists('fForDelete', $_REQUEST)) {
 
-			$oWebSite->setWebSiteName($fWebSiteName);
+			$oWebSite->setWebSiteName($_REQUEST['fWebSiteName']);
 				
 			if ($oWebSite->delete()) {
 				$oPatternCustom->setHtml(getDeleteSuccessPage());
@@ -62,7 +62,7 @@ if (checkSession()) {
 				$oPatternCustom->setHtml(statusPage(_("Remove Website"), _("This website can not be removed since it is still in use."), "", "listWebsites"));
 			} else { 
 				// ask for confirmation
-				$oPatternCustom->setHtml(getDeletePage($fWebSiteID));
+				$oPatternCustom->setHtml(getDeletePage($_REQUEST['fWebSiteID']));
 				$main->setFormAction($_SERVER["PHP_SELF"] . "?fForDelete=1");
 			}
 		}
