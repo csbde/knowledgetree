@@ -1,15 +1,29 @@
 <?php
 /**
-*
-* Class UnitOrganisationLink
-* Represents a unit, organisation link as per the database table units_organisations_link
-*
-* @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
-* @date 20 January 2003
-* @package lib.groups
-*/
-
-
+ * $Id$
+ *
+ * Represents a unit, organisation link as per the database table units_organisations_link.
+ *
+ * Copyright (c) 2003 Jam Warehouse http://www.jamwarehouse.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ * @version $Revision$
+ * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
+ * @package lib.unitmanagement
+ */
 class UnitOrganisationLink {
 	
 	/** primary key of object */
@@ -91,7 +105,7 @@ class UnitOrganisationLink {
 		if ($this->iId < 0) {
 			
 			$sql = $default->db;
-			$query = "SELECT unit_id FROM $default->owl_units_organisations_table WHERE unit_id = $this->iUnitID AND organisation_id = $this->iOrgID";
+			$query = "SELECT unit_id FROM $default->units_organisations_table WHERE unit_id = $this->iUnitID AND organisation_id = $this->iOrgID";
     		$sql->query($query);
    			$rows = $sql->num_rows($sql);
         
@@ -100,7 +114,7 @@ class UnitOrganisationLink {
 				$_SESSION["errorMessage"] = "UnitOrganisationlink::The id " . $this->iUnitID . " is already exist!";
 				return false;
        		} else{
-				$result = $sql->query("INSERT INTO " . $default->owl_units_organisations_table . " (unit_id,organisation_id) VALUES ($this->iUnitID,$this->iOrgID)");
+				$result = $sql->query("INSERT INTO " . $default->units_organisations_table . " (unit_id,organisation_id) VALUES ($this->iUnitID,$this->iOrgID)");
 				if ($result) {
 					$this->iId = $sql->insert_id();
 					return  true;
@@ -109,7 +123,6 @@ class UnitOrganisationLink {
 				return false;
 			}
 		}
-		$_SESSION["errorMessage"] = $lang_err_object_exists . "id = " . $this->iId . " table = $default->owl_units_organisations_link_table";
 		return false;
 	}
 	
@@ -124,7 +137,7 @@ class UnitOrganisationLink {
 		//only update if the object has been stored
 		if ($this->iId > 0) {
 			$sql = $default->db;
-			$result = $sql->query("UPDATE " . $default->owl_units_organisations_table . " SET organisation_id = $this->iOrgID, unit_id = $this->iUnitID WHERE id = $this->iId");
+			$result = $sql->query("UPDATE " . $default->units_organisations_table . " SET organisation_id = $this->iOrgID, unit_id = $this->iUnitID WHERE id = $this->iId");
 			if ($result) {
 				return true;
 			}
@@ -146,7 +159,7 @@ class UnitOrganisationLink {
 		//only delete the object if it exists in the database
 		if ($this->iId >= 0) {
 			$sql = $default->db;
-			$result = $sql->query("DELETE FROM $default->owl_units_organisations_table WHERE id = $this->iId");
+			$result = $sql->query("DELETE FROM $default->units_organisations_table WHERE id = $this->iId");
 			if ($result) {
 				return true;
 			}
@@ -168,14 +181,13 @@ class UnitOrganisationLink {
 	function & get($iUnitOrganisationLinkID) {
 		global $default;	
 		$sql = $default->db;
-		$result = $sql->query("SELECT * FROM $default->owl_units_organisations_table WHERE id = $iUnitOrganisationLinkID");
+		$result = $sql->query("SELECT * FROM $default->units_organisations_table WHERE id = $iUnitOrganisationLinkID");
 		if ($result) {
 			if ($sql->next_record()) {
 				$oUnitOrganisationLink = & new UnitOrganisationLink($sql->f("unit_id"),$sql->f("organisation_id") );
 				$oUnitOrganisationLink->iId = $iUnitOrganisationLinkID;
 				return $oUnitOrganisationLink;
 			}
-			$_SESSION["errorMessage"] = $lang_err_object_not_exist . "id = " . $iUnitOrganisationLinkID . " table = $default->owl_units_organisations_link_table";
 			return false;
 		}
 		$_SESSION["errorMessage"] = $lang_err_database;
@@ -195,7 +207,7 @@ class UnitOrganisationLink {
 		$aUnitOrganisationLink;
 		settype($aUnitOrganisationLink, "array");
 		$sql = $default->db;
-		$result = $sql->query("SELECT * FROM "  . $default->owl_units_organisations_table  . (isset($sWhereClause) ? " " . $sWhereClause : ""));
+		$result = $sql->query("SELECT * FROM "  . $default->units_organisations_table  . (isset($sWhereClause) ? " " . $sWhereClause : ""));
 		if ($result) {			
 			$iCount = 0;
 			while ($sql->next_record()) {
@@ -218,7 +230,7 @@ class UnitOrganisationLink {
      */
 	function unitBelongsToOrg($unitId) {
 		global $default;
-		return lookupField("$default->owl_units_organisations_table", "organisation_id", "unit_id", $unitId );
+		return lookupField("$default->units_organisations_table", "organisation_id", "unit_id", $unitId );
 	}
 	
 	/*
@@ -232,14 +244,14 @@ class UnitOrganisationLink {
      */
 	function setUnitOrgID($unitId) {
 		global $default;
-		$id = lookupID($default->owl_units_organisations_table, "unit_id",  $unitId);
+		$id = lookupID($default->units_organisations_table, "unit_id",  $unitId);
 		$this->iId= $id;
 	}
 	
 	function getByUnitID($unitId) {
 		global $default;
 		$sql = $default->db;
-		$result = $sql->query("SELECT * FROM $default->owl_units_organisations_table WHERE unit_id = $unitId");
+		$result = $sql->query("SELECT * FROM $default->units_organisations_table WHERE unit_id = $unitId");
 		if ($result) {		    	
 			if ($sql->next_record()) {
 				$oUnitOrganisationLink = & UnitOrganisationLink::get($sql->f("id"));

@@ -1,20 +1,33 @@
 <?php
-
-require_once("$default->fileSystemRoot/lib/security/permission.inc");
-
+require_once("$default->fileSystemRoot/lib/security/Permission.inc");
 // define access constants
 define("None", 1);
 define("Guest", 2);
 define("User", 3);
 define("UnitAdmin", 4);
 define("SysAdmin", 5);
-
 /**
  * $Id$
- * 
+ *
  * Maintains (page, access) access map, as well as (section, page) map.
- * 
- * @version $Revision$ 
+ *
+ * Copyright (c) 2003 Jam Warehouse http://www.jamwarehouse.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ * @version $Revision$
  * @author Michael Joseph <michael@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
  * @package lib.session
  */
@@ -169,12 +182,12 @@ class SiteMap {
         global $default, $lang_err_database, $fFolderID;
         $sql = $default->db;
         // lookup sectionID
-        $sectionID = lookupID($default->owl_site_sections_table, "name", $sSectionName);
+        $sectionID = lookupID($default->site_sections_table, "name", $sSectionName);
         if ($sectionID) {
             // initialise result array
             $results = array("descriptions" => array(), "links" => array());
 
-            if ($sql->query("SELECT link_text, action, access_id FROM $default->owl_sitemap_table WHERE section_id=$sectionID " . 
+            if ($sql->query("SELECT link_text, action, access_id FROM $default->sitemap_table WHERE section_id=$sectionID " . 
             			    "AND is_enabled=1 AND is_default=0" . ( $bSortLinks ? " ORDER BY link_text ASC" : "" ) ) ) {
                 while ($sql->next_record()) {
                     // check permissions
@@ -310,7 +323,7 @@ class SiteMap {
         global $default, $lang_err_database;
         $sql = $default->db;
         // lookup the page and access_id from the sitemap
-        if ($sql->query("SELECT page, access_id FROM $default->owl_sitemap_table WHERE action='$action'")) {
+        if ($sql->query("SELECT page, access_id FROM $default->sitemap_table WHERE action='$action'")) {
             if ($sql->next_record()) {
                 // check permissions
                 if ($this->hasPermission($sql->f("access_id"))) {
@@ -384,8 +397,8 @@ class SiteMap {
         global $default, $lang_err_database;
         $sql = $default->db;
         // lookup the page and access_id from the sitemap
-        if ($sql->query("SELECT SSL.name FROM $default->owl_sitemap_table AS S
-                        INNER JOIN $default->owl_site_sections_table AS SSL ON S.section_id=SSL.id
+        if ($sql->query("SELECT SSL.name FROM $default->sitemap_table AS S
+                        INNER JOIN $default->site_sections_table AS SSL ON S.section_id=SSL.id
                         WHERE S.page='$sRequiredPage'")) {
             if ($sql->next_record()) {
                 // return the section name
@@ -446,10 +459,10 @@ class SiteMap {
         global $default, $lang_err_database;
         $sql = $default->db;
         // lookup sectionID
-        $sectionID = lookupID($default->owl_site_sections_table, "name", $sSectionName);
+        $sectionID = lookupID($default->site_sections_table, "name", $sSectionName);
         if ($sectionID) {
             // lookup the default action for the specified section
-            if ($sql->query("SELECT action FROM $default->owl_sitemap_table
+            if ($sql->query("SELECT action FROM $default->sitemap_table
                             WHERE section_id=$sectionID
                             AND is_default=1 AND is_enabled=1")) {
                 if ($sql->next_record()) {
@@ -527,7 +540,7 @@ class SiteMap {
         $sql = $default->db;
 
         // lookup the action for the specified page
-        if ($sql->query("SELECT action FROM $default->owl_sitemap_table WHERE page='$sPage'")) {
+        if ($sql->query("SELECT action FROM $default->sitemap_table WHERE page='$sPage'")) {
             if ($sql->next_record()) {
                 // return the section name
                 return $sql->f("action");
@@ -588,13 +601,13 @@ class SiteMap {
         // only if we're using the array
         if (!$this->bUseDB) {
             // clear section table
-            if ($sql->query("DELETE from $default->owl_site_sections_table")) {
+            if ($sql->query("DELETE from $default->site_sections_table")) {
                 $default->log->debug("Sitemap::syncWithDB removed sections");
             } else {
                 $default->log->error("Sitemap::syncWithDB remove sections failed");
             }
             // clear sitemap table
-            if ($sql->query("DELETE from $default->owl_sitemap_table")) {
+            if ($sql->query("DELETE from $default->sitemap_table")) {
                 $default->log->debug("Sitemap::syncWithDB removed sitemap");
             } else {
                 $default->log->error("Sitemap::syncWithDB remove sitemap failed");
@@ -602,7 +615,7 @@ class SiteMap {
             // for each section
             foreach ($this->aSiteMap as $section => $valArr) {
                 // insert into the section
-                $sSectionSql = "INSERT INTO $default->owl_site_sections_table (name) VALUES ('$section')";
+                $sSectionSql = "INSERT INTO $default->site_sections_table (name) VALUES ('$section')";
                 $default->log->debug("Sitemap::syncWithDB insert=$sSectionSql");
 
                 if ($sql->query($sSectionSql)) {
@@ -616,7 +629,7 @@ class SiteMap {
                 foreach ($valArr as $requiredAccess => $pageArr) {
                     // now loop through all the pages
                     foreach ($pageArr as $action => $page) {
-                        $sSiteMapSql = "INSERT INTO $default->owl_sitemap_table (action, page, section_id, access_id, link_text, is_default, is_enabled) " .
+                        $sSiteMapSql = "INSERT INTO $default->sitemap_table (action, page, section_id, access_id, link_text, is_default, is_enabled) " .
                                        "VALUES ('$action', '" . $page["page"] . "', $sectionID, $requiredAccess, '" . $page["description"] . "', " . $page["default"] . ", " . $page["enabled"] . ")";
                         if ($sql->query($sSiteMapSql)) {
                             $default->log->debug("Sitemap::syncWithDb sitemap insert worked for ($action, " . $page["page"] . ")");

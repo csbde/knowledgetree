@@ -1,14 +1,29 @@
 <?php
 /**
-* 
-* Class Role
-* Represents a role as per the roles database table
-*
-* @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
-* @date 20 January 2003
-* package lib.roles
-*/
-
+ * $Id$
+ *
+ * Represents a role as per the roles database table.
+ *
+ * Copyright (c) 2003 Jam Warehouse http://www.jamwarehouse.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ * @version $Revision$
+ * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
+ * @package lib.roles
+ */
 class Role {
 	
 	/** role object primary key */
@@ -87,7 +102,7 @@ class Role {
 		if ($this->iId < 0) {
 			//check to see if name exsits
 			$sql = $default->db;
-			$query = "SELECT name FROM ". $default->owl_roles_table ." WHERE name = '" . $this->sName . "'";
+			$query = "SELECT name FROM ". $default->roles_table ." WHERE name = '" . $this->sName . "'";
         		$sql->query($query);
        			$rows = $sql->num_rows($sql);
         
@@ -98,7 +113,7 @@ class Role {
 	       		 }else
 	      		 {
 				$sql = $default->db;
-				$result = $sql->query("INSERT INTO " . $default->owl_roles_table . " (name, active, can_read, can_write) VALUES ('" . addslashes($this->sName) . "', " . ($this->bActive ? 1 : 0) . ", "  . ($this->bCanRead ? 1 : 0) . ", " . ($this->bCanWrite ? 1 : 0) . ")");
+				$result = $sql->query("INSERT INTO " . $default->roles_table . " (name, active, can_read, can_write) VALUES ('" . addslashes($this->sName) . "', " . ($this->bActive ? 1 : 0) . ", "  . ($this->bCanRead ? 1 : 0) . ", " . ($this->bCanWrite ? 1 : 0) . ")");
 				if ($result) {
 				$this->iId = $sql->insert_id();
 				return  true;
@@ -122,7 +137,7 @@ class Role {
 		//only update if the object has been stored
 		if ($this->iId > 0) {
 			$sql = $default->db;
-			$result = $sql->query("UPDATE " . $default->owl_roles_table . " SET name = '" . addslashes($this->sName) . "', active = " . ($this->bActive ? 1 : 0) . ", can_read = " . ($this->bCanRead ? 1 : 0) . ", can_write = " . ($this->bCanWrite ? 1 : 0) . " WHERE id = $this->iId");
+			$result = $sql->query("UPDATE " . $default->roles_table . " SET name = '" . addslashes($this->sName) . "', active = " . ($this->bActive ? 1 : 0) . ", can_read = " . ($this->bCanRead ? 1 : 0) . ", can_write = " . ($this->bCanWrite ? 1 : 0) . " WHERE id = $this->iId");
 			if ($result) {
 				return true;
 			}
@@ -145,7 +160,7 @@ class Role {
 		if ($this->iId >= 0) {
 			//check to see if role is linked to a folder
 			$sql = $default->db;
-			$query = "SELECT role_id FROM ". $default->owl_groups_folders_approval_table ." WHERE role_id = '" . $this->iId . "'";
+			$query = "SELECT role_id FROM ". $default->groups_folders_approval_table ." WHERE role_id = '" . $this->iId . "'";
         		$sql->query($query);
        			$rows = $sql->num_rows($sql);
         
@@ -156,7 +171,7 @@ class Role {
            		 
 	       		 }else{
 				$sql = $default->db;
-				$result = $sql->query("DELETE FROM $default->owl_roles_table WHERE id = $this->iId");
+				$result = $sql->query("DELETE FROM $default->roles_table WHERE id = $this->iId");
 				if ($result) {
 				return true;
 			}
@@ -179,7 +194,7 @@ class Role {
 	function & get($iRoleID) {
 		global $default;
 		$sql = $default->db;
-		$result = $sql->query("SELECT * FROM $default->owl_roles_table WHERE id = $iRoleID");
+		$result = $sql->query("SELECT * FROM $default->roles_table WHERE id = $iRoleID");
 		if ($result) {
 			if ($sql->next_record()) {
 				$oRole = & new Role(stripslashes($sql->f("name")), $sql->f("can_read"), $sql->f("can_write"));
@@ -187,7 +202,7 @@ class Role {
 				$oRole->bActive = $sql->f("active");
 				return $oRole;
 			}
-			$_SESSION["errorMessage"] = $lang_err_object_not_exist . "id = " . $iRoleID . " table = $default->owl_roles_table";
+			$_SESSION["errorMessage"] = $lang_err_object_not_exist . "id = " . $iRoleID . " table = $default->roles_table";
 			return false;
 		}
 		$_SESSION["errorMessage"] = $lang_err_database;
@@ -207,7 +222,7 @@ class Role {
 		$aRoleArray;
 		settype($aRoleArray, "array");
 		$sql = $default->db;
-		$result = $sql->query("SELECT * FROM " . $default->owl_roles_table  . (isset($sWhereClause) ? " " . $sWhereClause : ""));
+		$result = $sql->query("SELECT * FROM " . $default->roles_table  . (isset($sWhereClause) ? " " . $sWhereClause : ""));
 		if ($result) {			
 			$iCount = 0;
 			while ($sql->next_record()) {
