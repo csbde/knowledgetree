@@ -31,7 +31,7 @@ function getEditableTypeSpecificMetaData($iDocumentID, $iDocumentTypeID) {
     return $oPatternTableSqlQuery->render();
 }
 
-function getPage($iDocumentID, $iDocumentTypeID) {
+function getPage($iDocumentID, $iDocumentTypeID, $bFirstEdit) {
 	global $default;
 	$sToRender = "<table>\n";
 	$sToRender .= "<tr>\n";		
@@ -47,9 +47,11 @@ function getPage($iDocumentID, $iDocumentTypeID) {
 	$sToRender .= "<td>\n";
 	$sToRender .= "<input type=\"image\" src=\"$default->graphicsUrl/widgets/update.gif\" />\n";
 	$sToRender .= "</td>\n";
-	$sToRender .= "<td>\n";
-	$sToRender .= "<a href=\"$default->rootUrl/control.php?action=viewDocument&fDocumentID=$iDocumentID\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\" /></a>\n";
-	$sToRender .= "</td>\n";
+    if (!isset($bFirstEdit)) {    
+        $sToRender .= "<td>\n";
+        $sToRender .= "<a href=\"$default->rootUrl/control.php?action=viewDocument&fDocumentID=$iDocumentID\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\" /></a>\n";
+        $sToRender .= "</td>\n";
+    }
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
 	
