@@ -50,10 +50,15 @@ class Session {
         
         // insert session information into db
         $sql = $default->db;
-        $query = "INSERT INTO $default->sessions_table (session_id, user_id, lastused, ip) VALUES ('$sessionID', $iUserID, '" . date("Y-m-d H:i:s", time()) . "', '$ip')";
+        $aParams = array(
+            'session_id' => $sessionID,
+            'user_id' => $iUserID,
+            'lastused' => date("Y-m-d H:i:s", time()),
+            'ip' => $ip,
+        );
 
-        $result = $sql->query($query);        
-        if(!$result) {
+        $result = DBUtil::autoInsert($default->sessions_table, $aParams);
+        if($result != DB_OK) {
             die("$lang_err_sess_write");
         }
 
