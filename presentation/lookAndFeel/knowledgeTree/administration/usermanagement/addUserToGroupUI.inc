@@ -121,7 +121,6 @@ function getUserDisplay($oUser) {
             $oUnassignedUsersLB = & new PatternListBox($default->owl_users_table, "username", "id", "fUserID");
             $oUnassignedUsersLB->setFromClause("LEFT OUTER JOIN $default->owl_users_groups_table UGL ON ST.id=UGL.user_id");
             $oUnassignedUsersLB->setWhereClause("ISNULL(UGL.group_id)");
-            $default->log->info(arrayToString($oUnassignedUsersLB->getEntries()));
             $oPatternListBox->setAdditionalEntries($oUnassignedUsersLB->getEntries());
         }
 		return $oPatternListBox->render();
