@@ -9,7 +9,7 @@
  *
  * @version $Revision$
  * @author Michael Joseph <michael@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
- * @package presentation.lookAndFeel.knowledgeTree.administration.dopcumentmanagement
+ * @package presentation.lookAndFeel.knowledgeTree.administration.documentmanagement
  */
 
 /**
@@ -31,7 +31,7 @@ function renderStatusPage($aSuccessDocuments, $aErrorDocuments) {
     	$sToRender .= "<tr><td>There were errors restoring the following documents:</td></tr>\n";
 	    $sToRender .= "<tr/><tr/>";    	
 	    for ($i=0; $i<count($aErrorDocuments); $i++) {    	
-    		$sToRender .= "<tr><td>" . $aErrorDocuments[$i]->getDisplayPath() . "</td></tr>\n";
+    		$sToRender .= "<tr><td>" . $aErrorDocuments[$i]->getDisplayPath(true) . "</td></tr>\n";
 	    }
 	}
 	$sToRender .= "<tr/><tr/>";	
@@ -48,7 +48,7 @@ function renderRestoreConfirmationPage($aDocuments) {
 	
 	$sToRender  = renderHeading("Restore Archived Documents");
 	$sToRender .= "<table>";
-    $sToRender .= "<tr><td>The documents and folders you have chosen to restore from the archive are listed below.</td></tr>\n";
+    $sToRender .= "<tr><td>The documents you have chosen to restore from the archive are listed below.</td></tr>\n";
     $sToRender .= "<tr><td>Click 'Restore' to confirm restoration, or 'Cancel' to abort.</td></tr>\n";
     $sToRender .= "<tr/><tr/>";
 
@@ -57,7 +57,7 @@ function renderRestoreConfirmationPage($aDocuments) {
         $sToRender .= "\t<tr>\n";
         $sToRender .= "\t\t<td bgcolor=\"" . getColour($i) . "\">\n";
         $sToRender .= "<input type=\"hidden\" name=\"fDocumentIDs[]\" value=\"" . $aDocuments[$i]->getID() . "\"/>\n";        
-        $sToRender .= $aDocuments[$i]->getDisplayPath() . "\n";
+        $sToRender .= $aDocuments[$i]->getDisplayPath(true) . "\n";
         $sToRender .= "\t\t</td>\n";
         $sToRender .= "\t</tr>\n";
     }
@@ -117,8 +117,8 @@ function renderArchivedDocumentsResultsPage($aDocuments) {
 		// and print document paths with checkboxes
         $sToRender .= "\t<tr>\n";
         $sToRender .= "\t\t<td bgcolor=\"" . getColour($i) . "\">\n";
-        $sToRender .= "<input type=\"checkbox\" name=\"fDocumentIDs[]\" value=\"" . $aDocuments[$i]->getID() . "\"/>\n";        
-        $sToRender .= $aDocuments[$i]->getDisplayPath() . "\n";
+        $sToRender .= "<input type=\"checkbox\" name=\"fDocumentIDs[]\" value=\"" . $aDocuments[$i]->getID() . "\"/>\n";
+        $sToRender .= $aDocuments[$i]->getDisplayPath(true) . "\n";
         $sToRender .= "\t\t</td>\n";
         $sToRender .= "\t</tr>\n";			
 	}
