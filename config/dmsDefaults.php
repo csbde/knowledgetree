@@ -98,7 +98,6 @@ $default->owl_web_documents_table = "web_documents";
 // Table with web documents info for web publishing
 $default->owl_web_documents_status_table = "web_documents_status";
 
-
 // This is the defualt MailServer Host for emailing 
 $default->owl_mail_server = "mail.jamwarehouse.com";
 
@@ -109,7 +108,9 @@ require_once("$default->owl_fs_root/phplib/db_mysql.inc");
 // Change this to reflect the authentication method you are using
 //require_once("$default->owl_fs_root/lib/LDAPAuthenticator.inc");
 //require_once("$default->owl_fs_root/lib/Authenticator.inc");
-require_once("$default->owl_fs_root/lib/DBAuthenticator.inc");
+$default->authentication_class = "DBAuthenticator";
+require_once("$default->owl_fs_root/lib/authentication/$default->authentication_class.inc");
+
 
 // logo file that must reside inside lang/graphics directory
 $default->logo = "kt.jpg";
@@ -127,14 +128,13 @@ $default->debug = True;
 require_once("$default->owl_fs_root/lib/SiteMap.inc");
 $default->siteMap = new SiteMap();
 // action, section, page, userClass (SA, UA, U, A)
-$default->siteMap->addPage("LOGIN", "login.php?loginAction=login", "General", "Anonymous");
-$default->siteMap->addPage("LOGIN_FORM", "login.php?loginAction=loginForm", "General", "Anonymous"); 
-$default->siteMap->addPage("LOGOUT", "logout.php", "General", "Anonymous");
-$default->siteMap->addPage("DASHBOARD", "dashboard.php", "General", "Anonymous");
-$default->siteMap->addPage("BROWSE", "browse.php", "Browse Collections", "Anonymous");
-$default->siteMap->addPage("ADDFOLDER", "addFolder.php", "Browse Collections", "Unit Administrator");
-$default->siteMap->addPage("ADDUSER", "addUser.php", "Administration", "Unit Administrator");
-$default->siteMap->addPage("ADDUNIT", "addUnit.php", "Administration", "Unit Administrator");
-$default->siteMap->addPage("ADDORG", "addOrganisation.php", "Administration", "System Administrator");
-
+$default->siteMap->addPage("login", "login.php?loginAction=login", "General", "Anonymous");
+$default->siteMap->addPage("loginForm", "login.php?loginAction=loginForm", "General", "Anonymous"); 
+$default->siteMap->addPage("logout", "logout.php", "General", "Anonymous");
+$default->siteMap->addPage("dashboard", "dashboard.php", "General", "Anonymous");
+$default->siteMap->addPage("browse", "browse.php", "Browse Collections", "Anonymous");
+$default->siteMap->addPage("addFolder", "addFolder.php", "Browse Collections", "Unit Administrators");
+$default->siteMap->addPage("addUser", "addUser.php", "Administration", "Unit Administrators");
+$default->siteMap->addPage("addUnit", "addUnit.php", "Administration", "Unit Administrators");
+$default->siteMap->addPage("addOrganisation", "addOrganisation.php", "Administration", "System Administrators");
 ?>
