@@ -115,7 +115,6 @@ function renderTypeSpecificMetaData($oDocument, $bEditable) {
               "FROM $default->documents_table AS D INNER JOIN document_fields_link AS DFL ON D.id = DFL.document_id " .
               "INNER JOIN $default->document_fields_table AS DF ON DF.ID = DFL.document_field_id " .
               "WHERE D.id = ? " .
-              "AND DF.name NOT LIKE 'Author' " .
               "AND DF.name NOT LIKE 'Category' " .
               "AND DF.is_generic = 0", $oDocument->getID());
     $aColumns = array("name", "value");
