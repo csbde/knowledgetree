@@ -1,4 +1,5 @@
 <?php
+require_once("$default->owl_fs_root/lib/users/User.inc");
 require_once("$default->owl_fs_root/lib/documentmanagement/Document.inc");
 require_once("$default->owl_fs_root/lib/foldermanagement/Folder.inc");
 require_once("$default->owl_fs_root/lib/subscriptions/DocumentSubscription.inc");
@@ -75,9 +76,7 @@ class SubscriptionManager {
             return false;
         }
     }
-    
 
-    
     /**
      * Sends an alert to each of the users subscribed to this folder
      * that the folder has changed.
@@ -202,7 +201,51 @@ class SubscriptionManager {
             $_SESSION["errorMessage"] = $lang_err_database;
             return false;
         }
-        return $aDocuments;        
+        return $aDocuments;
+    }
+    
+    /**
+     * Retrieves the users that are subscribed to this folder.
+     *
+     * @param integer the ID of the folder to retrieve subscribers for
+     * @return array of users objects representing the subscribers, false on error
+     */
+    function retrieveFolderSubscribers($iFolderID) {
+        global $default;
+        
+        $sql = $default->db;
+        $aUsers = array();
+        if ($sql->query("SELECT user_id from $default->owl_folder_subscriptions_table WHERE folder_id=$iFolderID")) {
+            while ($sql->next_record()) {
+                $aUsers[] = & User::get($sql->f("user_id"));
+            }
+        } else {
+            $_SESSION["errorMessage"] = $lang_err_database;
+            return false;
+        }
+        return $aUsers;
+    }
+    
+    /**
+     * Retrieves the users that are subscribed to this document.
+     *
+     * @param integer the ID of the document to retrieve subscribers for
+     * @return array of users objects representing the subscribers
+     */    
+    function retrieveDocumentSubscribers($iDocumentID) {
+        global $default;
+        
+        $sql = $default->db;
+        $aUsers = array();
+        if ($sql->query("SELECT user_id from $default->owl_document_subscriptions_table WHERE document_id=$iDocumentID")) {
+            while ($sql->next_record()) {
+                $aUsers[] = & User::get($sql->f("user_id"));
+            }
+        } else {
+            $_SESSION["errorMessage"] = $lang_err_database;
+            return false;
+        }
+        return $aUsers;        
     }
 }
 ?>
