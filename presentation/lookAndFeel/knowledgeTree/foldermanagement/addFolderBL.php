@@ -43,7 +43,7 @@ if (checkSession()) {
             $main->setFormAction("addFolderBL.php?fFolderID=$fFolderID");
             $main->setHasRequiredFields(true);
             $main->render();
-        } else {fwabyw
+        } else {
             //have a folder name to store
             if (Permission::userHasFolderWritePermission($fFolderID)) {
                 //check for illegal characters in the folder name
