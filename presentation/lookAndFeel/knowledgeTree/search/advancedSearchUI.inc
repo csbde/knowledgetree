@@ -29,8 +29,17 @@ function getMetaData($aMetaTagIDs) {
 	$sToRender = "<table border=\"0\">\n";
 	$sToRender .= "<input type=\"hidden\" name=\"adv_search_start\" value=\"\" />\n";
 	
+    $iRecordCount = 0;
 	while ($sql->next_record()) {
-		$sToRender .= "<tr><td><input type=\"checkbox\" " . wasSelected($sql->f("id"), $aMetaTagIDs) . " name=\"f_adv_" . $sql->f("name") . "\" value=\"" . $sql->f("id") . "\"></td><td>" . $sql->f("name") . "</td></tr>\n";		
+        $sMetaDataCheckBox = "<input type=\"checkbox\" " . wasSelected($sql->f("id"), $aMetaTagIDs) . " name=\"f_adv_" . $sql->f("name") . "\" value=\"" . $sql->f("id") . "\"></td><td>" . $sql->f("name");
+        $iRecordCount++;
+        if (($iRecordCount % 3) == 1) {
+            $sToRender .= "<tr><td>$sMetaDataCheckBox</td>\n";
+        } else if (($iRecordCount % 3) == 0) {
+            $sToRender .= "<td>$sMetaDataCheckBox</td></tr>\n";
+        } else {
+            $sToRender .= "<td>$sMetaDataCheckBox</td>\n";
+        }
 	}
 	
 	$sToRender .= "<input type=\"hidden\" name=\"adv_search_end\" value=\"\" />\n";
