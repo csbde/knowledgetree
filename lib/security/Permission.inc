@@ -167,27 +167,9 @@ class Permission {
         $sQuery = "SELECT GFL.folder_id " ./*ok*/
                         "FROM $default->groups_folders_table AS GFL INNER JOIN $default->users_groups_table AS UGL ON GFL.group_id = UGL.group_id " .
                         "WHERE UGL.user_id = ? " .
+                        "AND GFL.folder_id = ? " .
                         "AND GFL.can_write = 1 ";
-        $aParams = array($_SESSION["userID"]);
-        if ($oFolder->getInheritParentPermission()) {
-            //if we use parent permissions, get the parent folder ids           
-            $sQuery .= "AND GFL.folder_id IN (";
-            if (strlen($oFolder->getParentFolderIDs()) > 0) {
-                $aParentFolderIDs = split(',', $oFolder->getParentFolderIDs());
-                $aParentFolderIDs[] = $oFolder->getID();
-                $sQms = DBUtil::paramArray($aParentFolderIDs);
-                $sQuery .= $sQms;
-                $aParams = array_merge($aParams, $aParentFolderIDs);
-            } else {
-                $sQuery .= "?";
-                $aParams[] = $oFolder->getID();
-            }
-            $sQuery .= ") ";
-        } else {
-            //otherwise we just use the current folder id
-            $sQuery .= "AND GFL.folder_id IN (?)";
-            $aParams[] = $oFolder->getID();
-        }
+        $aParams = array($_SESSION["userID"], $oFolder->getPermissionFolderID());
 
         $res = DBUtil::runQuery(array($sQuery, $aParams));
         
@@ -243,31 +225,13 @@ class Permission {
             $default->log->info("Failed to retrieve folder with ID " . $oFolder->getID() . " from database");
             return false;
         }
-        
+
         $sQuery = "SELECT GFL.folder_id " ./*ok*/
                   "FROM $default->groups_folders_table AS GFL INNER JOIN $default->users_groups_table AS UGL ON GFL.group_id = UGL.group_id " .
                   "WHERE UGL.user_id = ? " .
+                  "AND GFL.folder_id = ? " .
                   "AND GFL.can_read = 1 ";
-        $aParams = array($_SESSION["userID"]);
-        if ($oFolder->getInheritParentPermission()) {
-            //if we use parent permissions, get the parent folder ids           
-            $sQuery .= "AND GFL.folder_id IN (";
-            if (strlen($oFolder->getParentFolderIDs()) > 0) {
-                $aParentFolderIDs = split(',', $oFolder->getParentFolderIDs());
-                $aParentFolderIDs[] = $oFolder->getID();
-                $sQms = DBUtil::paramArray($aParentFolderIDs);
-                $sQuery .= $sQms;
-                $aParams = array_merge($aParams, $aParentFolderIDs);
-            } else {
-                $sQuery .= "?";
-                $aParams[] = $oFolder->getID();
-            }
-            $sQuery .= ") ";
-        } else {
-            //otherwise we just use the current folder id
-            $sQuery .= "AND GFL.folder_id IN (?)";
-            $aParams[] = $oFolder->getID();
-        }
+        $aParams = array($_SESSION["userID"], $oFolder->getPermissionFolderID());
         
         //$sql->query(array($sQuery, $aParams));
         $res = DBUtil::runQuery(array($sQuery, $aParams));
