@@ -18,17 +18,18 @@ function renderBrowseAddPage($fFolderID) {
     $sToRender .= "</table>\n";
     $sToRender .= "<table border=\"0\">\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "\t<td>" . renderFolderList($fFolderID, "control.php?action=addFolder") . "<td>\n";
-    $sToRender .= "</tr>\n";
-    $sToRender .= "</table><br>\n";
-    $sToRender .= "<table border=\"0\">\n";
-    $sToRender .= "<tr>\n";
     $sToRender .= "<td colspan=\"2\"><b>New folder name:<b></td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "<td><input type=\"text\" name=\"fFolderName\" value=\"\" /></td>\n";
     $sToRender .= "<td><input type=\"image\" src=\"$default->graphicsUrl/widgets/add.gif\"></td>\n";
+	$sToRender .= "<td><a href=\"$default->rootUrl/control.php?action=browse&fFolderID=$fFolderID\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></a></td>\n";    
     $sToRender .= "</tr>\n";
-    $sToRender .= "</table>\n";
+    $sToRender .= "</table>\n";    
+    $sToRender .= "<table border=\"0\">\n";
+    $sToRender .= "<tr>\n";
+    $sToRender .= "\t<td>" . renderFolderList($fFolderID, "control.php?action=addFolder") . "<td>\n";
+    $sToRender .= "</tr>\n";
+    $sToRender .= "</table><br>\n";
 
     return $sToRender;
 }
