@@ -101,8 +101,10 @@ class Email {
 	
 	        //send the email
 	        if(!$this->oMailer->Send()) {
-	            $_SESSION["errorMessage"] = $lang_err_email . " " . $this->oMailer->ErrorInfo;
+	            $default->log->error("Error sending mail to $mToEmail; mailer error code=" . $this->oMailer->ErrorInfo);
 	            return false;
+	        } else {
+	        	$default->log->info("Successfully sent mail to $mToEmail");
 	        }
 	        return true;
         } else {
