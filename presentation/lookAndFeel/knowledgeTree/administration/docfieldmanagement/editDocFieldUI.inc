@@ -53,7 +53,7 @@ function getEditPage($iDocFieldID) {
 		
 		$sToRender .= "</tr>\n";
 		$sToRender .= "<tr>\n";
-		$sToRender .= "<td>Has MetaData_lookup: </td><td>" . getHasLookupCheckBox($oDocField) . "</td>\n";
+		$sToRender .= "<td>Has MetaData Lookup: </td><td>" . getHasLookupCheckBox($oDocField) . "</td>\n";
 		$sToRender .= "</tr>\n";
 		$sToRender .= "<tr>\n";
 		$sToRender .= "</tr>\n";
