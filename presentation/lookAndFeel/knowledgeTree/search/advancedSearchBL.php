@@ -37,8 +37,8 @@ if (checkSession()) {
 				
 				if (!isset($fStartIndex)) {
 					$fStartIndex = 0;
-				}				
-				$oPatternCustom->setHtml(getSearchResults($sMetaTagIDs,$sSQLSearchString, $fStartIndex));					
+				}
+				$oPatternCustom->setHtml(getSearchResults($sMetaTagIDs,$sSQLSearchString, $fStartIndex, $fToSearch));
 				$main->setCentralPayload($oPatternCustom);				                                
 				$main->render();
 			} else {
@@ -46,6 +46,7 @@ if (checkSession()) {
 				$oPatternCustom->setHtml(getSearchPage($fSearchString));
 				$main->setCentralPayload($oPatternCustom);
 				$main->setErrorMessage("Please select at least one criteria to search by");
+				$main->setHasRequiredFields(true);
 				$main->setFormAction("advancedSearchBL.php?fForSearch=1");                                
 				$main->render();
 			}
@@ -56,6 +57,7 @@ if (checkSession()) {
 				$oPatternCustom->setHtml(getSearchPage($fSearchString, $aMetaTagIDs));
 				$main->setCentralPayload($oPatternCustom);
 				$main->setErrorMessage("Please enter text to search on");
+				$main->setHasRequiredFields(true);
 				$main->setFormAction("advancedSearchBL.php?fForSearch=1");                                
 				$main->render();
 		}
@@ -64,6 +66,7 @@ if (checkSession()) {
 		//display search criteria
 		$oPatternCustom = & new PatternCustom();
 		$oPatternCustom->setHtml(getSearchPage($fSearchString));
+		$main->setHasRequiredFields(true);
 		$main->setCentralPayload($oPatternCustom);                                
 		$main->setFormAction("advancedSearchBL.php?fForSearch=1");                                
 		$main->render();
