@@ -11,7 +11,7 @@ require_once("../../config/dmsDefaults.php");
 if (checkSession()) {
 	require_once("$default->owl_fs_root/lib/documentmanagement/Document.inc");
 	require_once("$default->owl_fs_root/lib/documentmanagement/DocumentTransaction.inc");
-	require_once("$default->owl_fs_root/lib/foldermanagement/FolderLib.inc");
+	require_once("$default->owl_fs_root/lib/foldermanagement/Folder.inc");
 	require_once("$default->owl_fs_root/lib/foldermanagement/FolderManager.inc");
 
 	$oDocTransaction = & new DocumentTransaction(11, 'Test transaction', 1);

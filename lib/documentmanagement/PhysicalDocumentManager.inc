@@ -38,7 +38,7 @@ class PhysicalDocumentManager {
 		$oDocument = & PhysicalDocumentManager::createDocumentFromUploadedFile($aFileArray, $iFolderID);
 		$oDocument->setDescription($sDescription);		
 		//find the path on the system where the document should be stored
-		$sDocumentFileSystemPath = FolderLib::getFolderPath($oDocument->getFolderID()) . "/" . $oDocument->getName();
+		$sDocumentFileSystemPath = Folder::getFolderPath($oDocument->getFolderID()) . "/" . $oDocument->getName();
 		var_dump($sDocumentFileSystemPath);
 		//copy the file accross
 		if (copy($sTmpFilePath, $sDocumentFileSystemPath)) {
@@ -73,8 +73,8 @@ class PhysicalDocumentManager {
 	function downloadPhysicalDocument($iDocumentID) {
 		//get the document
 		$oDocument = & Document::get($iDocumentID);		
-		//get the path to the document on the server
-		$sDocumentFileSystemPath = FolderLib::getFolderPath($oDocument->getFolderID()) . "/" . $oDocument->getName();		
+		//get the path to the document on the server		
+		$sDocumentFileSystemPath = Folder::getFolderPath($oDocument->getFolderID()) . "/" . $oDocument->getName();		
 		//set the correct headers
 		if (strstr($_SERVER["HTTP_USER_AGENT"], "MSIE")) {		
 			Header ("Content-type: application/" . PhysicalDocumentManager::getMimeTypeName($oDocument->getMimeTypeID()));
@@ -103,7 +103,7 @@ class PhysicalDocumentManager {
 		//get the document
 		$oDocument = & Document::get($iDocumentID);		
 		//get the path to the document on the server
-		$sDocumentFileSystemPath = FolderLib::getFolderPath($oDocument->getFolderID()) . "/" . $oDocument->getName();
+		$sDocumentFileSystemPath = Folder::getFolderPath($oDocument->getFolderID()) . "/" . $oDocument->getName();
 		$total=$url . $files[$i];		
 		
 		if (strstr($_SERVER["HTTP_USER_AGENT"], "MSIE")) {		

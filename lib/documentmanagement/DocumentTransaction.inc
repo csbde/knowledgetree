@@ -58,7 +58,7 @@ class DocumentTransaction {
 		$this->iUserID = $_SESSION["userID"];
 		$this->dDateTime = getCurrentDateTime();		
 		$this->sIP = $_SERVER["REMOTE_ADDR"];
-		$this->sFileName = FolderLib::getFolderPath($oDocument->getFolderID()) . "/" . $oDocument->getName();
+		$this->sFileName = Folder::getFolderPath($oDocument->getFolderID()) . "/" . $oDocument->getName();
 	}
 	
 	/**
