@@ -1,6 +1,7 @@
 <?php
 
 require_once("$default->owl_fs_root/lib/security/permission.inc");
+require_once("$default->owl_fs_root/lib/users/User.inc");
 require_once("$default->owl_fs_root/lib/documentmanagement/Document.inc");
 require_once("$default->owl_fs_root/lib/foldermanagement/Folder.inc");
 
@@ -34,108 +35,72 @@ class DocumentBrowser {
         
         // no folder specified, so depending on the users groups, resolve to the right folderID
         if ($folderID == -1) {
-            // no folder specified, so start at the root for this users organisation
+            // no folder specified, so start at the root folder
             
-            // TODO: check that all these lookup calls succeed?
-            
-            // lookup this users groups
-            $groupIDs = lookupGroupIDs($_SESSION["userID"]);
-            $default->log->debug("DocumentBrowser::browseByFolder: groupIDs=" . arrayToString($groupIDs));
-            /*
-            // look up this users unit
-            // FIXME: what if the user belongs to multiple units?
-            $unitID = lookupField($default->owl_groups_units_table, "unit_id", "group_id", $groupIDs[0]);
-            // lookup the unit name
-            $unitName = lookupField($default->owl_units_table, "name", "id", $unitID);
-            $default->log->debug("DocumentBrowser::browseByFolder: unitID=$unitID; unitName=$unitName");
-           
-            // look up the organisation name for this user
-            $organisationID = lookupField($default->owl_units_table, "organisation_id", "id", $unitID);
-            $organisationName = lookupField($default->owl_organisations_table, "name", "id", $organisationID);
-            $default->log->debug("DocumentBrowser::browseByFolder: organisationID=$organisationID; orgName=$organisationName");
-            
-            // construct the folder name from the organisation
-            $rootFolderName = $organisationName . " Document Root";
-          
-            // lookup the id of the root folder
-            $folderID = lookupID($default->owl_folders_table, "name", $rootFolderName);
-            $default->log->debug("DocumentBrowser::browseByFolder: root folderID=$folderID, root folder name=$rootFolderName");
-            */
             // if this is a system administrator, start her at the root folder
-            // TODO: add to default->sysadmin_group
-            if ($this->checkGroup("System Administrators", $groupIDs)) {
+            if (Permission::userIsSystemAdministrator()) {
                 $folderID = lookupID($default->owl_folders_table, "parent_id", 0);
-               //$folderQuery = "SELECT * FROM $default->owl_folders_table WHERE name='$rootFolderName'";
-               //$results["folders"][] = & Folder::get($folderID);
-               $default->log->info("DocumentBrowser::browseByFolder looked up org root folderID=$folderID; org root foldername=$rootFolderName");
+               $default->log->info("DocumentBrowser::browseByFolder looked up org root folderID=$folderID");
             } else {
-               // otherwise start everyone relative to their unit
-               
-               // FIXME: actually need to lookup the unit root folder- which should map to the unitname
-               //        and descend directly from the organisation document root
+                // start everyone else relative to their unit
+                
+                // look up this users unit
+                // FIXME: what if the user belongs to multiple units?
+                //$unitID = lookupField($default->owl_groups_units_table, "unit_id", "group_id", $groupIDs[0]);
+                $unitID = User::getUnitID($_SESSION["userID"]);
+                // lookup the unit name
+                $unitName = lookupField($default->owl_units_table, "name", "id", $unitID);
+                $default->log->debug("DocumentBrowser::browseByFolder: unitID=$unitID; unitName=$unitName");               
 
-               $default->log->debug("DocumentBrowser::browseByFolder: unitName=$unitName");
+                // the unit root folder has the same name as the unit
+                // FIXME: dodgy i know, but its easy
+                $unitRootFolderName = $unitName;
                
-               $unitRootFolderName = $unitName;// . " Root Folder";
-               
-               // lookup descendant folders with the appropriate unit set
-               //$folderQuery = "SELECT  from $default->owl_folders_table " . 
-               //               "WHERE parent_id=$folderID and name='$unitRootFolder' and unit_id=$unitID";
-               $folderID = lookupID($default->owl_folders_table, "name", $unitRootFolderName);
-               //$results["folders"][] = & Folder::get($folderID);
-               $default->log->info("DocumentBrowser::browseByFolder looked up unit root folderID=$folderID; unit root foldername=$unitRootFolderName");
+                // now lookup the folderID
+                $folderID = lookupID($default->owl_folders_table, "name", $unitRootFolderName);
+                $default->log->info("DocumentBrowser::browseByFolder looked up unit root folderID=$folderID; unit root foldername=$unitRootFolderName");
             }
         } else {
             $default->log->info("DocumentBrowser::browseByFolder starting at passed in folderID=$folderID");
-            // start from the specified folder
-            //$folderQuery = "SELECT * FROM $default->owl_folders_table WHERE id=$folderID";
         }
         
         $default->log->debug("DocumentBrowser::browseByFolder: folderID=$folderID");
         
-        // check if the user has access to this folder
-        //if (Permission::userHasFolderReadPermission($folderID)) {
-            // get the folder
-            $results["folders"][] = & Folder::get($folderID);
-            $default->log->debug("DocumentBrowser::browseByFolder: results=" . arrayToString($results));
-            
-            // now find all the child folders relative to this one 
-            // FIXME: in the same unit?
-            $folderQuery = "SELECT id from $default->owl_folders_table WHERE parent_id=" . $folderID;
-            $default->log->debug("DocumentBrowser::browseByFolder child folder query=$folderQuery");
-            if ($sql->query($folderQuery)) {
-                while ($sql->next_record()) {
-                    // add the child folders to the array
-                    $results["folders"][] = & Folder::get($sql->f("id"));
+        // get the folder
+        $results["folders"][] = & Folder::get($folderID);
+        $default->log->debug("DocumentBrowser::browseByFolder: results=" . arrayToString($results));
+        
+        // now find all the child folders relative to this one 
+        // FIXME: in the same unit?
+        $folderQuery = "SELECT id from $default->owl_folders_table WHERE parent_id=" . $folderID;
+        $default->log->debug("DocumentBrowser::browseByFolder child folder query=$folderQuery");
+        if ($sql->query($folderQuery)) {
+            while ($sql->next_record()) {
+                // add the child folders to the array
+                $results["folders"][] = & Folder::get($sql->f("id"));
+            }
+        }
+        $default->log->debug("DocumentBrowser::browseByFolder: after child folders added; results=" . arrayToString($results));
+        
+        // create query to retrieve documents in this folder
+        $documentQuery = "SELECT id FROM $default->owl_documents_table WHERE folder_id=$folderID";
+        $default->log->debug("DocumentBrowser::browseByFolder about to execute $documentQuery");
+        if ($sql->query($documentQuery)) {
+            while ($sql->next_record()) {
+                // check permissions
+                if (Permission::userHasDocumentReadPermission($sql->f("id"))) {
+                    // add documents to array
+                    // set file attributes
+                    $results["documents"][] = & Document::get($sql->f("id")); 
+                } else {
+                    $default->log->debug("DocumentBrowser::browseByFolder: read permission denied for document id=" . $sql->f("id"));
                 }
             }
-            $default->log->debug("DocumentBrowser::browseByFolder: after child folders added; results=" . arrayToString($results));
-            
-            // create query to retrieve documents in this folder
-            $documentQuery = "SELECT id FROM $default->owl_documents_table WHERE folder_id=$folderID";
-            $default->log->debug("DocumentBrowser::browseByFolder about to execute $documentQuery");
-            if ($sql->query($documentQuery)) {
-                while ($sql->next_record()) {
-                    // check permissions
-                    if (Permission::userHasDocumentReadPermission($sql->f("id"))) {
-                        // add documents to array
-                        // set file attributes
-                        $results["documents"][] = & Document::get($sql->f("id")); 
-                    } else {
-                        $default->log->debug("DocumentBrowser::browseByFolder: read permission denied for document id=" . $sql->f("id"));
-                    }
-                }
-            } else {
-                $_SESSION["errorMessage"] = "documents table select failed";
-            }
-            
-            return $results;
-        /*    
         } else {
-            // permission to view this folder denied
-            $_SESSION["errorMessage"] = "you do not have permission to view this folder (" . $_SESSION["errorMessage"] . ")";
-            return false;
-        }*/
+            $_SESSION["errorMessage"] = "documents table select failed";
+        }
+        
+        return $results;
     }
 
     /**
