@@ -36,7 +36,8 @@ require_once("$default->fileSystemRoot/lib/users/User.inc");
 require_once("$default->fileSystemRoot/lib/security/Permission.inc");
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");    
 require_once("$default->fileSystemRoot/lib/discussions/DiscussionThread.inc");   //###
-require_once("$default->fileSystemRoot/lib/discussions/DiscussionComment.inc");  //###    
+require_once("$default->fileSystemRoot/lib/discussions/DiscussionComment.inc");  //###
+require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/documentmanagement/documentUI.inc");    
 require_once("$default->fileSystemRoot/presentation/Html.inc");   
           
 if(checkSession()) {

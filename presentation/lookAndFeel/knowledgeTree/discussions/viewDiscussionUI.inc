@@ -66,23 +66,6 @@ function getNewThreadOption($fDocumentID) {
 	   return $sToRender;
 }
 
-
-/** 
- *	Renders the path for the document
- *
- *	@param $fDocumentID -> a valid document ID
- */
-function renderDocumentPath($iDocumentID) {
-    global $default;
-	
-	$oDocument = & Document::get($iDocumentID);
-	$sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
-	$sTDBGColour = $default->siteMap->getSectionColour($sSectionName, "td");	
-    $sDocumentPath = displayFolderPathLink(Folder::getFolderPathAsArray($oDocument->getFolderID()), Folder::getFolderPathNamesAsArray($oDocument->getFolderID()), "$default->rootUrl/control.php?action=browse") . " > ";
-    $sDocumentPath .= "<a href=\"$default->rootUrl/presentation/lookAndFeel/knowledgeTree/documentmanagement/viewBL.php?fDocumentID=" . $oDocument->getID() . "&fForInlineView=1\">" . $oDocument->getName() . "</a>";    
-    return "<table border=0 cellpadding=\"5\" width = 100%><tr><td bgcolor=\"$sTDBGColour\">$sDocumentPath</td></tr></table>\n";
-}
-
 /** 
  *	Views the list of comments for a document
  *  Prints out 1 comment 
@@ -110,7 +93,7 @@ function getViewComment($iNum,$oThread,$oComment,$oUser) {
 		$sHeading = "Document Discussion Comments";
 	
 		$sToRender .= renderHeading($sHeading );
-		$sToRender .= renderDocumentPath($oThread->getDocumentID());		
+		$sToRender .= displayDocumentPath($oThread->getDocumentID());		
 		$sToRender .= "<table border=0 width=100%><tr>"; 
 		$sToRender .= "<td width=100><b>Views: </b> " . $oThread->getNumberOfViews() . "</td>";    		
 		$sToRender .= "<td width=20></td>";
@@ -148,7 +131,7 @@ function getCommentBody($oComment, $iDocumentID, $oUser) {
 	$sHeading = "Document Comment";
 		
 	$sToRender .= renderHeading($sHeading);
-	$sToRender .= renderDocumentPath($iDocumentID);
+	$sToRender .= displayDocumentPath($iDocumentID);
 	$aBody = explode("\n",$oComment->getBody());
 	$sBody = "";
 	$numChars = 160;  // number of chars in a line
