@@ -41,7 +41,7 @@ function getDeletePage($oGroupFolderLink, $iFolderID) {
 	$sToRender .= "<td>Access</td><td>" . getAccessCheckBoxes(true, $oGroupFolderLink->getCanRead(), $oGroupFolderLink->getCanWrite()) . "</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td><table><tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/delete.gif\" /></td><td><a href=\"$default->rootUrl/control.php?action=editFolder&fFolderID=" . $oGroupFolderLink->getFolderID() . "\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\" /></a></td></tr></table></td>\n";
+	$sToRender .= "<td><table><tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/delete.gif\" border=\"0\"/></td><td><a href=\"$default->rootUrl/control.php?action=editFolder&fFolderID=" . $oGroupFolderLink->getFolderID() . "\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\" /></a></td></tr></table></td>\n";
 	$sToRender .= "</tr>\n";	
 	$sToRender .= "<table>\n";
 
@@ -65,7 +65,7 @@ function getEditPage($oGroupFolderLink, $iFolderID) {
 	$sToRender .= "<td>Access</td><td>" . getAccessCheckBoxes(false, $oGroupFolderLink->getCanRead(), $oGroupFolderLink->getCanWrite()) . "</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td><table><tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/update.gif\" /></td><td><a href=\"$default->rootUrl/control.php?action=editFolder&fFolderID=" . $oGroupFolderLink->getFolderID() . "\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\" /></a></td></tr></table></td>\n";
+	$sToRender .= "<td><table><tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/update.gif\" border=\"0\"/></td><td><a href=\"$default->rootUrl/control.php?action=editFolder&fFolderID=" . $oGroupFolderLink->getFolderID() . "\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\" /></a></td></tr></table></td>\n";
 	$sToRender .= "</tr>\n";	
 	$sToRender .= "<table>\n";
 	
