@@ -71,7 +71,10 @@ if (checkSession()) {
 								
 								//remove any document word links that this document may have
 								Document::removeDocumentWordLinks($fDocumentID);
-                             
+								
+								//delete all fields associated with the document
+								Document::deleteDocumentFieldsLinks($fDocumentID);
+								
                                 // redirect to the browse folder page							
                                 redirect("$default->rootUrl/control.php?action=browse&fFolderID=" . $oDocument->getFolderID());
                             } else {
