@@ -49,11 +49,7 @@ if (checkSession()) {
 	                $oDocumentTransaction->create();
 	                PhysicalDocumentManager::downloadPhysicalDocument($fDocumentID);
 	            }
-
-	            // optionally redirect to some other page
-//	            if ($fForDownload) {
-//	            	$sOnLoadJs = "redirTimer(0, '" . generateControllerUrl("downloadDocument", "fDocumentID=$fDocumentID") ."');";
-//	            }
+				exit;
 	        }
     	} else {
 	        require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
