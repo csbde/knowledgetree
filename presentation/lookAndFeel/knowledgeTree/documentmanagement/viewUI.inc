@@ -72,12 +72,12 @@ function renderTypeSpecificMetaData($oDocument) {
 	return $oPatternTableSqlQuery->render();
 }
 
-function renderDocumentRouting($oDocument) {
+function renderEditableDocumentRouting($oDocument) {
 	global $default;
-	$sQuery = "SELECT GFAL.id as id, R.name AS role_name, COALESCE(U.Name, 'Not assigned') AS name, GFAL.precedence AS precedence, 'Edit' as edit " .
-				"FROM documents AS D INNER JOIN groups_folders_approval_link AS GFAL ON D.folder_id = GFAL.folder_id " .
+	$sQuery = "SELECT D.id as document_id, GFAL.id as id, R.name AS role_name, COALESCE(U.Name, 'Not assigned') AS name, GFAL.precedence AS precedence, 'Edit' as edit " .	
+				"FROM documents AS D INNER JOIN $default->owl_groups_folders_approval_table AS GFAL ON D.folder_id = GFAL.folder_id " .
 				"INNER JOIN roles AS R ON GFAL.role_id = R.id " .
-				"LEFT OUTER JOIN folders_users_roles_link AS FURL ON FURL.folder_id = D.folder_id " .
+				"LEFT OUTER JOIN folders_users_roles_link AS FURL ON FURL.group_folder_approval_id = GFAL.id " .
 				"LEFT OUTER JOIN users AS U ON FURL.user_id = U.id " .
 				"WHERE D.id = " . $oDocument->getID() . " " .
 				"ORDER BY GFAL.precedence, role_name ASC";
@@ -85,8 +85,31 @@ function renderDocumentRouting($oDocument) {
 	$aColumns = array("role_name", "name", "precedence", "edit");
 	$aColumnHeaders = array("Role", "Player", "Seq", "");
 	$aColumnTypes = array(1,1,1,3);
-	$oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaders, "10%", "$default->owl_root_url/control.php?action=modifyDocumentRouting&fFolderCollaborationID=","id");
+	$aDBColumnArray = array("id","document_id");
+	$aQueryStringVariableNames = array("fFolderCollaborationID", "fDocumentID");
+	$oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaders, "10%", "$default->owl_root_url/control.php?action=modifyDocumentRouting",$aDBColumnArray,$aQueryStringVariableNames);
 	$oPatternTableSqlQuery->setTableHeading("Document Routing");
+	$oPatternTableSqlQuery->setDisplayColumnHeadings(true);
+	return $oPatternTableSqlQuery->render();
+	
+}
+
+function renderNonEditableDocumentRouting($oDocument) {
+	global $default;
+	$sQuery = "SELECT D.id as document_id, GFAL.id as id, R.name AS role_name, COALESCE(U.Name, 'Not assigned') AS name, GFAL.precedence AS precedence " .	
+				"FROM documents AS D INNER JOIN $default->owl_groups_folders_approval_table AS GFAL ON D.folder_id = GFAL.folder_id " .
+				"INNER JOIN roles AS R ON GFAL.role_id = R.id " .
+				"LEFT OUTER JOIN folders_users_roles_link AS FURL ON FURL.group_folder_approval_id = GFAL.id " .
+				"LEFT OUTER JOIN users AS U ON FURL.user_id = U.id " .
+				"WHERE D.id = " . $oDocument->getID() . " " .
+				"ORDER BY GFAL.precedence, role_name ASC";
+	
+	$aColumns = array("role_name", "name", "precedence");
+	$aColumnHeaders = array("Role", "Player", "Seq");
+	$aColumnTypes = array(1,1,1);	
+	$oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaders, "10%", "$default->owl_root_url/control.php?action=modifyDocumentRouting",$aDBColumnArray,$aQueryStringVariableNames);
+	$oPatternTableSqlQuery->setTableHeading("Document Routing");
+	$oPatternTableSqlQuery->setDisplayColumnHeadings(true);
 	return $oPatternTableSqlQuery->render();
 	
 }
@@ -113,7 +136,7 @@ function getEditPage($oDocument) {
 	$sToRender .= "<td valign=top>\n";
 		$sToRender .= "\t<table border = 0, width = 230>\n";
 		$sToRender .= "\t<tr>\n";
-		$sToRender .= "\t\t<td>" . wrapInTable(renderDocumentRouting($oDocument)) . "</td>\n";
+		$sToRender .= "\t\t<td>" . wrapInTable(renderEditableDocumentRouting($oDocument)) . "</td>\n";
 		//$sToRender .= "\t\t<td>" . renderDocumentRouting($oDocument) . "</td>\n";
 		$sToRender .= "\t</tr>";
 		$sToRender .= "\t</table>";
@@ -152,7 +175,7 @@ function getViewPage($oDocument) {
 	$sToRender .= "<td valign=top>\n";
 		$sToRender .= "\t<table border = 0, width = 230>\n";
 		$sToRender .= "\t<tr>\n";
-		$sToRender .= "\t\t<td>" . wrapInTable(renderDocumentRouting($oDocument)) . "</td>\n";
+		$sToRender .= "\t\t<td>" . wrapInTable(renderNonEditableDocumentRouting($oDocument)) . "</td>\n";
 		//$sToRender .= "\t\t<td>" . renderDocumentRouting($oDocument) . "</td>\n";
 		$sToRender .= "\t</tr>";
 		$sToRender .= "\t</table>";
