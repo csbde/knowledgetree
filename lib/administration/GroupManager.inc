@@ -300,31 +300,10 @@
 	 {
 	        global $default;
 	
-	        $sql = new Owl_DB;
-	             
-	        // check that group exists if it does'nt return false
-	        $query = "SELECT id FROM $default->owl_groups_table WHERE name = '" . $groupName . "'";
-	        $sql->query($query);
-	        $rows = $sql->num_rows($sql);
-	        // go into record set
-	        $sql->next_record();
+	        $id = lookupID($default->owl_groups_table, "name",  $groupName);
 	        
-	        // store the id in a variable
-	        $id = $sql->f("id");
-	        
-	        // if no entry..username does not exist
-	        if ($rows == 0) 
-	        {
-	            // duplicate username
-	            $default->errorMessage = "GroupManager::The Group  " . $groupName . " does not exist<br>";
-	            $default->log->debug($default->errorMessage);
-	            return false;
-	        }
-	        else
-	        {
-	        	return $id;
-	        }
-	}	
+	        return $id;
+ 	}	
 			
     /*
      * Function getGroupName($groupID)
@@ -341,31 +320,10 @@
 	 {
 	        global $default;
 	
-	        $sql = new Owl_DB;
+	        //call lookup function
+	        $name = lookupField($default->owl_groups_table, "name" , "id",  $groupID);
 	        
-	             
-	        // check that username exists if it does'nt return false
-	        $query = "SELECT name FROM $default->owl_groups_table WHERE id = '" . $groupID . "'";
-	        $sql->query($query);
-	        $rows = $sql->num_rows($sql);
-	        // go into record set
-	        $sql->next_record();
-	        
-	        // store the id in a variable
-	        $name = $sql->f("name");
-	        
-	        // if no entry..group name does'nt exist
-	        if ($rows == 0) 
-	        {
-	            // duplicate username
-	            $default->errorMessage = "GroupManager::The group does not exist<br>";
-	            $default->log->debug($default->errorMessage);
-	            return false;
-	        }
-	        else
-	        {
-	        	return $name;
-	        }
+	        return $name;     
 	}	
 
    /*
@@ -381,77 +339,46 @@
 	 {
 	        global $default;
 		$unitinfo = array();
-	        $sql = new Owl_DB;
-	        //$groupName = new GroupManager;
 	        
-	             
-	        // check that group exists if it does'nt return false
-	        $query = "SELECT unit_id FROM $default->owl_groups_units_table WHERE  group_id = '" . $groupID . "'";
-	        $sql->query($query);
-	        $rows = $sql->num_rows($sql);
+	        // call lookup functions	        
+	        $unitID = lookupField($default->owl_groups_units_table, "unit_id" , "group_id",  $groupID);    
+	        $unitName = lookupField($default->owl_units_table, "name" , "id",  $unitID);    
 	        
-	        // if no entry..group does not belong to a unit
-	        if ($rows == 0) 
-	        {
-	            // duplicate username
-	            $default->errorMessage = "GroupManager::The group does not belong to a unit<br>";
-	            $default->log->debug($default->errorMessage);
-	            return false;
-	        }
-	 
-	        	        
-	        while($sql->next_record())
-	        {
-	        	$unitinfo[1] = array("id" => $sql->f("unit_id"),
-	        			    "name" => $this->getUnitName($sql->f("unit_id")) // TODO change this to unit obj
-	        			  );
+	        $unitinfo[1] = array("id" => $unitID, "name" => $unitName);
 	        	
-	        }
-	        
+	        // return an array
 	        return $unitinfo;
+	        
 	}	
 	
 	
-	
+    
     /*  
      *
-     * gets the name of a unit using their username
+     * gets the org details of the org a unit belongs to TODO: move into System/Or Management
      *
-     * @param   unitID
-     *   The id of the unit who's name we want
-     * @return char
-     *   name of unit
+     * @param   orgID
+     *   The id of the org who's name we want based on the unit who belongs to it
+     * @return array
+     *   if and name of org
      */
      
-	function getUnitName($unitID)
+	function getOrg($unitID)
 	 {
-	        global $default;
-	
-	        $sql = new Owl_DB;
+	 	
+	 	global $default;
+		$orginfo = array();
 	        
-	             
-	        // check that username exists if it does'nt return false
-	        $query = "SELECT name FROM $default->owl_units_table WHERE id = '" . $unitID . "'";
-	        $sql->query($query);
-	        $rows = $sql->num_rows($sql);
-	        // go into record set
-	        $sql->next_record();
+	        // call lookup functions	        
+	        $orgID = lookupField($default->owl_units_table, "organisation_id" , "id",  $unitID);    
+	        $orgName = lookupField($default->owl_organisations_table, "name" , "id",  $orgID);    
 	        
-	        // store the id in a variable
-	        $name = $sql->f("name");
+	        $orginfo[1] = array("id" => $orgID, "name" => $orgName);
+	        	
+	        // return an array
+	        return $orginfo;
 	        
-	        // if no entry..unit name does'nt exist
-	        if ($rows == 0) 
-	        {
-	            // duplicate username
-	            $default->errorMessage = "GroupManager::The unit does not exist<br>";
-	            $default->log->debug($default->errorMessage);
-	            return false;
-	        }
-	        else
-	        {
-	        	return $name;
-	        }
+	       
 	}
 		
  }
