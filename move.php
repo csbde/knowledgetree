@@ -3,8 +3,6 @@
 /*
  * move.php
  *
- * Move a folder or a file to a new destination
- *
  * Copyright (c) 1999-2002 The Owl Project Team
  * Licensed under the GNU GPL. For full terms see the file COPYING.
  *
@@ -48,18 +46,14 @@ switch ($order) {
 
 
 if($action == "file") {
-	//if  the user does not have permission to modify the file
 	if(check_auth($id, "file_modify", $userid) == 0) {
 		include("./lib/header.inc");
 		print("<TABLE WIDTH=$default->table_expand_width BGCOLOR=$default->main_header_bgcolor CELLSPACING=0 CELLPADDING=0 BORDER=$default->table_border HEIGHT=30>");
 		?>
 		<TR><TD ALIGN=LEFT>
                 <?php print("$lang_user: ");
-		
-		//if the user has access to his/her preferences
-		//print a link to the user's preferences
 		if(prefaccess($userid)) {
-			print("<A HREF='prefs.php?owluser=$userid&sess=$sess&expand=$expand&order=$order&sortname=$sortname'>");
+                print("<A HREF='prefs.php?owluser=$userid&sess=$sess&expand=$expand&order=$order&sortname=$sortname'>");
                 }
                 print uid_to_name($userid);
                 print ("</A>");
@@ -75,18 +69,14 @@ if($action == "file") {
 		exit($lang_nofilemod);
 	}
 } else {
-	//if the user does not have permission to modify the folder
 	if(check_auth($id, "folder_modify", $userid) == 0) {
 		include("./lib/header.inc");
 		print("<TABLE WIDTH=$default->table_expand_width BGCOLOR=$default->main_header_bgcolor CELLSPACING=0 CELLPADDING=0 BORDER=$default->table_border HEIGHT=30>");
 		?>
 		<TR><TD ALIGN=LEFT>
                 <?php print("$lang_user: ");
-		
-		//if the user has access to his/her preferences
-		//print a link to the user's preferences
                 if(prefaccess($userid)) {
-			print("<A HREF='prefs.php?owluser=$userid&sess=$sess&expand=$expand&order=$order&sortname=$sortname'>");
+                print("<A HREF='prefs.php?owluser=$userid&sess=$sess&expand=$expand&order=$order&sortname=$sortname'>");
                 }
                 print uid_to_name($userid);
                 print ("</A>");
@@ -102,17 +92,9 @@ if($action == "file") {
 	}
 }
 
-
-/**
-* Check for new folders.  Sets $newFolder to the new folder id
-*/
 function checkForNewFolder() {
 	global $HTTP_POST_VARS, $newFolder;
-	if (!is_array($HTTP_POST_VARS)) 
-	{
-		return;
-	}
-	
+	if (!is_array($HTTP_POST_VARS)) return;
 	while (list($key, $value) = each ($HTTP_POST_VARS)) {
 		if (substr($key,0,2)=="ID") { 
 			$newFolder = intval(substr($key,2)); 
@@ -121,58 +103,27 @@ function checkForNewFolder() {
 	}
 }
 
-/**
-* Display all the sub-folders in a folder
-*
-* @param $fid		folder id
-* @param $folder	folder name
-*
-*/
 function showFoldersIn($fid, $folder) {
 	global $folderList, $fCount, $fDepth, $excludeID, $action, $id, $default, $userid ;
 	for ($c=0 ;$c < ($fDepth-1) ; $c++) print "<img src='$default->owl_root_url/locale/$default->owl_lang/graphics/icons/blank.gif' height=16 width=18 align=top>";
 	if ($fDepth) print "<img src='$default->owl_root_url/locale/$default->owl_lang/graphics/icons/link.gif' height=16 width=16 align=top>";
 	
 	$gray=0;	//	Work out when to gray out folders ...
-	
-	//current parent for all moves
-	if ($fid==$excludeID)
-	{
-		$gray=1;	
-	}
-	//subtree for folder moves
-	//can't move a folder to itself
-	if (($action=="folder") && ($fid==$id)) 
-	{
-		$gray=1;	
-	}
-	//check for permissions
-	//if you don't have folder modify permissions
-	if (check_auth($fid, "folder_modify", $userid) == 0)
-	{
-		$gray = 1; 	
-	}
+	if ($fid==$excludeID) $gray=1;	//	current parent for all moves
+	if (($action=="folder") && ($fid==$id)) $gray=1;	//	subtree for folder moves
+	if (check_auth($fid, "folder_modify", $userid) == 0) $gray = 1; 	//	check for permissions
 
-	
+
 	if ($gray) {
 		print "<img src='$default->owl_root_url/locale/$default->owl_lang/graphics/icons/folder_gray.gif' height=16 width=16 align=top>";
 		print " <font color=\"silver\">$folder</font><br>\n";
-	}	
-	else 
-	{
+	} else {
 		print "<input type='image' border=0 src='$default->owl_root_url/locale/$default->owl_lang/graphics/icons/folder_closed.gif' height=16 width=16 align=top name=\"ID";
 		print "$fid\"> $folder<br>\n";
 	}
 
-	//Don't show subtree of selected folder as target for folder move
-	if (($action=="folder") && ($fid==$id)) 
-	{
-		return;	
-	}
-	
-	//recurse through all the folders in the current folder and
-	//display their sub-folders
-	for ($c=0; $c < $fCount; $c++) {
+	if (($action=="folder") && ($fid==$id)) return;	//	Don't show subtree of selected folder as target for folder move
+	for ($c=0; $c<$fCount; $c++) {
 		if ($folderList[$c][2]==$fid) {
 			$fDepth++;
 			showFoldersIn( $folderList[$c][0] , $folderList[$c][1] ); 
@@ -187,14 +138,12 @@ if ($action=="$lang_cancel_button") {
 }
 
 checkForNewFolder();
-//if there is a new folder
 if (isset($newFolder)) {
 	$sql = new Owl_DB;
 
 	$source="";
 	$fID=$parent;
 	do {
-		//build the directory path from the root folder to the current parent folder
 		$sql->query("select name,parent from $default->owl_folders_table where id='$fID'");
 		while($sql->next_record()) {
 			$tName = $sql->f("name");
@@ -206,7 +155,6 @@ if (isset($newFolder)) {
 	$dest="";
 	$fID=$newFolder;
 	do {
-		//build the directory path from the root folder to the new folder
 		$sql->query("select name,parent from $default->owl_folders_table where id='$fID'");
 		while($sql->next_record()) {
 			$tName = $sql->f("name");
@@ -232,8 +180,6 @@ if (isset($newFolder)) {
 	}
 
 
-	//if we're using the file system
-	//then move the file
 	if($default->owl_use_fs) {
 		if ($type != "url") {
            		if (!file_exists("$default->owl_FileDir/$dest$fname")) {

@@ -3,8 +3,6 @@
 /*
  * view.php
  *
- * Displays file details, image previews, zip previews depending on the current action
- *
  * Copyright (c) 1999-2002 The Owl Project Team
  * Licensed under the GNU GPL. For full terms see the file COPYING.
  *
@@ -54,13 +52,7 @@ switch ($order) {
 }
 
 // END 496814 Column Sorts are not persistant
-/**
-* Finds the path from the root folder to the required folder
-*
-* @param $parent required folder
-*
-* @returns string containing path from root folder to required folder 
-*/
+
 function find_path($parent) {
 	global $default;
         $path = fid_to_name($parent);
@@ -75,13 +67,6 @@ function find_path($parent) {
         return $path;
 }
 
-/**
-* Get a file name for a file id
-*
-* @paramater $id file id
-*
-* @return string file name
-*/
 function fid_to_filename($id) {
 	global $default;
         $sql = new Owl_DB;
@@ -90,14 +75,11 @@ function fid_to_filename($id) {
 }
 
 if($action == "image_show") {
-	//if the user has permission to download the file
 	if(check_auth($id, "file_download", $userid) == 1) {
-		//if the file is stored on the file system
 		if ($default->owl_use_fs) {
 			$path = $default->owl_FileDir."/".find_path($parent)."/".fid_to_filename($id);
 			readfile("$path");
 		}
-		//else the file is stored in the database
 		else {
 			$sql = new Owl_DB;
                 	$filename =  fid_to_filename($id);
@@ -145,17 +127,12 @@ print("<TABLE WIDTH=$default->table_expand_width BGCOLOR=$default->main_header_b
 <?php print("<A HREF='browse.php?sess=$sess&parent=$parent&expand=$expand&order=$order&$sortorder=$sortname'><IMG SRC='$default->owl_root_url/locale/$language/graphics/btn_browse.gif' BORDER=0>");?>
 	</A></TD></TR></TABLE>
 <?php
-
-//view the file details (name, creator, security rights etc.)
 if($action == "file_details") {
-	//if the current user has permission to view the folder
 	if(check_auth($parent, "folder_view", $userid) == 1) {
                 $expand = 1;
                 print("<TABLE WIDTH=$default->table_expand_width BORDER=$default->table_border>");
                 print("<TR><TD align=left>".gen_navbar($parent)."/".flid_to_name($id)."</TD></TR>");
                 print("</TABLE><HR WIDTH=$default->table_expand_width><BR>");
-		
-		//get the file information
                 $sql = new Owl_DB; $sql->query("select * from $default->owl_files_table where id = '$id'");
                 while($sql->next_record()) {
                         $security = $sql->f("security");
@@ -183,9 +160,7 @@ if($action == "file_details") {
 	}
 }
 
-//preview an image
 if($action == "image_preview") {
-	//if the current user has permission to dowload the file
 	if(check_auth($id, "file_download", $userid) == 1) {
 		$path = find_path($parent)."/".fid_to_filename($id);
 		print("$lang_viewing". gen_navbar($parent) . "/" . fid_to_filename($id) ."<HR WIDTH=50%><BR><BR>");
@@ -195,18 +170,13 @@ if($action == "image_preview") {
 	}
 }
 
-//preview a zip file
 if($action == "zip_preview") {
-	//if the current user has permission to download the file
 	if(check_auth($id, "file_download", $userid) == 1) {
 		$name = fid_to_filename($id);
 
-		//if the file is stored on the file system
 		if ($default->owl_use_fs) {
                   $path = find_path($parent)."/".$name;
-                }
-		//else the file is stored in the database
-		else {
+                } else {
                   $path = $name;
                   if (file_exists($default->owl_FileDir. "/$path")) unlink($default->owl_FileDir. "/$path");
                   $file = fopen($default->owl_FileDir. "/$path", 'wb');
@@ -254,18 +224,13 @@ if($action == "zip_preview") {
 
 // BEGIN wes change
 if($action == "html_show" || $action == "text_show") {
-	//if the current user has permission to download the file
         if(check_auth($id, "file_download", $userid) == 1) {
-	 //if the file is stored on the file system
           if ($default->owl_use_fs) {
                 $path = $default->owl_FileDir."/".find_path($parent)."/".fid_to_filename($id);
 		print("<BR>$lang_viewing". gen_navbar($parent) . "/" . fid_to_filename($id) ."<HR WIDTH=50%><BR><BR></CENTER>");
                 if ($action == "text_show") print("<xmp>");
                 readfile("$path");
-          }
-	  //else the file is stored in the database
-	  else 
-	  {
+          } else {
                 print("$lang_viewing /".find_path($parent)."/".fid_to_filename($id)."<HR WIDTH=50%><BR><BR></CENTER>");
                 if ($action == "text_show") print("<xmp>");
 

@@ -1,34 +1,62 @@
 <?php
 
-/*
+/**
  * index.php
+ *
+ * This is the index page for the admin
  *
  * Copyright (c) 1999-2002 The Owl Project Team
  * Licensed under the GNU GPL. For full terms see the file COPYING.
- *
- * $Id$
+ * @version v 1.1.1.1 2002/12/04
+ * @author michael
+ * @package Owl
  */
+ 
 
 require("../config/owl.php");
 require("../lib/owl.lib.php");
 require("../config/html.php");
 
-
-if($action == "backup") dobackup();
+// action selected is to backup then doBackup function is called
+if($action == "backup") 
+{
+	dobackup();
+}
 
 include("../lib/header.inc");
 print("<CENTER>");
 
-if($usergroupid != "0") die("$lang_err_unauthorized");
+// if usergroupid invalid then unauthorised view and exit
+if($usergroupid != "0")
+{
+	 die("$lang_err_unauthorized");
+}
 
-if(!isset($action)) $action = "users";
+// if not action set ..set action to users
+if(!isset($action))
+{
+	 $action = "users";
+}
 
-function printusers() {
+//-------------------------------------------------------------
+/**
+ *   Function PrintUsers
+ *
+ *   Prints the users out
+ *	
+ */
+//-------------------------------------------------------------
+// Semi-Usable - Interface based
+function printusers() 
+{
 	global $sess, $default, $lang_users;
 
+	//create a new connection
 	$sql = new Owl_DB;
+	// create a new active session
 	$sql_active_sess = new Owl_DB;
 
+	
 	$sql->query("select username,name,id,maxsessions from $default->owl_users_table order by name");
 	
 
@@ -64,18 +92,21 @@ function printusers() {
 
  	print("<TABLE BORDER=$default->table_border><TR><TD BGCOLOR=$default->table_header_bg>$lang_users</TD><TD BGCOLOR=$default->table_header_bg>&nbsp</TD></TR>");
 
-
+	
 	while($sql->next_record()) {
+        	// loop through record getting user information
                 $uid = $sql->f("id");
                 $username = $sql->f("username");
                 $name = $sql->f("name");
  		$maxsess = $sql->f("maxsessions") + 1;
                 $numrows = 0;
                 
+                // find active sessions
                 $sql_active_sess->query("select * from $default->owl_sessions_table where uid = $uid");
                 $sql_active_sess->next_record();
                 $numrows = $sql_active_sess->num_rows($sql_active_sess);
 
+		// print out information ->not usable
                 if ($name == "")
 			print("<TR><TD align=left><A HREF='index.php?sess=$sess&action=users&owluser=".$uid."'>".$username."</A></TD>");
                 else
@@ -85,24 +116,53 @@ function printusers() {
 	print("</TABLE>");  
 }
 
-function printgroups() {
+//-------------------------------------------------------------
+/**
+ *   Function PrintGroups
+ *
+ *   Prints the Groups out
+ *	
+ */
+//-------------------------------------------------------------
+// Semi-Usable -> Interface Based
+function printgroups() 
+{// print out all groups 
 	global $sess, $lang_groups, $default;
 	$sql = new Owl_DB;
 	$sql->query("select name,id from $default->owl_groups_table order by name");
 	print("<TABLE BORDER=$default->table_border><TR><TD BGCOLOR=$default->table_header_bg>$lang_groups</TD></TR>");
-	while($sql->next_record()) {
+	
+	while($sql->next_record())
+	 {
 		print("<TR><TD align=left><A HREF='index.php?sess=$sess&action=groups&group=".$sql->f("id")."'>".$sql->f("name")."</A></TD></TR>");
 	}
 	print("</TABLE>");
 }
 
-function printuser($id) {
+//-------------------------------------------------------------
+/**
+ *   Function PrintUsr($id)
+ *
+ *   Prints the User out
+ *
+ *   @param $id
+ *	The Id of the user who's info is to be printed
+ *	
+ */
+//-------------------------------------------------------------
+// Semi-Usable -> Interface Based
+function printuser($id) 
+{	//declare globals
 	global $sess,$change,$lang_saved,$lang_title,$lang_group,$lang_username,$lang_password,$lang_change,$lang_quota,$lang_groupmember,$lang_noprefaccess,$lang_disableuser, $lang_userlang, $lang_maxsessions, $lang_attach_file;
 	global $lang_flush_sessions_alt, $lang_flushed, $lang_deleteuser, $lang_email, $lang_notification, $default, $flush;
 
-	if($change == 1) print("$lang_saved<BR>");
+	if($change == 1) 
+	{
+		print("$lang_saved<BR>");
+	}
 
-	if ($flush == 1) {
+	if ($flush == 1) 
+	{
 	  flushsessions($id, $sess); 
 	  print($lang_flushed);
 	}
@@ -110,13 +170,19 @@ function printuser($id) {
 	$sql = new Owl_DB;
 	$sql->query("select id,name from $default->owl_groups_table order by name");
 	$i=0;
-	while($sql->next_record()) {
+	
+	// store groups in array
+	while($sql->next_record()) 
+	{
 		$groups[$i][0] = $sql->f("id");
 		$groups[$i][1] = $sql->f("name");
 		$i++;
 	}
 	$sql->query("select * from $default->owl_users_table where id = '$id'");
-	while($sql->next_record()) {
+	
+	//post to dbmodify any changes and their values
+	while($sql->next_record()) 
+	{
 		print("<FORM ACTION='admin_dbmodify.php' METHOD=POST>");
 		print("<INPUT TYPE=HIDDEN NAME=id VALUE=".$sql->f("id").">");
 		print("<INPUT TYPE=HIDDEN NAME=sess VALUE=$sess>");
@@ -124,7 +190,8 @@ function printuser($id) {
 		print("<TABLE BORDER=$default->table_border><TR><TD BGCOLOR=$default->table_header_bg align=right>$lang_title</TD><TD align=left><INPUT TYPE=text NAME=name VALUE='".$sql->f("name")."'></TD></TR>");
 		print("<TR><TD BGCOLOR=$default->table_header_bg align=right>$lang_group</TD><TD align=left><SELECT NAME=groupid>");
 		print("<OPTION VALUE=".$sql->f("groupid").">".group_to_name($sql->f("groupid")));
-		foreach($groups as $g) {
+		foreach($groups as $g) 
+		{
 			print("<OPTION VALUE=$g[0]>$g[1]");
 		}
 		print("</SELECT></TD></TR>");
@@ -146,17 +213,22 @@ function printuser($id) {
                 // Bozz Change  begin
                 //This is to allow a user to be part of more than one group
         
+        	// assign a user to more than one group
                 print("<TR><TD BGCOLOR=$default->table_header_bg align=right>$lang_groupmember</TD><TD align=left>");
                 $i=0;
                 $sqlmemgroup = new Owl_DB;
-                foreach($groups as $g) {
+                foreach($groups as $g) 
+                {
                         $is_set_gid = $g[0];
                         $sqlmemgroup->query("select userid from $default->owl_users_grpmem_table where userid = '$id' and groupid = '$is_set_gid'");
                         $sqlmemgroup->next_record();
-                        if ($sqlmemgroup->num_rows($sqlmemgroup) > 0) {
+                        
+                        if ($sqlmemgroup->num_rows($sqlmemgroup) > 0) 
+                        {
                              print("<input type='checkbox' name='group$i' value=$g[0] checked>$g[1]<BR>");
                         }
-                        else {
+                        else
+                        {
                              print("<input type='checkbox' name='group$i' value=$g[0]>$g[1]<BR>");
                         }
                         $i++;
@@ -171,29 +243,59 @@ function printuser($id) {
                 print("<TR><TD BGCOLOR=$default->table_header_bg ALIGN=RIGHT>$lang_username</TD><TD align=left><INPUT TYPE=TEXT NAME=loginname VALUE='".$sql->f("username")."'></TD></TR>");
 		print("<TR><TD BGCOLOR=$default->table_header_bg align=right>$lang_quota</TD><TD align=left>".$sql->f("quota_current")." / <INPUT TYPE=TEXT NAME=quota VALUE=".$sql->f("quota_max")."></TD></TR>");
 		print("<TR><TD BGCOLOR=$default->table_header_bg align=right>$lang_maxsessions</TD><TD align=left>".($sql->f("maxsessions") + 1)." / <INPUT TYPE=TEXT NAME=maxsessions VALUE=".($sql->f("maxsessions") + 1).">
-<a href=\"index.php?sess=$sess&action=user&owluser=$id&change=0&flush=1\"><IMG SRC='$default->owl_root_url/graphics/admin_flush.gif' BORDER=0 ALT='$lang_flush_sessions_alt' TITLE='$lang_flush_sessions_alt'></a></TD></TR>");
+		<a href=\"index.php?sess=$sess&action=user&owluser=$id&change=0&flush=1\"><IMG SRC='$default->owl_root_url/graphics/admin_flush.gif' BORDER=0 ALT='$lang_flush_sessions_alt' TITLE='$lang_flush_sessions_alt'></a></TD></TR>");
 		print("<TR><TD BGCOLOR=$default->table_header_bg align=right>$lang_password</TD><TD align=left><INPUT TYPE=PASSWORD NAME=password VALUE='".$sql->f("password")."'></TD></TR>");
                 print("<TR><TD BGCOLOR=$default->table_header_bg align=right>$lang_email</TD><TD align=left><INPUT TYPE=TEXT NAME=email VALUE='".$sql->f("email")."'></TD></TR>");
+                
+                // if notify is on ..set its value to checked
                 if ( $sql->f("notify") == 1)
-                    print("<TR><TD BGCOLOR=$default->table_header_bg align=right>$lang_notification</TD><TD align=left><INPUT TYPE=CHECKBOX NAME=notify VALUE=1 checked></TD></TR>");
+                {
+                    	print("<TR><TD BGCOLOR=$default->table_header_bg align=right>$lang_notification</TD><TD align=left><INPUT TYPE=CHECKBOX NAME=notify VALUE=1 checked></TD></TR>");
+                }
                 else
+                {
                     print("<TR><TD BGCOLOR=$default->table_header_bg align=right>$lang_notification</TD><TD align=left><INPUT TYPE=CHECKBOX NAME=notify VALUE=1></TD></TR>");
+                }
+                
+                // if attachfile is on ..set its value to checked
                 if ( $sql->f("attachfile") == 1)
+                {
                     print("<TR><TD BGCOLOR=$default->table_header_bg align=right>$lang_attach_file</TD><TD align=left><INPUT TYPE=CHECKBOX NAME=attachfile VALUE=1 checked></TD></TR>");
+                }
                 else
+                 {
                     print("<TR><TD BGCOLOR=$default->table_header_bg align=right>$lang_attach_file</TD><TD align=left><INPUT TYPE=CHECKBOX NAME=attachfile VALUE=1></TD></TR>");
-		if ($id != 1) {
-                if ( $sql->f("disabled") == 1)
-                    print("<TR><TD BGCOLOR=$default->table_header_bg align=right>$lang_disableuser</TD><TD align=left><INPUT TYPE=CHECKBOX NAME=disabled VALUE=1 checked></TD></TR>");
-                else
-                    print("<TR><TD BGCOLOR=$default->table_header_bg align=right>$lang_disableuser</TD><TD align=left><INPUT TYPE=CHECKBOX NAME=disabled VALUE=1></TD></TR>");
-                if ( $sql->f("noprefaccess") == 1)
-                    print("<TR><TD BGCOLOR=$default->table_header_bg align=right>$lang_noprefaccess</TD><TD align=left><INPUT TYPE=CHECKBOX NAME=noprefaccess VALUE=1 checked></TD></TR>");
-                else
-                    print("<TR><TD BGCOLOR=$default->table_header_bg align=right>$lang_noprefaccess</TD><TD align=left><INPUT TYPE=CHECKBOX NAME=noprefaccess VALUE=1></TD></TR>");
+                 }
+		
+		
+		if ($id != 1) 
+		{
+			// if disabled is on ..set its value to checked
+                	if ( $sql->f("disabled") == 1)
+                    	{
+                    		print("<TR><TD BGCOLOR=$default->table_header_bg align=right>$lang_disableuser</TD><TD align=left><INPUT TYPE=CHECKBOX NAME=disabled VALUE=1 checked></TD></TR>");
+                    	}
+                	else
+                	{
+                    		print("<TR><TD BGCOLOR=$default->table_header_bg align=right>$lang_disableuser</TD><TD align=left><INPUT TYPE=CHECKBOX NAME=disabled VALUE=1></TD></TR>");
+                    	}
+                    	
+                    	// if noprefaccess is on ..set its value to checked
+                	if ( $sql->f("noprefaccess") == 1)
+                	{
+                		print("<TR><TD BGCOLOR=$default->table_header_bg align=right>$lang_noprefaccess</TD><TD align=left><INPUT TYPE=CHECKBOX NAME=noprefaccess VALUE=1 checked></TD></TR>");
+                	}
+                	else
+                	{
+                    		print("<TR><TD BGCOLOR=$default->table_header_bg align=right>$lang_noprefaccess</TD><TD align=left><INPUT TYPE=CHECKBOX NAME=noprefaccess VALUE=1></TD></TR>");
+                    	}
 		}
+		
 		print("</TABLE><BR><INPUT TYPE=SUBMIT VALUE=$lang_change>");
-		if ($sql->f("id") != 1) {
+		
+		// delete user if id != 1
+		if ($sql->f("id") != 1)
+		{
 			print("<INPUT TYPE=SUBMIT NAME=action VALUE='$lang_deleteuser'>");
 		}
 
@@ -201,31 +303,83 @@ function printuser($id) {
 	}
 }
 
-function flushsessions($id, $sess) {
+//-------------------------------------------------------------
+/**
+ *   Function flushsessions($id, $sess) 
+ *
+ *   Flushes the session variable form the db
+ *
+ *   @param $id
+ *	The Id of the user
+ *   @param $sess
+ *	The session variable
+*/
+//-------------------------------------------------------------
+// Usable
+function flushsessions($id, $sess) 
+{
   global $default;
   $sql= new Owl_DB;
   $sql->query("delete from $default->owl_sessions_table where uid='$id' AND sessid!='$sess'");
 }
 
 
-function printgroup($id) {
+//-------------------------------------------------------------
+/**
+ *   Function printgroup($id) 
+ *
+ *   Prints out the group
+ *
+ *   @param $id
+ *	The Id of the user
+ *   
+*/
+//-------------------------------------------------------------
+// Semi-Usable -> interface based
+
+function printgroup($id) 
+{
 	global $sess,$change,$lang_title,$lang_change,$lang_deletegroup,$lang_saved,$default;
-	if(isset($change)) print("$lang_saved<BR>");
+	
+	if(isset($change))
+	{
+		 print("$lang_saved<BR>");
+	}
+	
 	$sql = new Owl_DB;
 	$sql->query("select id,name from $default->owl_groups_table where id = '$id'");
-	while($sql->next_record()) {
+	
+	// post to dbmodify with several values
+	while($sql->next_record()) 
+	{
 		print("<FORM ACTION='admin_dbmodify.php' METHOD=POST>");
 		print("<INPUT TYPE=HIDDEN NAME=id VALUE=".$sql->f("id").">");
 		print("<INPUT TYPE=HIDDEN NAME=sess VALUE=$sess>");
 		print("<INPUT TYPE=HIDDEN name=action VALUE=group>");
 		print("<TABLE BORDER=$default->table_border><TR><TD BGCOLOR=$default->table_header_bg>$lang_title</TD><TD><INPUT TYPE=text NAME=name VALUE='".$sql->f("name")."'></TD></TR></TABLE>");
 		print("<BR><INPUT TYPE=SUBMIT VALUE=$lang_change>");
-		if($sql->f("id") != 0) print("<INPUT TYPE=SUBMIT NAME=action VALUE='$lang_deletegroup'>");
+		
+		// delete the group
+		if($sql->f("id") != 0) 
+		{
+			print("<INPUT TYPE=SUBMIT NAME=action VALUE='$lang_deletegroup'>");
+		}
 		print("</FORM>");
 	}
 }
 
-function printnewgroup() {
+//-------------------------------------------------------------
+/**
+ *   Function printnewgroup() 
+ *
+ *   Prints out a new group
+ *
+ 
+*/
+//-------------------------------------------------------------
+// NOT Usable
+function printnewgroup() 
+{
 	global $default, $sess,$lang_title,$lang_add;
 	print("<FORM ACTION='admin_dbmodify.php' METHOD=post>");
 	print("<INPUT TYPE=HIDDEN NAME=action VALUE=add>");
@@ -234,13 +388,24 @@ function printnewgroup() {
 	print("<TABLE BORDER=$default->table_border><TR><TD BGCOLOR=$default->table_header_bg>$lang_title</TD><TD><INPUT TYPE=TEXT NAME=name></TD></TR></TABLE><BR><INPUT TYPE=SUBMIT VALUE=$lang_add></FORM>");
 }
 
+//-------------------------------------------------------------
+/**
+ *   Function printnewuserr() 
+ *
+ *   Prints out a new user
+ *
+*/
+//-------------------------------------------------------------
+// Semi-Usable
 function printnewuser() {
 	global $sess,$lang_title,$lang_username,$lang_group,$lang_password,$lang_add,$default, $lang_quota,$lang_groupmember;
         global $lang_email, $lang_notification, $lang_noprefaccess, $lang_disableuser, $lang_userlang, $lang_maxsessions, $lang_attach_file; 
 	$sql = new Owl_DB;
 	$sql->query("select id,name from $default->owl_groups_table order by name");
 	$i=0;
-	while($sql->next_record()) {
+	// get all groups
+	while($sql->next_record()) 
+	{
 		$groups[$i][0] = $sql->f("id");
 		$groups[$i][1] = $sql->f("name");
 		$i++;
@@ -252,30 +417,32 @@ function printnewuser() {
 	print("<TABLE BORDER=$default->table_border><TR><TD BGCOLOR=$default->table_header_bg align=right>$lang_title</TD><TD align=left><INPUT TYPE=TEXT NAME=name></TD></TR>");
 	print("<TR><TD BGCOLOR=$default->table_header_bg align=right>$lang_username</TD><TD align=left><INPUT TYPE=TEXT NAME=loginname></TD></TR>");
 	print("<TR><TD BGCOLOR=$default->table_header_bg align=right>$lang_group</TD><TD align=left><SELECT NAME=groupid>");
-	foreach($groups as $g) {
+	
+	foreach($groups as $g) 
+	{
 		print("<OPTION VALUE=$g[0]>$g[1]");
 	}
         print("</SELECT></TD></TR>");
         //*******************************
         // Display the Language dropdown
         //*******************************
-                print("<TR><TD BGCOLOR=$default->table_header_bg align=right>$lang_userlang</TD><TD align=left><SELECT NAME=newlanguage>");
-                                                 $dir = dir($default->owl_LangDir);
-                                                 $dir->rewind();
+        print("<TR><TD BGCOLOR=$default->table_header_bg align=right>$lang_userlang</TD><TD align=left><SELECT NAME=newlanguage>");
+        $dir = dir($default->owl_LangDir);
+        $dir->rewind();
                         
-                                                 while($file=$dir->read())
-                                                        {
-                                                                if ($file != "." and $file != "..")
-                                                                        { 
-                        							//janu's change BEGIN
-                        							print("<OPTION VALUE=$file");
-                        							if ($file == $default->owl_lang)
-                                							print (" SELECTED");
-                        							print(">$file");
-                        							//janu's change END 
-                                                                        }
-                                                        }
-                                         $dir->close();
+        while($file=$dir->read())
+        {
+        	if ($file != "." and $file != "..")
+        	{ 
+                //janu's change BEGIN
+                	print("<OPTION VALUE=$file");
+                	if ($file == $default->owl_lang)
+                        print (" SELECTED");
+                        print(">$file");
+                 //janu's change END 
+                 }
+         }
+                $dir->close();
                 print("</SELECT></TD></TR>");
 
         // Bozz Change  begin
@@ -283,7 +450,8 @@ function printnewuser() {
 	
         print("<TR><TD BGCOLOR=$default->table_header_bg align=right>$lang_groupmember</TD><TD align=left>");
         $i=0;
-	foreach($groups as $g) {
+	foreach($groups as $g) 
+	{
 		print("<input type='checkbox' name='group$i' value=$g[0]>$g[1]<BR>");
                 $i++;
 	}
@@ -302,6 +470,15 @@ function printnewuser() {
 	print("</TABLE><BR><INPUT TYPE=SUBMIT VALUE=$lang_add></FORM>");
 }
 
+//-------------------------------------------------------------
+/**
+ *   Function printHTML() 
+ *
+ *   Prints out the required HTML
+ *
+ */
+//-------------------------------------------------------------
+// NOT Usable
 function printhtml() {
         global $default, $sess, $lang_add, $lang_change, $change, $lang_saved;
         global $lang_ht_tbl_border_sz, $lang_ht_tbl_hd_bg, $lang_ht_tbl_cell_bg_cl, $lang_ht_tbl_cell_bg_al, $lang_ht_tbl_bg_cl, $lang_ht_expand_width, $lang_ht_collapse_width, $lang_ht_bd_bg_cl, $lang_ht_bd_txt_cl, $lang_ht_bd_lnk_cl, $lang_ht_bd_vlnk_cl, $lang_ht_bd_width; 
@@ -335,7 +512,15 @@ function printhtml() {
                    <TD align=left><INPUT TYPE=TEXT NAME=body_vlink VALUE='$default->body_vlink'></TD></TR>");
         print("</TABLE><BR><INPUT TYPE=SUBMIT VALUE=$lang_change></FORM>");
 }
-
+//-------------------------------------------------------------
+/**
+ *   Function printPrefs() 
+ *
+ *   Prints out the preferences in a specific format
+ *
+ */
+//-------------------------------------------------------------
+// NOT Usable
 function printprefs() {
         global $default, $sess, $lang_add, $lang_change, $change, $lang_saved;
 	global $lang_owl_title_email, $lang_owl_email_from, $lang_owl_email_fromname, $lang_owl_email_replyto , $lang_owl_email_server, $lang_owl_title_HD, $lang_owl_lookAtHD, $lang_owl_def_file_security, $lang_owl_def_file_group_owner, $lang_owl_def_file_owner, $lang_owl_def_file_title, $lang_owl_def_file_meta , $lang_owl_def_fold_sec, $lang_owl_def_fold_group_owner, $lang_owl_def_fold_owner, $lang_owl_title_other, $lang_owl_max_filesize, $lang_owl_owl_timeout, $lang_owl_owl_expand, $lang_owl_version_control, $lang_owl_restrict_view ;
@@ -358,7 +543,8 @@ function printprefs() {
                    <TD align=left><INPUT TYPE=TEXT NAME=email_server VALUE='$default->owl_email_server' size=30></TD></TR>");
         print("<TR><TD BGCOLOR=$default->main_header_bgcolor align=CENTER colspan=2>$lang_owl_title_HD</TD></TR>");
 
-	if ( $default->owl_LookAtHD == "false" ){
+	if ( $default->owl_LookAtHD == "false" )
+	{
                	print("<TR><TD BGCOLOR=$default->table_header_bg align=right>$lang_owl_lookAtHD</TD><TD align=left><INPUT TYPE=CHECKBOX NAME=lookAtHD VALUE='false' checked></TD></TR>");
         	print("<INPUT TYPE=HIDDEN NAME=def_file_security VALUE='$default->owl_def_file_security'>");
         	print("<INPUT TYPE=HIDDEN NAME=def_file_group_owner VALUE='$default->owl_def_file_group_owner'>");
@@ -369,103 +555,138 @@ function printprefs() {
         	print("<INPUT TYPE=HIDDEN NAME=def_fold_group_owner VALUE='$default->owl_def_fold_group_owner'>");
         	print("<INPUT TYPE=HIDDEN NAME=def_fold_owner VALUE='$default->owl_def_fold_owner'>");
 	}
-      	else {
+      	else 
+      	{
       		print("<TR><TD BGCOLOR=$default->table_header_bg align=right>$lang_owl_lookAtHD</TD><TD align=left><INPUT TYPE=CHECKBOX NAME=lookAtHD VALUE='false'></TD></TR>");
              	printfileperm($default->owl_def_file_security, "def_file_security", $lang_owl_def_file_security, "user");
-
-
 
      	   $sql = new Owl_DB;
            $sql->query("select id,name from $default->owl_groups_table");
            $i=0;
-           while($sql->next_record()) {
+           // get all groups
+           while($sql->next_record())
+            {
                    $groups[$i][0] = $sql->f("id");
                    $groups[$i][1] = $sql->f("name");
                    $i++;
-           }
+            }
           print("<TR><TD ALIGN=RIGHT BGCOLOR=$default->table_header_bg>$lang_owl_def_file_group_owner</TD><TD align=left><SELECT NAME=def_file_group_owner>");
-	   foreach($groups as $g) {
-                             print("<OPTION VALUE=$g[0] ");
-                             if($g[0] == $default->owl_def_file_group_owner)
-				print("SELECTED");
-			     print(">$g[1]");
-                          }
+	   
+	   // loop through all groups
+	   foreach($groups as $g)
+	    {
+                 print("<OPTION VALUE=$g[0] ");
+                 if($g[0] == $default->owl_def_file_group_owner)
+	 	 print("SELECTED");
+		 print(">$g[1]");
+             }
                           print("</SELECT></TD></TR>");
      	   $sql = new Owl_DB;
            $sql->query("select id,name from $default->owl_users_table");
            $i=0;
-           while($sql->next_record()) {
+           
+           // get all users
+           while($sql->next_record()) 
+           {
                    $users[$i][0] = $sql->f("id");
                    $users[$i][1] = $sql->f("name");
                    $i++;
            }
           print("<TR><TD ALIGN=RIGHT BGCOLOR=$default->table_header_bg>$lang_owl_def_file_owner</TD><TD align=left><SELECT NAME=def_file_owner>");
-	   foreach($users as $g) {
-                             print("<OPTION VALUE=$g[0] ");
-                             if($g[0] == $default->owl_def_file_owner)
-				print("SELECTED");
-			     print(">$g[1]");
-                          }
-                          print("</SELECT></TD></TR>");
+	   
+	   loop through users
+	   foreach($users as $g) 
+	   {
+                print("<OPTION VALUE=$g[0] ");
+                if($g[0] == $default->owl_def_file_owner)
+	 	print("SELECTED");
+	        print(">$g[1]");
+            }
+                        print("</SELECT></TD></TR>");
 
 
         print("<TR><TD BGCOLOR=$default->table_header_bg align=right>$lang_owl_def_file_title</TD>
-                   <TD align=left><INPUT TYPE=TEXT NAME=def_file_title VALUE='$default->owl_def_file_title' size=40></TD></TR>");
+        <TD align=left><INPUT TYPE=TEXT NAME=def_file_title VALUE='$default->owl_def_file_title' size=40></TD></TR>");
         print("<TR><TD BGCOLOR=$default->table_header_bg align=right>$lang_owl_def_file_meta</TD>
-                   <TD align=left><INPUT TYPE=TEXT NAME=def_file_meta VALUE='$default->owl_def_file_meta' size=40></TD></TR>");
+        <TD align=left><INPUT TYPE=TEXT NAME=def_file_meta VALUE='$default->owl_def_file_meta' size=40></TD></TR>");
 
-             	printgroupperm($default->owl_def_fold_security, "def_fold_security", $lang_owl_def_fold_sec, "user");
+        printgroupperm($default->owl_def_fold_security, "def_fold_security", $lang_owl_def_fold_sec, "user");
 
-          print("<TR><TD ALIGN=RIGHT BGCOLOR=$default->table_header_bg>$lang_owl_def_fold_group_owner</TD><TD align=left><SELECT NAME=def_fold_group_owner>");
-           foreach($groups as $g) {
-                             print("<OPTION VALUE=$g[0] ");
-                             if($g[0] == $default->owl_def_fold_group_owner)
-                                print("SELECTED");
-                             print(">$g[1]");
-                          }
-                          print("</SELECT></TD></TR>");
+        print("<TR><TD ALIGN=RIGHT BGCOLOR=$default->table_header_bg>$lang_owl_def_fold_group_owner</TD><TD align=left><SELECT NAME=def_fold_group_owner>");
+        foreach($groups as $g) 
+           {
+                print("<OPTION VALUE=$g[0] ");
+                if($g[0] == $default->owl_def_fold_group_owner)
+                print("SELECTED");
+                print(">$g[1]");
+            }
+                print("</SELECT></TD></TR>");
 
-          print("<TR><TD ALIGN=RIGHT BGCOLOR=$default->table_header_bg>$lang_owl_def_fold_owner</TD><TD align=left><SELECT NAME=def_fold_owner>");
-	   foreach($users as $g) {
-                             print("<OPTION VALUE=$g[0] ");
-                             if($g[0] == $default->owl_def_fold_owner)
-				print("SELECTED");
-			     print(">$g[1]");
-                          }
-                          print("</SELECT></TD></TR>");
+         print("<TR><TD ALIGN=RIGHT BGCOLOR=$default->table_header_bg>$lang_owl_def_fold_owner</TD><TD align=left><SELECT NAME=def_fold_owner>");
+	 foreach($users as $g) 
+	 {
+                print("<OPTION VALUE=$g[0] ");
+                if($g[0] == $default->owl_def_fold_owner)
+		print("SELECTED");
+	        print(">$g[1]");
+          }
+                print("</SELECT></TD></TR>");
 
         }
         print("<TR><TD BGCOLOR=$default->main_header_bgcolor align=CENTER colspan=2>$lang_owl_title_other</TD></TR>");
         print("<TR><TD BGCOLOR=$default->table_header_bg align=right>$lang_owl_max_filesize</TD>
-                   <TD align=left><INPUT TYPE=TEXT NAME=max_filesize VALUE='$default->max_filesize'></TD></TR>");
+        <TD align=left><INPUT TYPE=TEXT NAME=max_filesize VALUE='$default->max_filesize'></TD></TR>");
         print("<TR><TD BGCOLOR=$default->table_header_bg align=right>$lang_owl_owl_timeout</TD>
-                   <TD align=left><INPUT TYPE=TEXT NAME=owl_timeout VALUE='$default->owl_timeout'></TD></TR>");
+        <TD align=left><INPUT TYPE=TEXT NAME=owl_timeout VALUE='$default->owl_timeout'></TD></TR>");
 
+	//if expansion is true
 	if ( $default->expand == 1 )
-                    print("<TR><TD BGCOLOR=$default->table_header_bg align=right>$lang_owl_owl_expand</TD><TD align=left><INPUT TYPE=CHECKBOX NAME=owl_expand VALUE=1 checked></TD></TR>");
-                else
-                    print("<TR><TD BGCOLOR=$default->table_header_bg align=right>$lang_owl_owl_expand:</TD><TD align=left><INPUT TYPE=CHECKBOX NAME=owl_expand VALUE=1></TD></TR>");
-
+	{
+                print("<TR><TD BGCOLOR=$default->table_header_bg align=right>$lang_owl_owl_expand</TD><TD align=left><INPUT TYPE=CHECKBOX NAME=owl_expand VALUE=1 checked></TD></TR>");
+         }
+         else
+         {
+         	print("<TR><TD BGCOLOR=$default->table_header_bg align=right>$lang_owl_owl_expand:</TD><TD align=left><INPUT TYPE=CHECKBOX NAME=owl_expand VALUE=1></TD></TR>");
+         }
+	
+	// if version control checked
 	if ( $default->owl_version_control == 1 )
-                    print("<TR><TD BGCOLOR=$default->table_header_bg align=right>$lang_owl_version_control</TD><TD align=left><INPUT TYPE=CHECKBOX NAME=version_control VALUE=1 checked></TD></TR>");
-                else
-                    print("<TR><TD BGCOLOR=$default->table_header_bg align=right>$lang_owl_version_control</TD><TD align=left><INPUT TYPE=CHECKBOX NAME=version_control VALUE=1></TD></TR>");
+         {
+         	print("<TR><TD BGCOLOR=$default->table_header_bg align=right>$lang_owl_version_control</TD><TD align=left><INPUT TYPE=CHECKBOX NAME=version_control VALUE=1 checked></TD></TR>");
+         }
+        else
+         {
+         	print("<TR><TD BGCOLOR=$default->table_header_bg align=right>$lang_owl_version_control</TD><TD align=left><INPUT TYPE=CHECKBOX NAME=version_control VALUE=1></TD></TR>");
+         }
 
+	// restrict view checked if true
 	if ( $default->restrict_view == 1 )
-                    print("<TR><TD BGCOLOR=$default->table_header_bg align=right>$lang_owl_restrict_view</TD><TD align=left><INPUT TYPE=CHECKBOX NAME=restrict_view VALUE=1 checked></TD></TR>");
-                else
-                    print("<TR><TD BGCOLOR=$default->table_header_bg align=right>$lang_owl_restrict_view</TD><TD align=left><INPUT TYPE=CHECKBOX NAME=restrict_view VALUE=1></TD></TR>");
+	{
+              print("<TR><TD BGCOLOR=$default->table_header_bg align=right>$lang_owl_restrict_view</TD><TD align=left><INPUT TYPE=CHECKBOX NAME=restrict_view VALUE=1 checked></TD></TR>");
+        }
+        else
+        {      print("<TR><TD BGCOLOR=$default->table_header_bg align=right>$lang_owl_restrict_view</TD><TD align=left><INPUT TYPE=CHECKBOX NAME=restrict_view VALUE=1></TD></TR>");
+	}
 
         print("<TR><TD BGCOLOR=$default->main_header_bgcolor align=CENTER colspan=2>$lang_owl_title_tools</TD></TR>");
         print("<TR><TD BGCOLOR=$default->table_header_bg align=right>$lang_owl_dbdump_path</TD>
-                   <TD align=left><INPUT TYPE=TEXT NAME=dbdump_path VALUE='$default->dbdump_path' size=30></TD></TR>");
+        <TD align=left><INPUT TYPE=TEXT NAME=dbdump_path VALUE='$default->dbdump_path' size=30></TD></TR>");
         print("<TR><TD BGCOLOR=$default->table_header_bg align=right>$lang_owl_gzip_path</TD>
-                   <TD align=left><INPUT TYPE=TEXT NAME=gzip_path VALUE='$default->gzip_path' size=30></TD></TR>");
+        <TD align=left><INPUT TYPE=TEXT NAME=gzip_path VALUE='$default->gzip_path' size=30></TD></TR>");
         print("<TR><TD BGCOLOR=$default->table_header_bg align=right>$lang_owl_tar_path</TD>
-                   <TD align=left><INPUT TYPE=TEXT NAME=tar_path VALUE='$default->tar_path' size=30></TD></TR>");
+        <TD align=left><INPUT TYPE=TEXT NAME=tar_path VALUE='$default->tar_path' size=30></TD></TR>");
         print("</TABLE><BR><INPUT TYPE=SUBMIT VALUE=$lang_change></FORM>");
 }
 
+//-------------------------------------------------------------
+/**
+ *   Function DoBackup() 
+ *
+ *   Does a backup by zipping relevant data
+ *
+ */
+//-------------------------------------------------------------
+// NOT Usable
 function dobackup() {
   global $default;
 
@@ -484,7 +705,7 @@ function dobackup() {
 }
 
 
-
+// if action has been selected..do it..
 if($action) {
 	print("<TABLE WIDTH=$default->table_expand_width BGCOLOR=$default->main_header_bgcolor CELLSPACING=0 CELLPADDING=0 BORDER=$default->table_border HEIGHT=30>");
 	print("<TR><TD WIDTH=200 VALIGN=TOP>");
@@ -503,26 +724,60 @@ if($action) {
 	print("<A HREF='index.php?sess=$sess&action=newgroup'><IMG SRC='$default->owl_root_url/graphics/admin_groups.gif' BORDER=0 ALT='$lang_newgroup_alt' TITLE='$lang_newgroup_alt'></A><BR>");
 	print("<A HREF='index.php?sess=$sess&action=edhtml'><IMG SRC='$default->owl_root_url/graphics/admin_html_prefs.gif' BORDER=0 ALT='$lang_edthtml_alt' TITLE='$lang_edthtml_alt'></A><BR>");
 	print("<A HREF='index.php?sess=$sess&action=edprefs'><IMG SRC='$default->owl_root_url/graphics/admin_site_prefs.gif' BORDER=0 ALT='$lang_edprefs_alt' TITLE='$lang_edprefs_alt'></A><BR>");
-        if (file_exists($default->dbdump_path) && file_exists($default->gzip_path)) {
+        
+        if (file_exists($default->dbdump_path) && file_exists($default->gzip_path)) 
+        {
 		print("<A HREF='index.php?sess=$sess&action=backup'><IMG SRC='$default->owl_root_url/graphics/admin_backup.gif' BORDER=0 ALT='$lang_backup_alt' TITLE='$lang_backup_alt'></A><BR><BR>");
         }
         else {
 		print("<IMG SRC='$default->owl_root_url/graphics/admin_backup_disabled.gif' BORDER=0 ALT='$lang_backup_dis_alt' TITLE='$lang_backup_dis_alt'></A><BR><BR>");
 	}
+
 //	print("<A HREF='upgrade-users.php?sess=$sess'>$lang_upg_MD5</A><BR><BR>");
 	printusers();
 	print("<BR><BR>");
 	printgroups();
 	print("</TD></TR></TABLE>");
 	print("</TD><TD VALIGN=TOP>");
-	if(isset($owluser)) printuser($owluser);
-	if(isset($group)) printgroup($group);
-	if($action == "newgroup") printnewgroup();
-	if($action == "newuser") printnewuser();
-	if($action == "edhtml") printhtml();
-	if($action == "edprefs") printprefs();
+	// if user action selected..print user
+	if(isset($owluser))
+	{
+		 printuser($owluser);
+	}
+	
+	//if group action selected print group
+	if(isset($group)) 
+	{
+		printgroup($group);
+	}
+	
+	// if newgroup action slelected print the new group
+	if($action == "newgroup") 
+	{
+		printnewgroup();
+	}
+	
+	// if the newuser action print the new user
+	if($action == "newuser") 
+	{
+		printnewuser();
+	}
+	
+	//if the edit html action has been selected run the printHTML
+	if($action == "edhtml") 
+	{ 
+		printhtml();
+	}
+	
+	// if edit preferences selected print the preferences
+	if($action == "edprefs") 
+	{
+		printprefs();
+	}
 	print("</TD></TR></TABLE>");
-} else {
+} 
+else 
+{
 	exit("$lang_err_general");
 }
 
