@@ -91,7 +91,7 @@ class TimePeriod {
         //if the id >= 0, then the object has already been created
         if ($this->iId < 0) {
             $sql = $default->db;
-            $result = $sql->query("INSERT INTO $default->owl_time_period_table (time_unit_id, units) " .
+            $result = $sql->query("INSERT INTO $default->time_period_table (time_unit_id, units) " .
                                   "VALUES ($this->iTimeUnitID, $this->iUnits)");
             if ($result) {
                 //set the current primary key
@@ -112,7 +112,7 @@ class TimePeriod {
         global $default;
         if ($this->iId >= 0) {			
             $sql = $default->db;
-			$sQuery = "UPDATE $default->owl_time_period_table SET " .
+			$sQuery = "UPDATE $default->time_period_table SET " .
 					  "time_unit_id = $this->iTimeUnitID, " .								  
                       "units = $this->iUnits " .                                  
            			  "WHERE id = $this->iId";
@@ -135,7 +135,7 @@ class TimePeriod {
         global $default;
         if ($this->iId >= 0) {
             $sql = $default->db;
-            $result = $sql->query("DELETE FROM $default->owl_time_period_table WHERE id = $this->iId");
+            $result = $sql->query("DELETE FROM $default->time_period_table WHERE id = $this->iId");
             if ($result) {
                 $this->iId = -1;
                 return true;
@@ -155,7 +155,7 @@ class TimePeriod {
     function & get($iTimePeriodID) {
         global $default;
         $sql = $default->db;
-        $sql->query("SELECT * FROM $default->owl_time_period_table WHERE id = $iTimePeriodID");
+        $sql->query("SELECT * FROM $default->time_period_table WHERE id = $iTimePeriodID");
         if ($sql->next_record()) {
             $oTimePeriod = & new TimePeriod($sql->f("time_unit_id"), $sql->f("units"));
             $oTimePeriod->iId = $iTimePeriodID;
@@ -175,7 +175,7 @@ class TimePeriod {
         global $default;
         $aTimePeriodArray = array();
         $sql = $default->db;
-        $result = $sql->query("SELECT * FROM $default->owl_time_period_table " . (isset($sWhereClause) ? " WHERE " . $sWhereClause : ""));
+        $result = $sql->query("SELECT * FROM $default->time_period_table " . (isset($sWhereClause) ? " WHERE " . $sWhereClause : ""));
         if ($result) {
             $iCount = 0;
             while ($sql->next_record()) {

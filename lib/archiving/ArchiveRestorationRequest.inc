@@ -134,7 +134,7 @@ class ArchiveRestorationRequest {
         //if the id >= 0, then the object has already been created
         if ($this->iId < 0) {
             $sql = $default->db;
-            $result = $sql->query("INSERT INTO $default->owl_archive_restoration_table (document_id, request_user_id, admin_user_id, datetime) " .
+            $result = $sql->query("INSERT INTO $default->archive_restoration_table (document_id, request_user_id, admin_user_id, datetime) " .
                                   "VALUES ($this->iDocumentID, $this->iRequestUserID, $this->iAdminUserID, '$this->dDateTime')");
             if ($result) {
                 //set the current primary key
@@ -155,7 +155,7 @@ class ArchiveRestorationRequest {
         global $default;
         if ($this->iId >= 0) {			
             $sql = $default->db;
-			$sQuery = "UPDATE $default->owl_archive_restoration_table SET " .
+			$sQuery = "UPDATE $default->archive_restoration_table SET " .
 					  "document_id = $this->iDocumentID, " .								  
                       "request_user_id = $this->iRequestUserID, " .
                       "admin_user_id = $this->iAdminUserID, " .
@@ -180,7 +180,7 @@ class ArchiveRestorationRequest {
         global $default;
         if ($this->iId >= 0) {
             $sql = $default->db;
-            $result = $sql->query("DELETE FROM $default->owl_archive_restoration_table WHERE id = $this->iId");
+            $result = $sql->query("DELETE FROM $default->archive_restoration_table WHERE id = $this->iId");
             if ($result) {
                 $this->iId = -1;
                 return true;
@@ -200,7 +200,7 @@ class ArchiveRestorationRequest {
     function & getFromDocumentID($iDocumentID) {
         global $default;
         $sql = $default->db;
-        $sql->query("SELECT * FROM $default->owl_archive_restoration_table WHERE document_id = $iDocumentID");
+        $sql->query("SELECT * FROM $default->archive_restoration_table WHERE document_id = $iDocumentID");
         if ($sql->next_record()) {
             $oArchiveRestorationRequest = & new ArchiveRestorationRequest($sql->f("document_id"), $sql->f("request_user_id"), $sql->f("admin_user_id"), $sql->f("datetime"));
             $oArchiveRestorationRequest->iId = $sql->f("id");
@@ -219,7 +219,7 @@ class ArchiveRestorationRequest {
     function & get($iArchiveRestorationRequestID) {
         global $default;
         $sql = $default->db;
-        $sql->query("SELECT * FROM $default->owl_archive_restoration_table WHERE id = $iArchiveRestorationRequestID");
+        $sql->query("SELECT * FROM $default->archive_restoration_table WHERE id = $iArchiveRestorationRequestID");
         if ($sql->next_record()) {
             $oArchiveRestorationRequest = & new ArchiveRestorationRequest($sql->f("document_id"), $sql->f("request_user_id"), $sql->f("admin_user_id"), $sql->f("datetime"));
             $oArchiveRestorationRequest->iId = $iArchiveRestorationRequestID;
@@ -239,7 +239,7 @@ class ArchiveRestorationRequest {
         global $default;
         $aArchiveRestorationRequestArray = array();
         $sql = $default->db;
-        $result = $sql->query("SELECT * FROM $default->owl_archive_restoration_table " . (isset($sWhereClause) ? " WHERE " . $sWhereClause : ""));
+        $result = $sql->query("SELECT * FROM $default->archive_restoration_table " . (isset($sWhereClause) ? " WHERE " . $sWhereClause : ""));
         if ($result) {
             while ($sql->next_record()) {
                 $aArchiveRestorationRequestArray[] = & ArchiveRestorationRequest::get($sql->f("id"));

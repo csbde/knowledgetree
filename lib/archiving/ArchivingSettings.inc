@@ -133,7 +133,7 @@ class ArchivingSettings {
         //if the id >= 0, then the object has already been created
         if ($this->iId < 0) {
             $sql = $default->db;
-            $sQuery = "INSERT INTO $default->owl_archiving_settings_table (archiving_type_id, expiration_date, document_transaction_id, time_period_id) " .
+            $sQuery = "INSERT INTO $default->archiving_settings_table (archiving_type_id, expiration_date, document_transaction_id, time_period_id) " .
                       "VALUES ($this->iArchivingTypeID, " . $this->addQuotes($this->dExpirationDate) . ", $this->iDocumentTransactionID, $this->iTimePeriodID)";
             $result = $sql->query($sQuery);
                                   $default->log->info($sQuery);
@@ -163,7 +163,7 @@ class ArchivingSettings {
         global $default;
         if ($this->iId >= 0) {			
             $sql = $default->db;
-			$sQuery = "UPDATE $default->owl_archiving_settings_table SET " .
+			$sQuery = "UPDATE $default->archiving_settings_table SET " .
                       "archiving_type_id = $this->iArchivingTypeID, " . 
 					  "expiration_date = " . $this->addQuotes($this->dExpirationDate) . ", " .
 					  "document_transaction_id = $this->iDocumentTransactionID, " .								  
@@ -189,7 +189,7 @@ class ArchivingSettings {
         global $default;
         if ($this->iId >= 0) {
             $sql = $default->db;
-            $result = $sql->query("DELETE FROM $default->owl_archiving_settings_table WHERE id = $this->iId");
+            $result = $sql->query("DELETE FROM $default->archiving_settings_table WHERE id = $this->iId");
             if ($result) {
                 $this->iId = -1;
                 return true;
@@ -209,7 +209,7 @@ class ArchivingSettings {
     function & get($iArchivingSettingsID) {
         global $default;
         $sql = $default->db;
-        $sql->query("SELECT * FROM $default->owl_archiving_settings_table WHERE id = $iArchivingSettingsID");
+        $sql->query("SELECT * FROM $default->archiving_settings_table WHERE id = $iArchivingSettingsID");
         if ($sql->next_record()) {
             $oArchivingSettings = & new ArchivingSettings($sql->f("archiving_type_id"), 
             											  $sql->f("expiration_date"),
@@ -232,7 +232,7 @@ class ArchivingSettings {
         global $default;
         $aArchivingSettings = array();
         $sql = $default->db;
-        $result = $sql->query("SELECT * FROM $default->owl_archiving_settings_table " . (isset($sWhereClause) ? " WHERE " . $sWhereClause : ""));
+        $result = $sql->query("SELECT * FROM $default->archiving_settings_table " . (isset($sWhereClause) ? " WHERE " . $sWhereClause : ""));
         if ($result) {
             while ($sql->next_record()) {
                 $oArchivingSettings = & ArchivingSettings::get($sql->f("id"));
