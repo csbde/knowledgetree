@@ -14,11 +14,12 @@ function getHeading() {
 }
 
 function getMessage() {
-	    $sRefreshMessage = "<table><tr><td align=\"center\">If your browser displays a 'Warning: Page has Expired' message when you attempt to return to these search results, please click your browser's 'Refresh' button</td></tr></table>";
+	$sRefreshMessage = "<table><tr><td align=\"center\">If your browser displays a 'Warning: Page has Expired' message when you attempt to return to these search results, please click your browser's 'Refresh' button</td></tr></table>";
 }
 
 function getSearchResultsByCategory($iFolderID, $sKeywords, $iStartIndex, $sCategory) {
 	global $default;
+	$default->log->info("getSearchResultsByCategory($iFolderID, $sKeywords, $iStartIndex, $sCategory)");
 	$sQuery = "SELECT DISTINCT '" . "$default->graphicsUrl/widgets/dfolder.gif" . "' AS folder_image_url, F.id AS folder_id, D.id AS document_id, D.name AS document_name, ROUND(MATCH(DT.document_text) AGAINST ('" . $sKeywords . "'),3) AS score " . 
 				"FROM $default->owl_documents_table AS D INNER JOIN $default->owl_document_text_table AS DT ON D.id = DT.document_id " .
 				"INNER JOIN $default->owl_document_fields_table AS DFL ON DT.document_id=DFL.document_id " .								
@@ -29,20 +30,17 @@ function getSearchResultsByCategory($iFolderID, $sKeywords, $iStartIndex, $sCate
 				"WHERE MATCH(DT.document_text) AGAINST ('" . $sKeywords . "') " .
 				"AND SDUL.user_id = " . $_SESSION["userID"] . " " .
 				"AND SL.name='Live' ";
-				//only check in the parent_folder_ids if we're not searching from the
-				//root folder down
-				if ($iFolderID != 1) { 
-					$sQuery .= "AND (F.parent_folder_ids LIKE '%,$iFolderID,%' OR F.id = $iFolderID) ";
-				}				
-				$sQuery .= "AND DF.name LIKE 'Category' ";
-				if (isset($sCategory)) {
-					$sQuery .= "AND DFL.value LIKE '$sCategory' ";
-				}
-				$sQuery .= "ORDER BY score DESC";
+	//only check in the parent_folder_ids if we're not searching from the
+	//root folder down
+	if (isset($iFolderID) && ($iFolderID != 1)) { 
+		$sQuery .= "AND (F.parent_folder_ids LIKE '%,$iFolderID,%' OR F.id = $iFolderID) ";
+	}				
+	$sQuery .= "AND DF.name LIKE 'Category' ";
+	if (isset($sCategory)) {
+		$sQuery .= "AND DFL.value LIKE '$sCategory' ";
+	}
+	$sQuery .= "ORDER BY score DESC";
 				
-	
-	//var_dump($sQuery);
-	
 	$aColumns = array("folder_image_url", "document_name","score");
 	$aColumnTypes = array(4,3,1);
 	$aColumnHeaders = array("<font color=\"ffffff\">Folder</font>","<font color=\"ffffff\">Document</font>","<font color=\"ffffff\">Score</font>");
@@ -64,18 +62,16 @@ function getSearchResultsByDocumentType($iFolderID, $sKeywords, $iStartIndex, $i
 				"INNER JOIN $default->search_permissions_table AS SDUL ON SDUL.document_id = D.id " .
 				"WHERE MATCH(DT.document_text) AGAINST ('" . $sKeywords . "') " .
 				"AND SDUL.user_id = " . $_SESSION["userID"] . " ";
-				if (isset($iDocTypeID)) {
-					$sQuery .= "AND D.document_type_id = $iDocTypeID ";
-				}					 
-				$sQuery .= "AND SL.name='Live' "; 
-				//only check in the parent_folder_ids if we're not searching from the
-				//root folder down
-				if ($iFolderID != 1) { 
-					$sQuery .= "AND (F.parent_folder_ids LIKE '%,$iFolderID,%' OR F.id = $iFolderID) ";
-				}				
-				$sQuery .= "ORDER BY score DESC";
-				
-	//var_dump($sQuery);
+	if (isset($iDocTypeID)) {
+		$sQuery .= "AND D.document_type_id = $iDocTypeID ";
+	}					 
+	$sQuery .= "AND SL.name='Live' "; 
+	//only check in the parent_folder_ids if we're not searching from the
+	//root folder down
+	if (isset($iFolderID) && ($iFolderID != 1)) { 
+		$sQuery .= "AND (F.parent_folder_ids LIKE '%,$iFolderID,%' OR F.id = $iFolderID) ";
+	}				
+	$sQuery .= "ORDER BY score DESC";
 	
 	$aColumns = array("folder_image_url", "document_name","score");
 	$aColumnTypes = array(4,3,1);
@@ -100,14 +96,12 @@ function getSeachResultsByFolder($iFolderID, $iStartIndex, $sKeywords) {
 				"WHERE MATCH(DT.document_text) AGAINST ('" . $sKeywords . "') " .
 				"AND SDUL.user_id = " . $_SESSION["userID"] . " " .
 				"AND SL.name='Live' "; 
-				//only check in the parent_folder_ids if we're not searching from the
-				//root folder down
-				if ($iFolderID != 1) { 
-					$sQuery .= "AND (F.parent_folder_ids LIKE '%,$iFolderID,%' OR F.id = $iFolderID) ";
-				}				
-				$sQuery .= "ORDER BY score DESC";
-			
-	//var_dump($sQuery);
+	//only check in the parent_folder_ids if we're not searching from the
+	//root folder down
+	if (isset($iFolderID) && ($iFolderID != 1)) { 
+		$sQuery .= "AND (F.parent_folder_ids LIKE '%,$iFolderID,%' OR F.id = $iFolderID) ";
+	}				
+	$sQuery .= "ORDER BY score DESC";
 	
 	$aColumns = array("folder_image_url", "document_name","score");
 	$aColumnTypes = array(4,3,1);
@@ -130,5 +124,4 @@ function getSearchVariablesHtml($sSearchText, $sBrowseType, $iFolderID, $iDocume
 	$sToRender .= "<input type=\"hidden\" name=\"fDocType\" value=\"$iDocType\" />\n";
 	return $sToRender;
 }
-
 ?>
