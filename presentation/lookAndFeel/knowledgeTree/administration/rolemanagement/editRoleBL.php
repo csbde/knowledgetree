@@ -43,13 +43,11 @@ if (checkSession()) {
 
     // if a new group has been added
     if (isset($fFromCreate)) {
-
         if($fRoleID == -1) {
             $oPatternCustom->setHtml(getAddFailPage());
         } else {
-            $oPatternCustom->setHtml(getCreatePage($fRoleID));
+        	controllerRedirect("listRoles");
         }
-
         $main->setFormAction("$default->rootUrl/presentation/lookAndFeel/knowledgeTree/store.php?fReturnURL=" . urlencode("$default->rootUrl/control.php?action=listRoles"));
 
         // coming from manual edit page

@@ -28,10 +28,11 @@
 function getPage() {
 
 	global $default;
-	$aDisplayRowNames = array("Name: ");
-	$aParameterNumbers = array(0);
-	$aDisplayColumnTypes = array(1);
-	$aRequired = array(1);
+	
+	$aDisplayRowNames = array("Name", "Read", "Write");
+	$aParameterNumbers = array(0,1,2);
+	$aDisplayColumnTypes = array(1,2,2);
+	$aRequired = array(1,1,1);
 
 	// create a text field that is required 
 	$oPatternCreate = & new PatternCreate("Role", "roles/Role.inc",$aDisplayRowNames, $aParameterNumbers, $aDisplayColumnTypes, $aRequired);
