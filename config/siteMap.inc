@@ -95,7 +95,7 @@ $default->siteMap->addPage("websiteManagement", "/presentation/lookAndFeel/knowl
 $default->siteMap->addPage("systemAdministration", "/presentation/lookAndFeel/knowledgeTree/administration/systemsettings/systemSettingsBL.php", "Administration", SysAdmin, "System Settings");
 $default->siteMap->addPage("archivedDocuments", "/presentation/lookAndFeel/knowledgeTree/administration/documentmanagement/manageArchivedDocumentsBL.php", "Administration", UnitAdmin, "Restore Archived Documents");
 $default->siteMap->addPage("deletedDocuments", "/presentation/lookAndFeel/knowledgeTree/administration/documentmanagement/listDeletedDocumentsBL.php", "Administration", UnitAdmin, "Deleted Documents");
-$default->siteMap->addPage("doccheckoutManagement", "/presentation/lookAndFeel/knowledgeTree/administration/admin.php?sectionName=doccheckoutAdministration", "Administration", UnitAdmin, "Document Checkout Management");
+$default->siteMap->addPage("doccheckoutManagement", "/presentation/lookAndFeel/knowledgeTree/administration/doccheckoutmanagement/listDocumentsBL.php", "Administration", UnitAdmin, "Document Checkout Management");
 
 $default->siteMap->addSectionColour("Administration", "th", "056DCE");
 $default->siteMap->addSectionColour("Administration", "td", "6699CC");
@@ -149,8 +149,8 @@ $default->siteMap->addSectionColour("userAdministration", "th", "056DCE");
 $default->siteMap->addSectionColour("userAdministration", "td", "6699CC");
 
 // document checkout management
-$default->siteMap->addPage("listDocs", "/presentation/lookAndFeel/knowledgeTree/administration/doccheckoutmanagement/listDocumentsBL.php", "doccheckoutAdministration", UnitAdmin, "List Documents");
-$default->siteMap->addDefaultPage("editDocCheckout", "/presentation/lookAndFeel/knowledgeTree/administration/doccheckoutmanagement/editDocCheckoutBL.php", "doccheckoutAdministration", UnitAdmin, "Edit Document Checkout");
+$default->siteMap->addPage("listDocs", "/presentation/lookAndFeel/knowledgeTree/administration/doccheckoutmanagement/listDocumentsBL.php", "Administration", UnitAdmin, "List Documents", false);
+$default->siteMap->addPage("editDocCheckout", "/presentation/lookAndFeel/knowledgeTree/administration/doccheckoutmanagement/editDocCheckoutBL.php", "Administration", UnitAdmin, "Edit Document Checkout", false);
 
 $default->siteMap->addSectionColour("doccheckoutAdministration", "th", "056DCE");
 
