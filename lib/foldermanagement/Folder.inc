@@ -455,18 +455,20 @@ class Folder {
      * @return array full path of folder as an array of folderIDs
      */
     function getFolderPathNamesAsArray($iFolderID) {
-		global $default;		
+		global $default;
 		$oFolder = Folder::get($iFolderID);
-		$aPathArray;
-		if (strlen($oFolder->sFullPath) > 0) {
-			if (strlen($oFolder->sFullPath) > 1) {				
-				$aPathArray = explode("/",$oFolder->sFullPath);				
+		$aPathArray = array();		
+		if ($oFolder) {
+			if (strlen($oFolder->sFullPath) > 0) {
+				if (strlen($oFolder->sFullPath) > 1) {				
+					$aPathArray = explode("/",$oFolder->sFullPath);				
+				} else {
+					$aPathArray = array($oFolder->sFullPath);
+				}
+				$aPathArray[count($aPathArray)] = $oFolder->getName();
 			} else {
-				$aPathArray = array($oFolder->sFullPath);
+				$aPathArray = array($oFolder->getName());
 			}
-			$aPathArray[count($aPathArray)] = $oFolder->getName();
-		} else {
-			$aPathArray = array($oFolder->getName());
 		}
 		return $aPathArray;
     }
@@ -507,7 +509,11 @@ class Folder {
 	function getFolderDisplayPath($iFolderID) {
 		global $default;
         $aPathNamesArray = Folder::getFolderPathNamesAsArray($iFolderID);
-        return implode(" > ", $aPathNamesArray);
+        if (count($aPathNamesArray) > 1) {
+        	return implode(" > ", $aPathNamesArray);
+        } else {
+        	return "";
+        }
 	}
 	
 	/**
