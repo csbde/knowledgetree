@@ -33,12 +33,12 @@ if (checkSession()) {
 	
 		if (Permission::userHasFolderWritePermission($fFolderID)) {
 			//user has folder write permission
-			if (isset($fForStore)) {
+			if (isset($fForStore)) {				
 				$oDependantDocumentTemplate;			
-				if ($fTemplateDocumentID == "-1") {				
+				if ($fTargetDocumentID == "-1") {				
 					$oDependantDocumentTemplate = & new DependantDocumentTemplate($fDocumentTitle, $fUserID, $fFolderCollaborationID);
 				} else {
-					$oDependantDocumentTemplate = & new DependantDocumentTemplate($fDocumentTitle, $fUserID, $fFolderCollaborationID, $fTemplateDocumentID);
+					$oDependantDocumentTemplate = & new DependantDocumentTemplate($fDocumentTitle, $fUserID, $fFolderCollaborationID, $fTargetDocumentID);
 				}
 				if (!($oDependantDocumentTemplate->create())) {
 					include_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
@@ -69,7 +69,7 @@ if (checkSession()) {
 					include_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");		
 					
 					$oPatternCustom = & new PatternCustom();
-					$oPatternCustom->setHtml(getAddPage($fFolderCollaborationID, $fFolderID, (isset($fUnitID) ? $fUnitID : -1), (isset($fDocumentTitle) ? $fDocumentTitle : ""), (isset($fTemplateDocument) ? $fTemplateDocument : ""), (isset($fDocumentID) ? $fDocumentID : "") ));
+					$oPatternCustom->setHtml(getAddPage($fFolderCollaborationID, $fFolderID, (isset($fUnitID) ? $fUnitID : -1), (isset($fDocumentTitle) ? $fDocumentTitle : ""), (isset($fDocument) ? $fDocument : ""), (isset($fTargetDocumentID) ? $fTargetDocumentID : "") ));
 		    		$main->setCentralPayload($oPatternCustom);
 		    	    $main->setFormAction($_SERVER["PHP_SELF"] . "?fFolderID=$fFolderID&fFolderCollaborationID=$fFolderCollaborationID&fForStore=1");
 		    	    $main->setHasRequiredFields(true);    		
@@ -107,7 +107,7 @@ if (checkSession()) {
 				$oDependantDocumentTemplate = DependantDocumentTemplate::get($fDependantDocumentTemplateID);
 				$oDependantDocumentTemplate->setDefaultUserID($fUserID);
 				$oDependantDocumentTemplate->setDocumentTitle($fDocumentTitle);
-				$oDependantDocumentTemplate->setTemplateDocumentID((isset($fTemplateDocumentID) ? $fTemplateDocumentID : null));
+				$oDependantDocumentTemplate->setTemplateDocumentID((isset($fTargetDocumentID) ? $fDocument : null));
 				$oDependantDocumentTemplate->update();			
 				
 				redirect("$default->rootUrl/control.php?action=viewDependantDocument&fFolderID=$fFolderID&fFolderCollaborationID=$fFolderCollaborationID");
