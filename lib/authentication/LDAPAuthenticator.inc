@@ -34,17 +34,17 @@ class LDAPAuthenticator extends Authenticator {
      *
      * @param string the LDAP server to connect to for validation (optional)
      * @param string the dn branch to perform the authentication against (optional)
+     * @param string the ldap server type (optional)
      */
-    function LDAPAuthenticator($sLdapServer = "", $sLdapDN = "") {
+    function LDAPAuthenticator($sLdapServer = "", $sLdapDN = "", $sServerType = "") {
         global $default;
 
         $this->sLdapServer = strlen($sLdapServer) > 0 ? $sLdapServer : $default->ldapServer;
         $this->sBaseDN = strlen($sLdapDN) > 0 ? $sLdapDN : $default->ldapRootDn;
+        $this->sServerType = strlen($sServerType) > 0 ? $sServerType : $default->ldapServerType;
 
         // initialise and setup ldap class
-        $this->oLdap = new AuthLdap();
-        $this->oLdap->server = array($this->sLdapServer);
-        $this->oLdap->dn = $this->sBaseDN;
+        $this->oLdap = new AuthLdap(array($this->sLdapServer), $this->sBaseDN, $this->sServerType);
     }
 
     /**
