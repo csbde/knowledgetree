@@ -78,34 +78,34 @@ function getSubscriptionDocuments() {
 }
 
 function pendingDocumentsHeaders() {
-    return "<th align=\"left\" width=\"33%\">
-            <span class=\"sectionColumns\">Title</span>
+    return "<th align=\"left\" width=\"33%\" class=\"sectionColumns\">
+            Title
             </th>
-            <th align=\"left\" width=\"33%\">
-            <span class=\"sectionColumns\">Status</span>
+            <th align=\"left\" width=\"33%\" class=\"sectionColumns\">
+            Status
             </th>
-            <th align=\"left\" width=\"33%\">
-            <span class=\"sectionColumns\">Days</span>
+            <th align=\"left\" width=\"33%\" class=\"sectionColumns\">
+            Days
             </th>";
 }
 
 function checkedOutDocumentsHeaders() {
-    return "<th align=\"left\" width=\"33%\">
-            <span class=\"sectionColumns\">Title</span>
+    return "<th align=\"left\" width=\"33%\" class=\"sectionColumns\">
+            Title
             </th>
-            <th align=\"left\" width=\"66%\">
-            <span class=\"sectionColumns\">Days</span>
+            <th align=\"left\" width=\"66%\" class=\"sectionColumns\">
+            Days
             </th>";
 }
 
 function subscriptionDocumentsHeaders() {
-    return "<th align=\"left\" width=\"33%\">
-            <span class=\"sectionColumns\">Title</span>
+    return "<th align=\"left\" width=\"33%\" class=\"sectionColumns\">
+            Title
             </th>
-            <th align=\"left\" width=\"33%\">
-            <span class=\"sectionColumns\">Status</span>
+            <th align=\"left\" width=\"33%\" class=\"sectionColumns\">
+            Status
             </th>
-            <th align=\"left\" width=\"33%\">
-            <span class=\"sectionColumns\">Days</span>
+            <th align=\"left\" width=\"33%\" class=\"sectionColumns\">
+            Days
             </th>";
 }
