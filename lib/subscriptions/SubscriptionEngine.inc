@@ -122,6 +122,7 @@ class SubscriptionEngine {
 
         $sql = $default->db;
         $aUsers = array();
+        $default->log->debug("retrieveSubscribers(id=$iExternalID, type=$iSubscriptionType); table=" .Subscription::getTableName($iSubscriptionType). "; id=" .Subscription::getIdFieldName($iSubscriptionType));
         if ($sql->query("SELECT user_id FROM " . Subscription::getTableName($iSubscriptionType) .  " " .
                         "WHERE " . Subscription::getIdFieldName($iSubscriptionType) .  " = $iExternalID")) {
             while ($sql->next_record()) {
