@@ -101,7 +101,8 @@ class PhysicalDocumentManager {
 	        Header("Content-Type: " . PhysicalDocumentManager::getMimeTypeName($oDocument->getMimeTypeID()));
 			Header("Content-Length: ". $oDocument->getFileSize());
 			Header("Content-Disposition: attachment; filename=\"" . $oDocument->getFileName() . "\"");        
-	        Header("Pragma: no-store");
+	        Header("Pragma: no-cache");
+	        Header("Cache-Control: no-cache");
 	        Header("Expires: 0");
 			readfile($sDocumentFileSystemPath);
         } else {
@@ -127,7 +128,8 @@ class PhysicalDocumentManager {
 			header("Content-Length: ". $oDocument->getFileSize());
 			// prefix the filename presented to the browser to preserve the document extension
 			header("Content-Disposition: attachment; filename=" . "$sVersion-" . $oDocument->getFileName());
-	        header("Pragma: no-store");
+	        Header("Pragma: no-cache");
+	        Header("Cache-Control: no-cache");
 	        header("Expires: 0");
 			readfile($sDocumentFileSystemPath);
         } else {
@@ -384,7 +386,8 @@ class PhysicalDocumentManager {
 	        Header("Content-Type: " . PhysicalDocumentManager::getMimeTypeName($oDocument->getMimeTypeID()));
 			Header("Content-Length: " . $oDocument->getFileSize());
 			Header("Content-Disposition: inline; filename=" . $oDocument->getFileName());
-	        header("Pragma: no-store");
+	        Header("Pragma: no-cache");
+	        Header("Cache-Control: no-cache");
 			return readfile($sDocumentFileSystemPath);
         } else {
         	return false;
