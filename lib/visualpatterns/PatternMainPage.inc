@@ -69,6 +69,7 @@ class PatternMainPage {
 	function PatternMainPage() {
         global $default;
 		$this->sFormAction = "$default->rootUrl/control.php";
+		$this->bScroll = $default->contentPaneScrolling;
 	}
 		
 	function setNorthWestPayload($oNewVal) {		
