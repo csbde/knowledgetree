@@ -68,16 +68,20 @@ $test = $group->addGroupToUnit(2,3);
 $test = $group->addGroupToUnit(2,1);
 
 
-/////////////// Test get groups group belongs 2
+/////////////// Test get unit 
 echo "<br><br>*** Show unit group belongs to test ***<br><br>";
 $test = $group->getUnit(2);
 
-//for($i=0;$i < count($test);$i++)    
-//{
 printf("unit ID: %s<br>", $test[1]['id']);
 printf("unit Name: %s<br>", $test[1]['name']);
-//}
 
+
+/////////////// Test get groups group belongs 2
+echo "<br><br>*** Show org unit belongs to ***<br><br>";
+$test = $group->getOrg(1);
+
+printf("org ID: %s<br>", $test[1]['id']);
+printf("org Name: %s<br>", $test[1]['name']);
 
 /////////////// Test remove group from unit
 echo "<br><br>*** Remove group from unit Test ***<br><br>";
@@ -110,10 +114,10 @@ printf("Name: %s<br>", $test);
 
 
 /////////////// Test getGroupID
-echo "<br><br>*** List GroupID Test ***<br><br>";
+echo "<br><br>*** get GroupID Test ***<br><br>";
 
 // group exists
-$test = $group->getGroupID("System Administrators");
+$test = $group->getGroupID('System Administrators');
 
 printf("<br>ID: %s<br>", $test);
 
