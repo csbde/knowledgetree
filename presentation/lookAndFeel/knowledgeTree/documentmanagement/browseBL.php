@@ -48,15 +48,7 @@ if (checkSession()) {
     $oDocBrowser = new DocumentBrowser();
     // instantiate my content pattern
     $oContent = new PatternCustom();
-
-    $oContent->addHtml(
-                 startTable("0", "100%") .
-                 // pending documents
-                 startTableRowCell() .
-                     startTable("0", "100%") .
-                         tableRow("left", "", tableData(browseTypeSelect($fBrowseType))) .
-                         tableRow("", "", tabledata("")) .
-                         tableRow("", "", tabledata("")));
+ 
     // instantiate data arrays
     $folders = NULL;
     $categories = NULL;
@@ -69,107 +61,32 @@ if (checkSession()) {
                         } else {
                             $results = $oDocBrowser->browseByFolder($fFolderID);
                         }
-                        if ($results) {
-                            $default->log->debug("browseBL.php: retrieved results from folder browse=" . arrayToString($results));
-                            $folderID = $results["folders"][0]->getID();
-                        
-                            // the first folder in the list is the folder we're in so display the path to this folder
-                            // as the heading
-                            $default->log->debug("browseBL.php: folder path array for folderID=$folderID=" . arrayToString(Folder::getFolderPathAsArray($folderID)));
-                            $oContent->addHtml(tableRow("", "", tableData(displayFolderPathLink(Folder::getFolderPathAsArray($folderID)))));
-                            
-                            // empty row for spacing
-                            $oContent->addHtml(tableRow("", "", tableData("&nbsp;")));
-                           
-                            // now loop through the rest of the folders and display links
-                            for ($i=1; $i<count($results["folders"]); $i++) {
-                                $sRow = displayFolderLink($results["folders"][$i]);
-                                $oContent->addHtml(tableRow("", "", tableData($sRow)));
-                            }
-                            
-                            // loop through the files and display links
-                            for ($i=0; $i<count($results["documents"]); $i++) {
-                                $sDocumentLink = displayDocumentLink($results["documents"][$i]);
-                                $oContent->addHtml(tableRow("", "", tableData($sDocumentLink))); 
-                            }
-                        } else {
-                            // empty row for spacing
-                            $oContent->addHtml(tableRow("", "", tableData("&nbsp;")));
-                            $oContent->addHtml(tablerow("", "", tableData($_SESSION["errorMessage"])));
-                        }
-                                                   
                         break;
                         
         case "category" :
                         if (!$fCategoryName) {
                             $results = $oDocBrowser->browseByCategory();
-                            
-                            // we have a list of categories
-                            // so loop through them and display
-                            $oContent->addHtml(tableRow("", "", tableData(displayCategoryLink("Categories"))));
-                            
-                            // empty row for spacing
-                            $oContent->addHtml(tableRow("", "", tableData("&nbsp;")));
-                            
-                            for ($i=0; $i<count($results["categories"]); $i++) {
-                                $oContent->addHtml(tableRow("", "", tableData(displayCategoryLink($results["categories"][$i])))); 
-                            }
-                            
                         } else {
                             $results = $oDocBrowser->browseByCategory($fCategoryName);
-                            // display category heading
-                            $oContent->addHtml(tableRow("", "", tableData(displayCategoryPathLink($results["categories"][0]))));
-                            
-                            // empty row for spacing
-                            $oContent->addHtml(tableRow("", "", tableData("&nbsp;")));
-                            
-                            // now loop through the documents in the category (TODO: if any)
-                            // and display them
-                            for ($i=0; $i<count($results["documents"]); $i++) {
-                                $sDocumentLink = displayDocumentLink($results["documents"][$i], true);
-                                $oContent->addHtml(tableRow("", "", tableData($sDocumentLink)));                                    
-                            }
                         }
-                        
                         break;
                         
         case "documentType" :
                         if (!$fDocumentTypeID) {
                             $results = $oDocBrowser->browseByDocumentType();
-                            
-                            // we have a list of document types
-                            // so loop through them and display
-                            $oContent->addHtml(tableRow("", "", tableData(displayDocumentTypeLink(array("name"=>"Document Types")))));
-                            
-                            // empty row for spacing
-                            $oContent->addHtml(tableRow("", "", tableData("&nbsp;")));
-                            
-                            for ($i=0; $i<count($results["documentTypes"]); $i++) {
-                                $oContent->addHtml(tableRow("", "", tableData(displayDocumentTypeLink($results["documentTypes"][$i])))); 
-                            }
-                            
                         } else {
                             $results = $oDocBrowser->browseByDocumentType($fDocumentTypeID);
-                            // display document type heading
-                            $oContent->addHtml(tableRow("", "", tableData(displayDocumentTypePathLink($results["documentTypes"][0]))));
-                            
-                            // empty row for spacing
-                            $oContent->addHtml(tableRow("", "", tableData("&nbsp;")));
-                            
-                            // now loop through the documents in the category (TODO: if any)
-                            // and display them
-                            for ($i=0; $i<count($results["documents"]); $i++) {
-                                $sDocumentLink = displayDocumentLink($results["documents"][$i], true);
-                                $oContent->addHtml(tableRow("", "", tableData($sDocumentLink)));                                    
-                            }                                
                         }
                         break;
     }
-
-    $oContent->addHtml( 
-                     stopTable() . 
-                 endTableRowCell() .
-             stopTable());
+    
+    if ($results) {
+        // display the list of categories
+        $oContent->addHtml(renderPage($results, $fBrowseType));
+        
+    } else {
+        $main->setErrorMessage("There are no document types to display");
+    }
     
     $main->setCentralPayload($oContent);
     $main->setFormAction($_SERVER["PHP_SELF"]);
