@@ -373,7 +373,7 @@ class Folder {
 		}	
 		return $default->owl_FileDir . "/" . Folder::getFolderName($iFolderID) . "/";*/
 		$oFolder = Folder::get($iFolderID);
-		return $default->owl_FileDir . "/" . $oFolder->sFullPath . "/" . $oFolder->getName();
+		return $default->owl_FileDir . "/" . $oFolder->sFullPath . "/" . $oFolder->getName() . "/";
 	}
 
 	/**
