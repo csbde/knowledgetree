@@ -1,11 +1,20 @@
-.dashboardHeadings {
-font-size : 9pt;
+.sectionHeading {
+font-size : 10pt;
 font-family : Verdana, sans-serif;
 font-weight : lighter;
 font-style : normal;
 color : #ffffff;
 text-decoration: none;
-}  
+}
+  
+.sectionColumns {
+font-size : 8pt;
+font-family : Verdana, sans-serif;
+font-weight : lighter;
+font-style : normal;
+color : #000000;
+text-decoration: none;
+}
 
 P {
 font-size : 9pt;
