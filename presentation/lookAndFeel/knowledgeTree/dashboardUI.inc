@@ -114,8 +114,8 @@ function renderPage($aPendingDocumentList, $aCheckedOutDocumentList, $aSubscript
     $sToRender .= "\t\t<td><img src=\"$default->graphicsUrl/welcome.gif\"/></td>\n";
     
     // some arb welcoming text goes here
-    $oUser = User::get($_SESSION["userID"]);    
-    $sToRender .= "\t\t<td>Hi" . (strlen($oUser->getName()) > 0 ? " " . $oUser->getName() : "") . ", welcome back to the MRC DMS, part of the Knowledge Tree.</td>\n";
+    $sUserName = User::getName($_SESSION["userID"]);
+    $sToRender .= "\t\t<td>Hi" . (strlen($sUserName) > 0 ? " " . $sUserName : "") . ", welcome back to the MRC DMS, part of the Knowledge Tree.</td>\n";
     $sToRender .= "\t</tr>\n";
     
     // dashboard alerts
