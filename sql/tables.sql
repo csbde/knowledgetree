@@ -412,8 +412,8 @@ ADD CONSTRAINT PK_active_sessions
 PRIMARY KEY (id)
 ;
 
-ALTER TABLE archive_settings 
-ADD CONSTRAINT PK_archive_settings 
+ALTER TABLE archiving_settings 
+ADD CONSTRAINT PK_archiving_settings 
 PRIMARY KEY (id) 
 ;
 
@@ -617,10 +617,6 @@ ALTER TABLE web_sites
 ADD CONSTRAINT PK_web_sites
 PRIMARY KEY (id);
 
-ALTER TABLE words_lookup
-ADD CONSTRAINT PK_word_list
-PRIMARY KEY (id);
-
 -- mime types
 -- TODO: add icon paths to inserts
 INSERT INTO mime_types (filetypes, mimetypes, icon_path) VALUES ('ai', 'application/postscript', NULL);
@@ -752,6 +748,16 @@ INSERT INTO mime_types (filetypes, mimetypes, icon_path) VALUES ('xyz', 'chemica
 INSERT INTO mime_types (filetypes, mimetypes, icon_path) VALUES ('zip', 'application/zip', 'icons/zip.gif');
 INSERT INTO mime_types (filetypes, mimetypes, icon_path) VALUES ('gz', 'application/x-gzip', 'icons/zip.gif');
 INSERT INTO mime_types (filetypes, mimetypes, icon_path) VALUES ('tgz', 'application/x-gzip', 'icons/zip.gif');
+INSERT INTO mime_types (filetypes, mimetypes, icon_path) VALUES ('sxw', 'application/vnd.sun.xml.writer', 'icons/oowriter.gif');
+INSERT INTO mime_types (filetypes, mimetypes, icon_path) VALUES ('stw','application/vnd.sun.xml.writer.template', 'icons/oowriter.gif');
+INSERT INTO mime_types (filetypes, mimetypes, icon_path) VALUES ('sxc','application/vnd.sun.xml.calc', 'icons/oocalc.gif');
+INSERT INTO mime_types (filetypes, mimetypes, icon_path) VALUES ('stc','application/vnd.sun.xml.calc.template', 'icons/oocalc.gif');
+INSERT INTO mime_types (filetypes, mimetypes, icon_path) VALUES ('sxd','application/vnd.sun.xml.draw', NULL);
+INSERT INTO mime_types (filetypes, mimetypes, icon_path) VALUES ('std','application/vnd.sun.xml.draw.template', NULL);
+INSERT INTO mime_types (filetypes, mimetypes, icon_path) VALUES ('sxi','application/vnd.sun.xml.impress', 'icons/ooimpress.gif');
+INSERT INTO mime_types (filetypes, mimetypes, icon_path) VALUES ('sti','application/vnd.sun.xml.impress.template', 'icons/ooimpress.gif');
+INSERT INTO mime_types (filetypes, mimetypes, icon_path) VALUES ('sxg','application/vnd.sun.xml.writer.global', NULL);
+INSERT INTO mime_types (filetypes, mimetypes, icon_path) VALUES ('sxm','application/vnd.sun.xml.math', NULL);
 
 -- data_types
 insert into data_types (name) values ('STRING');
