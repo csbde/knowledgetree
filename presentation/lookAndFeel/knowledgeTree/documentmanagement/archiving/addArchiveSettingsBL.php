@@ -32,7 +32,7 @@ if (checkSession()) {
     if ($fStore) {
     	$oDASFactory = new DocumentArchiveSettingsFactory($fArchivingTypeID);
     	
-    	if ($oDASFactory->create($fDocumentID, $fExpirationDate, $fDocumentTransactionID, $fTimeUnitID, $fUnits)) {
+    	if ($oDASFactory->create($fArchivingTypeID, $fDocumentID, $fExpirationDate, $fDocumentTransactionID, $fTimeUnitID, $fUnits)) {
 			// created, redirect to view page
 			controllerRedirect("viewDocument", "fDocumentID=$fDocumentID&fShowSection=archiveSettings");
     	} else {
