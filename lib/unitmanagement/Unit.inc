@@ -80,7 +80,11 @@ class Unit {
                     // FIXME: lookup the organisation for this unit and use the appropriate folder id for the org root folder
                     $oFolder = new Folder($this->sName, $this->sName . " Unit Root Folder", 1, $_SESSION["userID"], $this->iId);
                     if ($oFolder->create()) {
-                        return true;
+                        if (PhysicalFolderManagement::createFolder(Folder::getFolderPath($oFolder->getID()))) {
+                            return true;
+                        } else {
+                            return false;
+                        }
                     } else {
                         return false;
                     }
