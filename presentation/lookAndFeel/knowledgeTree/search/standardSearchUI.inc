@@ -48,7 +48,7 @@ function getSearchResults($sFolderIDs,$sSQLSearchString, $iStartIndex) {
 			"INNER JOIN $default->owl_words_lookup_table AS WL ON WL.id = DWL.word_id " .
 			"WHERE F.id IN ($sFolderIDs) " .
 			"AND ($sSQLSearchString)";	
-			"ORDER BY D.name ASC";
+			"ORDER BY D.name ASC";	
 	$aColumns = array("folder_image_url", "document_name");
 	$aColumnTypes = array(4,3);
 	$aColumnHeaders = array("","Document");
