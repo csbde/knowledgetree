@@ -108,7 +108,7 @@ class Unit {
                     } else {
                     	// a unit root folder already exists in the database
                     	// update the description
-                    	$aFolders = Folder::getList("name='" . $this->sName . "' AND parent_id=1");
+                    	$aFolders = Folder::getList("name='" . addslashes($this->sName) . "' AND parent_id=1");
                     	$oFolder = $aFolders[0];
                     	$oFolder->setDescription($this->sName . " Unit Root Folder");
                     	$oFolder->setUnitID($this->iId);
@@ -136,7 +136,7 @@ class Unit {
         if ($this->iId > 0) {
             $sql = $default->db;
             // lookup current name before updating
-            $sOldName = lookupField($default->units_table, "name", "id", $this->iId);
+            $sOldName = addslashes(lookupField($default->units_table, "name", "id", $this->iId));
             $result = $sql->query("UPDATE " . $default->units_table . " SET name = '$this->sName' WHERE id = $this->iId");
             if ($result) {
                 // need to update the units root folder also
@@ -148,9 +148,9 @@ class Unit {
 			        // folder name has changed, update the full_path
 					$sOldPath = $default->documentRoot . "/" . $oFolder->getFullPath() . "/" . $oFolder->getName();
 	                // update the folder name
-	                $oFolder->setName($this->sName);
-	                $oFolder->setDescription($this->sName . " Unit Root Folder");
-	              	$sNewPath = $default->documentRoot . "/" . $oFolder->getFullPath() . "/" . $oFolder->getName();
+	              	$sNewPath = $default->documentRoot . "/" . $oFolder->getFullPath() . "/" . $oFolder->getName();	                
+	                $oFolder->setName(addslashes($this->sName));
+	                $oFolder->setDescription(addslashes($this->sName . " Unit Root Folder"));
 
 	                if ($oFolder->update(true)) {
 	                    if (!PhysicalFolderManagement::renameFolder($sOldPath, $sNewPath)) {
