@@ -31,7 +31,7 @@ require_once("$default->fileSystemRoot/lib/database/lookup.inc");
 require_once("$default->fileSystemRoot/lib/System.inc");
 $default->system = new System();
 
-if ($default->system->initialised()) {
+/*if ($default->system->initialised()) {
     $aSettings = array("ldapServer", "ldapRootDn", "emailServer", "emailFrom", "emailFromName",
                        "emailAdmin", "emailAdminName",
                        "serverName", "fileSystemRoot", "documentRoot", "languageDirectory",
@@ -41,7 +41,7 @@ if ($default->system->initialised()) {
     for ($i=0; $i<count($aSettings); $i++) {
         $default->$aSettings[$i] = $default->system->get($aSettings[$i]);
     }
-} else {
+} else {*/
     // TODO: redirect to system setup form
 
     // ldap settings
@@ -56,7 +56,7 @@ if ($default->system->initialised()) {
     $default->emailAdmin = "dmsHelp@jamwarehouse.com";
     $default->emailAdminName = "DMS Administrator";
     
-    $default->serverName = "changeme.to.your.hostname";
+    $default->serverName = "ktdev.jamwarehouse.com";
     
     // directories
     $default->documentRoot  =  "/usr/local/www/owl/dms/Documents";

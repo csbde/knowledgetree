@@ -28,6 +28,7 @@ deploy() {
     find $tmp -name CVS -exec rm -rf {} \; 2> /dev/null
 
     # tar it up
+    rm /tmp/owl.tgz 2> /dev/null
     tar -czvf /tmp/owl.tgz $tmp
     
     # clean up

@@ -116,9 +116,7 @@ $default->owl_help_table = "help";
 
 
 // Change this to reflect the authentication method you are using
-//require_once("$default->fileSystemRoot/lib/LDAPAuthenticator.inc");
-//require_once("$default->fileSystemRoot/lib/Authenticator.inc");
-$default->authenticationClass = "DBAuthenticator";
+$default->authenticationClass = "LDAPAuthenticator";
 
 require_once("$default->fileSystemRoot/lib/authentication/$default->authenticationClass.inc");
 
@@ -331,7 +329,7 @@ require_once("$default->fileSystemRoot/phpSniff/phpSniff.class.php");
 $default->phpSniff = new phpSniff($_SERVER["HTTP_USER_AGENT"]);
 
 require_once("$default->fileSystemRoot/lib/Log.inc");
-$default->log = new Log($default->fileSystemRoot . "/log.txt", INFO);
+$default->log = new Log($default->fileSystemRoot . "/log.txt", DEBUG);
 
 // import request variables and setup language
 require_once("$default->fileSystemRoot/lib/dms.inc");
