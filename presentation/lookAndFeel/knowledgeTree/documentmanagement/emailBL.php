@@ -42,9 +42,16 @@ if (checkSession()) {
                         // add the link to the document to the mail
                         $sMessage .= ' ' . generateControllerLink("viewDocument", "fDocumentID=$fDocumentID", $oDocument->getName());
 
+                        // add optional comment
+                        if (strlen($fComment) > 0) {
+                        	$sMessage .= "<br><br>$fComment";
+                        }
+                        
+                        $sTitle = "Link: " . $oDocument->getName() . " from " . $oUser->getName();
+                        
                         //email the hyperlink
-                        $oEmail = new Email();                        
-                        $oEmail->send($fToEmail, "Document link", $sMessage);
+                        $oEmail = new Email();
+                        $oEmail->send($fToEmail, $sTitle, $sMessage);
                         
                         //go back to the document view page
                         redirect("$default->rootUrl/control.php?action=viewDocument&fDocumentID=$fDocumentID");
