@@ -1,10 +1,15 @@
+-- table definitions
 CREATE TABLE active_sessions ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 user_id INTEGER,
 session_id CHAR(255),
 lastused DATETIME,
 ip CHAR(30)
+);
 
+CREATE TABLE categories_lookup (
+id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
+name CHAR(255) NOT NULL
 );
 
 CREATE TABLE document_fields ( 
@@ -93,7 +98,6 @@ done BIT
 ) 
 ;
 
-
 CREATE TABLE groups_folders_approval_link ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 folder_id INTEGER NOT NULL,
@@ -112,7 +116,9 @@ can_write BIT NOT NULL
 
 CREATE TABLE groups_lookup ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
-name CHAR(100) NOT NULL
+name CHAR(100) NOT NULL,
+is_sys_admin BIT NOT NULL,
+is_unit_admin BIT NOT NULL
 );
 
 CREATE TABLE groups_units_link ( 
@@ -195,8 +201,6 @@ group_id INTEGER NOT NULL
 ) 
 ;
 
-
-
 CREATE TABLE web_documents ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 document_id INTEGER NOT NULL,
@@ -223,8 +227,14 @@ id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 word CHAR(255) NOT NULL
 );
 
+-- pk constraints
 ALTER TABLE active_sessions 
 ADD CONSTRAINT PK_active_sessions 
+PRIMARY KEY (id) 
+;
+
+ALTER TABLE categories_lookup 
+ADD CONSTRAINT PK_categories_lookup 
 PRIMARY KEY (id) 
 ;
 
@@ -234,7 +244,7 @@ PRIMARY KEY (id)
 ;
 
 ALTER TABLE document_fields_link 
-ADD CONSTRAINT PK_document_type_fields_valookupes 
+ADD CONSTRAINT PK_document_fields_link 
 PRIMARY KEY (id) 
 ;
 
@@ -333,7 +343,6 @@ ADD CONSTRAINT PK_units
 PRIMARY KEY (id) 
 ;
 
-
 ALTER TABLE users 
 ADD CONSTRAINT PK_users 
 PRIMARY KEY (id) 
@@ -351,19 +360,18 @@ PRIMARY KEY (id)
 
 ALTER TABLE web_documents_status_lookup 
 ADD CONSTRAINT PK_web_documents_status 
-PRIMARY KEY (id) 
-;
+PRIMARY KEY (id);
 
 ALTER TABLE web_sites 
 ADD CONSTRAINT PK_web_sites 
-PRIMARY KEY (id) 
-;
+PRIMARY KEY (id);
 
 ALTER TABLE words_lookup 
 ADD CONSTRAINT PK_word_list 
-PRIMARY KEY (id) 
-;
+PRIMARY KEY (id);
 
+-- mime types
+-- TODO: add icon paths to inserts
 INSERT INTO mime_types (filetypes, mimetypes) VALUES ('ai', 'application/postscript');
 INSERT INTO mime_types (filetypes, mimetypes) VALUES ('aif', 'audio/x-aiff');
 INSERT INTO mime_types (filetypes, mimetypes) VALUES ('aifc', 'audio/x-aiff');
@@ -490,7 +498,20 @@ INSERT INTO mime_types (filetypes, mimetypes) VALUES ('zip', 'application/zip');
 INSERT INTO mime_types (filetypes, mimetypes) VALUES ('gz', 'application/x-gzip');
 INSERT INTO mime_types (filetypes, mimetypes) VALUES ('tgz', 'application/x-gzip');
 
--- insert into system_settings (these are from the old html table)
+-- supported languages (not really ;)
+INSERT INTO language_lookup (name) VALUES ("English");
+INSERT INTO language_lookup (name) VALUES ("Chinese");
+INSERT INTO language_lookup (name) VALUES ("Danish");
+INSERT INTO language_lookup (name) VALUES ("Deutsch");
+INSERT INTO language_lookup (name) VALUES ("Dutch");
+INSERT INTO language_lookup (name) VALUES ("Francais");
+INSERT INTO language_lookup (name) VALUES ("Hungarian");
+INSERT INTO language_lookup (name) VALUES ("Italian");
+INSERT INTO language_lookup (name) VALUES ("Norwegian");
+INSERT INTO language_lookup (name) VALUES ("Portuguese");
+INSERT INTO language_lookup (name) VALUES ("Spanish");
+
+-- system settings (from the owl html table)
 INSERT INTO system_settings (name, value) values ("table_border", "0");
 INSERT INTO system_settings (name, value) values ("table_header_bg", "gray");
 INSERT INTO system_settings (name, value) values ("table_cell_bg", "#FFCCCC");
@@ -503,73 +524,379 @@ INSERT INTO system_settings (name, value) values ("body_link", "#000000");
 INSERT INTO system_settings (name, value) values ("body_vlink", "#000000");
 INSERT INTO system_settings (name, value) values ("main_header_bgcolor", "#d0d0d0");
 
---INSERT INTO prefs (email_from, email_fromname,email_replyto,email_server, lookathd, def_file_security, def_file_group_owner, def_file_owner, def_file_title, def_file_meta, def_fold_security, def_fold_group_owner, def_fold_owner,max_filesize, timeout, expand, version_control, restrict_view, dbdump_path, gzip_path, tar_path) values ("owl@yourdomain.com", "OWL Intranet","noreply@yourdomain.com","localhost", "false", "0", "0", "1", "<font color=red>No Info</font>", "not in db", "50", "1", "0", "5120000", "900","1","1","0", "/usr/bin/mysqldump", "/bin/gzip", "/bin/tar");
+-- document statuses
+INSERT INTO web_documents_status_lookup (name) VALUES ("Pending");
+INSERT INTO web_documents_status_lookup (name) VALUES ("Published");
+INSERT INTO web_documents_status_lookup (name) VALUES ("Not Published");
 
-INSERT INTO groups_lookup (name) VALUES ("System Administrators");
-INSERT INTO groups_lookup (name) VALUES ("Unit Administrators");
-INSERT INTO groups_lookup (name) VALUES ("Anonymous");
-
-INSERT INTO organisations_lookup (name) VALUES ("Medical Research Council");
-
-INSERT INTO units (name, organisation_id, parent_id) VALUES ("Administration Unit", 1, 0);
-
-INSERT INTO users (name, username, password, quota_max, quota_current, email, mobile, email_notification, sms_notification,ldap_dn, max_sessions) 
-            VALUES ("Administrator", "admin", "admin", "0", "0", "", "", 1, 1, "", 1);
-INSERT INTO users (name, username, password, quota_max, quota_current, email, mobile, email_notification, sms_notification,ldap_dn, max_sessions) 
-            VALUES ("Anonymous", "guest", "guest", "0", "0", "", "", 0, 0, "", 19);
-            
---UPDATE users SET language = 'NewEnglish';
-UPDATE users SET password = '21232f297a57a5a743894a0e4a801fc3' WHERE name = "Administrator";
-UPDATE users SET password = '084e0343a0486ff05530df6c705c8bb4' WHERE name = "Anonymous";
-
-INSERT INTO groups_units_link (group_id, unit_id) VALUES (1, 1);
-INSERT INTO groups_units_link (group_id, unit_id) VALUES (3, 1);
-INSERT INTO users_groups_link (group_id, user_id) VALUES (1, 1);
-INSERT INTO users_groups_link (group_id, user_id) VALUES (3, 2);
-
--- default document type field- category
-INSERT INTO document_fields (name, data_type) VALUES ("Category", "String");
-INSERT INTO document_fields (name, data_type) VALUES ("Keywords", "String");
-INSERT INTO document_fields (name, data_type) VALUES ("Comments", "String");
-INSERT INTO document_fields (name, data_type) VALUES ("Author(s)", "String");
-
-INSERT INTO document_types_lookup (name) VALUES ("Proposal");
-INSERT INTO document_type_fields_link (document_type_id, field_id, is_mandatory) VALUES (1, 1, 1);
-INSERT INTO document_type_fields_link (document_type_id, field_id, is_mandatory) VALUES (1, 2, 0);
-INSERT INTO document_type_fields_link (document_type_id, field_id, is_mandatory) VALUES (1, 3, 0);
-
+-- document transaction types
 INSERT INTO document_transaction_types_lookup (name) VALUES ("Create");
 INSERT INTO document_transaction_types_lookup (name) VALUES ("Update");
 INSERT INTO document_transaction_types_lookup (name) VALUES ("Delete");
 INSERT INTO document_transaction_types_lookup (name) VALUES ("Rename");
 INSERT INTO document_transaction_types_lookup (name) VALUES ("Move");
 
+-- roles
+INSERT INTO roles (name, can_read, can_write) VALUES ('Editor', 1, 1);
+INSERT INTO roles (name, can_read, can_write) VALUES ('Spell Checker', 1, 0);
+INSERT INTO roles (name, can_read, can_write) VALUES ('Web Publisher', 1, 0);
+
+-- mrc organisation
+INSERT INTO organisations_lookup (name) VALUES ("Medical Research Council");
+
+-- setup mrc units
+INSERT INTO units (name, organisation_id, parent_id) VALUES ("ADARG", 1, 0); -- id=1
+INSERT INTO units (name, organisation_id, parent_id) VALUES ("AfroAids", 1, 0); -- id=2
+INSERT INTO units (name, organisation_id, parent_id) VALUES ("Diabetes", 1, 0); -- id=3
+INSERT INTO units (name, organisation_id, parent_id) VALUES ("Burden of Disease", 1, 0); -- id=4
+
+-- setup groups
+INSERT INTO groups_lookup (name, is_sys_admin, is_unit_admin) VALUES ("System Administrators", 1, 0); -- id=1
+INSERT INTO groups_lookup (name, is_sys_admin, is_unit_admin) VALUES ("ADARG Unit Administrators", 0, 1); -- id=2
+INSERT INTO groups_lookup (name, is_sys_admin, is_unit_admin) VALUES ("AfroAids Unit Administrators", 0, 1); -- id=3
+INSERT INTO groups_lookup (name, is_sys_admin, is_unit_admin) VALUES ("Diabetes Unit Administrators", 0, 1); -- id=4
+INSERT INTO groups_lookup (name, is_sys_admin, is_unit_admin) VALUES ("Burden of Disease Unit Administrators", 0, 1); -- id=5
+INSERT INTO groups_lookup (name, is_sys_admin, is_unit_admin) VALUES ("Anonymous", 0, 0); -- id=6
+INSERT INTO groups_lookup (name, is_sys_admin, is_unit_admin) VALUES ("Spell Checkers", 0, 0); -- id=7
+INSERT INTO groups_lookup (name, is_sys_admin, is_unit_admin) VALUES ("Editors", 0, 0); -- id=8
+INSERT INTO groups_lookup (name, is_sys_admin, is_unit_admin) VALUES ("Finance", 0, 0); -- id=9
+
+------ map groups to units
+---- adarg
+-- administrators
+INSERT INTO groups_units_link (group_id, unit_id) VALUES (2, 1);
+-- other groups
+INSERT INTO groups_units_link (group_id, unit_id) VALUES (7, 1);
+INSERT INTO groups_units_link (group_id, unit_id) VALUES (8, 1);
+
+---- afroaids
+-- administrators
+INSERT INTO groups_units_link (group_id, unit_id) VALUES (3, 2);
+-- other groups
+INSERT INTO groups_units_link (group_id, unit_id) VALUES (7, 2);
+INSERT INTO groups_units_link (group_id, unit_id) VALUES (8, 2);
+
+---- diabetes
+-- administrators
+INSERT INTO groups_units_link (group_id, unit_id) VALUES (4, 3);
+-- other groups
+INSERT INTO groups_units_link (group_id, unit_id) VALUES (7, 3);
+INSERT INTO groups_units_link (group_id, unit_id) VALUES (8, 3);
+
+---- disease
+-- administrators
+INSERT INTO groups_units_link (group_id, unit_id) VALUES (5, 4);
+-- other groups
+INSERT INTO groups_units_link (group_id, unit_id) VALUES (7, 4);
+INSERT INTO groups_units_link (group_id, unit_id) VALUES (8, 4);
+
+
+------ users & map users to groups
+---- system administrator
+INSERT INTO users (username, name, password, quota_max, quota_current, email, mobile, email_notification, sms_notification, ldap_dn, max_sessions, language_id)
+            VALUES ("admin", "Administrator", "21232f297a57a5a743894a0e4a801fc3", "0", "0", "", "", 1, 1, "", 1, 1);
+INSERT INTO users_groups_link (group_id, user_id) VALUES (1, 1);
+            
+---- guest user
+INSERT INTO users (username, name, password, quota_max, quota_current, email, mobile, email_notification, sms_notification, ldap_dn, max_sessions, language_id)
+            VALUES ("guest", "Anonymous", "084e0343a0486ff05530df6c705c8bb4", "0", "0", "", "", 0, 0, "", 19, 1);
+INSERT INTO users_groups_link (group_id, user_id) VALUES (6, 2);
+            
+---- unit administrators
+-- adarg
+INSERT INTO users (username, name, password, quota_max, quota_current, email, mobile, email_notification, sms_notification, ldap_dn, max_sessions, language_id)
+            VALUES ("adargAdmin", "ADARG Unit Administrator", "21232f297a57a5a743894a0e4a801fc3", "0", "0", "", "", 0, 0, "", 1, 1);
+INSERT INTO users_groups_link (group_id, user_id) VALUES (2, 3);
+
+-- afroaids
+INSERT INTO users (username, name, password, quota_max, quota_current, email, mobile, email_notification, sms_notification, ldap_dn, max_sessions, language_id)
+            VALUES ("afroaidsAdmin", "afroAIDS Unit Administrator", "21232f297a57a5a743894a0e4a801fc3", "0", "0", "", "", 0, 0, "", 1, 1);
+INSERT INTO users_groups_link (group_id, user_id) VALUES (3, 4);
+
+-- diabetes
+INSERT INTO users (username, name, password, quota_max, quota_current, email, mobile, email_notification, sms_notification, ldap_dn, max_sessions, language_id)
+            VALUES ("diabetesAdmin", "Diabetes Unit Administrator", "21232f297a57a5a743894a0e4a801fc3", "0", "0", "", "", 0, 0, "", 1, 1);
+INSERT INTO users_groups_link (group_id, user_id) VALUES (4, 5);    
+        
+-- disease
+INSERT INTO users (username, name, password, quota_max, quota_current, email, mobile, email_notification, sms_notification, ldap_dn, max_sessions, language_id)
+            VALUES ("diseaseAdmin", "Burden of Disease Unit Administrator", "21232f297a57a5a743894a0e4a801fc3", "0", "0", "", "", 0, 0, "", 1, 1);
+INSERT INTO users_groups_link (group_id, user_id) VALUES (5, 6);
+
+---- unit users
+-- adarg unit user
+INSERT INTO users (username, name, password, quota_max, quota_current, email, mobile, email_notification, sms_notification, ldap_dn, max_sessions, language_id)
+            VALUES ("adargUser", "adargUser", "084e0343a0486ff05530df6c705c8bb4", "0", "0", "", "", 0, 0, "", 1, 1);
+-- spell checker and editor
+INSERT INTO users_groups_link (group_id, user_id) VALUES (7, 7);
+INSERT INTO users_groups_link (group_id, user_id) VALUES (8, 7);
+
+-- afroaids unit user
+INSERT INTO users (username, name, password, quota_max, quota_current, email, mobile, email_notification, sms_notification, ldap_dn, max_sessions, language_id)
+            VALUES ("afroaidsUser", "afroaidsUser", "084e0343a0486ff05530df6c705c8bb4", "0", "0", "", "", 0, 0, "", 1, 1);
+-- just spell checker
+INSERT INTO users_groups_link (group_id, user_id) VALUES (7, 8);
+
+-- diabetes unit user
+INSERT INTO users (username, name, password, quota_max, quota_current, email, mobile, email_notification, sms_notification, ldap_dn, max_sessions, language_id)
+            VALUES ("diabetesUser", "diabetesUser", "084e0343a0486ff05530df6c705c8bb4", "0", "0", "", "", 0, 0, "", 1, 1);
+-- just editor            
+INSERT INTO users_groups_link (group_id, user_id) VALUES (8, 9);
+
+-- disease unit user
+INSERT INTO users (username, name, password, quota_max, quota_current, email, mobile, email_notification, sms_notification, ldap_dn, max_sessions, language_id)
+            VALUES ("diseaseUser", "diseaseUser", "084e0343a0486ff05530df6c705c8bb4", "0", "0", "", "", 0, 0, "", 1, 1);
+-- spell checker and editor
+INSERT INTO users_groups_link (group_id, user_id) VALUES (7, 10);
+INSERT INTO users_groups_link (group_id, user_id) VALUES (8, 10);
+
+-- default document type fields
+INSERT INTO document_fields (name, data_type) VALUES ("Category", "String");
+INSERT INTO document_fields (name, data_type) VALUES ("Keywords", "String");
+INSERT INTO document_fields (name, data_type) VALUES ("Comments", "String");
+INSERT INTO document_fields (name, data_type) VALUES ("Author(s)", "String");
+
+-- default document types
+INSERT INTO document_types_lookup (name) VALUES ("Admin");
+INSERT INTO document_type_fields_link (document_type_id, field_id, is_mandatory) VALUES (1, 1, 1);
+INSERT INTO document_type_fields_link (document_type_id, field_id, is_mandatory) VALUES (1, 2, 0);
+INSERT INTO document_type_fields_link (document_type_id, field_id, is_mandatory) VALUES (1, 3, 0);
+INSERT INTO document_type_fields_link (document_type_id, field_id, is_mandatory) VALUES (1, 4, 1);
+
+INSERT INTO document_types_lookup (name) VALUES ("Proposal");
+INSERT INTO document_type_fields_link (document_type_id, field_id, is_mandatory) VALUES (2, 1, 1);
+INSERT INTO document_type_fields_link (document_type_id, field_id, is_mandatory) VALUES (2, 2, 0);
+INSERT INTO document_type_fields_link (document_type_id, field_id, is_mandatory) VALUES (2, 3, 0);
+INSERT INTO document_type_fields_link (document_type_id, field_id, is_mandatory) VALUES (2, 4, 1);
+
+INSERT INTO document_types_lookup (name) VALUES ("Publications");
+INSERT INTO document_type_fields_link (document_type_id, field_id, is_mandatory) VALUES (3, 1, 1);
+INSERT INTO document_type_fields_link (document_type_id, field_id, is_mandatory) VALUES (3, 2, 0);
+INSERT INTO document_type_fields_link (document_type_id, field_id, is_mandatory) VALUES (3, 3, 0);
+INSERT INTO document_type_fields_link (document_type_id, field_id, is_mandatory) VALUES (3, 4, 1);
+
+INSERT INTO document_types_lookup (name) VALUES ("Research");
+INSERT INTO document_type_fields_link (document_type_id, field_id, is_mandatory) VALUES (4, 1, 1);
+INSERT INTO document_type_fields_link (document_type_id, field_id, is_mandatory) VALUES (4, 2, 0);
+INSERT INTO document_type_fields_link (document_type_id, field_id, is_mandatory) VALUES (4, 3, 0);
+INSERT INTO document_type_fields_link (document_type_id, field_id, is_mandatory) VALUES (4, 4, 1);
+
+
+-- define folder structure
+---- mrc organisation root folder
 INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
-             VALUES ("Documents", "Root Document Folder", 0, 1, 51, 0, 0);
+             VALUES ("Medical Research Council", "MRC Root Document Folder", 0, 1, 0, 0, 0); -- id=1
+
+---- adarg unit folders
+INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
+             VALUES ("ADARG", "ADARG Unit Root Folder", 1, 1, 0, 1, 0);  -- id=2
              
-INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
-             VALUES ("Medical Research Council Document Root", "MRC Root Document Folder", 1, 1, 51, 0, 0);
-INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
-             VALUES ("Test folder 1", "Test folder 1", 1, 1, 51, 0, 0);
-INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
-             VALUES ("Test folder 2", "Test folder 2", 2, 1, 51, 0, 0);
-INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
-             VALUES ("Test folder 3", "Test folder 3", 3, 1, 51, 0, 0);
+             -- Admin Folder
+             INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
+             VALUES ("Admin", "ADARG Unit Administration Folder", 2, 1, 1, 1, 0); -- id=3
+                 -- Admin SubFolders
+                 INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
+                 VALUES ("Leave", "Applications for leave", 3, 1, 1, 1, 0); -- id=4
+                 -- spell checkers have read
+                 INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (7, 4, 1, 0);
+                 
+                 INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
+                 VALUES ("Invoices", "Unpaid bills", 3, 1, 1, 1, 0); -- id=5
+                 -- finance has write access
+                 INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (9, 5, 0, 1);
 
-INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
-             VALUES ("Administration Unit Document Root", "Administration Unit Root Document Folder", 2, 1, 51, 1, 0);             
+             -- Proposals Folder
+             INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
+             VALUES ("Proposals", "ADARG Unit Proposals Folder", 2, 1, 2, 1, 0);  -- id=6
+                
+                 INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
+                 VALUES ("Accepted", "accepted proposal", 6, 1, 1, 1, 0); -- id=7
+                 -- spell checkers have read
+                 INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (7, 7, 1, 0);
+                 
+                 INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
+                 VALUES ("Pending", "pending proposals", 6, 1, 1, 1, 0); -- id=8
+                 -- spell checkers have read
+                 INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (7, 8, 1, 0);
+             
+             -- Publications Folder
+             INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
+             VALUES ("Publications", "ADARG Unit Publications Folder", 2, 1, 3, 1, 0); -- id=9
+                 INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
+                 VALUES ("Published", "published publications", 9, 1, 1, 1, 0); -- id=10
+                 -- editors have write
+                 INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (8, 10, 0, 1);
+             
+             -- Research Folder
+             INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
+             VALUES ("Research", "ADARG Unit Research Folder", 2, 1, 4, 1, 0); -- id=11
+                 INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
+                 VALUES ("Current", "current research", 11, 1, 1, 1, 0); -- id=12
+                 -- spell checkers have read
+                 INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (7, 12, 1, 0);
 
--- add a document             
-INSERT INTO documents (document_type_id, name, filename, size, creator_id, modified, description, security, mime_id, folder_id, major_version, minor_version, is_checked_out) 
-            VALUES (1, "Test File", "test.txt", "36", 0, "Dec 27th, 2000 at 05:17 pm", "", 0, 0, 3, 0, 1, 0);
+                 INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
+                 VALUES ("Archived", "archived research", 11, 1, 1, 1, 0); -- id=13
+                 -- spell checkers have read
+                 INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (7, 13, 1, 0);
+                 
+---- afroaids unit folders
+INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
+             VALUES ("AfroAIDS", "AfroAIDS Unit Root Folder", 1, 1, 0, 2, 0); -- id=14
+             
+             -- Admin folder
+             INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
+             VALUES ("Admin", "AfroAIDS Unit Administration Folder", 14, 1, 1, 2, 0);  -- id=15
+                 INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
+                 VALUES ("Leave", "Applications for leave", 15, 1, 1, 1, 0); -- id=16
+                 -- spell checkers have read
+                 INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (7, 16, 1, 0);
+                 
+                 INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
+                 VALUES ("Invoices", "Unpaid bills", 15, 1, 1, 1, 0); -- id=17
+                 -- finance has write access
+                 INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (9, 17, 0, 1);
+             
+             -- Proposals folder
+             INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
+             VALUES ("Proposals", "AfroAIDS Unit Proposals Folder", 14, 1, 2, 2, 0);  -- id=18
+                 INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
+                 VALUES ("Accepted", "accepted proposal", 18, 1, 1, 1, 0); -- id=19
+                 -- spell checkers have read
+                 INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (7, 19, 1, 0);
+                 
+                 INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
+                 VALUES ("Pending", "pending proposals", 18, 1, 1, 1, 0); -- id=20
+                 -- spell checkers have read
+                 INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (7, 20, 1, 0);
+             
+             -- Publications Folder
+             INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
+             VALUES ("Publications", "AfroAIDS Unit Publications Folder", 14, 1, 3, 2, 0);  -- id=21
+                 INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
+                 VALUES ("Published", "published publications", 21, 1, 1, 1, 0); -- id=22
+                 -- editors have write
+                 INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (8, 22, 0, 1);
+
+             -- Research Folder
+             INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
+             VALUES ("Research", "AfroAIDS Unit Research Folder", 14, 1, 4, 2, 0);-- id=23
+                 INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
+                 VALUES ("Current", "current research", 23, 1, 1, 1, 0); -- id=24
+                 -- spell checkers have read
+                 INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (7, 24, 1, 0);
+
+                 INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
+                 VALUES ("Archived", "archived research", 23, 1, 1, 1, 0); -- id=25
+                 -- spell checkers have read
+                 INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (7, 25, 1, 0);
+             
+-- done
+---- diabetes unit folders
+INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
+             VALUES ("Diabetes", "Diabetes Unit Root Folder", 1, 1, 0, 3, 0);  -- id=26
+             -- Admin Folder
+             INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
+             VALUES ("Admin", "Diabetes Unit Administration Folder", 26, 1, 1, 3, 0);  -- id=27
+                -- Admin SubFolders
+                 INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
+                 VALUES ("Leave", "Applications for leave", 27, 1, 1, 1, 0); -- id=28
+                 -- spell checkers have read
+                 INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (7, 28, 1, 0);
+                 
+                 INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
+                 VALUES ("Invoices", "Unpaid bills", 27, 1, 1, 1, 0); -- id=29
+                 -- finance has write access
+                 INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (9, 29, 0, 1);
+             
+             -- Proposal Folder
+             INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
+             VALUES ("Proposals", "Diabetes Unit Proposals Folder", 26, 1, 2, 3, 0);   -- id=30
+                 INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
+                 VALUES ("Accepted", "accepted proposal", 30, 1, 1, 1, 0); -- id=31
+                 -- spell checkers have read
+                 INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (7, 31, 1, 0);
+                 
+                 INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
+                 VALUES ("Pending", "pending proposals", 30, 1, 1, 1, 0); -- id=32
+                 -- spell checkers have read
+                 INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (7, 32, 1, 0);
+                 
+             INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
+             VALUES ("Publications", "Diabetes Unit Publications Folder", 26, 1, 3, 3, 0);  -- id=33
+                 INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
+                 VALUES ("Published", "published publications", 33, 1, 1, 1, 0); -- id=34
+                 -- editors have write
+                 INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (8, 34, 0, 1);
+             
+             INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
+             VALUES ("Research", "Diabetes Unit Research Folder", 26, 1, 4, 3, 0);  -- id=35
+                 INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
+                 VALUES ("Current", "current research", 35, 1, 1, 1, 0); -- id=36
+                 -- spell checkers have read
+                 INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (7, 36, 1, 0);
+
+                 INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
+                 VALUES ("Archived", "archived research", 35, 1, 1, 1, 0); -- id=37
+                 -- spell checkers have read
+                 INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (7, 37, 1, 0);             
+             
+---- burden of disease unit folders
+INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
+             VALUES ("Burden of Disease", "Burden of Disease Unit Root Folder", 1, 1, 0, 4, 0);  -- id=38
+             
+             INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
+             VALUES ("Admin", "Burden of Disease Unit Administration Folder", 38, 1, 1, 4, 0);  -- id=39
+                 -- Admin SubFolders
+                 INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
+                 VALUES ("Leave", "Applications for leave", 39, 1, 1, 1, 0); -- id=40
+                 -- spell checkers have read
+                 INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (7, 40, 1, 0);
+                 
+                 INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
+                 VALUES ("Invoices", "Unpaid bills", 39, 1, 1, 1, 0); -- id=41
+                 -- finance has write access
+                 INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (9, 41, 0, 1);
+                 
+             INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
+             VALUES ("Proposals", "Burden of Disease Unit Proposals Folder", 38, 1, 2, 4, 0);  -- id=42
+                 INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
+                 VALUES ("Accepted", "accepted proposal", 42, 1, 1, 1, 0); -- id=43
+                 -- spell checkers have read
+                 INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (7, 43, 1, 0);
+                 
+                 INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
+                 VALUES ("Pending", "pending proposals", 42, 1, 1, 1, 0); -- id=44
+                 -- spell checkers have read
+                 INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (7, 44, 1, 0);
+                 
+             INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
+             VALUES ("Publications", "Burden of Disease Unit Publications Folder", 38, 1, 3, 4, 0);  -- id=45
+                 INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
+                 VALUES ("Published", "published publications", 45, 1, 1, 1, 0); -- id=46
+                 -- editors have write
+                 INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (8, 46, 0, 1);
+             
+             INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
+             VALUES ("Research", "Burden of Disease Unit Research Folder", 38, 1, 4, 4, 0);  -- id=47
+                 INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
+                 VALUES ("Current", "current research", 47, 1, 1, 1, 0); -- id=48
+                 -- spell checkers have read
+                 INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (7, 48, 1, 0);
+
+                 INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
+                 VALUES ("Archived", "archived research", 47, 1, 1, 1, 0); -- id=49
+                 -- spell checkers have read
+                 INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (7, 48, 1, 0);      
+             
+-- add one document to each folder             
+INSERT INTO documents (document_type_id, name, filename, size, creator_id, modified, description, security, mime_id, 
+                       folder_id, major_version, minor_version, is_checked_out) 
+            VALUES    (1, "Test File", "test.txt", "36", 1, "Dec 27th, 2000 at 05:17 pm", "", 0, 5,
+                       3, 0, 1, 0); -- id = 1
 -- set the category metadata value
 INSERT INTO document_fields_link (document_id, document_field_id, value) VALUES (1, 1, "test");
 
-INSERT INTO web_documents_status_lookup (name) VALUES ("Pending");
-INSERT INTO web_documents_status_lookup (name) VALUES ("Published");
-INSERT INTO web_documents_status_lookup (name) VALUES ("Not Published");
+-- TODO: populate categories_lookup
 
-INSERT INTO roles (name) VALUES ('Editor');
-INSERT INTO roles (name) VALUES ('Spell Checker');
-INSERT INTO roles (name) VALUES ('Web Publisher');
 
