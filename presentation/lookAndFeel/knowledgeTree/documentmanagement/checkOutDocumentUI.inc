@@ -29,6 +29,7 @@ function renderCheckOutPage($oDocument) {
 	$sToRender .= "<tr>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
+    //$sToRender .= "<td><input onclick=\"alert('You have now checked out this document. No one else can make updates to the document while you have it checked out. Save the latest version of the document and please check it back in as soon as you finish working on it.');\" type=\"image\" border=\"0\" src =\"$default->graphicsUrl/widgets/checkout.gif\" value=\"Submit\"/>\n";
     $sToRender .= "<td><input type=\"image\" border=\"0\" src =\"$default->graphicsUrl/widgets/checkout.gif\" value=\"Submit\"/>\n";
 	$sToRender .= generateControllerLink("viewDocument", "fDocumentID=" . $oDocument->getID(), "<img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\">") . "</td>\n";	    
 	$sToRender .= "</tr>\n";
