@@ -110,13 +110,26 @@ if (checkSession()) {
 					$main->setErrorMessage("Document collaboration successfully started");
 					$main->render();
 				} else {				
-					//not all the roles have users assigned to them, so display an error message
+					//not all the roles have actual users assigned to them, so we must assign the
+					//default users and then proceed										
+					
+					FolderUserRole::createDefaultFolderUserRoles($oDocument);
+					
 					require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
+					
+					$oDocument->beginCollaborationProcess();
 					$oPatternCustom = & new PatternCustom();
 					$oPatternCustom->setHtml(getEditPage($oDocument));
 					$main->setCentralPayload($oPatternCustom);
+					$main->setErrorMessage("Document collaboration successfully started");
+					$main->render();
+					
+					
+					/*$oPatternCustom = & new PatternCustom();
+					$oPatternCustom->setHtml(getEditPage($oDocument));
+					$main->setCentralPayload($oPatternCustom);
 					$main->setErrorMessage("Document collaboration not started.  Not all steps in the process have been assigned");
-					$main->render();					
+					$main->render();*/					
 				}
 			} else {
 				//the folder has no collaboration set up yet, so we can't start document collaboration
