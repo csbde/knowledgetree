@@ -182,7 +182,7 @@ class NavBar {
         if ((strcmp($this->sSection,"Standard Search") == 0) || (strcmp($this->sSection,"Advanced Search") == 0)) {
             $bar .= "<INPUT type=\"hidden\" name=\"fSearchText\"/>\n ";
         } else {
-            $bar .= "<INPUT type=\"text\" name=\"fStandardSearchString\" width=\"30\" height = \"10\" align = \"absmiddle\" />\n";
+            $bar .= "<INPUT type=\"text\" name=\"fSearchText\" width=\"30\" height = \"10\" align = \"absmiddle\" />\n";
             (isset($this->iFolderID) ? $bar .= "<INPUT type=\"hidden\" name=\"fFolderID\" value=\"" . $this->iFolderID . "\"  />\n " : $bar .= "");
             (isset($this->iDocumentID) ? $bar .= "<INPUT type=\"hidden\" name=\"fDocumentID\" value=\"" . $this->iDocumentID . "\"  />\n " : $bar .= "");
             (isset($this->sCategoryName) ? $bar .= "<INPUT type=\"hidden\" name=\"fCategoryName\" value=\"" . $this->sCategoryName . "\"  />\n " : $bar .= "");
@@ -211,7 +211,7 @@ class NavBar {
         $sToRender = "\n\n<SCRIPT LANGUAGE=\"javascript\">\n ";
         $sToRender .= "<!--\n";
         $sToRender .= "function validateStandardSearch(newAction) {\n";        
-        $sToRender .= "\tif (!(validRequired(document.MainForm.fStandardSearchString, 'Search text'))) {\n";
+        $sToRender .= "\tif (!(validRequired(document.MainForm.fSearchText, 'Search text'))) {\n";
         $sToRender .= "\t\treturn false;\n\t}\n";
         $sToRender .= "\telse {\n";
         $sToRender .= "\t\tsetActionAndSubmitSearch(newAction);\n";        
