@@ -25,9 +25,9 @@ for ($i = 0; $i < count($aKeys); $i++) {
 		$i++;
 		//get the object folder name
 		$sObjectFolderName = $_POST[$aKeys[$i]];		
+		$i++;
 		
-		while ((strncasecmp("unique_end", $sRowStart, 10) != 0)  && ($i < count($aKeys))) {
-			$i++;
+		while ((strncasecmp("unique_end", $sRowStart, 10) != 0)  && ($i < count($aKeys))) {			
 			//get the paramater number
 			$iParameterNumber = $_POST[$aKeys[$i]];			
 			$i++;
@@ -59,9 +59,12 @@ for ($i = 0; $i < count($aKeys); $i++) {
 					break;
 			}			
 			$aParameterValues[$iParameterNumber] = $value;		
+			$i++;
+			$sRowStart = $aKeys[$i];		
 		}		
 	}
 }
+
 
 //include the correct file for the object
 include_once("$default->owl_fs_root/lib/$sObjectFolderName");
