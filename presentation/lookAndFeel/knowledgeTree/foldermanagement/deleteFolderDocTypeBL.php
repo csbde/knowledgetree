@@ -24,6 +24,7 @@ if (checkSession()) {
 		//user has permission to delete
 		if (isset($fFolderDocTypeID)) {
 			//the required variables exist
+            
 			if (Document::documentIsAssignedDocTypeInFolder($fFolderID, $fFolderDocTypeID)) {
 				//there is a document in the folder assigned this type, so
 				//it may not be deleted
@@ -31,6 +32,13 @@ if (checkSession()) {
 				$oPatternCustom->setHtml(getPage($fFolderID));
 				$main->setCentralPayload($oPatternCustom);
 				$main->setErrorMessage("A document in this folder is currently assigned this type.  You may not delete it.");								
+				$main->render();
+            } else if (count(FolderDocTypeLink::getList("folder_id=$fFolderID")) == 1) {
+                // there is only one document type mapped to this folder- not allowed to delete the last one
+				require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
+				$oPatternCustom->setHtml(getPage($fFolderID));
+				$main->setCentralPayload($oPatternCustom);
+				$main->setErrorMessage("You may not delete the last document type for this folder.");								
 				$main->render();
 			} else {
 				//go ahead and delete
