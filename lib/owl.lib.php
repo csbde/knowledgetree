@@ -200,7 +200,7 @@ class Owl_Session {
  *  The Session id
  * @param ssessuid
  *  The user session id
- * @Return $this
+ * @return $this
  *  Return the session
  * 
 */
@@ -669,7 +669,7 @@ function verify_session($sess) {
  *
  *   @param $parent
  *  The parent id
- *   @Return $sql->f("name");
+ *   @return $sql->f("name");
  *  Return the name of the folder   
 */
 //-------------------------------------------------------------
@@ -693,7 +693,7 @@ function fid_to_name($parent)
  *
  *   @param $id
  *  The file  id
- *   @Return $sql->f("name");
+ *   @return $sql->f("name");
  *  Return the name of the file 
 */
 //-------------------------------------------------------------
@@ -717,7 +717,7 @@ function flid_to_name($id)
  *
  *   @param $id
  *  file id
- *   @Return $sql->f("name");
+ *   @return $sql->f("name");
  *  Return the name of the file
 */
 //-------------------------------------------------------------
@@ -739,7 +739,7 @@ function flid_to_filename($id) {
  *
  *   @param $userid
  *  The user id
- *   @Return $groupid
+ *   @return $groupid
  *  Return the groupId
 */
 //-------------------------------------------------------------
@@ -786,7 +786,7 @@ function owlfilecreator($fileid) {
  *
  *   @param $fileid
  *  The file id
- *   @Return $foldercreator
+ *   @return $foldercreator
  *  Return the creatorid of the folder  
 */
 //-------------------------------------------------------------
@@ -810,7 +810,7 @@ function owlfoldercreator($folderid)
  *
  *   @param $fileid
  *  The file id
- *   @Return $filegroup;
+ *   @return $filegroup;
  *  Returns the group id of the file group
 */
 //-------------------------------------------------------------
@@ -835,7 +835,7 @@ function owlfilegroup($fileid)
  *
  *   @param $folderid
  *  The folder id
- *   @Return $foldergroup;
+ *   @return $foldergroup;
  *  Returns the group id of the folder group
 */
 //-------------------------------------------------------------
@@ -859,7 +859,7 @@ function owlfoldergroup($folderid) {
  *
  *   @param $folderid
  *  The folder id
- *   @Return $folderparent
+ *   @return $folderparent
  *  Returns the folderparent of from the folder
 */
 //-------------------------------------------------------------
@@ -884,7 +884,7 @@ function owlfolderparent($folderid)
  *
  *   @param $fileid
  *  The file id
- *   @Return $fileparent
+ *   @return $fileparent
  *  Returns the file parent of from the files
 */
 //-------------------------------------------------------------
@@ -908,7 +908,7 @@ function owlfileparent($fileid)
  *
  *   @param $id
  *  The id
- *   @Return $name;
+ *   @return $name;
  *  Return the name of the creator
 */
 //-------------------------------------------------------------
@@ -936,7 +936,7 @@ function fid_to_creator($id) {
  *
  *   @param $id
  *  The id
- *   @Return $sql->f("name");
+ *   @return $sql->f("name");
  *  Return the name of the group
 */
 //-------------------------------------------------------------
@@ -961,7 +961,7 @@ function group_to_name($id)
  *
  *   @param $id
  *  The id
- *   @Return $name
+ *   @return $name
  *  Return the name of the user
 */
 //-------------------------------------------------------------
@@ -989,7 +989,7 @@ function uid_to_name($id)
  *
  *   @param $id
  *  The id
- *   @Return prefaccess;
+ *   @return prefaccess;
  *  Return the name of the folder   
 */
 //-------------------------------------------------------------
@@ -1013,7 +1013,7 @@ function prefaccess($id) {
  *
  *   @param $parent
  *  The parent id
- *   @Return $Navbar
+ *   @return $Navbar
  *  Return the navbar that has been generated
 */
 //-------------------------------------------------------------
@@ -1043,7 +1043,7 @@ function gen_navbar($parent)
  *
  *   @param $parent
  *  The parent id
- *   @Return $Navbar;
+ *   @return $Navbar;
  *  Return the navbar with directory path
 */
 //-------------------------------------------------------------
@@ -1073,7 +1073,7 @@ function get_dirpath($parent) {
  *
  *   @param $filesize
  *  The size of the file
- *   @Return $file_size;
+ *   @return $file_size;
  *  Return the rounded off file size
 */
 //-------------------------------------------------------------
@@ -1111,7 +1111,7 @@ function gen_filesize($file_size)
  *
  *   @param $varname
  *  The parent id
- *   @Return $sql->f("name");
+ *   @return $sql->f("name");
  *  Return the name of the folder   
 */
 //-------------------------------------------------------------
@@ -1134,7 +1134,7 @@ function uploadCompat($varname) {
  *
  * Used to check requirments
  *
- *   @Return 1
+ *   @return 1
  *  Returns 1
 */
 //-------------------------------------------------------------
@@ -1169,9 +1169,9 @@ function checkrequirements()
  *
  *   @param $errco
  *  The error code
- *   @Return "";
+ *   @return "";
  *  Return empty string
- *   @Return $lines[count($lines)-1]
+ *   @return $lines[count($lines)-1]
  *  Returns numba of lines
 */
 //-------------------------------------------------------------
@@ -1429,7 +1429,7 @@ function printfileperm($currentval, $namevariable, $printmessage, $type) {
  *  
  *   @param $ext
  *  The extension of the file
- *   @Return $sql->f("name");
+ *   @return $sql->f("name");
  *  Return the name of the folder   
 */
 //-------------------------------------------------------------

@@ -25,7 +25,7 @@ require("./lib/security.lib.php");
  *
  *   @param $parent
  *	The parent folder id of the parent folder that needs to be retrieved 
- *   @Return $path
+ *   @return $path
  *	Returns the path of the parent folder
 */
 //-------------------------------------------------------------
