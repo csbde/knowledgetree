@@ -42,9 +42,12 @@ require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternTableSqlQuery.inc");
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
 
+require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/documentmanagement/documentUI.inc");
+
 require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/documentmanagement/viewHistoryUI.inc");
 require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
 require_once("$default->fileSystemRoot/presentation/Html.inc");
+
 
 if (checkSession()) {	
 	require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
