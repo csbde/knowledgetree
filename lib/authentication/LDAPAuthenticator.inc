@@ -56,8 +56,18 @@ class LDAPAuthenticator extends Authenticator {
      */
     function checkPassword($sUserName, $sPassword) {
         global $default;
-
-        return $this->oLdap->checkPass($sUserName, $sPassword);
+        if ($this->oLdap->connect()) {
+            // TODO: lookup dn from username - must exist in db
+            if ( $this->oLdap->authBind("uid=$sUserName,ou=The Jam Warehouse,ou=External to MRC, o=Medical Research Council", $sPassword) ) {
+                return true;
+            } else {
+                $_SESSION["errorMessage"] = "LDAP error: (" . $this->oLdap->ldapErrorCode . ") " . $this->oLdap->ldapErrorText;
+                return false;
+            }
+        } else {
+            $_SESSION["errorMessage"] = "LDAP error: (" . $this->oLdap->ldapErrorCode . ") " . $this->oLdap->ldapErrorText;
+            return false;
+        }
     }
 
 
