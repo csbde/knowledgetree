@@ -6,7 +6,7 @@
  * Contains document browsing business logic.
  *
  * @version $Revision$ 
- * @author <a href="mailto:michael@jamwarehouse.com>Michael Joseph</a>, Jam Warehouse (Pty) Ltd, South Africa
+ * @author <a href="mailto:michael@jamwarehouse.com">Michael Joseph</a>, Jam Warehouse (Pty) Ltd, South Africa
  * @package dmslib
  */
 class DocumentBrowser {
@@ -29,7 +29,12 @@ class DocumentBrowser {
             // TODO: organisationID (and name) should be on session
             
             // TODO: use the organisation to find the root folder
-            // eg. $rootFolderName = $_SESSION["organisationName"] . " Document Root";
+            if (!isset($_SESSION["organisationName"])) {
+                $_SESSION["organisationName"] = "MRC";
+            }
+            $rootFolderName = $_SESSION["organisationName"] . " Document Root";
+            // lookup the id of the root folder
+            $folderID = lookupID($default->owl_folders_table, "name", "'$rootFolderName'");
             
             // if this is a system administrator, start her at the ROOT
             // TODO: add to default->sysadmin_group
@@ -37,9 +42,6 @@ class DocumentBrowser {
                $folderQuery = "SELECT * FROM $default->owl_folders_table WHERE name='$rootFolderName'";
             } else {
                // otherwise start everyone relative to their unit
-               
-               // lookup the id of the root folder
-               //$folderID = lookupID($default->owl_folders_table, "name", "'$rootFolderName'");
                
                // FIXME: actually need to lookup the unit root folder- which should map to the unitname
                //        and descend directly from the organisation document root
