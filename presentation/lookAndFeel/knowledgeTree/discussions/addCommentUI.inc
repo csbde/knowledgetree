@@ -68,8 +68,7 @@ function getAddComment($fDocumentID, $sSubject, $sBody) {
 	$sHeading = "Add a Comment";	
 	$sToRender .= renderHeading($sHeading);
 	$sToRender .= renderDocumentPath($fDocumentID);	
-	$sToRender .= "<table width=\"100%\" border=\"0\" cellpadding=0 ><tr><td></td>\n";
-	//$sToRender .= "<td align=right width=100%><input onmouseover=\"this.style.cursor='hand'\" type=\"submit\" style=\"BORDER-RIGHT: 0px groove; BORDER-TOP: 0px groove; BACKGROUND-IMAGE: url($default->graphicsUrl/widgets/submit.gif); BORDER-LEFT: 0px groove; WIDTH: 45px; BORDER-BOTTOM: 0px groove; HEIGHT: 18; BACKGROUND-COLOR: white\" width=\"45\" height=\"20\" value=\" \" width=\"100\"></td>";
+	$sToRender .= "<table width=\"100%\" border=\"0\" cellpadding=0 ><tr><td></td>\n";	
 	$sToRender .= "<td align=right width=100%><input onmouseover=\"this.style.cursor='hand'\" type=\"image\" src=\"$default->graphicsUrl/widgets/submit.gif\"></td>";
 	$sToRender .= "<td width=\"10\"><img src=\"$default->graphicsUrl/widgets/back.gif\" onmouseover=\"this.style.cursor='hand'\" onclick=\"javascript: history.go(-1);\" ></td></tr>\n";
 	$sToRender .= "<br><tr><td valign=\"top\" width=10><b>Subject</b></td><td colspan=2>\n";
