@@ -103,12 +103,15 @@ class PatternListBox {
 		$sQuery = "SELECT DISTINCT ST." . $this->sDisplayColumn . " AS display, ST." .  $this->sValueColumn . " AS value FROM $this->sTableName AS ST ";
 		if (isset($this->sFromClause)) {
 			$sQuery .= $this->sFromClause . " ";
+			
 		}
 		if (isset($this->sWhereClause)) {
 			$sQuery .= "WHERE " . $this->sWhereClause . " ";
+			
 		}
 		
 		$sQuery .= "ORDER BY ST.$this->sDisplayColumn " . ($this->bOrderAsc ? "ASC" : "DESC");		
+
 		$sql->query($sQuery);
 		if ($sql->num_rows() > 0 || $this->bIncludeDefaultValue) {			
 			//$sToRender = "<SELECT NAME = \"$this->sSelectName\" ". ($this->bPostBackOnChange ? "onChange=\"location=$this->sOnChangeAction;\" " : " ") . ">\n";
