@@ -7,15 +7,6 @@
 * @package presentation.lookAndFeel.knowledgeTree.
 *
 */
-/*function renderHeading() {
-    global $default;
-    $sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
-    $sColor = $default->siteMap->getSectionColour($sSectionName, "th");
-    $sToRender .= "<tr align=\"left\"><th class=\"sectionHeading\" bgcolor=\"$sColor\"><font color=\"ffffff\">Preferences</font></th></tr>\n";
-    $sToRender .= "<tr/>\n";
-    $sToRender .= "<tr/>\n";
-    return $sToRender;
-}*/
 
 function getUserDetailsPage($iUserID) {
 	
@@ -33,9 +24,9 @@ function getUserDetailsPage($iUserID) {
 	$oPattern = & new PatternEditableListFromQuery($sQuery, $default->owl_users_table, $aDisplayColumns, $aStoreColumns, $aColumnNames, $aDisplayColumnTypes, $aDatabaseColumnTypes) ;
 	$oPattern->setUniqueName("userEdit");
 	$oPattern->setColumnsRequired(array(1,0,0,0));
-	
+
+	$sToRender .= renderHeading("Preferences");
 	$sToRender .= "<table width=\"600\">\n";
-    $sToRender .= renderHeading("Preferenes");
 	$sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr/><tr/><tr><td><b>Edit User Properties:</b></td></tr>\n";
 	$sToRender .= "<tr>\n";
