@@ -38,7 +38,7 @@ function renderGroupPicker($iUserID){
 
 	$sToRender .= "<table width=\"600\" border=0>";
     $sToRender .= "<tr><td width=100%><b>" . _("User Name") . ": </b>" . getUserDisplay($oUser) . "</td><td>";
-    $sToRender .= "<a href=\"$default->rootUrl/control.php?action=listUsers\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a>";
+    $sToRender .= "<a href=\"$default->rootUrl/control.php?action=listUsers\"><img src =\"" . KTHtml::getBackButton() . "\" border = \"0\" /></a>";
     $sToRender .= "</td></tr>\n";
     $sToRender .= "</table>\n";
 
@@ -109,12 +109,7 @@ function renderGroupPicker($iUserID){
 	$sToRender .= "<input type=\"hidden\" name=\"groupRemovedRight\"/><br>";
 	$sToRender .= "<input type=\"hidden\" name=\"groupAddedLeft\"/><br>";
 	$sToRender .= "<input type=\"hidden\" name=\"groupAddedRight\"/><br>";
-	$sToRender .= "<input type=\"hidden\" name=\"userNewLeft\"/><br>";
-	$sToRender .= "<input type=\"hidden\" name=\"userNewRight\"/><br>";
-	$sToRender .= "<input type=\"hidden\" name=\"userRemovedLeft\"/><br>";
-	$sToRender .= "<input type=\"hidden\" name=\"userRemovedRight\"/><br>";
-	$sToRender .= "<input type=\"hidden\" name=\"userAddedLeft\"/><br>";
-	$sToRender .= "<input type=\"hidden\" name=\"userAddedRight\"/><br>";	
+
 	return $sToRender;
 }
 

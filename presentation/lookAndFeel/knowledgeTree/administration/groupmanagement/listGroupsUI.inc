@@ -43,7 +43,7 @@ function getUnitDisplay($iUnitID) {
 
 function getGroups($aUnitIDs) {
 	global $default;
-	$sQuery = 	"SELECT GL.id AS groupID, UL.name AS UnitNameB4, GL.name AS name, 'Edit' , 'Delete', 'Edit Unit', " .
+	$sQuery = 	"SELECT GL.id AS groupID, UL.name AS UnitNameB4, GL.name AS name, 'Edit' , 'Delete', 'Edit Unit', 'Edit Users', " .
 				"CASE WHEN UL.name IS NULL THEN '<font color=darkgrey>No Unit Assigned</font>' ELSE UL.name END AS UnitName " . 
 				"FROM ($default->groups_table GL LEFT JOIN $default->groups_units_table GUL ON GL.id = GUL.group_id) " . 
 				"LEFT JOIN $default->units_table UL ON UL.id = GUL.unit_id ";
@@ -67,15 +67,16 @@ function getGroups($aUnitIDs) {
 	$sQuery .= $sWhereClause . "ORDER BY GL.name";
 	$default->log->info("groupQuery: $sQuery");	
 				
-    $aColumns = array("name", "UnitName", "Edit", "Delete", "Edit Unit");
-    $aColumnNames = array(_("Name"), _("Unit Name"), _("Edit"), _("Delete"), _("Edit Unit"));
-    $aColumnTypes = array(1,1,3,3,3);
+    $aColumns = array("name", "UnitName", "Edit", "Delete", "Edit Unit", "Edit Users");
+    $aColumnNames = array(_("Name"), _("Unit Name"), _("Edit"), _("Delete"), _("Edit Unit"), _("Edit Users"));
+    $aColumnTypes = array(1,1,3,3,3,3);
     $aDBColumnArray = array("groupID");
     $aQueryStringVariableNames = array("fGroupID");
     	    
     $aHyperLinkURL = array(	2=> "$default->rootUrl/control.php?action=editGroup",                       			
                      		3=> "$default->rootUrl/control.php?action=removeGroup",
-                     		4=> "$default->rootUrl/control.php?action=editGroupUnit"); 
+                     		4=> "$default->rootUrl/control.php?action=editGroupUnit", 
+                     		5=> "$default->rootUrl/control.php?action=editGroupUsers"); 
     	    
     $oSearchResults = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnNames, "100%", $aHyperLinkURL,$aDBColumnArray,$aQueryStringVariableNames);
 	$oSearchResults->setDisplayColumnHeadings(true);	
