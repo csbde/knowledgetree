@@ -1,5 +1,7 @@
 <?php
 
+require_once("$default->owl_fs_root/lib/security/permission.inc");
+
 /**
  * $Id$
  * 
@@ -75,50 +77,61 @@ class DocumentBrowser {
         
         // retrieve folder details
         $folders = $this->retrieveFolderDetails($folderQuery);
-        // lookup the name of the root folder
-        $folderName = lookupField($default->owl_folders_table, "name", "id", $folderID);
         
-        $default->log->debug("DocumentBrowser::browseByFolder folderID=$folderID; folderName=$folderName");
-        $default->log->debug("DocumentBrowser::browseByFolder folders=" . arrayToString($folders));
-        
-        // now find all the child folders relative to this one
-        $folderQuery = "SELECT * from $default->owl_folders_table WHERE parent_id=" . $folderID;
-        $default->log->debug("DocumentBrowser::browseByFolder child folder query=$folderQuery");
-        $childFolders = $this->retrieveFolderDetails($folderQuery);
-        $default->log->debug("DocumentBrowser::browseByFolder childFolders=" . arrayToString($childFolders));
-        
-        // add children to array
-        $folders[$folderName]["folders"] = $childFolders;
-        
-        // create query to retrieve documents in this folder
-        $documentQuery = "SELECT * FROM $default->owl_documents_table WHERE folder_id=$folderID";
-        $default->log->debug("DocumentBrowser::browseByFolder about to execute $documentQuery");
-        if ($sql->query($documentQuery)) {
-            while ($sql->next_record()) {
-                $default->log->debug("DocumentBrowser::browseByFolder got the next document record");
-                // add documents to array
-                $documentName = $sql->f("name");
-                // set file attributes
-                $folders[$folderName]["documents"][$documentName] = 
-                                                         array("id" => $sql->f("id"),
-                                                               "document_type_id" => $sql->f("id"),
-                                                               "name" => $documentName,
-                                                               "filename" => $sql->f("filename"),
-                                                               "size" => $sql->f("size"),
-                                                               "creator_id" => $sql->f("creator_id"),
-                                                               "modified" => $sql->f("modified"),
-                                                               "description" => $sql->f("description"),
-                                                               "mime_id" => $sql->f("mime_id"),
-                                                               "folder_id" => $sql->f("folder_id"),
-                                                               "major_version" => $sql->f("major_version"),
-                                                               "minor_version" => $sql->f("minor_version"),                                                            
-                                                               "is_checked_out" => $sql->f("is_checked_out")); 
+        // check if the user has access to this folder
+        if (Permission::userHasFolderReadPermission($folderID)) {
+            
+            // lookup the name of the root folder
+            $folderName = lookupField($default->owl_folders_table, "name", "id", $folderID);
+            
+            $default->log->debug("DocumentBrowser::browseByFolder folderID=$folderID; folderName=$folderName");
+            $default->log->debug("DocumentBrowser::browseByFolder folders=" . arrayToString($folders));
+            
+            // now find all the child folders relative to this one
+            $folderQuery = "SELECT * from $default->owl_folders_table WHERE parent_id=" . $folderID;
+            $default->log->debug("DocumentBrowser::browseByFolder child folder query=$folderQuery");
+            $childFolders = $this->retrieveFolderDetails($folderQuery);
+            $default->log->debug("DocumentBrowser::browseByFolder childFolders=" . arrayToString($childFolders));
+            
+            // add children to array
+            $folders[$folderName]["folders"] = $childFolders;
+            
+            // create query to retrieve documents in this folder
+            $documentQuery = "SELECT * FROM $default->owl_documents_table WHERE folder_id=$folderID";
+            $default->log->debug("DocumentBrowser::browseByFolder about to execute $documentQuery");
+            if ($sql->query($documentQuery)) {
+                while ($sql->next_record()) {
+                    // check permissions
+                    if (Permission::userHasDocumentReadPermission($sql->f("id"))) {
+                        // add documents to array
+                        // set file attributes
+                        $folders[$folderName]["documents"][$sql->f("name")] = 
+                                                                 array("id" => $sql->f("id"),
+                                                                       "document_type_id" => $documentID,
+                                                                       "name" => $documentName,
+                                                                       "filename" => $sql->f("filename"),
+                                                                       "size" => $sql->f("size"),
+                                                                       "creator_id" => $sql->f("creator_id"),
+                                                                       "modified" => $sql->f("modified"),
+                                                                       "description" => $sql->f("description"),
+                                                                       "mime_id" => $sql->f("mime_id"),
+                                                                       "folder_id" => $sql->f("folder_id"),
+                                                                       "major_version" => $sql->f("major_version"),
+                                                                       "minor_version" => $sql->f("minor_version"),                                                            
+                                                                       "is_checked_out" => $sql->f("is_checked_out"));
+                    }
+                }
+            } else {
+                $_SESSION["errorMessage"] = "documents table select failed";
             }
+            
+            return $folders;
+            
         } else {
-            $_SESSION["errorMessage"] = "documents table select failed";
+            // permission to view this folder denied
+            $_SESSION["errorMessage"] = "you do not have permission to view this folder (" . $_SESSION["errorMessage"] . ")";
+            return false;
         }
-        
-        return $folders;        
     }
 
     /**
@@ -166,7 +179,10 @@ class DocumentBrowser {
             // loop through resultset and build comma separated list of documentIDs
             $documentIDs = array();
             while ($sql->next_record()) {
-                $documentIDs[] = $sql->f("document_id");
+                // check permissions
+                if (Permission::userHasDocumentReadPermission($sql->f("document_id"))) {
+                    $documentIDs[] = $sql->f("document_id");
+                }
             }
             $default->log->debug("DocumentBrowser::browseByCategory documentIDs=" . arrayToString($documentIDs));
             // use lookup function to retrieve details
@@ -207,7 +223,10 @@ class DocumentBrowser {
             $documentIDs = array();
             $sql->query($query);
             while ($sql->next_record()) {
-                $documentIDs[] = $sql->f("id");
+                // check permission
+                if (Permission::userHasDocumentReadPermission($sql->f("id"))) {
+                    $documentIDs[] = $sql->f("id");
+                }
             }
             $default->log->debug("DocumentBrowser::browseByCategory documentIDs=" . arrayToString($documentIDs));
             // use lookup function to retrieve details
