@@ -20,8 +20,8 @@ class SubscriptionConstants {
      * @return integer the constant for this type
      */
     function subscriptionType($sType) {
-        $aSubscriptionType = array("DocumentSubscription" => 0,
-                                   "FolderSubscription" => 1);
+        $aSubscriptionType = array("DocumentSubscription" => 1,
+                                   "FolderSubscription" => 2);
         return $aSubscriptionType[$sType];
 
     }
@@ -32,11 +32,11 @@ class SubscriptionConstants {
      * @return integer the constant for this type
      */
     function subscriptionAlertType($sType) {
-        $aChangeType = array("AddFolder" => 0,
-                             "RemoveFolder" => 1,
-                             "AddDocument" => 2,
-                             "RemoveDocument" => 3,
-                             "ModifyDocument" => 4);
+        $aChangeType = array("AddFolder" => 1,
+                             "RemoveFolder" => 2,
+                             "AddDocument" => 3,
+                             "RemoveDocument" => 4,
+                             "ModifyDocument" => 5);
         return $aChangeType[$sType];
     }
 }
