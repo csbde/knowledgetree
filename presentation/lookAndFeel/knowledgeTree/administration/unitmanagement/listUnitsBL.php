@@ -24,9 +24,8 @@ if (checkSession()) {
     require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");    
     require_once("$default->fileSystemRoot/lib/visualpatterns/PatternTableSqlQuery.inc");    
     require_once("$default->fileSystemRoot/lib/visualpatterns/PatternBrowsableSearchResults.inc");
-    require_once("$default->fileSystemRoot/lib/visualpatterns/PatternListBox.inc");    
-    require_once("$default->fileSystemRoot/lib/discussions/DiscussionThread.inc");  
-    require_once("$default->fileSystemRoot/lib/discussions/DiscussionComment.inc");   
+    require_once("$default->fileSystemRoot/lib/visualpatterns/PatternListBox.inc");   
+       
     require_once("$default->fileSystemRoot/presentation/Html.inc");
 	
 	
