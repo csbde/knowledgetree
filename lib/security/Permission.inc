@@ -70,12 +70,12 @@ class Permission {
 		global $default;
                 
 		if ($oDocument == null) {
-			$default->log->info("Failed to retrieve document with ID $iDocumentID from database");
+			$default->log->info("Failed to retrieve document with ID " . $oDocument->getID() . " from database");
 			return false;
 		}
 		if (Permission::userHasWriteRoleForDocument($oDocument) ||
 			Permission::userHasReadRoleForDocument($oDocument) ||
-			//Permission::userHasFolderReadPermission($oDocument->getFolderID()) ||
+			Permission::userHasFolderReadPermission(Folder::get($oDocument->getFolderID())) ||
 			Permission::documentIsTemplateForDependantDocument($oDocument)) {
 			return true;
 		}
