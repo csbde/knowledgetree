@@ -14,18 +14,24 @@ require_once("$default->owl_fs_root/presentation/Html.inc");
  * @package presentation.documentmanagement
  */
 
+/**
+ * Generates radio button selects for document browse by type
+ * Javascript refreshes the form when it changes
+ *
+ * @param string the selected browse by option
+ */
 function browseTypeSelect($sBrowseType) {
     return "<span class=\"browseTypeSelect\">\n
-            \tView documents by: <input type=\"radio\" name=\"fBrowseType\" onClick=\"document.forms[0].submit()\" value=\"folder\"" .
+            \tView documents by: <input type=\"radio\" name=\"fBrowseType\" onChange=\"document.forms[0].submit()\" value=\"folder\"" .
                                ((($sBrowseType=="folder") || (strlen($sBrowseType)==0)) ? "checked" : "") . "> Folders\n" .
-                               "<input type=\"radio\" name=\"fBrowseType\" onClick=\"document.forms[0].submit()\" value=\"category\"" .
+                               "<input type=\"radio\" name=\"fBrowseType\" onChange=\"document.forms[0].submit()\" value=\"category\"" .
                                (($sBrowseType=="category") ? "checked" : "") . "> Category\n" .
-                               "<input type=\"radio\" name=\"fBrowseType\" onClick=\"document.forms[0].submit()\" value=\"documentType\"" .
+                               "<input type=\"radio\" name=\"fBrowseType\" onChange=\"document.forms[0].submit()\" value=\"documentType\"" .
                                (($sBrowseType=="documentType") ? "checked" : "") . "> Document Type\n</span>";
 }
 
 function displayCategoryPathLink($sCategoryName) {
-   return "Categories > " . displayCategoryLink($sCategoryName);                                              
+   return "<span class=\"browseTypeSelect\">Categories</span> > " . displayCategoryLink($sCategoryName);                                              
 }
 
 function displayCategoryLink($sCategoryName) {
@@ -41,7 +47,7 @@ function displayDocumentTypeLink($aDocumentType) {
 }
 
 function displayDocumentTypePathLink($aDocumentType) {
-    return "Document Types > " . displayDocumentTypeLink($aDocumentType);
+    return "<span class=\"browseTypeSelect\">Document Types</span> > " . displayDocumentTypeLink($aDocumentType);
 }
 
 function displayDocumentLink($oDocument, $bDisplayFullPath = false) {
