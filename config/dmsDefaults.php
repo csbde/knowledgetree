@@ -143,7 +143,7 @@ $default->siteMap->addPage("logout", "/presentation/logout.php", "General", "Ano
 $default->siteMap->addPage("dashboard", "/presentation/dashboardBL.php", "General", "Unit Administrators", "dashboard");
 
 //pages for manage documents section
-$default->siteMap->addDefaultPage("browse", "/presentation/documentmanagement/browseBL.php", "Manage Documents", "Anonymous", "browse documents");
+$default->siteMap->addDefaultPage("browse", "/presentation/documentmanagement/browseBL.php?fBrowseType=folder", "Manage Documents", "Anonymous", "browse documents");
 $default->siteMap->addPage("addFolder", "/presentation/documentmanagement/addFolder.php", "Manage Documents", "Unit Administrators", "add a folder");
 $default->siteMap->addPage("viewDocument", "/presentation/documentmanagement/viewDocumentBL.php", "Manage Documents", "Anonymous", "view document details");
 
