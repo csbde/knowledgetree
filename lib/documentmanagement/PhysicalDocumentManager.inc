@@ -5,12 +5,6 @@
  * Contains all functions required to upload, alter and
  * delete a physical document.
  *
- * Form variables that will be required:
- *	o When calling uploadDocument:
- *		o $fDescription - description of uploaded file
- *		o $fFolderID - primary key of folder into which file will be placed
- * 	o When calling deleteDocument:
- *
  * Copyright (c) 2003 Jam Warehouse http://www.jamwarehouse.com
  *
  * This program is free software; you can redistribute it and/or modify
