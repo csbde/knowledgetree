@@ -46,8 +46,8 @@ function getUserDetailsPage($iUserID) {
 function getEditPageSuccess() {	
 	global $default;
 			
-	$sToRender .= "<table width=\"600\">\n";
     $sToRender .= renderHeading("Preferences");
+	$sToRender .= "<table width=\"600\">\n";    
 	$sToRender .= "<tr/><tr/><tr><td><b>Success!</b></td></tr>\n";
 	$sToRender .= "<tr><td>The User was successfully modified</td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
@@ -64,8 +64,8 @@ function getEditPageSuccess() {
 function getEditPageFail() {	
 	global $default;
 			
-	$sToRender .= "<table>\n";
     $sToRender .= renderHeading("Preferences");
+	$sToRender .= "<table>\n";    
 	$sToRender .= "<tr/><tr/>\n";
 	$sToRender .= "<tr><td>User modification Failed!</td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
