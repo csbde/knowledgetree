@@ -130,6 +130,7 @@ $default->owl_archiving_date_settings_table = "archiving_date_settings";
 $default->owl_archiving_utilisation_settings_table = "archiving_utilisation_settings";
 $default->owl_time_period_table = "time_period";
 $default->owl_time_unit_lookup_table = "time_unit_lookup";
+$default->owl_status_table = "status_lookup";
 
 // logo file that must reside inside lang/graphics directory
 $default->logo = "kt.jpg";
