@@ -26,7 +26,6 @@ if (count($_POST) > 0) {
 	
 	//execute the queries
 	for ($i=0; $i<count($aQueries); $i++) {
-		$default->log->info("query=" . $aQueries[$i]);
 		$sql = $default->db;
 		$sql->query($aQueries[$i]);
 	}
