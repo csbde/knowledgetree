@@ -32,14 +32,6 @@ if (checkSession()) {
 			$oPatternCustom->setHtml(renderHeading("Edit Unit Organisation"));
 			            
             $oPatternCustom->addHtml(getOrgPage($fUnitID));
-        	           
-            
-            //$sQuery = 	"SELECT  " .
-            //			"WHERE organisations_lookup INNER JOIN units_organisations_link ON organisations_lookup.id = units_organisations_link.organisation_id";
-            
-            //$faGroupID = GroupUserLink::getGroups($fUserID);
-            //$oPatternCustom->setHtml(getGroupPage($fUserID,$faGroupID));
-            //$main->setFormAction($_SERVER["PHP_SELF"] . "?fUserSet=1&fGroupSet=1");
         }
     } else {
         // build first page
