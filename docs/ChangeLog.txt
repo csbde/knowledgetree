@@ -1,3 +1,89 @@
+Version 2.0.0rc6 (2005/01/26)
+
+Bug Fixes
+=========
+* Search permission updates fixed for MySQL < 4.0.11
+* Documents whose creating users were deleted now still have information
+  displayed
+* Updating the webmaster for a web site now works
+* Allow a metadata field named Author to display
+* Require that log files can be written to
+* Fix browsing and criteria management on some versions of PHP
+
+Other changes
+=============
+* Can set an option to not require generic metadata be filled in
+
+Detailed ChangeLog
+==================
+
+
+2005-01-26 00:47  nbm
+
+	* sql/mysql/: install/tables.sql, upgrade/1.2.4-to-2.0.0.sql:
+
+	Set knowledgeTreeVersion to 2.0.0rc6 for release candidate
+
+2005-01-25 05:15  nbm
+
+	* config/dmsDefaults.php,
+	  presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentUI.inc:
+
+	Allow admins to not require that generic metadata be filled in.
+
+	SF tracker:	1066841
+	Submitted by:	anthrocode
+
+2005-01-25 04:49  nbm
+
+	* lib/foldermanagement/Folder.inc:
+
+	MySQL < 4.0.11 doesn't allow JOIN with ON - INNER JOIN is the most
+	accurate description of what we want anyway.
+
+2005-01-25 04:35  nbm
+
+	* presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:
+
+	Use a LEFT JOIN on the creator, as it may have been deleted.
+
+	SF Tracker:	1048247
+	Submitted by:	Edwin de Jong via Marcel Berteler (pluk77)
+
+2005-01-25 02:55  nbm
+
+	* lib/web/WebSite.inc:
+
+	Actually set the WebMasterID when called.
+
+	SF tracker:	1012901
+	Submitted by:	Antonello Cesare (acesare)
+
+2005-01-25 02:45  nbm
+
+	* presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:
+
+	Allow an Author metadata to be displayed - it's no longer created by
+	default.
+
+	SF tracker:	1048279
+	Submitted by:	Marcel Berteler (pluk77)
+
+2005-01-24 10:35  nbm
+
+	* lib/browse/Criteria.inc:
+
+	Make sure the id given is an integer.  array_key_exists in some versions
+	or configurations of PHP will not consider a string and an integer as
+	equivalent.
+
+2005-01-24 01:58  nbm
+
+	* lib/Log.inc:
+
+	Require that we can write to log files before proceeding.
+
+
 Version 2.0.0rc5 (2005/01/19)
 
 Bug Fixes
