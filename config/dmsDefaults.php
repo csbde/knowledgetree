@@ -273,14 +273,14 @@ KTInit::setupLogging();
 // Send all PHP errors to a file (and maybe a window)
 set_error_handler(array('KTInit', 'handlePHPError'));
 
-KTInit::setupDB();
-KTInit::setupRandomSeed();
-
 // Give everyone access to legacy PHP functions
 require_once(KT_LIB_DIR . '/util/legacy.inc');
 
 // Give everyone access to KTUtil utility functions
 require_once(KT_LIB_DIR . '/util/ktutil.inc');
+
+KTInit::setupDB();
+KTInit::setupRandomSeed();
 
 require_once("$default->fileSystemRoot/lib/authentication/$default->authenticationClass.inc");
 
