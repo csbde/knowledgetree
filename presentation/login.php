@@ -54,7 +54,7 @@ if ($loginAction == "loginForm") {
     </head>
     <body onload=\"javascript:document.loginForm.fUserName.focus()\">
     <center>
-    <img src=\"$default->rootUrl/locale/$default->defaultLanguage/graphics/$default->logo\">
+    <img src=\"$default->graphicsUrl/ktLogin.jpg\">
     <br><br>
     <table>\n
     <form name=\"loginForm\" action=\"login.php\" method=\"post\">
