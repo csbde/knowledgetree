@@ -33,10 +33,10 @@ function getAddPage() {
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>Unit Name: </td><td><input size = \"40\" type=\"text\" name=\"fUnitName\"> </td>\n";
+	$sToRender .= "<td>" . _("Unit Name") . ": </td><td><input size = \"40\" type=\"text\" name=\"fUnitName\"> </td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>Organisation: </td><td>" . getOrgDisplay() ;
+	$sToRender .= "<td>" . _("Organisation") . ": </td><td>" . getOrgDisplay() ;
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "</tr>\n";
@@ -61,9 +61,9 @@ function getAddPageSuccess() {
 			
 	$sToRender .= renderHeading("Add Unit");
 	$sToRender .= "<table>\n";
-	$sToRender .= "<tr><td><b>Addition Successful!</b></td></tr>\n";
+	$sToRender .= "<tr><td><b>" . _("Addition Successful!") . "</b></td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
-	$sToRender .= "<tr><td>New Unit was successfully added</td></tr>\n";
+	$sToRender .= "<tr><td>" . _("New Unit was successfully added") . "</td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
@@ -80,7 +80,7 @@ function getAddPageFail($sMessage) {
 			
     $sToRender .= renderHeading("Add Unit");
 	$sToRender .= "<table>\n";
-	$sToRender .= "<tr><td><b>Addition Unsuccessful</b></td></tr>\n";
+	$sToRender .= "<tr><td><b>" . _("Addition Unsuccessful") . "</b></td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr><td>$sMessage</td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
@@ -100,7 +100,7 @@ function getPageFail() {
     $sToRender .= renderHeading("Add Unit");
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr></tr>\n";
-	$sToRender .= "<tr><td>Please enter a name AND Select the Organisation</td></tr>\n";
+	$sToRender .= "<tr><td>" . _("Please enter a name AND Select the Organisation") . "</td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
@@ -116,9 +116,9 @@ function getAddPageToOrgFail() {
 			
     $sToRender .= renderHeading("Add Unit");
     $sToRender .= "<table>\n";
-    $sToRender .= "<tr><td><b>Addition to Organisation Unsuccessful</b></td></tr>\n";
+    $sToRender .= "<tr><td><b>" . _("Addition to Organisation Unsuccessful") . "</b></td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
-	$sToRender .= "<tr><td>The Unit was not added to the Organisation.</td></tr>\n";
+	$sToRender .= "<tr><td>" . _("The Unit was not added to the Organisation.") . "</td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
@@ -139,7 +139,7 @@ function getOrgDisplay() {
 		$oOrganisation = $aOrganisations[0];
 		return $oOrganisation->getName() . "<input type=\"hidden\" name=\"fOrgID\" value=\"" . $oOrganisation->getID() . "\"";;
 	} else {
-		return "No organisations" . "<input type=\"hidden\" name=\"fOrgID\" value=\"\"/>";
+		return _("No organisations") . "<input type=\"hidden\" name=\"fOrgID\" value=\"\"/>";
 	}
 //	$oPatternListBox = & new PatternListBox($default->organisations_table, "name", "id", "fOrgID");
 //	return $oPatternListBox->render();

@@ -49,7 +49,7 @@ function getOrganisations() {
 
 function getPage() {
 	global $default;
-	$sToRender .= renderHeading("Organisation Management");
+	$sToRender .= renderHeading(_("Organisation Management"));
 
 	// add user link
 	//$sToRender .= getAddLink("addOrg", "Add An Organisation");

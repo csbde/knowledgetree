@@ -30,7 +30,7 @@ function getEditMetaDataFailPage($iDocFieldID){
 
     $sToRender .= renderHeading("Edit Document Field Lookup");
     $sToRender .= "<table width=300>\n";
-    $sToRender .= "<tr><td>Document has no lookups to edit.</td></tr>\n";
+    $sToRender .= "<tr><td>" . _("Document has no lookups to edit.") . "</td></tr>\n";
     $sToRender .= "<tr>\n";
     $sToRender .= "<td></td><td><a href=\"$default->rootUrl/control.php?action=editDocFieldLookups&fDocFieldID=$iDocFieldID\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
     $sToRender .= "</tr>\n";    
@@ -48,9 +48,9 @@ function getSelectFieldPage($iDocFieldID) {
 
     $sToRender .= renderHeading("Edit Document Field Lookup");
     $sToRender .= "<table>\n";
-    $sToRender .= "<tr>Please Select a Field</tr>\n";
+    $sToRender .= "<tr>" . _("Please Select a Field") . "</tr>\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "<td>Document Field: </td><td>" . getDocFieldDisplay($oDocField) . "</td>\n";
+    $sToRender .= "<td>" . _("Document Field") . ": </td><td>" . getDocFieldDisplay($oDocField) . "</td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "<tr>\n";
     $sToRender .= "</tr>\n";
@@ -81,12 +81,12 @@ function getSelectMetaDataPage($iDocFieldID, $iMetaDataID) {
 
     $sToRender .= renderHeading("Edit Document Field Lookup");
     $sToRender .= "<table>\n";
-    $sToRender .= "<tr>Please Select the Document Field Lookup you wish to Edit</tr>\n";
+    $sToRender .= "<tr>" . _("Please Select the Document Field Lookup you wish to Edit") . "</tr>\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "<td>Document Field: </td><td>" . getDocFieldDisplay($oDocField) . "</td>\n";
+    $sToRender .= "<td>" . _("Document Field") . ": </td><td>" . getDocFieldDisplay($oDocField) . "</td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "<td>Lookup: </td><td>" . getMetaDataDisplay($oMetaData,$iDocFieldID) . "</td>\n";
+    $sToRender .= "<td>" . _("Lookup") . ": </td><td>" . getMetaDataDisplay($oMetaData,$iDocFieldID) . "</td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "<tr>\n";
     $sToRender .= "</tr>\n";
@@ -112,12 +112,12 @@ function getEditMetaDataPage($iDocFieldID, $iMetaDataID) {
 
     $sToRender .= renderHeading("Edit Document Field Lookup");
     $sToRender .= "<table>\n";
-    $sToRender .= "<tr>Enter a Different Value</tr>\n";
+    $sToRender .= "<tr>" . _("Enter a Different Value") . "</tr>\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "<td>Document Field: </td><td>" . getDocFieldDisplay($oDocField) . "</td>\n";
+    $sToRender .= "<td>" . _("Document Field") . ": </td><td>" . getDocFieldDisplay($oDocField) . "</td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "<td>Lookup: </td><td>" . getMetaDataDisplay($oMetaData,$iDocFieldID) . "</td>\n";
+    $sToRender .= "<td>" . _("Lookup") . ": </td><td>" . getMetaDataDisplay($oMetaData,$iDocFieldID) . "</td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr></tr>\n";
@@ -144,8 +144,8 @@ function getSuccessPage($iDocFieldID = null) {
 
     $sToRender .= renderHeading("Edit Document Field Lookup");
     $sToRender .= "<table>\n";
-    $sToRender .= "<tr><td><b>Success!</b></td></tr>\n";
-    $sToRender .= "<tr><td>The Document Field Lookup was successfully edited</td></tr>\n";
+    $sToRender .= "<tr><td><b>" . _("Success") . "!</b></td></tr>\n";
+    $sToRender .= "<tr><td>" . _("The Document Field Lookup was successfully edited") . "</td></tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr>\n";
@@ -162,8 +162,8 @@ function getFailPage($iDocFieldID = null) {
 
     $sToRender .= renderHeading("Edit Document Field Lookup");
     $sToRender .= "<table>\n";
-    $sToRender .= "<tr><td><b>FAILURE!</b></td></tr>\n";
-    $sToRender .= "<tr><td>The Document Field Lookup was not updated</td></tr>\n";
+    $sToRender .= "<tr><td><b>" . strtoupper(_("Failure")) . "!</b></td></tr>\n";
+    $sToRender .= "<tr><td>" . _("The Document Field Lookup was not updated") . "</td></tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr>\n";
@@ -181,8 +181,8 @@ function getTextPage($iDocFieldID = null) {
 
     $sToRender .= renderHeading("Edit Document Field Lookup");
     $sToRender .= "<table>\n";
-    $sToRender .= "<tr><td><b>FAILURE!</b></td></tr>\n";
-    $sToRender .= "<tr><td>Please Enter a Value in the Text Box</td></tr>\n";
+    $sToRender .= "<tr><td><b>" . strtoupper(_("Failure")) . "!</b></td></tr>\n";
+    $sToRender .= "<tr><td>" . _("Please Enter a Value in the Text Box") . "</td></tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr>\n";
@@ -197,7 +197,7 @@ function getTextPage($iDocFieldID = null) {
 function getUpdateButton($oDocField) {
     global $default;
     if (!isset($oDocField)) {
-        return "Please select a Document Field: ";
+        return _("Please select a Document Field:") . " ";
     } else {
         return "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/update.gif\" value=\"submit\" border=\"0\"/></td>\n";
     }

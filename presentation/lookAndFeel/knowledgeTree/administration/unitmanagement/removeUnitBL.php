@@ -51,7 +51,8 @@ if (checkSession()) {
 	        // if the unit has groups linked to it, then it can't be deleted
 	        if ($oUnit->hasGroups()) {
 	        	// display error message
-	        	$oPatternCustom->setHtml(getStatusPage("Can't delete Unit '" . $oUnit->getName() . "'", "Please remove all groups belonging to this Unit before attempting to delete it"));
+	        	$oPatternCustom->setHtml(getStatusPage(
+				sprintf(_("Can't delete Unit '%s'"), $oUnit->getName()), _("Please remove all groups belonging to this Unit before attempting to delete it")));
 	        } else {
 		        // retrieve organisation link (for later deletion or to get the organisation id)
 			    $oUnitOrg = UnitOrganisationLink::getByUnitID($fUnitID);
@@ -66,17 +67,17 @@ if (checkSession()) {
 				        // delete the link between this unit and its organisation if there is one
 						if ($oUnitOrg) {
 					       	if ($oUnitOrg->delete()) {
-					       		$oPatternCustom->setHtml(getStatusPage("Unit SuccessFully Removed!"));
+					       		$oPatternCustom->setHtml(getStatusPage(_("Unit SuccessFully Removed!")));
 					        } else {
 					        	// couldn't delete the link to the organisation
-								$oPatternCustom->setHtml(getStatusPage("Deletion of Unit Organisation Link Failed!", "The Unit was deleted, but the link to the Organisation could not be deleted"));
+								$oPatternCustom->setHtml(getStatusPage(_("Deletion of Unit Organisation Link Failed!"), _("The Unit was deleted, but the link to the Organisation could not be deleted")));
 					       	}
 						} else {
 							// no organisation mapped
-							$oPatternCustom->setHtml(getStatusPage("Unit SuccessFully Removed!"));
+							$oPatternCustom->setHtml(getStatusPage(_("Unit SuccessFully Removed!")));
 						}
 			        } else {
-			            $oPatternCustom->setHtml(getStatusPage("Deletion of Unit '" . $oUnit->getName() . "' Failed!"));
+			            $oPatternCustom->setHtml(getStatusPage(sprintpf(_("Deletion of Unit '%s' failed!"), $oUnit->getName())));
 			        }
 	        	// ask for confirmation before deleting		        
 			    } else {
@@ -86,11 +87,11 @@ if (checkSession()) {
 	        }
 		} else {
 			// couldn't retrieve unit from db
-        	$oPatternCustom->setHtml(getStatusPage("No Unit selected for deletion."));
+        	$oPatternCustom->setHtml(getStatusPage(_("No Unit selected for deletion.")));
 		}			
     } else {
     	// no params received, error 
-        $oPatternCustom->setHtml(getStatusPage("No Unit selected for deletion."));
+        $oPatternCustom->setHtml(getStatusPage(_("No Unit selected for deletion.")));
     }
 
     $main->setCentralPayload($oPatternCustom);

@@ -33,13 +33,13 @@ function getEditPage($iLinkID) {
 	if (isset($iLinkID)) {
 		$oLink = Link::get($iLinkID);
 	} else {
-    	$sHeading = "Please select a Link:";
+    	$sHeading = _("Please select a Link:");
 	} 
     $sToRender .= renderHeading("Edit QuickLink");
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr><td>$sHeading</td></tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>Link Name: </td><td>" . getLinkDisplay($oLink) . "</td>\n";
+	$sToRender .= "<td>" . _("Link Name") . ": </td><td>" . getLinkDisplay($oLink) . "</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "</tr>\n";
@@ -49,10 +49,10 @@ function getEditPage($iLinkID) {
 	if (isset($iLinkID)) {
 		$sToRender .= "</tr>\n";
 		$sToRender .= "<tr>\n";
-		$sToRender .= "<td>URL: </td><td>" . getURL($oLink) . "</td>\n";
+		$sToRender .= "<td>" . _("URL") . ": </td><td>" . getURL($oLink) . "</td>\n";
 		$sToRender .= "</tr>\n";
 		$sToRender .= "<tr>\n";
-		$sToRender .= "<td>Rank: </td><td>" . getRank($oLink) . "</td>\n";
+		$sToRender .= "<td>" . _("Rank") . ": </td><td>" . getRank($oLink) . "</td>\n";
 		$sToRender .= "</tr>\n";
 		$sToRender .= "<tr>\n";
 		$sToRender .= "</tr>\n";
@@ -87,11 +87,11 @@ function getEditPageSuccess() {
 	global $default;
 			
     $sToRender .= renderHeading("Edit QuickLink");
-	$sToRender .= "<b>Success!</b>\n";
+	$sToRender .= "<b>" . _("Success") . "!</b>\n";
 	$sToRender .= "<table>\n";
 	$sToRender .= "<br></br>\n";
 	$sToRender .= "<tr></tr>\n";
-	$sToRender .= "<tr><td>The Link was successfully modified</td></tr>\n";
+	$sToRender .= "<tr><td>" . _("The Link was successfully modified") . "</td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
@@ -109,11 +109,11 @@ function getEditPageFail() {
 	global $default;
 			
     $sToRender .= renderHeading("Edit QuickLink");
-	$sToRender .= "<b>Success!</b>\n";
+	$sToRender .= "<b>" . _("Failure") . "!</b>\n";
 	$sToRender .= "<table>\n";
 	$sToRender .= "<br></br>\n";
 	$sToRender .= "<tr></tr>\n";
-	$sToRender .= "<tr><td>The Link modification Failed!</td></tr>\n";
+	$sToRender .= "<tr><td>" . _("The Link modification Failed!") . "</td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";

@@ -34,18 +34,18 @@ if(checkSession()) {
     // include the page template (with navbar)
     require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 
-    $Center .= renderHeading("Add Document Type");
+    $Center .= renderHeading ("Add Document Type");
     $Center .= "<TABLE BORDER=\"0\" CELLSPACING=\"2\" CELLPADDING=\"2\">\n";
     $Center .= "<tr>\n";
     if($fDocTypeID == -1) {
-        $Center .= "<td><b>Document Type addition Unsuccessful!</b></td>\n";
+        $Center .= "<td><b>" . _("Document Type addition Unsuccessful!") . "</b></td>\n";
         $Center .= "</tr>\n";
         $Center .= "<tr></tr>\n";
         $Center .= "<tr>\n";
-        $Center .= "<td>Document Type already exists</td>\n";
+        $Center .= "<td>" . _("Document Type already exists") . "</td>\n";
         $Center .= "</tr>\n";
     } else {
-        $Center .= "<td><b>Document Type added Successfully!</b></td>\n";
+        $Center .= "<td><b>" . _("Document Type added Successfully!") . "</b></td>\n";
         $Center .= "</tr>\n";
     }
 

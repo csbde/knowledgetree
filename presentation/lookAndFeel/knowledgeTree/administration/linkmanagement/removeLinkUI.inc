@@ -31,16 +31,16 @@ function getDeletePage($iLinkID) {
     $oLink = null;
     if (isset($iLinkID)) {
         $oLink = Link::get($iLinkID);
-        $sHeading .= "<b>Are you sure you wish to Remove this Link?:</b>\n";
+        $sHeading .= "<b>" . _("Are you sure you wish to Remove this Link?:") . "</b>\n";
     } else {
-        $sHeading .= "Please select a Link:";
+        $sHeading .= _("Please select a Link:");
     }
 
     $sToRender .= renderHeading("Remove QuickLink");
     $sToRender .= "<table>\n";
     $sToRender .= "<tr><td colspan=\"2\">$sHeading</td></tr>\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "<td>Link Name: </td><td>" . getLinkDisplay($oLink) . "</td>\n";
+    $sToRender .= "<td>" . _("Link Name") . ": </td><td>" . getLinkDisplay($oLink) . "</td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "<tr>\n";
     $sToRender .= "</tr>\n";
@@ -68,7 +68,7 @@ function getDeleteSuccessPage() {
     $sToRender .= renderHeading("Remove QuickLink");
     $sToRender .= "<TABLE BORDER=\"0\" CELLSPACING=\"2\" CELLPADDING=\"2\">\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "<td><b>Link SuccessFully Removed!</b></td>\n";
+    $sToRender .= "<td><b>" . _("Link SuccessFully Removed!") . "</b></td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr></tr>\n";
@@ -90,11 +90,11 @@ function getDeleteFailPage() {
     $sToRender .= renderHeading("Remove QuickLink");
     $sToRender .= "<TABLE BORDER=\"0\" CELLSPACING=\"2\" CELLPADDING=\"2\">\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "<td><b>Deletion Failed!</b></td>\n";
+    $sToRender .= "<td><b>" . _("Deletion Failed!") . "</b></td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr></tr>\n";
-    $sToRender .= "<tr><td>Please Ensure that The Link has been Removed from any Unit it belongs to</td></tr>\n";
+    $sToRender .= "<tr><td>" . _("Please Ensure that The Link has been Removed from any Unit it belongs to") . "</td></tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "</tr>\n";

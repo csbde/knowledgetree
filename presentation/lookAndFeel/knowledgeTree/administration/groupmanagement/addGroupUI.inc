@@ -33,11 +33,11 @@ function getPage() {
 	$sToRender .= renderHeading("Add A New Group");
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>Group Name:</td>\n";
+	$sToRender .= "<td>" . _("Group Name") . ":</td>\n";
     $sToRender .= "<td><input size = \"40\" type=\"text\" name=\"fGroupName\" /></td>\n";    
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr/>\n";
-    $sToRender .= "<tr><td><b>Unit</b></td><td>" . getUnitListBox() . "</td></tr>\n";    
+    $sToRender .= "<tr><td><b>" . _("Unit") . "</b></td><td>" . getUnitListBox() . "</td></tr>\n";    
 	$sToRender .= "<td align=\"right\"><input type=\"image\" src=\"$default->graphicsUrl/widgets/add.gif\" value=\"Submit\" border=\"0\"/>";
 	$sToRender .= getCancelButton("listGroups") . "</td>\n";	
 	$sToRender .= "</table>\n";	

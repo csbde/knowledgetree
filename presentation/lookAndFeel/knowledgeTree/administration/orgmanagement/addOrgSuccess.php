@@ -37,9 +37,9 @@ if(checkSession()) {
     $sToRender .= "<table>\n";
     $sToRender .= "<tr>\n";
     if($fSuccess) {
-    	$sToRender .= "<td>Organisation added Successfully!</td>\n";
+    	$sToRender .= "<td>" . _("Organisation added Successfully!") . "</td>\n";
     } else {
-    	$sToRender .= "<td>Organisation not added. Organisation may already exist!</td>\n";
+    	$sToRender .= "<td>" . _("Organisation not added. Organisation may already exist!") . "</td>\n";
     }
     $sToRender .= "</tr>\n";
     $sToRender .= "<tr></tr>\n";

@@ -31,16 +31,16 @@ function getDeletePage($fDocFieldID) {
     $oDocField = null;
     if (isset($fDocFieldID)) {
         $oDocField = DocumentField::get($fDocFieldID);
-        $sHeading = "<b>Are you sure you wish to Remove this Document Field?:</b>\n";
+        $sHeading = "<b>" . _("Are you sure you wish to Remove this Document Field?") . ":</b>\n";
     } else {
-        $sHeading = "Please select a Document Field:";
+        $sHeading = _("Please select a Document Field:");
     }
 
-    $sToRender .= renderHeading("Remove Document Field");
+    $sToRender .= renderHeading(_("Remove Document Field"));
     $sToRender .= "<table>\n";
     $sToRender .= "<tr><td colspan=\"2\">$sHeading</td></tr>\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "<td>Document Field Name: </td><td>" . getDocFieldDisplay($oDocField) . "</td>\n";
+    $sToRender .= "<td>" . _("Document Field Name:") . " </td><td>" . getDocFieldDisplay($oDocField) . "</td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "<tr>\n";
     $sToRender .= "<td>" . getDocFieldDataType($oDocField) . "</td>\n";
@@ -78,26 +78,27 @@ function getStatusPage($sHeading, $sText = "") {
 
 // get successfully deletion page
 function getDeleteSuccessPage() {
-	return getStatusPage("Document Field SuccessFully Removed!");
+	return getStatusPage(_("Document Field SuccessFully Removed!"));
 }
 
 // get deletion failed page
 function getDeleteFailPage() {
-	return getStatusPage("Deletion Failed!", "Please Ensure that The Document Field has not been assigned");
+	return getStatusPage(_("Deletion Failed!"), _("Please Ensure that The Document Field has not been assigned"));
 }
 
 function getFieldMappedPage($sDocumentFieldName, $aDocumentTypes) {
 	global $default;
 	
     $sToRender .= "<table>\n";
-    $sToRender .= "<tr><td>Document field '$sDocumentFieldName' is mapped to the following document type(s), and can therefore not be deleted.</td></tr>\n";
-    $sToRender .= "<tr><td>Click on the Document Type name to edit its fields, or click 'Back' to return to List Document Fields.</td></tr>\n";
+    $sToRender .= "<tr><td>" . 
+        sprintf(_("Document field '%s' is mapped to the following document type(s), and can therefore not be deleted."), $sDocumentFieldName) . "</td></tr>\n";
+    $sToRender .= "<tr><td>" . _("Click on the Document Type name to edit its fields, or click 'Back' to return to List Document Fields.") . "</td></tr>\n";
     for ($i=0; $i<count($aDocumentTypes); $i++) {
     	$sToRender .= "<tr><td><strong>" . generateControllerLink("editDocTypeFields", "fDocTypeSelected=1&fDocTypeID=" . $aDocumentTypes[$i]->getID(), $aDocumentTypes[$i]->getName()) . "</strong></td></tr>";
     }
     $sToRender .= "</table>\n";
 
-	return getStatusPage("Can't delete document field '$sDocumentFieldName'", $sToRender);
+	return getStatusPage(_("Can't delete document field") . " '$sDocumentFieldName'", $sToRender);
 }
 
 // show listbox...or the text name

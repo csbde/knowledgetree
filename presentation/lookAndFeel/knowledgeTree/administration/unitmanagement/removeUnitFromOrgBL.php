@@ -43,18 +43,18 @@ if (checkSession()) {
 
     $oPatternCustom = & new PatternCustom();
 	
-	$oPatternCustom->addHtml(renderHeading("Remove Unit from an Organisation"));    
+	$oPatternCustom->addHtml(renderHeading(_("Remove Unit from an Organisation")));    
     
     if (isset($fUnitID)) {    	    
     	if ($fOrgID == "" && $fRemove == 1){
-	    	$main->setErrorMessage("An error occured.");	
+	    	$main->setErrorMessage(_("An error occured."));	
     		$main->setFormAction($_SERVER["PHP_SELF"] . "?fUnitID=$fUnitID&fAdd=1" );
     	}	
 		if ($fOrgID > 0) {    	
 	    	//$oUnitOrgLink = & new UnitOrganisationLink($fUnitID,$fOrgID);			
 			$aUnitOrgLink = UnitOrganisationLink::getList("WHERE unit_id = $fUnitID AND organisation_id = $fOrgID");			
 			if (count($aUnitOrgLink) > 1) {
-				$oPatternCustom->addHtml("ERROR: Multiple links exist even though a Unit can only belong to One Organization.");					
+				$oPatternCustom->addHtml(_("Error") . ":" . _("Multiple links exist even though a Unit can only belong to one Organisation."));					
 			}else {
 				$oLinkObject = $aUnitOrgLink[0];
 				if ($oLinkObject->delete()) {

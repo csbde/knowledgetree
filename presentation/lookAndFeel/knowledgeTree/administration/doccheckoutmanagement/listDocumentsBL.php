@@ -42,11 +42,11 @@ if (checkSession()) {
 		for ($i=0; $i<count($aDocuments); $i++) {
 			if ($aDocuments[$i]) {
 				$sToRender .= "<tr bgcolor=\"" . getColour($i) . "\"><td width=\"80%\">" . $aDocuments[$i]->getDisplayPath() . "</td>";
-				$sToRender .= "<td align=\"right\">" . generateControllerLink("editDocCheckout", "fDocumentID=" . $aDocuments[$i]->getID(), "Check In") . "</td></tr>"; 
+				$sToRender .= "<td align=\"right\">" . generateControllerLink("editDocCheckout", "fDocumentID=" . $aDocuments[$i]->getID(), _("Check In") . "</td></tr>"); 
 			}
 		}
 	}  else {
-		$sToRender .= "<tr><td colspan=\"3\">There are no checked out documents</td></tr>";
+		$sToRender .= "<tr><td colspan=\"3\">" . _("There are no checked out documents") . "</td></tr>";
 	}
 	$sToRender .= "</table>";
 

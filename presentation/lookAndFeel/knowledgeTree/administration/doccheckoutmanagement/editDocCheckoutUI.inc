@@ -27,11 +27,11 @@
  
 function getEditCheckoutSuccessPage(){
 	global $default;
-	return statusPage("Edit Document Checkout", "Succesfully updated document checkout.", "", "listDocs");
+	return statusPage(_("Edit Document Checkout"), _("Succesfully updated document checkout."), "", "listDocs");
 }
 
 function getErrorPage($sMessage) {
-	return statusPage("Edit Document Checkout", "Error checking in document", $sMessage, "listDocs");
+	return statusPage(_("Edit Document Checkout"), _("Error checking in document"), $sMessage, "listDocs");
 }	
 
 function getEditCheckoutPage($fDocumentID){
@@ -41,9 +41,9 @@ function getEditCheckoutPage($fDocumentID){
 	$oUser = User::get($oDocument->getCheckedOutUserID());
 	$sToRender .= renderHeading("Edit Document Checkout");	
 	$sToRender .= "<table>\n";
-	$sToRender .= "<tr><td colspan=\"2\">Are you sure you want to Check In the document:</tr></td>";
-	$sToRender .= "<tr><td width=\"20%\">Path</td><td><b>" . $oDocument->getDisplayPath() . "</b></td></tr>";
-	$sToRender .= "<tr><td>Checked Out By</td><td><b>" . ($oUser ? $oUser->getName() : "Unknown" ) . "</b></td></tr>";
+	$sToRender .= "<tr><td colspan=\"2\">" . _("Are you sure you want to Check In the document:") . "</tr></td>";
+	$sToRender .= "<tr><td width=\"20%\">" . _("Path") . "</td><td><b>" . $oDocument->getDisplayPath() . "</b></td></tr>";
+	$sToRender .= "<tr><td>" . _("Checked Out By") . "</td><td><b>" . ($oUser ? $oUser->getName() : _("Unknown")) . "</b></td></tr>";
  	$sToRender .= "<input type=\"hidden\" name=\"fUpdate\" value=\"1\">\n";
  	$sToRender .= "<input type=\"hidden\" name=\"fDocumentID\" value=\"$fDocumentID\">\n";
 	$sToRender .= "<tr>\n";

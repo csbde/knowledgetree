@@ -40,7 +40,7 @@ function getEditPage($iDocFieldID) {
     $sToRender .= "<table>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "<td>Document Field Name: </td><td>" . getDocFieldDisplay($oDocField) . "</td>\n";
+    $sToRender .= "<td>" . _("Document Field Name:") . " </td><td>" . getDocFieldDisplay($oDocField) . "</td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "<tr>\n";
     $sToRender .= "</tr>\n";
@@ -50,21 +50,21 @@ function getEditPage($iDocFieldID) {
     if (isset($iDocFieldID)) {
         $sToRender .= "</tr>\n";
         $sToRender .= "<tr>\n";
-        $sToRender .= "<td>Data Type: </td><td>" . getDataTypesList($aDataTypes, $currentDataType ) . "</td>\n";
+        $sToRender .= "<td>" . _("Data Type") . ": </td><td>" . getDataTypesList($aDataTypes, $currentDataType ) . "</td>\n";
         $sToRender .= "</tr>\n";
         $sToRender .= "<tr>\n";
         
         // allow changing the generic status if the field is not linked to a document type
         // and if this isn't the category field
         if ( ($checkBox == false) && $oDocField->getName() != "Category") {
-            $sToRender .= "<td>Is Generic: </td><td>" . getIsGenericCheckBox($oDocField) . "</td>\n";
+            $sToRender .= "<td>" . _("Is Generic") . ": </td><td>" . getIsGenericCheckBox($oDocField) . "</td>\n";
         } else {
             $sToRender .= "<input type=\"hidden\" name=\"fDocFieldIsGeneric\" value=\"" . $oDocField->getIsGeneric() . "\">\n";
         }
         
         $sToRender .= "</tr>\n";
         $sToRender .= "<tr>\n";
-        $sToRender .= "<td>Has MetaData Lookup: </td><td>" . getHasLookupCheckBox($oDocField) . "</td>\n";
+        $sToRender .= "<td>" . _("Has MetaData Lookup:") . " </td><td>" . getHasLookupCheckBox($oDocField) . "</td>\n";
         $sToRender .= "</tr>\n";
         $sToRender .= "<tr>\n";
         $sToRender .= "</tr>\n";
@@ -93,11 +93,11 @@ function getEditPageSuccess() {
     global $default;
     
     $sToRender .= renderHeading("Edit Document Field");
-    $sToRender .= "<b>Success!</b>\n";
+    $sToRender .= "<b>" . _("Success") . "!</b>\n";
     $sToRender .= "<table>\n";
     $sToRender .= "<br></br>\n";
     $sToRender .= "<tr></tr>\n";
-    $sToRender .= "<tr><td>The Document Field was successfully modified</td></tr>\n";
+    $sToRender .= "<tr><td>" . _("The Document Field was successfully modified") . "</td></tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr>\n";
@@ -114,11 +114,11 @@ function getEditPageFail() {
     global $default;
     
     $sToRender .= renderHeading("Edit Document Field");
-    $sToRender .= "<b>FAILURE!</b>\n";
+    $sToRender .= "<b>" . strtoupper(_("Failure")) . "!</b>\n";
     $sToRender .= "<table>\n";
     $sToRender .= "<br></br>\n";
     $sToRender .= "<tr></tr>\n";
-    $sToRender .= "<tr><td>The Document Field modification Failed!</td></tr>\n";
+    $sToRender .= "<tr><td>" . _("The Document Field modification Failed!") . "</td></tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr>\n";
@@ -192,7 +192,7 @@ function getHasLookupCheckBox($oDocField) {
 function getUpdateButton($oDocField) {
     global $default;
     if (!isset($oDocField)) {
-        return "Please select a Document Field: ";
+        return _("Please select a Document Field:") . " ";
     } else {
         return "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/update.gif\" value=\"submit\" border=\"0\"/></td>\n";
     }

@@ -37,7 +37,7 @@ function getUnitDisplay($iUnitID) {
 		if ($iUnitID != 0) {
 			$oPatternListBox->setSelectedValue($iUnitID);
 		}    
-	    return "<table><tr><td><b>Filter By Unit </b></td><td>" . $oPatternListBox->render() . "</td></tr></table>";
+	    return "<table><tr><td><b>" . _("Filter By Unit") . " </b></td><td>" . $oPatternListBox->render() . "</td></tr></table>";
     }
 }
 
@@ -68,7 +68,7 @@ function getGroups($aUnitIDs) {
 	$default->log->info("groupQuery: $sQuery");	
 				
     $aColumns = array("name", "UnitName", "Edit", "Delete", "Edit Unit");
-    $aColumnNames = array( "Name", "Unit Name", "Edit", "Delete", "Edit Unit");
+    $aColumnNames = array(_("Name"), _("Unit Name"), _("Edit"), _("Delete"), _("Edit Unit"));
     $aColumnTypes = array(1,1,3,3,3);
     $aDBColumnArray = array("groupID");
     $aQueryStringVariableNames = array("fGroupID");
@@ -86,7 +86,7 @@ function getPage($aUnitIDs) {
 	global $default;
 	$sToRender .= renderHeading("Group Management");
 
-	$sToRender .= getAddLink("addGroup", "Add A Group");
+	$sToRender .= getAddLink("addGroup", _("Add A Group"));
 	$sToRender .= getUnitDisplay($aUnitIDs[0]);
 	$sToRender .= getGroups($aUnitIDs);
 	return $sToRender;

@@ -38,7 +38,7 @@ function getEditPage($iDocTypeID) {
     $sToRender .= "<table>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "<td>Document Type Name: </td><td>" . getDocTypeDisplay($oDocType) . "</td>\n";
+    $sToRender .= "<td>" . _("Document Type Name:") . " </td><td>" . getDocTypeDisplay($oDocType) . "</td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "<tr>\n";
     $sToRender .= "</tr>\n";
@@ -76,7 +76,7 @@ function getDetailsPage($iDocTypeID) {
     $sToRender .= "<table>\n";
     $sToRender .= "<tr><td><br></br></td></tr>\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "<td>Document Type Name: </td><td>" . getDocTypeDisplay($oDocType) . "</td>\n";
+    $sToRender .= "<td>" . _("Document Type Name:") . " </td><td>" . getDocTypeDisplay($oDocType) . "</td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "<tr>\n";
     $sToRender .= "<td></td>" . getUpdateButton($oDocType);
@@ -105,20 +105,20 @@ function getMandatoryPage($iDocFieldID,$iDocTypeFieldID) {
     $sToRender .= "<input type=\"hidden\" name=\"fDocTypeID\" value=\"" . $oDocTypeField->iDocumentTypeID . "\">\n" ;
     $sToRender .= "<input type=\"hidden\" name=\"fFieldID\" value=\"" . $oDocTypeField->iFieldID . "\">\n" .
                   $sToRender .= "<br></br>\n";
-    $sToRender .= "<b>Change Mandatory Setting:</b>\n";
+    $sToRender .= "<b>" . _("Change Mandatory Setting:") . "</b>\n";
     $sToRender .= "<table>\n";
     $sToRender .= "<br></br>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "<td>Document Field Name: </td><td>" . $oDocField->getName() . "</td>\n";
+    $sToRender .= "<td>" . _("Document Field Name:") . " </td><td>" . $oDocField->getName() . "</td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "<tr>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "<tr>\n";
     if($oDocTypeField->getIsMandatory() == 1) {
-        $sToRender .= "<td>Is Mandatory:  </td><td><input type=\"checkbox\" name=\"fIsMandatory\" value=\"1\" CHECKED></td><td>\n";
+        $sToRender .= "<td>" . _("Is Mandatory:") . "  </td><td><input type=\"checkbox\" name=\"fIsMandatory\" value=\"1\" CHECKED></td><td>\n";
     } else {
-        $sToRender .= "<td>Is Mandatory:  </td><td><input type=\"checkbox\" name=\"fIsMandatory\" value=\"0\" ></td><td>\n";
+        $sToRender .= "<td>" . _("Is Mandatory:") . "  </td><td><input type=\"checkbox\" name=\"fIsMandatory\" value=\"0\" ></td><td>\n";
     }
 
     $sToRender .= "</tr>\n";
@@ -146,8 +146,8 @@ function getEditPageSuccess() {
 
     $sToRender .= renderHeading("Edit Document Type");
     $sToRender .= "<table>\n";
-    $sToRender .= "<tr><td><b>Success!</b></td></tr>\n";
-    $sToRender .= "<tr><td>The Document Type was successfully modified</td></tr>\n";
+    $sToRender .= "<tr><td><b>" . _("Success") . "!</b></td></tr>\n";
+    $sToRender .= "<tr><td>" . _("The Document Type was successfully modified") . "</td></tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr>\n";
@@ -164,8 +164,8 @@ function getEditPageFail() {
 
     $sToRender .= renderHeading("Edit Document Type");
     $sToRender .= "<table>\n";
-    $sToRender .= "<tr><td><b>Failure!</b></td></tr>\n";
-    $sToRender .= "<tr><td>Document Type modification Failed!</td></tr>\n";
+    $sToRender .= "<tr><td><b>" . strtoupper(_("Failure")) . "!</b></td></tr>\n";
+    $sToRender .= "<tr><td>" . _("Document Type modification Failed!") . "</td></tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr>\n";
@@ -233,7 +233,7 @@ function addSpecificFieldsList($aAllSpecific) {
 function getUpdateButton($oDocType) {
     global $default;
     if (!isset($oDocType)) {
-        return "Please select a Document Type: ";
+        return _("Please select a Document Type") . ": ";
     } else {
         return "<td align = right><input ONCLICK=\"// setActionAndSubmit('" . $_SERVER["PHP_SELF"] ."?fUpdate=1');\" type=\"image\" src =\"$default->graphicsUrl/widgets/update.gif\" border=0 value=\"submit\" /></td>\n";
     }

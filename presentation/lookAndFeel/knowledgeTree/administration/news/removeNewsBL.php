@@ -53,7 +53,7 @@ if (checkSession()) {
     		} else {
     			// delete failed
     			$default->log->error("deleteNewsBL.php DB error deleting dashboard news (" . arrayToString($oDashboardNews) . ")");
-    			$oContent->setHtml(renderErrorMessage("An error occurred while deleting this news item."));
+    			$oContent->setHtml(renderErrorMessage(_("An error occurred while deleting this news item.")));
     			// TODO: incorporate message into another page
     		}	    		
     	} else {
@@ -62,7 +62,7 @@ if (checkSession()) {
     	}
     } else {
     	// no news id, so display an error message
-    	$oContent->setHtml(renderErrorMessage("No news item was selected for deletion"));
+    	$oContent->setHtml(renderErrorMessage(_("No news item was selected for deletion")));
     	// TODO: incorporate message into another page
     }        
 

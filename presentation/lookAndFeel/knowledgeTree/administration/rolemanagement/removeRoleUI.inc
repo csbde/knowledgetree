@@ -30,7 +30,7 @@ function getDeletePage($iRoleID) {
     $oRole = null;
     if (isset($iRoleID)) {
         $oRole = Role::get($iRoleID);
-        $sHeading .= "<b>Are you sure you wish to Remove this Role?:</b>\n";
+        $sHeading .= "<b>" . _("Are you sure you wish to Remove this Role?:") . "</b>\n";
     } else {
         $sHeading .= "Please select a Role:";
     }
@@ -39,7 +39,7 @@ function getDeletePage($iRoleID) {
     $sToRender .= "<table>\n";
     $sToRender .= "<tr><td>$sHeading</td></tr>\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "<td>Role Name: </td><td>" . getRoleDisplay($oRole) . "</td>\n";
+    $sToRender .= "<td>" . _("Role Name:") . " </td><td>" . getRoleDisplay($oRole) . "</td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "<tr>\n";
     $sToRender .= "</tr>\n";
@@ -67,7 +67,7 @@ function getDeleteSuccessPage() {
     $sToRender .= renderHeading("Remove Role");
     $sToRender .= "<TABLE BORDER=\"0\" CELLSPACING=\"2\" CELLPADDING=\"2\">\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "<td><b>Role SuccessFully Removed!</b></td>\n";
+    $sToRender .= "<td><b>" . _("Role SuccessFully Removed!") . "</b></td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr></tr>\n";
@@ -89,11 +89,11 @@ function getDeleteFailPage() {
     $sToRender .= renderHeading("Remove Role");
     $sToRender .= "<TABLE BORDER=\"0\" CELLSPACING=\"2\" CELLPADDING=\"2\">\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "<td><b>Deletion Failed!</b></td>\n";
+    $sToRender .= "<td><b>" . _("Deletion Failed!") . "</b></td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr></tr>\n";
-    $sToRender .= "<tr><td>Please Ensure that The Role has not been assigned to any Folder</td></tr>\n";
+    $sToRender .= "<tr><td>" . _("Please Ensure that The Role has not been assigned to any Folder") . "</td></tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "</tr>\n";

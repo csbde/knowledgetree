@@ -33,8 +33,8 @@ function renderConfirmDocuments($aDocuments) {
 	
 	$sToRender  = renderHeading("Expunge Deleted Documents");
 	$sToRender .= "<table>";
-    $sToRender .= "<tr><td>The documents you have chosen to expunge are listed below.</td></tr>\n";
-    $sToRender .= "<tr><td>Click 'Expunge' to confirm deletion, or 'Cancel' to abort.</td></tr>\n";
+    $sToRender .= "<tr><td>" . _("The documents you have chosen to expunge are listed below.") . "</td></tr>\n";
+    $sToRender .= "<tr><td>" . _("Click 'Expunge' to confirm deletion, or 'Cancel' to abort.") . "</td></tr>\n";
     $sToRender .= "<tr/><tr/>";
 
     // loop through them    
@@ -63,14 +63,14 @@ function renderStatusPage($aSuccessDocuments, $aErrorDocuments) {
 	$sToRender  = renderHeading("Expunge Deleted Documents Status");
 	$sToRender .= "<table>";
 	if (count($aSuccessDocuments) > 0) {
-	    $sToRender .= "<tr><td>The following documents were successfully expunged:</td></tr>\n";
+	    $sToRender .= "<tr><td>" . _("The following documents were successfully expunged:") . "</td></tr>\n";
 	    $sToRender .= "<tr/><tr/>";
 	    for ($i=0; $i<count($aSuccessDocuments); $i++) {
 			$sToRender .= "<tr><td>" . $aSuccessDocuments[$i] . "</td></tr>\n";
 	    }
 	}
 	if (count($aErrorDocuments) > 0) {
-    	$sToRender .= "<tr><td>There were errors restoring the following documents:</td></tr>\n";
+    	$sToRender .= "<tr><td>" . _("There were errors restoring the following documents:") . "</td></tr>\n";
 	    $sToRender .= "<tr/><tr/>";    	
 	    for ($i=0; $i<count($aErrorDocuments); $i++) {    	
     		$sToRender .= "<tr><td>" . $aErrorDocuments[$i] . "</td></tr>\n";

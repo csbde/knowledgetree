@@ -38,7 +38,7 @@ require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 $Center = "<br></br>\n" ;
 $Center .= "<TABLE BORDER=\"0\" CELLSPACING=\"2\" CELLPADDING=\"2\">\n";
 $Center .= "<tr>\n";
-$Center .= "<td>Group SuccessFully Removed!</td>\n";
+$Center .= "<td>" . _("Group successfully removed") . "</td>\n";
 $Center .= "</tr>\n";	
 $Center .= "<tr></tr>\n";
 $Center .= "<tr></tr>\n";

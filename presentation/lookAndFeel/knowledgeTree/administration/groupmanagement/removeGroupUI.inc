@@ -31,7 +31,7 @@ function getDeletePage($iGroupID) {
 	$oGroup = null;
 	if (isset($iGroupID)) {
 		$oGroup = Group::get($iGroupID);
-		$sHeading = "<b>Are you sure you wish to Remove this Group?:</b>\n";
+		$sHeading = "<b>" . _("Are you sure you wish to Remove this Group?:") . "</b>\n";
 	} else {
         $sHeading = "Please select a group: ";
     }
@@ -40,7 +40,7 @@ function getDeletePage($iGroupID) {
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr><td>$sHeading</td></tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>Group Name: " . getGroupDisplay($oGroup) . "</td>\n";
+	$sToRender .= "<td>" . _("Group Name") . ": " . getGroupDisplay($oGroup) . "</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "</tr>\n";
@@ -77,14 +77,14 @@ function getGroupDisplay($oGroup) {
 // show check box
 function getUnitAdminCheckBox($oGroup) {
 	if (isset($oGroup)) {
-		return "Unit Administrator: <input disabled=\"true\" type=\"checkbox\" name=\"fGroupUnitAdmin\" " . ($oGroup->getUnitAdmin() ? "CHECKED " : " ") . " />";
+		return _("Unit Administrator") . ": <input disabled=\"true\" type=\"checkbox\" name=\"fGroupUnitAdmin\" " . ($oGroup->getUnitAdmin() ? "CHECKED " : " ") . " />";
 	}
 }
 
 // show text box
 function getSysAdminCheckBox($oGroup) {
 	if (isset($oGroup)) {
-		return "System Administrator: <input disabled=\"true\" type=\"checkbox\" name=\"fGroupSysAdmin\" " . ($oGroup->getSysAdmin() ? "CHECKED " : " ") . " />";
+		return _("System Administrator") . ": <input disabled=\"true\" type=\"checkbox\" name=\"fGroupSysAdmin\" " . ($oGroup->getSysAdmin() ? "CHECKED " : " ") . " />";
 	}
 }
 

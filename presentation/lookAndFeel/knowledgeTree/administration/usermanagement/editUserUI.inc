@@ -33,9 +33,9 @@ function getEditPage($iUserID) {
 	}
 	$sToRender .= renderHeading("Edit User Properties");
 	$sToRender .= "<table>\n";
-	$sToRender .= "<tr><td>Please select a User: </td></tr>\n";
+	$sToRender .= "<tr><td>" . _("Please select a User") . ": </td></tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>Username: </td><td>" . getUserDisplay($oUser) . "</td>\n";
+	$sToRender .= "<td>" . _("Username") . ": </td><td>" . getUserDisplay($oUser) . "</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "</tr>\n";
@@ -56,7 +56,7 @@ function getUserDetailsPage($iUserID) {
 	$sQuery =  "SELECT * FROM $default->users_table WHERE id = $iUserID";
 	$aDisplayColumns = array( "username","name","email", "mobile", "email_notification", "max_sessions");
 	$aStoreColumns = array( "username","name","email", "mobile", "email_notification", "max_sessions") ;
-	$aColumnNames = array("Username: ","Name: ", "Email Address: ", "Mobile Number: ", "Email Notification: ", "Max Sessions: ");
+	$aColumnNames = array(_("Username") . ": ", _("Name") . ": ", _("Email Address") . ": ", _("Mobile Number") . ": ", _("Email Notification") . ": ", _("Max Sessions") . ": ");
 	$aDisplayColumnTypes = array(1,1,1,1,2,1,1,1,1);
 	$aDatabaseColumnTypes = array(1,1,1,1,2,1,1,1,1);
 	
@@ -91,9 +91,9 @@ function getEditPageSuccess() {
 			
 	$sToRender .= renderHeading("Edit User Properties");
 	$sToRender .= "<table>\n";
-	$sToRender .= "<tr><td><b>Success!</b></td></tr>\n";
+	$sToRender .= "<tr><td><b>" . _("Success") . "!</b></td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
-	$sToRender .= "<tr><td>The User was successfully modified</td></tr>\n";
+	$sToRender .= "<tr><td>" . _("The User was successfully modified") . "/td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
@@ -112,9 +112,9 @@ function getEditPageFail() {
 			
 	$sToRender .= renderHeading("Edit User Properties");
 	$sToRender .= "<table>\n";
-    $sToRender .= "<tr><td><b>Failed!</b></td></tr>\n";
+	$sToRender .= "<tr><td><b>" . strtoupper(_("Failure")) . "!</b></td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
-	$sToRender .= "<tr><td>User modification Failed!</td></tr>\n";
+	$sToRender .= "<tr><td>" . _("User modification Failed!") . "</td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";

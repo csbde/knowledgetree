@@ -33,7 +33,7 @@ function getQuickLinks() {
 				"ORDER BY name";
 	
     $aColumns = array("LinkName", "LinkURL", "LinkRank", "Edit", "Delete");
-    $aColumnNames = array("Link Name","URL", "Rank", "Edit", "Delete");
+    $aColumnNames = array(_("Link Name"),_("URL"), _("Rank"), _("Edit"), _("Delete"));
     $aColumnTypes = array(1,1,1,3,3);
     $aDBColumnArray = array("LinkID");
     $aQueryStringVariableNames = array("fLinkID");

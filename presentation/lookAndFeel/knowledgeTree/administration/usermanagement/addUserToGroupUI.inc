@@ -36,9 +36,9 @@ function getPage($iUserID, $iGroupID) {
 	
 	if (isset($iGroupID)) {
 		$oGroup = Group::get($iGroupID);
-		$heading = "<tr><td colspan=\"2\">Please confirm your choice by clicking 'Assign', or 'Cancel' to abort.</td></tr>\n";		
+		$heading = "<tr><td colspan=\"2\">" . _("Please confirm your choice by clicking 'Assign', or 'Cancel' to abort.") . "</td></tr>\n";		
 	} else {
-		$heading = "<tr><td colspan=\"2\">Please choose the Group to assign to this user.</td></tr>\n";
+		$heading = "<tr><td colspan=\"2\">" . _("Please choose the Group to assign to this user.") . "</td></tr>\n";
 	}
 	$sQueryString = "&fUserID=$iUserID";
     
@@ -47,11 +47,11 @@ function getPage($iUserID, $iGroupID) {
 	$sToRender .= $heading;
 	$sToRender .= "<tr>\n";
 	$sToRender .= "</tr>\n";	
-	$sToRender .= "<td>User Name: </td><td><input type=hidden id=\"fUserID\" name=\"fUserID\" value=\"" . $oUser->getID() . "\">" .  $oUser->getName() . "</a></td>\n";
+	$sToRender .= "<td>" . _("User Name") . ": </td><td><input type=hidden id=\"fUserID\" name=\"fUserID\" value=\"" . $oUser->getID() . "\">" .  $oUser->getName() . "</a></td>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>Group Name: </td><td>" . getGroupDisplay($oGroup) . "</td>\n";
+	$sToRender .= "<td>" . _("Group Name") . ": </td><td>" . getGroupDisplay($oGroup) . "</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "</tr>\n";
@@ -72,8 +72,8 @@ function getPageNotSelected($sQueryString) {
 
     $sToRender .= renderHeading("Add User to Group");
 	$sToRender .= "<table>\n";
-	$sToRender .= "<tr><td><b>Sorry, Selection Failed</b></td></tr>\n";
-	$sToRender .= "<tr><td>Please select Group</td></tr>\n";
+	$sToRender .= "<tr><td><b>" . _("Sorry, Selection Failed") . "</b></td></tr>\n";
+	$sToRender .= "<tr><td>" . _("Please select a Group") . "</td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
@@ -91,8 +91,8 @@ function getPageSuccess($sQueryString) {
 
     $sToRender .= renderHeading("Add User to Group");            
 	$sToRender .= "<table>\n";
-	$sToRender .= "<tr><td><b>Success!</b></td></tr>\n";
-	$sToRender .= "<tr><td>The User was successfully assigned to the specified Group</td></tr>\n";
+	$sToRender .= "<tr><td><b>" . _("Success") . "!</b></td></tr>\n";
+	$sToRender .= "<tr><td>" . _("The User was successfully assigned to the specified Group") . "</td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
@@ -110,8 +110,8 @@ function getPageFail($sQueryString) {
 		
     $sToRender .= "<table border=\"0\" width=\"600\">" . renderHeading("Add User to Group");
     $sToRender .= "<table>\n";
-	$sToRender .= "<tr><td><b>Failed!</b></td></tr>\n";
-	$sToRender .= "<tr><td>The User already belongs to the specified Group</td></tr>\n";
+	$sToRender .= "<tr><td><b>" . strtoupper(_("Failure")) . "!</b></td></tr>\n";
+	$sToRender .= "<tr><td>" . _("The User already belongs to the specified Group") . "</td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";

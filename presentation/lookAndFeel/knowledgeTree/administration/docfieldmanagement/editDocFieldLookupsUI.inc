@@ -32,7 +32,7 @@ function getLookupNotSet() {
     $sToRender .= "<table>\n";    
     $sToRender .= "<tr>\n";
     $sToRender .= "<td>\n";
-    $sToRender .= "Document Field is not Lookup enabled.";
+    $sToRender .= _("Document Field is not Lookup enabled.");
     $sToRender .= "</td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "<td></td>\n";
@@ -54,7 +54,7 @@ function getPage($iUserID) {
     if (isset($iUserID)) {
         $oUser = User::get($iUserID);
     } else {
-        $heading = "<tr><td>Please select a User:</td></tr>\n";
+        $heading = "<tr><td>" . _("Please select a User") . ":</td></tr>\n";
     }
 
     $sToRender .= renderHeading("Edit User Groups");
@@ -62,7 +62,7 @@ function getPage($iUserID) {
     $sToRender .= $heading;
     $sToRender .= "<tr>\n";
     $sToRender .= "</tr>\n";
-    $sToRender .= "<td>User Name: " . getUserDisplay($oUser) . "</td>\n";
+    $sToRender .= "<td>" . _("User Name") . ": " . getUserDisplay($oUser) . "</td>\n";
     $sToRender .= "<tr>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "<tr>\n";
@@ -82,19 +82,19 @@ function getGroupPage($fDocFieldID) {
     
     $oDocField = DocumentField::get($fDocFieldID);    
            
-    $LookupDisplay .= "<b>Current Lookups</b><br>\n";	
+    $LookupDisplay .= "<b>" . _("Current Lookups") . "</b><br>\n";	
 	$sQuery = 	" Select * " .	
 				" From " . $default->metadata_table .
 				" WHERE document_field_id=" . $fDocFieldID;        
 
  	$aColumns = array("name");
-    $aColumnNames = array("Lookup name");
+    $aColumnNames = array(_("Lookup name"));
     $aColumnTypes = array(1);
     $aDBColumnArray = array("id");
     $aQueryStringVariableNames = array("fDocFieldLookupID");
     	    
     $oSearchResults = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnNames, "100%", $aHyperLinkURL,$aDBColumnArray,$aQueryStringVariableNames);
-    $oSearchResults->setEmptyTableMessage("<font color=\"red\">You must enter at least one value!</font>");   
+    $oSearchResults->setEmptyTableMessage("<font color=\"red\">" . _("You must enter at least one value!") . "</font>");   
 	$LookupDisplay .= $oSearchResults->render() ;
 
 	$sFontTag  .= "<font face=\"Arial\" color=\"#0066cc\">";
@@ -104,7 +104,7 @@ function getGroupPage($fDocFieldID) {
     $sToRender .= renderHeading("Edit Document Field Lookups");
 	
     $sToRender .= "<table width=\"600\" border=0>";
-    $sToRender .= "<tr><td width=100%><br><b>Field Name: &nbsp;</b>" . $oDocField->getName() . "<br><br></td><td>";
+    $sToRender .= "<tr><td width=100%><br><b>" . _("Field Name") . ": &nbsp;</b>" . $oDocField->getName() . "<br><br></td><td>";
     $sToRender .= "<a href=\"$default->rootUrl/control.php?action=listDocFields\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a>";
     
     $sToRender .= "</td></tr>\n";
@@ -122,7 +122,7 @@ function getGroupPage($fDocFieldID) {
     $sToRender .= "<table border=0 cellspacing=1>\n";
     $sToRender .= "<tr><td><b>Options</b></td></tr>";
     $sToRender .= "<tr><td width=200 bgcolor=$sBgColor>";
-    $sToRender .= "<br><a href=\"$default->rootUrl/control.php?action=addMetaDataForField&fDocFieldID=$fDocFieldID\">&nbsp;&nbsp;Add Document Field Lookups</a><br><br>";
+    $sToRender .= "<br><a href=\"$default->rootUrl/control.php?action=addMetaDataForField&fDocFieldID=$fDocFieldID\">&nbsp;&nbsp;" . _("Add Document Field Lookups") . "</a><br><br>";
     $sToRender .= "</td><td>"; 	
     $sToRender .= "</td></tr>";
 	
@@ -130,12 +130,12 @@ function getGroupPage($fDocFieldID) {
 	if ($iDocFieldLookupCount > 0) {
 		
 		$sToRender .= "<tr><td width=200 bgcolor=$sBgColor>";
-	    $sToRender .= "<br><a href=\"$default->rootUrl/control.php?action=editMetadataForField&fDocFieldID=$fDocFieldID\">&nbsp;&nbsp;Edit Document Field Lookups</a><br><br>";
+	    $sToRender .= "<br><a href=\"$default->rootUrl/control.php?action=editMetadataForField&fDocFieldID=$fDocFieldID\">&nbsp;&nbsp;" . _("Edit Document Field Lookups") . "</a><br><br>";
 	    $sToRender .= "</td><td>"; 	
 	    $sToRender .= "</td></tr>";
 	    
 	    $sToRender .= "<tr><td width=200 bgcolor=$sBgColor>";
-	    $sToRender .= "<br><a href=\"$default->rootUrl/control.php?action=removeMetaDataFromField&fDocFieldID=$fDocFieldID\">&nbsp;&nbsp;Remove Document Field Lookups</a><br><br>";
+	    $sToRender .= "<br><a href=\"$default->rootUrl/control.php?action=removeMetaDataFromField&fDocFieldID=$fDocFieldID\">&nbsp;&nbsp;" . _("Remove Document Field Lookups") . "</a><br><br>";
 	    $sToRender .= "</td><td>";    
 	    $sToRender .= "</td></tr>";
 	}
@@ -156,13 +156,13 @@ function getDeleteConfirmedPage($iUserID,$fGroupID) {
     // change headings if User selected
     if (isset($iUserID)) {
         $oUser = User::get($iUserID);
-        $heading = "<tr><td>Are you sure you wish to remove this user from the Group?</td></tr>";
+        $heading = "<tr><td>" . _("Are you sure you wish to remove this user from the Group?") . "</td></tr>";
     }
 
     // change headings if User selected
     if (isset($fGroupID)) {
         $oGroup = Group::get($fGroupID);
-        $Groupdisplay = "<td>Group Name: " . $oGroup->getName() . "</td>\n";
+        $Groupdisplay = "<td>" . _("Group Name") . ": " . $oGroup->getName() . "</td>\n";
     }
 
     $sToRender .= "<table width=\"600\">" . renderHeading("Edit User Groups") . "</table>";
@@ -170,7 +170,7 @@ function getDeleteConfirmedPage($iUserID,$fGroupID) {
     $sToRender .= "<tr>\n";
     $sToRender .= $heading;
     $sToRender .= "</tr>\n";
-    $sToRender .= "<td>User Name: " . getUserDisplay($oUser) . "</td>\n";
+    $sToRender .= "<td>". _("User Name") . ": " . getUserDisplay($oUser) . "</td>\n";
     $sToRender .= "<tr>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "<tr>\n";
@@ -194,7 +194,7 @@ function getPageFail() {
 
     $sToRender .= "<table width=\"600\">" . renderHeading("Edit User Groups") . "</table>";
     $sToRender .= "<table>\n";
-    $sToRender .= "<tr><td><b>Sorry, Removal Failed</b></td></tr>\n";
+    $sToRender .= "<tr><td><b>" . _("Sorry, Removal Failed") . "</b></td></tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "<tr>\n";
@@ -215,9 +215,9 @@ function getPageSuccess() {
 
     $sToRender .= "<table width=\"600\">" . renderHeading("Edit User Groups") . "</table>";
     $sToRender .= "<table>\n";
-    $sToRender .= "<tr><td><b>Success!</b></td></tr>\n";
+    $sToRender .= "<tr><td><b>" . _("Success") . "!</b></td></tr>\n";
     $sToRender .= "<tr></tr>\n";
-    $sToRender .= "<tr><td>The User was successfully removed from the Group</td></tr>\n";
+    $sToRender .= "<tr><td>" . _("The User was successfully removed from the Group") . "</td></tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr>\n";

@@ -35,9 +35,9 @@ function getSelectFieldPage($iDocFieldID) {
 	
     $sToRender .= renderHeading("Remove Document Field Lookup");
 	$sToRender .= "<table>\n";
-	$sToRender .= "<tr>Please Select a Field</tr>\n";
+	$sToRender .= "<tr>" . _("Please Select a Field") . "</tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>Document Field: </td><td>" . getDocFieldDisplay($oDocField) . "</td>\n";
+	$sToRender .= "<td>" . _("Document Field") . ": </td><td>" . getDocFieldDisplay($oDocField) . "</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "</tr>\n";
@@ -64,14 +64,14 @@ function getSelectMetaDataPage($iDocFieldID, $iMetaDataID) {
 		$oMetaData = MetaData::get($iMetaDataID);
 	}
 	
-    $sToRender .= renderHeading("Remove Document Field Lookup");
+    $sToRender .= renderHeading(_("Remove Document Field Lookup"));
 	$sToRender .= "<table>\n";
-	$sToRender .= "<tr>Please Select the Lookup value you wish to remove</tr>\n";
+	$sToRender .= "<tr>" . _("Please Select the Lookup value you wish to remove") . "</tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>Document Field: </td><td>" . getDocFieldDisplay($oDocField) . "</td>\n";
+	$sToRender .= "<td>" . _("Document Field") . ": </td><td>" . getDocFieldDisplay($oDocField) . "</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>Lookup: </td><td>" . getMetaDataDisplay($oMetaData,$iDocFieldID) . "</td>\n";
+	$sToRender .= "<td>" . _("Lookup") . ": </td><td>" . getMetaDataDisplay($oMetaData,$iDocFieldID) . "</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr><td></td>" . getCancelButton($oDocField);
 	$sToRender .= "</tr>\n";
@@ -97,14 +97,14 @@ function getDeleteConfirmedPage($iDocFieldID, $iMetaDataID) {
 	
     $sToRender .= renderHeading("Remove Document Field Lookup");
 	$sToRender .= "<table border=0>\n";
-	$sToRender .= "<tr><td colspan=\"2\">Are you sure you wish to Remove the specified lookup from the Field?</td></tr>\n";
+	$sToRender .= "<tr><td colspan=\"2\">" . _("Are you sure you wish to Remove the specified lookup from the Field?") . "</td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>Document Field: </td><td>" . getDocFieldDisplay($oDocField) . "</td>\n";
+	$sToRender .= "<td>" . _("Document Field") . ": </td><td>" . getDocFieldDisplay($oDocField) . "</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>Lookup: </td><td>" . getMetaDataDisplay($oMetaData,$iDocFieldID) . "</td>\n";
+	$sToRender .= "<td>" . _("Lookup") . ": </td><td>" . getMetaDataDisplay($oMetaData,$iDocFieldID) . "</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
@@ -123,8 +123,8 @@ function getSuccessPage($iDocFieldID = null) {
 			
     $sToRender .= renderHeading("Remove Document Field Lookup");
 	$sToRender .= "<table>\n";
-	$sToRender .= "<tr><td><b>Success!</b></td></tr>\n";
-	$sToRender .= "<tr><td>The lookup was successfully deleted</td></tr>\n";
+	$sToRender .= "<tr><td><b>" . _("Success") . "!</b></td></tr>\n";
+	$sToRender .= "<tr><td>" . _("The lookup was successfully deleted") . "</td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
@@ -141,8 +141,8 @@ function getFailPage($iDocFieldID = null) {
 			
     $sToRender .= renderHeading("Remove Document Field Lookup");
 	$sToRender .= "<table>\n";
-	$sToRender .= "<tr><td><b>FAILURE!</b></td></tr>\n";
-	$sToRender .= "<tr><td>The lookup was not deleted</td></tr>\n";
+	$sToRender .= "<tr><td><b>" . strtoupper(_("Failure")) . "!</b></td></tr>\n";
+	$sToRender .= "<tr><td>" . _("The lookup was not deleted") . "</td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
@@ -157,7 +157,7 @@ function getFailPage($iDocFieldID = null) {
 function getDeleteButton($oDocField) {
 	global $default;
 	if (!isset($oDocField)) {
-		return "Please select a Document Field: ";
+		return _("Please select a Document Field:");
 	} else {
 		return "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/delete.gif\" value=\"submit\" border=\"0\"/></td>\n";
 	}

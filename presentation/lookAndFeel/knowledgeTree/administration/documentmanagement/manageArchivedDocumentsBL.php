@@ -56,12 +56,12 @@ if (checkSession()) {
 				// display the documents
 				$oContent->setHtml(renderArchivedDocumentsResultsPage($aDocuments));
 			} else {
-				$oContent->setHtml(getSearchPage($fSearchString, explode(",",$sMetaTagIDs), "Archived Documents Search", true));				
-				$sErrorMessage = "No documents matched your search criteria";                              
+				$oContent->setHtml(getSearchPage($fSearchString, explode(",",$sMetaTagIDs), _("Archived Documents Search"), true));				
+				$sErrorMessage = _("No documents matched your search criteria");                              
 			}				
 		} else {
-			$oContent->setHtml(getSearchPage($fSearchString, array(), "Archived Documents Search", true));
-			$sErrorMessage = "Please select at least one criteria to search by";
+			$oContent->setHtml(getSearchPage($fSearchString, array(), _("Archived Documents Search"), true));
+			$sErrorMessage = _("Please select at least one criteria to search by");
 		}
 	} else if ($fDocumentIDs) {
 		// got some documents to restore
@@ -95,10 +95,10 @@ if (checkSession()) {
 			        		// FIXME: refactor notification
 			        		// TODO: check email notification and valid email address
 		        			$oRequestUser = User::get($aRequests[$j]->getRequestUserID());
-							$sBody = "The document '" . generateControllerLink("viewDocument", "fDocumentID=" . $aDocuments[$i]->getID(), $aDocuments[$i]->getName()) . "'"; 
-							$sBody .= " has been restored from the archive.";								
+							$sBody = _("The document") . " '" . generateControllerLink("viewDocument", "fDocumentID=" . $aDocuments[$i]->getID(), $aDocuments[$i]->getName()) . "'"; 
+							$sBody .= " " . _("has been restored from the archive.")."";								
 							$oEmail = & new Email();
-							if ($oEmail->send($oRequestUser->getEmail(), "Archived Document Restored", $sBody)) {
+							if ($oEmail->send($oRequestUser->getEmail(), _("Archived Document Restored"), $sBody)) {
 		        				$default->log->info("manageArchivedDocumentsBL.php sent email to " . $oRequestUser->getEmail());
 		        				// now delete the request
 		        				$iRequestID = $aRequests[$j]->getID();
@@ -129,7 +129,7 @@ if (checkSession()) {
 		}
 	} else {	
 		// display the advanced search form, but specify that only archived documents must be returned
-		$oContent->setHtml(getSearchPage("", array(), "Archived Documents Search", true));
+		$oContent->setHtml(getSearchPage("", array(), _("Archived Documents Search"), true));
 	}
 
 	// build the page

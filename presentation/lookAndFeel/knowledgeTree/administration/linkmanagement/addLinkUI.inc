@@ -29,7 +29,7 @@ function getPage() {
 
 	global $default;
 
-	$aDisplayRowNames = array("Name:", "URL: ", "Rank:(1-5) ");
+	$aDisplayRowNames = array(_("Name") . ": ", _("URL") . ": ", _("Rank") . "(1-5): ");
 	$aParameterNumbers = array(0,1,2);
 	$aDisplayColumnTypes = array(1,1,1);
 	$aRequired = array(1,1,1);
@@ -61,7 +61,7 @@ function getAddPageFail() {
 			
     $sToRender .= renderHeading("Add QuickLink");
 	$sToRender .= "<table>\n";
-	$sToRender .= "<tr><td><b>Addition Unsuccessful</b></td></tr>\n";
+	$sToRender .= "<tr><td><b>" . _("Addition Unsuccessful") . "</b></td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";

@@ -28,7 +28,7 @@
 function getNoUnitPage($fGroupID){
 	global $default;
 	$sToRender .= "<table><tr><td>\n";
-	$sToRender .= "<br>Group does not belong to an existing Unit.\n";
+	$sToRender .= "<br>" . _("Group does not belong to an existing Unit.") . "\n";
 	$sToRender .= "</td><td></td></tr><tr><td></td><td>\n";
 	$sToRender .= "<a href=\"$default->rootUrl/control.php?action=editGroupUnit&fGroupID=$fGroupID\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a>\n";
 	$sToRender .= "</td></tr></table>\n";
@@ -45,15 +45,15 @@ function getPage($iGroupID, $iUnitID) {
 	// change headings if group selected
 	if (isset($iGroupID)) {
 		$oGroup = Group::get($iGroupID);
-		$heading = "<tr><td>Are you sure you wish to remove the Group from the Unit?</td> </tr>\n";
+		$heading = "<tr><td>" . _("Are you sure you wish to remove the Group from the Unit?") . "</td> </tr>\n";
 	}else{
-		$heading = "<tr><td>Please select a Group:</td></tr>\n";
+		$heading = "<tr><td>" . _("Please select a Group") . ":</td></tr>\n";
 	}
 	
 	// when unitid is gotten show the name
 	if (isset($iUnitID)) {
 		$oUnit = Unit::get($iUnitID);
-		$unitdisplay = "<td>Unit Name: " . getUnitDisplay($oUnit) . "</td>\n";
+		$unitdisplay = "<td>" . _("Unit Name") . ": " . getUnitDisplay($oUnit) . "</td>\n";
 		
 	}
 	else{
@@ -66,7 +66,7 @@ function getPage($iGroupID, $iUnitID) {
 	$sToRender .= "<br>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "</tr>\n";
-	$sToRender .= "<td>Group Name: " . getGroupDisplay($oGroup) . "</td>\n";
+	$sToRender .= "<td>" . _("Group Name") . ": " . getGroupDisplay($oGroup) . "</td>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
@@ -100,7 +100,7 @@ function getPageFail($iGroupID) {
 		
 	$sToRender .= renderHeading("Remove Group From Unit");
 	$sToRender .= "<table>\n";
-	$sToRender .= "<tr><td><b>Sorry, Removal Failed</b></td></tr>\n";
+	$sToRender .= "<tr><td><b>" . _("Sorry, Removal Failed") . "</b></td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
@@ -120,9 +120,9 @@ function getPageNotSelected() {
 			
 	$sToRender .= renderHeading("Remove Group From Unit");
 	$sToRender .= "<table>\n";
-	$sToRender .= "<tr><td><b>Sorry, Selection Failed</b></td></tr>\n";
+	$sToRender .= "<tr><td><b>" . _("Sorry, Selection Failed") . "</b></td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
-	$sToRender .= "<tr><td>Please select a Group</td></tr>\n";
+	$sToRender .= "<tr><td>" . _("Please select a Group") . "</td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
@@ -139,9 +139,9 @@ function getPageSuccess($iGroupID) {
 			
 	$sToRender .= renderHeading("Remove Group From Unit");
 	$sToRender .= "<table>\n";
-	$sToRender .= "<tr><td><b>Success!</b></td></tr>\n";
+	$sToRender .= "<tr><td><b>" . _("Success") . "!</b></td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
-	$sToRender .= "<tr><td>The Group was successfully removed from the Unit</td></tr>\n";
+	$sToRender .= "<tr><td>" . _("The Group was successfully removed from the Unit") . "</td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";

@@ -31,7 +31,7 @@ function getOrganisationDisplay($fOrganisationID) {
 	if ($fOrganisationID != 0) {
 		$oPatternListBox->setSelectedValue($fOrganisationID);
 	}
-	return "<table><tr><td><b>Filter By Organisation </b></td><td>" . $oPatternListBox->render() . "</td></tr></table>";	        
+	return "<table><tr><td><b>" . _("Filter By Organisation") . " </b></td><td>" . $oPatternListBox->render() . "</td></tr></table>";	        
 }
 
 function getUnits($fOrganisationID) {
@@ -47,7 +47,7 @@ function getUnits($fOrganisationID) {
 				"ORDER BY units_lookup.name";
 		
     $aColumns = array("name", "OrgName", "Edit", "Delete");//, "Edit Organisations");
-    $aColumnNames = array("Unit Name", "Organisation", "Edit", "Delete");//, "Edit Organisations");
+    $aColumnNames = array(_("Unit Name"), _("Organisation"), _("Edit"), _("Delete"));//, "Edit Organisations");
     $aColumnTypes = array(1,1,3,3);//,3);
     $aDBColumnArray = array("unitID");
     $aQueryStringVariableNames = array("fUnitID");
@@ -65,7 +65,7 @@ function getPage($fOrganisationID) {
 	global $default;
 	$sToRender .= renderHeading("Unit Management");
 
-	$sToRender .= getAddLink("addUnit", "Add A Unit");
+	$sToRender .= getAddLink("addUnit", _("Add A Unit"));
 	//$sToRender .= getOrganisationDisplay($fOrganisationID);
 	$sToRender .= getUnits($fOrganisationID);
 	return $sToRender;

@@ -59,7 +59,7 @@ function getOrgPage($fUnitID = null){
 	    $sToRender .= "<table width=100% border=0>\n";
 	    $sToRender .= "<tr>\n";
 	    $sToRender .= "<td><b>\n";
-	    $sToRender .= "Current Organisation\n";
+	    $sToRender .= _("Current Organisation") . "\n";
 	    $sToRender .= "</b></td>\n";
 	    $sToRender .= "</tr>\n";    
 	    $sToRender .= "<tr>\n";
@@ -88,15 +88,15 @@ function getUnitOrgEdit($bNoOrg, $fUnitID = null){
 	$sBgColor = "#F5F6EE";
 	       
     $sToRender .= "<table border=0 cellspacing=1>\n";
-    $sToRender .= "  <tr><td><b>Options</b></td></tr>";
+    $sToRender .= "  <tr><td><b>" . _("Options") . "</b></td></tr>";
     if ($bNoOrg) {
 	    $sToRender .= "  <tr><td bgcolor=$sBgColor>";
-	    $sToRender .= "  <br>&nbsp;&nbsp;<a href=\"$default->rootUrl/control.php?action=addUnitToOrg&fUnitID=" . $fUnitID . "\">Add Unit to an Organisation</a><br><br>";
+	    $sToRender .= "  <br>&nbsp;&nbsp;<a href=\"$default->rootUrl/control.php?action=addUnitToOrg&fUnitID=" . $fUnitID . "\">" . _("Add Unit to an Organisation") . "</a><br><br>";
 	    $sToRender .= "  </td><td>";	    
 	    $sToRender .= "  </td></tr>";
     } else {
 	    $sToRender .= "  <tr><td bgcolor=$sBgColor>";
-	    $sToRender .= "  <br>&nbsp;&nbsp;<a href=\"$default->rootUrl/control.php?action=removeUnitFromOrg&fUnitID=" . $fUnitID  . "\">Remove Unit from an Organisation</a><br><br>";
+	    $sToRender .= "  <br>&nbsp;&nbsp;<a href=\"$default->rootUrl/control.php?action=removeUnitFromOrg&fUnitID=" . $fUnitID  . "\">" . _("Remove Unit from an Organisation") . "</a><br><br>";
 	    $sToRender .= "  </td><td>";	    
 	    $sToRender .= "  </td></tr>";
     }
@@ -116,7 +116,7 @@ function getPage($iUserID) {
     if (isset($iUserID)) {
         $oUser = User::get($iUserID);
     } else {
-        $heading = "<tr><td>Please select a User:</td></tr>\n";
+        $heading = "<tr><td>" . _("Please select a User") . ":</td></tr>\n";
     }
 
     $sToRender .= renderHeading("Edit User Groups");
@@ -124,7 +124,7 @@ function getPage($iUserID) {
     $sToRender .= $heading;
     $sToRender .= "<tr>\n";
     $sToRender .= "</tr>\n";
-    $sToRender .= "<td>User Name: " . getUserDisplay($oUser) . "</td>\n";
+    $sToRender .= "<td>" . _("User Name") . ": " . getUserDisplay($oUser) . "</td>\n";
     $sToRender .= "<tr>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "<tr>\n";
@@ -142,7 +142,7 @@ function getPageFail() {
 
     $sToRender .= "<table width=\"600\">" . renderHeading("Edit User Groups") . "</table>";
     $sToRender .= "<table>\n";
-    $sToRender .= "<tr><td><b>Sorry, Removal Failed</b></td></tr>\n";
+    $sToRender .= "<tr><td><b>" . _("Sorry, Removal Failed") . "</b></td></tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "<tr>\n";
@@ -161,9 +161,9 @@ function getPageSuccess() {
 
     $sToRender .= "<table width=\"600\">" . renderHeading("Edit User Groups") . "</table>";
     $sToRender .= "<table>\n";
-    $sToRender .= "<tr><td><b>Success!</b></td></tr>\n";
+    $sToRender .= "<tr><td><b>" . _("Success") . "!</b></td></tr>\n";
     $sToRender .= "<tr></tr>\n";
-    $sToRender .= "<tr><td>The User was successfully removed from the Group</td></tr>\n";
+    $sToRender .= "<tr><td>" . _("The User was successfully removed from the Group") . "</td></tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr>\n";

@@ -36,7 +36,7 @@ if(checkSession()) {
     $Center .= renderHeading("Edit Role");
     $Center .= "<TABLE BORDER=\"0\" CELLSPACING=\"2\" CELLPADDING=\"2\">\n";
     $Center .= "<tr>\n";
-    $Center .= "<td>Update Successful!</td>\n";
+    $Center .= "<td>" . _("Update Successful!") . "</td>\n";
     $Center .= "</tr>\n";
     $Center .= "<tr></tr>\n";
     $Center .= "<tr></tr>\n";
