@@ -55,7 +55,8 @@ if (checkSession()) {
 
 
                         $oPatternCustom = & new PatternCustom();
-                        $oPatternCustom->setHtml(getDocumentEmailPage($oDocument));
+                        $oUserArray = User::getList();
+                        $oPatternCustom->setHtml(getDocumentEmailPage($oDocument,$oUserArray));
                         $main->setErrorMessage("The email address you entered was invalid.  Please enter<br> " .
                                                "an email address of the form someone@somewhere.some postfix");
                         $main->setFormAction($_SERVER["PHP_SELF"] . "?fDocumentID=$fDocumentID&fSendEmail=1");
@@ -67,9 +68,10 @@ if (checkSession()) {
                 //ask for an email address
                 require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
                 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
-
+				
+				$oUserArray = User::getList();
                 $oPatternCustom = & new PatternCustom();
-                $oPatternCustom->setHtml(getDocumentEmailPage($oDocument));
+                $oPatternCustom->setHtml(getDocumentEmailPage($oDocument,$oUserArray));
                 $main->setCentralPayload($oPatternCustom);
                 $main->setFormAction($_SERVER["PHP_SELF"] . "?fDocumentID=$fDocumentID&fSendEmail=1");
                 $main->render();
