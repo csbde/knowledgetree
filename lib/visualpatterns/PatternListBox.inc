@@ -50,10 +50,10 @@ class PatternListBox {
 	*/
 	function & render() {
 		$sql = new Owl_DB();
-		$sql->query("SELECT $this->sDisplayColumn AS display, $this->sValueColumn AS value FROM $this->sTableName ORDER BY $this->sDisplayColumn " . ($this->bOrderAsc ? "ASC" : "DESC"));
-		$sToRender = "<SELECT NAME = \"$this->sName\"><br>";
+		$sql->query("SELECT DISTINCT $this->sDisplayColumn AS display, $this->sValueColumn AS value FROM $this->sTableName ORDER BY $this->sDisplayColumn " . ($this->bOrderAsc ? "ASC" : "DESC"));
+		$sToRender = "<SELECT NAME = \"$this->sSelectName\">\n";
 		while ($sql->next_record()) {
-			$sToRender .= "<OPTION value=\"" . $sql->f("value") . "\">" . $sql->f("display") . "</OPTION><br>";
+			$sToRender .= "<OPTION value=\"" . $sql->f("value") . "\">" . $sql->f("display") . "</OPTION>\n";
 		}
 		$sToRender .= "</SELECT><br><br>";
 		return $sToRender;
