@@ -59,7 +59,8 @@ function getEditPage($iFolderCollaborationID, $iFolderID, $iGroupID, $iUserID, $
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>Sequence</td><td><input type=\"text\" name=\"fSequenceNumber\" value=\"$iSequenceNumber\" /></td>\n";
 	$sToRender .= "</tr>";			
-	$sToRender .= "<td><table><tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/update.gif\" border=\"0\"/></td><td><a href=\"$default->rootUrl/control.php?action=editFolder&fFolderID=" . $iFolderID . "\" /></a></td></tr></table>\n";
+	$sToRender .= "<tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/update.gif\" border=\"0\"/></td>";
+	$sToRender .= "<td>" . generateControllerLink("editFolder", "fFolderID=$iFolderID&fShowSection=folderRouting", "<img border=\"0\" src=\"$default->graphicsUrl/widgets/cancel.gif\"/>")  . "</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
 	
@@ -83,27 +84,4 @@ function getRoleDropDown($iRoleID) {
 	
 	return $oPatternListBox->render();
 }
-
-/*function getAddPage() {
-	global $default;
-	return "<table border=0>\n" .
-			"<caption><b>Edit folder routing information</b></caption>\n" .
-			"<tr>\n" .
-			"<td><b>Group</b></td><td>". getGroupDropDown() ."</td>\n" .
-			"</tr>\n" .	
-			"<tr>\n" .
-			"<td><b>Role</b></td><td>".getRoleDropDown()."</td>\n" .
-			"</tr>\n" .
-			"<tr>\n" .
-			"<tr>\n" .
-			"<td><b>Seq. no.</b></td><td><input type=\"text\" name=\"fSequenceNumber\" size=\"5\" value=1 /></td>\n" .
-			"</tr>\n" .
-			"<tr>\n" .
-			"<td colspan=\"2\">&nbsp</td>\n" .
-			"</tr>\n" .
-			"<tr>\n" .
-			"<td><b><input type=\"image\" src=\"$default->graphicsUrl/widgets/update.gif\" border=\"0\"/></b></td><td><a href=\"$default->rootUrl/control.php?action=editFolder&fFolderID=$iFolderID \"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\" /></a></td>\n" .
-			"</tr>\n" .
-			"</table>\n";
-}*/
 ?>
