@@ -32,10 +32,11 @@ class DependantDocumentTemplate {
 	* @param 	Document field data type
 	*
 	*/
-	function DependantDocumentTemplate($sNewDocumentTitle, $iNewDefaultUserID, $iNewTemplateDocumentID, $iNewGroupFolderApprovalLinkID) {
+	function DependantDocumentTemplate($sNewDocumentTitle, $iNewDefaultUserID, $iNewGroupFolderApprovalLinkID, $iNewTemplateDocumentID = null) {
 		//object not created yet
 		global $default;
-		$this->iID = -1;
+		$this->iId = -1;
+		$this->sDocumentTitle = $sNewDocumentTitle;
 		$this->iDefaultUserID = $iNewDefaultUserID;
 		$this->iTemplateDocumentID = $iNewTemplateDocumentID;
 		$this->iGroupFolderApprovalLinkID = $iNewGroupFolderApprovalLinkID;
@@ -116,10 +117,10 @@ class DependantDocumentTemplate {
 	*/
 	function create() {
 		global $default, $lang_err_database, $lang_err_object_exists;
-		//if the object hasn't been created
+		//if the object hasn't been created	
 		if ($this -> iId < 0) {
-			$sql = $default -> db;
-			$result = $sql -> query("INSERT INTO $default->owl_dependant_document_template_table (document_title, user_id,template_document_id, group_folder_approval_link_id) VALUES ('" . addslashes($this->sDocumentTitle) . "', $this->iDefaultUserID, $this->iTemplateDocumentID, $this->iGroupFolderApprovalLinkID)");
+			$sql = $default -> db;			
+			$result = $sql -> query("INSERT INTO $default->owl_dependant_document_template_table (document_title, default_user_id,template_document_id, group_folder_approval_link_id) VALUES ('" . addslashes($this->sDocumentTitle) . "', $this->iDefaultUserID, " . (isset($this->iTemplateDocumentID) ? $this->iTemplateDocumentID : "'NULL'") . ", $this->iGroupFolderApprovalLinkID)");
 			if ($result) {
 				$this -> iId = $sql -> insert_id();
 				return true;
@@ -127,7 +128,7 @@ class DependantDocumentTemplate {
 			$_SESSION["errorMessage"] = $lang_err_database;
 			return false;
 		}
-		$_SESSION["errorMessage"] = $lang_err_object_exists."id = ".$this -> iId." table = document_fields";
+		$_SESSION["errorMessage"] = $lang_err_object_exists."id = ".$this->iId." Table = $default->owl_dependant_document_template_table";
 		return false;
 	}
 
