@@ -491,6 +491,26 @@ class User {
 
         $this->iId = $id;
     }
+    
+    /**
+     * Static
+     *
+     * Get the username
+     *
+     * @param integer the user ID
+     * @return the username
+     */
+    function getName($iUserID) {
+        global $default;
+        
+        $sUserName = lookupField($default->owl_users_table, "name", "id", $iUserID);
+        if ($sUserName) {
+            return $sUserName;
+        } else {
+            return false;
+        }
+    }
+   
 }
 
 /**
