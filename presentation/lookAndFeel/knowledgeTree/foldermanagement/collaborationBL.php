@@ -26,18 +26,11 @@ if (checkSession()) {
 	require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
 	require_once("$default->fileSystemRoot/presentation/Html.inc");
 	
-	if (isset($fForAdd)) {
-		//we are adding a new entry
-		require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
-		$oPatternCustom = & new PatternCustom();
-		$oPatternCustom->setHtml(getEditPage($fFolderCollaborationID, $fFolderID));
-		$main->setCentralPayload($oPatternCustom);
-		$main->setFormAction($_SERVER["PHP_SELF"] . "?fFolderID=$fFolderID&fForCreate=1");
-		$main->render();
-	} else if (isset($fForStore)) {
-		//we are storing a new entry
+	if (isset($fForUpdate)) {		
+		//we are updating
 		$oFolderCollaboration = & FolderCollaboration::get($fFolderCollaborationID);
 		$oFolderCollaboration->setGroupID($fGroupID);
+		$oFolderCollaboration->setUserID($fUserID);
 		if ($fRoleID != -1) {
 			$oFolderCollaboration->setRoleID($fRoleID);
 		} else {
@@ -56,9 +49,10 @@ if (checkSession()) {
 			//we are editing an existing entry
 			require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 			$oPatternCustom = & new PatternCustom();
-			$oPatternCustom->setHtml(getEditPage($fFolderCollaborationID, $fFolderID));
+			$oPatternCustom->setHtml(getEditPage($fFolderCollaborationID, $fFolderID, $fGroupID, $fUserID, $fRoleID, $fSequenceNumber));
 			$main->setCentralPayload($oPatternCustom);
-			$main->setFormAction("../store.php?fReturnURL=" . urlencode("$default->rootUrl/control.php?action=editFolder&fFolderID=$fFolderID"));
+			$main->setFormAction($_SERVER["PHP_SELF"] . "?fFolderID=$fFolderID&fFolderCollaborationID=$fFolderCollaborationID&fForUpdate=1");
+			$main->setHasRequiredFields(true);
 			$main->render();
 		}
 	}	
