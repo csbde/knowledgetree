@@ -9,15 +9,15 @@
 *
 */
 
-function renderBrowseAddPage($fFolderID) {	 
+function renderBrowseAddPage($fFolderID) {	
 	$sToRender = "<table border=\"0\">\n";
 	$sToRender .= "<tr>\n";	
-	$sToRender .= "\t<td>" . renderFolderPath($fFolderID) . "</td>\n";
+	$sToRender .= "\t<td>" . renderFolderPath($fFolderID, "$default->owl_ui_directory/foldermanagement/addFolderBL.php") . "</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
 	$sToRender .= "<table border=\"0\">\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "\t<td>" . renderFolderList($fFolderID) . "<td>\n";
+	$sToRender .= "\t<td>" . renderFolderList($fFolderID, "control.php?action=addFolder") . "<td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table><br>\n";
 	$sToRender .= "<table border=\"1\">\n";
