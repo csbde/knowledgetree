@@ -25,6 +25,17 @@ function lookupID($tableName, $fieldName, $fieldValue){
 }
 
 /**
+ * Performs an name field lookup on the specified table.
+ *
+ * @param string the name of table to perform the id lookup.
+ * @param integer the id value to perform the lookup with
+ * @return int the id of the row in the db with $fieldName=$fieldValue
+ */
+function lookupName($tableName, $idFieldValue){
+    return lookupField($tableName, "name", "id", $idFieldValue);
+}
+
+/**
  * Retrieves the groups that the user is a member of
  *
  * @param int the user to lookup groups for
