@@ -29,7 +29,7 @@ function displayFolderPathLink($aPathArray) {
        // retrieve the folder id for this folder name
        $iFolderID = Folder::getFolderID($aPathArray[$i]);
        // generate a link back to this page setting fFolderID
-       $sLink = generateLink("/presentation/documentmanagement/browseBL.php", 
+       $sLink = generateLink($_SERVER["PHP_SELF"],
                             "fBrowseType=folder&fFolderID=$iFolderID", 
                              $aPathArray[$i]);
        $sPathLinks = (strlen($sPathLinks) > 0) ? $sPathLinks . " > " . $sLink : $sLink; 
@@ -38,9 +38,11 @@ function displayFolderPathLink($aPathArray) {
 }
 
 function displayFolderLink($oFolder) {
-    return generateLink("/presentation/documentmanagement/browseBL.php", 
+    global $default;
+    $sFolderIconPath = generateImage($default->owl_graphics_url . "/widgets/dfolder.gif");
+    return generateLink($_SERVER["PHP_SELF"],
                         "fBrowseType=folder&fFolderID=" . $oFolder->getID(),
-                        // TODO: display folder icon
+                        $sFolderIconPath .
                         $oFolder->getName());
 }
 
@@ -49,13 +51,13 @@ function displayCategoryPathLink($sCategoryName) {
 }
 
 function displayCategoryLink($sCategoryName) {
-    return generateLink("/presentation/documentmanagement/browseBL.php",
+    return generateLink($_SERVER["PHP_SELF"],
                         "fBrowseType=category&fCategoryName=$sCategoryName",
                         $sCategoryName);
 }
 
 function displayDocumentTypeLink($aDocumentType) {
-    return generateLink("/presentation/documentmanagement/browseBL.php",
+    return generateLink($_SERVER["PHP_SELF"],
                         "fBrowseType=documentType&fDocumentTypeID=" . $aDocumentType["id"],
                         $aDocumentType["name"]);
 }
@@ -64,14 +66,12 @@ function displayDocumentTypePathLink($aDocumentType) {
     return "Document Types > " . displayDocumentTypeLink($aDocumentType);
 }
 
-function displayDocumentLink($oDocument) {//, $bDisplayFullPath) {
+function displayDocumentLink($oDocument, $bDisplayFullPath = false) {
     global $default;
     $sIconPath = generateImage($oDocument->getMimeTypeIconUrl());
-    return generateLink("/presentation/documentmanagement/documentViewBL.php", 
+    return generateLink("$default->owl_ui_url/documentmanagement/documentViewBL.php", 
                         "fDocumentID=" . $oDocument->getID(),
-                        // TODO: display file type icon
                         ($sIconPath ? $sIconPath : "") . 
-                        //($bDisplayFullPath ? Document::getDocumentPathAsArray($oDocument->getID()) : $oDocument->getName());
-                        $oDocument->getName());
+                        ($bDisplayFullPath ? implode(" > ", $oDocument->getDocumentPathAsArray($oDocument->getID())) : $oDocument->getName()));
 }
 ?>
