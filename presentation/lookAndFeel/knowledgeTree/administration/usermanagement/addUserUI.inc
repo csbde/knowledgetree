@@ -86,14 +86,15 @@ function getDetailsDBPage($suserName, $aAttributes) {
 }
 
 function getDetailsLDAPPage($suserName, $aAttributes, $sUserIdentifier) {
-
-    $sToRender .= renderHeading("Add User To System");
  	global $default;
+ 	
+    $sToRender .= renderHeading("Add User To System");
+
 	foreach ($aAttributes as $sUserName => $aUserAttributes) {
         $sToRender .= "<table>\n";
         $sToRender .= "<tr><td><b>User Details: </b></td></tr>\n";
         $sToRender .= "<tr>\n";
-        $sToRender .= "<td>LDAP DN: </td><td><input disabled size = \"40\" type=\"text\" name=\"fLdap\" value = \"". $aUserAttributes["dn"]. "\"> </td>\n";
+        $sToRender .= "<td>LDAP DN: </td><td><input " . ($default->bNN4 ? "onblur=\"disable(document.MainForm.fLdap)" : "DISABLED") . " size = \"40\" type=\"text\" name=\"fLdap\" value = \"". $aUserAttributes["dn"]. "\"> </td>\n";
         $sToRender .= "<input type=\"hidden\" name=\"fLdap\" value = \"". $aUserAttributes["dn"]. "\">\n";
         $sToRender .= "</tr>\n";
         $sToRender .= "<tr>\n";
