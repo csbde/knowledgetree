@@ -1,17 +1,30 @@
 <?php
-
 /**
-*
-* Class WebSite
-* Represents a web site as per the web_sites database table
-*
-* @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
-* @date 20 January 2003
-*
-* @todo - add regex parsing to ensure URL is valid
-* @package lib.web 
-*/
-
+ * $Id$
+ *
+ * Represents a web site as per the web_sites database table.
+ *
+ * Copyright (c) 2003 Jam Warehouse http://www.jamwarehouse.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ * @version $Revision$
+ * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
+ * @package lib.web
+ * @todo - add regex parsing to ensure URL is valid
+ */
 class WebSite {
 
     /** primary key of web site */
@@ -122,7 +135,7 @@ class WebSite {
         if ($this->iId < 0) {
             //check to see if name exsits
             $sql = $default->db;
-            $query = "SELECT web_site_name FROM ". $default->owl_web_sites_table ." WHERE web_site_name = '" . $this->sWebSiteName . "' and web_site_url = '" . $this->sWebSiteURL . "' and web_master_id = '" . $this->iWebMasterID . "'";
+            $query = "SELECT web_site_name FROM ". $default->web_sites_table ." WHERE web_site_name = '" . $this->sWebSiteName . "' and web_site_url = '" . $this->sWebSiteURL . "' and web_master_id = '" . $this->iWebMasterID . "'";
             $sql->query($query);
             $rows = $sql->num_rows($sql);
             if ($rows > 0) {
@@ -133,7 +146,7 @@ class WebSite {
             } else {
 
                 $sql = $default->db;
-                $result = $sql->query("INSERT INTO " . $default->owl_web_sites_table . " (web_site_name, web_site_url, web_master_id) VALUES ('" . addslashes($this->sWebSiteName) . "', '" . addslashes($this->sWebSiteURL) . "', $this->iWebMasterID)");
+                $result = $sql->query("INSERT INTO " . $default->web_sites_table . " (web_site_name, web_site_url, web_master_id) VALUES ('" . addslashes($this->sWebSiteName) . "', '" . addslashes($this->sWebSiteURL) . "', $this->iWebMasterID)");
                 if ($result) {
                     $this->iId = $sql->insert_id();
                     return  true;
@@ -142,7 +155,7 @@ class WebSite {
                 return false;
             }
         }
-        $_SESSION["errorMessage"] = $lang_err_object_exists . "id = " . $this->iId . " table = $default->owl_web_sites_table";
+        $_SESSION["errorMessage"] = $lang_err_object_exists . "id = " . $this->iId . " table = $default->web_sites_table";
         return false;
     }
 
@@ -157,7 +170,7 @@ class WebSite {
         //only update if the object has been stored
         if ($this->iId > 0) {
             $sql = $default->db;
-            $result = $sql->query("UPDATE " . $default->owl_web_sites_table . " SET web_site_name = '" . addslashes($this->sWebSiteName) . "', web_site_url = '" . addslashes($this->sWebSiteURL) . "', web_master_id = '" . $this->iWebMasterID . "' WHERE id = $this->iId");
+            $result = $sql->query("UPDATE " . $default->web_sites_table . " SET web_site_name = '" . addslashes($this->sWebSiteName) . "', web_site_url = '" . addslashes($this->sWebSiteURL) . "', web_master_id = '" . $this->iWebMasterID . "' WHERE id = $this->iId");
             if ($result) {
                 return true;
             }
@@ -179,7 +192,7 @@ class WebSite {
         //only delete the object if it exists in the database
         if ($this->iId >= 0) {
             $sql = $default->db;
-            $result = $sql->query("DELETE FROM $default->owl_web_sites_table WHERE id = $this->iId");
+            $result = $sql->query("DELETE FROM $default->web_sites_table WHERE id = $this->iId");
             if ($result) {
                 return true;
             }
@@ -201,14 +214,14 @@ class WebSite {
     function & get($iWebSiteID) {
         global $default;
         $sql = $default->db;
-        $result = $sql->query("SELECT * FROM $default->owl_web_sites_table WHERE id = $iWebSiteID");
+        $result = $sql->query("SELECT * FROM $default->web_sites_table WHERE id = $iWebSiteID");
         if ($result) {
             if ($sql->next_record()) {
                 $oWebSite = & new WebSite(stripslashes($sql->f("web_site_name")), stripslashes($sql->f("web_site_url")), $sql->f("web_master_id"));
                 $oWebSite->iId = $iWebSiteID;
                 return $oWebSite;
             }
-            $_SESSION["errorMessage"] = $lang_err_object_not_exist . "id = " . $iWebSiteID . " table = $default->owl_web_sites_table";
+            $_SESSION["errorMessage"] = $lang_err_object_not_exist . "id = " . $iWebSiteID . " table = $default->web_sites_table";
             return false;
         }
         $_SESSION["errorMessage"] = $lang_err_database;
@@ -226,7 +239,7 @@ class WebSite {
         $aWebSiteArray;
         settype($aWebSiteArray, "array");
         $sql = $default->db;
-        $result = $sql->query("SELECT * FROM " . $default->owl_web_sites_table);
+        $result = $sql->query("SELECT * FROM " . $default->web_sites_table);
         if ($result) {
             $iCount = 0;
             while ($sql->next_record()) {

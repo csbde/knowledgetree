@@ -1,7 +1,31 @@
 <?php
 
 require_once("PatternListBox.inc");
-
+/**
+ * $Id$
+ *
+ * Renders document field appropriately (as a listbox if required).
+ *
+ * Copyright (c) 2003 Jam Warehouse http://www.jamwarehouse.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ * @version $Revision$
+ * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
+ * @package lib.visualpatterns
+ */
 class PatternMetaData {
 	
 	var $sMetaDataField;
@@ -20,7 +44,7 @@ class PatternMetaData {
 	
 	function render() {
 		global $default;
-		$sQuery = "SELECT has_lookup FROM $default->owl_fields_table WHERE name LIKE '" . $this->sMetaDataField . "'";
+		$sQuery = "SELECT has_lookup FROM $default->document_fields_table WHERE name LIKE '" . $this->sMetaDataField . "'";
 
 		$sql = $default->db;
 		$sql->query($sQuery);
@@ -28,8 +52,8 @@ class PatternMetaData {
 			if ($sql->f("has_lookup")) {
 				//is a lookup, so display a drop down list
 				$sWhereClause = "DF.name LIKE '" . $this->sMetaDataField . "'";
-				$sFromClause = "INNER JOIN $default->owl_fields_table AS DF ON ST.document_field_id = DF.id";
-				$oPatternListBox = & new PatternListBox("$default->owl_document_fields_lookup_tables", "name", "name", $this->sFormName);
+				$sFromClause = "INNER JOIN $default->document_fields_table AS DF ON ST.document_field_id = DF.id";
+				$oPatternListBox = & new PatternListBox("$default->document_fields_lookup_tables", "name", "name", $this->sFormName);
 				if ($this->sValue != null) {
 					$oPatternListBox->setSelectedValue($this->sValue);
 				}

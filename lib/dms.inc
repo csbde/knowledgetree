@@ -1,13 +1,24 @@
 <?php
-
 /**
- * @package lib
- * 
  * $Id$
  *
  * DMS default routines and functions
  *
- * Licensed under the GNU GPL. For full terms see the file COPYING.
+ * Copyright (c) 2003 Jam Warehouse http://www.jamwarehouse.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * @version $Revision$
  * @author Michael Joseph <michael@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
@@ -53,12 +64,12 @@ if(isset($default->defaultLanguage)) {
     } else {
 
         $sql = $default->db;
-        $sql->query("select * from $default->owl_sessions_table where id = '" . session_id() . "'");       
+        $sql->query("select * from $default->sessions_table where id = '" . session_id() . "'");       
         $sql->next_record();
         $numrows = $sql->num_rows($sql);
         $userID = $sql->f("user_id");
         if($numrows == 1) {
-            $sql->query("select * from $default->owl_users_table where id = $userID");
+            $sql->query("select * from $default->users_table where id = $userID");
             $sql->next_record();
             $language = $sql->f("language");
             // BEGIN wes fix

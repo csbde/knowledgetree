@@ -1,21 +1,31 @@
 <?php
-
 /**
  * $Id$
- * 
+ *
  * Main page of the document management system.  Consists of a 2 x 2 HTML table.
  * Custom defined payloads can be placed in each of the table cells, giving a reasonable
  * amount of layout/design flexibility
  *
- * JavaScript to validate numbers and strings is included by default
+ * Copyright (c) 2003 Jam Warehouse http://www.jamwarehouse.com
  *
- * Licensed under the GNU GPL. For full terms see the file DOCS/COPYING.
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
  *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ * @version $Revision$
  * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
- * @date 12 December 2002
  * @package lib.visualpatterns
- */	
-
+ */
 class PatternMainPage {
 	
 	/** property holder for $oNorthWestPayload */
