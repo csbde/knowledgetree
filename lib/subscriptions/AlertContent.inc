@@ -36,7 +36,8 @@ class AlertContent {
                                SubscriptionConstants::subscriptionAlertType("CheckInDocument") => $sSubject . "Checked In Document",
                                SubscriptionConstants::subscriptionAlertType("CheckOutDocument") => $sSubject . "Checked Out Document",
                                SubscriptionConstants::subscriptionAlertType("MovedDocument") => $sSubject . "Moved Document",
-                               SubscriptionConstants::subscriptionAlertType("ArchivedDocument") => $sSubject . "Archived Document");
+                               SubscriptionConstants::subscriptionAlertType("ArchivedDocument") => $sSubject . "Archived Document",
+                               SubscriptionConstants::subscriptionAlertType("RestoredArchivedDocument") => $sSubject . "Restored Document");
 
         $sViewAlertParams = "fSubscriptionID=" . $aValues["subscriptionID"] . "&fSubscriptionType=" . $aValues["subscriptionType"];
         $aAlertContent = array(SubscriptionConstants::subscriptionAlertType("AddFolder") =>
@@ -86,13 +87,18 @@ class AlertContent {
                                        "The document '" . $aValues["modifiedDocumentName"] . "' has been moved from folder '" . $aValues["oldFolderName"] . "' to folder '" . $aValues["newFolderName"] . "'.<br>" .
                                        "Please clear this subscription alert by clicking on the following link: " .
                                        generateControllerLink("viewAlert", $sViewAlertParams, $aValues["modifiedDocumentName"]),
-                                       
+
                                SubscriptionConstants::subscriptionAlertType("ArchivedDocument") =>
                                        "The document '" . $aValues["modifiedDocumentName"] . "' has been archived.<br>" .
+                                       "Please clear this subscription alert by clicking on the following link: " .
+                                       generateControllerLink("viewAlert", $sViewAlertParams, $aValues["modifiedDocumentName"]),
+                                                                              
+                               SubscriptionConstants::subscriptionAlertType("RestoredArchivedDocument") =>
+                                       "The document '" . $aValues["modifiedDocumentName"] . "' has been restored from the archive.<br>" .
                                        "Please clear this subscription alert by clicking on the following link: " .
                                        generateControllerLink("viewAlert", $sViewAlertParams, $aValues["modifiedDocumentName"]));
 
         return array ("subject" => $aAlertSubject[$iSubscriptionAlertType],
-                      "text" => "Hello " . $aValues["subscriberName"] . "<br><br>" . $aAlertContent[$iSubscriptionAlertType]);
+                      "text" => "Hello " . $aValues["subscriberName"] . ",<br><br>" . $aAlertContent[$iSubscriptionAlertType]);
     }
 }
