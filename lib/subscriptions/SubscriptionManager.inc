@@ -78,14 +78,19 @@ class SubscriptionManager {
     function viewSubscription($iSubscriptionID, $iSubscriptionType) {
         // instantiate subscription from id
         $oSubscription = Subscription::get($iSubscriptionID, $iSubscriptionType);
-        // update the alerted flag
-        $oSubscription->setIsAlerted(false);
-        // save the update
-        if ($oSubscription->update()) {
-            // return the url to the content
-            return $oSubscription->getContentUrl();
+        if ($oSubscription) {
+            // update the alerted flag
+            $oSubscription->setIsAlerted(false);
+            // save the update
+            if ($oSubscription->update()) {
+                // return the url to the content
+                return $oSubscription->getContentUrl();
+            } else {
+                // error message set by Subscription::updates
+                return false;
+            }
         } else {
-            // error message set by Subscription::updates
+            // error message set by Subscription::get
             return false;
         }
     }
