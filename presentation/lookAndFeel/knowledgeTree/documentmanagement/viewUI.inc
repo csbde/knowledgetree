@@ -22,18 +22,19 @@ function renderDocumentPath($oDocument) {
 
 function renderDocumentData($oDocument) {
     global $default;
-    $sQuery = "SELECT D.name, D.modified, DTT.datetime AS created, U.name AS initiator, CONCAT(CONCAT(D.major_version, '.'), D.minor_version) AS version, WDSL.name AS status " .
+    $sQuery = "SELECT D.name, D.modified, DTT.datetime AS created, U.name AS initiator, CONCAT(CONCAT(D.major_version, '.'), D.minor_version) AS version, WDSL.name AS status, DTL.name AS document_type " .
               "FROM $default->owl_documents_table AS D INNER JOIN $default->owl_web_documents_table AS WD ON WD.document_id = D.ID " .
               "INNER JOIN $default->owl_web_documents_status_table AS WDSL ON WD.status_id = WDSL.id " .
               "INNER JOIN $default->owl_users_table AS U ON U.id = D.creator_id " .
               "INNER JOIN $default->owl_document_transactions_table AS DTT ON DTT.document_id = D.id " .
               "INNER JOIN $default->owl_transaction_types_table AS TT ON DTT.transaction_id = TT.id " .
+			  "INNER JOIN $default->owl_document_types_table AS DTL ON DTL.id = D.document_type_id " .
               "WHERE D.id = " . $oDocument->getID() . " " .
               "AND TT.name LIKE 'Create'";
 
-    $aColumns = array("name", "modified", "created", "initiator", "version", "status");
-    $aColumnNames = array("Document title", "Last updated", "Created", "Document initiator", "Version", "Status");
-    $aColumnTypes = array(1,1,1,1,1);
+    $aColumns = array("name", "modified", "created", "initiator", "document_type", "version", "status");
+    $aColumnNames = array("Document title", "Last updated", "Created", "Document initiator", "Document Type", "Version", "Status");
+    $aColumnTypes = array(1,1,1,1,1,1);
     $oPatternListFromQuery = & new PatternListFromQuery($sQuery, $aColumns, $aColumnNames, $aColumnTypes);
     $oPatternListFromQuery->setTableHeading("Document Data");
     $oPatternListFromQuery->setTableWidth("90%");
