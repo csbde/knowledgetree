@@ -61,7 +61,8 @@ class Permission {
 		}
 		if (Permission::userHasDocumentWritePermission($iDocumentID) ||
 			Permission::userHasReadRoleForDocument($iDocumentID) ||
-			Permission::userHasFolderReadPermission($oDocument->getFolderID())) {
+			Permission::userHasFolderReadPermission($oDocument->getFolderID()) ||
+			Permission::documentIsTemplateForDependantDocument($iDocumentID)) {
 			return true;
 		}
 		$_SESSION["errorMessage"] = $lang_err_user_doc_read . "id " . $iDocumentID;
@@ -292,6 +293,21 @@ class Permission {
 		return false;		
 	}
 	
+	/** Static functions
+	*
+	* Checks if the document is a template for a depedant document
+	* that the user is responsible for creating
+	*/
+	function documentIsTemplateForDependantDocument($iDocumentID) {
+		global $default;
+		$sql = $default->db;
+		$sql->query("SELECT id FROM $default->owl_dependant_document_instance_table WHERE template_document_id = $iDocumentID and user_id = " . $_SESSION["userID"]);
+		if ($sql->next_record()) {
+			return true;
+		}
+		return false;		
+	}
+	
 	/**
 	* Checks if a given role exists using the role primary key
 	*
@@ -396,14 +412,7 @@ class Permission {
 	function userIsUnitAdministratorForFolder($iFolderID) {
         global $default;
 		$sql = $default->db;
-		/*$sql->query("SELECT UGL.group_id " .
-			"FROM $default->owl_users_groups_table AS UGL INNER JOIN $default->owl_groups_units_table AS GUL ON GUL.group_id = UGL.group_id " .
-			"INNER JOIN $default->owl_groups_table AS GL ON GL.id = UGL.group_id " .
-            "INNER JOIN $default->owl_groups_folders_table AS GFL ON GFL.group_id = UGL.group_id " .
-			"WHERE UGL.user_id = " . $_SESSION["userID"] . " " .
-			"AND GL.is_unit_admin = 1 " .
-            "AND GFL.folder_id = $iFolderID");*/
-        	
+		        	
         $sql->query("SELECT * " .
 				"FROM $default->owl_groups_folders_table AS GFL INNER JOIN $default->owl_folders_table AS F ON GFL.folder_id = F.id " .
 				"INNER JOIN $default->owl_groups_units_table AS GUL ON GUL.unit_id = F.unit_id " .
