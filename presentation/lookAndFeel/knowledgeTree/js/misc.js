@@ -1,13 +1,13 @@
 function setActionAndSubmit(newAction) {	
-    document.MainForm.action = newAction;	
+    document.MainForm.action = newAction;
+	alert(document.MainForm.action);
     document.MainForm.submit();
 }
 
-function setActionAndSubmitAsGet(newAction) {	
-    document.MainForm.action = newAction;
+function setActionAndSubmitSearch() {	
+	document.MainForm.fForStandardSearch.value = 'yes';
 	document.MainForm.method = 'GET';
-	alert(document.MainForm.action);
-    document.MainForm.submit();
+	document.MainForm.submit();	
 }
 
 function isEmailAddr(email)

@@ -207,14 +207,15 @@ class NavBar {
               "<tr height=\"20%\"><td background = " . $hStretched ." width =\"100%\">". $row1 ."</td></tr>\n " .
               "<tr  height=\"30%\"> <td VALIGN = \"absmiddle\" background = " . $hStretched ." width =\"100%\" NOWRAP >\n " .
               "<img align = \"absmiddle\" src = \"$default->graphicsUrl/arrow.gif\" ></img>\n " .
-              "<input name=\"fSearchText\" />\n" .
-              //"<INPUT type=\"text\" name=\"fSearchText\" width=\"30\" height = \"10\" align = \"absmiddle\" />\n " .
-              "<INPUT type=\"hidden\" name=\"fBrowseType\" value=\"" . $this->sBrowseType . "\"  />\n " .
-              "<INPUT type=\"hidden\" name=\"fFolderID\"  value=\"" . $this->iFolderID . "\"  />\n " .
-              "<INPUT type=\"hidden\" name=\"fDocumentID\" value=\"" . $this->iDocumentID . "\"  />\n " .
-              "<INPUT type=\"hidden\" name=\"fCategoryName\" value=\"" . $this->sCategoryName . "\"  />\n " .
-              "<INPUT type=\"hidden\" name=\"fDocTypeID\"  value=\"" . $this->iDocTypeID . "\"  />\n " .
-              "<INPUT type=\"button\" onClick=\"setActionAndSubmitAsGet('http://www.google.com')\" value=\"Search\" src=\"$default->graphicsUrl/search.gif\" align = \"absmiddle\" border=\"0\" />\n " .
+              "<img align = \"absmiddle\" src = \"$default->graphicsUrl/arrow.gif\" ></img>\n " .
+			  "<INPUT type=\"hidden\" name=\"fForStandardSearch\" value=\"no\" />\n " .
+              "<INPUT type=\"text\" name=\"fSearchText\" width=\"30\" height = \"10\" align = \"absmiddle\" />\n " .
+			  "<INPUT type=\"hidden\" name=\"fBrowseType\" value=\"" . $this->sBrowseType . "\"  />\n " .
+			  "<INPUT type=\"hidden\" name=\"fFolderID\"  value=\"" . $this->iFolderID . "\"  />\n " .
+			  "<INPUT type=\"hidden\" name=\"fDocumentID\" value=\"" . $this->iDocumentID . "\"  />\n " .
+			  "<INPUT type=\"hidden\" name=\"fCategoryName\" value=\"" . $this->sCategoryName . "\"  />\n " .
+			  "<INPUT type=\"hidden\" name=\"fDocTypeID\"  value=\"" . $this->iDocTypeID . "\"  />\n " .
+              "<INPUT type=\"image\" onClick=\"setActionAndSubmitSearch()\" src=\"$default->graphicsUrl/search.gif\" align = \"absmiddle\" border=\"0\" />\n " .
               "</td>\n " .
               "</tr>\n" .
               "<tr height=\"25%\" ><td width =\"10%\">". $row3 . "</td></tr>\n" .
