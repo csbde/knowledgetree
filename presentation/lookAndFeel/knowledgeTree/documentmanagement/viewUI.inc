@@ -95,7 +95,7 @@ function renderEditableDocumentRouting($oDocument) {
               "FROM documents AS D INNER JOIN $default->owl_groups_folders_approval_table AS GFAL ON D.folder_id = GFAL.folder_id " .
               "INNER JOIN roles AS R ON GFAL.role_id = R.id " .
               "LEFT OUTER JOIN folders_users_roles_link AS FURL ON FURL.group_folder_approval_id = GFAL.id " .
-              "LEFT OUTER JOIN users AS U ON FURL.user_id = U.id " .
+              "LEFT OUTER JOIN users AS U ON FURL.user_id = U.id AND FURL.document_id = D.id " .
               "WHERE D.id = " . $oDocument->getID() . " " .
               "ORDER BY GFAL.precedence, role_name ASC";
 
