@@ -89,7 +89,7 @@ class Unit {
                 $_SESSION["errorMessage"] = "Unit::The name " . $this->sName . " is already in use!";
                 return false;
             } else {
-                $result = $sql->query("INSERT INTO " . $default->units_table . " (name) VALUES ('" . addslashes($this->sName) . "')");
+                $result = $sql->query("INSERT INTO " . $default->units_table . " (name) VALUES ('$this->sName')");
                 if ($result) {
                     $this->iId = $sql->insert_id();
                     // create a new unit root folder
@@ -131,7 +131,7 @@ class Unit {
             $sql = $default->db;
             // lookup current name before updating
             $sOldName = lookupField($default->units_table, "name", "id", $this->iId);
-            $result = $sql->query("UPDATE " . $default->units_table . " SET name = '" . addslashes($this->sName) . "' WHERE id = $this->iId");
+            $result = $sql->query("UPDATE " . $default->units_table . " SET name = '$this->sName' WHERE id = $this->iId");
             if ($result) {
                 // need to update the units root folder also
                 $iFolderID = Folder::getFolderID($sOldName);
@@ -202,7 +202,7 @@ class Unit {
         $result = $sql->query("SELECT * FROM $default->units_table WHERE id = $iUnitID");
         if ($result) {
             if ($sql->next_record()) {
-                $oUnit = & new Unit(stripslashes($sql->f("name")));
+                $oUnit = & new Unit($sql->f("name"));
                 $oUnit->iId = $iUnitID;
                 return $oUnit;
             }

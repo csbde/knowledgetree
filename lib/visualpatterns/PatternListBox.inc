@@ -164,9 +164,9 @@ class PatternListBox {
 			}
 			while ($sql->next_record()) {
 				if ($this->selectedValue == $sql->f("value")) {
-					$sToRender .= "<OPTION value=\"" . $sql->f("value") . "\" SELECTED>" . stripslashes($sql->f("display")) . "</OPTION>\n";
+					$sToRender .= "<OPTION value=\"" . $sql->f("value") . "\" SELECTED>" . $sql->f("display") . "</OPTION>\n";
 				} else {
-					$sToRender .= "<OPTION value=\"" . $sql->f("value") . "\">" . stripslashes($sql->f("display")) . "</OPTION>\n";
+					$sToRender .= "<OPTION value=\"" . $sql->f("value") . "\">" . $sql->f("display") . "</OPTION>\n";
 				}
 			}
             if (isset($this->aAdditionalEntries)) {
@@ -200,7 +200,7 @@ class PatternListBox {
         $aValues = array();
         while ($sql->next_record()) {
             $aValues[] = array("value" => $sql->f("value"),
-                               "display" => stripslashes($sql->f("display")));
+                               "display" => $sql->f("display"));
         }
         return $aValues;
     }

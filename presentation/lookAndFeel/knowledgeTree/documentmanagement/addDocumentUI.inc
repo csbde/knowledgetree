@@ -32,8 +32,6 @@ function getDocumentType($iFolderID, $iDocumentTypeID, $iDependantDocumentID = n
 	$oPatternListBox = & new PatternListBox("$default->document_types_table", "name", "id", "fDocumentTypeID",$sWhereClause);
 	$oPatternListBox->setIncludeDefaultValue(true);
 	$oPatternListBox->setFromClause("INNER JOIN $default->folder_doctypes_table AS FDL ON ST.id = FDL.document_type_id");
-	$oPatternListBox->setPostBackOnChange(true);
-	$oPatternListBox->setOnChangeAction("setActionAndSubmit('" . $_SERVER["PHP_SELF"] . "?fFolderID=$iFolderID" . (isset($iDependantDocumentID) ? "&fDependantDocumentID=$iDependantDocumentID" : "") . "')");
 	
 	if ($iDocumentTypeID) {
 		$oPatternListBox->setSelectedValue($iDocumentTypeID);
@@ -41,8 +39,16 @@ function getDocumentType($iFolderID, $iDocumentTypeID, $iDependantDocumentID = n
 	} else {
 		$sHeading = "Please select the document type:";		
 	}
-	 
-	return "<table><tr><td><b>$sHeading<b></td></tr><tr><td>" . $oPatternListBox->render() . "</td></tr></table>";
+	
+	$sToRender = "<table><tr><td><b>$sHeading<b></td></tr><tr><td>" . $oPatternListBox->render() . "</td></tr></table>";
+	
+	$sToRender .= "\n\n<script language=\"javascript\">\n<!--\n";
+	$sToRender .= "function validateForm(theForm) {\n";
+    $sToRender .= "\tif (!(validRequired(theForm.fDocumentTypeID, 'Document Type'))) {\n";
+    $sToRender .= "\t\treturn false;\n\t}\n";
+	$sToRender .= "return true;\n}\n";
+	$sToRender .= "//-->\n</script>\n\n";	
+	return $sToRender;	
 }
 
 /**
@@ -176,6 +182,7 @@ function getPage($iFolderID, $iDocumentTypeID, $iDependantDocumentID = null, $sM
 		if (Permission::userHasFolderWritePermission($iFolderID)) {
 			$sToRender .= getDocumentType($iFolderID, $iDocumentTypeID, $iDependantDocumentID);
 			$sActionButtons .= generateControllerLink("browse", "fFolderID=$iFolderID", "<img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"/>");
+			$sActionButtons .= "<input type=\"image\" src=\"$default->graphicsUrl/widgets/next.gif\" border=\"0\"/>";			
 
 			$sToRender .= "<table border=\"0\" width=\"100%\" >\n";
 			$sToRender .= "<tr><td>$sActionButtons</td></tr>";
@@ -189,7 +196,6 @@ function getPage($iFolderID, $iDocumentTypeID, $iDependantDocumentID = null, $sM
 		$sToRender .= "<tr>\n";
 		$sToRender .= "</tr>";
 		$sToRender .= "</table><br>\n";
-
 	}
 
 	return $sToRender;
@@ -197,7 +203,7 @@ function getPage($iFolderID, $iDocumentTypeID, $iDependantDocumentID = null, $sM
 
 function getStatusPage($iFolderID, $sMessage) {
     $sToRender .= renderHeading("Add Document");
-    $sToRender .= renderFolderPath($iFolderID, generateControllerUrl("addDocument", "fFolderID=$iFolderID"), true);
+    $sToRender .= renderFolderPath($iFolderID, generateControllerUrl("addDocument", "fFolderID=$iFolderID", false), true);
 
 	$sToRender .= "<table border=\"0\" width=\"100%\">\n";
 	$sToRender .= "<tr>\n";	

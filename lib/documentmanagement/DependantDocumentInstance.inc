@@ -79,7 +79,7 @@ class DependantDocumentInstance {
 	*
 	*/
 	function setDocumentTitle($sNewValue) {
-		$this -> sDocumentTitle = $sNewValue;
+		$this->sDocumentTitle = $sNewValue;
 	}
 
 	/**
@@ -99,7 +99,7 @@ class DependantDocumentInstance {
 	*
 	*/
 	function getTemplateDocumentID() {
-		return $this -> iTemplateDocumentID;
+		return $this->iTemplateDocumentID;
 	}
 
 	/**
@@ -109,7 +109,7 @@ class DependantDocumentInstance {
 	*
 	*/
 	function setHasLookup($sNewValue) {
-		$this -> iTemplateDocumentID = $sNewValue;
+		$this->iTemplateDocumentID = $sNewValue;
 	}
 	
 	function getParentDocumentID() {
@@ -125,17 +125,17 @@ class DependantDocumentInstance {
 	function create() {
 		global $default, $lang_err_database, $lang_err_object_exists;		
 		//if the object hasn't been created
-		if ($this -> iId < 0) {			
-			$sql = $default -> db;
-			$result = $sql -> query("INSERT INTO $default->dependant_document_instance_table (document_title, user_id,template_document_id, parent_document_id) VALUES ('" . addslashes($this->sDocumentTitle) . "', $this->iUserID, " . (isset($this->iTemplateDocumentID) ? "$this->iTemplateDocumentID" : "NULL") . ", " . $this->iParentDocumentID . ")");
+		if ($this->iId < 0) {			
+			$sql = $default->db;
+			$result = $sql->query("INSERT INTO $default->dependant_document_instance_table (document_title, user_id,template_document_id, parent_document_id) VALUES ('$this->sDocumentTitle', $this->iUserID, " . (isset($this->iTemplateDocumentID) ? "$this->iTemplateDocumentID" : "NULL") . ", " . $this->iParentDocumentID . ")");
 			if ($result) {
-				$this -> iId = $sql -> insert_id();
+				$this->iId = $sql->insert_id();
 				return true;
 			}			
 			$_SESSION["errorMessage"] = $lang_err_database;			
 			return false;
 		}		
-		$_SESSION["errorMessage"] = $lang_err_object_exists."id = ".$this -> iId." table = dependant_document_instance";		
+		$_SESSION["errorMessage"] = $lang_err_object_exists."id = ".$this->iId." table = dependant_document_instance";		
 		return false;
 	}
 
@@ -148,9 +148,9 @@ class DependantDocumentInstance {
 	function update() {
 		global $default, $lang_err_database, $lang_err_object_key;
 		//only update if the object has been stored
-		if ($this -> iId > 0) {
-			$sql = $default -> db;
-			$result = $sql -> query("UPDATE $default -> owl_dependant_documents SET document_title = '".addslashes($this -> sDocumentTitle)."', user_id = $this->iUserID, template_document_id = $this->iTemplateDocumentID, parent_document_id = $this->iParentDocumentID WHERE id = $this->iId");
+		if ($this->iId > 0) {
+			$sql = $default->db;
+			$result = $sql->query("UPDATE $default->dependant_document_instance_table SET document_title = '$this->sDocumentTitle', user_id = $this->iUserID, template_document_id = $this->iTemplateDocumentID, parent_document_id = $this->iParentDocumentID WHERE id = $this->iId");
 			if ($result) {
 				return true;
 			}
@@ -170,9 +170,9 @@ class DependantDocumentInstance {
 	function delete() {
 		global $default, $lang_err_database, $lang_err_object_key;
 		//only delete the object if it exists in the database
-		if ($this -> iId >= 0) {
-			$sql = $default -> db;
-			$result = $sql -> query("DELETE FROM $default->dependant_document_instance_table WHERE id = $this->iId");
+		if ($this->iId >= 0) {
+			$sql = $default->db;
+			$result = $sql->query("DELETE FROM $default->dependant_document_instance_table WHERE id = $this->iId");
 			if ($result) {
 				return true;
 			}
@@ -193,12 +193,12 @@ class DependantDocumentInstance {
 	*/
 	function & get($iDependantDocumentID) {
 		global $default;
-		$sql = $default -> db;
-		$result = $sql -> query("SELECT * FROM $default->dependant_document_instance_table WHERE id = $iDependantDocumentID");
+		$sql = $default->db;
+		$result = $sql->query("SELECT * FROM $default->dependant_document_instance_table WHERE id = $iDependantDocumentID");
 		if ($result) {
-			if ($sql -> next_record()) {
-				$oDependantDocument = & new DependantDocumentInstance(stripslashes($sql -> f("document_title")), $sql -> f("user_id"), $sql -> f("template_document_id"), $sql->f("parent_document_id"));
-				$oDependantDocument -> iId = $sql -> f("id");
+			if ($sql->next_record()) {
+				$oDependantDocument = & new DependantDocumentInstance($sql->f("document_title"), $sql->f("user_id"), $sql->f("template_document_id"), $sql->f("parent_document_id"));
+				$oDependantDocument->iId = $sql->f("id");
 				return $oDependantDocument;
 			}
 			$_SESSION["errorMessage"] = $lang_err_object_not_exist."id = ".$iDependantDocumentID." table = $default->dependant_document_instance_table";

@@ -61,9 +61,8 @@ function controllerRedirect($sAction, $sQueryString = "") {
 function generateLink($sTargetPage, $sQueryString, $sLinkText = "") {
     global $default;
 
-    if (strlen($sQueryString) > 0) {
-        $sQueryStringDelimiter = (strstr($sTargetPage, "?") ? "&" : "?");
-    }
+    $sQueryStringDelimiter = strlen($sQueryString) > 0 ? (strstr($sTargetPage, "?") ? "&" : "?") : "";
+
     $sLink = "http" . ($default->sslEnabled ? "s" : "") . "://" . $default->serverName . 
              ((substr($sTargetPage, 0, strlen($default->rootUrl)) != $default->rootUrl) ? $default->rootUrl : "") . 
              $sTargetPage . $sQueryStringDelimiter . $sQueryString;
@@ -148,7 +147,7 @@ function checkSessionAndRedirect($bRedirect) {
             } else {
             	$url = generateControllerUrl("loginForm");
             }
-            $redirect = urlencode($_SERVER[PHP_SELF] . "?" . $_SERVER["QUERY_STRING"]);
+            $redirect = urlencode($_SERVER["PHP_SELF"] . "?" . $_SERVER["QUERY_STRING"]);
             if ((strlen($redirect) > 1)) {
                 $default->log->debug("checkSession:: redirect url=$redirect");
                 // this session verification failure represents either the first visit to

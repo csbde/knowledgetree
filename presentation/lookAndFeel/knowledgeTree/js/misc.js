@@ -73,11 +73,10 @@ function isBlank(formField) {
 function validRequired(formField,fieldLabel)
 {
 	var result = true;
-    
     if (formField){
         switch(formField.type){
             case "select-one":
-                if (formField.selectedIndex == 0 || formField.options[formField.selectedIndex].text == "" || formField.options[formField.selectedIndex].text == "None"){
+                if (formField.options[formField.selectedIndex].text == "" || formField.options[formField.selectedIndex].text == "None"){
                     result = false;
                 }
                 break;

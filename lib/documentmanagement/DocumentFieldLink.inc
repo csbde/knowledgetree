@@ -133,7 +133,7 @@ class DocumentFieldLink {
 		if ($this->iId < 0) {
 			$sql = $default->db;
 			$result = $sql->query("INSERT INTO " . $default->document_fields_link_table . " (document_id, document_field_id, value) " .
-						"VALUES ($this->iDocumentID, $this->iDocumentFieldID, '" . addslashes($this->sValue) . "')");
+						"VALUES ($this->iDocumentID, $this->iDocumentFieldID, '$this->sValue')");
 			if ($result) {
 				//set the current documents primary key
 				$this->iId = $sql->insert_id();
@@ -157,7 +157,7 @@ class DocumentFieldLink {
 		if ($this->iId >= 0) {
 			$sql = $default->db;
 			$result = $sql->query("UPDATE " . $default->document_fields_link_table . " SET " .
-					"document_id = $this->iDocumentID, document_field_id = $this->iDocumentFieldID, value = '" . addslashes($this->sValue) . "'" .
+					"document_id = $this->iDocumentID, document_field_id = $this->iDocumentFieldID, value = '$this->sValue'" .
 					"WHERE id = $this->iId");
 			if ($result) {
 				return true;

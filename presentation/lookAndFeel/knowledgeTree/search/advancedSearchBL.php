@@ -52,9 +52,9 @@ if (checkSession()) {
 				$sSQLSearchString = getSQLSearchString($fSearchString);
 				
 				if (!isset($fStartIndex)) {
-					$fStartIndex = 0;
+					$fStartIndex = 1;
 				}
-				$oPatternCustom->setHtml(getSearchResults($sMetaTagIDs,$sSQLSearchString, $fStartIndex, $fToSearch));
+				$oPatternCustom->setHtml(getSearchResults($sMetaTagIDs, $sSQLSearchString, $fStartIndex, $fSearchString, $fToSearch));
 				$main->setCentralPayload($oPatternCustom);				                                
 				$main->render();
 			} else {

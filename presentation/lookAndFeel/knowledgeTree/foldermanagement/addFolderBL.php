@@ -67,11 +67,14 @@ if (checkSession()) {
             //have a folder name to store
 	            if (Permission::userHasFolderWritePermission($fFolderID)) {
 	                //check for illegal characters in the folder name
-	                if (strpos($fFolderName, "\\") === false && strpos($fFolderName, ">") === false &&
-	                    strpos($fFolderName, "<") === false && strpos($fFolderName, ":") === false &&
-	                    strpos($fFolderName, "*") === false && strpos($fFolderName, "?") === false &&
-	                     strpos($fFolderName, "|") === false && strpos($fFolderName, "/") === false &&
-						 strpos($fFolderName, "\"") === false) {
+	                
+	                // strip slashes from the already EPGCS escaped form input
+	                $sCheckFolderName = stripslashes($fFolderName);
+	                if (strpos($sCheckFolderName, "\\") === false && strpos($sCheckFolderName, ">") === false &&
+	                    strpos($sCheckFolderName, "<") === false && strpos($sCheckFolderName, ":") === false &&
+	                    strpos($sCheckFolderName, "*") === false && strpos($sCheckFolderName, "?") === false &&
+	                     strpos($sCheckFolderName, "|") === false && strpos($sCheckFolderName, "/") === false &&
+						 strpos($sCheckFolderName, "\"") === false) {
 							 
 	                    if (Folder::folderExistsName($fFolderName, $fFolderID)) {
 	                        require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");

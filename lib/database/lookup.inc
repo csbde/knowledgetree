@@ -86,7 +86,7 @@ function lookupField($tableName, $selectFieldName, $whereFieldName, $whereFieldV
  
     if ($sql->query($query)) {
         if ($sql->next_record()) {
-            return stripslashes($sql->f($selectFieldName));
+            return $sql->f($selectFieldName);
         } else {
             $_SESSION["errorMessage"] = "$selectFieldName field lookup retrieval failed ($query).";
             return false;

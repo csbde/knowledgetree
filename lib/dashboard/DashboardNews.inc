@@ -306,8 +306,8 @@ class DashboardNews {
         if ($this->iId < 0) {
             $sql = $default->db;
             $result = $sql->query("INSERT INTO $default->news_table (synopsis, body, rank, image, image_size, image_mime_type_id, active) " .
-                                  "VALUES ('" . addslashes($this->sSynopsis) . "', '" . addslashes($this->sBody) . "', $this->iRank, " .
-                                  "'" . addslashes($this->sImage) . "', $this->iImageSize, $this->iImageMimeTypeID, " . ($this->bActive ? "1" : "0") . ")");
+                                  "VALUES ('$this->sSynopsis', '$this->sBody', $this->iRank, " .
+                                  "'$this->sImage', $this->iImageSize, $this->iImageMimeTypeID, " . ($this->bActive ? "1" : "0") . ")");
             if ($result) {
                 //set the current news item primary key
                 $this->iId = $sql->insert_id();
@@ -334,10 +334,10 @@ class DashboardNews {
         if ($this->iId >= 0) {			
             $sql = $default->db;
 			$sQuery = "UPDATE " . $default->news_table . " SET " .
-								  "synopsis = '" . addslashes($this->sSynopsis) . "', " .
-                                  "body = '" . addslashes($this->sBody) . "', " .
+								  "synopsis = '$this->sSynopsis', " .
+                                  "body = '$this->sBody', " .
                                   "rank = $this->iRank, " .
-                                  "image = '" . addslashes($this->sImage) . "', " .
+                                  "image = '$this->sImage', " .
                                   "image_size = $this->iImageSize " .
                                   ($this->iImageMimeTypeID ? ", image_mime_type_id = $this->iImageMimeTypeID " : " ") .                                 
            			 "WHERE id = $this->iId";
@@ -395,7 +395,7 @@ class DashboardNews {
             $aImage = array( "image" => $sql->f("image"),
             				 "filesize" => $sql->f("image_size"),
             				 "mimetypeid" => $sql->f("image_mime_type_id") );			
-            $oDashboardNews = & new DashboardNews(stripslashes($sql->f("synopsis")), stripslashes($sql->f("body")), $sql->f("rank"), $aImage);
+            $oDashboardNews = & new DashboardNews($sql->f("synopsis"), $sql->f("body"), $sql->f("rank"), $aImage);
             $oDashboardNews->iId = $iNewsID;
             $oDashboardNews->setActive($sql->f("active"));
             return $oDashboardNews;          

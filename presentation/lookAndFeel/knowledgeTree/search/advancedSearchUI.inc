@@ -39,7 +39,7 @@ function getMetaData($aMetaTagIDs) {
     $sCheckAllJavascript = "";
 	while ($sql->next_record()) {
 		$sCheckAllJavascript .= "document.MainForm.f_adv_$iRecordCount.checked=value;\n"; 
-        $sMetaDataCheckBox = "<input type=\"checkbox\" " . wasSelected($sql->f("id"), $aMetaTagIDs) . " name=\"f_adv_$iRecordCount\" value=\"" . $sql->f("id") . "\"></td><td>" . stripslashes($sql->f("name"));
+        $sMetaDataCheckBox = "<input type=\"checkbox\" " . wasSelected($sql->f("id"), $aMetaTagIDs) . " name=\"f_adv_$iRecordCount\" value=\"" . $sql->f("id") . "\"></td><td>" . $sql->f("name");
         $iRecordCount++;
         if (($iRecordCount % 3) == 1) {
             $sToRender .= "<tr><td>$sMetaDataCheckBox</td>\n";
@@ -95,7 +95,7 @@ function getSearchPage($sSearchString = "", $aMetaTagIDs = array(), $sHeading = 
 	return $sToRender . getSearchValidationJavaScript();
 }
 
-function getSearchResults($sMetaTagIDs, $sSQLSearchString, $iStartIndex, $sStatus = "Live") {
+function getSearchResults($sMetaTagIDs, $sSQLSearchString, $iStartIndex, $sSearchString, $sStatus = "Live") {
 	global $default;
 					
 	$sQuery = "SELECT '" . "$default->graphicsUrl/widgets/dfolder.gif" . "' AS folder_image_url, F.id folder_id, D.id document_id, D.name AS document_name, COUNT(D.id) AS doc_count " .
@@ -108,7 +108,7 @@ function getSearchResults($sMetaTagIDs, $sSQLSearchString, $iStartIndex, $sStatu
 			"AND (" . $sSQLSearchString . ") " .
 			"AND SDUL.user_id = " . $_SESSION["userID"] . " " .
 			"AND SL.name='$sStatus' " .
-			"GROUP BY D.id ";
+			"GROUP BY D.id " .
 			"ORDER BY doc_count DESC ";
 	$default->log->info("getSearchResults $sQuery");
 	$aColumns = array("folder_image_url", "document_name", "doc_count");
@@ -120,9 +120,10 @@ function getSearchResults($sMetaTagIDs, $sSQLSearchString, $iStartIndex, $sStatu
 	
 	$oPatternBrowse = & new PatternBrowseableSearchResults($sQuery, 10, $aColumns, $aColumnTypes, $aColumnHeaders, $aLinkURLs, $aDBQueryStringColumns, $aQueryStringVariableNames);
 	$oPatternBrowse->setStartIndex($iStartIndex);
+	$oPatternBrowse->setSearchText($sSearchString);
     
     $sRefreshMessage = "<table><tr><td align=\"center\">If your browser displays a 'Warning: Page has Expired' message when you attempt to return to these search results, please click your browser's 'Refresh' button</td></tr></table>";
-	return renderHeading("Advanced Search") . $oPatternBrowse->render() . $sRefreshMessage . getSearchVariablesHtml($sSearchText, $sMetaTagIDs);
+	return renderHeading("Advanced Search") . $oPatternBrowse->render() . $sRefreshMessage . getSearchVariablesHtml($sSearchString, $sStatus, $sMetaTagIDs);
 }
 
 function getSearchValidationJavaScript() {
@@ -145,9 +146,11 @@ function wasSelected($iID, $aMetaTagIDs) {
 	return "";
 }
 
-function getSearchVariablesHtml($sSearchText, $sMetaTagIDs) {
+function getSearchVariablesHtml($sSearchText, $sStatus, $sMetaTagIDs) {
 	$aMetaTagIDs = explode(",", $sMetaTagIDs);
-	$sToRender = "\n\n<input type=\"hidden\" name=\"fSearchString\" value=\"$sSearchText\" />\n";
+	$sToRender = "\n\n<input type=\"hidden\" name=\"fForSearch\" value=\"1\" />\n";
+	$sToRender .= "\n\n<input type=\"hidden\" name=\"fSearchString\" value=\"$sSearchText\" />\n";
+	$sToRender .= "\n\n<input type=\"hidden\" name=\"fToSearch\" value=\"$sStatus\" />\n";
 	$sToRender .= "<input type=\"hidden\" name=\"adv_search_start\" value=\"\" />\n";
 	for ($i = 0; $i < count($aMetaTagIDs); $i++) {
 		$sToRender .= "<input type=\"hidden\" name=\"fMetaTag_$i\" value=\"" . $aMetaTagIDs[$i] . "\" />\n";

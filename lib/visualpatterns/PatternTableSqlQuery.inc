@@ -164,9 +164,9 @@ class PatternTableSqlQuery {
 								}
 								if ($sql->f($this->aColumns[$i]) != null) {
 									if ($this->bWordWrap) {
-										$sToRender .= wordwrap(stripslashes($sql->f($this->aColumns[$i])), 25, " ", 1) . "</td>";
+										$sToRender .= wordwrap($sql->f($this->aColumns[$i]), 25, " ", 1) . "</td>";
 									} else {
-										$sToRender .= stripslashes($sql->f($this->aColumns[$i])) . "</td>";
+										$sToRender .= $sql->f($this->aColumns[$i]) . "</td>";
 									}
 								} else {
 									$sToRender .= "&nbsp;</td>";
@@ -205,7 +205,7 @@ class PatternTableSqlQuery {
 								} else if ($this->bUseImageURLFromQuery) {
 									$sToRender .= $this->generateImageURL($sql->f("image_url"));
 								}
-								$sToRender .= stripslashes($sql->f($this->aColumns[$i])) . "</a></td>\n";
+								$sToRender .= $sql->f($this->aColumns[$i]) . "</a></td>\n";
 								break;
 						default:
 								break;

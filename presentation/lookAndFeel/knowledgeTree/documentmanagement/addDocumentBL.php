@@ -101,7 +101,7 @@ if (checkSession()) {
                                     				" are meant to be linked for collaboration purposes.  As creator of the document, ' " . $oParentDocument->getName() . "', you are requested to " .
                                     				"please link them manually by browsing to the parent document, " .
                                     				generateControllerLink("viewDocument","fDocumentID=" . $oParentDocument->getID(), $oParentDocument->getName()) . 
-                                    				"  and selecting the link button.  " . $oDocument->getName() . " can be found at " . $oDocument->generateFullFolderPath($oDocument->getFolderID());
+                                    				"  and selecting the link button.  " . $oDocument->getName() . " can be found at " . $oDocument->getDisplayPath();
                                     		
                                     		$oEmail = & new Email();
 											$oEmail->send($oUserDocCreator->getEmail(), "Automatic document linking failed", $sBody);

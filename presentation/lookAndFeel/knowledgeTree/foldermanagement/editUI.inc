@@ -52,7 +52,7 @@ function getFolderData($iFolderID, $sDivName, $sStatusMessage = "") {
 	$oPatternListFromQuery->setTableWidth("610");
 	
 	$sToRender .= "<table>";
-	if ($sStatusMessage) {
+	if (strlen($sStatusMessage) > 0) {
 		$sToRender .= "<tr><td><font color=\"red\">$sStatusMessage</font></td></tr>";
 	}
 	$sToRender .= "<tr><td>" . $oPatternListFromQuery->render() . "</td></tr>";	
@@ -70,12 +70,12 @@ function getFolderRouting($iFolderID, $sDivName, $bCollaboration) {
 	global $default;
 	//had to use coalesce and left outer join for user_id because this column was a new addition
 	//and the user_ids for existing documents before this change will be null
-	$sQuery = "SELECT GFAL.id as id, GFAL.folder_id AS folder_id, G.name AS group_name, G.id AS group_id, GFAL.role_id AS role_id, R.name AS role_name, GFAL.precedence AS precedence, COALESCE(U.id, -1) AS user_id, COALESCE(U.name, 'Not Assigned') AS user_name, 'Edit' as edit, 'Delete' as del, 'Dependant docs' as depn " .
-				"FROM $default->groups_folders_approval_table AS GFAL INNER JOIN roles AS R ON GFAL.role_id = R.id " .
-				"INNER JOIN $default->groups_table AS G ON G.id = GFAL.group_id " .
-				"LEFT OUTER JOIN $default->users_table AS U ON U.id = GFAL.user_id " .				 
-				"WHERE GFAL.folder_id = $iFolderID " .
-				"ORDER BY GFAL.precedence, role_name ASC";
+	$sQuery = "SELECT GFAL.id as id, GFAL.folder_id AS folder_id, COALESCE(G.name, 'Not Assigned') AS group_name, G.id AS group_id, GFAL.role_id AS role_id, R.name AS role_name, GFAL.precedence AS precedence, COALESCE(U.id, -1) AS user_id, COALESCE(U.name, 'Not Assigned') AS user_name, 'Edit' as edit, 'Delete' as del, 'Dependant docs' as depn " .
+			  "FROM $default->groups_folders_approval_table AS GFAL INNER JOIN roles AS R ON GFAL.role_id = R.id " .
+			  "LEFT OUTER JOIN $default->groups_table AS G ON G.id = GFAL.group_id " .
+			  "LEFT OUTER JOIN $default->users_table AS U ON U.id = GFAL.user_id " .				 
+			  "WHERE GFAL.folder_id = $iFolderID " .
+			  "ORDER BY GFAL.precedence, role_name ASC";
 	
 	$aColumns = array("group_name", "role_name", "precedence", "user_name", "edit", "del", "depn");
 	$aColumnHeaders = array("Group", "Role", "Seq", "User", "", "");
@@ -89,6 +89,9 @@ function getFolderRouting($iFolderID, $sDivName, $bCollaboration) {
 	$oPatternTableSqlQuery->setDisplayColumnHeadings(true);
 	
 	$sToRender .= "<table>";
+	if ($bCollaboration) {
+		$sToRender .= "<tr><td><font color=\"red\">Documents in this folder are currently undergoing this collaboration process, so these steps can't be altered</font></td></tr>";
+	}
 	$sToRender .= "<tr><td>" . $oPatternTableSqlQuery->render() . "</td></tr>";
     if (!$bCollaboration) {
         $sToRender .= "<tr>\n";
@@ -227,14 +230,7 @@ function getStatusPage($iFolderID, $sStatusMessage) {
 
 	$sToRender .= "</table>";
 	$sToRender .= "</div>";
-	// ugly netscape hacks
-	if (!$default->bNN4) {
-		$sToRender .= "<div id=\"contentDiv\" style=\"position:relative;visibility:hidden;top:10px;\">";
-	}
 	$sToRender .= getFolderData($iFolderID, "folderData", $sStatusMessage);
-	if (!$default->bNN4) {
-		$sToRender .= "</div>";
-	}	
 	return $sToRender;
 }
 ?>

@@ -133,11 +133,11 @@ class DependantDocumentTemplate {
 	function create() {
 		global $default, $lang_err_database, $lang_err_object_exists;		 
 		//if the object hasn't been created	
-		if ($this -> iId < 0) {
-			$sql = $default -> db;
-			$result = $sql -> query("INSERT INTO $default->dependant_document_template_table (document_title, default_user_id,template_document_id, group_folder_approval_link_id) VALUES ('" . addslashes($this->sDocumentTitle) . "', $this->iDefaultUserID, " . (($this->iTemplateDocumentID == null) ? "NULL" : $this->iTemplateDocumentID) . ", $this->iGroupFolderApprovalLinkID)");
+		if ($this->iId < 0) {
+			$sql = $default->db;
+			$result = $sql->query("INSERT INTO $default->dependant_document_template_table (document_title, default_user_id,template_document_id, group_folder_approval_link_id) VALUES ('$this->sDocumentTitle', $this->iDefaultUserID, " . (($this->iTemplateDocumentID == null) ? "NULL" : $this->iTemplateDocumentID) . ", $this->iGroupFolderApprovalLinkID)");
 			if ($result) {
-				$this -> iId = $sql -> insert_id();
+				$this->iId = $sql->insert_id();
 				return true;
 			}
 			$_SESSION["errorMessage"] = $lang_err_database;
@@ -156,9 +156,9 @@ class DependantDocumentTemplate {
 	function update() {
 		global $default, $lang_err_database, $lang_err_object_key;
 		//only update if the object has been stored
-		if ($this -> iId > 0) {
-			$sql = $default -> db;
-			$result = $sql -> query("UPDATE $default->dependant_document_template_table SET document_title = '".addslashes($this -> sDocumentTitle)."', default_user_id = $this->iDefaultUserID, template_document_id = " . (($this->iTemplateDocumentID == null) ? "NULL" : $this->iTemplateDocumentID) . ", group_folder_approval_link_id = $this->iGroupFolderApprovalLinkID WHERE id = $this->iId");
+		if ($this->iId > 0) {
+			$sql = $default->db;
+			$result = $sql->query("UPDATE $default->dependant_document_template_table SET document_title = '$this->sDocumentTitle', default_user_id = $this->iDefaultUserID, template_document_id = " . (($this->iTemplateDocumentID == null) ? "NULL" : $this->iTemplateDocumentID) . ", group_folder_approval_link_id = $this->iGroupFolderApprovalLinkID WHERE id = $this->iId");
 			if ($result) {
 				return true;
 			}
@@ -178,9 +178,9 @@ class DependantDocumentTemplate {
 	function delete() {
 		global $default, $lang_err_database, $lang_err_object_key;
 		//only delete the object if it exists in the database
-		if ($this -> iId >= 0) {
-			$sql = $default -> db;
-			$result = $sql -> query("DELETE FROM $default->dependant_document_template_table WHERE id = $this->iId");
+		if ($this->iId >= 0) {
+			$sql = $default->db;
+			$result = $sql->query("DELETE FROM $default->dependant_document_template_table WHERE id = $this->iId");
 			if ($result) {
 				return true;
 			}
@@ -201,13 +201,13 @@ class DependantDocumentTemplate {
 	*/
 	function & get($iDependantDocumentID) {
 		global $default;
-		$sql = $default -> db;
-		$result = $sql -> query("SELECT * FROM $default->dependant_document_template_table WHERE id = $iDependantDocumentID");
+		$sql = $default->db;
+		$result = $sql->query("SELECT * FROM $default->dependant_document_template_table WHERE id = $iDependantDocumentID");
 		if ($result) {
-			if ($sql -> next_record()) {
-				$DependantDocumentTemplate = & new DependantDocumentTemplate(stripslashes($sql -> f("document_title")), $sql -> f("default_user_id"), $sql->f("group_folder_approval_link_id"), $sql->f("template_document_id"));
-				$DependantDocumentTemplate -> iId = $sql -> f("id");
-				/*if (!($sql -> f("template_document_id") == null)) {
+			if ($sql->next_record()) {
+				$DependantDocumentTemplate = & new DependantDocumentTemplate($sql->f("document_title"), $sql->f("default_user_id"), $sql->f("group_folder_approval_link_id"), $sql->f("template_document_id"));
+				$DependantDocumentTemplate->iId = $sql->f("id");
+				/*if (!($sql->f("template_document_id") == null)) {
 					 $DependantDocumentTemplate->setTemplateDocumentID($sql->f("template_document_id"));
 				}*/
 				return $DependantDocumentTemplate;

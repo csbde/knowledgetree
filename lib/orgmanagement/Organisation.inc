@@ -81,7 +81,7 @@ class Organisation {
                 $_SESSION["errorMessage"] = "Organisation::The name " . $this->sName . " is already in use!";
                 return false;
             } else {
-                $result = $sql->query("INSERT INTO " . $default->organisations_table . " (name) VALUES ('" . addslashes($this->sName) . "')");
+                $result = $sql->query("INSERT INTO " . $default->organisations_table . " (name) VALUES ('$this->sName')");
                 if ($result) {
                     $this->iId = $sql->insert_id();
                     return true;
@@ -104,7 +104,7 @@ class Organisation {
         //only update if the object has been stored
         if ($this->iId > 0) {
             $sql = $default->db;
-            $result = $sql->query("UPDATE " . $default->organisations_table . " SET name = '" . addslashes($this->sName) . "' WHERE id = $this->iId");
+            $result = $sql->query("UPDATE " . $default->organisations_table . " SET name = '$this->sName' WHERE id = $this->iId");
             if ($result) {
                 return true;
             }
@@ -160,7 +160,7 @@ class Organisation {
         $result = $sql->query("SELECT * FROM $default->organisations_table WHERE id = $iOrgID");
         if ($result) {
             if ($sql->next_record()) {
-                $oOrg = & new Organisation(stripslashes($sql->f("name")));
+                $oOrg = & new Organisation($sql->f("name"));
                 $oOrg->iId = $iOrgID;
                 return $oOrg;
             }

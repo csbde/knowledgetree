@@ -223,7 +223,7 @@ class GroupFolderApprovalLink {
 				$oGroupFolderApprovalLink->iId = $iGroupFolderLinkID;
 				return $oGroupFolderApprovalLink;
 			}
-			$_SESSION["errorMessage"] = $lang_err_object_not_exist . "id = " . $iGroupFolderLinkID . " table = $default-owl_groups_folders_approval_table";
+
 			return false;
 		}
 		$_SESSION["errorMessage"] = $lang_err_database;

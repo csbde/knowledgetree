@@ -50,6 +50,8 @@ class PatternBrowseableSearchResults {
 	var $sOrderDirection = "ASC";
 	/** New QueryString when submitting to self */
 	var $sQueryString;
+	/** Search criteria **/
+	var $sSearchText;
 	
 	function PatternBrowseableSearchResults($sTmpQuery, $iTmpResultsToDisplay, $aTmpColumns, $aTmpColumnTypes, $aTmpColumnHeaders, $aTmpLinkURLs = null, $aTmpDBQueryStringColumns = null, $aTmpQueryStringVariableNames = null) {
 		$this->sQuery = $sTmpQuery;
@@ -82,6 +84,9 @@ class PatternBrowseableSearchResults {
 	function setOrderDirection($sNewValue) {
 		$this->sOrderDirection = $sNewValue;
 	}
+	function setSearchText($sNewValue) {
+		$this->sSearchText = $sNewValue;
+	}
 	
 	/**
 	* Build the HTML string used to render the object
@@ -96,43 +101,53 @@ class PatternBrowseableSearchResults {
 		$sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
 		$sTHBGColour = $default->siteMap->getSectionColour($sSectionName, "th");
 		
-		//add the limit and offset stuff for cutting down result set
-		$sLimitQuery = $this->sQuery . " LIMIT " . $this->iStartIndex . ", " . $this->iResultsToDisplay;
-		$sql = & $default->db;		
+		// run the query first and get the number of rows
+		$iTotalResults = $this->getResultCount();
+				
+		// now add the limit and offset stuff for cutting down result set
+		// decrement startIndex because LIMIT starts at zero and startIndex starts at 1 (for display purposes)
+		$sLimitQuery = $this->sQuery . " LIMIT " . ($this->iStartIndex-1) . ", " . $this->iResultsToDisplay;
+
+		$sql = & $default->db;
 		$sql->query($sLimitQuery);
-		$sToRender;
+
 		if ($sql->num_rows() == 0) {
 			//no results
-			$sToRender = "<table width=\"100%\" height=\"100%\">\n";		
+			$sToRender .= "<table width=\"100%\" height=\"100%\">\n";		
 			$sToRender .= "<tr>\n";		
 			$sToRender .= "<td><p class=\"errorText\">No results matched your criteria</p></td>\n";
 			$sToRender .= "</tr>\n";
 			$sToRender .= "</table>\n";
 		} else {
         
-			$sToRender = "<table width=\"100%\" height=\"100%\">\n";		
+			$sToRender .= "<table width=\"100%\" height=\"100%\">\n";
+			
+			// display the number of results
+			$iEndIndex = $this->iStartIndex+$this->iResultsToDisplay-1 < $iTotalResults ? $this->iStartIndex+$this->iResultsToDisplay-1 : $iTotalResults;
+			
+			$sToRender .= "<tr><td colspan=\"3\">Searched the KnowledgeTree for '$this->sSearchText'.</td></tr>";
+			$sToRender .= "<tr><td colspan=\"3\" align=\"right\">Displaying results $this->iStartIndex - $iEndIndex of $iTotalResults</td></tr>\n";
+					
 			$sToRender .= "<tr>\n";		
 			for ($i = 0; $i < count($this->aColumnHeadings); $i++) {
 				if (! (strcmp($this->sOrderByColumn, $this->aColumns[$i]) === false) && (strcmp($this->sOrderByColumn, $this->aColumns[$i]) == 0)) {
 					if (!(strcmp($this->sOrderDirection,"ASC") === false) && (strcmp($this->sOrderDirection,"ASC") == 0)) {					
-						//$sToRender .= "<th align=\"left\"><a href=\"" . $_SERVER["PHP_SELF"] . "?fOrderBy=" . $this->aColumns[$i] . "&fOrderDirection=DESC&fStartIndex=" . $this->iStartIndex . "\">" . $this->aColumnHeadings[$i]."</a></th>\n";
 						$sToRender .= "<th align=\"left\" bgcolor=\"" . $sTHBGColour . "\">" . $this->aColumnHeadings[$i]. "</th>\n";
 					} else {
-						//$sToRender .= "<th align=\"left\"><a href=\"" . $_SERVER["PHP_SELF"] . "?fOrderBy=" . $this->aColumns[$i] . "&fOrderDirection=ASC&fStartIndex=" . $this->iStartIndex . "\">" . $this->aColumnHeadings[$i]."</a></th>\n";
 						$sToRender .= "<th align=\"left\" bgcolor=\"" . $sTHBGColour . "\">" . $this->aColumnHeadings[$i]. "</th>\n";
 					}
 				} else {
-					//$sToRender .= "<th align=\"left\"><a href=\"" . $_SERVER["PHP_SELF"] . "?fOrderBy=" . $this->aColumns[$i] . "&fOrderDirection=ASC&fStartIndex=" . $this->iStartIndex . "\">" . $this->aColumnHeadings[$i]."</a></th>\n";
 					$sToRender .= "<th align=\"left\" bgcolor=\"" . $sTHBGColour . "\">" . $this->aColumnHeadings[$i]. "</th>\n";
 				}
 			}
 			$sToRender .= "</tr>\n";		
 			$iColour = 0;
 			$iDisplayed = 0;
-			//limit the result set displayed		
-			while($sql->next_record() && ($iDisplayed < $this->iResultsToDisplay)) {
+		
+			//limit the result set displayed			
+			while($sql->next_record()) {
 				$sToRender .= "<tr bgcolor=\"" . getColour($iColour) . "\">";
-				$iColour++;
+				$iColour++; $iDisplayed++;
 				
 				for ($i = 0; $i < count($this->aColumns); $i++) {
 					switch ($this->aColumnTypes[$i]) {
@@ -141,7 +156,7 @@ class PatternBrowseableSearchResults {
 							$sToRender .= "<td>" . $sql->f($this->aColumns[$i]) . "</td>\n";					
 						break;
 						case 2:
-							//diplay a checkbox
+							//display a checkbox
 							$sToRender .= "<td>" . ($sql->f($this->aColumns[$i]) ? "Yes" : "No") . "</td>\n";						
 							break;
 						case 3:					
@@ -176,43 +191,40 @@ class PatternBrowseableSearchResults {
 					}
 				}
 				$sToRender .= "</tr>\n";
-				$iDisplayed++;
-			}
+			} 
 			
 			//if we displayed less results than the number to display
 			//simply pad the table
 			while ($iDisplayed < $this->iResultsToDisplay) {
-				$sToRender .= "<tr><td>&nbsp</td></tr>\n";
+				$sToRender .= "<tr><td>&nbsp;</td></tr>\n";
 				$iDisplayed++;
 			}
-			
+			$sToRender .= "</table>";
+
+			$sToRender .= "<table>";
 			$sToRender .= "<tr>\n";		
-			
-			$sToRender .= "<input type=\"hidden\" name=\"fStartIndex\" value=\"" . ($this->iStartIndex +  $this->iResultsToDisplay) . "\" />\n";
-			/* Display only the next button */
-			if (($this->iStartIndex + $this->iResultsToDisplay) < $this->getResultCount($sql) && $this->iStartIndex == 0) {
-				$sToRender .= "<td>";
-				//$sToRender .= ("<a href=\"" . $_SERVER["PHP_SELF"] . "?fStartIndex=" . ($this->iStartIndex +  $this->iResultsToDisplay) . "\">Next</a>");
-				$sToRender .= ("<input type=\"image\" src=\"$default->graphicsUrl/widgets/next.gif\" onClick=\"setActionAndSubmit('" . $_SERVER["PHP_SELF"] . "?fStartIndex=" . ($this->iStartIndex +  $this->iResultsToDisplay) . $this->sQueryString . "')\" />");
+			$sToRender .= "<input type=\"hidden\" name=\"fStartIndex\" value=\"$iEndIndex\" />\n";
+			// Display only the next button
+			if (($this->iStartIndex + $this->iResultsToDisplay) < $iTotalResults && $this->iStartIndex == 1) {
+				$sToRender .= "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>";
+				$sToRender .= "<td align=\"left\">";
+				$sToRender .= "<input type=\"image\" src=\"$default->graphicsUrl/widgets/next.gif\" onClick=\"setActionAndSubmit('" . $_SERVER["PHP_SELF"] . "?fStartIndex=" . ($this->iStartIndex +  $this->iResultsToDisplay) . $this->sQueryString . "')\" />";
 				$sToRender .= "</td>\n";
 			}
-			/* Display both the next and the previous buttons */		
-			else if (($this->iStartIndex + $this->iResultsToDisplay) < $this->getResultCount($sql) && $this->iStartIndex > 0) {
+			// Display both the next and the previous buttons		
+			else if (($this->iStartIndex + $this->iResultsToDisplay) < $iTotalResults && $this->iStartIndex > 1) {
 				$sToRender .= "<td>";
-				$sToRender .= ("<input type=\"image\" src=\"$default->graphicsUrl/widgets/next.gif\" onClick=\"setActionAndSubmit('" . $_SERVER["PHP_SELF"] . "?fStartIndex=" . ($this->iStartIndex +  $this->iResultsToDisplay)  . $this->sQueryString . "')\" />");
+				$sToRender .= "<input type=\"image\" src=\"$default->graphicsUrl/widgets/previous.gif\" onClick=\"setActionAndSubmit('" . $_SERVER["PHP_SELF"] . "?fStartIndex=" . ($this->iStartIndex -  $this->iResultsToDisplay) . $this->sQueryString . "')\" />";
 				$sToRender .= "</td>";
 				$sToRender .= "<td>";
-				$sToRender .= ("<input type=\"image\" src=\"$default->graphicsUrl/widgets/previous.gif\" onClick=\"setActionAndSubmit('" . $_SERVER["PHP_SELF"] . "?fStartIndex=" . ($this->iStartIndex -  $this->iResultsToDisplay) . $this->sQueryString . "')\" />");
+				$sToRender .= "<input type=\"image\" src=\"$default->graphicsUrl/widgets/next.gif\" onClick=\"setActionAndSubmit('" . $_SERVER["PHP_SELF"] . "?fStartIndex=" . ($this->iStartIndex +  $this->iResultsToDisplay)  . $this->sQueryString . "')\" />";				
 				$sToRender .= "</td>\n";
 				
 			}	
-			/* Display only the previous button */
-			else if ($this->iStartIndex > 0) {
-				$sToRender .= "<td>\n";
-				$sToRender .= ("&nbsp");
-				$sToRender .= "</td>";
-				$sToRender .= "<td>\n";
-				$sToRender .= ("<input type=\"image\" src=\"$default->graphicsUrl/widgets/previous.gif\" onClick=\"setActionAndSubmit('" . $_SERVER["PHP_SELF"] . "?fStartIndex=" . ($this->iStartIndex -  $this->iResultsToDisplay) . $this->sQueryString . "')\" />");
+			// Display only the previous button
+			else if ($this->iStartIndex > 1) {
+				$sToRender .= "<td align=\"left\">\n";
+				$sToRender .= "<input type=\"image\" src=\"$default->graphicsUrl/widgets/previous.gif\" onClick=\"setActionAndSubmit('" . $_SERVER["PHP_SELF"] . "?fStartIndex=" . ($this->iStartIndex -  $this->iResultsToDisplay) . $this->sQueryString . "')\" />";
 				$sToRender .= "</td>";
 			}
 			
@@ -222,11 +234,14 @@ class PatternBrowseableSearchResults {
 		return $sToRender;
 	}
 	
-	function getResultCount($sql) {		
+	function getResultCount() {
+		global $default;
+		$sql = & $default->db;
 		if ($sql->query($this->sQuery)) {
 			return $sql->num_rows();
+		} else {
+			return 0;
 		}
-		return 0;
 	}
 }
 ?>

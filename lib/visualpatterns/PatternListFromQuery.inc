@@ -127,7 +127,7 @@ class PatternListFromQuery {
 												
 							$sToRender .= "<td nowrap bgcolor=\"$sTDBGColour\">" . $this->aColumnNames[$i] . "</td><td width=\"100%\" bgcolor=\"" . getColour($iColour) ."\">";
 							if ($sql->f($this->aColumns[$i]) != null) {	 							
-								$sToRender .= stripslashes($sql->f($this->aColumns[$i])) . "</td>\n";
+								$sToRender .= $sql->f($this->aColumns[$i]) . "</td>\n";
 							} else {
 								$sToRender .= "&nbsp;</td>";
 							}
@@ -153,7 +153,7 @@ class PatternListFromQuery {
 							//$sToRender .= "<td bgcolor=\"$sTDBGColour\">" . $this->aColumnNames[$i] . "</td><td bgcolor=\"" . getColour($iColour) ."\"><textarea cols=$this->iTextAreaColumns rows=$this->iTextAreaRows READONLY>" . $sql->f($this->aColumns[$i]) . "</textarea></td>\n";
 							//break;
 						case 3:
-							$sToRender .= "<td bgcolor=\"$sTDBGColour\">" . $this->aColumnNames[$i] . "</b></td><td bgcolor=\"" . getColour($iColour) ."\"><a href=\"" . $this->aHyperLinkURL[$i] . "?" . $this->replaceValues($this->aQueryStringText[$i], $sql) . "\">" . stripslashes($sql->f($this->aColumns[$i])) . "</a></td>\n";
+							$sToRender .= "<td bgcolor=\"$sTDBGColour\">" . $this->aColumnNames[$i] . "</b></td><td bgcolor=\"" . getColour($iColour) ."\"><a href=\"" . $this->aHyperLinkURL[$i] . "?" . $this->replaceValues($this->aQueryStringText[$i], $sql) . "\">" . $sql->f($this->aColumns[$i]) . "</a></td>\n";
 							break;
 						default:
 							break;

@@ -76,12 +76,10 @@ class Authenticator {
                         }
                         else {
                             // db access failed
-                            $_SESSION["errorMessage"] = $lang_err_database;
                             $aUserDetails["status"] = 0;
                         }
                     } else {
                         // db access failed
-                        $_SESSION["errorMessage"] = $lang_err_database;
                         $aUserDetails["status"] = 0;
                     }
                 } else {

@@ -98,7 +98,7 @@ if ($loginAction == "loginForm") {
         switch ($userDetails["status"]) {
             // bad credentials
         case 0:
-                $url = $url . "&errorMessage=" . urlencode($lang_loginfail);
+                $url = $url . "&errorMessage=" . urlencode("Login failure");
             break;
             // successfully authenticated
         case 1:
@@ -137,18 +137,18 @@ if ($loginAction == "loginForm") {
             break;
             // login disabled
         case 2:
-            $url = $url . "&errorMessage=" . urlencode($lang_logindisabled);
+            $url = $url . "&errorMessage=" . urlencode("Account has been DISABLED, contact the System Adminstrator");
             break;
             // too many sessions
         case 3 :
-            $url = $url . "&errorMessage=" . urlencode($lang_toomanysessions);
+            $url = $url . "&errorMessage=" . urlencode("Maximum sessions for user reached.<br>Contact the System Administrator");
             break;
             // not a unit user
         case 4 :
             $url = $url . "&errorMessage=" . urlencode("Not unit user- contact an Administrator");
             break;            
         default :
-            $url = $url . "&errorMessage=" . urlencode($lang_err_general);
+            $url = $url . "&errorMessage=" . urlencode("Login failure");
         }
     } else {
         // didn't receive any login parameters, so redirect login form

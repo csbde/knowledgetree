@@ -29,12 +29,8 @@ function getPage($iFolderID, $iDocumentTypeID) {
 	global $default;
 	$sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
 	$sTDBGColour = $default->siteMap->getSectionColour($sSectionName, "td");
-    $sToRender = renderHeading("Add Folder Document Type");
-	$sToRender .= "<table border=\"0\">\n";
-    $sToRender .= "<tr>\n";
-    $sToRender .= "\t<td width=\"100%\">" . renderFolderPath($iFolderID, "/control.php?action=browse	") . "</td>\n";
-    $sToRender .= "</tr>\n";
-    $sToRender .= "</table>\n";
+    $sToRender  = renderHeading("Add Folder Document Type");
+    $sToRender .= renderFolderPath($iFolderID, "/control.php?action=browse");
     $sToRender .= "<table border=\"0\">\n";
     $sToRender .= "<tr>\n";	
 	$sToRender .= "<td bgcolor=\"$sTDBGColour\">Document type</td>\n";

@@ -65,7 +65,8 @@ function getSearchResultsByCategory($iFolderID, $sKeywords, $iStartIndex, $sCate
 	$aQueryStringVariableNames = array("fDocumentID", "fFolderID");
 	
 	$oPatternBrowse = & new PatternBrowseableSearchResults($sQuery, 10, $aColumns, $aColumnTypes, $aColumnHeaders, $aLinkURLs, $aDBQueryStringColumns, $aQueryStringVariableNames);
-	$oPatternBrowse->setStartIndex($iStartIndex);	
+	$oPatternBrowse->setStartIndex($iStartIndex);
+	$oPatternBrowse->setSearchText($sKeywords);	
 	return getHeading() . $oPatternBrowse->render() . getSearchVariablesHtml($sKeywords, "category", $iFolderID, "", $sCategory, "") . getMessage();
 }
 
@@ -98,6 +99,7 @@ function getSearchResultsByDocumentType($iFolderID, $sKeywords, $iStartIndex, $i
 	
 	$oPatternBrowse = & new PatternBrowseableSearchResults($sQuery, 10, $aColumns, $aColumnTypes, $aColumnHeaders, $aLinkURLs, $aDBQueryStringColumns, $aQueryStringVariableNames);
 	$oPatternBrowse->setStartIndex($iStartIndex);
+	$oPatternBrowse->setSearchText($sKeywords);
 	return getHeading() . $oPatternBrowse->render() . getSearchVariablesHtml($sKeywords, "documentType", $iFolderID, "", "", $iDocTypeID) . getMessage();
 	
 }
@@ -128,6 +130,7 @@ function getSeachResultsByFolder($iFolderID, $iStartIndex, $sKeywords) {
 	
 	$oPatternBrowse = & new PatternBrowseableSearchResults($sQuery, 10, $aColumns, $aColumnTypes, $aColumnHeaders, $aLinkURLs, $aDBQueryStringColumns, $aQueryStringVariableNames);
 	$oPatternBrowse->setStartIndex($iStartIndex);
+	$oPatternBrowse->setSearchText($sKeywords);
 	return getHeading() . $oPatternBrowse->render() . getSearchVariablesHtml($sKeywords, "", $iFolderID, "", "", "") . getMessage();
 }
 

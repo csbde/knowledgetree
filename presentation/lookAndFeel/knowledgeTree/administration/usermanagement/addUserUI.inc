@@ -124,7 +124,7 @@ function getDetailsLDAPPage($sUserName, $aAttributes, $sUserIdentifier) {
         $sToRender .= "<tr>\n";
         $sToRender .= "<td>Sms Notification: </td><td><input type=\"checkbox\" name=\"fSmsNotification\"/> </td>\n";
         $sToRender .= "</tr>\n";
-        $sToRender .= "<tr><td><b>Group</b></td><td>" . getGroupListBox() . "</td></tr>\n";        
+        $sToRender .= "<tr><td><b>Initial Group</b></td><td>" . getGroupListBox() . "</td></tr>\n";        
         $sToRender .= "<tr>\n";
         $sToRender .= "<td colspan=\"2\" align=\"right\">" . getAddButton() . getCancelButton("listUsers") . "</td>";
         $sToRender .= "</tr>\n";

@@ -80,28 +80,25 @@ function getGotGroupPage($iGroupID,$iUnitID){
 // gets main page
 function getPage($iGroupID, $iUnitID) {
     global $default;
-    $oGroup = null;
-    $oUnit = null;
+    
+    $oGroup = Group::get($iGroupID);
+    if (isset($iUnitID)) {
+        $oUnit = Unit::get($iUnitID);
+    }
 
-    if (isset($iGroupID)) {
-        $oGroup = Group::get($iGroupID);
-        $heading = "<tr><td colspan=\"2\">Are you Sure you wish to assign the Group to the Unit?</td></tr>\n";
+    if ($oUnit) {
+        $heading = "<tr><td colspan=\"2\">Are you sure you wish to assign the Group to the Unit?</td></tr>\n";
     } else {
-        if (Permission::userIsUnitAdministrator()) {
+        if (Permission::userIsUnitAdministrator() && !Permission::userIsSystemAdministrator()) {
             $heading = "<tr><td colspan=\"2\">Please Assign a Group to your Unit:</td></tr>\n";
         } else {
             $heading = "<tr><td colspan=\"2\">Please Assign a Group to a Unit:</td></tr>\n";
         }
     }
-    
-    if (isset($iUnitID)) {
-        $oUnit = Unit::get($iUnitID);
-    }
 
     $sToRender .= renderHeading("Assign Group to Unit");
     $sToRender .= "<table>\n";
     $sToRender .= $heading;
-    $sToRender .= "<br>\n";
     $sToRender .= "<tr>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "<td>Group Name: </td><td>" . getGroupDisplay($oGroup) . "</td>\n";
@@ -227,7 +224,7 @@ function getGroupDisplay($oGroup) {
 // display the listbox initially ..then just display the text
 function getUnitDisplay($oUnit) {
     global $default;
-    if (Permission::userIsUnitAdministrator()) {
+    if (Permission::userIsUnitAdministrator() && !Permission::userIsSystemAdministrator()) {
         $oUnit = Unit::get(User::getUnitID($_SESSION["userID"]));
     }
     if (!isset($oUnit)) {

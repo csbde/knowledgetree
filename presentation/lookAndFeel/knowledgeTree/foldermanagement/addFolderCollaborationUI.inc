@@ -70,6 +70,7 @@ function getFolderPath($iFolderID) {
 function getGroupDropDown($iGroupID, $iFolderID) {
 	global $default;
 	$oPatternListBox = & new PatternListBox("$default->groups_table", "name", "id", "fGroupID");
+	$oPatternListBox->setFromClause("INNER JOIN $default->users_groups_table UGL ON UGL.group_id=ST.id"); 
 	$oPatternListBox->setPostBackOnChange(true);
 	$oPatternListBox->setOnChangeAction("setActionAndSubmit('" . $_SERVER["PHP_SELF"] . "?fFolderID=$iFolderID');");
 	if (isset($iGroupID)) {
