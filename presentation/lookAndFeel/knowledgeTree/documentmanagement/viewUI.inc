@@ -46,7 +46,8 @@ function renderDocumentData($oDocument, $bEditable, $sStatusMessage = "") {
     $aColumnTypes = array(1,1,1,1,1,1,1,1);
     $oPatternListFromQuery = & new PatternListFromQuery($sQuery, $aColumns, $aColumnNames, $aColumnTypes);
     $oPatternListFromQuery->setTableHeading("Document Data");
-    $oPatternListFromQuery->setTableWidth("400");   
+    $oPatternListFromQuery->setEmptyTableMessage("No Document Data");
+    $oPatternListFromQuery->setTableWidth("400");
       
     $sToRender .= "\t<table cellspacing=\"0\" cellpadding=\"0\" border=\"0\" width=\"100%\">\n";
 	if ($sStatusMessage) {

@@ -35,7 +35,9 @@ class PatternListFromQuery {
 	var $iTableWidth = null;
 	/** Picture paths */
 	var $sChkPicPath = "widgets/checked.gif";
-	var $sUnChkPicPath = "widgets/unchecked.gif";	
+	var $sUnChkPicPath = "widgets/unchecked.gif";
+	/** message that will be displayed if the table is empty*/
+	var $sEmptyTableMessage;	
 	
 	/**
 	* Default constructor
@@ -72,6 +74,10 @@ class PatternListFromQuery {
 		$this->bIndividualTableForEachResult = $bNewValue;
 	}
 	
+	function setEmptyTableMessage($sNewValue) {
+		$this->sEmptyTableMessage = $sNewValue;
+	}
+		
 	function & render() {
         global $default;
 		$sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
@@ -87,8 +93,12 @@ class PatternListFromQuery {
 		}
 		
 		if ($sql->num_rows() == 0) {
-			$sToRender .= "<tr>\n";					
-			$sToRender .= "<td colspan=" . count($this->aColumns) . ">No " . (isset($this->sTableHeading) ? "$this->sTableHeading" : "") . " data</td>\n";
+			$sToRender .= "<tr>\n";
+			if (isset($this->sEmptyTableMessage)) {
+				$sToRender .= "<td colspan=" . count($this->aColumns) . ">$this->sEmptyTableMessage</td>\n";
+			} else {
+				$sToRender .= "<td colspan=" . count($this->aColumns) . ">No " . (isset($this->sTableHeading) ? "$this->sTableHeading" : "") . " data</td>\n";
+			}
 			$sToRender .= "</tr>\n";
 		} else {
 			$iColour = 0;
