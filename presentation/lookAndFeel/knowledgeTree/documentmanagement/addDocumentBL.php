@@ -17,7 +17,9 @@ if (checkSession()) {
 	require_once("$default->owl_fs_root/lib/visualpatterns/PatternTableSqlQuery.inc");
 	require_once("$default->owl_fs_root/lib/visualpatterns/PatternCustom.inc");
 	require_once("$default->owl_fs_root/lib/foldermanagement/Folder.inc");
-	require_once("$default->owl_fs_root/lib/DocumentManagement/Document.inc");
+	require_once("$default->owl_fs_root/lib/documentmanagement/Document.inc");
+	require_once("$default->owl_fs_root/lib/documentmanagement/DocumentTransaction.inc");
+	require_once("$default->owl_fs_root/lib/web/WebDocument.inc");
 	require_once("$default->owl_fs_root/lib/DocumentManagement/PhysicalDocumentManager.inc");
 	require_once("$default->owl_fs_root/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
 	require_once("$default->owl_fs_root/presentation/Html.inc");
@@ -37,6 +39,13 @@ if (checkSession()) {
 						if ($oDocument->create()) {
 							//if the document was successfully created in the db, then store it on the file system
 							if (PhysicalDocumentManager::uploadPhysicalDocument($oDocument, $fFolderID, "None", $_FILES['fFile']['tmp_name'])) {
+								//create the web document link
+								$oWebDocument = & new WebDocument($oDocument->getID(), -1, 1, NOT_PUBLISHED, getCurrentDateTime());
+								$oWebDocument->create();
+								//create the document transaction record
+								$oDocumentTransaction = & new DocumentTransaction($oDocument->getID(), "Document created", CREATE);
+								$oDocumentTransaction->create();
+								//redirect to the document view page
 								redirect("$default->owl_root_url/control.php?action=viewDocument&fDocumentID=" . $oDocument->getID());
 							} else {
 								require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");
