@@ -399,16 +399,22 @@ function getWebPublishPage($oDocument) {
     $sToRender .= "\t</table>\n";
     $sToRender .= "</td>\n";
     $sToRender .= "<td valign=top>\n";
-    $sToRender .= "\t<table border = 0, width = 230>\n";
+    $sToRender .= "\t<table border=\"0\" width=\"230\">\n";
     $sToRender .= "\t<tr>\n";
     $sToRender .= "\t\t<td>" . renderNonEditableDocumentRouting($oDocument) . "</td>\n";
     $sToRender .= "\t<tr>\n";
     $sToRender .= "\t<tr>\n";
-    $sToRender .= "\t\t<th>Choose the website to publish to:</th>\n";
+    $sToRender .= "\t\t<th align=\"left\">Choose the website to publish to:</th>\n";
     $sToRender .= "\t</tr>";
     $sToRender .= "\t<tr>\n";
     $sToRender .= "\t\t<td>" . $oPatternListBox->render() . "</td>\n";
     $sToRender .= "\t\t<input type=\"hidden\" name=\"fForPublish\" value=\"1\" />\n";
+    $sToRender .= "\t</tr>";
+    $sToRender .= "\t<tr>\n";
+    $sToRender .= "\t\t<th nowrap align=\"left\">Enter a comment for the web master:</th>\n";
+    $sToRender .= "\t</tr>";
+    $sToRender .= "\t<tr>\n";
+    $sToRender .= "\t\t<td><input type=\"text\" name=\"fComment\" size=\"30\" /></td>\n";
     $sToRender .= "\t</tr>";
     $sToRender .= "\t<tr>\n";
     $sToRender .= "\t\t<td><input type=\"image\" src=\"$default->graphicsUrl/widgets/publish.gif\" border=\"0\"/></a>";
@@ -418,6 +424,15 @@ function getWebPublishPage($oDocument) {
     $sToRender .= "</td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "</table>";
+
+	$sToRender .= "\n\n<script language=\"javascript\">\n<!--\n";
+	$sToRender .= "function validateForm(theForm) {\n";	
+	$sToRender .= "\tif (!(validRequired(document.MainForm.fWebSiteID,'Website'))) {\n";
+	$sToRender .= "\t\treturn false;\n\t}\n";
+    $sToRender .= "\tif (!(validRequired(document.MainForm.fComment,'Publish comment'))) {\n";
+	$sToRender .= "\t\treturn false;\n\t}\n";    
+	$sToRender .= "return true;\n}\n";
+	$sToRender .= "//-->\n</script>\n\n";
 
     return $sToRender;
 }
