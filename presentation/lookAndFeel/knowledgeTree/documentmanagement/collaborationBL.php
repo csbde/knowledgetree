@@ -48,12 +48,12 @@ if (checkSession()) {
 				redirect("$default->rootUrl/control.php?action=viewDocument&fDocumentID=$fDocumentID&fCollaborationEdit=0");
 			}
 			if (isset($fForStore)) {
-				//if we are storing, get the folder collaboration entry from the database
+				//if we are storing, get the folder collaboration entry from the database				
 				$oFolderCollaboration = & FolderCollaboration::get($fFolderCollaborationID);
 				if (isset($fUserID) && ($fUserID != "")) {
 					//if a user has been selected, then set up the folders_users_roles_link database entry
-					$oFolderUserRole = & FolderUserRole::getFromFolderCollaboration($fFolderCollaborationID, $fDocumentID);
-					if (!($oFolderUserRole === false)) {
+					$oFolderUserRole = & FolderUserRole::getFromFolderCollaboration($fFolderCollaborationID, $fDocumentID);					
+					if (!($oFolderUserRole === false)) {					
 						//if we have an entry, just update it
 						if ($oFolderUserRole->getUserID() != $fUserID) {
 							//the user assigned has been changed, so inform the old user of his removal from the 
@@ -70,7 +70,7 @@ if (checkSession()) {
 						$oFolderUserRole->update();
 					} else {
 						//otherwise, create a new one
-						$oFolderUserRole = & new FolderUserRole($fUserID, $fDocumentID, $fFolderCollaborationID, 0);						
+						$oFolderUserRole = & new FolderUserRole($fUserID, $fDocumentID, $fFolderCollaborationID, 0);												
 						$oFolderUserRole->create();						
 					}					
 					//email the user to inform him of his newly assigned role in the collaboration process
