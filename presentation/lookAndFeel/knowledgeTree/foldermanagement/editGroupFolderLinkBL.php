@@ -47,11 +47,11 @@ if (checkSession()) {
                     // otherwise display an error message
                     $sErrorMessage = "The folder access entry could not be deleted from the database";
                     $oGroupFolderLink = & GroupFolderLink::get($fGroupFolderLinkID);
-                    $oPatternCustom->setHtml(getEditPage($oGroupFolderLink));
+                    $oPatternCustom->setHtml(getEditPage($oGroupFolderLink, $fFolderID));
                 }
             } else {
                 $oGroupFolderLink = & GroupFolderLink::get($fGroupFolderLinkID);
-                $oPatternCustom->setHtml(getEditPage($oGroupFolderLink));
+                $oPatternCustom->setHtml(getEditPage($oGroupFolderLink, $fFolderID));
             }
         } else {
             // display an error message
