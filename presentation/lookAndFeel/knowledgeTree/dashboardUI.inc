@@ -228,7 +228,7 @@ function renderDashboardNews() {
 	// retrieve all news items
 	$aDashboardNews = DashboardNews::getList("active=1");
 	
-	if ($default->ScrollingNews) {
+	if ($default->scrollingNews) {
 	  
 	  $sToRender .= "<MARQUEE onmouseover=this.stop() onmouseout=this.start() scrollAmount=1 direction=up width='100%' height='100'>";
 	$sToRender .= "\t\t\t<table border=\"0\" width=\"100%\">\n";
