@@ -44,14 +44,16 @@ function renderCheckedOutDocuments($aCheckedOutDocumentList) {
     $sToRender .= "\t\t<th class=\"sectionHeading\" colspan=\"2\">Checked Out Documents</th>\n";
     $sToRender .= "\t</tr>\n";
     
-	$sToRender .= "\t<tr>\n";    
-    $sToRender .= "<th align=\"left\" width=\"66%\" class=\"sectionColumns\">\n";
-    $sToRender .= "Title\n";
-    $sToRender .= "</th>\n";
-    $sToRender .= "<th align=\"left\" width=\"33%\" class=\"sectionColumns\">\n";
-    $sToRender .= "Days\n";
-    $sToRender .= "</th>";
-    $sToRender .= "\t\t</tr>\n";
+    if (count($aCheckedOutDocumentList) > 0) {
+        $sToRender .= "\t<tr>\n";
+        $sToRender .= "<th align=\"left\" width=\"66%\" class=\"sectionColumns\">\n";
+        $sToRender .= "Title\n";
+        $sToRender .= "</th>\n";
+        $sToRender .= "<th align=\"left\" width=\"33%\" class=\"sectionColumns\">\n";
+        $sToRender .= "Days\n";
+        $sToRender .= "</th>";
+        $sToRender .= "\t\t</tr>\n";
+    }
     
     for ($i = 0; $i < count($aCheckedOutDocumentList); $i++) {
         $oDocument = $aCheckedOutDocumentList[$i];
@@ -107,7 +109,7 @@ function renderQuickLinks($aQuickLinks) {
 function renderPage($aPendingDocumentList, $aCheckedOutDocumentList, $aSubscriptionAlertList, $aQuickLinks) {
     global $default;
     
-    $sToRender  = "<table border=\"0\" width=\"600\" >\n";
+    $sToRender  = "<table border=\"1\" width=\"600\" >\n";
 	$sToRender .= "\t<tr>\n";
     $sToRender .= "\t\t<td><img src=\"$default->graphicsUrl/welcome.gif\"/></td>\n";
     
@@ -118,8 +120,8 @@ function renderPage($aPendingDocumentList, $aCheckedOutDocumentList, $aSubscript
     
     // dashboard alerts
     $sToRender .= "\t<tr>\n";
-    $sToRender .= "\t\t<td width=\"50%\">\n";
-    $sToRender .= "\t\t\t<table border=\"0\" width=\"100%\">\n";
+    $sToRender .= "\t\t<td width=\"50%\" valign=\"top\">\n";
+    $sToRender .= "\t\t\t<table border=\"1\" width=\"100%\">\n";
     $sToRender .= renderPendingCollaborationDocuments($aPendingDocumentList);
     $sToRender .= renderCheckedOutDocuments($aCheckedOutDocumentList) . "\n";
     $sToRender .= renderSubscriptionAlerts($aSubscriptionAlertList) . "\n";
