@@ -47,7 +47,7 @@ if (checkSession()) {
                         $oDocumentTransaction = & new DocumentTransaction($fDocumentID, "Document deleted", DELETE);
                         $oDocumentTransaction->create();
                         // flip the status id
-                        $oDocument->setStatusID(lookupStatusID("Deleted"));
+                        $oDocument->setStatusID(DELETED);
                         // store
                         if ($oDocument->update()) {
                         	// now move the document to the delete folder
