@@ -57,7 +57,7 @@ if (checkSession()) {
     				// we have an image, now check the size
     				$iImgWidth = $aSize[0];
     				$iImgHeight = $aSize[1];
-    				if (DashboardNews::checkImageSize($iImgWidth, $iImgHeight)) {
+    				if ($oDashboardNews->checkImageSize($iImgWidth, $iImgHeight)) {
     					// size is fine, so set it
 						$oDashboardNews->setImageFile($_FILES['fImage']['tmp_name']);
 
