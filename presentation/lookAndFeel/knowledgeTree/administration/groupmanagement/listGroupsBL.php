@@ -12,8 +12,7 @@
 
 if (checkSession()) {    
     require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCreate.inc");    
-    require_once("listGroupsUI.inc"); 
-    require_once("../adminUI.inc");    
+    require_once("listGroupsUI.inc");        
 	require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
     require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
     require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
