@@ -30,6 +30,8 @@ class PatternMainPage {
 	var $oNorthPayload;
 	/** form action*/
 	var $sFormAction;
+	/** form enctype */
+	var $sFormEncType;
 	
 	var $sErrorMessage;
 	
@@ -57,6 +59,10 @@ class PatternMainPage {
 		$this->sErrorMessage = $sNewValue;
 	}
 	
+	function setFormEncType($sNewValue) {
+		$this->sFormEncType = $sNewValue;
+	}
+	
 	
 	/**
 	* Render the page in HTML
@@ -71,7 +77,7 @@ class PatternMainPage {
 							PatternMainPage::getNumberStringValidationJavaScript() . "\n" .
 							"</head>\n" .
 							"<body>\n" .
-							"<form id=\"MainForm\" action=\"".$this->sFormAction."\" method=\"POST\">\n" .
+							"<form id=\"MainForm\" " . (isset($this->sFormEncType) ? "enctype=\"$this->sFormEncType\" " : " ") . " action=\"".$this->sFormAction."\" method=\"POST\">\n" .
 								"<table border=\"1\" width=\"600\" height=\"600\">\n " .
 									"<tr height=\"18%\">\n".
 										"<td width=\"5%\">\n";
