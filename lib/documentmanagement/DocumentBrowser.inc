@@ -130,7 +130,7 @@ class DocumentBrowser {
             $results["categories"][] = "Categories";
            
             // get a list of category values
-            $query = "select value from $default->owl_document_fields_table where document_field_id=$categoryFieldID ORDER BY value ASC";
+            $query = "select distinct value from $default->owl_document_fields_table where document_field_id=$categoryFieldID ORDER BY value ASC";
             $default->log->debug("DocumentBrowser::browseByCategory category listing query=$query");
             $sql->query($query);
             // loop through resultset, build array and return
@@ -194,7 +194,7 @@ class DocumentBrowser {
             $results["documentTypes"][] = array("id" => $documentTypeID, "name" => $documentTypeName);
             
             // find all documents with this document type
-            $query = "select id from $default->owl_documents_table where document_type_id=$documentTypeID";
+            $query = "SELECT DISTINCT id FROM $default->owl_documents_table WHERE document_type_id=$documentTypeID";
             $default->log->debug("DocumentBrowser::browseByDocumentType: documents from doc type query=$query");
             // loop through resultset and build array of documentIDs
             $sql->query($query);
