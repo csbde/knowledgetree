@@ -69,7 +69,7 @@ class Log {
             mkdir($this->logDirectory, 0755);
         }
             
-        $this->logFile = $this->logDirectory . "/$sLogFilePrefix-" . date("d-m-Y") . ".txt";
+        $this->logFile = $this->logDirectory . "/$sLogFilePrefix-" . date("Y-m-d") . ".txt";
         if (!file_exists($this->logFile)) {
             touch($this->logFile);
         }
