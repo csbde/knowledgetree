@@ -34,9 +34,9 @@ class PatternListFromQuery {
 	/** number of colums for text area if text area option is being used */
 	var $iTextAreaColums = 20;
 	/** heading for table */
-	var $sTableHeading;
-	/** whether to create an individual table for each row in the result set or not */
-	var $bIndividualTableForEachResult = false;
+	var $sTableHeading;	
+	/** set the table width */
+	var $iTableWidth = null;
 	
 	/**
 	* Default constructor
@@ -51,6 +51,10 @@ class PatternListFromQuery {
 		$this->aColumnTypes = $aNewColumnTypes;
 		$this->aHyperLinkURL = $aNewHyperLinkURL;
 		$this->aQueryStringText = $aNewQueryStringText;		
+	}
+	
+	function setTableWidth($iNewValue) {
+		$this->iTableWidth = $iNewValue;
 	}
 	
 	function setTextAreaRows($iNewValue) {
@@ -73,7 +77,7 @@ class PatternListFromQuery {
 		$sql = new Owl_DB();
 		$sql->query($this->sQuery);		
 		$sToRender = "";
-		$sToRender .= "<table border = 0, cellpadding = 5>\n";
+		$sToRender .= "<table border = 0, cellpadding = 5 " . (isset($this->iTableWidth) ? ", width = $this->iTableWidth" : "") . " >\n";
 		while ($sql->next_record()) {
 			if (isset($this->sTableHeading)) {
 				$sToRender .= "<caption align = left><b>$this->sTableHeading</b></caption>\n";
