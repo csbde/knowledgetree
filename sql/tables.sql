@@ -22,23 +22,11 @@ name CHAR(100)
 
 CREATE TABLE archiving_settings ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
+archiving_type_id INTEGER NOT NULL,
 expiration_date DATE,
 document_transaction_id INTEGER,
 time_period_id INTEGER
 )  TYPE = InnoDB;
-
-CREATE TABLE archiving_date_settings ( 
-id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
-expiration_date DATE,
-time_period_id INTEGER
-)  TYPE = InnoDB;
-
-CREATE TABLE archiving_utilisation_settings ( 
-id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
-document_transaction_id INTEGER,
-time_period_id INTEGER
-)  TYPE = InnoDB;
-
 
 CREATE TABLE data_types ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
@@ -101,11 +89,10 @@ checked_out_user_id INTEGER,
 status_id INTEGER
 )TYPE = InnoDB;
 
-CREATE TABLE document_archiving ( 
+CREATE TABLE document_archiving_link ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 document_id INTEGER NOT NULL,
-archiving_type_id INTEGER,
-archiving_settings_id INTEGER
+archiving_settings_id INTEGER NOT NULL
 )  TYPE = InnoDB;
 
 CREATE TABLE document_fields ( 
