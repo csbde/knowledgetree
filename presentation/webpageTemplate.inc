@@ -42,7 +42,10 @@ $nwPayLoad ->setHtml($nwestLoad);
 // set up the west payload
 //get section links
 if ($sectionName != "General") {
-    $sectionArray = $default->siteMap->getSectionLinks($sectionName);
+
+	$bSortLinks = !($sectionName == "Administration");
+
+    $sectionArray = $default->siteMap->getSectionLinks($sectionName, $bSortLinks);
 
     $output1["links"] = $sectionArray["links"];
     $output2["descriptions"] = $sectionArray["descriptions"];
