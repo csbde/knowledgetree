@@ -5,7 +5,7 @@ user_id INTEGER,
 session_id CHAR(255),
 lastused DATETIME,
 ip CHAR(30)
-);
+) TYPE = InnoDB;
 
 CREATE TABLE document_fields ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
@@ -13,25 +13,25 @@ name CHAR(255) NOT NULL,
 data_type CHAR(100) NOT NULL,
 is_generic BIT,
 has_lookup BIT
-);
+)TYPE = InnoDB;
 
 CREATE TABLE document_fields_link ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 document_id INTEGER NOT NULL,
 document_field_id INTEGER NOT NULL,
 value CHAR(255) NOT NULL
-);
+)TYPE = InnoDB;
 
 CREATE TABLE document_fields_lookup (
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 document_field_id INTEGER NOT NULL,
 name CHAR(255) NOT NULL
-);
+)TYPE = InnoDB;
 
 CREATE TABLE document_transaction_types_lookup ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 name CHAR(100) NOT NULL
-);
+)TYPE = InnoDB;
 
 CREATE TABLE document_transactions ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
@@ -43,25 +43,25 @@ ip CHAR(30),
 filename CHAR(255) NOT NULL,
 comment CHAR(255) NOT NULL,
 transaction_id INTEGER
-);
+)TYPE = InnoDB;
 
 CREATE TABLE document_type_fields_link ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 document_type_id INTEGER NOT NULL,
 field_id INTEGER NOT NULL,
 is_mandatory BIT NOT NULL
-);
+)TYPE = InnoDB;
 
 CREATE TABLE document_types_lookup ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 name CHAR(100)
-);
+)TYPE = InnoDB;
 
 CREATE TABLE document_words_link ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 word_id INTEGER NOT NULL,
 document_id INTEGER NOT NULL
-);
+)TYPE = InnoDB;
 
 CREATE TABLE documents ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
@@ -78,14 +78,14 @@ folder_id INTEGER NOT NULL,
 major_version INTEGER NOT NULL,
 minor_version INTEGER NOT NULL,
 is_checked_out BIT NOT NULL
-);
+)TYPE = InnoDB;
 
 CREATE TABLE document_subscriptions ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 user_id INTEGER NOT NULL,
 document_id INTEGER NOT NULL,
 is_alerted BIT
-);
+)TYPE = InnoDB;
 
 CREATE TABLE folders ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
@@ -96,14 +96,14 @@ creator_id INTEGER,
 document_type_id INTEGER NOT NULL,
 unit_id INTEGER,
 is_public BIT NOT NULL
-);
+)TYPE = InnoDB;
 
 CREATE TABLE folder_subscriptions ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 user_id INTEGER NOT NULL,
 folder_id INTEGER NOT NULL,
 is_alerted BIT
-);
+)TYPE = InnoDB;
 
 CREATE TABLE folders_users_roles_link ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
@@ -113,7 +113,7 @@ document_id INTEGER NOT NULL,
 datetime DATETIME,
 done BIT,
 active BIT
-);
+)TYPE = InnoDB;
 
 CREATE TABLE groups_folders_approval_link ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
@@ -121,7 +121,7 @@ folder_id INTEGER NOT NULL,
 group_id INTEGER NOT NULL,
 precedence INTEGER NOT NULL,
 role_id INTEGER NOT NULL
-);
+)TYPE = InnoDB;
 
 CREATE TABLE groups_folders_link (
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
@@ -129,44 +129,44 @@ group_id INTEGER NOT NULL,
 folder_id INTEGER NOT NULL,
 can_read BIT NOT NULL,
 can_write BIT NOT NULL
-);
+)TYPE = InnoDB;
 
 CREATE TABLE groups_lookup ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 name CHAR(100) NOT NULL,
 is_sys_admin BIT NOT NULL,
 is_unit_admin BIT NOT NULL
-);
+)TYPE = InnoDB;
 
 CREATE TABLE groups_units_link ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 group_id INTEGER NOT NULL,
 unit_id INTEGER NOT NULL
-);
+)TYPE = InnoDB;
 
 CREATE TABLE links ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 name CHAR(100) NOT NULL,
 url CHAR(100) NOT NULL,
 rank INTEGER NOT NULL
-);
+)TYPE = InnoDB;
 
 CREATE TABLE language_lookup ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 name CHAR(100) NOT NULL
-);
+)TYPE = InnoDB;
 
 CREATE TABLE mime_types ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 filetypes CHAR(100) NOT NULL,
 mimetypes CHAR(100) NOT NULL,
 icon_path CHAR(255) 
-);
+)TYPE = InnoDB;
 
 CREATE TABLE organisations_lookup ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 name CHAR(100) NOT NULL
-);
+)TYPE = InnoDB;
 
 CREATE TABLE roles ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
@@ -174,18 +174,18 @@ name CHAR(255) NOT NULL,
 active BIT NOT NULL,
 can_read BIT NOT NULL,
 can_write BIT NOT NULL
-);
+)TYPE = InnoDB;
 
 -- sitemap tables
 CREATE TABLE site_sections_lookup (
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 name CHAR(255)
-);
+)TYPE = InnoDB;
 
 CREATE TABLE site_access_lookup (
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 name CHAR(255)
-);
+)TYPE = InnoDB;
 
 CREATE TABLE sitemap (
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
@@ -196,30 +196,30 @@ access_id INTEGER,
 link_text CHAR(255),
 is_default BIT,
 is_enabled BIT DEFAULT 1
-);
+)TYPE = InnoDB;
 
 CREATE TABLE system_settings ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 name CHAR(255) NOT NULL,
 value CHAR(255) NOT NULL
-);
+)TYPE = InnoDB;
 
 CREATE TABLE sys_deleted ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 table_name CHAR(255) NOT NULL,
 datetime DATETIME NOT NULL
-);
+)TYPE = InnoDB;
 
 CREATE TABLE units_lookup ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 name CHAR(100) NOT NULL
-);
+)TYPE = InnoDB;
 
 CREATE TABLE units_organisations_link ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 unit_id INTEGER NOT NULL,
 organisation_id INTEGER NOT NULL
-);
+)TYPE = InnoDB;
 
 CREATE TABLE users (
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
@@ -236,14 +236,14 @@ ldap_dn CHAR(255),
 max_sessions INTEGER,
 language_id INTEGER
 ) 
-;
+TYPE = InnoDB;
 
 CREATE TABLE users_groups_link ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 user_id INTEGER NOT NULL,
 group_id INTEGER NOT NULL
 ) 
-;
+TYPE = InnoDB;
 
 CREATE TABLE web_documents ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
@@ -252,24 +252,24 @@ web_site_id INTEGER NOT NULL,
 unit_id INTEGER NOT NULL,
 status_id INTEGER NOT NULL,
 datetime DATETIME NOT NULL
-);
+)TYPE = InnoDB;
 
 CREATE TABLE web_documents_status_lookup ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 name CHAR(50) NOT NULL
-);
+)TYPE = InnoDB;
 
 CREATE TABLE web_sites ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 web_site_name CHAR(100) NOT NULL,
 web_site_url CHAR(50) NOT NULL,
 web_master_id INTEGER NOT NULL
-);
+)TYPE = InnoDB;
 
 CREATE TABLE words_lookup ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 word CHAR(255) NOT NULL
-);
+)TYPE = InnoDB;
 
 -- pk constraints
 ALTER TABLE active_sessions
