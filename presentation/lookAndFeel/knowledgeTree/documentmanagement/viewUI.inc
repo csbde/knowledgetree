@@ -162,10 +162,10 @@ function getEditPage($oDocument) {
 		$sToRender .= "\t\t<td><a href=" . $_SERVER['PHP_SELF'] . "?fDocumentID=" . $oDocument->getID() . "&fBeginCollaboration=1><img src=\"$default->graphicsUrl/widgets/begin.gif\" border=\"0\"/></a></td>\n";	
 	} else if (Document::userIsPerformingCurrentCollaborationStep($oDocument->getID())) {
 		//if the current user is responsible for an active step in the collaboration process		
-		$sToRender .= "\t\t<table border=\"0\"><tr>\n";
+		$sToRender .= "\t\t<td><table border=\"0\"><tr>\n";
 		$sToRender .= "\t\t<td><b>You currently have an active role<br> in the collaboration process</b></td>\n";				
 		$sToRender .= "\t\t<td align=\"center\"><a href=" . $_SERVER['PHP_SELF'] . "?fDocumentID=" . $oDocument->getID() . "&fCollaborationStepComplete=1><img src=\"$default->graphicsUrl/widgets/update.gif\" border=\"0\"/></a></td>\n";
-		$sToRender .= "\t\t</tr></table>\n";
+		$sToRender .= "\t\t</tr></table></td>\n";
 	}
     $sToRender .= "\t</tr>";
     $sToRender .= "\t</table>";
