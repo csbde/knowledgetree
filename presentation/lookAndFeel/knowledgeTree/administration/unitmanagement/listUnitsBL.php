@@ -35,7 +35,7 @@ if(checkSession()) {
 		global $default;
 		
 		$oPatternCustom->addHtml(renderHeading("Current System Units"));		// Create the Heading
-		 
+				
 		$oPatternCustom->addHtml(getFilterOptions($fOrgID));
 		
 		$main->setFormAction($_SERVER['PHP_SELF']);
