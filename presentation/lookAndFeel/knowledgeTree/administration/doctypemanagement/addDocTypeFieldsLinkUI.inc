@@ -105,7 +105,7 @@ function getFirstPage($sHtmlListBox = null, $iDocTypeID, $bIsNew = null) {
 	}
 	
 	$sToRender .= "<tr><td align=right>Mandatory? </td><td><input type=checkbox name=bMandatory> </td></tr>\n";	
-	$sToRender .= "<tr><td></td><td align=right><input type=\"image\" src =\"$default->graphicsUrl/widgets/select.gif\" border=0 value=\"submit\"/></td>";
+	$sToRender .= "<tr><td></td><td align=right><input type=\"image\" src =\"$default->graphicsUrl/widgets/add.gif\" border=0 value=\"submit\"/></td>";
 	 
 	//$sToRender .= "<td><a href=\"$default->rootUrl/control.php?action=listDocTypes\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" /></a></td></tr>\n";
 	$sToRender .= "<td>" . getCancelButton($iDocTypeID) . "</td></tr>\n";
