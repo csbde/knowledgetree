@@ -20,6 +20,7 @@ DROP TABLE groups_units_link;
 DROP TABLE help;
 DROP TABLE language_lookup;
 DROP TABLE links;
+DROP TABLE metadata_lookup;
 DROP TABLE mime_types;
 DROP TABLE organisations_lookup;
 DROP TABLE roles;
