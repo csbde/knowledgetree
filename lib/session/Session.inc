@@ -72,12 +72,13 @@ class Session {
      *
      * @param int the userID to remove stale sessions for
      */
-    function removeStaleSessions($userID) {
+    function removeStaleSessions($userID = -1) {
         global $default;
         // deletes any sessions for this userID where the default timeout has elapsed.
         $time = time() -  $default->sessionTimeout;
         $sql = $default->db;
-        $sql->query("DELETE FROM $default->owl_sessions_table WHERE user_id=$userID AND lastused <= '" . formatDateTime($time) . "'");
+        $sQuery = "DELETE FROM $default->owl_sessions_table WHERE " . (($userID != -1) ? "user_id=$userID AND " : "") . "lastused <= '" . formatDateTime($time) . "'";
+        $sql->query($sQuery);
     }
 
     /**
@@ -88,9 +89,11 @@ class Session {
     function verify() {
         global $default, $lang_sesstimeout, $lang_sessinuse, $lang_err_sess_notvalid;
         
+        // remove old sessions
+        Session::removeStaleSessions();
+        
         session_start();
         $sessionID = session_id();
-        $default->log->debug("Session::verify() retrieved sessionID=$sessionID");
         if (strlen($sessionID) > 0) {
             // initialise return status
             $sessionStatus = 0;
@@ -102,7 +105,7 @@ class Session {
 
             // FIXME: if there aren't more rows that the max sessions for this user
             if ($numrows >= 1) {
-                $default->log->debug("Session::verify() found session in db");
+                $default->log->debug("Session::verify found session in db");
                 while($sql->next_record()) {
                     $iUserID = $sql->f("user_id");
                     $ip = $this->getClientIP();
@@ -110,10 +113,7 @@ class Session {
                     if ($ip == $sql->f("ip")) {
                         // now check if the timeout has been exceeded
                         $lastused = $sql->f("lastused");
-                        $default->log->debug("Session::verify() lastused=$lastused; str=" . strtotime($lastused));
-                        $default->log->debug("Session::verify() current time=" . time());
                         $diff = time() - strtotime($lastused);
-                        $default->log->debug("Session::verify() timeout = " . $default->sessionTimeout . "; diff=$diff");                        
                         if($diff <= $default->sessionTimeout) {
                             // session has been verified, update status
                             $sessionStatus = 1;
@@ -135,8 +135,6 @@ class Session {
                             $sessionStatus = 2;
                             // destroy this session
                             $this->destroy();
-                            // remove old sessions
-                            Session::removeStaleSessions($iUserID);
                             $_SESSION["errorMessage"] = $lang_sesstimeout;
                         }
                     } else {
@@ -145,14 +143,17 @@ class Session {
                         $_SESSION["errorMessage"] = $lang_sessinuse;
                     }
                 }
-            }                         
+            } else {
+                // the session doesn't exist in the db
+                $default->log->error("Session::verify sessionID=$sessionID, not in db");
+                return false;
+            }
         } else {
-            $default->log->error("verify() session not in db");
+            $default->log->error("Session::verify session not in db");
             // there is no session
             return false;
         }
-        // return the array
-        $default->log->debug("Session::verify() returning sessionStatus=$sessionStatus");
+        // return the status
         return $sessionStatus;
     }
     
