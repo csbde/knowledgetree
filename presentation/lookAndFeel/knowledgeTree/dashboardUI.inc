@@ -85,9 +85,11 @@ function renderPendingCollaborationDocuments($aPendingDocumentList) {
     $sToRender .= "\t\t\t</tr>\n";
     for ($i = 0; $i < count($aPendingDocumentList); $i++) {
         $oDocument = $aPendingDocumentList[$i];
-        $sToRender .= "\t\t\t<tr>\n";
-        $sToRender .= "\t\t\t\t<td colspan=\"2\">" . generateControllerLink("viewDocument", "fDocumentID=" . $oDocument->getID(), "<img src=\"$default->graphicsUrl/widgets/dstatus.gif\" border=\"0\"/>&nbsp;" . $oDocument->getDisplayPath()) . "</td>\n";        
-        $sToRender .= "\t\t\t</tr>\n";
+        if ($oDocument) {
+	        $sToRender .= "\t\t\t<tr>\n";
+	        $sToRender .= "\t\t\t\t<td colspan=\"2\">" . generateControllerLink("viewDocument", "fDocumentID=" . $oDocument->getID(), "<img src=\"$default->graphicsUrl/widgets/dstatus.gif\" border=\"0\"/>&nbsp;" . $oDocument->getDisplayPath()) . "</td>\n";        
+	        $sToRender .= "\t\t\t</tr>\n";
+        }
     }    
     return $sToRender;
 }
