@@ -156,7 +156,7 @@ function renderSubscriptionAlerts($aSubscriptionAlertList) {
 
 function renderDependantDocuments($aDependantDocumentList) {
 	global $default;
-    if (count($aCheckedOutDocumentList) > 0) {
+    if (count($aDependantDocumentList) > 0) {
         $sBgColor = "#9D9D7F";
     } else {
         $sBgColor = "#CECEBF";
