@@ -28,7 +28,7 @@
 function getPageButtons($iDocumentID){
 	global $default;
 	$sToRender .= "<table width=100%><tr>\n";
-	$sToRender .= "<td align=right width=100%><a href=\"" . generateControllerLink("addComment", "fDocumentID=$iDocumentID&fAddComment=1&fNewComment=1") . "\"><img src=\"" . KTHtml::getAddCommentButton() . "\" border=\"0\" /></a></td>\n";
+	$sToRender .= "<td align=right width=100%><a href=\"" . generateControllerLink("addComment", "fDocumentID=$iDocumentID&fAddComment=1&fNewThread=1") . "\"><img src=\"" . KTHtml::getAddCommentButton() . "\" border=\"0\" /></a></td>\n";
 	$sToRender .= "<td align=right width=10><a href=\"" . generateControllerLink("viewDocument", "fDocumentID=$iDocumentID&fAddComment=1") . "\"><img src=\"" . KTHtml::getBackButton() . "\"  border=\"0\" /></a></td>\n";
 	$sToRender .= "</tr></table>\n";
 	return $sToRender; 
