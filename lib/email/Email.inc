@@ -46,40 +46,45 @@ class Email {
      */
     function send($sToEmail, $sSubject, $sBody, $sFromEmail = "", $sFromName = "") {
         global $default, $lang_err_email;
-
-        // set defaults for optional params
-        $sFromEmail = ((strlen($sFromEmail) == 0) || ($sFromEmail == "")) ? $default->system->get("emailFrom") : $sFromEmail;
-        $sFromName = ((strlen($sFromName) == 0) || ($sFromName == "")) ? $default->system->get("emailFromName") : $sFromName;
-
-        // set optional params
-        if ((strlen($sFromEmail) > 0) && ($sFromEmail != "")) {
-            $this->oMailer->From = $sFromEmail;
-        }
-        if ((strlen($sFromName) > 0) && ($sFromName != "")) {
-            $this->oMailer->FromName = $sFromName;
-        }
         
-        // if there are multiple addresses (; separated)
-        $aEmailAddresses = array();
-        if (strpos($sToEmail, ";") > 0) {
-            // explode them
-            $aEmailAddresses = explode(";", $sToEmail);
-            for ($i=0; $i<count($aEmailAddresses); $i++) {
-                $this->oMailer->AddAddress($aEmailAddresses[$i]);
-                $default->log->info("Email.inc adding " . $aEmailAddresses[$i]);
-            }
+        if (strlen($sToEmail) > 0) {
+	        // set defaults for optional params
+	        $sFromEmail = ((strlen($sFromEmail) == 0) || ($sFromEmail == "")) ? $default->system->get("emailFrom") : $sFromEmail;
+	        $sFromName = ((strlen($sFromName) == 0) || ($sFromName == "")) ? $default->system->get("emailFromName") : $sFromName;
+	
+	        // set optional params
+	        if ((strlen($sFromEmail) > 0) && ($sFromEmail != "")) {
+	            $this->oMailer->From = $sFromEmail;
+	        }
+	        if ((strlen($sFromName) > 0) && ($sFromName != "")) {
+	            $this->oMailer->FromName = $sFromName;
+	        }
+	        
+	        // if there are multiple addresses (; separated)
+	        $aEmailAddresses = array();
+	        if (strpos($sToEmail, ";") > 0) {
+	            // explode them
+	            $aEmailAddresses = explode(";", $sToEmail);
+	            for ($i=0; $i<count($aEmailAddresses); $i++) {
+	                $this->oMailer->AddAddress($aEmailAddresses[$i]);
+	                $default->log->info("Email.inc adding " . $aEmailAddresses[$i]);
+	            }
+	        } else {
+	            $this->oMailer->AddAddress($sToEmail);
+	        }
+	        $this->oMailer->Subject = stripslashes($sSubject);
+	        $this->oMailer->Body = stripslashes($sBody);
+	
+	        //send the email
+	        if(!$this->oMailer->Send()) {
+	            $_SESSION["errorMessage"] = $lang_err_email . " " . $this->oMailer->ErrorInfo;
+	            return false;
+	        }
+	        return true;
         } else {
-            $this->oMailer->AddAddress($sToEmail);
+        	// no valid email address supplied
+        	return false;
         }
-        $this->oMailer->Subject = stripslashes($sSubject);
-        $this->oMailer->Body = stripslashes($sBody);
-
-        //send the email
-        if(!$this->oMailer->Send()) {
-            $_SESSION["errorMessage"] = $lang_err_email . " " . $this->oMailer->ErrorInfo;
-            return false;
-        }
-        return true;
     }
 
     /**
