@@ -67,12 +67,12 @@ function getAddComment($fDocumentID, $sSubject, $sBody) {
 	$sHeading = "Add a Comment";	
 	$sToRender .= renderHeading($sHeading);
 	$sToRender .= renderDocumentPath($fDocumentID);	
-	$sToRender .= "<table width=\"100%\" border=0><tr><td></td>\n";
-	$sToRender .= "<td align=right><input type=\"submit\" style=\"BORDER-RIGHT: 0px groove; BORDER-TOP: 0px groove; BACKGROUND-IMAGE: url($default->graphicsUrl/widgets/submit.gif); BORDER-LEFT: 0px groove; WIDTH: 45px; BORDER-BOTTOM: 0px groove; HEIGHT: 18; BACKGROUND-COLOR: white\" width=\"45\" height=\"20\" value=\" \" width=\"100\"></td></tr>\n";
+	$sToRender .= "<table width=\"100%\" border=\"0\" cellpadding=0 ><tr><td></td>\n";
+	$sToRender .= "<td align=right><input onmouseover=\"this.style.cursor='hand'\" type=\"submit\" style=\"BORDER-RIGHT: 0px groove; BORDER-TOP: 0px groove; BACKGROUND-IMAGE: url($default->graphicsUrl/widgets/submit.gif); BORDER-LEFT: 0px groove; WIDTH: 45px; BORDER-BOTTOM: 0px groove; HEIGHT: 18; BACKGROUND-COLOR: white\" width=\"45\" height=\"20\" value=\" \" width=\"100\"></td></tr>\n";
 	$sToRender .= "<br><tr><td valign=\"top\" width=10><b>Subject</b></td><td>\n";
 	$sToRender .= "<input type=\"text\" style=\"width:100%\" name=\"NewCommentSubject\" id=\"NewCommentSubject\" value=\"$sSubject\"></td></tr>\n";
 	$sToRender .= "<tr><td valign=\"top\"><b>Body</b></td><td><textarea style=\"width:100%\" rows=\"21\" name=\"NewComment\" id=\"NewComment\" style=\"FONT-STYLE: normal; FONT-FAMILY: sans-serif; FONT-VARIANT: normal\">$sBody</textarea></td></tr></table>\n";
-	$sToRender .= "</table>";	
+		
 
 	return $sToRender;
 	
