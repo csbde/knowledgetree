@@ -9,7 +9,7 @@
  *      browseByDocumentType($documentTypeID) 
  *
  * @version $Revision$ 
- * @author <a href="mailto:michael@jamwarehouse.com>Michael Joseph</a>, Jam Warehouse (Pty) Ltd, South Africa
+ * @author <a href="mailto:michael@jamwarehouse.com">Michael Joseph</a>, Jam Warehouse (Pty) Ltd, South Africa
  * @package tests/documentmanagement
  */
 
@@ -32,17 +32,29 @@ if (checkSession()) {
         // default browse- should resolve to root folder
         echo "default browse- starts at this users root folder<br>";
         $artifacts = $db->browseByFolder();
+        if (isset($_SESSION["errorMessage"])) {
+            echo "error: " . $_SESSION["errorMessage"] . "<br>";
+            $_SESSION["errorMessage"] = "NULL";
+        }        
         print_r($artifacts);
         
         // now supply a folderid
         $folderID = 3;
         echo "browse- starting at folder (folderID=$folderID)<br>";
         $artifacts = $db->browseByFolder($folderID);
+        if (isset($_SESSION["errorMessage"])) {
+            echo "error: " . $_SESSION["errorMessage"] . "<br>";
+            $_SESSION["errorMessage"] = "NULL";
+        }        
         print_r($artifacts);
 
         // browse by category
         echo "category browse- return a list of categories:<br>";        
         $categories = $db->browseByCategory();
+        if (isset($_SESSION["errorMessage"])) {
+            echo "error: " . $_SESSION["errorMessage"] . "<br>";
+            $_SESSION["errorMessage"] = "NULL";
+        }        
         print_r($categories);
         
         // pick a random category
@@ -51,11 +63,19 @@ if (checkSession()) {
         $category = $categories[$rand_keys];
         echo "browsing by category = $category<br>";
         $artifacts = $db->browseByCategory($category);
+        if (isset($_SESSION["errorMessage"])) {
+            echo "error: " . $_SESSION["errorMessage"] . "<br>";
+            $_SESSION["errorMessage"] = "NULL";
+        }        
         print_r($artifacts);
 
         // document type browsing
         echo "document type browse- get list of doc types<br>";
         $documentTypes = $db->browseByDocumentType();
+        if (isset($_SESSION["errorMessage"])) {
+            echo "error: " . $_SESSION["errorMessage"] . "<br>";
+            $_SESSION["errorMessage"] = "NULL";
+        }        
         print_r($documentTypes);
         
         // pick a random document type
@@ -64,6 +84,10 @@ if (checkSession()) {
                 
         echo "browsing by document type = " . $documentTypeID . "<br>";
         $artifacts = $db->browseByDocumentType($documentTypeID);
+        if (isset($_SESSION["errorMessage"])) {
+            echo "error: " . $_SESSION["errorMessage"] . "<br>";
+            $_SESSION["errorMessage"] = "NULL";
+        }        
         print_r($artifacts);
 
         echo "</pre>";
