@@ -111,7 +111,7 @@ if (checkSession()) {
                 // get folders descended from this one
                 $aFolderArray = Folder::getList("parent_id=$fFolderID");
                 // get documents in this folder
-                $aDocumentArray = Document::getList("folder_id=$fFolderID");
+                $aDocumentArray = Document::getList("folder_id=$fFolderID AND status_id=" . LIVE);
                 
                 if (count($aFolderArray) > 0) {
                     $oPatternCustom->setHtml(getFolderNotEmptyPage($fFolderID,  count($aFolderArray), "folder(s)"));
