@@ -19,7 +19,7 @@ function getFolderPath($iFolderID) {
     return "<table border=\"0\" width=\"610\"><tr><td bgcolor=\"$sTDBGColour\">" . displayFolderPathLink(Folder::getFolderPathAsArray($iFolderID), Folder::getFolderPathNamesAsArray($iFolderID),  "$default->rootUrl/control.php?action=browse") . "</td></tr></table>\n";
 }
 
-function getFolderData($iFolderID, $sDivName) {
+function getFolderData($iFolderID, $sDivName, $sStatusMessage = "") {
 	global $default;
 	$sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
 	$sTDBGColour = $default->siteMap->getSectionColour($sSectionName, "td");
@@ -29,7 +29,10 @@ function getFolderData($iFolderID, $sDivName) {
 			
 	$sql = $default->db;
 	$sql->query($sQuery);
-	$sToRender = "<table>\n";
+	if ($sStatusMessage) {
+		$sToRender .= "<font color=\"red\">$sStatusMessage</font>";
+	}
+	$sToRender .= "<table>\n";
 	$sToRender .= "<caption><strong>Folder Data</strong></caption>";
 	if ($sql->next_record()) {
 		$sToRender .= "<tr>\n";
@@ -158,7 +161,7 @@ function renderFolderSection($sHeading) {
 	return "<tr bgcolor=\"" . getColour($iColour) . "\"><td width=\"100%\">$sHeading</td></tr>\n";
 }
 
-function getPage($iFolderID, $bCollaboration = false) {
+function getPage($iFolderID, $sStatusMessage = "", $bCollaboration = false) {
 	global $default;
        
 	if ( $default->browser == "ie" ) {
@@ -177,7 +180,7 @@ function getPage($iFolderID, $bCollaboration = false) {
 	$sToRender .= "</table>";		
     $sToRender .= "</div>";
         
-	$sToRender .= getFolderData($iFolderID, "folderData");
+	$sToRender .= getFolderData($iFolderID, "folderData", $sStatusMessage);
 	$sToRender .= getFolderRouting($iFolderID, "folderRouting", $bCollaboration);
 	$sToRender .= getFolderDocTypes($iFolderID, "documentTypes");
 	$sToRender .= getFolderGroupAccess($iFolderID, "folderPermissions");
