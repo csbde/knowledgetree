@@ -413,3 +413,6 @@ CREATE TABLE `zseq_browse_criteria` (
 ) TYPE=MyISAM;
 
 INSERT INTO `zseq_browse_criteria` SELECT MAX(`id`) FROM `browse_criteria`;
+
+ALTER TABLE `folders` ADD `permission_folder_id` INT;
+ALTER TABLE `folders` ADD INDEX ( `permission_folder_id` ) ;

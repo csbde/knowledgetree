@@ -383,10 +383,12 @@ CREATE TABLE folders (
   parent_folder_ids text,
   full_path text,
   inherit_parent_folder_permission int(11) default NULL,
+  permission_folder_id int(11) default NULL,
   UNIQUE KEY id (id),
   KEY fk_parent_id (parent_id),
   KEY fk_creator_id (creator_id),
-  KEY fk_unit_id (unit_id)
+  KEY fk_unit_id (unit_id),
+  KEY permission_folder_id (permission_folder_id)
 ) TYPE=InnoDB;
 
 -- --------------------------------------------------------
