@@ -454,7 +454,7 @@ class Document {
 		//one by ordering by precedence
 		$sql->query("SELECT FURL.id AS id, GFAT.precedence " .
 					"FROM $default->owl_groups_folders_approval_table AS GFAT INNER JOIN $default->owl_folders_user_roles_table AS FURL ON GFAT.id = FURL.group_folder_approval_id " .
-					"WHERE document_id = $this->iId AND user_id = " . $_SESSION["userID"] . "  " . 
+					"WHERE document_id = $this->iId AND FURL.user_id = " . $_SESSION["userID"] . "  " . 
 					"AND done = 0 " . 
 					"ORDER BY precedence ASC");
 		if ($sql->next_record()) {
