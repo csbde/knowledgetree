@@ -126,16 +126,14 @@ function renderTimePeriod($sHeading, $oTimePeriod = null) {
  *
  * @param integer the archive settings to modify, null display an add form
  */
-function renderArchiveSettingsForm($oDocumentArchiving = null) {
+function renderArchiveSettingsForm($iDocumentID, $oArchiveSettings, $iArchivingTypeID = -1) {
 	global $default, $fDocumentID;
 
-	if (is_a($oDocumentArchiving, "DocumentArchiving")) {
+	if ($oArchiveSettings) {
 		$sToRender .= "(in order to change the archiving type for this document, click the 'Remove' button and add new archiving settings)";
-		$iArchivingTypeID = $oDocumentArchiving->getArchivingTypeID();
-	} else {
-		$iArchivingTypeID = (integer)$oDocumentArchiving;
-		unset($oDocumentArchiving);
+		$iArchivingTypeID = $oArchiveSettings->getArchivingTypeID();
 	}
+	
 	$sArchivingType = lookupName($default->owl_archiving_type_lookup_table, $iArchivingTypeID);
 					
 	$sToRender .= "<table border=\"0\">";
@@ -143,18 +141,14 @@ function renderArchiveSettingsForm($oDocumentArchiving = null) {
 	switch ($sArchivingType) {
 		case "Date" : 
 			
-			if ($oDocumentArchiving) {
-				// get date settings from document archiving
-				$oDateArchivingSettings = ArchivingDateSettings::get($oDocumentArchiving->getArchivingSettingsID());
-			}			
 			$sToRender .= "<tr><th align=\"left\" colspan=\"2\">Archive By Date</th></tr>";						
 			$sToRender .= "<tr><td>Expiration Date:</td></tr>";
-			$sToRender .= "<tr><td valign=bottom><input type=\"text\" name=\"fExpirationDate\" size=\"11\" " . ($oDateArchivingSettings ? "value=\"" . ($oDateArchivingSettings->getExpirationDate() == "0000-00-00" ? "" : $oDateArchivingSettings->getExpirationDate()) : "") . "\">";
+			$sToRender .= "<tr><td valign=bottom><input type=\"text\" name=\"fExpirationDate\" size=\"11\" " . ($oArchiveSettings ? "value=\"" . ($oArchiveSettings->getExpirationDate() == "0000-00-00" ? "" : $oArchiveSettings->getExpirationDate()) : "") . "\">";
 			$sToRender .= "&nbsp;&nbsp;<a href=\"javascript:show_calendar('MainForm.fExpirationDate',null,null,'YYYY-MM-DD');\" onmouseover=\"window.status='Date Picker';return true;\" onmouseout=\"window.status='';return true;\"><img src=\"$default->graphicsUrl/calendar/calendar.gif\" name=\"imgCalendar\" width=\"34\" height=\"21\" border=\"0\" alt=\"\"></a>";
 			$sToRender .= "&nbsp;&nbsp;<a href=\"javascript:void();\" onclick=\"document.MainForm.fExpirationDate.value=''\"><img src=\"$default->graphicsUrl/widgets/reset.gif\" border=\"0\"></a></td></tr>";
 					
-			if ($oDateArchivingSettings) {
-				$oTimePeriod = TimePeriod::get($oDateArchivingSettings->getTimePeriodID());
+			if ($oArchiveSettings) {
+				$oTimePeriod = TimePeriod::get($oArchiveSettings->getTimePeriodID());
 				$sToRender .= renderTimePeriod("Expires after", $oTimePeriod);
 			} else {
 				$sToRender .= renderTimePeriod("Expires after");
@@ -162,26 +156,19 @@ function renderArchiveSettingsForm($oDocumentArchiving = null) {
 			$sToRender .= getDateArchivingJavascript();
 			break;		
 		case "Utilisation" :
-			if ($oDocumentArchiving) {
-				// get date settings from document archiving
-				$oUtilisationArchivingSettings = ArchivingUtilisationSettings::get($oDocumentArchiving->getArchivingSettingsID());
-				$iDocumentTransactionID = $oUtilisationArchivingSettings->getDocumentTransactionID();
-			}
-				
+							
 			$sToRender .= "<tr><th align=\"left\" colspan=\"2\">Archive By Utilisation</th></tr>";	
 			$sToRender .= "<tr><td colspan=\"2\">Archive document </td></tr>";
-			if ($oUtilisationArchivingSettings) {
-				$oTimePeriod = TimePeriod::get($oUtilisationArchivingSettings->getTimePeriodID());
+			if ($oArchiveSettings) {
+				$oTimePeriod = TimePeriod::get($oArchiveSettings->getTimePeriodID());
 				$sToRender .= renderTimePeriod("", $oTimePeriod);
 			} else {
 				$sToRender .= renderTimePeriod("");
 			}
+			if ($oArchiveSettings) {
+				$iDocumentTransactionID = $oArchiveSettings->getDocumentTransactionID();
+			}
 			$sToRender .= "<tr><td colspan=\"2\">after the last " . renderDocumentTransactionListBox($iDocumentTransactionID) . " transaction</td></tr>";
-			/*
-			$sToRender .= "<tr><td>Document Transaction:</td><td>" . 
-						   renderDocumentTransactionListBox($iDocumentTransactionID) . 
-						   "</td></tr>";	
-			*/
 			$sToRender .= getUtilisationArchivingJavascript();
 			break;		
 	}	
@@ -190,7 +177,7 @@ function renderArchiveSettingsForm($oDocumentArchiving = null) {
 	$sToRender .= "<input type=\"hidden\" name=\"fDocumentID\" value=\"$fDocumentID\">\n";
 	$sToRender .= "<input type=\"hidden\" name=\"fArchivingTypeID\" value=\"$iArchivingTypeID\">\n";
 	$sToRender .= "<input type=\"hidden\" name=\"fStore\" value=\"1\">\n";	
-	if ($oDocumentArchiving) {		
+	if ($oArchiveSettings) {		
 		$sToRender .= "<tr><td colspan=\"2\"><input type=\"image\" src=\"$default->graphicsUrl/widgets/update.gif\" border=\"0\">\n";
 		$sToRender .= generateControllerLink("modifyDocumentArchiveSettings", "fDocumentID=$fDocumentID&fDelete=1", "<img src=\"$default->graphicsUrl/widgets/remove.gif\" border=\"0\"/>");
 	} else {
@@ -206,16 +193,16 @@ function renderArchiveSettingsForm($oDocumentArchiving = null) {
 /**
  * Displays the edit document archive settings page
  */
-function renderEditArchiveSettingsPage($oDocumentArchiving, $sErrorMessage = "") {
+function renderEditArchiveSettingsPage($iDocumentID, $oArchiveSettings, $sErrorMessage = "") {
 	global $default;
 	
 	$sToRender .= renderHeading("Edit Document Archive Settings");
-	$sToRender .= displayDocumentPath($oDocumentArchiving->getDocumentID());	
+	$sToRender .= displayDocumentPath($iDocumentID);	
 	if (strlen($sErrorMessage) > 0) {
 		$sToRender .= renderErrorMessage($sErrorMessage);
 	}
     $sToRender .= "<table>\n";
-	$sToRender .= renderArchiveSettingsForm($oDocumentArchiving);
+	$sToRender .= renderArchiveSettingsForm($iDocumentID, $oArchiveSettings);
 	$sToRender .= "</table>\n";
 	return $sToRender;
 }
@@ -233,7 +220,7 @@ function renderAddArchiveSettingsPage($iDocumentID, $iArchivingTypeID = false, $
 	}
     $sToRender .= "<table>\n";
     if ($iArchivingTypeID) {
-		$sToRender .= renderArchiveSettingsForm($iArchivingTypeID);
+		$sToRender .= renderArchiveSettingsForm($iDocumentID, null, $iArchivingTypeID);
     } else {
 		$sToRender .= renderChooseArchivingTypeForm();    	
     }

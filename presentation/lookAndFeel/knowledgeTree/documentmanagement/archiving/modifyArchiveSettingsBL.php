@@ -14,6 +14,7 @@ require_once("../../../../../config/dmsDefaults.php");
 require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
 
 require_once("$default->fileSystemRoot/lib/archiving/DocumentArchiveSettingsFactory.inc");
+require_once("$default->fileSystemRoot/lib/archiving/ArchivingSettings.inc");
 
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternMainPage.inc");
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
@@ -31,10 +32,12 @@ if (checkSession()) {
     
     if ($fDocumentID) {
     	// retrieve the appropriate settings given the document id
-    	$oDocumentArchiving = DocumentArchiving::getFromDocumentID($fDocumentID);    	
-		if ($oDocumentArchiving) {
+    	$oDocumentArchiving = DocumentArchiving::getFromDocumentID($fDocumentID);
+		// retrieve the settings
+		$oArchiveSettings = ArchivingSettings::get($oDocumentArchiving->getArchivingSettingsID());    	    	
+		if ($oDocumentArchiving && $oArchiveSettings) {
 		    if ($fStore) {
-		    	$oDASFactory = new DocumentArchiveSettingsFactory($oDocumentArchiving->getArchivingTypeID());
+		    	$oDASFactory = new DocumentArchiveSettingsFactory();
 		    	
 		    	if ($oDASFactory->update($oDocumentArchiving, $fExpirationDate, $fDocumentTransactionID, $fTimeUnitID, $fUnits)) {
 		    		$default->log->info("modifyArchiveSettingsBL.php successfully updated archive settings (documentID=$fDocumentID)");
@@ -50,9 +53,9 @@ if (checkSession()) {
 		    	} else {
 		    		$default->log->error("modifyArchiveSettingsBL.php error deleting archive settings (documentID=$fDocumentID)");
 		    	}
-		    } else {   	
+		    } else {
 				// display the edit page
-				$oContent->setHtml(renderEditArchiveSettingsPage($oDocumentArchiving));    	
+				$oContent->setHtml(renderEditArchiveSettingsPage($fDocumentID, $oArchiveSettings));    	
 		    }
 		} else {
 			// no archiving settings for this document
