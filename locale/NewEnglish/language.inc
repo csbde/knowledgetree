@@ -229,6 +229,8 @@ $lang_err_email         = "Message could not be sent";
 $lang_err_fileexists    = "Move was Canceled<BR>File with the same name already exists.";
 $lang_err_nameempty    	= "Folder name cannot be empty";
 
+$lang_err_doc_no_folder = "The document does not have a folder assigned to it";
+
 $lang_err_document_type_does_not_exist = "The following document type does not exist: ";
 $lang_err_document_type_field_does_not_exist = "The following document type field does not exist: ";
 
@@ -239,6 +241,8 @@ $lang_err_user_unitadmin_group = "The user is not part of the unit administrator
 
 $lang_err_user_folder_write = "The current user does not have write permission for the folder: ";
 $lang_err_user_folder_read = "The current user does not have permission to read this folder: ";
+$lang_err_user_doc_read = "The current user does not have permission to read this document: ";
+$lang_err_user_doc_write = "The current user does not have permission to write to this document: ";
 
 $lang_err_folder_not_public = "This folder is not public: ";
 
