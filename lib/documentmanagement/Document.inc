@@ -617,7 +617,7 @@ class Document {
     * @return string full path to document
     */
     function getDisplayPath() {
-        return Folder::getFolderDisplayPath($this->iFolderID) . " > " . $this->sFileName;
+        return Folder::getFolderDisplayPath($this->iFolderID) . " > " . $this->sName;
     }
     
     /**
