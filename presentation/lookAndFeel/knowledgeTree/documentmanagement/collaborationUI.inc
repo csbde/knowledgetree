@@ -20,6 +20,7 @@ function getUserDropDown($iGroupID, $iUserID) {
 	$oPatternListBox->setFromClause($sFromClause);
 	$sWhereClause = "UGL.group_id = $iGroupID";
 	$oPatternListBox->setWhereClause($sWhereClause);
+	$oPatternListBox->setIncludeDefaultValue(false);
 	
 	if (isset($iUserID)) {
 		$oPatternListBox->setSelectedValue($iUserID);
