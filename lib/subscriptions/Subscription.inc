@@ -67,37 +67,6 @@ class Subscription {
     }
 
     /**
-     * Returns the correct table name for the subscription type
-     *
-     * @param integer the subscription type
-     * @return string the subscription table name to use
-     */
-    function getTableName($iSubscriptionType) {
-        global $default;
-
-        if ($iSubscriptionType == SubscriptionConstants::subscriptionType("DocumentSubscription")) {
-            return $default->owl_document_subscriptions_table;
-        } else if($iSubscriptionType == SubscriptionConstants::subscriptionType("FolderSubscription")) {
-            return $default->owl_folder_subscriptions_table;
-        }
-
-    }
-    /**
-     * Returns the correct id field name for the subscription type
-     *
-     * @param integer the subscription type
-     * @return string the subscription id field name to use
-     */
-    function getIdFieldName($iSubscriptionType) {
-        if ($iSubscriptionType == SubscriptionConstants::subscriptionType("DocumentSubscription")) {
-            return "document_id";
-        } else if($iSubscriptionType == SubscriptionConstants::subscriptionType("FolderSubscription")) {
-            return "folder_id";
-        }
-
-    }
-
-    /**
     * Get the primary key of the current subscription object
     *
     * @return integer primary key of subscription
@@ -161,13 +130,24 @@ class Subscription {
     }
 
     /**
-     * Returns the artefact link html
+     * Returns the link to view the subscription content
      */
-    function getLink() {
+    function getContentLink() {
         if ($iSubscriptionType == SubscriptionConstants::subscriptionType("DocumentSubscription")) {
-            return Document::getDocumentDisplayPath($iDocumentID);
+            return generateControllerLink("viewDocument", Document::getDocumentDisplayPath($this->iExternalID), "fDocumentID=$iExternalID");
         } else if ($iSubscriptionType == SubscriptionConstants::subscriptionType("FolderSubscription")) {
-            return Folder::getFolderDisplayPath($iFolderID);
+            return generateControllerLink("browse", Folder::getFolderDisplayPath($this->iExternalID), "fBrowseType=folder&fFolderID=$iExternalID");
+        }
+    }
+
+    /**
+     * Returns the url to the subscription content
+     */
+    function getContentUrl() {
+        if ($iSubscriptionType == SubscriptionConstants::subscriptionType("DocumentSubscription")) {
+            return generateControllerUrl("viewDocument", "fDocumentID=$iExternalID");
+        } else if ($iSubscriptionType == SubscriptionConstants::subscriptionType("FolderSubscription")) {
+            return generateControllerUrl("browse", "fBrowseType=folder&fFolderID=$iExternalID");
         }
     }
 
@@ -281,12 +261,12 @@ class Subscription {
     * Given a subscription's values will create a subscription object and populate it with the corresponding
     * primary key
     *
+    * @param integer the user ID    
     * @param integer the external ID
-    * @param integer the user ID
     * @param integer the type of subscription    
     * @return object subscription object on successful retrieval, false otherwise and set $_SESSION["errorMessage"]
     */
-    function getByIDs($iExternalID, $iUserID, $iSubscriptionType) {
+    function getByIDs($iUserID, $iExternalID, $iSubscriptionType) {
         global $default, $lang_err_database, $lang_err_object_not_exist;
         $sql = $default->db;
         if ($sql->query("SELECT * FROM " . Subscription::getTableName($iSubscriptionType) . " " .
@@ -310,12 +290,12 @@ class Subscription {
     /**
     * Checks if a given subscription already exists using the external and user ids
     *
+    * @param integer the user ID    
     * @param integer the external ID
-    * @param integer the user ID
     * @param integer the subscription type
     * @return true if the document subscription exists, false otherwise
     */
-    function exists($iExternalID, $iUserID, $iSubscriptionType) {
+    function exists($iUserID, $iExternalID, $iSubscriptionType) {
         global $default, $lang_err_database;
         $sql = $default->db;
         if ($sql->query("SELECT id FROM " . Subscription::getTableName($iSubscriptionType) . " " .
@@ -327,6 +307,37 @@ class Subscription {
             $_SESSION["errorMessage"] = $lang_err_database;
         }
         return false;
+    }
+
+    /**
+     * Returns the correct table name for the subscription type
+     *
+     * @param integer the subscription type
+     * @return string the subscription table name to use
+     */
+    function getTableName($iSubscriptionType) {
+        global $default;
+
+        if ($iSubscriptionType == SubscriptionConstants::subscriptionType("DocumentSubscription")) {
+            return $default->owl_document_subscriptions_table;
+        } else if($iSubscriptionType == SubscriptionConstants::subscriptionType("FolderSubscription")) {
+            return $default->owl_folder_subscriptions_table;
+        }
+
+    }
+    /**
+     * Returns the correct id field name for the subscription type
+     *
+     * @param integer the subscription type
+     * @return string the subscription id field name to use
+     */
+    function getIdFieldName($iSubscriptionType) {
+        if ($iSubscriptionType == SubscriptionConstants::subscriptionType("DocumentSubscription")) {
+            return "document_id";
+        } else if($iSubscriptionType == SubscriptionConstants::subscriptionType("FolderSubscription")) {
+            return "folder_id";
+        }
+
     }
 }
 ?>
