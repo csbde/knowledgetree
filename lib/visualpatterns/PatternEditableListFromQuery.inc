@@ -39,6 +39,8 @@ class PatternEditableListFromQuery {
 	var $sUniqueName;
 	/** set the tables to check for display type 3 */
 	var $aDropDownListTableNames;
+	/** set whether a column is required or not */
+	var $aColumnsRequired;	
 	
 	/**
 	* Default constructor
@@ -84,8 +86,14 @@ class PatternEditableListFromQuery {
 		$this->aDropDownListTableNames = $aNewValue;
 	}
 	
+	function setColumnsRequired($aNewValue) {
+		$this->aColumnsRequired = $aNewValue;
+	}
+	
 	function & render() {
         global $default;
+		//records the columns to generate validation javascript for
+		$aValidationColumnNames = array();
         
 		$sql = $default->db;		
 		$sql->query($this->sQuery);
@@ -123,6 +131,13 @@ class PatternEditableListFromQuery {
 							break;
 					}				
 					$sToRender .= "</tr>\n";
+					
+					//check for required columns
+					if (isset($this->aColumnsRequired) &&($this->aColumnsRequired[$i])) {
+						$iArrayEntry = count($aValidationColumnNames);
+						$aValidationColumnNames[$iArrayEntry]["formName"] = $this->sUniqueName . "_" . $i . "_value";
+						$aValidationColumnNames[$iArrayEntry]["displayName"] =  $this->aColumnNames[$i];
+					}
 			}
 			
 			$sToRender .= "<input type=\"hidden\" name=\"unique_end_" . $this->sUniqueName . "\" value=\"\" />\n";
@@ -132,11 +147,25 @@ class PatternEditableListFromQuery {
 			$sToRender .= "<td colspan=" . count($this->aDisplayColumns) . ">No " . (isset($this->sTableHeading) ? "$this->sTableHeading" : "") . " data</td>\n";
 			$sToRender .= "</tr>\n";			
 		}
+		
+		$sToRender .= $this->generateRequiredFieldValidation($aValidationColumnNames);
+		
 		return $sToRender;
 	}
 	
-	function replaceValues($sQueryStringText, $sql) {
-		return $sQueryStringText;
+	function generateRequiredFieldValidation($aValidationColumnNames) {
+		$sToRender .= "\n\n<script language=\"javascript\">\n<!--\n";
+		$sToRender .= "function validateForm(theForm) {\n";			
+		for ($i = 0; $i < count($aValidationColumnNames); $i++) {			
+			$sToRender .= "\tif (!(validRequired(document.MainForm." . $aValidationColumnNames[$i]["formName"] . ", '" . $aValidationColumnNames[$i]["displayName"] . "'))) {\n";
+			$sToRender .= "\t\treturn false;\n\t}\n";			
+		}
+		$sToRender .= "return true;\n}\n";
+		
+		$sToRender .= "//-->\n</script>\n\n";
+		
+		return $sToRender;
+                
 	}
 	
 }
