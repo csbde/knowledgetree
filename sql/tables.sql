@@ -191,7 +191,8 @@ user_id INTEGER NOT NULL,
 document_id INTEGER NOT NULL,
 datetime DATETIME,
 done BIT,
-active BIT
+active BIT,
+dependant_documents_created BIT
 )TYPE = InnoDB;
 
 CREATE TABLE folder_doctypes_link (
@@ -1081,3 +1082,5 @@ INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default)
 INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default, is_enabled) VALUES ("scratchPad", "/tests/scratchPad.php", 8, 2, "scratch", 0, 0);
 INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default, is_enabled) VALUES ("sitemap", "/tests/session/SiteMap.php", 8, 2, "sitemap", 0, 0);
 INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default, is_enabled) VALUES ("documentBrowserTest", "/tests/documentmanagement/DocumentBrowser.php", 8, 2, "test the document browser", 0, 0);
+
+UPDATE folders_users_roles_link SET dependant_documents_created = 1;
