@@ -66,8 +66,12 @@ function getPage() {
     $sToRender .= "<tr>\n";
     $sToRender .= "</tr>\n";
     for($i = 0; $i < count($aNames); $i++) {
-
-        $sToRender .= "<td>". ($i+1) .".</td><td>" .$aRowNames[$i] ." </td><td><input size = \"40\" type=\"text\" name=\"". $aNames[$i] ."\" value =\"". $oSystem->get(substr($aNames[$i],1)) ."\"></td>\n";
+        if ($oSystem->initialised()) {
+            $sToRender .= "<td>". ($i+1) .".</td><td>" .$aRowNames[$i] ." </td><td><input size = \"40\" type=\"text\" name=\"". $aNames[$i] ."\" value =\"". $oSystem->get(substr($aNames[$i],1)) ."\"></td>\n";
+        } else {
+            $sSetting = substr($aNames[$i],1);
+            $sToRender .= "<td>". ($i+1) .".</td><td>" .$aRowNames[$i] ." </td><td><input size = \"40\" type=\"text\" name=\"". $aNames[$i] ."\" value =\"". $default->$sSetting ."\"></td>\n";
+        }
         $sToRender .= "</tr>\n";
 
     }
