@@ -25,6 +25,8 @@ class PatternTableSqlQuery {
 	/* Columns in table to query (ID is included by default) */
 	var $aColumns;
 	/* Column types.  Possibles are 1 = text, 2 = boolean*/
+	var $aColumnTypes;
+	/** header names to display */	
 	var $aColumnHeaderNames;
 	/** table width, either in pixels or as a percentage e.g. 600 or 100%*/
 	var $sWidth;
@@ -38,9 +40,10 @@ class PatternTableSqlQuery {
 	var $sTableHeading;
 	
 	
-	function PatternTableSqlQuery($sTmpQuery, $aTmpColumns, $aTmpColumnHeaderNames, $sTmpWidth, $bTmpDisplayColumnHeadings = false, $sTmpWhereClause = null, $sTmpOrderByClause = null) {
+	function PatternTableSqlQuery($sTmpQuery, $aTmpColumns, $aTmpColumnTypes, $aTmpColumnHeaderNames, $sTmpWidth, $bTmpDisplayColumnHeadings = false, $sTmpWhereClause = null, $sTmpOrderByClause = null) {
 		$this->sQuery = $sTmpQuery;
 		$this->aColumns = & $aTmpColumns;
+		$this->aColumnTypes = $aTmpColumnTypes;
 		$this->aColumnHeaderNames = $aTmpColumnHeaderNames;
 		$this->sWidth = $sTmpWidth;
 		$this->sWhereClause = & $sTmpWhereClause;
@@ -80,7 +83,13 @@ class PatternTableSqlQuery {
 			while ($sql->next_record()) {			
 				$sToRender .= "<tr>\n";
 				for ($i = 0; $i < count($this->aColumns); $i++) {
-					$sToRender .= "<td>" . $sql->f($this->aColumns[$i]) . "</td>";
+					switch ($this->aColumnTypes[$i]) {
+						case 1:
+								$sToRender .= "<td>" . $sql->f($this->aColumns[$i]) . "</td>";
+								break;
+						default:
+								break;
+					}
 				}
 				$sToRender .= "</tr>\n";			
 			}
