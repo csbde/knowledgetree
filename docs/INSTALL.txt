@@ -1,8 +1,12 @@
 KnowledgeTree Installation Notes
 --------------------------------
 
-*  Ensure that you have PHP, MySQL and Apache installed and configured.
-   - Check that the following PHP configuration options are set appropriately in php.ini:
+*  KnowledgeTree requires the following software to run:
+   -  Apache 1.3 or above
+   -  MySQL 4.0 or above with INNODB support
+   -  PHP 4.3.0 or above, but not yet PHP 5.0
+
+*  Check that the following PHP configuration options are set appropriately in php.ini:
 		error_reporting  =  E_ALL & ~E_NOTICE
 		file_uploads = On
 		upload_tmp_dir = C:\PHP\uploadtemp
