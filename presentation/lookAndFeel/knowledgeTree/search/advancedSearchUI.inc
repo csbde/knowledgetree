@@ -78,7 +78,9 @@ function getSearchResults($sSQLSearchString, $iStartIndex, $sSearchText, $sMetaT
 	
 	$oPatternBrowse = & new PatternBrowseableSearchResults($sQuery, 10, $aColumns, $aColumnTypes, $aColumnHeaders, $aLinkURLs, $aDBQueryStringColumns, $aQueryStringVariableNames);
 	$oPatternBrowse->setStartIndex($iStartIndex);
-	return "<table width=\"600\">" . renderHeading() . "</table>" . $oPatternBrowse->render() . getSearchVariablesHtml($sSearchText, $sMetaTagIDs);
+    
+    $sRefreshMessage = "<table><tr><td align=\"center\">If your browser displays a 'Warning: Page has Expired' message when you attempt to return to these search results, please click your browser's 'Refresh' button</td></tr></table>";
+	return "<table width=\"600\">" . renderHeading() . "</table>" . $oPatternBrowse->render() . $sRefreshMessage . getSearchVariablesHtml($sSearchText, $sMetaTagIDs);
 }
 
 function getSearchValidationJavaScript() {
