@@ -26,7 +26,7 @@ $default->fileSystemRoot  = "/usr/local/www/dms";
 // server settings
 $default->serverName = "change.to.your.hostname";
 // whether ssl is enabled or not
-$default->sslEnabled = true;
+$default->sslEnabled = false;
 // Change this to reflect the authentication method you are using
 // valid choices are: DBAuthenticator, LDAPAuthenticator
 $default->authenticationClass = "DBAuthenticator";
