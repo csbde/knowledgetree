@@ -114,6 +114,59 @@ class DocumentTransaction {
         return false;
 	}
 	
-	
+    /**
+     * Static function.  Given a document transaction primary key will create
+     * a document transaction object and populate it with the corresponding
+     * database values
+     *
+     * @return DocumentTransaction populated DocumentTransaction object on success, false otherwise and set $_SESSION["errorMessage"]
+     */
+    function & get($iDocumentTransactionID) {
+        global $default, $lang_err_doc_not_exist;
+        if (strlen($iDocumentTransactionID) > 0) {
+	        $sql = $default->db;
+	        $sql->query("SELECT * FROM $default->owl_document_transactions_table WHERE id = $iDocumentTransactionID");
+	        if ($sql->next_record()) {			
+	            $oDocumentTransaction = & new DocumentTransaction($sql->f("document_id"), stripslashes($sql->f("comment")), $sql->f("transaction_id"));
+	            $oDocumentTransaction->iId = $sql->f("id");	
+				$oDocumentTransaction->sVersion = $sql->f("version");
+				$oDocumentTransaction->iUserID = $sql->f("user_id");
+				$oDocumentTransaction->dDateTime = $sql->f("datetime");		
+				$oDocumentTransaction->sIP = $sql->f("ip");
+				$oDocumentTransaction->sFileName = $sql->f("filename");
+	            return $oDocumentTransaction;
+	        }
+	        $_SESSION["errorMessage"] = $lang_err_object_not_exist . "id = " . $iDocumentTransactionID . " table = document_transactions";
+	        return false;
+        } else {
+        	$_SESSION["errorMessage"] = "document transaction ID not set.  Cannot retrieve document with no id";
+        	return false;
+        }
+    }
+
+    /**
+     * Static function
+     * Get a list of DocumentTransactions
+     *
+     *  @param  String  Where clause (not required)
+     *
+     * @return Array array of DocumentTransaction objects, false otherwise and set $_SESSION["errorMessage"]
+     */
+    function getList($sWhereClause = null) {
+        global $default, $lang_err_database;
+        $aDocumentTransactionArray = array();
+        $sql = $default->db;
+        $sQuery = "SELECT * FROM $default->owl_document_transactions_table " . (isset($sWhereClause) ? " WHERE " . $sWhereClause : "");
+        $result = $sql->query($sQuery);
+        if ($result) {
+            while ($sql->next_record()) {
+            	$oDocumentTransaction = & DocumentTransaction::get($sql->f("id"));
+                $aDocumentTransactionArray[] = $oDocumentTransaction;
+            }
+            return $aDocumentTransactionArray;
+        }
+        $_SESSION["errorMessage"] = $lang_err_database;
+        return false;
+    }
 }
 ?>
