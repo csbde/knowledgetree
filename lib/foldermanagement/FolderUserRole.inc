@@ -198,10 +198,10 @@ class FolderUserRole {
 		return false;
 	}
 	
-	function & getFromFolderCollaboration($iFolderCollaborationID) {
+	function & getFromFolderCollaboration($iFolderCollaborationID, $iDocumentID) {
 		global $default, $lang_err_database;
 		$sql = $default->db;
-		$sql->query("SELECT id FROM $default->owl_folders_user_roles_table WHERE group_folder_approval_id = $iFolderCollaborationID");
+		$sql->query("SELECT id FROM $default->owl_folders_user_roles_table WHERE group_folder_approval_id = $iFolderCollaborationID AND document_id = $iDocumentID");
 		if ($sql->next_record()) {
 			return FolderUserRole::get($sql->f("id"));
 		}
