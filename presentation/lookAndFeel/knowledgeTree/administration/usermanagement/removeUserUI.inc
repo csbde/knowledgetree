@@ -83,7 +83,7 @@ function getDeleteFailPage() {
     $sToRender .= renderHeading(_("Remove User"));
     $sToRender .= "<table>\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "<td><b>" . _("Deletion Failed") . "!</b></td>\n";
+    $sToRender .= "<td><b>" . _("Deletion Failed!") . "</b></td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "</tr>\n";
