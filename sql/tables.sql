@@ -79,8 +79,8 @@ major_version INTEGER NOT NULL,
 minor_version INTEGER NOT NULL,
 is_checked_out BIT NOT NULL,
 parent_folder_ids TEXT,
-full_path TEXT
-
+full_path TEXT,
+checked_out_user_id INTEGER
 )TYPE = InnoDB;
 
 CREATE TABLE document_subscriptions ( 
