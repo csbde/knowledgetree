@@ -63,11 +63,11 @@ if (checkSession()) {
 
     // now try to retrieve them
     echo "<li>folder subscriptions for userID=$iUserID:";
-    $aFolders = $oSubscriptionManager->retrieveSubscriptions($iUserID, SubscriptionConstants::subscriptionType("FolderSubscription"));
+    $aFolders = $oSubscriptionManager->retrieveUserSubscriptions($iUserID, SubscriptionConstants::subscriptionType("FolderSubscription"));
     echo "<pre>" . arrayToString($aFolders) . "</pre></li>";
 
     echo "<li>document subscriptions for userID=$iUserID:";
-    $aDocuments = $oSubscriptionManager->retrieveSubscriptions($iUserID, SubscriptionConstants::subscriptionType("DocumentSubscription"));
+    $aDocuments = $oSubscriptionManager->retrieveUserSubscriptions($iUserID, SubscriptionConstants::subscriptionType("DocumentSubscription"));
     echo "<pre>" . arrayToString($aDocuments) . "</pre></li>";
 
     // now try retrieving both
