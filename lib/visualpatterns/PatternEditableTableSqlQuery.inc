@@ -45,7 +45,11 @@ class PatternEditableTableSqlQuery {
 	/** Unique name */
 	var $sUniqueName;
 	/** message that will be displayed if the table is empty*/
-	var $sEmptyTableMessage;    
+	var $sEmptyTableMessage;
+	/** whether or not to include javascript validation rendering automatically */
+	var $bRenderJavascriptValidation = true;
+	/** temporary array holding the required fields */
+	var $aRequiredVariables;
 	
 	var $aRequiredColumnNames;
 	var $aRequiredFieldNames;
@@ -95,6 +99,10 @@ class PatternEditableTableSqlQuery {
 		$this->sEmptyTableMessage = $sNewValue;
 	}
 	
+	function setRenderJavascriptValidation($bNewValue) {
+		$this->bRenderJavascriptValidation = $bNewValue;
+	}
+	
 	function & render() {
         global $default;
         
@@ -118,7 +126,7 @@ class PatternEditableTableSqlQuery {
 			}
 			$sToRender .= "</tr>\n";		
 		} else {
-			$aRequiredVariables = array();
+			$this->aRequiredVariables = array();
 			$iRowCount = 0;
 			while ($sql->next_record()) {				
 				$sToRender .= "<tr>\n";
@@ -128,17 +136,17 @@ class PatternEditableTableSqlQuery {
                 
                 // check for is_mandatory field validation
                 if ($sql->f("is_mandatory") == "1") {
-                    $aRequiredVariables[]["formName"] = $this->sUniqueName . "_" . $iRowCount . (count($this->aStoreColumnNames)-1) . "_value";
+                    $this->aRequiredVariables[]["formName"] = $this->sUniqueName . "_" . $iRowCount . (count($this->aStoreColumnNames)-1) . "_value";
                 }                
 				for ($i = 0; $i < count($this->aStoreColumnNames); $i++) {					
 					if (isset($this->aRequiredColumnNames)) {
 						for ($k = 0; $k < count($this->aRequiredColumnNames); $k++) {
 							if (strcmp($this->aStoreColumnNames[$i], $this->aRequiredColumnNames[$k]) == 0) {								
-								$aRequiredVariables[count($aRequiredVariables)]["formName"] = $this->sUniqueName . "_" . $iRowCount . $i . "_value";
+								$this->aRequiredVariables[count($this->aRequiredVariables)]["formName"] = $this->sUniqueName . "_" . $iRowCount . $i . "_value";
 							}
 						}
 					}
-
+					
 					//generate the right kind of editable field
 					$sToRender .= "\t<td>\n";
 					switch ($this->aColumnDisplayTypes[$i]) {
@@ -211,26 +219,32 @@ class PatternEditableTableSqlQuery {
 			}
 		}
 		$sToRender .= "</table>";
-		if (isset($aRequiredVariables)) {
-			$sToRender .= $this->generateRequiredFieldValidation($aRequiredVariables);
+		if (isset($this->aRequiredVariables)) {
+			if ($this->bRenderJavascriptValidation) {
+				$sToRender .= $this->generateRequiredFieldValidation($this->aRequiredVariables);
+			}
 		}
 		return $sToRender;
 	}
 	
 	function generateRequiredFieldValidation($aValidationColumnNames) {
 		$sToRender .= "\n\n<script language=\"javascript\">\n<!--\n";
-		$sToRender .= "function validateForm(theForm) {\n";			
+		$sToRender .= "function validateForm(theForm) {\n";
 		for ($i = 0; $i < count($aValidationColumnNames); $i++) {
             $sToRender .= "\tif (!(validRequired(document.MainForm." . $aValidationColumnNames[$i]["formName"] . ", 'selected'))) {\n";
             $sToRender .= "\t\treturn false;\n\t}\n";
 		}
 		$sToRender .= "return true;\n}\n";
-		
 		$sToRender .= "//-->\n</script>\n\n";
-		
 		return $sToRender;
-                
+	}
+	
+	function getValidationJavascript() {
+		for ($i = 0; $i < count($this->aRequiredVariables); $i++) {
+            $sToRender .= "\tif (!(validRequired(document.MainForm." . $this->aRequiredVariables[$i]["formName"] . ", 'selected'))) {\n";
+            $sToRender .= "\t\treturn false;\n\t}\n";
+		}
+		return $sToRender;
 	}
 }
-
 ?>
