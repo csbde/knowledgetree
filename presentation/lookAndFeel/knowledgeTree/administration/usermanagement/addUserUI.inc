@@ -12,11 +12,9 @@
 function getSelectUserPage($aResults) {
 	global $default;
 	
-    //$sToRender  = renderHeading("User Administration");
-	$sToRender .= "<br></br>\n";
-	$sToRender .= "<b>Select the User to add to the System:</b>\n";
+    $sToRender .= "<table width=\"600\">" . renderHeading("Add User To System") . "</table>";
 	$sToRender .= "<table>\n";
-    $sToRender .= "<br></br>\n";
+	$sToRender .= "<tr><td>Select the User to add to the System:</td></tr>\n";
 	$sToRender .= "<tr><td><select name=\"fName\">\n";
     foreach ($aResults as $sName => $aAttributes) {
         $sToRender .= "<option value=\"$sName\">$sName</option>";
@@ -33,12 +31,10 @@ function getAddPage($unitID) {
 
 	global $default;
 	
-    //$sToRender  = renderHeading("User Administration");
-	$sToRender .= "<br></br>\n";
-	$sToRender .= "<b>Add a New User to the System:</b>\n";
+    $sToRender .= "<table width=\"600\">" . renderHeading("Add User To System") . "</table>";
 	$sToRender .= "<table>\n";
-	$sToRender .= "<br></br>\n";
-	$sToRender .= "<tr>Please enter a VALID Username to search for in the text box below</tr>\n";
+	$sToRender .= "<tr><td>Add a New User to the System:</td></tr>\n";
+	$sToRender .= "<tr><td>Please enter a VALID Username to search for in the text box below</td></tr>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>Username: </td><td><input size = \"40\" type=\"text\" name=\"fName\"> </td>\n";
 	$sToRender .= "</tr>\n";
@@ -56,14 +52,12 @@ function getAddPage($unitID) {
 function getDetailsDBPage($suserName, $aAttributes) {
 
  	global $default;
+    $sToRender .= "<table width=\"600\">" . renderHeading("Add User To System") . "</table>";
     foreach ($aAttributes as $sUserName => $aUserAttributes) {
-        $sToRender .= "<br></br>\n";
-        $sToRender .= "<b>User Details: </b>\n";
         $sToRender .= "<table>\n";
-        $sToRender .= "<br></br>\n";
+        $sToRender .= "<tr><td><b>User Details: </b></td></tr>\n";
         $sToRender .= "<tr>\n";
         $sToRender .= "<td>Username: </td><td><input size = \"40\" type=\"text\" name=\"fUsername\" value = \"". $aUserAttributes["username"]. "\"> </td>\n";
-        //$sToRender .= "<input type=\"hidden\" name=\"fUsername\" value = \"" . $aUserAttributes["username"] ."\">\n";
         $sToRender .= "</tr>\n";
         $sToRender .= "<tr>\n";
         $sToRender .= "<td>Password: </td><td><input size = \"40\" type=\"password\" name=\"fPassword\"></td>\n";
@@ -81,17 +75,10 @@ function getDetailsDBPage($suserName, $aAttributes) {
         $sToRender .= "<td>Email Notification: </td><td><input type=\"checkbox\" name=\"fEmailNotification\" value=\"" . $aUserAttributes["email_notification"] . "\" " . ($aUserAttributes["email_notification"] == "1" ? "checked" : "") . "\"> </td>\n";
         $sToRender .= "</tr>\n";
         $sToRender .= "<tr>\n";
-        $sToRender .= "<td>Sms Notification: </td><td><input type=\"checkbox\" name=\"fSmsNotification\" value=\"" . $aUserAttributes["sms_notification"] . "\" " . ($aUserAttributes["sms_notification"] == "1" ? "checked" : "") . "\"> </td>\n";
+        $sToRender .= "<td>Sms Notification: </td><td><input type=\"checkbox\" name=\"fSmsNotification\" value=\"" . $aUserAttributes["sms_notification"] . "\" " . ($aUserAttributes["sms_notification"] == "1" ? "checked" : "") . "> </td>\n";
         $sToRender .= "</tr>\n";
         $sToRender .= "<tr>\n";
-        $sToRender .= "</tr>\n";
-        $sToRender .= "<tr>\n";
-        $sToRender .= "</tr>\n";
-        $sToRender .= "<tr>\n";
-        $sToRender .= "</tr>\n";
-        $sToRender .= "<tr>\n";
-        $sToRender .= "<td></td><td>" . getAddButton();	
-        $sToRender .= "<td></td><td>" . getCancelButton();
+        $sToRender .= "<td colspan=\"2\" align=\"right\">" . getAddButton() . getCancelButton() . "</td>";
         $sToRender .= "</tr>\n";
         $sToRender .= "</table>\n";
 	}
@@ -101,12 +88,11 @@ function getDetailsDBPage($suserName, $aAttributes) {
 
 function getDetailsLDAPPage($suserName, $aAttributes) {
 
+    $sToRender .= "<table width=\"600\">" . renderHeading("Add User To System") . "</table>";
  	global $default;
 	foreach ($aAttributes as $sUserName => $aUserAttributes) {
-        $sToRender .= "<br></br>\n";
-        $sToRender .= "<b>User Details: </b>\n";
         $sToRender .= "<table>\n";
-        $sToRender .= "<br></br>\n";
+        $sToRender .= "<tr><td><b>User Details: </b></td></tr>\n";
         $sToRender .= "<tr>\n";
         $sToRender .= "<td>LDAP DN: </td><td><input disabled size = \"40\" type=\"text\" name=\"fLdap\" value = \"". $aUserAttributes["dn"]. "\"> </td>\n";
         $sToRender .= "<input type=\"hidden\" name=\"fLdap\" value = \"". $aUserAttributes["dn"]. "\">\n";
@@ -130,19 +116,14 @@ function getDetailsLDAPPage($suserName, $aAttributes) {
         $sToRender .= "</tr>\n";
         $sToRender .= "<tr>\n";
         $sToRender .= "<td>Sms Notification: </td><td><input type=\"checkbox\" name=\"fSmsNotification\"/> </td>\n";
-        $sToRender .= "<tr>\n";
         $sToRender .= "</tr>\n";
         $sToRender .= "<tr>\n";
-        $sToRender .= "</tr>\n";
-        $sToRender .= "<tr>\n";
-        $sToRender .= "<td></td><td>" . getAddButton();	
-        $sToRender .= "<td></td><td>" . getCancelButton();
+        $sToRender .= "<td colspan=\"2\" align=\"right\">" . getAddButton() . getCancelButton() . "</td>";
         $sToRender .= "</tr>\n";
         $sToRender .= "</table>\n";
     }
-	
+
 	return $sToRender;
-	
 }
 
 
@@ -150,10 +131,9 @@ function getDetailsLDAPPage($suserName, $aAttributes) {
 function getPageSuccess() {	
 	global $default;
 			
-	$sToRender .= "<br></br>\n";
-	$sToRender .= "<b>Addition Successful!</b>\n";
+	$sToRender .= "<table width=\"600\">" . renderHeading("Add User To System") . "</table>";
 	$sToRender .= "<table>\n";
-	$sToRender .= "<br></br>\n";
+    $sToRender .= "<tr><td><b>Addition Successful!</b></td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr><td>The User was successfully added to the System</td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
@@ -170,10 +150,9 @@ function getPageSuccess() {
 function getPageFail() {	
 	global $default;
 			
-	$sToRender .= "<br></br>\n";
-	$sToRender .= "<b>Addition Unsuccessful</b>\n";
+	$sToRender .= "<table width=\"600\">" . renderHeading("Add User To System") . "</table>";
 	$sToRender .= "<table>\n";
-	$sToRender .= "<br></br>\n";
+	$sToRender .= "<tr><td><b>Addition Successful!</b></td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr><td>The User was not added. Username Already exists!</td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
@@ -192,10 +171,9 @@ function getPageFail() {
 function getPageUsernameNotFound() {	
 	global $default;
 			
-	$sToRender .= "<br></br>\n";
-	$sToRender .= "<b>Username not found!</b>\n";
+	$sToRender .= "<table width=\"600\">" . renderHeading("Add User To System") . "</table>";
 	$sToRender .= "<table>\n";
-	$sToRender .= "<br></br>\n";
+	$sToRender .= "<tr><td><b>Username not found!</b></td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr><td>Please ensure that the username that you entered Exists!</td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
@@ -213,13 +191,13 @@ function getPageUsernameNotFound() {
 // show delete button or select button
 function getAddButton() {
 	global $default;
-		return "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/add.gif\" value=\"submit\" border=\"0\"/></td>\n";
+		return "<input type=\"image\" src =\"$default->graphicsUrl/widgets/add.gif\" value=\"submit\" border=\"0\"/>\n";
 }
 
 // show cancel button
 function getCancelButton() {
 	global $default;
-	return "<td align = right><a href=\"$default->rootUrl/control.php?action=addUser\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" /></a></td>\n";
+	return "<a href=\"$default->rootUrl/control.php?action=addUser\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" /></a>\n";
 	
 }
 
