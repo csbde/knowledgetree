@@ -64,7 +64,7 @@ if (checkSession()) {
             } else {
                 // ask for confirmation
                 $default->log->info("sub=" . arrayToString($oSubscription));
-                $oPatternCustom->setHtml(renderSubscriptionRemoveConfirmationPage($oSubscription));
+                $oPatternCustom->setHtml(renderRemoveConfirmationPage($oSubscription));
             }
         } else {
             // you're not subscribed
@@ -76,7 +76,26 @@ if (checkSession()) {
         $main->setCentralPayload($oPatternCustom);
         $main->setFormAction($_SERVER["PHP_SELF"]);
         $main->render();
+
+    } else if ($fDocumentIDs || $fFolderIDs) {
+        // multiple unsubscribes
         
+        // unsubscribe folders
+        
+        // unsubscribe documents
+        
+            $oSubscription = & Subscription::getByIDs($iUserID, $iExternalID, $iSubscriptionType);
+            // remove it
+            if ($oSubscription->delete()) {
+                $default->log->info("removeSubscriptionBL.php removed subscription for userID=$iUserID, subType=$iSubscriptionType, id=$iExternalID");
+                // redirect to viewFolder or viewDocument
+                redirect($oSubscription->getContentUrl());
+            } else {
+                // error removing subscription
+                $default->log->error("removeSubscriptionBL.php error removing subscription for userID=$iUserID, subType=$iSubscriptionType, id=$iExternalID");                
+                $oPatternCustom->setHtml(renderErrorPage("An error occurred while removing this subscription (" . $_SESSION["errorMessage"] . ")" ));
+            }
+
     } else {
         // neither document or folder chosen
         $oPatternCustom->setHtml(renderErrorPage("You haven't chosen a folder or a document to unsubscribe from"));
