@@ -117,28 +117,28 @@ class PatternEditableListFromQuery {
 			}		
 			
 			for ($i = 0; $i < count($this->aDisplayColumns); $i++) {		
-					$sToRender .= "<tr bgcolour=\"" . $this->getColour($i) . "\">\n";
+					$sToRender .= "<tr>\n";
 					$sToRender .= "<input type=\"hidden\" name=\"" . $this->sUniqueName . "_" . $i . "_tc\" value=\"" . $this->aStoreColumns[$i] . "\" />\n";
 					$sToRender .= "<input type=\"hidden\" name=\"" . $this->sUniqueName . "_" . $i . "_type\" value=\"" . $this->aDatabaseColumnTypes[$i] . "\" />\n";					
-					$sToRender .= "\t<td>" . $this->aColumnNames[$i] . "</td>\n";
+					$sToRender .= "\t<td bgcolor=\"$sTDBGColour\">" . $this->aColumnNames[$i] . "</td>\n";
 					switch ($this->aDisplayColumnTypes[$i]) {						
 						case 1:	
-							//plain text field							
-							$sToRender .= "\t<td bgcolor=\"$sTDBGColour\"><input type=\"text\" size = \"30\" name=\"" . $this->sUniqueName . "_" . $i . "_value\" value=\"" . stripslashes($sql->f($this->aDisplayColumns[$i])) . "\"</td>\n";
+							//plain text field
+							$sToRender .= "\t<td bgcolor=\"" . $this->getColour($i) . "\"><input type=\"text\" size = \"30\" name=\"" . $this->sUniqueName . "_" . $i . "_value\" value=\"" . stripslashes($sql->f($this->aDisplayColumns[$i])) . "\"</td>\n";
 							break;						
 						case 2:
 							//boolean value
-							$sToRender .= "\t<td bgcolor=\"$sTDBGColour\"><input type=\"checkbox\" name=\"" . $this->sUniqueName . "_" . $i . "_value\" value=\"1\" " . ($sql->f($this->aDisplayColumns[$i]) ? " CHECKED " : " ") . "/></td>\n";
+							$sToRender .= "\t<td bgcolor=\"" . $this->getColour($i) . "\"><input type=\"checkbox\" name=\"" . $this->sUniqueName . "_" . $i . "_value\" value=\"1\" " . ($sql->f($this->aDisplayColumns[$i]) ? " CHECKED " : " ") . "/></td>\n";
 							break;
 						case 3:	
 							$oPatternListBox = & new PatternListBox($this->aDropDownListTableNames[$i], "name", "id", $this->sUniqueName . "_" . $i . "_value");
 							$oPatternListBox->setSelectedValue($sql->f($this->aStoreColumns[$i]));
-							$sToRender .= "\t<td bgcolor=\"$sTDBGColour\">" . $oPatternListBox->render() . "</td>\t\n";
+							$sToRender .= "\t<td bgcolor=\"" . $this->getColour($i) . "\">" . $oPatternListBox->render() . "</td>\t\n";
 							break;
 						case 4:
 							//meta data type
 							$oPattern = & new PatternMetaData($this->aMetaDataFields[$i], $this->sUniqueName . "_" . $i . "_value", $sql->f($this->aStoreColumns[$i]));
-							$sToRender .= "\t<td bgcolor=\"$sTDBGColour\">" . $oPattern->render() . "</td>\t\n";
+							$sToRender .= "\t<td bgcolor=\"" . $this->getColour($i) . "\">" . $oPattern->render() . "</td>\t\n";
 						default:
 							break;
 					}				
