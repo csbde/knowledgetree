@@ -43,7 +43,7 @@ class Authenticator {
                         $userDetails["status"]       = 1;
                         $userDetails["user_id"]      = $sql->f("id");
                         $userDetails["username"]     = $sql->f("username");
-                        $userDetails["group_id"]     = $sql->f("group_id");
+                        //$userDetails["group_id"]     = $sql->f("group_id");
                         $userDetails["max_sessions"] = $sql->f("max_sessions") + 1;
                     }
                 }
