@@ -401,7 +401,9 @@ function displayActionButtons($oDocument, $bEdit) {
     }   
     $sToRender .= "<tr><td align=\"left\"><a href=\"" . generateControllerLink("viewDiscussion", "fDocumentID=" . $oDocument->getID() . "&fForDiscussion=1") . "\"><img src=\"$default->graphicsUrl/widgets/docactions/discussion.gif\" border=\"0\" /></a></td></tr>\n";
     // only display the archive button for available documents
-    if (!$oDocument->getIsCheckedOut() && !$oDocument->hasCollaboration() && (!DocumentCollaboration::documentCollaborationStarted($oDocument->getID()))) {
+    // if the document is not checked out
+    // and if the document is not in collaboration
+    if (!$oDocument->getIsCheckedOut() && (!$oDocument->hasCollaboration() || !DocumentCollaboration::documentCollaborationStarted($oDocument->getID()))) {
     	$sToRender .= "<tr><td align=\"left\"><a href=\"" . generateControllerLink("archiveDocument", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/docactions/archive.gif\" border=\"0\" /></a></td></tr>\n";
     } else {
     	$iDummyButtons++;
