@@ -89,7 +89,7 @@ class KTHtml {
         return imgSrc('widgets/cancel.png');
     }
     function getLoginButton() {
-        return imgSrc('icons/login.jpg');
+        return imgSrc('icons/login.png');
     }
     function getNextButton() {
         return imgSrc('widgets/next.png');
