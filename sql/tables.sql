@@ -21,16 +21,17 @@ name CHAR(255) NOT NULL
 
 CREATE TABLE dependant_document_instance ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
-document_title TEXT,
-user_id INTEGER,
-template_document_id INTEGER
+document_title TEXT NOT NULL,
+user_id INTEGER NOT NULL,
+template_document_id INTEGER,
 ) TYPE = InnoDB;
 
 CREATE TABLE dependant_document_template ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
-document_title TEXT,
-default_user_id INTEGER,
-template_document_id INTEGER
+document_title TEXT NOT NULL,
+default_user_id INTEGER NOT NULL,
+template_document_id INTEGER,
+group_folder_approval_link_id INTEGER
 ) TYPE = InnoDB;
 
 CREATE TABLE discussion_threads ( 
