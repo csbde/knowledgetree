@@ -27,7 +27,7 @@ Documents/     The physical documents reside here.
 etc/           Contains sample configuration for PHP, MySQL and Apache.
 graphics/      This is where the user interface graphics live.
 lib/           This is where the object model/backend KnowledgeTre classes live.
-locale/        Language specific files..
+locale/        Language specific files.
 log/           The application log files live here
 phpSniff/      phpSniff v 2.1.3
 phplib/        Database handler classes.
@@ -78,7 +78,12 @@ INSTALLATION
 *  Login:
    - in a web browser goto http://$default->serverName/$default->rootUrl/
    - default user is "admin" with password "admin"
-
    
-- The KnowledgeTree Team
+
+Jam Warehouse – Smart Business Innovation
+Phone: +27 21 4477440
+Fax: +27 21 4477449
+Email: info@jamwarehouse.com
+Web: http://www.jamwarehouse.com/
+
 $Id$
