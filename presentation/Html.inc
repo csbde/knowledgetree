@@ -55,7 +55,8 @@ function endTableRowCell() {
 }
 
 function generateLink($sTargetPage, $sQueryString, $sLinkText) {
-    return "<a href=\"$sTargetPage?$sQueryString\">$sLinkText</a>\n";
+    $sQueryStringDelimiter = (strstr($sTargetPage, "?") ? "&" : "?");
+    return "<a href=\"$sTargetPage$sQueryStringDelimiter$sQueryString\">$sLinkText</a>\n";
 }
 
 function generateImage($sImageSource) {
