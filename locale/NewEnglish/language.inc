@@ -15,7 +15,7 @@
 
 */
 
-$lang_logout 		= "<IMG SRC='$default->owl_root_url/locale/$language/graphics/btn_logout.gif' BORDER=0>";
+$lang_logout 		= "<IMG SRC='$default->owl_root_url/locale/NewEnglish/graphics/btn_logout.gif' BORDER=0>";
 //$lang_logout		= "(Logout)";
 $lang_login		= "Login";
 $lang_successlogout 	= "You have sucessfully logged out";
@@ -183,7 +183,7 @@ $lang_notif_msg         = "THIS IS AN AUTOMATED MESSAGE FROM OWL Intranet\n\nFin
 
 // Diego Bugfix
 //$lang_admin              = "Admin";
-$lang_admin              = "<BR><IMG SRC='$default->owl_root_url/locale/$language/graphics/btn_admin.gif' BORDER=0><BR>";
+$lang_admin              = "<BR><IMG SRC='$default->owl_root_url/locale/NewEnglish/graphics/btn_admin.gif' BORDER=0><BR>";
 $lang_user               = "User";
 $lang_search             = "Search";
 $lang_search_results_for = "Search results for";
