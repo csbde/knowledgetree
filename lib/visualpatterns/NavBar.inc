@@ -215,7 +215,7 @@ class NavBar {
 			  "<INPUT type=\"hidden\" name=\"fDocumentID\" value=\"" . $this->iDocumentID . "\"  />\n " .
 			  "<INPUT type=\"hidden\" name=\"fCategoryName\" value=\"" . $this->sCategoryName . "\"  />\n " .
 			  "<INPUT type=\"hidden\" name=\"fDocTypeID\"  value=\"" . $this->iDocTypeID . "\"  />\n " .
-              "<INPUT type=\"image\" onClick=\"setActionAndSubmitSearch()\" src=\"$default->graphicsUrl/search.gif\" align = \"absmiddle\" border=\"0\" />\n " .
+              "<INPUT type=\"image\" onClick=\"setActionAndSubmitSearch('" . $default->rootUrl . "/control.php')\" src=\"$default->graphicsUrl/search.gif\" align = \"absmiddle\" border=\"0\" />\n " .
               "</td>\n " .
               "</tr>\n" .
               "<tr height=\"25%\" ><td width =\"10%\">". $row3 . "</td></tr>\n" .
