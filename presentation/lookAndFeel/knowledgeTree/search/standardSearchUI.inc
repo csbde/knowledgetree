@@ -8,7 +8,7 @@
 * @package presentation.lookAndFeel.documentmanagement
 */
 
-function renderHeading() {
+/*function renderHeading() {
     global $default;
     $sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
     $sColor = $default->siteMap->getSectionColour($sSectionName, "th");
@@ -16,11 +16,11 @@ function renderHeading() {
     $sToRender .= "<tr/>\n";
     $sToRender .= "<tr/>\n";
     return $sToRender;
-}
+}*/
 
 function getPage($sSearchText, $sBrowseType, $iFolderID, $iDocumentID, $sCategoryName, $iDocType, $sFolderIDs, $iStartIndex, $sSQLSearchString, $bSearchByDocument = false) {
     $sRefreshMessage = "<table><tr><td align=\"center\">If your browser displays a 'Warning: Page has Expired' message when you attempt to return to these search results, please click your browser's 'Refresh' button</td></tr></table>";
-    return "<table width=\"600\">" . renderHeading() . "</table>" . getSearchResults($sFolderIDs, $sSQLSearchString, $iStartIndex, $bSearchByDocument) . $sRefreshMessage . getSearchVariablesHtml($sSearchText, $sBrowseType, $iFolderID, $iDocumentID, $sCategoryName, $iDocType);
+    return "<table width=\"600\">" . renderHeading("Standard Search") . "</table>" . getSearchResults($sFolderIDs, $sSQLSearchString, $iStartIndex, $bSearchByDocument) . $sRefreshMessage . getSearchVariablesHtml($sSearchText, $sBrowseType, $iFolderID, $iDocumentID, $sCategoryName, $iDocType);
 }
 
 /*function getSearchResults($sIDs,$sSQLSearchString, $iStartIndex, $bSearchByDocument = false) {

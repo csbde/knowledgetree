@@ -18,7 +18,8 @@ if (checkSession()) {
 	require_once("$default->fileSystemRoot/lib/visualpatterns/PatternBrowsableSearchResults.inc");
 	require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");	
 	require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
-	require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");	
+	require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
+	require_once("$default->fileSystemRoot/presentation/Html.inc");	
 	require_once("standardSearchUI.inc");		
 	
 	if (!isset($fStartIndex)) {

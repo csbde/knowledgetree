@@ -17,6 +17,7 @@ if (checkSession()) {
 	require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
 	require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
 	require_once("$default->fileSystemRoot/lib/security/permission.inc");
+	require_once("$default->fileSystemRoot/presentation/Html.inc");
 	require_once("advancedSearchUI.inc");
 	
 	require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");

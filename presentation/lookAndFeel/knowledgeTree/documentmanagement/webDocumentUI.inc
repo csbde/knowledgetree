@@ -12,7 +12,7 @@
  * @package presentation.lookAndFeel.knowledgeTree.documentmanagement
  */
 
-function renderHeading() {
+/*function renderHeading() {
     global $default;
     $sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
     $sColor = $default->siteMap->getSectionColour($sSectionName, "th");
@@ -22,7 +22,7 @@ function renderHeading() {
     $sToRender .= "<tr/>\n";
     $sToRender .= "</table>\n";
     return $sToRender;
-}
+}*/
  
 /**
  * Prompts the user for a checkout comment
@@ -35,7 +35,7 @@ function renderUploadPage($oWebDocument) {
     $oWebSite = WebSite::get($oWebDocument->getWebSiteID());
     $oUser = User::get($oDocument->getCreatorID());
     
-    $sToRender  = renderHeading();
+    $sToRender  = renderHeading("Web document");
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr><td>'" . $oUser->getName() . "' has requested that the document </td></tr>";
     $sToRender .= "<tr><td><strong>" . generateControllerLink("viewDocument", "fDocumentID=" . $oDocument->getID(), $oDocument->getDisplayPath()) . "</strong></td></tr>";

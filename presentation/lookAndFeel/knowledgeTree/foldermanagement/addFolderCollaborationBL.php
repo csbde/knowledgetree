@@ -18,6 +18,7 @@ if (checkSession()) {
 		include_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
 		include_once("$default->fileSystemRoot/lib/security/permission.inc");
         include_once("$default->fileSystemRoot/lib/users/User.inc");
+        require_once("$default->fileSystemRoot/presentation/Html.inc");
 		if (Permission::userHasFolderWritePermission($fFolderID)) {
 			//can only create new collaboration steps if the user has folder write permission
 			if (isset($fForStore)) {

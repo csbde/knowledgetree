@@ -19,6 +19,7 @@ if (checkSession()) {
 	require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentLink.inc");
 	require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
 	require_once("$default->fileSystemRoot/lib/security/permission.inc");
+	require_once("$default->fileSystemRoot/presentation/Html.inc");
 	require_once("addDocumentLinkUI.inc");
 	
 	if (Permission::userHasDocumentWritePermission($fDocumentID)) {

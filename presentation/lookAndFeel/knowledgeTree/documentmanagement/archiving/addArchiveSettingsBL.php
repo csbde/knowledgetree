@@ -11,6 +11,7 @@ require_once("$default->fileSystemRoot/lib/visualpatterns/PatternTableSqlQuery.i
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternListBox.inc");
 require_once("$default->uiDirectory/documentmanagement/documentUI.inc");
 require_once("$default->uiDirectory/documentmanagement/archiving/archiveSettingsUI.inc");
+require_once("$default->fileSystemRoot/presentation/Html.inc");
 
 /**
  * $Id$

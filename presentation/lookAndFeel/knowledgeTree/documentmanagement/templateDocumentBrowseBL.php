@@ -6,6 +6,7 @@ require_once("$default->fileSystemRoot/lib/browse/Browser.inc");
 require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentType.inc");
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
 require_once("$default->uiDirectory/documentmanagement/templateDocumentBrowseUI.inc");
+require_once("$default->fileSystemRoot/presentation/Html.inc");
 
 /**
  * This page very closely follows browseBL.php.  This page is ONLY used when a user
