@@ -46,7 +46,7 @@ class PatternImage {
 		if (isset($this->sImgWidth) && isset($this->sImgWidth)) {
 			return "<img src=\"".$this->sImgURL."\" width=\"". $this->iImgWidth."\" height=\"".$this->iImgHeight."\" align=\"center\" />";
 		}
-		return "<img src=\"".$this->sImgURL."\" width=\"100%\" height=\"100%\" align=\"center\" />";		
+		return "<img src=\"".$this->sImgURL."\" align=\"center\" border =\"1\" />";		
 	}
 	
 	
