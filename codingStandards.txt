@@ -1,0 +1,7 @@
+Coding Standard Doc
+=====================
+(Inform - can be formalized later. Only standards above and beyond those in the original spec are included here)
+
+1) 	All functions return their required value on success or false otherwise.  On returning false, all function
+	set the $_SESSION["errorMessage"] variable
+	
