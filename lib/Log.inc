@@ -51,24 +51,25 @@ class Log {
      *
      * @param string the path to the logfile to write to
      * @param int the desired level to log at
+     * @param string log file name prefix     
      */
-    function Log($logDirectory, $logLevel = INFO) {
+    function Log($logDirectory, $logLevel = INFO, $sLogFilePrefix = "log") {
         $this->logDirectory = $logDirectory;
         $this->minimumLoggingLevel = $logLevel;
-        $this->initialiseLogFile();
+        $this->initialiseLogFile($sLogFilePrefix);
     }
 
 
     /**
      * Creates the log file from the current datetime
      */
-    function initialiseLogFile() {
+    function initialiseLogFile($sLogFilePrefix) {
         global $default;
         if (!file_exists($this->logDirectory)) {
             mkdir($this->logDirectory, 0755);
         }
             
-        $this->logFile = $this->logDirectory . "/log-" . date("d-m-Y") . ".txt";
+        $this->logFile = $this->logDirectory . "/$sLogFilePrefix-" . date("d-m-Y") . ".txt";
         if (!file_exists($this->logFile)) {
             touch($this->logFile);
         }
