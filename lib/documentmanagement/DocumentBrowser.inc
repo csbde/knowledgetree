@@ -68,7 +68,6 @@ class DocumentBrowser {
         // get the folder
         $results["folders"][] = & Folder::get($folderID);
         if ($results["folders"][0]) {
-            $default->log->debug("DocumentBrowser::browseByFolder: results=" . arrayToString($results));
             
             // now find all the child folders relative to this one 
             // FIXME: in the same unit?
@@ -80,7 +79,6 @@ class DocumentBrowser {
                     $results["folders"][] = & Folder::get($sql->f("id"));
                 }
             }
-            $default->log->debug("DocumentBrowser::browseByFolder: after child folders added; results=" . arrayToString($results));
             
             // create query to retrieve documents in this folder
             $documentQuery = "SELECT id FROM $default->owl_documents_table WHERE folder_id=$folderID ORDER BY name ASC";
