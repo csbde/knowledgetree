@@ -153,18 +153,6 @@ class DocumentArchiving extends KTEntity {
      * @return Array array of DocumentArchiving objects, false otherwise
      */
     function getList($sWhereClause = null) {
-        global $default;
-        $aDocumentArchivingArray = array();
-        $sql = $default->db;
-        $result = $sql->query("SELECT * FROM $default->document_archiving_table " . (isset($sWhereClause) ? " WHERE " . $sWhereClause : ""));/*wc*/
-        if ($result) {
-            $iCount = 0;
-            while ($sql->next_record()) {
-                $oDocumentArchiving = & DocumentArchiving::get($sql->f("id"));
-                $aDocumentArchivingArray[$iCount++] = $oDocumentArchiving;
-            }
-            return $aDocumentArchivingArray;
-        }
-        return false;
+        return KTEntityUtil::getList(DocumentArchiving::_table(), 'DocumentArchiving', $sWhereClause);
     }    
 }

@@ -110,18 +110,6 @@ class ArchivingType extends KTEntity {
      * @return Array array of ArchivingType objects, false otherwise
      */
     function getList($sWhereClause = null) {
-        global $default;
-        $aArchivingTypeArray = array();
-        $sql = $default->db;
-        $result = $sql->query("SELECT * FROM $default->archiving_type_lookup_table " . (isset($sWhereClause) ? " WHERE " . $sWhereClause : ""));/*wc*/
-        if ($result) {
-            $iCount = 0;
-            while ($sql->next_record()) {
-                $oArchivingType = & ArchivingType::get($sql->f("id"));
-                $aArchivingTypeArray[$iCount++] = $oArchivingType;
-            }
-            return $aArchivingTypeArray;
-        }
-        return false;
+        return KTEntityUtil::getList(ArchivingType::_table(), 'ArchivingType', $sWhereClause);
     }    
 }

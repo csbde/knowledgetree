@@ -196,16 +196,6 @@ class ArchiveRestorationRequest extends KTEntity {
      * @return Array array of ArchiveRestorationRequest objects, false otherwise
      */
     function getList($sWhereClause = null) {
-        global $default;
-        $aArchiveRestorationRequestArray = array();
-        $sql = $default->db;
-        $result = $sql->query("SELECT * FROM $default->archive_restoration_table " . (isset($sWhereClause) ? " WHERE " . $sWhereClause : ""));/*wc*/
-        if ($result) {
-            while ($sql->next_record()) {
-                $aArchiveRestorationRequestArray[] = & ArchiveRestorationRequest::get($sql->f("id"));
-            }
-            return $aArchiveRestorationRequestArray;
-        }
-        return false;
+        return KTEntityUtil::getList(ArchiveRestorationRequest::_table(), 'ArchiveRestorationRequest', $sWhereClause);
     }    
 }

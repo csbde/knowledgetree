@@ -173,21 +173,7 @@ class DependantDocumentTemplate extends KTEntity {
     * @return Array array of DependantDocumentTemplates objects, false otherwise and set $_SESSION["errorMessage"]
     */
     function getList($sWhereClause = null) {
-        global $default;
-        $aDependantDocumentTemplateArray = array();
-        $sql = $default->db;
-        // TODO: join on sys_deleted
-        $result = $sql->query("SELECT * FROM " . $default->dependant_document_template_table  . (isset($sWhereClause) ? " WHERE " . $sWhereClause : ""));/*wc*/
-        if ($result) {
-            $iCount = 0;
-            while ($sql->next_record()) {
-                $oDependantDocumentTemplate = & DependantDocumentTemplate::get($sql->f("id"));
-                $aDependantDocumentTemplateArray[$iCount] = $oDependantDocumentTemplate;
-                $iCount++;
-            }
-            return $aDependantDocumentTemplateArray;
-        }
-        return false;
+        return KTEntityUtil::getList(DependantDocumentTemplate::_table(), 'DependantDocumentTemplate', $sWhereClause);
     }
 }
 

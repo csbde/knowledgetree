@@ -174,22 +174,7 @@ class Group extends KTEntity {
 	* @return Array array of Group objects, false otherwise and set $_SESSION["errorMessage"]
 	*/
 	function getList($sWhereClause = null) {
-		global $default, $lang_err_database;
-		$aGroupArray;
-		settype($aGroupArray, "array");
-		$sql = $default->db;
-		$result = $sql->query("SELECT * FROM " . $default->groups_table  . (isset($sWhereClause) ? " " . $sWhereClause : ""));/*wc*/
-		if ($result) {			
-			$iCount = 0;
-			while ($sql->next_record()) {
-				$oGroup = & Group::get($sql->f("id"));
-				$aGroupArray[$iCount] = $oGroup;
-				$iCount++;
-			}
-			return $aGroupArray;
-		}
-		$_SESSION["errorMessage"] = $lang_err_database;
-		return false;
+            return KTEntityUtil::getList(Group::_table(), 'Group', $sWhereClause);
 	}
 	
 	/**

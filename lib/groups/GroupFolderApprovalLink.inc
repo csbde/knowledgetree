@@ -186,22 +186,7 @@ class GroupFolderApprovalLink extends KTEntity {
 	* @return Array array of GroupFolderApprovalLink objects, false otherwise and set $_SESSION["errorMessage"]
 	*/
 	function getList($sWhereClause = null) {
-		global $default, $lang_err_database;
-		$aGroupFolderApprovalLinkArray;
-		settype($aGroupFolderApprovalLinkArray, "array");
-		$sql = $default->db;
-		$result = $sql->query("SELECT * FROM " . $default->groups_folders_approval_table  . (isset($sWhereClause) ? " " . $sWhereClause : ""));/*wc*/
-		if ($result) {			
-			$iCount = 0;
-			while ($sql->next_record()) {
-				$oGroupFolderApprovalLink = & GroupFolderApprovalLink::get($sql->f("id"));
-				$aGroupFolderApprovalLinkArray[$iCount] = $oGroupFolderApprovalLink;
-				$iCount++;
-			}
-			return $aGroupFolderApprovalLinkArray;
-		}
-		$_SESSION["errorMessage"] = $lang_err_database;
-		return false;
+            return KTEntityUtil::getList(GroupFolderApprovalLink::_table(), 'GroupFolderApprovalLink', $sWhereClause);
 	}
 	
 }

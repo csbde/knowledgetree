@@ -258,22 +258,7 @@ class Unit extends KTEntity {
     * @return Array array of Unit objects, false otherwise and set $_SESSION["errorMessage"]
     */
     function getList($sWhereClause = null) {
-        global $default, $lang_err_database;
-        $aUnitArray;
-        settype($aUnitArray, "array");
-        $sql = $default->db;
-        $result = $sql->query("SELECT * FROM " . $default->units_table  . (isset($sWhereClause) ? " " . $sWhereClause : ""));/*wc*/
-        if ($result) {
-            $iCount = 0;
-            while ($sql->next_record()) {
-                $oUnit = & Unit::get($sql->f("id"));
-                $aUnitArray[$iCount] = $oUnit;
-                $iCount++;
-            }
-            return $aUnitArray;
-        }
-        $_SESSION["errorMessage"] = $lang_err_database;
-        return false;
+        return KTEntityUtil::getList(Unit::_table(), 'Unit', $sWhereClause);
     }
 
 }

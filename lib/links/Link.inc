@@ -150,22 +150,7 @@ class Link extends KTEntity {
 	* @return Array array of Link objects, false otherwise and set $_SESSION["errorMessage"]
 	*/
 	function getList($sWhereClause = null) {
-		global $default, $lang_err_database;
-		$aLinkArray;
-		settype($aLinkArray, "array");
-		$sql = $default->db;
-		$result = $sql->query("SELECT * FROM " . $default->quicklinks_table  . (isset($sWhereClause) ? " " . $sWhereClause : ""));/*wc*/
-		if ($result) {			
-			$iCount = 0;
-			while ($sql->next_record()) {
-				$oLink = & Link::get($sql->f("id"));
-				$aLinkArray[$iCount] = $oLink;
-				$iCount++;
-			}
-			return $aLinkArray;
-		}
-		$_SESSION["errorMessage"] = $lang_err_database;
-		return false;
+            return KTEntityUtil::getList(Link::_table(), 'Link', $sWhereClause);
 	}
 	
 	

@@ -343,19 +343,7 @@ class DashboardNews extends KTEntity {
      * @return Array array of DashboardNews objects, false otherwise
      */
     function getList($sWhereClause = null) {
-        global $default;
-        $aDashboardNewsArray = array();
-        $sql = $default->db;
-        $result = $sql->query("SELECT * FROM " . $default->news_table  . (isset($sWhereClause) ? " WHERE " . $sWhereClause : "") . " ORDER BY rank ASC");/*wc*/
-        if ($result) {
-            $iCount = 0;
-            while ($sql->next_record()) {
-                $oDashboardNews = & DashboardNews::get($sql->f("id"));
-                $aDashboardNewsArray[$iCount++] = $oDashboardNews;
-            }
-            return $aDashboardNewsArray;
-        }
-        return false;
+        return KTEntityUtil::getList(DashboardNews::_table(), 'DashboardNews', $sWhereClause);
     }
     
     /**

@@ -376,23 +376,7 @@ class User extends KTEntity {
     * @return Array array of User objects, false otherwise and set $_SESSION["errorMessage"]
     */
     function getList($sWhereClause = null) {
-        global $default, $lang_err_database;
-        $aUserArray;
-        settype($aUserArray, "array");
-        $sql = $default->db;
-        $result = $sql->query("SELECT * FROM " . $default->users_table  . (isset($sWhereClause) ? " " . $sWhereClause : ""));/*wc*/
-        if ($result) {
-            $iCount = 0;
-            while ($sql->next_record()) {
-                $oUser = & User::get($sql->f("id"));
-                $oUser->iQuotaCurrent = $sql->f("quota_current");
-                $aUserArray[$iCount] = $oUser;
-                $iCount++;
-            }
-            return $aUserArray;
-        }
-        $_SESSION["errorMessage"] = $lang_err_database;
-        return false;
+        return KTEntityUtil::getList(User::_table(), 'User', $sWhereClause);
     }
 
     /**

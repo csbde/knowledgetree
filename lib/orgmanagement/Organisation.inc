@@ -144,22 +144,7 @@ class Organisation extends KTEntity {
     * @return Array array of org objects, false otherwise and set $_SESSION["errorMessage"]
     */
     function getList($sWhereClause = null) {
-        global $default, $lang_err_database;
-        $aOrgArray;
-        settype($aUnitArray, "array");
-        $sql = $default->db;
-        $result = $sql->query("SELECT * FROM " . $default->organisations_table . (isset($sWhereClause) ? " " . $sWhereClause : ""));/*wc*/
-        if ($result) {
-            $iCount = 0;
-            while ($sql->next_record()) {
-                $oOrg = & Organisation::get($sql->f("id"));
-                $aOrgArray[$iCount] = $oOrg;
-                $iCount++;
-            }
-            return $aOrgArray;
-        }
-        $_SESSION["errorMessage"] = $lang_err_database;
-        return false;
+        return KTEntityUtil::getList(Organisation::_table(), 'Organisation', $sWhereClause);
     }
 }
 /**

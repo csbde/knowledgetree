@@ -147,18 +147,7 @@ class GroupFolderLink extends KTEntity {
 	* @return Array array of FolderCollaboration objects, false otherwise and set $_SESSION["errorMessage"]
 	*/
 	function getList($sWhereClause = null) {
-		global $default, $lang_err_database;
-		$oGroupFolderLinkArray = array();
-		$sql = $default->db;
-		$result = $sql->query("SELECT * FROM " . $default->groups_folders_table  . (isset($sWhereClause) ? " " . $sWhereClause : ""));/*wc*/
-		if ($result) {			
-			while ($sql->next_record()) {
-				$oGroupFolderLinkArray[] = & GroupFolderLink::get($sql->f("id"));
-			}
-			return $oGroupFolderLinkArray;
-		}
-		$_SESSION["errorMessage"] = $lang_err_database;
-		return false;
+            return KTEntityUtil::getList(GroupFolderLink::_table(), 'GroupFolderLink', $sWhereClause);
 	}
 }
 ?>

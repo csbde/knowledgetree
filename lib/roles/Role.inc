@@ -165,22 +165,7 @@ class Role extends KTEntity {
 	* @return Array array of WebDocument objects, false otherwise and set $_SESSION["errorMessage"]
 	*/
 	function getList($sWhereClause = null) {
-		global $default, $lang_err_database;
-		$aRoleArray;
-		settype($aRoleArray, "array");
-		$sql = $default->db;
-		$result = $sql->query("SELECT * FROM " . $default->roles_table  . (isset($sWhereClause) ? " " . $sWhereClause : ""));/*wc*/
-		if ($result) {			
-			$iCount = 0;
-			while ($sql->next_record()) {
-				$oRole = & Role::get($sql->f("id"));
-				$aRoleArray[$iCount] = $oRole;
-				$iCount++;
-			}
-			return $aRoleArray;
-		}
-		$_SESSION["errorMessage"] = $lang_err_database;
-		return false;
+            return KTEntityUtil::getList(Role::_table(), 'Role', $sWhereClause);
 	}
 }
 

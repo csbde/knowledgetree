@@ -175,17 +175,7 @@ class DocumentType extends KTEntity {
 	 * @return Array array of DocumentType objects, false otherwise
 	*/
 	function getList($sWhereClause = null) {
-		global $default, $lang_err_database;
-		$aDocumentTypeArray = array();
-		$sql = $default->db;
-		$result = $sql->query("SELECT * FROM " . $default->document_types_table  . (isset($sWhereClause) ? " WHERE $sWhereClause" : ""));/*wc*/
-		if ($result) {			
-			while ($sql->next_record()) {
-				$aDocumentTypeArray[] = & DocumentType::get($sql->f("id"));
-			}
-			return $aDocumentTypeArray;
-		}
-		return false;
+            return KTEntityUtil::getList(DocumentType::_table(), 'DocumentType', $sWhereClause);
 	}
 }
 
