@@ -29,7 +29,7 @@
 function getPage() {
 
 	global $default;
-	$aDisplayRowNames = array(_("Document Field Name") . ":", _("Data Types") . ": ", _("Generic") . ": ", _("Has a Lookup") . ": ");
+	$aDisplayRowNames = array(_("Document Field Name:"), _("Data Types") . ": ", _("Generic") . ": ", _("Has a Lookup") . ": ");
 	$aParameterNumbers = array(0,1,2,3);
 	$aDisplayColumnTypes = array(1,3,2,2);
 	$aRequired = array(1,1);

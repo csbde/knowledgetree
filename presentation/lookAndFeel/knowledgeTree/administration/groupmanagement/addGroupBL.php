@@ -53,10 +53,10 @@ if (checkSession()) {
                 // redirect to list page
                 controllerRedirect("listGroups");
             } else {
-                $oPatternCustom->setHtml(statusPage(_("Add A New Group"), _("Addition Unsuccessful!"), _("There was an error associating the new group with the specified unit."), "addGroup"));
+                $oPatternCustom->setHtml(statusPage(_("Add A New Group"), _("Addition Unsuccessful") . "!", _("There was an error associating the new group with the specified unit."), "addGroup"));
             }
         } else {
-            $oPatternCustom->setHtml(statusPage(_("Add A New Group"), _("Addition Unsuccessful!"), _("There was an error creating the new group (Check that a group with this name doesn't already exist)."), "addGroup"));
+            $oPatternCustom->setHtml(statusPage(_("Add A New Group"), _("Addition Unsuccessful") . "!", _("There was an error creating the new group (Check that a group with this name doesn't already exist)."), "addGroup"));
         }
     } else {
        // display form
