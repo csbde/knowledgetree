@@ -1,4 +1,13 @@
 -- table definitions
+
+CREATE TABLE document_text (
+  id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
+  document_id integer,
+  document_text MEDIUMTEXT,
+  FULLTEXT (document_text)
+) Type = InnoDB;
+
+
 CREATE TABLE active_sessions ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 user_id INTEGER,
