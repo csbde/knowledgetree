@@ -95,6 +95,10 @@ $default->owl_subscriptions_table = "subscriptions";
 $default->owl_sys_deleted_table = "sys_deleted";
 // stores default system settings
 $default->owl_system_settings_table = "system_settings";
+// Table with discussion threads 
+$default->owl_discussion_threads_table = "discussion_threads";
+// Table with discussion comments
+$default->owl_discussion_comments_table = "discussion_comments";
 // Table with unit information
 $default->owl_units_table = "units_lookup";
 // Table with unit organisation link tables
