@@ -87,7 +87,9 @@ function renderEditableDocumentRouting($oDocument) {
 	$aColumnTypes = array(1,1,1,3);
 	$aDBColumnArray = array("id","document_id");
 	$aQueryStringVariableNames = array("fFolderCollaborationID", "fDocumentID");
-	$oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaders, "10%", "$default->owl_root_url/control.php?action=modifyDocumentRouting",$aDBColumnArray,$aQueryStringVariableNames);
+	$aLinkURLs = array(3=>"$default->owl_root_url/control.php?action=modifyDocumentRouting");
+	
+	$oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaders, "10%", $aLinkURLs,$aDBColumnArray,$aQueryStringVariableNames);
 	$oPatternTableSqlQuery->setTableHeading("Document Routing");
 	$oPatternTableSqlQuery->setDisplayColumnHeadings(true);
 	return $oPatternTableSqlQuery->render();
