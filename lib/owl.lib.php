@@ -1637,7 +1637,7 @@ function printgroupperm($currentval, $namevariable, $printmessage, $type) {
  * and loading the default language
  */ 
 // make request parameters global
-/*
+
 if (substr(phpversion(),0,5) >= "4.1.0") {
     // if supported by the installed version of PHP
     import_request_variables('pgc');
@@ -1661,7 +1661,7 @@ if (substr(phpversion(),0,5) >= "4.1.0") {
         extract($HTTP_POST_FILES);
     }
 }
-*/
+
 /*
 // initialise session var
 if(!isset($sess)) {
