@@ -26,6 +26,30 @@ class Group {
 		$this->bIsSysAdmin = $bNewIsSysAdmin;
 	}
 	
+	function getUnitAdmin() {
+		return $this->bIsUnitAdmin;
+	}
+	
+	function setUnitAdmin($bNewValue) {
+		$this->bIsUnitAdmin = $bNewValue;
+	}
+	
+	function getSysAdmin() {
+		return $this->bIsSysAdmin;
+	}
+	
+	function setSysAdmin($bNewValue) {
+		$this->bIsSysAdmin = $bNewValue;
+	}
+	
+	function getName() {
+		return $this->sName;
+	}
+	
+	function setName($sNewValue) {
+		$this->sName = $sNewValue;
+	}
+	
 	/**
 	* Create the current object in the database
 	*
@@ -36,14 +60,27 @@ class Group {
 		global $default, $lang_err_database, $lang_err_object_exists;
 		//if the object hasn't been created
 		if ($this->iId < 0) {
+			//check to see if name exsits
 			$sql = $default->db;
-			$result = $sql->query("INSERT INTO " . $default->owl_groups_table . " (name, is_sys_admin, is_unit_admin) VALUES ('" . addslashes($this->sName) . "', " . ($this->bIsSysAdmin ? 1 : 0) . ", " . ($this->bIsUnitAdmin ? 1 : 0) . ")");
-			if ($result) {
-				$this->iId = $sql->insert_id();
-				return  true;
+			$query = "SELECT name FROM ". $default->owl_groups_table ." WHERE name = '" . $this->sName . "'";
+        		$sql->query($query);
+       			$rows = $sql->num_rows($sql);
+        
+      			 if ($rows > 0){
+            		 // duplicate username
+           		 $_SESSION["errorMessage"] = "User::The username " . $this->sUserName . " is already in use!";
+           		 return false;
+	       		 }else
+	      		 {
+				$sql = $default->db;
+				$result = $sql->query("INSERT INTO " . $default->owl_groups_table . " (name, is_sys_admin, is_unit_admin) VALUES ('" . addslashes($this->sName) . "', " . ($this->bIsSysAdmin ? 1 : 0) . ", " . ($this->bIsUnitAdmin ? 1 : 0) . ")");
+				if ($result) {
+					$this->iId = $sql->insert_id();
+					return  true;
+				}
+				$_SESSION["errorMessage"] = $lang_err_database;
+				return false;
 			}
-			$_SESSION["errorMessage"] = $lang_err_database;
-			return false;
 		}
 		$_SESSION["errorMessage"] = $lang_err_object_exists . "id = " . $this->iId . " table = document_fields";
 		return false;
@@ -147,4 +184,20 @@ class Group {
 	
 	
 }
+
+
+/**
+* Static function
+*
+* Creates a Group object from an array
+*
+* @param 	Array		Array of parameters.  Must match order of parameters in constructor
+*
+* @return User user object
+*/
+function & createFromArray($aParameters) {
+	$oGroup = & new Group($aParameters[0], $aParameters[1], $aParameters[2], $aParameters[3], $aParameters[4], $aParameters[5], $aParameters[6], $aParameters[7], $aParameters[8], $aParameters[9], $aParameters[10]);
+	return $oGroup;
+}
+
 ?>
