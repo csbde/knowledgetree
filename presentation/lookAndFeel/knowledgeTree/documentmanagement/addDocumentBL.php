@@ -89,6 +89,7 @@ if (checkSession()) {
                                                     "folderName" => Folder::getFolderName($fFolderID)));
                                     $default->log->info("addDocumentBL.php fired $count subscription alerts for new document " . $oDocument->getName());
                                     
+                                    // TODO: further meta-data processing 
                                     //redirect to the document view page
                                     redirect("$default->rootUrl/control.php?action=modifyDocument&fDocumentID=" . $oDocument->getID(). "&fFirstEdit=1");
                                 } else {
@@ -101,7 +102,7 @@ if (checkSession()) {
                                     $main->setFormAction($_SERVER["PHP_SELF"] . "?fFolderID=$fFolderID&fForStore=1" . (isset($fDependantDocumentID) ? "&fDependantDocumentID=$fDependantDocumentID" : ""));
                                     $main->setFormEncType("multipart/form-data");
                                     $main->setErrorMessage("An error occured while storing the document on the file system");
-                                    $default->log->error("addDocumentBL.php Filesystem error attempting to store document " . $oDocument->getFileName() . " in folder " . Folder::getFolderPath($fFolderID) . " id=$fFolderID");
+                                    $default->log->error("addDocumentBL.php Filesystem error attempting to store document " . $oDocument->getFileName() . " in folder " . Folder::getFolderPath($fFolderID) . "; id=$fFolderID");
                                     $main->render();
                                 }
                             } else {
