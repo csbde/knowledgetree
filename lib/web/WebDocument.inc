@@ -39,14 +39,50 @@ class WebDocument {
 		$this->iStatusID = $iNewStatusID;
 		$this->dDateTime = $dNewDateTime;
 	}
-	
+    
+    /** primary key accessor method */
+    function getID() {
+        return $this->iId;
+    }
+    
+    /** document id accessor methods */
+    function getDocumentID() {
+        return $this->iDocumentID;
+    }
+	function setDocumentID($iNewValue) {
+		$this->iDocumentID = $iNewValue;
+	}
+    
+    /** status id accessor methods */
+    function getStatusID() {
+        return $this->iStatusID;
+    }
 	function setStatusID($iNewValue) {
 		$this->iStatusID = $iNewValue;
 	}
+    
+    /** website id accessor methods */
+    function getWebSiteID() {
+        return $this->iWebSiteID;
+    }    
     function setWebSiteID($iNewValue) {
         $this->iWebSiteID = $iNewValue;
     }
-	
+    
+    /** modification datetime accessor methods */
+    function getDateTime() {
+        return $this->dDateTime;
+    }
+    function setDateTime($dNewValue) {
+        $this->dDateTime = $dNewValue;
+    }
+    
+    /** return the document display path */
+	function getDisplayPath() {
+        $oDocument = Document::get($this->iDocumentID);
+        return $oDocument->getDisplayPath();
+    }
+    
 	/**
 	* Create the current object in the database
 	*
