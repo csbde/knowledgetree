@@ -55,13 +55,7 @@ $default->system = new System();
 $default->organisationID = 1;
 
 if ($default->system->initialised()) {
-    $aSettings = array("ldapServer", "ldapRootDn", "ldapServerType",
-                       "ldapDomain", "ldapSearchUser", "ldapSearchPassword", 
-                       "emailServer", "emailFrom", "emailFromName",
-                       "emailAdmin", "emailAdminName",
-                       "documentRoot", "languageDirectory",
-                       "uiDirectory", "rootUrl", "graphicsUrl", "uiUrl", "useFS", "defaultLanguage",
-                       "sessionTimeout");
+    $aSettings = $default->system->aSettings;
     
     for ($i=0; $i<count($aSettings); $i++) {
         $default->$aSettings[$i] = $default->system->get($aSettings[$i]);
@@ -85,7 +79,6 @@ if ($default->system->initialised()) {
     
     // directories
     $default->documentRoot  =  $default->fileSystemRoot . "/Documents";
-    $default->languageDirectory  = $default->fileSystemRoot . "/locale";
     $default->uiDirectory  = $default->fileSystemRoot . "/presentation/lookAndFeel/knowledgeTree";
      
     // urls
@@ -93,11 +86,9 @@ if ($default->system->initialised()) {
     $default->graphicsUrl = $default->rootUrl . "/graphics";
     $default->uiUrl  = $default->rootUrl . "/presentation/lookAndFeel/knowledgeTree";
     
-    // app settings
-    // TODO: in browse- scan current folder and sync db
-    $default->useFS            = true;
-    $default->defaultLanguage  = "NewEnglish";
     // session timeout (in seconds)
     $default->sessionTimeout = 1200;
+    // add javascript content pane scrolling arrows
+    $default->contentPaneScrolling = true;
 }
 ?>
