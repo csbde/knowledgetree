@@ -772,13 +772,15 @@ class Document {
 						$oRole = Role::get($oFolderCollaboration->getRoleID());
 						//get the user to email
 						$oUser = User::get($oFolderUserRole->getUserID());
-				
-						$sBody = $oUser->getUserName() . ", your role of '" . $oRole->getName() . "' in the document, '" . $this->sName . "' collaboration process is now active. " .
-												"Click <a href=\"https://" . $_SERVER["SERVER_NAME"] . "$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $this->iId . "\">here</a> to access " .
-												"the document";
-				
-						$oEmail = & new Email($default->owl_email_from, $default->owl_email_fromname);
-						$oEmail->send($oUser->getEmail(), "Document collaboration role active", $sBody, $default->owl_email_from, $default->owl_email_fromname);						
+						if ($oUser->getEmailNotification()) {
+					
+							$sBody = $oUser->getUserName() . ", your role of '" . $oRole->getName() . "' in the document, '" . $this->sName . "' collaboration process is now active. " .
+													"Click <a href=\"https://" . $_SERVER["SERVER_NAME"] . "$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $this->iId . "\">here</a> to access " .
+													"the document";
+					
+							$oEmail = & new Email($default->owl_email_from, $default->owl_email_fromname);
+							$oEmail->send($oUser->getEmail(), "Document collaboration role active", $sBody, $default->owl_email_from, $default->owl_email_fromname);
+						}
 					}
 					return true;
 				}
@@ -823,15 +825,17 @@ class Document {
 				//reset all steps and email the creator				
 				Document::resetDocumentCollaborationSteps($iDocumentID);
 				$oDocument = Document::get($iDocumentID);
-				$oUser = User::get($oDocument->getCreatorID());
-				$oCurrentUser = User::get($_SESSION["userID"]);
-				
-				$sBody = $oUser->getUserName() . ", the document, '<a href=\"https://" . $_SERVER["SERVER_NAME"] . "$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $this->iId . "\">" . $oDocument->getName() . "</a>' " .
-										"has been rejected by " . $oCurrentUser->getName() . " in the document collaboration process.  The collaboration process has been stopped. " .
-										"The comment entered by " . $oCurrentUser->getName() . " was: $sComment";
-		
-				$oEmail = & new Email($default->owl_email_from, $default->owl_email_fromname);
-				$oEmail->send($oUser->getEmail(), "Document rejected in collaboration process", $sBody, $default->owl_email_from, $default->owl_email_fromname);
+				if ($oUser->getEmailNotification()) {
+					$oUser = User::get($oDocument->getCreatorID());
+					$oCurrentUser = User::get($_SESSION["userID"]);
+					
+					$sBody = $oUser->getUserName() . ", the document, '<a href=\"https://" . $_SERVER["SERVER_NAME"] . "$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $this->iId . "\">" . $oDocument->getName() . "</a>' " .
+											"has been rejected by " . $oCurrentUser->getName() . " in the document collaboration process.  The collaboration process has been stopped. " .
+											"The comment entered by " . $oCurrentUser->getName() . " was: $sComment";
+			
+					$oEmail = & new Email($default->owl_email_from, $default->owl_email_fromname);
+					$oEmail->send($oUser->getEmail(), "Document rejected in collaboration process", $sBody, $default->owl_email_from, $default->owl_email_fromname);
+				}
 			} else {
 				//there are steps prior to this step
 				$sQuery = "SELECT FURL.id AS furl_id " . 
@@ -850,15 +854,17 @@ class Document {
 					$oFolderUserRole->update();
 					
 					$oDocument = Document::get($iDocumentID);
-					$oUser = User::get($oFolderUserRole->getUserID());
-					$oCurrentUser = User::get($_SESSION["userID"]);
-				
-					$sBody = $oUser->getUserName() . ", the document, '<a href=\"https://" . $_SERVER["SERVER_NAME"] . "$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $this->iId . "\">" . $oDocument->getName() . "</a>' " .
-										"has been rejected by " . $oCurrentUser->getName() . " in the document collaboration process.  Please re-perform you step in the collaboration process." .
-										"The comment entered by " . $oCurrentUser->getName() . " was: $sComment";
-		
-					$oEmail = & new Email($default->owl_email_from, $default->owl_email_fromname);
-					$oEmail->send($oUser->getEmail(), "Document rejected in collaboration process", $sBody, $default->owl_email_from, $default->owl_email_fromname);
+					if ($oUser->getEmailNotification()) {
+						$oUser = User::get($oFolderUserRole->getUserID());
+						$oCurrentUser = User::get($_SESSION["userID"]);
+					
+						$sBody = $oUser->getUserName() . ", the document, '<a href=\"https://" . $_SERVER["SERVER_NAME"] . "$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $this->iId . "\">" . $oDocument->getName() . "</a>' " .
+											"has been rejected by " . $oCurrentUser->getName() . " in the document collaboration process.  Please re-perform you step in the collaboration process." .
+											"The comment entered by " . $oCurrentUser->getName() . " was: $sComment";
+			
+						$oEmail = & new Email($default->owl_email_from, $default->owl_email_fromname);
+						$oEmail->send($oUser->getEmail(), "Document rejected in collaboration process", $sBody, $default->owl_email_from, $default->owl_email_fromname);
+					}
 					
 				}
 				$oFolderUserRole = FolderUserRole::get($iCurrentFolderUserRoleID);
@@ -868,6 +874,50 @@ class Document {
 			}
 			
 		}
+	}
+	
+	/**
+	* Checks if a document is pending web publishing
+	* 
+	* 
+	*/
+	function documentIsPendingWebPublishing($iDocumentID) {
+		global $default;
+		$sQuery = "SELECT * FROM $default->owl_web_documents_table WHERE document_id = $iDocumentID AND status_id = 1";
+		$sql = $default->db;
+		$sql->query($sQuery);
+		if ($sql->next_record()) {
+			return true;;
+		}
+		return false;
+	}
+	
+	/**
+	* Notify the web master when a document is awaiting publishing 
+	* 
+	*/
+	function notifyWebMaster($iDocumentID) {
+		global $default;
+		$sQuery = "SELECT WS.web_master_id " .
+				"FROM $default->owl_web_sites_table AS WS INNER JOIN $default->owl_web_documents_table AS WD ON WS.id = WD.web_site_id " .
+				"WHERE WD.document_id = $iDocumentID";
+		$sql->$default->db;
+		$sql->query($sQuery);
+		if ($sql->next_record()) {
+			$oUser = User::get($sql->f("web_master_id"));
+			if (!($oUser === false)) {
+				if ($oUser->getEmailNotification()) {
+					$oDocument = Document::get($iDocumentID);
+					$sBody = $oUser->getUserName() . ", the document <a href=\"https://" . $_SERVER["SERVER_NAME"] . "$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $this->iId . "\">" . $oDocument->getName() . "</a> to access " .
+														"is pending web publishing";
+						
+					$oEmail = & new Email($default->owl_email_from, $default->owl_email_fromname);
+					$oEmail->send($oUser->getEmail(), "Document collaboration role active", $sBody, $default->owl_email_from, $default->owl_email_fromname);
+				}
+			}
+			
+		}
+		
 	}
 }
 
