@@ -30,11 +30,11 @@ function displayFolderPathLink($aPathArray, $aPathNameArray, $sLinkPage = "") {
         $iFolderID = $aPathArray[$i];		
         // retrieve the folder name for this folder
         //$sFolderName = Folder::getFolderName($iFolderID);
-		$sFolderName = $aPathNameArray[$i];
-        // generate a link back to this page setting fFolderID
+		$sFolderName = $aPathNameArray[$i];		
+        // generate a link back to this page setting fFolderID		
         $sLink = generateLink($sLinkPage,
                               "fBrowseType=folder&fFolderID=$iFolderID",
-                              $sFolderName);
+                              $sFolderName);		
         $sPathLinks = (strlen($sPathLinks) > 0) ? $sPathLinks . " > " . $sLink : $sLink;
     }
     return $sPathLinks;
@@ -61,8 +61,8 @@ function displayFolderLink($oFolder, $sLinkPage = "") {
                         $oFolder->getName());
 }
 
-function renderFolderPath($iFolderID, $sLinkURL) {	 
-    $sFolderPath = displayFolderPathLink(Folder::getFolderPathAsArray($iFolderID), Folder::getFolderPathNamesAsArray($iFolderID), $sLinkURL);
+function renderFolderPath($iFolderID, $sLinkURL) {	
+    $sFolderPath = displayFolderPathLink(Folder::getFolderPathAsArray($iFolderID), Folder::getFolderPathNamesAsArray($iFolderID), $sLinkURL);	
     return "<table border=1 width = 100%><tr><td>$sFolderPath</td></tr></table>\n";
 }
 
