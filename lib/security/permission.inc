@@ -132,7 +132,7 @@ class Permission {
 	function userIsInUnitAdministratorGroup($iFolderID) {
 		global $lang_err_user_unitadmin_group, $default;
 		$sql = new Owl_DB();
-		$sql->query("SELECT * FROM " . $default->owl_group_folders_table ." AS GFL INNER JOIN " . $default->owl_groups_users_link_table . " as GUL ON GFL.group_id = GUL.group_id " .
+		$sql->query("SELECT * FROM " . $default->owl_groups_folders_table ." AS GFL INNER JOIN " . $default->owl_users_groups_table . " as GUL ON GFL.group_id = GUL.group_id " .
 					"INNER JOIN " . $default->owl_groups_table . " AS G ON G.ID = GFL.group_id " .
 					"WHERE GFL.folder_id = " . $iFolderID . " " .
 					"AND GUL.user_id = " . $_SESSION["userID"] . " " .
