@@ -201,9 +201,26 @@ class DocumentType {
 		return false;
 	}
 	
-
-	
-	
+	/**
+ 	 * Static- Get a list document types;
+	 *
+	 * @param 	String		Where clause (not required)
+	 *
+	 * @return Array array of DocumentType objects, false otherwise
+	*/
+	function getList($sWhereClause = null) {
+		global $default, $lang_err_database;
+		$aDocumentTypeArray = array();
+		$sql = $default->db;
+		$result = $sql->query("SELECT * FROM " . $default->owl_document_types_table  . (isset($sWhereClause) ? " WHERE $sWhereClause" : ""));
+		if ($result) {			
+			while ($sql->next_record()) {
+				$aDocumentTypeArray[] = & DocumentType::get($sql->f("id"));
+			}
+			return $aDocumentTypeArray;
+		}
+		return false;
+	}
 }
 
 
