@@ -31,11 +31,13 @@
 
 require_once("../../../../config/dmsDefaults.php");
 
+
 if (checkSession()) {
 	if (isset($fFolderID)) {
+		include_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
 		$oFolder = Folder::get($fFolderID);
 		//if a folder has been selected
-		include_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
+		
 		include_once("$default->fileSystemRoot/lib/security/Permission.inc");
         include_once("$default->fileSystemRoot/lib/users/User.inc");
         require_once("$default->fileSystemRoot/presentation/Html.inc");
