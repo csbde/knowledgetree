@@ -37,6 +37,9 @@ if (checkSession()) {
 	        } else {
 		        // retrieve organisation link (for later deletion or to get the organisation id)
 			    $oUnitOrg = UnitOrganisationLink::getByUnitID($fUnitID);
+			    if ($oUnitOrg) {
+			    	$oOrganisation = Organisation::get($oUnitOrg->getOrgID());
+			    }			    
 	        		
 				// we've received confirmation, so delete
 			    if (isset($fForDeleteConfirmed)) {
@@ -59,7 +62,6 @@ if (checkSession()) {
 			        }
 	        	// ask for confirmation before deleting		        
 			    } else {
-			    	$oOrganisation = Organisation::get($oUnitOrg->getOrgID());
 			        $oPatternCustom->setHtml(getConfirmDeletePage($oUnit, $oOrganisation));
 			        $main->setFormAction($_SERVER["PHP_SELF"] . "?fForDeleteConfirmed=1");
 			    }
