@@ -1,5 +1,8 @@
 <?php
 
+require_once("$default->owl_fs_root/lib/database/datetime.inc");
+
+// define error levels
 define("DEBUG", 0);
 define("INFO", 1);
 define("ERROR", 2);
