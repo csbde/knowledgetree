@@ -191,8 +191,8 @@ function renderFolderResults($aResults) {
             $sToRender .= "<tr bgcolor=\"" . getColour($i-1) . "\">";            
             // folder name
             $sToRender .= "<td>" . $sFolderLink . "</td>";
-            // blank filename (??: folder description?)
-            $sToRender .= "<td>&nbsp;</td>";
+            // blank filename (folder description?)
+            $sToRender .= "<td>" . $aResults["folders"][$i]->getDescription() . "</td>";
             // creator name
             $sToRender .= "<td>" . ($oCreator ? $oCreator->getName() : "&nbsp;") . "</td>";
             // modified date (TODO: add to db)
