@@ -148,9 +148,10 @@ function getEditPage($oDocument) {
 	$sToRender .= "</table>\n";
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td><input type=\"submit\" value=\"Edit\"></td>\n";
-	$sToRender .= "<td><a href=\"" . $_SERVER["PHP_SELF"] . "?fDocumentID=" . $oDocument->getID() . "&fForDownload=1\">Download</a></td>\n";
-	$sToRender .= "<td><a href=\"$default->owl_root_url/control.php?action=emailDocument&fDocumentID=" . $oDocument->getID() . "\">Email link</a></td>\n";
+	//$sToRender .= "<td><input type=\"image\" srcvalue=\"Edit\"></td>\n";
+	$sToRender .= "<td><input type=\"image\" src=\"$default->owl_graphics_url/widgets/edit.gif\"></td>\n";
+	$sToRender .= "<td><a href=\"" . $_SERVER["PHP_SELF"] . "?fDocumentID=" . $oDocument->getID() . "&fForDownload=1\"><img src=\"$default->owl_graphics_url/widgets/download.gif\" /></a></td>\n";
+	$sToRender .= "<td><a href=\"$default->owl_root_url/control.php?action=emailDocument&fDocumentID=" . $oDocument->getID() . "\"><img src=\"$default->owl_graphics_url/widgets/email.gif\" /></a></td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
 		
