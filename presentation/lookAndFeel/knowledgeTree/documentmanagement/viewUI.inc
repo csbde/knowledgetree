@@ -384,6 +384,25 @@ function renderDependantDocuments($oDocument, $bEdit) {
     return $sToRender;
 }
 
+// This array exists only to give gettext a hint that these buttons
+// should be added to the .po file.
+
+$aTranslatedButtons = array(
+    _("View"),
+    _("Email"),
+    _("Checkout"),
+    _("Delete"),
+    _("History"),
+    _("Move"),
+    _("Subscribe"),
+    _("Unsubscribe"),
+    _("Discussion"),
+    _("Archive"),
+    _("Link New Doc"),
+    _("Publish"),
+);
+
+
 $aImageNameToLabel = array(
     "dependentdoc" => "Link new doc",
 );
@@ -407,7 +426,8 @@ function displayButton($sAction, $sQueryString, $sImageName, $sDisabledText = ""
             } else {
                 $sLabel = $sImageName;
             }
-            $sLabel = strtoupper($sLabel);
+            $sTranslatedWords = _(ucwords($sLabel));
+            $sLabel = strtoupper($sTranslatedWords);
             if ($bActive) {
                     $sClass = "button";
             } else {
@@ -428,7 +448,7 @@ function displayViewButton($oDocument, $bEdit) {
         if ($default->useTextButtons === false) {
     return "<tr><td align=\"left\"><a onClick=\"alert('$sViewAlert '); return true;\" href=\"" . generateControllerLink("downloadDocument", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/docactions/view.gif\" border=\"0\" title=\"" . _("View the document") . "\"/></a></td></tr>\n";
         } else {
-    return "<a onClick=\"alert('$sViewAlert '); return true;\" href=\"" . generateControllerLink("downloadDocument", "fDocumentID=" . $oDocument->getID()) . "\"><span class=\"button\" title=\"" . _("View the document") . "\">VIEW</span></a>\n";
+    return "<a onClick=\"alert('$sViewAlert '); return true;\" href=\"" . generateControllerLink("downloadDocument", "fDocumentID=" . $oDocument->getID()) . "\"><span class=\"button\" title=\"" . _("View the document") . "\">" . strtoupper(_("View")) . "</span></a>\n";
         }
 }
 
