@@ -21,7 +21,7 @@ function getSelectUserPage($aResults) {
         $sToRender .= "<option value=\"$sName\">$sName</option>";
     }
     $sToRender .= "</select></td></tr>\n";
-    $sToRender .= "<tr><td></td><td align=\"right\"><input type=\"image\" src=\"/owl/graphics/widgets/select.gif\" value=\"submit\"/></td></tr>\n";
+    $sToRender .= "<tr><td></td><td align=\"right\"><input type=\"image\" src=\"$default->graphicsUrl/graphics/widgets/select.gif\" value=\"submit\"/></td></tr>\n";
 	$sToRender .= "</table>\n";
 	
 	return $sToRender;
