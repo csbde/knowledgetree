@@ -90,62 +90,36 @@ class PatternEditableListFromQuery {
 			
 			if (isset($this->sTableHeading)) {
 						$sToRender .= "<caption align = left><b>$this->sTableHeading</b></caption>\n";
+			}		
+			
+			for ($i = 0; $i < count($this->aDisplayColumns); $i++) {		
+					$sToRender .= "<tr>\n";
+					$sToRender .= "<input type=\"hidden\" name=\"" . $this->sUniqueName . "_tc\" value=\"" . $this->aStoreColumns[$i] . "\" />\n";
+					$sToRender .= "<input type=\"hidden\" name=\"" . $this->sUniqueName . "_type\" value=\"" . $this->aDatabaseColumnTypes[$i] . "\" />\n";					
+					$sToRender .= "\t<td>" . $this->aColumnNames[$i] . "</td>\n";
+					switch ($this->aDisplayColumnTypes[$i]) {						
+						case 1:	
+							//plain text field							
+							$sToRender .= "\t<td><input type=\"text\" name=\"" . $this->sUniqueName . "_" . $i . "_value\" value=\"" . $sql->f($this->aDisplayColumns[$i]) . "\"</td>\n";
+							break;						
+						case 2:
+							//boolean value
+							//$sToRender .= "\t<td><textarea cols=$this->iTextAreaDisplayColumns rows=$this->iTextAreaRows READONLY>" . $sql->f($this->aDisplayColumns[$i]) . "</textarea></td>\n";
+							break;
+						case 3:	
+							break;
+						default:
+							break;
+					}				
+					$sToRender .= "</tr>\n";
 			}
 			
-			if ($sql->num_rows() == 0) {
-				$sToRender .= "<tr>\n";					
-				$sToRender .= "<td colspan=" . count($this->aDisplayColumns) . ">No " . (isset($this->sTableHeading) ? "$this->sTableHeading" : "") . " data</td>\n";
-				$sToRender .= "</tr>\n";
-			} else {
-				for ($i = 0; $i < count($this->aDisplayColumns); $i++) {		
-						$sToRender .= "<tr>\n";
-						$sToRender .= "<input type=\"hidden\" name=\"" . $this->sUniqueName . "_tc\" value=\"" . $this->aStoreColumns[$i] . "\" />\n";
-						$sToRender .= "<input type=\"hidden\" name=\"" . $this->sUniqueName . "_type\" value=\"" . $this->aDatabaseColumnTypes[$i] . "\" />\n";					
-						$sToRender .= "\t<td>" . $this->aColumnNames[$i] . "</td>\n";
-						switch ($this->aDisplayColumnTypes[$i]) {						
-							case 1:	
-								//plain text field							
-								$sToRender .= "\t<td><input type=\"text\" name=\"" . $this->sUniqueName . "_" . $i . "_value\" value=\"" . $sql->f($this->aDisplayColumns[$i]) . "\"</td>\n";
-								break;						
-							case 2:
-								//boolean value
-								//$sToRender .= "\t<td><textarea cols=$this->iTextAreaDisplayColumns rows=$this->iTextAreaRows READONLY>" . $sql->f($this->aDisplayColumns[$i]) . "</textarea></td>\n";
-								break;
-							case 3:	
-								break;
-							default:
-								break;
-						}				
-						$sToRender .= "</tr>\n";
-				}
-				
-				/*while ($sql->next_record()) {
-					//$sToRender .= "<tr><td>\n";
-					for ($i = 0; $i < count($this->aDisplayColumns); $i++) {		
-						$sToRender .= "<tr>\n";
-						$sToRender .= "<input type=\"hidden\" name=\"" . $this->sUniqueName . "_tc\" value=\"" . $this->aStoreColumns[$i] . "\" />\n";
-						$sToRender .= "<input type=\"hidden\" name=\"" . $this->sUniqueName . "_type\" value=\"" . $this->aDatabaseColumnTypes[$i] . "\" />\n";					
-						$sToRender .= "\t<td>" . $this->aColumnNames[$i] . "</td>\n";
-						switch ($this->aDisplayColumnTypes[$i]) {						
-							case 1:	
-								//plain text field							
-								$sToRender .= "\t<td><input type=\"text\" name=\"" . $this->sUniqueName . "_" . $i . "_value\" value=\"" . $sql->f($this->aDisplayColumns[$i]) . "\"</td>\n";
-								break;						
-							case 2:
-								//boolean value
-								//$sToRender .= "\t<td><textarea cols=$this->iTextAreaDisplayColumns rows=$this->iTextAreaRows READONLY>" . $sql->f($this->aDisplayColumns[$i]) . "</textarea></td>\n";
-								break;
-							case 3:	
-								break;
-							default:
-								break;
-						}				
-						$sToRender .= "</tr>\n";
-					}
-				}*/
-			}
 			$sToRender .= "<input type=\"hidden\" name=\"unique_end_" . $this->sUniqueName . "\" value=\"\" />\n";
 			$sToRender .= "</table>\n";
+		} else {			
+			$sToRender .= "<tr>\n";					
+			$sToRender .= "<td colspan=" . count($this->aDisplayColumns) . ">No " . (isset($this->sTableHeading) ? "$this->sTableHeading" : "") . " data</td>\n";
+			$sToRender .= "</tr>\n";			
 		}
 		return $sToRender;
 	}
