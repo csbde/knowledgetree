@@ -258,9 +258,9 @@ class Permission {
 	function userHasWriteRoleForDocument($iDocumentID) {
 		global $default, $lang_err_user_role;	
 		$sql = $default->db;
-		$sql->query("SELECT * FROM $default->owl_folders_user_roles_table AS FURL INNER JOIN $default->owl_groups_folders_approval_table AS GFAL ON FURL.group_folder_approval_id = GFAL.id " .
+		$sql->query("SELECT FURL.id FROM $default->owl_folders_user_roles_table AS FURL INNER JOIN $default->owl_groups_folders_approval_table AS GFAL ON FURL.group_folder_approval_id = GFAL.id " .
 					"INNER JOIN $default->owl_roles_table AS R ON GFAL.role_id = R.id " .					
-					"WHERE user_id = " . $_SESSION["userID"] . " " .
+					"WHERE FURL.user_id = " . $_SESSION["userID"] . " " .
 					"AND FURL.document_id = $iDocumentID " .
 					"AND R.can_write = 1 " . 
 					"AND R.active = 1");
@@ -283,7 +283,7 @@ class Permission {
 		$sql = $default->db;
 		$sql->query("SELECT * FROM $default->owl_folders_user_roles_table AS FURL INNER JOIN $default->owl_groups_folders_approval_table AS GFAL ON FURL.group_folder_approval_id = GFAL.id " .
 					"INNER JOIN $default->owl_roles_table AS R ON GFAL.role_id = R.id " .					
-					"WHERE user_id = " . $_SESSION["userID"] . " " .
+					"WHERE FURL.user_id = " . $_SESSION["userID"] . " " .
 					"AND FURL.document_id = $iDocumentID " .
 					"AND R.can_read = 1");
 		if ($sql->next_record()) {
