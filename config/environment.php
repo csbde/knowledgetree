@@ -30,9 +30,10 @@ $default->db = new Database();
 require_once("$default->fileSystemRoot/lib/database/lookup.inc");
 require_once("$default->fileSystemRoot/lib/System.inc");
 $default->system = new System();
-/*
+
 if ($default->system->initialised()) {
     $aSettings = array("ldapServer", "ldapRootDn", "emailServer", "emailFrom", "emailFromName",
+                       "emailAdmin", "emailAdminName",
                        "serverName", "fileSystemRoot", "documentRoot", "languageDirectory",
                        "uiDirectory", "rootUrl", "graphicsUrl", "uiUrl", "useFS", "defaultLanguage",
                        "sessionTimeout", "sslEnabled");    
@@ -40,7 +41,7 @@ if ($default->system->initialised()) {
     for ($i=0; $i<count($aSettings); $i++) {
         $default->$aSettings[$i] = $default->system->get($aSettings[$i]);
     }
-} else {*/
+} else {
     // TODO: redirect to system setup form
 
     // ldap settings
@@ -52,6 +53,8 @@ if ($default->system->initialised()) {
     $default->emailServer = "mail.jamwarehouse.com";
     $default->emailFrom = "dms@jamwarehouse.com";
     $default->emaiFromName = "MRC Document Management System";
+    $default->emailAdmin = "dmsHelp@jamwarehouse.com";
+    $default->emailAdminName = "DMS Administrator";
     
     $default->serverName = "changeme.to.your.hostname";
     
