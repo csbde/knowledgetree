@@ -37,6 +37,7 @@ function getButtons() {
         "email.png" => _("Email"),
         "movehere.png" => _("Move Here"),
         "begin.png" => _("Begin"),
+        "login.png" => _("Login"),
     );
 }
 
@@ -86,7 +87,7 @@ $sDomain = 'knowledgeTree';
 $btd = bindtextdomain($sDomain, "/home/nbm/cvs/knowledgeTree/i18n");
 textdomain($sDomain);
 
-$font = "/usr/share/fonts/truetype/ttf-bitstream-vera/Vera.ttf";
+$font = "/usr/share/fonts/bitstream-vera/Vera.ttf";
 $fontsize = 8;
 
 $buttons = getButtons();
