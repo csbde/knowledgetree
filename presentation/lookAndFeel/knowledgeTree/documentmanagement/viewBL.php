@@ -129,12 +129,27 @@ if (checkSession()) {
 				$oEmail = & new Email();
 				$oEmail->send($oUser->getEmail(), "Document collaboration complete", $sBody);
 				
+                // collaboration accepted transaction
+                $oDocumentTransaction = & new DocumentTransaction($fDocumentID, "Document collaboration step accepted", COLLAB_ACCEPT);
+                if ($oDocumentTransaction->create()) {
+                	$default->log->debug("viewBL.php created collaboration accepted document transaction for document ID=$fDocumentID");                                    	
+                } else {
+                	$default->log->error("viewBL.php couldn't create collaboration accepted  document transaction for document ID=$fDocumentID");
+                }
+                				
 				//possibly set the document up for web publishing????
 				$sStatusMessage = "Document collaboration complete.  The document initiator has been notified";					
 				$oPatternCustom->setHtml(getStatusPage($oDocument, $sStatusMessage));					
 			} else {
 				//start the next steps if all criteria are met					
 				DocumentCollaboration::beginNextStepInCollaborationProcess($fDocumentID, $_SESSION["userID"]);
+                // collaboration accepted transaction
+                $oDocumentTransaction = & new DocumentTransaction($fDocumentID, "Document collaboration step accepted", COLLAB_ACCEPT);
+                if ($oDocumentTransaction->create()) {
+                	$default->log->debug("viewBL.php created collaboration accepted document transaction for document ID=$fDocumentID");                                    	
+                } else {
+                	$default->log->error("viewBL.php couldn't create collaboration accepted  document transaction for document ID=$fDocumentID");
+                }				
 				$sStatusMessage = "The next steps in the collaboration process have been started";					
 				$oPatternCustom->setHtml(getStatusPage($oDocument, $sStatusMessage));
 			}
