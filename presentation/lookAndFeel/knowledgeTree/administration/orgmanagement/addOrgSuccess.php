@@ -9,38 +9,32 @@
 */
 
 require_once("../../../../../config/dmsDefaults.php");
+require_once("../adminUI.inc");
 
 global $default;
-	
-if(checkSession())
-{
 
-// include the page template (with navbar)
-require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");  	
+if(checkSession()) {
 
-$Center = "<br></br>\n" ;
-$Center .= "<TABLE BORDER=\"0\" CELLSPACING=\"2\" CELLPADDING=\"2\">\n";
-$Center .= "<tr>\n";
-$Center .= "<td>Organisation added Successfully!</td>\n";
-$Center .= "</tr>\n";	
-$Center .= "<tr></tr>\n";
-$Center .= "<tr></tr>\n";
-$Center .= "<tr></tr>\n";
-$Center .= "<tr></tr>\n";
-$Center .= "<tr>\n";
-$Center .= "<td align = right><a href=\"$default->rootUrl/control.php?action=addOrg\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
-$Center .= "</tr>\n";
-$Center .= "</table>\n";
-		
+    // include the page template (with navbar)
+    require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 
-$oPatternCustom = & new PatternCustom();
-$oPatternCustom->setHtml($Center); 
-$main->setCentralPayload($oPatternCustom);
-$main->render();
+    $sToRender .= "<table width=\"600\">" . renderHeading("Add Unit") . "</table>";
+    $sToRender .= "<table>\n";
+    $sToRender .= "<tr>\n";
+    $sToRender .= "<td>Organisation added Successfully!</td>\n";
+    $sToRender .= "</tr>\n";
+    $sToRender .= "<tr></tr>\n";
+    $sToRender .= "<tr></tr>\n";
+    $sToRender .= "<tr></tr>\n";
+    $sToRender .= "<tr></tr>\n";
+    $sToRender .= "<tr>\n";
+    $sToRender .= "<td align = right><a href=\"$default->rootUrl/control.php?action=addOrg\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
+    $sToRender .= "</tr>\n";
+    $sToRender .= "</table>\n";
 
-
-
-
+    $oPatternCustom = & new PatternCustom();
+    $oPatternCustom->setHtml($sToRender);
+    $main->setCentralPayload($oPatternCustom);
+    $main->render();
 }
-
 ?>
