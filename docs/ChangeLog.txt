@@ -1,3 +1,359 @@
+Version 1.2.2
+* Tue May 11 2004 Michael Joseph <michael@jamwarehouse.com>
+
+Features
+========
+* Internationalisation framework added.
+  - The first step in producing a multi-lingual KnowledgeTree(tm) is released
+    in this version.  See docs/i18n.txt for more information.
+* Added the ability to email document links to groups.
+  - A link to a document in the KnowledgeTree(tm) can now be emailed to
+    groups as well as users.
+* Discussion threads are now indented.
+  - The display of the discussion forums has been improved by graphically
+    representing groups of threads
+* Updated password feature
+  - Administrators can now reset user's passwords.
+
+Bug Fixes
+=========
+Added XSS attack protection.
+#2988-	Removed redundant routing role active attribute.
+#2963-	Add silent deletion when expunging folders and documents that don't exists on the fs.
+#3512-	Linked Documents browse popup didn't return the selected document.
+#3426-	Browse Collections- display # of documents and folders in a folder.
+#2978-	Administration Security- Unit administrators should not be able administer system admin user accounts, or create groups with sysadmin privileges or add users to system admin groups.
+#3265-	Document Details -> Archiving Settings- Utilisation setting don't display
+#3543-	Assigning units to groups, input not validated (stefano.ciancio@mail.wind.it).
+#2944-	Adding a unit causes duplicate root folders if a folder with the name of the unit exists already.
+#3425-	Browse Collections - title => filename; description => title
+#3545-	IE -> Add Document -> JScript syntax error
+#3519-	Unit Admin can administer groups in all units, not just the unit she is admin for.
+#3481-	Don't allow published documents to be checked out.
+#2985-	Don't allow checked out documents or documents in collaboration to be archived.
+Many community-contributed patches (see Detailed ChangeLog)
+
+Detailed ChangeLog
+==================
+
+2004-04-30 17:12  michael 
+    * knowledgeTree/docs/INSTALL.txt:     
+	  Type:	  			  Documentation 
+	  Description:		  Added upgrade instructions and corrected path to SQL directory
+ 
+2004-04-26 17:49  michael <michael@jamwarehouse.com>
+
+	* knowledgeTree/lib/documentmanagement/DocumentTransaction.inc:
+	  Type: 	    		Functionality change 
+	  Description:			Document transaction logging stores the path on the
+	                		filesystem.  
+	  Behaviour before fix: The path to the document on the filesystem is stored for each document transaction.
+	  Behaviour after fix:	Only the path relative to the document
+	  						root is relevant.  
+	  Credit:			    Stefano Ciancio.
+
+2004-04-26 16:46  michael <michael@jamwarehouse.com>
+
+	* knowledgeTree/presentation/lookAndFeel/knowledgeTree/foldermanagement/addFolderDocTypeUI.inc:
+	  Type:				    Functionality change 
+	  Description:		    Added ordering to document type drop down list by document type name.  
+	  Behaviour before fix:	Document type were ordered "randomly" 
+	  Behaviour after fix:	Document types are now ordered by document type name.  
+	  Credit:		  		Patch contributed by Stefano Ciancio.
+
+2004-04-26 16:31  michael <michael@jamwarehouse.com>
+
+	* knowledgeTree/presentation/lookAndFeel/knowledgeTree/foldermanagement/addFolderDocTypeBL.php:
+	  Type:		       		  Bugfix 
+	  Description:     		  Corrected form action relative paths.  
+	  Behaviour before fix:	  Add folder broken for sites with the dms not at site root.  
+	  Behaviour after fix:	  Expected functionality for all installations.  
+
+2004-04-26 16:31  michael <michael@jamwarehouse.com>
+
+	* knowledgeTree/presentation/lookAndFeel/knowledgeTree/search/advancedSearchBL.php:
+	  Type:		       		  Bugfix 
+	  Description:     		  Corrected form action relative paths.  
+	  Behaviour before fix:	  Add folder broken for sites with the dms not at site root.  
+	  Behaviour after fix:	  Expected functionality for all installations.  
+
+2004-04-26 13:34  michael <michael@jamwarehouse.com>
+
+	* knowledgeTree/presentation/lookAndFeel/knowledgeTree/foldermanagement/addFolderBL.php: 
+	  Type:		       		  Bugfix 
+	  Description:     		  Corrected form action relative paths.  
+	  Behaviour before fix:	  Add folder broken for sites with the dms not at site root.  
+	  Behaviour after fix:	  Expected functionality for all installations.  
+	  Credit:		   		  Thanks for Roman Pavlov for this bug report and patch.
+
+2004-03-23 12:27  andrew <andrew@jamwarehouse.com>
+
+	* knowledgeTree/presentation/lookAndFeel/knowledgeTree/administration/usermanagement/: listUsersBL.php, listUsersUI.inc: 
+	  Type:		     	Functionality change.  
+	  Description:	    Added user filtering in the user admin section.  
+	  Credit:	  		This patch was supplied by Stefano Ciancio.
+
+2004-03-03 16:41  andrew <andrew@jamwarehouse.com>
+
+	* knowledgeTree/presentation/lookAndFeel/knowledgeTree/: create.php, store.php: 
+	  Removed some more potential XSS problems.
+
+2004-03-03 10:28  andrew <andrew@jamwarehouse.com>
+
+	* knowledgeTree/lib/sanitize.inc:
+	  Type: 		  			Bug fix 
+	  Description:	  			Modification on the XSS bugfix for the logon page.  
+	  Behaviour before fix:	    Not allowing certain punctuation.  
+	  Behaviour after fix: 		Allows limited punctuation.
+
+2004-02-27 15:45  andrew <andrew@jamwarehouse.com>
+
+	* knowledgeTree/presentation/login.php:
+	  Type: 		          Functionality change 
+	  Description:		      Includes XSS attack prevention.  
+	  Behaviour before fix:	  XSS attack could be performed on login.php.  
+	  Behaviour after fix:	  XSS attacks seem unsuccessful after patch.	
+	  Credit: 		          Thanks to Jonathan E. Hawkins for pointing out this bug.
+
+2004-02-27 15:45  andrew <andrew@jamwarehouse.com>
+
+	* knowledgeTree/lib/sanitize.inc:
+	  Type: 		          Functionality change 
+	  Description:		      Includes XSS attack prevention.  
+	  Behaviour before fix:	  XSS attack could be performed on login.php.  
+	  Behaviour after fix:	  XSS attacks seem unsuccessful after patch.	
+	  Credit: 		          Thanks to Jonathan E. Hawkins for pointing out this bug.
+
+2004-02-18 10:20  michael <michael@jamwarehouse.com>
+
+	* knowledgeTree/docs/TODO.txt: 
+	  added multi-document select task
+
+2004-02-11 13:38  andrew <andrew@jamwarehouse.com>
+
+	* knowledgeTree/docs/INSTALL.txt: 
+	  Type:	  			  Documentation 
+	  Description:		  Added steps needed to save the System Settings after install.
+
+2004-02-09 16:49  andrew <andrew@jamwarehouse.com>
+
+	* knowledgeTree/presentation/lookAndFeel/knowledgeTree/search/advancedSearchUI.inc: 
+	  Type:	  			  Feature/functionality.  
+	  Description:		  The docuement and the parent folder are returned in the search results.  
+	  Credit:		      Stefano Ciancio
+
+2004-02-05 14:48  andrew <andrew@jamwarehouse.com>
+
+	* knowledgeTree/docs/faq.txt: 
+	  Type:	  			  Documentation update.  
+	  Description:		  Minor update regarding searches.
+
+2004-02-05 14:41  andrew <andrew@jamwarehouse.com>
+
+	* knowledgeTree/: lib/dashboard/DashboardNews.inc,
+	  presentation/lookAndFeel/knowledgeTree/dashboardUI.inc: 
+	  Type:			     Functionality change.  
+	  Description:	     Added a configurable MARQUEE'd scrolling news to dashboard.
+	  Credit:		     This patch was supplied by Stefano Ciancio.
+
+2004-02-05 14:41  andrew <andrew@jamwarehouse.com>
+
+	* knowledgeTree/config/environment.php:
+	  Type: 		  Functionality change.  
+	  Description:    Added a configurable MARQUEE'd scrolling news to dashboard.
+	  Credit:		  This patch was supplied by Stefano Ciancio.
+
+2004-01-28 13:04  michael <michael@jamwarehouse.com>
+
+	* knowledgeTree/: lib/session/Session.inc, lib/session/control.inc,
+	  presentation/lookAndFeel/knowledgeTree/documentmanagement/downloadBL.php:
+	  Added workaround code for the IE SSL bug.
+
+2004-01-27 11:14  michael <michael@jamwarehouse.com>
+
+	* knowledgeTree/presentation/lookAndFeel/knowledgeTree/administration/usermanagement/listUsersUI.inc:
+	  changed to sort by username
+
+2004-01-23 15:28  michael <michael@jamwarehouse.com>
+
+	* knowledgeTree/lib/documentmanagement/PhysicalDocumentManager.inc:
+	  added quotes around filename in http header bug report by
+	  christian janssen [proftp_cj@kdd.de]
+
+2004-01-08 15:07  michael <michael@jamwarehouse.com>
+	* knowledgeTree/presentation/lookAndFeel/knowledgeTree/administration/usermanagement/listUsersUI.inc: now includes users that aren't in any groups in default listing (s.ciancio@pisa.iol.it)
+
+2003-12-18 15:59  michael <michael@jamwarehouse.com>
+	* knowledgeTreeIntegration/src/java/com/jamwarehouse/knowledgeTree/service/ListDocuments.java: #3569 return an array of zero size rather than null.
+
+2003-12-17 13:28  michael <michael@jamwarehouse.com>
+	* knowledgeTree/presentation/lookAndFeel/knowledgeTree/: documentmanagement/emailBL.php, documentmanagement/emailUI.inc, js/OptionTransfer.js: #3500 added ability to send to groups and users.
+	* knowledgeTree/presentation/lookAndFeel/knowledgeTree/js/misc.js: trim values before checking if its blank
+
+2003-12-17 13:26  michael <michael@jamwarehouse.com>
+	* knowledgeTree/lib/visualpatterns/PatternMainPage.inc: #3500 added optionTransfer js and ability to set javascript in <head>
+
+2003-12-17 13:25  michael <michael@jamwarehouse.com>
+	* knowledgeTree/lib/email/Email.inc: #3500 added error logging
+
+2003-12-15 17:15  michael <michael@jamwarehouse.com>
+	* knowledgeTree/lib/groups/Group.inc: #3500 added utility getUsers method
+
+2003-12-15 17:14  michael <michael@jamwarehouse.com>
+	* knowledgeTree/lib/email/Email.inc: #3500 refactored email code to use either a single email address or an array of them
+
+2003-12-15 16:53  michael <michael@jamwarehouse.com>
+	* knowledgeTree/presentation/lookAndFeel/knowledgeTree/discussions/viewDiscussionUI.inc: #3497 used button routine- fixes back button
+
+2003-12-15 15:56  michael <michael@jamwarehouse.com>
+	* knowledgeTree/presentation/lookAndFeel/knowledgeTree/discussions/addCommentBL.php: #3497 fixed refactor bug, removed fAddComment parameter
+
+2003-12-15 15:45  michael <michael@jamwarehouse.com>
+	* knowledgeTree/presentation/lookAndFeel/knowledgeTree/discussions/: addCommentBL.php, addCommentUI.inc, viewDiscussionBL.php, viewDiscussionUI.inc: #3497 changes to support listing comments by thread and indenting appropriately
+
+2003-12-15 15:44  michael <michael@jamwarehouse.com>
+	* knowledgeTree/: config/siteMap.inc, presentation/lookAndFeel/knowledgeTree/discussions/viewCommentBL.php, presentation/lookAndFeel/knowledgeTree/discussions/viewCommentUI.inc: #3497 refactored viewComment functionality into separate pages
+
+2003-12-15 15:43  michael <michael@jamwarehouse.com>
+	* knowledgeTree/lib/discussions/DiscussionThread.inc: #3497 changed some method names to more accurately reflect function, and added getList method
+	* knowledgeTree/lib/discussions/DiscussionComment.inc: #3497 added in_reply_to field to object
+
+2003-12-15 15:42  michael <michael@jamwarehouse.com>
+	* knowledgeTree/sql/mysql/: install/tables.sql, upgrade/1.2.2/1.2.2.sql: #3497 added in_reply_to field to comments table
+
+2003-12-03 16:58  michael <michael@jamwarehouse.com>
+	* knowledgeTree/sync/migrateLDAP.php: first cut ldap migration script
+
+2003-11-27 13:24  michael <michael@jamwarehouse.com>
+	* knowledgeTree/presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentUI.inc: #3548 removed default document type
+
+2003-11-26 10:20  michael <michael@jamwarehouse.com>
+	* knowledgeTree/presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentUI.inc: #3545 removed javascript that attempted to copy the filename to the title field
+
+2003-11-24 15:42  michael <michael@jamwarehouse.com>
+	* knowledgeTree/sql/mysql/upgrade/mrc/mrc_phase2_upgrade.sql: changed dependant documents created flag to false
+
+2003-11-24 15:15  michael <michael@jamwarehouse.com>
+	* knowledgeTree/presentation/lookAndFeel/knowledgeTree/administration/usermanagement/listUsersBL.php: removed debug logging
+	* knowledgeTree/presentation/lookAndFeel/knowledgeTree/administration/usermanagement/listUsersUI.inc: #3519 don't allow default value ie. no filter
+	* knowledgeTree/presentation/lookAndFeel/knowledgeTree/administration/usermanagement/listUsersBL.php: #3519 select a group in your unit if you're a unit administrator and none has been selected
+
+2003-11-24 12:35  michael <michael@jamwarehouse.com>
+	* knowledgeTree/presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/: listGroupsBL.php, listGroupsUI.inc: #3519 system administrators can filter by unit, unit administrators only see their unit
+
+2003-11-24 12:12  michael <michael@jamwarehouse.com>
+	* knowledgeTree/presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/: addUnitBL.php, addUnitUI.inc: #2944 added check for existing folder and appropriate error message.
+
+2003-11-24 12:04  michael <michael@jamwarehouse.com>
+	* knowledgeTree/presentation/lookAndFeel/knowledgeTree/documentmanagement/createDependantDocumentBL.php: #3537 redirect to the right section
+
+2003-11-24 12:01  michael <michael@jamwarehouse.com>
+	* knowledgeTree/lib/unitmanagement/Unit.inc: #3518 added slashes for non GPC data.
+	* knowledgeTree/presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/editUnitBL.php: removed debug output
+
+2003-11-24 11:18  michael <michael@jamwarehouse.com>
+	* knowledgeTree/presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/assignGroupToUnitUI.inc: #3543 patched by stefano.ciancio@mail.wind.it
+
+2003-11-17 18:32  michael <michael@jamwarehouse.com>
+	* knowledgeTree/presentation/lookAndFeel/knowledgeTree/administration/usermanagement/listUsersUI.inc: #3515 added distinct
+
+2003-11-17 18:19  michael <michael@jamwarehouse.com>
+	* knowledgeTree/presentation/lookAndFeel/knowledgeTree/discussions/viewDiscussionBL.php: #3513 changed to list by thread instead of date
+
+2003-11-17 18:01  michael <michael@jamwarehouse.com>
+	* knowledgeTree/presentation/lookAndFeel/knowledgeTree/documentmanagement/templateDocumentBrowseBL.php: #3512 added missing boolean flag
+
+2003-11-12 18:14  michael <michael@jamwarehouse.com>
+	* knowledgeTree/presentation/login.php: changed to explicit script location
+
+2003-11-12 15:51  michael <michael@jamwarehouse.com>
+	* knowledgeTree/presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc: #3481 if the document is published don't allow checkout
+
+2003-11-12 12:21  michael <michael@jamwarehouse.com>
+	* knowledgeTree/presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc: fixed introduced bug- inline view on document filename reinstated
+
+2003-11-10 17:59  michael <michael@jamwarehouse.com>
+	* knowledgeTree/presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc: corrected layout
+
+2003-11-10 17:29  michael <michael@jamwarehouse.com>
+	* knowledgeTree/sql/mysql/upgrade/mrc/1.2.1.sql: added 1.2.1 mrc specific db upgrade script
+
+2003-11-10 17:04  michael <michael@jamwarehouse.com>
+	* knowledgeTree/presentation/lookAndFeel/knowledgeTree/documentmanagement/: viewHistoryBL.php, viewHistoryUI.inc: #3425 display document.fileName in document browse paths for consistency
+
+2003-11-10 14:55  michael <michael@jamwarehouse.com>
+	* knowledgeTree/sync/dbSync.php: changed formatting
+
+2003-11-10 12:28  michael <michael@jamwarehouse.com>
+	* knowledgeTree/presentation/lookAndFeel/knowledgeTree/documentman gement/browseUI.inc: corrected grammar for no documents|folders
+
+2003-11-10 12:05  michael <michael@jamwarehouse.com>
+	* knowledgeTree/presentation/lookAndFeel/knowledgeTree/foldermanag ment/deleteFolderDocTypeUI.inc: corrected layout and controller link
+
+2003-11-10 12:03  michael <michael@jamwarehouse.com>
+	* knowledgeTree/: lib/documentmanagement/Document.inc, presentation/lookAndFeel/knowledgeTree/documentmanagement/documentUI.inc, presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc: #3425 display document.fileName in document browse paths for consistency
+
+2003-11-10 11:51  michael <michael@jamwarehouse.com>
+	* knowledgeTree/presentation/lookAndFeel/knowledgeTree/discussions/: addCommentBL.php, addCommentUI.inc, viewDiscussionBL.php, viewDiscussionUI.inc: #3425 changed to use common function in documentUI.inc
+
+2003-11-10 11:48  michael <michael@jamwarehouse.com>
+	* knowledgeTree/presentation/lookAndFeel/knowledgeTree/documentmanagement/modifyUI.inc: #3425 removed unused function
+
+2003-11-10 11:29  michael <michael@jamwarehouse.com>
+	* knowledgeTree/presentation/lookAndFeel/knowledgeTree/documentmanagement/: browseUI.inc, documentUI.inc: #3425 the filename is the document title- primary reference, and the soft title is the description
+
+2003-11-10 11:09  michael <michael@jamwarehouse.com>
+	* knowledgeTree/presentation/lookAndFeel/knowledgeTree/documentmanagement/browseUI.inc: #3426 provisionally added folder and document counts
+
+2003-11-07 17:24  michael <michael@jamwarehouse.com>
+	* knowledgeTree/presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc: catered for the case where there are no archiving settings
+
+2003-11-07 17:16  michael <michael@jamwarehouse.com>
+	* knowledgeTree/presentation/lookAndFeel/knowledgeTree/documentmanagement/templateDocumentBrowseBL.php: use browse functionality with template switch instead of duplicating code.
+	* knowledgeTree/presentation/lookAndFeel/knowledgeTree/documentmanagement/browseUI.inc: added optional template browsing support
+
+2003-11-07 17:08  michael <michael@jamwarehouse.com>
+	* knowledgeTree/presentation/lookAndFeel/knowledgeTree/administration/doccheckoutmanagement/editDocCheckoutUI.inc: added check for no checked out user details
+
+2003-11-07 17:07  michael <michael@jamwarehouse.com>
+	* knowledgeTree/lib/documentmanagement/PhysicalDocumentManager.inc: validate upload by checkin if the file exists in the right place after the upload
+
+2003-11-07 17:05  michael <michael@jamwarehouse.com>
+	* knowledgeTree/presentation/lookAndFeel/knowledgeTree/documentmanagement/: viewBL.php, viewUI.inc: #3265 added code to display the archiving settings on the document details screen.
+
+2003-11-07 17:04  michael <michael@jamwarehouse.com>
+	* knowledgeTree/presentation/lookAndFeel/knowledgeTree/documentmanagement/archiving/archiveSettingsUI.inc: corrected function usage
+
+2003-11-06 17:49  michael <michael@jamwarehouse.com>
+	* knowledgeTree/presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/editGroupUI.inc: #2978 only allow the creation/editing of a sys admin group if you are a system administrator
+
+2003-11-06 17:48  michael <michael@jamwarehouse.com>
+	* knowledgeTree/presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/listGroupsUI.inc: #2978 only display system administrator groups if you are a system administrator
+	* knowledgeTree/presentation/lookAndFeel/knowledgeTree/administration/usermanagement/listUsersUI.inc: #2978 only display system administrator user accounts if you are a system administrator
+
+2003-11-06 13:06  rob <rob@jamwarehouse.com>
+	* knowledgeTree/i18n/: afr/Language.inc, en/Language.inc: updated to include more i18n strings
+	* knowledgeTree/: presentation/lookAndFeel/knowledgeTree/documentmanagement/browseBL.php, presentation/lookAndFeel/knowledgeTree/documentmanagement/browseUI.inc, lib/browse/Browser.inc: Added i18n
+
+2003-11-06 12:04  rob <rob@jamwarehouse.com>
+	* knowledgeTree/config/: environment.php: Updated internationalization included directory
+
+2003-11-03 14:29  michael <michael@jamwarehouse.com>
+	* knowledgeTree/sql/mysql/upgrade/1.2.1/1.2.1.sql: added knowledgeTreeVersion update to upgrade script.
+
+2003-11-03 14:25  michael <michael@jamwarehouse.com>
+	* knowledgeTree/sql/mysql/upgrade/1.2.1/1.2.1.sql: changed from binary to ascii
+
+2003-11-03 11:44  rob <rob@jamwarehouse.com>
+	* knowledgeTree/i18n/: afr/Language.inc, en/Language.inc, LanguageFunctions.inc: Internationalization functionality
+
+2003-11-03 11:41  rob <rob@jamwarehouse.com>
+	* knowledgeTree/: presentation/lookAndFeel/knowledgeTree/dashboardUI.inc, config/environment.php: Added internationalization
+
+2003-10-15 11:56  rob <rob@jamwarehouse.com>
+	* knowledgeTree/sql/mysql/install/tables.sql: Added missing inherit_parent_folder_permission column to folders table
+
+
 Version 1.2.1
 * Tue October 14 2003 Michael Joseph <michael@jamwarehouse.com>
 
@@ -398,7 +754,6 @@ Full changelog
 	  websitemanagement/removeWebsiteBL.php,
 	  websitemanagement/removeWebsiteUI.inc: added copyright and gpl
 	  notice removed owl prefix from table aliases
-
 
 Version 1.2.0
 * Tue Aug 12 2003 Michael Joseph <michael@jamwarehouse.com>
