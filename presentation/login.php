@@ -148,5 +148,8 @@ if ($loginAction == "loginForm") {
         $url .= "&$queryString";
     }
     redirect($url);
+} else {
+	// redirect to root
+	redirect($default->rootUrl);
 }
 ?>
