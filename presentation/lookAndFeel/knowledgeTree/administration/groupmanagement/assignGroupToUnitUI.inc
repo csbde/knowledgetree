@@ -69,7 +69,11 @@ function getGotGroupPage($iGroupID,$iUnitID){
 	$sToRender .= "function validateForm(theForm) {;\n";
 	$sToRender .= "\tif (!(validRequired(theForm.fGroupID, 'Group'))) {\n";
 	$sToRender .= "\t\treturn false;\n";
-	$sToRender .= "\t}\n";	
+	$sToRender .= "\t}\n";
+	// #3543 patched by stefano.ciancio@mail.wind.it	
+	$sToRender .= "\tif (!(validRequired(theForm.fUnitID,'Unit'))) {\n";
+	$sToRender .= "\t\treturn false;\n";
+	$sToRender .= "\t}\n";
 	$sToRender .= "return true;\n}\n";		
 	$sToRender .= "-->\n</script>\n\n";
 
@@ -118,6 +122,10 @@ function getPage($iGroupID, $iUnitID) {
     $sToRender .= "\n\n<script language=\"javascript\">\n<!--\n";
 	$sToRender .= "function validateForm(theForm) {;\n";
 	$sToRender .= "\tif (!(validRequired(theForm.fGroupID, 'Group'))) {\n";
+	$sToRender .= "\t\treturn false;\n";
+	$sToRender .= "\t}\n";
+	// #3543 patched by stefano.ciancio@mail.wind.it
+	$sToRender .= "\tif (!(validRequired(theForm.fUnitID,'Unit'))) {\n";
 	$sToRender .= "\t\treturn false;\n";
 	$sToRender .= "\t}\n";	
 	$sToRender .= "return true;\n}\n";		
