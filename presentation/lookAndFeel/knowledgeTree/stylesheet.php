@@ -149,3 +149,30 @@ SELECT {
     left:0px; 
     top:0px;
 }
+
+span.button {
+        font-size: 6pt;
+        width: 100%;
+        /* height: 20px; */
+        border: 1px solid #000;
+        text-align: center;
+        white-space: nowrap;
+        display: block;
+        margin-top: 4px;
+        text-decoration: none;
+}
+span.button:Hover {
+        background-color: #EEEEEE;
+}
+span.disabledbutton {
+        font-size: 6pt;
+        background-color: #CCCCCC;
+        color: #333333;
+        width: 100%;
+        /* height: 20px; */
+        border: 1px solid #333;
+        text-align: center;
+        white-space: nowrap;
+        display: block;
+        margin-top: 4px;
+}
