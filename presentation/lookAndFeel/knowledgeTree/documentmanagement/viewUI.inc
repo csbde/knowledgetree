@@ -30,7 +30,7 @@ function renderDocumentData($oDocument) {
               "WHERE D.id = " . $oDocument->getID() . " " .
               "AND TT.name LIKE 'Create'";
 
-    $aColumns = array("name", "last_modified", "created", "initiator", "version", "status");
+    $aColumns = array("name", "modified", "created", "initiator", "version", "status");
     $aColumnNames = array("Document title", "Last updated", "Created", "Document initiator", "Version", "Status");
     $aColumnTypes = array(1,1,1,1,1);
     $oPatternListFromQuery = & new PatternListFromQuery($sQuery, $aColumns, $aColumnNames, $aColumnTypes);
