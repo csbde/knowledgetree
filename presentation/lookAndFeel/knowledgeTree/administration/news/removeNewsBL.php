@@ -33,7 +33,7 @@ if (checkSession()) {
     		if ($oDashboardNews->delete()) {
     			$default->log->info("deleteNewsBL.php successfully deleted dashboard news id=$fNewsID");
     			// redirect to view page
-    			redirect("$default->rootUrl/control.php?action=viewNews");
+    			redirect("$default->rootUrl/control.php?action=listNews");
     		} else {
     			// delete failed
     			$default->log->error("deleteNewsBL.php DB error deleting dashboard news (" . arrayToString($oDashboardNews) . ")");

@@ -63,7 +63,7 @@ if (checkSession()) {
 			    		if ($oDashboardNews->update()) {
 			    			$default->log->info("editNewsBL.php successfully updated dashboard news id=$fNewsID");
 			    			// redirect to view page
-			    			redirect("$default->rootUrl/control.php?action=viewNews");
+			    			redirect("$default->rootUrl/control.php?action=listNews");
 			    		} else {
 			    			// update failed
 			    			$default->log->error("editNewsBL.php DB error updating dashboard news id=$fNewsID; ($fSynopsis, $fBody, $fRank)");
@@ -81,7 +81,7 @@ if (checkSession()) {
 	    		if ($oDashboardNews->update()) {
 	    			$default->log->info("editNewsBL.php successfully updated dashboard news id=$fNewsID");
 	    			// redirect to view page
-	    			redirect("$default->rootUrl/control.php?action=viewNews");
+	    			redirect("$default->rootUrl/control.php?action=listNews");
 	    		} else {
 	    			// update failed
 	    			$default->log->error("editNewsBL.php DB error updating dashboard news id=$fNewsID; ($fSynopsis, $fBody, $fRank)");
