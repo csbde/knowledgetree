@@ -19,18 +19,21 @@ class FolderCollaboration {
 	var $iFolderID;
 	/** primary key of group from which user can be assigned*/
 	var $iGroupID;
+	/** primary key of default user */
+	var $iUserID;
 	/** sequence number of this step in the process*/
 	var $iSequenceNumber;
 	/** primary key of role use will perform */
 	var $iRoleID;
 	
-	function FolderCollaboration($iNewFolderID, $iNewGroupID, $iNewSequenceNumber, $iNewRoleID) {
+	function FolderCollaboration($iNewFolderID, $iNewGroupID, $iNewSequenceNumber, $iNewRoleID, $iNewUserID) {
 		//object not created in database yet
 		$this->iId = -1;
 		$this->iFolderID = $iNewFolderID;
 		$this->iGroupID = $iNewGroupID;
 		$this->iSequenceNumber = $iNewSequenceNumber;
 		$this->iRoleID = $iNewRoleID;
+		$this->iUserID = $iNewUserID;
 	}
 	
 	function getID() {
@@ -69,6 +72,10 @@ class FolderCollaboration {
 		$this->iRoleID = $iNewValue;
 	}
 	
+	function getUserID() {
+		return $this->iUserID;
+	}
+	
 	/**
 	* Create the current object in the database
 	*
@@ -80,7 +87,7 @@ class FolderCollaboration {
 		//if the object hasn't been created
 		if ($this->iId < 0) {
 			$sql = $default->db;
-			$result = $sql->query("INSERT INTO " . $default->owl_groups_folders_approval_table . " (folder_id, group_id, precedence, role_id) VALUES ($this->iFolderID, $this->iGroupID, $this->iSequenceNumber, $this->iRoleID)");
+			$result = $sql->query("INSERT INTO " . $default->owl_groups_folders_approval_table . " (folder_id, group_id, precedence, role_id, user_id) VALUES ($this->iFolderID, $this->iGroupID, $this->iSequenceNumber, $this->iRoleID, $this->iUserID)");
 			if ($result) {
 				$this->iId = $sql->insert_id();
 				return  true;
@@ -103,7 +110,7 @@ class FolderCollaboration {
 		//only update if the object has been stored
 		if ($this->iId > 0) {
 			$sql = $default->db;
-			$result = $sql->query("UPDATE " . $default->owl_groups_folders_approval_table . " SET group_id = $this->iGroupID, folder_id = $this->iFolderID, precedence = $this->iSequenceNumber, role_id = $this->iRoleID WHERE id = $this->iId");
+			$result = $sql->query("UPDATE " . $default->owl_groups_folders_approval_table . " SET group_id = $this->iGroupID, folder_id = $this->iFolderID, precedence = $this->iSequenceNumber, role_id = $this->iRoleID, user_id = $this->iUserID WHERE id = $this->iId");
 			if ($result) {
 				return true;
 			}
@@ -169,7 +176,7 @@ class FolderCollaboration {
 		$result = $sql->query("SELECT * FROM $default->owl_groups_folders_approval_table WHERE id = $iFolderCollaborationID");
 		if ($result) {
 			if ($sql->next_record()) {
-				$oFolderCollaboration = & new FolderCollaboration($sql->f("folder_id"), $sql->f("group_id"), $sql->f("precedence"), $sql->f("role_id"));
+				$oFolderCollaboration = & new FolderCollaboration($sql->f("folder_id"), $sql->f("group_id"), $sql->f("precedence"), $sql->f("role_id"), $sql->f("user_id"));
 				$oFolderCollaboration->iId = $iFolderCollaborationID;
 				return $oFolderCollaboration;
 			}
