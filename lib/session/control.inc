@@ -102,11 +102,12 @@ function generateLinkForTemplateDocumentBrowse($sTargetPage, $sQueryString, $sLi
  * @return string the controller url, empty string if no action is supplied
  */
 function generateControllerUrl($sAction, $sQueryString = "", $bReturnLink = true) {
+    global $default;
     if (strlen($sAction) > 0) {
     	if ($bReturnLink) {
         	return generateLink("/control.php?action=$sAction", $sQueryString);
     	} else {
-    		return "/control.php?action=$sAction&$sQueryString";
+		return $default->rootUrl .  "/control.php?action=$sAction&$sQueryString";
     	}
     } else {
         return "";
