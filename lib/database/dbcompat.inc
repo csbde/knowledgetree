@@ -8,10 +8,14 @@ class DBCompat {
             $aParams = $sQuery[1];
             $sQuery = $sQuery[0];
         }
-        #$this->lastResult =& $default->_db->query($sQuery, $aParams);
         $this->lastResult =& DBUtil::runQuery(array($sQuery, $aParams));
-        $this->lastInsertID = mysql_insert_id($default->_db->connection);
-        $this->lastResult->autofree = true;
+        if (PEAR::isError($this->lastResult)) {
+            $default->log->error("Error running query: " .  DBUtil::lastQuery());
+            $default->log->error($this->lastResult->toString());
+        } else {
+            $this->lastInsertID = mysql_insert_id($default->_db->connection);
+            $this->lastResult->autofree = true;
+        }
         return $this->lastResult;
     }
 
