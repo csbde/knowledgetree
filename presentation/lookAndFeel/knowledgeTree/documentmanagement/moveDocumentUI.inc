@@ -44,10 +44,10 @@ function getConfirmationPage($iFolderID, $iDocumentIDs) {
 	$sToRender .= "<tr><td><a href=\"$default->rootUrl/control.php?action=moveDocument&" . $sQueryString . 
                   "fFolderID=$iFolderID" .
                             "&fForMove=1&fConfirmed=1\">" .
-                            "<img src=\"$default->graphicsUrl/widgets/move.gif\" border=\"0\"/>" . 
+                            "<img src=\"" . KTHtml::getMoveButton() . "\" border=\"0\"/>" . 
                             "</a>&nbsp;" . 
                   "<a href=\"$default->rootUrl/control.php?action=browse&fFolderID=$iFolderID\">" . 
-                  "<img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></a></td></tr>\n";
+                  "<img src=\"" . KTHtml::getCancelButton() . "\" border=\"0\"></a></td></tr>\n";
 	$sToRender .= "</table>\n";
 	return $sToRender;
 }
@@ -77,7 +77,7 @@ function getPage($iFolderID, $iDocumentIDs, $sErrorMessage = "") {
 	$sToRender .= "<tr>\n";
   $sToRender .= "<td>" . renderFolderList($iFolderID, "/control.php?action=moveDocument&" . $sQueryString) . "</td>\n";
 	$sToRender .= "</tr>\n";	
-  $sToRender .= "<td><table><tr><td><a href=\"" . $_SERVER["PHP_SELF"] . "?$sQueryString&fFolderID=$iFolderID&fForMove=1\"><img src=\"$default->graphicsUrl/widgets/movehere.gif\" border=\"0\"></a></td> <td><a href=\"$default->rootUrl/control.php?action=browse&fFolderID=$iFolderID\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></a></td></tr></table></td>";
+  $sToRender .= "<td><table><tr><td><a href=\"" . $_SERVER["PHP_SELF"] . "?$sQueryString&fFolderID=$iFolderID&fForMove=1\"><img src=\"" . KTHtml::getMoveHereButton() . "\" border=\"0\"></a></td> <td><a href=\"$default->rootUrl/control.php?action=browse&fFolderID=$iFolderID\"><img src=\"" . KTHtml::getCancelButton() . "\" border=\"0\"></a></td></tr></table></td>";
 
 	$sToRender .= "</table>\n";
 	return $sToRender;
@@ -90,7 +90,7 @@ function renderErrorPage($sErrorMessage, $iDocumentID = "") {
     $sToRender  = renderHeading(_("Delete Document"));
     $sToRender .= "<table>\n";
     $sToRender .= "<tr><td><p class=\"errorText\">$sErrorMessage</p>\n" .
-      "<a href=\"javascript:history.go(-2)\"><img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\"/></a>\n" .
+      "<a href=\"javascript:history.go(-2)\"><img src=\"" . KTHtml::getBackButton() . "\" border=\"0\"/></a>\n" .
       "</p></td></tr></table>\n";
     return $sToRender;
   }

@@ -58,7 +58,7 @@ function getPage($iUserID, $iGroupID) {
 	$sToRender .= "<tr>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<td></td><td>" . getAssignButton($oUser);
-	$sToRender .= "<td><a href=\"$default->rootUrl/control.php?action=editUserGroups$sQueryString\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" /></a></td>";		
+	$sToRender .= "<td><a href=\"$default->rootUrl/control.php?action=editUserGroups$sQueryString\"><img src =\"" . KTHtml::getCancelButton() . "\" border = \"0\" /></a></td>";		
 	$sToRender .= "</td></table>\n";
 	
 	
@@ -77,7 +77,7 @@ function getPageNotSelected($sQueryString) {
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=addUserToGroup$sQueryString\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
+	$sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=addUserToGroup$sQueryString\"><img src =\"" . KTHtml::getBackButton() . "\" border = \"0\" /></a></td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
 	
@@ -96,7 +96,7 @@ function getPageSuccess($sQueryString) {
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=addUserToGroup$sQueryString\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
+	$sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=addUserToGroup$sQueryString\"><img src =\"" . KTHtml::getBackButton() . "\" border = \"0\" /></a></td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
 	
@@ -115,7 +115,7 @@ function getPageFail($sQueryString) {
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=addUserToGroup$sQueryString\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
+	$sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=addUserToGroup$sQueryString\"><img src =\"" . KTHtml::getBackButton() . "\" border = \"0\" /></a></td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
 	
@@ -174,18 +174,18 @@ function getGroupDisplay($oGroup) {
 function getAssignButton($oUser) {
 	global $default;
 	if (!isset($oUser)) {
-		return "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/select.gif\" value=\"submit\" border=\"0\"/></td>\n";
+		return "<td align = right><input type=\"image\" src =\"" . KTHtml::getSelectButton() . "\" value=\"submit\" border=\"0\"/></td>\n";
 	} else {
-		return "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/assign.gif\" value=\"submit\" border=\"0\"/></td>\n";
+		return "<td align = right><input type=\"image\" src =\"" . KTHtml::getAssignButton() . "\" value=\"submit\" border=\"0\"/></td>\n";
 	}
 }
 // show button after User selected
 function getCancelButton($oUser) {
 	global $default;
 	if (!isset($oUser)) {
-		return "<td align = right><a href=\"$default->rootUrl/control.php?action=userManagement\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" value=\"cancel\" border=\"0\"/></a></td>\n";
+		return "<td align = right><a href=\"$default->rootUrl/control.php?action=userManagement\"><img src =\"" . KTHtml::getCancelButton() . "\" value=\"cancel\" border=\"0\"/></a></td>\n";
 	} else {
-		return "<td align = right><a href=\"$default->rootUrl/control.php?action=addUserToGroup\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\" /></a></td>\n";
+		return "<td align = right><a href=\"$default->rootUrl/control.php?action=addUserToGroup\"><img src =\"" . KTHtml::getCancelButton() . "\" border=\"0\" /></a></td>\n";
 	}
 }
 

@@ -163,7 +163,7 @@ function getPageFail($iGroupID) {
     $sToRender .= "<tr>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=listGroups\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
+    $sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=listGroups\"><img src =\"" . KTHtml::getBackButton() . "\" border = \"0\" /></a></td>\n";
     $sToRender .= "</tr>\n";
 
     $sToRender .= "</table>\n";
@@ -184,7 +184,7 @@ function getPageNotSelected() {
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=listGroups\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
+    $sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=listGroups\"><img src =\"" . KTHtml::getBackButton() . "\" border = \"0\" /></a></td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "</table>\n";
 
@@ -204,7 +204,7 @@ function getPageSuccess() {
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=listGroups\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
+    $sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=listGroups\"><img src =\"" . KTHtml::getBackButton() . "\" border = \"0\" /></a></td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "</table>\n";
 
@@ -249,18 +249,18 @@ function getUnitDisplay($oUnit) {
 function getAssignButton($oGroup) {
     global $default;
     if (!isset($oGroup)) {
-        return "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/select.gif\" value=\"submit\" border=\"0\"/></td>\n";
+        return "<td align = right><input type=\"image\" src =\"" . KTHtml::getSelectButton() . "\" value=\"submit\" border=\"0\"/></td>\n";
     } else {
-        return "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/assign.gif\" value=\"submit\" border=\"0\"/></td>\n";
+        return "<td align = right><input type=\"image\" src =\"" . KTHtml::getAssignButton() . "\" value=\"submit\" border=\"0\"/></td>\n";
     }
 }
 // show button after group selected
 function getCancelButton($oGroup) {
     global $default;
 	if ($oGroup){
-    	return "<td align = right><a href=\"$default->rootUrl/control.php?action=editGroupUnit&fGroupID=" . $oGroup->getID() . "\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" /></a></td>\n";    
+    	return "<td align = right><a href=\"$default->rootUrl/control.php?action=editGroupUnit&fGroupID=" . $oGroup->getID() . "\"><img src =\"" . KTHtml::getCancelButton() . "\" border = \"0\" /></a></td>\n";    
 	} else {
-		return "<td align = right><a href=\"$default->rootUrl/control.php?action=listGroups\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" /></a></td>\n";
+		return "<td align = right><a href=\"$default->rootUrl/control.php?action=listGroups\"><img src =\"" . KTHtml::getCancelButton() . "\" border = \"0\" /></a></td>\n";
 	}
 }
 

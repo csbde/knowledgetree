@@ -259,22 +259,22 @@ if (checkSession()) {
 					$oPatternCustom->setHtml(getRequestRestoreDocumentPage($oDocument));
             	}            
             } else {
-	            $oPatternCustom->setHtml("<a href=\"" . generateControllerLink("browse", "fFolderID=" . $oDocument->getFolderID()) . "\"><img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\" /></a>\n");
+	            $oPatternCustom->setHtml("<a href=\"" . generateControllerLink("browse", "fFolderID=" . $oDocument->getFolderID()) . "\"><img src=\"" . KTHtml::getBackButton() . "\" border=\"0\" /></a>\n");
 	            $main->setErrorMessage(_("The document you have chosen no longer exists in the DMS."));
             }
             $main->setFormAction("$default->rootUrl/control.php?action=modifyDocument&fDocumentID=" . $oDocument->getID());
         } else {
         	if ($oDocument) {
-            	$oPatternCustom->setHtml("<a href=\"" . generateControllerLink("browse", "fFolderID=" . $oDocument->getFolderID()) . "\"><img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\" /></a>\n");
+            	$oPatternCustom->setHtml("<a href=\"" . generateControllerLink("browse", "fFolderID=" . $oDocument->getFolderID()) . "\"><img src=\"" . KTHtml::getBackButton() . "\" border=\"0\" /></a>\n");
         	} else {
-        		$oPatternCustom->setHtml("<a href=\"javascript:history.go(-1)\"><img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\" /></a>\n");
+        		$oPatternCustom->setHtml("<a href=\"javascript:history.go(-1)\"><img src=\"" . KTHtml::getBackButton() . "\" border=\"0\" /></a>\n");
         	}
             $main->setErrorMessage(_("Either you do not have permission to view this document, or the document you have chosen no longer exists on the file system."));
         }
         
     } else {
         require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
-        $oPatternCustom->setHtml("<a href=\"javascript:history.go(-1)\"><img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\" /></a>\n");
+        $oPatternCustom->setHtml("<a href=\"javascript:history.go(-1)\"><img src=\"" . KTHtml::getBackButton() . "\" border=\"0\" /></a>\n");
         $main->setErrorMessage(_("You have not chosen a document to view"));
     }
     $main->setCentralPayload($oPatternCustom);            

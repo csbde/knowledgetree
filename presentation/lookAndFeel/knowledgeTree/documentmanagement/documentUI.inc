@@ -102,6 +102,6 @@ function renderErrorPage($sErrorMessage, $iDocumentID = -1) {
            (($iDocumentID == -1) ? 
            "<a href=\"$default->rootUrl/control.php?action=viewDocument&fDocumentID=$iDocumentID\">" :
            "<a href=\"javascript:history.go(-1)\">") .
-           "<img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\"/></a>\n";
+           "<img src=\"" . KTHtml::getBackButton() . "\" border=\"0\"/></a>\n";
 }
 ?>

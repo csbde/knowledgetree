@@ -33,7 +33,7 @@
 function getSubmitSuccessPage($iDocumentID){	
 	global $default;
 	$sMessage = _("Your submission has been successful.");
-	$sToRender .= "$sMessage<br><br><a href=\"" . generateControllerLink("viewDiscussion", "fDocumentID=" . $iDocumentID . "&fForDiscussion=1") . "\"><img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\" /></a>";
+	$sToRender .= "$sMessage<br><br><a href=\"" . generateControllerLink("viewDiscussion", "fDocumentID=" . $iDocumentID . "&fForDiscussion=1") . "\"><img src=\"" . KTHtml::getBackButton() . "\" border=\"0\" /></a>";
  	
 	return $sToRender;	
 }
@@ -55,14 +55,14 @@ function getAddComment($fDocumentID, $sSubject, $sBody, $iCommentID, $fNewCommen
 	$sToRender .= "<td align=right width=500>";
 	$sToRender .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 	$sToRender .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-	$sToRender .= "<input onmouseover=\"this.style.cursor='hand'\" type=\"image\" src=\"$default->graphicsUrl/widgets/submit.gif\" border=0></td>";	
+	$sToRender .= "<input onmouseover=\"this.style.cursor='hand'\" type=\"image\" src=\"" . KTHtml::getSubmitButton() . "\" border=0></td>";	
 	if ($fNewComment>0) {	// If user is creating a new comment
-		$sToRender .= "<td width=\"10\" valign=top><a href=\"" . generateControllerLink("viewDiscussion", "fForDiscussion=1&fDocumentID=$fDocumentID") . "\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=0 ></a></td></tr>\n";
+		$sToRender .= "<td width=\"10\" valign=top><a href=\"" . generateControllerLink("viewDiscussion", "fForDiscussion=1&fDocumentID=$fDocumentID") . "\"><img src=\"" . KTHtml::getCancelButton() . "\" border=0 ></a></td></tr>\n";
 		$sToRender .= "<input type=\"hidden\" name=\"fNewComment\" value=\"1\"/>";
 	} else {				// If the user is replying to a comment
 		$sToRender .= "<input type=\"hidden\" name=\"fInReplyTo\" value=\"$iCommentID\"/>";
 		$sToRender .= "<input type=\"hidden\" name=\"fThreadID\" value=\"". $fThreadID . "\"/>";
-		$sToRender .= "<td width=\"10\" valign=top><a href=\"" . generateControllerLink("viewComment", "fViewComment=1&iDocumentID=$fDocumentID&iCommentID=$iCommentID") . "\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=0 ></a></td></tr>\n";		
+		$sToRender .= "<td width=\"10\" valign=top><a href=\"" . generateControllerLink("viewComment", "fViewComment=1&iDocumentID=$fDocumentID&iCommentID=$iCommentID") . "\"><img src=\"" . KTHtml::getCancelButton() . "\" border=0 ></a></td></tr>\n";		
 	}
 	$sToRender .= "<br><tr><td valign=\"top\" width=10><b>Subject</b></td><td colspan=2>\n";
 	$sToRender .= "<input type=\"text\" style=\"width:385\" name=\"fSubject\" value=\"$sSubject\"></td></tr>\n";

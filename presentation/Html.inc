@@ -45,7 +45,7 @@ function statusPage($sTitle, $sHeading, $sText = "", $sCancelAction, $sQueryStri
     $sToRender .= "<td><b>$sHeading</b></td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "<tr><td>$sText</td></tr>\n";
-    $sToRender .= "<tr><td align=\"right\">" . generateControllerLink($sCancelAction, $sQueryString, "<img src =\"$default->graphicsUrl/widgets/back.gif\" border=\"0\"/>") . "</td></tr>\n";
+    $sToRender .= "<tr><td align=\"right\">" . generateControllerLink($sCancelAction, $sQueryString, "<img src =\"" . KTHtml::getBackButton() . "\" border=\"0\"/>") . "</td></tr>\n";
     $sToRender .= "</table>\n";
     return $sToRender;
 }
@@ -80,4 +80,116 @@ function imgSrc($sImage) {
 		return $default->graphicsUrl . "/$sImage";
 	}
 }
+
+class KTHtml {
+    function getAddButton() {
+        return imgSrc('widgets/add.gif');
+    }
+    function getCancelButton() {
+        return imgSrc('widgets/cancel.gif');
+    }
+    function getLoginButton() {
+        return imgSrc('icons/login.jpg');
+    }
+    function getNextButton() {
+        return imgSrc('widgets/next.gif');
+    }
+    function getBackButton() {
+        return imgSrc('widgets/back.gif');
+    }
+    function getAddCommentButton() {
+        return imgSrc('widgets/addcomment.gif');
+    }
+    function getSubscribeButton() {
+        return imgSrc('widgets/subscribe.gif');
+    }
+    function getUnsubscribeButton() {
+        return imgSrc('widgets/unsubscribe.gif');
+    }
+    function getRejectButton() {
+        return imgSrc('widgets/reject.gif');
+    }
+    function getUpdatePasswordButton() {
+        return imgSrc('widgets/updatePassword.gif');
+    }
+    function getDeleteButton() {
+        return imgSrc('widgets/delete.gif');
+    }
+    function getSelectButton() {
+        return imgSrc('widgets/select.gif');
+    }
+    function getUpdateButton() {
+        return imgSrc('widgets/update.gif');
+    }
+    function getAssignButton() {
+        return imgSrc('widgets/assign.gif');
+    }
+    function getSearchButton() {
+        return imgSrc('widgets/search.gif');
+    }
+    function getEditButton() {
+        return imgSrc('widgets/edit.gif');
+    }
+    function getApproveButton() {
+        return imgSrc('widgets/approve.gif');
+    }
+    function getDoneButton() {
+        return imgSrc('widgets/done.gif');
+    }
+    function getPublishButton() {
+        return imgSrc('widgets/publish.gif');
+    }
+    function getMoveButton() {
+        return imgSrc('widgets/move.gif');
+    }
+    function getRemoveButton() {
+        return imgSrc('widgets/remove.gif');
+    }
+    function getRestoreButton() {
+        return imgSrc('widgets/restore.gif');
+    }
+    function getSubmitButton() {
+        return imgSrc('widgets/submit.gif');
+    }
+    function getExpungeButton() {
+        return imgSrc('widgets/expunge.gif');
+    }
+    function getRestoreHereButton() {
+        return imgSrc('widgets/restorehere.gif');
+    }
+    function getReplyButton() {
+        return imgSrc('widgets/reply.gif');
+    }
+    function getNewButton() {
+        return imgSrc('widgets/new.gif');
+    }
+    function getResetButton() {
+        return imgSrc('widgets/reset.gif');
+    }
+    function getArchiveButton() {
+        return imgSrc('widgets/archive.gif');
+    }
+    function getBrowseButton() {
+        return imgSrc('widgets/browse.gif');
+    }
+    function getCheckInButton() {
+        return imgSrc('widgets/checkin.gif');
+    }
+    function getCheckOutButton() {
+        return imgSrc('widgets/checkout.gif');
+    }
+    function getDownloadButton() {
+        return imgSrc('widgets/download.gif');
+    }
+    function getEmailButton() {
+        return imgSrc('widgets/email.gif');
+    }
+    function getMoveHereButton() {
+        return imgSrc('widgets/movehere.gif');
+    }
+    function getBeginButton() {
+        return imgSrc('widgets/begin.gif');
+    }
+}
+
 ?>

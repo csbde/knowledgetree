@@ -45,7 +45,7 @@ function getPage($iFolderID, $iGroupID, $iRoleID, $iSequenceNumber) {
 	$sToRender .= "<td>" . _("Sequence No.") . "</td><td><input type=\"text\" name=\"fSequenceNumber\" size=\"5\" " . (isset($iSequenceNumber) ? "value=\"$iSequenceNumber\" " : " ") . "/></td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td><table><tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/add.gif\" border=\"0\"/></td><td>" . generateControllerLink("editFolder", "fFolderID=$iFolderID&fShowSection=folderRouting", "<img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"/>") . "</td></tr></table></td>\n";
+	$sToRender .= "<td><table><tr><td><input type=\"image\" src=\"" . KTHtml::getAddButton() . "\" border=\"0\"/></td><td>" . generateControllerLink("editFolder", "fFolderID=$iFolderID&fShowSection=folderRouting", "<img src=\"" . KTHtml::getCancelButton() . "\" border=\"0\"/>") . "</td></tr></table></td>\n";
 	$sToRender .= "</tr>\n";	
 	$sToRender .= "</table>\n";
 	

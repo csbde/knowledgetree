@@ -70,7 +70,7 @@ function getViewPage($iFolderCollaborationID, $iFolderID) {
 	$sToRender .= "<td>" . getDocumentLinkFolderCollaborationData($iFolderCollaborationID) . "</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";	
-	$sToRender .= "<td><table><tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/add.gif\" border=\"0\"/></td><td>" . generateControllerLink("editFolder", "fFolderID=$iFolderID&fShowSection=folderRouting", "<img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"/>") . "</td></tr></table>\n";
+	$sToRender .= "<td><table><tr><td><input type=\"image\" src=\"" . KTHtml::getAddButton() . "\" border=\"0\"/></td><td>" . generateControllerLink("editFolder", "fFolderID=$iFolderID&fShowSection=folderRouting", "<img src=\"" . KTHtml::getCancelButton() . "\" border=\"0\"/>") . "</td></tr></table>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";	
 	
@@ -106,7 +106,7 @@ function getEditPage($iFolderID, $iDependantDocumentID, $iFolderCollaborationID,
 	}		
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";	
-	$sToRender .= "<td><table><tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/update.gif\" border=\"0\"/></td><td><a href=\"" . $default->rootUrl . "/control.php?action=viewDependantDocument&fFolderID=$iFolderID&fFolderCollaborationID=$iFolderCollaborationID\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"/></a></td></tr></table>\n";	
+	$sToRender .= "<td><table><tr><td><input type=\"image\" src=\"" . KTHtml::getUpdateButton() . "\" border=\"0\"/></td><td><a href=\"" . $default->rootUrl . "/control.php?action=viewDependantDocument&fFolderID=$iFolderID&fFolderCollaborationID=$iFolderCollaborationID\"><img src=\"" . KTHtml::getCancelButton() . "\" border=\"0\"/></a></td></tr></table>\n";	
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
 	$sToRender .= "<input type=\"hidden\" name=\"fTargetDocumentID\" value=\"-1\" />\n";	
@@ -142,7 +142,7 @@ function getAddPage($iFolderCollaborationID, $iFolderID, $iUnitID, $sDocumentTit
 	}		
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";	
-	$sToRender .= "<td><table><tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/done.gif\" border=\"0\"/></td><td><a href=\"" . $default->rootUrl . "/control.php?action=viewDependantDocument&fFolderID=$iFolderID&fFolderCollaborationID=$iFolderCollaborationID\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"/></a></td></tr></table>\n";	
+	$sToRender .= "<td><table><tr><td><input type=\"image\" src=\"" . KTHtml::getDoneButton() . "\" border=\"0\"/></td><td><a href=\"" . $default->rootUrl . "/control.php?action=viewDependantDocument&fFolderID=$iFolderID&fFolderCollaborationID=$iFolderCollaborationID\"><img src=\"" . KTHtml::getCancelButton() . "\" border=\"0\"/></a></td></tr></table>\n";	
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
 	$sToRender .= "<input type=\"hidden\" name=\"fTargetDocumentID\" value=\"-1\" />\n";	

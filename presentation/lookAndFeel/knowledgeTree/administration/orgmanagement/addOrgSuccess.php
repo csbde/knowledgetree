@@ -47,7 +47,7 @@ if(checkSession()) {
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "<td align = right><a href=\"$default->rootUrl/control.php?action=listOrg\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
+    $sToRender .= "<td align = right><a href=\"$default->rootUrl/control.php?action=listOrg\"><img src =\"" . KTHtml::getBackButton() . "\" border = \"0\" /></a></td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "</table>\n";
 

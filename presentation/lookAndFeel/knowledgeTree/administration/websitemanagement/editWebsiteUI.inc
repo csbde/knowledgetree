@@ -67,7 +67,7 @@ function getEditWebSitePage($oWebSite) {
 // gets the cancel button when a User is selected
 function getCancelButton($oUser) {
     global $default;
-    return "<td align = right><a href=\"$default->rootUrl/control.php?action=listWebsites\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" /></a></td>\n";
+    return "<td align = right><a href=\"$default->rootUrl/control.php?action=listWebsites\"><img src =\"" . KTHtml::getCancelButton() . "\" border = \"0\" /></a></td>\n";
 }
 
 // show the list box when no User selected
@@ -104,7 +104,7 @@ function getFailPage() {
 function getUpdateButton($oUser) {
     global $default;
     if (isset($oUser)) {
-        return "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/update.gif\" value=\"submit\" border=\"0\"/></td>\n";
+        return "<td align = right><input type=\"image\" src =\"" . KTHtml::getUpdateButton() . "\" value=\"submit\" border=\"0\"/></td>\n";
     }
 }
 ?>

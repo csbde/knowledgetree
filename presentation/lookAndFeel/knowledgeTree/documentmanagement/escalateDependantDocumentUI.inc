@@ -50,8 +50,8 @@ function getPage($oDependantDocument) {
 	$sToRender .= "<tr><td colspan=\"2\">" . _("To send the user a reminder message, fill in the text box below and click 'Done'") . "</td></tr>";
 	$sToRender .= "<tr><td>" . _("Reminder Message") . "</td><td><textarea rows=\"5\" cols=\"30\" name=\"fReminderMessage\"></textarea></td></tr>\n";
 	$sToRender .= "<tr>\n";	
-	$sToRender .= "<td><table><tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/done.gif\" onClick='return validateForm(document.MainForm);' border=\"0\"/></td>";
-	$sToRender .= "<td>" . generateControllerLink("viewDocument", "fDocumentID=" . $oDocument->getID() . "&fShowSection=linkedDocuments", "<img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"/>") . "</td></tr></table>\n";	
+	$sToRender .= "<td><table><tr><td><input type=\"image\" src=\"" . KTHtml::getDoneButton() . "\" onClick='return validateForm(document.MainForm);' border=\"0\"/></td>";
+	$sToRender .= "<td>" . generateControllerLink("viewDocument", "fDocumentID=" . $oDocument->getID() . "&fShowSection=linkedDocuments", "<img src=\"" . KTHtml::getCancelButton() . "\" border=\"0\"/>") . "</td></tr></table>\n";	
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
 	$sToRender .= "<input type=\"hidden\" name=\"fSendMessage\" value=\"1\" />\n";	

@@ -38,7 +38,7 @@ function getOrgPage($fUnitID = null){
 	
 	$sToRender .= "<table width=\"600\" border=0>";
     $sToRender .= "<tr><td width=100%></td><td>";
-    $sToRender .= "<a href=\"$default->rootUrl/control.php?action=listUnits\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a>";
+    $sToRender .= "<a href=\"$default->rootUrl/control.php?action=listUnits\"><img src =\"" . KTHtml::getBackButton() . "\" border = \"0\" /></a>";
     $sToRender .= "</td></tr>\n";
     $sToRender .= "</table>";    
     
@@ -148,7 +148,7 @@ function getPageFail() {
     $sToRender .= "<tr>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=removeUserFromGroup\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
+    $sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=removeUserFromGroup\"><img src =\"" . KTHtml::getBackButton() . "\" border = \"0\" /></a></td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "</table>\n";
 
@@ -167,7 +167,7 @@ function getPageSuccess() {
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=listUsers\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
+    $sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=listUsers\"><img src =\"" . KTHtml::getBackButton() . "\" border = \"0\" /></a></td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "</table>\n";
 
@@ -193,9 +193,9 @@ function getGroupDisplay($aGroup) {
 function getDeleteButton($oUser) {
     global $default;
     if (!isset($oUser)) {
-        return "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/select.gif\" value=\"submit\" border=\"0\"/></td>\n";
+        return "<td align = right><input type=\"image\" src =\"" . KTHtml::getSelectButton() . "\" value=\"submit\" border=\"0\"/></td>\n";
     } else {
-        return "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/delete.gif\" value=\"submit\" border=\"0\"/></td>\n";
+        return "<td align = right><input type=\"image\" src =\"" . KTHtml::getDeleteButton() . "\" value=\"submit\" border=\"0\"/></td>\n";
     }
 }
 
@@ -204,19 +204,19 @@ function getDeleteButton($oUser) {
 function getSelectButton($oUser) {
     global $default;
     if (!isset($oUser)) {
-        return "<input type=\"image\" src =\"$default->graphicsUrl/widgets/select.gif\" value=\"submit\" border=\"0\"/>\n";
+        return "<input type=\"image\" src =\"" . KTHtml::getSelectButton() . "\" value=\"submit\" border=\"0\"/>\n";
     } else {
-        return "<input type=\"image\" src =\"$default->graphicsUrl/widgets/select.gif\" value=\"submit\" border=\"0\"/>\n";
+        return "<input type=\"image\" src =\"" . KTHtml::getSelectButton() . "\" value=\"submit\" border=\"0\"/>\n";
     }
 }
 // show cancel button
 function getCancelButton($oUser) {
     global $default;
     if (!isset($oUser)) {
-        //return "<td align = right><a href=\"$default->rootUrl/control.php?action=UserManagement\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" value=\"cancel\" /></a></td>\n";
+        //return "<td align = right><a href=\"$default->rootUrl/control.php?action=UserManagement\"><img src =\"" . KTHtml::getCancelButton() . "\" value=\"cancel\" /></a></td>\n";
     }
     else {
-        return "<a href=\"$default->rootUrl/control.php?action=listUsers\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" /></a>\n";
+        return "<a href=\"$default->rootUrl/control.php?action=listUsers\"><img src =\"" . KTHtml::getCancelButton() . "\" border = \"0\" /></a>\n";
     }
 }
 

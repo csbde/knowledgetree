@@ -35,7 +35,7 @@ function getSelectUserPage($aResults) {
         $sToRender .= "<option value=\"$sName\">$sName</option>";
     }
     $sToRender .= "</select></td></tr>\n";
-    $sToRender .= "<tr><td></td><td align=\"right\"><input type=\"image\" src=\"$default->graphicsUrl/widgets/select.gif\" value=\"submit\" border=\"0\"/></td></tr>\n";
+    $sToRender .= "<tr><td></td><td align=\"right\"><input type=\"image\" src=\"" . KTHtml::getSelectButton() . "\" value=\"submit\" border=\"0\"/></td></tr>\n";
 	$sToRender .= "</table>\n";
 	return $sToRender;
 }
@@ -53,7 +53,7 @@ function getSearchPage($unitID) {
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "</tr>\n";
-	$sToRender .= "<td></td><td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/select.gif\" value=\"Submit\" border=\"0\"/></td>\n";	
+	$sToRender .= "<td></td><td align = right><input type=\"image\" src =\"" . KTHtml::getSelectButton() . "\" value=\"Submit\" border=\"0\"/></td>\n";	
 	$sToRender .= "</table>\n";
 	return $sToRender;
 }
@@ -171,7 +171,7 @@ function getPageUsernameNotFound() {
 
 function getAddButton() {
 	global $default;
-	return "<input type=\"image\" src =\"$default->graphicsUrl/widgets/add.gif\" value=\"submit\" border=\"0\"/>\n";
+	return "<input type=\"image\" src =\"" . KTHtml::getAddButton() . "\" value=\"submit\" border=\"0\"/>\n";
 }
 
 function getGroupListBox() {

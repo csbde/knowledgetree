@@ -128,7 +128,7 @@ function getSuccessPage($iDocFieldID = null) {
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=editDocFieldLookups&fDocFieldID=$iDocFieldID\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
+	$sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=editDocFieldLookups&fDocFieldID=$iDocFieldID\"><img src =\"" . KTHtml::getBackButton() . "\" border = \"0\" /></a></td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
 	
@@ -146,7 +146,7 @@ function getFailPage($iDocFieldID = null) {
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=editDocFieldLookups&fDocFieldID=$iDocFieldID\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
+	$sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=editDocFieldLookups&fDocFieldID=$iDocFieldID\"><img src =\"" . KTHtml::getBackButton() . "\" border = \"0\" /></a></td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
 	
@@ -159,7 +159,7 @@ function getDeleteButton($oDocField) {
 	if (!isset($oDocField)) {
 		return _("Please select a Document Field:");
 	} else {
-		return "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/delete.gif\" value=\"submit\" border=\"0\"/></td>\n";
+		return "<td align = right><input type=\"image\" src =\"" . KTHtml::getDeleteButton() . "\" value=\"submit\" border=\"0\"/></td>\n";
 	}
 }
 
@@ -167,9 +167,9 @@ function getDeleteButton($oDocField) {
 function getCancelButton($oDocField) {
 	global $default;
 	if (!isset($oDocField)) {
-		return "<td align = right><a href=\"$default->rootUrl/control.php?action=listDocFields\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" value=\"cancel\" border = \"0\"/></a></td>\n";
+		return "<td align = right><a href=\"$default->rootUrl/control.php?action=listDocFields\"><img src =\"" . KTHtml::getCancelButton() . "\" value=\"cancel\" border = \"0\"/></a></td>\n";
 	} else {
-		return "<td align = right><a href=\"$default->rootUrl/control.php?action=editDocFieldLookups&fDocFieldID=" . $oDocField->getId() . "\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" /></a></td>\n";
+		return "<td align = right><a href=\"$default->rootUrl/control.php?action=editDocFieldLookups&fDocFieldID=" . $oDocField->getId() . "\"><img src =\"" . KTHtml::getCancelButton() . "\" border = \"0\" /></a></td>\n";
 	}
 }
 

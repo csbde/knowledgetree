@@ -46,8 +46,8 @@ function getPage($sUserName) {
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td colspan=\"2\" align=\"right\">";
-	$sToRender .= "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/update.gif\" value=\"Update\" border=\"0\"/>";
-	$sToRender .= "<a href=\"$default->rootUrl/control.php?action=userManagement\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" value=\"cancel\" border=\"0\"/></a>\n";
+	$sToRender .= "<td align = right><input type=\"image\" src =\"" . KTHtml::getUpdateButton() . "\" value=\"Update\" border=\"0\"/>";
+	$sToRender .= "<a href=\"$default->rootUrl/control.php?action=userManagement\"><img src =\"" . KTHtml::getCancelButton() . "\" value=\"cancel\" border=\"0\"/></a>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
 	
@@ -65,7 +65,7 @@ function getPasswordUpdateSuccessPage() {
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=userManagement\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
+	$sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=userManagement\"><img src =\"" . KTHtml::getBackButton() . "\" border = \"0\" /></a></td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
 	

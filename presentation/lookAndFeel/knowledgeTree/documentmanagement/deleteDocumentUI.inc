@@ -44,7 +44,7 @@ function getPage($fDocumentIDs) {
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>&nbsp</td>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td><table><tr><td><a href=\"" . $_SERVER["PHP_SELF"] . "?$sQueryString&fDeleteConfirmed=1\"><img src=\"$default->graphicsUrl/widgets/delete.gif\" border=\"0\"></a></td> <td><a href=\"javascript:history.go(-1)\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></a></td></tr></table></td>";	
+	$sToRender .= "<td><table><tr><td><a href=\"" . $_SERVER["PHP_SELF"] . "?$sQueryString&fDeleteConfirmed=1\"><img src=\"" . KTHtml::getDeleteButton() . "\" border=\"0\"></a></td> <td><a href=\"javascript:history.go(-1)\"><img src=\"" . KTHtml::getCancelButton() . "\" border=\"0\"></a></td></tr></table></td>";	
 	$sToRender .= "</tr>";
 	$sToRender .= "</table>\n";
 	
@@ -60,7 +60,7 @@ function renderErrorPage($sErrorMessage, $iDocumentID = "") {
 	    $sToRender  = renderHeading(_("Delete Document"));    
 	    $sToRender .= "<table>\n";
 	    $sToRender .= "<tr><td><p class=\"errorText\">$sErrorMessage</p>\n" .
-	                  "<a href=\"javascript:history.go(-2)\"><img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\"/></a>\n" .
+	                  "<a href=\"javascript:history.go(-2)\"><img src=\"" . KTHtml::getBackButton() . "\" border=\"0\"/></a>\n" .
 	                  "</p></td></tr></table>\n";
 	   return $sToRender;
 	}

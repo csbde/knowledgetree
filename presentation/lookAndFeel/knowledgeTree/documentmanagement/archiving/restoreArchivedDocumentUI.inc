@@ -38,8 +38,8 @@ function getRestoreArchivedDocumentPage($oDocument) {
     $sToRender .= "\t<tr>\n\t\t<td>" . _("Please click 'Restore' to restore this archived document.") . "</td>\n\t</tr>\n";
     $sToRender .= "\t<tr><td><input type=\"hidden\" name=\"fDocumentIDs[]\" value=\"" . $oDocument->getID() . "\"/></td></tr>\n";    
     $sToRender .= "\t<tr>\n";
-    $sToRender .= "\t\t<td><a href=\"" . generateControllerUrl("archivedDocuments", "fConfirm=1&fDocumentIDs[]=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/restore.gif\" border=\"0\" /></a>";
-    $sToRender .= "<a href=\"$default->rootUrl/control.php?action=browse&fFolderID=" . $oDocument->getFolderID() . "\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\" /></a></td>\n";    
+    $sToRender .= "\t\t<td><a href=\"" . generateControllerUrl("archivedDocuments", "fConfirm=1&fDocumentIDs[]=" . $oDocument->getID()) . "\"><img src=\"" . KTHtml::getRestoreButton() . "\" border=\"0\" /></a>";
+    $sToRender .= "<a href=\"$default->rootUrl/control.php?action=browse&fFolderID=" . $oDocument->getFolderID() . "\"><img src=\"" . KTHtml::getCancelButton() . "\" border=\"0\" /></a></td>\n";    
     $sToRender .= "\t</tr>";
     $sToRender .= "</table>\n";
     	
@@ -59,8 +59,8 @@ $sToRender .= "\t<tr>\n\t\t<td><strong>" . _("This document has been archived!")
     $sToRender .= "\t<tr>\n\t\t<td>" . _("To request that the document be unarchived, please click the 'Restore' button.") . "</td>\n\t</tr>\n";
     $sToRender .= "\t<tr><td><input type=\"hidden\" name=\"fDocumentIDs[]\" value=\"" . $oDocument->getID() . "\"/></td></tr>\n";    
     $sToRender .= "\t<tr>\n";
-    $sToRender .= "\t\t<td><a href=\"" . generateControllerUrl("requestDocumentRestore", "&fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/restore.gif\" border=\"0\" /></a>";
-    $sToRender .= "<a href=\"$default->rootUrl/control.php?action=browse&fFolderID=" . $oDocument->getFolderID() . "\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\" /></a></td>\n";    
+    $sToRender .= "\t\t<td><a href=\"" . generateControllerUrl("requestDocumentRestore", "&fDocumentID=" . $oDocument->getID()) . "\"><img src=\"" . KTHtml::getRestoreButton() . "\" border=\"0\" /></a>";
+    $sToRender .= "<a href=\"$default->rootUrl/control.php?action=browse&fFolderID=" . $oDocument->getFolderID() . "\"><img src=\"" . KTHtml::getCancelButton() . "\" border=\"0\" /></a></td>\n";    
     $sToRender .= "\t</tr>";
     $sToRender .= "</table>\n";
         
@@ -76,7 +76,7 @@ function renderRequestSuccessPage($oDocument) {
     $sToRender = renderHeading(_("Restore Archived Document"));
     $sToRender .= "<table>\n";
     $sToRender .= "\t<tr><td>" . _("Your request has been processed, you will be notified when the document is restored.") . "</td></tr>\n";
-    $sToRender .= "\t<tr><td><a href=\"$default->rootUrl/control.php?action=browse&fFolderID=" . $oDocument->getFolderID() . "\"><img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\" /></a></td></tr>\n";    
+    $sToRender .= "\t<tr><td><a href=\"$default->rootUrl/control.php?action=browse&fFolderID=" . $oDocument->getFolderID() . "\"><img src=\"" . KTHtml::getBackButton() . "\" border=\"0\" /></a></td></tr>\n";    
     $sToRender .= "</table>\n";
 	return $sToRender;
 }	
@@ -89,7 +89,7 @@ function renderRequestFailurePage($oDocument, $oUnitAdminUser) {
     $sToRender = renderHeading(_("Restore Archived Document"));
     $sToRender .= "<table>\n";
     $sToRender .= "\t<tr><td>" . _("There was an error requesting the restoration of this document from the archive.  Please try again later.") . "</td></tr>\n";
-    $sToRender .= "\t<tr><td><a href=\"$default->rootUrl/control.php?action=browse&fFolderID=" . $oDocument->getFolderID() . "\"><img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\" /></a></td></tr>\n";    
+    $sToRender .= "\t<tr><td><a href=\"$default->rootUrl/control.php?action=browse&fFolderID=" . $oDocument->getFolderID() . "\"><img src=\"" . KTHtml::getBackButton() . "\" border=\"0\" /></a></td></tr>\n";    
     $sToRender .= "</table>\n";
 	return $sToRender;
 }

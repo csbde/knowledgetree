@@ -31,8 +31,8 @@ function getOptionPage($iDocTypeID = null){
 	$sToRender .= renderHeading(_("Add Type Specific Field to Document Type"));
 	$sToRender .= "<br>";
 	$sToRender .= "<table>\n";
-	$sToRender .= "<tr><td>" . _("New type specific field?") . "</td><td><a href=\"$default->rootUrl/control.php?action=addDocTypeFieldsLink&fNewField=1&fDocTypeID=$iDocTypeID\"><img src =\"$default->graphicsUrl/widgets/select.gif\" border = \"0\" /></a></td></tr>\n";
-	$sToRender .= "<tr><td>" . _("Choose from existing type specific fields") . "</td><td><a href=\"$default->rootUrl/control.php?action=addDocTypeFieldsLink&fFromList=1&fDocTypeID=$iDocTypeID\"><img src =\"$default->graphicsUrl/widgets/select.gif\" border = \"0\" /></a></td></tr>\n";		
+	$sToRender .= "<tr><td>" . _("New type specific field?") . "</td><td><a href=\"$default->rootUrl/control.php?action=addDocTypeFieldsLink&fNewField=1&fDocTypeID=$iDocTypeID\"><img src =\"" . KTHtml::getSelectButton() . "\" border = \"0\" /></a></td></tr>\n";
+	$sToRender .= "<tr><td>" . _("Choose from existing type specific fields") . "</td><td><a href=\"$default->rootUrl/control.php?action=addDocTypeFieldsLink&fFromList=1&fDocTypeID=$iDocTypeID\"><img src =\"" . KTHtml::getSelectButton() . "\" border = \"0\" /></a></td></tr>\n";		
 	$sToRender .= "<tr><td></td><td>" . getCancelButton($iDocTypeID) . "</td></tr>\n";
 	$sToRender .= "</table>\n";
 		
@@ -122,9 +122,9 @@ function getFirstPage($sHtmlListBox = null, $iDocTypeID, $bIsNew = null) {
 	}
 	
 	$sToRender .= "<tr><td align=right>" . _("Mandatory") . "? </td><td><input type=checkbox name=bMandatory> </td></tr>\n";	
-	$sToRender .= "<tr><td></td><td align=right><input type=\"image\" src =\"$default->graphicsUrl/widgets/add.gif\" border=0 value=\"submit\"/></td>";
+	$sToRender .= "<tr><td></td><td align=right><input type=\"image\" src =\"" . KTHtml::getAddButton() . "\" border=0 value=\"submit\"/></td>";
 	 
-	//$sToRender .= "<td><a href=\"$default->rootUrl/control.php?action=listDocTypes\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" /></a></td></tr>\n";
+	//$sToRender .= "<td><a href=\"$default->rootUrl/control.php?action=listDocTypes\"><img src =\"" . KTHtml::getCancelButton() . "\" border = \"0\" /></a></td></tr>\n";
 	$sToRender .= "<td>" . getCancelButton($iDocTypeID) . "</td></tr>\n";
 	
 	$sToRender .= "</table>\n";
@@ -135,13 +135,13 @@ function getFirstPage($sHtmlListBox = null, $iDocTypeID, $bIsNew = null) {
 // gets the cancel button
 function getCancelButton($iDocTypeID = null) {
     global $default;    
-    //return "<a href=\"$default->rootUrl/control.php?action=listDocTypes\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" /></a>\n";    
-	return "<a href=\"$default->rootUrl/control.php?action=editDocTypeFields&fDocTypeSelected=1&fDocTypeID=" . $iDocTypeID . "\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" /></a>\n";
+    //return "<a href=\"$default->rootUrl/control.php?action=listDocTypes\"><img src =\"" . KTHtml::getCancelButton() . "\" border = \"0\" /></a>\n";    
+	return "<a href=\"$default->rootUrl/control.php?action=editDocTypeFields&fDocTypeSelected=1&fDocTypeID=" . $iDocTypeID . "\"><img src =\"" . KTHtml::getCancelButton() . "\" border = \"0\" /></a>\n";
 }
 
 // gets the cancel button
 function getBackButton($iDocTypeID = null) {
     global $default;    
-    return "<a href=\"$default->rootUrl/control.php?action=editDocTypeFields&fDocTypeSelected=1&fDocTypeID=" . $iDocTypeID . "\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a>\n";    
+    return "<a href=\"$default->rootUrl/control.php?action=editDocTypeFields&fDocTypeSelected=1&fDocTypeID=" . $iDocTypeID . "\"><img src =\"" . KTHtml::getBackButton() . "\" border = \"0\" /></a>\n";    
 }
 ?>

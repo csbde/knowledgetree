@@ -46,7 +46,7 @@ function getFolderNotEmptyPage($iFolderID, $iObjectCount, $sObjectType) {
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>&nbsp</td>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td><table><tr><td><a href=\"$default->rootUrl/control.php?action=browse&fFolderID=" . $iFolderID . "\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></a></td></tr></table></td>";
+	$sToRender .= "<td><table><tr><td><a href=\"$default->rootUrl/control.php?action=browse&fFolderID=" . $iFolderID . "\"><img src=\"" . KTHtml::getCancelButton() . "\" border=\"0\"></a></td></tr></table></td>";
 	$sToRender .= "</tr>";
 	$sToRender .= "</table>\n";
 	return $sToRender;    
@@ -66,7 +66,7 @@ function getConfirmPage($iFolderID, $sFolderName) {
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>&nbsp</td>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td><table><tr><td><a href=\"" . $_SERVER["PHP_SELF"] . "?fFolderID=$iFolderID&fDeleteConfirmed=1\"><img src=\"$default->graphicsUrl/widgets/delete.gif\" border=\"0\"></a></td> <td><a href=\"$default->rootUrl/control.php?action=browse&fFolderID=" . $iFolderID . "\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></a></td></tr></table></td>";
+	$sToRender .= "<td><table><tr><td><a href=\"" . $_SERVER["PHP_SELF"] . "?fFolderID=$iFolderID&fDeleteConfirmed=1\"><img src=\"" . KTHtml::getDeleteButton() . "\" border=\"0\"></a></td> <td><a href=\"$default->rootUrl/control.php?action=browse&fFolderID=" . $iFolderID . "\"><img src=\"" . KTHtml::getCancelButton() . "\" border=\"0\"></a></td></tr></table></td>";
 	$sToRender .= "</tr>";
 	$sToRender .= "</table>\n";
 	return $sToRender;

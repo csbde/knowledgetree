@@ -59,13 +59,13 @@ function getEditCheckoutPage($fDocumentID){
 // gets the updatebutton when a unit is selected
 function getUpdateButton() {
 	global $default;
-	return "<input type=\"image\" src =\"$default->graphicsUrl/widgets/update.gif\" value=\"submit\" border=\"0\"/>\n";	
+	return "<input type=\"image\" src =\"" . KTHtml::getUpdateButton() . "\" value=\"submit\" border=\"0\"/>\n";	
 }
 
 // gets the cancel button when a unit is selected
 function getCancelButton() {
 	global $default;
-	return "<a href=\"$default->rootUrl/control.php?action=listDocs\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\" /></a>\n";
+	return "<a href=\"$default->rootUrl/control.php?action=listDocs\"><img src =\"" . KTHtml::getCancelButton() . "\" border=\"0\" /></a>\n";
 }
 
 ?>

@@ -46,8 +46,8 @@ function getPage($iFolderID, $iDocumentID, $sDocumentName) {
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
 	
-	$sToRender .= "<input type=\"image\" src=\"$default->graphicsUrl/widgets/done.gif\" border=\"0\" />\n";
-	$sToRender .= "<a href=\"$default->rootUrl/control.php?action=viewDocument&fDocumentID=$iDocumentID\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\" /></a>\n";
+	$sToRender .= "<input type=\"image\" src=\"" . KTHtml::getDoneButton() . "\" border=\"0\" />\n";
+	$sToRender .= "<a href=\"$default->rootUrl/control.php?action=viewDocument&fDocumentID=$iDocumentID\"><img src=\"" . KTHtml::getCancelButton() . "\" border=\"0\" /></a>\n";
 	
 	
 	

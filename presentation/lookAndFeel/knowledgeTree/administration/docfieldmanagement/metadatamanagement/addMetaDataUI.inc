@@ -99,7 +99,7 @@ function getSuccessPage($iDocFieldID = null) {
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=editDocFieldLookups&fDocFieldID=$iDocFieldID\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
+    $sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=editDocFieldLookups&fDocFieldID=$iDocFieldID\"><img src =\"" . KTHtml::getBackButton() . "\" border = \"0\" /></a></td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "</table>\n";
 
@@ -117,7 +117,7 @@ function getFailPage($iDocFieldID = null) {
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=editDocFieldLookups&fDocFieldID=$iDocFieldID\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
+    $sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=editDocFieldLookups&fDocFieldID=$iDocFieldID\"><img src =\"" . KTHtml::getBackButton() . "\" border = \"0\" /></a></td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "</table>\n";
 
@@ -136,7 +136,7 @@ function getTextPage($iDocFieldID = null) {
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=editDocFieldLookups&fDocFieldID=$iDocFieldID\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
+    $sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=editDocFieldLookups&fDocFieldID=$iDocFieldID\"><img src =\"" . KTHtml::getBackButton() . "\" border = \"0\" /></a></td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "</table>\n";
 
@@ -149,7 +149,7 @@ function getAddButton($oDocField) {
     if (!isset($oDocField)) {
         return _("Please select a Document Field:");
     } else {
-        return "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/add.gif\" value=\"submit\" border=\"0\"/></td>\n";
+        return "<td align = right><input type=\"image\" src =\"" . KTHtml::getAddButton() . "\" value=\"submit\" border=\"0\"/></td>\n";
     }
 }
 
@@ -157,10 +157,10 @@ function getAddButton($oDocField) {
 function getCancelButton($oDocField) {
     global $default;
     if (!isset($oDocField)) {
-        return "<td align = right><a href=\"$default->rootUrl/control.php?action=listDocFields\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" value=\"cancel\" /></a></td>\n";
+        return "<td align = right><a href=\"$default->rootUrl/control.php?action=listDocFields\"><img src =\"" . KTHtml::getCancelButton() . "\" value=\"cancel\" /></a></td>\n";
     }
     else {
-        return "<td align = right><a href=\"$default->rootUrl/control.php?action=editDocFieldLookups&fDocFieldID=" . $oDocField->getId() . " \"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" /></a></td>\n";
+        return "<td align = right><a href=\"$default->rootUrl/control.php?action=editDocFieldLookups&fDocFieldID=" . $oDocField->getId() . " \"><img src =\"" . KTHtml::getCancelButton() . "\" border = \"0\" /></a></td>\n";
     }
 }
 

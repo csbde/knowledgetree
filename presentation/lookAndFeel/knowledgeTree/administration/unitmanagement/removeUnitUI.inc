@@ -59,7 +59,7 @@ function getStatusPage($sHeading, $sText = "") {
     $sToRender .= "<td><b>$sHeading</b></td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "<tr><td>$sText</td></tr>\n";
-    $sToRender .= "<tr><td align = right><a href=\"$default->rootUrl/control.php?action=listUnits\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td></tr>\n";
+    $sToRender .= "<tr><td align = right><a href=\"$default->rootUrl/control.php?action=listUnits\"><img src =\"" . KTHtml::getBackButton() . "\" border = \"0\" /></a></td></tr>\n";
     $sToRender .= "</table>\n";
 
     return $sToRender;
@@ -96,8 +96,8 @@ function getOrgDisplay($oOrg) {
 function getDeleteButton($oUnit) {
     global $default;
     if (isset($oUnit)) {
-        return "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/delete.gif\" value=\"submit\" border=\"0\"/></td>\n".
-               "<td align = right><a href=\"$default->rootUrl/control.php?action=listUnits\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" /></a></td>\n";
+        return "<td align = right><input type=\"image\" src =\"" . KTHtml::getDeleteButton() . "\" value=\"submit\" border=\"0\"/></td>\n".
+               "<td align = right><a href=\"$default->rootUrl/control.php?action=listUnits\"><img src =\"" . KTHtml::getCancelButton() . "\" border = \"0\" /></a></td>\n";
     }
 }
 
@@ -106,9 +106,9 @@ function getDeleteButton($oUnit) {
 function getCancelButton($oUnit) {
     global $default;
     if (!isset($oUnit)) {
-        return "<td align = right><a href=\"$default->rootUrl/control.php?action=unitManagement\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" value=\"cancel\" /></a></td>\n";
+        return "<td align = right><a href=\"$default->rootUrl/control.php?action=unitManagement\"><img src =\"" . KTHtml::getCancelButton() . "\" value=\"cancel\" /></a></td>\n";
     } else {
-        return "<td align = right><a href=\"$default->rootUrl/control.php?action=listUnits\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" /></a></td>\n";
+        return "<td align = right><a href=\"$default->rootUrl/control.php?action=listUnits\"><img src =\"" . KTHtml::getCancelButton() . "\" border = \"0\" /></a></td>\n";
     }
 }
 

@@ -39,7 +39,7 @@ function getPage($iFolderID, $iDocumentTypeID) {
 	$sToRender .= "</table>\n";
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td><table border=\"0\"><tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/add.gif\" border=\"0\"></td><td>" . generateControllerLink("editFolder", "fFolderID=$iFolderID&fShowSection=documentTypes", "<img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"/>") . "</td></tr></table></td><td>&nbsp</td>\n";
+	$sToRender .= "<td><table border=\"0\"><tr><td><input type=\"image\" src=\"" . KTHtml::getAddButton() . "\" border=\"0\"></td><td>" . generateControllerLink("editFolder", "fFolderID=$iFolderID&fShowSection=documentTypes", "<img src=\"" . KTHtml::getCancelButton() . "\" border=\"0\"/>") . "</td></tr></table></td><td>&nbsp</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table><br>\n";
 	

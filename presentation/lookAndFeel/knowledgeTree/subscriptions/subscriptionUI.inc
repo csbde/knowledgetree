@@ -79,7 +79,7 @@ function renderManagePage() {
 	$sToRender .= "<tr/>\n";
     $sToRender .= "<tr><td>";
     if (!$bNoSubscriptions) {
-        $sToRender .= "<input type=\"image\" src=\"$default->graphicsUrl/widgets/unsubscribe.gif\" border=\"0\"/></a>\n";
+        $sToRender .= "<input type=\"image\" src=\"" . KTHtml::getUnsubscribeButton() . "\" border=\"0\"/></a>\n";
     }
 	$sToRender .= "</td></tr>\n";
     $sToRender .= "</table>\n";
@@ -128,8 +128,8 @@ function renderMultipleRemoveConfirmationPage($aFolderSubscriptions, $aDocumentS
     $sToRender .= "<tr/>\n";
     $sToRender .= "<tr/>\n";
     $sToRender .= "<input type=\"hidden\" name=\"fConfirmed\" value=\"1\"/>";
-    $sToRender .= "<tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/unsubscribe.gif\" border=\"0\"/></a>\n";    
-	$sToRender .= "<a href=\"javascript:history.go(-1)\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></a></td>\n";
+    $sToRender .= "<tr><td><input type=\"image\" src=\"" . KTHtml::getUnsubscribeButton() . "\" border=\"0\"/></a>\n";    
+	$sToRender .= "<a href=\"javascript:history.go(-1)\"><img src=\"" . KTHtml::getCancelButton() . "\" border=\"0\"></a></td>\n";
 	$sToRender .= "</tr>\n";
     $sToRender .= "</table>\n";
     
@@ -161,8 +161,8 @@ function renderRemoveConfirmationPage($oSubscription) {
 	$sToRender .= "<td>" . _("Select 'Unsubscribe' to confirm the deletion, or 'Cancel' to cancel it") . "</td>\n";
 	$sToRender .= "</tr>\n";
     $sToRender .= "<tr/>\n";
-    $sToRender .= "<tr><td><a href=\"$default->rootUrl/control.php?action=removeSubscription&$sContentUrl&fConfirmed=1\"><img src =\"$default->graphicsUrl/widgets/unsubscribe.gif\" border=\"0\"/></a>\n";
-	$sToRender .= "<a href=\"" . $oSubscription->getContentUrl() . "\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></a></td>\n";
+    $sToRender .= "<tr><td><a href=\"$default->rootUrl/control.php?action=removeSubscription&$sContentUrl&fConfirmed=1\"><img src =\"" . KTHtml::getUnsubscribeButton() . "\" border=\"0\"/></a>\n";
+	$sToRender .= "<a href=\"" . $oSubscription->getContentUrl() . "\"><img src=\"" . KTHtml::getCancelButton() . "\" border=\"0\"></a></td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
 	
@@ -194,8 +194,8 @@ function renderAddConfirmationPage($oSubscription) {
 	$sToRender .= "<td>" . _("Select 'Subscribe' to confirm the subscription, or 'Cancel' to cancel it") . "</td>\n";
 	$sToRender .= "</tr>\n";
     $sToRender .= "<tr/>\n";
-    $sToRender .= "<tr><td><a href=\"$default->rootUrl/control.php?action=addSubscription&$sContentUrl&fConfirmed=1\"><img src =\"$default->graphicsUrl/widgets/subscribe.gif\" border=\"0\"/></a>\n";
-	$sToRender .= "<a href=\"" . $oSubscription->getContentUrl() . "\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></a></td>\n";
+    $sToRender .= "<tr><td><a href=\"$default->rootUrl/control.php?action=addSubscription&$sContentUrl&fConfirmed=1\"><img src =\"" . KTHtml::getSubscribeButton() . "\" border=\"0\"/></a>\n";
+	$sToRender .= "<a href=\"" . $oSubscription->getContentUrl() . "\"><img src=\"" . KTHtml::getCancelButton() . "\" border=\"0\"></a></td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
 	
@@ -207,7 +207,7 @@ function renderErrorPage($sErrorMessage) {
     $sToRender  = renderHeading(_("Subscriptions"), "Subscriptions");
     $sToRender .= "<table>\n";
     $sToRender .= "<tr><td><p class=\"errorText\">$sErrorMessage</p>\n" .
-                  "<a href=\"javascript:history.go(-1)\"><img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\"/></a>\n" .
+                  "<a href=\"javascript:history.go(-1)\"><img src=\"" . KTHtml::getBackButton() . "\" border=\"0\"/></a>\n" .
                   "</p></td></tr></table>\n";
    return $sToRender;
 }

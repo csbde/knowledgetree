@@ -30,7 +30,7 @@ function getNoUnitPage($fGroupID){
 	$sToRender .= "<table><tr><td>\n";
 	$sToRender .= "<br>" . _("Group does not belong to an existing Unit.") . "\n";
 	$sToRender .= "</td><td></td></tr><tr><td></td><td>\n";
-	$sToRender .= "<a href=\"$default->rootUrl/control.php?action=editGroupUnit&fGroupID=$fGroupID\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a>\n";
+	$sToRender .= "<a href=\"$default->rootUrl/control.php?action=editGroupUnit&fGroupID=$fGroupID\"><img src =\"" . KTHtml::getBackButton() . "\" border = \"0\" /></a>\n";
 	$sToRender .= "</td></tr></table>\n";
 	return $sToRender;
 	
@@ -106,7 +106,7 @@ function getPageFail($iGroupID) {
 	$sToRender .= "<tr>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=removeGroupFromUnit\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
+	$sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=removeGroupFromUnit\"><img src =\"" . KTHtml::getBackButton() . "\" border = \"0\" /></a></td>\n";
 	$sToRender .= "</tr>\n";
 	
 	$sToRender .= "</table>\n";
@@ -126,7 +126,7 @@ function getPageNotSelected() {
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=removeGroupFromUnit\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
+	$sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=removeGroupFromUnit\"><img src =\"" . KTHtml::getBackButton() . "\" border = \"0\" /></a></td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
 	
@@ -145,7 +145,7 @@ function getPageSuccess($iGroupID) {
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=editGroupUnit&fGroupID=$iGroupID\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
+	$sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=editGroupUnit&fGroupID=$iGroupID\"><img src =\"" . KTHtml::getBackButton() . "\" border = \"0\" /></a></td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
 	
@@ -195,9 +195,9 @@ function getUnitDisplay($oUnit) {
 function getDeleteButton($oGroup) {
 	global $default;
 	if (!isset($oGroup)) {
-		return "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/select.gif\" value=\"submit\" border=\"0\"/></td>\n";
+		return "<td align = right><input type=\"image\" src =\"" . KTHtml::getSelectButton() . "\" value=\"submit\" border=\"0\"/></td>\n";
 	} else {
-		return "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/delete.gif\" value=\"submit\" border=\"0\"/></td>\n";
+		return "<td align = right><input type=\"image\" src =\"" . KTHtml::getDeleteButton() . "\" value=\"submit\" border=\"0\"/></td>\n";
 	}
 }
 
@@ -205,9 +205,9 @@ function getDeleteButton($oGroup) {
 function getCancelButton($oGroup) {
 	global $default;
 	if (!isset($oGroup)) {
-		return "<td align = right><a href=\"$default->rootUrl/control.php?action=groupManagement\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" value=\"cancel\" border = \"0\"/></a></td>\n";
+		return "<td align = right><a href=\"$default->rootUrl/control.php?action=groupManagement\"><img src =\"" . KTHtml::getCancelButton() . "\" value=\"cancel\" border = \"0\"/></a></td>\n";
 	} else {
-		return "<td align = right><a href=\"$default->rootUrl/control.php?action=editGroupUnit&fGroupID=" . $oGroup->iId . "\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" /></a></td>\n";
+		return "<td align = right><a href=\"$default->rootUrl/control.php?action=editGroupUnit&fGroupID=" . $oGroup->iId . "\"><img src =\"" . KTHtml::getCancelButton() . "\" border = \"0\" /></a></td>\n";
 	}
 }
 

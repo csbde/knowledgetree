@@ -71,9 +71,9 @@ if (checkSession(true)) {
 	        require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 	        $oPatternCustom = new PatternCustom();    		
         	if ($oDocument) {
-            	$oPatternCustom->setHtml("<a href=\"" . generateControllerLink("browse", "fFolderID=" . $oDocument->getFolderID()) . "\"><img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\" /></a>\n");
+            	$oPatternCustom->setHtml("<a href=\"" . generateControllerLink("browse", "fFolderID=" . $oDocument->getFolderID()) . "\"><img src=\"" . KTHtml::getBackButton() . "\" border=\"0\" /></a>\n");
         	} else {
-        		$oPatternCustom->setHtml("<a href=\"javascript:history.go(-1)\"><img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\" /></a>\n");
+        		$oPatternCustom->setHtml("<a href=\"javascript:history.go(-1)\"><img src=\"" . KTHtml::getBackButton() . "\" border=\"0\" /></a>\n");
         	}
             $main->setErrorMessage(_("Either you do not have permission to view this document, or the document you have chosen no longer exists on the file system."));
             $main->setCentralPayload($oPatternCustom);            
@@ -82,7 +82,7 @@ if (checkSession(true)) {
     } else {
         require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
         $oPatternCustom = new PatternCustom();
-        $oPatternCustom->setHtml("<a href=\"javascript:history.go(-1)\"><img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\" /></a>\n");
+        $oPatternCustom->setHtml("<a href=\"javascript:history.go(-1)\"><img src=\"" . KTHtml::getBackButton() . "\" border=\"0\" /></a>\n");
         $main->setErrorMessage(_("You have not chosen a document to view"));
         $main->setCentralPayload($oPatternCustom);            
 		$main->render();

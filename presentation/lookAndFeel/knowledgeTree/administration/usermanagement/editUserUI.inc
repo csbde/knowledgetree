@@ -73,12 +73,12 @@ function getUserDetailsPage($iUserID) {
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "</tr>\n";
-	$sToRender .= "<tr><td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/update.gif\" value=\"Update\" border=\"0\"/>\n";
+	$sToRender .= "<tr><td align = right><input type=\"image\" src =\"" . KTHtml::getUpdateButton() . "\" value=\"Update\" border=\"0\"/>\n";
     //$sToRender .= getCancelButton(User::get($iUserID)) . "</td></tr>";
     $sToRender .= getCancelButton(User::get($iUserID));
     if (strcmp($default->authenticationClass,"DBAuthenticator") == 0) {
     	//only update password if we are using the db
-    	$sToRender .= "<a href=\"$default->rootUrl/control.php?action=userPasswordManagement&fUserID=$iUserID\"><img src =\"$default->graphicsUrl/widgets/updatePassword.gif\" border=\"0\" /></td></tr>\n";
+    	$sToRender .= "<a href=\"$default->rootUrl/control.php?action=userPasswordManagement&fUserID=$iUserID\"><img src =\"" . KTHtml::getUpdatePasswordButton() . "\" border=\"0\" /></td></tr>\n";
     }
 	$sToRender .= "</table>\n";
     
@@ -97,7 +97,7 @@ function getEditPageSuccess() {
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=listUsers&\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
+	$sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=listUsers&\"><img src =\"" . KTHtml::getBackButton() . "\" border = \"0\" /></a></td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
 	
@@ -118,7 +118,7 @@ function getEditPageFail() {
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=editUser\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
+	$sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=editUser\"><img src =\"" . KTHtml::getBackButton() . "\" border = \"0\" /></a></td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
 	
@@ -146,7 +146,7 @@ function getUserDisplay($oUser) {
 function getUpdateButton($oUser) {
 	global $default;
 	if (!isset($oUser)) {
-		return "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/update.gif\" value=\"submit\" border=\"0\"/></td>\n";
+		return "<td align = right><input type=\"image\" src =\"" . KTHtml::getUpdateButton() . "\" value=\"submit\" border=\"0\"/></td>\n";
 	}
 }
 
@@ -154,9 +154,9 @@ function getUpdateButton($oUser) {
 function getCancelButton($oUser) {
 	global $default;
 	if (!isset($oUser)) {
-		return "<a href=\"$default->rootUrl/control.php?action=userManagement\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" value=\"cancel\" border=\"0\"/></a>\n";
+		return "<a href=\"$default->rootUrl/control.php?action=userManagement\"><img src =\"" . KTHtml::getCancelButton() . "\" value=\"cancel\" border=\"0\"/></a>\n";
 	} else {		
-		return "<a href=\"$default->rootUrl/control.php?action=listUsers\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\" /></a>\n";
+		return "<a href=\"$default->rootUrl/control.php?action=listUsers\"><img src =\"" . KTHtml::getCancelButton() . "\" border=\"0\" /></a>\n";
 	}
 }
 ?>

@@ -52,9 +52,9 @@ function getUserDetailsPage($iUserID) {
     $sToRender.= "<tr>\n";
     $sToRender.= "</tr>\n";
 
-    $sToRender.= "<tr><td><input type=\"image\" src =\"$default->graphicsUrl/widgets/update.gif\" value=\"Update\" border=\"0\"/>\n";
+    $sToRender.= "<tr><td><input type=\"image\" src =\"" . KTHtml::getUpdateButton() . "\" value=\"Update\" border=\"0\"/>\n";
     if (strcmp($default -> authenticationClass, "DBAuthenticator") == 0) {
-        $sToRender.= "<a href=\"$default->rootUrl/control.php?action=changeUserPassword\"><img src =\"$default->graphicsUrl/widgets/updatePassword.gif\" border=\"0\" /></td></tr>\n";
+        $sToRender.= "<a href=\"$default->rootUrl/control.php?action=changeUserPassword\"><img src =\"" . KTHtml::getUpdatePasswordButton() . "\" border=\"0\" /></td></tr>\n";
     }
     $sToRender.= "</table>\n";
     return $sToRender;
@@ -69,7 +69,7 @@ function getEditPageSuccess() {
     $sToRender.= "<tr></tr>\n";
     $sToRender.= "<tr></tr>\n";
     $sToRender.= "<tr>\n";
-    $sToRender.= "<td><a href=\"$default->rootUrl/control.php?action=preferences\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border=\"0\" /></a></td>\n";
+    $sToRender.= "<td><a href=\"$default->rootUrl/control.php?action=preferences\"><img src =\"" . KTHtml::getBackButton() . "\" border=\"0\" /></a></td>\n";
     $sToRender.= "</tr>\n";
     $sToRender.= "</table>\n";
     return $sToRender;
@@ -84,7 +84,7 @@ function getEditPageFail() {
     $sToRender.= "<tr></tr>\n";
     $sToRender.= "<tr></tr>\n";
     $sToRender.= "<tr>\n";
-    $sToRender.= "<td></td><td align=\"right\"><a href=\"$default->rootUrl/control.php?action=preferences\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border=\"0\" /></a></td>\n";
+    $sToRender.= "<td></td><td align=\"right\"><a href=\"$default->rootUrl/control.php?action=preferences\"><img src =\"" . KTHtml::getBackButton() . "\" border=\"0\" /></a></td>\n";
     $sToRender.= "</tr>\n";
     $sToRender.= "</table>\n";
     return $sToRender;

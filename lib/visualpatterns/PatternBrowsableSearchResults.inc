@@ -208,7 +208,7 @@ class PatternBrowseableSearchResults {
 			if (($this->iStartIndex + $this->iResultsToDisplay) < $iTotalResults && $this->iStartIndex == 1) {
 				$sToRender .= "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>";
 				$sToRender .= "<td align=\"left\">";
-				$sToRender .= "<input type=\"image\" src=\"$default->graphicsUrl/widgets/next.gif\" onClick=\"setActionAndSubmit('" . $_SERVER["PHP_SELF"] . "?fStartIndex=" . ($this->iStartIndex +  $this->iResultsToDisplay) . $this->sQueryString . "')\" />";
+				$sToRender .= "<input type=\"image\" src=\"" . KTHtml::getNextButton() . "\" onClick=\"setActionAndSubmit('" . $_SERVER["PHP_SELF"] . "?fStartIndex=" . ($this->iStartIndex +  $this->iResultsToDisplay) . $this->sQueryString . "')\" />";
 				$sToRender .= "</td>\n";
 			}
 			// Display both the next and the previous buttons		
@@ -217,7 +217,7 @@ class PatternBrowseableSearchResults {
 				$sToRender .= "<input type=\"image\" src=\"$default->graphicsUrl/widgets/previous.gif\" onClick=\"setActionAndSubmit('" . $_SERVER["PHP_SELF"] . "?fStartIndex=" . ($this->iStartIndex -  $this->iResultsToDisplay) . $this->sQueryString . "')\" />";
 				$sToRender .= "</td>";
 				$sToRender .= "<td>";
-				$sToRender .= "<input type=\"image\" src=\"$default->graphicsUrl/widgets/next.gif\" onClick=\"setActionAndSubmit('" . $_SERVER["PHP_SELF"] . "?fStartIndex=" . ($this->iStartIndex +  $this->iResultsToDisplay)  . $this->sQueryString . "')\" />";				
+				$sToRender .= "<input type=\"image\" src=\"" . KTHtml::getNextButton() . "\" onClick=\"setActionAndSubmit('" . $_SERVER["PHP_SELF"] . "?fStartIndex=" . ($this->iStartIndex +  $this->iResultsToDisplay)  . $this->sQueryString . "')\" />";				
 				$sToRender .= "</td>\n";
 				
 			}	

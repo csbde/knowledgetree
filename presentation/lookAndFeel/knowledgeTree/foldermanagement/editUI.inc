@@ -56,7 +56,7 @@ function getFolderData($iFolderID, $sDivName, $sStatusMessage = "") {
 		$sToRender .= "<tr><td><font color=\"red\">$sStatusMessage</font></td></tr>";
 	}
 	$sToRender .= "<tr><td>" . $oPatternListFromQuery->render() . "</td></tr>";	
-	$sToRender .= "<tr><td><a href=\"$default->rootUrl/control.php?action=modifyFolderData&fFolderID=$iFolderID\"><img src=\"$default->graphicsUrl/widgets/edit.gif\" border=\"0\" /></a></td></tr>";
+	$sToRender .= "<tr><td><a href=\"$default->rootUrl/control.php?action=modifyFolderData&fFolderID=$iFolderID\"><img src=\"" . KTHtml::getEditButton() . "\" border=\"0\" /></a></td></tr>";
     $sToRender .= "</table>";;
 
 	if ($sStatusMessage) {
@@ -96,7 +96,7 @@ function getFolderRouting($iFolderID, $sDivName, $bCollaboration) {
     if (!$bCollaboration) {
         $sToRender .= "<tr>\n";
         $sToRender .= "<td>\n";
-        $sToRender .=  "<a href=\"$default->rootUrl/control.php?action=addFolderCollaboration&fFolderID=$iFolderID\"><img src=\"$default->graphicsUrl/widgets/add.gif\" border=\"0\" /></a>\n";
+        $sToRender .=  "<a href=\"$default->rootUrl/control.php?action=addFolderCollaboration&fFolderID=$iFolderID\"><img src=\"" . KTHtml::getAddButton() . "\" border=\"0\" /></a>\n";
         $sToRender .= "</td>\n";
         $sToRender .= "</tr>\n";
     }
@@ -124,7 +124,7 @@ function getFolderDocTypes($iFolderID, $sDivName) {
 	
 	$sToRender .= "<table>";
 	$sToRender .= "<tr><td>" . $oPatternTableSqlQuery->render() . "</td></tr>";	
-	$sToRender .= "<tr><td><a href=\"$default->rootUrl/control.php?action=addFolderDocType&fFolderID=$iFolderID\"><img src=\"$default->graphicsUrl/widgets/add.gif\" border=\"0\" /></a></td></tr>";
+	$sToRender .= "<tr><td><a href=\"$default->rootUrl/control.php?action=addFolderDocType&fFolderID=$iFolderID\"><img src=\"" . KTHtml::getAddButton() . "\" border=\"0\" /></a></td></tr>";
     $sToRender .= "</table>";		
     return renderSectionDiv($sDivName, $sToRender);	
 }
@@ -149,7 +149,7 @@ function getFolderGroupAccess($iFolderID, $sDivName) {
    
 	$sToRender .= "<table>";
 	$sToRender .= "<tr><td>" . $oPatternTableSqlQuery->render() . "</td></tr>";
-	$sToRender .= "<tr><td><a href=\"$default->rootUrl/control.php?action=addGroupFolderLink&fFolderID=$iFolderID\"><img src=\"$default->graphicsUrl/widgets/add.gif\" border=\"0\" /></a></td></tr>";
+	$sToRender .= "<tr><td><a href=\"$default->rootUrl/control.php?action=addGroupFolderLink&fFolderID=$iFolderID\"><img src=\"" . KTHtml::getAddButton() . "\" border=\"0\" /></a></td></tr>";
     $sToRender .= "</table>";		
     return renderSectionDiv($sDivName, $sToRender);		 	
 }

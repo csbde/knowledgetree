@@ -72,7 +72,7 @@ function getSearchPage($sSearchString = "", $aMetaTagIDs = array(), $sHeading = 
 	$sToRender .= "<table width=\"600\">\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>" . _("Search text:") . " <input type=\"text\" size=\"50\" name=\"fSearchString\" value=\"$sSearchString\" />\n";
-	$sToRender .= "<input type=\"image\" src=\"$default->graphicsUrl/widgets/search.gif\" border=\"0\"/></td>\n";
+	$sToRender .= "<input type=\"image\" src=\"" . KTHtml::getSearchButton() . "\" border=\"0\"/></td>\n";
 	$sToRender .= "</tr>\n";
 		
 	if ($bSearchArchive) {

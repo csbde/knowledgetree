@@ -85,7 +85,7 @@ function getDocumentRoutingPage($iGroupID, $iUserID, $iRoleID, $iSequenceNumber,
 			"<td colspan=\"2\">&nbsp</td>\n" .
 			"</tr>\n" .
 			"<tr>\n" .
-			"<td><b><input type=\"image\" src=\"$default->graphicsUrl/widgets/update.gif\" border=\"0\"/></b></td><td>" . generateControllerLink("viewDocument", "fDocumentID=$fDocumentID&fShowSection=documentRouting", "<img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"/>") . "</td>\n" .
+			"<td><b><input type=\"image\" src=\"" . KTHtml::getUpdateButton() . "\" border=\"0\"/></b></td><td>" . generateControllerLink("viewDocument", "fDocumentID=$fDocumentID&fShowSection=documentRouting", "<img src=\"" . KTHtml::getCancelButton() . "\" border=\"0\"/>") . "</td>\n" .
 			"</tr>\n" .
 			"</table>\n";
 }

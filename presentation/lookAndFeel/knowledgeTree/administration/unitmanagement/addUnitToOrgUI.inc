@@ -32,7 +32,7 @@ function getAddFailPage(){
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>\n";	
 	
-	$sToRender .= "<a href=\"$default->rootUrl/control.php?action=listUnits\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a>\n";
+	$sToRender .= "<a href=\"$default->rootUrl/control.php?action=listUnits\"><img src =\"" . KTHtml::getBackButton() . "\" border = \"0\" /></a>\n";
 	
 	$sToRender .= "</td>\n";
 	$sToRender .= "</tr>\n";
@@ -48,7 +48,7 @@ function getAddSuccessPage(){
 	$sToRender .= "<td>\n";
 	
 	$sToRender .= _("Unit has been successfully added to the Organisation."). "\n";
-	$sToRender .= "<a href=\"$default->rootUrl/control.php?action=listUnits\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a>\n";
+	$sToRender .= "<a href=\"$default->rootUrl/control.php?action=listUnits\"><img src =\"" . KTHtml::getBackButton() . "\" border = \"0\" /></a>\n";
 	
 	$sToRender .= "</td>\n";
 	$sToRender .= "</tr>\n";
@@ -81,8 +81,8 @@ function getAddUnitsPage($oUnit) {
 	$sToRender .= getOrgDropdown();	
 	$sToRender .= "</td>\n";
 	$sToRender .= "<td valign=middle>\n";	
-	$sToRender .= "<input type=\"image\" src =\"$default->graphicsUrl/widgets/add.gif\" value=\"Submit\" border=\"0\"/> &nbsp;";
-	$sToRender .= "<a href=\"$default->rootUrl/control.php?action=editUnitOrg&fUnitID=" . $oUnit->getID() . "\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" /></a>\n";
+	$sToRender .= "<input type=\"image\" src =\"" . KTHtml::getAddButton() . "\" value=\"Submit\" border=\"0\"/> &nbsp;";
+	$sToRender .= "<a href=\"$default->rootUrl/control.php?action=editUnitOrg&fUnitID=" . $oUnit->getID() . "\"><img src =\"" . KTHtml::getCancelButton() . "\" border = \"0\" /></a>\n";
 	$sToRender .= "</td>\n";
 	$sToRender .= "</tr>\n";		
 	$sToRender .= "</table>\n";
@@ -121,7 +121,7 @@ function getAddPage($unitID) {
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "</tr>\n";
-	$sToRender .= "<td></td><td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/add.gif\" value=\"Submit\" border=\"0\"/></td>\n";	
+	$sToRender .= "<td></td><td align = right><input type=\"image\" src =\"" . KTHtml::getAddButton() . "\" value=\"Submit\" border=\"0\"/></td>\n";	
 	$sToRender .= "</table>\n";
 	
 	return $sToRender;
@@ -139,7 +139,7 @@ function getAddPageSuccess() {
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=addUnit\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
+	$sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=addUnit\"><img src =\"" . KTHtml::getBackButton() . "\" border = \"0\" /></a></td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
 	
@@ -158,7 +158,7 @@ function getAddPageFail() {
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=addUnit\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
+	$sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=addUnit\"><img src =\"" . KTHtml::getBackButton() . "\" border = \"0\" /></a></td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
 	
@@ -178,7 +178,7 @@ function getPageFail() {
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=addUnit\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
+	$sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=addUnit\"><img src =\"" . KTHtml::getBackButton() . "\" border = \"0\" /></a></td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
 	
@@ -197,7 +197,7 @@ function getAddPageToOrgFail() {
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=addUnit\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
+	$sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=addUnit\"><img src =\"" . KTHtml::getBackButton() . "\" border = \"0\" /></a></td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
 	

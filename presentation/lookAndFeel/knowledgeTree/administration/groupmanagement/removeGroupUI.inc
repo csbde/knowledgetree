@@ -92,8 +92,8 @@ function getSysAdminCheckBox($oGroup) {
 function getDeleteButton($oGroup) {
 	global $default;
 	if (isset($oGroup)) {
-        return "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/delete.gif\" value=\"submit\" border=\"0\"/></td>\n".
-        "<td align = right><a href=\"$default->rootUrl/control.php?action=listGroups\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" /></a></td>\n";
+        return "<td align = right><input type=\"image\" src =\"" . KTHtml::getDeleteButton() . "\" value=\"submit\" border=\"0\"/></td>\n".
+        "<td align = right><a href=\"$default->rootUrl/control.php?action=listGroups\"><img src =\"" . KTHtml::getCancelButton() . "\" border = \"0\" /></a></td>\n";
     }
 }
 ?>

@@ -37,7 +37,7 @@ function renderStatusPage($oDocument) {
     $sToRender .= "<tr><td>" . generateControllerLink("viewDocument", "fDocumentID=" . $oDocument->getID(), $oDocument->getDisplayPath(true)) . "\n";
     $sToRender .= "<tr/><tr/>";
 	
-    $sToRender .= "<tr><td>" . generateControllerLink("deletedDocuments", "", "<img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\"></td></tr>");
+    $sToRender .= "<tr><td>" . generateControllerLink("deletedDocuments", "", "<img src=\"" . KTHtml::getBackButton() . "\" border=\"0\"></td></tr>");
 	$sToRender .= "</table>";
     return $sToRender;	
 }
@@ -54,8 +54,8 @@ function renderConfirmationPage($iDocumentID, $iFolderID) {
 		"</td></tr>";
 	$sToRender .= "<tr><td>" . _("to folder") . " <strong>" . Folder::getFolderDisplayPath($iFolderID) . "</strong>?</td></tr>\n";
 	$sToRender .= "</tr><tr/><tr/>\n";
-	$sToRender .= "<tr><td>" . generateControllerLink("restoreDeletedDocument", "fDocumentID=$iDocumentID&fFolderID=$iFolderID&fForMove=1&fConfirmed=1", "<img src=\"$default->graphicsUrl/widgets/restore.gif\" border=\"0\"/>") . "&nbsp;";
-	$sToRender .= generateControllerLink("restoreDeletedDocument", "fDocumentID=$iDocumentID&fFolderID=$iFolderID", "<img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"/>") . "</td></tr>\n";
+	$sToRender .= "<tr><td>" . generateControllerLink("restoreDeletedDocument", "fDocumentID=$iDocumentID&fFolderID=$iFolderID&fForMove=1&fConfirmed=1", "<img src=\"" . KTHtml::getRestoreButton() . "\" border=\"0\"/>") . "&nbsp;";
+	$sToRender .= generateControllerLink("restoreDeletedDocument", "fDocumentID=$iDocumentID&fFolderID=$iFolderID", "<img src=\"" . KTHtml::getCancelButton() . "\" border=\"0\"/>") . "</td></tr>\n";
 	$sToRender .= "</table>\n";
 	return $sToRender;
 }
@@ -76,7 +76,7 @@ function renderFolderBrowsePage($iDocumentID, $iFolderID) {
 	$sToRender .= "<td>" . renderFolderList($iFolderID, generateControllerUrl("restoreDeletedDocument", "fDocumentID=$iDocumentID", false)) . "</td>\n";
 	$sToRender .= "</tr>\n";	
 	$sToRender .= "<tr><td><table><tr><td colspan=\"3\">" . _("Select the folder you would like to restore deleted document") . " <strong>" . Document::getDocumentName($iDocumentID) . "</strong> to.</td></tr>";
-	$sToRender .= "<tr/><tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/restorehere.gif\" border=\"0\"/>&nbsp;" . generateControllerLink("deletedDocuments", "", "<img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\">") . "</td></tr></table></td>\n";
+	$sToRender .= "<tr/><tr><td><input type=\"image\" src=\"" . KTHtml::getRestoreHereButton() . "\" border=\"0\"/>&nbsp;" . generateControllerLink("deletedDocuments", "", "<img src=\"" . KTHtml::getCancelButton() . "\" border=\"0\">") . "</td></tr></table></td>\n";
 	$sToRender .= "</table>\n";
 	return $sToRender;
 }

@@ -70,56 +70,41 @@ welcome.gif: Welcome to the Knowledge Tree
 search.gif: SEARCH
 tree.gif: KnowledgeTree (no translate?)
 
-admin/over.gif: ADMIN
-admin/norm.gif: ADMIN
-asearch/over.gif: ADVANCED SEARCH
-asearch/norm.gif: ADVANCED SEARCH
-help/over.gif: HELP
-help/norm.gif: HELP
-home/over.gif: DASHBOARD
-home/norm.gif: DASHBOARD
-leftnav/links.gif: Links
-leftnav/uadmin.gif: Contact Unit Admin
-leftnav/cadmin.gif: Contact Admin
-logout/over.gif: LOGOUT
-logout/norm.gif: LOGOUT
-mdocs/over.gif: BROWSE COLLECTION
-mdocs/norm.gif: BROWSE COLLECTION
-prefs/over.gif: PREFERENCES
-prefs/norm.gif: PREFERENCES
-subscriptions/over.gif: SUBSCRIPTIONS
-subscriptions/norm.gif: SUBSCRIPTIONS
-
-widgets/docactions/archive.gif: ARCHIVE
-widgets/docactions/disabled-archive.gif: ARCHIVE
-widgets/docactions/checkin.gif: CHECK-IN
-widgets/docactions/disabled-checkin.gif: CHECK-IN
-widgets/docactions/checkout.gif: CHECK-OUT
-widgets/docactions/disabled-checkout.gif: CHECK-OUT
-widgets/docactions/delete.gif: DELETE
-widgets/docactions/disabled-delete.gif: DELETE
-widgets/docactions/dependentdoc.gif: LINK NEW DOC
-widgets/docactions/disabled-dependentdoc.gif: LINK NEW DOC
-widgets/docactions/discussion.gif: DISCUSSION
-widgets/docactions/disabled-discussion.gif: DISCUSSION
-widgets/docactions/download.gif: DOWNLOAD
-widgets/docactions/disabled-download.gif: DOWNLOAD
-widgets/docactions/email.gif: EMAIL
-widgets/docactions/disabled-email.gif: EMAIL
-widgets/docactions/history.gif: HISTORY
-widgets/docactions/disabled-history.gif: HISTORY
-widgets/docactions/move.gif: MOVE
-widgets/docactions/disabled-move.gif: MOVE
-widgets/docactions/publish.gif: PUBLISH
-widgets/docactions/disabled-publish.gif: PUBLISH
-widgets/docactions/subscribe.gif: SUBSCRIBE
-widgets/docactions/disabled-subscribe.gif: SUBSCRIBE
-widgets/docactions/unsubscribe.gif: UNSUBSCRIBE
-widgets/docactions/disabled-unsubscribe.gif: UNSUBSCRIBE
-widgets/docactions/view.gif: VIEW
-widgets/docactions/disabled-view.gif: VIEW
-
-
+widgets/add.gif: Add
+widgets/cancel.gif: Cancel
+widgets/next.gif: Next
+widgets/back.gif: Back
+widgets/addcomment.gif: Add Comment
+widgets/subscribe.gif: Subscribe
+widgets/unsubscribe.gif: Unsubscribe
+widgets/reject.gif: Reject
+widgets/updatePassword.gif: Update Password
+widgets/delete.gif: Delete
+widgets/select.gif: Select
+widgets/update.gif: Update
+widgets/assign.gif: Assign
+widgets/search.gif: Search
+widgets/edit.gif: Edit
+widgets/approve.gif: Approve
+widgets/done.gif: Done
+widgets/publish.gif: Publish
+widgets/move.gif: Move
+widgets/remove.gif: Remove
+widgets/restore.gif: Restore
+widgets/submit.gif: Submit
+widgets/expunge.gif: Expunge
+widgets/restorehere.gif: Restore Here
+widgets/reply.gif: Reply
+widgets/new.gif: New
+widgets/reset.gif: Reset
+widgets/archive.gif: Archive
+widgets/browse.gif: Browse
+widgets/checkin.gif: Check In
+widgets/checkout.gif: Check Out
+widgets/download.gif: Download
+widgets/email.gif: Email
+widgets/movehere.gif: Move Here
+widgets/begin.gif: Begin
 	
 Testing
 -------

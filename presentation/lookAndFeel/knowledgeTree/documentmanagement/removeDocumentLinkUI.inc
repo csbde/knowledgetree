@@ -42,7 +42,7 @@ function getPage($sParentDocumentName, $sChildDocumentName, $iParentDocumentID) 
 	$sToRender .= "<td>&nbsp</td>\n";
 	$sToRender .= "</tr>\n";	;
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td><table><tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/delete.gif\" border=\"0\"></td> <td><a href=\"$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $iParentDocumentID . "\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></a></td></tr></table></td>";	
+	$sToRender .= "<td><table><tr><td><input type=\"image\" src=\"" . KTHtml::getDeleteButton() . "\" border=\"0\"></td> <td><a href=\"$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $iParentDocumentID . "\"><img src=\"" . KTHtml::getCancelButton() . "\" border=\"0\"></a></td></tr></table></td>";	
 	$sToRender .= "</tr>";
 	$sToRender .= "</table>";
 	return $sToRender;

@@ -90,7 +90,7 @@ function renderEditAddNewsForm($oDashboardNews) {
 	
 	$sToRender .= ($oDashboardNews ? "<input type=\"hidden\" name=\"fNewsID\" value=\"" . $oDashboardNews->getID() . "\">" : "");
 			
-	$sToRender .= "<tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/submit.gif\" border=\"0\">\n";
+	$sToRender .= "<tr><td><input type=\"image\" src=\"" . KTHtml::getSubmitButton() . "\" border=\"0\">\n";
 	$sToRender .= getCancelButton("listNews") . "</td></tr>\n";    
 	$sToRender .= "</table>";
 	
@@ -163,7 +163,7 @@ function renderPreviewNewsPage($oDashboardNews) {
 	$sToRender .= "<tr><td><strong>" . $oDashboardNews->getSynopsis() . "</strong></td></tr>\n";	
 	$sToRender .= "<tr><td>" . $oDashboardNews->getImageLink() . "</td></tr>\n";
 	$sToRender .= "<tr><td>" . $oDashboardNews->getBody() . "</td></tr>\n";
-	$sToRender .= "<tr><td><a href=\"$default->rootUrl/control.php?action=listNews\"><img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\"></a></td></tr>\n";
+	$sToRender .= "<tr><td><a href=\"$default->rootUrl/control.php?action=listNews\"><img src=\"" . KTHtml::getBackButton() . "\" border=\"0\"></a></td></tr>\n";
 	$sToRender .= "</table>";
 	return $sToRender;		
 } 
@@ -181,7 +181,7 @@ function renderDeleteNewsConfirmationPage($oDashboardNews) {
 	$sToRender .= renderNewsItem($oDashboardNews);	
 	
 	$sToRender .= "<input type=\"hidden\" name=\"fDeleteConfirmed\" value=\"1\">";	
-	$sToRender .= "<tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/delete.gif\" border=\"0\">\n";
+	$sToRender .= "<tr><td><input type=\"image\" src=\"" . KTHtml::getDeleteButton() . "\" border=\"0\">\n";
 	$sToRender .= getCancelButton("listNews") . "</td></tr>\n";    
 	
 	$sToRender .= "</table>\n";

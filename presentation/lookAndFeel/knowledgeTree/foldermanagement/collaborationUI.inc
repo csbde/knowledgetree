@@ -76,8 +76,8 @@ function getEditPage($iFolderCollaborationID, $iFolderID, $iGroupID, $iUserID, $
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>" . _("Sequence") . "</td><td><input type=\"text\" name=\"fSequenceNumber\" value=\"$iSequenceNumber\" /></td>\n";
 	$sToRender .= "</tr>";			
-	$sToRender .= "<tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/update.gif\" border=\"0\"/></td>";
-	$sToRender .= "<td>" . generateControllerLink("editFolder", "fFolderID=$iFolderID&fShowSection=folderRouting", "<img border=\"0\" src=\"$default->graphicsUrl/widgets/cancel.gif\"/>")  . "</td>\n";
+	$sToRender .= "<tr><td><input type=\"image\" src=\"" . KTHtml::getUpdateButton() . "\" border=\"0\"/></td>";
+	$sToRender .= "<td>" . generateControllerLink("editFolder", "fFolderID=$iFolderID&fShowSection=folderRouting", "<img border=\"0\" src=\"" . KTHtml::getCancelButton() . "\"/>")  . "</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
 	

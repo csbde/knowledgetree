@@ -70,7 +70,7 @@ function renderChooseArchivingTypeForm() {
 	$sToRender .= "<tr><td>" . _("Archiving Type") . ":</td><td>" . renderArchivingTypeListBox() . "</td></tr>";
 	// hidden archive settings references
 	$sToRender .= "<input type=\"hidden\" name=\"fDocumentID\" value=\"$fDocumentID\">\n";			
-	$sToRender .= "<tr><td>" . generateControllerLink("viewDocument", "fDocumentID=$fDocumentID&fShowSection=archiveSettings", "<img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\" />") . "</td></tr>\n";
+	$sToRender .= "<tr><td>" . generateControllerLink("viewDocument", "fDocumentID=$fDocumentID&fShowSection=archiveSettings", "<img src=\"" . KTHtml::getCancelButton() . "\" border=\"0\" />") . "</td></tr>\n";
 	$sToRender .= "</table>";
 	return $sToRender;
 }
@@ -131,7 +131,7 @@ function renderTimePeriod($sHeading, $sFooter = "", $oTimePeriod = null) {
 	}
 	$sToRender .= "<td><input type=\"text\" size=\"11\" name=\"fUnits\" value=\"" . ($oTimePeriod ? $oTimePeriod->getUnits() : "") . "\">";
 	$sToRender .= "&nbsp;&nbsp;" . renderTimeUnitsListBox( ($oTimePeriod ? $oTimePeriod->getTimeUnitID() : null) ) . $sFooter;
-	$sToRender .= "&nbsp;&nbsp;<a href=\"javascript:void();\" onclick=\"document.MainForm.fUnits.value='';document.MainForm.fTimeUnitID.value='';\"><img src=\"$default->graphicsUrl/widgets/reset.gif\" border=\"0\"></a></td>";
+	$sToRender .= "&nbsp;&nbsp;<a href=\"javascript:void();\" onclick=\"document.MainForm.fUnits.value='';document.MainForm.fTimeUnitID.value='';\"><img src=\"" . KTHtml::getResetButton() . "\" border=\"0\"></a></td>";
 	$sToRender .= "</tr>";	
 	return $sToRender;		
 }
@@ -160,7 +160,7 @@ function renderArchiveSettingsForm($iDocumentID, $oArchiveSettings, $iArchivingT
 			$sToRender .= "<tr><td>" . _("Expiration Date") . ":</td>";
 			$sToRender .= "<td valign=bottom><input type=\"text\" name=\"fExpirationDate\" size=\"10\" maxlength=\"10\" " . ($oArchiveSettings ? "value=\"" . ($oArchiveSettings->getExpirationDate() == "0000-00-00" ? "" : $oArchiveSettings->getExpirationDate()) . "\"" : "") . ">";			
 			$sToRender .= "&nbsp;&nbsp;<a href=\"javascript:show_calendar('MainForm.fExpirationDate',null,null,'YYYY-MM-DD');\" onmouseover=\"window.status='Date Picker';return true;\" onmouseout=\"window.status='';return true;\"><img src=\"$default->graphicsUrl/calendar/calendar.gif\" name=\"imgCalendar\" width=\"34\" height=\"21\" border=\"0\" alt=\"\"></a>";
-			$sToRender .= "&nbsp;&nbsp;<a href=\"javascript:void();\" onclick=\"document.MainForm.fExpirationDate.value=''\"><img src=\"$default->graphicsUrl/widgets/reset.gif\" border=\"0\"></a></td></tr>";
+			$sToRender .= "&nbsp;&nbsp;<a href=\"javascript:void();\" onclick=\"document.MainForm.fExpirationDate.value=''\"><img src=\"" . KTHtml::getResetButton() . "\" border=\"0\"></a></td></tr>";
 					
 			if ($oArchiveSettings) {
 				$oTimePeriod = TimePeriod::get($oArchiveSettings->getTimePeriodID());
@@ -193,13 +193,13 @@ function renderArchiveSettingsForm($iDocumentID, $oArchiveSettings, $iArchivingT
 	$sToRender .= "<input type=\"hidden\" name=\"fArchivingTypeID\" value=\"$iArchivingTypeID\">\n";
 	$sToRender .= "<input type=\"hidden\" name=\"fStore\" value=\"1\">\n";	
 	if ($oArchiveSettings) {		
-		$sToRender .= "<tr><td colspan=\"2\"><input type=\"image\" src=\"$default->graphicsUrl/widgets/update.gif\" border=\"0\">\n";
-		$sToRender .= generateControllerLink("modifyDocumentArchiveSettings", "fDocumentID=$fDocumentID&fDelete=1", "<img src=\"$default->graphicsUrl/widgets/remove.gif\" border=\"0\"/>");
+		$sToRender .= "<tr><td colspan=\"2\"><input type=\"image\" src=\"" . KTHtml::getUpdateButton() . "\" border=\"0\">\n";
+		$sToRender .= generateControllerLink("modifyDocumentArchiveSettings", "fDocumentID=$fDocumentID&fDelete=1", "<img src=\"" . KTHtml::getRemoveButton() . "\" border=\"0\"/>");
 	} else {
-		$sToRender .= "<tr><td colspan=\"2\"><input type=\"image\" src=\"$default->graphicsUrl/widgets/submit.gif\" border=\"0\">\n";
-		$sToRender .= generateControllerLink("addDocumentArchiveSettings", "fDocumentID=$fDocumentID", "<img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\">");
+		$sToRender .= "<tr><td colspan=\"2\"><input type=\"image\" src=\"" . KTHtml::getSubmitButton() . "\" border=\"0\">\n";
+		$sToRender .= generateControllerLink("addDocumentArchiveSettings", "fDocumentID=$fDocumentID", "<img src=\"" . KTHtml::getBackButton() . "\" border=\"0\">");
 	}	
-	$sToRender .= generateControllerLink("viewDocument", "fDocumentID=$fDocumentID&fShowSection=archiveSettings", "<img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\" />") . "</td></tr>\n";
+	$sToRender .= generateControllerLink("viewDocument", "fDocumentID=$fDocumentID&fShowSection=archiveSettings", "<img src=\"" . KTHtml::getCancelButton() . "\" border=\"0\" />") . "</td></tr>\n";
 	$sToRender .= "</table>";
 
 	return $sToRender; 
@@ -263,7 +263,7 @@ function renderArchiveConfirmationPage($iDocumentID, $sErrorMessage = "") {
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>&nbsp</td>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td><table><tr><td><a href=\"" . $_SERVER["PHP_SELF"] . "?fDocumentID=$iDocumentID&fConfirmed=1\"><img src=\"$default->graphicsUrl/widgets/archive.gif\" border=\"0\"></a></td><td>" . generateControllerLink("viewDocument", "fDocumentID=$iDocumentID&fShowSection=archiveSettings", "<img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\">") . "</td></tr></table></td>";	
+	$sToRender .= "<td><table><tr><td><a href=\"" . $_SERVER["PHP_SELF"] . "?fDocumentID=$iDocumentID&fConfirmed=1\"><img src=\"" . KTHtml::getArchiveButton() . "\" border=\"0\"></a></td><td>" . generateControllerLink("viewDocument", "fDocumentID=$iDocumentID&fShowSection=archiveSettings", "<img src=\"" . KTHtml::getCancelButton() . "\" border=\"0\">") . "</td></tr></table></td>";	
 	$sToRender .= "</tr>";
 	$sToRender .= "</table>\n";
 	

@@ -52,7 +52,7 @@ function getCreatePage($iRoleID) {
 	$sToRender .= "<tr>\n";
 	$sToRender .= "</tr>\n";
 	
-	$sToRender .= "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/update.gif\" value=\"Update\" border=\"0\"/><a href=\"$default->rootUrl/control.php?action=addRole\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" /></a></td>\n";
+	$sToRender .= "<td align = right><input type=\"image\" src =\"" . KTHtml::getUpdateButton() . "\" value=\"Update\" border=\"0\"/><a href=\"$default->rootUrl/control.php?action=addRole\"><img src =\"" . KTHtml::getCancelButton() . "\" border = \"0\" /></a></td>\n";
 	$sToRender .= "</table>\n";
     
 	return $sToRender;
@@ -71,7 +71,7 @@ function getAddFailPage() {
 	$sToRender .= "<tr>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td align = right><a href=\"$default->rootUrl/control.php?action=addRole\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
+	$sToRender .= "<td align = right><a href=\"$default->rootUrl/control.php?action=addRole\"><img src =\"" . KTHtml::getBackButton() . "\" border = \"0\" /></a></td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
 		
@@ -139,7 +139,7 @@ function getEditPageSuccess() {
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=listRoles\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
+	$sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=listRoles\"><img src =\"" . KTHtml::getBackButton() . "\" border = \"0\" /></a></td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
 	
@@ -161,7 +161,7 @@ function getEditPageFail() {
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=listRole\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
+	$sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=listRole\"><img src =\"" . KTHtml::getBackButton() . "\" border = \"0\" /></a></td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
 	
@@ -219,7 +219,7 @@ function getUpdateButton($oRole) {
 	if (!isset($oRole)) {
 		return _("Please select a Role:") . " ";
 	} else {
-		return "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/update.gif\" value=\"submit\" border=\"0\"/></td>\n";
+		return "<td align = right><input type=\"image\" src =\"" . KTHtml::getUpdateButton() . "\" value=\"submit\" border=\"0\"/></td>\n";
 	}
 }
 
@@ -227,9 +227,9 @@ function getUpdateButton($oRole) {
 function getCancelButton($oRole) {
 	global $default;
 	if (!isset($oRole)) {
-		//return "<td align = right><a href=\"$default->rootUrl/control.php?action=groupManagement\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" value=\"cancel\" /></a></td>\n";
+		//return "<td align = right><a href=\"$default->rootUrl/control.php?action=groupManagement\"><img src =\"" . KTHtml::getCancelButton() . "\" value=\"cancel\" /></a></td>\n";
 	} else {
-		return "<td align = right><a href=\"$default->rootUrl/control.php?action=listRoles\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" /></a></td>\n";
+		return "<td align = right><a href=\"$default->rootUrl/control.php?action=listRoles\"><img src =\"" . KTHtml::getCancelButton() . "\" border = \"0\" /></a></td>\n";
 	}
 }
 ?>
