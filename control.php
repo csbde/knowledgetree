@@ -19,11 +19,12 @@
 
 // main library routines and defaults
 require_once("./config/owl.php");
+require_once("./config/dmsDefaults.php");
 require_once("./lib/owl.lib.php");
 require_once("./config/html.php");
 require_once("./lib/control.inc");
-require_once("./lib/SiteMap.inc");
 require_once("./lib/Session.inc");
+require_once("./lib/SiteMap.inc");
 
 // -------------------------------
 // page start
@@ -31,17 +32,17 @@ require_once("./lib/Session.inc");
 
 if (!checkSession($sessionID)) {
     // no session, redirect to login
-    $action = "loginForm";
+    $action = "LOGIN_FORM";
 }
 
 // retrieve the login page to redirect to
 $page = $default->siteMap->getPage($action, getUserClass($userID))
 
-if (isset($page)) {
-    redirect($page);
-} else {
+// getPage returns false for no permisssion
+if (!$page) {
     // TODO: build no permission page
-    print "you do not have access to view this page!  please go away, and come back when you do.";
+    print "you do not have access to view this page!  please go away, and come back when you do.";    
+} else {
+    redirect($page);
 }
-
 ?>
