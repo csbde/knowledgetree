@@ -149,9 +149,25 @@ if (!$oFolder->create()) {
     exit(0);
 }
 
+if (!is_array($fDocumentTypeID)) {
+    $fDocumentTypeID = array($fDocumentTypeID);
+}
 
-$oFolderDocTypeLink = & new FolderDocTypeLink($oFolder->getID(), $fDocumentTypeID);
-if (!$oFolderDocTypeLink->create()) {
+$aFolderDocTypeLinks = array();
+$bFailed = false;
+foreach ($fDocumentTypeID as $iDocumentTypeID) {
+    $oFolderDocTypeLink = & new FolderDocTypeLink($oFolder->getID(), $iDocumentTypeID);
+    if (!$oFolderDocTypeLink->create()) {
+        $bFailed = true;
+        break;
+    }
+    $aFolderDocTypeLinks[] =& $oFolderDocTypeLink;
+}
+
+if ($bFailed) {
+    foreach ($aFolderDocTypeLinks as $oFolderDocTypeLink) {
+        $oFolderDocTypeLink->delete();
+    }
     //couldn't associate the chosen document type with this folder
     $default->log->error("addFolderBL.php DB error storing folder-document type link for folder name=$fFolderName in parent folder '" . Folder::getFolderPath($fFolderID) . "' folderID=$fFolderID; docTypeID=$fDocumentTypeID");
     
@@ -173,7 +189,10 @@ if (!PhysicalFolderManagement::createFolder(Folder::getFolderPath($oFolder->getI
     $default->log->error("addFolderBL.php Filesystem error attempting to store folder name=$fFolderName in parent folder '" . Folder::getFolderPath($fFolderID) . "' id=$fFolderID");
     
     // remove the folder and its doc type link from the db and report and error
-    $oFolderDocTypeLink->delete();
+    foreach ($aFolderDocTypeLinks as $oFolderDocTypeLink) {
+        $oFolderDocTypeLink->delete();
+    }
+    //couldn't associate the chosen document type with this folder
     $oFolder->delete();
     require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
     $oPatternCustom->setHtml(renderBrowsePage($fFolderID));
