@@ -104,14 +104,14 @@ elseif ($loginAction == "login") {
             break;
             // login disabled
         case 2:
-            $url = $url . "&errorMessage=$lang_logindisabled";
+            $url = $url . "&errorMessage=" . urlencode($lang_logindisabled);
             break;
             // too many sessions
         case 3 :
-            $url = $url . "&errorMessage=$lang_toomanysessions";
+            $url = $url . "&errorMessage=" . urlencode($lang_toomanysessions);
             break;
         default :
-            $url = $url . "&errorMessage=$lang_err_general";
+            $url = $url . "&errorMessage=" . urlencode($lang_err_general);
         }
     } else {
         // didn't receive any login parameters, so redirect login form
