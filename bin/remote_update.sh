@@ -19,6 +19,9 @@ cvs -d $cvsroot co owl
 cd owl/Documents
 cvs update -d
 
+# remove CVS directories
+find $tmp -name CVS -exec rm -rf {} \; 2> /dev/null
+
 # tar it up
 tar -czvf /tmp/owl.tgz $tmp
 
