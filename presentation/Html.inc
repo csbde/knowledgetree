@@ -29,8 +29,8 @@ function tableRow($align, $bgcolor, $html) {
 
 
 function tableHeading($cssClassName, $colspan, $text) {
-    return "<th colspan=\"$colspan\">\n
-            <span class=\"$cssClassName\">$text</span>\n
+    return "<th class=\"$cssClassName\" colspan=\"$colspan\">\n
+            $text\n
             </th>\n";
 }
 
