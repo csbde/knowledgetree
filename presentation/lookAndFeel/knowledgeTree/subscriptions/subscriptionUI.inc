@@ -64,7 +64,7 @@ function renderManagePage() {
     }
     for ($i = 0; $i < count($aDocumentSubscriptions); $i++) {
         $sToRender .= "\t<tr>\n";
-        $sToRender .= "\t\t<td bgcolor=\"" . getColour($i) . "\">\n";
+        $sToRender .= "\t\t<td bgcolor=\"" . getColour($i+count($aFolderSubscriptions)) . "\">\n";
         $sToRender .= "<input type=\"checkbox\" name=\"fDocumentSubscriptionIDs[]\" value=\"" . $aDocumentSubscriptions[$i]->getID() . "\"/>\n";        
         if ($aDocumentSubscriptions[$i]->getIsAlerted()) {
             $sToRender .= $aDocumentSubscriptions[$i]->getAlertLink() . "\n";
