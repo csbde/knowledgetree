@@ -22,14 +22,12 @@ function getPage() {
                         "Administrator Name: ",
                         "Default Email Address: ",
                         "Default Email Name: ",
-                        "File System Root: ",
                         "Document Root: ",
                         "Language Directory: ",
                         "User Interface Directory: ",
                         "Root URL: ",
                         "Graphics URL: ",
                         "User Interface URL: ",
-                        "Use File System: ",
                         "Default Language: ",
                         "Session Timeout: ");
 
@@ -40,14 +38,12 @@ function getPage() {
                     "femailAdminName",
                     "femailFrom",
                     "femailFromName",
-                    "ffilesystemRoot",
                     "fdocumentRoot",
                     "flanguageDirectory",
                     "fuiDirectory",
                     "frootUrl",
                     "fgraphicsUrl",
                     "fuiUrl",
-                    "fuseFs",
                     "fdefaultLanguage",
                     "fsessionTimeout");
 
