@@ -48,7 +48,7 @@ if (checkSession()) {
                 }
             } else {
                 $oGroupFolderLink = & GroupFolderLink::get($fGroupFolderLinkID);
-                $oPatternCustom->setHtml(getDeletePage($oGroupFolderLink));
+                $oPatternCustom->setHtml(getDeletePage($oGroupFolderLink, $fFolderID));
             }
         } else {
             // display an error message
