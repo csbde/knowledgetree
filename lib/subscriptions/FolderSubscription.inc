@@ -157,15 +157,15 @@ class FolderSubscription {
 	}
 	
 	/**
-	* Static function.  
-	* Given a folder subscription primary key will create
-	* a folder subscription object and populate it with the corresponding
-	* database values
-	*
-	* @param integer primary key of folder subscription to get
-	*
-	* @return object folder subscription object on successful retrieval, false otherwise and set $_SESSION["errorMessage"]
-	*/
+	 * Static function.  
+     * Given a folder subscription primary key will create
+     * a folder subscription object and populate it with the corresponding
+     * database values
+     *
+     * @param integer primary key of folder subscription to get
+     *
+     * @return object folder subscription object on successful retrieval, false otherwise and set $_SESSION["errorMessage"]
+     */
 	function get($iFolderSubscriptionID) {
 		global $default,  $lang_err_object_not_exist;
 		$sql = $default->db;
@@ -177,6 +177,48 @@ class FolderSubscription {
 		} 
  		$_SESSION["errorMessage"] = $lang_err_object_not_exist . "id = " . $iFolderSubscriptionID . " table = folder_subscriptions";
 		return false;
-	}    
+	}
+
+	/**
+	 * Static function.
+	 * Given a folder subscription's values will create
+	 * a folder subscription object and populate it with the corresponding
+	 * primary key
+	 *
+     * @param integer the folder ID
+     * @param integer the user ID
+	 * @return object folder subscription object on successful retrieval, false otherwise and set $_SESSION["errorMessage"]
+	 */
+	function getByIDs($iFolderID, $iUserID) {
+		global $default,  $lang_err_object_not_exist;
+		$sql = $default->db;
+		$sql->query("SELECT * FROM " . $default->owl_folder_subscriptions_table . " " .
+                    "WHERE folder_id = $iFolderID AND user_id = $iUserID");
+		if ($sql->next_record()) {
+			$oFolderSubscription = & new FolderSubscription($sql->f("folder_id"), $sql->f("user_id"));
+            $oFolderSubscription->iID = $sql->f("id");
+			return $oFolderSubscription;
+		} 
+ 		$_SESSION["errorMessage"] = $lang_err_object_not_exist . "id = " . $iFolderSubscriptionID . " table = folder_subscriptions";
+		return false;
+	}
+
+	/**
+     * Checks if a given folder subscription already exists using the folder and user ids
+ 	 *
+     * @param integer the folder ID
+     * @param integer the user ID
+     * @return true if the folder subscription exists, false otherwise
+     */
+	function exists($iFolderID, $iUserID) {
+		global $default;
+		$sql = $default->db;
+		$sql->query("SELECT id FROM " . $default->owl_folder_subscriptions_table . " " .
+                    "WHERE folder_id = $iFolderID AND user_id = $iUserID");
+		if ($sql->next_record()) {
+			return true;
+		}		
+		return false;
+	}
 }
 ?>
