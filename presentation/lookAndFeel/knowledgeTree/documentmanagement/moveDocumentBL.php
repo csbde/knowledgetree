@@ -129,6 +129,5 @@ if (checkSession()) {
 		$main->setErrorMessage("No document/folder selected");
 		$main->render();
 	}
-    
 }
 ?>
