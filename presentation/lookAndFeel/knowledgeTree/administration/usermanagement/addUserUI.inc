@@ -97,38 +97,39 @@ function getDetailsDBPage($suserName, $aAttributes) {
 function getDetailsLDAPPage($suserName, $aAttributes) {
 
  	global $default;
-	
-	$sToRender .= "<br></br>\n";
-	$sToRender .= "<b>User Details: </b>\n";
-	$sToRender .= "<table>\n";
-	$sToRender .= "<br></br>\n";
-	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>LDAP DN: </td><td><input disabled size = \"40\" type=\"text\" name=\"fLdap\" value = \"". $aAttributes[$suserName]["dn"]. "\"> </td>\n";
-    $sToRender .= "<input type=\"hidden\" name=\"fLdap\" value = \"". $aAttributes[$suserName]["dn"]. "\">\n";
-	$sToRender .= "</tr>\n";
-	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>Username: </td><td><input disabled size = \"40\" type=\"text\" name=\"fUsername\" value = \"" . $aAttributes[$suserName]["uid"] ."\"> </td>\n";
-    $sToRender .= "<input type=\"hidden\" name=\"fUsername\" value = \"" . $aAttributes[$suserName]["uid"] ."\">\n";
-	$sToRender .= "</tr>\n";
-	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>Name: </td><td><input size = \"40\" type=\"text\" name=\"fName\" value = \"" . $aAttributes[$suserName]["givenname"] ." " . $aAttributes[$suserName]["sn"] ."\"> </td>\n";
-	$sToRender .= "</tr>\n";
-	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>Email: </td><td><input disabled size = \"40\" type=\"text\" name=\"fEmail\" value = \"" . $aAttributes[$suserName]["mail"] ."\"> </td>\n";
-    $sToRender .= "<input type=\"hidden\" name=\"fEmail\" value = \"" . $aAttributes[$suserName]["mail"] ."\">\n";    
-	$sToRender .= "</tr>\n";
-	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>Mobile Number: </td><td><input size = \"40\" type=\"text\" name=\"fMobile\" value = \"" . $aAttributes[$suserName]["mobile"] ."\"> </td>\n";
-	$sToRender .= "</tr>\n";
-	$sToRender .= "<tr>\n";
-	$sToRender .= "</tr>\n";
-	$sToRender .= "<tr>\n";
-	$sToRender .= "</tr>\n";
-	$sToRender .= "<tr>\n";
-	$sToRender .= "<td></td><td>" . getAddButton();	
-	$sToRender .= "<td></td><td>" . getCancelButton();
-	$sToRender .= "</tr>\n";
-	$sToRender .= "</table>\n";
+	foreach ($aAttributes as $sUserName => $aUserAttributes) {
+        $sToRender .= "<br></br>\n";
+        $sToRender .= "<b>User Details: </b>\n";
+        $sToRender .= "<table>\n";
+        $sToRender .= "<br></br>\n";
+        $sToRender .= "<tr>\n";
+        $sToRender .= "<td>LDAP DN: </td><td><input disabled size = \"40\" type=\"text\" name=\"fLdap\" value = \"". $aUserAttributes["dn"]. "\"> </td>\n";
+        $sToRender .= "<input type=\"hidden\" name=\"fLdap\" value = \"". $aUserAttributes["dn"]. "\">\n";
+        $sToRender .= "</tr>\n";
+        $sToRender .= "<tr>\n";
+        $sToRender .= "<td>Username: </td><td><input disabled size = \"40\" type=\"text\" name=\"fUsername\" value = \"" . $aUserAttributes["uid"] ."\"> </td>\n";
+        $sToRender .= "<input type=\"hidden\" name=\"fUsername\" value = \"" . $aUserAttributes["uid"] ."\">\n";
+        $sToRender .= "</tr>\n";
+        $sToRender .= "<tr>\n";
+        $sToRender .= "<td>Name: </td><td><input size = \"40\" type=\"text\" name=\"fName\" value = \"" . $aUserAttributes["givenname"] ." " . $aUserAttributes["sn"] ."\"> </td>\n";
+        $sToRender .= "</tr>\n";
+        $sToRender .= "<tr>\n";
+        $sToRender .= "<td>Email: </td><td><input disabled size = \"40\" type=\"text\" name=\"fEmail\" value = \"" . $aUserAttributes["mail"] ."\"> </td>\n";
+        $sToRender .= "<input type=\"hidden\" name=\"fEmail\" value = \"" . $aUserAttributes["mail"] ."\">\n";    
+        $sToRender .= "</tr>\n";
+        $sToRender .= "<tr>\n";
+        $sToRender .= "<td>Mobile Number: </td><td><input size = \"40\" type=\"text\" name=\"fMobile\" value = \"" . $aUserAttributes["mobile"] ."\"> </td>\n";
+        $sToRender .= "</tr>\n";
+        $sToRender .= "<tr>\n";
+        $sToRender .= "</tr>\n";
+        $sToRender .= "<tr>\n";
+        $sToRender .= "</tr>\n";
+        $sToRender .= "<tr>\n";
+        $sToRender .= "<td></td><td>" . getAddButton();	
+        $sToRender .= "<td></td><td>" . getCancelButton();
+        $sToRender .= "</tr>\n";
+        $sToRender .= "</table>\n";
+    }
 	
 	return $sToRender;
 	
