@@ -112,14 +112,6 @@ CREATE TABLE zseq_document_subscriptions (
 INSERT INTO `zseq_document_subscriptions` SELECT MAX(`id`) FROM `document_subscriptions`;
 ALTER TABLE `document_subscriptions` CHANGE `id` `id` INT( 11 ) NOT NULL;
 
-DROP TABLE IF EXISTS zseq_document_text;
-CREATE TABLE zseq_document_text (
-  id int(10) unsigned NOT NULL auto_increment,
-  PRIMARY KEY  (id)
-) TYPE=MyISAM;
-INSERT INTO `zseq_document_text` SELECT MAX(`id`) FROM `document_text`;
-ALTER TABLE `document_text` CHANGE `id` `id` INT( 11 ) NOT NULL;
-
 DROP TABLE IF EXISTS zseq_document_transaction_types_lookup;
 CREATE TABLE zseq_document_transaction_types_lookup (
   id int(10) unsigned NOT NULL auto_increment,
@@ -421,3 +413,5 @@ ALTER TABLE `documents` ADD `created` DATETIME NOT NULL ;
 ALTER TABLE `documents` ADD INDEX ( `created` ) ;
 
 UPDATE documents AS D, document_transactions AS T SET D.created = T.datetime WHERE T.document_id = D.id AND T.transaction_id = 1;
+
+ALTER TABLE `document_text` DROP `id` 
