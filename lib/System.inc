@@ -31,7 +31,7 @@ class System {
     function initialised() {
         global $default;
         
-        if ($this->db->query("SELECT count(*) AS count FROM system_settings WHERE name<>'lastIndexUpdate'")) {
+        if ($this->db->query("SELECT count(*) AS count FROM system_settings WHERE name<>'lastIndexUpdate' AND name<>'filesystemRoot'")) {
             $this->db->next_record();
             return ($this->db->f("count") > 0) ? true : false;
         }
