@@ -70,7 +70,8 @@ if (checkSession()) {
 	// build the page
 	require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");    
 	$main->setCentralPayload($oContent);
-	$main->setFormAction($_SERVER['PHP_SELF']);	
+	$main->setFormAction($_SERVER['PHP_SELF']);
+	$main->setSubmitMethod("GET");
 	$main->setHasRequiredFields(true);			
 	$main->render();
 } 
