@@ -418,6 +418,7 @@ class Document {
 			
 			$oEmail = & new Email();
 			$oEmail->send($oUser->getEmail(), "Document collaboration role active", $sBody);
+			DocumentCollaboration::createDependantDocuments($oFolderUserRole);
 			
 			//check if there are any other parallel steps that have to be started
 			while ($sql->next_record()) {
@@ -437,10 +438,11 @@ class Document {
 			
 					$oEmail = & new Email();
 					$oEmail->send($oUser->getEmail(), "Document collaboration role active", $sBody);
+					DocumentCollaboration::createDependantDocuments($oFolderUserRole);
 				} else {
 					return;
 				}
-			}
+			}			
 		}
 	}
 
@@ -476,26 +478,31 @@ class Document {
     */
     function & get($iDocumentID) {
         global $default, $lang_err_doc_not_exist;
-        $sql = $default->db;
-        // TODO: join on sys_deleted
-        $sql->query("SELECT * FROM $default->owl_documents_table WHERE id = $iDocumentID");
-        if ($sql->next_record()) {			
-            $oDocument = & new Document(stripslashes($sql->f("name")), stripslashes($sql->f("filename")), $sql->f("size"), $sql->f("creator_id"), $sql->f("mime_id"), $sql->f("folder_id"), $sql->f("description"));
-            $oDocument->setDocumentTypeID($sql->f("document_type_id"));
-            $oDocument->setMajorVersionNumber($sql->f("major_version"));
-            $oDocument->setMinorVersionNumber($sql->f("minor_version"));
-            $oDocument->setIsCheckedOut($sql->f("is_checked_out"));
-            $oDocument->setLastModifiedDate($sql->f("modified"));			
-			$oDocument->sParentFolderIDs = stripslashes($sql->f("parent_folder_ids"));
-			$oDocument->sFullPath = stripslashes($sql->f("full_path"));
-            $oDocument->setCheckedOutUserID($sql->f("checked_out_user_id"));
-            // FIXME: nasty hack- paying the penalty for adding status_id late in phase 2
-            $oDocument->setStatusID( ($sql->f("status_id") == "" ? lookupStatusID("Live") : $sql->f("status_id")) );
-            $oDocument->iId = $iDocumentID;
-            return $oDocument;
+        if (strlen($iDocumentID) > 0) {
+	        $sql = $default->db;
+	        // TODO: join on sys_deleted
+	        $sql->query("SELECT * FROM $default->owl_documents_table WHERE id = $iDocumentID");
+	        if ($sql->next_record()) {			
+	            $oDocument = & new Document(stripslashes($sql->f("name")), stripslashes($sql->f("filename")), $sql->f("size"), $sql->f("creator_id"), $sql->f("mime_id"), $sql->f("folder_id"), $sql->f("description"));
+	            $oDocument->setDocumentTypeID($sql->f("document_type_id"));
+	            $oDocument->setMajorVersionNumber($sql->f("major_version"));
+	            $oDocument->setMinorVersionNumber($sql->f("minor_version"));
+	            $oDocument->setIsCheckedOut($sql->f("is_checked_out"));
+	            $oDocument->setLastModifiedDate($sql->f("modified"));			
+				$oDocument->sParentFolderIDs = stripslashes($sql->f("parent_folder_ids"));
+				$oDocument->sFullPath = stripslashes($sql->f("full_path"));
+	            $oDocument->setCheckedOutUserID($sql->f("checked_out_user_id"));
+	            // FIXME: nasty hack- paying the penalty for adding status_id late in phase 2
+	            $oDocument->setStatusID( ($sql->f("status_id") == "" ? lookupStatusID("Live") : $sql->f("status_id")) );
+	            $oDocument->iId = $iDocumentID;
+	            return $oDocument;
+	        }
+	        $_SESSION["errorMessage"] = $lang_err_object_not_exist . "id = " . $iDocumentID . " table = documents";
+	        return false;
+        } else {
+        	$_SESSION["errorMessage"] = "Document ID not set.  Cannot retrieve document with no id";
+        	return false;
         }
-        $_SESSION["errorMessage"] = $lang_err_object_not_exist . "id = " . $iDocumentID . " table = documents";
-        return false;
     }
 
     /**
