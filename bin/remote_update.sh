@@ -14,7 +14,8 @@ mkdir $tmp
 
 # export owl
 cd $tmp
-cvs -d $cvsroot co -r $tag owl
+#cvs -d $cvsroot co -r $tag owl
+cvs -d $cvsroot co owl
 cd owl/Documents
 cvs update -d
 
@@ -25,4 +26,4 @@ tar -czvf /tmp/owl.tgz $tmp
 scp /tmp/owl.tgz $scpUser@$remote:$remotePath
 
 # untar it remotely
-ssh $scpUser@$remote "cd $remotePath; mv $remoteDir $remoteDir-`date +%Y-%m-%d`; tar -zxvf owl.tgz; rm owl.tgz; mv tmp/dms/owl/* $remoteDir; rmdir tmp"
+ssh $scpUser@$remote "cd $remotePath; mv $remoteDir $remoteDir-`date +%Y-%m-%d`; tar -zxvf owl.tgz; rm owl.tgz; mv tmp/dms/owl $remoteDir; rm -rf tmp"
