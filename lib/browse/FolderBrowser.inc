@@ -120,7 +120,10 @@ class FolderBrowser extends Browser {
                     if (Permission::userHasDocumentReadPermission($sql->f("id"))) {
                         // add documents to array
                         // set file attributes
-                        $results["documents"][] = & Document::get($sql->f("id")); 
+                        $oDocument = & Document::get($sql->f("id"));
+                        if ($oDocument->getStatusID() == lookupStatusID("Live")) {
+                        	$results["documents"][] = $oDocument;
+                        } 
                     } else {
                         // set access denied message
                         $results["accessDenied"] = true;
