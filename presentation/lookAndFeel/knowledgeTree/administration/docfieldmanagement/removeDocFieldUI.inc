@@ -44,48 +44,44 @@ function getDeletePage($fDocFieldID) {
     return $sToRender;
 }
 
+function getStatusPage($sHeading, $sText = "") {
+	global $default;
+	
+    $sToRender .= renderHeading("Remove Document Field");
+    $sToRender .= "<table border=\"0\" cellspacing=\"2\" cellpadding=\"2\">\n";
+    $sToRender .= "<tr>\n";
+    $sToRender .= "<td><b>$sHeading</b></td>\n";
+    $sToRender .= "</tr>\n";
+    $sToRender .= "<tr/><tr/>\n";
+    $sToRender .= "<tr><td>$sText</td></tr>\n";
+    $sToRender .= "<tr/><tr/>\n";
+	$sToRender .= "<td align=\"right\">" . generateControllerLink("listDocFields", "", "<img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" />") . "</td>\n";
+    $sToRender .= "</table>\n";
+    return $sToRender;
+}
+
 // get successfully deletion page
 function getDeleteSuccessPage() {
-
-    global $default;
-
-    $sToRender .= renderHeading("Remove Document Field");
-    $sToRender .= "<TABLE BORDER=\"0\" CELLSPACING=\"2\" CELLPADDING=\"2\">\n";
-    $sToRender .= "<tr>\n";
-    $sToRender .= "<td><b>Document Field SuccessFully Removed!</b></td>\n";
-    $sToRender .= "</tr>\n";
-    $sToRender .= "<tr></tr>\n";
-    $sToRender .= "<tr></tr>\n";
-    $sToRender .= "<tr></tr>\n";
-    $sToRender .= "<tr></tr>\n";
-    $sToRender .= "<tr>\n";
-    $sToRender .= "<td align = right><a href=\"$default->rootUrl/control.php?action=listDocFields\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
-    $sToRender .= "</tr>\n";
-    $sToRender .= "</table>\n";
-
-    return $sToRender;
+	return getStatusPage("Document Field SuccessFully Removed!");
 }
 
 // get deletion failed page
 function getDeleteFailPage() {
+	return getStatusPage("Deletion Failed!", "Please Ensure that The Document Field has not been assigned");
+}
 
-    global $default;
-
-    $sToRender .= renderHeading("Remove Document Field");
-    $sToRender .= "<TABLE BORDER=\"0\" CELLSPACING=\"2\" CELLPADDING=\"2\">\n";
-    $sToRender .= "<tr>\n";
-    $sToRender .= "<td><b>Deletion Failed!</b></td>\n";
-    $sToRender .= "</tr>\n";
-    $sToRender .= "<tr></tr>\n";
-    $sToRender .= "<tr></tr>\n";
-    $sToRender .= "<tr><td>Please Ensure that The Document Field has not been assigned</td></tr>\n";
-    $sToRender .= "<tr></tr>\n";
-    $sToRender .= "<tr></tr>\n";
-    $sToRender .= "</tr>\n";
-    $sToRender .= "<tr><td align = right><a href=\"$default->rootUrl/control.php?action=listDocFields\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td></tr>\n";
+function getFieldMappedPage($sDocumentFieldName, $aDocumentTypes) {
+	global $default;
+	
+    $sToRender .= "<table>\n";
+    $sToRender .= "<tr><td>Document field '$sDocumentFieldName' is mapped to the following document type(s), and can therefore not be deleted.</td></tr>\n";
+    $sToRender .= "<tr><td>Click on the Document Type name to edit its fields, or click 'Back' to return to List Document Fields.</td></tr>\n";
+    for ($i=0; $i<count($aDocumentTypes); $i++) {
+    	$sToRender .= "<tr><td><strong>" . generateControllerLink("editDocTypeFields", "fDocTypeSelected=1&fDocTypeID=" . $aDocumentTypes[$i]->getID(), $aDocumentTypes[$i]->getName()) . "</strong></td></tr>";
+    }
     $sToRender .= "</table>\n";
 
-    return $sToRender;
+	return getStatusPage("Can't delete document field '$sDocumentFieldName'", $sToRender);
 }
 
 // show listbox...or the text name
@@ -117,8 +113,8 @@ function getDocFieldDataType($oDocField) {
 function getDeleteButton($oDocField) {
     global $default;
     if (isset($oDocField)) {
-        return "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/delete.gif\" value=\"submit\"border=\"0\" /></td>\n".
-               "<td align = right><a href=\"$default->rootUrl/control.php?action=listDocFields\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" /></a></td>\n";
+        return "<td align=\"right\"><input type=\"image\" src =\"$default->graphicsUrl/widgets/delete.gif\" value=\"submit\"border=\"0\" /></td>\n".
+               "<td align=\"right\">" . getControllerLink("listDocFields", "<img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" />") . "</td>\n";
     }
 }
 
@@ -126,10 +122,10 @@ function getDeleteButton($oDocField) {
 function getCancelButton($oDocField) {
     global $default;
     if (!isset($oDocField)) {
-        return "<td align = right><a href=\"$default->rootUrl/control.php?action=docfield\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" value=\"cancel\" border = \"0\"/></a></td>\n";
+        return "<td align=\"right\">" . getControllerLink("docfield", "<img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" />") . "</td>\n";
     }
     else {
-        return "<td align = right><a href=\"$default->rootUrl/control.php?action=listDocFields\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" /></a></td>\n";
+        return "<td align=\"right\">" . getControllerLink("listDocFields", "<img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" />") . "</td>\n";
     }
 }
 ?>
