@@ -191,6 +191,10 @@ class Folder {
 		return $this->sFullPath;
 	}
 	
+	function getParentFolderIDs() {
+		return $this->sParentFolderIDs;
+	}
+	
 	/**
 	* Generate a comma delimited string containing
 	* the parent folder ids
