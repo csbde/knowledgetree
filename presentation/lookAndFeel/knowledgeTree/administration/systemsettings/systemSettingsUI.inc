@@ -17,6 +17,7 @@ function getPage() {
 
     $aRowNames = array ("LDAP Server: ",
                         "LDAP Root DN: ",
+                        "LDAP Server Type (iPlanet OR ActiveDirectory): ",
                         "Email Server:",
                         "Administrator Email Address: ",
                         "Administrator Name: ",
@@ -33,6 +34,7 @@ function getPage() {
 
     $aNames = array("fldapServer",
                     "fldapRootDn",
+                    "fldapServerType",
                     "femailServer",
                     "femailAdmin",
                     "femailAdminName",
