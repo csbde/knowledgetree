@@ -269,6 +269,9 @@ if (checkSession()) {
             		// and ordinary users to request that the document be restored
 					$oPatternCustom->setHtml(getRequestRestoreDocumentPage($oDocument));
             	}            
+            } else {
+	            $oPatternCustom->setHtml("<a href=\"" . generateControllerLink("browse", "fFolderID=" . $oDocument->getFolderID()) . "\"><img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\" /></a>\n");
+	            $main->setErrorMessage("The document you have chosen no longer exists in the DMS.");
             }
             $main->setCentralPayload($oPatternCustom);
             $main->setFormAction("$default->rootUrl/control.php?action=modifyDocument&fDocumentID=" . $oDocument->getID());
