@@ -13,7 +13,7 @@ function renderHeading($sHeading) {
     $sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
     $sColor = $default->siteMap->getSectionColour($sSectionName, "th");
     $sToRender  = "<table border=\"0\" width=\"100%\">\n";
-    $sToRender .= "<tr align=\"left\"><th class=\"sectionHeading\" bgcolor=\"$sColor\">$sHeading</th></tr>\n";
+    $sToRender .= "<tr align=\"left\"><th class=\"sectionHeading\" bgcolor=\"$sColor\"><font color=\"ffffff\">$sHeading</font></th></tr>\n";
     $sToRender .= "<tr/>\n";
     $sToRender .= "<tr/>\n";
     $sToRender .= "</table>\n";
@@ -31,10 +31,10 @@ function getPage($iDocumentID) {
 	$bAddNetscapeScript = false;
 	if (! (($default->phpSniff->property("browser") == "moz") && ($default->phpSniff->property("version") <= "4.79")) ) {
 		//for any other browser but netscape 4.7 do this	
-		$sToRender .= "<td>Document to link</td><td><input type=\"text\" DISABLED name=\"fTargetDocument\" value=\"\" /><input type=\"button\" value=\"Browse\" onClick=\"newWindow('http://ktdev/control.php?action=templateBrowse','window2')\"></td>\n";
+		$sToRender .= "<td>Document to link</td><td><input type=\"text\" DISABLED name=\"fTargetDocument\" value=\"\" /><input type=\"button\" value=\"Browse\" onClick=\"newWindow('" . generateControllerUrl("templateBrowse") . "','window2')\"></td>\n";
 	}else {
 		//for netscape 4.7 do this
-		$sToRender .= "<td>Document to link</td><td><input type=\"text\"  value=\"\" name=\"fTargetDocument\" onblur=\"disable(document.MainForm.fTargetDocument);\" /><input type=\"button\" value=\"Browse\" onClick=\"disable(document.MainForm.fTargetDocument);newWindow('http://ktdev/control.php?action=templateBrowse','window2')\"></td>\n";
+		$sToRender .= "<td>Document to link</td><td><input type=\"text\"  value=\"\" name=\"fTargetDocument\" onblur=\"disable(document.MainForm.fTargetDocument);\" /><input type=\"button\" value=\"Browse\" onClick=\"disable(document.MainForm.fTargetDocument);newWindow('" . generateControllerUrl("templateBrowse") . "','window2')\"></td>\n";
 		$bAddNetscapeScript = true;
 	}		
 	$sToRender .= "</tr>\n";
