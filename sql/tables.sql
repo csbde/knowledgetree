@@ -83,7 +83,9 @@ is_checked_out BIT NOT NULL
 CREATE TABLE document_subscriptions ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 user_id INTEGER NOT NULL,
-document_id INTEGER NOT NULL
+document_id INTEGER NOT NULL,
+datetime_alerted DATETIME,
+is_alerted BIT
 );
 
 CREATE TABLE folders ( 
@@ -100,7 +102,9 @@ is_public BIT NOT NULL
 CREATE TABLE folder_subscriptions ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 user_id INTEGER NOT NULL,
-folder_id INTEGER NOT NULL
+folder_id INTEGER NOT NULL,
+datetime_alerted DATETIME,
+is_alerted BIT
 );
 
 CREATE TABLE folders_users_roles_link ( 
