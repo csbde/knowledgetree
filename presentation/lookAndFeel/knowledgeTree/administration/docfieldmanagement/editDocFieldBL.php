@@ -15,12 +15,10 @@ if (checkSession()) {
 	require_once("editDocFieldUI.inc");
 	require_once("$default->fileSystemRoot/lib/security/permission.inc");
 	require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentField.inc");
-	require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 	require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");	
 	require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
 	require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
 	require_once("$default->fileSystemRoot/presentation/Html.inc");
-	
 	
 	$oPatternCustom = & new PatternCustom();		
 	
@@ -42,27 +40,34 @@ if (checkSession()) {
 			$oDocField->setHasLookup(false);
 		}
 		if ($oDocField->update()) {
-				// if successfull print out success message
-				$oPatternCustom->setHtml(getEditPageSuccess());
-				
+
+			// if we're setting lookup to be true, then prompt for an initial lookup value??
+			if (isset($fDocFieldHasLookup)) {
+				// and there are no metadata values for this lookup
+				if (DocumentField::getLookupCount($fDocFieldID) == 0) {
+					// then redirect to the edit metadata page
+					controllerRedirect("addMetaDataForField", "fDocFieldID=$fDocFieldID");
+				}
+			}
+			// otherwise, print out success message
+			$oPatternCustom->setHtml(getEditPageSuccess());
 		} else {
-				// if fail print out fail message
-				$oPatternCustom->setHtml(getEditPageFail());
+			// if fail print out fail message
+			$oPatternCustom->setHtml(getEditPageFail());
 		}
 	} else if (isset($fDocFieldID)){	
-				
 		// post back on DocField select from manual edit page	
 		$oPatternCustom->setHtml(getEditPage($fDocFieldID));
-		$main->setFormAction($_SERVER["PHP_SELF"] . "?fForStore=1");
-		
-		
+		$sFormAction = $_SERVER["PHP_SELF"] . "?fForStore=1";
 	} else {
 		// if nothing happens...just reload edit page
 		$oPatternCustom->setHtml(getEditPage(null));
-		$main->setFormAction($_SERVER["PHP_SELF"]);
-			
+		$sFormAction = $_SERVER["PHP_SELF"];
 	}
+	
 	//render the page
+	require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
+	$main->setFormAction($sFormAction);	
 	$main->setCentralPayload($oPatternCustom);
     $main->setHasRequiredFields(true);
 	$main->render();	
