@@ -186,8 +186,11 @@ function getDocTypeDisplay($oDocType) {
     global $default;
     if (!isset($oDocType)) {
         $oPatternListBox = & new PatternListBox($default->owl_document_types_table, "name", "id", "fDocTypeID");
-        $oPatternListBox->setFromClause("LEFT OUTER JOIN $default->owl_documents_table D on ST.id=D.document_type_id");
-        $oPatternListBox->setWhereClause("ISNULL(D.id)");
+        // only restrict doc type editing for non sys admins
+        if (!Permission::userIsSystemAdministrator()) {
+            $oPatternListBox->setFromClause("LEFT OUTER JOIN $default->owl_documents_table D on ST.id=D.document_type_id");
+            $oPatternListBox->setWhereClause("ISNULL(D.id)");
+        }
         $oPatternListBox->setPostBackOnChange(true);
         return $oPatternListBox->render();
     } else {
