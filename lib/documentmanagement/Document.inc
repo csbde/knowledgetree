@@ -267,6 +267,64 @@ class Document {
         $_SESSION["errorMessage"] = $lang_err_object_key;
         return false;
     }
+	
+	/**
+	* Begin the current document's collaboration process
+	*
+	*/	
+	function beginCollaborationProcess() {
+		global $default;
+		//get the steps in this document's collaboration process
+		$sQuery = "SELECT FURL.id, GFAL.precedence " .
+				"FROM $default->owl_folders_user_roles_table AS FURL INNER JOIN $default->owl_groups_folders_approval_table AS GFAL ON FURL.group_folder_approval_id = GFAL.id " .
+				"WHERE document_id = " . $this->iId . " " .
+				"ORDER BY GFAL.precedence ASC";
+		$sql = $default->db;
+		$sql->query($sQuery);
+		if  ($sql->next_record()) {
+			//get the first step in the collaboration process			
+			$iMinimumSequenceNumber = $sql->f("precedence");
+			$oFolderUserRole = FolderUserRole::get($sql->f("id"));
+			$oFolderUserRole->setActive(true);
+			$oFolderUserRole->update();
+			$oFolderCollaboration = FolderCollaboration::get($oFolderUserRole->getGroupFolderApprovalID());
+			//get the role the user must perform
+			$oRole = Role::get($oFolderCollaboration->getRoleID());
+			//get the user to email
+			$oUser = User::get($oFolderUserRole->getUserID());
+			
+			$sBody = $oUser->getUserName() . ", your role of '" . $oRole->getName() . "' in the document, '" . $this->sName . "' collaboration process is now active. " .
+										"Click <a href=\"https://" . $_SERVER['SERVER_NAME'] . "$default->owl_root_url/control.php?action=viewDocument&fDocumentID=" . $this->iId . "\">here</a> to access " .
+										"the document";
+										
+			
+			$oEmail = & new Email($default->owl_email_from, $default->owl_email_fromname);
+			$oEmail->send($oUser->getEmail(), "Document collaboration role active", $sBody, $default->owl_email_from, $default->owl_email_fromname);
+			
+			//check if there are any other parallel steps that have to be started
+			while ($sql->next_record()) {
+				if ($sql->f("precedence") == $iMinimumSequenceNumber) {
+					$oFolderUserRole = FolderUserRole::get($sql->f("id"));
+					$oFolderUserRole->setActive(true);
+					$oFolderUserRole->update();
+					$oFolderCollaboration = FolderCollaboration::get($oFolderUserRole->getGroupFolderApprovalID());
+					//get the role the user must perform
+					$oRole = Role::get($oFolderCollaboration->getRoleID());
+					//get the user to email
+					$oUser = User::get($oFolderUserRole->getUserID());
+			
+					$sBody = $oUser->getUserName() . ", your role of '" . $oRole->getName() . "' in the document, '" . $this->sName . "' collaboration process is now active. " .
+											"Click <a href=\"https://" . $_SERVER["SERVER_NAME"] . "$default->owl_root_url/control.php?action=viewDocument&fDocumentID=" . $this->iId . "\">here</a> to access " .
+											"the document";
+			
+					$oEmail = & new Email($default->owl_email_from, $default->owl_email_fromname);
+					$oEmail->send($oUser->getEmail(), "Document collaboration role active", $sBody, $default->owl_email_from, $default->owl_email_fromname);
+				} else {
+					return;
+				}
+			}
+		}
+	}
 
 
     /**
