@@ -73,7 +73,7 @@ class Permission {
 		if (Permission::userHasGroupWritePermissionForFolder($iFolderID) ||
 			Permission::userHasWriteRoleForFolder($iFolderID) ||
 			Permission::userIsSystemAdministrator() ||
-			Permission::userIsUnitAdministrator($iFolderID)) {
+			Permission::userIsUnitAdministratorForFolder($iFolderID)) {
 				return true;
 			}
 		$_SESSION["errorMessage"] = $lang_err_user_folder_write . "id " . $iFolderID; 
@@ -354,6 +354,24 @@ class Permission {
 			"INNER JOIN $default->owl_groups_table AS GL ON GL.id = UGL.group_id " .
 			"WHERE UGL.user_id = " . $_SESSION["userID"] . " " .
 			"AND GL.is_unit_admin = 1");
+		return $sql->next_record();
+	}
+    
+	/**
+	* Checks if the current user is a unit administrator
+	*
+	* @return boolean true if the user is the unit administrator for the unit to which the folder belongs, false otherwise
+	*/
+	function userIsUnitAdministratorForFolder($iFolderID) {
+        global $default;
+		$sql = new Owl_DB();
+		$sql->query("SELECT UGL.group_id " .
+			"FROM $default->owl_users_groups_table AS UGL INNER JOIN $default->owl_groups_units_table AS GUL ON GUL.group_id = UGL.group_id " .
+			"INNER JOIN $default->owl_groups_table AS GL ON GL.id = UGL.group_id " .
+            "INNER JOIN $default->owl_groups_folders_table AS GFL ON GFL.group_id = UGL.group_id " .
+			"WHERE UGL.user_id = " . $_SESSION["userID"] . " " .
+			"AND GL.is_unit_admin = 1 " .
+            "AND GFL.folder_id = $iFolderID");
 		return $sql->next_record();
 	}
     
