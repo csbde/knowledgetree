@@ -170,7 +170,8 @@ class NavBar
                                generateControllerUrl($default->siteMap->getDefaultAction("Advanced Search")),
                                generateControllerUrl($default->siteMap->getDefaultAction("Administration")),
                                generateControllerUrl($default->siteMap->getDefaultAction("Preferences")),
-                               generateControllerUrl($default->siteMap->getDefaultAction("Help")),
+                               //generateControllerUrl($default->siteMap->getDefaultAction("Help")),
+							   "help", 
                                generateControllerUrl($default->siteMap->getDefaultAction("Logout")));
 
 
@@ -189,7 +190,16 @@ class NavBar
         $row4MenuImages = array($colourHome,$colourmdocs,$coloursubscriptions,$colourasearch,$colouradmin,$colourprefs,$colourhelp,$colourlogout);
 
         //set up the links
-        $oPatternTableLinks = new PatternTableLinks($aTopMenuLinks, null, 1, 8,2,$aTopMenuImages);
+        //$oPatternTableLinks = new PatternTableLinks($aTopMenuLinks, null, 1, 8,2,$aTopMenuImages);
+		$sTopMenu = "<table width=\"100%\" height=\"100%\" cellspacing = \"0\">\n<tr>\n";
+		for ($i = 0; $i < count($aTopMenuLinks); $i++) {			
+			if (strcmp($aTopMenuLinks[$i], "help") == 0) {				
+				$sTopMenu .= "<td cellspacing = \"20\"><input type=\"image\" src=\"" . $aTopMenuImages[$i] . "\" onClick=\"return helpWindow();\" border=\"0\" /></a></td>\n";
+			} else {
+				$sTopMenu .= "<td cellspacing = \"20\"><a href=\"" . $aTopMenuLinks[$i] . "\"><img src=\"" . $aTopMenuImages[$i] . "\" border=\"0\" /></a></td>\n";
+			}
+		}
+		$sTopMenu .= "</tr>\n</table>\n";		
         $oColourTableLinks = new PatternTableLinks($aTopMenuLinks, null, 1, 8,2,$row4MenuImages);
 
         // set up rows
@@ -198,7 +208,8 @@ class NavBar
         //row 2 will be a search bar
         $row2 ="";
         //row 3 will be the heading subsections
-        $row3 =  $oPatternTableLinks->render();
+        //$row3 =  $oPatternTableLinks->render();
+		$row3 =  $sTopMenu;
         //array of coloured section images
         $row4 = $oColourTableLinks->render();
 
@@ -209,19 +220,20 @@ class NavBar
               <Table cellpadding = \"1\" cellspacing = \"1\" border=\"1\" width=\"100%\" height=\"100%\">\n " .
               "<tr height=\"20%\"><td background = " . $hStretched ." width =\"100%\">". $row1 ."</td></tr>\n " .
               "<tr  height=\"30%\"> <td VALIGN = \"absmiddle\" background = " . $hStretched ." width =\"100%\" NOWRAP >\n " .
-              "<img align = \"absmiddle\" src = \"$default->graphicsUrl/arrow.gif\" ></img>\n " .
-              "<INPUT type=\"Text\" name=\"fSearchText\" width=\"30\" height = \"10\" align = \"absmiddle\" />\n " .
+              "<img align = \"absmiddle\" src = \"$default->graphicsUrl/arrow.gif\" ></img>\n " .			  
+			  "<input name=\"fSearchText\" />\n" .
+              //"<INPUT type=\"text\" name=\"fSearchText\" width=\"30\" height = \"10\" align = \"absmiddle\" />\n " .
 			  "<INPUT type=\"hidden\" name=\"fBrowseType\" value=\"" . $this->sBrowseType . "\"  />\n " .
 			  "<INPUT type=\"hidden\" name=\"fFolderID\"  value=\"" . $this->iFolderID . "\"  />\n " .
 			  "<INPUT type=\"hidden\" name=\"fDocumentID\" value=\"" . $this->iDocumentID . "\"  />\n " .
 			  "<INPUT type=\"hidden\" name=\"fCategoryName\" value=\"" . $this->sCategoryName . "\"  />\n " .
 			  "<INPUT type=\"hidden\" name=\"fDocTypeID\"  value=\"" . $this->iDocTypeID . "\"  />\n " .
-              "<INPUT type=\"button\" onClick=\"setActionAndSubmit('$default->rootUrl/presentation/lookAndFeel/knowledgeTree/documentmanagement/searchDocumentBL.php')\" value=\"Search\" src=\"$default->graphicsUrl/search.gif\" align = \"absmiddle\" border=\"0\" />\n " .
+              "<INPUT type=\"button\" onClick=\"setActionAndSubmitAsGet('http://www.google.com')\" value=\"Search\" src=\"$default->graphicsUrl/search.gif\" align = \"absmiddle\" border=\"0\" />\n " .			  			  
               "</td>\n " .
               "</tr>\n" .
               "<tr height=\"25%\" ><td width =\"10%\">". $row3 . "</td></tr>\n" .
               "<tr height=\"25%\"><td width =\"100%\">". $row4 . "</td></tr>\n" .
-              "</table>\n";
+              "</table>\n";			  
 
         //set the bar as html to object
         $toRender->setHtml($bar);

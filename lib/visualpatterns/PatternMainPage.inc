@@ -39,6 +39,8 @@ class PatternMainPage {
 	
 	var $sErrorMessage;
 	
+	var $sHelpContext = "browse";
+	
 	function setNorthWestPayload($oNewVal) {		
 		$this->oNorthWestPayload = & $oNewVal;		
 	}
@@ -71,6 +73,10 @@ class PatternMainPage {
 		$this->bHasRequiredFields = $bNewValue;
 	}
 	
+	function setHelpContext($sNewValue) {
+		$this->sHelpContext = $sNewValue;
+	}
+	
 	
 	/**
 	* Render the page in HTML
@@ -84,7 +90,7 @@ class PatternMainPage {
                             "<link rel=\"stylesheet\" href=\"$default->uiUrl/stylesheet.php\">\n".                            
 							PatternMainPage::getJavaScript() . "\n" .							
 							"</head>\n" .
-							"<body marginleft=\"0\" marginheight=\"0\">\n";
+							"<body marginleft=\"0\" marginheight=\"0\">\n";							
         // hack to circumvent the crapness of ns 4.79
         if (! (($default->phpSniff->property("browser") == "moz") && ($default->phpSniff->property("version") <= "4.79")) ) {
             $sToRender .=       "<div id=\"divUp\">" .
@@ -95,7 +101,8 @@ class PatternMainPage {
                                 "</div>";
         }
                             
-		$sToRender .= 		    "<form name=\"MainForm\" " . (isset($this->sFormEncType) ? "enctype=\"$this->sFormEncType\" " : " ") . " action=\"".$this->sFormAction."\" method=\"POST\" " . (($this->bHasRequiredFields) ? "onsubmit=\"return validateForm(this)\" " : " ") . ">\n" .
+		$sToRender .= 		    "<form name=\"MainForm\" " . (isset($this->sFormEncType) ? "enctype=\"$this->sFormEncType\" " : " ") . " action=\"".$this->sFormAction."\" method=POST " . (($this->bHasRequiredFields) ? "onsubmit=\"return validateForm(this)\" " : " ") . ">\n" .		
+		
 								"<table border=\"1\" width=\"700\" height=\"600\">\n " .
 
 									"<tr height=\"18%\">\n".
@@ -117,7 +124,7 @@ class PatternMainPage {
 									<tr border = \"1\" height=\"72%\" >\n										
 										<td border = \"1\" width=\"5%\">";
 										if (isset($this->oWestPayload)) {											
-											$sToRender = $sToRender . "\n" . $this->oWestPayload->render() . "\n";
+											$sToRender = $sToRender . "\n" . $this->oWestPayload->render() . "\n";											
 										} else {
 											$sToRender = $sToRender . "\nWest payload not set\n";
 										}
@@ -128,7 +135,7 @@ class PatternMainPage {
                                             // hack to circumvent the crapness of ns 4.79
                                             if (! (($default->phpSniff->property("browser") == "moz") && ($default->phpSniff->property("version") <= "4.79")) ) {
                                                 $sToRender .= "\t<div id=\"divScrollTextCont\">\n
-                                                               \t\t<div id=\"divText\">\n";
+                                                               \t\t<div id=\"divText\">\n";												
                                             }                                          
 											if (isset($this->sErrorMessage)) {
 												$sToRender .= "<table border=\"0\"><tr><td><p class=\"errorText\">$this->sErrorMessage</td></tr></table>\n ";
@@ -163,12 +170,27 @@ class PatternMainPage {
         // hack to circumvent the crapness of ns 4.79
         if (! (($default->phpSniff->property("browser") == "moz") && ($default->phpSniff->property("version") <= "4.79")) ) {
             return "<script type=\"text/javascript\" src=\"$sUrl/js/misc.js\"></script>
-                    <script type=\"text/javascript\" src=\"$sUrl/js/scroll.js\"></script>";
+                    <script type=\"text/javascript\" src=\"$sUrl/js/scroll.js\"></script>" .
+					$this->getHelpJavaScript();
         } else {
-            return "<script type=\"text/javascript\" src=\"$sUrl/js/misc.js\"></script>";        
+            return "<script type=\"text/javascript\" src=\"$sUrl/js/misc.js\"></script>" . $this->getHelpJavaScript();        
         }
         
 	}
+	
+	function getHelpJavaScript() {
+		global $default;
+		return "\n\n<SCRIPT LANGUAGE=\"javascript\">\n " .
+		"<!--\n" .	 
+		"function helpWindow() {\n" .			
+			"window.open ('$default->uiUrl/help.php?fAction=" . $default->siteMap->getActionFromPage((substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])))) . "&fSection=" . $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"]))) . "', 'newwindow', config='height=600,width=800, toolbar=no, menubar=no, scrollbars=no, resizable=true,location=no, directories=no, status=no');\n" .
+			"return false;\n" .
+		"}\n" .
+		"-->\n" .
+		"</SCRIPT>\n\n";
+	}
+
+
 }
 
 ?>
