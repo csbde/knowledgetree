@@ -118,3 +118,6 @@ name CHAR(100)
 INSERT INTO time_unit_lookup (name) VALUES ("Years");
 INSERT INTO time_unit_lookup (name) VALUES ("Months");
 INSERT INTO time_unit_lookup (name) VALUES ("Days");
+
+INSERT INTO document_transaction_types_lookup (name) VALUES ("View");
+UPDATE document_transactions SET transaction_id=10 WHERE transaction_id=6 AND comment='Inline view'
