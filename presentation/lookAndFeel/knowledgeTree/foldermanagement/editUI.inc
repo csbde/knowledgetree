@@ -121,7 +121,7 @@ function getFolderGroupAccess($iFolderID, $sDivName) {
 	
 	$aColumns = array("group_name", "can_read", "can_write", "edit", "del");
 	$aColumnHeaders = array("Group", "Read", "Write", "", "");
-	$aColumnTypes = array(1,1,1,3,3);
+	$aColumnTypes = array(1,2,2,3,3);
 	$aDBColumnArray = array("id","folder_id");
 	$aQueryStringVariableNames = array("fGroupFolderLinkID", "fFolderID");
 	$aLinkURLs = array(3=>"$default->rootUrl/control.php?action=modifyGroupFolderLink",4=>"$default->rootUrl/control.php?action=deleteGroupFolderLink");
