@@ -2,13 +2,12 @@
 /**
  * $Id$
  * 
- * Maintains page-level access map, as well as section, page map.
+ * Maintains (page, access) access map, as well as (section, page) map.
  * 
  * @version $Revision$ 
  * @author michael@jamwarehouse.com
  * @package dms
  */
-
 class SiteMap {
 
     /**
@@ -26,44 +25,39 @@ class SiteMap {
     /**
      * Adds a site page mapping entry.
      *
-     * @param $action
-     *        the controller action
-     * @param $page
-     *        the corresponding page for this action
-     * @param $sectionName
-     *        the section this page falls under
-     * @param $groupID
-     *        the user group with access to this page
+     * @param $action        the controller action
+     * @param $page          the corresponding page for this action
+     * @param $sectionName   the section this page falls under
+     * @param $groupName     the user group with access to this page
      */
-    function addPage($action, $page, $sectionName, $groupID) {
+    function addPage($action, $page, $sectionName, $groupName) {
         // add to map
-        $this->siteMapArray[$sectionName][$groupID][$action] = $page;
+        $this->siteMapArray[$sectionName][$groupName][$action] = $page;
     }
     
     /**
-     * Returns the page mapped to the action, userClass pair.
+     * Returns the page mapped to the (action, groupName) pair.
      *
-     * @param $action
-     *        the action to lookup pages for
-     * @param $groupIDs
-     *        array of user group IDs to perform page level validation against
-     * @return
-     *        the page to redirect to, or false if the user class doesn't
-     *        have access to the page
+     * @param $action        the action to lookup pages for
+     * @param $userID        the user requesting the action
+     * @return string the page to redirect to, or false if the user doesn't have access to the page
      */
-    function getPage($action, $groupIDs) {
+    function getPage($action, $userID) {
         global $default;
-        $default->log->debug("Sitemap::getPage function start; action=$action; groupIDs=" . arrayToString($groupIDs));
+        $default->log->debug("Sitemap::getPage function start; action=$action; userID=$userID");
         // for each section
         foreach ($this->siteMapArray as $section => $valArr) {
             $default->log->debug("Sitemap::getPage section=$section");
             // for each group, page array combination
-            foreach ($valArr as $requiredGroup => $pageArr) {
-                $reqGrpID = lookupID($default->owl_groups_table, "name", "'$requiredGroup'");
-                $default->log->debug("Sitemap::getPage requiredGroup=$requiredGroup; reqGrpID=$reqGrpID");
+            foreach ($valArr as $requiredGroupName => $pageArr) {
+                // lookup the id of the group with access to this page
+                $reqGrpID = lookupID($default->owl_groups_table, "name", "$requiredGroupName");
+                $default->log->debug("Sitemap::getPage requiredGroupName=$requiredGroupName; id=$reqGrpID");
                 // now loop through pages until we find the right one
                 foreach ($pageArr as $ackshin => $page) {
                     if ($ackshin == $action) {
+                        // lookup the groups this user is in
+                        $groupIDs = lookupGroupIDs($userID);
                         // now check if we have the right group access by
                         // looping through the groupID array and returning the page
                         // if the current groupID <= $reqGrpID
@@ -72,7 +66,6 @@ class SiteMap {
                         // we're assuming that the default groups will be created in the right
                         // order, so that groups with sys and unit access have lower ids than
                         // the required ones!
-                        $default->log->debug("Sitemap::getPage groupid array length=" . count($groupIDs));
                         for ($i = 0; $i<count($groupIDs); $i++) {
                             $default->log->debug("Sitemap::getPage current groupid=" . $groupIDs[$i] . "; reqGrpID=$reqGrpID"); 
                             if ($groupIDs[$i] <= $reqGrpID) {
@@ -85,6 +78,7 @@ class SiteMap {
         }
         // if the function hasn't returned already then the specified
         // userGroup does not have access to the action
+        $default->log->info("Sitemap::getPage access denied for ($action, $userID)");
         return false;
     }
     
@@ -92,23 +86,28 @@ class SiteMap {
      * Returns the pages in the specified section accessible to the 
      * specified userClass.
      *
-     * @param $sectionName
-     *        the section to retrieve pages for
-     * @param $userClass
-     *        the user class to return pages for
-     * @return
-     *        an array containing the actions for the specified section
+     * @param $sectionName   the section to retrieve pages for
+     * @param $userID        the user class to return pages for
+     * @return array the actions for the specified section
      */
-    function getSection($sectionName, $userClass) {
+    function getSection($sectionName, $userID) {
         // check if the section exists
         if (is_array($this->siteMapArray[$sectionName])) {
             // initialise result array
             $results = array();
-            // need to loop through all user class arrays in this section
-            foreach ($this->siteMapArray[$sectionName] as $uc => $pages) {
-                if (constant($userClass) <= constant($uc)) {
-                    // add this array to the resultset array
-                    $results = array_merge($results, $this->siteMapArray[$sectionName][$uc]);
+            // need to loop through all (groupName, page) arrays in this section
+            foreach ($this->siteMapArray[$sectionName] as $requiredGroupName => $pages) {
+                // lookup groupID for requiredGroupName
+                $reqGrpID = lookupID($default->owl_groups_table, "name", "$requiredGroupName");
+                // lookup groupIDs for the user
+                $groupIDs = lookupGroupIDs($userID);
+                // loop through the user's groups and check against the requiredGroup
+                for ($i = 0; $i<count($groupIDs); $i++) {
+                    $default->log->debug("getPage current groupid=" . $groupIDs[$i] . "; reqGrpID=$reqGrpID"); 
+                    if ($groupIDs[$i] <= $reqGrpID) {
+                        // add this array to the resultset array
+                        $results = array_merge($results, $this->siteMapArray[$sectionName][$uc]);
+                    }
                 }
             }
             // now check if we have anything in the results array before returning it
