@@ -398,6 +398,18 @@ class DateModifiedCriterion extends DateCreatedCriterion {
     }
 }
 
+class SizeCriterion extends BrowseCriterion {
+    function documentDisplay ($oDocument) {
+        return $oDocument->getFileSize();
+    }
+    function getName() {
+        return "size";
+    }
+    function searchDisplay($aRequest) {
+        return "";
+    }
+}
+
 class Criteria {
     function &_getBaseCriterionByNumber($iID) {
         global $default;
@@ -423,6 +435,9 @@ class Criteria {
             case -7:
                 $oCriterion =& new DateModifiedCriterion(_("Date Modified"), 'modified', 'modified', -7);
                 break;
+            case -8:
+                $oCriterion =& new SizeCriterion(_("File Size"), 'size', 'size', -8);
+                break;
         }
         return $oCriterion;
     }
@@ -433,7 +448,7 @@ class Criteria {
             return;
         }
         $aBaseCriteria = array();
-        $aIDs = range(-1, -7); 
+        $aIDs = range(-1, -8); 
         foreach ($aIDs as $iID) {
             $oCriterion =& Criteria::_getBaseCriterionByNumber($iID);
             $aBaseCriteria[$iID] =& $oCriterion;
