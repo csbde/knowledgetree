@@ -85,7 +85,7 @@ function getDetailsDBPage($suserName, $aAttributes) {
 	
 }
 
-function getDetailsLDAPPage($suserName, $aAttributes) {
+function getDetailsLDAPPage($suserName, $aAttributes, $sUserIdentifier) {
 
     $sToRender .= "<table width=\"600\">" . renderHeading("Add User To System") . "</table>";
  	global $default;
@@ -97,7 +97,7 @@ function getDetailsLDAPPage($suserName, $aAttributes) {
         $sToRender .= "<input type=\"hidden\" name=\"fLdap\" value = \"". $aUserAttributes["dn"]. "\">\n";
         $sToRender .= "</tr>\n";
         $sToRender .= "<tr>\n";
-        $sToRender .= "<td>Username: </td><td><input disabled size = \"40\" type=\"text\" name=\"fUsername\" value = \"" . $aUserAttributes["uid"] ."\"> </td>\n";
+        $sToRender .= "<td>Username: </td><td><input disabled size = \"40\" type=\"text\" name=\"fUsername\" value = \"" . $aUserAttributes[$sUserIdentifier] ."\"> </td>\n";
         $sToRender .= "<input type=\"hidden\" name=\"fUsername\" value = \"" . $aUserAttributes["uid"] ."\">\n";
         $sToRender .= "</tr>\n";
         $sToRender .= "<tr>\n";
