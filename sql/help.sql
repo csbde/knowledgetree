@@ -70,3 +70,7 @@ INSERT INTO help VALUES (68,'addUserToGroup','addUserToGroupHelp.html');
 INSERT INTO help VALUES (69,'removeUserFromGroup','removeUserFromGroupHelp.html');
 INSERT INTO help VALUES (70,'viewDiscussion','viewDiscussionThread.html');
 INSERT INTO help VALUES (71,'addComment','addDiscussionComment.html');
+INSERT INTO help VALUES (72,'listNews','listDashboardNewsHelp.html');
+INSERT INTO help VALUES (73,'editNews','editDashboardNewsHelp.html');
+INSERT INTO help VALUES (74,'previewNews','previewDashboardNewsHelp.html');
+INSERT INTO help VALUES (75,'addNews','addDashboardNewsHelp.html');
