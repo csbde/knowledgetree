@@ -105,8 +105,24 @@ if (checkSession()) {
 		} else if (isset($fReplyComment)){  // if user is replying to existing comment			
 			$main->setFormAction($_SERVER['PHP_SELF'] . "?fAddCommentSubmit=1&iDocumentID=$fDocumentID");
 			
-			$oComment = DiscussionComment::get($fCommentID);
-			$oPatternCustom->addHtml(getAddComment($fDocumentID,"Re: " . $oComment->getSubject() , "\n\n\n[Start Text Body]\n\n" . urldecode( $oComment->getBody())  . "\n\n[End Text Body]"));	
+			$oComment = DiscussionComment::get($fCommentID);						
+			$oUser = User::get($oComment->getUserID());
+			
+			$sReplyBody = $oComment->getBody();			
+			
+			$sReplyBodyHeader .= "\n\n\n>------ Original Message ------";
+			$sReplyBodyHeader .= "\n>User:     " . $oUser->getName();
+			$sReplyBodyHeader .= "\n>Date:     " . $oComment->getDate();
+			$sReplyBodyHeader .= "\n>Subject: " . $oComment->getSubject();
+			$sReplyBodyHeader .= "\n>---------------------------------------";
+			
+			$sReplyBody = $sReplyBodyHeader . "\n>" .  str_replace("%0D%0A" ,"%0D%0A>", $sReplyBody); // Put in ">" as indentation for the reply
+			
+			if (strpos($oComment->getSubject(), "Re:") != " "){
+				$sReply = "Re: ";
+			}else { $sReply = ""; }
+			
+			$oPatternCustom->addHtml(getAddComment($fDocumentID, $sReply . $oComment->getSubject() , urldecode($sReplyBody) ));	
 								
 		} else if (isset($fNewThread)){ // Start adding a new Thread 
 			$main->setFormAction($_SERVER['PHP_SELF'] . "?fAddCommentSubmit=1&iDocumentID=$fDocumentID&fNewThread=1");

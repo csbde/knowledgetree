@@ -70,7 +70,7 @@ function getAddComment($fDocumentID, $sSubject, $sBody) {
 	$sToRender .= renderDocumentPath($fDocumentID);	
 	$sToRender .= "<table width=\"100%\" border=\"0\" cellpadding=0 ><tr><td></td>\n";	
 	$sToRender .= "<td align=right width=100%><input onmouseover=\"this.style.cursor='hand'\" type=\"image\" src=\"$default->graphicsUrl/widgets/submit.gif\"></td>";
-	$sToRender .= "<td width=\"10\"><img src=\"$default->graphicsUrl/widgets/back.gif\" onmouseover=\"this.style.cursor='hand'\" onclick=\"javascript: history.go(-1);\" ></td></tr>\n";
+	$sToRender .= "<td width=\"10\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" onmouseover=\"this.style.cursor='hand'\" onclick=\"javascript: history.go(-1);\" ></td></tr>\n";
 	$sToRender .= "<br><tr><td valign=\"top\" width=10><b>Subject</b></td><td colspan=2>\n";
 	$sToRender .= "<input type=\"text\" style=\"width:385\"  name=\"NewCommentSubject\" id=\"NewCommentSubject\" value=\"$sSubject\"></td></tr>\n";	
 	$sToRender .= "<tr><td valign=\"top\"><b>Body</b></td><td colspan=2><textarea  cols=60 rows=\"21\" name=\"NewComment\" id=\"NewComment\" style=\"FONT-STYLE: normal; FONT-FAMILY: sans-serif; FONT-VARIANT: normal\">$sBody</textarea></td></tr></table>\n";		
