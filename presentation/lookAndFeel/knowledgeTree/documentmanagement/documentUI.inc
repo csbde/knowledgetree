@@ -32,8 +32,7 @@ function displayDocumentLink($oDocument, $bDisplayFullPath = false) {
 
     return generateLink("$default->rootUrl/control.php", 
                         "action=viewDocument&fDocumentID=" . $oDocument->getID(),
-                        $sIconPath . 
-                        $sLinkText);
+                        $sIconPath . "&nbsp;" . $sLinkText);
 }
 
 /**
