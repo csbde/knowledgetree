@@ -26,14 +26,20 @@ if (checkSession()) {
     // user attributes to search for
     $aAttributes = array ("username", "name", "email", "mobile", "email_notification", "sms_notification");
     $oDbAuth = new DBAuthenticator();
-    $sSearch = "admin";
+    $sSearch = "user";
     echo "<ul><li>searching for $sSearch with attributes=<pre>" . arrayToString($aAttributes) . "</pre></li>";
-    $aResults = $oDbAuth->searchUsers("admin", $aAttributes);
+    $aResults = $oDbAuth->searchUsers($sSearch, $aAttributes);
     echo "<li><pre>" . arrayToString($aResults) . "</pre></li></ul>";
 
     require_once("$default->owl_fs_root/lib/authentication/LDAPAuthenticator.inc");
     echo "<b>Testing LDAP searching</b>";
     // user attributes to search for
     $aAttributes = array ("dn", "uid", "givenname", "sn", "mail", "mobile");
+    $oLdapAuth = new LDAPAuthenticator();
+    $sSearch = "michael";
+    echo "<ul><li>searching for $sSearch with attributes=<pre>" . arrayToSTring($aAttributes) . "</pre></li>";
+    $aResults = $oLdapAuth->searchUsers($sSearch, $aAttributes);
+    echo "<li><pre>" . arrayToString($aResults) . "</pre></li></ul>";
+
 }
 ?>
