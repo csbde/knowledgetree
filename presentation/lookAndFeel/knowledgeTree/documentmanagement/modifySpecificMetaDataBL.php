@@ -26,7 +26,8 @@ if (checkSession()) {
 		$oPatternCustom = & new PatternCustom();
 		$oPatternCustom->setHtml(getPage($fDocumentID, $oDocument->getDocumentTypeID()));
 		$main->setCentralPayload($oPatternCustom);			
-		$main->setFormAction("../store.php?fReturnURL=" . urlencode("$default->rootUrl/control.php?action=viewDocument&fDocumentID=$fDocumentID"));		
+		$main->setFormAction("../store.php?fReturnURL=" . urlencode("$default->rootUrl/control.php?action=viewDocument&fDocumentID=$fDocumentID"));
+        $main->setHasRequiredFields(true);		
 		$main->render();
 	}
 	
