@@ -53,32 +53,36 @@ class PatternTableLinks {
 	* @return String of HTML used to render object
 	*/
 	function & render() {
-		$iArraySize = array_count_values($this->aLinks);
+		global $default;
+		
+		$iArraySize = count($this->aLinks);
 		$iArrayCount = 0;		 
-		$sToRender = "<table width=\"100%\" height=\"100%\" cellspacing = \"0\">\n";		
+		$sToRender = "<table border=0 width=\"100%\" cellspacing = \"0\">\n";		
 		
 		//build the table
 		for ($i = 0; $i < $this->iRows; $i++) {			
-			$sToRender = $sToRender . "<tr>\n";			
+			$sToRender .= "<tr>\n";
+			$sLink = "";
 			for ($j = 0; $j < $this->iColumns; $j++) {
-				$sToRender = $sToRender . "<td cellspacing = \"20\" width =\"100%\">";
 				if ($iArrayCount < $iArraySize) {
-                    $sToRender = $sToRender . ((strlen($this->aLinks[$iArrayCount]) > 0) ? "<a href=\"" . $this->aLinks[$iArrayCount] . "\">" : "");
-                    if ($this->iLinkType == TEXT) {
-                        $sToRender = $sToRender . $this->aLinksText[$iArrayCount];
-                    } else if ($this->iLinkType == IMAGE) {
-                        $oImage = new PatternImage($this->aLinkImages[$iArrayCount]);
-                        $sToRender = $sToRender . $oImage->render();
-                    }
-                    $sToRender = $sToRender . "</a>";
+					if (strlen($this->aLinks[$iArrayCount]) > 0) {
+	                    $sLink = "<a href=\"" . $this->aLinks[$iArrayCount] . "\">";
+	                    if ($this->iLinkType == TEXT) {
+	                        $sLink .= $this->aLinksText[$iArrayCount];
+	                    } else if ($this->iLinkType == IMAGE) {
+	                        $oImage = new PatternImage($this->aLinkImages[$iArrayCount]);
+	                        $sLink .= $oImage->render();
+	                    }
+	                    $sLink .= "</a>";
+						
+					}
 					$iArrayCount++;
 				}
-				$sToRender = $sToRender . "</td>\n";
-				
+				$sToRender .= "<td cellspacing=\"20\" width=\"100%\">" . (strlen($sLink) > 0 ? $sLink : "&nbsp;") . "</td>";				
 			}
-			$sToRender = $sToRender . "</tr>\n";			
+			$sToRender .= "</tr>\n";			
 		}		
-		$sToRender = $sToRender . "</table>\n";				 
+		$sToRender .= "</table>\n";				 
 		return $sToRender;		
 	}
 }
