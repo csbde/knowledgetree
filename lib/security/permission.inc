@@ -28,7 +28,7 @@ class Permission {
 	*/	
 	function userHasDocumentWritePermission($iDocumentID) {
 		$oDocument = & Document::get($iDocumentID);
-		if (Permission::userHasFolderWritePermission($oDocument->getFolderID()) {
+		if (Permission::userHasFolderWritePermission($oDocument->getFolderID())) {
 			return true;
 		}
 		$_SESSION["errorMessage"] = $lang_err_user_doc_write . "id " . $iDocumentID;
@@ -49,7 +49,7 @@ class Permission {
 	function userHasDocumentReadPermission($iDocumentID) {
         $oDocument = & Document::get($iDocumentID);
 		if (Permission::userHasDocumentWritePermission($iDocumentID) ||
-			Permission::userHasFolderReadPermission($oDocument->getFolderID()) {
+			Permission::userHasFolderReadPermission($oDocument->getFolderID())) {
 			return true;
 		}
 		$_SESSION["errorMessage"] = $lang_err_user_doc_read . "id " . $iDocumentID;
@@ -96,8 +96,8 @@ class Permission {
 		global $lang_err_user_folder_write;
 		if (Permission::folderIsPublic($iFolderID) ||
 			Permission::userHasFolderWritePermission($iFolderID) ||
-			Permission::userHasGroupReadPermissionForFolder($iFolderID)) 
-			Permission::userHasReadRoleForFolder($iFolderID) {
+			Permission::userHasGroupReadPermissionForFolder($iFolderID) || 
+			Permission::userHasReadRoleForFolder($iFolderID)) {
 			return true;
 		}
 		$_SESSION["errorMessage"] = $lang_err_user_folder_write . "id " . $iFolderID;
@@ -337,7 +337,7 @@ class Permission {
 		$sql->query("SELECT UGL.group_id " . 
 					"FROM $default->owl_users_groups_table AS UGL INNER JOIN $default->owl_groups_table AS GL ON UGL.group_id = GL.id " .
 					"WHERE UGL.user_id = " . $_SESSION["userID"] . " " .
-					"AND is_sys_admin = 1";);		
+					"AND is_sys_admin = 1");		
 		return $sql->next_record();
 	}
 	
@@ -356,7 +356,7 @@ class Permission {
 			"FROM $default->owl_users_groups_table AS UGL INNER JOIN $default->owl_groups_units_table AS GUL ON GUL.group_id = UGL.group_id " .
 			"INNER JOIN $default->owl_groups_table AS GL ON GL.id = UGL.group_id " .
 			"WHERE UGL.user_id = " . $_SESSION["userID"] . " " .
-			"AND GL.is_unit_admin = 1";);
+			"AND GL.is_unit_admin = 1");
 		return $sql->next_record();
 	}
 	
