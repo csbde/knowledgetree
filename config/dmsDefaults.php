@@ -48,7 +48,7 @@ if (!defined('PATH_SEPARATOR')) {
     }
 }
 
-/// {{{ KTInit
+// {{{ KTInit
 class KTInit {
     // {{{ prependPath()
     function prependPath ($path) {
@@ -126,6 +126,10 @@ class KTInit {
 
         // DBUtil is the preferred database abstraction
         require_once(KT_LIB_DIR . '/database/dbutil.inc');
+
+        // KTEntity is the database-backed base class
+        require_once(KT_LIB_DIR . '/ktentity.inc');
+
     }
     /// }}}
 
@@ -171,6 +175,12 @@ class KTInit {
         }
     }
     // }}}
+
+    // {{{ setupRandomSeed()
+    function setupRandomSeed () {
+        mt_srand(hexdec(substr(md5(microtime()), -8)) & 0x7fffffff);
+    }
+    // }}}
 }
 // }}}
 
@@ -183,7 +193,7 @@ $default->serverName = $_SERVER['HTTP_HOST'];
 
 $default->execSearchPath = $_SERVER['PATH'];
 $default->unzipCommand = "unzip";
-$default->logLevel = INFO;
+$default->logLevel = 'INFO';
 
 $default->useDatabaseConfiguration = false;
 
@@ -192,6 +202,7 @@ require_once("environment.php");
 
 KTInit::prependPath(KT_DIR . '/pear');
 KTInit::setupDB();
+KTInit::setupRandomSeed();
 
 require_once("$default->fileSystemRoot/lib/authentication/$default->authenticationClass.inc");
 
@@ -219,6 +230,9 @@ KTInit::setupI18n();
 KTInit::cleanGlobals();
 KTInit::cleanMagicQuotes();
 
+// Give everyone access to KTUtil utility functions
+require_once(KT_LIB_DIR . '/util/ktutil.inc');
+
 // site map definition
 include("siteMap.inc");
 
@@ -230,7 +244,5 @@ require_once(KT_DIR . '/presentation/Html.inc');
 require_once(KT_DIR . '/phpSniff/phpSniff.class.php');
 require_once('browsers.inc');
 
-// Give everyone access to KTUtil utility functions
-require_once(KT_LIB_DIR . '/util/ktutil.inc');
 
 ?>
