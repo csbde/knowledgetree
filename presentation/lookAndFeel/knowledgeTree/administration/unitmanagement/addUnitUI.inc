@@ -23,7 +23,7 @@ function getAddPage() {
 	$sToRender .= "<tr>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<td></td><td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/add.gif\" value=\"Submit\" border=\"0\"/>";
-	$sToRender .= generateControllerLink("listUnits", "", "<image border=\"0\" src=\"$default->graphicsUrl/widgets/cancel.gif\"/>") . "</td>\n";	
+	$sToRender .= getCancelButton("listUnits") . "</td>\n";	
 	$sToRender .= "</table>\n";
 	
 	// javascript validation

@@ -8,21 +8,21 @@
 *
 */
 require_once("../../../../../config/dmsDefaults.php");
+require_once("$default->fileSystemRoot/lib/visualpatterns/PatternListBox.inc");
+require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCreate.inc");
+require_once("$default->fileSystemRoot/lib/users/User.inc");
+require_once("$default->fileSystemRoot/lib/groups/Group.inc");
+require_once("$default->fileSystemRoot/lib/groups/GroupUserLink.inc");    
+require_once("$default->fileSystemRoot/lib/security/permission.inc");
+require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
+require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
+require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
+require_once("$default->fileSystemRoot/presentation/Html.inc");
+require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/administration/adminUI.inc");
+require_once("addUserUI.inc");
 
 if (checkSession()) {
-    require_once("$default->fileSystemRoot/lib/visualpatterns/PatternListBox.inc");
-    require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCreate.inc");
-    require_once("addUserUI.inc");
-    require_once("$default->fileSystemRoot/lib/users/User.inc");
-    require_once("$default->fileSystemRoot/lib/groups/Group.inc");
-	require_once("$default->fileSystemRoot/lib/groups/GroupUserLink.inc");    
-    require_once("$default->fileSystemRoot/lib/security/permission.inc");
-    require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
-    require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
-    require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
-    require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
-    require_once("$default->fileSystemRoot/presentation/Html.inc");
-
+	require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
     $oPatternCustom = & new PatternCustom();
     //create db object
     $oAuth = new $default->authenticationClass;
