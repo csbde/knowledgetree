@@ -18,9 +18,12 @@ require_once("$default->fileSystemRoot/presentation/Html.inc");
  * Display the heading for the admin section
  */
 function renderAdminHeading($sHeading, $sSectionName = "") {
-    $sCenter .= renderHeading("Administration");
+	global $default;
+	
+    $sAction = $default->siteMap->getActionFromPage(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
+    $sCenter .= renderHeading($default->siteMap->getPageLinkText($sAction));
+    
     $sCenter .= "<table width=\"600\">\n";
-    $sCenter .=	"<tr/><tr/><tr><td><b> Welcome to the Administration Section</b></td></tr>\n";
     $sCenter .=	"<tr><td>Please make a selection from the sidemenu.</td></tr>\n";
     $sCenter .=	"</table>\n";
     return $sCenter;	
@@ -28,12 +31,12 @@ function renderAdminHeading($sHeading, $sSectionName = "") {
 
 if (checkSession()) {
 	require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
-	
+
 	if (!isset($sectionName)) {
 		$sectionName = "Administration";
-	}   
+	}
     $sCenter .= "<table width=\"600\">\n";
-    $sCenter .= renderAdminHeading("Administration");	        
+    $sCenter .= renderAdminHeading("Administration", $sectionName);	        
     $sCenter .=	"</table>\n";
 
 	$oPatternCustom = & new PatternCustom();
