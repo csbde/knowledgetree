@@ -1,132 +1,157 @@
 <?php
-
-	
 /**
-*
-* Class Email
-*
-* Contains static functions concerned with sending emails
-*
-* @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
-* @date 19 January 2003
-* @package lib.email
-*/
+ * $Id$
+ *
+ * Contains static functions concerned with sending emails
+ *
+ * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
+ * @version $Revision$
+ * @package lib.email
+ */
+class Email {
 
-Class Email {
-	
+    /**
+     * The underlying emailer class
+     */
+    var $oMailer;
 
-	/**
-	* Sends an email containing a hyperlink to a specified recipient
-	*
-	* @param 	The sender's email address
-	* @param 	The sender's Name
-	* @param 	The recipients email address
-	* @param 	The subject heading for the email
-	* @param 	The Body of the email
-	* @param 	The hyperlink that should be sent
-	*
-	* @return boolean true on email successfully sent, false otherwise and set $_SESSION["errorMessage"]
-	* 
-	* @todo check for special characters (including encoding the link correctly???)
-	* @todo need to test this on multiple mail clients, not just Outlook
-	*/
-	function sendHyperLink($FromEmail, $FromName, $ToEmail, $Subj, $EmailBody, $hyperlink)
-	{
-		global $default;
-			
-		// create a new phpmailer object.
-		$emailHyperlink = new phpmailer();
-		
-		//set up info
-		$emailHyperlink->isSMTP();
-		$emailHyperlink->Host = $default->owl_email_server; // SMTP server
-		
-		//get info from relevant fields.
-		$emailHyperlink->From = $FromEmail;
-		$emailHyperlink->FromName = $FromName;
-		$emailHyperlink->AddAddress($ToEmail);
-		$emailHyperlink->Subject = stripslashes($Subj);
-		$emailHyperlink->Body = stripslashes($EmailBody) . ' ' . $hyperlink;
-		$emailHyperlink->WordWrap = 100;
-		$emailHyperlink->IsHTML(true);
-		   
-		//send the email       
-		if(!$emailHyperlink->Send()) {
-		   $_SESSION["errorMessage"] = $lang_err_email . " " . $emailHyperlink->ErrorInfo;
-		   return false;	
-		}
-		return true;
-	}
-	/**
-	* Sends an email ment for administration, 
-	*
-	* @param 	The sender's email address
-	* @param 	The sender's Name
-	* @param 	The recipients email address
-	* @param 	The subject heading for the email
-	* @param 	The Body of the email
-	* @param 	The hyperlink that should be sent
-	*
-	* @return boolean true on email successfully sent, false otherwise and set $_SESSION["errorMessage"]
-	* 
-	* @todo check for special characters (including encoding the link correctly???)
-	* @todo need to test this on multiple mail clients, not just Outlook
-	*/
-	function sendHelpEmail($FromEmail, $FromName, $ToEmail, $Subj, $EmailBody, $hyperlink)
-	{
-		global $default;
-			
-		// create a new phpmailer object.
-		$emailHyperlink = new phpmailer();
-		
-		//set up info
-		$emailHyperlink->isSMTP();
-		$emailHyperlink->Host = $default->owl_email_server; // SMTP server
-		
-		//get info from relevant fields.
-		$emailHyperlink->From = $FromEmail;
-		$emailHyperlink->FromName = $FromName;
-		$emailHyperlink->AddAddress($ToEmail);
-		$emailHyperlink->Subject = stripslashes($Subj)  . ' ' . $hyperlink; //only difference from above
-		$emailHyperlink->Body = stripslashes($EmailBody) . " <br>This bug can be found on this page: " . "<a href = ". $hyperlink .">". $hyperlink ."</a>";
-		$emailHyperlink->WordWrap = 80;
-		$emailHyperlink->IsHTML(true);
-		   
-		//send the email       
-		if(!$emailHyperlink->Send()) {
-		   $_SESSION["errorMessage"] = $lang_err_email . " " . $emailHyperlink->ErrorInfo;
-		   return false;	
-		}
-		return true;
-	}
-	
-	function sendEmail($FromEmail, $FromName, $ToEmail, $Subj, $EmailBody)
-	{
-		global $default;
-			
-		// create a new phpmailer object.
-		$emailHyperlink = new phpmailer();
-		
-		//set up info
-		$emailHyperlink->isSMTP();
-		$emailHyperlink->Host = $default->owl_email_server; // SMTP server
-		
-		//get info from relevant fields.
-		$emailHyperlink->From = $FromEmail;
-		$emailHyperlink->FromName = $FromName;
-		$emailHyperlink->AddAddress($ToEmail);
-		$emailHyperlink->Subject = stripslashes($Subj);
-		$emailHyperlink->Body = stripslashes($EmailBody);
-		$emailHyperlink->WordWrap = 100;
-		$emailHyperlink->IsHTML(true);
-		   
-		//send the email       
-		if(!$emailHyperlink->Send()) {
-		   $_SESSION["errorMessage"] = $lang_err_email;
-		   return false;	
-		}
-		return true;
-	}
+    /**
+     * Creates an email class, initialising the underlying mailer class
+     * with default system information
+     *
+     * @param string the sender's email address (optional)
+     * @param string the sender's name (optional)     
+     */
+    function Email($sFromEmail = "", $sFromName = "") {
+        global $default;
+        // create a new phpmailer object.
+        $this->oMailer = new phpmailer();
+        $this->oMailer->isSMTP();
+        $this->oMailer->Host = $default->system->get("emailServer");
+        $this->oMailer->From = (strlen($sFromEmail) == 0) ? $default->system->get("emailFrom") : $sFromEmail;
+        $this->oMailer->FromName = (strlen($sFromName) == 0) ? $default->system->get("emailFromName") : $sFromName;
+        $this->oMailer->WordWrap = 100;
+        $this->oMailer->IsHTML(true);
+    }
+
+    /**
+     * Sends an email to a specified recipient.
+     *
+     * @param string the sender's email address (optional)
+     * @param string the sender's name (optional)
+     * @param string the recipients email address
+     * @param string the subject of the email
+     * @param string the body of the email
+     * @return boolean true on email successfully sent, false otherwise and set $_SESSION["errorMessage"]
+     */
+    function send($sToEmail, $sSubject, $sBody, $sFromEmail = "", $sFromName = "") {
+        global $default, $lang_err_email;
+
+        // set defaults for optional params
+        $sFromEmail = ((strlen($sFromEmail) == 0) || ($sFromEmail == "")) ? $default->system->get("emailFrom") : $sFromEmail;
+        $sFromName = ((strlen($sFromName) == 0) || ($sFromName == "")) ? $default->system->get("emailFromName") : $sFromName;
+
+        // set optional params
+        if ((strlen($sFromEmail) > 0) && ($sFromEmail != "")) {
+            $this->oMailer->From = $sFromEmail;
+        }
+        if ((strlen($sFromName) > 0) && ($sFromName != "")) {
+            $this->oMailer->FromName = $sFromName;
+        }
+        $this->oMailer->AddAddress($sToEmail);
+        $this->oMailer->Subject = stripslashes($sSubject);
+        $this->oMailer->Body = stripslashes($sBody);
+
+        //send the email
+        if(!$this->oMailer->Send()) {
+            $_SESSION["errorMessage"] = $lang_err_email . " " . $this->oMailer->ErrorInfo;
+            return false;
+        }
+        return true;
+    }
+
+    /**
+    * Sends an email containing a hyperlink to a specified recipient
+    *
+    * @param  The sender's email address
+    * @param  The sender's Name
+    * @param  The recipients email address
+    * @param  The subject heading for the email
+    * @param  The Body of the email
+    * @param  The hyperlink that should be sent
+    *
+    * @return boolean true on email successfully sent, false otherwise and set $_SESSION["errorMessage"]
+    * 
+    * @todo check for special characters (including encoding the link correctly???)
+    * @todo need to test this on multiple mail clients, not just Outlook
+    */
+    function sendHyperLink($FromEmail, $FromName, $ToEmail, $Subj, $EmailBody, $hyperlink) {
+        global $default;
+
+        //get info from relevant fields.
+        $this->oMailer->From = $FromEmail;
+        $this->oMailer->FromName = $FromName;
+        $this->oMailer->AddAddress($ToEmail);
+        $this->oMailer->Subject = stripslashes($Subj);
+        $this->oMailer->Body = stripslashes($EmailBody) . ' ' . $hyperlink;
+
+        //send the email
+        if(!$this->oMailer->Send()) {
+            $_SESSION["errorMessage"] = $lang_err_email . " " . $this->oMailer->ErrorInfo;
+            return false;
+        }
+        return true;
+    }
+    /**
+    * Sends an email ment for administration, 
+    *
+    * @param  The sender's email address
+    * @param  The sender's Name
+    * @param  The recipients email address
+    * @param  The subject heading for the email
+    * @param  The Body of the email
+    * @param  The hyperlink that should be sent
+    *
+    * @return boolean true on email successfully sent, false otherwise and set $_SESSION["errorMessage"]
+    * 
+    * @todo check for special characters (including encoding the link correctly???)
+    * @todo need to test this on multiple mail clients, not just Outlook
+    */
+    function sendHelpEmail($FromEmail, $FromName, $ToEmail, $Subj, $EmailBody, $hyperlink) {
+        global $default;
+
+        //get info from relevant fields.
+        $this->oMailer->From = $FromEmail;
+        $this->oMailer->FromName = $FromName;
+        $this->oMailer->AddAddress($ToEmail);
+        $this->oMailer->Subject = stripslashes($Subj)  . ' ' . $hyperlink; //only difference from above
+        $this->oMailer->Body = stripslashes($EmailBody) . " <br>This bug can be found on this page: " . "<a href = ". $hyperlink .">". $hyperlink ."</a>";
+
+        //send the email
+        if(!$this->oMailer->Send()) {
+            $_SESSION["errorMessage"] = $lang_err_email . " " . $this->oMailer->ErrorInfo;
+            return false;
+        }
+        return true;
+    }
+
+    function sendEmail($FromEmail, $FromName, $ToEmail, $Subj, $EmailBody) {
+        global $default;
+
+        //get info from relevant fields.
+        $this->oMailer->From = $FromEmail;
+        $this->oMailer->FromName = $FromName;
+        $this->oMailer->AddAddress($ToEmail);
+        $this->oMailer->Subject = stripslashes($Subj);
+        $this->oMailer->Body = stripslashes($EmailBody);
+
+        //send the email
+        if(!$this->oMailer->Send()) {
+            $_SESSION["errorMessage"] = $lang_err_email . " " . $this->oMailer->ErrorInfo;
+            return false;
+        }
+        return true;
+    }
 }
 
 ?>
