@@ -58,19 +58,20 @@ class Browser {
      */
     function Browser($sNewSortField, $sNewSortDirection, $aNewSortCriteria = array()) {
     	// default sort criteria
+    	global $browse_folder_sort_title, $browse_folder_sort_description, $browse_folder_sort_creator, $browse_folder_sort_date_created, $browse_folder_sort_document_type;
     	if (count($aNewSortCriteria) == 0) {
-	    	$aNewSortCriteria = array ( "name"       		=> array ("display" => "Title"), 	
-		 					  	 	    "filename"   		=> array ("display" => "Description"),
-								 	 	"creator_id" 		=> array ("display" => "Creator", 
+	    	$aNewSortCriteria = array ( "name"       		=> array ("display" => $browse_folder_sort_title), 	
+		 					  	 	    "filename"   		=> array ("display" => $browse_folder_sort_description),
+								 	 	"creator_id" 		=> array ("display" => $browse_folder_sort_creator, 
 								 	 						      	  "lookup"  => array ("table" => "users",
 								 	 										   		  	  "field" => "name")),
 								 	 										   		  	  
-									 	"id"                => array ("display" => "Date Created",
+									 	"id"                => array ("display" => $browse_folder_sort_date_created,
 									 			 					  "lookup"  => array("table" => "document_transactions",
 									 								 					 "field" => "datetime",
 									 								 					 "joinColumn" => "document_id",
 									 								 					 "whereClause" => "transaction_id=1")),
-									 	"document_type_id"  => array ("display" => "Document Type",
+									 	"document_type_id"  => array ("display" => $browse_folder_sort_document_type,
 								 	 						      	  "lookup"  => array ("table" => "document_types_lookup",
 								 	 										   		  	  "field" => "name")) );
     	}

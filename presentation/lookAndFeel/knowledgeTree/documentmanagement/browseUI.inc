@@ -37,14 +37,15 @@ require_once("$default->uiDirectory/foldermanagement/addFolderUI.inc");
  * @param string the selected browse by option
  */
 function renderBrowseTypeSelect($sBrowseType) {
+	global $browse_view_documents_by_heading, $browse_view_documents_by_folder, $browse_view_documents_by_category, $browse_view_documents_by_doctype;
     // TODO: write function for onChange that checks if the new value
     return "<span class=\"browseTypeSelect\">\n
-            \tView documents by: <input type=\"radio\" name=\"fBrowseType\" onclick=\"document.MainForm.submit()\" value=\"folder\"" .
-                               ((($sBrowseType=="folder") || (strlen($sBrowseType)==0)) ? " checked=\"checked\"" : "") . "/> Folders\n" .
+            \t" . $browse_view_documents_by_heading . ": <input type=\"radio\" name=\"fBrowseType\" onclick=\"document.MainForm.submit()\" value=\"folder\"" .
+                               ((($sBrowseType=="folder") || (strlen($sBrowseType)==0)) ? " checked=\"checked\"" : "") . "/> " . $browse_view_documents_by_folder ."\n" .
                                "<input type=\"radio\" name=\"fBrowseType\" onclick=\"document.MainForm.submit()\" value=\"category\"" .
-                               (($sBrowseType=="category") ? " checked=\"checked\"" : "") . "/> Category\n" .
+                               (($sBrowseType=="category") ? " checked=\"checked\"" : "") . "/> " . $browse_view_documents_by_category . "\n" .
                                "<input type=\"radio\" name=\"fBrowseType\" onclick=\"document.MainForm.submit()\" value=\"documentType\"" .
-                               (($sBrowseType=="documentType") ? " checked=\"checked\"" : "") . "/> Document Type\n</span>";
+                               (($sBrowseType=="documentType") ? " checked=\"checked\"" : "") . "/> " . $browse_view_documents_by_doctype . "\n</span>";
 }
 
 // <category browse helper methods>
@@ -54,7 +55,7 @@ function renderBrowseTypeSelect($sBrowseType) {
  * 
  * @param string the category name to display
  */
-function displayCategoryPathLink($aCategories) {
+function displayCategoryPathLink($aCategories) {	
     // if the first value in arr["categories"] == Categories then we've got a list of categories
     if ($aCategories[0] == "Categories") {
         return displayCategoryLink($aCategories[0]);
@@ -86,10 +87,11 @@ function displayCategoryLink($sCategoryName) {
  *
  * @param array the category browse results
  */
-function renderCategoryResults($aResults) {   
+function renderCategoryResults($aResults) {	   
     $sToRender = "";
     
-    // if the first value in arr["categories"] == Categories then we've got a list of categories
+    //var_dump($aResults["categories"][0]);
+    // if the first value in arr["categories"] == Categories then we've got a list of categories    
     if ($aResults["categories"][0] == "Categories") {
         // loop through categories and display them
         for ($i=1; $i<count($aResults["categories"]); $i++) {
@@ -191,7 +193,7 @@ function renderDocumentTypeResults($aResults) {
  * @param array the browse result objects
  */
 function renderFolderResults($aResults) {
-    global $default;
+    global $default, $browse_no_sub_folders, $browse_no_documents, $browse_no_document_permission;
     $sToRender = "";
 
     // now loop through the rest of the folders and display links
@@ -215,10 +217,10 @@ function renderFolderResults($aResults) {
             $sToRender .= "</tr>\n";
         }
     } else {
-        $sToRender .= "<tr><td colspan=\"5\">This folder contains no sub folders</td></tr>";
+        $sToRender .= "<tr><td colspan=\"5\">" . $browse_no_sub_folders . "</td></tr>";
     }
         
-    $sToRender .= "<tr><td>" . renderDocumentList($aResults, "This folder contains no documents", "You don't have access to the documents in this folder") . "</td></tr>\n";
+    $sToRender .= "<tr><td>" . renderDocumentList($aResults, $browse_no_documents, $browse_no_document_permission) . "</td></tr>\n";
     
     return $sToRender;
 }
@@ -313,12 +315,12 @@ function renderDocumentList($aResults, $sNoDocumentsMessage, $sNoPermissionMessa
  * @param string the direction to sort
  */
 function renderPage($aResults, $sBrowseType, $sSortBy, $sSortDirection) {
-    global $default;
+    global $default, $browse_collection_heading;
     
 	$sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
 	$sTDBGColour = $default->siteMap->getSectionColour($sSectionName, "td");    
 
-    $sToRender = renderHeading("Browse Collection");
+    $sToRender = renderHeading($browse_collection_heading);
     
     $sToRender .= "<table border=\"0\" cellpadding=\"5\" width=\"100%\"><tr><td bgcolor=\"$sTDBGColour\">"; 
     switch ($sBrowseType) {

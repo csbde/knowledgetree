@@ -71,8 +71,7 @@ if (checkSession()) {
     $sectionName = $oBrowser->getSectionName();
      
     // instantiate my content pattern
-    $oContent = new PatternCustom();
-	
+    $oContent = new PatternCustom();	
 	$aResults = $oBrowser->browse();
 	if (($fBrowseType == "folder") && (!isset($fFolderID))) {
 		controllerRedirect("browse", "fFolderID=" . $aResults["folders"][0]->getID());
