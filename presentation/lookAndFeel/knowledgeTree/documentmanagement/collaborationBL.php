@@ -48,10 +48,10 @@ if (checkSession()) {
 			}
 			if (isset($fForStore)) {
 				//if we are storing, get the folder collaboration entry from the database
-				$oFolderCollaboration = & FolderCollaboration::get($fFolderCollaborationID);			
-				if (isset($fUserID) & ($fUserID != -1)) {
+				$oFolderCollaboration = & FolderCollaboration::get($fFolderCollaborationID);
+				if (isset($fUserID) && ($fUserID != "")) {
 					//if a user has been selected, then set up the folders_users_roles_link database entry
-					$oFolderUserRole = & FolderUserRole::getFromFolderCollaboration($fFolderCollaborationID);
+					$oFolderUserRole = & FolderUserRole::getFromFolderCollaboration($fFolderCollaborationID, $fDocumentID);
 					if (!($oFolderUserRole === false)) {
 						//if we have an entry, just update it
 						if ($oFolderUserRole->getUserID() != $fUserID) {
@@ -86,7 +86,7 @@ if (checkSession()) {
 				} else {
 					//the may have been unassigned and no new user assigned
 					//if this is true, delete the folder_user_role_link
-					$oFolderUserRole = & FolderUserRole::getFromFolderCollaboration($fFolderCollaborationID);
+					$oFolderUserRole = & FolderUserRole::getFromFolderCollaboration($fFolderCollaborationID, $fDocumentID);
 					if (!($oFolderUserRole === false)) {
 						$oFolderUserRole->delete();
 					}
@@ -98,10 +98,10 @@ if (checkSession()) {
 				require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");			
 				$oPatternCustom = & new PatternCustom();
 				
-				$aFolderCollaborationArray = getFolderCollaborationArray($fFolderCollaborationID);			
+				$aFolderCollaborationArray = getFolderCollaborationArray($fFolderCollaborationID, $fDocumentID);			
 				$oPatternCustom->setHtml(getDocumentRoutingPage($aFolderCollaborationArray["group_id"],$aFolderCollaborationArray["user_id"], $aFolderCollaborationArray["role_id"], $aFolderCollaborationArray["sequence"], $fDocumentID));
 				$main->setCentralPayload($oPatternCustom);
-				$main->setFormAction($_SEVER["PHP_SELF"] . "?fFolderCollaborationID=$fFolderCollaborationID&fDocumentID=$fDocumentID&fForStore=1");
+				$main->setFormAction($_SERVER["PHP_SELF"] . "?fFolderCollaborationID=$fFolderCollaborationID&fDocumentID=$fDocumentID&fForStore=1");
 				$main->render();
 			}
 		} else {
@@ -124,13 +124,12 @@ if (checkSession()) {
 	}
 }
 
-function getFolderCollaborationArray($fFolderCollaborationID) {
+function getFolderCollaborationArray($fFolderCollaborationID, $fDocumentID) {
 	global $default;
 	$sQuery = "SELECT GFL.group_id AS group_id, GFL.folder_id AS folder_id, GFL.precedence AS precedence, GFL.role_id, U.id AS user_id " .
-			"FROM $default->owl_groups_folders_approval_table AS GFL LEFT OUTER JOIN folders_users_roles_link AS FURL ON FURL.group_folder_approval_id = GFL.id " .
+			"FROM $default->owl_groups_folders_approval_table AS GFL LEFT OUTER JOIN folders_users_roles_link AS FURL ON FURL.group_folder_approval_id = GFL.id AND FURL.document_id = $fDocumentID " .
 			"LEFT OUTER JOIN users AS U ON FURL.user_id = U.id " .
 			"WHERE GFL.id = $fFolderCollaborationID";
-			
 	$sql = $default->db;
 	$sql->query($sQuery);
 	if ($sql->next_record()) {
