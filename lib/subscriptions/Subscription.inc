@@ -135,10 +135,11 @@ class Subscription {
      * Returns the link to view the subscription content
      */
     function getContentLink() {
+        // TODO: add subscription icon
         if ($this->iSubscriptionType == SubscriptionConstants::subscriptionType("DocumentSubscription")) {
-            return generateControllerLink("viewDocument", Document::getDocumentDisplayPath($this->iExternalID), "fDocumentID=$this->iExternalID");
+            return generateControllerLink("viewDocument", "fDocumentID=$this->iExternalID", Document::getDocumentDisplayPath($this->iExternalID));
         } else if ($this->iSubscriptionType == SubscriptionConstants::subscriptionType("FolderSubscription")) {
-            return generateControllerLink("browse", Folder::getFolderDisplayPath($this->iExternalID), "fBrowseType=folder&fFolderID=$this->iExternalID");
+            return generateControllerLink("browse", "fBrowseType=folder&fFolderID=$this->iExternalID", Folder::getFolderDisplayPath($this->iExternalID));
         }
     }
 
@@ -154,6 +155,7 @@ class Subscription {
     }
 
     function getAlertLink() {
+        // TODO: add alerted icon
         $sViewAlertUrl = "/control.presentation/lookAndFeel/knowledgeTree/subscriptions/viewAlertBL.php";
         $sViewAlertParams = "fSubscriptionID=" . $this->iID . "&fSubscriptionType=" . $this->iSubscriptionType;
 
@@ -161,8 +163,15 @@ class Subscription {
             return generateControllerLink("viewAlert", $sViewAlertParams, Document::getDocumentDisplayPath($this->iExternalID));
         } else if ($this->iSubscriptionType == SubscriptionConstants::subscriptionType("FolderSubscription")) {
             return generateControllerLink("viewAlert", $sViewAlertParams, Folder::getFolderDisplayPath($this->iExternalID));
-        }        
-                
+        }
+    }
+    
+    function getSubscriptionTypeName() {
+        if ($this->iSubscriptionType == SubscriptionConstants::subscriptionType("DocumentSubscription")) {
+            return "document";
+        } else if ($this->iSubscriptionType == SubscriptionConstants::subscriptionType("FolderSubscription")) {
+            return "folder";
+        }
     }
     
     /**
@@ -287,7 +296,7 @@ class Subscription {
                         "WHERE " . Subscription::getIdFieldName($iSubscriptionType) . " = $iExternalID AND user_id = $iUserID")) {
             if ($sql->next_record()) {
                 $oSubscription = & new Subscription($sql->f("user_id"),
-                                                    Subscription::getIdFieldName($iSubscriptionType),
+                                                    $sql->f(Subscription::getIdFieldName($iSubscriptionType)),
                                                     $iSubscriptionType,
                                                     $sql->f("is_alerted"));
                 $oSubscription->iID = $sql->f("id");
