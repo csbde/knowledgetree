@@ -196,7 +196,9 @@ class SiteMap {
      * @param string the section to return links for
      */
     function getSectionLinksUsingArray($sSectionName) {
-        global $default;
+        global $default, $fFolderID, $fDocumentID;
+        // TODO: same for documentID
+        
         // check if the section exists
         if (is_array($this->aSiteMap[$sSectionName])) {
             // initialise result array
@@ -213,7 +215,9 @@ class SiteMap {
                             ($pages[$action]["enabled"])) {
                                 $default->log->debug("SiteMap::getSectionLinks adding $action");
                             $results["descriptions"][] = $pages[$action]["description"];
-                            $results["links"][] = generateControllerUrl($action);
+                            // if fFolderID is set and fFolderID is in the page string
+                            // append folderID to the controller link
+                            $results["links"][] = ($fFolderID && strstr($pages[$action]["page"], "fFolderID")) ? generateControllerUrl($action . "&fFolderID=$fFolderID") : generateControllerUrl($action);
                         }
                     }
                 }
