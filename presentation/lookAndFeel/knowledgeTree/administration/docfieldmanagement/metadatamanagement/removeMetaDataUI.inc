@@ -1,5 +1,30 @@
 <?php
-
+/**
+ * $Id$
+ *
+ * Remove MetaData UI functions.
+ *
+ * Copyright (c) 2003 Jam Warehouse http://www.jamwarehouse.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ * @version $Revision$
+ * @author Mukhtar Dharsey, Jam Warehouse (Pty) Ltd, South Africa
+ * @package administration.docfieldmanagement.metadatamanagement
+ */
+ 
 // if its the manual edit page..then display normally
 function getSelectFieldPage($iDocFieldID) {	
 	global $default;
@@ -155,7 +180,7 @@ function getDocFieldDisplay($oDocField) {
 	if (!isset($oDocField)) {
 		
 		$sWhereClause = " ST.has_lookup = 1" ;
-		$oPatternListBox = & new PatternListBox($default->owl_fields_table, "name", "id", "fDocFieldID");
+		$oPatternListBox = & new PatternListBox($default->document_fields_table, "name", "id", "fDocFieldID");
 		//$oPatternListBox->setIncludeDefaultValue(true);
 		$oPatternListBox->setWhereClause($sWhereClause);
 		$oPatternListBox->setPostBackOnChange(true);		
@@ -175,7 +200,7 @@ function getMetaDataDisplay($oMetaData,$iDocFieldID) {
 		
 		
 		$sWhereClause = " ST.document_field_id = " . $iDocFieldID;
-		$oPatternListBox = & new PatternListBox($default->owl_metadata_table, "name", "id", "fMetaDataID");
+		$oPatternListBox = & new PatternListBox($default->metadata_table, "name", "id", "fMetaDataID");
 		//$oPatternListBox->setIncludeDefaultValue(true);
 		$oPatternListBox->setWhereClause($sWhereClause);
 		$oPatternListBox->setPostBackOnChange(true);		
