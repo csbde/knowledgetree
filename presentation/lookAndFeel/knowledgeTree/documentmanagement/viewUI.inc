@@ -207,6 +207,7 @@ function renderEditableDocumentRouting($oDocument) {
     $sToRender .= "\t\t<td>" . $oPatternTableSqlQuery->render() . "</td>\n";
     $sToRender .= "\t</tr>";            
     $sToRender .= "\t<tr>\n";    
+    // FIXME display messages instead of just not displaying button
     // collaboration cannot be started or approved/rejected unless the document is not checked out    
 	if (!$oDocument->getIsCheckedOut() && $oDocument->hasCollaboration() && (!DocumentCollaboration::documentCollaborationStarted($oDocument->getID())) && ($_SESSION["userID"] == $oDocument->getCreatorID())) {
 		//if not all collaboration steps have been set, then you cannot start the collaboration process
