@@ -24,12 +24,24 @@ class PatternMainPage {
 	
 	/** property holder for $oNorthWestPayload */
 	var $oNorthWestPayload;
+    /** bg colour **/
+    var $sNorthWestPayloadBackGroundColour;
+    
 	/** property holder for $oWestPayload */
 	var $oWestPayload;
+    /** bg colour **/
+    var $sWestPayloadBackGroundColour;
+    
 	/** property holder for $oEastPayload */
 	var $oCentralPayload;
+    /** bg colour **/
+    var $sCentralPayloadBackGroundColour;
+    
 	/** property holder for $oNorthPayload */
 	var $oNorthPayload;
+    /** bg colour **/
+    var $sNorthPayloadBackGroundColour;
+    
 	/** form action*/
 	var $sFormAction;
 	/** form enctype */
@@ -45,17 +57,33 @@ class PatternMainPage {
 		$this->oNorthWestPayload = & $oNewVal;		
 	}
 	
+    function setNorthWestPayloadBackGroundColour($sColour) {
+        $this->sNorthWestPayloadBackGroundColour = $sColour;
+    }
+    
 	function setNorthPayload($oNewVal) {		
 		$this->oNorthPayload = & $oNewVal;		
 	}
 	
+    function setNorthPayloadBackGroundColour($sColour) {
+        $this->sNorthPayloadBackGroundColour = $sColour;
+    }
+    
 	function setCentralPayload($oNewVal) {
 		$this->oCentralPayload = & $oNewVal;		
 	}
 	
-	function setWestPayload($oNewVal) {		
-		$this->oWestPayload = & $oNewVal;		
+    function setCentralPayloadBackGroundColour($sColour) {
+        $this->sCentralPayloadBackGroundColour = $sColour;
+    }
+    
+	function setWestPayload($oNewVal) {
+		$this->oWestPayload = & $oNewVal;
 	}
+    
+    function setWestPayloadBackGroundColour($sColour) {
+        $this->sWestPayloadBackGroundColour = $sColour;
+    }
 	
 	function setFormAction($sNewVal) {
 		$this->sFormAction = & $sNewVal;
@@ -106,14 +134,14 @@ class PatternMainPage {
 								"<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"700\" height=\"600\">\n " .
 
 									"<tr height=\"18%\">\n".
-										"<td width=\"5%\">\n";
+										"<td width=\"5%\"" . (isset($this->sNorthWestPayloadBackGroundColour) ? " bgcolor=\"" . $this->sNorthWestPayloadBackGroundColour . "\"" : "") . ">\n";
 										if (isset($this->oNorthWestPayload)) {											
 											$sToRender = $sToRender . "\n" . $this->oNorthWestPayload->render() . "\n";
 										} else {
 											$sToRender = $sToRender . "\nNorthwest payload not set\n";
 										}
 										$sToRender = $sToRender . "</td>\n
-										<td width = \"90%\">\n";										
+										<td width = \"90%\"" . (isset($this->sNorthPayloadBackGroundColour) ? " bgcolor=\"" . $this->sNorthPayloadBackGroundColour . "\"" : "") . ">\n";										
 										if (isset($this->oNorthPayload)) {
 											$sToRender = $sToRender . "\n" . $this->oNorthPayload->render() . "\n";
 										} else {
@@ -122,14 +150,14 @@ class PatternMainPage {
 										$sToRender = $sToRender . "</td>\n
 									</tr>\n
 									<tr border = \"1\" height=\"72%\" >\n										
-										<td border = \"1\" width=\"5%\">";
+										<td border = \"1\" width=\"5%\"" . (isset($this->sWestPayloadBackGroundColour) ? " bgcolor=\"" . $this->sWestPayloadBackGroundColour . "\"" : "") . ">";
 										if (isset($this->oWestPayload)) {											
 											$sToRender = $sToRender . "\n" . $this->oWestPayload->render() . "\n";											
 										} else {
 											$sToRender = $sToRender . "\nWest payload not set\n";
 										}
 										$sToRender = $sToRender . "</td>\n
-										<td width=\"80%\" valign=\"top\">\n";
+										<td width=\"80%\" valign=\"top\"" . (isset($this->sCentralPayloadBackGroundColour) ? " bgcolor=\"" . $this->sCentralPayloadBackGroundColour . "\"" : "") . ">\n";
                                         
 										if (isset($this->oCentralPayload)) {
                                             // hack to circumvent the crapness of ns 4.79
