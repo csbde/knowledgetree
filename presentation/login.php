@@ -66,6 +66,9 @@ if ($loginAction == "loginForm") {
                 $session = new Session();
                 $sessionID = $session->create($userDetails["userID"]);
                 
+                // initialise page-level authorisation array
+                $_SESSION["pageAccess"] = NULL;
+                
                 // check for a location to forward to
                 if (isset($redirect) && strlen(trim($redirect))>0) {
                     $url = urldecode($redirect);

@@ -40,9 +40,6 @@ if (checkSessionAndRedirect(false)) {
 //  from the sitemap requires group access ie. !Anonymous then redirect to no
 //  permission page)
 
-// reset authorisation flag before checking access
-$_SESSION["pageAccess"] = NULL;
-
 // check whether the users group has access to the requested page
 $page = $default->siteMap->getPage($action, $_SESSION["userID"]);
 
