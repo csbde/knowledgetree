@@ -110,12 +110,10 @@ class KTInit {
             $sDomain = 'knowledgeTree';
             bindtextdomain($sDomain, $default->fileSystemRoot . "/i18n");
             textdomain($sDomain);
+            return true;
         } else {
+            return false;
             $default->log->info("Gettext not installed, i18n disabled.");
-            // define a dummy _ function so gettext is not -required-
-            function _($sString) {
-                return $sString;
-            }
         }
     }
     // }}}
@@ -243,6 +241,34 @@ class KTInit {
         return false;
     }
     // }}}
+
+
+    // {{{ guessRootUrl()
+    function guessRootUrl() {
+        $urlpath = $_SERVER['PHP_SELF'];
+        $bFound = false;
+        $rootUrl = "";
+        while ($urlpath) {
+            if (file_exists(KT_DIR . '/' . $urlpath)) {
+                $bFound = true;
+                break;
+            }
+            $i = strpos($urlpath, '/');
+            if ($i === false) {
+                break;
+            }
+            $rootUrl .= substr($urlpath, 0, $i);
+            $urlpath = substr($urlpath, $i + 1);
+        }
+        if ($bFound) {
+            if ($rootUrl) {
+                $rootUrl = '/' . $rootUrl;
+            }
+            return $rootUrl;
+        }
+        return "";
+    }
+    // }}}
 }
 // }}}
 
@@ -260,6 +286,15 @@ $default->logLevel = 'INFO';
 $default->useDatabaseConfiguration = false;
 $default->developmentWindowLog = false;
 $default->genericMetaDataRequired = true;
+
+$default->sslEnabled = false;
+if (array_key_exists('HTTPS', $_SERVER)) {
+    if (strtolower($_SERVER['HTTPS']) === 'on') {
+        $default->sslEnabled = true;
+    }
+}
+
+$default->rootUrl = KTInit::guessRootUrl();
 
 // include the environment settings
 require_once("environment.php");
@@ -301,7 +336,13 @@ if ($default->useDatabaseConfiguration && $default->system->initialised()) {
 // table mapping entries
 include("tableMappings.inc");
 
-KTInit::setupI18n();
+$i18nLoaded = KTInit::setupI18n();
+if ($i18nLoaded === false) {
+    // define a dummy _ function so gettext is not -required-
+    function _($sString) {
+        return $sString;
+    }
+}
 
 KTInit::cleanGlobals();
 KTInit::cleanMagicQuotes();
