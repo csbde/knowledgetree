@@ -15,14 +15,13 @@ function getEditPage($iLinkID) {
 	$oLink = null;
 	if (isset($iLinkID)) {
 		$oLink = Link::get($iLinkID);
-	}
-	
-	
-	$sToRender .= "<br></br>\n";
+	} else {
+    	$sHeading = "Please select a Link:";
+	} 
+    $sToRender .= "<table width=\"600\">" . renderHeading("Edit QuickLink") . "</table>";
 	$sToRender .= "<b>Edit Link Properties:</b>\n";
 	$sToRender .= "<table>\n";
-	$sToRender .= "<br></br>\n";
-	$sToRender .= "<tr></tr>\n";
+	$sToRender .= "<tr><td>$sHeading</td></tr>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>Link Name: </td><td>" . getLinkDisplay($oLink) . "</td>\n";
 	$sToRender .= "</tr>\n";
@@ -58,7 +57,7 @@ function getEditPage($iLinkID) {
 function getEditPageSuccess() {	
 	global $default;
 			
-	$sToRender .= "<br></br>\n";
+    $sToRender .= "<table width=\"600\">" . renderHeading("Edit QuickLink") . "</table>";
 	$sToRender .= "<b>Success!</b>\n";
 	$sToRender .= "<table>\n";
 	$sToRender .= "<br></br>\n";
@@ -80,7 +79,7 @@ function getEditPageSuccess() {
 function getEditPageFail() {	
 	global $default;
 			
-	$sToRender .= "<br></br>\n";
+    $sToRender .= "<table width=\"600\">" . renderHeading("Edit QuickLink") . "</table>";
 	$sToRender .= "<b>Success!</b>\n";
 	$sToRender .= "<table>\n";
 	$sToRender .= "<br></br>\n";
@@ -136,9 +135,7 @@ function getRank($oLink) {
 // gets the updatebutton when a Link is selected
 function getUpdateButton($oLink) {
 	global $default;
-	if (!isset($oLink)) {
-		return "Please select a Link: ";
-	} else {
+	if (isset($oLink)) {
 		return "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/update.gif\" value=\"submit\" border=\"0\"/></td>\n";
 	}
 }
