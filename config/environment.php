@@ -51,7 +51,7 @@ $default->db = new Database();
 
 // default language
 $default->defaultLanguage = "en";
-$default->useAcceptLanguageHeader = false;
+$default->useAcceptLanguageHeader = true;
 
 // instantiate system settings class
 require_once("$default->fileSystemRoot/lib/database/lookup.inc");
@@ -104,6 +104,6 @@ if ($default->system->initialised()) {
     // session timeout (in seconds)
     $default->sessionTimeout = 1200;
     // add javascript content pane scrolling arrows
-    $default->contentPaneScrolling = true;
+    $default->contentPaneScrolling = false;
 }
 ?>
