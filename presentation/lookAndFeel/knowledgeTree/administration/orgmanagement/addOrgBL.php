@@ -26,6 +26,7 @@ if (checkSession()) {
 	$oPatternCustom->setHtml(getPage());
 	$main->setCentralPayload($oPatternCustom);
 	$main->setFormAction("$default->rootUrl/presentation/lookAndFeel/knowledgeTree/create.php?fRedirectURL=".urlencode("$default->rootUrl/control.php?action=addOrgSuccess&fedit=1"));
+    $main->setHasRequiredFields(true);
 	$main->render();
 }
 ?>
