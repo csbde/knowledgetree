@@ -1,5 +1,7 @@
 <?php
 require_once("$default->fileSystemRoot/lib/subscriptions/SubscriptionConstants.inc");
+require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
+require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
 
 /**
  * 
@@ -151,6 +153,18 @@ class Subscription {
         }
     }
 
+    function getAlertLink() {
+        $sViewAlertUrl = "/control.presentation/lookAndFeel/knowledgeTree/subscriptions/viewAlertBL.php";
+        $sViewAlertParams = "fSubscriptionID=" . $this->iID . "&fSubscriptionType=" . $this->iSubscriptionType;
+
+        if ($this->iSubscriptionType == SubscriptionConstants::subscriptionType("DocumentSubscription")) {
+            return generateControllerLink("viewAlert", $sViewAlertParams, Document::getDocumentDisplayPath($this->iExternalID));
+        } else if ($this->iSubscriptionType == SubscriptionConstants::subscriptionType("FolderSubscription")) {
+            return generateControllerLink("viewAlert", $sViewAlertParams, Folder::getFolderDisplayPath($this->iExternalID));
+        }        
+                
+    }
+    
     /**
     * Create the current document subscription in the database
     *
