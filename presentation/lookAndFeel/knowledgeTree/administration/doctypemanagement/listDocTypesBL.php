@@ -31,7 +31,7 @@ if (checkSession()) {
 if(checkSession()) {	
 		global $default;
 		
-		$oPatternCustom->addHtml(renderHeading("Current System Organisations"));		// Create the Heading				
+		$oPatternCustom->addHtml(renderHeading("Document Type Management"));		// Create the Heading				
 		 		
 		$main->setFormAction($_SERVER['PHP_SELF']);
 				
