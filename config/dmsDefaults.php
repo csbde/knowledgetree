@@ -130,6 +130,16 @@ class KTInit {
 
         require_once("DB.php");
 
+        // DBCompat allows phplib API compatibility
+        require_once(KT_LIB_DIR . '/database/dbcompat.inc');
+        $default->db = new DBCompat;
+
+        // DBUtil is the preferred database abstraction
+        require_once(KT_LIB_DIR . '/database/dbutil.inc');
+
+        // KTEntity is the database-backed base class
+        require_once(KT_LIB_DIR . '/ktentity.inc');
+
         $dsn = array(
             'phptype'  => $default->dbType,
             'username' => $default->dbUser,
@@ -148,19 +158,9 @@ class KTInit {
         if (PEAR::isError($default->_db)) {
             KTInit::handleInitError($default->_db);
             // returns only in checkup
-            return $res;
+            return $default->_db;
         }
         $default->_db->setFetchMode(DB_FETCHMODE_ASSOC);
-
-        // DBCompat allows phplib API compatibility
-        require_once(KT_LIB_DIR . '/database/dbcompat.inc');
-        $default->db = new DBCompat;
-
-        // DBUtil is the preferred database abstraction
-        require_once(KT_LIB_DIR . '/database/dbutil.inc');
-
-        // KTEntity is the database-backed base class
-        require_once(KT_LIB_DIR . '/ktentity.inc');
 
     }
     /// }}}
