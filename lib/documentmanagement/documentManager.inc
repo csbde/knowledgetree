@@ -294,15 +294,29 @@ function viewDocumentHistory($DocumentID)
 				
 	global $default;
 	$db = new Owl_DB();
+	$history = array();
 		
 	$Sql = "SELECT * FROM  " . $default->owl_document_transactions_table . " WHERE document_id = $DocumentID";
 		
 	$result = $db->query($Sql);
-	$rows = $db->num_rows($result);
-		
+	//$rows = $db->num_rows($result);
+	
+	while($db->next_record())
+         {
+        	$history[0] = array("id" => $db->f("id"),
+                                    "document_id" => $db->f("document_id"),
+                                    "version" => $db->f("version"),
+                                    "user_id" => $db->f("user_id"),
+                                    "datetime" => $db->f("datetime"),
+                                    "ip" => $db->f("ip"),
+                                    "filename" => $db->f("filename"),
+                                    "comment" => $db->f("comment"),
+                                    "transaction_id" => $db->f("transaction_id")); 
+         }
+        
 	
 	// return the result set..
-	return $result;
+	return $history;
 
 }	
 	
