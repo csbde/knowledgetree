@@ -50,7 +50,9 @@ require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
 require_once("$default->fileSystemRoot/lib/documentmanagement/DependantDocumentInstance.inc");
 require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentCollaboration.inc");
 
+require_once("$default->fileSystemRoot/lib/archiving/ArchivingSettings.inc");
 require_once("$default->fileSystemRoot/lib/archiving/DocumentArchiving.inc");
+require_once("$default->fileSystemRoot/lib/archiving/TimePeriod.inc");
 
 require_once("$default->fileSystemRoot/lib/foldermanagement/FolderCollaboration.inc");
 require_once("$default->fileSystemRoot/lib/foldermanagement/FolderUserRole.inc");

@@ -139,44 +139,40 @@ function renderTypeSpecificMetaData($oDocument, $bEditable) {
     $sToRender .= "\t</table>\n";
     return $sToRender;    
 }
-
-function renderEditableDocumentArchiveSettings($oDocument) {
+function renderDocumentArchiveSettingsDetails($oDocument, $bEditable) {
 	global $default;
-    $sQuery = "SELECT d.id, atl.name, 'Edit' AS edit FROM $default->document_archiving_table AS da " .
-    		  "INNER JOIN $default->archiving_settings_table AS ast ON da.archiving_settings_id=ast.id " .
-    		  "INNER JOIN $default->archiving_type_lookup_table AS atl ON ast.archiving_type_id=atl.id " .
-			  "INNER JOIN $default->documents_table AS d ON da.document_id=d.id " .
-			  "WHERE d.id = " . $oDocument->getID();
-    
-    $aColumns = array("name", "edit");
-    $aColumnHeaders = array("Archiving Type");
-    $aColumnTypes = array(1,3);
-    $aDBColumnArray = array("id");
-    $aQueryStringVariableNames = array("fDocumentID");
-    $aLinkURLs = array(1=>"$default->rootUrl/control.php?action=modifyDocumentArchiveSettings");
-    $oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaders, "500", $aLinkURLs ,$aDBColumnArray,$aQueryStringVariableNames);
-    $oPatternTableSqlQuery->setTableHeading("Archiving Settings");
-    $oPatternTableSqlQuery->setEmptyTableMessage("No archiving settings");
-    $oPatternTableSqlQuery->setDisplayColumnHeadings(true);
-    return $oPatternTableSqlQuery->render();	
-}
+	
+	// retrieve the appropriate settings given the document id
+	$oDocumentArchiving = DocumentArchiving::getFromDocumentID($oDocument->getID());
+	// retrieve the settings
+	$oArchiveSettings = ArchivingSettings::get($oDocumentArchiving->getArchivingSettingsID());  			
+	// switch on archiving type
+	$sArchivingType = lookupName($default->archiving_type_lookup_table, $oArchiveSettings->getArchivingTypeID());
+	$oTimePeriod = TimePeriod::get($oArchiveSettings->getTimePeriodID());
+		
+	switch ($sArchivingType) {
+		case "Date" : 
+			$sDisplayText  = "Expiration Date: " . $oArchiveSettings->getExpirationDate();
+			if ($oTimePeriod) {
+				$sDisplayText .= "<br/>Expires after " . $oTimePeriod->getUnits() . " ";
+				$sDisplayText .= lookupName($default->time_unit_lookup_table, $oTimePeriod->getTimeUnitID()) . " from document creation date";
+			}
+			break;		
+		case "Utilisation" :
+			$sDisplayText .= "Archive document " . $oTimePeriod->getUnits() . " ";
+			$sDisplayText .= lookupName($default->time_unit_lookup_table, $oTimePeriod->getTimeUnitID());
+			$sDisplayText .= " after the last " . lookupName($default->transaction_types_table, $oArchiveSettings->getDocumentTransactionID()) . " transaction";
+			break;		
+	}	
 
-function renderNonEditableDocumentArchiveSettings($oDocument) {
-	global $default;
-    $sQuery = "SELECT d.id, atl.name FROM $default->document_archiving_table AS da " .
-    		  "INNER JOIN $default->archiving_settings_table AS ast ON da.archiving_settings_id=ast.id " .
-    		  "INNER JOIN $default->archiving_type_lookup_table AS atl ON ast.archiving_type_id=atl.id " .
-			  "INNER JOIN $default->documents_table AS d ON da.document_id=d.id " .
-			  "WHERE d.id = " . $oDocument->getID();
-    
-    $aColumns = array("name");
-    $aColumnHeaders = array("Archiving Type");
-    $aColumnTypes = array(1);
-    $oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaders, "500", $aLinkURLs ,$aDBColumnArray,$aQueryStringVariableNames);
-    $oPatternTableSqlQuery->setTableHeading("Archiving Settings");
-    $oPatternTableSqlQuery->setEmptyTableMessage("No archiving settings");
-    $oPatternTableSqlQuery->setDisplayColumnHeadings(true);
-    return $oPatternTableSqlQuery->render();
+	$sToRender  = "<table cellpadding=\"5\" border=\"0\" width=\"500\">";
+	$sToRender .= "<caption align=\"top\" colspan=\"2\" align=\"left\"><b>Archiving Settings</b></caption>";
+	$sToRender .= "<th align=\"left\">Archiving Type: $sArchivingType</th>";
+	$sToRender .= "<tr bgcolor=\"F5F6EE\">";
+	$sToRender .= "<td>$sDisplayText</td>" . ($bEditable ? "<td>" . generateControllerLink("modifyDocumentArchiveSettings", "fDocumentID=" . $oDocument->getID(), "Edit") . "</td>" : "");
+	$sToRender .= "</tr>";
+	$sToRender .= "</table>";
+    return  $sToRender;	
 }
 
 function renderDocumentArchiveSettings($oDocument, $bEditable) {
@@ -184,7 +180,8 @@ function renderDocumentArchiveSettings($oDocument, $bEditable) {
 
     $sToRender .= "\t<table cellspacing=\"0\" cellpadding=\"0\" border=\"0\" width=\"100%\">\n";
     $sToRender .= "\t<tr>\n";
-    $sToRender .= "\t\t<td>" . ($bEditable ? renderEditableDocumentArchiveSettings($oDocument) : renderNonEditableDocumentArchiveSettings($oDocument)) . "</td>\n";
+    
+	$sToRender .= "\t\t<td>" . renderDocumentArchiveSettingsDetails($oDocument, $bEditable) . "</td>\n";    
     $sToRender .= "\t</tr>";
     if ($bEditable) {
 	   	$sToRender .= "\t<tr>\n";
