@@ -10,7 +10,7 @@
 */
 
 function renderDocumentPath($oDocument) {
-    $sDocumentPath = displayFolderPathLink(Folder::getFolderPathAsArray($oDocument->getFolderID())) . " > " . $oDocument->getName();
+    $sDocumentPath = displayFolderPathLink(Folder::getFolderPathAsArray($oDocument->getFolderID()), Folder::getFolderPathNamesAsArray($oDocument->getFolderID())) . " > " . $oDocument->getName();
     return "<table border=1 width = 100%><tr><td>$sDocumentPath</td></tr></table>\n";
 }
 

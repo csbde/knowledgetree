@@ -42,7 +42,7 @@ function getPage($iFolderID, $iGroupID, $iRoleID, $iSequenceNumber) {
 
 function getFolderPath($iFolderID) {
 	global $default;
-	return displayFolderPathLink(Folder::getFolderPathAsArray($iFolderID), "$default->owl_root_url/control.php?action=browse");		
+	return displayFolderPathLink(Folder::getFolderPathAsArray($iFolderID), Folder::getFolderPathNamesAsArray($iFolderID),  "$default->owl_root_url/control.php?action=browse");		
 }
 
 function getGroupDropDown($iGroupID) {

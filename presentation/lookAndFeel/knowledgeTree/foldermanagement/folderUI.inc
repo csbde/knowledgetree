@@ -19,7 +19,7 @@
  * @param array containing the path to the folder (folder ids)
  * @param string the page to link to (defaults to the page this is called from)
  */
-function displayFolderPathLink($aPathArray, $sLinkPage = "") {
+function displayFolderPathLink($aPathArray, $aPathNameArray, $sLinkPage = "") {
     global $default;
     if (strlen($sLinkPage) == 0) {
         $sLinkPage = $_SERVER["PHP_SELF"];
@@ -27,9 +27,10 @@ function displayFolderPathLink($aPathArray, $sLinkPage = "") {
     $default->log->debug("displayFolderPathLink: slinkPage=$sLinkPage");
     // display a separate link to each folder in the path
     for ($i=0; $i<count($aPathArray); $i++) {
-        $iFolderID = $aPathArray[$i];
+        $iFolderID = $aPathArray[$i];		
         // retrieve the folder name for this folder
-        $sFolderName = Folder::getFolderName($iFolderID);
+        //$sFolderName = Folder::getFolderName($iFolderID);
+		$sFolderName = $aPathNameArray[$i];
         // generate a link back to this page setting fFolderID
         $sLink = generateLink($sLinkPage,
                               "fBrowseType=folder&fFolderID=$iFolderID",
@@ -60,8 +61,8 @@ function displayFolderLink($oFolder, $sLinkPage = "") {
                         $oFolder->getName());
 }
 
-function renderFolderPath($fFolderID, $sLinkURL) {
-    $sFolderPath = displayFolderPathLink(Folder::getFolderPathAsArray($fFolderID, $sLinkURL));
+function renderFolderPath($iFolderID, $sLinkURL) {	 
+    $sFolderPath = displayFolderPathLink(Folder::getFolderPathAsArray($iFolderID), Folder::getFolderPathNamesAsArray($iFolderID), $sLinkURL);
     return "<table border=1 width = 100%><tr><td>$sFolderPath</td></tr></table>\n";
 }
 

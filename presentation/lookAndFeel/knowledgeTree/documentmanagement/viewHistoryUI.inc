@@ -11,7 +11,7 @@
 
 function getDocumentPath($iFolderID, $sDocumentName) {
     global $default;
-    $sDocumentPath = displayFolderPathLink(Folder::getFolderPathAsArray($iFolderID), "$default->owl_root_url/control.php?action=browse") . " > " . $sDocumentName;
+    $sDocumentPath = displayFolderPathLink(Folder::getFolderPathAsArray($iFolderID), Folder::getFolderPathNamesAsArray($iFolderID),  "$default->owl_root_url/control.php?action=browse") . " > " . $sDocumentName;
     return "<table border=1 width = 100%><tr><td>$sDocumentPath</td></tr></table>\n";
 }
 
