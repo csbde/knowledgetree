@@ -77,6 +77,7 @@ function renderGenericMetaData($oDocument, $bEditable) {
     $aColumnTypes = array(1,1);
     $oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaders, "500");
     $oPatternTableSqlQuery->setTableHeading("Generic Meta Data");
+    $oPatternTableSqlQuery->setEmptyTableMessage("No Generic Meta Data");
     
     $sToRender .= "\t<table cellspacing=\"0\" cellpadding=\"0\" border=\"0\" width=\"100%\">\n";    	
     $sToRender .= "\t<tr>\n";

@@ -27,6 +27,7 @@ function getEditableGenericMetaData($iDocumentID, $iDocumentTypeID) {
     $oPatternTableSqlQuery->setUniqueName("gmd");
 	$oPatternTableSqlQuery->setRequiredColumnNames(array("value"));
 	$oPatternTableSqlQuery->setMetaDataFields($aMetaDataColumnNames);
+	$oPatternTableSqlQuery->setEmptyTableMessage("No Generic Meta Data");
     return $oPatternTableSqlQuery->render();
 
 }
