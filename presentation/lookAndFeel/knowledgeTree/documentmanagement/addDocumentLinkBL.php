@@ -37,7 +37,7 @@ if (checkSession()) {
 				//an error occured while trying to create the document link
 				$oPatternCustom = & new PatternCustom();
 				$oPatternCustom->setHtml(getPage($fDocumentID));
-				
+				$main->setOnLoadJavaScript("disable(document.MainForm.fTargetDocument)");
 				$main->setCentralPayload($oPatternCustom);
 				$main->setFormAction($_SERVER["PHP_SELF"] . "?fDocumentID=$fDocumentID&fForStore=1");
 				$main->setHasRequiredFields(true);
@@ -50,6 +50,7 @@ if (checkSession()) {
 						
 			$oPatternCustom = & new PatternCustom();
 			$oPatternCustom->setHtml(getPage($fDocumentID));
+			$main->setOnLoadJavaScript("disable(document.MainForm.fTargetDocument)");
 			$main->setCentralPayload($oPatternCustom);
 			$main->setFormAction($_SERVER["PHP_SELF"] . "?fDocumentID=$fDocumentID&fForStore=1");
 			$main->setHasRequiredFields(true);				
