@@ -54,42 +54,42 @@ function getAddPage($unitID) {
 function getDetailsDBPage($suserName, $aAttributes) {
 
  	global $default;
-
-	$sToRender .= "<br></br>\n";
-	$sToRender .= "<b>User Details: </b>\n";
-	$sToRender .= "<table>\n";
-	$sToRender .= "<br></br>\n";
-	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>Username: </td><td><input disabled size = \"40\" type=\"text\" name=\"fUsername\" value = \"". $aAttributes[$suserName]["username"]. "\"> </td>\n";
-    $sToRender .= "<input type=\"hidden\" name=\"fUsername\" value = \"" . $aAttributes[$suserName]["username"] ."\">\n";
-	$sToRender .= "</tr>\n";
-	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>Name: </td><td><input size = \"40\" type=\"text\" name=\"fName\" value = \"" . $aAttributes[$suserName]["name"] ."\"> </td>\n";
-	$sToRender .= "</tr>\n";
-	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>Email: </td><td><input size = \"40\" type=\"text\" name=\"fEmail\" value = \"" . $aAttributes[$suserName]["email"] ."\"> </td>\n";
-	$sToRender .= "</tr>\n";
-	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>Mobile: </td><td><input size = \"40\" type=\"text\" name=\"fMobile\" value = \"" . $aAttributes[$suserName]["mobile"] ."\"> </td>\n";
-	$sToRender .= "</tr>\n";
-	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>Email Notification: </td><td><input size = \"40\" type=\"text\" name=\"fEmailNotificaition\" value = \"" . $aAttributes[$suserName]["email_notification"] ."\"> </td>\n";
-	$sToRender .= "</tr>\n";
-	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>Sms Notification: </td><td><input size = \"40\" type=\"text\" name=\"fSmsNotification\" value = \"" . $aAttributes[$suserName]["sms_notification"] ."\"> </td>\n";
-	$sToRender .= "</tr>\n";
-	$sToRender .= "<tr>\n";
-	$sToRender .= "</tr>\n";
-	$sToRender .= "<tr>\n";
-	$sToRender .= "</tr>\n";
-	$sToRender .= "<tr>\n";
-	$sToRender .= "</tr>\n";
-	$sToRender .= "<tr>\n";
-	$sToRender .= "<td></td><td>" . getAddButton();	
-	$sToRender .= "<td></td><td>" . getCancelButton();
-	$sToRender .= "</tr>\n";
-	$sToRender .= "</table>\n";
-	
+    foreach ($aAttributes as $sUserName => $aUserAttributes) {
+        $sToRender .= "<br></br>\n";
+        $sToRender .= "<b>User Details: </b>\n";
+        $sToRender .= "<table>\n";
+        $sToRender .= "<br></br>\n";
+        $sToRender .= "<tr>\n";
+        $sToRender .= "<td>Username: </td><td><input disabled size = \"40\" type=\"text\" name=\"fUsername\" value = \"". $aUserAttributes["username"]. "\"> </td>\n";
+        $sToRender .= "<input type=\"hidden\" name=\"fUsername\" value = \"" . $aUserAttributes["username"] ."\">\n";
+        $sToRender .= "</tr>\n";
+        $sToRender .= "<tr>\n";
+        $sToRender .= "<td>Name: </td><td><input size = \"40\" type=\"text\" name=\"fName\" value = \"" . $aUserAttributes["name"] ."\"> </td>\n";
+        $sToRender .= "</tr>\n";
+        $sToRender .= "<tr>\n";
+        $sToRender .= "<td>Email: </td><td><input size = \"40\" type=\"text\" name=\"fEmail\" value = \"" . $aUserAttributes["email"] ."\"> </td>\n";
+        $sToRender .= "</tr>\n";
+        $sToRender .= "<tr>\n";
+        $sToRender .= "<td>Mobile: </td><td><input size = \"40\" type=\"text\" name=\"fMobile\" value = \"" . $aUserAttributes["mobile"] ."\"> </td>\n";
+        $sToRender .= "</tr>\n";
+        $sToRender .= "<tr>\n";
+        $sToRender .= "<td>Email Notification: </td><td><input size = \"40\" type=\"text\" name=\"fEmailNotificaition\" value = \"" . $aUserAttributes["email_notification"] ."\"> </td>\n";
+        $sToRender .= "</tr>\n";
+        $sToRender .= "<tr>\n";
+        $sToRender .= "<td>Sms Notification: </td><td><input size = \"40\" type=\"text\" name=\"fSmsNotification\" value = \"" . $aUserAttributes["sms_notification"] ."\"> </td>\n";
+        $sToRender .= "</tr>\n";
+        $sToRender .= "<tr>\n";
+        $sToRender .= "</tr>\n";
+        $sToRender .= "<tr>\n";
+        $sToRender .= "</tr>\n";
+        $sToRender .= "<tr>\n";
+        $sToRender .= "</tr>\n";
+        $sToRender .= "<tr>\n";
+        $sToRender .= "<td></td><td>" . getAddButton();	
+        $sToRender .= "<td></td><td>" . getCancelButton();
+        $sToRender .= "</tr>\n";
+        $sToRender .= "</table>\n";
+	}
 	return $sToRender;
 	
 }
