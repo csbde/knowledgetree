@@ -176,7 +176,7 @@ $default->siteMap->addPage("viewPreferences", "/preferences.php", "Preferences",
 $default->siteMap->addPage("editPreferences", "/preferences.php", "Preferences", User, "Edit Preferences");
 
 // pages for Help section
-$default->siteMap->addDefaultPage("help", "/help.php", "Help", Guest, "Help");
+$default->siteMap->addDefaultPage("help", "/presentation/lookAndFeel/knowledgeTree/Help/emailHelp.php", "Help", Guest, "Help");
 
 // pages for logout section section
 $default->siteMap->addDefaultPage("logout", "/presentation/logout.php", "Logout", Guest, "Logout");
