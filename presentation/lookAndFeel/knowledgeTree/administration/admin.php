@@ -1,5 +1,5 @@
 <?php
-require_once("./config/dmsDefaults.php");
+require_once("../../../../config/dmsDefaults.php");
 		
 	
 if(checkSession()) {
