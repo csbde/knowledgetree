@@ -11,7 +11,7 @@ require_once("$default->fileSystemRoot/lib/documentmanagement/PhysicalDocumentMa
  *
  * @version $Revision$
  * @author Michael Joseph <michael@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
- * @package lib.authentication 
+ * @package lib.dashboard 
  */
 
 class DashboardNews {
@@ -44,6 +44,14 @@ class DashboardNews {
 	 * The mime type id of the image
 	 */
 	var $iImageMimeTypeID;	
+	/**
+	 * The maximum allowable width of an image
+	 */
+	var $iMaxImageWidth = 80;
+	/**
+	 * The maximum allowable height of an image
+	 */
+	var $iMaxImageHeight = 40;
 	
 	/**
 	 * Constructs a news item
@@ -53,6 +61,8 @@ class DashboardNews {
 	 * @param integer the rank
 	 */
 	function DashboardNews($sNewSynopsis, $sNewBody, $iNewRank, $mImage = "") {
+		global $default;
+		
 		// primary key not set as document is not stored yet
 		$this->iId = -1;
 		$this->setSynopsis($sNewSynopsis);
@@ -64,11 +74,16 @@ class DashboardNews {
 			$this->setImage($mImage["image"]);
 			$this->setImageSize($mImage["filesize"]);
 			$this->setImageMimeTypeID($mImage["mimetypeid"]);
-		} else {			
+		} else if (strlen($mImage) > 0){	
 			if (file_exists($mImage)) {
 				// we've been passed a file, so read it in
 				$this->setImageFile($mImage);
 			}
+		} else {
+			// initialise
+			$this->setImage("");
+			$this->setImageSize(0);
+			$this->setImageMimeTypeID(0);
 		}
 	}
 
@@ -100,6 +115,13 @@ class DashboardNews {
 	 */
 	function getBody(){
 		return $this->sBody;
+	}
+
+	/**
+	 * Returns a fragment of the body
+	 */
+	function getBodyFragment() {
+		return substr($this->sBody, 0, 50);
 	}
 
 	/**
@@ -174,6 +196,47 @@ class DashboardNews {
 	 */
 	function setImageMimeTypeID($iNewMimeTypeID) {
 		$this->iImageMimeTypeID = $iNewMimeTypeID;
+	}
+	
+	/**
+	 * Retrieve the maximum image width
+	 */
+	function getMaxImageWidth() {
+		return $this->iMaxImageWidth;
+	}
+
+	/**
+	 * Set the maximum image width
+	 *
+	 * @param integer the maximum image width	 
+	 */
+	function setMaxImageWidth($iNewMaxImageWidth) {
+		$this->iMaxImageWidth = $iNewMaxImageWidth;
+	} 
+	
+	/**
+	 * Retrieve the maximum image height
+	 */
+	function getMaxImageHeight() {
+		return $this->iMaxImageHeight;
+	}
+
+	/**
+	 * Set the maximum image height
+	 *
+	 * @param integer the maximum image height	 
+	 */
+	function setMaxImageHeight($iNewMaxImageHeight) {
+		$this->iMaxImageHeight = $iNewMaxImageHeight;
+	}
+
+	/**
+	 * Returns the maximum dimensions as a string
+	 *
+	 * @param string the maximum image dimensions
+	 */
+	function getMaxImageDimensions() {
+		return $this->iMaxImageWidth . "x" . $this->iMaxImageHeight;
 	} 
 	
 	/**
@@ -191,8 +254,10 @@ class DashboardNews {
 	 * @param string path to the image on the filesystem
 	 */
 	function setImageFile($sPathToImage){
+		global $default;
+		$default->log->info("set image file called with $sPathToImage");
 		if (file_exists($sPathToImage)) {
-			$aImage = $this->imageToString($sPathToImage);
+			$aImage = $this->readInImage($sPathToImage);
 			$this->sImage = $aImage["image"];
 			$this->iImageSize = $aImage["filesize"];
 			$this->iImageMimeTypeID = $aImage["mimetypeid"];
@@ -301,14 +366,14 @@ class DashboardNews {
         global $default;
         $aDashboardNewsArray = array();
         $sql = $default->db;
-        $result = $sql->query("SELECT * FROM " . $default->owl_news_table  . (isset($sWhereClause) ? " WHERE " . $sWhereClause : ""));
+        $result = $sql->query("SELECT * FROM " . $default->owl_news_table  . (isset($sWhereClause) ? " WHERE " . $sWhereClause : "") . " ORDER BY rank ASC");
         if ($result) {
             $iCount = 0;
             while ($sql->next_record()) {
                 $oDashboardNews = & DashboardNews::get($sql->f("id"));
                 $aDashboardNewsArray[$iCount++] = $oDashboardNews;
             }
-            return $aDocumentArray;
+            return $aDashboardNewsArray;
         }
         return false;
     }
@@ -319,7 +384,7 @@ class DashboardNews {
      * @param string path to the image file
      * @return string the image as a string
      */
-    function imageToString($sImagePath) {
+    function readInImage($sImagePath) {
    		// check if the image exists
    		if (file_exists($sImagePath)) {
    			// read in the file
@@ -331,5 +396,30 @@ class DashboardNews {
    		} else {
    			return false;
    		}   		
+    }
+    
+    /**
+     * Evaluates the size of the image and returns false if it is too big
+     *
+     * @param integer the width of the image
+     * @param integer the height of the image
+     */
+    function checkImageSize($iImageWidth, $iImageHeight) {
+    	global $default;
+    	$default->log->info("comparing $iImageWidth:" . $this->iMaxImageWidth . "; $iImageHeight:" . $this->iMaxImageHeight);
+    	if ( ($iImageWidth <= $this->iMaxImageWidth) && ($iImageHeight <= $this->iMaxImageHeight) ) {
+    		return true;
+    	} else {
+    		return false;
+    	}
+    }
+    
+    /**
+     * Returns the link text for linking to the current news item image
+     */
+    function getImageLink() {
+    	global $default;
+    	
+		return "<img width=\"$this->iMaxImageWidth\" height=\"$this->iMaxImageHeight\" src=\"$default->rootUrl/" . $default->siteMap->getPage("viewNewsImage") . "?fNewsID=" . $this->getID() . "\" border=\"0\">";   	
     }
 }

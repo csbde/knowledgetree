@@ -24,15 +24,15 @@ function renderPendingWebDocuments($aPendingDocumentList) {
 
     if (count($aPendingDocumentList) > 0) {
         $sBgColor = "#9D9D7F"; 
-        $sToRender  = "\t<tr align=\"left\" bgcolor=\"$sBgColor\">\n";
+        $sToRender  = "\t\t\t<tr align=\"left\" bgcolor=\"$sBgColor\">\n";
             
-        $sToRender .= "\t\t<th class=\"sectionHeading\" colspan=\"2\"><font color=\"ffffff\">Pending Web Documents</font></th>\n";
-        $sToRender .= "\t</tr>\n";
+        $sToRender .= "\t\t\t\t<th class=\"sectionHeading\" colspan=\"2\"><font color=\"ffffff\">Pending Web Documents</font></th>\n";
+        $sToRender .= "\t\t\t</tr>\n";
         for ($i = 0; $i < count($aPendingDocumentList); $i++) {
             $oWebDocument = $aPendingDocumentList[$i];
-            $sToRender .= "\t<tr>\n";
-            $sToRender .= "<td colspan=\"2\">" . generateControllerLink("webDocument", "fWebDocumentID=" . $oWebDocument->getID(), "<img src=\"$default->graphicsUrl/widgets/dstatus.gif\" border=\"0\"/>&nbsp;" . $oWebDocument->getDisplayPath()) . "</td>\n";        
-            $sToRender .= "\t</tr>\n";
+            $sToRender .= "\t\t\t<tr>\n";
+            $sToRender .= "\t\t\t\t<td colspan=\"2\">" . generateControllerLink("webDocument", "fWebDocumentID=" . $oWebDocument->getID(), "<img src=\"$default->graphicsUrl/widgets/dstatus.gif\" border=\"0\"/>&nbsp;" . $oWebDocument->getDisplayPath()) . "</td>\n";        
+            $sToRender .= "\t\t\t</tr>\n";
         }
         return $sToRender;
     } else {
@@ -53,15 +53,15 @@ function renderPendingCollaborationDocuments($aPendingDocumentList) {
     } else {
         $sBgColor = "#CECEBF";
     }    
-    $sToRender  = "\t<tr align=\"left\" bgcolor=\"$sBgColor\">\n";
+    $sToRender  = "\t\t\t<tr align=\"left\" bgcolor=\"$sBgColor\">\n";
         
-    $sToRender .= "\t\t<th class=\"sectionHeading\" colspan=\"2\"><font color=\"ffffff\">Pending Documents</font></th>\n";
-    $sToRender .= "\t</tr>\n";
+    $sToRender .= "\t\t\t\t<th class=\"sectionHeading\" colspan=\"2\"><font color=\"ffffff\">Pending Documents</font></th>\n";
+    $sToRender .= "\t\t\t</tr>\n";
     for ($i = 0; $i < count($aPendingDocumentList); $i++) {
         $oDocument = $aPendingDocumentList[$i];
-        $sToRender .= "\t<tr>\n";
-        $sToRender .= "<td colspan=\"2\">" . generateControllerLink("viewDocument", "fDocumentID=" . $oDocument->getID(), "<img src=\"$default->graphicsUrl/widgets/dstatus.gif\" border=\"0\"/>&nbsp;" . $oDocument->getDisplayPath()) . "</td>\n";        
-        $sToRender .= "\t</tr>\n";
+        $sToRender .= "\t\t\t<tr>\n";
+        $sToRender .= "\t\t\t\t<td colspan=\"2\">" . generateControllerLink("viewDocument", "fDocumentID=" . $oDocument->getID(), "<img src=\"$default->graphicsUrl/widgets/dstatus.gif\" border=\"0\"/>&nbsp;" . $oDocument->getDisplayPath()) . "</td>\n";        
+        $sToRender .= "\t\t\t</tr>\n";
     }    
     return $sToRender;
 }
@@ -78,27 +78,27 @@ function renderCheckedOutDocuments($aCheckedOutDocumentList) {
     } else {
         $sBgColor = "#CECEBF";
     }    
-    $sToRender  = "\t<tr align=\"left\" bgcolor=\"$sBgColor\">\n";   
-    $sToRender .= "\t\t<th class=\"sectionHeading\" colspan=\"2\"><font color=\"ffffff\">Checked Out Documents</font></th>\n";
-    $sToRender .= "\t</tr>\n";
+    $sToRender  = "\t\t\t<tr align=\"left\" bgcolor=\"$sBgColor\">\n";   
+    $sToRender .= "\t\t\t\t<th class=\"sectionHeading\" colspan=\"2\"><font color=\"ffffff\">Checked Out Documents</font></th>\n";
+    $sToRender .= "\t\t\t</tr>\n";
     
     if (count($aCheckedOutDocumentList) > 0) {
-        $sToRender .= "\t<tr>\n";
-        $sToRender .= "<th align=\"left\" width=\"66%\" class=\"sectionColumns\">\n";
-        $sToRender .= "Title\n";
+        $sToRender .= "\t\t\t<tr>\n";
+        $sToRender .= "\t\t\t\t<th align=\"left\" width=\"66%\" class=\"sectionColumns\">";
+        $sToRender .= "Title";
         $sToRender .= "</th>\n";
-        $sToRender .= "<th align=\"right\" width=\"33%\" class=\"sectionColumns\">\n";
-        $sToRender .= "Days\n";
-        $sToRender .= "</th>";
-        $sToRender .= "\t\t</tr>\n";
+        $sToRender .= "\t\t\t\t<th align=\"right\" width=\"33%\" class=\"sectionColumns\">";
+        $sToRender .= "Days";
+        $sToRender .= "\t\t\t\t</th>\n";
+        $sToRender .= "\t\t\t</tr>\n";
     }
     
     for ($i = 0; $i < count($aCheckedOutDocumentList); $i++) {
         $oDocument = $aCheckedOutDocumentList[$i];
-        $sToRender .= "\t<tr>\n";
-        $sToRender .= "<td>" . generateControllerLink("viewDocument", "fDocumentID=" . $oDocument->getID(), "<img src=\"$default->graphicsUrl/widgets/dstatus.gif\" border=\"0\"/>&nbsp;" . $oDocument->getDisplayPath()) . "</td>\n";
-        $sToRender .= "<td align=right>" . $oDocument->getDaysSinceLastModified() . "</td>\n";
-        $sToRender .= "\t</tr>\n";
+        $sToRender .= "\t\t\t<tr>\n";
+        $sToRender .= "\t\t\t\t<td>" . generateControllerLink("viewDocument", "fDocumentID=" . $oDocument->getID(), "<img src=\"$default->graphicsUrl/widgets/dstatus.gif\" border=\"0\"/>&nbsp;" . $oDocument->getDisplayPath()) . "</td>\n";
+        $sToRender .= "\t\t\t\t<td align=right>" . $oDocument->getDaysSinceLastModified() . "</td>\n";
+        $sToRender .= "\t\t\t</tr>\n";
     }
     return $sToRender;
 }
@@ -115,13 +115,13 @@ function renderSubscriptionAlerts($aSubscriptionAlertList) {
     } else {
         $sBgColor = "#CECEBF";
     }    
-    $sToRender  = "\t<tr align=\"left\" bgcolor=\"$sBgColor\">\n";
-    $sToRender .= "\t\t<th class=\"sectionHeading\" colspan=\"2\"><font color=\"ffffff\">Subscription Alerts</font></th>\n";
-    $sToRender .= "\t</tr>\n";
+    $sToRender  = "\t\t\t<tr align=\"left\" bgcolor=\"$sBgColor\">\n";
+    $sToRender .= "\t\t\t\t<th class=\"sectionHeading\" colspan=\"2\"><font color=\"ffffff\">Subscription Alerts</font></th>\n";
+    $sToRender .= "\t\t\t</tr>\n";
     for ($i = 0; $i < count($aSubscriptionAlertList); $i++) {
-        $sToRender .= "\t<tr>\n";
-        $sToRender .= "<td colspan=\"2\">" . $aSubscriptionAlertList[$i]->getAlertLink() . "</td>\n";
-        $sToRender .= "\t</tr>\n";
+        $sToRender .= "\t\t\t<tr>\n";
+        $sToRender .= "\t\t\t\t<td colspan=\"2\">" . $aSubscriptionAlertList[$i]->getAlertLink() . "</td>\n";
+        $sToRender .= "\t\t\t</tr>\n";
     }    
     return $sToRender;
 }
@@ -131,17 +131,45 @@ function renderSubscriptionAlerts($aSubscriptionAlertList) {
  */
 function renderQuickLinks($aQuickLinks) {
     global $default;
-    $sToRender .= "\t<tr align=\"left\" bgcolor=\"#9D9D7F\">\n";
-    $sToRender .= "\t\t<th class=\"sectionHeading\">Quick Links</th>\n";
-    $sToRender .= "\t</tr>\n";
+    $sToRender .= "\t\t\t<tr align=\"left\" bgcolor=\"#9D9D7F\">\n";
+    $sToRender .= "\t\t\t\t<th class=\"sectionHeading\">Quick Links</th>\n";
+    $sToRender .= "\t\t\t</tr>\n";
     for ($i = 0; $i < count($aQuickLinks); $i++) {
-        $sToRender .= "\t<tr>\n";
-        $sToRender .= "<td colspan=\"2\"><a href=\"" . $aQuickLinks[$i]->getUrl() . "\" target=\"_new\"><img src=\"$default->graphicsUrl/widgets/qlink.gif\" border=\"0\"/>" . $aQuickLinks[$i]->getName() . "</a></td>\n";
-        $sToRender .= "\t</tr>\n";
+        $sToRender .= "\t\t\t<tr>\n";
+        $sToRender .= "\t\t\t\t<td colspan=\"2\"><a href=\"" . $aQuickLinks[$i]->getUrl() . "\" target=\"_new\"><img src=\"$default->graphicsUrl/widgets/qlink.gif\" border=\"0\"/>" . $aQuickLinks[$i]->getName() . "</a></td>\n";
+        $sToRender .= "\t\t\t</tr>\n";
     }
     return $sToRender;
 }
 
+/**
+ * Displays the dashboard news items
+ *
+ */
+function renderDashboardNews() {
+	global $default;
+	
+	// retrieve all news items
+	$aDashboardNews = DashboardNews::getList();
+	
+	$sToRender .= "\t\t\t<table border=\"0\" width=\"100%\">\n";
+	// the main news item
+	$oMainDashboardNews = $aDashboardNews[0];
+	$sToRender .= "\t\t\t\t<tr><td><strong>" . $oMainDashboardNews->getSynopsis() . "</strong></td></tr>\n";	
+	$sToRender .= "\t\t\t\t<tr><td>" . $oMainDashboardNews->getImageLink() . "</td></tr>\n";
+	$sToRender .= "\t\t\t\t<tr><td>" . $oMainDashboardNews->getBodyFragment() . "..... <a href=\"#\" onClick=\"javascript:window.open('" . generateControllerUrl("viewNewsItem", "fNewsID=" . $oMainDashboardNews->getID()) . "', 'newwindow', config='height=200,width=300,left=0,top=0, toolbar=no, menubar=no, scrollbars=yes, resizable=no,location=no, directories=no, status=no');return false;\">more</a></td></tr>\n";
+		
+	// links to old news items
+	/*
+	for ($i=1; $i<count($aDashboardNews); $i++) {
+		$sToRender .= "\t\t\t\t<tr><td>" . generateControllerLink("viewNewsItem", "fNewsID=" . $aDashboardNews[$i]->getID(), $aDashboardNews[$i]->getSynopsis()) . "</td></tr>\n";
+	}
+	*/
+	$sToRender .= "\t\t\t</table>\n";
+	    
+	return $sToRender;
+}
+ 
 /**
  * Renders the dashboard
  *
@@ -153,18 +181,23 @@ function renderPage($aPendingDocumentList, $aCheckedOutDocumentList, $aSubscript
     global $default;
     
     $sToRender  = "<table border=\"0\" width=\"600\" >\n";
-	$sToRender .= "\t<tr>\n";
-    $sToRender .= "\t\t<td><img src=\"$default->graphicsUrl/welcome.gif\"/></td>\n";
+	$sToRender .= "\t<tr valign=\"top\">\n";
+    $sToRender .= "\t\t<td><img src=\"$default->graphicsUrl/welcome.gif\" border=\"0\"/></td>\n";
     
     // some arb welcoming text goes here
     $oUser = & User::get($_SESSION["userID"]);
     $sUserName = $oUser->getName();
     $sToRender .= "\t\t<td>Hi" . (strlen($sUserName) > 0 ? " " . $sUserName : "") . ", welcome back to the " . lookupField($default->owl_organisations_table, "name", "id", $default->organisationID) . " DMS, part of the Knowledge Tree.</td>\n";
-    $sToRender .= "\t</tr>\n";
+        
+    // dashboard news
+    $sToRender .= "\t\t<td>\n";
+    $sToRender .= renderDashboardNews();
+    $sToRender .= "\t\t</td>\n";    
+    $sToRender .= "\t</tr>\n";    
     
     // dashboard alerts
     $sToRender .= "\t<tr>\n";
-    $sToRender .= "\t\t<td width=\"50%\" valign=\"top\" colspan=2>\n";
+    $sToRender .= "\t\t<td width=\"50%\" valign=\"top\" colspan=\"2\">\n";
     $sToRender .= "\t\t\t<table border=\"0\" width=\"100%\">\n";
     $sToRender .= renderPendingWebDocuments($aWebDocuments) . "\n";    
     $sToRender .= renderPendingCollaborationDocuments($aPendingDocumentList);
@@ -183,6 +216,31 @@ function renderPage($aPendingDocumentList, $aCheckedOutDocumentList, $aSubscript
     $sToRender .= "\t</tr>\n";
     $sToRender .= "</table>\n";  
     
+    return $sToRender;
+}
+
+/**
+ * Displays a news item
+ */
+function renderNewsItemPage($oDashboardNews) {
+	global $default;
+	     	
+	$sToRender .= "<html>\n";
+	$sToRender .= "<head>\n";
+	$sToRender .= "<meta http-equiv=\"refresh\" content=\"" . ($default->sessionTimeout+3) . "\">\n";
+	$sToRender .= "<link rel=\"SHORTCUT ICON\" href=\"$default->graphicsUrl/tree.ico\">\n";
+	$sToRender .= "<link rel=\"stylesheet\" href=\"$default->uiUrl/stylesheet.php\">\n";
+	$sToRender .= "</head>\n";
+	$sToRender .= "<body marginleft=\"0\" marginheight=\"0\">\n";
+	$sToRender .= "\t\t\t<table border=\"0\" width=\"100%\">\n";
+	$sToRender .= "\t\t\t\t<tr><td><strong>" . $oDashboardNews->getSynopsis() . "</strong></td></tr>\n";	
+	$sToRender .= "\t\t\t\t<tr><td>" . $oDashboardNews->getImageLink() . "</td></tr>\n";
+	$sToRender .= "\t\t\t\t<tr><td>" . $oDashboardNews->getBody() . "</td></tr>\n";
+	$sToRender .= "<tr><td><a href=\"javascript:window.close()\">close</a></td></tr>\n";
+	$sToRender .= "</table>";
+	$sToRender .= "</body>";
+	$sToRender .= "</html>";
+	
     return $sToRender;
 }
 ?>

@@ -2,10 +2,9 @@
 
 // main library routines and defaults
 require_once("../../../config/dmsDefaults.php");
-require_once("$default->fileSystemRoot/lib/subscriptions/SubscriptionManager.inc");
-require_once("$default->fileSystemRoot/lib/web/WebDocument.inc");
+require_once("$default->fileSystemRoot/lib/dashboard/Dashboard.inc");
+require_once("$default->fileSystemRoot/lib/dashboard/DashboardNews.inc");
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
-require_once("$default->fileSystemRoot/lib/links/link.inc");
 require_once("$default->uiDirectory/dashboardUI.inc");
 
 /**
@@ -26,46 +25,6 @@ require_once("$default->uiDirectory/dashboardUI.inc");
 // page start
 // -------------------------------
 
-/**
- * Retrieves the collaboration documents that the current user has pending
- *
- * @param integer the user to retrieve pending collaboration documents for
- */
-function getPendingCollaborationDocuments($iUserID) {
-    // TODO: move this to a more logical class/file
-    global $default;
-    $sQuery = "SELECT document_id FROM $default->owl_folders_user_roles_table WHERE active=1 AND user_id=" . $_SESSION["userID"];
-    $aDocumentList = array();
-    $sql = $default->db;
-    if ($sql->query($sQuery)) {
-        while ($sql->next_record()) {
-            $aDocumentList[] = & Document::get($sql->f("document_id"));
-        }
-    }
-    return $aDocumentList;
-}
-
-/**
- * Retrieves the web documents that the current user has pending
- *
- * @param integer the user to retrieve pending web documents for
- */
-function getPendingWebDocuments($iUserID) {
-    // TODO: move this to a more logical class/file
-    global $default;
-    $sQuery = "SELECT wd.id FROM web_documents wd " . 
-              "INNER JOIN web_sites ws ON wd.web_site_id = ws.id " .
-              "WHERE ws.web_master_id=$iUserID AND wd.status_id=1";
-    $aDocumentList = array();
-    $sql = $default->db;
-    if ($sql->query($sQuery)) {
-        while ($sql->next_record()) {
-            $aDocumentList[] = & WebDocument::get($sql->f("id"));
-        }
-    }
-    return $aDocumentList;
-}
-
 if (checkSession()) {
     // include the page template (with navbar)
     require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
@@ -73,19 +32,23 @@ if (checkSession()) {
     // instantiate my content pattern    
     $oContent = new PatternCustom();
     
+    // construct the dashboard object
+    $oDashboard = new Dashboard($_SESSION["userID"]);
+    
     // retrieve collaboration pending documents for this user
-    $aPendingDocumentList = getPendingCollaborationDocuments($_SESSION["userID"]);
+    $aPendingDocumentList = $oDashboard->getPendingCollaborationDocuments();
+    
     // retrieve checked out documents for this user                         
-    $aCheckedOutDocumentList = Document::getList("checked_out_user_id=" . $_SESSION["userID"]);
+    $aCheckedOutDocumentList = $oDashboard->getCheckedOutDocuments();
 
     // retrieve subscription alerts for this user
-    $aSubscriptionAlertList = SubscriptionManager::listSubscriptionAlerts($_SESSION["userID"]);
+    $aSubscriptionAlertList = $oDashboard->getSubscriptionAlerts();
     
     // retrieve quicklinks
-    $aQuickLinks = Link::getList("ORDER BY rank");
+    $aQuickLinks = $oDashboard->getQuickLinks();
     
     // retrieve pending web documents
-    $aPendingWebDocuments = getPendingWebDocuments($_SESSION["userID"]);
+    $aPendingWebDocuments = $oDashboard->getPendingWebDocuments();
     
     // generate the html
     $oContent->setHtml(renderPage($aPendingDocumentList, $aCheckedOutDocumentList, $aSubscriptionAlertList, $aQuickLinks, $aPendingWebDocuments));
