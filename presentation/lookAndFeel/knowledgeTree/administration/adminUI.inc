@@ -10,6 +10,7 @@ function renderHeading($sHeading, $sSectionName = "") {
         $sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
     }
     $sColor = $default->siteMap->getSectionColour($sSectionName, "th");
+    $sColor = $sColor == "" ? $sSectionName : $sColor;
     $sToRender .= "<tr align=\"left\"><th class=\"sectionHeading\" bgcolor=\"$sColor\"><font color=\"ffffff\">$sHeading</font></th></tr>\n";
     $sToRender .= "<tr/>\n";
     $sToRender .= "<tr/>\n";
