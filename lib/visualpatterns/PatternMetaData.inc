@@ -21,6 +21,7 @@ class PatternMetaData {
 	function render() {
 		global $default;
 		$sQuery = "SELECT has_lookup FROM $default->owl_fields_table WHERE name LIKE '" . $this->sMetaDataField . "'";
+
 		$sql = $default->db;
 		$sql->query($sQuery);
 		if ($sql->next_record()) {			
@@ -28,11 +29,12 @@ class PatternMetaData {
 				//is a lookup, so display a drop down list
 				$sWhereClause = "DF.name LIKE '" . $this->sMetaDataField . "'";
 				$sFromClause = "INNER JOIN $default->owl_fields_table AS DF ON ST.document_field_id = DF.id";
-				$oPatternListBox = & new PatternListBox("$default->owl_document_fields_lookup_tables", "id", "name",  $this->sFormName, $sWhereClause);
+				$oPatternListBox = & new PatternListBox("$default->owl_document_fields_lookup_tables", "name", "name", $this->sFormName);
 				if ($this->sValue != null) {
 					$oPatternListBox->setSelectedValue($this->sValue);
 				}
-				$oPatternListBox->setFromClause($sFromClause);				
+				$oPatternListBox->setFromClause($sFromClause);
+                $oPatternListBox->setWhereClause($sWhereClause);				
 				return $oPatternListBox->render();
 			} else {
 				$sToRender = "<input type=\"text\" name=\"" . $this->sMetaDataField . "\" ";
