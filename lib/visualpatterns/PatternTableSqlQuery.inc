@@ -112,7 +112,7 @@ class PatternTableSqlQuery {
 						case 1:
 								$sToRender .= "<td>";
 								if (isset($this->sImageURL)) {
-									$sToRender .= $this->generateImageURL($this->sImageURL) 
+									$sToRender .= $this->generateImageURL($this->sImageURL);
 								}
 								$sToRender .= $sql->f($this->aColumns[$i]) . "</td>";
 								break;
