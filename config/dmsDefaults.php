@@ -120,6 +120,8 @@ $default->owl_words_lookup_table = "words_lookup";
 //stores help text
 $default->owl_help_table = "help";
 $default->owl_document_text_table = "document_text";
+$default->owl_dependant_document_table = "dependant_document";
+$default->owl_document_link_table = "document_link";
 
 // logo file that must reside inside lang/graphics directory
 $default->logo = "kt.jpg";
