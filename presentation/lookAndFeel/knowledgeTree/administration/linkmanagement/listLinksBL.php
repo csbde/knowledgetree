@@ -1,6 +1,6 @@
 <?php
 /**
-* BL information for viewing a Discussion	
+* BL information for listing Documemnt Fields	
 *
 * @author Omar Rahbeeni
 * @date 19 May 2003
@@ -11,10 +11,8 @@
 	require_once("../../../../../config/dmsDefaults.php");
 
 if (checkSession()) {    
-    require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCreate.inc");    
-    require_once("listDocTypesUI.inc"); 
+    require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCreate.inc");
 	require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
-    require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
     require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
     require_once("$default->fileSystemRoot/lib/users/User.inc");    
     require_once("$default->fileSystemRoot/lib/security/permission.inc");
@@ -31,25 +29,26 @@ if (checkSession()) {
 if(checkSession()) {	
 		global $default;
 		
-		$oPatternCustom->addHtml(renderHeading("Current System Organisations"));		// Create the Heading				
+		$oPatternCustom->addHtml(renderHeading("Link Management"));		// Create the Heading				
 		 		
 		$main->setFormAction($_SERVER['PHP_SELF']);
 				
-		$sQuery = 	"SELECT id as DocFieldID, name as DocFieldName, data_type, is_generic, has_lookup, " . 
-					"'Edit', 'Delete', 'Edit Metadata' " .
-					"FROM " . $default->owl_fields_table . " " .
+		
+		$sQuery = 	"SELECT id as LinkID, name as LinkName, url LinkURL, rank as LinkRank, " . 
+					"'Edit', 'Delete' " .
+					"FROM " . $default->owl_links_table . " " .
 					"ORDER BY name";
 		
-	    $aColumns = array("DocFieldName", "data_type", "is_generic", "has_lookup","Edit", "Delete", "Edit Metadata" );
-	    $aColumnNames = array("Name", "Data type", "Generic?", "Lookup?", "Edit", "Delete", "Edit Metadata");
-	    $aColumnTypes = array(1,1,2,2,3,3,3);
-	    $aDBColumnArray = array("DocFieldID");
-	    $aQueryStringVariableNames = array("fDocFieldID");
+	    $aColumns = array("LinkName", "LinkURL", "LinkRank", "Edit", "Delete");
+	    $aColumnNames = array("Link Name","URL", "Rank", "Edit", "Delete");
+	    $aColumnTypes = array(1,1,1,3,3);
+	    $aDBColumnArray = array("LinkID");
+	    $aQueryStringVariableNames = array("fLinkID");
 	    	    
-	    $aHyperLinkURL = array(	4=> "$default->rootUrl/control.php?action=editDocField",                       			
-                       			5=> "$default->rootUrl/control.php?action=removeDocField",
-                       			6=> "$default->rootUrl/control.php?action=editDocFieldLookups");  
-                       				    	    
+	    $aHyperLinkURL = array(	3=> "$default->rootUrl/control.php?action=editLink",                       			
+                       			4=> "$default->rootUrl/control.php?action=removeLink");
+                     			
+	    	    
 	    $oSearchResults = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnNames, "100%", $aHyperLinkURL,$aDBColumnArray,$aQueryStringVariableNames);	    
 		$oSearchResults->setDisplayColumnHeadings(true);
 	    $htmlTables = $oSearchResults->render() ;
