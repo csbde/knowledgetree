@@ -75,19 +75,16 @@ elseif ($loginAction == "login") {
 
             // check for a location to forward to
             if (isset($redirect) && strlen(trim($redirect))>0) {
+                $redirect = urldecode($redirect);
                 // remove any params from redirect before looking up from sitemap
                 if (strstr($redirect, "?")) {
                     $queryString = substr($redirect, strpos($redirect, "?")+1, strlen($redirect));
                     $redirect = substr($redirect, 0, strpos($redirect, "?"));
-                    $default->log->debug("login.php redirect=$redirect; querystring=$queryString");
                 }
 
                 // need to strip rootUrl off $redirect
                 if (strlen($default->rootUrl) > 0) {
-                    $tmp = urldecode($redirect);
-                    $default->log->debug("login.php: substr($tmp, strpos($tmp, $default->rootUrl)+strlen($default->rootUrl), strlen($tmp))");
-                    $redirect = substr($tmp, strpos($tmp, $default->rootUrl)+strlen($default->rootUrl), strlen($tmp));
-                    $default->log->debug("login.php: redirect=$redirect");
+                    $redirect = substr($redirect, strpos($redirect, $default->rootUrl)+strlen($default->rootUrl), strlen($redirect));
                 }
                 $action = $default->siteMap->getActionFromPage($redirect);
                 if ($action) {
