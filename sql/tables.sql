@@ -3,7 +3,7 @@
 CREATE TABLE discussion_threads ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 document_id INTEGER NOT NULL,
-forst_comment_id INTEGER NOT NULL,
+first_comment_id INTEGER NOT NULL,
 last_comment_id INTEGER NOT NULL,
 views INTEGER NOT NULL,
 replies INTEGER NOT NULL,
