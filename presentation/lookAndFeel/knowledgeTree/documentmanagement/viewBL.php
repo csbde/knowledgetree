@@ -15,7 +15,6 @@
 
 
 require_once("../../../../config/dmsDefaults.php");
-
 if (checkSession()) {	
 	if (isset($fDocumentID)) {	
 		require_once("$default->owl_fs_root/lib/security/permission.inc");
