@@ -1,6 +1,17 @@
 <?php
 
-
+/**
+ * $Id$
+ *
+ * Move document page.
+ *
+ * Licensed under the GNU GPL. For full terms see the file DOCS/COPYING.
+ *
+ * @version $Revision$
+ * @author Michael Joseph <michael@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
+ * @package presentation.lookAndFeel.knowledgeTree.documentmanagement
+ */
+ 
 require_once("../../../../config/dmsDefaults.php");
 
 require_once("$default->fileSystemRoot/lib/security/permission.inc");
@@ -20,7 +31,7 @@ require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
 require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/documentmanagement/moveDocumentUI.inc");
 require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
 require_once("$default->fileSystemRoot/presentation/Html.inc");
-
+ 
 if (checkSession()) {
 	
 	if (isset($fDocumentID) && isset($fFolderID)) {		
