@@ -69,7 +69,7 @@ class Group {
         
       			 if ($rows > 0){
             		 // duplicate username
-           		 $_SESSION["errorMessage"] = "User::The username " . $this->sUserName . " is already in use!";
+           		 $_SESSION["errorMessage"] = "Group::The Group name " . $this->sName . " is already in use!";
            		 return false;
 	       		 }else
 	      		 {
