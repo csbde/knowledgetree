@@ -146,7 +146,7 @@ class DocumentFieldLink extends KTEntity {
 	function & get($iDocumentFieldLinkID) {
 		global $default, $lang_err_doc_not_exist;
 		$sql = $default->db;
-		$sql->query("SELECT * FROM " . $default->document_fields_link_table . " WHERE id = " . $iDocumentFieldLinkID);
+		$sql->query(array("SELECT * FROM " . $default->document_fields_link_table . " WHERE id = ?", $iDocumentFieldLinkID));/*ok*/
 		if ($sql->next_record()) {			
 			$oDocumentFieldLink = & new DocumentFieldLink($sql->f("document_id"), $sql->f("document_field_id"), $sql->f("value"));		
 			$oDocumentFieldLink->iId = $iDocumentFieldLinkID;

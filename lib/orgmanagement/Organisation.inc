@@ -85,8 +85,9 @@ class Organisation extends KTEntity {
         if ($this->iId >= 0) {
             //check to see if group is linked to a unit
             $sql = $default->db;
-            $query = "SELECT organisation_id FROM ". $default->units_organisations_table ." WHERE organisation_id = '" . $this->iId . "'";
-            $sql->query($query);
+            $query = "SELECT organisation_id FROM ". $default->units_organisations_table ." WHERE organisation_id = ?";/*ok*/
+            $aParams = array($this->iId);
+            $sql->query(array($query, $aParams));
             $rows = $sql->num_rows($sql);
             if ($rows > 0) {
                 // duplicate link exists
@@ -107,7 +108,7 @@ class Organisation extends KTEntity {
     function & get($iOrgID) {
         global $default;
         $sql = $default->db;
-        $result = $sql->query("SELECT * FROM $default->organisations_table WHERE id = $iOrgID");
+        $result = $sql->query(array("SELECT * FROM $default->organisations_table WHERE id = ?", $iOrgID));/*ok*/
         if ($result) {
             if ($sql->next_record()) {
                 $oOrg = & new Organisation($sql->f("name"));
@@ -147,7 +148,7 @@ class Organisation extends KTEntity {
         $aOrgArray;
         settype($aUnitArray, "array");
         $sql = $default->db;
-        $result = $sql->query("SELECT * FROM " . $default->organisations_table . (isset($sWhereClause) ? " " . $sWhereClause : ""));
+        $result = $sql->query("SELECT * FROM " . $default->organisations_table . (isset($sWhereClause) ? " " . $sWhereClause : ""));/*wc*/
         if ($result) {
             $iCount = 0;
             while ($sql->next_record()) {

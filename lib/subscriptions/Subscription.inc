@@ -221,7 +221,9 @@ class Subscription extends KTEntity {
         global $default, $lang_err_object_not_exist, $lang_err_database;
         $sql = $default->db;
 
-        if ($sql->query("SELECT * FROM " . Subscription::getTableName($iSubscriptionType) . " WHERE id = " . $iSubscriptionID)) {
+        $sQuery = "SELECT * FROM " . Subscription::getTableName($iSubscriptionType) . " WHERE id = ?";/*ok*/
+        $aParams = array($iSubscriptionID);
+        if ($sql->query(array($sQuery, $aParams))) {/*ok*/
             if ($sql->next_record()) {
                 $oSubscription = & new Subscription($sql->f("user_id"),
                                                     $sql->f(Subscription::getIdFieldName($iSubscriptionType)),
@@ -251,8 +253,9 @@ class Subscription extends KTEntity {
     function getByIDs($iUserID, $iExternalID, $iSubscriptionType) {
         global $default, $lang_err_database, $lang_err_object_not_exist;
         $sql = $default->db;
-        if ($sql->query("SELECT * FROM " . Subscription::getTableName($iSubscriptionType) . " " .
-                        "WHERE " . Subscription::getIdFieldName($iSubscriptionType) . " = $iExternalID AND user_id = $iUserID")) {
+        $sQuery = "SELECT * FROM " . Subscription::getTableName($iSubscriptionType) . " WHERE " . Subscription::getIdFieldName($iSubscriptionType) . " = ? AND user_id = ?";/*ok*/
+        $aParams = array($iExternalID, $iUserID);
+        if ($sql->query(array($sQuery, $aParams))) {
             if ($sql->next_record()) {
                 $oSubscription = & new Subscription($sql->f("user_id"),
                                                     $sql->f(Subscription::getIdFieldName($iSubscriptionType)),
@@ -280,8 +283,9 @@ class Subscription extends KTEntity {
     function exists($iUserID, $iExternalID, $iSubscriptionType) {
         global $default, $lang_err_database;
         $sql = $default->db;
-        if ($sql->query("SELECT id FROM " . Subscription::getTableName($iSubscriptionType) . " " .
-                        "WHERE " . Subscription::getIdFieldName($iSubscriptionType) . " = $iExternalID AND user_id = $iUserID")) {
+        $sQuery = "SELECT id FROM " . Subscription::getTableName($iSubscriptionType) . " WHERE " . Subscription::getIdFieldName($iSubscriptionType) . " = ? AND user_id = ?";/*ok*/
+        $aParams = array($iExternalID, $iUserID);
+        if ($sql->query(array($sQuery, $aParams))) {
             if ($sql->next_record()) {
                 return true;
             }

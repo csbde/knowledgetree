@@ -82,7 +82,7 @@ class Group extends KTEntity {
 	function hasUsers() {
 		global $default;
 		$sql = $default->db;
-		$sql->query("SELECT id FROM $default->users_groups_table WHERE group_id = $this->iId");
+		$sql->query(array("SELECT id FROM $default->users_groups_table WHERE group_id = ?", $this->iId));/*ok*/
        	$rows = $sql->num_rows();
         if ($rows > 0) {
         	return true;
@@ -98,8 +98,9 @@ class Group extends KTEntity {
 		global $default;
 
 		$sql = $default->db;
-		$query = "SELECT id FROM $default->groups_units_table WHERE group_id = $this->iId";
-	    $sql->query($query);
+		$query = "SELECT id FROM $default->groups_units_table WHERE group_id = ?";/*ok*/
+        $aParams = array($this->iId);
+	    $sql->query(array($query, $aParams));
 	   	$rows = $sql->num_rows();
 		if ($rows > 0){
 	    	return true;
@@ -115,8 +116,9 @@ class Group extends KTEntity {
 		global $default;
 
 		$sql = $default->db;
-		$query = "SELECT id FROM $default->groups_folders_approval_table WHERE group_id = $this->iId";
-	    $sql->query($query);
+		$query = "SELECT id FROM $default->groups_folders_approval_table WHERE group_id = ?";/*ok*/
+        $aParams = array($this->iId);
+	    $sql->query(array($query, $aParams));
 	   	$rows = $sql->num_rows();
 		if ($rows > 0){
 	    	return true;
@@ -149,7 +151,7 @@ class Group extends KTEntity {
 	function & get($iGroupID) {
 		global $default;
 		$sql = $default->db;
-		$result = $sql->query("SELECT * FROM $default->groups_table WHERE id = $iGroupID");
+		$result = $sql->query(array("SELECT * FROM $default->groups_table WHERE id = ?", $iGroupID));/*ok*/
 		if ($result) {
 			if ($sql->next_record()) {
 				$oGroup = & new Group($sql->f("name"), $sql->f("is_unit_admin"), $sql->f("is_sys_admin"));
@@ -176,7 +178,7 @@ class Group extends KTEntity {
 		$aGroupArray;
 		settype($aGroupArray, "array");
 		$sql = $default->db;
-		$result = $sql->query("SELECT * FROM " . $default->groups_table  . (isset($sWhereClause) ? " " . $sWhereClause : ""));
+		$result = $sql->query("SELECT * FROM " . $default->groups_table  . (isset($sWhereClause) ? " " . $sWhereClause : ""));/*wc*/
 		if ($result) {			
 			$iCount = 0;
 			while ($sql->next_record()) {
@@ -196,7 +198,7 @@ class Group extends KTEntity {
 	function getUsers() {
 		global $default;
 		$sql = $default->db;
-		$result = $sql->query("SELECT user_id FROM $default->users_groups_table WHERE group_id = $this->iId");
+		$result = $sql->query(array("SELECT user_id FROM $default->users_groups_table WHERE group_id = ?", $this->iId));/*ok*/
 		$aUsers = array();		
 		if ($result) {			
 			$iCount = 0;

@@ -163,7 +163,7 @@ class GroupFolderApprovalLink extends KTEntity {
 	function & get($iGroupFolderLinkID) {
 		global $default;
 		$sql = $default->db;
-		$result = $sql->query("SELECT * FROM $default->groups_folders_approval_table WHERE id = $iGroupFolderLinkID");
+		$result = $sql->query(array("SELECT * FROM $default->groups_folders_approval_table WHERE id = ?", $iGroupFolderLinkID));/*ok*/
 		if ($result) {
 			if ($sql->next_record()) {
 				$oGroupFolderApprovalLink = & new GroupFolderApprovalLink($sql->f("folder_id"), $sql->f("group_id"), $sql->f("precedence"), $sql->f("role_id"), $sql->f("datetime"));
@@ -190,7 +190,7 @@ class GroupFolderApprovalLink extends KTEntity {
 		$aGroupFolderApprovalLinkArray;
 		settype($aGroupFolderApprovalLinkArray, "array");
 		$sql = $default->db;
-		$result = $sql->query("SELECT * FROM " . $default->groups_folders_approval_table  . (isset($sWhereClause) ? " " . $sWhereClause : ""));
+		$result = $sql->query("SELECT * FROM " . $default->groups_folders_approval_table  . (isset($sWhereClause) ? " " . $sWhereClause : ""));/*wc*/
 		if ($result) {			
 			$iCount = 0;
 			while ($sql->next_record()) {

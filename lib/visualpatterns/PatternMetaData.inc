@@ -44,7 +44,7 @@ class PatternMetaData {
 	
 	function render() {
 		global $default;
-		$sQuery = "SELECT has_lookup FROM $default->document_fields_table WHERE name LIKE '" . DBUtil::escapeSimple($this->sMetaDataField) . "'";
+		$sQuery = "SELECT has_lookup FROM $default->document_fields_table WHERE name LIKE '" . DBUtil::escapeSimple($this->sMetaDataField) . "'";/*ok*/
 
 		$sql = $default->db;
 		$sql->query($sQuery);

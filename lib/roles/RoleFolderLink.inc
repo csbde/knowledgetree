@@ -193,7 +193,7 @@ class RoleFolderLink extends KTEntity {
 	function & get($iRolesFoldersID) {
 		global $default;
 		$sql = $default->db;
-		$result = $sql->query("SELECT * FROM $default->folders_user_roles_table WHERE id = $iRolesFoldersID");
+		$result = $sql->query(array("SELECT * FROM $default->folders_user_roles_table WHERE id = ?", $iRolesFoldersID));/*ok*/
 		if ($result) {
 			if ($sql->next_record()) {
 				$oRolesFoldersLink = & new RoleFolderLink($sql->f("user_id"), $sql->f("folder_id"), $sql->f("role_type_id"), $sql->f("datetime"));
@@ -222,7 +222,7 @@ class RoleFolderLink extends KTEntity {
 		$aRolesFoldersLinkArray;
 		settype($aRolesFoldersLinkArray, "array");
 		$sql = $default->db;
-		$result = $sql->query("SELECT * FROM " . $default->folders_user_roles_table  . (isset($sWhereClause) ? " " . $sWhereClause : ""));
+		$result = $sql->query("SELECT * FROM " . $default->folders_user_roles_table  . (isset($sWhereClause) ? " " . $sWhereClause : ""));/*wc*/
 		if ($result) {			
 			$iCount = 0;
 			while ($sql->next_record()) {

@@ -117,8 +117,9 @@ class Role extends KTEntity {
 		if ($this->iId >= 0) {
 			//check to see if role is linked to a folder
 			$sql = $default->db;
-			$query = "SELECT role_id FROM ". $default->groups_folders_approval_table ." WHERE role_id = '" . $this->iId . "'";
-            $sql->query($query);
+			$query = "SELECT role_id FROM ". $default->groups_folders_approval_table ." WHERE role_id = ?";/*ok*/
+            $aParams = array($this->iId);
+            $sql->query(array($query, $aParams));
             $rows = $sql->num_rows($sql);
         
              if ($rows > 0){
@@ -140,7 +141,7 @@ class Role extends KTEntity {
 	function & get($iRoleID) {
 		global $default;
 		$sql = $default->db;
-		$result = $sql->query("SELECT * FROM $default->roles_table WHERE id = $iRoleID");
+		$result = $sql->query(array("SELECT * FROM $default->roles_table WHERE id = ?", $iRoleID));/*ok*/
 		if ($result) {
 			if ($sql->next_record()) {
 				$oRole = & new Role($sql->f("name"), $sql->f("can_read"), $sql->f("can_write"));
@@ -168,7 +169,7 @@ class Role extends KTEntity {
 		$aRoleArray;
 		settype($aRoleArray, "array");
 		$sql = $default->db;
-		$result = $sql->query("SELECT * FROM " . $default->roles_table  . (isset($sWhereClause) ? " " . $sWhereClause : ""));
+		$result = $sql->query("SELECT * FROM " . $default->roles_table  . (isset($sWhereClause) ? " " . $sWhereClause : ""));/*wc*/
 		if ($result) {			
 			$iCount = 0;
 			while ($sql->next_record()) {

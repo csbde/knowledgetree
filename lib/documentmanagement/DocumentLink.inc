@@ -121,7 +121,7 @@ class DocumentLink extends KTEntity {
 	function & get($iDocumentLinkID) {
 		global $default;
 		$sql = $default->db;
-		$result = $sql->query("SELECT * FROM $default->document_link_table WHERE id = $iDocumentLinkID");
+		$result = $sql->query(array("SELECT * FROM $default->document_link_table WHERE id = ?", $iDocumentLinkID));/*ok*/
 		if ($result) {
 			if ($sql->next_record()) {
 				$oDocumentLink = & new DocumentLink($sql->f("parent_document_id"), $sql->f("parent_document_id"));

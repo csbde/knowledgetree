@@ -147,8 +147,9 @@ class DocumentTypeFieldLink extends KTEntity {
 		if ($this->iId < 0) {
 			//check to see if name exsits
 			$sql = $default->db;
-			$query = "SELECT id FROM ". $default->document_type_fields_table ." WHERE document_type_id = '" . $this->iDocumentTypeID . "' and field_id = '". $this->iFieldID . "'";
-            $sql->query($query);
+			$sQuery = "SELECT id FROM ". $default->document_type_fields_table ." WHERE document_type_id = ? and field_id = ?";/*ok*/
+            $aParams = array($this->iDocumentTypeID, $this->iFieldID);
+            $sql->query(array($sQuery, $aParams));
             $rows = $sql->num_rows($sql);
         
              if ($rows > 0){
@@ -171,7 +172,7 @@ class DocumentTypeFieldLink extends KTEntity {
 	function & get($iDocumentTypeFieldLinkID) {
 		global $default;
 		$sql = $default->db;
-		$sql->query("SELECT * FROM " . $default->document_type_fields_table . " WHERE id = " . $iDocumentTypeFieldLinkID);
+		$sql->query(array("SELECT * FROM " . $default->document_type_fields_table . " WHERE id = ?", $iDocumentTypeFieldLinkID));/*ok*/
 		if ($sql->next_record()) {			
 			$oDocumentTypeFieldLink = & new DocumentTypeFieldLink($sql->f("document_type_id"), $sql->f("field_id"), $sql->f("is_mandatory"));		
 			$oDocumentTypeFieldLink->iId = $iDocumentTypeFieldLinkID;
@@ -201,8 +202,9 @@ class DocumentTypeFieldLink extends KTEntity {
 	function getByFieldAndTypeIDs($iDocTypeID, $iDocFieldID) {
 	   	global $default;
 		$sql = $default->db;
-		$sQuery = "SELECT id FROM $default->document_type_fields_table WHERE field_id = $iDocFieldID AND document_type_id = $iDocTypeID";
-		$result = $sql->query($sQuery);
+		$sQuery = "SELECT id FROM $default->document_type_fields_table WHERE field_id = ? AND document_type_id = ?";/*ok*/
+        $aParams = array($iDocFieldID, $iDocTypeID);
+		$result = $sql->query(array($sQuery, $aParams));
 		if ($result) {
 			if ($sql->next_record()) {
 				return DocumentTypeFieldLink::get($sql->f("id"));
@@ -224,7 +226,7 @@ class DocumentTypeFieldLink extends KTEntity {
 		global $default;
 		$aFields = array();
 		$sql = $default->db;
-		$result = $sql->query("SELECT field_id FROM " . $default->document_type_fields_table  . " WHERE document_type_id = ". $iDocTypeID);
+		$result = $sql->query(array("SELECT field_id FROM " . $default->document_type_fields_table  . " WHERE document_type_id = ?", $iDocTypeID));/*ok*/
 		if ($result) {			
 			while ($sql->next_record()) {
 				$aFields[] = DocumentField::get($sql->f("field_id"));

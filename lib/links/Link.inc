@@ -92,8 +92,9 @@ class Link extends KTEntity {
 		if ($this->iId < 0) {
 			//check to see if name exsits
 			$sql = $default->db;
-			$query = "SELECT name FROM ". $default->quicklinks_table ." WHERE name = '" . $this->sName . "'";
-            $sql->query($query);
+			$query = "SELECT name FROM ". $default->quicklinks_table ." WHERE name = ?";/*ok*/
+            $aParams = array($this->sName);
+            $sql->query(array($query, $aParams));
             $rows = $sql->num_rows($sql);
         
             if ($rows > 0){
@@ -102,8 +103,9 @@ class Link extends KTEntity {
             }
 
 	       	$sql = $default->db;
-			$query = "SELECT rank FROM ". $default->quicklinks_table ." WHERE rank = '" . $this->iRank . "'";
-        	$sql->query($query);
+			$query = "SELECT rank FROM ". $default->quicklinks_table ." WHERE rank = ?";/*ok*/
+            $aParams = array($this->iRank);
+        	$sql->query(array($query, $aParams));
        		$rows = $sql->num_rows($sql);
 	       		 
 	       	if ($rows > 0){
@@ -125,7 +127,7 @@ class Link extends KTEntity {
 	function & get($iLinkID) {
 		global $default;
 		$sql = $default->db;
-		$result = $sql->query("SELECT * FROM $default->quicklinks_table WHERE id = $iLinkID");
+		$result = $sql->query(array("SELECT * FROM $default->quicklinks_table WHERE id = ?", $iLinkID));/*ok*/
 		if ($result) {
 			if ($sql->next_record()) {
 				$oLink = & new Link($sql->f("name"), $sql->f("url"), $sql->f("rank"));
@@ -152,7 +154,7 @@ class Link extends KTEntity {
 		$aLinkArray;
 		settype($aLinkArray, "array");
 		$sql = $default->db;
-		$result = $sql->query("SELECT * FROM " . $default->quicklinks_table  . (isset($sWhereClause) ? " " . $sWhereClause : ""));
+		$result = $sql->query("SELECT * FROM " . $default->quicklinks_table  . (isset($sWhereClause) ? " " . $sWhereClause : ""));/*wc*/
 		if ($result) {			
 			$iCount = 0;
 			while ($sql->next_record()) {
