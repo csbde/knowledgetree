@@ -1,7 +1,7 @@
 <?php
 
 // main library routines and defaults
-require_once("../../config/dmsDefaults.php");
+require_once("../../../../config/dmsDefaults.php");
 require_once("$default->owl_ui_directory/documentmanagement/browseUI.inc");
 require_once("$default->owl_fs_root/lib/documentmanagement/DocumentBrowser.inc");
 
@@ -45,7 +45,7 @@ require_once("$default->owl_fs_root/lib/visualpatterns/NavBar.inc");
 
 // only if we have a valid session
 if (checkSession()) {
-    require_once("../webpageTemplate.inc");
+    require_once("../../../webpageTemplate.inc");
     $oContent = new PatternCustom();
     
     // retrieve variables
@@ -135,7 +135,7 @@ if (checkSession()) {
                             // now loop through the documents in the category (TODO: if any)
                             // and display them (TODO: with hyperlinked paths)
                             for ($i=0; $i<count($results["documents"]); $i++) {
-                                $sDocumentLink = displayDocumentLink($results["documents"][$i]);
+                                $sDocumentLink = displayDocumentLink($results["documents"][$i], true);
                                 $oContent->addHtml(tableRow("", "", tableData($sDocumentLink)));                                    
                             }
                         }
@@ -168,7 +168,7 @@ if (checkSession()) {
                             // now loop through the documents in the category (TODO: if any)
                             // and display them (TODO: with hyperlinked paths)
                             for ($i=0; $i<count($results["documents"]); $i++) {
-                                $sDocumentLink = displayDocumentLink($results["documents"][$i]);
+                                $sDocumentLink = displayDocumentLink($results["documents"][$i], true);
                                 $oContent->addHtml(tableRow("", "", tableData($sDocumentLink)));                                    
                             }                                
                         }
