@@ -34,6 +34,8 @@ class PatternMainPage {
 	var $sFormAction;
 	/** form enctype */
 	var $sFormEncType;
+	/** whether the form has fields that require javascript checking */
+	var $bHasRequiredFields = false;
 	
 	var $sErrorMessage;
 	
@@ -65,6 +67,10 @@ class PatternMainPage {
 		$this->sFormEncType = $sNewValue;
 	}
 	
+	function setHasRequiredFields($bNewValue) {
+		$this->bHasRequiredFields = $bNewValue;
+	}
+	
 	
 	/**
 	* Render the page in HTML
@@ -89,7 +95,7 @@ class PatternMainPage {
                                 "</div>";
         }
                             
-		$sToRender .= 		    "<form name=\"MainForm\" " . (isset($this->sFormEncType) ? "enctype=\"$this->sFormEncType\" " : " ") . " action=\"".$this->sFormAction."\" method=\"POST\" onsubmit=\"return validate666Form(this)\">\n" .
+		$sToRender .= 		    "<form name=\"MainForm\" " . (isset($this->sFormEncType) ? "enctype=\"$this->sFormEncType\" " : " ") . " action=\"".$this->sFormAction."\" method=\"POST\" " . (($this->bHasRequiredFields) ? "onsubmit=\"return validateForm(this)\" " : " ") . ">\n" .
 								"<table border=\"1\" width=\"700\" height=\"600\">\n " .
 
 									"<tr height=\"18%\">\n".
