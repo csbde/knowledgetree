@@ -8,38 +8,31 @@
 *
 */
 
-function getDocumentPath($oDocument) {
-	global $default;
-	$sDocumentPath = displayFolderPathLink(Folder::getFolderPathAsArray($oDocument->getFolderID()), Folder::getFolderPathNamesAsArray($oDocument->getFolderID()), "$default->rootUrl/control.php?action=browse") . " > " . $oDocument->getName();
-	return "<table border=1 width = 100%><tr><td>$sDocumentPath</td></tr></table>\n";	
+function renderHeading($sHeading) {
+    global $default;
+    $sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
+    $sColor = $default->siteMap->getSectionColour($sSectionName, "th");
+    $sToRender  = "<table border=\"0\" width=\"600\">\n";
+    $sToRender .= "<tr align=\"left\"><th class=\"sectionHeading\" bgcolor=\"$sColor\">$sHeading</th></tr>\n";
+    $sToRender .= "<tr/>\n";
+    $sToRender .= "<tr/>\n";
+    $sToRender .= "</table>\n";
+    return $sToRender;
 }
 
-function getEmailPage($oDocument) {	
-	$sToRender = "<table>\n" .
-	$sToRender .= "<tr>\n" .
-	$sToRender .= "<td><b>Document:</b></td><td>" . getDocumentPath($oDocument) . "</td>\n" .
-	$sToRender .= "</tr>\n" .
-	$sToRender .= "</table>\n";
-	/*
-	$sToRender .= "<tr>\n" .
-	$sToRender .= "<td><b>Recipient's name:</b></td><td><input type=\"text\" name=\"fToName\" /></td>\n" .
-	$sToRender .= "</tr>\n" .
-	$sToRender .= "<tr>\n" .
-	$sToRender .= "<td><b>Recipient's email address:</b></td><td><input type=\"text\" name=\"fToEmailAddress\" /></td>\n" .
-	$sToRender .= "</tr>\n" .
-	$sToRender .= "<tr>\n" .
-	$sToRender .= "<td><input type=\"Submit\" value=\"Send link\" /></td>\n" .
-	$sToRender .= "</tr>\n" .
-	$sToRender .= "</table>\n";*/
-	return $sToRender;
+function getDocumentPath($oDocument) {
+	global $default;
+	$sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
+	$sTDBGColour = $default->siteMap->getSectionColour($sSectionName, "td");	    
+	$sDocumentPath = displayFolderPathLink(Folder::getFolderPathAsArray($oDocument->getFolderID()), Folder::getFolderPathNamesAsArray($oDocument->getFolderID()), "$default->rootUrl/control.php?action=browse") . " > " . $oDocument->getName();
+	return "<table border=\"0\" width = 100%><tr><td bgcolor=\"$sTDBGColour\">$sDocumentPath</td></tr></table>\n";	
 }
 
 function getDocumentEmailPage($oDocument) {
 	global $default;
-	$sToRender = getDocumentPath($oDocument) . "\n<br>\n";	 
+    $sToRender = renderHeading("Email document link");
+	$sToRender .= getDocumentPath($oDocument) . "\n<br>\n";	 
 	$sToRender .= "<table>\n";
-	$sToRender .= "<th colspan=\"2\" align=\"left\">Email details</th>\n";
-	$sToRender .= "<tr><td>&nbsp</td><td>&nbsp</td></tr>\n";
 	$sToRender .= "<tr><td>Recipient name:</td><td><input type=\"text\" name=\"fToName\" /></td></tr>\n";
 	$sToRender .= "<tr><td>Email address:</td><td><input type=\"text\" name=\"fToEmail\" />(separate multiple addresses with a semicolon)</td></tr>\n";
 	$sToRender .= "<tr><td>&nbsp</td><td>&nbsp</td></tr>\n";
