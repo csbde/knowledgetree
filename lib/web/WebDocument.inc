@@ -190,11 +190,8 @@ class WebDocument {
 		$sql = $default->db;
 		$result = $sql->query("SELECT * FROM " . $default->owl_web_documents_table  . (isset($sWhereClause) ? " WHERE " . $sWhereClause : ""));
 		if ($result) {			
-			$iCount = 0;
 			while ($sql->next_record()) {
-				$oWebDocument = & WebDocument::get($sql->f("id"));
-				$aWebDocumentArray[$iCount] = $oWebDocument;
-				$iCount++;
+				$aWebDocumentArray[]= & WebDocument::get($sql->f("id"));
 			}
 			return $aWebDocumentArray;
 		}
