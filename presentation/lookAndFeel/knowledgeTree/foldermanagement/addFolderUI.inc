@@ -44,6 +44,14 @@ function getRightSide($iFolderID) {
 	$sToRender .= "<td><table border=\"0\"><tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/add.gif\" border=\"0\"></td><td><a href=\"$default->rootUrl/control.php?action=browse&fFolderID=$iFolderID\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></a></td></tr></table></td><td>&nbsp</td>\n";    
     $sToRender .= "</tr>\n";
     $sToRender .= "</table>\n";
+    
+	$sToRender .= "\n\n<script language=\"javascript\">\n<!--\n";
+	$sToRender .= "function validateForm(theForm) {\n";
+	$sToRender .= "\tif (!(validRequired(theForm.fFolderName, 'Folder Name'))) {\n";
+	$sToRender .= "\t\treturn false;\n";
+	$sToRender .= "\t}\n";	
+	$sToRender .= "return true;\n}\n";		
+	$sToRender .= "//-->\n</script>\n\n";
 
     return $sToRender;
 }
