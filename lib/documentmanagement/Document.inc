@@ -374,6 +374,25 @@ class Document {
 		return false;
 	}	
 	
+    /**
+     * Returns the url to the file type icon associated with this document
+     *
+     * @return string the url to the relevant file icon, false if there is none
+     */
+    function getMimeTypeIconUrl() {
+        global $default;
+        if ($this->iMimeTypeID) {
+            // lookup the icon from the table
+            $sIconPath = lookupField($default->owl_mime_table, "icon_path", "id", $this->iMimeTypeID);
+            if (strlen($sIconPath) > 0) {                
+                return $default->owl_graphics_url . "/" . $sIconPath;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
 }
 
 ?>
