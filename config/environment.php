@@ -40,7 +40,7 @@ require_once("$default->fileSystemRoot/lib/System.inc");
 $default->system = new System();
 
 if ($default->system->initialised()) {
-    $aSettings = array("ldapServer", "ldapRootDn", "emailServer", "emailFrom", "emailFromName",
+    $aSettings = array("ldapServer", "ldapRootDn", "ldapServerType", "emailServer", "emailFrom", "emailFromName",
                        "emailAdmin", "emailAdminName",
                        "documentRoot", "languageDirectory",
                        "uiDirectory", "rootUrl", "graphicsUrl", "uiUrl", "useFS", "defaultLanguage",
