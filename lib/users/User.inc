@@ -276,16 +276,33 @@ class User {
 	function create() {
 		global $default, $lang_err_database, $lang_err_object_exists;		
 		//if the object hasn't been created
-		if ($this->iId < 0) {
+		if ($this->iId < 0) 
+		{
+			//check to see if name exsits
 			$sql = new Owl_DB();
-			$result = $sql->query("INSERT INTO " . $default->owl_users_table . " (username, name, password, quota_max, quota_current, email, mobile, email_notification, sms_notification, ldap_dn, max_sessions, language_id) " .
+			$query = "SELECT username FROM ". $default->owl_users_table ." WHERE username = '" . $this->sUserName . "'";
+        		$sql->query($query);
+       			$rows = $sql->num_rows($sql);
+        
+      			 if ($rows > 0) 
+       		 	{
+            		 // duplicate username
+           		 $_SESSION["errorMessage"] = "User::The username " . $this->sUserName . " is already in use!";
+           		 return false;
+	       		 }
+	       
+	      		 else
+	      		 {
+	        		$result = $sql->query("INSERT INTO " . $default->owl_users_table . " (username, name, password, quota_max, quota_current, email, mobile, email_notification, sms_notification, ldap_dn, max_sessions, language_id) " .
 					"VALUES ('" . addslashes($this->sUserName) . "', '" . addslashes($this->sName) . "', '" . addslashes(md5($this->sPassword)) . "', $this->iQuotaMax, 0, '" . addslashes($this->sEmail) . "', '" . addslashes($this->sMobile) . "', " . ($this->bEmailNotification ? 1 : 0) . ", " . ($this->bSmsNotification ? 1 : 0) . ", '" . addslashes($this->sLdapDn) . "', $this->iMaxSessions, $this->iLanguageID)");
-			if ($result) {
-				$this->iId = $sql->insert_id();
-				return  true;
+				if ($result) 
+				{
+					$this->iId = $sql->insert_id();
+					return  true;
+				}
+				$_SESSION["errorMessage"] = $lang_err_database;
+				return false;
 			}
-			$_SESSION["errorMessage"] = $lang_err_database;
-			return false;
 		}
 		$_SESSION["errorMessage"] = $lang_err_object_exists . "id = " . $this->iId . " table = $default->owl_users_table";
 		return false;
@@ -390,7 +407,7 @@ class User {
 	
     /**
      * Static function
-     * Return the unitID for the specified user
+     * Return the useID for the specified user
      *
      * @param int the id the user to lookup the unit for
      * @return int the unitID, false otherwise and $_SESSION["errorMessage"] set
@@ -410,5 +427,23 @@ class User {
 		$_SESSION["errorMessage"] = $lang_err_database;
 		return false;
     }
+    /*
+     * static function
+     *
+     * gets the id of a user using their username
+     *
+     * @param   string  The username for which we want its ID
+     *
+     *   
+     */
+     
+	function getUserID($username)
+	 {
+	       global $default;
+	
+	        $id = lookupID($default->owl_users_table, "username",  $username);
+	        
+	        $this->iId = $id;
+	}
 }
 ?>
