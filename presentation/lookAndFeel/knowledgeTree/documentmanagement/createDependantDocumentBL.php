@@ -22,12 +22,6 @@ if (checkSession()) {
 	require_once("$default->fileSystemRoot/presentation/Html.inc");
 	require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
 	
-	
-	//TODO REMOVE THIS LINE - FOR TESTING ONLY!!!!	
-	if (!isset($fDocumentID)) {
-		$fDocumentID = 1;
-	}
-	
 	if (isset($fForStore)) {
 		$oDependantDocument = & new DependantDocumentInstance($fDocumentTitle, $fUserID, $fTargetDocumentID, $fDocumentID);		
 		if ($oDependantDocument->create()) {		
@@ -62,7 +56,6 @@ if (checkSession()) {
 			$main->setFormAction($_SERVER["PHP_SELF"] . "?fDocumentID=$fDocumentID&fForStore=1");
 			$main->setErrorMessage("An error occurred whilst trying to create the dependant document");
 			$main->render(); 
-			
 		}		
 	} else {
 		require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
@@ -77,5 +70,4 @@ if (checkSession()) {
 		$main->render();			
 	}
 }
-
 ?>
