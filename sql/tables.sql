@@ -976,4 +976,13 @@ INSERT INTO help VALUES (44,'viewHistory','viewHistoryHelp.html');
 INSERT INTO help VALUES (45,'checkInDocument','checkInDocumentHelp.html');
 INSERT INTO help VALUES (46,'checkOutDocument','checkOutDocumentHelp.html');
 INSERT INTO help VALUES (47,'advancedSearch','advancedSearchHelp.html');
+INSERT INTO help VALUES (48,'deleteFolderCollaboration','deleteFolderCollaborationHelp.html');
+INSERT INTO help VALUES (49,'addFolderDocType','addFolderDocTypeHelp.html');
+INSERT INTO help VALUES (50,'deleteFolderDocType','deleteFolderDocTypeHelp.html');
+INSERT INTO help VALUES (51,'addGroupFolderLink','addGroupFolderLinkHelp.html');
+INSERT INTO help VALUES (52,'deleteGroupFolderLink','deleteGroupFolderLinkHelp.html');
+INSERT INTO help VALUES (53,'addWebsite','addWebsiteHelp.html');
+INSERT INTO help VALUES (54,'addWebsiteSuccess','addWebsiteHelp.html');
+INSERT INTO help VALUES (55,'editWebsite','editWebsiteHelp.html');
+INSERT INTO help VALUES (56,'removeWebSite','removeWebSiteHelp.html');
 
