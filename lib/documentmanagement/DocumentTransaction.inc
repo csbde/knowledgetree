@@ -5,7 +5,9 @@ DEFINE("UPDATE", 2);
 DEFINE("DELETE", 3);
 DEFINE("RENAME", 4);
 DEFINE("MOVE", 5);
-DEFINE("DOWNLOAD", 5);
+DEFINE("DOWNLOAD", 6);
+DEFINE("CHECKIN", 7);
+DEFINE("CHECKOUT", 8);
 
 /**
 *
@@ -20,12 +22,6 @@ DEFINE("DOWNLOAD", 5);
 * @date 18 January 2003
 * @package lib.documentmanagement
 */
-
-define(1, "CREATE");
-define(2, "UPDATE");
-define(3, "DELETE");
-define(4, "RENAME");
-define(5, "MOVE");
 
 class DocumentTransaction {
 	
