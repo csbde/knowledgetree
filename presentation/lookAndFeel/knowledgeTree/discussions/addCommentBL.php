@@ -97,7 +97,7 @@ if (checkSession()) {
 				}// End Of if for THREAD ID test
 									
 			}else { // the user has not entered BOTH a subject and a text body
-				$main->setErrorMessage("The subject line and/or body may be empty" . $NewCommentSubject . "#" . $NewComment);				
+				$main->setErrorMessage("The subject line and/or body should not be empty.");				
 				$main->setFormAction($_SERVER['PHP_SELF'] . "?fAddCommentSubmit=1&iDocumentID=$fDocumentID");
 				$oPatternCustom->addHtml(getAddComment($fDocumentID,$_POST["NewCommentSubject"],$_POST["NewComment"], $fCommentID, 1));
 			} // end of IF for Subject and Body test	
