@@ -29,14 +29,16 @@ function getUserDropDown($iGroupID, $iUserID) {
 	return $oPatternListBox->render();
 }
 
-function getRoleDropDown($iRoleID) {
-	global $default;
+function getRole($iRoleID) {
+	$oRole = Role::get($iRoleID);
+	return "<input type=\"hidden\" name=\"fRoleID\" value=\"$iRoleID\" />" . $oRole->getName();
+	/*global $default;
 	$oPatternListBox = & new PatternListBox("$default->owl_roles_table", "name", "id", "fRoleID");
 	if (isset($iRoleID)) {
 		$oPatternListBox->setSelectedValue($iRoleID);
 	}
 	$oPatternListBox->setEmptyErrorMessage("There are no users in this group");
-	return $oPatternListBox->render();
+	return $oPatternListBox->render();*/
 }
 
 function getDocumentRoutingPage($iGroupID, $iUserID, $iRoleID, $iSequenceNumber, $fDocumentID) {
@@ -47,7 +49,8 @@ function getDocumentRoutingPage($iGroupID, $iUserID, $iRoleID, $iSequenceNumber,
 			"<td><b>Group</b></td><td>".getGroupRow($iGroupID)."</td>\n" .
 			"</tr>\n" .
 			"<tr>\n" .
-			"<td><b>Role</b></td><td>".getRoleDropDown($iRoleID)."</td>\n" .			
+			//"<td><b>Role</b></td><td>".getRoleDropDown($iRoleID)."</td>\n" .
+			"<td><b>Role</b></td><td>".getRole($iRoleID)."</td>\n" .			
 			"</tr>\n" .
 			"<tr>\n" .
 			"<td><b>Player</b></td><td>".getUserDropDown($iGroupID, $iUserID)."</td>\n" .
@@ -60,7 +63,7 @@ function getDocumentRoutingPage($iGroupID, $iUserID, $iRoleID, $iSequenceNumber,
 			"<td colspan=\"2\">&nbsp</td>\n" .
 			"</tr>\n" .
 			"<tr>\n" .
-			"<td><b><input type=\"image\" src=\"$default->owl_graphics_url\widgets\update.gif\" /></b></td><td><a href=\"$default->owl_root_url/control.php?action=viewDocument&fDocumentID=$fDocumentID \"><img src=\"$default->owl_graphics_url\widgets\cancel.gif\"></a></td>\n" .
+			"<td><b><input type=\"image\" src=\"$default->owl_graphics_url\widgets\update.gif\" /></b></td><td><a href=\"$default->owl_root_url/control.php?action=viewDocument&fDocumentID=$fDocumentID \"><img src=\"$default->owl_graphics_url\widgets\cancel.gif\" border=\"0\"></a></td>\n" .
 			"</tr>\n" .
 			"</table>\n";
 }
