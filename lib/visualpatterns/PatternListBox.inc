@@ -43,6 +43,8 @@ class PatternListBox {
 	var $sEmptyErrorMessage = "No values";
 	/** whether to include 'None' as an option*/
 	var $bIncludeDefaultValue = true;
+    /** additional list box items */
+    var $aAdditionalEntries;
 	
 	/**
 	* Constructor
@@ -89,6 +91,10 @@ class PatternListBox {
 	function setIncludeDefaultValue($bNewValue) {
 		$this->bIncludeDefaultValue = $bNewValue;
 	}
+    
+    function setAdditionalEntries($aNewValue) {
+        $this->aAdditionalEntries = $aNewValue;
+    }
 	
 	/**
 	* Create the HTML string that will be used to render the list box
@@ -128,11 +134,40 @@ class PatternListBox {
 					$sToRender .= "<OPTION value=\"" . $sql->f("value") . "\">" . stripslashes($sql->f("display")) . "</OPTION>\n";
 				}
 			}
+            if (isset($this->aAdditionalEntries)) {
+                for ($i=0; $i<count($this->aAdditionalEntries); $i++) {
+                    $sToRender .= "<OPTION value=\"" . $this->aAdditionalEntries[$i]["value"] . "\">" . $this->aAdditionalEntries[$i]["display"] . "</OPTION>\n";
+                }
+            }
 			$sToRender .= "</SELECT>\n";
 		} else {
 			$sToRender .= "<label class=\"errorText\">$this->sEmptyErrorMessage</label>\n";
 		}		
 		return $sToRender;
 	}
+    
+    function getEntries() {
+        global $default;
+        
+		$sql = $default->db;
+		$sQuery = "SELECT DISTINCT ST." . $this->sDisplayColumn . " AS display, ST." .  $this->sValueColumn . " AS value FROM $this->sTableName AS ST ";
+		if (isset($this->sFromClause)) {
+			$sQuery .= $this->sFromClause . " ";
+		}
+		if (isset($this->sWhereClause)) {
+			$sQuery .= "WHERE " . $this->sWhereClause . " ";
+			
+		}
+		
+		$sQuery .= "ORDER BY ST.$this->sDisplayColumn " . ($this->bOrderAsc ? "ASC" : "DESC");		
+
+		$sql->query($sQuery);
+        $aValues = array();
+        while ($sql->next_record()) {
+            $aValues[] = array("value" => $sql->f("value"),
+                               "display" => stripslashes($sql->f("display")));
+        }
+        return $aValues;
+    }
 }
 ?>
