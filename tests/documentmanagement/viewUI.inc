@@ -26,13 +26,13 @@ function renderDocumentPath($oDocument) {
 function renderDocumentData($oDocument, $sDivName, $bEditable) {
     global $default;
     $sQuery = "SELECT D.name, D.modified, DTT.datetime AS created, U.name AS initiator, CONCAT(CONCAT(D.major_version, '.'), D.minor_version) AS version, WDSL.name AS status, DTL.name AS document_type, D.is_checked_out,  COALESCE(U2.name, '') AS c_user " .
-              "FROM $default->owl_documents_table AS D INNER JOIN $default->owl_web_documents_table AS WD ON WD.document_id = D.ID " .
-              "INNER JOIN $default->owl_web_documents_status_table AS WDSL ON WD.status_id = WDSL.id " .
-              "INNER JOIN $default->owl_users_table AS U ON U.id = D.creator_id " .
-              "INNER JOIN $default->owl_document_transactions_table AS DTT ON DTT.document_id = D.id " .
-              "INNER JOIN $default->owl_transaction_types_table AS TT ON DTT.transaction_id = TT.id " .
-			  "INNER JOIN $default->owl_document_types_table AS DTL ON DTL.id = D.document_type_id " .
-              "LEFT OUTER JOIN $default->owl_users_table AS U2 ON U2.id = D.checked_out_user_id " .
+              "FROM $default->documents_table AS D INNER JOIN $default->web_documents_table AS WD ON WD.document_id = D.ID " .
+              "INNER JOIN $default->web_documents_status_table AS WDSL ON WD.status_id = WDSL.id " .
+              "INNER JOIN $default->users_table AS U ON U.id = D.creator_id " .
+              "INNER JOIN $default->document_transactions_table AS DTT ON DTT.document_id = D.id " .
+              "INNER JOIN $default->transaction_types_table AS TT ON DTT.transaction_id = TT.id " .
+			  "INNER JOIN $default->document_types_table AS DTL ON DTL.id = D.document_type_id " .
+              "LEFT OUTER JOIN $default->users_table AS U2 ON U2.id = D.checked_out_user_id " .
               "WHERE D.id = " . $oDocument->getID() . " " .
               "AND TT.name LIKE 'Create'";
 
@@ -61,8 +61,8 @@ function renderDocumentData($oDocument, $sDivName, $bEditable) {
 function renderGenericMetaData($oDocument, $sDivName, $bEditable) {
     global $default;
     $sQuery = "SELECT DF.name AS name, DFL.value as value " .
-              "FROM $default->owl_documents_table AS D INNER JOIN $default->owl_document_fields_table AS DFL ON D.id = DFL.document_id " .
-              "INNER JOIN $default->owl_fields_table AS DF ON DF.id = DFL.document_field_id " .
+              "FROM $default->documents_table AS D INNER JOIN $default->document_fields_link_table AS DFL ON D.id = DFL.document_id " .
+              "INNER JOIN $default->document_fields_table AS DF ON DF.id = DFL.document_field_id " .
               "WHERE document_id = " . $oDocument->getID() . " " .
               "AND DF.is_generic = 1";
     $aColumns = array("name", "value");
@@ -117,9 +117,9 @@ function renderTypeSpecificMetaData($oDocument, $sDivName, $bEditable) {
 
 function renderEditableDocumentArchiveSettings($oDocument) {
 	global $default;
-    $sQuery = "SELECT d.id, atl.name, 'Edit' AS edit FROM $default->owl_document_archiving_table AS da " .
-    		  "INNER JOIN $default->owl_archiving_type_lookup_table AS atl ON da.archiving_type_id=atl.id " .
-			  "INNER JOIN $default->owl_documents_table AS d ON da.document_id=d.id " .
+    $sQuery = "SELECT d.id, atl.name, 'Edit' AS edit FROM $default->document_archiving_table AS da " .
+    		  "INNER JOIN $default->archiving_type_lookup_table AS atl ON da.archiving_type_id=atl.id " .
+			  "INNER JOIN $default->documents_table AS d ON da.document_id=d.id " .
 			  "WHERE d.id = " . $oDocument->getID();
     
     $aColumns = array("name", "edit");
@@ -136,9 +136,9 @@ function renderEditableDocumentArchiveSettings($oDocument) {
 }
 function renderNonEditableDocumentArchiveSettings($oDocument) {
 	global $default;
-    $sQuery = "SELECT d.id, atl.name FROM $default->owl_document_archiving_table AS da " .
-    		  "INNER JOIN $default->owl_archiving_type_lookup_table AS atl ON da.archiving_type_id=atl.id " .
-			  "INNER JOIN $default->owl_documents_table AS d ON da.document_id=d.id " .
+    $sQuery = "SELECT d.id, atl.name FROM $default->document_archiving_table AS da " .
+    		  "INNER JOIN $default->archiving_type_lookup_table AS atl ON da.archiving_type_id=atl.id " .
+			  "INNER JOIN $default->documents_table AS d ON da.document_id=d.id " .
 			  "WHERE d.id = " . $oDocument->getID();
     
     $aColumns = array("name");
@@ -173,7 +173,7 @@ function renderDocumentArchiveSettings($oDocument, $sDivName, $bEditable) {
 function renderEditableDocumentRouting($oDocument, $sDivName) {
     global $default;
     $sQuery = "SELECT D.id as document_id, GFAL.id as id, R.name AS role_name, COALESCE(U.Name, 'Not assigned') AS name, GFAL.precedence AS precedence, COALESCE(FURL.active,0) AS active, COALESCE(FURL.done, 0) AS done, 'Edit' as edit " .
-              "FROM documents AS D INNER JOIN $default->owl_groups_folders_approval_table AS GFAL ON D.folder_id = GFAL.folder_id " .
+              "FROM documents AS D INNER JOIN $default->groups_folders_approval_table AS GFAL ON D.folder_id = GFAL.folder_id " .
               "INNER JOIN roles AS R ON GFAL.role_id = R.id " .
               "LEFT OUTER JOIN folders_users_roles_link AS FURL ON FURL.group_folder_approval_id = GFAL.id AND FURL.document_id = D.id " .
               "LEFT OUTER JOIN users AS U ON FURL.user_id = U.id " .
@@ -235,7 +235,7 @@ function renderEditableDocumentRouting($oDocument, $sDivName) {
 function renderNonEditableDocumentRouting($oDocument, $sDivName) {
     global $default;
     $sQuery = "SELECT D.id as document_id, GFAL.id as id, R.name AS role_name, COALESCE(U.Name, 'Not assigned') AS name, GFAL.precedence AS precedence, COALESCE(FURL.active,0) AS active, COALESCE(FURL.done, 0) AS done " .
-              "FROM documents AS D INNER JOIN $default->owl_groups_folders_approval_table AS GFAL ON D.folder_id = GFAL.folder_id " .
+              "FROM documents AS D INNER JOIN $default->groups_folders_approval_table AS GFAL ON D.folder_id = GFAL.folder_id " .
               "INNER JOIN roles AS R ON GFAL.role_id = R.id " .
               "LEFT OUTER JOIN folders_users_roles_link AS FURL ON FURL.group_folder_approval_id = GFAL.id AND FURL.document_id = D.id " .
               "LEFT OUTER JOIN users AS U ON FURL.user_id = U.id " .
@@ -611,7 +611,7 @@ function getCheckInEditPage($oDocument) {
 function getWebPublishPage($oDocument) {
     global $default;
     
-    $oPatternListBox = & new PatternListBox($default->owl_web_sites_table, "web_site_name", "id", "fWebSiteID");
+    $oPatternListBox = & new PatternListBox($default->web_sites_table, "web_site_name", "id", "fWebSiteID");
     
     $sToRender = renderHeading("Document Detail") . renderDocumentPath($oDocument) . "\n<br>\n";
     $sToRender .= "<table border = 0>\n";

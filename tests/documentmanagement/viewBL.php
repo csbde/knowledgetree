@@ -22,7 +22,7 @@
 
 require_once("../../config/dmsDefaults.php");
 
-require_once("$default->fileSystemRoot/lib/security/permission.inc");
+require_once("$default->fileSystemRoot/lib/security/Permission.inc");
 
 require_once("$default->fileSystemRoot/lib/email/Email.inc");
 
