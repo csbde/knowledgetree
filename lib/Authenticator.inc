@@ -36,25 +36,25 @@ class Authenticator {
             if ($numrows == "1") {
                 while($sql->next_record()) {
                     if ( $sql->f("disabled") == 1 ) {  
-                        $userDetails["status"]     = 2;
+                        $userDetails["status"]       = 2;
                     } else {
-                        $userDetails["status"]     = 1;
-                        $userDetails["userName"]   = $sql->f("username");
-                        $userDetails["userID"]     = $sql->f("id");
-                        $userDetails["groupID"]    = $sql->f("groupid");
-                        $maxsessions               = $sql->f("maxsessions") + 1;
+                        $userDetails["status"]       = 1;
+                        $userDetails["user_id"]      = $sql->f("id");
+                        $userDetails["username"]     = $sql->f("username");
+                        $userDetails["group_id"]     = $sql->f("group_id");
+                        $userDetails["max_sessions"] = $sql->f("max_sessions") + 1;
                     }
                 }
                 
                 // remove stale sessions from the database for the user
                 // that is signing on.
-                Session::removeStaleSessions($userDetails["userID"]);
+                Session::removeStaleSessions($userDetails["user_id"]);
                 
                  // Check if Maxsessions has been reached
                 $sql = new Owl_DB; 
-                $sql->query("select * from $default->owl_sessions_table where uid = '".$userDetails["userID"]."'");
-                if ($sql->num_rows($sql) >= $maxsessions) {
-                    if ( $userDetails["groupID"] == 0) {
+                $sql->query("select * from $default->owl_sessions_table where uid = '".$userDetails["user_id"]."'");
+                if ($sql->num_rows($sql) >= $userDetails["max_sessions"]) {
+                    if ( $userDetails["group_id"] == 0) {
                         // ignore maxsessions check for admin group
                         $userDetails["status"] = 1;
                     } else {
