@@ -44,28 +44,29 @@ if (checkSession()) {
 	
 	// get main page
 	if (isset($fWebSiteID)) {
-		$oPatternCustom->setHtml(getDeletePage($fWebSiteID));
-		$main->setFormAction($_SERVER["PHP_SELF"] . "?fForDelete=1");
-		
-	// get delete page
-	} else {
-		$oPatternCustom->setHtml(getDeletePage(null));
-		$main->setFormAction($_SERVER["PHP_SELF"]);
-	}
+		$oWebSite = Website::get($fWebSiteID);
+	    // if delete entry
+		if (isset($fForDelete)) {
 
-    // if delete entry
-	if (isset($fForDelete)) {
-			$oWebSite = Website::get($fWebSiteID);
 			$oWebSite->setWebSiteName($fWebSiteName);
-			
-		if ($oWebSite->delete()) {
-			$oPatternCustom->setHtml(getDeleteSuccessPage());
-			
+				
+			if ($oWebSite->delete()) {
+				$oPatternCustom->setHtml(getDeleteSuccessPage());
+				
+			} else {
+				$oPatternCustom->setHtml(getDeleteFailPage());
+			}
 		} else {
-			$oPatternCustom->setHtml(getDeleteFailPage());
+			// check that the website isn't involved in any publishing request
+			if ($oWebSite->inUse()) {
+				$oPatternCustom->setHtml(statusPage("Remove Website", "This website can not be removed since it is still in use.", "", "listWebsites"));
+			} else { 
+				// ask for confirmation
+				$oPatternCustom->setHtml(getDeletePage($fWebSiteID));
+				$main->setFormAction($_SERVER["PHP_SELF"] . "?fForDelete=1");
+			}
 		}
 	}
-	
 	$main->setCentralPayload($oPatternCustom);				
 	$main->render();		
 }
