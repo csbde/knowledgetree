@@ -84,16 +84,31 @@ class GroupUserLink {
 	function create() {
 		global $default, $lang_err_database, $lang_err_object_exists;
 		//if the object hasn't been created
-		if ($this->iId < 0) {
+		if ($this->iId < 0) 
+		{
 			$sql = $default->db;
-			$result = $sql->query("INSERT INTO " . $default->owl_users_groups_table . " (group_id, user_id) VALUES ($this->iGroupID, $this->iUserID)");
-			if ($result) {
-				$this->iId = $sql->insert_id();
-				return  true;
+			$query = "SELECT user_id, group_id FROM ". $default->owl_users_groups_table ." WHERE user_id = '" . $this->iUserID . "' and group_id = '". $this->iGroupID ."'";
+        		$sql->query($query);
+       			$rows = $sql->num_rows($sql);
+        
+      			if ($rows > 0) 
+       		 	{
+        	    		 // duplicate username
+           			 $_SESSION["errorMessage"] = "GroupUserLink::The id " . $this->iUnitID . " already exists!";
+           			 return false;
+	       		 }
+       			 else
+       			 {
+				$sql = $default->db;
+				$result = $sql->query("INSERT INTO " . $default->owl_users_groups_table . " (group_id, user_id) VALUES ($this->iGroupID, $this->iUserID)");
+				if ($result) {
+					$this->iId = $sql->insert_id();
+					return  true;
 			}
 			$_SESSION["errorMessage"] = $lang_err_database;
 			return false;
 		}
+	}
 		$_SESSION["errorMessage"] = $lang_err_object_exists . "id = " . $this->iId . " table = $default->owl_users_groups_table";
 		return false;
 	}
@@ -194,5 +209,60 @@ class GroupUserLink {
 		return false;
 	}
 	
+	function getGroups($iUserID) {
+		global $default, $lang_err_database;
+		$aGroupUserLink;
+		settype($aGroupUserLink, "array");
+		$sql = $default->db;
+		$result = $sql->query("SELECT group_id FROM " . $default->owl_users_groups_table  . " Where user_id = ". $iUserID);
+		if ($result) {			
+			$iCount = 0;
+			while ($sql->next_record()) {
+				//$oGroupUserLink = & GroupUserLink::get($sql->f("id"));
+				$aGroupUserLink[$iCount] = $sql->f("group_id");
+				$iCount++;
+			}
+			return $aGroupUserLink;
+		}
+		$_SESSION["errorMessage"] = $lang_err_database;
+		return false;
+	}
+	/*
+     * static function
+     *
+     * test to see if group exists already
+     *
+     * @param   false or a value
+     *   
+     */
+     
+	function userBelongsToGroup($iUserID)
+	 {
+	       global $default;
+	
+	        $value = lookupField("$default->owl_users_groups_table", "group_id", "user_id", $iUserID );
+	        
+	        return $value;
+	        
+	}
+	
+	/*
+     * static function
+     *
+     * sets the id of the groupunit using their groupid
+     *
+     * @param   String
+     *   The unit_ID
+     *   
+     */
+     
+	function setUserGroupID($iUserId)
+	 {
+	       global $default;
+	
+	        $id = lookupID($default->owl_users_groups_table, "user_id",  $iUserId);
+	        
+	        $this->iId= $id;
+	}
 }
 ?>

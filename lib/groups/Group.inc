@@ -35,6 +35,10 @@ class Group {
 		$this->bIsUnitAdmin = $bNewValue;
 	}
 	
+	function setID($iNewValue) {
+		$this->iId = $iNewValue;
+	}
+	
 	function getSysAdmin() {
 		return $this->bIsSysAdmin;
 	}
