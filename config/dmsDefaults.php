@@ -53,13 +53,13 @@ $default->owl_fields_table = "document_fields";
 // links document
 $default->owl_document_type_fields_table = "document_fields_link";
 // document transaction types
-$default->owl_transaction_types_table = "document_transaction_types_lu";
+$default->owl_transaction_types_table = "document_transaction_types_lookup";
 // document transactions
 $default->owl_document_transactions_table = "document_transactions"; 
 // links document types to document type fields
 $default->owl_document_type_fields_table = "document_type_fields_link";
 // document type information
-$default->owl_document_types_table = "document_types_lu";
+$default->owl_document_types_table = "document_types_lookup";
 // links documents to words
 $default->owl_document_words_table = "document_words_link";
 // stores documents
