@@ -13,8 +13,10 @@ function switchDiv(div_id, object)
   if (style_sheet)
   {
     if (object == "document") {
+    	showAll(aDocumentDivs);    
     	hideAll(aDocumentDivs);
     } else {
+    	showAll(aFolderDivs);    	    
     	hideAll(aFolderDivs);
     }
     changeObjectVisibility(div_id,"visible");
@@ -32,6 +34,15 @@ function hideAll(aDivs)
 {
    for (var i=0; i<aDivs.length; i++) {
      changeObjectVisibility(aDivs[i], "hidden");
+   }
+}
+// function showAll()
+//  shows a bunch of divs
+//
+function showAll(aDivs)
+{
+   for (var i=0; i<aDivs.length; i++) {
+     changeObjectVisibility(aDivs[i], "visible");
    }
 }
 
