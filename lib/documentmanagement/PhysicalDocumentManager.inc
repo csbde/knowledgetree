@@ -143,11 +143,9 @@ class PhysicalDocumentManager {
 		$oDocument = & Document::get($iDocumentID);		
 		//get the path to the document on the server
         $sDocumentFileSystemPath = $oDocument->getPath();
-		$total=$url . $files[$i];		
-		
         Header("Content-Type: " . PhysicalDocumentManager::getMimeTypeName($oDocument->getMimeTypeID()));
 		Header("Content-Length: " . $oDocument->getFileSize());
-		Header("Content-Disposition: inline; filename=" . $oDocument->getName());
+		Header("Content-Disposition: inline; filename=" . $oDocument->getFileName());
         header("Pragma: no-store");
 		return readfile($sDocumentFileSystemPath);
 	}
