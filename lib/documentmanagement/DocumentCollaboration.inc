@@ -184,7 +184,7 @@ class DocumentCollaboration {
 							$oEmail = & new Email();
 							$oEmail->send($oUser->getEmail(), "Document collaboration role active", $sBody);
 						}
-						DocumentCollaboration::createDependantDocuments(& $oFolderUserRole);
+						DocumentCollaboration::createDependantDocuments($oFolderUserRole);
 					}
 					return true;
 				}
@@ -200,7 +200,7 @@ class DocumentCollaboration {
 	* folder collaboration step with primary key $iGroupFolderApprovalID.  Users
 	* responsible for their creation are notified via email 
 	*/
-	function createDependantDocuments($oFolderUserRole) {
+	function createDependantDocuments(& $oFolderUserRole) {
 		global $default;
 		//only create the documents if they haven't been created		
 		if ($oFolderUserRole->getDependantDocumentsCreated() == false) {

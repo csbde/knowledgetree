@@ -365,13 +365,13 @@ class Folder {
 	* 
 	* @return Array array of child ids
 	*/
-	function getChildren($iFolderID, $aChildren = array()) {		
+	function getChildren($iFolderID, & $aChildren) {		
 		global $default;
 		$sql = $default->db;
 		$sql->query("SELECT id from $default->folders_table WHERE parent_id = $iFolderID");
 		while ($sql->next_record()) {
 			$aChildren[count($aChildren)] = $sql->f("id");
-			Folder::getChildren($sql->f("id"), & $aChildren);
+			Folder::getChildren($sql->f("id"), $aChildren);
 		}		
 		return $aChildren;
 	}
