@@ -356,8 +356,22 @@ class Permission {
 			"AND GL.is_unit_admin = 1");
 		return $sql->next_record();
 	}
-	
-	
+    
+    /**
+     * Checks if the current user is a guest user
+     *
+     * @return boolean true if the user is in the Anonymous group, else false
+     */
+    function userIsGuest() {
+        global $default;
+		$sql = new Owl_DB();
+        // you're a guest user if you're in the Anonymous group
+		$sql->query("SELECT UGL.group_id 
+                     FROM $default->owl_users_groups_table AS UGL INNER JOIN $default->owl_groups_table AS GL ON GL.id = UGL.group_id
+                     WHERE GL.name = 'Anonymous'
+                     AND UGL.user_id = " . $_SESSION["userID"]);
+		return $sql->next_record();        
+    }
 }
 
 ?>
