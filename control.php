@@ -1,5 +1,9 @@
 <?php
 
+// main library routines and defaults
+require_once("./config/dmsDefaults.php");
+require_once("$default->owl_fs_root/lib/session/SiteMap.inc");
+
 /**
  * $Id$ 
  *  
@@ -15,16 +19,11 @@
  * @package controller
  */
 
-// main library routines and defaults
-require_once("./config/dmsDefaults.php");
-require_once("$default->owl_fs_root/lib/session/SiteMap.inc");
-
 // -------------------------------
 // page start
 // -------------------------------
 
 // check the session, but don't redirect if the check fails
-
 if (checkSessionAndRedirect(false)) {
     // session check succeeds, so default action should be the dashboard if no action was specified
     if (!isset($action)) {
