@@ -42,7 +42,7 @@ function getOrgPage($fUnitID = null){
 	    $sToRender .= "<table width=100% border=0>\n";
 	    $sToRender .= "<tr>\n";
 	    $sToRender .= "<td><b>\n";
-	    $sToRender .= "Current Orginisation\n";
+	    $sToRender .= "Current Organisation\n";
 	    $sToRender .= "</b></td>\n";
 	    $sToRender .= "</tr>\n";    
 	    $sToRender .= "<tr>\n";
