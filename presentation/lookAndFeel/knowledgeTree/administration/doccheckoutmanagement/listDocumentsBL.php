@@ -32,31 +32,31 @@ if (checkSession()) {
 
 if(checkSession()) {	
 
-		$oPatternCustom->addHtml(renderHeading("Documents"));		// Create the Heading				
+		$oPatternCustom->addHtml(renderHeading("Checked out Documents"));		// Create the Heading				
 		 
 		
 		$main->setFormAction($_SERVER['PHP_SELF']);
 				
-		$sQuery = "SELECT documents.id as DocId, documents.name as Name, documents.filename as File, is_checked_out as CheckedOut, " .
+		$sQuery = "SELECT documents.id as DocId, documents.name as Name, documents.filename as File, " .
 				"CASE  WHEN users.name Is Null THEN '<font color=blue>* No one</font>' ELSE  users.name END AS UserName, " .
-				"'Edit Checkout' " .
+				"'Check In' " .
 				"FROM documents left join users " .
-				"on documents.checked_out_user_id = users.id ";
+				"on documents.checked_out_user_id = users.id " .
+				"WHERE documents.is_checked_out = 1";
 
-	    $aColumns = array("Name", "File", "CheckedOut", "UserName", "Edit Checkout");
-	    $aColumnNames = array("Name", "File", "Checked Out?", "Checked Out to", "Edit Checkout");
-	    $aColumnTypes = array(1,1,2,1,3);
+	    $aColumns = array("Name", "File", "UserName", "Check In");
+	    $aColumnNames = array("Name", "File", "Checked Out by", "");
+	    $aColumnTypes = array(1,1,1,3);
 	    $aDBColumnArray = array("DocId");
 	    $aQueryStringVariableNames = array("fDocID");
 	    	    
-	    $aHyperLinkURL = array(	4=> "$default->rootUrl/control.php?action=editDocCheckout");
+	    $aHyperLinkURL = array(	3=> "$default->rootUrl/control.php?action=editDocCheckout");
 	    	    
 	    $oSearchResults = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnNames, "100%", $aHyperLinkURL,$aDBColumnArray,$aQueryStringVariableNames);
-	    
 		$oSearchResults->setDisplayColumnHeadings(true);
-	    $htmlTables = $oSearchResults->render() ;
+		$oSearchResults->setEmptyTableMessage("No checked out documents");
 	
-	    $oPatternCustom->addHtml($htmlTables);	    
+	    $oPatternCustom->addHtml($oSearchResults->render());	    
 	
 	} // end of if checksession
 	
