@@ -234,20 +234,6 @@ function renderEditableDocumentRouting($oDocument) {
 		$sToRender .= "\t\t</tr></table></td>\n";
 	}
 
-    // only display the publish button for unpublished documents	
-    if (!DocumentCollaboration::documentIsPendingWebPublishing($oDocument->getID())) {      
-        // if there is collaboration
-        if ($oDocument->hasCollaboration()) {
-            // only display publish button if collaboration is complete and you're the last user in the collaboration process (or a sysadmin)
-            if (DocumentCollaboration::documentCollaborationDone($oDocument->getID()) && 
-               ( ($_SESSION["userID"] == DocumentCollaboration::getLastCollaboratorID($oDocument->getID())) || Permission::userIsSystemAdministrator() ) ) {
-                $sToRender .= "<td><a href=" . $_SERVER['PHP_SELF'] . "?fDocumentID=" . $oDocument->getID() . "&fForPublish=1><img src=\"$default->graphicsUrl/widgets/publish.gif\" border=\"0\"/></a></td>\n";
-            }
-        } else if ( ($_SESSION["userID"] == $oDocument->getCreatorID()) || Permission::userIsSystemAdministrator() ) {
-            // no collaboration for this folder, so only the creator (or an administrator) can request publication
-            $sToRender .= "<td><a href=" . $_SERVER['PHP_SELF'] . "?fDocumentID=" . $oDocument->getID() . "&fForPublish=1><img src=\"$default->graphicsUrl/widgets/publish.gif\" border=\"0\"/></a></td>\n";
-        }
-    }
     $sToRender .= "\t</tr>";
 	$sToRender .= "\t</table>\n";
 	
@@ -370,23 +356,23 @@ function displayViewButton($oDocument, $bEdit) {
 }
 
 function displayCheckInOutButton($oDocument, $bEdit) {
-    if ($bEdit) {
-    	$sQueryString = "fDocumentID=" . $oDocument->getID();
-         // display the check in button if the document is checked out and you checked the document out
-        if ($oDocument->getIsCheckedOut()) {
-        	if ($oDocument->getCheckedOutUserID() == $_SESSION["userID"]) {
-        		$sAction = "checkInDocument";
-        		$sImageName = "checkin";
-        	} else {
-        		$oUser = User::get($oDocument->getCheckedOutUserID());
-        		$sDisabledText = "The document can only be checked back in by " . $oUser->getName();
-        	} 
-        // otherwise display the check out button
-        } else {
-        	$sAction = "checkOutDocument";
-        	$sImageName = "checkout";
-        }
-    } else {
+
+	$sQueryString = "fDocumentID=" . $oDocument->getID();
+	// display the check in button if the document is checked out and you checked the document out
+	if ($oDocument->getIsCheckedOut()) {
+		if ($oDocument->getCheckedOutUserID() == $_SESSION["userID"]) {
+	  		$sAction = "checkInDocument";
+	  		$sImageName = "checkin";
+	  	} else {
+	  		$oUser = User::get($oDocument->getCheckedOutUserID());
+	  		$sDisabledText = "The document can only be checked back in by " . $oUser->getName();
+	  	} 
+	// otherwise display the check out button
+	} else {
+	  	$sAction = "checkOutDocument";
+	  	$sImageName = "checkout";
+	}
+    if (!$bEdit) {
     	$sDisabledText = "You do not have write access to this document";
     }
     return "<tr><td align=\"left\">"  . displayButton($sAction, $sQueryString, $sImageName, $sDisabledText) . "</td></tr>\n";    
@@ -470,28 +456,30 @@ function displayDependantDocumentButton($oDocument, $bEdit) {
 	return "<td align=\"left\"><a href=\"" . generateControllerLink("createDependantDocument", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/docactions/dependentdoc.gif\" border=\"0\" /></a></td>\n";	
 }
 
-/*
 function displayPublishButton($oDocument, $bEdit) {
-   // only display the publish button for unpublished documents	
+    // only display the publish button for unpublished documents	
     if (!DocumentCollaboration::documentIsPendingWebPublishing($oDocument->getID())) {      
         // if there is collaboration
         if ($oDocument->hasCollaboration()) {
             // only display publish button if collaboration is complete and you're the last user in the collaboration process (or a sysadmin)
-            if (DocumentCollaboration::documentCollaborationDone($oDocument->getID()) && 
-               ( ($_SESSION["userID"] == DocumentCollaboration::getLastCollaboratorID($oDocument->getID())) || Permission::userIsSystemAdministrator() ) ) {
-                $sToRender .= "<td><a href=" . $_SERVER['PHP_SELF'] . "?fDocumentID=" . $oDocument->getID() . "&fForPublish=1><img src=\"$default->graphicsUrl/widgets/publish.gif\" border=\"0\"/></a></td>\n";
+            if (DocumentCollaboration::documentCollaborationDone($oDocument->getID())) { 
+                if ( !($_SESSION["userID"] == DocumentCollaboration::getLastCollaboratorID($oDocument->getID())) && !Permission::userIsSystemAdministrator() ) {
+                	$sDisabledText = "You are not the last collaborator and hence cannot publish this document";
+                }
+            } else {
+            	$sDisabledText = "You cannot publish this document until collaboration is complete";
             }
-        } else if ( ($_SESSION["userID"] == $oDocument->getCreatorID()) || Permission::userIsSystemAdministrator() ) {
-            // no collaboration for this folder, so only the creator (or an administrator) can request publication
-            $sToRender .= "<td><a href=" . $_SERVER['PHP_SELF'] . "?fDocumentID=" . $oDocument->getID() . "&fForPublish=1><img src=\"$default->graphicsUrl/widgets/publish.gif\" border=\"0\"/></a></td>\n";
+        } else {
+        	// no collaboration, check the user permissions
+        	if ( !($_SESSION["userID"] == $oDocument->getCreatorID()) && !Permission::userIsSystemAdministrator() ) {
+        		$sDisabledText = "You do not have permission to publish this document.";
+        	}
         }
     } else {
     	$sDisabledText = "This document is already published.";
     }
-    // FIXME: need to disabled publish button
-	return "<tr><td align=\"left\">"  . displayButton("archiveDocument", "fDocumentID=" . $oDocument->getID(), "archive", $sDisabledText) . "</td></tr>\n";    
+	return "<tr><td align=\"left\">"  . displayButton("viewDocument", "fDocumentID=" . $oDocument->getID() . "&fForPublish=1", "publish", $sDisabledText) . "</td></tr>\n";    
 }
-*/
 	
 function displayActionButtons($oDocument, $bEdit) {
     $sToRender .= displayViewButton($oDocument, $bEdit);
@@ -504,14 +492,8 @@ function displayActionButtons($oDocument, $bEdit) {
 	$sToRender .= displayDiscussionButton($oDocument, $bEdit);
     $sToRender .= displayArchiveButton($oDocument, $bEdit);
 	$sToRender .= displayDependantDocumentButton($oDocument, $bEdit);
-	// FIXME: need disabled publish button
-	//$sToRender .= displayPublishButton($oDocument, $bEdit);
+	$sToRender .= displayPublishButton($oDocument, $bEdit);
 	
-	$iDummyButtons = 1;
-	// spacing hack
-	for ($i=0; $i<$iDummyButtons; $i++) {
-		$sToRender .= "<tr><td align=\"left\">&nbsp;</td></tr>\n";
-	}	
     return $sToRender;
 }
 
