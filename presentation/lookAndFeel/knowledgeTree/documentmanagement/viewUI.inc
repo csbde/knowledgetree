@@ -183,8 +183,8 @@ function getEditPage($oDocument) {
     $sToRender .= "<td><a href=\"" . generateControllerLink("deleteDocument", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/delete.gif\" border=\"0\" /></a></td>\n";
     $sToRender .= "<td><a href=\"" . generateControllerLink("viewHistory", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/history.gif\" border=\"0\" /></a></td>\n";    
     
-    // display the check in button if the document is checked out
-    if ($oDocument->getIsCheckedOut()) {
+    // display the check in button if the document is checked out and you checked the document out
+    if ($oDocument->getIsCheckedOut() && ($oDocument->getCheckedOutUserID() == $_SESSION["userID"])) {
         $sToRender .= "<td><a href=\"" . generateControllerLink("checkInDocument", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/checkin.gif\" border=\"0\" /></a></td>\n";
     // otherwise display the check out button
     } else {
@@ -287,6 +287,10 @@ function getCheckOutEditPage($oDocument, $bCheckedOut = false) {
     $sToRender .= "\t<tr>\n";
     if ($bCheckedOut) {
         $sToRender .= "\t\t<td>" . wrapInTable("You have now checked out this document. No one else can make updates to the document while you have it checked out. Click the Download button to get the latest version of the file. Please check it back in, as soon as you finish working on it.") . "</td>\n";
+        $sToRender .= "\t</tr>";
+        $sToRender .= "\t<tr>\n";
+        $sToRender .= "<td><a href=\"$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $oDocument->getID() . "&fForDownload=1\"><img src=\"$default->graphicsUrl/widgets/download.gif\" border=\"0\" /></a>\n";
+        $sToRender .= "<a href=\"$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $oDocument->getID() . "\"><img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\" /></a></td>\n";        
     } else {
         $sToRender .= "\t\t<td>" . wrapInTable(renderCheckOutPage($oDocument)) . "</td>\n";
     }
