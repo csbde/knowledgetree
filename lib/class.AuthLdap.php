@@ -376,8 +376,8 @@ class AuthLdap {
       $uname			              = $info[$i]["uid"][0];
       // add to the array for each attribute in my list
       // add to the array for each attribute in my list
-      for ( $i = 0; $i < count( $attributeArray); $i++) {
-          $userslist["$uname"]["$attributeArray[$i]"]      = $info[$i][strtolower($attributeArray[$i])][0];
+      for ( $j = 0; $j < count( $attributeArray); $j++) {
+          $userslist["$uname"]["$attributeArray[$j]"]      = $info[$i][strtolower($attributeArray[$j])][0];
       }
     }
 
