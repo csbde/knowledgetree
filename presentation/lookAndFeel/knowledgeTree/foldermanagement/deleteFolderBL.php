@@ -31,6 +31,7 @@ require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
 require_once("$default->fileSystemRoot/lib/foldermanagement/FolderCollaboration.inc");
 require_once("$default->fileSystemRoot/lib/foldermanagement/FolderDocTypeLink.inc");
 require_once("$default->fileSystemRoot/lib/foldermanagement/PhysicalFolderManagement.inc");
+require_once("$default->fileSystemRoot/lib/groups/GroupUnitLink.inc");
 require_once("$default->fileSystemRoot/lib/users/User.inc");
 require_once("$default->fileSystemRoot/lib/subscriptions/SubscriptionManager.inc");
 require_once("$default->fileSystemRoot/lib/subscriptions/SubscriptionEngine.inc");
@@ -137,10 +138,22 @@ if (checkSession()) {
                     $oPatternCustom->setHtml(getFolderNotEmptyPage($fFolderID, count($aLiveDocuments), "document(s)"));
                 } else if (count($aArchivedDocuments) > 0) {
                     $oPatternCustom->setHtml(getFolderNotEmptyPage($fFolderID, "", " archived documents"));                	
-                } else {                
-                    // get confirmation first
-                    $oFolder = Folder::get($fFolderID);
-                    $oPatternCustom->setHtml(getConfirmPage($fFolderID, $oFolder->getName()));
+                } else {
+                	// check if this is a unit root folder before allowing deletion
+                	$oFolder = Folder::get($fFolderID);
+                	
+					// check if this unit has any groups
+					$aGroupUnitLink = GroupUnitLink::getList("unit_id=" . $oFolder->getUnitID());
+					$bUnitHasGroups = count($aGroupUnitLink) > 0;
+					   
+                	if (Folder::folderIsUnitRootFolder($fFolderID) && $bUnitHasGroups) {
+						// you can't delete a unit root folder
+						$oPatternCustom->setHtml(statusPage("Delete Folder", "", "You can't delete this folder because it is a Unit Root Folder and in use.", "browse", "fFolderID=" . $iFolderID));
+
+                	} else {
+	                    // get confirmation first
+	                    $oPatternCustom->setHtml(getConfirmPage($fFolderID, $oFolder->getName()));
+                	}
                 }
                 // render the page
                 require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
