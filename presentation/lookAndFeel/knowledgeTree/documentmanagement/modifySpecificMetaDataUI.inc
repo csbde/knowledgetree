@@ -20,7 +20,7 @@ function getEditableTypeSpecificMetaData($iDocumentID, $iDocumentTypeID) {
     $aDisplayColumnNames = array("document_id", "field_name", "value");
     $aColumnsEditable = array(0,0,1);
     $aColumnsVisible = array(0,1,1);
-    $aColumnDisplayTypes = array(1,1,1);
+    $aColumnDisplayTypes = array(1,1,4);
     $aColumnDatabaseTypes = array(0,0,1);
 	$aMetaDataColumnNames = array(2=>"field_name");
 
