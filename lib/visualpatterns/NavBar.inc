@@ -54,14 +54,14 @@ class NavBar {
         $this->sCategoryName = $sTmpCategoryName;
         $this->iDocTypeID = $iTmpDocTypeID;
 
-        $this->mdocs = "$default->graphicsUrl/mdocs/norm.gif";
-        $this->home = "$default->graphicsUrl/home/norm.gif";
-        $this->subscriptions = "$default->graphicsUrl/subscriptions/norm.gif";
-        $this->asearch = "$default->graphicsUrl/asearch/norm.gif";
-        $this->admin = "$default->graphicsUrl/admin/norm.gif";
-        $this->prefs = "$default->graphicsUrl/prefs/norm.gif";
-        $this->help = "$default->graphicsUrl/help/norm.gif";
-        $this->logout = "$default->graphicsUrl/logout/norm.gif";
+        $this->mdocs = "$default->graphicsUrl/navbar/mdocs/norm.gif";
+        $this->home = "$default->graphicsUrl/navbar/home/norm.gif";
+        $this->subscriptions = "$default->graphicsUrl/navbar/subscriptions/norm.gif";
+        $this->asearch = "$default->graphicsUrl/navbar/asearch/norm.gif";
+        $this->admin = "$default->graphicsUrl/navbar/admin/norm.gif";
+        $this->prefs = "$default->graphicsUrl/navbar/prefs/norm.gif";
+        $this->help = "$default->graphicsUrl/navbar/help/norm.gif";
+        $this->logout = "$default->graphicsUrl/navbar/logout/norm.gif";
 
         $this->mdocsClass = "dash";
         $this->homeClass = "dash";
@@ -93,55 +93,55 @@ class NavBar {
 
         // check for highlighting..and highlight as required
         if($section == "General") {
-            $this->home = "$default->graphicsUrl/home/over.gif";
-            $this->nwColourBar = "$default->graphicsUrl/home/def.gif";
+            $this->home = "$default->graphicsUrl/navbar/home/over.gif";
+            $this->nwColourBar = "$default->graphicsUrl/navbar/home/def.gif";
             $this->homeClass = "dashactive";
         }
 
         if(($section == "Manage Documents") || ($section == "Manage Categories") || ($section == "Manage Document Types")) {
-            $this->mdocs = "$default->graphicsUrl/mdocs/over.gif";
-            $this->nwColourBar = "$default->graphicsUrl/mdocs/def.gif";
+            $this->mdocs = "$default->graphicsUrl/navbar/mdocs/over.gif";
+            $this->nwColourBar = "$default->graphicsUrl/navbar/mdocs/def.gif";
             $this->mdocsClass = "dashactive";
         }
 		if($section == "Discussion Threads" )  {
-            $this->mdocs = "$default->graphicsUrl/mdocs/over.gif";
-            $this->nwColourBar = "$default->graphicsUrl/mdocs/def.gif";
+            $this->mdocs = "$default->graphicsUrl/navbar/mdocs/over.gif";
+            $this->nwColourBar = "$default->graphicsUrl/navbar/mdocs/def.gif";
             $this->mdocsClass = "dashactive";
         }
 
         if($section == "Subscriptions") {
-            $this->subscriptions = "$default->graphicsUrl/subscriptions/over.gif";
-            $this->nwColourBar = "$default->graphicsUrl/subscriptions/def.gif";
+            $this->subscriptions = "$default->graphicsUrl/navbar/subscriptions/over.gif";
+            $this->nwColourBar = "$default->graphicsUrl/navbar/subscriptions/def.gif";
             $this->subscriptionsClass = "dashactive";
         }
 
         if(($section == "Standard Search") || ($section == "Advanced Search")) {
-            $this->asearch = "$default->graphicsUrl/asearch/over.gif";
-            $this->nwColourBar = "$default->graphicsUrl/asearch/def.gif";
+            $this->asearch = "$default->graphicsUrl/navbar/asearch/over.gif";
+            $this->nwColourBar = "$default->graphicsUrl/navbar/asearch/def.gif";
             $this->asearchClass = "dashactive";
         }
 
         if(substr($section, -14) == "Administration") {
-            $this->admin = "$default->graphicsUrl/admin/over.gif";
-            $this->nwColourBar = "$default->graphicsUrl/admin/def.gif";
+            $this->admin = "$default->graphicsUrl/navbar/admin/over.gif";
+            $this->nwColourBar = "$default->graphicsUrl/navbar/admin/def.gif";
             $this->adminClass = "dashactive";
         }
 
         if($section == "Preferences") {
-            $this->prefs = "$default->graphicsUrl/prefs/over.gif";
-            $this->nwColourBar = "$default->graphicsUrl/prefs/def.gif";
+            $this->prefs = "$default->graphicsUrl/navbar/prefs/over.gif";
+            $this->nwColourBar = "$default->graphicsUrl/navbar/prefs/def.gif";
             $this->prefsClass = "dashactive";
         }
 
         if($section == "Help") {
-            $this->help = "$default->graphicsUrl/help/over.gif";
-            $this->nwColourBar = "$default->graphicsUrl/help/def.gif";
+            $this->help = "$default->graphicsUrl/navbar/help/over.gif";
+            $this->nwColourBar = "$default->graphicsUrl/navbar/help/def.gif";
             $this->helpClass = "dashactive";
         }
 
         if($section == "Logout") {
-            $this->logout = "$default->graphicsUrl/logout/over.gif";
-            $this->nwColourBar = "$default->graphicsUrl/logout/def.gif";
+            $this->logout = "$default->graphicsUrl/navbar/logout/over.gif";
+            $this->nwColourBar = "$default->graphicsUrl/navbar/logout/def.gif";
             $this->logoutClass = "dashactive";
         }
     }
@@ -157,14 +157,14 @@ class NavBar {
         $hStretched = "$default->graphicsUrl/hrepeat.gif";
 
         // set colour pics for row 4 of navbar
-        $colourHome = "$default->graphicsUrl/home/colour.gif";
-        $colourmdocs = "$default->graphicsUrl/mdocs/colour.gif";
-        $coloursubscriptions = "$default->graphicsUrl/subscriptions/colour.gif";
-        $colourasearch = "$default->graphicsUrl/asearch/colour.gif";
-        $colouradmin = "$default->graphicsUrl/admin/colour.gif";
-        $colourprefs = "$default->graphicsUrl/prefs/colour.gif";
-        $colourhelp = "$default->graphicsUrl/help/colour.gif";
-        $colourlogout = "$default->graphicsUrl/logout/colour.gif";
+        $colourHome = "$default->graphicsUrl/navbar/home/colour.gif";
+        $colourmdocs = "$default->graphicsUrl/navbar/mdocs/colour.gif";
+        $coloursubscriptions = "$default->graphicsUrl/navbar/subscriptions/colour.gif";
+        $colourasearch = "$default->graphicsUrl/navbar/asearch/colour.gif";
+        $colouradmin = "$default->graphicsUrl/navbar/admin/colour.gif";
+        $colourprefs = "$default->graphicsUrl/navbar/prefs/colour.gif";
+        $colourhelp = "$default->graphicsUrl/navbar/help/colour.gif";
+        $colourlogout = "$default->graphicsUrl/navbar/logout/colour.gif";
 
         // get list of sections
         $aTopMenuLinks = array(generateControllerUrl("dashboard"),
