@@ -120,8 +120,6 @@ function getDocFieldDisplay($oDocField) {
     global $default;
     if (!isset($oDocField)) {
         $oPatternListBox = & new PatternListBox($default->owl_fields_table, "name", "id", "fDocFieldID");
-        $oPatternListBox->setFromClause("LEFT OUTER JOIN $default->owl_document_fields_table DFL ON ST.id=DFL.document_field_id");
-        $oPatternListBox->setWhereClause("ISNULL(DFL.value)");
         $oPatternListBox->setPostBackOnChange(true);
         return $oPatternListBox->render();
     } else {
