@@ -44,7 +44,6 @@ if (checkSession()) {
     // if a new unit has been added
     // coming from manual edit page
     if (isset($fForStore)) {
-            $oPatternCustom->setHtml("hello");
         
         $oUnit = Unit::get($fUnitID);
         
