@@ -1,7 +1,7 @@
 <?php
 error_reporting(E_ALL);
 /*******************************************************************************
-	$Id: index.php,v 1.10 2002/09/13 21:40:34 epsilon7 Exp $
+	$Id: index.php,v 1.17 2003/07/02 23:28:35 epsilon7 Exp $
     
     phpSniff: HTTP_USER_AGENT Client Sniffer for PHP
 	Copyright (C) 2001 Roger Raymond ~ epsilon7@users.sourceforge.net
@@ -21,27 +21,28 @@ error_reporting(E_ALL);
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 *******************************************************************************/
 
-// email me the user agent strings
-// i only do this so i can see what people are using
-// so that i can continually update the code
-//mail('roger@asphyxia.com','[phpsniff-user-agent] '.$_SERVER['HTTP_USER_AGENT'],$_SERVER['HTTP_USER_AGENT'],"From: epsilon7\r\n");
-
 require_once('phpSniff.class.php');
 require_once('phpTimer.class.php');
 
-// initialize some vars
-if(!isset($UA)) $UA = '';
-if(!isset($cc)) $cc = '';
-if(!isset($dl)) $dl = '';
-if(!isset($am)) $am = '';
+//echo '<pre>';
+//print_r($_COOKIE);
+//echo '</pre>';
 
-$timer = new phpTimer();
+// initialize some vars
+$GET_VARS = isset($_GET) ? $_GET : $HTTP_GET_VARS;
+$POST_VARS = isset($_POST) ? $_GET : $HTTP_POST_VARS;
+if(!isset($GET_VARS['UA'])) $GET_VARS['UA'] = '';
+if(!isset($GET_VARS['cc'])) $GET_VARS['cc'] = '';
+if(!isset($GET_VARS['dl'])) $GET_VARS['dl'] = '';
+if(!isset($GET_VARS['am'])) $GET_VARS['am'] = '';
+
+$timer =& new phpTimer();
 $timer->start('main');
 $timer->start('client1');
-$sniffer_settings = array('check_cookies'=>$cc,
-                          'default_language'=>$dl,
-                          'allow_masquerading'=>$am);
-$client = new phpSniff($UA,$sniffer_settings);
+$sniffer_settings = array('check_cookies'=>$GET_VARS['cc'],
+                          'default_language'=>$GET_VARS['dl'],
+                          'allow_masquerading'=>$GET_VARS['am']);
+$client =& new phpSniff($GET_VARS['UA'],$sniffer_settings);
 
 $timer->stop('client1');
 
@@ -93,8 +94,26 @@ function has_quirk ($quirk)
 
 ?>
 <html>
-<head><title>phpSniff <?php print $client->_version; ?> on SourceForge</title></head>
-<body>
+<head>
+<title>phpSniff <?php print $client->_version; ?> on SourceForge</title>
+<style type="text/css">
+INPUT, SELECT {
+    background-color: #c8c8c8;
+    font-family: monospace;
+    font-size: 10px;
+}
+BODY {
+    background-color: #ffffff;
+    font-family: sans-serif;
+    font-size: 10px;
+}
+TD {
+    font-family: sans-serif;
+    font-size: 10px;
+}
+</style>
+</head>
+<body marginwidth="0" marginheight="0" topmargin="0" leftmargin="0">
 <?php
 //  fix for cgi versions of php ~ 6/28/2001 ~ RR
 $script_path = getenv('PATH_INFO') ? getenv('PATH_INFO') : getenv('SCRIPT_NAME');
@@ -109,13 +128,13 @@ $script_path = getenv('PATH_INFO') ? getenv('PATH_INFO') : getenv('SCRIPT_NAME')
 </p>
 <table border="0" cellpadding="3" cellspacing="0" bgcolor="<?php print $c3_bg; ?>" width="100%">
 <tr>
-<td align="left" valign="top">
+<td align="left" valign="top" width="100%">
     <font color="#ffffff"><b>CURRENT BROWSER INFORMATION</b></font><br>
     <font color="#ffffff" size="-1">
     <?php printf('phpSniff version : %s - php version : %s</font>',$client->_version, PHP_VERSION); ?>
     </font>
 </td>
-<td align="right" valign="top">
+<td align="right" valign="top" width="100%">
     <font color="#ffffff">
     <select name="UA">
     <?php
@@ -273,8 +292,10 @@ $script_path = getenv('PATH_INFO') ? getenv('PATH_INFO') : getenv('SCRIPT_NAME')
     </tr>
     <?php
        	browser_is('aol');
-       	browser_is('ie6up');
-       	browser_is('ns4up');
+       	browser_is('ie6+');
+       	browser_is('mz1.3+');
+        browser_is('ns7+');
+        browser_is('op6+');
     ?>
 	<!-- language_is search -->
     <tr>
@@ -290,7 +311,7 @@ $script_path = getenv('PATH_INFO') ? getenv('PATH_INFO') : getenv('SCRIPT_NAME')
        	<td bgcolor="<?php print $c3_bg; ?>" colspan="2" nowrap><font color="#ffcc00">$client->is(<i>search</i>)</font></td>
     </tr>
     <?php
-		is('b:ns4up');
+		is('b:ns7-');
 		is('l:en-us');
     ?>
 	</table>
@@ -309,8 +330,12 @@ printf("<pre>\n".
 </p>
 <?php
 print ('<p align="left"><font size="-2">_______________________________<br>');
-print ('Copyleft 2001-2002 PHyX8 Studio<br></font></p>');
+print ('Copyleft 2001-2003 Simian Synapse, LLC.<br></font></p>');
 ?>
-<!A href="http://sourceforge.net"> <!IMG src="http://sourceforge.net/sflogo.php?group_id=26044" width="88" height="31" border="0" alt="SourceForge Logo"></A>
+<p align="center">
+<A href="http://sourceforge.net"><IMG 
+src="http://sourceforge.net/sflogo.php?group_id=26044" 
+width="88" height="31" border="0" alt="SourceForge Logo"></A>
+</p>
 </body>
 </html>

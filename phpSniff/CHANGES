@@ -1,4 +1,43 @@
-$Id: CHANGES,v 1.11 2002/09/13 21:40:34 epsilon7 Exp $
+$Id: CHANGES,v 1.23 2003/07/02 23:31:55 epsilon7 Exp $
+
+========================================================================
+Changes for version 2.1.3
+========================================================================
+    * add k-meleon support
+    * add camino support
+    * add mozilla firebird support
+    * add amiga support
+    * fixed issues with netscape and gecko browsers
+    
+========================================================================
+Changes for version 2.1.2
+========================================================================
+[2003.02.13]
+rraymond : correctly identifies more browsers (galeon, phoenix, chimera, safari)
+rraymond : fixes netscape/mozilla detection
+
+[2002.09.17]
+rraymond : can now use '+' as alias for 'up' and '-' as alias for 'dn'
+rraymond : cleanup of user_agent.inc file
+rraymond : removed old test cookie code
+rraymond : better mozilla/netscape differentiation
+rraymond : added BrowseX support (short name = BX)
+
+[2002.09.13]
+rraymond : fixes for some bad config settings
+rraymond : Short Names List
+           Internet Explorer => IE
+           Netscape          => NS
+           Mozilla           => MZ
+           Opera             => OP
+           Konqueror         => KQ
+           Links             => LI
+           Lynx              => LX
+           NCSA Mosaic       => MO
+           Amaya             => AM
+           OmniWeb           => OW
+           iCab              => IC
+           HotJava           => HJ
 
 ========================================================================
 Changes for version 2.1.1
