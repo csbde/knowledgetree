@@ -50,6 +50,8 @@ if (checkSession()) {
 				$oPatternCustom->setHtml(getEditPageFail());
 		}
 	} else if (isset($fDocFieldID)){		
+		
+				
 		// post back on DocField select from manual edit page	
 		$oPatternCustom->setHtml(getEditPage($fDocFieldID));
 		$main->setFormAction($_SERVER["PHP_SELF"] . "?fForStore=1");

@@ -280,6 +280,26 @@ class DocumentField {
 		$_SESSION["errorMessage"] = $lang_err_database;
 		return false;
 	}
+	
+		/* Static function.  Given a documenttype...will find all fields belongin to it
+	*
+	* @return DocumentFieldLink populated DocumentFieldLink object on success, false otherwise and set $_SESSION["errorMessage"]
+	*/
+	function isFieldLinkedToType() {
+		global $default, $lang_err_database;
+		$sql = $default->db;
+		$query = "SELECT * FROM " . $default->owl_document_type_fields_table  . " Where field_id = $this->iId";
+		$sql->query($query);
+       		$rows = $sql->num_rows($sql);
+        
+      		 if ($rows > 0){
+      			 	return true;
+		}else{
+			return false;
+		}
+		$_SESSION["errorMessage"] = $lang_err_database;
+		return false;
+	}
 }
 
 /**
