@@ -20,8 +20,10 @@ function getMetaData($aMetaTagIDs) {
 	$sToRender .= "<input type=\"hidden\" name=\"adv_search_start\" value=\"\" />\n";
 	
     $iRecordCount = 0;
+    $sCheckAllJavascript = "";
 	while ($sql->next_record()) {
-        $sMetaDataCheckBox = "<input type=\"checkbox\" " . wasSelected($sql->f("id"), $aMetaTagIDs) . " name=\"f_adv_" . $sql->f("name") . "\" value=\"" . $sql->f("id") . "\"></td><td>" . $sql->f("name");
+		$sCheckAllJavascript .= "document.MainForm.f_adv_$iRecordCount.checked=value;\n"; 
+        $sMetaDataCheckBox = "<input type=\"checkbox\" " . wasSelected($sql->f("id"), $aMetaTagIDs) . " name=\"f_adv_$iRecordCount\" value=\"" . $sql->f("id") . "\"></td><td>" . $sql->f("name");
         $iRecordCount++;
         if (($iRecordCount % 3) == 1) {
             $sToRender .= "<tr><td>$sMetaDataCheckBox</td>\n";
@@ -33,6 +35,14 @@ function getMetaData($aMetaTagIDs) {
 	}
 	
 	$sToRender .= "<input type=\"hidden\" name=\"adv_search_end\" value=\"\" />\n";
+	$sToRender .= "\n\n<SCRIPT LANGUAGE=\"javascript\">\n ";
+	$sToRender .= "<!--\n";		
+	$sToRender .= "function setChecked(value) {\n";	
+	$sToRender .= $sCheckAllJavascript;
+	$sToRender .= "\t}\n";
+	$sToRender .= "-->\n";
+	$sToRender .= "</SCRIPT>\n\n";	
+	$sToRender .= "<tr><td colspan=\"3\"><a href=\"javascript:setChecked(1)\"><img src=\"$default->graphicsUrl/widgets/checkall.gif\" border=\"0\"/></a></td><td colspan=\"3\"><a href=\"javascript:setChecked(0)\"><img src=\"$default->graphicsUrl/widgets/clearall.gif\" border=\"0\"/></a></td></tr>"; 
 	$sToRender .= "</table>\n";
 	
 	return $sToRender;
@@ -42,10 +52,19 @@ function getSearchPage($sSearchString = "", $aMetaTagIDs = array(), $sHeading = 
     $sToRender  = renderHeading($sHeading);	
 	$sToRender .= "<table width=\"600\">\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>Search text: <input type=\"text\" size=\"60\" name=\"fSearchString\" value=\"$sSearchString\" />\n";
-	$sToRender .= "<input type=\"button\" value=\"search\" onClick=\"validateAdvancedSearch()\"/></td>\n";
-	$sToRender .= ($bSearchArchive ? "<input type=\"hidden\" name=\"fSearchArchive\" value=\"1\"" : "");
+	$sToRender .= "<td>Search text: <input type=\"text\" size=\"50\" name=\"fSearchString\" value=\"$sSearchString\" />\n";
+	$sToRender .= "<input type=\"image\" src=\"$default->graphicsUrl/widgets/search.gif\" border=\"0\"/></td>\n";
 	$sToRender .= "</tr>\n";
+		
+	if ($bSearchArchive) {
+		$sToRender .= "<input type=\"hidden\" name=\"fToSearch\" value=\"Archived\"/>";
+	} else {
+		$sToRender .= "<tr>\n";
+		$sToRender .= "<td>&nbsp</td>\n";
+		$sToRender .= "</tr>\n";
+		$sToRender .= "<tr><td>Search: <select name=\"fToSearch\"><option value=\"Live\">Live</option><option value=\"Archived\">Archived</option></select> Documents</td></tr>";		
+	}	
+
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>&nbsp</td>\n";
 	$sToRender .= "</tr>\n";
@@ -57,22 +76,25 @@ function getSearchPage($sSearchString = "", $aMetaTagIDs = array(), $sHeading = 
 	$sToRender .= "</tr>\n";	
 	$sToRender .= "</table>\n";
 	
-	return $sToRender . getSearchValidationJavaScript();;
+	return $sToRender . getSearchValidationJavaScript();
 }
 
-function getSearchResults($sMetaTagIDs, $sSQLSearchString, $iStartIndex) {
-	global $default;	
+function getSearchResults($sMetaTagIDs, $sSQLSearchString, $iStartIndex, $sStatus = "Live") {
+	global $default;
+					
 	$sQuery = "SELECT '" . "$default->graphicsUrl/widgets/dfolder.gif" . "' AS folder_image_url, F.id folder_id, D.id document_id, D.name AS document_name, COUNT(D.id) AS doc_count " .
 			"FROM $default->owl_documents_table AS D INNER JOIN $default->owl_folders_table AS F ON D.folder_id = F.id " .
 			"INNER JOIN document_fields_link AS DFL ON DFL.document_id = D.id " .
 			"INNER JOIN document_fields AS DF ON DF.id = DFL.document_field_id " . 
-			"INNER JOIN search_document_user_link AS SDUL ON SDUL.document_id = D.ID " .			
+			"INNER JOIN search_document_user_link AS SDUL ON SDUL.document_id = D.ID " .
+			"INNER JOIN status_lookup AS SL on D.status_id=SL.id " .						
 			"WHERE DF.ID IN ($sMetaTagIDs) " .
-			"AND " . $sSQLSearchString . " " .
+			"AND (" . $sSQLSearchString . ") " .
 			"AND SDUL.user_id = " . $_SESSION["userID"] . " " .
+			"AND SL.name='$sStatus' " .			
 			"GROUP BY D.id ";
-			"ORDER BY doc_count DESC ";		
-	
+			"ORDER BY doc_count DESC ";
+	$default->log->info("getSearchResults $sQuery");
 	$aColumns = array("folder_image_url", "document_name", "doc_count");
 	$aColumnTypes = array(4,3,1);
 	$aColumnHeaders = array("<font color=\"ffffff\">Folder</font>","<font color=\"ffffff\">Document</font>", "<font color=\"ffffff\">Matches</font>");
@@ -90,10 +112,10 @@ function getSearchResults($sMetaTagIDs, $sSQLSearchString, $iStartIndex) {
 function getSearchValidationJavaScript() {
 	$sToRender = "\n\n<SCRIPT LANGUAGE=\"javascript\">\n ";
 	$sToRender .= "<!--\n";		
-	$sToRender .= "function validateAdvancedSearch() {\n";	
+	$sToRender .= "function validateForm() {\n";	
 	$sToRender .= "\tif (!(validRequired(document.MainForm.fSearchString, 'Search text'))) {\n";
-	$sToRender .= "\t\treturn;\n\t}\n";
-	$sToRender .= "\tdocument.MainForm.submit();\n}\n";
+	$sToRender .= "\t\treturn false;\n\t}\n";
+	$sToRender .= "\treturn true;\n}\n";
 	$sToRender .= "-->\n";
 	$sToRender .= "</SCRIPT>\n\n";
 	return $sToRender;
