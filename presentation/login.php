@@ -28,6 +28,27 @@ if ($loginAction == "loginForm") {
     <link rel=\"stylesheet\" href=\"$default->uiUrl/stylesheet.php\">
     <link rel=\"SHORTCUT ICON\" href=\"$default->graphicsUrl/tree.ico\">
     <title>The KnowledgeTree</title>
+
+	<SCRIPT TYPE=\"text/javascript\">
+	<!--
+	function submitenter(myfield,e)
+	{
+	var keycode;
+	if (window.event) keycode = window.event.keyCode;
+	else if (e) keycode = e.which;
+	else return true;
+	
+	if (keycode == 13)
+	   {
+	   myfield.form.submit();
+	   return false;
+	   }
+	else
+	   return true;
+	}
+	//-->
+	</SCRIPT
+    
     </head>
     <body onload=\"javascript:document.loginForm.fUserName.focus()\">
     <center>
@@ -41,7 +62,7 @@ if ($loginAction == "loginForm") {
     \t<tr><td>$lang_username:</td></tr>
     \t<tr><td><input type=\"text\" name=\"fUserName\" size=\"35\"></td></tr>
     \t<tr><td>$lang_password:</td></tr>
-    <tr><td><input type=\"password\" name=\"fPassword\" size=\"35\">
+    <tr><td><input type=\"password\" name=\"fPassword\" size=\"35\" onKeyPress=\"return submitenter(this,event)\">
     </td></tr>
     <input type=\"hidden\" name=\"redirect\" value=\"$redirect\"/>
     <input type=\"hidden\" name=\"loginAction\" value=\"login\">\n
