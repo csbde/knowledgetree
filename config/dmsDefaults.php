@@ -190,6 +190,7 @@ $default->siteMap->addDefaultPage("logout", "/presentation/logout.php", "Logout"
 $default->siteMap->addPage("scratchPad", "/tests/scratchPad.php", "Tests", Guest, "scratch", false);
 $default->siteMap->addPage("sitemap", "/tests/session/SiteMap.php", "Tests", Guest, "sitemap", false);
 $default->siteMap->addPage("documentBrowserTest", "/tests/documentmanagement/DocumentBrowser.php", "Tests", Guest, "test the document browser", false);
+$default->siteMap->addPage("scroll", "/tests/scroll/textScrollTest.php", "Tests", Guest, "test scrolling", false);
 
 
 
@@ -200,6 +201,7 @@ require_once("$default->owl_fs_root/lib/session/control.inc");
 require_once("$default->owl_fs_root/lib/database/db.inc");
 require_once("$default->owl_fs_root/lib/database/lookup.inc");
 require_once("$default->owl_fs_root/lib/System.inc");
+require_once("$default->owl_fs_root/phpSniff/phpSniff.class.php");
 
 // single db instantiation
 $default->db = new Database();
@@ -207,7 +209,11 @@ $default->db = new Database();
 // instantiate system settings class
 $default->system = new System();
 
+// instantiate phpsniffer
+$default->phpSniff = new phpSniff();
+
 // import request variables and setup language
 require_once("$default->owl_fs_root/lib/dms.inc");
+
 
 ?>
