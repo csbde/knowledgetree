@@ -14,21 +14,20 @@
  * @package presentation.lookAndFeel.knowledgeTree.documentmanagement
  */
 
-function renderDocumentPath($oDocument, $bDisplayActions) {
+function renderDocumentPath($oDocument, $bDisplayActions = false) {
     global $default;
 	$sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
 	$sTDBGColour = $default->siteMap->getSectionColour($sSectionName, "td");
 	if ($bDisplayActions) {	
 	    $sDocumentPath = displayFolderPathLink(Folder::getFolderPathAsArray($oDocument->getFolderID()), Folder::getFolderPathNamesAsArray($oDocument->getFolderID()), "$default->rootUrl/control.php?action=browse") . " > ";
-	    $sDocumentPath .= "<a onClick=\"alert('This will view a copy of the document current in the DMS.  Any changes to this file will not be managed in the DMS.'); return true;\" href=\"" . generateControllerUrl("downloadDocument", "fDocumentID=" . $oDocument->getID() . "&fForInlineView=1") . "\">" . $oDocument->getName() . "</a>";
-	    //$sDocumentPath .= generateControllerLink("viewDocument", "fDocumentID=" . $oDocument->getID() . "&fForInlineView=1", $oDocument->getName());
+	    $sDocumentPath .= "<a onClick=\"alert('This will view a copy of the current version of this document in the DMS.  Any changes to this file will not be managed in the DMS.'); return true;\" href=\"" . generateControllerUrl("downloadDocument", "fDocumentID=" . $oDocument->getID() . "&fForInlineView=1") . "\">" . $oDocument->getName() . "</a>";
 	} else {
 		$sDocumentPath = $oDocument->getDisplayPath();
 	}    
-	return "<table border=0 cellpadding=\"5\" width=\"610\"><tr bgcolor=\"$sTDBGColour\"><td width=\"87%\">$sDocumentPath</td>" . ($bDisplayActions ? "<td width=\"15%\">Actions</td>" : "") . "</tr></table>\n";
+	return "<table border=0 cellpadding=\"0\" width=\"610\"><tr bgcolor=\"$sTDBGColour\"><td width=\"87%\">$sDocumentPath</td>" . ($bDisplayActions ? "<td width=\"15%\" align=\"center\" valign=\"top\">Actions</td>" : "") . "</tr></table>\n";
 }
 
-function renderDocumentData($oDocument, $bEditable) {
+function renderDocumentData($oDocument, $bEditable, $sStatusMessage = "") {
     global $default;
     $sQuery = "SELECT D.name, D.modified, DTT.datetime AS created, U.name AS initiator, CONCAT(CONCAT(D.major_version, '.'), D.minor_version) AS version, WDSL.name AS status, DTL.name AS document_type, D.is_checked_out,  COALESCE(U2.name, '') AS c_user " .
               "FROM $default->owl_documents_table AS D INNER JOIN $default->owl_web_documents_table AS WD ON WD.document_id = D.ID " .
@@ -48,7 +47,10 @@ function renderDocumentData($oDocument, $bEditable) {
     $oPatternListFromQuery->setTableHeading("Document Data");
     $oPatternListFromQuery->setTableWidth("400");   
       
-    $sToRender .= "\t<table border=\"0\" width=\"100%\">\n";
+	if ($sStatusMessage) {
+		$sToRender .= "<font color=\"red\">$sStatusMessage</font>";
+	}      
+    $sToRender .= "\t<table cellspacing=\"0\" cellpadding=\"0\" border=\"0\" width=\"100%\">\n";
     $sToRender .= "\t<tr>\n";
     $sToRender .= "\t\t<td>" . $oPatternListFromQuery->render() . "</td>\n";    
     $sToRender .= "\t</tr>\n";
@@ -63,7 +65,7 @@ function renderDocumentData($oDocument, $bEditable) {
 }
 
 
-function renderGenericMetaData($oDocument, $sDivName, $bEditable) {
+function renderGenericMetaData($oDocument, $bEditable) {
     global $default;
     $sQuery = "SELECT DF.name AS name, DFL.value as value " .
               "FROM $default->owl_documents_table AS D INNER JOIN $default->owl_document_fields_table AS DFL ON D.id = DFL.document_id " .
@@ -76,7 +78,7 @@ function renderGenericMetaData($oDocument, $sDivName, $bEditable) {
     $oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaders, "500");
     $oPatternTableSqlQuery->setTableHeading("Generic Meta Data");
     
-    $sToRender .= "\t<table border=\"0\" width=\"100%\">\n";    	
+    $sToRender .= "\t<table cellspacing=\"0\" cellpadding=\"0\" border=\"0\" width=\"100%\">\n";    	
     $sToRender .= "\t<tr>\n";
     $sToRender .= "\t<td>" . $oPatternTableSqlQuery->render() . "</td>\n";
     $sToRender .= "\t</tr>\n";
@@ -87,10 +89,10 @@ function renderGenericMetaData($oDocument, $sDivName, $bEditable) {
     }
 	$sToRender .= "\t</table>\n";
     
-    return renderSectionDiv($sDivName, $sToRender);
+    return $sToRender;
 }
 
-function renderTypeSpecificMetaData($oDocument, $sDivName, $bEditable) {
+function renderTypeSpecificMetaData($oDocument, $bEditable) {
 	global $default;
 	
     $sQuery = "SELECT DF.name AS name, DFL.value AS value " .
@@ -103,11 +105,11 @@ function renderTypeSpecificMetaData($oDocument, $sDivName, $bEditable) {
     $aColumns = array("name", "value");
     $aColumnHeaders = array("Tag", "Value");
     $aColumnTypes = array(1,1);
-    $oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaders, "540");
+    $oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaders, "500");
     $oPatternTableSqlQuery->setTableHeading("Type Specific Meta Data");
 	$oPatternTableSqlQuery->setEmptyTableMessage("No Type Specific Meta Data");
     
-    $sToRender .= "\t<table border=\"0\" width=\"100%\">\n";	
+    $sToRender .= "\t<table cellspacing=\"0\" cellpadding=\"0\" border=\"0\" width=\"100%\">\n";	
     $sToRender .= "\t<tr>\n";
     $sToRender .= "\t\t<td>" . $oPatternTableSqlQuery->render() . "</td>\n";    
     $sToRender .= "\t</tr>\n";
@@ -117,7 +119,7 @@ function renderTypeSpecificMetaData($oDocument, $sDivName, $bEditable) {
 		$sToRender .= "\t</tr>\n";
     }
     $sToRender .= "\t</table>\n";
-    return renderSectionDiv($sDivName, $sToRender);    
+    return $sToRender;    
 }
 
 function renderEditableDocumentArchiveSettings($oDocument) {
@@ -157,10 +159,10 @@ function renderNonEditableDocumentArchiveSettings($oDocument) {
     return $oPatternTableSqlQuery->render();
 }
 
-function renderDocumentArchiveSettings($oDocument, $sDivName, $bEditable) {
+function renderDocumentArchiveSettings($oDocument, $bEditable) {
     global $default;   
 
-    $sToRender .= "\t<table border=\"0\" width=\"100%\">\n";
+    $sToRender .= "\t<table cellspacing=\"0\" cellpadding=\"0\" border=\"0\" width=\"100%\">\n";
     $sToRender .= "\t<tr>\n";
     $sToRender .= "\t\t<td>" . ($bEditable ? renderEditableDocumentArchiveSettings($oDocument) : renderNonEditableDocumentArchiveSettings($oDocument)) . "</td>\n";
     $sToRender .= "\t</tr>";
@@ -173,10 +175,10 @@ function renderDocumentArchiveSettings($oDocument, $sDivName, $bEditable) {
     }        	    
 	$sToRender .= "\t</table>\n";
 
-    return renderSectionDiv($sDivName, $sToRender);
+    return $sToRender;
 }
 
-function renderEditableDocumentRouting($oDocument, $sDivName) {
+function renderEditableDocumentRouting($oDocument) {
     global $default;
     $sQuery = "SELECT D.id as document_id, GFAL.id as id, R.name AS role_name, COALESCE(U.Name, 'Not assigned') AS name, GFAL.precedence AS precedence, COALESCE(FURL.active,0) AS active, COALESCE(FURL.done, 0) AS done, 'Edit' as edit " .
               "FROM documents AS D INNER JOIN $default->owl_groups_folders_approval_table AS GFAL ON D.folder_id = GFAL.folder_id " .
@@ -196,7 +198,7 @@ function renderEditableDocumentRouting($oDocument, $sDivName) {
     $oPatternTableSqlQuery->setTableHeading("Document Routing");
     $oPatternTableSqlQuery->setDisplayColumnHeadings(true);
     
-    $sToRender .= "\t<table border=\"0\" width=\"100%\">\n";
+    $sToRender .= "\t<table cellspacing=\"0\" cellpadding=\"0\" border=\"0\" width=\"100%\">\n";
     $sToRender .= "\t<tr>\n";
     $sToRender .= "\t\t<td>" . $oPatternTableSqlQuery->render() . "</td>\n";
     $sToRender .= "\t</tr>";            
@@ -235,10 +237,10 @@ function renderEditableDocumentRouting($oDocument, $sDivName) {
     $sToRender .= "\t</tr>";
 	$sToRender .= "\t</table>\n";
 	
-    return renderSectionDiv($sDivName, $sToRender);    
+    return $sToRender;    
 }
 
-function renderNonEditableDocumentRouting($oDocument, $sDivName) {
+function renderNonEditableDocumentRouting($oDocument) {
     global $default;
     $sQuery = "SELECT D.id as document_id, GFAL.id as id, R.name AS role_name, COALESCE(U.Name, 'Not assigned') AS name, GFAL.precedence AS precedence, COALESCE(FURL.active,0) AS active, COALESCE(FURL.done, 0) AS done " .
               "FROM documents AS D INNER JOIN $default->owl_groups_folders_approval_table AS GFAL ON D.folder_id = GFAL.folder_id " .
@@ -255,7 +257,7 @@ function renderNonEditableDocumentRouting($oDocument, $sDivName) {
     $oPatternTableSqlQuery->setTableHeading("Document Routing");
     $oPatternTableSqlQuery->setDisplayColumnHeadings(true);
 
-   	$sToRender .= "\t<table border=\"0\" width=\"100%\">\n";
+   	$sToRender .= "\t<table cellspacing=\"0\" cellpadding=\"0\" border=\"0\" width=\"100%\">\n";
     $sToRender .= "\t<tr>\n";
     $sToRender .= "\t\t<td>" . $oPatternTableSqlQuery->render() . "</td>\n";
     $sToRender .= "\t</tr>";
@@ -271,10 +273,10 @@ function renderNonEditableDocumentRouting($oDocument, $sDivName) {
 	    
 	$sToRender .= "\t</table>\n";
 	
-    return renderSectionDiv($sDivName, $sToRender);
+    return $sToRender;
 }
 
-function renderEditableLinkedDocuments($oDocument, $sDivName) {
+function renderEditableLinkedDocuments($oDocument) {
 	global $default;
 	
 	$sQuery = "SELECT D.id AS child_document_id, D.name, DL.id as document_link_id, DL.parent_document_id AS parent_document_id, 'Unlink' AS unlink " .
@@ -292,7 +294,7 @@ function renderEditableLinkedDocuments($oDocument, $sDivName) {
     $oPatternTableSqlQuery->setTableHeading("Linked documents");
     $oPatternTableSqlQuery->setDisplayColumnHeadings(true);    
     
-    $sToRender .= "\t<table border=\"0\" width=\"100%\">\n";    
+    $sToRender .= "\t<table cellspacing=\"0\" cellpadding=\"0\" border=\"0\" width=\"100%\">\n";    
     $sToRender .= "\t<tr>\n";
     $sToRender .= "\t\t<td>" . $oPatternTableSqlQuery->render() . "</td>\n";
     $sToRender .= "\t</tr>";
@@ -300,10 +302,10 @@ function renderEditableLinkedDocuments($oDocument, $sDivName) {
     $sToRender .= "<td><a href=\"$default->rootUrl/control.php?action=addDocumentLink&fDocumentID=" . $oDocument->getID() ."\"><img src=\"$default->graphicsUrl/widgets/add.gif\" border=\"0\"/></a></td>\n";
     $sToRender .= "\t</tr>";     
 	$sToRender .= "\t</table>\n";
-    return renderSectionDiv($sDivName, $sToRender);
+    return $sToRender;
 }
 
-function renderNonEditableLinkedDocuments($oDocument, $sDivName) {
+function renderNonEditableLinkedDocuments($oDocument) {
 	global $default;
 	
 	$sQuery = "SELECT D.id, D.name " .
@@ -321,12 +323,12 @@ function renderNonEditableLinkedDocuments($oDocument, $sDivName) {
     $oPatternTableSqlQuery->setTableHeading("Linked documents");
     $oPatternTableSqlQuery->setDisplayColumnHeadings(true);
     
-    $sToRender .= "\t<table border=\"0\" width=\"100%\">\n";    
+    $sToRender .= "\t<table cellspacing=\"0\" cellpadding=\"0\" border=\"0\" width=\"100%\">\n";    
     $sToRender .= "\t<tr>\n";
     $sToRender .= "\t\t<td>" . $oPatternTableSqlQuery->render() . "</td>\n";
     $sToRender .= "\t</tr>";
 	$sToRender .= "\t</table>\n";
-    return renderSectionDiv($sDivName, $sToRender);    
+    return $sToRender;    
 }
 
 
@@ -371,80 +373,102 @@ function displayActionButtons($oDocument, $bEdit) {
 
 function renderSectionDiv($sDivName, $sHtml) {
 	global $default;
-	
-	if ( $default->browser == "ie" ) {
-		return "<div id=\"$sDivName\" style=\"position:absolute;visibility:hidden;top:280px;left:135px;\">$sHtml</div>";
+	$bNN4 = (($default->browser == "moz") && ($default->version <= "4.79"));
+	if ($bNN4) {	
+		return "<div id=\"$sDivName\" style=\"position:absolute;visibility:hidden;left:135px;\">$sHtml</div>";
 	} else {
-		return "<div id=\"$sDivName\" style=\"position:absolute;visibility:hidden;top:260px;left:133px;\">$sHtml</div>";		
+		return "<div id=\"$sDivName\" style=\"position:absolute;visibility:hidden;left:5px;\">$sHtml</div>";
+	}		
+}
+
+function renderDocumentSection($sSectionName, $sHeadingText, $bDisplayLink, $iDocumentID) {	
+	if ($bDisplayLink) {
+		$sLink = generateControllerLink("viewDocument", "fDocumentID=$iDocumentID&fShowSection=$sSectionName", $sHeadingText);
+	} else {
+		$sLink = "<a href=\"javascript:void();\" onClick=\"switchDiv('$sSectionName', 'document');\">$sHeadingText</a>";
 	}
-}
-
-function renderDocumentSection($sHeading) {
-	return "<tr bgcolor=\"" . getColour($iColour) . "\"><td width=\"100%\">$sHeading</td></tr>\n";
+	return "<tr bgcolor=\"" . getColour($iColour) . "\"><td width=\"100%\">$sLink</td></tr>\n";
 }
 	
-function getPage($oDocument, $bEdit, $sHtml = "") {
+function getPage($oDocument, $bEdit, $sStatusMessage = "") {
     global $default;
-   	
-   	if ($sHtml <> "") {
-	    $sToRender .= renderHeading("Document Detail");
-	    $sToRender .= renderDocumentPath($oDocument, ($sHtml == "")) . "\n\n";
-   		$sToRender .= $sHtml;
-    	$sToRender .= renderDocumentData($oDocument, $bEdit);   		
-   	} else {
-   		
-		if ( $default->browser == "ie" ) {
-			$sToRender = "<div id=\"headings\" style=\"position:absolute;visibility:visible;top:120px;left:134px;\">";		
-		} else {
-			$sToRender = "<div id=\"headings\" style=\"position:absolute;visibility:visible;top:106px;left:134px;\">";
-		}
-	    $sToRender .= renderHeading("Document Detail");
-	    $sToRender .= renderDocumentPath($oDocument, ($sHtml == "")) . "\n\n";
-	
-		$sToRender .= "<table border=\"0\" width=\"530\">";		
-		$sToRender .= renderDocumentSection("<a href=\"javascript:void();\" onClick=\"switchDiv('documentData', 'document');\">Document Data</a>");
-		$sToRender .= renderDocumentSection("<a href=\"javascript:void();\" onClick=\"switchDiv('genericMetaData', 'document');\">Generic Meta Data</a>");
-		$sToRender .= renderDocumentSection("<a href=\"javascript:void();\" onClick=\"switchDiv('typeSpecificMetaData', 'document');\">Type Specific Meta Data</a>");
-		$sToRender .= renderDocumentSection("<a href=\"javascript:void();\" onClick=\"switchDiv('archiveSettings', 'document');\">Archive Settings</a>");
-		$sToRender .= renderDocumentSection("<a href=\"javascript:void();\" onClick=\"switchDiv('documentRouting', 'document');\">Document Routing</a>");
-		$sToRender .= renderDocumentSection("<a href=\"javascript:void();\" onClick=\"switchDiv('linkedDocuments', 'document');\">Linked Documents</a>");
-		$sToRender .= "</table>";		
-	    $sToRender .= "</div>";
-	    
-		$sToRender .= renderSectionDiv("documentData", renderDocumentData($oDocument, $bEdit));	    
-	    $sToRender .= renderDocumentArchiveSettings($oDocument, "archiveSettings", $bEdit);
-	    if ($bEdit) {       
-	    	$sToRender .= renderEditableDocumentRouting($oDocument, "documentRouting");
-	    } else {
-	    	$sToRender .= renderNonEditableDocumentRouting($oDocument, "documentRouting");
-	    }
-	    	
-	    $sToRender .= renderGenericMetaData($oDocument, "genericMetaData", $bEdit);
-	    if ($bEdit) {
-	    	$sToRender .= renderEditableLinkedDocuments($oDocument, "linkedDocuments");
-	    } else {
-	    	$sToRender .= renderNonEditableLinkedDocuments($oDocument, "linkedDocuments", $bEdit);    	
-	    }
-	    $sToRender .= renderTypeSpecificMetaData($oDocument, "typeSpecificMetaData", $bEdit);
-	       
-		if ( $default->browser == "ie" ) {
-	    	$sToRender .= "<div id=\"actionButtons\" style=\"position:absolute;visibility:visible;top:170px;left:665px;\">";
-		} else {
-	    	$sToRender .= "<div id=\"actionButtons\" style=\"position:absolute;visibility:visible;top:155px;left:665px;\">";
-		}
-	    $sToRender .= "<table cellspacing=\"0\" cellpadding=\"0\">\n";
-	    $sToRender .= displayActionButtons($oDocument, $bEdit);
-	    $sToRender .= "</table>\n";
-	    $sToRender .= "</div>";
-   	}
+   	  		
+	$sToRender = "<div id=\"headings\" style=\"position:relative;visibility:visible;top:2px;left:2px;\">";
+    $sToRender .= renderHeading("Document Detail");
+    $sToRender .= renderDocumentPath($oDocument, true) . "\n\n";
+	$sToRender .= "<table cellspacing=\"0\" cellpadding=\"0\" id=\"headingTable\">";
+	$sToRender .= "<tr><td valign=\"top\">";	
+	$sToRender .= "<table border=\"0\" width=\"530\">";
 
+	// if we have a status message, then make the section links refresh to viewDocument with the fShowSection variable
+	// ie. effectively removes statusMessage on next click
+	$bDisplayLink = ($sStatusMessage) ? true : false;
+
+	$sToRender .= renderDocumentSection("documentData", "Document Data", $bDisplayLink, $oDocument->getID());	
+	$sToRender .= renderDocumentSection("genericMetaData", "Generic Meta Data", $bDisplayLink, $oDocument->getID());
+	$sToRender .= renderDocumentSection("typeSpecificMetaData", "Type Specific Meta Data", $bDisplayLink, $oDocument->getID());
+	$sToRender .= renderDocumentSection("archiveSettings", "Archive Settings", $bDisplayLink, $oDocument->getID());
+	$sToRender .= renderDocumentSection("documentRouting", "Document Routing", $bDisplayLink, $oDocument->getID());
+	$sToRender .= renderDocumentSection("linkedDocuments", "Linked Documents", $bDisplayLink, $oDocument->getID());
+	$sToRender .= "</table>";		
+	$sToRender .= "</td><td>";
+    $sToRender .= "<table cellspacing=\"0\" cellpadding=\"0\">\n";
+	$sToRender .= displayActionButtons($oDocument, $bEdit);	    
+    $sToRender .= "</table>\n";
+	$sToRender .= "</td></tr>";
+	$sToRender .= "</table>";
+    $sToRender .= "</div>";
+
+	// ugly netscape hacks
+	$bNN4 = (($default->browser == "moz") && ($default->version <= "4.79"));
+	if (!$bNN4) {
+		$sToRender .= "<div id=\"contentDiv\" style=\"position:relative;visibility:hidden;top:-8px;\">";
+	}
+	$sToRender .= renderSectionDiv("documentData", renderDocumentData($oDocument, $bEdit, $sStatusMessage));
+    $sToRender .= renderSectionDiv("genericMetaData", renderGenericMetaData($oDocument, $bEdit));
+   	$sToRender .= renderSectionDiv("typeSpecificMetaData", renderTypeSpecificMetaData($oDocument, $bEdit));
+    $sToRender .= renderSectionDiv("archiveSettings", renderDocumentArchiveSettings($oDocument, $bEdit));
+    if ($bEdit) {       
+    	$sToRender .= renderSectionDiv("documentRouting", renderEditableDocumentRouting($oDocument));
+    	$sToRender .= renderSectionDiv("linkedDocuments", renderEditableLinkedDocuments($oDocument));
+    } else {
+    	$sToRender .= renderSectionDiv("documentRouting", renderNonEditableDocumentRouting($oDocument));
+    	$sToRender .= renderSectionDiv("linkedDocuments", renderNonEditableLinkedDocuments($oDocument, $bEdit));
+    }
+	if (!$bNN4) {
+		$sToRender .= "</div>";
+	}    
     return $sToRender;	
+}
+function getStatusPage($oDocument, $sStatusMessage) {
+    global $default;
+       
+    $sToRender .= renderHeading("Document Detail");
+    $sToRender .= renderDocumentPath($oDocument, false) . "\n\n";
+    $sToRender .= "<table cellspacing=\"0\" cellpadding=\"0\">";
+
+	// if we have a status message, then make the section links refresh to viewDocument with the fShowSection variable
+	// ie. effectively removes statusMessage on next click
+	$bDisplayLink = ($sStatusMessage) ? true : false;
+
+	$sToRender .= renderDocumentSection("documentData", "Document Data", $bDisplayLink, $oDocument->getID());	
+	$sToRender .= renderDocumentSection("genericMetaData", "Generic Meta Data", $bDisplayLink, $oDocument->getID());
+	$sToRender .= renderDocumentSection("typeSpecificMetaData", "Type Specific Meta Data", $bDisplayLink, $oDocument->getID());
+	$sToRender .= renderDocumentSection("archiveSettings", "Archive Settings", $bDisplayLink, $oDocument->getID());
+	$sToRender .= renderDocumentSection("documentRouting", "Document Routing", $bDisplayLink, $oDocument->getID());
+	$sToRender .= renderDocumentSection("linkedDocuments", "Linked Documents", $bDisplayLink, $oDocument->getID());
+	$sToRender .= "</table>";
+	$sToRender .= renderDocumentData($oDocument, false, $sStatusMessage);	
+	return $sToRender;
 }
 
 function getWebPublishPage($oDocument) {
     global $default;
     
     $oPatternListBox = & new PatternListBox($default->owl_web_sites_table, "web_site_name", "id", "fWebSiteID");
+    
+    $sToRender .= renderHeading("Document Detail");
+    $sToRender .= renderDocumentPath($oDocument, false) . "\n\n";
     
     $sToRender .= "<table>\n";
     $sToRender .= "\t<tr>";    
@@ -476,11 +500,12 @@ function getWebPublishPage($oDocument) {
 	$sToRender .= "return true;\n}\n";
 	$sToRender .= "//-->\n</script>\n\n";
 
-    return getPage($oDocument, false, $sToRender);
+   	$sToRender .= renderDocumentData($oDocument, $bEdit);   
+    	
+    return $sToRender;
 }
 
 function wrapInTable($sHtml) {
     return "\n\t\t\t<table border = 1, width = 100%><tr><td>$sHtml</td></tr></table>\n";
 }
-
 ?>
