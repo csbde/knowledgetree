@@ -39,7 +39,7 @@ class PatternMetaData {
 			} else {
                 $sToRender = "<input type=\"text\" name=\"" . $this->sFormName . "\" ";                
 				if ($this->sValue != null) {
-					$sToRender .= "value=\"" . $this->sValue . "\" ";
+					$sToRender .= "value=\"" . stripslashes($this->sValue) . "\" ";
 				}
 				$sToRender .= " />";
 				return $sToRender;
