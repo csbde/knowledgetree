@@ -35,13 +35,13 @@ class DocumentBrowser {
         // no folder specified, so depending on the users groups, resolve to the right folderID
         if ($folderID == -1) {
             // no folder specified, so start at the root for this users organisation
-
+            
             // TODO: check that all these lookup calls succeed?
             
             // lookup this users groups
             $groupIDs = lookupGroupIDs($_SESSION["userID"]);
             $default->log->debug("DocumentBrowser::browseByFolder: groupIDs=" . arrayToString($groupIDs));
-            
+            /*
             // look up this users unit
             // FIXME: what if the user belongs to multiple units?
             $unitID = lookupField($default->owl_groups_units_table, "unit_id", "group_id", $groupIDs[0]);
@@ -60,10 +60,11 @@ class DocumentBrowser {
             // lookup the id of the root folder
             $folderID = lookupID($default->owl_folders_table, "name", $rootFolderName);
             $default->log->debug("DocumentBrowser::browseByFolder: root folderID=$folderID, root folder name=$rootFolderName");
-            
+            */
             // if this is a system administrator, start her at the root folder
             // TODO: add to default->sysadmin_group
             if ($this->checkGroup("System Administrators", $groupIDs)) {
+                $folderID = lookupID($default->owl_folders_table, "parent_id", 0);
                //$folderQuery = "SELECT * FROM $default->owl_folders_table WHERE name='$rootFolderName'";
                //$results["folders"][] = & Folder::get($folderID);
                $default->log->info("DocumentBrowser::browseByFolder looked up org root folderID=$folderID; org root foldername=$rootFolderName");
@@ -75,7 +76,7 @@ class DocumentBrowser {
 
                $default->log->debug("DocumentBrowser::browseByFolder: unitName=$unitName");
                
-               $unitRootFolderName = $unitName . " Document Root";
+               $unitRootFolderName = $unitName;// . " Root Folder";
                
                // lookup descendant folders with the appropriate unit set
                //$folderQuery = "SELECT  from $default->owl_folders_table " . 
@@ -93,7 +94,7 @@ class DocumentBrowser {
         $default->log->debug("DocumentBrowser::browseByFolder: folderID=$folderID");
         
         // check if the user has access to this folder
-        if (Permission::userHasFolderReadPermission($folderID)) {
+        //if (Permission::userHasFolderReadPermission($folderID)) {
             // get the folder
             $results["folders"][] = & Folder::get($folderID);
             $default->log->debug("DocumentBrowser::browseByFolder: results=" . arrayToString($results));
@@ -129,12 +130,12 @@ class DocumentBrowser {
             }
             
             return $results;
-            
+        /*    
         } else {
             // permission to view this folder denied
             $_SESSION["errorMessage"] = "you do not have permission to view this folder (" . $_SESSION["errorMessage"] . ")";
             return false;
-        }
+        }*/
     }
 
     /**
