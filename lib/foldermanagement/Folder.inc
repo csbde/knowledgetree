@@ -53,103 +53,7 @@ class Folder {
 		$this->bIsPublic = $bNewIsPublic;
 	}
 	
-	/**
-	* Create the current folder in the database
-	*
-	* @return boolean true and set $this->iId with new primary key, false otherwise and set $_SESSION["errorMessage"]
-	*/
-	function create() {
-		global $default, $lang_err_database; $lang_err_object_exists;
-		//if the object has not already been stored		
-		if ($this->iId < 0) {
-			$sql = new Owl_DB();
-			$result = $sql->query("INSERT INTO " . $default->owl_folders_table . " (name, description, parent_id, creator_id, document_type_id, unit_id, is_public) " .
-						"VALUES ('" . addslashes($this->sName) . "', '" . addslashes($this->sDescription) . "', $this->iParentID, $this->iCreatorID, $this->iDocumentTypeID, $this->iUnitID, " . ($this->bIsPublic ? 1 : 0) . ")");
-			if ($result) {
-				$this->iId = $sql->insert_id();
-				return true;
-			}
-			$_SESSION["errorMessage"] = $lang_err_database;
-			return false;
-		}
-		$_SESSION["errorMessage"] = $lang_err_object_exists . "id = " . $this->iId . " table = folders";
-		return false;
-	}
-	
-	/**
-	* Update the current folder values in the database
-	*
-	* @return boolean true on successful update, false otherwise and set $_SESSION["errorMessage"]
-	*/
-	function update() {
-		global $default, $lang_err_database, $lang_err_object_key;
-		//can only update the object if it has already been stored
-		if ($this->iId >= 0) {
-			$sql = new Owl_DB();
-			$result = $sql->query("UPDATE " . $default->owl_folders_table . " SET " .
-							"name = '" . addslashes($this->sName) . "', " .
-							"description = '" . addslashes($this->sDescription) . "', " .
-							"parent_id = $this->iParentID, " .
-							"creator_id = $this->iCreatorID, " .
-							"document_type_id = $this->iDocumentTypeID, " .
-							"unit_id = $this->iUnitID, " . 
-							"is_public = " . ($this->bIsPublic ? 1 : 0) . " " .
-						"WHERE id = " . $this->iId);
-			if ($result) {
-				return true;
-			}
-			$_SESSION["errorMessage"] = $lang_err_database;
-			return false;			
-		}
-		$_SESSION["errorMessage"] = $lang_err_object_key;		
-	}
-	
-	
-	/**
-	* Delete the current object from the database
-	*
-	* @return boolean true and reset id to -1 on successful delete, false otherwise and set $_SESSION["errorMessage"]
-	*/
-	function delete() {
-		global $default, $lang_err_database, $lang_err_object_key;
-		if ($this->iId >= 0) {
-			$sql = new Owl_DB();
-			$result = $sql->query("DELETE FROM " . $default->owl_folders_table . " WHERE id = " . $this->iId);
-			if ($result) {
-				$this->iId = -1;
-				return true;
-			}
-			$_SESSION["errorMessage"] = $lang_err_database;
-			return false;
-		}
-		$_SESSION["errorMessage"] = $lang_err_object_key;
-		return false;
-		
-	}
-	
-	/**
-	* Static function.  Given a folder primary key will create
-	* a folder object and populate it with the corresponding
-	* database values
-	*
-	* @param $iFolderID		Primary key of folder to get
-	*
-	* @return Folder folder object on successful retrieval, false otherwise and set $_SESSION["errorMessage"]
-	*/
-	function get($iFolderID) {
-		global $default,  $lang_err_object_not_exist;
-		$sql = new Owl_DB();
-		$sql->query("SELECT * FROM " . $default->owl_folders_table . " WHERE id = " . $iFolderID);
-		if ($sql->next_record()) {
-			$oFolder = & new Folder(stripslashes($sql->f("name")), stripslashes($sql->f("description")), $sql->f("parent_id"), $sql->f("creator_id"), $sql->f("document_type_id"), $sql->f("unit_id"), $sql->f("is_public"));
-			return $oFolder;
-		} 
- 		$_SESSION["errorMessage"] = $lang_err_object_not_exist . "id = " . $iFolderID . " table = folders";
-		return false;
-	}
-
-	
-	/**
+		/**
 	* Get the primary key of the current folder object
 	*
 	* @return integer primary key of folder
@@ -274,6 +178,216 @@ class Folder {
 	*/
 	function setIsPublic($bNewValue) {
 		$this->bIsPublic = $bNewValue;
+	}
+	
+	/**
+	* Create the current folder in the database
+	*
+	* @return boolean true and set $this->iId with new primary key, false otherwise and set $_SESSION["errorMessage"]
+	*/
+	function create() {
+		global $default, $lang_err_database; $lang_err_object_exists;
+		//if the object has not already been stored		
+		if ($this->iId < 0) {
+			$sql = new Owl_DB();
+			$result = $sql->query("INSERT INTO " . $default->owl_folders_table . " (name, description, parent_id, creator_id, document_type_id, unit_id, is_public) " .
+						"VALUES ('" . addslashes($this->sName) . "', '" . addslashes($this->sDescription) . "', $this->iParentID, $this->iCreatorID, $this->iDocumentTypeID, $this->iUnitID, " . ($this->bIsPublic ? 1 : 0) . ")");
+			if ($result) {
+				$this->iId = $sql->insert_id();
+				return true;
+			}
+			$_SESSION["errorMessage"] = $lang_err_database;
+			return false;
+		}
+		$_SESSION["errorMessage"] = $lang_err_object_exists . "id = " . $this->iId . " table = folders";
+		return false;
+	}
+	
+	/**
+	* Update the current folder values in the database
+	*
+	* @return boolean true on successful update, false otherwise and set $_SESSION["errorMessage"]
+	*/
+	function update() {
+		global $default, $lang_err_database, $lang_err_object_key;
+		//can only update the object if it has already been stored
+		if ($this->iId >= 0) {
+			$sql = new Owl_DB();
+			$result = $sql->query("UPDATE " . $default->owl_folders_table . " SET " .
+							"name = '" . addslashes($this->sName) . "', " .
+							"description = '" . addslashes($this->sDescription) . "', " .
+							"parent_id = $this->iParentID, " .
+							"creator_id = $this->iCreatorID, " .
+							"document_type_id = $this->iDocumentTypeID, " .
+							"unit_id = $this->iUnitID, " . 
+							"is_public = " . ($this->bIsPublic ? 1 : 0) . " " .
+						"WHERE id = " . $this->iId);
+			if ($result) {
+				return true;
+			}
+			$_SESSION["errorMessage"] = $lang_err_database;
+			return false;			
+		}
+		$_SESSION["errorMessage"] = $lang_err_object_key;		
+	}
+	
+	
+	/**
+	* Delete the current object from the database
+	*
+	* @return boolean true and reset id to -1 on successful delete, false otherwise and set $_SESSION["errorMessage"]
+	*/
+	function delete() {
+		global $default, $lang_err_database, $lang_err_object_key;
+		if ($this->iId >= 0) {
+			$sql = new Owl_DB();
+			$result = $sql->query("DELETE FROM " . $default->owl_folders_table . " WHERE id = " . $this->iId);
+			if ($result) {
+				$this->iId = -1;
+				return true;
+			}
+			$_SESSION["errorMessage"] = $lang_err_database;
+			return false;
+		}
+		$_SESSION["errorMessage"] = $lang_err_object_key;
+		return false;
+		
+	}
+	
+	/**
+	* Static function.  
+	* Given a folder primary key will create
+	* a folder object and populate it with the corresponding
+	* database values
+	*
+	* @param $iFolderID		Primary key of folder to get
+	*
+	* @return Folder folder object on successful retrieval, false otherwise and set $_SESSION["errorMessage"]
+	*/
+	function get($iFolderID) {
+		global $default,  $lang_err_object_not_exist;
+		$sql = new Owl_DB();
+		$sql->query("SELECT * FROM " . $default->owl_folders_table . " WHERE id = " . $iFolderID);
+		if ($sql->next_record()) {
+			$oFolder = & new Folder(stripslashes($sql->f("name")), stripslashes($sql->f("description")), $sql->f("parent_id"), $sql->f("creator_id"), $sql->f("document_type_id"), $sql->f("unit_id"), $sql->f("is_public"));
+			return $oFolder;
+		} 
+ 		$_SESSION["errorMessage"] = $lang_err_object_not_exist . "id = " . $iFolderID . " table = folders";
+		return false;
+	}
+	
+	/**
+	* Static function.
+	* Get the full path for a folder
+	* 
+	* @param 	Primary key of folder to generate path for	
+	*
+	* @return String full path of folder
+	*/
+	function getFolderPath($iFolderID) {
+		global $default;		
+		//if the folder has a parent
+		if (Folder::getParentFolderID($iFolderID) != 0) {			
+			$sCurrentPath = Folder::getFolderPath(Folder::getParentFolderID($iFolderID), Folder::getFolderName($iFolderID)) . "/" . $sCurremtPath;
+		}
+		return $default->owl_FileDir . "/" . Folder::getFolderName($iFolderID);
+		
+	}
+	
+	/**
+	* Static function
+	* Get the primary key of the parent folder
+	*
+	* @param $iFolderID		Primary key of folder to get parent for
+	*
+	* @return integer primary key of parent folder
+	*/
+	function getParentFolderID($iFolderID) {
+		global $default;
+		$sql = new Owl_DB();
+		$sql->query("SELECT parent_id FROM " . $default->owl_folders_table . " WHERE id = " . $iFolderID);
+		$sql->next_record();
+		return $sql->f("parent_id");
+	}
+	
+	/**
+	* Static function
+	* Get the document type for a folder
+	*
+	* @param $iFolderID
+	*
+	* @return integer document type primary key, false otherwise and set $_SESSION["errorMessage"]
+	*/
+	function getFolderDocumentType($iFolderID) {
+		global $default, $lang_err_database;
+		if (Folder::folderExistsID($iFolderID)) {
+			$sql = new Owl_DB();
+			$sql->query("SELECT document_type_id FROM " . $default->owl_folders_table . " WHERE id = " . $iFolderID);
+			if ($sql->next_record()) {
+				return $sql->f("document_type_id");
+			}
+			$_SESSION["errorMessage"] = $lang_err_database;
+			
+		}
+		//error message set by Folder::folderExists
+		return false;
+	}
+	
+	/**
+	* Static function
+	* Checks if a given folder already exists using the folder name
+	*
+	* @param $sName			Name of folder
+	* @param $iParentID		Primary key of parent folder
+	*
+	* @return	true if the folder exists, false otherwise and set $_SESSION["errorMessage"]
+	*/
+	function folderExistsName($sName, $iParentID) {
+		$sName = addslashes($sName);
+		global $default, $lang_err_folder_exist;
+		$sql = new Owl_DB();
+		$sql->query("SELECT * FROM " . $default->owl_folders_table . " WHERE name = '" . $sName . "' AND parent_id = " . $iParentID);
+		if ($sql->next_record()) {
+			return true;
+		}
+		$_SESSION["errorMessage"] = $lang_err_folder_exist . $sName . " parent_id " . $iParentID;
+		return false;
+	}
+	
+	/**
+	* Checks if a given folder already exists using the folder name
+	*
+	* @param $iFolderID			Primary key of folder
+	*
+	* @return	true if the folder exists, false otherwise and set $_SESSION["errorMessage"]
+	*/
+	function folderExistsID($iFolderID) {
+		global $default, $lang_err_folder_exist;
+		$sql = new Owl_DB();
+		$sql->query("SELECT * FROM " . $default->owl_folders_table . " WHERE id = " . $iFolderID);
+		if ($sql->next_record()) {
+			return true;
+		}
+		$_SESSION["errorMessage"] =$lang_err_folder_exist . "id " . $iFolderID;
+		return false;
+	}
+	
+	/**
+	* Get the folder name using the primary key
+	*
+	* @param $iFolderID		Primary key of folder to get name for
+	*
+	* @return String name on success, false otherwise and set $_SESSION["errorMessage"]
+	*/
+	function getFolderName($iFolderID) {
+		global $default, $lang_err_database;
+		$sql = new Owl_DB();
+		$sql->query("SELECT name FROM " . $default->owl_folders_table . " WHERE id = " . $iFolderID);
+		if ($sql->next_record()) {
+			return stripslashes($sql->f("name"));
+		}
+		$_SESSION["errorMessage"] = $lang_err_database;
+		return false;
 	}
 	
 }
