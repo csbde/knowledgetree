@@ -40,7 +40,7 @@ function getDeletePage($iLinkID) {
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "</tr>\n";
-	$sToRender .= "<td>" . getDeleteButton($oLink)	. "</td>\n";
+	$sToRender .= "<tr>" . getDeleteButton($oLink)	. "</tr>\n";
 	$sToRender .= "</table>\n";
 	
 	
@@ -131,8 +131,8 @@ function getDeleteButton($oLink) {
 	if (!isset($oLink)) {
 		return "Please select a Link: ";
 	} else {
-		return "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/delete.gif\" value=\"submit\" /></td>\n".
-		"<td align = right><a href=\"$default->rootUrl/control.php?action=removeLink\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" /></a></td>\n";
+		return "<td colspan=\"2\"><input type=\"image\" src =\"$default->graphicsUrl/widgets/delete.gif\" value=\"submit\" />\n".
+		"<a href=\"$default->rootUrl/control.php?action=removeLink\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" /></a></td>\n";
 	}
 }
 ?>
