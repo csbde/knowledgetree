@@ -253,7 +253,7 @@ function renderPage($aPendingDocumentList, $aCheckedOutDocumentList, $aSubscript
     // some arb welcoming text goes here
     $oUser = & User::get($_SESSION["userID"]);
     $sUserName = $oUser->getName();
-    $sToRender .= "\t\t<td>Hi" . (strlen($sUserName) > 0 ? " " . $sUserName : "") . ", welcome back to the " . lookupField($default->owl_organisations_table, "name", "id", $default->organisationID) . " DMS, part of the Knowledge Tree.</td>\n";
+    $sToRender .= "\t\t<td>Hi" . (strlen($sUserName) > 0 ? " " . $sUserName : "") . ", welcome back to the " . lookupField($default->organisations_table, "name", "id", $default->organisationID) . " DMS, part of the Knowledge Tree.</td>\n";
         
     // dashboard news
     $sToRender .= "\t\t<td>\n";

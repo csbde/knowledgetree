@@ -16,7 +16,7 @@ echo $headingBar;
 
 //Query the database for the helpURL based on the current action
 $sQuery = "SELECT HLP.help_info as helpinfo ".
-		"FROM $default->owl_help_table AS HLP WHERE '$fAction' = HLP.fSection";
+		"FROM $default->help_table AS HLP WHERE '$fAction' = HLP.fSection";
 		
 $sql = $default->db;
 $sql->query($sQuery);
