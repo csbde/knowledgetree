@@ -259,14 +259,13 @@ function renderAddArchiveSettingsPage($iArchivingTypeID, $sErrorMessage = "") {
 function renderArchiveConfirmationPage($iDocumentID, $sErrorMessage = "") {
 	global $default;
 		
-	$sToRender .= renderHeading("Archive Document");
+	$sToRender = renderHeading("Archive Document");
 	if (strlen($sErrorMessage) > 0) {
 		$sToRender .= renderErrorMessage($sErrorMessage);
-	}
-	
+	}	
     $sToRender .= "<table>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>You have chosen to archive the document entitled </td></tr><tr><td>'" . Document::getDocumentName($iDocumentID) . "'.</td>\n";
+	$sToRender .= "<td>You have chosen to archive the document entitled '" . Document::getDocumentName($iDocumentID) . "'.</td>\n";
 	$sToRender .= "<tr>\n<tr>\n";
 	$sToRender .= "<td>Select 'Archive' to confirm, or 'Cancel' to cancel.</td>\n";
 	$sToRender .= "<tr>\n";
