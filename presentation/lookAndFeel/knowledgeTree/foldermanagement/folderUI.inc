@@ -66,7 +66,7 @@ function renderFolderPath($iFolderID, $sLinkURL) {
 	$sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
 	$sTDBGColour = $default->siteMap->getSectionColour($sSectionName, "td");	
     $sFolderPath = displayFolderPathLink(Folder::getFolderPathAsArray($iFolderID), Folder::getFolderPathNamesAsArray($iFolderID), $sLinkURL);	
-    return "<table border=0 cellpadding=\"5\" width = 100%><tr><td bgcolor=\"$sTDBGColour\">$sFolderPath</td></tr></table>\n";
+    return "<table border=\"0\" cellpadding=\"5\" width=\"600\"><tr><td bgcolor=\"$sTDBGColour\">$sFolderPath</td></tr></table>\n";
 }
 
 /**
