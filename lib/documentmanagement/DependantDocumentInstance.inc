@@ -21,7 +21,9 @@ class DependantDocumentInstance {
 	/** document title name */	
 	var $sDocumentTitle;
 	/** primary key of document to use as template */
-	var $iTemplateDocumentID;	
+	var $iTemplateDocumentID;
+	/** parent document to which this document will be linked */
+	var $iParentDocumentID;	
 
 	/**
 	* Default constructor
@@ -30,14 +32,14 @@ class DependantDocumentInstance {
 	* @param 	Document field data type
 	*
 	*/
-	function DependantDocumentInstance($sNewDocumentTitle, $iNewUserID, $iNewTemplateDocumentID) {
+	function DependantDocumentInstance($sNewDocumentTitle, $iNewUserID, $iNewTemplateDocumentID, $iNewParentDocumentID) {
 		//object not created yet
 		global $default;
-		$this->iID = -1;
+		$this->iId = -1;
+		$this->sDocumentTitle = $sNewDocumentTitle;
 		$this->iUserID = $iNewUserID;
 		$this->iTemplateDocumentID = $iNewTemplateDocumentID;
-		
-
+		$this->iParentDocumentID = $iNewParentDocumentID;
 	}
 
 	/**
@@ -108,7 +110,7 @@ class DependantDocumentInstance {
 		//if the object hasn't been created
 		if ($this -> iId < 0) {
 			$sql = $default -> db;
-			$result = $sql -> query("INSERT INTO $default->owl_dependant_document_instance_table (document_title, user_id,template_document_id) VALUES ('" . addslashes($this->sDocumentTitle) . "', $this->iUserID, $this->iTemplateDocumentID)");
+			$result = $sql -> query("INSERT INTO $default->owl_dependant_document_instance_table (document_title, user_id,template_document_id, parent_document_id) VALUES ('" . addslashes($this->sDocumentTitle) . "', $this->iUserID, " . (isset($this->iTemplateDocumentID) ? "$this->iTemplateDocumentID" : "NULL") . ", " . $this->iParentDocumentID + ")");
 			if ($result) {
 				$this -> iId = $sql -> insert_id();
 				return true;
@@ -131,7 +133,7 @@ class DependantDocumentInstance {
 		//only update if the object has been stored
 		if ($this -> iId > 0) {
 			$sql = $default -> db;
-			$result = $sql -> query("UPDATE $default -> owl_dependant_documents SET document_title = '".addslashes($this -> sDocumentTitle)."', user_id = $this->iUserID, template_document_id = $this->iTemplateDocumentID WHERE id = $this->iId");
+			$result = $sql -> query("UPDATE $default -> owl_dependant_documents SET document_title = '".addslashes($this -> sDocumentTitle)."', user_id = $this->iUserID, template_document_id = $this->iTemplateDocumentID, parent_document_id = $this->iParentDocumentID WHERE id = $this->iId");
 			if ($result) {
 				return true;
 			}
@@ -178,7 +180,7 @@ class DependantDocumentInstance {
 		$result = $sql -> query("SELECT * FROM $default->owl_dependant_document_instance_table WHERE id = $iDependantDocumentID");
 		if ($result) {
 			if ($sql -> next_record()) {
-				$oDependantDocument = & new DependantDocument(stripslashes($sql -> f("document_title")), $sql -> f("user_id"), $sql -> f("template_document_id"));
+				$oDependantDocument = & new DependantDocument(stripslashes($sql -> f("document_title")), $sql -> f("user_id"), $sql -> f("template_document_id"), $sql->f("parent_document_id"));
 				$oDependantDocument -> iId = $sql -> f("id");
 				return $oDependantDocument;
 			}
