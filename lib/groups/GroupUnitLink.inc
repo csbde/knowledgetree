@@ -115,7 +115,7 @@ class GroupUnitLink {
             $sTable = $default->groups_units_table;
             $aFieldValues = array(
                 'group_id' => $this->iGroupID,
-                'unit_id' => this->iUnitID,
+                'unit_id' => $this->iUnitID,
             );
             $id =& DBUtil::autoInsert($sTable, $aFieldValues);
 
