@@ -21,9 +21,8 @@ class PhysicalFolderManagement {
 	* @param 	Folder mode
 	*
 	*/
-	function createFolder($sPath, $iMode) {
-		
-		
+	function createFolder($sPath) {
+		return mkdir($sPath, 0700);
 	}
 	
 	/**
