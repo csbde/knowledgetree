@@ -3,7 +3,9 @@ require_once("../../../../config/dmsDefaults.php");
 
 function renderHeading() {
     global $default;
-    $sColor = $default->siteMap->getSectionColour("Administration", "td");
+    
+    $sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
+    $sColor = $default->siteMap->getSectionColour($sSectionName, "th");
     $sToRender .= "<tr align=\"left\"><th class=\"sectionHeading\" bgcolor=\"$sColor\">Administration</th></tr>\n";
     $sToRender .= "<tr/>\n";
     $sToRender .= "<tr/>\n";
