@@ -37,8 +37,9 @@ if (checkSession()) {
             if (isset($fStore)) {
                 // check that a document type has been selected
                 if ($fDocumentTypeID) {
-                //make sure the user actually selected a file first
-                    if (strlen($_FILES['fFile']['name']) > 0) {
+                // make sure the user actually selected a file first
+                // and that something was uploaded
+                    if ( (strlen($_FILES['fFile']['name']) > 0) && $_FILES['fFile']['size'] > 0) {
                         //if the user selected a file to upload
                         //create the document in the database
                         $oDocument = & PhysicalDocumentManager::createDocumentFromUploadedFile($_FILES['fFile'], $fFolderID);
@@ -126,7 +127,7 @@ if (checkSession()) {
                                 $default->log->error("addDocumentBL.php DB error storing document in folder " . Folder::getFolderPath($fFolderID) . " id=$fFolderID");                            	
                                 require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
                                 $oPatternCustom = & new PatternCustom();
-                                $oPatternCustom->setHtml(getStatusPage($fFolderID, "An error occured while storing the document in the database, please try again.</td><td><a href=\"$default->rootUrl/control.php?action=browse&fFolderID=$fFolderID\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></a>"));                                
+                                $oPatternCustom->setHtml(getStatusPage($fFolderID, "An error occured while storing the document in the database, please try again.</td><td><a href=\"$default->rootUrl/control.php?action=addDocument&fFolderID=$fFolderID&fDocumentTypeID=$fDocumentTypeID\"><img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\"></a>"));                                
                                 $main->setCentralPayload($oPatternCustom);
                                 $main->render();
                             }
@@ -135,7 +136,7 @@ if (checkSession()) {
                             $default->log->error("addDocumentBL.php Document exists with name " . $oDocument->getFileName() . " in folder " . Folder::getFolderPath($fFolderID) . " id=$fFolderID");                        	
                             require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
                             $oPatternCustom = & new PatternCustom();
-							$oPatternCustom->setHtml(getStatusPage($fFolderID, "A document with this file name already exists in this folder</td><td><a href=\"$default->rootUrl/control.php?action=browse&fFolderID=$fFolderID\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></a>"));                            
+							$oPatternCustom->setHtml(getStatusPage($fFolderID, "A document with this file name already exists in this folder</td><td><a href=\"$default->rootUrl/control.php?action=addDocument&fFolderID=$fFolderID&fDocumentTypeID=$fDocumentTypeID\"><img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\"></a>"));                            
                             $main->setCentralPayload($oPatternCustom);
                             $main->render();
                         }
@@ -143,7 +144,7 @@ if (checkSession()) {
                     	// no uploaded file
                         require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
                         $oPatternCustom = & new PatternCustom();
-						$oPatternCustom->setHtml(getStatusPage($fFolderID, "You did not select a valid document to upload</td><td><a href=\"$default->rootUrl/control.php?action=browse&fFolderID=$fFolderID\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></a>"));                        
+						$oPatternCustom->setHtml(getStatusPage($fFolderID, "You did not select a valid document to upload</td><td><a href=\"$default->rootUrl/control.php?action=addDocument&fFolderID=$fFolderID&fDocumentTypeID=$fDocumentTypeID\"><img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\"></a>"));                        
                         $main->setCentralPayload($oPatternCustom);
                         $main->render();
                     }
