@@ -36,9 +36,10 @@ if (checkSession()) {
 				} else {
 					$oDependantDocumentTemplate = DependantDocumentTemplate::get($fDependantDocumentTemplateID);
 					$oUser = User::get($oDependantDocumentTemplate->getDefaultUserId());
+					$oTemplateDocument = Document::get($oDependantDocumentTemplate->getTemplateDocumentID());
 				
 					$oPatternCustom = & new PatternCustom();				
-					$oPatternCustom->setHtml(getPage($fFolderID, $fFolderCollaborationID, $oDependantDocumentTemplate->getDocumentTitle(), $oUser->getName(), Document::getName($oDependantDocumentTemplate->getTemplateDocumentID())));
+					$oPatternCustom->setHtml(getPage($fFolderID, $fFolderCollaborationID, $oDependantDocumentTemplate->getDocumentTitle(), $oUser->getName(), (!($oTemplateDocument->getName() === false)) ? $oTemplateDocument->getName() : ""));
 	    			$main->setCentralPayload($oPatternCustom);
 	    	    	$main->setFormAction($_SERVER["PHP_SELF"] . "?fFolderID=$fFolderID&fFolderCollaborationID=$fFolderCollaborationID&fDependantDocumentTemplateID=$fDependantDocumentTemplateID&fForDelete=1");
 	    	    	$main->setErrorMessage("An error occured while attempting to delete the dependant document");	    	        		
@@ -50,9 +51,10 @@ if (checkSession()) {
 				
 				$oDependantDocumentTemplate = DependantDocumentTemplate::get($fDependantDocumentTemplateID);
 				$oUser = User::get($oDependantDocumentTemplate->getDefaultUserId());
+				$oTemplateDocument = Document::get($oDependantDocumentTemplate->getTemplateDocumentID());
 				
 				$oPatternCustom = & new PatternCustom();				
-				$oPatternCustom->setHtml(getPage($fFolderID, $fFolderCollaborationID, $oDependantDocumentTemplate->getDocumentTitle(), $oUser->getName(), Document::getName($oDependantDocumentTemplate->getTemplateDocumentID())));
+				$oPatternCustom->setHtml(getPage($fFolderID, $fFolderCollaborationID, $oDependantDocumentTemplate->getDocumentTitle(), $oUser->getName(), (!($oTemplateDocument->getName() === false)) ? $oTemplateDocument->getName() : ""));
 	    		$main->setCentralPayload($oPatternCustom);
 	    	    $main->setFormAction($_SERVER["PHP_SELF"] . "?fFolderID=$fFolderID&fFolderCollaborationID=$fFolderCollaborationID&fDependantDocumentTemplateID=$fDependantDocumentTemplateID&fForDelete=1");	    	        		
 	    		$main->render();	
