@@ -315,18 +315,15 @@ class DocumentField {
 	}
 	
 	function getLookupCount($iDocumentFieldID){
-		global $default, $lang_err_database;
+		global $default;
 			
 		$sql = $default->db;
-		$result = $sql->query("SELECT * FROM " . $default->owl_metadata_table . " WHERE document_field_id = " . $iDocumentFieldID);
+		$result = $sql->query("SELECT COUNT(*) AS count FROM " . $default->owl_metadata_table . " WHERE document_field_id = " . $iDocumentFieldID);
 		if ($result) {			
-			$iCount = 0;
-			while ($sql->next_record()) {		
-				$iCount++;
+			if ($sql->next_record()) {		
+				return $sql->f("count");
 			}
-			return $iCount;
 		}
-		$_SESSION["errorMessage"] = $lang_err_database;
 		return false;
 	}
 }
