@@ -84,7 +84,7 @@ $westLoad = "<table cellspacing=\"0\" cellpadding=\"2\" border=\"0\" width=\"100
             "\t<tr valign=\"top\"><td>$westRender</td></tr>\n" .
             "</table>" .
             (isset($default->contactAdminPosition) ? "<div style=\"position:absolute;top:" . $default->contactAdminPosition . "px;left:8px\">" : "") . 
-            "<table cellspacing=\"0\" cellpadding=\"2\" border=\"0\" width=\"100%\">\n" .            
+            "<table cellspacing=\"0\" cellpadding=\"2\" border=\"0\">\n" .            
             "\t<tr valign=\"bottom\"><td align=left><a href=\"mailto:$default->emailAdmin\"><img src=\"$cAdmin\"/ border=\"0\"></a></td></tr>\n" .
             "\t<tr valign=\"top\"><td align=left><a href=\"mailto:$sUnitAdminEmail\"><img src=\"$uAdmin\"/ border=\"0\"></a></td></tr>\n" .
             "</table>" .
