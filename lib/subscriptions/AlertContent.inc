@@ -35,27 +35,27 @@ class AlertContent {
         $aAlertContent = array(SubscriptionConstants::subscriptionAlertType("AddFolder") =>
                                "A new folder '" . $aValues["newFolderName"] . "' has been added to folder '" . $aValues["parentFolderName"] . "'.<br>" .
                                "Please clear this subscription alert by clicking on the following link: " .
-                               "<a href=\"http://" . $_SERVER["SERVER_NAME"] . "/presentation/lookAndFeel/knowledgeTree/subscriptions/viewAlertBL.php?fSubscriptionID=" . $aValues["subscriptionID"] . "&fSubscriptionType=" . $aValues["subscriptionType"] . "\">" . $aValues["parentFolderName"] . "</a>",
+                               "<a href=\"https://" . $_SERVER["SERVER_NAME"] . "/presentation/lookAndFeel/knowledgeTree/subscriptions/viewAlertBL.php?fSubscriptionID=" . $aValues["subscriptionID"] . "&fSubscriptionType=" . $aValues["subscriptionType"] . "\">" . $aValues["parentFolderName"] . "</a>",
 
                                SubscriptionConstants::subscriptionAlertType("RemoveFolder") =>
                                        "The folder '" . $aValues["removedFolderName"] . "' has been removed from folder '" . $aValues["parentFolderName"] . "'.<br>" .
                                        "Please clear this subscription alert by clicking on the following link: " .
-                                       "<a href=\"http://" . $_SERVER["SERVER_NAME"] . "/presentation/lookAndFeel/knowledgeTree/subscriptions/viewAlertBL.php?fSubscriptionID=" . $aValues["subscriptionID"] . "&fSubscriptionType=" . $aValues["subscriptionType"] . "\">" . $aValues["parentFolderName"] . "</a>",
+                                       "<a href=\"https://" . $_SERVER["SERVER_NAME"] . "/presentation/lookAndFeel/knowledgeTree/subscriptions/viewAlertBL.php?fSubscriptionID=" . $aValues["subscriptionID"] . "&fSubscriptionType=" . $aValues["subscriptionType"] . "\">" . $aValues["parentFolderName"] . "</a>",
 
                                SubscriptionConstants::subscriptionAlertType("AddDocument") =>
                                        "A new document '" . $aValues["newDocumentName"] . "' has been added to folder '" . $aValues["folderName"] . "'.<br>" .
                                        "Please clear this subscription alert by clicking on the following link: " .
-                                       "<a href=\"http://" . $_SERVER["SERVER_NAME"] . "/presentation/lookAndFeel/knowledgeTree/subscriptions/viewAlertBL.php?fSubscriptionID=" . $aValues["subscriptionID"] . "&fSubscriptionType=" . $aValues["subscriptionType"] . "\">" . $aValues["newDocumentName"] . "</a>",
+                                       "<a href=\"https://" . $_SERVER["SERVER_NAME"] . "/presentation/lookAndFeel/knowledgeTree/subscriptions/viewAlertBL.php?fSubscriptionID=" . $aValues["subscriptionID"] . "&fSubscriptionType=" . $aValues["subscriptionType"] . "\">" . $aValues["newDocumentName"] . "</a>",
 
                                SubscriptionConstants::subscriptionAlertType("RemoveDocument") =>
                                        "The document '" . $aValues["removedDocumentName"] . "' has been removed from folder '" . $aValues["folderName"] . "'.<br>" .
                                        "Please clear this subscription alert by clicking on the following link: " .
-                                       "<a href=\"http://" . $_SERVER["SERVER_NAME"] . "/presentation/lookAndFeel/knowledgeTree/subscriptions/viewAlertBL.php?fSubscriptionID=" . $aValues["subscriptionID"] . "&fSubscriptionType=" . $aValues["subscriptionType"] . "\">" . $aValues["folderName"] . "</a>",
+                                       "<a href=\"https://" . $_SERVER["SERVER_NAME"] . "/presentation/lookAndFeel/knowledgeTree/subscriptions/viewAlertBL.php?fSubscriptionID=" . $aValues["subscriptionID"] . "&fSubscriptionType=" . $aValues["subscriptionType"] . "\">" . $aValues["folderName"] . "</a>",
 
                                SubscriptionConstants::subscriptionAlertType("ModifyDocument") =>
                                        "The document '" . $aValues["modifiedDocumentName"] . "' has been modified.<br>" .
                                        "Please clear this subscription alert by clicking on the following link: " .
-                                       "<a href=\"http://" . $_SERVER["SERVER_NAME"] . "/presentation/lookAndFeel/knowledgeTree/subscriptions/viewAlertBL.php?fSubscriptionID=" . $aValues["subscriptionID"] . "&fSubscriptionType=" . $aValues["subscriptionType"] . "\">" . $aValues["modifiedDocumentName"] . "</a>");
+                                       "<a href=\"https://" . $_SERVER["SERVER_NAME"] . "/presentation/lookAndFeel/knowledgeTree/subscriptions/viewAlertBL.php?fSubscriptionID=" . $aValues["subscriptionID"] . "&fSubscriptionType=" . $aValues["subscriptionType"] . "\">" . $aValues["modifiedDocumentName"] . "</a>");
 
         return array ("subject" => $aAlertSubject[$iSubscriptionAlertType],
                       "text" => "Hello " . $aValues["subscriberName"] . "<br><br>" . $aAlertContent[$iSubscriptionAlertType]);
