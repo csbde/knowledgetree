@@ -4,17 +4,17 @@
  *
  * This class is used for session management.
  *
- * @author owl sourceforge team
+ * @author <a href="mailto:michael@jamwarehouse.com">Michael Joseph</a>, Jam Warehouse (Pty) Ltd, South Africa
  * @version $Revision$
- * @package Owl
+ * @package dmslib
  */
 class Session {
 
     /**
      * Creates a session.
      *
-     * @param $userDetails    array containing user details
-     * @return returns the generated sessionID
+     * @param array $userDetails    the details of the user to create a session for
+     * @return string               the generated sessionID
      */
 	function create($userDetails) {
         global $default;
@@ -39,8 +39,8 @@ class Session {
         
         // insert session information into db
         $sql = new Owl_DB;
-        $query = "insert into $default->owl_sessions_table (session_id, user_id, lastused, ip) values ('$sessionID', '$userID', '" . date("Y-m-d H:i:s", time()) . "', '$ip')";
-        //echo "query=$query<br>";
+        $query = "INSERT INTO $default->owl_sessions_table (session_id, user_id, lastused, ip) VALUES ('$sessionID', '$userID', '" . date("Y-m-d H:i:s", time()) . "', '$ip')";
+
         $result = $sql->query($query);        
         if(!$result) {
             die("$lang_err_sess_write");
@@ -58,7 +58,7 @@ class Session {
         session_start();
         // remove the session information from the database
         $sql = new Owl_DB;
-        $query = "delete from $default->owl_sessions_table where session_id = '" . session_id() . "'";
+        $query = "DELETE FROM $default->owl_sessions_table WHERE session_id = '" . session_id() . "'";
         $sql->query($query);
 
         // remove the php4 session
@@ -77,7 +77,7 @@ class Session {
         // deletes any sessions for this userID where the default timeout has elapsed.
         $time = time() -  $default->owl_timeout;
         $sql = new Owl_DB;
-        $sql->query("delete from $default->owl_sessions_table where user_id = '" . $userID . "' and lastused <= '" . date("Y-m-d H:i:s",$time) . "'");
+        $sql->query("DELETE FROM $default->owl_sessions_table WHERE user_id = '" . $userID . "' AND lastused <= '" . date("Y-m-d H:i:s",$time) . "'");
     }
 
     /**
@@ -95,11 +95,11 @@ class Session {
         if (strlen($sessionID) > 0) {
         
             // initialise return status
-            $sessionStatus["status"] = 0;
+            $sessionStatus = 0;
             
             // this should be an existing session, so check the db
             $sql = new Owl_DB; 
-            $sql->query("select * from $default->owl_sessions_table where session_id = '$sessionID'");
+            $sql->query("SELECT * FROM $default->owl_sessions_table WHERE session_id = '$sessionID'");
             $numrows = $sql->num_rows($sql);
             
             // found one match
@@ -117,32 +117,34 @@ class Session {
                         $default->log->debug("Session::verify timeout = " . $default->owl_timeout . "; diff=$diff");                        
                         if((time() - strtotime($lastused)) <= $default->owl_timeout) {
                             // session has been verified, update status
-                            $sessionStatus["status"] = 1;
+                            $sessionStatus = 1;
+                            // ??: will this change during a user session?
                             // only set the userID if its not in the array already 
-                            if (!$sessionStatus["userID"]) {
-                                $sessionStatus["userID"] = $sql->f("user_id");
+                            if (!$_SESSION["userID"]) {
+                                $_SESSION["userID"] = $sql->f("user_id");
                             }
                             // lookup the user                            
-                            $sql->query("select * from $default->owl_users_table where id = '".$sessionStatus["userid"]."'");
+                            $sql->query("SELECT * FROM $default->owl_users_groups_table WHERE id = ".$_SESSION["userID"]);
                             while($sql->next_record()) {
                                 // FIXME: this much change to look at users_groups_link
                                 // only set the groupID if its not in the array already
-                                if (!$sessionStatus["groupID"]) {
-                                    $sessionStatus["groupID"] = $sql->f("group_id");
+                                if (!$_SESSION["groupID"]) {
+                                    $_SESSION["groupID"] = $sql->f("group_id");
                                 }
                             }
                             // update last used timestamps
-                            $sql->query("update $default->owl_sessions_table set lastused = '" . date("Y-m-d H:i:s",time()) ."' where user_id = '" . $sessionStatus["userID"] . "'");
+                            $sql->query("UPDATE $default->owl_sessions_table SET lastused = '" . date("Y-m-d H:i:s",time()) ."' " .
+                                        "WHERE user_id = " . $_SESSION["userID"] . " AND session_id = '$sessionID'");
                             // add the array to the session
                             $_SESSION["sessionStatus"] = $sessionStatus;
                         } else {
                             // session timed out status
-                            $sessionStatus["status"] = 2;
+                            $sessionStatus = 2;
                             $default->errorMessage = $lang_sesstimeout;
                         }
                     } else {
                         // session in use status
-                        $sessionStatus["status"] = 3;
+                        $sessionStatus = 3;
                         $default->errorMessage = $lang_sessinuse;
                     }
                 }
@@ -153,7 +155,7 @@ class Session {
             return false;
         }
         // return the array
-        $output = "Session::verify returning sessionStatus[\"status\"]=" . $sessionStatus["status"];
+        $output = "Session::verify returning sessionStatus[\"status\"]=" . $sessionStatus;
         $default->log->debug($output);
         return $sessionStatus;
     }
