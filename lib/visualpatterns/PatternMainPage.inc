@@ -164,7 +164,7 @@ class PatternMainPage {
                                                                \t\t<div id=\"divText\">\n";												
                                             }                                          
 											if (isset($this->sErrorMessage)) {
-												$sToRender .= "<table border=\"0\"><tr><td><p class=\"errorText\">$this->sErrorMessage</td></tr></table>\n ";
+												$sToRender .= "<table border=\"0\"><tr><td><p class=\"errorText\">$this->sErrorMessage</p></td></tr></table>\n ";
 											}
 											$sToRender = $sToRender . "\n" . $this->oCentralPayload->render() . "\n";
 										} else {											
