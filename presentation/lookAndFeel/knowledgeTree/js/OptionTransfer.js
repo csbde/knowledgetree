@@ -469,4 +469,48 @@ function OptionTransfer(l,r) {
 	this.setAutoSort=OT_setAutoSort;
 	this.init=OT_init;
 	this.update=OT_update;
+	this.sortSelectMatch=OT_sortSelectMatch;
+}
+
+
+
+// -------------------------------------------------------------------
+// sortSelectMatch(select_object, pattern)
+//   Pass this function a SELECT object and the options will be sorted
+//   matching pattern string. It select also matching options
+// -------------------------------------------------------------------
+function OT_sortSelectMatch(obj, pattern) {
+
+	sortSelect(obj);
+
+	var o = new Array();
+	// Store original array in "o"
+	if (obj.options==null) { return; }
+	for (var i=0; i<obj.options.length; i++){
+		o[o.length] = new Option(obj.options[i].text, obj.options[i].value, obj.options[i].defaultSelected, obj.options[i].selected) ;
+	}
+
+	// Match / NoMatch Array
+	match = new Array();
+	nomatch = new Array();
+	for (var i=0; i<o.length; i++){
+
+		if (o[i].text.toLowerCase().indexOf(pattern.toLowerCase())!=-1) {
+			match[match.length] = new Option(o[i].text, o[i].value, o[i].defaultSelected, true);
+		} else {
+			nomatch[nomatch.length] = new Option(o[i].text, o[i].value, o[i].defaultSelected, false);
+		}
+	}
+
+	// Now rewrite sorted array
+	for (var i=0; i<match.length; i++){
+		obj.options[i] = new Option(match[i].text, match[i].value, match[i].defaultSelected, match[i].selected);
+	}
+
+	for (var i=0; i<nomatch.length; i++){
+		obj.options[i+match.length] = new Option(nomatch[i].text, nomatch[i].value, nomatch[i].defaultSelected, nomatch[i].selected);
+	}
+	
+	return;
+
 	}
