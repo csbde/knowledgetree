@@ -13,22 +13,23 @@ class Session {
     /**
      * Creates a session.
      *
-     * @param $userID
-     *	      user identifier
-     * @return $sessionID
-     * 	      returns the generated sessionID
+     * @param $userDetails    array containing user details
+     * @return returns the generated sessionID
      */
-	function create($userID) {
+	function create($userDetails) {
         global $default;
         
         session_start();
         
         // bind userID to session
-        $_SESSION["userID"] = $userID;
+        $_SESSION["userID"] = $userDetails["userID"];
         
         // lookup group id and add to session
-        $_SESSION["groupID"] = lookupGroupIDs($userID);
-        $default->log->debug("Session::create groupids=" . arrayToString($_SESSION["groupID"]));
+        $_SESSION["groupID"] = $userDetails["groupID"];
+        $_SESSION["unitID"] = $userDetails["unitID"];
+        $_SESSION["username"] = $userDetails["username"];
+        
+        $default->log->debug("Session::create session variables=" . arrayToString($_SESSION));
         
         // use the PHP generated session id
         $sessionID = session_id();
