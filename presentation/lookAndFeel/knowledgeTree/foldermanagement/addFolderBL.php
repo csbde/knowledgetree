@@ -46,10 +46,11 @@ if (checkSession()) {
             if (Permission::userHasFolderWritePermission($fFolderID)) {
                 //check for illegal characters in the folder name
                 if (strpos($fFolderName, "\\") === false && strpos($fFolderName, ">") === false &&
-                                                   strpos($fFolderName, "<") === false && strpos($fFolderName, ":") === false &&
-                                                                                 strpos($fFolderName, "*") === false && strpos($fFolderName, "?") === false &&
-                                                                                                               strpos($fFolderName, "|") === false && strpos($fFolderName, "/") === false &&
-                                                                                                                                             strpos($fFolderName, "\"") === false) {
+                    strpos($fFolderName, "<") === false && strpos($fFolderName, ":") === false &&
+                    strpos($fFolderName, "*") === false && strpos($fFolderName, "?") === false &&
+                     strpos($fFolderName, "|") === false && strpos($fFolderName, "/") === false &&
+					 strpos($fFolderName, "\"") === false) {
+						 
                     if (Folder::folderExistsName($fFolderName, $fFolderID)) {
                         require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");
                         $oPatternCustom->setHtml(renderBrowseAddPage($fFolderID));
