@@ -37,6 +37,7 @@ if (checkSession()) {
     require_once("$default->fileSystemRoot/lib/visualpatterns/PatternListFromQuery.inc");
     require_once("$default->fileSystemRoot/lib/visualpatterns/PatternTableSqlQuery.inc");
     
+    require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/documentmanagement/checkInDocumentUI.inc");
     require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/documentmanagement/documentUI.inc");
     require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc");
     require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
@@ -116,11 +117,11 @@ if (checkSession()) {
                                 }
                             } else {
                                 $sErrorMessage = "Please select a document by first clicking on 'Browse'.  Then click 'Check-In'";
-                                $oPatternCustom->setHtml(getCheckInEditPage($oDocument));
+                                $oPatternCustom->setHtml(getCheckInPage($oDocument));
                             }
                         } else {
                             // prompt the user for a check in comment and the file
-                            $oPatternCustom->setHtml(getCheckInEditPage($oDocument));
+                            $oPatternCustom->setHtml(getCheckInPage($oDocument));
                         }
                     } else {
                         // you don't have this doc checked out

@@ -25,6 +25,7 @@ if (checkSession()) {
     require_once("$default->fileSystemRoot/lib/documentmanagement/PhysicalDocumentManager.inc");
     require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentTransaction.inc");
     require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
+	require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentCollaboration.inc");    
     
     require_once("$default->fileSystemRoot/lib/foldermanagement/FolderCollaboration.inc");
     require_once("$default->fileSystemRoot/lib/foldermanagement/FolderUserRole.inc");
@@ -37,6 +38,7 @@ if (checkSession()) {
     require_once("$default->fileSystemRoot/lib/visualpatterns/PatternListFromQuery.inc");
     require_once("$default->fileSystemRoot/lib/visualpatterns/PatternTableSqlQuery.inc");
     
+	require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/documentmanagement/checkOutDocumentUI.inc");    
     require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/documentmanagement/documentUI.inc");
     require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc");
     require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
@@ -78,8 +80,7 @@ if (checkSession()) {
                             $default->log->info("checkOutDocumentBL.php fired $count subscription alerts for checked out document " . $oDocument->getName());
 
                             // display checkout success message in the document view page
-                            $oPatternCustom->setHtml(getCheckOutEditPage($oDocument, true));
-                            
+                            $oPatternCustom->setHtml(getCheckOutPage($oDocument, true));
                             
                         } else {
                             // document update failed
@@ -87,7 +88,7 @@ if (checkSession()) {
                         }
                     } else {
                         // prompt the user for a checkout comment
-                        $oPatternCustom->setHtml(getCheckOutEditPage($oDocument));
+                        $oPatternCustom->setHtml(getCheckOutPage($oDocument));
                     }
                 } else {
                     // this document is already checked out
@@ -108,6 +109,7 @@ if (checkSession()) {
         // no document id was set when coming to this page,
         $oPatternCustom->setHtml(renderErrorPage("No document is currently selected for check out"));
     }
+
 
     require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
     $main->setCentralPayload($oPatternCustom);
