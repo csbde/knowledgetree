@@ -222,7 +222,7 @@ if (checkSession()) {
             }
             $main->setDHTMLScrolling(false);
 			
-		} else if (Permission::userHasDocumentWritePermission($oDocument) || Permission::userHasDocumentReadPermission($fDocumentID)) {
+		} else if (Permission::userHasDocumentWritePermission($oDocument) || Permission::userHasDocumentReadPermission($oDocument)) {
           
             // check subscription flag
             // ??
@@ -238,7 +238,7 @@ if (checkSession()) {
             if ($oDocument->isLive()) {
 	            if (Permission::userHasDocumentWritePermission($oDocument)) {
 	                $oPatternCustom->setHtml(getPage($oDocument, true));
-	            } else if (Permission::userHasDocumentReadPermission($fDocumentID)) {
+	            } else if (Permission::userHasDocumentReadPermission($oDocument)) {
 	                $oPatternCustom->setHtml(getPage($oDocument, false));
 	            }
 	            $main->setDHTMLScrolling(false);

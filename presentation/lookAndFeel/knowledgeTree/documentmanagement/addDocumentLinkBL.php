@@ -37,10 +37,12 @@ if (checkSession()) {
 	require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
 	require_once("$default->fileSystemRoot/lib/security/Permission.inc");
 	require_once("$default->fileSystemRoot/presentation/Html.inc");
+	require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
 	require_once("documentUI.inc");
 	require_once("addDocumentLinkUI.inc");
 	
-	if (Permission::userHasDocumentWritePermission($fDocumentID)) {
+	$oDocument = Document::get($fDocumentID);
+	if (Permission::userHasDocumentWritePermission($oDocument)) {
 		//user has permission to link this document to another
 		if (isset($fForStore)) {
 			//create a new document link

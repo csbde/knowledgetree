@@ -59,24 +59,25 @@ require_once("$default->fileSystemRoot/presentation/Html.inc");
 
 if (checkSession()) {
     if (isset($fDocumentID)) {
-        if (isset($fCollaborationEdit) && Permission::userHasDocumentWritePermission($fDocumentID)) {
+    	$oDocument = & Document::get($fDocumentID);
+        if (isset($fCollaborationEdit) && Permission::userHasDocumentWritePermission($oDocument)) {
             //return value from collaborationBL.php.  User attempted to edt
             //a step in the document collaboration process that is currently being
             //executed
             require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 
-            $oDocument = & Document::get($fDocumentID);
+            
             $oPatternCustom = & new PatternCustom();
             $oPatternCustom->setHtml(getEditPage($oDocument));
             $main->setCentralPayload($oPatternCustom);
             $main->setErrorMessage("You cannot edit a document collaboration step that is completed or currently underway");
             $main->setFormAction("$default->rootUrl/control.php?action=modifyDocument&fDocumentID=" . $oDocument->getID());
             $main->render();
-        } else if (isset($fForInlineView) && Permission::userHasDocumentReadPermission($fDocumentID)) {
+        } else if (isset($fForInlineView) && Permission::userHasDocumentReadPermission($oDocument)) {
 			$oDocumentTransaction = & new DocumentTransaction($fDocumentID, "Inline view", VIEW);
             $oDocumentTransaction->create();
             PhysicalDocumentManager::inlineViewPhysicalDocument($fDocumentID);			
-		} else if (isset($fForDownload) && Permission::userHasDocumentReadPermission($fDocumentID)) {
+		} else if (isset($fForDownload) && Permission::userHasDocumentReadPermission($oDocument)) {
             //if the user has document read permission, perform the download
             if (isset($fVersion)) {
                 // we're downloading an old version of the document
@@ -89,7 +90,7 @@ if (checkSession()) {
                 $oDocumentTransaction->create();
                 PhysicalDocumentManager::downloadPhysicalDocument($fDocumentID);
             }
-        } else if (isset($fBeginCollaboration) && Permission::userHasDocumentWritePermission($fDocumentID)) {
+        } else if (isset($fBeginCollaboration) && Permission::userHasDocumentWritePermission($oDocument)) {
             require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
             //begin the collaboration process
             //first ensure that all steps in the collaboration process are assigned
@@ -209,7 +210,7 @@ if (checkSession()) {
                 $main->render();
             }
 			
-		} else if (Permission::userHasDocumentWritePermission($fDocumentID) || Permission::userHasDocumentReadPermission($fDocumentID)) {
+		} else if (Permission::userHasDocumentWritePermission($oDocument) || Permission::userHasDocumentReadPermission($oDocument)) {
             require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
             require_once("$default->fileSystemRoot/lib/subscriptions/SubscriptionEngine.inc");
 
@@ -227,9 +228,9 @@ if (checkSession()) {
             
             $oPatternCustom = & new PatternCustom();
             if ($oDocument->isLive()) {
-	            if (Permission::userHasDocumentWritePermission($fDocumentID)) {
+	            if (Permission::userHasDocumentWritePermission($oDocument)) {
 	                $oPatternCustom->setHtml(getPage($oDocument, true));
-	            } else if (Permission::userHasDocumentReadPermission($fDocumentID)) {
+	            } else if (Permission::userHasDocumentReadPermission($oDocument)) {
 	                $oPatternCustom->setHtml(getPage($oDocument, false));
 	            }
             } else if ($oDocument->isArchived()) {

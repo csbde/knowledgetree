@@ -56,7 +56,8 @@ if (checkSession()) {
 	//if the required form variabled are set
 	if (isset($fFolderCollaborationID) && isset($fDocumentID)) {
 		//if the user has write permission for the document
-		if (Permission::userHasDocumentWritePermission($fDocumentID)) {
+		$oDocument = Document::get($fDocumentID);
+		if (Permission::userHasDocumentWritePermission($oDocument)) {
 			if ($fIsActive) {
 				//if the document collaboration step the user is attempting to edit is underway, you may not edit it
 				//so bounce the user back to the document view page and display an error message
