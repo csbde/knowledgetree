@@ -33,8 +33,9 @@ if ($loginAction == "loginForm") {
            <br><br>
            <table>\n
            <form action=\"login.php\" method=\"post\">
-           <tr><td>Please enter your details below to login</P></td></tr>
-           <tr><td><font color=\"red\">$errorMessage</font><tr><td>
+           <tr><td>Please enter your details below to login</td></tr>
+           <tr><td></td></tr>
+           <tr align=\"center\"><td><font color=\"red\">$errorMessage</font><tr><td>
            \t<tr><td>$lang_username:</td></tr>
            \t<tr><td><input type=\"text\" name=\"fUserName\" size=\"35\"></td></tr>
            \t<tr><td>$lang_password:</td></tr>
