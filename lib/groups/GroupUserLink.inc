@@ -1,12 +1,12 @@
 <?php
 /**
-* @package lib.groups
 *
 * Class GroupUserLink
 * Represents a group, unit link as per the database table groups_units_link
 *
 * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
 * @date 20 January 2003
+* @package lib.groups
 */
 
 class GroupUserLink {

@@ -1,7 +1,6 @@
 <?php
 
 /**
-* @package lib.documentmanagement
 *
 * Class PhysicalDocumentManager.inc
 *
@@ -16,6 +15,7 @@
 *
 * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
 * @date 13 January 2003
+* @package lib.documentmanagement
 */
 
 

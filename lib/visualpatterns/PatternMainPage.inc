@@ -1,14 +1,14 @@
 <?php
 
 /**
-* @package lib.visualpatterns
 * 
-*	Main page of the document management system.  Consists of a 2 x 2 HTML table.
-*	Custom defined payloads can be placed in each of the table cells, giving a reasonable
-*	amount of layout/design flexibility
+* Main page of the document management system.  Consists of a 2 x 2 HTML table.
+* Custom defined payloads can be placed in each of the table cells, giving a reasonable
+* amount of layout/design flexibility
 *
-*	@author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
-*	@date 12 December 2002
+* @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
+* @date 12 December 2002
+* @package lib.visualpatterns
 *	
 */
 

@@ -1,7 +1,6 @@
 <?php
 
 /**
-* @package lib.foldermanagement
 *
 * Class Folder
 *
@@ -9,7 +8,7 @@
 *
 * @author Rob Cherry, Jam Warehouse (Pty), Ltd, South Africa
 * @date 16 Janurary 2003
-*
+* @package lib.foldermanagement
 */
 
 class Folder {

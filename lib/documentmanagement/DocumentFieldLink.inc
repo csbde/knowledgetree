@@ -1,7 +1,6 @@
 <?php
 
 /**
-* @package lib.documentmanagement
 *
 * Class DocumentFieldLink
 *
@@ -9,6 +8,7 @@
 *
 * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
 * @date 19 January 2003
+* @package lib.documentmanagement
 */
 
 class DocumentFieldLink {

@@ -1,12 +1,12 @@
 <?php
 /**
-* @package lib.web
 *
 * Class Subscription
 * Represents a subscription as per the subscriptions database table
 *
 * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
 * @date 20 January 2003
+* @package lib.web
 */
 
 class Subscription {

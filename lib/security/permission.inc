@@ -1,7 +1,5 @@
 <?php
 
-//require_once("$default->owl_fs_root/lib/documentmanagement/documentLib.inc");
-
 /**
 * Class Permission
 *
@@ -12,7 +10,8 @@
 *	o has read/write access for a specific folder/directory
 *
 *	@author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
-*	@date 14 January 2003 
+*	@date 14 January 2003
+* @package lib.roles 
 */
 
 class Permission {

@@ -1,6 +1,5 @@
 <?php
 /**
-* @package lib.documentmanagement
 *
 * Class Document
 *
@@ -11,6 +10,7 @@
 *
 * @todo add in document change transaction functionality
 *
+* @package lib.documentmanagement
 */
 
 class Document {

@@ -3,7 +3,6 @@
 require_once("$default->owl_fs_root/lib/security/permission.inc");
 
 /**
- * @package lib.documentmanagement
  * 
  * $Id$
  * 
@@ -13,6 +12,7 @@ require_once("$default->owl_fs_root/lib/security/permission.inc");
  *
  * @version $Revision$ 
  * @author Michael Joseph <michael@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
+ *
  * @package lib.documentmanagement
  */
 class DocumentBrowser {

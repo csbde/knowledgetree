@@ -1,6 +1,5 @@
 <?php
 /**
-* @package lib.documentmanagement
 *
 * Class DocumentTransaction
 *
@@ -11,6 +10,7 @@
 *
 * @author Rob Cherry, Jam Warehouse(Pty) Ltd, South Africa
 * @date 18 January 2003
+* @package lib.documentmanagement
 */
 
 class DocumentTransaction {

@@ -1,20 +1,22 @@
 <?php
 
 /**
-Builds a query using the table name and the array of specified columns
-and displays the results in an HTML table.  The ID column of the table is
-included by default
-
-The first column in the table can be rendered as a link 
-to the document/folder using the $iLinkType variable to specify the link type,
-the $sLinkPageURL to specify the page URL to link to and $sLinkImageURL to specify
-the image to display in the case of either a $iLinkType of 2 (image only) or 3 (image + text)
-
-@author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
-@date 7 January 2003
-
-@todo $iLinkImageURL is hard coded - change
-$todo $sLinkPageURL is hard coded - change
+* 
+* Builds a query using the table name and the array of specified columns
+* and displays the results in an HTML table.  The ID column of the table is
+* included by default
+*
+* The first column in the table can be rendered as a link 
+* to the document/folder using the $iLinkType variable to specify the link type,
+* the $sLinkPageURL to specify the page URL to link to and $sLinkImageURL to specify
+* the image to display in the case of either a $iLinkType of 2 (image only) or 3 (image + text)
+*
+* @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
+* @date 7 January 2003
+*
+* @todo $iLinkImageURL is hard coded - change
+* @todo $sLinkPageURL is hard coded - change
+* @package lib.visualpatterns
 */
 
 class PatternTableSqlQuery {

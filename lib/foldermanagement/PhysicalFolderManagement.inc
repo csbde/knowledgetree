@@ -1,7 +1,6 @@
 <?php
 
 /**
-* @package lib.foldermanagement
 * 
 * Contains static functions for doing physical folder managements
 * such as creating/deleting folders
@@ -10,6 +9,7 @@
 * @date 19 January 2003
 *
 * @todo finished createFolder() function - find out correct mode
+* @package lib.foldermanagement
 */
 
 class PhysicalFolderManagement {
