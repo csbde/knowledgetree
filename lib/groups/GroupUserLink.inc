@@ -99,31 +99,27 @@ class GroupUserLink {
 	function create() {
 		global $default, $lang_err_database, $lang_err_object_exists;
 		//if the object hasn't been created
-		if ($this->iId < 0) 
-		{
+		if ($this->iId < 0) {
 			$sql = $default->db;
 			$query = "SELECT user_id, group_id FROM ". $default->users_groups_table ." WHERE user_id = '" . $this->iUserID . "' and group_id = '". $this->iGroupID ."'";
         		$sql->query($query);
        			$rows = $sql->num_rows($sql);
         
-      			if ($rows > 0) 
-       		 	{
-        	    		 // duplicate username
-           			 $_SESSION["errorMessage"] = "GroupUserLink::The id " . $this->iUnitID . " already exists!";
-           			 return false;
-	       		 }
-       			 else
-       			 {
-				$sql = $default->db;
-				$result = $sql->query("INSERT INTO " . $default->users_groups_table . " (group_id, user_id) VALUES ($this->iGroupID, $this->iUserID)");
-				if ($result) {
-					$this->iId = $sql->insert_id();
-					return  true;
-			}
-			$_SESSION["errorMessage"] = $lang_err_database;
-			return false;
+      			if ($rows > 0){
+        	    	// duplicate username
+           			$_SESSION["errorMessage"] = "GroupUserLink::The id " . $this->iUnitID . " already exists!";
+           			return false;
+	       		 } else {
+					$sql = $default->db;
+					$result = $sql->query("INSERT INTO " . $default->users_groups_table . " (group_id, user_id) VALUES ($this->iGroupID, $this->iUserID)");
+					if ($result) {
+						$this->iId = $sql->insert_id();
+						return  true;
+					}
+					$_SESSION["errorMessage"] = $lang_err_database;
+					return false;
+				}
 		}
-	}
 		$_SESSION["errorMessage"] = $lang_err_object_exists . "id = " . $this->iId . " table = $default->users_groups_table";
 		return false;
 	}
@@ -197,7 +193,7 @@ class GroupUserLink {
 		return false;
 	}
 
-/**
+   /**
 	* Static function
 	* Get a list of web documents
 	*
@@ -224,6 +220,29 @@ class GroupUserLink {
 		return false;
 	}
 	
+	/**
+	 * Updates the search permissions for a group
+	 */
+	function updateSearchPermissions() {
+		global $default;
+	    // group permissions                
+	    $sGroupPerms = "INSERT INTO $default->search_permissions_table (user_id, document_id) " .
+				       "SELECT UGL.user_id AS user_id, D.id AS document_id " .
+				       "FROM $default->documents_table AS D INNER JOIN folders AS F ON D.folder_id = F.id " .
+				       "INNER JOIN $default->groups_folders_table AS GFL ON GFL.folder_id = F.id " .
+				       "INNER JOIN $default->users_groups_table AS UGL ON UGL.group_id = GFL.group_id " .
+				       "WHERE GFL.group_id=$this->iGroupID";
+		$default->log->info("GroupUserLink groupPerms=$sGroupPerms");
+		$sql = $default->db;
+		if ($sql->query($sGroupPerms)) {
+			$default->log->debug("groupPerms succeeded");
+			return true;
+		} else {
+			$default->log->error("groupPerms failed");
+			return false;
+		}	
+	}
+	
 	function getGroups($iUserID) {
 		global $default, $lang_err_database;
 		$aGroupUserLink;
@@ -242,56 +261,43 @@ class GroupUserLink {
 		$_SESSION["errorMessage"] = $lang_err_database;
 		return false;
 	}
-	/*
+	
+	/**
      * static function
-     *
      * test to see if group exists already
      *
      * @param   false or a value
-     *   
      */
-     
-	function userBelongsToGroup($iUserID)
-	 {
-	       global $default;
-	
-	        $value = lookupField("$default->users_groups_table", "group_id", "user_id", $iUserID );
-	        
-	        return $value;
-	        
+	function userBelongsToGroup($iUserID){
+		global $default;
+		$value = lookupField("$default->users_groups_table", "group_id", "user_id", $iUserID );
+		return $value;
 	}
 	
-	/*
+	/**
      * static function
-     *
      * sets the id of the groupunit using their groupid
      *
      * @param   String
      *   The unit_ID
-     *   
      */
      
-	function setUserGroupID($iGroupId, $iUserId)
-	 {
+	function setUserGroupID($iGroupId, $iUserId) {
 	   	global $default;
 		$sql = $default->db;
 		$result = $sql->query("SELECT id FROM $default->users_groups_table WHERE user_id = $iUserId and group_id = $iGroupId");
 		if ($result) {
 			if ($sql->next_record()) {
 				$id = $sql->f("id");
-				
-			}else{
+			} else{
 				$_SESSION["errorMessage"] = $lang_err_database;
 				return false;
 			}
-		
-		}else{	
+		} else{	
 			$_SESSION["errorMessage"] = $lang_err_database;
 			return false;
 		}
-		
 		$this->iId = $id;
-		
 	}
 }
 ?>
