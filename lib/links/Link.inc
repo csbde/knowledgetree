@@ -113,7 +113,6 @@ class Link {
             $this->iId = $id;
             return true;
 		}
-	}
 		$_SESSION["errorMessage"] = $lang_err_object_exists . "id = " . $this->iId . " table = document_fields";
 		return false;
 	}
