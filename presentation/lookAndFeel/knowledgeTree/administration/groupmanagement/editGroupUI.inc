@@ -25,7 +25,7 @@ function getCreatePage($iGroupID) {
 	$oPattern->setUniqueName("groupEdit");
 	$oPattern->setColumnsRequired(array(1,0,0));
 		
-	$sToRender .= renderHeading("Edit Group Properties");
+	$sToRender .= renderHeading("Add Group Properties");
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
