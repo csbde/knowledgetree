@@ -79,7 +79,6 @@ function checkSessionAndRedirect($bRedirect) {
             $url = $default->owl_root_url . "/control.php?action=loginForm";
             
             $redirect = urlencode($_SERVER[PHP_SELF]);
-            $default->log->debug("checkSession:: redirect=$redirect");
             if ((strlen($redirect) > 1)) {
                 $default->log->debug("checkSession:: redirect url=$redirect");
                 // this session verification failure represents either the first visit to 
