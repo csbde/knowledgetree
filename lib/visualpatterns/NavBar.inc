@@ -187,7 +187,7 @@ class NavBar
 			
 		<tr height=\"20%\"><td background = " . $hStretched ." width =\"100%\">". $row1 ."</td></tr>
 			
-		<tr height=\"28%\"><td background = " . $hStretched ." width =\"100%\" >www</td></tr>
+		<tr height=\"28%\"><td background = " . $hStretched ." width =\"100%\" ></td></tr>
 			
 		<tr height=\"25%\" ><td width =\"10%\">". $row3 . "</td></tr>
 			
