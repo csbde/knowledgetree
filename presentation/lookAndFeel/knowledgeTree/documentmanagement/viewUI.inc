@@ -56,6 +56,45 @@ function renderDocumentData($oDocument) {
     return $oPatternListFromQuery->render();
 }
 
+function renderEditableLinkedDocuments($oDocument) {
+	global $default;
+	
+	$sQuery = "SELECT D.id AS document_id, D.name, DL.id as document_link_id, 'Unlink' AS unlink " .
+			"FROM documents AS D INNER JOIN document_link AS DL ON D.id = DL.child_document_id " .
+			"WHERE DL.parent_document_id = " . $oDocument->getID();
+	
+	$aColumns = array("name", "unlink");
+    $aColumnHeaders = array("Document");
+    $aColumnTypes = array(3,3);
+    $aDBColumnArray = array("document_id","document_link_id");
+    $aQueryStringVariableNames = array("fDocumentID", "fDocumentLinkID");
+    $aLinkURLs = array(0=>"$default->rootUrl/control.php?action=viewDocument", 1=>"$default->rootUrl/control.php?action=removeDocumentLink");
+
+    $oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaders, "100%", $aLinkURLs,$aDBColumnArray,$aQueryStringVariableNames);
+    $oPatternTableSqlQuery->setTableHeading("Linked documents");
+    $oPatternTableSqlQuery->setDisplayColumnHeadings(true);
+    return $oPatternTableSqlQuery->render();
+
+}
+
+function renderNonEditableLinkedDocuments($oDocument) {
+	global $default;
+	
+	$sQuery = "SELECT D.id, D.name, 'Delete' AS del " .
+			"FROM documents AS D INNER JOIN document_link AS DL ON D.id = DL.child_document_id " .
+			"WHERE DL.parent_document_id = " . $oDocument->getID();
+	
+	$aColumns = array("name","del");
+    $aColumnNames = array("Document");
+    $aColumnTypes = array(1,3);
+    
+    $oPatternListFromQuery = & new PatternListFromQuery($sQuery, $aColumns, $aColumnNames, $aColumnTypes);
+    $oPatternListFromQuery->setTableHeading("Linked documents");
+    $oPatternListFromQuery->setTableWidth("90%");
+    return $oPatternListFromQuery->render();
+}
+
+
 function renderGenericMetaData($oDocument) {
     global $default;
     $sQuery = "SELECT DF.name AS name, DFL.value as value " .
@@ -237,9 +276,10 @@ function getEditPage($oDocument) {
 		$sToRender .= "\t</tr>";
     }
     */
+    
     $sToRender .= "\t<tr>\n";
     $sToRender .= "\t\t<td>" . renderEditableDocumentRouting($oDocument) . "</td>\n";
-    $sToRender .= "\t</tr>";
+    $sToRender .= "\t</tr>";    
         
     $sToRender .= "\t<tr>\n";
     
@@ -257,7 +297,7 @@ function getEditPage($oDocument) {
 		if (!$oDocument->getIsCheckedOut()) {				
 			$sToRender .= "\t\t<td align=\"center\"><a onClick=\"return confirm('Are you sure you want to approve?  You will not have access to this document until the collaboration process is complete (unless the document is rejected in a subsequent step)');\" href=" . $_SERVER['PHP_SELF'] . "?fDocumentID=" . $oDocument->getID() . "&fCollaborationStepComplete=1><img src=\"$default->graphicsUrl/widgets/approve.gif\" border=\"0\"/></a></td>\n";
 			$sToRender .= "\t\t<td align=\"center\"><a href=\"$default->rootUrl/control.php?action=collaborationStepReject&fDocumentID=$iDocumentID\"><img src=\"$default->graphicsUrl/widgets/reject.gif\" border=\"0\"/></a></td>\n";
-		}
+		}	
 		$sToRender .= "\t\t</tr></table></td>\n";
 	}
     
@@ -275,7 +315,13 @@ function getEditPage($oDocument) {
             $sToRender .= "<td><a href=" . $_SERVER['PHP_SELF'] . "?fDocumentID=" . $oDocument->getID() . "&fForPublish=1><img src=\"$default->graphicsUrl/widgets/publish.gif\" border=\"0\"/></a></td>\n";
         }
     }
-    $sToRender .= "\t</tr>";    
+    $sToRender .= "\t</tr>";
+    $sToRender .= "\t<tr>\n";
+    $sToRender .= "\t\t<td>" . renderEditableLinkedDocuments($oDocument) . "</td>\n";
+    $sToRender .= "\t</tr>";
+    $sToRender .= "\t<tr>\n";
+    $sToRender .= "<td><a href=" . $_SERVER['PHP_SELF'] . "?fDocumentID=" . $oDocument->getID() . "&fForPublish=1><img src=\"$default->graphicsUrl/widgets/add.gif\" border=\"0\"/></a></td>\n";
+    $sToRender .= "\t</tr>";     
     $sToRender .= "\t</table>";
     $sToRender .= "</td>\n";
     $sToRender .= "</tr>\n";
