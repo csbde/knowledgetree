@@ -140,8 +140,8 @@ function getGroupDisplay($oGroup) {
             // if this is the system administrator, prepend group names with unit name
             $oPatternListBox = & new PatternListBox($default->owl_groups_table, "name", "id", "fGroupID");
             $oPatternListBox->setFromClause("LEFT OUTER JOIN groups_units_link GUL on ST.id=GUL.group_id " .
-                                            "INNER JOIN units_lookup UL on GUL.unit_id=UL.id");
-            $oPatternListBox->setCompositeDisplayName("DISTINCT CONCAT(CONCAT(UL.name, '-'),ST.name)");
+                                            "LEFT OUTER JOIN units_lookup UL on GUL.unit_id=UL.id");
+            $oPatternListBox->setCompositeDisplayName("DISTINCT COALESCE(CONCAT(CONCAT(UL.name, '-'),ST.name),ST.name)");
         } else if (Permission::userIsUnitAdministrator()) {
             // else if this is a unit administrator, only display the groups in your unit
             $oPatternListBox = & new PatternListBox($default->owl_groups_table, "name", "id", "fGroupID");
