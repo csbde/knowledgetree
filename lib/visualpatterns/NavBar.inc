@@ -206,8 +206,7 @@ class NavBar {
         $toRender = new PatternCustom;		
 
         //bar is the actaul html creation of the nav bar
-        $bar= "
-              <Table cellpadding = \"1\" cellspacing = \"1\" border=\"1\" width=\"100%\" height=\"100%\">\n " .
+        $bar= "<table cellpadding = \"1\" cellspacing = \"1\" border=\"0\" width=\"100%\" height=\"100%\">\n " .
               "<tr height=\"20%\"><td background = " . $hStretched ." width =\"100%\">". $row1 ."</td></tr>\n " .
               "<tr  height=\"30%\"> <td VALIGN = \"absmiddle\" background = " . $hStretched ." width =\"100%\" NOWRAP >\n " .
               "<img align = \"absmiddle\" src = \"$default->graphicsUrl/arrow.gif\" ></img>\n " .
