@@ -36,7 +36,9 @@ KnowledgeTree DMS Development TODO List
   - For Coverage and performance tests
 - Write custom error handler
 - Security audit
-- Make logging robust, spin off as Log4Php?  Or use PEAR Logging class.
+- Logging
+  - Make logging robust, spin off as Log4Php?  Or use PEAR Logging class.
+  - Revisit application logging and tidy up logging levels.
 - Document Routing
   - Allow overrides on a per document basis
   - Manage the routing sequence numbers in the application.
