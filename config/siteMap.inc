@@ -215,11 +215,11 @@ $default->siteMap->addSectionColour("linkAdministration", "th", "056DCE");
 $default->siteMap->addSectionColour("linkAdministration", "td", "6699CC");
 
 // rolemanagement
-$default->siteMap->addPage("listRoles", "/presentation/lookAndFeel/knowledgeTree/administration/rolemanagement/listRolesBL.php", "Administration", SysAdmin, "List Roles");
-$default->siteMap->addPage("addRole", "/presentation/lookAndFeel/knowledgeTree/administration/rolemanagement/addRoleBL.php", "Administration", SysAdmin, "Add New Role");
-$default->siteMap->addDefaultPage("editRole", "/presentation/lookAndFeel/knowledgeTree/administration/rolemanagement/editRoleBL.php", "Administration", SysAdmin, "Edit Role Properties");
+$default->siteMap->addPage("listRoles", "/presentation/lookAndFeel/knowledgeTree/administration/rolemanagement/listRolesBL.php", "Administration", SysAdmin, "List Roles", false);
+$default->siteMap->addPage("addRole", "/presentation/lookAndFeel/knowledgeTree/administration/rolemanagement/addRoleBL.php", "Administration", SysAdmin, "Add New Role", false);
+$default->siteMap->addDefaultPage("editRole", "/presentation/lookAndFeel/knowledgeTree/administration/rolemanagement/editRoleBL.php", "Administration", SysAdmin, "Edit Role Properties", false);
 $default->siteMap->addDefaultPage("editRoleSuccess", "/presentation/lookAndFeel/knowledgeTree/administration/rolemanagement/editRoleSuccess.php", "Administration", SysAdmin, "Edit Role Properties", false);
-$default->siteMap->addDefaultPage("removeRole", "/presentation/lookAndFeel/knowledgeTree/administration/rolemanagement/removeRoleBL.php", "Administration", SysAdmin, "Remove a Role");
+$default->siteMap->addDefaultPage("removeRole", "/presentation/lookAndFeel/knowledgeTree/administration/rolemanagement/removeRoleBL.php", "Administration", SysAdmin, "Remove a Role", false);
 
 $default->siteMap->addSectionColour("roleAdministration", "th", "056DCE");
 $default->siteMap->addSectionColour("roleAdministration", "td", "6699CC");
