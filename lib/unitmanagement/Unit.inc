@@ -5,7 +5,7 @@
 *
 * @author Mukhtar Dharsey
 * @date 28 January 2003
-* @package lib.units
+* @package lib.unitmanagement
 */
 
 class Unit {
