@@ -123,9 +123,9 @@ class PatternListBox {
 			}
 			while ($sql->next_record()) {
 				if ($this->selectedValue == $sql->f("value")) {
-					$sToRender .= "<OPTION value=\"" . $sql->f("value") . "\" SELECTED>" . $sql->f("display") . "</OPTION>\n";
+					$sToRender .= "<OPTION value=\"" . $sql->f("value") . "\" SELECTED>" . stripslashes($$sql->f("display")) . "</OPTION>\n";
 				} else {
-					$sToRender .= "<OPTION value=\"" . $sql->f("value") . "\">" . $sql->f("display") . "</OPTION>\n";
+					$sToRender .= "<OPTION value=\"" . $sql->f("value") . "\">" . stripslashes($sql->f("display")) . "</OPTION>\n";
 				}
 			}
 			$sToRender .= "</SELECT>\n";
