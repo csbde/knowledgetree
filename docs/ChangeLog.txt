@@ -1,0 +1,25 @@
+Version 1.2.0
+* Mon Jul 28 2003 Michael Joseph <michael@jamwarehouse.com> 
+- TODO: compare with branch
+- Administration changes- 
+
+Version 1.1.2 
+* Mon Jul 28 2003 Michael Joseph <michael@jamwarehouse.com> 
+- Minor bugfixes in administration section- group management.
+- Fixed add user for DB authentication.
+- Updated documentation (FAQ, INSTALL, README).
+- Updated FileIndexer (1.1.2) and released DocumentArchiver (1.0.0)
+
+Version 1.1.1 
+* Fri Jul 18 2003 Michael Joseph  <michael@jamwarehouse.com> 
+- Updated documentation.
+- Updated Project version bump
+
+Version 1.1.0 
+* Fri Jul 04 2003 Michael Joseph  <michael@jamwarehouse.com> 
+- External release.
+- Patched database scripts and tidied for distribution.
+
+Version 1.0.0
+* Tue May 13 2003 Michael Joseph <michael@jamwarehouse.com> 
+- Initial release.
