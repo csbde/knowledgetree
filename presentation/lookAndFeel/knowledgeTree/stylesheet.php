@@ -19,7 +19,7 @@ if ( ($browser == "moz") && ($version == "4.79")) {
     $scroll["textBoxHeight"] = "395";  
 } elseif ( ($browser == "moz") && ($version == "5.0")) {
     $scroll["upArrowLeft"] = "760";
-    $scroll["upArrowTop"] = "150";
+    $scroll["upArrowTop"] = "155";
     $scroll["downArrowLeft"] = "760";
     $scroll["downArrowTop"] = "580";
     
