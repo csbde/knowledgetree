@@ -111,6 +111,7 @@ if (!$oGroupFolderLink->delete()) {
     exit(0);
 }
 
+$oFolder->updatePermissions();
 controllerRedirect("editFolder", "fFolderID=$fFolderID&fShowSection=folderPermissions");
 
 ?>
