@@ -232,6 +232,10 @@ class SiteMap {
             }
             // now check if we have anything in the results array before returning it
             if (count($results) > 0) {
+            	// alpha sort the results 
+            	array_multisort ($results["descriptions"], SORT_ASC,
+            	 				 $results["links"], SORT_ASC); 
+				reset ($results); 
                 return $results;
             } else {
                 return false;
