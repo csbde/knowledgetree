@@ -70,7 +70,7 @@ function renderPage($oDocument, $iDocumentTypeID, $fFirstEdit) {
     $sToRender = "<table border = 0>\n";
     $sToRender .= "<tr>\n";
     $sToRender .= "<td>\n";
-    $sToRender .= wrapInTable(renderEditableDocumentData($oDocument, $iDocumentTypeID)) . "\n";
+    $sToRender .= renderEditableDocumentData($oDocument, $iDocumentTypeID) . "\n";
     $sToRender .= "</tr>\n";    
     $sToRender .= "</table>\n";
     $sToRender .= "<table>\n";
