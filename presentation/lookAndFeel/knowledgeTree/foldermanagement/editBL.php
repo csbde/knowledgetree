@@ -56,9 +56,10 @@ if (checkSession()) {
 				}				
 				if ($bSuccessfulUpdate) {
 					$oPatternCustom = & new PatternCustom();
-					$oPatternCustom->setHtml(getPage($fFolderID));					
+					$oPatternCustom->setHtml(getPage($fFolderID));
 					$main->setCentralPayload($oPatternCustom);
 					$main->setHasRequiredFields(true);
+                    $main->setErrorMessage("Folder successfully updated");
 					$main->setFormAction("../store.php?fReturnURL=" . urlencode("$default->rootUrl/control.php?action=browse&fFolderID=$fFolderID"));
 					$main->render();
 				} else {
