@@ -120,14 +120,31 @@ class WebSite {
 		global $default, $lang_err_database, $lang_err_object_exists;
 		//if the object hasn't been created
 		if ($this->iId < 0) {
+			//check to see if name exsits
 			$sql = $default->db;
-			$result = $sql->query("INSERT INTO " . $default->owl_web_sites_table . " (web_site_name, web_site_url, web_master_id) VALUES ('" . addslashes($this->sWebSiteName) . "', '" . addslashes($this->sWebSiteURL) . "', $this->iWebMasterID)");
-			if ($result) {
-				$this->iId = $sql->insert_id();
-				return  true;
+			$query = "SELECT web_site_name FROM ". $default->owl_web_sites_table ." WHERE web_site_name = '" . $this->sWebSiteName . "' and web_site_url = '" . $this->sWebSiteURL . "' and web_master_id = '" . $this->iWebMasterID . "'";
+        		$sql->query($query);
+       			$rows = $sql->num_rows($sql);
+       			
+       			printf("whot %s", $query);
+        
+      			 if ($rows > 0){
+            		 // duplicate username
+           		 $_SESSION["errorMessage"] = "Website::The Wesbite name " . $this->sWebSiteName . " is already in use!";
+           		 return false;
+           		 
+	       		 }else
+	      		 {
+				
+				$sql = $default->db;
+				$result = $sql->query("INSERT INTO " . $default->owl_web_sites_table . " (web_site_name, web_site_url, web_master_id) VALUES ('" . addslashes($this->sWebSiteName) . "', '" . addslashes($this->sWebSiteURL) . "', $this->iWebMasterID)");
+				if ($result) {
+					$this->iId = $sql->insert_id();
+					return  true;
+				}
+				$_SESSION["errorMessage"] = $lang_err_database;
+				return false;
 			}
-			$_SESSION["errorMessage"] = $lang_err_database;
-			return false;
 		}
 		$_SESSION["errorMessage"] = $lang_err_object_exists . "id = " . $this->iId . " table = $default->owl_web_sites_table";
 		return false;
@@ -144,7 +161,7 @@ class WebSite {
 		//only update if the object has been stored
 		if ($this->iId > 0) {
 			$sql = $default->db;
-			$result = $sql->query("UPDATE " . $default->owl_web_sites_table . " SET web_site_name = '" . addslashes($this->sWebSiteName) . "', web_site_url = '" . addslashes($this->sWebSiteURL) . "', web_master_id = $this->iWebMasterID WHERE id = $this->iId");
+			$result = $sql->query("UPDATE " . $default->owl_web_sites_table . " SET web_site_name = '" . addslashes($this->sWebSiteName) . "', web_site_url = '" . addslashes($this->sWebSiteURL) . "', web_master_id = '" . $this->iWebMasterID . "' WHERE id = $this->iId");
 			if ($result) {
 				return true;
 			}
@@ -228,6 +245,53 @@ class WebSite {
 	}
 	
 	
+/*
+     * static function
+     *
+     * sets the id of the groupunit using their groupid
+     *
+     * @param   String
+     *   The unit_ID
+     *   
+     */
+     
+	function setWebSiteID($iWebMasterID,$sWebSiteName)
+	 {
+	   	global $default;
+		$sql = $default->db;
+		$result = $sql->query("SELECT id FROM $default->owl_web_sites_table WHERE web_master_id = $iWebMasterID and web_site_name = '" . $sWebSiteName . "' ");
+		if ($result) {
+			if ($sql->next_record()) {
+				$id = $sql->f("id");
+				
+			}else{
+				$_SESSION["errorMessage"] = $lang_err_database;
+				return false;
+			}
+		
+		}else{	
+			$_SESSION["errorMessage"] = $lang_err_database;
+			return false;
+		}
+		
+		$this->iId = $id;
+		
+	}
 }
 
+
+
+/**
+* Static function
+*
+* Creates a Group object from an array
+*
+* @param 	Array		Array of parameters.  Must match order of parameters in constructor
+*
+* @return User user object
+*/
+function & websiteCreateFromArray($aParameters) {
+	$oWebsite = & new Website($aParameters[0], $aParameters[1], $aParameters[2], $aParameters[3], $aParameters[4], $aParameters[5], $aParameters[6], $aParameters[7], $aParameters[8], $aParameters[9], $aParameters[10]);
+	return $oWebsite;
+}
 ?>
