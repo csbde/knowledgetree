@@ -35,7 +35,7 @@ if ($loginAction == "loginForm") {
     <form action=\"login.php\" method=\"post\">
     <tr><td>Please enter your details below to login</td></tr>
     <tr><td></td></tr>
-    <tr align=\"center\"><td><font color=\"red\">$errorMessage</font><tr><td>
+    <tr><td><font color=\"red\">$errorMessage</font><tr><td>
     \t<tr><td>$lang_username:</td></tr>
     \t<tr><td><input type=\"text\" name=\"fUserName\" size=\"35\"></td></tr>
     \t<tr><td>$lang_password:</td></tr>
@@ -110,6 +110,10 @@ elseif ($loginAction == "login") {
         case 3 :
             $url = $url . "&errorMessage=" . urlencode($lang_toomanysessions);
             break;
+            // not a unit user
+        case 4 :
+            $url = $url . "&errorMessage=" . urlencode("Not unit user- contact an Administrator");
+            break;            
         default :
             $url = $url . "&errorMessage=" . urlencode($lang_err_general);
         }
