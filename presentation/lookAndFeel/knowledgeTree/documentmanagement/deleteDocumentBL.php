@@ -13,6 +13,7 @@ require_once("../../../../config/dmsDefaults.php");
 require_once("$default->owl_fs_root/lib/foldermanagement/Folder.inc");
 require_once("$default->owl_fs_root/lib/users/User.inc");
 require_once("$default->owl_fs_root/lib/documentmanagement/Document.inc");
+require_once("$default->owl_fs_root/lib/documentmanagement/DocumentTransaction.inc");
 
 require_once("$default->owl_fs_root/presentation/Html.inc");
 
@@ -28,14 +29,18 @@ if (checkSession()) {
 				$oDocument = Document::get($fDocumentID);
 				if (isset($oDocument)) {
 					$sDocumentPath = Folder::getFolderPath($oDocument->getFolderID()) . $oDocument->getFileName();
+					$oDocumentTransaction = & new DocumentTransaction($fDocumentID, "Document deleted", DELETE);
+					$oDocumentTransaction->create();
 					if ($oDocument->delete()) {
 						if (unlink($sDocumentPath)) {
-							//successfully deleted the document from the file system
+							//successfully deleted the document from the file system							
 							redirect("$default->owl_root_url/control.php?action=browse&fFolderID=" . $oDocument->getFolderID());
 						} else {
 							//could not delete the document from the file system
 							//reverse the document deletion
 							$oDocument->create();
+							//get rid of the document transaction
+							$oDocumentTransaction->delete();
 							require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");			
 							$oPatternCustom = & new PatternCustom();							
 							$oPatternCustom->setHtml("");
@@ -43,6 +48,15 @@ if (checkSession()) {
 							$main->setErrorMessage("The document could not be deleted from the file system");
 							$main->render();
 						}
+					} else {
+						//could not delete the document in the db
+						$oDocumentTransaction->delete();
+						require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");			
+						$oPatternCustom = & new PatternCustom();							
+						$oPatternCustom->setHtml("");
+						$main->setCentralPayload($oPatternCustom);
+						$main->setErrorMessage("The document could not be deleted from the database");
+						$main->render();
 					}
 				} else {
 					//could not load document object
