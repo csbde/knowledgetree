@@ -30,6 +30,8 @@ function getFolderData($iFolderID) {
 	$oPatternEditableListFromQuery = & new PatternEditableListFromQuery($sQuery, $default->owl_folders_table, $aDisplayColumns, $aStoreColumns, $aColumnNames, $aDisplayColumnTypes, $aDatabaseColumnTypes);
 	$oPatternEditableListFromQuery->setUniqueName("folderEdit");
 	$oPatternEditableListFromQuery->setDropDownListTableNames($aDropDownListTableNames);
+	$oPatternEditableListFromQuery->setColumnsRequired(array(1,0,1,0));
+	
 	return $oPatternEditableListFromQuery->render();
 	
 }

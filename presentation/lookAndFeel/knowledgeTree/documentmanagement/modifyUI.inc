@@ -29,6 +29,7 @@ function renderEditableDocumentData($oDocument) {
     $oPatternEditableListFromQuery = & new PatternEditableListFromQuery($sQuery, $default->owl_documents_table, $aDisplayColumns, $aStoreColumns, $aColumnNames, $aDisplayColumnTypes, $aDatabaseColumnTypes);
     $oPatternEditableListFromQuery->setUniqueName("dd");
     $oPatternEditableListFromQuery->setTableHeading("Document Data");
+	$oPatternEditableListFromQuery->setColumnsRequired(array(1));
     return $oPatternEditableListFromQuery->render();
 }
 

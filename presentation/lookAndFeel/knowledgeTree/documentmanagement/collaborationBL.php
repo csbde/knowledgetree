@@ -80,9 +80,16 @@ if (checkSession()) {
 					
 					$sBody = "You have been assigned the role of '" . $oRole->getName() . "' in the collaboration process for the document entitled '" . $oDocument->getName() . "'.  You will be informed when your role becomes active";					
 					$oEmail->send($oUser->getEmail(), "Assigment of role in document collaboration process", $sBody, $default->owl_email_from, $default->owl_email_fromname);
-				}				
-				//go back to the document view page
-				redirect("$default->owl_root_url/control.php?action=viewDocument&fDocumentID=$fDocumentID");
+				} else {
+					//the may have been unassigned and no new user assigned
+					//if this is true, delete the folder_user_role_link
+					$oFolderUserRole = & FolderUserRole::getFromFolderCollaboration($fFolderCollaborationID);
+					if (!($oFolderUserRole === false)) {
+						$oFolderUserRole->delete();
+					}
+					//go back to the document view page
+					redirect("$default->owl_root_url/control.php?action=viewDocument&fDocumentID=$fDocumentID");
+				}
 			} else {
 				//we're still browsing, so just display the document routing details
 				require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");			

@@ -31,7 +31,7 @@ function getFolderCollaborationData($iFolderCollaborationID) {
 	$oPatternEditableListFromQuery = & new PatternEditableListFromQuery($sQuery, $default->owl_groups_folders_approval_table, $aDisplayColumns, $aStoreColumns, $aColumnNames, $aDisplayColumnTypes, $aDatabaseColumnTypes);
 	$oPatternEditableListFromQuery->setDropDownListTableNames($aDropDownListTables);
 	$oPatternEditableListFromQuery->setUniqueName("folderCollab");
-	
+	$oPatternEditableListFromQuery->setColumnsRequired(0,0,1);
 	return $oPatternEditableListFromQuery->render();
 			
 }
