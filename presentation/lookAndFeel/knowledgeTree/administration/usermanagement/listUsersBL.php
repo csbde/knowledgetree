@@ -38,7 +38,6 @@ require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/ad
 if (checkSession()) {	
     $oPatternCustom = & new PatternCustom();
     if (Permission::userIsUnitAdministrator() && !$fGroupID) {
-    	$default->log->info("unitadmin and undefined fGroupID");
     	// #3519 select a group in your unit if you're a unit administrator and none has been selected
 	    $sql = $default->db;
 	    $sql->query("SELECT group_id FROM $default->groups_units_table WHERE unit_id = " . 
