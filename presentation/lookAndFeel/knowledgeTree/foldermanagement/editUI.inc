@@ -109,6 +109,26 @@ function getFolderRouting($iFolderID) {
 	
 }
 
+function getFolderGroupAccess($iFolderID) {
+	global $default;
+	$sQuery = "SELECT GFL.id as id, GFL.group_id AS group_id, GFL.folder_id AS folder_id, GFL.can_read AS can_read, GFL.can_write AS can_write, GL.name AS group_name, 'Edit' as edit, 'Delete' as del " .	
+			  "FROM $default->owl_groups_folders_table AS GFL " .
+              "INNER JOIN $default->owl_groups_table AS GL ON GFL.group_id = GL.id " .
+			  "WHERE GFL.folder_id = $iFolderID";
+	
+	$aColumns = array("group_name", "can_read", "can_write", "edit", "del");
+	$aColumnHeaders = array("Group", "Read", "Write", "", "");
+	$aColumnTypes = array(1,1,1,3,3);
+	$aDBColumnArray = array("id","folder_id");
+	$aQueryStringVariableNames = array("fGroupFolderLinkID", "fFolderID");
+	$aLinkURLs = array(3=>"$default->rootUrl/control.php?action=modifyGroupFolderLink",4=>"$default->rootUrl/control.php?action=deleteGroupFolderLink");
+	
+	$oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaders, "90%", $aLinkURLs, $aDBColumnArray,$aQueryStringVariableNames);
+	$oPatternTableSqlQuery->setTableHeading("Folder Permissions");
+	$oPatternTableSqlQuery->setDisplayColumnHeadings(true);
+	return $oPatternTableSqlQuery->render();    
+}
+
 function getPage($iFolderID) {
 	global $default;	
 	$sToRender = "<table border=\"1\" width=\"100%\"><tr><td>" . getFolderPath($iFolderID) . "</td></tr></table>\n";
@@ -166,6 +186,19 @@ function getRightSide($iFolderID) {
 	$sToRender .=  "<a href=\"$default->rootUrl/control.php?action=addFolderDocType&fFolderID=$iFolderID\"><img src=\"$default->graphicsUrl/widgets/add.gif\" border=\"0\" /></a>\n";
 	$sToRender .= "</td>\n";
 	$sToRender .= "</tr>\n";
+    
+	$sToRender .= "<tr>\n";
+	$sToRender .= "<td>\n";
+	$sToRender .= wrapInTable(getFolderGroupAccess($iFolderID));
+	$sToRender .= "</td>\n";
+	$sToRender .= "</tr>\n";
+	$sToRender .= "<tr>\n";
+	$sToRender .= "<td>\n";
+	$sToRender .=  "<a href=\"$default->rootUrl/control.php?action=addGroupFolderLink&fFolderID=$iFolderID\"><img src=\"$default->graphicsUrl/widgets/add.gif\" border=\"0\" /></a>\n";
+	$sToRender .= "</td>\n";
+	$sToRender .= "</tr>\n";
+
+    
 	$sToRender .= "</table>\n";
 	return $sToRender;
 }
