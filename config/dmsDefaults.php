@@ -37,12 +37,10 @@ if (in_array("gettext", get_loaded_extensions()) && function_exists('gettext') &
 	if ($default->useAcceptLanguageHeader) {
 	    $aInstalledLocales = getInstalledLocales();
 	    $sLocale=al2gt($aInstalledLocales, 'text/html');
-	    putenv('LANG=' . $sLocale);
-	    setlocale(LC_MESSAGES, $sLocale);
-	} else {		
-		putenv('LANG=' . $default->defaultLanguage); 
-		setlocale(LC_MESSAGES, $default->defaultLanguage);
-	}
+	    $default->defaultLanguage = $sLocale;
+	}		
+	putenv('LANG=' . $default->defaultLanguage); 
+	setlocale(LC_MESSAGES, $default->defaultLanguage);
 	// Set the text domain
 	$sDomain = 'knowledgeTree';
 	bindtextdomain($sDomain, $default->fileSystemRoot . "/i18n"); 
