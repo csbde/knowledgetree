@@ -39,7 +39,7 @@ class BrowserFactory {
      * @param string the direction to sort in    
      * @return Browser the correct Browser implementation class
      */
-    function create($sBrowseBy, $sSortField, $sSortDirection) {
+    function &create($sBrowseBy, $sSortField, $sSortDirection) {
     	
 	    switch ($sBrowseBy) {
 	        case "folder" : // retrieve folderID if present
