@@ -280,13 +280,7 @@ CREATE TABLE zseq_roles (
 INSERT INTO `zseq_roles` SELECT MAX(`id`) FROM `roles`;
 ALTER TABLE `roles` CHANGE `id` `id` INT( 11 ) NOT NULL;
 
-DROP TABLE IF EXISTS zseq_search_document_user_link;
-CREATE TABLE zseq_search_document_user_link (
-  id int(10) unsigned NOT NULL auto_increment,
-  PRIMARY KEY  (id)
-) TYPE=MyISAM;
-INSERT INTO `zseq_search_document_user_link` SELECT MAX(`id`) FROM `search_document_user_link`;
-ALTER TABLE `search_document_user_link` CHANGE `id` `id` INT( 11 ) NOT NULL;
+ALTER TABLE `search_document_user_link` DROP `id`;
 
 DROP TABLE IF EXISTS zseq_status_lookup;
 CREATE TABLE zseq_status_lookup (
