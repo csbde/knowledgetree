@@ -196,6 +196,16 @@ class DBUtil {
         return DBUtil::runQuery(array($sQuery, $aParams), $db);
     }
 
+    function &paramArray($aArray) {
+        $iNumIds = count($aArray);
+        return join(",", array_fill(0, $iNumIds, '?'));
+    }
+
+    function &escapeSimple($sString, $db = null) {
+        $db =& DBUtil::getDB();
+        return $db->escapeSimple($sString);
+    }
+
 }
 
 ?>
