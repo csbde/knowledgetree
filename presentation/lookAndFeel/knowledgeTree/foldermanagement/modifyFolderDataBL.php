@@ -77,6 +77,7 @@ if (checkSession()) {
 				$oPatternCustom = & new PatternCustom();
 				$oPatternCustom->setHtml(getFolderData($fFolderID, _("An error occurred while updating this folder")));
 				$main->setHasRequiredFields(true);
+                                $_SESSION["pageAccess"][$default->rootUrl . '/presentation/lookAndFeel/knowledgeTree/store.php'] = true;
 				$main->setFormAction("$default->rootUrl/presentation/lookAndFeel/knowledgeTree/store.php?fReturnURL=" . urlencode("$default->rootUrl/control.php?action=browse&fFolderID=$fFolderID"));
 			}
 		} else {

@@ -53,6 +53,7 @@ if (checkSession()) {
             $oPatternCustom->setHtml(getCreatePage($fGroupID));
         }
 
+        $_SESSION["pageAccess"][$default->rootUrl . '/presentation/lookAndFeel/knowledgeTree/store.php'] = true;
         $main->setFormAction("$default->rootUrl/presentation/lookAndFeel/knowledgeTree/store.php?fReturnURL=" . urlencode("$default->rootUrl/control.php?action=editGroupSuccess"));
 
         // coming from manual edit page

@@ -50,6 +50,7 @@ if (checkSession()) {
         } else {
         	controllerRedirect("listRoles");
         }
+        $_SESSION["pageAccess"][$default->rootUrl .  '/presentation/lookAndFeel/knowledgeTree/store.php'] = true;
         $main->setFormAction("$default->rootUrl/presentation/lookAndFeel/knowledgeTree/store.php?fReturnURL=" . urlencode("$default->rootUrl/control.php?action=listRoles"));
 
         // coming from manual edit page
