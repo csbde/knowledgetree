@@ -74,6 +74,7 @@ class PatternCreate {
     }
 	
 	function render() {
+        global $default;
         $this->sUniqueName .= KTUtil::randomString();
         $_SESSION["pelfq_" . $this->sUniqueName . "_object"] = $this->sObject;
         $_SESSION["pelfq_" . $this->sUniqueName . "_fn"] = $this->sObjectPath;
