@@ -60,7 +60,7 @@ if (checkSession()) {
                             
                         } else {
                             // document update failed
-                            $oPatternCustom->setHtml("<p class=\"errorText\">An error occurred while storing this document in the database</p>\n");
+                            $oPatternCustom->setHtml(renderErrorPage("An error occurred while storing this document in the database"));
                         }
                     } else {
                         // prompt the user for a checkout comment
@@ -69,27 +69,24 @@ if (checkSession()) {
                 } else {
                     // this document is already checked out
                     // TODO: for extra credit, tell the user who has this document checked out
-                    $oPatternCustom->setHtml("<p class=\"errorText\">This document is already checked out</p>\n");                    
+                    $oPatternCustom->setHtml(renderErrorPage("This document is already checked out"));                    
                 }
             } else {
                 // no permission to checkout the document
-                $oPatternCustom->setHtml("<p class=\"errorText\">Could not check out this document</p>\n");
+                $oPatternCustom->setHtml(renderErrorPage("You don't have permission to check out this document"));
             }
         } else {
             // couldn't instantiate the document
-            $oPatternCustom->setHtml("<p class=\"errorText\">Could not check out this document</p>\n");
+            $oPatternCustom->setHtml(renderErrorPage("Could not check out this document"));
         }
     } else {
         // no document id was set when coming to this page,
-        $oPatternCustom->setHtml("<p class=\"errorText\">No document is currently selected for check out</p>\n");
+        $oPatternCustom->setHtml(renderErrorPage("No document is currently selected for check out"));
     }
 
     require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
     $main->setCentralPayload($oPatternCustom);
     $main->setFormAction($_SERVER["PHP_SELF"]);
-    if (isset($sErrorMessage)) {
-        $main->setErrorMessage($sErrorMessage);
-    }
     $main->render();
 }
 ?>
