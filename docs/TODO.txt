@@ -2,8 +2,7 @@ KnowledgeTree DMS Development TODO List
 ---------------------------------------
 
 (In no particular order after office integration)
-- Microsoft Office integration- Open, Edit, Update documents in the KnowledgeTree
-  from within Microsoft Office programs (IN PROGRESS)
+- Microsoft Office integration- Open, Edit, Update documents in the KnowledgeTree from within Microsoft Office programs (IN PROGRESS)
 
 - Search- improve standard search hitrate
   - if there are no standard search results then try advanced search?
@@ -45,5 +44,6 @@ KnowledgeTree DMS Development TODO List
   - Accomodate custom search terms- $fCustomSearchxxx
 - Allow thumbnails for image types (API for any other filetype)
 - Permission model- allow breaking of permission inheritance (integrate with serving multiple organisations)
+- Multi-document select in a folder (for delete, move etc.)
 
 $Id$
