@@ -177,7 +177,7 @@ $default->siteMap->addPage("addFolder", "/presentation/lookAndFeel/knowledgeTree
 $default->siteMap->addPage("addFolderDocType", "/presentation/lookAndFeel/knowledgeTree/foldermanagement/addFolderDocTypeBL.php", "Manage Documents", User, "");
 $default->siteMap->addPage("deleteFolderDocType", "/presentation/lookAndFeel/knowledgeTree/foldermanagement/deleteFolderDocTypeBL.php", "Manage Documents", User, "");
 $default->siteMap->addPage("editFolder", "/presentation/lookAndFeel/knowledgeTree/foldermanagement/editBL.php", "Manage Documents", User, "Modify Folder Properties");
-$default->siteMap->addPage("modifyFolderData", "/presentation/lookAndFeel/knowledgeTree/foldermanagement/modifyFolderDataBL.php", "Manage Documents", User, "Modify Folder Data");
+$default->siteMap->addPage("modifyFolderData", "/presentation/lookAndFeel/knowledgeTree/foldermanagement/modifyFolderDataBL.php", "Manage Documents", User, "Modify Folder Data", false);
 $default->siteMap->addPage("deleteFolder", "/presentation/lookAndFeel/knowledgeTree/foldermanagement/deleteFolderBL.php", "Manage Documents", User, "Delete Current Folder");
 
 
