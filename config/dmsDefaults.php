@@ -97,6 +97,7 @@ class KTInit {
     }
     // }}}
 
+    // {{{ setupDb()
     function setupDb () {
         global $default;
 
@@ -113,14 +114,20 @@ class KTInit {
         $options = array(
             'debug'       => 2,
             'portability' => DB_PORTABILITY_ERRORS,
+            'seqname_format' => 'zseq_%s',
         );
 
         $default->_db = &DB::connect($dsn, $options);
         $default->_db->setFetchMode(DB_FETCHMODE_ASSOC);
 
+        // DBCompat allows phplib API compatibility
         require_once(KT_LIB_DIR . '/database/dbcompat.inc');
         $default->db = new DBCompat;
+
+        // DBUtil is the preferred database abstraction
+        require_once(KT_LIB_DIR . '/database/dbutil.inc');
     }
+    /// }}}
 
     // {{{ cleanGlobals()
     function cleanGlobals () {
