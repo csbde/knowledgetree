@@ -62,7 +62,8 @@ function renderTypeSpecificMetaData($oDocument) {
 				"INNER JOIN document_fields AS DF ON DF.ID = DFL.document_field_id " .
 				"WHERE D.id = " . $oDocument->getID() . " " .
 				"AND DF.name NOT LIKE 'Author' " .
-				"AND DF.name NOT LIKE 'Category'";
+				"AND DF.name NOT LIKE 'Category' " .
+				"AND DF.is_generic = 0";
 	$aColumns = array("name", "value");
 	$aColumnHeaders = array("Tag", "Value");
 	$aColumnTypes = array(1,1);
@@ -117,6 +118,7 @@ function getPage($oDocument) {
 	$sToRender .= "</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>";
+	$sToRender .= "<input type=\"submit\" value=\"Edit\">";
 		
 	return $sToRender;	
 }
