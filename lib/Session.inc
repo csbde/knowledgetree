@@ -27,7 +27,8 @@ class Session {
         $_SESSION["userID"] = $userID;
         
         // lookup group id and add to session
-        $_SESSION["groupID"] = owlusergroup($userID);
+        $_SESSION["groupID"] = lookupGroupIDs($userID);
+        $default->log->debug("Session::create groupids=" . arrayToString($_SESSION["groupID"]));
         
         // use the PHP generated session id
         $sessionID = session_id();
@@ -87,9 +88,9 @@ class Session {
     function verify() {
         global $default, $lang_sesstimeout, $lang_sessinuse, $lang_err_sess_notvalid;
         
-        getprefs();
-        
+        session_start();
         $sessionID = session_id();
+        $default->log->debug("Session::verify retrieved sessionID=$sessionID");
         if (strlen($sessionID) > 0) {
         
             // initialise return status
@@ -99,16 +100,21 @@ class Session {
             $sql = new Owl_DB; 
             $sql->query("select * from $default->owl_sessions_table where session_id = '$sessionID'");
             $numrows = $sql->num_rows($sql);
-            $time = time();
             
             // found one match
-            if ($numrows == "1") {
+            if ($numrows == 1) {
+                $default->log->debug("Session::verify found session in db");
                 while($sql->next_record()) {
                     $ip = $this->getClientIP();
                     // check that ip matches
                     if ($ip == $sql->f("ip")) {
                         // now check if the timeout has been exceeded
-                        if(($time - strtotime($sql->f("lastused"))) <= $default->owl_timeout) {
+                        $lastused = $sql->f("lastused");
+                        $default->log->debug("Session::verify lastused=$lastused; str=" . strtotime($lastused));
+                        $default->log->debug("Session::verify current time=" . time());
+                        $diff = time() - strtotime($lastused);
+                        $default->log->debug("Session::verify timeout = " . $default->owl_timeout . "; diff=$diff");                        
+                        if((time() - strtotime($lastused)) <= $default->owl_timeout) {
                             // session has been verified, update status
                             $sessionStatus["status"] = 1;
                             // only set the userID if its not in the array already 
@@ -118,6 +124,7 @@ class Session {
                             // lookup the user                            
                             $sql->query("select * from $default->owl_users_table where id = '".$sessionStatus["userid"]."'");
                             while($sql->next_record()) {
+                                // FIXME: this much change to look at users_groups_link
                                 // only set the groupID if its not in the array already
                                 if (!$sessionStatus["groupID"]) {
                                     $sessionStatus["groupID"] = $sql->f("group_id");
@@ -140,10 +147,13 @@ class Session {
                 }
             }                         
         } else {
+            $default->log->error("Session::verify session not in db");
             // there is no session
             return false;
         }
         // return the array
+        $output = "Session::verify returning sessionStatus[\"status\"]=" . $sessionStatus["status"];
+        $default->log->debug($output);
         return $sessionStatus;
     }
     
