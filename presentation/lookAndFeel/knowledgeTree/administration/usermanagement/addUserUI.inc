@@ -11,7 +11,6 @@
 // display multiple users
 function getSelectUserPage($aResults) {
 	global $default;
-	
     $sToRender .= renderHeading("Add User To System");
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr><td>Select the User to add to the System:</td></tr>\n";
@@ -22,15 +21,12 @@ function getSelectUserPage($aResults) {
     $sToRender .= "</select></td></tr>\n";
     $sToRender .= "<tr><td></td><td align=\"right\"><input type=\"image\" src=\"$default->graphicsUrl/widgets/select.gif\" value=\"submit\" border=\"0\"/></td></tr>\n";
 	$sToRender .= "</table>\n";
-	
 	return $sToRender;
 }
 
 // get add pages
 function getSearchPage($unitID) {
-
 	global $default;
-	
     $sToRender .= renderHeading("Search For A User To Add");
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr><td colspan=\"2\">Please enter a VALID Username to search for in the text box below</td></tr>\n";
@@ -43,13 +39,10 @@ function getSearchPage($unitID) {
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<td></td><td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/select.gif\" value=\"Submit\" border=\"0\"/></td>\n";	
 	$sToRender .= "</table>\n";
-	
 	return $sToRender;
-	
 }
 
-function getDetailsDBPage($suserName, $aAttributes) {
-
+function getDetailsDBPage($sUserName, $aAttributes) {
  	global $default;
     $sToRender .= renderHeading("Add User To System");
     foreach ($aAttributes as $sUserName => $aUserAttributes) {
@@ -76,20 +69,19 @@ function getDetailsDBPage($suserName, $aAttributes) {
         $sToRender .= "<tr>\n";
         $sToRender .= "<td>Sms Notification: </td><td><input type=\"checkbox\" name=\"fSmsNotification\" value=\"" . $aUserAttributes["sms_notification"] . "\" " . ($aUserAttributes["sms_notification"] == "1" ? "checked" : "") . "> </td>\n";
         $sToRender .= "</tr>\n";
+        $sToRender .= "<tr><td><b>Initial Group</b></td><td>" . getGroupListBox() . "</td></tr>\n";        
         $sToRender .= "<tr>\n";
         $sToRender .= "<td colspan=\"2\" align=\"right\">" . getAddButton() . getCancelButton() . "</td>";
         $sToRender .= "</tr>\n";
         $sToRender .= "</table>\n";
+		$sToRender .= getJavascriptValidation();        
 	}
 	return $sToRender;
-	
 }
 
-function getDetailsLDAPPage($suserName, $aAttributes, $sUserIdentifier) {
+function getDetailsLDAPPage($sUserName, $aAttributes, $sUserIdentifier) {
  	global $default;
- 	
     $sToRender .= renderHeading("Add User To System");
-
 	foreach ($aAttributes as $sUserName => $aUserAttributes) {
         $sToRender .= "<table>\n";
         $sToRender .= "<tr><td><b>User Details: </b></td></tr>\n";
@@ -98,15 +90,14 @@ function getDetailsLDAPPage($suserName, $aAttributes, $sUserIdentifier) {
         $sToRender .= "<input type=\"hidden\" name=\"fLdap\" value = \"". $aUserAttributes["dn"]. "\">\n";
         $sToRender .= "</tr>\n";
         $sToRender .= "<tr>\n";
-        $sToRender .= "<td>Username: </td><td><input disabled size = \"40\" type=\"text\" name=\"fUsername\" value = \"" . $aUserAttributes[$sUserIdentifier] ."\"> </td>\n";
+        $sToRender .= "<td>Username: </td><td><input " . ($default->bNN4 ? "onblur=\"disable(document.MainForm.fUsername)" : "DISABLED") . " size = \"40\" type=\"text\" name=\"fUsername\" value = \"" . $aUserAttributes[$sUserIdentifier] ."\"> </td>\n";
         $sToRender .= "<input type=\"hidden\" name=\"fUsername\" value = \"" . $aUserAttributes[$sUserIdentifier] ."\">\n";
         $sToRender .= "</tr>\n";
         $sToRender .= "<tr>\n";
         $sToRender .= "<td>Name: </td><td><input size = \"40\" type=\"text\" name=\"fName\" value = \"" . $aUserAttributes["givenname"] ." " . $aUserAttributes["sn"] ."\"> </td>\n";
         $sToRender .= "</tr>\n";
         $sToRender .= "<tr>\n";
-        $sToRender .= "<td>Email: </td><td><input " . ((strlen($aUserAttributes["mail"]) > 0) ? "disabled " : "") . "size = \"40\" type=\"text\" name=\"fEmail\" value = \"" . $aUserAttributes["mail"] ."\"> </td>\n";
-        $sToRender .= "<input type=\"hidden\" name=\"fEmail\" value = \"" . $aUserAttributes["mail"] ."\">\n";    
+        $sToRender .= "<td>Email: </td><td><input size = \"40\" type=\"text\" name=\"fEmail\" value = \"" . $aUserAttributes["userPrincipalName"] ."\"> </td>\n";
         $sToRender .= "</tr>\n";
         $sToRender .= "<tr>\n";
         $sToRender .= "<td>Mobile Number: </td><td><input size = \"40\" type=\"text\" name=\"fMobile\" value = \"" . $aUserAttributes["mobile"] ."\"> </td>\n";
@@ -117,89 +108,78 @@ function getDetailsLDAPPage($suserName, $aAttributes, $sUserIdentifier) {
         $sToRender .= "<tr>\n";
         $sToRender .= "<td>Sms Notification: </td><td><input type=\"checkbox\" name=\"fSmsNotification\"/> </td>\n";
         $sToRender .= "</tr>\n";
+        $sToRender .= "<tr><td><b>Group</b></td><td>" . getGroupListBox() . "</td></tr>\n";        
         $sToRender .= "<tr>\n";
         $sToRender .= "<td colspan=\"2\" align=\"right\">" . getAddButton() . getCancelButton() . "</td>";
         $sToRender .= "</tr>\n";
         $sToRender .= "</table>\n";
+        $sToRender .= getJavascriptValidation(true);
     }
-
 	return $sToRender;
 }
 
+function getJavascriptValidation($bLdap) {
+	// validation starts
+	$sToRender .= "\n\n<script language=\"javascript\">\n<!--\n";
+	$sToRender .= "function validateForm(theForm) {\n";
+	// the username is disabled for adding users from a directory
+	if (!$bLdap) {
+	    $sToRender .= "\tif (!(validRequired(theForm.fUsername, 'Username'))) {\n";
+	    $sToRender .= "\t\treturn false;\n\t}\n";
+	}
+    $sToRender .= "\tif (!(validRequired(theForm.fName, 'User display name'))) {\n";
+    $sToRender .= "\t\treturn false;\n\t}\n";
+    $sToRender .= "\tif (!(validRequired(theForm.fPassword, 'Password'))) {\n";
+    $sToRender .= "\t\treturn false;\n\t}\n";
+    $sToRender .= "\tif (!(validRequired(theForm.fEmail, 'Email address'))) {\n";
+    $sToRender .= "\t\treturn false;\n\t}\n";
+    $sToRender .= "\tif (!(validRequired(theForm.fGroupID, 'Initial group'))) {\n";
+    $sToRender .= "\t\treturn false;\n\t}\n";    
+	$sToRender .= "return true;\n}\n";
+	$sToRender .= "//-->\n</script>\n\n";
+	return $sToRender;	
+}	
 
-// if edition is successful print otu success page
-function getPageSuccess() {	
-	global $default;
-			
-	$sToRender .= renderHeading("Add User To System");
-	$sToRender .= "<table>\n";
-    $sToRender .= "<tr><td><b>Addition Successful!</b></td></tr>\n";
-	$sToRender .= "<tr></tr>\n";
-	$sToRender .= "<tr><td>The User was successfully added to the System</td></tr>\n";
-	$sToRender .= "<tr></tr>\n";
-	$sToRender .= "<tr></tr>\n";
-	$sToRender .= "<tr>\n";
-	$sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=addUser\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
-	$sToRender .= "</tr>\n";
-	$sToRender .= "</table>\n";
-	
-	return $sToRender;
+function getPageSuccess() {
+	return statusPage("Add User To System", "Addition Successful!", "The User was successfully added to the System.", "addUser");
 }
 
-// if edition is successful print otu success page
-function getPageFail() {	
-	global $default;
-			
-	$sToRender .= renderHeading("Add User To System");
-	$sToRender .= "<table>\n";
-	$sToRender .= "<tr><td><b>Addition Successful!</b></td></tr>\n";
-	$sToRender .= "<tr></tr>\n";
-	$sToRender .= "<tr><td>The User was not added. Username Already exists!</td></tr>\n";
-	$sToRender .= "<tr></tr>\n";
-	$sToRender .= "<tr></tr>\n";
-	$sToRender .= "<tr>\n";
-	$sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=addUser\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
-	$sToRender .= "</tr>\n";
-	$sToRender .= "</table>\n";
-	
-	
-	return $sToRender;
+function getPageGroupFail() {
+	return statusPage("Add User To System", "Group Addition Unsuccessful!", "The user was succesfully added, but could not be assigned to the selected group.", "addUser");
+}	
+
+function getPageFail() {
+	return statusPage("Add User To System", "Addition Unsuccessful!", "The user was not added because the selected User Name already exists.", "addUser");
 }
 
-
-// if edition is successful print otu success page
-function getPageUsernameNotFound() {	
-	global $default;
-			
-	$sToRender .= renderHeading("Add User To System");
-	$sToRender .= "<table>\n";
-	$sToRender .= "<tr><td><b>Username not found!</b></td></tr>\n";
-	$sToRender .= "<tr></tr>\n";
-	$sToRender .= "<tr><td>Please ensure that the username that you entered Exists!</td></tr>\n";
-	$sToRender .= "<tr></tr>\n";
-	$sToRender .= "<tr></tr>\n";
-	$sToRender .= "<tr>\n";
-	$sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=addUser\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
-	$sToRender .= "</tr>\n";
-	$sToRender .= "</table>\n";
-	
-	
-	return $sToRender;
+function getPageUsernameNotFound() {
+	return statusPage("Add User To System", "Username not found!", "Your user search string did not match any users in the user directory.", "addUser");
 }
 
-
-// show delete button or select button
 function getAddButton() {
 	global $default;
-		return "<input type=\"image\" src =\"$default->graphicsUrl/widgets/add.gif\" value=\"submit\" border=\"0\"/>\n";
+	return "<input type=\"image\" src =\"$default->graphicsUrl/widgets/add.gif\" value=\"submit\" border=\"0\"/>\n";
 }
 
-// show cancel button
 function getCancelButton() {
 	global $default;
 	return "<a href=\"$default->rootUrl/control.php?action=addUser\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" /></a>\n";
-	
 }
 
-
+function getGroupListBox() {
+	global $default;
+	if (Permission::userIsSystemAdministrator()) {
+	    // if this is the system administrator, prepend group names with unit name
+	    $oPatternListBox = & new PatternListBox($default->owl_groups_table, "name", "id", "fGroupID");
+	    $oPatternListBox->setFromClause("LEFT OUTER JOIN groups_units_link GUL on ST.id=GUL.group_id " .
+	                                    "LEFT OUTER JOIN units_lookup UL on GUL.unit_id=UL.id");
+	    $oPatternListBox->setCompositeDisplayName("DISTINCT COALESCE(CONCAT(CONCAT(UL.name, '-'),ST.name),ST.name)");
+	} else if (Permission::userIsUnitAdministrator()) {
+	    // else if this is a unit administrator, only display the groups in your unit
+	    $oPatternListBox = & new PatternListBox($default->owl_groups_table, "name", "id", "fGroupID");
+	    $oPatternListBox->setFromClause("INNER JOIN $default->owl_groups_units_table GUL on ST.id=GUL.group_id");
+	    $oPatternListBox->setWhereClause("GUL.unit_id=" . User::getUnitID($_SESSION["userID"]));
+	}
+	return $oPatternListBox->render();
+}
 ?>
