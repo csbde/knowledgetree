@@ -46,7 +46,7 @@ class NavBar {
         $this->iFolderID = $iTmpFolderID;
         $this->iDocumentID = $iTmpDocumentID;
         $this->sCategoryName = $sTmpCategoryName;
-        $this->iDoctypeID = $iTmpDocTypeID;
+        $this->iDocTypeID = $iTmpDocTypeID;	
 
 
         $this->mdocs = "$default->graphicsUrl/mdocs/norm.gif";
@@ -216,8 +216,7 @@ class NavBar {
 			  if ((strcmp($this->sSection,"Standard Search") == 0) || (strcmp($this->sSection,"Advanced Search") == 0)) {
 				  $bar .= "<INPUT type=\"hidden\" name=\"fSearchText\" width=\"30\" height = \"10\" align = \"absmiddle\" />\n ";
 			  } else {
-				  $bar .= "<INPUT type=\"text\" name=\"fStandardSearchString\" width=\"30\" height = \"10\" align = \"absmiddle\" />\n " .
-						"<INPUT type=\"hidden\" name=\"fBrowseType\" value=\"" . $this->sBrowseType . "\"  />\n " .
+				  $bar .= "<INPUT type=\"text\" name=\"fStandardSearchString\" width=\"30\" height = \"10\" align = \"absmiddle\" />\n " .						
 						"<INPUT type=\"hidden\" name=\"fFolderID\"  value=\"" . $this->iFolderID . "\"  />\n " .
 						"<INPUT type=\"hidden\" name=\"fDocumentID\" value=\"" . $this->iDocumentID . "\"  />\n " .
 						"<INPUT type=\"hidden\" name=\"fCategoryName\" value=\"" . $this->sCategoryName . "\"  />\n " .
