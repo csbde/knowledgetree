@@ -30,12 +30,16 @@
  */
 
 require_once("../../../../config/dmsDefaults.php");
+require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
+    
 if (checkSession()) {
     require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
 
     $oPatternCustom = & new PatternCustom();
 
     if (isset($fFolderID)) {
+    	//initialse a folder object
+    	$oFolder = Folder::get($fFolderID);
         require_once("$default->fileSystemRoot/lib/visualpatterns/PatternTableSqlQuery.inc");
 		require_once("$default->fileSystemRoot/lib/visualpatterns/PatternListBox.inc");
         require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
@@ -49,7 +53,8 @@ if (checkSession()) {
         if (!isset($fFolderName)) {
             require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
             //we're still browsing			
-            if (Permission::userHasFolderWritePermission($fFolderID)) {
+           
+            if (Permission::userHasFolderWritePermission($oFolder)) {
                 //if the user is allowed to add folders, then display the add button
                 $oPatternCustom->setHtml(renderBrowseAddPage($fFolderID));
             } else {
@@ -65,7 +70,7 @@ if (checkSession()) {
         	// a document type has been specified
         	if (isset($fDocumentTypeID)) {
             //have a folder name to store
-	            if (Permission::userHasFolderWritePermission($fFolderID)) {
+	            if (Permission::userHasFolderWritePermission($oFolder)) {
 	                //check for illegal characters in the folder name
 	                
 	                // strip slashes from the already EPGCS escaped form input
