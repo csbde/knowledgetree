@@ -369,7 +369,7 @@ class Folder {
 		}	
 		return $default->owl_FileDir . "/" . Folder::getFolderName($iFolderID) . "/";*/
 		$oFolder = Folder::get($iFolderID);
-		return $oFolder->sFullPath;
+		return $default->owl_FileDir . "/" . $oFolder->sFullPath . "/" . $oFolder->getName();
 	}
 
 	/**
@@ -382,15 +382,18 @@ class Folder {
      */
     function getFolderPathAsArray($iFolderID) {
 		global $default;		
-		//if the folder has a parent
-		/*if (Folder::getParentFolderID($iFolderID) != 0) {
-			$aPathArray = Folder::getFolderPathAsArray(Folder::getParentFolderID($iFolderID));
-            $aPathArray[] = $iFolderID;
-		} else {
-            $aPathArray[] = $iFolderID;
-        }*/
 		$oFolder = Folder::get($iFolderID);
-		$aPathArray = explode($oFolder->sParentFolderIDs , ",");		
+		$aPathArray;
+		if (strlen($oFolder->sParentFolderIDs) > 0) {
+			if (strlen($oFolder->sParentFolderIDs) > 1) {				
+				$aPathArray = explode(",",$oFolder->sParentFolderIDs);				
+			} else {
+				$aPathArray = array($oFolder->sParentFolderIDs);
+			}
+			$aPathArray[count($aPathArray)] = $oFolder->getID();
+		} else {
+			$aPathArray = array($oFolder->getID());
+		}
 		return $aPathArray;
     }
 	
