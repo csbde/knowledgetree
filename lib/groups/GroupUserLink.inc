@@ -1,14 +1,29 @@
 <?php
 /**
-*
-* Class GroupUserLink
-* Represents a group, unit link as per the database table groups_units_link
-*
-* @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
-* @date 20 January 2003
-* @package lib.groups
-*/
-
+ * $Id$
+ *
+ * Represents a group, unit link as per the database table groups_units_link.
+ *
+ * Copyright (c) 2003 Jam Warehouse http://www.jamwarehouse.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ * @version $Revision$
+ * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
+ * @package lib.groups 
+ */
 class GroupUserLink {
 	
 	/** primary key of object */
@@ -87,7 +102,7 @@ class GroupUserLink {
 		if ($this->iId < 0) 
 		{
 			$sql = $default->db;
-			$query = "SELECT user_id, group_id FROM ". $default->owl_users_groups_table ." WHERE user_id = '" . $this->iUserID . "' and group_id = '". $this->iGroupID ."'";
+			$query = "SELECT user_id, group_id FROM ". $default->users_groups_table ." WHERE user_id = '" . $this->iUserID . "' and group_id = '". $this->iGroupID ."'";
         		$sql->query($query);
        			$rows = $sql->num_rows($sql);
         
@@ -100,7 +115,7 @@ class GroupUserLink {
        			 else
        			 {
 				$sql = $default->db;
-				$result = $sql->query("INSERT INTO " . $default->owl_users_groups_table . " (group_id, user_id) VALUES ($this->iGroupID, $this->iUserID)");
+				$result = $sql->query("INSERT INTO " . $default->users_groups_table . " (group_id, user_id) VALUES ($this->iGroupID, $this->iUserID)");
 				if ($result) {
 					$this->iId = $sql->insert_id();
 					return  true;
@@ -109,7 +124,7 @@ class GroupUserLink {
 			return false;
 		}
 	}
-		$_SESSION["errorMessage"] = $lang_err_object_exists . "id = " . $this->iId . " table = $default->owl_users_groups_table";
+		$_SESSION["errorMessage"] = $lang_err_object_exists . "id = " . $this->iId . " table = $default->users_groups_table";
 		return false;
 	}
 	
@@ -124,7 +139,7 @@ class GroupUserLink {
 		//only update if the object has been stored
 		if ($this->iId > 0) {
 			$sql = $default->db;
-			$result = $sql->query("UPDATE " . $default->owl_users_groups_table . " SET group_id = $this->iGroupID, user_id = $this->iUserID WHERE id = $this->iId");
+			$result = $sql->query("UPDATE " . $default->users_groups_table . " SET group_id = $this->iGroupID, user_id = $this->iUserID WHERE id = $this->iId");
 			if ($result) {
 				return true;
 			}
@@ -146,7 +161,7 @@ class GroupUserLink {
 		//only delete the object if it exists in the database
 		if ($this->iId >= 0) {
 			$sql = $default->db;
-			$result = $sql->query("DELETE FROM $default->owl_users_groups_table WHERE id = $this->iId");
+			$result = $sql->query("DELETE FROM $default->users_groups_table WHERE id = $this->iId");
 			if ($result) {
 				return true;
 			}
@@ -168,14 +183,14 @@ class GroupUserLink {
 	function & get($iGroupUserLinkID) {
 		global $default;
 		$sql = $default->db;
-		$result = $sql->query("SELECT * FROM $default->owl_users_groups_table WHERE id = $iGroupUserLinkID");
+		$result = $sql->query("SELECT * FROM $default->users_groups_table WHERE id = $iGroupUserLinkID");
 		if ($result) {
 			if ($sql->next_record()) {
 				$oGroupUserLink = & new GroupUserLink($sql->f("group_id"), $sql->f("user_id"));
 				$oGroupUserLink->iId = $iGroupUserLinkID;
 				return $oGroupUserLink;
 			}
-			$_SESSION["errorMessage"] = $lang_err_object_not_exist . "id = " . $iGroupUserLinkID . " table = $default->owl_users_groups_table";
+			$_SESSION["errorMessage"] = $lang_err_object_not_exist . "id = " . $iGroupUserLinkID . " table = $default->users_groups_table";
 			return false;
 		}
 		$_SESSION["errorMessage"] = $lang_err_database;
@@ -195,7 +210,7 @@ class GroupUserLink {
 		$aGroupUserLink;
 		settype($aGroupUserLink, "array");
 		$sql = $default->db;
-		$result = $sql->query("SELECT * FROM " . $default->owl_users_groups_table  . (isset($sWhereClause) ? " " . $sWhereClause : ""));
+		$result = $sql->query("SELECT * FROM " . $default->users_groups_table  . (isset($sWhereClause) ? " " . $sWhereClause : ""));
 		if ($result) {			
 			$iCount = 0;
 			while ($sql->next_record()) {
@@ -214,7 +229,7 @@ class GroupUserLink {
 		$aGroupUserLink;
 		settype($aGroupUserLink, "array");
 		$sql = $default->db;
-		$result = $sql->query("SELECT group_id FROM " . $default->owl_users_groups_table  . " Where user_id = ". $iUserID);
+		$result = $sql->query("SELECT group_id FROM " . $default->users_groups_table  . " Where user_id = ". $iUserID);
 		if ($result) {			
 			$iCount = 0;
 			while ($sql->next_record()) {
@@ -240,7 +255,7 @@ class GroupUserLink {
 	 {
 	       global $default;
 	
-	        $value = lookupField("$default->owl_users_groups_table", "group_id", "user_id", $iUserID );
+	        $value = lookupField("$default->users_groups_table", "group_id", "user_id", $iUserID );
 	        
 	        return $value;
 	        
@@ -260,7 +275,7 @@ class GroupUserLink {
 	 {
 	   	global $default;
 		$sql = $default->db;
-		$result = $sql->query("SELECT id FROM $default->owl_users_groups_table WHERE user_id = $iUserId and group_id = $iGroupId");
+		$result = $sql->query("SELECT id FROM $default->users_groups_table WHERE user_id = $iUserId and group_id = $iGroupId");
 		if ($result) {
 			if ($sql->next_record()) {
 				$id = $sql->f("id");

@@ -1,14 +1,30 @@
 <?php
 /**
-* Class that represents a link between users, folders and roles as per the
-* folders_users_roles_link
-*
-* @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
-* @date 29 January 2003
-* @package lib.foldermanagement
-*
-*/
-
+ * $Id$
+ *
+ * Class that represents a link between users, folders and roles as per the
+ * folders_users_roles_link table.
+ *
+ * Copyright (c) 2003 Jam Warehouse http://www.jamwarehouse.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ * @version $Revision$
+ * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
+ * @package lib.foldermanagement 
+ */
 class FolderUserRole {
 	
 	var $iId;
@@ -103,7 +119,7 @@ class FolderUserRole {
 		//if the object hasn't been created
 		if ($this->iId < 0) {
 			$sql = $default->db;
-			$result = $sql->query("INSERT INTO " . $default->owl_folders_user_roles_table . " (user_id, document_id, group_folder_approval_id, datetime, done, active, dependant_documents_created) VALUES ($this->iUserID, $this->iDocumentID, $this->iGroupFolderApprovalID, '$this->dDateTime', " . ($this->bDone ? "1" : "0") . ", " . ($this->bActive ? "1" : "0") . ", " . (($this->bDependantDocumentsCreated) ? "1" : "0") . ")");
+			$result = $sql->query("INSERT INTO " . $default->folders_user_roles_table . " (user_id, document_id, group_folder_approval_id, datetime, done, active, dependant_documents_created) VALUES ($this->iUserID, $this->iDocumentID, $this->iGroupFolderApprovalID, '$this->dDateTime', " . ($this->bDone ? "1" : "0") . ", " . ($this->bActive ? "1" : "0") . ", " . (($this->bDependantDocumentsCreated) ? "1" : "0") . ")");
 			if ($result) {
 				$this->iId = $sql->insert_id();
 				return  true;
@@ -126,8 +142,8 @@ class FolderUserRole {
 		//only update if the object has been stored
 		if ($this->iId > 0) {
 			$sql = $default->db;
-			//echo "UPDATE " . $default->owl_folders_user_roles_table . " SET user_id = $this->iUserID, document_id = $this->iDocumentID, group_folder_approval_id = $this->iGroupFolderApprovalID, datetime = '$this->dDateTime', done = " . ($this->bDone ? "1" : "0") . ", active = " . ($this->bActive ? "1" : "0") . ", dependant_documents_created = " . ($this->bDependantDocumentsCreated ? "1" : "0") . " WHERE id = $this->iId";
-			$result = $sql->query("UPDATE " . $default->owl_folders_user_roles_table . " SET user_id = $this->iUserID, document_id = $this->iDocumentID, group_folder_approval_id = $this->iGroupFolderApprovalID, datetime = '$this->dDateTime', done = " . ($this->bDone ? "1" : "0") . ", active = " . ($this->bActive ? "1" : "0") . ", dependant_documents_created = " . ($this->bDependantDocumentsCreated ? "1" : "0") . " WHERE id = $this->iId");
+			//echo "UPDATE " . $default->folders_user_roles_table . " SET user_id = $this->iUserID, document_id = $this->iDocumentID, group_folder_approval_id = $this->iGroupFolderApprovalID, datetime = '$this->dDateTime', done = " . ($this->bDone ? "1" : "0") . ", active = " . ($this->bActive ? "1" : "0") . ", dependant_documents_created = " . ($this->bDependantDocumentsCreated ? "1" : "0") . " WHERE id = $this->iId";
+			$result = $sql->query("UPDATE " . $default->folders_user_roles_table . " SET user_id = $this->iUserID, document_id = $this->iDocumentID, group_folder_approval_id = $this->iGroupFolderApprovalID, datetime = '$this->dDateTime', done = " . ($this->bDone ? "1" : "0") . ", active = " . ($this->bActive ? "1" : "0") . ", dependant_documents_created = " . ($this->bDependantDocumentsCreated ? "1" : "0") . " WHERE id = $this->iId");
 			if ($result) {
 				return true;
 			}
@@ -149,7 +165,7 @@ class FolderUserRole {
 		//only delete the object if it exists in the database
 		if ($this->iId >= 0) {
 			$sql = $default->db;
-			$result = $sql->query("DELETE FROM $default->owl_folders_user_roles_table WHERE id = $this->iId");
+			$result = $sql->query("DELETE FROM $default->folders_user_roles_table WHERE id = $this->iId");
 			if ($result) {
 				return true;
 			}
@@ -171,7 +187,7 @@ class FolderUserRole {
 	function & get($iFolderUserRoleID) {
 		global $default;
 		$sql = $default->db;
-		$result = $sql->query("SELECT * FROM $default->owl_folders_user_roles_table WHERE id = $iFolderUserRoleID");
+		$result = $sql->query("SELECT * FROM $default->folders_user_roles_table WHERE id = $iFolderUserRoleID");
 		if ($result) {
 			if ($sql->next_record()) {
 				$oFolderUserRole = & new FolderUserRole($sql->f("user_id"), $sql->f("document_id"), $sql->f("group_folder_approval_id"), $sql->f("done"), $sql->f("active"), $sql->f("dependant_documents_created"));
@@ -180,7 +196,7 @@ class FolderUserRole {
 				
 				return $oFolderUserRole;
 			}
-			$_SESSION["errorMessage"] = $lang_err_object_not_exist . "id = " . $iFolderUserRoleID . " table = $default->owl_folders_user_roles_table";
+			$_SESSION["errorMessage"] = $lang_err_object_not_exist . "id = " . $iFolderUserRoleID . " table = $default->folders_user_roles_table";
 			return false;
 		}
 		$_SESSION["errorMessage"] = $lang_err_database;
@@ -200,7 +216,7 @@ class FolderUserRole {
 		$aFolderUserRoleArray;
 		settype($aFolderUserRoleArray, "array");
 		$sql = $default->db;
-		$result = $sql->query("SELECT * FROM " . $default->owl_folders_user_roles_table  . (isset($sWhereClause) ? " WHERE " . $sWhereClause : ""));
+		$result = $sql->query("SELECT * FROM " . $default->folders_user_roles_table  . (isset($sWhereClause) ? " WHERE " . $sWhereClause : ""));
 		if ($result) {			
 			$iCount = 0;
 			while ($sql->next_record()) {
@@ -217,7 +233,7 @@ class FolderUserRole {
 	function & getFromFolderCollaboration($iFolderCollaborationID, $iDocumentID) {
 		global $default, $lang_err_database;
 		$sql = $default->db;
-		$sql->query("SELECT id FROM $default->owl_folders_user_roles_table WHERE group_folder_approval_id = $iFolderCollaborationID AND document_id = $iDocumentID");
+		$sql->query("SELECT id FROM $default->folders_user_roles_table WHERE group_folder_approval_id = $iFolderCollaborationID AND document_id = $iDocumentID");
 		if ($sql->next_record()) {
 			return FolderUserRole::get($sql->f("id"));
 		}

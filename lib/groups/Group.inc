@@ -1,13 +1,29 @@
 <?php
 /**
-* Represents a Group as per the database table groups
-*
-* @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
-* @date 23 January 2003
-* @package lib.groups
-*
-*/
-
+ * $Id$
+ *
+ * Represents a Group as per the database table groups.
+ *
+ * Copyright (c) 2003 Jam Warehouse http://www.jamwarehouse.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ * @version $Revision$
+ * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
+ * @package lib.groups 
+ */
 class Group {
 	
 	/** primary key of current object */
@@ -66,7 +82,7 @@ class Group {
 	function hasUsers() {
 		global $default;
 		$sql = $default->db;
-		$sql->query("SELECT id FROM $default->owl_users_groups_table WHERE group_id = $this->iId");
+		$sql->query("SELECT id FROM $default->users_groups_table WHERE group_id = $this->iId");
        	$rows = $sql->num_rows();
         if ($rows > 0) {
         	return true;
@@ -82,7 +98,7 @@ class Group {
 		global $default;
 
 		$sql = $default->db;
-		$query = "SELECT id FROM $default->owl_groups_units_table WHERE group_id = $this->iId";
+		$query = "SELECT id FROM $default->groups_units_table WHERE group_id = $this->iId";
 	    $sql->query($query);
 	   	$rows = $sql->num_rows();
 		if ($rows > 0){
@@ -104,7 +120,7 @@ class Group {
 		if ($this->iId < 0) {
 			//check to see if name exsits
 			$sql = $default->db;
-			$query = "SELECT name FROM ". $default->owl_groups_table ." WHERE name = '" . $this->sName . "'";
+			$query = "SELECT name FROM ". $default->groups_table ." WHERE name = '" . $this->sName . "'";
       		$sql->query($query);
      		$rows = $sql->num_rows();
    			if ($rows > 0) {
@@ -113,7 +129,7 @@ class Group {
 				return false;
 	        } else {
 				$sql = $default->db;
-				$result = $sql->query("INSERT INTO " . $default->owl_groups_table . " (name, is_sys_admin, is_unit_admin) VALUES ('" . addslashes($this->sName) . "', " . ($this->bIsSysAdmin ? 1 : 0) . ", " . ($this->bIsUnitAdmin ? 1 : 0) . ")");
+				$result = $sql->query("INSERT INTO " . $default->groups_table . " (name, is_sys_admin, is_unit_admin) VALUES ('" . addslashes($this->sName) . "', " . ($this->bIsSysAdmin ? 1 : 0) . ", " . ($this->bIsUnitAdmin ? 1 : 0) . ")");
 				if ($result) {
 					$this->iId = $sql->insert_id();
 					return  true;
@@ -137,7 +153,7 @@ class Group {
 		//only update if the object has been stored
 		if ($this->iId > 0) {
 			$sql = $default->db;
-			$result = $sql->query("UPDATE " . $default->owl_groups_table . " SET name = '" . addslashes($this->sName) . "', is_sys_admin = " . ($this->bIsSysAdmin ? 1 : 0) . ", is_unit_admin = " . ($this->bIsUnitAdmin ? 1 : 0) . " WHERE id = $this->iId");
+			$result = $sql->query("UPDATE " . $default->groups_table . " SET name = '" . addslashes($this->sName) . "', is_sys_admin = " . ($this->bIsSysAdmin ? 1 : 0) . ", is_unit_admin = " . ($this->bIsUnitAdmin ? 1 : 0) . " WHERE id = $this->iId");
 			if ($result) {
 				return true;
 			}
@@ -159,7 +175,7 @@ class Group {
 		//only delete the object if it exists in the database
 		if ($this->iId >= 0) {
 			$sql = $default->db;
-			$result = $sql->query("DELETE FROM $default->owl_groups_table WHERE id = $this->iId");
+			$result = $sql->query("DELETE FROM $default->groups_table WHERE id = $this->iId");
 			return $result;
 		}
 		$_SESSION["errorMessage"] = $lang_err_object_key;
@@ -177,14 +193,14 @@ class Group {
 	function & get($iGroupID) {
 		global $default;
 		$sql = $default->db;
-		$result = $sql->query("SELECT * FROM $default->owl_groups_table WHERE id = $iGroupID");
+		$result = $sql->query("SELECT * FROM $default->groups_table WHERE id = $iGroupID");
 		if ($result) {
 			if ($sql->next_record()) {
 				$oGroup = & new Group(stripslashes($sql->f("name")), $sql->f("is_unit_admin"), $sql->f("is_sys_admin"));
 				$oGroup->iId = $iGroupID;
 				return $oGroup;
 			}
-			$_SESSION["errorMessage"] = $lang_err_object_not_exist . "id = " . $iGroupID . " table = $default->owl_groups_table";
+			$_SESSION["errorMessage"] = $lang_err_object_not_exist . "id = " . $iGroupID . " table = $default->groups_table";
 			return false;
 		}
 		$_SESSION["errorMessage"] = $lang_err_database;
@@ -204,7 +220,7 @@ class Group {
 		$aGroupArray;
 		settype($aGroupArray, "array");
 		$sql = $default->db;
-		$result = $sql->query("SELECT * FROM " . $default->owl_groups_table  . (isset($sWhereClause) ? " " . $sWhereClause : ""));
+		$result = $sql->query("SELECT * FROM " . $default->groups_table  . (isset($sWhereClause) ? " " . $sWhereClause : ""));
 		if ($result) {			
 			$iCount = 0;
 			while ($sql->next_record()) {
@@ -229,7 +245,7 @@ class Group {
      */
 	function getGroupName($id) {
         global $default;
-        $sName = lookupField("$default->owl_groups_table", "name", "id", $id );
+        $sName = lookupField("$default->groups_table", "name", "id", $id );
         return $sName;
 	}
 }
@@ -247,7 +263,7 @@ class Group {
 	 {
 	       global $default;
 	
-	        $name = lookupField("$default->owl_groups_table", "name", "id", $id );
+	        $name = lookupField("$default->groups_table", "name", "id", $id );
 	        
 	        $this->sName= $name;
 	}

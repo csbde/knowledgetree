@@ -1,16 +1,31 @@
 <?php
 /**
-* Class GroupFolderApprovalLink
-* Represents a group/folder/approval link as per the groups_folders_approval_link
-* 
-* groups_folders_approval_link are used to set the approval workflow for a document
-* The precedence_id determines the order of the workflow
-*
-* @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
-* @date 20 January 2003
-* @package lib.groups
-*/
-
+ * $Id$
+ *
+ * Represents a group/folder/approval link as per the groups_folders_approval_link.
+ * Used to set the approval workflow for a document
+ * The precedence_id determines the order of the workflow.
+ *
+ * Copyright (c) 2003 Jam Warehouse http://www.jamwarehouse.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ * @version $Revision$
+ * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
+ * @package lib.groups 
+ */
 class GroupFolderApprovalLink {
 	
 	/** primary key of object */
@@ -134,7 +149,7 @@ class GroupFolderApprovalLink {
 		//if the object hasn't been created
 		if ($this->iId < 0) {
 			$sql = $default->db;
-			$result = $sql->query("INSERT INTO " . $default->owl_groups_folders_approval_table . " (folder_id, group_id, precedence, role_id) VALUES ($this->iFolderID, $this->iGroupID, $this->iPrecedence, $this->iRoleID)");
+			$result = $sql->query("INSERT INTO " . $default->groups_folders_approval_table . " (folder_id, group_id, precedence, role_id) VALUES ($this->iFolderID, $this->iGroupID, $this->iPrecedence, $this->iRoleID)");
 			if ($result) {
 				$this->iId = $sql->insert_id();
 				return  true;
@@ -157,7 +172,7 @@ class GroupFolderApprovalLink {
 		//only update if the object has been stored
 		if ($this->iId > 0) {
 			$sql = $default->db;
-			$result = $sql->query("UPDATE " . $default->owl_groups_folders_approval_table . " SET folder_id = $this->iFolderID, group_id = $this->iGroupID, precedence = $this->iPrecedence, role_id = $this->iRoleID WHERE id = $this->iId");
+			$result = $sql->query("UPDATE " . $default->groups_folders_approval_table . " SET folder_id = $this->iFolderID, group_id = $this->iGroupID, precedence = $this->iPrecedence, role_id = $this->iRoleID WHERE id = $this->iId");
 			if ($result) {
 				return true;
 			}
@@ -179,7 +194,7 @@ class GroupFolderApprovalLink {
 		//only delete the object if it exists in the database
 		if ($this->iId >= 0) {
 			$sql = $default->db;
-			$result = $sql->query("DELETE FROM $default->owl_groups_folders_approval_table WHERE id = $this->iId");
+			$result = $sql->query("DELETE FROM $default->groups_folders_approval_table WHERE id = $this->iId");
 			if ($result) {
 				return true;
 			}
@@ -201,7 +216,7 @@ class GroupFolderApprovalLink {
 	function & get($iGroupFolderLinkID) {
 		global $default;
 		$sql = $default->db;
-		$result = $sql->query("SELECT * FROM $default->owl_groups_folders_approval_table WHERE id = $iGroupFolderLinkID");
+		$result = $sql->query("SELECT * FROM $default->groups_folders_approval_table WHERE id = $iGroupFolderLinkID");
 		if ($result) {
 			if ($sql->next_record()) {
 				$oGroupFolderApprovalLink = & new GroupFolderApprovalLink($sql->f("folder_id"), $sql->f("group_id"), $sql->f("precedence"), $sql->f("role_id"), $sql->f("datetime"));
@@ -228,7 +243,7 @@ class GroupFolderApprovalLink {
 		$aGroupFolderApprovalLinkArray;
 		settype($aGroupFolderApprovalLinkArray, "array");
 		$sql = $default->db;
-		$result = $sql->query("SELECT * FROM " . $default->owl_groups_folders_approval_table  . (isset($sWhereClause) ? " " . $sWhereClause : ""));
+		$result = $sql->query("SELECT * FROM " . $default->groups_folders_approval_table  . (isset($sWhereClause) ? " " . $sWhereClause : ""));
 		if ($result) {			
 			$iCount = 0;
 			while ($sql->next_record()) {

@@ -1,12 +1,29 @@
 <?php
 /**
-* Represents an entry in the database as per the folder_doctype_link table
-* 
-* @author Rob Cherry, Jam Warehouse South Africa (Pty) Ltd
-* @date 27 February 2003 
-* @package
-*/
-
+ * $Id$
+ *
+ * Represents an entry in the database as per the folder_doctype_link table.
+ *
+ * Copyright (c) 2003 Jam Warehouse http://www.jamwarehouse.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ * @version $Revision$
+ * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
+ * @package lib.foldermanagement 
+ */
 class FolderDocTypeLink {
 	
 	/** primary key of object */
@@ -32,7 +49,7 @@ class FolderDocTypeLink {
 		//if the object has not already been stored		
 		if ($this->iId < 0) {			
 			$sql = $default->db;
-			$result = $sql->query("INSERT INTO " . $default->owl_folder_doctypes_table . " (folder_id, document_type_id) " .
+			$result = $sql->query("INSERT INTO " . $default->folder_doctypes_table . " (folder_id, document_type_id) " .
 						"VALUES ($this->iFolderID, $this->iDocumentTypeID)");
 			if ($result) {
 				$this->iId = $sql->insert_id();
@@ -59,7 +76,7 @@ class FolderDocTypeLink {
 				$sOldPath = $default->documentRoot . "/" . $this->sFullPath . "/" . $this->sName;
 			}
 			$sql = $default->db;
-			$sQuery = "UPDATE " . $default->owl_folder_doctypes_table . " SET " .
+			$sQuery = "UPDATE " . $default->folder_doctypes_table . " SET " .
 							"folder_id = $this->iFolderID, " .
 							"document_type_id = $this->iDocumentTypeID " .							
 							"WHERE id = " . $this->iId;
@@ -82,7 +99,7 @@ class FolderDocTypeLink {
 		global $default, $lang_err_database, $lang_err_object_key;
 		if ($this->iId >= 0) {
 			$sql = $default->db;
-			$result = $sql->query("DELETE FROM " . $default->owl_folder_doctypes_table . " WHERE id = " . $this->iId);
+			$result = $sql->query("DELETE FROM " . $default->folder_doctypes_table . " WHERE id = " . $this->iId);
 			if ($result) {
 				$this->iId = -1;
 				return true;
@@ -108,7 +125,7 @@ class FolderDocTypeLink {
 	function get($iFolderDocTypeLinkID) {		
 		global $default,  $lang_err_object_not_exist;
 		$sql = $default->db;		
-		$sql->query("SELECT * FROM " . $default->owl_folder_doctypes_table . " WHERE id = " . $iFolderDocTypeLinkID);
+		$sql->query("SELECT * FROM " . $default->folder_doctypes_table . " WHERE id = " . $iFolderDocTypeLinkID);
 		if ($sql->next_record()) {
 			$oFolderDocTypeLink = & new FolderDocTypeLink($sql->f("folder_id"), $sql->f("document_type_id"));
             $oFolderDocTypeLink->iId = $iFolderDocTypeLinkID;			
@@ -132,7 +149,7 @@ class FolderDocTypeLink {
         settype($aFolderDocTypeLinkArray, "array");
         $sql = $default->db;
         // TODO: join on sys_deleted
-        $result = $sql->query("SELECT * FROM " . $default->owl_folder_doctypes_table  . (isset($sWhereClause) ? " WHERE " . $sWhereClause : ""));
+        $result = $sql->query("SELECT * FROM " . $default->folder_doctypes_table  . (isset($sWhereClause) ? " WHERE " . $sWhereClause : ""));
         if ($result) {
             $iCount = 0;
             while ($sql->next_record()) {
