@@ -25,6 +25,7 @@ DROP TABLE site_sections_lookup;
 DROP TABLE site_access_lookup;
 DROP TABLE sitemap;
 DROP TABLE system_settings;
+DROP TABLE sys_deleted;
 DROP TABLE units_lookup;
 DROP TABLE units_organisations_link;
 DROP TABLE users;

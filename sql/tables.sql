@@ -200,6 +200,12 @@ name CHAR(255) NOT NULL,
 value CHAR(255) NOT NULL
 );
 
+CREATE TABLE sys_deleted ( 
+id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
+table_name CHAR(255) NOT NULL,
+datetime DATETIME NOT NULL
+);
+
 CREATE TABLE units_lookup ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 name CHAR(100) NOT NULL
@@ -394,6 +400,11 @@ PRIMARY KEY (id)
 
 ALTER TABLE system_settings
 ADD CONSTRAINT PK_system_settings
+PRIMARY KEY (id)
+;
+
+ALTER TABLE sys_deleted
+ADD CONSTRAINT PK_sys_deleted
 PRIMARY KEY (id)
 ;
 
