@@ -14,11 +14,11 @@ $default->owl_root_url		= "";
 $default->owl_graphics_url	= $default->owl_root_url . "/graphics";
 
 // Directory where owl is located
-$default->owl_fs_root		= "c:/owl";
+$default->owl_fs_root		= "C:/Projects/MRC/Devel/owl";
 $default->owl_LangDir		= $default->owl_fs_root . "/locale";
 
 // Directory where The Documents Directory is On Disc
-$default->owl_FileDir           =  "c:/owl";
+$default->owl_FileDir           =  "C:/Projects/MRC/Devel/owl";
 //$default->owl_FileDir           =  "/tmp";
 
 // Set to true to use the file system to store documents, false only uses the database
@@ -88,6 +88,15 @@ $default->owl_prefs_table	= "intranet.prefs";
 // Table with file data info
 $default->owl_files_data_table  = "filedata";
 
+//Table with document type info
+$default->owl_document_types_table = "document_types";
+
+//Table that links document types to document type fields
+$default->owl_document_type_fields_table = "document_type_fields";
+
+//Table with document type field info
+$default->owl_fields_table = "fields";
+
 // Change this to reflect the database you are using
 require_once("$default->owl_fs_root/phplib/db_mysql.inc");
 //require("$default->owl_fs_root/phplib/db_pgsql.inc");
@@ -102,11 +111,11 @@ $default->ldapServer = "192.168.1.9";
 $default->ldapRootDn = "o=Medical Research Council";
 
 // Database info
-$default->owl_db_user           = "root";
-$default->owl_db_pass           = "pass123";
+$default->owl_db_user           = "rob";
+$default->owl_db_pass           = "rob";
 $default->owl_db_host           = "";
 //$default->owl_db_name           = "intranet";
-$default->owl_db_name           = "dms";
+$default->owl_db_name           = "owl";
 
 // logo file that must reside inside lang/graphics directory
 $default->logo = "kt.jpg";
@@ -130,7 +139,7 @@ $default->debug = True;
 //$default->owl_restrict_linkto   = true;
 
 $default->owl_email_server = "mail.jamwarehouse.com";
-$default->owl_email_from = "owl@spare2.jamwarehouse.com";
+$default->owl_email_from = "owl@rob.jamwarehouse.com";
 $default->owl_email_fromname = "owl";
 
 // user class constant definitions
