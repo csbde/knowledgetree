@@ -23,10 +23,8 @@ function getPage() {
 	$oPatternCreate = & new PatternCreate("DocumentField", "documentmanagement/DocumentField.inc",$aDisplayRowNames, $aParameterNumbers, $aDisplayColumnTypes, $aRequired,$aDropDownListTableNames,$aDropDownListValueColumns,$aDropDownListDisplayColumns);
 	$oPatternCreate->setUniqueName("DocField");
 	
-	$sToRender .= "<br></br>\n";
-	$sToRender .= "<b>Add a New Document Field to the System:</b>\n";
+	$sToRender .= "<table width=\"600\">" . renderHeading("Add Document Field") . "</table>";
 	$sToRender .= "<table>\n";
-	$sToRender .= "<br></br>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>" . $oPatternCreate->render() . "</td>\n";
@@ -34,13 +32,11 @@ function getPage() {
 	$sToRender .= "<tr>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "</tr>\n";
-	$sToRender .= "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/add.gif\" value=\"Submit\" border=\"0\"/></td>\n";	
+	$sToRender .= "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/add.gif\" value=\"Submit\" border=\"0\"/></td>\n";
+    $sToRender .= "<td align = right><a href=\"$default->rootUrl/control.php?action=docfield\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" value=\"cancel\" border = \"0\"/></a></td>\n";
+	$sToRender .= "</tr>\n";	
 	$sToRender .= "</table>\n";
 	
 	return $sToRender;
-	
-	
-	
 }
 ?>
