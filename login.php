@@ -70,9 +70,7 @@ if ($loginAction == "loginForm") {
             case 1:
                 // start the session
                 $session = new Session();
-                $sessionID = $session->create($userDetails["user_id"]);
-                // add the user details array to the session
-                $_SESSION["userDetails"] = $userDetails;
+                $sessionID = $session->create($userDetails);
                 
                 // check for a location to forward to
                 if (isset($redirect) && strlen(trim($redirect))>0) {
