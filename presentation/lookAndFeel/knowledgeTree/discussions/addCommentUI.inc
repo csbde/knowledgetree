@@ -62,7 +62,7 @@ function getAddComment($fDocumentID, $sSubject, $sBody, $iCommentID, $fNewCommen
 	}
 	$sToRender .= "<br><tr><td valign=\"top\" width=10><b>Subject</b></td><td colspan=2>\n";
 	$sToRender .= "<input type=\"text\" style=\"width:385\"  name=\"NewCommentSubject\" id=\"NewCommentSubject\" value=\"$sSubject\"></td></tr>\n";
-	$sToRender .= "<tr><td valign=\"top\"><b>Body</b></td><td colspan=2><textarea name='txtComment' cols=60 rows=\"21\" name=\"NewComment\" id=\"NewComment\" wrap=\"physical\" >$sBody</textarea></td></tr></table>\n";
+	$sToRender .= "<tr><td valign=\"top\"><b>Body</b></td><td colspan=2><textarea cols=60 rows=\"21\" name=\"NewComment\" id=\"NewComment\" wrap=\"physical\" >$sBody</textarea></td></tr></table>\n";
 	return $sToRender;	
 }
 
