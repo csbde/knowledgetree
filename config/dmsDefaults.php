@@ -235,7 +235,6 @@ $default->siteMap->addSectionColour("orgAdministration", "td", "6699CC");
 // user management
 $default->siteMap->addPage("addUser", "/presentation/lookAndFeel/knowledgeTree/administration/usermanagement/addUserBL.php", "userAdministration", SysAdmin, "Add User to System");
 $default->siteMap->addPage("editUser", "/presentation/lookAndFeel/knowledgeTree/administration/usermanagement/editUserBL.php", "userAdministration", SysAdmin, "Edit User Properties");
-$default->siteMap->addPage("editUserSuccess", "/presentation/lookAndFeel/knowledgeTree/administration/usermanagement/editUserSuccess.php", "userAdministration", SysAdmin, "Edit User Properties Success", false);
 $default->siteMap->addPage("removeUser", "/presentation/lookAndFeel/knowledgeTree/administration/usermanagement/removeUserBL.php", "userAdministration", SysAdmin, "Remove User from System");
 $default->siteMap->addPage("addUserToGroup", "/presentation/lookAndFeel/knowledgeTree/administration/usermanagement/addUserToGroupBL.php", "userAdministration", UnitAdmin, "Add User to Group");
 $default->siteMap->addPage("removeUserFromGroup", "/presentation/lookAndFeel/knowledgeTree/administration/usermanagement/removeUserFromGroupBL.php", "userAdministration", UnitAdmin, "Remove User From Group");
@@ -246,14 +245,15 @@ $default->siteMap->addSectionColour("userAdministration", "td", "6699CC");
 //document type management
 $default->siteMap->addPage("doctype", "/presentation/lookAndFeel/knowledgeTree/administration/admin.php?sectionName=documentTypeAdministration", "doctypeAdministration", SysAdmin, "Document Type Management");
 $default->siteMap->addPage("docfield", "/presentation/lookAndFeel/knowledgeTree/administration/admin.php?sectionName=documentFieldAdministration", "doctypeAdministration", SysAdmin, "Document Field Management");
+
 // document type stuff
 $default->siteMap->addPage("addDocType", "/presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/addDocTypeBL.php", "documentTypeAdministration", SysAdmin, "Add a Document Type");
 $default->siteMap->addPage("addDocTypeSuccess", "/presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/addDocTypeSuccess.php", "documentTypeAdministration", SysAdmin, "Add a Document Type success", False);
 $default->siteMap->addPage("editDocType", "/presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/editDocTypeBL.php", "documentTypeAdministration", SysAdmin, "Edit a Document Type");
 $default->siteMap->addPage("removeDocType", "/presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/removeDocTypeBL.php", "documentTypeAdministration", SysAdmin, "Remove a Document Type");
 
-$default->siteMap->addSectionColour("doctypeAdministration", "th", "056DCE");
-$default->siteMap->addSectionColour("doctypeAdministration", "td", "6699CC");
+$default->siteMap->addSectionColour("documentTypeAdministration", "th", "056DCE");
+$default->siteMap->addSectionColour("documentTypeAdministration", "td", "6699CC");
 
 // doc field stuff
 $default->siteMap->addPage("addDocField", "/presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/addDocFieldBL.php", "documentFieldAdministration", SysAdmin, "Add a Document Field");
@@ -262,7 +262,7 @@ $default->siteMap->addPage("editDocField", "/presentation/lookAndFeel/knowledgeT
 $default->siteMap->addPage("removeDocField", "/presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/removeDocFieldBL.php", "documentFieldAdministration", SysAdmin, "Remove a Document Field");
 $default->siteMap->addPage("metadata", "/presentation/lookAndFeel/knowledgeTree/administration/admin.php?sectionName=metaDataAdministration", "documentFieldAdministration", SysAdmin, "Document Field Lookup Management");
 
-$default->siteMap->addSectionColour("documentFieldAdministration", "td", "6699CC");
+$default->siteMap->addSectionColour("documentFieldAdministration", "th", "056DCE");
 
 //metadata
 $default->siteMap->addPage("addMetaData", "/presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/metadatamanagement/addMetaDataBL.php", "metaDataAdministration", SysAdmin, "Add Document Field Lookups");
