@@ -88,18 +88,17 @@ class FolderLib {
 	/**
 	* Get the full path for a folder
 	* 
-	* @param $iFolderID		Primary key of folder to generate path for
-	* @param $sFolderName	Name of folder to generate path for
+	* @param 	Primary key of folder to generate path for	
 	*
 	* @return String full path of folder
 	*/
-	function getFolderPath($iFolderID, $sFolderName) {
-		global $default;
+	function getFolderPath($iFolderID) {
+		global $default;		
 		//if the folder has a parent
 		if (FolderLib::getParentFolderID($iFolderID) != 0) {			
 			$sCurrentPath = FolderLib::getFolderPath(FolderLib::getParentFolderID($iFolderID), FolderLib::getFolderName($iFolderID)) . "/" . $sCurremtPath;
 		}
-		return $default->owl_fs_root . "/" . FolderLib::getFolderName($iFolderID);
+		return $default->owl_FileDir . "/" . FolderLib::getFolderName($iFolderID);
 		
 	}
 }
