@@ -74,7 +74,7 @@ function getSearchResults($sMetaTagIDs, $sSQLSearchString, $iStartIndex) {
 			"ORDER BY doc_count DESC ";		
 	
 	$aColumns = array("folder_image_url", "document_name", "doc_count");
-	$aColumnTypes = array(4,3,3);
+	$aColumnTypes = array(4,3,1);
 	$aColumnHeaders = array("<font color=\"ffffff\">Folder</font>","<font color=\"ffffff\">Document</font>", "<font color=\"ffffff\">Matches</font>");
 	$aLinkURLs = array("$default->rootUrl/control.php?action=browse","$default->rootUrl/control.php?action=viewDocument");
 	$aDBQueryStringColumns = array("document_id","folder_id");

@@ -27,6 +27,8 @@ if (checkSession()) {
 
 	if (strlen($fForSearch)) {		
 		if (strlen($fSearchString) > 0) {
+			$oPatternCustom = & new PatternCustom();
+			
 			//display search results
 			$sMetaTagIDs = getChosenMetaDataTags();	
 			
@@ -34,33 +36,13 @@ if (checkSession()) {
 				$sSQLSearchString = getSQLSearchString($fSearchString);
 				
 				if (!isset($fStartIndex)) {
-						$fStartIndex = 0;
-				}
-				
+					$fStartIndex = 0;
+				}				
 				$oPatternCustom->setHtml(getSearchResults($sMetaTagIDs,$sSQLSearchString, $fStartIndex));					
 				$main->setCentralPayload($oPatternCustom);				                                
 				$main->render();
-				//$sDocument = getApprovedDocumentString($sMetaTagIDs, $sSQLSearchString, (isset($fSearchArchive) ? "Archived" : "Live"));
-				/*if (strlen($sDocument) > 0) {
-					//if there are documents to view					
-					$oPatternCustom = & new PatternCustom();
-					if (!isset($fStartIndex)) {
-						$fStartIndex = 0;
-					}
-					$oPatternCustom->setHtml(getSearchResults($sMetaTagIDs,$sSQLSearchString, $fStartIndex));					
-					$main->setCentralPayload($oPatternCustom);				                                
-					$main->render();
-				} else {
-					$oPatternCustom = & new PatternCustom();
-					$oPatternCustom->setHtml(getSearchPage($fSearchString, explode(",",$sMetaTagIDs)));
-					$main->setCentralPayload($oPatternCustom);
-					$main->setErrorMessage("No documents matched your search criteria");
-					$main->setFormAction("advancedSearchBL.php?fForSearch=1");                                
-					$main->render();
-				}*/
-				
 			} else {
-				$oPatternCustom = & new PatternCustom();
+				
 				$oPatternCustom->setHtml(getSearchPage($fSearchString));
 				$main->setCentralPayload($oPatternCustom);
 				$main->setErrorMessage("Please select at least one criteria to search by");
