@@ -42,6 +42,8 @@ function isEmailAddr(email)
 function isBlank(formField) {
 	var result = false;
     if (formField){
+	// trim formField.value
+	formField.value = formField.value.replace(/\s+/g," ").replace(/^\s*|\s*$/g,"");
         switch(formField.type){
             case "select-one":
                 if (formField.selectedIndex == 0 || formField.options[formField.selectedIndex].text == "" || formField.options[formField.selectedIndex].text == "None"){
@@ -53,6 +55,7 @@ function isBlank(formField) {
                     result = true;
                 }
                 break;
+            case "hidden":                
             case "text":
             case "textarea":
                 if (formField.value == "" || formField.value == null){
