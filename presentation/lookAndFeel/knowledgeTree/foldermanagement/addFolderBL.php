@@ -44,103 +44,114 @@ if (checkSession()) {
             $main->setHasRequiredFields(true);
             $main->render();
         } else {
+        	// a document type has been specified
+        	if (isset($fDocumentTypeID)) {
             //have a folder name to store
-            if (Permission::userHasFolderWritePermission($fFolderID)) {
-                //check for illegal characters in the folder name
-                if (strpos($fFolderName, "\\") === false && strpos($fFolderName, ">") === false &&
-                    strpos($fFolderName, "<") === false && strpos($fFolderName, ":") === false &&
-                    strpos($fFolderName, "*") === false && strpos($fFolderName, "?") === false &&
-                     strpos($fFolderName, "|") === false && strpos($fFolderName, "/") === false &&
-					 strpos($fFolderName, "\"") === false) {
-						 
-                    if (Folder::folderExistsName($fFolderName, $fFolderID)) {
-                        require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
-                        $oPatternCustom->setHtml(renderBrowseAddPage($fFolderID));
-                        $main->setCentralPayload($oPatternCustom);
-                        $main->setErrorMessage("There is another folder named $fFolderName in this folder already");
-                        $main->setHasRequiredFields(true);
-                        $main->setFormAction("addFolderBL.php?fFolderID=$fFolderID");
-                        $main->render();
-                    } else {						
-                        $oParentFolder = Folder::get($fFolderID);
-                        //create the folder in the db, giving it the properties of it's parent folder
-                        $oFolder = & new Folder($fFolderName, "", $fFolderID, $_SESSION["userID"], $oParentFolder->getUnitID());
-                        if ($oFolder->create()) {
-							$oFolderDocTypeLink = & new FolderDocTypeLink($oFolder->getID(), $fDocumentTypeID);
-							if ($oFolderDocTypeLink->create()) {
-								//create the folder on the file system
-								if (PhysicalFolderManagement::createFolder(Folder::getFolderPath($oFolder->getID()))) {
-									$default->log->info("addFolderBL.php successfully added folder $fFolderName to parent folder " . Folder::getFolderPath($fFolderID) . " id=$fFolderID");
-									
-									// fire subscription alerts for the new folder
-									$count = SubscriptionEngine::fireSubscription($oParentFolder->getID(), SubscriptionConstants::subscriptionAlertType("AddFolder"),
-											 SubscriptionConstants::subscriptionType("FolderSubscription"),
-											 array( "newFolderName" => $fFolderName,
-													"parentFolderName" => $oParentFolder->getName()) );
-									$default->log->info("addFolderBL.php fired $count subscription alerts for new folder $fFolderName");
-									redirect("$default->rootUrl/control.php?action=editFolder&fFolderID=" . $oFolder->getID());
+	            if (Permission::userHasFolderWritePermission($fFolderID)) {
+	                //check for illegal characters in the folder name
+	                if (strpos($fFolderName, "\\") === false && strpos($fFolderName, ">") === false &&
+	                    strpos($fFolderName, "<") === false && strpos($fFolderName, ":") === false &&
+	                    strpos($fFolderName, "*") === false && strpos($fFolderName, "?") === false &&
+	                     strpos($fFolderName, "|") === false && strpos($fFolderName, "/") === false &&
+						 strpos($fFolderName, "\"") === false) {
+							 
+	                    if (Folder::folderExistsName($fFolderName, $fFolderID)) {
+	                        require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
+	                        $oPatternCustom->setHtml(renderBrowseAddPage($fFolderID));
+	                        $main->setCentralPayload($oPatternCustom);
+	                        $main->setErrorMessage("There is another folder named $fFolderName in this folder already");
+	                        $main->setHasRequiredFields(true);
+	                        $main->setFormAction("addFolderBL.php?fFolderID=$fFolderID");
+	                        $main->render();
+	                    } else {						
+	                        $oParentFolder = Folder::get($fFolderID);
+	                        //create the folder in the db, giving it the properties of it's parent folder
+	                        $oFolder = & new Folder($fFolderName, "", $fFolderID, $_SESSION["userID"], $oParentFolder->getUnitID());
+	                        if ($oFolder->create()) {
+								$oFolderDocTypeLink = & new FolderDocTypeLink($oFolder->getID(), $fDocumentTypeID);
+								if ($oFolderDocTypeLink->create()) {
+									//create the folder on the file system
+									if (PhysicalFolderManagement::createFolder(Folder::getFolderPath($oFolder->getID()))) {
+										$default->log->info("addFolderBL.php successfully added folder $fFolderName to parent folder " . Folder::getFolderPath($fFolderID) . " id=$fFolderID");
+										
+										// fire subscription alerts for the new folder
+										$count = SubscriptionEngine::fireSubscription($oParentFolder->getID(), SubscriptionConstants::subscriptionAlertType("AddFolder"),
+												 SubscriptionConstants::subscriptionType("FolderSubscription"),
+												 array( "newFolderName" => $fFolderName,
+														"parentFolderName" => $oParentFolder->getName()) );
+										$default->log->info("addFolderBL.php fired $count subscription alerts for new folder $fFolderName");
+										redirect("$default->rootUrl/control.php?action=editFolder&fFolderID=" . $oFolder->getID());
+									} else {
+										//if we couldn't do that
+										$default->log->error("addFolderBL.php Filesystem error attempting to store folder name=$fFolderName in parent folder '" . Folder::getFolderPath($fFolderID) . "' id=$fFolderID");
+										
+										// remove the folder and its doc type link from the db and report and error
+										$oFolderDocTypeLink->delete();
+										$oFolder->delete();
+										require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
+										$oPatternCustom->setHtml(renderBrowsePage($fFolderID));
+										$main->setCentralPayload($oPatternCustom);
+										$main->setErrorMessage("There was an error creating the folder $fFolderName on the filesystem");
+										$main->setFormAction("addFolderBL.php?fFolderID=$fFolderID");
+										$main->setHasRequiredFields(true);									
+										$main->render();
+									}
 								} else {
-									//if we couldn't do that
-									$default->log->error("addDocumentBL.php Filesystem error attempting to store folder name=$fFolderName in parent folder '" . Folder::getFolderPath($fFolderID) . "' id=$fFolderID");
+									//couldn't associate the chosen document type with this folder
+									$default->log->error("addFolderBL.php DB error storing folder-document type link for folder name=$fFolderName in parent folder '" . Folder::getFolderPath($fFolderID) . "' folderID=$fFolderID; docTypeID=$fDocumentTypeID");
 									
-									// remove the folder and its doc type link from the db and report and error
-									$oFolderDocTypeLink->delete();
+									//remove the folder from the database								
 									$oFolder->delete();
 									require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 									$oPatternCustom->setHtml(renderBrowsePage($fFolderID));
 									$main->setCentralPayload($oPatternCustom);
 									$main->setErrorMessage("There was an error creating the folder $fFolderName on the filesystem");
 									$main->setFormAction("addFolderBL.php?fFolderID=$fFolderID");
-									$main->setHasRequiredFields(true);									
-									$main->render();
+									$main->setHasRequiredFields(true);
+									$main->render();								
 								}
-							} else {
-								//couldn't associate the chosen document type with this folder
-								$default->log->error("addDocumentBL.php DB error storing folder-document type link for folder name=$fFolderName in parent folder '" . Folder::getFolderPath($fFolderID) . "' folderID=$fFolderID; docTypeID=$fDocumentTypeID");
-								
-								//remove the folder from the database								
-								$oFolder->delete();
-								require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
-								$oPatternCustom->setHtml(renderBrowsePage($fFolderID));
-								$main->setCentralPayload($oPatternCustom);
-								$main->setErrorMessage("There was an error creating the folder $fFolderName on the filesystem");
-								$main->setFormAction("addFolderBL.php?fFolderID=$fFolderID");
-								$main->setHasRequiredFields(true);
-								$main->render();								
-							}
-                        } else {
-                            //if we couldn't create the folder in the db, report an error
-                            $default->log->error("addDocumentBL.php DB error attempting to store folder name=$fFolderName in parent folder '" . Folder::getFolderPath($fFolderID) . "' id=$fFolderID");
-                            									
-                            require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
-                            $oPatternCustom->setHtml(renderBrowsePage($fFolderID));
-                            $main->setCentralPayload($oPatternCustom);
-                            $main->setErrorMessage("There was an error creating the folder $fFolderName in the database");
-                            $main->setFormAction("addFolderBL.php?fFolderID=$fFolderID");
-                            $main->render();
-                        }
-                    }
-                } else {
-                    //the user entered an illegal character in the folder name
-                    require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
-                    $oPatternCustom->setHtml(renderBrowseAddPage($fFolderID));
-                    $main->setCentralPayload($oPatternCustom);
-                    $main->setErrorMessage("Folder not created. Folder names may not contain: '<', '>', '*', '/', '\', '|', '?' or '\"' ");
-                    $main->setHasRequiredFields(true);
-                    $main->setFormAction("addFolderBL.php?fFolderID=$fFolderID");
-                    $main->render();
-                }
-
-            } else {
-                //if the user doesn't have write permission for this folder,
-                //give them only browse facilities
+	                        } else {
+	                            //if we couldn't create the folder in the db, report an error
+	                            $default->log->error("addFolderBL.php DB error attempting to store folder name=$fFolderName in parent folder '" . Folder::getFolderPath($fFolderID) . "' id=$fFolderID");
+	                            									
+	                            require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
+	                            $oPatternCustom->setHtml(renderBrowsePage($fFolderID));
+	                            $main->setCentralPayload($oPatternCustom);
+	                            $main->setErrorMessage("There was an error creating the folder $fFolderName in the database");
+	                            $main->setFormAction("addFolderBL.php?fFolderID=$fFolderID");
+	                            $main->render();
+	                        }
+	                    }
+	                } else {
+	                    //the user entered an illegal character in the folder name
+	                    require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
+	                    $oPatternCustom->setHtml(renderBrowseAddPage($fFolderID));
+	                    $main->setCentralPayload($oPatternCustom);
+	                    $main->setErrorMessage("Folder not created. Folder names may not contain: '<', '>', '*', '/', '\', '|', '?' or '\"' ");
+	                    $main->setHasRequiredFields(true);
+	                    $main->setFormAction("addFolderBL.php?fFolderID=$fFolderID");
+	                    $main->render();
+	                }
+	
+	            } else {
+	                //if the user doesn't have write permission for this folder,
+	                //give them only browse facilities
+	                require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
+	                $oPatternCustom->setHtml(renderBrowsePage($fFolderID));
+	                $main->setCentralPayload($oPatternCustom);
+	                $main->setErrorMessage("You do not have permission to create new folders in this folder");
+	                $main->setFormAction("addFolderBL.php?fFolderID=$fFolderID");
+	                $main->render();
+	            }
+        	} else {
+	            //there are no document type assigned to this folder
                 require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
-                $oPatternCustom->setHtml(renderBrowsePage($fFolderID));
+                $oPatternCustom->setHtml(renderBrowseAddPage($fFolderID));
                 $main->setCentralPayload($oPatternCustom);
-                $main->setErrorMessage("You do not have permission to create new folders in this folder");
+                $main->setErrorMessage("You did not specify a document type.  If there are no system document types, please contact a System Administrator.");
                 $main->setFormAction("addFolderBL.php?fFolderID=$fFolderID");
-                $main->render();
-            }
+                $main->render();        		
+        	}
         }
     } else {
         require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
