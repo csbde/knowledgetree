@@ -55,7 +55,7 @@ if (checkSession()) {
 				$main->setCentralPayload($oPatternCustom);
 				$main->setErrorMessage(_("A document in this folder is currently assigned this type.  You may not delete it."));
 				$main->render();
-            } else if (count(FolderDocTypeLink::getList("folder_id=$fFolderID")) == 1) {
+            } else if (count(FolderDocTypeLink::getList(array("folder_id = ?", $fFolderID))) == 1) {/*ok*/
                 // there is only one document type mapped to this folder- not allowed to delete the last one
 				require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 				$oPatternCustom->setHtml(getPage($fFolderID));

@@ -243,7 +243,7 @@ class CreatorCriterion extends BrowseCriterion {
     }
     function searchWidget ($aRequest) {
         $sRet = "<select size=\"1\" name=\"bmd" . $this->getID() . "\">\n";
-        $aUsers = User::getList();
+        $aUsers = User::getList();/*ok*/
         $sRet .= "<option value=\"-1\">None</option>\n";
         foreach ($aUsers as $oUser) {
             $sRet .= "<option value=\"" . $oUser->getID() . "\">" . $oUser->getName() . "</option>\n";
@@ -262,7 +262,7 @@ class DateCreatedCriterion extends BrowseCriterion {
     );
 
     function documentDisplay ($oDocument) {
-        $aDocumentTransaction = DocumentTransaction::getList("transaction_id=1 AND document_id=" . $oDocument->getID());
+        $aDocumentTransaction = DocumentTransaction::getList(array("transaction_id = 1 AND document_id = ?", $oDocument->getID()));/*ok*/
         return $aDocumentTransaction[0]->dDateTime;
     }
     function getName() {
@@ -285,7 +285,7 @@ class DocumentTypeCriterion extends BrowseCriterion {
     }
     function searchWidget ($aRequest) {
         $sRet = "<select size=\"1\" name=\"bmd" . $this->getID() . "\">\n";
-        $aUsers = DocumentType::getList();
+        $aUsers = DocumentType::getList();/*ok*/
         $sRet .= "<option value=\"-1\">None</option>\n";
         foreach ($aUsers as $oUser) {
             $sRet .= "<option value=\"" . $oUser->getID() . "\">" . $oUser->getName() . "</option>\n";

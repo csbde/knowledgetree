@@ -133,7 +133,8 @@ function getPage($iDocumentID, $aDocumentThreads) {
 function getCommentTree($iThreadID, $iReplyTo, $iLevel = 0) {
 	global $default;
 	// find all comments for the specified thread and reply
-	$aComments = DiscussionComment::getList("thread_id = $iThreadID AND in_reply_to = $iReplyTo ORDER BY id");
+        $aWhereClause = array("thread_id = ? AND in_reply_to = ? ORDER BY id", array($iThreadID, $iReplyTo));
+	$aComments = DiscussionComment::getList($aWhereClause);/*ok*/
 	// loop through these and find their children
 	for ($i=0; $i<count($aComments); $i++) {
 		$aTree[] = array( "comment" => $aComments[$i], "level" => $iLevel);

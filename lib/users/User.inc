@@ -461,7 +461,7 @@ class User extends KTEntity {
             $unitRootFolderName = $unitName;
            
             // now lookup the folderID
-            $aFolders = Folder::getList("name='$unitRootFolderName' and parent_id=1");
+            $aFolders = Folder::getList(array("name = ? and parent_id = 1", $unitRootFolderName));/*ok*/
             
             if (!$aFolders) {
                 // no folder exists with this name, so start at the root

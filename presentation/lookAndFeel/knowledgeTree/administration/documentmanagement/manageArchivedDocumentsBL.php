@@ -91,7 +91,7 @@ if (checkSession()) {
 	        			$aSuccessDocuments[] = $aDocuments[$i];
 	        			
 		        		// check if there are requests for this document to be archived
-		        		$aRequests = ArchiveRestorationRequest::getList("document_id=" . $aDocuments[$i]->getID());
+		        		$aRequests = ArchiveRestorationRequest::getList(array("document_id = ?", $aDocuments[$i]->getID()));/*ok*/
 		        		$default->log->info("manageArchivedDocumentsBL.php about to send notification for " . count($aRequests) . " restoration requests for document id " . $aDocuments[$i]->getID());
 		        		for ($j=0; $j<count($aRequests); $j++) {
 			        		// email the users

@@ -136,7 +136,7 @@ function InitUsers($oGroup) {
 	
 	// Manageable Users
 	if (Permission::userIsSystemAdministrator()) {
-		$aManageableUsers = User::getList();
+		$aManageableUsers = User::getList();/*ok*/
 		foreach ($aManageableUsers as $tmp) {
 			array_push($aManageableUserIDs, $tmp->getID());
 		}

@@ -54,7 +54,8 @@ if (checkSession()) {
     	}	
 		if ($fOrgID > 0) {    	
 	    	//$oUnitOrgLink = & new UnitOrganisationLink($fUnitID,$fOrgID);			
-			$aUnitOrgLink = UnitOrganisationLink::getList("WHERE unit_id = $fUnitID AND organisation_id = $fOrgID");			
+			$aWhereClase = array("WHERE unit_id = ? AND organisation_id = ?", array($fUnitID, $fOrgID));
+			$aUnitOrgLink = UnitOrganisationLink::getList($aWhereClase);/*ok*/
 			if (count($aUnitOrgLink) > 1) {
 				$oPatternCustom->addHtml(_("Error") . ":" . _("Multiple links exist even though a Unit can only belong to one Organisation."));					
 			}else {

@@ -81,7 +81,7 @@ class FolderBrowser extends Browser {
                 $unitRootFolderName = $unitName;
 
                 // now lookup the folderID
-                $aFolders = Folder::getList("name='$unitRootFolderName' and parent_id=1");
+                $aFolders = Folder::getList(array("name = ? and parent_id = 1", $unitRootFolderName));/*ok*/
 
                 $default->log->debug("Users UNIT Name = " . $unitRootFolderName  );
 

@@ -48,7 +48,7 @@ if (checkSession()) {
     $oPatternCustom = & new PatternCustom();	
 	if (isset($fForDiscussion)) {		
 		if (isset($fDocumentID)) { 	
-			$aDocumentThreads = DiscussionThread::getList("document_id=$fDocumentID ORDER BY id");
+			$aDocumentThreads = DiscussionThread::getList(array("document_id = ? ORDER BY id", $fDocumentID));/*ok*/
 			if (count($aDocumentThreads) > 0) {
 				// call the ui function to display the comments
 				$oPatternCustom->setHtml(getPage($fDocumentID, $aDocumentThreads));				

@@ -226,7 +226,7 @@ function renderDashboardNews() {
 	global $default;
 	
 	// retrieve all news items
-	$aDashboardNews = DashboardNews::getList("active=1");
+	$aDashboardNews = DashboardNews::getList("active=1");/*ok*/
 	
 	if ($default->scrollingNews) {
 	  

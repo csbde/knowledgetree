@@ -176,7 +176,7 @@ function getOtherGroups($aInfoGroups) {
 	$allGroupIDs = array();
 
 	if (Permission::userIsSystemAdministrator()) {
-		$allGroups = Group::getList("WHERE 1=1 ORDER BY name");
+		$allGroups = Group::getList("ORDER BY name");/*ok*/
 		foreach ($allGroups as $oGroup) {
 			array_push($allGroupIDs, $oGroup->getID());
 		}

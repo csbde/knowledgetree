@@ -50,7 +50,7 @@ if (checkSession()) {
     	}
     	controllerRedirect("expungeDeletedDocuments", $sQueryString);
     } else {
-		$oContent->setHtml(renderListDeletedDocumentsPage(Document::getList("status_id=" . DELETED)));
+		$oContent->setHtml(renderListDeletedDocumentsPage(Document::getList("status_id=" . DELETED)));/*ok*/
     }
 	require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 	$main->setCentralPayload($oContent);
