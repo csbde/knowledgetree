@@ -396,3 +396,26 @@ ALTER TABLE `units_lookup` ADD UNIQUE (
 `name`
 )
 
+DROP TABLE IF EXISTS `browse_criteria`;
+CREATE TABLE `browse_criteria` (
+  `id` int(11) NOT NULL default '0',
+  `criteria_id` int(11) NOT NULL default '0',
+  `precedence` int(11) NOT NULL default '0',
+  PRIMARY KEY  (`id`),
+  UNIQUE KEY `criteria_id` (`criteria_id`),
+  UNIQUE KEY `precedence` (`precedence`)
+) TYPE=InnoDB;
+
+INSERT INTO `browse_criteria` VALUES (1, -1, 0);
+INSERT INTO `browse_criteria` VALUES (2, -2, 1);
+INSERT INTO `browse_criteria` VALUES (3, -3, 2);
+INSERT INTO `browse_criteria` VALUES (4, -4, 3);
+INSERT INTO `browse_criteria` VALUES (5, -5, 4);
+
+DROP TABLE IF EXISTS `zseq_browse_criteria`;
+CREATE TABLE `zseq_browse_criteria` (
+  `id` int(10) unsigned NOT NULL auto_increment,
+  PRIMARY KEY  (`id`)
+) TYPE=MyISAM;
+
+INSERT INTO `zseq_browse_criteria` SELECT MAX(`id`) FROM `browse_criteria`;

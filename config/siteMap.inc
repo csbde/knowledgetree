@@ -130,6 +130,8 @@ $default->siteMap->addPage("websiteManagement", "/presentation/lookAndFeel/knowl
 
 $default->siteMap->addPage("systemAdministration", "/presentation/lookAndFeel/knowledgeTree/administration/systemsettings/systemSettingsBL.php", "Administration", SysAdmin, _("System Settings"), true, 14);
 
+$default->siteMap->addPage("browseAdministration", "/presentation/lookAndFeel/knowledgeTree/administration/browsemanagement/editBrowserBL.php", "Administration", SysAdmin, _("Browse Management"), true, 15);
+
 $default->siteMap->addSectionColour("Administration", "th", "056DCE");
 $default->siteMap->addSectionColour("Administration", "td", "6699FF");
 
