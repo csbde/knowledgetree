@@ -162,7 +162,7 @@ class SiteMap {
             // initialise result array
             $results = array("descriptions" => array(), "links" => array());
 
-            if ($sql->query("SELECT link_text, action, access_id FROM $default->owl_sitemap_table WHERE section_id=$sectionID AND is_enabled=1")) {
+            if ($sql->query("SELECT link_text, action, access_id FROM $default->owl_sitemap_table WHERE section_id=$sectionID AND is_enabled=1 AND is_default=0")) {
                 while ($sql->next_record()) {
                     // check permissions
                     if ($this->hasPermission($sql->f("access_id"))) {
@@ -209,8 +209,9 @@ class SiteMap {
                 if ($this->hasPermission($requiredAccess)) {
                     foreach ($pages as $action => $pageDetail) {
                         // add this array to the resultset array if there is link text and it is enabled
+                        // but not if it is the default page
                         if ((strlen($pages[$action]["description"]) > 0) &&
-                                ($pages[$action]["enabled"])) {
+                                ($pages[$action]["enabled"]) && (!$pages[$action]["default"])) {
 
                             $results["descriptions"][] = $pages[$action]["description"];
                             
