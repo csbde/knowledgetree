@@ -61,7 +61,7 @@ function getUploadDocument() {
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td colspan=\"2\"><b>Document to add:<b></td>\n";
 	$sToRender .= "</tr>\n";
-	$sToRender .= "<tr><td>File</td><td><input type=\"file\" name=\"fFile\" onChange=\"document.MainForm.fName=document.MainForm.fFile\"></td></tr>\n";
+	$sToRender .= "<tr><td>File</td><td><input type=\"file\" name=\"fFile\"></td></tr>\n";
 	$sToRender .= "<tr><td>Title</td><td><input type=\"text\" name=\"fName\" size=\"20\"></td></tr>\n";	
 	$sToRender .= "</table>\n";
 	return $sToRender;
