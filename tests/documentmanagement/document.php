@@ -19,7 +19,7 @@ if (checkSession()) {
 	
 	//test creation of a document
 	echo "<b>Testing document creation</b><br>";
-	$oDoc = & new Document("Test document", "Test document", 100, $_SESSION["userID"], "Test of document object", 1, 10);
+	$oDoc = & new Document("Test document", "Test document", 100, $_SESSION["userID"], 1, 3, "Test of document object");
 	if (isset($oDoc)) {
 		echo "Passed document creation test<br><br>";
 		
