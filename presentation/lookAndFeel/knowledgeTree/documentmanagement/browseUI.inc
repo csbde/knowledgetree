@@ -282,7 +282,9 @@ function renderDocumentList($aResults, $sNoDocumentsMessage, $sNoPermissionMessa
             $sToRender .= "<td>" . $oCreator->getName() . "</td>";
             $sToRender .= "<td>" . $aResults["documents"][$i]->getLastModifiedDate() . "</td>";
             $oDocumentType = DocumentType::get($aResults["documents"][$i]->getDocumentTypeID());
-            $sToRender .= "<td>" . $oDocumentType->getName() . "</td>";
+            if ($oDocumentType) {
+            	$sToRender .= "<td>" . $oDocumentType->getName() . "</td>";
+            }
             $sToRender .= "</tr>\n";
         }
     } else if ($aResults["accessDenied"]) {
