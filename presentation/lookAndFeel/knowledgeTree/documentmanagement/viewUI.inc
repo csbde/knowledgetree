@@ -125,7 +125,8 @@ function renderTypeSpecificMetaData($oDocument, $bEditable) {
 function renderEditableDocumentArchiveSettings($oDocument) {
 	global $default;
     $sQuery = "SELECT d.id, atl.name, 'Edit' AS edit FROM $default->owl_document_archiving_table AS da " .
-    		  "INNER JOIN $default->owl_archiving_type_lookup_table AS atl ON da.archiving_type_id=atl.id " .
+    		  "INNER JOIN $default->owl_archiving_settings_table AS ast ON da.archiving_settings_id=ast.id " .
+    		  "INNER JOIN $default->owl_archiving_type_lookup_table AS atl ON ast.archiving_type_id=atl.id " .
 			  "INNER JOIN $default->owl_documents_table AS d ON da.document_id=d.id " .
 			  "WHERE d.id = " . $oDocument->getID();
     
@@ -145,7 +146,8 @@ function renderEditableDocumentArchiveSettings($oDocument) {
 function renderNonEditableDocumentArchiveSettings($oDocument) {
 	global $default;
     $sQuery = "SELECT d.id, atl.name FROM $default->owl_document_archiving_table AS da " .
-    		  "INNER JOIN $default->owl_archiving_type_lookup_table AS atl ON da.archiving_type_id=atl.id " .
+    		  "INNER JOIN $default->owl_archiving_settings_table AS ast ON da.archiving_settings_id=ast.id " .
+    		  "INNER JOIN $default->owl_archiving_type_lookup_table AS atl ON ast.archiving_type_id=atl.id " .
 			  "INNER JOIN $default->owl_documents_table AS d ON da.document_id=d.id " .
 			  "WHERE d.id = " . $oDocument->getID();
     
