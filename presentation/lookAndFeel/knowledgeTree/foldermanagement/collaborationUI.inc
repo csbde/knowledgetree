@@ -28,61 +28,75 @@ function getFolderPath($iFolderID) {
 	return "<table border=\"0\" width = 100%><tr><td bgcolor=\"$sTDBGColour\">$sFolderPathLink</td></tr></table>\n";    
 }
 
-function getFolderCollaborationData($iFolderCollaborationID) {
+function getGroupDropDown($iFolderCollaborationID, $iFolderID, $iGroupID) {
 	global $default;
-	$sQuery = "SELECT GFAL.id, GFAL.folder_id, F.name AS folder_name, GFAL.group_id, G.name AS group_name, GFAL.role_id, R.name AS role_name, GFAL.precedence " .
-			"FROM $default->owl_groups_folders_approval_table AS GFAL INNER JOIN $default->owl_folders_table AS F ON GFAL.folder_id = F.id " .
-			"INNER JOIN $default->owl_groups_table AS G ON GFAL.group_id = G.id " .
-			"LEFT OUTER JOIN $default->owl_roles_table AS R ON GFAL.role_id = R.id " .
-			"WHERE GFAL.id = $iFolderCollaborationID";
+	$oPatternListBox = & new PatternListBox($default->owl_groups_table, "Name", "ID", "fGroupID");
+	$oPatternListBox->setPostBackOnChange(true);
+	$oPatternListBox->setOnChangeAction("setActionAndSubmit('" . $_SERVER["userID"] . "?fFolderID=$iFolderID&fFolderCollaborationID=$iFolderCollaborationID');");
+	if (isset($iGroupID)) {
+		$oPatternListBox->setSelectedValue($iGroupID);
+	}
+	return $oPatternListBox->render();
 	
-	$aDisplayColumns = array("group_name", "role_name", "precedence");
-	$aStoreColumns = array("group_id", "role_id", "precedence");
-	$aColumnNames = array("Group","Role", "Sequence");
-	$aDisplayColumnTypes = array(3,3,1);
-	$aDatabaseColumnTypes = array(0,0,1);
-	$aDropDownListTables = array($default->owl_groups_table, $default->owl_roles_table);
-	
-	$oPatternEditableListFromQuery = & new PatternEditableListFromQuery($sQuery, $default->owl_groups_folders_approval_table, $aDisplayColumns, $aStoreColumns, $aColumnNames, $aDisplayColumnTypes, $aDatabaseColumnTypes);
-	$oPatternEditableListFromQuery->setDropDownListTableNames($aDropDownListTables);
-	$oPatternEditableListFromQuery->setUniqueName("folderCollab");
-	$oPatternEditableListFromQuery->setColumnsRequired(0,0,1);
-	return $oPatternEditableListFromQuery->render();
-			
 }
 
-function getEditPage($iFolderCollaborationID, $iFolderID) {
+function getUserDropDown($iGroupID, $iUserID) {
+	global $default;
+	if (!(isset($iGroupID))) {
+		$iGroupID = -1;
+	}
+	$oPatternListBox = & new PatternListBox($default->owl_users_table, "Name", "ID", "fUserID", "UGL.group_id = $iGroupID");
+	$oPatternListBox->setFromClause("INNER JOIN $default->owl_users_groups_table AS UGL ON UGL.user_id = ST.id");	
+	if (isset($iUserID)) {
+		$oPatternListBox->setSelectedValue($iUserID);
+	}
+	return $oPatternListBox->render();
+	
+}
+
+function getEditPage($iFolderCollaborationID, $iFolderID, $iGroupID, $iUserID, $iRoleID, $iSequenceNumber) {
 	global $default;
 	$sToRender = renderHeading("Edit Folder Collaboration Step");
     $sToRender .= getFolderPath($iFolderID);
-	$sToRender .= "<table border=\"0\" width=\"100%\">\n";	
-	$sToRender .= "<tr>\n";	
-	$sToRender .= "<td>" . getFolderCollaborationData($iFolderCollaborationID) . "</td>\n";
+	$sToRender .= "<table>\n";
+	$sToRender .= "<tr>\n";
+	$sToRender .= "<td>Group</td><td>" . getGroupDropDown($iFolderCollaborationID, $iFolderID, $iGroupID) . "</td>\n";
+	$sToRender .= "</tr>";
+	$sToRender .= "<tr>\n";
+	$sToRender .= "<td>User</td><td>" . getUserDropDown($iGroupID, $iUserID) . "</td>\n";
+	$sToRender .= "</tr>";
+	$sToRender .= "<tr>\n";
+	$sToRender .= "<td>Role</td><td>" . getRoleDropDown($iRoleID) . "</td>\n";
+	$sToRender .= "</tr>";
+	$sToRender .= "<tr>\n";
+	$sToRender .= "<td>Sequence</td><td><input type=\"text\" name=\"fSequenceNumber\" value=\"$iSequenceNumber\" /></td>\n";
+	$sToRender .= "</tr>";			
+	$sToRender .= "<td><table><tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/update.gif\" border=\"0\"/></td><td><a href=\"$default->rootUrl/control.php?action=editFolder&fFolderID=" . $iFolderID . "\" /></a></td></tr></table>\n";
 	$sToRender .= "</tr>\n";
-	$sToRender .= "<tr>\n";	
-	$sToRender .= "<td><table><tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/update.gif\" border=\"0\"/></td><td><a href=\"$default->rootUrl/control.php?action=editFolder&fFolderID=" . $iFolderID . "\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\" /></a></td></tr></table>\n";
-	$sToRender .= "</tr>\n";
-	$sToRender .= "</table>\n";	
+	$sToRender .= "</table>\n";
+	
+	$sToRender .= "\n\n<script language=\"javascript\">\n<!--\n";
+	$sToRender .= "function validateForm(theForm) {\n";	
+	$sToRender .= "\tif (!(validRequired(theForm.fGroupID,'Group')) || !(validRequired(theForm.fUserID,'User')) || !(validRequired(theForm.fRoleID,'Role')) || !(validNum(theForm.fSequenceNumber,'Sequence no.')) || !(validRequired(theForm.fSequenceNumber,'Sequence no.'))) {\n";
+	$sToRender .= "\t\treturn false;\n\t}\n";
+	$sToRender .= "return true;\n}\n";
+	$sToRender .= "//-->\n</script>\n\n";	
 	
 	return $sToRender;
 }
 
-function getGroupDropDown() {	
+function getRoleDropDown($iRoleID) {
 	global $default;
-	$oPatternListBox = & new PatternListBox("$default->owl_groups_table", "name", "id", "fGroupID");
-	$oPatternListBox->setIncludeDefaultValue(false);
-	$oPatternListBox->setEmptyErrorMessage("There are no groups");
-	return $oPatternListBox->render();
-}
-
-function getRoleDropDown() {
-	global $default;
-	$oPatternListBox = & new PatternListBox("$default->owl_roles_table", "name", "id", "fRoleID");	
+	$oPatternListBox = & new PatternListBox("$default->owl_roles_table", "name", "id", "fRoleID");		
 	$oPatternListBox->setEmptyErrorMessage("There are no users in this group");		
+	if (isset($iRoleID)) {
+		$oPatternListBox->setSelectedValue($iRoleID);
+	}
+	
 	return $oPatternListBox->render();
 }
 
-function getAddPage() {
+/*function getAddPage() {
 	global $default;
 	return "<table border=0>\n" .
 			"<caption><b>Edit folder routing information</b></caption>\n" .
@@ -103,5 +117,5 @@ function getAddPage() {
 			"<td><b><input type=\"image\" src=\"$default->graphicsUrl/widgets/update.gif\" border=\"0\"/></b></td><td><a href=\"$default->rootUrl/control.php?action=editFolder&fFolderID=$iFolderID \"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\" /></a></td>\n" .
 			"</tr>\n" .
 			"</table>\n";
-}
+}*/
 ?>
