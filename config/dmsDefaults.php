@@ -194,10 +194,7 @@ $default->siteMap->addPage("systemAdministration", "/presentation/admin.php?sect
 $default->siteMap->addPage("addGroup", "/presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/addGroupBL.php", "groupAdministration", UnitAdmin, "Add A Group");
 $default->siteMap->addPage("editGroup", "/presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/editGroupBL.php", "groupAdministration", UnitAdmin, "Edit Group Properties");
 $default->siteMap->addPage("editGroupSuccess", "/presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/editGroupSuccess.php", "groupAdministration", UnitAdmin, "Updated Group Successfully",false);
-$default->siteMap->addPage("editGroupFail", "/presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/editGroupFail.php", "groupAdministration", UnitAdmin, "Update Failure",false);
 $default->siteMap->addPage("removeGroup", "/presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/removeGroupBL.php", "groupAdministration", UnitAdmin, "Remove a Group");
-$default->siteMap->addPage("removeGroupSuccess", "/presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/removeGroupSuccess.php", "groupAdministration", UnitAdmin, "Group Successfully Removed",false);
-$default->siteMap->addPage("removeGroupFail", "/presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/removeGroupFail.php", "groupAdministration", UnitAdmin, "Group Removal Failure",false);
 $default->siteMap->addPage("assignGroupToUnit", "/presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/assignGroupToUnitBL.php", "groupAdministration", UnitAdmin, "Assign Group to Unit");
 $default->siteMap->addPage("removeGroupFromUnit", "/presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/removeGroupFromUnitBL.php", "groupAdministration", UnitAdmin, "Remove Group From Unit");
 

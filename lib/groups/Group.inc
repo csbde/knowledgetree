@@ -19,6 +19,7 @@ class Group {
 	/** is the group a sys admin */
 	var $bIsSysAdmin;
 	
+	
 	function Group($sNewName, $bNewIsUnitAdmin = false, $bNewIsSysAdmin = false) {
 		$this->iId = -1;
 		$this->sName = $sNewName;
@@ -118,13 +119,26 @@ class Group {
 		global $default, $lang_err_database, $lang_err_object_key;
 		//only delete the object if it exists in the database
 		if ($this->iId >= 0) {
+			//check to see if group is linked to a unit
 			$sql = $default->db;
-			$result = $sql->query("DELETE FROM $default->owl_groups_table WHERE id = $this->iId");
-			if ($result) {
+			$query = "SELECT group_id FROM ". $default->owl_groups_units_table ." WHERE group_id = '" . $this->iId . "'";
+        		$sql->query($query);
+       			$rows = $sql->num_rows($sql);
+        
+      			 if ($rows > 0){
+            		 // duplicate link exists
+           		 $_SESSION["errorMessage"] = "Group::The Group " . $this->sName . " exits!";
+           		 return false;
+           		 
+	       		 }else{
+				$sql = $default->db;
+				$result = $sql->query("DELETE FROM $default->owl_groups_table WHERE id = $this->iId");
+				if ($result) {
 				return true;
+				}
+				$_SESSION["errorMessage"] = $lang_err_database;
+				return false;
 			}
-			$_SESSION["errorMessage"] = $lang_err_database;
-			return false;
 		}
 		$_SESSION["errorMessage"] = $lang_err_object_key;
 		return false;
@@ -184,6 +198,25 @@ class Group {
 	
 	
 }
+/*
+     * static function
+     *
+     * gets the name of a unit using their id
+     *
+     * @param   String
+     *   The name
+     *   
+     */
+     
+	function getUnitName($id)
+	 {
+	       global $default;
+	
+	        $name = lookupField("$default->owl_groups_table", "name", "id", $id );
+	        
+	        $this->sName= $name;
+	}
+
 
 
 /**

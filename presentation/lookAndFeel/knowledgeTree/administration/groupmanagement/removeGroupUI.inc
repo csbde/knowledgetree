@@ -8,7 +8,7 @@
 * @package presentation.lookAndFeel.knowledgeTree.
 *
 */
-
+// gets the delete stuff
 function getDeletePage($iGroupID) {	
 	global $default;
 	$oGroup = null;
@@ -26,7 +26,7 @@ function getDeletePage($iGroupID) {
 	$sToRender .= "<br></br>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>" . getGroupDisplay($oGroup) . "</td>\n";
+	$sToRender .= "<td>Group Name: " . getGroupDisplay($oGroup) . "</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "</tr>\n";
@@ -47,6 +47,51 @@ function getDeletePage($iGroupID) {
 	return $sToRender;
 }
 
+// get successfully deletion page
+function getDeleteSuccessPage() {	
+	
+global $default;
+
+$sToRender  = "<br></br>\n" ;
+$sToRender .= "<TABLE BORDER=\"0\" CELLSPACING=\"2\" CELLPADDING=\"2\">\n";
+$sToRender .= "<tr>\n";
+$sToRender .= "<td><b>Group SuccessFully Removed!</b></td>\n";
+$sToRender .= "</tr>\n";	
+$sToRender .= "<tr></tr>\n";
+$sToRender .= "<tr></tr>\n";
+$sToRender .= "<tr></tr>\n";
+$sToRender .= "<tr></tr>\n";
+$sToRender .= "<tr>\n";
+$sToRender .= "<td align = right><a href=\"$default_owl_root_url/control.php?action=removeGroup\"><img src =\"$default->owl_graphics_url/widgets/back.gif\" border = \"0\" /></a></td>\n";
+$sToRender .= "</tr>\n";
+$sToRender .= "</table>\n";
+		
+return $sToRender;
+}
+
+// get deletion failed page
+function getDeleteFailPage() {	
+
+global $default;	
+
+$sToRender  = "<br></br>\n" ;
+$sToRender .= "<TABLE BORDER=\"0\" CELLSPACING=\"2\" CELLPADDING=\"2\">\n";
+$sToRender .= "<tr>\n";
+$sToRender .= "<td><b>Deletion Failed!</b></td>\n";
+$sToRender .= "</tr>\n";	
+$sToRender .= "<tr></tr>\n";
+$sToRender .= "<tr></tr>\n";
+$sToRender .= "<tr><td>Please Ensure that The Group has been Removed from any Unit it belongs to</td></tr>\n";
+$sToRender .= "<tr></tr>\n";
+$sToRender .= "<tr></tr>\n";
+$sToRender .= "</tr>\n";
+$sToRender .= "<tr><td align = right><a href=\"$default_owl_root_url/control.php?action=removeGroup\"><img src =\"$default->owl_graphics_url/widgets/back.gif\" border = \"0\" /></a></td></tr>\n";
+$sToRender .= "</table>\n";
+		
+return $sToRender;
+}
+
+// show listbox...or the text name
 function getGroupDisplay($oGroup) {
 	global $default;
 	if (!isset($oGroup)) {
@@ -56,11 +101,12 @@ function getGroupDisplay($oGroup) {
 		return $oPatternListBox->render();
 	} else {
 		return "<input type=\"hidden\" name=\"fGroupID\" value=\"" . $oGroup->iId . "\">\n" .
-		"Group Name: <b>" . $oGroup->getName() . "</b>";
+		"<b>" . $oGroup->getName() . "</b>";
 	}
 	
 }
 
+// show check box
 function getUnitAdminCheckBox($oGroup) {
 	if (!isset($oGroup)) {
 		return "";
@@ -69,6 +115,7 @@ function getUnitAdminCheckBox($oGroup) {
 	}
 }
 
+// show text box
 function getSysAdminCheckBox($oGroup) {
 	if (!isset($oGroup)) {
 		return "";
@@ -78,11 +125,11 @@ function getSysAdminCheckBox($oGroup) {
 	
 }
 
-
+// show delete button
 function getDeleteButton($oGroup) {
 	global $default;
 	if (!isset($oGroup)) {
-		return "Please select a group";
+		return "Please select a group: ";
 	} else {
 		return "<td align = right><input type=\"image\" src =\"$default->owl_graphics_url/widgets/Delete.gif\" value=\"submit\" /></td>\n".
 		"<td align = right><a href=\"$default_owl_root_url/control.php?action=removeGroup\"><img src =\"$default->owl_graphics_url/widgets/Cancel.gif\" border = \"0\" /></a></td>\n";

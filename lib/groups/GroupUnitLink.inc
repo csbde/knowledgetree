@@ -84,15 +84,31 @@ class GroupUnitLink {
 	function create() {
 		global $default, $lang_err_database, $lang_err_object_exists;
 		//if the object hasn't been created
-		if ($this->iId < 0) {
+		if ($this->iId < 0) 
+		{
 			$sql = $default->db;
-			$result = $sql->query("INSERT INTO " . $default->owl_groups_units_table . " (group_id, unit_id) VALUES ($this->iGroupID, $this->iUnitID)");
-			if ($result) {
-				$this->iId = $sql->insert_id();
-				return  true;
+			$query = "SELECT unit_id, group_id FROM ". $default->owl_groups_units_table ." WHERE unit_id = '" . $this->iUnitID . "' and group_id = '". $this->iGroupID ."'";
+        		$sql->query($query);
+       			$rows = $sql->num_rows($sql);
+        
+      			if ($rows > 0) 
+       		 	{
+        	    		 // duplicate username
+           			 $_SESSION["errorMessage"] = "GroupUnitlink::The id " . $this->iUnitID . " already exists!";
+           			 return false;
+	       		 }
+       			 else
+       			 {
+				$sql = $default->db;
+				$result = $sql->query("INSERT INTO " . $default->owl_groups_units_table . " (group_id, unit_id) VALUES ($this->iGroupID, $this->iUnitID)");
+				if ($result) 
+				{
+					$this->iId = $sql->insert_id();
+					return  true;
+				}
+				$_SESSION["errorMessage"] = $lang_err_database;
+				return false;
 			}
-			$_SESSION["errorMessage"] = $lang_err_database;
-			return false;
 		}
 		$_SESSION["errorMessage"] = $lang_err_object_exists . "id = " . $this->iId . " table = $default->owl_groups_units_table";
 		return false;
@@ -193,6 +209,47 @@ class GroupUnitLink {
 		$_SESSION["errorMessage"] = $lang_err_database;
 		return false;
 	}
+	
+	
+	
+	/*
+     * static function
+     *
+     * test to see if group exists already
+     *
+     * @param   false or a value
+     *   
+     */
+     
+	function groupBelongsToUnit($groupId)
+	 {
+	       global $default;
+	
+	        $value = lookupField("$default->owl_groups_units_table", "unit_id", "group_id", $groupId );
+	        
+	        return $value;
+	        
+	}
+	
+	/*
+     * static function
+     *
+     * sets the id of the groupunit using their groupid
+     *
+     * @param   String
+     *   The unit_ID
+     *   
+     */
+     
+	function setGroupUnitID($groupId)
+	 {
+	       global $default;
+	
+	        $id = lookupID($default->owl_groups_units_table, "group_id",  $groupId);
+	        
+	        $this->iId= $id;
+	}
+	
 	
 }
 ?>
