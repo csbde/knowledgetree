@@ -1,6 +1,6 @@
 <?php
 
-require_once("$default->owl_fs_root/lib/class.AuthLdap.php");
+require_once("$default->owl_fs_root/lib/authentication/class.AuthLdap.php");
 
 /**
  * $Id$
