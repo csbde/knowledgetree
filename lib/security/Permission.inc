@@ -40,15 +40,15 @@ class Permission {
 	*
 	* @return boolean true if the current user has document write permission, false otherwise and set $_SESSION["errorMessage"]
 	*/	
-	function userHasDocumentWritePermission($iDocumentID) {
+	function userHasDocumentWritePermission($oDocument) {
 		global $default;
-		$oDocument = & Document::get($iDocumentID);
+		
 		if ($oDocument == null) {
 			$default->log->info("Failed to retrieve document with ID $iDocumentID from database");
 			return false;
 		}
-		if (Permission::userHasFolderWritePermission($oDocument->getFolderID()) ||
-			Permission::userHasWriteRoleForDocument($iDocumentID)) {
+		if (Permission::userHasFolderWritePermission(Folder::get($oDocument->getFolderID())) ||
+			Permission::userHasWriteRoleForDocument($oDocument)) {
 			return true;
 		}
 		$_SESSION["errorMessage"] = $lang_err_user_doc_write . "id " . $iDocumentID;
@@ -66,20 +66,20 @@ class Permission {
 	*
 	* @return boolean true if the current user has document read permission, false otherwise and set $_SESSION["errorMessage"]
 	*/	
-	function userHasDocumentReadPermission($iDocumentID) {
+	function userHasDocumentReadPermission($oDocument) {
 		global $default;
-        $oDocument = & Document::get($iDocumentID);
+                
 		if ($oDocument == null) {
 			$default->log->info("Failed to retrieve document with ID $iDocumentID from database");
 			return false;
 		}
-		if (Permission::userHasDocumentWritePermission($iDocumentID) ||
-			Permission::userHasReadRoleForDocument($iDocumentID) ||
-			Permission::userHasFolderReadPermission($oDocument->getFolderID()) ||
-			Permission::documentIsTemplateForDependantDocument($iDocumentID)) {
+		if (Permission::userHasWriteRoleForDocument($oDocument) ||
+			Permission::userHasReadRoleForDocument($oDocument) ||
+			//Permission::userHasFolderReadPermission($oDocument->getFolderID()) ||
+			Permission::documentIsTemplateForDependantDocument($oDocument)) {
 			return true;
 		}
-		$_SESSION["errorMessage"] = $lang_err_user_doc_read . "id " . $iDocumentID;
+		$_SESSION["errorMessage"] = $lang_err_user_doc_read . "id " . $oDocument->getID();
 		return false;		
 	}
 	
@@ -95,14 +95,16 @@ class Permission {
 	*
 	* @return boolean true if the user has folder write permission, false otherwise and set $_SESSION["errorMessage"]
 	*/
-	function userHasFolderWritePermission($iFolderID) {		
-		global $lang_err_user_folder_write;
-		if (Permission::userHasGroupWritePermissionForFolder($iFolderID) ||	
+	function userHasFolderWritePermission($oFolder) {		
+		global $lang_err_user_folder_write, $default;
+		if (Permission::userHasGroupWritePermissionForFolder($oFolder) ||	
 			Permission::userIsSystemAdministrator() ||
-			Permission::userIsUnitAdministratorForFolder($iFolderID)) {
+			Permission::userIsUnitAdministratorForFolder($oFolder)) {
+				$default->log->debug("FOLDER PERMISSIONS: Does have folder writer permission");
 				return true;
 			}
-		$_SESSION["errorMessage"] = $lang_err_user_folder_write . "id " . $iFolderID; 
+		$_SESSION["errorMessage"] = $lang_err_user_folder_write . "id " . $oFolder->getID();
+		$default->log->debug("FOLDER PERMISSIONS: Does NOT have folder writer permission"); 
 		return false;
 	}
 	
@@ -118,11 +120,12 @@ class Permission {
 	*
 	* @return boolean true if the user has folder write permission, false otherwise and set $_SESSION["errorMessage"]
 	*/
-	function userHasFolderReadPermission($iFolderID) {		
+	function userHasFolderReadPermission($oFolder) {		
 		global $lang_err_user_folder_write;
-		if (Permission::folderIsPublic($iFolderID) ||
-			Permission::userHasFolderWritePermission($iFolderID) ||
-			Permission::userHasGroupReadPermissionForFolder($iFolderID)) {
+		
+		if (Permission::folderIsPublic($oFolder) ||
+			Permission::userHasFolderWritePermission($oFolder) ||
+			Permission::userHasGroupReadPermissionForFolder($oFolder)) {
 			return true;
 		}
 		$_SESSION["errorMessage"] = $lang_err_user_folder_write . "id " . $iFolderID;
@@ -136,15 +139,19 @@ class Permission {
 	*
 	* @return boolean true if the folder is public, false otherwise and set $_SESSION["errorMessage"]
 	*/
-	function folderIsPublic($iFolderID) {
+	function folderIsPublic($oFolder) {
 		global $default, $lang_err_folder_not_public;
-		$sql = $default->db;
-		$sql->query("SELECT * FROM " . $default->folders_table . " WHERE id = " . $iFolderID . " AND is_public = 1");
-		if ($sql->next_record()) {
+		
+		if ($oFolder->getIsPublic())
+		{
+			$default->log->debug("FOLDER PERMISSIONS: folder is public ");
 			return true;
 		}
-		$_SESSION["errorMessage"] = $lang_err_folder_not_public . "id " . $iFolderID;
-		return false;		
+		else
+		{
+			$default->log->debug("FOLDER PERMISSIONS: folder NOT public ");
+			return false;
+		}
 	}
 	
 	/**
@@ -154,9 +161,9 @@ class Permission {
 	*
 	* @return boolean true if the user has folder write permission, false otherwise and set $_SESSION["errorMessage"]
 	*/
-	function userHasGroupWritePermissionForFolder($iFolderID) {
+	function userHasGroupWritePermissionForFolder($oFolder) {
 		global $default, $lang_err_user_folder_write;
-		$oFolder = Folder::get($iFolderID);
+		
 		if ($oFolder == null) {
 			$default->log->info("Failed to retrieve folder with ID $iFolderID from database");
 			return false;
@@ -168,10 +175,10 @@ class Permission {
 						"AND GFL.can_write = 1 ";
 		if ($oFolder->getInheritParentPermission()) {
 			//if we use parent permissions, get the parent folder ids			
-			$sQuery .= "AND GFL.folder_id IN (" . (strlen($oFolder->getParentFolderIDs()) > 0 ? $oFolder->getParentFolderIDs() . ",$iFolderID" : $iFolderID) .  ")";
+			$sQuery .= "AND GFL.folder_id IN (" . (strlen($oFolder->getParentFolderIDs()) > 0 ? $oFolder->getParentFolderIDs() . "," . $oFolder->getID() : $oFolder->getID()) .  ")";
 		} else {
 			//otherwise we just use the current folder id
-			$sQuery .= "AND GFL.folder_id IN (" . $iFolderID .  ")";
+			$sQuery .= "AND GFL.folder_id IN (" . $oFolder->getID() .  ")";
 		}
 		
 		$sql->query($sQuery);
@@ -213,10 +220,10 @@ class Permission {
 	*
 	* @return boolean true if the user has folder write permission, false otherwise and set $_SESSION["errorMessage"]
 	*/
-	function userHasGroupReadPermissionForFolder($iFolderID) {
+	function userHasGroupReadPermissionForFolder($oFolder) {
 		global $default, $lang_err_user_folder_read;		
 		$sql = $default->db;
-		$oFolder = Folder::get($iFolderID);
+		
 		if ($oFolder == null) {
 			$default->log->info("Failed to retrieve folder with ID $iFolderID from database");
 			return false;
@@ -234,11 +241,14 @@ class Permission {
 			$sQuery .= "AND GFL.folder_id IN (" . $iFolderID .  ")";
 		}						
 		$sql->query($sQuery);
-				
+		
+		$default->log->debug("userHasGroupReadPermissionForFolder sql: " . $sQuery);	
 		if ($sql->next_record()) {
+			$default->log->debug("FOLDER PERMISSIONS: Does have group read permission for folder");
 			return true;
 		}		
 		$_SESSION["errorMessage"] = $lang_err_user_folder_read;
+		$default->log->debug("FOLDER PERMISSIONS: Does  NOT have group read permission for folder");
 		return false;
 	}
 	
@@ -286,14 +296,14 @@ class Permission {
 	*
 	* @return boolean true is the user has the role assigned, false otherwise and set $_SESSION["errorMessage"]
 	*/
-	function userHasWriteRoleForDocument($iDocumentID) {
+	function userHasWriteRoleForDocument($oDocument) {
 		global $default, $lang_err_user_role;	
 		$sql = $default->db;
 		$sql->query("SELECT FURL.id FROM $default->folders_user_roles_table AS FURL INNER JOIN $default->groups_folders_approval_table AS GFAL ON FURL.group_folder_approval_id = GFAL.id " .
 					"INNER JOIN $default->roles_table AS R ON GFAL.role_id = R.id " .					
 					"WHERE FURL.user_id = " . $_SESSION["userID"] . " " .
-					"AND FURL.document_id = $iDocumentID " .
-					"AND R.can_write = 1 " . 
+					"AND FURL.document_id = " . $oDocument->getID() .
+					" AND R.can_write = 1 " . 
 					"AND R.active = 1");
 		if ($sql->next_record()) {
 			return true;
@@ -309,14 +319,14 @@ class Permission {
 	*
 	* @return boolean true is the user has the role assigned, false otherwise and set $_SESSION["errorMessage"]
 	*/
-	function userHasReadRoleForDocument($iDocumentID) {
+	function userHasReadRoleForDocument($oDocument) {
 		global $default, $lang_err_user_role;	
 		$sql = $default->db;
 		$sql->query("SELECT * FROM $default->folders_user_roles_table AS FURL INNER JOIN $default->groups_folders_approval_table AS GFAL ON FURL.group_folder_approval_id = GFAL.id " .
 					"INNER JOIN $default->roles_table AS R ON GFAL.role_id = R.id " .					
 					"WHERE FURL.user_id = " . $_SESSION["userID"] . " " .
-					"AND FURL.document_id = $iDocumentID " .
-					"AND R.can_read = 1");
+					"AND FURL.document_id = " . $oDocument->getID()  .
+					" AND R.can_read = 1");
 		if ($sql->next_record()) {
 			return true;
 		}
@@ -329,10 +339,10 @@ class Permission {
 	* Checks if the document is a template for a depedant document
 	* that the user is responsible for creating
 	*/
-	function documentIsTemplateForDependantDocument($iDocumentID) {
+	function documentIsTemplateForDependantDocument($oDocument) {
 		global $default;
 		$sql = $default->db;
-		$sql->query("SELECT id FROM $default->dependant_document_instance_table WHERE template_document_id = $iDocumentID and user_id = " . $_SESSION["userID"]);
+		$sql->query("SELECT id FROM $default->dependant_document_instance_table WHERE template_document_id = " . $oDocument->getID() . " and user_id = " . $_SESSION["userID"]);
 		if ($sql->next_record()) {
 			return true;
 		}
@@ -440,7 +450,7 @@ class Permission {
 	*
 	* @return boolean true if the user is the unit administrator for the unit to which the folder belongs, false otherwise
 	*/
-	function userIsUnitAdministratorForFolder($iFolderID) {
+	function userIsUnitAdministratorForFolder($oFolder) {
         global $default;
 		$sql = $default->db;
 		        	
@@ -450,8 +460,8 @@ class Permission {
 				"INNER JOIN $default->groups_table AS GL ON GUL.group_id = GL.id " .
 				"INNER JOIN $default->users_groups_table AS UGL ON UGL.group_id = GL.id " .
 				"WHERE GL.is_unit_admin = 1 "  .
-				"AND GFL.folder_id = $iFolderID " .
-				"AND UGL.user_id = " . $_SESSION["userID"]);
+				"AND GFL.folder_id = " . $oFolder->getID() .
+				" AND UGL.user_id = " . $_SESSION["userID"]);
 		return $sql->next_record();
 	}
     
