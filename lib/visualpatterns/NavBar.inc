@@ -171,10 +171,10 @@ class NavBar {
         // build the nav bar
         $bar  = "<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\">\n";
         $bar .= "\t<tr height=\"30\">\n";
-        $bar .= "\t\t<td align=\"right\" bgcolor=\"#1A4383\" valign=\"top\" width=\"100%\"><img src=\"$heading\"/><img src=\"$default->graphicsUrl/logo.jpg\" width=\"30\" height=\"36\"/></td>\n";        
+        $bar .= "\t\t<td align=\"right\" valign=\"top\" width=\"100%\"><img src=\"$heading\"/><img src=\"$default->graphicsUrl/logo.jpg\" width=\"30\" height=\"36\"/></td>\n";        
         $bar .= "\t</tr>\n";
         $bar .= "\t<tr height=\"30\">\n";
-        $bar .= "\t\t<td colspan=\"2\" bgcolor=\"#1A4383\" width=\"100%\" nowrap>";
+        $bar .= "\t\t<td colspan=\"2\" bgcolor=\"#1A4383\" width=\"100%\">";
         $bar .= "<img align=\"absmiddle\" src=\"$default->graphicsUrl/arrow.gif\" ></img>\n";
 
         $bar .= "<INPUT type=\"hidden\" name=\"fForStandardSearch\" value=\"no\" />\n ";
@@ -182,7 +182,7 @@ class NavBar {
         if ((strcmp($this->sSection,"Standard Search") == 0) || (strcmp($this->sSection,"Advanced Search") == 0)) {
             $bar .= "<INPUT type=\"hidden\" name=\"fSearchText\"/>\n ";
         } else {
-            $bar .= "<INPUT type=\"text\" name=\"fSearchText\" width=\"30\" height = \"10\" align = \"absmiddle\" />\n";
+            $bar .= "<INPUT type=\"text\" name=\"fSearchText\" width=\"30\" height = \"10\" />\n";
             (isset($this->iFolderID) ? $bar .= "<INPUT type=\"hidden\" name=\"fFolderID\" value=\"" . $this->iFolderID . "\"  />\n " : $bar .= "");
             (isset($this->iDocumentID) ? $bar .= "<INPUT type=\"hidden\" name=\"fDocumentID\" value=\"" . $this->iDocumentID . "\"  />\n " : $bar .= "");
             (isset($this->sCategoryName) ? $bar .= "<INPUT type=\"hidden\" name=\"fCategoryName\" value=\"" . $this->sCategoryName . "\"  />\n " : $bar .= "");
@@ -190,7 +190,7 @@ class NavBar {
             //this next line works in IE, and Netscape 4.79 up, but NOT Netscape 4.79
             //$bar .= "<INPUT type=\"image\" onClick=\"return validateStandardSearch('" . $default->rootUrl . "/control.php')\" src=\"$default->graphicsUrl/search.gif\" align = \"absmiddle\" border=\"0\" />\n";
             //replaced with this line            
-            $bar .= "<a href=\"#\" onClick=\"return validateStandardSearch('" . $default->rootUrl . "/control.php')\"><image src=\"$default->graphicsUrl/search.gif\" border=\"0\" /></a>";
+            $bar .= "<a href=\"#\" onClick=\"return validateStandardSearch('" . $default->rootUrl . "/control.php')\"><image align=\"absmiddle\" src=\"$default->graphicsUrl/search.gif\" border=\"0\" /></a>";
             
         }
         $bar .= "\t\t</td>\n";
