@@ -1,5 +1,11 @@
-function setActionAndSubmit(newAction) {
+function setActionAndSubmit(newAction) {	
+    document.MainForm.action = newAction;	
+    document.MainForm.submit();
+}
+
+function setActionAndSubmitAsGet(newAction) {	
     document.MainForm.action = newAction;
+	document.MainForm.method = "GET";
     document.MainForm.submit();
 }
 
