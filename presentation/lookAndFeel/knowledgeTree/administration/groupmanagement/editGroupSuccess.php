@@ -31,8 +31,8 @@ require_once("$default->fileSystemRoot/presentation/Html.inc");
 
 global $default;
 
-if(checkSession()) {
-
+if (checkSession()) {
+	
     // include the page template (with navbar)
     require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 
