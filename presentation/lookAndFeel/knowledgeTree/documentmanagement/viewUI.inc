@@ -460,7 +460,7 @@ function displayDependantDocumentButton($oDocument, $bEdit) {
 
 function displayPublishButton($oDocument, $bEdit) {
     // only display the publish button for unpublished documents	
-    if (!DocumentCollaboration::documentIsPendingWebPublishing($oDocument->getID())) {      
+    if (DocumentCollaboration::documentIsPendingWebPublishing($oDocument->getID())) {      
         // if there is collaboration
         if ($oDocument->hasCollaboration()) {
             // only display publish button if collaboration is complete and you're the last user in the collaboration process (or a sysadmin)
