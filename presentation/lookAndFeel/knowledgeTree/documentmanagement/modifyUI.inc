@@ -62,20 +62,64 @@ function renderDocumentPath($oDocument) {
 }*/
 
 function renderEditableGenericMetaData($oDocument) {
-	global $default;
-	$sQuery = "SELECT DF.name AS name, DFL.value as value, DFL.id AS id " .
-			"FROM $default->owl_documents_table AS D INNER JOIN $default->owl_document_fields_table AS DFL ON D.id = DFL.document_id " .
-			"INNER JOIN $default->owl_fields_table AS DF ON DF.id = DFL.document_field_id " .
-			"WHERE document_id = " . $oDocument->getID() . " " .
-			"AND DF.is_generic = 1";
-	$aColumns = array("name", "value");
-	$aColumnHeaders = array("Tag", "Value");
-	$aColumnTypes = array(1,1);
-	$aColumnEditable = array(0,1);
-	$oPatternTableSqlQuery = & new PatternEditableTableSqlQuery($sQuery, $default->owl_document_fields_table, "generic_meta_data", $aColumns, $aColumnTypes, $aColumnEditable, $aColumnHeaders, "90%");
-	$oPatternTableSqlQuery->setTableHeading("Generic Meta Data");
+	global $default;	
+	$sQuery =	"SELECT " . $oDocument->getID() . " AS document_id, COALESCE(DFL.id, -1) AS id, DF.name AS name, DF.id as document_field_id, COALESCE(DFL.value, null) AS value " .
+				"FROM $default->owl_fields_table AS DF LEFT OUTER JOIN $default->owl_document_fields_table AS DFL ON DFL.document_field_id = DF.id " .
+				"RIGHT OUTER JOIN documents AS D ON D.id = DFL.document_id " .
+				"WHERE DF.is_generic = 1 " . 
+				"AND D.id = " . $oDocument->getID();
+			
+	$aStoreColumnNames = array("document_id", "document_field_id","value");
+	$aDisplayColumnNames = array("document_id", "name", "value");
+	$aColumnsEditable = array(0,0,1);
+	$aColumnsVisible = array(0,1,1);
+	$aColumnTypes = array(1,1,1);
+	
+	$oPatternTableSqlQuery = & new PatternEditableTableSqlQuery($sQuery, "document_fields_links", $aStoreColumnNames, $aDisplayColumnNames, $aColumnsEditable, $aColumnsVisible, $aColumnTypes, "gmd");
+	$oPatternTableSqlQuery->setTableCaption("Generic Meta Data");
 	return $oPatternTableSqlQuery->render();
 	
+}
+
+function renderEditableTypeSpecificMetaData($oDocument) {
+	global $default;
+	$sQuery = "SELECT COALESCE(DFL.id, -1) AS id, " . $oDocument->getID() . " AS document_id, DTFL.document_type_id AS document_type_id, DTL.name AS document_type_name, DTFL.field_id, DF.name AS field_name, DFL.value AS field_value, DTFL.is_mandatory AS is_mandatory " .
+			"FROM $default->owl_document_type_fields_table AS DTFL INNER JOIN $default->owl_folders_table AS F ON F.document_type_id = DTFL.document_type_id " .
+			"INNER JOIN $default->owl_documents_table AS D ON D.folder_id = F.id " .
+			"INNER JOIN $default->owl_document_types_table AS DTL ON DTL.id = DTFL.document_type_id " .
+			"INNER JOIN $default->owl_fields_table AS DF ON DTFL.field_id = DF.id " .
+			"LEFT OUTER JOIN $default->owl_document_fields_table AS DFL ON DFL.document_field_id = DF.id " .
+			"WHERE D.id =  " . $oDocument->getID() . " " .
+			"AND DF.is_generic = 0 ";
+			
+	$aStoreColumnNames = array("document_id", "field_id", "field_value");
+	$aDisplayColumnNames = array("document_id", "field_name", "field_value");
+	$aColumnsEditable = array(0,0,1);
+	$aColumnsVisible = array(0,1,1);
+	$aColumnTypes = array(1,1,1);
+	
+	$oPatternTableSqlQuery = & new PatternEditableTableSqlQuery($sQuery, "document_fields_links", $aStoreColumnNames, $aDisplayColumnNames, $aColumnsEditable, $aColumnsVisible, $aColumnTypes, "tsmd");
+	$oPatternTableSqlQuery->setTableCaption("Type specific meta data");
+	return $oPatternTableSqlQuery->render();
+}
+
+function renderPage($oDocument) {
+	$sToRender = "<table border = 0>\n";
+	$sToRender .= "<tr>\n";
+	$sToRender .= "<td>\n";
+	$sToRender .= wrapInTable(renderEditableGenericMetaData($oDocument)) . "\n";
+	$sToRender .= "</td>\n";
+	$sToRender .= "<td>\n";
+	$sToRender .= wrapInTable(renderEditableTypeSpecificMetaData($oDocument)) . "\n";
+	$sToRender .= "</td>\n";
+	$sToRender .= "</tr>\n";	
+	$sToRender .= "</table>\n";
+	$sToRender .= "<input type=\"submit\" value=\"Submit\" />\n";
+	return $sToRender;
+}
+
+function wrapInTable($sHtml) {
+	return "\n\t\t\t<table border = 1, width = 100%><tr><td>$sHtml</td></tr></table>\n";	
 }
 
 
