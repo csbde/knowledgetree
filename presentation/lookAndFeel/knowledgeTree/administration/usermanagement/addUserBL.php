@@ -122,7 +122,9 @@ if (checkSession()) {
         	$default->log->info("adding user id " . $oUser->getID() . " to group id $fGroupID"); 
         	$oUserGroup = new GroupUserLink($fGroupID,$oUser->getID());
         	if ($oUserGroup->create()) {
-            	$oPatternCustom->setHtml(getPageSuccess());
+        		// FIXME: update search permissions for the group
+        		// redirect to list page
+        		controllerRedirect("listUsers");
         	} else {
         		$oPatternCustom->setHtml(getPageGroupFail());
         	}
