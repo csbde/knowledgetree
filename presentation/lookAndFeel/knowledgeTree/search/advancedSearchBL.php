@@ -39,7 +39,6 @@ function criteriaNumber ($var) {
     if ($res !== false) {
         $res = strtr($res, '_', '-');
     }
-    var_dump($res);
     return $res;
 }
 
