@@ -241,7 +241,8 @@ class Permission {
 					"INNER JOIN $default->owl_roles_table AS R ON GFAL.role_id = R.id " .					
 					"WHERE user_id = " . $_SESSION["userID"] . " " .
 					"AND FURL.document_id = $iDocumentID " .
-					"AND R.can_write = 1");
+					"AND R.can_write = 1 " . 
+					"AND R.active = 1");
 		if ($sql->next_record()) {
 			return true;
 		}
