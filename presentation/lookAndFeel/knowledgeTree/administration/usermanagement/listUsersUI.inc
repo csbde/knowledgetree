@@ -68,7 +68,7 @@ function getUsers($fGroupID) {
 			$sWhereClause = "WHERE $sRestrictUsers";
 		}
 	}
-	$sQuery .= $sWhereClause . "ORDER BY U.name";
+	$sQuery .= $sWhereClause . "ORDER BY U.username";
 	
     $aColumns = array("name", "username",  "Edit", "Delete", "Edit Groups");
     $aColumnNames = array("Name", "Username", "Edit", "Delete", "Edit Groups");
