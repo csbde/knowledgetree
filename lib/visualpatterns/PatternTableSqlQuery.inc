@@ -87,7 +87,7 @@ class PatternTableSqlQuery {
 	function & render() {		
 		$sToRender = "<table cellpadding = 5, border = 0>\n";
 		if (isset($this->sTableHeading)) {
-			$sToRender .= "<caption colspan = " . count($this->aColumns) . ", align=left><b>$this->sTableHeading</b></caption>\n";
+			$sToRender .= "<caption align=\"top\" colspan = " . count($this->aColumns) . ", align=left><b>$this->sTableHeading</b></caption>\n";
 		}
 		if ($this->bDisplayColumnHeadings) {
 			for ($i = 0; $i < count($this->aColumnHeaderNames); $i++) {
@@ -110,7 +110,11 @@ class PatternTableSqlQuery {
 				for ($i = 0; $i < count($this->aColumns); $i++) {
 					switch ($this->aColumnTypes[$i]) {
 						case 1:
-								$sToRender .= "<td>" . (isset($this->sImageURL) ? $this->generateImageURL() : "") . $sql->f($this->aColumns[$i]) . "</td>";
+								$sToRender .= "<td>";
+								if (isset($this->sImageURL)) {
+									$sToRender .= $this->generateImageURL($this->sImageURL) 
+								}
+								$sToRender .= $sql->f($this->aColumns[$i]) . "</td>";
 								break;
 						case 3:
 								$sToRender .= "<td><a href=\"" . $this->sLinkURL . $sql->f($this->sDBQueryStringColumn) . "\">" . (isset($this->sImageURL) ? $this->generateImageURL() : "") . $sql->f($this->aColumns[$i]) . "</a></td>\n";
@@ -127,10 +131,9 @@ class PatternTableSqlQuery {
 	}
 	
 	
-	function generateImageURL() {
-		return "<img src=\"" . $this->sImageURL . "\" border=\"0\"/>";
+	function generateImageURL($sURL) {
+		return "<img src=\"" . $sURL . "\" border=\"0\"/>";
 	}
-	
 	
 }
 
