@@ -1,0 +1,56 @@
+KnowledgeTree Internationalisation (i18n)
+-----------------------------------------
+
+Overview
+--------
+Support for i18n has been added to the KnowledgeTree- however, we are not in a position to
+begin translating the KnowledgeTree until all the text and graphics in the application are marked for translation.
+This is a mammoth task that will require the support and aid of the KnowledgeTree community :)
+
+Requirements
+------------
+
+i18n requires gettext (http://www.gnu.org/software/gettext) and the gettext php module to work
+(see http://php.net/gettext for installation instructions).
+
+Completed Tasks and Implementation Details
+------------------------------------------
+
+- i18n/<locale>/LC_MESSAGES
+			   /graphics
+			   
+- gettext support loaded if php module available
+
+- dashboard and document browse view i18n'd
+
+***TODO****
+- checks the browser's Accept-Language header and uses that language (if there is a translation for it)
+
+
+The TODO List
+-------------
+
+The rest of the KnowledgeTree needs to be i18n'd.
+Here are some guidelines for adding gettext support to the KnowledgeTree.
+
+- find translatable strings and wrap literals with _()
+	eg. change:
+	
+	to:
+	 _("Checked Out Documents")
+- if strings are concatenated with dynamic content use sprintf
+    eg. 
+- add ordering to sprintf parameters- use single quotes so slashes aren't escaped in the .po files
+    eg.
+	sprintf(_('Hi %1$s, welcome back to the %2$s DMS, part of the Knowledge Tree')
+
+Testing
+-------
+- install gettext command line utilities
+- run xgettext to generate .po files
+- write a test translation
+- use msgfmt to compile your translated file
+- change the default language and verify
+  - you may have to specify the complete locale ie <langcode>_<countrycode>
+
+$Id$
