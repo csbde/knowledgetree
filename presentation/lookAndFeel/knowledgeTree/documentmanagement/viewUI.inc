@@ -336,13 +336,24 @@ function renderNonEditableLinkedDocuments($oDocument) {
     return $sToRender;    
 }
 
+function displayButton($sControllerLink, $sQueryString, $sImageName, $bActive, $sInactiveTooltip = "") {
+	$sImage = "<img border=\"0\" src=\"$default->graphicsUrl/widgets/docactions/";
+	if ($bActive) {
+		$sImage .= "$sImageName.gif\"";
+	} else {
+		$sImage .= "disabled-$sImageName.gif\" alt=\"$sInactiveTooltip\"";		
+	}
+	$sImage .= "/>";
+	return generateControllerLink($sControllerLink, $sQueryString, $sImage);
+}
+
 function displayActionButtons($oDocument, $bEdit) {
     global $default;
     
     $iDummyButtons = 2;
     
     // view
-    $sToRender .= "<tr><td align=\"left\"><a onClick=\"alert('This will download a copy of the document and is not the same as Checking Out a document.  Changes to this downloaded file will not be managed in the DMS.'); return true;\" href=\"" . generateControllerLink("downloadDocument", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/docactions/view.gif\" border=\"0\" /></a></td></tr>\n";    
+    $sToRender .= "<tr><td align=\"left\"><a onClick=\"alert('This will download a copy of the document and is not the same as Checking Out a document.  Changes to this downloaded file will not be managed in the DMS.'); return true;\" href=\"" . generateControllerLink("downloadDocument", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/docactions/view.gif\" border=\"0\" alt=\"View the document\"/></a></td></tr>\n";    
     if ($bEdit) {
          // display the check in button if the document is checked out and you checked the document out
         if ($oDocument->getIsCheckedOut() && ($oDocument->getCheckedOutUserID() == $_SESSION["userID"])) {
@@ -357,7 +368,7 @@ function displayActionButtons($oDocument, $bEdit) {
     }
     
     $sToRender .= "<tr><td align=\"left\"><a href=\"" . generateControllerLink("emailDocument", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/docactions/email.gif\" border=\"0\" /></a></td></tr>\n";    
-    if ($bEdit) {
+    if ($bEdit && !$oDocument->getIsCheckedOut()) {
         $sToRender .= "<tr><td align=\"left\"><a href=\"" . generateControllerLink("deleteDocument", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/docactions/delete.gif\" border=\"0\" /></a></td></tr>\n";
     } else {
     	$iDummyButtons++;
