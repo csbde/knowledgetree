@@ -6,14 +6,10 @@ function getSelectFieldPage($iDocFieldID) {
 	$oDocField = null;
 	if (isset($iDocFieldID)) {
 		$oDocField = DocumentField::get($iDocFieldID);
-		
 	}
 	
-	
-	$sToRender .= "<br></br>\n";
-	$sToRender .= "<b>Remove Lookup From Field:</b>\n";
+    $sToRender .= "<table width=\"600\">" . renderHeading("Remove Document Field Lookup") . "</table>";
 	$sToRender .= "<table>\n";
-	$sToRender .= "<br></br>\n";
 	$sToRender .= "<tr>Please Select a Field</tr>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>Document Field: </td><td>" . getDocFieldDisplay($oDocField) . "</td>\n";
@@ -21,10 +17,9 @@ function getSelectFieldPage($iDocFieldID) {
 	$sToRender .= "<tr>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<tr>\n";
+	$sToRender .= "<tr><td></td>\n" . getCancelButton($oDocField);
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
-	
 	
 	return $sToRender;
 }
@@ -36,22 +31,16 @@ function getSelectMetaDataPage($iDocFieldID, $iMetaDataID) {
 	$oDocField = null;
 	$oMetaData = null;
 	
-
 	if (isset($iDocFieldID)) {
 		$oDocField = DocumentField::get($iDocFieldID);
-		
 	}
 	
 	if (isset($iMetaDataID)) {
 		$oMetaData = MetaData::get($iMetaDataID);
-		
 	}
 	
-	
-	$sToRender .= "<br></br>\n";
-	$sToRender .= "<b>Remove Lookup From Field:</b>\n";
+    $sToRender .= "<table width=\"600\">" . renderHeading("Remove Document Field Lookup") . "</table>";
 	$sToRender .= "<table>\n";
-	$sToRender .= "<br></br>\n";
 	$sToRender .= "<tr>Please Select the Lookup value you wish to remove</tr>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>Document Field: </td><td>" . getDocFieldDisplay($oDocField) . "</td>\n";
@@ -59,10 +48,9 @@ function getSelectMetaDataPage($iDocFieldID, $iMetaDataID) {
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>Lookup: </td><td>" . getMetaDataDisplay($oMetaData,$iDocFieldID) . "</td>\n";
 	$sToRender .= "</tr>\n";
-	$sToRender .= "<tr>\n";
+	$sToRender .= "<tr><td></td>" . getCancelButton($oDocField);
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
-	
 	
 	return $sToRender;
 }
@@ -74,22 +62,16 @@ function getDeleteConfirmedPage($iDocFieldID, $iMetaDataID) {
 	$oDocField = null;
 	$oMetaData = null;
 	
-
 	if (isset($iDocFieldID)) {
 		$oDocField = DocumentField::get($iDocFieldID);
-		
 	}
 	
 	if (isset($iMetaDataID)) {
 		$oMetaData = MetaData::get($iMetaDataID);
-		
 	}
 	
-	
-	$sToRender .= "<br></br>\n";
-	$sToRender .= "<b>Remove Lookup From Field:</b>\n";
+    $sToRender .= "<table width=\"600\">" . renderHeading("Remove Document Field Lookup") . "</table>";
 	$sToRender .= "<table>\n";
-	$sToRender .= "<br></br>\n";
 	$sToRender .= "<tr><td>Are you sure you wish to Remove</td></tr><tr><td> the specified lookup from the Field?</td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
@@ -107,21 +89,16 @@ function getDeleteConfirmedPage($iDocFieldID, $iMetaDataID) {
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
 	
-	
 	return $sToRender;
 }
-
-
 
 // if edition is successful print otu success page
 function getSuccessPage() {	
 	global $default;
 			
-	$sToRender .= "<br></br>\n";
-	$sToRender .= "<b>Success!</b>\n";
+    $sToRender .= "<table width=\"600\">" . renderHeading("Remove Document Field Lookup") . "</table>";
 	$sToRender .= "<table>\n";
-	$sToRender .= "<br></br>\n";
-	$sToRender .= "<tr></tr>\n";
+	$sToRender .= "<tr><td><b>Success!</b></td></tr>\n";
 	$sToRender .= "<tr><td>The lookup was successfully deleted</td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
@@ -130,7 +107,6 @@ function getSuccessPage() {
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
 	
-	
 	return $sToRender;
 }
 
@@ -138,11 +114,9 @@ function getSuccessPage() {
 function getFailPage() {	
 	global $default;
 			
-	$sToRender .= "<br></br>\n";
-	$sToRender .= "<b>FAILURE!</b>\n";
+    $sToRender .= "<table width=\"600\">" . renderHeading("Remove Document Field Lookup") . "</table>";
 	$sToRender .= "<table>\n";
-	$sToRender .= "<br></br>\n";
-	$sToRender .= "<tr></tr>\n";
+	$sToRender .= "<tr><td><b>FAILURE!</b></td></tr>\n";
 	$sToRender .= "<tr><td>The lookup was not deleted</td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
@@ -151,11 +125,8 @@ function getFailPage() {
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
 	
-	
 	return $sToRender;
 }
-
-
 
 // gets the updatebutton when a DocField is selected
 function getDeleteButton($oDocField) {
@@ -171,7 +142,7 @@ function getDeleteButton($oDocField) {
 function getCancelButton($oDocField) {
 	global $default;
 	if (!isset($oDocField)) {
-		//return "<td align = right><a href=\"$default->rootUrl/control.php?action=DocFieldManagement\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" value=\"cancel\" /></a></td>\n";
+		return "<td align = right><a href=\"$default->rootUrl/control.php?action=metadata\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" value=\"cancel\" border = \"0\"/></a></td>\n";
 	} else {
 		return "<td align = right><a href=\"$default->rootUrl/control.php?action=removeMetaData\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" /></a></td>\n";
 	}
@@ -216,6 +187,4 @@ function getMetaDataDisplay($oMetaData,$iDocFieldID) {
 		
 	}
 }
-
-
 ?>
