@@ -32,7 +32,7 @@ function getWebsites() {
 
 function getPage() {
 	global $default;
-	$sToRender .= renderHeading("Current System Websites");
+	$sToRender .= renderHeading("Website Management");
 
 	// add user link
 	$sToRender .= getAddLink("addWebsite", "Add A Website");

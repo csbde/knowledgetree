@@ -28,7 +28,7 @@ function getOrganisations() {
 
 function getPage() {
 	global $default;
-	$sToRender .= renderHeading("Current System Organisations");
+	$sToRender .= renderHeading("Organisation Management");
 
 	// add user link
 	$sToRender .= getAddLink("addOrg", "Add A Organisation");
