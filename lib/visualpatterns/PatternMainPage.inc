@@ -73,8 +73,8 @@ class PatternMainPage {
 		$sToRender = 	"<html>\n" .
 							"<head>\n" .
                             "<meta http-equiv=\"refresh\" content=\"" . ($default->owl_timeout+3) . "\">\n" .
-                            "<link rel=\"StyleSheet\" HREF=\"$default->owl_ui_url/stylesheet.css\" type=\"text/css\">\n".
-							PatternMainPage::getNumberStringValidationJavaScript() . "\n" .
+                            "<link rel=\"StyleSheet\" HREF=\"$default->owl_ui_url/stylesheet.css\" type=\"text/css\">\n".							
+							PatternMainPage::getJavaScript() . "\n" .							
 							"</head>\n" .
 							"<body>\n" .
 							"<form name=\"MainForm\" " . (isset($this->sFormEncType) ? "enctype=\"$this->sFormEncType\" " : " ") . " action=\"".$this->sFormAction."\" method=\"POST\">\n" .
@@ -120,10 +120,16 @@ class PatternMainPage {
 						"</html>\n";
 		echo $sToRender;
 	}
-
-	function getNumberStringValidationJavaScript() {
+	
+	/**
+	* Returns java scrip that has 3 functions:
+	*	o validateString - validates a string
+	*	o validateNumber - validates a number
+	*	o setActionAndSubmit - sets the MainForm action to newAction and submits
+	*/
+	function getJavaScript() {
 		return "<script language=\"JavaScript\">\n".
-						"<!--\n" .
+					"<!--\n" .
 						"function validateString(field, msg, min, max) {\n" .
 							"\tif (!min) { min = 1 }\n" .
 							"\tif (!max) { max = 65535 }\n\n" .
@@ -148,10 +154,16 @@ class PatternMainPage {
 								"\t\treturn false;\n" .
 							"\t}\n" .
 						"\treturn true;\n" .
-						"}\n" .
+						"}\n\n" .
+						
+					"function setActionAndSubmit(newAction) {\n ".
+						"\tdocument.MainForm.action = newAction;\n" .
+						"\tdocument.MainForm.submit();\n" .
+					"}\n" .
 						"//-->\n" .
 					"</script>\n";
 	}
+	
 	
 }
 
