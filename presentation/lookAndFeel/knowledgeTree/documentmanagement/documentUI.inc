@@ -30,8 +30,8 @@ function displayDocumentLink($oDocument, $bDisplayFullPath = false) {
         $sLinkText = Folder::getFolderDisplayPath($oDocument->getFolderID()) . " > " . $sLinkText;
     }
 
-    return generateLink("$default->owl_root_url/control.php?action=viewDocument", 
-                        "fDocumentID=" . $oDocument->getID(),
+    return generateLink("$default->owl_root_url/control.php", 
+                        "action=viewDocument&fDocumentID=" . $oDocument->getID(),
                         $sIconPath . 
                         $sLinkText);
 }
