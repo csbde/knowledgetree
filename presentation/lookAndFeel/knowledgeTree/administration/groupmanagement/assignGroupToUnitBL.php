@@ -25,14 +25,21 @@ if (checkSession()) {
 
     $oPatternCustom = & new PatternCustom();
 
-    if(!isset($fGroupSet)) {
+    /*if (isset($fGroupID) ){
+    	// build first page
+        $oPatternCustom->setHtml(getGotGroupPage($fGroupID,null));
+        $main->setHasRequiredFields(true);
+        $main->setFormAction($_SERVER["PHP_SELF"] . "?fGroupSet=1");
+    }    
+    else*/ 
+    if(isset($fGroupSet)) {
         // build first page
         $oPatternCustom->setHtml(getPage(null,null));
         $main->setHasRequiredFields(true);
         $main->setFormAction($_SERVER["PHP_SELF"] . "?fGroupSet=1");
     } else {
         // do a check to see both drop downs selected
-        if($fGroupID == -1 Or $fUnitID ==-1) {
+        if(!isset($fGroupID) AND !isset($fUnitID )) {
             $oPatternCustom->setHtml(getPageNotSelected());
         } else { //check if it belongs to a unit
             $unitLink = GroupUnitLink::groupBelongsToUnit($fGroupID);

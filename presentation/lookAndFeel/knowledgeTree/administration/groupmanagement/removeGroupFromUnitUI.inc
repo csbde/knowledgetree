@@ -8,6 +8,17 @@
 *
 */
 
+function getNoUnitPage($fGroupID){
+	global $default;
+	$sToRender .= "<table><tr><td>\n";
+	$sToRender .= "<br>Group does not belong to an existing Unit.\n";
+	$sToRender .= "</td><td></td></tr><tr><td></td><td>\n";
+	$sToRender .= "<a href=\"$default->rootUrl/control.php?action=editGroupUnit&fGroupID=$fGroupID\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a>\n";
+	$sToRender .= "</td></tr></table>\n";
+	return $sToRender;
+	
+}
+
 // get page for removal
 function getPage($iGroupID, $iUnitID) {	
 	global $default;
@@ -106,7 +117,7 @@ function getPageNotSelected() {
 	return $sToRender;
 }
 // show success page if removed from unit successfully
-function getPageSuccess() {	
+function getPageSuccess($iGroupID) {	
 	global $default;
 			
 	$sToRender .= renderHeading("Remove Group From Unit");
@@ -117,7 +128,7 @@ function getPageSuccess() {
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=removeGroupFromUnit\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
+	$sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=editGroupUnit&fGroupID=$iGroupID\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
 	
@@ -179,7 +190,7 @@ function getCancelButton($oGroup) {
 	if (!isset($oGroup)) {
 		return "<td align = right><a href=\"$default->rootUrl/control.php?action=groupManagement\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" value=\"cancel\" border = \"0\"/></a></td>\n";
 	} else {
-		return "<td align = right><a href=\"$default->rootUrl/control.php?action=removeGroupFromUnit\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" /></a></td>\n";
+		return "<td align = right><a href=\"$default->rootUrl/control.php?action=editGroupUnit&fGroupID=" . $oGroup->iId . "\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" /></a></td>\n";
 	}
 }
 

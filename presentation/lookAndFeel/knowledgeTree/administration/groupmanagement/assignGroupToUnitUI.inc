@@ -8,6 +8,58 @@
 *
 */
 
+function getGotGroupPage($iGroupID,$iUnitID){
+	global $default;
+    $oGroup = null;
+    $oUnit = null;
+
+    if (isset($iGroupID)) {
+        $oGroup = Group::get($iGroupID);
+        //$heading = "<tr><td colspan=\"2\"><b>Group Name: <b>" . $oGroup->getName() . "</td></tr>\n";
+    } else {
+        if (Permission::userIsUnitAdministrator()) {
+            $heading = "<tr><td colspan=\"2\">Please Assign a Group to your Unit:</td></tr>\n";
+        } else {
+            $heading = "<tr><td colspan=\"2\">Please Assign a Group to a Unit:</td></tr>\n";
+        }
+    }
+    
+    if (isset($iUnitID)) {
+        $oUnit = Unit::get($iUnitID);
+    }
+
+    $sToRender .= renderHeading("Assign Group to Unit");
+    $sToRender .= "<table>\n";
+    $sToRender .= $heading;
+    $sToRender .= "<br>\n";
+    $sToRender .= "<tr>\n";
+    $sToRender .= "</tr>\n";
+    $sToRender .= "<td>Group Name: </td><td>" . getGroupDisplay($oGroup) . "</td>\n";
+    $sToRender .= "<tr>\n";
+    $sToRender .= "</tr>\n";
+    $sToRender .= "<tr>\n";
+    $sToRender .= "<td>Unit Name: </td><td>" . getUnitDisplay($oUnit) . "</td>\n";
+    $sToRender .= "</tr>\n";
+    $sToRender .= "<tr>\n";
+    $sToRender .= "</tr>\n";
+    $sToRender .= "<tr>\n";
+    $sToRender .= "</tr>\n";
+    $sToRender .= "<td></td><td>" . getAssignButton($oGroup);
+    $sToRender .= getCancelButton($oGroup);
+    $sToRender .= "</td></table>\n";
+
+    $sToRender .= "\n\n<script language=\"javascript\">\n<!--\n";
+	$sToRender .= "function validateForm(theForm) {;\n";
+	$sToRender .= "\tif (!(validRequired(theForm.fGroupID, 'Group'))) {\n";
+	$sToRender .= "\t\treturn false;\n";
+	$sToRender .= "\t}\n";	
+	$sToRender .= "return true;\n}\n";		
+	$sToRender .= "-->\n</script>\n\n";
+
+    return $sToRender;
+	
+}
+
 // gets main page
 function getPage($iGroupID, $iUnitID) {
     global $default;
@@ -89,7 +141,7 @@ function getPageFail($iGroupID) {
     $sToRender .= "<tr>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=assignGroupToUnit\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
+    $sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=listGroups\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
     $sToRender .= "</tr>\n";
 
     $sToRender .= "</table>\n";
@@ -103,14 +155,14 @@ function getPageNotSelected() {
     global $default;
 
     $sToRender .= renderHeading("Assign Group to Unit");
-    $sToRender .= "<table>\n";
+    $sToRender .= "<table border=1>\n";
     $sToRender .= "<tr><td><b>Sorry, Selection Failed</b></td></tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr><td>Please select BOTH a Group AND a Unit</td></tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=assignGroupToUnit\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
+    $sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=listGroups\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "</table>\n";
 
@@ -130,7 +182,7 @@ function getPageSuccess() {
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=assignGroupToUnit\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
+    $sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=listGroups\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "</table>\n";
 
@@ -162,7 +214,7 @@ function getUnitDisplay($oUnit) {
         $oUnit = Unit::get(User::getUnitID($_SESSION["userID"]));
     }
     if (!isset($oUnit)) {
-        $oPatternListBox = & new PatternListBox($default->owl_units_table, "name", "id", "fUnitID");
+        $oPatternListBox = & new PatternListBox($default->owl_units_table , "name", "id", "fUnitID");
         return $oPatternListBox->render();            
     } else {
         return "<input type=\"hidden\" name=\"fUnitID\" value=\"" . $oUnit->iId . "\">\n" .
@@ -183,7 +235,7 @@ function getAssignButton($oGroup) {
 // show button after group selected
 function getCancelButton($oGroup) {
     global $default;
-    return "<td align = right><a href=\"$default->rootUrl/control.php?action=groupManagement\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" /></a></td>\n";    
+    return "<td align = right><a href=\"$default->rootUrl/control.php?action=listGroups\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" /></a></td>\n";    
 }
 
 

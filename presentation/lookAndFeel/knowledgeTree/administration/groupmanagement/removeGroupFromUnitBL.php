@@ -36,8 +36,12 @@ if (checkSession()) {
             $oPatternCustom->setHtml(getPageNotSelected());
         } else {
             $fUnitID = GroupUnitLink::groupBelongsToUnit($fGroupID);
-            $oPatternCustom->setHtml(getPage($fGroupID,$fUnitID));
-            $main->setFormAction($_SERVER["PHP_SELF"] . "?fGroupSet=1&fDeleteConfirmed=1");
+            if ($fUnitID > 0) {  //If UnitID Exists
+	            $oPatternCustom->setHtml(getPage($fGroupID,$fUnitID));
+	            $main->setFormAction($_SERVER["PHP_SELF"] . "?fGroupSet=1&fDeleteConfirmed=1");
+            } else { // No Units exists to felete group from
+            	$oPatternCustom->setHtml(getNoUnitPage($fGroupID));	            
+            }
         }
     }
 
@@ -46,7 +50,7 @@ if (checkSession()) {
         $oGroupUnit = new GroupUnitLink($fGroupID,$fUnitID);
         $oGroupUnit->setGroupUnitID($fGroupID);
         $oGroupUnit->delete();
-        $oPatternCustom->setHtml(getPageSuccess());
+        $oPatternCustom->setHtml(getPageSuccess($fGroupID));
     }
 
     // render page
