@@ -148,6 +148,7 @@ $default->siteMap->addPage("viewNewsImage", "/presentation/lookAndFeel/knowledge
 
 //pages for manage documents section
 $default->siteMap->addDefaultPage("browse", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/browseBL.php", "Manage Documents", Guest, "browse documents");
+$default->siteMap->addDefaultPage("templateBrowse", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/templateDocumentBrowseBL.php", "Manage Documents", Guest, "browse documents");
 $default->siteMap->addPage("viewDocument", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/viewBL.php", "Manage Documents", Guest, "View Document", false);
 $default->siteMap->addPage("deleteDocument", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/deleteDocumentBL.php", "Manage Documents", User, "Delete document", false);
 $default->siteMap->addPage("moveDocument", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/moveDocumentBL.php", "Manage Documents", User, "Move document", false);
