@@ -28,9 +28,9 @@
  *	The File/Folder(s) that needs to be retrieved 
  *   @param $ThePath
  *	The Path to Search for the File/Folder(s)
- *   @Return $Files
+ *   @return $Files
  *	Returns an array of Files that needs to be retrieved 
- *   @Return $Folders
+ *   @return $Folders
  *	Returns an array Folder(s) that needs to be retrieved 
 */
 //-------------------------------------------------------------
@@ -88,7 +88,7 @@ function GetFromHD($GetWhat, $ThePath)
  *
  *   @param $PathFile
  *	The Path to the File
- *   @Return $FileInfo
+ *   @return $FileInfo
  *	Returns an array with the information of the file
 */
 //-------------------------------------------------------------
@@ -123,7 +123,7 @@ function GetFileInfo($PathFile) {
  *      The parent folder id
  *   @param $DBTable
  *	The DBTable to compare to
- *   @Return $RefreshPage
+ *   @return $RefreshPage
  *	Return true or false if page needs to be refreshed
 */
 //-------------------------------------------------------------

@@ -264,7 +264,7 @@ class UnitManager {
      *
      * returns an array of all the usernames
      *
-     * @Return
+     * @return
      *     an array of usernames
     */
     //-----------------------------------------------------------------
@@ -289,7 +289,7 @@ class UnitManager {
      *
      * Returns an array of all the details for a specified user.
      *
-     * @Return
+     * @return
      *           an array of usernames
     */
     //-----------------------------------------------------------------
