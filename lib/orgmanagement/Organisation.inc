@@ -133,16 +133,32 @@ class Organisation
 	{
 		global $default, $lang_err_database, $lang_err_object_key;
 		//only delete the object if it exists in the database
-		if ($this->iId >= 0) 
-		{
+		
+		
+		if ($this->iId >= 0) {
+			//check to see if group is linked to a unit
 			$sql = $default->db;
-			$result = $sql->query("DELETE FROM $default->owl_organisations_table WHERE id = $this->iId");
-			if ($result) 
-			{
-				return true;
+			$query = "SELECT organisation_id FROM ". $default->owl_units_organisations_table ." WHERE organisation_id = '" . $this->iId . "'";
+        		$sql->query($query);
+       			$rows = $sql->num_rows($sql);
+        		
+        	
+        		
+      			if ($rows > 0){
+      			// duplicate link exists
+           		 $_SESSION["errorMessage"] = "Group::The Group " . $this->sName . " exits!";
+           		 return false;
+           		 
+	       		 }else{
+				$sql = $default->db;
+				$result = $sql->query("DELETE FROM $default->owl_organisations_table WHERE id = $this->iId");
+				if ($result) 
+				{
+					return true;
+				}
+				$_SESSION["errorMessage"] = $lang_err_database;
+				return false;
 			}
-			$_SESSION["errorMessage"] = $lang_err_database;
-			return false;
 		}
 		$_SESSION["errorMessage"] = $lang_err_object_key;
 		return false;
