@@ -25,20 +25,27 @@
  * @package documentmanagement
  */
  
-function getConfirmationPage($iFolderID, $iDocumentID) {
+function getConfirmationPage($oFolder, $oDocument) {
 	global $default;
     $sToRender = renderHeading("Move Document");
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr>\n<td>Are you sure you want to move </td></tr>";
-	$sToRender .= "<tr><td><strong>" . Document::getDocumentDisplayPath($iDocumentID) . "</strong> to </td></tr>\n";
-	$sToRender .= "<tr><td><strong>" . Folder::getFolderDisplayPath($iFolderID) . " > " . Document::getDocumentName($iDocumentID) . "</strong></td>\n";
+	$sToRender .= "<tr><td><strong>" . $oDocument->getDisplayPath() . "</strong> to </td></tr>\n";
+	$sToRender .= "<tr><td><strong>" . Folder::getFolderDisplayPath($oFolder->getID()) . " > " . $oDocument->getFileName() . "</strong></td>\n";
 	$sToRender .= "</tr>\n";
-	$sToRender .= "<tr><td><a href=\"$default->rootUrl/control.php?action=moveDocument&fDocumentID=$iDocumentID&fFolderID=$iFolderID&fForMove=1&fConfirmed=1\"><img src=\"$default->graphicsUrl/widgets/move.gif\" border=\"0\"/></a>&nbsp;<a href=\"$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $iDocumentID . "\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></a></td></tr>\n";
+	$sToRender .= "<tr><td><a href=\"$default->rootUrl/control.php?action=moveDocument&fDocumentID=" .
+                            $oDocument->getID() . "&fFolderID=" . $oFolder->getID() . 
+                            "&fForMove=1&fConfirmed=1\">" .
+                            "<img src=\"$default->graphicsUrl/widgets/move.gif\" border=\"0\"/>" . 
+                            "</a>&nbsp;" . 
+                            "<a href=\"$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $oDocument->getID() . "\">" . 
+                            "<img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></a>" .
+                   "</td></tr>\n";
 	$sToRender .= "</table>\n";
 	return $sToRender;
 }
 
-
+// FIXME: change these to object references instead of IDs
 function getPage($iFolderID, $iDocumentID, $sErrorMessage = "") {
 	global $default;
     $sToRender = renderHeading("Move Document");

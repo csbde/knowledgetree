@@ -123,14 +123,14 @@ if (checkSession()) {
 				$oPatternCustom = & new PatternCustom();
 
 				$oDocument = Document::get($fDocumentID);
-				
+				$oFolder = Folder::get($fFolderID);
 				// check if the selected folder has the same document type as the document we're moving
 				if (Folder::folderIsLinkedToDocType($fFolderID, $oDocument->getDocumentTypeID())) {
 					// check that there is no filename collision in the destination directory				
 					$sNewDocumentFileSystemPath = Folder::getFolderPath($fFolderID) . $oDocument->getFileName();
 					if (!file_exists($sNewDocumentFileSystemPath)) {
 						// display confirmation page
-						$oPatternCustom->setHtml(getConfirmationPage($fFolderID, $fDocumentID));
+						$oPatternCustom->setHtml(getConfirmationPage($oFolder, $oDocument));
 					} else {
 						// filename collision
 						$oPatternCustom->setHtml(getPage($fFolderID, $fDocumentID, "This folder already contains a document of the same name.  Please choose another directory"));
