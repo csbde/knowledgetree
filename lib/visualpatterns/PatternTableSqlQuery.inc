@@ -54,8 +54,8 @@ class PatternTableSqlQuery {
 	/** Picture paths */
 	var $sChkPicPath = "widgets/checked.gif";
 	var $sUnChkPicPath = "widgets/unchecked.gif";
-	
-	var $bIncludeBorder = false;
+	/** whether to force entries to wrap */
+	var $bWordWrap = false;
 				
 	function PatternTableSqlQuery($sTmpQuery, $aTmpColumns, $aTmpColumnTypes, $aTmpColumnHeaderNames, $sTmpWidth, $aTmpLinkURLs = null, $aTmpDBQueryStringColumns = null, $aNewQueryStringVariableNames = null) {
 		$this->sQuery = $sTmpQuery;
@@ -99,6 +99,10 @@ class PatternTableSqlQuery {
 	
 	function getChkPicPath() {
 		return $this->sChkPicPath ;	
+	}
+	
+	function setWordWrap($bNewValue) {
+		$this->bWordWrap = $bNewValue;	
 	}
 	
 	/**
@@ -145,8 +149,12 @@ class PatternTableSqlQuery {
 								} else if ($this->bUseImageURLFromQuery) {
 									$sToRender .= $this->generateImageURL($sql->f("image_url"));
 								}
-								if ($sql->f($this->aColumns[$i]) != null) {	 							
-									$sToRender .= wordwrap(stripslashes($sql->f($this->aColumns[$i])), 25, " ", 1) . "</td>";
+								if ($sql->f($this->aColumns[$i]) != null) {
+									if ($this->bWordWrap) {
+										$sToRender .= wordwrap(stripslashes($sql->f($this->aColumns[$i])), 25, " ", 1) . "</td>";
+									} else {
+										$sToRender .= stripslashes($sql->f($this->aColumns[$i])) . "</td>";
+									}
 								} else {
 									$sToRender .= "&nbsp;</td>";
 								}
