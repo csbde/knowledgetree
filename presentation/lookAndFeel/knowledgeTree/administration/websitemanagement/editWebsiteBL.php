@@ -24,35 +24,29 @@ if (checkSession()) {
 
     $oPatternCustom = & new PatternCustom();
 
-    if(isset($fUserID)) {
-        // post back on User select from manual edit page
-        $oPatternCustom->setHtml(getSelectWebSitePage($fUserID,$fWebSiteID));
-        $main->setFormAction($_SERVER["PHP_SELF"] . "?fSelected=1");
-    } else {
-        // if nothing happens...just reload edit page
-        $oPatternCustom->setHtml(getSelectWebMasterPage(null));
-        $main->setFormAction($_SERVER["PHP_SELF"]);
-    }
-
-    if(isset($fSelected)) {
-        $oPatternCustom->setHtml(getEditWebSitePage($fUserID,$fWebSiteID));
-        $main->setFormAction($_SERVER["PHP_SELF"] . "?fForStore=1");
-    }
-
-    if(isset($fForStore)) {
-        if($fWebSiteName != "") {
-            $oWebSite = new WebSite($fWebSiteName,$fWebSiteURL, $fUserID);
-            $oWebSite->setWebSiteID($fUserID,$fOldWebSiteName);
-
-            if($oWebSite->update()) {
-                $oPatternCustom->setHtml(getSuccessPage());
-            } else {
-                $oPatternCustom->setHtml(getFailPage());
-            }
-        } else {
-            $oPatternCustom->setHtml(getTextPage());
-        }
-    }
+    if ($fWebSiteID) {
+    	$oWebSite = WebSite::get($fWebSiteID);
+    	if ($oWebSite) {
+	    	if ($fForStore) {
+	    		$oWebSite->setWebSiteName($fWebSiteName);
+	    		$oWebSite->setWebMasterID($fWebMasterID);
+	    		$oWebSite->setWebSiteURL($fWebSiteURL);
+	            if ($oWebSite->update()) {
+	                $oPatternCustom->setHtml(getSuccessPage());
+	            } else {
+	                $oPatternCustom->setHtml(getFailPage());
+	            }
+		    } else {
+		        $oPatternCustom->setHtml(getEditWebSitePage($oWebSite));
+		        $main->setFormAction($_SERVER["PHP_SELF"] . "?fForStore=1");
+		    }
+    	} else {
+			$oPatternCustom->setHtml(statusPage("Edit Website", "", "The selected website no longer exists in the database.", "listWebsites"));    		
+    	}
+  	} else {
+  		$oPatternCustom->setHtml(statusPage("Edit Website", "", "No website has been selected for editing.", "listWebsites"));
+  	}
+    	
     //render the page
     $main->setCentralPayload($oPatternCustom);
     $main->setHasRequiredFields(true);
