@@ -166,7 +166,7 @@ if (checkSession()) {
             //so don't display add button
             require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
             $oPatternCustom = & new PatternCustom();
-            $oPatternCustom->setHtml(getStatusPage($fFolderID, "You do not have permission to add a document to this folder</td><td><a href=\"$default->rootUrl/control.php?action=browse&fFolderID=$fFolderID\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></a>"));
+            $oPatternCustom->setHtml(getPage($fFolderID, $fDocumentTypeID, $fDependantDocumentID, "You do not have permission to add a document to this folder</td><td><a href=\"$default->rootUrl/control.php?action=browse&fFolderID=$fFolderID\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></a>"));
             $main->setCentralPayload($oPatternCustom);
             $main->render();
         }
