@@ -527,6 +527,12 @@ INSERT INTO document_type_fields_link (document_type_id, field_id, is_mandatory)
 INSERT INTO document_type_fields_link (document_type_id, field_id, is_mandatory) VALUES (1, 2, 0);
 INSERT INTO document_type_fields_link (document_type_id, field_id, is_mandatory) VALUES (1, 3, 0);
 
+INSERT INTO document_transaction_types_lookup (name) VALUES ("Create");
+INSERT INTO document_transaction_types_lookup (name) VALUES ("Update");
+INSERT INTO document_transaction_types_lookup (name) VALUES ("Delete");
+INSERT INTO document_transaction_types_lookup (name) VALUES ("Rename");
+INSERT INTO document_transaction_types_lookup (name) VALUES ("Move");
+
 INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
              VALUES ("Documents", "Root Document Folder", 0, 1, 51, 0, 0);
              
