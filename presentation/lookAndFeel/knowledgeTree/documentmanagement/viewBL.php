@@ -19,9 +19,10 @@ if (checkSession()) {
 	if (isset($fDocumentID)) {	
 		require_once("$default->owl_fs_root/lib/security/permission.inc");
 		require_once("$default->owl_fs_root/lib/documentmanagement/Document.inc");
+		require_once("$default->owl_fs_root/lib/email/Email.inc");
 		require_once("$default->owl_fs_root/lib/documentmanagement/PhysicalDocumentManager.inc");
 		require_once("$default->owl_fs_root/lib/documentmanagement/DocumentTransaction.inc");
-		require_once("$default->owl_fs_root/lib/foldermanagement/Folder.inc");
+		require_once("$default->owl_fs_root/lib/foldermanagement/Folder.inc");		
 		
 		if (isset($fForDownload)) {
 			if (Permission::userHasDocumentReadPermission($fDocumentID)) {
@@ -40,9 +41,7 @@ if (checkSession()) {
 				$main->setCentralPayload($oPatternCustom);
 				$main->render();
 			}
-		}
-		
-		if (Permission::userHasDocumentWritePermission($fDocumentID)) {		
+		} else if (Permission::userHasDocumentWritePermission($fDocumentID)) {		
 			require_once("$default->owl_fs_root/lib/security/permission.inc");
 			require_once("$default->owl_fs_root/lib/documentmanagement/Document.inc");
 			require_once("$default->owl_fs_root/lib/foldermanagement/Folder.inc");
