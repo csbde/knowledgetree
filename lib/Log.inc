@@ -52,8 +52,9 @@ class Log {
      * Creates the log file from the current datetime
      */
     function initialiseLogFile() {
+        global $default;
         if (!file_exists($this->logDirectory)) {
-            mkdir($this->logDirectory, "0700");
+            mkdir($this->logDirectory, $default->uMask);
         }
             
         $this->logFile = $this->logDirectory . "/log-" . date("d-m-Y") . ".txt";
