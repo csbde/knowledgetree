@@ -313,6 +313,18 @@ class Folder {
 		return $aChildren;
 	}
 	
+    /**
+     * Returns the documents in this folder
+     */
+    function getDocumentIDs($iFolderID) {
+		global $default;
+		$sql = $default->db;
+		$sql->query("SELECT id from $default->owl_documents_table WHERE folder_id = $iFolderID");
+		while ($sql->next_record()) {
+			$sChildString .= $sql->f("id") . ",";
+		}
+		return substr($sChildString,0, strlen($sChildString)-1);
+    }
 	
 	/**
 	* Delete the current object from the database
@@ -623,6 +635,26 @@ class Folder {
 		}
 		return false;
 	}
+    
+    /**
+     * Returns whether this folder has any documents currently in collaboration
+     */
+    function hasDocumentInCollaboration($iFolderID) {
+        global $default;
+        $sDocumentIDs = Folder::getDocumentIDs($iFolderID);
+        if (strlen($sDocumentIDs) > 0) {
+            $sQuery = "SELECT * FROM folders_users_roles_link WHERE document_id in ($sDocumentIDs) AND (active = 1 OR done = 1)";
+            $sql = $default->db;
+            $sql->query($sQuery);
+            if ($sql->next_record()) {
+                return true;
+            }
+            return false;
+        } else {
+            // no documents
+            return false;
+        }
+    }
 }
 
 ?>
