@@ -748,7 +748,7 @@ function owlusergroup($userid)
     $sql->query("select group_id from $default->owl_users_table where id = '$userid'");
     while($sql->next_record()) 
     {
-        $groupid = $sql->f("groupid");
+        $groupid = $sql->f("group_id");
         return $groupid;
     }
 }
