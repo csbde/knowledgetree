@@ -518,6 +518,8 @@ INSERT INTO mime_types (filetypes, mimetypes, icon_path) VALUES ('latex', 'appli
 INSERT INTO mime_types (filetypes, mimetypes, icon_path) VALUES ('lha', 'application/octet-stream', NULL);
 INSERT INTO mime_types (filetypes, mimetypes, icon_path) VALUES ('lzh', 'application/octet-stream', NULL);
 INSERT INTO mime_types (filetypes, mimetypes, icon_path) VALUES ('man', 'application/x-troff-man', NULL);
+INSERT INTO mime_types (filetypes, mimetypes, icon_path) VALUES ('mdb', 'application/access','icons/access.gif');
+INSERT INTO mime_types (filetypes, mimetypes, icon_path) VALUES ('mdf', 'application/access','icons/access.gif');
 INSERT INTO mime_types (filetypes, mimetypes, icon_path) VALUES ('me', 'application/x-troff-me', NULL);
 INSERT INTO mime_types (filetypes, mimetypes, icon_path) VALUES ('mesh', 'model/mesh', NULL);
 INSERT INTO mime_types (filetypes, mimetypes, icon_path) VALUES ('mid', 'audio/midi', NULL);
@@ -531,6 +533,7 @@ INSERT INTO mime_types (filetypes, mimetypes, icon_path) VALUES ('mpe', 'video/m
 INSERT INTO mime_types (filetypes, mimetypes, icon_path) VALUES ('mpeg', 'video/mpeg', NULL);
 INSERT INTO mime_types (filetypes, mimetypes, icon_path) VALUES ('mpg', 'video/mpeg', NULL);
 INSERT INTO mime_types (filetypes, mimetypes, icon_path) VALUES ('mpga', 'audio/mpeg', NULL);
+INSERT INTO mime_types (filetypes, mimetypes, icon_path) VALUES ('mpp', 'application/vnd.ms-project', 'icons/project.gif');
 INSERT INTO mime_types (filetypes, mimetypes, icon_path) VALUES ('ms', 'application/x-troff-ms', NULL);
 INSERT INTO mime_types (filetypes, mimetypes, icon_path) VALUES ('msh', 'model/mesh', NULL);
 INSERT INTO mime_types (filetypes, mimetypes, icon_path) VALUES ('nc', 'application/x-netcdf', NULL);
@@ -587,6 +590,7 @@ INSERT INTO mime_types (filetypes, mimetypes, icon_path) VALUES ('txt', 'text/pl
 INSERT INTO mime_types (filetypes, mimetypes, icon_path) VALUES ('ustar', 'application/x-ustar', NULL);
 INSERT INTO mime_types (filetypes, mimetypes, icon_path) VALUES ('vcd', 'application/x-cdlink', NULL);
 INSERT INTO mime_types (filetypes, mimetypes, icon_path) VALUES ('vrml', 'model/vrml', NULL);
+INSERT INTO mime_types (filetypes, mimetypes, icon_path) VALUES ('vsd', 'application/vnd.visio', 'icons/visio.gif');
 INSERT INTO mime_types (filetypes, mimetypes, icon_path) VALUES ('wav', 'audio/x-wav', NULL);
 INSERT INTO mime_types (filetypes, mimetypes, icon_path) VALUES ('wrl', 'model/vrml', NULL);
 INSERT INTO mime_types (filetypes, mimetypes, icon_path) VALUES ('xbm', 'image/x-xbitmap', NULL);
