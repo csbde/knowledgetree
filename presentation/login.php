@@ -42,7 +42,7 @@ if ($loginAction == "loginForm") {
            </td></tr>
            <input type=\"hidden\" name=\"redirect\" value=\"$redirect\"/>
            <input type=\"hidden\" name=\"loginAction\" value=\"login\">\n    
-           <tr align=\"right\"><td><input type=\"submit\" value=\"$lang_login\"></td></tr>\n
+           <tr align=\"right\"><td><input type=\"image\" src=\"$default->owl_graphics_url/icons/login.jpg\"></td></tr>\n
            </table>
            </center>
            </body>
