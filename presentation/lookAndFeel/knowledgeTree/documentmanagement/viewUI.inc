@@ -372,7 +372,7 @@ function renderDependantDocuments($oDocument, $bEdit) {
     $sToRender .= "\t\t<td>" . $oPatternTableSqlQuery->render() . "</td>\n";
     $sToRender .= "\t</tr>";
     $sToRender .= "\t<tr>\n";
-    $sToRender .= "<td><a href=\"$default->rootUrl/control.php?action=addDocumentLink&fDocumentID=" . $oDocument->getID() ."\"><img src=\"$default->graphicsUrl/widgets/add.gif\" border=\"0\"/></a></td>\n";
+    $sToRender .= "<td><a href=\"$default->rootUrl/control.php?action=createDependantDocument&fDocumentID=" . $oDocument->getID() ."\"><img src=\"$default->graphicsUrl/widgets/add.gif\" border=\"0\"/></a></td>\n";
     $sToRender .= "\t</tr>";     
 	$sToRender .= "\t</table>\n";
     return $sToRender;
