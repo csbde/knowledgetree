@@ -53,7 +53,11 @@ class PhysicalDocumentManager {
 		if (copy($sTmpFilePath, $sDocumentFileSystemPath)) {						
 			//remove the temporary file
 			unlink($sTmpFilePath);
-			return true;		
+			if (file_exists($sDocumentFileSystemPath)) {
+				return true;
+			} else {
+				return false;
+			}		
 		} else {
 			$_SESSION["errorMessage"] = $lang_err_upload;
 			return false;
