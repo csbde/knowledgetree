@@ -50,7 +50,7 @@ class DBUtil {
             $sQuery = $query;
         }
         $res = $db->query($sQuery, $aParams);
-        $default->log->debug('Query: ' . DBUtil::lastQuery($db));
+        $default->queryLog->debug('Query: ' . DBUtil::lastQuery($db));
         return $res;
     }
 
@@ -106,6 +106,7 @@ class DBUtil {
     function logQueryError($query, $result) {
         global $default;
         $default->log->error($result->toString());
+        $default->queryLog->error($result->toString());
     }
 
     function nextId($seqname, $ondemand = false, $db = null) {
@@ -132,7 +133,7 @@ class DBUtil {
             $aFieldValues['id'] = DBUtil::nextId($sTable, null, $db);
         }
         $res = $db->autoExecute($sTable, $aFieldValues);
-        $default->log->debug('Query: ' . DBUtil::lastQuery($db));
+        $default->queryLog->debug('Query: ' . DBUtil::lastQuery($db));
         if ($res === DB_OK) {
             return $aFieldValues['id'];
         }
@@ -147,7 +148,7 @@ class DBUtil {
         // $default->log->debug('AutoUpdate called for table ' . $sTable . ' with id ' . $iId);
         $db =& DBUtil::getDB();
         $res = $db->autoExecute($sTable, $aFieldValues, DB_AUTOQUERY_UPDATE, 'id = ' . $iId);
-        $default->log->debug('Query: ' . DBUtil::lastQuery($db));
+        $default->queryLog->debug('Query: ' . DBUtil::lastQuery($db));
         if ($res === DB_OK) {
             return $res;
         }
@@ -172,7 +173,7 @@ class DBUtil {
         $ret =& $db->execute($sth, array_values($aValues));
         $db->freePrepared($sth);
 
-        $default->log->debug('Query: ' . DBUtil::lastQuery($db));
+        $default->queryLog->debug('Query: ' . DBUtil::lastQuery($db));
         if ($res === DB_OK) {
             return $res;
         }
