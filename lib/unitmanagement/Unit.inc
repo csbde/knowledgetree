@@ -114,23 +114,28 @@ class Unit {
             if ($result) {
                 // need to update the units root folder also
                 $iFolderID = Folder::getFolderID($sOldName);
-                // lookup the folder with the old unit name
-                $oFolder = Folder::get($iFolderID);
-		        // folder name has changed, update the full_path
-				$sOldPath = $default->documentRoot . "/" . $oFolder->getFullPath() . "/" . $oFolder->getName();
-                // update the folder name
-                $oFolder->setName($this->sName);
-                $oFolder->setDescription($this->sName . " Unit Root Folder");
-                $sNewPath = $default->documentRoot . "/" . $oFolder->getFullPath() . "/" . $oFolder->getName();
-                if ($oFolder->update(true)) {
-                    if (!PhysicalFolderManagement::renameFolder($sOldPath, $sNewPath)) {
-                        //reverse the database changes if the physical rename failed
-                        $oFolder->setName($sOldName);
-                        $oFolder->update(true);
-                        return false;
-                    }
-                }
+
+				if($iFolderID) {
+	                // lookup the folder with the old unit name
+	                $oFolder = Folder::get($iFolderID);
+			        // folder name has changed, update the full_path
+					$sOldPath = $default->documentRoot . "/" . $oFolder->getFullPath() . "/" . $oFolder->getName();
+	                // update the folder name
+	                $oFolder->setName($this->sName);
+	                $oFolder->setDescription($this->sName . " Unit Root Folder");
+	              	$sNewPath = $default->documentRoot . "/" . $oFolder->getFullPath() . "/" . $oFolder->getName();
+
+	                if ($oFolder->update(true)) {
+	                    if (!PhysicalFolderManagement::renameFolder($sOldPath, $sNewPath)) {
+	                        //reverse the database changes if the physical rename failed
+	                        $oFolder->setName($sOldName);
+	                        $oFolder->update(true);
+	                        return false;
+	                    }
+	                }
+				}
                 return true;
+
             }
             $_SESSION["errorMessage"] = $lang_err_database;
             return false;
