@@ -532,8 +532,7 @@ INSERT INTO language_lookup (name) VALUES ("Norwegian");
 INSERT INTO language_lookup (name) VALUES ("Portuguese");
 INSERT INTO language_lookup (name) VALUES ("Spanish");
 
----- system settings
--- ldap
+-- system settings
 INSERT INTO system_settings (name, value) values ("lastIndexUpdate", "0");
 
 -- document statuses
@@ -585,28 +584,25 @@ INSERT INTO groups_lookup (name, is_sys_admin, is_unit_admin) VALUES ("System Ad
 INSERT INTO groups_lookup (name, is_sys_admin, is_unit_admin) VALUES ("Unit Administrators", 0, 1); -- id=2
 INSERT INTO groups_lookup (name, is_sys_admin, is_unit_admin) VALUES ("Anonymous", 0, 0); -- id=3
 
------- map groups to units
 -- unit administrators
 INSERT INTO groups_units_link (group_id, unit_id) VALUES (2, 1);
 
------- users & map users to groups
----- system administrator
+-- system administrator
 INSERT INTO users (username, name, password, quota_max, quota_current, email, mobile, email_notification, sms_notification, ldap_dn, max_sessions, language_id)
             VALUES ("admin", "Administrator", "21232f297a57a5a743894a0e4a801fc3", "0", "0", "", "", 1, 1, "", 1, 1);
 INSERT INTO users_groups_link (group_id, user_id) VALUES (1, 1);
 
----- unit administrator
+-- unit administrator
 INSERT INTO users (username, name, password, quota_max, quota_current, email, mobile, email_notification, sms_notification, ldap_dn, max_sessions, language_id)
             VALUES ("unitAdmin", "Unit Administrator", "21232f297a57a5a743894a0e4a801fc3", "0", "0", "", "", 1, 1, "", 1, 1);
 INSERT INTO users_groups_link (group_id, user_id) VALUES (2, 2);
                         
----- guest user
+-- guest user
 INSERT INTO users (username, name, password, quota_max, quota_current, email, mobile, email_notification, sms_notification, ldap_dn, max_sessions, language_id)
             VALUES ("guest", "Anonymous", "084e0343a0486ff05530df6c705c8bb4", "0", "0", "", "", 0, 0, "", 19, 1);
 INSERT INTO users_groups_link (group_id, user_id) VALUES (3, 3);
             
 -- define folder structure
----- organisation root folder
 INSERT INTO folders (name, description, parent_id, creator_id, unit_id, is_public)
              VALUES ("Root Folder", "Root Document Folder", 0, 1, 0, 0);
 INSERT INTO folders (name, description, parent_id, creator_id, unit_id, is_public)
