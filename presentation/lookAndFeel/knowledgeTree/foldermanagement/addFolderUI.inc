@@ -29,13 +29,13 @@ function renderBrowseAddPage($iFolderID) {
     global $default;
 	$sToRender = "<table border=\"0\" width=\"100%\">\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "\t<td>" . renderFolderPath($iFolderID, "$default->uiUrl/foldermanagement/addFolderBL.php") . "</td>\n";
+    $sToRender .= "\t<td>" . renderFolderPath($iFolderID, generateControllerUrl("addFolder", "", false)) . "</td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "</table>\n";
     $sToRender .= "<table border=\"0\">\n";
     $sToRender .= "<tr>\n";
 	$sToRender .= "<td valign=\"top\" width=\"300\">\n";
-	$sToRender .= wrapInTable(renderFolderList($iFolderID, "/control.php?action=addFolder"));
+	$sToRender .= wrapInTable(renderFolderList($iFolderID, generateControllerUrl("addFolder", "", false)));
 	$sToRender .= "</td>\n";
 	$sToRender .= "<td valign=\"top\">\n";
 	$sToRender .= getRightSide($iFolderID);
@@ -86,12 +86,12 @@ function renderBrowsePage($fFolderID) {
     global $default;
     $sToRender = "<table border=\"0\">\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "\t<td>" . renderFolderPath($fFolderID, "$default->uiUrl/foldermanagement/addFolderBL.php") . "</td>\n";
+    $sToRender .= "\t<td>" . renderFolderPath($fFolderID, generateControllerUrl("addFolder", "", false)) . "</td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "</table>\n";
     $sToRender .= "<table border=\"0\">\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "\t<td>" . renderFolderList($fFolderID, "control.php?action=addFolder") . "<td>\n";
+    $sToRender .= "\t<td>" . renderFolderList($fFolderID, generateControllerUrl("addFolder", "", false)) . "<td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "</table><br>\n";
 
