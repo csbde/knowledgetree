@@ -134,7 +134,24 @@ function getFolderGroupAccess($iFolderID, $sDivName) {
 	$sQuery = "SELECT GFL.id as id, GFL.group_id AS group_id, GFL.folder_id AS folder_id, GFL.can_read AS can_read, GFL.can_write AS can_write, GL.name AS group_name, 'Edit' as edit, 'Delete' as del " .	
 			  "FROM $default->groups_folders_table AS GFL " .
               "INNER JOIN $default->groups_table AS GL ON GFL.group_id = GL.id " .
-			  "WHERE GFL.folder_id = $iFolderID";
+			  "WHERE GFL.folder_id = ?";
+
+        $iTestFolderID = $iFolderID;
+        $bFoundPermissions = false;
+        $bDisabled = false;
+        while ($bFoundPermissions !== true) {
+            $aCheckQuery = array('SELECT id FROM groups_folders_link WHERE folder_id = ? LIMIT 1', $iTestFolderID);
+            if (count(DBUtil::getResultArrayKey($aCheckQuery, 'id')) == 0) {
+                $default->log->info('No direct permissions on folder ' . $iTestFolderID);
+                $bDisabled = true;
+                $oTestFolder = Folder::get($iTestFolderID);
+                $iTestFolderID = $oTestFolder->getParentID();
+                $default->log->info('... trying parent: ' . $iTestFolderID);
+            } else {
+                $default->log->info('Found direct permissions on folder ' . $iTestFolderID);
+                break;
+            }
+        }
 	
 	$aColumns = array("group_name", "can_read", "can_write", "edit", "del");
 	$aColumnHeaders = array(_("Group"), _("Read"), _("Write"), "", "");
@@ -143,9 +160,13 @@ function getFolderGroupAccess($iFolderID, $sDivName) {
 	$aQueryStringVariableNames = array("fGroupFolderLinkID", "fFolderID");
 	$aLinkURLs = array(3=>"$default->rootUrl/control.php?action=modifyGroupFolderLink",4=>"$default->rootUrl/control.php?action=deleteGroupFolderLink");
 	
-	$oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaders, "610", $aLinkURLs, $aDBColumnArray,$aQueryStringVariableNames);
+	$oPatternTableSqlQuery = & new PatternTableSqlQuery(array($sQuery, $iTestFolderID), $aColumns, $aColumnTypes, $aColumnHeaders, "610", $aLinkURLs, $aDBColumnArray,$aQueryStringVariableNames);
 	$oPatternTableSqlQuery->setTableHeading("Folder Permissions");
 	$oPatternTableSqlQuery->setDisplayColumnHeadings(true);
+        if ($bDisabled === true) {
+            $oPatternTableSqlQuery->setDisabled($bDisabled);
+            $oPatternTableSqlQuery->setTableHeading("Folder Permissions (inherited)");
+        }
    
 	$sToRender .= "<table>";
 	$sToRender .= "<tr><td>" . $oPatternTableSqlQuery->render() . "</td></tr>";
