@@ -40,6 +40,10 @@ class Role {
 		return $this->sName;
 	}
 	
+	function getID() {
+		return $this->iId;
+	}
+	
 	/**
 	* Create the current object in the database
 	*
