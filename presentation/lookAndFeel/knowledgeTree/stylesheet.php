@@ -26,7 +26,7 @@ if ( ($browser == "moz") && ($version <= 4.79)) {
     $scroll["textBoxLeft"] = "135";
     $scroll["textBoxTop"] = "120";
     $scroll["textBoxWidth"] = "600";
-    $scroll["textBoxHeight"] = "470";
+    $scroll["textBoxHeight"] = "458";
 } elseif ($browser == "ie") {
     // MSIE 6.0
     $scroll["upArrowLeft"] = "725";
@@ -37,7 +37,7 @@ if ( ($browser == "moz") && ($version <= 4.79)) {
     $scroll["textBoxLeft"] = "138";
     $scroll["textBoxTop"] = "135";
     $scroll["textBoxWidth"] = "600";
-    $scroll["textBoxHeight"] = "477";
+    $scroll["textBoxHeight"] = "463";
 }
 ?>
 <pre>
