@@ -43,6 +43,9 @@ class WebDocument {
 	function setStatusID($iNewValue) {
 		$this->iStatusID = $iNewValue;
 	}
+    function setWebSiteID($iNewValue) {
+        $this->iWebSiteID = $iNewValue;
+    }
 	
 	/**
 	* Create the current object in the database
