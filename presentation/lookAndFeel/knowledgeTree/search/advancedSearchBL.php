@@ -120,7 +120,6 @@ function getApprovedDocumentString($sMetaTagIDs, $sSQLSearchString) {
 				"AND " . $sSQLSearchString . " " .
 				"AND SL.name='Live' " .
 				"AND SDUL.user_id = " . $_SESSION["userID"];
-	$default->log->info("search doc query=$sQuery");
 	$sql = $default->db;
 	$sql->query($sQuery);	
 	while ($sql->next_record()) {
