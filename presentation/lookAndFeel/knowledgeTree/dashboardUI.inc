@@ -207,7 +207,7 @@ function renderDependantDocuments($aDependantDocumentList) {
  */
 function renderQuickLinks($aQuickLinks) {
     global $default;
-    $sToRender .= "\t\t\t<tr align=\"left\" bgcolor=\"#9D9D7F\">\n";
+    $sToRender  = "\t\t\t<tr align=\"left\" bgcolor=\"#9D9D7F\">\n";
     $sToRender .= "\t\t\t\t<th class=\"sectionHeading\"><font color=\"ffffff\">" . _("Quick Links") . "</font></th>\n";
     $sToRender .= "\t\t\t</tr>\n";
     for ($i = 0; $i < count($aQuickLinks); $i++) {
@@ -227,6 +227,8 @@ function renderDashboardNews() {
 	
 	// retrieve all news items
 	$aDashboardNews = DashboardNews::getList("active=1");/*ok*/
+
+    $sToRender = "";
 	
 	if ($default->scrollingNews) {
 	  
@@ -321,7 +323,7 @@ function renderPage($aPendingDocumentList, $aCheckedOutDocumentList, $aSubscript
 function renderNewsItemPage($oDashboardNews) {
 	global $default;
 	     	
-	$sToRender .= "<html>\n";
+	$sToRender  = "<html>\n";
 	$sToRender .= "<head>\n";
 	$sToRender .= "<meta http-equiv=\"refresh\" content=\"" . ($default->sessionTimeout+3) . "\">\n";
 	$sToRender .= "<link rel=\"SHORTCUT ICON\" href=\"$default->graphicsUrl/tree.ico\">\n";
