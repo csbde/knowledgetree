@@ -70,7 +70,6 @@ if (checkSession()) {
             $sStatusMessage = "You cannot edit a document collaboration step that is completed or currently underway";
             $oPatternCustom->setHtml(getStatusPage($oDocument, $sStatusMessage));
             $main->setDHTMLScrolling(false);
-            $main->setFormAction("$default->rootUrl/control.php?action=modifyDocument&fDocumentID=" . $oDocument->getID());
         } else if (isset($fBeginCollaboration) && Permission::userHasDocumentWritePermission($fDocumentID)) {
             //begin the collaboration process
             //first ensure that all steps in the collaboration process are assigned

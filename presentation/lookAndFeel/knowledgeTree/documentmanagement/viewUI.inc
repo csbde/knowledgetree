@@ -49,7 +49,7 @@ function renderDocumentData($oDocument, $bEditable, $sStatusMessage = "") {
       
     $sToRender .= "\t<table cellspacing=\"0\" cellpadding=\"0\" border=\"0\" width=\"100%\">\n";
 	if ($sStatusMessage) {
-		$sToRender .= "<tr><td><font color=\"red\">$sStatusMessage</font></td></tr>";
+		$sToRender .= "<tr><td>&nbsp;</td></tr><tr><td><font color=\"red\">$sStatusMessage</font></td></tr>";
 	}    
     $sToRender .= "\t<tr>\n";
     $sToRender .= "\t\t<td>" . $oPatternListFromQuery->render() . "</td>\n";    
@@ -460,7 +460,7 @@ function getStatusPage($oDocument, $sStatusMessage) {
 	$sToRender = "<div id=\"headings\" style=\"position:relative;visibility:visible;top:2px;left:2px;\">";       
     $sToRender .= renderHeading("Document Detail");
     $sToRender .= renderDocumentPath($oDocument, false) . "\n\n";
-    $sToRender .= "<table border=\"0\" width=\"530\">";
+    $sToRender .= "<table border=\"0\" width=\"610\">";
 
 	// if we have a status message, then make the section links refresh to viewDocument with the fShowSection variable
 	// ie. effectively removes statusMessage on next click
@@ -474,7 +474,7 @@ function getStatusPage($oDocument, $sStatusMessage) {
 	$sToRender .= renderDocumentSection("linkedDocuments", "Linked Documents", $bDisplayLink, $oDocument->getID());
 	$sToRender .= "</table>";
     $sToRender .= "</div>";
-	$sToRender .= renderSectionDiv("documentData", renderDocumentData($oDocument, false, $sStatusMessage));
+	$sToRender .= renderDocumentData($oDocument, false, $sStatusMessage);
 	return $sToRender;
 }
 
