@@ -122,26 +122,24 @@ class PatternMainPage {
         // hack to circumvent the crapness of ns 4.79
         if (! (($default->phpSniff->property("browser") == "moz") && ($default->phpSniff->property("version") <= "4.79")) ) {
             $sToRender .=       "<div id=\"divUp\">" .
-                                "\t<a href=\"#\" onmouseover=\"scroll(-7)\" onmouseout=\"noScroll()\"><img src=\"" . $default->graphicsUrl . "/desc.gif\" width=\"25\" height=\"30\" alt=\"up\" border=\"0\"></a>" .
+                                "\t<a href=\"#\" onmouseover=\"scroll(-7)\" onmouseout=\"noScroll()\"><img src=\"" . $default->graphicsUrl . "/desc.gif\" width=\"18\" height=\"9\" alt=\"up\" border=\"0\"></a>" .
                                 "</div>" .
                                 "<div id=\"divDown\">" .
-                                "\t<a href=\"#\" onmouseover=\"scroll(7)\" onmouseout=\"noScroll()\"><img src=\"" . $default->graphicsUrl . "/asc.gif\" width=\"25\" height=\"30\" alt=\"down\" border=\"0\"></a>" .
+                                "\t<a href=\"#\" onmouseover=\"scroll(7)\" onmouseout=\"noScroll()\"><img src=\"" . $default->graphicsUrl . "/asc.gif\" width=\"18\" height=\"9\" alt=\"down\" border=\"0\"></a>" .
                                 "</div>";
         }
-                            
-		$sToRender .= 		    "<form name=\"MainForm\" " . (isset($this->sFormEncType) ? "enctype=\"$this->sFormEncType\" " : " ") . " action=\"".$this->sFormAction."\" method=POST " . (($this->bHasRequiredFields) ? "onsubmit=\"return validateForm(this)\" " : " ") . ">\n" .		
-		
-								"<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"700\" height=\"600\">\n " .
 
-									"<tr height=\"18%\">\n".
-										"<td width=\"5%\"" . (isset($this->sNorthWestPayloadBackGroundColour) ? " bgcolor=\"" . $this->sNorthWestPayloadBackGroundColour . "\"" : "") . ">\n";
+		$sToRender .= 		    "<form name=\"MainForm\" " . (isset($this->sFormEncType) ? "enctype=\"$this->sFormEncType\" " : " ") . " action=\"".$this->sFormAction."\" method=POST " . (($this->bHasRequiredFields) ? "onsubmit=\"return validateForm(this)\" " : " ") . ">\n" .		
+								"<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"700\" height=\"600\">\n " .
+									"<tr height=\"10\">\n".
+										"<td valign=\"top\" " . (isset($this->sNorthWestPayloadBackGroundColour) ? " bgcolor=\"" . $this->sNorthWestPayloadBackGroundColour . "\"" : "") . ">\n";
 										if (isset($this->oNorthWestPayload)) {											
 											$sToRender = $sToRender . "\n" . $this->oNorthWestPayload->render() . "\n";
 										} else {
 											$sToRender = $sToRender . "\nNorthwest payload not set\n";
 										}
 										$sToRender = $sToRender . "</td>\n
-										<td width = \"90%\"" . (isset($this->sNorthPayloadBackGroundColour) ? " bgcolor=\"" . $this->sNorthPayloadBackGroundColour . "\"" : "") . ">\n";										
+										<td valign=\"top\" align=\"left\" " . (isset($this->sNorthPayloadBackGroundColour) ? " bgcolor=\"" . $this->sNorthPayloadBackGroundColour . "\"" : "") . ">\n";										
 										if (isset($this->oNorthPayload)) {
 											$sToRender = $sToRender . "\n" . $this->oNorthPayload->render() . "\n";
 										} else {
@@ -149,15 +147,15 @@ class PatternMainPage {
 										}
 										$sToRender = $sToRender . "</td>\n
 									</tr>\n
-									<tr border = \"1\" height=\"72%\" >\n										
-										<td border = \"1\" width=\"5%\"" . (isset($this->sWestPayloadBackGroundColour) ? " bgcolor=\"" . $this->sWestPayloadBackGroundColour . "\"" : "") . ">";
+									<tr>\n										
+										<td valign=\"top\"" . (isset($this->sWestPayloadBackGroundColour) ? " bgcolor=\"" . $this->sWestPayloadBackGroundColour . "\"" : "") . ">";
 										if (isset($this->oWestPayload)) {											
 											$sToRender = $sToRender . "\n" . $this->oWestPayload->render() . "\n";											
 										} else {
 											$sToRender = $sToRender . "\nWest payload not set\n";
 										}
 										$sToRender = $sToRender . "</td>\n
-										<td width=\"80%\" valign=\"top\"" . (isset($this->sCentralPayloadBackGroundColour) ? " bgcolor=\"" . $this->sCentralPayloadBackGroundColour . "\"" : "") . ">\n";
+										<td valign=\"top\"" . (isset($this->sCentralPayloadBackGroundColour) ? " bgcolor=\"" . $this->sCentralPayloadBackGroundColour . "\"" : "") . ">\n";
                                         
 										if (isset($this->oCentralPayload)) {
                                             // hack to circumvent the crapness of ns 4.79
