@@ -1,6 +1,6 @@
 <?php
 /**
-* BL information for adding a Unit
+* BL information for changing system info
 *
 * @author Mukhtar Dharsey
 * @date 5 February 2003
@@ -30,6 +30,8 @@ if (checkSession()) {
 		$aNames = array("ldapServer",
 				"ldapRootDn",
 				"emailServer",
+				"emailAdmin",
+				"emailAdminName",
 				"emailFrom",
 				"emailFromName",
 				"filesystemRoot",
@@ -46,6 +48,8 @@ if (checkSession()) {
 		$aValues = array($fldapServer,
 				 $fldapRootDn,
 				 $femailServer,
+				 $femailAdmin,
+				 $femailAdminName,
 				 $femailFrom,
 				 $femailFromName,
 				 $ffilesystemRoot,
