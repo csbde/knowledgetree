@@ -37,14 +37,14 @@ function getMetaData($aMetaTagIDs) {
 	
 	return $sToRender;
 }
-
-function getSearchPage($sSearchString = "", $aMetaTagIDs = array()) {
+function getSearchPage($sSearchString = "", $aMetaTagIDs = array(), $sHeading = "Advanced Search", $bSearchArchive = false) {
 	global $default;
-    $sToRender  = renderHeading("Advanced Search");	
+    $sToRender  = renderHeading($sHeading);	
 	$sToRender .= "<table width=\"600\">\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>Search text: <input type=\"text\" size=\"60\" name=\"fSearchString\" value=\"$sSearchString\" />\n";
 	$sToRender .= "<input type=\"button\" value=\"search\" onClick=\"validateAdvancedSearch()\"/></td>\n";
+	$sToRender .= ($bSearchArchive ? "<input type=\"hidden\" name=\"fSearchArchive\" value=\"1\"" : "");
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>&nbsp</td>\n";
