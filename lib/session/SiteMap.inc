@@ -468,7 +468,7 @@ class SiteMap {
      * Returns the action for a specific page- to enable redirects (uses the db)
      *
      * @param string the page to perform the reverse lookup for
-     * @return string the action for this page
+     * @return string the action for this page, false if there is no mapping
      */
     function getActionFromPageUsingDB($sPage) {
         global $default, $lang_err_database;
@@ -493,7 +493,7 @@ class SiteMap {
      * Returns the action for a specific page- to enable redirects (uses the array)
      *
      * @param string the page to perform the reverse lookup for
-     * @return string the action for this page
+     * @return string the action for this page, false if there is no mapping
      */
     function getActionFromPageUsingArray($sPage) {
         global $default;
@@ -514,6 +514,7 @@ class SiteMap {
                 }
             }
         }
+        return false;
     }
 
     /**
