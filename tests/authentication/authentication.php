@@ -45,6 +45,6 @@ if (checkSession()) {
     // user credentials to authenticate
     $sUserName = "michael";
     $sPassword = "pass123";
-    echo "<ul><li>Authenticating ($sUserName, $sPassword) : " . $oLdapAuth->checkPass($sUserName, $sPassword) . "</li></ul>";
+    echo "<ul><li>Authenticating ($sUserName, $sPassword) : " . ($oLdapAuth->checkPassword($sUserName, $sPassword) ? "true" : "false") . "</li></ul>";
 }
 ?>
