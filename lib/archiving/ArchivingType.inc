@@ -69,7 +69,7 @@ class ArchivingType {
         //if the id >= 0, then the object has already been created
         if ($this->iId < 0) {
             $sql = $default->db;
-            $result = $sql->query("INSERT INTO $default->owl_archiving_type_lookup_table (name) " .
+            $result = $sql->query("INSERT INTO $default->archiving_type_lookup_table (name) " .
                                   "VALUES ('" . addslashes($this->sName) . "')");
             if ($result) {
                 //set the current primary key
@@ -90,7 +90,7 @@ class ArchivingType {
         global $default;
         if ($this->iId >= 0) {			
             $sql = $default->db;
-			$sQuery = "UPDATE $default->owl_archiving_type_lookup_table SET " .
+			$sQuery = "UPDATE $default->archiving_type_lookup_table SET " .
 					  "name = '" . addslashes($this->sName) . "' " .                                
            			  "WHERE id = $this->iId";
             $result = $sql->query($sQuery);
@@ -112,7 +112,7 @@ class ArchivingType {
         global $default;
         if ($this->iId >= 0) {
             $sql = $default->db;
-            $result = $sql->query("DELETE FROM $default->owl_archiving_type_lookup_table WHERE id = $this->iId");
+            $result = $sql->query("DELETE FROM $default->archiving_type_lookup_table WHERE id = $this->iId");
             if ($result) {
                 $this->iId = -1;
                 return true;
@@ -132,7 +132,7 @@ class ArchivingType {
     function & get($iArchivingTypeID) {
         global $default;
         $sql = $default->db;
-        $sql->query("SELECT * FROM $default->owl_archiving_type_lookup_table WHERE id = $iArchivingTypeID");
+        $sql->query("SELECT * FROM $default->archiving_type_lookup_table WHERE id = $iArchivingTypeID");
         if ($sql->next_record()) {
             $oArchivingType = & new ArchivingType($sql->f("name"));
             $oArchivingType->iId = $iArchivingTypeID;
@@ -152,7 +152,7 @@ class ArchivingType {
         global $default;
         $aArchivingTypeArray = array();
         $sql = $default->db;
-        $result = $sql->query("SELECT * FROM $default->owl_archiving_type_lookup_table " . (isset($sWhereClause) ? " WHERE " . $sWhereClause : ""));
+        $result = $sql->query("SELECT * FROM $default->archiving_type_lookup_table " . (isset($sWhereClause) ? " WHERE " . $sWhereClause : ""));
         if ($result) {
             $iCount = 0;
             while ($sql->next_record()) {

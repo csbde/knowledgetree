@@ -53,7 +53,7 @@ class DocumentArchiveSettingsFactory {
 	function create($iArchivingTypeID, $iDocumentID, $dExpirationDate, $iDocumentTransactionID, $iTimeUnitID, $iUnits) {
 		global $default;
 		
-		$sArchivingType = lookupName($default->owl_archiving_type_lookup_table, $iArchivingTypeID);
+		$sArchivingType = lookupName($default->archiving_type_lookup_table, $iArchivingTypeID);
 				
 		// process time period (if any)
 		$iTimePeriodID = $this->handleTimePeriod($iTimeUnitID, $iUnits);
@@ -106,7 +106,7 @@ class DocumentArchiveSettingsFactory {
 			$iTimePeriodID = $this->handleTimePeriod($iTimeUnitID, $iUnits);
 			$oArchiveSettings->setTimePeriodID($iTimePeriodID);
 								
-			$sArchivingType = lookupName($default->owl_archiving_type_lookup_table, $oArchiveSettings->getArchivingTypeID());
+			$sArchivingType = lookupName($default->archiving_type_lookup_table, $oArchiveSettings->getArchivingTypeID());
 			// update it based on the type
 			switch ($sArchivingType) {
 				case "Date" : 			$oArchiveSettings->setExpirationDate($dExpirationDate);										
