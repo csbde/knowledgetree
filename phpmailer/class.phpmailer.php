@@ -142,7 +142,7 @@ class phpmailer
      * @access public
      * @var string
      */
-    var $PluginDir         = "phpmailer/";
+    var $PluginDir         = "";
 
     /**
      *  Holds phpmailer version.
@@ -653,6 +653,7 @@ class phpmailer
     function smtp_send($header, $body) {
         // Include SMTP class code, but not twice
         include_once($this->PluginDir . "class.smtp.php");
+
 
         $smtp = new SMTP;
 
