@@ -43,7 +43,9 @@ $default->system = new System();
 $default->organisationID = 1;
 
 if ($default->system->initialised()) {
-    $aSettings = array("ldapServer", "ldapRootDn", "ldapServerType", "emailServer", "emailFrom", "emailFromName",
+    $aSettings = array("ldapServer", "ldapRootDn", "ldapServerType",
+                       "ldapDomain", "ldapSearchUser", "ldapSearchPassword", 
+                       "emailServer", "emailFrom", "emailFromName",
                        "emailAdmin", "emailAdminName",
                        "documentRoot", "languageDirectory",
                        "uiDirectory", "rootUrl", "graphicsUrl", "uiUrl", "useFS", "defaultLanguage",
@@ -70,7 +72,7 @@ if ($default->system->initialised()) {
     $default->emailAdminName = "DMS Administrator";
     
     // directories
-    $default->documentRoot  =  "/usr/local/www/owl/dms/Documents";
+    $default->documentRoot  =  $default->fileSystemRoot . "/Documents";
     $default->languageDirectory  = $default->fileSystemRoot . "/locale";
     $default->uiDirectory  = $default->fileSystemRoot . "/presentation/lookAndFeel/knowledgeTree";
      
