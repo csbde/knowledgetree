@@ -145,7 +145,7 @@ $default->owl_timeout = 1200;
 $default->debug = True;
 
 // whether ssl is enabled or not
-$default->sslEnabled = true;
+$default->sslEnabled = false;
 
 // define site mappings
 require_once("$default->owl_fs_root/lib/session/SiteMap.inc");
@@ -161,6 +161,7 @@ $default->siteMap->addPage("dashboard", "/presentation/dashboardBL.php", "Genera
 //pages for manage documents section
 $default->siteMap->addDefaultPage("browse", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/browseBL.php", "Manage Documents", Guest, "browse documents");
 $default->siteMap->addPage("viewDocument", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/viewBL.php", "Manage Documents", Guest, "");
+$default->siteMap->addPage("viewDocumentHistory", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/viewHistoryBL.php", "Manage Documents", User, "View Document History");
 $default->siteMap->addPage("addDocument", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentBL.php", "Manage Documents", User, "Add A Document");
 $default->siteMap->addPage("modifyDocumentRouting", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/collaborationBL.php", "Manage Documents", User, "");
 $default->siteMap->addPage("modifyDocument", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/modifyBL.php", "Manage Documents", User, "");
