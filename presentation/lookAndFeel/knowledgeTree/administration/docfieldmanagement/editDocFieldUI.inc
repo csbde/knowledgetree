@@ -18,6 +18,8 @@ function getEditPage($iDocFieldID) {
 	if (isset($iDocFieldID)) {
 		$oDocField = DocumentField::get($iDocFieldID);
 		$checkBox = $oDocField->isFieldLinkedToType();
+		$aDataTypes =  $oDocField->getAllDataTypes();
+		$currentDataType = $oDocField->getDataType();
 		
 	}
 		
@@ -39,7 +41,7 @@ function getEditPage($iDocFieldID) {
 	if (isset($iDocFieldID)) {
 		$sToRender .= "</tr>\n";
 		$sToRender .= "<tr>\n";
-		$sToRender .= "<td>Data Type: </td><td><input size = \"20\" type=\"text\" name=\"fDocFieldDataType\" value=\"" . $oDocField->getDataType() . "\">";
+		$sToRender .= "<td>Data Type: </td><td>" . getDataTypesList($aDataTypes, $currentDataType ) . "</td>\n";
 		$sToRender .= "</tr>\n";
 		$sToRender .= "<tr>\n";
 		
@@ -126,6 +128,35 @@ function getDocFieldDisplay($oDocField) {
 	}
 	
 }
+
+// show Group details on confirm deletion page
+function getDataTypesList($aDataTypes, $sCurrent) {
+	global $default;
+
+		/*"select UGL.group_id, GL.name from users_groups_link as UGL
+		 inner join groups_lookup AS GL on UGL.group_id = GL.id
+		 where UGL.user_id=1"'*/
+
+		
+		$sDataype = "<Select Name=\"fDocFieldDataType\">";
+		 
+		 for ($i=0;$i < count($aDataTypes);$i++){
+		 	
+		 	if($aDataTypes[$i]["name"] == $sCurrent){
+		 		 $Options .=  "<OPTION value= \"". $aDataTypes[$i]["name"]. "\" SELECTED>". $aDataTypes[$i]["name"] ."</OPTION>\n";
+		 	}else{
+		 	  // $oDocField= DocField::get($aAllSpecific[$i]["id"]);
+		 	    $Options .=  "<OPTION value= \"". $aDataTypes[$i]["name"] . "\">". $aDataTypes[$i]["name"] ."</OPTION>\n";
+		 	}
+		 	
+		 }
+		
+		$sDataype .= $Options . "</SELECT>";
+		
+		return $sDataype;
+	
+}
+
 
 // returns the checkbox ticked or unticked
 function getIsGenericCheckBox($oDocField) {
