@@ -176,6 +176,9 @@ $default->siteMap->addPage("checkInDocument", "/presentation/lookAndFeel/knowled
 $default->siteMap->addSectionColour("Manage Documents", "td", "BDDFE0");
 $default->siteMap->addSectionColour("Manage Documents", "th", "57AFAE");
 
+// web documents
+$default->siteMap->addPage("webDocument", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/webDocumentBL.php", "Manage Documents", Guest, "View Web Document", false);
+
 // category management
 $default->siteMap->addPage("manageCategories", "/presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/editDocFieldBL.php?fDocFieldID=1", "Manage Categories", SysAdmin, "Manage Categories");
 $default->siteMap->addSectionColour("Manage Categories", "td", "BDDFE0");
