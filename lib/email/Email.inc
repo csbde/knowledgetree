@@ -39,7 +39,7 @@ Class Email {
 		
 		//set up info
 		$emailHyperlink->isSMTP();
-		$emailHyperlink->Host = $default->owl_mail_server; // SMTP server
+		$emailHyperlink->Host = $default->owl_email_server; // SMTP server
 		
 		//get info from relevant fields.
 		$emailHyperlink->From = $FromEmail;
@@ -81,7 +81,7 @@ Class Email {
 		
 		//set up info
 		$emailHyperlink->isSMTP();
-		$emailHyperlink->Host = $default->owl_mail_server; // SMTP server
+		$emailHyperlink->Host = $default->owl_email_server; // SMTP server
 		
 		//get info from relevant fields.
 		$emailHyperlink->From = $FromEmail;
