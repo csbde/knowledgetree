@@ -1,5 +1,6 @@
 <?php
 
+	
 /**
 *
 * Class Email
@@ -12,6 +13,7 @@
 */
 
 Class Email {
+	
 
 	/**
 	* Sends an email containing a hyperlink to a specified recipient
@@ -28,34 +30,75 @@ Class Email {
 	* @todo check for special characters (including encoding the link correctly???)
 	* @todo need to test this on multiple mail clients, not just Outlook
 	*/
-	function sendHyperLink($FromEmail, $FromName, $ToEmail, $Subject, $EmailBody, $hyperlink)
+	function sendHyperLink($FromEmail, $FromName, $ToEmail, $Subj, $EmailBody, $hyperlink)
 	{
 		global $default;
 			
 		// create a new phpmailer object.
-		$mail = new phpmailer();
+		$emailHyperlink = new phpmailer();
 		
 		//set up info
-		$mail->IsSMTP(); // telling the class to use SMTP
-		$mail->Host = $default->owl_mail_server; // SMTP server
+		$emailHyperlink->isSMTP();
+		$emailHyperlink->Host = $default->owl_mail_server; // SMTP server
 		
 		//get info from relevant fields.
-		$mail->From = $FromEmail;
-		$mail->FromName = $FromName;
-		$mail->AddAddress($ToEmail);
-		$mail->Subject = $Subj;
-		$mail->Body = $EmailBody  . ' ' . $hyperlink;
-		$mail->WordWrap = 100;
-		$mail->IsHTML(true);
+		$emailHyperlink->From = $FromEmail;
+		$emailHyperlink->FromName = $FromName;
+		$emailHyperlink->AddAddress($ToEmail);
+		$emailHyperlink->Subject = $Subj;
+		$emailHyperlink->Body = stripslashes($EmailBody) . ' ' . $hyperlink;
+		$emailHyperlink->WordWrap = 100;
+		$emailHyperlink->IsHTML(true);
 		   
 		//send the email       
-		if(!$mail->Send()) {
-		   $_SESSION["errorMessage"] = $lang_err_email . " " . $mail->ErrorInfo;
+		if(!$emailHyperlink->Send()) {
+		   $_SESSION["errorMessage"] = $lang_err_email . " " . $emailHyperlink->ErrorInfo;
 		   return false;	
 		}
 		return true;
 	}
-	
+	/**
+	* Sends an email ment for administration, 
+	*
+	* @param 	The sender's email address
+	* @param 	The sender's Name
+	* @param 	The recipients email address
+	* @param 	The subject heading for the email
+	* @param 	The Body of the email
+	* @param 	The hyperlink that should be sent
+	*
+	* @return boolean true on email successfully sent, false otherwise and set $_SESSION["errorMessage"]
+	* 
+	* @todo check for special characters (including encoding the link correctly???)
+	* @todo need to test this on multiple mail clients, not just Outlook
+	*/
+	function sendHelpEmail($FromEmail, $FromName, $ToEmail, $Subj, $EmailBody, $hyperlink)
+	{
+		global $default;
+			
+		// create a new phpmailer object.
+		$emailHyperlink = new phpmailer();
+		
+		//set up info
+		$emailHyperlink->isSMTP();
+		$emailHyperlink->Host = $default->owl_mail_server; // SMTP server
+		
+		//get info from relevant fields.
+		$emailHyperlink->From = $FromEmail;
+		$emailHyperlink->FromName = $FromName;
+		$emailHyperlink->AddAddress($ToEmail);
+		$emailHyperlink->Subject = $Subj  . ' ' . $hyperlink; //only difference from above
+		$emailHyperlink->Body = stripslashes($EmailBody) . " <br>This bug can be found on this page: " . "<a href = ". $hyperlink .">" . $hyperlink . "</a>";
+		$emailHyperlink->WordWrap = 80;
+		$emailHyperlink->IsHTML(true);
+		   
+		//send the email       
+		if(!$emailHyperlink->Send()) {
+		   $_SESSION["errorMessage"] = $lang_err_email . " " . $emailHyperlink->ErrorInfo;
+		   return false;	
+		}
+		return true;
+	}
 }
 
 ?>
