@@ -38,12 +38,12 @@ if (checkSession()) {
         if($fMetaDataName != "") {
             $oMetaData = new MetaData($fDocFieldID,$fMetaDataName);
             if($oMetaData->create()) {
-                $oPatternCustom->setHtml(getSuccessPage());
+                $oPatternCustom->setHtml(getSuccessPage($fDocFieldID));
             } else {
-                $oPatternCustom->setHtml(getFailPage());
+                $oPatternCustom->setHtml(getFailPage($fDocFieldID));
             }
         } else {
-            $oPatternCustom->setHtml(getTextPage());
+            $oPatternCustom->setHtml(getTextPage($fDocFieldID));
         }
     }
 

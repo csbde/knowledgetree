@@ -45,12 +45,12 @@ if (checkSession()) {
             $oMetaData = new MetaData($fDocFieldID,$fMetaDataName);
             $oMetaData->setMetaDataID($fDocFieldID,$fOldMetaDataName);
             if($oMetaData->update()) {
-                $oPatternCustom->setHtml(getSuccessPage());
+                $oPatternCustom->setHtml(getSuccessPage($fDocFieldID));
             } else {
-                $oPatternCustom->setHtml(getFailPage());
+                $oPatternCustom->setHtml(getFailPage($fDocFieldID));
             }
         } else {
-            $oPatternCustom->setHtml(getTextPage());
+            $oPatternCustom->setHtml(getTextPage($fDocFieldID));
         }
     }
 
