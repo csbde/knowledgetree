@@ -10,7 +10,7 @@
  */
 
 // include the environment settings
-require_once("Environment.php");
+require_once("environment.php");
 
 $default->owl_graphics_url = $default->owl_root_url . "/graphics";
 $default->owl_LangDir  = $default->owl_fs_root . "/locale";
@@ -176,8 +176,8 @@ $default->siteMap->addPage("moveFolder", "/presentation/lookAndFeel/knowledgeTre
 $default->siteMap->addPage("addDocument", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentBL.php", "Manage Documents", User, "Add A Document");
 $default->siteMap->addPage("modifyDocumentRouting", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/collaborationBL.php", "Manage Documents", User, "");
 $default->siteMap->addPage("modifyFolderCollaboration", "/presentation/lookAndFeel/knowledgeTree/foldermanagement/collaborationBL.php", "Manage Documents", User, "", false);
-$default->siteMap->addPage("addFolderCollaboration", "/presentation/lookAndFeel/knowledgeTree/folderManagement/addFolderCollaborationBL.php", "Manage Documents", User, "", false);
-$default->siteMap->addPage("deleteFolderCollaboration", "/presentation/lookAndFeel/knowledgeTree/folderManagement/deleteFolderCollaborationBL.php", "Manage Documents", User, "", false);
+$default->siteMap->addPage("addFolderCollaboration", "/presentation/lookAndFeel/knowledgeTree/foldermanagement/addFolderCollaborationBL.php", "Manage Documents", User, "", false);
+$default->siteMap->addPage("deleteFolderCollaboration", "/presentation/lookAndFeel/knowledgeTree/foldermanagement/deleteFolderCollaborationBL.php", "Manage Documents", User, "", false);
 
 // pages for administration section
 $default->siteMap->addDefaultPage("administration", "/admin.php", "Administration", UnitAdmin, "Administration");
