@@ -27,7 +27,7 @@
  
 require_once("../../../../../config/dmsDefaults.php");
 
-KTUtil::extractGPC('fAssign', 'fUserID', 'fUserSet');
+KTUtil::extractGPC('fAssign', 'fUserID', 'fUserSet', 'groupAddedLeft', 'groupAddedRight');
 
 /*
  * Update all User/Groups association
