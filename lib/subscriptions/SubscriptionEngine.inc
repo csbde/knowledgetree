@@ -3,9 +3,9 @@ require_once("$default->fileSystemRoot/lib/users/User.inc");
 require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
 require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
 require_once("$default->fileSystemRoot/lib/subscriptions/Subscription.inc");
-require_once("$default->fileSystemRoot/lib/subscriptions/AlertContent.inc");
-require_once("$default->fileSystemRoot/lib/subscriptions/alert/EmailAlert.inc");
-require_once("$default->fileSystemRoot/lib/subscriptions/alert/SMSAlert.inc");
+require_once("$default->fileSystemRoot/lib/alert/AlertContent.inc");
+require_once("$default->fileSystemRoot/lib/alert/delivery/EmailAlert.inc");
+require_once("$default->fileSystemRoot/lib/alert/delivery/SMSAlert.inc");
 
 /**
  * 
@@ -70,7 +70,7 @@ class SubscriptionEngine {
 
                 // retrieve the appropriate content
                 // using the values array to customise the notification message
-                $sAlertContent = AlertContent::get($iSubscriptionAlertType, $aValues);
+                $sAlertContent = AlertContent::getSubscriptionAlert($iSubscriptionAlertType, $aValues);
 
                 // construct alerts
                 if ($aSubscribers[$i]->getEmailNotification() && (strlen($aSubscribers[$i]->getEmail()) > 0)) {
