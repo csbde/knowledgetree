@@ -125,10 +125,9 @@ $default->owl_dependant_document_template_table = "dependant_document_template";
 $default->owl_dependant_document_instance_table = "dependant_document_instance";
 $default->owl_document_link_table = "document_link";
 // archive settings
-$default->owl_document_archiving_table = "document_archiving";
+$default->owl_document_archiving_table = "document_archiving_link";
 $default->owl_archiving_type_lookup_table = "archiving_type_lookup";
-$default->owl_archiving_date_settings_table = "archiving_date_settings";
-$default->owl_archiving_utilisation_settings_table = "archiving_utilisation_settings";
+$default->owl_archiving_settings_table = "archiving_settings";
 $default->owl_time_period_table = "time_period";
 $default->owl_time_unit_lookup_table = "time_unit_lookup";
 $default->owl_archive_restoration_table = "archive_restoration_request";
