@@ -73,7 +73,7 @@ class BrowseCriterion {
             return array($sFolderQuery, $aParams);
         }
 
-        $sFolderQuery .= "WHERE parent_id = ? ORDER BY $this->sSortField " . $this->oBrowser->sSortDirection;
+        $sFolderQuery .= "WHERE parent_id = ? ORDER BY " . $this->getFolderSortField() . " " . $this->oBrowser->sSortDirection;
         $aParams = array($iParentID);
         return array($sFolderQuery, $aParams);
     }
@@ -104,7 +104,7 @@ class BrowseCriterion {
         } else {
             $sDocumentJoinField = $this->getDocumentField();
             // $sSortField = $this->getSortField();
-            $documentQuery .= "ORDER BY $this->sSortField " . $this->oBrowser->sSortDirection;
+            $documentQuery .= "ORDER BY " . $this->getSortField() . " " . $this->oBrowser->sSortDirection;
         }
         
         return array($documentQuery, $aParams);
@@ -118,8 +118,16 @@ class BrowseCriterion {
         return $this->sSortField;
     }
 
+    function getFolderSortField () {
+        return $this->sSortField;
+    }
+
     function getLookup () {
         return $this->aLookup;
+    }
+
+    function getName() {
+        return $this->sDocumentField;
     }
 }
 
@@ -148,14 +156,33 @@ class NameCriterion extends BrowseCriterion {
     function folderDisplay($oFolder) {
         return displayFolderLink($oFolder);
     }
+
+    function getFolderSortField() {
+        return 'name';
+    }
+}
+
+class IDCriterion extends BrowseCriterion {
+    var $bFolderCriterion = true;
+    function documentDisplay ($oDocument) {
+        return $oDocument->getID();
+    }
+    function folderDisplay($oFolder) {
+        return $oFolder->getID();
+    }
 }
 
 class TitleCriterion extends BrowseCriterion {
+    var $bFolderCriterion = true;
     function documentDisplay ($oDocument) {
         return $oDocument->getName();
     }
     function folderDisplay($oFolder) {
         return $oFolder->getDescription();
+    }
+
+    function getFolderSortField() {
+        return 'description';
     }
 }
 
@@ -188,6 +215,9 @@ class DateCreatedCriterion extends BrowseCriterion {
     function documentDisplay ($oDocument) {
         $aDocumentTransaction = DocumentTransaction::getList("transaction_id=1 AND document_id=" . $oDocument->getID());
         return $aDocumentTransaction[0]->dDateTime;
+    }
+    function getName() {
+        return "datecreated";
     }
 }
 
@@ -235,6 +265,43 @@ class GenericMetadataCriterion extends BrowseCriterion {
         }
         return $res;
     }
+
+    function getName() {
+        global $default;
+        $aQuery = array("SELECT name FROM $default->document_fields_table WHERE id = ?", array($this->iFieldID)); /*ok*/
+        return "gmd_" . DBUtil::getOneResultKey($aQuery, 'name');
+    }
+}
+
+function &getCriterionByNumber(&$aSortCriteria, &$oBrowser, $iID) {
+    global $default;
+    switch ($iID) {
+        case -1:
+            $oCriterion =& new NameCriterion(_("Name"), 'filename', 'filename', $oBrowser);
+            break;
+        case -2:
+            $oCriterion =& new TitleCriterion(_("Title"), 'name', 'name', $oBrowser);
+            break;
+        case -3:
+            $oCriterion =& new CreatorCriterion(_("Creator"), 'creator_id', 'creator_id', $oBrowser);
+            break;
+        case -4:
+            $oCriterion =& new DateCreatedCriterion(_("Date Created"), 'id', 'id', $oBrowser);
+            break;
+        case -5:
+            $oCriterion =& new DocumentTypeCriterion(_("Document Type"), 'document_type_id', 'document_type_id', $oBrowser);
+            break;
+        case -6:
+            $oCriterion =& new IDCriterion(_("ID"), 'id', 'id', $oBrowser);
+            break;
+        default:
+            $aQuery = array("SELECT name FROM $default->document_fields_table WHERE id = ?", array($iID)); /*ok*/
+            $sName = DBUtil::getOneResultKey($aQuery, 'name');
+            $oCriterion =& new GenericMetadataCriterion($sName, 'id', 'id', $oBrowser, $iID);
+            break;
+
+    }
+    return $oCriterion;
 }
  
 class Browser {
@@ -270,17 +337,16 @@ class Browser {
     function Browser($sNewSortField, $sNewSortDirection, $aNewSortCriteria = array()) {
         // default sort criteria
         if (count($aNewSortCriteria) == 0) {
-            $aNewSortCriteria = array (
-                "name" => new NameCriterion(_("Title"), 'name', 'name', $this),
-                "filename" => new TitleCriterion(_("Description"), 'filename', 'filename', $this),
-                "creator_id" => new CreatorCriterion(_("Creator"), 'creator_id', 'creator_id', $this),
-                "id" => new DateCreatedCriterion(_("Date Created"), 'id', 'id', $this),
-                "document_type_id" => new DocumentTypeCriterion(_("Document Type"), 'document_type_id', 'document_type_id', $this),
-                "category" => new GenericMetadataCriterion("Category", 'id', 'id', $this, 1),
-            );
+            $aNewSortCriteria = array();
+            $aQuery = array("SELECT criteria_id FROM browse_criteria ORDER BY precedence", array()); /*ok*/
+            $aSelectedCriteriaIDs = DBUtil::getResultArrayKey($aQuery, 'criteria_id');
+            foreach ($aSelectedCriteriaIDs as $iID) {
+                $oCriterion =& getCriterionByNumber($aNewSortCriteria, $this, $iID);
+                $aNewSortCriteria[$oCriterion->getName()] =& $oCriterion;
+            }
     	}
 							 	 										   		      	
-    	$this->aSortCriteria = $aNewSortCriteria;
+    	$this->aSortCriteria =& $aNewSortCriteria;
     	$this->sSortField = $sNewSortField;
     	$this->sSortDirection = $sNewSortDirection;
     }
@@ -348,6 +414,10 @@ class Browser {
 
     function getOptions() {
         return $this->aOptions;
+    }
+
+    function columns() {
+        return count($this->aSortCriteria);
     }
 
     /**
