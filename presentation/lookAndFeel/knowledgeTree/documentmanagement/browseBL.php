@@ -35,6 +35,7 @@ require_once("$default->owl_ui_directory/documentmanagement/browseUI.inc");
 
 // only if we have a valid session
 if (checkSession()) {
+    ob_start();
     require_once("../../../webpageTemplate.inc");
     
     // retrieve variables
@@ -48,41 +49,38 @@ if (checkSession()) {
     $oDocBrowser = new DocumentBrowser();
     // instantiate my content pattern
     $oContent = new PatternCustom();
- 
-    // instantiate data arrays
-    $folders = NULL;
-    $categories = NULL;
-    $documentTypes = NULL;
     
     switch ($fBrowseType) {
-        case "folder" : // retrieve folderID if present                
+        case "folder" : // retrieve folderID if present
                         if (!$fFolderID) {
-                            $results = $oDocBrowser->browseByFolder();
+                            $aResults = $oDocBrowser->browseByFolder();
+                            controllerRedirect("browse", "fFolderID=" . $aResults["folders"][0]->getID());
                         } else {
-                            $results = $oDocBrowser->browseByFolder($fFolderID);
+                            ob_end_flush();
+                            $aResults = $oDocBrowser->browseByFolder($fFolderID);
                         }
                         break;
                         
         case "category" :
                         if (!$fCategoryName) {
-                            $results = $oDocBrowser->browseByCategory();
+                            $aResults = $oDocBrowser->browseByCategory();
                         } else {
-                            $results = $oDocBrowser->browseByCategory($fCategoryName);
+                            $aResults = $oDocBrowser->browseByCategory($fCategoryName);
                         }
                         break;
                         
         case "documentType" :
                         if (!$fDocumentTypeID) {
-                            $results = $oDocBrowser->browseByDocumentType();
+                            $aResults = $oDocBrowser->browseByDocumentType();
                         } else {
-                            $results = $oDocBrowser->browseByDocumentType($fDocumentTypeID);
+                            $aResults = $oDocBrowser->browseByDocumentType($fDocumentTypeID);
                         }
                         break;
     }
     
-    if ($results) {
+    if ($aResults) {
         // display the list of categories
-        $oContent->addHtml(renderPage($results, $fBrowseType));
+        $oContent->addHtml(renderPage($aResults, $fBrowseType));
         
     } else {
         $main->setErrorMessage("There are no document types to display");
