@@ -26,16 +26,16 @@ function getUserDetailsPage($iUserID) {
 	//}
 	
 	$sQuery =  "SELECT * FROM $default->owl_users_table WHERE id = $iUserID";
-	$aDisplayColumns = array( "username","name","email", "mobile", "email_notification", "sms_notification"); 
-	$aStoreColumns = array( "username","name","email", "mobile", "email_notification", "sms_notification") ;
-	$aColumnNames = array("Username: ","Name: ", "Email Address: ", "Mobile Number: ", "Email Notification: ", "Sms Notification: ");
-	$aDisplayColumnTypes = array(1,1,1,1,2,2);
-	$aDatabaseColumnTypes = array(1,1,1,1,2,2);
+	$aDisplayColumns = array("name","email", "mobile", "email_notification", "sms_notification"); 
+	$aStoreColumns = array("name","email", "mobile", "email_notification", "sms_notification") ;
+	$aColumnNames = array("Name: ", "Email Address: ", "Mobile Number: ", "Email Notification: ", "Sms Notification: ");
+	$aDisplayColumnTypes = array(1,1,1,2,2);
+	$aDatabaseColumnTypes = array(1,1,1,2,2);
 	
 	// get list of User properties...name...text field...is_Sys_admin and is_unit_admin..checkboxes
 	$oPattern = & new PatternEditableListFromQuery($sQuery, $default->owl_users_table, $aDisplayColumns, $aStoreColumns, $aColumnNames, $aDisplayColumnTypes, $aDatabaseColumnTypes) ;
 	$oPattern->setUniqueName("userEdit");
-	$oPattern->setColumnsRequired(array(1,1,0,0,0,0));
+	$oPattern->setColumnsRequired(array(1,0,0,0,0));
 	
 	$sToRender .= "<table width=\"600\">\n";
     $sToRender .= renderHeading();
