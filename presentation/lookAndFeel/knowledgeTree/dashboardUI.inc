@@ -114,7 +114,8 @@ function renderPage($aPendingDocumentList, $aCheckedOutDocumentList, $aSubscript
     $sToRender .= "\t\t<td><img src=\"$default->graphicsUrl/welcome.gif\"/></td>\n";
     
     // some arb welcoming text goes here
-    $sUserName = User::getName($_SESSION["userID"]);
+    $oUser = & User::get($_SESSION["userID"]);
+    $sUserName = $oUser->getName();
     $sToRender .= "\t\t<td>Hi" . (strlen($sUserName) > 0 ? " " . $sUserName : "") . ", welcome back to the MRC DMS, part of the Knowledge Tree.</td>\n";
     $sToRender .= "\t</tr>\n";
     
