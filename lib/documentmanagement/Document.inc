@@ -38,6 +38,9 @@ class Document {
     var $iMinorVersion;
     /** document checked out status */
     var $bIsCheckedOut;
+    //?? make checked out a status?
+    /** document status **/
+    var $iStatusID;
     /** the user that currently has the document checked out */
     var $iCheckedOutUserID;    
 	/** comma delimited string of folder hierarch this document falls under */
@@ -70,6 +73,8 @@ class Document {
         $this->iMinorVersion = 1;
         $this->bIsCheckedOut = false;
         $this->iCheckedOutUserID = -1;
+        // FIXME: statuses
+        $this->iStatusID = lookupStatusID("Live");
     }
 
     /** Get the document primary key */
@@ -207,6 +212,16 @@ class Document {
         $this->iCheckedOutUserID = $iNewValue;
     }
 
+    /** Get the status id */
+    function getStatusID() {
+        return $this->iStatusID;
+    }
+
+    /** set the status id */
+    function setStatusID($iNewValue) {
+        $this->iStatusID = $iNewValue;
+    }
+    
     /** returns the number of days since this document has been last modified **/
     function getDaysSinceLastModified() {
         // convert to epoch
@@ -271,8 +286,8 @@ class Document {
 			$this->sFullPath = substr($sFullPath, 1, strlen($sFullPath));
 			$sParentFolderIDs = $this->generateParentFolderIDS($this->iFolderID);
 			$this->sParentFolderIDs = substr($sParentFolderIDs, 1, strlen($sParentFolderIDs));
-            $result = $sql->query("INSERT INTO " . $default->owl_documents_table . " (document_type_id, name, filename, size, creator_id, modified, description, mime_id, folder_id, major_version, minor_version, is_checked_out, checked_out_user_id, parent_folder_ids, full_path) " .
-                                  "VALUES (" . $this->iDocumentTypeID . ", '" . addslashes($this->sName) . "', '" . addslashes($this->sFileName) . "', $this->iSize, $this->iCreatorID, '" . getCurrentDateTime() . "', '" . addslashes($this->sDescription) . "', $this->iMimeTypeID, $this->iFolderID, $this->iMajorVersion, $this->iMinorVersion, " . ($this->bIsCheckedOut ? 1 : 0) . ", " . $this->iCheckedOutUserID . ", '" . $this->sParentFolderIDs . "','" . addslashes($this->sFullPath) . "')");
+            $result = $sql->query("INSERT INTO " . $default->owl_documents_table . " (document_type_id, name, filename, size, creator_id, modified, description, mime_id, folder_id, major_version, minor_version, is_checked_out, checked_out_user_id, parent_folder_ids, full_path, status_id) " .
+                                  "VALUES ($this->iDocumentTypeID, '" . addslashes($this->sName) . "', '" . addslashes($this->sFileName) . "', $this->iSize, $this->iCreatorID, '" . getCurrentDateTime() . "', '" . addslashes($this->sDescription) . "', $this->iMimeTypeID, $this->iFolderID, $this->iMajorVersion, $this->iMinorVersion, " . ($this->bIsCheckedOut ? 1 : 0) . ", $this->iCheckedOutUserID, '$this->sParentFolderIDs','" . addslashes($this->sFullPath) . "', $this->iStatusID)");
             if ($result) {
                 //set the current documents primary key
                 $this->iId = $sql->insert_id();
@@ -304,9 +319,9 @@ class Document {
                                   "modified = '" . getCurrentDateTime() . "', " .
                                   "description = '" . addslashes($this->sDescription) . "', " .
                                   "mime_id = $this->iMimeTypeID, " .
-                                  "folder_id = " . $this->iFolderID . ", " .
-                                  "major_version = " . $this->iMajorVersion . ", " .
-                                  "minor_version = " . $this->iMinorVersion . ", ";
+                                  "folder_id = $this->iFolderID, " .
+                                  "major_version = $this->iMajorVersion, " .
+                                  "minor_version = $this->iMinorVersion, ";
 								  if ($aForMove) {
 									  //only update these if the document is being moved
 									  $sFullPath = $this->generateFullFolderPath($this->iFolderID); 
@@ -317,7 +332,8 @@ class Document {
 									  			"full_path = '" . addslashes($this->sFullPath) . "', ";
 								  }					
                                   $sQuery .= "is_checked_out = " . ($this->bIsCheckedOut ? "1" : "0") . ", " .
-                                             "checked_out_user_id = " . $this->iCheckedOutUserID . " " .            								  			  
+                                             "checked_out_user_id = $this->iCheckedOutUserID, " .
+                                             "status_id = $this->iStatusID " .
                                   			 "WHERE id = $this->iId";
             $result = $sql->query($sQuery);
             if ($result) {
@@ -458,8 +474,10 @@ class Document {
             $oDocument->setLastModifiedDate($sql->f("modified"));			
 			$oDocument->sParentFolderIDs = stripslashes($sql->f("parent_folder_ids"));
 			$oDocument->sFullPath = stripslashes($sql->f("full_path"));
+            $oDocument->setCheckedOutUserID($sql->f("checked_out_user_id"));
+            // FIXME: nasty hack- paying the penalty for adding status_id late in phase 2
+            $oDocument->setStatusID( ($sql->f("status_id") == "" ? lookupStatusID("Live") : $sql->f("status_id")) );
             $oDocument->iId = $iDocumentID;
-            $oDocument->iCheckedOutUserID = $sql->f("checked_out_user_id");
             return $oDocument;
         }
         $_SESSION["errorMessage"] = $lang_err_object_not_exist . "id = " . $iDocumentID . " table = documents";
@@ -535,7 +553,7 @@ class Document {
         $aDocumentHistory;
         settype($aDocumentHistory, "array");
         $sql = $default->db;
-        $result = $sql->query("SELECT * FROM  " . $default->owl_document_transactions_table . " WHERE document_id = $this->iId ORDER BY datetime ASC");
+        $result = $sql->query("SELECT * FROM  " . $default->owl_document_transactions_table . " WHERE document_id = $this->iId ORDER BY datetime DESC");
         if ($result) {
             $iCount = 0;
             while($sql->next_record()) {
