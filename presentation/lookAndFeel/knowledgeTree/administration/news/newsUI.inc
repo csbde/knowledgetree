@@ -68,7 +68,7 @@ function renderNewsItem($oDashboardNews) {
  *
  * @param DashboardNews the news item to modify
  */
-function renderEditAddNewsForm($oDashboardNews, $bUpdate) {
+function renderEditAddNewsForm($oDashboardNews) {
 	global $default;
 	
 	$sToRender  = "<table>";
@@ -77,14 +77,9 @@ function renderEditAddNewsForm($oDashboardNews, $bUpdate) {
 	$sToRender .= "<tr><td>Body:</td><td><textarea name=\"fBody\" cols=\"35\" rows=\"10\">" . ($oDashboardNews ? $oDashboardNews->getBody() : "") . "</textarea></td></tr>";
 	$sToRender .= "<tr><td>Rank:</td><td><input type=\"text\" name=\"fRank\" value=\"" . ($oDashboardNews ? $oDashboardNews->getRank() : "") . "\"></td></tr>";	
 	$sToRender .= "<tr><td>Image:</td><td><input type=\"file\" name=\"fImage\"></td></tr>";
-	$sToRender .= "<tr><td>Active:</td><td><input type=\"checkbox\" name=\"fActive\" " . ($oDashboardNews ? ($oDashboardNews->getActive() ? "checked" : "") : "") . "\"></td></tr>";
+	$sToRender .= "<tr><td>Active:</td><td><input type=\"checkbox\" name=\"fActive\" " . ($oDashboardNews ? ($oDashboardNews->getActive() ? "checked" : "") : "") . "></td></tr>";
 	
-	if ($bUpdate) {
-		$sToRender .= "<input type=\"hidden\" name=\"fNewsID\" value=\"" . $oDashboardNews->getID() . "\">";
-		$sToRender .= "<input type=\"hidden\" name=\"fUpdate\" value=\"1\">";		
-	} else {
-		$sToRender .= "<input type=\"hidden\" name=\"fStore\" value=\"1\">";
-	}	
+	$sToRender .= ($oDashboardNews ? "<input type=\"hidden\" name=\"fNewsID\" value=\"" . $oDashboardNews->getID() . "\">" : "");
 			
 	$sToRender .= "<tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/submit.gif\" border=\"0\">\n";
 	$sToRender .= "<a href=\"$default->rootUrl/control.php?action=listNews\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></a></td></tr>\n";    
@@ -115,7 +110,7 @@ function renderEditNewsPage($oDashboardNews, $sErrorMessage = "") {
 		$sToRender .= renderErrorMessage($sErrorMessage);
 	}
     $sToRender .= "<table>\n";
-	$sToRender .= renderEditAddNewsForm($oDashboardNews, true);
+	$sToRender .= renderEditAddNewsForm($oDashboardNews);
 	$sToRender .= "</table>\n";
 	return $sToRender;
 }
@@ -131,7 +126,7 @@ function renderAddNewsPage($oDashboardNews, $sErrorMessage = "") {
 		$sToRender .= renderErrorMessage($sErrorMessage);
 	}	
     $sToRender .= "<table>\n";
-	$sToRender .= renderEditAddNewsForm($oDashboardNews, false);
+	$sToRender .= renderEditAddNewsForm($oDashboardNews);
 	$sToRender .= "</table>\n";
 	return $sToRender;	
 }

@@ -300,6 +300,12 @@ class DashboardNews {
             if ($result) {
                 //set the current news item primary key
                 $this->iId = $sql->insert_id();
+            
+                if ($this->bActive) {
+                	// we're setting this entry to active, so set all the others to inactive
+                	$sql->query("UPDATE $default->owl_news_table SET active=0 WHERE id <> $this->iId");
+                }                
+                            
                 return true;
             }
             return false;
@@ -437,7 +443,6 @@ class DashboardNews {
      */
     function checkImageSize($iImageWidth, $iImageHeight) {
     	global $default;
-    	$default->log->info("comparing $iImageWidth:" . $this->iMaxImageWidth . "; $iImageHeight:" . $this->iMaxImageHeight);
     	if ( ($iImageWidth <= $this->iMaxImageWidth) && ($iImageHeight <= $this->iMaxImageHeight) ) {
     		return true;
     	} else {
@@ -450,7 +455,10 @@ class DashboardNews {
      */
     function getImageLink() {
     	global $default;
-    	
-		return "<img width=\"$this->iMaxImageWidth\" height=\"$this->iMaxImageHeight\" src=\"$default->rootUrl/" . $default->siteMap->getPage("viewNewsImage") . "?fNewsID=" . $this->getID() . "\" border=\"0\">";   	
+    	if ($this->iImageSize > 0) {
+			return "<img width=\"$this->iMaxImageWidth\" height=\"$this->iMaxImageHeight\" src=\"$default->rootUrl/" . $default->siteMap->getPage("viewNewsImage") . "?fNewsID=" . $this->getID() . "\" border=\"0\">";
+    	} else {
+    		return "";
+    	}   	
     }
 }
