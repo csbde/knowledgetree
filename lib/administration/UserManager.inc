@@ -1,29 +1,18 @@
 <?php
 
 require_once("$default->owl_fs_root/lib/class.AuthLdap.php");
-/*-----------------------------------------------------------------*/
+
 /**
  * $Id$
  * 
- * Performs unit administration tasks- this includes user, group and category management,
+ * Performs user administration tasks- this includes create, remove, update
+ * as well as addUserToGroup and removeUserFromGroup ..etc
  *
  * @version $Revision$ 
  * @author Mukhtar Dharsey
- * @package dmslib
+ * @package dmslib 
  */
- 
-/*-----------------------------------------------------------------*/
-/**
- * Class User Manager
- * 
- * Performs user administration tasks- this includes create,remove,update
- * as well as addusertogroup and removeuserfromgroup ..etc
- * 
- */
-/*-----------------------------------------------------------------*/
-
-class UserManager
- {
+class UserManager {
 
     /**
      * Handle to the ldap util class
@@ -32,10 +21,7 @@ class UserManager
     
     // user management
     
-    /*-----------------------------------------------------------------*/
-    /*
-     * Function ListLdapUsers($userNameSearch)
-     *
+    /**
      * Searches the LDAP directory for users matching the supplied search string.
      * 
      * @param   $userNameSearch
@@ -43,7 +29,6 @@ class UserManager
      * @return  array
      *          returns an array containing the users found
      */
-     /*-----------------------------------------------------------------*/
     function listLdapUsers($userNameSearch) {
         global $default;
 
@@ -67,21 +52,12 @@ class UserManager
                 return false;
             }
         } else {
-            // ldap connection failed, bail
-            // TODO: error handling
+            $_SESSION["errorMessage"] = "LDAP error: (" . $ldap->ldapErrorCode ") " . $ldap->ldapErrorText;
             return false;
-            /*
-            $default->log->debug "There was a problem.<br>";
-            $default->log->debug "Error code : " . $ldap->ldapErrorCode . "<br>";
-            $default->log->debug "Error text : " . $ldap->ldapErrorText . "<br>";
-            */
         }
     }
     
-    
-    //-----------------------------------------------------------------
-    /*
-     * Function createUser($userDetails)
+    /**
      *
      * Adds a user to the unit.
      *
@@ -178,10 +154,7 @@ class UserManager
 		
 	}
 
-    //-----------------------------------------------------------------
-    /*
-     * Function RemoveUser($userID)
-     *
+    /**
      * Removes a user from the users table...since a user does not exist anymore..
      * deletion from all its groups is also required
      *
@@ -192,9 +165,7 @@ class UserManager
      * @return boolean
      *    True if the deletion was successful, else false if not or nonexistant.
      */
-    //-----------------------------------------------------------------
-	function removeUser($userID)
-	{
+	function removeUser($userID) {
 		global $default;
 		// create a connection
         	$sql = new Owl_DB;
@@ -232,10 +203,7 @@ class UserManager
 			
 	 }
 
-    //-----------------------------------------------------------------
-    /*
-     * Function updateUser($userID, $userDetails)
-     *
+    /**
      * Updates a users details
      *
      * @param    userID
@@ -245,7 +213,6 @@ class UserManager
      * @return   boolean
      *           true if the addition was successful, else false.
      */
-    //-----------------------------------------------------------------
 	function updateUser($userID, $userDetails)
 	{
 		global $default;
@@ -292,16 +259,13 @@ class UserManager
             		return true;
         	 }
 	}
-    //-----------------------------------------------------------------
-    /*
-     * Function listUser()
-     *
-     * returns an array of all the usernames
+
+    /**
+     * Returns an array of all the usernames
      *
      * @return array
      *     An array of usernames
-    */
-    //-----------------------------------------------------------------
+     */
 	function listUsers(){
 		
 		global $default;
@@ -331,8 +295,7 @@ class UserManager
 		
 	}
 	
-    //-----------------------------------------------------------------
-    /*
+    /**
      * Function getUserDetails($userID)
      *
      * Returns an array of all the details for a specified user.
@@ -340,7 +303,6 @@ class UserManager
      * @return array
      *    An array of details of a specified user
     */
-    //-----------------------------------------------------------------
 	function getUserDetails($userID)
 	{
 		
@@ -379,9 +341,7 @@ class UserManager
 		
 	}
 
-    //-----------------------------------------------------------------
-    /*
-     * Function addUserToGroup($groupID, $userID)
+    /**
      *
      * Adds a user to the group.
      *
@@ -392,7 +352,6 @@ class UserManager
      * @return boolean
      *    True if the addition was successful, else false if not or nonexistant.
      */
-     //-----------------------------------------------------------------
 	function addUserToGroup($userID,$groupID)
 	{
 		global $default;
@@ -428,11 +387,8 @@ class UserManager
 	 }
 	 
 	 
-     //-----------------------------------------------------------------
-     /*
-     * Function removeUserFromGroup($userID, $groupID)
-     *
-     * removes a user from a group
+    /**
+     * Removes a user from a group
      *
      * @param    groupID
      *    The ID of the group to remove the user from
@@ -441,7 +397,6 @@ class UserManager
      * @return boolean
      *    True if the deletion was successful, else false if not or nonexistant.
      */
-    //-----------------------------------------------------------------
 	function removeUserFromGroup($userID,$groupID)
 	{
 		global $default;
@@ -477,18 +432,14 @@ class UserManager
 			
 	 }
 	 
-    //-----------------------------------------------------------------
-     /*
-     * Function removeUserFromAllGroups($userID)
+    /**
+     * Removes a user from ALL groups it belongs to
      *
-     * removes a user from ALL groups it belongs to
-     *
-    * @param    userID
+     * @param    userID
      *    The Id of the User that must be removed from the table
      * @return boolean
      *    True if the deletion was successful, else false if not or nonexistant.
      */
-    //-----------------------------------------------------------------
 	function removeUserFromAllGroups($userID)
 	{
 		global $default;
@@ -523,10 +474,8 @@ class UserManager
         	 }
 			
 	 }
-    //-----------------------------------------------------------------
-    /*
-     * Function getUserID($username)
-     *
+
+    /**
      * Adds a user to the unit.
      *
      * @param    $username
@@ -534,7 +483,6 @@ class UserManager
      * @return Integer
      *   The username's Id
      */
-    //-----------------------------------------------------------------
 	function getUserID($username)
 	 {
 	        global $default;
