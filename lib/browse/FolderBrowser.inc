@@ -37,7 +37,7 @@ class FolderBrowser extends Browser {
      * @param string the field to sort the results by
      * @param string the direction to sort the results
      */
-    function FolderBrowser($sSortField = "name", $sSortDirection = "asc", $aNewSortCriteria = array()) {
+    function FolderBrowser($sSortField = "filename", $sSortDirection = "asc", $aNewSortCriteria = array()) {
         Browser::Browser($sSortField, $sSortDirection, $aNewSortCriteria);
     }
 
