@@ -22,7 +22,7 @@ function displayDocumentLink($oDocument, $bDisplayFullPath = false) {
     global $default;
     
     $sIconUrl = $oDocument->getMimeTypeIconUrl();
-    $sIconPath = ($sIconUrl ? generateImage($sIconUrl) : generateImage("$default->graphicsUrl/star.gif"));
+    $sIconPath = ($sIconUrl ? generateImage($sIconUrl) : generateImage("$default->graphicsUrl/unknown.gif"));
 
     $sLinkText = $oDocument->getName();
     if ($bDisplayFullPath) {
