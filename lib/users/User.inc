@@ -491,6 +491,40 @@ class User {
 
         $this->iId = $id;
     }
+    
+    /** Static function
+    * Gets the user's default top level folder for the current user
+    */
+    function getUserRootFolder() {
+    	global $default;
+    	
+    	$unitID = User::getUnitID($_SESSION["userID"]);
+    	$iFolderID; 
+            
+        if ($unitID) {
+            // if the user is in a unit, start at the unit's root folder
+            
+            // lookup the unit name
+            $unitName = lookupField($default->owl_units_table, "name", "id", $unitID);             
+
+            // the unit root folder has the same name as the unit
+            // FIXME: dodgy i know, but its easy
+            $unitRootFolderName = $unitName;
+           
+            // now lookup the folderID
+            $aFolders = Folder::getList("name='$unitRootFolderName' and parent_id=1");
+            
+            if (!$aFolders) {
+                // no folder exists with this name, so start at the root
+                $iFolderID = lookupID($default->owl_folders_table, "parent_id", 0);
+            } else {
+            	$iFolderID = $aFolders[0]->getID();
+            }
+        } else {
+        	$iFolderID = lookupID($default->owl_folders_table, "parent_id", 0);
+        }
+         return $iFolderID;
+    }
 }
 
 /**
