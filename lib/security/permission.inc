@@ -28,7 +28,8 @@ class Permission {
 	*/	
 	function userHasDocumentWritePermission($iDocumentID) {
 		$oDocument = & Document::get($iDocumentID);
-		if (Permission::userHasFolderWritePermission($oDocument->getFolderID())) {
+		if (Permission::userHasFolderWritePermission($oDocument->getFolderID()) ||
+			Permission::userHasWriteRoleForDocument($iDocumentID)) {
 			return true;
 		}
 		$_SESSION["errorMessage"] = $lang_err_user_doc_write . "id " . $iDocumentID;
@@ -49,6 +50,7 @@ class Permission {
 	function userHasDocumentReadPermission($iDocumentID) {
         $oDocument = & Document::get($iDocumentID);
 		if (Permission::userHasDocumentWritePermission($iDocumentID) ||
+			Permission::userHasReadRoleForDocument($iDocumentID) ||
 			Permission::userHasFolderReadPermission($oDocument->getFolderID())) {
 			return true;
 		}
@@ -70,8 +72,7 @@ class Permission {
 	*/
 	function userHasFolderWritePermission($iFolderID) {
 		global $lang_err_user_folder_write;
-		if (Permission::userHasGroupWritePermissionForFolder($iFolderID) ||
-			Permission::userHasWriteRoleForFolder($iFolderID) ||
+		if (Permission::userHasGroupWritePermissionForFolder($iFolderID) ||	
 			Permission::userIsSystemAdministrator() ||
 			Permission::userIsUnitAdministratorForFolder($iFolderID)) {
 				return true;
@@ -96,8 +97,7 @@ class Permission {
 		global $lang_err_user_folder_write;
 		if (Permission::folderIsPublic($iFolderID) ||
 			Permission::userHasFolderWritePermission($iFolderID) ||
-			Permission::userHasGroupReadPermissionForFolder($iFolderID) || 
-			Permission::userHasReadRoleForFolder($iFolderID)) {
+			Permission::userHasGroupReadPermissionForFolder($iFolderID)) {
 			return true;
 		}
 		$_SESSION["errorMessage"] = $lang_err_user_folder_write . "id " . $iFolderID;
@@ -234,13 +234,13 @@ class Permission {
 	*
 	* @return boolean true is the user has the role assigned, false otherwise and set $_SESSION["errorMessage"]
 	*/
-	function userHasWriteRoleForFolder($iFolderID) {
+	function userHasWriteRoleForDocument($iDocumentID) {
 		global $default, $lang_err_user_role;	
 		$sql = $default->db;
 		$sql->query("SELECT * FROM $default->owl_folders_user_roles_table AS FURL INNER JOIN $default->owl_groups_folders_approval_table AS GFAL ON FURL.group_folder_approval_id = GFAL.id " .
-					"INNER JOIN $default->owl_roles_table AS R ON GFAL.role_id = R.id " .										
-					"WHERE GFAL.folder_id = " . $iFolderID . " " .
-					"AND user_id = " . $_SESSION["userID"] . " " .
+					"INNER JOIN $default->owl_roles_table AS R ON GFAL.role_id = R.id " .					
+					"WHERE user_id = " . $_SESSION["userID"] . " " .
+					"AND FURL.document_id = $iDocumentID " .
 					"AND R.can_write = 1");
 		if ($sql->next_record()) {
 			return true;
@@ -256,13 +256,13 @@ class Permission {
 	*
 	* @return boolean true is the user has the role assigned, false otherwise and set $_SESSION["errorMessage"]
 	*/
-	function userHasReadRoleForFolder($iFolderID) {
+	function userHasReadRoleForDocument($iDocumentID) {
 		global $default, $lang_err_user_role;	
 		$sql = $default->db;
-		$sql->query("SELECT * " . 
-					"FROM " . $default->owl_folders_user_roles_table . " AS FURL INNER JOIN " . $default->owl_roles_table . " AS R ON FURL.role_type_id = R.id " .
-					"WHERE folder_id = " . $iFolderID . " " .
-					"AND user_id = " . $_SESSION["userID"] . " " .
+		$sql->query("SELECT * FROM $default->owl_folders_user_roles_table AS FURL INNER JOIN $default->owl_groups_folders_approval_table AS GFAL ON FURL.group_folder_approval_id = GFAL.id " .
+					"INNER JOIN $default->owl_roles_table AS R ON GFAL.role_id = R.id " .					
+					"WHERE user_id = " . $_SESSION["userID"] . " " .
+					"AND FURL.document_id = $iDocumentID " .
 					"AND R.can_read = 1");
 		if ($sql->next_record()) {
 			return true;
