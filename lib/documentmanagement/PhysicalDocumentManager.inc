@@ -66,25 +66,54 @@ class PhysicalDocumentManager {
 	*
 	* @param 	Primary key of document to stream
 	*
-	* @return boolean true on successful completion of streaming, false otherwise ande set $_SESSION["errorMessage"]
+	* @return int number of bytes read from file on success or false otherwise;
+	*
+	* @todo investigate possible problem in MSIE 5.5 concerning Content-Disposition header
 	*/
 	function downloadPhysicalDocument($iDocumentID) {
 		//get the document
 		$oDocument = & Document::get($iDocumentID);		
 		//get the path to the document on the server
-		$sDocumentFileSystemPath = FolderLib::getFolderPath($oDocument->getFolderID()) . "/" . $oDocument->getName();
-		$total=$url . $files[$i];
-		
-		Header("Content-Type: application/octet-stream");		
-		Header("Content-Length: " . $oDocument->getFileSize());		
-		//apparently there is some problem with IE 5.5, so we put this check in		
-		//if (strstr($_SERVER["HTTP_USER_AGENT"], "MSIE 5.5")) {
-			if (strstr($_SERVER["HTTP_USER_AGENT"], "MSIE")) {
-			Header("Content-Disposition: inline; filename=" . $oDocument->getName());
+		$sDocumentFileSystemPath = FolderLib::getFolderPath($oDocument->getFolderID()) . "/" . $oDocument->getName();		
+		//set the correct headers
+		if (strstr($_SERVER["HTTP_USER_AGENT"], "MSIE")) {		
+			Header ("Content-type: application/" . PhysicalDocumentManager::getMimeTypeName($oDocument->getMimeTypeID()));
 		} else {
-			Header("Content-Disposition: attachment; filename=" . $oDocument->getName());
+			Header ("Content-type: application/octect-stream");
 		}
+								
+		Header("Content-Length: ". $oDocument->getFileSize());
+		Header("Content-Disposition: attachment; filename=" . $oDocument->getName());        
+        Header("Pragma: no-cache");
+        Header("Expires: 0");
 		readfile($sDocumentFileSystemPath);
+
+	}
+	
+	/**
+	* View a document using an inline viewer
+	*
+	* @param 	Primary key of document to view
+	*
+	* @return int number of bytes read from file on success or false otherwise;
+	*
+	* @todo investigate possible problem in MSIE 5.5 concerning Content-Disposition header
+	*/
+	function inlineViewPhysicalDocument($iDocumentID) {
+		//get the document
+		$oDocument = & Document::get($iDocumentID);		
+		//get the path to the document on the server
+		$sDocumentFileSystemPath = FolderLib::getFolderPath($oDocument->getFolderID()) . "/" . $oDocument->getName();
+		$total=$url . $files[$i];		
+		
+		if (strstr($_SERVER["HTTP_USER_AGENT"], "MSIE")) {		
+			Header ("Content-type: application/" . PhysicalDocumentManager::getMimeTypeName($oDocument->getMimeTypeID()));
+		} else {
+			Header ("Content-type: application/octect-stream");
+		}					
+		Header("Content-Length: " . $oDocument->getFileSize() * 1024);
+		Header("Content-Disposition: inline; filename=" . $oDocument->getName());
+		return readfile($sDocumentFileSystemPath);
 	}
 	
 	
