@@ -39,6 +39,14 @@ KnowledgeTree DMS Development TODO List
 - Make logging robust, spin off as Log4Php?  Or use PEAR Logging class.
 - Document Routing
   - Allow overrides on a per document basis
+  - Manage the routing sequence numbers in the application.
+  - Routing starts automatically when a document is added
+  - Routing templates- the roles are specified and default users are chosen when creating a folder
+  - Specify a group in a routing step- all the people in the group must review/approve
+  - Allow routing to be restarted
+  - While a document is being routed, the current version of the document must only be available to users
+    involved in the process.  Other users see the version before routing started
+  - If a user has a read approval step, the user must not have access to "reject" the step
 - Search
   - Search all document and folder properties
   - Accomodate custom search terms- $fCustomSearchxxx
