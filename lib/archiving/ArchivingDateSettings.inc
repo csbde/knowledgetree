@@ -53,7 +53,7 @@ class ArchivingDateSettings {
 	 * Gets the expiration date
 	 */
 	function getExpirationDate() {
-		return $this->dExpirationDate;
+		return ($this->dExpirationDate == "NULL" ? "" : $this->dExpirationDate);
 	}
 
 	/**
