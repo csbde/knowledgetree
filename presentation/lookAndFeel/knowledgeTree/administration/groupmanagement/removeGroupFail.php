@@ -16,7 +16,7 @@ if(checkSession())
 {
 
 // include the page template (with navbar)
-require_once("$default->fileSystemRoot/presentation/webPageTemplate.inc");  	
+require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");  	
 
 
 $Center = "<br></br>\n" ;
