@@ -132,23 +132,26 @@ function getPageSuccess() {
 // show listbox of groups belonging to groups_units_link table
 function getGroupDisplay($oGroup) {
 	global $default;
-	// added clauses to get those groups belonging to the groups_units_link table
-	$from = "," . $default->owl_groups_units_table . " AS GU";
-	$where = "(ST.id = GU.group_id)";
-	
 	
 	if (!isset($oGroup)) {
-		$oPatternListBox = & new PatternListBox($default->owl_groups_table, "name", "id", "fGroupID");
-		$oPatternListBox->setWhereClause($where);
-		$oPatternListBox->setFromClause($from);
-		//$oPatternListBox->setIncludeDefaultValue(true);
-		//$oPatternListBox->setPostBackOnChange(true);		
+        $oPatternListBox = & new PatternListBox($default->owl_groups_table, "name", "id", "fGroupID");        
+        if (Permission::userIsSystemAdministrator()) {
+            $default->log->info("getGroupDisplay sysadmin");
+            // if this is the system administrator, prepend group names with unit name
+            $oPatternListBox->setFromClause("LEFT OUTER JOIN groups_units_link GUL on ST.id=GUL.group_id " .
+                                            "LEFT OUTER JOIN units_lookup UL on GUL.unit_id=UL.id");
+            $oPatternListBox->setCompositeDisplayName("DISTINCT COALESCE(CONCAT(CONCAT(UL.name, '-'),ST.name),ST.name)");
+        } else if (Permission::userIsUnitAdministrator()) {
+            $default->log->info("getGroupDisplay unitadmin");
+            // else if this is a unit administrator, only display the groups in your unit
+            $oPatternListBox->setFromClause("INNER JOIN $default->owl_groups_units_table GUL on ST.id=GUL.group_id");
+            $oPatternListBox->setWhereClause("GUL.unit_id=" . User::getUnitID($_SESSION["userID"]));
+        }
 		return $oPatternListBox->render();
 	} else {
 		return "<input type=\"hidden\" name=\"fGroupID\" value=\"" . $oGroup->iId . "\">\n" .
 		 $oGroup->getName();
 	}
-	
 }
 
 // show unit details on confirm deletion page
