@@ -513,8 +513,8 @@ UPDATE users SET password = '084e0343a0486ff05530df6c705c8bb4' WHERE name = "Ano
 
 INSERT INTO groups_units_link (group_id, unit_id) VALUES (1, 1);
 INSERT INTO groups_units_link (group_id, unit_id) VALUES (3, 1);
-INSERT INTO user_group_link (group_id, user_id) VALUES (1, 1);
-INSERT INTO user_group_link (group_id, user_id) VALUES (3, 2);
+INSERT INTO users_groups_link (group_id, user_id) VALUES (1, 1);
+INSERT INTO users_groups_link (group_id, user_id) VALUES (3, 2);
 
 -- default document type field- category
 INSERT INTO document_fields (name, data_type) VALUES ("Category", "String");
