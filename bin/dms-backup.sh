@@ -20,7 +20,7 @@ mkdir -p $LOCAL_MOUNT
 # mount the server
 mount_smbfs -N "$BACKUP_SERVER" $LOCAL_MOUNT
 
-# tar onto the local mount point
+# tar up the cvs repository
 archive=mrc_dms_`date +%Y-%m-%d`.tgz
 tar czvf /tmp/$archive $BACKUP_FROM
 
@@ -29,6 +29,9 @@ cp /tmp/$archive "$BACKUP_TO"
 
 # check that its there
 ls -al "$BACKUP_TO"
+
+# clean up
+rm /tmp/$archive
 
 # disconnect twice (for safety and because the first try consistently doesn't work)
 umount $LOCAL_MOUNT
