@@ -36,6 +36,8 @@ class Document {
     var $iMinorVersion;
     /** document checked out status */
     var $bIsCheckedOut;
+    /** the user that currently has the document checked out */
+    var $iCheckedOutUserID;    
 	/** comma delimited string of folder hierarch this document falls under */
 	var $sParentFolderIDs;
 	/** forward slash deliminated path from file system root */
@@ -65,6 +67,7 @@ class Document {
         $this->iMajorVersion = 0;
         $this->iMinorVersion = 1;
         $this->bIsCheckedOut = false;
+        $this->iCheckedOutUserID = -1;
     }
 
     /** Get the document primary key */
@@ -179,7 +182,7 @@ class Document {
 
     /** set the minor version number */
     function setMinorVersionNumber($iNewValue) {
-        $this->iMinorVersionNumber = $iNewValue;
+        $this->iMinorVersion = $iNewValue;
     }
 
     /** get the document check out status */
@@ -192,6 +195,16 @@ class Document {
         $this->bIsCheckedOut = $bNewValue;
     }
 	
+    /** get the user id that has the document checked out **/
+    function getCheckedOutUserID() {
+        return $this->iCheckedOutUserID;
+    }
+
+    /** set the user id that has the document checked out **/    
+    function setCheckedOutUserID($iNewValue) {
+        $this->iCheckedOutUserID = $iNewValue;
+    }
+
 	/**
 	* Generate a comma delimited string containing
 	* the parent folder ids
@@ -275,8 +288,8 @@ class Document {
                                   "description = '" . addslashes($this->sDescription) . "', " .
                                   "mime_id = $this->iMimeTypeID, " .
                                   "folder_id = " . $this->iFolderID . ", " .
-                                  "major_version = $this->iMajorVersion, " .
-                                  "minor_version =  $this->iMinorVersion, ";
+                                  "major_version = " . $this->iMajorVersion . ", " .
+                                  "minor_version = " . $this->iMinorVersion . ", ";
 								  if ($aForMove) {
 									  //only update these if the document is being moved
 									  $sFullPath = $this->generateFullFolderPath($this->iFolderID); 
@@ -286,8 +299,9 @@ class Document {
 									  $sQuery .= "parent_folder_ids = '" . addslashes($this->sParentFolderIDs) . "'," .
 									  			"full_path = '" . addslashes($this->sFullPath) . "', ";
 								  }					
-                                  $sQuery .= "is_checked_out = " . ($this->bIsCheckedOut ? "1" : "0") . " " .								  			  
-                                  			"WHERE id = $this->iId";
+                                  $sQuery .= "is_checked_out = " . ($this->bIsCheckedOut ? "1" : "0") . ", " .
+                                             "checked_out_user_id = " . $this->iCheckedOutUserID . " " .            								  			  
+                                  			 "WHERE id = $this->iId";
             $result = $sql->query($sQuery);
             if ($result) {
                 return true;
@@ -404,7 +418,8 @@ class Document {
             $oDocument->setIsCheckedOut($sql->f("is_checked_out"));			
 			$oDocument->sParentFolderIDs = stripslashes($sql->f("parent_folder_ids"));
 			$oDocument->sFullPath = stripslashes($sql->f("full_path"));
-            $oDocument->iId = $iDocumentID;			
+            $oDocument->iId = $iDocumentID;
+            $oDocument->setCheckedOutUserID = $sql->f("checked_out_user_id");
             return $oDocument;
         }
         $_SESSION["errorMessage"] = $lang_err_object_not_exist . "id = " . $iDocumentID . " table = documents";
