@@ -37,11 +37,13 @@ class BrowseCriterion {
     var $aLookup = null;
     var $bFolderCriterion = false;
     var $aOptions = array();
+    var $iID;
 
-    function BrowseCriterion ($sDisplay, $sDocumentField, $sSortField) {
+    function BrowseCriterion ($sDisplay, $sDocumentField, $sSortField, $iID) {
         $this->sDisplay =& $sDisplay;
         $this->sDocumentField =& $sDocumentField;
         $this->sSortField =& $sSortField;
+        $this->iID = $iID;
     }
 
     function headerDisplay () {
@@ -130,6 +132,10 @@ class BrowseCriterion {
         return $this->sDocumentField;
     }
 
+    function getID() {
+        return $this->iID;
+    }
+
     function setOptions($aOptions) {
         $this->aOptions = $aOptions;
     }
@@ -139,7 +145,7 @@ class BrowseCriterion {
     }
 
     function searchWidget ($aRequest) {
-        return "<input type=\"text\" size=\"50\" name=\"bmd$k\" />";
+        return "<input type=\"text\" size=\"50\" name=\"bmd" . $this->getID() . "\" />";
     }
 }
 
@@ -215,7 +221,7 @@ class CreatorCriterion extends BrowseCriterion {
         return $this->documentDisplay($oFolder);
     }
     function searchWidget ($aRequest) {
-        $sRet = "<select size=\"1\" name=\"bmd$k\">\n";
+        $sRet = "<select size=\"1\" name=\"bmd" . $this->getID() . "\">\n";
         $aUsers = User::getList();
         $sRet .= "<option value=\"-1\">None</option>\n";
         foreach ($aUsers as $oUser) {
@@ -257,7 +263,7 @@ class DocumentTypeCriterion extends BrowseCriterion {
         return "&nbsp;";
     }
     function searchWidget ($aRequest) {
-        $sRet = "<select size=\"1\" name=\"bmd$k\">\n";
+        $sRet = "<select size=\"1\" name=\"bmd" . $this->getID() . "\">\n";
         $aUsers = DocumentType::getList();
         $sRet .= "<option value=\"-1\">None</option>\n";
         foreach ($aUsers as $oUser) {
@@ -278,7 +284,7 @@ class GenericMetadataCriterion extends BrowseCriterion {
 
     function GenericMetadataCriterion ($sDisplay, $sDocumentField, $sSortField, $iFieldID) {
         $this->iFieldID = $iFieldID;
-        $this->BrowseCriterion($sDisplay, $sDocumentField, $sSortField);
+        $this->BrowseCriterion($sDisplay, $sDocumentField, $sSortField, $iFieldID);
         $this->aLookup['whereClause'] = 'document_field_id = ' .  $iFieldID;
     }
 
@@ -310,22 +316,22 @@ class Criteria {
         global $default;
         switch ($iID) {
             case -1:
-                $oCriterion =& new NameCriterion(_("Name"), 'filename', 'filename');
+                $oCriterion =& new NameCriterion(_("Name"), 'filename', 'filename', -1);
                 break;
             case -2:
-                $oCriterion =& new TitleCriterion(_("Title"), 'name', 'name');
+                $oCriterion =& new TitleCriterion(_("Title"), 'name', 'name', -2);
                 break;
             case -3:
-                $oCriterion =& new CreatorCriterion(_("Creator"), 'creator_id', 'creator_id');
+                $oCriterion =& new CreatorCriterion(_("Creator"), 'creator_id', 'creator_id', -3);
                 break;
             case -4:
-                $oCriterion =& new DateCreatedCriterion(_("Date Created"), 'id', 'id');
+                $oCriterion =& new DateCreatedCriterion(_("Date Created"), 'id', 'id', -4);
                 break;
             case -5:
-                $oCriterion =& new DocumentTypeCriterion(_("Document Type"), 'document_type_id', 'document_type_id');
+                $oCriterion =& new DocumentTypeCriterion(_("Document Type"), 'document_type_id', 'document_type_id', -5);
                 break;
             case -6:
-                $oCriterion =& new IDCriterion(_("ID"), 'id', 'id');
+                $oCriterion =& new IDCriterion(_("ID"), 'id', 'id', -6);
                 break;
         }
         return $oCriterion;
