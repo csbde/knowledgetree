@@ -24,7 +24,7 @@ function renderStatusPage($aSuccessDocuments, $aErrorDocuments) {
 	    $sToRender .= "<tr><td>The following documents were successfully restored:</td></tr>\n";
 	    $sToRender .= "<tr/><tr/>";
 	    for ($i=0; $i<count($aSuccessDocuments); $i++) {
-			$sToRender .= "<tr><td>" . $aSuccessDocuments[$i]->getDisplayPath() . "</td></tr>\n";
+			$sToRender .= "<tr><td>" . generateControllerLink("viewDocument", "fDocumentID=" . $aSuccessDocuments[$i]->getID(), $aSuccessDocuments[$i]->getDisplayPath()) . "</td></tr>\n";
 	    }
 	}
 	if (count($aErrorDocuments) > 0) {
@@ -72,14 +72,20 @@ function renderRestoreConfirmationPage($aDocuments) {
 /**
  * Displays the archived document search form
  */ 
-function renderSearchPage() {
+function renderSearchPage($aMetaTagIDs = array()) {
 	global $default;
-    $sToRender  = renderHeading("Archived Documents Search");	
+    $sToRender  = renderHeading("Archived Documents Search");
+    
 	$sToRender .= "<table width=\"600\">\n";
-	$sToRender .= "<tr>\n";	
-	$sToRender .= "<tr><td>Search for archived documents by entering the document name:</td></tr>\n";
-	$sToRender .= "<td>Document name: <input type=\"text\" size=\"60\" name=\"fSearchString\" value=\"$sSearchString\" />\n";
+	$sToRender .= "<tr>\n";
+	$sToRender .= "<td>Search text: <input type=\"text\" size=\"60\" name=\"fSearchString\" value=\"$sSearchString\" />\n";
 	$sToRender .= "<input type=\"image\" src=\"$default->graphicsUrl/widgets/submit.gif\" border=\"0\"></td>\n";
+	$sToRender .= "</tr>\n";
+	$sToRender .= "<tr>\n";
+	$sToRender .= "<td>&nbsp</td>\n";
+	$sToRender .= "</tr>\n";
+	$sToRender .= "<tr>\n";
+	$sToRender .= "<td>" . getMetaData($aMetaTagIDs) . "</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>&nbsp</td>\n";
@@ -101,47 +107,25 @@ function renderSearchPage() {
 /**
  * Performs the search and displays the results
  */
-function renderArchivedDocumentsResultsPage($sKeywords, $iStartIndex) {
+function renderArchivedDocumentsResultsPage($sDocumentIDs) {
 	global $default;
-	$sQuery = 	"SELECT DISTINCT D.id AS document_id, D.name AS document_name " . 
-			  	"FROM search_document_user_link AS SDUL " .
-				"INNER JOIN documents AS D ON D.id = SDUL.document_id " .
-				"INNER JOIN status_lookup AS SL ON D.status_id = SL.id " .
-				"WHERE SDUL.user_id = " . $_SESSION["userID"] . " " .
-				"AND SL.name='Archived' " .
-				"AND (D.name like '%$sKeywords%' " .
-				"OR D.filename like '%$sKeywords%')"; 
 
+	$aDocumentIDs = explode(",", $sDocumentIDs);
 	$sToRender  = renderHeading("Archived Documents Search Results");
-	$sToRender .= "<table>";
-	$sql = $default->db;
-	// perform query	
-	if ($sql->query($sQuery)) {
-		if ($sql->num_rows() > 0) {
-		    $sToRender .= "<tr><td>The following archived documents meet your search string.";
-		    $sToRender .= "<tr><td>Select the documents you'd like to restore, and click 'Restore', or 'Cancel' to abort</td></tr>\n";
-			
-			while ($sql->next_record()) {
-				// and print document paths with checkboxes
-				$oDocument = Document::get($sql->f("document_id"));
-		        $sToRender .= "\t<tr>\n";
-		        $sToRender .= "\t\t<td bgcolor=\"" . getColour($i) . "\">\n";
-		        $sToRender .= "<input type=\"checkbox\" name=\"fDocumentIDs[]\" value=\"" . $oDocument->getID() . "\"/>\n";        
-		        $sToRender .= $oDocument->getDisplayPath() . "\n";
-		        $sToRender .= "\t\t</td>\n";
-		        $sToRender .= "\t</tr>\n";			
-			}
-			$sToRender .= "<tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/restore.gif\" border=\"0\"/></a>\n";
-			$sToRender .= generateControllerLink("archivedDocuments", "", "<img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></td></tr>");			
-		} else {
-		    $sToRender .= "<tr><td>Your query did not return any archived documents.";
-		    $sToRender .= "<tr><td>" . generateControllerLink("archivedDocuments", "", "<img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\">") . "</td></tr>\n";
-		}	
-	} else {
-		// query failed
-	    $sToRender .= "<tr><td>There was an error processing your query- please try again later.";
-	    $sToRender .= "<tr><td>" . generateControllerLink("archivedDocuments", "", "<img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\">") . "</td></tr>\n";
-	}	
+	$sToRender .= "<table>";			
+    $sToRender .= "<tr><td>Select the archived documents you'd like to restore, and click 'Restore', or 'Cancel' to abort</td></tr>\n";
+	for ($i=0; $i<count($aDocumentIDs); $i++) {
+		// and print document paths with checkboxes
+		$oDocument = Document::get($aDocumentIDs[$i]);
+        $sToRender .= "\t<tr>\n";
+        $sToRender .= "\t\t<td bgcolor=\"" . getColour($i) . "\">\n";
+        $sToRender .= "<input type=\"checkbox\" name=\"fDocumentIDs[]\" value=\"" . $oDocument->getID() . "\"/>\n";        
+        $sToRender .= $oDocument->getDisplayPath() . "\n";
+        $sToRender .= "\t\t</td>\n";
+        $sToRender .= "\t</tr>\n";			
+	}
+	$sToRender .= "<tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/restore.gif\" border=\"0\"/></a>\n";
+	$sToRender .= generateControllerLink("archivedDocuments", "", "<img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></td></tr>");			
 	$sToRender .= "</table>";
 	
 	return $sToRender;
