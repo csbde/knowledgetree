@@ -3,11 +3,11 @@
 require_once("$default->owl_fs_root/lib/security/permission.inc");
 
 // define access constants
-define("None", -1);
-define("Guest", 0);
-define("User", 1);
-define("UnitAdmin", 2);
-define("SysAdmin", 3);
+define("None", 1);
+define("Guest", 2);
+define("User", 3);
+define("UnitAdmin", 4);
+define("SysAdmin", 5);
 
 /**
  * $Id$
@@ -151,24 +151,24 @@ class SiteMap {
      * @param string the section to return links for
      */
     function getSectionLinksUsingDB($sSectionName) {
-        /*
-        $default->owl_site_access_table = "site_access_lookup";
-        $default->owl_site_sections_table = "site_sections_lookup";
-        $default->owl_sitemap_table = "sitemap";
-        */
         global $default, $lang_err_database;
         $sql = new Owl_DB();
         // lookup sectionID
-        $sectionID = lookupID($default->site_sections_table, "name", $sSectionName);
+        $sectionID = lookupID($default->owl_site_sections_table, "name", $sSectionName);
         if ($sectionID) {
             // initialise result array
             $results = array("descriptions" => array(), "links" => array());
             
-            if ($sql->query("SELECT link_text, action FROM $default->sitemap_table WHERE section_id=$sectionID")) {
+            if ($sql->query("SELECT link_text, action, access_id FROM $default->owl_sitemap_table WHERE section_id=$sectionID")) {                
                 while ($sql->next_record()) {
-                    // add this array to the resultset array
-                    $results["descriptions"][] = $sql->f("link_text");
-                    $results["links"][] = generateControllerUrl($sql->f("action"));                    
+                    // check permissions
+                    if ($this->hasPermission($sql->f("access_id"))) {
+                        // add this array to the resultset array if there is link text
+                        if (strlen($sql->f("link_text")) > 0) {
+                            $results["descriptions"][] = $sql->f("link_text");
+                            $results["links"][] = generateControllerUrl($sql->f("action"));
+                        }
+                    }
                 }
                 // now check if we have anything in the results array before returning it
                 if (count($results) > 0) {
@@ -202,9 +202,11 @@ class SiteMap {
             foreach ($this->aSiteMap[$sSectionName] as $requiredAccess => $pages) {
                 if ($this->hasPermission($requiredAccess)) {
                     foreach ($pages as $action => $pageDetail) {
-                        // add this array to the resultset array
-                        $results["descriptions"][] = $pages[$action]["description"];
-                        $results["links"][] = generateControllerUrl($action);
+                        // add this array to the resultset array if there is link text
+                        if (strlen($pages[$action]["description"]) > 0) {
+                            $results["descriptions"][] = $pages[$action]["description"];
+                            $results["links"][] = generateControllerUrl($action);
+                        }
                     }
                 }
             }
@@ -242,6 +244,24 @@ class SiteMap {
      * @return string the page to redirect to, or false if the user doesn't have access to the page
      */
     function getPageUsingDB($action) {
+        global $default, $lang_err_database;
+        $sql = new Owl_DB();
+        // lookup the page and access_id from the sitemap
+        if ($sql->query("SELECT page, access_id FROM $default->owl_sitemap_table WHERE action='$action'")) {                
+            if ($sql->next_record()) {
+                // check permissions
+                if ($this->hasPermission($sql->f("access_id"))) {
+                    // return the page
+                    return $sql->f("page");
+                }
+            } else {
+                $_SESSION["errorMessage"] = $lang_err_database;
+                return false;
+            }
+        } else {
+            $_SESSION["errorMessage"] = $lang_err_database;
+            return false;
+        }
     }
     
     /**
