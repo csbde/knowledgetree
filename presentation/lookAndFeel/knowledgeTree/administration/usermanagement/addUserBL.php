@@ -84,7 +84,7 @@ if (checkSession()) {
         // if db authentication
         if(isset($fFromDb)) {
             //User($sNewUserName, $sNewName, $sNewPassword, $iNewQuotaMax, $sNewEmail, $sNewMobile, $bNewEmailNotification, $bNewSmsNotification, $sNewLdapDn, $iNewMaxSessions, $iNewLanguageID)
-            $oUser = new User($fUsername,$fName,md5($fPassword),0,$fEmail,$fMobile,$fEmailNotification,$fSmsNotification,0,1,0);
+            $oUser = new User($fUsername,$fName,$fPassword,0,$fEmail,$fMobile,$fEmailNotification,$fSmsNotification,0,1,0);
 
         } else {
             $oUser = new User($fUsername,$fName,0,0,$fEmail,$fMobile,$fEmailNotification,$fSmsNotification,$fLdap,1,0);
