@@ -110,12 +110,7 @@ $default->owl_words_lookup_table = "words_lookup";
 //require_once("$default->fileSystemRoot/lib/LDAPAuthenticator.inc");
 //require_once("$default->fileSystemRoot/lib/Authenticator.inc");
 $default->authenticationClass = "DBAuthenticator";
-/*
-echo "<pre>";
-print_r($default);
-echo "</pre>";
-exit;
-*/
+
 require_once("$default->fileSystemRoot/lib/authentication/$default->authenticationClass.inc");
 
 // logo file that must reside inside lang/graphics directory
@@ -123,14 +118,6 @@ $default->logo = "kt.jpg";
 
 $default->version = "owl-dms 1.0 @build-date@";
 $default->phpversion = "4.0.2";
-
-// Change this to reflect the database you are using
-//require("$default->fileSystemRoot/phplib/db_pgsql.inc");
-require_once("$default->fileSystemRoot/phplib/db_mysql.inc");
-
-// single db instantiation
-require_once("$default->fileSystemRoot/lib/database/db.inc");
-$default->db = new Database();
 
 // define site mappings
 require_once("$default->fileSystemRoot/lib/session/SiteMap.inc");
@@ -161,6 +148,11 @@ $default->siteMap->addPage("modifyDocumentRouting", "/presentation/lookAndFeel/k
 $default->siteMap->addPage("modifyFolderCollaboration", "/presentation/lookAndFeel/knowledgeTree/foldermanagement/collaborationBL.php", "Manage Documents", User, "", false);
 $default->siteMap->addPage("addFolderCollaboration", "/presentation/lookAndFeel/knowledgeTree/foldermanagement/addFolderCollaborationBL.php", "Manage Documents", User, "", false);
 $default->siteMap->addPage("deleteFolderCollaboration", "/presentation/lookAndFeel/knowledgeTree/foldermanagement/deleteFolderCollaborationBL.php", "Manage Documents", User, "", false);
+
+// category management
+$default->siteMap->addPage("manageCategories", "/presentation/lookAndFeel/knowledgeTree/administration/manageCategoriesBL.php", "Manage Categories", SysAdmin, "Manage Categories");
+// document type management
+$default->siteMap->addPage("manageDocumentTypes", "/presentation/lookAndFeel/knowledgeTree/administration/manageDocumentTypesBL.php?", "Manage Document Types", SysAdmin, "Manage Document Types");
 
 // pages for administration section
 $default->siteMap->addDefaultPage("administration", "/presentation/lookAndFeel/knowledgeTree/administration/admin.php", "Administration", UnitAdmin, "Administration");
@@ -208,11 +200,10 @@ $default->siteMap->addPage("editRoleSuccess", "/presentation/lookAndFeel/knowled
 $default->siteMap->addPage("removeRole", "/presentation/lookAndFeel/knowledgeTree/administration/rolemanagement/removeRoleBL.php", "roleAdministration", SysAdmin, "Remove a Role");
 
 /////// pages for subscriptions section
-$default->siteMap->addDefaultPage("subscriptions", "/subscriptions.php", "Subscriptions", Guest, "SubScriptions", false);
-$default->siteMap->addDefaultPage("viewAlert", "/presentation/lookAndFeel/knowledgeTree/subscriptions/viewAlertBL.php", "Subscriptions", User, "Subscriptions", false);
+$default->siteMap->addDefaultPage("subscriptions", "/subscriptions.php", "Subscriptions", Guest, "SubScriptions");
+$default->siteMap->addPage("viewAlert", "/presentation/lookAndFeel/knowledgeTree/subscriptions/viewAlertBL.php", "Subscriptions", User, "Subscriptions", false);
 
 // pages for advanced search section
-// $default->siteMap->addDefaultPage("advancedSearch", "/email.php", "Advanced Search", "Anonymous", "Advanced Search");
 $default->siteMap->addDefaultPage("advancedSearch", "/search.php", "Advanced Search", Guest, "Advanced Search", false);
 
 // pages for prefs section
