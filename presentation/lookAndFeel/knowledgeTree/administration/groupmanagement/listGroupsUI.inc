@@ -8,13 +8,6 @@
 *
 */
 
-function getAddGroupLink() {
-	global $default;
-	$sBGColor = $default->siteMap->getSectionColour("Administration", "td");
-	return "<table width=\"100%\"><tr><td bgcolor=\"$sBGColor\">" . generateControllerLink("addGroup", "", "<font color=\"#ffffff\">Add A Group</font>") . "</td></tr></table>\n";	
-}
-
-
 // display the listbox initially ..then just display the text
 function getUnitDisplay($iUnitID) {
     global $default;
@@ -27,7 +20,7 @@ function getUnitDisplay($iUnitID) {
 	if ($iUnitID != 0) {
 		$oPatternListBox->setSelectedValue($iUnitID);
 	}    
-    return "<table><tr><td><b>Filter by Unit </b></td><td>" . $oPatternListBox->render() . "</td></tr></table>";
+    return "<table><tr><td><b>Filter By Unit </b></td><td>" . $oPatternListBox->render() . "</td></tr></table>";
 }
 
 function getGroups($fUnitID) {
@@ -58,7 +51,7 @@ function getPage($fUnitID) {
 	global $default;
 	$sToRender .= renderHeading("Current System Groups");
 
-	$sToRender .= getAddGroupLink();
+	$sToRender .= getAddLink("addGroup", "Add A Group");
 	$sToRender .= getUnitDisplay($fUnitID);
 	$sToRender .= getGroups($fUnitID);
 	return $sToRender;

@@ -8,12 +8,6 @@
 *
 */
 
-function getAddUnitLink() {
-	global $default;
-	$sBGColor = $default->siteMap->getSectionColour("Administration", "td");
-	return "<table width=\"100%\"><tr><td bgcolor=\"$sBGColor\">" . generateControllerLink("addUnit", "", "<font color=\"#ffffff\">Add A Unit</font>") . "</td></tr></table>\n";	
-}
-
 function getOrganisationDisplay($fOrganisationID) {
 	global $default;
 	$oPatternListBox = & new PatternListBox($default->owl_organisations_table, "name", "id", "fOrganisationID");
@@ -55,8 +49,7 @@ function getPage($fOrganisationID) {
 	global $default;
 	$sToRender .= renderHeading("Current System Units");
 
-	// add user link
-	$sToRender .= getAddUnitLink();
+	$sToRender .= getAddLink("addUnit", "Add A Unit");
 	$sToRender .= getOrganisationDisplay($fOrganisationID);
 	$sToRender .= getUnits($fOrganisationID);
 	return $sToRender;
