@@ -163,7 +163,7 @@ function renderFolderSection($sSectionName, $sHeadingText, $bDisplayLink, $iFold
 	if ($bDisplayLink) {
 		$sLink = generateControllerLink("editFolder", "fFolderID=$iFolderID&fShowSection=$sSectionName", $sHeadingText);
 	} else {
-		$sLink = "<a href=\"javascript:void();\" onClick=\"switchDiv('$sSectionName', 'folder');\">$sHeadingText</a>";
+		$sLink = "<a href=\"#\" onClick=\"switchDiv('$sSectionName', 'folder');\">$sHeadingText</a>";
 	}
 	return "<tr bgcolor=\"" . getColour($iColour) . "\"><td width=\"100%\">$sLink</td></tr>\n";
 }
