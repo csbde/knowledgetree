@@ -45,6 +45,9 @@ class PatternEditableTableSqlQuery {
 	/** Unique name */
 	var $sUniqueName;
 	
+	var $aRequiredColumnNames;
+	var $aRequiredFieldNames;
+	
 	function PatternEditableTableSqlQuery($sTmpQuery, $sTmpTableName, $aTmpStoreColumnNames, $aTmpDisplayColumnNames, $aTmpColumnsEditable, $aTmpColumnsVisible, $aTmpColumnDisplayTypes, $aTmpColumnDatabaseTypes) {
 		$this->sQuery = $sTmpQuery;
 		$this->sTableName = $sTmpTableName;
@@ -75,9 +78,14 @@ class PatternEditableTableSqlQuery {
 		$this->aColumnHeaderNames = $aNewValue;
 	}
 	
-	function getRequiredVariableNames() {
+	/*function getRequiredVariableNames() {
 		return $this->aRequiredVariableNames;
+	}*/
+	
+	function setRequiredColumnNames($aNewValue) {
+		$this->aRequiredColumnNames = $aNewValue;
 	}
+	
 	
 	function & render() {
         global $default;
@@ -99,6 +107,7 @@ class PatternEditableTableSqlQuery {
 			$sToRender .= "<td colspan=" . count($this->aColumnsSql) . ">No " . (isset($this->sTableCaption) ? $this->sTableCaption : "") . " data</td>\n";			
 			$sToRender .= "</tr>\n";		
 		} else {
+			$aRequiredVariables = array();
 			$iRowCount = 0;
 			while ($sql->next_record()) {				
 				$sToRender .= "<tr>\n";
@@ -106,6 +115,14 @@ class PatternEditableTableSqlQuery {
 				$sToRender .= "<input type=\"hidden\" name=\"" . $this->sUniqueName . "_" . $iRowCount . "\" value=\"" . $sql->f("id") . "\" />\n";
 				$sToRender .= "<input type=\"hidden\" name=\"" . $this->sUniqueName . "_" . $iRowCount . "_tn\" value=\"" . $this->sTableName . "\" />\n";
 				for ($i = 0; $i < count($this->aStoreColumnNames); $i++) {					
+					if (isset($this->aRequiredColumnNames)) {
+						for ($k = 0; $k < count($this->aRequiredColumnNames); $k++) {
+							if (strcmp($this->aStoreColumnNames[$i], $this->aRequiredColumnNames[$k]) == 0) {								
+								$aRequiredVariables[count($aRequiredVariables)]["formName"] = $this->sUniqueName . "_" . $iRowCount . $i . "_value";						
+								
+							}
+						}
+					}
 					//generate the right kind of editable field
 					$sToRender .= "\t<td>\n";					
 					switch ($this->aColumnDisplayTypes[$i]) {
@@ -156,8 +173,26 @@ class PatternEditableTableSqlQuery {
 				$iRowCount++;
 			}
 		}
-		$sToRender .= "</table>";		
+		$sToRender .= "</table>";
+		if (isset($this->aRequiredColumnNames)) {
+			$sToRender .= $this->generateRequiredFieldValidation($aRequiredVariables);
+		}
 		return $sToRender;
+	}
+	
+	function generateRequiredFieldValidation($aValidationColumnNames) {
+		$sToRender .= "\n\n<script language=\"javascript\">\n<!--\n";
+		$sToRender .= "function validateForm(theForm) {\n";			
+		for ($i = 0; $i < count($aValidationColumnNames); $i++) {
+			$sToRender .= "\tif (!(validRequired(document.MainForm." . $aValidationColumnNames[$i]["formName"] . ", 'selected'))) {\n";
+			$sToRender .= "\t\treturn false;\n\t}\n";			
+		}
+		$sToRender .= "return true;\n}\n";
+		
+		$sToRender .= "//-->\n</script>\n\n";
+		
+		return $sToRender;
+                
 	}
 }
 
