@@ -154,7 +154,7 @@ class SiteMap {
      * @param string the section to return links for
      */
     function getSectionLinksUsingDB($sSectionName) {
-        global $default, $lang_err_database;
+        global $default, $lang_err_database, $fFolderID;
         $sql = new Owl_DB();
         // lookup sectionID
         $sectionID = lookupID($default->owl_site_sections_table, "name", $sSectionName);
@@ -168,9 +168,10 @@ class SiteMap {
                     if ($this->hasPermission($sql->f("access_id"))) {
                         // add this array to the resultset array if there is link text
                         if (strlen($sql->f("link_text")) > 0) {
-                            $results["descriptions"][] = $sql->f("link_text");
-                            // FIXME: need to pass params to some links
-                            $results["links"][] = generateControllerUrl($sql->f("action"));
+                            $results["descriptions"][] = $sql->f("link_text");                            
+                            // if fFolderID is set and fFolderID is in the page string
+                            // append folderID to the controller link
+                            $results["links"][] = $fFolderID ? generateControllerUrl($sql->f("action") . "&fFolderID=$fFolderID") : generateControllerUrl($sql->f("action"));
                         }
                     }
                 }
@@ -217,7 +218,7 @@ class SiteMap {
                             $results["descriptions"][] = $pages[$action]["description"];
                             // if fFolderID is set and fFolderID is in the page string
                             // append folderID to the controller link
-                            $results["links"][] = ($fFolderID && strstr($pages[$action]["page"], "fFolderID")) ? generateControllerUrl($action . "&fFolderID=$fFolderID") : generateControllerUrl($action);
+                            $results["links"][] = $fFolderID ? generateControllerUrl($action . "&fFolderID=$fFolderID") : generateControllerUrl($action);
                         }
                     }
                 }
