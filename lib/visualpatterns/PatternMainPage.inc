@@ -54,8 +54,10 @@ class PatternMainPage {
 	var $sErrorMessage;
 	
 	var $sHelpContext = "browse";
-	
+	/** javascript to execute on body load **/	
 	var $onLoadJavaScript;
+	/** whether or not to use dhtml scrolling **/
+	var $bScroll = true;
 	
 	function setNorthWestPayload($oNewVal) {		
 		$this->oNorthWestPayload = & $oNewVal;		
@@ -116,24 +118,27 @@ class PatternMainPage {
 	function setOnLoadJavaScript($sJavaScript) {
 		$this->onLoadJavaScript = $sJavaScript;
 	}
-		
-	
+
+	function setDHTMLScrolling($sNewValue) {
+		$this->bScroll = $sNewValue;
+	}	
 	
 	/**
 	* Render the page in HTML
 	*/
 	function render() {
         global $default;
-		$sToRender = 	"<html>\n" .
-							"<head>\n" .
-                            "<meta http-equiv=\"refresh\" content=\"" . ($default->sessionTimeout+3) . ";\">\n" .
+        $bNN4 = (($default->browser == "moz") && ($default->version <= "4.79") || ($default->browser == "ns"));
+		$sToRender  = 	"<html>\n";
+		$sToRender .= 	"<head>\n";
+       	$sToRender .= 	"<meta http-equiv=\"refresh\" content=\"" . ($default->sessionTimeout+3) . ($bNN4 ? ";" : "") . "\">\n" .			
                             "<link rel=\"SHORTCUT ICON\" href=\"$default->graphicsUrl/tree.ico\">\n" .
                             "<link rel=\"stylesheet\" href=\"$default->uiUrl/stylesheet.php\">\n".                            
 							PatternMainPage::getJavaScript() . "\n" .							
 							"</head>\n" .
-							"<body marginleft=\"0\" marginheight=\"0\"" . (isset($this->onLoadJavaScript) ? "onload=\"$this->onLoadJavaScript\"" : "") . ">\n";							
+							"<body marginleft=\"0\" marginheight=\"0\" " . (isset($this->onLoadJavaScript) ? "onload=\"$this->onLoadJavaScript\"" : "") . ">\n";							
         // hack to circumvent the crapness of ns 4.79
-        if (! (($default->phpSniff->property("browser") == "moz") && ($default->phpSniff->property("version") <= "4.79")) ) {
+        if (!$bNN4 ) {
             $sToRender .=       "<div id=\"divUp\">" .
                                 "\t<a href=\"#\" onmouseover=\"scroll(-7)\" onmouseout=\"noScroll()\"><img src=\"" . $default->graphicsUrl . "/down.gif\" width=\"18\" height=\"9\" alt=\"up\" border=\"0\"></a>" .
                                 "</div>" .
@@ -172,7 +177,7 @@ class PatternMainPage {
                                         
 										if (isset($this->oCentralPayload)) {
                                             // hack to circumvent the crapness of ns 4.79
-                                            if (! (($default->phpSniff->property("browser") == "moz") && ($default->phpSniff->property("version") <= "4.79")) ) {
+                                            if (!$bNN4 && $this->bScroll) {
                                                 $sToRender .= "\t<div id=\"divScrollTextCont\">\n
                                                                \t\t<div id=\"divText\">\n";												
                                             }                                          
@@ -184,7 +189,7 @@ class PatternMainPage {
 											$sToRender = $sToRender . "\nCentral payload not set\n";
 										}
                                         // hack to circumvent the crapness of ns 4.79
-                                        if (! (($default->phpSniff->property("browser") == "moz") && ($default->phpSniff->property("version") <= "4.79")) ) {
+                                        if (! $bNN4 ) {
                                             $sToRender = $sToRender . "</div></div>\n";
                                         }
                                         $sToRender = $sToRender . "</td>\n" .
@@ -208,18 +213,15 @@ class PatternMainPage {
         $sUrl = $default->uiUrl;
         // hack to circumvent the crapness of ns 4.79
  
-        if (! (($default->phpSniff->property("browser") == "moz") && ($default->phpSniff->property("version") <= "4.79")) ) {
-            return "<script type=\"text/javascript\" src=\"$sUrl/js/scroll.js\"></script>\n" .
-            	   "<script type=\"text/javascript\" src=\"$sUrl/js/datePicker.js\"></script>\n" .            
-            	   "<script type=\"text/javascript\" src=\"$sUrl/js/misc.js\"></script>" . 
-            	   $this->getHelpJavaScript();        
-
-        } else {
-            return "<script type=\"text/javascript\" src=\"$sUrl/js/datePicker.js\"></script>\n" .            
-            	   "<script type=\"text/javascript\" src=\"$sUrl/js/misc.js\"></script>" . 
-            	   $this->getHelpJavaScript();        
+        if (!$bNN4 && $this->bScroll) {
+            $sJavaScript = "<script type=\"text/javascript\" src=\"$sUrl/js/scroll.js\"></script>\n";
         }
-        
+        $sJavaScript .= "<script type=\"text/javascript\" src=\"$sUrl/js/datePicker.js\"></script>\n";            
+		$sJavaScript .= "<script type=\"text/javascript\" src=\"$sUrl/js/misc.js\"></script>";
+		$sJavaScript .= "<script type=\"text/javascript\" src=\"$sUrl/js/divSwitch.js\"></script>";            	    
+		$sJavaScript .= $this->getHelpJavaScript();
+
+		return $sJavaScript;       
 	}
 	
 	function getHelpJavaScript() {
