@@ -17,6 +17,7 @@ if (checkSession()) {
 		//if a folder has been selected
 		include_once("$default->owl_fs_root/lib/foldermanagement/Folder.inc");
 		include_once("$default->owl_fs_root/lib/security/permission.inc");
+        include_once("$default->owl_fs_root/lib/users/User.inc");
 		if (Permission::userHasFolderWritePermission($fFolderID)) {
 			//can only create new collaboration steps if the user has folder write permission
 			if (isset($fForStore)) {
