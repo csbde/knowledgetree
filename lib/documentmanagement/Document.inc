@@ -36,6 +36,10 @@ class Document {
     var $iMinorVersion;
     /** document checked out status */
     var $bIsCheckedOut;
+	/** comma delimited string of folder hierarch this document falls under */
+	var $sParentFolderIDs;
+	/** comma delimited string of folder names for hierarchy under which this document falls */
+	var $sFullPath;
 
     /**
     * Document class constructor
@@ -187,6 +191,45 @@ class Document {
     function setIsCheckedOut($bNewValue) {
         $this->bCheckedOut = $bNewValue;
     }
+	
+	/**
+	* Generate a comma delimited string containing
+	* the parent folder ids
+	* 
+	* @return String	comma delimited string containing the parent folder ids
+	*/
+	function generateParentFolderIDS($iFolderID) {
+		global $default;
+		//if the folder is not the root folder 
+		if ($iFolderID != 1) {
+			$sql = $default->db;
+			$sql->query("SELECT parent_id FROM $default->owl_folders_table WHERE ID = $iFolderID");
+			$sql->next_record();
+			return $this->generateParentFolderIDS($sql->f("parent_id")) . ",$iFolderID";
+		}
+		return $iFolderID;
+		
+	}
+	
+	/**
+	* Backslash deliminated string giving full path of document
+	* from file system root url
+	* 
+	*/
+	function generateFullFolderPath($iFolderID) {
+		global $default;
+		//if the folder is not the root folder 
+		if ($iFolderID != 1) {
+			$sql = $default->db;
+			$sql->query("SELECT name, parent_id FROM $default->owl_folders_table WHERE ID = $iFolderID");
+			$sql->next_record();			
+			return $this->generateFullFolderPath($sql->f("parent_id")) . "\\" . stripslashes($sql->f("name"));
+		}
+		$sql = $default->db;
+		$sql->query("SELECT name FROM $default->owl_folders_table WHERE ID = $iFolderID");
+		$sql->next_record();
+		return stripslashes($sql->f("name"));
+	}
 
     /**
     * Insert the current document into the database
@@ -198,8 +241,10 @@ class Document {
         //if the id >= 0, then the object has already been created
         if ($this->iId < 0) {
             $sql = $default->db;
-            $result = $sql->query("INSERT INTO " . $default->owl_documents_table . " (document_type_id, name, filename, size, creator_id, modified, description, mime_id, folder_id, major_version, minor_version, is_checked_out) " .
-                                  "VALUES (" . $this->iDocumentTypeID . ", '" . addslashes($this->sName) . "', '" . addslashes($this->sFileName) . "', $this->iSize, $this->iCreatorID, '" . getCurrentDateTime() . "', '" . addslashes($this->sDescription) . "', $this->iMimeTypeID, $this->iFolderID, $this->iMajorVersion, $this->iMinorVersion, " . ($this->bIsCheckedOut ? 1 : 0) . ")");
+			$this->sParentFolderIDs = $this->generateParentFolderIDS($this->getFolderID());
+			$this->sFullPath = $this->generateFullFolderPath($this->getFolderID());
+            $result = $sql->query("INSERT INTO " . $default->owl_documents_table . " (document_type_id, name, filename, size, creator_id, modified, description, mime_id, folder_id, major_version, minor_version, is_checked_out, parent_folder_ids, full_path) " .
+                                  "VALUES (" . $this->iDocumentTypeID . ", '" . addslashes($this->sName) . "', '" . addslashes($this->sFileName) . "', $this->iSize, $this->iCreatorID, '" . getCurrentDateTime() . "', '" . addslashes($this->sDescription) . "', $this->iMimeTypeID, $this->iFolderID, $this->iMajorVersion, $this->iMinorVersion, " . ($this->bIsCheckedOut ? 1 : 0) . ", '" . $this->sParentFolderIDs . "','" . addslashes($this->sFullPath) . "')");
             if ($result) {
                 //set the current documents primary key
                 $this->iId = $sql->insert_id();
@@ -218,23 +263,29 @@ class Document {
     *
     * @return boolean true on successful update, false otherwise and set $_SESSION["errorMessage"]
     */
-    function update() {
+    function update($aForMove = false) {
         global $default, $lang_err_database, $lang_err_object_key;
-        if ($this->iId >= 0) {
+        if ($this->iId >= 0) {			
             $sql = $default->db;
-            $result = $sql->query("UPDATE " . $default->owl_documents_table . " SET " .
-                                  "document_typeid = $this->iDocumentTypeID, " .
-                                  "file_name = '" . addslashes($this->file_name) . "', " .
+			$sQuery = "UPDATE " . $default->owl_documents_table . " SET " .
+                                  "document_type_id = $this->iDocumentTypeID, " .
+                                  "filename = '" . addslashes($this->sFileName) . "', " .
                                   "size = $this->iSize, " .
                                   "creator_id = $this->iCreatorID, " .
-                                  "modified = " . getCurrentDateTime() . ", " .
+                                  "modified = '" . getCurrentDateTime() . "', " .
                                   "description = '" . addslashes($this->sDescription) . "', " .
                                   "mime_id = $this->iMimeTypeID, " .
-                                  "folder_id = $this->iFolderID, " .
-                                  "major_revision = $this->iMajorRevision, " .
-                                  "minor_revision =  $this->iMinorRevision, " .
-                                  "is_checked_out = $this->bIsCheckedOut " .
-                                  "WHERE id = $this->id");
+                                  "folder_id = " . $this->iFolderID . ", " .
+                                  "major_version = $this->iMajorVersion, " .
+                                  "minor_version =  $this->iMinorVersion, ";
+								  if ($aForMove) {
+									  //only update these if the document is being moved
+									  $sQuery .= "parent_folder_ids = '" . addslashes($this->generateParentFolderIDS($this->iFolderID)) . "'," .
+									  			"full_path = '" . addslashes($this->generateFullFolderPath($this->iFolderID)) . "', ";
+								  }					
+                                  $sQuery .= "is_checked_out = " . ($this->bIsCheckedOut ? "1" : "0") . " " .								  			  
+                                  			"WHERE id = $this->iId";
+            $result = $sql->query($sQuery);
             if ($result) {
                 return true;
             }
@@ -342,13 +393,15 @@ class Document {
         $sql = $default->db;
         // TODO: join on sys_deleted
         $sql->query("SELECT * FROM $default->owl_documents_table WHERE id = $iDocumentID");
-        if ($sql->next_record()) {
-            $oDocument = & new Document(stripslashes($sql->f("name")), $sql->f("filename"), $sql->f("size"), stripslashes($sql->f("creator_id")), $sql->f("mime_id"), $sql->f("folder_id"), $sql->f("description"));
+        if ($sql->next_record()) {			
+            $oDocument = & new Document(stripslashes($sql->f("name")), stripslashes($sql->f("filename")), $sql->f("size"), $sql->f("creator_id"), $sql->f("mime_id"), $sql->f("folder_id"), $sql->f("description"));
             $oDocument->setDocumentTypeID($sql->f("document_type_id"));
             $oDocument->setMajorVersionNumber($sql->f("major_version"));
             $oDocument->setMinorVersionNumber($sql->f("minor_version"));
-            $oDocument->setIsCheckedOut($sql->f("is_checked_out"));
-            $oDocument->iId = $iDocumentID;
+            $oDocument->setIsCheckedOut($sql->f("is_checked_out"));			
+			$oDocument->sParentFolderIDs = stripslashes($sql->f("parent_folder_ids"));
+			$oDocument->sFullPath = stripslashes($sql->f("full_path"));
+            $oDocument->iId = $iDocumentID;			
             return $oDocument;
         }
         $_SESSION["errorMessage"] = $lang_err_object_not_exist . "id = " . $iDocumentID . " table = documents";
