@@ -103,6 +103,7 @@ function checkSessionAndRedirect($bRedirect) {
 function checkSession() {
     global $default;
     if (checkSessionAndRedirect(true)) {
+        $default->log->debug("control.inc print the session variables: " . arrayToString($_SESSION));
         // the session is cool, now check if we access to this page
         $default->log->debug("control.inc page=" . $_SERVER['PHP_SELF'] . "?" . $_SESSION["pageAccess"][$_SERVER['PHP_SELF']]);
         if ($_SESSION["pageAccess"][$_SERVER['PHP_SELF']]) {
