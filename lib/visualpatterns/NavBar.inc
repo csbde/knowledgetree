@@ -183,11 +183,17 @@ class NavBar
 		
 		//bar is the actaul html creation of the nav bar
 	$bar= "				
-		<Table cellpadding = \"1\" cellspacing = \"1\" border=\"0\" width=\"100%\" height=\"100%\">
+		<Table cellpadding = \"1\" cellspacing = \"1\" border=\"1\" width=\"100%\" height=\"100%\">
 			
 		<tr height=\"20%\"><td background = " . $hStretched ." width =\"100%\">". $row1 ."</td></tr>
 			
-		<tr height=\"28%\"><td background = " . $hStretched ." width =\"100%\" ></td></tr>
+		<tr  height=\"30%\">	<td VALIGN = \"absmiddle\" background = " . $hStretched ." width =\"100%\" NOWRAP >
+					<img align = \"absmiddle\" src = \"$default->owl_graphics_url/arrow.gif\" ></img> 
+					<INPUT type=\"Text\" name=\"searchField\" width=\"30\" height = \"10\" align = \"absmiddle\" >
+					<INPUT type=\"image\" name=\"search\" value=\"Search\" src = \"$default->owl_graphics_url/search.gif\" align = \"absmiddle\" >
+					</td>
+				   
+		</tr>
 			
 		<tr height=\"25%\" ><td width =\"10%\">". $row3 . "</td></tr>
 			
