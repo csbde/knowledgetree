@@ -69,7 +69,7 @@ class Document {
 	
 	/** Get the document primary key */
 	function getID() {
-		return $this->iID;
+		return $this->iId;
 	}
 	
 	/** Get the document type id */
