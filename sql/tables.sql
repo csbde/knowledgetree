@@ -827,34 +827,34 @@ INSERT INTO document_type_fields_link (document_type_id, field_id, is_mandatory)
 
 -- define folder structure
 ---- mrc organisation root folder
-INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
-             VALUES ("Medical Research Council", "MRC Root Document Folder", 0, 1, 0, 0, 0); -- id=1
+INSERT INTO folders (name, description, parent_id, creator_id, unit_id, is_public)
+             VALUES ("Medical Research Council", "MRC Root Document Folder", 0, 1, 0, 0); -- id=1
 
 ---- adarg unit folders
 -- [7,8,9]
-INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
-             VALUES ("ADARG", "ADARG Unit Root Folder", 1, 1, 0, 1, 0);  -- id=2
+INSERT INTO folders (name, description, parent_id, creator_id, unit_id, is_public)
+             VALUES ("ADARG", "ADARG Unit Root Folder", 1, 1, 1, 0);  -- id=2
              -- unit admins have write access
              INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (2, 2, 0, 1);
                  
 ---- afroaids unit folders
 -- [10,11,12]
-INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
-             VALUES ("AfroAIDS", "AfroAIDS Unit Root Folder", 1, 1, 0, 2, 0); -- id=3
+INSERT INTO folders (name, description, parent_id, creator_id, unit_id, is_public)
+             VALUES ("AfroAIDS", "AfroAIDS Unit Root Folder", 1, 1, 2, 0); -- id=3
              -- unit admins have write access
              INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (3, 3, 0, 1);             
              
 ---- diabetes unit folders
 --[13,14,15]
-INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
-             VALUES ("Diabetes", "Diabetes Unit Root Folder", 1, 1, 0, 3, 0);  -- id=4
+INSERT INTO folders (name, description, parent_id, creator_id, unit_id, is_public)
+             VALUES ("Diabetes", "Diabetes Unit Root Folder", 1, 1, 3, 0);  -- id=4
              -- unit admins have write access
              INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (4, 4, 0, 1);
              
 ---- burden of disease unit folders
 -- [16,17,18]
-INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
-             VALUES ("Burden of Disease", "Burden of Disease Unit Root Folder", 1, 1, 0, 4, 0);  -- id=5
+INSERT INTO folders (name, description, parent_id, creator_id, unit_id, is_public)
+             VALUES ("Burden of Disease", "Burden of Disease Unit Root Folder", 1, 1, 4, 0);  -- id=5
              -- unit admins have write access
              INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (5, 5, 0, 1);             
              
