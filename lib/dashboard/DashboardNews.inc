@@ -1,5 +1,7 @@
 <?php
 
+require_once("$default->fileSystemRoot/lib/documentmanagement/PhysicalDocumentManager.inc");
+
 /**
  * $Id$
  * 
@@ -34,6 +36,14 @@ class DashboardNews {
 	 * An accompanying image
 	 */
 	var $sImage;
+	/**
+	 * The size of the image
+	 */
+	var $iImageSize;
+	/**
+	 * The mime type id of the image
+	 */
+	var $iImageMimeTypeID;	
 	
 	/**
 	 * Constructs a news item
@@ -41,19 +51,29 @@ class DashboardNews {
 	 * @param string the synopsis
 	 * @param string the body
 	 * @param integer the rank
-	 * @param string the image
 	 */
-	function DashboardNews($sNewSynopsis, $sNewBody, $iNewRank, $sNewImage) {
+	function DashboardNews($sNewSynopsis, $sNewBody, $iNewRank, $mImage) {
 		// primary key not set as document is not stored yet
 		$this->iId = -1;
-		$this->sSynopsis = $sNewSynopsis;
-		$this->sBody = $sNewBody;
-		$this->iRank = $iNewRank;
-		$this->sImage = $sNewImage;
+		$this->setSynopsis($sNewSynopsis);
+		$this->setBody($sNewBody);
+		$this->setRank($iNewRank);
+		// if we've been passed an array
+		if (is_array($mImage)) {
+			// then the image details are in it
+			$this->setImage($mImage["image"]);
+			$this->setImageSize($mImage["filesize"]);
+			$this->setImageMimeTypeID($mImage["mimetype"]);
+		} else {			
+			if (file_exists($mImage)) {
+				// we've been passed a file, so read it in
+				$this->setImageFile($mImage);
+			}
+		}
 	}
 
 	/**
-	 * Gets the id
+	 * Gets the new item primary key
 	 */
 	function getID(){
 		return $this->iId;
@@ -69,7 +89,7 @@ class DashboardNews {
 	/**
 	 * Sets the synopsis
 	 *
-	 * @param    $sNewSynopsis
+	 * @param string the new synopsis
 	 */
 	function setSynopsis($sNewSynopsis){
 		$this->sSynopsis = $sNewSynopsis;
@@ -85,7 +105,7 @@ class DashboardNews {
 	/**
 	 * Sets the body
 	 * 
-	 * @param    $sNewBody
+	 * @param string the new news body
 	 */ 
 	function setBody($sNewBody){
 		$this->sBody = $sNewBody;
@@ -101,28 +121,83 @@ class DashboardNews {
 	/**
 	 * Sets the rank
 	 *
-	 * @param    $iNewRank
+	 * @param integer the new news item rank
 	 */
 	function setRank($iNewRank){
 		$this->iRank = $iNewRank;
 	}
 
 	/**
-	 * Gets the image
+	 * Retrieves the image text
+	 *
 	 */
-	function getImage(){
+	function getImage() {
 		return $this->sImage;
+	}
+	
+	/**
+	 * Sets the image text
+	 *
+	 * @param string the new image text	 
+	 */
+	function setImage($sNewImageText) {
+		$this->sImage = $sNewImageText;
+	}
+		 	 
+	/**
+	 * Retrieve the image size
+	 */
+	function getImageSize() {
+		return $this->iImageSize;
+	}
+	 
+	/**
+	 * Set the image size
+	 *
+	 * @param integer the image size	 
+	 */
+	function setImageSize($iNewImageSize) {
+		$this->iImageSize = $iNewImageSize;
+	}
+	 
+	/**
+	 * Retrieve the image mime type
+	 */
+	function getImageMimeTypeID() {
+		return $this->iImageMimeTypeID;
 	}
 
 	/**
-	 * Sets the image
+	 * Set the image mime type
 	 *
-	 * @param    $sImage
+	 * @param integer the image mime type	 
 	 */
-	function setImage($sNewImage){
-		$this->sImage = $sNewImage;
+	function setImageMimeTypeID($iNewMimeTypeID) {
+		$this->iImageMimeTypeID = $iNewMimeTypeID;
+	} 
+	
+	/**
+	 * Displays the news item image
+	 */
+	function displayImage(){
+        header("Content-Type: " . PhysicalDocumentManager::getMimeTypeName($this->iImageMimeTypeID));
+		header("Content-Length: " . $this->iImageSize);		
+		echo $this->sImage;
 	}
 
+	/**
+	 * Sets the image information from a file
+	 *
+	 * @param string path to the image on the filesystem
+	 */
+	function setImageFile($sPathToImage){
+		if (file_exists($sPathToImage)) {
+			$aImage = $this->imageToString($sPathToImage);
+			$this->sImage = $aImage["image"];
+			$this->iImageSize = $aImage["filesize"];
+			$this->iImageMimeTypeID = $aImage["mimetypeid"];
+		}
+	}
 
 	/**
 	 * Inserts the current new item into the database
@@ -134,8 +209,9 @@ class DashboardNews {
         //if the id >= 0, then the object has already been created
         if ($this->iId < 0) {
             $sql = $default->db;
-            $result = $sql->query("INSERT INTO $default->owl_news_table (image, synopsis, body, rank) " .
-                                  "VALUES ('" . addslashes($this->sImage) . "', '" . addslashes($this->sSynopsis) . "', '" . addslashes($this->sBody) . "', $this->iRank)");
+            $result = $sql->query("INSERT INTO $default->owl_news_table (synopsis, body, rank, image, image_size, image_mime_type_id) " .
+                                  "VALUES ('" . addslashes($this->sSynopsis) . "', '" . addslashes($this->sBody) . "', $this->iRank, " .
+                                  "'" . addslashes($this->sImage) . "', $this->iImageSize, $this->iImageMimeTypeID)");
             if ($result) {
                 //set the current news item primary key
                 $this->iId = $sql->insert_id();
@@ -156,10 +232,12 @@ class DashboardNews {
         if ($this->iId >= 0) {			
             $sql = $default->db;
 			$sQuery = "UPDATE " . $default->owl_news_table . " SET " .
-                                  "image = '" . addslashes($this->sImage) . "', " .
 								  "synopsis = '" . addslashes($this->sSynopsis) . "', " .
                                   "body = '" . addslashes($this->sBody) . "', " .
-                                  "rank = $this->iRank " .
+                                  "rank = $this->iRank, " .
+                                  "image = '" . addslashes($this->sImage) . "', " .
+                                  "image_size = $this->iImageSize, " .
+                                  "image_mime_type_id = $this->iImageMimeTypeID " .                                  
            			 "WHERE id = $this->iId";
             $result = $sql->query($sQuery);
             if ($result) {
@@ -201,10 +279,14 @@ class DashboardNews {
         global $default;
         $sql = $default->db;
         $sql->query("SELECT * FROM $default->owl_news_table WHERE id = $iNewsID");
-        if ($sql->next_record()) {			
-            $oDashboardNews = & new DashboardNews(stripslashes($sql->f("synopsis")), stripslashes($sql->f("body")), $sql->f("rank"), $sql->f("image"));
+        if ($sql->next_record()) {
+            $aImage = array( "image" => $sql->f("image"),
+            				 "filesize" => $sql->f("image_size"),
+            				 "mimetypeid" => $sql->f("image_mime_type_id") );
+        				
+            $oDashboardNews = & new DashboardNews(stripslashes($sql->f("synopsis")), stripslashes($sql->f("body")), $sql->f("rank"), $aImage);
             $oDashboardNews->iId = $iDocumentID;
-            return $$oDashboardNews;          
+            return $oDashboardNews;          
         }
         return false;
     }
@@ -239,6 +321,16 @@ class DashboardNews {
      * @return string the image as a string
      */
     function imageToString($sImagePath) {
-   		
+   		// check if the image exists
+   		if (file_exists($sImagePath)) {
+   			// read in the file
+			$fd = fopen ($sImagePath, "rb");
+			$sImageString = fread($fd, filesize($sImagePath));
+			fclose($fd);
+			// return the string
+			return array("image" => $sImageString, "filesize" => filesize($sImagePath), "mimetypeid" => PhysicalDocumentManager::getMimeTypeID(null, $sImagePath));   			
+   		} else {
+   			return false;
+   		}   		
     }
 }
