@@ -109,7 +109,8 @@ class PatternListBox {
 		$sQuery .= "ORDER BY $this->sDisplayColumn " . ($this->bOrderAsc ? "ASC" : "DESC");		
 		$sql->query($sQuery);
 		if ($sql->num_rows() > 0) {			
-			$sToRender = "<SELECT NAME = \"$this->sSelectName\" ". ($this->bPostBackOnChange ? "onChange=\"$this->sOnChangeAction\" " : " ") . ">\n";
+			//$sToRender = "<SELECT NAME = \"$this->sSelectName\" ". ($this->bPostBackOnChange ? "onChange=\"location=$this->sOnChangeAction;\" " : " ") . ">\n";
+			$sToRender = "<SELECT NAME = \"$this->sSelectName\" ". ($this->bPostBackOnChange ? "onChange=\"document.MainForm.submit();\" " : " ") . ">\n";
 			if ($this->bIncludeDefaultValue) {
 				$sToRender .= "<OPTION value=\"-1\">None</OPTION>\n";
 			}

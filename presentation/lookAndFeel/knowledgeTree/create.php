@@ -78,7 +78,7 @@ $oObject->create();
 
 //redirect the user
 if (isset($fRedirectURL)) {
-	redirect(urldecode($fRedirectURL));
+	redirect(urldecode($fRedirectURL) . $oObject->iId);
 } else {
 	redirect("$default->owl_root_url/control.php");
 }
