@@ -188,7 +188,7 @@ function getUpdateButton($oUser) {
 	if (!isset($oUser)) {
 		return "Please select a WebMaster: ";
 	} else {
-		return "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/update.gif\" value=\"submit\" /></td>\n";
+		return "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/update.gif\" value=\"submit\" border=\"0\"/></td>\n";
 	}
 }
 

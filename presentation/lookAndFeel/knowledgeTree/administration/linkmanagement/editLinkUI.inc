@@ -139,7 +139,7 @@ function getUpdateButton($oLink) {
 	if (!isset($oLink)) {
 		return "Please select a Link: ";
 	} else {
-		return "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/update.gif\" value=\"submit\" /></td>\n";
+		return "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/update.gif\" value=\"submit\" border=\"0\"/></td>\n";
 	}
 }
 

@@ -163,7 +163,7 @@ function getDeleteButton($oDocField) {
 	if (!isset($oDocField)) {
 		return "Please select a Document Field: ";
 	} else {
-		return "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/delete.gif\" value=\"submit\" /></td>\n";
+		return "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/delete.gif\" value=\"submit\" border=\"0\"/></td>\n";
 	}
 }
 

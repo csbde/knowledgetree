@@ -22,7 +22,7 @@ function getSelectUserPage($aResults) {
         $sToRender .= "<option value=\"$sName\">$sName</option>";
     }
     $sToRender .= "</select></td></tr>\n";
-    $sToRender .= "<tr><td></td><td align=\"right\"><input type=\"image\" src=\"$default->graphicsUrl/widgets/select.gif\" value=\"submit\"/></td></tr>\n";
+    $sToRender .= "<tr><td></td><td align=\"right\"><input type=\"image\" src=\"$default->graphicsUrl/widgets/select.gif\" value=\"submit\" border=\"0\"/></td></tr>\n";
 	$sToRender .= "</table>\n";
 	
 	return $sToRender;
@@ -46,7 +46,7 @@ function getAddPage($unitID) {
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "</tr>\n";
-	$sToRender .= "<td></td><td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/select.gif\" value=\"Submit\" /></td>\n";	
+	$sToRender .= "<td></td><td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/select.gif\" value=\"Submit\" border=\"0\"/></td>\n";	
 	$sToRender .= "</table>\n";
 	
 	return $sToRender;
@@ -62,9 +62,12 @@ function getDetailsDBPage($suserName, $aAttributes) {
         $sToRender .= "<table>\n";
         $sToRender .= "<br></br>\n";
         $sToRender .= "<tr>\n";
-        $sToRender .= "<td>Username: </td><td><input disabled size = \"40\" type=\"text\" name=\"fUsername\" value = \"". $aUserAttributes["username"]. "\"> </td>\n";
-        $sToRender .= "<input type=\"hidden\" name=\"fUsername\" value = \"" . $aUserAttributes["username"] ."\">\n";
+        $sToRender .= "<td>Username: </td><td><input size = \"40\" type=\"text\" name=\"fUsername\" value = \"". $aUserAttributes["username"]. "\"> </td>\n";
+        //$sToRender .= "<input type=\"hidden\" name=\"fUsername\" value = \"" . $aUserAttributes["username"] ."\">\n";
         $sToRender .= "</tr>\n";
+        $sToRender .= "<tr>\n";
+        $sToRender .= "<td>Password: </td><td><input size = \"40\" type=\"password\" name=\"fPassword\"></td>\n";
+        $sToRender .= "</tr>\n";        
         $sToRender .= "<tr>\n";
         $sToRender .= "<td>Name: </td><td><input size = \"40\" type=\"text\" name=\"fName\" value = \"" . $aUserAttributes["name"] ."\"> </td>\n";
         $sToRender .= "</tr>\n";
@@ -210,7 +213,7 @@ function getPageUsernameNotFound() {
 // show delete button or select button
 function getAddButton() {
 	global $default;
-		return "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/add.gif\" value=\"submit\" /></td>\n";
+		return "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/add.gif\" value=\"submit\" border=\"0\"/></td>\n";
 }
 
 // show cancel button

@@ -104,7 +104,7 @@ function getUpdateButton($oOrg) {
 	if (!isset($oOrg)) {
 		return "Please select a Organisation: ";
 	} else {
-		return "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/update.gif\" value=\"submit\" /></td>\n";
+		return "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/update.gif\" value=\"submit\" border=\"0\"/></td>\n";
 	}
 }
 

@@ -70,7 +70,7 @@ function getUserDetailsPage($iUserID) {
 	$sToRender .= "<tr>\n";
 	$sToRender .= "</tr>\n";
 	
-	$sToRender .= "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/update.gif\" value=\"Update\" /></td>\n";	
+	$sToRender .= "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/update.gif\" value=\"Update\" border=\"0\"/></td>\n";	
 	$sToRender .= "</table>\n";
 		
 	
@@ -147,7 +147,7 @@ function getUpdateButton($oUser) {
 	if (!isset($oUser)) {
 		return "Please select a User: ";
 	} else {
-		return "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/update.gif\" value=\"submit\" /></td>\n";
+		return "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/update.gif\" value=\"submit\" border=\"0\"/></td>\n";
 	}
 }
 

@@ -131,7 +131,7 @@ function getDeleteButton($oRole) {
 	if (!isset($oRole)) {
 		return "Please select a Role: ";
 	} else {
-		return "<td></td><td><td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/delete.gif\" value=\"submit\" /></td>\n".
+		return "<td></td><td><td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/delete.gif\" value=\"submit\" border=\"0\"/></td>\n".
 		"<td align = right><a href=\"$default->rootUrl/control.php?action=removeRole\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" /></a></td>\n";
 	}
 }
