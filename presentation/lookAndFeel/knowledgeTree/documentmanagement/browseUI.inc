@@ -74,7 +74,7 @@ function renderCategoryResults($aResults) {
     } else {
         // else the first entry is the category name, so display the documents in the category
         // with full paths
-        $sToRender .= renderDocumentList($aResults["documents"], true);
+        $sToRender .= renderDocumentList($aResults["documents"], "This category contains no documents", true);
     }
     return $sToRender;
 }
@@ -120,7 +120,7 @@ function renderDocumentTypeResults($aResults) {
     } else {
         // else the first entry is the document type name, so display the documents in the document type
         // with full paths
-        $sToRender .= renderDocumentList($aResults["documents"], true);
+        $sToRender .= renderDocumentList($aResults["documents"], "This document type contains no documents", true);
     }
     return $sToRender;
 }
@@ -140,19 +140,19 @@ function renderFolderResults($aResults) {
     }
     
     $sToRender .= "<tr><td>&nbsp;</td></tr>";
-    $sToRender .= "<tr><td>" . renderDocumentList($aResults["documents"]) . "</td></tr>\n";
+    $sToRender .= "<tr><td>" . renderDocumentList($aResults["documents"], "This folder contains no documents") . "</td></tr>\n";
     
     return $sToRender;
 }
 
-function renderDocumentList($aDocuments, $bDisplayFullPath = false) {
+function renderDocumentList($aDocuments, $sNoDocumentsMessage, $bDisplayFullPath = false) {
     // loop through the files and display links
     if (count($aDocuments) > 0) {
         for ($i=0; $i<count($aDocuments); $i++) {
             $sToRender .= "<tr><td bgcolor=\"" . getColour($i) . "\">" . displayDocumentLink($aDocuments[$i], $bDisplayFullPath) . "</td></tr>";
         }
     } else {
-        $sToRender .= "<tr><td>This folder contains no documents</td></tr>";
+        $sToRender .= "<tr><td>$sNoDocumentsMessage</td></tr>";
     }
     return $sToRender;
 }
