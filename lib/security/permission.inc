@@ -15,8 +15,22 @@
 class Permission {
 	
 	/**
+	* Checks if the current user has write permission for a specific document.
+	* To have document write permission the user must satisfy ONE of the following conditions:
+	*	o have write permission for the folder in which the document resides
+	* 	o be assigned a role which has write permission for the document
+	*
+	* @param $iDocumentID		Primary key of document to check
+	*
+	* @return true is the current user has document write permission, false otherwise and set $_SESSION["errorMessage"]
+	*/	
+	function userHasDocumentWritePermission($iDocumentID) {
+		
+	}
+	
+	/**
 	* Checks if the current user has write permission for a specific folder
-	* To have write permission on a folder the user must satisfy ONE of the following conditions
+	* To have write permission on a folder the user must satisfy ONE of the following conditions:
 	*	o be in the system administrator group
 	*	o be in the unit administrator group for the unit to which the folder belongs
 	*	o belong to a group that has write access to the folder 
@@ -91,7 +105,7 @@ class Permission {
 	function userIsInUnitAdministratorGroup($iFolderID) {
 		global $lang_err_user_unitadmin_group, $default;
 		$sql = new Owl_DB();
-		$sql->query("SELECT * FROM " . $default->owl_group_folders_link_table ." AS GFL INNER JOIN " . $default->owl_groups_users_link_table . " as GUL ON GFL.group_id = GUL.group_id " .
+		$sql->query("SELECT * FROM " . $default->owl_group_folders_table ." AS GFL INNER JOIN " . $default->owl_groups_users_link_table . " as GUL ON GFL.group_id = GUL.group_id " .
 					"INNER JOIN " . $default->owl_groups_table . " AS G ON G.ID = GFL.group_id " .
 					"WHERE GFL.folder_id = " . $iFolderID . " " .
 					"AND GUL.user_id = " . $_SESSION["user_id"] . " " .
@@ -114,7 +128,7 @@ class Permission {
 	function userHasGroupWritePermissionForFolder($iFolderID) {
 		global $default, $lang_err_user_folder_write;
 		$sql = new Owl_DB();
-		$sql->query("SELECT * FROM " . $default->groups_folders_link = "groups_folders_link" . " WHERE folder_id = " . $iFolderID . " AND user_id = " . $_SESSION["user_id"] . " AND can_write = 1";
+		$sql->query("SELECT * FROM " . $default->owl_groups_folders_table . " WHERE folder_id = " . $iFolderID . " AND user_id = " . $_SESSION["user_id"] . " AND can_write = 1";
 		if ($sql->next_record()) {
 			return true;
 		}
@@ -132,7 +146,7 @@ class Permission {
 	function userHasGroupReadPermissionForFolder($iFolderID) {
 		global $default, $lang_err_user_folder_read;
 		$sql = new Owl_DB();
-		$sql->query("SELECT * FROM " . $default->owl_groups_folders_link_table = "groups_folders_link" . " WHERE folder_id = " . $iFolderID . " AND user_id = " . $_SESSION["user_id"] . " AND can_read = 1";
+		$sql->query("SELECT * FROM " . $default->owl_groups_folders_table = "groups_folders_link" . " WHERE folder_id = " . $iFolderID . " AND user_id = " . $_SESSION["user_id"] . " AND can_read = 1";
 		if ($sql->next_record()) {
 			return true;
 		}
@@ -150,7 +164,7 @@ class Permission {
 	function userIsInGroupID($iGroupID) {		
 		global $default, $lang_err_user_group;
 		$sql = new Owl_DB();
-		$sql->query("SELECT id FROM " . $default->owl_groups_users_link_table . " WHERE id = " $iGroupID . " AND user_id = " . $_SESSION["user_id"]);
+		$sql->query("SELECT id FROM " . $default->owl_groups_users_table . " WHERE id = " $iGroupID . " AND user_id = " . $_SESSION["user_id"]);
 		if ($sql->next_record()) {
 			return true;
 		}
@@ -168,7 +182,7 @@ class Permission {
 	function userIsInGroupName($sGroupName) {
 		global $default, $lang_err_user_group;
 		$sql = new Owl_DB();
-		$sql->query("SELECT id FROM " . $default->owl_groups_users_link_table . " AS GULT INNER JOIN " . $default->owl_groups_table . " AS G ON GULT.group_id = G.ID WHERE G.name = '" . $sGroupName . "' AND user_id = " . $_SESSION["user_id"]);
+		$sql->query("SELECT id FROM " . $default->owl_groups_users_table . " AS GULT INNER JOIN " . $default->owl_groups_table . " AS G ON GULT.group_id = G.ID WHERE G.name = '" . $sGroupName . "' AND user_id = " . $_SESSION["user_id"]);
 		if ($sql->next_record()) {
 			return true;
 		}
@@ -187,7 +201,7 @@ class Permission {
 	function userHasWriteRoleForFolder($iFolderID) {
 		global $default, $lang_err_user_role;	
 		$sql = new Owl_DB();
-		$sql->query("SELECT * FROM " . $default->owl_folders_user_links_table . " AS FURL INNER JOIN " . $default->owl_role_table . " AS R ON FURL.role_id = R.id WHERE folder_id = " . $iFolderID . " AND user_id = " . $_SESSION["user_id"] . " AND R.can_write = 1");
+		$sql->query("SELECT * FROM " . $default->owl_folders_user_table . " AS FURL INNER JOIN " . $default->owl_role_table . " AS R ON FURL.role_id = R.id WHERE folder_id = " . $iFolderID . " AND user_id = " . $_SESSION["user_id"] . " AND R.can_write = 1");
 		if ($sql->next_record()) {
 			return true;
 		}
@@ -205,7 +219,7 @@ class Permission {
 	function roleIDExists($iRoleID) {
 		global $default, $lang_err_role_not_exist;
 		$sql = new Owl_DB();
-		$sql->query("SELECT id FROM " . $default->owl_role_table . " WHERE id = " . $iRoleID;
+		$sql->query("SELECT id FROM " . $default->owl_roles_table . " WHERE id = " . $iRoleID;
 		if (sql->next_record()) {
 			return true;	
 		}
@@ -223,7 +237,7 @@ class Permission {
 	function roleNameExists($sRoleName) {
 		global $default, $lang_err_role_not_exist;
 		$sql = new Owl_DB();
-		$sql->query("SELECT id FROM " . $default->owl_role_table . " WHERE name = '" . $sRoleName . "'";
+		$sql->query("SELECT id FROM " . $default->owl_roles_table . " WHERE name = '" . $sRoleName . "'";
 		if (sql->next_record()) {
 			return true;	
 		}
@@ -242,7 +256,7 @@ class Permission {
 		global $default, $lang_database_error;
 		if (roleExists($sRoleName) {
 			$sql = new Owl_DB();
-			$sql->query("SELECT id FROM " . $default->owl_role_table . " WHERE name = '" . $sRoleName . "'";
+			$sql->query("SELECT id FROM " . $default->owl_roles_table . " WHERE name = '" . $sRoleName . "'";
 			sql->next_record();
 			return sql->f("id");	
 		}
