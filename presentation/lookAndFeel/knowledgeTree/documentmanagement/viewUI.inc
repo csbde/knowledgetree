@@ -460,7 +460,8 @@ function displayDependantDocumentButton($oDocument, $bEdit) {
 
 function displayPublishButton($oDocument, $bEdit) {
     // only display the publish button for unpublished documents	
-    if (DocumentCollaboration::documentIsPendingWebPublishing($oDocument->getID())) {      
+    if (!DocumentCollaboration::documentIsPublished($oDocument->getID()) && 
+    	!DocumentCollaboration::documentIsPendingWebPublishing($oDocument->getID())) {      
         // if there is collaboration
         if ($oDocument->hasCollaboration()) {
             // only display publish button if collaboration is complete and you're the last user in the collaboration process (or a sysadmin)
@@ -478,7 +479,11 @@ function displayPublishButton($oDocument, $bEdit) {
         	}
         }
     } else {
-    	$sDisabledText = "This document is already published.";
+    	if (DocumentCollaboration::documentIsPublished($oDocument->getID())) {
+    		$sDisabledText = "This document is already published.";
+    	} else if (DocumentCollaboration::documentIsPendingWebPublishing($oDocument->getID())) {
+    		$sDisabledText = "This document has been marked as pending publishing and the web publisher has been notified.";
+    	}
     }
 	return "<tr><td align=\"left\">"  . displayButton("viewDocument", "fDocumentID=" . $oDocument->getID() . "&fForPublish=1", "publish", $sDisabledText) . "</td></tr>\n";    
 }
