@@ -38,7 +38,7 @@ class Document {
     var $bIsCheckedOut;
 	/** comma delimited string of folder hierarch this document falls under */
 	var $sParentFolderIDs;
-	/** comma delimited string of folder names for hierarchy under which this document falls */
+	/** backlash deliminated path from file system root */
 	var $sFullPath;
 
     /**
@@ -201,13 +201,13 @@ class Document {
 	function generateParentFolderIDS($iFolderID) {
 		global $default;
 		//if the folder is not the root folder 
-		if ($iFolderID != 1) {
+		if ($iFolderID != 0) {
 			$sql = $default->db;
 			$sql->query("SELECT parent_id FROM $default->owl_folders_table WHERE ID = $iFolderID");
 			$sql->next_record();
 			return $this->generateParentFolderIDS($sql->f("parent_id")) . ",$iFolderID";
 		}
-		return $iFolderID;
+		return;
 		
 	}
 	
@@ -219,16 +219,13 @@ class Document {
 	function generateFullFolderPath($iFolderID) {
 		global $default;
 		//if the folder is not the root folder 
-		if ($iFolderID != 1) {
+		if ($iFolderID != 0) {
 			$sql = $default->db;
 			$sql->query("SELECT name, parent_id FROM $default->owl_folders_table WHERE ID = $iFolderID");
 			$sql->next_record();			
 			return $this->generateFullFolderPath($sql->f("parent_id")) . "\\" . stripslashes($sql->f("name"));
 		}
-		$sql = $default->db;
-		$sql->query("SELECT name FROM $default->owl_folders_table WHERE ID = $iFolderID");
-		$sql->next_record();
-		return stripslashes($sql->f("name"));
+		return;
 	}
 
     /**
@@ -242,7 +239,9 @@ class Document {
         if ($this->iId < 0) {
             $sql = $default->db;
 			$this->sParentFolderIDs = $this->generateParentFolderIDS($this->getFolderID());
-			$this->sFullPath = $this->generateFullFolderPath($this->getFolderID());
+			$this->sFullPath = substr($this->sFullPath, 1, strlen($this->sFullPath));
+			$this->sParentFolderIDs = $this->generateParentFolderIDS($this->iParentID);
+			$this->sParentFolderIDs = substr($this->sParentFolderIDs, 1, strlen($this->sParentFolderIDs));
             $result = $sql->query("INSERT INTO " . $default->owl_documents_table . " (document_type_id, name, filename, size, creator_id, modified, description, mime_id, folder_id, major_version, minor_version, is_checked_out, parent_folder_ids, full_path) " .
                                   "VALUES (" . $this->iDocumentTypeID . ", '" . addslashes($this->sName) . "', '" . addslashes($this->sFileName) . "', $this->iSize, $this->iCreatorID, '" . getCurrentDateTime() . "', '" . addslashes($this->sDescription) . "', $this->iMimeTypeID, $this->iFolderID, $this->iMajorVersion, $this->iMinorVersion, " . ($this->bIsCheckedOut ? 1 : 0) . ", '" . $this->sParentFolderIDs . "','" . addslashes($this->sFullPath) . "')");
             if ($result) {
@@ -280,8 +279,8 @@ class Document {
                                   "minor_version =  $this->iMinorVersion, ";
 								  if ($aForMove) {
 									  //only update these if the document is being moved
-									  $sQuery .= "parent_folder_ids = '" . addslashes($this->generateParentFolderIDS($this->iFolderID)) . "'," .
-									  			"full_path = '" . addslashes($this->generateFullFolderPath($this->iFolderID)) . "', ";
+									  $sQuery .= "parent_folder_ids = '" . addslashes(substr($this->sFullPath, 1, strlen($this->sFullPath))) . "'," .
+									  			"full_path = '" . addslashes($this->sParentFolderIDs, 1, strlen($this->sParentFolderIDs)) . "', ";
 								  }					
                                   $sQuery .= "is_checked_out = " . ($this->bIsCheckedOut ? "1" : "0") . " " .								  			  
                                   			"WHERE id = $this->iId";
