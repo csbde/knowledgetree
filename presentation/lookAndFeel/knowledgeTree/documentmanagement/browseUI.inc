@@ -37,15 +37,14 @@ require_once("$default->uiDirectory/foldermanagement/addFolderUI.inc");
  * @param string the selected browse by option
  */
 function renderBrowseTypeSelect($sBrowseType) {
-	global $browse_view_documents_by_heading, $browse_view_documents_by_folder, $browse_view_documents_by_category, $browse_view_documents_by_doctype;
     // TODO: write function for onChange that checks if the new value
     return "<span class=\"browseTypeSelect\">\n
-            \t" . $browse_view_documents_by_heading . ": <input type=\"radio\" name=\"fBrowseType\" onclick=\"document.MainForm.submit()\" value=\"folder\"" .
-                               ((($sBrowseType=="folder") || (strlen($sBrowseType)==0)) ? " checked=\"checked\"" : "") . "/> " . $browse_view_documents_by_folder ."\n" .
+            \t" . _("View documents by") . ": <input type=\"radio\" name=\"fBrowseType\" onclick=\"document.MainForm.submit()\" value=\"folder\"" .
+                               ((($sBrowseType=="folder") || (strlen($sBrowseType)==0)) ? " checked=\"checked\"" : "") . "/> " . _("Folders") ."\n" .
                                "<input type=\"radio\" name=\"fBrowseType\" onclick=\"document.MainForm.submit()\" value=\"category\"" .
-                               (($sBrowseType=="category") ? " checked=\"checked\"" : "") . "/> " . $browse_view_documents_by_category . "\n" .
+                               (($sBrowseType=="category") ? " checked=\"checked\"" : "") . "/> " . _("Category") . "\n" .
                                "<input type=\"radio\" name=\"fBrowseType\" onclick=\"document.MainForm.submit()\" value=\"documentType\"" .
-                               (($sBrowseType=="documentType") ? " checked=\"checked\"" : "") . "/> " . $browse_view_documents_by_doctype . "\n</span>";
+                               (($sBrowseType=="documentType") ? " checked=\"checked\"" : "") . "/> " . _("Document Type") . "\n</span>";
 }
 
 // <category browse helper methods>
@@ -193,7 +192,7 @@ function renderDocumentTypeResults($aResults) {
  * @param array the browse result objects
  */
 function renderFolderResults($aResults, $bTemplateBrowsing = false) {
-    global $default, $browse_no_sub_folders, $browse_no_documents, $browse_no_document_permission;
+    global $default;
     $sToRender = "";
 
     // now loop through the rest of the folders and display links
@@ -217,10 +216,13 @@ function renderFolderResults($aResults, $bTemplateBrowsing = false) {
             $sToRender .= "</tr>\n";
         }
     } else {
-        $sToRender .= "<tr><td colspan=\"5\">" . $browse_no_sub_folders . "</td></tr>";
+        $sToRender .= "<tr><td colspan=\"5\">" . _("This folder contains no sub folders") . "</td></tr>";
     }
         
-    $sToRender .= "<tr><td>" . renderDocumentList($aResults, $browse_no_documents, $browse_no_document_permission, false, $bTemplateBrowsing) . "</td></tr>\n";
+    $sToRender .= "<tr><td>" . renderDocumentList($aResults, _("This folder contains no documents"), 
+    											  _("You don't have access to the documents in this folder"), 
+    											  false, $bTemplateBrowsing) . 
+   				  "</td></tr>\n";
     
     return $sToRender;
 }
@@ -332,12 +334,12 @@ function appendCounts($aFolderPath, $iFolderCount, $iDocumentCount) {
  */
 
 function renderPage($aResults, $sBrowseType, $sSortBy, $sSortDirection, $bTemplateBrowsing = false) {
-    global $default, $browse_collection_heading;
+    global $default;
     
 	$sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
 	$sTDBGColour = $default->siteMap->getSectionColour($sSectionName, "td");    
 
-    $sToRender = renderHeading($browse_collection_heading);
+    $sToRender = renderHeading(_("Browse collection"));
     
     $sToRender .= "<table border=\"0\" cellpadding=\"5\" width=\"100%\"><tr><td bgcolor=\"$sTDBGColour\">"; 
     switch ($sBrowseType) {

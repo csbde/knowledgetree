@@ -68,18 +68,18 @@ if ($loginAction == "loginForm") {
     <br><br>
     <table>\n
     <form name=\"loginForm\" action=\"" . $_SERVER["PHP_SELF"] . "\" method=\"post\">
-    <tr><td>Please enter your details below to login</td></tr>
+    <tr><td>" . _("Please enter your details below to login") . "</td></tr>
     <tr><td></td></tr>
     <tr><td><font color=\"red\">" . sanitize($errorMessage) . "</font><tr><td>
-    \t<tr><td>Username:</td></tr>
+    \t<tr><td>" . _("Username") . ":</td></tr>
     \t<tr><td><input type=\"text\" name=\"fUserName\" size=\"35\"></td></tr>
-    \t<tr><td>Password:</td></tr>
+    \t<tr><td>" . _("Password") . ":</td></tr>
     <tr><td><input type=\"password\" name=\"fPassword\" size=\"35\" onKeyPress=\"return submitenter(this,event)\">
     </td></tr>
     <input type=\"hidden\" name=\"redirect\" value=\"$redirect\"/>
     <input type=\"hidden\" name=\"loginAction\" value=\"login\">\n
     <tr align=\"right\"><td><input type=\"image\" src=\"$default->graphicsUrl/icons/login.jpg\" border=\"0\"></td></tr>\n
-    <tr><td><font size=\"1\">Version: " . $default->system->get("knowledgeTreeVersion") . "</font></td></tr>
+    <tr><td><font size=\"1\">" . _("Version") . ": " . $default->system->get("knowledgeTreeVersion") . "</font></td></tr>
     </table>
     </center>
     </body>
@@ -138,18 +138,18 @@ if ($loginAction == "loginForm") {
             break;
             // login disabled
         case 2:
-            $url = $url . "&errorMessage=" . urlencode("Account has been DISABLED, contact the System Adminstrator");
+            $url = $url . "&errorMessage=" . urlencode(_("Account has been DISABLED, contact the System Adminstrator"));
             break;
             // too many sessions
         case 3 :
-            $url = $url . "&errorMessage=" . urlencode("Maximum sessions for user reached.<br>Contact the System Administrator");
+            $url = $url . "&errorMessage=" . urlencode(_("Maximum sessions for user reached.<br>Contact the System Administrator"));
             break;
             // not a unit user
         case 4 :
-            $url = $url . "&errorMessage=" . urlencode("Not unit user- contact an Administrator");
+            $url = $url . "&errorMessage=" . urlencode(_("Not unit user- contact an Administrator"));
             break;            
         default :
-            $url = $url . "&errorMessage=" . urlencode("Login failure");
+            $url = $url . "&errorMessage=" . urlencode(_("Login failure"));
         }
     } else {
         // didn't receive any login parameters, so redirect login form
