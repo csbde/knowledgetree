@@ -85,7 +85,7 @@ if (checkSession()) {
 					//go back to the document view page
 					redirect("$default->rootUrl/control.php?action=viewDocument&fDocumentID=$fDocumentID");                    
 				} else {
-					//the may have been unassigned and no new user assigned
+					//the user may have been unassigned and no new user assigned
 					//if this is true, delete the folder_user_role_link
 					$oFolderUserRole = & FolderUserRole::getFromFolderCollaboration($fFolderCollaborationID, $fDocumentID);
 					if (!($oFolderUserRole === false)) {
@@ -127,9 +127,10 @@ if (checkSession()) {
 
 function getFolderCollaborationArray($fFolderCollaborationID, $fDocumentID) {
 	global $default;
-	$sQuery = "SELECT GFL.group_id AS group_id, GFL.folder_id AS folder_id, GFL.precedence AS precedence, GFL.role_id, U.id AS user_id " .
+	$sQuery = "SELECT GFL.group_id AS group_id, GFL.folder_id AS folder_id, GFL.precedence AS precedence, GFL.role_id, COALESCE(U.id, U2.id) AS user_id " .
 			"FROM $default->owl_groups_folders_approval_table AS GFL LEFT OUTER JOIN folders_users_roles_link AS FURL ON FURL.group_folder_approval_id = GFL.id AND FURL.document_id = $fDocumentID " .
 			"LEFT OUTER JOIN users AS U ON FURL.user_id = U.id " .
+			"LEFT OUTER JOIN users AS U2 ON GFL.user_id = U2.id " .
 			"WHERE GFL.id = $fFolderCollaborationID";
 	$sql = $default->db;
 	$sql->query($sQuery);
