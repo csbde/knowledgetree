@@ -3,6 +3,7 @@
 require_once("$default->fileSystemRoot/lib/subscriptions/SubscriptionManager.inc");
 require_once("$default->fileSystemRoot/lib/web/WebDocument.inc");
 require_once("$default->fileSystemRoot/lib/links/link.inc");
+require_once("$default->fileSystemRoot/lib/documentmanagement/DependantDocumentInstance.inc");
 
 /**
  * $Id$
@@ -96,4 +97,17 @@ class Dashboard {
 	    }
 	    return $aDocumentList;
 	}
+	
+	function getDependantDocuments() {
+		global $default;
+		$sQuery = "SELECT id FROM $default->owl_dependant_document_instance_table WHERE user_id = " . $this->iUserID;
+		$aDocumentList = array();
+		$sql = $default->db;
+		$sql->query($sQuery);
+		while ($sql->next_record()) {
+			$aDocumentList[] = & DependantDocumentInstance::get($sql->f("id"));
+		}
+		return $aDocumentList;	
+	}
+	
 }
