@@ -87,6 +87,8 @@ class Owl_DB extends DB_Sql {
         if (isset($sOrderByClause)) {
             $this->sQuery .= "ORDER BY " . $sOrderByClause . " ";
         }
+		
+		$this->query($this->sQuery);
         
     }
     
@@ -126,7 +128,8 @@ class Owl_DB extends DB_Sql {
             $this->sQuery .= "ORDER BY " . $sOrderByClause . " ";
         }
         
-        $this->sQuery .= "LIMIT " . $iOffset . ", " . $iLimit;      
+        $this->sQuery .= "LIMIT " . $iOffset . ", " . $iLimit;
+		$this->query($this->sQuery);
     }
     
     /**

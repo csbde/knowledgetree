@@ -1,5 +1,6 @@
 <?php
 
+require_once ("../../config/environment.php");
 require_once ("$default->owl_root_url/lib/owl.lib.php");
 
 /**
@@ -110,14 +111,13 @@ class PatternTableSqlQuery {
 		}
 		$sToRender .= "</tr>\n";
 		
-		$oDBConnection = & new Owl_DB();
-		$oDBConnection->createSQLQueryWithOffset($this->sTableName, $this->aColumns, $this->iStartIndex, $this->iResultsToDisplay);
-		$oQueryResults = & $oDBConnection->getQueryResults();
+		$sql = & new Owl_DB();
+		$sql->createSQLQueryWithOffset($this->sTableName, $this->aColumns, $this->iStartIndex, $this->iResultsToDisplay);
 		
-		
+				
 		$iDisplayed = 0;
-		//limit the result set displayed
-		while(($aRow = mysql_fetch_row($oQueryResults)) && ($iDisplayed < $this->iResultsToDisplay)) {
+		//limit the result set displayed		
+		while(($aRow = $sql->next_record()) && ($iDisplayed < $this->iResultsToDisplay)) {
 			$sToRender .= "<tr>";			
 			
 			//get the value for each column in the row
@@ -164,13 +164,13 @@ class PatternTableSqlQuery {
 		$sToRender .= "<tr>\n";		
 		
 		/* Display only the next button */
-		if (($this->iStartIndex + $this->iResultsToDisplay) < $oDBConnection->getLastQueryResultCount() && $this->iStartIndex == 0) {
+		if (($this->iStartIndex + $this->iResultsToDisplay) < $sql->getLastQueryResultCount() && $this->iStartIndex == 0) {
 			$sToRender .= "<td>";
 			$sToRender .= ("<a href=\"test.php?fStartIndex=" . ($this->iStartIndex +  $this->iResultsToDisplay) . "\">Next</a>");
 			$sToRender .= "</td>\n";
 		}
 		/* Display both the next and the previous buttons */		
-		else if (($this->iStartIndex + $this->iResultsToDisplay) < $oDBConnection->getLastQueryResultCount() && $this->iStartIndex > 0) {
+		else if (($this->iStartIndex + $this->iResultsToDisplay) < $sql->getLastQueryResultCount() && $this->iStartIndex > 0) {
 			$sToRender .= "<td>";
 			$sToRender .= ("<a href=\"test.php?fStartIndex=" . ($this->iStartIndex +  $this->iResultsToDisplay) . "\">Next</a>");
 			$sToRender .= "</td>";
