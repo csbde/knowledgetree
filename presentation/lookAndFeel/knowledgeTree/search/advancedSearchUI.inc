@@ -21,7 +21,6 @@ function getMetaData($aMetaTagIDs) {
 	
 	while ($sql->next_record()) {
 		$sToRender .= "<tr><td><input type=\"checkbox\" " . wasSelected($sql->f("id"), $aMetaTagIDs) . " name=\"f_adv_" . $sql->f("name") . "\" value=\"" . $sql->f("id") . "\"></td><td>" . $sql->f("name") . "</td></tr>\n";		
-		
 	}
 	
 	$sToRender .= "<input type=\"hidden\" name=\"adv_search_end\" value=\"\" />\n";
@@ -35,7 +34,8 @@ function getSearchPage($sSearchString = "", $aMetaTagIDs = array()) {
 	$sToRender = "<table>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>Search text: <input type=\"text\" size=\"60\" name=\"fSearchString\" value=\"$sSearchString\" /></td>\n";
-	$sToRender .= "<td><input type=\"image\" src=\"$default->graphicsUrl/search.gif\" /></td>\n";
+	//$sToRender .= "<td><input type=\"button\" src=\"$default->graphicsUrl/search.gif\" value=\"search\" onClick=\"validateAdvancedSearchText()\"/></td>\n";
+	$sToRender .= "<td><input type=\"button\" value=\"search\" onClick=\"validateAdvancedSearch()\"/></td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>&nbsp</td>\n";
@@ -48,11 +48,40 @@ function getSearchPage($sSearchString = "", $aMetaTagIDs = array()) {
 	$sToRender .= "</tr>\n";	
 	$sToRender .= "</table>\n";
 	
-	return $sToRender;
+	return $sToRender . getSearchValidationJavaScript();;
 }
 
-function getSearchResults($sFolderIDs,$sSQLSearchString, $iStartIndex) {
+function getSearchResults($sSQLSearchString, $iStartIndex, $sSearchText, $sMetaTagIDs) {
+	global $default;	 
+	$sQuery = "SELECT DISTINCT '" . "$default->graphicsUrl/widgets/dfolder.gif" . "' AS folder_image_url, F.id folder_id, D.id document_id, D.name AS document_name " .
+			"FROM $default->owl_documents_table AS D INNER JOIN $default->owl_folders_table AS F ON D.folder_id = F.id " .
+			"WHERE D.id IN ($sSQLSearchString)" .	
+			"ORDER BY D.name ASC";
 	
+	$aColumns = array("folder_image_url", "document_name");
+	$aColumnTypes = array(4,3);
+	$aColumnHeaders = array("","Document");
+	$aLinkURLs = array("$default->rootUrl/control.php?action=browse","$default->rootUrl/control.php?action=viewDocument");
+	$aDBQueryStringColumns = array("document_id","folder_id");
+	$aQueryStringVariableNames = array("fDocumentID", "fFolderID");
+	
+	
+	$oPatternBrowse = & new PatternBrowseableSearchResults($sQuery, 2, $aColumns, $aColumnTypes, $aColumnHeaders, $aLinkURLs, $aDBQueryStringColumns, $aQueryStringVariableNames);
+	$oPatternBrowse->setStartIndex($iStartIndex);
+	return $oPatternBrowse->render() . getSearchVariablesHtml($sSearchText, $sMetaTagIDs);
+}
+
+function getSearchValidationJavaScript() {
+	$sToRender = "\n\n<SCRIPT LANGUAGE=\"javascript\">\n ";
+	$sToRender .= "<!--\n";		
+	$sToRender .= "function validateAdvancedSearch() {\n";	
+	$sToRender .= "\tif (!(validRequired(document.MainForm.fSearchString, 'Search text'))) {\n";
+	$sToRender .= "\t\treturn;\n\t}\n";
+	$sToRender .= "\tdocument.MainForm.submit();\n}\n";
+	$sToRender .= "-->\n";
+	$sToRender .= "</SCRIPT>\n\n";
+	return $sToRender;
+
 }
 
 function wasSelected($iID, $aMetaTagIDs) {
@@ -60,6 +89,18 @@ function wasSelected($iID, $aMetaTagIDs) {
 		return "CHECKED";
 	}	
 	return "";
+}
+
+function getSearchVariablesHtml($sSearchText, $sMetaTagIDs) {
+	$aMetaTagIDs = explode(",", $sMetaTagIDs);
+	$sToRender = "\n\n<input type=\"hidden\" name=\"fSearchString\" value=\"$sSearchText\" />\n";
+	$sToRender .= "<input type=\"hidden\" name=\"adv_search_start\" value=\"\" />\n";
+	for ($i = 0; $i < count($aMetaTagIDs); $i++) {
+		$sToRender .= "<input type=\"hidden\" name=\"fMetaTag_$i\" value=\"" . $aMetaTagIDs[$i] . "\" />\n";
+		
+	}
+	$sToRender .= "<input type=\"hidden\" name=\"adv_search_end\" value=\"\" />\n";
+	return $sToRender;
 }
 
 ?>
