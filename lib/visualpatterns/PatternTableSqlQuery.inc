@@ -52,7 +52,7 @@ class PatternTableSqlQuery {
 	/** message that will be displayed if the table is empty*/
 	var $sEmptyTableMessage;
 	/** Picture path */
-	var $sPicPath;
+	var $sChkPicPath = "/graphics/widgets/checked.gif";
 	
 	var $bIncludeBorder = false;
 				
@@ -92,12 +92,12 @@ class PatternTableSqlQuery {
 		$this->bIncludeBorder = $bNewValue;
 	}
 	
-	function setPicPath($sNewPicPath) {
-		$this->sPicPath = $sNewPicPath;	
+	function setChkPicPath($sNewChkPicPath) {
+		$this->sChkPicPath = $sNewChkPicPath;	
 	}
 	
-	function getPicPath() {
-		return $this->sPicPath ;	
+	function getChkPicPath() {
+		return $this->sChkPicPath ;	
 	}
 	
 	/**
@@ -156,7 +156,7 @@ class PatternTableSqlQuery {
 								if ($sql->f($this->aColumns[$i]) != null) {									
 									$value = $sql->f($this->aColumns[$i]);
 									if ($value) { 
-										$sToRender .= "<img src='" . $this->sPicPath . "'>";
+										$sToRender .= "<img src='" . $this->sChkPicPath . "'>";
 									}
 									$sToRender .= "&nbsp;</td>";	
 								} else {
