@@ -16,7 +16,7 @@ function startTable($border, $width) {
 }
 
 function tableCaption($sCaption) {
-	return "<caption><b>$sCaption</b></caption>\n";
+    return "<caption><b>$sCaption</b></caption>\n";
 }
 
 function stopTable() {
@@ -30,8 +30,8 @@ function tableRow($align, $bgcolor, $html) {
 
 function tableHeading($cssClassName, $colspan, $text) {
     return "<th class=\"$cssClassName\" colspan=\"$colspan\">\n
-            $text\n
-            </th>\n";
+           $text\n
+           </th>\n";
 }
 
 function tableData($html, $iColspan = 1) {
@@ -47,16 +47,11 @@ function startTableRowCell() {
 }
 
 function textInput($sId, $sValue) {
-	return "<input type=text id=\"$sId\" value=\"$sValue\" />\n";
+    return "<input type=text id=\"$sId\" value=\"$sValue\" />\n";
 }
 
 function endTableRowCell() {
     return "</td></tr>\n";
-}
-
-function generateLink($sTargetPage, $sQueryString, $sLinkText) {
-    $sQueryStringDelimiter = (strstr($sTargetPage, "?") ? "&" : "?");
-    return "<a href=\"$sTargetPage$sQueryStringDelimiter$sQueryString\">$sLinkText</a>\n";
 }
 
 function generateImage($sImageSource) {
@@ -64,35 +59,35 @@ function generateImage($sImageSource) {
 }
 
 function getNumberStringValidationJavaScript() {
-	return "<script language=\"JavaScript\">\n".
-				"<!--\n" .
-				"function validateString(field, msg, min, max) {\n" .
-					"\tif (!min) { min = 1 }\n" .
-					"\tif (!max) { max = 65535 }\n\n" .
-	
-					"\tif (!field.value || field.value.length < min || field.value.max > max) {\n" .
-					"\t\talert(msg);\n" .
-					"\t\tfield.focus();\n" .
-					"\t\tfield.select();\n" .
-					"\t\treturn false;\n" .
-					"\t}\n" .
-				"\treturn true;\n" .
-				"}\n\n" .
-				
-				"function validateNumber(field, msg, min, max) {\n" .
-					"\tif (!min) { min = 0 }\n" .
-					"\tif (!max) { max = 255 }\n" .
-					
-					"\tif ( (parseInt(field.value) != field.value) || field.value.length < min || field.value.length > max) {\n" .
-						"\t\talert(msg);\n" .
-						"\t\tfield.focus();\n" .
-						"\t\tfield.select();\n" .
-						"\t\treturn false;\n" .
-					"\t}\n" .
-				"\treturn true;\n" .
-				"}\n" .
-				"//-->\n" .
-			"</script>\n";
+    return "<script language=\"JavaScript\">\n".
+           "<!--\n" .
+           "function validateString(field, msg, min, max) {\n" .
+           "\tif (!min) { min = 1 }\n" .
+           "\tif (!max) { max = 65535 }\n\n" .
+
+           "\tif (!field.value || field.value.length < min || field.value.max > max) {\n" .
+           "\t\talert(msg);\n" .
+           "\t\tfield.focus();\n" .
+           "\t\tfield.select();\n" .
+           "\t\treturn false;\n" .
+           "\t}\n" .
+           "\treturn true;\n" .
+           "}\n\n" .
+
+           "function validateNumber(field, msg, min, max) {\n" .
+           "\tif (!min) { min = 0 }\n" .
+           "\tif (!max) { max = 255 }\n" .
+
+           "\tif ( (parseInt(field.value) != field.value) || field.value.length < min || field.value.length > max) {\n" .
+           "\t\talert(msg);\n" .
+           "\t\tfield.focus();\n" .
+           "\t\tfield.select();\n" .
+           "\t\treturn false;\n" .
+           "\t}\n" .
+           "\treturn true;\n" .
+           "}\n" .
+           "//-->\n" .
+           "</script>\n";
 }
 
 ?>
