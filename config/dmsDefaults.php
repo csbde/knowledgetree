@@ -79,6 +79,8 @@ $default->owl_links_table = "links";
 $default->owl_metadata_table = "metadata_lookup";
 // Table with mime info
 $default->owl_mime_table = "mime_types";
+// dashboard news table
+$default->owl_news_table = "news";
 // organisation information
 $default->owl_organisations_table = "organisations_lookup";
 // stores role information (name and access)
