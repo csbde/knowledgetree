@@ -162,7 +162,7 @@ $default->siteMap->addPage("addDocument", "/presentation/lookAndFeel/knowledgeTr
 $default->siteMap->addPage("modifyDocumentRouting", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/collaborationBL.php", "Manage Documents", User, "");
 $default->siteMap->addPage("modifyDocument", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/modifyBL.php", "Manage Documents", User, "");
 $default->siteMap->addPage("addFolder", "/presentation/lookAndFeel/knowledgeTree/foldermanagement/addFolderBL.php", "Manage Documents", User, "Add A Folder");
-$default->siteMap->addPage("editFolder", "/presentation/lookAndFeel/knowledgeTree/folderManagement/editBL.php", "Manage Documents", UnitAdmin, "Modify Folder Properties", false);
+$default->siteMap->addPage("editFolder", "/presentation/lookAndFeel/knowledgeTree/folderManagement/editBL.php", "Manage Documents", UnitAdmin, "Modify Folder Properties");
 $default->siteMap->addPage("deleteFolder", "/presentation/documentmanagement/deleteFolder.php?fFolderID=", "Manage Documents", UnitAdmin, "Delete A Folder", false);
 $default->siteMap->addPage("moveFolder", "/presentation/documentmanagement/moveFolder.php", "Manage Documents", UnitAdmin, "Move A Folder", false);
 $default->siteMap->addPage("modifyFolderCollaboration", "/presentation/lookAndFeel/knowledgeTree/foldermanagement/collaborationBL.php", "Manage Documents", User, "", false);
@@ -222,9 +222,10 @@ $default->siteMap->addPage("scratchPad", "/tests/scratchPad.php", "Tests", Guest
 $default->siteMap->addPage("sitemap", "/tests/session/SiteMap.php", "Tests", Guest, "sitemap", false);
 $default->siteMap->addPage("documentBrowserTest", "/tests/documentmanagement/DocumentBrowser.php", "Tests", Guest, "test the document browser", false);
 $default->siteMap->addPage("scroll", "/tests/scroll/textScrollTest.php", "Tests", Guest, "test scrolling", false);
-$default->siteMap->addPage("folderSub", "/tests/subscriptions/folderSubscription.php", "Tests", Guest, "folder subscription unit test", false);
+$default->siteMap->addPage("subTest", "/tests/subscriptions/subscription.php", "Tests", Guest, "subscription unit test", false);
 $default->siteMap->addPage("documentSub", "/tests/subscriptions/documentSubscription.php", "Tests", Guest, "document subscription unit test", false);
 $default->siteMap->addPage("subManager", "/tests/subscriptions/subscriptionManager.php", "Tests", Guest, "manage subscription unit test", false);
+$default->siteMap->addPage("subEngine", "/tests/subscriptions/subscriptionEngine.php", "Tests", Guest, "subscription firing unit test", false);
 $default->siteMap->addPage("auth", "/tests/authentication/authentication.php", "Tests", Guest, "authentication unit test", false);
 
 // default requires
