@@ -440,14 +440,14 @@ class SiteMap {
             $results = array();
             // need to loop through all (groupName, page) arrays in this section
             foreach ($this->aSiteMap[$sSectionName] as $requiredAccess => $pages) {
-                // don't need to check the permissions here, when the controller tries to
-                // retrieve the page from the action, the perms will be checked
-                //$default->log->debug("Sitemap::getDefaultAction: (section=$sectionName, reqGrp=$requiredGroupName); pages=" . arrayToString($pages));
-                foreach ($pages as $action => $pageArray) {
-                    //$default->log->debug("Sitemap::getDefaultAction: action=$action; pageArray" . arrayToString($pageArray));
-                    if ($pageArray["default"] && $pageArray["enabled"]) {
-                        return $action;
+                if ($this->hasPermission($requiredAccess)) {
+                    foreach ($pages as $action => $pageArray) {
+                        if ($pageArray["default"] && $pageArray["enabled"]) {
+                            return $action;
+                        }
                     }
+                } else {
+                    return "";
                 }
             }
         } else {
