@@ -115,11 +115,13 @@ function renderNonEditableDocumentRouting($oDocument) {
 }
 
 function getEditPage($oDocument) {
+	global $default;
 	$sToRender = renderDocumentPath($oDocument) . "\n<br>\n"; 
 	$sToRender .= "<table border = 0>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>\n";
-		$sToRender .= "\t<table border = 0 width = 280>\n";
+		//$sToRender .= "\t<table border = 0 width = 280>\n";
+		$sToRender .= "\t<table border = 0>\n";
 		$sToRender .= "\t<tr width>\n";
 		$sToRender .= "\t\t<td>" . wrapInTable(renderDocumentData($oDocument)) . "</td>\n";
 		//$sToRender .= "\t\t<td>" . renderGenericDocumentMetaData($oDocument) . "</td>\n";
@@ -134,7 +136,8 @@ function getEditPage($oDocument) {
 		$sToRender .= "\t</table>\n";
 	$sToRender .= "</td>\n";
 	$sToRender .= "<td valign=top>\n";
-		$sToRender .= "\t<table border = 0, width = 230>\n";
+		//$sToRender .= "\t<table border = 0, width = 230>\n";
+		$sToRender .= "\t<table border = 0>\n";
 		$sToRender .= "\t<tr>\n";
 		$sToRender .= "\t\t<td>" . wrapInTable(renderEditableDocumentRouting($oDocument)) . "</td>\n";
 		//$sToRender .= "\t\t<td>" . renderDocumentRouting($oDocument) . "</td>\n";
@@ -147,6 +150,7 @@ function getEditPage($oDocument) {
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td><input type=\"submit\" value=\"Edit\"></td>\n";
 	$sToRender .= "<td><a href=\"" . $_SERVER["PHP_SELF"] . "?fDocumentID=" . $oDocument->getID() . "&fForDownload=1\">Download</a></td>\n";
+	$sToRender .= "<td><a href=\"$default->owl_root_url/control.php?action=emailDocument&fDocumentID=" . $oDocument->getID() . "\">Email link</a></td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
 		
@@ -154,6 +158,7 @@ function getEditPage($oDocument) {
 }
 
 function getViewPage($oDocument) {
+	global $default;
 	$sToRender = renderDocumentPath($oDocument) . "\n<br>\n"; 
 	$sToRender .= "<table border = 0>\n";
 	$sToRender .= "<tr>\n";
@@ -185,6 +190,7 @@ function getViewPage($oDocument) {
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr>\n";	
 	$sToRender .= "<td><a href=\"" . $_SERVER["PHP_SELF"] . "?fDocumentID=" . $oDocument->getID() . "&fForDownload=1\">Download</a></td>\n";
+	$sToRender .= "<td><a href=\"$default->owl_root_url/control.php?action=emailDocument&fDocumentID=" . $oDocument->getID() . "\">Email link</a></td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
 		
