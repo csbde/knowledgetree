@@ -46,10 +46,11 @@ if (checkSession()) {
     $oPatternCustom = & new PatternCustom();
     
 	if (isset($fFolderID)) {
-		if (Permission::userHasFolderWritePermission($fFolderID)) {
+		$oFolder = Folder::get($fFolderID);
+		if (Permission::userHasFolderWritePermission($oFolder)) {
 			if (isset($fDeleteConfirmed)) {
 				// deletion of folder is confirmed
-				$oFolder = Folder::get($fFolderID);
+				
 				if (isset($oFolder)) {
                     // check if there are any documents or folders in this folder
                     

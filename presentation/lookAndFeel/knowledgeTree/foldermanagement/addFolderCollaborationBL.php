@@ -33,12 +33,13 @@ require_once("../../../../config/dmsDefaults.php");
 
 if (checkSession()) {
 	if (isset($fFolderID)) {
+		$oFolder = Folder::get($fFolderID);
 		//if a folder has been selected
 		include_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
 		include_once("$default->fileSystemRoot/lib/security/Permission.inc");
         include_once("$default->fileSystemRoot/lib/users/User.inc");
         require_once("$default->fileSystemRoot/presentation/Html.inc");
-		if (Permission::userHasFolderWritePermission($fFolderID)) {
+		if (Permission::userHasFolderWritePermission($oFolder)) {
 			//can only create new collaboration steps if the user has folder write permission
 			if (isset($fForStore)) {
 				//attempt to create the new folder collaboration entry

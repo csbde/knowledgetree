@@ -181,7 +181,8 @@ function getPage($iFolderID, $iDocumentTypeID, $iDependantDocumentID = null, $sM
 		
 	} else {
 		// only allow document type choosing if the user has write permission
-		if (Permission::userHasFolderWritePermission($iFolderID)) {
+		$oFolder = Folder::get($iFolderID);
+		if (Permission::userHasFolderWritePermission($oFolder)) {
 			$sToRender .= getDocumentType($iFolderID, $iDocumentTypeID, $iDependantDocumentID);
 			$sActionButtons .= generateControllerLink("browse", "fFolderID=$iFolderID", "<img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"/>");
 			$sActionButtons .= "<input type=\"image\" src=\"$default->graphicsUrl/widgets/next.gif\" border=\"0\"/>";			

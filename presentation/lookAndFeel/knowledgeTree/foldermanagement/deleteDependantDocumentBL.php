@@ -43,8 +43,8 @@ if (checkSession()) {
 		require_once("$default->fileSystemRoot/lib/visualpatterns/PatternListBox.inc");
 		require_once("deleteDependantDocumentUI.inc");	
 	
-	
-		if (Permission::userHasFolderWritePermission($fFolderID)) {
+	 	$oFolder = Folder::get($fFolderID);
+		if (Permission::userHasFolderWritePermission($oFolder)) {
 			//user has permission to alter folder contents
 			if (isset($fForDelete)) {
 				$oDependantDocumentTemplate = DependantDocumentTemplate::get($fDependantDocumentTemplateID);

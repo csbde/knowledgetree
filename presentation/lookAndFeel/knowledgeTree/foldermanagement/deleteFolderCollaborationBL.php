@@ -41,7 +41,9 @@ if (checkSession()) {
         include_once("$default->fileSystemRoot/lib/groups/Group.inc");
         include_once("$default->fileSystemRoot/lib/roles/Role.inc");
         require_once("$default->fileSystemRoot/presentation/Html.inc");
-        if (Permission::userHasFolderWritePermission($fFolderID)) {
+        
+        $oFolder = Folder::get($fFolderID);
+        if (Permission::userHasFolderWritePermission($oFolder)) {
             //can only delete new collaboration steps if the user has folder write permission
             if (isset($fForDelete)) {
                 $oFolderCollaboration = & FolderCollaboration::get($fFolderCollaborationID);

@@ -38,7 +38,8 @@ if (checkSession()) {
 	
 	$oPatternCustom = & new PatternCustom();
 	
-	if (Permission::userHasFolderWritePermission($fFolderID)) {
+	$oFolder = Folder::get($fFolderID);
+	if (Permission::userHasFolderWritePermission($oFolder)) {
 		//user has permission to delete
 		if (isset($fFolderDocTypeID)) {
 			//the required variables exist

@@ -36,8 +36,8 @@ if (checkSession()) {
     require_once("addFolderDocTypeUI.inc");
 	
 	$oPatternCustom = & new PatternCustom();
-	
-	if (Permission::userHasFolderWritePermission($fFolderID)) {
+	$oFolder = Folder::get($fFolderID);
+	if (Permission::userHasFolderWritePermission($oFolder)) {
 		if (isset($fForAdd)) {
 			//user has selected a document type
 			if (Folder::folderIsLinkedToDocType($fFolderID, $fDocumentTypeID)) {
