@@ -36,6 +36,7 @@ include_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
 include_once("$default->fileSystemRoot/lib/security/Permission.inc");
 include_once("$default->fileSystemRoot/lib/users/User.inc");
 include_once("$default->fileSystemRoot/lib/groups/GroupFolderLink.inc");
+include_once("$default->fileSystemRoot/lib/groups/Group.inc");
 include_once("$default->fileSystemRoot/presentation/Html.inc");
 include_once("$default->fileSystemRoot/lib/visualpatterns/PatternListBox.inc");			
 include_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
