@@ -146,6 +146,6 @@ require_once("$default->owl_fs_root/lib/Log.inc");
 require_once("$default->owl_fs_root/lib/Session.inc");
 require_once("$default->owl_fs_root/lib/control.inc");
 require_once("$default->owl_fs_root/lib/db.inc");
-require_once("$default->owl_fs_root/lib/lookup.inc");
+require_once("$default->owl_fs_root/lib/database/lookup.inc");
 require_once("$default->owl_fs_root/lib/dms.inc");
 ?>
