@@ -1,5 +1,7 @@
 <?php
 
+require_once("../../config/dmsDefaults.php");
+
 /**
 * Contains unit tests for class Document in /lib/documentmanagement/Document.inc
 *
@@ -9,9 +11,8 @@
 *	o storing of object
 *	o updating of object
 *	o deletion of object
+* @package tests.documentmanagement
 */
-
-require_once("../../config/dmsDefaults.php");
 
 if (checkSession()) {
 	require_once("$default->owl_fs_root/lib/documentmanagement/Document.inc");

@@ -1,12 +1,15 @@
 <?php
+
+require_once("../../config/dmsDefaults.php");
+
 /**
 * Unit test for class DocumentTransaction in /lib/documentmanagement/DocumentTransaction.inc
 *
 * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
 * @date 18 January 2003
-*
+* @package tests.documentmanagement
 */
-require_once("../../config/dmsDefaults.php");
+
 
 if (checkSession()) {
 	require_once("$default->owl_fs_root/lib/documentmanagement/Document.inc");

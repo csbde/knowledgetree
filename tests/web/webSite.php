@@ -1,14 +1,16 @@
 <?php
+
+require_once("../../config/dmsDefaults.php");
+
 /**
-* @package tests.web
 *
 * Unit tests for WebSite class in /lib/web/WebSite.inc
 *
 * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
 * @date 20 January 2003
+* @package tests.web
 */
 
-require_once("../../config/dmsDefaults.php");
 
 if (checkSession()) {
 	require_once("$default->owl_fs_root/lib/web/WebSite.inc");

@@ -1,13 +1,15 @@
 <?php
+
+require_once("../../config/dmsDefaults.php");
+
 /**
 * Unit tests for static function in Email class in /lib/email/Email.inc
 *
 * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
 * @date 19 January 2003
-*
+* @package tests.email
 */
 
-require_once("../../config/dmsDefaults.php");
 
 if (checkSession) {
 	require_once("$default->owl_fs_root/lib/email/Email.inc");

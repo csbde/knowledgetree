@@ -1,4 +1,7 @@
 <?php
+
+require_once("../../config/dmsDefaults.php");
+
 /**
 * Unit test for class Unit in /lib/units
 *
@@ -7,8 +10,6 @@
 * @package tests.units
 *
 */
-
-require_once("../../config/dmsDefaults.php");
 
 if (checkSession) {
 	require_once("$default->owl_fs_root/lib/units/Unit.inc");

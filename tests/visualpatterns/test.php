@@ -5,7 +5,9 @@ require_once ("./lib/visualpatterns/PatternImage.inc");
 require_once ("./lib/visualpatterns/PatternTableLinks.inc");
 require_once ("./lib/visualpatterns/PatternTableSqlQuery.inc");
 
-
+/**
+ * @package tests.visualpatterns
+ */
 //North west image
 $img = new PatternImage("file://C:/temp/test/al.jpg");
 
