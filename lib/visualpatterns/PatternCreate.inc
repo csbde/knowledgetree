@@ -122,7 +122,7 @@ class PatternCreate {
 	
 	function generateRequiredFieldValidation() {
 		$sToRender .= "\n\n<script language=\"javascript\">\n<!--\n";
-		$sToRender .= "function validate666Form(theForm) {\n";			
+		$sToRender .= "function validateForm(theForm) {\n";			
 		for ($i = 0; $i < count($this->aDisplayRowNames); $i++) {
 			if ($this->aRequired[$i]) {
 				$sToRender .= "\tif (!(validRequired(document.MainForm." . $this->sUniqueName . "_" . $i . "_value, '" . $this->aDisplayRowNames[$i] . "'))) {\n";
