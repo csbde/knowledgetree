@@ -115,7 +115,7 @@ if (checkSession()) {
             $oPatternCustom = & new PatternCustom();
             $oPatternCustom->setHtml(getBrowsePage($fFolderID));
             $main->setCentralPayload($oPatternCustom);
-            $main->setErrorMessage("You do not have permission to add a document to this folder");
+            $main->setErrorMessage("You do not have permission to add a document to this folder</td><td><a href=\"$default->rootUrl/control.php?action=browse&fFolderID=$fFolderID\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></a>");
             $main->render();
         }
     } else {
