@@ -48,7 +48,7 @@ function updateFolder($oFolder) {
 		$sql = $default->db;		
 		//root folders won't get anything added to them
 		if (strlen($sFullPath) > 0) {			
-			$sql->query("UPDATE " . $default->owl_folders_table . " SET " .
+			$sql->query("UPDATE " . $default->folders_table . " SET " .
 							"full_path = '" . addslashes($sFullPath) . "', " .
 							"parent_folder_ids = '" . addslashes($sParentIDs) . "' " .
 							"WHERE id = " . $oFolder->getID());
