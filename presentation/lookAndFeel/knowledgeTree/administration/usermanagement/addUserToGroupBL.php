@@ -47,7 +47,7 @@ if (checkSession()) {
         if($oUserGroup->create()) {
             $oPatternCustom->setHtml(getPageSuccess("&fUserID=$fUserID"));
         } else {
-            $oPatternCustom->setHtml(getPageFail());
+            $oPatternCustom->setHtml(getPageFail("&fUserID=$fUserID"));
         }
     }
     // render page
