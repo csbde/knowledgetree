@@ -120,7 +120,7 @@ class DocumentTypeFieldLink {
 		if ($this->iId < 0) {
 			//check to see if name exsits
 			$sql = $default->db;
-			$query = "SELECT document_type_id FROM ". $default->owl_document_type_fields_table ." WHERE document_type_id = '" . $this->iDocumentTypeID . "' and field_id = '". $this->iFieldID . "'";
+			$query = "SELECT id FROM ". $default->owl_document_type_fields_table ." WHERE document_type_id = '" . $this->iDocumentTypeID . "' and field_id = '". $this->iFieldID . "'";
         		$sql->query($query);
        			$rows = $sql->num_rows($sql);
         
@@ -215,6 +215,7 @@ class DocumentTypeFieldLink {
 	}
 	
 	
+	
 		/*
      * static function
      *
@@ -234,24 +235,67 @@ class DocumentTypeFieldLink {
 	        
 	}
 	
-	/*
+
+/*
      * static function
      *
-     * sets the id of the docTypeField using their doc_type_id
+     * sets the id of the groupunit using their groupid
      *
      * @param   String
      *   The unit_ID
      *   
      */
      
-	function setDocTypeFieldID($docTypeId)
+	function setDocTypeFieldID($iDocTypeID, $iDocFieldID)
 	 {
-	       global $default;
-	
-	        $id = lookupID($default->owl_document_type_fields_table, "document_type_id",  $docTypeId);
-	        
-	        $this->iId= $id;
+	   	global $default;
+		$sql = $default->db;
+		$result = $sql->query("SELECT id FROM $default->owl_document_type_fields_table WHERE field_id = $iDocFieldID and document_type_id = $iDocTypeID ");
+		if ($result) {
+			if ($sql->next_record()) {
+				$id = $sql->f("id");
+				
+			}else{
+				$_SESSION["errorMessage"] = $lang_err_database;
+				return false;
+			}
+		
+		}else{	
+			$_SESSION["errorMessage"] = $lang_err_database;
+			return false;
+		}
+		
+		$this->iId = $id;
+		
 	}
+
+
+	
+	
+	/* Static function.  Given a documenttype...will find all fields belongin to it
+	*
+	* @return DocumentFieldLink populated DocumentFieldLink object on success, false otherwise and set $_SESSION["errorMessage"]
+	*/
+	function getSpecificFields($iDocTypeID) {
+		global $default, $lang_err_database;
+		$aFields;
+		settype($aFields, "array");
+		$sql = $default->db;
+		$result = $sql->query("SELECT field_id FROM " . $default->owl_document_type_fields_table  . " Where document_type_id = ". $iDocTypeID);
+		if ($result) {			
+			$iCount = 0;
+			while ($sql->next_record()) {
+				
+				$aFields[$iCount] = $sql->f("field_id");
+				$iCount++;
+			}
+			return $aFields;
+		}
+		$_SESSION["errorMessage"] = $lang_err_database;
+		return false;
+	}
+	
+	
 }
 
 
