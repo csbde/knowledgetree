@@ -416,3 +416,8 @@ INSERT INTO `zseq_browse_criteria` SELECT MAX(`id`) FROM `browse_criteria`;
 
 ALTER TABLE `folders` ADD `permission_folder_id` INT;
 ALTER TABLE `folders` ADD INDEX ( `permission_folder_id` ) ;
+
+ALTER TABLE `documents` ADD `created` DATETIME NOT NULL ;
+ALTER TABLE `documents` ADD INDEX ( `created` ) ;
+
+UPDATE documents AS D, document_transactions AS T SET D.created = T.datetime WHERE T.document_id = D.id AND T.transaction_id = 1;
