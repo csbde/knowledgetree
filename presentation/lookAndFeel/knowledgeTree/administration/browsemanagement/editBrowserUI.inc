@@ -22,6 +22,8 @@
  * @package administration.groupmanagement
  */
 
+require_once(KT_LIB_DIR . '/browse/Criteria.inc');
+
 // Create two listbox
 function renderBrowsePicker() {
 
@@ -38,14 +40,14 @@ function renderBrowsePicker() {
 	$sToRender .= "</tr>";
 
 	// Initialise structure
-	$aInfo = InitCriteria();
+	$aSelectedCriteria = getSelectedCriteria();
 
 	// Select Boxes	
 	$sToRender .= "<tr>\n";	
 	$sToRender .= "<td valign=\"top\" width=1%>\n";
 	$sToRender .= "<select name=\"browseSelect\" size=\"10\" multiple>\n";
 	// retrieve users' groups
-	$sToRender .= getSelected($aInfo);
+	$sToRender .= showSelected($aSelectedCriteria);
 	$sToRender .= "</select></td>\n";
     $sToRender .= "<td>";
 	$sToRender .= "<input TYPE=\"button\" NAME=\"up\" style=\"width:10px\" VALUE=\"^\" ONCLICK=\"moveOptionUp(optBrowse.left); optBrowse.update()\"> <br />";
@@ -62,7 +64,7 @@ function renderBrowsePicker() {
 	$sToRender .= "<td valign=\"top\" width=1%>\n";	
 	$sToRender .= "<select name=\"chosenCriteria\" size=\"10\" multiple>\n";
 	// retrieve other groups
-	$sToRender .= getAvailable($aInfo);
+	$sToRender .= showAvailable(Criteria::getAllCriteria(), $aSelectedCriteria);
 	$sToRender .= "</select></td>";
 	$sToRender .= "</tr>";
 
@@ -76,11 +78,13 @@ function renderBrowsePicker() {
 	// Show current settings
 	$sBgColor = "#F5F6EE";
 	$sToRender .= "<tr>";
-	$sToRender .= "<td colspan=\"3\"><strong>" . _("Current Users") . "</strong><BR>";
+	$sToRender .= "<td colspan=\"3\"><strong>" . _("Current Criteria") . "</strong><BR>";
 	$sToRender .= "<table cellspacing=1 border=0>";
-	for ($i=0; $i < count($aInfo[0]); $i++) {
-		$sName = criterionGet($aInfo[0][$i]);
-		$sToRender .=  "<tr><td>" . ($i+1) . "</td><td bgcolor=$sBgColor>". $sName ."</td></tr>\n";
+    $i = 1;
+	foreach ($aSelectedCriteria as $oCriterion) {
+		$sName = $oCriterion->headerDisplay();
+		$sToRender .=  "<tr><td>" . $i . "</td><td bgcolor=$sBgColor>". $sName ."</td></tr>\n";
+        $i++;
 	}
 	$sToRender .= "</table></td></tr>";
 
@@ -95,62 +99,34 @@ function renderBrowsePicker() {
 	return $sToRender;
 }
 
-$aBaseCriteria = array(
+/*$aBaseCriteria = array(
     -1 => _('Title'),
     -2 => _('Description'),
     -3 => _('Creator'),
     -4 => _('Date Created'),
     -5 => _('Document Type'),
     -6 => _('ID'),
-);
+);*/
 
-function criterionGet($iCriteriaID) {
-    global $default;
-    global $aBaseCriteria;
-    if ($iCriteriaID < 0) {
-        $sName = $aBaseCriteria[$iCriteriaID];
-    } else {
-        $aQuery = array("SELECT name FROM $default->document_fields_table WHERE id = ?", array($iCriteriaID)); /*ok*/
-        $sName = DBUtil::getOneResultKey($aQuery, 'name');
-    }
-    return $sName;
-}
-
-/* Initialise some structures to build ui
- * Return an array of:
- *		Current Users assigned to Group
- *		UnitAdmin Manageable User Ids
-*/
-function InitCriteria() {
-    global $default;
-    global $aBaseCriteria;
-
-    $aAllCriteriaIDs = array_keys($aBaseCriteria);
-    $aQuery = array("SELECT id FROM $default->document_fields_table", array()); /*ok*/
-    $aIDs = DBUtil::getResultArrayKey($aQuery, 'id');
-    $aAllCriteriaIDs = array_merge($aAllCriteriaIDs, $aIDs);
-
+function getSelectedCriteria() {
     $aQuery = array("SELECT criteria_id FROM browse_criteria ORDER BY precedence", array()); /*ok*/
     $aSelectedCriteriaIDs = DBUtil::getResultArrayKey($aQuery, 'criteria_id');
-    
-	return array($aSelectedCriteriaIDs, $aAllCriteriaIDs);
+    $aSelectedCriteria = array();
+    foreach ($aSelectedCriteriaIDs as $iCriteriaID) {
+        $aSelectedCriteria[$iCriteriaID] =& Criteria::getCriterionByNumber($iCriteriaID);
+    }
+	return $aSelectedCriteria;
 }
 
 
 /* Get all Users in a Group */
-function getSelected($aInfo) {
+function showSelected($aInfo) {
     global $default;
     global $aBaseCriteria;
 
-	foreach ($aInfo[0] as $iCriteriaID) {
-        if ($iCriteriaID < 0) {
-            $sName = $aBaseCriteria[$iCriteriaID];
-        } else {
-            $aQuery = array("SELECT name FROM $default->document_fields_table WHERE id = ?", array($iCriteriaID)); /*ok*/
-            $sName = DBUtil::getOneResultKey($aQuery, 'name');
-        }
+	foreach ($aInfo as $iCriteriaID => $oCriteria) {
 		$sToRender .= "<OPTION value=\"" . $iCriteriaID . "\" onDblClick=\"optBrowse.transferRight()\" >\n";	
-		$sToRender .= $sName;
+		$sToRender .= $oCriteria->headerDisplay();
 		$sToRender .= "</OPTION>\n";
 	}
 
@@ -159,23 +135,15 @@ function getSelected($aInfo) {
 
 
 // Get other Users
-function getAvailable($aInfo) {
+function showAvailable($aAvailable, $aSelected) {
     global $default;
-    global $aBaseCriteria;
 
-	$aOtherUserIDs = array();
-
-	$aOtherUserIDs = array_diff($aInfo[1], $aInfo[0]);
+    $aOtherUserIDs = array_diff(array_keys($aAvailable), array_keys($aSelected));
 
 	foreach ($aOtherUserIDs as $iCriteriaID) {
-        if ($iCriteriaID < 0) {
-            $sName = $aBaseCriteria[$iCriteriaID];
-        } else {
-            $aQuery = array("SELECT name FROM $default->document_fields_table WHERE id = ?", array($iCriteriaID)); /*ok*/
-            $sName = DBUtil::getOneResultKey($aQuery, 'name');
-        }
+        $oCriterion = Criteria::getCriterionByNumber($iCriteriaID);
 		$sToRender .= "<OPTION value=\"" . $iCriteriaID . "\" onDblClick=\"optBrowse.transferRight()\" >\n";	
-		$sToRender .= $sName;
+		$sToRender .= $oCriterion->headerDisplay();
 		$sToRender .= "</OPTION>\n";
 	}
 
