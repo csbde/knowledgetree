@@ -8,7 +8,7 @@
 # displays the script usage message 
 #
 usage() {
-    echo "usage: `basename $0` -b branch -v version -v version"
+    echo "usage: `basename $0` -b branch -v version"
     echo "       eg. `basename $0` -b BRANCH_1_0_1_20030728 -v 1.1.2"
     exit 1
 }
