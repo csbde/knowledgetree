@@ -8,9 +8,24 @@
 *
 */
 
+function renderHeading() {
+    global $default;
+    $sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
+    $sColor = $default->siteMap->getSectionColour($sSectionName, "th");
+    $sToRender  = "<table border=\"0\" width=\"100%\">\n";
+    $sToRender .= "<tr align=\"left\"><th class=\"sectionHeading\" bgcolor=\"$sColor\">Modify Folder</th></tr>\n";
+    $sToRender .= "<tr/>\n";
+    $sToRender .= "<tr/>\n";
+    $sToRender .= "</table>\n";
+    return $sToRender;
+}
+
 function getFolderPath($iFolderID) {
 	global $default;
-	return displayFolderPathLink(Folder::getFolderPathAsArray($iFolderID), Folder::getFolderPathNamesAsArray($iFolderID),  "$default->rootUrl/control.php?action=browse");		
+    global $default;
+	$sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
+	$sTDBGColour = $default->siteMap->getSectionColour($sSectionName, "td");
+    return "<table border=\"0\" width=\"100%\"><tr><td bgcolor=\"$sTDBGColour\">" . displayFolderPathLink(Folder::getFolderPathAsArray($iFolderID), Folder::getFolderPathNamesAsArray($iFolderID),  "$default->rootUrl/control.php?action=browse") . "</td></tr></table>\n";
 }
 
 
@@ -132,10 +147,11 @@ function getFolderGroupAccess($iFolderID) {
 }
 
 function getPage($iFolderID) {
-	global $default;	
-	$sToRender = "<table border=\"1\" width=\"100%\"><tr><td>" . getFolderPath($iFolderID) . "</td></tr></table>\n";
-	
-	$sToRender .= "<table border  =\"0\">\n";
+	global $default;
+    
+    $sToRender  = renderHeading();
+    $sToRender .= getFolderPath($iFolderID);
+	$sToRender .= "<table border=\"0\">\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td valign=\"top\">\n";
 	$sToRender .= getLeftSide($iFolderID);
@@ -150,10 +166,10 @@ function getPage($iFolderID) {
 
 function getLeftSide($iFolderID) {
 	global $default;
-	$sToRender .= "<table border  =\"0\">\n";
+	$sToRender .= "<table border=\"0\">\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>\n";
-	$sToRender .= wrapInTable(getFolderData($iFolderID));
+	$sToRender .= getFolderData($iFolderID);
 	$sToRender .= "</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
@@ -163,7 +179,7 @@ function getLeftSide($iFolderID) {
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>\n";
-	$sToRender .=  wrapInTable(getFolderRouting($iFolderID)) . "\n";
+	$sToRender .=  getFolderRouting($iFolderID) . "\n";
 	$sToRender .= "</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
@@ -180,7 +196,7 @@ function getRightSide($iFolderID) {
 	$sToRender .= "<table border  =\"0\">\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>\n";
-	$sToRender .= wrapInTable(getFolderDocTypes($iFolderID));
+	$sToRender .= getFolderDocTypes($iFolderID);
 	$sToRender .= "</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
@@ -191,7 +207,7 @@ function getRightSide($iFolderID) {
     
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>\n";
-	$sToRender .= wrapInTable(getFolderGroupAccess($iFolderID));
+	$sToRender .= getFolderGroupAccess($iFolderID);
 	$sToRender .= "</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
