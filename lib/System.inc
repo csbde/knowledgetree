@@ -25,8 +25,6 @@
  * @package lib
  */ 
 class System {
-    
-    var $db;
     var $aSettings = array("ldapServer", "ldapRootDn", "ldapServerType",
                            "ldapDomain", "ldapSearchUser", "ldapSearchPassword", 
                        	   "emailServer", "emailFrom", "emailFromName", "emailAdmin", "emailAdminName",
@@ -40,20 +38,15 @@ class System {
                           "Root URL", "Graphics URL", "User Interface URL",
                           "Session Timeout", "Content Pane Scrolling Enabled", "Hide Unreadable Folders?");
                                                          
-    function System() {
-        global $default;
-        $this->db = new Database();
-    }
-    
     /**
      * Returns true if there are entries in the system_settings table
      */
     function initialised() {
         global $default;
         
-        if ($this->db->query("SELECT count(*) AS count FROM system_settings WHERE name<>'lastIndexUpdate' AND name<>'filesystemRoot' AND name<>'knowledgeTreeVersion' AND value<>''")) {
-            $this->db->next_record();
-            return ($this->db->f("count") > 0) ? true : false;
+        if ($default->db->query("SELECT count(*) AS count FROM system_settings WHERE name<>'lastIndexUpdate' AND name<>'filesystemRoot' AND name<>'knowledgeTreeVersion' AND value<>''")) {
+            $default->db->next_record();
+            return ($default->db->f("count") > 0) ? true : false;
         }
     }
     
