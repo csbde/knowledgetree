@@ -118,7 +118,7 @@ if (checkSession()) {
                 if (count($aFolderArray) > 0) {
                     $oPatternCustom->setHtml(getFolderNotEmptyPage($fFolderID,  count($aFolderArray), "folder(s)"));
                 } else if (count($aLiveDocuments) > 0) {
-                    $oPatternCustom->setHtml(getFolderNotEmptyPage($fFolderID, count($aDocumentArray), "document(s)"));
+                    $oPatternCustom->setHtml(getFolderNotEmptyPage($fFolderID, count($aLiveDocuments), "document(s)"));
                 } else if (count($aArchivedDocuments) > 0) {
                     $oPatternCustom->setHtml(getFolderNotEmptyPage($fFolderID, "", " archived documents"));                	
                 } else {                
