@@ -66,7 +66,7 @@ function getSearchResults($sSQLSearchString, $iStartIndex, $sSearchText, $sMetaT
 	$aQueryStringVariableNames = array("fDocumentID", "fFolderID");
 	
 	
-	$oPatternBrowse = & new PatternBrowseableSearchResults($sQuery, 2, $aColumns, $aColumnTypes, $aColumnHeaders, $aLinkURLs, $aDBQueryStringColumns, $aQueryStringVariableNames);
+	$oPatternBrowse = & new PatternBrowseableSearchResults($sQuery, 10, $aColumns, $aColumnTypes, $aColumnHeaders, $aLinkURLs, $aDBQueryStringColumns, $aQueryStringVariableNames);
 	$oPatternBrowse->setStartIndex($iStartIndex);
 	return $oPatternBrowse->render() . getSearchVariablesHtml($sSearchText, $sMetaTagIDs);
 }
