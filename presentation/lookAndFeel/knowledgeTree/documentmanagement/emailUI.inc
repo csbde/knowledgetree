@@ -38,10 +38,10 @@ function getDocumentEmailPage($oDocument) {
 	global $default;
 	$sToRender = getDocumentPath($oDocument) . "\n<br>\n";	 
 	$sToRender .= "<table>\n";
-	$sToRender .= "<th colspan=\"2\" align=\"left\">Email details</th>\n";	
+	$sToRender .= "<th colspan=\"2\" align=\"left\">Email details</th>\n";
 	$sToRender .= "<tr><td>&nbsp</td><td>&nbsp</td></tr>\n";
 	$sToRender .= "<tr><td>Recipient name:</td><td><input type=\"text\" name=\"fToName\" /></td></tr>\n";
-	$sToRender .= "<tr><td>Email address:</td><td><input type=\"text\" name=\"fToEmail\" /></td></tr>\n";
+	$sToRender .= "<tr><td>Email address:</td><td><input type=\"text\" name=\"fToEmail\" />(separate multiple addresses with a semicolon)</td></tr>\n";
 	$sToRender .= "<tr><td>&nbsp</td><td>&nbsp</td></tr>\n";
 	$sToRender .= "<tr><td><table><tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/email.gif\" /></td><td><a href=\"$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $oDocument->getID() . "\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"/></a></td></tr></table></td>\n";
 	$sToRender .= "</table>\n";

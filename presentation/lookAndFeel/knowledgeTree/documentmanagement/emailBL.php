@@ -39,11 +39,13 @@ if (checkSession()) {
                         } else {
                             $sMessage = "Your colleague, " . $oUser->getName() . ", wishes you to view the document entitled '" . $oDocument->getName() . "'.\n  Click on the hyperlink below to view it";
                         }
-                        $sHyperLink = generateLink("/presentation/lookAndFeel/knowledgeTree/documentmanagement/viewBL.php", "fDocumentID=$fDocumentID", $oDocument->getName());
+                        // add the link to the document to the mail
+                        $sMessage .= ' ' . generateLink("/presentation/lookAndFeel/knowledgeTree/documentmanagement/viewBL.php", "fDocumentID=$fDocumentID", $oDocument->getName()); 
 
                         //email the hyperlink
-                        $oEmail = new Email();
-                        $oEmail->sendHyperlink($default->owl_email_from, "MRC DMS", $fToEmail, "Document link",  $sMessage, $sHyperLink);
+                        $oEmail = new Email();                        
+                        $oEmail->send($fToEmail, "Document link", $sMessage);
+                        
                         //go back to the document view page
                         redirect("$default->rootUrl/control.php?action=viewDocument&fDocumentID=$fDocumentID");
                     } else {
@@ -68,7 +70,7 @@ if (checkSession()) {
 
                 $oPatternCustom = & new PatternCustom();
                 $oPatternCustom->setHtml(getDocumentEmailPage($oDocument));
-                //$main->setErrorMessage("Please enter an email address of the form someone@somewhere.some postfix");
+                $main->setErrorMessage("Please enter an email address of the form someone@somewhere.some postfix");
                 $main->setCentralPayload($oPatternCustom);
                 $main->setFormAction($_SERVER["PHP_SELF"] . "?fDocumentID=$fDocumentID&fSendEmail=1");
                 $main->render();
@@ -88,12 +90,18 @@ if (checkSession()) {
 
 /** use regex to validate the format of the email address */
 function validateEmailAddress($sEmailAddress) {
-    $bResult = ereg ("^[^@ ]+@[^@ ]+\.[^@ \.]+$", $sEmailAddress );
-    if ($bResult) {
-        return TRUE;
+    $aEmailAddresses = array();
+    if (strpos($sEmailAddress, ";")) {
+        $aEmailAddresses = explode(";", $sEmailAddress);
     } else {
-        return FALSE;
+        $aEmailAddresses[] = $sEmailAddress;
     }
+    $bToReturn = true;
+    for ($i=0; $i<count($aEmailAddresses); $i++) {
+        $bResult = ereg ("^[^@ ]+@[^@ ]+\.[^@ \.]+$", $aEmailAddresses[$i] );
+        $bToReturn = $bToReturn && $bResult;
+    }
+    return $bToReturn;
 }
 
 ?>
