@@ -36,192 +36,62 @@
  * @todo $iLinkImageURL is hard coded - change
  * @todo $sLinkPageURL is hard coded - change 
  */
-class PatternTableSqlQuery {	
-	
-	/** query to execute*/
-	var $sQuery;
-	/* Columns in table to query (ID is included by default) */
-	var $aColumns;
-	/* Column types.  Possibles are 1 = text, 2 = boolean, 3 = hyperlink url */
-	var $aColumnTypes;
-	/** header names to display */	
-	var $aColumnHeaderNames;
-	/** table width, either in pixels or as a percentage e.g. 600 or 100%*/
-	var $sWidth;	
-	/** link url used if a column type of 3 is specified */
-	var $aLinkURLs;
-	/** database column values to append to link url if a column type of 3 is specified */
-	var $aDBQueryStringColumns;
-	/** variables names to give $aDBQueryStringColumns on the query string */
-	var $aQueryStringVariableNames;
-	/** display the column headings or not */
-	var $bDisplayColumnHeadings;
-	/** table heading */
-	var $sTableHeading;
-	/** specify an image at the start of each row in the table */
-	var $sImageURL;
-	/** specify whether to use $sImageURL or to get the image url from the sql result set */
-	var $bUseImageURLFromQuery = false;
-	/** message that will be displayed if the table is empty*/
-	var $sEmptyTableMessage;
-	/** Picture paths */
-	var $sChkPicPath = "widgets/checked.gif";
-	var $sUnChkPicPath = "widgets/unchecked.gif";
-	/** whether to force entries to wrap */
-	var $bWordWrap = false;
-				
-	function PatternTableSqlQuery($sTmpQuery, $aTmpColumns, $aTmpColumnTypes, $aTmpColumnHeaderNames, $sTmpWidth, $aTmpLinkURLs = null, $aTmpDBQueryStringColumns = null, $aNewQueryStringVariableNames = null) {
-		$this->sQuery = $sTmpQuery;
-		$this->aColumns = & $aTmpColumns;
-		$this->aColumnTypes = $aTmpColumnTypes;
-		$this->aColumnHeaderNames = $aTmpColumnHeaderNames;
-		$this->sWidth = $sTmpWidth;
-		$this->bDisplayColumnHeadings = $bTmpDisplayColumnHeadings;
-		$this->aLinkURLs = $aTmpLinkURLs;		
-		$this->aDBQueryStringColumns = $aTmpDBQueryStringColumns;
-		$this->aQueryStringVariableNames = $aNewQueryStringVariableNames;
-	}
-	
-	function setEmptyTableMessage($sNewValue) {
-		$this->sEmptyTableMessage = $sNewValue;
-	}
-	
-	function setTableHeading($sNewValue) {
-		$this->sTableHeading = $sNewValue;
-	}
-	
-	function setImageURL($sNewValue) {
-		$this->sImageURL = $sNewValue;
-	}
-	
-	function setUseImageURLFromQuery($bNewValue) {
-		$this->bUseImageURLFromQuery = $bNewValue;
-	}
-	
-	function setDisplayColumnHeadings($bNewValue) {
-		$this->bDisplayColumnHeadings = $bNewValue;
-	}
-	
-	function setIncludeBorder($bNewValue) {
-		$this->bIncludeBorder = $bNewValue;
-	}
-	
-	function setChkPicPath($sNewChkPicPath) {
-		$this->sChkPicPath = $sNewChkPicPath;	
-	}
-	
-	function getChkPicPath() {
-		return $this->sChkPicPath ;	
-	}
-	
-	function setWordWrap($bNewValue) {
-		$this->bWordWrap = $bNewValue;	
-	}
-	
-	/**
-	* Build the HTML string used to render the object
-	*
-	* @return String of HTML used to render object
-	*
-	* @todo possibly add in image size restraints for link types 2 and 3
-	*/	
-	function & render() {
-        global $default;
-        
-		$sToRender = "<table cellpadding=\"5\" border=\"" . ($this->bIncludeBorder ? "1" : "0") . "\" width=\"" . $this->sWidth . "\">\n";
-		if (isset($this->sTableHeading)) {
-			$sToRender .= "<caption align=\"top\" colspan=\"" . count($this->aColumns) . "\" align=\"left\"><b>$this->sTableHeading</b></caption>\n";
-		}
-		if ($this->bDisplayColumnHeadings) {
-			for ($i = 0; $i < count($this->aColumnHeaderNames); $i++) {
-				$sToRender .= "<th align=left>" . $this->aColumnHeaderNames[$i] . "</th>\n";
-			}
-		}
-		$sql = $default->db;
-		$sql->query($this->sQuery);
-		if ($sql->num_rows() == 0) {
-			$sToRender .= "<tr>\n";	
-			if (isset($this->sEmptyTableMessage)) {
-				$sToRender .= "<td colspan=" . count($this->aColumns) . ">$this->sEmptyTableMessage</td>\n";
-			} else {
-				$sToRender .= "<td colspan=" . count($this->aColumns) . ">No " . (isset($this->sTableHeading) ? $this->sTableHeading : "") . " data</td>\n";
-			}
-			$sToRender .= "</tr>\n";		
-		} else {
-			$iColour = 0;
-			while ($sql->next_record()) {			
-				$sToRender .= "<tr bgcolor=\"" . getColour($iColour) . "\">\n";
-				$iColour++;
-				for ($i = 0; $i < count($this->aColumns); $i++) {
-					switch ($this->aColumnTypes[$i]) {
-						case 1:
-								//text
-								$sToRender .= "<td>";
-								if (isset($this->sImageURL)) {
-									$sToRender .= $this->generateImageURL($this->sImageURL);
-								} else if ($this->bUseImageURLFromQuery) {
-									$sToRender .= $this->generateImageURL($sql->f("image_url"));
-								}
-								if ($sql->f($this->aColumns[$i]) != null) {
-									if ($this->bWordWrap) {
-										$sToRender .= wordwrap($sql->f($this->aColumns[$i]), 25, " ", 1) . "</td>";
-									} else {
-										$sToRender .= $sql->f($this->aColumns[$i]) . "</td>";
-									}
-								} else {
-									$sToRender .= "&nbsp;</td>";
-								}
-								break;
-						case 2:
-								//boolean
-								$sToRender .= "<td>";
-								if ($sql->f($this->aColumns[$i]) != null) {									
-									$value = $sql->f($this->aColumns[$i]);
-									if ($value) { 
-										$sToRender .= "<img src=\"$default->graphicsUrl/" . $this->sChkPicPath . "\">";
-									} else {
-										$sToRender .= "<img src=\"$default->graphicsUrl/" . $this->sUnChkPicPath . "\">";
-									}
-									$sToRender .= "&nbsp;</td>";	
-								} else {
-									$sToRender .= "&nbsp;</td>";
-								}							
 
-								break;
-						case 3:
-								//hyperlink								
-								$sToRender .= "<td><a href=\"";
-								$sLink = $this->aLinkURLs[$i];
-								for ($j = 0; $j < count($this->aDBQueryStringColumns); $j++) {
-									if (strpos($sLink, "?") === false) {
-										$sLink .= "?" . $this->aQueryStringVariableNames[$j] . "=" . $sql->f($this->aDBQueryStringColumns[$j]);										
-									} else { 
-										$sLink .= "&" . $this->aQueryStringVariableNames[$j] . "=" . $sql->f($this->aDBQueryStringColumns[$j]);
-									}									
-								}
-								$sToRender .= $sLink . "\">";
-								
-								if (isset($this->sImageURL)) {
-									$sToRender .= $this->generateImageURL($this->sImageURL);
-								} else if ($this->bUseImageURLFromQuery) {
-									$sToRender .= $this->generateImageURL($sql->f("image_url"));
-								}
-								$sToRender .= $sql->f($this->aColumns[$i]) . "</a></td>\n";
-								break;
-						default:
-								break;
-					}
-				}
-				$sToRender .= "</tr>\n";			
-			}
-		}
-		$sToRender .= "</table>";		
-		return $sToRender;
-	}
-	
-	
-	function generateImageURL($sURL) {
-		return "<img src=\"" . $sURL . "\" border=\"0\"/>";
+require_once('PatternTableGeneric.inc');
+
+class SqlResultSetAdapter {
+    // Has there been an error setting up the result set?
+    var $broken = false;
+
+    function SqlResultSetAdapter ($oResultSet) {
+        global $default;
+        $default->log->info('SqlResultSetAdapter called');
+        $this->oResultSet = $oResultSet;
+        if (PEAR::isError($oResultSet)) {
+            $this->broken = true;
+        }
+    }
+
+    function isEmpty () {
+        global $default;
+        $default->log->info('Checked if SqlResultSetAdapter was empty');
+        if ($this->broken) {
+            return $this->oResultSet;
+        }
+        return ($this->oResultSet->numRows() == 0);
+    }
+
+    function next () {
+        global $default;
+        $default->log->info('Got next result from SqlResultSetAdapter');
+        if ($this->broken) {
+            return $this->oResultSet;
+        }
+        $aNextResult = $this->oResultSet->fetchRow(DB_FETCHMODE_ASSOC);
+        if ($aNextResult === null) {
+            return null;
+        }
+        return new SqlResultAdapter ($aNextResult);
+    }
+}
+
+class SqlResultAdapter {
+    function SqlResultAdapter ($oResult) {
+        $this->oResult = $oResult;
+    }
+    function get ($sField) {
+        global $default;
+        $default->log->info('Getting ' . $sField . ' field from SqlResultAdapter');
+        return $this->oResult[$sField];
+    }
+}
+
+class PatternTableSqlQuery extends PatternTableGeneric {	
+	function PatternTableSqlQuery($sTmpQuery, $aTmpColumns, $aTmpColumnTypes, $aTmpColumnHeaderNames, $sTmpWidth, $aTmpLinkURLs = null, $aTmpDBQueryStringColumns = null, $aNewQueryStringVariableNames = null) {
+            $oResult = DBUtil::runQuery($sTmpQuery);
+            $oResultSet =& new SqlResultSetAdapter ($oResult); 
+            $this->PatternTableGeneric($oResultSet, $aTmpColumns, $aTmpColumnTypes, $aTmpColumnHeaderNames, $sTmpWidth, $aTmpLinkURLs, $aTmpDBQueryStringColumns, $aNewQueryStringVariableNames);
 	}
 }
+
 ?>
