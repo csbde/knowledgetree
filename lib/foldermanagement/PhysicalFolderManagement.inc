@@ -24,7 +24,7 @@ class PhysicalFolderManagement {
 	function createFolder($sPath) {
         global $default;
         
-		return mkdir($sPath, $default->uMask);
+		return mkdir($sPath, "0755");
 	}
 	
 	/**
