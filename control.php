@@ -74,11 +74,6 @@ if (!$page) {
         $accessPage = $page;
     }
     
-    // if we have a redirect url, then append it(??)
-    if (strlen($redirect) > 0) {
-        $page = $page . (strstr($page, "?") ? "&redirect=$redirect" : "?redirect=$redirect");
-    }
-    
     $_SESSION["pageAccess"][$accessPage] = true;
     // if we have a querystring add it on
     if (strlen($queryString) > 0) {
