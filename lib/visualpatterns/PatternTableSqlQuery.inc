@@ -125,7 +125,11 @@ class PatternTableSqlQuery {
 								} else if ($this->bUseImageURLFromQuery) {
 									$sToRender .= $this->generateImageURL($sql->f("image_url"));
 								}
-								$sToRender .= $sql->f($this->aColumns[$i]) . "</td>";
+								if ($sql->f($this->aColumns[$i] != null)) {
+									$sToRender .= $sql->f($this->aColumns[$i]) . "</td>";
+								} else {
+									$sToRender .= "&nbsp</td>";
+								}
 								break;
 						case 3:
 								$sToRender .= "<td><a href=\"" . $this->sLinkURL;
