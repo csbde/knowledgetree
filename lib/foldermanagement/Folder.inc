@@ -301,16 +301,16 @@ class Folder {
      * 
      * @param int primary key of folder to generate path for	
      *
-     * @return array full path of folder as an array
+     * @return array full path of folder as an array of folderIDs
      */
     function getFolderPathAsArray($iFolderID) {
 		global $default;		
 		//if the folder has a parent
 		if (Folder::getParentFolderID($iFolderID) != 0) {
 			$aPathArray = Folder::getFolderPathAsArray(Folder::getParentFolderID($iFolderID));
-            $aPathArray[] = Folder::getFolderName($iFolderID);
+            $aPathArray[] = $iFolderID;
 		} else {
-            $aPathArray[] = Folder::getFolderName($iFolderID);
+            $aPathArray[] = $iFolderID;
         }
 		return $aPathArray;
     }
