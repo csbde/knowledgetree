@@ -62,11 +62,13 @@ class DocumentTransaction {
 		$this->sComment = $sNewComment;
 		$this->iTransactionID = $iNewTransactionID;
 		$oDocument = & Document::get($iNewDocumentID);
-		$this->sVersion = $oDocument->getMajorVersionNumber() . "." . $oDocument->getMinorVersionNumber();
+		if ($oDocument) {
+			$this->sVersion = $oDocument->getMajorVersionNumber() . "." . $oDocument->getMinorVersionNumber();
+			$this->sFileName = Folder::getFolderPath($oDocument->getFolderID()) . "/" . $oDocument->getName();			
+		}
 		$this->iUserID = $_SESSION["userID"];
 		$this->dDateTime = getCurrentDateTime();		
 		$this->sIP = $_SERVER["REMOTE_ADDR"];
-		$this->sFileName = Folder::getFolderPath($oDocument->getFolderID()) . "/" . $oDocument->getName();
 	}
 	
 	/**
