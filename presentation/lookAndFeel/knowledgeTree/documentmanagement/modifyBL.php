@@ -62,6 +62,7 @@ if (checkSession()) {
 				//get rid of all the old document type entries
 				$oDocument->removeInvalidDocumentTypeEntries();
 				$oDocument->setDocumentTypeID($fDocumentTypeID);
+				$bUpdateMetaData = true;
 			}
 			
 			if ($oDocument->update()) {
@@ -73,8 +74,8 @@ if (checkSession()) {
                 $default->log->info("modifyBL.php fired $count subscription alerts for modified document " . $oDocument->getName());
                 
 				//on successful update, redirect to the view page
-				if (isset($fFirstEdit)) {
-					controllerRedirect("modifyDocumentGenericMetaData", "fDocumentID=" . $oDocument->getID() . "&fFirstEdit=1");
+				if (isset($bUpdateMetaData)) {
+					controllerRedirect("modifyDocumentTypeMetaData", "fDocumentID=" . $oDocument->getID() . "&fFirstEdit=1");
 				} else {
 					controllerRedirect("viewDocument", "fDocumentID=" . $oDocument->getID());
 				}
