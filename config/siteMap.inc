@@ -137,10 +137,10 @@ $default->siteMap->addSectionColour("orgAdministration", "th", "056DCE");
 $default->siteMap->addSectionColour("orgAdministration", "td", "6699CC");
 
 // user management
-$default->siteMap->addDefaultPage("editUserGroups", "/presentation/lookAndFeel/knowledgeTree/administration/usermanagement/editUserGroupsBL.php", "userAdministration", SysAdmin, "Edit User Groups");
-$default->siteMap->addPage("listUsers", "/presentation/lookAndFeel/knowledgeTree/administration/usermanagement/listUsersBL.php", "userAdministration", SysAdmin, "List Users");
+$default->siteMap->addDefaultPage("editUserGroups", "/presentation/lookAndFeel/knowledgeTree/administration/usermanagement/editUserGroupsBL.php", "userAdministration", UnitAdmin, "Edit User Groups");
+$default->siteMap->addPage("listUsers", "/presentation/lookAndFeel/knowledgeTree/administration/usermanagement/listUsersBL.php", "userAdministration", UnitAdmin, "List Users");
 $default->siteMap->addPage("addUser", "/presentation/lookAndFeel/knowledgeTree/administration/usermanagement/addUserBL.php", "userAdministration", SysAdmin, "Add User");
-$default->siteMap->addDefaultPage("editUser", "/presentation/lookAndFeel/knowledgeTree/administration/usermanagement/editUserBL.php", "userAdministration", SysAdmin, "Edit User Properties");
+$default->siteMap->addDefaultPage("editUser", "/presentation/lookAndFeel/knowledgeTree/administration/usermanagement/editUserBL.php", "userAdministration", UnitAdmin, "Edit User Properties");
 $default->siteMap->addDefaultPage("removeUser", "/presentation/lookAndFeel/knowledgeTree/administration/usermanagement/removeUserBL.php", "userAdministration", SysAdmin, "Remove User from System");
 $default->siteMap->addDefaultPage("addUserToGroup", "/presentation/lookAndFeel/knowledgeTree/administration/usermanagement/addUserToGroupBL.php", "userAdministration", UnitAdmin, "Add User to Group");
 $default->siteMap->addDefaultPage("removeUserFromGroup", "/presentation/lookAndFeel/knowledgeTree/administration/usermanagement/removeUserFromGroupBL.php", "userAdministration", UnitAdmin, "Remove User From Group");
@@ -149,8 +149,8 @@ $default->siteMap->addSectionColour("userAdministration", "th", "056DCE");
 $default->siteMap->addSectionColour("userAdministration", "td", "6699CC");
 
 // document checkout management
-$default->siteMap->addPage("listDocs", "/presentation/lookAndFeel/knowledgeTree/administration/doccheckoutmanagement/listDocumentsBL.php", "doccheckoutAdministration", SysAdmin, "List Documents");
-$default->siteMap->addDefaultPage("editDocCheckout", "/presentation/lookAndFeel/knowledgeTree/administration/doccheckoutmanagement/editDocCheckoutBL.php", "doccheckoutAdministration", SysAdmin, "Edit Document Checkout");
+$default->siteMap->addPage("listDocs", "/presentation/lookAndFeel/knowledgeTree/administration/doccheckoutmanagement/listDocumentsBL.php", "doccheckoutAdministration", UnitAdmin, "List Documents");
+$default->siteMap->addDefaultPage("editDocCheckout", "/presentation/lookAndFeel/knowledgeTree/administration/doccheckoutmanagement/editDocCheckoutBL.php", "doccheckoutAdministration", UnitAdmin, "Edit Document Checkout");
 
 $default->siteMap->addSectionColour("doccheckoutAdministration", "th", "056DCE");
 
