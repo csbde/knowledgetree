@@ -68,12 +68,15 @@ class PatternBrowseableSearchResults {
 		for ($i = 0; $i < count($this->aColumnHeadings); $i++) {
 			if (! (strcmp($this->sOrderByColumn, $this->aColumns[$i]) === false) && (strcmp($this->sOrderByColumn, $this->aColumns[$i]) == 0)) {
 				if (!(strcmp($this->sOrderDirection,"ASC") === false) && (strcmp($this->sOrderDirection,"ASC") == 0)) {					
-					$sToRender .= "<th align=\"left\"><a href=\"" . $_SERVER["PHP_SELF"] . "?fOrderBy=" . $this->aColumns[$i] . "&fOrderDirection=DESC&fStartIndex=" . $this->iStartIndex . "\">" . $this->aColumnHeadings[$i]."</a></th>\n";
+					//$sToRender .= "<th align=\"left\"><a href=\"" . $_SERVER["PHP_SELF"] . "?fOrderBy=" . $this->aColumns[$i] . "&fOrderDirection=DESC&fStartIndex=" . $this->iStartIndex . "\">" . $this->aColumnHeadings[$i]."</a></th>\n";
+					$sToRender .= "<th align=\"left\">" . $this->aColumnHeadings[$i]. "</th>\n";
 				} else {
-					$sToRender .= "<th align=\"left\"><a href=\"" . $_SERVER["PHP_SELF"] . "?fOrderBy=" . $this->aColumns[$i] . "&fOrderDirection=ASC&fStartIndex=" . $this->iStartIndex . "\">" . $this->aColumnHeadings[$i]."</a></th>\n";
+					//$sToRender .= "<th align=\"left\"><a href=\"" . $_SERVER["PHP_SELF"] . "?fOrderBy=" . $this->aColumns[$i] . "&fOrderDirection=ASC&fStartIndex=" . $this->iStartIndex . "\">" . $this->aColumnHeadings[$i]."</a></th>\n";
+					$sToRender .= "<th align=\"left\">" . $this->aColumnHeadings[$i]. "</th>\n";
 				}
 			} else {
-				$sToRender .= "<th align=\"left\"><a href=\"" . $_SERVER["PHP_SELF"] . "?fOrderBy=" . $this->aColumns[$i] . "&fOrderDirection=ASC&fStartIndex=" . $this->iStartIndex . "\">" . $this->aColumnHeadings[$i]."</a></th>\n";
+				//$sToRender .= "<th align=\"left\"><a href=\"" . $_SERVER["PHP_SELF"] . "?fOrderBy=" . $this->aColumns[$i] . "&fOrderDirection=ASC&fStartIndex=" . $this->iStartIndex . "\">" . $this->aColumnHeadings[$i]."</a></th>\n";
+				$sToRender .= "<th align=\"left\">" . $this->aColumnHeadings[$i]. "</th>\n";
 			}
 		}
 		$sToRender .= "</tr>\n";		
@@ -105,6 +108,18 @@ class PatternBrowseableSearchResults {
 						}
 						$sToRender .= "\">" . $sql->f($this->aColumns[$i]) . "</a></td>\n";
 						break;
+					case 4:
+						//diplay an image URL
+						$sToRender .= "<td><a href=\"" . $this->aLinkURLs[$i];
+						for ($j = 0; $j < count($this->aDBQueryStringColumns); $j++) {
+							if (strpos($sToRender, "?") === false) {
+								$sToRender .= "?" . $this->aQueryStringVariableNames[$j] . "=" . $sql->f($this->aDBQueryStringColumns[$j]);										
+							} else { 
+								$sToRender .= "&" . $this->aQueryStringVariableNames[$j] . "=" . $sql->f($this->aDBQueryStringColumns[$j]);
+							}									
+						}						
+						$sToRender .= "\"><img src=\"" . $sql->f($this->aColumns[$i]) . "\" border=\"0\" /></a></td>\n";						
+						break;
 					default:
 						break;
 				}
@@ -122,19 +137,21 @@ class PatternBrowseableSearchResults {
 		
 		$sToRender .= "<tr>\n";		
 		
+		$sToRender .= "<input type=\"hidden\" name=\"fStartIndex\" value=\"" . ($this->iStartIndex +  $this->iResultsToDisplay) . "\" />\n";
 		/* Display only the next button */
 		if (($this->iStartIndex + $this->iResultsToDisplay) < $this->getResultCount($sql) && $this->iStartIndex == 0) {
 			$sToRender .= "<td>";
-			$sToRender .= ("<a href=\"" . $_SERVER["PHP_SELF"] . "?fStartIndex=" . ($this->iStartIndex +  $this->iResultsToDisplay) . "\">Next</a>");
+			//$sToRender .= ("<a href=\"" . $_SERVER["PHP_SELF"] . "?fStartIndex=" . ($this->iStartIndex +  $this->iResultsToDisplay) . "\">Next</a>");
+			$sToRender .= ("<input type=\"image\" src=\"$default->graphicsUrl/widgets/next.gif\" onClick=\"setActionAndSubmit('" . $_SERVER["PHP_SELF"] . "?fStartIndex=" . ($this->iStartIndex +  $this->iResultsToDisplay) . "')\" />");
 			$sToRender .= "</td>\n";
 		}
 		/* Display both the next and the previous buttons */		
 		else if (($this->iStartIndex + $this->iResultsToDisplay) < $this->getResultCount($sql) && $this->iStartIndex > 0) {
 			$sToRender .= "<td>";
-			$sToRender .= ("<a href=\"" . $_SERVER["PHP_SELF"] . "?fStartIndex=" . ($this->iStartIndex +  $this->iResultsToDisplay) . "\">Next</a>");
+			$sToRender .= ("<input type=\"image\" src=\"$default->graphicsUrl/widgets/next.gif\" onClick=\"setActionAndSubmit('" . $_SERVER["PHP_SELF"] . "?fStartIndex=" . ($this->iStartIndex +  $this->iResultsToDisplay) . "')\" />");
 			$sToRender .= "</td>";
 			$sToRender .= "<td>";
-			$sToRender .= ("<a href=\"" . $_SERVER["PHP_SELF"] . "?fStartIndex=" . ($this->iStartIndex - $this->iResultsToDisplay) . "\">Previous</a>");
+			$sToRender .= ("<input type=\"image\" src=\"$default->graphicsUrl/widgets/previous.gif\" onClick=\"setActionAndSubmit('" . $_SERVER["PHP_SELF"] . "?fStartIndex=" . ($this->iStartIndex -  $this->iResultsToDisplay) . "')\" />");
 			$sToRender .= "</td>\n";
 			
 		}	
@@ -144,7 +161,7 @@ class PatternBrowseableSearchResults {
 			$sToRender .= ("&nbsp");
 			$sToRender .= "</td>";
 			$sToRender .= "<td>\n";
-			$sToRender .= ("<a href=\"" . $_SERVER["PHP_SELF"] . "?fStartIndex=" . ($this->iStartIndex - $this->iResultsToDisplay) . "\">Previous</a>");
+			$sToRender .= ("<input type=\"image\" src=\"$default->graphicsUrl/widgets/previous.gif\" onClick=\"setActionAndSubmit('" . $_SERVER["PHP_SELF"] . "?fStartIndex=" . ($this->iStartIndex -  $this->iResultsToDisplay) . "')\" />");
 			$sToRender .= "</td>";
 		}
 		
