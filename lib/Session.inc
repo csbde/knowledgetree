@@ -49,8 +49,7 @@ class Session {
         $current = time();
         // insert session information into db
         $sql = new Owl_DB;
-        $result = $sql->query("insert into $default->owl_sessions_table (sessid, uid, lastused, ip) values ('$sessionID', '$userID', '$current', '$ip')");
-        
+        $result = $sql->query("insert into $default->owl_sessions_table (id, user_id, lastused, ip) values ('$sessionID', '$userID', '$current', '$ip')");        
         if(!'result') {
             die("$lang_err_sess_write");
         }
@@ -67,7 +66,7 @@ class Session {
         session_start();
         // remove the session information from the database
         $sql = new Owl_DB;
-        $query = "delete from $default->owl_sessions_table where sessid = '" . session_id() . "'";
+        $query = "delete from $default->owl_sessions_table where id = '" . session_id() . "'";
         $sql->query($query);
 
         // remove the php4 session
@@ -86,7 +85,7 @@ class Session {
         // deletes any sessions for this userID where the default timeout has elapsed.
         $time = time() -  $default->owl_timeout;
         $sql = new Owl_DB;
-        $sql->query("delete from $default->owl_sessions_table where uid = '" . $userID . "' and lastused <= $time ");
+        $sql->query("delete from $default->owl_sessions_table where user_id = '" . $userID . "' and lastused <= $time ");
     }
     
     /**
@@ -107,7 +106,7 @@ class Session {
         
         // this should be an existing session, so check the db
         $sql = new Owl_DB; 
-        $sql->query("select * from $default->owl_sessions_table where sessid = '$sessionID'");
+        $sql->query("select * from $default->owl_sessions_table where id = '$sessionID'");
         $numrows = $sql->num_rows($sql);
         $time = time();
         
@@ -138,7 +137,7 @@ class Session {
                         // session verified, so update last user time
                         $lastused = time();
                         $userID = $sessionStatus["userID"];
-                        $sql->query("update $default->owl_sessions_table set lastused = '$lastused' where uid = '$userID'");
+                        $sql->query("update $default->owl_sessions_table set lastused = '$lastused' where user_id = '$userID'");
 
                     } else {
                         // session time out status

@@ -1278,8 +1278,7 @@ function getprefs ( )
     global $default;
 
     $sql = new Owl_DB;
-    //$sql->query("select * from $default->owl_prefs_table");
-    $sql->query("select * from prefs");
+    $sql->query("select * from $default->owl_prefs_table");
     $sql->next_record();
 
     $default->owl_email_from        = $sql->f("email_from");
@@ -1637,6 +1636,7 @@ if (substr(phpversion(),0,5) >= "4.1.0") {
     }
 }
 
+/*
 // initialise session var
 if(!isset($sess)) {
     $sess = 0;
@@ -1649,6 +1649,7 @@ if(!isset($loginname)) {
 if(!isset($login)) {
     $login = 0;
 }
+*/
 
 // set default language
 if(isset($default->owl_lang)) {
@@ -1660,7 +1661,7 @@ if(isset($default->owl_lang)) {
     } else {
 
         $sql = new Owl_DB;
-        $sql->query("select * from $default->owl_sessions_table where sessid = '$sess'");       
+        $sql->query("select * from $default->owl_sessions_table where id = '$sess'");       
         $sql->next_record();
         $numrows = $sql->num_rows($sql);
         $getuid = $sql->f("uid");
