@@ -40,11 +40,11 @@ function renderBrowseTypeSelect($sBrowseType) {
     // TODO: write function for onChange that checks if the new value
     return "<span class=\"browseTypeSelect\">\n
             \tView documents by: <input type=\"radio\" name=\"fBrowseType\" onclick=\"document.MainForm.submit()\" value=\"folder\"" .
-                               ((($sBrowseType=="folder") || (strlen($sBrowseType)==0)) ? " checked" : "") . "/> Folders\n" .
+                               ((($sBrowseType=="folder") || (strlen($sBrowseType)==0)) ? " checked=\"checked\"" : "") . "/> Folders\n" .
                                "<input type=\"radio\" name=\"fBrowseType\" onclick=\"document.MainForm.submit()\" value=\"category\"" .
-                               (($sBrowseType=="category") ? " checked" : "") . "/> Category\n" .
+                               (($sBrowseType=="category") ? " checked=\"checked\"" : "") . "/> Category\n" .
                                "<input type=\"radio\" name=\"fBrowseType\" onclick=\"document.MainForm.submit()\" value=\"documentType\"" .
-                               (($sBrowseType=="documentType") ? " checked" : "") . "/> Document Type\n</span>";
+                               (($sBrowseType=="documentType") ? " checked=\"checked\"" : "") . "/> Document Type\n</span>";
 }
 
 /**
