@@ -39,14 +39,14 @@ if (checkSession()) {
 		    	if ($oDASFactory->update($oDocumentArchiving, $fExpirationDate, $fDocumentTransactionID, $fTimeUnitID, $fUnits)) {
 		    		$default->log->info("modifyArchiveSettingsBL.php successfully updated archive settings (documentID=$fDocumentID)");
 					// created, redirect to view page
-					redirect("$default->rootUrl/control.php?action=viewDocument&fDocumentID=$fDocumentID");
+					controllerRedirect("viewDocument", "fDocumentID=$fDocumentID&fShowSection=archiveSettings");
 		    	} else {
     				$default->log->error("modifyArchiveSettingsBL.php error updating archive settings (documentID=$fDocumentID)");		    		
 		    	}	    	
 		    } elseif ($fDelete) {
 		    	if ($oDocumentArchiving->delete()) {
 		    		$default->log->info("modifyArchiveSettingsBL.php successfully deleted archive settings (documentID=$fDocumentID)");
-					redirect("$default->rootUrl/control.php?action=viewDocument&fDocumentID=$fDocumentID");		    		
+					controllerRedirect("viewDocument", "fDocumentID=$fDocumentID&fShowSection=archiveSettings");		    		
 		    	} else {
 		    		$default->log->error("modifyArchiveSettingsBL.php error deleting archive settings (documentID=$fDocumentID)");
 		    	}
