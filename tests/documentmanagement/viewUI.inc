@@ -385,7 +385,7 @@ function getEditPage($oDocument) {
 		$sToRender = "<div id=\"headings\" style=\"position:absolute;visibility:visible;top:106px;left:132px;\">";
 	}
 
-    $sToRender .= renderHeading("Document Detail");
+    $sToRender .= renderHeading(_("Document Detail"));
     $sToRender .= renderDocumentPath($oDocument) . "\n\n";
 	$sToRender .= "<table border=\"0\" width=\"530\">";    	
 	$sToRender .= renderDocumentSection("<a href=\"javascript:void();\" onClick=\"switchDiv('documentData');\">Document Data</a>");
@@ -426,7 +426,7 @@ function getPage($oDocument, $bEdit) {
 		$sToRender = "<div id=\"headings\" style=\"position:absolute;visibility:visible;top:106px;left:132px;\">";
 	}
 
-    $sToRender .= renderHeading("Document Detail");
+    $sToRender .= renderHeading(_("Document Detail"));
     $sToRender .= renderDocumentPath($oDocument) . "\n\n";
 	$sToRender .= "<table border=\"0\" width=\"530\">";    	
 	$sToRender .= renderDocumentSection("<a href=\"javascript:void();\" onClick=\"switchDiv('documentData');\">Document Data</a>");
@@ -470,7 +470,7 @@ function getPage($oDocument, $bEdit) {
 function getViewPage($oDocument) {
     global $default;
 	$iDocumentID = $oDocument->getID();
-    $sToRender = renderHeading("Document Detail") . renderDocumentPath($oDocument) . "\n<br>\n";
+    $sToRender = renderHeading(_("Document Detail")) . renderDocumentPath($oDocument) . "\n<br>\n";
     
     $sToRender .= "<table>\n";
     $sToRender .= "<tr>\n";
@@ -528,7 +528,7 @@ function getViewPage($oDocument) {
  */
 function getCheckOutEditPage($oDocument, $bCheckedOut = false) {
     global $default;
-    $sToRender = renderHeading("Document Detail") . renderDocumentPath($oDocument) . "\n<br>\n";
+    $sToRender = renderHeading(_("Document Detail")) . renderDocumentPath($oDocument) . "\n<br>\n";
     $sToRender .= "<table border = 0>\n";
     $sToRender .= "<tr>\n";
     $sToRender .= "<td>\n";
@@ -576,7 +576,7 @@ function getCheckOutEditPage($oDocument, $bCheckedOut = false) {
  */
 function getCheckInEditPage($oDocument) {
     global $default;
-    $sToRender = renderHeading("Document Detail") . renderDocumentPath($oDocument) . "\n<br>\n";
+    $sToRender = renderHeading(_("Document Detail")) . renderDocumentPath($oDocument) . "\n<br>\n";
     $sToRender .= "<table border = 0>\n";
     $sToRender .= "<tr>\n";
     $sToRender .= "<td>\n";
@@ -613,7 +613,7 @@ function getWebPublishPage($oDocument) {
     
     $oPatternListBox = & new PatternListBox($default->web_sites_table, "web_site_name", "id", "fWebSiteID");
     
-    $sToRender = renderHeading("Document Detail") . renderDocumentPath($oDocument) . "\n<br>\n";
+    $sToRender = renderHeading(_("Document Detail")) . renderDocumentPath($oDocument) . "\n<br>\n";
     $sToRender .= "<table border = 0>\n";
     $sToRender .= "<tr>\n";
     $sToRender .= "<td>\n";
