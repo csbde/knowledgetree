@@ -58,8 +58,8 @@ function displayFolderLink($oFolder, $sLinkPage = "") {
                         $oFolder->getName());
 }
 
-function renderFolderPath($fFolderID) {	
-	$sFolderPath = displayFolderPathLink(Folder::getFolderPathAsArray($fFolderID, "$default->owl_ui_directory/foldermanagement/addFolderBL.php"));
+function renderFolderPath($fFolderID, $sLinkURL) {	
+	$sFolderPath = displayFolderPathLink(Folder::getFolderPathAsArray($fFolderID, $sLinkURL));
 	return "<table border=1 width = 100%><tr><td>$sFolderPath</td></tr></table>\n";	
 }
 
