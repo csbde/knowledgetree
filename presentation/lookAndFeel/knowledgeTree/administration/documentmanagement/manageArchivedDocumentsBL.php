@@ -48,7 +48,7 @@ if (checkSession()) {
 
 	if (strlen($fSearchString) > 0) {
 		// perform the search and display the results
-		$sMetaTagIDs = getChosenMetaDataTags();				
+		$sMetaTagIDs = getChosenMetaDataTags($_GET);				
 		if (strlen($sMetaTagIDs) > 0) {
 			$sSQLSearchString = getSQLSearchString($fSearchString);
 			$aDocuments = searchForDocuments($sMetaTagIDs, $sSQLSearchString, "Archived");
@@ -140,7 +140,6 @@ if (checkSession()) {
 	$main->setCentralPayload($oContent);
 	$main->setFormAction($_SERVER['PHP_SELF']);	
 	$main->setHasRequiredFields(true);
-	$main->setSubmitMethod("GET");			
 	$main->render();
 }
 

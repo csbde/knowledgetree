@@ -46,7 +46,7 @@ if (checkSession()) {
 			$oPatternCustom = & new PatternCustom();
 			
 			//display search results
-			$sMetaTagIDs = getChosenMetaDataTags();	
+			$sMetaTagIDs = getChosenMetaDataTags($_POST);	
 			
 			if (strlen($sMetaTagIDs) > 0) {
 				$sSQLSearchString = getSQLSearchString($fSearchString);
