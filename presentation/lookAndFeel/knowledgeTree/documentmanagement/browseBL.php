@@ -1,6 +1,8 @@
 <?php
 
 require_once("../../../../config/dmsDefaults.php");
+require_once("$default->fileSystemRoot/lib/browse/BrowserFactory.inc");
+require_once("$default->fileSystemRoot/lib/browse/Browser.inc");
 require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentBrowser.inc");
 require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentType.inc");
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
@@ -39,6 +41,9 @@ require_once("$default->uiDirectory/documentmanagement/browseUI.inc");
 
 // only if we have a valid session
 if (checkSession()) {
+    require_once("../../../../phpSniff/phpTimer.class.php");
+    $timer = new phpTimer();
+    $timer->start();
     
     // retrieve variables
     if (!$fBrowseType) {
@@ -58,51 +63,19 @@ if (checkSession()) {
     }
        
     // fire up the document browser 
-    $oDocBrowser = new DocumentBrowser();
+    //$oDocBrowser = new DocumentBrowser();
+    $oBrowser = BrowserFactory::create($fBrowseType, $fSortBy, $fSortDirection);
+     
     // instantiate my content pattern
     $oContent = new PatternCustom();
-
-    switch ($fBrowseType) {
-        case "folder" : // retrieve folderID if present
-                        if (!$fFolderID) {
-                            $aResults = $oDocBrowser->browseByFolder();
-                            controllerRedirect("browse", "fFolderID=" . $aResults["folders"][0]->getID());
-                        } else {
-                            $aResults = $oDocBrowser->browseByFolder($fFolderID, $fSortBy, $fSortDirection);
-                        }
-                        break;
-                        
-        case "category" :
-                        $sectionName = "Manage Categories";
-                        if (!$fCategoryName) {
-                            $aResults = $oDocBrowser->browseByCategory("", $fSortBy, $fSortDirection);
-                        } else {
-                            $aResults = $oDocBrowser->browseByCategory($fCategoryName, $fSortBy, $fSortDirection);
-                        }
-                        break;
-                        
-        case "documentType" :
-                        $sectionName = "Manage Document Types";
-                        if (!$fDocumentTypeID) {
-                            $aResults = $oDocBrowser->browseByDocumentType(-1, $fSortBy, $fSortDirection);
-                        } else {
-                            $aResults = $oDocBrowser->browseByDocumentType($fDocumentTypeID, $fSortBy, $fSortDirection);
-                        }
-                        break;
-    }
+	
+	$aResults = $oBrowser->browse();
     
     require_once("../../../webpageTemplate.inc");    
-    if ($aResults) {
-        // display the list of categories
-        $oContent->addHtml(renderPage($aResults, $fBrowseType, $fSortBy, $fSortDirection));
-        
-    } else {
-        $main->setErrorMessage("There are no document types to display");
-    }
-    
+	// display the browse results
+    $oContent->addHtml(renderPage($aResults, $fBrowseType, $fSortBy, $fSortDirection));    
     $main->setCentralPayload($oContent);
-    $main->setFormAction($_SERVER["PHP_SELF"]);
-    $main->render();
-    
+    $main->setFormAction($_SERVER["PHP_SELF"]);    
+    $main->render();    
 }
 ?>

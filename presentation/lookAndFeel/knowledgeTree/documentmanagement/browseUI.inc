@@ -228,13 +228,13 @@ function renderFolderResults($aResults) {
  * @param string the direction currently sorted in
  */
 function renderSortHeadings($sSortBy, $sSortDirection) {
- 	global $default, $oDocBrowser, $fBrowseType, $fFolderID, $fCategoryName, $fDocumentTypeID;
+ 	global $default, $oBrowser, $fBrowseType, $fFolderID, $fCategoryName, $fDocumentTypeID;
  	
 	$sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
 	$sTDBGColour = $default->siteMap->getSectionColour($sSectionName, "td");    
 
 	// need list of display criteria and sort name
-    $aSortCriteria = $oDocBrowser->getSortCriteria();							 										 
+    $aSortCriteria = $oBrowser->getSortCriteria();							 										 
 	
     $sToRender .= "<tr bgcolor=\"$sTDBGColour\">";
     while (list($key, $value) = each ($aSortCriteria)) {    	
