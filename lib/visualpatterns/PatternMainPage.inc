@@ -103,7 +103,7 @@ class PatternMainPage {
                             
 		$sToRender .= 		    "<form name=\"MainForm\" " . (isset($this->sFormEncType) ? "enctype=\"$this->sFormEncType\" " : " ") . " action=\"".$this->sFormAction."\" method=POST " . (($this->bHasRequiredFields) ? "onsubmit=\"return validateForm(this)\" " : " ") . ">\n" .		
 		
-								"<table border=\"1\" width=\"700\" height=\"600\">\n " .
+								"<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"700\" height=\"600\">\n " .
 
 									"<tr height=\"18%\">\n".
 										"<td width=\"5%\">\n";
