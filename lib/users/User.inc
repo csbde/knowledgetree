@@ -374,7 +374,7 @@ class User {
 		settype($aUserArray, "array");
 		$sql = new Owl_DB();
 		$result = $sql->query("SELECT * FROM " . $default->owl_users_table  . (isset($sWhereClause) ? " " . $sWhereClause : ""));
-		if ($result) {			
+		if ($result) {
 			$iCount = 0;
 			while ($sql->next_record()) {
 				$oUser = & User::get($sql->f("id"));
@@ -388,6 +388,27 @@ class User {
 		return false;
 	}
 	
-	
+    /**
+     * Static function
+     * Return the unitID for the specified user
+     *
+     * @param int the id the user to lookup the unit for
+     * @return int the unitID, false otherwise and $_SESSION["errorMessage"] set
+     */
+    function getUnitID($userID) {
+        global $default, $lang_err_database;
+        
+		$sql = new Owl_DB();        
+        $result = $sql->query("SELECT DISTINCT gul.unit_id FROM $default->owl_users_groups_table ugl " .
+                              "INNER JOIN $default->owl_groups_units_table gul ON ugl.group_id = gul.group_id ".
+                              "WHERE ugl.user_id=$userID");
+		if ($result) {
+			if ($sql->next_record()) {
+				return $sql->f("unit_id");
+			}
+		}
+		$_SESSION["errorMessage"] = $lang_err_database;
+		return false;
+    }
 }
 ?>
