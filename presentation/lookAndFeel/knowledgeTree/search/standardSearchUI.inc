@@ -8,8 +8,18 @@
 * @package presentation.lookAndFeel.documentmanagement
 */
 
+function renderHeading() {
+    global $default;
+    $sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
+    $sColor = $default->siteMap->getSectionColour($sSectionName, "th");
+    $sToRender .= "<tr align=\"left\"><th class=\"sectionHeading\" bgcolor=\"$sColor\"><font color=\"ffffff\">Standard Search</font></th></tr>\n";
+    $sToRender .= "<tr/>\n";
+    $sToRender .= "<tr/>\n";
+    return $sToRender;
+}
+
 function getPage($sSearchText, $sBrowseType, $iFolderID, $iDocumentID, $sCategoryName, $iDocType, $sFolderIDs, $iStartIndex, $sSQLSearchString, $bSearchByDocument = false) {
-	return getSearchResults($sFolderIDs, $sSQLSearchString, $iStartIndex, $bSearchByDocument) . getSearchVariablesHtml($sSearchText, $sBrowseType, $iFolderID, $iDocumentID, $sCategoryName, $iDocType);
+    return "<table width=\"600\">" . renderHeading() . "</table>" . getSearchResults($sFolderIDs, $sSQLSearchString, $iStartIndex, $bSearchByDocument) . getSearchVariablesHtml($sSearchText, $sBrowseType, $iFolderID, $iDocumentID, $sCategoryName, $iDocType);
 }
 
 function getSearchResults($sIDs,$sSQLSearchString, $iStartIndex, $bSearchByDocument = false) {
@@ -18,21 +28,25 @@ function getSearchResults($sIDs,$sSQLSearchString, $iStartIndex, $bSearchByDocum
 			"FROM $default->owl_documents_table AS D INNER JOIN $default->owl_folders_table AS F ON D.folder_id = F.id " .
 			"INNER JOIN $default->owl_document_words_table AS DWL ON DWL.document_id = D.id " .
 			"INNER JOIN $default->owl_words_lookup_table AS WL ON WL.id = DWL.word_id ";
-			if ($bSearchByDocument) {
-				$sQuery .= "WHERE D.id IN ($sIDs) ";
-			} else {
-				$sQuery .= "WHERE F.id IN ($sIDs) ";
-			}
-			$sQuery .= "AND ($sSQLSearchString)";	
+            if (strlen($sIDs) > 0) {
+                if ($bSearchByDocument) {
+                    $sQuery .= "WHERE D.id IN ($sIDs) ";
+                } else {
+                    $sQuery .= "WHERE F.id IN ($sIDs) ";
+                }
+                $sQuery .= "AND ($sSQLSearchString)";
+            } else {
+                $sQuery .= "WHERE ($sSQLSearchString)";
+            }
+				
 			$sQuery .= "ORDER BY D.name ASC";
 	
 	$aColumns = array("folder_image_url", "document_name");
 	$aColumnTypes = array(4,3);
-	$aColumnHeaders = array("","Document");
+	$aColumnHeaders = array("<font color=\"ffffff\">Folder</font>","<font color=\"ffffff\">Document</font>");
 	$aLinkURLs = array("$default->rootUrl/control.php?action=browse","$default->rootUrl/control.php?action=viewDocument");
 	$aDBQueryStringColumns = array("document_id","folder_id");
 	$aQueryStringVariableNames = array("fDocumentID", "fFolderID");
-	
 	
 	$oPatternBrowse = & new PatternBrowseableSearchResults($sQuery, 10, $aColumns, $aColumnTypes, $aColumnHeaders, $aLinkURLs, $aDBQueryStringColumns, $aQueryStringVariableNames);
 	$oPatternBrowse->setStartIndex($iStartIndex);
