@@ -12,12 +12,12 @@
 */
 
 
-class DepandantDocument {
+class DependantDocumentTemplate {
 
 	/** primary key value */
 	var $iId;
 	/** primary key of user responsible for creating document */
-	var $iUserID;
+	var $iDefaultUserID;
 	/** document title name */	
 	var $sDocumentTitle;
 	/** primary key of document to use as template */
@@ -30,11 +30,11 @@ class DepandantDocument {
 	* @param 	Document field data type
 	*
 	*/
-	function DepandantDocument($sNewDocumentTitle, $iUserID, $iNewTemplateDocumentID) {
+	function DependantDocumentTemplate($sNewDocumentTitle, $iNewDefaultUserID, $iNewTemplateDocumentID) {
 		//object not created yet
 		global $default;
 		$this->iID = -1;
-		$this->iUserID = $iUserID;
+		$this->iDefaultUserID = $iNewDefaultUserID;
 		$this->iTemplateDocumentID = $iNewTemplateDocumentID;
 		
 
@@ -54,7 +54,7 @@ class DepandantDocument {
 	* Get the primary key of the user responsbile for new document creation
 	*/
 	function getUserID() {
-		return $this->iUserID;
+		return $this->iDefaultUserID;
 	}
 
 	/**
@@ -108,7 +108,7 @@ class DepandantDocument {
 		//if the object hasn't been created
 		if ($this -> iId < 0) {
 			$sql = $default -> db;
-			$result = $sql -> query("INSERT INTO $default -> owl_dependant_documents_table (document_title, user_id,template_document_id) VALUES ('" . addslashes($this->sDocumentTitle) . "', $this->iUserID, $this->iTemplateDocumentID)");
+			$result = $sql -> query("INSERT INTO $default->owl_dependant_document_template_table (document_title, user_id,template_document_id) VALUES ('" . addslashes($this->sDocumentTitle) . "', $this->iDefaultUserID, $this->iTemplateDocumentID)");
 			if ($result) {
 				$this -> iId = $sql -> insert_id();
 				return true;
@@ -131,7 +131,7 @@ class DepandantDocument {
 		//only update if the object has been stored
 		if ($this -> iId > 0) {
 			$sql = $default -> db;
-			$result = $sql -> query("UPDATE $default -> owl_dependant_documents SET document_title = '".addslashes($this -> sDocumentTitle)."', user_id = $this->iUserID, template_document_id = $this->iTemplateDocumentID WHERE id = $this->iId");
+			$result = $sql -> query("UPDATE $default -> owl_dependant_documents SET document_title = '".addslashes($this -> sDocumentTitle)."', user_id = $this->iDefaultUserID, template_document_id = $this->iTemplateDocumentID WHERE id = $this->iId");
 			if ($result) {
 				return true;
 			}
@@ -153,7 +153,7 @@ class DepandantDocument {
 		//only delete the object if it exists in the database
 		if ($this -> iId >= 0) {
 			$sql = $default -> db;
-			$result = $sql -> query("DELETE FROM $default->owl_dependant_documents_table WHERE id = $this->iId");
+			$result = $sql -> query("DELETE FROM $default->owl_dependant_document_template_table WHERE id = $this->iId");
 			if ($result) {
 				return true;
 			}
@@ -175,14 +175,14 @@ class DepandantDocument {
 	function & get($iDependantDocumentID) {
 		global $default;
 		$sql = $default -> db;
-		$result = $sql -> query("SELECT * FROM $default->owl_dependant_documents_table WHERE id = $iDependantDocumentID");
+		$result = $sql -> query("SELECT * FROM $default->owl_dependant_document_template_table WHERE id = $iDependantDocumentID");
 		if ($result) {
 			if ($sql -> next_record()) {
 				$oDependantDocument = & new DependantDocument(stripslashes($sql -> f("document_title")), $sql -> f("user_id"), $sql -> f("template_document_id"));
 				$oDependantDocument -> iId = $sql -> f("id");
 				return $oDependantDocument;
 			}
-			$_SESSION["errorMessage"] = $lang_err_object_not_exist."id = ".$iDependantDocumentID." table = $default->owl_dependant_documents_table";
+			$_SESSION["errorMessage"] = $lang_err_object_not_exist."id = ".$iDependantDocumentID." table = $default->owl_dependant_document_template_table";
 			return false;
 		}
 		$_SESSION["errorMessage"] = $lang_err_database;
