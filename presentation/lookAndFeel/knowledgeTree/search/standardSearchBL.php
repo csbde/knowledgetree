@@ -37,18 +37,14 @@ if (checkSession()) {
 								require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 								$oPatternCustom = & new PatternCustom();
                                 $oPatternCustom->setHtml(getPage($fSearchText, $fBrowseType, $fFolderID, $fDocumentID, $fCategoryName, $fDocType, $sFolderString, $fStartIndex, getSQLSearchString($fSearchText)));
-                                $main->setCentralPayload($oPatternCustom);                                
-                                $main->setFormAction("addFolderBL.php?fFolderID=$fFolderID");
-                                $main->setHasRequiredFields(true);
+                                $main->setCentralPayload($oPatternCustom);
                                 $main->render();								
 							} else {
 								$sFolderString = getApprovedFolderString($fFolderID);
 								require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 								$oPatternCustom = & new PatternCustom();
                                 $oPatternCustom->setHtml(getPage($fSearchText, $fBrowseType, $fFolderID, $fDocumentID, $fCategoryName, $fDocType, $sFolderString, $fStartIndex, getSQLSearchString($fSearchText)));
-                                $main->setCentralPayload($oPatternCustom);                                
-                                $main->setFormAction("addFolderBL.php?fFolderID=$fFolderID");
-                                $main->setHasRequiredFields(true);
+                                $main->setCentralPayload($oPatternCustom);
                                 $main->render();
 							}
 							break;
@@ -61,18 +57,14 @@ if (checkSession()) {
 								require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 								$oPatternCustom = & new PatternCustom();
                                 $oPatternCustom->setHtml(getPage($fSearchText, $fBrowseType, $fFolderID, $fDocumentID, $fCategoryName, $fDocType, $sFolderString, $fStartIndex, getSQLSearchString($fSearchText)));
-                                $main->setCentralPayload($oPatternCustom);                                
-                                $main->setFormAction("addFolderBL.php?fFolderID=$fFolderID");
-                                $main->setHasRequiredFields(true);
+                                $main->setCentralPayload($oPatternCustom);
                                 $main->render();			
 							} else {								 
 								$sFolderString = getApprovedFolderStringFromCategory($fCategoryName);
 								require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 								$oPatternCustom = & new PatternCustom();
                                 $oPatternCustom->setHtml(getPage($fSearchText, $fBrowseType, $fFolderID, $fDocumentID, $fCategoryName, $fDocType, $sFolderString, $fStartIndex, getSQLSearchString($fSearchText)));
-                                $main->setCentralPayload($oPatternCustom);                                
-                                $main->setFormAction("addFolderBL.php?fFolderID=$fFolderID");
-                                $main->setHasRequiredFields(true);
+                                $main->setCentralPayload($oPatternCustom);
                                 $main->render();								
 							}
 							break;
@@ -86,9 +78,7 @@ if (checkSession()) {
 								require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 								$oPatternCustom = & new PatternCustom();
                                 $oPatternCustom->setHtml(getPage($fSearchText, $fBrowseType, $fFolderID, $fDocumentID, $fCategoryName, $fDocType, $sFolderString, $fStartIndex, getSQLSearchString($fSearchText)));
-                                $main->setCentralPayload($oPatternCustom);                                
-                                $main->setFormAction("addFolderBL.php?fFolderID=$fFolderID");
-                                $main->setHasRequiredFields(true);
+                                $main->setCentralPayload($oPatternCustom);
                                 $main->render();			
 							} else {
 								//TODO ONCE DOC TYPE/FOLDERS HAVE BEEN CHANGED
