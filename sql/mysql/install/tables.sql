@@ -62,6 +62,7 @@ creator_id INTEGER NOT NULL
 CREATE TABLE discussion_comments ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 thread_id INTEGER NOT NULL,
+in_reply_to INTEGER,
 user_id INTEGER NOT NULL,
 subject TEXT,
 body TEXT,
