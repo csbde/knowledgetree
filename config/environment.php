@@ -59,6 +59,14 @@ $default->system = new System();
 // hack to set org to use for dashboard greeting
 $default->organisationID = 1;
 
+// Scrolling News (true/false).
+// Note: This makes use of the MARQUEE HTML tag. This tag is not fully supported in
+//       all web browsers. It is generally safe for most web browsers (IE/Gecko-based).
+//       Only enable this if you are sure that this will not adversely
+//       effect your clients.
+// $default->scrollingNews = true;
+$default->scrollingNews = false; 
+
 if ($default->system->initialised()) {
     $aSettings = $default->system->aSettings;
     
