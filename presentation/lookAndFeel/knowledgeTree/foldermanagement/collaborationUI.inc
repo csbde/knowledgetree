@@ -45,7 +45,7 @@ function getEditPage($iFolderCollaborationID, $iFolderID) {
 	$sToRender .= "</table>\n";
 	$sToRender .= "<table border=\"0\" width=\"100%\">\n";	
 	$sToRender .= "<tr>\n";	
-	$sToRender .= "<td>" . getFolderCollaborationData($iFolderID) . "</td>\n";
+	$sToRender .= "<td>" . getFolderCollaborationData($iFolderCollaborationID) . "</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";	
 	$sToRender .= "<td><table><tr><td><input type=\"image\" src=\"$default->owl_graphics_url\widgets\update.gif\" /></td><td><a href=\"$default->owl_root_url/control.php?action=editFolder&fFolderID=" . $iFolderID . "\"><img src=\"$default->owl_graphics_url\widgets\cancel.gif\" border=\"0\" /></a></td></tr></table>\n";
