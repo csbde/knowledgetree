@@ -136,7 +136,8 @@ class Browser {
 
     function setOptions($aOptions) {
         $this->aOptions = array_merge($this->aOptions, $aOptions);
-        foreach (array_values($this->aSortCriteria) as $oCriteria) {
+        foreach (array_keys($this->aSortCriteria) as $sKey) {
+            $oCriteria =& $this->aSortCriteria[$sKey];
             $oCriteria->setOptions($aOptions);
         }
     }
