@@ -45,15 +45,16 @@ if ($default->system->initialised()) {
     $default->emailFrom = "dms@jamwarehouse.com";
     $default->emaiFromName = "MRC Document Management System";
     
-    $default->serverName = "archive.mrc.ac.za";
+    $default->serverName = "changeme.to.your.hostname";
     
     // directories
     $default->documentRoot  =  "/usr/local/www/owl/dms/Documents";
     $default->languageDirectory  = $default->fileSystemRoot . "/locale";
     $default->uiDirectory  = $default->fileSystemRoot . "/presentation/lookAndFeel/knowledgeTree";
-    
+    $default->uMask = "0755";
+     
     // urls
-    $default->rootUrl  = "/owl";
+    $default->rootUrl  = "/dms";
     $default->graphicsUrl = $default->rootUrl . "/graphics";
     $default->uiUrl  = $default->rootUrl . "/presentation/lookAndFeel/knowledgeTree";
     
