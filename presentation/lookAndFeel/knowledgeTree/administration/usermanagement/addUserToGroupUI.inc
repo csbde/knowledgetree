@@ -17,17 +17,14 @@ function getPage($iUserID, $iGroupID) {
 	if (isset($iUserID)) {
 		$oUser = User::get($iUserID);
 		$heading = "<tr><td>Are you Sure you wish to assign the User to the Group?</td></tr>\n";
-	}else{
+	} else{
 		$heading = "<tr><td>Please Assign a User to a Group:</td></tr>\n";
 	}
-	
-	
 	if (isset($iGroupID)) {
 		$oGroup = Group::get($iGroupID);
-		
 	}
 
-    $sToRender .= "<table width=\"100%\">" . renderHeading("Add User to Group") . "</table>";
+    $sToRender .= "<table width=\"600\">" . renderHeading("Add User to Group") . "</table>";
 	$sToRender .= "<table>\n";
 	$sToRender .= $heading;
 	$sToRender .= "<tr>\n";
@@ -42,7 +39,7 @@ function getPage($iUserID, $iGroupID) {
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "</tr>\n";
-	$sToRender .= "<td></td><td>" . getAssignButton($oUser);	
+	$sToRender .= "<td></td><td>" . getAssignButton($oUser);
 	$sToRender .= getCancelButton($oUser);	
 	$sToRender .= "</td></table>\n";
 	
@@ -55,7 +52,7 @@ function getPage($iUserID, $iGroupID) {
 function getPageNotSelected() {	
 	global $default;
 
-    $sToRender .= "<table width=\"100%\">" . renderHeading("Add User to Group") . "</table>";
+    $sToRender .= "<table width=\"600\">" . renderHeading("Add User to Group") . "</table>";
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr><td><b>Sorry, Selection Failed</b></td></tr>\n";
 	$sToRender .= "<tr><td>Please select BOTH a User AND a Group</td></tr>\n";
@@ -74,7 +71,7 @@ function getPageNotSelected() {
 function getPageSuccess() {
 	global $default;
 
-    $sToRender .= "<table width=\"100%\">" . renderHeading("Add User to Group") . "</table>";            
+    $sToRender .= "<table width=\"600\">" . renderHeading("Add User to Group") . "</table>";            
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr><td><b>Success!</b></td></tr>\n";
 	$sToRender .= "<tr><td>The User was successfully assigned to the specified Group</td></tr>\n";
@@ -93,8 +90,8 @@ function getPageSuccess() {
 function getPageFail() {
 	global $default;
 		
-    $sToRender .= "<table border=1 width=\"600\">" . renderHeading("Add User to Group") . "</table>";
-	$sToRender .= "<table border=1>\n";
+    $sToRender .= "<table border=\"0\" width=\"600\">" . renderHeading("Add User to Group") . "</table>";
+    $sToRender .= "<table>\n";
 	$sToRender .= "<tr><td><b>Failed!</b></td></tr>\n";
 	$sToRender .= "<tr><td>The User already belongs to the specified Group</td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
@@ -168,9 +165,9 @@ function getAssignButton($oUser) {
 function getCancelButton($oUser) {
 	global $default;
 	if (!isset($oUser)) {
-		//return "<td align = right><a href=\"$default->rootUrl/control.php?action=UserManagement\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" value=\"cancel\" /></a></td>\n";
+		return "<td align = right><a href=\"$default->rootUrl/control.php?action=userManagement\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" value=\"cancel\" border=\"0\"/></a></td>\n";
 	} else {
-		return "<td align = right><a href=\"$default->rootUrl/control.php?action=addUserToGroup\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" /></a></td>\n";
+		return "<td align = right><a href=\"$default->rootUrl/control.php?action=addUserToGroup\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\" /></a></td>\n";
 	}
 }
 
