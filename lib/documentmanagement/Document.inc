@@ -286,7 +286,7 @@ class Document extends KTEntity {
 		//if the folder is not the root folder 
 		if ($iFolderID != 0) {
 			$sql = $default->db;
-			$sql->query("SELECT parent_id FROM $default->folders_table WHERE ID = " . quote($iFolderID));
+			$sql->query(array("SELECT parent_id FROM $default->folders_table WHERE ID = ?", $iFolderID));/*ok*/
 			$sql->next_record();
 			return $this->generateParentFolderIDS($sql->f("parent_id")) . ",$iFolderID";
 		}
@@ -314,7 +314,7 @@ class Document extends KTEntity {
 		//if the folder is not the root folder 
 		if ($iFolderID != 0) {
 			$sql = $default->db;
-			$sql->query("SELECT name, parent_id FROM $default->folders_table WHERE ID = " . quote($iFolderID));
+			$sql->query(array("SELECT name, parent_id FROM $default->folders_table WHERE ID = ?", $iFolderID));/*ok*/
 			$sql->next_record();			
 			return $this->generateFullFolderPath($sql->f("parent_id")) . "/" . $sql->f("name");
 		}
@@ -382,12 +382,12 @@ class Document extends KTEntity {
 	    $sql = $default->db;
 
 	    // group permissions                
-	    $sGroupPerms = "INSERT INTO $default->search_permissions_table (user_id, document_id) " .
-				       "SELECT UGL.user_id AS user_id, D.id AS document_id " .
+	    $sGroupPerms = array("INSERT INTO $default->search_permissions_table (user_id, document_id) " .
+				       "SELECT UGL.user_id AS user_id, D.id AS document_id " ./*ok*/
 				       "FROM $default->documents_table AS D INNER JOIN folders AS F ON D.folder_id = F.id " .
 				       "INNER JOIN $default->groups_folders_table AS GFL ON GFL.folder_id = F.id " .
 				       "INNER JOIN $default->users_groups_table AS UGL ON UGL.group_id = GFL.group_id " .
-				       "WHERE D.id=" . quote($this->iId);
+				       "WHERE D.id = ?", $this->iId);
 		$default->log->debug("addDocument groupPerms=$sGroupPerms");
 		if ($sql->query($sGroupPerms)) {
 			$default->log->debug("groupPerms succeeded");
@@ -395,10 +395,10 @@ class Document extends KTEntity {
 			$default->log->error("groupPerms failed");
 		}
 		// role permissions
-	    $sRolePerms = "INSERT INTO $default->search_permissions_table (user_id, document_id) " .
-				      "SELECT user_id, document_id " .
+	    $sRolePerms = array("INSERT INTO $default->search_permissions_table (user_id, document_id) " .
+				      "SELECT user_id, document_id " ./*ok*/
 				      "FROM $default->folders_user_roles_table " .
-				      "WHERE document_id=" . quote($this->iId);
+				      "WHERE document_id = ?", $this->iId);
 		$default->log->info("addDocument rolePerms=$sRolePerms");
 		if ($sql->query($sRolePerms)) {
 			$default->log->debug("rolePerms succeeded");
@@ -407,11 +407,11 @@ class Document extends KTEntity {
 		}
 										            
 		// public folders
-		$sPublicFolderPerms = "INSERT INTO $default->search_permissions_table (user_id, document_id) " . 
-                			  "SELECT U.id, D.id " . 
+		$sPublicFolderPerms = array("INSERT INTO $default->search_permissions_table (user_id, document_id) " . 
+                			  "SELECT U.id, D.id " . /*ok*/
                 			  "FROM $default->users_table AS U, $default->documents_table AS D INNER JOIN $default->folders_table AS F ON D.folder_id = F.id " .
 							  "WHERE F.is_public = 1 " .
-							  "AND D.id=" . quote($this->iId);
+							  "AND D.id = ?", $this->iId);
 		$default->log->debug("addDocument publicFolder=$sPublicFolderPerms");
 		if ($sql->query($sPublicFolderPerms)) {
 			$default->log->debug("publicFolder succeeded");
@@ -420,10 +420,10 @@ class Document extends KTEntity {
 		}
 							
 		// creator permissions
-		$sCreatorPerms = "INSERT INTO $default->search_permissions_table (user_id, document_id) " .
-						 "SELECT creator_id, id " .
+		$sCreatorPerms = array("INSERT INTO $default->search_permissions_table (user_id, document_id) " .
+						 "SELECT creator_id, id " ./*ok*/
 						 "FROM $default->documents_table " .
-						 "WHERE id=" . quote($this->iId);
+						 "WHERE id = ?", $this->iId);
 		$default->log->debug("addDocument creatorPerms=$sCreatorPerms");
 		if ($sql->query($sCreatorPerms)) {
 			$default->log->debug("creatorPerms succeeded");
@@ -439,11 +439,11 @@ class Document extends KTEntity {
 	function beginCollaborationProcess() {
 		global $default;
 		//get the steps in this document's collaboration process
-		$sQuery = "SELECT FURL.id, GFAL.precedence " .
+		$sQuery = array("SELECT FURL.id, GFAL.precedence " ./*ok*/
 				  "FROM $default->folders_user_roles_table AS FURL " .
                   "INNER JOIN $default->groups_folders_approval_table AS GFAL ON FURL.group_folder_approval_id = GFAL.id " .
-				  "WHERE document_id = " . quote($this->iId) . " " .
-				  "ORDER BY GFAL.precedence ASC";
+				  "WHERE document_id = ? " .
+				  "ORDER BY GFAL.precedence ASC", $this->iId);
 		$sql = $default->db;
 		$sql->query($sQuery);
 		if  ($sql->next_record()) {
@@ -498,12 +498,12 @@ class Document extends KTEntity {
 		//get the current step
 		//if the user is assinged to two or more roles, make sure we get the current
 		//one by ordering by precedence
-		$sql->query("SELECT FURL.id AS id, GFAT.precedence " .
+		$sql->query(array("SELECT FURL.id AS id, GFAT.precedence " ./*ok*/
 					"FROM $default->groups_folders_approval_table AS GFAT " . 
                     "INNER JOIN $default->folders_user_roles_table AS FURL ON GFAT.id = FURL.group_folder_approval_id " .
-					"WHERE document_id = $this->iId AND FURL.user_id = " . quote($_SESSION["userID"]) . "  " . 
+					"WHERE document_id = ? AND FURL.user_id = ? " . 
 					"AND done = 0 " . 
-					"ORDER BY precedence ASC");
+					"ORDER BY precedence ASC", array($this->iId, $_SESSION["userID"])));
 		if ($sql->next_record()) {
 			//set it as done
 			$oFolderUserRole = FolderUserRole::get($sql->f("id"));
@@ -527,7 +527,7 @@ class Document extends KTEntity {
         global $default, $lang_err_doc_not_exist;
         if (strlen($iDocumentID) > 0) {
 	        $sql = $default->db;
-	        $sql->query("SELECT * FROM $default->documents_table WHERE id = " . quote($iDocumentID));
+	        $sql->query(array("SELECT * FROM $default->documents_table WHERE id = ?", $iDocumentID));/*ok*/
 	        if ($sql->next_record()) {			
 	            $oDocument = & new Document($sql->f("name"), $sql->f("filename"), $sql->f("size"), $sql->f("creator_id"), $sql->f("mime_id"), $sql->f("folder_id"), $sql->f("description"));
 	            $oDocument->setDocumentTypeID($sql->f("document_type_id"));
@@ -562,7 +562,7 @@ class Document extends KTEntity {
         $aDocumentArray;
         settype($aDocumentArray, "array");
         $sql = $default->db;
-        $result = $sql->query("SELECT * FROM " . $default->documents_table  . 
+        $result = $sql->query("SELECT * FROM " . $default->documents_table  . /*wc*/
                               (isset($sWhereClause) ? " WHERE " . $sWhereClause : ""));
         if ($result) {
             $iCount = 0;
@@ -589,11 +589,11 @@ class Document extends KTEntity {
         $aDocumentFieldArray;
         settype($aDocumentFieldArray,"array");
         $sql = $default->db;
-        $result = $sql->query("SELECT DF.id AS id, DF.name AS name, DF.data_type AS data_type " .
+        $result = $sql->query(array("SELECT DF.id AS id, DF.name AS name, DF.data_type AS data_type " ./*ok*/
                               "FROM $default->document_fields_table AS DF " .
                               "INNER JOIN $default->document_type_fields_table AS DTFL ON DF.id = DTFL.field_id " . 
-                              "WHERE DTFL.document_type_id = " . quote($iDocumentTypeID) . ($bMandatoryOnly ? "AND DFTL.is_mandatory = 1 " : " ") . 
-                              "ORDER BY DF.name ASC");
+                              "WHERE DTFL.document_type_id = ? " . ($bMandatoryOnly ? "AND DFTL.is_mandatory = 1 " : " ") . 
+                              "ORDER BY DF.name ASC", $iDocumentTypeID));
         if ($result) {
             $iCount = 0;
             while ($sql->next_record()) {
@@ -619,9 +619,9 @@ class Document extends KTEntity {
         global $default, $lang_err_database;
         $aDocumentHistory = array();
         $sql = $default->db;
-        $result = $sql->query("SELECT * FROM  " . $default->document_transactions_table . " " .
-                              "WHERE document_id = " . quote($this->iId) . " " .
-                              "ORDER BY datetime DESC");
+        $result = $sql->query(array("SELECT * FROM  " . $default->document_transactions_table . " " ./*ok*/
+                              "WHERE document_id = ? " .
+                              "ORDER BY datetime DESC", $this->iId));
         if ($result) {
             $iCount = 0;
             while($sql->next_record()) {
@@ -695,10 +695,11 @@ class Document extends KTEntity {
     function documentExists($sFileName, $iFolderID) {
         global $default;
         $sql = $default->db;
-        $sQuery = "SELECT * FROM $default->documents_table " .
-        		  "WHERE filename = " . quote($sFileName)  . 
-        		  " AND folder_id = " . quote($iFolderID)  .
-        		  " AND status_id = " . LIVE;
+        $sQuery = "SELECT * FROM $default->documents_table " ./*ok*/
+        		  "WHERE filename = ? " .
+        		  " AND folder_id = ?" . 
+        		  " AND status_id = ?";
+        $aParams = array($sFileName, $iFolderID, LIVE);
         $sql->query($sQuery);
         if ($sql->next_record()) {
             return true;
@@ -716,8 +717,8 @@ class Document extends KTEntity {
         global $default, $lang_err_database, $lang_err_doc_not_exist;
         $sql = $default->db;
 
-        if ($sql->query("SELECT name FROM $default->documents_table " .
-                        "WHERE id = " . quote($iDocumentID))) {
+        if ($sql->query(array("SELECT name FROM $default->documents_table " ./*ok*/
+                        "WHERE id = ?", $iDocumentID))) {
             if ($sql->next_record()) {
                 return $sql->f("name");
             } 
@@ -746,11 +747,11 @@ class Document extends KTEntity {
 	function documentIsAssignedDocTypeInFolder($iFolderID, $iFolderDocTypeID) {
 		global $default;
 		$sql = $default->db;
-		$sql->query("SELECT * " . 
+		$sql->query(array("SELECT * " . /*ok*/
 					"FROM $default->folder_doctypes_table AS FDL " .
 					"INNER JOIN $default->documents_table AS D ON D.document_type_id = FDL.document_type_id " .
-					"WHERE FDL.id = " . quote($iFolderDocTypeID) . " " .
-					"AND D.folder_id = " . quote($iFolderID));
+					"WHERE FDL.id = ? " .
+					"AND D.folder_id = ?", array($iFolderDocTypeID, $iFolderID)));
 		if ($sql->next_record()) {
 			return true;
 		}
@@ -763,10 +764,10 @@ class Document extends KTEntity {
 	*/
 	function removeInvalidDocumentTypeEntries() {
 		global $default;
-		$sQuery = "SELECT field_id FROM $default->document_type_fields_table DTFL " .
+		$sQuery = array("SELECT field_id FROM $default->document_type_fields_table DTFL " . /*ok*/
                   "INNER JOIN $default->document_fields_table AS DF ON DF.id = DTFL.field_id " .
-                  "WHERE DTFL.document_type_id = " . quote($this->iDocumentTypeID) . " " .
-                  "AND DF.is_generic = 0";
+                  "WHERE DTFL.document_type_id = ? " .
+                  "AND DF.is_generic = 0", $this->iDocumentTypeID);
 		$sql = $default->db;
 		$sql->query($sQuery);
 		$aFieldIDs = array();
@@ -798,7 +799,7 @@ class Document extends KTEntity {
     function hasCollaboration() {
 		global $default;
 		$sql = $default->db;
-		$sql->query("SELECT id AS count from $default->groups_folders_approval_table WHERE folder_id = $this->iFolderID");
+		$sql->query(array("SELECT id AS count from $default->groups_folders_approval_table WHERE folder_id = ?", $this->iFolderID));/*ok*/
 		if ($sql->next_record()) {
 			return true;
 		}

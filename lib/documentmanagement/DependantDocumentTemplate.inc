@@ -149,7 +149,7 @@ class DependantDocumentTemplate extends KTEntity {
 	function & get($iDependantDocumentID) {
 		global $default;
 		$sql = $default->db;
-		$result = $sql->query("SELECT * FROM $default->dependant_document_template_table WHERE id = $iDependantDocumentID");
+		$result = $sql->query(array("SELECT * FROM $default->dependant_document_template_table WHERE id = ?", $iDependantDocumentID));/*ok*/
 		if ($result) {
 			if ($sql->next_record()) {
 				$DependantDocumentTemplate = & new DependantDocumentTemplate($sql->f("document_title"), $sql->f("default_user_id"), $sql->f("group_folder_approval_link_id"), $sql->f("template_document_id"));
@@ -177,7 +177,7 @@ class DependantDocumentTemplate extends KTEntity {
         $aDependantDocumentTemplateArray = array();
         $sql = $default->db;
         // TODO: join on sys_deleted
-        $result = $sql->query("SELECT * FROM " . $default->dependant_document_template_table  . (isset($sWhereClause) ? " WHERE " . $sWhereClause : ""));
+        $result = $sql->query("SELECT * FROM " . $default->dependant_document_template_table  . (isset($sWhereClause) ? " WHERE " . $sWhereClause : ""));/*wc*/
         if ($result) {
             $iCount = 0;
             while ($sql->next_record()) {

@@ -156,7 +156,7 @@ class DocumentArchiving extends KTEntity {
         global $default;
         $aDocumentArchivingArray = array();
         $sql = $default->db;
-        $result = $sql->query("SELECT * FROM $default->document_archiving_table " . (isset($sWhereClause) ? " WHERE " . $sWhereClause : ""));
+        $result = $sql->query("SELECT * FROM $default->document_archiving_table " . (isset($sWhereClause) ? " WHERE " . $sWhereClause : ""));/*wc*/
         if ($result) {
             $iCount = 0;
             while ($sql->next_record()) {

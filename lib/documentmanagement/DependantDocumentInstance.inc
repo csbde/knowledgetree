@@ -141,7 +141,7 @@ class DependantDocumentInstance extends KTEntity {
 	function & get($iDependantDocumentID) {
 		global $default;
 		$sql = $default->db;
-		$result = $sql->query("SELECT * FROM $default->dependant_document_instance_table WHERE id = $iDependantDocumentID");
+		$result = $sql->query(array("SELECT * FROM $default->dependant_document_instance_table WHERE id = ?", $iDependantDocumentID));/*ok*/
 		if ($result) {
 			if ($sql->next_record()) {
 				$oDependantDocument = & new DependantDocumentInstance($sql->f("document_title"), $sql->f("user_id"), $sql->f("template_document_id"), $sql->f("parent_document_id"));

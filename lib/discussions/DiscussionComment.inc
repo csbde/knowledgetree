@@ -155,7 +155,7 @@ class DiscussionComment extends KTEntity {
     function & get($iNewCommentID) {
         global $default;
         $sql = $default->db;
-        $result = $sql->query("SELECT * FROM $default->discussion_comments_table WHERE id = $iNewCommentID");
+        $result = $sql->query(array("SELECT * FROM $default->discussion_comments_table WHERE id = ?", $iNewCommentID));/*ok*/
         if ($result) {
             if ($sql->next_record()) {                
                 $oDiscussionComment = & new DiscussionComment($sql->f("body"),$sql->f("subject"),$sql->f("user_id"),$sql->f("thread_id"),$sql->f("in_reply_to"));
@@ -180,7 +180,7 @@ class DiscussionComment extends KTEntity {
         global $default;
         $aDiscussionComments = array();
         $sql = $default->db;
-        $result = $sql->query("SELECT * FROM " . $default->discussion_comments_table  . (isset($sWhereClause) ? " WHERE " . $sWhereClause : ""));
+        $result = $sql->query("SELECT * FROM " . $default->discussion_comments_table  . (isset($sWhereClause) ? " WHERE " . $sWhereClause : ""));/*wc*/
         if ($result) {
             while ($sql->next_record()) {
                 $aDiscussionComments[] = & DiscussionComment::get($sql->f("id"));
@@ -212,7 +212,7 @@ class DiscussionComment extends KTEntity {
 		if ($this->iId > 0) {
 			//check to see if group is linked to a unit
 			$sql = $default->db;
-			$query = "SELECT * FROM ". $default->discussion_comments_table . " WHERE id = " . $this->iId  ;
+			$query = array("SELECT * FROM ". $default->discussion_comments_table . " WHERE id = ?", $this->iId);/*ok*/
 			$sql->query($query);
 			$rows = $sql->num_rows($sql);
 			

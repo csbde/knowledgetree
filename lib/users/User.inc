@@ -353,7 +353,7 @@ class User extends KTEntity {
     function & get($iUserID) {
         global $default;
         $sql = $default->db;
-        $result = $sql->query("SELECT * FROM $default->users_table WHERE id = $iUserID");
+        $result = $sql->query(array("SELECT * FROM $default->users_table WHERE id = ?", $iUserID));/*ok*/
         if ($result) {
             if ($sql->next_record()) {
                 $oUser = & new User($sql->f("username"), $sql->f("name"), $sql->f("password"), $sql->f("quota_max"), $sql->f("email"), $sql->f("mobile"), $sql->f("email_notification"), $sql->f("sms_notification"), $sql->f("ldap_dn"), $sql->f("max_sessions"), $sql->f("language_id"));
@@ -380,7 +380,7 @@ class User extends KTEntity {
         $aUserArray;
         settype($aUserArray, "array");
         $sql = $default->db;
-        $result = $sql->query("SELECT * FROM " . $default->users_table  . (isset($sWhereClause) ? " " . $sWhereClause : ""));
+        $result = $sql->query("SELECT * FROM " . $default->users_table  . (isset($sWhereClause) ? " " . $sWhereClause : ""));/*wc*/
         if ($result) {
             $iCount = 0;
             while ($sql->next_record()) {
@@ -406,9 +406,9 @@ class User extends KTEntity {
         global $default, $lang_err_database;
 
         $sql = $default->db;
-        $result = $sql->query("SELECT DISTINCT gul.unit_id FROM $default->users_groups_table ugl " .
+        /*ok*/$result = $sql->query(array("SELECT DISTINCT gul.unit_id FROM $default->users_groups_table ugl " .
                               "INNER JOIN $default->groups_units_table gul ON ugl.group_id = gul.group_id ".
-                              "WHERE ugl.user_id=$userID");
+                              "WHERE ugl.user_id = ?", $userID));
         if ($result) {
             $aUnitIDs = array();
             while ($sql->next_record()) {
@@ -430,9 +430,9 @@ class User extends KTEntity {
         global $default, $lang_err_database;
 
         $sql = $default->db;
-        $result = $sql->query("SELECT DISTINCT gul.unit_id FROM $default->users_groups_table ugl " .
+        /*ok*/$result = $sql->query(array("SELECT DISTINCT gul.unit_id FROM $default->users_groups_table ugl " .
                               "INNER JOIN $default->groups_units_table gul ON ugl.group_id = gul.group_id ".
-                              "WHERE ugl.user_id=$userID");
+                              "WHERE ugl.user_id = ?", $userID));
         if ($result) {
             if ($sql->next_record()) {
                 return $sql->f("unit_id");
@@ -503,17 +503,17 @@ class User extends KTEntity {
 	        // then find the group that is unit_admin
 	        $sql = $default->db;
 	        $sEmail = "";
-	        if ($sql->query("SELECT group_id FROM $default->groups_units_table GUL " . 
+	        if ($sql->query(array("SELECT group_id FROM $default->groups_units_table GUL " . /*ok*/
 	                        "INNER JOIN $default->groups_table GL on GUL.group_id=GL.id " .
 	                        "WHERE GL.is_unit_admin=1 " .
-	                        "AND unit_id=$iUnitID")) {
+	                        "AND unit_id = ?", $iUnitID))) {
 	            // get the first record
 	            if ($sql->next_record()) {
 	                $iGroupID = $sql->f("group_id");
 	                // then find the first user in this group that has an email address
-	                if ($sql->query("SELECT U.id, U.email FROM $default->users_table U " .
+	                if ($sql->query(array("SELECT U.id, U.email FROM $default->users_table U " . /*ok*/
 	                                "INNER JOIN $default->users_groups_table UGL on UGL.user_id=U.id " .
-	                                "WHERE group_id=$iGroupID")) {
+	                                "WHERE group_id = ?", $iGroupID))) {
 	                    while ($sql->next_record()) {
 	                        if (strlen($sql->f("email")) > 0) {
 	                            return User::get($sql->f("id"));

@@ -112,7 +112,7 @@ class TimeUnit extends KTEntity {
         global $default;
         $aTimeUnitArray = array();
         $sql = $default->db;
-        $result = $sql->query("SELECT * FROM $default->time_unit_lookup_table " . (isset($sWhereClause) ? " WHERE " . $sWhereClause : ""));
+        $result = $sql->query("SELECT * FROM $default->time_unit_lookup_table " . (isset($sWhereClause) ? " WHERE " . $sWhereClause : ""));/*wc*/
         if ($result) {
             $iCount = 0;
             while ($sql->next_record()) {

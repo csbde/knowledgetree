@@ -88,8 +88,8 @@ class SubscriptionManager {
         global $default;
 
         $sql = $default->db;
-        if ($sql->query("SELECT id FROM " . Subscription::getTableName($iSubscriptionType) .  " " .
-                        "WHERE " . Subscription::getIdFieldName($iSubscriptionType) . " = $iExternalID")) {
+        if ($sql->query(array("SELECT id FROM " . Subscription::getTableName($iSubscriptionType) .  " " ./*ok*/
+                        "WHERE " . Subscription::getIdFieldName($iSubscriptionType) . " = ?", $iExternalID))) {
             $aSubscriptions = array();
             while ($sql->next_record()) {
                 $aSubscriptions[] = & Subscription::get($sql->f("id"), $iSubscriptionType);
@@ -150,8 +150,8 @@ class SubscriptionManager {
         global $default;
 
         $sql = $default->db;
-        if ($sql->query("SELECT id FROM " . Subscription::getTableName($iSubscriptionType) .  " " .
-                        "WHERE user_id = $iUserID")) {
+        if ($sql->query(array("SELECT id FROM " . Subscription::getTableName($iSubscriptionType) .  " " ./*ok*/
+                        "WHERE user_id = ?", $iUserID))) {
             $aSubscriptions = array();
             while ($sql->next_record()) {
                 $aSubscriptions[] = & Subscription::get($sql->f("id"), $iSubscriptionType);
@@ -184,9 +184,9 @@ class SubscriptionManager {
         global $default;
 
         $sql = $default->db;
-        if ($sql->query("SELECT id FROM " . Subscription::getTableName($iSubscriptionType) .  " " .
-                        "WHERE user_id = $iUserID " .
-                        "AND is_alerted = 1")) {
+        if ($sql->query(array("SELECT id FROM " . Subscription::getTableName($iSubscriptionType) .  " " ./*ok*/
+                        "WHERE user_id = ? " .
+                        "AND is_alerted = 1", $iUserID))) {
             $aSubscriptions = array();
             while ($sql->next_record()) {
                 $aSubscriptions[] = & Subscription::get($sql->f("id"), $iSubscriptionType);

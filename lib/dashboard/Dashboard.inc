@@ -49,12 +49,13 @@ class Dashboard {
 	 */
 	function getPendingWebDocuments(){
 	    global $default;
-	    $sQuery = "SELECT wd.id FROM web_documents wd " . 
+	    $sQuery = "SELECT wd.id FROM web_documents wd " . /*ok*/
 	              "INNER JOIN web_sites ws ON wd.web_site_id = ws.id " .
-	              "WHERE ws.web_master_id=" . $this->iUserID . " AND wd.status_id=1";
+	              "WHERE ws.web_master_id = ? AND wd.status_id = 1";
+        $aParams = array($this->iUserID);
 	    $aDocumentList = array();
 	    $sql = $default->db;
-	    if ($sql->query($sQuery)) {
+	    if ($sql->query(array($sQuery, $aParams))) {
 	        while ($sql->next_record()) {
 	            $aDocumentList[] = & WebDocument::get($sql->f("id"));
 	        }
@@ -77,7 +78,7 @@ class Dashboard {
 	function getPendingCollaborationDocuments(){
 	    global $default;
 	    
-	    $sQuery = "SELECT document_id FROM $default->folders_user_roles_table WHERE active=1 AND user_id=" . $this->iUserID;
+	    $sQuery = array("SELECT document_id FROM $default->folders_user_roles_table WHERE active=1 AND user_id = ?", $this->iUserID);/*ok*/
 	    $aDocumentList = array();
 	    $sql = $default->db;
 	    if ($sql->query($sQuery)) {
@@ -120,7 +121,7 @@ class Dashboard {
 	 */
 	function getDependantDocuments() {
 		global $default;
-		$sQuery = "SELECT id FROM $default->dependant_document_instance_table WHERE user_id = " . $this->iUserID;
+		$sQuery = array("SELECT id FROM $default->dependant_document_instance_table WHERE user_id = ?", $this->iUserID);/*ok*/
 		$aDocumentList = array();
 		$sql = $default->db;
 		$sql->query($sQuery);

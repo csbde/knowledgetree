@@ -115,8 +115,9 @@ class UnitOrganisationLink extends KTEntity {
 		if ($this->iId < 0) {
 			
 			$sql = $default->db;
-			$query = "SELECT unit_id FROM $default->units_organisations_table WHERE unit_id = $this->iUnitID AND organisation_id = $this->iOrgID";
-    		$sql->query($query);
+			$query = "SELECT unit_id FROM $default->units_organisations_table WHERE unit_id = ? AND organisation_id = ?";/*ok*/
+            $params = array($this->iUnitID, $this->iOrgID);
+    		$sql->query(array($query, $params));
    			$rows = $sql->num_rows($sql);
         
   			if ($rows > 0) {
@@ -138,7 +139,7 @@ class UnitOrganisationLink extends KTEntity {
 	function & get($iUnitOrganisationLinkID) {
 		global $default;	
 		$sql = $default->db;
-		$result = $sql->query("SELECT * FROM $default->units_organisations_table WHERE id = $iUnitOrganisationLinkID");
+		$result = $sql->query(array("SELECT * FROM $default->units_organisations_table WHERE id = ?", $iUnitOrganisationLinkID));/*ok*/
 		if ($result) {
 			if ($sql->next_record()) {
 				$oUnitOrganisationLink = & new UnitOrganisationLink($sql->f("unit_id"),$sql->f("organisation_id") );
@@ -164,7 +165,7 @@ class UnitOrganisationLink extends KTEntity {
 		$aUnitOrganisationLink;
 		settype($aUnitOrganisationLink, "array");
 		$sql = $default->db;
-		$result = $sql->query("SELECT * FROM "  . $default->units_organisations_table  . (isset($sWhereClause) ? " " . $sWhereClause : ""));
+		$result = $sql->query("SELECT * FROM "  . $default->units_organisations_table  . (isset($sWhereClause) ? " " . $sWhereClause : ""));/*wc*/
 		if ($result) {			
 			$iCount = 0;
 			while ($sql->next_record()) {
@@ -208,7 +209,7 @@ class UnitOrganisationLink extends KTEntity {
 	function getByUnitID($unitId) {
 		global $default;
 		$sql = $default->db;
-		$result = $sql->query("SELECT * FROM $default->units_organisations_table WHERE unit_id = $unitId");
+		$result = $sql->query(array("SELECT * FROM $default->units_organisations_table WHERE unit_id = ?", $unitId));/*ok*/
 		if ($result) {		    	
 			if ($sql->next_record()) {
 				$oUnitOrganisationLink = & UnitOrganisationLink::get($sql->f("id"));
