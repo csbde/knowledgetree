@@ -15,7 +15,7 @@ if (checkSession()) {
     require_once("removeUnitFromOrgUI.inc");
     require_once("$default->fileSystemRoot/lib/unitmanagement/Unit.inc");
     require_once("$default->fileSystemRoot/lib/unitmanagement/UnitOrganisationLink.inc");
-    require_once("$default->fileSystemRoot/lib/orgManagement/Organisation.inc");
+    require_once("$default->fileSystemRoot/lib/orgmanagement/Organisation.inc");
     require_once("$default->fileSystemRoot/lib/security/permission.inc");
     require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
     require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
