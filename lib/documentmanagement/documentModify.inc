@@ -21,7 +21,7 @@ class DocumentModify {
 	*							uploadCompat($varname) in owl.lib.php
 	* @param $iFolderID			Folder in which to store document
 	*
-	* @return true on successful upload and storage, false otherwise and set $_SESSION["errorMessage"]
+	* @return boolean true on successful upload and storage, false otherwise and set $_SESSION["errorMessage"]
 	*
 	* @todo add URL functionality
 	*/
@@ -69,7 +69,7 @@ class DocumentModify {
 	* 
 	* @param $iNewFileSize		Size of new file
 	*
-	* @return true if the user is within quota, false otherwise and sets $_SESSION["errorMessage"]
+	* @return boolean true if the user is within quota, false otherwise and sets $_SESSION["errorMessage"]
 	*/
 	
 	function isWithinQuota($iNewFileSize) {
