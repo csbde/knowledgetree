@@ -61,7 +61,7 @@ if (checkSession()) {
 					}				
 					if ($bSuccessfulUpdate) {
 						$oPatternCustom = & new PatternCustom();
-						$oPatternCustom->setHtml(getPage($fFolderID, "Folder successfully updated"));
+						$oPatternCustom->setHtml(getStatusPage($fFolderID, "Folder successfully updated"));
 			            $main->setDHTMLScrolling(false);
 			            $main->setOnLoadJavaScript("switchDiv('folderData', 'folder')");
 						
@@ -74,7 +74,7 @@ if (checkSession()) {
 			            $main->setDHTMLScrolling(false);
 			            $main->setOnLoadJavaScript("switchDiv('folderData', 'folder')");
 						
-						$oPatternCustom->setHtml(getPage($fFolderID, "An error occured while updating this folder"));
+						$oPatternCustom->setHtml(getStatusPage($fFolderID, "An error occurred while updating this folder"));
 						$main->setCentralPayload($oPatternCustom);
 						$main->setHasRequiredFields(true);
 						$main->setFormAction("../store.php?fReturnURL=" . urlencode("$default->rootUrl/control.php?action=browse&fFolderID=$fFolderID"));
@@ -85,7 +85,7 @@ if (checkSession()) {
 	                //a document currently in this process
 	                $oPatternCustom = & new PatternCustom();
 		            $main->setDHTMLScrolling(false);
-		            $main->setOnLoadJavaScript("switchDiv('folderData', 'folder')");
+		            $main->setOnLoadJavaScript("switchDiv('folderRouting', 'folder')");
 	                
 	                $oPatternCustom->setHtml(getPage($fFolderID, "You cannot edit this folder collaboration process as a document is currently undergoing this collaboration process", true));
 	                $main->setCentralPayload($oPatternCustom);
@@ -97,7 +97,7 @@ if (checkSession()) {
 	                //a document currently in this process
 	                $oPatternCustom = & new PatternCustom();
 		            $main->setDHTMLScrolling(false);
-		            $main->setOnLoadJavaScript("switchDiv('folderData', 'folder')");
+		            $main->setOnLoadJavaScript("switchDiv('folderRouting', 'folder')");
 	                
 	                $oPatternCustom->setHtml(getPage($fFolderID, "You cannot delete this folder collaboration process as a document is currently undergoing this collaboration process", true));
 	                $main->setCentralPayload($oPatternCustom);
@@ -109,9 +109,9 @@ if (checkSession()) {
 	                // does this folder have a document in it that has started collaboration?
 	                $bCollaboration = Folder::hasDocumentInCollaboration($fFolderID);
 		            $main->setDHTMLScrolling(false);
-		            $main->setOnLoadJavaScript("switchDiv('folderData', 'folder')");
+		            $main->setOnLoadJavaScript("switchDiv('" . (isset($fShowSection) ? $fShowSection : "folderData") . "', 'folder')");
 	                    
-	                $oPatternCustom->setHtml(getPage($fFolderID, $bCollaboration));
+	                $oPatternCustom->setHtml(getPage($fFolderID, "", $bCollaboration));
 	                $main->setCentralPayload($oPatternCustom);
 	                $main->setHasRequiredFields(true);
 	                $main->setFormAction("../store.php?fReturnURL=" . urlencode("$default->rootUrl/control.php?action=browse&fFolderID=$fFolderID"));
