@@ -45,8 +45,12 @@ class tmpDocument {
     }
     
     function getTitleLink() {
+        /*
         return "<a href=\"control.php?action=viewDocument&fDocumentID=" . $this->id . "\">" .
                $this->title . "</a>";
+        */
+        return "<u>$this->title</u>";
+               
     }
     
     function getStatus() {
