@@ -118,7 +118,7 @@ class Authenticator {
       *        the name of the user to check
       * @param $password
       *        the password to check
-      * @return true if the password is correct, else false
+      * @return boolean true if the password is correct, else false
       */
      function checkPassword($userName, $password) {
      }

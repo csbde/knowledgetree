@@ -210,7 +210,7 @@ class DocumentBrowser {
      *
      * @param $requiredGroupName  the group name to check for
      * @param $groupIDS           an array of groupIDs to check
-     * @return true if $requiredGroupName is in the $groupIDs array, else false
+     * @return boolean true if $requiredGroupName is in the $groupIDs array, else false
      */
     function checkGroup($requiredGroupName, $groupIDs) {
         global $default;

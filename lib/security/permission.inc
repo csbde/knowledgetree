@@ -24,7 +24,7 @@ class Permission {
 	*
 	* @param $iDocumentID		Primary key of document to check
 	*
-	* @return true is the current user has document write permission, false otherwise and set $_SESSION["errorMessage"]
+	* @return boolean true is the current user has document write permission, false otherwise and set $_SESSION["errorMessage"]
 	*/	
 	function userHasDocumentWritePermission($iDocumentID) {
 		if (Permission::userHasFolderWritePermission(DocumentLib::getDocumentFolderID($iDocumentID)) ||
@@ -43,7 +43,7 @@ class Permission {
 	*
 	* @param $iDocumentID		Primary key of document to check
 	*
-	* @return true is the current user has document read permission, false otherwise and set $_SESSION["errorMessage"]
+	* @return boolean true is the current user has document read permission, false otherwise and set $_SESSION["errorMessage"]
 	*/	
 	function userHasDocumentReadPermission($iDocumentID) {
 		if (Permission::userHasFolderReadPermission(DocumentLib::getDocumentFolderID($iDocumentID)) ||
@@ -63,7 +63,7 @@ class Permission {
 	*	
 	* @param $iFolderID		Primary key of folder to check
 	*
-	* @return true is the user has folder write permission, false otherwise and set $_SESSION["errorMessage"]
+	* @return boolean true is the user has folder write permission, false otherwise and set $_SESSION["errorMessage"]
 	*/
 	function userHasFolderWritePermission($iFolderID) {
 		global $lang_err_user_folder_write;
@@ -86,7 +86,7 @@ class Permission {
 	*
 	* @param $iFolderID		Primary key of folder to check
 	*
-	* @return true is the user has folder write permission, false otherwise and set $_SESSION["errorMessage"]
+	* @return boolean true is the user has folder write permission, false otherwise and set $_SESSION["errorMessage"]
 	*/
 	function userHasFolderReadPermission($iFolderID) {
 		global $lang_err_user_folder_write;
@@ -104,7 +104,7 @@ class Permission {
 	*
 	* @param $iFolderID		Primary key of folder to check
 	*
-	* @return true if the folder is public, false otherwise and set $_SESSION["errorMessage"]
+	* @return boolean true if the folder is public, false otherwise and set $_SESSION["errorMessage"]
 	*/
 	function folderIsPublic($iFolderID) {
 		global $default, $lang_err_folder_not_public;
@@ -124,7 +124,7 @@ class Permission {
 	*
 	* @param $iFolderID		Primary key of folder to check
 	*
-	* @return true is the user has folder write permission, false otherwise and set $_SESSION["errorMessage"]
+	* @return boolean true is the user has folder write permission, false otherwise and set $_SESSION["errorMessage"]
 	*
 	* @todo Remove hardcoding of 'Unit Administrators'
 	*/
@@ -149,7 +149,7 @@ class Permission {
 	* 
 	* @param $iFolderID 	Primary key of folder to check
 	*
-	* @return true is the user has folder write permission, false otherwise and set $_SESSION["errorMessage"]
+	* @return boolean true is the user has folder write permission, false otherwise and set $_SESSION["errorMessage"]
 	*/
 	function userHasGroupWritePermissionForFolder($iFolderID) {
 		global $default, $lang_err_user_folder_write;
@@ -167,7 +167,7 @@ class Permission {
 	*
 	* @param $iFolderID		Primary key of folder to check
 	*
-	* @return true is the user has folder write permission, false otherwise and set $_SESSION["errorMessage"]
+	* @return boolean true is the user has folder write permission, false otherwise and set $_SESSION["errorMessage"]
 	*/
 	function userHasGroupReadPermissionForFolder($iFolderID) {
 		global $default, $lang_err_user_folder_read;
@@ -185,7 +185,7 @@ class Permission {
 	*
 	* @param $iGroupID 	Primary key of group to check
 	*
-	* @return true if the user is in the group, false otherwise and sets $_SESSION["errorMessage"]
+	* @return boolean true if the user is in the group, false otherwise and sets $_SESSION["errorMessage"]
 	*/
 	function userIsInGroupID($iGroupID) {		
 		global $default, $lang_err_user_group;
@@ -203,7 +203,7 @@ class Permission {
 	*
 	* @param $sGroupName	Name of group to check
 	*
-	* @return true if the user is in the group, false otherwise and sets $_SESSION["errorMessage"]
+	* @return boolean true if the user is in the group, false otherwise and sets $_SESSION["errorMessage"]
 	*/
 	function userIsInGroupName($sGroupName) {
 		global $default, $lang_err_user_group;
@@ -222,7 +222,7 @@ class Permission {
 	*	
 	* @param $iFolderID 	Primary key of folder to check
 	*
-	* @return true is the user has the role assigned, false otherwise and set $_SESSION["errorMessage"]
+	* @return boolean true is the user has the role assigned, false otherwise and set $_SESSION["errorMessage"]
 	*/
 	function userHasWriteRoleForFolder($iFolderID) {
 		global $default, $lang_err_user_role;	
@@ -240,7 +240,7 @@ class Permission {
 	*	
 	* @param $iFolderID 	Primary key of folder to check
 	*
-	* @return true is the user has the role assigned, false otherwise and set $_SESSION["errorMessage"]
+	* @return boolean true is the user has the role assigned, false otherwise and set $_SESSION["errorMessage"]
 	*/
 	function userHasReadRoleForFolder($iFolderID) {
 		global $default, $lang_err_user_role;	
@@ -258,7 +258,7 @@ class Permission {
 	*
 	* @param $iRoleID		Primary key of role to check for
 	*
-	* @return true if role exists, false otherwise and set $_SESSION["errorMessage"] 
+	* @return boolean true if role exists, false otherwise and set $_SESSION["errorMessage"] 
 	*/
 	function roleIDExists($iRoleID) {
 		global $default, $lang_err_role_not_exist;
@@ -276,7 +276,7 @@ class Permission {
 	*
 	* @param $sRoleName		Name of role to check for
 	*
-	* @return true if role exists, false otherwise and set $_SESSION["errorMessage"] 
+	* @return boolean true if role exists, false otherwise and set $_SESSION["errorMessage"] 
 	*/
 	function roleNameExists($sRoleName) {
 		global $default, $lang_err_role_not_exist;
