@@ -599,7 +599,7 @@ class Permission {
     	
 	    $sql = $default->db;
 
-        $aDeleteCurrent = array("DELETE FROM $default->search_permissions_table WHERE user_id = ?", $iDocumentID);
+        $aDeleteCurrent = array("DELETE FROM $default->search_permissions_table WHERE user_id = ?", $iUserID);
         $res = DBUtil::runQuery($aDeleteCurrent);
         if (PEAR::isError($res)) {
             $default->log->error("Unable to delete existing permissions for user: " . $res->toString());
