@@ -1,25 +1,16 @@
 <?php
 /**
-* viewHistoryBL.php
-* Contains HTML information required to build the document history view page.
-* Will be used by viewHistoryBL.php
-*
-* @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
-* @date 12 February 2003
-* @package presentation.lookAndFeel.knowledgeTree.documentManager
-*/
-
-/*function renderHeading($sHeading) {
-    global $default;
-    $sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
-    $sColor = $default->siteMap->getSectionColour($sSectionName, "th");
-    $sToRender  = "<table border=\"0\" width=\"600\">\n";
-    $sToRender .= "<tr align=\"left\"><th class=\"sectionHeading\" bgcolor=\"$sColor\">$sHeading</th></tr>\n";
-    $sToRender .= "<tr/>\n";
-    $sToRender .= "<tr/>\n";
-    $sToRender .= "</table>\n";
-    return $sToRender;
-}*/
+ * $Id$
+ *
+ * Contains HTML information required to build the document history view page.
+ * Will be used by viewHistoryBL.php
+ *
+ * Licensed under the GNU GPL. For full terms see the file DOCS/COPYING.
+ *
+ * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
+ * @date 12 February 2003
+ * @package presentation.lookAndFeel.knowledgeTree.documentmanagement
+ */
 
 function getDocumentPath($iFolderID, $sDocumentName) {
 	global $default;
@@ -52,7 +43,7 @@ function getDocumentHistory($iDocumentID) {
         $i = 0;
         while ($sql->next_record()) {
             if ($sql->f("transaction_name") == "Check Out") {
-	        	$sVersion = generateControllerLink("viewDocument", "fDocumentID=$iDocumentID&fForDownload=1&fVersion=" . $sql->f("version"), "<strong>" . $sql->f("version") . "</strong>");
+	        	$sVersion = generateControllerLink("downloadDocument", "fDocumentID=$iDocumentID&fVersion=" . $sql->f("version"), "<strong>" . $sql->f("version") . "</strong>");
             } else {
                 $sVersion = $sql->f("version");
             }
