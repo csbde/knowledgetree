@@ -294,7 +294,7 @@ class Document {
 			$oUser = User::get($oFolderUserRole->getUserID());
 			
 			$sBody = $oUser->getUserName() . ", your role of '" . $oRole->getName() . "' in the document, '" . $this->sName . "' collaboration process is now active. " .
-										"Click <a href=\"https://" . $_SERVER['SERVER_NAME'] . "$default->owl_root_url/control.php?action=viewDocument&fDocumentID=" . $this->iId . "\">here</a> to access " .
+                                        "Click " . generateLink("control.php?action=viewDocument", "fDocumentID=" . $this->iId, "here") . " to access " .
 										"the document";
 										
 			
