@@ -111,7 +111,7 @@ function getReadableCheckBox($oRole) {
 	if (!isset($oRole)) {
 		return "";
 	} else {
-		return "<td>Role Name: </td><td><input type=\"checkbox\" name=\"fReadable\" " . ($oRole->getReadable() ? "CHECKED " : " ") . " />";
+		return "<td>Readable: </td><td><input type=\"checkbox\" name=\"fReadable\" " . ($oRole->getReadable() ? "CHECKED " : " ") . " />";
 	}
 }
 
@@ -120,7 +120,7 @@ function getWriteableCheckBox($oRole) {
 	if (!isset($oRole)) {
 		return "";
 	} else {
-		return "<td>Role Name: </td><td><input type=\"checkbox\" name=\"fWritable\" " . ($oRole->getWriteable() ? "CHECKED " : " ") . " />";
+		return "<td>Writable: </td><td><input type=\"checkbox\" name=\"fWritable\" " . ($oRole->getWriteable() ? "CHECKED " : " ") . " />";
 	}
 	
 }
