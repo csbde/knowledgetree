@@ -107,20 +107,18 @@ function renderSearchPage($aMetaTagIDs = array()) {
 /**
  * Performs the search and displays the results
  */
-function renderArchivedDocumentsResultsPage($sDocumentIDs) {
+function renderArchivedDocumentsResultsPage($aDocuments) {
 	global $default;
 
-	$aDocumentIDs = explode(",", $sDocumentIDs);
 	$sToRender  = renderHeading("Archived Documents Search Results");
 	$sToRender .= "<table>";			
     $sToRender .= "<tr><td>Select the archived documents you'd like to restore, and click 'Restore', or 'Cancel' to abort</td></tr>\n";
-	for ($i=0; $i<count($aDocumentIDs); $i++) {
+	for ($i=0; $i<count($aDocuments); $i++) {
 		// and print document paths with checkboxes
-		$oDocument = Document::get($aDocumentIDs[$i]);
         $sToRender .= "\t<tr>\n";
         $sToRender .= "\t\t<td bgcolor=\"" . getColour($i) . "\">\n";
-        $sToRender .= "<input type=\"checkbox\" name=\"fDocumentIDs[]\" value=\"" . $oDocument->getID() . "\"/>\n";        
-        $sToRender .= $oDocument->getDisplayPath() . "\n";
+        $sToRender .= "<input type=\"checkbox\" name=\"fDocumentIDs[]\" value=\"" . $aDocuments[$i]->getID() . "\"/>\n";        
+        $sToRender .= $aDocuments[$i]->getDisplayPath() . "\n";
         $sToRender .= "\t\t</td>\n";
         $sToRender .= "\t</tr>\n";			
 	}
