@@ -16,7 +16,8 @@
 require_once("../../../../config/dmsDefaults.php");
 
 if (checkSession()) {	
-	if (isset($fFolderID) && isset($fFolderCollaborationID)) {				
+	if (isset($fFolderID) && isset($fFolderCollaborationID)) {
+		require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
 		require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
 		require_once("$default->fileSystemRoot/lib/users/User.inc");
 		require_once("$default->fileSystemRoot/lib/documentmanagement/DependantDocumentTemplate.inc");
@@ -31,16 +32,16 @@ if (checkSession()) {
 			if (isset($fForDelete)) {
 				$oDependantDocumentTemplate = DependantDocumentTemplate::get($fDependantDocumentTemplateID);
 				if ($oDependantDocumentTemplate->delete()) {
-					redirect($default->rootUrl . "/control.php?action=viewDependantDocument&fFolderID=$fFolderID&fFolderCollaborationID=$fFolderCollaborationID");				
+					controllerRedirect("viewDependantDocument", "fFolderID=$fFolderID&fFolderCollaborationID=$fFolderCollaborationID");				
 				} else {
 					$oDependantDocumentTemplate = DependantDocumentTemplate::get($fDependantDocumentTemplateID);
 					$oUser = User::get($oDependantDocumentTemplate->getDefaultUserId());
 				
 					$oPatternCustom = & new PatternCustom();				
-					$oPatternCustom->setHtml(getPage($fFolderID, $fFolderCollaborationID, $oDependantDocumentTemplate->getDocumentTitle(), $oUser->getName(), 'sTemplateDocument'));
+					$oPatternCustom->setHtml(getPage($fFolderID, $fFolderCollaborationID, $oDependantDocumentTemplate->getDocumentTitle(), $oUser->getName(), Document::getName($oDependantDocumentTemplate->getTemplateDocumentID())));
 	    			$main->setCentralPayload($oPatternCustom);
 	    	    	$main->setFormAction($_SERVER["PHP_SELF"] . "?fFolderID=$fFolderID&fFolderCollaborationID=$fFolderCollaborationID&fDependantDocumentTemplateID=$fDependantDocumentTemplateID&fForDelete=1");
-	    	    	$main->setErrorMessage("An error occured while attempting to delete the depedant document");	    	        		
+	    	    	$main->setErrorMessage("An error occured while attempting to delete the dependant document");	    	        		
 	    			$main->render();						
 				}
 				
@@ -51,7 +52,7 @@ if (checkSession()) {
 				$oUser = User::get($oDependantDocumentTemplate->getDefaultUserId());
 				
 				$oPatternCustom = & new PatternCustom();				
-				$oPatternCustom->setHtml(getPage($fFolderID, $fFolderCollaborationID, $oDependantDocumentTemplate->getDocumentTitle(), $oUser->getName(), 'sTemplateDocument'));
+				$oPatternCustom->setHtml(getPage($fFolderID, $fFolderCollaborationID, $oDependantDocumentTemplate->getDocumentTitle(), $oUser->getName(), Document::getName($oDependantDocumentTemplate->getTemplateDocumentID())));
 	    		$main->setCentralPayload($oPatternCustom);
 	    	    $main->setFormAction($_SERVER["PHP_SELF"] . "?fFolderID=$fFolderID&fFolderCollaborationID=$fFolderCollaborationID&fDependantDocumentTemplateID=$fDependantDocumentTemplateID&fForDelete=1");	    	        		
 	    		$main->render();	
