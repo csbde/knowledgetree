@@ -11,7 +11,7 @@
 	require_once("../../../../config/dmsDefaults.php");
 
 if (checkSession()) {    
-    require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCreate.inc");    
+//    require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCreate.inc");    
     require_once("viewDiscussionUI.inc");     
 	require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
     require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
@@ -20,8 +20,8 @@ if (checkSession()) {
     require_once("$default->fileSystemRoot/lib/security/permission.inc");
     require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
     require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");    
-    //require_once("$default->fileSystemRoot/lib/visualpatterns/PatternListFromQuery.inc");
     require_once("$default->fileSystemRoot/lib/visualpatterns/PatternBrowsableSearchResults.inc");    
+    //require_once("$default->fileSystemRoot/lib/visualpatterns/PatternTableSqlQuery.inc");
     require_once("$default->fileSystemRoot/lib/discussions/DiscussionThread.inc");  
     require_once("$default->fileSystemRoot/lib/discussions/DiscussionComment.inc");   
     require_once("$default->fileSystemRoot/presentation/Html.inc");
@@ -39,7 +39,31 @@ if(checkSession()) {
 						$sAllCommentID = $oThread->getAllCommentID();
 						$arrAllCommentID = explode(",", $sAllCommentID);										
 						$iNumMax = $oThread->getNumberOfReplies();						
-	
+						//$$$$$$$$$$$$$$$444
+						
+						/*$sQuery = 	"SELECT 1 as ForView, subject, username, date, discussion_comments.id as com_id, discussion_threads.document_id as doc_id " .
+						 			"FROM  (discussion_comments INNER JOIN users ON discussion_comments.user_id = users.id) INNER JOIN discussion_threads ON discussion_threads.id = discussion_comments.thread_id  " .
+						 			"WHERE discussion_threads.id = " . $iThreadID .
+						 			" ORDER BY date DESC";		
+		
+					    $aColumns = array("subject", "username", "date");
+					    $aColumnNames = array("Subject", "User", "Date");
+					    $aColumnTypes = array(3,1,1);
+					    
+					    $aDBColumnArray = array("ForView", "com_id", "doc_id");
+					    $aQueryStringVariableNames = array("ForView", "com_id", "doc_id");
+					    	    
+					    $aHyperLinkURL = array(	0=> $_SERVER['PHP_SELF']); 
+					    	    
+					    $oSearchResults = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnNames, "100%", $aHyperLinkURL,$aDBColumnArray,$aQueryStringVariableNames);
+						
+						$sToRender .= renderHeading("Document Discussion Thread");
+						$sToRender .= renderDocumentPath($oThread->getDocumentID());
+					    $oPatternCustom->addHtml($sToRender);
+					    $oPatternCustom->addHtml(getPageButtons($oThread));
+						$oPatternCustom->addHtml($oSearchResults->render());*/
+						//$$$$$$$$$$$$$$44
+						
 						$sQuery = 	"SELECT 1 as ForView, subject, username, date, discussion_comments.id as com_id, discussion_threads.document_id as doc_id " .
 						 			"FROM  (discussion_comments INNER JOIN users ON discussion_comments.user_id = users.id) INNER JOIN discussion_threads ON discussion_threads.id = discussion_comments.thread_id  " .
 						 			"WHERE discussion_threads.id = " . $iThreadID .
@@ -59,13 +83,15 @@ if(checkSession()) {
 					    if (!isset($fStartIndex)) { $iStartIndex = 0 ;}
 					    else { $iStartIndex = $fStartIndex ;}
 					    
-					    $oSearchResults = & new PatternBrowseableSearchResults ($sQuery, 13, $aColumns, $aColumnTypes, $aColumnNames, $aHyperLinkURL, $aQueryStringCols, $aQueryStringVars);
+					    
+					    
+					    $oSearchResults = & new PatternBrowseableSearchResults ($sQuery, $oThread->getNumberOfReplies(), $aColumns, $aColumnTypes, $aColumnNames, $aHyperLinkURL, $aQueryStringCols, $aQueryStringVars);
 					    $oSearchResults->setStartIndex($iStartIndex);
 					    $oSearchResults->setQueryString("&fDocumentID=$fDocumentID&fForDiscussion=1");
 					    $sToRender .= renderHeading("Document Discussion Thread");
 						$sToRender .= renderDocumentPath($oThread->getDocumentID());
 					    $oPatternCustom->addHtml($sToRender);
-					    $oPatternCustom->addHtml(getPageButtons($oThread));
+					    $oPatternCustom->addHtml(getPageButtons($oThread));				    
 					    $oPatternCustom->addHtml($oSearchResults->render());    
 						
 						// On opening, increment the number of views of current thread & update database

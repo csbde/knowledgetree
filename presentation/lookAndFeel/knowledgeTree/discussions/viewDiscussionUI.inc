@@ -17,8 +17,6 @@ function getPageButtons($oThread){
 	$sToRender .= "<td align=right width=10><a href=\"" . generateControllerLink("viewDocument", "fDocumentID=" . $oThread->getDocumentID() . "&fAddComment=1") . "\"><img src=\"$default->graphicsUrl/widgets/back.gif\"  border=\"0\" /></a></td>\n";
 		
 	$sToRender .= "</tr></table>\n";
-	//$sToRender .= "<a href=\"" . generateControllerLink("addComment", "fDocumentID=" . $oThread->getDocumentID() . "&fAddComment=1") . "\"><img src=\"$default->graphicsUrl/widgets/addcomment.gif\" border=\"0\" /></a>\n";
-	//$sToRender .= "<img src=\"$default->graphicsUrl/widgets/back.gif\" onmouseover=\"this.style.cursor='hand'\" onclick=\"javascript: history.go(-1);\" />\n";
 	
 	return $sToRender ; 
 }
