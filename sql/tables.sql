@@ -1003,4 +1003,8 @@ INSERT INTO help VALUES (61,'removeDocField','removeDocFieldHelp.html');
 INSERT INTO help VALUES (62,'addMetaData','addMetaDataHelp.html');
 INSERT INTO help VALUES (63,'editMetaData','editMetaDataHelp.html');
 INSERT INTO help VALUES (64,'removeMetaData','removeMetaDataHelp.html');
-
+INSERT INTO help VALUES (65,'addUser','addUserHelp.html');
+INSERT INTO help VALUES (66,'editUser','editUserHelp.html');
+INSERT INTO help VALUES (67,'removeUser','removeUserHelp.html');
+INSERT INTO help VALUES (68,'addUserToGroup','addUserToGroupHelp.html');
+INSERT INTO help VALUES (69,'removeUserFromGroup','removeUserFromGroupHelp.html');
