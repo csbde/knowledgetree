@@ -21,9 +21,18 @@ function renderHeading($sHeading) {
     return $sToRender;
 }
 
-function getDeletePage($oGroupFolderLink) {
+function getFolderPath($iFolderID) {
+	global $default;
+	$sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
+	$sTDBGColour = $default->siteMap->getSectionColour($sSectionName, "td");
+	$sFolderPathLink = displayFolderPathLink(Folder::getFolderPathAsArray($iFolderID), Folder::getFolderPathNamesAsArray($iFolderID),  "$default->rootUrl/control.php?action=browse");	    
+	return "<table border=\"0\" width = 100%><tr><td bgcolor=\"$sTDBGColour\">$sFolderPathLink</td></tr></table>\n";    
+}
+
+function getDeletePage($oGroupFolderLink, $iFolderID) {
 	global $default;
     $sToRender  = renderHeading("Delete Folder Access");
+    $sToRender .= getFolderPath($iFolderID);    
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>Group</td><td>" . Group::getGroupName($oGroupFolderLink->getGroupID()) . "</td>\n";
@@ -45,9 +54,10 @@ function getDeletePage($oGroupFolderLink) {
 	return $sToRender;
 }
 
-function getEditPage($oGroupFolderLink) {
+function getEditPage($oGroupFolderLink, $iFolderID) {
 	global $default;
     $sToRender  = renderHeading("Edit Folder Access");
+    $sToRender .= getFolderPath($iFolderID);    
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>Group</td><td>" . getGroupDropDown($oGroupFolderLink->getGroupID()) . "</td>\n";
@@ -73,6 +83,7 @@ function getEditPage($oGroupFolderLink) {
 function getAddPage($iFolderID) {
 	global $default;
     $sToRender  = renderHeading("Add Folder Access");
+    $sToRender .= getFolderPath($iFolderID);
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>Group</td><td>" . getGroupDropDown() . "</td>\n";
@@ -98,11 +109,6 @@ function getAddPage($iFolderID) {
 function getAccessCheckBoxes($bReadOnly, $fCanRead = false, $fCanWrite = false) {
     return "<input name=\"fCanRead\" type=\"checkbox\" " . ($bReadOnly ? "disabled " : "") . ($fCanRead ? "checked" : "") . "/>Read\n" .
            "<input name=\"fCanWrite\" type=\"checkbox\" " . ($bReadOnly ? "disabled " : "") . ($fCanWrite ? "checked" : "") . "/>Write\n";
-}
-
-function getFolderPath($iFolderID) {
-	global $default;
-	return displayFolderPathLink(Folder::getFolderPathAsArray($iFolderID), Folder::getFolderPathNamesAsArray($iFolderID),  "$default->rootUrl/control.php?action=browse");		
 }
 
 function getGroupDropDown($iGroupID = -1) {
