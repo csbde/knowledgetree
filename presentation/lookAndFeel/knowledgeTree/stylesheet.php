@@ -8,35 +8,35 @@ $browser = $default->phpSniff->property("browser");
 $version = $default->phpSniff->property("version");
 
 if ( ($browser == "moz") && ($version == "4.79")) {
-    $scroll["upArrowLeft"] = "670";
+    $scroll["upArrowLeft"] = "780";
     $scroll["upArrowTop"] = "190";
-    $scroll["downArrowLeft"] = "670";
+    $scroll["downArrowLeft"] = "780";
     $scroll["downArrowTop"] = "585";
     
     $scroll["textBoxLeft"] = "145";
-    $scroll["textBoxTop"] = "200";
-    $scroll["textBoxWidth"] = "600";
+    $scroll["textBoxTop"] = "190";
+    $scroll["textBoxWidth"] = "620";
     $scroll["textBoxHeight"] = "395";  
 } elseif ( ($browser == "moz") && ($version == "5.0")) {
-    $scroll["upArrowLeft"] = "650";
+    $scroll["upArrowLeft"] = "760";
     $scroll["upArrowTop"] = "150";
-    $scroll["downArrowLeft"] = "650";
+    $scroll["downArrowLeft"] = "760";
     $scroll["downArrowTop"] = "580";
     
-    $scroll["textBoxLeft"] = "145";
+    $scroll["textBoxLeft"] = "140";
     $scroll["textBoxTop"] = "150";
-    $scroll["textBoxWidth"] = "500";
+    $scroll["textBoxWidth"] = "620";
     $scroll["textBoxHeight"] = "440";
 } elseif ($browser == "ie") {
     // MSIE 6.0
-    $scroll["upArrowLeft"] = "650";
-    $scroll["upArrowTop"] = "160";
-    $scroll["downArrowLeft"] = "650";
+    $scroll["upArrowLeft"] = "760";
+    $scroll["upArrowTop"] = "155";
+    $scroll["downArrowLeft"] = "760";
     $scroll["downArrowTop"] = "600";
     
     $scroll["textBoxLeft"] = "145";
     $scroll["textBoxTop"] = "160";
-    $scroll["textBoxWidth"] = "500";
+    $scroll["textBoxWidth"] = "610";
     $scroll["textBoxHeight"] = "440";  
 }
 ?>
