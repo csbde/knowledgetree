@@ -36,13 +36,13 @@ class SiteMap {
      * @param string the controller action
      * @param string the corresponding page for this action
      * @param string the section this page falls under
-     * @param string the user group with access to this page
+     * @param int    the minimum access needed to access this page
      * @param string description of the page for link presentation
      */
-    function addPage($action, $page, $sectionName, $groupName, $description) {
-        $this->siteMapArray[$sectionName][$groupName][$action] = array ("page" => $page, 
-                                                                        "description" => $description, 
-                                                                        "default" => false);
+    function addPage($action, $page, $sectionName, $requiredAccess, $description) {
+        $this->siteMapArray[$sectionName][$requiredAccess][$action] = array ("page" => $page, 
+                                                                             "description" => $description, 
+                                                                             "default" => false);
     }
     
     /**
@@ -51,13 +51,13 @@ class SiteMap {
      * @param string the controller action
      * @param string the corresponding page for this action
      * @param string the section this page falls under
-     * @param string the user group with access to this page
+     * @param int    the minimum access needed to access this page
      * @param string description of the page for link presentation     
      */    
-    function addDefaultPage($action, $page, $sectionName, $groupName, $description) {
-        $this->siteMapArray[$sectionName][$groupName][$action] = array ("page" => $page, 
-                                                                        "description" => $description, 
-                                                                        "default" => true);
+    function addDefaultPage($action, $page, $sectionName, $requiredAccess, $description) {
+        $this->siteMapArray[$sectionName][$requiredAccess][$action] = array ("page" => $page, 
+                                                                             "description" => $description, 
+                                                                             "default" => true);
     }
 
     /**
@@ -69,8 +69,8 @@ class SiteMap {
         global $default;
         // for each section
         foreach ($this->siteMapArray as $section => $valArr) {
-            // for each group, page array combination
-            foreach ($valArr as $requiredGroupName => $pageArr) {
+            // for each access, page array combination
+            foreach ($valArr as $requiredAccess => $pageArr) {
                 // now loop through pages until we find the right one
                 foreach ($pageArr as $action => $page) {
                     if ($sRequiredPage == $page["page"]) {
@@ -89,10 +89,7 @@ class SiteMap {
      * @return boolean true if the user has the access, else false.
      */
     function hasPermission($requiredAccess) {
-        // sitemap access rules:
-        // if anonymous
-        // or the user is in the required group 
-        // or the user is a SA
+
         switch ($requiredAccess) {
             case A  : // everyone has access to anonymous pages
                       return true;
@@ -134,7 +131,7 @@ class SiteMap {
             // initialise result array
             $results = array("descriptions" => array(), "links" => array());
             
-            // need to loop through all (groupName, page) arrays in this section
+            // need to loop through all (access, page) arrays in this section
             foreach ($this->siteMapArray[$sSectionName] as $requiredAccess => $pages) {
                 if ($this->hasPermission($requiredAccess)) {
                     foreach ($pages as $action => $pageDetail) {
@@ -204,7 +201,7 @@ class SiteMap {
             // initialise result array
             $results = array();
             // need to loop through all (groupName, page) arrays in this section
-            foreach ($this->siteMapArray[$sectionName] as $requiredGroupName => $pages) {
+            foreach ($this->siteMapArray[$sectionName] as $requiredAccess => $pages) {
                 // don't need to check the permissions here, when the controller tries to
                 // retrieve the page from the action, the perms will be checked
                 //$default->log->debug("Sitemap::getDefaultAction: (section=$sectionName, reqGrp=$requiredGroupName); pages=" . arrayToString($pages));
@@ -236,8 +233,8 @@ class SiteMap {
         foreach ($this->siteMapArray as $section => $valArr) {
             $default->log->debug("Sitemap::getActionFromPage section=$section");
             // for each group, page array combination
-            foreach ($valArr as $requiredGroupName => $pageArr) {
-                $default->log->debug("Sitemap::getActionFromPage grp=$requiredGroupName");
+            foreach ($valArr as $requiredAccess => $pageArr) {
+                $default->log->debug("Sitemap::getActionFromPage access=$requiredAccess");
                 // now loop through pages until we find the right one
                 foreach ($pageArr as $action => $page) {
                     $default->log->debug("Sitemap::getActionFromPage action=$action, reqPage=$sPage; page=" . $page["page"]);
