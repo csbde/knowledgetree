@@ -8,9 +8,23 @@
 *
 */
 
+function renderHeading($sHeading) {
+    global $default;
+    $sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
+    $sColor = $default->siteMap->getSectionColour($sSectionName, "th");
+    $sToRender  = "<table border=\"0\" width=\"600\">\n";
+    $sToRender .= "<tr align=\"left\"><th class=\"sectionHeading\" bgcolor=\"$sColor\">$sHeading</th></tr>\n";
+    $sToRender .= "<tr/>\n";
+    $sToRender .= "<tr/>\n";
+    $sToRender .= "</table>\n";
+    return $sToRender;
+}
 function getFolderPath($iFolderID) {
 	global $default;
-	return displayFolderPathLink(Folder::getFolderPathAsArray($iFolderID), Folder::getFolderPathNamesAsArray($iFolderID),  "$default->rootUrl/control.php?action=browse");		
+	$sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
+	$sTDBGColour = $default->siteMap->getSectionColour($sSectionName, "td");
+	$sFolderPathLink = displayFolderPathLink(Folder::getFolderPathAsArray($iFolderID), Folder::getFolderPathNamesAsArray($iFolderID),  "$default->rootUrl/control.php?action=browse");	    
+	return "<table border=\"0\" width = 100%><tr><td bgcolor=\"$sTDBGColour\">$sFolderPathLink</td></tr></table>\n";    
 }
 
 function getFolderCollaborationData($iFolderCollaborationID) {
@@ -38,11 +52,8 @@ function getFolderCollaborationData($iFolderCollaborationID) {
 
 function getEditPage($iFolderCollaborationID, $iFolderID) {
 	global $default;
-	$sToRender .= "<table border=\"1\" width=\"100%\">\n";	
-	$sToRender .= "<tr>\n";	
-	$sToRender .= "<td>" . getFolderPath($iFolderID) . "</td>\n";
-	$sToRender .= "</tr>\n";	
-	$sToRender .= "</table>\n";
+	$sToRender = renderHeading("Edit Folder Collaboration Step");
+    $sToRender .= getFolderPath($iFolderID);
 	$sToRender .= "<table border=\"0\" width=\"100%\">\n";	
 	$sToRender .= "<tr>\n";	
 	$sToRender .= "<td>" . getFolderCollaborationData($iFolderCollaborationID) . "</td>\n";
