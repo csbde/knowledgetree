@@ -42,6 +42,7 @@ require_once("$default->fileSystemRoot/lib/visualpatterns/PatternTableSqlQuery.i
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternListFromQuery.inc");
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternTableSqlQuery.inc");
+require_once("$default->fileSystemRoot/lib/visualpatterns/PatternListBox.inc");
 
 require_once("$default->fileSystemRoot/lib/web/WebDocument.inc");
 
@@ -87,6 +88,10 @@ if (checkSession()) {
 				$aFolderUserRoles = FolderUserRole::getList("document_id = " . $fDocumentID);
 				if (count($aFolderCollaboration) == count($aFolderUserRoles)) {
 					//if all the roles have been assigned we can start the collaboration process
+                    
+					//TODO: check if this collaboration has already occured, and then reset all the steps before beginning it again
+					//Document::resetDocumentCollaborationSteps($fDocumentID);
+                    
 					$oDocument->beginCollaborationProcess();
 					$oPatternCustom = & new PatternCustom();
 					$oPatternCustom->setHtml(getEditPage($oDocument));
@@ -115,10 +120,10 @@ if (checkSession()) {
 				//the user has signled that they have completed their step in the collaboration process
 				if (Document::isLastStepInCollaborationProcess($fDocumentID)) {				
 					require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
-					//the last step in the collaboration process has been performed
-					//reset all the steps and email the document creator
-					Document::resetDocumentCollaborationSteps($fDocumentID);
-					$oDocument = Document::get($fDocumentID);
+					//the last step in the collaboration process has been performed- email the document creator
+                    
+					$oDocument = Document::get($fDocumentID);                    
+                    $oDocument->endCollaborationProcess();
                     
                     // on the last collaboration step- trigger a major revision
                     // major version number rollover
@@ -152,37 +157,57 @@ if (checkSession()) {
 					$main->render();
 				}
 		} else if ((isset($fForPublish)) && (!Document::documentIsPendingWebPublishing($fDocumentID))) {
-			//user wishes to public document
-			$oDocument = Document::get($fDocumentID);
-			if ($_SESSION["userID"] == $oDocument->getCreatorID()) {
-				//only the creator can send the document for publishing
-				$aWebDocument = WebDocument::getList("document_id = $fDocumentID");
-				$oWebDocument = $aWebDocument[0];
-				$oWebDocument->setStatusID(PENDING);
-				if ($oWebDocument->update()) {
-					require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
-					$oDocumentTransaction = & new DocumentTransaction($fDocumentID, "Document sent for web publishing", UPDATE);
-					$oDocumentTransaction->create();
-					$oDocument = Document::get($fDocumentID);
-					Document::notifyWebMaster($fDocumentID);
-					$oPatternCustom = & new PatternCustom();
-					$oPatternCustom->setHtml(getEditPage($oDocument));
-					$main->setCentralPayload($oPatternCustom);
-					$main->setErrorMessage("The document has been marked as pending publishing and the web publisher has been notified");
-					$main->render();
-					
-				} else {
-					require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");					
-					$oDocument = Document::get($fDocumentID);
-					$oPatternCustom = & new PatternCustom();
-					$oPatternCustom->setHtml(getEditPage($oDocument));
-					$main->setCentralPayload($oPatternCustom);
-					$main->setErrorMessage("An error occured while attempting to update the document for publishing");
-					$main->render();					
-				}
-			} else {
-				
-			}
+            if (isset($fWebSiteID)) {
+                // user wishes to publish document
+                $oDocument = Document::get($fDocumentID);
+                $default->log->info("userID=" . $_SESSION["userID"] . "; docid=$fDocumentID; creator id=" . $oDocument->getCreatorID());
+                if ($_SESSION["userID"] == $oDocument->getCreatorID()) {
+                    //only the creator can send the document for publishing
+                    $aWebDocument = WebDocument::getList("document_id = $fDocumentID");
+                    $oWebDocument = $aWebDocument[0];
+                    $oWebDocument->setStatusID(PENDING);
+                    $oWebDocument->setWebSiteID($fWebSiteID);
+                    if ($oWebDocument->update()) {
+                        require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
+                        $oDocumentTransaction = & new DocumentTransaction($fDocumentID, "Document sent for web publishing", UPDATE);
+                        $oDocumentTransaction->create();
+                        $oDocument = Document::get($fDocumentID);
+                        Document::notifyWebMaster($fDocumentID);
+                        $oPatternCustom = & new PatternCustom();
+                        $oPatternCustom->setHtml(getEditPage($oDocument));
+                        $main->setCentralPayload($oPatternCustom);
+                        $main->setErrorMessage("The document has been marked as pending publishing and the web publisher has been notified");
+                        $main->render();
+                        
+                    } else {
+                        require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");					
+                        $oDocument = Document::get($fDocumentID);
+                        $oPatternCustom = & new PatternCustom();
+                        $oPatternCustom->setHtml(getEditPage($oDocument));
+                        $main->setCentralPayload($oPatternCustom);
+                        $main->setErrorMessage("An error occured while attempting to update the document for publishing");
+                        $main->render();					
+                    }
+                } else {
+                    // you're can't publish if you're not the originator
+                    require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");					
+                    $oDocument = Document::get($fDocumentID);
+                    $oPatternCustom = & new PatternCustom();
+                    $oPatternCustom->setHtml(getEditPage($oDocument));
+                    $main->setCentralPayload($oPatternCustom);
+                    $main->setErrorMessage("You can't publish this document because you're not the document originator");
+                    $main->render();
+                }
+            } else {
+                // prompt for the website to publish to
+                require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");					
+                $oDocument = Document::get($fDocumentID);
+                $oPatternCustom = & new PatternCustom();
+                $oPatternCustom->setHtml(getWebPublishPage($oDocument));
+                $main->setCentralPayload($oPatternCustom);
+                $main->setFormAction($_SERVER['PHP_SELF']);
+                $main->render();
+            }
 			
 		} else if (Permission::userHasDocumentWritePermission($fDocumentID) || Permission::userHasDocumentReadPermission($fDocumentID)) {
             require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
