@@ -16,6 +16,12 @@ Bug Fixes
 Detailed ChangeLog
 ==================
 
+2005-03-11 03:15  nbm
+
+	* config/dmsDefaults.php:
+
+	Move requires before a potential return statement.
+
 2005-03-11 02:45  nbm
 
 	* docs/INSTALL.txt:
