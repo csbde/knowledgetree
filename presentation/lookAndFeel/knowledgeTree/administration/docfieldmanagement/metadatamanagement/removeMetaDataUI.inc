@@ -11,7 +11,7 @@ function getSelectFieldPage($iDocFieldID) {
 	
 	
 	$sToRender .= "<br></br>\n";
-	$sToRender .= "<b>Remove MetaData From Field:</b>\n";
+	$sToRender .= "<b>Remove Lookup From Field:</b>\n";
 	$sToRender .= "<table>\n";
 	$sToRender .= "<br></br>\n";
 	$sToRender .= "<tr>Please Select a Field</tr>\n";
@@ -49,15 +49,15 @@ function getSelectMetaDataPage($iDocFieldID, $iMetaDataID) {
 	
 	
 	$sToRender .= "<br></br>\n";
-	$sToRender .= "<b>Remove MetaData From Field:</b>\n";
+	$sToRender .= "<b>Remove Lookup From Field:</b>\n";
 	$sToRender .= "<table>\n";
 	$sToRender .= "<br></br>\n";
-	$sToRender .= "<tr>Please Select the Metadata you wish to Edit</tr>\n";
+	$sToRender .= "<tr>Please Select the Lookup value you wish to remove</tr>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>Document Field: </td><td>" . getDocFieldDisplay($oDocField) . "</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>MetaData: </td><td>" . getMetaDataDisplay($oMetaData,$iDocFieldID) . "</td>\n";
+	$sToRender .= "<td>Lookup: </td><td>" . getMetaDataDisplay($oMetaData,$iDocFieldID) . "</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "</tr>\n";
@@ -87,17 +87,17 @@ function getDeleteConfirmedPage($iDocFieldID, $iMetaDataID) {
 	
 	
 	$sToRender .= "<br></br>\n";
-	$sToRender .= "<b>Remove MetaData From Field:</b>\n";
+	$sToRender .= "<b>Remove Lookup From Field:</b>\n";
 	$sToRender .= "<table>\n";
 	$sToRender .= "<br></br>\n";
-	$sToRender .= "<tr><td>Are you sure you wish to Remove</td></tr><tr><td> the specified Metadata from the Field?</td></tr>\n";
+	$sToRender .= "<tr><td>Are you sure you wish to Remove</td></tr><tr><td> the specified lookup from the Field?</td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>Document Field: </td><td>" . getDocFieldDisplay($oDocField) . "</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>MetaData: </td><td>" . getMetaDataDisplay($oMetaData,$iDocFieldID) . "</td>\n";
+	$sToRender .= "<td>Lookup: </td><td>" . getMetaDataDisplay($oMetaData,$iDocFieldID) . "</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
@@ -122,7 +122,7 @@ function getSuccessPage() {
 	$sToRender .= "<table>\n";
 	$sToRender .= "<br></br>\n";
 	$sToRender .= "<tr></tr>\n";
-	$sToRender .= "<tr><td>The metadata was successfully deleted</td></tr>\n";
+	$sToRender .= "<tr><td>The lookup was successfully deleted</td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
@@ -143,7 +143,7 @@ function getFailPage() {
 	$sToRender .= "<table>\n";
 	$sToRender .= "<br></br>\n";
 	$sToRender .= "<tr></tr>\n";
-	$sToRender .= "<tr><td>The metadata was not deleted</td></tr>\n";
+	$sToRender .= "<tr><td>The lookup was not deleted</td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
