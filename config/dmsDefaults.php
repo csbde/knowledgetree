@@ -68,6 +68,8 @@ $default->owl_documents_table = "documents";
 $default->owl_folders_table = "folders";
 // links folders to users (and roles) for approval collaboration
 $default->owl_folders_user_roles_table	= "folders_user_roles_link";
+//link groups to folders
+$default->owl_group_folders_table = "group_folders_link";
 // stores approval collaboration information- approval roles mapped to folders with order
 $default->owl_groups_folders_approval_table	= "groups_folders_approval_link";
 // links groups to folders
