@@ -996,3 +996,7 @@ INSERT INTO help VALUES (54,'addWebsiteSuccess','addWebsiteHelp.html');
 INSERT INTO help VALUES (55,'editWebsite','editWebsiteHelp.html');
 INSERT INTO help VALUES (56,'removeWebSite','removeWebSiteHelp.html');
 INSERT INTO help VALUES (57,'standardSearch','standardSearchHelp.html');
+INSERT INTO help VALUES (58,'modifyDocumentTypeMetaData','modifyDocumentTypeMetaDataHelp.html');
+INSERT INTO help VALUES (59,'addDocField','addDocFieldHelp.html');
+
+
