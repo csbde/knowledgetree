@@ -33,6 +33,10 @@ function tableData($html) {
     return "<td>$html</td>\n";
 }
 
+function tableCssData($html, $cssClass) {
+    return "<td><span class=\"$cssClass\">$html</span></td>\n";
+}
+
 function startTableRowCell() {
     return "<tr><td>\n";
 }
