@@ -163,8 +163,8 @@ function getDeleteButton($oUnit) {
 	if (!isset($oUnit)) {
 		return "Please select a Unit: ";
 	} else {
-		return "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/Delete.gif\" value=\"submit\" /></td>\n".
-		"<td align = right><a href=\"$default->rootUrl/control.php?action=removeUnit\"><img src =\"$default->graphicsUrl/widgets/Cancel.gif\" border = \"0\" /></a></td>\n";
+		return "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/delete.gif\" value=\"submit\" /></td>\n".
+		"<td align = right><a href=\"$default->rootUrl/control.php?action=removeUnit\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" /></a></td>\n";
 	}
 }
 

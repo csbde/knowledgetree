@@ -108,8 +108,8 @@ function getDeleteButton($oOrg) {
 	if (!isset($oOrg)) {
 		return "Please select a Org: ";
 	} else {
-		return "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/Delete.gif\" value=\"submit\" /></td>\n".
-		"<td align = right><a href=\"$default->rootUrl/control.php?action=removeOrg\"><img src =\"$default->graphicsUrl/widgets/Cancel.gif\" border = \"0\" /></a></td>\n";
+		return "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/delete.gif\" value=\"submit\" /></td>\n".
+		"<td align = right><a href=\"$default->rootUrl/control.php?action=removeOrg\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" /></a></td>\n";
 	}
 }
 ?>
