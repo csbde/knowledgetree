@@ -116,9 +116,12 @@ if (checkSession()) {
                                     // now handle meta data, pass new document id to queries
 									$aQueries = constructQuery(array_keys($_POST), array("document_id" =>$oDocument->getID()));
 									for ($i=0; $i<count($aQueries); $i++) {
-										$default->log->info("addDocumentBL.php metaDataQuery=" . $aQueries[$i]);
 										$sql = $default->db;
-										$sql->query($aQueries[$i]);
+										if ($sql->query($aQueries[$i])) {
+											$default->log->info("addDocumentBL.php query succeeded=" . $aQueries[$i]);
+										} else {
+											$default->log->error("addDocumentBL.php query failed=" . $aQueries[$i]);
+										}										
 									}
 									                                    
                                     // fire subscription alerts for the new document
