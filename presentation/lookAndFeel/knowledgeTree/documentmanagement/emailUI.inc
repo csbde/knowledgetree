@@ -33,42 +33,86 @@ function getDocumentPath($oDocument) {
 	return "<table border=\"0\" width = 100%><tr><td bgcolor=\"$sTDBGColour\">$sDocumentPath</td></tr></table>\n";	
 }
 
-function getDocumentEmailPage($oDocument,$oUserArray) {
-	global $default;
-    $sToRender = renderHeading("Email Document Link");
-	$sToRender .= getDocumentPath($oDocument) . "\n<br>\n";	 
-	$sToRender .= "<table>\n";	
-	$sToRender .= "<tr><td>Recipient name:</td><td>\n";	
-	$sToRender .= "<select name=\"UserSelect\" id=\"UserSelect\" onchange=\"javascript:  var oUserSelect = getObject('UserSelect');" . 
-					"var sColon; " .
-					"var oTemp = getObject('fToEmail'); " . 
-					"if (oTemp.value.length > 0) {sColon=';'; } else {sColon=''; } " . 
-					"if (oUserSelect[oUserSelect.selectedIndex].value!=1 && oUserSelect[oUserSelect.selectedIndex].value!='' && oUserSelect[oUserSelect.selectedIndex].value!=' ') { " . 
-					"	oTemp.value=oTemp.value + sColon + oUserSelect[oUserSelect.selectedIndex].value; " .
-					"}\">\n";
-	$sToRender .= "<OPTION value=\"1\">\n";
-	$sToRender .= "Select Recipient</OPTION>\n";	
+function renderGroupPicker() {	
+	
+	$sToRender .= "<tr><td valign=\"top\" colspan=\"3\"><strong>Groups</strong></td></tr>";
+	$sToRender .= "<tr><td valign=\"top\" width=1%>\n";	
+	$sToRender .= "<select name=\"groupSelect\" size=\"4\" multiple>\n";
+	// retrieve all groups
+	$aGroups = Group::getList("WHERE 1=1 ORDER BY name");
+	for ($i = 0; $i < count($aGroups); $i++) {	
+		$sToRender .= "<OPTION value=\"" . $aGroups[$i]->getID() . "\" onDblClick=\"optGroup.transferRight()\" >\n";	
+		$sToRender .= $aGroups[$i]->getName();
+		$sToRender .= "</OPTION>\n";
+	}	
+	$sToRender .= "</select></td>";
+	$sToRender .= "<td width=1%>";
+	$sToRender .= "<input TYPE=\"button\" NAME=\"right\" VALUE=\"&gt;&gt;\" ONCLICK=\"optGroup.transferRight()\">";
+	$sToRender .= "<input TYPE=\"button\" NAME=\"left\" VALUE=\"&lt;&lt;\" ONCLICK=\"optGroup.transferLeft()\">";	
+	$sToRender .= "</td>";	
+	$sToRender .= "<td><select name=\"chosenGroups\" size=\"5\" multiple>";
+	$sToRender .= "<option>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>";
+	$sToRender .= "</select></td>";
+	$sToRender .= "</tr>\n";
+	return $sToRender;
+}
+
+function renderUserPicker() {
+	$sToRender .= "<tr><td colspan=\"3\"><strong>Users</strong></td><tr>\n";	
+	$sToRender .= "<tr><td><select name=\"userSelect\" size=\"4\" multiple>\n";
+	$oUserArray = User::getList("WHERE 1=1 ORDER BY name");	
 	for ($i = 0; $i < count($oUserArray); $i++) {
 		if(strlen($oUserArray[$i]->getEmail())>0){ // if an email address exists			
-			$sToRender .= "<OPTION value=\"" . $oUserArray[$i]->getEmail() . "\" onclick=\"javascript: getObject(\"fToEmail\").value=getObject(\"fToEmail\").value + ';'\" >\n";
+			$sToRender .= "<OPTION value=\"" . $oUserArray[$i]->getID() . "\" onDblClick=\"optUser.transferRight()\">\n";
 			$sToRender .= $oUserArray[$i]->getName();
 			$sToRender .= "</OPTION>\n";
 		}
 	}	
-	$sToRender .= "</select></td></tr>\n";																																		
-	$sToRender .= "<tr><td>Email Addresses:</td><td><input type=\"text\" name=\"fToEmail\" style=\"width:270\"/></td><td><img src=\"$default->graphicsUrl/widgets/clear.gif\" onMouseDown=\"var oTemp = getObject('fToEmail'); oTemp.value=''; oTemp = getObject('UserSelect'); oTemp.selectedIndex=0;\" onmouseover=\"this.style.cursor='hand'\"></td></tr>\n";	
+	$sToRender .= "</select></td>";
+	$sToRender .= "<td>";
+	$sToRender .= "<input TYPE=\"button\" NAME=\"right\" VALUE=\"&gt;&gt;\" ONCLICK=\"optUser.transferRight()\">";
+	$sToRender .= "<input TYPE=\"button\" NAME=\"left\" VALUE=\"&lt;&lt;\" ONCLICK=\"optUser.transferLeft()\">";	
+	$sToRender .= "</td>";	
+	$sToRender .= "<td width=\"30%\"><select name=\"chosenUsers\" size=\"5\" multiple>";
+	$sToRender .= "<option>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>";
+	$sToRender .= "</select></td>";
+	$sToRender .= "</tr>\n";
+
+	return $sToRender;
+}
+
+function getDocumentEmailPage($oDocument) {
+	global $default;
+    $sToRender = renderHeading("Email Document Link");
+	$sToRender .= getDocumentPath($oDocument) . "\n<br>\n";
+	$sToRender .= "<table width=\"100%\">\n";
+	$sToRender .= "<tr><td><table>\n";	
+	$sToRender .= renderGroupPicker();
+	$sToRender .= renderUserPicker();	
+	$sToRender .= "</table></td></tr>";
+	$sToRender .= "<tr><td><table>\n";
+	$sToRender .= "<tr><td valign=\"top\">Comment</td><td><textarea rows=\"5\" cols=\"30\" name=\"fComment\"></textarea></td>";//</tr>\n";
+	$sToRender .= "<td valign=\"bottom\"><table><tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/email.gif\" border=\"0\" /></td><td><a href=\"$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $oDocument->getID() . "\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"/></a></td></tr></table></td></tr>\n";
+	$sToRender .= "</table></td></tr>\n";
+	$sToRender .= "</table>";
+	$sToRender .= "<input type=\"hidden\" name=\"groupNewLeft\"/><br>";
+	$sToRender .= "<input type=\"hidden\" name=\"groupNewRight\"/><br>";
+	$sToRender .= "<input type=\"hidden\" name=\"groupRemovedLeft\"/><br>";
+	$sToRender .= "<input type=\"hidden\" name=\"groupRemovedRight\"/><br>";
+	$sToRender .= "<input type=\"hidden\" name=\"groupAddedLeft\"/><br>";
+	$sToRender .= "<input type=\"hidden\" name=\"groupAddedRight\"/><br>";
+	$sToRender .= "<input type=\"hidden\" name=\"userNewLeft\"/><br>";
+	$sToRender .= "<input type=\"hidden\" name=\"userNewRight\"/><br>";
+	$sToRender .= "<input type=\"hidden\" name=\"userRemovedLeft\"/><br>";
+	$sToRender .= "<input type=\"hidden\" name=\"userRemovedRight\"/><br>";
+	$sToRender .= "<input type=\"hidden\" name=\"userAddedLeft\"/><br>";
+	$sToRender .= "<input type=\"hidden\" name=\"userAddedRight\"/><br>";	
 	
-	$sToRender .= "<tr><td></td><td>(separate multiple addresses with a semicolon)</td></tr>";
-	$sToRender .= "<tr><td>Comment</td><td><textarea rows=\"5\" cols=\"30\" name=\"fComment\"></textarea></td></tr>\n";
-	$sToRender .= "<tr><td>&nbsp</td><td>&nbsp</td></tr>\n";
-	$sToRender .= "<tr><td><table><tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/email.gif\" border=\"0\"/></td><td><a href=\"$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $oDocument->getID() . "\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"/></a></td></tr></table></td>\n";
-	$sToRender .= "</table>\n";
 	$sToRender .= "<script language='javascript'>\n";
-	$sToRender .= "function getObject(sObjName){\n";	//Function to return an html object(Netscape 4.7 compatable)	
-	$sToRender .= "		var oSelect;\n";	
-	$sToRender .= "	  	oSelect = document.forms[0].elements[sObjName];";
-	$sToRender .= "   	return oSelect;\n";
-	$sToRender .= "}\n";		
+	$sToRender .= "function validateForm(theForm) {\n";
+	$sToRender .= "\tif (isBlank(theForm.groupNewRight) && isBlank(theForm.userNewRight)) {\n";
+	$sToRender .= "\t\talert(\"Please choose either at least one Group or User to email a link to this document.\");return false;\n\t}\n";
+	$sToRender .= "return true;\n}\n";
 	$sToRender .= "</script >\n";
 	return $sToRender;
 }
