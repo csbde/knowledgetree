@@ -171,7 +171,7 @@ class NavBar {
         // build the nav bar
         $bar  = "<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\">\n";
         $bar .= "\t<tr height=\"30\">\n";
-        $bar .= "\t\t<td align=\"right\" valign=\"top\" width=\"100%\"><img src=\"$heading\"/><img src=\"$default->graphicsUrl/logo.jpg\"/></td>\n";        
+        $bar .= "\t\t<td align=\"right\" bgcolor=\"#1A4383\" valign=\"top\" width=\"100%\"><img src=\"$heading\"/><img src=\"$default->graphicsUrl/logo.jpg\" width=\"30\" height=\"36\"/></td>\n";        
         $bar .= "\t</tr>\n";
         $bar .= "\t<tr height=\"30\">\n";
         $bar .= "\t\t<td colspan=\"2\" bgcolor=\"#1A4383\" width=\"100%\" nowrap>";
