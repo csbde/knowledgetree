@@ -25,6 +25,12 @@ require_once("./lib/SiteMap.inc");
 // -------------------------------
 // page start
 // -------------------------------
-    
-echo generateLink("LOGOUT") . "logout</a>";
+
+// check if this page is authorised, ie. has come from control.php
+if ($sessionStatus["authorised"]) {
+    echo generateLink("LOGOUT") . "logout</a>";
+} else {
+    // FIXME: redirect to no permission page
+    print "you do not have access to view this page!  please go away, and come back when you do.";
+}
 ?>
