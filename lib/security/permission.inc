@@ -351,6 +351,7 @@ class Permission {
 	* @return boolean true if the user is the unit administrator for the unit to which the folder belongs, false otherwise
 	*/
 	function userIsUnitAdministrator($iFolderID) {
+        global $default;
 		$sql = new Owl_DB();
 		$sql->query("SELECT UGL.group_id " .
 			"FROM $default->owl_users_groups_table AS UGL INNER JOIN $default->owl_groups_units_table AS GUL ON GUL.group_id = UGL.group_id " .
