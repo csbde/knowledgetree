@@ -259,6 +259,7 @@ $default->logLevel = 'INFO';
 
 $default->useDatabaseConfiguration = false;
 $default->developmentWindowLog = false;
+$default->genericMetaDataRequired = true;
 
 // include the environment settings
 require_once("environment.php");
