@@ -112,7 +112,6 @@ if ($loginAction == "loginForm") {
 
             // check for a location to forward to
             if (isset($redirect) && strlen(trim($redirect))>0) {
-                $redirect = sanitize($redirect);
                 // remove any params from redirect before looking up from sitemap
                 if (strstr($redirect, "?")) {
                     $queryString = substr($redirect, strpos($redirect, "?")+1, strlen($redirect));
