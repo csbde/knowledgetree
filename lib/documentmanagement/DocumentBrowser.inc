@@ -265,13 +265,12 @@ class DocumentBrowser {
                $folders[$folderName] = array("id" => $folderID,
                                              "description" => $folderSql->f("description"),
                                              "parent_id" => $folderSql->f("parent_id"),
-                                             "creator_id" => $folderSql->f("creator_id"),
-                                             "document_type_id" => $folderSql->f("document_type_id"),
+                                             "creator_id" => $folderSql->f("creator_id"),                                             
                                              "unit_id" => $folderSql->f("unit_id"),
                                              "is_public" => $folderSql->f("is_public"));*/
-               $folders[$folderName] = new Folder($folderName, $folderSql->f("description"), $folderSql->f("parent_id"),
-                                                  $folderSql->f("creator_id"), $folderSql->f("document_type_id"),
-                                                  $folderSql->f("unit_id"), $folderSql->f("is_public"));
+               $folders[$folderName] = & new Folder($folderName, $folderSql->f("description"), $folderSql->f("parent_id"),
+                                                  $folderSql->f("creator_id"), $folderSql->f("unit_id"), 
+												  $folderSql->f("is_public"));
             } else {
                 $_SESSION["errorMessage"] = "could not retrieve folder details: $folderQuery";
                 $default->log->debug("DocumentBrowser::retrieveFolderDetails error=" . $_SESSION["errorMessage"]);

@@ -9,29 +9,50 @@
 *
 */
 
-function renderBrowseAddPage($fFolderID) {
+function renderBrowseAddPage($iFolderID) {
     global $default;
-    $sToRender = "<table border=\"0\">\n";
+	$sToRender = "<table border=\"0\">\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "\t<td>" . renderFolderPath($fFolderID, "$default->ui_url/foldermanagement/addFolderBL.php") . "</td>\n";
+    $sToRender .= "\t<td>" . renderFolderPath($iFolderID, "$default->uiUrl/foldermanagement/addFolderBL.php") . "</td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "</table>\n";
     $sToRender .= "<table border=\"0\">\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "<td colspan=\"2\"><b>New folder name:<b></td>\n";
-    $sToRender .= "</tr>\n";
+	$sToRender .= "<td valign=\"top\" width=\"300\">\n";
+	$sToRender .= wrapInTable(renderFolderList($iFolderID, "control.php?action=addFolder"));
+	$sToRender .= "</td>\n";
+	$sToRender .= "<td valign=\"top\">\n";
+	$sToRender .= getRightSide($iFolderID);
+	$sToRender .= "</td>\n";
+	$sToRender .= "</tr>\n";
+	$sToRender .= "</table><br>\n";
+	
+    return $sToRender;
+}
+
+function getRightSide($iFolderID) {
+	global $default;
+	$sToRender .= "<table border=\"0\">\n";    
+	$sToRender .= "<tr>\n";
+	$sToRender .= "<td><b>Folder name: </b></td>\n";
     $sToRender .= "<td><input type=\"text\" name=\"fFolderName\" value=\"\" /></td>\n";
-    $sToRender .= "<td><input type=\"image\" src=\"$default->graphicsUrl/widgets/add.gif\"></td>\n";
-	$sToRender .= "<td><a href=\"$default->rootUrl/control.php?action=browse&fFolderID=$fFolderID\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></a></td>\n";    
+	$sToRender .= "</tr>\n";
+	$sToRender .= "<tr>\n";
+	$sToRender .= "<td><b>Doc Type: </b></td>\n";
+	$sToRender .= "<td>" . getDocumentTypeDropDown() . "</td>\n";
+	$sToRender .= "</tr>\n";    
+	$sToRender .= "<td><table border=\"0\"><tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/add.gif\"></td><td><a href=\"$default->rootUrl/control.php?action=browse&fFolderID=$fFolderID\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></a></td></tr></table></td><td>&nbsp</td>\n";    
     $sToRender .= "</tr>\n";
-    $sToRender .= "</table>\n";    
-    $sToRender .= "<table border=\"0\">\n";
-    $sToRender .= "<tr>\n";
-    $sToRender .= "\t<td>" . renderFolderList($fFolderID, "control.php?action=addFolder") . "<td>\n";
-    $sToRender .= "</tr>\n";
-    $sToRender .= "</table><br>\n";
+    $sToRender .= "</table>\n";
 
     return $sToRender;
+}
+
+function getDocumentTypeDropDown() {
+	global $default;
+	$oPatternListBox = & new PatternListBox("$default->owl_document_types_table", "name", "id", "fDocumentTypeID");
+	$oPatternListBox->setIncludeDefaultValue(false);
+	return $oPatternListBox->render();
 }
 
 function renderBrowsePage($fFolderID) {
@@ -49,4 +70,9 @@ function renderBrowsePage($fFolderID) {
 
     return $sToRender;
 }
+
+function wrapInTable($sHtml) {
+	return "\n\t\t<table border = 0, width = 100%><tr><td>$sHtml</td></tr></table>\n";	
+}
+
 ?>

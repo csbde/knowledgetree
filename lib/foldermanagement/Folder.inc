@@ -24,9 +24,7 @@ class Folder {
 	/** folder parent primary key */
 	var $iParentID;
 	/** primary key of user who created folder */
-	var $iCreatorID;
-	/** primary key of document types this folder holds */
-	var $iDocumentTypeID;
+	var $iCreatorID;	
 	/** primary key of unit to which this folder belongs */
 	var $iUnitID;
 	/** public status of folder */
@@ -48,14 +46,13 @@ class Folder {
 	* @param $iNewUnitID			Primary key of unit to which folder belongs
 	* @param $bNewIsPublic			Folder public status (is the folder public or not?)
 	*/
-	function Folder($sNewName, $sNewDescription, $iNewParentID, $iNewCreatorID, $iNewDocumentTypeID, $iNewUnitID, $bNewIsPublic = false) {
+	function Folder($sNewName, $sNewDescription, $iNewParentID, $iNewCreatorID, $iNewUnitID, $bNewIsPublic = false) {
 		//id of -1 means that the object has not yet been stored in the database
 		$this->iId = -1;
 		$this->sName = $sNewName;
 		$this->sDescription = $sNewDescription;
 		$this->iParentID = $iNewParentID;
-		$this->iCreatorID = $iNewCreatorID;
-		$this->iDocumentTypeID = $iNewDocumentTypeID;
+		$this->iCreatorID = $iNewCreatorID;		
 		$this->iUnitID = $iNewUnitID;
 		$this->bIsPublic = $bNewIsPublic;
 	}
@@ -125,26 +122,6 @@ class Folder {
 	*/
 	function setParentID($iNewValue) {
 		$this->iParentID = $iNewValue;
-	}
-	
-	/**
-	* Get the document type primary key
-	*
-	* @return integer document type primary key
-	*
-	*/
-	function getDocumentTypeID() {
-		return $this->iDocumentTypeID;
-	}
-	
-	/**
-	* Set the document type primary key
-	*
-	* @param $iNewValue		New document type id
-	*
-	*/
-	function setDocumentTypeID($iNewValue) {
-		$this->iDocumentTypeID = $iNewValue;
 	}
 	
 	/**
@@ -245,8 +222,8 @@ class Folder {
 			$this->sParentFolderIDs = $this->generateParentFolderIDS($this->iParentID);
 			$this->sParentFolderIDs = substr($this->sParentFolderIDs, 1, strlen($this->sParentFolderIDs));
 			$sql = $default->db;
-			$result = $sql->query("INSERT INTO " . $default->owl_folders_table . " (name, description, parent_id, creator_id, document_type_id, unit_id, is_public, full_path, parent_folder_ids) " .
-						"VALUES ('" . addslashes($this->sName) . "', '" . addslashes($this->sDescription) . "', $this->iParentID, $this->iCreatorID, $this->iDocumentTypeID, $this->iUnitID, " . ($this->bIsPublic ? 1 : 0) . ",'" . addslashes($this->sFullPath) . "','" . addslashes($this->sParentFolderIDs) . "')");
+			$result = $sql->query("INSERT INTO " . $default->owl_folders_table . " (name, description, parent_id, creator_id, unit_id, is_public, full_path, parent_folder_ids) " .
+						"VALUES ('" . addslashes($this->sName) . "', '" . addslashes($this->sDescription) . "', $this->iParentID, $this->iCreatorID, $this->iUnitID, " . ($this->bIsPublic ? 1 : 0) . ",'" . addslashes($this->sFullPath) . "','" . addslashes($this->sParentFolderIDs) . "')");
 			if ($result) {
 				$this->iId = $sql->insert_id();
 				return true;
@@ -277,7 +254,6 @@ class Folder {
 							"description = '" . addslashes($this->sDescription) . "', " .
 							"parent_id = $this->iParentID, " .
 							"creator_id = $this->iCreatorID, " .
-							"document_type_id = $this->iDocumentTypeID, " .
 							"unit_id = $this->iUnitID, ";
 							if ($bPathChange) {
 								$sFullPath = $this->generateFullFolderPath($this->iParentID);								
@@ -382,7 +358,7 @@ class Folder {
 		$sql = $default->db;		
 		$sql->query("SELECT * FROM " . $default->owl_folders_table . " WHERE id = " . $iFolderID);
 		if ($sql->next_record()) {
-			$oFolder = & new Folder(stripslashes($sql->f("name")), stripslashes($sql->f("description")), $sql->f("parent_id"), $sql->f("creator_id"), $sql->f("document_type_id"), $sql->f("unit_id"), $sql->f("is_public"));
+			$oFolder = & new Folder(stripslashes($sql->f("name")), stripslashes($sql->f("description")), $sql->f("parent_id"), $sql->f("creator_id"), $sql->f("unit_id"), $sql->f("is_public"));
             $oFolder->iId = $iFolderID;
 			$oFolder->sFullPath = stripslashes($sql->f("full_path"));
 			$oFolder->sParentFolderIDs = stripslashes($sql->f("parent_folder_ids"));
@@ -536,7 +512,7 @@ class Folder {
 		global $default, $lang_err_database;
 		if (Folder::folderExistsID($iFolderID)) {
 			$sql = $default->db;
-			$sql->query("SELECT document_type_id FROM " . $default->owl_folders_table . " WHERE id = " . $iFolderID);
+			$sql->query("SELECT document_type_id FROM " . $default->owl_folder_doctypes_table . " WHERE id = " . $iFolderID);
 			if ($sql->next_record()) {
 				return $sql->f("document_type_id");
 			}
@@ -621,6 +597,21 @@ class Folder {
 		$_SESSION["errorMessage"] = $lang_err_database;
 		return false;
 	}    
+	
+	/**
+	* Checks if a document type is already
+	* linked to a folder
+	* 
+	*/
+	function folderIsLinkedToDocType($iFolderID, $iDocTypeID) {
+		global $default;
+		$sql = $default->db;
+		$sql->query("SELECT id FROM $default->owl_folder_doctypes_table WHERE document_type_id = $iDocTypeID and folder_id = $iFolderID");
+		if ($sql->next_record()) {
+			return true;
+		}
+		return false;
+	}
 }
 
 ?>

@@ -19,7 +19,9 @@ if (checkSession()) {
 
     if (isset($fFolderID)) {
         require_once("$default->fileSystemRoot/lib/visualpatterns/PatternTableSqlQuery.inc");
+		require_once("$default->fileSystemRoot/lib/visualpatterns/PatternListBox.inc");
         require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
+		require_once("$default->fileSystemRoot/lib/foldermanagement/FolderDocTypeLink.inc");
         require_once("$default->fileSystemRoot/lib/foldermanagement/PhysicalFolderManagement.inc");
         require_once("$default->fileSystemRoot/lib/subscriptions/SubscriptionEngine.inc");
         require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
@@ -41,7 +43,7 @@ if (checkSession()) {
             $main->setFormAction("addFolderBL.php?fFolderID=$fFolderID");
             $main->setHasRequiredFields(true);
             $main->render();
-        } else {
+        } else {fwabyw
             //have a folder name to store
             if (Permission::userHasFolderWritePermission($fFolderID)) {
                 //check for illegal characters in the folder name
@@ -59,31 +61,47 @@ if (checkSession()) {
                         $main->setHasRequiredFields(true);
                         $main->setFormAction("addFolderBL.php?fFolderID=$fFolderID");
                         $main->render();
-                    } else {
+                    } else {						
                         $oParentFolder = Folder::get($fFolderID);
                         //create the folder in the db, giving it the properties of it's parent folder
-                        $oFolder = &new Folder($fFolderName, "", $fFolderID, $_SESSION["userID"], $oParentFolder->getDocumentTypeID(), $oParentFolder->getUnitID());
+                        $oFolder = & new Folder($fFolderName, "", $fFolderID, $_SESSION["userID"], $oParentFolder->getUnitID());
                         if ($oFolder->create()) {
-                            //create the folder on the file system
-                            if (PhysicalFolderManagement::createFolder(Folder::getFolderPath($oFolder->getID()))) {
-                                // fire subscription alerts for the new folder
-                                $count = SubscriptionEngine::fireSubscription($oParentFolder->getID(), SubscriptionConstants::subscriptionAlertType("AddFolder"),
-                                         SubscriptionConstants::subscriptionType("FolderSubscription"),
-                                         array( "newFolderName" => $fFolderName,
-                                                "parentFolderName" => $oParentFolder->getName()) );
-                                $default->log->info("addFolderBL.php fired $count subscription alerts for new folder $fFolderName");
-                                redirect("$default->rootUrl/control.php?action=editFolder&fFolderID=" . $oFolder->getID());
-                            } else {
-                                //if we couldn't do that, remove the folder from the db and report and error
-                                $oFolder->delete();
-                                require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
-                                $oPatternCustom->setHtml(renderBrowsePage($fFolderID));
-                                $main->setCentralPayload($oPatternCustom);
-                                $main->setErrorMessage("There was an error creating the folder $fFolderName on the filesystem");
-                                $main->setFormAction("addFolderBL.php?fFolderID=$fFolderID");
-                                $main->setHasRequiredFields(true);
-                                $main->render();
-                            }
+							$oFolderDocTypeLink = & new FolderDocTypeLink($oFolder->getID(), $fDocumentTypeID);
+							if ($oFolderDocTypeLink->create()) {
+								//create the folder on the file system
+								if (PhysicalFolderManagement::createFolder(Folder::getFolderPath($oFolder->getID()))) {
+									// fire subscription alerts for the new folder
+									$count = SubscriptionEngine::fireSubscription($oParentFolder->getID(), SubscriptionConstants::subscriptionAlertType("AddFolder"),
+											 SubscriptionConstants::subscriptionType("FolderSubscription"),
+											 array( "newFolderName" => $fFolderName,
+													"parentFolderName" => $oParentFolder->getName()) );
+									$default->log->info("addFolderBL.php fired $count subscription alerts for new folder $fFolderName");
+									redirect("$default->rootUrl/control.php?action=editFolder&fFolderID=" . $oFolder->getID());
+								} else {
+									//if we couldn't do that, remove the folder and its doc type link
+									//from the db and report and error
+									$oFolderDocTypeLink->delete();
+									$oFolder->delete();
+									require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
+									$oPatternCustom->setHtml(renderBrowsePage($fFolderID));
+									$main->setCentralPayload($oPatternCustom);
+									$main->setErrorMessage("There was an error creating the folder $fFolderName on the filesystem");
+									$main->setFormAction("addFolderBL.php?fFolderID=$fFolderID");
+									$main->setHasRequiredFields(true);
+									$main->render();
+								}
+							} else {
+								//couldn't associate the chosen document type with this folder
+								//remove the folder from the database
+								$oFolder->delete();
+								require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
+								$oPatternCustom->setHtml(renderBrowsePage($fFolderID));
+								$main->setCentralPayload($oPatternCustom);
+								$main->setErrorMessage("There was an error creating the folder $fFolderName on the filesystem");
+								$main->setFormAction("addFolderBL.php?fFolderID=$fFolderID");
+								$main->setHasRequiredFields(true);
+								$main->render();								
+							}
                         } else {
                             //if we couldn't create the folder in the db, report an error
                             require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
