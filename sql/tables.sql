@@ -656,6 +656,8 @@ INSERT INTO document_transaction_types_lookup (name) VALUES ("Delete");
 INSERT INTO document_transaction_types_lookup (name) VALUES ("Rename");
 INSERT INTO document_transaction_types_lookup (name) VALUES ("Move");
 INSERT INTO document_transaction_types_lookup (name) VALUES ("Download");
+INSERT INTO document_transaction_types_lookup (name) VALUES ("Check In");
+INSERT INTO document_transaction_types_lookup (name) VALUES ("Check Out");
 
 -- roles
 INSERT INTO roles (name, active, can_read, can_write) VALUES ('Editor', 1, 1, 1);
