@@ -46,15 +46,14 @@ if(checkSession()) {
 		
 	    $aColumns = array("name", 	  "active", "reader", "writer", "Edit", "Delete");
 	    $aColumnNames = array("Name", "Active", "Read", "Write", "Edit", "Delete");
-	    $aColumnTypes = array(1,4,4,4,3,3);
+	    $aColumnTypes = array(1,2,2,2,3,3);
 	    $aDBColumnArray = array("roleID");
 	    $aQueryStringVariableNames = array("fRoleID");
 	    	    
 	    $aHyperLinkURL = array(	4=> "$default->rootUrl/control.php?action=editRole",                       			
                        			5=> "$default->rootUrl/control.php?action=removeRole"); //"$default->rootUrl/control.php?action=removeUserFromGroup");
 	    	    
-	    $oSearchResults = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnNames, "100%", $aHyperLinkURL,$aDBColumnArray,$aQueryStringVariableNames);
-	    $oSearchResults->setPicPath("$default->graphicsUrl/widgets/checked.gif");
+	    $oSearchResults = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnNames, "100%", $aHyperLinkURL,$aDBColumnArray,$aQueryStringVariableNames);	    
 		$oSearchResults->setDisplayColumnHeadings(true);
 	    $htmlTables = $oSearchResults->render() ;
 	
