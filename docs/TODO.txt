@@ -1,0 +1,42 @@
+KnowledgeTree DMS Development TODO List
+---------------------------------------
+
+(In no particular order after office integration)
+
+- Microsoft Office integration- Open, Edit, Update documents in the KnowledgeTree
+  from within Microsoft Office programs
+- WebDAV integration
+- Reporting- Simple usage and statistics report generator
+- Code Review and Refactoring
+  - Web Framework: Phrame (http://phrame.sourceforge.net) / Smarty (http://smarty.php.net) integration
+  - Notification Handling
+      - tidy up collaboration emailing text- refactor emailing
+        - names instead of usernames, line breaks etc (html/txt?)
+      - email controller links
+      - ?? and getDocumentPath-> displayDocumentPath?
+  - Subscription refactoring
+      - Use a factory and distinct DocumentSubscription and FolderSubscription classes
+  - All common UI code- headings, document/folder path, candystriping, status and error messages
+- Documentation
+  - Design document and Developers Guide
+    - decide what is core and what is optional
+    - how to decouple logic into modules- documentActions
+- Javascript folder browse; folder tree pane
+- Zip functions
+  - Mass up/download
+    - download- zip up and download file lists (folders, categories, document types, search list)
+  - Unpacking archives
+    - Allow zips to be browsed and contents accessed.
+- Shortcuts  
+  - Folder: Add a shortcut to a document in the dms from a folder
+- Allow addition of URLS
+- Add number of documents to folder view, or change folder icon (open/closed)based on folder contents
+- Automated Test Suite
+  - For Coverage and performance tests
+- Write custom error handler
+- Security audit
+- Make logging robust, spin off as Log4Php?
+- Document Routing
+  - Allow overrides on a per document basis
+
+$Id$
