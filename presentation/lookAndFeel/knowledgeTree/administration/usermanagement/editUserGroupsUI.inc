@@ -89,14 +89,12 @@ function getGroupPage($iUserID, $aGroup) {
     $sToRender .= "<table border=0 cellspacing=1>\n";
     $sToRender .= "<tr><td><b>Options</b></td></tr>";
     $sToRender .= "<tr><td width=200 bgcolor=$sBgColor>";
-    $sToRender .= "<br>&nbsp;&nbsp;Add user to a group<br><br>";
-    $sToRender .= "</td><td>";
-    $sToRender .= "<a href=\"$default->rootUrl/control.php?action=addUserToGroup&fUserID=$iUserID\"><img border=0 src=\"$default->graphicsUrl/widgets/enter.gif\"></img></a>";
+    $sToRender .= "<br><a href=\"$default->rootUrl/control.php?action=addUserToGroup&fUserID=$iUserID\">&nbsp;&nbsp;Add user to a group</a><br><br>";
+    $sToRender .= "</td><td>"; 	
     $sToRender .= "</td></tr>";
     $sToRender .= "<tr><td width=200 bgcolor=$sBgColor>";
-    $sToRender .= "<br>&nbsp;&nbsp;Remove user from a group<br><br>";
-    $sToRender .= "</td><td>";
-    $sToRender .= "<a href=\"$default->rootUrl/control.php?action=removeUserFromGroup&fUserID=$iUserID\"><img border=0 src=\"$default->graphicsUrl/widgets/enter.gif\"></img></a>";
+    $sToRender .= "<br><a href=\"$default->rootUrl/control.php?action=removeUserFromGroup&fUserID=$iUserID\">&nbsp;&nbsp;Remove user from a group</a><br><br>";
+    $sToRender .= "</td><td>";    
     $sToRender .= "</td></tr>";
     $sToRender .= "</table>\n";
     
