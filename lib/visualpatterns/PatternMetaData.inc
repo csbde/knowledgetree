@@ -37,7 +37,7 @@ class PatternMetaData {
                 $oPatternListBox->setWhereClause($sWhereClause);				
 				return $oPatternListBox->render();
 			} else {
-				$sToRender = "<input type=\"text\" name=\"" . $this->sMetaDataField . "\" ";
+                $sToRender = "<input type=\"text\" name=\"" . $this->sFormName . "\" ";                
 				if ($this->sValue != null) {
 					$sToRender .= "value=\"" . $this->sValue . "\" ";
 				}
