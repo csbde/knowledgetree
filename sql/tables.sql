@@ -312,11 +312,6 @@ ADD CONSTRAINT PK_document_fields_link
 PRIMARY KEY (id)
 ;
 
-ALTER TABLE document_fields_lookup
-ADD CONSTRAINT PK_document_fields_lookup
-PRIMARY KEY (id)
-;
-
 ALTER TABLE document_transaction_types_lookup
 ADD CONSTRAINT PK_document_transaction_types_lookup
 PRIMARY KEY (id)
