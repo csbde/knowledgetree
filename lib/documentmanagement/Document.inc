@@ -269,8 +269,8 @@ class Document {
 			$this->sFullPath = substr($sFullPath, 1, strlen($sFullPath));
 			$sParentFolderIDs = $this->generateParentFolderIDS($this->iFolderID);
 			$this->sParentFolderIDs = substr($sParentFolderIDs, 1, strlen($sParentFolderIDs));
-            $result = $sql->query("INSERT INTO " . $default->owl_documents_table . " (document_type_id, name, filename, size, creator_id, modified, description, mime_id, folder_id, major_version, minor_version, is_checked_out, parent_folder_ids, full_path) " .
-                                  "VALUES (" . $this->iDocumentTypeID . ", '" . addslashes($this->sName) . "', '" . addslashes($this->sFileName) . "', $this->iSize, $this->iCreatorID, '" . getCurrentDateTime() . "', '" . addslashes($this->sDescription) . "', $this->iMimeTypeID, $this->iFolderID, $this->iMajorVersion, $this->iMinorVersion, " . ($this->bIsCheckedOut ? 1 : 0) . ", '" . $this->sParentFolderIDs . "','" . addslashes($this->sFullPath) . "')");
+            $result = $sql->query("INSERT INTO " . $default->owl_documents_table . " (document_type_id, name, filename, size, creator_id, modified, description, mime_id, folder_id, major_version, minor_version, is_checked_out, checked_out_user_id, parent_folder_ids, full_path) " .
+                                  "VALUES (" . $this->iDocumentTypeID . ", '" . addslashes($this->sName) . "', '" . addslashes($this->sFileName) . "', $this->iSize, $this->iCreatorID, '" . getCurrentDateTime() . "', '" . addslashes($this->sDescription) . "', $this->iMimeTypeID, $this->iFolderID, $this->iMajorVersion, $this->iMinorVersion, " . ($this->bIsCheckedOut ? 1 : 0) . ", " . $this->iCheckedOutUserID . ", '" . $this->sParentFolderIDs . "','" . addslashes($this->sFullPath) . "')");
             if ($result) {
                 //set the current documents primary key
                 $this->iId = $sql->insert_id();
@@ -434,7 +434,7 @@ class Document {
 			$oDocument->sParentFolderIDs = stripslashes($sql->f("parent_folder_ids"));
 			$oDocument->sFullPath = stripslashes($sql->f("full_path"));
             $oDocument->iId = $iDocumentID;
-            $oDocument->setCheckedOutUserID = $sql->f("checked_out_user_id");
+            $oDocument->iCheckedOutUserID = $sql->f("checked_out_user_id");
             return $oDocument;
         }
         $_SESSION["errorMessage"] = $lang_err_object_not_exist . "id = " . $iDocumentID . " table = documents";
