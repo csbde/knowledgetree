@@ -1,16 +1,16 @@
 <?php
+require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentField.inc");
 
 /**
-*
-* Class DocumentTypeFieldLink
-*
-* Represents a document type field link as per the database table document_types_fields_link
-*
-* @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
-* @date 19 January 2003
-* @package lib.documentmanagement
-*/
-
+ *
+ * Class DocumentTypeFieldLink
+ *
+ * Represents a document type field link as per the database table document_types_fields_link
+ *
+ * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
+ * @date 19 January 2003
+ * @package lib.documentmanagement
+ */
 class DocumentTypeFieldLink {
 	
 	/** document field link primary key */
@@ -156,9 +156,10 @@ class DocumentTypeFieldLink {
 		global $default, $lang_err_database, $lang_err_object_key;
 		if ($this->iId >= 0) {
 			$sql = $default->db;
-			$result = $sql->query("UPDATE " . $default->owl_document_type_fields_table . " SET " .
+			$sQuery = "UPDATE " . $default->owl_document_type_fields_table . " SET " .
 					"document_type_id = $this->iDocumentTypeID, field_id = $this->iFieldID, is_mandatory = '" . $this->bIsMandatory . "'" .
-					"WHERE id = $this->iId");
+					"WHERE id = $this->iId";
+			$result = $sql->query($sQuery);
 			if ($result) {
 				return true;
 			}
@@ -202,7 +203,7 @@ class DocumentTypeFieldLink {
 	* @return DocumentFieldLink populated DocumentFieldLink object on success, false otherwise and set $_SESSION["errorMessage"]
 	*/
 	function & get($iDocumentTypeFieldLinkID) {
-		global $default, $lang_err_doc_not_exist;
+		global $default;
 		$sql = $default->db;
 		$sql->query("SELECT * FROM " . $default->owl_document_type_fields_table . " WHERE id = " . $iDocumentTypeFieldLinkID);
 		if ($sql->next_record()) {			
@@ -210,92 +211,62 @@ class DocumentTypeFieldLink {
 			$oDocumentTypeFieldLink->iId = $iDocumentTypeFieldLinkID;
 			return $oDocumentTypeFieldLink;
 		}
-		$_SESSION["errorMessage"] = $lang_err_object_not_exist . "id = " . $iDocumentTypeID . " table = $default->owl_document_type_fields_table";
 		return false;		
 	}
 	
-	
-	
-		/*
-     * static function
+	/**
+     * Static- Lookup a document field associated with a document type id
      *
-     * find out wot doctype belongs to wot field
-     *
-     * @param   false or a value
-     *   
+     * @param integer the document type id
+     * @return integer a document field id  
      */
-     
-	function docTypeBelongsToField($doctypeId)
-	 {
-	       global $default;
-	
-	        $value = lookupField("$default->owl_document_type_fields_table", "field_id", "document_type_id", $doctypeId );
-	        
-	        return $value;
-	        
+	function docTypeBelongsToField($iDocTypeID) {
+		global $default;
+		return lookupField("$default->owl_document_type_fields_table", "field_id", "document_type_id", $iDocTypeID );
 	}
-	
 
-/*
-     * static function
+	/**
+     * Static- Lookup the DocumentTypeFieldLink by document type and document field ids
      *
-     * sets the id of the groupunit using their groupid
-     *
-     * @param   String
-     *   The unit_ID
-     *   
+     * @param integer the document type id
+	 * @param integer the document field id     
+     * @return DocumentTypeFieldLink the object representing this database row
      */
-     
-	function setDocTypeFieldID($iDocTypeID, $iDocFieldID)
-	 {
+	function getByFieldAndTypeIDs($iDocTypeID, $iDocFieldID) {
 	   	global $default;
 		$sql = $default->db;
-		$result = $sql->query("SELECT id FROM $default->owl_document_type_fields_table WHERE field_id = $iDocFieldID and document_type_id = $iDocTypeID ");
+		$sQuery = "SELECT id FROM $default->owl_document_type_fields_table WHERE field_id = $iDocFieldID AND document_type_id = $iDocTypeID";
+		$result = $sql->query($sQuery);
 		if ($result) {
 			if ($sql->next_record()) {
-				$id = $sql->f("id");
-				
-			}else{
-				$_SESSION["errorMessage"] = $lang_err_database;
+				return DocumentTypeFieldLink::get($sql->f("id"));
+			} else{
 				return false;
 			}
-		
-		}else{	
-			$_SESSION["errorMessage"] = $lang_err_database;
+		} else {
 			return false;
 		}
-		
-		$this->iId = $id;
-		
 	}
 
-
-	
-	
-	/* Static function.  Given a documenttype...will find all fields belongin to it
-	*
-	* @return DocumentFieldLink populated DocumentFieldLink object on success, false otherwise and set $_SESSION["errorMessage"]
-	*/
-	function getSpecificFields($iDocTypeID) {
-		global $default, $lang_err_database;
-		$aFields;
-		settype($aFields, "array");
+	/**
+	 * Static- Returns DocumentFields mapped to a DocumentType
+	 *
+	 * @param integer primary key of the document type
+	 * @return DocumentFieldLink populated DocumentFieldLink object on success, false otherwise and set $_SESSION["errorMessage"]
+	 */
+	function getDocumentTypeFields($iDocTypeID) {
+		global $default;
+		$aFields = array();
 		$sql = $default->db;
-		$result = $sql->query("SELECT field_id FROM " . $default->owl_document_type_fields_table  . " Where document_type_id = ". $iDocTypeID);
+		$result = $sql->query("SELECT field_id FROM " . $default->owl_document_type_fields_table  . " WHERE document_type_id = ". $iDocTypeID);
 		if ($result) {			
-			$iCount = 0;
 			while ($sql->next_record()) {
-				
-				$aFields[$iCount] = $sql->f("field_id");
-				$iCount++;
+				$aFields[] = DocumentField::get($sql->f("field_id"));
 			}
 			return $aFields;
 		}
-		$_SESSION["errorMessage"] = $lang_err_database;
 		return false;
 	}
-	
-	
 }
 
 
