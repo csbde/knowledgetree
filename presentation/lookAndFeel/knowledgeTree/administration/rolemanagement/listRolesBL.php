@@ -33,7 +33,7 @@ if (checkSession()) {
 if(checkSession()) {	
 		global $default;
 		
-		$oPatternCustom->addHtml(renderHeading("Current System Organisations"));		// Create the Heading				
+		$oPatternCustom->addHtml(renderHeading("Current System Roles"));		// Create the Heading				
 		 
 		
 		$main->setFormAction($_SERVER['PHP_SELF']);
