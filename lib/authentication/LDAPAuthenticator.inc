@@ -48,6 +48,7 @@ class LDAPAuthenticator extends Authenticator {
      function checkPassword($userName, $password) {
          global $default;
          $ldap = new AuthLdap();
+         
      }
 }
 ?>
