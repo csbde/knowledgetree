@@ -92,15 +92,15 @@ if (checkSession()) {
                 } else {
                     // this document is already checked out
                     // TODO: for extra credit, tell the user who has this document checked out
-                    $oPatternCustom->setHtml(renderErrorPage("This document is already checked out"));                    
+                    $oPatternCustom->setHtml(renderErrorPage("This document is already checked out", $fDocumentID));                    
                 }
             } else {
                 // no permission to checkout the document
-                $oPatternCustom->setHtml(renderErrorPage("You don't have permission to check out this document"));
+                $oPatternCustom->setHtml(renderErrorPage("You don't have permission to check out this document", $fDocumentID));
             }
         } else {
             // couldn't instantiate the document
-            $oPatternCustom->setHtml(renderErrorPage("Could not check out this document"));
+            $oPatternCustom->setHtml(renderErrorPage("Could not check out this document", $fDocumentID));
         }
     } else {
         // no document id was set when coming to this page,
