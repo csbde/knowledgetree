@@ -123,8 +123,22 @@ class GroupUserLink extends KTEntity {
                 return false;
             }
         }
-        return parent::create();
+        $res = parent::create();
+        if (($res === false) || (PEAR::isError($res))) {
+            return $res;
+        }
+        $this->updateSearchPermissions();
+        return $res;
 	}
+
+    function delete() {
+        $res = parent::delete();
+        if (($res === false) || (PEAR::isError($res))) {
+            return $res;
+        }
+        $this->updateSearchPermissions();
+        return $res;
+    }
 	
 	/**
 	* Static function.
@@ -167,24 +181,7 @@ class GroupUserLink extends KTEntity {
 	 * Updates the search permissions for a group
 	 */
 	function updateSearchPermissions() {
-		global $default;
-	    // group permissions                
-	    $sGroupPerms = "INSERT INTO $default->search_permissions_table (user_id, document_id) " .
-				       "SELECT UGL.user_id AS user_id, D.id AS document_id " ./*ok*/
-				       "FROM $default->documents_table AS D INNER JOIN folders AS F ON D.folder_id = F.id " .
-				       "INNER JOIN $default->groups_folders_table AS GFL ON GFL.folder_id = F.id " .
-				       "INNER JOIN $default->users_groups_table AS UGL ON UGL.group_id = GFL.group_id " .
-				       "WHERE GFL.group_id = ?";
-        $aParams = array($this->iGroupID);
-		$default->log->info("GroupUserLink groupPerms=$sGroupPerms");
-		$sql = $default->db;
-		if ($sql->query(array($sGroupPerms, $aParams))) {
-			$default->log->debug("groupPerms succeeded");
-			return true;
-		} else {
-			$default->log->error("groupPerms failed");
-			return false;
-		}	
+        Permission::updateSearchPermissionsForUser($this->getUserID());
 	}
 	
 	function getGroups($iUserID) {
