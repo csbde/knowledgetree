@@ -58,7 +58,7 @@ if (checkSession()) {
                                     //create the document transaction record
                                     $oDocumentTransaction = & new DocumentTransaction($oDocument->getID(), "Document created", CREATE);
                                     if ($oDocumentTransaction->create()) {
-                                    	$default->log->error("addDocumentBL.php created create document transaction for document ID=" . $oDocument->getID());                                    	
+                                    	$default->log->debug("addDocumentBL.php created create document transaction for document ID=" . $oDocument->getID());                                    	
                                     } else {
                                     	$default->log->error("addDocumentBL.php couldn't create create document transaction for document ID=" . $oDocument->getID());
                                     }                                    
