@@ -18,13 +18,13 @@ class Session {
      * @param int the id of the user to create a session for
      * @return string the generated sessionID
      */
-	function create($userID) {
+	function create($iUserID) {
         global $default;
         
         session_start();
         
         // bind user id to session
-        $_SESSION["userID"] = $userID;
+        $_SESSION["userID"] = $iUserID;
         
         // use the PHP generated session id
         $sessionID = session_id();
@@ -32,11 +32,11 @@ class Session {
         // retrieve client ip
         $ip = $this->getClientIP();
 
-        $default->log->debug("Session::create() new session for $userID, from $ip, sessionID=$sessionID");
+        $default->log->debug("Session::create() new session for $iUserID, from $ip, sessionID=$sessionID");
         
         // insert session information into db
         $sql = $default->db;
-        $query = "INSERT INTO $default->owl_sessions_table (session_id, user_id, lastused, ip) VALUES ('$sessionID', '$userID', '" . date("Y-m-d H:i:s", time()) . "', '$ip')";
+        $query = "INSERT INTO $default->owl_sessions_table (session_id, user_id, lastused, ip) VALUES ('$sessionID', $iUserID, '" . date("Y-m-d H:i:s", time()) . "', '$ip')";
 
         $result = $sql->query($query);        
         if(!$result) {
@@ -77,7 +77,7 @@ class Session {
         // deletes any sessions for this userID where the default timeout has elapsed.
         $time = time() -  $default->sessionTimeout;
         $sql = $default->db;
-        $sql->query("DELETE FROM $default->owl_sessions_table WHERE user_id = '" . $userID . "' AND lastused <= '" . formatDateTime($time) . "'");
+        $sql->query("DELETE FROM $default->owl_sessions_table WHERE user_id =$userID AND lastused <= '" . formatDateTime($time) . "'");
     }
 
     /**
@@ -102,7 +102,6 @@ class Session {
 
             // FIXME: if there aren't more rows that the max sessions for this user
             if ($numrows >= 1) {
-                $userID = $sql->f("user_id");
                 $default->log->debug("Session::verify() found session in db");
                 while($sql->next_record()) {
                     $ip = $this->getClientIP();
@@ -118,16 +117,17 @@ class Session {
                             // session has been verified, update status
                             $sessionStatus = 1;
                             // use userID to refresh user details and set on session
+                            $iUserID = $sql->f("user_id");
                             
                             // ??: will this change during a user session?
                             // only set the userID if its not in the array already 
                             if (!$_SESSION["userID"]) {
-                                $_SESSION["userID"] = $sql->f("user_id");
+                                $_SESSION["userID"] = $iUserID;
                             }
                             
                             // update last used timestamp
                             $sql->query("UPDATE $default->owl_sessions_table SET lastused = '" . getCurrentDateTime() ."' " .
-                                        "WHERE user_id = " . $_SESSION["userID"] . " AND session_id = '$sessionID'");
+                                        "WHERE user_id = $iUserID AND session_id = '$sessionID'");
                             // add the array to the session
                             $_SESSION["sessionStatus"] = $sessionStatus;
                         } else {
@@ -136,7 +136,7 @@ class Session {
                             // destroy this session
                             $this->destroy();
                             // remove old sessions
-                            Session::removeStaleSessions($userID);
+                            Session::removeStaleSessions($iUserID);
                             $_SESSION["errorMessage"] = $lang_sesstimeout;
                         }
                     } else {
@@ -152,7 +152,7 @@ class Session {
             return false;
         }
         // return the array
-        $default->log->debug("Session::verify() returning sessionStatus[\"status\"]=" . $sessionStatus);
+        $default->log->debug("Session::verify() returning sessionStatus=$sessionStatus");
         return $sessionStatus;
     }
     
