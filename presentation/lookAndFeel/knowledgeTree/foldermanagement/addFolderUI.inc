@@ -19,7 +19,7 @@ function renderBrowseAddPage($iFolderID) {
     $sToRender .= "<table border=\"0\">\n";
     $sToRender .= "<tr>\n";
 	$sToRender .= "<td valign=\"top\" width=\"300\">\n";
-	$sToRender .= wrapInTable(renderFolderList($iFolderID, "control.php?action=addFolder"));
+	$sToRender .= wrapInTable(renderFolderList($iFolderID, "/control.php?action=addFolder"));
 	$sToRender .= "</td>\n";
 	$sToRender .= "<td valign=\"top\">\n";
 	$sToRender .= getRightSide($iFolderID);
