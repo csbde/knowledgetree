@@ -69,7 +69,7 @@ thread_id INTEGER NOT NULL,
 user_id INTEGER NOT NULL,
 subject TEXT,
 body TEXT,
-date date
+date datetime
 )TYPE = InnoDB;
 
 CREATE TABLE documents ( 
