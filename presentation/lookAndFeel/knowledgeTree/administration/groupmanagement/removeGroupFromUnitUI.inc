@@ -19,7 +19,7 @@ function getPage($iGroupID, $iUnitID) {
 		$oGroup = Group::get($iGroupID);
 		$heading = "<tr><td>Are you sure you wish to remove the Group from the Unit?</td> </tr>\n";
 	}else{
-		$heading = "<tr>Please select a Group: </tr>\n";
+		$heading = "<tr><td>Please select a Group:</td></tr>\n";
 	}
 	
 	// when unitid is gotten show the name
@@ -32,10 +32,8 @@ function getPage($iGroupID, $iUnitID) {
 		$unitdisplay = "";
 	}
 		
-	$sToRender .= "<br></br>\n";
-	$sToRender .= "<b>Select a Group to Remove from its Unit:</b>\n";
+	$sToRender .= "<table width=\"600\">" . renderHeading("Remove Group From Unit") . "</table>";
 	$sToRender .= "<table>\n";
-	$sToRender .= "<br></br>\n";
 	$sToRender .= $heading;
 	$sToRender .= "<br>\n";
 	$sToRender .= "<tr>\n";
@@ -72,10 +70,9 @@ function getPageFail($iGroupID) {
 	
 	$oUnit= Unit::get($iUnitID);
 		
-	$sToRender .= "<br></br>\n";
-	$sToRender .= "<b>Sorry, Removal Failed</b>\n";
+	$sToRender .= "<table width=\"600\">" . renderHeading("Remove Group From Unit") . "</table>";
 	$sToRender .= "<table>\n";
-	$sToRender .= "<br></br>\n";
+	$sToRender .= "<tr><td><b>Sorry, Removal Failed</b></td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
@@ -93,10 +90,9 @@ function getPageFail($iGroupID) {
 function getPageNotSelected() {	
 	global $default;
 			
-	$sToRender .= "<br></br>\n";
-	$sToRender .= "<b>Sorry, Selection Failed</b>\n";
+	$sToRender .= "<table width=\"600\">" . renderHeading("Remove Group From Unit") . "</table>";
 	$sToRender .= "<table>\n";
-	$sToRender .= "<br></br>\n";
+	$sToRender .= "<tr><td><b>Sorry, Selection Failed</b></td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr><td>Please select a Group</td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
@@ -113,10 +109,9 @@ function getPageNotSelected() {
 function getPageSuccess() {	
 	global $default;
 			
-	$sToRender .= "<br></br>\n";
-	$sToRender .= "<b>Success!</b>\n";
+	$sToRender .= "<table width=\"600\">" . renderHeading("Remove Group From Unit") . "</table>";
 	$sToRender .= "<table>\n";
-	$sToRender .= "<br></br>\n";
+	$sToRender .= "<tr><td><b>Success!</b></td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr><td>The Group was successfully removed from the Unit</td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
@@ -182,7 +177,7 @@ function getDeleteButton($oGroup) {
 function getCancelButton($oGroup) {
 	global $default;
 	if (!isset($oGroup)) {
-		//return "<td align = right><a href=\"$default->rootUrl/control.php?action=groupManagement\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" value=\"cancel\" /></a></td>\n";
+		return "<td align = right><a href=\"$default->rootUrl/control.php?action=groupManagement\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" value=\"cancel\" border = \"0\"/></a></td>\n";
 	} else {
 		return "<td align = right><a href=\"$default->rootUrl/control.php?action=removeGroupFromUnit\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" /></a></td>\n";
 	}
