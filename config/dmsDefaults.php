@@ -87,7 +87,8 @@ require_once("$default->owl_fs_root/phplib/db_mysql.inc");
 
 // Change this to reflect the authentication method you are using
 //require_once("$default->owl_fs_root/lib/LDAPAuthenticator.inc");
-//require_once("$default->owl_fs_root/lib/DBAuthenticator.inc");
+require_once("$default->owl_fs_root/lib/Authenticator.inc");
+require_once("$default->owl_fs_root/lib/DBAuthenticator.inc");
 
 // Database info
 $default->owl_db_user           = "root";
@@ -96,7 +97,7 @@ $default->owl_db_host           = "";
 $default->owl_db_name           = "intranet";
 
 // logo file that must reside inside lang/graphics directory
-$default->logo = "owl.gif";
+$default->logo = "kt.jpg";
 
 // BUG Number: 457588
 // This is to display the version information in the footer
@@ -125,7 +126,8 @@ $default->owl_email_fromname = "owl";
 // to view pages with UA access.
 define("SA", 0);
 define("UA", 1);
-define("A", 2);
+define("U", 2);
+define("A", 3);
 
 // define site mappings
 require_once("/lib/SiteMap.inc");
@@ -134,6 +136,7 @@ $default->siteMap = new SiteMap();
 $default->siteMap->addPage("LOGIN", "login.php?loginAction=login", "General", "A");
 $default->siteMap->addPage("LOGIN_FORM", "login.php?loginAction=loginForm", "General", "A"); 
 $default->siteMap->addPage("LOGOUT", "logout.php", "General", "A");
+$default->siteMap->addPage("DASHBOARD", "dashboard.php", "General", "A");
 $default->siteMap->addPage("BROWSE", "browse.php", "Browse Collections", "A");
 $default->siteMap->addPage("ADDFOLDER", "addFolder.php", "Browse Collections", "UA");
 $default->siteMap->addPage("ADDUSER", "addUser.php", "Administration", "UA");
