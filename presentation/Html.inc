@@ -11,9 +11,11 @@
  * @package presentation
  */
 
-function renderHeading($sHeading) {
+function renderHeading($sHeading, $sSectionName = "") {
 	global $default;
-    $sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
+	if (strlen($sSectionName) == 0) {
+    	$sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
+	}
     $sColor = $default->siteMap->getSectionColour($sSectionName, "th");
     $sToRender  = "<table border=\"0\" width=\"100%\">\n";
     $sToRender .= "<tr align=\"left\"><th class=\"sectionHeading\" bgcolor=\"$sColor\"><font color=\"ffffff\">$sHeading</font></th></tr>\n";
