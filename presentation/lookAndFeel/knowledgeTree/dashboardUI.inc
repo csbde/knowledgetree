@@ -103,6 +103,45 @@ function renderCheckedOutDocuments($aCheckedOutDocumentList) {
     return $sToRender;
 }
 
+function renderDependantDocuments($aDependantDocumentList) {
+	global $default;
+    if (count($aCheckedOutDocumentList) > 0) {
+        $sBgColor = "#9D9D7F";
+    } else {
+        $sBgColor = "#CECEBF";
+    }    
+    $sToRender  = "\t\t\t<tr align=\"left\" bgcolor=\"$sBgColor\">\n";   
+    $sToRender .= "\t\t\t\t<th class=\"sectionHeading\" colspan=\"2\"><font color=\"ffffff\">Dependant Documents</font></th>\n";
+    $sToRender .= "\t\t\t</tr>\n";
+    
+    if (count($aDependantDocumentList) > 0) {
+        $sToRender .= "\t\t\t<tr>\n";
+        $sToRender .= "\t\t\t\t<th align=\"left\" width=\"33%\" class=\"sectionColumns\">";
+        $sToRender .= "Title";
+        $sToRender .= "</th>\n";
+        $sToRender .= "\t\t\t\t<th align=\"left\" width=\"66%\" class=\"sectionColumns\">";
+        $sToRender .= "Template document";
+        $sToRender .= "\t\t\t\t</th>\n";
+        $sToRender .= "\t\t\t</tr>\n";
+    }
+    
+    for ($i = 0; $i < count($aDependantDocumentList); $i++) {
+        $oDependantDocument = $aDependantDocumentList[$i];
+        $oTemplateDocument = Document::get($oDependantDocument->getTemplateDocumentID());                
+        
+        $sToRender .= "\t\t\t<tr>\n";
+        $sToRender .= "\t\t\t\t<td>" . $oDependantDocument->getDocumentTitle() . "</td>";
+        if (!($oTemplateDocument === false)) {        
+	        $sToRender .= "<td>" . generateControllerLink("viewDocument", "fDocumentID=" . $oTemplateDocument->getID(), "<img src=\"$default->graphicsUrl/widgets/dstatus.gif\" border=\"0\"/>&nbsp;" . $oTemplateDocument->getName()) . "</td>\n";	     
+        } else {
+        	$sToRender .= "<td>No template specified</td>\n";
+        }
+        $sToRender .= "\t\t\t</tr>\n";        
+    }
+    return $sToRender;	 
+	
+}
+
 /**
  * Displays the subscription alerts
  *
@@ -179,7 +218,7 @@ function renderDashboardNews() {
  * @param array checked out documents for this user
  * @param array subscription alerts for this user
  */
-function renderPage($aPendingDocumentList, $aCheckedOutDocumentList, $aSubscriptionAlertList, $aQuickLinks, $aWebDocuments) {
+function renderPage($aPendingDocumentList, $aCheckedOutDocumentList, $aSubscriptionAlertList, $aQuickLinks, $aWebDocuments, $aDependantDocuments) {
     global $default;
     
     $sToRender  = "<table border=\"0\" width=\"600\" >\n";
@@ -205,6 +244,7 @@ function renderPage($aPendingDocumentList, $aCheckedOutDocumentList, $aSubscript
     $sToRender .= renderPendingCollaborationDocuments($aPendingDocumentList);
     $sToRender .= renderCheckedOutDocuments($aCheckedOutDocumentList) . "\n";
     $sToRender .= renderSubscriptionAlerts($aSubscriptionAlertList) . "\n";
+    $sToRender .= renderDependantDocuments($aDependantDocuments) . "\n";
     $sToRender .= "\t\t\t</table>\n";
     $sToRender .= "\t\t</td>\n";
     
@@ -214,6 +254,7 @@ function renderPage($aPendingDocumentList, $aCheckedOutDocumentList, $aSubscript
     $sToRender .= renderQuickLinks($aQuickLinks);
     $sToRender .= "\t\t\t</table>\n";
     
+        
     $sToRender .= "\t\t</td>\n";
     $sToRender .= "\t</tr>\n";
     $sToRender .= "</table>\n";  
