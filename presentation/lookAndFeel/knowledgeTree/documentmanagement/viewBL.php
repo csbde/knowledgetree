@@ -82,14 +82,14 @@ if (checkSession()) {
 	$oPatternCustom = & new PatternCustom();
     if (isset($fDocumentID)) {
     	$oDocument = & Document::get($fDocumentID);
-        if (isset($fCollaborationEdit) && Permission::userHasDocumentWritePermission($fDocumentID)) {
+        if (isset($fCollaborationEdit) && Permission::userHasDocumentWritePermission($oDocument)) {
             //return value from collaborationBL.php.  User attempted to edit
             //a step in the document collaboration process that is currently being
             //executed
             $sStatusMessage = "You cannot edit a document collaboration step that is completed or currently underway";
             $oPatternCustom->setHtml(getStatusPage($oDocument, $sStatusMessage));
             $main->setDHTMLScrolling(false);
-        } else if (isset($fBeginCollaboration) && Permission::userHasDocumentWritePermission($fDocumentID)) {
+        } else if (isset($fBeginCollaboration) && Permission::userHasDocumentWritePermission($oDocument)) {
             //begin the collaboration process
             //first ensure that all steps in the collaboration process are assigned
             $aFolderCollaboration = FolderCollaboration::getList("WHERE folder_id = " . $oDocument->getFolderID());
@@ -222,7 +222,7 @@ if (checkSession()) {
             }
             $main->setDHTMLScrolling(false);
 			
-		} else if (Permission::userHasDocumentWritePermission($fDocumentID) || Permission::userHasDocumentReadPermission($fDocumentID)) {
+		} else if (Permission::userHasDocumentWritePermission($oDocument) || Permission::userHasDocumentReadPermission($fDocumentID)) {
           
             // check subscription flag
             // ??
@@ -236,7 +236,7 @@ if (checkSession()) {
             }
             
             if ($oDocument->isLive()) {
-	            if (Permission::userHasDocumentWritePermission($fDocumentID)) {
+	            if (Permission::userHasDocumentWritePermission($oDocument)) {
 	                $oPatternCustom->setHtml(getPage($oDocument, true));
 	            } else if (Permission::userHasDocumentReadPermission($fDocumentID)) {
 	                $oPatternCustom->setHtml(getPage($oDocument, false));
