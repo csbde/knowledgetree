@@ -52,7 +52,12 @@ function getDocumentHistory($iDocumentID) {
         $i = 0;
         while ($sql->next_record()) {
             if ($sql->f("transaction_name") == "Check Out") {
-                $sVersion = generateControllerLink("viewDocument", "fDocumentID=$iDocumentID&fForDownload=1&fVersion=" . $sql->f("version"), $sql->f("version"));
+                // IE ssl download hack- don't use ssl to download
+                if ($default->phpSniff->property("browser") == "ie") {
+                    $sVersion = "<a href=\"http://" . $default->serverName . "$default->rootUrl/control.php?action=viewDocument&fDocumentID=$iDocumentID&fForDownload=1&fVersion=" . $sql->f("version") . "\">" . $sql->f("version") . "</a>";
+                } else {
+                    $sVersion = generateControllerLink("viewDocument", "fDocumentID=$iDocumentID&fForDownload=1&fVersion=" . $sql->f("version"), $sql->f("version"));
+                }
             } else {
                 $sVersion = $sql->f("version");
             }
