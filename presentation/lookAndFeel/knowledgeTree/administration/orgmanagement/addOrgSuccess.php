@@ -20,7 +20,11 @@ if(checkSession()) {
     $sToRender .= renderHeading("Add Unit");
     $sToRender .= "<table>\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "<td>Organisation added Successfully!</td>\n";
+    if($fSuccess) {
+    	$sToRender .= "<td>Organisation added Successfully!</td>\n";
+    } else {
+    	$sToRender .= "<td>Organisation not added. Organisation may already exist!</td>\n";
+    }
     $sToRender .= "</tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr></tr>\n";
