@@ -143,8 +143,7 @@ if (checkSession()) {
 		} else if ((isset($fForPublish)) && (!DocumentCollaboration::documentIsPendingWebPublishing($fDocumentID))) {
 			if ($fSubmit) {
 	            // user wishes to publish document
-	            $aWebDocument = WebDocument::getList("document_id = $fDocumentID");
-	            $oWebDocument = $aWebDocument[0];
+	            $aWebDocument = WebDocument::get(lookupID($default->owl_web_documents_table, "document_id", $fDocumentID));
 
 	            if (strlen($fWebSiteID) > 0) {
 		            $oWebDocument->setStatusID(PENDING);
