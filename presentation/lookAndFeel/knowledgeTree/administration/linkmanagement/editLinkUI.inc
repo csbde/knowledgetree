@@ -22,7 +22,7 @@
  *
  * @version $Revision$
  * @author Mukhtar Dharsey, Jam Warehouse (Pty) Ltd, South Africa
- * @package administration.docfieldmanagement
+ * @package administration.linkmanagement
  */
 // get hte edit page if it comes from the add page
 
