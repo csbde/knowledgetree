@@ -97,15 +97,14 @@ class DocumentTypeBrowser extends Browser {
             $sql->query($documentQuery);
             $results["accessDenied"] = false;
             while ($sql->next_record()) {
-                // check permission
                 $oDocument = & Document::get($sql->f("id"));
-                if (Permission::userHasDocumentReadPermission($oDocument)) {
-                	
-                    if ($oDocument->isLive()) {
-                    	$results["documents"][] = $oDocument;
+                // proceed if the document is live                
+                if ($oDocument->isLive()) {                
+                    if (Permission::userHasDocumentReadPermission($oDocument)) {
+                      	$results["documents"][] = $oDocument;
+                    } else {
+                        $results["accessDenied"] = true;
                     }
-                } else {
-                    $results["accessDenied"] = true;
                 }
             }
             $default->log->debug("DocumentTypeBrowser::browse() results=" . arrayToString($results));
