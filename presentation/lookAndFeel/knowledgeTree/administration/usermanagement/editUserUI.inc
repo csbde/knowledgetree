@@ -93,7 +93,7 @@ function getEditPageSuccess() {
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr><td><b>" . _("Success") . "!</b></td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
-	$sToRender .= "<tr><td>" . _("The User was successfully modified") . "/td></tr>\n";
+	$sToRender .= "<tr><td>" . _("The User was successfully modified") . "</td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
