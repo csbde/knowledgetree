@@ -104,7 +104,9 @@ if (checkSession()) {
 				
 		} else if (isset($fReplyComment)){  // if user is replying to existing comment			
 			$main->setFormAction($_SERVER['PHP_SELF'] . "?fAddCommentSubmit=1&iDocumentID=$fDocumentID");
-			$oPatternCustom->addHtml(getAddComment($fDocumentID,"Re: " . $CommentSubject , "\n\n\n[Start Text Body]\n\n" . $Comment  . "\n\n[End Text Body]"));
+			
+			$oComment = DiscussionComment::get($fCommentID);
+			$oPatternCustom->addHtml(getAddComment($fDocumentID,"Re: " . $oComment->getSubject() , "\n\n\n[Start Text Body]\n\n" . urldecode( $oComment->getBody())  . "\n\n[End Text Body]"));	
 								
 		} else if (isset($fNewThread)){ // Start adding a new Thread 
 			$main->setFormAction($_SERVER['PHP_SELF'] . "?fAddCommentSubmit=1&iDocumentID=$fDocumentID&fNewThread=1");
