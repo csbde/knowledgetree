@@ -146,7 +146,7 @@ if ($loginAction == "loginForm") {
             break;
             // not a unit user
         case 4 :
-            $url = $url . "&errorMessage=" . urlencode(_("Not unit user- contact an Administrator"));
+            $url = $url . "&errorMessage=" . urlencode(_("This user does not belong to a group and is therefore not allowed to log in."));
             break;            
         default :
             $url = $url . "&errorMessage=" . urlencode(_("Login failure"));
