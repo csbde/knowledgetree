@@ -34,7 +34,7 @@ if (checkSession()) {
     	
     	if ($oDASFactory->create($fDocumentID, $fExpirationDate, $fDocumentTransactionID, $fTimeUnitID, $fUnits)) {
 			// created, redirect to view page
-			redirect("$default->rootUrl/control.php?action=viewDocument&fDocumentID=$fDocumentID");
+			controllerRedirect("viewDocument", "fDocumentID=$fDocumentID&fShowSection=archiveSettings");
     	} else {
     		// error
     		$default->log->error("addArchiveSettingsBL.php error adding archive settings");
