@@ -119,6 +119,14 @@ done BIT,
 active BIT
 )TYPE = InnoDB;
 
+
+CREATE TABLE folder_doctypes_link (
+id int(11) NOT NULL auto_increment,
+folder_id int(11) NOT NULL default '0',
+document_type_id int(11) NOT NULL default '0',
+UNIQUE KEY id (id)
+) TYPE=InnoDB;
+
 CREATE TABLE groups_folders_approval_link ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 folder_id INTEGER NOT NULL,
@@ -272,12 +280,6 @@ name CHAR(50) NOT NULL
 )TYPE = InnoDB;
 
 
-CREATE TABLE folder_doctypes_link (
-  id int(11) NOT NULL auto_increment,
-  folder_id int(11) NOT NULL default '0',
-  document_type_id int(11) NOT NULL default '0',
-  UNIQUE KEY id (id)
-) TYPE=InnoDB;
 
 CREATE TABLE web_sites ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
