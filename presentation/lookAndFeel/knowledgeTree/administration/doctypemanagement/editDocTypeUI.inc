@@ -78,8 +78,10 @@ function getDetailsPage($iDocTypeID,$aGeneric,$aSpecific, $aAllSpecific) {
 	$sToRender .= "<tr><td><br></br></td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>Add New Type Specific Field: </td><td>" . addSpecificFieldsList($aAllSpecific) ; 
-	$sToRender .= "</td></tr><td></td><td>Mandatory: <input type=\"checkbox\" name=\"fIsMandatory\" value=\"1\" CHECKED></td><td>" . getAddSpecificFieldButton() . "</td>\n";
+	if(count($aAllSpecific) > 0){	
+		$sToRender .= "<td>Add New Type Specific Field: </td><td>" . addSpecificFieldsList($aAllSpecific) ; 
+		$sToRender .= "</td></tr><td></td><td>Mandatory: <input type=\"checkbox\" name=\"fIsMandatory\" value=\"1\" CHECKED></td><td>" . getAddSpecificFieldButton() . "</td>\n";
+	}
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr><td><br></br></td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
