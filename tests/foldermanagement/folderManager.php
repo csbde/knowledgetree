@@ -29,7 +29,7 @@ if (checkSession()) {
 	
 	//check creation of a duplicate folder
 	echo "<b>Testing creation of duplicate folder</b><br>";
-	if (!FolderManager::createFolder("Test folder", "This is another a test' %//^&* folder", -1, $_SESSION["user_id"], 1, 1, true)) {
+	if (!FolderManager::createFolder("Test folder", "This is another a test' %//^&* folder", -1, $_SESSION["userID"], 1, 1, true)) {
 		echo "Passed creation of duplicate folder test<br>";
 	} else {
 		echo "Failed creation of a dupliate folder test: " . $_SESSION["errorMessage"] . "<br>";
