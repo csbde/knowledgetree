@@ -252,6 +252,25 @@ class WebSite {
         $_SESSION["errorMessage"] = $lang_err_database;
         return false;
     }
+    
+    /**
+     * Returns true if the website is currently in use- ie. a document is being published to it
+     */
+    function inUse() {
+    	global $default;
+    	$sql = $default->db;
+    	$sQuery = "SELECT WS.id FROM $default->web_sites_table WS " . 
+    			  "INNER JOIN $default->web_documents_table WD ON WS.id=WD.web_site_id " .
+    			  "WHERE WS.id = $this->iId " . 
+    			  "AND WD.status_id=1";
+    	$sql->query($sQuery);
+		$rows = $sql->num_rows();
+		if ($rows > 0){
+	    	return true;
+		} else {
+			return false;
+		}    		
+    }
 }
 
 /**
