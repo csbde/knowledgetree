@@ -71,13 +71,19 @@ class PatternTableSqlQuery {
 			}
 		}
 		$sql = new Owl_DB();
-		$sql->query($this->sQuery);		
-		while ($sql->next_record()) {			
-			$sToRender .= "<tr>\n";
-			for ($i = 0; $i < count($this->aColumns); $i++) {
-				$sToRender .= "<td>" . $sql->f($this->aColumns[$i]) . "</td>";
+		$sql->query($this->sQuery);
+		if ($sql->num_rows() == 0) {
+			$sToRender .= "<tr>\n";			
+			$sToRender .= "<td colspan=" . count($this->aColumns) . ">No " . (isset($this->sTableHeading) ? $this->sTableHeading : "") . " data</td>\n";			
+			$sToRender .= "</tr>\n";		
+		} else {
+			while ($sql->next_record()) {			
+				$sToRender .= "<tr>\n";
+				for ($i = 0; $i < count($this->aColumns); $i++) {
+					$sToRender .= "<td>" . $sql->f($this->aColumns[$i]) . "</td>";
+				}
+				$sToRender .= "</tr>\n";			
 			}
-			$sToRender .= "</tr>\n";			
 		}
 		$sToRender .= "</table>";		
 		return $sToRender;
