@@ -3,46 +3,25 @@ id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 user_id INTEGER,
 lastused DATETIME,
 ip CHAR(30)
-) 
-;
-
-
+);
 
 CREATE TABLE document_fields ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 name CHAR(255) NOT NULL,
 data_type CHAR(100) NOT NULL
-) 
-;
-
-
+);
 
 CREATE TABLE document_fields_link ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 document_id INTEGER NOT NULL,
 document_field_id INTEGER NOT NULL,
 value CHAR(255) NOT NULL
-) 
-;
-
-CREATE TABLE groups_folders_link (
-id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
-group_id INTEGER NOT NULL,
-folder_id INTEGER NOT NULL,
-can_read BIT NOT NULL,
-can_write BIT NOT NULL
-)
-;
-
-
+);
 
 CREATE TABLE document_transaction_types_lu ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 name CHAR(100) NOT NULL
-) 
-;
-
-
+);
 
 CREATE TABLE document_transactions ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
@@ -54,37 +33,25 @@ ip CHAR(30),
 filename CHAR(50) NOT NULL,
 comment CHAR(10) NOT NULL,
 transaction_id INTEGER
-) 
-;
-
-
+);
 
 CREATE TABLE document_type_fields_link ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 document_type_id INTEGER NOT NULL,
 field_id INTEGER NOT NULL,
 is_mandatory BOOL NOT NULL
-) 
-;
-
-
+);
 
 CREATE TABLE document_types_lu ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 name CHAR(100)
-) 
-;
-
-
+);
 
 CREATE TABLE document_words_link ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 word_id INTEGER NOT NULL,
 document_id INTEGER NOT NULL
-) 
-;
-
-
+);
 
 CREATE TABLE documents ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
@@ -101,10 +68,7 @@ folder_id INTEGER NOT NULL,
 major_version INTEGER NOT NULL,
 minor_version INTEGER NOT NULL,
 is_checked_out BOOL NOT NULL
-) 
-;
-
-
+);
 
 CREATE TABLE folders ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
@@ -115,20 +79,14 @@ creator_id INTEGER,
 document_type_id INTEGER NOT NULL,
 unit_id INTEGER,
 is_public BOOL NOT NULL
-) 
-;
-
-
+);
 
 CREATE TABLE folders_user_roles_link ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 user_id INTEGER NOT NULL,
 folder_id INTEGER NOT NULL,
 role_type_id INTEGER NOT NULL
-) 
-;
-
-
+);
 
 CREATE TABLE groups_folders_approval_link ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
@@ -136,92 +94,71 @@ folder_id INTEGER NOT NULL,
 group_id INTEGER NOT NULL,
 precedence INTEGER NOT NULL,
 role_id INTEGER NOT NULL
-) 
-;
+);
 
-
+CREATE TABLE groups_folders_link (
+id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
+group_id INTEGER NOT NULL,
+folder_id INTEGER NOT NULL,
+can_read BIT NOT NULL,
+can_write BIT NOT NULL
+);
 
 CREATE TABLE groups_lu ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 name CHAR(100) NOT NULL
-) 
-;
-
-
+);
 
 CREATE TABLE groups_users_link ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 group_id INTEGER NOT NULL,
 user_id INTEGER NOT NULL,
 unit_id INTEGER NOT NULL
-) 
-;
-
-
+);
 
 CREATE TABLE links ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 name CHAR(100) NOT NULL,
 url CHAR(100) NOT NULL,
 rank INTEGER NOT NULL
-) 
-;
-
-
+);
 
 CREATE TABLE mime_types ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 filetypes CHAR(100) NOT NULL,
 mimetypes CHAR(100) NOT NULL
-) 
-;
-
-
+);
 
 CREATE TABLE organisations_lu ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 name CHAR(100) NOT NULL
-) 
-;
-
-
+);
 
 CREATE TABLE roles ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 name CHAR(255) NOT NULL,
 can_read BOOL NOT NULL,
 can_write BOOL NOT NULL
-) 
-;
-
-
+);
 
 CREATE TABLE subscriptions ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 user_id INTEGER NOT NULL,
 document_id INTEGER NOT NULL
-) 
-;
-
-
+);
 
 CREATE TABLE system_settings ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 name CHAR(255) NOT NULL,
 value CHAR(255) NOT NULL
-) 
-;
-
-
+);
 
 CREATE TABLE units ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 name CHAR(100) NOT NULL,
 organisation_id INTEGER NOT NULL,
 parent_id INTEGER NOT NULL
-) 
-;
-
+);
 
 CREATE TABLE users (id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 group_id INTEGER NOT NULL,
@@ -236,8 +173,8 @@ email_notification BOOL NOT NULL,
 sms_notification BOOL NOT NULL,
 language CHAR(100),
 ldap_dn CHAR(255),
-max_sessions INTEGER) 
-;
+max_sessions INTEGER
+);
 
 
 CREATE TABLE web_documents ( 
@@ -247,38 +184,24 @@ web_site_id INTEGER NOT NULL,
 unit_id INTEGER NOT NULL,
 status_id INTEGER NOT NULL,
 datetime DATETIME NOT NULL
-) 
-;
-
-
+);
 
 CREATE TABLE web_documents_status_lu ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 name CHAR(50) NOT NULL
-) 
-;
-
-
+);
 
 CREATE TABLE web_sites ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 web_site_name CHAR(100) NOT NULL,
 web_site_url CHAR(50) NOT NULL,
 web_master_id INTEGER NOT NULL
-) 
-;
-
-
+);
 
 CREATE TABLE words_lu ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 word CHAR(255) NOT NULL
-) 
-;
-
-
-
-
+);
 
 ALTER TABLE active_sessions 
 ADD CONSTRAINT PK_active_sessions 
