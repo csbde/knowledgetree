@@ -29,26 +29,24 @@ require_once("$default->owl_fs_root/lib/SiteMap.inc");
 // page start
 // -------------------------------
 
-// check the session
-checkSession();
-
-// loop through array of post params and build query string, omitting action
-$queryParams = "";
-foreach ($_POST as $key => $value) {
-    //echo "key=$key; value=$value<br>";
-    if ($key != "action") {
-        if (strlen($queryParams) > 0) {
-            $queryParams = "?$key=$value";
-        } else {
-            $queryParams = $queryParams . "&$key=$value";
-        }
-    }   
+if (checkSession()) {
+    // session check succeeds, so default action should be the dashboard 
+    // (if no action specified
+    if (!isset($action)) {
+        $action = "dashboard";
+    }
+} else {
+    // session check fails, so default action should be the login form
+    // (if no action specified)
+    if (!isset($action)) {
+        $action = "loginForm";
+    }
 }
 
 // reset authorisation flag before checking access
 $_SESSION["authorised"] = false;
 
-// check whether this group has access to the requested page
+// check whether the users group has access to the requested page
 $page = $default->siteMap->getPage($action, $_SESSION["groupID"]);
 
 if (!$page) {
@@ -57,18 +55,13 @@ if (!$page) {
     
     // FIXME: redirect to no permission page
     print "you do not have access to view this page!  please go away, and come back when you do.<br>";
-    echo generateLink("LOGOUT") . "logout</a>";    
+    echo generateLink("logout") . "logout</a>";    
 
     exit;
 } else {
     // set authorised flag and redirect
     $_SESSION["authorised"] = true;
     
-    // if we have additional params to add do it
-    if (strlen($queryParams) > 0) {
-        $page = $page . "&$queryParams";
-    }
-
     redirect($page);
 }
 ?>
