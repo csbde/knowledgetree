@@ -57,22 +57,39 @@ class Browser {
      * @param array the sort criteria
      */
     function Browser($sNewSortField, $sNewSortDirection, $aNewSortCriteria = array()) {
-    	// default sort criteria
-    	if (count($aNewSortCriteria) == 0) {
-	    	$aNewSortCriteria = array ( "name"       		=> array ("display" => _("Title")), 	
-		 					  	 	    "filename"   		=> array ("display" => _("Description")),
-								 	 	"creator_id" 		=> array ("display" => _("Creator"), 
-								 	 						      	  "lookup"  => array ("table" => "users",
-								 	 										   		  	  "field" => "name")),
-								 	 										   		  	  
-									 	"id"                => array ("display" => _("Date Created"),
-									 			 					  "lookup"  => array("table" => "document_transactions",
-									 								 					 "field" => "datetime",
-									 								 					 "joinColumn" => "document_id",
-									 								 					 "whereClause" => "transaction_id=1")),
-									 	"document_type_id"  => array ("display" => _("Document Type"),
-								 	 						      	  "lookup"  => array ("table" => "document_types_lookup",
-								 	 										   		  	  "field" => "name")) );
+        // default sort criteria
+        if (count($aNewSortCriteria) == 0) {
+            $aNewSortCriteria = array (
+                "name" => array(
+                    "display" => _("Title"),
+                ),     
+                "filename" => array(
+                    "display" => _("Description"),
+                ),
+                "creator_id" => array(
+                    "display" => _("Creator"), 
+                    "lookup"  => array(
+                        "table" => "users",
+                        "field" => "name",
+                    ),
+                ),
+                "id" => array(
+                    "display" => _("Date Created"),
+                    "lookup"  => array(
+                        "table" => "document_transactions",
+                        "field" => "datetime",
+                        "joinColumn" => "document_id",
+                        "whereClause" => "transaction_id=1",
+                    ),
+                ),
+                "document_type_id" => array(
+                    "display" => _("Document Type"),
+                    "lookup"  => array(
+                        "table" => "document_types_lookup",
+                        "field" => "name"
+                    ),
+                ),
+            );
     	}
 							 	 										   		      	
     	$this->aSortCriteria = $aNewSortCriteria;
