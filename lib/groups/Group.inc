@@ -209,7 +209,40 @@ class Group extends KTEntity {
         $sName = lookupField("$default->groups_table", "name", "id", $id );
         return $sName;
 	}
+
+    function &getMembers() {
+        require_once(KT_LIB_DIR . '/groups/GroupUserLink.inc');
+        require_once(KT_LIB_DIR . '/users/User.inc');
+        $aLinks = GroupUserLink::getList(array('group_id = ?', $this->getID()));
+        $aMembers = array();
+        foreach ($aLinks as $oLink) {
+            $oUser = User::get($oLink->getUserID());
+            if ($oUser !== false) {
+                $aMembers[] =& $oUser;
+            }
+        }
+        return $aMembers;
+    }
+
+    function delete() {
+        require_once(KT_LIB_DIR . '/groups/GroupUserLink.inc');
+        require_once(KT_LIB_DIR . '/groups/GroupUnitLink.inc');
+
+        // XXX: Urg, should I just DELETE instead?
+        $aLinks = GroupUserLink::getList(array('group_id = ?', $this->getID()));
+        foreach ($aLinks as $oLink) {
+            $oLink->delete();
+        }
+
+        $aLinks = GroupUnitLink::getList(array('group_id = ?', $this->getID()));
+        foreach ($aLinks as $oLink) {
+            $oLink->delete();
+        }
+        return parent::delete();
+    }
 }
+
+
 /*
      * static function
      *
