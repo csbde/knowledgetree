@@ -114,7 +114,7 @@ function getDeleteButton($oDocField) {
     global $default;
     if (isset($oDocField)) {
         return "<td align=\"right\"><input type=\"image\" src =\"$default->graphicsUrl/widgets/delete.gif\" value=\"submit\"border=\"0\" /></td>\n".
-               "<td align=\"right\">" . generateControllerLink("listDocFields", "<img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" />") . "</td>\n";
+               "<td align=\"right\">" . generateControllerLink("listDocFields", "", "<img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" />") . "</td>\n";
     }
 }
 
@@ -122,10 +122,9 @@ function getDeleteButton($oDocField) {
 function getCancelButton($oDocField) {
     global $default;
     if (!isset($oDocField)) {
-        return "<td align=\"right\">" . generateControllerLink("docfield", "<img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" />") . "</td>\n";
-    }
-    else {
-        return "<td align=\"right\">" . generateControllerLink("listDocFields", "<img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" />") . "</td>\n";
+        return "<td align=\"right\">" . generateControllerLink("docfield", "", "<img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" />") . "</td>\n";
+    } else {
+        return "<td align=\"right\">" . generateControllerLink("listDocFields", "", "<img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" />") . "</td>\n";
     }
 }
 ?>
