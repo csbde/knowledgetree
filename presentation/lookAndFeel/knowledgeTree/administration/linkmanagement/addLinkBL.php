@@ -12,6 +12,7 @@ require_once("../../../../../config/dmsDefaults.php");
 if (checkSession()) {
 	require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCreate.inc");
 	require_once("addLinkUI.inc");
+    require_once("../adminUI.inc");
 	require_once("$default->fileSystemRoot/lib/links/link.inc");
 	require_once("$default->fileSystemRoot/lib/security/permission.inc");
 	require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");

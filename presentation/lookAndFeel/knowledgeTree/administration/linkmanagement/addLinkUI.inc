@@ -11,27 +11,18 @@
 function getPage() {
 
 	global $default;
-	
-	//$oOrg = null;
-	//if (isset($iLinkID)) {
-	//	$oLink = Link::get($iLinkID);
-	//	
-	//}
+
 	$aDisplayRowNames = array("Name:", "URL: ", "Rank:(1-5) ");
 	$aParameterNumbers = array(0,1,2);
 	$aDisplayColumnTypes = array(1,1,1);
 	$aRequired = array(1,1,1);
-	
 
 	// create a text field that is required 
 	$oPatternCreate = & new PatternCreate("Link", "links/link.inc",$aDisplayRowNames, $aParameterNumbers, $aDisplayColumnTypes, $aRequired);
 	$oPatternCreate->setUniqueName("link");
 	
-	
-	$sToRender .= "<br></br>\n";
-	$sToRender .= "<b>Add a New QuickLink:</b>\n";
+	$sToRender .= "<table width=\"600\">" . renderHeading("Add QuickLink") . "</table>";
 	$sToRender .= "<table>\n";
-	$sToRender .= "<br></br>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>" . $oPatternCreate->render() . "</td>\n";
@@ -42,23 +33,16 @@ function getPage() {
 	$sToRender .= "</table>\n";
 	
 	return $sToRender;
-	
 }
 
  // TODO .. do a check if rank already taken...as well as do a check if name already exists when inserting
- 
- 
- 
  // if edition is successful print otu success page
 function getAddPageFail() {	
 	global $default;
 			
-	$sToRender .= "<br></br>\n";
-	$sToRender .= "<b>Addition Unsuccessful</b>\n";
+    $sToRender .= "<table width=\"600\">" . renderHeading("Add QuickLink") . "</table>";
 	$sToRender .= "<table>\n";
-	$sToRender .= "<br></br>\n";
-	$sToRender .= "<tr></tr>\n";
-	$sToRender .= "<tr><td>The Libn</td></tr>\n";
+	$sToRender .= "<tr><td><b>Addition Unsuccessful</b></td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
@@ -66,11 +50,6 @@ function getAddPageFail() {
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
 	
-	
 	return $sToRender;
 }
-
-
-
-
 ?>
