@@ -165,7 +165,7 @@ class Permission {
         }       
         $sql = $default->db;
         $sQuery = "SELECT GFL.folder_id " .
-                        "FROM groups_folders_link AS GFL INNER JOIN users_groups_link AS UGL ON GFL.group_id = UGL.group_id " .
+                        "FROM $default->groups_folders_table AS GFL INNER JOIN $default->users_groups_table AS UGL ON GFL.group_id = UGL.group_id " .
                         "WHERE UGL.user_id =  " . $_SESSION["userID"] . " " .
                         "AND GFL.can_write = 1 ";
         if ($oFolder->getInheritParentPermission()) {
@@ -225,7 +225,7 @@ class Permission {
         }
         
         $sQuery = "SELECT GFL.folder_id " .
-                  "FROM groups_folders_link AS GFL INNER JOIN users_groups_link AS UGL ON GFL.group_id = UGL.group_id " .
+                  "FROM $default->groups_folders_table AS GFL INNER JOIN $default->users_groups_table AS UGL ON GFL.group_id = UGL.group_id " .
                   "WHERE UGL.user_id =  " . $_SESSION["userID"] . " " .
                   "AND GFL.can_read = 1 ";
         if ($oFolder->getInheritParentPermission()) {
