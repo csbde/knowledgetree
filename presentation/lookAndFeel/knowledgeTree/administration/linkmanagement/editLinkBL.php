@@ -53,6 +53,7 @@ if (checkSession()) {
 	}
 	//render the page
 	$main->setCentralPayload($oPatternCustom);
-	$main->render();	
+    $main->setHasRequiredFields(true);
+	$main->render();
 }
 ?>

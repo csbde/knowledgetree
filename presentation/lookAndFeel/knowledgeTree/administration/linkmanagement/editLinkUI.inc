@@ -19,7 +19,6 @@ function getEditPage($iLinkID) {
     	$sHeading = "Please select a Link:";
 	} 
     $sToRender .= "<table width=\"600\">" . renderHeading("Edit QuickLink") . "</table>";
-	$sToRender .= "<b>Edit Link Properties:</b>\n";
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr><td>$sHeading</td></tr>\n";
 	$sToRender .= "<tr>\n";
@@ -49,7 +48,20 @@ function getEditPage($iLinkID) {
 	$sToRender .= getCancelButton($oLink);	
 	$sToRender .= "</table>\n";
 	
-	
+    $sToRender .= "\n\n<script language=\"javascript\">\n<!--\n";
+	$sToRender .= "function validateForm(theForm) {\n";
+	$sToRender .= "\tif (!(validRequired(theForm.fLinkName, 'Link Name'))) {\n";
+	$sToRender .= "\t\treturn false;\n";
+	$sToRender .= "\t}\n";
+	$sToRender .= "\tif (!(validRequired(theForm.fUrl, 'URL'))) {\n";
+	$sToRender .= "\t\treturn false;\n";
+	$sToRender .= "\t}\n";
+	$sToRender .= "\tif (!(validRequired(theForm.fRank, 'Rank'))) {\n";
+	$sToRender .= "\t\treturn false;\n";
+	$sToRender .= "\t}\n";    
+	$sToRender .= "return true;\n}\n";
+	$sToRender .= "//-->\n</script>\n\n";
+    
 	return $sToRender;
 }
 
