@@ -32,11 +32,21 @@ function getCreatePage($iGroupID) {
 	$oGroup = null;
 	
 	$sQuery =  "SELECT * FROM $default->groups_table WHERE id = $iGroupID";
-	$aDisplayColumns = array("name","is_sys_admin","is_unit_admin");
-	$aStoreColumns = array("name","is_sys_admin","is_unit_admin");
-	$aColumnNames = array("Name:","System admin:", "Unit admin:");
-	$aDisplayColumnTypes = array(1,2,2);
-	$aDatabaseColumnTypes = array(1,2,2);
+	// #2978 if you're not a system administrator, you can't add a sys admin group
+	// FIXME: there must be a more elegant way to do this?  possibly some exclusions to the pattern 
+	if (Permission::userIsSystemAdministrator()) {
+		$aDisplayColumns = array("name","is_sys_admin","is_unit_admin");
+		$aStoreColumns = array("name","is_sys_admin","is_unit_admin");
+		$aColumnNames = array("Name:","System admin:", "Unit admin:");
+		$aDisplayColumnTypes = array(1,2,2);
+		$aDatabaseColumnTypes = array(1,2,2);
+	} else {
+		$aDisplayColumns = array("name","is_unit_admin");
+		$aStoreColumns = array("name","is_unit_admin");
+		$aColumnNames = array("Name:","Unit admin:");
+		$aDisplayColumnTypes = array(1,2);
+		$aDatabaseColumnTypes = array(1,2);		
+	}
 	
 	// get list of group properties...name...text field...is_Sys_admin and is_unit_admin..checkboxes
 	$oPattern = & new PatternEditableListFromQuery($sQuery, $default->groups_table, $aDisplayColumns, $aStoreColumns, $aColumnNames, $aDisplayColumnTypes, $aDatabaseColumnTypes);
@@ -107,9 +117,11 @@ function getEditPage($iGroupID) {
 		$sToRender .= "<tr>\n";
 		$sToRender .= "<td>Unit Administrator: </td><td>" . getUnitAdminCheckBox($oGroup) . "</td>\n";
 		$sToRender .= "</tr>\n";
-		$sToRender .= "<tr>\n";
-		$sToRender .= "<td>System Administrator: </td><td>" . getSysAdminCheckBox($oGroup) . "</td>\n";
-		$sToRender .= "</tr>\n";
+		if (Permission::userIsSystemAdministrator()) {
+			$sToRender .= "<tr>\n";
+			$sToRender .= "<td>System Administrator: </td><td>" . getSysAdminCheckBox($oGroup) . "</td>\n";
+			$sToRender .= "</tr>\n";
+		}
 		$sToRender .= "<tr>\n";
 		$sToRender .= "</tr>\n";
 	}
