@@ -183,7 +183,7 @@ class DBUtil {
         return PEAR::raiseError('Unknown return value for whereUpdate');
     }
 
-    function &lastQuery($db) {
+    function &lastQuery($db = null) {
         $db =& DBUtil::getDB();
         return $db->last_query;
     }
