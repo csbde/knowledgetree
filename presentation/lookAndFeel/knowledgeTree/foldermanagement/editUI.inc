@@ -36,19 +36,20 @@ function getFolderData($iFolderID) {
 
 function getFolderRouting($iFolderID) {
 	global $default;
-	$sQuery = "SELECT GFAL.id as id, GFAL.folder_id AS folder_id, G.name AS group_name, R.name AS role_name, GFAL.precedence AS precedence, 'Edit' as edit " .	
+	$sQuery = "SELECT GFAL.id as id, GFAL.folder_id AS folder_id, G.name AS group_name, R.name AS role_name, GFAL.precedence AS precedence, 'Edit' as edit, 'Delete' as del " .	
 				"FROM $default->owl_groups_folders_approval_table AS GFAL INNER JOIN roles AS R ON GFAL.role_id = R.id " .
 				"INNER JOIN $default->owl_groups_table AS G ON G.id = GFAL.group_id " .
 				"WHERE GFAL.folder_id = $iFolderID " .
 				"ORDER BY GFAL.precedence, role_name ASC";
 	
-	$aColumns = array("group_name", "role_name", "precedence", "edit");
-	$aColumnHeaders = array("Group", "Role", "Seq", "");
-	$aColumnTypes = array(1,1,1,3);
+	$aColumns = array("group_name", "role_name", "precedence", "edit", "del");
+	$aColumnHeaders = array("Group", "Role", "Seq", "", "");
+	$aColumnTypes = array(1,1,1,3,3);
 	$aDBColumnArray = array("id","folder_id");
 	$aQueryStringVariableNames = array("fFolderCollaborationID", "fFolderID");
+	$aLinkURLs = array(3=>"$default->owl_root_url/control.php?action=modifyFolderCollaboration",4=>"$default->owl_root_url/control.php?action=deleteFolderCollaboration");
 	
-	$oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaders, "90%", "$default->owl_root_url/control.php?action=modifyFolderRouting",$aDBColumnArray,$aQueryStringVariableNames);
+	$oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaders, "90%", $aLinkURLs, $aDBColumnArray,$aQueryStringVariableNames);
 	$oPatternTableSqlQuery->setTableHeading("Document Routing");
 	$oPatternTableSqlQuery->setDisplayColumnHeadings(true);
 	return $oPatternTableSqlQuery->render();
@@ -66,7 +67,7 @@ function getPage($iFolderID) {
 	$sToRender .= "<td>" . wrapInTable(getFolderRouting($iFolderID)) . "</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";	
-	$sToRender .= "<td><table><tr><td><a href=\"$default->owl_root_url/control.php?action=addFolderCollaboration\">Add</a></td><td>&nbsp</td></tr></table></td>\n";
+	$sToRender .= "<td><table><tr><td><a href=\"$default->owl_root_url/control.php?action=addFolderCollaboration&fFolderID=$iFolderID\"><img src=\"$default->owl_graphics_url/widgets/add.gif\" border=\"0\" /></a></td><td>&nbsp</td></tr></table></td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
 	return $sToRender;
