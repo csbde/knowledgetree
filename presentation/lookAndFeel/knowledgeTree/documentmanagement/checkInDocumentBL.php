@@ -17,13 +17,31 @@
 require_once("../../../../config/dmsDefaults.php");
 
 if (checkSession()) {
-    require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
-    require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
-    require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
-    require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentTransaction.inc");
+    require_once("$default->fileSystemRoot/lib/email/Email.inc");
+    
+    require_once("$default->fileSystemRoot/lib/users/User.inc");
+    
     require_once("$default->fileSystemRoot/lib/documentmanagement/PhysicalDocumentManager.inc");
-    require_once("$default->fileSystemRoot/lib/subscriptions/SubscriptionEngine.inc");    
-    require_once("documentUI.inc");
+    require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentTransaction.inc");
+    require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
+    
+    require_once("$default->fileSystemRoot/lib/foldermanagement/FolderCollaboration.inc");
+    require_once("$default->fileSystemRoot/lib/foldermanagement/FolderUserRole.inc");
+    require_once("$default->fileSystemRoot/lib/roles/Role.inc");
+    require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
+    
+    require_once("$default->fileSystemRoot/lib/visualpatterns/PatternListFromQuery.inc");
+    require_once("$default->fileSystemRoot/lib/visualpatterns/PatternTableSqlQuery.inc");
+    require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
+    require_once("$default->fileSystemRoot/lib/visualpatterns/PatternListFromQuery.inc");
+    require_once("$default->fileSystemRoot/lib/visualpatterns/PatternTableSqlQuery.inc");
+    
+    require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/documentmanagement/documentUI.inc");
+    require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc");
+    require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
+    require_once("$default->fileSystemRoot/presentation/Html.inc");
+    
+    require_once("$default->fileSystemRoot/lib/subscriptions/SubscriptionEngine.inc");
 
     $oPatternCustom = & new PatternCustom();
 
@@ -83,8 +101,7 @@ if (checkSession()) {
                                     $default->log->info("checkInDocumentBL.php fired $count subscription alerts for checked out document " . $oDocument->getName());
 
                                     //redirect to the document view page
-                                    redirect("$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $oDocument->getID());                        
-                                    
+                                    redirect("$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $oDocument->getID());
                                 } else {
                                     // document update failed
                                     $oPatternCustom->setHtml(renderErrorPage("An error occurred while storing this document in the database"));
@@ -96,11 +113,11 @@ if (checkSession()) {
                             }
                         } else {
                             $sErrorMessage = "Please select a document by first clicking on 'Browse'.  Then click 'Check-In'";
-                            $oPatternCustom->setHtml(renderCheckInPage($oDocument));
+                            $oPatternCustom->setHtml(getCheckInEditPage($oDocument));
                         }
                     } else {
                         // prompt the user for a check in comment and the file
-                        $oPatternCustom->setHtml(renderCheckInPage($oDocument));
+                        $oPatternCustom->setHtml(getCheckInEditPage($oDocument));
                     }
                 } else {
                     // this document isn't checked out
