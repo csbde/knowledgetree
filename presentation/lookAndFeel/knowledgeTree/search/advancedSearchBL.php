@@ -21,7 +21,8 @@ if (checkSession()) {
 	
 	require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 
-	if (isset($fForSearch)) {		
+	//if (isset($fForSearch)) {
+	if (strlen($fSearchString) > 0) {		
 		if (strlen($fSearchString) > 0) {
 			//display search results
 			$sMetaTagIDs = getChosenMetaDataTags();	
@@ -29,7 +30,13 @@ if (checkSession()) {
 			if (strlen($sMetaTagIDs) > 0) {
 				$sSQLSearchString = getSQLSearchString($fSearchString);
 				$sDocument = getApprovedDocumentString($sMetaTagIDs, $sSQLSearchString);
-				echo $sDocument;
+				$oPatternCustom = & new PatternCustom();
+				if (!isset($fStartIndex)) {
+					$fStartIndex = 0;
+				}
+				$oPatternCustom->setHtml(getSearchResults($sDocument,$fStartIndex, $fSearchString, $sMetaTagIDs));
+				$main->setCentralPayload($oPatternCustom);				                                
+				$main->render();
 				
 			} else {
 				$oPatternCustom = & new PatternCustom();
@@ -82,6 +89,10 @@ function getChosenMetaDataTags() {
 	return implode(",",$aTagIDs);
 }
 
+/**
+* Generate a string onsisting of all documents that match the search criteria
+* and that the user is allowed to see
+*/
 function getApprovedDocumentString($sMetaTagIDs, $sSQLSearchString) {
 	global $default;
 	$aApprovedDocumentIDs = array();
@@ -101,6 +112,10 @@ function getApprovedDocumentString($sMetaTagIDs, $sSQLSearchString) {
 	return implode(",",$aApprovedDocuments);	
 }
 
+/*
+* Generate a string that can be used in a SQL query
+* from the list of documents the user is allowed to see
+*/
 function getSQLSearchString($sSearchString) {
 	$aWords = explode(" ", $sSearchString);
 	$sSQLSearchString;
