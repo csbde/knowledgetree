@@ -39,11 +39,13 @@ class PatternEditableTableSqlQuery {
 	/** columns visible or not (store columns) */
 	var $aColumnsVisible;
 	/** column types: 1 = text, 2 = boolean, 3 = drop down list */
-	var $aColumnTypes;
+	var $aColumnDisplayTypes;
+	/** 0 = id, 1 = text, 2 = boolean*/
+	var $aColumnDatabaseTypes;
 	/** Unique name */
 	var $sUniqueName;
 	
-	function PatternEditableTableSqlQuery($sTmpQuery, $sTmpTableName, $aTmpStoreColumnNames, $aTmpDisplayColumnNames, $aTmpColumnsEditable, $aTmpColumnsVisible, $aTmpColumnTypes, $sTmpUniqueName) {
+	function PatternEditableTableSqlQuery($sTmpQuery, $sTmpTableName, $aTmpStoreColumnNames, $aTmpDisplayColumnNames, $aTmpColumnsEditable, $aTmpColumnsVisible, $aTmpColumnDisplayTypes, $aTmpColumnDatabaseTypes) {
 		$this->sQuery = $sTmpQuery;
 		$this->sTableName = $sTmpTableName;
 		$this->aStoreColumnNames = $aTmpStoreColumnNames;
@@ -51,7 +53,13 @@ class PatternEditableTableSqlQuery {
 		$this->aColumnsEditable = $aTmpColumnsEditable;
 		$this->sUniqueName = $sTmpUniqueName;
 		$this->aColumnsVisible = $aTmpColumnsVisible;
-		$this->aColumnTypes = $aTmpColumnTypes;
+		$this->aColumnDisplayTypes = $aTmpColumnDisplayTypes;
+		//echo "Types: " . $aTmpDatabaseColumnTypes;
+		$this->aColumnDatabaseTypes = $aTmpColumnDatabaseTypes;
+	}
+	
+	function setUniqueName($sNewValue) {
+		$this->sUniqueName = $sNewValue;
 	}
 	
 	
@@ -92,37 +100,47 @@ class PatternEditableTableSqlQuery {
 			$iRowCount = 0;
 			while ($sql->next_record()) {				
 				$sToRender .= "<tr>\n";
+				$sToRender .= "<input type=\"hidden\" name=\"unique_start_" . $this->sUniqueName . $iRowCount . "\" value=\"\" />\n";
 				$sToRender .= "<input type=\"hidden\" name=\"" . $this->sUniqueName . "_" . $iRowCount . "\" value=\"" . $sql->f("id") . "\" />\n";
-				$sToRender .= "<input type=\"hidden\" name=\"" . $this->sUniqueName . "_" . $iRowCount . "_tc\" value=\"" . $this->sTableName . "\" />\n";
-				for ($i = 0; $i < count($this->aStoreColumnNames); $i++) {
+				$sToRender .= "<input type=\"hidden\" name=\"" . $this->sUniqueName . "_" . $iRowCount . "_tn\" value=\"" . $this->sTableName . "\" />\n";
+				for ($i = 0; $i < count($this->aStoreColumnNames); $i++) {					
 					//generate the right kind of editable field
-					$sToRender .= "\t<td>\n";
-					switch ($this->aColumnTypes[$i]) {
+					$sToRender .= "\t<td>\n";					
+					switch ($this->aColumnDisplayTypes[$i]) {
 						case 1:
+							//output the table column name
+							$sToRender .= "\t<input type=\"hidden\" name=\"" . $this->sUniqueName . "_" . $iRowCount . $i . "_tc\" value=\"" . $this->aStoreColumnNames[$i] . "\" />\n";
+							//output the column type
+							$sToRender .= "\t<input type=\"hidden\" name=\"" . $this->sUniqueName . "_" . $iRowCount . $i . "_type\" value=\"" . $this->aColumnDatabaseTypes[$i] . "\" />\n";
+							//output the value
 							if ($this->aColumnsVisible[$i]) {
 								if ($this->aColumnsEditable[$i]) {
-									$sToRender .= "\t<input type=\"text\" name=\"" . $this->sUniqueName . "_" . $iRowCount . "_value\" value=\"" . $sql->f($this->aStoreColumnNames[$i]) . "\" />\n";
+									$sToRender .= "\t<input type=\"text\" name=\"" . $this->sUniqueName . "_" . $iRowCount . $i . "_value\" value=\"" . $sql->f($this->aStoreColumnNames[$i]) . "\" />\n";
 								} else {
-									$sToRender .= "\t<input type=\"hidden\" name=\"" . $this->sUniqueName . "_" . $iRowCount . "_value\" value=\"" . $sql->f($this->aStoreColumnNames[$i]) . "\" />".$sql->f($this->aDisplayColumnNames[$i])."\n";
+									$sToRender .= "\t<input type=\"hidden\" name=\"" . $this->sUniqueName . "_" . $iRowCount . $i . "_value\" value=\"" . $sql->f($this->aStoreColumnNames[$i]) . "\" />".$sql->f($this->aDisplayColumnNames[$i])."\n";
 								}
 							} else {
-								$sToRender .= "\t<input type=\"hidden\" name=\"" . $this->sUniqueName . "_" . $iRowCount . "_value\" value=\"" . $sql->f($this->aStoreColumnNames[$i]) . "\" />\n";
+								$sToRender .= "\t<input type=\"hidden\" name=\"" . $this->sUniqueName . "_" . $iRowCount . $i . "_value\" value=\"" . $sql->f($this->aStoreColumnNames[$i]) . "\" />\n";
 							}
-							$sToRender .= "\t<input type=\"hidden\" name=\"" . $this->sUniqueName . "_" . $iRowCount . "_tc\" value=\"" . $this->aStoreColumnNames[$i] . "\" />\n";
 							break;
 						case 2:
+							//output the table column name
+							$sToRender .= "\t<input type=\"hidden\" name=\"tc_" . $this->sUniqueName . "_" . $iRowCount . $i . "_tc\" value=\"" . $this->aStoreColumnNames[$i] . "\" />\n";
+							//output the column type
+							$sToRender .= "\t<input type=\"hidden\" name=\"" . $this->sUniqueName . "_" . $iRowCount . $i . "_type\" value=\"" . $this->aColumnDatabaseTypes[$i] . "\" />\n";
+							//output the value
 							if ($this->aColumnsVisible[$i]) {
 								if ($this->aColumnsEditable[$i]) {
-									$sToRender .= "\t<input type=\"checkbox\" name=\"" . $this->sUniqueName . "_" . $iRowCount . "_value\" value=\"" . ($sql->f($this->aStoreColumnNames[$i] ? "1\" checked" : "0\"")) . " />\n";
+									$sToRender .= "\t<input type=\"checkbox\" name=\"" . $this->sUniqueName . "_" . $iRowCount . $i . "_value\" value=\"" . ($sql->f($this->aStoreColumnNames[$i] ? "1\" checked" : "0\"")) . " />\n";
 								} else {
-									$sToRender .= "\t<input type=\"hidden\" name=\"" . $this->sUniqueName . "_" . $iRowCount . "_value\" value=\"" . $sql->f($this->aStoreColumnNames[$i]) . "\" />".$sql->f($this->aDisplayColumnNames[$i])."\n";
+									$sToRender .= "\t<input type=\"hidden\" name=\"" . $this->sUniqueName . "_" . $iRowCount . $i . "_value\" value=\"" . $sql->f($this->aStoreColumnNames[$i]) . "\" />".$sql->f($this->aDisplayColumnNames[$i])."\n";
 								}
 							} else {
-								$sToRender .= "\t<input type=\"hidden\" name=\"" . $this->sUniqueName . "_" . $iRowCount . "_value\" value=\"" . $sql->f($this->aStoreColumnNames[$i]) . "\" />\n";
-							}
-							$sToRender .= "\t<input type=\"hidden\" name=\"" . $this->sUniqueName . "_" . $iRowCount . "_tc\" value=\"" . $this->aStoreColumnNames[$i] . "\" />\n";
+								$sToRender .= "\t<input type=\"hidden\" name=\"" . $this->sUniqueName . "_" . $iRowCount . $i . "_value\" value=\"" . $sql->f($this->aStoreColumnNames[$i]) . "\" />\n";
+							}							
 							break;
 						case 3:
+							$sToRender .= "<b>The column type for drop downs is not implemented yet</b>\n";
 							break;
 						default:
 							$sToRender .= "<b>You are attempting to render an unknown column type " . ($this->aColumnTypes[$i]) . " in PatternEditableTableSqlQuery</b>\n";
@@ -131,6 +149,7 @@ class PatternEditableTableSqlQuery {
 
 					$sToRender .= "\t</td>\n";
 				}
+				$sToRender .= "<input type=\"hidden\" name=\"unique_end_" . $this->sUniqueName . $iRowCount . "\" value=\"\" />\n";
 				$sToRender .= "</tr>\n";
 				$iRowCount++;
 			}
