@@ -98,11 +98,15 @@ class Session {
     /**
      * Used to verify the current user's session.
      *
+	 * @param boolean optional parameter set if we're downloading a file     
      * @return int session verification status
      */
-    function verify() {
+    function verify($bDownload = false) {
         global $default, $lang_sesstimeout, $lang_sessinuse, $lang_err_sess_notvalid;
-        
+        // this is a workaround for an SSL download bug with IE.
+        if ($bDownload) {
+        	session_cache_limiter('public');
+        }
         session_start();
         $sessionID = session_id();
         if (strlen($sessionID) > 0) {
