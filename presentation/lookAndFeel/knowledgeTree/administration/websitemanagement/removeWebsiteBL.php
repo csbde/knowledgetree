@@ -8,6 +8,7 @@
 *
 */
 require_once("../../../../../config/dmsDefaults.php");
+require_once("../adminUI.inc");
 
 if (checkSession()) {
 	require_once("$default->fileSystemRoot/lib/visualpatterns/PatternListBox.inc");
@@ -26,7 +27,6 @@ if (checkSession()) {
 	
 	// get main page
 	if (isset($fWebSiteID)) {
-			
 		$oPatternCustom->setHtml(getDeletePage($fWebSiteID));
 		$main->setFormAction($_SERVER["PHP_SELF"] . "?fForDelete=1");
 		
@@ -35,8 +35,8 @@ if (checkSession()) {
 		$oPatternCustom->setHtml(getDeletePage(null));
 		$main->setFormAction($_SERVER["PHP_SELF"]);
 	}
-	
-		// if delete entry
+
+    // if delete entry
 	if (isset($fForDelete)) {
 			$oWebSite = Website::get($fWebSiteID);
 			$oWebSite->setWebSiteName($fWebSiteName);

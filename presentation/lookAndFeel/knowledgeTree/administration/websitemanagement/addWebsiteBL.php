@@ -13,6 +13,7 @@ if (checkSession()) {
 	require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCreate.inc");
 	require_once("$default->fileSystemRoot/lib/visualpatterns/PatternListBox.inc");
 	require_once("addWebsiteUI.inc");
+    require_once("../adminUI.inc");
 	require_once("$default->fileSystemRoot/lib/web/WebSite.inc");
 	require_once("$default->fileSystemRoot/lib/security/permission.inc");
 	require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
