@@ -4,4 +4,9 @@ Coding Standard Doc
 
 1) 	All functions return their required value on success or false otherwise.  On returning false, all function
 	set the $_SESSION["errorMessage"] variable
-	
+2)	All presentation layer files must contain a list of the expected querystring and form variables they will receive
+3)	Any function that inserts into a database table must begin its name with "create" e.g. createFolder().  The exception
+	to this is a function which inserts into a link table.  It must begin its name with "add" e.g. addUserToGroup()
+4)	All database tables that consist of id, name pairs will end in the word "lookup" e.g. groups_lookup
+5)	All database tables that link two or more tables together will end in the word "link"
+
