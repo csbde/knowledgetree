@@ -200,7 +200,7 @@ $lang_err_quota		= "You do not have enough quota space to upload this file: ";
 $lang_err_quota_needed	= " needed ";
 $lang_err_quota_avail	= " available.";
 $lang_err_quota_exceed  = "You have exceeded your quota";
-$lang_err_upload 	= "Upload error";
+$lang_err_upload 	= "Document upload error";
 $lang_err_folder_exist	= "This folder already exists";
 $lang_err_folder_create = "Folder Creation error";
 //Begin Daphne Change - backup folder and file creation errors
