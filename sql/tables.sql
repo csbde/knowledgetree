@@ -531,6 +531,7 @@ INSERT INTO users_groups_link (group_id, user_id) VALUES (3, 2);
 INSERT INTO document_fields (name, data_type) VALUES ("Category", "String");
 INSERT INTO document_fields (name, data_type) VALUES ("Keywords", "String");
 INSERT INTO document_fields (name, data_type) VALUES ("Comments", "String");
+INSERT INTO document_fields (name, data_type) VALUES ("Author(s)", "String");
 
 INSERT INTO document_types_lookup (name) VALUES ("Proposal");
 INSERT INTO document_type_fields_link (document_type_id, field_id, is_mandatory) VALUES (1, 1, 1);
@@ -566,3 +567,9 @@ INSERT INTO document_fields_link (document_id, document_field_id, value) VALUES 
 
 INSERT INTO web_documents_status_lookup (name) VALUES ("Pending");
 INSERT INTO web_documents_status_lookup (name) VALUES ("Published");
+INSERT INTO web_documents_status_lookup (name) VALUES ("Not Published");
+
+INSERT INTO roles (name) VALUES ('Editor');
+INSERT INTO roles (name) VALUES ('Spell Checker');
+INSERT INTO roles (name) VALUES ('Web Publisher');
+
