@@ -11,11 +11,44 @@
 * @package presentation.lookandfeel
 */
 
+require_once("$default->fileSystemRoot/lib/users/User.inc");
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternMainPage.inc");
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternImage.inc");
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternTableLinks.inc");
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternTableSqlQuery.inc");
 require_once("$default->fileSystemRoot/lib/visualpatterns/NavBar.inc");
+
+
+function getUnitAdminEmail() {
+    global $default;
+    // find out what unit we're in
+    $iUnitID = User::getUnitID($_SESSION["userID"]);
+    if ($iUnitID) {
+        // then find the group that is unit_admin
+        $sql = $default->db;
+        $sEmail = "";
+        if ($sql->query("SELECT group_id FROM $default->owl_groups_units_table GUL " . 
+                        "INNER JOIN $default->owl_groups_table GL on GUL.group_id=GL.id " .
+                        "WHERE GL.is_unit_admin=1 " .
+                        "AND unit_id=$iUnitID")) {
+            // get the first record
+            if ($sql->next_record()) {
+                $iGroupID = $sql->f("group_id");
+                // then find the first user in this group that has an email address
+                if ($sql->query("SELECT U.email FROM $default->owl_users_table U " .
+                                "INNER JOIN $default->owl_users_groups_table UGL on UGL.user_id=U.id " .
+                                "WHERE group_id=$iGroupID")) {
+                    while ($sql->next_record()) {
+                        if (strlen($sql->f("email")) > 0) {
+                            $sEmail = $sql->f("email");
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return ($sEmail == "") ? $default->emailAdmin : $sEmail;
+}
 
 // create the navbar and north payload
 $navbar = & new NavBar($fBrowseType, $fFolderID, $fDocumentID, $fCategoryName, $fDocumentTypeID);
@@ -33,10 +66,11 @@ $navbar->setHighlightedSection($sectionName);
 
 // setup nw payload
 $colourBar = $navbar->getNWColourbar();
-$nwestLoad   = "<table width=\"100%\" height=\"100%\">\n" . 
+$nwestLoad   = "<table cellspacing=0 cellpadding=0 border=0>\n" . 
                "<tr><td><img valign=\"top\" src=\"$default->graphicsUrl/tree.gif\"/></td></tr>\n" .
                "<tr><td><img valign=\"top\" src=\"$colourBar\"/></td></tr>\n" .
                "</table>";
+               
 
 $nwPayLoad = new PatternCustom;
 $nwPayLoad ->setHtml($nwestLoad);
@@ -60,11 +94,13 @@ if ($sectionName != "General") {
 
 //set up links
 $cAdmin = "$default->graphicsUrl/leftnav/cadmin.gif" ;
+$uAdmin = "$default->graphicsUrl/leftnav/uadmin.gif" ;
 
 //setup the westpayload
-$westLoad = "<table cellspacing=\"5\"  cellpadding=\"5\"  border=\"0\" width=\"100%\" height=\"75%\">\n" .
+$westLoad = "<table cellspacing=\"0\" cellpadding=\"2\"  border=\"0\" width=\"100%\" height=\"75%\">\n" .
             "\t<tr><td>$westRender</td></tr>\n" .
-            "\t<tr><td><a href=\"mailto:$default->emailAdmin\"><img src=\"$cAdmin\"/ border=\"0\"></a></td></tr>\n" .
+            "\t<tr><td align=left><a href=\"mailto:$default->emailAdmin\"><img src=\"$cAdmin\"/ border=\"0\"></a></td></tr>\n" .
+            "\t<tr><td align=left><a href=\"mailto:" . getUnitAdminEmail() . "\"><img src=\"$uAdmin\"/ border=\"0\"></a></td></tr>\n" .            
             "</table>";
 
 $westPayLoad = new PatternCustom;
