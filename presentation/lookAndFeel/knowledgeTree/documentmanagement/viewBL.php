@@ -1,6 +1,7 @@
 <?php
 /**
  * $Id$
+ *
  * Contains the business logic required to build the document view page.
  * Will use documentViewUI.php for HTML
  *
@@ -12,7 +13,6 @@
  *   o fForDownload - the user is attempting to download the document
  *   o fBeginCollaboration - the user selected the 'Begin Collaboration' button
  *   o fFireSubscription - the document has been modified, and a subscription alert must be fired
- *
  *
  * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
  * @date 21 January 2003
@@ -50,6 +50,7 @@ require_once("$default->fileSystemRoot/lib/visualpatterns/PatternListBox.inc");
 require_once("$default->fileSystemRoot/lib/web/WebDocument.inc");
 
 require_once("$default->fileSystemRoot/lib/subscriptions/Subscription.inc");
+require_once("$default->fileSystemRoot/lib/subscriptions/SubscriptionEngine.inc");
 
 require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/documentmanagement/archiving/restoreArchivedDocumentUI.inc");
 require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/documentmanagement/documentUI.inc");
@@ -58,20 +59,17 @@ require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/fo
 require_once("$default->fileSystemRoot/presentation/Html.inc");
 
 if (checkSession()) {
+	require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
+	$oPatternCustom = & new PatternCustom();
     if (isset($fDocumentID)) {
+    	$oDocument = & Document::get($fDocumentID);
         if (isset($fCollaborationEdit) && Permission::userHasDocumentWritePermission($fDocumentID)) {
             //return value from collaborationBL.php.  User attempted to edt
             //a step in the document collaboration process that is currently being
             //executed
-            require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
-
-            $oDocument = & Document::get($fDocumentID);
-            $oPatternCustom = & new PatternCustom();
-            $oPatternCustom->setHtml(getEditPage($oDocument));
-            $main->setCentralPayload($oPatternCustom);
+            $oPatternCustom->setHtml(getPage($oDocument, true));
             $main->setErrorMessage("You cannot edit a document collaboration step that is completed or currently underway");
             $main->setFormAction("$default->rootUrl/control.php?action=modifyDocument&fDocumentID=" . $oDocument->getID());
-            $main->render();
         } else if (isset($fForInlineView) && Permission::userHasDocumentReadPermission($fDocumentID)) {
 			$oDocumentTransaction = & new DocumentTransaction($fDocumentID, "Inline view", VIEW);
             $oDocumentTransaction->create();
@@ -90,10 +88,8 @@ if (checkSession()) {
                 PhysicalDocumentManager::downloadPhysicalDocument($fDocumentID);
             }
         } else if (isset($fBeginCollaboration) && Permission::userHasDocumentWritePermission($fDocumentID)) {
-            require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
             //begin the collaboration process
             //first ensure that all steps in the collaboration process are assigned
-            $oDocument = Document::get($fDocumentID);
             $aFolderCollaboration = FolderCollaboration::getList("WHERE folder_id = " . $oDocument->getFolderID());
 			if (count($aFolderCollaboration) > 0) {
 				//if the the folder has collaboration steps set up
@@ -105,49 +101,26 @@ if (checkSession()) {
 					//DocumentCollaboration::resetDocumentCollaborationSteps($fDocumentID);
                     
 					$oDocument->beginCollaborationProcess();
-					$oPatternCustom = & new PatternCustom();
-					$oPatternCustom->setHtml(getEditPage($oDocument));
-					$main->setCentralPayload($oPatternCustom);
+					$oPatternCustom->setHtml(getPage($oDocument, true));
 					$main->setErrorMessage("Document collaboration successfully started");
-					$main->render();
 				} else {				
 					//not all the roles have actual users assigned to them, so we must assign the
 					//default users and then proceed										
 					
 					FolderUserRole::createDefaultFolderUserRoles($oDocument);
-					
-					require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
-					
 					$oDocument->beginCollaborationProcess();
-					$oPatternCustom = & new PatternCustom();
-					$oPatternCustom->setHtml(getEditPage($oDocument));
-					$main->setCentralPayload($oPatternCustom);
+					$oPatternCustom->setHtml(getPage($oDocument, true));
 					$main->setErrorMessage("Document collaboration successfully started");
-					$main->render();
-					
-					
-					/*$oPatternCustom = & new PatternCustom();
-					$oPatternCustom->setHtml(getEditPage($oDocument));
-					$main->setCentralPayload($oPatternCustom);
-					$main->setErrorMessage("Document collaboration not started.  Not all steps in the process have been assigned");
-					$main->render();*/					
 				}
 			} else {
 				//the folder has no collaboration set up yet, so we can't start document collaboration
-				require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
-				$oPatternCustom = & new PatternCustom();
-				$oPatternCustom->setHtml(getEditPage($oDocument));
-				$main->setCentralPayload($oPatternCustom);
+				$oPatternCustom->setHtml(getPage($oDocument, true));
 				$main->setErrorMessage("The collaboration steps for the folder must be set up before collaboration can begin");
-				$main->render();                
             }
 		} else if ((isset($fCollaborationStepComplete)) && (DocumentCollaboration::userIsPerformingCurrentCollaborationStep($fDocumentID))) {				
 				//the user has signled that they have completed their step in the collaboration process
 				if (DocumentCollaboration::isLastStepInCollaborationProcess($fDocumentID)) {				
-					require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 					//the last step in the collaboration process has been performed- email the document creator
-                    
-					$oDocument = Document::get($fDocumentID);                    
                     $oDocument->endCollaborationProcess();
                     
                     // on the last collaboration step- trigger a major revision
@@ -164,27 +137,18 @@ if (checkSession()) {
 					$oEmail->send($oUser->getEmail(), "Document collaboration complete", $sBody);
 					
 					//possibly set the document up for web publishing????
-					$oPatternCustom = & new PatternCustom();
-					$oPatternCustom->setHtml(getEditPage($oDocument));
-					$main->setCentralPayload($oPatternCustom);
+					$oPatternCustom->setHtml(getPage($oDocument, true));
 					$main->setErrorMessage("Document collaboration complete.  The document initiator has been notified");
-					$main->render();
 					
 				} else {
-					require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 					//start the next steps if all criteria are met					
 					DocumentCollaboration::beginNextStepInCollaborationProcess($fDocumentID, $_SESSION["userID"]);
-					$oDocument = Document::get($fDocumentID);
-					$oPatternCustom = & new PatternCustom();
-					$oPatternCustom->setHtml(getEditPage($oDocument));
-					$main->setCentralPayload($oPatternCustom);
+					$oPatternCustom->setHtml(getPage($oDocument, true));
 					$main->setErrorMessage("The next steps in the collaboration process have been started");
-					$main->render();
 				}
 		} else if ((isset($fForPublish)) && (!DocumentCollaboration::documentIsPendingWebPublishing($fDocumentID))) {
 			if ($fSubmit) {
 	            // user wishes to publish document
-	            $oDocument = Document::get($fDocumentID);
 	            $aWebDocument = WebDocument::getList("document_id = $fDocumentID");
 	            $oWebDocument = $aWebDocument[0];
 
@@ -199,50 +163,33 @@ if (checkSession()) {
 	            }
 	            
                 if ($oWebDocument->update()) {
-                    require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
                     $oDocumentTransaction = & new DocumentTransaction($fDocumentID, "Document sent for web publishing", UPDATE);
                     $oDocumentTransaction->create();
-                    $oDocument = Document::get($fDocumentID);
                     if ((strlen($fWebSiteID) > 0) && (strlen($fComment) > 0)) {
                     	DocumentCollaboration::notifyWebMaster($fDocumentID, $fComment);
                     }
-                    $oPatternCustom = & new PatternCustom();
-                    $oPatternCustom->setHtml(getEditPage($oDocument));
-                    $main->setCentralPayload($oPatternCustom);
+                    $oPatternCustom->setHtml(getPage($oDocument, true));
                     if ((strlen($fWebSiteID) > 0) && (strlen($fComment) > 0)) {
                     	$main->setErrorMessage("The document has been marked as pending publishing and the web publisher has been notified");
                     } else {
                     	$main->setErrorMessage("The document has been published");                    	
                     }
-                    $main->render();
-                    
                 } else {
-                    require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");					
-                    $oDocument = Document::get($fDocumentID);
-                    $oPatternCustom = & new PatternCustom();
-                    $oPatternCustom->setHtml(getEditPage($oDocument));
-                    $main->setCentralPayload($oPatternCustom);
+                    $oPatternCustom->setHtml(getPage($oDocument, false));
                     $main->setErrorMessage("An error occured while attempting to update the document for publishing");
-                    $main->render();					
                 }
             } else {
                 // prompt for the website to publish to
-                require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");					
-                $oDocument = Document::get($fDocumentID);
-                $oPatternCustom = & new PatternCustom();
                 $oPatternCustom->setHtml(getWebPublishPage($oDocument));
-                $main->setCentralPayload($oPatternCustom);
                 $main->setFormAction($_SERVER['PHP_SELF']);
-                $main->render();
+	            //$main->setDHTMLScrolling(false);
+	            //$main->setOnLoadJavaScript("switchDiv('documentData')");
             }
 			
 		} else if (Permission::userHasDocumentWritePermission($fDocumentID) || Permission::userHasDocumentReadPermission($fDocumentID)) {
-            require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
-            require_once("$default->fileSystemRoot/lib/subscriptions/SubscriptionEngine.inc");
-
-            $oDocument = & Document::get($fDocumentID);
-            
+          
             // check subscription flag
+            // ??
             if (isset($fFireSubscription)) {
                 // fire subscription alerts for the modified document
                 $count = SubscriptionEngine::fireSubscription($fDocumentID, SubscriptionConstants::subscriptionAlertType("ModifyDocument"),
@@ -252,12 +199,11 @@ if (checkSession()) {
                 $default->log->info("viewBL.php fired $count subscription alerts for modified document $fFolderName");                
             }
             
-            $oPatternCustom = & new PatternCustom();
             if ($oDocument->isLive()) {
 	            if (Permission::userHasDocumentWritePermission($fDocumentID)) {
-	                $oPatternCustom->setHtml(getEditPage($oDocument));
+	                $oPatternCustom->setHtml(getPage($oDocument, true));
 	            } else if (Permission::userHasDocumentReadPermission($fDocumentID)) {
-	                $oPatternCustom->setHtml(getViewPage($oDocument));
+	                $oPatternCustom->setHtml(getPage($oDocument, false));
 	            }
             } else if ($oDocument->isArchived()) {
 	            $main->setErrorMessage("This document has been archived.");
@@ -273,29 +219,23 @@ if (checkSession()) {
 	            $oPatternCustom->setHtml("<a href=\"" . generateControllerLink("browse", "fFolderID=" . $oDocument->getFolderID()) . "\"><img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\" /></a>\n");
 	            $main->setErrorMessage("The document you have chosen no longer exists in the DMS.");
             }
-            $main->setCentralPayload($oPatternCustom);
+            $main->setDHTMLScrolling(false);
+            $main->setOnLoadJavaScript("switchDiv('documentData')");
             $main->setFormAction("$default->rootUrl/control.php?action=modifyDocument&fDocumentID=" . $oDocument->getID());
-            $main->render();
         } else {
-            require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
-
-            $oPatternCustom = & new PatternCustom();
-            $oPatternCustom->setHtml("<a href=\"" . generateControllerLink("browse", "fFolderID=" . $oDocument->getFolderID()) . "\"><img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\" /></a>\n");
+        	if ($oDocument) {
+            	$oPatternCustom->setHtml("<a href=\"" . generateControllerLink("browse", "fFolderID=" . $oDocument->getFolderID()) . "\"><img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\" /></a>\n");
+        	} else {
+        		$oPatternCustom->setHtml("<a href=\"javascript:history.go(-1)\"><img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\" /></a>\n");
+        	}
             $main->setErrorMessage("Either you do not have permission to view this document, or the document you have chosen no longer exists on the file system.");
-            $main->setCentralPayload($oPatternCustom);
-            $main->render();
         }
     } else {
         require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
-
-        $oPatternCustom = & new PatternCustom();
-        $oPatternCustom->setHtml("");
+        $oPatternCustom->setHtml("<a href=\"javascript:history.go(-1)\"><img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\" /></a>\n");
         $main->setErrorMessage("You have not chosen a document to view");
-        $main->setCentralPayload($oPatternCustom);
-        $main->render();
     }
+    $main->setCentralPayload($oPatternCustom);            
+    $main->render();
 }
-
 ?>
-
-
