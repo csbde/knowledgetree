@@ -222,6 +222,20 @@ class Document {
         $this->iStatusID = $iNewValue;
     }
     
+    /**
+     * Returns the live status of the document
+     */
+    function isLive() {
+    	return $this->getStatusID() == lookupStatusID("Live");
+    }
+    
+    /**
+     * Get status ID wrapper for archived status
+     */
+    function isArchived() {
+    	return $this->getStatusID() == lookupStatusID("Archived");
+    }
+    
     /** returns the number of days since this document has been last modified **/
     function getDaysSinceLastModified() {
         // convert to epoch
