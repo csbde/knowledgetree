@@ -181,7 +181,11 @@ function getEditPage($oDocument) {
     $sToRender .= "</table>\n";
     $sToRender .= "<table>\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "<td><a href=\"" . $_SERVER["PHP_SELF"] . "?fDocumentID=" . $oDocument->getID() . "&fForDownload=1\"><img src=\"$default->graphicsUrl/widgets/download.gif\" border=\"0\" /></a></td>\n";
+    if ($default->phpSniff->property("browser") == "ie") {
+        $sToRender .= "<td><a href=\"http://" . $default->serverName . $_SERVER["PHP_SELF"] . "?fDocumentID=" . $oDocument->getID() . "&fForDownload=1\"><img src=\"$default->graphicsUrl/widgets/download.gif\" border=\"0\" /></a></td>\n";
+    } else {
+        $sToRender .= "<td><a href=\"" . generateControllerLink("viewDocument", "fDocumentID=" . $oDocument->getID() . "&fForDownload=1") . "\"><img src=\"$default->graphicsUrl/widgets/download.gif\" border=\"0\" /></a></td>\n";    
+    }
     $sToRender .= "<td><a href=\"" . generateControllerLink("emailDocument", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/email.gif\" border=\"0\" /></a></td>\n";    
     $sToRender .= "<td><a href=\"" . generateControllerLink("deleteDocument", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/delete.gif\" border=\"0\" /></a></td>\n";
     $sToRender .= "<td><a href=\"" . generateControllerLink("viewHistory", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/history.gif\" border=\"0\" /></a></td>\n";    
