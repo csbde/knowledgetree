@@ -26,7 +26,7 @@ if (checkSession()) {
 
     $oPatternCustom = & new PatternCustom();
 
-    if(isset($fUserSet)) {
+    if(isset($fUserID)) { //isset($fUserSet)) {
         // do a check to see both drop downs selected
         if($fUserID == -1) {
             $oPatternCustom->setHtml(getPageNotSelected());
@@ -51,7 +51,7 @@ if (checkSession()) {
         $oUserGroup = new GroupUserLink($fGroupID, $fUserID);
         $oUserGroup->setUserGroupID($fGroupID,$fUserID);
         if($oUserGroup->delete()) {
-            $oPatternCustom->setHtml(getPageSuccess());
+            $oPatternCustom->setHtml(getPageSuccess($fUserID));
         } else {
             $oPatternCustom->setHtml(getPageFail());
         }

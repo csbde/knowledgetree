@@ -15,21 +15,23 @@ function getPage($iUserID, $iGroupID) {
 	$oGroup = null;
 	
 	if (isset($iUserID)) {
-		$oUser = User::get($iUserID);
-		$heading = "<tr><td colspan=\"2\">Are you Sure you wish to assign the User to the Group?</td></tr>\n";
+		$heading = "<tr><td colspan=\"2\">Please Assign the User to a Group:</td></tr>\n";
+		$oUser = User::get($iUserID);		
+		//$heading = "<tr><td colspan=\"2\">Are you Sure you wish to assign the User to the Group?</td></tr>\n";
 	} else{
 		$heading = "<tr><td colspan=\"2\">Please Assign a User to a Group:</td></tr>\n";
 	}
 	if (isset($iGroupID)) {
 		$oGroup = Group::get($iGroupID);
 	}
-
+	$sQueryString = "&fUserID=$iUserID";
+    
     $sToRender .= "<table width=\"600\">" . renderHeading("Add User to Group") . "</table>";
 	$sToRender .= "<table>\n";
 	$sToRender .= $heading;
 	$sToRender .= "<tr>\n";
-	$sToRender .= "</tr>\n";
-	$sToRender .= "<td>User Name: </td><td>" . getUserDisplay($oUser) . "</td>\n";
+	$sToRender .= "</tr>\n";	
+	$sToRender .= "<td>User Name: </td><td><input type=hidden id=\"fUserID\" name=\"fUserID\" value=\"" . $oUser->getID() . "\">" .  $oUser->getName() . "</a></td>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
@@ -40,7 +42,7 @@ function getPage($iUserID, $iGroupID) {
 	$sToRender .= "<tr>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<td></td><td>" . getAssignButton($oUser);
-	$sToRender .= getCancelButton($oUser);	
+	$sToRender .= "<td><a href=\"$default->rootUrl/control.php?action=editUserGroups$sQueryString\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" /></a></td>";		
 	$sToRender .= "</td></table>\n";
 	
 	
@@ -49,17 +51,17 @@ function getPage($iUserID, $iGroupID) {
 
 
 // page that comes up when there is nothing selected
-function getPageNotSelected() {	
+function getPageNotSelected($sQueryString) {	
 	global $default;
 
     $sToRender .= "<table width=\"600\">" . renderHeading("Add User to Group") . "</table>";
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr><td><b>Sorry, Selection Failed</b></td></tr>\n";
-	$sToRender .= "<tr><td>Please select BOTH a User AND a Group</td></tr>\n";
+	$sToRender .= "<tr><td>Please select Group</td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=addUserToGroup\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
+	$sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=addUserToGroup$sQueryString\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
 	
@@ -68,7 +70,7 @@ function getPageNotSelected() {
 }
 
 //if addition successful
-function getPageSuccess() {
+function getPageSuccess($sQueryString) {
 	global $default;
 
     $sToRender .= "<table width=\"600\">" . renderHeading("Add User to Group") . "</table>";            
@@ -78,7 +80,7 @@ function getPageSuccess() {
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=addUserToGroup\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
+	$sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=addUserToGroup$sQueryString\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
 	
