@@ -103,7 +103,7 @@ if (checkSession()) {
 	require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");    
 	$main->setCentralPayload($oContent);
 	$main->setFormEncType("multipart/form-data");
-	$main->setFormAction($_SERVER['PHP_SELF']);	
+	$main->setFormAction($_SERVER['PHP_SELF'] . "?fUpdate=1");	
 	$main->setHasRequiredFields(true);			
 	$main->render();	
 } 
