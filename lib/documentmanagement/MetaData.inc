@@ -199,6 +199,10 @@ class MetaData extends KTEntity {
 		
 	}
 
+    function getList($sWhereClause = null) {
+        return KTEntityUtil::getList(MetaData::_table(), 'MetaData', $sWhereClause);
+    }
+
 }
 /**
 * Static function
