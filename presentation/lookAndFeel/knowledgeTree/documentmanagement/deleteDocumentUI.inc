@@ -51,4 +51,13 @@ function getPage($iDocumentID, $iFolderID, $sDocumentName) {
 	
 }
 
+function renderErrorPage($sErrorMessage) {
+    global $default;
+    $sToRender  = renderHeading("Delete Document");    
+    $sToRender .= "<table>\n";
+    $sToRender .= "<tr><td><p class=\"errorText\">$sErrorMessage</p>\n" .
+                  "<a href=\"javascript:history.go(-1)\"><img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\"/></a>\n" .
+                  "</p></td></tr></table>\n";
+   return $sToRender;
+}
 ?>
