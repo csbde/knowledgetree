@@ -25,10 +25,14 @@ function getConfirmationPage($iFolderID, $iDocumentID) {
 }
 
 
-function getPage($iFolderID, $iDocumentID) {
+function getPage($iFolderID, $iDocumentID, $sErrorMessage = "") {
 	global $default;
     $sToRender = renderHeading("Move Document");
 	$sToRender .= "<table>\n";
+	if ($sErrorMessage) {
+		$sToRender .= "<tr><td><font color=\"red\">$sErrorMessage</font></td></tr>";
+	}
+	$sToRender .= "<tr><td>Move document " . Document::getDocumentDisplayPath($iDocumentID) . " to:</td></tr>";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>" . renderFolderPath($iFolderID, "/control.php?action=moveDocument&fDocumentID=$iDocumentID") . "</td>\n";
 	$sToRender .= "</tr>\n";

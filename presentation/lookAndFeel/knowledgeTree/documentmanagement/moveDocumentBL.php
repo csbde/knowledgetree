@@ -38,7 +38,8 @@ if (checkSession()) {
 		if (isset($fForMove)) {
 			if ($fConfirmed) {
 				//we're trying to move a document
-				$oDocument = & Document::get($fDocumentID);			
+				$oDocument = & Document::get($fDocumentID);
+				$oFolder = & Folder::get($fFolderID);
 				$iOldFolderID = $oDocument->getFolderID();
 				if (Permission::userHasDocumentWritePermission($fDocumentID) && Permission::userHasFolderWritePermission($fFolderID)) {
 					//if the user has both document and folder write permissions				
@@ -47,10 +48,10 @@ if (checkSession()) {
 					//put the document in the new folder
 					$oDocument->setFolderID($fFolderID);
 					if ($oDocument->update(true)) {
-						//get the new document path
-						$sNewDocumentFileSystemPath = Folder::getFolderPath($oDocument->getFolderID()) . $oDocument->getFileName();
+						//get the old document path
+						$sOldDocumentFileSystemPath = Folder::getFolderPath($iOldFolderID) . $oDocument->getFileName();
 						//move the document on the file system
-						if (PhysicalDocumentManager::move($sOldDocumentFileSystemPath, $sNewDocumentFileSystemPath)) {
+						if (PhysicalDocumentManager::moveDocument($sOldDocumentFileSystemPath, $oDocument, $oFolder)) {							
 	                        
 	                        // fire subscription alerts for the moved document (and the folder its in)
 	                        $count = SubscriptionEngine::fireSubscription($fDocumentID, SubscriptionConstants::subscriptionAlertType("MovedDocument"),
@@ -105,18 +106,27 @@ if (checkSession()) {
 					$main->render();
 				}
 			} else {
-				// display confirmation page
 				require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 				$oPatternCustom = & new PatternCustom();
-				$oPatternCustom->setHtml(getConfirmationPage($fFolderID, $fDocumentID));
-				$main->setCentralPayload($oPatternCustom);   
-				$main->setFormAction($_SERVER["PHP_SELF"] . "?fForMove=1&fDocumentID=$fDocumentID&fFolderID=$fFolderID");
+
+				$oDocument= Document::get($fDocumentID);
+				// check that there is no filename collision in the destination directory				
+				$sNewDocumentFileSystemPath = Folder::getFolderPath($fFolderID) . $oDocument->getFileName();
+				if (!file_exists($sNewDocumentFileSystemPath)) {
+					// display confirmation page
+					$oPatternCustom->setHtml(getConfirmationPage($fFolderID, $fDocumentID));
+				} else {
+					// filename collision
+					$oPatternCustom->setHtml(getPage($fFolderID, $fDocumentID, "This folder already contains a document of the same name.  Please choose another directory"));
+				}
+				$main->setFormAction($_SERVER["PHP_SELF"] . "?fForMove=1&fDocumentID=$fDocumentID&fFolderID=$fFolderID");				
+				$main->setCentralPayload($oPatternCustom);
 				$main->render();				
 			}			
 		} else {		
 			require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 			$oPatternCustom = & new PatternCustom();
-			$oPatternCustom->setHtml(getPage($fFolderID, $fDocumentID));
+			$oPatternCustom->setHtml(getPage($fFolderID, $fDocumentID));				
 			$main->setCentralPayload($oPatternCustom);   
 			$main->setFormAction($_SERVER["PHP_SELF"] . "?fForMove=1&fDocumentID=$fDocumentID&fFolderID=$fFolderID");
 			$main->render();
