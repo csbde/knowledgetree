@@ -18,8 +18,9 @@ class FolderUserRole {
 	var $dDateTime;
 	var $bDone;
 	var $bActive;
+	var $bDependantDocumentsCreated;
 	
-	function FolderUserRole($iNewUserID, $iNewDocumentID, $iNewGroupFolderApprovalID, $bNewDone = false, $bNewActive = false) {
+	function FolderUserRole($iNewUserID, $iNewDocumentID, $iNewGroupFolderApprovalID, $bNewDone = false, $bNewActive = false, $bNewDependantDocumentsCreated = false) {
 		$this->iId = -1;
 		$this->iUserID = $iNewUserID;
 		$this->iDocumentID = $iNewDocumentID;
@@ -27,6 +28,7 @@ class FolderUserRole {
 		$this->dDateTime = getCurrentDateTime();
 		$this->bDone = $bNewDone;
 		$this->bActive = $bNewActive;
+		$this->bDependantDocumentsCreated = $bNewDependantDocumentsCreated;
 	}
 	
 	function getUserID() {
@@ -77,6 +79,15 @@ class FolderUserRole {
 		$this->bActive = $bNewValue;
 	}
 	
+	function setDependantDocumentsCreated($bNewValue) {
+		$this->bDependantDocumentsCreated = $bNewValue;
+	}
+	
+	function getDependantDocumentsCreated() {
+		return $this->bDependantDocumentsCreated;
+		
+	}
+	
 	/**
 	* Create the current object in the database
 	*
@@ -88,7 +99,7 @@ class FolderUserRole {
 		//if the object hasn't been created
 		if ($this->iId < 0) {
 			$sql = $default->db;
-			$result = $sql->query("INSERT INTO " . $default->owl_folders_user_roles_table . " (user_id, document_id, group_folder_approval_id, datetime, done, active) VALUES ($this->iUserID, $this->iDocumentID, $this->iGroupFolderApprovalID, '$this->dDateTime', " . ($this->bDone ? "1" : "0") . ", " . ($this->bActive ? "1" : "0") . ")");
+			$result = $sql->query("INSERT INTO " . $default->owl_folders_user_roles_table . " (user_id, document_id, group_folder_approval_id, datetime, done, active, dependant_documents_created) VALUES ($this->iUserID, $this->iDocumentID, $this->iGroupFolderApprovalID, '$this->dDateTime', " . ($this->bDone ? "1" : "0") . ", " . ($this->bActive ? "1" : "0") . ", " . ($this->bDependantDocumentsCreated) ? "1" : "0" . ")");
 			if ($result) {
 				$this->iId = $sql->insert_id();
 				return  true;
@@ -96,7 +107,7 @@ class FolderUserRole {
 			$_SESSION["errorMessage"] = $lang_err_database;
 			return false;
 		}
-		$_SESSION["errorMessage"] = $lang_err_object_exists . "id = " . $this->iId . " table = document_fields";
+		$_SESSION["errorMessage"] = $lang_err_object_exists . "id = " . $this->iId . " table = folders_users_roles_link";
 		return false;
 	}
 	
@@ -111,7 +122,7 @@ class FolderUserRole {
 		//only update if the object has been stored
 		if ($this->iId > 0) {
 			$sql = $default->db;
-			$result = $sql->query("UPDATE " . $default->owl_folders_user_roles_table . " SET user_id = $this->iUserID, document_id = $this->iDocumentID, group_folder_approval_id = $this->iGroupFolderApprovalID, datetime = '$this->dDateTime', done = " . ($this->bDone ? "1" : "0") . ", active = " . ($this->bActive ? "1" : "0") . " WHERE id = $this->iId");
+			$result = $sql->query("UPDATE " . $default->owl_folders_user_roles_table . " SET user_id = $this->iUserID, document_id = $this->iDocumentID, group_folder_approval_id = $this->iGroupFolderApprovalID, datetime = '$this->dDateTime', done = " . ($this->bDone ? "1" : "0") . ", active = " . ($this->bActive ? "1" : "0") . ", dependant_documents_created = " . ($this->bDependantDocumentsCreated ? "1" : "0") . " WHERE id = $this->iId");
 			if ($result) {
 				return true;
 			}
@@ -158,7 +169,7 @@ class FolderUserRole {
 		$result = $sql->query("SELECT * FROM $default->owl_folders_user_roles_table WHERE id = $iFolderUserRoleID");
 		if ($result) {
 			if ($sql->next_record()) {
-				$oFolderUserRole = & new FolderUserRole($sql->f("user_id"), $sql->f("document_id"), $sql->f("group_folder_approval_id"), $sql->f("done"), $sql->f("active"));
+				$oFolderUserRole = & new FolderUserRole($sql->f("user_id"), $sql->f("document_id"), $sql->f("group_folder_approval_id"), $sql->f("done"), $sql->f("active"), $sql->f("dependant_documents_created"));
 				$oFolderUserRole->iId = $iFolderUserRoleID;
 				$oFolderUserRole->bDateTime =  $sql->f("datetime");
 				
