@@ -142,11 +142,9 @@ if ($loginAction == "loginForm") {
         }
     } else {
         // didn't receive any login parameters, so redirect login form
-        // TODO: set "no login parameters received error message?
-        // internal error message- should never happen
-        $default->log->error("
+        $default->log->error("login.php no login parameters received");
     }
-    if (strlen($queryString) > 0) {
+    if (strlen($queryString) > 0) {    	
         $url .= "&$queryString";
     }
     redirect($url);
