@@ -30,6 +30,7 @@ include("siteMap.inc");
 // instantiate log
 require_once("$default->fileSystemRoot/lib/Log.inc");
 $default->log = new Log($default->fileSystemRoot . "/log", INFO);
+$default->timerLog = new Log($default->fileSystemRoot . "/log", INFO, "timer");
 // setup i18n if gettext is installed
 if (in_array("gettext", get_loaded_extensions()) && function_exists('gettext') && function_exists('_')) {
 	require_once("$default->fileSystemRoot/lib/i18n/languageFunctions.inc");	
@@ -47,6 +48,10 @@ if (in_array("gettext", get_loaded_extensions()) && function_exists('gettext') &
 	textdomain($sDomain);
 } else {
 	$default->log->info("Gettext not installed, i18n disabled.");
+	// define a dummy _ function so gettext is not -required-
+	function _($sString) {
+		return $sString;
+	}
 }
 require_once("$default->fileSystemRoot/phpmailer/class.phpmailer.php");
 require_once("$default->fileSystemRoot/lib/session/Session.inc");
