@@ -1,16 +1,6 @@
 <?php
 
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
-
-/**
-*  NavBar.inc
-*
-*  Create the top section of the navbar..
- 
-* @author Mukhtar Dharsey
-* @date 22 January 2003
-*/
-
 global $default;
 
 /**
@@ -30,7 +20,7 @@ class NavBar {
     var $help;
     var $logout;
     var $nwColourbar;
-	var $sSection;
+    var $sSection;
 
     /**  variables used for searching */
     var $sBrowseType;
@@ -46,8 +36,7 @@ class NavBar {
         $this->iFolderID = $iTmpFolderID;
         $this->iDocumentID = $iTmpDocumentID;
         $this->sCategoryName = $sTmpCategoryName;
-        $this->iDocTypeID = $iTmpDocTypeID;	
-
+        $this->iDocTypeID = $iTmpDocTypeID;
 
         $this->mdocs = "$default->graphicsUrl/mdocs/norm.gif";
         $this->home = "$default->graphicsUrl/home/norm.gif";
@@ -57,29 +46,25 @@ class NavBar {
         $this->prefs = "$default->graphicsUrl/prefs/norm.gif";
         $this->help = "$default->graphicsUrl/help/norm.gif";
         $this->logout = "$default->graphicsUrl/logout/norm.gif";
-
     }
 
-
     /**
-    * gets the url for the colour bar
-    *
-    * @param The section that needs to be highlighted
-    */
+     * gets the url for the colour bar
+     *
+     * @param The section that needs to be highlighted
+     */
     function getNWColourbar() {
         return $this->nwColourBar;
     }
 
-
-
     /**
-    * sets a highlighted section varaibles
-    *
-    * @param The section that needs to be highlighted
-    */
+     * sets a highlighted section varaibles
+     *
+     * @param The section that needs to be highlighted
+     */
     function setHighlightedSection($section) {
         global $default;
-		$this->sSection = $section;
+        $this->sSection = $section;
 
         // check for highlighting..and highlight as required
         if($section == "General") {
@@ -96,18 +81,15 @@ class NavBar {
             $this->subscriptions = "$default->graphicsUrl/subscriptions/over.gif";
             $this->nwColourBar = "$default->graphicsUrl/subscriptions/def.gif";
         }
-		
-        if(($section == "Standard Search") || ($section == "Advanced Search")) {			
+
+        if(($section == "Standard Search") || ($section == "Advanced Search")) {
             $this->asearch = "$default->graphicsUrl/asearch/over.gif";
             $this->nwColourBar = "$default->graphicsUrl/asearch/def.gif";
         }
 
-	
         if(substr($section, -14) == "Administration") {
-        		
             $this->admin = "$default->graphicsUrl/admin/over.gif";
             $this->nwColourBar = "$default->graphicsUrl/admin/def.gif";
-            
         }
 
         if($section == "Preferences") {
@@ -120,22 +102,15 @@ class NavBar {
             $this->nwColourBar = "$default->graphicsUrl/help/def.gif";
         }
 
-
         if($section == "Logout") {
             $this->logout = "$default->graphicsUrl/logout/over.gif";
             $this->nwColourBar = "$default->graphicsUrl/logout/def.gif";
         }
-		
     }
 
-
-
     /**
-    * 
-    * this function creates the navbar for a specific page...
-    * 
-    * 
-    */
+     * this function creates the navbar for a specific page...
+     */
     function render() {
         global $default;
 
@@ -153,19 +128,16 @@ class NavBar {
         $colourhelp = "$default->graphicsUrl/help/colour.gif";
         $colourlogout = "$default->graphicsUrl/logout/colour.gif";
 
-
         // get list of sections
-
         $aTopMenuLinks = array(generateControllerUrl("dashboard"),
                                generateControllerUrl($default->siteMap->getDefaultAction("Manage Documents")),
                                generateControllerUrl($default->siteMap->getDefaultAction("Subscriptions")),
                                generateControllerUrl($default->siteMap->getDefaultAction("Advanced Search")),
                                generateControllerUrl($default->siteMap->getDefaultAction("Administration")),
                                generateControllerUrl($default->siteMap->getDefaultAction("Preferences")),
-                               //generateControllerUrl($default->siteMap->getDefaultAction("Help")),
                                "help",
                                generateControllerUrl($default->siteMap->getDefaultAction("Logout")));
-							   
+
         // create array of images for navbar sections
         $aTopMenuImages = array($this->home,
                                 $this->mdocs,
@@ -176,51 +148,48 @@ class NavBar {
                                 $this->help,
                                 $this->logout);
 
-
         // create array of menu colour images
         $aColourMenuImages = array($colourHome,$colourmdocs,$coloursubscriptions,$colourasearch,$colouradmin,$colourprefs,$colourhelp,$colourlogout);
 
         //set up the links
         for ($i = 0; $i < count($aTopMenuLinks); $i++) {
             if (strcmp($aTopMenuLinks[$i], "help") == 0) {
-                $sTopMenu .= "<a href=\"#\" onClick=\"javascript:helpWindow();\"><image src=\"" . $aTopMenuImages[$i] . "\" border=\"0\" /></a>";
-                $sColourMenu .= "<a href=\"#\" onClick=\"javascript:helpWindow();\"><image src=\"" . $aColourMenuImages[$i] . "\" border=\"0\" /></a>";
+                $sTopMenu .= "<td width=\"10\"><a href=\"#\" onClick=\"javascript:helpWindow();\"><image src=\"" . $aTopMenuImages[$i] . "\" border=\"0\" /></a></td>\n";
+                $sColourMenu .= "<td width=\"10\"><a href=\"#\" onClick=\"javascript:helpWindow();\"><image src=\"" . $aColourMenuImages[$i] . "\" border=\"0\" /></a></td>\n";
             } else {
-                $sTopMenu .= (strlen($aTopMenuLinks[$i]) > 0 ? "<a href=\"" . $aTopMenuLinks[$i] . "\">" : "") . "<img src=\"" . $aTopMenuImages[$i] . "\" border=\"0\" /></a>\n";
-                $sColourMenu .= (strlen($aTopMenuLinks[$i]) > 0 ? "<a href=\"" . $aTopMenuLinks[$i] . "\">" : "") . "<img src=\"" . $aColourMenuImages[$i] . "\" border=\"0\"/></a>\n";
+                $sTopMenu .= "<td width=\"10\">" . (strlen($aTopMenuLinks[$i]) > 0 ? "<a href=\"" . $aTopMenuLinks[$i] . "\">" : "") . "<img src=\"" . $aTopMenuImages[$i] . "\" border=\"0\" /></a></td>\n";
+                $sColourMenu .= "<td width=\"10\">" . (strlen($aTopMenuLinks[$i]) > 0 ? "<a href=\"" . $aTopMenuLinks[$i] . "\">" : "") . "<img src=\"" . $aColourMenuImages[$i] . "\" border=\"0\"/></a></td>\n";
             }
         }
-        $sMenu = $sTopMenu . "<br>" . $sColourMenu;
-
-        // set up rows
-        //row one image
-        $row1 = "<img src = ". $heading. ">";
-        //row 2 will be a search bar
-        $row2 ="";
 
         $toRender = new PatternCustom;
 
         //bar is the actaul html creation of the nav bar
-        $bar= "<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"100%\" height=\"100%\">\n " .
-              "<tr height=\"20%\"><td background=\"" . $hStretched . "\" width =\"100%\">". $row1 ."</td></tr>\n " .
-              "<tr height=\"30%\"> <td valign=\"absmiddle\" background=\"" . $hStretched . "\" width =\"100%\" nowrap>\n " .
-              "<img align=\"absmiddle\" src=\"$default->graphicsUrl/arrow.gif\" ></img>\n " .
-              "<INPUT type=\"hidden\" name=\"fForStandardSearch\" value=\"no\" />\n ";
-			  //disable the search bar if we are browsing search results
-			  if ((strcmp($this->sSection,"Standard Search") == 0) || (strcmp($this->sSection,"Advanced Search") == 0)) {
-				  $bar .= "<INPUT type=\"hidden\" name=\"fSearchText\" width=\"30\" height=\"10\" align=\"absmiddle\" />\n ";
-			  } else {
-				  $bar .= "<INPUT type=\"text\" name=\"fStandardSearchString\" width=\"30\" height = \"10\" align = \"absmiddle\" />\n " .						
-						"<INPUT type=\"hidden\" name=\"fFolderID\"  value=\"" . $this->iFolderID . "\"  />\n " .
-						"<INPUT type=\"hidden\" name=\"fDocumentID\" value=\"" . $this->iDocumentID . "\"  />\n " .
-						"<INPUT type=\"hidden\" name=\"fCategoryName\" value=\"" . $this->sCategoryName . "\"  />\n " .
-						"<INPUT type=\"hidden\" name=\"fDocTypeID\"  value=\"" . $this->iDocTypeID . "\"  />\n " .
-						"<INPUT type=\"image\" onClick=\"return validateStandardSearch('" . $default->rootUrl . "/control.php')\" src=\"$default->graphicsUrl/search.gif\" align = \"absmiddle\" border=\"0\" />\n ";
-			  }			  
-              $bar .= "</td>\n " .
-				  "</tr>\n" .
-                  "<tr height=\"25%\"><td nowrap>$sMenu</td></tr>\n" .
-				  "</table>\n";
+        $bar  = "<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\">\n";
+        $bar .= "\t<tr height=\"30\">\n";
+        $bar .= "\t\t<td background=\"$hStretched\" width=\"100%\"><img src=\"$heading\"/></td>\n";
+        $bar .= "\t</tr>\n";
+        $bar .= "\t<tr height=\"30\">\n";
+        $bar .= "\t\t<td valign=\"absmiddle\" background=\"$hStretched\" width=\"100%\" nowrap>";
+        $bar .= "<img align=\"absmiddle\" src=\"$default->graphicsUrl/arrow.gif\" ></img>\n";
+
+        $bar .= "<INPUT type=\"hidden\" name=\"fForStandardSearch\" value=\"no\" />\n ";
+        //disable the search bar if we are browsing search results
+        if ((strcmp($this->sSection,"Standard Search") == 0) || (strcmp($this->sSection,"Advanced Search") == 0)) {
+            $bar .= "<INPUT type=\"hidden\" name=\"fSearchText\"/>\n ";
+        } else {
+            $bar .= "<INPUT type=\"text\" name=\"fStandardSearchString\" width=\"30\" height = \"10\" align = \"absmiddle\" />\n";
+            $bar .= "<INPUT type=\"hidden\" name=\"fFolderID\" value=\"" . $this->iFolderID . "\"  />\n ";
+            $bar .= "<INPUT type=\"hidden\" name=\"fDocumentID\" value=\"" . $this->iDocumentID . "\"  />\n ";
+            $bar .= "<INPUT type=\"hidden\" name=\"fCategoryName\" value=\"" . $this->sCategoryName . "\"  />\n ";
+            $bar .= "<INPUT type=\"hidden\" name=\"fDocTypeID\" value=\"" . $this->iDocTypeID . "\"  />\n ";
+            $bar .= "<INPUT type=\"image\" onClick=\"return validateStandardSearch('" . $default->rootUrl . "/control.php')\" src=\"$default->graphicsUrl/search.gif\" align = \"absmiddle\" border=\"0\" />\n";
+        }
+        $bar .= "\t\t</td>\n";
+        $bar .= "\t</tr>\n";
+        $bar .= "<tr height=30><td ><table cellspacing=0 cellpadding=0 border=0><tr>$sTopMenu</tr>\n";
+        $bar .= "<tr>$sColourMenu</tr></table></td></tr>\n";
+        $bar .= "</table>\n";
 
         //set the bar as html to object
         $toRender->setHtml($bar);
@@ -229,22 +198,20 @@ class NavBar {
         return $toRender->render() . $this->getSearchValidationJavaScript();
 
     }
-	
-	function getSearchValidationJavaScript() {
-		$sToRender = "\n\n<SCRIPT LANGUAGE=\"javascript\">\n ";
-		$sToRender .= "<!--\n";		
-		$sToRender .= "function validateStandardSearch(newAction) {\n";		
-		$sToRender .= "\tif (!(validRequired(document.MainForm.fStandardSearchString, 'Search text'))) {\n";
-		$sToRender .= "\t\treturn false;\n\t}\n";
-		$sToRender .= "\telse {\n";
-		$sToRender .= "\t\tsetActionAndSubmitSearch(newAction);\n";
-		$sToRender .= "\t}\n";
-		$sToRender .= "}\n";
-		$sToRender .= "-->\n";
-		$sToRender .= "</SCRIPT>\n\n";
-		return $sToRender;
-	
-	}
+
+    function getSearchValidationJavaScript() {
+        $sToRender = "\n\n<SCRIPT LANGUAGE=\"javascript\">\n ";
+        $sToRender .= "<!--\n";
+        $sToRender .= "function validateStandardSearch(newAction) {\n";
+        $sToRender .= "\tif (!(validRequired(document.MainForm.fStandardSearchString, 'Search text'))) {\n";
+        $sToRender .= "\t\treturn false;\n\t}\n";
+        $sToRender .= "\telse {\n";
+        $sToRender .= "\t\tsetActionAndSubmitSearch(newAction);\n";
+        $sToRender .= "\t}\n";
+        $sToRender .= "}\n";
+        $sToRender .= "-->\n";
+        $sToRender .= "</SCRIPT>\n\n";
+        return $sToRender;
+    }
 }
-        //render the object
 ?>
