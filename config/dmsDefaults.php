@@ -97,6 +97,30 @@ class KTInit {
     }
     // }}}
 
+    function setupDb () {
+        global $default;
+
+        require_once("DB.php");
+
+        $dsn = array(
+            'phptype'  => $default->dbType,
+            'username' => $default->dbUser,
+            'password' => $default->dbPass,
+            'hostspec' => $default->dbHost,
+            'database' => $default->dbName,
+        );
+
+        $options = array(
+            'debug'       => 2,
+            'portability' => DB_PORTABILITY_ERRORS,
+        );
+
+        $default->_db = &DB::connect($dsn, $options);
+        $default->_db->setFetchMode(DB_FETCHMODE_ASSOC);
+
+        require_once(KT_LIB_DIR . '/database/dbcompat.inc');
+        $default->db = new DBCompat;
+    }
 
     // {{{ cleanGlobals()
     function cleanGlobals () {
@@ -153,17 +177,16 @@ $default->serverName = $_SERVER['HTTP_HOST'];
 $default->execSearchPath = $_SERVER['PATH'];
 $default->unzipCommand = "unzip";
 $default->logLevel = INFO;
-$default->pearPath = KT_DIR . '/pear';
 
 $default->useDatabaseConfiguration = false;
 
 // include the environment settings
 require_once("environment.php");
 
-require_once("$default->fileSystemRoot/lib/authentication/$default->authenticationClass.inc");
+KTInit::prependPath(KT_DIR . '/pear');
+KTInit::setupDB();
 
-require_once("$default->fileSystemRoot/lib/database/db.inc");
-$default->db = new Database();
+require_once("$default->fileSystemRoot/lib/authentication/$default->authenticationClass.inc");
 
 // instantiate system settings class
 require_once("$default->fileSystemRoot/lib/database/lookup.inc");
@@ -178,11 +201,8 @@ if ($default->useDatabaseConfiguration && $default->system->initialised()) {
     }
 }
 
-
 // table mapping entries
 include("tableMappings.inc");
-
-KTInit::prependPath($default->pearPath);
 
 // instantiate log
 KTInit::setupLogging();
