@@ -82,9 +82,6 @@ function getDetailsDBPage($sUserName, $aAttributes) {
         $sToRender .= "<tr>\n";
         $sToRender .= "<td>Email Notification: </td><td><input type=\"checkbox\" name=\"fEmailNotification\" value=\"" . $aUserAttributes["email_notification"] . "\" " . ($aUserAttributes["email_notification"] == "1" ? "checked" : "") . "\"> </td>\n";
         $sToRender .= "</tr>\n";
-        $sToRender .= "<tr>\n";
-        $sToRender .= "<td>Sms Notification: </td><td><input type=\"checkbox\" name=\"fSmsNotification\" value=\"" . $aUserAttributes["sms_notification"] . "\" " . ($aUserAttributes["sms_notification"] == "1" ? "checked" : "") . "> </td>\n";
-        $sToRender .= "</tr>\n";
         $sToRender .= "<tr><td><b>Initial Group</b></td><td>" . getGroupListBox() . "</td></tr>\n";        
         $sToRender .= "<tr>\n";
         $sToRender .= "<td colspan=\"2\" align=\"right\">" . getAddButton() . getCancelButton("listUsers") . "</td>";

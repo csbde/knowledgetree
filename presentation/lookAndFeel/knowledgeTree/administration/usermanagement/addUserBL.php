@@ -46,7 +46,7 @@ if (checkSession()) {
     $oAuth = new $default->authenticationClass;
     // user attributes to search for
     if ($default->authenticationClass == "DBAuthenticator")  {
-        $aAttributes = array ("username", "name", "email", "mobile", "email_notification", "sms_notification");
+        $aAttributes = array ("username", "name", "email", "mobile", "email_notification");
         $bLdap = false;
     } else {
         //if its using LDAP get these attributes
@@ -112,9 +112,9 @@ if (checkSession()) {
     } else if(isset($fAddToDb)) {
         // if db authentication
         if(isset($fFromDb)) {
-            $oUser = new User($fUsername,$fName,$fPassword,0,$fEmail,$fMobile,$fEmailNotification,$fSmsNotification,0,1,0);
+            $oUser = new User($fUsername,$fName,$fPassword,0,$fEmail,$fMobile,$fEmailNotification,false,0,1,0);
         } else {
-            $oUser = new User($fUsername,$fName,0,0,$fEmail,$fMobile,$fEmailNotification,$fSmsNotification,$fLdap,1,0);
+            $oUser = new User($fUsername,$fName,0,0,$fEmail,$fMobile,$fEmailNotification,false,$fLdap,1,0);
         }
 
         if($oUser->create()) {
@@ -131,7 +131,7 @@ if (checkSession()) {
         }
     } else {
     	if ($default->authenticationClass == "DBAuthenticator")  {
-			$aAttributes = array("" => array ("username", "name", "email", "mobile", "email_notification", "sms_notification"));    		
+			$aAttributes = array("" => array ("username", "name", "email", "mobile", "email_notification"));    		
             $oPatternCustom->setHtml(getDetailsDBPage(null,$aAttributes));
             $main->setFormAction($_SERVER["PHP_SELF"]. "?fAddToDb=1&fFromDb=1");
     	} else {
