@@ -24,6 +24,7 @@ if (checkSession()) {
     require_once("$default->fileSystemRoot/lib/documentmanagement/PhysicalDocumentManager.inc");
     require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentTransaction.inc");
     require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
+    require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentCollaboration.inc");    
     
     require_once("$default->fileSystemRoot/lib/foldermanagement/FolderCollaboration.inc");
     require_once("$default->fileSystemRoot/lib/foldermanagement/FolderUserRole.inc");
