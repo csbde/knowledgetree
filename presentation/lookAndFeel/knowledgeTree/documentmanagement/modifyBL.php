@@ -21,7 +21,9 @@ if (checkSession()) {
 	
 	require_once("$default->fileSystemRoot/lib/security/permission.inc");
 	require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
-	require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");						
+	require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
+    require_once("$default->fileSystemRoot/lib/subscriptions/SubscriptionEngine.inc");
+    require_once("$default->fileSystemRoot/lib/subscriptions/SubscriptionManager.inc");    
 	require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
 	require_once("$default->fileSystemRoot/lib/visualpatterns/PatternListBox.inc");
 	require_once("$default->fileSystemRoot/lib/visualpatterns/PatternEditableTableSqlQuery.inc");
@@ -45,6 +47,13 @@ if (checkSession()) {
 			}
 			
 			if ($oDocument->update()) {
+                // fire subscription alerts for the modified document
+                $count = SubscriptionEngine::fireSubscription($fDocumentID, SubscriptionConstants::subscriptionAlertType("ModifyDocument"),
+                         SubscriptionConstants::subscriptionType("DocumentSubscription"),
+                         array( "folderID" => $oDocument->getFolderID(),
+                                "modifiedDocumentName" => $oDocument->getName()));
+                $default->log->info("modifyBL.php fired $count subscription alerts for modified document " . $oDocument->getName());
+                
 				//on successful update, redirect to the view page
 				if (isset($fFirstEdit)) {
 					redirect("$default->rootUrl/control.php?action=modifyDocumentGenericMetaData&fDocumentID=" . $oDocument->getID() . "&fFirstEdit=1");
