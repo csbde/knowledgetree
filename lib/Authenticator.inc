@@ -30,9 +30,8 @@ class Authenticator {
             // TODO: refactor the code below (and change for new db)
             //       also need to add ldap dn to user table
             $sql = new Owl_DB; 
-            $query = "select * from $default->owl_users_table where username = '$username'";
+            $query = "select * from $default->owl_users_table where username = '$userName'";
             $sql->query($query);
-            //$sql->query("select * from $default->owl_users_table where username = '$username' and password = '" . md5($password) . "'");
             $numrows = $sql->num_rows($sql);
             if ($numrows == "1") {
                 while($sql->next_record()) {
@@ -68,7 +67,6 @@ class Authenticator {
             // authentication failed
             $userDetails["status"] = 0;
         }
-
         return $userDetails;
     }
     
