@@ -15,22 +15,6 @@ require_once("../../../../../config/dmsDefaults.php");
  */
 
 /**
- * Display the heading
- * FIXME: need to refactor this
- */
-/*function renderHeading($sHeading) {
-    global $default;
-    $sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
-    $sColor = $default->siteMap->getSectionColour($sSectionName, "th");
-    $sToRender  = "<table border=\"0\" width=\"600\">\n";
-    $sToRender .= "<tr align=\"left\"><th class=\"sectionHeading\" bgcolor=\"$sColor\"><font color=\"ffffff\">$sHeading</font></th></tr>\n";
-    $sToRender .= "<tr/>\n";
-    $sToRender .= "<tr/>\n";
-    $sToRender .= "</table>\n";
-    return $sToRender;
-}*/
-
-/**
  * Displays an error message
  */
 function renderErrorMessage($sErrorMessage) {
@@ -208,7 +192,8 @@ function renderArchiveSettingsForm($oDocumentArchiving = null) {
 		$sToRender .= "<tr><td colspan=\"2\"><input type=\"image\" src=\"$default->graphicsUrl/widgets/update.gif\" border=\"0\">\n";
 		$sToRender .= "<a href=\"$default->rootUrl/control.php?action=modifyDocumentArchiveSettings&fDocumentID=$fDocumentID&fDelete=1\"><img src=\"$default->graphicsUrl/widgets/remove.gif\" border=\"0\" /></a>\n";
 	} else {
-		$sToRender .= "<tr><td colspan=\"2\"><input type=\"image\" src=\"$default->graphicsUrl/widgets/submit.gif\" border=\"0\">\n";		
+		$sToRender .= "<tr><td colspan=\"2\"><input type=\"image\" src=\"$default->graphicsUrl/widgets/submit.gif\" border=\"0\">\n";
+		$sToRender .= "<a href=\"$default->rootUrl/control.php?action=addDocumentArchiveSettings&fDocumentID=$fDocumentID\"><img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\"></a>\n";
 	}	
 	$sToRender .= "<a href=\"$default->rootUrl/control.php?action=viewDocument&fDocumentID=$fDocumentID\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\" /></a></td></tr>\n";
 	$sToRender .= "</table>";
