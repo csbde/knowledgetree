@@ -65,7 +65,7 @@ class PatternMainPage {
 	/** more javascript */
 	var $additionalJavaScript;
 	/** whether or not to use dhtml scrolling **/
-	var $bScroll = true;
+	var $bScroll;
 	
 	
 	function PatternMainPage() {
@@ -154,7 +154,6 @@ class PatternMainPage {
 		$sToRender .= 	"<head>\n";
 		$sToRender .=   "<title>The KnowledgeTree</title>";
        	$sToRender .= 	"<meta http-equiv=\"refresh\" content=\"" . ($default->sessionTimeout+3) . ($bNN4 ? ";" : "") . "\">\n" .
-                        '<META http-equiv="Content-Type" content="text/html; charset=UTF-8">' .
                             "<link rel=\"SHORTCUT ICON\" href=\"$default->graphicsUrl/tree.ico\">\n" .
                             "<link rel=\"stylesheet\" href=\"$default->uiUrl/stylesheet.php\">\n".                            
 							PatternMainPage::getJavaScript() . "\n" .							
