@@ -42,7 +42,7 @@ if (checkSession()) {
         $aUnitIDs = User::getUnitIDs($_SESSION["userID"]);
         $oPatternCustom->setHtml(getPage($aUnitIDs));
 	} else {
-    	$oPatternCustom->setHtml(getPage($fUnitID));
+    	$oPatternCustom->setHtml(getPage(array($fUnitID)));
 	}
 	require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 	$main->setCentralPayload($oPatternCustom);
