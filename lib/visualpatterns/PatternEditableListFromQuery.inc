@@ -37,6 +37,8 @@ class PatternEditableListFromQuery {
 	var $iTableWidth = null;
 	/** unique name to prepend to form variables */
 	var $sUniqueName;
+	/** set the tables to check for display type 3 */
+	var $aDropDownListTableNames;
 	
 	/**
 	* Default constructor
@@ -78,6 +80,10 @@ class PatternEditableListFromQuery {
 		$this->bIndividualTableForEachResult = $bNewValue;
 	}
 	
+	function setDropDownListTableNames($aNewValue) {
+		$this->aDropDownListTableNames = $aNewValue;
+	}
+	
 	function & render() {
         global $default;
         
@@ -102,13 +108,16 @@ class PatternEditableListFromQuery {
 					switch ($this->aDisplayColumnTypes[$i]) {						
 						case 1:	
 							//plain text field							
-							$sToRender .= "\t<td><input type=\"text\" name=\"" . $this->sUniqueName . "_" . $i . "_value\" value=\"" . $sql->f($this->aDisplayColumns[$i]) . "\"</td>\n";
+							$sToRender .= "\t<td><input type=\"text\" name=\"" . $this->sUniqueName . "_" . $i . "_value\" value=\"" . stripslashes($sql->f($this->aDisplayColumns[$i])) . "\"</td>\n";
 							break;						
 						case 2:
 							//boolean value
-							//$sToRender .= "\t<td><textarea cols=$this->iTextAreaDisplayColumns rows=$this->iTextAreaRows READONLY>" . $sql->f($this->aDisplayColumns[$i]) . "</textarea></td>\n";
+							$sToRender .= "\t<td><input type=\"checkbox\" name=\"" . $this->sUniqueName . "_" . $i . "_value\" value=\"1\" " . ($sql->f($this->aDisplayColumns[$i]) ? " CHECKED " : " ") . "/></td>\n";
 							break;
 						case 3:	
+							$oPatternListBox = & new PatternListBox($this->aDropDownListTableNames[$i], "name", "id", $this->sUniqueName . "_" . $i . "_value");
+							$oPatternListBox->setSelectedValue($sql->f($this->aStoreColumns[$i]));
+							$sToRender .= "\t<td>" . $oPatternListBox->render() . "</td>\t\n";
 							break;
 						default:
 							break;
