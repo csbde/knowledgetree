@@ -111,6 +111,7 @@ class Unit {
                     	$aFolders = Folder::getList("name='" . $this->sName . "' AND parent_id=1");
                     	$oFolder = $aFolders[0];
                     	$oFolder->setDescription($this->sName . " Unit Root Folder");
+                    	$oFolder->setUnitID($this->iId);
                     	$oFolder->update();
                     	return true;
                     }
