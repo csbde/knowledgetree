@@ -16,9 +16,9 @@ function getPage($iDocTypeID, $iDocFieldID) {
 	
 	if (isset($iDocTypeID)) {
 		$oDocType = DocumentType::get($iDocTypeID);
-		$heading = "<tr>Are you Sure you wish to assign the Document Type to the Document Field? </tr>\n";
+		$heading = "<tr>Are you Sure you wish to assign the Document Field to the Document Type? </tr>\n";
 	}else{
-		$heading = "<tr>Please Assign a Document Type to a Document Field: </tr>\n";
+		$heading = "<tr>Please Assign a Document Field to a Document Type: </tr>\n";
 	}
 	
 	
@@ -28,14 +28,14 @@ function getPage($iDocTypeID, $iDocFieldID) {
 	}
 		
 	$sToRender .= "<br></br>\n";
-	$sToRender .= "<b>Assign Document Type to Document Field:</b>\n";
+	$sToRender .= "<b>Assign Document Field to Document Type:</b>\n";
 	$sToRender .= "<table>\n";
 	$sToRender .= "<br></br>\n";
 	$sToRender .= $heading;
 	$sToRender .= "<br>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "</tr>\n";
-	$sToRender .= "<td>DocumentType Name: </td><td>" . getDocTypeDisplay($oDocType) . "</td>\n";
+	$sToRender .= "<td>Document Type Name: </td><td>" . getDocTypeDisplay($oDocType) . "</td>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
@@ -54,44 +54,6 @@ function getPage($iDocTypeID, $iDocFieldID) {
 	return $sToRender;
 }
 
-// page when failure occurred
-function getPageFail($iDocTypeID) {	
-	global $default;
-	$oDocType = null;
-	$oDocField = null;
-		
-	if (isset($iDocTypeID)) {
-		$oDocType = DocumentType::get($iDocTypeID);
-	}
-	// find otu which DocField the DocType belogns to
-	$iDocFieldID = DocumentTypeFieldLink::docTypeBelongsToField($iDocTypeID);
-	// get the id of that DocField
-	$oDocField= DocumentField::get($iDocFieldID);
-		
-	$sToRender .= "<br></br>\n";
-	$sToRender .= "<b>Sorry, Assignment Failed</b>\n";
-	$sToRender .= "<table>\n";
-	$sToRender .= "<br></br>\n";
-	$sToRender .= "<tr></tr>\n";
-	$sToRender .= "<tr>Document Type Already Belongs to A DocumentField\n";
-	$sToRender .= "</tr>\n";
-	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>Document Type Name: </td><td><b>" .  $oDocType->getName() . "</b></td>\n";
-	$sToRender .= "</tr>\n";
-	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>Document Field Name: </td><td><b>" . $oDocField->getName($iDocFieldID) . "</b></td>\n";
-	$sToRender .= "</tr>\n";
-	$sToRender .= "<tr>\n";
-	$sToRender .= "</tr>\n";
-	$sToRender .= "<tr>\n";
-	$sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=assignDocTypeToField\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
-	$sToRender .= "</tr>\n";
-	
-	$sToRender .= "</table>\n";
-	
-	
-	return $sToRender;
-}
 
 // page that comes up when there is nothing selected
 function getPageNotSelected() {	
@@ -123,7 +85,28 @@ function getPageSuccess() {
 	$sToRender .= "<table>\n";
 	$sToRender .= "<br></br>\n";
 	$sToRender .= "<tr></tr>\n";
-	$sToRender .= "<tr><td>The Document Type was successfully assigned to the specified DocumentField</td></tr>\n";
+	$sToRender .= "<tr><td>The Document Field was successfully assigned to the specified Document Type</td></tr>\n";
+	$sToRender .= "<tr></tr>\n";
+	$sToRender .= "<tr></tr>\n";
+	$sToRender .= "<tr>\n";
+	$sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=assignDocTypeToField\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
+	$sToRender .= "</tr>\n";
+	$sToRender .= "</table>\n";
+	
+	
+	return $sToRender;
+}
+
+//if edition successful
+function getPageFail() {	
+	global $default;
+			
+	$sToRender .= "<br></br>\n";
+	$sToRender .= "<b>Failure!</b>\n";
+	$sToRender .= "<table>\n";
+	$sToRender .= "<br></br>\n";
+	$sToRender .= "<tr></tr>\n";
+	$sToRender .= "<tr><td>The Document Field already belongs to that Document Type</td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";

@@ -118,16 +118,29 @@ class DocumentTypeFieldLink {
 		global $default, $lang_err_doc_exist, $lang_err_database;
 		//if the id >= 0, then the object has already been created
 		if ($this->iId < 0) {
+			//check to see if name exsits
 			$sql = $default->db;
-			$result = $sql->query("INSERT INTO " . $default->owl_document_type_fields_table . " (document_type_id, field_id, is_mandatory) " .
-						"VALUES ($this->iDocumentTypeID, $this->iFieldID, '" . $this->bIsMandatory . "')");
-			if ($result) {
-				//set the current documents primary key
-				$this->iId = $sql->insert_id();
-				return true;
-			}
+			$query = "SELECT document_type_id FROM ". $default->owl_document_type_fields_table ." WHERE document_type_id = '" . $this->iDocumentTypeID . "' and field_id = '". $this->iFieldID . "'";
+        		$sql->query($query);
+       			$rows = $sql->num_rows($sql);
+        
+      			 if ($rows > 0){
+            		 	// duplicate username
+           		 	$_SESSION["errorMessage"] = "DocTypes::The DocumentType name " . $this->sName . " is already in use!";
+           		 	return false;
+           		 
+	       		 }else{
+				$sql = $default->db;
+				$result = $sql->query("INSERT INTO " . $default->owl_document_type_fields_table . " (document_type_id, field_id, is_mandatory) " .
+							"VALUES ($this->iDocumentTypeID, $this->iFieldID, '" . $this->bIsMandatory . "')");
+				if ($result) {
+					//set the current documents primary key
+					$this->iId = $sql->insert_id();
+					return true;
+				}
 			$_SESSION["errorMessage"] = $lang_err_database;
-			return false;			
+			return false;
+			}			
 		}
 		$_SESSION["errorMessage"] = $lang_err_object_exists . "id = " . $this->iId . " table = $default->owl_document_type_fields_table";
 		return false;

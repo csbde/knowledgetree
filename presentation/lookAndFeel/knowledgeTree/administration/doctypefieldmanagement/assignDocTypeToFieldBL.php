@@ -41,19 +41,19 @@ if (checkSession()) {
 			
 					
 		}else{ //check if it belongs to a unit
-			$fieldLink = DocumentTypeFieldLink::doctypeBelongsToField($fDocTypeID);
+			//$fieldLink = DocumentTypeFieldLink::doctypeBelongsToField($fDocTypeID);
 		
 			// if it does'nt ..then go to normal page
-			if($fieldLink == false){
+			//if($fieldLink == false){
 				
 				$oPatternCustom->setHtml(getPage($fDocTypeID,$fDocFieldID));
 				$main->setFormAction($_SERVER["PHP_SELF"] . "?fDocTypeSet=1&fDocTypeAssign=1");
 			
-			}else{
+		//	}else{
 			//if it does...then go to failure page
-				$oPatternCustom->setHtml(getPageFail($fDocTypeID));
+			//	$oPatternCustom->setHtml(getPageFail($fDocTypeID));
 				
-			}
+			//}
 		}
 	}
 	
@@ -70,8 +70,11 @@ if (checkSession()) {
 			$oDocTypeField->setIsMandatory(false);
 		}
 		
-		$oDocTypeField->create();
-		$oPatternCustom->setHtml(getPageSuccess());
+		if($oDocTypeField->create()){
+			$oPatternCustom->setHtml(getPageSuccess());
+		}else{
+			$oPatternCustom->setHtml(getPageFail());
+		}
 		
 	}
 	
