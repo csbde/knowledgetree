@@ -32,18 +32,10 @@ if ($sectionName == "")
 $navbar->setHighlightedSection($sectionName);
 
 // setup nw payload
-$colourBar = $navbar->getNWColourbar();
-$image = new PatternImage("$default->graphicsUrl/tree.gif");
-$image->setImgSize(114, 96);
-$img = $image->render();
-
-
-$nwestLoad   = "<html>
-               <table width = \"100%\" height = \"100%\">
-               <td>". $img ."</td></tr>
-               <tr><td><img src = " . $colourBar . "></img></td></tr>
-               </table>
-               </html>";
+$nwestLoad   = "<table width=\"100%\" height=\"100%\">\n" . 
+               "<tr><td><img valign=\"top\" src=\"$default->graphicsUrl/tree.gif\"/></td></tr>\n" .
+               "<tr><td><img valign=\"top\" src=\"$colourBar\"/></td></tr>\n" .
+               "</table>";
 
 $nwPayLoad = new PatternCustom;
 $nwPayLoad ->setHtml($nwestLoad);
@@ -73,17 +65,11 @@ $link = "$default->graphicsUrl/leftnav/links.gif" ;
 
 //setup the westpayload
 // TODO -> change to links the images as well
-$westLoad = "<table cellspacing = \"5\"  cellpadding = \"5\"  border  = \"0\" width = \"100%\" height = \"75%\">
-            <tr><td>". $westRender ."</td></tr>
-            </table>
-            <hr>
-            <img src = " . $cAdmin . "></img>
-            </hr>
-            <hr>
-            <img src = ". $link ."></img>
-            </hr>
-            <hr>
-            </hr>";
+$westLoad = "<table cellspacing=\"5\"  cellpadding=\"5\"  border=\"0\" width=\"100%\" height=\"75%\">\n" .
+            "\t<tr><td>$westRender</td></tr>\n" .
+            "\t<tr><td><a href=\"mailto:$default->emailAdmin\"><img src=\"$cAdmin\"/ border=\"0\"></a>\n" .
+            "\t<br><img src=\"$link\"/>\n</td></tr>" .
+            "</table>";
 
 $westPayLoad = new PatternCustom;
 $westPayLoad->setHtml($westLoad);
