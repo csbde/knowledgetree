@@ -104,6 +104,8 @@ class UnitManager {
             echo "insert into user table worked!<br>";
         }
         
+        // TODO: insert into group table
+        
         // TODO: must check that username is unique!
         // retrieve the generated id for insert into the user unit mapping table
         $query = "select * from $default->owl_users_table where username = '" . $userDetails['username'] . "'";
