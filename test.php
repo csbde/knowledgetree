@@ -1,8 +1,11 @@
 <?php
+require_once ("./config/dmsDefaults.php");
+require_once ("./lib/owl.lib.php");
 require_once ("./lib/visualpatterns/PatternMainPage.inc");
 require_once ("./lib/visualpatterns/PatternImage.inc");
 require_once ("./lib/visualpatterns/PatternTableLinks.inc");
 require_once ("./lib/visualpatterns/PatternTableSqlQuery.inc");
+
 
 /* North west image */
 $img = new PatternImage("file://C:/temp/test/al.jpg");
