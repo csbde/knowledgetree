@@ -53,23 +53,6 @@
  *   And the supplied parameter contains (amongst others) nl_BE.UTF-8
  *   and nl.ISO-8859-15, then nl_BE.UTF-8 will be picked.
  * 
- * $Log$
- * Revision 1.2  2004/11/04 09:55:00  nbm
- * Be wildly unfair, and if the character set hasn't been detected
- * properly, assume iso-8859-1.
- *
- * Revision 1.1  2004/05/10 15:58:37  michael
- * Type:			i18n Framework.
- * Description:		Added i18n support functions.
- *
- * Revision 1.1.1.1  2003/11/19 19:31:15  wouter
- * * moved to new CVS repo after death of the old
- * * Fixed code to apply a default to both Accept-Charset and
- *   Accept-Language if none of those headers are supplied; patch from
- *   Dominic Chambers <dominic@encasa.com>
- *
- * Revision 1.2  2003/08/14 10:23:59  wouter
- * Removed little error in Content-Type header syntaxis.
  *
  */
 
@@ -94,10 +77,8 @@ function find_match($curlscore,$curcscore,$curgtlang,$langval,$charval,
 function al2gt($gettextlangs, $mime) {
   global $default;
   /* default to "everything is acceptable", as RFC2616 specifies */
-  $acceptLang=(($_SERVER["HTTP_ACCEPT_LANGUAGE"] == '') ? '*' :
-  	$_SERVER["HTTP_ACCEPT_LANGUAGE"]);
-  $acceptChar=(($_SERVER["HTTP_ACCEPT_CHARSET"] == '') ? '*' :
-  	$_SERVER["HTTP_ACCEPT_CHARSET"]);
+  $acceptLang = KTUtil::arrayGet($_SERVER, "HTTP_ACCEPT_LANGUAGE", "*");
+  $acceptChar = KTUtil::arrayGet($_SERVER, "HTTP_ACCEPT_CHARSET", "*");
   $alparts=@preg_split("/,/",$acceptLang);
   $acparts=@preg_split("/,/",$acceptChar);
   
@@ -152,7 +133,7 @@ function al2gt($gettextlangs, $mime) {
     $tmp1=preg_replace("/\_/","-",$gtlang);
     $tmp2=@preg_split("/\./",$tmp1);
     $allang=strtolower($tmp2[0]);
-    $gtcs=strtoupper($tmp2[1]);
+    $gtcs=strtoupper(KTUtil::arrayGet($tmp2, 1, null));
     $noct=@preg_split("/-/",$allang);
 
     $testvals=array(
@@ -183,9 +164,7 @@ function al2gt($gettextlangs, $mime) {
   $gtparts=@preg_split("/\./",$curgtlang);
   $tmp=strtolower($gtparts[0]);
   $lang=preg_replace("/\_/", "-", $tmp);
-  $charset=$gtparts[1];
-
-  $default->log->debug("gtparts: " .  print_r($aInstalledLocalesgtparts, true));
+  $charset= KTUtil::arrayGet($gtparts, 1, null);
 
   if (is_null($charset) || ($charset === "")) {
     $charset = "iso-8859-1";
