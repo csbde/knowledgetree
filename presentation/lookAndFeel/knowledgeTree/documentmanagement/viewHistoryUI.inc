@@ -26,14 +26,6 @@
  * @package documentmanagement
  */
 
-function getDocumentPath($iFolderID, $sDocumentName) {
-	global $default;
-	$sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
-	$sTDBGColour = $default->siteMap->getSectionColour($sSectionName, "td");	    
-    $sDocumentPath = displayFolderPathLink(Folder::getFolderPathAsArray($iFolderID), Folder::getFolderPathNamesAsArray($iFolderID),  "$default->rootUrl/control.php?action=browse") . " > " . $sDocumentName;
-	return "<table border=\"0\"cellpadding=\"5\" width=\"610\"><tr bgcolor=\"$sTDBGColour\"><td width=\"87%\">$sDocumentPath</td></tr></table>\n";
-}
-
 function getDocumentHistory($iDocumentID) {
     global $default;
     $sQuery = "SELECT DTT.name AS transaction_name, U.name AS user_name, DT.version AS version, DT.comment AS comment, DT.datetime AS datetime " .
@@ -83,7 +75,7 @@ function getPage($iDocumentID, $iFolderID, $sDocumentName) {
     $sToRender  = renderHeading("Document History");
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>" . getDocumentPath($iFolderID, $sDocumentName) . "</td>\n";
+	$sToRender .= "<td>" . displayDocumentPath($iDocumentID) . "</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
 	$sToRender .= "<table>\n";
