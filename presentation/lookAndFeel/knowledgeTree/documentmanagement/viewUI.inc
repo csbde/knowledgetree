@@ -205,15 +205,14 @@ function getEditPage($oDocument) {
     
     // IE ssl download hack- don't use ssl to download
     if ($default->phpSniff->property("browser") == "ie") {
-        $sToRender .= "<td><a href=\"http://" . $default->serverName . $_SERVER["PHP_SELF"] . "?fDocumentID=" . $oDocument->getID() . "&fForDownload=1\"><img src=\"$default->graphicsUrl/widgets/download.gif\" border=\"0\" /></a></td>\n";
+        $sToRender .= "<td><a onClick=\"alert('This will download a copy of the document and is not the same as Checking Out a document- changes to this downloaded file will not be managed in the DMS.'); return true;\" href=\"http://" . $default->serverName . $_SERVER["PHP_SELF"] . "?fDocumentID=" . $oDocument->getID() . "&fForDownload=1\"><img src=\"$default->graphicsUrl/widgets/download.gif\" border=\"0\" /></a></td>\n";
     } else {
-        $sToRender .= "<td><a href=\"" . generateControllerLink("viewDocument", "fDocumentID=" . $oDocument->getID() . "&fForDownload=1") . "\"><img src=\"$default->graphicsUrl/widgets/download.gif\" border=\"0\" /></a></td>\n";    
+        $sToRender .= "<td><a onClick=\"alert('This will download a copy of the document and is not the same as Checking Out a document- changes to this downloaded file will not be managed in the DMS.'); return true;\" href=\"" . generateControllerLink("viewDocument", "fDocumentID=" . $oDocument->getID() . "&fForDownload=1") . "\"><img src=\"$default->graphicsUrl/widgets/download.gif\" border=\"0\" /></a></td>\n";    
     }
     $sToRender .= "<td><a href=\"" . generateControllerLink("emailDocument", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/email.gif\" border=\"0\" /></a></td>\n";    
     $sToRender .= "<td><a href=\"" . generateControllerLink("deleteDocument", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/delete.gif\" border=\"0\" /></a></td>\n";
-    $sToRender .= "<td><a href=\"" . generateControllerLink("viewHistory", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/history.gif\" border=\"0\" /></a></td>\n";    
-    
-       
+    $sToRender .= "<td><a href=\"" . generateControllerLink("viewHistory", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/history.gif\" border=\"0\" /></a></td>\n";
+
     // display the unsubscribe button if the user is subscribed to the document
     if (Subscription::exists($_SESSION["userID"], $oDocument->getID(), SubscriptionConstants::subscriptionType("DocumentSubscription"))) {
         $sToRender .= "<td><a href=\"" . generateControllerLink("removeSubscription", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/unsubscribe.gif\" border=\"0\" /></a></td>\n";
@@ -266,7 +265,12 @@ function getViewPage($oDocument) {
     $sToRender .= "</table>";
     $sToRender .= "<table>\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "<td><a href=\"" . $_SERVER["PHP_SELF"] . "?fDocumentID=" . $oDocument->getID() . "&fForDownload=1\"><img src=\"$default->graphicsUrl/widgets/download.gif\" border=\"0\" /></a></td>\n";
+    // IE ssl download hack- don't use ssl to download
+    if ($default->phpSniff->property("browser") == "ie") {
+        $sToRender .= "<td><a onClick=\"alert('This will download a copy of the document and is not the same as Checking Out a document- changes to this downloaded file will not be managed in the DMS.'); return true;\" href=\"http://" . $default->serverName . $_SERVER["PHP_SELF"] . "?fDocumentID=" . $oDocument->getID() . "&fForDownload=1\"><img src=\"$default->graphicsUrl/widgets/download.gif\" border=\"0\" /></a></td>\n";
+    } else {
+        $sToRender .= "<td><a onClick=\"alert('This will download a copy of the document and is not the same as Checking Out a document- changes to this downloaded file will not be managed in the DMS.'); return true;\" href=\"" . generateControllerLink("viewDocument", "fDocumentID=" . $oDocument->getID() . "&fForDownload=1") . "\"><img src=\"$default->graphicsUrl/widgets/download.gif\" border=\"0\" /></a></td>\n";    
+    }
     $sToRender .= "<td><a href=\"" . generateControllerLink("emailDocument", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/email.gif\" border=\"0\" /></a></td>\n";
     $sToRender .= "<td><a href=\"" . generateControllerLink("viewHistory", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/history.gif\" border=\"0\" /></a></td>\n";
     
