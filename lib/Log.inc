@@ -56,22 +56,28 @@ class Log {
     function Log($logDirectory, $logLevel = INFO, $sLogFilePrefix = "log") {
         $this->logDirectory = $logDirectory;
         $this->minimumLoggingLevel = $logLevel;
-        $this->initialiseLogFile($sLogFilePrefix);
+        $this->sLogFilePrefix = $sLogFilePrefix;
     }
 
 
     /**
      * Creates the log file from the current datetime
      */
-    function initialiseLogFile($sLogFilePrefix) {
+    function initialiseLogFile() {
         global $default;
         if (!file_exists($this->logDirectory)) {
-            mkdir($this->logDirectory, 0755);
+            $res = @mkdir($this->logDirectory, 0755);
+            if ($res === false) {
+                return new PEAR_Error('Failed to create log directory (check permissions)');
+            }
         }
             
-        $this->logFile = $this->logDirectory . "/$sLogFilePrefix-" . date("Y-m-d") . ".txt";
+        $this->logFile = $this->logDirectory . "/" . $this->sLogFilePrefix . "-" . date("Y-m-d") . ".txt";
         if (!file_exists($this->logFile)) {
-            touch($this->logFile);
+            $res = @touch($this->logFile);
+            if ($res === false) {
+                return new PEAR_Error('Failed to create log file (check permissions)');
+            }
         }
     }
 
