@@ -33,8 +33,7 @@ function getAddPage($unitID) {
 	
     $sToRender .= "<table width=\"600\">" . renderHeading("Add User To System") . "</table>";
 	$sToRender .= "<table>\n";
-	$sToRender .= "<tr><td>Add a New User to the System:</td></tr>\n";
-	$sToRender .= "<tr><td>Please enter a VALID Username to search for in the text box below</td></tr>\n";
+	$sToRender .= "<tr><td colspan=\"2\">Please enter a VALID Username to search for in the text box below</td></tr>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>Username: </td><td><input size = \"40\" type=\"text\" name=\"fName\"> </td>\n";
 	$sToRender .= "</tr>\n";
