@@ -28,7 +28,7 @@ function redirect($url) {
  * @param string the controller action
  * @param string additional querystring vars
  */
-function controllerRedirect($sAction, $sQueryString) {
+function controllerRedirect($sAction, $sQueryString = "") {
     global $default;
     // generate url
     $url = generateControllerUrl($sAction, $sQueryString);
