@@ -21,7 +21,7 @@
  *
  * @version $Revision$ 
  * @author Mukhtar Dharsey
- * @package testing
+ * @package tests.administration
  */
 /*-----------------------------------------------------------------*/
 
