@@ -41,6 +41,10 @@ class KTUtil {
             return true;
         } elseif (($sString == "N")) {
             return false;
+        } elseif (($sString == "ON")) {
+            return true;
+        } elseif (($sString == "OFF")) {
+            return false;
         } elseif (($sString == "")) {
             return $empty;
         } else {
