@@ -4,6 +4,7 @@ require_once("../../../../config/dmsDefaults.php");
 require_once("$default->fileSystemRoot/lib/email/Email.inc");
 require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
 require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
+require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentCollaboration.inc");
 require_once("$default->fileSystemRoot/lib/web/WebDocument.inc");
 require_once("$default->fileSystemRoot/lib/web/WebSite.inc");
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");

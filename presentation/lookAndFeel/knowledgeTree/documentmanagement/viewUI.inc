@@ -210,12 +210,12 @@ function getEditPage($oDocument) {
     $sToRender .= "\t\t<td>" . renderEditableDocumentRouting($oDocument) . "</td>\n";
     $sToRender .= "\t</tr>";
     $sToRender .= "\t<tr>\n";
-	if ($oDocument->hasCollaboration() && (!Document::documentCollaborationStarted($oDocument->getID())) && ($_SESSION["userID"] == $oDocument->getCreatorID())) {
+	if ($oDocument->hasCollaboration() && (!DocumentCollaboration::documentCollaborationStarted($oDocument->getID())) && ($_SESSION["userID"] == $oDocument->getCreatorID())) {
 		//if not all collaboration steps have been set, then you cannot start the collaboration process
 		//only the creator of the document can start the collaboration process		
 		$sToRender .= "\t\t<td><a href=" . $_SERVER['PHP_SELF'] . "?fDocumentID=" . $oDocument->getID() . "&fBeginCollaboration=1><img src=\"$default->graphicsUrl/widgets/begin.gif\" border=\"0\"/></a>";
 		$sToRender .= "</td>\n";
-	} else if (Document::userIsPerformingCurrentCollaborationStep($oDocument->getID())) {
+	} else if (DocumentCollaboration::userIsPerformingCurrentCollaborationStep($oDocument->getID())) {
 		//if the current user is responsible for an active step in the collaboration process		
 		$sToRender .= "\t\t<td><table border=\"0\"><tr>\n";
 		$sToRender .= "\t\t<td><b>You currently have an active role<br> in the collaboration process</b></td>\n";				
@@ -224,12 +224,12 @@ function getEditPage($oDocument) {
 		$sToRender .= "\t\t</tr></table></td>\n";
 	}
     
-    if (!Document::documentIsPendingWebPublishing($iDocumentID)) {
+    if (!DocumentCollaboration::documentIsPendingWebPublishing($iDocumentID)) {
         // only display for unpublished documents        
         // if there is collaboration
         if ($oDocument->hasCollaboration()) {
             // only display publish button if collaboration is complete and you're the last user in the collaboration process
-            if (Document::documentCollaborationDone($oDocument->getID()) && ($_SESSION["userID"] == Document::getLastCollaboratorID($iDocumentID))) {
+            if (DocumentCollaboration::documentCollaborationDone($oDocument->getID()) && ($_SESSION["userID"] == DocumentCollaboration::getLastCollaboratorID($iDocumentID))) {
                 $sToRender .= "<td><a href=" . $_SERVER['PHP_SELF'] . "?fDocumentID=" . $oDocument->getID() . "&fForPublish=1><img src=\"$default->graphicsUrl/widgets/publish.gif\" border=\"0\"/></a></td>\n";
             }
         } else if ($_SESSION["userID"] == $oDocument->getCreatorID()) {
@@ -284,7 +284,7 @@ function getViewPage($oDocument) {
     $sToRender .= "\t<tr>\n";
     $sToRender .= "\t\t<td>" . renderNonEditableDocumentRouting($oDocument) . "</td>\n";
     $sToRender .= "\t</tr>";
-	if (Document::userIsPerformingCurrentCollaborationStep($oDocument->getID())) {
+	if (DocumentCollaboration::userIsPerformingCurrentCollaborationStep($oDocument->getID())) {
 		//if the current user is responsible for an active step in the collaboration process		
 		$sToRender .= "\t\t<tr><td><table border=\"0\"><tr>\n";
 		$sToRender .= "\t\t<td><b>You currently have an active role<br> in the collaboration process</b></td>\n";				

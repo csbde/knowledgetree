@@ -64,7 +64,7 @@ function renderCheckInPage($oDocument) {
     $sToRender .= "<tr><td>\n";
   
     // if collaboration has started then revisions are minor
-    if (Document::documentCollaborationStarted($oDocument->getID())) {
+    if (DocumentCollaboration::documentCollaborationStarted($oDocument->getID())) {
         $sToRender .= "<input type=\"hidden\" name=\"fCheckInType\" value=\"minor\"/>\n";
     // else there is no collaboration, revisions are major (or override?)        
     } else {
