@@ -53,6 +53,7 @@ if (!isset($fFolderID)) {
     //else display an error message
     $oPatternCustom->setHtml("<a href=\"javascript:history.go(-1)\"><img src=\"" . KTHtml::getBackButton() . "\" border=\"0\" /></a>\n");
     $main->setErrorMessage(_("No folder currently selected"));
+    $_SESSION["pageAccess"][$default->rootUrl . '/presentation/lookAndFeel/knowledgeTree/store.php'] = true;
     $main->setFormAction("$default->rootUrl/presentation/lookAndFeel/knowledgeTree/store.php?fReturnURL=" . urlencode("$default->rootUrl/control.php?action=browse&fFolderID=$fFolderID"));
     $main->setCentralPayload($oPatternCustom);						
     $main->render();
@@ -64,6 +65,7 @@ if (!$oFolder) {
     // folder doesn't exist
     $oPatternCustom->setHtml("<a href=\"javascript:history.go(-1)\"><img src=\"" . KTHtml::getBackButton() . "\" border=\"0\" /></a>\n");
     $main->setErrorMessage(_("The folder you're trying to modify does not exist in the DMS"));
+    $_SESSION["pageAccess"][$default->rootUrl . '/presentation/lookAndFeel/knowledgeTree/store.php'] = true;
     $main->setFormAction("$default->rootUrl/presentation/lookAndFeel/knowledgeTree/store.php?fReturnURL=" . urlencode("$default->rootUrl/control.php?action=browse&fFolderID=$fFolderID"));
     $main->setCentralPayload($oPatternCustom);						
     $main->render();
@@ -86,12 +88,14 @@ if (isset($fCollaborationEdit)) {
     $oPatternCustom->setHtml(getStatusPage($fFolderID, _("You cannot edit this folder collaboration process as a document is currently undergoing this collaboration process")));
     
     $main->setHasRequiredFields(true);
+    $_SESSION["pageAccess"][$default->rootUrl .  '/presentation/lookAndFeel/knowledgeTree/store.php'] = true;
     $main->setFormAction("$default->rootUrl/presentation/lookAndFeel/knowledgeTree/store.php?fReturnURL=" . urlencode("$default->rootUrl/control.php?action=browse&fFolderID=$fFolderID"));
 } else if (isset($fCollaborationDelete)) {
     //user attempted to delete the folder collaboration process but could not because there is
     //a document currently in this process
     $oPatternCustom->setHtml(getStatusPage($fFolderID, _("You cannot delete this folder collaboration process as a document is currently undergoing this collaboration process")));
     $main->setHasRequiredFields(true);
+    $_SESSION["pageAccess"][$default->rootUrl . '/presentation/lookAndFeel/knowledgeTree/store.php'] = true;
     $main->setFormAction("$default->rootUrl/presentation/lookAndFeel/knowledgeTree/store.php?fReturnURL=" . urlencode("$default->rootUrl/control.php?action=browse&fFolderID=$fFolderID"));
 } else {
     // does this folder have a document in it that has started collaboration?
@@ -101,6 +105,7 @@ if (isset($fCollaborationEdit)) {
             
     $oPatternCustom->setHtml(getPage($fFolderID, "", $bCollaboration));
     $main->setHasRequiredFields(true);
+    $_SESSION["pageAccess"][$default->rootUrl . '/presentation/lookAndFeel/knowledgeTree/store.php'] = true;
     $main->setFormAction("$default->rootUrl/presentation/lookAndFeel/knowledgeTree/store.php?fReturnURL=" . urlencode("$default->rootUrl/control.php?action=browse&fFolderID=$fFolderID"));
 }
 

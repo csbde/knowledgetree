@@ -46,6 +46,7 @@ if (checkSession()) {
 	 if (isset($fUserID)){		
 		// post back on User select from manual edit page	
 		$oPatternCustom->setHtml(getUserDetailsPage($fUserID));
+                $_SESSION["pageAccess"][$default->rootUrl .  '/presentation/lookAndFeel/knowledgeTree/store.php'] = true;
 		$main->setFormAction("$default->rootUrl/presentation/lookAndFeel/knowledgeTree/store.php?fReturnURL=" . urlencode("$default->rootUrl/control.php?action=editUser&fSuccess=1"));		
 	} else if ($fSuccess) {
         $oPatternCustom->setHtml(getEditPageSuccess());
