@@ -18,7 +18,7 @@ function getDocumentLinkFolderCollaborationData($iFolderCollaborationID) {
 				"WHERE DDT.group_folder_approval_link_id = $iFolderCollaborationID";
 				
 	//echo $sQuery;			
-	$aColumns = array("document_title", "username", "template_document_name","edit", "del");
+	$aColumns = array("document_title", "username", "template_document_name", "edit", "del");
 	$aColumnHeaders = array("Document title", "Default creator", "Template document");
 	$aColumnTypes = array(1,1,3,3,3);
 	//$aDBColumnArray = array("id","group_folder_approval_link_id","template_document_id");
@@ -46,7 +46,7 @@ function getViewPage($iFolderCollaborationID, $iFolderID) {
 	$sToRender .= "<td>" . getDocumentLinkFolderCollaborationData($iFolderCollaborationID) . "</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";	
-	$sToRender .= "<td><table><tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/add.gif\" border=\"0\"/></td><td></td></tr></table>\n";
+	$sToRender .= "<td><table><tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/add.gif\" border=\"0\"/></td><td>" . generateControllerLink("editFolder", "fFolderID=$iFolderID&fShowSection=folderRouting", "<img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"/>") . "</td></tr></table>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";	
 	
@@ -76,7 +76,7 @@ function getEditPage($iFolderID, $iDependantDocumentID, $iFolderCollaborationID,
 	$bAddNetscapeScript = false;
 	if (! (($default->phpSniff->property("browser") == "moz") && ($default->phpSniff->property("version") <= "4.79")) ) {
 		//for any other browser but netscape 4.7 do this	
-		$sToRender .= "<td>Template document</td><td><input type=\"text\" DISABLED name=\"fTargetDocument\" value=\"$sTemplateDocumentName\" /><input type=\"button\" value=\"Browse\" onClick=\"newWindow('http://ktdev/control.php?action=templateBrowse','window2')\"></td>\n";
+		$sToRender .= "<td>Template document</td><td><input type=\"text\" DISABLED name=\"fTargetDocument\" value=\"$sTemplateDocumentName\" /><input type=\"button\" value=\"Browse\" onClick=\"newWindow('" . generateControllerLink("templateBrowse", "") . "','window2')\"></td>\n";
 	}else {
 		//for netscape 4.7 do this
 		$sToRender .= "<td>Template document</td><td><input type=\"text\"  value=\"$sTemplateDocumentName\" name=\"fTargetDocument\" onblur=\"disable(document.MainForm.fTargetDocument);\" /><input type=\"button\" value=\"Browse\" onClick=\"disable(document.MainForm.fTargetDocument);newWindow('http://ktdev/control.php?action=templateBrowse','window2')\"></td>\n";
