@@ -17,7 +17,7 @@ function getFolderPath($iFolderID) {
     global $default;
 	$sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
 	$sTDBGColour = $default->siteMap->getSectionColour($sSectionName, "td");
-    return "<table border=\"0\" cellpadding=\"0\" width=\"610\"><tr><td bgcolor=\"$sTDBGColour\">" . displayFolderPathLink(Folder::getFolderPathAsArray($iFolderID), Folder::getFolderPathNamesAsArray($iFolderID),  "$default->rootUrl/control.php?action=browse") . "</td></tr></table>\n";
+    return "<table border=\"0\" cellpadding=\"5\" width=\"610\"><tr><td bgcolor=\"$sTDBGColour\">" . displayFolderPathLink(Folder::getFolderPathAsArray($iFolderID), Folder::getFolderPathNamesAsArray($iFolderID),  "$default->rootUrl/control.php?action=browse") . "</td></tr></table>\n";
 }
 
 function getFolderData($iFolderID, $sDivName, $sStatusMessage = "") {
@@ -28,43 +28,25 @@ function getFolderData($iFolderID, $sDivName, $sStatusMessage = "") {
 			"FROM $default->owl_folders_table AS F " .
 			"WHERE F.id = $iFolderID";
 			
-	$sql = $default->db;
-	$sql->query($sQuery);
+			
+	$aColumns = array("name", "description", "is_public");
+	$aColumnHeaders = array("Name", "Description", "Public");
+	$aColumnTypes = array(1,1,2);
+	
+	$oPatternListFromQuery = & new PatternListFromQuery($sQuery, $aColumns, $aColumnHeaders, $aColumnTypes);
+	$oPatternListFromQuery->setTableHeading("Folder Data");
+	$oPatternListFromQuery->setTableWidth("610");
 	
 	$sToRender .= "<table>";
-	$sToRender .= "<tr><td>";
-	$sToRender .= "<table cellpadding=\"5\" border=\"0\" width=\"610\">\n";
-	$sToRender .= "<caption><strong>Folder Data</strong></caption>";
-	if ($sql->next_record()) {
-		$sToRender .= "<tr>\n";
-		$sToRender .= "<td bgcolor=\"" . $sTDBGColour . "\">Name</td>\n";
-		if (Folder::folderIsUnitRootFolder($iFolderID)) {
-			$sToRender .= "<td>" . $sql->f("name") . "</td>\n";
-		} else {
-			$sToRender .= "<td><input type=\"text\" name=\"fFolderName\" value=\"" . $sql->f("name") . "\" size=\"50\"></td>\n";
-		}
-		$sToRender .= "</tr>\n";
-		$sToRender .= "<tr>\n";
-		$sToRender .= "<td bgcolor=\"" . $sTDBGColour . "\">Description</td>\n";
-		$sToRender .= "<td><input type=\"text\" name=\"fDescription\" value=\"" . $sql->f("description") . "\" size=\"50\"></td>\n";
-		$sToRender .= "</tr>\n";
-		$sToRender .= "<tr>\n";
-		$sToRender .= "<td bgcolor=\"" . $sTDBGColour . "\">Public</td>\n";
-		$sToRender .= "<td><input type=\"checkbox\" name=\"fIsPublic\" " . ($sql->f("is_public") ? "CHECKED" : "") ." ></td>\n";
-		$sToRender .= "</tr>\n";
-		$sToRender .= "<tr>\n";
-		$sToRender .= "<td></td>\n";
-		$sToRender .= "</tr>\n";
-		$sToRender .= "<input type=\"hidden\" name=\"fFolderID\" value=\"$iFolderID\">";
-		$sToRender .= "<input type=\"hidden\" name=\fForUpdate\" value=\"1\">";
-		
-	}
-	$sToRender .= "</table></td></tr>";
-	//$sToRender .= "<tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/update.gif\" onClick=\"setActionAndSubmit('" . $_SERVER["PHP_SELF"] . "?fFolderID=$iFolderID&fForUpdate=1')\" border=\"0\" /></td></tr>\n";
-	$sToRender .= "<tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/update.gif\" border=\"0\" /></td></tr>\n";
-	$sToRender .= "</table>\n";
+	$sToRender .= "<tr><td>" . $oPatternListFromQuery->render() . "</td></tr>";	
+	$sToRender .= "<tr><td><a href=\"$default->rootUrl/control.php?action=modifyFolderData&fFolderID=$iFolderID\"><img src=\"$default->graphicsUrl/widgets/edit.gif\" border=\"0\" /></a></td></tr>";
+    $sToRender .= "</table>";;
 
-    return renderSectionDiv($sDivName, $sToRender);
+	if ($sStatusMessage) {
+		return $sToRender;
+	} else {
+    	return renderSectionDiv($sDivName, $sToRender);
+	}
 }
 
 function getFolderRouting($iFolderID, $sDivName, $bCollaboration) {
