@@ -102,10 +102,10 @@ class SubscriptionManager {
     * @return array of subscription objects
     */
     function listSubscriptions($iUserID) {
-        return $aSubscriptions = array("folders" => SubscriptionManager::retrieveSubscriptions($iUserID, SubscriptionConstants::subscriptionType("FolderSubscription")),
-                                       "documents" => SubscriptionManager::retrieveSubscriptions($iUserID, SubscriptionConstants::subscriptionType("DocumentSubscription")));
+        return $aSubscriptions = array_merge(SubscriptionManager::retrieveSubscriptions($iUserID, SubscriptionConstants::subscriptionType("FolderSubscription")),
+                                             SubscriptionManager::retrieveSubscriptions($iUserID, SubscriptionConstants::subscriptionType("DocumentSubscription")));
     }
-
+    
     /**
     * Retrieves the users's subscriptions
     *
@@ -118,6 +118,41 @@ class SubscriptionManager {
         $sql = $default->db;
         if ($sql->query("SELECT id FROM " . Subscription::getTableName($iSubscriptionType) .  " " .
                         "WHERE user_id = $iUserID")) {
+            $aSubscriptions = array();
+            while ($sql->next_record()) {
+                $aSubscriptions[] = & Subscription::get($sql->f("id"), $iSubscriptionType);
+            }
+        } else {
+            $_SESSION["errorMessage"] = $lang_err_database;
+            return false;
+        }
+        return $aSubscriptions;
+    }
+    
+    /**
+    * Retrieves all alerted subscriptions for this user.
+    *
+    * @param integer the ID of the user to retrieve alerted subscriptions for
+    * @return array of subscription objects
+    */    
+    function listSubscriptionAlerts($iUserID) {
+        return $aSubscriptions = array_merge(SubscriptionManager::retrieveSubscriptionAlerts($iUserID, SubscriptionConstants::subscriptionType("FolderSubscription")),
+                                             SubscriptionManager::retrieveSubscriptionAlerts($iUserID, SubscriptionConstants::subscriptionType("DocumentSubscription")));        
+    }
+
+    /**
+    * Retrieves the users's subscriptions
+    *
+    * @param integer the ID of the user to retrieve subscriptions for
+    * @return array of subscription objects, false if the database interaction fails
+    */
+    function retrieveSubscriptionAlerts($iUserID, $iSubscriptionType) {
+        global $default;
+
+        $sql = $default->db;
+        if ($sql->query("SELECT id FROM " . Subscription::getTableName($iSubscriptionType) .  " " .
+                        "WHERE user_id = $iUserID " .
+                        "AND is_alerted = 1")) {
             $aSubscriptions = array();
             while ($sql->next_record()) {
                 $aSubscriptions[] = & Subscription::get($sql->f("id"), $iSubscriptionType);
