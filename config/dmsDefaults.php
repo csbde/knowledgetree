@@ -89,7 +89,7 @@ $default->owl_document_types_table = "document_types";
 $default->owl_document_type_fields_table = "document_type_fields";
 
 //Table with document type field info
-$default->owl_fields_table = "fields";
+$default->owl_fields_table = "document_fields";
 
 // Change this to reflect the database you are using
 require_once("$default->owl_fs_root/phplib/db_mysql.inc");
