@@ -290,28 +290,6 @@ user_id INTEGER
 ALTER TABLE search_document_user_link ADD INDEX search_document_user_link_user_id_indx (user_id);
 ALTER TABLE search_document_user_link ADD INDEX search_document_user_link_document_id_indx (document_id);
 
--- sitemap tables
-CREATE TABLE site_sections_lookup (
-id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
-name CHAR(255)
-)TYPE = InnoDB;
-
-CREATE TABLE site_access_lookup (
-id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
-name CHAR(255)
-)TYPE = InnoDB;
-
-CREATE TABLE sitemap (
-id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
-action CHAR(50),
-page CHAR(255),
-section_id INTEGER,
-access_id INTEGER,
-link_text CHAR(255),
-is_default BIT,
-is_enabled BIT DEFAULT 1
-)TYPE = InnoDB;
-
 CREATE TABLE status_lookup  (
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 name CHAR(255)
@@ -584,11 +562,6 @@ INSERT INTO status_lookup (name) VALUES ("Live");
 INSERT INTO status_lookup (name) VALUES ("Published");
 INSERT INTO status_lookup (name) VALUES ("Deleted");
 INSERT INTO status_lookup (name) VALUES ("Archived");
-
--- roles
-INSERT INTO roles (name, active, can_read, can_write) VALUES ('Editor', 1, 1, 1);
-INSERT INTO roles (name, active, can_read, can_write) VALUES ('Spell Checker', 1, 1, 0);
-INSERT INTO roles (name, active, can_read, can_write) VALUES ('Web Publisher', 1, 1, 0);
 
 -- archiving types lookup
 INSERT INTO archiving_type_lookup (name) VALUES ("Date");
