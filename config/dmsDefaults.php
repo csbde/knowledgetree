@@ -92,8 +92,8 @@ $default->owl_system_settings_table = "system_settings";
 $default->owl_unit_table = "units";
 // Table with user info
 $default->owl_users_table	= "users";
-// links groups to users and units
-$default->owl_groups_users_table = "users_groups_link"; 
+// links groups to users
+$default->owl_users_groups_table = "users_groups_link"; 
 // Table with web documents info for web publishing
 $default->owl_web_documents_table = "web_documents";
  // Table with web documents info for web publishing
