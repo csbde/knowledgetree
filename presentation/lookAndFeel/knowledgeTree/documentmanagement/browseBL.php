@@ -8,24 +8,15 @@ require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentTransactio
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
 require_once("$default->uiDirectory/documentmanagement/browseUI.inc");
 require_once("$default->fileSystemRoot/presentation/Html.inc");
-
 /**
  * $Id$
- *  
+ *
  * This page controls browsing for documents- this can be done either by
  * folder, category or document type.
  * The relevant permission checking is performed, calls to the business logic
  * layer to retrieve the details of the documents to view are made and the user
  * interface is contructed.
  *
- * Licensed under the GNU GPL. For full terms see the file DOCS/COPYING.
- *
- * @version $Revision$
- * @author Michael Joseph <michael@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
- * @package presentation.lookAndFeel.knowledgeTree.documentmanagement
- */
- 
-/*
  * Querystring variables
  * ---------------------
  * fBrowseType - determines whether to browse by (folder, category, documentType) [mandatory]
@@ -34,11 +25,27 @@ require_once("$default->fileSystemRoot/presentation/Html.inc");
  * fDocumentTypeID - the document type id to browse [optional depending on fBrowseType]
  * fSortBy - the document attribute to sort the browse results by
  * fSortDirection - the direction to sort
+ *
+ * Copyright (c) 2003 Jam Warehouse http://www.jamwarehouse.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ * @version $Revision$
+ * @author Michael Joseph <michael@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
+ * @package documentmanagement
  */
-
-// -------------------------------
-// page start
-// -------------------------------
 
 // only if we have a valid session
 if (checkSession()) {

@@ -4,30 +4,31 @@ require_once("$default->fileSystemRoot/presentation/Html.inc");
 require_once("$default->uiDirectory/foldermanagement/folderUI.inc");
 require_once("$default->uiDirectory/documentmanagement/documentUI.inc");
 require_once("$default->uiDirectory/foldermanagement/addFolderUI.inc");
-
 /**
  * $Id$
  *
- * Document browsing page html UI building functions.
+ * Template document browsing page html UI building functions.
  *
- * Licensed under the GNU GPL. For full terms see the file DOCS/COPYING.
+ * Copyright (c) 2003 Jam Warehouse http://www.jamwarehouse.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * @version $Revision$
- * @author Michael Joseph <michael@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
- * @package presentation.lookAndFeel.knowledgeTree.documentmanagement
+ * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
+ * @package documentmanagement
  */
-
-/*function renderHeading($sHeading) {
-    global $default;
-    $sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
-    $sColor = $default->siteMap->getSectionColour($sSectionName, "th");
-    $sToRender  = "<table border=\"0\" width=\"600\">\n";
-    $sToRender .= "<tr align=\"left\"><th class=\"sectionHeading\" bgcolor=\"$sColor\"><font color=\"ffffff\">$sHeading</font></th></tr>\n";
-    $sToRender .= "<tr/>\n";
-    $sToRender .= "<tr/>\n";
-    $sToRender .= "</table>\n";
-    return $sToRender;
-}*/
  
 /**
  * Generates radio button selects for document browse by type

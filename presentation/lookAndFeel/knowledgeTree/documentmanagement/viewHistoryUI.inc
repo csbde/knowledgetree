@@ -5,11 +5,25 @@
  * Contains HTML information required to build the document history view page.
  * Will be used by viewHistoryBL.php
  *
- * Licensed under the GNU GPL. For full terms see the file DOCS/COPYING.
+ * Copyright (c) 2003 Jam Warehouse http://www.jamwarehouse.com
  *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ * @version $Revision$
  * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
- * @date 12 February 2003
- * @package presentation.lookAndFeel.knowledgeTree.documentmanagement
+ * @package documentmanagement
  */
 
 function getDocumentPath($iFolderID, $sDocumentName) {
@@ -23,8 +37,8 @@ function getDocumentPath($iFolderID, $sDocumentName) {
 function getDocumentHistory($iDocumentID) {
     global $default;
     $sQuery = "SELECT DTT.name AS transaction_name, U.name AS user_name, DT.version AS version, DT.comment AS comment, DT.datetime AS datetime " .
-			"FROM $default->owl_document_transactions_table AS DT INNER JOIN $default->owl_users_table AS U ON DT.user_id = U.id " .
-			"INNER JOIN $default->owl_transaction_types_table AS DTT ON DTT.id = DT.transaction_id " . 
+			"FROM $default->document_transactions_table AS DT INNER JOIN $default->users_table AS U ON DT.user_id = U.id " .
+			"INNER JOIN $default->transaction_types_table AS DTT ON DTT.id = DT.transaction_id " . 
 			"WHERE DT.document_id = $iDocumentID ORDER BY DT.datetime DESC";
 	$sql = $default->db;
     $sToRender  = "<table cellpadding=\"5\" width=\"100%\">\n";
