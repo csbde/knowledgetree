@@ -39,73 +39,69 @@ require_once("$default->owl_fs_root/lib/visualpatterns/PatternCustom.inc");
 
 // only if we have a valid session
 if (checkSession()) {
-
-    // check if this page is authorised, ie. has come from control.php
-    if ($_SESSION["authorised"]) {
-        // retrieve variables
-        if (!$fBrowseType) {
-            // required param not set- internal error or user querystring hacking
-            // TODO: something intelligent
-            $_SESSION["errorMessage"] = "Required parameter missing, cannot proceed";
-        } else {
-            // fire up the document browser 
-            $oDocBrowser = new DocumentBrowser();
-            
-            // TODO: instantiate the visual components
-            
-            // instantiate data arrays
-            $folders = NULL;
-            $categories = NULL;
-            $documentTypes = NULL;
-            
-            switch ($fBrowseType) {
-                case "folder" : // retrieve folderID if present                
-                                if (!$fFolderID) {
-                                    $folders = $oDocBrowser->browseByFolder();
-                                } else {
-                                    $folders = $oDocBrowser->browseByFolder($fFolderID);
-                                }
-                                break;
-                case "category" :
-                                if (!$fCategoryName) {
-                                    $categories = $oDocBrowser->browseByCategory();
-                                } else {
-                                    $documents = $oDocBrowser->browseByCategory($fCategoryName);
-                                }
-                                break;                
-                case "documentType" :
-                                if (!$fDocumentTypeID) {
-                                    $documentTypes = $oDocBrowser->browseByDocumentType();
-                                } else {
-                                    $documents = $oDocBrowser->browseByDocumentType($fDocumentTypeID);
-                                }
-                                break;                
-            }
-        }
-            
-        /*
-
-      - loop through things, displaying appropriately
-        - documentmanagement/browseUI.inc
-          - displayDocumentLink
-          - displayFolderLink
-          - display
-          - displayFileActions($permissionArray)
-
-      - docManagement
-        - getFileFolderPerms
-          - folder modification links (if perms)
-
-      - link to files / folders
-        - displayLinkWithPath; displayLink
-      - expand table?
-      */
+    // retrieve variables
+    if (!$fBrowseType) {
+        // required param not set- internal error or user querystring hacking
+        // TODO: something intelligent
+        $_SESSION["errorMessage"] = "Required parameter missing, cannot proceed";
+    } else {
+        // fire up the document browser 
+        $oDocBrowser = new DocumentBrowser();
         
-    } else {      
-        // FIXME: redirect to no permission page
-        print "you do not have access to view this page!  please go away, and come back when you do.<br>";
-        echo generateLink("logout") . "logout</a>";
-        // controllerRedirect("permissionDenied", "accessDeniedMsg=$lang_noPermission");
+        // TODO: instantiate the visual components
+        
+        // instantiate data arrays
+        $folders = NULL;
+        $categories = NULL;
+        $documentTypes = NULL;
+        
+        switch ($fBrowseType) {
+            case "folder" : // retrieve folderID if present                
+                            if (!$fFolderID) {
+                                $folders = $oDocBrowser->browseByFolder();
+                            } else {
+                                $folders = $oDocBrowser->browseByFolder($fFolderID);
+                            }
+                            break;
+            case "category" :
+                            if (!$fCategoryName) {
+                                $categories = $oDocBrowser->browseByCategory();
+                            } else {
+                                $documents = $oDocBrowser->browseByCategory($fCategoryName);
+                            }
+                            break;                
+            case "documentType" :
+                            if (!$fDocumentTypeID) {
+                                $documentTypes = $oDocBrowser->browseByDocumentType();
+                            } else {
+                                $documents = $oDocBrowser->browseByDocumentType($fDocumentTypeID);
+                            }
+                            break;                
+        }
     }
+        
+    /*
+
+  - loop through things, displaying appropriately
+    - documentmanagement/browseUI.inc
+      - displayDocumentLink
+      - displayFolderLink
+      - display
+      - displayFileActions($permissionArray)
+
+  - docManagement
+    - getFileFolderPerms
+      - folder modification links (if perms)
+
+  - link to files / folders
+    - displayLinkWithPath; displayLink
+  - expand table?
+  */
+    
+} else {      
+    // FIXME: redirect to no permission page
+    print "you do not have access to view this page!  please go away, and come back when you do.<br>";
+    echo generateLink("logout") . "logout</a>";
+    // controllerRedirect("permissionDenied", "accessDeniedMsg=$lang_noPermission");
 }
 ?>
