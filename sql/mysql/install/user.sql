@@ -14,7 +14,7 @@ GRANT SELECT ON document_transactions TO indexer@localhost IDENTIFIED BY 'idx158
 GRANT SELECT ON documents TO indexer@localhost IDENTIFIED BY 'idx158pqg';
 GRANT SELECT ON folders TO indexer@localhost IDENTIFIED BY 'idx158pqg';
 
-GRANT INSERT, DELETE ON document_text TO indexer@localhost IDENTIFIED BY 'idx158pqg';
+GRANT SELECT, INSERT, DELETE ON document_text TO indexer@localhost IDENTIFIED BY 'idx158pqg';
 GRANT INSERT, DELETE ON search_document_user_link TO indexer@localhost IDENTIFIED BY 'idx158pqg';
 -- restricted archiver user
 GRANT SELECT, UPDATE ON documents TO archiver@localhost IDENTIFIED BY 'ar(h923v3R';
