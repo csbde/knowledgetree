@@ -194,7 +194,7 @@ function renderEditableDocumentRouting($oDocument) {
               "ORDER BY GFAL.precedence, role_name ASC";
     $aColumns = array("role_name", "name", "precedence", "active", "done", "edit");
     $aColumnHeaders = array("Role", "User", "Seq", "Active", "Done", "");
-    $aColumnTypes = array(1,1,1,1,1,3);
+    $aColumnTypes = array(1,1,1,2,2,3);
     $aDBColumnArray = array("id","document_id","active","done");
     $aQueryStringVariableNames = array("fFolderCollaborationID", "fDocumentID","fIsActive","fIsDone");
     $aLinkURLs = array(5=>"$default->rootUrl/control.php?action=modifyDocumentRouting");
@@ -252,7 +252,7 @@ function renderNonEditableDocumentRouting($oDocument) {
 
     $aColumns = array("role_name", "name", "precedence", "active", "done");
     $aColumnHeaders = array("Role", "User", "Seq", "Active", "Done");
-    $aColumnTypes = array(1,1,1,1,1);
+    $aColumnTypes = array(1,1,1,2,2);
     $oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaders, "500", "$default->rootUrl/control.php?action=modifyDocumentRouting",$aDBColumnArray,$aQueryStringVariableNames);
     $oPatternTableSqlQuery->setTableHeading("Document Routing");
     $oPatternTableSqlQuery->setDisplayColumnHeadings(true);
@@ -404,10 +404,11 @@ function displayMoveButton($oDocument, $bEdit) {
     	$sQueryString = "fFolderID=" . $oDocument->getFolderID() . "&fDocumentID=" . $oDocument->getID();
     	// documents in collaboration and checked out documents can't be moved
 		if ($oDocument->getIsCheckedOut()) {
-			$sDisabledText = "The document is checked out";
+			$sDisabledText = "The document is checked out and cannot be moved.";
 		}
-		if (DocumentCollaboration::documentCollaborationStarted($oDocument->getID())) {
-			$sDisabledText = "The document is in collaboration";
+		if (DocumentCollaboration::documentCollaborationStarted($oDocument->getID()) &&
+		    !DocumentCollaboration::documentCollaborationDone($oDocument->getID())) {
+			$sDisabledText = "The document is in collaboration and cannot be moved.";
 		}
     } else {
      	$sDisabledText = "You do not have write access to this document";
@@ -439,7 +440,9 @@ function displayArchiveButton($oDocument, $bEdit) {
     // and if the document is not in collaboration
     if ($bEdit) {
 	    if (!$oDocument->getIsCheckedOut()) {
-	    	if ($oDocument->hasCollaboration() || DocumentCollaboration::documentCollaborationStarted($oDocument->getID())) {
+	    	if ($oDocument->hasCollaboration() && 
+	    		DocumentCollaboration::documentCollaborationStarted($oDocument->getID()) &&
+	    		!DocumentCollaboration::documentCollaborationDone($oDocument->getID())) {
 	    		$sDisabledText = "This document is in collaboration and cannot be archived";
 	    	}
 	    } else {
