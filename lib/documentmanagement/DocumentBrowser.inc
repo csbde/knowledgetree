@@ -155,15 +155,15 @@ class DocumentBrowser {
             $default->log->debug("DocumentBrowser::browseByCategory documents in category query=$query");
             $sql->query($query);
             // loop through resultset and add to array
+            $results["accessDenied"] = false;
             while ($sql->next_record()) {
                 // check permissions
                 if (Permission::userHasDocumentReadPermission($sql->f("document_id"))) {
                     $results["documents"][] = & Document::get($sql->f("document_id"));
                 } else {
-                    $default->log->debug("DocumentBrowser::browseByCategory permission denied for documentID=" . $sql->f("document_id"));
+                    $results["accessDenied"] = true;
                 }
              }
-            $default->log->debug("DocumentBrowser::browseByCategory results=" . arrayToString($results));
             
             return $results;
         }
@@ -202,12 +202,13 @@ class DocumentBrowser {
             $default->log->debug("DocumentBrowser::browseByDocumentType: documents from doc type query=$query");
             // loop through resultset and build array of documentIDs
             $sql->query($query);
+            $results["accessDenied"] = false;
             while ($sql->next_record()) {
                 // check permission
                 if (Permission::userHasDocumentReadPermission($sql->f("id"))) {
                     $results["documents"][] = & Document::get($sql->f("id"));
                 } else {
-                    $default->log->debug("DocumentBrowser::browseByDocumentType: permission denied for documentID=" . $sql->f("document_id"));
+                    $results["accessDenied"] = true;
                 }
             }
             $default->log->debug("DocumentBrowser::browseByDocumentType: results=" . arrayToString($results));
