@@ -30,7 +30,7 @@ if (checkSession()) {
                 if ($oFolderCollaboration->delete()) {
                     //on successful deletion, redirect to the folder edit page
                     include_once("$default->fileSystemRoot/presentation/Html.inc");
-                    redirect("$default->rootUrl/control.php?action=editFolder&fFolderID=$fFolderID");
+                    controllerRedirect("editFolder", "fFolderID=$fFolderID&fShowSection=folderRouting");
                 } else {
                     //otherwise display an error message
                     include_once("$default->fileSystemRoot/lib/visualpatterns/PatternListBox.inc");
@@ -55,7 +55,7 @@ if (checkSession()) {
                 if ($oFolderCollaboration->hasDocumentInProcess()) {
                     //can't delete a step in the folder collaboration process if there is a document
                     //currently undergoing the process
-                    redirect("$default->rootUrl/control.php?action=editFolder&fFolderID=$fFolderID&fCollaborationDelete=0");
+                    controllerRedirect("editFolder", "fFolderID=$fFolderID&fShowSection=folderRouting&fCollaborationDelete=0");
                 } else {
                     //display the browse page
                     include_once("$default->fileSystemRoot/lib/visualpatterns/PatternListBox.inc");

@@ -34,7 +34,7 @@ if (checkSession()) {
 			} else {
 				$oFolderDocType = & new FolderDocTypeLink($fFolderID,$fDocumentTypeID);
 				if ($oFolderDocType->create()) {
-					redirect("$default->rootUrl/control.php?action=editFolder&fFolderID=$fFolderID");					
+					controllerRedirect("editFolder", "fFolderID=$fFolderID&fShowSection=documentTypes");					
 				} else {
 					//error creating document in the db
 					require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");

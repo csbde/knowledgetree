@@ -39,7 +39,7 @@ if (checkSession()) {
                 $oGroupFolderLink = & GroupFolderLink::get($fGroupFolderLinkID);
                 if ($oGroupFolderLink->delete()) {
                     // on successful deletion, redirect to the folder edit page
-                    redirect("$default->rootUrl/control.php?action=editFolder&fFolderID=$fFolderID");
+                    controllerRedirect("editFolder", "fFolderID=$fFolderID&fShowSection=folderPermissions");
                 } else {
                     // otherwise display an error message
                     $sErrorMessage = "The folder access entry could not be deleted from the database";
