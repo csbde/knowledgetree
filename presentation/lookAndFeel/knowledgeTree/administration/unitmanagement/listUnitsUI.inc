@@ -21,8 +21,9 @@ function getOrgDisplay($fOrgID, $iSelectedValue = 0) {
         // if this is the system administrator, prepend group names with unit name
         $oPatternListBox = & new PatternListBox($default->owl_organisations_table, "name", "id", "fOrgID");
                
-        if ($iSelectedValue != 0) {
-        	$oPatternListBox->setSelectedValue($iSelectedValue);
+        if ($fOrgID != 0) {
+        	//$oPatternListBox->setSelectedValue($iSelectedValue);
+        	$oPatternListBox->setSelectedValue($fOrgID);
         }
                 
         return $oPatternListBox->render();	
