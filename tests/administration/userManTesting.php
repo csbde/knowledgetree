@@ -27,6 +27,8 @@
 
 
 require ("./config/dmsDefaults.php");
+//require ("$default->owl_fs_root/lib/db.inc");
+require ("$default->owl_fs_root/lib/dms.inc");
 require ("$default->owl_fs_root/lib/administration/UserManager.inc");
 
 $user = new UserManager;
@@ -73,6 +75,15 @@ $test = $user->addUserToGroup(2,3);
 // test user already added
 $test = $user->addUserToGroup(3,1);
 
+/////////////// Test get groups user belongs 2
+echo "<br><br>*** Show users groups test ***<br><br>";
+$test = $user->getGroups(2);
+
+for( $i=1;$i < count($test); $i++)
+{      
+printf("Group ID: %s<br>", $test[$i]['id']);
+printf("Group Name: %s<br>", $test[$i]['name']);
+}
 
 /////////////// Test remove user from group
 echo "<br><br>*** Remove Users from a Group Test ***<br><br>";
@@ -80,7 +91,7 @@ $test = $user->removeUserFromGroup(3,1);
 
 ////////////// Test Remove User
 echo "<br><br>*** Remove User Test ***<br><br>";
-$test = $user->removeUser(2);
+$test = $user->removeUser(1);
 
 
 ///////////////////// Test updateuser
