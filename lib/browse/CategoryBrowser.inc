@@ -52,18 +52,18 @@ class CategoryBrowser extends Browser {
         $default->log->debug("CategoryBrowser::browse() categoryFieldID=$categoryFieldID");
 
         if ($sCategoryName == "") {
-            $default->log->debug("CategoryBrowser::browse() no category supplied, returning list");
-            // no category value supplied, so return a list of categories
-            // set the first value to "categories"
-            $results["categories"][] = "Categories";
-           
-            // get a list of category values
-            $query = "SELECT DISTINCT value FROM $default->owl_document_fields_table WHERE document_field_id=$categoryFieldID ORDER BY value " . ($this->sSortField == "name" ? $this->sSortDirection : "ASC");
-            $default->log->info("CategoryBrowser::browse() category listing query=$query; $this->sSortField");
-            $sql->query($query);
-            // loop through resultset, build array and return
-            while ($sql->next_record()) {
-                $results["categories"][] = $sql->f("value");
+            if ($categoryFieldID) {            
+	            // no category value supplied, so return a list of categories
+	            // set the first value to "categories"
+	            $results["categories"][] = "Categories";
+	            // get a list of category values
+	            $query = "SELECT DISTINCT value FROM $default->owl_document_fields_table WHERE document_field_id=$categoryFieldID ORDER BY value " . ($this->sSortField == "name" ? $this->sSortDirection : "ASC");
+	            $default->log->info("CategoryBrowser::browse() category listing query=$query; $this->sSortField");
+	            $sql->query($query);
+	            // loop through resultset, build array and return
+	            while ($sql->next_record()) {
+	                $results["categories"][] = $sql->f("value");
+	            }
             }
             // its ok if we return an empty array- the UI's responsibility to check and print an error
             return $results;
