@@ -99,8 +99,10 @@ $uAdmin = "$default->graphicsUrl/leftnav/uadmin.gif" ;
 //setup the westpayload
 $westLoad = "<table cellspacing=\"0\" cellpadding=\"2\"  border=\"0\" width=\"100%\" height=\"75%\">\n" .
             "\t<tr><td>$westRender</td></tr>\n" .
-            "\t<tr><td align=left><a href=\"mailto:$default->emailAdmin\"><img src=\"$cAdmin\"/ border=\"0\"></a></td></tr>\n" .
-            "\t<tr><td align=left><a href=\"mailto:" . getUnitAdminEmail() . "\"><img src=\"$uAdmin\"/ border=\"0\"></a></td></tr>\n" .            
+            "</table>" .
+            "<table cellspacing=\"0\" cellpadding=\"2\"  border=\"0\" width=\"100%\" height=\"25%\">\n" .            
+            "\t<tr valign=\"bottom\"><td align=left><a href=\"mailto:$default->emailAdmin\"><img src=\"$cAdmin\"/ border=\"0\"></a></td></tr>\n" .
+            "\t<tr valign=\"middle\"><td align=left><a href=\"mailto:" . getUnitAdminEmail() . "\"><img src=\"$uAdmin\"/ border=\"0\"></a></td></tr>\n" .
             "</table>";
 
 $westPayLoad = new PatternCustom;
