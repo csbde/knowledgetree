@@ -149,32 +149,31 @@ $default->siteMap->addPage("dashboard", "/presentation/dashboardBL.php", "Genera
 
 //pages for manage documents section
 
-$default->siteMap->addDefaultPage("browse", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/browseBL.php", "Manage Documents", "Anonymous", "browse documents");
-$default->siteMap->addPage("viewDocument", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/viewBL.php", "Manage Documents", "Anonymous", "");
-$default->siteMap->addPage("addDocument", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentBL.php", "Manage Documents", User, "Add A Document");
-$default->siteMap->addPage("addFolder", "/presentation/lookAndFeel/knowledgeTree/foldermanagement/addFolderBL.php", "Manage Folders", User, "Add A Folder");
-$default->siteMap->addPage("modifyFolderProperties", "/presentation/documentmanagement/modifyFolder.php", "Manage Documents", "Unit Administrators", "Modify Folder Properties");
-$default->siteMap->addPage("deleteFolder", "/presentation/documentmanagement/deleteFolder.php", "Manage Documents", "Unit Administrators", "Delete A Folder");
-$default->siteMap->addPage("moveFolder", "/presentation/documentmanagement/moveFolder.php", "Manage Documents", "Unit Administrators", "Move A Folder");
-$default->siteMap->addPage("emailDocument", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/emailLink.php", "Manage Documents", "Anonymous", "");
+$default->siteMap->addDefaultPage("browse", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/browseBL.php", "Manage Documents", Guest, "browse documents");
+$default->siteMap->addPage("viewDocument", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/viewBL.php", "Manage Documents", Guest, "");
+$default->siteMap->addPage("addDocument", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentBL.php", "Manage Documents", User, "Add A Document", false);
+$default->siteMap->addPage("addFolder", "/presentation/lookAndFeel/knowledgeTree/foldermanagement/addFolderBL.php", "Manage Documents", User, "Add A Folder");
+$default->siteMap->addPage("modifyFolderProperties", "/presentation/documentmanagement/modifyFolder.php", "Manage Documents", UnitAdmin, "Modify Folder Properties", false);
+$default->siteMap->addPage("deleteFolder", "/presentation/documentmanagement/deleteFolder.php?fFolderID=", "Manage Documents", UnitAdmin, "Delete A Folder", false);
+$default->siteMap->addPage("moveFolder", "/presentation/documentmanagement/moveFolder.php", "Manage Documents", UnitAdmin, "Move A Folder", false);
+$default->siteMap->addPage("emailDocument", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/emailLink.php", "Manage Documents", Guest, "");
 $default->siteMap->addPage("modifyDocument", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/modifyBL.php", "Manage Documents", User, "");
 
-
 // pages for administration section
-$default->siteMap->addDefaultPage("administration", "/admin.php", "Administration", UnitAdmin, "Administration");
-$default->siteMap->addPage("unitAdministration", "/presentation/unitAdmin.php", "Administration", UnitAdmin, "Unit Administration");
-$default->siteMap->addPage("systemAdministration", "/presentation/sysAdmin.php", "Administration", SysAdmin, "System Administration");
+$default->siteMap->addDefaultPage("administration", "/admin.php", "Administration", UnitAdmin, "Administration", false);
+$default->siteMap->addPage("unitAdministration", "/presentation/unitAdmin.php", "Administration", UnitAdmin, "Unit Administration", false);
+$default->siteMap->addPage("systemAdministration", "/presentation/sysAdmin.php", "Administration", SysAdmin, "System Administration", false);
 
 // pages for advanced search section
 
 // $default->siteMap->addDefaultPage("advancedSearch", "/email.php", "Advanced Search", "Anonymous", "Advanced Search");
-$default->siteMap->addDefaultPage("advancedSearch", "/search.php", "Advanced Search", Guest, "Advanced Search");
+$default->siteMap->addDefaultPage("advancedSearch", "/search.php", "Advanced Search", Guest, "Advanced Search", false);
 
 
 // pages for prefs section
-$default->siteMap->addDefaultPage("preferences", "/preferences.php", "Preferences", User, "Preferences");
-$default->siteMap->addPage("viewPreferences", "/preferences.php", "Preferences", User, "View Preferences");
-$default->siteMap->addPage("editPreferences", "/preferences.php", "Preferences", User, "Edit Preferences");
+$default->siteMap->addDefaultPage("preferences", "/preferences.php", "Preferences", User, "Preferences", false);
+$default->siteMap->addPage("viewPreferences", "/preferences.php", "Preferences", User, "View Preferences", false);
+$default->siteMap->addPage("editPreferences", "/preferences.php", "Preferences", User, "Edit Preferences", false);
 
 // pages for Help section
 $default->siteMap->addDefaultPage("help", "/presentation/lookAndFeel/knowledgeTree/Help/emailHelp.php", "Help", Guest, "Help");
@@ -183,9 +182,9 @@ $default->siteMap->addDefaultPage("help", "/presentation/lookAndFeel/knowledgeTr
 $default->siteMap->addDefaultPage("logout", "/presentation/logout.php", "Logout", Guest, "Logout");
 
 // test pages
-$default->siteMap->addPage("scratchPad", "/tests/scratchPad.php", "Tests", Guest, "scratch");
-$default->siteMap->addPage("sitemap", "/tests/session/SiteMap.php", "Tests", Guest, "sitemap");
-$default->siteMap->addPage("documentBrowserTest", "/tests/documentmanagement/DocumentBrowser.php", "Tests", Guest, "test the document browser");
+$default->siteMap->addPage("scratchPad", "/tests/scratchPad.php", "Tests", Guest, "scratch", false);
+$default->siteMap->addPage("sitemap", "/tests/session/SiteMap.php", "Tests", Guest, "sitemap", false);
+$default->siteMap->addPage("documentBrowserTest", "/tests/documentmanagement/DocumentBrowser.php", "Tests", Guest, "test the document browser", false);
 
 // default requires
 require_once("$default->owl_fs_root/phpmailer/class.phpmailer.php");	
@@ -194,4 +193,6 @@ require_once("$default->owl_fs_root/lib/session/control.inc");
 require_once("$default->owl_fs_root/lib/database/db.inc");
 require_once("$default->owl_fs_root/lib/database/lookup.inc");
 require_once("$default->owl_fs_root/lib/dms.inc");
+
+// single db instantiation
 ?>
