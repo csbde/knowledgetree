@@ -139,16 +139,16 @@ class PatternMainPage {
 							"<body marginleft=\"0\" marginheight=\"0\" " . (isset($this->onLoadJavaScript) ? "onload=\"$this->onLoadJavaScript\"" : "") . ">\n";							
         // hack to circumvent the crapness of ns 4.79
         if (!$default->bNN4 && $this->bScroll) {
-            $sToRender .=       "<div id=\"divUp\">" .
-                                "\t<a href=\"#\" onmouseover=\"scroll(-7)\" onmouseout=\"noScroll()\"><img src=\"" . $default->graphicsUrl . "/down.gif\" width=\"18\" height=\"9\" alt=\"up\" border=\"0\"></a>" .
-                                "</div>" .
-                                "<div id=\"divDown\">" .
-                                "\t<a href=\"#\" onmouseover=\"scroll(7)\" onmouseout=\"noScroll()\"><img src=\"" . $default->graphicsUrl . "/up.gif\" width=\"18\" height=\"9\" alt=\"down\" border=\"0\"></a>" .
-                                "</div>";
+            $sToRender .=       "<div id=\"divUp\">\n" .
+                                "\t<a href=\"#\" onmouseover=\"scroll(-7)\" onmouseout=\"noScroll()\"><img src=\"" . $default->graphicsUrl . "/down.gif\" width=\"18\" height=\"9\" alt=\"up\" border=\"0\"></a>\n" .
+                                "</div>\n" .
+                                "<div id=\"divDown\">\n" .
+                                "\t<a href=\"#\" onmouseover=\"scroll(7)\" onmouseout=\"noScroll()\"><img src=\"" . $default->graphicsUrl . "/up.gif\" width=\"18\" height=\"9\" alt=\"down\" border=\"0\"></a>\n" .
+                                "</div>\n";
         }
 
 		$sToRender .= 		    "<form name=\"MainForm\" " . (isset($this->sFormEncType) ? "enctype=\"$this->sFormEncType\" " : " ") . " action=\"".$this->sFormAction."\" method=\"POST\" " . (($this->bHasRequiredFields) ? "onsubmit=\"return validateForm(this)\" " : " ") . ">\n" .		
-								"<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"700\" height=\"600\">\n " .
+								"<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"700\" height=\"$default->pageHeight\">\n " .
 									"<tr>\n".
 										"<td height=\"0\" valign=\"top\" " . (isset($this->sNorthWestPayloadBackGroundColour) ? " bgcolor=\"" . $this->sNorthWestPayloadBackGroundColour . "\"" : "") . ">\n";
 										if (isset($this->oNorthWestPayload)) {											
