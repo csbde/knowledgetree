@@ -18,7 +18,7 @@ parent_document_id INTEGER NOT NULL,
 child_document_id INTEGER NOT NULL
 ) TYPE = InnoDB;
 
-CREATE TABLE new_documents ( 
+CREATE TABLE dependant_documents ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 document_title TEXT,
 user_id INTEGER,
@@ -424,7 +424,7 @@ PRIMARY KEY (id)
 ;
 
 
-ALTER TABLE new_documents 
+ALTER TABLE dependant_documents 
 ADD CONSTRAINT PK_new_documents 
 PRIMARY KEY (id) 
 ;
