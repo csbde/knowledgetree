@@ -46,6 +46,8 @@ function renderBrowseTypeSelect($sBrowseType) {
                                (($sBrowseType=="documentType") ? " checked=\"checked\"" : "") . "/> Document Type\n</span>";
 }
 
+// <category display helper methods>
+
 /**
  * Displays the passed category path as a link
  * 
@@ -78,6 +80,11 @@ function displayCategoryLink($sCategoryName) {
     }
 }
 
+/**
+ * Displays the results for category browsing
+ *
+ * @param array the category browse results
+ */
 function renderCategoryResults($aResults) {   
     $sToRender = "";
     
@@ -95,6 +102,9 @@ function renderCategoryResults($aResults) {
     return $sToRender;
 }
 
+// </category display helper methods>
+
+// <document type display helper methods>
 /**
  * Displays the passed document type path as a link
  * 
@@ -123,7 +133,11 @@ function displayDocumentTypeLink($aDocumentType) {
                         $aDocumentType["name"]);
 }
 
-
+/**
+ * Displays the results for document type browsing
+ *
+ * @param array the document type browse results
+ */
 function renderDocumentTypeResults($aResults) {
     $sToRender = "";
     
@@ -140,6 +154,8 @@ function renderDocumentTypeResults($aResults) {
     }
     return $sToRender;
 }
+// </document type display helper methods>
+
 
 /**
  * Displays the headings for the displayed document details and enables
@@ -184,6 +200,11 @@ function renderSortHeadings($sSortBy, $sSortDirection) {
     return $sToRender;
 }
 
+/**
+ * Displays the folders in the browse results
+ *
+ * @param array the browse result objects
+ */
 function renderFolderResults($aResults) {
     global $default;
     $sToRender = "";
@@ -191,8 +212,9 @@ function renderFolderResults($aResults) {
     // now loop through the rest of the folders and display links
     if (count($aResults["folders"]) > 1) {
         for ($i=1; $i<count($aResults["folders"]); $i++) {
-            $sRow = displayFolderLink($aResults["folders"][$i]);
-            $sToRender .= "<tr><td colspan=\"5\" nowrap width=\"100%\" bgcolor=\"" . getColour($i) . "\">" . $sRow . "</td></tr>\n";
+            $sFolderLink = displayFolderLink($aResults["folders"][$i]);
+            $oCreator = User::get($aResults["folders"][$i]->getCreatorID());
+            $sToRender .= "<tr bgcolor=\"" . getColour($i) . "\"><td colspan=\"2\" nowrap width=\"100%\">" . $sFolderLink . "</td><td>" . $oCreator->getName() . "</td><td colspan=\"2\"></td></tr>\n";
         }
     } else {
         $sToRender .= "<tr><td>This folder contains no sub folders</td></tr>";
@@ -203,6 +225,14 @@ function renderFolderResults($aResults) {
     return $sToRender;
 }
 
+/**
+ * Displays the documents in the browse results
+ *
+ * @param array the browse result objects
+ * @param string the message to display if there are no documents
+ * @param string the message to display if the current user doesn't have permission to view the documents
+ * @param boolean whether to display the complete path to the document or not
+ */
 function renderDocumentList($aResults, $sNoDocumentsMessage, $sNoPermissionMessage, $bDisplayFullPath = false) {
     // loop through the files and display links
     if (count($aResults["documents"]) > 0) {
@@ -269,7 +299,9 @@ function renderPage($aResults, $sBrowseType, $sSortBy, $sSortDirection) {
     return $sToRender;
 }
 
-
+/**
+ * Candy striping helper method
+ */
 function getColour($iColourCount) {
 	return ($iColourCount%2 == 0) ? "F5F6EE" : "FFFFFF";
 }
