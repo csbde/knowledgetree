@@ -228,9 +228,10 @@ class DocumentCollaboration {
 		global $default;
 		//get the current sequence number		
 		$sQuery = "SELECT GFAT.precedence, GFAT.folder_id, FURL.id AS furl_id, FURL.document_id AS document_id " . 
-				"FROM $default->owl_folders_user_roles_table AS FURL INNER JOIN $default->owl_groups_folders_approval_table AS GFAT ON FURL.group_folder_approval_id = GFAT.id " .
+				"FROM $default->owl_folders_user_roles_table AS FURL " .
+				"INNER JOIN $default->owl_groups_folders_approval_table AS GFAT ON FURL.group_folder_approval_id = GFAT.id " .
 				"WHERE FURL.document_id = $iDocumentID " .
-				"AND user_id = " . $_SESSION["userID"] . " " .
+				"AND FURL.user_id = " . $_SESSION["userID"] . " " .
 				"AND FURL.active = 1 " .
 				"ORDER BY GFAT.precedence ASC";
 				
