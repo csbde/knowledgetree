@@ -14,13 +14,26 @@ require_once("$default->uiDirectory/search/advancedSearchUI.inc");
 require_once("$default->uiDirectory/search/advancedSearchUtil.inc");
 require_once("archivedDocumentsUI.inc");
 require_once("$default->fileSystemRoot/presentation/Html.inc");
-
 /**
  * $Id$
- *  
+ *
  * Business logic for searching archived documents
  *
- * Licensed under the GNU GPL. For full terms see the file DOCS/COPYING.
+ * Copyright (c) 2003 Jam Warehouse http://www.jamwarehouse.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * @version $Revision$
  * @author Michael Joseph <michael@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
@@ -139,10 +152,10 @@ function searchForDocuments($sMetaTagIDs, $sSQLSearchString, $sStatus = "Live") 
 	global $default;
 	$aDocuments = array();
 	$sQuery = "SELECT DISTINCT D.id " .
-				"FROM $default->owl_documents_table AS D INNER JOIN document_fields_link AS DFL ON DFL.document_id = D.id " .
-				"INNER JOIN $default->owl_fields_table AS DF ON DF.id = DFL.document_field_id " .
+				"FROM $default->documents_table AS D INNER JOIN document_fields_link AS DFL ON DFL.document_id = D.id " .
+				"INNER JOIN $default->document_fields_table AS DF ON DF.id = DFL.document_field_id " .
 				"INNER JOIN $default->search_permissions_table AS SDUL ON SDUL.document_id = D.ID " .
-				"INNER JOIN $default->owl_status_table AS SL on D.status_id=SL.id " .			
+				"INNER JOIN $default->status_table AS SL on D.status_id=SL.id " .			
 				"WHERE DF.ID IN ($sMetaTagIDs) " .
 				"AND (" . $sSQLSearchString . ") " .
 				"AND SL.name='$sStatus' " .
