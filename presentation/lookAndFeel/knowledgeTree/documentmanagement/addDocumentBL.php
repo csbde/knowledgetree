@@ -31,7 +31,6 @@ if (checkSession()) {
     require_once("addDocumentUI.inc");
     require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/store.inc");
 
-	$default->log->info("before:" . arrayToString($_REQUEST));
     if (isset($fFolderID)) {
         if (Permission::userHasFolderWritePermission($fFolderID)) {
             //user has permission to add document to this folder
@@ -51,11 +50,18 @@ if (checkSession()) {
                                 if (PhysicalDocumentManager::uploadPhysicalDocument($oDocument, $fFolderID, "None", $_FILES['fFile']['tmp_name'])) {
                                     //create the web document link
                                     $oWebDocument = & new WebDocument($oDocument->getID(), -1, 1, NOT_PUBLISHED, getCurrentDateTime());
-                                    $oWebDocument->create();
+                                    if ($oWebDocument->create()) {
+                                    	$default->log->error("addDocumentBL.php created web document for document ID=" . $oDocument->getID());                                    	
+                                    } else {
+                                    	$default->log->error("addDocumentBL.php couldn't create web document for document ID=" . $oDocument->getID());
+                                    }
                                     //create the document transaction record
                                     $oDocumentTransaction = & new DocumentTransaction($oDocument->getID(), "Document created", CREATE);
-                                    $oDocumentTransaction->create();
-                                    $default->log->info("addDocumentBL.php successfully added document " . $oDocument->getFileName() . " to folder " . Folder::getFolderPath($fFolderID) . " id=$fFolderID");
+                                    if ($oDocumentTransaction->create()) {
+                                    	$default->log->error("addDocumentBL.php created create document transaction for document ID=" . $oDocument->getID());                                    	
+                                    } else {
+                                    	$default->log->error("addDocumentBL.php couldn't create create document transaction for document ID=" . $oDocument->getID());
+                                    }                                    
                                     
                                     //the document was created/uploaded due to a collaboration step in another
                                     //document and must be linked to that document
@@ -101,6 +107,7 @@ if (checkSession()) {
                                                     "folderName" => Folder::getFolderName($fFolderID)));
                                     $default->log->info("addDocumentBL.php fired $count subscription alerts for new document " . $oDocument->getName());
                                     
+                                    $default->log->info("addDocumentBL.php successfully added document " . $oDocument->getFileName() . " to folder " . Folder::getFolderPath($fFolderID) . " id=$fFolderID");                                    
                                     //redirect to the document details page
                                     controllerRedirect("viewDocument", "fDocumentID=" . $oDocument->getID());
                                 } else {
