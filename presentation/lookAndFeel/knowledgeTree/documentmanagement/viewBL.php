@@ -160,7 +160,6 @@ if (checkSession()) {
             if (isset($fWebSiteID)) {
                 // user wishes to publish document
                 $oDocument = Document::get($fDocumentID);
-                $default->log->info("userID=" . $_SESSION["userID"] . "; docid=$fDocumentID; creator id=" . $oDocument->getCreatorID());
                 if ($_SESSION["userID"] == $oDocument->getCreatorID()) {
                     //only the creator can send the document for publishing
                     $aWebDocument = WebDocument::getList("document_id = $fDocumentID");
