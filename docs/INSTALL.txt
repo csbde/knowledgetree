@@ -1,0 +1,55 @@
+KnowledgeTree Installation Notes
+--------------------------------
+
+*  Ensure that you have PHP, MySQL and Apache installed and configured.
+   - Check that the following PHP configuration options are set appropriately in php.ini:
+		error_reporting  =  E_ALL & ~E_NOTICE
+		file_uploads = On
+		upload_tmp_dir = C:\PHP\uploadtemp
+		upload_max_filesize = 2M
+		session.use_cookies = 1
+
+*  Move the knowledgeTree folder to the directory it is going to be served from:
+   $ mv knowledgeTree /path/to/your/html/directory/
+
+*  Create a database:
+   $ mysqladmin -p create dms
+
+*  Create and populate the tables:
+   $ mysql -p dms < sql/tables.sql
+
+*  Configure your installation by changing the following attributes in config/environment.php:
+   - $default->fileSystemRoot
+   - $default->serverName
+   - $default->sslEnabled
+   - $default->authenticationClass
+   - $default->dbUser
+   - $default->dbPass
+   - $default->dbHost
+   - $default->dbName
+
+*  Check permissions on the Documents folder
+   - The "/Documents" folder MUST be able to be written to by your web server.
+     If your web server is running as user "nobody" and group "nobody" (apache default)
+     then cd to the files directory and type:
+
+     *nix: 'chown -R nobody.nobody Documents'
+     Windows: Check the permissions and security tabs
+
+*  Login:
+   - in a web browser goto http://$default->serverName/$default->rootUrl/
+   - default user is "admin" with password "admin"
+   
+Troubleshooting
+---------------
+
+Refer to docs/FAQ.txt.
+
+
+Jam Warehouse – Smart Business Innovation
+Phone: +27 21 4477440
+Fax: +27 21 4477449
+Email: info@jamwarehouse.com
+Web: http://www.jamwarehouse.com/
+
+$Id$
