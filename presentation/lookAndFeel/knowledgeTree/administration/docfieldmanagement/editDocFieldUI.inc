@@ -20,7 +20,6 @@ function getEditPage($iDocFieldID) {
         $checkBox = $oDocField->isFieldLinkedToType();
         $aDataTypes =  $oDocField->getAllDataTypes();
         $currentDataType = $oDocField->getDataType();
-
     }
 
     $sToRender .= renderHeading("Edit Document Field");
@@ -41,6 +40,7 @@ function getEditPage($iDocFieldID) {
         $sToRender .= "</tr>\n";
         $sToRender .= "<tr>\n";
 
+		// allow changing the generic status if the field is not linked to a document type
         if($checkBox == false) {
             $sToRender .= "<td>Is Generic: </td><td>" . getIsGenericCheckBox($oDocField) . "</td>\n";
         } else {
