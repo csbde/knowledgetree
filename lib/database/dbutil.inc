@@ -46,6 +46,8 @@ class DBUtil {
         if (is_array($query)) {
             $sQuery = $query[0];
             $aParams = $query[1];
+        } else {
+            $sQuery = $query;
         }
         $res = $db->query($sQuery, $aParams);
         $default->log->info('Query: ' . DBUtil::lastQuery($db));
