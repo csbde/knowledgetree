@@ -91,8 +91,6 @@ class DocumentBrowser {
         }
         
         $default->log->debug("DocumentBrowser::browseByFolder: folderID=$folderID");
-        // retrieve folder details
-        //$folders = $this->retrieveFolderDetails($folderQuery);
         
         // check if the user has access to this folder
         if (Permission::userHasFolderReadPermission($folderID)) {
