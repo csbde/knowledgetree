@@ -113,7 +113,6 @@ require_once("$default->owl_fs_root/phplib/db_mysql.inc");
 $default->authentication_class = "DBAuthenticator";
 require_once("$default->owl_fs_root/lib/authentication/$default->authentication_class.inc");
 
-
 // logo file that must reside inside lang/graphics directory
 $default->logo = "kt.jpg";
 
@@ -123,7 +122,8 @@ $default->logo = "kt.jpg";
 $default->version = "owl-dms 1.0 @build-date@";
 $default->phpversion = "4.0.2";
 
-$default->errorMessage = "";
+// session timeout (in seconds)
+$default->owl_timeout = 1200;
 $default->debug = True;
 
 // define site mappings
@@ -139,4 +139,8 @@ $default->siteMap->addPage("addFolder", "addFolder.php", "Browse Collections", "
 $default->siteMap->addPage("addUser", "addUser.php", "Administration", "Unit Administrators");
 $default->siteMap->addPage("addUnit", "addUnit.php", "Administration", "Unit Administrators");
 $default->siteMap->addPage("addOrganisation", "addOrganisation.php", "Administration", "System Administrators");
+$default->siteMap->addPage("scratchPad", "tests/scratchPad.php", "Tests", "Unit Administrators");
+
+require_once("$default->owl_fs_root/lib/Log.inc");
+$default->log = new Log("c:\owl\log.txt", INFO);
 ?>
