@@ -38,7 +38,7 @@ class Authenticator {
 
                 if ($this->checkPassword($sUserName, $sPassword)) {
 
-                    $default->log->info("Authenticator::login authenticated ($sUserName, $sPassword), id=$iUserID");
+                    $default->log->info("Authenticator::login authenticated $sUserName, id=$iUserID");
                     if ($iUserID) {
                         // add this to the return array
                         $aUserDetails["userID"] = $iUserID;
