@@ -64,7 +64,7 @@ class DocumentTypeBrowser extends Browser {
             $results["documentTypes"][] = array("name" => "Document Types");
             
             // return a list of document types
-            $query = "SELECT * FROM $default->document_types_table ORDER BY name " . ($this->sSortField == "name" ? $this->sSortDirection : "ASC");
+            /*ok*/$query = "SELECT * FROM $default->document_types_table ORDER BY name " . ($this->sSortField == "name" ? $this->sSortDirection : "ASC");
              
             $sql->query($query);
             while ($sql->next_record()) {

@@ -38,7 +38,9 @@ class DBAuthenticator extends Authenticator {
         global $default;
 
         $sql = $default->db;
-        if ($sql->query("SELECT * FROM $default->users_table WHERE username = '$userName' AND password = '" . md5($password) . "'")) {
+        $sQuery = "SELECT * FROM $default->users_table WHERE username = ? AND password = ?";/*ok*/
+        $aParams = array($userName, md5($password));
+        if ($sql->query(array($sQuery, $aParams))) {
             if ($sql->num_rows($sql) == "1") {
                 return true;
             } else {

@@ -87,8 +87,8 @@ class GroupFolderLink extends KTEntity {
         return array(
             'folder_id' => $this->iFolderID,
             'group_id' => $this->iGroupID,
-            'can_read' => $this->bCanRead,
-            'can_write' => $this->bCanWrite,
+            'can_read' => KTUtil::anyToBool($this->bCanRead),
+            'can_write' => KTUtil::anyToBool($this->bCanWrite),
         );
     }
 

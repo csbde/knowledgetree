@@ -62,7 +62,8 @@ class Authenticator {
                         $iMaxSessions = lookupField($default->users_table, "max_sessions", "id", $iUserID);
                         $default->log->debug("maxsessions=$iMaxSessions for userID=$iUserID");
                         $sql = $default->db;
-                        if ($sql->query("SELECT count(*) as count FROM $default->sessions_table WHERE user_id = $iUserID")) {
+                        $sQuery = array("SELECT count(*) as count FROM $default->sessions_table WHERE user_id = ?", $iUserID);/*ok*/
+                        if ($sql->query($sQuery)) {
                             $sql->next_record();
                             $default->log->debug("sess count=" . $sql->f("count"));
                             if ($sql->f("count") >= $iMaxSessions) {

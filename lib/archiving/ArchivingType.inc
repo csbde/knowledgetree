@@ -93,7 +93,7 @@ class ArchivingType extends KTEntity {
     function & get($iArchivingTypeID) {
         global $default;
         $sql = $default->db;
-        $sql->query("SELECT * FROM $default->archiving_type_lookup_table WHERE id = $iArchivingTypeID");
+        $sql->query(array("SELECT * FROM $default->archiving_type_lookup_table WHERE id = ?", $iArchivingTypeID));/*ok*/
         if ($sql->next_record()) {
             $oArchivingType = & new ArchivingType($sql->f("name"));
             $oArchivingType->iId = $iArchivingTypeID;

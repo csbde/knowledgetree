@@ -94,7 +94,7 @@ class DefaultLookup extends KTEntity {
 	*/
 	function & get($sTableName, $iId) {
 		$sql = $default->db;
-		$result = $sql->query("SELECT * FROM $sTableName WHERE id = $iId");		
+		$result = $sql->query(array("SELECT * FROM $sTableName WHERE id = ?", $iId));/*ok*/
 		if ($result) {
 			if ($sql->next_record()) {
 				$oLookup = & new DefaultLookup($sTableName, $sql->f("name"));

@@ -92,7 +92,7 @@ class TimeUnit extends KTEntity {
     function & get($iTimeUnitID) {
         global $default;
         $sql = $default->db;
-        $sql->query("SELECT * FROM $default->time_unit_lookup_table WHERE id = $iTimeUnitID");
+        $sql->query(array("SELECT * FROM $default->time_unit_lookup_table WHERE id = ?", $iTimeUnitID));/*ok*/
         if ($sql->next_record()) {
             $oTimeUnit = & new TimeUnit($sql->f("name"));
             $oTimeUnit->iId = $iTimeUnitID;

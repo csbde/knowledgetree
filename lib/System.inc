@@ -44,7 +44,7 @@ class System {
     function initialised() {
         global $default;
         
-        if ($default->db->query("SELECT count(*) AS count FROM system_settings WHERE name<>'lastIndexUpdate' AND name<>'filesystemRoot' AND name<>'knowledgeTreeVersion' AND value<>''")) {
+        if ($default->db->query("SELECT count(*) AS count FROM system_settings WHERE name<>'lastIndexUpdate' AND name<>'filesystemRoot' AND name<>'knowledgeTreeVersion' AND value<>''")) {/*ok*/
             $default->db->next_record();
             return ($default->db->f("count") > 0) ? true : false;
         }

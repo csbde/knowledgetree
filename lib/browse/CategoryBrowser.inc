@@ -72,9 +72,10 @@ class CategoryBrowser extends Browser {
 	            $results["categories"][] = "Categories";
 	            // get a list of category values
                 // FIXME: exclude deleted document metadata
-	            $query = "SELECT DISTINCT value FROM $default->document_fields_link_table WHERE document_field_id=$categoryFieldID ORDER BY value " . ($this->sSortField == "name" ? $this->sSortDirection : "ASC");
+	            $query = "SELECT DISTINCT value FROM $default->document_fields_link_table WHERE document_field_id = ? ORDER BY value " . ($this->sSortField == "name" ? $this->sSortDirection : "ASC");/*ok*/
+                $aParams = array($categoryFieldID);
 	            $default->log->info("CategoryBrowser::browse() category listing query=$query; $this->sSortField");
-	            $sql->query($query);
+	            $sql->query(array($query, $aParams));
 	            // loop through resultset, build array and return
 	            while ($sql->next_record()) {
 	                $results["categories"][] = $sql->f("value");
@@ -89,23 +90,24 @@ class CategoryBrowser extends Browser {
             
             // we have a category to use, so find all the documents
             // with this category value
-            $categoryQuery = "SELECT df.document_id FROM $default->document_fields_link_table df " .
+            $categoryQuery = "SELECT df.document_id FROM $default->document_fields_link_table df " . /*ok*/
                      "INNER JOIN $default->documents_table d ON df.document_id = d.id ";
             if ( isset($aLookupCriteria) ) {
             	$categoryQuery .= "INNER JOIN " .  $aLookupCriteria["table"] . " lt ON ";
             	$categoryQuery .= "d.$this->sSortField" . "=lt." . (isset($aLookupCriteria["joinColumn"]) ? $aLookupCriteria["joinColumn"] : "id");
-            	
             }                    
-			$categoryQuery .= " WHERE df.document_field_id = $categoryFieldID AND value='$sCategoryName' " . (isset($aLookupCriteria["whereClause"]) ? "AND lt." . $aLookupCriteria["whereClause"] : "") . " ";;
+			$categoryQuery .= " WHERE df.document_field_id = ? AND value = ? " . (isset($aLookupCriteria["whereClause"]) ? "AND lt." . $aLookupCriteria["whereClause"] : "") . " ";;
+            $aParams = array($categoryFieldID, $sCategoryName);
 			if ( isset($aLookupCriteria) ) {
             	$categoryQuery .= "ORDER BY lt." . $aLookupCriteria["field"] . " $this->sSortDirection";
             } else {
             	$categoryQuery .= "ORDER BY d.$this->sSortField $this->sSortDirection";
-            }                    
+            }
+
               
             $default->log->debug("categoryQuery=$categoryQuery");                                        
                      
-            $sql->query($categoryQuery);
+            $sql->query(array($categoryQuery, $aParams));
             // loop through resultset and add to array
             $results["accessDenied"] = false;
             while ($sql->next_record()) {

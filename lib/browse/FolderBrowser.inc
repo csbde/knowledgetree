@@ -118,20 +118,22 @@ class FolderBrowser extends Browser {
                         
             // if we're sorting by name or creator_id then sort folders in the appropriate direction
            
+            $aParams = array();
             $sFolderQuery = "SELECT f.id FROM $default->folders_table AS f ";
 			if (in_array($this->sSortField, array("name", "creator_id"))) {             
 	            if (isset($aLookupCriteria)) {
-	            	$sFolderQuery .= "INNER JOIN " .  $aLookupCriteria["table"] . " lt ON f.$this->sSortField=lt.id WHERE parent_id=" . $iFolderID;
+	            	$sFolderQuery .= "INNER JOIN " . $aLookupCriteria["table"] . " lt ON f.$this->sSortField=lt.id WHERE parent_id = ?";
 	            	$sFolderQuery .= " ORDER BY lt." . $aLookupCriteria["field"] . " $this->sSortDirection";
 	            } else {
-	             	$sFolderQuery .= "WHERE parent_id=$iFolderID ORDER BY $this->sSortField $this->sSortDirection";
+	             	$sFolderQuery .= "WHERE parent_id = ? ORDER BY $this->sSortField $this->sSortDirection";
 	            }
 			} else {
-				$sFolderQuery .= "WHERE parent_id=$iFolderID ORDER BY f.name asc";
+				$sFolderQuery .= "WHERE parent_id = ? ORDER BY f.name asc";
 			}
+            $aParams[] = $iFolderID;
 			$default->log->debug("Ordering folderQuery = $sFolderQuery");
            
-            if ($sql->query($sFolderQuery)) {
+            if ($sql->query(array($sFolderQuery, $aParams))) {
                 while ($sql->next_record()) {
                   $default->log->debug("In folder iteration while, with folder_id " . $sql->f("id"));
                   // check whether to display folders which are not readable and display/hide these accordingly

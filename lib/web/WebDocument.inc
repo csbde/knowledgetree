@@ -125,7 +125,7 @@ class WebDocument extends KTEntity {
 	function & get($iWebDocumentsID) {
 		global $default;
 		$sql = $default->db;
-		$result = $sql->query("SELECT * FROM $default->web_documents_table WHERE id = $iWebDocumentsID");
+		$result = $sql->query(array("SELECT * FROM $default->web_documents_table WHERE id = ?", $iWebDocumentsID));/*ok*/
 		if ($result) {
 			if ($sql->next_record()) {
 				$oWebDocument = & new WebDocument($sql->f("document_id"), $sql->f("web_site_id"), $sql->f("unit_id"), $sql->f("status_id"), $sql->f("datetime"));
@@ -149,10 +149,13 @@ class WebDocument extends KTEntity {
 	*/
 	function getList($sWhereClause = null) {
 		global $default, $lang_err_database;
-		$aWebDocumentArray;
-		settype($aWebDocumentArray, "array");
+		$aWebDocumentArray = array();
 		$sql = $default->db;
-		$result = $sql->query("SELECT * FROM " . $default->web_documents_table  . (isset($sWhereClause) ? " WHERE " . $sWhereClause : ""));
+        $sQuery = "SELECT * FROM " . $default->web_documents_table;
+        if (isset($sWhereClause)) {
+            $sQuery .= " WHERE " . $sWhereClause;
+        }
+		$result = $sql->query($sQuery);
 		if ($result) {			
 			while ($sql->next_record()) {
 				$aWebDocumentArray[]= & WebDocument::get($sql->f("id"));
