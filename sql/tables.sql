@@ -1,5 +1,5 @@
 CREATE TABLE active_sessions ( 
-id INTEGER NOT NULL,
+id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 user_id INTEGER,
 lastused DATETIME,
 ip CHAR(30)
@@ -83,7 +83,7 @@ document_type_id INTEGER NOT NULL,
 name CHAR(80) NOT NULL,
 filename CHAR(50) NOT NULL,
 size BIGINT NOT NULL,
-creatorid INTEGER NOT NULL,
+creator_id INTEGER NOT NULL,
 modified DATE NOT NULL,
 description CHAR(200) NOT NULL,
 security INTEGER NOT NULL,
@@ -98,7 +98,7 @@ is_checked_out BOOL NOT NULL
 
 
 CREATE TABLE folders ( 
-id INTEGER,
+id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 name CHAR(255),
 description CHAR(255),
 parent_id INTEGER,
@@ -122,7 +122,7 @@ role_type_id INTEGER NOT NULL
 
 
 CREATE TABLE groups_folders_approval_link ( 
-id INTEGER NOT NULL,
+id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 folder_id INTEGER NOT NULL,
 group_id INTEGER NOT NULL,
 precedence INTEGER NOT NULL,
@@ -133,7 +133,7 @@ role_id INTEGER NOT NULL
 
 
 CREATE TABLE groups_lu ( 
-id INTEGER NOT NULL,
+id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 name CHAR(100) NOT NULL
 ) 
 ;
@@ -213,18 +213,7 @@ parent_id INTEGER NOT NULL
 ;
 
 
-
-CREATE TABLE user_group_link ( 
-id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
-user_id INTEGER NOT NULL,
-group_id INTEGER NOT NULL
-) 
-;
-
-
-
-CREATE TABLE users ( 
-id INTEGER AUTO_INCREMENT  NOT NULL UNIQUE AUTO_INCREMENT,
+CREATE TABLE users (id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 group_id INTEGER NOT NULL,
 username CHAR(255) NOT NULL,
 name CHAR(255) NOT NULL,
@@ -234,10 +223,18 @@ quota_current INTEGER NOT NULL,
 email CHAR(255),
 mobile INTEGER,
 email_notification BOOL NOT NULL,
-sms_notification BOOL NOT NULL
-) 
+sms_notification BOOL NOT NULL,
+language CHAR(100),
+ldap_dn CHAR(255),
+max_sessions INTEGER) 
 ;
 
+CREATE TABLE user_group_link ( 
+id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
+user_id INTEGER NOT NULL,
+group_id INTEGER NOT NULL
+) 
+;
 
 
 CREATE TABLE web_documents ( 
@@ -445,8 +442,8 @@ UPDATE users SET password = '084e0343a0486ff05530df6c705c8bb4' WHERE name = "Ano
 INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
              VALUES ("Documents", "Root Document Folder", 0, 0, 51, 0, 0);
              
-INSERT INTO documents (name, filename, size, creator_id, parent_id, modified, description, security, mime_id, folder_id, major_version, minor_version, is_checked_out) 
-            VALUES ("Test File", "test.txt", "36", 0, 0, "Dec 27th, 2000 at 05:17 pm", "", 0, 0, 0, 0, 1, 0);
+INSERT INTO documents (name, filename, size, creator_id, modified, description, security, mime_id, folder_id, major_version, minor_version, is_checked_out) 
+            VALUES ("Test File", "test.txt", "36", 0, "Dec 27th, 2000 at 05:17 pm", "", 0, 0, 0, 0, 1, 0);
 
 INSERT INTO mime_types (filetypes, mimetypes) VALUES ('ai', 'application/postscript');
 INSERT INTO mime_types (filetypes, mimetypes) VALUES ('aif', 'audio/x-aiff');
