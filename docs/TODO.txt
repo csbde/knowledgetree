@@ -41,7 +41,7 @@ KnowledgeTree DMS Development TODO List
 - Document Routing
   - Allow overrides on a per document basis
 - Search
-  - Search for document creator and folder names
+  - Search all document and folder properties
   - Accomodate custom search terms- $fCustomSearchxxx
 - Allow thumbnails for image types (API for any other filetype)
 - Permission model- allow breaking of permission inheritance (integrate with serving multiple organisations)
