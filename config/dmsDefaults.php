@@ -151,7 +151,7 @@ $default->siteMap->addPage("dashboard", "/presentation/dashboardBL.php", "Genera
 
 $default->siteMap->addDefaultPage("browse", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/browseBL.php", "Manage Documents", "Anonymous", "browse documents");
 $default->siteMap->addPage("viewDocument", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/viewBL.php", "Manage Documents", "Anonymous", "");
-$default->siteMap->addPage("addDocument", "/presentation/documentmanagement/addDocument.php", "Manage Documents", "Anonymous", "Add A Document");
+$default->siteMap->addPage("addDocument", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentBL.php", "Manage Documents", User, "Add A Document");
 $default->siteMap->addPage("addFolder", "/presentation/lookAndFeel/knowledgeTree/foldermanagement/addFolderBL.php", "Manage Folders", User, "Add A Folder");
 $default->siteMap->addPage("modifyFolderProperties", "/presentation/documentmanagement/modifyFolder.php", "Manage Documents", "Unit Administrators", "Modify Folder Properties");
 $default->siteMap->addPage("deleteFolder", "/presentation/documentmanagement/deleteFolder.php", "Manage Documents", "Unit Administrators", "Delete A Folder");
