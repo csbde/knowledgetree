@@ -86,14 +86,22 @@ if (checkSession()) {
 					$oDocument->beginCollaborationProcess();
 					$sStatusMessage = "Document collaboration successfully started";
 					$oPatternCustom->setHtml(getStatusPage($oDocument, $sStatusMessage));
-				} else {				
-					//not all the roles have actual users assigned to them, so we must assign the
-					//default users and then proceed										
+				} else {
+					// check that default users have been assigned to the routing steps before using them
 					
-					FolderUserRole::createDefaultFolderUserRoles($oDocument);
-					$oDocument->beginCollaborationProcess();
-					$sStatusMessage = "Document collaboration successfully started";					
-					$oPatternCustom->setHtml(getStatusPage($oDocument, $sStatusMessage));
+					if (FolderCollaboration::defaultUsersAssigned($aFolderCollaboration)) {
+						//not all the roles have actual users assigned to them, so we must assign the
+						//default users and then proceed										
+						
+						FolderUserRole::createDefaultFolderUserRoles($oDocument);
+						$oDocument->beginCollaborationProcess();
+						$sStatusMessage = "Document collaboration successfully started";					
+						$oPatternCustom->setHtml(getStatusPage($oDocument, $sStatusMessage));
+					} else {
+						// the folder does not have default users assigned for the routing steps
+						$sStatusMessage = "Default users have not been assigned at the folder level.  Please set these up, or choose specific users for this document before attempting to start collaboration.";				
+						$oPatternCustom->setHtml(getStatusPage($oDocument, $sStatusMessage));						
+					}
 				}
 			} else {
 				//the folder has no collaboration set up yet, so we can't start document collaboration
