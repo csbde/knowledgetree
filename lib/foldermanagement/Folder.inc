@@ -185,6 +185,10 @@ class Folder {
 		$this->bIsPublic = $bNewValue;
 	}
 	
+	function getFullPath() {
+		return $this->sFullPath;
+	}
+	
 	/**
 	* Generate a comma delimited string containing
 	* the parent folder ids
@@ -309,9 +313,9 @@ class Folder {
 	*
 	* @return Folder folder object on successful retrieval, false otherwise and set $_SESSION["errorMessage"]
 	*/
-	function get($iFolderID) {
+	function get($iFolderID) {		
 		global $default,  $lang_err_object_not_exist;
-		$sql = $default->db;
+		$sql = $default->db;		
 		$sql->query("SELECT * FROM " . $default->owl_folders_table . " WHERE id = " . $iFolderID);
 		if ($sql->next_record()) {
 			$oFolder = & new Folder(stripslashes($sql->f("name")), stripslashes($sql->f("description")), $sql->f("parent_id"), $sql->f("creator_id"), $sql->f("document_type_id"), $sql->f("unit_id"), $sql->f("is_public"));
@@ -380,6 +384,31 @@ class Folder {
      *
      * @return array full path of folder as an array of folderIDs
      */
+    function getFolderPathNamesAsArray($iFolderID) {
+		global $default;		
+		$oFolder = Folder::get($iFolderID);
+		$aPathArray;
+		if (strlen($oFolder->sFullPath) > 0) {
+			if (strlen($oFolder->sFullPath) > 1) {				
+				$aPathArray = explode("/",$oFolder->sFullPath);				
+			} else {
+				$aPathArray = array($oFolder->sFullPath);
+			}
+			$aPathArray[count($aPathArray)] = $oFolder->getName();
+		} else {
+			$aPathArray = array($oFolder->getName());
+		}
+		return $aPathArray;
+    }
+	
+	/**
+     * Static function.
+     * Get the full path for a folder as an array
+     * 
+     * @param int primary key of folder to generate path for	
+     *
+     * @return array full path of folder as an array of folderIDs
+     */
     function getFolderPathAsArray($iFolderID) {
 		global $default;		
 		$oFolder = Folder::get($iFolderID);
@@ -391,9 +420,9 @@ class Folder {
 				$aPathArray = array($oFolder->sParentFolderIDs);
 			}
 			$aPathArray[count($aPathArray)] = $oFolder->getID();
-		} else {
+		} else {			
 			$aPathArray = array($oFolder->getID());
-		}
+		}		
 		return $aPathArray;
     }
 	
