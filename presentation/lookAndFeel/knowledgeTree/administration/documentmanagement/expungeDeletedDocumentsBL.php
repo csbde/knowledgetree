@@ -7,8 +7,8 @@ require_once("$default->fileSystemRoot/lib/documentmanagement/PhysicalDocumentMa
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternMainPage.inc");
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternTableSqlQuery.inc");
+require_once("$default->fileSystemRoot/lib/web/WebDocument.inc");
 require_once("$default->uiDirectory/documentmanagement/documentUI.inc");
-
 require_once("expungeDeletedDocumentsUI.inc");
 require_once("$default->fileSystemRoot/presentation/Html.inc");
 
@@ -46,13 +46,26 @@ if (checkSession()) {
 				if (PhysicalDocumentManager::expunge($aDocuments[$i])) {
 					// delete this from the db now
 					if ($aDocuments[$i]->delete()) {
+						// removed succesfully
 						$aSuccessDocuments[] = $aDocuments[$i]->getDisplayPath();
+
+						// remove any document data
+						$aDocuments[$i]->cleanupDocumentData($fDocumentIDs[$i]);
+
+                        // delete the corresponding web document entry
+                        $oWebDocument = WebDocument::get(lookupID($default->owl_web_documents_table, "document_id", $fDocumentIDs[$i]));
+                        $oWebDocument->delete();
+												
+						// store an expunge transaction
+                        $oDocumentTransaction = & new DocumentTransaction($fDocumentIDs[$i], "Document expunged", EXPUNGE);
+                        $oDocumentTransaction->create();
+                        
 					} else {
-						$default->log->error("expungeDeletedDocumentsBL.php couldn't rm docID=" . $aDocuments[$i]->getID() . " from the db");
+						$default->log->error("expungeDeletedDocumentsBL.php couldn't rm docID=" . $fDocumentIDs[$i] . " from the db");
 						$aErrorDocuments[] = $aDocuments[$i]->getDisplayPath();
 					}
 				} else {
-					$default->log->error("expungeDeletedDocumentsBL.php couldn't rm docID=" . $aDocuments[$i]->getID() . " from the filesystem");
+					$default->log->error("expungeDeletedDocumentsBL.php couldn't rm docID=" . $fDocumentIDs[$i] . " from the filesystem");
 					$aErrorDocuments[] = $aDocuments[$i]->getDisplayPath();
 				}
 			}
