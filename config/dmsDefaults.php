@@ -142,5 +142,4 @@ $default->siteMap->addPage("addOrganisation", "addOrganisation.php", "Administra
 $default->siteMap->addPage("scratchPad", "tests/scratchPad.php", "Tests", "Unit Administrators");
 
 require_once("$default->owl_fs_root/lib/Log.inc");
-$default->log = new Log("c:\owl\log.txt", INFO);
 ?>
