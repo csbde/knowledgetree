@@ -20,6 +20,7 @@
 * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
 * @date 25 January 2003
 * @todo - add client side validation stuff
+* @todo - add column type 3 -> select field stuff
 * @package lib.visualpatterns
 */
 
@@ -42,14 +43,15 @@ class PatternEditableTableSqlQuery {
 	/** Unique name */
 	var $sUniqueName;
 	
-	function PatternEditableTableSqlQuery($sTmpQuery, $sTmpTableName, $aTmpDisplayColumnNames, $aTmpStoreColumnNames, $aTmpColumnsEditable, $aTmpColumnsVisible, $sTmpUniqueName) {
+	function PatternEditableTableSqlQuery($sTmpQuery, $sTmpTableName, $aTmpStoreColumnNames, $aTmpDisplayColumnNames, $aTmpColumnsEditable, $aTmpColumnsVisible, $aTmpColumnTypes, $sTmpUniqueName) {
 		$this->sQuery = $sTmpQuery;
 		$this->sTableName = $sTmpTableName;
-		$this->aDisplayColumnNames = $aTmpDisplayColumnNames;
 		$this->aStoreColumnNames = $aTmpStoreColumnNames;
+		$this->aDisplayColumnNames = $aTmpDisplayColumnNames;		
 		$this->aColumnsEditable = $aTmpColumnsEditable;
 		$this->sUniqueName = $sTmpUniqueName;
 		$this->aColumnsVisible = $aTmpColumnsVisible;
+		$this->aColumnTypes = $aTmpColumnTypes;
 	}
 	
 	
@@ -95,16 +97,37 @@ class PatternEditableTableSqlQuery {
 				for ($i = 0; $i < count($this->aStoreColumnNames); $i++) {
 					//generate the right kind of editable field
 					$sToRender .= "\t<td>\n";
-					if ($this->aColumnsVisible[$i]) {
-						if ($this->aColumnsEditable[$i]) {
-							$sToRender .= "\t<input type=\"text\" name=\"" . $this->sUniqueName . "_" . $iRowCount . "_value\" value=\"" . $sql->f($this->aStoreColumnNames[$i]) . "\" />\n";
-						} else {
-							$sToRender .= "\t<input type=\"hidden\" name=\"" . $this->sUniqueName . "_" . $iRowCount . "_value\" value=\"" . $sql->f($this->aStoreColumnNames[$i]) . "\" />".$sql->f($this->aDisplayColumnNames[$i])."\n";
-						}
-					} else {
-						$sToRender .= "\t<input type=\"hidden\" name=\"" . $this->sUniqueName . "_" . $iRowCount . "_value\" value=\"" . $sql->f($this->aStoreColumnNames[$i]) . "\" />";
+					switch ($this->aColumnTypes[$i]) {
+						case 1:
+							if ($this->aColumnsVisible[$i]) {
+								if ($this->aColumnsEditable[$i]) {
+									$sToRender .= "\t<input type=\"text\" name=\"" . $this->sUniqueName . "_" . $iRowCount . "_value\" value=\"" . $sql->f($this->aStoreColumnNames[$i]) . "\" />\n";
+								} else {
+									$sToRender .= "\t<input type=\"hidden\" name=\"" . $this->sUniqueName . "_" . $iRowCount . "_value\" value=\"" . $sql->f($this->aStoreColumnNames[$i]) . "\" />".$sql->f($this->aDisplayColumnNames[$i])."\n";
+								}
+							} else {
+								$sToRender .= "\t<input type=\"hidden\" name=\"" . $this->sUniqueName . "_" . $iRowCount . "_value\" value=\"" . $sql->f($this->aStoreColumnNames[$i]) . "\" />\n";
+							}
+							$sToRender .= "\t<input type=\"hidden\" name=\"" . $this->sUniqueName . "_" . $iRowCount . "_tc\" value=\"" . $this->aStoreColumnNames[$i] . "\" />\n";
+							break;
+						case 2:
+							if ($this->aColumnsVisible[$i]) {
+								if ($this->aColumnsEditable[$i]) {
+									$sToRender .= "\t<input type=\"checkbox\" name=\"" . $this->sUniqueName . "_" . $iRowCount . "_value\" value=\"" . ($sql->f($this->aStoreColumnNames[$i] ? "1\" checked" : "0\"")) . " />\n";
+								} else {
+									$sToRender .= "\t<input type=\"hidden\" name=\"" . $this->sUniqueName . "_" . $iRowCount . "_value\" value=\"" . $sql->f($this->aStoreColumnNames[$i]) . "\" />".$sql->f($this->aDisplayColumnNames[$i])."\n";
+								}
+							} else {
+								$sToRender .= "\t<input type=\"hidden\" name=\"" . $this->sUniqueName . "_" . $iRowCount . "_value\" value=\"" . $sql->f($this->aStoreColumnNames[$i]) . "\" />\n";
+							}
+							$sToRender .= "\t<input type=\"hidden\" name=\"" . $this->sUniqueName . "_" . $iRowCount . "_tc\" value=\"" . $this->aStoreColumnNames[$i] . "\" />\n";
+							break;
+						case 3:
+							break;
+						default:
+							$sToRender .= "<b>You are attempting to render an unknown column type " . ($this->aColumnTypes[$i]) . " in PatternEditableTableSqlQuery</b>\n";
+							break;
 					}
-					$sToRender .= "\t<input type=\"hidden\" name=\"" . $this->sUniqueName . "_" . $iRowCount . "_tc\" value=\"" . $this->aStoreColumnNames[$i] . "\" />\n";					
 
 					$sToRender .= "\t</td>\n";
 				}
@@ -117,33 +140,4 @@ class PatternEditableTableSqlQuery {
 	}
 }
 
-/*
-case 1:									
-								$sToRender .= "\t<td>\n";
-								if ($this->aColumnsVisible[$i]) {																		
-									$sToRender .= "\t\t<input type=\"text\" name=\"unique_" .$this->sUniqueName . "_" . $this->iVariableCount . "\" value=\"" . $sql->f($this->aDisplayColumns[$i]) . "\" />\n";
-									$sToRender .= "\t\t<input type=\"hidden\" name=\"unique_" . $this->sUniqueName . "_" . $this->iVariableCount . "_row\" value=\"" . $iRowCount . "\" />\n";
-									$sToRender .= "\t\t<input type=\"hidden\" name=\"unique_" . $this->sUniqueName . "_" . $this->iVariableCount . "_id\" value=\"" . $sql->f($this->aPrimaryKey[$i]) . "\" />\n";
-									$sToRender .= "\t\t<input type=\"hidden\" name=\"unique_" . $this->sUniqueName . "_" . $this->iVariableCount . "_tn\" value=\"" . $this->sTableName . "\" />\n";
-									$sToRender .= "\t\t<input type=\"hidden\" name=\"unique_" . $this->sUniqueName . "_" . $this->iVariableCount . "_tc\" value=\"" . $this->aTableColumns[$i] . "\" />\n";
-									$sToRender .= "\t\t<input type=\"hidden\" name=\"unique_" . $this->sUniqueName . "_" . $this->iVariableCount . "_type\" value=\"text\" />\n";
-									if ($this->aColumnsRequired[$i]) {
-										$this->aRequiredFormVariableNames[count($this->aRequiredFormVariableNames)] = "unique_" .$this->sUniqueName . "_" . $this->iVariableCount;
-									}									
-									$this->iVariableCount++;
-									
-								} else {
-									$sToRender .= "\t\t" . $sql->f($this->aColumnsSql[$i]) . "\n";
-								}
-								$sToRender .= "\t</td>\n";
-								break;
-						case 2:
-							//todo - implement checkbox functionality
-							break;
-						case 3:
-							//todo - implement drop down list functionality
-							break;
-						default:								
-								break;
-*/
 ?>
