@@ -51,9 +51,9 @@ if (checkSession()) {
 		$oPatternCustom->setHtml(getPage($fDocumentID, $oDocument->getDocumentTypeID(), $fFirstEdit));
 		$main->setCentralPayload($oPatternCustom);
         if (isset($fFirstEdit)) {
-            $main->setFormAction("../store.php?fReturnURL=" . urlencode("$default->rootUrl/control.php?action=modifyDocumentTypeMetaData&fDocumentID=$fDocumentID&fFirstEdit=1"));            
+            $main->setFormAction("$default->rootUrl/presentation/lookAndFeel/knowledgeTree/store.php?fReturnURL=" . urlencode("$default->rootUrl/control.php?action=modifyDocumentTypeMetaData&fDocumentID=$fDocumentID&fFirstEdit=1"));            
         } else {
-		    $main->setFormAction("../store.php?fReturnURL=" . urlencode("$default->rootUrl/control.php?action=viewDocument&fDocumentID=$fDocumentID&fShowSection=genericMetaData"));
+		    $main->setFormAction("$default->rootUrl/presentation/lookAndFeel/knowledgeTree/store.php?fReturnURL=" . urlencode("$default->rootUrl/control.php?action=viewDocument&fDocumentID=$fDocumentID&fShowSection=genericMetaData"));
         }
 		$main->setHasRequiredFields(true);
 		$main->render();
