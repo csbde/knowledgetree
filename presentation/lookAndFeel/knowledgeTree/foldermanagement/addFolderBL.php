@@ -42,41 +42,57 @@ if (checkSession()) {
 		} else {
 			//have a folder name to store
 			if (Permission::userHasFolderWritePermission($fFolderID)) {
-				if (Folder::folderExistsName($fFolderName, $fFolderID)) {
-					require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");
-					$oPatternCustom->setHtml(renderBrowseAddPage($fFolderID));
-					$main->setCentralPayload($oPatternCustom);
-					$main->setErrorMessage("There is another folder named $fFolderName in this folder already");
-					$main->setFormAction("addFolderBL.php?fFolderID=$fFolderID");
-					$main->render();
-				} else {
-					$oParentFolder = Folder::get($fFolderID);
-					//create the folder in the db, giving it the properties of it's parent folder					
-					$oFolder = &new Folder($fFolderName, "", $fFolderID, $_SESSION["userID"], $oParentFolder->getDocumentTypeID(), $oParentFolder->getUnitID());
-					if ($oFolder->create()) {
-						//create the folder on the file system						
-						if (PhysicalFolderManagement::createFolder(Folder::getFolderPath($oFolder->getID()))) {							
-							redirect("$default->owl_root_url/control.php?action=browse&fBrowseType=folder&fFolderID=" . $oFolder->getID());
+				//check for illegal characters in the folder name
+				if (strpos($fFolderName, "\\") === false && strpos($fFolderName, ">") === false &&
+					strpos($fFolderName, "<") === false && strpos($fFolderName, ":") === false &&
+					strpos($fFolderName, "*") === false && strpos($fFolderName, "?") === false &&
+					strpos($fFolderName, "|") === false && strpos($fFolderName, "/") === false && 
+					strpos($fFolderName, "\"") === false) {
+					if (Folder::folderExistsName($fFolderName, $fFolderID)) {
+						require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");
+						$oPatternCustom->setHtml(renderBrowseAddPage($fFolderID));
+						$main->setCentralPayload($oPatternCustom);
+						$main->setErrorMessage("There is another folder named $fFolderName in this folder already");
+						$main->setFormAction("addFolderBL.php?fFolderID=$fFolderID");
+						$main->render();
+					} else {
+						$oParentFolder = Folder::get($fFolderID);
+						//create the folder in the db, giving it the properties of it's parent folder					
+						$oFolder = &new Folder($fFolderName, "", $fFolderID, $_SESSION["userID"], $oParentFolder->getDocumentTypeID(), $oParentFolder->getUnitID());
+						if ($oFolder->create()) {
+							//create the folder on the file system						
+							if (PhysicalFolderManagement::createFolder(Folder::getFolderPath($oFolder->getID()))) {							
+								redirect("$default->owl_root_url/control.php?action=browse&fBrowseType=folder&fFolderID=" . $oFolder->getID());
+							} else {
+								//if we couldn't do that, remove the folder from the db and report and error
+								$oFolder->delete();
+								require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");
+								$oPatternCustom->setHtml(renderBrowsePage($fFolderID));
+								$main->setCentralPayload($oPatternCustom);
+								$main->setErrorMessage("There was an error creating the folder $fFolderName on the filesystem");
+								$main->setFormAction("addFolderBL.php?fFolderID=$fFolderID");
+								$main->render();
+							}
 						} else {
-							//if we couldn't do that, remove the folder from the db and report and error
-							$oFolder->delete();
+							//if we couldn't create the folder in the db, report an error
 							require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");
 							$oPatternCustom->setHtml(renderBrowsePage($fFolderID));
 							$main->setCentralPayload($oPatternCustom);
-							$main->setErrorMessage("There was an error creating the folder $fFolderName on the filesystem");
+							$main->setErrorMessage("There was an error creating the folder $fFolderName in the database");
 							$main->setFormAction("addFolderBL.php?fFolderID=$fFolderID");
 							$main->render();
 						}
-					} else {
-						//if we couldn't create the folder in the db, report an error
-						require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");
-						$oPatternCustom->setHtml(renderBrowsePage($fFolderID));
-						$main->setCentralPayload($oPatternCustom);
-						$main->setErrorMessage("There was an error creating the folder $fFolderName in the database");
-						$main->setFormAction("addFolderBL.php?fFolderID=$fFolderID");
-						$main->render();
 					}
+				} else {
+					//the user entered an illegal character in the folder name
+					require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");
+					$oPatternCustom->setHtml(renderBrowseAddPage($fFolderID));
+					$main->setCentralPayload($oPatternCustom);
+					$main->setErrorMessage("Folder not created. Folder names may not contain: '<', '>', '*', '/', '\', '|', '?' or '\"' ");
+					$main->setFormAction("addFolderBL.php?fFolderID=$fFolderID");
+					$main->render();
 				}
+					
 			} else {
 				//if the user doesn't have write permission for this folder,
 				//give them only browse facilities
