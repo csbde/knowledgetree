@@ -58,6 +58,9 @@ class PatternBrowseableSearchResults {
 	function & render() {
         global $default;
 		
+		$sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
+		$sTHBGColour = $default->siteMap->getSectionColour($sSectionName, "th");
+		
 		//add the limit and offset stuff for cutting down result set
 		$sLimitQuery = $this->sQuery . " LIMIT " . $this->iStartIndex . ", " . $this->iResultsToDisplay;
 		$sql = & $default->db;		
@@ -78,22 +81,23 @@ class PatternBrowseableSearchResults {
 				if (! (strcmp($this->sOrderByColumn, $this->aColumns[$i]) === false) && (strcmp($this->sOrderByColumn, $this->aColumns[$i]) == 0)) {
 					if (!(strcmp($this->sOrderDirection,"ASC") === false) && (strcmp($this->sOrderDirection,"ASC") == 0)) {					
 						//$sToRender .= "<th align=\"left\"><a href=\"" . $_SERVER["PHP_SELF"] . "?fOrderBy=" . $this->aColumns[$i] . "&fOrderDirection=DESC&fStartIndex=" . $this->iStartIndex . "\">" . $this->aColumnHeadings[$i]."</a></th>\n";
-						$sToRender .= "<th align=\"left\">" . $this->aColumnHeadings[$i]. "</th>\n";
+						$sToRender .= "<th align=\"left\" bgcolor=\"" . $sTHBGColour . "\">" . $this->aColumnHeadings[$i]. "</th>\n";
 					} else {
 						//$sToRender .= "<th align=\"left\"><a href=\"" . $_SERVER["PHP_SELF"] . "?fOrderBy=" . $this->aColumns[$i] . "&fOrderDirection=ASC&fStartIndex=" . $this->iStartIndex . "\">" . $this->aColumnHeadings[$i]."</a></th>\n";
-						$sToRender .= "<th align=\"left\">" . $this->aColumnHeadings[$i]. "</th>\n";
+						$sToRender .= "<th align=\"left\" bgcolor=\"" . $sTHBGColour . "\">" . $this->aColumnHeadings[$i]. "</th>\n";
 					}
 				} else {
 					//$sToRender .= "<th align=\"left\"><a href=\"" . $_SERVER["PHP_SELF"] . "?fOrderBy=" . $this->aColumns[$i] . "&fOrderDirection=ASC&fStartIndex=" . $this->iStartIndex . "\">" . $this->aColumnHeadings[$i]."</a></th>\n";
-					$sToRender .= "<th align=\"left\">" . $this->aColumnHeadings[$i]. "</th>\n";
+					$sToRender .= "<th align=\"left\" bgcolor=\"" . $sTHBGColour . "\">" . $this->aColumnHeadings[$i]. "</th>\n";
 				}
 			}
 			$sToRender .= "</tr>\n";		
-					
+			$iColour = 0;
 			$iDisplayed = 0;
 			//limit the result set displayed		
 			while($sql->next_record() && ($iDisplayed < $this->iResultsToDisplay)) {
-				$sToRender .= "<tr>";
+				$sToRender .= "<tr bgcolor=\"" . $this->getColour($iColour) . "\">";
+				$iColour++;
 				
 				for ($i = 0; $i < count($this->aColumns); $i++) {
 					switch ($this->aColumnTypes[$i]) {
@@ -185,6 +189,10 @@ class PatternBrowseableSearchResults {
 			return $sql->num_rows();
 		}
 		return 0;
+	}
+	
+	function getColour($iColourCount) {
+		return ($iColourCount%2 == 0) ? "F5F6EE" : "FFFFFF";
 	}
 }
 

@@ -40,7 +40,9 @@ class PatternEditableListFromQuery {
 	/** set the tables to check for display type 3 */
 	var $aDropDownListTableNames;
 	/** set whether a column is required or not */
-	var $aColumnsRequired;	
+	var $aColumnsRequired;
+	/** used when type = 4 to tell which meta data field to pick */
+	var $aMetaDataFields;
 	
 	/**
 	* Default constructor
@@ -90,8 +92,14 @@ class PatternEditableListFromQuery {
 		$this->aColumnsRequired = $aNewValue;
 	}
 	
+	function setMetaDataFields($aNewValue) {
+		$this->aMetaDataFields = $aNewValue;
+	}
+	
 	function & render() {
         global $default;
+		$sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
+		$sTDBGColour = $default->siteMap->getSectionColour($sSectionName, "td");
 		//records the columns to generate validation javascript for
 		$aValidationColumnNames = array();
         
@@ -109,24 +117,28 @@ class PatternEditableListFromQuery {
 			}		
 			
 			for ($i = 0; $i < count($this->aDisplayColumns); $i++) {		
-					$sToRender .= "<tr>\n";
+					$sToRender .= "<tr bgcolour=\"" . $this->getColour($i) . "\">\n";
 					$sToRender .= "<input type=\"hidden\" name=\"" . $this->sUniqueName . "_" . $i . "_tc\" value=\"" . $this->aStoreColumns[$i] . "\" />\n";
 					$sToRender .= "<input type=\"hidden\" name=\"" . $this->sUniqueName . "_" . $i . "_type\" value=\"" . $this->aDatabaseColumnTypes[$i] . "\" />\n";					
 					$sToRender .= "\t<td>" . $this->aColumnNames[$i] . "</td>\n";
 					switch ($this->aDisplayColumnTypes[$i]) {						
 						case 1:	
 							//plain text field							
-							$sToRender .= "\t<td><input type=\"text\" size = \"30\" name=\"" . $this->sUniqueName . "_" . $i . "_value\" value=\"" . stripslashes($sql->f($this->aDisplayColumns[$i])) . "\"</td>\n";
+							$sToRender .= "\t<td bgcolor=\"$sTDBGColour\"><input type=\"text\" size = \"30\" name=\"" . $this->sUniqueName . "_" . $i . "_value\" value=\"" . stripslashes($sql->f($this->aDisplayColumns[$i])) . "\"</td>\n";
 							break;						
 						case 2:
 							//boolean value
-							$sToRender .= "\t<td><input type=\"checkbox\" name=\"" . $this->sUniqueName . "_" . $i . "_value\" value=\"1\" " . ($sql->f($this->aDisplayColumns[$i]) ? " CHECKED " : " ") . "/></td>\n";
+							$sToRender .= "\t<td bgcolor=\"$sTDBGColour\"><input type=\"checkbox\" name=\"" . $this->sUniqueName . "_" . $i . "_value\" value=\"1\" " . ($sql->f($this->aDisplayColumns[$i]) ? " CHECKED " : " ") . "/></td>\n";
 							break;
 						case 3:	
 							$oPatternListBox = & new PatternListBox($this->aDropDownListTableNames[$i], "name", "id", $this->sUniqueName . "_" . $i . "_value");
 							$oPatternListBox->setSelectedValue($sql->f($this->aStoreColumns[$i]));
-							$sToRender .= "\t<td>" . $oPatternListBox->render() . "</td>\t\n";
+							$sToRender .= "\t<td bgcolor=\"$sTDBGColour\">" . $oPatternListBox->render() . "</td>\t\n";
 							break;
+						case 4:
+							//meta data type
+							$oPattern = & new PatternMetaData($this->aMetaDataFields[$i], $this->sUniqueName . "_" . $i . "_value", $sql->f($this->aStoreColumns[$i]));
+							$sToRender .= "\t<td bgcolor=\"$sTDBGColour\">" . $oPattern->render() . "</td>\t\n";
 						default:
 							break;
 					}				
@@ -166,6 +178,10 @@ class PatternEditableListFromQuery {
 		
 		return $sToRender;
                 
+	}
+	
+	function getColour($iColourCount) {
+		return ($iColourCount%2 == 0) ? "F5F6EE" : "FFFFFF";
 	}
 	
 }

@@ -22,10 +22,12 @@ function getEditableTypeSpecificMetaData($iDocumentID, $iDocumentTypeID) {
     $aColumnsVisible = array(0,1,1);
     $aColumnDisplayTypes = array(1,1,1);
     $aColumnDatabaseTypes = array(0,0,1);
+	$aMetaDataColumnNames = array(2=>"field_name");
 
     $oPatternTableSqlQuery = & new PatternEditableTableSqlQuery($sQuery, "document_fields_link", $aStoreColumnNames, $aDisplayColumnNames, $aColumnsEditable, $aColumnsVisible, $aColumnDisplayTypes, $aColumnDatabaseTypes);
     $oPatternTableSqlQuery->setTableCaption("Type specific meta data");
-    $oPatternTableSqlQuery->setUniqueName("tsmd");	
+    $oPatternTableSqlQuery->setUniqueName("tsmd");
+	$oPatternTableSqlQuery->setMetaDataFields($aMetaDataColumnNames);	
     return $oPatternTableSqlQuery->render();
 }
 
