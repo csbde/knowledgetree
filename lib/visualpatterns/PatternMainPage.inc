@@ -131,8 +131,8 @@ class PatternMainPage {
 
 		$sToRender .= 		    "<form name=\"MainForm\" " . (isset($this->sFormEncType) ? "enctype=\"$this->sFormEncType\" " : " ") . " action=\"".$this->sFormAction."\" method=POST " . (($this->bHasRequiredFields) ? "onsubmit=\"return validateForm(this)\" " : " ") . ">\n" .		
 								"<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"700\" height=\"600\">\n " .
-									"<tr height=\"10\">\n".
-										"<td valign=\"top\" " . (isset($this->sNorthWestPayloadBackGroundColour) ? " bgcolor=\"" . $this->sNorthWestPayloadBackGroundColour . "\"" : "") . ">\n";
+									"<tr>\n".
+										"<td height=\"0\" valign=\"top\" " . (isset($this->sNorthWestPayloadBackGroundColour) ? " bgcolor=\"" . $this->sNorthWestPayloadBackGroundColour . "\"" : "") . ">\n";
 										if (isset($this->oNorthWestPayload)) {											
 											$sToRender = $sToRender . "\n" . $this->oNorthWestPayload->render() . "\n";
 										} else {
@@ -148,7 +148,7 @@ class PatternMainPage {
 										$sToRender = $sToRender . "</td>\n
 									</tr>\n
 									<tr>\n										
-										<td valign=\"top\"" . (isset($this->sWestPayloadBackGroundColour) ? " bgcolor=\"" . $this->sWestPayloadBackGroundColour . "\"" : "") . ">";
+										<td height=\"100%\" valign=\"top\"" . (isset($this->sWestPayloadBackGroundColour) ? " bgcolor=\"" . $this->sWestPayloadBackGroundColour . "\"" : "") . ">";
 										if (isset($this->oWestPayload)) {											
 											$sToRender = $sToRender . "\n" . $this->oWestPayload->render() . "\n";											
 										} else {
