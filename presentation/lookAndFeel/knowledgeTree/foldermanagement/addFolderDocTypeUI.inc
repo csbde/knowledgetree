@@ -1,11 +1,14 @@
 <?php
 /**
-* Presentation information used by addFolderDocTypeBL.php
-* 
-* @author Rob Cherry, Jam Warehouse South Africa (Pty) Ltd
-* @date 37 February 2003
-* @package presentation.lookAndFeel.knowledgeTree.foldermanagement
-*/
+ * $Id$
+ *
+ * Presentation information used by addFolderDocTypeBL.php
+ *
+ * Licensed under the GNU GPL. For full terms see the file DOCS/COPYING.
+ * 
+ * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
+ * @package presentation.lookAndFeel.knowledgeTree.foldermanagement
+ */
 
 function getPage($iFolderID, $iDocumentTypeID) {
 	global $default;
@@ -14,14 +17,13 @@ function getPage($iFolderID, $iDocumentTypeID) {
     $sToRender = renderHeading("Add Folder Document Type");
 	$sToRender .= "<table border=\"0\">\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "\t<td width=\"100%\">" . renderFolderPath($iFolderID, "$default->uiUrl/foldermanagement/addFolderBL.php") . "</td>\n";
+    $sToRender .= "\t<td width=\"100%\">" . renderFolderPath($iFolderID, "/control.php?action=browse	") . "</td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "</table>\n";
-	$sToRender .= "<br>";
     $sToRender .= "<table border=\"0\">\n";
     $sToRender .= "<tr>\n";	
 	$sToRender .= "<td bgcolor=\"$sTDBGColour\">Document type</td>\n";
-	$sToRender .= "<td>" . getDocumentTypeDropDown($iDocumentTypeID) . "</td>\n";	
+	$sToRender .= "<td>" . getDocumentTypeDropDown($iDocumentTypeID, $iFolderID) . "</td>\n";	
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
 	$sToRender .= "<table>\n";
@@ -33,9 +35,13 @@ function getPage($iFolderID, $iDocumentTypeID) {
 	return $sToRender;
 }
 
-function getDocumentTypeDropDown($iDocumentTypeID) {
+function getDocumentTypeDropDown($iDocumentTypeID, $iFolderID) {
 	global $default;
-	$oPatternListBox = & new PatternListBox("$default->owl_document_types_table", "name", "id", "fDocumentTypeID");
+	// cunningly joined query courtesy of R. Cherry Esq.
+	$oPatternListBox = & new PatternListBox("SELECT DTL.name AS display, DTL.id AS value " .  
+											"FROM $default->owl_document_types_table AS DTL " .
+											"LEFT OUTER JOIN $default->owl_folder_doctypes_table AS FDL ON FDL.document_type_id = DTL.id AND FDL.folder_id = $iFolderID " .
+											"WHERE folder_id IS NULL", "fDocumentTypeID");
 	$oPatternListBox->setIncludeDefaultValue(false);
 	if (isset($iDocumentTypeID)) {
 		$oPatternListBox->setSelectedValue($iDocumentTypeID);
