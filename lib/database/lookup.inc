@@ -35,6 +35,11 @@ function lookupName($tableName, $idFieldValue){
     return lookupField($tableName, "name", "id", $idFieldValue);
 }
 
+function lookupStatusID($statusName) {
+	global $default;
+	return lookupID($default->owl_status_table, "name", $statusName);
+}
+
 /**
  * Retrieves the groups that the user is a member of
  *
