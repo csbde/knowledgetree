@@ -66,16 +66,6 @@ function getMetaData($aMetaTagIDs) {
 	return $sToRender;
 }
 
-function renderSearchSection($sSectionName, $sHeadingText, $bDisplayLink) {
-    static $iColour;
-    if ($bDisplayLink) {
-        $sLink = generateControllerLink("advancedSearch", "fShowSection=$sSectionName", $sHeadingText);
-    } else {
-        $sLink = "<a href=\"#\" onClick=\"switchDiv('$sSectionName', 'search');\">$sHeadingText</a>";
-    }
-    return "<tr bgcolor=\"" . getColour($iColour) . "\"><td width=\"100%\">$sLink</td></tr>\n";
-}
-
 function getSearchPage($sSearchString = "", $aMetaTagIDs = array(), $sHeading = null, $bSearchArchive = false) {
 	global $default;
 	if (is_null($sHeading)) {
@@ -84,23 +74,20 @@ function getSearchPage($sSearchString = "", $aMetaTagIDs = array(), $sHeading = 
 
     $sToRender  = renderHeading($sHeading);	
 
-    $sToRender .= "<div id=\"headings\">\n";
-    $sToRender .= "<table width=\"100%\">";
-    $sToRender .= renderSearchSection("searchLess", _("Simpler Search"), false);
-    $sToRender .= renderSearchSection("searchMore", _("More Options"), false);
-    $sToRender .= "</table>";
-    $sToRender .= "</div>";
+    $sToRender .= "<form name=\"advancedSearch\" method=\"POST\">";
 
-    $sToRender .= "<div id=\"contentDiv\" style=\"position:relative;visibility:hidden;width:500px;\" >\n";
+    $sToRender .= "<table width=\"100%\">\n";
+    $sToRender .= "<tr><td colspan=\"2\"><h3>" . _("Document Data") . "</h3></td></tr>";
+    $aBaseCriteria = Criteria::getBaseCriteria();
+    foreach ($aBaseCriteria as $k => $v) {
+        $sToRender .= $v->searchDisplay($_REQUEST);
+    }
+    $sToRender .= "<tr><td colspan=\"2\"><h3>" . _("Document Fields") . "</h3></td></tr>";
+    $aGenericCriteria = Criteria::getGenericCriteria();
+    foreach ($aGenericCriteria as $k => $v) {
+        $sToRender .= $v->searchDisplay($_REQUEST);
+    }
 
-    $sToRender .= "<div id=\"searchLess\" style=\"position:absolute;visibility:hidden;left:5px;\" >\n";
-
-	$sToRender .= "<table width=\"600\">\n";
-	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>" . _("Search text:") . " <input type=\"text\" size=\"50\" name=\"fSearchString\" value=\"$sSearchString\" />\n";
-	$sToRender .= "<input name=\"simpleSearch\" type=\"image\" src=\"" . KTHtml::getSearchButton() . "\" border=\"0\"/></td>\n";
-	$sToRender .= "</tr>\n";
-		
 	if ($bSearchArchive) {
 		$sToRender .= "<input type=\"hidden\" name=\"fToSearch\" value=\"Archived\"/>";
 	} else {
@@ -110,42 +97,10 @@ function getSearchPage($sSearchString = "", $aMetaTagIDs = array(), $sHeading = 
 		$sToRender .= "<tr><td>" . _("Search") . ": <select name=\"fToSearch\"><option value=\"Live\">" . _("Live") . "</option><option value=\"Archived\">" . _("Archived") . "</option></select> " . _("Documents") . "</td></tr>";		
 	}	
 
-	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>&nbsp</td>\n";
-	$sToRender .= "</tr>\n";
-	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>" . getMetaData($aMetaTagIDs) . "</td>\n";
-	$sToRender .= "</tr>\n";
-	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>&nbsp</td>\n";
-	$sToRender .= "</tr>\n";	
-	$sToRender .= "</table>\n";
-    $sToRender .= "</div>";
-
-
-    $sToRender .= "<div id=\"searchMore\" style=\"position:absolute;visibility:hidden;left:5px;\">";
-
-    $sToRender .= "<form name=\"advancedSearch\" method=\"POST\">";
-
-    $sToRender .= "<table width=\"100%\">\n";
-    $sToRender .= "<tr><td colspan=\"2\"><h3>Built-in metadata</h3></td></tr>";
-    $aBaseCriteria = Criteria::getBaseCriteria();
-    foreach ($aBaseCriteria as $k => $v) {
-        $sToRender .= $v->searchDisplay($_REQUEST);
-    }
-    $sToRender .= "<tr><td colspan=\"2\"><h3>Generic metadata</h3></td></tr>";
-    $aGenericCriteria = Criteria::getGenericCriteria();
-    foreach ($aGenericCriteria as $k => $v) {
-        $sToRender .= $v->searchDisplay($_REQUEST);
-    }
     $sToRender .= "</table>\n";
-	$sToRender .= "<input name=\"advancedSearch\" type=\"image\" src=\"" . KTHtml::getSearchButton() . "\" border=\"0\"/></td>\n";
+	$sToRender .= "<input name=\"advancedSearch\" type=\"image\" src=\"" . KTHtml::getSearchButton() . "\" border=\"0\"/>\n";
     $sToRender .= "</form>";
 
-    $sToRender .= "</div>";
-    $sToRender .= "</div>";
-
-	
 	return $sToRender . getSearchValidationJavaScript();
 }
 
@@ -196,8 +151,9 @@ function getSearchValidationJavaScript() {
 	$sToRender .= "\t\treturn false;\n\t}\n";
 	$sToRender .= "\treturn true;\n}\n";
 	$sToRender .= "-->\n";
-	$sToRender .= "</SCRIPT>\n\n";*/
-	return $sToRender;
+	$sToRender .= "</SCRIPT>\n\n";
+	return $sToRender;*/
+    return "";
 }
 
 function wasSelected($iID, $aMetaTagIDs) {
