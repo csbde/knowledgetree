@@ -36,10 +36,10 @@ if (checkSession()) {
 		$sMetaTagIDs = getChosenMetaDataTags();				
 		if (strlen($sMetaTagIDs) > 0) {
 			$sSQLSearchString = getSQLSearchString($fSearchString);
-			$sDocumentIDs = getApprovedDocumentString($sMetaTagIDs, $sSQLSearchString, "Archived");
-			if (strlen($sDocumentIDs) > 0) {
+			$aDocuments = searchForDocuments($sMetaTagIDs, $sSQLSearchString, "Archived");
+			if (count($aDocuments) > 0) {
 				// display the documents
-				$oContent->setHtml(renderArchivedDocumentsResultsPage($sDocumentIDs));
+				$oContent->setHtml(renderArchivedDocumentsResultsPage($aDocuments));
 			} else {
 				$oContent->setHtml(getSearchPage($fSearchString, explode(",",$sMetaTagIDs), "Archived Documents Search", true));				
 				$sErrorMessage = "No documents matched your search criteria";                              
@@ -64,6 +64,10 @@ if (checkSession()) {
 			$aSuccessDocuments = array();
 	        for ($i = 0; $i < count($aDocuments); $i++) {
 	        	if ($aDocuments[$i]) {
+	        		// TODO: check if there are requests for this document to be archived
+	        		//       and email them
+	        		// FIXME: refactor notification
+	        		
 	        		// set the status to live
 	        		$aDocuments[$i]->setStatusID(lookupStatusID("Live"));
 	        		if ($aDocuments[$i]->update()) {
@@ -88,7 +92,6 @@ if (checkSession()) {
 		}
 	} else {	
 		// display the advanced search form, but specify that only archived documents must be returned
-		//getSearchPage($sSearchString = "", $aMetaTagIDs = array(), $sHeading = "Advanced Search", $bSearchArchive = false) {
 		$oContent->setHtml(getSearchPage("", array(), "Archived Documents Search", true));
 	}
 
@@ -101,5 +104,32 @@ if (checkSession()) {
 	$main->setFormAction($_SERVER['PHP_SELF']);	
 	$main->setHasRequiredFields(true);			
 	$main->render();
-} 
+}
+
+
+/**
+* Generate a string consisting of all documents that match the search criteria
+* and that the user is allowed to see
+*/
+function searchForDocuments($sMetaTagIDs, $sSQLSearchString, $sStatus = "Live") {	
+	global $default;
+	$aDocuments = array();
+	$sQuery = "SELECT DISTINCT D.id " .
+				"FROM documents AS D INNER JOIN document_fields_link AS DFL ON DFL.document_id = D.id " .
+				"INNER JOIN document_fields AS DF ON DF.id = DFL.document_field_id " .
+				"INNER JOIN search_document_user_link AS SDUL ON SDUL.document_id = D.ID " .
+				"INNER JOIN status_lookup AS SL on D.status_id=SL.id " .			
+				"WHERE DF.ID IN ($sMetaTagIDs) " .
+				"AND (" . $sSQLSearchString . ") " .
+				"AND SL.name='$sStatus' " .
+				"AND SDUL.user_id = " . $_SESSION["userID"];
+				$default->log->info("searchForDocuments $sQuery");
+	$sql = $default->db;
+	$sql->query($sQuery);
+	while ($sql->next_record()) {
+		$aDocuments[] = & Document::get($sql->f("id"));
+	}
+
+	return $aDocuments;
+}
 ?>
