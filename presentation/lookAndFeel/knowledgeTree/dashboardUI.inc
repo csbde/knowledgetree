@@ -155,9 +155,11 @@ function renderDashboardNews() {
 	$sToRender .= "\t\t\t<table border=\"0\" width=\"100%\">\n";
 	// the main news item
 	$oMainDashboardNews = $aDashboardNews[0];
-	$sToRender .= "\t\t\t\t<tr><td><strong>" . $oMainDashboardNews->getSynopsis() . "</strong></td></tr>\n";	
-	$sToRender .= "\t\t\t\t<tr><td>" . $oMainDashboardNews->getImageLink() . "</td></tr>\n";
-	$sToRender .= "\t\t\t\t<tr><td>" . $oMainDashboardNews->getBodyFragment() . "..... <a href=\"#\" onClick=\"javascript:window.open('" . generateControllerUrl("viewNewsItem", "fNewsID=" . $oMainDashboardNews->getID()) . "', 'newwindow', config='height=200,width=300,left=0,top=0, toolbar=no, menubar=no, scrollbars=yes, resizable=no,location=no, directories=no, status=no');return false;\">more</a></td></tr>\n";
+	if ($oMainDashboardNews) {
+		$sToRender .= "\t\t\t\t<tr><td><strong>" . $oMainDashboardNews->getSynopsis() . "</strong></td></tr>\n";	
+		$sToRender .= "\t\t\t\t<tr><td>" . $oMainDashboardNews->getImageLink() . "</td></tr>\n";
+		$sToRender .= "\t\t\t\t<tr><td>" . $oMainDashboardNews->getBodyFragment() . "..... <a href=\"#\" onClick=\"javascript:window.open('" . generateControllerUrl("viewNewsItem", "fNewsID=" . $oMainDashboardNews->getID()) . "', 'newwindow', config='height=200,width=300,left=0,top=0, toolbar=no, menubar=no, scrollbars=yes, resizable=no,location=no, directories=no, status=no');return false;\">more</a></td></tr>\n";
+	}
 		
 	// links to old news items
 	/*
