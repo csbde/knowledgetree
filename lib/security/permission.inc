@@ -27,7 +27,12 @@ class Permission {
 	* @return boolean true if the current user has document write permission, false otherwise and set $_SESSION["errorMessage"]
 	*/	
 	function userHasDocumentWritePermission($iDocumentID) {
+		global $default;
 		$oDocument = & Document::get($iDocumentID);
+		if ($oDocument == null) {
+			$default->log->info("Failed to retrieve document with ID $iDocumentID from database");
+			return false;
+		}
 		if (Permission::userHasFolderWritePermission($oDocument->getFolderID()) ||
 			Permission::userHasWriteRoleForDocument($iDocumentID)) {
 			return true;
@@ -48,7 +53,12 @@ class Permission {
 	* @return boolean true if the current user has document read permission, false otherwise and set $_SESSION["errorMessage"]
 	*/	
 	function userHasDocumentReadPermission($iDocumentID) {
+		global $default;
         $oDocument = & Document::get($iDocumentID);
+		if ($oDocument == null) {
+			$default->log->info("Failed to retrieve document with ID $iDocumentID from database");
+			return false;
+		}
 		if (Permission::userHasDocumentWritePermission($iDocumentID) ||
 			Permission::userHasReadRoleForDocument($iDocumentID) ||
 			Permission::userHasFolderReadPermission($oDocument->getFolderID())) {
@@ -132,6 +142,10 @@ class Permission {
 	function userHasGroupWritePermissionForFolder($iFolderID) {
 		global $default, $lang_err_user_folder_write;
 		$oFolder = Folder::get($iFolderID);
+		if ($oFolder == null) {
+			$default->log->info("Failed to retrieve folder with ID $iFolderID from database");
+			return false;
+		}
 		$sql = $default->db;			
 		$sql->query("SELECT GFL.folder_id " .
 						"FROM groups_folders_link AS GFL INNER JOIN users_groups_link AS UGL ON GFL.group_id = UGL.group_id " .
@@ -179,6 +193,10 @@ class Permission {
 		global $default, $lang_err_user_folder_read;
 		$sql = $default->db;
 		$oFolder = Folder::get($iFolderID);
+		if ($oFolder == null) {
+			$default->log->info("Failed to retrieve folder with ID $iFolderID from database");
+			return false;
+		}
 		//$sql->query("SELECT * FROM " . $default->owl_groups_folders_table = "groups_folders_link" . " WHERE folder_id = " . $iFolderID . " AND user_id = " . $_SESSION["userID"] . " AND can_read = 1");
         $sql->query("SELECT GFL.folder_id " .
 						"FROM groups_folders_link AS GFL INNER JOIN users_groups_link AS UGL ON GFL.group_id = UGL.group_id " .
@@ -217,7 +235,7 @@ class Permission {
 	*
 	* @return boolean true if the user is in the group, false otherwise and sets $_SESSION["errorMessage"]
 	*/
-	function userIsInGroupName($sGroupName) {
+	function userIsInGroupName($sGroupName) {		
 		global $default, $lang_err_user_group;
 		$sql = $default->db;
 		$sql->query("SELECT GULT.id FROM " . $default->owl_users_groups_table . " AS GULT INNER JOIN " . $default->owl_groups_table . " AS G ON GULT.group_id = G.ID WHERE G.name = '" . $sGroupName . "' AND user_id = " . $_SESSION["userID"]);
