@@ -36,18 +36,13 @@ class DocumentBrowser {
         // no folder specified, so depending on the users groups, resolve to the right folderID
         if ($folderID == -1) {
             // no folder specified, so start at the root folder
+                        
+            // look up this users unit
+            $unitID = User::getUnitID($_SESSION["userID"]);
             
-            // if this is a system administrator, start her at the root folder
-            if (Permission::userIsSystemAdministrator()) {
-                $folderID = lookupID($default->owl_folders_table, "parent_id", 0);
-               $default->log->info("DocumentBrowser::browseByFolder looked up org root folderID=$folderID");
-            } else {
-                // start everyone else relative to their unit
+            if ($unitID) {
+                // if the user is in a unit, start at the unit's root folder
                 
-                // look up this users unit
-                // FIXME: what if the user belongs to multiple units?
-                //$unitID = lookupField($default->owl_groups_units_table, "unit_id", "group_id", $groupIDs[0]);
-                $unitID = User::getUnitID($_SESSION["userID"]);
                 // lookup the unit name
                 $unitName = lookupField($default->owl_units_table, "name", "id", $unitID);
                 $default->log->debug("DocumentBrowser::browseByFolder: unitID=$unitID; unitName=$unitName");               
@@ -58,8 +53,12 @@ class DocumentBrowser {
                
                 // now lookup the folderID
                 $folderID = lookupID($default->owl_folders_table, "name", $unitRootFolderName);
-                $default->log->info("DocumentBrowser::browseByFolder looked up unit root folderID=$folderID; unit root foldername=$unitRootFolderName");
-            }
+                $default->log->info("DocumentBrowser::browseByFolder looked up unit root folderID=$folderID; unit root foldername=$unitRootFolderName");                    
+            } else {
+                // else just start at the root
+                $folderID = lookupID($default->owl_folders_table, "parent_id", 0);
+                $default->log->info("DocumentBrowser::browseByFolder: starting at docroot folderID=$folderID");
+             }
         } else {
             $default->log->info("DocumentBrowser::browseByFolder starting at passed in folderID=$folderID");
         }
