@@ -34,7 +34,7 @@ function lookupGroupIDs($userID) {
     $groupIDs = array();
     
     $sql = new Owl_DB;
-    $sql->query("select group_id from $default->owl_groups_users_table where user_id = '$userID'");
+    $sql->query("select group_id from $default->owl_users_groups_table where user_id = '$userID'");
     while($sql->next_record()) {
         $groupIDs[] = $sql->f("group_id");
     }
@@ -99,9 +99,19 @@ function arrayToCss($array) {
 /**
  * Returns the current date time
  *
- * @return String the current date time (Y-m-d H:i:s)
+ * @return string the current date time (Y-m-d H:i:s)
  */
 function getCurrentDateTime() {
     return date("Y-m-d H:i:s", time());
+}
+
+/**
+ * Returns the specified date time, formatted as Y-m-d H:i:s
+ *
+ * @param $dateTime the date time to format
+ * @return string the formatted date time
+ */
+function formatDateTime($dateTime) {
+    return date("Y-m-d H:i:s", $dateTime);
 }
 ?>
