@@ -15,7 +15,8 @@ if (checkSession()) {
 	require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
 	require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
 	require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");	
-	require_once("$default->fileSystemRoot/lib/visualpatterns/PatternEditableTableSqlQuery.inc");					
+	require_once("$default->fileSystemRoot/lib/visualpatterns/PatternEditableTableSqlQuery.inc");
+	require_once("$default->fileSystemRoot/lib/visualpatterns/PatternMetaData.inc");					
 	require_once("$default->fileSystemRoot/presentation/Html.inc");
 	require_once("modifySpecificMetaDataUI.inc");
 	
