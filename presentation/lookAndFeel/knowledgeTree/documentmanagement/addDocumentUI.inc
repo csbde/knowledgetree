@@ -8,7 +8,7 @@
 *
 */
 
-function getDocumentType($iFolderID, $iDocumentTypeID) {
+function getDocumentType($iFolderID, $iDocumentTypeID, $iDependantDocumentID = null) {
 	global $default;
 	
 	$sWhereClause = "FDL.folder_id = $iFolderID";
@@ -16,7 +16,7 @@ function getDocumentType($iFolderID, $iDocumentTypeID) {
 	$oPatternListBox->setIncludeDefaultValue(true);
 	$oPatternListBox->setFromClause("INNER JOIN $default->owl_folder_doctypes_table AS FDL ON ST.id = FDL.document_type_id");
 	$oPatternListBox->setPostBackOnChange(true);
-	$oPatternListBox->setOnChangeAction("setActionAndSubmit('" . $_SERVER["PHP_SELF"] . "?fFolderID=$iFolderID')");
+	$oPatternListBox->setOnChangeAction("setActionAndSubmit('" . $_SERVER["PHP_SELF"] . "?fFolderID=$iFolderID" . (isset($iDependantDocumentID) ? "&fDependantDocumentID=$iDependantDocumentID" : "") . "')");
 	
 	if ($iDocumentTypeID) {
 		$oPatternListBox->setSelectedValue($iDocumentTypeID);
@@ -123,11 +123,24 @@ function getMetaDataForm($iFolderID, $iDocumentTypeID) {
 
 	return $sToRender;
 }	
-function getPage($iFolderID, $iDocumentTypeID, $iDependantDocumentID = null) {
+function getPage($iFolderID, $iDocumentTypeID, $iDependantDocumentID = null, $sMessage = "") {
     global $default;
     
-    $sToRender .= renderHeading("Add Document");
-    $sToRender .= renderFolderPath($iFolderID, "", false);
+    if (isset($iDependantDocumentID)) {
+    	$sQueryString =  "&fDependantDocumentID=$iDependantDocumentID";
+    }
+    
+    $sToRender .= renderHeading("Add " . (isset($iDependantDocumentID) ? "Dependant " : "") . "Document");
+    	    	
+    $sToRender .= renderFolderPath($iFolderID, "/control.php?action=addDocument" . $sQueryString, (isset($iDependantDocumentID) ? true : false));
+    	
+	if ($sMessage) {
+		$sToRender .= "<table border=\"0\" width=\"100%\">\n";
+		$sToRender .= "<tr>\n";	
+		$sToRender .= "\t<td><font color=\"red\">$sMessage</font></td>\n";
+		$sToRender .= "</tr>\n";
+		$sToRender .= "</table>\n";
+	}
 	
 	if ($iDocumentTypeID) {
 		$sToRender .= "<table><tr><td><b>Document Type<b></td></tr><tr><td>" . lookupName($default->owl_document_types_table, $iDocumentTypeID) . "</td></tr></table>";
@@ -135,17 +148,34 @@ function getPage($iFolderID, $iDocumentTypeID, $iDependantDocumentID = null) {
 		$sToRender .= getMetaDataForm($iFolderID, $iDocumentTypeID);
 		$sActionButtons = "<input type=\"image\" src=\"$default->graphicsUrl/widgets/add.gif\" border=\"0\"/>";
 		$sToRender .= "<input type=\"hidden\" name=\"fStore\" value=\"1\">";
-		$sActionButtons .= generateControllerLink("addDocument", "fFolderID=$iFolderID", "<img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\"/>") .
-						   generateControllerLink("browse", "fFolderID=$iFolderID", "<img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"/>");		
-	} else {
-		$sToRender .= getDocumentType($iFolderID, $iDocumentTypeID);
-		$sActionButtons .= generateControllerLink("browse", "fFolderID=$iFolderID", "<img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"/>");		
-	}		
+		$sActionButtons .= generateControllerLink("addDocument", "fFolderID=$iFolderID" . $sQueryString , "<img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\"/>") .
+						   generateControllerLink("browse", "fFolderID=$iFolderID", "<img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"/>");
 
-	$sToRender .= "<table border=\"0\" width=\"100%\" >\n";
-	$sToRender .= "<tr><td>$sActionButtons</td></tr>";
-	$sToRender .= "</table>";
-	
+		$sToRender .= "<table border=\"0\" width=\"100%\" >\n";
+		$sToRender .= "<tr><td>$sActionButtons</td></tr>";
+		$sToRender .= "</table>";
+		
+	} else {
+		// only allow document type choosing if the user has write permission
+		if (Permission::userHasFolderWritePermission($iFolderID)) {
+			$sToRender .= getDocumentType($iFolderID, $iDocumentTypeID, $iDependantDocumentID);
+			$sActionButtons .= generateControllerLink("browse", "fFolderID=$iFolderID", "<img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"/>");
+		}
+
+		$sToRender .= "<table border=\"0\" width=\"100%\" >\n";
+		$sToRender .= "<tr><td>$sActionButtons</td></tr>";
+		$sToRender .= "</table>";
+		
+		// display folders for browsing
+		$sToRender .= "<table border=\"0\" width=\"100%\">\n";
+		$sToRender .= "<tr>\n";
+		$sToRender .= "\t<td>" . renderFolderList($iFolderID, "/control.php?action=addDocument" . $sQueryString) . "<td>\n";
+		$sToRender .= "</tr>\n";	
+		$sToRender .= "<tr>\n";
+		$sToRender .= "</tr>";
+		$sToRender .= "</table><br>\n";
+	}
+
 	return $sToRender;
 }
 
