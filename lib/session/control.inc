@@ -64,7 +64,7 @@ function generateControllerUrl($action, $queryString = "") {
  * @return string the generated href
  */
 function generateControllerLink($action, $linkText, $queryString = "") {
-    return "<a href=\"" . generateControllerUrl($action, $queryString) . "\">$linkText</a>";
+    return "<a href=\"https://" . $_SERVER["SERVER_NAME"] . generateControllerUrl($action, $queryString) . "\">$linkText</a>";
 }
 
 /**
