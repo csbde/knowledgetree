@@ -45,7 +45,6 @@ class SqlResultSetAdapter {
 
     function SqlResultSetAdapter ($oResultSet) {
         global $default;
-        $default->log->info('SqlResultSetAdapter called');
         $this->oResultSet = $oResultSet;
         if (PEAR::isError($oResultSet)) {
             $this->broken = true;
@@ -54,7 +53,6 @@ class SqlResultSetAdapter {
 
     function isEmpty () {
         global $default;
-        $default->log->info('Checked if SqlResultSetAdapter was empty');
         if ($this->broken) {
             return $this->oResultSet;
         }
@@ -63,7 +61,6 @@ class SqlResultSetAdapter {
 
     function next () {
         global $default;
-        $default->log->info('Got next result from SqlResultSetAdapter');
         if ($this->broken) {
             return $this->oResultSet;
         }
@@ -81,7 +78,6 @@ class SqlResultAdapter {
     }
     function get ($sField) {
         global $default;
-        $default->log->info('Getting ' . $sField . ' field from SqlResultAdapter');
         return $this->oResult[$sField];
     }
 }
