@@ -123,14 +123,16 @@ function getUtilisationArchivingJavascript() {
 	return $sToRender;
 }
 	
-function renderTimePeriod($sHeading, $oTimePeriod = null) {
+function renderTimePeriod($sHeading, $sFooter = "", $oTimePeriod = null) {
 	global $default;
+	$sToRender .= "<tr valign=\"middle\">";
 	if (strlen($sHeading) > 0) {
-		$sToRender .= "<tr><td colspan=\"3\">$sHeading:</td></tr>";
+		$sToRender .= "<td>$sHeading:</td>";
 	}
-	$sToRender .= "<tr valign=\"middle\"><td><input type=\"text\" size=\"11\" name=\"fUnits\" value=\"" . ($oTimePeriod ? $oTimePeriod->getUnits() : "") . "\">";
-	$sToRender .= "&nbsp;&nbsp;" . renderTimeUnitsListBox( ($oTimePeriod ? $oTimePeriod->getTimeUnitID() : null) );
-	$sToRender .= "&nbsp;&nbsp;<a href=\"javascript:void();\" onclick=\"document.MainForm.fUnits.value='';document.MainForm.fTimeUnitID.value='';\"><img src=\"$default->graphicsUrl/widgets/reset.gif\" border=\"0\"></a></td></tr>";	
+	$sToRender .= "<td><input type=\"text\" size=\"11\" name=\"fUnits\" value=\"" . ($oTimePeriod ? $oTimePeriod->getUnits() : "") . "\">";
+	$sToRender .= "&nbsp;&nbsp;" . renderTimeUnitsListBox( ($oTimePeriod ? $oTimePeriod->getTimeUnitID() : null) ) . $sFooter;
+	$sToRender .= "&nbsp;&nbsp;<a href=\"javascript:void();\" onclick=\"document.MainForm.fUnits.value='';document.MainForm.fTimeUnitID.value='';\"><img src=\"$default->graphicsUrl/widgets/reset.gif\" border=\"0\"></a></td>";
+	$sToRender .= "</tr>";	
 	return $sToRender;		
 }
 	
@@ -155,17 +157,17 @@ function renderArchiveSettingsForm($iDocumentID, $oArchiveSettings, $iArchivingT
 		case "Date" : 
 			
 			$sToRender .= "<tr><th align=\"left\" colspan=\"2\">Archive By Date</th></tr>";						
-			$sToRender .= "<tr><td>Expiration Date:</td></tr>";
-			$sToRender .= "<tr><td valign=bottom><input type=\"text\" name=\"fExpirationDate\" size=\"10\" maxlength=\"10\" " . ($oArchiveSettings ? "value=\"" . ($oArchiveSettings->getExpirationDate() == "0000-00-00" ? "" : $oArchiveSettings->getExpirationDate()) . "\"" : "") . ">";			
+			$sToRender .= "<tr><td>Expiration Date:</td>";
+			$sToRender .= "<td valign=bottom><input type=\"text\" name=\"fExpirationDate\" size=\"10\" maxlength=\"10\" " . ($oArchiveSettings ? "value=\"" . ($oArchiveSettings->getExpirationDate() == "0000-00-00" ? "" : $oArchiveSettings->getExpirationDate()) . "\"" : "") . ">";			
 			$sToRender .= "&nbsp;&nbsp;<a href=\"javascript:show_calendar('MainForm.fExpirationDate',null,null,'YYYY-MM-DD');\" onmouseover=\"window.status='Date Picker';return true;\" onmouseout=\"window.status='';return true;\"><img src=\"$default->graphicsUrl/calendar/calendar.gif\" name=\"imgCalendar\" width=\"34\" height=\"21\" border=\"0\" alt=\"\"></a>";
 			$sToRender .= "&nbsp;&nbsp;<a href=\"javascript:void();\" onclick=\"document.MainForm.fExpirationDate.value=''\"><img src=\"$default->graphicsUrl/widgets/reset.gif\" border=\"0\"></a></td></tr>";
 					
 			if ($oArchiveSettings) {
 				$oTimePeriod = TimePeriod::get($oArchiveSettings->getTimePeriodID());
-				$sToRender .= renderTimePeriod("Expires after", $oTimePeriod);
+				$sToRender .= renderTimePeriod("Expires after", "from document creation date", $oTimePeriod);
 			} else {
-				$sToRender .= renderTimePeriod("Expires after");
-			}				
+				$sToRender .= renderTimePeriod("Expires after", "from document creation date");
+			}
 			$sToRender .= getDateArchivingJavascript();
 			break;		
 		case "Utilisation" :
