@@ -560,7 +560,7 @@ INSERT INTO folders (name, description, parent_id, creator_id, document_type_id,
 
 -- add a document             
 INSERT INTO documents (document_type_id, name, filename, size, creator_id, modified, description, security, mime_id, folder_id, major_version, minor_version, is_checked_out) 
-            VALUES (1, "Test File", "test.txt", "36", 0, "Dec 27th, 2000 at 05:17 pm", "", 0, 0, 0, 0, 1, 0);
+            VALUES (1, "Test File", "test.txt", "36", 0, "Dec 27th, 2000 at 05:17 pm", "", 0, 0, 3, 0, 1, 0);
 -- set the category metadata value
 INSERT INTO document_fields_link (document_id, document_field_id, value) VALUES (1, 1, "test");
 
