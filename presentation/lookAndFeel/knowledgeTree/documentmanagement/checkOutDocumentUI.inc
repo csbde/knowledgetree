@@ -52,7 +52,7 @@ function getCheckOutPage($oDocument, $bCheckedOut = false) {
     if ($bCheckedOut) {
     	$sToRender .= "<table>";
         $sToRender .= "<tr><td>You have now checked out this document. No one else can make updates to the document while you have it checked out. Click the Download button to get the latest version of the file. Please check it back in, as soon as you finish working on it.</td></tr>\n";
-        $sToRender .= "<tr><td><a href=\"$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $oDocument->getID() . "&fForDownload=1\"><img src=\"$default->graphicsUrl/widgets/download.gif\" border=\"0\" /></a>\n";    
+        $sToRender .= "<tr><td><a href=\"$default->rootUrl/control.php?action=downloadDocument&fDocumentID=" . $oDocument->getID() . "\"><img src=\"$default->graphicsUrl/widgets/download.gif\" border=\"0\" /></a>\n";    
         $sToRender .= "<a href=\"$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $oDocument->getID() . "\"><img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\" /></a></td>\n";
         $sToRender .= "</table>";        
     } else {
