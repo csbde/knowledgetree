@@ -86,7 +86,6 @@ $default->siteMap->addPage("userManagement", "/presentation/lookAndFeel/knowledg
 $default->siteMap->addPage("groupManagement", "/presentation/lookAndFeel/knowledgeTree/administration/admin.php?sectionName=groupAdministration", "Administration", UnitAdmin, "Group Management");
 $default->siteMap->addPage("unitManagement", "/presentation/lookAndFeel/knowledgeTree/administration/admin.php?sectionName=unitAdministration", "Administration", SysAdmin, "Unit Management");
 $default->siteMap->addPage("orgManagement", "/presentation/lookAndFeel/knowledgeTree/administration/admin.php?sectionName=orgAdministration", "Administration", SysAdmin, "Organisation Management");
-//$default->siteMap->addPage("doctypeManagement", "/presentation/lookAndFeel/knowledgeTree/administration/admin.php?sectionName=doctypeAdministration", "Administration", SysAdmin, "Document Type & Field Management");
 $default->siteMap->addPage("doctype", "/presentation/lookAndFeel/knowledgeTree/administration/admin.php?sectionName=documentTypeAdministration", "Administration", SysAdmin, "Document Type Management");
 $default->siteMap->addPage("docfield", "/presentation/lookAndFeel/knowledgeTree/administration/admin.php?sectionName=documentFieldAdministration", "Administration", SysAdmin, "Document Field Management");
 $default->siteMap->addPage("roleManagement", "/presentation/lookAndFeel/knowledgeTree/administration/admin.php?sectionName=roleAdministration", "Administration", SysAdmin, "Role Management");
@@ -148,10 +147,6 @@ $default->siteMap->addDefaultPage("removeUserFromGroup", "/presentation/lookAndF
 
 $default->siteMap->addSectionColour("userAdministration", "th", "056DCE");
 $default->siteMap->addSectionColour("userAdministration", "td", "6699CC");
-
-//document type management
-//$default->siteMap->addPage("doctype", "/presentation/lookAndFeel/knowledgeTree/administration/admin.php?sectionName=documentTypeAdministration", "doctypeAdministration", SysAdmin, "Document Type Management");
-//$default->siteMap->addPage("docfield", "/presentation/lookAndFeel/knowledgeTree/administration/admin.php?sectionName=documentFieldAdministration", "doctypeAdministration", SysAdmin, "Document Field Management");
 
 // document checkout management
 $default->siteMap->addPage("listDocs", "/presentation/lookAndFeel/knowledgeTree/administration/doccheckoutmanagement/listDocumentsBL.php", "doccheckoutAdministration", SysAdmin, "List Documents");
