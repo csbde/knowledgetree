@@ -10,7 +10,7 @@ require_once("$default->owl_fs_root/lib/authentication/class.AuthLdap.php");
  *
  * @version $Revision$ 
  * @author Mukhtar Dharsey
- * @package dmslib 
+ * @package lib.administration 
  */
 
 // uses function from groupamanager class

@@ -9,7 +9,7 @@ require_once("$default->owl_fs_root/lib/class.AuthLdap.php");
  *
  * @version $Revision$ 
  * @author Mukhtar Dharsey
- * @package dmslib
+ * @package lib.administration
  */
 /*-----------------------------------------------------------------*/
 /**

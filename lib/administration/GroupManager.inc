@@ -7,7 +7,7 @@
  *
  * @version $Revision: 1.0  
  * @author Mukhtar Dharsey
- * @package dmslib 
+ * @package lib.administration 
  */
  
 // group management
