@@ -52,7 +52,7 @@ class DashboardNews {
 	 * @param string the body
 	 * @param integer the rank
 	 */
-	function DashboardNews($sNewSynopsis, $sNewBody, $iNewRank, $mImage) {
+	function DashboardNews($sNewSynopsis, $sNewBody, $iNewRank, $mImage = "") {
 		// primary key not set as document is not stored yet
 		$this->iId = -1;
 		$this->setSynopsis($sNewSynopsis);
@@ -236,8 +236,8 @@ class DashboardNews {
                                   "body = '" . addslashes($this->sBody) . "', " .
                                   "rank = $this->iRank, " .
                                   "image = '" . addslashes($this->sImage) . "', " .
-                                  "image_size = $this->iImageSize, " .
-                                  "image_mime_type_id = $this->iImageMimeTypeID " .                                  
+                                  "image_size = $this->iImageSize " .
+                                  ($this->iImageMimeTypeID ? ", image_mime_type_id = $this->iImageMimeTypeID " : "") .                                  
            			 "WHERE id = $this->iId";
             $result = $sql->query($sQuery);
             if ($result) {
@@ -285,7 +285,7 @@ class DashboardNews {
             				 "mimetypeid" => $sql->f("image_mime_type_id") );
         				
             $oDashboardNews = & new DashboardNews(stripslashes($sql->f("synopsis")), stripslashes($sql->f("body")), $sql->f("rank"), $aImage);
-            $oDashboardNews->iId = $iDocumentID;
+            $oDashboardNews->iId = $iNewsID;
             return $oDashboardNews;          
         }
         return false;
