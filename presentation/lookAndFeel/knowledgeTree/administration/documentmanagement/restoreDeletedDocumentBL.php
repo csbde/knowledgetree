@@ -31,10 +31,10 @@ if (checkSession()) {
     
     if ($fDocumentID && $fFolderID) {
 		if (isset($fForMove)) {
-			if ($fConfirmed) {
-		    	$oDocument = Document::get($fDocumentID);
-		    	$oFolder = Folder::get($fFolderID);
-		    	if ($oDocument && $oFolder) {
+	    	$oDocument = Document::get($fDocumentID);
+	    	$oFolder = Folder::get($fFolderID);
+	    	if ($oDocument && $oFolder) {
+				if ($fConfirmed) {
     				require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");					
 					// restore the document
 					$oDocument->setStatusID(LIVE);
@@ -57,14 +57,19 @@ if (checkSession()) {
 						$oContent->setHtml(renderErrorPage("The document could not be restored.  Please try again later"));
 					}
 				} else {
-		    		// no document
-		    		$default->log->error("restoreDeletedDocumentBL.php documentID=$fDocumentID folderID=$fFolderID instantiation failed");
-		    		// TODO: redirect to list page with error
-		    		controllerRedirect("deletedDocuments", "");
+					require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");					
+			    	if (!Document::documentExists($oDocument->getFileName(), $fFolderID)) {
+						$oContent->setHtml(renderConfirmationPage($fDocumentID, $fFolderID));
+		    		} else {
+		    			// there is already a document with that filename here
+		    			$oContent->setHtml(statusPage("Restore Deleted Document", "", "A document with this file name (" . $oDocument->getFileName() . ") already exists in that folder.", "restoreDeletedDocument", "fDocumentID=$fDocumentID&fFolderID=$fFolderID"));
+		    		}
 				}
 			} else {
-				require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
-				$oContent->setHtml(renderConfirmationPage($fDocumentID, $fFolderID));
+	    		// no document
+	    		$default->log->error("restoreDeletedDocumentBL.php documentID=$fDocumentID folderID=$fFolderID instantiation failed");
+	    		// TODO: redirect to list page with error
+	    		controllerRedirect("deletedDocuments", "");
 			}
     	} else {
     		require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
