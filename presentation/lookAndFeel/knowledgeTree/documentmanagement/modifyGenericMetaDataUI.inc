@@ -1,5 +1,13 @@
 <?php
-
+/**
+ * $Id$
+ *
+ * Contains HTML information required to display the generic meta data edit page.
+ *
+ * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
+ * @package presentation.lookAndFeel.knowledgeTree.documentmanagement
+ */
+ 
 function getEditableGenericMetaData($iDocumentID, $iDocumentTypeID) {
     global $default;
     $sQuery = "SELECT DISTINCT $iDocumentID AS document_id, COALESCE(DFL.id, -1) AS id, DF.id AS document_field_id, DFL.value AS value, DF.name AS field_name " .
@@ -25,7 +33,10 @@ function getEditableGenericMetaData($iDocumentID, $iDocumentTypeID) {
 
 function getPage($iDocumentID, $iDocumentTypeID, $fFirstEdit) {
 	global $default;
-	$sToRender = "<table>\n";
+	
+	$sToRender .= renderHeading("Edit Generic Meta Data");
+	$sToRender .= displayDocumentPath($iDocumentID);
+	$sToRender .= "<table>\n";
 	$sToRender .= "<tr>\n";		
 	$sToRender .= "<td>\n";
 	$sToRender .= getEditableGenericMetaData($iDocumentID, $iDocumentTypeID);
@@ -54,5 +65,4 @@ function getPage($iDocumentID, $iDocumentTypeID, $fFirstEdit) {
 	
 	return $sToRender;
 }
-
 ?>

@@ -1,13 +1,15 @@
 <?php
 /**
-* Expected form variables:
-*	o fDocumentID - primary key of document being editid
-* Optional form variables:
-*	o fFirstTime - set by addDocumentBL on first time uploads and forces the user to
-*				   fill out the generic meta data
-* 
-* 
-*/
+ * $Id$
+ *
+ * Expected form variables:
+ *	o fDocumentID - primary key of document being editid
+ * Optional form variables:
+ *	o fFirstTime - set by addDocumentBL on first time uploads and forces the user to
+ *				   fill out the generic meta data
+ * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
+ * @package presentation.lookAndFeel.knowledgeTree.documentmanagement
+ */
 
 require_once("../../../../config/dmsDefaults.php");
 
@@ -19,6 +21,7 @@ if (checkSession()) {
 	require_once("$default->fileSystemRoot/lib/visualpatterns/PatternEditableTableSqlQuery.inc");
 	require_once("$default->fileSystemRoot/lib/visualpatterns/PatternMetaData.inc");					
 	require_once("$default->fileSystemRoot/presentation/Html.inc");
+	require_once("documentUI.inc");
 	require_once("modifyGenericMetaDataUI.inc");
 	
 	if (Permission::userHasDocumentWritePermission($fDocumentID)) {

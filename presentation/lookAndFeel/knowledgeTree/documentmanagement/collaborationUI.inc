@@ -1,12 +1,14 @@
 <?php
 /**
-* Presentation data for collaborationBL.php
-*
-* @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
-* @date 28 January 2003
-* @package presentation.lookAndFeel.knowledgeTree.documentmanagement
-*
-*/
+ * $Id$
+ *  
+ * Presentation data for collaborationBL.php
+ *
+ * Licensed under the GNU GPL. For full terms see the file DOCS/COPYING.
+ *
+ * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
+ * @package presentation.lookAndFeel.knowledgeTree.documentmanagement
+ */
 
 function getGroupRow($iGroupID) {	
 	$oGroup = Group::get($iGroupID);
@@ -47,7 +49,9 @@ function getDocumentRoutingPage($iGroupID, $iUserID, $iRoleID, $iSequenceNumber,
 	$sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
 	$sTDBGColour = $default->siteMap->getSectionColour($sSectionName, "td");
 	$sTHBGColour = $default->siteMap->getSectionColour($sSectionName, "th");
-	return "<table cellspacing=2, cellpadding=2, border=0>\n" .
+	return 	renderHeading("Edit Document Approval Routing") .
+			displayDocumentPath($fDocumentID) .
+			"<table cellspacing=2, cellpadding=2, border=0>\n" .
 			"<caption><b>Document Routing</b></caption>\n" .
 			"<tr>\n" .
 			"<td bgcolor=\"$sTDBGColour\"><b>Group</b></td><td>".getGroupRow($iGroupID)."</td>\n" .

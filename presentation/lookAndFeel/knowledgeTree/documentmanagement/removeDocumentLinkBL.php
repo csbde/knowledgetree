@@ -1,19 +1,20 @@
 <?php
 
 /**
-* Business logic for unlinking a parent document from a child documenbt
-*
-* Expected form variables:
-*	$fDocumentLinkID - primary key of document link to delete
-*	$fChildDocumentID - primary key of child document to which parent document is linked
-*	$fParentDocumentID - primary key of parent document
-*
-* @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
-* @date 22 May 2003
-*
-*/
-
-
+ * $Id$
+ *  
+ * Business logic for unlinking a parent document from a child documenbt
+ *
+ * Expected form variables:
+ *	$fDocumentLinkID - primary key of document link to delete
+ *	$fChildDocumentID - primary key of child document to which parent document is linked
+ *	$fParentDocumentID - primary key of parent document
+ *
+ * Licensed under the GNU GPL. For full terms see the file DOCS/COPYING.
+ * 
+ * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
+ * @package presentation.lookAndFeel.knowledgeTree.documentmanagement
+ */
 require_once("../../../../config/dmsDefaults.php");
 
 if (checkSession()) {
@@ -21,9 +22,9 @@ if (checkSession()) {
 	require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");	
 	require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentLink.inc");
 	require_once("$default->fileSystemRoot/presentation/Html.inc");
+	require_once("documentUI.inc");
 	require_once("removeDocumentLinkUI.inc");
-	
-	
+
 	if (Permission::userHasDocumentWritePermission($fParentDocumentID)) {
 		if (isset($fForDelete)) {
 			//deleting a document link
@@ -69,6 +70,4 @@ if (checkSession()) {
 		$main->render();
 	}
 }
-
-
 ?>
