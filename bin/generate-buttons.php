@@ -38,6 +38,8 @@ function getButtons() {
         "movehere.png" => _("Move Here"),
         "begin.png" => _("Begin"),
         "login.png" => _("Login"),
+        "checkall.png" => _("Check All"),
+        "clearall.png" => _("Clear All"),
     );
 }
 
