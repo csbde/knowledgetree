@@ -1,0 +1,44 @@
+<?php
+/**
+* Presentation information for adding a Org
+*
+* @author Mukhtar Dharsey
+* @date 5 February 2003
+* @package presentation.lookAndFeel.knowledgeTree.
+*
+*/
+// get add pages
+function getPage() {
+
+	global $default;
+	$aDisplayRowNames = array("Organisation Name:");
+	$aParameterNumbers = array(0);
+	$aDisplayColumnTypes = array(1);
+	$aRequired = array(1);
+	//$aDropDownListTableNames = array(10=>"document_types_lookup");
+
+	// create a text field that is required 
+	$oPatternCreate = & new PatternCreate("Organisation", "Orgmanagement\\Organisation.inc",$aDisplayRowNames, $aParameterNumbers, $aDisplayColumnTypes, $aRequired);
+	$oPatternCreate->setUniqueName("organisation");
+	
+	$sToRender .= "<br></br>\n";
+	$sToRender .= "<b>Add a New Organisation to the System:</b>\n";
+	$sToRender .= "<table>\n";
+	$sToRender .= "<br></br>\n";
+	$sToRender .= "<tr></tr>\n";
+	$sToRender .= "<tr>\n";
+	$sToRender .= "<td>" . $oPatternCreate->render() . "</td>\n";
+	$sToRender .= "</tr>\n";
+	$sToRender .= "<tr>\n";
+	$sToRender .= "</tr>\n";
+	$sToRender .= "<tr>\n";
+	$sToRender .= "</tr>\n";
+	$sToRender .= "<td align = right><input type=\"image\" src =\"$default->owl_graphics_url/widgets/add.gif\" value=\"Submit\" /></td>\n";	
+	$sToRender .= "</table>\n";
+	
+	return $sToRender;
+	
+	
+	
+}
+?>

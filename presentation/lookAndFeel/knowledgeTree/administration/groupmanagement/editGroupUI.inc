@@ -58,7 +58,6 @@ function getAddFailPage() {
 	
 	global $default;
 			
-	
 	$sToRender .= "<table>\n";
 	$sToRender .= "<br></br>\n";
 	$sToRender .= "<tr><b>Add Group Failed:</b></tr>\n";
@@ -72,10 +71,7 @@ function getAddFailPage() {
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
 		
-			
 	return $sToRender;
-	
-	
 	
 }
 
