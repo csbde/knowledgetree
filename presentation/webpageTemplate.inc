@@ -73,7 +73,7 @@ $link = "$default->owl_graphics_url/leftnav/links.gif" ;
 // TODO -> change to links the images as well
 $westLoad = "
        
-         <table  cellspacing = \"5\"  cellpadding = \"5\"  border  = \"1\" width = \"100%\" height = \"75%\">
+         <table  cellspacing = \"5\"  cellpadding = \"5\"  border  = \"0\" width = \"100%\" height = \"75%\">
          <tr><td>". $westRender ."</td></tr>
          </table>
          <hr>
