@@ -560,18 +560,29 @@ INSERT INTO language_lookup (name) VALUES ("Norwegian");
 INSERT INTO language_lookup (name) VALUES ("Portuguese");
 INSERT INTO language_lookup (name) VALUES ("Spanish");
 
--- system settings (from the owl html table)
-INSERT INTO system_settings (name, value) values ("table_border", "0");
-INSERT INTO system_settings (name, value) values ("table_header_bg", "gray");
-INSERT INTO system_settings (name, value) values ("table_cell_bg", "#FFCCCC");
-INSERT INTO system_settings (name, value) values ("table_cell_bg_alt", "#CCCCFF");
-INSERT INTO system_settings (name, value) values ("table_expand_width", "90%");
-INSERT INTO system_settings (name, value) values ("table_collapse_width", "50%");
-INSERT INTO system_settings (name, value) values ("body_bgcolor", "#FFEEDD");
-INSERT INTO system_settings (name, value) values ("body_textcolor", "#000066");
-INSERT INTO system_settings (name, value) values ("body_link", "#000000");
-INSERT INTO system_settings (name, value) values ("body_vlink", "#000000");
-INSERT INTO system_settings (name, value) values ("main_header_bgcolor", "#d0d0d0");
+---- system settings
+-- ldap
+INSERT INTO system_settings (name, value) values ("ldapServer", "192.168.1.9");
+INSERT INTO system_settings (name, value) values ("ldapRootDn", "o=Medical Research Council");
+-- email settings
+INSERT INTO system_settings (name, value) values ("emailServer", "mail.jamwarehouse.com");
+INSERT INTO system_settings (name, value) values ("emailFrom", "owl@jamwarehouse.com");
+INSERT INTO system_settings (name, value) values ("emailFromName", "owl");
+-- directories
+INSERT INTO system_settings (name, value) values ("filesystemRoot", "c:/owl");
+INSERT INTO system_settings (name, value) values ("documentRoot", "c:/owl/Documents");
+INSERT INTO system_settings (name, value) values ("languageDirectory", "c:/owl/locale");
+INSERT INTO system_settings (name, value) values ("uiDirectory", "c:/owl/presentation/lookAndFeel/knowledgeTree");
+-- urls
+INSERT INTO system_settings (name, value) values ("rootUrl", "");
+INSERT INTO system_settings (name, value) values ("graphicsUrl", "/graphics");
+INSERT INTO system_settings (name, value) values ("uiUrl", "/presentation/lookAndFeel/knowledgeTree");
+-- general settings
+INSERT INTO system_settings (name, value) values ("useFs", "true");
+INSERT INTO system_settings (name, value) values ("defaultLanguage", "NewEnglish");
+--INSERT INTO system_settings (name, value) values ("notificationLink", "http://$_SERVER[SERVER_NAME]$default->owl_root_url/");
+INSERT INTO system_settings (name, value) values ("sessionTimeout", "1200");
+
 
 -- document statuses
 INSERT INTO web_documents_status_lookup (name) VALUES ("Pending");
