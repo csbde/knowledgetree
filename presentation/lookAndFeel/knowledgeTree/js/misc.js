@@ -1,6 +1,5 @@
 function setActionAndSubmit(newAction) {	
-    document.MainForm.action = newAction;
-	alert(document.MainForm.action);
+    document.MainForm.action = newAction;	
     document.MainForm.submit();
 }
 
