@@ -316,6 +316,11 @@ ADD CONSTRAINT PK_document_fields
 PRIMARY KEY (id)
 ;
 
+ALTER TABLE data_types
+ADD CONSTRAINT PK_data_types
+PRIMARY KEY(id)
+;
+
 ALTER TABLE document_fields_link
 ADD CONSTRAINT PK_document_fields_link
 PRIMARY KEY (id)
@@ -383,6 +388,11 @@ PRIMARY KEY (id)
 
 ALTER TABLE language_lookup
 ADD CONSTRAINT PK_language_lookup
+PRIMARY KEY (id)
+;
+
+ALTER TABLE metadata_lookup
+ADD CONSTRAINT PK_metadata_lookup
 PRIMARY KEY (id)
 ;
 
