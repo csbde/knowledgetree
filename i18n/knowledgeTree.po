@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-28 13:31+0200\n"
+"POT-Creation-Date: 2004-11-03 14:38+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,20 +16,51 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/addFolderDocTypeBL.php:61
+msgid "A database error occured while attempting to assign the document type to the folder"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/deleteFolderDocTypeBL.php:53
+msgid "A document in this folder is currently assigned this type.  You may not delete it."
+msgstr ""
+
 #: presentation/lookAndFeel/knowledgeTree/administration/documentmanagement/restoreDeletedDocumentBL.php:81
 #, php-format
 msgid "A document with this file name (%s) already exists in that folder."
 msgstr ""
 
-#: presentation/login.php:141
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentBL.php:163
+msgid "A document with this file name already exists in this folder"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/addGroupFolderLinkBL.php:64
+msgid "A folder access entry for the selected folder and group already exists."
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentBL.php:179
+msgid "A valid document type was not selected."
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/groupFolderLinkUI.inc:46
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/groupFolderLinkUI.inc:71
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/groupFolderLinkUI.inc:98
+msgid "Access Rights"
+msgstr ""
+
+#: presentation/login.php:142
 msgid "Account has been DISABLED, contact the System Adminstrator"
 msgstr ""
 
+#: config/dmsDefaults.php:54
 #: presentation/lookAndFeel/knowledgeTree/administration/news/newsUI.inc:46
 #: presentation/lookAndFeel/knowledgeTree/administration/news/newsUI.inc:89
 #: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:218
 #: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:276
 msgid "Active"
+msgstr ""
+
+#: bin/generate-buttons.php:5
+msgid "Add"
 msgstr ""
 
 #: config/siteMap.inc:55
@@ -52,6 +83,8 @@ msgstr ""
 msgid "Add A Group"
 msgstr ""
 
+#: presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/addGroupBL.php:56
+#: presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/addGroupBL.php:59
 #: presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/addGroupUI.inc:33
 msgid "Add A New Group"
 msgstr ""
@@ -68,11 +101,24 @@ msgstr ""
 msgid "Add A User"
 msgstr ""
 
+#: presentation/lookAndFeel/knowledgeTree/administration/websitemanagement/listWebsitesUI.inc:56
+msgid "Add A Website"
+msgstr ""
+
+#: bin/generate-buttons.php:9
+msgid "Add Comment"
+msgstr ""
+
 #: presentation/lookAndFeel/knowledgeTree/administration/news/newsUI.inc:133
 msgid "Add Dashboard News"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentUI.inc:208
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentUI.inc:158
+msgid "Add Dependant Document"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentUI.inc:160
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentUI.inc:212
 msgid "Add Document"
 msgstr ""
 
@@ -97,8 +143,8 @@ msgstr ""
 msgid "Add Document Field Lookups"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/addDocTypeUI.inc:42
 #: presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/addDocTypeSuccess.php:37
+#: presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/addDocTypeUI.inc:42
 msgid "Add Document Type"
 msgstr ""
 
@@ -130,8 +176,8 @@ msgstr ""
 msgid "Add Group to a Unit"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/administration/orgmanagement/addOrgUI.inc:40
 #: presentation/lookAndFeel/knowledgeTree/administration/orgmanagement/addOrgSuccess.php:36
+#: presentation/lookAndFeel/knowledgeTree/administration/orgmanagement/addOrgUI.inc:40
 msgid "Add Organisation"
 msgstr ""
 
@@ -150,16 +196,16 @@ msgstr ""
 msgid "Add Type Specific Field to Document Type"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/addUnitUI.inc:32
-#: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/addUnitUI.inc:62
-#: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/addUnitUI.inc:81
-#: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/addUnitUI.inc:100
-#: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/addUnitUI.inc:117
 #: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/addUnitToOrgUI.inc:113
 #: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/addUnitToOrgUI.inc:134
 #: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/addUnitToOrgUI.inc:153
 #: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/addUnitToOrgUI.inc:174
 #: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/addUnitToOrgUI.inc:192
+#: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/addUnitUI.inc:32
+#: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/addUnitUI.inc:62
+#: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/addUnitUI.inc:81
+#: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/addUnitUI.inc:100
+#: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/addUnitUI.inc:117
 #: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/removeUnitFromOrgUI.inc:121
 #: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/removeUnitFromOrgUI.inc:142
 #: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/removeUnitFromOrgUI.inc:161
@@ -190,10 +236,14 @@ msgstr ""
 msgid "Add User to Group"
 msgstr ""
 
+#: presentation/lookAndFeel/knowledgeTree/administration/websitemanagement/addWebsiteSuccess.php:36
 #: presentation/lookAndFeel/knowledgeTree/administration/websitemanagement/addWebsiteUI.inc:44
 #: presentation/lookAndFeel/knowledgeTree/administration/websitemanagement/addWebsiteUI.inc:64
-#: presentation/lookAndFeel/knowledgeTree/administration/websitemanagement/addWebsiteSuccess.php:36
 msgid "Add Website"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/discussions/addCommentUI.inc:51
+msgid "Add a Comment"
 msgstr ""
 
 #: presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/editDocTypeFieldsUI.inc:49
@@ -204,36 +254,101 @@ msgstr ""
 msgid "Add user to a group"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/addUserUI.inc:157
-#: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/addUnitUI.inc:64
 #: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/addUnitToOrgUI.inc:136
+#: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/addUnitUI.inc:64
 #: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/removeUnitFromOrgUI.inc:144
+#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/addUserUI.inc:157
 msgid "Addition Successful!"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/addUserUI.inc:165
-#: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/addUnitUI.inc:83
-#: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/addUnitToOrgUI.inc:155
-#: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/removeUnitFromOrgUI.inc:163
 #: presentation/lookAndFeel/knowledgeTree/administration/linkmanagement/addLinkSuccess.php:43
 #: presentation/lookAndFeel/knowledgeTree/administration/linkmanagement/addLinkUI.inc:64
+#: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/addUnitToOrgUI.inc:155
+#: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/addUnitUI.inc:83
+#: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/removeUnitFromOrgUI.inc:163
+#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/addUserUI.inc:165
+#: presentation/lookAndFeel/knowledgeTree/administration/websitemanagement/addWebsiteSuccess.php:42
+#: presentation/lookAndFeel/knowledgeTree/administration/websitemanagement/addWebsiteUI.inc:66
 msgid "Addition Unsuccessful"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/addUnitUI.inc:119
+#: presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/addGroupBL.php:56
+#: presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/addGroupBL.php:59
+msgid "Addition Unsuccessful!"
+msgstr ""
+
 #: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/addUnitToOrgUI.inc:194
+#: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/addUnitUI.inc:119
 #: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/removeUnitFromOrgUI.inc:202
 msgid "Addition to Organisation Unsuccessful"
+msgstr ""
+
+#: lib/visualpatterns/NavBar.inc:203
+msgid "Admin"
 msgstr ""
 
 #: config/siteMap.inc:108
 msgid "Administration"
 msgstr ""
 
+#: config/siteMap.inc:234 lib/visualpatterns/NavBar.inc:202
 #: presentation/lookAndFeel/knowledgeTree/search/advancedSearchUI.inc:69
 #: presentation/lookAndFeel/knowledgeTree/search/advancedSearchUI.inc:129
-#: config/siteMap.inc:234
 msgid "Advanced Search"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/viewDependantDocumentsBL.php:67
+msgid "An error occured attempting to store the dependant document"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/deleteDocumentBL.php:191
+msgid "An error occured deleting the following document(s):"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/moveDocumentBL.php:135
+msgid "An error occured moving the following document(s):"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/deleteDependantDocumentBL.php:62
+msgid "An error occured while attempting to delete the dependant document"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/modifyBL.php:95
+msgid "An error occured while attempting to update the document"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewBL.php:211
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewBL.php:215
+msgid "An error occured while attempting to update the document for publishing.  Please try again later."
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/passwordManagementBL.php:59
+#: presentation/lookAndFeel/knowledgeTree/preferences/passwordManagementBL.php:57
+msgid "An error occured while attempting to update the user's password"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/collaborationRollbackBL.php:67
+msgid "An error occured while creating the document transaction"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentBL.php:154
+msgid "An error occured while storing the document in the database, please try again."
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentBL.php:145
+msgid "An error occured while storing the document on the file system, please try again."
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/removeDocumentLinkBL.php:62
+msgid "An error occured whilst attempting to delete the link between the two documents"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentLinkBL.php:63
+msgid "An error occured whilst attempting to link the two documents"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/deleteFolderBL.php:123
+msgid "An error occured whilst retrieving the folder from the database"
 msgstr ""
 
 #: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/removeUnitFromOrgBL.php:50
@@ -245,8 +360,30 @@ msgstr ""
 msgid "An error occurred while creating this news item."
 msgstr ""
 
+#: presentation/lookAndFeel/knowledgeTree/subscriptions/addSubscriptionBL.php:92
+msgid "An error occurred while creating this subscription"
+msgstr ""
+
 #: presentation/lookAndFeel/knowledgeTree/administration/news/removeNewsBL.php:56
 msgid "An error occurred while deleting this news item."
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/subscriptions/removeSubscriptionBL.php:69
+#: presentation/lookAndFeel/knowledgeTree/subscriptions/removeSubscriptionBL.php:103
+msgid "An error occurred while removing this subscription."
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/checkInDocumentBL.php:132
+msgid "An error occurred while storing the new file on the filesystem"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/checkInDocumentBL.php:125
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/checkOutDocumentBL.php:101
+msgid "An error occurred while storing this document in the database"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/modifyFolderDataBL.php:76
+msgid "An error occurred while updating this folder"
 msgstr ""
 
 #: presentation/lookAndFeel/knowledgeTree/administration/news/editNewsBL.php:87
@@ -254,12 +391,28 @@ msgstr ""
 msgid "An error occurred while updating this news item."
 msgstr ""
 
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/createDependantDocumentBL.php:77
+msgid "An error occurred whilst trying to create the dependant document"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/deleteFolderDocTypeBL.php:72
+msgid "An error was encountered while attempting to delete this link from the database"
+msgstr ""
+
+#: bin/generate-buttons.php:20
+msgid "Approve"
+msgstr ""
+
+#: bin/generate-buttons.php:32
+msgid "Archive"
+msgstr ""
+
 #: presentation/lookAndFeel/knowledgeTree/documentmanagement/archiving/archiveSettingsUI.inc:253
 msgid "Archive Document"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:602
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:650
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:626
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:674
 msgid "Archive Settings"
 msgstr ""
 
@@ -279,10 +432,10 @@ msgstr ""
 msgid "Archived Documents Restoration Status"
 msgstr ""
 
+#: presentation/lookAndFeel/knowledgeTree/administration/documentmanagement/archivedDocumentsUI.inc:90
 #: presentation/lookAndFeel/knowledgeTree/administration/documentmanagement/manageArchivedDocumentsBL.php:59
 #: presentation/lookAndFeel/knowledgeTree/administration/documentmanagement/manageArchivedDocumentsBL.php:63
 #: presentation/lookAndFeel/knowledgeTree/administration/documentmanagement/manageArchivedDocumentsBL.php:132
-#: presentation/lookAndFeel/knowledgeTree/administration/documentmanagement/archivedDocumentsUI.inc:90
 msgid "Archived Documents Search"
 msgstr ""
 
@@ -294,12 +447,21 @@ msgstr ""
 msgid "Archiving Settings"
 msgstr ""
 
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/archiving/archiveSettingsUI.inc:70
 #: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:171
 msgid "Archiving Type"
 msgstr ""
 
 #: presentation/lookAndFeel/knowledgeTree/administration/doccheckoutmanagement/editDocCheckoutUI.inc:44
 msgid "Are you sure you want to Check In the document:"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:253
+msgid "Are you sure you want to approve?  You will not have access to this document until the collaboration process is complete (unless the document is rejected in a subsequent step)"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/moveDocumentUI.inc:32
+msgid "Are you sure you want to move"
 msgstr ""
 
 #: presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/editDocTypeFieldsUI.inc:65
@@ -344,8 +506,16 @@ msgstr ""
 msgid "Are you sure you wish to Remove this Unit:"
 msgstr ""
 
+#: presentation/lookAndFeel/knowledgeTree/administration/websitemanagement/removeWebsiteUI.inc:34
+msgid "Are you sure you wish to Remove this WebSite?"
+msgstr ""
+
 #: presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/assignGroupToUnitUI.inc:94
 msgid "Are you sure you wish to assign the Group to the Unit?"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/groupFolderLinkUI.inc:55
+msgid "Are you sure you wish to delete this folder access entry?"
 msgstr ""
 
 #: presentation/lookAndFeel/knowledgeTree/administration/news/newsUI.inc:179
@@ -356,10 +526,20 @@ msgstr ""
 msgid "Are you sure you wish to remove the Group from the Unit?"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/editUserGroupsUI.inc:133
 #: presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/editGroupUnitUI.inc:143
 #: presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/editDocFieldLookupsUI.inc:159
+#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/editUserGroupsUI.inc:133
+#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/removeUserFromGroupUI.inc:117
 msgid "Are you sure you wish to remove this user from the Group?"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/removeUserUI.inc:33
+#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/removeUserUI.inc:106
+msgid "Are you sure you wish to remove this user?"
+msgstr ""
+
+#: bin/generate-buttons.php:17
+msgid "Assign"
 msgstr ""
 
 #: presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/assignGroupToUnitUI.inc:48
@@ -370,17 +550,43 @@ msgstr ""
 msgid "Assign Group to Unit"
 msgstr ""
 
+#: presentation/lookAndFeel/knowledgeTree/discussions/viewDiscussionUI.inc:110
+msgid "Author"
+msgstr ""
+
+#: bin/generate-buttons.php:8
+#: presentation/lookAndFeel/knowledgeTree/noAccess.php:29
+msgid "Back"
+msgstr ""
+
+#: bin/generate-buttons.php:39
+msgid "Begin"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/passwordManagementBL.php:69
+#: presentation/lookAndFeel/knowledgeTree/preferences/passwordManagementBL.php:67
+msgid "Blank passwords are not valid.  Please try again."
+msgstr ""
+
 #: presentation/lookAndFeel/knowledgeTree/administration/news/newsUI.inc:46
 #: presentation/lookAndFeel/knowledgeTree/administration/news/newsUI.inc:67
 #: presentation/lookAndFeel/knowledgeTree/administration/news/newsUI.inc:86
 msgid "Body"
 msgstr ""
 
+#: bin/generate-buttons.php:33
+msgid "Browse"
+msgstr ""
+
 #: presentation/lookAndFeel/knowledgeTree/documentmanagement/templateDocumentBrowseUI.inc:313
 msgid "Browse Collection"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/browseUI.inc:342
+#: lib/visualpatterns/NavBar.inc:200
+msgid "Browse Collections"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/browseUI.inc:359
 msgid "Browse collection"
 msgstr ""
 
@@ -393,6 +599,10 @@ msgstr ""
 msgid "Can't delete document field"
 msgstr ""
 
+#: bin/generate-buttons.php:6
+msgid "Cancel"
+msgstr ""
+
 #: presentation/lookAndFeel/knowledgeTree/documentmanagement/browseUI.inc:45
 msgid "Category"
 msgstr ""
@@ -401,12 +611,17 @@ msgstr ""
 msgid "Change Mandatory Setting:"
 msgstr ""
 
+#: bin/generate-buttons.php:34
 #: presentation/lookAndFeel/knowledgeTree/administration/doccheckoutmanagement/listDocumentsBL.php:45
 msgid "Check In"
 msgstr ""
 
 #: presentation/lookAndFeel/knowledgeTree/documentmanagement/checkInDocumentUI.inc:112
 msgid "Check In Document"
+msgstr ""
+
+#: bin/generate-buttons.php:35
+msgid "Check Out"
 msgstr ""
 
 #: presentation/lookAndFeel/knowledgeTree/documentmanagement/checkOutDocumentUI.inc:62
@@ -429,7 +644,11 @@ msgstr ""
 msgid "Choose from existing type specific fields"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:669
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/archiving/archiveSettingsUI.inc:69
+msgid "Choose the archiving type for this document"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:693
 msgid "Choose the website to publish to:"
 msgstr ""
 
@@ -449,8 +668,47 @@ msgstr ""
 msgid "Click on the Document Type name to edit its fields, or click 'Back' to return to List Document Fields."
 msgstr ""
 
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/collaborationRollbackUI.inc:42
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/emailUI.inc:94
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewHistoryUI.inc:47
+msgid "Comment"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/discussions/addCommentBL.php:90
+msgid "Comment Object failed in creation"
+msgstr ""
+
 #: presentation/lookAndFeel/knowledgeTree/preferences/passwordManagementUI.inc:43
 msgid "Confirm password"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/checkInDocumentBL.php:161
+msgid "Could not check in this document"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/checkOutDocumentBL.php:120
+msgid "Could not check out this document"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/discussions/addCommentBL.php:93
+msgid "Could not create a new discussion thread."
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/deleteDocumentBL.php:162
+msgid "Could not delete document on file system"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/deleteDocumentBL.php:180
+msgid "Could not load document in database"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/moveDocumentBL.php:102
+msgid "Could not move document on file system"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/deleteDocumentBL.php:173
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/moveDocumentBL.php:108
+msgid "Could not update document in database"
 msgstr ""
 
 #: presentation/lookAndFeel/knowledgeTree/documentmanagement/createDependantDocumentUI.inc:39
@@ -481,32 +739,63 @@ msgstr ""
 msgid "Current Units"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/administration/news/newsUI.inc:148
+#: presentation/lookAndFeel/knowledgeTree/discussions/viewDiscussionUI.inc:43
+msgid "Current document has no discussion.  Press the ADD button to start a discussion."
+msgstr ""
+
+#: lib/visualpatterns/NavBar.inc:199
+msgid "Dashboard"
+msgstr ""
+
 #: config/siteMap.inc:123
+#: presentation/lookAndFeel/knowledgeTree/administration/news/newsUI.inc:148
 msgid "Dashboard News Management"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/listDocFieldsUI.inc:37
 #: presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/editDocFieldUI.inc:53
+#: presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/listDocFieldsUI.inc:37
 msgid "Data Type"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/addDocFieldUI.inc:32
+msgid "Data Types"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/discussions/addCommentUI.inc:94
+#: presentation/lookAndFeel/knowledgeTree/discussions/viewCommentUI.inc:69
+#: presentation/lookAndFeel/knowledgeTree/discussions/viewDiscussionUI.inc:111
+msgid "Date"
 msgstr ""
 
 #: lib/browse/Browser.inc:68
 msgid "Date Created"
 msgstr ""
 
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewHistoryUI.inc:48
+msgid "Datetime"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/dashboardUI.inc:128
+msgid "Days"
+msgstr ""
+
 #: presentation/lookAndFeel/knowledgeTree/foldermanagement/viewDependantDocumentsUI.inc:46
 msgid "Default creator"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/listDocTypesUI.inc:37
-#: presentation/lookAndFeel/knowledgeTree/administration/websitemanagement/listWebsitesUI.inc:36
-#: presentation/lookAndFeel/knowledgeTree/administration/rolemanagement/listRolesUI.inc:35
-#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/listUsersUI.inc:82
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewBL.php:121
+msgid "Default users have not been assigned at the folder level.  Please set these up, or choose specific users for this document before attempting to start collaboration."
+msgstr ""
+
+#: bin/generate-buttons.php:14
 #: presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/listGroupsUI.inc:71
 #: presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/listDocFieldsUI.inc:37
-#: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/listUnitsUI.inc:50
+#: presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/listDocTypesUI.inc:37
 #: presentation/lookAndFeel/knowledgeTree/administration/linkmanagement/listLinksUI.inc:36
+#: presentation/lookAndFeel/knowledgeTree/administration/rolemanagement/listRolesUI.inc:35
+#: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/listUnitsUI.inc:50
+#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/listUsersUI.inc:82
+#: presentation/lookAndFeel/knowledgeTree/administration/websitemanagement/listWebsitesUI.inc:36
 msgid "Delete"
 msgstr ""
 
@@ -518,8 +807,9 @@ msgstr ""
 msgid "Delete Dashboard News"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/deleteDocumentUI.inc:38
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/deleteDocumentUI.inc:63
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/deleteDocumentUI.inc:29
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/deleteDocumentUI.inc:60
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/moveDocumentUI.inc:90
 msgid "Delete Document"
 msgstr ""
 
@@ -548,13 +838,18 @@ msgstr ""
 msgid "Deleted Documents"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/administration/orgmanagement/removeOrgUI.inc:90
-#: presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/removeDocTypeUI.inc:89
-#: presentation/lookAndFeel/knowledgeTree/administration/rolemanagement/removeRoleUI.inc:92
-#: presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/removeGroupFail.php:42
+#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/removeUserUI.inc:86
+msgid "Deletion Failed"
+msgstr ""
+
 #: presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/editGroupFail.php:42
+#: presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/removeGroupFail.php:42
 #: presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/removeDocFieldUI.inc:86
+#: presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/removeDocTypeUI.inc:89
 #: presentation/lookAndFeel/knowledgeTree/administration/linkmanagement/removeLinkUI.inc:93
+#: presentation/lookAndFeel/knowledgeTree/administration/orgmanagement/removeOrgUI.inc:90
+#: presentation/lookAndFeel/knowledgeTree/administration/rolemanagement/removeRoleUI.inc:92
+#: presentation/lookAndFeel/knowledgeTree/administration/websitemanagement/removeWebsiteUI.inc:95
 msgid "Deletion Failed!"
 msgstr ""
 
@@ -567,11 +862,13 @@ msgstr ""
 msgid "Deletion of Unit Organisation Link Failed!"
 msgstr ""
 
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/escalateDependantDocumentBL.php:44
 #: presentation/lookAndFeel/knowledgeTree/documentmanagement/escalateDependantDocumentUI.inc:31
 msgid "Dependant Document Send Escalation Message"
 msgstr ""
 
 #: presentation/lookAndFeel/knowledgeTree/dashboardUI.inc:174
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/viewDependantDocumentsUI.inc:55
 msgid "Dependant Documents"
 msgstr ""
 
@@ -591,36 +888,41 @@ msgstr ""
 msgid "Do you wish to remove the Unit from the Organisation?"
 msgstr ""
 
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:309
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:338
 #: presentation/lookAndFeel/knowledgeTree/search/advancedSearchUI.inc:119
 #: presentation/lookAndFeel/knowledgeTree/search/standardSearchUI.inc:62
 #: presentation/lookAndFeel/knowledgeTree/search/standardSearchUI.inc:95
 #: presentation/lookAndFeel/knowledgeTree/search/standardSearchUI.inc:126
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:309
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:338
 msgid "Document"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/administration/doccheckoutmanagement/listDocumentsBL.php:39
 #: config/siteMap.inc:121
+#: presentation/lookAndFeel/knowledgeTree/administration/doccheckoutmanagement/listDocumentsBL.php:39
 msgid "Document Checkout Management"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/discussions/addCommentUI.inc:87
+#: presentation/lookAndFeel/knowledgeTree/discussions/viewCommentUI.inc:39
+msgid "Document Comment"
 msgstr ""
 
 #: presentation/lookAndFeel/knowledgeTree/documentmanagement/modifyUI.inc:36
 #: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:64
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:599
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:647
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:623
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:671
 msgid "Document Data"
 msgstr ""
 
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:613
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:663
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:688
 #: tests/documentmanagement/viewUI.inc:388
 #: tests/documentmanagement/viewUI.inc:429
 #: tests/documentmanagement/viewUI.inc:473
 #: tests/documentmanagement/viewUI.inc:531
 #: tests/documentmanagement/viewUI.inc:579
 #: tests/documentmanagement/viewUI.inc:616
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:589
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:639
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:664
 msgid "Document Detail"
 msgstr ""
 
@@ -628,26 +930,30 @@ msgstr ""
 msgid "Document Discussion Comments"
 msgstr ""
 
+#: presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/metadatamanagement/addMetaDataUI.inc:39
+#: presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/metadatamanagement/addMetaDataUI.inc:67
 #: presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/metadatamanagement/editMetaDataUI.inc:53
 #: presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/metadatamanagement/editMetaDataUI.inc:86
 #: presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/metadatamanagement/editMetaDataUI.inc:117
-#: presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/metadatamanagement/addMetaDataUI.inc:39
-#: presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/metadatamanagement/addMetaDataUI.inc:67
 #: presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/metadatamanagement/removeMetaDataUI.inc:40
 #: presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/metadatamanagement/removeMetaDataUI.inc:71
 #: presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/metadatamanagement/removeMetaDataUI.inc:104
 msgid "Document Field"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/listDocFieldsUI.inc:53
 #: config/siteMap.inc:117
+#: presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/listDocFieldsUI.inc:53
 msgid "Document Field Management"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/editDocTypeUI.inc:113
-#: presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/editDocTypeFieldsUI.inc:87
+#: presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/addDocFieldUI.inc:32
+msgid "Document Field Name"
+msgstr ""
+
 #: presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/editDocFieldUI.inc:43
 #: presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/removeDocFieldUI.inc:43
+#: presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/editDocTypeFieldsUI.inc:87
+#: presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/editDocTypeUI.inc:113
 msgid "Document Field Name:"
 msgstr ""
 
@@ -675,27 +981,42 @@ msgstr ""
 msgid "Document Linking"
 msgstr ""
 
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentUI.inc:130
+msgid "Document Meta Data"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/collaborationUI.inc:70
 #: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:225
 #: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:279
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:603
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:651
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:627
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:675
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/editUI.inc:191
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/editUI.inc:227
 msgid "Document Routing"
 msgstr ""
 
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/createDependantDocumentUI.inc:43
 #: presentation/lookAndFeel/knowledgeTree/documentmanagement/modifyUI.inc:39
 #: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:366
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/viewDependantDocumentsUI.inc:88
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/viewDependantDocumentsUI.inc:124
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/viewDependantDocumentsUI.inc:181
 msgid "Document Title"
 msgstr ""
 
 #: lib/browse/Browser.inc:73
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentUI.inc:40
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentUI.inc:174
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/browseUI.inc:47
 #: presentation/lookAndFeel/knowledgeTree/documentmanagement/modifyUI.inc:47
 #: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:61
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/browseUI.inc:47
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/addFolderUI.inc:57
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/addFolderUI.inc:69
 msgid "Document Type"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/listDocTypesUI.inc:53
 #: config/siteMap.inc:116
+#: presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/listDocTypesUI.inc:53
 msgid "Document Type Management"
 msgstr ""
 
@@ -703,10 +1024,10 @@ msgstr ""
 msgid "Document Type Name"
 msgstr ""
 
+#: presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/editDocTypeFieldsUI.inc:41
 #: presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/editDocTypeUI.inc:41
 #: presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/editDocTypeUI.inc:79
 #: presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/removeDocTypeUI.inc:43
-#: presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/editDocTypeFieldsUI.inc:41
 msgid "Document Type Name:"
 msgstr ""
 
@@ -730,6 +1051,20 @@ msgstr ""
 msgid "Document Type modification Failed!"
 msgstr ""
 
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/editUI.inc:192
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/editUI.inc:228
+msgid "Document Types"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewBL.php:160
+msgid "Document collaboration complete.  The document initiator has been notified"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewBL.php:106
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewBL.php:117
+msgid "Document collaboration successfully started"
+msgstr ""
+
 #: presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/removeDocFieldUI.inc:94
 #, php-format
 msgid "Document field '%s' is mapped to the following document type(s), and can therefore not be deleted."
@@ -747,9 +1082,24 @@ msgstr ""
 msgid "Document initiator"
 msgstr ""
 
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/escalateDependantDocumentUI.inc:38
 #: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:61
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/deleteDependantDocumentUI.inc:33
 #: presentation/lookAndFeel/knowledgeTree/foldermanagement/viewDependantDocumentsUI.inc:46
 msgid "Document title"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentUI.inc:63
+msgid "Document to add"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentLinkUI.inc:39
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentLinkUI.inc:42
+msgid "Document to link"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/addFolderDocTypeUI.inc:36
+msgid "Document type"
 msgstr ""
 
 #: presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/removeDocTypeUI.inc:67
@@ -760,20 +1110,30 @@ msgstr ""
 msgid "Documents"
 msgstr ""
 
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/editUI.inc:93
+msgid "Documents in this folder are currently undergoing this collaboration process, so these steps can't be altered"
+msgstr ""
+
+#: bin/generate-buttons.php:21
 #: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:218
 #: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:276
 msgid "Done"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/administration/orgmanagement/listOrgUI.inc:38
-#: presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/listDocTypesUI.inc:37
-#: presentation/lookAndFeel/knowledgeTree/administration/websitemanagement/listWebsitesUI.inc:36
-#: presentation/lookAndFeel/knowledgeTree/administration/rolemanagement/listRolesUI.inc:35
-#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/listUsersUI.inc:82
+#: bin/generate-buttons.php:36
+msgid "Download"
+msgstr ""
+
+#: bin/generate-buttons.php:19
 #: presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/listGroupsUI.inc:71
 #: presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/listDocFieldsUI.inc:37
-#: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/listUnitsUI.inc:50
+#: presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/listDocTypesUI.inc:37
 #: presentation/lookAndFeel/knowledgeTree/administration/linkmanagement/listLinksUI.inc:36
+#: presentation/lookAndFeel/knowledgeTree/administration/orgmanagement/listOrgUI.inc:38
+#: presentation/lookAndFeel/knowledgeTree/administration/rolemanagement/listRolesUI.inc:35
+#: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/listUnitsUI.inc:50
+#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/listUsersUI.inc:82
+#: presentation/lookAndFeel/knowledgeTree/administration/websitemanagement/listWebsitesUI.inc:36
 #: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:218
 msgid "Edit"
 msgstr ""
@@ -821,14 +1181,14 @@ msgstr ""
 msgid "Edit Document Field Lookups"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/editDocTypeUI.inc:37
-#: presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/editDocTypeUI.inc:75
-#: presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/editDocTypeUI.inc:147
-#: presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/editDocTypeUI.inc:165
 #: presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/editDocTypeFieldsUI.inc:36
 #: presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/editDocTypeFieldsUI.inc:62
 #: presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/editDocTypeFieldsUI.inc:81
 #: presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/editDocTypeFieldsUI.inc:103
+#: presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/editDocTypeUI.inc:37
+#: presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/editDocTypeUI.inc:75
+#: presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/editDocTypeUI.inc:147
+#: presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/editDocTypeUI.inc:165
 msgid "Edit Document Type"
 msgstr ""
 
@@ -884,12 +1244,12 @@ msgstr ""
 msgid "Edit QuickLink"
 msgstr ""
 
+#: presentation/lookAndFeel/knowledgeTree/administration/rolemanagement/editRoleSuccess.php:36
 #: presentation/lookAndFeel/knowledgeTree/administration/rolemanagement/editRoleUI.inc:44
 #: presentation/lookAndFeel/knowledgeTree/administration/rolemanagement/editRoleUI.inc:66
 #: presentation/lookAndFeel/knowledgeTree/administration/rolemanagement/editRoleUI.inc:89
 #: presentation/lookAndFeel/knowledgeTree/administration/rolemanagement/editRoleUI.inc:133
 #: presentation/lookAndFeel/knowledgeTree/administration/rolemanagement/editRoleUI.inc:155
-#: presentation/lookAndFeel/knowledgeTree/administration/rolemanagement/editRoleSuccess.php:36
 msgid "Edit Role"
 msgstr ""
 
@@ -908,11 +1268,6 @@ msgstr ""
 msgid "Edit Unit Organisation"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/editUserGroupsUI.inc:41
-#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/editUserGroupsUI.inc:89
-#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/editUserGroupsUI.inc:142
-#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/editUserGroupsUI.inc:169
-#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/editUserGroupsUI.inc:190
 #: presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/editGroupUnitUI.inc:41
 #: presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/editGroupUnitUI.inc:152
 #: presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/editGroupUnitUI.inc:179
@@ -925,26 +1280,45 @@ msgstr ""
 #: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/editUnitOrgUI.inc:122
 #: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/editUnitOrgUI.inc:143
 #: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/editUnitOrgUI.inc:162
+#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/editUserGroupsUI.inc:41
+#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/editUserGroupsUI.inc:89
+#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/editUserGroupsUI.inc:142
+#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/editUserGroupsUI.inc:169
+#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/editUserGroupsUI.inc:190
 msgid "Edit User Groups"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/preferences/editUserPrefsUI.inc:46
+#: config/siteMap.inc:138
 #: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/editUserUI.inc:34
 #: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/editUserUI.inc:68
 #: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/editUserUI.inc:92
 #: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/editUserUI.inc:113
-#: config/siteMap.inc:138
+#: presentation/lookAndFeel/knowledgeTree/preferences/editUserPrefsUI.inc:46
 msgid "Edit User Properties"
 msgstr ""
 
+#: presentation/lookAndFeel/knowledgeTree/administration/websitemanagement/editWebsiteBL.php:62
+#: presentation/lookAndFeel/knowledgeTree/administration/websitemanagement/editWebsiteBL.php:65
 #: presentation/lookAndFeel/knowledgeTree/administration/websitemanagement/editWebsiteUI.inc:32
+#: presentation/lookAndFeel/knowledgeTree/administration/websitemanagement/editWebsiteUI.inc:96
+#: presentation/lookAndFeel/knowledgeTree/administration/websitemanagement/editWebsiteUI.inc:100
 msgid "Edit Website"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/preferences/editUserPrefsUI.inc:34
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/downloadBL.php:78
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewBL.php:272
+msgid "Either you do not have permission to view this document, or the document you have chosen no longer exists on the file system."
+msgstr ""
+
+#: bin/generate-buttons.php:37
+msgid "Email"
+msgstr ""
+
 #: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/addUserUI.inc:77
 #: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/addUserUI.inc:113
 #: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/editUserUI.inc:59
+#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/removeUserUI.inc:153
+#: presentation/lookAndFeel/knowledgeTree/preferences/editUserPrefsUI.inc:34
 msgid "Email Address"
 msgstr ""
 
@@ -952,10 +1326,10 @@ msgstr ""
 msgid "Email Document Link"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/preferences/editUserPrefsUI.inc:34
 #: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/addUserUI.inc:83
 #: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/addUserUI.inc:119
 #: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/editUserUI.inc:59
+#: presentation/lookAndFeel/knowledgeTree/preferences/editUserPrefsUI.inc:34
 msgid "Email Notification"
 msgstr ""
 
@@ -963,7 +1337,15 @@ msgstr ""
 msgid "Enter a Different Value"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:675
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/checkInDocumentUI.inc:49
+msgid "Enter a check in comment for the document"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/checkOutDocumentUI.inc:37
+msgid "Enter a check out comment for the document"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:699
 msgid "Enter a comment for the web master:"
 msgstr ""
 
@@ -985,12 +1367,30 @@ msgstr ""
 msgid "Error deleting document field."
 msgstr ""
 
+#: presentation/lookAndFeel/knowledgeTree/administration/doccheckoutmanagement/editDocCheckoutBL.php:61
+msgid "Error while trying to update the document checkout."
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/escalateDependantDocumentUI.inc:43
+msgid "Error! No user specified"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/archiving/archiveSettingsUI.inc:160
 #: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:158
 msgid "Expiration Date"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/administration/documentmanagement/listDeletedDocumentsUI.inc:34
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/archiving/archiveSettingsUI.inc:167
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/archiving/archiveSettingsUI.inc:169
+msgid "Expires after"
+msgstr ""
+
+#: bin/generate-buttons.php:27
+msgid "Expunge"
+msgstr ""
+
 #: presentation/lookAndFeel/knowledgeTree/administration/documentmanagement/expungeDeletedDocumentsUI.inc:34
+#: presentation/lookAndFeel/knowledgeTree/administration/documentmanagement/listDeletedDocumentsUI.inc:34
 msgid "Expunge Deleted Documents"
 msgstr ""
 
@@ -998,20 +1398,20 @@ msgstr ""
 msgid "Expunge Deleted Documents Status"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/administration/orgmanagement/editOrgUI.inc:81
-#: presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/editDocTypeUI.inc:167
-#: presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/editDocTypeFieldsUI.inc:123
-#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/addUserToGroupUI.inc:113
-#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/editUserUI.inc:115
 #: presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/editGroupUI.inc:168
-#: presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/metadatamanagement/editMetaDataUI.inc:165
-#: presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/metadatamanagement/editMetaDataUI.inc:184
+#: presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/editDocFieldUI.inc:117
 #: presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/metadatamanagement/addMetaDataUI.inc:115
 #: presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/metadatamanagement/addMetaDataUI.inc:134
+#: presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/metadatamanagement/editMetaDataUI.inc:165
+#: presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/metadatamanagement/editMetaDataUI.inc:184
 #: presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/metadatamanagement/removeMetaDataUI.inc:144
-#: presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/editDocFieldUI.inc:117
-#: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/editUnitUI.inc:79
+#: presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/editDocTypeFieldsUI.inc:123
+#: presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/editDocTypeUI.inc:167
 #: presentation/lookAndFeel/knowledgeTree/administration/linkmanagement/editLinkUI.inc:112
+#: presentation/lookAndFeel/knowledgeTree/administration/orgmanagement/editOrgUI.inc:81
+#: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/editUnitUI.inc:79
+#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/addUserToGroupUI.inc:113
+#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/editUserUI.inc:115
 msgid "Failure"
 msgstr ""
 
@@ -1058,17 +1458,42 @@ msgstr ""
 msgid "Folder"
 msgstr ""
 
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/editUI.inc:190
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/editUI.inc:226
+msgid "Folder Data"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/addFolderUI.inc:53
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/addFolderUI.inc:66
+msgid "Folder Name"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/editUI.inc:193
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/editUI.inc:229
+msgid "Folder Permissions"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/addFolderBL.php:156
+msgid "Folder not created. Folder names may not contain: '<', '>', '*', '/', '\\', '|', '?' or '\"' "
+msgstr ""
+
 #: presentation/lookAndFeel/knowledgeTree/documentmanagement/browseUI.inc:43
 msgid "Folders"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/addDocFieldUI.inc:32
+msgid "Generic"
 msgstr ""
 
 #: presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/editDocTypeFieldsUI.inc:45
 msgid "Generic Document Fields:"
 msgstr ""
 
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentUI.inc:89
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/modifyGenericMetaDataUI.inc:43
 #: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:97
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:600
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:648
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:624
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:672
 msgid "Generic Meta Data"
 msgstr ""
 
@@ -1076,8 +1501,16 @@ msgstr ""
 msgid "Generic?"
 msgstr ""
 
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/collaborationUI.inc:72
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/addFolderCollaborationUI.inc:36
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/collaborationUI.inc:68
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/collaborationUI.inc:86
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/deleteFolderCollaborationUI.inc:43
 #: presentation/lookAndFeel/knowledgeTree/foldermanagement/editUI.inc:81
 #: presentation/lookAndFeel/knowledgeTree/foldermanagement/editUI.inc:140
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/groupFolderLinkUI.inc:43
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/groupFolderLinkUI.inc:67
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/groupFolderLinkUI.inc:95
 msgid "Group"
 msgstr ""
 
@@ -1089,26 +1522,26 @@ msgstr ""
 msgid "Group Already Belongs to A Unit"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/listGroupsUI.inc:87
 #: config/siteMap.inc:112
+#: presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/listGroupsUI.inc:87
 msgid "Group Management"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/addUserToGroupUI.inc:54
-#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/removeUserFromGroupUI.inc:123
-#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/editUserGroupsUI.inc:81
-#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/editUserGroupsUI.inc:84
-#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/editUserGroupsUI.inc:139
 #: presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/addGroupUI.inc:36
 #: presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/assignGroupToUnitUI.inc:54
 #: presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/assignGroupToUnitUI.inc:108
 #: presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/assignGroupToUnitUI.inc:158
+#: presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/editGroupUI.inc:108
 #: presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/editGroupUnitUI.inc:103
 #: presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/editGroupUnitUI.inc:149
 #: presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/removeGroupFromUnitUI.inc:69
-#: presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/editGroupUI.inc:108
 #: presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/removeGroupUI.inc:43
 #: presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/editDocFieldLookupsUI.inc:165
+#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/addUserToGroupUI.inc:54
+#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/editUserGroupsUI.inc:81
+#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/editUserGroupsUI.inc:84
+#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/editUserGroupsUI.inc:139
+#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/removeUserFromGroupUI.inc:123
 msgid "Group Name"
 msgstr ""
 
@@ -1125,6 +1558,10 @@ msgstr ""
 msgid "Group successfully removed"
 msgstr ""
 
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/emailUI.inc:38
+msgid "Groups"
+msgstr ""
+
 #: presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/addDocTypeFieldsLinkUI.inc:115
 msgid "Has Lookup? "
 msgstr ""
@@ -1133,13 +1570,22 @@ msgstr ""
 msgid "Has MetaData Lookup:"
 msgstr ""
 
-#: config/siteMap.inc:248
+#: presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/addDocFieldUI.inc:32
+msgid "Has a Lookup"
+msgstr ""
+
+#: config/siteMap.inc:248 lib/visualpatterns/NavBar.inc:205
 msgid "Help"
 msgstr ""
 
 #: presentation/lookAndFeel/knowledgeTree/dashboardUI.inc:281
 #, php-format
 msgid "Hi %1$s, welcome back to the %2$s DMS, part of the Knowledge Tree"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/search/advancedSearchUI.inc:128
+#: presentation/lookAndFeel/knowledgeTree/search/standardSearchUI.inc:33
+msgid "If your browser displays a 'Warning: Page has Expired' message when you attempt to return to these search results, please click your browser's 'Refresh' button"
 msgstr ""
 
 #: presentation/lookAndFeel/knowledgeTree/administration/news/newsUI.inc:46
@@ -1152,6 +1598,10 @@ msgstr ""
 msgid "Initial Group"
 msgstr ""
 
+#: presentation/lookAndFeel/knowledgeTree/discussions/viewDiscussionBL.php:91
+msgid "Invalid function.  No such functionality exists for this page."
+msgstr ""
+
 #: presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/editDocFieldUI.inc:60
 msgid "Is Generic"
 msgstr ""
@@ -1159,6 +1609,10 @@ msgstr ""
 #: presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/editDocTypeUI.inc:119
 #: presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/editDocTypeUI.inc:121
 msgid "Is Mandatory:"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/deleteDocumentBL.php:84
+msgid "It's still in collaboration"
 msgstr ""
 
 #: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/addUserUI.inc:102
@@ -1169,10 +1623,10 @@ msgstr ""
 msgid "Last updated"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/administration/websitemanagement/listWebsitesUI.inc:36
-#: presentation/lookAndFeel/knowledgeTree/administration/linkmanagement/listLinksUI.inc:36
 #: presentation/lookAndFeel/knowledgeTree/administration/linkmanagement/editLinkUI.inc:42
+#: presentation/lookAndFeel/knowledgeTree/administration/linkmanagement/listLinksUI.inc:36
 #: presentation/lookAndFeel/knowledgeTree/administration/linkmanagement/removeLinkUI.inc:43
+#: presentation/lookAndFeel/knowledgeTree/administration/websitemanagement/listWebsitesUI.inc:36
 msgid "Link Name"
 msgstr ""
 
@@ -1184,8 +1638,8 @@ msgstr ""
 msgid "Link object is empty."
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:604
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:652
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:628
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:676
 msgid "Linked Documents"
 msgstr ""
 
@@ -1202,18 +1656,18 @@ msgstr ""
 msgid "Live"
 msgstr ""
 
-#: presentation/login.php:103 presentation/login.php:152
+#: presentation/login.php:104 presentation/login.php:153
 msgid "Login failure"
 msgstr ""
 
-#: config/siteMap.inc:251
+#: config/siteMap.inc:251 lib/visualpatterns/NavBar.inc:206
 msgid "Logout"
 msgstr ""
 
 #: presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/listDocFieldsUI.inc:37
+#: presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/metadatamanagement/addMetaDataUI.inc:70
 #: presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/metadatamanagement/editMetaDataUI.inc:89
 #: presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/metadatamanagement/editMetaDataUI.inc:120
-#: presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/metadatamanagement/addMetaDataUI.inc:70
 #: presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/metadatamanagement/removeMetaDataUI.inc:74
 #: presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/metadatamanagement/removeMetaDataUI.inc:107
 msgid "Lookup"
@@ -1248,50 +1702,68 @@ msgstr ""
 msgid "Max Sessions"
 msgstr ""
 
-#: presentation/login.php:145
+#: presentation/login.php:146
 msgid "Maximum sessions for user reached.<br>Contact the System Administrator"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/preferences/editUserPrefsUI.inc:34
 #: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/addUserUI.inc:80
 #: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/addUserUI.inc:116
 #: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/editUserUI.inc:59
+#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/removeUserUI.inc:156
+#: presentation/lookAndFeel/knowledgeTree/preferences/editUserPrefsUI.inc:34
 msgid "Mobile Number"
 msgstr ""
 
+#: config/siteMap.inc:61
 #: presentation/lookAndFeel/knowledgeTree/foldermanagement/editUI.inc:180
 #: presentation/lookAndFeel/knowledgeTree/foldermanagement/editUI.inc:218
 #: presentation/lookAndFeel/knowledgeTree/foldermanagement/modifyFolderDataUI.inc:39
-#: config/siteMap.inc:61
 msgid "Modify Folder Properties"
 msgstr ""
 
+#: bin/generate-buttons.php:23
+msgid "Move"
+msgstr ""
+
 #: presentation/lookAndFeel/knowledgeTree/documentmanagement/moveDocumentUI.inc:30
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/moveDocumentUI.inc:51
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/moveDocumentUI.inc:58
 msgid "Move Document"
+msgstr ""
+
+#: bin/generate-buttons.php:38
+msgid "Move Here"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/moveDocumentUI.inc:63
+msgid "Move document(s)"
 msgstr ""
 
 #: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/removeUnitFromOrgBL.php:57
 msgid "Multiple links exist even though a Unit can only belong to one Organisation."
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/preferences/editUserPrefsUI.inc:34
-#: presentation/lookAndFeel/knowledgeTree/administration/orgmanagement/listOrgUI.inc:38
+#: presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/editGroupUI.inc:40
+#: presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/editGroupUI.inc:46
+#: presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/listGroupsUI.inc:71
+#: presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/listDocFieldsUI.inc:37
 #: presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/listDocTypesUI.inc:37
-#: presentation/lookAndFeel/knowledgeTree/administration/rolemanagement/editRoleUI.inc:35
+#: presentation/lookAndFeel/knowledgeTree/administration/linkmanagement/addLinkUI.inc:32
+#: presentation/lookAndFeel/knowledgeTree/administration/orgmanagement/listOrgUI.inc:38
 #: presentation/lookAndFeel/knowledgeTree/administration/rolemanagement/addRoleUI.inc:32
+#: presentation/lookAndFeel/knowledgeTree/administration/rolemanagement/editRoleUI.inc:35
 #: presentation/lookAndFeel/knowledgeTree/administration/rolemanagement/listRolesUI.inc:35
 #: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/addUserUI.inc:74
 #: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/addUserUI.inc:110
 #: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/editUserUI.inc:59
 #: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/listUsersUI.inc:82
-#: presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/listGroupsUI.inc:71
-#: presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/editGroupUI.inc:40
-#: presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/editGroupUI.inc:46
-#: presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/listDocFieldsUI.inc:37
-#: presentation/lookAndFeel/knowledgeTree/administration/linkmanagement/addLinkUI.inc:32
+#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/removeUserUI.inc:150
 #: presentation/lookAndFeel/knowledgeTree/foldermanagement/editUI.inc:47
+#: presentation/lookAndFeel/knowledgeTree/preferences/editUserPrefsUI.inc:34
 msgid "Name"
+msgstr ""
+
+#: bin/generate-buttons.php:30
+msgid "New"
 msgstr ""
 
 #: presentation/lookAndFeel/knowledgeTree/administration/linkmanagement/addLinkSuccess.php:41
@@ -1302,10 +1774,14 @@ msgstr ""
 msgid "New Type specific Field Created and Linked."
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/addUnitUI.inc:66
 #: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/addUnitToOrgUI.inc:138
+#: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/addUnitUI.inc:66
 #: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/removeUnitFromOrgUI.inc:146
 msgid "New Unit was successfully added"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/administration/websitemanagement/addWebsiteSuccess.php:40
+msgid "New Website Added SuccessFully"
 msgstr ""
 
 #: presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/addDocTypeFieldsLinkUI.inc:109
@@ -1320,14 +1796,26 @@ msgstr ""
 msgid "New type specific field?"
 msgstr ""
 
+#: bin/generate-buttons.php:7
+msgid "Next"
+msgstr ""
+
 #: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:65
 msgid "No Document Data"
 msgstr ""
 
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentUI.inc:93
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/modifyGenericMetaDataUI.inc:47
 #: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:98
 msgid "No Generic Meta Data"
 msgstr ""
 
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewHistoryUI.inc:41
+msgid "No Transaction History data"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentUI.inc:119
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/modifySpecificMetaDataUI.inc:46
 #: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:129
 msgid "No Type Specific Meta Data"
 msgstr ""
@@ -1341,8 +1829,69 @@ msgstr ""
 msgid "No archiving settings"
 msgstr ""
 
+#: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/editUnitOrgUI.inc:51
+msgid "No assigned Organisation"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/viewDependantDocumentsUI.inc:57
+msgid "No dependant documents"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/discussions/viewDiscussionBL.php:84
+msgid "No discussion thread is currently available"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/deleteDocumentBL.php:221
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewHistoryBL.php:73
+msgid "No document currently selected"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/archiving/modifyArchiveSettingsBL.php:80
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/archiving/modifyArchiveSettingsBL.php:84
+msgid "No document has been selected."
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/checkInDocumentBL.php:165
+msgid "No document is currently selected for check in"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/checkOutDocumentBL.php:124
+msgid "No document is currently selected for check out"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/administration/doccheckoutmanagement/editDocCheckoutBL.php:69
+msgid "No document selected to check back in"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/archiving/archiveDocumentBL.php:82
+msgid "No document supplied for archiving"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentUI.inc:36
+msgid "No document types defined! Please contact an Administrator"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/collaborationBL.php:144
+msgid "No document/document routing details are currently selected"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/moveDocumentBL.php:197
+msgid "No document/folder selected"
+msgstr ""
+
 #: presentation/lookAndFeel/knowledgeTree/administration/documentmanagement/manageArchivedDocumentsBL.php:60
 msgid "No documents matched your search criteria"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/addFolderBL.php:186
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/addFolderCollaborationBL.php:102
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/addGroupFolderLinkBL.php:74
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/deleteFolderBL.php:179
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/deleteFolderCollaborationBL.php:109
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/deleteGroupFolderLinkBL.php:74
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/editBL.php:88
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/editGroupFolderLinkBL.php:77
+msgid "No folder currently selected"
 msgstr ""
 
 #: presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/removeGroupBL.php:70
@@ -1361,6 +1910,22 @@ msgstr ""
 msgid "No organisations"
 msgstr ""
 
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/escalateDependantDocumentUI.inc:47
+msgid "No template document"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/dashboardUI.inc:197
+msgid "No template specified"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/webDocumentBL.php:77
+msgid "No web document selected"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/administration/websitemanagement/editWebsiteBL.php:65
+msgid "No website has been selected for editing."
+msgstr ""
+
 #: presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/removeDocFieldBL.php:75
 msgid "Non-existent document field"
 msgstr ""
@@ -1373,29 +1938,37 @@ msgstr ""
 msgid "Not Assigned to an Organisation"
 msgstr ""
 
+#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/removeUserUI.inc:107
+msgid "Note: This User will be Removed from ALL Groups as well"
+msgstr ""
+
 #: presentation/lookAndFeel/knowledgeTree/administration/linkmanagement/addLinkSuccess.php:51
 msgid "Only a maximum of 5 Quicklinks are allowed"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/editUserGroupsUI.inc:107
+#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/passwordManagementBL.php:78
+msgid "Only an administrator can update a user password from here"
+msgstr ""
+
 #: presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/editGroupUnitUI.inc:117
 #: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/editUnitOrgUI.inc:91
+#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/editUserGroupsUI.inc:107
 msgid "Options"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/listUnitsUI.inc:50
 #: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/addUnitUI.inc:39
+#: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/listUnitsUI.inc:50
 #: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/removeUnitFromOrgUI.inc:84
 msgid "Organisation"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/administration/orgmanagement/listOrgUI.inc:52
 #: config/siteMap.inc:114
+#: presentation/lookAndFeel/knowledgeTree/administration/orgmanagement/listOrgUI.inc:52
 msgid "Organisation Management"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/administration/orgmanagement/editOrgUI.inc:40
 #: presentation/lookAndFeel/knowledgeTree/administration/orgmanagement/addOrgUI.inc:31
+#: presentation/lookAndFeel/knowledgeTree/administration/orgmanagement/editOrgUI.inc:40
 #: presentation/lookAndFeel/knowledgeTree/administration/orgmanagement/removeOrgUI.inc:44
 #: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/removeUnitUI.inc:40
 msgid "Organisation Name"
@@ -1425,9 +1998,17 @@ msgstr ""
 msgid "Page expects a Document Type ID."
 msgstr ""
 
-#: presentation/login.php:77
 #: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/addUserUI.inc:71
+#: presentation/login.php:78
 msgid "Password"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/passwordManagementBL.php:83
+msgid "Passwords can only be update in Knowledgew Tree when authentication is against the MySQL database, not against an LDAP server"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/preferences/passwordManagementBL.php:78
+msgid "Passwords can only be updated in Knowledge Tree when authentication is against the database, not against an LDAP server"
 msgstr ""
 
 #: presentation/lookAndFeel/knowledgeTree/administration/doccheckoutmanagement/editDocCheckoutUI.inc:45
@@ -1440,6 +2021,10 @@ msgstr ""
 
 #: presentation/lookAndFeel/knowledgeTree/dashboardUI.inc:41
 msgid "Pending Web Documents"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/collaborationUI.inc:78
+msgid "Player"
 msgstr ""
 
 #: presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/assignGroupToUnitUI.inc:40
@@ -1456,6 +2041,10 @@ msgstr ""
 msgid "Please Check Name and Rank for duplicates!"
 msgstr ""
 
+#: presentation/lookAndFeel/knowledgeTree/administration/websitemanagement/addWebsiteSuccess.php:47
+msgid "Please Check for duplicates!"
+msgstr ""
+
 #: presentation/lookAndFeel/knowledgeTree/administration/orgmanagement/removeOrgUI.inc:94
 msgid "Please Ensure that ALL Units has been Removed the Organisation it belongs to"
 msgstr ""
@@ -1464,8 +2053,8 @@ msgstr ""
 msgid "Please Ensure that The Document Field has not been assigned"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/removeGroupFail.php:45
 #: presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/editGroupFail.php:45
+#: presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/removeGroupFail.php:45
 msgid "Please Ensure that The Group has been Removed from any Unit it belongs to"
 msgstr ""
 
@@ -1481,8 +2070,8 @@ msgstr ""
 msgid "Please Ensure that the Document Type has been Removed from ALL Folders"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/metadatamanagement/editMetaDataUI.inc:185
 #: presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/metadatamanagement/addMetaDataUI.inc:135
+#: presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/metadatamanagement/editMetaDataUI.inc:185
 msgid "Please Enter a Value in the Text Box"
 msgstr ""
 
@@ -1490,8 +2079,8 @@ msgstr ""
 msgid "Please Enter a new lookup value to add to the Selected Field"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/metadatamanagement/editMetaDataUI.inc:51
 #: presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/metadatamanagement/addMetaDataUI.inc:37
+#: presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/metadatamanagement/editMetaDataUI.inc:51
 #: presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/metadatamanagement/removeMetaDataUI.inc:38
 msgid "Please Select a Field"
 msgstr ""
@@ -1504,8 +2093,21 @@ msgstr ""
 msgid "Please Select the Lookup value you wish to remove"
 msgstr ""
 
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/moveDocumentBL.php:171
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/moveDocumentBL.php:176
+msgid "Please choose another directory"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/emailUI.inc:114
+msgid "Please choose either at least one Group or User to email a link to this document."
+msgstr ""
+
 #: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/addUserToGroupUI.inc:41
 msgid "Please choose the Group to assign to this user."
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/archiving/restoreArchivedDocumentUI.inc:38
+msgid "Please click 'Restore' to restore this archived document."
 msgstr ""
 
 #: presentation/lookAndFeel/knowledgeTree/administration/news/addNewsBL.php:101
@@ -1516,21 +2118,33 @@ msgstr ""
 msgid "Please confirm your choice by clicking 'Assign', or 'Cancel' to abort."
 msgstr ""
 
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/deleteDocumentBL.php:62
+msgid "Please deselect it and retry."
+msgstr ""
+
 #: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/editUnitUI.inc:37
 msgid "Please edit the Unit name"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/administration/websitemanagement/removeWebsiteUI.inc:99
+msgid "Please ensure that the website has been removed from any unit it belongs to"
 msgstr ""
 
 #: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/addUserUI.inc:48
 msgid "Please enter a VALID Username to search for in the text box below"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/addUnitUI.inc:103
 #: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/addUnitToOrgUI.inc:177
+#: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/addUnitUI.inc:103
 #: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/removeUnitFromOrgUI.inc:185
 msgid "Please enter a name AND Select the Organisation"
 msgstr ""
 
-#: presentation/login.php:72
+#: presentation/lookAndFeel/knowledgeTree/search/advancedSearchBL.php:75
+msgid "Please enter text to search on"
+msgstr ""
+
+#: presentation/login.php:73
 msgid "Please enter your details below to login"
 msgstr ""
 
@@ -1546,10 +2160,11 @@ msgstr ""
 msgid "Please select BOTH a Group AND a Unit"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/metadatamanagement/editMetaDataUI.inc:200
-#: presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/metadatamanagement/removeMetaDataUI.inc:160
 #: presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/editDocFieldUI.inc:195
 #: presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/removeDocFieldUI.inc:36
+#: presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/metadatamanagement/addMetaDataUI.inc:150
+#: presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/metadatamanagement/editMetaDataUI.inc:200
+#: presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/metadatamanagement/removeMetaDataUI.inc:160
 msgid "Please select a Document Field:"
 msgstr ""
 
@@ -1558,10 +2173,10 @@ msgstr ""
 msgid "Please select a Document Type"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/addUserToGroupUI.inc:76
+#: presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/editGroupUI.inc:238
 #: presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/removeGroupFromUnitUI.inc:50
 #: presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/removeGroupFromUnitUI.inc:125
-#: presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/editGroupUI.inc:238
+#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/addUserToGroupUI.inc:76
 msgid "Please select a Group"
 msgstr ""
 
@@ -1571,15 +2186,28 @@ msgid "Please select a Link:"
 msgstr ""
 
 #: presentation/lookAndFeel/knowledgeTree/administration/rolemanagement/editRoleUI.inc:220
+#: presentation/lookAndFeel/knowledgeTree/administration/rolemanagement/removeRoleUI.inc:35
 msgid "Please select a Role:"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/editUserGroupsUI.inc:38
-#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/editUserUI.inc:36
 #: presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/editGroupUnitUI.inc:38
 #: presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/editDocFieldLookupsUI.inc:57
 #: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/editUnitOrgUI.inc:119
+#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/editUserGroupsUI.inc:38
+#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/editUserUI.inc:36
 msgid "Please select a User"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/checkInDocumentBL.php:139
+msgid "Please select a document by first clicking on 'Browse'.  Then click 'Check-In'"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/removeGroupUI.inc:36
+msgid "Please select a group:"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/removeUserUI.inc:35
+msgid "Please select a user"
 msgstr ""
 
 #: presentation/lookAndFeel/knowledgeTree/administration/orgmanagement/editOrgUI.inc:38
@@ -1588,18 +2216,27 @@ msgid "Please select an Organisation"
 msgstr ""
 
 #: presentation/lookAndFeel/knowledgeTree/administration/documentmanagement/manageArchivedDocumentsBL.php:64
+#: presentation/lookAndFeel/knowledgeTree/search/advancedSearchBL.php:64
 msgid "Please select at least one criteria to search by"
 msgstr ""
 
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentUI.inc:42
+msgid "Please select the document type:"
+msgstr ""
+
+#: config/siteMap.inc:241 lib/visualpatterns/NavBar.inc:204
 #: presentation/lookAndFeel/knowledgeTree/preferences/editUserPrefsUI.inc:43
 #: presentation/lookAndFeel/knowledgeTree/preferences/editUserPrefsUI.inc:65
 #: presentation/lookAndFeel/knowledgeTree/preferences/editUserPrefsUI.inc:80
-#: config/siteMap.inc:241
 msgid "Preferences"
 msgstr ""
 
 #: presentation/lookAndFeel/knowledgeTree/foldermanagement/editUI.inc:47
 msgid "Public"
+msgstr ""
+
+#: bin/generate-buttons.php:22
+msgid "Publish"
 msgstr ""
 
 #: presentation/lookAndFeel/knowledgeTree/dashboardUI.inc:211
@@ -1614,19 +2251,21 @@ msgstr ""
 msgid "QuickLinks Management"
 msgstr ""
 
+#: presentation/lookAndFeel/knowledgeTree/administration/linkmanagement/addLinkUI.inc:32
+#: presentation/lookAndFeel/knowledgeTree/administration/linkmanagement/editLinkUI.inc:55
+#: presentation/lookAndFeel/knowledgeTree/administration/linkmanagement/listLinksUI.inc:36
+#: presentation/lookAndFeel/knowledgeTree/administration/linkmanagement/removeLinkUI.inc:135
 #: presentation/lookAndFeel/knowledgeTree/administration/news/newsUI.inc:46
 #: presentation/lookAndFeel/knowledgeTree/administration/news/newsUI.inc:68
 #: presentation/lookAndFeel/knowledgeTree/administration/news/newsUI.inc:87
-#: presentation/lookAndFeel/knowledgeTree/administration/linkmanagement/listLinksUI.inc:36
-#: presentation/lookAndFeel/knowledgeTree/administration/linkmanagement/editLinkUI.inc:55
-#: presentation/lookAndFeel/knowledgeTree/administration/linkmanagement/addLinkUI.inc:32
 msgid "Rank"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/administration/rolemanagement/editRoleUI.inc:35
 #: presentation/lookAndFeel/knowledgeTree/administration/rolemanagement/addRoleUI.inc:32
+#: presentation/lookAndFeel/knowledgeTree/administration/rolemanagement/editRoleUI.inc:35
 #: presentation/lookAndFeel/knowledgeTree/administration/rolemanagement/listRolesUI.inc:35
 #: presentation/lookAndFeel/knowledgeTree/foldermanagement/editUI.inc:140
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/groupFolderLinkUI.inc:116
 msgid "Read"
 msgstr ""
 
@@ -1636,6 +2275,18 @@ msgstr ""
 
 #: presentation/lookAndFeel/knowledgeTree/administration/rolemanagement/editRoleUI.inc:103
 msgid "Readable:"
+msgstr ""
+
+#: bin/generate-buttons.php:12
+msgid "Reject"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/escalateDependantDocumentUI.inc:51
+msgid "Reminder Message"
+msgstr ""
+
+#: bin/generate-buttons.php:24
+msgid "Remove"
 msgstr ""
 
 #: presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/removeDocFieldUI.inc:39
@@ -1709,8 +2360,8 @@ msgstr ""
 msgid "Remove Unit"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/removeUnitFromOrgBL.php:46
 #: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/editUnitOrgUI.inc:99
+#: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/removeUnitFromOrgBL.php:46
 msgid "Remove Unit from an Organisation"
 msgstr ""
 
@@ -1729,6 +2380,7 @@ msgstr ""
 msgid "Remove User From Group"
 msgstr ""
 
+#: presentation/lookAndFeel/knowledgeTree/administration/websitemanagement/removeWebsiteBL.php:62
 #: presentation/lookAndFeel/knowledgeTree/administration/websitemanagement/removeWebsiteUI.inc:39
 #: presentation/lookAndFeel/knowledgeTree/administration/websitemanagement/removeWebsiteUI.inc:68
 #: presentation/lookAndFeel/knowledgeTree/administration/websitemanagement/removeWebsiteUI.inc:91
@@ -1739,8 +2391,20 @@ msgstr ""
 msgid "Remove user from a group"
 msgstr ""
 
+#: bin/generate-buttons.php:29
+msgid "Reply"
+msgstr ""
+
 #: presentation/lookAndFeel/knowledgeTree/documentmanagement/archiving/restoreArchivedDocumentUI.inc:55
 msgid "Request Archived Document Restoration"
+msgstr ""
+
+#: bin/generate-buttons.php:31
+msgid "Reset"
+msgstr ""
+
+#: bin/generate-buttons.php:25
+msgid "Restore"
 msgstr ""
 
 #: presentation/lookAndFeel/knowledgeTree/documentmanagement/archiving/restoreArchivedDocumentUI.inc:34
@@ -1749,36 +2413,43 @@ msgstr ""
 msgid "Restore Archived Document"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/administration/documentmanagement/archivedDocumentsUI.inc:62
 #: config/siteMap.inc:119
+#: presentation/lookAndFeel/knowledgeTree/administration/documentmanagement/archivedDocumentsUI.inc:62
 msgid "Restore Archived Documents"
 msgstr ""
 
+#: presentation/lookAndFeel/knowledgeTree/administration/documentmanagement/restoreDeletedDocumentBL.php:80
 #: presentation/lookAndFeel/knowledgeTree/administration/documentmanagement/restoreDeletedDocumentsUI.inc:34
 #: presentation/lookAndFeel/knowledgeTree/administration/documentmanagement/restoreDeletedDocumentsUI.inc:50
 #: presentation/lookAndFeel/knowledgeTree/administration/documentmanagement/restoreDeletedDocumentsUI.inc:68
-#: presentation/lookAndFeel/knowledgeTree/administration/documentmanagement/restoreDeletedDocumentsUI.inc.orig:50
-#: presentation/lookAndFeel/knowledgeTree/administration/documentmanagement/restoreDeletedDocumentsUI.inc.orig:66
-#: presentation/lookAndFeel/knowledgeTree/administration/documentmanagement/restoreDeletedDocumentBL.php:80
 msgid "Restore Deleted Document"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/administration/documentmanagement/restoreDeletedDocumentsUI.inc.orig:34
-msgid "Restore Deleted Document Status"
+#: bin/generate-buttons.php:28
+msgid "Restore Here"
 msgstr ""
 
 #: presentation/lookAndFeel/knowledgeTree/administration/documentmanagement/restoreDeletedDocumentBL.php:85
 msgid "Restored Deleted Document"
 msgstr ""
 
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/collaborationBL.php:142
+msgid "Return to document dashboard"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/collaborationUI.inc:75
 #: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:218
 #: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:276
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/addFolderCollaborationUI.inc:42
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/collaborationUI.inc:74
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/collaborationUI.inc:86
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/deleteFolderCollaborationUI.inc:46
 #: presentation/lookAndFeel/knowledgeTree/foldermanagement/editUI.inc:81
 msgid "Role"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/administration/rolemanagement/listRolesUI.inc:51
 #: config/siteMap.inc:126
+#: presentation/lookAndFeel/knowledgeTree/administration/rolemanagement/listRolesUI.inc:51
 msgid "Role Management"
 msgstr ""
 
@@ -1797,6 +2468,7 @@ msgstr ""
 msgid "Score"
 msgstr ""
 
+#: bin/generate-buttons.php:18
 #: presentation/lookAndFeel/knowledgeTree/search/advancedSearchUI.inc:84
 msgid "Search"
 msgstr ""
@@ -1805,13 +2477,58 @@ msgstr ""
 msgid "Search For A User To Add"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/search/advancedSearchUI.inc:74
 #: presentation/lookAndFeel/knowledgeTree/administration/documentmanagement/archivedDocumentsUI.inc:94
+#: presentation/lookAndFeel/knowledgeTree/search/advancedSearchUI.inc:74
 msgid "Search text:"
+msgstr ""
+
+#: bin/generate-buttons.php:15
+msgid "Select"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/archiving/archiveSettingsUI.inc:261
+msgid "Select 'Archive' to confirm, or 'Cancel' to cancel."
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/deleteFolderUI.inc:44
+msgid "Select 'Cancel' to return to the browse page."
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/removeDocumentLinkUI.inc:39
+msgid "Select 'Delete' to confirm or 'Cancel' to cancel"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/deleteDocumentUI.inc:42
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/deleteFolderUI.inc:64
+msgid "Select 'Delete' to confirm the deletion, or 'Cancel' to cancel it"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/subscriptions/subscriptionUI.inc:194
+msgid "Select 'Subscribe' to confirm the subscription, or 'Cancel' to cancel it"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/subscriptions/subscriptionUI.inc:127
+msgid "Select 'Unsubscribe' to confirm the deletion(s), or 'Cancel' to cancel them"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/subscriptions/subscriptionUI.inc:161
+msgid "Select 'Unsubscribe' to confirm the deletion, or 'Cancel' to cancel it"
 msgstr ""
 
 #: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/removeUserFromGroupUI.inc:87
 msgid "Select a Group to Remove User from"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/administration/websitemanagement/removeWebsiteUI.inc:36
+msgid "Select a WebSite"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/addFolderCollaborationUI.inc:110
+msgid "Select a group"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/browseUI.inc:313
+msgid "Select all documents"
 msgstr ""
 
 #: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/addUnitToOrgBL.php:49
@@ -1832,14 +2549,33 @@ msgstr ""
 msgid "Select the documents you would like to completely remove and click 'Expunge', or click on the document name link to restore the document."
 msgstr ""
 
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/checkInDocumentUI.inc:37
+msgid "Select the file to check in"
+msgstr ""
+
 #: presentation/lookAndFeel/knowledgeTree/administration/documentmanagement/restoreDeletedDocumentsUI.inc:78
 msgid "Select the folder you would like to restore deleted document"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/subscriptions/subscriptionUI.inc:45
+msgid "Select the subscriptions you'd like to unsubscribe from, and click 'Unsubscribe'"
 msgstr ""
 
 #: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:218
 #: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:276
 #: presentation/lookAndFeel/knowledgeTree/foldermanagement/editUI.inc:81
 msgid "Seq"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/collaborationUI.inc:77
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/collaborationUI.inc:86
+msgid "Sequence"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/collaborationUI.inc:82
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/addFolderCollaborationUI.inc:45
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/deleteFolderCollaborationUI.inc:49
+msgid "Sequence No."
 msgstr ""
 
 #: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/addUserUI.inc:122
@@ -1854,11 +2590,12 @@ msgstr ""
 msgid "Sorry, Group Already Exists!"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/editUserGroupsUI.inc:171
 #: presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/editGroupUnitUI.inc:181
 #: presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/removeGroupFromUnitUI.inc:103
 #: presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/editDocFieldLookupsUI.inc:197
 #: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/editUnitOrgUI.inc:145
+#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/editUserGroupsUI.inc:171
+#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/removeUserFromGroupUI.inc:155
 msgid "Sorry, Removal Failed"
 msgstr ""
 
@@ -1866,14 +2603,14 @@ msgstr ""
 msgid "Sorry, Role Already Exists!"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/addUserToGroupUI.inc:75
 #: presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/assignGroupToUnitUI.inc:181
 #: presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/removeGroupFromUnitUI.inc:123
+#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/addUserToGroupUI.inc:75
 msgid "Sorry, Selection Failed"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/search/standardSearchUI.inc:29
 #: config/siteMap.inc:235
+#: presentation/lookAndFeel/knowledgeTree/search/standardSearchUI.inc:29
 msgid "Standard Search"
 msgstr ""
 
@@ -1881,10 +2618,26 @@ msgstr ""
 msgid "Status"
 msgstr ""
 
+#: presentation/lookAndFeel/knowledgeTree/discussions/addCommentUI.inc:93
+#: presentation/lookAndFeel/knowledgeTree/discussions/viewCommentUI.inc:67
+#: presentation/lookAndFeel/knowledgeTree/discussions/viewDiscussionUI.inc:109
+msgid "Subject"
+msgstr ""
+
+#: bin/generate-buttons.php:26
+msgid "Submit"
+msgstr ""
+
+#: bin/generate-buttons.php:10
+msgid "Subscribe"
+msgstr ""
+
 #: presentation/lookAndFeel/knowledgeTree/dashboardUI.inc:156
+#: test-gettext.php:12
 msgid "Subscription Alerts"
 msgstr ""
 
+#: lib/visualpatterns/NavBar.inc:201
 #: presentation/lookAndFeel/knowledgeTree/subscriptions/subscriptionUI.inc:39
 #: presentation/lookAndFeel/knowledgeTree/subscriptions/subscriptionUI.inc:98
 #: presentation/lookAndFeel/knowledgeTree/subscriptions/subscriptionUI.inc:156
@@ -1897,28 +2650,28 @@ msgstr ""
 msgid "Succesfully updated document checkout."
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/preferences/editUserPrefsUI.inc:67
-#: presentation/lookAndFeel/knowledgeTree/administration/orgmanagement/editOrgUI.inc:60
-#: presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/editDocTypeUI.inc:149
-#: presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/editDocTypeFieldsUI.inc:118
-#: presentation/lookAndFeel/knowledgeTree/administration/rolemanagement/editRoleUI.inc:134
-#: presentation/lookAndFeel/knowledgeTree/administration/rolemanagement/editRoleUI.inc:156
-#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/addUserToGroupUI.inc:94
-#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/removeUserFromGroupUI.inc:176
-#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/editUserGroupsUI.inc:192
-#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/editUserUI.inc:94
 #: presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/assignGroupToUnitUI.inc:201
+#: presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/editGroupUI.inc:146
 #: presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/editGroupUnitUI.inc:202
 #: presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/removeGroupFromUnitUI.inc:142
-#: presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/editGroupUI.inc:146
-#: presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/metadatamanagement/editMetaDataUI.inc:147
-#: presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/metadatamanagement/addMetaDataUI.inc:97
-#: presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/metadatamanagement/removeMetaDataUI.inc:126
 #: presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/editDocFieldLookupsUI.inc:218
 #: presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/editDocFieldUI.inc:96
-#: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/editUnitUI.inc:58
-#: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/editUnitOrgUI.inc:164
+#: presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/metadatamanagement/addMetaDataUI.inc:97
+#: presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/metadatamanagement/editMetaDataUI.inc:147
+#: presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/metadatamanagement/removeMetaDataUI.inc:126
+#: presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/editDocTypeFieldsUI.inc:118
+#: presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/editDocTypeUI.inc:149
 #: presentation/lookAndFeel/knowledgeTree/administration/linkmanagement/editLinkUI.inc:90
+#: presentation/lookAndFeel/knowledgeTree/administration/orgmanagement/editOrgUI.inc:60
+#: presentation/lookAndFeel/knowledgeTree/administration/rolemanagement/editRoleUI.inc:134
+#: presentation/lookAndFeel/knowledgeTree/administration/rolemanagement/editRoleUI.inc:156
+#: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/editUnitOrgUI.inc:164
+#: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/editUnitUI.inc:58
+#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/addUserToGroupUI.inc:94
+#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/editUserGroupsUI.inc:192
+#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/editUserUI.inc:94
+#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/removeUserFromGroupUI.inc:176
+#: presentation/lookAndFeel/knowledgeTree/preferences/editUserPrefsUI.inc:67
 msgid "Success"
 msgstr ""
 
@@ -1934,12 +2687,21 @@ msgstr ""
 msgid "System Administrator"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/administration/systemsettings/systemSettingsUI.inc:32
 #: config/siteMap.inc:129
+#: presentation/lookAndFeel/knowledgeTree/administration/systemsettings/systemSettingsUI.inc:32
 msgid "System Settings"
 msgstr ""
 
+#: presentation/lookAndFeel/knowledgeTree/dashboardUI.inc:183
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/createDependantDocumentUI.inc:57
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/createDependantDocumentUI.inc:60
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/escalateDependantDocumentUI.inc:47
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/deleteDependantDocumentUI.inc:39
 #: presentation/lookAndFeel/knowledgeTree/foldermanagement/viewDependantDocumentsUI.inc:46
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/viewDependantDocumentsUI.inc:102
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/viewDependantDocumentsUI.inc:105
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/viewDependantDocumentsUI.inc:138
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/viewDependantDocumentsUI.inc:141
 msgid "Template document"
 msgstr ""
 
@@ -2007,8 +2769,8 @@ msgstr ""
 msgid "The Unit was deleted, but the link to the Organisation could not be deleted"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/addUnitUI.inc:121
 #: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/addUnitToOrgUI.inc:196
+#: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/addUnitUI.inc:121
 #: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/removeUnitFromOrgUI.inc:204
 msgid "The Unit was not added to the Organisation."
 msgstr ""
@@ -2035,25 +2797,41 @@ msgstr ""
 msgid "The User was successfully assigned to the specified Group"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/preferences/editUserPrefsUI.inc:68
 #: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/editUserUI.inc:96
+#: presentation/lookAndFeel/knowledgeTree/preferences/editUserPrefsUI.inc:68
 msgid "The User was successfully modified"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/removeUserFromGroupUI.inc:178
-#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/editUserGroupsUI.inc:194
 #: presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/editGroupUnitUI.inc:204
 #: presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/editDocFieldLookupsUI.inc:220
 #: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/editUnitOrgUI.inc:166
+#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/editUserGroupsUI.inc:194
+#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/removeUserFromGroupUI.inc:178
 msgid "The User was successfully removed from the Group"
 msgstr ""
 
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/archiving/addArchiveSettingsBL.php:57
+msgid "The archive settings for this document could not be added"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewBL.php:127
+msgid "The collaboration steps for the folder must be set up before collaboration can begin"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/escalateDependantDocumentBL.php:91
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/escalateDependantDocumentBL.php:95
+msgid "The dependant document information could not be found."
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/escalateDependantDocumentBL.php:83
+msgid "The dependant document user information could not be found."
+msgstr ""
+
 #: presentation/lookAndFeel/knowledgeTree/administration/documentmanagement/restoreDeletedDocumentsUI.inc:36
-#: presentation/lookAndFeel/knowledgeTree/administration/documentmanagement/manageArchivedDocumentsBL.php:98
 msgid "The document"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:420
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:444
 #, php-format
 msgid "The document can only be checked back in by %s"
 msgstr ""
@@ -2063,12 +2841,28 @@ msgstr ""
 msgid "The document could not be restored.  Please try again later"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:463
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewBL.php:204
+msgid "The document has been marked as pending publishing and the web publisher has been notified"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewBL.php:206
+msgid "The document has been published"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:487
 msgid "The document is checked out and cannot be moved."
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:467
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:491
 msgid "The document is in collaboration and cannot be moved."
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewBL.php:263
+msgid "The document you have chosen no longer exists in the DMS."
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/subscriptions/subscriptionUI.inc:44
+msgid "The documents and folders you're subscribed to are listed below."
 msgstr ""
 
 #: presentation/lookAndFeel/knowledgeTree/administration/documentmanagement/expungeDeletedDocumentsUI.inc:36
@@ -2079,8 +2873,53 @@ msgstr ""
 msgid "The documents you have chosen to restore from the archive are listed below."
 msgstr ""
 
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/escalateDependantDocumentBL.php:79
+msgid "The escalation message could not be sent because the user has disabled notification"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/escalateDependantDocumentBL.php:75
+msgid "The escalation message could not be sent due to a system error sending the notification."
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/checkInDocumentBL.php:135
+msgid "The file you selected does not match the current filename in the DMS.  Please try again."
+msgstr ""
+
 #: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/addUnitBL.php:73
 msgid "The folder"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/addGroupFolderLinkBL.php:60
+msgid "The folder access entry could not be created in the database"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/deleteGroupFolderLinkBL.php:61
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/editGroupFolderLinkBL.php:64
+msgid "The folder access entry could not be deleted from the database"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/addFolderCollaborationBL.php:66
+msgid "The folder collaboration entry could not be created in the database"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/deleteFolderCollaborationBL.php:67
+msgid "The folder collaboration entry could not be deleted from the database"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/deleteFolderBL.php:115
+msgid "The folder could not be deleted from the database"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/deleteFolderBL.php:106
+msgid "The folder could not be deleted from the file system"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/addFolderDocTypeBL.php:48
+msgid "The folder has already been assigned this document type"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/editBL.php:82
+msgid "The folder you're trying to modify does not exist in the DMS"
 msgstr ""
 
 #: presentation/lookAndFeel/knowledgeTree/administration/documentmanagement/listDeletedDocumentsUI.inc:37
@@ -2117,6 +2956,31 @@ msgstr ""
 msgid "The lookup was successfully deleted"
 msgstr ""
 
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewBL.php:172
+msgid "The next steps in the collaboration process have been started"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/deleteDocumentBL.php:195
+msgid "The other documents are been deleted."
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/moveDocumentBL.php:139
+msgid "The other documents are been moved."
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/passwordManagementBL.php:64
+#: presentation/lookAndFeel/knowledgeTree/preferences/passwordManagementBL.php:62
+msgid "The password and its confirmation do not match.  Please try again."
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/administration/websitemanagement/editWebsiteBL.php:62
+msgid "The selected website no longer exists in the database."
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/discussions/addCommentBL.php:96
+msgid "The subject line and/or body should not be empty."
+msgstr ""
+
 #: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/addUserUI.inc:165
 msgid "The user was not added because the selected User Name already exists."
 msgstr ""
@@ -2129,6 +2993,14 @@ msgstr ""
 msgid "The user's password was successfully updated"
 msgstr ""
 
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/webDocumentBL.php:74
+msgid "The web document could not be retrieved from the database"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/administration/websitemanagement/editWebsiteUI.inc:96
+msgid "The website has been updated."
+msgstr ""
+
 #: presentation/lookAndFeel/knowledgeTree/administration/documentmanagement/listDeletedDocumentsUI.inc:58
 msgid "There are currently no deleted documents in the system"
 msgstr ""
@@ -2137,20 +3009,81 @@ msgstr ""
 msgid "There are no checked out documents"
 msgstr ""
 
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/groupFolderLinkUI.inc:128
+msgid "There are no groups"
+msgstr ""
+
 #: presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/addDocTypeFieldsLinkUI.inc:87
 msgid "There are no non-generic fields in the database."
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/addFolderCollaborationUI.inc:119
+msgid "There are no roles"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/collaborationUI.inc:97
+msgid "There are no users in this group"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/addFolderBL.php:88
+#, php-format
+msgid "There is another folder named %s in this folder already"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/browseUI.inc:117
+msgid "There is no Category Document Field- contact a System Administrator."
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/addGroupBL.php:56
+msgid "There was an error associating the new group with the specified unit."
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/addFolderBL.php:146
+#, php-format
+msgid "There was an error creating the folder %s in the database"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/addFolderBL.php:120
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/addFolderBL.php:134
+#, php-format
+msgid "There was an error creating the folder %s on the filesystem"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/addGroupBL.php:59
+msgid "There was an error creating the new group (Check that a group with this name doesn't already exist)."
 msgstr ""
 
 #: presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/removeGroupBL.php:54
 msgid "There was an error deleting this group.  Please try again later."
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/administration/documentmanagement/expungeDeletedDocumentsUI.inc:73
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/archiving/restoreArchivedDocumentUI.inc:91
+msgid "There was an error requesting the restoration of this document from the archive.  Please try again later."
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/webDocumentBL.php:67
+msgid "There was an error updating the web document status"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/administration/websitemanagement/editWebsiteUI.inc:100
+msgid "There was an error updating the website, please try again later."
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/subscriptions/manageSubscriptionsBL.php:72
+msgid "There were errors removing the following subscriptions:"
+msgstr ""
+
 #: presentation/lookAndFeel/knowledgeTree/administration/documentmanagement/archivedDocumentsUI.inc:44
+#: presentation/lookAndFeel/knowledgeTree/administration/documentmanagement/expungeDeletedDocumentsUI.inc:73
 msgid "There were errors restoring the following documents:"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:446
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/browseUI.inc:115
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/templateDocumentBrowseUI.inc:114
+msgid "This category contains no documents"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:470
 msgid "This document can't be deleted because its checked out"
 msgstr ""
 
@@ -2158,31 +3091,60 @@ msgstr ""
 msgid "This document field does not exist in the database"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:542
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/archiving/restoreArchivedDocumentUI.inc:37
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/archiving/restoreArchivedDocumentUI.inc:58
+msgid "This document has been archived!"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:566
 msgid "This document has been marked as pending publishing and the web publisher has been notified."
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:428
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:452
 msgid "This document has been published and cannot be checked out"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:540
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/checkOutDocumentBL.php:112
+msgid "This document is already checked out"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:564
 msgid "This document is already published."
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:505
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:529
 msgid "This document is checked out and cannot be archived."
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:502
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:526
 msgid "This document is in collaboration and cannot be archived"
 msgstr ""
 
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/browseUI.inc:181
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/templateDocumentBrowseUI.inc:178
+msgid "This document type contains no documents"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/moveDocumentBL.php:171
+msgid "This folder already contains a document of the same name."
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/moveDocumentBL.php:122
+msgid "This folder already contains a document of the same name. Please choose another directory"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/deleteFolderUI.inc:42
+msgid "This folder cannot be deleted while it is not empty."
+msgstr ""
+
 #: presentation/lookAndFeel/knowledgeTree/documentmanagement/browseUI.inc:222
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/templateDocumentBrowseUI.inc:218
 msgid "This folder contains no documents"
 msgstr ""
 
 #: presentation/lookAndFeel/knowledgeTree/documentmanagement/browseUI.inc:219
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/templateDocumentBrowseUI.inc:215
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc:120
 msgid "This folder contains no sub folders"
 msgstr ""
 
@@ -2210,11 +3172,19 @@ msgstr ""
 msgid "This group is part of a document routing step!"
 msgstr ""
 
-#: presentation/login.php:149
+#: presentation/lookAndFeel/knowledgeTree/subscriptions/viewAlertBL.php:62
+msgid "This subscription alert does not exist."
+msgstr ""
+
+#: presentation/login.php:150
 msgid "This user does not belong to a group and is therefore not allowed to log in."
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:407
+#: presentation/lookAndFeel/knowledgeTree/administration/websitemanagement/removeWebsiteBL.php:62
+msgid "This website can not be removed since it is still in use."
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:427
 msgid "This will download a copy of the document and is not the same as Checking Out a document.  Changes to this downloaded file will not be managed in the DMS."
 msgstr ""
 
@@ -2222,20 +3192,52 @@ msgstr ""
 msgid "This will view a copy of the current version of this document in the DMS.  Any changes to this file will not be managed in the DMS."
 msgstr ""
 
+#: presentation/lookAndFeel/knowledgeTree/discussions/addCommentBL.php:87
+msgid "Thread Object failed to update"
+msgstr ""
+
 #: lib/browse/Browser.inc:62
+#: presentation/lookAndFeel/knowledgeTree/dashboardUI.inc:125
+#: presentation/lookAndFeel/knowledgeTree/dashboardUI.inc:180
 msgid "Title"
 msgstr ""
 
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/moveDocumentUI.inc:71
+msgid "To Folder"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/archiving/restoreArchivedDocumentUI.inc:59
+msgid "To request that the document be unarchived, please click the 'Restore' button."
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/escalateDependantDocumentUI.inc:50
+msgid "To send the user a reminder message, fill in the text box below and click 'Done'"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewHistoryUI.inc:37
+msgid "Transaction History"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewHistoryUI.inc:44
+msgid "Type"
+msgstr ""
+
 #: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:128
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:601
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:649
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:625
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:673
 msgid "Type Specific Meta Data"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/administration/websitemanagement/listWebsitesUI.inc:36
-#: presentation/lookAndFeel/knowledgeTree/administration/linkmanagement/listLinksUI.inc:36
-#: presentation/lookAndFeel/knowledgeTree/administration/linkmanagement/editLinkUI.inc:52
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentUI.inc:118
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/modifySpecificMetaDataUI.inc:45
+msgid "Type specific meta data"
+msgstr ""
+
 #: presentation/lookAndFeel/knowledgeTree/administration/linkmanagement/addLinkUI.inc:32
+#: presentation/lookAndFeel/knowledgeTree/administration/linkmanagement/editLinkUI.inc:52
+#: presentation/lookAndFeel/knowledgeTree/administration/linkmanagement/listLinksUI.inc:36
+#: presentation/lookAndFeel/knowledgeTree/administration/linkmanagement/removeLinkUI.inc:126
+#: presentation/lookAndFeel/knowledgeTree/administration/websitemanagement/listWebsitesUI.inc:36
 msgid "URL"
 msgstr ""
 
@@ -2250,8 +3252,8 @@ msgstr ""
 msgid "Unit Administrator"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/listUnitsUI.inc:66
 #: config/siteMap.inc:113
+#: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/listUnitsUI.inc:66
 msgid "Unit Management"
 msgstr ""
 
@@ -2260,14 +3262,14 @@ msgstr ""
 #: presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/assignGroupToUnitUI.inc:161
 #: presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/listGroupsUI.inc:71
 #: presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/removeGroupFromUnitUI.inc:56
-#: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/listUnitsUI.inc:50
-#: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/removeUnitUI.inc:35
-#: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/addUnitUI.inc:36
 #: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/addUnitToOrgUI.inc:68
 #: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/addUnitToOrgUI.inc:117
+#: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/addUnitUI.inc:36
 #: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/editUnitUI.inc:39
+#: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/listUnitsUI.inc:50
 #: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/removeUnitFromOrgUI.inc:74
 #: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/removeUnitFromOrgUI.inc:125
+#: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/removeUnitUI.inc:35
 msgid "Unit Name"
 msgstr ""
 
@@ -2304,26 +3306,50 @@ msgstr ""
 msgid "Unlink document"
 msgstr ""
 
+#: bin/generate-buttons.php:11
+msgid "Unsubscribe"
+msgstr ""
+
+#: bin/generate-buttons.php:16
+msgid "Update"
+msgstr ""
+
 #: presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/editDocTypeFieldsUI.inc:81
 msgid "Update Document Field Link Mandatory Setting"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/administration/rolemanagement/editRoleSuccess.php:39
+#: bin/generate-buttons.php:13
+msgid "Update Password"
+msgstr ""
+
 #: presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/editGroupSuccess.php:42
+#: presentation/lookAndFeel/knowledgeTree/administration/rolemanagement/editRoleSuccess.php:39
 msgid "Update Successful!"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/preferences/passwordManagementUI.inc:31
-#: presentation/lookAndFeel/knowledgeTree/preferences/passwordManagementUI.inc:59
+#: presentation/lookAndFeel/knowledgeTree/administration/websitemanagement/editWebsiteUI.inc:34
+msgid "Update Website Properties"
+msgstr ""
+
 #: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/passwordManagementUI.inc:30
 #: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/passwordManagementUI.inc:61
+#: presentation/lookAndFeel/knowledgeTree/preferences/passwordManagementUI.inc:31
+#: presentation/lookAndFeel/knowledgeTree/preferences/passwordManagementUI.inc:59
 msgid "Update user password"
 msgstr ""
 
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/createDependantDocumentUI.inc:49
 #: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:218
 #: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:276
 #: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:366
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/addFolderCollaborationUI.inc:39
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/collaborationUI.inc:71
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/collaborationUI.inc:86
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/deleteDependantDocumentUI.inc:36
 #: presentation/lookAndFeel/knowledgeTree/foldermanagement/editUI.inc:81
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/viewDependantDocumentsUI.inc:94
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/viewDependantDocumentsUI.inc:130
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/viewDependantDocumentsUI.inc:181
 msgid "User"
 msgstr ""
 
@@ -2332,25 +3358,30 @@ msgstr ""
 msgid "User Details"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/listUsersUI.inc:98
 #: config/siteMap.inc:110 config/siteMap.inc:111
+#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/listUsersUI.inc:98
 msgid "User Management"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/addUserToGroupUI.inc:50
-#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/editUserGroupsUI.inc:46
-#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/editUserGroupsUI.inc:92
-#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/editUserGroupsUI.inc:147
 #: presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/editGroupUnitUI.inc:46
 #: presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/editGroupUnitUI.inc:157
 #: presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/editDocFieldLookupsUI.inc:65
 #: presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/editDocFieldLookupsUI.inc:173
 #: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/editUnitOrgUI.inc:127
+#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/addUserToGroupUI.inc:50
+#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/editUserGroupsUI.inc:46
+#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/editUserGroupsUI.inc:92
+#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/editUserGroupsUI.inc:147
+#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/removeUserUI.inc:109
 msgid "User Name"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/preferences/editUserPrefsUI.inc:83
+#: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/removeUserUI.inc:64
+msgid "User SuccessFully Removed!"
+msgstr ""
+
 #: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/editUserUI.inc:117
+#: presentation/lookAndFeel/knowledgeTree/preferences/editUserPrefsUI.inc:83
 msgid "User modification Failed!"
 msgstr ""
 
@@ -2358,13 +3389,19 @@ msgstr ""
 msgid "User name"
 msgstr ""
 
-#: presentation/login.php:75
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/createDependantDocumentUI.inc:46
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/viewDependantDocumentsUI.inc:91
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/viewDependantDocumentsUI.inc:127
+msgid "User's Unit"
+msgstr ""
+
 #: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/addUserUI.inc:50
 #: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/addUserUI.inc:68
 #: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/addUserUI.inc:106
 #: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/editUserUI.inc:38
 #: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/editUserUI.inc:59
 #: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/listUsersUI.inc:82
+#: presentation/login.php:76
 msgid "Username"
 msgstr ""
 
@@ -2372,8 +3409,14 @@ msgstr ""
 msgid "Username not found!"
 msgstr ""
 
-#: presentation/login.php:83
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/emailUI.inc:61
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewHistoryUI.inc:45
+msgid "Users"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewHistoryUI.inc:46
 #: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:61
+#: presentation/login.php:84
 msgid "Version"
 msgstr ""
 
@@ -2385,7 +3428,8 @@ msgstr ""
 msgid "View documents by"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:408
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:429
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:431
 msgid "View the document"
 msgstr ""
 
@@ -2397,8 +3441,21 @@ msgstr ""
 msgid "WebMaster"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/administration/websitemanagement/listWebsitesUI.inc:53
+#: presentation/lookAndFeel/knowledgeTree/administration/websitemanagement/editWebsiteUI.inc:41
+#: presentation/lookAndFeel/knowledgeTree/administration/websitemanagement/removeWebsiteUI.inc:44
+msgid "WebSite Name"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/administration/websitemanagement/editWebsiteUI.inc:43
+msgid "WebSite URL"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/administration/websitemanagement/editWebsiteUI.inc:38
+msgid "Webmaster"
+msgstr ""
+
 #: config/siteMap.inc:127
+#: presentation/lookAndFeel/knowledgeTree/administration/websitemanagement/listWebsitesUI.inc:53
 msgid "Website Management"
 msgstr ""
 
@@ -2406,50 +3463,296 @@ msgstr ""
 msgid "Website Name"
 msgstr ""
 
+#: presentation/lookAndFeel/knowledgeTree/administration/websitemanagement/removeWebsiteUI.inc:72
+msgid "Website Successfully Removed!"
+msgstr ""
+
 #: presentation/lookAndFeel/knowledgeTree/administration/websitemanagement/addWebsiteUI.inc:31
 msgid "Website URL"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/administration/websitemanagement/editWebsiteUI.inc:100
+msgid "Website update failure!"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/administration/websitemanagement/editWebsiteUI.inc:96
+msgid "Website update success!"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/discussions/viewDiscussionUI.inc:55
+msgid "Would you like to create a new Discussion thread for this document?"
 msgstr ""
 
 #: presentation/lookAndFeel/knowledgeTree/administration/rolemanagement/editRoleUI.inc:106
 msgid "Writable:"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/administration/rolemanagement/editRoleUI.inc:35
 #: presentation/lookAndFeel/knowledgeTree/administration/rolemanagement/addRoleUI.inc:32
+#: presentation/lookAndFeel/knowledgeTree/administration/rolemanagement/editRoleUI.inc:35
 #: presentation/lookAndFeel/knowledgeTree/administration/rolemanagement/listRolesUI.inc:35
 #: presentation/lookAndFeel/knowledgeTree/foldermanagement/editUI.inc:140
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/groupFolderLinkUI.inc:117
 msgid "Write"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:527
+#: presentation/lookAndFeel/knowledgeTree/subscriptions/addSubscriptionBL.php:100
+msgid "You are already subscribed to this folder or document"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/subscriptions/subscriptionUI.inc:42
+msgid "You are not subscribed to any documents or folders."
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:551
 msgid "You are not the last collaborator and hence cannot publish this document"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/subscriptions/removeSubscriptionBL.php:79
+msgid "You aren't subscribed to this folder or document"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/checkInDocumentBL.php:149
+msgid "You can't check in this document because its checked out by"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/checkInDocumentBL.php:153
+msgid "You can't check in this document because its not checked out"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/moveDocumentBL.php:176
+msgid "You can't move the document to this folder because it cannot store the document type of your document."
 msgstr ""
 
 #: presentation/lookAndFeel/knowledgeTree/administration/documentmanagement/restoreDeletedDocumentBL.php:85
 msgid "You can't restore the document to this folder because it cannot store the document type of your document.  Please choose another directory."
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:530
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/deleteDocumentBL.php:83
+msgid "You can't, at least, delete one document"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/viewDependantDocumentsBL.php:82
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/viewDependantDocumentsBL.php:108
+msgid "You cannot add a new dependant document as there is currently a document in this folder undergoing collaboration"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/editBL.php:61
+msgid "You cannot delete this folder collaboration process as a document is currently undergoing this collaboration process"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewBL.php:89
+msgid "You cannot edit a document collaboration step that is completed or currently underway"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/editBL.php:54
+msgid "You cannot edit this folder collaboration process as a document is currently undergoing this collaboration process"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:554
 msgid "You cannot publish this document until collaboration is complete"
 msgstr ""
 
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/archiving/addArchiveSettingsBL.php:60
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/archiving/modifyArchiveSettingsBL.php:65
+msgid "You cannot select an expiration date in the past. Please try again."
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:250
 #: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:290
 msgid "You currently have an active role in the collaboration process"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:535
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentBL.php:171
+msgid "You did not select a valid document to upload"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/discussions/addCommentBL.php:132
+msgid "You did not specify a document to add a comment to."
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/addFolderBL.php:177
+msgid "You did not specify a document type.  If there are no system document types, please contact a System Administrator."
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/discussions/viewDiscussionBL.php:88
+msgid "You did not specify a document."
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/discussions/viewCommentBL.php:50
+msgid "You didn't specify a comment to view"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/noAccess.php:28
+msgid "You do not have permission to access this page."
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentBL.php:201
+msgid "You do not have permission to add a document to this folder"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/addFolderDocTypeBL.php:79
+msgid "You do not have permission to assign a document type to this folder"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/checkInDocumentBL.php:157
+msgid "You do not have permission to check in this document"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/addFolderBL.php:63
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/addFolderBL.php:168
+msgid "You do not have permission to create new folders in this folder"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/removeDocumentLinkBL.php:86
+msgid "You do not have permission to delete links between documents"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/deleteFolderBL.php:170
+msgid "You do not have permission to delete this folder"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/collaborationBL.php:135
+msgid "You do not have permission to edit document routing details"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/modifyBL.php:122
+msgid "You do not have permission to edit this document"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/editBL.php:77
+msgid "You do not have permission to edit this folder"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:559
 msgid "You do not have permission to publish this document."
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:432
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:449
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:470
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:508
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/deleteFolderDocTypeBL.php:82
+msgid "You do not have permission to remove this document type from this folder"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewHistoryBL.php:65
+msgid "You do not have permission to view this document's history"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/moveDocumentBL.php:115
+msgid "You do not have rights to move this document"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/emailBL.php:194
+msgid "You do not have the permission to email a link to this document"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:456
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:473
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:494
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:532
 msgid "You do not have write access to this document"
 msgstr ""
 
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/deleteDocumentBL.php:61
+msgid "You do not have, at least, permission to delete one document"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/browseUI.inc:115
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/templateDocumentBrowseUI.inc:114
+msgid "You don't have access to the documents in this category"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/browseUI.inc:181
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/templateDocumentBrowseUI.inc:178
+msgid "You don't have access to the documents in this document type"
+msgstr ""
+
 #: presentation/lookAndFeel/knowledgeTree/documentmanagement/browseUI.inc:223
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/templateDocumentBrowseUI.inc:218
 msgid "You don't have access to the documents in this folder"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/checkOutDocumentBL.php:116
+msgid "You don't have permission to check out this document"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/deleteGroupFolderLinkBL.php:71
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/editGroupFolderLinkBL.php:74
+msgid "You don't have permission to delete this folder access entry."
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/subscriptions/addSubscriptionBL.php:110
+msgid "You don't have permission to subscribe to this folder or document"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/archiving/archiveSettingsUI.inc:259
+msgid "You have chosen to archive the document entitled"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/deleteFolderUI.inc:61
+msgid "You have chosen to delete the folder entitled"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/deleteDocumentUI.inc:32
+msgid "You have chosen to delete the following document(s):"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/subscriptions/subscriptionUI.inc:100
+msgid "You have chosen to delete the following subscription(s):"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/removeDocumentLinkUI.inc:34
+msgid "You have chosen to delete the link between these two documents"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/subscriptions/subscriptionUI.inc:158
+msgid "You have chosen to delete your subscription to:"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/collaborationRollbackUI.inc:38
+msgid "You have chosen to reject the previous collaboration step for the document.  Please provide a reason"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/subscriptions/subscriptionUI.inc:191
+msgid "You have chosen to subscribe to:"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/downloadBL.php:86
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewBL.php:278
+msgid "You have not chosen a document to view"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/subscriptions/viewAlertBL.php:44
+msgid "You have not selected a subscription alert"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/checkOutDocumentUI.inc:66
+msgid "You have now checked out this document. No one else can make updates to the document while you have it checked out. Click the Download button to get the latest version of the file. Please check it back in, as soon as you finish working on it."
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewBL.php:248
+msgid "You have now checked out this document. No one else can make updates to the document while you have it checked out. Save the document, make your changes and check it back in as soon as you finish working on it."
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/escalateDependantDocumentUI.inc:36
+msgid "You have requested that the following document be created:"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/subscriptions/addSubscriptionBL.php:117
+msgid "You haven't chosen a folder or a document to subscribe to"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/subscriptions/removeSubscriptionBL.php:108
+msgid "You haven't chosen a folder or a document to unsubscribe from"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentBL.php:210
+msgid "You haven't selected a folder to add a document to."
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/deleteFolderDocTypeBL.php:60
+msgid "You may not delete the last document type for this folder."
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/administration/news/addNewsBL.php:57
+msgid "You may only upload an image file."
 msgstr ""
 
 #: presentation/lookAndFeel/knowledgeTree/administration/news/editNewsBL.php:68
@@ -2460,8 +3763,30 @@ msgstr ""
 msgid "You must enter at least one value!"
 msgstr ""
 
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/emailBL.php:164
+msgid "You must select either a group or a user to send an email link to."
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/groupFolderLinkUI.inc:81
+#: presentation/lookAndFeel/knowledgeTree/foldermanagement/groupFolderLinkUI.inc:108
+msgid "You must select either read or write access"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/archiving/restoreArchivedDocumentUI.inc:78
+msgid "Your request has been processed, you will be notified when the document is restored."
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/discussions/addCommentUI.inc:35
+msgid "Your submission has been successful."
+msgstr ""
+
 #: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/addUserUI.inc:169
 msgid "Your user search string did not match any users in the user directory."
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/archiving/archiveSettingsUI.inc:186
+#, php-format
+msgid "after the last %s transactions"
 msgstr ""
 
 #: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/addUnitBL.php:73
@@ -2472,8 +3797,17 @@ msgstr ""
 msgid "browse documents"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/administration/documentmanagement/manageArchivedDocumentsBL.php:99
-msgid "has been restored from the archive."
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/archiving/archiveSettingsUI.inc:167
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/archiving/archiveSettingsUI.inc:169
+msgid "from document creation date"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/archiving/archiveSettingsUI.inc:148
+msgid "in order to change the archiving type for this document, click the 'Remove' button and add new archiving settings"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/noAccess.php:29
+msgid "logout"
 msgstr ""
 
 #: presentation/lookAndFeel/knowledgeTree/administration/documentmanagement/restoreDeletedDocumentsUI.inc:55
