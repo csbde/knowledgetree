@@ -52,23 +52,6 @@ function getNewThreadOption($fDocumentID) {
 	   return $sToRender;
 }
 
-/** 
- *	Renders the heading for the page
- *
- *	@param $sHeading -> text heading for the page
- */
-function renderHeading($sHeading) {
-    global $default;
-        
-    $sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
-    $sColor = $default->siteMap->getSectionColour($sSectionName, "th");
-    $sToRender  = "<table border=\"0\" width=\"600\">\n";
-    $sToRender .= "<tr align=\"left\"><th class=\"sectionHeading\" bgcolor=\"$sColor\"><font color=\"ffffff\">$sHeading</font></th></tr>\n";
-    $sToRender .= "<tr/>\n";
-    $sToRender .= "<tr/>\n";
-    $sToRender .= "</table>\n";
-    return $sToRender;
-}
 
 /** 
  *	Renders the path for the document
