@@ -113,7 +113,7 @@ class Permission {
 	*/
 	function folderIsPublic($iFolderID) {
 		global $default, $lang_err_folder_not_public;
-		$sql = new Owl_DB();
+		$sql = $default->db;
 		$sql->query("SELECT * FROM " . $default->owl_folders_table . " WHERE id = " . $iFolderID . " AND is_public = 1");
 		if ($sql->next_record()) {
 			return true;
@@ -131,7 +131,7 @@ class Permission {
 	*/
 	function userHasGroupWritePermissionForFolder($iFolderID) {
 		global $default, $lang_err_user_folder_write;
-		$sql = new Owl_DB();			
+		$sql = $default->db;			
 		$sql->query("SELECT GFL.folder_id " .
 						"FROM groups_folders_link AS GFL INNER JOIN users_groups_link AS UGL ON GFL.group_id = UGL.group_id " .
 						"WHERE UGL.user_id =  " . $_SESSION["userID"] . " " .
@@ -176,7 +176,7 @@ class Permission {
 	*/
 	function userHasGroupReadPermissionForFolder($iFolderID) {
 		global $default, $lang_err_user_folder_read;
-		$sql = new Owl_DB();
+		$sql = $default->db;
 		//$sql->query("SELECT * FROM " . $default->owl_groups_folders_table = "groups_folders_link" . " WHERE folder_id = " . $iFolderID . " AND user_id = " . $_SESSION["userID"] . " AND can_read = 1");
         $sql->query("SELECT GFL.folder_id " .
 						"FROM groups_folders_link AS GFL INNER JOIN users_groups_link AS UGL ON GFL.group_id = UGL.group_id " .
@@ -199,7 +199,7 @@ class Permission {
 	*/
 	function userIsInGroupID($iGroupID) {		
 		global $default, $lang_err_user_group;
-		$sql = new Owl_DB();
+		$sql = $default->db;
 		$sql->query("SELECT id FROM " . $default->owl_groups_users_table . " WHERE id = " . $iGroupID . " AND user_id = " . $_SESSION["userID"]);
 		if ($sql->next_record()) {
 			return true;
@@ -217,7 +217,7 @@ class Permission {
 	*/
 	function userIsInGroupName($sGroupName) {
 		global $default, $lang_err_user_group;
-		$sql = new Owl_DB();
+		$sql = $default->db;
 		$sql->query("SELECT GULT.id FROM " . $default->owl_users_groups_table . " AS GULT INNER JOIN " . $default->owl_groups_table . " AS G ON GULT.group_id = G.ID WHERE G.name = '" . $sGroupName . "' AND user_id = " . $_SESSION["userID"]);
 		if ($sql->next_record()) {
 			return true;
@@ -236,7 +236,7 @@ class Permission {
 	*/
 	function userHasWriteRoleForFolder($iFolderID) {
 		global $default, $lang_err_user_role;	
-		$sql = new Owl_DB();
+		$sql = $default->db;
 		$sql->query("SELECT * FROM " . $default->owl_folders_user_roles_table . " AS FURL INNER JOIN " . $default->owl_roles_table . " AS R ON FURL.role_type_id = R.id " .
 					"WHERE folder_id = " . $iFolderID . " " .
 					"AND user_id = " . $_SESSION["userID"] . " " .
@@ -257,7 +257,7 @@ class Permission {
 	*/
 	function userHasReadRoleForFolder($iFolderID) {
 		global $default, $lang_err_user_role;	
-		$sql = new Owl_DB();
+		$sql = $default->db;
 		$sql->query("SELECT * " . 
 					"FROM " . $default->owl_folders_user_roles_table . " AS FURL INNER JOIN " . $default->owl_roles_table . " AS R ON FURL.role_type_id = R.id " .
 					"WHERE folder_id = " . $iFolderID . " " .
@@ -279,7 +279,7 @@ class Permission {
 	*/
 	function roleIDExists($iRoleID) {
 		global $default, $lang_err_role_not_exist;
-		$sql = new Owl_DB();
+		$sql = $default->db;
 		$sql->query("SELECT id FROM " . $default->owl_roles_table . " WHERE id = " . $iRoleID);
 		if ($sql->next_record()) {
 			return true;	
@@ -297,7 +297,7 @@ class Permission {
 	*/
 	function roleNameExists($sRoleName) {
 		global $default, $lang_err_role_not_exist;
-		$sql = new Owl_DB();
+		$sql = $default->db;
 		$sql->query("SELECT id FROM " . $default->owl_roles_table . " WHERE name = '" . $sRoleName . "'");
 		if ($sql->next_record()) {
 			return true;	
@@ -316,7 +316,7 @@ class Permission {
 	function getRoleID($sRoleName) {
 		global $default, $lang_err_database;
 		if (roleExists($sRoleName)) {
-			$sql = new Owl_DB();
+			$sql = $default->db;
 			$sql->query("SELECT id FROM " . $default->owl_roles_table . " WHERE name = '" . $sRoleName . "'");
 			$sql->next_record();
 			return $sql->f("id");	
@@ -333,7 +333,7 @@ class Permission {
 	*/
 	function userIsSystemAdministrator() {
 		global $default, $lang_err_database;
-		$sql = new Owl_DB();
+		$sql = $default->db;
 		$sql->query("SELECT UGL.group_id " . 
 					"FROM $default->owl_users_groups_table AS UGL INNER JOIN $default->owl_groups_table AS GL ON UGL.group_id = GL.id " .
 					"WHERE UGL.user_id = " . $_SESSION["userID"] . " " .
@@ -348,7 +348,7 @@ class Permission {
 	*/
 	function userIsUnitAdministrator() {
         global $default;
-		$sql = new Owl_DB();
+		$sql = $default->db;
 		$sql->query("SELECT UGL.group_id " .
 			"FROM $default->owl_users_groups_table AS UGL INNER JOIN $default->owl_groups_units_table AS GUL ON GUL.group_id = UGL.group_id " .
 			"INNER JOIN $default->owl_groups_table AS GL ON GL.id = UGL.group_id " .
@@ -364,7 +364,7 @@ class Permission {
 	*/
 	function userIsUnitAdministratorForFolder($iFolderID) {
         global $default;
-		$sql = new Owl_DB();
+		$sql = $default->db;
 		$sql->query("SELECT UGL.group_id " .
 			"FROM $default->owl_users_groups_table AS UGL INNER JOIN $default->owl_groups_units_table AS GUL ON GUL.group_id = UGL.group_id " .
 			"INNER JOIN $default->owl_groups_table AS GL ON GL.id = UGL.group_id " .
@@ -382,7 +382,7 @@ class Permission {
      */
     function userIsGuest() {
         global $default;
-		$sql = new Owl_DB();
+		$sql = $default->db;
         // you're a guest user if you're in the Anonymous group
 		$sql->query("SELECT UGL.group_id 
                      FROM $default->owl_users_groups_table AS UGL INNER JOIN $default->owl_groups_table AS GL ON GL.id = UGL.group_id

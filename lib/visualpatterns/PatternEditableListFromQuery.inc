@@ -79,7 +79,9 @@ class PatternEditableListFromQuery {
 	}
 	
 	function & render() {
-		$sql = new Owl_DB();		
+        global $default;
+        
+		$sql = $default->db;		
 		$sql->query($this->sQuery);
 		if ($sql->next_record()) {;
 			$sToRender = "";

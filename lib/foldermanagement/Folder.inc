@@ -190,7 +190,7 @@ class Folder {
 		global $default, $lang_err_database; $lang_err_object_exists;
 		//if the object has not already been stored		
 		if ($this->iId < 0) {
-			$sql = new Owl_DB();
+			$sql = $default->db;
 			$result = $sql->query("INSERT INTO " . $default->owl_folders_table . " (name, description, parent_id, creator_id, document_type_id, unit_id, is_public) " .
 						"VALUES ('" . addslashes($this->sName) . "', '" . addslashes($this->sDescription) . "', $this->iParentID, $this->iCreatorID, $this->iDocumentTypeID, $this->iUnitID, " . ($this->bIsPublic ? 1 : 0) . ")");
 			if ($result) {
@@ -213,7 +213,7 @@ class Folder {
 		global $default, $lang_err_database, $lang_err_object_key;
 		//can only update the object if it has already been stored
 		if ($this->iId >= 0) {
-			$sql = new Owl_DB();
+			$sql = $default->db;
 			$result = $sql->query("UPDATE " . $default->owl_folders_table . " SET " .
 							"name = '" . addslashes($this->sName) . "', " .
 							"description = '" . addslashes($this->sDescription) . "', " .
@@ -241,7 +241,7 @@ class Folder {
 	function delete() {
 		global $default, $lang_err_database, $lang_err_object_key;
 		if ($this->iId >= 0) {
-			$sql = new Owl_DB();
+			$sql = $default->db;
 			$result = $sql->query("DELETE FROM " . $default->owl_folders_table . " WHERE id = " . $this->iId);
 			if ($result) {
 				$this->iId = -1;
@@ -267,7 +267,7 @@ class Folder {
 	*/
 	function get($iFolderID) {
 		global $default,  $lang_err_object_not_exist;
-		$sql = new Owl_DB();
+		$sql = $default->db;
 		$sql->query("SELECT * FROM " . $default->owl_folders_table . " WHERE id = " . $iFolderID);
 		if ($sql->next_record()) {
 			$oFolder = & new Folder(stripslashes($sql->f("name")), stripslashes($sql->f("description")), $sql->f("parent_id"), $sql->f("creator_id"), $sql->f("document_type_id"), $sql->f("unit_id"), $sql->f("is_public"));
@@ -346,7 +346,7 @@ class Folder {
 	function getParentFolderID($iFolderID) {
 		if ($iFolderID != 0) {
 			global $default;		
-			$sql = new Owl_DB();
+			$sql = $default->db;
 			$sql->query("SELECT parent_id FROM " . $default->owl_folders_table . " WHERE id = " . $iFolderID);
 			$sql->next_record();		
 			return $sql->f("parent_id");
@@ -365,7 +365,7 @@ class Folder {
 	function getFolderDocumentType($iFolderID) {
 		global $default, $lang_err_database;
 		if (Folder::folderExistsID($iFolderID)) {
-			$sql = new Owl_DB();
+			$sql = $default->db;
 			$sql->query("SELECT document_type_id FROM " . $default->owl_folders_table . " WHERE id = " . $iFolderID);
 			if ($sql->next_record()) {
 				return $sql->f("document_type_id");
@@ -389,7 +389,7 @@ class Folder {
 	function folderExistsName($sName, $iParentID) {
 		$sName = addslashes($sName);
 		global $default, $lang_err_folder_exist;
-		$sql = new Owl_DB();
+		$sql = $default->db;
 		$sql->query("SELECT * FROM " . $default->owl_folders_table . " WHERE name = '" . $sName . "' AND parent_id = " . $iParentID);
 		if ($sql->next_record()) {
 			return true;
@@ -407,7 +407,7 @@ class Folder {
 	*/
 	function folderExistsID($iFolderID) {
 		global $default, $lang_err_folder_exist;
-		$sql = new Owl_DB();
+		$sql = $default->db;
 		$sql->query("SELECT * FROM " . $default->owl_folders_table . " WHERE id = " . $iFolderID);
 		if ($sql->next_record()) {
 			return true;
@@ -425,7 +425,7 @@ class Folder {
 	*/
 	function getFolderName($iFolderID) {
 		global $default, $lang_err_database;
-		$sql = new Owl_DB();
+		$sql = $default->db;
 		$sql->query("SELECT name FROM " . $default->owl_folders_table . " WHERE id = " . $iFolderID);
 		if ($sql->next_record()) {
 			return stripslashes($sql->f("name"));
@@ -443,7 +443,7 @@ class Folder {
 	*/
 	function getFolderID($sFolderName) {
 		global $default, $lang_err_database;
-		$sql = new Owl_DB();
+		$sql = $default->db;
 		$sql->query("SELECT id FROM " . $default->owl_folders_table . " WHERE name = '" . addslashes($sFolderName) . "'");
 		if ($sql->next_record()) {
 			return $sql->f("id");

@@ -54,7 +54,9 @@ class PatternListBox {
 	*
 	*/
 	function & render() {
-		$sql = new Owl_DB();
+        global $default;
+        
+		$sql = $default->db;
 		$sQuery = "SELECT DISTINCT $this->sDisplayColumn AS display, $this->sValueColumn AS value FROM $this->sTableName ";
 		if (isset($this->sWhereClause)) {
 			$sQuery .= "WHERE " . $this->sWhereClause . " ";

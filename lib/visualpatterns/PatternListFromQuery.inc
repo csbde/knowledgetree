@@ -70,7 +70,9 @@ class PatternListFromQuery {
 	}
 	
 	function & render() {
-		$sql = new Owl_DB();
+        global $default;
+        
+		$sql = $default->db;
 		$sql->query($this->sQuery);		
 		$sToRender = "";
 		$sToRender .= "<table border = 0, cellpadding = 5 " . (isset($this->iTableWidth) ? ", width = $this->iTableWidth" : "") . " >\n";

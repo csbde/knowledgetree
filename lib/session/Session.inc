@@ -35,7 +35,7 @@ class Session {
         $default->log->debug("Session::create() new session for $userID, from $ip, sessionID=$sessionID");
         
         // insert session information into db
-        $sql = new Owl_DB;
+        $sql = $default->db;
         $query = "INSERT INTO $default->owl_sessions_table (session_id, user_id, lastused, ip) VALUES ('$sessionID', '$userID', '" . date("Y-m-d H:i:s", time()) . "', '$ip')";
 
         $result = $sql->query($query);        
@@ -54,7 +54,7 @@ class Session {
 
         session_start();
         // remove the session information from the database
-        $sql = new Owl_DB;
+        $sql = $default->db;
         $query = "DELETE FROM $default->owl_sessions_table WHERE session_id = '" . session_id() . "'";
         $sql->query($query);
 
@@ -72,7 +72,7 @@ class Session {
         global $default;
         // deletes any sessions for this userID where the default timeout has elapsed.
         $time = time() -  $default->owl_timeout;
-        $sql = new Owl_DB;
+        $sql = $default->db;
         $sql->query("DELETE FROM $default->owl_sessions_table WHERE user_id = '" . $userID . "' AND lastused <= '" . formatDateTime($time) . "'");
     }
 
@@ -92,7 +92,7 @@ class Session {
             $sessionStatus = 0;
             
             // this should be an existing session, so check the db
-            $sql = new Owl_DB; 
+            $sql = $default->db; 
             $sql->query("SELECT * FROM $default->owl_sessions_table WHERE session_id = '$sessionID'");
             $numrows = $sql->num_rows($sql);
 

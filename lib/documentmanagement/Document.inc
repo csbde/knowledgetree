@@ -201,7 +201,7 @@ class Document {
 		global $default, $lang_err_doc_exist, $lang_err_database;
 		//if the id >= 0, then the object has already been created
 		if ($this->iId < 0) {
-			$sql = new Owl_DB();
+			$sql = $default->db;
 			$result = $sql->query("INSERT INTO " . $default->owl_documents_table . " (document_type_id, name, filename, size, creator_id, modified, description, mime_id, folder_id, major_version, minor_version, is_checked_out) " .
 						"VALUES (" . $this->iDocumentTypeID . ", '" . addslashes($this->sName) . "', '" . addslashes($this->sFileName) . "', $this->iSize, $this->iCreatorID, '" . getCurrentDateTime() . "', '" . addslashes($this->sDescription) . "', $this->iMimeTypeID, $this->iFolderID, $this->iMajorVersion, $this->iMinorVersion, " . ($this->bIsCheckedOut ? 1 : 0) . ")");
 			if ($result) {
@@ -225,7 +225,7 @@ class Document {
 	function update() {
 		global $default, $lang_err_database, $lang_err_object_key;
 		if ($this->iId >= 0) {
-			$sql = new Owl_DB();
+			$sql = $default->db;
 			$result = $sql->query("UPDATE " . $default->owl_documents_table . " SET " .
 						"document_typeid = $this->iDocumentTypeID, " . 
 						"file_name = '" . addslashes($this->file_name) . "', " .
@@ -259,7 +259,7 @@ class Document {
 	function delete() {	
 		global $default, $lang_err_database, $lang_err_object_key;
 		if ($this->iId >= 0) {
-			$sql = new Owl_DB();
+			$sql = $default->db;
 			$result = $sql->query("DELETE FROM  " . $default->owl_documents_table . "  WHERE id = $this->iId");
 			if ($result) {
 				$this->iId = -1;
@@ -283,7 +283,7 @@ class Document {
 	*/
 	function & get($iDocumentID) {
 		global $default, $lang_err_doc_not_exist;
-		$sql = new Owl_DB();
+		$sql = $default->db;
 		$sql->query("SELECT * FROM $default->owl_documents_table WHERE id = $iDocumentID");
 		if ($sql->next_record()) {			
 			$oDocument = & new Document(stripslashes($sql->f("name")), $sql->f("filename"), $sql->f("size"), stripslashes($sql->f("creator_id")), $sql->f("mime_id"), $sql->f("folder_id"), $sql->f("description"));			
@@ -310,7 +310,7 @@ class Document {
 	function getDocumentFieldsForDocumentType($iDocumentTypeID, $bMandatoryOnly = false) {
 		$aDocumentFieldArray;
 		settype($aDocumentFieldArray,"array");
-		$sql = new Owl_DB();
+		$sql = $default->db;
 		$result = $sql->query("SELECT DF.id AS id, DF.name AS name, DF.data_type AS data_type FROM document_fields AS DF INNER JOIN document_type_fields_link AS DTFL ON DF.id = DTFL.field_id WHERE DTFL.document_type_id = $iDocumentTypeID " . ($bMandatoryOnly ? "AND DFTL.is_mandatory = 1 " : " ") . "ORDER BY DF.name ASC");
 		if ($result) {
 			$iCount = 0;
@@ -338,7 +338,7 @@ class Document {
 		global $default, $lang_err_database;
 		$aDocumentHistory;
 		settype($aDocumentHistory, "array");
-		$sql = new Owl_DB();
+		$sql = $default->db;
 		$result = $sql->query("SELECT * FROM  " . $default->owl_document_transactions_table . " WHERE document_id = $this->iId ORDER BY datetime ASC");
 		if ($result) {
 			$iCount = 0;
@@ -365,7 +365,7 @@ class Document {
 	*/	
 	function documentExists($sFileName, $iFolderID) {
 		global $default, $lang_err_doc_not_exist;
-		$sql = new Owl_DB();
+		$sql = $default->db;
 		$sql->query("SELECT * FROM $default->owl_documents_table WHERE name = '" . addslashes($sFileName) . "' AND folder_id = $iFolderID");
 		if ($sql->next_record()) {
 			return true;

@@ -34,7 +34,7 @@ function lookupGroupIDs($userID) {
     global $default;
     $groupIDs = array();
     
-    $sql = new Owl_DB;
+    $sql = $default->db;
     $sql->query("select group_id from $default->owl_users_groups_table where user_id = '$userID'");
     while($sql->next_record()) {
         $groupIDs[] = $sql->f("group_id");
@@ -52,7 +52,7 @@ function lookupGroupIDs($userID) {
  */
 function lookupField($tableName, $selectFieldName, $whereFieldName, $whereFieldValue) {
     global $default;
-    $sql = new Owl_DB();
+    $sql = $default->db;
     $query = "select $selectFieldName from $tableName where $whereFieldName = '". $whereFieldValue . "'" ;
  
     if ($sql->query($query)) {

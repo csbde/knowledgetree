@@ -155,7 +155,7 @@ class SiteMap {
      */
     function getSectionLinksUsingDB($sSectionName) {
         global $default, $lang_err_database, $fFolderID;
-        $sql = new Owl_DB();
+        $sql = $default->db;
         // lookup sectionID
         $sectionID = lookupID($default->owl_site_sections_table, "name", $sSectionName);
         if ($sectionID) {
@@ -258,7 +258,7 @@ class SiteMap {
      */
     function getPageUsingDB($action) {
         global $default, $lang_err_database;
-        $sql = new Owl_DB();
+        $sql = $default->db;
         // lookup the page and access_id from the sitemap
         if ($sql->query("SELECT page, access_id FROM $default->owl_sitemap_table WHERE action='$action'")) {                
             if ($sql->next_record()) {
@@ -332,7 +332,7 @@ class SiteMap {
      */
     function getSectionNameUsingDB($sRequiredPage) {
       global $default, $lang_err_database;
-        $sql = new Owl_DB();
+        $sql = $default->db;
         // lookup the page and access_id from the sitemap
         if ($sql->query("SELECT SSL.name FROM $default->owl_sitemap_table AS S 
                          INNER JOIN $default->owl_site_sections_table AS SSL ON S.section_id=SSL.id 
@@ -394,7 +394,7 @@ class SiteMap {
      */
     function getDefaultActionUsingDB($sSectionName) {
         global $default, $lang_err_database;
-        $sql = new Owl_DB();
+        $sql = $default->db;
         // lookup sectionID
         $sectionID = lookupID($default->owl_site_sections_table, "name", $sSectionName);
         if ($sectionID) {
@@ -474,7 +474,7 @@ class SiteMap {
      */
     function getActionFromPageUsingDB($sPage) {
         global $default, $lang_err_database;
-        $sql = new Owl_DB();
+        $sql = $default->db;
         
         // lookup the action for the specified page
         if ($sql->query("SELECT action FROM $default->owl_sitemap_table WHERE page='$sPage'")) {                
@@ -532,7 +532,7 @@ class SiteMap {
      */
     function syncWithDB() {
         global $default;
-        $sql = new Owl_DB();
+        $sql = $default->db;
         
         // only if we're using the array
         if (!$this->bUseDB) {

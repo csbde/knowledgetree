@@ -133,7 +133,7 @@ class GroupFolderApprovalLink {
 		global $default, $lang_err_database, $lang_err_object_exists;		
 		//if the object hasn't been created
 		if ($this->iId < 0) {
-			$sql = new Owl_DB();
+			$sql = $default->db;
 			$result = $sql->query("INSERT INTO " . $default->owl_groups_folders_approval_table . " (folder_id, group_id, precedence, role_id) VALUES ($this->iFolderID, $this->iGroupID, $this->iPrecedence, $this->iRoleID)");
 			if ($result) {
 				$this->iId = $sql->insert_id();
@@ -156,7 +156,7 @@ class GroupFolderApprovalLink {
 		global $default, $lang_err_database, $lang_err_object_key;
 		//only update if the object has been stored
 		if ($this->iId > 0) {
-			$sql = new Owl_DB();
+			$sql = $default->db;
 			$result = $sql->query("UPDATE " . $default->owl_groups_folders_approval_table . " SET folder_id = $this->iFolderID, group_id = $this->iGroupID, precedence = $this->iPrecedence, role_id = $this->iRoleID WHERE id = $this->iId");
 			if ($result) {
 				return true;
@@ -178,7 +178,7 @@ class GroupFolderApprovalLink {
 		global $default, $lang_err_database, $lang_err_object_key;
 		//only delete the object if it exists in the database
 		if ($this->iId >= 0) {
-			$sql = new Owl_DB();
+			$sql = $default->db;
 			$result = $sql->query("DELETE FROM $default->owl_groups_folders_approval_table WHERE id = $this->iId");
 			if ($result) {
 				return true;
@@ -200,7 +200,7 @@ class GroupFolderApprovalLink {
 	*/
 	function & get($iGroupFolderLinkID) {
 		global $default;
-		$sql = new Owl_DB();
+		$sql = $default->db;
 		$result = $sql->query("SELECT * FROM $default->owl_groups_folders_approval_table WHERE id = $iGroupFolderLinkID");
 		if ($result) {
 			if ($sql->next_record()) {
@@ -227,7 +227,7 @@ class GroupFolderApprovalLink {
 		global $default, $lang_err_database;
 		$aGroupFolderApprovalLinkArray;
 		settype($aGroupFolderApprovalLinkArray, "array");
-		$sql = new Owl_DB();
+		$sql = $default->db;
 		$result = $sql->query("SELECT * FROM " . $default->owl_groups_folders_approval_table  . (isset($sWhereClause) ? " " . $sWhereClause : ""));
 		if ($result) {			
 			$iCount = 0;

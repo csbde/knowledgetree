@@ -116,7 +116,7 @@ for ($i = 0; $i < count($aKeys); $i++) {
 						break;
 			}
 			//execute the query
-			$sql = new Owl_DB();
+			$sql = $default->db;
 			$sql->query($sQuery);
 		} else {
 			//perform an update
@@ -149,7 +149,7 @@ for ($i = 0; $i < count($aKeys); $i++) {
 				}			
 			$sQuery .= "WHERE id = $iPrimaryKey";
 			//execute the query
-			$sql = new Owl_DB();
+			$sql = $default->db;
 			$sql->query($sQuery);
 		}
 		

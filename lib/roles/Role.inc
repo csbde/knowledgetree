@@ -46,7 +46,7 @@ class Role {
 		global $default, $lang_err_database, $lang_err_object_exists;
 		//if the object hasn't been created
 		if ($this->iId < 0) {
-			$sql = new Owl_DB();
+			$sql = $default->db;
 			$result = $sql->query("INSERT INTO " . $default->owl_roles_table . " (name, can_read, can_write) VALUES ('" . addslashes($this->sName) . "', " . ($this->bCanRead ? 1 : 0) . ", " . ($this->bCanWrite ? 1 : 0) . ")");
 			if ($result) {
 				$this->iId = $sql->insert_id();
@@ -69,7 +69,7 @@ class Role {
 		global $default, $lang_err_database, $lang_err_object_key;
 		//only update if the object has been stored
 		if ($this->iId > 0) {
-			$sql = new Owl_DB();
+			$sql = $default->db;
 			$result = $sql->query("UPDATE " . $default->owl_roles_table . " SET name = '" . addslashes($this->sName) . "', can_read = " . ($this->bCanRead ? 1 : 0) . ", can_write = " . ($this->bCanWrite ? 1 : 0) . " WHERE id = $this->iId");
 			if ($result) {
 				return true;
@@ -91,7 +91,7 @@ class Role {
 		global $default, $lang_err_database, $lang_err_object_key;
 		//only delete the object if it exists in the database
 		if ($this->iId >= 0) {
-			$sql = new Owl_DB();
+			$sql = $default->db;
 			$result = $sql->query("DELETE FROM $default->owl_roles_table WHERE id = $this->iId");
 			if ($result) {
 				return true;
@@ -113,7 +113,7 @@ class Role {
 	*/
 	function & get($iRoleID) {
 		global $default;
-		$sql = new Owl_DB();
+		$sql = $default->db;
 		$result = $sql->query("SELECT * FROM $default->owl_roles_table WHERE id = $iRoleID");
 		if ($result) {
 			if ($sql->next_record()) {
@@ -140,7 +140,7 @@ class Role {
 		global $default, $lang_err_database;
 		$aRoleArray;
 		settype($aRoleArray, "array");
-		$sql = new Owl_DB();
+		$sql = $default->db;
 		$result = $sql->query("SELECT * FROM " . $default->owl_roles_table  . (isset($sWhereClause) ? " " . $sWhereClause : ""));
 		if ($result) {			
 			$iCount = 0;

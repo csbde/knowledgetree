@@ -80,6 +80,8 @@ class PatternEditableTableSqlQuery {
 	}
 	
 	function & render() {
+        global $default;
+        
 		//$sToRender = "<table border = 0, width=$this->sWidth>\n";
 		$sToRender = "<table cellpadding = 5, border = 0>\n";
 		if (isset($this->sTableCaption)) {
@@ -90,7 +92,7 @@ class PatternEditableTableSqlQuery {
 				$sToRender .= "<th align=left>" . $this->aColumnHeaderNames[$i] . "</th>\n";
 			}
 		}
-		$sql = new Owl_DB();
+		$sql = $default->db;
 		$sql->query($this->sQuery);
 		if ($sql->num_rows() == 0) {
 			$sToRender .= "<tr>\n";			

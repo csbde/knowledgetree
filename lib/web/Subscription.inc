@@ -51,7 +51,7 @@ class Subscription {
 		global $default, $lang_err_database, $lang_err_object_exists;
 		//if the object hasn't been created
 		if ($this->iId < 0) {
-			$sql = new Owl_DB();
+			$sql = $default->db;
 			$result = $sql->query("INSERT INTO " . $default->owl_subscriptions_table . " (user_id, document_id) VALUES ($this->iUserID, $this->iDocumentID)");
 			if ($result) {
 				$this->iId = $sql->insert_id();
@@ -74,7 +74,7 @@ class Subscription {
 		global $default, $lang_err_database, $lang_err_object_key;
 		//only update if the object has been stored
 		if ($this->iId > 0) {
-			$sql = new Owl_DB();
+			$sql = $default->db;
 			$result = $sql->query("UPDATE " . $default->owl_subscriptions_table . " SET user_id = $this->iUserID, document_id = $this->iDocumentID WHERE id = $this->iId");
 			if ($result) {
 				return true;
@@ -96,7 +96,7 @@ class Subscription {
 		global $default, $lang_err_database, $lang_err_object_key;
 		//only delete the object if it exists in the database
 		if ($this->iId >= 0) {
-			$sql = new Owl_DB();
+			$sql = $default->db;
 			$result = $sql->query("DELETE FROM $default->owl_subscriptions_table WHERE id = $this->iId");
 			if ($result) {
 				return true;
@@ -118,7 +118,7 @@ class Subscription {
 	*/
 	function & get($iSubscriptionID) {
 		global $default;
-		$sql = new Owl_DB();
+		$sql = $default->db;
 		$result = $sql->query("SELECT * FROM $default->owl_subscriptions_table WHERE id = $iSubscriptionID");
 		if ($result) {
 			if ($sql->next_record()) {
@@ -145,7 +145,7 @@ class Subscription {
 		global $default, $lang_err_database;
 		$aSubscriptionArray;
 		settype($aSubscriptionArray, "array");
-		$sql = new Owl_DB();
+		$sql = $default->db;
 		$result = $sql->query("SELECT * FROM " . $default->owl_subscriptions_table  . (isset($sWhereClause) ? " " . $sWhereClause : ""));
 		if ($result) {			
 			$iCount = 0;

@@ -120,7 +120,7 @@ class WebSite {
 		global $default, $lang_err_database, $lang_err_object_exists;
 		//if the object hasn't been created
 		if ($this->iId < 0) {
-			$sql = new Owl_DB();
+			$sql = $default->db;
 			$result = $sql->query("INSERT INTO " . $default->owl_web_sites_table . " (web_site_name, web_site_url, web_master_id) VALUES ('" . addslashes($this->sWebSiteName) . "', '" . addslashes($this->sWebSiteURL) . "', $this->iWebMasterID)");
 			if ($result) {
 				$this->iId = $sql->insert_id();
@@ -143,7 +143,7 @@ class WebSite {
 		global $default, $lang_err_database, $lang_err_object_key;
 		//only update if the object has been stored
 		if ($this->iId > 0) {
-			$sql = new Owl_DB();
+			$sql = $default->db;
 			$result = $sql->query("UPDATE " . $default->owl_web_sites_table . " SET web_site_name = '" . addslashes($this->sWebSiteName) . "', web_site_url = '" . addslashes($this->sWebSiteURL) . "', web_master_id = $this->iWebMasterID WHERE id = $this->iId");
 			if ($result) {
 				return true;
@@ -165,7 +165,7 @@ class WebSite {
 		global $default, $lang_err_database, $lang_err_object_key;
 		//only delete the object if it exists in the database
 		if ($this->iId >= 0) {
-			$sql = new Owl_DB();
+			$sql = $default->db;
 			$result = $sql->query("DELETE FROM $default->owl_web_sites_table WHERE id = $this->iId");
 			if ($result) {
 				return true;
@@ -187,7 +187,7 @@ class WebSite {
 	*/
 	function & get($iWebSiteID) {
 		global $default;
-		$sql = new Owl_DB();
+		$sql = $default->db;
 		$result = $sql->query("SELECT * FROM $default->owl_web_sites_table WHERE id = $iWebSiteID");
 		if ($result) {
 			if ($sql->next_record()) {
@@ -212,7 +212,7 @@ class WebSite {
 		global $default, $lang_err_database;
 		$aWebSiteArray;
 		settype($aWebSiteArray, "array");
-		$sql = new Owl_DB();
+		$sql = $default->db;
 		$result = $sql->query("SELECT * FROM " . $default->owl_web_sites_table);
 		if ($result) {			
 			$iCount = 0;

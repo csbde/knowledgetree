@@ -39,7 +39,7 @@ class Authenticator {
                 // Check if Maxsessions has been reached
                 // lookup maxsessions
                 $maxSessions = lookupField($default->owl_users_table, "max_sessions", "id", $userID);
-                $sql = new Owl_DB;
+                $sql = $default->db;
                 if ($sql->query("SELECT * FROM $default->owl_sessions_table WHERE user_id = '".$userDetails["user_id"]."'")) {
                     if ($sql->num_rows($sql) >= $maxSessions) {
                         // return too many sessions status code

@@ -118,7 +118,7 @@ class DocumentFieldLink {
 		global $default, $lang_err_doc_exist, $lang_err_database;
 		//if the id >= 0, then the object has already been created
 		if ($this->iId < 0) {
-			$sql = new Owl_DB();
+			$sql = $default->db;
 			$result = $sql->query("INSERT INTO " . $default->owl_document_fields_table . " (document_id, document_field_id, value) " .
 						"VALUES ($this->iDocumentID, $this->iDocumentFieldID, '" . addslashes($this->sValue) . "')");
 			if ($result) {
@@ -142,7 +142,7 @@ class DocumentFieldLink {
 	function update() {
 		global $default, $lang_err_database, $lang_err_object_key;
 		if ($this->iId >= 0) {
-			$sql = new Owl_DB();
+			$sql = $default->db;
 			$result = $sql->query("UPDATE " . $default->owl_document_fields_table . " SET " .
 					"document_id = $this->iDocumentID, document_field_id = $this->iDocumentFieldID, value = '" . addslashes($this->sValue) . "'" .
 					"WHERE id = $this->iId");
@@ -166,7 +166,7 @@ class DocumentFieldLink {
 	function delete() {	
 		global $default, $lang_err_database, $lang_err_object_key;
 		if ($this->iId >= 0) {
-			$sql = new Owl_DB();
+			$sql = $default->db;
 			$result = $sql->query("DELETE FROM  " . $default->owl_document_fields_table . "  WHERE id = $this->iId");
 			if ($result) {
 				$this->iId = -1;
@@ -190,7 +190,7 @@ class DocumentFieldLink {
 	*/
 	function & get($iDocumentFieldLinkID) {
 		global $default, $lang_err_doc_not_exist;
-		$sql = new Owl_DB();
+		$sql = $default->db;
 		$sql->query("SELECT * FROM " . $default->owl_document_fields_table . " WHERE id = " . $iDocumentFieldLinkID);
 		if ($sql->next_record()) {			
 			$oDocumentFieldLink = & new DocumentFieldLink($sql->f("document_id"), $sql->f("document_field_id"), $sql->f("value"));		

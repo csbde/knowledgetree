@@ -81,7 +81,7 @@ class DocumentTransaction {
 		global $default, $lang_err_object_exists;
 		//if the object hasn't been stored yet
 		if ($this->iId < 0) {
-			$sql = new Owl_DB();
+			$sql = $default->db;
 			$result = $sql->query("INSERT INTO " . $default->owl_document_transactions_table . " (document_id, version, user_id, datetime, ip, filename, comment, transaction_id) " .
 						"VALUES ($this->iDocumentID, '" . addslashes($this->sVersion) . "', $this->iUserID, '" . addslashes($this->dDateTime) . "', '" . addslashes($this->sIP) . "', '" . addslashes($this->sFileName) . "', '" . addslashes($this->sComment) . "', $this->iTransactionID)");
 			 if ($result) {

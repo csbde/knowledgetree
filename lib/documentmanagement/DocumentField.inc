@@ -93,7 +93,7 @@ class DocumentField {
 		global $default, $lang_err_database, $lang_err_object_exists;
 		//if the object hasn't been created
 		if ($this->iId < 0) {
-			$sql = new Owl_DB();
+			$sql = $default->db;
 			$result = $sql->query("INSERT INTO " . $default->owl_fields_table . " (name, data_type) VALUES ('" . addslashes($this->sName) . "', '" . addslashes($this->sDataType) . "')");
 			if ($result) {
 				$this->iId = $sql->insert_id();
@@ -116,7 +116,7 @@ class DocumentField {
 		global $default, $lang_err_database, $lang_err_object_key;
 		//only update if the object has been stored
 		if ($this->iId > 0) {
-			$sql = new Owl_DB();
+			$sql = $default->db;
 			$result = $sql->query("UPDATE " . $default->owl_fields_table . " SET name = '" . addslashes($this->sName) . "', data_type = '" . addslashes($this->sDataType) . "' WHERE id = $this->iId");
 			if ($result) {
 				return true;
@@ -138,7 +138,7 @@ class DocumentField {
 		global $default, $lang_err_database, $lang_err_object_key;
 		//only delete the object if it exists in the database
 		if ($this->iId >= 0) {
-			$sql = new Owl_DB();
+			$sql = $default->db;
 			$result = $sql->query("DELETE FROM $default->owl_fields_table WHERE id = $this->iId");
 			if ($result) {
 				return true;
@@ -160,7 +160,7 @@ class DocumentField {
 	*/
 	function & get($iDocumentFieldsID) {
 		global $default;
-		$sql = new Owl_DB();
+		$sql = $default->db;
 		$result = $sql->query("SELECT * FROM $default->owl_fields_table WHERE id = $iDocumentFieldsID");
 		if ($result) {
 			if ($sql->next_record()) {

@@ -159,7 +159,7 @@ class RoleFolderLink {
 		global $default, $lang_err_database, $lang_err_object_exists;
 		//if the object hasn't been created
 		if ($this->iId < 0) {
-			$sql = new Owl_DB();
+			$sql = $default->db;
 			$result = $sql->query("INSERT INTO " . $default->owl_folders_user_roles_table . " (user_id, folder_id, role_type_id, datetime, done) VALUES ($this->iUserID, $this->iFolderID, $this->iRoleTypeID, '$this->dDateTime', " . ($this->bDone ? 1 : 0) . ")");
 			if ($result) {
 				$this->iId = $sql->insert_id();
@@ -182,7 +182,7 @@ class RoleFolderLink {
 		global $default, $lang_err_database, $lang_err_object_key;
 		//only update if the object has been stored
 		if ($this->iId > 0) {
-			$sql = new Owl_DB();
+			$sql = $default->db;
 			$result = $sql->query("UPDATE " . $default->owl_folders_user_roles_table . " SET user_id = $this->iUserID, folder_id = $this->iFolderID, role_type_id = $this->iRoleTypeID, datetime = '$this->dDateTime', done = " . ($this->bDone ? 1 : 0) . " WHERE id = $this->iId");
 			if ($result) {
 				return true;
@@ -204,7 +204,7 @@ class RoleFolderLink {
 		global $default, $lang_err_database, $lang_err_object_key;
 		//only delete the object if it exists in the database
 		if ($this->iId >= 0) {
-			$sql = new Owl_DB();
+			$sql = $default->db;
 			$result = $sql->query("DELETE FROM $default->owl_folders_user_roles_table WHERE id = $this->iId");
 			if ($result) {
 				return true;
@@ -226,7 +226,7 @@ class RoleFolderLink {
 	*/
 	function & get($iRolesFoldersID) {
 		global $default;
-		$sql = new Owl_DB();
+		$sql = $default->db;
 		$result = $sql->query("SELECT * FROM $default->owl_folders_user_roles_table WHERE id = $iRolesFoldersID");
 		if ($result) {
 			if ($sql->next_record()) {
@@ -253,7 +253,7 @@ class RoleFolderLink {
 		global $default, $lang_err_database;
 		$aRolesFoldersLinkArray;
 		settype($aRolesFoldersLinkArray, "array");
-		$sql = new Owl_DB();
+		$sql = $default->db;
 		$result = $sql->query("SELECT * FROM " . $default->owl_folders_user_roles_table  . (isset($sWhereClause) ? " " . $sWhereClause : ""));
 		if ($result) {			
 			$iCount = 0;

@@ -187,13 +187,19 @@ $default->siteMap->addPage("scratchPad", "/tests/scratchPad.php", "Tests", Guest
 $default->siteMap->addPage("sitemap", "/tests/session/SiteMap.php", "Tests", Guest, "sitemap", false);
 $default->siteMap->addPage("documentBrowserTest", "/tests/documentmanagement/DocumentBrowser.php", "Tests", Guest, "test the document browser", false);
 
+
+
 // default requires
 require_once("$default->owl_fs_root/phpmailer/class.phpmailer.php");	
 require_once("$default->owl_fs_root/lib/session/Session.inc");
 require_once("$default->owl_fs_root/lib/session/control.inc");
 require_once("$default->owl_fs_root/lib/database/db.inc");
 require_once("$default->owl_fs_root/lib/database/lookup.inc");
-require_once("$default->owl_fs_root/lib/dms.inc");
 
 // single db instantiation
+$default->db = new Database();
+
+// import request variables and setup language
+require_once("$default->owl_fs_root/lib/dms.inc");
+
 ?>

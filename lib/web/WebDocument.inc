@@ -50,7 +50,7 @@ class WebDocument {
 		global $default, $lang_err_database, $lang_err_object_exists;
 		//if the object hasn't been created
 		if ($this->iId < 0) {
-			$sql = new Owl_DB();
+			$sql = $default->db;
 			$result = $sql->query("INSERT INTO " . $default->owl_web_documents_table . " (document_id, web_site_id, unit_id, status_id, datetime) VALUES ($this->iDocumentID, $this->iWebSiteID, $this->iUnitID, $this->iStatusID, '$this->dDateTime')");
 			if ($result) {
 				$this->iId = $sql->insert_id();
@@ -73,7 +73,7 @@ class WebDocument {
 		global $default, $lang_err_database, $lang_err_object_key;
 		//only update if the object has been stored
 		if ($this->iId > 0) {
-			$sql = new Owl_DB();
+			$sql = $default->db;
 			$result = $sql->query("UPDATE " . $default->owl_web_documents_table . " SET document_id = $this->iDocumentID, web_site_id = $this->iWebSiteID, unit_id = $this->iUnitID, status_id = $this->iStatusID, datetime = '$this->dDateTime' WHERE id = $this->iId");
 			if ($result) {
 				return true;
@@ -95,7 +95,7 @@ class WebDocument {
 		global $default, $lang_err_database, $lang_err_object_key;
 		//only delete the object if it exists in the database
 		if ($this->iId >= 0) {
-			$sql = new Owl_DB();
+			$sql = $default->db;
 			$result = $sql->query("DELETE FROM $default->owl_web_documents_table WHERE id = $this->iId");
 			if ($result) {
 				return true;
@@ -117,7 +117,7 @@ class WebDocument {
 	*/
 	function & get($iWebDocumentsID) {
 		global $default;
-		$sql = new Owl_DB();
+		$sql = $default->db;
 		$result = $sql->query("SELECT * FROM $default->owl_web_documents_table WHERE id = $iWebDocumentsID");
 		if ($result) {
 			if ($sql->next_record()) {
@@ -144,7 +144,7 @@ class WebDocument {
 		global $default, $lang_err_database;
 		$aWebDocumentArray;
 		settype($aWebDocumentArray, "array");
-		$sql = new Owl_DB();
+		$sql = $default->db;
 		$result = $sql->query("SELECT * FROM " . $default->owl_web_documents_table  . (isset($sWhereClause) ? " " . $sWhereClause : ""));
 		if ($result) {			
 			$iCount = 0;

@@ -20,10 +20,10 @@
  * @version v 1.1.1.1 2002/12/04
  * @author michael
  */
-class Owl_DB extends DB_Sql {
+class Database extends DB_Sql {
     
     /** Class name */
-    var $classname = "Owl_DB";
+    var $classname = "Database";
 
     // BEGIN wes changes -- moved these settings to config/owl.php
     // Server where the database resides
@@ -46,7 +46,7 @@ class Owl_DB extends DB_Sql {
     var $sLastOrderByClause;        
     
     /** Default Constructor */
-    function Owl_DB() {
+    function Database() {
       global $default;
       $this->Host = $default->owl_db_host;
       $this->Database = $default->owl_db_name;
