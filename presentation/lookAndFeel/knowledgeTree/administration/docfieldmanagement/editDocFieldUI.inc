@@ -121,9 +121,14 @@ function getDocFieldDisplay($oDocField) {
         $oPatternListBox->setPostBackOnChange(true);
         return $oPatternListBox->render();
     } else {
-        return "<input type=\"hidden\" name=\"fDocFieldID\" value=\"" . $oDocField->iId . "\">\n" .
-        "<input size=\"40\" type=\"text\" name=\"fDocFieldName\" value=\"" . $oDocField->getName() . "\"" .
-        ($oDocField->getName() == "Category" ? "disabled=\"disabled\"" : "") . ">";
+        $sToRender .= "<input type=\"hidden\" name=\"fDocFieldID\" value=\"" . $oDocField->iId . "\">\n";
+        if ($oDocField->getName() == "Category") {
+        	$sToRender .= "<input type=\"hidden\" name=\"fDocFieldName\" value=\"" . $oDocField->getName() . "\">\n";
+        	$sToRender .= $oDocField->getName();
+        } else {
+        	$sToRender .= "<input size=\"40\" type=\"text\" name=\"fDocFieldName\" value=\"" . $oDocField->getName() . "\">";
+        }
+		return $sToRender;
     }
 }
 
