@@ -58,7 +58,7 @@ if (checkSession()) {
                 $main->setErrorMessage("You do not have permission to create new folders in this folder</td><td><a href=\"$default->rootUrl/control.php?action=browse&fFolderID=$fFolderID\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></a>");
             }
             $main->setCentralPayload($oPatternCustom);
-            $main->setFormAction("addFolderBL.php?fFolderID=$fFolderID");
+            $main->setFormAction($_SERVER["PHP_SELF"] . "?fFolderID=$fFolderID");
             $main->setHasRequiredFields(true);
             $main->render();
         } else {
@@ -82,7 +82,7 @@ if (checkSession()) {
 	                        $main->setCentralPayload($oPatternCustom);
 	                        $main->setErrorMessage("There is another folder named $fFolderName in this folder already");
 	                        $main->setHasRequiredFields(true);
-	                        $main->setFormAction("addFolderBL.php?fFolderID=$fFolderID");
+	                        $main->setFormAction($_SERVER["PHP_SELF"] . "?fFolderID=$fFolderID");
 	                        $main->render();
 	                    } else {						
 	                        $oParentFolder = Folder::get($fFolderID);
@@ -113,7 +113,7 @@ if (checkSession()) {
 										$oPatternCustom->setHtml(renderBrowsePage($fFolderID));
 										$main->setCentralPayload($oPatternCustom);
 										$main->setErrorMessage("There was an error creating the folder $fFolderName on the filesystem");
-										$main->setFormAction("addFolderBL.php?fFolderID=$fFolderID");
+										$main->setFormAction($_SERVER["PHP_SELF"] . "?fFolderID=$fFolderID");
 										$main->setHasRequiredFields(true);									
 										$main->render();
 									}
@@ -127,7 +127,7 @@ if (checkSession()) {
 									$oPatternCustom->setHtml(renderBrowsePage($fFolderID));
 									$main->setCentralPayload($oPatternCustom);
 									$main->setErrorMessage("There was an error creating the folder $fFolderName on the filesystem");
-									$main->setFormAction("addFolderBL.php?fFolderID=$fFolderID");
+									$main->setFormAction($_SERVER["PHP_SELF"] . "?fFolderID=$fFolderID");
 									$main->setHasRequiredFields(true);
 									$main->render();								
 								}
@@ -139,7 +139,7 @@ if (checkSession()) {
 	                            $oPatternCustom->setHtml(renderBrowsePage($fFolderID));
 	                            $main->setCentralPayload($oPatternCustom);
 	                            $main->setErrorMessage("There was an error creating the folder $fFolderName in the database");
-	                            $main->setFormAction("addFolderBL.php?fFolderID=$fFolderID");
+	                            $main->setFormAction($_SERVER["PHP_SELF"] . "?fFolderID=$fFolderID");
 	                            $main->render();
 	                        }
 	                    }
@@ -150,7 +150,7 @@ if (checkSession()) {
 	                    $main->setCentralPayload($oPatternCustom);
 	                    $main->setErrorMessage("Folder not created. Folder names may not contain: '<', '>', '*', '/', '\', '|', '?' or '\"' ");
 	                    $main->setHasRequiredFields(true);
-	                    $main->setFormAction("addFolderBL.php?fFolderID=$fFolderID");
+	                    $main->setFormAction($_SERVER["PHP_SELF"] . "?fFolderID=$fFolderID");
 	                    $main->render();
 	                }
 	
@@ -161,7 +161,7 @@ if (checkSession()) {
 	                $oPatternCustom->setHtml(renderBrowsePage($fFolderID));
 	                $main->setCentralPayload($oPatternCustom);
 	                $main->setErrorMessage("You do not have permission to create new folders in this folder");
-	                $main->setFormAction("addFolderBL.php?fFolderID=$fFolderID");
+	                $main->setFormAction($_SERVER["PHP_SELF"] . "?fFolderID=$fFolderID");
 	                $main->render();
 	            }
         	} else {
@@ -170,7 +170,7 @@ if (checkSession()) {
                 $oPatternCustom->setHtml(renderBrowseAddPage($fFolderID));
                 $main->setCentralPayload($oPatternCustom);
                 $main->setErrorMessage("You did not specify a document type.  If there are no system document types, please contact a System Administrator.");
-                $main->setFormAction("addFolderBL.php?fFolderID=$fFolderID");
+                $main->setFormAction($_SERVER["PHP_SELF"] . "?fFolderID=$fFolderID");
                 $main->render();        		
         	}
         }
