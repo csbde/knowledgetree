@@ -34,18 +34,20 @@ if (checkSession()) {
                         //if the to address is valid, send the mail
                         global $default;
                         $oUser = User::get($_SESSION["userID"]);
+                        $sMessage = "<font face=\"arial\" size=\"2\">";
                         if (isset($fToName)) {
-                            $sMessage = "$fToName,<br><br>Your colleague, " . $oUser->getName() . ", wishes you to view the document entitled '" . $oDocument->getName() . "'.\n  Click on the hyperlink below to view it";
+                            $sMessage .= "$fToName,<br><br>Your colleague, " . $oUser->getName() . ", wishes you to view the document entitled '" . $oDocument->getName() . "'.\n  Click on the hyperlink below to view it";
                         } else {
-                            $sMessage = "Your colleague, " . $oUser->getName() . ", wishes you to view the document entitled '" . $oDocument->getName() . "'.\n  Click on the hyperlink below to view it";
+                            $sMessage .= "Your colleague, " . $oUser->getName() . ", wishes you to view the document entitled '" . $oDocument->getName() . "'.\n  Click on the hyperlink below to view it.";
                         }
                         // add the link to the document to the mail
-                        $sMessage .= ' ' . generateControllerLink("viewDocument", "fDocumentID=$fDocumentID", $oDocument->getName());
+                        $sMessage .= "<br>" . generateControllerLink("viewDocument", "fDocumentID=$fDocumentID", $oDocument->getName());
 
                         // add optional comment
                         if (strlen($fComment) > 0) {
-                        	$sMessage .= "<br><br>$fComment";
+                        	$sMessage .= "<br><br>Comments:<br>$fComment";
                         }
+                        $sMessage .= "</font>";
                         
                         $sTitle = "Link: " . $oDocument->getName() . " from " . $oUser->getName();
                         
