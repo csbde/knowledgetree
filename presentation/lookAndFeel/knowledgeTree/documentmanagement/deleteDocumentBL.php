@@ -15,6 +15,7 @@ require_once("$default->fileSystemRoot/lib/foldermanagement/FolderUserRole.inc")
 require_once("$default->fileSystemRoot/lib/users/User.inc");
 require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
 require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentTransaction.inc");
+require_once("$default->fileSystemRoot/lib/documentmanagement/PhysicalDocumentManager.inc");
 require_once("$default->fileSystemRoot/lib/subscriptions/SubscriptionEngine.inc");
 require_once("$default->fileSystemRoot/lib/subscriptions/SubscriptionManager.inc");
 require_once("$default->fileSystemRoot/lib/web/WebDocument.inc");
@@ -45,9 +46,13 @@ if (checkSession()) {
                         $sDocumentPath = Folder::getFolderPath($oDocument->getFolderID()) . $oDocument->getFileName();					
                         $oDocumentTransaction = & new DocumentTransaction($fDocumentID, "Document deleted", DELETE);
                         $oDocumentTransaction->create();
-                        if ($oDocument->delete()) {
-                            if (unlink($sDocumentPath)) {
-                                // successfully deleted the document from the file system
+                        // flip the status id
+                        $oDocument->setStatusID(lookupStatusID("Deleted"));
+                        // store
+                        if ($oDocument->update()) {
+                        	// now move the document to the delete folder
+                            if (PhysicalDocumentManager::delete($oDocument)) {
+                                // successfully deleted the document
                                 $default->log->info("deleteDocumentBL.php successfully deleted document " . $oDocument->getFileName() . " from folder " . Folder::getFolderPath($oDocument->getFolderID()) . " id=" . $oDocument->getFolderID());
                                 
                                 // delete all collaboration roles
@@ -70,14 +75,15 @@ if (checkSession()) {
                                 } else {
                                     $default->log->error("deleteDocumentBL.php couldn't remove document subscriptions");
                                 }
-								
+
+								// TODO: move to expunge								
 								//remove any document word links that this document may have
-								Document::deleteFromDocumentText($fDocumentID);
+								//Document::deleteFromDocumentText($fDocumentID);
 								
-																
+								// TODO: move to expunge																
                                 // delete the corresponding web document entry
-                                $oWebDocument = WebDocument::get(lookupID($default->owl_web_documents_table, "document_id", $fDocumentID));
-                                $oWebDocument->delete();
+//                                $oWebDocument = WebDocument::get(lookupID($default->owl_web_documents_table, "document_id", $fDocumentID));
+//                                $oWebDocument->delete();
                                 
                                 // redirect to the browse folder page							
                                 redirect("$default->rootUrl/control.php?action=browse&fFolderID=" . $oDocument->getFolderID());
