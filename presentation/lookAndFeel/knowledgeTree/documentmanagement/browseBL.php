@@ -2,6 +2,7 @@
 
 require_once("../../../../config/dmsDefaults.php");
 require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentBrowser.inc");
+require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
 require_once("$default->uiDirectory/documentmanagement/browseUI.inc");
 
 /**
@@ -35,8 +36,6 @@ require_once("$default->uiDirectory/documentmanagement/browseUI.inc");
 
 // only if we have a valid session
 if (checkSession()) {
-    ob_start();
-    require_once("../../../webpageTemplate.inc");
     
     // retrieve variables
     if (!$fBrowseType) {
@@ -56,12 +55,12 @@ if (checkSession()) {
                             $aResults = $oDocBrowser->browseByFolder();
                             controllerRedirect("browse", "fFolderID=" . $aResults["folders"][0]->getID());
                         } else {
-                            ob_end_flush();
                             $aResults = $oDocBrowser->browseByFolder($fFolderID);
                         }
                         break;
                         
         case "category" :
+                        $sectionName = "Manage Categories";
                         if (!$fCategoryName) {
                             $aResults = $oDocBrowser->browseByCategory();
                         } else {
@@ -70,6 +69,7 @@ if (checkSession()) {
                         break;
                         
         case "documentType" :
+                        $sectionName = "Manage Document Types";
                         if (!$fDocumentTypeID) {
                             $aResults = $oDocBrowser->browseByDocumentType();
                         } else {
@@ -78,6 +78,7 @@ if (checkSession()) {
                         break;
     }
     
+    require_once("../../../webpageTemplate.inc");    
     if ($aResults) {
         // display the list of categories
         $oContent->addHtml(renderPage($aResults, $fBrowseType));
@@ -90,8 +91,5 @@ if (checkSession()) {
     $main->setFormAction($_SERVER["PHP_SELF"]);
     $main->render();
     
-} else {
-    // redirect to no permission page
-    redirect("$default->uiUrl/noAccess.php");
 }
 ?>
