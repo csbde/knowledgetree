@@ -73,17 +73,19 @@ function renderTypeSpecificMetaData($oDocument) {
 }
 
 function renderDocumentRouting($oDocument) {
-	$sQuery = "SELECT R.name AS role_name, COALESCE(U.Name, 'Not assigned') AS name, GFAL.precedence AS precedence " .
+	global $default;
+	$sQuery = "SELECT GFAL.id as id, R.name AS role_name, COALESCE(U.Name, 'Not assigned') AS name, GFAL.precedence AS precedence, 'Edit' as edit " .
 				"FROM documents AS D INNER JOIN groups_folders_approval_link AS GFAL ON D.folder_id = GFAL.folder_id " .
 				"INNER JOIN roles AS R ON GFAL.role_id = R.id " .
 				"LEFT OUTER JOIN folders_users_roles_link AS FURL ON FURL.folder_id = D.folder_id " .
 				"LEFT OUTER JOIN users AS U ON FURL.user_id = U.id " .
 				"WHERE D.id = " . $oDocument->getID() . " " .
 				"ORDER BY GFAL.precedence, role_name ASC";
-		
-	$aColumns = array("role_name", "name", "precedence");
-	$aColumnHeaders = array("Role", "Player", "Seq");
-	$oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnHeaders, "10%", true);
+	
+	$aColumns = array("role_name", "name", "precedence", "edit");
+	$aColumnHeaders = array("Role", "Player", "Seq", "");
+	$aColumnTypes = array(1,1,1,3);
+	$oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaders, "10%", "$default->owl_root_url/control.php?action=modifyDocumentRouting&fFolderCollaborationID=","id");
 	$oPatternTableSqlQuery->setTableHeading("Document Routing");
 	return $oPatternTableSqlQuery->render();
 	
