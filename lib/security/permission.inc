@@ -12,7 +12,7 @@
 *	@date 14 January 2003 
 */
 
-require_once($default->owl_fs_root . "/lib/documentmanagement/documentLib.php");
+require_once($default->owl_fs_root . "/lib/documentmanagement/documentLib.inc");
 
 class Permission {
 	
