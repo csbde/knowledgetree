@@ -15,16 +15,25 @@ class PatternCustom {
 	/** 
      * Set the HTML string 
 	 *
-	 * @param $sNewValue		new HTML string
+	 * @param string		new HTML string
 	 */
 	function setHtml($sNewValue) {
 		$this->sHtml = $sNewValue;		
 	}
 	
+    /**
+     * Appends to the html string
+     *
+     * @param string        the html to append
+     */
+    function addHtml($sMoreHtml) {
+        $this->sHtml = $this->sHtml . $sMoreHtml;
+    }
+    
 	/**
 	 * Render the object
 	 *
-	 * @return	html string
+	 * @return string	    html string
 	 */
 	function & render() {
 		return $this->sHtml;
