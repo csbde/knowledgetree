@@ -77,7 +77,10 @@ mime_id INTEGER NOT NULL,
 folder_id INTEGER NOT NULL,
 major_version INTEGER NOT NULL,
 minor_version INTEGER NOT NULL,
-is_checked_out BIT NOT NULL
+is_checked_out BIT NOT NULL,
+parent_folder_ids CHAR(100),
+full_path CHAR(255)
+
 )TYPE = InnoDB;
 
 CREATE TABLE document_subscriptions ( 
