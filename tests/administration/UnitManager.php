@@ -1,7 +1,7 @@
 <?php
 
 // main library routines and defaults
-require_once("../config/dmsDefaults.php");
+require_once("../../config/dmsDefaults.php");
 require_once("$default->owl_fs_root/lib/owl.lib.php");
 require_once("$default->owl_fs_root/lib/administration/UnitManager.inc");
 
@@ -9,14 +9,13 @@ echo "<pre>";
 // unit tests for UnitManager methods
 
 $um = new UnitManager();
-/*
 $userArray = $um->listLdapUsers($userNameSearch);
 if (!'userArray') {
     echo "ldap user lookup failed!<br>";
 } else {
     print_r($userArray);
 }
-*/
+/*
 // do some transformation of the first entry in the array?
 // think maybe just set username = uid
 
@@ -39,6 +38,6 @@ if (!$result) {
 } else {
     echo "added user successfully<br>";
 }
-
+*/
 echo "</pre>";
 ?>
