@@ -8,19 +8,6 @@
  * @package presentation.lookAndFeel.knowledgeTree.foldermanagement
  */
 
- 
-/*function renderHeading($sHeading) {
-    global $default;
-    $sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
-    $sColor = $default->siteMap->getSectionColour($sSectionName, "th");
-    $sToRender  = "<table border=\"0\" width=\"600\">\n";
-    $sToRender .= "<tr align=\"left\"><th class=\"sectionHeading\" bgcolor=\"$sColor\">$sHeading</th></tr>\n";
-    $sToRender .= "<tr/>\n";
-    $sToRender .= "<tr/>\n";
-    $sToRender .= "</table>\n";
-    return $sToRender;
-}*/
-
 function getFolderPath($iFolderID) {
 	global $default;
 	$sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
@@ -43,7 +30,7 @@ function getDeletePage($oGroupFolderLink, $iFolderID) {
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td><table><tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/delete.gif\" border=\"0\"/></td><td>" . generateControllerLink("editFolder", "fFolderID=" . $oGroupFolderLink->getFolderID() . "&fShowSection=folderPermissions", "<img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"/>") . "</td></tr></table></td>\n";
 	$sToRender .= "</tr>\n";	
-	$sToRender .= "<table>\n";
+	$sToRender .= "</table>\n";
 
 	$sToRender .= "\n\n<script language=\"javascript\">\n<!--\n";
 	$sToRender .= "function validateForm(theForm) {\n";	
@@ -67,7 +54,7 @@ function getEditPage($oGroupFolderLink, $iFolderID) {
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td><table><tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/update.gif\" border=\"0\"/></td><td>" . generateControllerLink("editFolder", "fFolderID=" . $oGroupFolderLink->getFolderID() . "&fShowSection=folderPermissions", "<img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"/>") . "</td></tr></table></td>\n";
 	$sToRender .= "</tr>\n";	
-	$sToRender .= "<table>\n";
+	$sToRender .= "</table>\n";
 	
 	$sToRender .= "\n\n<script language=\"javascript\">\n<!--\n";
 	$sToRender .= "function validateForm(theForm) {\n";	
