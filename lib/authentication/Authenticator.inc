@@ -28,7 +28,7 @@ class Authenticator {
         $aUserDetails = array();
 
         // retrieve the userID
-        $iUserID = lookupID($default->owl_users_table, "username", "$sUserName");
+        $iUserID = lookupID($default->owl_users_table, "BINARY username", "$sUserName");
         if ($iUserID) {
             $oUser = & User::get($iUserID);
 
