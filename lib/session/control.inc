@@ -64,7 +64,8 @@ function generateLink($sTargetPage, $sQueryString, $sLinkText = "") {
     $sQueryStringDelimiter = strlen($sQueryString) > 0 ? (strstr($sTargetPage, "?") ? "&" : "?") : "";
 
     $sLink = "http" . ($default->sslEnabled ? "s" : "") . "://" . $default->serverName . 
-             ((substr($sTargetPage, 0, strlen($default->rootUrl)) != $default->rootUrl) ? $default->rootUrl : "") . 
+             ((substr($sTargetPage, 0, strlen($default->rootUrl)) != $default->rootUrl) ? $default->rootUrl : "") .
+             (substr($sTargetPage, 0, 1) == "/" ? "" : "/") . 
              $sTargetPage . $sQueryStringDelimiter . $sQueryString;
 
     return (strlen($sLinkText) > 0) ? "<a href=\"$sLink\">$sLinkText</a>" : $sLink;
