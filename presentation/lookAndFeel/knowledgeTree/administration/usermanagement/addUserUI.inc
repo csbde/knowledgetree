@@ -12,6 +12,7 @@
 function getSelectUserPage($aResults) {
 	global $default;
 	
+    //$sToRender  = renderHeading("User Administration");
 	$sToRender .= "<br></br>\n";
 	$sToRender .= "<b>Select the User to add to the System:</b>\n";
 	$sToRender .= "<table>\n";
@@ -32,6 +33,7 @@ function getAddPage($unitID) {
 
 	global $default;
 	
+    //$sToRender  = renderHeading("User Administration");
 	$sToRender .= "<br></br>\n";
 	$sToRender .= "<b>Add a New User to the System:</b>\n";
 	$sToRender .= "<table>\n";
@@ -73,10 +75,10 @@ function getDetailsDBPage($suserName, $aAttributes) {
         $sToRender .= "<td>Mobile: </td><td><input size = \"40\" type=\"text\" name=\"fMobile\" value = \"" . $aUserAttributes["mobile"] ."\"> </td>\n";
         $sToRender .= "</tr>\n";
         $sToRender .= "<tr>\n";
-        $sToRender .= "<td>Email Notification: </td><td><input size = \"40\" type=\"text\" name=\"fEmailNotificaition\" value = \"" . $aUserAttributes["email_notification"] ."\"> </td>\n";
+        $sToRender .= "<td>Email Notification: </td><td><input type=\"checkbox\" name=\"fEmailNotification\" value=\"" . $aUserAttributes["email_notification"] . "\" " . ($aUserAttributes["email_notification"] == "1" ? "checked" : "") . "\"> </td>\n";
         $sToRender .= "</tr>\n";
         $sToRender .= "<tr>\n";
-        $sToRender .= "<td>Sms Notification: </td><td><input size = \"40\" type=\"text\" name=\"fSmsNotification\" value = \"" . $aUserAttributes["sms_notification"] ."\"> </td>\n";
+        $sToRender .= "<td>Sms Notification: </td><td><input type=\"checkbox\" name=\"fSmsNotification\" value=\"" . $aUserAttributes["sms_notification"] . "\" " . ($aUserAttributes["sms_notification"] == "1" ? "checked" : "") . "\"> </td>\n";
         $sToRender .= "</tr>\n";
         $sToRender .= "<tr>\n";
         $sToRender .= "</tr>\n";
@@ -120,6 +122,11 @@ function getDetailsLDAPPage($suserName, $aAttributes) {
         $sToRender .= "<tr>\n";
         $sToRender .= "<td>Mobile Number: </td><td><input size = \"40\" type=\"text\" name=\"fMobile\" value = \"" . $aUserAttributes["mobile"] ."\"> </td>\n";
         $sToRender .= "</tr>\n";
+        $sToRender .= "<tr>\n";        
+        $sToRender .= "<td>Email Notification: </td><td><input type=\"checkbox\" name=\"fEmailNotification\"/> </td>\n";
+        $sToRender .= "</tr>\n";
+        $sToRender .= "<tr>\n";
+        $sToRender .= "<td>Sms Notification: </td><td><input type=\"checkbox\" name=\"fSmsNotification\"/> </td>\n";
         $sToRender .= "<tr>\n";
         $sToRender .= "</tr>\n";
         $sToRender .= "<tr>\n";
