@@ -57,7 +57,7 @@ function renderNewsItem($oDashboardNews) {
 	
 	$sToRender .= "<tr><td>Body:</td><td>" . $oDashboardNews->getBody() . "</td></tr>";
 	$sToRender .= "<tr><td>Rank:</td><td>" . $oDashboardNews->getRank() . "</td></tr>";	
-	//$sToRender .= "<tr><td colspan=\"2\">" . $oDashboardNews->getImageLink() . "</td></tr>";	
+	$sToRender .= "<tr><td colspan=\"2\">" . $oDashboardNews->getImageLink() . "</td></tr>";	
 		
 	$sToRender .= "<input type=\"hidden\" name=\"fNewsID\" value=\"" . $oDashboardNews->getID() . "\">";
     return $sToRender;
@@ -125,7 +125,7 @@ function renderEditNewsPage($oDashboardNews, $sErrorMessage = "") {
 function renderAddNewsPage($oDashboardNews, $sErrorMessage = "") {
 	global $default;
 	
-	$sToRender .= "<table width=\"600\">" . renderHeading("View Dashboard News") . "</table>";
+	$sToRender .= "<table width=\"600\">" . renderHeading("Add Dashboard News") . "</table>";
 	if (strlen($sErrorMessage) > 0) {
 		$sToRender .= renderErrorMessage($sErrorMessage);
 	}	
@@ -140,7 +140,7 @@ function renderAddNewsPage($oDashboardNews, $sErrorMessage = "") {
 function renderListNewsPage() {
 	global $default;
 	
-	$sToRender .= "<table width=\"600\">" . renderHeading("View Dashboard News") . "</table>";
+	$sToRender .= "<table width=\"600\">" . renderHeading("List Dashboard News") . "</table>";
     $sToRender .= "<table>\n";
 	$sToRender .= renderNewsTable();
 	$sToRender .= "</table>\n";
@@ -152,12 +152,13 @@ function renderListNewsPage() {
  */
 function renderPreviewNewsPage($oDashboardNews) {
 	global $default;
-	
-	$sToRender .= "<table width=\"600\">" . renderHeading("Preview Dashboard News") . "</table>";
-    $sToRender .= "<table>\n";	
-	$sToRender .= renderNewsItem($oDashboardNews);		
-	$sToRender .= "<tr><td><a href=\"$default->rootUrl/control.php?action=listNews\"><img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\"></a></td></tr>\n";    	
-	$sToRender .= "</table>\n";
+		
+	$sToRender .= "<table border=\"0\" width=\"100%\">\n";
+	$sToRender .= "<tr><td><strong>" . $oDashboardNews->getSynopsis() . "</strong></td></tr>\n";	
+	$sToRender .= "<tr><td>" . $oDashboardNews->getImageLink() . "</td></tr>\n";
+	$sToRender .= "<tr><td>" . $oDashboardNews->getBody() . "</td></tr>\n";
+	$sToRender .= "<tr><td><a href=\"$default->rootUrl/control.php?action=listNews\"><img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\"></a></td></tr>\n";
+	$sToRender .= "</table>";
 	return $sToRender;		
 } 
 
