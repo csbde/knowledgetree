@@ -749,6 +749,7 @@ class Document {
 			$oFolderUserRole = FolderUserRole::get($sql->f("id"));
 			$oFolderUserRole->setActive(false);
 			$oFolderUserRole->setDone(true);
+			$oFolderUserRole->setDateTime(getCurrentDateTime());
 			$oFolderUserRole->update();
 			//get it's sequence number
 			$iCurrentSequenceNumber =  $sql->f("precedence");			
@@ -786,6 +787,87 @@ class Document {
 			return false;
 		}
 		return false;
+	}
+	
+	/**
+	* Rolls back a collaboration step if it is
+	* rejected by the user.  This is a problem function as
+	* it really should have transactions, but doesn't
+	* 
+	*/
+	function rollbackCollaborationStep($iDocumentID, $sComment = "") {
+		global $default;
+		//get the current sequence number
+		$sQuery = "SELECT GFAT.precedence, GFAT.folder_id, FURL.id AS furl_id " . 
+				"FROM $default->owl_folders_user_roles_table AS FURL INNER JOIN $default->owl_groups_folders_approval_table AS GFAT ON FURL.group_folder_approval_id = GFAT.id " .
+				"WHERE FURL.document_id = $iDocumentID " .
+				"AND user_id = " . $_SESSION["userID"] . " " .
+				"ORDER BY GFAT.precedence ASC";
+		$sql = $default->db;
+		$sql->query($sQuery);
+		if ($sql->next_record()) {
+			$iCurrentSequenceNumber = $sql->f("precedence");
+			$iFolderID = $sql->f("folder_id");
+			$iCurrentFolderUserRoleID = $sql->f("furl_id");
+			
+			//get the previous sequence number
+			$sQuery = "SELECT COALESCE(MAX(precedence), -1) AS precedence " .
+						"FROM $default->owl_groups_folders_approval_table AS GFAT " .
+						"WHERE precedence < $iCurrentSequenceNumber";
+						"AND folder_id = $iFolderID";			
+			$sql->query($sQuery);			 
+			//there will always be a result in the result set
+			$sql->next_record();			
+			if ($sql->f("precedence") == -1) {
+				//the current step is the first step
+				//reset all steps and email the creator				
+				Document::resetDocumentCollaborationSteps($iDocumentID);
+				$oDocument = Document::get($iDocumentID);
+				$oUser = User::get($oDocument->getCreatorID());
+				$oCurrentUser = User::get($_SESSION["userID"]);
+				
+				$sBody = $oUser->getUserName() . ", the document, '<a href=\"https://" . $_SERVER["SERVER_NAME"] . "$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $this->iId . "\">" . $oDocument->getName() . "</a>' " .
+										"has been rejected by " . $oCurrentUser->getName() . " in the document collaboration process.  The collaboration process has been stopped. " .
+										"The comment entered by " . $oCurrentUser->getName() . " was: $sComment";
+		
+				$oEmail = & new Email($default->owl_email_from, $default->owl_email_fromname);
+				$oEmail->send($oUser->getEmail(), "Document rejected in collaboration process", $sBody, $default->owl_email_from, $default->owl_email_fromname);
+			} else {
+				//there are steps prior to this step
+				$sQuery = "SELECT FURL.id AS furl_id " . 
+					"FROM $default->owl_folders_user_roles_table AS FURL INNER JOIN $default->owl_groups_folders_approval_table AS GFAT ON FURL.group_folder_approval_id = GFAT.id " .
+					"WHERE FURL.document_id = $iDocumentID " .
+					"AND GFAT.precedence = " . $sql->f("precedence");
+				
+				$sql->query($sQuery);
+				while ($sql->next_record()) {
+					//reset all the previous steps and email the users
+					//to tell them to re-reperform their steps
+					$oFolderUserRole = FolderUserRole::get($sql->f("furl_id"));
+					$oFolderUserRole->setActive(true);
+					$oFolderUserRole->setDone(false);
+					$oFolderUserRole->setDateTime("");
+					$oFolderUserRole->update();
+					
+					$oDocument = Document::get($iDocumentID);
+					$oUser = User::get($oFolderUserRole->getUserID());
+					$oCurrentUser = User::get($_SESSION["userID"]);
+				
+					$sBody = $oUser->getUserName() . ", the document, '<a href=\"https://" . $_SERVER["SERVER_NAME"] . "$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $this->iId . "\">" . $oDocument->getName() . "</a>' " .
+										"has been rejected by " . $oCurrentUser->getName() . " in the document collaboration process.  Please re-perform you step in the collaboration process." .
+										"The comment entered by " . $oCurrentUser->getName() . " was: $sComment";
+		
+					$oEmail = & new Email($default->owl_email_from, $default->owl_email_fromname);
+					$oEmail->send($oUser->getEmail(), "Document rejected in collaboration process", $sBody, $default->owl_email_from, $default->owl_email_fromname);
+					
+				}
+				$oFolderUserRole = FolderUserRole::get($iCurrentFolderUserRoleID);
+				$oFolderUserRole->setActive(false);
+				$oFolderUserRole->setDone(false);
+				$oFolderUserRole->update();				
+			}
+			
+		}
 	}
 }
 
