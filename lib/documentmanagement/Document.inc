@@ -707,46 +707,13 @@ class Document {
 		return false;
     }    
 		
-	/**
-	* Static function.
-	* Remove all document -> word links associated with this document
-	* 
-	* TODO: update function - document_words table is no longer valid
-	* 
+	/** Static function 
+	* Deletes text in document_text table used for searching	
 	*/
-	function removeDocumentWordLinks($iDocumentID) {
-		global $default, $lang_err_database, $lang_err_object_key;
-        if ($this->iId >= 0) {
-            $sql = $default->db;            
-            $result = $sql->query("DELETE FROM  " . $default->owl_document_words_table . "  WHERE document_id = $iDocumentID");
-            if ($result) {
-                $this->iId = -1;
-                return true;
-            }
-            $_SESSION["errorMessage"] = $lang_err_database;
-            return false;
-        }
-        $_SESSION["errorMessage"] = $lang_err_object_key;
-        return false;
-	}
-	
-	/**
-	 * TODO: update function - document_words_link table is no longer valid
-	 */
-	function deleteDocumentFieldsLinks($iDocumentID) {
-		global $default, $lang_err_database, $lang_err_object_key;
-        if ($this->iId >= 0) {
-            $sql = $default->db;            
-            $result = $sql->query("DELETE FROM  " . $default->owl_document_fields_table . "  WHERE document_id = $iDocumentID");
-            if ($result) {
-                $this->iId = -1;
-                return true;
-            }
-            $_SESSION["errorMessage"] = $lang_err_database;
-            return false;
-        }
-        $_SESSION["errorMessage"] = $lang_err_object_key;
-        return false;		
+	function deleteFromDocumentText($iDocumentID) {
+		global $default;
+		$sql = $default->db;
+		return $sql->query("DELETE FROM $default->owl_document_text_table WHERE document_id = $iDocumentID");				
 	}
 }
 
