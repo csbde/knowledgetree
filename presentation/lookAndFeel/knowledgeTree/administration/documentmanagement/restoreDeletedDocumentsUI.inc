@@ -51,7 +51,7 @@ function renderConfirmationPage($iDocumentID, $iFolderID) {
 function renderFolderBrowsePage($iDocumentID, $iFolderID) {
 	global $default;
     $sToRender = renderHeading("Restore Deleted Document");
-	$sToRender .= "<table>\n";
+	$sToRender .= "<table width=100%>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>" . renderFolderPath($iFolderID, "/control.php?action=restoreDeletedDocument&fDocumentID=$iDocumentID") . "</td>\n";
 	$sToRender .= "</tr>\n";
