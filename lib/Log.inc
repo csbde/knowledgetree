@@ -111,10 +111,10 @@ class Log {
      */
     function writeLog($logEntry, $logLevel) {
         if ($logLevel >= $this->minimumLoggingLevel) {
-            if ($fp = fopen($this->logFile, "a")) {
+            if (@$fp = fopen($this->logFile, "a")) {
                 fwrite($fp, $logEntry);
             }
-            fclose($fp);
+            @fclose($fp);
         }
     }
 
