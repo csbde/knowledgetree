@@ -129,14 +129,27 @@ class DocumentType {
 	function delete() {
 		global $default, $lang_err_database, $lang_err_object_key;
 		//only delete the object if it exists in the database
-		if ($this->iId >= 0) {
+		if ($this->iId > 0) {
+			//check to see if name exsits
 			$sql = $default->db;
-			$result = $sql->query("DELETE FROM " . $default->owl_document_types_table . " WHERE id = $this->iId");
-			if ($result) {
-				return true;
+			$query = "SELECT folder_id FROM ". $default->owl_folder_doctypes_table ." WHERE document_type_id = '" . $this->iId . "'";
+        		$sql->query($query);
+       			$rows = $sql->num_rows($sql);
+        
+      			 if ($rows > 0){
+            		 	// duplicate username
+           		 	$_SESSION["errorMessage"] = "DocTypes::Assigned to DocFolder name " . $this->iId . " is already exists!";
+           		 	return false;
+           		 
+	       		 }else{
+				$sql = $default->db;
+				$result = $sql->query("DELETE FROM " . $default->owl_document_types_table . " WHERE id = '" . $this->iId . "'");
+				if ($result) {
+					return true;
+				}
+				$_SESSION["errorMessage"] = $lang_err_database;
+				return false;
 			}
-			$_SESSION["errorMessage"] = $lang_err_database;
-			return false;
 		}
 		$_SESSION["errorMessage"] = $lang_err_object_key;
 		return false;
