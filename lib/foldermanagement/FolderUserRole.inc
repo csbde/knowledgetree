@@ -223,5 +223,22 @@ class FolderUserRole {
 		}
 		return false;
 	}
+	
+	/** Creates default folder user roles from 
+	* information obtained at the folder level where folder
+	* collaboratio is created
+	*/
+	function createDefaultFolderUserRoles($oDocument) {
+		global $default;
+		$sQuery = "SELECT GFAL.id, GFAL.user_id " .
+				"FROM folders_users_roles_link AS FURL RIGHT OUTER JOIN groups_folders_approval_link AS GFAL ON FURL.group_folder_approval_id = GFAL.id AND group_folder_approval_id = NULL " .
+				"WHERE GFAL.folder_id = " . $oDocument->getFolderID();
+		$sql = $default->db;
+		$sql->query($sQuery);
+		while ($sql->next_record()) {
+			$oFolderUserRole = & new FolderUserRole($sql->f("user_id"), $oDocument->getID(), $sql->f("id"));
+			$oFolderUserRole->create();			
+		}
+	}
 }
 ?>
