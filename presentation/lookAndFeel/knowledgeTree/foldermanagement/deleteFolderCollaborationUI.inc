@@ -33,7 +33,6 @@ function getPage($iFolderID, $iGroupID, $iRoleID, $iSequenceNumber) {
 	global $default;
     $sToRender = renderHeading("Delete Folder Collaboration Step");
     $sToRender .= getFolderPath($iFolderID);
-	$sToRender .= "<br>\n";
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>Group</td><td>" . getGroup($iGroupID) . "</td>\n";
@@ -47,7 +46,7 @@ function getPage($iFolderID, $iGroupID, $iRoleID, $iSequenceNumber) {
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td><table><tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/delete.gif\" border=\"0\"/></td><td><a href=\"$default->rootUrl/control.php?action=editFolder&fFolderID=$iFolderID\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\" /></a></td></tr></table></td>\n";
 	$sToRender .= "</tr>\n";	
-	$sToRender .= "<table>\n";
+	$sToRender .= "</table>\n";
 	
 	$sToRender .= "\n\n<script language=\"javascript\">\n<!--\n";
 	$sToRender .= "function validateForm(theForm) {\n";	
