@@ -639,7 +639,7 @@ class Document {
     function getDocumentDisplayPath($iDocumentID) {
         global $default;
         $oDocument = & Document::get($iDocumentID);
-        return Folder::getFolderDisplayPath($oDocument->getFolderID()) . " > " . Document::getDocumentName($iDocumentID);
+        return $oDocument->getDisplayPath();
     }
 	
 	/**
