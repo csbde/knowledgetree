@@ -39,8 +39,6 @@ class Log {
     function Log($logFile, $logLevel = INFO) {
         $this->logFile = $logFile;
         $this->minimumLoggingLevel = $logLevel;
-        // initialise log file
-        $this->writeLog("\n-------------------\n" . date("Y-m-d H:i:s",time()) . ":logging started\n-------------------\n", $this->minimumLoggingLevel);
     }
     
     /**
