@@ -102,12 +102,8 @@ function getPage($iDocumentID, $aDocumentThreads) {
 	global $default;
 	
 	$sToRender .= renderHeading("Document Discussion Comments");
-	$sToRender .= displayDocumentPath($iDocumentID);		
-	$sToRender .= "<table border=0 width=100%><tr>"; 
-	$sToRender .= "<td align=right>\n";
-	$sToRender .= "<a href=\"" . generateControllerLink("addComment", "fDocumentID=$iDocumentID") . "\"><img src=\"$default->graphicsUrl/widgets/addcomment.gif\" border=\"0\" /></a>\n";
-	$sToRender .= "<img src=\"$default->graphicsUrl/widgets/back.gif\" onmouseover=\"this.style.cursor='hand'\" onclick=\"javascript: history.go(-1);\">\n</td>";
-	$sToRender .= "</tr></table><br>\n";			
+	$sToRender .= displayDocumentPath($iDocumentID);
+	$sToRender .= getPageButtons($iDocumentID);		
 	$sToRender .= "<table border=\"0\" width=\"100%\">\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td><b>Subject</b></td>\n";
