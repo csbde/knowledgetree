@@ -102,8 +102,8 @@ class PatternEditableListFromQuery {
 			
 			for ($i = 0; $i < count($this->aDisplayColumns); $i++) {		
 					$sToRender .= "<tr>\n";
-					$sToRender .= "<input type=\"hidden\" name=\"" . $this->sUniqueName . "_tc\" value=\"" . $this->aStoreColumns[$i] . "\" />\n";
-					$sToRender .= "<input type=\"hidden\" name=\"" . $this->sUniqueName . "_type\" value=\"" . $this->aDatabaseColumnTypes[$i] . "\" />\n";					
+					$sToRender .= "<input type=\"hidden\" name=\"" . $this->sUniqueName . "_" . $i . "_tc\" value=\"" . $this->aStoreColumns[$i] . "\" />\n";
+					$sToRender .= "<input type=\"hidden\" name=\"" . $this->sUniqueName . "_" . $i . "_type\" value=\"" . $this->aDatabaseColumnTypes[$i] . "\" />\n";					
 					$sToRender .= "\t<td>" . $this->aColumnNames[$i] . "</td>\n";
 					switch ($this->aDisplayColumnTypes[$i]) {						
 						case 1:	
