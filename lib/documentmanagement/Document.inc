@@ -380,7 +380,7 @@ class Document {
 			$oUser = User::get($oFolderUserRole->getUserID());
 			
 			$sBody = $oUser->getUserName() . ", your role of '" . $oRole->getName() . "' in the document, '" . $this->sName . "' collaboration process is now active. " .
-                                        "Click " . generateLink("control.php?action=viewDocument", "fDocumentID=" . $this->iId, "here") . " to access " .
+                                        "Click " . generateControllerLink("viewDocument", "fDocumentID=" . $this->iId, "here") . " to access " .
 										"the document";
 										
 			
