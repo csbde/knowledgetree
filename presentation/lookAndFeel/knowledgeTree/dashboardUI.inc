@@ -26,7 +26,7 @@ function renderPendingWebDocuments($aPendingDocumentList) {
         $sBgColor = "#9D9D7F"; 
         $sToRender  = "\t<tr align=\"left\" bgcolor=\"$sBgColor\">\n";
             
-        $sToRender .= "\t\t<th class=\"sectionHeading\" colspan=\"2\">Pending Web Documents</th>\n";
+        $sToRender .= "\t\t<th class=\"sectionHeading\" colspan=\"2\"><font color=\"ffffff\">Pending Web Documents</font></th>\n";
         $sToRender .= "\t</tr>\n";
         for ($i = 0; $i < count($aPendingDocumentList); $i++) {
             $oWebDocument = $aPendingDocumentList[$i];
@@ -55,7 +55,7 @@ function renderPendingCollaborationDocuments($aPendingDocumentList) {
     }    
     $sToRender  = "\t<tr align=\"left\" bgcolor=\"$sBgColor\">\n";
         
-    $sToRender .= "\t\t<th class=\"sectionHeading\" colspan=\"2\">Pending Documents</th>\n";
+    $sToRender .= "\t\t<th class=\"sectionHeading\" colspan=\"2\"><font color=\"ffffff\">Pending Documents</font></th>\n";
     $sToRender .= "\t</tr>\n";
     for ($i = 0; $i < count($aPendingDocumentList); $i++) {
         $oDocument = $aPendingDocumentList[$i];
@@ -79,7 +79,7 @@ function renderCheckedOutDocuments($aCheckedOutDocumentList) {
         $sBgColor = "#CECEBF";
     }    
     $sToRender  = "\t<tr align=\"left\" bgcolor=\"$sBgColor\">\n";   
-    $sToRender .= "\t\t<th class=\"sectionHeading\" colspan=\"2\">Checked Out Documents</th>\n";
+    $sToRender .= "\t\t<th class=\"sectionHeading\" colspan=\"2\"><font color=\"ffffff\">Checked Out Documents</font></th>\n";
     $sToRender .= "\t</tr>\n";
     
     if (count($aCheckedOutDocumentList) > 0) {
@@ -116,7 +116,7 @@ function renderSubscriptionAlerts($aSubscriptionAlertList) {
         $sBgColor = "#CECEBF";
     }    
     $sToRender  = "\t<tr align=\"left\" bgcolor=\"$sBgColor\">\n";
-    $sToRender .= "\t\t<th class=\"sectionHeading\" colspan=\"2\">Subscription Alerts</th>\n";
+    $sToRender .= "\t\t<th class=\"sectionHeading\" colspan=\"2\"><font color=\"ffffff\">Subscription Alerts</font></th>\n";
     $sToRender .= "\t</tr>\n";
     for ($i = 0; $i < count($aSubscriptionAlertList); $i++) {
         $sToRender .= "\t<tr>\n";
