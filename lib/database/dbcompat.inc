@@ -30,9 +30,9 @@ class DBCompat {
 
     function f ($field) {
         global $default;
-        $default->log->info("Requesting field $field");
+        // $default->log->debug("Requesting field $field");
         $value = $this->lastRow[$field];
-        $default->log->info("Yielding value $value");
+        // $default->log->debug("Yielding value $value");
         return $value;
     }
 
