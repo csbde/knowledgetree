@@ -595,6 +595,25 @@ class Document {
         $oDocument = & Document::get($iDocumentID);
         return Folder::getFolderDisplayPath($oDocument->getFolderID()) . " > " . Document::getDocumentName($iDocumentID);
     }
+	
+	/**
+	* Check if any documents are assigned the given
+	* document type in a specified folder
+	* 
+	*/
+	function documentIsAssignedDocTypeInFolder($iFolderID, $iFolderDocTypeID) {
+		global $default;
+		$sql = $default->db;
+		$sql->query("SELECT * " . 
+					"FROM $default->owl_folder_doctypes_table AS FDL INNER JOIN $default->owl_folders_table AS F ON FDL.folder_id = F.id " .
+					"INNER JOIN $default->owl_documents_table AS D ON D.folder_id = F.ID  " .
+					"WHERE FDL.id = $iFolderDocTypeID " .
+					"AND D.folder_id = $iFolderID");
+		if ($sql->next_record()) {
+			return true;
+		}
+		return false;
+	}
 }
 
 ?>
