@@ -37,7 +37,7 @@ class DiscussionComment {
         $this->iUserID = $iNewUserID;
         $this->iThreadID = $iNewThreadID;
         $this->dDate = null;				// This will get added in the SQL statement
-    	$this->id = -1;						// This will get created when the entry SQL statement
+    	$this->iId = -1;						// This will get created when the entry SQL statement
     }
 
 	
@@ -45,7 +45,7 @@ class DiscussionComment {
      * Return the CommentID
      */    
     function getID(){
-   		return $this->id; 	
+   		return $this->iId; 	
     }
     
     /**   
@@ -144,9 +144,11 @@ class DiscussionComment {
         if ($this->iId < 0) { //check to see if comment exists
             $sql = $default->db;            																																
             
-            $result = $sql->query("INSERT INTO " . $default->owl_discussion_comments_table . " (thread_id,user_id,subject, body) VALUES (" . $this->$ThreadID . "," . $this->$iUserID . "," . $this->$sSubject . "," . $this->$sBody . ", Now() )");
+            $result = $sql->query("INSERT INTO " . $default->owl_discussion_comments_table . " (thread_id,user_id,subject, body, date)" .
+             				       "VALUES (" . $this->iThreadID . "," . $this->iUserID . ",\"" . $this->sSubject . "\",\"" . $this->sBody . "\",Now())");
             if ($result) {
-	         return true;                    
+	          	$this->iId = $sql->insert_id();
+	         	return true;                    
 	        }
 	        $_SESSION["errorMessage"] = $lang_err_database;
 	        return false;    
