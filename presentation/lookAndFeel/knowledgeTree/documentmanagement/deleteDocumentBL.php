@@ -81,23 +81,25 @@ if (checkSession()) {
                                 //could not delete the document from the file system
                                 $default->log->error("deleteDocumentBL.php Filesystem error deleting document " . $oDocument->getFileName() . " from folder " . Folder::getFolderPath($oDocument->getFolderID()) . " id=" . $oDocument->getFolderID());
                                 //reverse the document deletion
-                                $oDocument->create();
+                                $oDocument->setStatusID(LIVE);
+                                $oDocument->update();
                                 //get rid of the document transaction
                                 $oDocumentTransaction->delete();
                                 require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");			
                                 $oPatternCustom = & new PatternCustom();							
-                                $oPatternCustom->setHtml(renderErrorPage("The document could not be deleted from the file system"));
+                                $oPatternCustom->setHtml(renderErrorPage("The document could not be deleted from the file system", $fDocumentID));
                                 $main->setCentralPayload($oPatternCustom);
                                 $main->render();
                             }
                         } else {
-                            //could not delete the document in the db
+                            //could not update the documents status in the db
                             $default->log->error("deleteDocumentBL.php DB error deleting document " . $oDocument->getFileName() . " from folder " . Folder::getFolderPath($oDocument->getFolderID()) . " id=" . $oDocument->getFolderID());
                             
+							//get rid of the document transaction
                             $oDocumentTransaction->delete();
                             require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");			
                             $oPatternCustom = & new PatternCustom();							
-                            $oPatternCustom->setHtml(renderErrorPage("The document could not be deleted from the database"));
+                            $oPatternCustom->setHtml(renderErrorPage("The document could not be deleted from the database", $fDocumentID));
                             $main->setCentralPayload($oPatternCustom);
                             $main->render();
                         }
@@ -105,7 +107,7 @@ if (checkSession()) {
                         //could not load document object
                         require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");			
                         $oPatternCustom = & new PatternCustom();							
-                        $oPatternCustom->setHtml(renderErrorPage("An error occured whilst retrieving the document from the database"));
+                        $oPatternCustom->setHtml(renderErrorPage("An error occured whilst retrieving the document from the database", $fDocumentID));
                         $main->setCentralPayload($oPatternCustom);
                         $main->render();
                     }
@@ -122,7 +124,7 @@ if (checkSession()) {
                 // there are active collaboration roles for this doc
                 require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");			
                 $oPatternCustom = & new PatternCustom();							
-                $oPatternCustom->setHtml(renderErrorPage("You can't delete this document because it's still in collaboration"));
+                $oPatternCustom->setHtml(renderErrorPage("You can't delete this document because it's still in collaboration", $fDocumentID));
                 $main->setCentralPayload($oPatternCustom);
                 $main->render();
             }
@@ -130,7 +132,7 @@ if (checkSession()) {
 			//user does not have permission to delete the document
 			require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");			
 			$oPatternCustom = & new PatternCustom();							
-			$oPatternCustom->setHtml(renderErrorPage("You do not have permission to delete this document"));
+			$oPatternCustom->setHtml(renderErrorPage("You do not have permission to delete this document", $fDocumentID));
 			$main->setCentralPayload($oPatternCustom);
 			$main->render();
 		}
