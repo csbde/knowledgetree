@@ -70,23 +70,6 @@ if (checkSession()) {
             $oPatternCustom->setHtml(getPage($oDocument, true));
             $main->setErrorMessage("You cannot edit a document collaboration step that is completed or currently underway");
             $main->setFormAction("$default->rootUrl/control.php?action=modifyDocument&fDocumentID=" . $oDocument->getID());
-        } else if (isset($fForInlineView) && Permission::userHasDocumentReadPermission($fDocumentID)) {
-			$oDocumentTransaction = & new DocumentTransaction($fDocumentID, "Inline view", VIEW);
-            $oDocumentTransaction->create();
-            PhysicalDocumentManager::inlineViewPhysicalDocument($fDocumentID);			
-		} else if (isset($fForDownload) && Permission::userHasDocumentReadPermission($fDocumentID)) {
-            //if the user has document read permission, perform the download
-            if (isset($fVersion)) {
-                // we're downloading an old version of the document
-                $oDocumentTransaction = & new DocumentTransaction($fDocumentID, "Document version $fVersion downloaded", DOWNLOAD);
-                $oDocumentTransaction->create();
-                PhysicalDocumentManager::downloadVersionedPhysicalDocument($fDocumentID, $fVersion);
-            } else {
-                // download the current version
-                $oDocumentTransaction = & new DocumentTransaction($fDocumentID, "Document downloaded", DOWNLOAD);
-                $oDocumentTransaction->create();
-                PhysicalDocumentManager::downloadPhysicalDocument($fDocumentID);
-            }
         } else if (isset($fBeginCollaboration) && Permission::userHasDocumentWritePermission($fDocumentID)) {
             //begin the collaboration process
             //first ensure that all steps in the collaboration process are assigned
@@ -182,8 +165,6 @@ if (checkSession()) {
                 // prompt for the website to publish to
                 $oPatternCustom->setHtml(getWebPublishPage($oDocument));
                 $main->setFormAction($_SERVER['PHP_SELF']);
-	            //$main->setDHTMLScrolling(false);
-	            //$main->setOnLoadJavaScript("switchDiv('documentData')");
             }
 			
 		} else if (Permission::userHasDocumentWritePermission($fDocumentID) || Permission::userHasDocumentReadPermission($fDocumentID)) {
@@ -220,7 +201,7 @@ if (checkSession()) {
 	            $main->setErrorMessage("The document you have chosen no longer exists in the DMS.");
             }
             $main->setDHTMLScrolling(false);
-            $main->setOnLoadJavaScript("switchDiv('documentData')");
+            $main->setOnLoadJavaScript("switchDiv('documentData', 'document')");
             $main->setFormAction("$default->rootUrl/control.php?action=modifyDocument&fDocumentID=" . $oDocument->getID());
         } else {
         	if ($oDocument) {
