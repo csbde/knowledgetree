@@ -63,7 +63,7 @@ if (checkSession()) {
 				$main->setCentralPayload($oPatternCustom);
 				$main->setErrorMessage("Please select at least one criteria to search by");
 				$main->setHasRequiredFields(true);
-				$main->setFormAction("advancedSearchBL.php?fForSearch=1");                                
+				$main->setFormAction($_SERVER["PHP_SELF"] . "?fForSearch=1");                                
 				$main->render();
 			}
 		} else {
@@ -74,7 +74,7 @@ if (checkSession()) {
 				$main->setCentralPayload($oPatternCustom);
 				$main->setErrorMessage("Please enter text to search on");
 				$main->setHasRequiredFields(true);
-				$main->setFormAction("advancedSearchBL.php?fForSearch=1");                                
+				$main->setFormAction($_SERVER["PHP_SELF"] . "?fForSearch=1");                                
 				$main->render();
 		}
 		
@@ -84,7 +84,7 @@ if (checkSession()) {
 		$oPatternCustom->setHtml(getSearchPage($fSearchString));
 		$main->setHasRequiredFields(true);
 		$main->setCentralPayload($oPatternCustom);                                
-		$main->setFormAction("advancedSearchBL.php?fForSearch=1");                                
+		$main->setFormAction($_SERVER["PHP_SELF"] . "?fForSearch=1");                                
 		$main->render();
 	}	
 }
