@@ -151,17 +151,19 @@ class PatternTableSqlQuery {
 								}
 								break;
 						case 2:
-								//boolean
+								//pic
 								$sToRender .= "<td>";
-								if ($sql->f($this->aColumns[$i]) != null) {
+								if ($sql->f($this->aColumns[$i]) != null) {									
 									$value = $sql->f($this->aColumns[$i]);
-									$sToRender .= "<input type=\"checkbox\" disabled" .  ($value ? " checked " : "") . ">";
-									$sToRender .= "</td>";	
+									if ($value) { 
+										$sToRender .= "<img src='" . $this->sPicPath . "'>";
+									}
+									$sToRender .= "&nbsp;</td>";	
 								} else {
 									$sToRender .= "&nbsp</td>";
 								}							
 
-								break;								
+								break;
 						case 3:
 								//hyperlink								
 								$sToRender .= "<td><a href=\"" . $this->aLinkURLs[$i];
@@ -180,20 +182,6 @@ class PatternTableSqlQuery {
 									$sToRender .= $this->generateImageURL($sql->f("image_url"));
 								}
 								$sToRender .= stripslashes($sql->f($this->aColumns[$i])) . "</a></td>\n";
-								break;
-						case 4:
-								//pic
-								$sToRender .= "<td>";
-								if ($sql->f($this->aColumns[$i]) != null) {									
-									$value = $sql->f($this->aColumns[$i]);
-									if ($value) { 
-										$sToRender .= "<img src='" . $this->sPicPath . "'>";
-									}
-									$sToRender .= "&nbsp;</td>";	
-								} else {
-									$sToRender .= "&nbsp</td>";
-								}							
-
 								break;
 						default:
 								break;
