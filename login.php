@@ -15,8 +15,10 @@
  
 // main library routines and defaults
 require_once("./config/dmsDefaults.php");
-require_once("$default->owl_fs_root/lib/owl.lib.php");
-require_once("$default->owl_fs_root/config/html.php");
+require_once("$default->owl_fs_root/lib/db.inc");
+require_once("$default->owl_fs_root/lib/dms.inc");
+require_once("$default->owl_fs_root/lib/lookup.inc");
+//require_once("$default->owl_fs_root/config/html.php");
 require_once("$default->owl_fs_root/lib/control.inc");
 require_once("$default->owl_fs_root/lib/Session.inc");
 
@@ -24,6 +26,7 @@ require_once("$default->owl_fs_root/lib/Session.inc");
 // page start
 // -------------------------------
 global $default;
+
 if ($loginAction == "loginForm") {
     // TODO: build login form using PatternMainPage
     //include("./lib/header.inc");
@@ -50,60 +53,53 @@ if ($loginAction == "loginForm") {
     //include("./lib/footer.inc");
     
 } elseif ($loginAction == "login") {
-    // check the requirements
-    if (checkrequirements() == 1) {
-        // TODO: appropriate error message
-        echo "check requirements failed!<br>";
-        exit;
-    } else {
-        // set default url for login failure
-        $url = $url . "login.php?loginAction=loginForm";
-        // if requirements are met and we have a username and password to authenticate
-        if( isset($fUserName) && isset($fPassword) ) {
-            // verifies the login and password of the user
-            $dbAuth = new $default->authentication_class;
-            $userDetails = $dbAuth->login($fUserName, $fPassword);
+    // set default url for login failure
+    $url = $url . "login.php?loginAction=loginForm";
+    // if requirements are met and we have a username and password to authenticate
+    if( isset($fUserName) && isset($fPassword) ) {
+        // verifies the login and password of the user
+        $dbAuth = new $default->authentication_class;
+        $userDetails = $dbAuth->login($fUserName, $fPassword);
 
-            switch ($userDetails["status"]) {
-                // bad credentials
-                case 0:
-                    $url = $url . "&errorMessage=$lang_loginfail";
-                    break;
-                // successfully authenticated
-                case 1:
-                    // start the session
-                    $session = new Session();
-                    $sessionID = $session->create($userDetails["user_id"]);
-                    // add the user details array to the session
-                    $_SESSION["userDetails"] = $userDetails;
-                    
-                    // check for a location to forward to
-                    if (isset($redirect) && strlen(trim($redirect))>0) {
-                        $url = urldecode($redirect);
-                    // else redirect to the dashboard
-                    } else {
-                        $_SESSION["authorised"] = false;                        
-                        $url = "control.php?action=dashboard";
-                    }
-                    break;
-                // login disabled                    
-                case 2:
-                    $url = $url . "&errorMessage=$lang_logindisabled";
-                    break;
-                // too many sessions
-                case 3 :
-                    $url = $url . "&errorMessage=$lang_toomanysessions";
-                    break;
-                default :
-                    $url = $url . "&errorMessage=$lang_err_general";
-            }
-        } else {
-            // didn't receive any login parameters, so redirect login form
-            // TODO: set "no login parameters received error message?
-            // internal error message- should never happen
+        switch ($userDetails["status"]) {
+            // bad credentials
+            case 0:
+                $url = $url . "&errorMessage=$lang_loginfail";
+                break;
+            // successfully authenticated
+            case 1:
+                // start the session
+                $session = new Session();
+                $sessionID = $session->create($userDetails["user_id"]);
+                // add the user details array to the session
+                $_SESSION["userDetails"] = $userDetails;
+                
+                // check for a location to forward to
+                if (isset($redirect) && strlen(trim($redirect))>0) {
+                    $url = urldecode($redirect);
+                // else redirect to the dashboard
+                } else {
+                    $_SESSION["authorised"] = false;                        
+                    $url = "control.php?action=dashboard";
+                }
+                break;
+            // login disabled                    
+            case 2:
+                $url = $url . "&errorMessage=$lang_logindisabled";
+                break;
+            // too many sessions
+            case 3 :
+                $url = $url . "&errorMessage=$lang_toomanysessions";
+                break;
+            default :
+                $url = $url . "&errorMessage=$lang_err_general";
         }
-        redirect($url);
+    } else {
+        // didn't receive any login parameters, so redirect login form
+        // TODO: set "no login parameters received error message?
+        // internal error message- should never happen
     }
+    redirect($url);
 }
 ?>
 
