@@ -9,7 +9,7 @@
  * @version $Revision$ 
  * @author Mukhtar Dharsey
  * @package dmslib
- *//
+ */
 /*-----------------------------------------------------------------*/
 
 /**
