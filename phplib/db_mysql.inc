@@ -92,7 +92,15 @@ class DB_Sql {
   }
 
   /* public: perform a query */
-  function query($Query_String) {
+  function query($Query_String) { 	
+    global $default;
+  	// only log the queries if we're in debug mode
+  	if ($default->minimumLoggingLevel == DEBUG) {    
+	    require_once("$default->fileSystemRoot/phpSniff/phpTimer.class.php");
+	    $timer = new phpTimer();
+	    $timer->start();
+  	}	
+    
     /* No empty queries, please, since PHP4 chokes on them. */
     if ($Query_String == "")
       /* The empty query string is passed on from the constructor,
@@ -122,6 +130,13 @@ class DB_Sql {
     }
 
     # Will return nada if it fails. That's fine.
+  	if ($default->minimumLoggingLevel == DEBUG) {    
+	    $timer->stop();
+		if ($fp = fopen($default->fileSystemRoot . "/log/queryLog.txt", "a")) {
+			fwrite($fp, $timer->get_current() . ": $Query_String\n");
+		}
+    	fclose($fp);
+  	}    
     return $this->Query_ID;
   }
 
