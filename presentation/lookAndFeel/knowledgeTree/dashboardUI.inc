@@ -40,6 +40,30 @@ function renderPendingWebDocuments($aPendingDocumentList) {
     }
 }
 
+
+function renderRestorationRequests($aRestorationRequests) {
+    global $default;
+
+    if (count($aRestorationRequests) > 0) {
+        $sBgColor = "#9D9D7F"; 
+        $sToRender  = "\t\t\t<tr align=\"left\" bgcolor=\"$sBgColor\">\n";
+            
+        $sToRender .= "\t\t\t\t<th class=\"sectionHeading\" colspan=\"2\"><font color=\"ffffff\">Archived Document Restoration Requests</font></th>\n";
+        $sToRender .= "\t\t\t</tr>\n";
+        for ($i = 0; $i < count($aRestorationRequests); $i++) {
+            $sToRender .= "\t\t\t<tr>\n";
+            $oDocument = Document::get($aRestorationRequests[$i]->getDocumentID());
+            $sToRender .= "\t\t\t\t<td colspan=\"2\">" . generateControllerLink("viewDocument", "fDocumentID=" . $oDocument->getID(), "<img src=\"$default->graphicsUrl/widgets/dstatus.gif\" border=\"0\"/>&nbsp;" . $oDocument->getDisplayPath()) . "</td>\n";        
+            $sToRender .= "\t\t\t</tr>\n";
+        }
+        return $sToRender;
+    } else {
+        return "";
+    }	
+}
+
+
+
 /**
  * Displays the pending collaboration documents
  *
@@ -103,6 +127,29 @@ function renderCheckedOutDocuments($aCheckedOutDocumentList) {
     return $sToRender;
 }
 
+/**
+ * Displays the subscription alerts
+ *
+ * @param array of subscription alerts
+ */
+function renderSubscriptionAlerts($aSubscriptionAlertList) {
+    global $default;
+    if (count($aSubscriptionAlertList) > 0) {
+        $sBgColor = "#9D9D7F";
+    } else {
+        $sBgColor = "#CECEBF";
+    }    
+    $sToRender  = "\t\t\t<tr align=\"left\" bgcolor=\"$sBgColor\">\n";
+    $sToRender .= "\t\t\t\t<th class=\"sectionHeading\" colspan=\"2\"><font color=\"ffffff\">Subscription Alerts</font></th>\n";
+    $sToRender .= "\t\t\t</tr>\n";
+    for ($i = 0; $i < count($aSubscriptionAlertList); $i++) {
+        $sToRender .= "\t\t\t<tr>\n";
+        $sToRender .= "\t\t\t\t<td colspan=\"2\">" . $aSubscriptionAlertList[$i]->getAlertLink() . "</td>\n";
+        $sToRender .= "\t\t\t</tr>\n";
+    }    
+    return $sToRender;
+}
+
 function renderDependantDocuments($aDependantDocumentList) {
 	global $default;
     if (count($aCheckedOutDocumentList) > 0) {
@@ -140,29 +187,6 @@ function renderDependantDocuments($aDependantDocumentList) {
     }
     return $sToRender;	 
 	
-}
-
-/**
- * Displays the subscription alerts
- *
- * @param array of subscription alerts
- */
-function renderSubscriptionAlerts($aSubscriptionAlertList) {
-    global $default;
-    if (count($aSubscriptionAlertList) > 0) {
-        $sBgColor = "#9D9D7F";
-    } else {
-        $sBgColor = "#CECEBF";
-    }    
-    $sToRender  = "\t\t\t<tr align=\"left\" bgcolor=\"$sBgColor\">\n";
-    $sToRender .= "\t\t\t\t<th class=\"sectionHeading\" colspan=\"2\"><font color=\"ffffff\">Subscription Alerts</font></th>\n";
-    $sToRender .= "\t\t\t</tr>\n";
-    for ($i = 0; $i < count($aSubscriptionAlertList); $i++) {
-        $sToRender .= "\t\t\t<tr>\n";
-        $sToRender .= "\t\t\t\t<td colspan=\"2\">" . $aSubscriptionAlertList[$i]->getAlertLink() . "</td>\n";
-        $sToRender .= "\t\t\t</tr>\n";
-    }    
-    return $sToRender;
 }
 
 /**
@@ -218,7 +242,7 @@ function renderDashboardNews() {
  * @param array checked out documents for this user
  * @param array subscription alerts for this user
  */
-function renderPage($aPendingDocumentList, $aCheckedOutDocumentList, $aSubscriptionAlertList, $aQuickLinks, $aWebDocuments, $aDependantDocuments) {
+function renderPage($aPendingDocumentList, $aCheckedOutDocumentList, $aSubscriptionAlertList, $aQuickLinks, $aWebDocuments, $aDependantDocuments, $aRestorationRequests) {
     global $default;
     
     $sToRender  = "<table border=\"0\" width=\"600\" >\n";
@@ -240,7 +264,8 @@ function renderPage($aPendingDocumentList, $aCheckedOutDocumentList, $aSubscript
     $sToRender .= "\t<tr>\n";
     $sToRender .= "\t\t<td width=\"50%\" valign=\"top\" colspan=\"2\">\n";
     $sToRender .= "\t\t\t<table border=\"0\" width=\"100%\">\n";
-    $sToRender .= renderPendingWebDocuments($aWebDocuments) . "\n";    
+    $sToRender .= renderPendingWebDocuments($aWebDocuments) . "\n";
+    $sToRender .= renderRestorationRequests($aRestorationRequests) . "\n";
     $sToRender .= renderPendingCollaborationDocuments($aPendingDocumentList);
     $sToRender .= renderCheckedOutDocuments($aCheckedOutDocumentList) . "\n";
     $sToRender .= renderSubscriptionAlerts($aSubscriptionAlertList) . "\n";

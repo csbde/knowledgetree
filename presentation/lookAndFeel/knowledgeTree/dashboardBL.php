@@ -50,11 +50,14 @@ if (checkSession()) {
     // retrieve pending web documents
     $aPendingWebDocuments = $oDashboard->getPendingWebDocuments();
     
-    //retrive dependant documents
+    // retrieve dependant documents
     $aDependantDocuments = $oDashboard->getDependantDocuments();
+
+    // retrieve archive restoration requests
+    $aRestorationRequests = $oDashboard->getArchiveRestorationRequestDocuments();
     
     // generate the html
-    $oContent->setHtml(renderPage($aPendingDocumentList, $aCheckedOutDocumentList, $aSubscriptionAlertList, $aQuickLinks, $aPendingWebDocuments, $aDependantDocuments));
+    $oContent->setHtml(renderPage($aPendingDocumentList, $aCheckedOutDocumentList, $aSubscriptionAlertList, $aQuickLinks, $aPendingWebDocuments, $aDependantDocuments, $aRestorationRequests));
     
     // display
     $main->setCentralPayload($oContent);
