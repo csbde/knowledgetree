@@ -326,6 +326,52 @@ class Document {
 		
 	}
 	
+	/**
+	* Get a document's transaction history
+	*
+	* @return Array array of DocumentTransaction objects
+	*
+	*/
+	function getDocumentHistory() {
+		global $default, $lang_err_database;
+		$aDocumentHistory;
+		settype($aDocumentHistory, "array");
+		$sql = new Owl_DB();
+		$result = $sql->query("SELECT * FROM  " . $default->owl_document_transactions_table . " WHERE document_id = $this->iId ORDER BY datetime ASC");
+		if ($result) {
+			$iCount = 0;
+			while($sql->next_record()) {				
+				$oDocumentTransaction = DocumentTransaction::get($sql->f("id"));
+				$aDocumentHistory[$iCount] = $oDocumentTransaction;
+				$iCount++;				 
+			}
+			return $history;
+		}
+		$_SESSION["errorMessage"] = $lang_err_database;
+		return false;
+		
+	}
+
+	/**
+	* Static function.
+	* Check if a document already exists
+	*
+	* @param $sName			Name of document
+	* @param $sFolderID		Primary key of folder to which document is assigned
+	*
+	* @return boolean true if document exists, false otherwise and set $_SESSION["errorMessage"]
+	*/	
+	function documentExists($sName, $iFolderID) {
+		global $default, $lang_err_doc_not_exist;
+		$sql = new Owl_DB();
+		$sql->query("SELECT * FROM " . $default->owl_documents_table . " WHERE name = '" . $sName "' AND folder_id = " . $iFolderID);
+		if ($sql->next_record()) {
+			return true;
+		}
+		$_SESSION["errorMessage"] = $lang_err_doc_not_exist . "name = " . $sName . " folder_id = " . $iFolderID;
+		return false;
+	}	
+	
 }
 
 ?>
