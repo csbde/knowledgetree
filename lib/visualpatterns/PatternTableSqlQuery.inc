@@ -119,19 +119,21 @@ class PatternTableSqlQuery {
 				for ($i = 0; $i < count($this->aColumns); $i++) {
 					switch ($this->aColumnTypes[$i]) {
 						case 1:
+								//text
 								$sToRender .= "<td>";
 								if (isset($this->sImageURL)) {
 									$sToRender .= $this->generateImageURL($this->sImageURL);
 								} else if ($this->bUseImageURLFromQuery) {
 									$sToRender .= $this->generateImageURL($sql->f("image_url"));
 								}
-								if ($sql->f($this->aColumns[$i] != null)) {
-									$sToRender .= $sql->f($this->aColumns[$i]) . "</td>";
+	 							if ($sql->f($this->aColumns[$i] != null)) {
+									$sToRender .= stripslashes($sql->f($this->aColumns[$i])) . "</td>";
 								} else {
 									$sToRender .= "&nbsp</td>";
 								}
 								break;
 						case 3:
+								//hyperlink
 								$sToRender .= "<td><a href=\"" . $this->sLinkURL;
 								for ($j = 0; $j < count($this->aDBQueryStringColumns); $j++) {
 									if (strpos($sToRender, "?") === false) {
@@ -147,7 +149,7 @@ class PatternTableSqlQuery {
 								} else if ($this->bUseImageURLFromQuery) {
 									$sToRender .= $this->generateImageURL($sql->f("image_url"));
 								}
-								$sToRender .= $sql->f($this->aColumns[$i]) . "</a></td>\n";
+								$sToRender .= stripslashes($sql->f($this->aColumns[$i])) . "</a></td>\n";
 								break;
 						default:
 								break;
