@@ -104,7 +104,6 @@ class PatternEditableTableSqlQuery {
 		}
 		$sql = $default->db;
 		$sql->query($this->sQuery);
-        
 		if ($sql->num_rows() == 0) {
 			$sToRender .= "<tr>\n";			
 			$sToRender .= "<td colspan=" . count($this->aColumnsSql) . ">No " . (isset($this->sTableCaption) ? $this->sTableCaption : "") . " data</td>\n";			
@@ -121,7 +120,7 @@ class PatternEditableTableSqlQuery {
 					if (isset($this->aRequiredColumnNames)) {
 						for ($k = 0; $k < count($this->aRequiredColumnNames); $k++) {
 							if (strcmp($this->aStoreColumnNames[$i], $this->aRequiredColumnNames[$k]) == 0) {								
-								$aRequiredVariables[count($aRequiredVariables)]["formName"] = $this->sUniqueName . "_" . $iRowCount . $i . "_value";						
+								$aRequiredVariables[count($aRequiredVariables)]["formName"] = $this->sUniqueName . "_" . $iRowCount . $i . "_value";
 							}
 						}
 					}
@@ -174,7 +173,7 @@ class PatternEditableTableSqlQuery {
 							$sToRender .= "\t<input type=\"hidden\" name=\"" . $this->sUniqueName . "_" . $iRowCount . $i . "_type\" value=\"" . $this->aColumnDatabaseTypes[$i] . "\" />\n";
 							if ($this->aColumnsVisible[$i]) {
 								if ($this->aColumnsEditable[$i]) {
-									$oPattern = & new PatternMetaData($sql->f($this->aMetaDataFields[$i]), $this->sUniqueName . "_" . $iRowCount . $i . "_value", $sql->f($this->aStoreColumns[$i]));
+									$oPattern = & new PatternMetaData($sql->f($this->aMetaDataFields[$i]), $this->sUniqueName . "_" . $iRowCount . $i . "_value", $sql->f($this->aStoreColumnNames[$i]));
 									$sToRender .= $oPattern->render();
 								} else {
 									$sToRender .= "\t<input type=\"hidden\" name=\"" . $this->sUniqueName . "_" . $iRowCount . $i . "_value\" value=\"" . $sql->f($this->aStoreColumnNames[$i]) . "\" />".$sql->f($this->aDisplayColumnNames[$i])."\n";
@@ -208,8 +207,8 @@ class PatternEditableTableSqlQuery {
 		$sToRender .= "\n\n<script language=\"javascript\">\n<!--\n";
 		$sToRender .= "function validateForm(theForm) {\n";			
 		for ($i = 0; $i < count($aValidationColumnNames); $i++) {
-			$sToRender .= "\tif (!(validRequired(document.MainForm." . $aValidationColumnNames[$i]["formName"] . ", 'selected'))) {\n";
-			$sToRender .= "\t\treturn false;\n\t}\n";			
+            $sToRender .= "\tif (!(validRequired(document.MainForm." . $aValidationColumnNames[$i]["formName"] . ", 'selected'))) {\n";
+            $sToRender .= "\t\treturn false;\n\t}\n";
 		}
 		$sToRender .= "return true;\n}\n";
 		
