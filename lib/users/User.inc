@@ -461,7 +461,7 @@ class User {
 *
 * @return User user object
 */
-function & createFromArray($aParameters) {
+function & userCreateFromArray($aParameters) {
 	$oUser = & new User($aParameters[0], $aParameters[1], $aParameters[2], $aParameters[3], $aParameters[4], $aParameters[5], $aParameters[6], $aParameters[7], $aParameters[8], $aParameters[9], $aParameters[10]);
 	return $oUser;
 }
