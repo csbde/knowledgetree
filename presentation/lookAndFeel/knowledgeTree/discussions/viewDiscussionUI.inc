@@ -149,8 +149,7 @@ function getCommentBody($oComment, $iDocumentID, $oUser) {
 		
 	$sToRender .= renderHeading($sHeading);
 	$sToRender .= renderDocumentPath($iDocumentID);
-	$sBody = urldecode(str_replace("%0D%0A","<br>",str_replace("+", "&nbsp;",$oComment->getBody())));
-	$aBody = explode("<br>",$sBody);
+	$aBody = explode("\n",$oComment->getBody());
 	$sBody = "";
 	$numChars = 160;  // number of chars in a line
 	
