@@ -89,7 +89,7 @@ class PatternMainPage {
                                 "</div>";
         }
                             
-		$sToRender .= 		    "<form name=\"MainForm\" " . (isset($this->sFormEncType) ? "enctype=\"$this->sFormEncType\" " : " ") . " action=\"".$this->sFormAction."\" method=\"POST\">\n" .
+		$sToRender .= 		    "<form name=\"MainForm\" " . (isset($this->sFormEncType) ? "enctype=\"$this->sFormEncType\" " : " ") . " action=\"".$this->sFormAction."\" method=\"POST\" onsubmit=\"return validate666Form(this)\">\n" .
 								"<table border=\"1\" width=\"700\" height=\"600\">\n " .
 
 									"<tr height=\"18%\">\n".
