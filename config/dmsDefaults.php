@@ -165,14 +165,17 @@ $default->siteMap->addDefaultPage("administration", "/admin.php", "Administratio
 $default->siteMap->addPage("unitAdministration", "/presentation/unitAdmin.php", "Administration", UnitAdmin, "Unit Administration", false);
 $default->siteMap->addPage("systemAdministration", "/presentation/sysAdmin.php", "Administration", SysAdmin, "System Administration", false);
 
-// pages for advanced search section
 
+// pages for subscriptions section
+$default->siteMap->addDefaultPage("subscriptions", "/subscriptions.php", "Subscriptions", Guest, "SubScriptions",false);
+
+// pages for advanced search section
 // $default->siteMap->addDefaultPage("advancedSearch", "/email.php", "Advanced Search", "Anonymous", "Advanced Search");
 $default->siteMap->addDefaultPage("advancedSearch", "/search.php", "Advanced Search", Guest, "Advanced Search", false);
 
 
 // pages for prefs section
-$default->siteMap->addDefaultPage("preferences", "/preferences.php", "Preferences", User, "Preferences", false);
+$default->siteMap->addDefaultPage("preferences", "/presentation/lookAndFeel/knowledgeTree/Help/emailHelp.php", "Preferences", User, "Preferences",false);
 $default->siteMap->addPage("viewPreferences", "/preferences.php", "Preferences", User, "View Preferences", false);
 $default->siteMap->addPage("editPreferences", "/preferences.php", "Preferences", User, "Edit Preferences", false);
 
