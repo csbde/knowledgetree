@@ -78,7 +78,7 @@ function getEditPageFail() {
 			
     $sToRender .= renderHeading(_("Edit Organisation"));
 	$sToRender .= "<table>\n";
-	$sToRender .= "<tr><td><b>" . strtoupper(_("Failure")) . "!</b>>/td></tr>\n";
+	$sToRender .= "<tr><td><b>" . strtoupper(_("Failure")) . "!</b></td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr><td>" . _("Organisation modification Failed!") . "</td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
