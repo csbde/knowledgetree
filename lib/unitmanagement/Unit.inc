@@ -107,6 +107,11 @@ class Unit {
 	                    }
                     } else {
                     	// a unit root folder already exists in the database
+                    	// update the description
+                    	$aFolders = Folder::getList("name='" . $this->sName . "' AND parent_id=1");
+                    	$oFolder = $aFolders[0];
+                    	$oFolder->setDescription($this->sName . " Unit Root Folder");
+                    	$oFolder->update();
                     	return true;
                     }
                 }
