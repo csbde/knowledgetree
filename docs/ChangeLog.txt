@@ -1,5 +1,5 @@
 Version 1.2.2
-* Tue May 11 2004 Michael Joseph <michael@jamwarehouse.com>
+* Tue May 26 2004 Michael Joseph <michael@jamwarehouse.com>
 
 Features
 ========
@@ -36,6 +36,86 @@ Many community-contributed patches (see Detailed ChangeLog)
 Detailed ChangeLog
 ==================
 
+
+2004-05-10 18:11  michael
+
+	* knowledgeTree/sql/mysql/install/tables.sql: 
+	  Type:	  			  Release preparation.  
+	  Description:	      Bump version number in db.
+
+2004-05-10 18:03  michael
+
+	* knowledgeTree/lib/: authentication/Authenticator.inc,
+	  authentication/DBAuthenticator.inc,
+	  discussions/DiscussionComment.inc,
+	  discussions/DiscussionThread.inc:
+	  Type:	  			Non-functional change.  
+	  Description:		Removed unused error message reference.
+
+2004-05-10 18:00  michael
+
+	* knowledgeTree/: presentation/login.php,
+	  presentation/lookAndFeel/knowledgeTree/dashboardUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/documentmanagement/browseU
+	  I.inc, lib/browse/Browser.inc: 
+	  Type:		       i18n implementation.  
+	  Description: 	   Added gettext modifier to UI text.
+
+2004-05-10 17:59  michael
+
+	* knowledgeTree/presentation/Html.inc: 
+	  Type:  		  i18n Framework.  
+	  Description: 	  Removed unused functions.
+					  Added image localisation function.
+
+2004-05-10 17:57  michael
+
+	* knowledgeTree/locale/:
+	  Type:		     	i18n Framework.
+	  Description:	    Removed old locale implementation.
+
+2004-05-10 17:55  michael
+
+	* knowledgeTree/i18n/: LanguageFunctions.inc, afr/Language.inc,
+	  en/Language.inc: 
+	  Type:		  		i18n Framework.
+	  Description:		Added i18n locale directory.
+
+2004-05-10 17:55  michael
+
+	* knowledgeTree/docs/i18n.txt: Type:
+	  Documentation.  Description:		  First draft i18n doc.
+
+2004-05-10 17:54  michael
+
+	* knowledgeTree/docs/CREDITS.txt: 
+	  Type:	  			Documentation.  
+	  Description:		Added credits for 3rd party modules.
+
+2004-05-10 17:54  michael
+
+	* knowledgeTree/docs/ChangeLog.txt: 
+	  Type:	  			  Documentation.  
+	  Description:		  Added change log entries for v1.2.2
+
+2004-05-10 17:54  michael
+
+	* knowledgeTree/docs/TODO.txt: 
+	  Type:	  			Documentation.  
+	  Description:		Updated logging task.
+
+2004-05-10 17:53  michael
+
+	* knowledgeTree/config/environment.php:
+	  Type:	  			i18n Framework.  
+	  Description: 	  	Added i18n configuration.
+
+2004-05-10 17:51  michael
+
+	* knowledgeTree/config/dmsDefaults.php: 
+	  Type:	  			i18n Framework.  
+	  Description: 	  	Load and setup gettext locales. 
+	  
 2004-04-30 17:12  michael 
     * knowledgeTree/docs/INSTALL.txt:     
 	  Type:	  			  Documentation 
