@@ -44,6 +44,8 @@ class PatternEditableTableSqlQuery {
 	var $aColumnDatabaseTypes;
 	/** Unique name */
 	var $sUniqueName;
+	/** message that will be displayed if the table is empty*/
+	var $sEmptyTableMessage;    
 	
 	var $aRequiredColumnNames;
 	var $aRequiredFieldNames;
@@ -89,6 +91,9 @@ class PatternEditableTableSqlQuery {
 		$this->aRequiredColumnNames = $aNewValue;
 	}
 	
+	function setEmptyTableMessage($sNewValue) {
+		$this->sEmptyTableMessage = $sNewValue;
+	}
 	
 	function & render() {
         global $default;
@@ -105,8 +110,12 @@ class PatternEditableTableSqlQuery {
 		$sql = $default->db;
 		$sql->query($this->sQuery);
 		if ($sql->num_rows() == 0) {
-			$sToRender .= "<tr>\n";			
-			$sToRender .= "<td colspan=" . count($this->aColumnsSql) . ">No " . (isset($this->sTableCaption) ? $this->sTableCaption : "") . " data</td>\n";			
+			$sToRender .= "<tr>\n";
+			if (isset($this->sEmptyTableMessage)) {
+				$sToRender .= "<td colspan=" . count($this->aStoreColumnNames) . ">$this->sEmptyTableMessage</td>\n";
+			} else {
+				$sToRender .= "<td colspan=" . count($this->aStoreColumnNames) . ">No " . (isset($this->sTableCaption) ? $this->sTableCaption : "") . " data</td>\n";
+			}
 			$sToRender .= "</tr>\n";		
 		} else {
 			$aRequiredVariables = array();
