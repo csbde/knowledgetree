@@ -106,9 +106,10 @@ class CategoryBrowser extends Browser {
             $results["accessDenied"] = false;
             while ($sql->next_record()) {
                 // check permissions
-                if (Permission::userHasDocumentReadPermission($sql->f("document_id"))) {
-                	$oDocument = & Document::get($sql->f("document_id"));
-                    if ($oDocument->isLive()) {
+                $oDocument = & Document::get($sql->f("document_id"));
+                
+                if (Permission::userHasDocumentReadPermission($oDocument)) {
+                	if ($oDocument->isLive()) {
                     	$results["documents"][] = $oDocument;
                     } 
                 } else {

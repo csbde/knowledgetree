@@ -52,8 +52,9 @@ require_once("$default->fileSystemRoot/presentation/Html.inc");
 if (checkSession()) {	
 	require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
     if (isset($fDocumentID)) {		
-		if (Permission::userHasDocumentReadPermission($fDocumentID)) {			
-			$oDocument = & Document::get($fDocumentID);
+    	$oDocument = & Document::get($fDocumentID);
+		if (Permission::userHasDocumentReadPermission($oDocument)) {			
+			
 			$oPatternCustom = & new PatternCustom();
 			$oPatternCustom->setHtml(getPage($oDocument->getID(), $oDocument->getFolderID(), $oDocument->getName()));
 			$main->setCentralPayload($oPatternCustom);   

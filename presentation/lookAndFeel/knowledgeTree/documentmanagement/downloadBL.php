@@ -40,7 +40,7 @@ require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
 if (checkSession(true)) {
     if (isset($fDocumentID)) {
     	$oDocument = Document::get($fDocumentID);
-    	if (Permission::userHasDocumentReadPermission($fDocumentID)) {
+    	if (Permission::userHasDocumentReadPermission($oDocument)) {
 	        if (isset($fForInlineView)) {
 				$oDocumentTransaction = & new DocumentTransaction($fDocumentID, "Inline view", VIEW);
 	            $oDocumentTransaction->create();
