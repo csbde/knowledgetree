@@ -23,6 +23,19 @@ function renderHeading($sHeading, $sSectionName = "") {
     return $sToRender;	
 }
 
+function statusPage($sTitle, $sHeading, $sCancelAction, $sText = "") {
+    global $default;
+    $sToRender .= renderHeading($sTitle);
+    $sToRender .= "<table>\n";
+    $sToRender .= "<tr>\n";
+    $sToRender .= "<td><b>$sHeading</b></td>\n";
+    $sToRender .= "</tr>\n";
+    $sToRender .= "<tr><td>$sText</td></tr>\n";
+    $sToRender .= "<tr><td align=\"right\">" . generateControllerLink("listGroups", "", "<img src =\"$default->graphicsUrl/widgets/back.gif\" border=\"0\"/>") . "</td></tr>\n";
+    $sToRender .= "</table>\n";
+    return $sToRender;
+}
+
 function startTable($border, $width) {
     return "<table border=\"$border\" width=\"$width\">\n";
 }
