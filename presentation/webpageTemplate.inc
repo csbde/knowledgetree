@@ -32,6 +32,7 @@ if ($sectionName == "")
 $navbar->setHighlightedSection($sectionName);
 
 // setup nw payload
+$colourBar = $navbar->getNWColourbar();
 $nwestLoad   = "<table width=\"100%\" height=\"100%\">\n" . 
                "<tr><td><img valign=\"top\" src=\"$default->graphicsUrl/tree.gif\"/></td></tr>\n" .
                "<tr><td><img valign=\"top\" src=\"$colourBar\"/></td></tr>\n" .
@@ -60,15 +61,11 @@ if ($sectionName != "General") {
 
 //set up links
 $cAdmin = "$default->graphicsUrl/leftnav/cadmin.gif" ;
-$link = "$default->graphicsUrl/leftnav/links.gif" ;
-
 
 //setup the westpayload
-// TODO -> change to links the images as well
 $westLoad = "<table cellspacing=\"5\"  cellpadding=\"5\"  border=\"0\" width=\"100%\" height=\"75%\">\n" .
             "\t<tr><td>$westRender</td></tr>\n" .
-            "\t<tr><td><a href=\"mailto:$default->emailAdmin\"><img src=\"$cAdmin\"/ border=\"0\"></a>\n" .
-            "\t<br><img src=\"$link\"/>\n</td></tr>" .
+            "\t<tr><td><a href=\"mailto:$default->emailAdmin\"><img src=\"$cAdmin\"/ border=\"0\"></a></td></tr>\n" .
             "</table>";
 
 $westPayLoad = new PatternCustom;
