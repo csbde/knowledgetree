@@ -380,7 +380,7 @@ class Document {
 			$oUser = User::get($oFolderUserRole->getUserID());
 			
 			$sBody = $oUser->getUserName() . ", your role of '" . $oRole->getName() . "' in the document, '" . $this->sName . "' collaboration process is now active. " .
-                                        "Click " . generateControllerLink("viewDocument", "fDocumentID=" . $this->iId, "here") . " to access " .
+                                        "Click " . generateLink("/presentation/lookAndFeel/knowledgeTree/documentmanagement/viewBL.php", "fDocumentID=" . $this->iId, "here") . " to access " .
 										"the document";
 										
 			
@@ -400,7 +400,7 @@ class Document {
 					$oUser = User::get($oFolderUserRole->getUserID());
 			
 					$sBody = $oUser->getUserName() . ", your role of '" . $oRole->getName() . "' in the document, '" . $this->sName . "' collaboration process is now active. " .
-                                            "Click " . generateControllerLink("viewDocument", "fDocumentID=" . $this->iId, "here") . " to access " .
+                                            "Click " . generateLink("/presentation/lookAndFeel/knowledgeTree/documentmanagement/viewBL.php", "fDocumentID=" . $this->iId, "here") . " to access " .
 											"the document";
 			
 					$oEmail = & new Email();
@@ -855,7 +855,7 @@ class Document {
 						if ($oUser->getEmailNotification()) {
                             $oDocument = & Document::get($iDocumentID);
 							$sBody = $oUser->getName() . ", your role of '" . $oRole->getName() . "' in the document, '" . $oDocument->getName() . "' collaboration process is now active. " .
-                                                    "Click " . generateControllerLink("viewDocument", "fDocumentID=$iDocumentID", "here") . " to access " .
+                                                    "Click " . generateLink("/presentation/lookAndFeel/knowledgeTree/documentmanagement/viewBL.php", "fDocumentID=$iDocumentID", "here") . " to access " .
 													"the document";
 					
 							$oEmail = & new Email();
@@ -909,7 +909,7 @@ class Document {
 				if ($oUser->getEmailNotification()) {
 					$oCurrentUser = User::get($_SESSION["userID"]);
 					
-                    $sBody = $oUser->getUserName() . ", the document, '" . generateControllerLink("viewDocument", "fDocumentID=" . $this->iId, $oDocument->getName()) . "' " .                    
+                    $sBody = $oUser->getUserName() . ", the document, '" . generateLink("/presentation/lookAndFeel/knowledgeTree/documentmanagement/viewBL.php", "fDocumentID=" . $this->iId, $oDocument->getName()) . "' " .                    
 											"has been rejected by " . $oCurrentUser->getName() . " in the document collaboration process.  The collaboration process has been stopped. " .
 											"The comment entered by " . $oCurrentUser->getName() . " was: $sComment";
 			
@@ -939,7 +939,7 @@ class Document {
 						$oUser = User::get($oFolderUserRole->getUserID());
 						$oCurrentUser = User::get($_SESSION["userID"]);
 					
-                        $sBody = $oUser->getUserName() . ", the document, '" . generateControllerLink("viewDocument", "fDocumentID=" . $this->iId, $oDocument->getName()) . "' " .                        
+                        $sBody = $oUser->getUserName() . ", the document, '" . generateLink("/presentation/lookAndFeel/knowledgeTree/documentmanagement/viewBL.php", "fDocumentID=" . $this->iId, $oDocument->getName()) . "' " .                        
 											"has been rejected by " . $oCurrentUser->getName() . " in the document collaboration process.  Please re-perform you step in the collaboration process." .
 											"The comment entered by " . $oCurrentUser->getName() . " was: $sComment";
 			
@@ -993,7 +993,7 @@ class Document {
 			if (!($oUser === false)) {
 				if ($oUser->getEmailNotification()) {
 					$oDocument = Document::get($iDocumentID);
-                    $sBody = $oUser->getUserName() . ", the document, '" . generateControllerLink("viewDocument", "fDocumentID=" . $oDocument->iId, $oDocument->getName()) . "' " .                    
+                    $sBody = $oUser->getUserName() . ", the document, '" . generateLink("/presentation/lookAndFeel/knowledgeTree/documentmanagement/viewBL.php", "fDocumentID=" . $oDocument->iId, $oDocument->getName()) . "' " .                    
 							 "is pending web publishing to " . $sql->f("web_site_name") . " (" . $sql->f("web_site_url") . ").\n\n  The publisher had these additional comments to make:\n$sComment" ;
 						
 					$oEmail = & new Email();

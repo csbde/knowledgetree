@@ -142,7 +142,7 @@ if (checkSession()) {
                     // TODO: create a transaction?
                     
 					$oUser = User::get($oDocument->getCreatorID());
-					$sBody = $oUser->getName() . ", the collaboration process for the document, '" . generateControllerLink("viewDocument", "fDocumentID=" . $oDocument->getID(), $oDocument->getName()) . "', has been completed. ";								
+					$sBody = $oUser->getName() . ", the collaboration process for the document, '" . generateLink("/presentation/lookAndFeel/knowledgeTree/documentmanagement/viewBL.php", "fDocumentID=" . $oDocument->getID(), $oDocument->getName()) . "', has been completed. ";								
 					$oEmail = & new Email();
 					$oEmail->send($oUser->getEmail(), "Document collaboration complete", $sBody);
 					
