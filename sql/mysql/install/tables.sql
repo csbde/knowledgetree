@@ -538,7 +538,7 @@ INSERT INTO language_lookup (name) VALUES ("Spanish");
 
 -- system settings
 INSERT INTO system_settings (name, value) values ("lastIndexUpdate", "0");
-INSERT INTO system_settings (name, value) values ("knowledgeTreeVersion", "1.2.0");
+INSERT INTO system_settings (name, value) values ("knowledgeTreeVersion", "1.2.2");
 
 -- document statuses
 INSERT INTO web_documents_status_lookup (name) VALUES ("Pending");
