@@ -1,15 +1,15 @@
 <?php
+require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentType.inc");
 /**
-*
-* Class DocumentField
-*
-* Represents a document field as per the database document_fields table
-*
-* @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
-* @date 19 January 2003
-* @package lib.documentmanagement
-*/
-
+ *
+ * Class DocumentField
+ *
+ * Represents a document field as per the database document_fields table
+ *
+ * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
+ * @date 19 January 2003
+ * @package lib.documentmanagement
+ */
 class DocumentField {
 	
 	/** primary key value */
@@ -227,80 +227,69 @@ class DocumentField {
 		return false;
 	}
 	
-	
-	
 	/**
-	* Static function.
-	* Gets all generic fields
-	* DocumentFields object and populate it with the 
-	* corresponding database values
-	*
-	* @return DocumentField populated DocumentField object on successful query, false otherwise and set $_SESSION["errorMessage"]
+ 	 * Static- Get a list of document fieldss;
+	 *
+	 * @param 	String		Where clause (not required)
+	 *
+	 * @return Array array of DocumentField objects, false otherwise
 	*/
-	function getGenericFields() {
-		global $default, $lang_err_database;
-		$aFields;
-		settype($aFields, "array");
+	function getList($sWhereClause = null) {
+		global $default;
+		$aDocumentFieldArray = array();
 		$sql = $default->db;
-		$result = $sql->query("SELECT name, id FROM " . $default->owl_fields_table  . " Where is_generic = 1");
+		$sQuery = "SELECT id FROM " . $default->owl_fields_table  . (isset($sWhereClause) ? " WHERE $sWhereClause" : "");
+		$result = $sql->query($sQuery);
 		if ($result) {			
-			$iCount = 0;
 			while ($sql->next_record()) {
-				
-				$aFields[$iCount]["id"] = $sql->f("id");
-				$aFields[$iCount]["name"] = $sql->f("name");
-				$iCount++;
+				$aDocumentFieldArray[] = & DocumentField::get($sql->f("id"));
 			}
-			return $aFields;
+			return $aDocumentFieldArray;
 		}
-		$_SESSION["errorMessage"] = $lang_err_database;
 		return false;
-	}
-	
-	/* Static function.  Given a documenttype...will find all fields belongin to it
-	*
-	* @return DocumentFieldLink populated DocumentFieldLink object on success, false otherwise and set $_SESSION["errorMessage"]
-	*/
-	function getAllSpecificFields() {
-		global $default, $lang_err_database;
-		$aFields;
-		settype($aFields, "array");
+	}	
+
+	/**
+	 * Returns the DocumentTypes mapped to this document field
+	 */
+	function getDocumentTypes() {
+		global $default;
+		$aDocumentTypes = array();
 		$sql = $default->db;
-		$result = $sql->query("SELECT id, name FROM " . $default->owl_fields_table  . " Where is_generic = 0");
-		if ($result) {			
-			$iCount = 0;
+		$query = "SELECT document_type_id FROM " . $default->owl_document_type_fields_table  . " WHERE field_id = $this->iId";
+		if ($sql->query($query)) {
 			while ($sql->next_record()) {
-				
-				$aFields[$iCount]["id"] = $sql->f("id");
-				$aFields[$iCount]["name"] = $sql->f("name");
-				$iCount++;
-			}
-			return $aFields;
-		}
-		$_SESSION["errorMessage"] = $lang_err_database;
-		return false;
-	}
-	
-		/* Static function.  Given a documenttype...will find all fields belongin to it
-	*
-	* @return DocumentFieldLink populated DocumentFieldLink object on success, false otherwise and set $_SESSION["errorMessage"]
-	*/
-	function isFieldLinkedToType() {
-		global $default, $lang_err_database;
-		$sql = $default->db;
-		$query = "SELECT * FROM " . $default->owl_document_type_fields_table  . " Where field_id = $this->iId";
-		$sql->query($query);
-       		$rows = $sql->num_rows($sql);
-        
-      		 if ($rows > 0){
-      			 	return true;
-		}else{
+      			$aDocumentTypes[] = & DocumentType::get($sql->f("document_type_id"));
+      		}
+			return $aDocumentTypes;
+		} else{
 			return false;
 		}
-		$_SESSION["errorMessage"] = $lang_err_database;
-		return false;
 	}
 	
+	/** 
+	 * Given a documenttype...will find all fields belonging to it
+ 	 *
+	 * @return DocumentFieldLink populated DocumentFieldLink object on success, false otherwise and set $_SESSION["errorMessage"]
+	 */
+	function isFieldLinkedToType() {
+		global $default;
+		$sql = $default->db;
+		$query = "SELECT document_type_id FROM " . $default->owl_document_type_fields_table  . " WHERE field_id = $this->iId";
+		if ($sql->query($query)) {
+			$rows = $sql->num_rows($sql);
+	      	if ($rows > 0) {
+	      		// instantiate the document types and return
+				return true;
+			} else{
+				return false;
+			}
+		} else {
+			return false;
+		}
+	}
+
+	// FIXME: add a data type class!	
 	/* Static function.  Given a documenttype...will find all fields belongin to it
 	*
 	* @return DocumentFieldLink populated DocumentFieldLink object on success, false otherwise and set $_SESSION["errorMessage"]
