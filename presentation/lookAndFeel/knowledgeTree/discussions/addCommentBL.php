@@ -76,7 +76,7 @@ if(checkSession()) {
 									
 			if ($iThreadID > 0){											
 					// Create the new comment					
-					$oComment = & new DiscussionComment(urlencode($_POST["NewComment"]),$_POST["NewCommentSubject"],$_SESSION["userID"],$iDocumentID);			
+					$oComment = & new DiscussionComment($_POST["NewComment"], $_POST["NewCommentSubject"],$_SESSION["userID"],$iDocumentID);			
 					$oComment->setThreadID($iThreadID);
 					$oComment->create();
 					
