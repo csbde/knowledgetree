@@ -312,10 +312,10 @@ class DashboardNews {
                 //set the current news item primary key
                 $this->iId = $sql->insert_id();
             
-                if ($this->bActive) {
-                	// we're setting this entry to active, so set all the others to inactive
-                	$sql->query("UPDATE $default->news_table SET active=0 WHERE id <> $this->iId");
-                }                
+//                 if ($this->bActive) {
+//                 	// we're setting this entry to active, so set all the others to inactive
+//                 	$sql->query("UPDATE $default->news_table SET active=0 WHERE id <> $this->iId");
+//                 }                
                             
                 return true;
             }
@@ -345,14 +345,12 @@ class DashboardNews {
             $result = $sql->query($sQuery);
             if ($result) {
                 if ($this->bActive) {
-                	// we're setting this entry to active, so set all the others to inactive
-                	$sql->query("UPDATE $default->news_table SET active=0");
                 	// now set our entry to active
                 	$sql->query("UPDATE $default->news_table SET active=1 where id=$this->iId");
-                } else {
-                	// set this to inactive
-                	$sql->query("UPDATE $default->news_table SET active=0 where id=$this->iId");
-                }
+		} else {
+		       // set this to inactive
+		       $sql->query("UPDATE $default->news_table SET active=0 where id=$this->iId");
+		}
                 return true;                 
             }
             return false;
