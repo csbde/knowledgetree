@@ -1,23 +1,23 @@
 <?php
-
 /**
-*
-* Class PhysicalDocumentManager.inc
-*
-* Contains all functions required to upload, alter and
-* delete a physical document.
-*
-* Form variables that will be required:
-*	o When calling uploadDocument:
-*		o $fDescription - description of uploaded file
-*		o $fFolderID - primary key of folder into which file will be placed
-* 	o When calling deleteDocument:
-*
-* @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
-* @date 13 January 2003
-* @package lib.documentmanagement
-*/
-
+ * $Id$
+ *
+ * Contains all functions required to upload, alter and
+ * delete a physical document.
+ *
+ * Form variables that will be required:
+ *	o When calling uploadDocument:
+ *		o $fDescription - description of uploaded file
+ *		o $fFolderID - primary key of folder into which file will be placed
+ * 	o When calling deleteDocument:
+ *
+ * Licensed under the GNU GPL. For full terms see the file DOCS/COPYING.
+ *
+ * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
+ * @version $Revision$
+ * @date 13 January 2003
+ * @package lib.documentmanagement
+ */
 
 class PhysicalDocumentManager {
 	
@@ -128,6 +128,74 @@ class PhysicalDocumentManager {
 			return false;
 		}
 	}
+	
+	/**
+	 * Deletes a document- moves it to the Deleted/ folder
+	 *
+	 * return boolean true on successful move, false otherwhise
+	 */
+	function delete($oDocument) {
+		global $default;
+		// current document path (includes old versions)
+		$sCurrentPath = $oDocument->getPath();
+		
+		// check if the deleted folder exists and create it if not
+		$sDeletedPrefix = $default->documentRoot . "/Deleted";
+		if (!file_exists($sDeletedPrefix)) {
+            mkdir($sDeletedPrefix, 0755);
+        }
+		
+		// move the file to the deleted folder, prefixed by its document id
+		$sDeletedPrefix = $default->documentRoot . "/Deleted/" . $oDocument->getID() . "-" . $oDocument->getFileName();
+
+		// find all the previous versions of this document and rename them
+		// ie. interrogate transaction history for all CHECKIN transactions and retrieve the versions		
+		$aDocumentTransactions = DocumentTransaction::getList("document_id=" . $oDocument->getID() . " AND transaction_id=" . CHECKOUT);
+		for ($i=0; $i<count($aDocumentTransactions); $i++) {
+			$sVersionedPath = $sCurrentPath . "-" . $aDocumentTransactions[$i]->getVersion();
+			$sDeletedPath = $sDeletedPrefix . "-" . $aDocumentTransactions[$i]->getVersion();
+			// move it to the deleted folder
+			$default->log->info("delete: moving $sVersionedPath to $sDeletedPath");
+			if (!PhysicalDocumentManager::move($sVersionedPath, $sDeletedPath)) {
+				$default->log->error("PhysicalDocumentManager::delete error moving $sVersionedPath to $sDeletedPath; documentID=" . $oDocument->getID());
+				// FIXME: can't bail now since we don't have transactions- so we doggedly continue deleting and logging errors
+			}
+		}
+		
+		// now move the current version		
+		if (PhysicalDocumentManager::move($sCurrentPath, $sDeletedPrefix)) {
+			return true;
+		} else {
+			$default->log->error("PhysicalDocumentManager::delete couldn't move $sCurrentPath to $sDeletedPath, documentID=" . $oDocument->getID());
+			return false;
+		}
+	}
+
+	/**
+	 * Completely remove a document from the Deleted/ folder
+	 *
+	 * return boolean true on successful move, false otherwhise
+	 */	
+	function expunge($oDocument) {
+		// deleted document path (includes previous versions)
+		$sDeletedPath = $default->documentRoot . "/Deleted/" . $oDocument->getID() . "-" . $oDocument->getFileName() . "*";
+		// zap 'em
+		// FIXME: same problem as delete, can't use wildcards, must step through checkin transactions
+	}
+	
+	/**
+	 * Completely remove a document from the Deleted/ folder to the specified folder
+	 *
+	 * return boolean true on successful move, false otherwhise
+	 */	
+	function restore($oDocument) {
+		// deleted document path (includes previous versions)
+		$sDeletedPrefix = $default->documentRoot . "/Deleted/" . $oDocument->getID() . "-" . $oDocument->getFileName();		
+		// move the document to the folder
+		$sNewDocumentFileSystemPath = Folder::getFolderPath($oDocument->getFolderID()) . "/" . $oDocument->getFileName();
+		// FIXME: same problem as delete, can't use wildcards, must step through checkin transactions
+	}
+	
 	
 	/**
 	* View a document using an inline viewer
