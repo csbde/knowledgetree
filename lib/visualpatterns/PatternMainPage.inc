@@ -183,7 +183,7 @@ class PatternMainPage {
 		return "\n\n<SCRIPT LANGUAGE=\"javascript\">\n " .
 		"<!--\n" .		
 		"function helpWindow() {\n" .			
-			"window.open (' . generateControllerUrl("help", "fAction=" . $default->siteMap->getActionFromPage((substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])))) . "&fSection=" . $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])))), 'newwindow', config='height=600,width=800, toolbar=no, menubar=no, scrollbars=no, resizable=true,location=no, directories=no, status=no');\n" .
+			"window.open ('" . generateControllerUrl("help", "fAction=" . $default->siteMap->getActionFromPage((substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])))) . "&fSection=" . $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])))) . "', 'newwindow', config='height=600,width=800, toolbar=no, menubar=no, scrollbars=no, resizable=true,location=no, directories=no, status=no');\n" .
 			"return false;\n" .
 		"}\n" .
 		"-->\n" .
