@@ -8,12 +8,6 @@
 *
 */
 
-function getAddUserLink() {
-	global $default;
-	$sBGColor = $default->siteMap->getSectionColour("Administration", "td");
-	return "<table width=\"100%\"><tr><td bgcolor=\"$sBGColor\">" . generateControllerLink("addUser", "", "<font color=\"#ffffff\">Add A User</font>") . "</td></tr></table>\n";	
-}
-
 function getGroupDisplay($iGroupID) {
 	global $default;
 	if (Permission::userIsSystemAdministrator()) {
