@@ -14,8 +14,7 @@
 */
 
 function renderDocumentPath($oDocument) {
-	//$sDocumentPath = Folder::getFolderDisplayPath($oDocument->getFolderID()) . " > " . $oDocument->getName();
-	$sDocumentPath = displayFolderPathLink(Folder::getFolderPathAsArray($oDocument->getFolderID())) . " > " . $oDocument->getName();
+	$sDocumentPath = displayFolderPathLink(Folder::getFolderPathAsArray($oDocument->getFolderID()), "$default->owl_root_url/control.php?action=browse") . " > " . $oDocument->getName();
 	return "<table border=1 width = 100%><tr><td>$sDocumentPath</td></tr></table>\n";	
 }
 
