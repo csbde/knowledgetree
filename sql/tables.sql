@@ -1,5 +1,6 @@
 CREATE TABLE active_sessions ( 
-id INTEGER NOT NULL,
+id INTEGER NOT NULL AUTO_INCREMENT,
+session_id CHAR(255),
 user_id INTEGER,
 lastused DATETIME,
 ip CHAR(30),
@@ -242,7 +243,7 @@ INSERT into units (name, organisation_id, parent_id) values ("Administration Uni
 
 INSERT INTO users (group_id, name, username, password, quota_max, quota_current, email, mobile, email_notification, sms_notification, ldap_dn, max_sessions) 
             VALUES (1, "Administrator", "admin", "admin", "0", "0", "", "", 1, 1, "", 0);
-INSERT INTO users (group_id, username, name, password, quota_max, quota_current, email, mobile, email_notification, sms_notification, ldap_dn, max_sessions) 
+INSERT INTO users (group_id, name, username, password, quota_max, quota_current, email, mobile, email_notification, sms_notification, ldap_dn, max_sessions) 
             VALUES (4, "Anonymous", "guest", "guest", "0", "0", "", "", 0, 0, "", 19);
             
 UPDATE users SET language = 'NewEnglish';
