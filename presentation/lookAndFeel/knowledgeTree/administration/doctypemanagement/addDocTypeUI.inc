@@ -21,10 +21,8 @@ function getPage() {
 	$oPatternCreate = & new PatternCreate("DocumentType", "documentmanagement/DocumentType.inc",$aDisplayRowNames, $aParameterNumbers, $aDisplayColumnTypes, $aRequired);
 	$oPatternCreate->setUniqueName("documentType");
 	
-	$sToRender .= "<br></br>\n";
-	$sToRender .= "<b>Add a New Document Type to the System:</b>\n";
+	$sToRender .= "<table width=\"600\">" . renderHeading("Add Document Type") . "</table>";
 	$sToRender .= "<table>\n";
-	$sToRender .= "<br></br>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>" . $oPatternCreate->render() . "</td>\n";
