@@ -49,7 +49,6 @@ font-size : 10pt;
 font-family : Verdana, sans-serif;
 font-style : normal;
 color : #000000;
-text-decoration: none;
 }
 
 
@@ -57,8 +56,7 @@ A:Visited  {
 font-size : 10pt;
 font-family : Verdana, sans-serif;
 font-style : normal;
-color : #000000;
-text-decoration: none;
+color : #0000FF;
 }
 
 A:Active  {
@@ -66,7 +64,6 @@ color : #000000;
 font-size : 10pt;
 font-family : Verdana, sans-serif;
 font-style : normal;
-text-decoration: none;
 }
 
 A:hover {
@@ -74,7 +71,24 @@ color : #000000;
 font-size : 10pt;
 font-family : Verdana,sans-serif;
 font-style : normal;
-text-decoration: none;
 background-color : #FFFACD;
 }
 
+TABLE {
+	font-size : 10pt;
+	font-family : Verdana, sans-serif;
+}
+
+TD {
+	font-size : 8pt ! important;
+	font-family : Verdana, sans-serif;
+}
+
+CAPTION {
+	font-size : 10pt;
+}
+
+TH {
+	font-size : 9pt;
+	font-family : Verdana, sans-serif;
+}
