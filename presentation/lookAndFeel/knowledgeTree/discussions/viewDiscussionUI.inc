@@ -28,8 +28,8 @@ function getNewThreadOption($fDocumentID) {
 	   $sToRender .= "No discussion thread is currently available.<br><br>";
 	   $sToRender .= "Would you like to create a new Discussion thread for this document?";
 	   $sToRender .= "&nbsp;&nbsp;&nbsp;";
-	   $sToRender .= "<a href=\"" . generateControllerLink("addComment", "fDocumentID=" . $fDocumentID . "&fNewThread=1") . "\"><img src=\"$default->graphicsUrl/widgets/new.gif\" border=\"0\" /></a> &nbsp;";
-	   $sToRender .= "<a href=\"" . generateControllerLink("viewDocument", "fDocumentID=" . $fDocumentID) . "\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\" /></a>";
+	   $sToRender .= "<a href=\"" . generateControllerLink("addComment", "fDocumentID=" . $fDocumentID . "&fNewThread=1") . "\"><img src=\"$default->graphicsUrl/widgets/new.gif\" border=\"0\"></a>";
+	   $sToRender .= "<a href=\"" . generateControllerLink("viewDocument", "fDocumentID=" . $fDocumentID) . "\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></a>";
 	   	   
 	   return $sToRender;
 }
@@ -109,13 +109,11 @@ function getCommentBody($oComment, $iDocumentID, $oUser) {
 	
 	$sToRender .= "<br><table width=100% border=0><tr ><td colspan=2><b>Author: </b>" . $oUser->getUserName() . "</td>\n";	
 	$sToRender .= "<td align=right>\n"; 
-	$sToRender .= "<input type=\"submit\" style=\"BORDER-RIGHT: 0px groove; BORDER-TOP: 0px groove; BACKGROUND-IMAGE: url($default->graphicsUrl/widgets/reply.gif); BORDER-LEFT: 0px groove; WIDTH: 40px; BORDER-BOTTOM: 0px groove; HEIGHT: 18; BACKGROUND-COLOR: white\" height=\"20\" value=\" \" width=\"200\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+	$sToRender .= "<input onmouseover=\"this.style.cursor='hand'\" type=\"submit\" style=\"BORDER-RIGHT: 0px groove; BORDER-TOP: 0px groove; BACKGROUND-IMAGE: url($default->graphicsUrl/widgets/reply.gif); BORDER-LEFT: 0px groove; WIDTH: 40px; BORDER-BOTTOM: 0px groove; HEIGHT: 18; BACKGROUND-COLOR: white\" height=\"20\" value=\" \" width=\"200\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 	$sToRender .= "</td></tr>\n"; 
 	$sToRender .= "<tr><td width=\"1\" style=\"background-color:#F5F6EE;\" valign=\"top\"><b>Subject: </b></td><td width=405 style=\"background-color:#F5F6EE;\">";
 	$sToRender .= "<input name=\"CommentSubject\" id=\"CommentSubject\" style=\"background-color:#F5F6EE;BORDER-TOP-WIDTH: 0px; BORDER-LEFT-WIDTH: 0px; BORDER-BOTTOM-WIDTH: 0px; WIDTH: 100%; BORDER-RIGHT-WIDTH: 0px\" readOnly width=0 value=\"" . $oComment->getSubject() . "\">";	
-	$sToRender .= "</td><td><b>Date: </b><font color=\"#056DCE\">" . $oComment->getDate() . "</font>&nbsp;&nbsp;&nbsp;</td></tr><tr><td colspan=3 valign=top>";
-	//$sToRender .= "<TEXTAREA readOnly name=\"Comment\" id=\"Comment\" style=\"BORDER-TOP-WIDTH: 1px; BORDER-LEFT-WIDTH: 1px; BORDER-BOTTOM-WIDTH: 0px; SCROLLBAR-SHADOW-COLOR: white; SCROLLBAR-3DLIGHT-COLOR: white; SCROLLBAR-ARROW-COLOR: white; SCROLLBAR-DARKSHADOW-COLOR: white; SCROLLBAR-BASE-COLOR: white; BORDER-RIGHT-WIDTH: 0px;FONT-FAMILY: sans-serif;\" rows=40 cols=96> ";
-	//$sToRender .= "<TEXTAREA readOnly name=\"Comment\" id=\"Comment\" style=\"BORDER-TOP-WIDTH: 1px; BORDER-LEFT-WIDTH: 1px; BORDER-BOTTOM-WIDTH: 0px; SCROLLBAR-SHADOW-COLOR: white; SCROLLBAR-3DLIGHT-COLOR: white; SCROLLBAR-ARROW-COLOR: white; SCROLLBAR-DARKSHADOW-COLOR: white; SCROLLBAR-BASE-COLOR: white; BORDER-RIGHT-WIDTH: 0px;FONT-FAMILY: sans-serif;\" rows=40 cols=96> ";
+	$sToRender .= "</td><td><b>Date: </b><font color=\"#056DCE\">" . $oComment->getDate() . "</font>&nbsp;&nbsp;&nbsp;</td></tr><tr><td colspan=3 valign=top>";	
 	$sToRender .= "<TEXTAREA readOnly name=\"Comment\" id=\"Comment\"  rows=40 cols=100 style=\"BORDER-WIDTH: 0px;FONT-FAMILY: sans-serif;\"> ";
 	$sToRender .= urldecode($oComment->getBody());
 	$sToRender .= "</textarea></td>";

@@ -75,10 +75,13 @@ if (checkSession()) {
 						if($oComment->getID() > 0) {
 							$oThread = DiscussionThread::get($iThreadID);
 							$oThread->setLastCommentID($oComment->getID());
-							if ($oThread->getFirstComment() == -1){ // if it is a new Thread
+							if ($oThread->getFirstCommentID() == -1){ // if it is a new Thread
 								$oThread->setFirstCommentID($oComment->getID());								
 							}
-							$oThread->setNumberOfViews();
+							if($_SESSION['Discussion' . $iDocumentID][0]->bViews != true ){
+								$oThread->setNumberOfViews();							
+								$_SESSION['Discussion' . $iDocumentID][0]->bViews = true;								
+							}							
 							$oThread->setNumberOfReplies();
 							if ($oThread->Update()) {						
 								$oPatternCustom->addHtml(getSubmitSuccessPage($iDocumentID));

@@ -44,10 +44,10 @@ if(checksession) {
 							$oPatternCustom->addHtml(getViewComment($i+1,$oThread,$oComment,$oUser));							
 						}					
 						// On opening, increment the number of views of current thread & update database
-						if($_SESSION['Discussion'][0]->bViews !=true ){
+						if($_SESSION['Discussion' . $fDocumentID][0]->bViews !=true ){
 							$oThread->setNumberOfViews();					
 							if($oThread->Update() == false) $oPatternCustom->addHtml("Failed to update. Please Contact Database Administrator in this regard") ;
-							$_SESSION['Discussion'][0]->bViews = true;
+							$_SESSION['Discussion' . $fDocumentID][0]->bViews = true;
 						} 																
 					} else { $oPatternCustom->setHtml(getViewFailPage("")) ;}						
 				} else { // No current thread, option to create one		
