@@ -41,23 +41,6 @@ if ( ($browser == "moz") && ($version == "4.79")) {
 }
 ?>
 <pre>
-.sectionHeading {
-font-size : 10pt;
-font-family : Verdana, sans-serif;
-font-weight : lighter;
-font-style : normal;
-color : #ffffff;
-text-decoration: none;
-}
-  
-.sectionColumns {
-font-size : 8pt;
-font-family : Verdana, sans-serif;
-font-weight : lighter;
-font-style : normal;
-color : #000000;
-text-decoration: none;
-}
 
 P {
 font-size : 9pt;
@@ -134,6 +117,23 @@ CAPTION {
 TH {
 	font-size : 9pt;
 	font-family : Verdana, sans-serif;
+}
+
+TH.sectionHeading {
+font-size : 10 pt;
+font-family : Verdana, sans-serif;
+font-style : normal;
+color : #ffffff;
+text-decoration: none;
+}
+  
+TH.sectionColumns {
+font-size : 8pt;
+font-family : Verdana, sans-serif;
+font-weight : lighter;
+font-style : normal;
+color : #000000;
+text-decoration: none;
 }
 
 .browseTypeSelect {
