@@ -18,7 +18,7 @@ document_field_id INTEGER NOT NULL,
 value CHAR(255) NOT NULL
 );
 
-CREATE TABLE document_transaction_types_lu ( 
+CREATE TABLE document_transaction_types_lookup ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 name CHAR(100) NOT NULL
 );
@@ -30,8 +30,8 @@ version CHAR(50),
 user_id INTEGER NOT NULL,
 datetime DATETIME NOT NULL,
 ip CHAR(30),
-filename CHAR(50) NOT NULL,
-comment CHAR(10) NOT NULL,
+filename CHAR(255) NOT NULL,
+comment CHAR(255) NOT NULL,
 transaction_id INTEGER
 );
 
@@ -42,7 +42,7 @@ field_id INTEGER NOT NULL,
 is_mandatory BOOL NOT NULL
 );
 
-CREATE TABLE document_types_lu ( 
+CREATE TABLE document_types_lookup ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 name CHAR(100)
 );
@@ -85,8 +85,12 @@ CREATE TABLE folders_user_roles_link (
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 user_id INTEGER NOT NULL,
 folder_id INTEGER NOT NULL,
-role_type_id INTEGER NOT NULL
-);
+role_type_id INTEGER NOT NULL,
+datetime DATETIME,
+done BOOL
+) 
+;
+
 
 CREATE TABLE groups_folders_approval_link ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
@@ -104,7 +108,7 @@ can_read BIT NOT NULL,
 can_write BIT NOT NULL
 );
 
-CREATE TABLE groups_lu ( 
+CREATE TABLE groups_lookup ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 name CHAR(100) NOT NULL
 );
@@ -129,7 +133,7 @@ filetypes CHAR(100) NOT NULL,
 mimetypes CHAR(100) NOT NULL
 );
 
-CREATE TABLE organisations_lu ( 
+CREATE TABLE organisations_lookup ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 name CHAR(100) NOT NULL
 );
@@ -160,8 +164,8 @@ organisation_id INTEGER NOT NULL,
 parent_id INTEGER NOT NULL
 );
 
-CREATE TABLE users (id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
-group_id INTEGER NOT NULL,
+CREATE TABLE users (
+id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 username CHAR(255) NOT NULL,
 name CHAR(255) NOT NULL,
 password CHAR(255) NOT NULL,
@@ -174,7 +178,16 @@ sms_notification BOOL NOT NULL,
 language CHAR(100),
 ldap_dn CHAR(255),
 max_sessions INTEGER
-);
+) 
+;
+
+CREATE TABLE user_group_link ( 
+id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
+user_id INTEGER NOT NULL,
+group_id INTEGER NOT NULL
+) 
+;
+
 
 
 CREATE TABLE web_documents ( 
@@ -186,7 +199,7 @@ status_id INTEGER NOT NULL,
 datetime DATETIME NOT NULL
 );
 
-CREATE TABLE web_documents_status_lu ( 
+CREATE TABLE web_documents_status_lookup ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 name CHAR(50) NOT NULL
 );
@@ -198,7 +211,7 @@ web_site_url CHAR(50) NOT NULL,
 web_master_id INTEGER NOT NULL
 );
 
-CREATE TABLE words_lu ( 
+CREATE TABLE words_lookup ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 word CHAR(255) NOT NULL
 );
@@ -214,11 +227,11 @@ PRIMARY KEY (id)
 ;
 
 ALTER TABLE document_fields_link 
-ADD CONSTRAINT PK_document_type_fields_values 
+ADD CONSTRAINT PK_document_type_fields_valookupes 
 PRIMARY KEY (id) 
 ;
 
-ALTER TABLE document_transaction_types_lu 
+ALTER TABLE document_transaction_types_lookup 
 ADD CONSTRAINT PK_document_transaction_types 
 PRIMARY KEY (id) 
 ;
@@ -233,7 +246,7 @@ ADD CONSTRAINT PK_document_type_fields
 PRIMARY KEY (id) 
 ;
 
-ALTER TABLE document_types_lu 
+ALTER TABLE document_types_lookup 
 ADD CONSTRAINT PK_document_types 
 PRIMARY KEY (id) 
 ;
@@ -258,7 +271,7 @@ ADD CONSTRAINT PK_groups_folders_approval_link
 PRIMARY KEY (id) 
 ;
 
-ALTER TABLE groups_lu 
+ALTER TABLE groups_lookup 
 ADD CONSTRAINT PK_groups 
 PRIMARY KEY (id) 
 ;
@@ -283,7 +296,7 @@ ADD CONSTRAINT PK_groups_folders_link
 PRIMARY KEY (id)  
 ;
 
-ALTER TABLE organisations_lu 
+ALTER TABLE organisations_lookup 
 ADD CONSTRAINT PK_organisations 
 PRIMARY KEY (id) 
 ;
@@ -319,7 +332,7 @@ ADD CONSTRAINT PK_web_documents
 PRIMARY KEY (id) 
 ;
 
-ALTER TABLE web_documents_status_lu 
+ALTER TABLE web_documents_status_lookup 
 ADD CONSTRAINT PK_web_documents_status 
 PRIMARY KEY (id) 
 ;
@@ -329,7 +342,7 @@ ADD CONSTRAINT PK_web_sites
 PRIMARY KEY (id) 
 ;
 
-ALTER TABLE words_lu 
+ALTER TABLE words_lookup 
 ADD CONSTRAINT PK_word_list 
 PRIMARY KEY (id) 
 ;
@@ -349,18 +362,18 @@ INSERT INTO system_settings (name, value) values ("main_header_bgcolor", "#d0d0d
 
 --INSERT INTO prefs (email_from, email_fromname,email_replyto,email_server, lookathd, def_file_security, def_file_group_owner, def_file_owner, def_file_title, def_file_meta, def_fold_security, def_fold_group_owner, def_fold_owner,max_filesize, timeout, expand, version_control, restrict_view, dbdump_path, gzip_path, tar_path) values ("owl@yourdomain.com", "OWL Intranet","noreply@yourdomain.com","localhost", "false", "0", "0", "1", "<font color=red>No Info</font>", "not in db", "50", "1", "0", "5120000", "900","1","1","0", "/usr/bin/mysqldump", "/bin/gzip", "/bin/tar");
 
-INSERT INTO groups_lu (name) VALUES ("System Administrators");
-INSERT INTO groups_lu (name) VALUES ("Unit Administrators");
-INSERT INTO groups_lu (name) VALUES ("Anonymous");
+INSERT INTO groups_lookup (name) VALUES ("System Administrators");
+INSERT INTO groups_lookup (name) VALUES ("Unit Administrators");
+INSERT INTO groups_lookup (name) VALUES ("Anonymous");
 
-INSERT INTO organisations_lu (name) VALUES ("Medical Research Council");
+INSERT INTO organisations_lookup (name) VALUES ("Medical Research Council");
 
 INSERT into units (name, organisation_id, parent_id) values ("Administration Unit", 1, 0);
 
-INSERT INTO users (group_id, name, username, password, quota_max, quota_current, email, mobile, email_notification, sms_notification, ldap_dn, max_sessions) 
-            VALUES (1, "Administrator", "admin", "admin", "0", "0", "", "", 1, 1, "", 0);
-INSERT INTO users (group_id, name, username, password, quota_max, quota_current, email, mobile, email_notification, sms_notification, ldap_dn, max_sessions) 
-            VALUES (4, "Anonymous", "guest", "guest", "0", "0", "", "", 0, 0, "", 19);
+INSERT INTO users (name, username, password, quota_max, quota_current, email, mobile, email_notification, sms_notification, ldap_dn, max_sessions) 
+            VALUES ("Administrator", "admin", "admin", "0", "0", "", "", 1, 1, "", 0);
+INSERT INTO users (name, username, password, quota_max, quota_current, email, mobile, email_notification, sms_notification, ldap_dn, max_sessions) 
+            VALUES ("Anonymous", "guest", "guest", "0", "0", "", "", 0, 0, "", 19);
             
 UPDATE users SET language = 'NewEnglish';
 UPDATE users SET password = '21232f297a57a5a743894a0e4a801fc3' WHERE name = "Administrator";
@@ -498,5 +511,5 @@ INSERT INTO mime_types (filetypes, mimetypes) VALUES ('zip', 'application/zip');
 INSERT INTO mime_types (filetypes, mimetypes) VALUES ('gz', 'application/x-gzip');
 INSERT INTO mime_types (filetypes, mimetypes) VALUES ('tgz', 'application/x-gzip');
 
-INSERT INTO web_documents_status_lu (name) VALUES ("Pending");
-INSERT INTO web_documents_status_lu (name) VALUES ("Published");
+INSERT INTO web_documents_status_lookup (name) VALUES ("Pending");
+INSERT INTO web_documents_status_lookup (name) VALUES ("Published");
