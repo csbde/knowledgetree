@@ -8,7 +8,7 @@ require_once("$default->owl_fs_root/lib/authentication/Authenticator.inc");
  * Perform authentication tasks against the database.
  * 
  * @version $Revision$ 
- * @author <a href="mailto:michael@jamwarehouse.com>Michael Joseph</a>, Jam Warehouse (Pty) Ltd, South Africa
+ * @author <a href="mailto:michael@jamwarehouse.com">Michael Joseph</a>, Jam Warehouse (Pty) Ltd, South Africa
  * @package dmslib
  */
 

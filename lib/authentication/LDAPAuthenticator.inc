@@ -1,7 +1,7 @@
 <?php
 
-require_once("./lib/class.AuthLdap.php");
-require_once("$default->owl_fs_root/lib/Authenticator.inc");
+require_once("$default->owl_fs_root/lib/authentication/class.AuthLdap.php");
+require_once("$default->owl_fs_root/lib/authentication/Authenticator.inc");
 
 /**
  * $Id$
@@ -9,7 +9,7 @@ require_once("$default->owl_fs_root/lib/Authenticator.inc");
  * Perform authentication tasks against LDAP compliant directory server.
  * 
  * @version $Revision$ 
- * @author <a href="mailto:michael@jamwarehouse.com>Michael Joseph</a>, Jam Warehouse (Pty) Ltd, South Africa
+ * @author <a href="mailto:michael@jamwarehouse.com">Michael Joseph</a>, Jam Warehouse (Pty) Ltd, South Africa
  * @package dmslib
  */
 class LDAPAuthenticator extends Authenticator {
