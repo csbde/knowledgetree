@@ -5,17 +5,30 @@ require_once("../../config/dmsDefaults.php");
 require_once("$default->owl_fs_root/lib/owl.lib.php");
 require_once("$default->owl_fs_root/lib/administration/UnitManager.inc");
 
+/**
+ * $Id$
+ * 
+ * Unit Tests for lib/administration/UnitManager.inc
+ *
+ * Licensed under the GNU GPL. For full terms see the file COPYING.
+ *
+ * @version $Revision$
+ * @author Michael Joseph <michael@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
+ * @package tests.administration
+ */
+
 echo "<pre>";
 // unit tests for UnitManager methods
 
 $um = new UnitManager();
+/*
 $userArray = $um->listLdapUsers($userNameSearch);
-if (!'userArray') {
+if (!userArray) {
     echo "ldap user lookup failed!<br>";
 } else {
     print_r($userArray);
 }
-/*
+*/
 // do some transformation of the first entry in the array?
 // think maybe just set username = uid
 
@@ -34,10 +47,10 @@ global $default;
 $result = $um->addUser($unitID, $userDetails);
 if (!$result) {
     echo "add user failed!<br>";
-    echo "error message=$default->errorMessage";
+    echo "error message=" . $_SESSION["errorMessage"];
 } else {
     echo "added user successfully<br>";
 }
-*/
+
 echo "</pre>";
 ?>

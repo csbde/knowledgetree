@@ -6,18 +6,19 @@
  * Contains database helper functions
  *
  * Licensed under the GNU GPL. For full terms see the file COPYING.
+ *
  * @version $Revision$
- * @author <a href="mailto:michael@jamwarehouse.com">Michael Joseph</a>, Jam Warehouse (Pty) Ltd, South Africa
- * @package dmslib
+ * @author Michael Joseph <michael@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
+ * @package lib.database
  */
  
 /**
  * Performs an id field lookup on the specified table.
  *
- * @param $tableName    the name of table to perform the id lookup.
- * @param $fieldName    the db field to return.
- * @param $fieldValue   the value to perform the lookup for
- * @return the id of the row in the db with $fieldName=$fieldValue
+ * @param string the name of table to perform the id lookup.
+ * @param string the db field to return.
+ * @param mixed the value to perform the lookup for
+ * @return int the id of the row in the db with $fieldName=$fieldValue
  */
 function lookupID($tableName, $fieldName, $fieldValue){
     return lookupField($tableName, "id", $fieldName, $fieldValue);
@@ -26,8 +27,8 @@ function lookupID($tableName, $fieldName, $fieldValue){
 /**
  * Retrieves the groups that the user is a member of
  *
- * @param $userID    the user to lookup groups for
- * @return an array containing the groupsIDs the user is a member of
+ * @param int the user to lookup groups for
+ * @return array the groupsIDs the user is a member of
  */
 function lookupGroupIDs($userID) {
     global $default;
@@ -44,11 +45,10 @@ function lookupGroupIDs($userID) {
 /**
  * Performs a generic one field lookup on a table
  *
- * @param $tableName          the name of the table to perform the lookup on
- * @param $selectFieldName    the field to return
- * @param $whereFieldName     the field to discriminate against(?!)
- * @param $whereFieldValue    the field value to return rows for 
- *                            (NOTE: the caller is responsible for quoting this value)
+ * @param string the name of the table to perform the lookup on
+ * @param string the field to return
+ * @param string the field to discriminate against(?!)
+ * @param string the field value to return rows for 
  */
 function lookupField($tableName, $selectFieldName, $whereFieldName, $whereFieldValue) {
     global $default;
@@ -71,6 +71,9 @@ function lookupField($tableName, $selectFieldName, $whereFieldName, $whereFieldV
 
 /**
  * Converts an array to a string
+ *
+ * @param array the array to convert
+ * @return string stringified array
  */
 function arrayToString($array) {
     ob_start();
@@ -83,8 +86,8 @@ function arrayToString($array) {
 /**
  * Converts an array to a comma separated string
  *
- * @param $array    the array to convert
- * @return a comma separated string of the array values
+ * @param array the array to convert
+ * @return string a comma separated string of the array values
  */
 function arrayToCss($array) {
     $css = "";
@@ -108,7 +111,7 @@ function getCurrentDateTime() {
 /**
  * Returns the specified date time, formatted as Y-m-d H:i:s
  *
- * @param $dateTime the date time to format
+ * @param int the date time to format
  * @return string the formatted date time
  */
 function formatDateTime($dateTime) {

@@ -7,17 +7,19 @@ require_once("$default->owl_fs_root/lib/security/permission.inc");
  * 
  * Contains document browsing business logic.
  *
+ * Licensed under the GNU GPL. For full terms see the file COPYING.
+ *
  * @version $Revision$ 
- * @author <a href="mailto:michael@jamwarehouse.com">Michael Joseph</a>, Jam Warehouse (Pty) Ltd, South Africa
- * @package dmslib
+ * @author Michael Joseph <michael@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
+ * @package lib.documentmanagement
  */
 class DocumentBrowser {
     
     /**
      * Browse the documents by folder
      *
-     * @param $folderID    the folder to browse from
-     * @return an multidimensional array of folders and documents
+     * @param int the folder to browse from
+     * @return array folders and documents
      */
     function browseByFolder($folderID = -1) {
         global $default;
@@ -137,7 +139,7 @@ class DocumentBrowser {
     /**
      * Browse the documents by category
      *
-     * @param $category    the category to browse
+     * @param string the category to browse
      */    
     function browseByCategory($category = "") {
         global $default;
@@ -196,7 +198,7 @@ class DocumentBrowser {
     /**
      * Browse the documents by document type
      *
-     * @param $documentTypeID    the document type ID to browse
+     * @param int the document type ID to browse
      */    
     function browseByDocumentType($documentTypeID = -1) {
         global $default;
@@ -241,8 +243,8 @@ class DocumentBrowser {
      * Checks whether the required group is one of the
      * groups in the $groupIDs array
      *
-     * @param $requiredGroupName  the group name to check for
-     * @param $groupIDS           an array of groupIDs to check
+     * @param string the group name to check for
+     * @param array an array of groupIDs to check
      * @return boolean true if $requiredGroupName is in the $groupIDs array, else false
      */
     function checkGroup($requiredGroupName, $groupIDs) {
@@ -270,8 +272,8 @@ class DocumentBrowser {
     /**
      * Returns an array of folder details for the specified folder
      *
-     * @param     $folderQuery the sql query to retrieve the correct folder
-     * @return an array containing the folder details
+     * @param string the sql query to retrieve the correct folder
+     * @return array the folder details
      */
     function retrieveFolderDetails($folderQuery) {
         global $default;
@@ -308,8 +310,8 @@ class DocumentBrowser {
     /**
      * Lookup document details for all the document_ids in the input array
      *
-     * @param    $documentIDs    an array containing the documentIDs to retrieve details for
-     * @return an array containing the details of all the documents
+     * @param array the documentIDs to retrieve details for
+     * @return array the details of all the documents
      */
     function lookupDocumentDetails($documentIDs) {
         global $default;
