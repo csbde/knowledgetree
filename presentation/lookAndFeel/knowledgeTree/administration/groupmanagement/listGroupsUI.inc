@@ -26,14 +26,13 @@
  */
 
 // display the listbox initially ..then just display the text
-function getUnitDisplay($aUnitIDs) {
+function getUnitDisplay($iUnitID) {
     global $default;
     
     // #3519 only allow unit filters for system administrators
     // unit administrators only see their units.
     if (Permission::userIsSystemAdministrator()) {
-	    $oPatternListBox = & new PatternListBox($default->units_table, "name", "id", "fUnitID");       
-        $oPatternListBox->setWhereClause("ST.unit_id IN (" . implode(",", $aUnitIDs) . ")");
+	    $oPatternListBox = & new PatternListBox($default->units_table, "name", "id", "fUnitID");
 		$oPatternListBox->setPostBackOnChange(true);    
 		if ($iUnitID != 0) {
 			$oPatternListBox->setSelectedValue($iUnitID);
@@ -50,9 +49,10 @@ function getGroups($aUnitIDs) {
 				"LEFT JOIN $default->units_table UL ON UL.id = GUL.unit_id ";
 				
 	// #2978 don't display system admin groups if you're not a sys admin
-	// filter by unit				
-	if ($aUnitIDs) {
-		$sWhereClause = "WHERE GUL.unit_id IN (" . implode(",", $aUnitIDs) . ") ";
+	// filter by unit
+    $sUnitIDs = implode(",", $aUnitIDs);
+	if ($sUnitIDs <> "") {
+		$sWhereClause = "WHERE GUL.unit_id IN (" . $sUnitIDs . ") ";
 	}
 	// #2978 don't display sys admin groups if you're not a sysadmin	
 	if (!Permission::userIsSystemAdministrator()) {
@@ -87,7 +87,7 @@ function getPage($aUnitIDs) {
 	$sToRender .= renderHeading("Group Management");
 
 	$sToRender .= getAddLink("addGroup", "Add A Group");
-	$sToRender .= getUnitDisplay($aUnitIDs);
+	$sToRender .= getUnitDisplay($aUnitIDs[0]);
 	$sToRender .= getGroups($aUnitIDs);
 	return $sToRender;
 }
