@@ -1,6 +1,6 @@
 <?php
 require("../../../config/dmsDefaults.php");
-header('mime_type', 'text/css');
+header("Content-type: text/css");
 ?>
 P {
 font-size : 9pt;
