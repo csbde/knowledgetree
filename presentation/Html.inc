@@ -102,4 +102,10 @@ function getNumberStringValidationJavaScript() {
            "</script>\n";
 }
 
+/**
+ * Candy striping helper method
+ */
+function getColour($iColourCount) {
+	return ($iColourCount%2 == 0) ? "F5F6EE" : "FFFFFF";
+}
 ?>
