@@ -22,6 +22,8 @@ class DependantDocumentTemplate {
 	var $sDocumentTitle;
 	/** primary key of document to use as template */
 	var $iTemplateDocumentID;	
+	/** primary key of folder collaboration step that template belongs to */
+	var $iGroupFolderApprovalLinkID;
 
 	/**
 	* Default constructor
@@ -30,12 +32,13 @@ class DependantDocumentTemplate {
 	* @param 	Document field data type
 	*
 	*/
-	function DependantDocumentTemplate($sNewDocumentTitle, $iNewDefaultUserID, $iNewTemplateDocumentID) {
+	function DependantDocumentTemplate($sNewDocumentTitle, $iNewDefaultUserID, $iNewTemplateDocumentID, $iNewGroupFolderApprovalLinkID) {
 		//object not created yet
 		global $default;
 		$this->iID = -1;
 		$this->iDefaultUserID = $iNewDefaultUserID;
 		$this->iTemplateDocumentID = $iNewTemplateDocumentID;
+		$this->iGroupFolderApprovalLinkID = $iNewGroupFolderApprovalLinkID;
 		
 
 	}
@@ -93,8 +96,16 @@ class DependantDocumentTemplate {
 	* @param 	Template document's primary key
 	*
 	*/
-	function setHasLookup($sNewValue) {
-		$this -> iTemplateDocumentID = $sNewValue;
+	function setTemplateDocumentID($iNewValue) {
+		$this -> iTemplateDocumentID = $iNewValue;
+	}
+	
+	function getGroupFolderApprovalLinkID() {
+		return $this->iGroupFolderApprovalLinkID;
+	}
+	
+	function setGroupFolderApprovalLinkID($iNewValue) {
+		$this->iGroupFolderApprovalLinkID = $iNewValue;
 	}
 
 	/**
@@ -108,7 +119,7 @@ class DependantDocumentTemplate {
 		//if the object hasn't been created
 		if ($this -> iId < 0) {
 			$sql = $default -> db;
-			$result = $sql -> query("INSERT INTO $default->owl_dependant_document_template_table (document_title, user_id,template_document_id) VALUES ('" . addslashes($this->sDocumentTitle) . "', $this->iDefaultUserID, $this->iTemplateDocumentID)");
+			$result = $sql -> query("INSERT INTO $default->owl_dependant_document_template_table (document_title, user_id,template_document_id, group_folder_approval_link_id) VALUES ('" . addslashes($this->sDocumentTitle) . "', $this->iDefaultUserID, $this->iTemplateDocumentID, $this->iGroupFolderApprovalLinkID)");
 			if ($result) {
 				$this -> iId = $sql -> insert_id();
 				return true;
@@ -131,7 +142,7 @@ class DependantDocumentTemplate {
 		//only update if the object has been stored
 		if ($this -> iId > 0) {
 			$sql = $default -> db;
-			$result = $sql -> query("UPDATE $default -> owl_dependant_documents SET document_title = '".addslashes($this -> sDocumentTitle)."', user_id = $this->iDefaultUserID, template_document_id = $this->iTemplateDocumentID WHERE id = $this->iId");
+			$result = $sql -> query("UPDATE $default -> owl_dependant_documents SET document_title = '".addslashes($this -> sDocumentTitle)."', user_id = $this->iDefaultUserID, template_document_id = $this->iTemplateDocumentID, group_folder_approval_link_id = $this->iGroupFolderApprovalLinkID WHERE id = $this->iId");
 			if ($result) {
 				return true;
 			}
@@ -178,7 +189,7 @@ class DependantDocumentTemplate {
 		$result = $sql -> query("SELECT * FROM $default->owl_dependant_document_template_table WHERE id = $iDependantDocumentID");
 		if ($result) {
 			if ($sql -> next_record()) {
-				$oDependantDocument = & new DependantDocument(stripslashes($sql -> f("document_title")), $sql -> f("user_id"), $sql -> f("template_document_id"));
+				$oDependantDocument = & new DependantDocument(stripslashes($sql -> f("document_title")), $sql -> f("user_id"), $sql -> f("template_document_id"), $sql->f("group_folder_approval_link_id"));
 				$oDependantDocument -> iId = $sql -> f("id");
 				return $oDependantDocument;
 			}
