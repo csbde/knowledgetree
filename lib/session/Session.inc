@@ -89,9 +89,6 @@ class Session {
     function verify() {
         global $default, $lang_sesstimeout, $lang_sessinuse, $lang_err_sess_notvalid;
         
-        // remove old sessions
-        Session::removeStaleSessions();
-        
         session_start();
         $sessionID = session_id();
         if (strlen($sessionID) > 0) {
@@ -146,13 +143,17 @@ class Session {
             } else {
                 // the session doesn't exist in the db
                 $default->log->error("Session::verify sessionID=$sessionID, not in db");
-                return false;
+                $sessionStatus = false;
             }
         } else {
             $default->log->error("Session::verify session not in db");
             // there is no session
-            return false;
+            $sessionStatus = false;
         }
+        
+        // remove old sessions
+        Session::removeStaleSessions();
+                
         // return the status
         return $sessionStatus;
     }
