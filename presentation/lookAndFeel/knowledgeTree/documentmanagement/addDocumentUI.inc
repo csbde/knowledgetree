@@ -10,7 +10,7 @@
 
 function getDocumentListForFolder($fFolderID) {
 	global $default;
-	$sQuery = "SELECT D.id AS  id, D.folder_id AS folder_id, D.name AS name, COALESCE(MT.icon_path, '$default->graphicsUrl/star.gif') AS image_url " . 
+	$sQuery = "SELECT D.id AS id, D.folder_id AS folder_id, D.name AS name, COALESCE(CONCAT('$default->graphicsUrl/', MT.icon_path), '$default->graphicsUrl/star.gif') AS image_url " . 
 			"FROM $default->owl_documents_table AS D LEFT OUTER JOIN $default->owl_mime_table AS MT ON D.mime_id = MT.id " .
 			"WHERE folder_id = $fFolderID " .
 			"ORDER BY name ASC";
