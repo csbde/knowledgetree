@@ -1,6 +1,6 @@
 <?php
 /**
-* BL information for viewing a Discussion	
+* BL information for listing Documemnt Fields	
 *
 * @author Omar Rahbeeni
 * @date 19 May 2003
@@ -12,7 +12,7 @@
 
 if (checkSession()) {    
     require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCreate.inc");    
-    require_once("listDocTypesUI.inc"); 
+    require_once("listDocFieldsUI.inc"); 
 	require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
     require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
     require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
@@ -31,7 +31,7 @@ if (checkSession()) {
 if(checkSession()) {	
 		global $default;
 		
-		$oPatternCustom->addHtml(renderHeading("Current System Organisations"));		// Create the Heading				
+		$oPatternCustom->addHtml(renderHeading("Document Fields List"));		// Create the Heading				
 		 		
 		$main->setFormAction($_SERVER['PHP_SELF']);
 				
@@ -48,8 +48,8 @@ if(checkSession()) {
 	    	    
 	    $aHyperLinkURL = array(	4=> "$default->rootUrl/control.php?action=editDocField",                       			
                        			5=> "$default->rootUrl/control.php?action=removeDocField",
-                       			6=> "$default->rootUrl/control.php?action=editDocFieldLookups");  
-                       				    	    
+                       			6=> "$default->rootUrl/control.php?action=editDocFieldLookups");                       			
+	    	    
 	    $oSearchResults = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnNames, "100%", $aHyperLinkURL,$aDBColumnArray,$aQueryStringVariableNames);	    
 		$oSearchResults->setDisplayColumnHeadings(true);
 	    $htmlTables = $oSearchResults->render() ;

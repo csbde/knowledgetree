@@ -49,8 +49,7 @@ if (checkSession()) {
 				// if fail print out fail message
 				$oPatternCustom->setHtml(getEditPageFail());
 		}
-	} else if (isset($fDocFieldID)){		
-		
+	} else if (isset($fDocFieldID)){	
 				
 		// post back on DocField select from manual edit page	
 		$oPatternCustom->setHtml(getEditPage($fDocFieldID));
