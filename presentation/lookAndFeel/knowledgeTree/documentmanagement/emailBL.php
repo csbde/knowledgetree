@@ -70,7 +70,6 @@ if (checkSession()) {
 
                 $oPatternCustom = & new PatternCustom();
                 $oPatternCustom->setHtml(getDocumentEmailPage($oDocument));
-                $main->setErrorMessage("Please enter an email address of the form someone@somewhere.some postfix");
                 $main->setCentralPayload($oPatternCustom);
                 $main->setFormAction($_SERVER["PHP_SELF"] . "?fDocumentID=$fDocumentID&fSendEmail=1");
                 $main->render();
