@@ -43,12 +43,12 @@ if (checkSession()) {
 			if ($fIsActive) {
 				//if the document collaboration step the user is attempting to edit is underway, you may not edit it
 				//so bounce the user back to the document view page and display an error message
-				redirect("$default->rootUrl/control.php?action=viewDocument&fDocumentID=$fDocumentID&fCollaborationEdit=0");
+				controllerRedirect("viewDocument", "fDocumentID=$fDocumentID&fShowSection=documentRouting&fCollaborationEdit=0");
 			}
 			if ($fIsDone) {
 				//the user is attempting to edit a step in the document collaboration process that has already been done
 				//so bounce the user back to the document view page and display an error message
-				redirect("$default->rootUrl/control.php?action=viewDocument&fDocumentID=$fDocumentID&fCollaborationEdit=0");
+				controllerRedirect("viewDocument", "fDocumentID=$fDocumentID&fShowSection=documentRouting&fCollaborationEdit=0");
 			}
 			if (isset($fForStore)) {
 				//if we are storing, get the folder collaboration entry from the database				
@@ -86,7 +86,7 @@ if (checkSession()) {
 					$oEmail->send($oUser->getEmail(), "Assigment of role in document collaboration process", $sBody, $default->owl_email_from, $default->owl_email_fromname);
                     
 					//go back to the document view page
-					redirect("$default->rootUrl/control.php?action=viewDocument&fDocumentID=$fDocumentID");                    
+					controllerRedirect("viewDocument", "fDocumentID=$fDocumentID&fShowSection=documentRouting");                   
 				} else {
 					//the user may have been unassigned and no new user assigned
 					//if this is true, delete the folder_user_role_link
@@ -95,7 +95,7 @@ if (checkSession()) {
 						$oFolderUserRole->delete();
 					}
 					//go back to the document view page
-					redirect("$default->rootUrl/control.php?action=viewDocument&fDocumentID=$fDocumentID");
+					controllerRedirect("viewDocument", "fDocumentID=$fDocumentID&fShowSection=documentRouting");
 				}
 			} else {
 				//we're still browsing, so just display the document routing details
