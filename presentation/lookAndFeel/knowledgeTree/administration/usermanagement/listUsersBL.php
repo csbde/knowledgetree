@@ -16,6 +16,7 @@ require_once("$default->fileSystemRoot/lib/visualpatterns/PatternTableSqlQuery.i
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternListBox.inc");    
 require_once("$default->fileSystemRoot/presentation/Html.inc");
 require_once("listUsersUI.inc");
+require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/administration/adminUI.inc");
 
 if (checkSession()) {	
     $oPatternCustom = & new PatternCustom();
