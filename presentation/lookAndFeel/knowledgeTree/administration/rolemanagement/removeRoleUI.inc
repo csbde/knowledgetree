@@ -61,7 +61,7 @@ function getDeleteSuccessPage() {
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "<td align = right><a href=\"$default->rootUrl/control.php?action=listRole\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
+    $sToRender .= "<td align = right><a href=\"$default->rootUrl/control.php?action=listRoles\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "</table>\n";
 
@@ -84,7 +84,7 @@ function getDeleteFailPage() {
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "</tr>\n";
-    $sToRender .= "<tr><td align = right><a href=\"$default->rootUrl/control.php?action=listRole\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td></tr>\n";
+    $sToRender .= "<tr><td align = right><a href=\"$default->rootUrl/control.php?action=listRoles\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td></tr>\n";
     $sToRender .= "</table>\n";
 
     return $sToRender;
@@ -138,7 +138,7 @@ function getDeleteButton($oRole) {
     global $default;
     if (isset($oRole)) {
         return "<td></td><td><td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/delete.gif\" value=\"submit\" border=\"0\"/></td>\n".
-               "<td align = right><a href=\"$default->rootUrl/control.php?action=listRole\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" /></a></td>\n";
+               "<td align = right><a href=\"$default->rootUrl/control.php?action=listRoles\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" /></a></td>\n";
     }
 }
 ?>
