@@ -117,6 +117,7 @@ $default->logo = "kt.jpg";
 $default->version = "owl-dms 1.0 @build-date@";
 $default->phpversion = "4.0.2";
 
+$default->errorMessage = "";
 $default->debug = True;
 
 // WES STUFF 
