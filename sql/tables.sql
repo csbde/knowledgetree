@@ -616,9 +616,9 @@ INSERT INTO mime_types (filetypes, mimetypes, icon_path) VALUES ('xml', 'text/xm
 INSERT INTO mime_types (filetypes, mimetypes, icon_path) VALUES ('xpm', 'image/x-xpixmap', NULL);
 INSERT INTO mime_types (filetypes, mimetypes, icon_path) VALUES ('xwd', 'image/x-xwindowdump', NULL);
 INSERT INTO mime_types (filetypes, mimetypes, icon_path) VALUES ('xyz', 'chemical/x-pdb', NULL);
-INSERT INTO mime_types (filetypes, mimetypes, icon_path) VALUES ('zip', 'application/zip', NULL);
-INSERT INTO mime_types (filetypes, mimetypes, icon_path) VALUES ('gz', 'application/x-gzip', NULL);
-INSERT INTO mime_types (filetypes, mimetypes, icon_path) VALUES ('tgz', 'application/x-gzip', NULL);
+INSERT INTO mime_types (filetypes, mimetypes, icon_path) VALUES ('zip', 'application/zip', 'icons/zip.gif');
+INSERT INTO mime_types (filetypes, mimetypes, icon_path) VALUES ('gz', 'application/x-gzip', 'icons/zip.gif');
+INSERT INTO mime_types (filetypes, mimetypes, icon_path) VALUES ('tgz', 'application/x-gzip', 'icons/zip.gif');
 
 -- data_types
 insert into data_types (name) values ('STRING');
