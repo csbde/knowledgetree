@@ -32,6 +32,7 @@ if (checkSession()) {
 	$main->setCentralPayload($oPatternCustom);
 	$main->setHasRequiredFields(true);	
 	$main->setFormAction("../store.php?fReturnURL=" . urlencode("$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $oDocument->getID() . "&fFireSubscription=1"));
+	$main->setHasRequiredFields(true);
 	$main->render();	
 }
 

@@ -50,6 +50,7 @@ function renderEditableGenericMetaData($oDocument) {
 
 
     $oPatternTableSqlQuery = & new PatternEditableTableSqlQuery($sQuery, "document_fields_link", $aStoreColumnNames, $aDisplayColumnNames, $aColumnsEditable, $aColumnsVisible, $aColumnDisplayTypes, $aColumnDatabaseTypes);
+	$oPatternTableSqlQuery->setRequiredColumnNames(array("value"));
     $oPatternTableSqlQuery->setTableCaption("Generic Meta Data");
     $oPatternTableSqlQuery->setUniqueName("gmd");
     return $oPatternTableSqlQuery->render();
@@ -104,6 +105,7 @@ function renderPage($oDocument) {
     $sToRender .= "<td><a href=\"$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $oDocument->getID() . "\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\" /></a><td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "</table>\n";
+		
     return $sToRender;
 }
 
