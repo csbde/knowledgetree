@@ -178,42 +178,37 @@ class NavBar {
 
 
         // create array of menu colour images
-        $row4MenuImages = array($colourHome,$colourmdocs,$coloursubscriptions,$colourasearch,$colouradmin,$colourprefs,$colourhelp,$colourlogout);
+        $aColourMenuImages = array($colourHome,$colourmdocs,$coloursubscriptions,$colourasearch,$colouradmin,$colourprefs,$colourhelp,$colourlogout);
 
         //set up the links
-        $sTopMenu = "<table width=\"100%\" height=\"100%\" cellspacing = \"0\">\n<tr>\n";
         for ($i = 0; $i < count($aTopMenuLinks); $i++) {
             if (strcmp($aTopMenuLinks[$i], "help") == 0) {
-                $sTopMenu .= "<td cellspacing = \"20\"><input type=\"image\" src=\"" . $aTopMenuImages[$i] . "\" onClick=\"return helpWindow();\" border=\"0\" /></a></td>\n";
+                $sTopMenu .= "<a href=\"#\" onClick=\"javascript:helpWindow();\"><image src=\"" . $aTopMenuImages[$i] . "\" border=\"0\" /></a>";
+                $sColourMenu .= "<a href=\"#\" onClick=\"javascript:helpWindow();\"><image src=\"" . $aColourMenuImages[$i] . "\" border=\"0\" /></a>";
             } else {
-                $sTopMenu .= "<td cellspacing = \"20\">" . (strlen($aTopMenuLinks[$i]) > 0 ? "<a href=\"" . $aTopMenuLinks[$i] . "\">" : "") . "<img src=\"" . $aTopMenuImages[$i] . "\" border=\"0\" /></a></td>\n";
+                $sTopMenu .= (strlen($aTopMenuLinks[$i]) > 0 ? "<a href=\"" . $aTopMenuLinks[$i] . "\">" : "") . "<img src=\"" . $aTopMenuImages[$i] . "\" border=\"0\" /></a>\n";
+                $sColourMenu .= (strlen($aTopMenuLinks[$i]) > 0 ? "<a href=\"" . $aTopMenuLinks[$i] . "\">" : "") . "<img src=\"" . $aColourMenuImages[$i] . "\" border=\"0\"/></a>\n";
             }
         }
-        $sTopMenu .= "</tr>\n</table>\n";
-        $oColourTableLinks = new PatternTableLinks($aTopMenuLinks, null, 1, 8,2,$row4MenuImages);
+        $sMenu = $sTopMenu . "<br>" . $sColourMenu;
 
         // set up rows
         //row one image
         $row1 = "<img src = ". $heading. ">";
         //row 2 will be a search bar
         $row2 ="";
-        //row 3 will be the heading subsections
-        //$row3 =  $oPatternTableLinks->render();
-        $row3 =  $sTopMenu;
-        //array of coloured section images
-        $row4 = $oColourTableLinks->render();
 
-        $toRender = new PatternCustom;		
+        $toRender = new PatternCustom;
 
         //bar is the actaul html creation of the nav bar
-        $bar= "<table cellpadding = \"1\" cellspacing = \"1\" border=\"0\" width=\"100%\" height=\"100%\">\n " .
-              "<tr height=\"20%\"><td background = " . $hStretched ." width =\"100%\">". $row1 ."</td></tr>\n " .
-              "<tr  height=\"30%\"> <td VALIGN = \"absmiddle\" background = " . $hStretched ." width =\"100%\" NOWRAP >\n " .
-              "<img align = \"absmiddle\" src = \"$default->graphicsUrl/arrow.gif\" ></img>\n " .
+        $bar= "<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"100%\" height=\"100%\">\n " .
+              "<tr height=\"20%\"><td background=\"" . $hStretched . "\" width =\"100%\">". $row1 ."</td></tr>\n " .
+              "<tr height=\"30%\"> <td valign=\"absmiddle\" background=\"" . $hStretched . "\" width =\"100%\" nowrap>\n " .
+              "<img align=\"absmiddle\" src=\"$default->graphicsUrl/arrow.gif\" ></img>\n " .
               "<INPUT type=\"hidden\" name=\"fForStandardSearch\" value=\"no\" />\n ";
 			  //disable the search bar if we are browsing search results
 			  if ((strcmp($this->sSection,"Standard Search") == 0) || (strcmp($this->sSection,"Advanced Search") == 0)) {
-				  $bar .= "<INPUT type=\"hidden\" name=\"fSearchText\" width=\"30\" height = \"10\" align = \"absmiddle\" />\n ";
+				  $bar .= "<INPUT type=\"hidden\" name=\"fSearchText\" width=\"30\" height=\"10\" align=\"absmiddle\" />\n ";
 			  } else {
 				  $bar .= "<INPUT type=\"text\" name=\"fStandardSearchString\" width=\"30\" height = \"10\" align = \"absmiddle\" />\n " .						
 						"<INPUT type=\"hidden\" name=\"fFolderID\"  value=\"" . $this->iFolderID . "\"  />\n " .
@@ -224,8 +219,7 @@ class NavBar {
 			  }			  
               $bar .= "</td>\n " .
 				  "</tr>\n" .
-				  "<tr height=\"25%\" ><td width =\"10%\">". $row3 . "</td></tr>\n" .
-				  "<tr height=\"25%\"><td width =\"100%\">". $row4 . "</td></tr>\n" .
+                  "<tr height=\"25%\"><td nowrap>$sMenu</td></tr>\n" .
 				  "</table>\n";
 
         //set the bar as html to object
