@@ -26,19 +26,43 @@ function isEmailAddr(email)
 
 function validRequired(formField,fieldLabel)
 {
-	var result = true;	
-	if (formField.value.length == 0)
-	{
+	var result = true;
+    
+    if (formField){
+        switch(formField.type){
+            case "select-one":
+                if (formField.selectedIndex == 0 || formField.options[formField.selectedIndex].text == "" || formField.options[formField.selectedIndex].text == "None"){
+                    result = false;
+                }
+                break;
+            case "select-multiple":
+                if (formField.selectedIndex == -1){
+                    result = false;
+                }
+                break;
+            case "text":
+            case "textarea":
+                if (formField.value == "" || formField.value == null){
+                    result = false;
+                }
+                break;
+            default:
+                if (formField.value == "" || formField.value == null){
+                    result = false;
+                }
+            }
+    }
+    
+    if (!result) {
 		if (fieldLabel == "selected") {
 			alert('Please enter a value for the ' + fieldLabel +' field.');
 		} else {
-			alert('Please enter a value for the "' + fieldLabel +'" field.');
-		}
+			alert('Please enter a value for the "' + fieldLabel + '" field.');
+		}        
 		formField.focus();
-		result = false;
-	}	
+	}
+
 	return result;
-	
 }
 
 function allDigits(str)
