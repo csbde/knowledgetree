@@ -4,6 +4,7 @@ require_once("$default->fileSystemRoot/lib/subscriptions/SubscriptionManager.inc
 require_once("$default->fileSystemRoot/lib/web/WebDocument.inc");
 require_once("$default->fileSystemRoot/lib/links/link.inc");
 require_once("$default->fileSystemRoot/lib/documentmanagement/DependantDocumentInstance.inc");
+require_once("$default->fileSystemRoot/lib/archiving/ArchiveRestorationRequest.inc");
 
 /**
  * $Id$
@@ -30,6 +31,31 @@ class Dashboard {
 	 */
 	function Dashboard($iUserID){
 		$this->iUserID = $iUserID;
+	}
+	
+	/**
+	 * Retrieves the web documents that the current user has pending
+	 */
+	function getPendingWebDocuments(){
+	    global $default;
+	    $sQuery = "SELECT wd.id FROM web_documents wd " . 
+	              "INNER JOIN web_sites ws ON wd.web_site_id = ws.id " .
+	              "WHERE ws.web_master_id=" . $this->iUserID . " AND wd.status_id=1";
+	    $aDocumentList = array();
+	    $sql = $default->db;
+	    if ($sql->query($sQuery)) {
+	        while ($sql->next_record()) {
+	            $aDocumentList[] = & WebDocument::get($sql->f("id"));
+	        }
+	    }
+	    return $aDocumentList;
+	}
+	
+	/**
+	 * Retrieves details of supporting documents that the current user must create
+	 */
+	function getArchiveRestorationRequestDocuments() {
+		return ArchiveRestorationRequest::getList("admin_user_id=" . $this->iUserID);
 	}
 
 	/**
@@ -77,27 +103,10 @@ class Dashboard {
 	function getQuickLinks(){
 		return Link::getList("ORDER BY rank");
 	}
-	
+		
 	/**
-	 * Retrieves the web documents that the current user has pending
-	 *
-	 * @param integer the user to retrieve pending web documents for
+	 * Retrieves details of supporting documents that the current user must create
 	 */
-	function getPendingWebDocuments(){
-	    global $default;
-	    $sQuery = "SELECT wd.id FROM web_documents wd " . 
-	              "INNER JOIN web_sites ws ON wd.web_site_id = ws.id " .
-	              "WHERE ws.web_master_id=" . $this->iUserID . " AND wd.status_id=1";
-	    $aDocumentList = array();
-	    $sql = $default->db;
-	    if ($sql->query($sQuery)) {
-	        while ($sql->next_record()) {
-	            $aDocumentList[] = & WebDocument::get($sql->f("id"));
-	        }
-	    }
-	    return $aDocumentList;
-	}
-	
 	function getDependantDocuments() {
 		global $default;
 		$sQuery = "SELECT id FROM $default->owl_dependant_document_instance_table WHERE user_id = " . $this->iUserID;
@@ -108,6 +117,5 @@ class Dashboard {
 			$aDocumentList[] = & DependantDocumentInstance::get($sql->f("id"));
 		}
 		return $aDocumentList;	
-	}
-	
+	}	
 }
