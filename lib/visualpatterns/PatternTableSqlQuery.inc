@@ -114,7 +114,6 @@ class PatternTableSqlQuery {
 		$oDBConnection->createSQLQueryWithOffset($this->sTableName, $this->aColumns, $this->iStartIndex, $this->iResultsToDisplay);
 		$oQueryResults = & $oDBConnection->getQueryResults();
 		
-		echo $oDBConnection->sQuery."<br>";
 		
 		$iDisplayed = 0;
 		//limit the result set displayed
