@@ -1,14 +1,404 @@
 Version 1.2.1
 * Tue October 14 2003 Michael Joseph <michael@jamwarehouse.com>
-- Email comments - comments can now be added when file links are emailed to users
-- Folder permission heirarchy - the backend functionality exists to allows folders to 
-inherit permissions from their parents or to allow them to define their own
-permissions.  This is currently NOT integrated into the user interface
-- Altering of user passwords - if KT is running in DBAuthentication mode (users
-are authenticated against the database), it is now possible for the system
-administrator to update user passwords through the user management section
-- Scrolling - javascript scrolling can be turned on or off in environment.php
-- Minor bug fixes
+
+Specific bug fixes:
+===================
+
+- Fixed double use of apostrophe for database encoding automatically by php and in code
+- Document types names that consist of alpha-numerics can be now be used
+- Error in SQL when assigning Groups to units fixed
+- Document addition displays error if not document types are availabe
+
+Alterations/additions
+=====================
+
+- Javascript scrolling can now be turned on/off in environment.php
+- Default document type added and mapped to default unit folder to allow immediate document addition after installation
+- Backend functionality for breaking folder permissions added - folders will be able to either inherit permissions or set their own
+- Changing of user passwords - administrators can now change user passwords through the user management section if KT is in DBAuthentication mode
+
+Full changelog
+===============
+
+2003-10-13 17:23  rob <rob@jamwarehouse.com>
+	* docs/ChangeLog.txt: Add changes for 1.2.0  to 1.2.1
+	* sql/mysql/upgrade/1.2.1/1.2.1.sql: SQL update to convert from  1.2.0 to 1.2.1
+	* presentation/lookAndFeel/knowledgeTree/administration/usermanagement/editUserUI.inc: Changed password hyperlink to button
+	* presentation/lookAndFeel/knowledgeTree/administration/usermanagement/: editUserUI.inc, passwordManagementBL.php,
+	  passwordManagementUI.inc: Update functionality so that admin can change user passwords when db authentication mode is used.
+	* config/siteMap.inc: Added mapping to password update functionality in the admin section
+	* lib/users/User.inc: Fixed bug in user update function.  No users could be updated.
+
+2003-10-09 11:06  michael <michael@jamwarehouse.com>
+	* presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc: changed alt to title (standards compliant)
+
+2003-10-08 10:18  rob <rob@jamwarehouse.com>
+	* lib/security/Permission.inc: Added new column to folders table that will allow user to break folder permission.  Permissions now check whether to use parent permissions or not and generate the SQL query accordingly
+	* sql/mysql/upgrade/1.2.0/1.2.0.sql,lib/foldermanagement/Folder.inc: Added new column to folders table that will allow user to break folder permission
+
+2003-09-23 11:29  michael <michael@jamwarehouse.com>
+	* presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentUI.inc: (#2966) set empty error message
+	* lib/visualpatterns/PatternListBox.inc: (#2966) only display the default value if there is no error message
+	*  presentation/lookAndFeel/knowledgeTree/administration/usermanagement/addUserUI.inc: (#3032) added missing slash
+	* lib/session/Session.inc: check if we have a user id before using it to destroy a session
+	* presentation/lookAndFeel/knowledgeTree/documentmanagement/createDependantDocumentUI.inc: (#3002) fixed unitID checking condition.
+	* presentation/lookAndFeel/knowledgeTree/subscriptions/subscriptionUI.inc: fixed candy striping
+
+2003-09-10 17:06  michael <michael@jamwarehouse.com>
+	* presentation/lookAndFeel/knowledgeTree/administration/usermanagement/addUserToGroupBL.php: (#2959) inserted additional search permissions on successful user group link addition
+	* lib/groups/GroupUserLink.inc: (#2959) tidied and added function to update group search permission entries for a new user in a group
+	* presentation/lookAndFeel/knowledgeTree/dashboardUI.inc: (#2997)
+	  clicking dashboard link goes to the relevant document details section now
+	* presentation/lookAndFeel/knowledgeTree/documentmanagement/modifyBL.php: (#2975) redirect to type specific edit page when document type changes
+	* presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/listUnitsUI.inc: (#2950) removed edit organisation
+	* presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/addUnitUI.inc: (#2950) changed organisation listbox to display
+	* presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/addUnitBL.php: (#2950) added reference to Organisation
+	* lib/web/WebSite.inc: (#2990) added method to check if the website is in use.
+	* presentation/lookAndFeel/knowledgeTree/administration/websitemanagement/removeWebsiteBL.php: (#2990) added check and error message if the website is in use.
+	* presentation/lookAndFeel/knowledgeTree/administration/usermanagement/addUserUI.inc: (#2945) only supply a value for the checkbox if one has been passed.
+
+2003-09-09 19:12  michael <michael@jamwarehouse.com>
+	* presentation/lookAndFeel/knowledgeTree/administration/usermanagement/addUserBL.php: (#2945) redirect to list page on successful addition
+	* presentation/lookAndFeel/knowledgeTree/administration/rolemanagement/: addRoleUI.inc, editRoleBL.php: (#2989) added all parameters to add page and redirect to list page on success
+	* presentation/lookAndFeel/knowledgeTree/administration/rolemanagement/: removeRoleBL.php, removeRoleUI.inc: removed active field and redirect to list on success
+	* presentation/lookAndFeel/knowledgeTree/administration/rolemanagement/: editRoleUI.inc, listRolesUI.inc: (#2988) removed active field from UI.
+
+2003-09-09 18:48  michael <michael@jamwarehouse.com>
+	* presentation/lookAndFeel/knowledgeTree/administration/rolemanagement/editRoleBL.php: (#2988) changed to redirect to list page on success 
+	* lib/foldermanagement/Folder.inc: (#2987) updated folderIsUnitRootFolder method
+	* presentation/lookAndFeel/knowledgeTree/foldermanagement/deleteFolderBL.php: (#2987) added checks for unit in use
+	* lib/groups/GroupUnitLink.inc, presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/editGroupUnitUI.inc, tests/groups/group.php: fixed getList method to automatically insert WHERE 
+	* lib/unitmanagement/Unit.inc: (#2944) set unitID also
+	* lib/unitmanagement/Unit.inc: (#2944) when adding a unit, if a unit root folder is found it is used as a unit root folder by setting its description and unitid	
+	* lib/foldermanagement/Folder.inc: (#2944) only check name and  parent when checking for existence
+	* sync/unDecodeComments.php: added script to urldecode discussion comments
+	* presentation/lookAndFeel/knowledgeTree/discussions/viewDiscussionUI.inc: (#2994) removed urldecoding and split on nl rather than <br>
+	* presentation/lookAndFeel/knowledgeTree/discussions/addCommentBL.php: (#2994) removed urlencoding
+	* presentation/lookAndFeel/knowledgeTree/administration/documentmanagement/restoreDeletedDocumentBL.php: (#2986) check the document types of the destination folder before allow restoration of a deleted document.
+	* presentation/lookAndFeel/knowledgeTree/discussions/viewDiscussionUI.inc: (#2994) reinstated bad wrapping code
+	* presentation/lookAndFeel/knowledgeTree/administration/usermanagement/: addUserBL.php, addUserUI.inc: (#2946) removed sms notification from form 
+	* lib/visualpatterns/PatternTableSqlQuery.inc: fixed dire link breaking introduced bug
+
+2003-09-08 17:53  michael <michael@jamwarehouse.com>
+
+	* presentation/lookAndFeel/knowledgeTree/discussions/addCommentBL.php: (#2977) corrected session checking and redirect to list page instead of bogus success page
+	* presentation/lookAndFeel/knowledgeTree/discussions/viewDiscussionUI.inc: (#2977) use wordwrap and don't display comment text as html
+	* presentation/lookAndFeel/knowledgeTree/discussions/viewDiscussionBL.php: (#2977) changed to use correct pattern
+	* lib/visualpatterns/PatternTableSqlQuery.inc: (#2977) corrected link querystring generation
+	* presentation/lookAndFeel/knowledgeTree/dashboardBL.php: corrected ui directory include
+
+2003-09-07 20:48  michael <michael@jamwarehouse.com>
+	* presentation/lookAndFeel/knowledgeTree/search/advancedSearchUtil.inc: corrected util method to use passed in array
+	* presentation/lookAndFeel/knowledgeTree/administration/documentmanagement/manageArchivedDocumentsBL.php: correct syntax snafu
+	* presentation/lookAndFeel/knowledgeTree/administration/documentmanagement/manageArchivedDocumentsBL.php: corrected method name
+	* presentation/lookAndFeel/knowledgeTree/administration/documentmanagement/manageArchivedDocumentsBL.php: reinstated submit action setting
+	* presentation/lookAndFeel/knowledgeTree/: administration/documentmanagement/manageArchivedDocumentsBL.php, search/advancedSearchBL.php, search/advancedSearchUtil.inc: changed getChosenMetaDataTags to use passed array and modified	  callers appropriately
+	* presentation/lookAndFeel/knowledgeTree/administration/documentmanagement/manageArchivedDocumentsBL.php: changed form submission method to get 
+	* presentation/lookAndFeel/knowledgeTree/administration/documentmanagement/archivedDocumentsUI.inc: correct syntax snafu
+	* presentation/lookAndFeel/knowledgeTree/administration/documentmanagement/archivedDocumentsUI.inc: changed cancell button to go back one screen instead of back to the search page	
+	* presentation/lookAndFeel/knowledgeTree/administration/doccheckoutmanagement/editDocCheckoutUI.inc: corrected grammar.
+
+2003-09-05 16:30  michael <michael@jamwarehouse.com>
+	* presentation/lookAndFeel/knowledgeTree/administration/doccheckoutmanagement/listDocumentsBL.php: corrected empty grid message
+	* presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentBL.php: improved logging for metadata queries
+	* presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc: corrected link dependent documents button
+	* presentation/lookAndFeel/knowledgeTree/documentmanagement/createDependantDocumentUI.inc: cancel button redirects to the right linked documents section
+
+2003-09-04 18:40  michael <michael@jamwarehouse.com>
+
+	* config/siteMap.inc: corrected manage document types link
+	* presentation/lookAndFeel/knowledgeTree/documentmanagement/archiving/archiveSettingsUI.inc: (#2976) changed the text to reflect that archiving happens from document creation date.
+	* presentation/lookAndFeel/knowledgeTree/documentmanagement/archiving/addArchiveSettingsBL.php: changed submit method to get
+
+2003-09-02 18:08  michael <michael@jamwarehouse.com>
+
+	* lib/foldermanagement/PhysicalFolderManagement.inc: (#2963) return deletion status based on existence of folder
+	* lib/documentmanagement/PhysicalDocumentManager.inc: (#2963) added checks for file existence after attempted deletion and returning status appropriately
+	* presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentBL.php: (#2972) added missing documentTypeID assignment!
+	* sql/mysql/install/tables.sql: (#2964) added a default document type and mapped it to the default unit folder
+	* presentation/lookAndFeel/knowledgeTree/administration/systemsettings/systemSettingsUI.inc: (#2962) refactored and tidied; using System attributes for variable names and labels
+	* presentation/lookAndFeel/knowledgeTree/administration/systemsettings/systemSettingsBL.php: (#2962) tidied, using arrays from  System object, redirect to list on update
+	* lib/visualpatterns/PatternMainPage.inc: (#2962) set scrolling action from configuration
+	* lib/System.inc: (#2962) added settings and labels, tidied, added support for storing arrays in the db
+
+2003-09-02 13:12  michael <michael@jamwarehouse.com>
+	* config/environment.php: (#2962) tidied up, using settings inside System object, added contentPaneScrolling setting
+	* lib/dashboard/DashboardNews.inc: corrected imageLink method
+
+2003-09-01 15:35  michael <michael@jamwarehouse.com>
+	* lib/dashboard/DashboardNews.inc: corrected update method
+	* lib/dashboard/DashboardNews.inc: fixed news creation (addslashes on binary image data) and stopped constraining dashboard image to 80x40
+	* graphics/subscriptions/: colour.gif, norm.gif: made intra-heading spacing consistent
+
+2003-08-29 16:39  michael <michael@jamwarehouse.com>
+	* bin/fix_perms.sh: removed log.txt creation
+	* docs/TODO.txt: updated todo list from kt-users list
+	* .project, config/siteMap.inc, config/tableMappings.inc,
+	  docs/ChangeLog.txt, docs/INSTALL.txt, docs/TODO.txt,
+	  graphics/logo.jpg, lib/DefaultLookup.inc,
+	  lib/archiving/ArchivingType.inc, lib/archiving/TimeUnit.inc,
+	  lib/authentication/Authenticator.inc,
+	  lib/dashboard/DashboardNews.inc, lib/database/lookup.inc,
+	  lib/documentmanagement/DependantDocumentInstance.inc,
+	  lib/documentmanagement/DependantDocumentTemplate.inc,
+	  lib/documentmanagement/Document.inc,
+	  lib/documentmanagement/DocumentField.inc,
+	  lib/documentmanagement/DocumentFieldLink.inc,
+	  lib/documentmanagement/DocumentLink.inc,
+	  lib/documentmanagement/DocumentTransaction.inc,
+	  lib/documentmanagement/DocumentType.inc,
+	  lib/documentmanagement/MetaData.inc,
+	  lib/documentmanagement/PhysicalDocumentManager.inc,
+	  lib/email/Email.inc, lib/foldermanagement/Folder.inc,
+	  lib/foldermanagement/PhysicalFolderManagement.inc,
+	  lib/groups/Group.inc, lib/groups/GroupFolderApprovalLink.inc,
+	  lib/links/Link.inc, lib/orgmanagement/Organisation.inc,
+	  lib/roles/Role.inc, lib/session/control.inc,
+	  lib/unitmanagement/Unit.inc, lib/users/User.inc,
+	  lib/visualpatterns/PatternBrowsableSearchResults.inc,
+	  lib/visualpatterns/PatternEditableListFromQuery.inc,
+	  lib/visualpatterns/PatternEditableTableSqlQuery.inc,
+	  lib/visualpatterns/PatternListBox.inc,
+	  lib/visualpatterns/PatternListFromQuery.inc,
+	  lib/visualpatterns/PatternMetaData.inc,
+	  lib/visualpatterns/PatternTableSqlQuery.inc,
+	  lib/web/WebDocument.inc, lib/web/WebSite.inc,
+	  presentation/login.php,
+	  presentation/lookAndFeel/knowledgeTree/dashboardBL.php,
+	  presentation/lookAndFeel/knowledgeTree/store.inc,
+	  presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/editDocFieldLookupsUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/assignGroupToUnitBL.php,
+	  presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/assignGroupToUnitUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/listGroupsUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/removeGroupBL.php,
+	  presentation/lookAndFeel/knowledgeTree/administration/news/addNewsBL.php,
+	  presentation/lookAndFeel/knowledgeTree/administration/news/editNewsBL.php,
+	  presentation/lookAndFeel/knowledgeTree/administration/news/removeNewsBL.php,
+	  presentation/lookAndFeel/knowledgeTree/administration/orgmanagement/addOrgSuccess.php,
+	  presentation/lookAndFeel/knowledgeTree/administration/orgmanagement/listOrgUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/administration/rolemanagement/editRoleSuccess.php,
+	  presentation/lookAndFeel/knowledgeTree/administration/usermanagement/addUserUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentBL.php,
+	  presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/documentmanagement/escalateDependantDocumentBL.php,
+	  presentation/lookAndFeel/knowledgeTree/documentmanagement/escalateDependantDocumentUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/foldermanagement/addFolderBL.php,
+	  presentation/lookAndFeel/knowledgeTree/foldermanagement/addFolderCollaborationUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/foldermanagement/addFolderDocTypeUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/foldermanagement/editUI.inc, presentation/lookAndFeel/knowledgeTree/js/misc.js,
+	  presentation/lookAndFeel/knowledgeTree/search/advancedSearchBL.php,
+	  presentation/lookAndFeel/knowledgeTree/search/advancedSearchUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/search/standardSearchBL.php,
+	  presentation/lookAndFeel/knowledgeTree/search/standardSearchUI.inc, sql/mysql/upgrade/1.2.0/1.2.0.sql,
+	  sql/mysql/upgrade/1.2.0/sanitise-default-data.sql,sync/sanitiseEscapedData.php: 
+	  
+	  merged from branch  BRANCH_1_2_0_12082003
+
+2003-08-28 17:12  michael <michael@jamwarehouse.com>
+	* presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/assignGroupToUnitBL.php: corrected assignment error
+	* presentation/lookAndFeel/knowledgeTree/administration/usermanagement/addUserUI.inc: corrected text- initial group label.
+	* presentation/lookAndFeel/knowledgeTree/foldermanagement/addFolderCollaborationUI.inc: (#2942) don't display groups with no users
+
+2003-08-27 12:59  michael <michael@jamwarehouse.com>
+	* presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentUI.inc: fixed breadcrumb path url for status page
+	* lib/visualpatterns/PatternMetaData.inc: adding slashes to non EPGCS originated field
+	* lib/: documentmanagement/Document.inc,foldermanagement/Folder.inc: (#2882) moved substring and
+	  addslashes into intermediate method that calls the recursive path
+	  and folder id building strings
+
+2003-08-27 12:06  michael <michael@jamwarehouse.com>
+	* presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentBL.php: (#2882) changed to use getDisplayPath in failure email
+	* lib/documentmanagement/DocumentTransaction.inc: (#2882) escaped  document filename
+	* presentation/lookAndFeel/knowledgeTree/administration/rolemanagement/editRoleSuccess.php: corrected controller action
+	* presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/assignGroupToUnitUI.inc: corrected permission check and headings
+	* presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/listGroupsUI.inc: corrected 'edit unit' wording
+
+2003-08-26 17:54  michael <michael@jamwarehouse.com>
+
+	* presentation/lookAndFeel/knowledgeTree/administration/orgmanagement/listOrgUI.inc: (#2940) removed add and delete organisation functionality until it has been correctly addressed
+	*  presentation/lookAndFeel/knowledgeTree/administration/orgmanagement/addOrgSuccess.php: (#2939) corrected heading
+	* lib/email/Email.inc: (#2930) reinstated stripslashes for email content
+	* sql/mysql/upgrade/1.2.0/: 1.2.0.sql, sanitise-default-data.sql: changed from binary to ascii
+
+2003-08-20 15:21  michael <michael@jamwarehouse.com>
+
+	* presentation/lookAndFeel/knowledgeTree/foldermanagement/addFolderBL.php: (#2882) strip slashes before checking folder name
+	* sync/sanitiseEscapedData.php: added escape cleaning script
+	* graphics/logo.jpg: updated jam logo
+
+2003-08-19 18:35  michael <michael@jamwarehouse.com>
+
+	* lib/visualpatterns/PatternMetaData.inc, presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/editDocFieldLookupsUI.inc: changed to use correct table alias
+	* presentation/lookAndFeel/knowledgeTree/dashboardBL.php: changed  format of dashboardUI require
+	* config/tableMappings.inc: removed duplicate mapping
+	* presentation/lookAndFeel/knowledgeTree/search/advancedSearchUI.inc, presentation/lookAndFeel/knowledgeTree/store.inc,lib/archiving/ArchivingType.inc, lib/archiving/TimeUnit.inc: (#2833) removed addslashes / stripslashes
+	* lib/: users/User.inc,
+	  visualpatterns/PatternEditableListFromQuery.inc,
+	  visualpatterns/PatternEditableTableSqlQuery.inc,
+	  visualpatterns/PatternListBox.inc,
+	  visualpatterns/PatternListFromQuery.inc,
+	  visualpatterns/PatternMetaData.inc,
+	  visualpatterns/PatternTableSqlQuery.inc, web/WebSite.inc,
+	  DefaultLookup.inc: (#2833) removed addslashes / stripslashes
+	* lib/groups/GroupFolderApprovalLink.inc: removed unused error message
+	* lib/: groups/Group.inc, links/Link.inc, orgmanagement/Organisation.inc, roles/Role.inc, unitmanagement/Unit.inc: (#2833) removed addslashes / stripslashes
+	* lib/: documentmanagement/PhysicalDocumentManager.inc, email/Email.inc, foldermanagement/Folder.inc: (#2833) removed addslashes / stripslashes
+	* lib/documentmanagement/: DocumentTransaction.inc, DocumentType.inc, MetaData.inc: (#2833) removed addslashes / stripslashes
+	* lib/documentmanagement/DocumentLink.inc: fixed spaces in object dereferencer and table alias
+	* lib/documentmanagement/: Document.inc, DocumentField.inc,DocumentFieldLink.inc: (#2833) removed addslashes / stripslashes
+	* lib/documentmanagement/: DependantDocumentInstance.inc,DependantDocumentTemplate.inc: (#2833) removed addslashes /stripslashes fixed spaces in object dereferencer
+	* presentation/lookAndFeel/knowledgeTree/administration/news/: addNewsBL.php, editNewsBL.php, removeNewsBL.php: added missing require for refactored getCancelButton functionality
+	* docs/INSTALL.txt: added magic quotes php.ini settings
+	* lib/: dashboard/DashboardNews.inc, database/lookup.inc: (#2833) removed addslashes / stripslashes
+	* presentation/lookAndFeel/knowledgeTree/foldermanagement/editUI.inc: (#2821) added text when routing is in progress and outer joined on groups
+	* config/siteMap.inc: changed to allow users to modify folder permissions
+	* lib/groups/Group.inc, presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/removeGroupBL.php: (#2821) add RI check for groups referenced in routing steps.
+	* presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc: (#2883) changed document level routing display
+	* presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentUI.inc: (#2884) replaced post on change with next button and validation
+
+2003-08-18 17:15  michael <michael@jamwarehouse.com>
+	* presentation/lookAndFeel/knowledgeTree/foldermanagement/editUI.inc: corrected status message display
+
+2003-08-15 17:24  michael <michael@jamwarehouse.com>
+	* presentation/lookAndFeel/knowledgeTree/documentmanagement/escalateDependantDocumentBL.php: added display for email sending failure
+	* presentation/lookAndFeel/knowledgeTree/documentmanagement/:escalateDependantDocumentBL.php, escalateDependantDocumentUI.inc:(#2649) added dependent document reminder pages
+	* presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc: changed all table references to aliases (#2649) integrated current dependent document requests
+	* config/siteMap.inc: (#2649) added entry for dependent document escalation message page
+	* lib/web/WebDocument.inc: the published status is duplicated in Document- added check before redefinition (luckily the ids are the same, but this is bad and must change)
+	* lib/session/control.inc: fixed non-fatal errors (undefined variable and mis-typed PHP_SELF reference
+	* presentation/lookAndFeel/knowledgeTree/search/advancedSearchUI.inc: corrected order by query
+	* lib/visualpatterns/PatternBrowsableSearchResults.inc:(#2879,#2878) fixed bugs and updated formatting
+	* docs/TODO.txt: added custom search todo
+
+2003-08-14 17:08  michael <michael@jamwarehouse.com>
+	* docs/TODO.txt: additions
+	* lib/foldermanagement/PhysicalFolderManagement.inc: trim trailing whitespace from folder names
+	* lib/visualpatterns/PatternBrowsableSearchResults.inc: removed  query from output
+	* lib/visualpatterns/PatternBrowsableSearchResults.inc: corrected result counting and swapped positioning of next and previous buttons
+	* presentation/lookAndFeel/knowledgeTree/search/:advancedSearchBL.php, standardSearchBL.php: corrected start index
+	* presentation/lookAndFeel/knowledgeTree/js/misc.js: corrected javascript validation for "select-one"
+
+2003-08-13 14:24  michael <michael@jamwarehouse.com>
+	* lib/visualpatterns/PatternBrowsableSearchResults.inc: (#2658) reformatted search status text
+	* presentation/lookAndFeel/knowledgeTree/search/standardSearchUI.inc: added search text for other standard search flavours
+	* presentation/lookAndFeel/knowledgeTree/search/standardSearchBL.php: reformatted- removed eol spaces
+	* presentation/lookAndFeel/knowledgeTree/search/advancedSearchUI.inc: (#2658) added search string and document status to hidden variables
+	* presentation/lookAndFeel/knowledgeTree/search/advancedSearchBL.php: (#2658) added search string for display
+	* lib/visualpatterns/PatternBrowsableSearchResults.inc: (#2658) reformatted search status
+	* lib/visualpatterns/PatternBrowsableSearchResults.inc: (#2658) added additional query to retrieve number of results
+	* lib/visualpatterns/PatternBrowsableSearchResults.inc,presentation/lookAndFeel/knowledgeTree/search/standardSearchUI.inc: (#2658) added status bar with search terms and number of results.	* .project: eclipse project file
+	* docs/INSTALL.txt: updated installation documentation
+
+2003-08-12 16:53  michael <michael@jamwarehouse.com>
+	* docs/TODO.txt: added thumbnail task
+	* docs/ChangeLog.txt: updated date and re-ordered
+	* presentation/lookAndFeel/knowledgeTree/foldermanagement/addFolderDocTypeUI.inc: fixed folder path display
+	* bin/releaseKT.sh: changed from export to checkout to get Documents folder in archives
+	* presentation/login.php: replaced language error messages
+	* lib/authentication/Authenticator.inc: removed language references
+	* sql/mysql/upgrade/: 1.2.0/1.2.0.sql,
+	  1.2.0/sanitise-default-data.sql, 1.1.2/release-1.1.2.sql,
+	  1.1.2/sanitise-default-data.sql, 1.1.2/sanitise_default-data.sql:
+	  updated directory and upgrade file names
+	* sql/mysql/upgrade/1.1.2/sanitise-default-data.sql: renamed cleanup sql
+	* sync/pathSync.php, tests/documentmanagement/viewBL.php, tests/documentmanagement/viewUI.inc: removed owl prefix from
+	  table aliases
+	* presentation/: Html.inc, login.php, logout.php, webpageTemplate.inc: added copyright and gpl notice removed owl prefix from table aliases
+	* presentation/lookAndFeel/knowledgeTree/: create.php, dashboardBL.php, dashboardUI.inc, help.php, noAccess.php,
+	  store.inc, store.php: removed @package
+	* presentation/lookAndFeel/knowledgeTree/: create.php,dashboardBL.php, dashboardUI.inc, help.php, noAccess.php,store.inc, store.php: added copyright and gpl notice removed owl prefix from table aliases
+	* presentation/lookAndFeel/knowledgeTree/subscriptions/: addSubscriptionBL.php, manageSubscriptionsBL.php,
+	  removeSubscriptionBL.php, subscriptionUI.inc, viewAlertBL.php: added copyright and gpl notice removed owl prefix from table  aliases
+	* presentation/lookAndFeel/knowledgeTree/:
+	  foldermanagement/addFolderBL.php,
+	  foldermanagement/addFolderCollaborationBL.php,
+	  foldermanagement/addFolderCollaborationUI.inc,
+	  foldermanagement/addFolderDocTypeBL.php,
+	  foldermanagement/addFolderDocTypeUI.inc,
+	  foldermanagement/addFolderUI.inc,
+	  foldermanagement/addGroupFolderLinkBL.php,
+	  foldermanagement/collaborationBL.php,
+	  foldermanagement/collaborationUI.inc,
+	  foldermanagement/deleteDependantDocumentBL.php,
+	  foldermanagement/deleteDependantDocumentUI.inc,
+	  foldermanagement/deleteFolderBL.php,
+	  foldermanagement/deleteFolderCollaborationBL.php,
+	  foldermanagement/deleteFolderCollaborationUI.inc,
+	  foldermanagement/deleteFolderDocTypeBL.php,
+	  foldermanagement/deleteFolderDocTypeUI.inc,
+	  foldermanagement/deleteFolderUI.inc,
+	  foldermanagement/deleteGroupFolderLinkBL.php,
+	  foldermanagement/editBL.php,
+	  foldermanagement/editGroupFolderLinkBL.php,
+	  foldermanagement/editUI.inc, foldermanagement/folderUI.inc,
+	  foldermanagement/groupFolderLinkUI.inc,
+	  foldermanagement/modifyFolderDataBL.php,
+	  foldermanagement/modifyFolderDataUI.inc,
+	  foldermanagement/viewDependantDocumentsBL.php,
+	  foldermanagement/viewDependantDocumentsUI.inc,
+	  preferences/editPrefsSuccess.php,
+	  preferences/editUserPrefsBL.php, preferences/editUserPrefsUI.inc,
+	  search/advancedSearchBL.php, search/advancedSearchUI.inc,
+	  search/advancedSearchUtil.inc, search/standardSearchBL.php,
+	  search/standardSearchUI.inc: added copyright and gpl notice
+	  removed owl prefix from table aliases
+	* presentation/lookAndFeel/knowledgeTree/documentmanagement/:
+	  addDocumentBL.php, addDocumentLinkBL.php, addDocumentLinkUI.inc,
+	  addDocumentUI.inc, browseBL.php, browseUI.inc,
+	  checkInDocumentBL.php, checkInDocumentUI.inc,
+	  checkOutDocumentBL.php, checkOutDocumentUI.inc,
+	  collaborationBL.php, collaborationRollbackBL.php,
+	  collaborationRollbackUI.inc, collaborationUI.inc,
+	  createDependantDocumentBL.php, createDependantDocumentUI.inc,
+	  deleteDocumentBL.php, deleteDocumentUI.inc, documentUI.inc,
+	  downloadBL.php, emailBL.php, emailUI.inc, modifyBL.php,
+	  modifyGenericMetaDataBL.php, modifyGenericMetaDataUI.inc,
+	  modifySpecificMetaDataBL.php, modifySpecificMetaDataUI.inc,
+	  modifyUI.inc, moveDocumentBL.php, moveDocumentUI.inc,
+	  removeDocumentLinkBL.php, removeDocumentLinkUI.inc,
+	  templateDocumentBrowseBL.php, templateDocumentBrowseUI.inc,
+	  viewBL.php, viewHistoryBL.php, viewHistoryUI.inc, viewUI.inc,
+	  webDocumentBL.php, webDocumentUI.inc: added copyright and gpl
+	  notice removed owl prefix from table aliases
+	* presentation/lookAndFeel/knowledgeTree/documentmanagement/archiving/: addArchiveSettingsBL.php, archiveDocumentBL.php,
+	  archiveSettingsUI.inc, modifyArchiveSettingsBL.php,
+	  requestDocumentRestoreBL.php, restoreArchivedDocumentUI.inc:
+	  added copyright and gpl notice removed owl prefix from table
+	  aliases
+	* presentation/lookAndFeel/knowledgeTree/administration/doctypefieldmanagement/: assignDocTypeToFieldBL.php,
+	  assignDocTypeToFieldUI.inc, removeDocTypeFromFieldBL.php,
+	  removeDocTypeFromFieldUI.inc: removed old administration pages
+	* presentation/lookAndFeel/knowledgeTree/:
+	  administration/admin.php, administration/adminUI.inc,
+	  dashboard/news/displayNewsImage.php,
+	  dashboard/news/displayNewsItem.php, discussions/addCommentBL.php,
+	  discussions/addCommentUI.inc, discussions/viewDiscussionBL.php,
+	  discussions/viewDiscussionUI.inc: added copyright and gpl notice
+	  removed owl prefix from table aliases
+	* presentation/lookAndFeel/knowledgeTree/administration/:
+	  usermanagement/addUserBL.php,
+	  usermanagement/addUserToGroupBL.php,
+	  usermanagement/addUserToGroupUI.inc,
+	  usermanagement/addUserUI.inc, usermanagement/editUserBL.php,
+	  usermanagement/editUserGroupsBL.php,
+	  usermanagement/editUserGroupsUI.inc,
+	  usermanagement/editUserUI.inc, usermanagement/listUsersBL.php,
+	  usermanagement/listUsersUI.inc, usermanagement/removeUserBL.php,
+	  usermanagement/removeUserFromGroupBL.php,
+	  usermanagement/removeUserFromGroupUI.inc,
+	  usermanagement/removeUserUI.inc,
+	  websitemanagement/addWebsiteBL.php,
+	  websitemanagement/addWebsiteSuccess.php,
+	  websitemanagement/addWebsiteUI.inc,
+	  websitemanagement/editWebsiteBL.php,
+	  websitemanagement/editWebsiteUI.inc,
+	  websitemanagement/listWebsitesBL.php,
+	  websitemanagement/listWebsitesUI.inc,
+	  websitemanagement/removeWebsiteBL.php,
+	  websitemanagement/removeWebsiteUI.inc: added copyright and gpl
+	  notice removed owl prefix from table aliases
+
 
 Version 1.2.0
 * Tue Aug 12 2003 Michael Joseph <michael@jamwarehouse.com>
