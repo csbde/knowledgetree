@@ -160,16 +160,16 @@ class Session {
      * Retrieves and returns the IP address of the current user
      */
     function getClientIP() {
-        // get client ip 
-        if(getenv("HTTP_CLIENT_IP")) {
-            $ip = getenv("HTTP_CLIENT_IP");
+        // get client ip
+        if (getenv("REMOTE_ADDR")) {
+            $ip = getenv("REMOTE_ADDR");
         } elseif(getenv("HTTP_X_FORWARDED_FOR")) {
             $forwardedip = getenv("HTTP_X_FORWARDED_FOR");
             list($ip,$ip2,$ip3,$ip4)= split (",", $forwardedip);
-        } else {
-            $ip = getenv("REMOTE_ADDR");
+        } elseif (getenv("HTTP_CLIENT_IP")) {
+            $ip = getenv("HTTP_CLIENT_IP");
         }
         return $ip;
-    }    
+    }
 }
 ?>
