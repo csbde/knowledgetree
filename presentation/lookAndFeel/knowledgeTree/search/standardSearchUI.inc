@@ -30,7 +30,7 @@ function getSearchResultsByCategory($iFolderID, $sKeywords, $iStartIndex, $sCate
 				"AND SL.name='Live' ";
 				//only check in the parent_folder_ids if we're not searching from the
 				//root folder down
-				if ($iFolderID != 0) { 
+				if ($iFolderID != 1) { 
 					$sQuery .= "AND (F.parent_folder_ids LIKE '%,$iFolderID,%' OR F.id = $iFolderID) ";
 				}				
 				$sQuery .= "AND DF.name LIKE 'Category' ";
@@ -69,7 +69,7 @@ function getSearchResultsByDocumentType($iFolderID, $sKeywords, $iStartIndex, $i
 				$sQuery .= "AND SL.name='Live' "; 
 				//only check in the parent_folder_ids if we're not searching from the
 				//root folder down
-				if ($iFolderID != 0) { 
+				if ($iFolderID != 1) { 
 					$sQuery .= "AND (F.parent_folder_ids LIKE '%,$iFolderID,%' OR F.id = $iFolderID) ";
 				}				
 				$sQuery .= "ORDER BY score DESC";
@@ -101,11 +101,11 @@ function getSeachResultsByFolder($iFolderID, $iStartIndex, $sKeywords) {
 				"AND SL.name='Live' "; 
 				//only check in the parent_folder_ids if we're not searching from the
 				//root folder down
-				if ($iFolderID != 0) { 
+				if ($iFolderID != 1) { 
 					$sQuery .= "AND (F.parent_folder_ids LIKE '%,$iFolderID,%' OR F.id = $iFolderID) ";
 				}				
 				$sQuery .= "ORDER BY score DESC";
-				
+			
 	//var_dump($sQuery);
 	
 	$aColumns = array("folder_image_url", "document_name","score");
