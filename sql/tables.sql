@@ -159,6 +159,27 @@ can_read BIT NOT NULL,
 can_write BIT NOT NULL
 );
 
+-- sitemap tables
+CREATE TABLE site_sections_lookup (
+id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
+name CHAR(255)
+);
+
+CREATE TABLE site_access_lookup (
+id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
+name CHAR(255)
+);
+
+CREATE TABLE sitemap (
+id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
+action CHAR(30),
+page CHAR(255),
+section_id INTEGER,
+access_id INTEGER,
+link_text CHAR(255),
+is_default BIT
+);
+
 CREATE TABLE subscriptions ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 user_id INTEGER NOT NULL,
@@ -229,146 +250,161 @@ word CHAR(255) NOT NULL
 );
 
 -- pk constraints
-ALTER TABLE active_sessions 
-ADD CONSTRAINT PK_active_sessions 
-PRIMARY KEY (id) 
-;
-
-ALTER TABLE categories_lookup 
-ADD CONSTRAINT PK_categories_lookup 
-PRIMARY KEY (id) 
-;
-
-ALTER TABLE document_fields 
-ADD CONSTRAINT PK_fields 
-PRIMARY KEY (id) 
-;
-
-ALTER TABLE document_fields_link 
-ADD CONSTRAINT PK_document_fields_link 
-PRIMARY KEY (id) 
-;
-
-ALTER TABLE document_transaction_types_lookup 
-ADD CONSTRAINT PK_document_transaction_types 
-PRIMARY KEY (id) 
-;
-
-ALTER TABLE document_transactions 
-ADD CONSTRAINT PK_document_transactions 
-PRIMARY KEY (id) 
-;
-
-ALTER TABLE document_type_fields_link 
-ADD CONSTRAINT PK_document_type_fields 
-PRIMARY KEY (id) 
-;
-
-ALTER TABLE document_types_lookup 
-ADD CONSTRAINT PK_document_types 
-PRIMARY KEY (id) 
-;
-
-ALTER TABLE document_words_link 
-ADD CONSTRAINT PK_document_words 
-PRIMARY KEY (id) 
-;
-
-ALTER TABLE documents 
-ADD CONSTRAINT PK_files 
-PRIMARY KEY (id) 
-;
-
-ALTER TABLE folders_users_roles_link 
-ADD CONSTRAINT PK_authors 
-PRIMARY KEY (id) 
-;
-
-ALTER TABLE groups_folders_approval_link 
-ADD CONSTRAINT PK_groups_folders_approval_link 
-PRIMARY KEY (id) 
-;
-
-ALTER TABLE groups_lookup 
-ADD CONSTRAINT PK_groups 
-PRIMARY KEY (id) 
-;
-
-ALTER TABLE language_lookup 
-ADD CONSTRAINT PK_language
-PRIMARY KEY (id) 
-;
-
-ALTER TABLE groups_units_link 
-ADD CONSTRAINT PK_groups_units_link 
-PRIMARY KEY (id) 
-;
-
-ALTER TABLE links 
-ADD CONSTRAINT PK_links 
-PRIMARY KEY (id) 
-;
-
-ALTER TABLE mime_types 
-ADD CONSTRAINT PK_mimes 
+ALTER TABLE active_sessions
+ADD CONSTRAINT PK_active_sessions
 PRIMARY KEY (id)
 ;
 
-ALTER TABLE groups_folders_link 
-ADD CONSTRAINT PK_groups_folders_link 
-PRIMARY KEY (id)  
+ALTER TABLE categories_lookup
+ADD CONSTRAINT PK_categories_lookup
+PRIMARY KEY (id)
 ;
 
-ALTER TABLE organisations_lookup 
-ADD CONSTRAINT PK_organisations 
-PRIMARY KEY (id) 
+ALTER TABLE document_fields
+ADD CONSTRAINT PK_document_fields
+PRIMARY KEY (id)
 ;
 
-ALTER TABLE roles 
-ADD CONSTRAINT PK_Editors 
-PRIMARY KEY (id) 
+ALTER TABLE document_fields_link
+ADD CONSTRAINT PK_document_fields_link
+PRIMARY KEY (id)
 ;
 
-ALTER TABLE subscriptions 
-ADD CONSTRAINT PK_subscriptions 
-PRIMARY KEY (id) 
+ALTER TABLE document_transaction_types_lookup
+ADD CONSTRAINT PK_document_transaction_types_lookup
+PRIMARY KEY (id)
 ;
 
-ALTER TABLE system_settings 
-ADD CONSTRAINT PK_system_settings 
-PRIMARY KEY (id) 
+ALTER TABLE document_transactions
+ADD CONSTRAINT PK_document_transactions
+PRIMARY KEY (id)
 ;
 
-ALTER TABLE units 
-ADD CONSTRAINT PK_units 
-PRIMARY KEY (id) 
+ALTER TABLE document_type_fields_link
+ADD CONSTRAINT PK_document_type_fields_link
+PRIMARY KEY (id)
 ;
 
-ALTER TABLE users 
-ADD CONSTRAINT PK_users 
-PRIMARY KEY (id) 
+ALTER TABLE document_types_lookup
+ADD CONSTRAINT PK_document_types_lookup
+PRIMARY KEY (id)
 ;
 
-ALTER TABLE users_groups_link 
+ALTER TABLE document_words_link
+ADD CONSTRAINT PK_document_words_link
+PRIMARY KEY (id)
+;
+
+ALTER TABLE documents
+ADD CONSTRAINT PK_documents
+PRIMARY KEY (id)
+;
+
+ALTER TABLE folders_users_roles_link
+ADD CONSTRAINT PK_folders_users_roles_link
+PRIMARY KEY (id)
+;
+
+ALTER TABLE groups_folders_approval_link
+ADD CONSTRAINT PK_groups_folders_approval_link
+PRIMARY KEY (id)
+;
+
+ALTER TABLE groups_lookup
+ADD CONSTRAINT PK_groups_lookup
+PRIMARY KEY (id)
+;
+
+ALTER TABLE language_lookup
+ADD CONSTRAINT PK_language_lookup
+PRIMARY KEY (id)
+;
+
+ALTER TABLE groups_units_link
+ADD CONSTRAINT PK_groups_units_link
+PRIMARY KEY (id)
+;
+
+ALTER TABLE links
+ADD CONSTRAINT PK_links
+PRIMARY KEY (id)
+;
+
+ALTER TABLE mime_types
+ADD CONSTRAINT PK_mimes_types
+PRIMARY KEY (id)
+;
+
+ALTER TABLE groups_folders_link
+ADD CONSTRAINT PK_groups_folders_link
+PRIMARY KEY (id)
+;
+
+ALTER TABLE organisations_lookup
+ADD CONSTRAINT PK_organisations_lookup
+PRIMARY KEY (id)
+;
+
+ALTER TABLE roles
+ADD CONSTRAINT PK_roles
+PRIMARY KEY (id)
+;
+
+ALTER TABLE site_sections_lookup
+ADD CONSTRAINT PK_site_sections_lookup
+PRIMARY KEY (id)
+;
+
+ALTER TABLE site_access_lookup
+ADD CONSTRAINT PK_site_access_lookup
+PRIMARY KEY (id)
+;
+
+ALTER TABLE sitemap
+ADD CONSTRAINT PK_sitemap
+PRIMARY KEY (id)
+;
+
+ALTER TABLE subscriptions
+ADD CONSTRAINT PK_subscriptions
+PRIMARY KEY (id)
+;
+
+ALTER TABLE system_settings
+ADD CONSTRAINT PK_system_settings
+PRIMARY KEY (id)
+;
+
+ALTER TABLE units
+ADD CONSTRAINT PK_units
+PRIMARY KEY (id)
+;
+
+ALTER TABLE users
+ADD CONSTRAINT PK_users
+PRIMARY KEY (id)
+;
+
+ALTER TABLE users_groups_link
 ADD CONSTRAINT PK_users_groups_link
-PRIMARY KEY (id) 
+PRIMARY KEY (id)
 ;
 
-ALTER TABLE web_documents 
-ADD CONSTRAINT PK_web_documents 
-PRIMARY KEY (id) 
+ALTER TABLE web_documents
+ADD CONSTRAINT PK_web_documents
+PRIMARY KEY (id)
 ;
 
-ALTER TABLE web_documents_status_lookup 
-ADD CONSTRAINT PK_web_documents_status 
+ALTER TABLE web_documents_status_lookup
+ADD CONSTRAINT PK_web_documents_status
 PRIMARY KEY (id);
 
-ALTER TABLE web_sites 
-ADD CONSTRAINT PK_web_sites 
+ALTER TABLE web_sites
+ADD CONSTRAINT PK_web_sites
 PRIMARY KEY (id);
 
-ALTER TABLE words_lookup 
-ADD CONSTRAINT PK_word_list 
+ALTER TABLE words_lookup
+ADD CONSTRAINT PK_word_list
 PRIMARY KEY (id);
 
 -- mime types
@@ -923,4 +959,50 @@ INSERT INTO document_fields_link (document_id, document_field_id, value) VALUES 
 
 -- TODO: populate categories_lookup
 
+-- sitemap sections
+INSERT INTO site_sections_lookup (name) VALUES ("General");
+INSERT INTO site_sections_lookup (name) VALUES ("Manage Documents");
+INSERT INTO site_sections_lookup (name) VALUES ("Administration");
+INSERT INTO site_sections_lookup (name) VALUES ("Advanced Search");
+INSERT INTO site_sections_lookup (name) VALUES ("Preferences");
+INSERT INTO site_sections_lookup (name) VALUES ("Help");
+INSERT INTO site_sections_lookup (name) VALUES ("Logout");
+INSERT INTO site_sections_lookup (name) VALUES ("Tests");
+-- sitemap access levels
+INSERT INTO site_access_lookup (name) VALUES ("None");
+INSERT INTO site_access_lookup (name) VALUES ("Guest");
+INSERT INTO site_access_lookup (name) VALUES ("User");
+INSERT INTO site_access_lookup (name) VALUES ("UnitAdmin");
+INSERT INTO site_access_lookup (name) VALUES ("SysAdmin");
+---- sitemap definition
+-- general section
+INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default) VALUES ("login", "/presentation/login.php?loginAction=login", 1, 0, "", 0);
+INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default) VALUES ("loginForm", "/presentation/login.php?loginAction=loginForm", 1, 0, "login", 0); 
+INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default) VALUES ("dashboard", "/presentation/dashboardBL.php", 1, 1, "dashboard", 0);
+-- manage documents section
+INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default) VALUES ("browse", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/browseBL.php", 2, 2, "browse documents", 0);
+INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default) VALUES ("viewDocument", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/viewBL.php", 2, 2, "", 0);
+INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default) VALUES ("addDocument", "/presentation/documentmanagement/addDocument.php", 2, 3, "Add A Document", 0);
+INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default) VALUES ("addFolder", "/presentation/documentmanagement/addFolder.php", 2, 4, "Add A Folder", 0);
+INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default) VALUES ("modifyFolderProperties", "/presentation/documentmanagement/modifyFolder.php", 2, 4, "Modify Folder Properties", 0);
+INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default) VALUES ("deleteFolder", "/presentation/documentmanagement/deleteFolder.php", 2, 4, "Delete A Folder", 0);
+INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default) VALUES ("moveFolder", "/presentation/documentmanagement/moveFolder.php", 2, 4, "Move A Folder", 0);
+-- pages for administration section
+INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default) VALUES ("administration", "/admin.php", 3, 4, "Administration", 1);
+INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default) VALUES ("unitAdministration", "/presentation/unitAdmin.php", 3, 4, "Unit Administration", 0);
+INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default) VALUES ("systemAdministration", "/presentation/sysAdmin.php", 3, 5, "System Administration", 0);
+-- pages for advanced search section
+INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default) VALUES ("advancedSearch", "/search.php", 4, 2, "Advanced Search", 1);
+-- pages for prefs section
+INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default) VALUES ("preferences", "/preferences.php", 5, 3, "Preferences", 1);
+INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default) VALUES ("viewPreferences", "/preferences.php", 5, 3, "View Preferences", 0);
+INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default) VALUES ("editPreferences", "/preferences.php", 5, 3, "Edit Preferences", 0);
+-- pages for Help section
+INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default) VALUES ("help", "/help.php", 6, 2, "Help", 1);
+-- pages for logout section section
+INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default) VALUES ("logout", "/presentation/logout.php", 7, 2, "Logout", 1);
+-- test pages
+INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default) VALUES ("scratchPad", "/tests/scratchPad.php", 8, 2, "scratch", 0);
+INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default) VALUES ("sitemap", "/tests/session/SiteMap.php", 8, 2, "sitemap", 0);
+INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default) VALUES ("documentBrowserTest", "/tests/documentmanagement/DocumentBrowser.php", 8, 2, "test the document browser", 0);
 
