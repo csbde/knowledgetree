@@ -12,7 +12,6 @@ id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 name CHAR(100)
 )  TYPE = InnoDB;
 
--- proposed
 CREATE TABLE archiving_settings ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 expiration_date DATE,
@@ -79,7 +78,6 @@ name TEXT NOT NULL,
 filename TEXT NOT NULL,
 size BIGINT NOT NULL,
 creator_id INTEGER NOT NULL,
-created DATETIME NOT NULL,
 modified DATETIME NOT NULL,
 description CHAR(200) NOT NULL,
 security INTEGER NOT NULL,
@@ -264,13 +262,6 @@ filetypes CHAR(100) NOT NULL,
 mimetypes CHAR(100) NOT NULL,
 icon_path CHAR(255) 
 )TYPE = InnoDB;
-
-CREATE TABLE new_documents ( 
-id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
-document_title TEXT,
-user_id INTEGER,
-template_document_id INTEGER
-) TYPE = InnoDB;
 
 CREATE TABLE news ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
@@ -466,11 +457,6 @@ PRIMARY KEY (id)
 
 ALTER TABLE document_types_lookup
 ADD CONSTRAINT PK_document_types_lookup
-PRIMARY KEY (id)
-;
-
-ALTER TABLE document_words_link
-ADD CONSTRAINT PK_document_words_link
 PRIMARY KEY (id)
 ;
 
