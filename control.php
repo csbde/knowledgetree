@@ -48,9 +48,11 @@ if (checkSession()) {
 // reset authorisation flag before checking access
 $_SESSION["authorised"] = false;
 
+$default->log->debug("control.php about to retrieve page from sitemap");
 // check whether the users group has access to the requested page
 $page = $default->siteMap->getPage($action, $_SESSION["groupID"]);
 
+$default->log->debug("control.php retrieved page=$page");
 if (!$page) {
     // this group doesn't have permission to access the page
     // or there is no page mapping for the requested action
@@ -63,6 +65,7 @@ if (!$page) {
 } else {
     // set authorised flag and redirect
     $_SESSION["authorised"] = true;
+    $default->log->debug("control.php:: set authorised flag:" . $_SESSION["authorised"]);
     
     redirect($page);
 }
