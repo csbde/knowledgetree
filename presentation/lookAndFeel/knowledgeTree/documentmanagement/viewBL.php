@@ -225,10 +225,16 @@ if (checkSession()) {
             }
             
             $oPatternCustom = & new PatternCustom();
-            if (Permission::userHasDocumentWritePermission($fDocumentID)) {
-                $oPatternCustom->setHtml(getEditPage($oDocument));
-            } else if (Permission::userHasDocumentReadPermission($fDocumentID)) {
-                $oPatternCustom->setHtml(getViewPage($oDocument));
+            if ($oDocument->getStatusID() == lookupStatusID("Live")) {
+	            if (Permission::userHasDocumentWritePermission($fDocumentID)) {
+	                $oPatternCustom->setHtml(getEditPage($oDocument));
+	            } else if (Permission::userHasDocumentReadPermission($fDocumentID)) {
+	                $oPatternCustom->setHtml(getViewPage($oDocument));
+	            }
+            } else if ($oDocument->getStatusID() == lookupStatusID("Archived")) {
+            	// cancel
+	            $oPatternCustom->setHtml("<a href=\"" . generateControllerLink("browse", "fFolderID=" . $oDocument->getFolderID()) . "\"><img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\" /></a>\n");
+	            $main->setErrorMessage("This document has been archived.");
             }
             $main->setCentralPayload($oPatternCustom);
             $main->setFormAction("$default->rootUrl/control.php?action=modifyDocument&fDocumentID=" . $oDocument->getID());
@@ -237,7 +243,7 @@ if (checkSession()) {
             require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 
             $oPatternCustom = & new PatternCustom();
-            $oPatternCustom->setHtml("");
+            $oPatternCustom->setHtml("<a href=\"" . generateControllerLink("browse", "fFolderID=" . $oDocument->getFolderID()) . "\"><img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\" /></a>\n");
             $main->setErrorMessage("Either you do not have permission to view this document, or the document you have chosen no longer exists on the file system.");
             $main->setCentralPayload($oPatternCustom);
             $main->render();
