@@ -762,14 +762,62 @@ class Folder extends KTEntity {
 
     // {{{ updatePermissions()
     function updatePermissions () {
+        // Update PermissionFolderIDs on folder and all folders in this
+        // branch.
+        $this->updatePermissionFolders();
+
+        // Now, we need to redo the permissions for all documents that
+        // share are in this branch of the tree that are in folders that
+        // share our PermissionFolderID.
+
+        // First, we update the documents in this folder
+        $sQuery = "SELECT D.id AS id FROM documents AS D WHERE D.folder_id = ?";
+        $aParams = array($this->getID());
+        $aDocumentIDs = DBUtil::getResultArrayKey(array($sQuery, $aParams), 'id');
+        // OPT: We could just do the work for the first, and copy it to
+        // the others...
+        foreach ($aDocumentIDs as $iDocumentID) {
+            Permission::updateSearchPermissionsForDocument($iDocumentID);
+        }
+        
+        // Then, we update the documents in our subfolders
+        $sFolderIDs = $this->generateFolderIDs($this->getID());
+        $sFolderIDs .= '%';
+        $sQuery = "SELECT D.id AS id FROM documents AS D JOIN folders AS F on D.folder_id = F.id WHERE F.parent_folder_ids LIKE ?";
+        $aParams = array($sFolderIDs);
+        $aDocumentIDs = DBUtil::getResultArrayKey(array($sQuery, $aParams), 'id');
+
+        // OPT: We could just do the work for the first, and copy it to
+        // the others...
+        foreach ($aDocumentIDs as $iDocumentID) {
+            Permission::updateSearchPermissionsForDocument($iDocumentID);
+        }
+    }
+    // }}}
+
+    // {{{ updatePermissionFolders()
+	/**
+     * Update the PermissionFolderID on this folder and all folders on
+     * this branch.
+	 *
+	 */
+    function updatePermissionFolders() {
+        $iOldPermissionFolderID = $this->iPermissionFolderID;
         $this->calculatePermissionFolder();
+        $iNewPermissionFolderID = $this->iPermissionFolderID;
+
+        // If our permission folder hasn't changed, our children's won't
+        // have.
+        if ($iOldPermissionFolderID === $iNewPermissionFolderID) {
+            return;
+        }
+
         // XXX: Non-explicit update... Have to update, or the children
         // wouldn't have access to it for the shortcut...
         $this->update();
-
         $aChildren = Folder::getList(array('parent_id = ?', $this->getID()));
         foreach ($aChildren as $oChild) {
-            $oChild->updatePermissions();
+            $oChild->updatePermissionFolders();
         }
     }
     // }}}
