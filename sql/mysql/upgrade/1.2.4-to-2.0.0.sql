@@ -414,4 +414,4 @@ ALTER TABLE `documents` ADD INDEX ( `created` ) ;
 
 UPDATE documents AS D, document_transactions AS T SET D.created = T.datetime WHERE T.document_id = D.id AND T.transaction_id = 1;
 
-ALTER TABLE `document_text` DROP `id` 
+ALTER TABLE `document_text` DROP `id`;
