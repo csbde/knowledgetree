@@ -63,7 +63,7 @@ if(checkSession()) {
 			if (isset($iCommentID)) {		// Check if a comment ID exists
 				$oComment = DiscussionComment::get($iCommentID);
 			  	$oUser = User::get($oComment->getUserID());		
-			  	$main->setFormAction("/presentation/lookAndFeel/knowledgeTree/discussions/addCommentBL.php?fDocumentID=$iDocumentID&fCommentID=$iCommentID&fReplyComment=1");		
+			  	$main->setFormAction("$default->rootUrl/presentation/lookAndFeel/knowledgeTree/discussions/addCommentBL.php?fDocumentID=$iDocumentID&fCommentID=$iCommentID&fReplyComment=1");		
 			  	$oPatternCustom->setHtml(getCommentBody($oComment,$iDocumentID,$oUser)) ;	  	
 			}
 		}else { // If no discussion exists 
