@@ -1,5 +1,7 @@
 <?php
 /**
+* @package lib.documentmanagement
+*
 * Class DocumentTransaction
 *
 * Represents a document transaction as per the database table document_transaction

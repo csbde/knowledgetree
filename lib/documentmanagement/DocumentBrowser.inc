@@ -3,6 +3,8 @@
 require_once("$default->owl_fs_root/lib/security/permission.inc");
 
 /**
+ * @package lib.documentmanagement
+ * 
  * $Id$
  * 
  * Contains document browsing business logic.

@@ -1,10 +1,12 @@
 <?php
 
 /*
-Given an image URL, this class will render it inside a single cell table
-
-@author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
-@date 7 January 2003
+* @package lib.visualpatterns
+ * 
+ * Given an image URL, this class will render it inside a single cell table
+ *
+ * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
+ * @date 7 January 2003
 
 */
 

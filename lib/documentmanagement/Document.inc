@@ -1,5 +1,7 @@
 <?php
 /**
+* @package lib.documentmanagement
+*
 * Class Document
 *
 * Represents a document as per the documents database table

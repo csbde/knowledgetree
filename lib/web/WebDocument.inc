@@ -1,5 +1,7 @@
 <?php
 /**
+* @package lib.web
+* 
 * Class Web Documents
 *
 * Represents a web document as per the web_documents table in the database

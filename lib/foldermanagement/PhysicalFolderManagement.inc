@@ -1,6 +1,8 @@
 <?php
 
 /**
+* @package lib.foldermanagement
+* 
 * Contains static functions for doing physical folder managements
 * such as creating/deleting folders
 *

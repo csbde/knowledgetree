@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * @package lib.visualpatterns
+ * 
  * $Id$
  *
  * Used to specify html code that is not catered for by any of the other patterns

@@ -1,6 +1,8 @@
 <?php
 
 /**
+* @package lib
+* 
 * Class DefaultLookup
 *
 * Represents the base class for any table in the database that ends in a _lookup

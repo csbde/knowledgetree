@@ -1,6 +1,8 @@
 <?php
 
 /**
+* @package lib.documentmanagement
+*
 * Class DocumentFieldLink
 *
 * Represents a document field link as per the database table document_fields_link

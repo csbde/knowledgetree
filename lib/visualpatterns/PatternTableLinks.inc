@@ -1,11 +1,13 @@
 <?php
 /*
-
-Given an array of URLs, this class will render them as an
-HTML table with with specified number of rows and columns
-
-@author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
-@date 7 January 2003
+* @package lib.visualpatterns
+* 
+*
+* Given an array of URLs, this class will render them as an
+* HTML table with with specified number of rows and columns
+*
+* @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
+* @date 7 January 2003
 */
 
 define("TEXT", 1);
