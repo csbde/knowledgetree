@@ -134,7 +134,7 @@ $default->debug = True;
 require_once("$default->owl_fs_root/lib/session/SiteMap.inc");
 $default->siteMap = new SiteMap();
 
-// action, page, section, group with access
+// action, page, section, group with access, link text
 
 // general pages
 $default->siteMap->addPage("login", "/presentation/login.php?loginAction=login", "General", "Anonymous", "");
@@ -144,14 +144,12 @@ $default->siteMap->addPage("dashboard", "/presentation/dashboardBL.php", "Genera
 
 //pages for manage documents section
 $default->siteMap->addDefaultPage("browse", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/browseBL.php", "Manage Documents", "Anonymous", "browse documents");
-//$default->siteMap->addDefaultPage("browse", "/manage.php", "Manage Documents", "Anonymous", "Manage documents");
+$default->siteMap->addPage("viewDocument", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/viewBL.php", "Manage Documents", "Anonymous", "");
 $default->siteMap->addPage("addDocument", "/presentation/documentmanagement/addDocument.php", "Manage Documents", "Anonymous", "Add A Document");
 $default->siteMap->addPage("addFolder", "/presentation/documentmanagement/addFolder.php", "Manage Documents", "Unit Administrators", "Add A Folder");
 $default->siteMap->addPage("modifyFolderProperties", "/presentation/documentmanagement/modifyFolder.php", "Manage Documents", "Unit Administrators", "Modify Folder Properties");
 $default->siteMap->addPage("deleteFolder", "/presentation/documentmanagement/deleteFolder.php", "Manage Documents", "Unit Administrators", "Delete A Folder");
 $default->siteMap->addPage("moveFolder", "/presentation/documentmanagement/moveFolder.php", "Manage Documents", "Unit Administrators", "Move A Folder");
-$default->siteMap->addPage("viewDocument", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/documentViewBL.php", "Manage Documents", "Anonymous", "");
-
 
 // pages for administration section
 $default->siteMap->addDefaultPage("administration", "/admin.php", "Administration", "Unit Administrators", "Administration");
@@ -172,20 +170,12 @@ $default->siteMap->addDefaultPage("help", "/help.php", "Help", "Anonymous", "Hel
 // pages for logout section section
 $default->siteMap->addDefaultPage("logout", "/presentation/logout.php", "Logout", "Anonymous", "Logout");
 
-
 // test pages
 $default->siteMap->addPage("scratchPad", "/tests/scratchPad.php", "Tests", "Anonymous", "scratch");
 $default->siteMap->addPage("sitemap", "/tests/session/SiteMap.php", "Tests", "Anonymous", "sitemap");
 $default->siteMap->addPage("documentBrowserTest", "/tests/documentmanagement/DocumentBrowser.php", "Tests", "Anonymous", "test the document browser");
 
-// action, page, section, group with access, link description
-
-
-
-
-
-
-
+// default requires
 require_once("$default->owl_fs_root/lib/session/Session.inc");
 require_once("$default->owl_fs_root/lib/session/control.inc");
 require_once("$default->owl_fs_root/lib/database/db.inc");
