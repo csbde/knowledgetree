@@ -460,7 +460,7 @@ class SiteMap {
      * @return string the action for this page
      */
     function getActionFromPageUsingDB($sPage) {
-       global $default, $lang_err_database;
+        global $default, $lang_err_database;
         $sql = new Owl_DB();
         
         // lookup the action for the specified page
@@ -511,6 +511,51 @@ class SiteMap {
     function printMap() {
         if (!$this->bUseDB) {
             return arrayToString($this->aSiteMap);
+        }
+    }
+    
+    /**
+     * Writes the current sitemap from the array to the DB
+     */
+    function syncWithDB() {
+        global $default;
+        $sql = new Owl_DB();
+        
+        // only if we're using the array
+        if (!$this->bUseDB) {
+            // clear section table
+            if ($sql->query("DELETE from $default->owl_site_sections_table")) {
+                $default->log->debug("Sitemap::syncWithDB removed sections");
+            } else {
+                $default->log->error("Sitemap::syncWithDB remove sections failed");
+            }
+            // for each section
+            foreach ($this->aSiteMap as $section => $valArr) {
+                // insert into the section
+                $sSectionSql = "INSERT INTO $default->owl_site_sections_table (name) VALUES ('$section')";
+                $default->log->debug("Sitemap::syncWithDB insert=$sSectionSql");
+                
+                if ($sql->query($sSectionSql)) {
+                    $sectionID = $sql->insert_id();
+                    $default->log->debug("Sitemap::syncWithDB added section $section; $sectionID");
+                } else {
+                    $default->log->error("Sitemap::syncWithDB add section $section failed");
+                }
+                
+                // for each group, page array combination
+                foreach ($valArr as $requiredAccess => $pageArr) {
+                    // now loop through all the pages
+                    foreach ($pageArr as $action => $page) {
+                        $sSiteMapSql = "INSERT INTO $default->owl_sitemap_table (action, page, section_id, access_id, link_text, is_default) " .
+                                       "VALUES ('$action', '" . $page["page"] . "', $sectionID, $requiredAccess, '" . $page["description"] . "', " . settype($page["default"], bool) . ")";
+                        if ($sql->query($sSiteMapSql)) {
+                            $default->log->debug("Sitemap::syncWithDb sitemap insert worked for ($action, " . $page["page"] . ")");
+                        } else {
+                            $default->log->debug("Sitemap::syncWithDB sitemap insert failed ($sSiteMapSql)");
+                        }
+                    }
+                }
+            }
         }
     }
 }
