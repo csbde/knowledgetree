@@ -31,17 +31,19 @@ if (checkSession()) {
 
     if ($fStore) {
     	$oDASFactory = new DocumentArchiveSettingsFactory($fArchivingTypeID);
-    	
-    	if ($oDASFactory->create($fArchivingTypeID, $fDocumentID, $fExpirationDate, $fDocumentTransactionID, $fTimeUnitID, $fUnits)) {
-			// created, redirect to view page
-			controllerRedirect("viewDocument", "fDocumentID=$fDocumentID&fShowSection=archiveSettings");
+    	if ($oDASFactory->validateDate($fExpirationDate)) {
+	    	if ($oDASFactory->create($fArchivingTypeID, $fDocumentID, $fExpirationDate, $fDocumentTransactionID, $fTimeUnitID, $fUnits)) {
+				// created, redirect to view page
+				controllerRedirect("viewDocument", "fDocumentID=$fDocumentID&fShowSection=archiveSettings");
+	    	} else {
+	    		// error
+	    		$default->log->error("addArchiveSettingsBL.php error adding archive settings");
+	    		// display form with error
+				$oContent->setHtml(renderAddArchiveSettingsPage(null, "The archive settings for this document could not be added"));   
+	    	}
     	} else {
-    		// error
-    		$default->log->error("addArchiveSettingsBL.php error adding archive settings");
-    		// display form with error
-			$oContent->setHtml(renderAddArchiveSettingsPage(null, "The archive settings for this document could not be added"));   
-    	}
-  		    	
+    		$oContent->setHtml(renderAddArchiveSettingsPage($fDocumentID, $fArchivingTypeID, "You cannot select an expiration date in the past. Please try again."));
+    	}    	
     } elseif (isset($fArchivingTypeID)) {
     	// the archiving type has been chosen, so display the correct form   	
 		$oContent->setHtml(renderAddArchiveSettingsPage($fDocumentID, $fArchivingTypeID));    	

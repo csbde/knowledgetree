@@ -38,13 +38,16 @@ if (checkSession()) {
 		if ($oDocumentArchiving && $oArchiveSettings) {
 		    if ($fStore) {
 		    	$oDASFactory = new DocumentArchiveSettingsFactory();
-		    	
-		    	if ($oDASFactory->update($oDocumentArchiving, $fExpirationDate, $fDocumentTransactionID, $fTimeUnitID, $fUnits)) {
-		    		$default->log->info("modifyArchiveSettingsBL.php successfully updated archive settings (documentID=$fDocumentID)");
-					// created, redirect to view page
-					controllerRedirect("viewDocument", "fDocumentID=$fDocumentID&fShowSection=archiveSettings");
+		    	if ($oDASFactory->validateDate($fExpirationDate)) {
+			    	if ($oDASFactory->update($oDocumentArchiving, $fExpirationDate, $fDocumentTransactionID, $fTimeUnitID, $fUnits)) {
+			    		$default->log->info("modifyArchiveSettingsBL.php successfully updated archive settings (documentID=$fDocumentID)");
+						// created, redirect to view page
+						controllerRedirect("viewDocument", "fDocumentID=$fDocumentID&fShowSection=archiveSettings");
+			    	} else {
+	    				$default->log->error("modifyArchiveSettingsBL.php error updating archive settings (documentID=$fDocumentID)");		    		
+			    	}
 		    	} else {
-    				$default->log->error("modifyArchiveSettingsBL.php error updating archive settings (documentID=$fDocumentID)");		    		
+		    		$oContent->setHtml(renderEditArchiveSettingsPage($fDocumentID, $oArchiveSettings, "You cannot select an expiration date in the past. Please try again."));
 		    	}	    	
 		    } elseif ($fDelete) {
 		    	if ($oDocumentArchiving->delete()) {
@@ -59,11 +62,11 @@ if (checkSession()) {
 		    }
 		} else {
 			// no archiving settings for this document
-			$oContent->setHtml(renderEditArchiveSettingsPage(null, "No document has been selected."));
+			$oContent->setHtml(renderEditArchiveSettingsPage(null, null, "No document has been selected."));
 		}
     } else {
     	// document id missing  	
-    	$oContent->setHtml(renderEditArchiveSettingsPage(null, "No document has been selected."));
+    	$oContent->setHtml(renderEditArchiveSettingsPage(null, null, "No document has been selected."));
     }
              
 	// build the page
