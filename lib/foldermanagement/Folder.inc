@@ -509,7 +509,7 @@ class Folder {
 	function getFolderDisplayPath($iFolderID) {
 		global $default;
         $aPathNamesArray = Folder::getFolderPathNamesAsArray($iFolderID);
-        if (count($aPathNamesArray) > 1) {
+        if (count($aPathNamesArray) > 0) {
         	return implode(" > ", $aPathNamesArray);
         } else {
         	return "";
