@@ -469,7 +469,30 @@ class User {
         return false;
     }
 
+    /**
+     * Static function
+     * Return the unitIDs of the specified user
+     *
+     * @param int the id the user to lookup the unit for
+     * @return array the unitIDs, false otherwise
+     */
+    function getUnitIDs($userID) {
+        global $default, $lang_err_database;
 
+        $sql = $default->db;
+        $result = $sql->query("SELECT DISTINCT gul.unit_id FROM $default->users_groups_table ugl " .
+                              "INNER JOIN $default->groups_units_table gul ON ugl.group_id = gul.group_id ".
+                              "WHERE ugl.user_id=$userID");
+        if ($result) {
+            $aUnitIDs = array();
+            while ($sql->next_record()) {
+                $aUnitIDs[] = $sql->f("unit_id");
+            }
+            return $aUnitIDs;
+        }
+        return false;
+    }
+    
     /**
      * Static function
      * Return the useID for the specified user
