@@ -201,6 +201,7 @@ $default->siteMap->addPage("websiteManagement", "/presentation/lookAndFeel/knowl
 $default->siteMap->addPage("systemAdministration", "/presentation/lookAndFeel/knowledgeTree/administration/systemsettings/systemSettingsBL.php", "Administration", SysAdmin, "System Settings");
 
 $default->siteMap->addSectionColour("Administration", "th", "056DCE");
+$default->siteMap->addSectionColour("Administration", "td", "6699CC");
 
 // group management
 $default->siteMap->addPage("addGroup", "/presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/addGroupBL.php", "groupAdministration", UnitAdmin, "Add A Group");
@@ -211,6 +212,7 @@ $default->siteMap->addPage("assignGroupToUnit", "/presentation/lookAndFeel/knowl
 $default->siteMap->addPage("removeGroupFromUnit", "/presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/removeGroupFromUnitBL.php", "groupAdministration", UnitAdmin, "Remove Group From Unit");
 
 $default->siteMap->addSectionColour("groupAdministration", "th", "056DCE");
+$default->siteMap->addSectionColour("groupAdministration", "td", "6699CC");
 
 // Unit management
 $default->siteMap->addPage("addUnit", "/presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/addUnitBL.php", "unitAdministration", SysAdmin, "Add A Unit");
@@ -219,6 +221,7 @@ $default->siteMap->addPage("addUnitSuccess", "/presentation/lookAndFeel/knowledg
 $default->siteMap->addPage("removeUnit", "/presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/removeUnitBL.php", "unitAdministration", SysAdmin, "Remove a Unit");
 
 $default->siteMap->addSectionColour("unitAdministration", "th", "056DCE");
+$default->siteMap->addSectionColour("unitAdministration", "td", "6699CC");
 
 // Organisation management
 $default->siteMap->addPage("addOrg", "/presentation/lookAndFeel/knowledgeTree/administration/orgmanagement/addOrgBL.php", "orgAdministration", SysAdmin, "Add An Organisation");
@@ -227,6 +230,7 @@ $default->siteMap->addPage("addOrgSuccess", "/presentation/lookAndFeel/knowledge
 $default->siteMap->addPage("removeOrg", "/presentation/lookAndFeel/knowledgeTree/administration/orgmanagement/removeOrgBL.php", "orgAdministration", SysAdmin, "Remove an Organisation");
 
 $default->siteMap->addSectionColour("orgAdministration", "th", "056DCE");
+$default->siteMap->addSectionColour("orgAdministration", "td", "6699CC");
 
 // user management
 $default->siteMap->addPage("addUser", "/presentation/lookAndFeel/knowledgeTree/administration/usermanagement/addUserBL.php", "userAdministration", SysAdmin, "Add User to System");
@@ -237,12 +241,11 @@ $default->siteMap->addPage("addUserToGroup", "/presentation/lookAndFeel/knowledg
 $default->siteMap->addPage("removeUserFromGroup", "/presentation/lookAndFeel/knowledgeTree/administration/usermanagement/removeUserFromGroupBL.php", "userAdministration", UnitAdmin, "Remove User From Group");
 
 $default->siteMap->addSectionColour("userAdministration", "th", "056DCE");
+$default->siteMap->addSectionColour("userAdministration", "td", "6699CC");
 
 //document type management
 $default->siteMap->addPage("doctype", "/presentation/lookAndFeel/knowledgeTree/administration/admin.php?sectionName=documentTypeAdministration", "doctypeAdministration", SysAdmin, "Document Type Management");
 $default->siteMap->addPage("docfield", "/presentation/lookAndFeel/knowledgeTree/administration/admin.php?sectionName=documentFieldAdministration", "doctypeAdministration", SysAdmin, "Document Field Management");
-
-
 // document type stuff
 $default->siteMap->addPage("addDocType", "/presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/addDocTypeBL.php", "documentTypeAdministration", SysAdmin, "Add a Document Type");
 $default->siteMap->addPage("addDocTypeSuccess", "/presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/addDocTypeSuccess.php", "documentTypeAdministration", SysAdmin, "Add a Document Type success", False);
@@ -250,6 +253,7 @@ $default->siteMap->addPage("editDocType", "/presentation/lookAndFeel/knowledgeTr
 $default->siteMap->addPage("removeDocType", "/presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/removeDocTypeBL.php", "documentTypeAdministration", SysAdmin, "Remove a Document Type");
 
 $default->siteMap->addSectionColour("doctypeAdministration", "th", "056DCE");
+$default->siteMap->addSectionColour("doctypeAdministration", "td", "6699CC");
 
 // doc field stuff
 $default->siteMap->addPage("addDocField", "/presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/addDocFieldBL.php", "documentFieldAdministration", SysAdmin, "Add a Document Field");
@@ -258,10 +262,16 @@ $default->siteMap->addPage("editDocField", "/presentation/lookAndFeel/knowledgeT
 $default->siteMap->addPage("removeDocField", "/presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/removeDocFieldBL.php", "documentFieldAdministration", SysAdmin, "Remove a Document Field");
 $default->siteMap->addPage("metadata", "/presentation/lookAndFeel/knowledgeTree/administration/admin.php?sectionName=metaDataAdministration", "documentFieldAdministration", SysAdmin, "Document Field Lookup Management");
 
+$default->siteMap->addSectionColour("documentFieldAdministration", "td", "6699CC");
+
 //metadata
 $default->siteMap->addPage("addMetaData", "/presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/metadatamanagement/addMetaDataBL.php", "metaDataAdministration", SysAdmin, "Add Document Field Lookups");
 $default->siteMap->addPage("editMetaData", "/presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/metadatamanagement/editMetaDataBL.php", "metaDataAdministration", SysAdmin, "Edit Document Field Lookups");
 $default->siteMap->addPage("removeMetaData", "/presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/metadatamanagement/removeMetaDataBL.php", "metaDataAdministration", SysAdmin, "Remove Document Field Lookups");
+
+$default->siteMap->addSectionColour("metaDataAdministration", "th", "056DCE");
+$default->siteMap->addSectionColour("metaDataAdministration", "td", "6699CC");
+
 // rolemanagement
 $default->siteMap->addPage("addRole", "/presentation/lookAndFeel/knowledgeTree/administration/rolemanagement/addRoleBL.php", "roleAdministration", SysAdmin, "Add New Role");
 $default->siteMap->addPage("editRole", "/presentation/lookAndFeel/knowledgeTree/administration/rolemanagement/editRoleBL.php", "roleAdministration", SysAdmin, "Edit Role Properties");
@@ -269,6 +279,7 @@ $default->siteMap->addPage("editRoleSuccess", "/presentation/lookAndFeel/knowled
 $default->siteMap->addPage("removeRole", "/presentation/lookAndFeel/knowledgeTree/administration/rolemanagement/removeRoleBL.php", "roleAdministration", SysAdmin, "Remove a Role");
 
 $default->siteMap->addSectionColour("roleAdministration", "th", "056DCE");
+$default->siteMap->addSectionColour("roleAdministration", "td", "6699CC");
 
 // link management
 $default->siteMap->addPage("addLink", "/presentation/lookAndFeel/knowledgeTree/administration/linkmanagement/addLinkBL.php", "linkAdministration", SysAdmin, "Add A Link");
@@ -276,8 +287,8 @@ $default->siteMap->addPage("addLinkSuccess", "/presentation/lookAndFeel/knowledg
 $default->siteMap->addPage("editLink", "/presentation/lookAndFeel/knowledgeTree/administration/linkmanagement/editLinkBL.php", "linkAdministration", SysAdmin, "Edit Link Properties");
 $default->siteMap->addPage("removeLink", "/presentation/lookAndFeel/knowledgeTree/administration/linkmanagement/removeLinkBL.php", "linkAdministration", SysAdmin, "Remove a Link");
 
-
 $default->siteMap->addSectionColour("linkAdministration", "th", "056DCE");
+$default->siteMap->addSectionColour("linkAdministration", "td", "6699CC");
 
 
 //website management
@@ -286,11 +297,15 @@ $default->siteMap->addPage("addWebsiteSuccess", "/presentation/lookAndFeel/knowl
 $default->siteMap->addPage("editWebSite", "/presentation/lookAndFeel/knowledgeTree/administration/websitemanagement/editWebsiteBL.php", "websiteAdministration", SysAdmin, "Edit Website");
 $default->siteMap->addPage("removeWebSite", "/presentation/lookAndFeel/knowledgeTree/administration/websitemanagement/removeWebsiteBL.php", "websiteAdministration", SysAdmin, "Remove a Website");
 
+$default->siteMap->addSectionColour("websiteAdministration", "th", "056DCE");
+$default->siteMap->addSectionColour("websiteAdministration", "td", "6699CC");
+
 // pages for subscriptions section
 $default->siteMap->addDefaultPage("manageSubscriptions", "/presentation/lookAndFeel/knowledgeTree/subscriptions/manageSubscriptionsBL.php", "Subscriptions", User, "Manage Subscriptions");
 $default->siteMap->addPage("viewAlert", "/presentation/lookAndFeel/knowledgeTree/subscriptions/viewAlertBL.php", "Subscriptions", User, "Subscriptions", false);
 
 $default->siteMap->addSectionColour("Subscriptions", "th", "FFC602");
+
 
 // pages for advanced search section
 $default->siteMap->addDefaultPage("advancedSearch", "/presentation/lookAndFeel/knowledgeTree/search/advancedSearchBL.php", "Advanced Search", Guest, "Advanced Search", true);
