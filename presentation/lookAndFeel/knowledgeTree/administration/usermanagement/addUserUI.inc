@@ -80,7 +80,7 @@ function getDetailsDBPage($sUserName, $aAttributes) {
         $sToRender .= "<td>Mobile: </td><td><input size = \"40\" type=\"text\" name=\"fMobile\" value = \"" . $aUserAttributes["mobile"] ."\"> </td>\n";
         $sToRender .= "</tr>\n";
         $sToRender .= "<tr>\n";
-        $sToRender .= "<td>Email Notification: </td><td><input type=\"checkbox\" name=\"fEmailNotification\" " . (isset($aUserAttributes["email_notification"]) ? "value=\"" . $aUserAttributes["email_notification"] . "\" " : "") . ($aUserAttributes["email_notification"] == "1" ? "checked" : "") . "\"> </td>\n";
+        $sToRender .= "<td>Email Notification: </td><td><input type=\"checkbox\" name=\"fEmailNotification\" " . (isset($aUserAttributes["email_notification"]) ? "value=\"" . $aUserAttributes["email_notification"] . "\" " : "") . ($aUserAttributes["email_notification"] == "1" ? "checked" : "") . "> </td>\n";
         $sToRender .= "</tr>\n";
         $sToRender .= "<tr><td><b>Initial Group</b></td><td>" . getGroupListBox() . "</td></tr>\n";        
         $sToRender .= "<tr>\n";
@@ -116,7 +116,7 @@ function getDetailsLDAPPage($sUserName, $aAttributes, $sUserIdentifier) {
         $sToRender .= "<td>Mobile Number: </td><td><input size = \"40\" type=\"text\" name=\"fMobile\" value = \"" . $aUserAttributes["mobile"] ."\"> </td>\n";
         $sToRender .= "</tr>\n";
         $sToRender .= "<tr>\n";        
-        $sToRender .= "<td>Email Notification: </td><td><input type=\"checkbox\" name=\"fEmailNotification\"/ CHECKED> </td>\n";
+        $sToRender .= "<td>Email Notification: </td><td><input type=\"checkbox\" name=\"fEmailNotification\" CHECKED/> </td>\n";
         $sToRender .= "</tr>\n";
         $sToRender .= "<tr>\n";
         $sToRender .= "<td>Sms Notification: </td><td><input type=\"checkbox\" name=\"fSmsNotification\"/> </td>\n";
