@@ -40,7 +40,7 @@ if (checkSession()) {
                             $sMessage = "Your colleague, " . $oUser->getName() . ", wishes you to view the document entitled '" . $oDocument->getName() . "'.\n  Click on the hyperlink below to view it";
                         }
                         // add the link to the document to the mail
-                        $sMessage .= ' ' . generateLink("/presentation/lookAndFeel/knowledgeTree/documentmanagement/viewBL.php", "fDocumentID=$fDocumentID", $oDocument->getName()); 
+                        $sMessage .= ' ' . generateControllerLink("viewDocument", "fDocumentID=$fDocumentID", $oDocument->getName());
 
                         //email the hyperlink
                         $oEmail = new Email();                        
