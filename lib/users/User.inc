@@ -345,28 +345,28 @@ class User {
     */
     function update() {
         global $default, $lang_err_database, $lang_err_object_key;
-        //only update if the object has been stored
-         if ($this->iId < 0) {
+        //only update if the object has been stored                
+         if ($this->iId > 0) {         	         	
             //check to see if name exsits
             $sql = $default->db;
-            $query = "SELECT username FROM ". $default->users_table ." WHERE username = '" . $this->sUserName . "'";
+            $query = "SELECT username FROM ". $default->users_table ." WHERE username = '" . $this->sUserName . "'";            
             $sql->query($query);
             $rows = $sql->num_rows($sql);
 
-            if ($rows > 0) {
+            if ($rows > 1) {            	
                 // duplicate username
                 $_SESSION["errorMessage"] = "User::The username " . $this->sUserName . " is already in use!";
                 return false;
             }
             else {
-            	$sql = $default->db;
-            	$result = $sql->query("UPDATE " . $default->users_table . " SET username = '$this->sUserName', name = '$this->sName', " . ($this->bPasswordChanged ? "password = '" . md5($this->sPassword) . "', " : " ") . " quota_max = $this->iQuotaMax, email = '$this->sEmail', mobile = '$this->sMobile', email_notification = " . ($this->bEmailNotification ? 1 : 0) . ", sms_notification = " . ($this->bSmsNotification ? 1 : 0) . ", ldap_dn = '$this->sLdapDn', max_sessions = $this->iMaxSessions, language_id = $this->iLanguageID WHERE id = $this->iId");
+            	$sql = $default->db;            	
+            	$result = $sql->query("UPDATE " . $default->users_table . " SET username = '$this->sUserName', name = '$this->sName', " . ($this->bPasswordChanged ? "password = '" . md5($this->sPassword) . "', " : " ") . " quota_max = $this->iQuotaMax, email = '$this->sEmail', mobile = '$this->sMobile', email_notification = " . ($this->bEmailNotification ? 1 : 0) . ", sms_notification = " . ($this->bSmsNotification ? 1 : 0) . ", ldap_dn = '$this->sLdapDn', max_sessions = $this->iMaxSessions, language_id = $this->iLanguageID WHERE id = $this->iId");            	
             	if ($result) {
               	  return true;
             	}
             $_SESSION["errorMessage"] = $lang_err_database;
             return false;
-        }
+        	}
         }
         $_SESSION["errorMessage"] = $lang_err_object_key;
         return false;
