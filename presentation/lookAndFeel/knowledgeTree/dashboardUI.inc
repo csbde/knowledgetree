@@ -27,7 +27,7 @@ function renderPendingCollaborationDocuments($aPendingDocumentList) {
     for ($i = 0; $i < count($aPendingDocumentList); $i++) {
         $oDocument = $aPendingDocumentList[$i];
         $sToRender .= "\t<tr>\n";
-        $sToRender .= "<td nowrap colspan=\"2\">" . generateControllerLink("viewDocument", "fDocumentID=" . $oDocument->getID(), "<img src=\"$default->graphicsUrl/widgets/dstatus.gif\" border=\"0\"/>" . $oDocument->getDisplayPath()) . "</td>\n";        
+        $sToRender .= "<td nowrap colspan=\"2\">" . generateControllerLink("viewDocument", "fDocumentID=" . $oDocument->getID(), "<img src=\"$default->graphicsUrl/widgets/dstatus.gif\" border=\"0\"/>&nbsp;" . $oDocument->getDisplayPath()) . "</td>\n";        
         $sToRender .= "\t</tr>\n";
     }    
     return $sToRender;
@@ -58,7 +58,7 @@ function renderCheckedOutDocuments($aCheckedOutDocumentList) {
     for ($i = 0; $i < count($aCheckedOutDocumentList); $i++) {
         $oDocument = $aCheckedOutDocumentList[$i];
         $sToRender .= "\t<tr>\n";
-        $sToRender .= "<td nowrap>" . generateControllerLink("viewDocument", "fDocumentID=" . $oDocument->getID(), $oDocument->getDisplayPath()) . "</td>\n";
+        $sToRender .= "<td nowrap>" . generateControllerLink("viewDocument", "fDocumentID=" . $oDocument->getID(), "<img src=\"$default->graphicsUrl/widgets/dstatus.gif\" border=\"0\"/>&nbsp;" . $oDocument->getDisplayPath()) . "</td>\n";
         $sToRender .= "<td>" . $oDocument->getDaysSinceLastModified() . "</td>\n";
         $sToRender .= "\t</tr>\n";
     }
@@ -121,7 +121,7 @@ function renderPage($aPendingDocumentList, $aCheckedOutDocumentList, $aSubscript
     
     // dashboard alerts
     $sToRender .= "\t<tr>\n";
-    $sToRender .= "\t\t<td width=\"50%\" valign=\"top\">\n";
+    $sToRender .= "\t\t<td width=\"50%\" valign=\"top\" colspan=2>\n";
     $sToRender .= "\t\t\t<table border=\"0\" width=\"100%\">\n";
     $sToRender .= renderPendingCollaborationDocuments($aPendingDocumentList);
     $sToRender .= renderCheckedOutDocuments($aCheckedOutDocumentList) . "\n";

@@ -172,9 +172,9 @@ class Subscription {
         $sViewAlertParams = "fSubscriptionID=" . $this->iID . "&fSubscriptionType=" . $this->iSubscriptionType;
 
         if ($this->iSubscriptionType == SubscriptionConstants::subscriptionType("DocumentSubscription")) {
-            return generateControllerLink("viewAlert", $sViewAlertParams, "<img src=\"$default->graphicsUrl/widgets/subsc.gif\" border=\"0\"/>" . Document::getDocumentDisplayPath($this->iExternalID));
+            return generateControllerLink("viewAlert", $sViewAlertParams, "<img src=\"$default->graphicsUrl/widgets/subsc.gif\" border=\"0\"/>&nbsp;" . Document::getDocumentDisplayPath($this->iExternalID));
         } else if ($this->iSubscriptionType == SubscriptionConstants::subscriptionType("FolderSubscription")) {
-            return generateControllerLink("viewAlert", $sViewAlertParams, "<img src=\"$default->graphicsUrl/widgets/subsc.gif\" border=\"0\"/>" . Folder::getFolderDisplayPath($this->iExternalID));
+            return generateControllerLink("viewAlert", $sViewAlertParams, "<img src=\"$default->graphicsUrl/widgets/subsc.gif\" border=\"0\"/>&nbsp;" . Folder::getFolderDisplayPath($this->iExternalID));
         }
     }
     
