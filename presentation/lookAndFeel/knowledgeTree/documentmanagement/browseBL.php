@@ -71,7 +71,7 @@ if (checkSession()) {
 		controllerRedirect("browse", "fFolderID=" . $aResults["folders"][0]->getID());
 	}
     
-    require_once("../../../webpageTemplate.inc");    
+    require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");    
 	// display the browse results
     $oContent->addHtml(renderPage($aResults, $fBrowseType, $fSortBy, $fSortDirection));    
     $main->setCentralPayload($oContent);
