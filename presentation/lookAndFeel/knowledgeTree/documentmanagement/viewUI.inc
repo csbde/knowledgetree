@@ -339,7 +339,12 @@ function getCheckOutEditPage($oDocument, $bCheckedOut = false) {
         $sToRender .= "\t\t<td>You have now checked out this document. No one else can make updates to the document while you have it checked out. Click the Download button to get the latest version of the file. Please check it back in, as soon as you finish working on it.</td>\n";
         $sToRender .= "\t</tr>";
         $sToRender .= "\t<tr>\n";
-        $sToRender .= "<td><a href=\"$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $oDocument->getID() . "&fForDownload=1\"><img src=\"$default->graphicsUrl/widgets/download.gif\" border=\"0\" /></a>\n";
+        // IE ssl download hack- don't use ssl to download
+        if ($default->phpSniff->property("browser") == "ie") {
+            $sToRender .= "<td><a href=\"http://" . $default->serverName . "$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $oDocument->getID() . "&fForDownload=1\"><img src=\"$default->graphicsUrl/widgets/download.gif\" border=\"0\" /></a>\n";
+        } else {
+            $sToRender .= "<td><a href=\"$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $oDocument->getID() . "&fForDownload=1\"><img src=\"$default->graphicsUrl/widgets/download.gif\" border=\"0\" /></a>\n";    
+        }
         $sToRender .= "<a href=\"$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $oDocument->getID() . "\"><img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\" /></a></td>\n";        
     } else {
         $sToRender .= "\t\t<td>" . renderCheckOutPage($oDocument) . "</td>\n";
