@@ -52,7 +52,7 @@ function getPage($iDocumentID, $iDocumentTypeID, $bFirstEdit) {
 	$sToRender .= "</td>\n";
     if (!isset($bFirstEdit)) {    
         $sToRender .= "<td>\n";
-        $sToRender .= "<a href=\"$default->rootUrl/control.php?action=viewDocument&fDocumentID=$iDocumentID\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\" /></a>\n";
+        $sToRender .= generateControllerLink("viewDocument, "fDocumentID=$iDocumentID&fShowSection=typeSpecificMetaData", "<img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"/>");
         $sToRender .= "</td>\n";
     }
 	$sToRender .= "</tr>\n";
