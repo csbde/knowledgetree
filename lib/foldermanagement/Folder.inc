@@ -502,7 +502,7 @@ class Folder {
 		global $default;		
 		//if the folder has a parent		
 		$oFolder = Folder::get($iFolderID);
-		return $oFolder->sFullPath . " > " . $oFolder->getName();
+		return (strlen($oFolder->sFullPath) > 0 ?  $oFolder->sFullPath . " > " : "")  . $oFolder->getName();
 	}
 	
 	/**
