@@ -155,7 +155,7 @@ function getEditPage($oDocument) {
     $sToRender .= "<table>\n";
     $sToRender .= "<tr>\n";
     //$sToRender .= "<td><input type=\"image\" srcvalue=\"Edit\"></td>\n";
-    $sToRender .= "<td><input type=\"image\" src=\"$default->owl_graphics_url/widgets/edit.gif\"></td>\n";
+    $sToRender .= "<td><input type=\"image\" src=\"$default->owl_graphics_url/widgets/edit.gif\" border=\"0\"></td>\n";
     $sToRender .= "<td><a href=\"" . $_SERVER["PHP_SELF"] . "?fDocumentID=" . $oDocument->getID() . "&fForDownload=1\"><img src=\"$default->owl_graphics_url/widgets/download.gif\" border=\"0\" /></a></td>\n";
     $sToRender .= "<td><a href=\"" . generateControllerLink("emailDocument", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->owl_graphics_url/widgets/email.gif\" border=\"0\" /></a></td>\n";    
     $sToRender .= "<td><a href=\"" . generateControllerLink("deleteDocument", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->owl_graphics_url/widgets/delete.gif\" border=\"0\" /></a></td>\n";   
