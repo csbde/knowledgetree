@@ -152,7 +152,11 @@ class BrowseCriterion {
     }
 
     function searchWidget ($aRequest) {
-        return "<input type=\"text\" size=\"50\" name=\"bmd" . $this->getID() . "\" />";
+        return "<input type=\"text\" size=\"50\" name=\"" . $this->getWidgetBase() . "\" />";
+    }
+
+    function getWidgetBase () {
+        return "bmd" . strtr($this->getID(), '-', '_');
     }
 
     function getSearchTable() {
@@ -161,9 +165,9 @@ class BrowseCriterion {
 
     function searchSQL ($aRequest) {
         if ($this->bString) {
-            return array($this->getSearchTable() . "." . $this->getSearchField() . " LIKE '%" . DBUtil::escapeSimple($aRequest['bmd' . $this->getID()]) . "%'", array());
+            return array($this->getSearchTable() . "." . $this->getSearchField() . " LIKE '%" . DBUtil::escapeSimple($aRequest[$this->getWidgetBase()]) . "%'", array());
         } else {
-            return array($this->getSearchTable() . "." . $this->getSearchField() . " = ?", array($aRequest['bmd' . $this->getID()]));
+            return array($this->getSearchTable() . "." . $this->getSearchField() . " = ?", array($aRequest[$this->getWidgetBase()]));
         }
     }
 }
@@ -242,7 +246,7 @@ class CreatorCriterion extends BrowseCriterion {
         return $this->documentDisplay($oFolder);
     }
     function searchWidget ($aRequest) {
-        $sRet = "<select size=\"1\" name=\"bmd" . $this->getID() . "\">\n";
+        $sRet = "<select size=\"1\" name=\"" . $this->getWidgetBase() . "\">\n";
         $aUsers = User::getList();/*ok*/
         $sRet .= "<option value=\"-1\">None</option>\n";
         foreach ($aUsers as $oUser) {
@@ -254,20 +258,52 @@ class CreatorCriterion extends BrowseCriterion {
 }
 
 class DateCreatedCriterion extends BrowseCriterion {
-    var $aLookup = array(
-        "table" => "document_transactions",
-        "field" => "datetime",
-        "joinColumn" => "document_id",
-        "whereClause" => "transaction_id=1",
-    );
-
     function documentDisplay ($oDocument) {
-        $aDocumentTransaction = DocumentTransaction::getList(array("transaction_id = 1 AND document_id = ?", $oDocument->getID()));/*ok*/
-        return $aDocumentTransaction[0]->dDateTime;
+        return $oDocument->getCreatedDateTime();
     }
     function getName() {
         return "datecreated";
     }
+    function searchWidget ($aRequest) {
+        global $default;
+        $sStartWidget = $this->getWidgetBase() . "_start";
+        $sEndWidget = $this->getWidgetBase() . "_end";
+        $sToRender = "<input type=\"text\" size=\"10\" name=\"" . $sStartWidget . "\" />";
+        $sToRender .= "&nbsp;&nbsp;<a href=\"javascript:show_calendar('MainForm." . $sStartWidget . "',null,null,'YYYY-MM-DD', false);\" onmouseover=\"window.status='Date Picker';return true;\" onmouseout=\"window.status='';return true;\"><img src=\"$default->graphicsUrl/calendar/calendar.gif\" name=\"imgCalendar\" width=\"34\" height=\"21\" border=\"0\" alt=\"\"></a>";
+        $sToRender .= "<input type=\"text\" size=\"10\" name=\"" . $sEndWidget . "\" />";
+        $sToRender .= "&nbsp;&nbsp;<a href=\"javascript:show_calendar('MainForm." . $sEndWidget . "',null,null,'YYYY-MM-DD', false);\" onmouseover=\"window.status='Date Picker';return true;\" onmouseout=\"window.status='';return true;\"><img src=\"$default->graphicsUrl/calendar/calendar.gif\" name=\"imgCalendar\" width=\"34\" height=\"21\" border=\"0\" alt=\"\"></a>";
+        return $sToRender;
+    }
+    function searchSQL ($aRequest) {
+        $sStartWidget = $this->getWidgetBase() . "_start";
+        $sEndWidget = $this->getWidgetBase() . "_end";
+        // XXX: DateTimeFixup: Should be more intelligent with handling
+        // end date - should be end of day on that day.
+        if (!array_key_exists($this->getWidgetBase() . "_start", $aRequest)) {
+            $sStart = null;
+        } else {
+            $sStart = $aRequest[$this->getWidgetBase() . "_start"];
+        }
+        if (!array_key_exists($this->getWidgetBase() . "_end", $aRequest)) {
+            $sEnd = null;
+        } else {
+            $sEnd = $aRequest[$this->getWidgetBase() . "_end"];
+        }
+        if ($sStart && $sEnd) {
+            return array($this->getSearchTable() . "." . $this->getSearchField() . " BETWEEN ? AND ?", array($sStart, $sEnd));
+        }
+        if ($sStart) {
+            return array($this->getSearchTable() . "." . $this->getSearchField() . " > ?", array($sStart));
+        }
+        if ($sEnd) {
+            return array($this->getSearchTable() . "." . $this->getSearchField() . " < ?", array($sEnd));
+        }
+        var_dump($aRequest);
+        var_dump($sStart);
+        var_dump($sEnd);
+        return array('Huh = ?', array(1));
+    }
+
 }
 
 class DocumentTypeCriterion extends BrowseCriterion {
@@ -284,7 +320,7 @@ class DocumentTypeCriterion extends BrowseCriterion {
         return "&nbsp;";
     }
     function searchWidget ($aRequest) {
-        $sRet = "<select size=\"1\" name=\"bmd" . $this->getID() . "\">\n";
+        $sRet = "<select size=\"1\" name=\"" . $this->getWidgetBase() . "\">\n";
         $aUsers = DocumentType::getList();/*ok*/
         $sRet .= "<option value=\"-1\">None</option>\n";
         foreach ($aUsers as $oUser) {
@@ -350,7 +386,7 @@ class Criteria {
                 $oCriterion =& new CreatorCriterion(_("Creator"), 'creator_id', 'creator_id', -3);
                 break;
             case -4:
-                $oCriterion =& new DateCreatedCriterion(_("Date Created"), 'id', 'id', -4);
+                $oCriterion =& new DateCreatedCriterion(_("Date Created"), 'created', 'created', -4);
                 break;
             case -5:
                 $oCriterion =& new DocumentTypeCriterion(_("Document Type"), 'document_type_id', 'document_type_id', -5);
