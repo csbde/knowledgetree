@@ -82,7 +82,7 @@ function renderFolderList($fFolderID, $sLinkURL) {
 	$aColumnHeaderNames = array("Folder");
 	
 	$oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaderNames, "100%", "$default->owl_root_url/$sLinkURL&fFolderID=", "id");
-	$oPatternTableSqlQuery->setImageURL("$default->owl_graphics_url/graphics/widgets/dfolder.gif");
+	$oPatternTableSqlQuery->setImageURL("$default->owl_graphics_url/widgets/dfolder.gif");
 	$oPatternTableSqlQuery->setEmptyTableMessage("This folder contains no sub folders");
 	return $oPatternTableSqlQuery->render();
 }
