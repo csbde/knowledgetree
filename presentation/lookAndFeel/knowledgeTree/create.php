@@ -44,12 +44,12 @@ for ($i = 0; $i < count($aKeys); $i++) {
 					break;
 				case 2:			
 					//check boxes don't post back any values if they are unchecked
-					//so we have to do a special check
-					if (strpos($aKeys[$i + 1], "parnum") != 0) {
-						//if the next key is one of type parnum, then the checkbox
+					//so we have to do a special check					
+					if ((strpos($aKeys[$i + 1], "parnum") != 0) || (substr($aKeys[$i + 1],0,10) == "unique_end")) {						
+						//if the next key is one of type parnum or is the end of the section, then the checkbox
 						//didn't post anything back and is obviously unchecked
 						$value = 0;
-					} else {
+					} else {						
 						//the checkbox did post back a value and was therefore checked
 						//the checkbox posts back a value of "on" so don't actually use the postback
 						//value, rather just set value to true
