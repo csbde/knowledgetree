@@ -26,8 +26,8 @@ class DocumentLink {
 	/**
 	* Default constructor
 	*
-	* @param 	Name of document field
-	* @param 	Document field data type
+	* @param 	Parent document primary key
+	* @param 	Child document primary key
 	*
 	*/
 	function DocumentLink($iNewParentDocumentID, $iNewChildDocumentID) {
