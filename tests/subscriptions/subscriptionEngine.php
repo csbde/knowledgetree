@@ -92,6 +92,7 @@ if (checkSession()) {
     $time = $timer->get_current('subscriptionFiring');
     echo "</ul><li><b>All Subscriptions: processed alerts=$iTotalCount; time=$time; subs/s=" . ($time/$iTotalCount) . "</b></li></ul>";
 
+    /*
     // cleanup silently
     for ($i = 1; $i<=10; $i++) {
         if ($i<=5) {
@@ -99,6 +100,7 @@ if (checkSession()) {
         } else {
             $oSubscriptionManager->removeSubscription($i, $iDocumentID, SubscriptionConstants::subscriptionType("DocumentSubscription"));
         }
-    }
+}
+    */
 }
 ?>
