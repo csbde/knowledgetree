@@ -89,7 +89,7 @@ user_id INTEGER NOT NULL,
 folder_id INTEGER NOT NULL,
 role_type_id INTEGER NOT NULL,
 datetime DATETIME,
-done BOOL
+done BIT
 ) 
 ;
 
