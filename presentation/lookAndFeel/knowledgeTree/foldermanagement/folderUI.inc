@@ -20,7 +20,7 @@
  * @param string the page to link to (defaults to the page this is called from)
  */
 function displayFolderPathLink($aPathArray, $sLinkPage = "") {
-    global $default;
+    global $default;	
    if (strlen($sLinkPage) == 0) {
        $sLinkPage = $_SERVER["PHP_SELF"];
    }
@@ -82,8 +82,10 @@ function renderFolderList($fFolderID, $sLinkURL) {
 	$aColumns = array("name");
 	$aColumnTypes = array(3);
 	$aColumnHeaderNames = array("Folder");
+	$aDBColumns = array("id");
+	$aQueryStringVariableNames = array("fFolderID");
 	
-	$oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaderNames, "100%", "$default->owl_root_url/$sLinkURL&fFolderID=", "id");
+	$oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaderNames, "100%", "$default->owl_root_url/$sLinkURL", $aDBColumns, $aQueryStringVariableNames);
 	$oPatternTableSqlQuery->setImageURL("$default->owl_graphics_url/widgets/dfolder.gif");
 	$oPatternTableSqlQuery->setEmptyTableMessage("This folder contains no sub folders");
 	return $oPatternTableSqlQuery->render();
