@@ -9,6 +9,11 @@
 */
 
 
+function goBack(){
+	global $default;
+	return "<table width=100%><tr><td align=right><img src=\"$default->graphicsUrl/widgets/back.gif\" onmouseover=\"this.style.cursor='hand'\" onclick=\"javascript: history.go(-1);\" ></td></tr></table>";
+}
+
 // If there are no threads to view for a document
 function getViewFailPage($sMessage)
 {

@@ -59,9 +59,10 @@ if(checkSession()) {
 					    if (!isset($fStartIndex)) { $iStartIndex = 0 ;}
 					    else { $iStartIndex = $fStartIndex ;}
 					    
-					    $oSearchResults = & new PatternBrowseableSearchResults ($sQuery, 14, $aColumns, $aColumnTypes, $aColumnNames, $aHyperLinkURL, $aQueryStringCols, $aQueryStringVars);
+					    $oSearchResults = & new PatternBrowseableSearchResults ($sQuery, 13, $aColumns, $aColumnTypes, $aColumnNames, $aHyperLinkURL, $aQueryStringCols, $aQueryStringVars);
 					    $oSearchResults->setStartIndex($iStartIndex);
 					    $oSearchResults->setQueryString("&fDocumentID=$fDocumentID&fForDiscussion=1");
+					    $oPatternCustom->addHtml(goBack());
 					    $oPatternCustom->addHtml($oSearchResults->render());    
 						
 						// On opening, increment the number of views of current thread & update database
