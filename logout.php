@@ -17,8 +17,9 @@
  
 // main library routines and defaults
 require_once("./config/dmsDefaults.php");
-require_once("$default->owl_fs_root/lib/owl.lib.php");
-require_once("$default->owl_fs_root/config/html.php");
+require_once("$default->owl_fs_root/lib/db.inc");
+require_once("$default->owl_fs_root/lib/dms.inc");
+require_once("$default->owl_fs_root/lib/lookup.inc");
 require_once("$default->owl_fs_root/lib/control.inc");
 require_once("$default->owl_fs_root/lib/Session.inc");
 
