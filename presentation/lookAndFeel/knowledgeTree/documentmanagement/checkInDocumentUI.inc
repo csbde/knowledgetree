@@ -109,7 +109,7 @@ function renderCheckInPage($oDocument) {
  * @param object the document to view and check out
  */
 function getCheckInPage($oDocument) {
-    $sToRender .= renderHeading("Check In Document");
+    $sToRender .= renderHeading(_("Check In Document"));
     $sToRender .= renderDocumentPath($oDocument, false) . "\n\n";
 	$sToRender .= renderCheckInPage($oDocument);
 	$sToRender .= renderDocumentData($oDocument, $bEdit);   

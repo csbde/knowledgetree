@@ -38,7 +38,7 @@ function getPage($iUserID) {
         $heading = "<tr><td>" . _("Please select a User") . ":</td></tr>\n";
     }
 
-    $sToRender .= renderHeading("Edit User Groups");
+    $sToRender .= renderHeading(_("Edit User Groups"));
     $sToRender .= "<table>\n";
     $sToRender .= $heading;
     $sToRender .= "<tr>\n";
@@ -97,7 +97,7 @@ function getUnitPage($iGroupID) {
 	$sTableTag .= "<table width=100% border=0 cellspacing=0>";
 	$sBgColor = "#F5F6EE";
 	
-	$sToRender .= renderHeading("Edit Group Units");
+	$sToRender .= renderHeading(_("Edit Group Units"));
 	
     $sToRender .= "<table width=\"600\" border=0>";
     $sToRender .= "<tr><td width=100%><b>" . _("Group Name") . ": </b>" . $oGroup->getName() . "</td><td>";
@@ -149,7 +149,7 @@ function getDeleteConfirmedPage($iUserID,$fGroupID) {
         $Groupdisplay = "<td>" . _("Group Name") . ": " . $oGroup->getName() . "</td>\n";
     }
 
-    $sToRender .= "<table width=\"600\">" . renderHeading("Edit User Groups") . "</table>";
+    $sToRender .= "<table width=\"600\">" . renderHeading(_("Edit User Groups")) . "</table>";
     $sToRender .= "<table>\n";
     $sToRender .= "<tr>\n";
     $sToRender .= $heading;
@@ -176,7 +176,7 @@ function getDeleteConfirmedPage($iUserID,$fGroupID) {
 function getPageFail() {
     global $default;
 
-    $sToRender .= "<table width=\"600\">" . renderHeading("Edit User Groups") . "</table>";
+    $sToRender .= "<table width=\"600\">" . renderHeading(_("Edit User Groups")) . "</table>";
     $sToRender .= "<table>\n";
     $sToRender .= "<tr><td><b>" . _("Sorry, Removal Failed") . "</b></td></tr>\n";
     $sToRender .= "<tr></tr>\n";
@@ -197,7 +197,7 @@ function getPageFail() {
 function getPageSuccess() {
     global $default;
 
-    $sToRender .= "<table width=\"600\">" . renderHeading("Edit User Groups") . "</table>";
+    $sToRender .= "<table width=\"600\">" . renderHeading(_("Edit User Groups")) . "</table>";
     $sToRender .= "<table>\n";
     $sToRender .= "<tr><td><b>" . _("Success") . "!</b></td></tr>\n";
     $sToRender .= "<tr></tr>\n";

@@ -34,8 +34,8 @@ function getOrganisations() {
 				"ORDER BY org.name";
     //$aColumns = array("name", "Edit", "Delete");
     $aColumns = array("name", "Edit");
-    //$aColumnNames = array("Name", "Edit", "Delete");
-    $aColumnNames = array("Name", "Edit");
+    //$aColumnNames = array(_("Name"), _("Edit"), _("Delete"));
+    $aColumnNames = array(_("Name"), _("Edit"));
     //$aColumnTypes = array(1,3,3);
     $aColumnTypes = array(1,3);    
     $aDBColumnArray = array("orgID");

@@ -31,7 +31,7 @@
 function renderListDeletedDocumentsPage($aDocuments) {
 	global $default;
 
-	$sToRender  = renderHeading("Expunge Deleted Documents");
+	$sToRender  = renderHeading(_("Expunge Deleted Documents"));
 	$sToRender .= "<table>";
 	if (count($aDocuments) > 0) {
 	    $sToRender .= "<tr><td>" . _("The following documents have been deleted from the DMS.") . "</td></tr>\n";

@@ -83,7 +83,7 @@ function renderUserPicker() {
 
 function getDocumentEmailPage($oDocument) {
 	global $default;
-    $sToRender = renderHeading("Email Document Link");
+    $sToRender = renderHeading(_("Email Document Link"));
 	$sToRender .= getDocumentPath($oDocument) . "\n<br>\n";
 	$sToRender .= "<table width=\"100%\">\n";
 	$sToRender .= "<tr><td><table>\n";	

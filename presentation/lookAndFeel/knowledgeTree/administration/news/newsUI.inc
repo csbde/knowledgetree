@@ -43,7 +43,7 @@ function renderNewsTable() {
     $sQuery = "SELECT id, synopsis, IF(LENGTH(body) > 25, CONCAT(LEFT(body,25),'...'), body) AS body, rank, IF(LENGTH(image)>0, 'yes', 'no') as image, active, 'Edit' AS edit, 'Preview' AS preview, 'Delete' AS del " .   
               "FROM $default->news_table ORDER BY rank ASC";
     $aColumns = array("synopsis", "body", "rank", "image", "active", "edit", "preview", "del");
-    $aColumnHeaders = array("Synopsis", "Body", "Rank", "Image", "Active");
+    $aColumnHeaders = array(_("Synopsis"), _("Body"), _("Rank"), _("Image"), _("Active"));
     $aColumnTypes = array(1,1,1,1,2,3,3,3);
     $aDBColumnArray = array("id");
     $aQueryStringVariableNames = array("fNewsID");
@@ -114,7 +114,7 @@ function renderEditAddNewsForm($oDashboardNews) {
 function renderEditNewsPage($oDashboardNews, $sErrorMessage = "") {
 	global $default;
 	
-	$sToRender .= renderHeading("Edit Dashboard News");
+	$sToRender .= renderHeading(_("Edit Dashboard News"));
 	if (strlen($sErrorMessage) > 0) {
 		$sToRender .= renderErrorMessage($sErrorMessage);
 	}
@@ -130,7 +130,7 @@ function renderEditNewsPage($oDashboardNews, $sErrorMessage = "") {
 function renderAddNewsPage($oDashboardNews, $sErrorMessage = "") {
 	global $default;
 	
-	$sToRender .= renderHeading("Add Dashboard News");
+	$sToRender .= renderHeading(_("Add Dashboard News"));
 	if (strlen($sErrorMessage) > 0) {
 		$sToRender .= renderErrorMessage($sErrorMessage);
 	}	
@@ -145,7 +145,7 @@ function renderAddNewsPage($oDashboardNews, $sErrorMessage = "") {
 function renderListNewsPage() {
 	global $default;
 	
-	$sToRender .= renderHeading("Dashboard News Management");
+	$sToRender .= renderHeading(_("Dashboard News Management"));
 	$sToRender .= getAddLink("addNews", "Add Dashboard News Item");	
     $sToRender .= "<table>\n";
 	$sToRender .= renderNewsTable();
@@ -174,7 +174,7 @@ function renderPreviewNewsPage($oDashboardNews) {
 function renderDeleteNewsConfirmationPage($oDashboardNews) {
 	global $default;
 	
-	$sToRender .= renderHeading("Delete Dashboard News");
+	$sToRender .= renderHeading(_("Delete Dashboard News"));
     $sToRender .= "<table>\n";
 	$sToRender .= "<tr><td colspan=\"2\">" . _("Are you sure you wish to delete this news item?") . "</td></tr>";
 	

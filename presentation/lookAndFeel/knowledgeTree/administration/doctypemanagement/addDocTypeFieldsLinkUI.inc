@@ -28,7 +28,7 @@
 function getOptionPage($iDocTypeID = null){
 	global $default;
 	
-	$sToRender .= renderHeading("Add Type Specific Field to Document Type");
+	$sToRender .= renderHeading(_("Add Type Specific Field to Document Type"));
 	$sToRender .= "<br>";
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr><td>" . _("New type specific field?") . "</td><td><a href=\"$default->rootUrl/control.php?action=addDocTypeFieldsLink&fNewField=1&fDocTypeID=$iDocTypeID\"><img src =\"$default->graphicsUrl/widgets/select.gif\" border = \"0\" /></a></td></tr>\n";

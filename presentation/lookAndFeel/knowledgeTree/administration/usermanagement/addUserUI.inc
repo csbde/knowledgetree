@@ -27,7 +27,7 @@
 // display multiple users
 function getSelectUserPage($aResults) {
 	global $default;
-    $sToRender .= renderHeading("Add User To System");
+    $sToRender .= renderHeading(_("Add User To System"));
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr><td>" . _("Select the User to add to the System:") . "</td></tr>\n";
 	$sToRender .= "<tr><td><select name=\"fName\">\n";
@@ -43,7 +43,7 @@ function getSelectUserPage($aResults) {
 // get add pages
 function getSearchPage($unitID) {
 	global $default;
-    $sToRender .= renderHeading("Search For A User To Add");
+    $sToRender .= renderHeading(_("Search For A User To Add"));
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr><td colspan=\"2\">" . _("Please enter a VALID Username to search for in the text box below") . "</td></tr>\n";
 	$sToRender .= "<tr>\n";
@@ -60,7 +60,7 @@ function getSearchPage($unitID) {
 
 function getDetailsDBPage($sUserName, $aAttributes) {
  	global $default;
-    $sToRender .= renderHeading("Add User To System");
+    $sToRender .= renderHeading(_("Add User To System"));
     foreach ($aAttributes as $sUserName => $aUserAttributes) {
         $sToRender .= "<table>\n";
         $sToRender .= "<tr><td><b>" . _("User Details") . ": </b></td></tr>\n";
@@ -94,7 +94,7 @@ function getDetailsDBPage($sUserName, $aAttributes) {
 
 function getDetailsLDAPPage($sUserName, $aAttributes, $sUserIdentifier) {
  	global $default;
-    $sToRender .= renderHeading("Add User To System");
+    $sToRender .= renderHeading(_("Add User To System"));
 	foreach ($aAttributes as $sUserName => $aUserAttributes) {
         $sToRender .= "<table>\n";
         $sToRender .= "<tr><td><b>" . _("User Details") . ": </b></td></tr>\n";

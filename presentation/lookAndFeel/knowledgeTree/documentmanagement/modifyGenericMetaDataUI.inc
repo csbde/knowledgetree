@@ -52,7 +52,7 @@ function getEditableGenericMetaData($iDocumentID, $iDocumentTypeID) {
 function getPage($iDocumentID, $iDocumentTypeID, $fFirstEdit) {
 	global $default;
 	
-	$sToRender .= renderHeading("Edit Generic Meta Data");
+	$sToRender .= renderHeading(_("Edit Generic Meta Data"));
 	$sToRender .= displayDocumentPath($iDocumentID);
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr>\n";		

@@ -33,7 +33,7 @@ function getEditPage($iOrgID) {
 		$oOrg = Organisation::get($iOrgID);
 	}
 	
-	$sToRender .= renderHeading("Edit Organisation");
+	$sToRender .= renderHeading(_("Edit Organisation"));
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr><td>" . _("Please select an Organisation") . ":</td></tr>\n";
 	$sToRender .= "<tr>\n";
@@ -55,7 +55,7 @@ function getEditPage($iOrgID) {
 function getEditPageSuccess() {	
 	global $default;
 			
-	$sToRender .= renderHeading("Edit Organisation");
+	$sToRender .= renderHeading(_("Edit Organisation"));
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr><td><b>" . _("Success") . "!</b></td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
@@ -76,7 +76,7 @@ function getEditPageSuccess() {
 function getEditPageFail() {	
 	global $default;
 			
-    $sToRender .= renderHeading("Edit Organisation");
+    $sToRender .= renderHeading(_("Edit Organisation"));
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr><td><b>" . strtoupper(_("Failure")) . "!</b>>/td></tr>\n";
 	$sToRender .= "<tr></tr>\n";

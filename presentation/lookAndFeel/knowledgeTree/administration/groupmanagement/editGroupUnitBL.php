@@ -48,7 +48,7 @@ if (checkSession()) {
         if($fGroupID == -1) {
             $oPatternCustom->setHtml(getPageNotSelected());
         } else {            
-   			$oPatternCustom->setHtml(renderHeading("Edit Group Units"));
+   			$oPatternCustom->setHtml(renderHeading(_("Edit Group Units")));
             $oPatternCustom->setHtml(getUnitPage($fGroupID));
             $main->setFormAction($_SERVER["PHP_SELF"] . "?fGroupSet=1&fUnitSet=1");
         }

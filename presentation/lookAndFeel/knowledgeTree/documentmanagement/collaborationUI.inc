@@ -64,7 +64,7 @@ function getDocumentRoutingPage($iGroupID, $iUserID, $iRoleID, $iSequenceNumber,
 	$sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
 	$sTDBGColour = $default->siteMap->getSectionColour($sSectionName, "td");
 	$sTHBGColour = $default->siteMap->getSectionColour($sSectionName, "th");
-	return 	renderHeading("Edit Document Approval Routing") .
+	return 	renderHeading(_("Edit Document Approval Routing")) .
 			displayDocumentPath($fDocumentID) .
 			"<table cellspacing=2, cellpadding=2, border=0>\n" .
 			"<caption><b>Document Routing</b></caption>\n" .

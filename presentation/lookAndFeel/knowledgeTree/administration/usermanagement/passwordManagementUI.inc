@@ -27,7 +27,7 @@
 
 function getPage($sUserName) {
 	global $default;
-	$sToRender = renderHeading("Update user password");
+	$sToRender = renderHeading(_("Update user password"));
 	$sToRender .= "<br>\n";	
 	$sToRender .= "<table cellpadding=\"5\">\n";
 	$sToRender .= "<tr>\n";
@@ -58,7 +58,7 @@ function getPage($sUserName) {
 function getPasswordUpdateSuccessPage() {	
 	global $default;
 			
-	$sToRender .= renderHeading("Update user password");
+	$sToRender .= renderHeading(_("Update user password"));
 	$sToRender .= "<br>\n";
 	$sToRender .= "<table>\n";	
 	$sToRender .= "<tr><td>The user's password was successfully updated</td></tr>\n";

@@ -44,7 +44,7 @@ function getFolderData($iFolderID, $sDivName, $sStatusMessage = "") {
 			
 			
 	$aColumns = array("name", "description", "is_public");
-	$aColumnHeaders = array("Name", "Description", "Public");
+	$aColumnHeaders = array(_("Name"), _("Description"), _("Public"));
 	$aColumnTypes = array(1,1,2);
 	
 	$oPatternListFromQuery = & new PatternListFromQuery($sQuery, $aColumns, $aColumnHeaders, $aColumnTypes);
@@ -78,7 +78,7 @@ function getFolderRouting($iFolderID, $sDivName, $bCollaboration) {
 			  "ORDER BY GFAL.precedence, role_name ASC";
 	
 	$aColumns = array("group_name", "role_name", "precedence", "user_name", "edit", "del", "depn");
-	$aColumnHeaders = array("Group", "Role", "Seq", "User", "", "");
+	$aColumnHeaders = array(_("Group"), _("Role"), _("Seq"), _("User"), "", "");
 	$aColumnTypes = array(1,1,1,1,3,3,3);
 	$aDBColumnArray = array("id","folder_id","group_id","user_id","precedence","role_id");
 	$aQueryStringVariableNames = array("fFolderCollaborationID", "fFolderID", "fGroupID","fUserID","fSequenceNumber","fRoleID");
@@ -137,7 +137,7 @@ function getFolderGroupAccess($iFolderID, $sDivName) {
 			  "WHERE GFL.folder_id = $iFolderID";
 	
 	$aColumns = array("group_name", "can_read", "can_write", "edit", "del");
-	$aColumnHeaders = array("Group", "Read", "Write", "", "");
+	$aColumnHeaders = array(_("Group"), _("Read"), _("Write"), "", "");
 	$aColumnTypes = array(1,2,2,3,3);
 	$aDBColumnArray = array("id","folder_id");
 	$aQueryStringVariableNames = array("fGroupFolderLinkID", "fFolderID");
@@ -177,7 +177,7 @@ function getPage($iFolderID, $sStatusMessage, $bCollaboration = false) {
     global $default;
    	  		
 	$sToRender = "<div id=\"headings\" style=\"position:relative;visibility:visible;top:2px;left:2px;\">";
-    $sToRender .= renderHeading("Modify Folder Properties");
+    $sToRender .= renderHeading(_("Modify Folder Properties"));
     $sToRender .= getFolderPath($iFolderID);    
 	$sToRender .= "<table border=0 cellspacing=\"0\" cellpadding=\"0\" width=\"610\">";
 	$sToRender .= "<tr><td valign=\"top\">";	
@@ -215,7 +215,7 @@ function getStatusPage($iFolderID, $sStatusMessage) {
     global $default;
        
 	$sToRender = "<div id=\"headings\" style=\"position:relative;visibility:visible;top:2px;left:2px;\">";       
-    $sToRender .= renderHeading("Modify Folder Properties");
+    $sToRender .= renderHeading(_("Modify Folder Properties"));
     $sToRender .= getFolderPath($iFolderID);
     $sToRender .= "<table border=\"0\" width=\"610\">";
 

@@ -310,7 +310,7 @@ function renderPage($aResults, $sBrowseType, $sSortBy, $sSortDirection) {
 	$sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
 	$sTDBGColour = $default->siteMap->getSectionColour($sSectionName, "td");    
 
-    $sToRender = renderHeading("Browse Collection");
+    $sToRender = renderHeading(_("Browse Collection"));
     
     $sToRender .= "<table border=\"0\" cellpadding=\"5\" width=\"100%\"><tr><td bgcolor=\"$sTDBGColour\">"; 
     switch ($sBrowseType) {

@@ -36,7 +36,7 @@ function getFolderPath($iFolderID) {
 
 function getPage($iFolderID, $iDocumentID, $iUnitID, $iUserID, $sDocumentTitle, $sTemplateDocument) {
 	global $default;
-	$sToRender = renderHeading("Create a new dependant document");
+	$sToRender = renderHeading(_("Create a new dependant document"));
     $sToRender .= getFolderPath($iFolderID);    
 	$sToRender .= "<table border=\"0\" width=\"100%\">\n";	
 	$sToRender .= "<tr>\n";	

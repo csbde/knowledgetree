@@ -36,7 +36,7 @@ function getFolderPath($iFolderID) {
 
 function getDeletePage($oGroupFolderLink, $iFolderID) {
 	global $default;
-    $sToRender  = renderHeading("Delete Folder Access");
+    $sToRender  = renderHeading(_("Delete Folder Access"));
     $sToRender .= getFolderPath($iFolderID);    
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr>\n";
@@ -60,7 +60,7 @@ function getDeletePage($oGroupFolderLink, $iFolderID) {
 
 function getEditPage($oGroupFolderLink, $iFolderID) {
 	global $default;
-    $sToRender  = renderHeading("Edit Folder Access");
+    $sToRender  = renderHeading(_("Edit Folder Access"));
     $sToRender .= getFolderPath($iFolderID);    
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr>\n";
@@ -87,7 +87,7 @@ function getEditPage($oGroupFolderLink, $iFolderID) {
 
 function getAddPage($iFolderID) {
 	global $default;
-    $sToRender  = renderHeading("Add Folder Access");
+    $sToRender  = renderHeading(_("Add Folder Access"));
     $sToRender .= getFolderPath($iFolderID);
     
 	$sToRender .= "<table>\n";

@@ -50,7 +50,7 @@ function getDocumentTypes() {
 
 function getPage() {
 	global $default;
-	$sToRender .= renderHeading("Document Type Management");
+	$sToRender .= renderHeading(_("Document Type Management"));
 
 	// add user link
 	$sToRender .= getAddLink("addDocType", _("Add A Document Type"));

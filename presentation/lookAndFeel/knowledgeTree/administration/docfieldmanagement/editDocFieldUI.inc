@@ -36,7 +36,7 @@ function getEditPage($iDocFieldID) {
         $currentDataType = $oDocField->getDataType();
     }
     
-    $sToRender .= renderHeading("Edit Document Field");
+    $sToRender .= renderHeading(_("Edit Document Field"));
     $sToRender .= "<table>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr>\n";
@@ -92,7 +92,7 @@ function getEditPage($iDocFieldID) {
 function getEditPageSuccess() {
     global $default;
     
-    $sToRender .= renderHeading("Edit Document Field");
+    $sToRender .= renderHeading(_("Edit Document Field"));
     $sToRender .= "<b>" . _("Success") . "!</b>\n";
     $sToRender .= "<table>\n";
     $sToRender .= "<br></br>\n";
@@ -113,7 +113,7 @@ function getEditPageSuccess() {
 function getEditPageFail() {
     global $default;
     
-    $sToRender .= renderHeading("Edit Document Field");
+    $sToRender .= renderHeading(_("Edit Document Field"));
     $sToRender .= "<b>" . strtoupper(_("Failure")) . "!</b>\n";
     $sToRender .= "<table>\n";
     $sToRender .= "<br></br>\n";

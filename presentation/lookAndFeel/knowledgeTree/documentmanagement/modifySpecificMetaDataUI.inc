@@ -51,7 +51,7 @@ function getEditableTypeSpecificMetaData($iDocumentID, $iDocumentTypeID) {
 
 function getPage($iDocumentID, $iDocumentTypeID, $bFirstEdit) {
 	global $default;
-	$sToRender .= renderHeading("Edit Type Specific Meta Data");
+	$sToRender .= renderHeading(_("Edit Type Specific Meta Data"));
 	$sToRender .= displayDocumentPath($iDocumentID);	
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr>\n";		

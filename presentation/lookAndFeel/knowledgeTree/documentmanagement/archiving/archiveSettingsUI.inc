@@ -211,7 +211,7 @@ function renderArchiveSettingsForm($iDocumentID, $oArchiveSettings, $iArchivingT
 function renderEditArchiveSettingsPage($iDocumentID, $oArchiveSettings, $sErrorMessage = "") {
 	global $default;
 	
-	$sToRender .= renderHeading("Edit Document Archive Settings");
+	$sToRender .= renderHeading(_("Edit Document Archive Settings"));
 	$sToRender .= displayDocumentPath($iDocumentID);	
 	if (strlen($sErrorMessage) > 0) {
 		$sToRender .= renderErrorMessage($sErrorMessage);
@@ -228,7 +228,7 @@ function renderEditArchiveSettingsPage($iDocumentID, $oArchiveSettings, $sErrorM
 function renderAddArchiveSettingsPage($iDocumentID, $iArchivingTypeID = false, $sErrorMessage = "") {
 	global $default;
 	
-	$sToRender .= renderHeading("Add Document Archive Settings");
+	$sToRender .= renderHeading(_("Add Document Archive Settings"));
 	$sToRender .= displayDocumentPath($iDocumentID);
 	if (strlen($sErrorMessage) > 0) {
 		$sToRender .= renderErrorMessage($sErrorMessage);
@@ -250,7 +250,7 @@ function renderAddArchiveSettingsPage($iDocumentID, $iArchivingTypeID = false, $
 function renderArchiveConfirmationPage($iDocumentID, $sErrorMessage = "") {
 	global $default;
 		
-	$sToRender = renderHeading("Archive Document");
+	$sToRender = renderHeading(_("Archive Document"));
 	if (strlen($sErrorMessage) > 0) {
 		$sToRender .= renderErrorMessage($sErrorMessage);
 	}	

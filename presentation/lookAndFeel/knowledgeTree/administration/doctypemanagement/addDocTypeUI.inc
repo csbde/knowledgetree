@@ -29,7 +29,7 @@
 function getPage() {
 
 	global $default;
-	$aDisplayRowNames = array("Document Type Name:");
+	$aDisplayRowNames = array(_("Document Type Name") . ":");
 	$aParameterNumbers = array(0);
 	$aDisplayColumnTypes = array(1);
 	$aRequired = array(1);
@@ -39,7 +39,7 @@ function getPage() {
 	$oPatternCreate = & new PatternCreate("DocumentType", "documentmanagement/DocumentType.inc",$aDisplayRowNames, $aParameterNumbers, $aDisplayColumnTypes, $aRequired);
 	$oPatternCreate->setUniqueName("documentType");
 	
-	$sToRender .= renderHeading("Add Document Type");
+	$sToRender .= renderHeading(_("Add Document Type"));
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";

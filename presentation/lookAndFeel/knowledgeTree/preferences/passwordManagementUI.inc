@@ -28,19 +28,19 @@
 
 function getPage($sUserName) {
     global $default;
-    $sToRender = renderHeading("Update user password");
+    $sToRender = renderHeading(_("Update user password"));
     $sToRender.= "<br>\n";
     $sToRender.= "<table cellpadding=\"5\">\n";
     $sToRender.= "<tr>\n";
-    $sToRender.= "<td bgcolor=\"FEE3CE\">User name: </td>\n";
+    $sToRender.= "<td bgcolor=\"FEE3CE\">" . _("User name") . ": </td>\n";
     $sToRender.= "<td bgcolor=\"F5F6EE\">$sUserName</td>\n";
     $sToRender.= "</tr>\n";
     $sToRender.= "<tr>\n";
-    $sToRender.= "<td bgcolor=\"FEE3CE\">New password: </td>\n";
+    $sToRender.= "<td bgcolor=\"FEE3CE\">" . _("New password") . ": </td>\n";
     $sToRender.= "<td bgcolor=\"F5F6EE\"><input type=\"password\" name=\"fNewPassword\"></td>\n";
     $sToRender.= "</tr>\n";
     $sToRender.= "<tr>\n";
-    $sToRender.= "<td bgcolor=\"FEE3CE\">Confirm password: </td>\n";
+    $sToRender.= "<td bgcolor=\"FEE3CE\">" . _("Confirm password") . ": </td>\n";
     $sToRender.= "<td bgcolor=\"F5F6EE\"><input type=\"password\" name=\"fNewPasswordConfirm\"></td>\n";
     $sToRender.= "</tr>\n";
     $sToRender.= "<tr>\n";
@@ -56,10 +56,10 @@ function getPage($sUserName) {
 
 function getPasswordUpdateSuccessPage() {
     global $default;
-    $sToRender.= renderHeading("Update user password");
+    $sToRender.= renderHeading(_("Update user password"));
     $sToRender.= "<br>\n";
     $sToRender.= "<table>\n";
-    $sToRender.= "<tr><td>The user's password was successfully updated</td></tr>\n";
+    $sToRender.= "<tr><td>" . _("The user's password was successfully updated") . "</td></tr>\n";
     $sToRender.= "<tr></tr>\n";
     $sToRender.= "<tr></tr>\n";
     $sToRender.= "<tr>\n";

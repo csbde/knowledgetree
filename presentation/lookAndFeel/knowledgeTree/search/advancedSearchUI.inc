@@ -63,12 +63,15 @@ function getMetaData($aMetaTagIDs) {
 	
 	return $sToRender;
 }
-function getSearchPage($sSearchString = "", $aMetaTagIDs = array(), $sHeading = "Advanced Search", $bSearchArchive = false) {
+function getSearchPage($sSearchString = "", $aMetaTagIDs = array(), $sHeading = null, $bSearchArchive = false) {
 	global $default;
+	if (is_null($sHeading)) {
+		$sHeading = _("Advanced Search");
+	}
     $sToRender  = renderHeading($sHeading);	
 	$sToRender .= "<table width=\"600\">\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>Search text: <input type=\"text\" size=\"50\" name=\"fSearchString\" value=\"$sSearchString\" />\n";
+	$sToRender .= "<td>" . _("Search text:") . " <input type=\"text\" size=\"50\" name=\"fSearchString\" value=\"$sSearchString\" />\n";
 	$sToRender .= "<input type=\"image\" src=\"$default->graphicsUrl/widgets/search.gif\" border=\"0\"/></td>\n";
 	$sToRender .= "</tr>\n";
 		
@@ -78,7 +81,7 @@ function getSearchPage($sSearchString = "", $aMetaTagIDs = array(), $sHeading = 
 		$sToRender .= "<tr>\n";
 		$sToRender .= "<td>&nbsp</td>\n";
 		$sToRender .= "</tr>\n";
-		$sToRender .= "<tr><td>Search: <select name=\"fToSearch\"><option value=\"Live\">Live</option><option value=\"Archived\">Archived</option></select> Documents</td></tr>";		
+		$sToRender .= "<tr><td>" . _("Search") . ": <select name=\"fToSearch\"><option value=\"Live\">" . _("Live") . "</option><option value=\"Archived\">" . _("Archived") . "</option></select> " . _("Documents") . "</td></tr>";		
 	}	
 
 	$sToRender .= "<tr>\n";
@@ -113,7 +116,7 @@ function getSearchResults($sMetaTagIDs, $sSQLSearchString, $iStartIndex, $sSearc
 	$default->log->info("getSearchResults $sQuery");
  	$aColumns = array("folder_name", "document_name", "doc_count");
  	$aColumnTypes = array(3,3,1);
-	$aColumnHeaders = array("<font color=\"ffffff\"><img src=$default->graphicsUrl/widgets/dfolder.gif> Folder</font>","<font color=\"ffffff\">Document</font>", "<font color=\"ffffff\">Matches</font>");
+	$aColumnHeaders = array("<font color=\"ffffff\"><img src=$default->graphicsUrl/widgets/dfolder.gif>" . _("Folder") . "</font>","<font color=\"ffffff\">" . _("Document") . "</font>", "<font color=\"ffffff\">" . _("Matches") . "</font>");
 	$aLinkURLs = array("$default->rootUrl/control.php?action=browse","$default->rootUrl/control.php?action=viewDocument");
 	$aDBQueryStringColumns = array("document_id","folder_id");
 	$aQueryStringVariableNames = array("fDocumentID", "fFolderID");
@@ -123,7 +126,7 @@ function getSearchResults($sMetaTagIDs, $sSQLSearchString, $iStartIndex, $sSearc
 	$oPatternBrowse->setSearchText($sSearchString);
     
     $sRefreshMessage = "<table><tr><td align=\"center\">If your browser displays a 'Warning: Page has Expired' message when you attempt to return to these search results, please click your browser's 'Refresh' button</td></tr></table>";
-	return renderHeading("Advanced Search") . $oPatternBrowse->render() . $sRefreshMessage . getSearchVariablesHtml($sSearchString, $sStatus, $sMetaTagIDs);
+	return renderHeading(_("Advanced Search")) . $oPatternBrowse->render() . $sRefreshMessage . getSearchVariablesHtml($sSearchString, $sStatus, $sMetaTagIDs);
 }
 
 function getSearchValidationJavaScript() {

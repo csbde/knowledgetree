@@ -29,7 +29,7 @@
 function getAddPage() {
 	global $default;
 	
-    $sToRender .= renderHeading("Add Unit");
+    $sToRender .= renderHeading(_("Add Unit"));
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
@@ -59,7 +59,7 @@ function getAddPage() {
 function getAddPageSuccess() {	
 	global $default;
 			
-	$sToRender .= renderHeading("Add Unit");
+	$sToRender .= renderHeading(_("Add Unit"));
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr><td><b>" . _("Addition Successful!") . "</b></td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
@@ -78,7 +78,7 @@ function getAddPageSuccess() {
 function getAddPageFail($sMessage) {	
 	global $default;
 			
-    $sToRender .= renderHeading("Add Unit");
+    $sToRender .= renderHeading(_("Add Unit"));
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr><td><b>" . _("Addition Unsuccessful") . "</b></td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
@@ -97,7 +97,7 @@ function getAddPageFail($sMessage) {
 function getPageFail() {	
 	global $default;
 			
-    $sToRender .= renderHeading("Add Unit");
+    $sToRender .= renderHeading(_("Add Unit"));
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr><td>" . _("Please enter a name AND Select the Organisation") . "</td></tr>\n";
@@ -114,7 +114,7 @@ function getPageFail() {
 function getAddPageToOrgFail() {	
 	global $default;
 			
-    $sToRender .= renderHeading("Add Unit");
+    $sToRender .= renderHeading(_("Add Unit"));
     $sToRender .= "<table>\n";
     $sToRender .= "<tr><td><b>" . _("Addition to Organisation Unsuccessful") . "</b></td></tr>\n";
 	$sToRender .= "<tr></tr>\n";

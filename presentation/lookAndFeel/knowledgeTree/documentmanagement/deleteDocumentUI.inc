@@ -35,7 +35,7 @@ function getDocumentPath($iFolderID, $sDocumentName) {
 
 function getPage($iDocumentID, $iFolderID, $sDocumentName) {
 	global $default;
-    $sToRender  = renderHeading("Delete Document");
+    $sToRender  = renderHeading(_("Delete Document"));
 	$sToRender .= getDocumentPath($iFolderID, $sDocumentName) . "<br>\n";
 	$sToRender .= "<table border=\"0\">\n";
 	$sToRender .= "<tr>\n";
@@ -60,7 +60,7 @@ function renderErrorPage($sErrorMessage, $iDocumentID = "") {
     if ($iDocumentID) {
     	return statusPage("Delete Document", "", $sErrorMessage, "viewDocument", "fDocumentID=$iDocumentID");
     } else {
-	    $sToRender  = renderHeading("Delete Document");    
+	    $sToRender  = renderHeading(_("Delete Document"));    
 	    $sToRender .= "<table>\n";
 	    $sToRender .= "<tr><td><p class=\"errorText\">$sErrorMessage</p>\n" .
 	                  "<a href=\"javascript:history.go(-1)\"><img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\"/></a>\n" .

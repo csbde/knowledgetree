@@ -42,7 +42,7 @@ if (checkSession()) {
 
     $oPatternCustom = & new PatternCustom();
 	
-	$oPatternCustom->addHtml(renderHeading("Add Unit to an Organisation"));    
+	$oPatternCustom->addHtml(renderHeading(_("Add Unit to an Organisation")));    
     
     if (isset($fUnitID)) {    	    
     	if ($fOrgID == "" && $fAdd == 1){

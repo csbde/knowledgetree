@@ -36,7 +36,7 @@ function getFolderPath($iFolderID) {
 
 function getPage($iFolderID, $iGroupID, $iRoleID, $iSequenceNumber) {
 	global $default;
-    $sToRender = renderHeading("Delete Folder Collaboration Step");
+    $sToRender = renderHeading(_("Delete Folder Collaboration Step"));
     $sToRender .= getFolderPath($iFolderID);
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr>\n";

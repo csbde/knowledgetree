@@ -37,7 +37,7 @@ function renderUploadPage($oWebDocument) {
     $oWebSite = WebSite::get($oWebDocument->getWebSiteID());
     $oUser = User::get($oDocument->getCreatorID());
     
-    $sToRender  = renderHeading("Web document");
+    $sToRender  = renderHeading(_("Web document"));
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr><td>'" . $oUser->getName() . "' has requested that the document </td></tr>";
     $sToRender .= "<tr><td><strong>" . generateControllerLink("viewDocument", "fDocumentID=" . $oDocument->getID(), $oDocument->getDisplayPath()) . "</strong></td></tr>";

@@ -28,7 +28,7 @@ function getEditMetaDataFailPage($iDocFieldID){
     global $default;
     
 
-    $sToRender .= renderHeading("Edit Document Field Lookup");
+    $sToRender .= renderHeading(_("Edit Document Field Lookup"));
     $sToRender .= "<table width=300>\n";
     $sToRender .= "<tr><td>" . _("Document has no lookups to edit.") . "</td></tr>\n";
     $sToRender .= "<tr>\n";
@@ -46,7 +46,7 @@ function getSelectFieldPage($iDocFieldID) {
         $oDocField = DocumentField::get($iDocFieldID);
     }
 
-    $sToRender .= renderHeading("Edit Document Field Lookup");
+    $sToRender .= renderHeading(_("Edit Document Field Lookup"));
     $sToRender .= "<table>\n";
     $sToRender .= "<tr>" . _("Please Select a Field") . "</tr>\n";
     $sToRender .= "<tr>\n";
@@ -79,7 +79,7 @@ function getSelectMetaDataPage($iDocFieldID, $iMetaDataID) {
 
 	getMetaDataDisplay($oMetaData,$iDocFieldID);
 
-    $sToRender .= renderHeading("Edit Document Field Lookup");
+    $sToRender .= renderHeading(_("Edit Document Field Lookup"));
     $sToRender .= "<table>\n";
     $sToRender .= "<tr>" . _("Please Select the Document Field Lookup you wish to Edit") . "</tr>\n";
     $sToRender .= "<tr>\n";
@@ -110,7 +110,7 @@ function getEditMetaDataPage($iDocFieldID, $iMetaDataID) {
         $oMetaData = MetaData::get($iMetaDataID);
     }
 
-    $sToRender .= renderHeading("Edit Document Field Lookup");
+    $sToRender .= renderHeading(_("Edit Document Field Lookup"));
     $sToRender .= "<table>\n";
     $sToRender .= "<tr>" . _("Enter a Different Value") . "</tr>\n";
     $sToRender .= "<tr>\n";
@@ -142,7 +142,7 @@ function getEditMetaDataPage($iDocFieldID, $iMetaDataID) {
 function getSuccessPage($iDocFieldID = null) {
     global $default;
 
-    $sToRender .= renderHeading("Edit Document Field Lookup");
+    $sToRender .= renderHeading(_("Edit Document Field Lookup"));
     $sToRender .= "<table>\n";
     $sToRender .= "<tr><td><b>" . _("Success") . "!</b></td></tr>\n";
     $sToRender .= "<tr><td>" . _("The Document Field Lookup was successfully edited") . "</td></tr>\n";
@@ -160,7 +160,7 @@ function getSuccessPage($iDocFieldID = null) {
 function getFailPage($iDocFieldID = null) {
     global $default;
 
-    $sToRender .= renderHeading("Edit Document Field Lookup");
+    $sToRender .= renderHeading(_("Edit Document Field Lookup"));
     $sToRender .= "<table>\n";
     $sToRender .= "<tr><td><b>" . strtoupper(_("Failure")) . "!</b></td></tr>\n";
     $sToRender .= "<tr><td>" . _("The Document Field Lookup was not updated") . "</td></tr>\n";
@@ -179,7 +179,7 @@ function getFailPage($iDocFieldID = null) {
 function getTextPage($iDocFieldID = null) {
     global $default;
 
-    $sToRender .= renderHeading("Edit Document Field Lookup");
+    $sToRender .= renderHeading(_("Edit Document Field Lookup"));
     $sToRender .= "<table>\n";
     $sToRender .= "<tr><td><b>" . strtoupper(_("Failure")) . "!</b></td></tr>\n";
     $sToRender .= "<tr><td>" . _("Please Enter a Value in the Text Box") . "</td></tr>\n";

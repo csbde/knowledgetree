@@ -30,7 +30,7 @@
  */
 function getPage() {
 	global $default;
-	$sToRender .= renderHeading("Add A New Group");
+	$sToRender .= renderHeading(_("Add A New Group"));
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>" . _("Group Name") . ":</td>\n";

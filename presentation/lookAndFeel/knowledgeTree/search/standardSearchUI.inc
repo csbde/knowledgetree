@@ -26,7 +26,7 @@
  */
 
 function getHeading() {
-    return renderHeading("Standard Search");
+    return renderHeading(_("Standard Search"));
 }
 
 function getMessage() {
@@ -59,7 +59,7 @@ function getSearchResultsByCategory($iFolderID, $sKeywords, $iStartIndex, $sCate
 				
 	$aColumns = array("folder_image_url", "document_name","score");
 	$aColumnTypes = array(4,3,1);
-	$aColumnHeaders = array("<font color=\"ffffff\">Folder</font>","<font color=\"ffffff\">Document</font>","<font color=\"ffffff\">Score</font>");
+	$aColumnHeaders = array("<font color=\"ffffff\">" . _("Folder") . "</font>","<font color=\"ffffff\">" . _("Document") . "</font>","<font color=\"ffffff\">" . _("Score") . "</font>");
 	$aLinkURLs = array("$default->rootUrl/control.php?action=browse","$default->rootUrl/control.php?action=viewDocument");
 	$aDBQueryStringColumns = array("document_id","folder_id");
 	$aQueryStringVariableNames = array("fDocumentID", "fFolderID");
@@ -92,7 +92,7 @@ function getSearchResultsByDocumentType($iFolderID, $sKeywords, $iStartIndex, $i
 	
 	$aColumns = array("folder_image_url", "document_name","score");
 	$aColumnTypes = array(4,3,1);
-	$aColumnHeaders = array("<font color=\"ffffff\">Folder</font>","<font color=\"ffffff\">Document</font>","<font color=\"ffffff\">Score</font>");
+	$aColumnHeaders = array("<font color=\"ffffff\">" . _("Folder") . "</font>","<font color=\"ffffff\">" . _("Document") . "</font>","<font color=\"ffffff\">" . _("Score") . "</font>");
 	$aLinkURLs = array("$default->rootUrl/control.php?action=browse","$default->rootUrl/control.php?action=viewDocument");
 	$aDBQueryStringColumns = array("document_id","folder_id");
 	$aQueryStringVariableNames = array("fDocumentID", "fFolderID");
@@ -123,7 +123,7 @@ function getSeachResultsByFolder($iFolderID, $iStartIndex, $sKeywords) {
 	
 	$aColumns = array("folder_image_url", "document_name","score");
 	$aColumnTypes = array(4,3,1);
-	$aColumnHeaders = array("<font color=\"ffffff\">Folder</font>","<font color=\"ffffff\">Document</font>","<font color=\"ffffff\">Score</font>");
+	$aColumnHeaders = array("<font color=\"ffffff\">" . _("Folder") . "</font>", "<font color=\"ffffff\">" . _("Document") . "</font>", "<font color=\"ffffff\">" . _("Score") . "</font>");
 	$aLinkURLs = array("$default->rootUrl/control.php?action=browse","$default->rootUrl/control.php?action=viewDocument");
 	$aDBQueryStringColumns = array("document_id","folder_id");
 	$aQueryStringVariableNames = array("fDocumentID", "fFolderID");

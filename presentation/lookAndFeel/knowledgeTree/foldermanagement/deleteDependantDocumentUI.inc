@@ -27,7 +27,7 @@
 
 function getPage($iFolderID, $iFolderCollaborationID, $sDocumentTitle, $sUserName, $sTemplateDocument) {
 	global $default;
-	$sToRender = renderHeading("Delete dependant document");
+	$sToRender = renderHeading(_("Delete dependant document"));
 	$sToRender .= "<table border=\"0\" width=\"100%\">\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>Document title</td><td>$sDocumentTitle</td>";

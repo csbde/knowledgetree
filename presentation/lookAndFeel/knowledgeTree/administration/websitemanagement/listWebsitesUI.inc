@@ -33,7 +33,7 @@ function getWebsites() {
 				"ORDER BY web_site_name";
 	
     $aColumns = array("WebsiteName", "WebsiteURL", "Edit", "Delete");
-    $aColumnNames = array("Link Name","URL", "Edit", "Delete");
+    $aColumnNames = array(_("Link Name"), _("URL"), _("Edit"), _("Delete"));
     $aColumnTypes = array(1,1,3,3);
     $aDBColumnArray = array("WebsiteID");
     $aQueryStringVariableNames = array("fWebSiteID");
@@ -50,7 +50,7 @@ function getWebsites() {
 
 function getPage() {
 	global $default;
-	$sToRender .= renderHeading("Website Management");
+	$sToRender .= renderHeading(_("Website Management"));
 
 	// add user link
 	$sToRender .= getAddLink("addWebsite", "Add A Website");

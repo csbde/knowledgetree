@@ -34,7 +34,7 @@ function getEditPage($iDocTypeID) {
 
     }
 
-    $sToRender .= renderHeading("Edit Document Type");
+    $sToRender .= renderHeading(_("Edit Document Type"));
     $sToRender .= "<table>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr>\n";
@@ -72,7 +72,7 @@ function getDetailsPage($iDocTypeID) {
 
     }
     
-    $sToRender .= renderHeading("Edit Document Type");
+    $sToRender .= renderHeading(_("Edit Document Type"));
     $sToRender .= "<table>\n";
     $sToRender .= "<tr><td><br></br></td></tr>\n";
     $sToRender .= "<tr>\n";
@@ -144,7 +144,7 @@ function getMandatoryPage($iDocFieldID,$iDocTypeFieldID) {
 function getEditPageSuccess() {
     global $default;
 
-    $sToRender .= renderHeading("Edit Document Type");
+    $sToRender .= renderHeading(_("Edit Document Type"));
     $sToRender .= "<table>\n";
     $sToRender .= "<tr><td><b>" . _("Success") . "!</b></td></tr>\n";
     $sToRender .= "<tr><td>" . _("The Document Type was successfully modified") . "</td></tr>\n";
@@ -162,7 +162,7 @@ function getEditPageSuccess() {
 function getEditPageFail() {
     global $default;
 
-    $sToRender .= renderHeading("Edit Document Type");
+    $sToRender .= renderHeading(_("Edit Document Type"));
     $sToRender .= "<table>\n";
     $sToRender .= "<tr><td><b>" . strtoupper(_("Failure")) . "!</b></td></tr>\n";
     $sToRender .= "<tr><td>" . _("Document Type modification Failed!") . "</td></tr>\n";

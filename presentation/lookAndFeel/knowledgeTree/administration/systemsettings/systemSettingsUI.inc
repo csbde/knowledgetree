@@ -29,7 +29,7 @@ function getPage() {
     global $default;
     $oSystem = $default->system;
 
-    $sToRender .= renderHeading("System Settings");
+    $sToRender .= renderHeading(_("System Settings"));
     $sToRender .= "<table>\n";
     $sToRender .= "<tr>\n";
     $sToRender .= "<tr>\n";

@@ -29,7 +29,7 @@ function getPage() {
 
 	global $default;
 	
-	$aDisplayRowNames = array("Name", "Read", "Write");
+	$aDisplayRowNames = array(_("Name"), _("Read"), _("Write"));
 	$aParameterNumbers = array(0,1,2);
 	$aDisplayColumnTypes = array(1,2,2);
 	$aRequired = array(1,1,1);
@@ -38,7 +38,7 @@ function getPage() {
 	$oPatternCreate = & new PatternCreate("Role", "roles/Role.inc",$aDisplayRowNames, $aParameterNumbers, $aDisplayColumnTypes, $aRequired);
 	$oPatternCreate->setUniqueName("role");
 	
-	$sToRender .= renderHeading("Add Role");
+	$sToRender .= renderHeading(_("Add Role"));
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";

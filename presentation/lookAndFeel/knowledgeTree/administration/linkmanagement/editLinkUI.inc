@@ -35,7 +35,7 @@ function getEditPage($iLinkID) {
 	} else {
     	$sHeading = _("Please select a Link:");
 	} 
-    $sToRender .= renderHeading("Edit QuickLink");
+    $sToRender .= renderHeading(_("Edit QuickLink"));
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr><td>$sHeading</td></tr>\n";
 	$sToRender .= "<tr>\n";
@@ -86,7 +86,7 @@ function getEditPage($iLinkID) {
 function getEditPageSuccess() {	
 	global $default;
 			
-    $sToRender .= renderHeading("Edit QuickLink");
+    $sToRender .= renderHeading(_("Edit QuickLink"));
 	$sToRender .= "<b>" . _("Success") . "!</b>\n";
 	$sToRender .= "<table>\n";
 	$sToRender .= "<br></br>\n";
@@ -108,7 +108,7 @@ function getEditPageSuccess() {
 function getEditPageFail() {	
 	global $default;
 			
-    $sToRender .= renderHeading("Edit QuickLink");
+    $sToRender .= renderHeading(_("Edit QuickLink"));
 	$sToRender .= "<b>" . _("Failure") . "!</b>\n";
 	$sToRender .= "<table>\n";
 	$sToRender .= "<br></br>\n";
