@@ -74,10 +74,11 @@ if ($loginAction == "loginForm") {
     </body>
     </html>";
 
-}
-elseif ($loginAction == "login") {
+} elseif ($loginAction == "login") {
     // set default url for login failure
-    $url = $url . "login.php?loginAction=loginForm";
+    // with redirect appended if set
+    $url = $url . "login.php?loginAction=loginForm" . (isset($redirect) ? "&redirect=$redirect" : "");
+    
     // if requirements are met and we have a username and password to authenticate
     if( isset($fUserName) && isset($fPassword) ) {
         // verifies the login and password of the user
@@ -143,13 +144,11 @@ elseif ($loginAction == "login") {
         // didn't receive any login parameters, so redirect login form
         // TODO: set "no login parameters received error message?
         // internal error message- should never happen
+        $default->log->error("
     }
     if (strlen($queryString) > 0) {
         $url .= "&$queryString";
     }
-    $default->log->debug("login.php: about to redirect to $url");
     redirect($url);
 }
 ?>
-
-
