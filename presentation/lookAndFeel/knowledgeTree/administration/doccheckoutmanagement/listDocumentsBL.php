@@ -46,7 +46,7 @@ if (checkSession()) {
 			}
 		}
 	}  else {
-		$sToRender .= "<tr><td colspan=\"3\">There are no checked out document</td></tr>";
+		$sToRender .= "<tr><td colspan=\"3\">There are no checked out documents</td></tr>";
 	}
 	$sToRender .= "</table>";
 
