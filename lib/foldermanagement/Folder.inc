@@ -281,7 +281,7 @@ class Folder extends KTEntity {
             'parent_id' => $this->iParentID,
             'creator_id' => $this->iCreatorID,
             'unit_id' => $this->iUnitID,
-            'is_public' => $this->bIsPublic,
+            'is_public' => KTUtil::anyToBool($this->bIsPublic),
             'full_path' => $this->sFullPath,
             'parent_folder_ids' => $this->sParentFolderIDs,
             'inherit_parent_folder_permission' => $this->bInheritParentPermissions,

@@ -115,7 +115,7 @@ class FolderUserRole extends KTEntity {
             'group_folder_approval_id' => $this->iGroupFolderApprovalID,
             'datetime' => $this->dDateTime,
             'done' => $this->bDone,
-            'active' => $this->bActive,
+            'active' => KTUtil::anyToBool($this->bActive),
             'dependant_documents_created' => $this->bDependantDocumentsCreated,
         );
     }

@@ -303,7 +303,7 @@ class DashboardNews extends KTEntity {
             'image' => $this->sImage,
             'image_size' => $this->iImageSize,
             'image_mime_type_id' => $this->iImageMimeTypeID,
-            'active' => $this->bActive,
+            'active' => KTUtil::anyToBool($this->bActive),
         );
     }
 

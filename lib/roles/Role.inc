@@ -94,9 +94,9 @@ class Role extends KTEntity {
     function _fieldValues () {
         return array(
             'name' => $this->sName,
-            'active' => $this->bActive,
-            'can_read' => $this->bCanRead,
-            'can_write' => $this->bCanWrite,
+            'active' => KTUtil::anyToBool($this->bActive),
+            'can_read' => KTUtil::anyToBool($this->bCanRead),
+            'can_write' => KTUtil::anyToBool($this->bCanWrite),
         );
     }
 
