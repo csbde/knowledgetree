@@ -83,7 +83,7 @@ unit_id INTEGER,
 is_public BOOL NOT NULL
 );
 
-CREATE TABLE folders_user_roles_link ( 
+CREATE TABLE folders_users_roles_link ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 user_id INTEGER NOT NULL,
 folder_id INTEGER NOT NULL,
@@ -182,7 +182,7 @@ language CHAR(100)
 ) 
 ;
 
-CREATE TABLE user_group_link ( 
+CREATE TABLE users_groups_link ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 user_id INTEGER NOT NULL,
 group_id INTEGER NOT NULL
@@ -262,7 +262,7 @@ ADD CONSTRAINT PK_files
 PRIMARY KEY (id) 
 ;
 
-ALTER TABLE folders_user_roles_link 
+ALTER TABLE folders_users_roles_link 
 ADD CONSTRAINT PK_authors 
 PRIMARY KEY (id) 
 ;
@@ -325,6 +325,11 @@ PRIMARY KEY (id)
 
 ALTER TABLE users 
 ADD CONSTRAINT PK_users 
+PRIMARY KEY (id) 
+;
+
+ALTER TABLE users_groups_link 
+ADD CONSTRAINT PK_users_groups_link
 PRIMARY KEY (id) 
 ;
 
