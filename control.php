@@ -60,6 +60,7 @@ if (!$page) {
     // this user doesn't have permission to access the page
     // or there is no page mapping for the requested action
     // redirect to no permission page
+    $default->log->error("control.php getPage failed for ($action, " . $_SESSION["userID"] . ")");
     redirect("$default->uiUrl/noAccess.php");
 } else {
     $page = $default->rootUrl . $page;
