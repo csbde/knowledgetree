@@ -27,9 +27,9 @@
 
 function getPage($iFolderID) {
 	global $default;
-	$sToRender = "<table border=\"0\">\n";
+	$sToRender = "<table border=\"0\" width=\"100%\">\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "\t<td>" . renderFolderPath($iFolderID, "$default->uiUrl/control.php?action=editFolder&fFolderID=$iFolderID") . "</td>\n";
+    $sToRender .= "\t<td>" . renderFolderPath($iFolderID, "/control.php?action=editFolder&fFolderID=$iFolderID&fShowSection=documentTypes", false) . "</td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "</table>\n";
     $sToRender .= "<table border=\"0\">\n";    
