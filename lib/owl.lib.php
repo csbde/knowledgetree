@@ -12,97 +12,6 @@
  * @package Owl
  */
  
-// Support for reg.globals off WES
-
-// check for phpversion
-if (substr(phpversion(),0,5) >= "4.1.0")
- {
- 	import_request_variables('pgc');
- }
- else 
- {
-        if (!EMPTY($_POST)) 
-        {
-             extract($_POST);
-        }
-        else
-        {
-             extract($HTTP_POST_VARS);
-        }
-        if (!EMPTY($_GET)) 
-        {
-              extract($_GET);
-        } 
-        else 
-        {
-             extract($HTTP_GET_VARS);
-        }
-        
-        if (!EMPTY($_FILE)) 
-        {
-                extract($_FILE);
-        }
-        else 
-        {
-                extract($HTTP_POST_FILES);
-        }
-}
-
-
-//set initial session var
-if(!isset($sess))
-{
-    $sess = 0;
-}
-
-// set initial loginname
-if(!isset($loginname)) 
-{
-	$loginname = 0;
-}
-//set login var
-if(!isset($login)) 
-{
-	$login = 0;
-}
-
-// set default language
-if(isset($default->owl_lang))
- {
-	$langdir = "$default->owl_fs_root/locale/$default->owl_lang";
-
-	if(is_dir("$langdir") != 1) 
-	{
-		die("$lang_err_lang_1 $langdir $lang_err_lang_2");
-	}
-	 else
-	 {
-		$sql = new Owl_DB;
-                $sql->query("select * from $default->owl_sessions_table where sessid = '$sess'");
-		$sql->next_record();
-                $numrows = $sql->num_rows($sql);
-                $getuid = $sql->f("uid");
-		if($numrows == 1)
-		 {
-                	$sql->query("select * from $default->owl_users_table where id = $getuid");
-			$sql->next_record();
-                	$language = $sql->f("language");
-			// BEGIN wes fix
-			if(!$language) 
-			{
-			  $language = $default->owl_lang;
-			}
-			// END wes fix
-			require("$default->owl_fs_root/locale/$language/language.inc");
-			$default->owl_lang = $language;
-                }
-                else
-			require("$default->owl_fs_root/locale/$default->owl_lang/language.inc");
-	}
-} else {
-	die("$lang_err_lang_notfound");
-}
-
 /**
  * class Owl_DB extends DB_Sql 
  *
@@ -1105,35 +1014,6 @@ function uploadCompat($varname) {
    return $retfile;
 }
 
-// why is this code here???????????????????????????? is it part of the function??????
-if ($sess) 
-{
-        gethtmlprefs();
-        $ok = verify_session($sess);
-        $temporary_ok =  $ok["bit"];
-	$userid = $ok["userid"];
-	$usergroupid = $ok["groupid"];
-        if ($ok["bit"] != "1") {
-                // Bozz Bug Fix begin
-                if (file_exists("./lib/header.inc")) {
-                     include("./lib/header.inc");
-                } else {
-                     include("../lib/header.inc");
-                }
-                // Bozz Bug Fix end
-                print("<BR><BR><CENTER>".$lang_invalidsess);
-                if ($parent == "" || $fileid == "")
-			print("<A HREF='$default->owl_root_url/index.php'><IMG SRC='$default->owl_root_url/locale/$default->owl_lang/graphics/btn_login.gif' BORDER=0 ></A>");
-                else
-			print("<A HREF='$default->owl_root_url/index.php?parent=$parent&fileid=$fileid'><IMG SRC='$default->owl_root_url/locale/$default->owl_lang/graphics/btn_login.gif' BORDER=0 ></A>");
-		exit;
-        } else {
-		$lastused = time();
-		$sql = new Owl_DB;
-		$sql->query("update $default->owl_sessions_table set lastused = '$lastused' where uid = '$userid'");
-	}
-}
-
 //------------------------------------------------------------        
 /**
  * Function checkrequirements() 
@@ -1614,11 +1494,120 @@ function printgroupperm($currentval, $namevariable, $printmessage, $type) {
 
 };
 
-// why is this here?????????????????????????????????????????
-if (!$sess && !$loginname && !$login) 
-	if(!isset($fileid))
-		header("Location: " . $default->owl_root_url . "/index.php?login=1");
-	else
-		header("Location: " . $default->owl_root_url . "/index.php?login=1&fileid=$fileid&parent=$parent");
+// ----------------------
+// page start
+// ----------------------
 
+/**
+ * Initialises the web application by making current
+ * request parameters global, performing session checking
+ * and loading the default language
+ */ 
+// make request parameters global
+if (substr(phpversion(),0,5) >= "4.1.0") {
+    // if supported by the installed version of PHP
+    import_request_variables('pgc');
+} else {
+    // do it manually
+    if (!EMPTY($_POST)) {
+        extract($_POST);
+    } else {
+        extract($HTTP_POST_VARS);
+    }
+    
+    if (!EMPTY($_GET)) {
+        extract($_GET);
+    } else {
+        extract($HTTP_GET_VARS);
+    }
+        
+    if (!EMPTY($_FILE)) {
+        extract($_FILE);
+    } else {
+        extract($HTTP_POST_FILES);
+    }
+}
+
+// initialise session var
+if(!isset($sess)) {
+    $sess = 0;
+}
+// initialise loginname
+if(!isset($loginname)) {
+    $loginname = 0;
+}
+// initialise login var
+if(!isset($login)) {
+    $login = 0;
+}
+
+// set default language
+if(isset($default->owl_lang)) {
+
+    $langdir = "$default->owl_fs_root/locale/$default->owl_lang";
+
+    if(is_dir("$langdir") != 1)	{
+        die("$lang_err_lang_1 $langdir $lang_err_lang_2");
+    } else {
+
+        $sql = new Owl_DB;
+        $sql->query("select * from $default->owl_sessions_table where sessid = '$sess'");       
+        $sql->next_record();
+        $numrows = $sql->num_rows($sql);
+        $getuid = $sql->f("uid");
+        if($numrows == 1) {
+            $sql->query("select * from $default->owl_users_table where id = $getuid");
+            $sql->next_record();
+            $language = $sql->f("language");
+            // BEGIN wes fix
+            if(!$language) {
+              $language = $default->owl_lang;
+            }
+            // END wes fix
+            require("$default->owl_fs_root/locale/$language/language.inc");
+            $default->owl_lang = $language;
+        } else {
+            require("$default->owl_fs_root/locale/$default->owl_lang/language.inc");
+        }
+    }
+} else {
+    die("$lang_err_lang_notfound");
+}
+
+if ($sess) {
+    gethtmlprefs();
+    $ok = verify_session($sess);
+    $temporary_ok =  $ok["bit"];
+	$userid = $ok["userid"];
+	$usergroupid = $ok["groupid"];
+
+    if ($ok["bit"] != "1") {
+        // Bozz Bug Fix begin
+        if (file_exists("./lib/header.inc")) {
+             include("./lib/header.inc");
+        } else {
+             include("../lib/header.inc");
+        }
+        // Bozz Bug Fix end
+        print("<BR><BR><CENTER>".$lang_invalidsess);
+        if ($parent == "" || $fileid == "") {
+            print("<A HREF='$default->owl_root_url/index.php'><IMG SRC='$default->owl_root_url/locale/$default->owl_lang/graphics/btn_login.gif' BORDER=0 ></A>");
+        } else {
+			print("<A HREF='$default->owl_root_url/index.php?parent=$parent&fileid=$fileid'><IMG SRC='$default->owl_root_url/locale/$default->owl_lang/graphics/btn_login.gif' BORDER=0 ></A>");
+        }
+		exit;
+    } else {
+		$lastused = time();
+		$sql = new Owl_DB;
+		$sql->query("update $default->owl_sessions_table set lastused = '$lastused' where uid = '$userid'");
+	}
+}
+
+if (!$sess && !$loginname && !$login) {
+	if(!isset($fileid)) {
+		header("Location: " . $default->owl_root_url . "/index.php?login=1");
+    } else {
+		header("Location: " . $default->owl_root_url . "/index.php?login=1&fileid=$fileid&parent=$parent");
+    }
+}
 ?>
