@@ -195,7 +195,7 @@ function renderDependantDocuments($aDependantDocumentList) {
 function renderQuickLinks($aQuickLinks) {
     global $default;
     $sToRender .= "\t\t\t<tr align=\"left\" bgcolor=\"#9D9D7F\">\n";
-    $sToRender .= "\t\t\t\t<th class=\"sectionHeading\">Quick Links</th>\n";
+    $sToRender .= "\t\t\t\t<th class=\"sectionHeading\"><font color=\"ffffff\">Quick Links</font></th>\n";
     $sToRender .= "\t\t\t</tr>\n";
     for ($i = 0; $i < count($aQuickLinks); $i++) {
         $sToRender .= "\t\t\t<tr>\n";
