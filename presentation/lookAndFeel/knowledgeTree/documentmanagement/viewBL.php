@@ -31,6 +31,7 @@ require_once("$default->fileSystemRoot/lib/users/User.inc");
 require_once("$default->fileSystemRoot/lib/documentmanagement/PhysicalDocumentManager.inc");
 require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentTransaction.inc");
 require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
+require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentCollaboration.inc");
 
 require_once("$default->fileSystemRoot/lib/foldermanagement/FolderCollaboration.inc");
 require_once("$default->fileSystemRoot/lib/foldermanagement/FolderUserRole.inc");
@@ -98,7 +99,7 @@ if (checkSession()) {
 					//if all the roles have been assigned we can start the collaboration process
                     
 					//TODO: check if this collaboration has already occured, and then reset all the steps before beginning it again
-					//Document::resetDocumentCollaborationSteps($fDocumentID);
+					//DocumentCollaboration::resetDocumentCollaborationSteps($fDocumentID);
                     
 					$oDocument->beginCollaborationProcess();
 					$oPatternCustom = & new PatternCustom();
@@ -124,9 +125,9 @@ if (checkSession()) {
 				$main->setErrorMessage("The collaboration steps for the folder must be set up before collaboration can begin");
 				$main->render();                
             }
-		} else if ((isset($fCollaborationStepComplete)) && (Document::userIsPerformingCurrentCollaborationStep($fDocumentID))) {				
+		} else if ((isset($fCollaborationStepComplete)) && (DocumentCollaboration::userIsPerformingCurrentCollaborationStep($fDocumentID))) {				
 				//the user has signled that they have completed their step in the collaboration process
-				if (Document::isLastStepInCollaborationProcess($fDocumentID)) {				
+				if (DocumentCollaboration::isLastStepInCollaborationProcess($fDocumentID)) {				
 					require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 					//the last step in the collaboration process has been performed- email the document creator
                     
@@ -156,7 +157,7 @@ if (checkSession()) {
 				} else {
 					require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 					//start the next steps if all criteria are met					
-					Document::beginNextStepInCollaborationProcess($fDocumentID, $_SESSION["userID"]);
+					DocumentCollaboration::beginNextStepInCollaborationProcess($fDocumentID, $_SESSION["userID"]);
 					$oDocument = Document::get($fDocumentID);
 					$oPatternCustom = & new PatternCustom();
 					$oPatternCustom->setHtml(getEditPage($oDocument));
@@ -164,7 +165,7 @@ if (checkSession()) {
 					$main->setErrorMessage("The next steps in the collaboration process have been started");
 					$main->render();
 				}
-		} else if ((isset($fForPublish)) && (!Document::documentIsPendingWebPublishing($fDocumentID))) {
+		} else if ((isset($fForPublish)) && (!DocumentCollaboration::documentIsPendingWebPublishing($fDocumentID))) {
             if (isset($fWebSiteID)) {
                 // user wishes to publish document
                 $oDocument = Document::get($fDocumentID);

@@ -17,6 +17,7 @@ require_once("$default->fileSystemRoot/lib/users/User.inc");
 require_once("$default->fileSystemRoot/lib/documentmanagement/PhysicalDocumentManager.inc");
 require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentTransaction.inc");
 require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
+require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentCollaboration.inc");
 
 require_once("$default->fileSystemRoot/lib/foldermanagement/FolderCollaboration.inc");
 require_once("$default->fileSystemRoot/lib/foldermanagement/FolderUserRole.inc");
@@ -29,13 +30,13 @@ require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/fo
 
 if (checkSession()) {
     if (isset($fDocumentID)) {
-		if (Document::userIsPerformingCurrentCollaborationStep($fDocumentID)) {	
+		if (DocumentCollaboration::userIsPerformingCurrentCollaborationStep($fDocumentID)) {	
 			if (isset($fForStore)) {
 				//user has entered a comment
 				//create the transaction and rollback the step
 				$oDocumentTransaction = & new DocumentTransaction($fDocumentID, $fComment, COLLAB_ROLLBACK);
 				if ($oDocumentTransaction->create()) {					
-					Document::rollbackCollaborationStep($fDocumentID, $fComment);					
+					DocumentCollaboration::rollbackCollaborationStep($fDocumentID, $fComment);					
 					redirect("$default->rootUrl/control.php?action=viewDocument&fDocumentID=$fDocumentID");
 				} else {
 					$oDocument = Document::get($fDocumentID);
