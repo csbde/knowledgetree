@@ -19,7 +19,7 @@ require_once("$default->fileSystemRoot/lib/visualpatterns/PatternTableSqlQuery.i
 require_once("$default->fileSystemRoot/lib/visualpatterns/NavBar.inc");
 
 
-function getUnitAdminEmail() {
+function getUnitAdminUser() {
     global $default;
     // find out what unit we're in
     $iUnitID = User::getUnitID($_SESSION["userID"]);
@@ -35,19 +35,19 @@ function getUnitAdminEmail() {
             if ($sql->next_record()) {
                 $iGroupID = $sql->f("group_id");
                 // then find the first user in this group that has an email address
-                if ($sql->query("SELECT U.email FROM $default->owl_users_table U " .
+                if ($sql->query("SELECT U.id, U.email FROM $default->owl_users_table U " .
                                 "INNER JOIN $default->owl_users_groups_table UGL on UGL.user_id=U.id " .
                                 "WHERE group_id=$iGroupID")) {
                     while ($sql->next_record()) {
                         if (strlen($sql->f("email")) > 0) {
-                            $sEmail = $sql->f("email");
+                            return User::get($sql->f("id"));
                         }
                     }
                 }
             }
         }
     }
-    return ($sEmail == "") ? $default->emailAdmin : $sEmail;
+    return false;
 }
 
 // create the navbar and north payload
@@ -96,13 +96,15 @@ if ($sectionName != "General") {
 $cAdmin = "$default->graphicsUrl/leftnav/cadmin.gif" ;
 $uAdmin = "$default->graphicsUrl/leftnav/uadmin.gif" ;
 
+$oUnitAdmin = getUnitAdminUser();
+$sUnitAdminEmail = $oUnitAdmin ? $oUnitAdmin->getEmail() : $default->emailAdmin; 
 //setup the westpayload
 $westLoad = "<table cellspacing=\"0\" cellpadding=\"2\"  border=\"0\" width=\"100%\" height=\"75%\">\n" .
             "\t<tr><td>$westRender</td></tr>\n" .
             "</table>" .
             "<table cellspacing=\"0\" cellpadding=\"2\"  border=\"0\" width=\"100%\" height=\"25%\">\n" .            
             "\t<tr valign=\"bottom\"><td align=left><a href=\"mailto:$default->emailAdmin\"><img src=\"$cAdmin\"/ border=\"0\"></a></td></tr>\n" .
-            "\t<tr valign=\"middle\"><td align=left><a href=\"mailto:" . getUnitAdminEmail() . "\"><img src=\"$uAdmin\"/ border=\"0\"></a></td></tr>\n" .
+            "\t<tr valign=\"middle\"><td align=left><a href=\"mailto:$sUnitAdminEmail\"><img src=\"$uAdmin\"/ border=\"0\"></a></td></tr>\n" .
             "</table>";
 
 $westPayLoad = new PatternCustom;
