@@ -392,3 +392,7 @@ ALTER TABLE `organisations_lookup` ADD UNIQUE (
 ALTER TABLE `roles` ADD UNIQUE (
  `name` 
 ); 
+ALTER TABLE `units_lookup` ADD UNIQUE (
+`name`
+)
+

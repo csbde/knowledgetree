@@ -631,6 +631,7 @@ CREATE TABLE units_lookup (
   id int(11) NOT NULL default '0',
   name char(100) NOT NULL default '',
   UNIQUE KEY id (id)
+  UNIQUE KEY name (name)
 ) TYPE=InnoDB;
 
 -- --------------------------------------------------------
