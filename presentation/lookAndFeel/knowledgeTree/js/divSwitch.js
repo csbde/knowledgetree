@@ -3,12 +3,21 @@
 //  and calls the other functions required
 //  to show that div
 //
-function switchDiv(div_id)
+function switchDiv(div_id, object)
 {
+  var aDocumentDivs = new Array("documentData", "genericMetaData", "typeSpecificMetaData", 
+                                "archiveSettings", "documentRouting", "linkedDocuments");
+  var aFolderDivs = new Array("folderData", "folderRouting", "documentTypes", "folderPermissions");
+                                
   var style_sheet = getStyleObject(div_id);
   if (style_sheet)
   {
-    hideAll();
+    if (object == "document") {
+    	hideAll(aDocumentDivs);
+    } else {
+    	hideAll(aFolderDivs);
+    }
+    	
     changeObjectVisibility(div_id,"visible");
   }
   else 
@@ -20,15 +29,11 @@ function switchDiv(div_id)
 // function hideAll()
 //  hides a bunch of divs
 //
-
-function hideAll()
+function hideAll(aDivs)
 {
-   changeObjectVisibility("documentData","hidden");
-   changeObjectVisibility("genericMetaData","hidden");
-   changeObjectVisibility("typeSpecificMetaData","hidden");
-   changeObjectVisibility("archiveSettings","hidden");
-   changeObjectVisibility("documentRouting","hidden");
-   changeObjectVisibility("linkedDocuments","hidden");  
+   for (var i=0; i<aDivs.length; i++) {
+     changeObjectVisibility(aDivs[i], "hidden");
+   }
 }
 
 // function getStyleObject(string) -> returns style object
