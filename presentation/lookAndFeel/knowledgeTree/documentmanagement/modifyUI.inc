@@ -4,10 +4,25 @@
  *
  * Presentation data used to modify documents (will be used by modifyBL.inc)
  *
- * Licensed under the GNU GPL. For full terms see the file DOCS/COPYING.
+ * Copyright (c) 2003 Jam Warehouse http://www.jamwarehouse.com
  *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ * @version $Revision$
  * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
- * @package presentation.lookAndFeel.knowledgeTree.documentmanagement
+ * @package documentmanagement
  */
 
 function renderDocumentPath($oDocument) {
@@ -50,9 +65,9 @@ function renderEditableDocumentData($oDocument, $iDocumentTypeID) {
 function getDocumentType($iFolderID, $iDocumentTypeID) {
 	global $default;
 	$sWhereClause = "FDL.folder_id = $iFolderID";
-	$oPatternListBox = & new PatternListBox("$default->owl_document_types_table", "name", "id", "fDocumentTypeID",$sWhereClause);
+	$oPatternListBox = & new PatternListBox("$default->document_types_table", "name", "id", "fDocumentTypeID",$sWhereClause);
 	$oPatternListBox->setIncludeDefaultValue(false);
-	$oPatternListBox->setFromClause("INNER JOIN $default->owl_folder_doctypes_table AS FDL ON ST.id = FDL.document_type_id");	
+	$oPatternListBox->setFromClause("INNER JOIN $default->folder_doctypes_table AS FDL ON ST.id = FDL.document_type_id");	
 	if (isset($iDocumentTypeID)) {
 		$oPatternListBox->setSelectedValue($iDocumentTypeID);
 	}	

@@ -1,20 +1,37 @@
 <?php
 /**
-* Presentation data used to add a document.  Used by addDocumentBL.php
-*
-* @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
-* @date 28 January 2003
-* @package presentation.lookAndFeel.knowledgeTree.documentmanagement
-*
-*/
+ * $Id$
+ *
+ * Presentation data used to add a document.  Used by addDocumentBL.php.
+ *
+ * Copyright (c) 2003 Jam Warehouse http://www.jamwarehouse.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ * @version $Revision$
+ * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
+ * @package documentmanagement
+ */
 
 function getDocumentType($iFolderID, $iDocumentTypeID, $iDependantDocumentID = null) {
 	global $default;
 	
 	$sWhereClause = "FDL.folder_id = $iFolderID";
-	$oPatternListBox = & new PatternListBox("$default->owl_document_types_table", "name", "id", "fDocumentTypeID",$sWhereClause);
+	$oPatternListBox = & new PatternListBox("$default->document_types_table", "name", "id", "fDocumentTypeID",$sWhereClause);
 	$oPatternListBox->setIncludeDefaultValue(true);
-	$oPatternListBox->setFromClause("INNER JOIN $default->owl_folder_doctypes_table AS FDL ON ST.id = FDL.document_type_id");
+	$oPatternListBox->setFromClause("INNER JOIN $default->folder_doctypes_table AS FDL ON ST.id = FDL.document_type_id");
 	$oPatternListBox->setPostBackOnChange(true);
 	$oPatternListBox->setOnChangeAction("setActionAndSubmit('" . $_SERVER["PHP_SELF"] . "?fFolderID=$iFolderID" . (isset($iDependantDocumentID) ? "&fDependantDocumentID=$iDependantDocumentID" : "") . "')");
 	
@@ -142,7 +159,7 @@ function getPage($iFolderID, $iDocumentTypeID, $iDependantDocumentID = null, $sM
 	}
 	
 	if ($iDocumentTypeID) {
-		$sToRender .= "<table><tr><td><b>Document Type<b></td></tr><tr><td>" . lookupName($default->owl_document_types_table, $iDocumentTypeID) . "</td></tr></table>";
+		$sToRender .= "<table><tr><td><b>Document Type<b></td></tr><tr><td>" . lookupName($default->document_types_table, $iDocumentTypeID) . "</td></tr></table>";
 		$sToRender .= getUploadDocument();
 		$sToRender .= getMetaDataForm($iFolderID, $iDocumentTypeID);
 		$sActionButtons = "<input type=\"image\" src=\"$default->graphicsUrl/widgets/add.gif\" border=\"0\"/>";
