@@ -102,15 +102,14 @@ $default->owl_web_documents_status_table = "web_documents_status";
 // This is the defualt MailServer Host for emailing 
 $default->owl_mail_server = "mail.jamwarehouse.com";
 
-
 // Change this to reflect the database you are using
-//require_once("$default->owl_fs_root/phplib/db_mysql.inc");
+require_once("$default->owl_fs_root/phplib/db_mysql.inc");
 //require("$default->owl_fs_root/phplib/db_pgsql.inc");
 
 // Change this to reflect the authentication method you are using
 //require_once("$default->owl_fs_root/lib/LDAPAuthenticator.inc");
 //require_once("$default->owl_fs_root/lib/Authenticator.inc");
-//require_once("$default->owl_fs_root/lib/DBAuthenticator.inc");
+require_once("$default->owl_fs_root/lib/DBAuthenticator.inc");
 
 // logo file that must reside inside lang/graphics directory
 $default->logo = "kt.jpg";
@@ -124,41 +123,18 @@ $default->phpversion = "4.0.2";
 $default->errorMessage = "";
 $default->debug = True;
 
-// WES STUFF 
-// Untested or in the process of implementing (DORMANT)
-// change at your own risks
-// on Second though Don't even think of changing anything below this line.
-
-//$default->owl_use_htaccess = 1;
-//$default->owl_launch_in_browser = 0;
-//$default->owl_restrict_linkto   = true;
-
-// user class constant definitions
-// a numerical mapping is used to allow super user classes access
-// to lower classes; ie. the permission check will allow the SA class
-// to view pages with UA access.
-// FIXME: these are just default groups- the order that they're inserted
-//        preserves the access relationship (even though the id column is auto_incremented
-//        and ideally shouldn't be used this way....., but if this was an ideal world i wouldn't
-//        really be doing this, would i? ;)
-/*
-define("SA", 0);
-define("UA", 1);
-define("U", 2);
-define("A", 3);
-*/
-
 // define site mappings
-/*require_once("$default->owl_fs_root/lib/SiteMap.inc");
+require_once("$default->owl_fs_root/lib/SiteMap.inc");
 $default->siteMap = new SiteMap();
 // action, section, page, userClass (SA, UA, U, A)
-$default->siteMap->addPage("LOGIN", "login.php?loginAction=login", "General", "A");
-$default->siteMap->addPage("LOGIN_FORM", "login.php?loginAction=loginForm", "General", "A"); 
-$default->siteMap->addPage("LOGOUT", "logout.php", "General", "A");
-$default->siteMap->addPage("DASHBOARD", "dashboard.php", "General", "A");
-$default->siteMap->addPage("BROWSE", "browse.php", "Browse Collections", "A");
-$default->siteMap->addPage("ADDFOLDER", "addFolder.php", "Browse Collections", "UA");
-$default->siteMap->addPage("ADDUSER", "addUser.php", "Administration", "UA");
-$default->siteMap->addPage("ADDUNIT", "addUnit.php", "Administration", "SA");
-$default->siteMap->addPage("ADDORG", "addOrganisation.php", "Administration", "SA");*/
+$default->siteMap->addPage("LOGIN", "login.php?loginAction=login", "General", "Anonymous");
+$default->siteMap->addPage("LOGIN_FORM", "login.php?loginAction=loginForm", "General", "Anonymous"); 
+$default->siteMap->addPage("LOGOUT", "logout.php", "General", "Anonymous");
+$default->siteMap->addPage("DASHBOARD", "dashboard.php", "General", "Anonymous");
+$default->siteMap->addPage("BROWSE", "browse.php", "Browse Collections", "Anonymous");
+$default->siteMap->addPage("ADDFOLDER", "addFolder.php", "Browse Collections", "Unit Administrator");
+$default->siteMap->addPage("ADDUSER", "addUser.php", "Administration", "Unit Administrator");
+$default->siteMap->addPage("ADDUNIT", "addUnit.php", "Administration", "Unit Administrator");
+$default->siteMap->addPage("ADDORG", "addOrganisation.php", "Administration", "System Administrator");
+
 ?>
