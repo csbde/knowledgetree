@@ -21,17 +21,17 @@ function getEditCheckoutPage($fDocumentID){
 	global $default;
 	
 	$oDocument = Document::get($fDocumentID);
+	$oUser = User::get($oDocument->getCheckedOutUserID());
 	$sToRender .= renderHeading("Edit Document Checkout");	
 	$sToRender .= "<table>\n";
-	$sToRender .= "<tr><td>Are you sure you want to Check In this document:</tr></td>";
-	$sToRender .= "<tr><td><b>" . $oDocument->getDisplayPath() . "</b></td></tr>"; 
+	$sToRender .= "<tr><td colspan=\"2\">Are you sure you want to Check In this document:</tr></td>";
+	$sToRender .= "<tr><td width=\"20%\">Path</td><td><b>" . $oDocument->getDisplayPath() . "</b></td></tr>";
+	 $sToRender .= "<tr><td>Checked Out By</td><td><b>" . $oUser->getName() . "</b></td></tr>";
  	$sToRender .= "<input type=\"hidden\" name=\"fUpdate\" value=\"1\">\n";
  	$sToRender .= "<input type=\"hidden\" name=\"fDocumentID\" value=\"$fDocumentID\">\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td align=right>\n";	
+	$sToRender .= "<td colspan=\"2\" align=right>\n";	
 	$sToRender .= getUpdateButton();	
-	$sToRender .= "</td>\n";
-	$sToRender .= "<td >\n";	
 	$sToRender .= getCancelButton();	
 	$sToRender .= "</td>\n";
 	$sToRender .= "</tr>\n";
