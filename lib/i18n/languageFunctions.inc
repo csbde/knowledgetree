@@ -28,6 +28,9 @@ function getInstalledLocales() {
 	global $default;
     // get a list of directories in ($default->fileSystemRoot . "/i18n")
     $aLocales = array();
+    $aLocales[] = "en";
+    $aLocales[] = "en_GB";
+    $aLocales[] = "en_ZA";
 	if ($handle = opendir($default->fileSystemRoot . "/i18n")) {
 	   while (false !== ($file = readdir($handle))) {
 	       if ($file != "." && $file != ".." && 
