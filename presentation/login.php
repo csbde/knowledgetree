@@ -79,7 +79,14 @@ if ($loginAction == "loginForm") {
                         $tmp = urldecode($redirect);
                         $default->log->debug("login.php: substr($tmp, strpos($tmp, $default->owl_root_url), strlen($tmp))");
                         $redirect = substr($tmp, strpos($tmp, $default->owl_root_url), strlen($tmp));
-                        $default->log->debug("login.php: redirect=$redirect");
+                        $default->log->debug("login.php: redirect=$redirect");                        
+                    }
+                    
+                    // remove any params from redirect before looking up from sitemap
+                    if (strstr($redirect, "?")) {
+                        $queryString = substr($redirect, strpos($redirect, "?")+1, strlen($redirect));
+                        $redirect = substr($redirect, 0, strpos($redirect, "?"));
+                        $default->log->debug("login.php redirect=$redirect; querystring=$queryString");
                     }
                     $url = generateControllerUrl($default->siteMap->getActionFromPage($redirect));
                 // else redirect to the dashboard
@@ -102,6 +109,9 @@ if ($loginAction == "loginForm") {
         // didn't receive any login parameters, so redirect login form
         // TODO: set "no login parameters received error message?
         // internal error message- should never happen
+    }
+    if (strlen($queryString) > 0) {
+        $url .= "&$queryString";
     }
     $default->log->debug("login.php: about to redirect to $url");
     redirect($url);
