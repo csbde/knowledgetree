@@ -329,26 +329,26 @@ class AuthLdap {
 
   // 2.5 User methods ----------------------------------------------------------
 
-  function getUsers( $search) {
+  function getUsers( $search, $attributeArray) {
     /* 2.5.1 : Returns an array containing a details of users, sorted by
     ** username. The search criteria is a standard LDAP query - * returns all
-    ** users.
+    ** users.  The $attributeArray variable contains the required user detail field names
     */
 
-    $checkDn = "ou=" .$this->people. ", " .$this->dn;
-    echo $checkDn;
+    // builds the appropriate dn, based on whether $this->people and/or $this->group is set
+    $checkDn = $this->setDn( true);
+    
     // Perform the search and get the entry handles
     $this->result = ldap_search( $this->connection, $checkDn, "uid=" .$search);
     $info = ldap_get_entries( $this->connection, $this->result);
     for( $i = 0; $i < $info["count"]; $i++){
       // Get the username, and create an array indexed by it...
       // Modify these as you see fit.
-      $uname			      = $info[$i]["uid"][0];
-      $userslist["$uname"]["cn"]      = $info[$i]["cn"][0];
-      $userslist["$uname"]["mail"]    = $info[$i]["mail"][0];
-      $userslist["$uname"]["phone"]   = $info[$i]["telephonenumber"][0];
-      $userslist["$uname"]["job"]     = $info[$i]["employeetype"][0];
-      $userslist["$uname"]["entryid"] = $info[$i]["entryid"][0];
+      $uname			              = $info[$i]["uid"][0];
+      // add to the array for each attribute in my list
+      for ( $i = 0; $i < count( $attributeArray); $i++) {
+          $userslist["$uname"]["$attributeArray[$i]"]      = $info[$i][strtolower($attributeArra[$i])][0];
+      }
     }
 
     if ( !@asort( $userslist)) {
@@ -361,7 +361,6 @@ class AuthLdap {
     }
     return $userslist;
   }
-
 
 } // End of class
 
