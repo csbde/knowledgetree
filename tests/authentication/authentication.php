@@ -41,5 +41,10 @@ if (checkSession()) {
     $aResults = $oLdapAuth->searchUsers($sSearch, $aAttributes);
     echo "<li><pre>" . arrayToString($aResults) . "</pre></li></ul>";
 
+    echo "<b>Testing LDAP authentication</b>";
+    // user credentials to authenticate
+    $sUserName = "michael";
+    $sPassword = "pass123";
+    echo "<ul><li>Authenticating ($sUserName, $sPassword) : " . $oLdapAuth->checkPass($sUserName, $sPassword) . "</li></ul>";
 }
 ?>
