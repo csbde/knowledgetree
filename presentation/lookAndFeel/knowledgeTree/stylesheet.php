@@ -2,62 +2,64 @@
 require("../../../config/dmsDefaults.php");
 header("Content-type: text/css");
 ?>
+BODY {
+    background: #ffffff;
+}
+
 P {
-font-size : 9pt;
-font-family : Verdana, sans-serif;
-font-weight : lighter;
-font-style : normal;
-color : #000000;
-text-decoration: none;
+    font-size : 9pt;
+    font-family : Verdana, sans-serif;
+    font-weight : lighter;
+    font-style : normal;
+    color : #000000;
+    text-decoration: none;
 }
 
 P.footer {
-font-size : 9pt;
-font-family : Verdana, sans-serif;
-font-weight : lighter;
-font-style : normal;
-color : #999999;
-text-decoration: none;
+    font-size : 9pt;
+    font-family : Verdana, sans-serif;
+    font-weight : lighter;
+    font-style : normal;
+    color : #999999;
+    text-decoration: none;
 }
 
 P.title {
-font-size : 9pt;
-font-family : Verdana, sans-serif;
-font-weight : inherit;
-font-style : normal;
-color : #ffffff;
-text-decoration: none;
+    font-size : 9pt;
+    font-family : Verdana, sans-serif;
+    font-weight : inherit;
+    font-style : normal;
+    color : #ffffff;
+    text-decoration: none;
 }
-
 
 A {
-font-size : 8pt;
-font-family : Verdana, sans-serif;
-text-decoration: none;
-color : #000000;
+    font-size : 8pt;
+    font-family : Verdana, sans-serif;
+    text-decoration: none;
+    color : #000000;
 }
 
-
 A:Visited  {
-font-size : 8pt;
-font-family : Verdana, sans-serif;
-font-style : normal;
-color : #000000;
+    font-size : 8pt;
+    font-family : Verdana, sans-serif;
+    font-style : normal;
+    color : #000000;
 }
 
 A:Active  {
-color : #000000;
-font-size : 8pt;
-font-family : Verdana, sans-serif;
-font-style : normal;
+    color : #000000;
+    font-size : 8pt;
+    font-family : Verdana, sans-serif;
+    font-style : normal;
 }
 
 A:hover {
-color : #000000;
-font-size : 8pt;
-font-family : Verdana,sans-serif;
-font-style : normal;
-text-decoration: underline;
+    color : #000000;
+    font-size : 8pt;
+    font-family : Verdana,sans-serif;
+    font-style : normal;
+    text-decoration: underline;
 }
 
 TABLE {
@@ -80,20 +82,20 @@ TH {
 }
 
 TH.sectionHeading {
-font-size : 10 pt;
-font-family : Verdana, sans-serif;
-font-style : normal;
-color : #ffffff;
-text-decoration: none;
+    font-size : 10 pt;
+    font-family : Verdana, sans-serif;
+    font-style : normal;
+    color : #ffffff;
+    text-decoration: none;
 }
   
 TH.sectionColumns {
-font-size : 8pt;
-font-family : Verdana, sans-serif;
-font-weight : lighter;
-font-style : normal;
-color : #000000;
-text-decoration: none;
+    font-size : 8pt;
+    font-family : Verdana, sans-serif;
+    font-weight : lighter;
+    font-style : normal;
+    color : #000000;
+    text-decoration: none;
 }
 
 .browseTypeSelect {
@@ -122,12 +124,14 @@ SELECT {
 #divUp   {
     position:absolute; 
     left: <?php echo $default->upArrowLeft ?>px; 
-    top: <?php echo $default->upArrowTop ?>px;}
+    top: <?php echo $default->upArrowTop ?>px;
+}
 
 #divDown {
     position:absolute; 
     left: <?php echo $default->downArrowLeft ?>px; 
-    top: <?php echo $default->downArrowTop ?>px;}
+    top: <?php echo $default->downArrowTop ?>px;
+}
 
 #divScrollTextCont {
     position:absolute; 
