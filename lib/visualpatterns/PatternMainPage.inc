@@ -1,18 +1,20 @@
 <?php
 
 /**
-* 
-* Main page of the document management system.  Consists of a 2 x 2 HTML table.
-* Custom defined payloads can be placed in each of the table cells, giving a reasonable
-* amount of layout/design flexibility
-*
-* JavaScript to validate numbers and strings is included by default
-*
-* @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
-* @date 12 December 2002
-* @package lib.visualpatterns
-*	
-*/	
+ * $Id$
+ * 
+ * Main page of the document management system.  Consists of a 2 x 2 HTML table.
+ * Custom defined payloads can be placed in each of the table cells, giving a reasonable
+ * amount of layout/design flexibility
+ *
+ * JavaScript to validate numbers and strings is included by default
+ *
+ * Licensed under the GNU GPL. For full terms see the file DOCS/COPYING.
+ *
+ * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
+ * @date 12 December 2002
+ * @package lib.visualpatterns
+ */	
 
 class PatternMainPage {
 	
@@ -53,6 +55,8 @@ class PatternMainPage {
 	
 	var $sHelpContext = "browse";
 	
+	var $onLoadJavaScript;
+	
 	function setNorthWestPayload($oNewVal) {		
 		$this->oNorthWestPayload = & $oNewVal;		
 	}
@@ -85,6 +89,10 @@ class PatternMainPage {
         $this->sWestPayloadBackGroundColour = $sColour;
     }
 	
+	function getFormAction() {
+		return $this->sFormAction;
+	}
+	
 	function setFormAction($sNewVal) {
 		$this->sFormAction = & $sNewVal;
 	}	
@@ -105,6 +113,11 @@ class PatternMainPage {
 		$this->sHelpContext = $sNewValue;
 	}
 	
+	function setOnLoadJavaScript($sJavaScript) {
+		$this->onLoadJavaScript = $sJavaScript;
+	}
+		
+	
 	
 	/**
 	* Render the page in HTML
@@ -113,12 +126,12 @@ class PatternMainPage {
         global $default;
 		$sToRender = 	"<html>\n" .
 							"<head>\n" .
-                            "<meta http-equiv=\"refresh\" content=\"" . ($default->sessionTimeout+3) . "\">\n" .
+                            "<meta http-equiv=\"refresh\" content=\"" . ($default->sessionTimeout+3) . ";\">\n" .
                             "<link rel=\"SHORTCUT ICON\" href=\"$default->graphicsUrl/tree.ico\">\n" .
                             "<link rel=\"stylesheet\" href=\"$default->uiUrl/stylesheet.php\">\n".                            
 							PatternMainPage::getJavaScript() . "\n" .							
 							"</head>\n" .
-							"<body marginleft=\"0\" marginheight=\"0\">\n";							
+							"<body marginleft=\"0\" marginheight=\"0\"" . (isset($this->onLoadJavaScript) ? "onload=\"$this->onLoadJavaScript\"" : "") . ">\n";							
         // hack to circumvent the crapness of ns 4.79
         if (! (($default->phpSniff->property("browser") == "moz") && ($default->phpSniff->property("version") <= "4.79")) ) {
             $sToRender .=       "<div id=\"divUp\">" .
@@ -129,7 +142,7 @@ class PatternMainPage {
                                 "</div>";
         }
 
-		$sToRender .= 		    "<form name=\"MainForm\" " . (isset($this->sFormEncType) ? "enctype=\"$this->sFormEncType\" " : " ") . " action=\"".$this->sFormAction."\" method=POST " . (($this->bHasRequiredFields) ? "onsubmit=\"return validateForm(this)\" " : " ") . ">\n" .		
+		$sToRender .= 		    "<form name=\"MainForm\" " . (isset($this->sFormEncType) ? "enctype=\"$this->sFormEncType\" " : " ") . " action=\"".$this->sFormAction."\" method=\"POST\" " . (($this->bHasRequiredFields) ? "onsubmit=\"return validateForm(this)\" " : " ") . ">\n" .		
 								"<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"700\" height=\"600\">\n " .
 									"<tr>\n".
 										"<td height=\"0\" valign=\"top\" " . (isset($this->sNorthWestPayloadBackGroundColour) ? " bgcolor=\"" . $this->sNorthWestPayloadBackGroundColour . "\"" : "") . ">\n";
@@ -184,12 +197,12 @@ class PatternMainPage {
 	}
 	
 	/**
-	* Returns links to javascript that has 3 functions:
-	*	o validateString - validates a string
-	*	o validateNumber - validates a number
-	*	o setActionAndSubmit - sets the MainForm action to newAction and submits
-    * And includes the dhtml text scrolling routine
-	*/
+	 * Returns links to javascript that has 3 functions:
+	 *	o validateString - validates a string
+	 *	o validateNumber - validates a number
+	 *	o setActionAndSubmit - sets the MainForm action to newAction and submits
+     * And includes the dhtml text scrolling routine
+	 */
 	function getJavaScript() {
         global $default;
         $sUrl = $default->uiUrl;
