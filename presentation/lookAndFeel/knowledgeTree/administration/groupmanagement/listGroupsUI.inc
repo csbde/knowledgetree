@@ -29,15 +29,16 @@
 function getUnitDisplay($iUnitID) {
     global $default;
     
-    if (Permission::userIsUnitAdministrator()) {
-        $iUnitID = User::getUnitID($_SESSION["userID"]);
+    // #3519 only allow unit filters for system administrators
+    // unit administrators only see their unit.
+    if (Permission::userIsSystemAdministrator()) {
+	    $oPatternListBox = & new PatternListBox($default->units_table, "name", "id", "fUnitID");
+		$oPatternListBox->setPostBackOnChange(true);    
+		if ($iUnitID != 0) {
+			$oPatternListBox->setSelectedValue($iUnitID);
+		}    
+	    return "<table><tr><td><b>Filter By Unit </b></td><td>" . $oPatternListBox->render() . "</td></tr></table>";
     }
-    $oPatternListBox = & new PatternListBox($default->units_table, "name", "id", "fUnitID");
-	$oPatternListBox->setPostBackOnChange(true);    
-	if ($iUnitID != 0) {
-		$oPatternListBox->setSelectedValue($iUnitID);
-	}    
-    return "<table><tr><td><b>Filter By Unit </b></td><td>" . $oPatternListBox->render() . "</td></tr></table>";
 }
 
 function getGroups($fUnitID) {
