@@ -15,6 +15,8 @@ if (checkSession()) {
 	require_once("removeUnitUI.inc");
 	require_once("$default->owl_fs_root/lib/security/permission.inc");
 	require_once("$default->owl_fs_root/lib/unitmanagement/Unit.inc");
+	require_once("$default->owl_fs_root/lib/orgmanagement/Organisation.inc");
+	require_once("$default->owl_fs_root/lib/unitmanagement/UnitOrganisationLink.inc");
 	require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");
 	require_once("$default->owl_fs_root/lib/visualpatterns/PatternCustom.inc");	
 	require_once("$default->owl_fs_root/lib/foldermanagement/Folder.inc");
@@ -26,30 +28,43 @@ if (checkSession()) {
 	// get main page
 	if (isset($fUnitID)) {
 			
-		$oPatternCustom->setHtml(getDeletePage($fUnitID));
-		$main->setFormAction($_SERVER["PHP_SELF"] . "?fForDelete=1");
-		
-	// get delete page
-	} else {
+			$fOrgID = UnitOrganisationLink::unitBelongsToOrg($fUnitID);
+			
+			
+			$oPatternCustom->setHtml(getDeleteConfirmedPage($fUnitID,$fOrgID));
+			$main->setFormAction($_SERVER["PHP_SELF"] . "?fForDeleteConfirmed=1");
+	}
+	else {
 		$oPatternCustom->setHtml(getDeletePage(null));
 		$main->setFormAction($_SERVER["PHP_SELF"]);
 	}
+		
+	if (isset($fForDeleteConfirmed)) {
 	
-		// if delete entry
-		if (isset($fForDelete)) {
+			// get unitorg object
+			$oUnitOrg = new UnitOrganisationLink($fUnitID,$fOrgID);
+			$oUnitOrg->setUnitOrgID($fUnitID);
+			
+			//get unit object
 			$oUnit = Unit::get($fUnitID);
 			$oUnit->setName($fUnitName);
+					
+			//delete unitorgobject
+			$oUnitOrg->delete();	
 			
-			//$fUnitID = GroupUnitLink::groupBelongsToUnit($fGroupID)
-			
+			//delet unit object
 			if ($oUnit->delete()) {
-			$oPatternCustom->setHtml(getDeleteSuccessPage());
+				
+				$oPatternCustom->setHtml(getDeleteSuccessPage());
 			
-		} else {
-			$oPatternCustom->setHtml(getDeleteFailPage());
-		}
+			} else {
+				$oPatternCustom->setHtml(getDeleteFailPage());
+			}
 		
 	}
+	
+	
+	
 	
 	$main->setCentralPayload($oPatternCustom);				
 	$main->render();		

@@ -87,6 +87,48 @@ $sToRender .= "</table>\n";
 return $sToRender;
 }
 
+
+function getDeleteConfirmedPage($iUnitID,$iOrgID) {	
+	global $default;
+	$oUnit = null;
+	if (isset($iUnitID)) {
+		$oUnit = Unit::get($iUnitID);
+		$sToRender .= "<br></br>\n";
+		$sToRender .= "<b>Are you sure you wish to Remove this Unit?:</b>\n";
+	}
+	else{
+		$sToRender .= "<br></br>\n";		
+		$sToRender .= "<b>Remove Unit From System:</b>\n";
+	}
+	
+	if (isset($iOrgID)) {
+		$oOrg = Organisation::get($iOrgID);
+	
+	}
+	
+	$sToRender .= "<table>\n";
+	$sToRender .= "<br></br>\n";
+	$sToRender .= "<tr></tr>\n";
+	$sToRender .= "<tr>\n";
+	$sToRender .= "<td>Unit Name: " . getUnitDisplay($oUnit) . "</td>\n";
+	$sToRender .= "</tr>\n";
+	$sToRender .= "<tr>\n";
+	$sToRender .= "</tr>\n";
+	$sToRender .= "<tr>\n";
+	$sToRender .= "<td>Organisation Name: " . getOrgDisplay($oOrg) . "</td>\n";
+	$sToRender .= "</tr>\n";
+	$sToRender .= "<tr>\n";
+	$sToRender .= "</tr>\n";
+	$sToRender .= "<tr>\n";
+	$sToRender .= getDeleteButton($oUnit);	
+	$sToRender .= "</tr>\n";
+	$sToRender .= "</table>\n";
+	
+	
+	return $sToRender;
+}
+
+
 // show listbox...or the text name
 function getUnitDisplay($oUnit) {
 	global $default;
@@ -102,6 +144,18 @@ function getUnitDisplay($oUnit) {
 	
 }
 
+// show listbox...or the text name
+function getOrgDisplay($oOrg) {
+	global $default;
+	if (!isset($oOrg)) {
+		
+	} else {
+		return "<input type=\"hidden\" name=\"fOrgID\" value=\"" . $oOrg->iId . "\">\n" .
+		"<b>" . $oOrg->getName() . "</b>";
+	}
+	
+}
+
 
 // show delete button
 function getDeleteButton($oUnit) {
@@ -113,4 +167,16 @@ function getDeleteButton($oUnit) {
 		"<td align = right><a href=\"$default_owl_root_url/control.php?action=removeUnit\"><img src =\"$default->owl_graphics_url/widgets/Cancel.gif\" border = \"0\" /></a></td>\n";
 	}
 }
+
+
+// show cancel button
+function getCancelButton($oUnit) {
+	global $default;
+	if (!isset($oUnit)) {
+		//return "<td align = right><a href=\"$default_owl_root_url/control.php?action=groupManagement\"><img src =\"$default->owl_graphics_url/widgets/cancel.gif\" value=\"cancel\" /></a></td>\n";
+	} else {
+		return "<td align = right><a href=\"$default_owl_root_url/control.php?action=removeUnit\"><img src =\"$default->owl_graphics_url/widgets/cancel.gif\" border = \"0\" /></a></td>\n";
+	}
+}
+
 ?>
