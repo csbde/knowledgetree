@@ -5,9 +5,11 @@
  * 
  * Interface class that performs all authentication functions.
  * 
- * @version $Revision$ 
- * @author michael@jamwarehouse.com
- * @package dmslib
+ * Licensed under the GNU GPL. For full terms see the file COPYING.
+ *
+ * @version $Revision$
+ * @author <a href="mailto:michael@jamwarehouse.com>Michael Joseph</a>, Jam Warehouse (Pty) Ltd, South Africa
+ * @package dms 
  */
 class Authenticator {
     
@@ -52,7 +54,7 @@ class Authenticator {
                 
                  // Check if Maxsessions has been reached
                 $sql = new Owl_DB; 
-                $sql->query("select * from $default->owl_sessions_table where uid = '".$userDetails["user_id"]."'");
+                $sql->query("select * from $default->owl_sessions_table where id = '".$userDetails["user_id"]."'");
                 if ($sql->num_rows($sql) >= $userDetails["max_sessions"]) {
                     if ( $userDetails["group_id"] == 0) {
                         // ignore maxsessions check for admin group
