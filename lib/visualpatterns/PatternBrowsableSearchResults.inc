@@ -113,14 +113,14 @@ class PatternBrowseableSearchResults {
 
 		if ($sql->num_rows() == 0) {
 			//no results
-			$sToRender .= "<table width=\"100%\" height=\"100%\">\n";		
+			$sToRender .= "<table width=\"100%\" height=\"80%\">\n";		
 			$sToRender .= "<tr>\n";		
 			$sToRender .= "<td><p class=\"errorText\">No results matched your criteria</p></td>\n";
 			$sToRender .= "</tr>\n";
 			$sToRender .= "</table>\n";
 		} else {
         
-			$sToRender .= "<table width=\"100%\" height=\"100%\">\n";
+			$sToRender .= "<table width=\"100%\" height=\"80%\">\n";
 			
 			// display the number of results
 			$iEndIndex = $this->iStartIndex+$this->iResultsToDisplay-1 < $iTotalResults ? $this->iStartIndex+$this->iResultsToDisplay-1 : $iTotalResults;
