@@ -57,7 +57,7 @@ class LDAPAuthenticator extends Authenticator {
     function checkPassword($sUserName, $sPassword) {
         global $default;
 
-        return $oLdap->checkPass($sUserName, $sPassword);
+        return $this->oLdap->checkPass($sUserName, $sPassword);
     }
 
 
