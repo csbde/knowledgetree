@@ -824,9 +824,9 @@ class Document {
 				//the current step is the first step
 				//reset all steps and email the creator				
 				Document::resetDocumentCollaborationSteps($iDocumentID);
-				$oDocument = Document::get($iDocumentID);
+				$oDocument = Document::get($iDocumentID);				
+				$oUser = User::get($oDocument->getCreatorID());
 				if ($oUser->getEmailNotification()) {
-					$oUser = User::get($oDocument->getCreatorID());
 					$oCurrentUser = User::get($_SESSION["userID"]);
 					
 					$sBody = $oUser->getUserName() . ", the document, '<a href=\"https://" . $_SERVER["SERVER_NAME"] . "$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $this->iId . "\">" . $oDocument->getName() . "</a>' " .
@@ -901,7 +901,8 @@ class Document {
 		$sQuery = "SELECT WS.web_master_id " .
 				"FROM $default->owl_web_sites_table AS WS INNER JOIN $default->owl_web_documents_table AS WD ON WS.id = WD.web_site_id " .
 				"WHERE WD.document_id = $iDocumentID";
-		$sql->$default->db;
+		
+		$sql = $default->db;
 		$sql->query($sQuery);
 		if ($sql->next_record()) {
 			$oUser = User::get($sql->f("web_master_id"));
