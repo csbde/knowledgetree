@@ -58,7 +58,7 @@ class PatternMainPage {
         
 		$sToRender = 	"<html>
 							<head>
-                            <meta http-equiv=\"refresh\" content=\"$default->owl_timeout\">
+                            <meta http-equiv=\"refresh\" content=\"" . ($default->owl_timeout+3) . "\">
                             <link rel=\"StyleSheet\" HREF=\"$default->owl_ui_url/stylesheet.css\" type=\"text/css\">
 							</head>
 							<body>
