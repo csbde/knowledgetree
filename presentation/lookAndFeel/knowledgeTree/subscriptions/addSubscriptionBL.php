@@ -27,6 +27,19 @@ require_once("$default->fileSystemRoot/lib/subscriptions/SubscriptionManager.inc
 // page start
 // -------------------------------
 
+/**
+ * Checks if the user has read permission on the subscription content
+ *
+ * @param integer the id of the subscription content
+ * @param integer the subscription type
+ */
+function checkPermission($iExternalID, $iSubscriptionType) {
+    if  ($iSubscriptionType == SubscriptionConstants::subscriptionType("FolderSubscription")) {
+        return Permission::userHasFolderReadPermission($iExternalID);
+    } else {
+        return Permission::userHasDocumentReadPermission($iExternalID);
+    }
+}
 // only if we have a valid session
 if (checkSession()) {
 
@@ -47,37 +60,46 @@ if (checkSession()) {
             $iExternalID = $fDocumentID;
             $iSubscriptionType = SubscriptionConstants::subscriptionType("DocumentSubscription");
         }
-
-        if (!Subscription::exists($iUserID, $iExternalID, $iSubscriptionType)) {
-            $oSubscription = new Subscription($iUserID, $iExternalID, $iSubscriptionType);            
-            // if we've confirmed the subscription
-            if ($fConfirmed) {
-                // add it
-                if ($oSubscription->create()) {
-                    $default->log->info("addSubscriptionBL.php added subscription for userID=$iUserID, subType=$iSubscriptionType, id=$iExternalID");
-                    // redirect to viewFolder or viewDocument
-                    $default->log->info("redirecting to " . $oSubscription->getContentUrl());
-
-                    redirect($oSubscription->getContentUrl());
+        
+        if (checkPermission($iExternalID, $iSubscriptionType)) {
+        
+            if (!Subscription::exists($iUserID, $iExternalID, $iSubscriptionType)) {
+                $oSubscription = new Subscription($iUserID, $iExternalID, $iSubscriptionType);            
+                // if we've confirmed the subscription
+                if ($fConfirmed) {
+                    // add it
+                    if ($oSubscription->create()) {
+                        $default->log->info("addSubscriptionBL.php added subscription for userID=$iUserID, subType=$iSubscriptionType, id=$iExternalID");
+                        // redirect to viewFolder or viewDocument
+                        $default->log->info("redirecting to " . $oSubscription->getContentUrl());
+    
+                        redirect($oSubscription->getContentUrl());
+                    } else {
+                        // error creating subscription
+                        $default->log->error("addSubscriptionBL.php error creating subscription for userID=$iUserID, subType=$iSubscriptionType, id=$iExternalID");                
+                        $oPatternCustom->setHtml(renderErrorPage("An error occurred while creating this subscription"));
+                    }
                 } else {
-                    // error creating subscription
-                    $default->log->error("addSubscriptionBL.php error creating subscription for userID=$iUserID, subType=$iSubscriptionType, id=$iExternalID");                
-                    $oPatternCustom->setHtml(renderErrorPage("An error occurred while creating this subscription"));
+                    // ask for confirmation
+                    $oPatternCustom->setHtml(renderSubscriptionAddConfirmationPage($oSubscription));
                 }
             } else {
-                // ask for confirmation
-                $oPatternCustom->setHtml(renderSubscriptionAddConfirmationPage($oSubscription));
+                // you're already subscribed
+                $oPatternCustom->setHtml(renderErrorPage("You are already subscribed to the " . ($fFolderID ? "folder '" . Folder::getFolderName($fFolderID) . "'" : "document '" . Document::getDocumentName($fDocumentID) . "'")));
             }
+            
+            require_once("../../../webpageTemplate.inc");
+            $main->setCentralPayload($oPatternCustom);
+            $main->setFormAction($_SERVER["PHP_SELF"]);
+            $main->render();
+            
         } else {
-            // you're already subscribed
-            $oPatternCustom->setHtml(renderErrorPage("You are already subscribed to the " . ($fFolderID ? "folder '" . Folder::getFolderName($fFolderID) . "'" : "document '" . Document::getDocumentName($fDocumentID) . "'")));
-        }
-        
-        require_once("../../../webpageTemplate.inc");
-        $main->setCentralPayload($oPatternCustom);
-        $main->setFormAction($_SERVER["PHP_SELF"]);
-        $main->render();
-        
+            // no permission
+            $oPatternCustom->setHtml(renderErrorPage("You don't have permission to subscribe to this folder or document"));
+            require_once("../../../webpageTemplate.inc");
+            $main->setCentralPayload($oPatternCustom);
+            $main->render();        
+        }        
     } else {
         // neither document or folder chosen
         $oPatternCustom->setHtml(renderErrorPage("You haven't chosen a folder or a document to subscribe to"));
