@@ -13,7 +13,7 @@ function renderBrowseAddPage($fFolderID) {
     global $default;
     $sToRender = "<table border=\"0\">\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "\t<td>" . renderFolderPath($fFolderID, "$default->uiDirectory/foldermanagement/addFolderBL.php") . "</td>\n";
+    $sToRender .= "\t<td>" . renderFolderPath($fFolderID, "$default->ui_url/foldermanagement/addFolderBL.php") . "</td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "</table>\n";
     $sToRender .= "<table border=\"0\">\n";
@@ -37,7 +37,7 @@ function renderBrowsePage($fFolderID) {
     global $default;
     $sToRender = "<table border=\"0\">\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "\t<td>" . renderFolderPath($fFolderID, "$default->uiDirectory/foldermanagement/addFolderBL.php") . "</td>\n";
+    $sToRender .= "\t<td>" . renderFolderPath($fFolderID, "$default->ui_url/foldermanagement/addFolderBL.php") . "</td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "</table>\n";
     $sToRender .= "<table border=\"0\">\n";
