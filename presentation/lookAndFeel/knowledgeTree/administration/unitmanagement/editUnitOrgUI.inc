@@ -79,7 +79,7 @@ function getUnitOrgEdit($bNoOrg, $fUnitID = null){
 	    $sToRender .= "  </td></tr>";
     } else {
 	    $sToRender .= "  <tr><td width=200 bgcolor=$sBgColor>";
-	    $sToRender .= "  <br>&nbsp;&nbsp;<a href=\"$default->rootUrl/control.php?action=removeUnitFromOrg&fUnitID=" . $fUnitID  . "\">Remove Unit from an Orgaisation</a><br><br>";
+	    $sToRender .= "  <br>&nbsp;&nbsp;<a href=\"$default->rootUrl/control.php?action=removeUnitFromOrg&fUnitID=" . $fUnitID  . "\">Remove Unit from an Organisation</a><br><br>";
 	    $sToRender .= "  </td><td>";	    
 	    $sToRender .= "  </td></tr>";
     }
