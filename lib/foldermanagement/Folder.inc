@@ -29,6 +29,10 @@ class Folder {
 	var $iUnitID;
 	/** public status of folder */
 	var $bIsPublic;
+	/** comma deliminated string of parent ids */
+	var $sParentFolderIDs;
+	/** backlash deliminated path from file system root */
+	var $sFullPath;
 	
 	
 	/**
@@ -182,6 +186,42 @@ class Folder {
 	}
 	
 	/**
+	* Generate a comma delimited string containing
+	* the parent folder ids
+	* 
+	* @return String	comma delimited string containing the parent folder ids
+	*/
+	function generateParentFolderIDS($iFolderID) {
+		global $default;
+		//if the folder is not the root folder
+		if ($iFolderID != 0) {
+			$sql = $default->db;
+			$sql->query("SELECT parent_id FROM $default->owl_folders_table WHERE ID = $iFolderID");
+			$sql->next_record();
+			return $this->generateParentFolderIDS($sql->f("parent_id")) . ",$iFolderID";
+		}
+		return;
+		
+	}
+	
+	/**
+	* Backslash deliminated string giving full path of document
+	* from file system root url
+	* 
+	*/
+	function generateFullFolderPath($iFolderID) {
+		global $default;
+		//if the folder is not the root folder 
+		if ($iFolderID != 0) {
+			$sql = $default->db;
+			$sql->query("SELECT name, parent_id FROM $default->owl_folders_table WHERE ID = $iFolderID");
+			$sql->next_record();			
+			return $this->generateFullFolderPath($sql->f("parent_id")) . "\\" . stripslashes($sql->f("name"));
+		}
+		return;
+	}
+	
+	/**
 	* Create the current folder in the database
 	*
 	* @return boolean true and set $this->iId with new primary key, false otherwise and set $_SESSION["errorMessage"]
@@ -190,9 +230,13 @@ class Folder {
 		global $default, $lang_err_database; $lang_err_object_exists;
 		//if the object has not already been stored		
 		if ($this->iId < 0) {
+			$this->sFullPath = $this->generateFullFolderPath($this->iParentID);
+			$this->sFullPath = substr($this->sFullPath, 1, strlen($this->sFullPath));
+			$this->sParentFolderIDs = $this->generateParentFolderIDS($this->iParentID);
+			$this->sParentFolderIDs = substr($this->sParentFolderIDs, 1, strlen($this->sParentFolderIDs));
 			$sql = $default->db;
-			$result = $sql->query("INSERT INTO " . $default->owl_folders_table . " (name, description, parent_id, creator_id, document_type_id, unit_id, is_public) " .
-						"VALUES ('" . addslashes($this->sName) . "', '" . addslashes($this->sDescription) . "', $this->iParentID, $this->iCreatorID, $this->iDocumentTypeID, $this->iUnitID, " . ($this->bIsPublic ? 1 : 0) . ")");
+			$result = $sql->query("INSERT INTO " . $default->owl_folders_table . " (name, description, parent_id, creator_id, document_type_id, unit_id, is_public, full_path, parent_folder_ids) " .
+						"VALUES ('" . addslashes($this->sName) . "', '" . addslashes($this->sDescription) . "', $this->iParentID, $this->iCreatorID, $this->iDocumentTypeID, $this->iUnitID, " . ($this->bIsPublic ? 1 : 0) . ",'" . addslashes($this->sFullPath) . "','" . addslashes($this->sParentFolderIDs) . "')");
 			if ($result) {
 				$this->iId = $sql->insert_id();
 				return true;
@@ -272,6 +316,8 @@ class Folder {
 		if ($sql->next_record()) {
 			$oFolder = & new Folder(stripslashes($sql->f("name")), stripslashes($sql->f("description")), $sql->f("parent_id"), $sql->f("creator_id"), $sql->f("document_type_id"), $sql->f("unit_id"), $sql->f("is_public"));
             $oFolder->iId = $iFolderID;
+			$oFolder->sFullPath = stripslashes($sql->f("full_path"));
+			$oFolder->sParentFolderIDs = stripslashes($sql->f("parent_folder_ids"));
 			return $oFolder;
 		} 
  		$_SESSION["errorMessage"] = $lang_err_object_not_exist . "id = " . $iFolderID . " table = folders";
