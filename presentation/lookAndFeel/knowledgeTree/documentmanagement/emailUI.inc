@@ -43,7 +43,7 @@ function getDocumentEmailPage($oDocument) {
 	$sToRender .= "<tr><td>Recipient name:</td><td><input type=\"text\" name=\"fToName\" /></td></tr>\n";
 	$sToRender .= "<tr><td>Email address:</td><td><input type=\"text\" name=\"fToEmail\" /></td></tr>\n";
 	$sToRender .= "<tr><td>&nbsp</td><td>&nbsp</td></tr>\n";
-	$sToRender .= "<tr><td><table><tr><td><input type=\"image\" src=\"$default->owl_graphics_url/widgets/email.gif\" /></td><td><a href=\"$default->owl_root_url/control.php?action=modifyDocument&fDocumentID=" . $oDocument->getID() . "\"><img src=\"$default->owl_graphics_url/widgets/cancel.gif\" border=\"0\"/></a></td></tr></table></td>\n";
+	$sToRender .= "<tr><td><table><tr><td><input type=\"image\" src=\"$default->owl_graphics_url/widgets/email.gif\" /></td><td><a href=\"$default->owl_root_url/control.php?action=viewDocument&fDocumentID=" . $oDocument->getID() . "\"><img src=\"$default->owl_graphics_url/widgets/cancel.gif\" border=\"0\"/></a></td></tr></table></td>\n";
 	$sToRender .= "</table>\n";
 	return $sToRender;
 }
