@@ -14,7 +14,7 @@ require_once("$default->owl_fs_root/lib/authentication/class.AuthLdap.php");
  */
 
 //common admin functions that dont really form part of class
-require ("$default->owl_fs_root/lib/administration/adminLib.inc");
+require_once ("$default->owl_fs_root/lib/administration/GroupManager.inc");
  
 class UserManager
  {
@@ -547,6 +547,7 @@ class UserManager
 	        global $default;
 		$groups = array();
 	        $sql = new Owl_DB;
+	        $groupName = new GroupManager;
 	        
 	             
 	        // check that username exists if it does'nt return false
@@ -568,7 +569,7 @@ class UserManager
 	        while($sql->next_record())
 	        {
 	        	$groups[$i] = array("id" => $sql->f("group_id"),
-	        			"name" => $this->getGroupName($sql->f("group_id"))
+	        			"name" => $groupName->getGroupName($sql->f("group_id"))
 	        			);
 	        	$i++;
 	        }
@@ -576,47 +577,7 @@ class UserManager
 	        return $groups;
 	}
 	
-    /*
-     * Function getGroupName($groupID)
-     *
-     * gets the id of a user using their username
-     *
-     * @param    $username
-     *   The username for which we want its ID
-     * @return char
-     *   name of group
-     */
-     
-	function getGroupName($groupID)
-	 {
-	        global $default;
-	
-	        $sql = new Owl_DB;
-	        
-	             
-	        // check that username exists if it does'nt return false
-	        $query = "SELECT name FROM $default->owl_groups_table WHERE id = '" . $groupID . "'";
-	        $sql->query($query);
-	        $rows = $sql->num_rows($sql);
-	        // go into record set
-	        $sql->next_record();
-	        
-	        // store the id in a variable
-	        $name = $sql->f("name");
-	        
-	        // if no entry..group name does'nt exist
-	        if ($rows == 0) 
-	        {
-	            // duplicate username
-	            $default->errorMessage = "UserManager::The group does not exist<br>";
-	            $default->log->debug($default->errorMessage);
-	            return false;
-	        }
-	        else
-	        {
-	        	return $name;
-	        }
-	}
+    
     
 }
 ?>
