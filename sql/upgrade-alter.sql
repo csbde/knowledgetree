@@ -121,3 +121,6 @@ INSERT INTO time_unit_lookup (name) VALUES ("Days");
 
 INSERT INTO document_transaction_types_lookup (name) VALUES ("View");
 UPDATE document_transactions SET transaction_id=10 WHERE transaction_id=6 AND comment='Inline view'
+ALTER TABLE groups_folders_approval_link ADD COLUMN user_id INT;
+/*
+UPDATE groups_folders_approval_link SET user_id = 1;*/
