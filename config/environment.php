@@ -46,6 +46,11 @@ require_once("$default->fileSystemRoot/phplib/db_mysql.inc");
 require_once("$default->fileSystemRoot/lib/database/db.inc");
 $default->db = new Database();
 
+//language translation functions
+require_once("$default->fileSystemRoot/internationalization/LanguageFunctions.inc");
+//change this to reflect the language to use
+require_once("$default->fileSystemRoot/internationalization/afrikaans/Language.inc");
+
 // instantiate system settings class
 require_once("$default->fileSystemRoot/lib/database/lookup.inc");
 require_once("$default->fileSystemRoot/lib/System.inc");
