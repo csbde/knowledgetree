@@ -49,6 +49,7 @@ if (checkSession()) {
                                     //create the document transaction record
                                     $oDocumentTransaction = & new DocumentTransaction($oDocument->getID(), "Document created", CREATE);
                                     $oDocumentTransaction->create();
+                                    $default->log->info("addDocumentBL.php successfully added document " . $oDocument->getFileName() . " to folder " . Folder::getFolderPath($fFolderID) . " id=$fFolderID");
                                     
                                     // fire subscription alerts for the new document
                                     $count = SubscriptionEngine::fireSubscription($fFolderID, SubscriptionConstants::subscriptionAlertType("AddDocument"),
@@ -60,6 +61,7 @@ if (checkSession()) {
                                     //redirect to the document view page
                                     redirect("$default->rootUrl/control.php?action=modifyDocument&fDocumentID=" . $oDocument->getID(). "&fFirstEdit=1");
                                 } else {
+                                	// couldn't store document in db
                                     require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
                                     $oDocument->delete();
                                     $oPatternCustom = & new PatternCustom();
@@ -68,9 +70,11 @@ if (checkSession()) {
                                     $main->setFormAction($_SERVER["PHP_SELF"] . "?fFolderID=$fFolderID&fForStore=1");
                                     $main->setFormEncType("multipart/form-data");
                                     $main->setErrorMessage("An error occured while storing the document on the file system");
+                                    $default->log->error("addDocumentBL.php Filesystem error attempting to store document " . $oDocument->getFileName() . " in folder " . Folder::getFolderPath($fFolderID) . " id=$fFolderID");
                                     $main->render();
                                 }
                             } else {
+                            	// couldn't store document on fs
                                 require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
                                 $oPatternCustom = & new PatternCustom();
                                 $oPatternCustom->setHtml(getBrowseAddPage($fFolderID));
@@ -78,9 +82,11 @@ if (checkSession()) {
                                 $main->setFormAction($_SERVER["PHP_SELF"] . "?fFolderID=$fFolderID&fForStore=1");
                                 $main->setFormEncType("multipart/form-data");
                                 $main->setErrorMessage("An error occured while storing the document in the database");
+                                $default->log->error("addDocumentBL.php DB error storing document in folder " . Folder::getFolderPath($fFolderID) . " id=$fFolderID");
                                 $main->render();
                             }
                         } else {
+                        	// document already exists in folder
                             require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
                             $oPatternCustom = & new PatternCustom();
                             $oPatternCustom->setHtml(getBrowseAddPage($fFolderID));
@@ -88,6 +94,7 @@ if (checkSession()) {
                             $main->setFormAction($_SERVER["PHP_SELF"] . "?fFolderID=$fFolderID&fForStore=1");
                             $main->setFormEncType("multipart/form-data");
                             $main->setErrorMessage("A document with this file name already exists in this folder");
+                            $default->log->error("addDocumentBL.php Document exists with name " . $oDocument->getFileName() . " in folder " . Folder::getFolderPath($fFolderID) . " id=$fFolderID");
                             $main->render();
                         }
                     } else {
