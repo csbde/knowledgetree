@@ -31,7 +31,12 @@ if (checkSession()) {
         $bLdap = false;
     } else {
         //if its using LDAP get these attributes
-        $aAttributes = array ("dn", "uid", "givenname", "sn", "mail", "mobile");
+        // TODO: make these user defined
+        if ($default->ldapServerType == "ActiveDirectory") {
+            $aAttributes = array ("dn", "samaccountname", "givenname", "sn", "mail", "telephonenumber");
+        } else {
+            $aAttributes = array ("dn", "uid", "givenname", "sn", "mail", "mobile");
+        }
         $bLdap = true;
     }
     
