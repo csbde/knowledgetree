@@ -76,7 +76,8 @@ function getGroupPage($fDocFieldID) {
     $aDBColumnArray = array("id");
     $aQueryStringVariableNames = array("fDocFieldLookupID");
     	    
-    $oSearchResults = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnNames, "100%", $aHyperLinkURL,$aDBColumnArray,$aQueryStringVariableNames);   
+    $oSearchResults = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnNames, "100%", $aHyperLinkURL,$aDBColumnArray,$aQueryStringVariableNames);
+    $oSearchResults->setEmptyTableMessage("<font color=\"red\">You must enter at least one value!</font>");   
 	$LookupDisplay .= $oSearchResults->render() ;
 
 	$sFontTag  .= "<font face=\"Arial\" color=\"#0066cc\">";
