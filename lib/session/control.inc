@@ -103,11 +103,10 @@ function checkSessionAndRedirect($bRedirect) {
 function checkSession() {
     global $default;
     if (checkSessionAndRedirect(true)) {
-        $default->log->debug("control.inc print the session variables: " . arrayToString($_SESSION));
+        $default->log->debug("control.inc: print the session variables: " . arrayToString($_SESSION));
         // the session is cool, now check if we access to this page
-        $currentPage = (strlen($_SERVER['QUERY_STRING']) > 0) ? $_SERVER['PHP_SELF'] . "?" . $_SERVER['QUERY_STRING'] : $_SERVER['PHP_SELF'];
-        $default->log->debug("control.inc qs=" . $_SERVER['QUERY_STRING'] . "; strlen(qs)=" . strlen($_SERVER['QUERY_STRING']) . "; page=$currentPage ? " . $_SESSION["pageAccess"][$currentPage]);
-        if ($_SESSION["pageAccess"][$currentPage]) {
+        $default->log->debug("control.inc: page=" . $_SERVER['PHP_SELF'] . " ? " . $_SESSION["pageAccess"][$_SERVER['PHP_SELF']]);
+        if ($_SESSION["pageAccess"][$_SERVER['PHP_SELF']]) {
             return true;
         } else {
             return false;

@@ -12,7 +12,7 @@ require_once("$default->owl_fs_root/lib/session/SiteMap.inc");
  * authentication and forwards the request to the appropriate handling
  * page.  
  *
- * Licensed under the GNU GPL. For full terms see the file COPYING.
+ * Licensed under the GNU GPL. For full terms see the file DOCS/COPYING.
  *
  * @version $Revision$
  * @author Michael Joseph <michael@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
@@ -36,28 +36,27 @@ if (checkSessionAndRedirect(false)) {
     }
 }
 
-// (if there is no userID on the session and the action that we're looking up
-//  from the sitemap requires group access ie. !Anonymous then redirect to no
-//  permission page)
-
-// check whether the users group has access to the requested page
+// retrieve the page from the sitemap (checks whether this user has access to the requested page)
 $page = $default->siteMap->getPage($action, $_SESSION["userID"]);
 
 $default->log->debug("retrieved page=$page from SiteMap");
 if (!$page) {
     // this user doesn't have permission to access the page
     // or there is no page mapping for the requested action
-    
-    // FIXME: redirect to no permission page
-    print "you do not have access to view this page!  please go away, and come back when you do.<br>";
-    echo generateLink("logout") . "logout</a>";    
-
-    exit;
+    // redirect to no permission page
+    redirect("$default->owl_ui_url/noAccess.php");
 } else {
     $page = $default->owl_root_url . $page;
     // set authorised flag and redirect
-    $_SESSION["pageAccess"][$page] = true;
-    $default->log->debug("control.php: just set SESSION[\"pageAccess\"][$page]=" . $_SESSION["pageAccess"][$page]); 
+    // strip querystring form $page before setting page authorisation flag
+    if (strstr($page, "?")) {
+        $accessPage = substr($page, 0, strpos($page, "?"));
+        $default->log->debug("control.php: page without querystring=$accessPage");
+    } else {
+        $accessPage = $page;
+    }
+    $_SESSION["pageAccess"][$accessPage] = true;
+    $default->log->debug("control.php: just set SESSION[\"pageAccess\"][$accessPage]=" . $_SESSION["pageAccess"][$accessPage]); 
     redirect($page);
 }
 ?>
