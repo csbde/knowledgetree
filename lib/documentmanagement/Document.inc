@@ -411,7 +411,27 @@ class Document {
 		}
 	}
 
-
+	function endCollaborationProcess() {
+		global $default;
+		$sql = $default->db;
+		//get the current step
+		//if the user is assinged to two or more roles, make sure we get the current
+		//one by ordering by precedence
+		$sql->query("SELECT FURL.id AS id, GFAT.precedence " .
+					"FROM $default->owl_groups_folders_approval_table AS GFAT INNER JOIN $default->owl_folders_user_roles_table AS FURL ON GFAT.id = FURL.group_folder_approval_id " .
+					"WHERE document_id = $this->iId AND user_id = " . $_SESSION["userID"] . " AND done=0 " . 
+					"ORDER BY precedence ASC");
+		if ($sql->next_record()) {
+			//set it as done
+			$oFolderUserRole = FolderUserRole::get($sql->f("id"));
+			$oFolderUserRole->setActive(false);
+			$oFolderUserRole->setDone(true);
+			$oFolderUserRole->setDateTime(getCurrentDateTime());
+			return $oFolderUserRole->update();
+		}
+		return false;
+	}
+    
     /**
     *
     * Static function.  Given a document primary key will create
@@ -669,6 +689,21 @@ class Document {
 		
 	}
 	
+    /**
+     * Checks if there is collaboration for this document
+     *
+     * @param integer the id of the document
+     */
+    function hasCollaboration() {
+		global $default;
+		$sql = $default->db;
+		$sql->query("SELECT id AS count from $default->owl_groups_folders_approval_table WHERE folder_id = $this->iFolderID");
+		if ($sql->next_record()) {
+			return true;
+		}
+		return false;
+    }
+    
 	/**
 	* Checks if the collaboration process for the document
 	* is started yet
@@ -683,6 +718,16 @@ class Document {
 		}
 		return false;
 	}
+    
+    function documentCollaborationDone($iDocumentID) {
+		global $default;
+		$sql = $default->db;
+		$sql->query("SELECT * FROM $default->owl_folders_user_roles_table WHERE document_id = $iDocumentID AND active = 0 AND done = 1");
+		if ($sql->next_record()) {
+			return true;
+		}
+		return false;
+    }
 	
 	/**
 	* Checks if the current user has an active role in the document
