@@ -1,3 +1,17 @@
+<!-- Original:  desypfa@hotmail.com -->
+<!-- Modified:  Benjamin Wright, Editor -->
+<!-- This script and many more are available free online at -->
+<!-- The JavaScript Source!! http://javascript.internet.com -->
+
+function redirTimer(redirTime, redirURL) { 
+	self.setTimeout("self.location.href = redirURL;",redirTime); 
+	alert("set redirect time=" + redirTime + ", url=" + redirURL);
+}
+
+function disable(elem) {
+	elem.onfocus=elem.blur;
+}
+
 function setActionAndSubmit(newAction) {	
     document.MainForm.action = newAction;	
     document.MainForm.submit();

@@ -70,6 +70,7 @@ if (checkSession()) {
 					
 					$oPatternCustom = & new PatternCustom();
 					$oPatternCustom->setHtml(getAddPage($fFolderCollaborationID, $fFolderID, (isset($fUnitID) ? $fUnitID : -1), (isset($fDocumentTitle) ? $fDocumentTitle : ""), (isset($fDocument) ? $fDocument : ""), (isset($fTargetDocumentID) ? $fTargetDocumentID : "") ));
+					$main->setOnLoadJavaScript("disable(document.MainForm.fTargetDocument)");
 		    		$main->setCentralPayload($oPatternCustom);
 		    	    $main->setFormAction($_SERVER["PHP_SELF"] . "?fFolderID=$fFolderID&fFolderCollaborationID=$fFolderCollaborationID&fForStore=1");
 		    	    $main->setHasRequiredFields(true);    		
@@ -98,6 +99,7 @@ if (checkSession()) {
 					
 					$oPatternCustom = & new PatternCustom();				
 					$oPatternCustom->setHtml(getEditPage($fFolderID, $fDependantDocumentTemplateID, $fFolderCollaborationID, $oDependantDocumentTemplate->getDocumentTitle(), (isset($oDocument) ? $oDocument->getName() : ""), (isset($oDocument) ? $oDependantDocumentTemplate->getTemplateDocumentID() : null), $oDependantDocumentTemplate->getDefaultUserID()));
+					$main->setOnLoadJavaScript("disable(document.MainForm.fTargetDocument)");
 		    		$main->setCentralPayload($oPatternCustom);
 		    	    $main->setFormAction($_SERVER["PHP_SELF"] . "?fFolderID=$fFolderID&fFolderCollaborationID=$fFolderCollaborationID&fDependantDocumentTemplateID=$fDependantDocumentTemplateID&fForUpdate=1");
 		    	    $main->setHasRequiredFields(true);    		
