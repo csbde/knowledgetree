@@ -19,7 +19,7 @@
 	$sQuery =  "SELECT * FROM $default->owl_groups_table WHERE id = $iGroupID";
 	$aDisplayColumns = array("name","is_sys_admin","is_unit_admin");
 	$aStoreColumns = array("name","is_sys_admin","is_unit_admin");
-	$aColumnNames = array("Name","System admin", "Unit admin");
+	$aColumnNames = array("Name:","System admin:", "Unit admin:");
 	$aDisplayColumnTypes = array(1,2,2);
 	$aDatabaseColumnTypes = array(1,2,2);
 	
@@ -35,9 +35,9 @@
 	$sToRender .= "<td>" . $oPattern->render() . "</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
+	$sToRender .= "<td>Assign to a Unit: &nbsp&nbsp" . getUnitDisplay() . "</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
-	//$sToRender .="<input type=\"hidden\" name=\"fGroupName\" value=\"" . $oGroup->setName() . "\"";
 	$sToRender .= "</tr>\n";
 	
 	$sToRender .= "<td align = right><input type=\"image\" src =\"$default->owl_graphics_url/widgets/update.gif\" value=\"Update\" /></td>\n";	
@@ -56,7 +56,9 @@ function getEditPage($iGroupID) {
 	$oGroup = null;
 	if (isset($iGroupID)) {
 		$oGroup = Group::get($iGroupID);
+		
 	}
+	
 	
 	$sToRender .= "<br></br>\n";
 	$sToRender .= "<b>Edit Group Properties:</b>\n";
@@ -64,19 +66,29 @@ function getEditPage($iGroupID) {
 	$sToRender .= "<br></br>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>" . getGroupDisplay($oGroup) . "</td>\n";
+	$sToRender .= "<td>Group Name: </td><td>" . getGroupDisplay($oGroup) . "</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>" . getUnitAdminCheckBox($oGroup) . "</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>" . getSysAdminCheckBox($oGroup) . "</td>\n";
-	$sToRender .= "</tr>\n";
+	
+	if (isset($iGroupID)) {
+		$sToRender .= "<td>Assign to Unit: </td><td>" . getUnitDisplay() . "</td>\n";
+		$sToRender .= "</tr>\n";
+		$sToRender .= "<tr>\n";
+		$sToRender .= "<td>Unit Administrator: </td><td>" . getUnitAdminCheckBox($oGroup) . "</td>\n";
+		$sToRender .= "</tr>\n";
+		$sToRender .= "<tr>\n";
+		$sToRender .= "<td>System Administrator: </td><td>" . getSysAdminCheckBox($oGroup) . "</td>\n";
+		$sToRender .= "</tr>\n";
+		$sToRender .= "<tr>\n";
+		$sToRender .= "</tr>\n";
+	}
+
+
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<tr>\n";
 	$sToRender .= "</tr>\n";
-	$sToRender .= "</tr>\n";
-	$sToRender .= getUpdateButton($oGroup);	
+	$sToRender .= "<td></td>" . getUpdateButton($oGroup);	
 	$sToRender .= getCancelButton($oGroup);	
 	$sToRender .= "</table>\n";
 	
@@ -88,13 +100,22 @@ function getGroupDisplay($oGroup) {
 	global $default;
 	if (!isset($oGroup)) {
 		$oPatternListBox = & new PatternListBox($default->owl_groups_table, "name", "id", "fGroupID");
-		$oPatternListBox->setIncludeDefaultValue(true);
+		//$oPatternListBox->setIncludeDefaultValue(true);
 		$oPatternListBox->setPostBackOnChange(true);		
 		return $oPatternListBox->render();
 	} else {
 		return "<input type=\"hidden\" name=\"fGroupID\" value=\"" . $oGroup->iId . "\">\n" .
-		"<input type=\"text\" name=\"fGroupName\" value=\"" . $oGroup->getName() . "\"";
+		"<input size = \"40\" type=\"text\" name=\"fGroupName\" value=\"" . $oGroup->getName() . "\">";
 	}
+	
+}
+
+function getUnitDisplay() {
+	global $default;
+	$oPatternListBox = & new PatternListBox($default->owl_units_table, "name", "id", "fUnitID");
+	return $oPatternListBox->render();
+		
+	
 	
 }
 
@@ -120,16 +141,16 @@ function getUpdateButton($oGroup) {
 	if (!isset($oGroup)) {
 		return "Please select a group";
 	} else {
-		return "<td align = right><input type=\"image\" src =\"$default->owl_graphics_url/widgets/update.gif\" value=\"update\" /></td>\n";
+		return "<td align = right><input type=\"image\" src =\"$default->owl_graphics_url/widgets/update.gif\" value=\"submit\" /></td>\n";
 	}
 }
 
 function getCancelButton($oGroup) {
 	global $default;
 	if (!isset($oGroup)) {
-		return "<td align = right><a href=\"$default_owl_root_url/control.php?action=browse\"><img src =\"$default->owl_graphics_url/widgets/cancel.gif\" value=\"cancel\" /></a></td>\n";
+		//return "<td align = right><a href=\"$default_owl_root_url/control.php?action=groupManagement\"><img src =\"$default->owl_graphics_url/widgets/cancel.gif\" value=\"cancel\" /></a></td>\n";
 	} else {
-		return "<td align = right><a href=\"$default_owl_root_url/control.php?action=editGroup\"><img src =\"$default->owl_graphics_url/widgets/cancel.gif\" value=\"cancel\" /></a></td>\n";
+		return "<td align = right><a href=\"$default_owl_root_url/control.php?action=editGroup\"><img src =\"$default->owl_graphics_url/widgets/cancel.gif\" border = \"0\" /></a></td>\n";
 	}
 }
 ?>

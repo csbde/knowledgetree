@@ -12,7 +12,7 @@ require_once("../../../../../config/dmsDefaults.php");
 if (checkSession()) {
 	require_once("$default->owl_fs_root/lib/visualpatterns/PatternListBox.inc");
 	require_once("$default->owl_fs_root/lib/visualpatterns/PatternEditableListFromQuery.inc");
-	require_once("editGroupUI.inc");
+	require_once("removeGroupUI.inc");
 	require_once("$default->owl_fs_root/lib/security/permission.inc");
 	require_once("$default->owl_fs_root/lib/groups/Group.inc");
 	require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");
@@ -21,46 +21,31 @@ if (checkSession()) {
 	require_once("$default->owl_fs_root/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
 	require_once("$default->owl_fs_root/presentation/Html.inc");
 	
-	if (isset($fFromCreate)) {
-		$oPatternCustom = & new PatternCustom();
-		$oPatternCustom->setHtml(getCreatePage($fGroupID));
-		$main->setCentralPayload($oPatternCustom);
-		$main->setFormAction("$default->owl_root_url/presentation/lookAndFeel/knowledgeTree/store.php?fRedirectURL=" . urlencode("$default->owl_root_url/control.php?action=editGroupSuccess"));		
-		$main->render();		
-	} else if (isset($fForStore)) {
-		$oGroup = Group::get($fGroupID);
-		$oGroup->setName($fGroupName);
-		
-		if (isset($fGroupUnitAdmin)) {
-			$oGroup->setUnitAdmin(true);
-		} else {
-			$oGroup->setUnitAdmin(false);
-		}
-		
-		if (isset($fGroupSysAdmin)) {
-			$oGroup->setSysAdmin(true);
-		} else {
-			$oGroup->setSysAdmin(false);
-		}
-		if ($oGroup->update()) {
-			redirect("$default->owl_root_url/control.php?action=editGroupSuccess");
-		} else {
-			redirect("$default->owl_root_url/control.php?action=editGroupFail");
-		}
-	} else if (isset($fGroupID)){		
+	if (isset($fGroupID)) {
 		$oPatternCustom = & new PatternCustom();		
-		$oPatternCustom->setHtml(getEditPage($fGroupID));
+		$oPatternCustom->setHtml(getDeletePage($fGroupID));
 		$main->setCentralPayload($oPatternCustom);				
-		$main->setFormAction($_SERVER["PHP_SELF"] . "?fForStore=1");
-		$main->render();
-		
+		$main->setFormAction($_SERVER["PHP_SELF"] . "?fForDelete=1");
+		$main->render();		
+	
 	} else {
 		$oPatternCustom = & new PatternCustom();		
-		$oPatternCustom->setHtml(getEditPage(null));
+		$oPatternCustom->setHtml(getDeletePage(null));
 		$main->setCentralPayload($oPatternCustom);		
 		$main->setFormAction($_SERVER["PHP_SELF"]);
 		$main->render();
-		
+	
+	}
+	
+		if (isset($fForDelete)) {
+			$oGroup = Group::get($fGroupID);
+			$oGroup->setName($fGroupName);
+			
+		if ($oGroup->delete()) {
+			redirect("$default->owl_root_url/control.php?action=removeGroupSuccess");
+		} else {
+			redirect("$default->owl_root_url/control.php?action=removeGroupFail");
+		}
 	}
 }
 ?>
