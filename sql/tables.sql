@@ -380,3 +380,6 @@ INSERT INTO mimes (filetypes, mimetypes) VALUES ('xyz', 'chemical/x-pdb');
 INSERT INTO mimes (filetypes, mimetypes) VALUES ('zip', 'application/zip');
 INSERT INTO mimes (filetypes, mimetypes) VALUES ('gz', 'application/x-gzip');
 INSERT INTO mimes (filetypes, mimetypes) VALUES ('tgz', 'application/x-gzip');
+
+INSERT INTO web_documents_status (name) VALUES ("Pending");
+INSERT INTO web_documents_status (name) VALUES ("Published");
