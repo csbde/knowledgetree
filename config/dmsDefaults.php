@@ -62,7 +62,14 @@ class KTInit {
         global $default;
         require_once("$default->fileSystemRoot/lib/Log.inc");
         $default->log = new Log($default->fileSystemRoot . "/log", $default->logLevel);
+        $res = $default->log->initialiseLogFile();
+        KTInit::handleInitError($res);
+        $default->queryLog = new Log($default->fileSystemRoot . "/log", $default->logLevel, "query");
+        $res = $default->queryLog->initialiseLogFile();
+        KTInit::handleInitError($res);
         $default->timerLog = new Log($default->fileSystemRoot . "/log", $default->logLevel, "timer");
+        $res = $default->timerLog->initialiseLogFile();
+        KTInit::handleInitError($res);
     }
     // }}}
 
@@ -97,8 +104,8 @@ class KTInit {
     }
     // }}}
 
-    // {{{ setupDb()
-    function setupDb () {
+    // {{{ setupDB()
+    function setupDB () {
         global $default;
 
         require_once("DB.php");
@@ -118,6 +125,10 @@ class KTInit {
         );
 
         $default->_db = &DB::connect($dsn, $options);
+        if (PEAR::isError($default->_db)) {
+            KTInit::handleInitError($default->_db);
+            // never returns
+        }
         $default->_db->setFetchMode(DB_FETCHMODE_ASSOC);
 
         // DBCompat allows phplib API compatibility
@@ -160,6 +171,7 @@ class KTInit {
                 KTInit::cleanMagicQuotesItem($var[$key]);
             }
         } else {
+            // XXX: Make it look pretty
             $var = stripslashes($var);
         }
     }
@@ -179,6 +191,13 @@ class KTInit {
     // {{{ setupRandomSeed()
     function setupRandomSeed () {
         mt_srand(hexdec(substr(md5(microtime()), -8)) & 0x7fffffff);
+    }
+    // }}}
+
+    // {{{ handleInitError()
+    function handleInitError($oError) {
+        // XXX: Make it look pretty
+        die($oError->toString());
     }
     // }}}
 }
