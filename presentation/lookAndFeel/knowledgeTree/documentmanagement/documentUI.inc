@@ -61,6 +61,7 @@ function renderCheckInPage($oDocument) {
 	$sToRender .= "<tr/>\n";
 	$sToRender .= "<tr><td><input type=\"text\" name=\"fCheckInComment\" size=\"30\"/></td></tr>\n";
     $sToRender .= "<tr><td><input type=\"hidden\" name=\"fForStore\" value=\"1\"/></td></tr>\n";
+    $sToRender .= "<tr><td><input type=\"hidden\" name=\"fDocumentID\" value=\"" . $oDocument->getID() . "\"/></td></tr>\n";    
     $sToRender .= "<tr><td>\n";
     $sToRender .= "<input type=\"radio\" name=\"fCheckInType\" value=\"major\" checked /> Major CheckIn\n";
     $sToRender .= "<input type=\"radio\" name=\"fCheckInType\" value=\"minor\" checked /> Minor CheckIn\n";
@@ -93,6 +94,7 @@ function renderCheckOutPage($oDocument) {
 	$sToRender .= "<tr/>\n";
 	$sToRender .= "<tr><td><input type=\"text\" name=\"fCheckOutComment\" size=\"30\"/></td></tr>\n";
     $sToRender .= "<tr><td><input type=\"hidden\" name=\"fForStore\" value=\"1\"/></td></tr>\n";
+    $sToRender .= "<tr><td><input type=\"hidden\" name=\"fDocumentID\" value=\"" . $oDocument->getID() . "\"/></td></tr>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
