@@ -86,7 +86,7 @@ require_once("$default->owl_fs_root/phplib/db_mysql.inc");
 //require("$default->owl_fs_root/phplib/db_pgsql.inc");
 
 // Change this to reflect the authentication method you are using
-require_once("$default->owl_fs_root/lib/LDAPAuthenticator.inc");
+//require_once("$default->owl_fs_root/lib/LDAPAuthenticator.inc");
 //require_once("$default->owl_fs_root/lib/DBAuthenticator.inc");
 
 // Database info
@@ -119,28 +119,24 @@ $default->owl_email_server = "mail.jamwarehouse.com";
 $default->owl_email_from = "owl@spare2.jamwarehouse.com";
 $default->owl_email_fromname = "owl";
 
-// define actions
-// needed?
-$_ACTIONS = array();
-$_ACTIONS["LOGIN"] = "login";
-$_ACTIONS["LOGIN_FORM"] = "loginForm";
-$_ACTIONS["LOGOUT"] = "logout";
-$_ACTIONS["BROWSE"] = "browse";
-$_ACTIONS["HELP"] = "help";
+// user class constant definitions
+// a numerical mapping is used to allow super user classes access
+// to lower classes; ie. the permission check will allow the SA class
+// to view pages with UA access.
+define("SA", 0);
+define("UA", 1);
+define("A", 2);
 
-/*
 // define site mappings
 require_once("/lib/SiteMap.inc");
 $default->siteMap = new SiteMap();
 // action, section, page, userClass (SA, UA, U, A)
-//($action, $page, $sectionName, $userClass)
-$default->siteMap->addMap("LOGIN", "login.php?loginAction=login", "General", "A");
-$default->siteMap->addMap("LOGIN_FORM", "login.php?loginAction=loginForm", "General", "A");
-$default->siteMap->addMap("LOGOUT", "logout.php", "General", "A");
-$default->siteMap->addMap("BROWSE", "browse.php", "Browse Collections", "A");
-$default->siteMap->addMap("ADDUSER", "addUser.php", "Administration", "UA");
-$default->siteMap->addMap("ADDUNIT", "addUnit.php", "Administration", "SA");
-$default->siteMap->addMap("ADDORG", "addOrganisation.php", "Administration", "SA");
-$default->siteMap->addMap("TEST", "test.php", "Tests", "UA");
-*/
+$default->siteMap->addPage("LOGIN", "login.php?loginAction=login", "General", "A");
+$default->siteMap->addPage("LOGIN_FORM", "login.php?loginAction=loginForm", "General", "A"); 
+$default->siteMap->addPage("LOGOUT", "logout.php", "General", "A");
+$default->siteMap->addPage("BROWSE", "browse.php", "Browse Collections", "A");
+$default->siteMap->addPage("ADDFOLDER", "addFolder.php", "Browse Collections", "UA");
+$default->siteMap->addPage("ADDUSER", "addUser.php", "Administration", "UA");
+$default->siteMap->addPage("ADDUNIT", "addUnit.php", "Administration", "SA");
+$default->siteMap->addPage("ADDORG", "addOrganisation.php", "Administration", "SA");
 ?>
