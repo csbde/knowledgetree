@@ -24,7 +24,7 @@ class PhysicalDocumentManager {
 	/**
 	* Upload and store a new document
 	*	
-	* @param 	Array containing file information.  Must match $_FILES exactly
+	* @param 	The document object being uploaded
 	* @param 	Primary key of folder in which document will be stored
 	* @param 	Document description (should be passed through as a form variable)
 	* @param	Temporary path of file on server (get from $aFileArray['fFile']['tmp_name'])
@@ -33,35 +33,6 @@ class PhysicalDocumentManager {
 	*
 	* @todo add URL functionality
 	*/
-	
-	/*function uploadPhysicalDocument($aFileArray, $iFolderID, $sDescription, $sTmpFilePath) {
-		global $lang_fileexists, $lang_err_upload, $lang_err_database;
-		//create the document object
-		$oDocument = & PhysicalDocumentManager::createDocumentFromUploadedFile($aFileArray, $iFolderID);
-		$oDocument->setDescription($sDescription);		
-		//find the path on the system where the document should be stored
-		$sDocumentFileSystemPath = Folder::getFolderPath($oDocument->getFolderID()) . "/" . $oDocument->getName();		
-		//copy the file accross
-		if (copy($sTmpFilePath, $sDocumentFileSystemPath)) {
-			//create the object in the database			
-			if ($oDocument->create()) {
-				//remove the temporary file
-				unlink($sTmpFilePath);
-				return true;
-			} else {
-				//if object creation failed, delete the file on the system
-				$_SESSION["errorMessage"] = $lang_err_database;
-				unlink($sDocumentFileSystemPath);
-				//remove the temporary file as well
-				unlink($sTmpFilePath);
-				return false;
-			}
-		} else {
-			$_SESSION["errorMessage"] = $lang_err_upload;
-			return false;
-		}
-	}*/
-	
 	function uploadPhysicalDocument($oDocument, $iFolderID, $sDescription, $sTmpFilePath) {
 		global $lang_fileexists, $lang_err_upload, $lang_err_database;				
 		//find the path on the system where the document should be stored
@@ -143,7 +114,7 @@ class PhysicalDocumentManager {
 		}
 								
 		header("Content-Length: ". $oDocument->getFileSize());
-		header("Content-Disposition: attachment; filename=" . $oDocument->getFileName() . "-$sVersion");
+		header("Content-Disposition: attachment; filename=" . "$sVersion-" . $oDocument->getFileName());
         header("Pragma: no-cache");
         header("Expires: 0");
 		readfile($sDocumentFileSystemPath);
