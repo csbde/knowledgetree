@@ -170,7 +170,7 @@ class DBUtil {
         $aValues = array_merge(array_values($aFieldValues), array_values($aWhereFieldValues));
 
         $sth = $db->autoPrepare($sTable, array_keys($aFieldValues), DB_AUTOQUERY_UPDATE, $sWhere);
-        $ret =& $db->execute($sth, array_values($aValues));
+        $res =& $db->execute($sth, array_values($aValues));
         $db->freePrepared($sth);
 
         $default->queryLog->debug('Query: ' . DBUtil::lastQuery($db));
