@@ -53,6 +53,8 @@ if ($default->system->initialised()) {
     // ldap settings
     $default->ldapServer = "192.168.1.9";
     $default->ldapRootDn = "o=Medical Research Council";
+    // current supported types=iPlanet, ActiveDirectory;
+    $default->ldapServerType = "ActiveDirectory";
     
     // email settings
     $default->emailServer = "mail.jamwarehouse.com";
