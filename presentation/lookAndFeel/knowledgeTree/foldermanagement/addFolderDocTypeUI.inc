@@ -38,10 +38,12 @@ function getPage($iFolderID, $iDocumentTypeID) {
 function getDocumentTypeDropDown($iDocumentTypeID, $iFolderID) {
 	global $default;
 	// cunningly joined query courtesy of R. Cherry Esq.
-	$oPatternListBox = & new PatternListBox("SELECT DTL.name AS display, DTL.id AS value " .  
-											"FROM $default->owl_document_types_table AS DTL " .
-											"LEFT OUTER JOIN $default->owl_folder_doctypes_table AS FDL ON FDL.document_type_id = DTL.id AND FDL.folder_id = $iFolderID " .
-											"WHERE folder_id IS NULL", "fDocumentTypeID");
+	$oPatternListBox = & new PatternListBox(null, null, null, null);
+	$oPatternListBox->setQuery("SELECT DTL.name AS display, DTL.id AS value " .  
+							   "FROM $default->owl_document_types_table AS DTL " .
+							   "LEFT OUTER JOIN $default->owl_folder_doctypes_table AS FDL ON FDL.document_type_id = DTL.id AND FDL.folder_id = $iFolderID " .
+							   "WHERE folder_id IS NULL");
+	$oPatternListBox->setSelectName("fDocumentTypeID");
 	$oPatternListBox->setIncludeDefaultValue(false);
 	if (isset($iDocumentTypeID)) {
 		$oPatternListBox->setSelectedValue($iDocumentTypeID);

@@ -68,10 +68,12 @@ class PatternListBox {
 		$this->bOrderAsc = $bNewOrderAsc;
 	}
 	
-	function PatternListBox($sQuery, $sNewSelectName) {
+	function setQuery($sQuery) {
 		$this->sQuery = $sQuery;
+	}		
+	function setSelectName($sNewSelectName) {		
 		$this->sSelectName = $sNewSelectName;
-	}
+	}		
 	
 	function setPostBackOnChange($bNewValue) {
 		$this->bPostBackOnChange = $bNewValue;
