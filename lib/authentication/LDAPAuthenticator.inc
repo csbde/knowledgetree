@@ -46,6 +46,8 @@ class LDAPAuthenticator extends Authenticator {
       * @return true if the password is correct, else false
       */
      function checkPassword($userName, $password) {
+         global $default;
+         $ldap = new AuthLdap();
      }
 }
 ?>
