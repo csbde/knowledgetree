@@ -181,7 +181,7 @@ class Unit {
      * gets the id of a unit using their name
      *
      * @param   String
-     *   The username for which we want its ID
+     *   The unit_ID
      *   
      */
      
@@ -192,6 +192,26 @@ class Unit {
 	        $id = lookupID($default->owl_units_table, "name",  $name);
 	        
 	        $this->iId= $id;
+	}
+	
+	
+	/*
+     * static function
+     *
+     * gets the name of a unit using their id
+     *
+     * @param   String
+     *   The name
+     *   
+     */
+     
+	function getUnitName($id)
+	 {
+	       global $default;
+	
+	        $name = lookupField("$default->owl_units_table", "name", "id", $id );
+	        
+	        $this->sName= $name;
 	}
 	
       /**

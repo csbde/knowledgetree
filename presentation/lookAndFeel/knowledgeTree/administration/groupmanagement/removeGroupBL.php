@@ -21,31 +21,34 @@ if (checkSession()) {
 	require_once("$default->owl_fs_root/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
 	require_once("$default->owl_fs_root/presentation/Html.inc");
 	
+	$oPatternCustom = & new PatternCustom();	
+	
+	// get main page
 	if (isset($fGroupID)) {
-		$oPatternCustom = & new PatternCustom();		
+			
 		$oPatternCustom->setHtml(getDeletePage($fGroupID));
-		$main->setCentralPayload($oPatternCustom);				
 		$main->setFormAction($_SERVER["PHP_SELF"] . "?fForDelete=1");
-		$main->render();		
-	
+		
+	// get delete page
 	} else {
-		$oPatternCustom = & new PatternCustom();		
 		$oPatternCustom->setHtml(getDeletePage(null));
-		$main->setCentralPayload($oPatternCustom);		
 		$main->setFormAction($_SERVER["PHP_SELF"]);
-		$main->render();
-	
 	}
 	
+		// if delete entry
 		if (isset($fForDelete)) {
 			$oGroup = Group::get($fGroupID);
 			$oGroup->setName($fGroupName);
 			
 		if ($oGroup->delete()) {
-			redirect("$default->owl_root_url/control.php?action=removeGroupSuccess");
+			$oPatternCustom->setHtml(getDeleteSuccessPage());
+			
 		} else {
-			redirect("$default->owl_root_url/control.php?action=removeGroupFail");
+			$oPatternCustom->setHtml(getDeleteFailPage());
 		}
 	}
+	
+	$main->setCentralPayload($oPatternCustom);				
+	$main->render();		
 }
 ?>

@@ -58,7 +58,7 @@ class UnitOrganisationLink {
 	}
 	
 	/**
-	* Get the prijmary key of the unit to which the org is linked
+	* Get the primary key of the unit to which the org is linked
 	*
 	* @return int primary key of unit to which the org is linked
 	*

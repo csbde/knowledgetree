@@ -7,7 +7,7 @@
 * @package presentation.lookAndFeel.knowledgeTree.
 *
 */
-
+// get add pages
 function getPage() {
 
 	global $default;
@@ -17,6 +17,7 @@ function getPage() {
 	$aRequired = array(1);
 	//$aDropDownListTableNames = array(10=>"document_types_lookup");
 
+	// create a text field that is required 
 	$oPatternCreate = & new PatternCreate("Group", "groups\\Group.inc",$aDisplayRowNames, $aParameterNumbers, $aDisplayColumnTypes, $aRequired);
 	$oPatternCreate->setUniqueName("group");
 	
@@ -29,8 +30,8 @@ function getPage() {
 	$sToRender .= "<td>" . $oPatternCreate->render() . "</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<tr>\n";
 	$sToRender .= "</tr>\n";
+	$sToRender .= "<tr>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<td align = right><input type=\"image\" src =\"$default->owl_graphics_url/widgets/add.gif\" value=\"Submit\" /></td>\n";	
 	$sToRender .= "</table>\n";

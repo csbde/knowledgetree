@@ -7,8 +7,8 @@
 * @package presentation.lookAndFeel.knowledgeTree.
 *
 */
-
-        function getCreatePage($iGroupID) {
+// get hte edit page if it comes from the add page
+function getCreatePage($iGroupID) {
 	
 	global $default;
 	$oGroup = null;
@@ -23,6 +23,7 @@
 	$aDisplayColumnTypes = array(1,2,2);
 	$aDatabaseColumnTypes = array(1,2,2);
 	
+	// get list of group properties...name...text field...is_Sys_admin and is_unit_admin..checkboxes
 	$oPattern = & new PatternEditableListFromQuery($sQuery, $default->owl_groups_table, $aDisplayColumns, $aStoreColumns, $aColumnNames, $aDisplayColumnTypes, $aDatabaseColumnTypes) ;
 	$oPattern->setUniqueName("groupEdit");
 	$oPattern->setColumnsRequired(array(1,0,0));
@@ -35,7 +36,7 @@
 	$sToRender .= "<td>" . $oPattern->render() . "</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>Assign to a Unit: &nbsp&nbsp" . getUnitDisplay() . "</td>\n";
+	//$sToRender .= "<td>Assign to a Unit: &nbsp&nbsp" . getUnitDisplay() . "</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "</tr>\n";
@@ -51,6 +52,34 @@
 	
 }
 
+
+// if fails ..
+function getAddFailPage() {
+	
+	global $default;
+			
+	
+	$sToRender .= "<table>\n";
+	$sToRender .= "<br></br>\n";
+	$sToRender .= "<tr><b>Add Group Failed:</b></tr>\n";
+	$sToRender .= "<tr>\n";
+	$sToRender .= "<td>Sorry, Group Already Exists!</td>\n";
+	$sToRender .= "</tr>\n";
+	$sToRender .= "<tr>\n";
+	$sToRender .= "</tr>\n";
+	$sToRender .= "<tr>\n";
+	$sToRender .= "<td align = right><a href=\"$default_owl_root_url/control.php?action=addGroup\"><img src =\"$default->owl_graphics_url/widgets/back.gif\" border = \"0\" /></a></td>\n";
+	$sToRender .= "</tr>\n";
+	$sToRender .= "</table>\n";
+		
+			
+	return $sToRender;
+	
+	
+	
+}
+
+// if its the manual edit page..then display normally
 function getEditPage($iGroupID) {	
 	global $default;
 	$oGroup = null;
@@ -72,8 +101,8 @@ function getEditPage($iGroupID) {
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
 	
+	// if a group selected...show checkboxes
 	if (isset($iGroupID)) {
-		$sToRender .= "<td>Assign to Unit: </td><td>" . getUnitDisplay() . "</td>\n";
 		$sToRender .= "</tr>\n";
 		$sToRender .= "<tr>\n";
 		$sToRender .= "<td>Unit Administrator: </td><td>" . getUnitAdminCheckBox($oGroup) . "</td>\n";
@@ -96,6 +125,51 @@ function getEditPage($iGroupID) {
 	return $sToRender;
 }
 
+// if edition is successful print otu success page
+function getEditPageSuccess() {	
+	global $default;
+			
+	$sToRender .= "<br></br>\n";
+	$sToRender .= "<b>Success!</b>\n";
+	$sToRender .= "<table>\n";
+	$sToRender .= "<br></br>\n";
+	$sToRender .= "<tr></tr>\n";
+	$sToRender .= "<tr><td>The Group was successfully modified</td></tr>\n";
+	$sToRender .= "<tr></tr>\n";
+	$sToRender .= "<tr></tr>\n";
+	$sToRender .= "<tr>\n";
+	$sToRender .= "<td></td><td align = right><a href=\"$default_owl_root_url/control.php?action=editGroup\"><img src =\"$default->owl_graphics_url/widgets/back.gif\" border = \"0\" /></a></td>\n";
+	$sToRender .= "</tr>\n";
+	$sToRender .= "</table>\n";
+	
+	
+	return $sToRender;
+}
+
+
+// gets the page if edition fails
+function getEditPageFail() {	
+	global $default;
+			
+	$sToRender .= "<br></br>\n";
+	$sToRender .= "<b>Success!</b>\n";
+	$sToRender .= "<table>\n";
+	$sToRender .= "<br></br>\n";
+	$sToRender .= "<tr></tr>\n";
+	$sToRender .= "<tr><td>The Group modification Failed!</td></tr>\n";
+	$sToRender .= "<tr></tr>\n";
+	$sToRender .= "<tr></tr>\n";
+	$sToRender .= "<tr>\n";
+	$sToRender .= "<td></td><td align = right><a href=\"$default_owl_root_url/control.php?action=editGroup\"><img src =\"$default->owl_graphics_url/widgets/back.gif\" border = \"0\" /></a></td>\n";
+	$sToRender .= "</tr>\n";
+	$sToRender .= "</table>\n";
+	
+	
+	return $sToRender;
+}
+
+// show the list box when no group selected
+// then shows a text box with the group's name
 function getGroupDisplay($oGroup) {
 	global $default;
 	if (!isset($oGroup)) {
@@ -110,15 +184,8 @@ function getGroupDisplay($oGroup) {
 	
 }
 
-function getUnitDisplay() {
-	global $default;
-	$oPatternListBox = & new PatternListBox($default->owl_units_table, "name", "id", "fUnitID");
-	return $oPatternListBox->render();
-		
-	
-	
-}
 
+// returns the checkbox ticked or unticked
 function getUnitAdminCheckBox($oGroup) {
 	if (!isset($oGroup)) {
 		return "";
@@ -127,6 +194,7 @@ function getUnitAdminCheckBox($oGroup) {
 	}
 }
 
+// returns the checkbox ticked or unticked
 function getSysAdminCheckBox($oGroup) {
 	if (!isset($oGroup)) {
 		return "";
@@ -136,15 +204,17 @@ function getSysAdminCheckBox($oGroup) {
 	
 }
 
+// gets the updatebutton when a group is selected
 function getUpdateButton($oGroup) {
 	global $default;
 	if (!isset($oGroup)) {
-		return "Please select a group";
+		return "Please select a group: ";
 	} else {
 		return "<td align = right><input type=\"image\" src =\"$default->owl_graphics_url/widgets/update.gif\" value=\"submit\" /></td>\n";
 	}
 }
 
+// gets the cancel button when a group is selected
 function getCancelButton($oGroup) {
 	global $default;
 	if (!isset($oGroup)) {
