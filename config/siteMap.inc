@@ -108,6 +108,7 @@ $default->siteMap->addSectionColour("Manage Document Types", "th", "57AFAE");
 $default->siteMap->addDefaultPage("administration", "/presentation/lookAndFeel/knowledgeTree/administration/admin.php", "Administration", UnitAdmin, "Administration");
 
 $default->siteMap->addPage("userManagement", "/presentation/lookAndFeel/knowledgeTree/administration/usermanagement/listUsersBL.php", "Administration", UnitAdmin, "User Management", true, 1);
+$default->siteMap->addPage("userPasswordManagement", "/presentation/lookAndFeel/knowledgeTree/administration/usermanagement/passwordManagementBL.php", "Administration", SysAdmin, "User Management", false, 1);
 $default->siteMap->addPage("groupManagement", "/presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/listGroupsBL.php", "Administration", UnitAdmin, "Group Management", true, 2);
 $default->siteMap->addPage("unitManagement", "/presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/listUnitsBL.php", "Administration", SysAdmin, "Unit Management", true, 3);
 $default->siteMap->addPage("orgManagement", "/presentation/lookAndFeel/knowledgeTree/administration/orgmanagement/listOrgBL.php", "Administration", SysAdmin, "Organisation Management", true, 4);
