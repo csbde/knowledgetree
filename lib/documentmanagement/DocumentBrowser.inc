@@ -26,33 +26,47 @@ class DocumentBrowser {
         
         if ($folderID == -1) {
             // no folder specified, so start at the root for this users organisation
-            // TODO: organisationID (and name) should be on session
+
+            // lookup this users groups
+            $groupIDs = lookupGroupIDs($_SESSION["userID"]);
+            $default->log->debug("DocumentBrowser::browseByFolder: groupIDs=" . arrayToString($groupIDs));
             
-            // TODO: use the organisation to find the root folder
-            if (!isset($_SESSION["organisationName"])) {
-                $_SESSION["organisationName"] = "MRC";
-            }
-            $rootFolderName = $_SESSION["organisationName"] . " Document Root";
+            // look up this users unit
+            // FIXME: what if the user belongs to multiple units?
+            $unitID = lookupID($default->owl_groups_units_table, "group_id", $groupIDs[0]);
+            // lookup the unit name
+            $unitName = lookupField($default->owl_units_table, "name", "id", $unitID);
+            $default->log->debug("DocumentBrowser::browseByFolder: unitID=$unitID; unitName=$unitName");
+           
+            // look up the organisation name for this user
+            $organisationID = lookupField($default->owl_units_table, "organisation_id", "id", $unitID);
+            $organisationName = lookupField($default->owl_organisations_table, "name", "id", $organisationID);
+            $default->log->debug("DocumentBrowser::browseByFolder: organisationID=$organisationID; orgName=$organisationName");
+            
+            // construct the folder name from the organisation
+            $rootFolderName = $organisationName . " Document Root";
+          
             // lookup the id of the root folder
-            $folderID = lookupID($default->owl_folders_table, "name", "'$rootFolderName'");
+            $folderID = lookupID($default->owl_folders_table, "name", "$rootFolderName");
+            $default->log->debug("DocumentBrowser::browseByFolder: folderID=$folderID");
             
             // if this is a system administrator, start her at the ROOT
             // TODO: add to default->sysadmin_group
-            if ($this->checkGroup("System Administrators", $_SESSION["groupID"])) {
+            if ($this->checkGroup("System Administrators", $groupIDs)) {
                $folderQuery = "SELECT * FROM $default->owl_folders_table WHERE name='$rootFolderName'";
             } else {
                // otherwise start everyone relative to their unit
                
                // FIXME: actually need to lookup the unit root folder- which should map to the unitname
                //        and descend directly from the organisation document root
-               $unitRootFolder = $_SESSION["unitName"] . " Document Root";
+
+               $default->log->debug("DocumentBrowser::browseByFolder: unitName=$unitName");
                
-               $unitID = $_SESSION["unitID"];
+               $unitRootFolder = $unitName . " Document Root";
+               
                // lookup descendant folders with the appropriate unit set
                $folderQuery = "SELECT * from $default->owl_folders_table " . 
-                              "WHERE unit_id=" . $unitID . 
-                              " AND parent_id='$folderID'" .
-                              " AND name='$unitRootFolder'";
+                              "WHERE name='$unitRootFolder'"; 
             }
         } else {
             // start from the specified folder
@@ -121,7 +135,7 @@ class DocumentBrowser {
         $sql = new Owl_DB();
 
         // lookup document_fields id for category
-        $categoryFieldID = lookupID($default->owl_fields_table, "name", "'$categoryField'");
+        $categoryFieldID = lookupID($default->owl_fields_table, "name", "$categoryField");
         $default->log->debug("DocumentBrowser::browseByCategory categoryFieldID=$categoryFieldID");
 
         if ($category == "") {
@@ -216,7 +230,7 @@ class DocumentBrowser {
         global $default;
         $sql = new Owl_DB();
         // lookup the id of $requiredGroupName
-        $requiredGroupID = lookupID($default->owl_groups_table, "name", "'$requiredGroupName'");
+        $requiredGroupID = lookupID($default->owl_groups_table, "name", "$requiredGroupName");
         $default->log->debug("DocumentBrowser::checkGroup reqGrpID=$requiredGroupID");
         if ($requiredGroupID) {
             // now loop through the array and check if we're in the group
