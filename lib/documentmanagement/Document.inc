@@ -159,7 +159,7 @@ class Document {
 		$sql = new Owl_DB();
 		$sql->query("SELECT * FROM " . $default->owl_documents_table . " WHERE id = " . $iDocumentID);
 		if ($sql->next_record()) {
-			$doc = & new Document(stripslashes($sql->f("name")), $sql->f("size"), $sql->f("creator_id"), stripslashes($sql->f("description")), $sql->f("mime_id"), $sql->f("folder_id"));			
+			$doc = & new Document(stripslashes($sql->f("name")), $sql->f("filename"), $sql->f("size"), stripslashes($sql->f("creator_id")), $sql->f("mime_id"), $sql->f("folder_id"), $sql->f("description"));			
 			$doc->setDocumentTypeID($sql->f("document_type_id"));
 			$doc->setMajorVersionNumber($sql->f("major_version"));
 			$doc->setMinorVersionNumber($sql->f("minor_version"));
