@@ -162,6 +162,7 @@ class PhysicalDocumentManager {
 		}					
 		Header("Content-Length: " . $oDocument->getFileSize() * 1024);
 		Header("Content-Disposition: inline; filename=" . $oDocument->getName());
+        header("Pragma: no-store");
 		return readfile($sDocumentFileSystemPath);
 	}
 	
