@@ -157,17 +157,19 @@ function renderFolderResults($aResults) {
     }
     
     $sToRender .= "<tr><td>&nbsp;</td></tr>";
-    $sToRender .= "<tr><td>" . renderDocumentList($aResults["documents"], "This folder contains no documents") . "</td></tr>\n";
+    $sToRender .= "<tr><td>" . renderDocumentList($aResults, "This folder contains no documents") . "</td></tr>\n";
     
     return $sToRender;
 }
 
-function renderDocumentList($aDocuments, $sNoDocumentsMessage, $bDisplayFullPath = false) {
+function renderDocumentList($aResults, $sNoDocumentsMessage, $bDisplayFullPath = false) {
     // loop through the files and display links
-    if (count($aDocuments) > 0) {
-        for ($i=0; $i<count($aDocuments); $i++) {
-            $sToRender .= "<tr><td bgcolor=\"" . getColour($i) . "\">" . displayDocumentLink($aDocuments[$i], $bDisplayFullPath) . "</td></tr>";
+    if (count($aResults["documents"]) > 0) {
+        for ($i=0; $i<count($aResults["documents"]); $i++) {
+            $sToRender .= "<tr><td bgcolor=\"" . getColour($i) . "\">" . displayDocumentLink($aResults["documents"][$i], $bDisplayFullPath) . "</td></tr>";
         }
+    } else if ($aResults["accessDenied"]) {
+        $sToRender .= "<tr><td>You don't have access to the documents in this folder</td></tr>";
     } else {
         $sToRender .= "<tr><td>$sNoDocumentsMessage</td></tr>";
     }
