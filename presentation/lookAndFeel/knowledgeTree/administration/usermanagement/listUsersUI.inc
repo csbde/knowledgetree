@@ -37,6 +37,7 @@ function getGroupDisplay($iGroupID) {
 	    $oPatternListBox = & new PatternListBox($default->groups_table, "name", "id", "fGroupID");
 	    $oPatternListBox->setFromClause("INNER JOIN $default->groups_units_table GUL on ST.id=GUL.group_id");
 	    $oPatternListBox->setWhereClause("GUL.unit_id=" . User::getUnitID($_SESSION["userID"]));
+	    $oPatternListBox->setIncludeDefaultValue(false);
 	}
 	$oPatternListBox->setPostBackOnChange(true);
 	if ($iGroupID != 0) {
@@ -87,8 +88,10 @@ function getPage($fGroupID) {
 	global $default;
 	$sToRender .= renderHeading("User Management");
 
-	// add user link
-	$sToRender .= getAddLink("addUser", "Add A User");
+	// add user link if you're a sysadmin
+	if (Permission::userIsSystemAdministrator()) {
+		$sToRender .= getAddLink("addUser", "Add A User");
+	}
 	$sToRender .= getGroupDisplay($fGroupID);
 	$sToRender .= getUsers($fGroupID);
 	return $sToRender;
