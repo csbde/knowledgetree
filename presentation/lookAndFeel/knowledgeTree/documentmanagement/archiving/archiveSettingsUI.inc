@@ -27,6 +27,7 @@ function renderErrorMessage($sErrorMessage) {
 function renderDocumentTransactionListBox($iDocumentTransactionID) {
 	global $default;	
     $oPatternListBox = & new PatternListBox($default->owl_transaction_types_table, "name", "id", "fDocumentTransactionID");
+    $oPatternListBox->setWhereClause("ST.id in (6,10)");
     if (isset($iDocumentTransactionID)) {
     	$oPatternListBox->setSelectedValue($iDocumentTransactionID);    	
     }    
@@ -118,7 +119,7 @@ function renderTimePeriod($sHeading, $oTimePeriod = null) {
 	}
 	$sToRender .= "<tr valign=\"middle\"><td><input type=\"text\" size=\"11\" name=\"fUnits\" value=\"" . ($oTimePeriod ? $oTimePeriod->getUnits() : "") . "\">";
 	$sToRender .= "&nbsp;&nbsp;" . renderTimeUnitsListBox( ($oTimePeriod ? $oTimePeriod->getTimeUnitID() : null) );
-	$sToRender .= "&nbsp;&nbsp;<a href=\"javascript:void();\" onclick=\"document.MainForm.fUnits.value='';document.MainForm.fTimeUnitID.value='';\"><img src=\"$default->graphicsUrl/widgets/clear.gif\" border=\"0\"></a></td></tr>";	
+	$sToRender .= "&nbsp;&nbsp;<a href=\"javascript:void();\" onclick=\"document.MainForm.fUnits.value='';document.MainForm.fTimeUnitID.value='';\"><img src=\"$default->graphicsUrl/widgets/reset.gif\" border=\"0\"></a></td></tr>";	
 	return $sToRender;		
 }
 	
@@ -152,7 +153,7 @@ function renderArchiveSettingsForm($oDocumentArchiving = null) {
 			$sToRender .= "<tr><td>Expiration Date:</td></tr>";
 			$sToRender .= "<tr><td valign=bottom><input type=\"text\" name=\"fExpirationDate\" size=\"11\" " . ($oDateArchivingSettings ? "value=\"" . ($oDateArchivingSettings->getExpirationDate() == "0000-00-00" ? "" : $oDateArchivingSettings->getExpirationDate()) : "") . "\">";
 			$sToRender .= "&nbsp;&nbsp;<a href=\"javascript:show_calendar('MainForm.fExpirationDate',null,null,'YYYY-MM-DD');\" onmouseover=\"window.status='Date Picker';return true;\" onmouseout=\"window.status='';return true;\"><img src=\"$default->graphicsUrl/calendar/calendar.gif\" name=\"imgCalendar\" width=\"34\" height=\"21\" border=\"0\" alt=\"\"></a>";
-			$sToRender .= "&nbsp;&nbsp;<a href=\"javascript:void();\" onclick=\"document.MainForm.fExpirationDate.value=''\"><img src=\"$default->graphicsUrl/widgets/clear.gif\" border=\"0\"></a></td></tr>";
+			$sToRender .= "&nbsp;&nbsp;<a href=\"javascript:void();\" onclick=\"document.MainForm.fExpirationDate.value=''\"><img src=\"$default->graphicsUrl/widgets/reset.gif\" border=\"0\"></a></td></tr>";
 					
 			if ($oDateArchivingSettings) {
 				$oTimePeriod = TimePeriod::get($oDateArchivingSettings->getTimePeriodID());
@@ -170,16 +171,19 @@ function renderArchiveSettingsForm($oDocumentArchiving = null) {
 			}
 				
 			$sToRender .= "<tr><th align=\"left\" colspan=\"2\">Archive By Utilisation</th></tr>";	
+			$sToRender .= "<tr><td colspan=\"2\">Archive document </td></tr>";
+			if ($oUtilisationArchivingSettings) {
+				$oTimePeriod = TimePeriod::get($oUtilisationArchivingSettings->getTimePeriodID());
+				$sToRender .= renderTimePeriod("", $oTimePeriod);
+			} else {
+				$sToRender .= renderTimePeriod("");
+			}
+			$sToRender .= "<tr><td colspan=\"2\">after the last " . renderDocumentTransactionListBox($iDocumentTransactionID) . " transaction</td></tr>";
+			/*
 			$sToRender .= "<tr><td>Document Transaction:</td><td>" . 
 						   renderDocumentTransactionListBox($iDocumentTransactionID) . 
 						   "</td></tr>";	
-			
-			if ($oUtilisationArchivingSettings) {
-				$oTimePeriod = TimePeriod::get($oUtilisationArchivingSettings->getTimePeriodID());
-				$sToRender .= renderTimePeriod("Time since last transaction", $oTimePeriod);
-			} else {
-				$sToRender .= renderTimePeriod("Time since last transaction");
-			}
+			*/
 			$sToRender .= getUtilisationArchivingJavascript();
 			break;		
 	}	
