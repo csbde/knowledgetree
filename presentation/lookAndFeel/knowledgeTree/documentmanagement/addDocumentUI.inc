@@ -32,6 +32,7 @@ function getDocumentType($iFolderID, $iDocumentTypeID, $iDependantDocumentID = n
 	$oPatternListBox = & new PatternListBox("$default->document_types_table", "name", "id", "fDocumentTypeID",$sWhereClause);
 	$oPatternListBox->setIncludeDefaultValue(true);
 	$oPatternListBox->setFromClause("INNER JOIN $default->folder_doctypes_table AS FDL ON ST.id = FDL.document_type_id");
+	$oPatternListBox->setEmptyErrorMessage("No document types defined! Please contact an Administrator");
 	
 	if ($iDocumentTypeID) {
 		$oPatternListBox->setSelectedValue($iDocumentTypeID);
