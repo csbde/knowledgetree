@@ -15,6 +15,10 @@ function startTable($border, $width) {
     return "<table border=\"$border\" width=\"$width\">\n";
 }
 
+function tableCaption($sCaption) {
+	return "<caption><b>$sCaption</b></caption>\n";
+}
+
 function stopTable() {
     return "</table>\n";
 }
@@ -23,14 +27,15 @@ function tableRow($align, $bgcolor, $html) {
     return "<tr align=\"$align\" bgcolor=\"$bgcolor\">$html</tr>\n";
 }
 
+
 function tableHeading($cssClassName, $colspan, $text) {
     return "<th colspan=\"$colspan\">\n
             <span class=\"$cssClassName\">$text</span>\n
             </th>\n";
 }
 
-function tableData($html) {
-    return "<td>$html</td>\n";
+function tableData($html, $iColspan = 1) {
+    return "<td colspan = $iColspan>$html</td>\n";
 }
 
 function tableCssData($html, $cssClass) {
@@ -39,6 +44,10 @@ function tableCssData($html, $cssClass) {
 
 function startTableRowCell() {
     return "<tr><td>\n";
+}
+
+function textInput($sId, $sValue) {
+	return "<input type=text id=\"$sId\" value=\"$sValue\" />\n";
 }
 
 function endTableRowCell() {
@@ -51,6 +60,38 @@ function generateLink($sTargetPage, $sQueryString, $sLinkText) {
 
 function generateImage($sImageSource) {
     return "<img border=\"0\" src=\"$sImageSource\">";
+}
+
+function getNumberStringValidationJavaScript() {
+	return "<script language=\"JavaScript\">\n".
+				"<!--\n" .
+				"function validateString(field, msg, min, max) {\n" .
+					"\tif (!min) { min = 1 }\n" .
+					"\tif (!max) { max = 65535 }\n\n" .
+	
+					"\tif (!field.value || field.value.length < min || field.value.max > max) {\n" .
+					"\t\talert(msg);\n" .
+					"\t\tfield.focus();\n" .
+					"\t\tfield.select();\n" .
+					"\t\treturn false;\n" .
+					"\t}\n" .
+				"\treturn true;\n" .
+				"}\n\n" .
+				
+				"function validateNumber(field, msg, min, max) {\n" .
+					"\tif (!min) { min = 0 }\n" .
+					"\tif (!max) { max = 255 }\n" .
+					
+					"\tif ( (parseInt(field.value) != field.value) || field.value.length < min || field.value.length > max) {\n" .
+						"\t\talert(msg);\n" .
+						"\t\tfield.focus();\n" .
+						"\t\tfield.select();\n" .
+						"\t\treturn false;\n" .
+					"\t}\n" .
+				"\treturn true;\n" .
+				"}\n" .
+				"//-->\n" .
+			"</script>\n";
 }
 
 ?>
