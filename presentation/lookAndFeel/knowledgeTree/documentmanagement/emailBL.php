@@ -55,6 +55,14 @@ if (checkSession()) {
                         $oEmail = new Email();
                         $oEmail->send($fToEmail, $sTitle, $sMessage);
                         
+	                    // emailed link transaction
+	                    $oDocumentTransaction = & new DocumentTransaction($fDocumentID, "Document link emailed to $fToEmail", EMAIL_LINK);
+	                    if ($oDocumentTransaction->create()) {
+	                    	$default->log->debug("emailBL.php created email link document transaction for document ID=$fDocumentID");                                    	
+	                    } else {
+	                    	$default->log->error("emailBL.php couldn't create email link document transaction for document ID=$fDocumentID");
+	                    }
+	                    
                         //go back to the document view page
                         redirect("$default->rootUrl/control.php?action=viewDocument&fDocumentID=$fDocumentID");
                     } else {

@@ -15,6 +15,7 @@ if (checkSession()) {
 	require_once("$default->fileSystemRoot/lib/visualpatterns/PatternEditableListFromQuery.inc");
 	require_once("editDocCheckoutUI.inc");
 	require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
+    require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentTransaction.inc");	
 	require_once("$default->fileSystemRoot/lib/security/permission.inc");
 	require_once("$default->fileSystemRoot/lib/links/link.inc");
 	require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
@@ -27,31 +28,40 @@ if (checkSession()) {
 	$oPatternCustom = & new PatternCustom();		
 	
 	$oPatternCustom->addHtml(renderHeading("Edit Document Checkout"));
-	
-	if (isset($fUpdate)){	
-		if (isset($fDocID)){			
-			$oDoc = Document::get($fDocID);
+
+	if (isset($fDocID)){	
+		if (isset($fUpdate)) {	
+			$oDocument = Document::get($fDocID);
 			
-			if (($oDoc->getIsCheckedOut() > 0 && $fDocCheckout=="on" ) ||
-				($oDoc->getIsCheckedOut() == 0 && $fDocCheckout=="" )){
+			if (($oDocument->getIsCheckedOut() > 0 && $fDocCheckout=="on" ) ||
+				($oDocument->getIsCheckedOut() == 0 && $fDocCheckout=="" )){
 				$main->setErrorMessage("No changes were made to the document checkout.");
 			} else {
 				if ($fDocCheckout=="on"){
-					$oDoc->setIsCheckedOut(1);				
-				}else {
-					$oDoc->setIsCheckedOut(0);
-					$oDoc->setCheckedOutUserID(-1);
+					$oDocument->setIsCheckedOut(1);				
+				} else {
+					$oDocument->setIsCheckedOut(0);
+					$oDocument->setCheckedOutUserID(-1);
 				}				
-				if ($oDoc->update()){
+				if ($oDocument->update()){
+                    // checkout cancelled transaction
+                    $oDocumentTransaction = & new DocumentTransaction($oDocument->getID(), "Document checked out cancelled", FORCE_CHECKIN);
+                    if ($oDocumentTransaction->create()) {
+                    	$default->log->debug("editDocCheckoutBL.php created forced checkin document transaction for document ID=" . $oDocument->getID());                                    	
+                    } else {
+                    	$default->log->error("editDocCheckoutBL.php couldn't create create document transaction for document ID=" . $oDocument->getID());
+                    }                                    
 					$oPatternCustom->addHtml(getEditCheckoutSuccessPage());
 				} else {
 					$main->setErrorMessage("Error while trying to update the document checkout.");
 				}
 			}			
+		} else {
+			$oPatternCustom->addHtml($fDocCheckout . getEditCheckoutPage($fDocID));
+			$main->setFormAction($_SERVER["PHP_SELF"] . "?fUpdate=1&fDocID=$fDocID");
 		}
-	} else if (isset($fDocID)){
-		$oPatternCustom->addHtml($fDocCheckout . getEditCheckoutPage($fDocID));
-		$main->setFormAction($_SERVER["PHP_SELF"] . "?fUpdate=1&fDocID=$fDocID");
+	} else {
+		// no document selected
 	}
 	//render the page
 	$main->setCentralPayload($oPatternCustom);
