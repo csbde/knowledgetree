@@ -8,35 +8,36 @@
 *
 */
 
-function getSubmit() {
+function getFields() {
 	global $default;
-	$sToRender = "<input type=\"image\" src =\"$default->graphicsUrl/widgets/select.gif\" value=\"submit\" border=\"0\"/>\n";
+	
+	$sQuery = 	"SELECT id as DocFieldID, name as DocFieldName, data_type, is_generic, has_lookup, " . 
+				"'Edit', 'Delete', 'Edit Lookups' " .
+				"FROM " . $default->owl_fields_table . " " .
+				"ORDER BY name";
+	
+    $aColumns = array("DocFieldName", "data_type", "is_generic", "has_lookup","Edit", "Delete", "Edit Lookups" );
+    $aColumnNames = array("Name", "Data type", "Generic?", "Lookup?", "Edit", "Delete", "Edit Lookups");
+    $aColumnTypes = array(1,1,2,2,3,3,3);
+    $aDBColumnArray = array("DocFieldID");
+    $aQueryStringVariableNames = array("fDocFieldID");
+    	    
+    $aHyperLinkURL = array(	4=> "$default->rootUrl/control.php?action=editDocField",                       			
+                     			5=> "$default->rootUrl/control.php?action=removeDocField",
+                     			6=> "$default->rootUrl/control.php?action=editDocFieldLookups");                       			
+    	    
+    $oSearchResults = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnNames, "100%", $aHyperLinkURL,$aDBColumnArray,$aQueryStringVariableNames);	    
+	$oSearchResults->setDisplayColumnHeadings(true);	
+    return $oSearchResults->render() ;	
+}
+
+function getPage() {
+	global $default;
+	$sToRender .= renderHeading("Current Document Fields");
+
+	// add user link
+	$sToRender .= getAddLink("addDocField", "Add A Document Field");
+	$sToRender .= getFields();
 	return $sToRender;
 }
-
-function getPageButtons($oThread){
-	global $default;
-	
-	$sToRender .= "<table width=100%><tr>\n";
-	$sToRender .= "<td align=right width=100%><a href=\"" . generateControllerLink("addComment", "fDocumentID=" . $oThread->getDocumentID() . "&fAddComment=1") . "\"><img src=\"$default->graphicsUrl/widgets/addcomment.gif\" border=\"0\" /></a></td>\n";
-	$sToRender .= "<td align=right width=10><img src=\"$default->graphicsUrl/widgets/back.gif\" onmouseover=\"this.style.cursor='hand'\" onclick=\"javascript: history.go(-1);\" /></td>\n";
-		
-	$sToRender .= "</tr></table>\n";
-	
-	return $sToRender ; 
-}
-
-// If there are no threads to view for a document
-function getViewFailPage($sMessage)
-{
-	global $default;
-	
-	if (strlen($sMessage)>0){
-		$sToRender = $sMessage;
-	}
-	else $sToRender = "Current document has no discussion.  Press the ADD button to start a discussion.";
-	
-	return $sToRender;
-}
-
 ?>
