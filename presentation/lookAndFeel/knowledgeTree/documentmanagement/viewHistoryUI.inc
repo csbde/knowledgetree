@@ -27,7 +27,7 @@ function getDocumentHistory($iDocumentID) {
 			"INNER JOIN $default->owl_transaction_types_table AS DTT ON DTT.id = DT.transaction_id " . 
 			"WHERE DT.document_id = $iDocumentID ORDER BY DT.datetime DESC";
 	$sql = $default->db;
-    $sToRender  = "<table cellpadding=\"5\" border=\"1\" width=\"90%\">\n";
+    $sToRender  = "<table cellpadding=\"5\" width=\"100%\">\n";
     $sToRender .= "<caption align=\"top\" colspan=\"5\" align=\"left\"><b>Transaction History</b></caption>\n";
     $sql->query($sQuery);
     if ($sql->num_rows() == 0) {
