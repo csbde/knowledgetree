@@ -228,9 +228,9 @@ if (checkSession()) {
             $oPatternCustom = & new PatternCustom();
             if ($oDocument->isLive()) {
 	            if (Permission::userHasDocumentWritePermission($fDocumentID)) {
-	                $oPatternCustom->setHtml(getEditPage($oDocument));
+	                $oPatternCustom->setHtml(getPage($oDocument, true));
 	            } else if (Permission::userHasDocumentReadPermission($fDocumentID)) {
-	                $oPatternCustom->setHtml(getViewPage($oDocument));
+	                $oPatternCustom->setHtml(getPage($oDocument, false));
 	            }
             } else if ($oDocument->isArchived()) {
             	// cancel
@@ -238,12 +238,13 @@ if (checkSession()) {
 	            $main->setErrorMessage("This document has been archived.");
             }
             $main->setCentralPayload($oPatternCustom);
+            $main->setDHTMLScrolling(false);
             $main->setOnLoadJavaScript("switchDiv('documentData')");
             $main->setFormAction("$default->rootUrl/control.php?action=modifyDocument&fDocumentID=" . $oDocument->getID());
             $main->render();
         } else {
             require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
-
+			$oDocument = & Document::get($fDocumentID);
             $oPatternCustom = & new PatternCustom();
             $oPatternCustom->setHtml("<a href=\"" . generateControllerLink("browse", "fFolderID=" . $oDocument->getFolderID()) . "\"><img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\" /></a>\n");
             $main->setErrorMessage("Either you do not have permission to view this document, or the document you have chosen no longer exists on the file system.");
