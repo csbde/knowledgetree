@@ -17,7 +17,7 @@ class PatternListFromQuery {
 	var $sQuery;
 	/** array of columns to display */
 	var $aColumns;
-	/** array of column types (textfield = 1, textarea = 2, hyperlink = 3) */	
+	/** array of column types (1 = text, 2 = boolean, 3 = hyperlink) */	
 	var $aColumnTypes;
 	/** names of columns to display */
 	var $aColumnNames;
