@@ -16,7 +16,7 @@ function getPage($sSearchText, $sBrowseType, $iFolderID, $iDocumentID, $sCategor
 
 function getSearchResults($sFolderIDs, $sKeywords, $iStartIndex) {
 	global $default;
-	$sQuery = "SELECT DISTINCT '" . "$default->graphicsUrl/widgets/dfolder.gif" . "' AS folder_image_url, F.id AS folder_id, D.id AS document_id, D.name AS document_name, MATCH(DT.document_text) AGAINST ('" . $sKeywords . "') AS score " . 
+	$sQuery = "SELECT DISTINCT '" . "$default->graphicsUrl/widgets/dfolder.gif" . "' AS folder_image_url, F.id AS folder_id, D.id AS document_id, D.name AS document_name, ROUND(MATCH(DT.document_text) AGAINST ('" . $sKeywords . "'),3) AS score " . 
 				"FROM search_document_user_link AS SDUL INNER JOIN document_text AS DT ON SDUL.document_id = DT.document_id " .
 				"INNER JOIN documents AS D ON D.id = SDUL.document_id " .
 				"INNER JOIN status_lookup AS SL ON D.status_id = SL.id " .
