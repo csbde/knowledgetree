@@ -5,7 +5,7 @@ class DBCompat {
         global $default;
         $args = func_get_args();
         $default->log->debug("Query was: " . $args[0]);
-        $this->lastResult = &call_user_method_array('query', $default->_db, $args);
+        $this->lastResult = &call_user_func_array(array(&$default->_db, 'query'), $args);
         $this->lastInsertID = mysql_insert_id($default->_db->connection);
         $this->lastResult->autofree = true;
         return $this->lastResult;
