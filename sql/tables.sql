@@ -131,7 +131,8 @@ rank INTEGER NOT NULL
 CREATE TABLE mime_types ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 filetypes CHAR(100) NOT NULL,
-mimetypes CHAR(100) NOT NULL
+mimetypes CHAR(100) NOT NULL,
+icon_path CHAR(255) 
 );
 
 CREATE TABLE organisations_lookup ( 
