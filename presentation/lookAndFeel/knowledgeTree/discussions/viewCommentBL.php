@@ -35,17 +35,19 @@ require_once("$default->fileSystemRoot/lib/discussions/DiscussionThread.inc");
 require_once("$default->fileSystemRoot/lib/discussions/DiscussionComment.inc");
 require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/documentmanagement/documentUI.inc");
 require_once("$default->fileSystemRoot/presentation/Html.inc");
+
+KTUtil::extractGPC('fCommentID', 'fDocumentID', 'fThreadID');
  
 if (checkSession()) {
 	require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
     $oPatternCustom = & new PatternCustom();	
  
 	// validate input parameters
-	if (isset($iCommentID) && isset($iDocumentID)) {
-		$oComment = DiscussionComment::get($iCommentID);
+	if (isset($fCommentID) && isset($fDocumentID)) {
+		$oComment = DiscussionComment::get($fCommentID);
 	  	$oUser = User::get($oComment->getUserID());		
 	  	$main->setFormAction("$default->rootUrl/presentation/lookAndFeel/knowledgeTree/discussions/addCommentBL.php?fDocumentID=$iDocumentID&fCommentID=$iCommentID&fReplyComment=1");		
-	  	$oPatternCustom->setHtml(getCommentBody($oComment,$iDocumentID,$oUser,$iThreadID));	  	
+	  	$oPatternCustom->setHtml(getCommentBody($oComment,$fDocumentID,$oUser,$fThreadID));	  	
 	} else {
 		$main->setErrorMessage(_("You didn't specify a comment to view"));
 	}
