@@ -109,7 +109,7 @@ function getViewComment($iNum,$oThread,$oComment,$oUser) {
 		$sToRender .= "</tr></table><br>\n";			
 		$sToRender .= "<table border=\"0\" width=\"100%\">\n";
 		$sToRender .= "<tr><td></td>\n";
-		$sToRender .= "<td><b>&nbsp;&nbsp;Subject</b></td>\n";
+		$sToRender .= "<td><b>Subject</b></td>\n";
 		$sToRender .= "<td><b>Author</b></td>\n";
 		$sToRender .= "<td><b>Date</b></td>\n"; 
 		$sToRender .= "</tr>\n"; 
@@ -147,7 +147,7 @@ function getCommentBody($oComment, $iDocumentID, $oUser) {
 	$sToRender .= "<a>" . $oComment->getSubject() . "</a>";
 	$sToRender .= "</td><td colspan=2><b>Date: </b><font color=\"#056DCE\">" . $oComment->getDate() . "</font>&nbsp;&nbsp;&nbsp;</td></tr><tr><td colspan=4 valign=top>";	
 	$sToRender .= "<DIV> ";		
-	$sToRender .= str_replace("%0D%0A","<br>",str_replace("+", "&nbsp;",$oComment->getBody())); // Div Views as HTML	
+	$sToRender .= urldecode(str_replace("%0D%0A","<br>",str_replace("+", "&nbsp;",$oComment->getBody()))); // Div Views as HTML	
 	$sToRender .= "</DIV></td>";	
 		
 	$sToRender .= "</tr></table> ";		
