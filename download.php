@@ -1,31 +1,19 @@
 <?php
 
-/**
+/*
  * download.php
- *
- * Allows the user to download the contents of a folder in zip format
  *
  * Copyright (c) 1999-2002 The Owl Project Team
  * Licensed under the GNU GPL. For full terms see the file COPYING.
  *
  * $Id$
- *
- * @todo line 187 spin out into separate function
- * @todo line 195 spin out into separate function 
- */
+*/
 
 require("./config/owl.php");
 require("./lib/owl.lib.php");
 require("./config/html.php");
 require("./lib/security.lib.php");
 
-/**
-* Finds the path from the root folder to the required folder
-*
-* @param $parent required folder
-*
-* @returns string containing path from root folder to required folder 
-*/
 function find_path($parent) {
 	global $parent, $default;
         $path = fid_to_name($parent);
@@ -40,13 +28,6 @@ function find_path($parent) {
         return $path;
 }
 
-/**
-* Get a file name for a file id
-*
-* @paramater $id file id
-*
-* @return string file name
-*/
 function fid_to_filename($id) {
 	global $default;
 	$sql = new Owl_DB;
@@ -54,22 +35,16 @@ function fid_to_filename($id) {
 	while($sql->next_record()) return $sql->f("filename");
 }
 
-/**
-* Zips an entire folder, including sub folders and places the resulting
-* zip file in a temporary directory just off $default->owl_FileDir
-*
-* @param $id 		folder id
-* @param $userid 	current user id
-*/
 function zip_folder($id, $userid) {
 
   global $default, $sess;
   
-  $tmpdir = $default->owl_FileDir . "/owltmpfld_$sess.$id";  
+  $tmpdir = $default->owl_FileDir . "/owltmpfld_$sess.$id";
+  //if (file_exists($tmpdir)) system("rm -rf " . escapeshellarg($tmpdir));
   if (file_exists($tmpdir)) myDelete($tmpdir);
 
   mkdir("$tmpdir", 0777);
-  
+  //system("mkdir " . escapeshellarg($tmpdir));
   $sql = new Owl_DB;
   $sql2 = new Owl_DB;
 
@@ -79,6 +54,7 @@ function zip_folder($id, $userid) {
   }
   $path = "$tmpdir/$top";
   mkdir("$path", 0777);
+  //system("mkdir " . escapeshellarg($path));
 
   folder_loop($sql, $sql2, $id, $path, $userid);
   // get all files in folder 
@@ -114,19 +90,11 @@ function zip_folder($id, $userid) {
 
 
 
-/**
-*
-* @param $sql 		query selecting the id and name of the folder from the $default->owl_folders_table
-* @param $sql2		not sure what this param is - its previous value appears to have no bearing on the recursive nature of the function
-* @param $id 		folder id
-* @param $tmpdir 	temporary director in which zip file will be placed
-* @param $userid 	current user id
-*/
+//function folder_loop(&$sql, &$sql2, $id, $tmpdir, $userid) {
 function folder_loop($sql, $sql2, $id, $tmpdir, $userid) {
 
   global $default;
 
-  //if you have rights to the folder
   if(check_auth($id, "folder_view", $userid) == 1) {
 
     $sql = new Owl_DB;
@@ -137,15 +105,10 @@ function folder_loop($sql, $sql2, $id, $tmpdir, $userid) {
       $filename = $tmpdir . "/" . $sql->f("filename");
       if(check_auth($fid, "file_download", $userid) == 1) {
 
-	//if documents are being stored using the file system
-	//simply place a copy of the file in the temporary directory
         if ($default->owl_use_fs) {
 	   $source = $default->owl_FileDir . "/" . get_dirpath($id) . "/" . $sql->f("filename");
 	   copy($source, $filename);
 	}
-	//else documents are being stored in the database
-	//and a file must be created in the temporary directory for the document
-	//and filled with the data stored in the database
 	else {
 	$sql2->query("select data,compressed from " . $default->owl_files_data_table . " where id='$fid'");
         while($sql2->next_record()) {
@@ -160,9 +123,9 @@ function folder_loop($sql, $sql2, $id, $tmpdir, $userid) {
             $fp=fopen($filename,"w");
             fwrite($fp, $sql2->f("data"));
             fclose($fp);
-          } // end if
+          } // end if     
 
-          } // end if
+          } // end if     
 
         } // end while
 

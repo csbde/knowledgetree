@@ -1,13 +1,17 @@
 <?php
 
-/*
+/**
  * log.php
+ *
+ * Used for Revision history and logs when the changes occurred
  *
  * Copyright (c) 1999-2002 The Owl Project Team
  * Licensed under the GNU GPL. For full terms see the file COPYING.
- *
- * $Id$
+ * @version v 1.1.1.1 2002/12/04
+ * @author michael
+ * @package test
  */
+
 
 require("./config/owl.php");
 require("./lib/owl.lib.php");
@@ -22,6 +26,7 @@ $filesearch = explode('.',$filename);
 // + ADDED &order=$order&$sortorder=$sortname to
 // all browse.php?  header and HREF LINES
 
+// responsible for determining the order of information
 switch ($order) {
      case "name":
            $sortorder = 'sortname';
@@ -53,7 +58,9 @@ print("<TABLE WIDTH=$default->table_expand_width BGCOLOR=$default->main_header_b
 ?>
 <TR><TD ALIGN=LEFT>
 <?php print("$lang_user: ");
-      if(prefaccess($userid)) {
+
+      if(prefaccess($userid)) 
+      {
 	print("<A HREF='prefs.php?owluser=$userid&sess=$sess&expand=$expand&order=$order&sortname=$sortname'>");
       }
 	print uid_to_name($userid);
@@ -68,13 +75,13 @@ print("<TABLE WIDTH=$default->table_expand_width BGCOLOR=$default->main_header_b
 <?php
 
 print("<CENTER>");
-
+	// generates a navigation bar and provides details for the docs
 	print("<TABLE WIDTH=$default->table_expand_width BORDER=$default->table_border>");
 	print("<TR><TD align=left>$lang_viewlog ".gen_navbar($parent)."/".flid_to_name($id)."</TD></TR>");
 	print("</TABLE><HR WIDTH=$default->table_expand_width><BR>$filename");
 
 	print ("<TABLE width=$default->table_expand_width border=$default->table_border cellpadding=3 cellspacing=0>
-		<TR><TD BGCOLOR='$default->table_header_bg' width=5%>$lang_ver</td>
+	 	<TR><TD BGCOLOR='$default->table_header_bg' width=5%>$lang_ver</td>
 		<TD BGCOLOR='$default->table_header_bg' width=10%>$lang_user</TD>
 		<TD BGCOLOR='$default->table_header_bg' width=60%>$lang_log_file</TD>
 		<TD BGCOLOR='$default->table_header_bg' width=25%>$lang_modified</TD></TR>");
@@ -116,31 +123,29 @@ if ($default->owl_use_fs)
 else
 {
 // name based query -- assuming that the given name for the file doesn't change...
-// at some point, we should really look into creating a "revision_id" field so that all revisions can be linked. 
-// in the meanwhile, the code for changing the Title of the file has been altered to go back and 
 
   $name = flid_to_name($id);
   $sql->query("select * from $default->owl_files_table where name='$name' AND parent='$parent' order by major_revision desc, minor_revision desc");
 }
 
 //global $sess;
+// prints out all the relevant information on the specific document
+	while($sql->next_record()) 
+	{
+		$choped = split("\.", $sql->f("filename"));
+        	$pos = count($choped);
+        	$ext = strtolower($choped[$pos-1]);
 
-		
-	while($sql->next_record()) {
-	$choped = split("\.", $sql->f("filename"));
-        $pos = count($choped);
-        $ext = strtolower($choped[$pos-1]);
-
-print("<TR><TD valign=top>".$sql->f("major_revision").".".$sql->f("minor_revision")."</TD>
+		print("<TR><TD valign=top>".$sql->f("major_revision").".".$sql->f("minor_revision")."</TD>
                <TD valign=top>".uid_to_name($sql->f("creatorid"))."</TD>
                <TD valign=top align=left><font size=2 style='font-weight:bold'>");
 		printFileIcons($sql->f("id"),$sql->f("filename"),$sql->f("checked_out"),$sql->f("url"),$default->owl_version_control,$ext);
 		print("&nbsp&nbsp[ ".$sql->f("filename")." ]</font><br>
                <pre>".$sql->f("description")."</></TD>
                <TD valign=top>".$sql->f("modified")."</TD></TR>");
-}
+	}
 
-//		print("<TR><TD valign=top>".$sql->f("major_revision").".".$sql->f("minor_revision")."</TD>
+	       //print("<TR><TD valign=top>".$sql->f("major_revision").".".$sql->f("minor_revision")."</TD>
 	       //<TD valign=top>".uid_to_name($sql->f("creatorid"))."</TD>
 	       //<TD valign=top><font style='font-weight:bold'>[ ".$sql->f("filename")." ]</font><br>
 	       //<pre>".$sql->f("description")."</></TD>
