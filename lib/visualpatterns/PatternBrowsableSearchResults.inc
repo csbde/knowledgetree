@@ -52,6 +52,8 @@ class PatternBrowseableSearchResults {
 	var $sQueryString;
 	/** Search criteria **/
 	var $sSearchText;
+	/** Advanced Search Criteria to remember **/
+	var $aRememberValues;
 	
 	function PatternBrowseableSearchResults($sTmpQuery, $iTmpResultsToDisplay, $aTmpColumns, $aTmpColumnTypes, $aTmpColumnHeaders, $aTmpLinkURLs = null, $aTmpDBQueryStringColumns = null, $aTmpQueryStringVariableNames = null) {
 		$this->sQuery = $sTmpQuery;
@@ -63,6 +65,7 @@ class PatternBrowseableSearchResults {
 		$this->aDBQueryStringColumns = $aTmpDBQueryStringColumns;		
 		$this->aQueryStringVariableNames = $aTmpQueryStringVariableNames;
 		$this->sQueryString = "";		
+		$this->aRememberValues = array();
 	}
 	
 	function setQueryString($sNewQueryString) {
@@ -87,6 +90,10 @@ class PatternBrowseableSearchResults {
 	function setSearchText($sNewValue) {
 		$this->sSearchText = $sNewValue;
 	}
+
+    function setRememberValues($aRemember) {
+        $this->aRememberValues = $aRemember;
+    }
 	
 	/**
 	* Build the HTML string used to render the object
@@ -212,7 +219,10 @@ class PatternBrowseableSearchResults {
 
 			$sToRender .= "<table>";
 			$sToRender .= "<tr>\n";		
-			$sToRender .= "<input type=\"hidden\" name=\"fStartIndex\" value=\"$iEndIndex\" />\n";
+            foreach ($this->aRememberValues as $k => $v) {
+                $v = htmlentities(urlencode($v));
+                $sToRender .= "<input type=\"hidden\" name=\"$k\" value=\"$v\" />\n";
+            }
 			// Display only the next button
 			if (($this->iStartIndex + $this->iResultsToDisplay - 1) < $iTotalResults && $this->iStartIndex == 1) {
 				$sToRender .= "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>";
@@ -223,7 +233,7 @@ class PatternBrowseableSearchResults {
 			// Display both the next and the previous buttons		
 			else if (($this->iStartIndex + $this->iResultsToDisplay - 1) < $iTotalResults && $this->iStartIndex > 1) {
 				$sToRender .= "<td>";
-				$sToRender .= "<input type=\"image\" src=\"$default->graphicsUrl/widgets/previous.gif\" onClick=\"setActionAndSubmit('" . $_SERVER["PHP_SELF"] . "?fStartIndex=" . ($this->iStartIndex -  $this->iResultsToDisplay) . $this->sQueryString . "')\" />";
+				$sToRender .= "<input type=\"image\" src=\"" . KTHtml::getPreviousButton() . "\" onClick=\"setActionAndSubmit('" . $_SERVER["PHP_SELF"] . "?fStartIndex=" . ($this->iStartIndex -  $this->iResultsToDisplay) . $this->sQueryString . "')\" />";
 				$sToRender .= "</td>";
 				$sToRender .= "<td>";
 				$sToRender .= "<input type=\"image\" src=\"" . KTHtml::getNextButton() . "\" onClick=\"setActionAndSubmit('" . $_SERVER["PHP_SELF"] . "?fStartIndex=" . ($this->iStartIndex +  $this->iResultsToDisplay)  . $this->sQueryString . "')\" />";				
@@ -233,7 +243,7 @@ class PatternBrowseableSearchResults {
 			// Display only the previous button
 			else if ($this->iStartIndex > 1) {
 				$sToRender .= "<td align=\"left\">\n";
-				$sToRender .= "<input type=\"image\" src=\"$default->graphicsUrl/widgets/previous.gif\" onClick=\"setActionAndSubmit('" . $_SERVER["PHP_SELF"] . "?fStartIndex=" . ($this->iStartIndex -  $this->iResultsToDisplay) . $this->sQueryString . "')\" />";
+				$sToRender .= "<input type=\"image\" src=\"" . KTHtml::getPreviousButton() . "\" onClick=\"setActionAndSubmit('" . $_SERVER["PHP_SELF"] . "?fStartIndex=" . ($this->iStartIndex -  $this->iResultsToDisplay) . $this->sQueryString . "')\" />";
 				$sToRender .= "</td>";
 			}
 			
