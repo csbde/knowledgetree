@@ -133,10 +133,10 @@ class Subscription {
      * Returns the link to view the subscription content
      */
     function getContentLink() {
-        if ($iSubscriptionType == SubscriptionConstants::subscriptionType("DocumentSubscription")) {
-            return generateControllerLink("viewDocument", Document::getDocumentDisplayPath($this->iExternalID), "fDocumentID=$iExternalID");
-        } else if ($iSubscriptionType == SubscriptionConstants::subscriptionType("FolderSubscription")) {
-            return generateControllerLink("browse", Folder::getFolderDisplayPath($this->iExternalID), "fBrowseType=folder&fFolderID=$iExternalID");
+        if ($this->iSubscriptionType == SubscriptionConstants::subscriptionType("DocumentSubscription")) {
+            return generateControllerLink("viewDocument", Document::getDocumentDisplayPath($this->iExternalID), "fDocumentID=$this->iExternalID");
+        } else if ($this->iSubscriptionType == SubscriptionConstants::subscriptionType("FolderSubscription")) {
+            return generateControllerLink("browse", Folder::getFolderDisplayPath($this->iExternalID), "fBrowseType=folder&fFolderID=$this->iExternalID");
         }
     }
 
@@ -144,10 +144,10 @@ class Subscription {
      * Returns the url to the subscription content
      */
     function getContentUrl() {
-        if ($iSubscriptionType == SubscriptionConstants::subscriptionType("DocumentSubscription")) {
-            return generateControllerUrl("viewDocument", "fDocumentID=$iExternalID");
-        } else if ($iSubscriptionType == SubscriptionConstants::subscriptionType("FolderSubscription")) {
-            return generateControllerUrl("browse", "fBrowseType=folder&fFolderID=$iExternalID");
+        if ($this->iSubscriptionType == SubscriptionConstants::subscriptionType("DocumentSubscription")) {
+            return generateControllerUrl("viewDocument", "fDocumentID=$this->iExternalID");
+        } else if ($this->iSubscriptionType == SubscriptionConstants::subscriptionType("FolderSubscription")) {
+            return generateControllerUrl("browse", "fBrowseType=folder&fFolderID=$this->iExternalID");
         }
     }
 
