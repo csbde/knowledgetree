@@ -58,7 +58,7 @@ if (checkSession()) {
             $oPatternCustom->setHtml(getPageFail());
         }
     }
-
+		
     // render page
     $main->setCentralPayload($oPatternCustom);
     $main->render();
