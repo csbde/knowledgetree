@@ -35,6 +35,7 @@ class DiscussionComment {
 	var $sSubject;
 	var $sBody;
 	var $dDate;
+	var $iInReplyTo;
 	
     /**
      * DiscussionComment Constructor
@@ -44,7 +45,7 @@ class DiscussionComment {
      * @param integer for userID who is creating the Discussion Comment
      * @param integer for the ThreadID which links all the comments for a document
      */
-    function DiscussionComment($sNewBody, $sNewSubject, $iNewUserID, $iNewThreadID) {
+    function DiscussionComment($sNewBody, $sNewSubject, $iNewUserID, $iNewThreadID, $iNewInReplyTo) {
         global $default;
 
         // start initializing variables.
@@ -53,6 +54,7 @@ class DiscussionComment {
         $this->iUserID = $iNewUserID;
         $this->iThreadID = $iNewThreadID;
         $this->dDate = null;				// This will get added in the SQL statement
+        $this->iInReplyTo = $iNewInReplyTo;
     	$this->iId = -1;						// This will get created when the entry SQL statement
     }
 
@@ -128,6 +130,20 @@ class DiscussionComment {
     	return $this->dDate;
     }
     
+    /**    
+     * Return the comment this is a reply to
+     */    
+    function getInReplyTo(){
+    	return $this->iInReplyTo;    	
+    }
+    
+    /**    
+     * Sets the comment this is a reply to
+     */        
+    function setInReplyTo($sNewCommentID){
+    	$this->iInReplyTo = $sNewCommentID;
+    }    
+    
     /**
     * Static function.
     * Given a web_documents primary key it will create a 
@@ -142,7 +158,7 @@ class DiscussionComment {
         $result = $sql->query("SELECT * FROM $default->discussion_comments_table WHERE id = $iNewCommentID");
         if ($result) {
             if ($sql->next_record()) {                
-                $oDiscussionComment = & new DiscussionComment($sql->f("body"),$sql->f("subject"),$sql->f("user_id"),$sql->f("thread_id"));
+                $oDiscussionComment = & new DiscussionComment($sql->f("body"),$sql->f("subject"),$sql->f("user_id"),$sql->f("thread_id"),$sql->f("in_reply_to"));
                 $oDiscussionComment->iId = $iNewCommentID;
                 $oDiscussionComment->dDate = $sql->f("date");
                 return $oDiscussionComment;
@@ -154,14 +170,36 @@ class DiscussionComment {
         return false;
     }
     
+    /**
+     * Static function
+     * Get a list of DiscussionComments
+     *
+     * @param  String  Where clause (optional)
+     *
+     * @return Array array of DiscussionComments objects, false otherwise
+     */
+    function getList($sWhereClause = null) {
+        global $default;
+        $aDiscussionComments = array();
+        $sql = $default->db;
+        $result = $sql->query("SELECT * FROM " . $default->discussion_comments_table  . (isset($sWhereClause) ? " WHERE " . $sWhereClause : ""));
+        if ($result) {
+            while ($sql->next_record()) {
+                $aDiscussionComments[] = & DiscussionComment::get($sql->f("id"));
+            }
+            return $aDiscussionComments;
+        }
+        return false;
+    }
+        
     function create(){
         global $default, $lang_err_database, $lang_err_object_exists;
         //if the object hasn't been created
         if ($this->iId < 0) { //check to see if comment exists
             $sql = $default->db;            																																
             
-            $result = $sql->query("INSERT INTO " . $default->discussion_comments_table . " (thread_id,user_id,subject, body, date)" .
-             				       "VALUES (" . $this->iThreadID . "," . $this->iUserID . ",\"" . $this->sSubject . "\",\"" . $this->sBody . "\",Now())");
+            $result = $sql->query("INSERT INTO " . $default->discussion_comments_table . " (thread_id,user_id,subject, body, date, in_reply_to)" .
+             				       "VALUES (" . $this->iThreadID . "," . $this->iUserID . ",\"" . $this->sSubject . "\",\"" . $this->sBody . "\", Now(), " . $this->iInReplyTo . ")");
             if ($result) {
 	          	$this->iId = $sql->insert_id();
 	         	return true;                    
@@ -186,7 +224,8 @@ class DiscussionComment {
             						" AND user_id = " 			. $this->iUserID .
             						" AND subject = " 			. $this->sSubject .
             						" AND body = " 				. $this->sBody .
-            						" AND date = Now()" 		. $this->dDate .            						  
+            						" AND in_reply_to = " 		. $this->iInReplyTo .            						
+            						" AND date = Now()" .
             						" WHERE id = " 				. $this->iId);
             if ($result) {           
      	       return true;
@@ -198,37 +237,34 @@ class DiscussionComment {
         return false;
     }
     
-     	function delete(){
-    	 global $default, $lang_err_database, $lang_err_object_key;
-        
-        //only delete the object if it exists in the database
-        if ($this->iId > 0) {
-            //check to see if group is linked to a unit
-            $sql = $default->db;
-            $query = "SELECT * FROM ". $default->discussion_comments_table . " WHERE id = " . $this->iId  ;
-            $sql->query($query);
-            $rows = $sql->num_rows($sql);
-
-            if ($rows > 1) {
-                // duplicate Thread exists
-                $_SESSION["errorMessage"] = "Thread::The Thread id " . $this->iId . " has duplicates!";
-                return false;
-
-            } else {
-                $sql = $default->db;
-                $result = $sql->query("DELETE FROM $default->discussion_comments_table WHERE id = $this->iId");
-                if ($result) {
-                    return true;
-                }
-                $_SESSION["errorMessage"] = $lang_err_database;
-                return false;
-            }
-        }
-        $_SESSION["errorMessage"] = $lang_err_object_key;
-        return false;
-    }    
-    
-   
+	function delete(){
+		global $default, $lang_err_database, $lang_err_object_key;
+		  
+		// only delete the object if it exists in the database
+		if ($this->iId > 0) {
+			//check to see if group is linked to a unit
+			$sql = $default->db;
+			$query = "SELECT * FROM ". $default->discussion_comments_table . " WHERE id = " . $this->iId  ;
+			$sql->query($query);
+			$rows = $sql->num_rows($sql);
+			
+			if ($rows > 1) {
+				// duplicate Thread exists
+				$_SESSION["errorMessage"] = "Thread::The Thread id " . $this->iId . " has duplicates!";
+				return false;
+			} else {
+				$sql = $default->db;
+				$result = $sql->query("DELETE FROM $default->discussion_comments_table WHERE id = $this->iId");
+				if ($result) {
+					return true;
+				}
+				$_SESSION["errorMessage"] = $lang_err_database;
+				return false;
+			}
+		}
+		$_SESSION["errorMessage"] = $lang_err_object_key;
+		return false;
+	}   
 }
 
 ?>
