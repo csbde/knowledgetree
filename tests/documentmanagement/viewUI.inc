@@ -49,7 +49,7 @@ function renderDocumentData($oDocument, $sDivName, $bEditable) {
     $sToRender .= "\t</tr>\n";
     if ($bEditable) {    
 		$sToRender .= "\t<tr>\n";
-	    $sToRender .= "<td colspan=\"2\"><a href=\"$default->rootUrl/control.php?action=modifyDocument&fDocumentID=" . $oDocument->getID() . "\"><image src=\"$default->graphicsUrl/widgets/edit.gif\" border=\"0\"></a></td>\n";
+	    $sToRender .= "<td colspan=\"2\"><a href=\"$default->rootUrl/control.php?action=modifyDocument&fDocumentID=" . $oDocument->getID() . "\"><img src=\"$default->graphicsUrl/widgets/edit.gif\" border=\"0\"></a></td>\n";
 		$sToRender .= "\t</tr>\n";
     }
 	$sToRender .= "\t</table>\n";
@@ -77,7 +77,7 @@ function renderGenericMetaData($oDocument, $sDivName, $bEditable) {
     $sToRender .= "\t</tr>\n";
     if ($bEditable) {
 		$sToRender .= "\t<tr>\n";
-	    $sToRender .= "<td><a href=\"$default->rootUrl/control.php?action=modifyDocumentGenericMetaData&fDocumentID=" . $oDocument->getID() . "\"><image src=\"$default->graphicsUrl/widgets/edit.gif\" border=\"0\"></a></td>\n";    
+	    $sToRender .= "<td><a href=\"$default->rootUrl/control.php?action=modifyDocumentGenericMetaData&fDocumentID=" . $oDocument->getID() . "\"><img src=\"$default->graphicsUrl/widgets/edit.gif\" border=\"0\"></a></td>\n";    
 		$sToRender .= "\t</tr>\n";
     }
 	$sToRender .= "\t</table>\n";
@@ -108,7 +108,7 @@ function renderTypeSpecificMetaData($oDocument, $sDivName, $bEditable) {
     $sToRender .= "\t</tr>\n";
     if ($bEditable) {
 		$sToRender .= "\t<tr>\n";
-	    $sToRender .= "<td><a href=\"$default->rootUrl/control.php?action=modifyDocumentTypeMetaData&fDocumentID=" . $oDocument->getID() . "\"><image src=\"$default->graphicsUrl/widgets/edit.gif\" border=\"0\"></a></td>\n";
+	    $sToRender .= "<td><a href=\"$default->rootUrl/control.php?action=modifyDocumentTypeMetaData&fDocumentID=" . $oDocument->getID() . "\"><img src=\"$default->graphicsUrl/widgets/edit.gif\" border=\"0\"></a></td>\n";
 		$sToRender .= "\t</tr>\n";
     }
     $sToRender .= "\t</table>\n";
