@@ -205,6 +205,20 @@ class Document {
         $this->iCheckedOutUserID = $iNewValue;
     }
 
+    /** returns the number of days since this document has been last modified **/
+    function getDaysSinceLastModified() {
+        // convert to epoch
+        $iLastModified = strtotime($this->dModified);
+        $iCurrentDateTime = time();
+        // calculate the difference
+        $iDiff = $iCurrentDateTime - $iLastModified;
+        // how many days is that?
+        $iMinutes = $iDiff / 60;
+        $iHours = $iMinutes / 60;
+        $iDays = $iHours / 24;
+        return floor($iDays);
+    }
+    
 	/**
 	* Generate a comma delimited string containing
 	* the parent folder ids
@@ -534,11 +548,19 @@ class Document {
     /**
      * Get the full path for a document
      *
-     * @param int primary key of document to generate path for 
      * @return string full path of document
      */
     function getPath() {
         return Folder::getFolderPath($this->iFolderID) . "/" . $this->sFileName;
+    }
+    
+    /**
+    * Get the path for a document that will be displayed to the user
+    * 
+    * @return string full path to document
+    */
+    function getDisplayPath() {
+        return Folder::getFolderDisplayPath($this->iFolderID) . " > " . $this->sFileName;
     }
     
     /**
