@@ -12,6 +12,21 @@ id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 name CHAR(255) NOT NULL
 )TYPE = InnoDB;
 
+CREATE TABLE document_link ( 
+id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
+parent_document_id INTEGER NOT NULL,
+child_document_id INTEGER NOT NULL
+) TYPE = InnoDB;
+
+CREATE TABLE new_documents ( 
+id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
+document_title TEXT,
+user_id INTEGER,
+template_document_id INTEGER
+) TYPE = InnoDB;
+
+
+
 CREATE TABLE discussion_threads ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 document_id INTEGER NOT NULL,
@@ -402,6 +417,18 @@ ALTER TABLE folders
 ADD CONSTRAINT PK_folders
 PRIMARY KEY (id)
 ;
+
+ALTER TABLE document_link 
+ADD CONSTRAINT PK_table_link 
+PRIMARY KEY (id) 
+;
+
+
+ALTER TABLE new_documents 
+ADD CONSTRAINT PK_new_documents 
+PRIMARY KEY (id) 
+;
+
 
 ALTER TABLE folder_subscriptions
 ADD CONSTRAINT PK_folder_subscriptions
