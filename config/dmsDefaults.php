@@ -101,6 +101,10 @@ $default->owl_web_documents_table = "web_documents";
 $default->owl_web_documents_status_table = "web_documents_status";
 
 
+// This is the defualt MailServer Host for emailing 
+$default->owl_mail_server = "mail.jamwarehouse.com"
+
+
 // Change this to reflect the database you are using
 require_once("$default->owl_fs_root/phplib/db_mysql.inc");
 //require("$default->owl_fs_root/phplib/db_pgsql.inc");
