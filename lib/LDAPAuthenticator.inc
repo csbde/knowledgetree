@@ -9,7 +9,7 @@ require_once("$default->owl_fs_root/lib/Authenticator.inc");
  * Perform authentication tasks against LDAP compliant directory server.
  * 
  * @version $Revision$ 
- * @author michael@jamwarehouse.com
+ * @author <a href="mailto:michael@jamwarehouse.com>Michael Joseph</a>, Jam Warehouse (Pty) Ltd, South Africa
  * @package dmslib
  */
 class LDAPAuthenticator extends Authenticator {
