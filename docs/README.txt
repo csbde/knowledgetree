@@ -1,24 +1,42 @@
-=================
-KnowledgeTree DMS
-=================
+KnowledgeTree Document Management System
+----------------------------------------
 
-The KnowledgeTree is an open-source Document Management System that currently provides
-the following features:
+Enterprise Knowledge Management with a Small Price Tag
+A feature-rich document management system built with open source technologies for low total cost of ownership.
 
-o  Document management
-   - folder and document creation
-   - versioning (check in / check out)
-   - configurable document meta-data (document types)
-o  Document approval routing
-o  Group-based access control
-o  Subscriptions (document and folder)
-o  Document searching
-o  Context-sensitive help
+General Features
+o Fully web-based.
+o Powerful document version control
+o Support for common file formats (MS Word, MS Excel, PDF, TXT, HTML)
+o Extensible document meta data
+o Subscription agents with push technology for notification of changes to documents or document directories
+o Archiving according to expiry date, expiry time period or utilisation for enhanced speed
+o Publish documents to websites
+o Document-specific discussion forums
+o Full-text search of common file formats (MS Word, MS Excel, PDF, TXT, HTML)
+o Search in user-defined metadata fields.
+o Access information according to folder structure, category or document type.
+o Personalised dashboard to view subscriptions, pending documents, checked-out documents and quick links.
+o Virtual binders for documents based on certain criteria
 
-DIRECTORY STRUCTURE
+
+Workflow Features
+o Improved management control of documents with ability to create a set process for document creation and publishing
+o Flexible document approval routing at the folder level
+o Delegate the creation of new documents within a document approval cycle
+
+
+Security Features
+o Access rights for document protection on a per group, role or organisational unit basis
+o SSL for encrypted and secure connections
+o Authentication integration with common LDAP servers (OpenLDAP, Sun ONE Directory Server and Active Directory)
+o Audit trails of user interaction with system including document changes
+
+
+Directory Structure
 -------------------
 
-Here is a description of what each of the top level directories contain.
+Here is a description of what each of the top level directories contain:
 
 bin/           This contains helper *nix shell scripts.
 config/        KnowledgeTree configuration files live.
@@ -37,48 +55,7 @@ sql/           Database table creation and population files.
 sync/          Scripts to synchronise the knowledgeTree
 tests/         This is where all of the unit tests live.
 
-INSTALLATION
-------------
-
-*  Ensure that you have PHP, MySQL and Apache installed and configured.
-   - Ensure that the following PHP configuration options are set appropriately in php.ini:
-		error_reporting  =  E_ALL & ~E_NOTICE
-		file_uploads = On
-		upload_tmp_dir = C:\PHP\uploadtemp
-		upload_max_filesize = 2M
-		session.use_cookies = 1
-
-*  Move the knowledgeTree folder to the directory it is going to be served from:
-   $ mv knowledgeTree /path/to/your/html/directory/
-
-*  Create a database:
-   $ mysqladmin -p create dms
-
-*  Create and populate the tables:
-   $ mysql -p dms < sql/tables.sql
-
-*  Configure your installation by changing the following attributes in config/environment.php:
-   - $default->fileSystemRoot
-   - $default->serverName
-   - $default->sslEnabled
-   - $default->authenticationClass
-   - $default->dbUser
-   - $default->dbPass
-   - $default->dbHost
-   - $default->dbName
-
-*  Check permissions on Documents folder
-   - The "/Documents" folder MUST be able to be written to by your web server.
-     If your web server is running as user "nobody" and group "nobody" (apache default)
-     then cd to the files directory and type:
-
-     *nix: 'chown -R nobody.nobody Documents'
-     Windows: Check the permissions and security tabs
-
-*  Login:
-   - in a web browser goto http://$default->serverName/$default->rootUrl/
-   - default user is "admin" with password "admin"
-   
+For installation instructions please refer to docs/INSTALL.txt
 
 Jam Warehouse – Smart Business Innovation
 Phone: +27 21 4477440
