@@ -1,0 +1,25 @@
+Here is the release process for KnowledgeTree.
+
+Test:
+1.1. Testing.
+
+Prepare:
+2.1. Update Changelog.
+2.2. Put release date into Changelog.txt
+2.3. Update database install and upgrade SQL scripts
+2.4. Update version number in database install and upgrade scripts
+2.5. Tag CVS - RELEASE_1_2_3_20040909
+2.6. kt/releaseKT.sh -b RELEASE_1_2_3_20040909 -v 1.2.3
+2.7. Test final release
+
+Release:
+3.1. ncftpput upload.sourceforge.net /incoming knowledgeTree-1.2.3.tgz knowledgeTree-1.2.3.zip
+3.2. Add to Sourceforge file manager
+3.3. Update Web site version number and features.
+
+Inform:
+4.1. Mail kt-dms-users and kt-dms-developers and kt-dms-announce
+4.2. Add to Forums
+
+Post-release:
+5.1. Prepare Changelog.txt for next release
