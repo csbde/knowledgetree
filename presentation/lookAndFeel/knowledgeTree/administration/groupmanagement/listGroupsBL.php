@@ -37,7 +37,13 @@ require_once("listGroupsUI.inc");
 
 if (checkSession()) {	
     $oPatternCustom = & new PatternCustom();
-    $oPatternCustom->setHtml(getPage($fUnitID));
+    // #3519 unit administrators only see their unit.
+	if (Permission::userIsUnitAdministrator()) {
+        $iUnitID = User::getUnitID($_SESSION["userID"]);
+        $oPatternCustom->setHtml(getPage($iUnitID));
+	} else {
+    	$oPatternCustom->setHtml(getPage($fUnitID));
+	}
 	require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 	$main->setCentralPayload($oPatternCustom);
 	$main->setFormAction($_SERVER['PHP_SELF']);	
