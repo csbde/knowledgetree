@@ -48,6 +48,11 @@ class System {
         return lookupField("system_settings", "value", "name", $sSettingName);
     }
     
+    function getInt($sSettingName) {
+        // select the value from the db
+        return (integer)lookupField("system_settings", "value", "name", $sSettingName);
+    }    
+    
     /**
      * Sets a setting, if $sSettingName exists then the value is overwritten
      * else a new setting is inserted.
