@@ -18,6 +18,10 @@ class DocumentField {
 	var $sName;
 	/** document field data type */
 	var $sDataType;
+	/** is_generic */
+	var $bIsGeneric;
+	/**has lookup*/
+	var $bHasLookup;
 	
 	/**
 	* Default constructor
@@ -26,11 +30,14 @@ class DocumentField {
 	* @param 	Document field data type
 	*
 	*/
-	function DocumentField($sNewName, $sNewDataType) {
+	function DocumentField($sNewName, $sNewDataType, $bNewIsGeneric, $bNewHasLookup) {
 		//object not created yet
 		$this->iId = -1;
 		$this->sName = $sNewName;
 		$this->sDataType = $sNewDataType;
+		$this->bIsGeneric = $bNewIsGeneric;
+		$this->bHasLookup = $bNewHasLookup;
+		
 	}
 	
 	/**
@@ -83,6 +90,51 @@ class DocumentField {
 		$this->sDataType = $sNewValue;
 	}
 	
+	
+	/**
+	* Get the document field's generic or not
+	*
+	* @return String document field's data type
+	*
+	*/
+	function getIsGeneric() {
+		return $this->bIsGeneric;
+	}
+	
+	/**
+	* Set the document field's genericness
+	*
+	* @param 	Document field's new data type
+	*
+	*/
+	function setIsGeneric($sNewValue) {
+		$this->bIsGeneric = $sNewValue;
+	}
+	
+	
+		
+	/**
+	* Get the document field's lookup or not
+	*
+	* @return String document field's data type
+	*
+	*/
+	function getHasLookup() {
+		return $this->bHasLookup;
+	}
+	
+	/**
+	* Set the document field's lookup
+	*
+	* @param 	Document field's new data type
+	*
+	*/
+	function setHasLookup($sNewValue) {
+		$this->bHasLookup = $sNewValue;
+	}
+	
+	
+	
 	/**
 	* Store the current object in the database
 	*
@@ -94,7 +146,7 @@ class DocumentField {
 		//if the object hasn't been created
 		if ($this->iId < 0) {
 			$sql = $default->db;
-			$result = $sql->query("INSERT INTO " . $default->owl_fields_table . " (name, data_type) VALUES ('" . addslashes($this->sName) . "', '" . addslashes($this->sDataType) . "')");
+			$result = $sql->query("INSERT INTO " . $default->owl_fields_table . " (name, data_type,is_generic,has_lookup) VALUES ('" . addslashes($this->sName) . "', '" . addslashes($this->sDataType) . "', '" . $this->bIsGeneric . "', '" . $this->bHasLookup ."')");
 			if ($result) {
 				$this->iId = $sql->insert_id();
 				return  true;
@@ -117,7 +169,7 @@ class DocumentField {
 		//only update if the object has been stored
 		if ($this->iId > 0) {
 			$sql = $default->db;
-			$result = $sql->query("UPDATE " . $default->owl_fields_table . " SET name = '" . addslashes($this->sName) . "', data_type = '" . addslashes($this->sDataType) . "' WHERE id = $this->iId");
+			$result = $sql->query("UPDATE " . $default->owl_fields_table . " SET name = '" . addslashes($this->sName) . "', data_type = '" . addslashes($this->sDataType) . "', is_generic = '" . $this->bIsGeneric . "', has_lookup = '" . $this->bHasLookup . "' WHERE id = $this->iId");
 			if ($result) {
 				return true;
 			}
@@ -164,7 +216,7 @@ class DocumentField {
 		$result = $sql->query("SELECT * FROM $default->owl_fields_table WHERE id = $iDocumentFieldsID");
 		if ($result) {
 			if ($sql->next_record()) {
-				$oDocumentField = & new DocumentField(stripslashes($sql->f("name")), stripslashes($sql->f("data_type")));
+				$oDocumentField = & new DocumentField(stripslashes($sql->f("name")), stripslashes($sql->f("data_type")), $sql->f("is_generic"), $sql->f("has_lookup"));
 				$oDocumentField->iId = $sql->f("id");
 				return $oDocumentField;
 			}
