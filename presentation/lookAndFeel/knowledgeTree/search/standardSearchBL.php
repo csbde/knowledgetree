@@ -33,17 +33,19 @@ if (checkSession()) {
 							if (!$fFolderID) {
 								//start at the root folder
 								$fFolderID = 0;
-								$sFolderString = getApprovedFolderString($fFolderID);
+								$sFolderString = getFolderString($fFolderID);
 								require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 								$oPatternCustom = & new PatternCustom();
-                                $oPatternCustom->setHtml(getPage($fStandardSearchString, $fBrowseType, $fFolderID, $fDocumentID, $fCategoryName, $fDocType, $sFolderString, $fStartIndex, getSQLSearchString($fStandardSearchString)));
+                                //$oPatternCustom->setHtml(getPage($fStandardSearchString, $fBrowseType, $fFolderID, $fDocumentID, $fCategoryName, $fDocType, $sFolderString, $fStartIndex, getSQLSearchString($fStandardSearchString)));
+                                $oPatternCustom->setHtml(getPage($fStandardSearchString, $fBrowseType, $fFolderID, $fDocumentID, $fCategoryName, $fDocType, $sFolderString, $fStartIndex, $fStandardSearchString));
                                 $main->setCentralPayload($oPatternCustom);
                                 $main->render();								
 							} else {
-								$sFolderString = getApprovedFolderString($fFolderID);
+								$sFolderString = getFolderString($fFolderID);
 								require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 								$oPatternCustom = & new PatternCustom();
-                                $oPatternCustom->setHtml(getPage($fStandardSearchString, $fBrowseType, $fFolderID, $fDocumentID, $fCategoryName, $fDocType, $sFolderString, $fStartIndex, getSQLSearchString($fStandardSearchString)));
+                                //$oPatternCustom->setHtml(getPage($fStandardSearchString, $fBrowseType, $fFolderID, $fDocumentID, $fCategoryName, $fDocType, $sFolderString, $fStartIndex, getSQLSearchString($fStandardSearchString)));
+                                $oPatternCustom->setHtml(getPage($fStandardSearchString, $fBrowseType, $fFolderID, $fDocumentID, $fCategoryName, $fDocType, $sFolderString, $fStartIndex, $fStandardSearchString));
                                 $main->setCentralPayload($oPatternCustom);
                                 $main->render();
 							}
@@ -53,17 +55,19 @@ if (checkSession()) {
 							if (!$fCategoryName) {
 								//no category name specified, so just start at the root folder								
 								$fFolderID = 0;
-								$sFolderString = getApprovedFolderString($fFolderID);
+								$sFolderString = getFolderString($fFolderID);
 								require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 								$oPatternCustom = & new PatternCustom();
-                                $oPatternCustom->setHtml(getPage($fStandardSearchString, $fBrowseType, $fFolderID, $fDocumentID, $fCategoryName, $fDocType, $sFolderString, $fStartIndex, getSQLSearchString($fStandardSearchString)));
+                                //$oPatternCustom->setHtml(getPage($fStandardSearchString, $fBrowseType, $fFolderID, $fDocumentID, $fCategoryName, $fDocType, $sFolderString, $fStartIndex, getSQLSearchString($fStandardSearchString)));
+                                $oPatternCustom->setHtml(getPage($fStandardSearchString, $fBrowseType, $fFolderID, $fDocumentID, $fCategoryName, $fDocType, $sFolderString, $fStartIndex, $fStandardSearchString));
                                 $main->setCentralPayload($oPatternCustom);
                                 $main->render();			
 							} else {								 
-								$sFolderString = getApprovedFolderStringFromCategory($fCategoryName);
+								$sFolderString = getFolderStringFromCategory($fCategoryName);
 								require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 								$oPatternCustom = & new PatternCustom();
-                                $oPatternCustom->setHtml(getPage($fStandardSearchString, $fBrowseType, $fFolderID, $fDocumentID, $fCategoryName, $fDocType, $sFolderString, $fStartIndex, getSQLSearchString($fStandardSearchString)));
+                                //$oPatternCustom->setHtml(getPage($fStandardSearchString, $fBrowseType, $fFolderID, $fDocumentID, $fCategoryName, $fDocType, $sFolderString, $fStartIndex, getSQLSearchString($fStandardSearchString)));
+                                $oPatternCustom->setHtml(getPage($fStandardSearchString, $fBrowseType, $fFolderID, $fDocumentID, $fCategoryName, $fDocType, $sFolderString, $fStartIndex, $fStandardSearchString));
                                 $main->setCentralPayload($oPatternCustom);
                                 $main->render();								
 							}
@@ -77,14 +81,16 @@ if (checkSession()) {
 								$sFolderString = getApprovedFolderString($fFolderID);
 								require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 								$oPatternCustom = & new PatternCustom();
-                                $oPatternCustom->setHtml(getPage($fStandardSearchString, $fBrowseType, $fFolderID, $fDocumentID, $fCategoryName, $fDocType, $sFolderString, $fStartIndex, getSQLSearchString($fStandardSearchString)));
+                                //$oPatternCustom->setHtml(getPage($fStandardSearchString, $fBrowseType, $fFolderID, $fDocumentID, $fCategoryName, $fDocType, $sFolderString, $fStartIndex, getSQLSearchString($fStandardSearchString)));
+                                $oPatternCustom->setHtml(getPage($fStandardSearchString, $fBrowseType, $fFolderID, $fDocumentID, $fCategoryName, $fDocType, $sFolderString, $fStartIndex, $fStandardSearchString));
                                 $main->setCentralPayload($oPatternCustom);
                                 $main->render();			
 							} else {
 								$sDocumentString = getApprovedDocsDocType($fDocTypeID);
 								require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 								$oPatternCustom = & new PatternCustom();
-                                $oPatternCustom->setHtml(getPage($fStandardSearchString, $fBrowseType, $fFolderID, $fDocumentID, $fCategoryName, $fDocType, $sDocumentString, $fStartIndex, getSQLSearchString($fStandardSearchString), true));
+                                //$oPatternCustom->setHtml(getPage($fStandardSearchString, $fBrowseType, $fFolderID, $fDocumentID, $fCategoryName, $fDocType, $sDocumentString, $fStartIndex, getSQLSearchString($fStandardSearchString), true));
+                                $oPatternCustom->setHtml(getPage($fStandardSearchString, $fBrowseType, $fFolderID, $fDocumentID, $fCategoryName, $fDocType, $sDocumentString, $fStartIndex, $fStandardSearchString, true));
                                 $main->setCentralPayload($oPatternCustom);
                                 $main->render();								
 							}
@@ -104,7 +110,8 @@ if (checkSession()) {
 			$sFolderString = getApprovedFolderString($oDocument->getFolderID());
 			require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 			$oPatternCustom = & new PatternCustom();
-			$oPatternCustom->setHtml(getPage($fStandardSearchString, $fBrowseType, $fFolderID, $fDocumentID, $fCategoryName, $fDocType, $sFolderString, $fStartIndex, getSQLSearchString($fStandardSearchString)));
+			//$oPatternCustom->setHtml(getPage($fStandardSearchString, $fBrowseType, $fFolderID, $fDocumentID, $fCategoryName, $fDocType, $sFolderString, $fStartIndex, getSQLSearchString($fStandardSearchString)));
+			$oPatternCustom->setHtml(getPage($fStandardSearchString, $fBrowseType, $fFolderID, $fDocumentID, $fCategoryName, $fDocType, $sFolderString, $fStartIndex, $fStandardSearchString));
 			$main->setCentralPayload($oPatternCustom);                                
 			$main->setFormAction("addFolderBL.php?fFolderID=$fFolderID");
 			$main->setHasRequiredFields(true);
@@ -112,10 +119,12 @@ if (checkSession()) {
 		} else {
 			//search from the root folder down i.e. all documents
 			$fFolderID = 0;
-			$sFolderString = getApprovedFolderString($fFolderID);
+			//$sFolderString = getApprovedFolderString($fFolderID);
+			$sFolderString = getFolderString($fFolderID);
 			require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 			$oPatternCustom = & new PatternCustom();
-			$oPatternCustom->setHtml(getPage($fStandardSearchString, $fBrowseType, $fFolderID, $fDocumentID, $fCategoryName, $fDocType, $sFolderString, $fStartIndex, getSQLSearchString($fStandardSearchString)));
+			//$oPatternCustom->setHtml(getPage($fStandardSearchString, $fBrowseType, $fFolderID, $fDocumentID, $fCategoryName, $fDocType, $sFolderString, $fStartIndex, getSQLSearchString($fStandardSearchString)));
+			$oPatternCustom->setHtml(getPage($fStandardSearchString, $fBrowseType, $fFolderID, $fDocumentID, $fCategoryName, $fDocType, $sFolderString, $fStartIndex, $fStandardSearchString));
 			$main->setCentralPayload($oPatternCustom);                                
 			$main->setFormAction("addFolderBL.php?fFolderID=$fFolderID");
 			$main->setHasRequiredFields(true);
@@ -123,6 +132,14 @@ if (checkSession()) {
 		}
 }
 
+function getFolderString($iFolderID) {
+	$aChildren = Folder::getChildren($iFolderID);
+	//add the folder we started on
+	$aChildren[count($aChildren)] = $iFolderID;
+	return implode(",", $aChildren);	
+}
+
+/*
 function getApprovedFolderString($iFolderID) {
 	$aChildren = Folder::getChildren($iFolderID);								
 	$aApprovedChildren = array();
@@ -159,7 +176,33 @@ function getApprovedFolderString($iFolderID) {
 	return implode(",", $aApprovedChildren);
 }
 
-function getApprovedFolderStringFromCategory($sCategory) {
+
+*/
+
+function getFolderStringFromCategory($sCategory) {
+	global $default;
+	$sQuery = "SELECT DISTINCT D.folder_id " . 
+			"FROM $default->owl_documents_table AS D inner join $default->owl_document_fields_table AS DFL ON D.id = DFL.document_id " .
+			"INNER JOIN $default->owl_fields_table AS DF ON DF.id = DFL.document_field_id " .
+			"WHERE DF.name LIKE 'Category' " .
+			"AND DFL.value LIKE '$sCategory'";
+			
+	$sql = $default->db;
+	$sql->query($sQuery);
+	
+	if ($sql->next_record()) {
+		//get all the folders in the category
+		$aFolders = array($sql->f("folder_id"));
+		while ($sql->next_record()) {
+			$aFolders[count($aFolders)] = $sql->f("folder_id");
+		}
+		return implode(",", $aFolders);
+	}
+	return "0";
+	
+}
+
+/*function getApprovedFolderStringFromCategory($sCategory) {
 	global $default;
 	$sQuery = "SELECT DISTINCT D.folder_id " . 
 			"FROM $default->owl_documents_table AS D inner join $default->owl_document_fields_table AS DFL ON D.id = DFL.document_id " .
@@ -210,7 +253,7 @@ function getApprovedFolderStringFromCategory($sCategory) {
 		return implode(",", $aApprovedChildren);		
 	}
 	return "0";
-}
+}*/
 
 function getSQLSearchString($sSearchString) {
 	$aWords = explode(" ", $sSearchString);
