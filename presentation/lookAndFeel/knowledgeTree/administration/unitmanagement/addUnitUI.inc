@@ -36,7 +36,7 @@ function getAddPage() {
 	$sToRender .= "<td>Unit Name: </td><td><input size = \"40\" type=\"text\" name=\"fUnitName\"> </td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>Select an Organisation: </td><td>" . getOrgDisplay() ;
+	$sToRender .= "<td>Organisation: </td><td>" . getOrgDisplay() ;
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "</tr>\n";
@@ -134,7 +134,14 @@ function getAddPageToOrgFail() {
  */
 function getOrgDisplay() {
 	global $default;
-	$oPatternListBox = & new PatternListBox($default->organisations_table, "name", "id", "fOrgID");
-	return $oPatternListBox->render();
+	$aOrganisations = Organisation::getList();
+	if ($aOrganisations && (count($aOrganisations) > 0)) {
+		$oOrganisation = $aOrganisations[0];
+		return $oOrganisation->getName() . "<input type=\"hidden\" name=\"fOrgID\" value=\"" . $oOrganisation->getID() . "\"";;
+	} else {
+		return "No organisations" . "<input type=\"hidden\" name=\"fOrgID\" value=\"\"/>";
+	}
+//	$oPatternListBox = & new PatternListBox($default->organisations_table, "name", "id", "fOrgID");
+//	return $oPatternListBox->render();
 }
 ?>
