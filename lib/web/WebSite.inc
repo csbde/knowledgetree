@@ -7,7 +7,9 @@
 * Represents a web site as per the web_sites database table
 *
 * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
-* @date 20 January 2003 
+* @date 20 January 2003
+*
+* @todo - add regex parsing to ensure URL is valid 
 */
 
 class WebSite {
@@ -36,6 +38,77 @@ class WebSite {
 		$this->sWebSiteURL = $sNewWebSiteURL;
 		$this->iWebMasterID = $iNewWebMasterID;
 	}
+	
+	/**
+	* Get the primary key for this object
+	*
+	* @return int primary key for this object
+	*
+	*/
+	function getID() {
+		return $this->iId;
+	}
+	
+	/**
+	* Get the web site name
+	*
+	* @return String web site name
+	*
+	*/
+	function getWebSiteName() {
+		return $this->sWebSiteName;
+	}
+	
+	/**
+	* Set the web site name
+	*
+	* @param 	String		Web site name
+	*
+	*/
+	function setWebSiteName($sNewValue) {
+		$this->sWebSiteName = $sNewValue;
+	}
+
+	/**
+	* Get the web site URL
+	*
+	* @return String web site URL
+	*
+	*/
+	function getWebSiteURL() {
+		return $this->sWebSiteURL;
+	}
+	
+	/**
+	* Set the web site URL
+	*
+	* @param 	String		Web site URL
+	*
+	*/	
+	function setWebSiteURL($sNewValue) {
+		$this->sWebSiteURL = $sNewValue;
+	}
+	
+	/**
+	* Get the primary key of the user that is the web master
+	*
+	* @return int primary key of user that is the web master
+	*
+	*/
+	function getWebMasterID() {
+		return $this->iWebMasterID;
+	}
+	
+	/**
+	* Set the web master id
+	*
+	* @param 	int		Primary key of user that is web master
+	*
+	*/
+	function setWebMasterID() {
+		$this->iWebMasterID = $iNewValue;
+	}
+
 	
 	/**
 	* Create the current object in the database

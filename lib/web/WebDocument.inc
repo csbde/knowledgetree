@@ -125,5 +125,32 @@ class WebDocument {
 		return false;
 	}
 	
+	/**
+	* Static function
+	* Get a list of web documents
+	*
+	* @param 	String		Where clause (not required)
+	*
+	* @return Array array of WebDocument objects, false otherwise and set $_SESSION["errorMessage"]
+	*/
+	function getList($sWhereClause = null) {
+		global $default, $lang_err_database;
+		$aWebDocumentArray;
+		settype($aWebDocumentArray, "array");
+		$sql = new Owl_DB();
+		$result = $sql->query("SELECT * FROM " . $default->owl_web_documents_table  . (isset($sWhereClause) ? " " . $sWhereClause : ""));
+		if ($result) {			
+			$iCount = 0;
+			while ($sql->next_record()) {
+				$oWebDocument = & WebDocument::get($sql->f("id"));
+				$aWebDocumentArray[$iCount] = $oWebDocument;
+				$iCount++;
+			}
+			return $aWebDocumentArray;
+		}
+		$_SESSION["errorMessage"] = $lang_err_database;
+		return false;
+	}
+	
 }
 ?>
