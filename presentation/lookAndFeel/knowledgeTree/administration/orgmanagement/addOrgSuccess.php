@@ -33,7 +33,7 @@ if(checkSession()) {
     // include the page template (with navbar)
     require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 
-    $sToRender .= renderHeading("Add Unit");
+    $sToRender .= renderHeading("Add Organisation");
     $sToRender .= "<table>\n";
     $sToRender .= "<tr>\n";
     if($fSuccess) {

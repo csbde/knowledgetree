@@ -109,6 +109,23 @@ class Group {
 	}
 	
 	/**
+	 * Checks if this group has users mapped to it or not
+	 */	
+	function hasRoutingSteps() {
+		global $default;
+
+		$sql = $default->db;
+		$query = "SELECT id FROM $default->groups_folders_approval_table WHERE group_id = $this->iId";
+	    $sql->query($query);
+	   	$rows = $sql->num_rows();
+		if ($rows > 0){
+	    	return true;
+		} else {
+			return false;
+		}
+	}
+		
+	/**
 	* Create the current object in the database
 	*
 	* @return boolean on successful store, false otherwise and set $_SESSION["errorMessage"]
@@ -129,7 +146,7 @@ class Group {
 				return false;
 	        } else {
 				$sql = $default->db;
-				$result = $sql->query("INSERT INTO " . $default->groups_table . " (name, is_sys_admin, is_unit_admin) VALUES ('" . addslashes($this->sName) . "', " . ($this->bIsSysAdmin ? 1 : 0) . ", " . ($this->bIsUnitAdmin ? 1 : 0) . ")");
+				$result = $sql->query("INSERT INTO " . $default->groups_table . " (name, is_sys_admin, is_unit_admin) VALUES ('$this->sName', " . ($this->bIsSysAdmin ? 1 : 0) . ", " . ($this->bIsUnitAdmin ? 1 : 0) . ")");
 				if ($result) {
 					$this->iId = $sql->insert_id();
 					return  true;
@@ -153,7 +170,7 @@ class Group {
 		//only update if the object has been stored
 		if ($this->iId > 0) {
 			$sql = $default->db;
-			$result = $sql->query("UPDATE " . $default->groups_table . " SET name = '" . addslashes($this->sName) . "', is_sys_admin = " . ($this->bIsSysAdmin ? 1 : 0) . ", is_unit_admin = " . ($this->bIsUnitAdmin ? 1 : 0) . " WHERE id = $this->iId");
+			$result = $sql->query("UPDATE " . $default->groups_table . " SET name = '$this->sName', is_sys_admin = " . ($this->bIsSysAdmin ? 1 : 0) . ", is_unit_admin = " . ($this->bIsUnitAdmin ? 1 : 0) . " WHERE id = $this->iId");
 			if ($result) {
 				return true;
 			}
@@ -196,7 +213,7 @@ class Group {
 		$result = $sql->query("SELECT * FROM $default->groups_table WHERE id = $iGroupID");
 		if ($result) {
 			if ($sql->next_record()) {
-				$oGroup = & new Group(stripslashes($sql->f("name")), $sql->f("is_unit_admin"), $sql->f("is_sys_admin"));
+				$oGroup = & new Group($sql->f("name"), $sql->f("is_unit_admin"), $sql->f("is_sys_admin"));
 				$oGroup->iId = $iGroupID;
 				return $oGroup;
 			}

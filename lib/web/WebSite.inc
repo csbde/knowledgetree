@@ -146,7 +146,7 @@ class WebSite {
             } else {
 
                 $sql = $default->db;
-                $result = $sql->query("INSERT INTO " . $default->web_sites_table . " (web_site_name, web_site_url, web_master_id) VALUES ('" . addslashes($this->sWebSiteName) . "', '" . addslashes($this->sWebSiteURL) . "', $this->iWebMasterID)");
+                $result = $sql->query("INSERT INTO " . $default->web_sites_table . " (web_site_name, web_site_url, web_master_id) VALUES ('$this->sWebSiteName', '$this->sWebSiteURL', $this->iWebMasterID)");
                 if ($result) {
                     $this->iId = $sql->insert_id();
                     return  true;
@@ -170,7 +170,7 @@ class WebSite {
         //only update if the object has been stored
         if ($this->iId > 0) {
             $sql = $default->db;
-            $result = $sql->query("UPDATE " . $default->web_sites_table . " SET web_site_name = '" . addslashes($this->sWebSiteName) . "', web_site_url = '" . addslashes($this->sWebSiteURL) . "', web_master_id = '" . $this->iWebMasterID . "' WHERE id = $this->iId");
+            $result = $sql->query("UPDATE " . $default->web_sites_table . " SET web_site_name = '$this->sWebSiteName', web_site_url = '$this->sWebSiteURL', web_master_id = '" . $this->iWebMasterID . "' WHERE id = $this->iId");
             if ($result) {
                 return true;
             }
@@ -217,7 +217,7 @@ class WebSite {
         $result = $sql->query("SELECT * FROM $default->web_sites_table WHERE id = $iWebSiteID");
         if ($result) {
             if ($sql->next_record()) {
-                $oWebSite = & new WebSite(stripslashes($sql->f("web_site_name")), stripslashes($sql->f("web_site_url")), $sql->f("web_master_id"));
+                $oWebSite = & new WebSite($sql->f("web_site_name"), $sql->f("web_site_url"), $sql->f("web_master_id"));
                 $oWebSite->iId = $iWebSiteID;
                 return $oWebSite;
             }

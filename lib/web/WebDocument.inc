@@ -1,7 +1,10 @@
 <?php
 
 DEFINE("PENDING",1);
-DEFINE("PUBLISHED", 2);
+// FIXME: duplicate status in Document- need one class that defines all lookup constants
+if (!defined("PUBLISHED")) {
+	DEFINE("PUBLISHED", 2);
+}
 DEFINE("NOT_PUBLISHED",3);
 /**
  * $Id$

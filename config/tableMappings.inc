@@ -30,8 +30,6 @@ $default->data_types_table ="data_types";
 $default->document_fields_table = "document_fields";
 // links document
 $default->document_fields_link_table = "document_fields_link";
-// meta data value lookup table
-$default->document_fields_lookup_tables = "metadata_lookup";
 // document subscriptions
 $default->document_subscriptions_table = "document_subscriptions";
 // document transaction types

@@ -276,11 +276,11 @@ class Document {
     }
     
 	/**
-	* Generate a comma delimited string containing
-	* the parent folder ids
-	* 
-	* @return String	comma delimited string containing the parent folder ids
-	*/
+	 * Recursive function to generate a comma delimited string containing
+	 * the parent folder ids
+	 * 
+	 * @return String	comma delimited string containing the parent folder ids
+	 */
 	function generateParentFolderIDS($iFolderID) {
 		global $default;
 		//if the folder is not the root folder 
@@ -295,10 +295,20 @@ class Document {
 	}
 	
 	/**
-	* Forward slash deliminated string giving full path of document
-	* from file system root url
-	* 
-	*/
+	 * Returns a comma delimited string containing the parent folder ids, strips leading /
+	 * 
+	 * @return String	comma delimited string containing the parent folder ids
+	 */	
+	function generateFolderIDs($iFolderID) {
+		$sFolderIDs = $this->generateParentFolderIDS($iFolderID);
+		return substr($sFolderIDs, 1, strlen($sFolderIDs));
+	}
+	
+
+	/**
+	 * Recursively generates forward slash deliminated string giving full path of document
+	 * from file system root url
+	 */
 	function generateFullFolderPath($iFolderID) {
 		global $default;
 		//if the folder is not the root folder 
@@ -306,10 +316,22 @@ class Document {
 			$sql = $default->db;
 			$sql->query("SELECT name, parent_id FROM $default->folders_table WHERE ID = $iFolderID");
 			$sql->next_record();			
-			return $this->generateFullFolderPath($sql->f("parent_id")) . "/" . stripslashes($sql->f("name"));
+			return $this->generateFullFolderPath($sql->f("parent_id")) . "/" . $sql->f("name");
 		}
 		return;
 	}
+
+	/**
+	 * Returns a forward slash deliminated string giving full path of document, strips leading /
+	 */
+	function generateFolderPath($iFolderID) {
+		global $default;
+		$sPath = $this->generateFullFolderPath($iFolderID);
+		$sPath = substr($sPath, 1, strlen($sPath));
+		$sPath = addslashes($sPath);
+		return $sPath;			
+	}	
+
 
     /**
     * Insert the current document into the database
@@ -321,12 +343,10 @@ class Document {
         //if the id >= 0, then the object has already been created
         if ($this->iId < 0) {
             $sql = $default->db;
-			$sFullPath = $this->generateFullFolderPath($this->iFolderID); 
-			$this->sFullPath = substr($sFullPath, 1, strlen($sFullPath));
-			$sParentFolderIDs = $this->generateParentFolderIDS($this->iFolderID);
-			$this->sParentFolderIDs = substr($sParentFolderIDs, 1, strlen($sParentFolderIDs));
+			$this->sFullPath = $this->generateFolderPath($this->iFolderID); 
+			$this->sParentFolderIDs = $this->generateFolderIDs($this->iFolderID);
             $result = $sql->query("INSERT INTO " . $default->documents_table . " (document_type_id, name, filename, size, creator_id, modified, description, mime_id, folder_id, major_version, minor_version, is_checked_out, checked_out_user_id, parent_folder_ids, full_path, status_id) " .
-                                  "VALUES ($this->iDocumentTypeID, '" . addslashes($this->sName) . "', '" . addslashes($this->sFileName) . "', $this->iSize, $this->iCreatorID, '" . getCurrentDateTime() . "', '" . addslashes($this->sDescription) . "', $this->iMimeTypeID, $this->iFolderID, $this->iMajorVersion, $this->iMinorVersion, " . ($this->bIsCheckedOut ? 1 : 0) . ", $this->iCheckedOutUserID, '$this->sParentFolderIDs','" . addslashes($this->sFullPath) . "', $this->iStatusID)");
+                                  "VALUES ($this->iDocumentTypeID, '$this->sName', '$this->sFileName', $this->iSize, $this->iCreatorID, '" . getCurrentDateTime() . "', '$this->sDescription', $this->iMimeTypeID, $this->iFolderID, $this->iMajorVersion, $this->iMinorVersion, " . ($this->bIsCheckedOut ? 1 : 0) . ", $this->iCheckedOutUserID, '$this->sParentFolderIDs','$this->sFullPath', $this->iStatusID)");
             if ($result) {
                 //set the current documents primary key
                 $this->iId = $sql->insert_id();
@@ -354,11 +374,11 @@ class Document {
 				       "INNER JOIN $default->groups_folders_table AS GFL ON GFL.folder_id = F.id " .
 				       "INNER JOIN $default->users_groups_table AS UGL ON UGL.group_id = GFL.group_id " .
 				       "WHERE D.id=$this->iId";
-		$default->log->info("addDocument groupPerms=$sGroupPerms");
+		$default->log->debug("addDocument groupPerms=$sGroupPerms");
 		if ($sql->query($sGroupPerms)) {
-			$default->log->info("groupPerms succeeded");
+			$default->log->debug("groupPerms succeeded");
 		} else {
-			$default->log->info("groupPerms failed");
+			$default->log->error("groupPerms failed");
 		}
 		// role permissions
 	    $sRolePerms = "INSERT INTO $default->search_permissions_table (user_id, document_id) " .
@@ -367,9 +387,9 @@ class Document {
 				      "WHERE document_id=$this->iId";
 		$default->log->info("addDocument rolePerms=$sRolePerms");
 		if ($sql->query($sRolePerms)) {
-			$default->log->info("rolePerms succeeded");
+			$default->log->debug("rolePerms succeeded");
 		} else {
-			$default->log->info("rolePerms failed");
+			$default->log->error("rolePerms failed");
 		}
 										            
 		// public folders
@@ -378,11 +398,11 @@ class Document {
                 			  "FROM $default->users_table AS U, $default->documents_table AS D INNER JOIN $default->folders_table AS F ON D.folder_id = F.id " .
 							  "WHERE F.is_public = 1 " .
 							  "AND D.id=$this->iId";
-		$default->log->info("addDocument publicFolder=$sPublicFolderPerms");
+		$default->log->debug("addDocument publicFolder=$sPublicFolderPerms");
 		if ($sql->query($sPublicFolderPerms)) {
-			$default->log->info("publicFolder succeeded");
+			$default->log->debug("publicFolder succeeded");
 		} else {
-			$default->log->info("publicFolder failed");
+			$default->log->error("publicFolder failed");
 		}
 							
 		// creator permissions
@@ -390,11 +410,11 @@ class Document {
 						 "SELECT creator_id, id " .
 						 "FROM $default->documents_table " .
 						 "WHERE id=$this->iId";
-		$default->log->info("addDocument creatorPerms=$sCreatorPerms");
+		$default->log->debug("addDocument creatorPerms=$sCreatorPerms");
 		if ($sql->query($sCreatorPerms)) {
-			$default->log->info("creatorPerms succeeded");
+			$default->log->debug("creatorPerms succeeded");
 		} else {
-			$default->log->info("creatorPerms failed");
+			$default->log->error("creatorPerms failed");
 		}		
     }
 
@@ -409,29 +429,28 @@ class Document {
             $sql = $default->db;
 			$sQuery = "UPDATE " . $default->documents_table . " SET " .
                                   "document_type_id = $this->iDocumentTypeID, " .
-								  "name = '" . addslashes($this->sName) . "', " .
-                                  "filename = '" . addslashes($this->sFileName) . "', " .
+								  "name = '$this->sName', " .
+                                  "filename = '$this->sFileName', " .
                                   "size = $this->iSize, " .
                                   "creator_id = $this->iCreatorID, " .
                                   "modified = '" . getCurrentDateTime() . "', " .
-                                  "description = '" . addslashes($this->sDescription) . "', " .
+                                  "description = '$this->sDescription', " .
                                   "mime_id = $this->iMimeTypeID, " .
                                   "folder_id = $this->iFolderID, " .
                                   "major_version = $this->iMajorVersion, " .
                                   "minor_version = $this->iMinorVersion, ";
-								  if ($aForMove) {
-									  //only update these if the document is being moved
-									  $sFullPath = $this->generateFullFolderPath($this->iFolderID); 
-									  $this->sFullPath = substr($sFullPath, 1, strlen($sFullPath));
-									  $sParentFolderIDs = $this->generateParentFolderIDS($this->iFolderID);
-									  $this->sParentFolderIDs = substr($sParentFolderIDs, 1, strlen($sParentFolderIDs));
-									  $sQuery .= "parent_folder_ids = '" . addslashes($this->sParentFolderIDs) . "'," .
-									  			"full_path = '" . addslashes($this->sFullPath) . "', ";
-								  }					
-                                  $sQuery .= "is_checked_out = " . ($this->bIsCheckedOut ? "1" : "0") . ", " .
-                                             "checked_out_user_id = $this->iCheckedOutUserID, " .
-                                             "status_id = $this->iStatusID " .
-                                  			 "WHERE id = $this->iId";
+			if ($aForMove) {
+				//only update these if the document is being moved
+				$this->sFullPath = $this->generateFolderPath($this->iFolderID); 
+				$this->sParentFolderIDs = $this->generateFolderIDs($this->iFolderID);
+	
+				$sQuery .= "parent_folder_ids = '$this->sParentFolderIDs'," .
+						   "full_path = '$this->sFullPath', ";
+			}					
+            $sQuery .= "is_checked_out = " . ($this->bIsCheckedOut ? "1" : "0") . ", " .
+                       "checked_out_user_id = $this->iCheckedOutUserID, " .
+                       "status_id = $this->iStatusID " .
+            			 "WHERE id = $this->iId";
             $result = $sql->query($sQuery);
             if ($result) {
                 return true;
@@ -565,14 +584,14 @@ class Document {
 	        // TODO: join on sys_deleted
 	        $sql->query("SELECT * FROM $default->documents_table WHERE id = $iDocumentID");
 	        if ($sql->next_record()) {			
-	            $oDocument = & new Document(stripslashes($sql->f("name")), stripslashes($sql->f("filename")), $sql->f("size"), $sql->f("creator_id"), $sql->f("mime_id"), $sql->f("folder_id"), $sql->f("description"));
+	            $oDocument = & new Document($sql->f("name"), $sql->f("filename"), $sql->f("size"), $sql->f("creator_id"), $sql->f("mime_id"), $sql->f("folder_id"), $sql->f("description"));
 	            $oDocument->setDocumentTypeID($sql->f("document_type_id"));
 	            $oDocument->setMajorVersionNumber($sql->f("major_version"));
 	            $oDocument->setMinorVersionNumber($sql->f("minor_version"));
 	            $oDocument->setIsCheckedOut($sql->f("is_checked_out"));
 	            $oDocument->setLastModifiedDate($sql->f("modified"));			
-				$oDocument->sParentFolderIDs = stripslashes($sql->f("parent_folder_ids"));
-				$oDocument->sFullPath = stripslashes($sql->f("full_path"));
+				$oDocument->sParentFolderIDs = $sql->f("parent_folder_ids");
+				$oDocument->sFullPath = $sql->f("full_path");
 	            $oDocument->setCheckedOutUserID($sql->f("checked_out_user_id"));
 	            // FIXME: nasty hack- paying the penalty for adding status_id late in phase 2
 	            $oDocument->setStatusID( ($sql->f("status_id") == "" ? LIVE : $sql->f("status_id")) );
@@ -731,7 +750,7 @@ class Document {
         global $default;
         $sql = $default->db;
         $sQuery = "SELECT * FROM $default->documents_table " .
-        		  "WHERE filename = '" . addslashes($sFileName) . "' " . 
+        		  "WHERE filename = '$sFileName' " . 
         		  "AND folder_id = $iFolderID " .
         		  "AND status_id = " . LIVE;
         $sql->query($sQuery);

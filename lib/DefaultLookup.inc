@@ -82,7 +82,7 @@ class DefaultLookup {
 		//don't create the object if it's aready been created
 		if ($this->iId < 0) {
 			$sql = $default->db;
-			$result = $sql->query("INSERT INTO $this->sTableName (name) VALUES ( '". addslashes($this->sName) . "')");
+			$result = $sql->query("INSERT INTO $this->sTableName (name) VALUES ('$this->sName')");
 			if ($result) {
 				//set the primary key;
 				$this->iId = $sql->insert_id();
@@ -106,7 +106,7 @@ class DefaultLookup {
 		//can only update if the object has been stored
 		if ($this->iId >= 0) {
 			$sql = $default->db;
-			$result = $sql->query("UPDATE $this->sTableName SET name = '" . addslashes($this->sName) . "' WHERE id = $this->iId");
+			$result = $sql->query("UPDATE $this->sTableName SET name = '$this->sName' WHERE id = $this->iId");
 			if ($result) {
 				return true;
 			}
@@ -156,7 +156,7 @@ class DefaultLookup {
 		$result = $sql->query("SELECT * FROM $sTableName WHERE id = $iId");		
 		if ($result) {
 			if ($sql->next_record()) {
-				$oLookup = & new DefaultLookup($sTableName, stripslashes($sql->f("name")));
+				$oLookup = & new DefaultLookup($sTableName, $sql->f("name"));
 				$oLookup->iId = $iId;
 				return $oLookup;
 			}

@@ -28,16 +28,20 @@
 function getOrganisations() {
 	global $default;
 	$sQuery = 	"SELECT org.id as orgID, org.name as name, " . 
-				"'Edit', 'Delete' " .
+				//"'Edit', 'Delete' " .
+				"'Edit'" .
 				"FROM organisations_lookup as org " .
 				"ORDER BY org.name";
-    $aColumns = array("name", "Edit", "Delete");
-    $aColumnNames = array("Name", "Edit", "Delete");
-    $aColumnTypes = array(1,3,3);
+    //$aColumns = array("name", "Edit", "Delete");
+    $aColumns = array("name", "Edit");
+    //$aColumnNames = array("Name", "Edit", "Delete");
+    $aColumnNames = array("Name", "Edit");
+    //$aColumnTypes = array(1,3,3);
+    $aColumnTypes = array(1,3);    
     $aDBColumnArray = array("orgID");
     $aQueryStringVariableNames = array("fOrgID");
-    $aHyperLinkURL = array(	1=> "$default->rootUrl/control.php?action=editOrg",                       			
-                     		2=> "$default->rootUrl/control.php?action=removeOrg");
+    $aHyperLinkURL = array(	1=> "$default->rootUrl/control.php?action=editOrg");                       			
+                     		//2=> "$default->rootUrl/control.php?action=removeOrg");
     $oSearchResults = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnNames, "100%", $aHyperLinkURL,$aDBColumnArray,$aQueryStringVariableNames);
 	$oSearchResults->setDisplayColumnHeadings(true);
     return $oSearchResults->render() ;	
@@ -48,7 +52,7 @@ function getPage() {
 	$sToRender .= renderHeading("Organisation Management");
 
 	// add user link
-	$sToRender .= getAddLink("addOrg", "Add An Organisation");
+	//$sToRender .= getAddLink("addOrg", "Add An Organisation");
 	$sToRender .= getOrganisations();
 	return $sToRender;
 }

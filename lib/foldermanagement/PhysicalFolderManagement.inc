@@ -37,7 +37,7 @@ class PhysicalFolderManagement {
 	function createFolder($sPath) {
         // check if a folder with this name exists before creating it        
         if (!file_exists($sPath)) {
-			return mkdir($sPath, 0755);
+			return mkdir(rtrim($sPath), 0755);
         } else {
         	return true;
         }
@@ -51,11 +51,11 @@ class PhysicalFolderManagement {
 	* @return boolean true on successful delete, false otherwise
 	*/
 	function deleteFolder($sPath) {
-		return rmdir($sPath);
+		return rmdir(rtrim($sPath));
 	}
 	
 	function renameFolder($sOldPath, $sNewPath) {		
-		return rename($sOldPath, $sNewPath);
+		return rename($sOldPath, rtrim($sNewPath));
 	}
 	
 }

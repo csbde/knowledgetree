@@ -324,7 +324,7 @@ class User {
             }
             else {
                 $result = $sql->query("INSERT INTO " . $default->users_table . " (username, name, password, quota_max, quota_current, email, mobile, email_notification, sms_notification, ldap_dn, max_sessions, language_id) " .
-                                      "VALUES ('" . addslashes($this->sUserName) . "', '" . addslashes($this->sName) . "', '" . addslashes(md5($this->sPassword)) . "', $this->iQuotaMax, 0, '" . addslashes($this->sEmail) . "', '" . addslashes($this->sMobile) . "', " . ($this->bEmailNotification ? 1 : 0) . ", " . ($this->bSmsNotification ? 1 : 0) . ", '" . addslashes($this->sLdapDn) . "', $this->iMaxSessions, $this->iLanguageID)");
+                                      "VALUES ('$this->sUserName', '$this->sName', '" . md5($this->sPassword) . "', $this->iQuotaMax, 0, '$this->sEmail', '$this->sMobile', " . ($this->bEmailNotification ? 1 : 0) . ", " . ($this->bSmsNotification ? 1 : 0) . ", '$this->sLdapDn', $this->iMaxSessions, $this->iLanguageID)");
                 if ($result) {
                     $this->iId = $sql->insert_id();
                     return  true;
@@ -360,7 +360,7 @@ class User {
             }
             else {
             	$sql = $default->db;
-            	$result = $sql->query("UPDATE " . $default->users_table . " SET username = '" . addslashes($this->sUserName) . "', name = '" . addslashes($this->sName) . "', " . ($this->bPasswordChanged ? "password = '" . addslashes(md5($this->sPassword)) . "', " : " ") . " quota_max = $this->iQuotaMax, email = '" . addslashes($this->sEmail) . "', mobile = '" . addslashes($this->sMobile) . "', email_notification = " . ($this->bEmailNotification ? 1 : 0) . ", sms_notification = " . ($this->bSmsNotification ? 1 : 0) . ", ldap_dn = '" . addslashes($this->sLdapDn) . "', max_sessions = $this->iMaxSessions, language_id = $this->iLanguageID WHERE id = $this->iId");
+            	$result = $sql->query("UPDATE " . $default->users_table . " SET username = '$this->sUserName', name = '$this->sName', " . ($this->bPasswordChanged ? "password = '" . md5($this->sPassword) . "', " : " ") . " quota_max = $this->iQuotaMax, email = '$this->sEmail', mobile = '$this->sMobile', email_notification = " . ($this->bEmailNotification ? 1 : 0) . ", sms_notification = " . ($this->bSmsNotification ? 1 : 0) . ", ldap_dn = '$this->sLdapDn', max_sessions = $this->iMaxSessions, language_id = $this->iLanguageID WHERE id = $this->iId");
             	if ($result) {
               	  return true;
             	}
@@ -430,7 +430,7 @@ class User {
         $result = $sql->query("SELECT * FROM $default->users_table WHERE id = $iUserID");
         if ($result) {
             if ($sql->next_record()) {
-                $oUser = & new User(stripslashes($sql->f("username")), stripslashes($sql->f("name")), stripslashes($sql->f("password")), $sql->f("quota_max"), stripslashes($sql->f("email")), stripslashes($sql->f("mobile")), $sql->f("email_notification"), $sql->f("sms_notification"), $sql->f("ldap_dn"), $sql->f("max_sessions"), $sql->f("language_id"));
+                $oUser = & new User($sql->f("username"), $sql->f("name"), $sql->f("password"), $sql->f("quota_max"), $sql->f("email"), $sql->f("mobile"), $sql->f("email_notification"), $sql->f("sms_notification"), $sql->f("ldap_dn"), $sql->f("max_sessions"), $sql->f("language_id"));
                 $oUser->iId = $iUserID;
                 return $oUser;
             }

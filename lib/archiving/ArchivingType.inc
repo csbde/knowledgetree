@@ -82,7 +82,7 @@ class ArchivingType {
         if ($this->iId < 0) {
             $sql = $default->db;
             $result = $sql->query("INSERT INTO $default->archiving_type_lookup_table (name) " .
-                                  "VALUES ('" . addslashes($this->sName) . "')");
+                                  "VALUES ('$this->sName')");
             if ($result) {
                 //set the current primary key
                 $this->iId = $sql->insert_id();
@@ -103,7 +103,7 @@ class ArchivingType {
         if ($this->iId >= 0) {			
             $sql = $default->db;
 			$sQuery = "UPDATE $default->archiving_type_lookup_table SET " .
-					  "name = '" . addslashes($this->sName) . "' " .                                
+					  "name = '$this->sName' " .
            			  "WHERE id = $this->iId";
             $result = $sql->query($sQuery);
             if ($result) {

@@ -96,7 +96,7 @@ function constructQuery($aKeys, $aSuppliedValues = null) {
 							break;
 						case 1:
 							//text
-							$sQuery .= "'" . addslashes($aValues[$j]) . "', ";
+							$sQuery .= "'" . $aValues[$j] . "', ";
 							break;
 						case 2:
 							//boolean												
@@ -121,7 +121,7 @@ function constructQuery($aKeys, $aSuppliedValues = null) {
 							break;
 					case 1:
 							//text
-							$sQuery .= "'" . addslashes($aValues[count($aColumns) - 1]) . "') ";
+							$sQuery .= "'" . $aValues[count($aColumns) - 1] . "') ";
 							break;
 						case 2:						
 							//boolean
@@ -151,7 +151,7 @@ function constructQuery($aKeys, $aSuppliedValues = null) {
 							$sQuery .= $aValues[$j] . ", ";
 							break;
 						case 1:
-							$sQuery .= "'" . addslashes($aValues[$j]) . "', ";
+							$sQuery .= "'" . $aValues[$j] . "', ";
 							break;
 						case 2:						
 							$sQuery .= ($aValues[$j] ? 1 : 0) . ", ";
@@ -171,7 +171,7 @@ function constructQuery($aKeys, $aSuppliedValues = null) {
 							$sQuery .= $aValues[count($aTypes) -1] . " ";
 							break;
 						case 1:
-							$sQuery .= "'" . addslashes($aValues[count($aTypes) -1]) . "' ";
+							$sQuery .= "'" . $aValues[count($aTypes) -1] . "' ";
 							break;
 						case 2:											
 							$sQuery .= ($aValues[count($aTypes) -1] ? 1 : 0) . " ";

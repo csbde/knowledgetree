@@ -139,7 +139,7 @@ class PatternEditableListFromQuery {
 					switch ($this->aDisplayColumnTypes[$i]) {						
 						case 1:	
 							//plain text field
-							$sToRender .= "\t<td bgcolor=\"" . getColour($i) . "\"><input type=\"text\" size = \"30\" name=\"" . $this->sUniqueName . "_" . $i . "_value\" value=\"" . stripslashes($sql->f($this->aDisplayColumns[$i])) . "\"</td>\n";
+							$sToRender .= "\t<td bgcolor=\"" . getColour($i) . "\"><input type=\"text\" size = \"30\" name=\"" . $this->sUniqueName . "_" . $i . "_value\" value=\"" . $sql->f($this->aDisplayColumns[$i]) . "\"</td>\n";
 							break;						
 						case 2:
 							//boolean value

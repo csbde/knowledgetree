@@ -98,7 +98,7 @@ class DocumentType {
            		 
 	       		 }else{
 				$sql = $default->db;
-				$result = $sql->query("INSERT INTO " . $default->document_types_table . " (name) VALUES ('" . addslashes($this->sName) . "')");
+				$result = $sql->query("INSERT INTO " . $default->document_types_table . " (name) VALUES ('$this->sName')");
 				if ($result) {
 				$this->iId = $sql->insert_id();
 				return  true;
@@ -123,7 +123,7 @@ class DocumentType {
 		//only update if the object has been stored
 		if ($this->iId > 0) {
 			$sql = $default->db;
-			$result = $sql->query("UPDATE " . $default->document_types_table . " SET name = '" . addslashes($this->sName) . "' WHERE id = $this->iId");
+			$result = $sql->query("UPDATE " . $default->document_types_table . " SET name = '$this->sName' WHERE id = $this->iId");
 			if ($result) {
 				return true;
 			}
@@ -204,7 +204,7 @@ class DocumentType {
 		$result = $sql->query("SELECT * FROM ". $default->document_types_table ." WHERE id = $iDocumentTypeID");
 		if ($result) {
 			if ($sql->next_record()) {
-				$oDocumentType = & new DocumentType(stripslashes($sql->f("name")));
+				$oDocumentType = & new DocumentType($sql->f("name"));
 				$oDocumentType->iId = $sql->f("id");
 				return $oDocumentType;
 			}

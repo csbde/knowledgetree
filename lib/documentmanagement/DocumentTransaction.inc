@@ -79,7 +79,7 @@ class DocumentTransaction {
 		$oDocument = & Document::get($iNewDocumentID);
 		if ($oDocument) {
 			$this->sVersion = $oDocument->getMajorVersionNumber() . "." . $oDocument->getMinorVersionNumber();
-			$this->sFileName = Folder::getFolderPath($oDocument->getFolderID()) . "/" . $oDocument->getName();			
+			$this->sFileName = addslashes(Folder::getFolderPath($oDocument->getFolderID()) . "/" . $oDocument->getName());			
 		}
 		$this->iUserID = $_SESSION["userID"];
 		$this->dDateTime = getCurrentDateTime();		
@@ -105,7 +105,7 @@ class DocumentTransaction {
 		if ($this->iId < 0) {
 			$sql = $default->db;
 			$result = $sql->query("INSERT INTO " . $default->document_transactions_table . " (document_id, version, user_id, datetime, ip, filename, comment, transaction_id) " .
-						"VALUES ($this->iDocumentID, '" . addslashes($this->sVersion) . "', $this->iUserID, '" . addslashes($this->dDateTime) . "', '" . addslashes($this->sIP) . "', '" . addslashes($this->sFileName) . "', '" . addslashes($this->sComment) . "', $this->iTransactionID)");
+						"VALUES ($this->iDocumentID, '$this->sVersion', $this->iUserID, '$this->dDateTime', '$this->sIP', '$this->sFileName', '$this->sComment', $this->iTransactionID)");
 			 if ($result) {
 				 //object has been stored, set the primary key
 				 $this->iId = $sql->insert_id();
@@ -150,7 +150,7 @@ class DocumentTransaction {
 	        $sql = $default->db;
 	        $sql->query("SELECT * FROM $default->document_transactions_table WHERE id = $iDocumentTransactionID");
 	        if ($sql->next_record()) {			
-	            $oDocumentTransaction = & new DocumentTransaction($sql->f("document_id"), stripslashes($sql->f("comment")), $sql->f("transaction_id"));
+	            $oDocumentTransaction = & new DocumentTransaction($sql->f("document_id"), $sql->f("comment"), $sql->f("transaction_id"));
 	            $oDocumentTransaction->iId = $sql->f("id");	
 				$oDocumentTransaction->sVersion = $sql->f("version");
 				$oDocumentTransaction->iUserID = $sql->f("user_id");

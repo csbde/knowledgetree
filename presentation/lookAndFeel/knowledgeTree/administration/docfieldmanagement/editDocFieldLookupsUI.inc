@@ -84,7 +84,7 @@ function getGroupPage($fDocFieldID) {
            
     $LookupDisplay .= "<b>Current Lookups</b><br>\n";	
 	$sQuery = 	" Select * " .	
-				" From " . $default->document_fields_lookup_tables .
+				" From " . $default->metadata_table .
 				" WHERE document_field_id=" . $fDocFieldID;        
 
  	$aColumns = array("name");

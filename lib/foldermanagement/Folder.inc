@@ -206,11 +206,11 @@ class Folder {
 	}
 	
 	/**
-	* Generate a comma delimited string containing
-	* the parent folder ids
-	* 
-	* @return String	comma delimited string containing the parent folder ids
-	*/
+	 * Recursive function to generate a comma delimited string containing
+	 * the parent folder ids
+	 * 
+	 * @return String	comma delimited string containing the parent folder ids
+	 */
 	function generateParentFolderIDS($iFolderID) {
 		global $default;
 		//if the folder is not the root folder
@@ -225,20 +225,40 @@ class Folder {
 	}
 	
 	/**
-	* Forward slash deliminated string giving full path of document
-	* from file system root url
-	* 
-	*/
+	 * Returns a comma delimited string containing the parent folder ids, strips leading /
+	 * 
+	 * @return String	comma delimited string containing the parent folder ids
+	 */	
+	function generateFolderIDs($iFolderID) {
+		$sFolderIDs = $this->generateParentFolderIDS($iFolderID);
+		return substr($sFolderIDs, 1, strlen($sFolderIDs));
+	}
+	
+	/**
+	 * Recursively generates forward slash deliminated string giving full path of document
+	 * from file system root url
+	 */
 	function generateFullFolderPath($iFolderID) {
 		global $default;
 		//if the folder is not the root folder 
 		if ($iFolderID != 0) {
 			$sql = $default->db;
 			$sql->query("SELECT name, parent_id FROM $default->folders_table WHERE ID = $iFolderID");
-			$sql->next_record();			
-			return $this->generateFullFolderPath($sql->f("parent_id")) . "/" . stripslashes($sql->f("name"));
+			$sql->next_record();
+			return $this->generateFullFolderPath($sql->f("parent_id")) . "/" . $sql->f("name");
 		}
 		return;
+	}
+	
+	/**
+	 * Returns a forward slash deliminated string giving full path of document, strips leading /
+	 */	
+	function generateFolderPath($iFolderID) {
+		global $default;
+		$sPath = $this->generateFullFolderPath($iFolderID);
+		$sPath = substr($sPath, 1, strlen($sPath));
+		$sPath = addslashes($sPath);
+		return $sPath;			
 	}
 	
 	/**
@@ -250,13 +270,11 @@ class Folder {
 		global $default, $lang_err_database; $lang_err_object_exists;
 		//if the object has not already been stored		
 		if ($this->iId < 0) {
-			$this->sFullPath = $this->generateFullFolderPath($this->iParentID);
-			$this->sFullPath = substr($this->sFullPath, 1, strlen($this->sFullPath));
-			$this->sParentFolderIDs = $this->generateParentFolderIDS($this->iParentID);
-			$this->sParentFolderIDs = substr($this->sParentFolderIDs, 1, strlen($this->sParentFolderIDs));
+			$this->sFullPath = $this->generateFolderPath($this->iParentID);
+			$this->sParentFolderIDs = $this->generateFolderIDs($this->iParentID);
 			$sql = $default->db;
 			$result = $sql->query("INSERT INTO " . $default->folders_table . " (name, description, parent_id, creator_id, unit_id, is_public, full_path, parent_folder_ids) " .
-						"VALUES ('" . addslashes($this->sName) . "', '" . addslashes($this->sDescription) . "', $this->iParentID, $this->iCreatorID, $this->iUnitID, " . ($this->bIsPublic ? 1 : 0) . ",'" . addslashes($this->sFullPath) . "','" . addslashes($this->sParentFolderIDs) . "')");
+						"VALUES ('$this->sName', '$this->sDescription', $this->iParentID, $this->iCreatorID, $this->iUnitID, " . ($this->bIsPublic ? 1 : 0) . ",'$this->sFullPath','$this->sParentFolderIDs')");
 			if ($result) {
 				$this->iId = $sql->insert_id();
 				return true;
@@ -280,19 +298,16 @@ class Folder {
 		if ($this->iId >= 0) {			
 			$sql = $default->db;
 			$sQuery = "UPDATE " . $default->folders_table . " SET " .
-							"name = '" . addslashes($this->sName) . "', " .
-							"description = '" . addslashes($this->sDescription) . "', " .
+							"name = '$this->sName', " .
+							"description = '$this->sDescription', " .
 							"parent_id = $this->iParentID, " .
 							"creator_id = $this->iCreatorID, " .
 							"unit_id = $this->iUnitID, ";
 							if ($bPathChange) {
-								$sFullPath = $this->generateFullFolderPath($this->iParentID);								
-								$this->sFullPath = substr($sFullPath, 1, strlen($sFullPath));
-								$sParentFolderIDs = $this->generateParentFolderIDS($this->iParentID);
-								$this->sParentFolderIDs = substr($sParentFolderIDs, 1, strlen($sParentFolderIDs));
-								
-								$sQuery .= "parent_folder_ids = '" . addslashes($this->sParentFolderIDs) . "'," .
-								  			"full_path = '" . addslashes($this->sFullPath) . "', ";
+								$this->sFullPath = $this->generateFolderPath($this->iParentID);
+								$this->sParentFolderIDs = $this->generateFolderIDs($this->iParentID);
+								$sQuery .= "parent_folder_ids = '$this->sParentFolderIDs'," .
+								  			"full_path = '$this->sFullPath', ";
 							}
 							$sQuery .= "is_public = " . ($this->bIsPublic ? 1 : 0) . " " .
 										"WHERE id = " . $this->iId;							
@@ -345,9 +360,7 @@ class Folder {
 		while ($sql->next_record()) {
 			$aChildren[count($aChildren)] = $sql->f("id");
 			Folder::getChildren($sql->f("id"), & $aChildren);
-			//$sChildString .= $sql->f("id") . "," . Folder::getChildren($sql->f("id"));
 		}		
-		//return $sChildString;
 		return $aChildren;
 	}
 	
@@ -401,10 +414,10 @@ class Folder {
 		$sql = $default->db;		
 		$sql->query("SELECT * FROM " . $default->folders_table . " WHERE id = " . $iFolderID);
 		if ($sql->next_record()) {
-			$oFolder = & new Folder(stripslashes($sql->f("name")), stripslashes($sql->f("description")), $sql->f("parent_id"), $sql->f("creator_id"), $sql->f("unit_id"), $sql->f("is_public"));
+			$oFolder = & new Folder($sql->f("name"), $sql->f("description"), $sql->f("parent_id"), $sql->f("creator_id"), $sql->f("unit_id"), $sql->f("is_public"));
             $oFolder->iId = $iFolderID;
-			$oFolder->sFullPath = stripslashes($sql->f("full_path"));
-			$oFolder->sParentFolderIDs = stripslashes($sql->f("parent_folder_ids"));
+			$oFolder->sFullPath = $sql->f("full_path");
+			$oFolder->sParentFolderIDs = $sql->f("parent_folder_ids");
 			return $oFolder;
 		} 
  		$_SESSION["errorMessage"] = $lang_err_object_not_exist . "id = " . $iFolderID . " table = folders";
@@ -439,7 +452,6 @@ class Folder {
         $aFolderArray;
         settype($aFolderArray, "array");
         $sql = $default->db;
-        // TODO: join on sys_deleted
         $result = $sql->query("SELECT * FROM " . $default->folders_table  . (isset($sWhereClause) ? " WHERE " . $sWhereClause : ""));
         if ($result) {
             $iCount = 0;
@@ -465,7 +477,8 @@ class Folder {
 	function getFolderPath($iFolderID) {
 		global $default;		
 		$oFolder = Folder::get($iFolderID);
-		return $default->documentRoot . "/" . $oFolder->sFullPath . "/" . $oFolder->getName() . "/";
+		$sPath = $default->documentRoot . "/" . $oFolder->sFullPath . "/" . $oFolder->getName() . "/";
+		return $sPath;
 	}
 
 	/**
@@ -590,10 +603,9 @@ class Folder {
 	* @return	true if the folder exists, false otherwise and set $_SESSION["errorMessage"]
 	*/
 	function folderExistsName($sName, $iParentID) {
-		$sName = addslashes($sName);
 		global $default, $lang_err_folder_exist;
 		$sql = $default->db;
-		$sql->query("SELECT * FROM " . $default->folders_table . " WHERE name = '" . $sName . "' AND parent_id = " . $iParentID);
+		$sql->query("SELECT * FROM " . $default->folders_table . " WHERE name = '$sName' AND parent_id = $iParentID");
 		if ($sql->next_record()) {
 			return true;
 		}
@@ -631,7 +643,7 @@ class Folder {
 		$sql = $default->db;
 		$sql->query("SELECT name FROM " . $default->folders_table . " WHERE id = " . $iFolderID);
 		if ($sql->next_record()) {
-			return stripslashes($sql->f("name"));
+			return $sql->f("name");
 		}
 		$_SESSION["errorMessage"] = $lang_err_database;
 		return false;
@@ -647,7 +659,7 @@ class Folder {
 	function getFolderID($sFolderName) {
 		global $default, $lang_err_database;
 		$sql = $default->db;
-		$sql->query("SELECT id FROM " . $default->folders_table . " WHERE name = '" . addslashes($sFolderName) . "'");
+		$sql->query("SELECT id FROM " . $default->folders_table . " WHERE name = '$sFolderName'");
 		if ($sql->next_record()) {
 			return $sql->f("id");
 		}

@@ -65,7 +65,7 @@ if (checkSession()) {
             if($unitLink == false) {
                 $oPatternCustom->setHtml(getPage($fGroupID,$fUnitID));
                 $main->setHasRequiredFields(true);
-                $main->setFormAction($_SERVER["PHP_SELF"] . "?fGroupSet=1&fGroupAssign=1");
+                $main->setFormAction($_SERVER["PHP_SELF"] . "?fGroupAssign=1");
             } else {
                 //if it does...then go to failure page
                 $oPatternCustom->setHtml(getPageFail($fGroupID));

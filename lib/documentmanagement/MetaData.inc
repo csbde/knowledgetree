@@ -123,7 +123,7 @@ class MetaData {
            		 
 	       		 }else{
 				$sql = $default->db;
-				$result = $sql->query("INSERT INTO " . $default->metadata_table . " (document_field_id,name) VALUES ('". $this->iDocFieldID . "','" . addslashes($this->sName) . "')");
+				$result = $sql->query("INSERT INTO " . $default->metadata_table . " (document_field_id,name) VALUES ('". $this->iDocFieldID . "','$this->sName')");
 				if ($result) {
 				$this->iId = $sql->insert_id();
 				return  true;
@@ -148,7 +148,7 @@ class MetaData {
 		//only update if the object has been stored
 		if ($this->iId > 0) {
 			$sql = $default->db;
-			$result = $sql->query("UPDATE " . $default->metadata_table. " SET name = '" . addslashes($this->sName) . "' WHERE id = $this->iId");
+			$result = $sql->query("UPDATE " . $default->metadata_table. " SET name = '$this->sName' WHERE id = $this->iId");
 			if ($result) {
 				return true;
 			}
@@ -195,7 +195,7 @@ class MetaData {
 		$result = $sql->query("SELECT * FROM ". $default->metadata_table." WHERE id = $iMetaDataID");
 		if ($result) {
 			if ($sql->next_record()) {
-				$oDocumentType = & new MetaData($sql->f("document_field_id"),stripslashes($sql->f("name")));
+				$oDocumentType = & new MetaData($sql->f("document_field_id"),$sql->f("name"));
 				$oDocumentType->iId = $sql->f("id");
 				return $oDocumentType;
 			}

@@ -101,7 +101,7 @@ class Link {
 	       			
 	       			}else{
 					$sql = $default->db;
-					$result = $sql->query("INSERT INTO " . $default->quicklinks_table . " (name, url, rank) VALUES ('" . addslashes($this->sName) . "', '" . ($this->sUrl) . "', " . ($this->iRank) . ")");
+					$result = $sql->query("INSERT INTO " . $default->quicklinks_table . " (name, url, rank) VALUES ('$this->sName', '$this->sUrl', $this->iRank)");
 					if ($result) {
 						$this->iId = $sql->insert_id();
 						return  true;
@@ -126,7 +126,7 @@ class Link {
 		//only update if the object has been stored
 		if ($this->iId > 0) {
 			$sql = $default->db;
-			$result = $sql->query("UPDATE " . $default->quicklinks_table . " SET name = '" . addslashes($this->sName) . "', url = '" . ($this->sUrl) . "', rank = " . ($this->iRank) . " WHERE id = $this->iId");
+			$result = $sql->query("UPDATE " . $default->quicklinks_table . " SET name = '$this->sName', url = '$this->sUrl', rank = $this->iRank WHERE id = $this->iId");
 			if ($result) {
 				return true;
 			}
@@ -174,7 +174,7 @@ class Link {
 		$result = $sql->query("SELECT * FROM $default->quicklinks_table WHERE id = $iLinkID");
 		if ($result) {
 			if ($sql->next_record()) {
-				$oLink = & new Link(stripslashes($sql->f("name")), $sql->f("url"), $sql->f("rank"));
+				$oLink = & new Link($sql->f("name"), $sql->f("url"), $sql->f("rank"));
 				$oLink->iId = $iLinkID;
 				return $oLink;
 			}

@@ -44,7 +44,7 @@ class PatternMetaData {
 	
 	function render() {
 		global $default;
-		$sQuery = "SELECT has_lookup FROM $default->document_fields_table WHERE name LIKE '" . $this->sMetaDataField . "'";
+		$sQuery = "SELECT has_lookup FROM $default->document_fields_table WHERE name LIKE '" . addslashes($this->sMetaDataField) . "'";
 
 		$sql = $default->db;
 		$sql->query($sQuery);
@@ -53,7 +53,7 @@ class PatternMetaData {
 				//is a lookup, so display a drop down list
 				$sWhereClause = "DF.name LIKE '" . $this->sMetaDataField . "'";
 				$sFromClause = "INNER JOIN $default->document_fields_table AS DF ON ST.document_field_id = DF.id";
-				$oPatternListBox = & new PatternListBox("$default->document_fields_lookup_tables", "name", "name", $this->sFormName);
+				$oPatternListBox = & new PatternListBox("$default->metadata_table", "name", "name", $this->sFormName);
 				if ($this->sValue != null) {
 					$oPatternListBox->setSelectedValue($this->sValue);
 				}
@@ -63,7 +63,7 @@ class PatternMetaData {
 			} else {
                 $sToRender = "<input type=\"text\" name=\"" . $this->sFormName . "\" ";                
 				if ($this->sValue != null) {
-					$sToRender .= "value=\"" . stripslashes($this->sValue) . "\" ";
+					$sToRender .= "value=\"" . $this->sValue . "\" ";
 				}
 				$sToRender .= " />";
 				return $sToRender;

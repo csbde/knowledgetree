@@ -5,7 +5,7 @@ require_once("../../../config/dmsDefaults.php");
 require_once("$default->fileSystemRoot/lib/dashboard/Dashboard.inc");
 require_once("$default->fileSystemRoot/lib/dashboard/DashboardNews.inc");
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
-require_once("$default->uiDirectory/dashboardUI.inc");
+require_once("dashboardUI.inc");
 /**
  * $Id$
  *

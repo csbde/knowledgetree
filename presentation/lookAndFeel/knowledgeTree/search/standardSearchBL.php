@@ -41,12 +41,12 @@ if (checkSession()) {
 	require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
 	require_once("$default->fileSystemRoot/presentation/Html.inc");	
 	require_once("standardSearchUI.inc");
-	
+
 	if (!isset($fStartIndex)) {
-		$fStartIndex = 0;
+		$fStartIndex = 1;
 	}
 
-	if (strlen($fBrowseType) > 0) {			
+	if (strlen($fBrowseType) > 0) {
 		//the user was browsing by a specific type
 		switch ($fBrowseType) {
 		case "folder" :

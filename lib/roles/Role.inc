@@ -113,7 +113,7 @@ class Role {
 	       		 }else
 	      		 {
 				$sql = $default->db;
-				$result = $sql->query("INSERT INTO " . $default->roles_table . " (name, active, can_read, can_write) VALUES ('" . addslashes($this->sName) . "', " . ($this->bActive ? 1 : 0) . ", "  . ($this->bCanRead ? 1 : 0) . ", " . ($this->bCanWrite ? 1 : 0) . ")");
+				$result = $sql->query("INSERT INTO " . $default->roles_table . " (name, active, can_read, can_write) VALUES ('$this->sName', " . ($this->bActive ? 1 : 0) . ", "  . ($this->bCanRead ? 1 : 0) . ", " . ($this->bCanWrite ? 1 : 0) . ")");
 				if ($result) {
 				$this->iId = $sql->insert_id();
 				return  true;
@@ -137,7 +137,7 @@ class Role {
 		//only update if the object has been stored
 		if ($this->iId > 0) {
 			$sql = $default->db;
-			$result = $sql->query("UPDATE " . $default->roles_table . " SET name = '" . addslashes($this->sName) . "', active = " . ($this->bActive ? 1 : 0) . ", can_read = " . ($this->bCanRead ? 1 : 0) . ", can_write = " . ($this->bCanWrite ? 1 : 0) . " WHERE id = $this->iId");
+			$result = $sql->query("UPDATE " . $default->roles_table . " SET name = '$this->sName', active = " . ($this->bActive ? 1 : 0) . ", can_read = " . ($this->bCanRead ? 1 : 0) . ", can_write = " . ($this->bCanWrite ? 1 : 0) . " WHERE id = $this->iId");
 			if ($result) {
 				return true;
 			}
@@ -197,7 +197,7 @@ class Role {
 		$result = $sql->query("SELECT * FROM $default->roles_table WHERE id = $iRoleID");
 		if ($result) {
 			if ($sql->next_record()) {
-				$oRole = & new Role(stripslashes($sql->f("name")), $sql->f("can_read"), $sql->f("can_write"));
+				$oRole = & new Role($sql->f("name"), $sql->f("can_read"), $sql->f("can_write"));
 				$oRole->iId = $iRoleID;
 				$oRole->bActive = $sql->f("active");
 				return $oRole;

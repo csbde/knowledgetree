@@ -172,9 +172,9 @@ class PatternEditableTableSqlQuery {
 							//output the value
 							if ($this->aColumnsVisible[$i]) {
 								if ($this->aColumnsEditable[$i]) {
-									$sToRender .= "\t<input type=\"text\" name=\"" . $this->sUniqueName . "_" . $iRowCount . $i . "_value\" value=\"" . stripslashes($sql->f($this->aStoreColumnNames[$i])) . "\" />\n";
+									$sToRender .= "\t<input type=\"text\" name=\"" . $this->sUniqueName . "_" . $iRowCount . $i . "_value\" value=\"" . $sql->f($this->aStoreColumnNames[$i]) . "\" />\n";
 								} else {
-									$sToRender .= "\t<input type=\"hidden\" name=\"" . $this->sUniqueName . "_" . $iRowCount . $i . "_value\" value=\"" . $sql->f($this->aStoreColumnNames[$i]) . "\" />" . stripslashes($sql->f($this->aDisplayColumnNames[$i]))."\n";
+									$sToRender .= "\t<input type=\"hidden\" name=\"" . $this->sUniqueName . "_" . $iRowCount . $i . "_value\" value=\"" . $sql->f($this->aStoreColumnNames[$i]) . "\" />" . $sql->f($this->aDisplayColumnNames[$i])."\n";
 								}
 							} else {
 								$sToRender .= "\t<input type=\"hidden\" name=\"" . $this->sUniqueName . "_" . $iRowCount . $i . "_value\" value=\"" . $sql->f($this->aStoreColumnNames[$i]) . "\" />\n";

@@ -1,13 +1,14 @@
 Version 1.2.0
-* Mon Jul 28 2003 Michael Joseph <michael@jamwarehouse.com> 
-- Administration menu simplification and consistency.
-- Segmented configuration files for ease of maintenance.
-- Updated install documentation.
-- Archiving- add the ability to search for archived documents and request their restoration.
+* Tue Aug 12 2003 Michael Joseph <michael@jamwarehouse.com>
 - Document Details and Folder Properties- updated display- javascript content swapping.
 - Improved display of Document actions- disabled buttons when action not available.
+- Add Document- streamlined process by placing all details on one page.
+- Archiving- add the ability to search for archived documents and request their restoration.
 - Deletion of documents is now soft, additional Administration option to expunge/restore deleted documents.
+- Administration menu simplification and consistency.
 - Administration - Cancel document checkout status functionality added.
+- Segmented configuration files for ease of maintenance.
+- Updated install documentation.
 - Additional online help files.
 
 Version 1.1.2 

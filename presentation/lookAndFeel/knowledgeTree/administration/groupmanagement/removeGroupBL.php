@@ -31,7 +31,6 @@ if (checkSession()) {
 	require_once("$default->fileSystemRoot/lib/visualpatterns/PatternListBox.inc");
 	require_once("$default->fileSystemRoot/lib/visualpatterns/PatternEditableListFromQuery.inc");
 	require_once("removeGroupUI.inc");
-    //require_once("../adminUI.inc");
 	require_once("$default->fileSystemRoot/lib/security/Permission.inc");
 	require_once("$default->fileSystemRoot/lib/groups/Group.inc");
 	require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
@@ -46,16 +45,20 @@ if (checkSession()) {
 		$oGroup = Group::get($fGroupID);
 		if (!$oGroup->hasUsers()) {
 			if (!$oGroup->hasUnit()) {
-				if (isset($fForDelete)) {
-					if ($oGroup->delete()) {
-						// FIXME: refactor getStatusPage in Html.inc
-						$oPatternCustom->setHtml(statusPage("Remove Group", "Group successfully removed!", "", "listGroups"));
+				if (!$oGroup->hasRoutingSteps()) {
+					if (isset($fForDelete)) {
+						if ($oGroup->delete()) {
+							// FIXME: refactor getStatusPage in Html.inc
+							$oPatternCustom->setHtml(statusPage("Remove Group", "Group successfully removed!", "", "listGroups"));
+						} else {
+							$oPatternCustom->setHtml(statusPage("Remove Group", "Group deletion failed!", "There was an error deleting this group.  Please try again later.", "listGroups"));
+						}
 					} else {
-						$oPatternCustom->setHtml(statusPage("Remove Group", "Group deletion failed!", "There was an error deleting this group.  Please try again later.", "listGroups"));
+						$oPatternCustom->setHtml(getDeletePage($fGroupID));
+						$main->setFormAction($_SERVER["PHP_SELF"] . "?fForDelete=1");
 					}
 				} else {
-					$oPatternCustom->setHtml(getDeletePage($fGroupID));
-					$main->setFormAction($_SERVER["PHP_SELF"] . "?fForDelete=1");
+					$oPatternCustom->setHtml(statusPage("Remove Group", "This group is part of a document routing step!", "This group can not be deleted because it is involved in the document routing process.", "listGroups"));
 				}
 			} else {
 				$oPatternCustom->setHtml(statusPage("Remove Group", "This group is in a unit!", "This group can not be deleted because it belongs to a unit.", "listGroups"));

@@ -75,7 +75,7 @@ class DocumentLink {
 	*
 	*/
 	function setParentDocumentID($iNewValue) {
-		$this -> iParentDocumentID = $iNewValue;
+		$this->iParentDocumentID = $iNewValue;
 	}
 
 	/**
@@ -95,7 +95,7 @@ class DocumentLink {
 	*
 	*/
 	function setChildDocumentID($iNewValue) {
-		$this -> iChildDocumentID = $iNewValue;
+		$this->iChildDocumentID = $iNewValue;
 	}
 
 	/**
@@ -107,17 +107,17 @@ class DocumentLink {
 	function create() {
 		global $default, $lang_err_database, $lang_err_object_exists;
 		//if the object hasn't been created
-		if ($this -> iId < 0) {
-			$sql = $default -> db;
-			$result = $sql -> query("INSERT INTO " . $default -> owl_document_link_table . " (parent_document_id, child_document_id) VALUES ($this->iParentDocumentID, $this->iChildDocumentID)");
+		if ($this->iId < 0) {
+			$sql = $default->db;
+			$result = $sql->query("INSERT INTO $default->document_link_table (parent_document_id, child_document_id) VALUES ($this->iParentDocumentID, $this->iChildDocumentID)");
 			if ($result) {
-				$this -> iId = $sql -> insert_id();
+				$this->iId = $sql->insert_id();
 				return true;
 			}
 			$_SESSION["errorMessage"] = $lang_err_database;
 			return false;
 		}
-		$_SESSION["errorMessage"] = $lang_err_object_exists."id = ".$this -> iId." table = document_fields";
+		$_SESSION["errorMessage"] = $lang_err_object_exists."id = ".$this->iId." table = document_fields";
 		return false;
 	}
 
@@ -130,9 +130,9 @@ class DocumentLink {
 	function update() {
 		global $default, $lang_err_database, $lang_err_object_key;
 		//only update if the object has been stored
-		if ($this -> iId > 0) {
-			$sql = $default -> db;
-			$result = $sql -> query("UPDATE ".$default -> owl_document_link_table." SET parent_document_id = $this->iParentDocumentID, child_document_id = $this->iChildDocumentID WHERE id = $this->iId");
+		if ($this->iId > 0) {
+			$sql = $default->db;
+			$result = $sql->query("UPDATE $default->document_link_table SET parent_document_id = $this->iParentDocumentID, child_document_id = $this->iChildDocumentID WHERE id = $this->iId");
 			if ($result) {
 				return true;
 			}
@@ -152,9 +152,9 @@ class DocumentLink {
 	function delete() {
 		global $default, $lang_err_database, $lang_err_object_key;
 		//only delete the object if it exists in the database
-		if ($this -> iId >= 0) {
-			$sql = $default -> db;
-			$result = $sql -> query("DELETE FROM $default->document_link_table WHERE id = $this->iId");
+		if ($this->iId >= 0) {
+			$sql = $default->db;
+			$result = $sql->query("DELETE FROM $default->document_link_table WHERE id = $this->iId");
 			if ($result) {
 				return true;
 			}
@@ -175,12 +175,12 @@ class DocumentLink {
 	*/
 	function & get($iDocumentLinkID) {
 		global $default;
-		$sql = $default -> db;
-		$result = $sql -> query("SELECT * FROM $default->document_link_table WHERE id = $iDocumentLinkID");
+		$sql = $default->db;
+		$result = $sql->query("SELECT * FROM $default->document_link_table WHERE id = $iDocumentLinkID");
 		if ($result) {
-			if ($sql -> next_record()) {
-				$oDocumentLink = & new DocumentLink($sql -> f("parent_document_id"), $sql -> f("parent_document_id"));
-				$oDocumentLink -> iId = $sql -> f("id");
+			if ($sql->next_record()) {
+				$oDocumentLink = & new DocumentLink($sql->f("parent_document_id"), $sql->f("parent_document_id"));
+				$oDocumentLink->iId = $sql->f("id");
 				return $oDocumentLink;
 			}
 			$_SESSION["errorMessage"] = $lang_err_object_not_exist."id = ".$iDocumentLinkID." table = $default->document_link_table";
