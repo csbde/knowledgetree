@@ -81,7 +81,7 @@ if (checkSession()) {
                     }
                 } else {
                     // ask for confirmation
-                    $oPatternCustom->setHtml(renderSubscriptionAddConfirmationPage($oSubscription));
+                    $oPatternCustom->setHtml(renderAddConfirmationPage($oSubscription));
                 }
             } else {
                 // you're already subscribed
