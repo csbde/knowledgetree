@@ -47,9 +47,13 @@ class PatternMainPage {
 	/**
 	* Render the page in HTML
 	*/
-	function render() {		
+	function render() {
+        global $default;
+        
 		$sToRender = 	"<html>
 							<head>
+                            <meta http-equiv=\"refresh\" content=\"$default->owl_timeout\">
+                            <link rel=\"StyleSheet\" HREF=\"$default->owl_root_url\lib\knowledge_tree.css\" type=\"text/css\">
 							</head>
 							<body>
 							<form id=\"MainForm\" action=\"".$this->sFormAction."\" method=\"get\">
@@ -70,7 +74,7 @@ class PatternMainPage {
 										}
 										$sToRender = $sToRender . "</td>\n
 									</tr>\n
-									<tr height=\"70%\">\n
+									<tr height=\"70%\" >\n
 										<td width=\"20%\">";
 										if (isset($this->oWestPayload)) {
 											$sToRender = $sToRender . $this->oWestPayload->render();
@@ -78,7 +82,7 @@ class PatternMainPage {
 											$sToRender = $sToRender . "West payload not set";
 										}
 										$sToRender = $sToRender . "</td>\n
-										<td width=\"80%\">\n";
+										<td width=\"80%\" valign=\"top\">\n";
 										if (isset($this->oCentralPayload)) {											
 											$sToRender = $sToRender . $this->oCentralPayload->render();
 										} else {											
