@@ -336,11 +336,12 @@ function renderNonEditableLinkedDocuments($oDocument) {
     return $sToRender;    
 }
 
-
 function displayActionButtons($oDocument, $bEdit) {
     global $default;
     
-    // TODO: change to view
+    $iDummyButtons = 0;
+    
+    // view
     $sToRender .= "<tr><td align=\"left\"><a onClick=\"alert('This will download a copy of the document and is not the same as Checking Out a document.  Changes to this downloaded file will not be managed in the DMS.'); return true;\" href=\"" . generateControllerLink("downloadDocument", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/docactions/view.gif\" border=\"0\" /></a></td></tr>\n";    
     if ($bEdit) {
          // display the check in button if the document is checked out and you checked the document out
@@ -350,18 +351,26 @@ function displayActionButtons($oDocument, $bEdit) {
         } else {
             $sToRender .= "<tr><td align=\"left\"><a href=\"" . generateControllerLink("checkOutDocument", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/docactions/checkout.gif\" border=\"0\" /></a></td></tr>\n";
         }
+    } else {
+    	// display spacing button
+    	$iDummyButtons++;
     }
     
     $sToRender .= "<tr><td align=\"left\"><a href=\"" . generateControllerLink("emailDocument", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/docactions/email.gif\" border=\"0\" /></a></td></tr>\n";    
     if ($bEdit) {
         $sToRender .= "<tr><td align=\"left\"><a href=\"" . generateControllerLink("deleteDocument", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/docactions/delete.gif\" border=\"0\" /></a></td></tr>\n";
+    } else {
+    	$iDummyButtons++;
     }
+    	
     $sToRender .= "<tr><td align=\"left\"><a href=\"" . generateControllerLink("viewHistory", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/docactions/history.gif\" border=\"0\" /></a></td></tr>\n";
     if ($bEdit) {
     	// documents in collaboration and checked out documents can't be moved
 		if (!$oDocument->getIsCheckedOut() && (!DocumentCollaboration::documentCollaborationStarted($oDocument->getID()))) {
         	$sToRender .= "<tr><td align=\"left\"><a href=\"" . generateControllerLink("moveDocument", "fFolderID=" . $oDocument->getFolderID() . "&fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/docactions/move.gif\" border=\"0\" /></a></td></tr>\n";
 		}
+    } else {
+    	$iDummyButtons++;
     }
     
     // display the unsubscribe button if the user is subscribed to the document
@@ -375,14 +384,14 @@ function displayActionButtons($oDocument, $bEdit) {
     // only display the archive button for available documents
     if (!$oDocument->getIsCheckedOut() && !$oDocument->hasCollaboration() && (!DocumentCollaboration::documentCollaborationStarted($oDocument->getID()))) {
     	$sToRender .= "<tr><td align=\"left\"><a href=\"" . generateControllerLink("archiveDocument", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/docactions/archive.gif\" border=\"0\" /></a></td></tr>\n";
+    } else {
+    	$iDummyButtons++;
     }
+    	
     $sToRender .= "<td align=\"left\"><a href=\"" . generateControllerLink("createDependantDocument", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/docactions/dependentdoc.gif\" border=\"0\" /></a></td>\n";
 
 	// spacing hack
-	if (!$bEdit) {
-		$sToRender .= "<tr><td align=\"left\">&nbsp;</td></tr>\n";
-		$sToRender .= "<tr><td align=\"left\">&nbsp;</td></tr>\n";
-		$sToRender .= "<tr><td align=\"left\">&nbsp;</td></tr>\n";
+	for ($i=0; $i<$iDummyButtons; $i++) {
 		$sToRender .= "<tr><td align=\"left\">&nbsp;</td></tr>\n";
 	}
 	    			
@@ -391,8 +400,7 @@ function displayActionButtons($oDocument, $bEdit) {
 
 function renderSectionDiv($sDivName, $sHtml) {
 	global $default;
-	$bNN4 = (($default->browser == "moz") && ($default->version <= "4.79"));
-	if ($bNN4) {	
+	if ($default->bNN4) {	
 		return "<div id=\"$sDivName\" style=\"position:absolute;visibility:hidden;left:135px;\">$sHtml</div>";
 	} else {
 		return "<div id=\"$sDivName\" style=\"position:absolute;visibility:hidden;left:5px;\">$sHtml</div>";
@@ -438,8 +446,7 @@ function getPage($oDocument, $bEdit, $sStatusMessage = "") {
     $sToRender .= "</div>";
 
 	// ugly netscape hacks
-	$bNN4 = (($default->browser == "moz") && ($default->version <= "4.79"));
-	if (!$bNN4) {
+	if (!$default->bNN4) {
 		$sToRender .= "<div id=\"contentDiv\" style=\"position:relative;visibility:hidden;top:-80px;width:500px;\">";
 	}
 	$sToRender .= renderSectionDiv("documentData", renderDocumentData($oDocument, $bEdit, $sStatusMessage));
@@ -453,7 +460,7 @@ function getPage($oDocument, $bEdit, $sStatusMessage = "") {
     	$sToRender .= renderSectionDiv("documentRouting", renderNonEditableDocumentRouting($oDocument));
     	$sToRender .= renderSectionDiv("linkedDocuments", renderNonEditableLinkedDocuments($oDocument, $bEdit));
     }
-	if (!$bNN4) {
+	if (!$default->bNN4) {
 		$sToRender .= "</div>";
 	}    
     return $sToRender;	
