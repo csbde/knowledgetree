@@ -43,9 +43,9 @@ class LDAPAuthenticator extends Authenticator {
         $this->sBaseDN = strlen($sLdapDN) > 0 ? $sLdapDN : $default->ldapRootDn;
         $this->sServerType = strlen($sServerType) > 0 ? $sServerType : $default->ldapServerType;
         $this->sLdapDomain = strlen($sLdapDomain) > 0 ? $sLdapDomain : $default->ldapDomain;
-
+        
         // initialise and setup ldap class
-        $this->oLdap = new AuthLdap($this->sLdapServer, $this->sBaseDN, $this->sServerType, $this->sLdapDomain);
+        $this->oLdap = new AuthLdap($this->sLdapServer, $this->sBaseDN, $this->sServerType, $this->sLdapDomain, $default->ldapSearchUser, $default->ldapSearchPassword);
     }
 
     /**
