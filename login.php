@@ -15,11 +15,14 @@
  
 // main library routines and defaults
 require_once("./config/dmsDefaults.php");
-require_once("./lib/owl.lib.php");
-require_once("./lib/control.inc");
-require_once("./config/html.php");
-require_once("./lib/Session.inc");
+require_once("$default->owl_fs_root/lib/owl.lib.php");
+require_once("$default->owl_fs_root/config/html.php");
+require_once("$default->owl_fs_root/lib/control.inc");
+require_once("$default->owl_fs_root/lib/Session.inc");
 
+// -------------------------------
+// page start
+// -------------------------------
 
 if ($loginAction == "loginForm") {
     // TODO: build login form using PatternMainPage
@@ -32,8 +35,8 @@ if ($loginAction == "loginForm") {
         print "<INPUT TYPE=\"HIDDEN\" NAME=\"parent\" value=\"$parent\">";
         print "<INPUT TYPE=\"HIDDEN\" NAME=\"fileid\" value=\"$fileid\">";
     }
-    if (isset($loginFailureMessage)) {
-        print "$loginFailureMessage<br>";
+    if (isset($errorMessage)) {
+        print "<font color=\"red\">$errorMessage</font><br>";
     }
         
 	print "<TABLE><TR><TD>$lang_username:</TD><TD><INPUT TYPE=\"TEXT\" NAME=\"fUserName\"><BR></TD></TR>";
@@ -56,46 +59,44 @@ if ($loginAction == "loginForm") {
         if( isset($fUserName) && isset($fPassword) ) {
             // verifies the login and password of the user
             $dbAuth = new DBAuthenticator();
-            $userDetails = $dbAuth->login($fUserName, $fUserName);
+            $userDetails = $dbAuth->login($fUserName, $fPassword);
             switch ($userDetails["status"]) {
+                // bad credentials
+                case 0:
+                    // this doesn't need to go back to the controller
+                    redirect("login.php?loginAction=loginForm&errorMessage=" . urlencode($lang_loginfail));
+                    break;
                 // successfully authenticated
                 case 1:
                     // start the session
-                    $sessionID = Session::create($userDetails["user_id"]);
+                    $session = new Session();
+                    $sessionID = $session->create($userDetails["user_id"]);
                     // add the user details array to the session
                     $_SESSION["userDetails"] = $userDetails;
                     
                     // check for a location to forward to
-                    //echo "started session, with id=$sessionID<br>";
-                    /*
                     if (isset($redirect) && strlen(trim($redirect))>0) {
-                        echo "it is set to $redirect<br>";
-                        $url = $redirect;
-                       //redirect($redirect);
-                    } else {*/
+                        $url = urldecode($redirect);
+                    } else {
+                        $_SESSION["authorised"] = false;
                         $url = "control.php?action=DASHBOARD";
-                    //}
-                    //echo "url set to $url<br>";
+                    }
                     break;
                 // login disabled                    
                 case 2:
-                    controllerRedirect("LOGIN_FORM", "errorMessage=$lang_logindisabled");
-                    //$url = "control.php?action=LOGIN_FORM&loginFailureMessage=$lang_logindisabled";
+                    redirect("login.php?loginAction=loginForm&errorMessage=" . urlencode($lang_logindisabled));
                     break;
                 // too many sessions
                 case 3 :
-                    controllerRedirect("LOGIN_FORM", "errorMessage=$lang_toomanysessions");
-                    //$url = "control.php?action=LOGIN_FORM&loginFailureMessage=$lang_toomanysessions";
+                    redirect("login.php?loginAction=loginForm&errorMessage=" . urlencode($lang_toomanysessions));
                     break;
                 default :
-                    controllerRedirect("LOGIN_FORM", "errorMessage=$lang_err_general");
-                    //$url = "control.php?action=LOGIN_FORM&loginFailureMessage=$lang_err_general";
+                    redirect("login.php?loginAction=loginForm&errorMessage=" . urlencode($lang_err_general));
             }
         } else {
             // didn't receive any login parameters, so redirect login form
             $url = "control.php?action=LOGIN_FORM";
         }
-        //echo "about to redirect to $url<br>";
         redirect($url);
     }
 }
