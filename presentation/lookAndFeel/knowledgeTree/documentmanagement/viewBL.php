@@ -191,8 +191,13 @@ if (checkSession()) {
 	                $oPatternCustom->setHtml(getPage($oDocument, false));
 	            }
 	            $main->setDHTMLScrolling(false);
-	            $main->setOnLoadJavaScript("switchDiv('" . (isset($fShowSection) ? $fShowSection : "documentData") . "', 'document')");
-	            
+
+	            $sJavaScript = "switchDiv('" . (isset($fShowSection) ? $fShowSection : "documentData") . "', 'document');";
+	            if ($fCheckedOut) {
+	            	$sCheckOutMessage = "You have now checked out this document. No one else can make updates to the document while you have it checked out. Save the document, make your changes and check it back in as soon as you finish working on it.";	            	
+	            	$sJavaScript .= "redirectLink('$sCheckOutMessage', '" . generateControllerUrl("downloadDocument", "fDocumentID=$fDocumentID") . "')"; 
+	            } 	            
+	            $main->setOnLoadJavaScript($sJavaScript);
             } else if ($oDocument->isArchived()) {
 	                        	
             	// allow admins to restore the document
