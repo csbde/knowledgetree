@@ -12,7 +12,7 @@ require_once("../../../../../config/dmsDefaults.php");
 if (checkSession()) {
 	require_once("$default->fileSystemRoot/lib/visualpatterns/PatternListBox.inc");
 	require_once("$default->fileSystemRoot/lib/visualpatterns/PatternEditableListFromQuery.inc");
-	require_once("editDocTypeUI.inc");
+	require_once("editDocTypeFieldsUI.inc");
 	require_once("$default->fileSystemRoot/lib/security/permission.inc");
 	require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentType.inc");
 	require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentField.inc");
@@ -30,9 +30,16 @@ if (checkSession()) {
 	// coming from manual edit page	
 	if (isset($fUpdate)) {
 		
-		$oDocType = DocumentType::get($fDocTypeID);
-		$oDocType->setName($fDocTypeName);
-				
+		//$oDocType = DocumentType::get($fDocTypeID);
+		//$oDocType->setName($fDocTypeName);
+		
+		// store type specific field id's in an array
+		$aGenericDocFields  = DocumentField::getGenericFields();
+		$aSpecificDocFields = DocumentTypeFieldLink::getSpecificFields($fDocTypeID);
+		
+		 echo "<li><pre>" . arrayToString($aSpecificDocFields ) . "</pre></li></ul>";
+		
+		/**
 		if ($oDocType->update()) {
 				// if successfull print out success message
 				$oPatternCustom->setHtml(getEditPageSuccess());
@@ -41,10 +48,24 @@ if (checkSession()) {
 				// if fail print out fail message
 				$oPatternCustom->setHtml(getEditPageFail());
 		}
+		**/
 	} else if (isset($fDocTypeSelected)){		
-					
-		$oPatternCustom->setHtml(getDetailsPage($fDocTypeID));
-		$main->setFormAction($_SERVER["PHP_SELF"] . "?fUpdate=1");		
+		// post back on DocType select from manual edit page	
+		// store type generic field id's in an array
+		$aGenericFields  = DocumentField::getGenericFields();
+		
+		// get all specific fields
+		$aAllSpecificFields  = DocumentField::getAllSpecificFields();
+		
+		
+		// store type specific field id's and names in an array for specifc doctype
+		$aSpecificFields = DocumentTypeFieldLink::getSpecificFields($fDocTypeID);
+		
+		
+		$oPatternCustom->setHtml(getDetailsPage($fDocTypeID, $aGenericFields, $aSpecificFields,  $aAllSpecificFields));
+		$main->setFormAction($_SERVER["PHP_SELF"] . "?fShowDetails=1");
+		
+		
 	}else if(isset($fAdd))
 		{	
 			if($fIsMandatory == 1){
@@ -107,26 +128,21 @@ if (checkSession()) {
 	}else if(isset($fEdit)){ 
 		$fFieldID = $fEdit;
 		
-		 $iMandatory = 0;
+		$iMandatory = 0;
 		 
 		$oDocTypeField = new DocumentTypeFieldLink($fDocTypeID, $fFieldID, $iMandatory);
 			
-			//delete it by first getting hte corresponding id
+		//delete it by first getting hte corresponding id
 		$oDocTypeField ->setDocTypeFieldID($fDocTypeID, $fFieldID);
-		
+
 		$iDocTypeFieldID = $oDocTypeField->getID();
-				
+						
 		$oPatternCustom->setHtml(getMandatoryPage($fFieldID,$iDocTypeFieldID));
 		$main->setFormAction($_SERVER["PHP_SELF"] . "?fUpdateMandatory=1");
-		
-		
-	
-	
-	}else if(isset($fUpdateMandatory)){ 
 			
-		
-		
-					 
+	
+	} else if(isset($fUpdateMandatory)){ 
+						 
 		$oDocTypeField = new DocumentTypeFieldLink($fDocTypeID, $fFieldID, $fMandatory);
 			
 			//delete it by first getting hte corresponding id
