@@ -3,7 +3,7 @@
 /**
 * Contains unit tests for class Document in /lib/documentmanagement/Document.inc
 *
-* Tests:
+* Tests are:
 *	o creation of document object
 *	o setting/getting of values
 *	o storing of object
@@ -14,8 +14,8 @@
 require_once("../../config/dmsDefaults.php");
 
 if (checkSession()) {
-	require_once("$default->owl_root_url/lib/documentmanagement/Document.inc");
-	require_once("$default->owl_root_url/lib/foldermanagement/FolderManager.inc");
+	require_once("$default->owl_fs_root/lib/documentmanagement/Document.inc");
+	require_once("$default->owl_fs_root/lib/foldermanagement/FolderManager.inc");
 	
 	//test creation of a document
 	echo "<b>Testing document creation</b><br>";
