@@ -86,7 +86,8 @@ class DocumentBrowser {
             
             // create query to retrieve documents in this folder
             $documentQuery = "SELECT id FROM $default->owl_documents_table WHERE folder_id=$folderID ORDER BY name ASC";
-            $default->log->debug("DocumentBrowser::browseByFolder about to execute $documentQuery");
+            // initialise access flag;
+            $results["accessDenied"] = false;
             if ($sql->query($documentQuery)) {
                 while ($sql->next_record()) {
                     // check permissions
@@ -95,7 +96,8 @@ class DocumentBrowser {
                         // set file attributes
                         $results["documents"][] = & Document::get($sql->f("id")); 
                     } else {
-                        $default->log->debug("DocumentBrowser::browseByFolder: read permission denied for document id=" . $sql->f("id"));
+                        // set access denied message
+                        $results["accessDenied"] = true;
                     }
                 }
             } else {
