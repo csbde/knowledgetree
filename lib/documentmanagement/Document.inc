@@ -299,6 +299,33 @@ class Document {
 	}
 	
 	/**
+	* Static function
+	* Get a list of Documents
+	*
+	* @param 	String		Where clause (not required)
+	*
+	* @return Array array of Documents objects, false otherwise and set $_SESSION["errorMessage"]
+	*/
+	function getList($sWhereClause = null) {
+		global $default, $lang_err_database;
+		$aDocumentArray;
+		settype($aDocumentArray, "array");
+		$sql = $default->db;
+		$result = $sql->query("SELECT * FROM " . $default->owl_documents_table  . (isset($sWhereClause) ? " WHERE " . $sWhereClause : ""));
+		if ($result) {			
+			$iCount = 0;
+			while ($sql->next_record()) {
+				$oDocument = & Document::get($sql->f("id"));
+				$aDocumentArray[$iCount] = $oDocument;
+				$iCount++;
+			}
+			return $aDocumentArray;
+		}
+		$_SESSION["errorMessage"] = $lang_err_database;
+		return false;
+	}
+	
+	/**
 	* Static function.
 	* Get all the document field's associated with a document type
 	*
