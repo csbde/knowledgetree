@@ -1,6 +1,4 @@
 <?php
-require_once("$default->fileSystemRoot/phplib/db_mysql.inc");
-require_once("$default->fileSystemRoot/lib/database/db.inc");
 /**
  * $Id$
  *
