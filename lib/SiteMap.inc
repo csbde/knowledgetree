@@ -45,20 +45,23 @@ class SiteMap {
      *
      * @param $action
      *        the action to lookup pages for
-     * @param $userClass
-     *        the userclass to perform page level validation against
+     * @param $userGroup
+     *        the user group to perform page level validation against
      * @return
      *        the page to redirect to, or false if the user class doesn't
      *        have access to the page
      */
-    function getPage($action, $userClass) {
+    function getPage($action, $userGroup) {
         // map incoming userClass to number
-        $uc = constant($userClass);
+        //$uc = constant($userClass);
+        
+        // look up the id for this group
+        $groupID = group_to_name($userGroup);        
 
         // iterate through multidim sitemap array
         foreach ($this->siteMapArray as $section => $valArr) {
-            foreach ($valArr as $userAccess => $pageArr) {
-                if ($uc <= constant($userAccess)) {
+            foreach ($valArr as $requiredGroup => $pageArr) {
+                if ($groupID <= group_to_name($requiredGroup)) {
                     // now loop through pages until we find the right one
                     foreach ($pageArr as $ackshin => $page) {
                         if ($ackshin == $action) {
@@ -69,7 +72,7 @@ class SiteMap {
             }
         }
         // if the function hasn't returned already then the specified
-        // userClass does not have access to the action
+        // userGroup does not have access to the action
         return false;
     }
     
