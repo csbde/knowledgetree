@@ -143,6 +143,10 @@ class KTInit {
 }
 // }}}
 
+// Application defaults
+//
+// Overriden in environment.php
+
 $default->fileSystemRoot = KT_DIR;
 $default->serverName = $_SERVER['HTTP_HOST'];
 
@@ -151,8 +155,28 @@ $default->unzipCommand = "unzip";
 $default->logLevel = INFO;
 $default->pearPath = KT_DIR . '/pear';
 
+$default->useDatabaseConfiguration = false;
+
 // include the environment settings
 require_once("environment.php");
+
+require_once("$default->fileSystemRoot/lib/authentication/$default->authenticationClass.inc");
+
+require_once("$default->fileSystemRoot/lib/database/db.inc");
+$default->db = new Database();
+
+// instantiate system settings class
+require_once("$default->fileSystemRoot/lib/database/lookup.inc");
+require_once("$default->fileSystemRoot/lib/System.inc");
+$default->system = new System();
+
+if ($default->useDatabaseConfiguration && $default->system->initialised()) {
+    $aSettings = $default->system->aSettings;
+
+    for ($i=0; $i<count($aSettings); $i++) {
+        $default->$aSettings[$i] = $default->system->get($aSettings[$i]);
+    }
+}
 
 
 // table mapping entries

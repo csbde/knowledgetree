@@ -21,16 +21,24 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */ 
 
-// install path
-$default->fileSystemRoot  = "/usr/local/www/dms";
-// server settings
-$default->serverName = "change.to.your.hostname";
+// install path (file path)
+//
+// Leave commented to have it automatically detected.
+// 
+// $default->fileSystemRoot  = "";
+
+// Webserver name (host name)
+//
+// Leave commented to have it automatically detected.
+// 
+// $default->serverName = "";
+
 // whether ssl is enabled or not
 $default->sslEnabled = false;
+
 // Change this to reflect the authentication method you are using
 // valid choices are: DBAuthenticator, LDAPAuthenticator
 $default->authenticationClass = "DBAuthenticator";
-require_once("$default->fileSystemRoot/lib/authentication/$default->authenticationClass.inc");
 
 // enable folder hiding flag
 $default->folderHidingFlag = 1;
@@ -45,18 +53,9 @@ $default->dbPass           = "pass";
 // currently mysql is the only supported type
 $default->dbType = "mysql";
 
-// single db instantiation
-require_once("$default->fileSystemRoot/lib/database/db.inc");
-$default->db = new Database();
-
 // default language
 $default->defaultLanguage = "en";
 $default->useAcceptLanguageHeader = true;
-
-// instantiate system settings class
-require_once("$default->fileSystemRoot/lib/database/lookup.inc");
-require_once("$default->fileSystemRoot/lib/System.inc");
-$default->system = new System();
 
 // hack to set org to use for dashboard greeting
 $default->organisationID = 1;
@@ -69,41 +68,44 @@ $default->organisationID = 1;
 // $default->scrollingNews = true;
 $default->scrollingNews = false; 
 
-if ($default->system->initialised()) {
-    $aSettings = $default->system->aSettings;
+// ----------------------------------------------------------------
+// WARNING: Settings below here may be overridden if using database
+// configuration
+//
+// To enable database configuration, uncomment the next command:
+//
+//         $default->useDatabaseConfiguration = true;
+//
+// ----------------------------------------------------------------
+
+// ldap settings
+$default->ldapServer = "192.168.1.9";
+$default->ldapRootDn = "o=Organisation";
+// current supported types=iPlanet, ActiveDirectory;
+$default->ldapServerType = "iPlanet";
+$default->ldapDomain = "domain.com";
+$default->ldapSearchUser = "searchUser@domain.com";
+$default->ldapSearchPassword = "pwd";
     
-    for ($i=0; $i<count($aSettings); $i++) {
-        $default->$aSettings[$i] = $default->system->get($aSettings[$i]);
-    }
-} else {
-    // ldap settings
-    $default->ldapServer = "192.168.1.9";
-    $default->ldapRootDn = "o=Organisation";
-    // current supported types=iPlanet, ActiveDirectory;
-    $default->ldapServerType = "iPlanet";
-    $default->ldapDomain = "domain.com";
-    $default->ldapSearchUser = "searchUser@domain.com";
-    $default->ldapSearchPassword = "pwd";
+// email settings
+$default->emailServer = "mail.domain.com";
+$default->emailFrom = "kt@domain.com";
+$default->emaiFromName = "KnowledgeTree Document Management System";
+$default->emailAdmin = "kt@jamwarehouse.com";
+$default->emailAdminName = "DMS Administrator";
     
-    // email settings
-    $default->emailServer = "mail.domain.com";
-    $default->emailFrom = "kt@domain.com";
-    $default->emaiFromName = "KnowledgeTree Document Management System";
-    $default->emailAdmin = "kt@jamwarehouse.com";
-    $default->emailAdminName = "DMS Administrator";
-    
-    // directories
-    $default->documentRoot  =  $default->fileSystemRoot . "/Documents";
-    $default->uiDirectory  = $default->fileSystemRoot . "/presentation/lookAndFeel/knowledgeTree";
+// directories
+$default->documentRoot  =  $default->fileSystemRoot . "/Documents";
+$default->uiDirectory  = $default->fileSystemRoot . "/presentation/lookAndFeel/knowledgeTree";
      
-    // urls
-    $default->rootUrl  = "";
-    $default->graphicsUrl = $default->rootUrl . "/graphics";
-    $default->uiUrl  = $default->rootUrl . "/presentation/lookAndFeel/knowledgeTree";
+// urls
+$default->rootUrl  = "";
+$default->graphicsUrl = $default->rootUrl . "/graphics";
+$default->uiUrl  = $default->rootUrl . "/presentation/lookAndFeel/knowledgeTree";
     
-    // session timeout (in seconds)
-    $default->sessionTimeout = 1200;
-    // add javascript content pane scrolling arrows
-    $default->contentPaneScrolling = false;
-}
+// session timeout (in seconds)
+$default->sessionTimeout = 1200;
+// add javascript content pane scrolling arrows
+$default->contentPaneScrolling = false;
+
 ?>
