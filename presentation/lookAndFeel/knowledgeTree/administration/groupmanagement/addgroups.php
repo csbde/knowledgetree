@@ -9,7 +9,7 @@ if(checkSession())
 {
 
 // include the page template (with navbar)
-require_once("$default->fileSystemRoot/presentation/webPageTemplate.inc");  	
+require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");  	
  // when email button sent..send email
 if ($submit) 
 {
