@@ -16,16 +16,15 @@ i18n requires gettext (http://www.gnu.org/software/gettext) and the gettext php 
 Completed Tasks and Implementation Details
 ------------------------------------------
 
-- i18n/<locale>/LC_MESSAGES
+- i18n/<locale>/LC_MESSAGES/knowledgeTree.mo
+							knowledgeTree.po
 			   /graphics
 			   
 - gettext support loaded if php module available
 
-- dashboard and document browse view i18n'd
+- login, dashboard, document browse view i18n'd
 
-***TODO****
 - checks the browser's Accept-Language header and uses that language (if there is a translation for it)
-
 
 The TODO List
 -------------
@@ -33,24 +32,41 @@ The TODO List
 The rest of the KnowledgeTree needs to be i18n'd.
 Here are some guidelines for adding gettext support to the KnowledgeTree.
 
-- find translatable strings and wrap literals with _()
-	eg. change:
-	
-	to:
-	 _("Checked Out Documents")
-- if strings are concatenated with dynamic content use sprintf
-    eg. 
-- add ordering to sprintf parameters- use single quotes so slashes aren't escaped in the .po files
-    eg.
-	sprintf(_('Hi %1$s, welcome back to the %2$s DMS, part of the Knowledge Tree')
+- find translatable strings and wrap literals with _() eg. 
+	original:
+    $sToRender .= "\t\t\t\t<th class=\"sectionHeading\" colspan=\"2\"><font color=\"ffffff\">Pending Web Documents</font></th>\n";		
+	i18n'd:
+    $sToRender .= "\t\t\t\t<th class=\"sectionHeading\" colspan=\"2\"><font color=\"ffffff\">" . _("Pending Web Documents") . "</font></th>\n";			
 
+- if strings are concatenated with dynamic content use sprintf eg.
+	original:	
+    $sToRender .= "\t\t<td>Hi " . $sUserName . ", welcome back to the " . lookupField($default->organisations_table, "name", "id", $default->organisationID) . 
+    			  "DMS, part of the Knowledge Tree</td>\n";	
+	i18n'd:
+    $sToRender .= "\t\t<td>" . sprintf(_('Hi %s, welcome back to the %s DMS, part of the Knowledge Tree'), 
+    									$sUserName, 
+    									lookupField($default->organisations_table, "name", "id", $default->organisationID)) . 
+    			   "</td>\n";
+
+- images- use the imgSrc function to dynamically use the images in the i18n directory (if they exist) eg.
+	original:
+    $sToRender .= "\t\t<td><img src=\"$default->graphicsUrl/welcome.gif\" border=\"0\"/></td>\n";		
+	i18n'd:
+    $sToRender .= "\t\t<td><img src=\"" . imgSrc("welcome.gif") . "\" border=\"0\"/></td>\n";	
+	
 Testing
 -------
 - install gettext command line utilities
-- run xgettext to generate .po files
-- write a test translation
-- use msgfmt to compile your translated file
-- change the default language and verify
-  - you may have to specify the complete locale ie <langcode>_<countrycode>
+- run xgettext to generate .po files eg.
+  xgettext --files-from=i18n/file-list -LPHP --keyword=_ --no-wrap --msgid-bugs-address="kt-i18n@jamwarehouse.com" -o knowledgeTree.po
+- write a test translation by editing the po file appropriately.  if you have problems with the order of parameters, because your language's
+  ordering is different then in english. You can use the $ to change order eg: 
+        msgid "Upgrading item %d of %d"
+        msgstr "... %2$d ... %1$d ..."
+- construct the right directory structure inside i18n eg.
+  $ mkdir -p i18n/es/LC_MESSAGES/	        
+- use msgfmt to compile your translated .po file to a .mo
+  $ msgfmt --check $knowldgeTree.po --output-file=i18n/$es/LC_MESSAGES/knowledgeTree.mo
+- change $default->defaultLanguage in config/environment.php and verify your translation.
 
 $Id$
