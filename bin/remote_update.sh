@@ -70,3 +70,6 @@ remoteDir=`basename $dir`
 # now just do it
 # TODO: return code handling
 deploy
+
+# reminder
+echo "don't forget to run fix_perms.sh on the remote machine as root to allow the www user access to the dms"
