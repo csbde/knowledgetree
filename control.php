@@ -49,7 +49,7 @@ if (checkSessionAndRedirect(false)) {
 }
 
 // need to strip query string params from action before attempting to retrieve from sitemap
-
+$queryString = "";
 // check for the presence of additional params
 if (strstr($_SERVER["QUERY_STRING"], "&")) {
     // strip and save the querystring
@@ -62,7 +62,7 @@ if (strstr($_SERVER["QUERY_STRING"], "&")) {
 }
     
 // retrieve the page from the sitemap (checks whether this user has access to the requested page)
-$page = $default->siteMap->getPage($action, $_SESSION["userID"]);
+$page = $default->siteMap->getPage($action, isset($_SESSION["userID"]) ? $_SESSION["userID"] : "");
 
 if (!$page) {
     // this user doesn't have permission to access the page
