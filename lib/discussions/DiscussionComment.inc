@@ -186,12 +186,13 @@ class DiscussionComment extends KTEntity {
             'user_id' => $this->iUserID,
             'subject' => $this->sSubject,
             'body' => $this->sBody,
-            'date' => getCurrentDate(),
+            'date' => getCurrentDateTime(),
             'in_reply_to' => $this->iInReplyTo,
         );
     }
 
     function _table () {
+        global $default;
         return $default->discussion_comments_table;
     }
         
