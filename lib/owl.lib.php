@@ -1,103 +1,135 @@
 <?php
 
-/*
+/**
  * owl.lib.php
+ *
+ * Main library routines, language and session handling.
  *
  * Copyright (c) 1999-2002 The Owl Project Team
  * Licensed under the GNU GPL. For full terms see the file COPYING.
  *
  * $Id$
+ * @todo move classes to their own files (Owl_DB, Owl_Session)
+ * @todo refactor functions by function (authentication, session, language)
  */
 
 // Support for reg.globals off WES
-
-if (substr(phpversion(),0,5) >= "4.1.0")
-        import_request_variables('pgc');
- else {
-        if (!EMPTY($_POST)) {
-                extract($_POST);
-        } else {
-                extract($HTTP_POST_VARS);
-        }
-        if (!EMPTY($_GET)) {
-                extract($_GET);
-        } else {
-                extract($HTTP_GET_VARS);
-        }
-        if (!EMPTY($_FILE)) {
-                extract($_FILE);
-        } else {
-                extract($HTTP_POST_FILES);
-        }
+if (substr(phpversion(),0,5) >= "4.1.0") {
+    import_request_variables('pgc');
+} else {
+    if (!EMPTY($_POST)) {
+        extract($_POST);
+    } else {
+        extract($HTTP_POST_VARS);
+    }
+    if (!EMPTY($_GET)) {
+        extract($_GET);
+    } else {
+        extract($HTTP_GET_VARS);
+    }
+    if (!EMPTY($_FILE)) {
+        extract($_FILE);
+    } else {
+        extract($HTTP_POST_FILES);
+    }
 }
 
+if(!isset($sess)) {
+    $sess = 0;
+}
+if(!isset($loginname)) {
+    $loginname = 0;
+}
+if(!isset($login)) {
+    $login = 0;
+}
 
-if(!isset($sess)) $sess = 0;
-if(!isset($loginname)) $loginname = 0;
-if(!isset($login)) $login = 0;
-
+// load appropriate language
 if(isset($default->owl_lang)) {
 	$langdir = "$default->owl_fs_root/locale/$default->owl_lang";
 	if(is_dir("$langdir") != 1) {
 		die("$lang_err_lang_1 $langdir $lang_err_lang_2");
 	} else {
 		$sql = new Owl_DB;
-                $sql->query("select * from $default->owl_sessions_table where sessid = '$sess'");
+        $sql->query("select * from $default->owl_sessions_table where sessid = '$sess'");
 		$sql->next_record();
-                $numrows = $sql->num_rows($sql);
-                $getuid = $sql->f("uid");
+        $numrows = $sql->num_rows($sql);
+        $getuid = $sql->f("uid");
 		if($numrows == 1) {
-                	$sql->query("select * from $default->owl_users_table where id = $getuid");
+            $sql->query("select * from $default->owl_users_table where id = $getuid");
 			$sql->next_record();
-                	$language = $sql->f("language");
+            $language = $sql->f("language");
 			// BEGIN wes fix
 			if(!$language) {
-			  $language = $default->owl_lang;
+                $language = $default->owl_lang;
 			}
 			// END wes fix
 			require("$default->owl_fs_root/locale/$language/language.inc");
 			$default->owl_lang = $language;
-                }
-                else
+        } else {
 			require("$default->owl_fs_root/locale/$default->owl_lang/language.inc");
+        }
 	}
 } else {
 	die("$lang_err_lang_notfound");
 }
 
 
+/**
+ * Owl specific database class.
+ */
 class Owl_DB extends DB_Sql {
-        var $classname = "Owl_DB";
+    /**
+     * Identifier for this class
+     */
+    var $classname = "Owl_DB";
+    
+    // BEGIN wes changes -- moved these settings to config/owl.php
 
-        // BEGIN wes changes -- moved these settings to config/owl.php
-        // Server where the database resides
-        var $Host = ""; 
+    /**
+     * Server where the database resides
+     */
+    var $Host = ""; 
+    
+    /**
+     * Database name
+     */
+    var $Database = "";
+    
+    /**
+     * User to access database
+     */
+    var $User = "";
+    
+    /** 
+     * Password for database
+     */
+    var $Password = "";
 
-        // Database name
-        var $Database = "";
-
-        // User to access database
-        var $User = "";
-
-        // Password for database
-        var $Password = "";
-
+    /**
+     * Creates an instance of Owl_DB.
+     * This constructor sets the connection details
+     * from the global defaults defined in config/owl.php
+     */
 	function Owl_DB() {
-	  global $default;
-	  $this->Host = $default->owl_db_host;
-	  $this->Database = $default->owl_db_name;
-	  $this->User = $default->owl_db_user;
-	  $this->Password = $default->owl_db_pass;
+        global $default;
+        $this->Host = $default->owl_db_host;
+        $this->Database = $default->owl_db_name;
+        $this->User = $default->owl_db_user;
+        $this->Password = $default->owl_db_pass;
 	}
 	// END wes changes
 
-        function haltmsg($msg) {
-                printf("</td></table><b>Database error:</b> %s<br>\n", $msg);
-                printf("<b>SQL Error</b>: %s (%s)<br>\n",
-                        $this->Errno, $this->Error);
-        }
+    /**
+     * Prints database error message
+     *
+     * @param $msg  the error message
+     */
+    function haltmsg($msg) {
+        printf("</td></table><b>Database error:</b> %s<br>\n", $msg);
+        printf("<b>SQL Error</b>: %s (%s)<br>\n", $this->Errno, $this->Error);
+    }
 }
-
 
 class Owl_Session {
 	var $sessid;
