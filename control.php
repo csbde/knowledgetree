@@ -46,15 +46,21 @@ if (!$page) {
     // redirect to no permission page
     redirect("$default->owl_ui_url/noAccess.php");
 } else {
+    $default->log->debug("control.php redirect=$redirect");
     $page = $default->owl_root_url . $page;
     // set authorised flag and redirect
     // strip querystring form $page before setting page authorisation flag
     if (strstr($page, "?")) {
         $accessPage = substr($page, 0, strpos($page, "?"));
-        $default->log->debug("control.php: page without querystring=$accessPage");
+        $default->log->debug("control.php: page without querystring=$accessPage; with=$page");
     } else {
         $accessPage = $page;
     }
+    
+    if (strlen($redirect) > 0) {
+        $page = $page . (strstr($page, "?") ? "&redirect=$redirect" : "?redirect=$redirect");
+    }
+    
     $_SESSION["pageAccess"][$accessPage] = true;
     $default->log->debug("control.php: just set SESSION[\"pageAccess\"][$accessPage]=" . $_SESSION["pageAccess"][$accessPage]); 
     redirect($page);
