@@ -235,6 +235,7 @@ $default->siteMap->addPage("websiteManagement", "/presentation/lookAndFeel/knowl
 $default->siteMap->addPage("systemAdministration", "/presentation/lookAndFeel/knowledgeTree/administration/systemsettings/systemSettingsBL.php", "Administration", SysAdmin, "System Settings");
 $default->siteMap->addPage("archivedDocuments", "/presentation/lookAndFeel/knowledgeTree/administration/documentmanagement/manageArchivedDocumentsBL.php", "Administration", UnitAdmin, "Restore Archived Documents");
 $default->siteMap->addPage("deletedDocuments", "/presentation/lookAndFeel/knowledgeTree/administration/documentmanagement/listDeletedDocumentsBL.php", "Administration", UnitAdmin, "Deleted Documents");
+$default->siteMap->addPage("doccheckoutManagement", "/presentation/lookAndFeel/knowledgeTree/administration/admin.php?sectionName=doccheckoutAdministration", "Administration", UnitAdmin, "Document Checkout Management");
 
 $default->siteMap->addSectionColour("Administration", "th", "056DCE");
 $default->siteMap->addSectionColour("Administration", "td", "6699CC");
@@ -290,6 +291,12 @@ $default->siteMap->addSectionColour("userAdministration", "td", "6699CC");
 //document type management
 //$default->siteMap->addPage("doctype", "/presentation/lookAndFeel/knowledgeTree/administration/admin.php?sectionName=documentTypeAdministration", "doctypeAdministration", SysAdmin, "Document Type Management");
 //$default->siteMap->addPage("docfield", "/presentation/lookAndFeel/knowledgeTree/administration/admin.php?sectionName=documentFieldAdministration", "doctypeAdministration", SysAdmin, "Document Field Management");
+
+// document checkout management
+$default->siteMap->addPage("listDocs", "/presentation/lookAndFeel/knowledgeTree/administration/doccheckoutmanagement/listDocumentsBL.php", "doccheckoutAdministration", SysAdmin, "List Documents");
+$default->siteMap->addDefaultPage("editDocCheckout", "/presentation/lookAndFeel/knowledgeTree/administration/doccheckoutmanagement/editDocCheckoutBL.php", "doccheckoutAdministration", SysAdmin, "Edit Document Checkout");
+
+$default->siteMap->addSectionColour("doccheckoutAdministration", "th", "056DCE");
 
 // document type stuff
 $default->siteMap->addDefaultPage("addDocTypeFieldsLink", "/presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/addDocTypeFieldsLinkBL.php", "documentTypeAdministration", SysAdmin, "Add a Document Type to Fields Link");
