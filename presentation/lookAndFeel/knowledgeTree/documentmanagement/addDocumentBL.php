@@ -20,7 +20,7 @@ if (checkSession()) {
 	require_once("$default->owl_fs_root/lib/documentmanagement/Document.inc");
 	require_once("$default->owl_fs_root/lib/documentmanagement/DocumentTransaction.inc");
 	require_once("$default->owl_fs_root/lib/web/WebDocument.inc");
-	require_once("$default->owl_fs_root/lib/DocumentManagement/PhysicalDocumentManager.inc");
+	require_once("$default->owl_fs_root/lib/documentmanagement/PhysicalDocumentManager.inc");
 	require_once("$default->owl_fs_root/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
 	require_once("$default->owl_fs_root/presentation/Html.inc");
 	require_once("addDocumentUI.inc");
