@@ -123,6 +123,13 @@ $default->owl_document_text_table = "document_text";
 $default->owl_dependant_document_template_table = "dependant_document_template";
 $default->owl_dependant_document_instance_table = "dependant_document_instance";
 $default->owl_document_link_table = "document_link";
+// archive settings
+$default->owl_document_archiving_table = "document_archiving";
+$default->owl_archiving_type_lookup_table = "archiving_type_lookup";
+$default->owl_archiving_date_settings_table = "archiving_date_settings";
+$default->owl_archiving_utilisation_settings_table = "archiving_utilisation_settings";
+$default->owl_time_period_table = "time_period";
+$default->owl_time_unit_lookup_table = "time_unit_lookup";
 
 // logo file that must reside inside lang/graphics directory
 $default->logo = "kt.jpg";
@@ -156,6 +163,10 @@ $default->siteMap->addPage("viewHistory", "/presentation/lookAndFeel/knowledgeTr
 $default->siteMap->addPage("modifyDocument", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/modifyBL.php", "Manage Documents", User, "Modify Document", false);
 $default->siteMap->addPage("emailDocument", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/emailBL.php", "Manage Documents", User, "Email A Document", false);
 $default->siteMap->addPage("modifyDocumentGenericMetaData", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/modifyGenericMetaDataBL.php", "Manage Documents", User, "Modify Document Generic MetaData", false);
+$default->siteMap->addPage("archiveDocument", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/archiving/archiveDocumentBL.php", "Manage Documents", User, "Archive Document", false);
+$default->siteMap->addPage("addDocumentArchiveSettings", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/archiving/addArchiveSettingsBL.php", "Manage Documents", User, "Add Document Archive Settings", false);
+$default->siteMap->addPage("modifyDocumentArchiveSettings", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/archiving/modifyArchiveSettingsBL.php", "Manage Documents", User, "Modify Document Archive Settings", false);
+
 
 $default->siteMap->addPage("addFolder", "/presentation/lookAndFeel/knowledgeTree/foldermanagement/addFolderBL.php", "Manage Documents", User, "Add A Folder");
 $default->siteMap->addPage("addFolderDocType", "/presentation/lookAndFeel/knowledgeTree/foldermanagement/addFolderDocTypeBL.php", "Manage Documents", User, "");
@@ -357,16 +368,6 @@ $default->siteMap->addDefaultPage("addComment", "/presentation/lookAndFeel/knowl
 
 $default->siteMap->addSectionColour("Discussion Threads", "td", "BDDFE0");
 $default->siteMap->addSectionColour("Discussion Threads", "th", "57AFAE");
-
-// test pages
-$default->siteMap->addPage("scratchPad", "/tests/scratchPad.php", "Tests", Guest, "scratch", false);
-$default->siteMap->addPage("sitemap", "/tests/session/SiteMap.php", "Tests", Guest, "sitemap", false);
-$default->siteMap->addPage("documentBrowserTest", "/tests/documentmanagement/DocumentBrowser.php", "Tests", Guest, "test the document browser", false);
-$default->siteMap->addPage("scroll", "/tests/scroll/textScrollTest.php", "Tests", Guest, "test scrolling", false);
-$default->siteMap->addPage("subTest", "/tests/subscriptions/subscription.php", "Tests", Guest, "subscription unit test", false);
-$default->siteMap->addPage("subManager", "/tests/subscriptions/subscriptionManager.php", "Tests", Guest, "manage subscription unit test", false);
-$default->siteMap->addPage("subEngine", "/tests/subscriptions/subscriptionEngine.php", "Tests", Guest, "subscription firing unit test", false);
-$default->siteMap->addPage("auth", "/tests/authentication/authentication.php", "Tests", Guest, "authentication unit test", false);
 
 // default requires
 require_once("$default->fileSystemRoot/phpmailer/class.phpmailer.php");
