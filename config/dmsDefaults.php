@@ -127,7 +127,7 @@ $default->owl_timeout = 1200;
 $default->debug = True;
 
 // define site mappings
-require_once("$default->owl_fs_root/lib/SiteMap.inc");
+require_once("$default->owl_fs_root/lib/session/SiteMap.inc");
 $default->siteMap = new SiteMap();
 // action, section, page, userClass (SA, UA, U, A)
 $default->siteMap->addPage("login", "/login.php?loginAction=login", "General", "Anonymous");
