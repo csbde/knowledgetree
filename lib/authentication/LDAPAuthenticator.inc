@@ -59,18 +59,17 @@ class LDAPAuthenticator extends Authenticator {
         if ($this->oLdap->connect()) {
             // lookup dn from username - must exist in db
             $sBindDn = lookupField($default->owl_users_table, "ldap_dn", "username", $sUserName);
-            if (!$sBindDn) {
+            if ($sBindDn) {
                 if ( $this->oLdap->authBind($sBindDn, $sPassword) ) {
                     return true;
                 } else {
                     $_SESSION["errorMessage"] = "LDAP error: (" . $this->oLdap->ldapErrorCode . ") " . $this->oLdap->ldapErrorText;
                     return false;
                 }
-
             } else {
                 // no ldap_dn for this user, so reject this authentication attempt
-                $_SESSION["errorMessage"] = "Username $sUserName does not not exist in the DMS.  Please contact the System Administrator for assistance."
-                                            return false;
+                $_SESSION["errorMessage"] = "Username $sUserName does not not exist in the DMS.  Please contact the System Administrator for assistance.";
+                return false;
             }
         } else {
             $_SESSION["errorMessage"] = "LDAP error: (" . $this->oLdap->ldapErrorCode . ") " . $this->oLdap->ldapErrorText;
