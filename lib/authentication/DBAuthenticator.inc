@@ -1,19 +1,30 @@
 <?php
-
 require_once("$default->fileSystemRoot/lib/authentication/Authenticator.inc");
-
 /**
  * $Id$
- * 
+ *
  * Perform authentication tasks against the database.
  *
- * Licensed under the GNU GPL. For full terms see the file COPYING.
+ * Copyright (c) 2003 Jam Warehouse http://www.jamwarehouse.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
  * 
- * @version $Revision$ 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ * @version $Revision$
  * @author Michael Joseph <michael@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
- * @package lib.authentication
+ * @package lib.authentication 
  */
-
 class DBAuthenticator extends Authenticator {
 
     /**
@@ -27,7 +38,7 @@ class DBAuthenticator extends Authenticator {
         global $default;
 
         $sql = $default->db;
-        if ($sql->query("SELECT * FROM $default->owl_users_table WHERE username = '$userName' AND password = '" . md5($password) . "'")) {
+        if ($sql->query("SELECT * FROM $default->users_table WHERE username = '$userName' AND password = '" . md5($password) . "'")) {
             if ($sql->num_rows($sql) == "1") {
                 return true;
             } else {
@@ -55,7 +66,7 @@ class DBAuthenticator extends Authenticator {
         for ($i=0; $i<count($aAttributes); $i++) {
             $sQuery .= $aAttributes[$i] . (( ($i+1) == count($aAttributes) ) ? "" : ", ");
         }
-        $sQuery .= " FROM $default->owl_users_table WHERE username = '$sUserName'";
+        $sQuery .= " FROM $default->users_table WHERE username = '$sUserName'";
 
         if ($sql->query($sQuery)) {
             $aUserResults = array();
@@ -87,7 +98,7 @@ class DBAuthenticator extends Authenticator {
         for ($i=0; $i<count($aAttributes); $i++) {
             $sQuery .= $aAttributes[$i] . (( ($i+1) == count($aAttributes) ) ? "" : ", ");
         }
-        $sQuery .= " FROM $default->owl_users_table where username like '%$sUserNameSearch%'";
+        $sQuery .= " FROM $default->users_table where username like '%$sUserNameSearch%'";
 
         if ($sql->query($sQuery)) {
             $aUserResults = array();
