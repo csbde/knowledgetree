@@ -227,11 +227,9 @@ unit_id INTEGER NOT NULL
 )TYPE = InnoDB;
 
 CREATE TABLE help (
-  id int(11) NOT NULL auto_increment,
+  id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
   fSection varchar(100) NOT NULL default '',
-  help_info text NOT NULL,
-  PRIMARY KEY  (id),
-  UNIQUE KEY id (id)
+  help_info text NOT NULL
 ) TYPE=InnoDB;
 
 CREATE TABLE links ( 
@@ -285,9 +283,9 @@ can_write BIT NOT NULL
 )TYPE = InnoDB;
 
 CREATE TABLE search_document_user_link (
-id integer unique auto_increment,
-document_id integer,
-user_id integer
+id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
+document_id INTEGER,
+user_id INTEGER
 ) Type = InnoDB;
 
 -- sitemap tables
@@ -321,12 +319,6 @@ CREATE TABLE system_settings (
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 name CHAR(255) NOT NULL,
 value CHAR(255) NOT NULL
-)TYPE = InnoDB;
-
-CREATE TABLE sys_deleted ( 
-id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
-table_name CHAR(255) NOT NULL,
-datetime DATETIME NOT NULL
 )TYPE = InnoDB;
 
 CREATE TABLE time_period ( 
@@ -396,229 +388,7 @@ web_site_url CHAR(50) NOT NULL,
 web_master_id INTEGER NOT NULL
 )TYPE = InnoDB;
 
--- pk constraints
-ALTER TABLE discussion_threads
-ADD CONSTRAINT PK_discussion_threads
-PRIMARY KEY (id)
-;
-
-ALTER TABLE discussion_comments
-ADD CONSTRAINT PK_discussion_comments
-PRIMARY KEY (id)
-;
-
-ALTER TABLE active_sessions
-ADD CONSTRAINT PK_active_sessions
-PRIMARY KEY (id)
-;
-
-ALTER TABLE archiving_settings 
-ADD CONSTRAINT PK_archiving_settings 
-PRIMARY KEY (id) 
-;
-
-ALTER TABLE folder_doctypes_link
-ADD CONSTRAINT PK_folder_doctypes_link
-PRIMARY KEY (id)
-;
-
-ALTER TABLE document_fields
-ADD CONSTRAINT PK_document_fields
-PRIMARY KEY (id)
-;
-
-ALTER TABLE data_types
-ADD CONSTRAINT PK_data_types
-PRIMARY KEY(id)
-;
-
-ALTER TABLE document_fields_link
-ADD CONSTRAINT PK_document_fields_link
-PRIMARY KEY (id)
-;
-
-ALTER TABLE document_transaction_types_lookup
-ADD CONSTRAINT PK_document_transaction_types_lookup
-PRIMARY KEY (id)
-;
-
-ALTER TABLE document_transactions
-ADD CONSTRAINT PK_document_transactions
-PRIMARY KEY (id)
-;
-
-ALTER TABLE document_type_fields_link
-ADD CONSTRAINT PK_document_type_fields_link
-PRIMARY KEY (id)
-;
-
-ALTER TABLE document_types_lookup
-ADD CONSTRAINT PK_document_types_lookup
-PRIMARY KEY (id)
-;
-
-ALTER TABLE documents
-ADD CONSTRAINT PK_documents
-PRIMARY KEY (id)
-;
-
-ALTER TABLE document_subscriptions
-ADD CONSTRAINT PK_document_subscriptions
-PRIMARY KEY (id)
-;
-
-ALTER TABLE folders
-ADD CONSTRAINT PK_folders
-PRIMARY KEY (id)
-;
-
-ALTER TABLE document_link 
-ADD CONSTRAINT PK_table_link 
-PRIMARY KEY (id) 
-;
-
-
-ALTER TABLE dependant_document_instance
-ADD CONSTRAINT PK_new_documents_instance
-PRIMARY KEY (id) 
-;
-
-ALTER TABLE dependant_document_template
-ADD CONSTRAINT PK_new_document_template
-PRIMARY KEY (id) 
-;
-
-
-ALTER TABLE folder_subscriptions
-ADD CONSTRAINT PK_folder_subscriptions
-PRIMARY KEY (id)
-;
-
-ALTER TABLE folders_users_roles_link
-ADD CONSTRAINT PK_folders_users_roles_link
-PRIMARY KEY (id)
-;
-
-ALTER TABLE groups_folders_approval_link
-ADD CONSTRAINT PK_groups_folders_approval_link
-PRIMARY KEY (id)
-;
-
-ALTER TABLE groups_lookup
-ADD CONSTRAINT PK_groups_lookup
-PRIMARY KEY (id)
-;
-
-ALTER TABLE language_lookup
-ADD CONSTRAINT PK_language_lookup
-PRIMARY KEY (id)
-;
-
-ALTER TABLE metadata_lookup
-ADD CONSTRAINT PK_metadata_lookup
-PRIMARY KEY (id)
-;
-
-ALTER TABLE news 
-ADD CONSTRAINT PK_news 
-PRIMARY KEY (id) 
-;
-
-ALTER TABLE groups_units_link
-ADD CONSTRAINT PK_groups_units_link
-PRIMARY KEY (id)
-;
-
-ALTER TABLE links
-ADD CONSTRAINT PK_links
-PRIMARY KEY (id)
-;
-
-ALTER TABLE mime_types
-ADD CONSTRAINT PK_mimes_types
-PRIMARY KEY (id)
-;
-
-ALTER TABLE groups_folders_link
-ADD CONSTRAINT PK_groups_folders_link
-PRIMARY KEY (id)
-;
-
-ALTER TABLE organisations_lookup
-ADD CONSTRAINT PK_organisations_lookup
-PRIMARY KEY (id)
-;
-
-ALTER TABLE roles
-ADD CONSTRAINT PK_roles
-PRIMARY KEY (id)
-;
-
-ALTER TABLE site_sections_lookup
-ADD CONSTRAINT PK_site_sections_lookup
-PRIMARY KEY (id)
-;
-
-ALTER TABLE site_access_lookup
-ADD CONSTRAINT PK_site_access_lookup
-PRIMARY KEY (id)
-;
-
-ALTER TABLE sitemap
-ADD CONSTRAINT PK_sitemap
-PRIMARY KEY (id)
-;
-
-ALTER TABLE status_lookup
-ADD CONSTRAINT PK_status_lookup
-PRIMARY KEY (id)
-;
-
-ALTER TABLE system_settings
-ADD CONSTRAINT PK_system_settings
-PRIMARY KEY (id)
-;
-
-ALTER TABLE sys_deleted
-ADD CONSTRAINT PK_sys_deleted
-PRIMARY KEY (id)
-;
-
-ALTER TABLE units_lookup
-ADD CONSTRAINT PK_units_lookup
-PRIMARY KEY (id)
-;
-
-ALTER TABLE units_organisations_link
-ADD CONSTRAINT PK_units_organisations_link
-PRIMARY KEY (id)
-;
-
-ALTER TABLE users
-ADD CONSTRAINT PK_users
-PRIMARY KEY (id)
-;
-
-ALTER TABLE users_groups_link
-ADD CONSTRAINT PK_users_groups_link
-PRIMARY KEY (id)
-;
-
-ALTER TABLE web_documents
-ADD CONSTRAINT PK_web_documents
-PRIMARY KEY (id)
-;
-
-ALTER TABLE web_documents_status_lookup
-ADD CONSTRAINT PK_web_documents_status
-PRIMARY KEY (id);
-
-ALTER TABLE web_sites
-ADD CONSTRAINT PK_web_sites
-PRIMARY KEY (id);
-
 -- mime types
--- TODO: add icon paths to inserts
 INSERT INTO mime_types (filetypes, mimetypes, icon_path) VALUES ('ai', 'application/postscript', NULL);
 INSERT INTO mime_types (filetypes, mimetypes, icon_path) VALUES ('aif', 'audio/x-aiff', NULL);
 INSERT INTO mime_types (filetypes, mimetypes, icon_path) VALUES ('aifc', 'audio/x-aiff', NULL);
@@ -781,7 +551,7 @@ INSERT INTO language_lookup (name) VALUES ("Spanish");
 
 ---- system settings
 -- ldap
-INSERT INTO system_settings (name, value) values ("lastIndexUpdate", "2002-01-01");
+INSERT INTO system_settings (name, value) values ("lastIndexUpdate", "0");
 
 -- document statuses
 INSERT INTO web_documents_status_lookup (name) VALUES ("Pending");
@@ -822,256 +592,39 @@ INSERT INTO time_unit_lookup (name) VALUES ("Months");
 INSERT INTO time_unit_lookup (name) VALUES ("Days");
 
 -- mrc organisation
-INSERT INTO organisations_lookup (name) VALUES ("Medical Research Council");
+INSERT INTO organisations_lookup (name) VALUES ("Default Organisation");
 
 -- setup mrc units
-INSERT INTO units_lookup (name) VALUES ("ADARG"); -- id=1
-INSERT INTO units_lookup (name) VALUES ("AfroAids"); -- id=2
-INSERT INTO units_lookup (name) VALUES ("Diabetes"); -- id=3
-INSERT INTO units_lookup (name) VALUES ("Burden of Disease"); -- id=4
+INSERT INTO units_lookup (name) VALUES ("Default Unit");
 
-INSERT INTO units_organisations_link (unit_id, organisation_id) VALUES (1, 1); -- id=1
-INSERT INTO units_organisations_link (unit_id, organisation_id) VALUES (2, 1); -- id=2
-INSERT INTO units_organisations_link (unit_id, organisation_id) VALUES (3, 1); -- id=3
-INSERT INTO units_organisations_link (unit_id, organisation_id) VALUES (4, 1); -- id=4
+INSERT INTO units_organisations_link (unit_id, organisation_id) VALUES (1, 1);
 
 -- setup groups
 INSERT INTO groups_lookup (name, is_sys_admin, is_unit_admin) VALUES ("System Administrators", 1, 0); -- id=1
-INSERT INTO groups_lookup (name, is_sys_admin, is_unit_admin) VALUES ("ADARG Unit Administrators", 0, 1); -- id=2
-INSERT INTO groups_lookup (name, is_sys_admin, is_unit_admin) VALUES ("AfroAids Unit Administrators", 0, 1); -- id=3
-INSERT INTO groups_lookup (name, is_sys_admin, is_unit_admin) VALUES ("Diabetes Unit Administrators", 0, 1); -- id=4
-INSERT INTO groups_lookup (name, is_sys_admin, is_unit_admin) VALUES ("Burden of Disease Unit Administrators", 0, 1); -- id=5
-INSERT INTO groups_lookup (name, is_sys_admin, is_unit_admin) VALUES ("Anonymous", 0, 0); -- id=6
--- adarg unit groups
-INSERT INTO groups_lookup (name, is_sys_admin, is_unit_admin) VALUES ("Spell Checkers", 0, 0); -- id=7
-INSERT INTO groups_lookup (name, is_sys_admin, is_unit_admin) VALUES ("Editors", 0, 0); -- id=8
-INSERT INTO groups_lookup (name, is_sys_admin, is_unit_admin) VALUES ("Finance", 0, 0); -- id=9
--- afroaids unit groups
-INSERT INTO groups_lookup (name, is_sys_admin, is_unit_admin) VALUES ("Spell Checkers", 0, 0); -- id=10
-INSERT INTO groups_lookup (name, is_sys_admin, is_unit_admin) VALUES ("Editors", 0, 0); -- id=11
-INSERT INTO groups_lookup (name, is_sys_admin, is_unit_admin) VALUES ("Finance", 0, 0); -- id=12
--- diabetes unit groups
-INSERT INTO groups_lookup (name, is_sys_admin, is_unit_admin) VALUES ("Spell Checkers", 0, 0); -- id=13
-INSERT INTO groups_lookup (name, is_sys_admin, is_unit_admin) VALUES ("Editors", 0, 0); -- id=14
-INSERT INTO groups_lookup (name, is_sys_admin, is_unit_admin) VALUES ("Finance", 0, 0); -- id=15
--- disease unit groups
-INSERT INTO groups_lookup (name, is_sys_admin, is_unit_admin) VALUES ("Spell Checkers", 0, 0); -- id=16
-INSERT INTO groups_lookup (name, is_sys_admin, is_unit_admin) VALUES ("Editors", 0, 0); -- id=17
-INSERT INTO groups_lookup (name, is_sys_admin, is_unit_admin) VALUES ("Finance", 0, 0); -- id=18
+INSERT INTO groups_lookup (name, is_sys_admin, is_unit_admin) VALUES ("Unit Administrators", 0, 1); -- id=2
+INSERT INTO groups_lookup (name, is_sys_admin, is_unit_admin) VALUES ("Anonymous", 0, 0); -- id=3
 
 ------ map groups to units
----- adarg
--- administrators
+-- unit administrators
 INSERT INTO groups_units_link (group_id, unit_id) VALUES (2, 1);
--- other groups
-INSERT INTO groups_units_link (group_id, unit_id) VALUES (7, 1);
-INSERT INTO groups_units_link (group_id, unit_id) VALUES (8, 1);
-INSERT INTO groups_units_link (group_id, unit_id) VALUES (9, 1);
-
----- afroaids
--- administrators
-INSERT INTO groups_units_link (group_id, unit_id) VALUES (3, 2);
--- other groups
-INSERT INTO groups_units_link (group_id, unit_id) VALUES (10, 2);
-INSERT INTO groups_units_link (group_id, unit_id) VALUES (11, 2);
-INSERT INTO groups_units_link (group_id, unit_id) VALUES (12, 2);
-
----- diabetes
--- administrators
-INSERT INTO groups_units_link (group_id, unit_id) VALUES (4, 3);
--- other groups
-INSERT INTO groups_units_link (group_id, unit_id) VALUES (13, 3);
-INSERT INTO groups_units_link (group_id, unit_id) VALUES (14, 3);
-INSERT INTO groups_units_link (group_id, unit_id) VALUES (15, 3);
-
----- disease
--- administrators
-INSERT INTO groups_units_link (group_id, unit_id) VALUES (5, 4);
--- other groups
-INSERT INTO groups_units_link (group_id, unit_id) VALUES (16, 4);
-INSERT INTO groups_units_link (group_id, unit_id) VALUES (17, 4);
-INSERT INTO groups_units_link (group_id, unit_id) VALUES (18, 4);
-
 
 ------ users & map users to groups
 ---- system administrator
 INSERT INTO users (username, name, password, quota_max, quota_current, email, mobile, email_notification, sms_notification, ldap_dn, max_sessions, language_id)
             VALUES ("admin", "Administrator", "21232f297a57a5a743894a0e4a801fc3", "0", "0", "", "", 1, 1, "", 1, 1);
 INSERT INTO users_groups_link (group_id, user_id) VALUES (1, 1);
-            
+
+---- unit administrator
+INSERT INTO users (username, name, password, quota_max, quota_current, email, mobile, email_notification, sms_notification, ldap_dn, max_sessions, language_id)
+            VALUES ("unitAdmin", "Unit Administrator", "21232f297a57a5a743894a0e4a801fc3", "0", "0", "", "", 1, 1, "", 1, 1);
+INSERT INTO users_groups_link (group_id, user_id) VALUES (2, 2);
+                        
 ---- guest user
 INSERT INTO users (username, name, password, quota_max, quota_current, email, mobile, email_notification, sms_notification, ldap_dn, max_sessions, language_id)
             VALUES ("guest", "Anonymous", "084e0343a0486ff05530df6c705c8bb4", "0", "0", "", "", 0, 0, "", 19, 1);
-INSERT INTO users_groups_link (group_id, user_id) VALUES (6, 2);
+INSERT INTO users_groups_link (group_id, user_id) VALUES (3, 3);
             
----- unit administrators
--- adarg
-INSERT INTO users (username, name, password, quota_max, quota_current, email, mobile, email_notification, sms_notification, ldap_dn, max_sessions, language_id)
-            VALUES ("adargAdmin", "ADARG Unit Administrator", "21232f297a57a5a743894a0e4a801fc3", "0", "0", "", "", 0, 0, "", 1, 1);
-INSERT INTO users_groups_link (group_id, user_id) VALUES (2, 3);
-
--- afroaids
-INSERT INTO users (username, name, password, quota_max, quota_current, email, mobile, email_notification, sms_notification, ldap_dn, max_sessions, language_id)
-            VALUES ("afroaidsAdmin", "afroAIDS Unit Administrator", "21232f297a57a5a743894a0e4a801fc3", "0", "0", "", "", 0, 0, "", 1, 1);
-INSERT INTO users_groups_link (group_id, user_id) VALUES (3, 4);
-
--- diabetes
-INSERT INTO users (username, name, password, quota_max, quota_current, email, mobile, email_notification, sms_notification, ldap_dn, max_sessions, language_id)
-            VALUES ("diabetesAdmin", "Diabetes Unit Administrator", "21232f297a57a5a743894a0e4a801fc3", "0", "0", "", "", 0, 0, "", 1, 1);
-INSERT INTO users_groups_link (group_id, user_id) VALUES (4, 5);    
-        
--- disease
-INSERT INTO users (username, name, password, quota_max, quota_current, email, mobile, email_notification, sms_notification, ldap_dn, max_sessions, language_id)
-            VALUES ("diseaseAdmin", "Burden of Disease Unit Administrator", "21232f297a57a5a743894a0e4a801fc3", "0", "0", "", "", 0, 0, "", 1, 1);
-INSERT INTO users_groups_link (group_id, user_id) VALUES (5, 6);
-
----- unit users
--- adarg unit user
-INSERT INTO users (username, name, password, quota_max, quota_current, email, mobile, email_notification, sms_notification, ldap_dn, max_sessions, language_id)
-            VALUES ("adargUser", "adargUser", "084e0343a0486ff05530df6c705c8bb4", "0", "0", "", "", 0, 0, "", 1, 1);
--- spell checker and editor
-INSERT INTO users_groups_link (group_id, user_id) VALUES (7, 7);
-INSERT INTO users_groups_link (group_id, user_id) VALUES (8, 7);
-
--- afroaids unit user
-INSERT INTO users (username, name, password, quota_max, quota_current, email, mobile, email_notification, sms_notification, ldap_dn, max_sessions, language_id)
-            VALUES ("afroaidsUser", "afroaidsUser", "084e0343a0486ff05530df6c705c8bb4", "0", "0", "", "", 0, 0, "", 1, 1);
--- just spell checker
-INSERT INTO users_groups_link (group_id, user_id) VALUES (10, 8);
-
--- diabetes unit user
-INSERT INTO users (username, name, password, quota_max, quota_current, email, mobile, email_notification, sms_notification, ldap_dn, max_sessions, language_id)
-            VALUES ("diabetesUser", "diabetesUser", "084e0343a0486ff05530df6c705c8bb4", "0", "0", "", "", 0, 0, "", 1, 1);
--- editor and finance
-INSERT INTO users_groups_link (group_id, user_id) VALUES (14, 9);
-INSERT INTO users_groups_link (group_id, user_id) VALUES (15, 9);
-
--- disease unit user
-INSERT INTO users (username, name, password, quota_max, quota_current, email, mobile, email_notification, sms_notification, ldap_dn, max_sessions, language_id)
-            VALUES ("diseaseUser", "diseaseUser", "084e0343a0486ff05530df6c705c8bb4", "0", "0", "", "", 0, 0, "", 1, 1);
--- spell checker, editor and finance
-INSERT INTO users_groups_link (group_id, user_id) VALUES (16, 10);
-INSERT INTO users_groups_link (group_id, user_id) VALUES (17, 10);
-INSERT INTO users_groups_link (group_id, user_id) VALUES (18, 10);
-
--- default document type fields
-INSERT INTO document_fields (name, data_type, is_generic) VALUES ("Category", "String", 1);
-INSERT INTO document_fields (name, data_type, is_generic) VALUES ("Keywords", "String", 1);
-INSERT INTO document_fields (name, data_type, is_generic) VALUES ("Comments", "String", 1);
-INSERT INTO document_fields (name, data_type, is_generic) VALUES ("Author(s)", "String", 1);
-
--- default document types
-INSERT INTO document_types_lookup (name) VALUES ("Admin");
-INSERT INTO document_type_fields_link (document_type_id, field_id, is_mandatory) VALUES (1, 1, 1);
-INSERT INTO document_type_fields_link (document_type_id, field_id, is_mandatory) VALUES (1, 2, 0);
-INSERT INTO document_type_fields_link (document_type_id, field_id, is_mandatory) VALUES (1, 3, 0);
-INSERT INTO document_type_fields_link (document_type_id, field_id, is_mandatory) VALUES (1, 4, 1);
-
-INSERT INTO document_types_lookup (name) VALUES ("Proposal");
-INSERT INTO document_type_fields_link (document_type_id, field_id, is_mandatory) VALUES (2, 1, 1);
-INSERT INTO document_type_fields_link (document_type_id, field_id, is_mandatory) VALUES (2, 2, 0);
-INSERT INTO document_type_fields_link (document_type_id, field_id, is_mandatory) VALUES (2, 3, 0);
-INSERT INTO document_type_fields_link (document_type_id, field_id, is_mandatory) VALUES (2, 4, 1);
-
-INSERT INTO document_types_lookup (name) VALUES ("Publications");
-INSERT INTO document_type_fields_link (document_type_id, field_id, is_mandatory) VALUES (3, 1, 1);
-INSERT INTO document_type_fields_link (document_type_id, field_id, is_mandatory) VALUES (3, 2, 0);
-INSERT INTO document_type_fields_link (document_type_id, field_id, is_mandatory) VALUES (3, 3, 0);
-INSERT INTO document_type_fields_link (document_type_id, field_id, is_mandatory) VALUES (3, 4, 1);
-
-INSERT INTO document_types_lookup (name) VALUES ("Research");
-INSERT INTO document_type_fields_link (document_type_id, field_id, is_mandatory) VALUES (4, 1, 1);
-INSERT INTO document_type_fields_link (document_type_id, field_id, is_mandatory) VALUES (4, 2, 0);
-INSERT INTO document_type_fields_link (document_type_id, field_id, is_mandatory) VALUES (4, 3, 0);
-INSERT INTO document_type_fields_link (document_type_id, field_id, is_mandatory) VALUES (4, 4, 1);
-
-
 -- define folder structure
 ---- mrc organisation root folder
 INSERT INTO folders (name, description, parent_id, creator_id, unit_id, is_public)
-             VALUES ("Medical Research Council", "MRC Root Document Folder", 0, 1, 0, 0); -- id=1
-
----- adarg unit folders
--- [7,8,9]
-INSERT INTO folders (name, description, parent_id, creator_id, unit_id, is_public, parent_folder_ids, full_path)
-             VALUES ("ADARG", "ADARG Unit Root Folder", 1, 1, 1, 0, 1, 'Medical Research Council');  -- id=2
-             -- unit admins have write access
-             INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (2, 2, 0, 1);
-                 
----- afroaids unit folders
--- [10,11,12]
-INSERT INTO folders (name, description, parent_id, creator_id, unit_id, is_public, parent_folder_ids, full_path)
-             VALUES ("AfroAIDS", "AfroAIDS Unit Root Folder", 1, 1, 2, 0, 1, 'Medical Research Council'); -- id=3
-             -- unit admins have write access
-             INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (3, 3, 0, 1);             
-             
----- diabetes unit folders
---[13,14,15]
-INSERT INTO folders (name, description, parent_id, creator_id, unit_id, is_public, parent_folder_ids, full_path)
-             VALUES ("Diabetes", "Diabetes Unit Root Folder", 1, 1, 3, 0, 1, 'Medical Research Council');  -- id=4
-             -- unit admins have write access
-             INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (4, 4, 0, 1);
-             
----- burden of disease unit folders
--- [16,17,18]
-INSERT INTO folders (name, description, parent_id, creator_id, unit_id, is_public, parent_folder_ids, full_path)
-             VALUES ("Burden of Disease", "Burden of Disease Unit Root Folder", 1, 1, 4, 0, 1, 'Medical Research Council');  -- id=5
-             -- unit admins have write access
-             INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (5, 5, 0, 1);
-
--- link the folders to document types
-INSERT INTO folder_doctypes_link (document_type_id, folder_id)
-	SELECT	F.id, DTL.id
-	FROM	folders AS F, document_types_lookup AS DTL;
-             
-             
--- TODO: populate categories_lookup
-
--- sitemap sections
-INSERT INTO site_sections_lookup (name) VALUES ("General");
-INSERT INTO site_sections_lookup (name) VALUES ("Manage Documents");
-INSERT INTO site_sections_lookup (name) VALUES ("Administration");
-INSERT INTO site_sections_lookup (name) VALUES ("Advanced Search");
-INSERT INTO site_sections_lookup (name) VALUES ("Preferences");
-INSERT INTO site_sections_lookup (name) VALUES ("Help");
-INSERT INTO site_sections_lookup (name) VALUES ("Logout");
-INSERT INTO site_sections_lookup (name) VALUES ("Tests");
--- sitemap access levels
-INSERT INTO site_access_lookup (name) VALUES ("None");
-INSERT INTO site_access_lookup (name) VALUES ("Guest");
-INSERT INTO site_access_lookup (name) VALUES ("User");
-INSERT INTO site_access_lookup (name) VALUES ("UnitAdmin");
-INSERT INTO site_access_lookup (name) VALUES ("SysAdmin");
----- sitemap definition
--- general section
-INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default) VALUES ("login", "/presentation/login.php?loginAction=login", 1, 0, "", 0);
-INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default) VALUES ("loginForm", "/presentation/login.php?loginAction=loginForm", 1, 0, "login", 0); 
-INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default) VALUES ("dashboard", "/presentation/dashboardBL.php", 1, 1, "dashboard", 0);
--- manage documents section
-INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default) VALUES ("browse", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/browseBL.php", 2, 2, "browse documents", 1);
-INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default) VALUES ("viewDocument", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/viewBL.php", 2, 2, "", 0);
-INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default, is_enabled) VALUES ("addDocument", "/presentation/documentmanagement/addDocument.php", 2, 3, "Add A Document", 0, 0);
-INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default, is_enabled) VALUES ("addFolder", "/presentation/documentmanagement/addFolder.php", 2, 4, "Add A Folder", 0, 0);
-INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default, is_enabled) VALUES ("modifyFolderProperties", "/presentation/documentmanagement/modifyFolder.php", 2, 4, "Modify Folder Properties", 0, 0);
-INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default, is_enabled) VALUES ("deleteFolder", "/presentation/documentmanagement/deleteFolder.php", 2, 4, "Delete A Folder", 0, 0);
-INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default, is_enabled) VALUES ("moveFolder", "/presentation/documentmanagement/moveFolder.php", 2, 4, "Move A Folder", 0, 0);
--- pages for administration section
-INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default, is_enabled) VALUES ("administration", "/admin.php", 3, 4, "Administration", 1, 0);
-INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default, is_enabled) VALUES ("unitAdministration", "/presentation/unitAdmin.php", 3, 4, "Unit Administration", 0, 0);
-INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default, is_enabled) VALUES ("systemAdministration", "/presentation/sysAdmin.php", 3, 5, "System Administration", 0, 0);
--- pages for advanced search section
-INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default, is_enabled) VALUES ("advancedSearch", "/search.php", 4, 2, "Advanced Search", 1, 0);
--- pages for prefs section
-INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default, is_enabled) VALUES ("preferences", "/preferences.php", 5, 3, "Preferences", 1, 0);
-INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default, is_enabled) VALUES ("viewPreferences", "/preferences.php", 5, 3, "View Preferences", 0, 0);
-INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default, is_enabled) VALUES ("editPreferences", "/preferences.php", 5, 3, "Edit Preferences", 0, 0);
--- pages for Help section
-INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default) VALUES ("help", "/help.php", 6, 2, "Help", 1);
--- pages for logout section section
-INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default) VALUES ("logout", "/presentation/logout.php", 7, 2, "Logout", 1);
--- test pages
-INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default, is_enabled) VALUES ("scratchPad", "/tests/scratchPad.php", 8, 2, "scratch", 0, 0);
-INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default, is_enabled) VALUES ("sitemap", "/tests/session/SiteMap.php", 8, 2, "sitemap", 0, 0);
-INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default, is_enabled) VALUES ("documentBrowserTest", "/tests/documentmanagement/DocumentBrowser.php", 8, 2, "test the document browser", 0, 0);
-
-UPDATE folders_users_roles_link SET dependant_documents_created = 1;
+             VALUES ("Root Folder", "Root Document Folder", 0, 1, 0, 0);
