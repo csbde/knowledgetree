@@ -1,18 +1,18 @@
 <?php
 
 /**
- * login.php -- Login page
+ * $Id$
  *  
  * This page handles logging a user into the dms.
  * This page displays the login form, and performs the business logic login processing.
  *
  * Licensed under the GNU GPL. For full terms see the file COPYING.
  *
- * @version $Id$
- * @Copyright (c) 1999-2002 The Owl Project Team
- * @author michael
+ * @version $Revision$
+ * @author <a href="mailto:michael@jamwarehouse.com>Michael Joseph</a>, Jam Warehouse (Pty) Ltd, South Africa
  * @package dms
  */
+ 
 // main library routines and defaults
 require_once("./config/dmsDefaults.php");
 require_once("./lib/owl.lib.php");
