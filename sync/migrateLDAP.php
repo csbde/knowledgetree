@@ -13,21 +13,22 @@ require_once("../config/dmsDefaults.php");
 $aUsers = User::getList();
 
 // then initialise the LDAP authenticator with the new directory server address
-$sNewLdapServer = "smaurg.mrc.ac.za";
-$sNewLdapDn = "";
+$sNewLdapServer = "jam001.jamwarehouse.com";
+$sNewLdapDn = "CN=Users,DC=jamwarehouse,DC=com";
 $oLdap = new LDAPAuthenticator($sNewLdapServer, $sNewLdapDn);;
-
+echo "<pre>";
 for ($i=0; $i<count($aUsers); $i++) {
 	// for each user, lookup the dn based on the username	
 	$oUser = $aUsers[$i];
 	$aResults = $oLdap->searchUsers($oUser->getUserName(), array ("dn"));
 	if (count($aResults) > 1) {
-		echo "retrieved " . count($aResults) . " matches for username=" + $oUser->getUserName();
-	} else {
+		echo "retrieved " . count($aResults) . " matches for username=" . $oUser->getUserName() . ": " . arrayToString($aResults) . "<br>";
+	} else if (count($aResults) == 1) {
 		$sNewDN = $aResults[$oUser->getUserName()]["dn"];
 		// echo an update statement that sets the dn to the correct value		
-		echo "UPDATE users SET ldap_dn='" . $sNewDN . "' WHERE id=" . $oUser->getID();
+		echo "UPDATE users SET ldap_dn='" . $sNewDN . "' WHERE id=" . $oUser->getID() . "<br>";
 	}
 }
 echo "Change the configuration file to point to the new directory server-" . $sNewLdapServer;
+echo "</pre>";
 ?>
