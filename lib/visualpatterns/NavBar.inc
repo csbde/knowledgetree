@@ -210,8 +210,7 @@ class NavBar {
               "<tr height=\"20%\"><td background = " . $hStretched ." width =\"100%\">". $row1 ."</td></tr>\n " .
               "<tr  height=\"30%\"> <td VALIGN = \"absmiddle\" background = " . $hStretched ." width =\"100%\" NOWRAP >\n " .
               "<img align = \"absmiddle\" src = \"$default->graphicsUrl/arrow.gif\" ></img>\n " .
-              "<img align = \"absmiddle\" src = \"$default->graphicsUrl/arrow.gif\" ></img>\n " .
-			  "<INPUT type=\"hidden\" name=\"fForStandardSearch\" value=\"no\" />\n ";
+              "<INPUT type=\"hidden\" name=\"fForStandardSearch\" value=\"no\" />\n ";
 			  //disable the search bar if we are browsing search results
 			  if ((strcmp($this->sSection,"Standard Search") == 0) || (strcmp($this->sSection,"Advanced Search") == 0)) {
 				  $bar .= "<INPUT type=\"hidden\" name=\"fSearchText\" width=\"30\" height = \"10\" align = \"absmiddle\" />\n ";
