@@ -16,6 +16,7 @@ if (checkSession()) {
 	require_once("$default->owl_fs_root/lib/folderManagement/FolderManager.inc");
 	
 	echo "Document upload succeeded: " . (PhysicalDocumentManager::uploadPhysicalDocument($_FILES, $folderDropDown, "None", $_FILES['upfile']['tmp_name']) ? "Yes" : "No");
+
 	
 	
 }

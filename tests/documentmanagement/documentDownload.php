@@ -17,7 +17,7 @@ if (checkSession()) {
 	
 	echo "<html><head></head><body>\n";
 	echo "<form method=\"POST\"  action=\"documentDownload2.php\">\n";
-	echo "<input type=\"text\" name=\"folderID\">\n";
+	echo "<input type=\"text\" name=\"documentID\">\n";
 	echo "<input type=\"submit\" value=\"Submit\">\n";
 	echo "</body></html>";
 
