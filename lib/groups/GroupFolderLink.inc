@@ -11,7 +11,7 @@
  * @author Michael Joseph <michael@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
  * @package lib.foldermanagement
  */
-class FolderAccess {
+class GroupFolderLink {
 	
 	/** primary key of current object */
 	var $iId;
@@ -24,7 +24,7 @@ class FolderAccess {
 	/** write access */
 	var $bCanWrite;
 	
-	function FolderAccess($iNewFolderID, $iNewGroupID, $iNewCanRead, $iNewCanWrite) {
+	function GroupFolderLink($iNewFolderID, $iNewGroupID, $iNewCanRead, $iNewCanWrite) {
 		//object not created in database yet
 		$this->iId = -1;
 		$this->iFolderID = $iNewFolderID;
@@ -135,7 +135,21 @@ class FolderAccess {
 		$_SESSION["errorMessage"] = $lang_err_object_key;
 		return false;
 	}
-	
+    /**
+     * Whether the folder permission exists in the database
+     */     
+    function exists() {
+        global $default;
+        $sql = $default->db;
+        if ($sql->query("SELECT count(*) AS count FROM $default->owl_groups_folders_table WHERE folder_id = $this->iFolderID AND group_id = $this->iGroupID")) {
+            $sql->next_record();
+            return ($sql->f("count") > 0) ? true : false;
+        } else {
+            $_SESSION["errorMessage"] = $lang_err_database;
+            return false;
+        }
+    }
+    
 	/**
 	* Static function.
 	* Given a primary key it will create a FolderAccess object and populate it with the 
@@ -143,15 +157,15 @@ class FolderAccess {
 	*
 	* @return FolderAccess populated FolderAccess object on successful query, false otherwise and set $_SESSION["errorMessage"]
 	*/
-	function & get($iFolderAccessID) {
+	function & get($iGroupFolderID) {
 		global $default;
 		$sql = $default->db;
-		$result = $sql->query("SELECT * FROM $default->owl_groups_folders_table WHERE id = $iFolderAccessID");
+		$result = $sql->query("SELECT * FROM $default->owl_groups_folders_table WHERE id = $iGroupFolderID");
 		if ($result) {
 			if ($sql->next_record()) {
-				$oFolderAccess = & new FolderAccess($sql->f("folder_id"), $sql->f("group_id"), $sql->f("can_read"), $sql->f("can_write"));
-				$oFolderAccess->iId = $iFolderAccessID;
-				return $oFolderAccess;
+				$oGroupFolderLink = & new GroupFolderLink($sql->f("folder_id"), $sql->f("group_id"), $sql->f("can_read"), $sql->f("can_write"));
+				$oGroupFolderLink->iId = $iGroupFolderID;
+				return $oGroupFolderLink;
 			}
 			$_SESSION["errorMessage"] = $lang_err_object_not_exist . "id = " . $iFolderAccessID . " table = $default->owl_groups_folders_table";
 			return false;
@@ -170,14 +184,14 @@ class FolderAccess {
 	*/
 	function getList($sWhereClause = null) {
 		global $default, $lang_err_database;
-		$oFolderAccessArray = array();
+		$oGroupFolderLinkArray = array();
 		$sql = $default->db;
 		$result = $sql->query("SELECT * FROM " . $default->owl_groups_folders_table  . (isset($sWhereClause) ? " " . $sWhereClause : ""));
 		if ($result) {			
 			while ($sql->next_record()) {
-				$oFolderAccessArray[] = & FolderAccess::get($sql->f("id"));
+				$oGroupFolderLinkArray[] = & GroupFolderLink::get($sql->f("id"));
 			}
-			return $oFolderAccessArray;
+			return $oGroupFolderLinkArray;
 		}
 		$_SESSION["errorMessage"] = $lang_err_database;
 		return false;
