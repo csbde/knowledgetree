@@ -83,7 +83,7 @@ class PatternEditableTableSqlQuery {
 		//$sToRender = "<table border = 0, width=$this->sWidth>\n";
 		$sToRender = "<table cellpadding = 5, border = 0>\n";
 		if (isset($this->sTableCaption)) {
-			$sToRender .= "<caption colspan = " . count($this->aColumnsSql) . ", align=left><b>$this->sTableCaption</b></caption>\n";
+			$sToRender .= "<caption align=\"top\" colspan = " . count($this->aColumnsSql) . ", align=left><b>$this->sTableCaption</b></caption>\n";
 		}
 		if ($this->bDisplayColumnHeadings) {
 			for ($i = 0; $i < count($this->aColumnHeaderNames); $i++) {
