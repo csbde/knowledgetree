@@ -8,109 +8,20 @@
 * @package presentation.lookAndFeel.knowledgeTree.
 *
 */
-// gets the delete stuff
-function getDeletePage($iUnitID) {
-    global $default;
-    $oUnit = null;
-    if (isset($iUnitID)) {
-        $oUnit = Unit::get($iUnitID);
-        $sHeading .= "<b>Are you sure you wish to Remove this Unit?:</b>\n";
-    } else {
-        $sHeading .= "Please select a Unit: ";
-    }
 
-    $sToRender .= renderHeading("Remove Unit");
-    $sToRender .= "<table>\n";
-    $sToRender .= "<tr><td>$sHeading</td></tr>\n";
-    $sToRender .= "<tr>\n";
-    $sToRender .= "<td>Unit Name: </td>" . getUnitDisplay($oUnit) . "\n";
-    $sToRender .= "</tr>\n";
-    $sToRender .= "<tr>\n";
-    $sToRender .= "</tr>\n";
-    $sToRender .= "<tr>\n";
-    $sToRender .= "</tr>\n";
-    $sToRender .= "<tr>\n";
-    $sToRender .= "</tr>\n";
-    $sToRender .= "<tr>\n";
-    $sToRender .= getDeleteButton($oUnit);
-    $sToRender .= "</tr>\n";
-    $sToRender .= "</table>\n";
-
-
-    return $sToRender;
-}
-
-// get successfully deletion page
-function getDeleteSuccessPage() {
-
+function getConfirmDeletePage($oUnit, $oOrg) {
     global $default;
 
     $sToRender .= renderHeading("Remove Unit");
     $sToRender .= "<table>\n";
-    $sToRender .= "<tr>\n";
-    $sToRender .= "<td><b>Unit SuccessFully Removed!</b></td>\n";
-    $sToRender .= "</tr>\n";
-    $sToRender .= "<tr></tr>\n";
-    $sToRender .= "<tr></tr>\n";
-    $sToRender .= "<tr></tr>\n";
-    $sToRender .= "<tr></tr>\n";
-    $sToRender .= "<tr>\n";
-    $sToRender .= "<td align = right><a href=\"$default->rootUrl/control.php?action=listUnits\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
-    $sToRender .= "</tr>\n";
-    $sToRender .= "</table>\n";
-
-    return $sToRender;
-}
-
-// get deletion failed page
-function getDeleteFailPage() {
-
-    global $default;
-
-    $sToRender .= renderHeading("Remove Unit");
-    $sToRender .= "<table>\n";
-    $sToRender .= "<tr>\n";
-    $sToRender .= "<td><b>Deletion Failed!</b></td>\n";
-    $sToRender .= "</tr>\n";
-    $sToRender .= "<tr></tr>\n";
-    $sToRender .= "<tr></tr>\n";
-    $sToRender .= "<tr><td>Please Ensure that the unit has no groups belonging to it</td></tr>\n";
-    $sToRender .= "<tr></tr>\n";
-    $sToRender .= "</tr>\n";
-    $sToRender .= "<tr><td align = right><a href=\"$default->rootUrl/control.php?action=listUnits\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td></tr>\n";
-    $sToRender .= "</table>\n";
-
-    return $sToRender;
-}
-
-
-function getDeleteConfirmedPage($iUnitID,$iOrgID) {
-    global $default;
-    $oUnit = null;
-    if (isset($iUnitID)) {
-        $oUnit = Unit::get($iUnitID);
-    }
-
-    if (isset($iOrgID)) {
-        $oOrg = Organisation::get($iOrgID);
-    }
-
-	if($oOrg){
-		$sOrgValue = getOrgDisplay($oOrg);
-	} else {
-			$sOrgValue = "<b>* Not Assigned to an Organisation<b>";
-	}	
-
-    $sToRender .= renderHeading("Remove Unit");
-    $sToRender .= "<table>\n";
-    $sToRender .= "<tr><td><b>Are you sure you wish to Remove this Unit?:</b></td></tr>\n";
+    $sToRender .= "<tr><td><b>Are you sure you wish to Remove this Unit:</b></td></tr>\n";
     $sToRender .= "<tr>\n";
     $sToRender .= "<td>Unit Name: " . getUnitDisplay($oUnit) . "</td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "<tr>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "<td>Organisation Name: " . $sOrgValue . "</td>\n";
+    $sToRender .= "<td>Organisation Name: " . getOrgDisplay($oOrg) . "</td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "<tr>\n";
     $sToRender .= "</tr>\n";
@@ -122,6 +33,21 @@ function getDeleteConfirmedPage($iUnitID,$iOrgID) {
     return $sToRender;
 }
 
+function getStatusPage($sHeading, $sText = "") {
+
+    global $default;
+
+    $sToRender .= renderHeading("Remove Unit");
+    $sToRender .= "<table>\n";
+    $sToRender .= "<tr>\n";
+    $sToRender .= "<td><b>$sHeading</b></td>\n";
+    $sToRender .= "</tr>\n";
+    $sToRender .= "<tr><td>$sText</td></tr>\n";
+    $sToRender .= "<tr><td align = right><a href=\"$default->rootUrl/control.php?action=listUnits\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td></tr>\n";
+    $sToRender .= "</table>\n";
+
+    return $sToRender;
+}
 
 // show listbox...or the text name
 function getUnitDisplay($oUnit) {
@@ -144,6 +70,8 @@ function getOrgDisplay($oOrg) {
     if (isset($oOrg)) {
         return "<input type=\"hidden\" name=\"fOrgID\" value=\"" . $oOrg->iId . "\">\n" .
                "<b>" . $oOrg->getName() . "</b>";
+    } else {
+    	return "<b>* Not Assigned to an Organisation<b>";
     }
 }
 

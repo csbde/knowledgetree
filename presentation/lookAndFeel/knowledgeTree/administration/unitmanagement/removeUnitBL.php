@@ -25,39 +25,52 @@ if (checkSession()) {
 
     $oPatternCustom = & new PatternCustom();
 
-    // get main page
-    if (isset($fUnitID)) {
-        $fOrgID = UnitOrganisationLink::unitBelongsToOrg($fUnitID);
-        
-        if(!$fOrgID) { $fOrgID = null;} 
-                
-        $oPatternCustom->setHtml(getDeleteConfirmedPage($fUnitID,$fOrgID));
-        $main->setFormAction($_SERVER["PHP_SELF"] . "?fForDeleteConfirmed=1");
-    } else {
-        $oPatternCustom->setHtml(getDeletePage(null));
-        $main->setFormAction($_SERVER["PHP_SELF"]);
-    }
-
-    if (isset($fForDeleteConfirmed)) {
-        // get unitorg object
-        if ($fOrgID > 0) {
-	        $oUnitOrg = new UnitOrganisationLink($fUnitID,$fOrgID);
-	        $oUnitOrg->setUnitOrgID($fUnitID);
-        	
-        	//delete unitorgobject
-        	$oUnitOrg->delete();
-        }
-        //get unit object
+    if ($fUnitID) {
+        // retrieve unit object
         $oUnit = Unit::get($fUnitID);
-        $oUnit->setName($fUnitName);
-        
-
-        //delete unit object
-        if ($oUnit->delete()) {
-            $oPatternCustom->setHtml(getDeleteSuccessPage());
-        } else {
-            $oPatternCustom->setHtml(getDeleteFailPage());
-        }
+		if ($oUnit) {
+	    
+	        // if the unit has groups linked to it, then it can't be deleted
+	        if ($oUnit->hasGroups()) {
+	        	// display error message
+	        	$oPatternCustom->setHtml(getStatusPage("Can't delete Unit '" . $oUnit->getName() . "'", "Please remove all groups belonging to this Unit before attempting to delete it"));
+	        } else {
+		        // retrieve organisation link (for later deletion or to get the organisation id)
+			    $oUnitOrg = UnitOrganisationLink::getByUnitID($fUnitID);
+	        		
+				// we've received confirmation, so delete
+			    if (isset($fForDeleteConfirmed)) {
+			        //delete unit object
+			        if ($oUnit->delete()) {
+				        // delete the link between this unit and its organisation if there is one
+						if ($oUnitOrg) {
+					       	if ($oUnitOrg->delete()) {
+					       		$oPatternCustom->setHtml(getStatusPage("Unit SuccessFully Removed!"));
+					        } else {
+					        	// couldn't delete the link to the organisation
+								$oPatternCustom->setHtml(getStatusPage("Deletion of Unit Organisation Link Failed!", "The Unit was deleted, but the link to the Organisation could not be deleted"));
+					       	}
+						} else {
+							// no organisation mapped
+							$oPatternCustom->setHtml(getStatusPage("Unit SuccessFully Removed!"));
+						}
+			        } else {
+			            $oPatternCustom->setHtml(getStatusPage("Deletion of Unit '" . $oUnit->getName() . "' Failed!"));
+			        }
+	        	// ask for confirmation before deleting		        
+			    } else {
+			    	$oOrganisation = Organisation::get($oUnitOrg->getOrgID());
+			        $oPatternCustom->setHtml(getConfirmDeletePage($oUnit, $oOrganisation));
+			        $main->setFormAction($_SERVER["PHP_SELF"] . "?fForDeleteConfirmed=1");
+			    }
+	        }
+		} else {
+			// couldn't retrieve unit from db
+        	$oPatternCustom->setHtml(getStatusPage("No Unit selected for deletion."));
+		}			
+    } else {
+    	// no params received, error 
+        $oPatternCustom->setHtml(getStatusPage("No Unit selected for deletion."));
     }
 
     $main->setCentralPayload($oPatternCustom);
