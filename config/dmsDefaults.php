@@ -230,6 +230,7 @@ $default->siteMap->addPage("viewAlert", "/presentation/lookAndFeel/knowledgeTree
 
 // pages for advanced search section
 $default->siteMap->addDefaultPage("advancedSearch", "/search.php", "Advanced Search", Guest, "Advanced Search", false);
+$default->siteMap->addDefaultPage("standardSearch", "/presentation/lookAndFeel/knowledgeTree/search/standardSearchBL.php", "Standard Search", Guest, "Standard Search", false);
 
 // pages for prefs section
 //$default->siteMap->addDefaultPage("preferences", "/presentation/lookAndFeel/knowledgeTree/Help/emailHelp.php", "Preferences", User, "Preferences",false);
