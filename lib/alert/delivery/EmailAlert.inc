@@ -12,7 +12,7 @@ require_once("$default->fileSystemRoot/lib/email/Email.inc");
  * @version $Revision$ 
  * @author Michael Joseph <michael@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
  *
- * @package lib.subscriptions.alert
+ * @package lib.alert.delivery
  */
 class EmailAlert {
     var $sAddress;

@@ -14,6 +14,18 @@
  * @package lib.subscriptions
  */
 class AlertContent {
+	
+	/**
+	 * Returns the appropriate alert content for document collaboration emails
+	 * after appropriately substituting the passed values into the text.
+	 *
+	 * @param int the type of document collaboration alert, see CollaborationConstants.inc
+	 * @param array contains the dynamic values that need to be substituted into the alert notification text
+	 * @return string the alert content
+	 */
+	function getCollaborationAlert($iCollaborationAlertType, $aValues) {
+	}
+	
 
     /**
      * Returns the appropriate alert content for the subscriptionAlertType
@@ -24,7 +36,7 @@ class AlertContent {
      *              alert notification text
      * @return string the alert content
      */
-    function get($iSubscriptionAlertType, $aValues) {
+    function getSubscriptionAlert($iSubscriptionAlertType, $aValues) {
         $sSubject = "MRC DMS Subscription Alert- ";
         $aAlertSubject = array(SubscriptionConstants::subscriptionAlertType("AddFolder") => $sSubject . "New Folder",
                                SubscriptionConstants::subscriptionAlertType("RemoveSubscribedFolder") => $sSubject . "Removed Folder",
