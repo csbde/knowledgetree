@@ -47,7 +47,7 @@ if (checkSession()) {
     	$oFolder = Folder::get($fFolderID);
     	if ($oFolder) {
 	        //if the user can edit the folder
-	        if (Permission::userHasFolderWritePermission($fFolderID)) {
+	        if (Permission::userHasFolderWritePermission($oFolder)) {
 				if (isset($fCollaborationEdit)) {
 	                //user attempted to edit the folder collaboration process but could not because there is
 	                //a document currently in this process
