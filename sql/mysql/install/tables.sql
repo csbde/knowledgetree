@@ -712,3 +712,8 @@ INSERT INTO folders (name, description, parent_id, creator_id, unit_id, is_publi
              VALUES ("Root Folder", "Root Document Folder", 0, 1, 0, 0);
 INSERT INTO folders (name, description, parent_id, creator_id, unit_id, is_public, parent_folder_ids, full_path)
              VALUES ("Default Unit", "Default Unit Root Folder", 1, 1, 1, 0, "1", "Root Folder");
+             
+-- default document type
+INSERT INTO document_types_lookup (name) VALUES ("Default");
+-- map folder to document type
+INSERT INTO folder_doctypes_link (folder_id, document_type_id) VALUES (2, 1);
