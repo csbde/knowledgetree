@@ -43,14 +43,21 @@ if (checkSession()) {
     		}
      		//post array to page
     		if(isset($aResults))
-    		{	if($bLdap == false){
-				$oPatternCustom->setHtml(getDetailsDBPage($sSearch,$aResults));
-				$main->setFormAction($_SERVER["PHP_SELF"]. "?fAddToDb=1&fFromDb=1");
-			}else{
-				$oPatternCustom->setHtml(getDetailsLDAPPage($sSearch,$aResults));
-				$main->setFormAction($_SERVER["PHP_SELF"]. "?fAddToDb=1");
+    		{	
+    			if(count($aResults)== 0){
+    			
+    					$oPatternCustom->setHtml(getPageUsernameNotFound());
+    			}
+    			else{
+    			
+    				if($bLdap == false){
+					$oPatternCustom->setHtml(getDetailsDBPage($sSearch,$aResults));
+					$main->setFormAction($_SERVER["PHP_SELF"]. "?fAddToDb=1&fFromDb=1");
+				}else{
+					$oPatternCustom->setHtml(getDetailsLDAPPage($sSearch,$aResults));
+					$main->setFormAction($_SERVER["PHP_SELF"]. "?fAddToDb=1");
+				}
 			}
-			
 			
 		}else{
 			$oPatternCustom->setHtml(getAddPageFail());
