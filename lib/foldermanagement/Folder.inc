@@ -289,9 +289,8 @@ class Folder {
 	function getFolderPath($iFolderID) {
 		global $default;		
 		//if the folder has a parent
-		if (Folder::getParentFolderID($iFolderID) != 0) {
-			$sCurrentPath = Folder::getFolderPath(Folder::getParentFolderID($iFolderID)) . Folder::getFolderName($iFolderID) . "/" . $sCurrentPath;
-			return $sCurrentPath;
+		if (Folder::getParentFolderID($iFolderID) != 0) {			
+			return Folder::getFolderPath(Folder::getParentFolderID($iFolderID)) . "/" . Folder::getFolderName($iFolderID);
 		}	
 		return $default->owl_FileDir . "/" . Folder::getFolderName($iFolderID) . "/";
 	}
