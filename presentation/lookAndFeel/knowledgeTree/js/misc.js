@@ -4,9 +4,10 @@ function setActionAndSubmit(newAction) {
     document.MainForm.submit();
 }
 
-function setActionAndSubmitSearch() {	
+function setActionAndSubmitSearch(newAction) {	
 	document.MainForm.fForStandardSearch.value = 'yes';
 	document.MainForm.method = 'GET';
+	document.MainForm.action = newAction;
 	document.MainForm.submit();	
 }
 
