@@ -6,6 +6,7 @@ $scroll = array();
 
 $browser = $default->phpSniff->property("browser");
 $version = $default->phpSniff->property("version");
+echo "$browser-$version";
 if ( ($browser == "moz") && ($version <= 4.79)) {
     $scroll["upArrowLeft"] = "780";
     $scroll["upArrowTop"] = "190";
@@ -17,36 +18,56 @@ if ( ($browser == "moz") && ($version <= 4.79)) {
     $scroll["textBoxWidth"] = "620";
     $scroll["textBoxHeight"] = "395";  
 } elseif ( ($browser == "moz") && ($version == "5.0")) {
-    $scroll["upArrowLeft"] = "722";
+    $scroll["upArrowLeft"] = "742";
     $scroll["upArrowTop"] = "107";
-    $scroll["downArrowLeft"] = "722";
+    $scroll["downArrowLeft"] = "742";
     $scroll["downArrowTop"] = "588";
     
     $scroll["textBoxLeft"] = "135";
-    $scroll["textBoxTop"] = "120";
+    $scroll["textBoxTop"] = "105";
     $scroll["textBoxWidth"] = "600";
-    $scroll["textBoxHeight"] = "458";
+    $scroll["textBoxHeight"] = "490";
 } elseif ($browser == "ie") {
-    // MSIE 6.0
-    $scroll["upArrowLeft"] = "725";
+    // MSIE
+    $scroll["upArrowLeft"] = "745";
     $scroll["upArrowTop"] = "122";
-    $scroll["downArrowLeft"] = "725";
+    $scroll["downArrowLeft"] = "745";
     $scroll["downArrowTop"] = "604";
     
-    $scroll["textBoxLeft"] = "138";
-    $scroll["textBoxTop"] = "135";
-    $scroll["textBoxWidth"] = "600";
-    $scroll["textBoxHeight"] = "463";
-} else {
-    $scroll["upArrowLeft"] = "722";
+    $scroll["textBoxLeft"] = "134";
+    $scroll["textBoxTop"] = "118";
+    $scroll["textBoxWidth"] = "608";
+    $scroll["textBoxHeight"] = "493";
+} elseif ( ($browser == "ns") && ($version == "6.2.3") ) {
+    $scroll["upArrowLeft"] = "745";
+    $scroll["upArrowTop"] = "110";
+    $scroll["downArrowLeft"] = "745";
+    $scroll["downArrowTop"] = "697";
+    
+    $scroll["textBoxLeft"] = "132";
+    $scroll["textBoxTop"] = "104";
+    $scroll["textBoxWidth"] = "610";
+    $scroll["textBoxHeight"] = "595";
+} elseif ( ($browser == "ns") && ($version == "7.0") ) {
+    $scroll["upArrowLeft"] = "742";
     $scroll["upArrowTop"] = "107";
-    $scroll["downArrowLeft"] = "722";
+    $scroll["downArrowLeft"] = "742";
     $scroll["downArrowTop"] = "588";
     
-    $scroll["textBoxLeft"] = "135";
-    $scroll["textBoxTop"] = "120";
-    $scroll["textBoxWidth"] = "600";
-    $scroll["textBoxHeight"] = "458";	
+    $scroll["textBoxLeft"] = "132";
+    $scroll["textBoxTop"] = "103";
+    $scroll["textBoxWidth"] = "608";
+    $scroll["textBoxHeight"] = "497";	    
+} else {
+    $scroll["upArrowLeft"] = "742";
+    $scroll["upArrowTop"] = "107";
+    $scroll["downArrowLeft"] = "742";
+    $scroll["downArrowTop"] = "588";
+    
+    $scroll["textBoxLeft"] = "132";
+    $scroll["textBoxTop"] = "103";
+    $scroll["textBoxWidth"] = "608";
+    $scroll["textBoxHeight"] = "497";	
 }
 ?>
 <pre>
