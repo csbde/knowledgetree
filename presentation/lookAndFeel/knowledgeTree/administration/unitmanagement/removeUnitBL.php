@@ -28,6 +28,9 @@ if (checkSession()) {
     // get main page
     if (isset($fUnitID)) {
         $fOrgID = UnitOrganisationLink::unitBelongsToOrg($fUnitID);
+        
+        if(!$fOrgID) { $fOrgID = null;} 
+                
         $oPatternCustom->setHtml(getDeleteConfirmedPage($fUnitID,$fOrgID));
         $main->setFormAction($_SERVER["PHP_SELF"] . "?fForDeleteConfirmed=1");
     } else {
@@ -37,15 +40,17 @@ if (checkSession()) {
 
     if (isset($fForDeleteConfirmed)) {
         // get unitorg object
-        $oUnitOrg = new UnitOrganisationLink($fUnitID,$fOrgID);
-        $oUnitOrg->setUnitOrgID($fUnitID);
-
+        if ($fOrgID > 0) {
+	        $oUnitOrg = new UnitOrganisationLink($fUnitID,$fOrgID);
+	        $oUnitOrg->setUnitOrgID($fUnitID);
+        	
+        	//delete unitorgobject
+        	$oUnitOrg->delete();
+        }
         //get unit object
         $oUnit = Unit::get($fUnitID);
         $oUnit->setName($fUnitName);
-
-        //delete unitorgobject
-        $oUnitOrg->delete();
+        
 
         //delete unit object
         if ($oUnit->delete()) {
