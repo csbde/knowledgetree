@@ -716,14 +716,16 @@ class Document {
     * @return boolean true if document exists, false otherwise and set $_SESSION["errorMessage"]
     */
     function documentExists($sFileName, $iFolderID) {
-        global $default, $lang_err_doc_not_exist;
+        global $default;
         $sql = $default->db;
-        $sQuery = "SELECT * FROM $default->owl_documents_table WHERE filename = '" . addslashes($sFileName) . "' AND folder_id = $iFolderID";
+        $sQuery = "SELECT * FROM $default->owl_documents_table " .
+        		  "WHERE filename = '" . addslashes($sFileName) . "' " . 
+        		  "AND folder_id = $iFolderID " .
+        		  "AND status_id = " . LIVE;
         $sql->query($sQuery);
         if ($sql->next_record()) {
             return true;
         }
-        $_SESSION["errorMessage"] = $lang_err_doc_not_exist . "name = " . $sName . " folder_id = " . $iFolderID;
         return false;
     }
 
