@@ -11,6 +11,13 @@
 
 // install path
 $default->fileSystemRoot  = "/usr/local/www/owl/dms";
+// server settings
+$default->serverName = "change.to.your.hostname";
+// whether ssl is enabled or not
+$default->sslEnabled = true;
+// Change this to reflect the authentication method you are using
+$default->authenticationClass = "DBAuthenticator";
+require_once("$default->fileSystemRoot/lib/authentication/$default->authenticationClass.inc");
 
 // Database info
 $default->dbUser           = "dms";
@@ -34,20 +41,14 @@ $default->system = new System();
 if ($default->system->initialised()) {
     $aSettings = array("ldapServer", "ldapRootDn", "emailServer", "emailFrom", "emailFromName",
                        "emailAdmin", "emailAdminName",
-                       "serverName", "documentRoot", "languageDirectory",
-                       "uiDirectory", "uMask", "rootUrl", "graphicsUrl", "uiUrl", "useFS", "defaultLanguage",
-                       "sessionTimeout", "sslEnabled");    
+                       "documentRoot", "languageDirectory",
+                       "uiDirectory", "rootUrl", "graphicsUrl", "uiUrl", "useFS", "defaultLanguage",
+                       "sessionTimeout");
     
     for ($i=0; $i<count($aSettings); $i++) {
-        if ($aSettings[$i] == "uMask") {
-            $default->$aSettings[$i] = $default->system->getInt($aSettings[$i]);
-        } else {
-            $default->$aSettings[$i] = $default->system->get($aSettings[$i]);
-        }
+        $default->$aSettings[$i] = $default->system->get($aSettings[$i]);
     }
 } else {
-    // TODO: redirect to system setup form
-
     // ldap settings
     $default->ldapServer = "192.168.1.9";
     $default->ldapRootDn = "o=Medical Research Council";
@@ -59,13 +60,10 @@ if ($default->system->initialised()) {
     $default->emailAdmin = "dmsHelp@jamwarehouse.com";
     $default->emailAdminName = "DMS Administrator";
     
-    $default->serverName = "ktdev.jamwarehouse.com";
-    
     // directories
     $default->documentRoot  =  "/usr/local/www/owl/dms/Documents";
     $default->languageDirectory  = $default->fileSystemRoot . "/locale";
     $default->uiDirectory  = $default->fileSystemRoot . "/presentation/lookAndFeel/knowledgeTree";
-    $default->uMask = "0755";
      
     // urls
     $default->rootUrl  = "/dms";
@@ -78,7 +76,5 @@ if ($default->system->initialised()) {
     $default->defaultLanguage  = "NewEnglish";
     // session timeout (in seconds)
     $default->sessionTimeout = 1200;
-    // whether ssl is enabled or not
-    $default->sslEnabled = true;
 }
 ?>

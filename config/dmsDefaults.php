@@ -114,12 +114,6 @@ $default->owl_words_lookup_table = "words_lookup";
 //stores help text
 $default->owl_help_table = "help";
 
-
-// Change this to reflect the authentication method you are using
-$default->authenticationClass = "DBAuthenticator";
-
-require_once("$default->fileSystemRoot/lib/authentication/$default->authenticationClass.inc");
-
 // logo file that must reside inside lang/graphics directory
 $default->logo = "kt.jpg";
 
