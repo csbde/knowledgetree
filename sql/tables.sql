@@ -96,7 +96,6 @@ name CHAR(255),
 description CHAR(255),
 parent_id INTEGER,
 creator_id INTEGER,
-document_type_id INTEGER NOT NULL,
 unit_id INTEGER,
 is_public BIT NOT NULL,
 parent_folder_ids TEXT,
@@ -272,6 +271,14 @@ id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 name CHAR(50) NOT NULL
 )TYPE = InnoDB;
 
+
+CREATE TABLE folder_doctypes_link (
+  id int(11) NOT NULL auto_increment,
+  folder_id int(11) NOT NULL default '0',
+  document_type_id int(11) NOT NULL default '0',
+  UNIQUE KEY id (id)
+) TYPE=InnoDB;
+
 CREATE TABLE web_sites ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 web_site_name CHAR(100) NOT NULL,
@@ -287,6 +294,11 @@ word CHAR(255) NOT NULL
 -- pk constraints
 ALTER TABLE active_sessions
 ADD CONSTRAINT PK_active_sessions
+PRIMARY KEY (id)
+;
+
+ALTER TABLE folder_doctypes_link
+ADD CONSTRAINT PK_folder_doctypes_link
 PRIMARY KEY (id)
 ;
 
