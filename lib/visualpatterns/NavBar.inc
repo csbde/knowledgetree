@@ -163,8 +163,7 @@ class NavBar {
                                //generateControllerUrl($default->siteMap->getDefaultAction("Help")),
                                "help",
                                generateControllerUrl($default->siteMap->getDefaultAction("Logout")));
-
-
+							   
         // create array of images for navbar sections
         $aTopMenuImages = array($this->home,
                                 $this->mdocs,
@@ -213,7 +212,7 @@ class NavBar {
               "<img align = \"absmiddle\" src = \"$default->graphicsUrl/arrow.gif\" ></img>\n " .
 			  "<INPUT type=\"hidden\" name=\"fForStandardSearch\" value=\"no\" />\n ";
 			  //disable the search bar if we are browsing search results
-			  if (strcmp($this->sSection,"Standard Search") == 0) {
+			  if ((strcmp($this->sSection,"Standard Search") == 0) || (strcmp($this->sSection,"Advanced Search") == 0)) {
 				  $bar .= "<INPUT type=\"hidden\" name=\"fSearchText\" width=\"30\" height = \"10\" align = \"absmiddle\" />\n ";
 			  } else {
 				  $bar .= "<INPUT type=\"text\" name=\"fSearchText\" width=\"30\" height = \"10\" align = \"absmiddle\" />\n " .
