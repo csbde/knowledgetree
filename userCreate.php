@@ -1,6 +1,6 @@
 <?php
 
-require_once("config/dmsDefaults.php");
+require_once("./config/dmsDefaults.php");
 
 // write to file
 for ($i = 0; $i < 1000; $i++) {
