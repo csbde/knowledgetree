@@ -17,7 +17,7 @@ function getDocumentPath($iFolderID, $sDocumentName) {
 	$sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
 	$sTDBGColour = $default->siteMap->getSectionColour($sSectionName, "td");	    
     $sDocumentPath = displayFolderPathLink(Folder::getFolderPathAsArray($iFolderID), Folder::getFolderPathNamesAsArray($iFolderID),  "$default->rootUrl/control.php?action=browse") . " > " . $sDocumentName;
-	return "<table border=\"0\" width=\"600\"><tr><td bgcolor=\"$sTDBGColour\">$sDocumentPath</td></tr></table>\n";	
+	return "<table border=\"0\"cellpadding=\"5\" width=\"610\"><tr bgcolor=\"$sTDBGColour\"><td width=\"87%\">$sDocumentPath</td></tr></table>\n";
 }
 
 function getDocumentHistory($iDocumentID) {
