@@ -24,8 +24,8 @@ if (checkSession()) {
 	if (count($aDocuments) > 0) {
 		for ($i=0; $i<count($aDocuments); $i++) {
 			if ($aDocuments[$i]) {
-				$sToRender .= "<tr><td width=\"80%\">" . $aDocuments[$i]->getDisplayPath() . "</td>";
-				$sToRender .= "<td align=\"right\">" . generateControllerLink("editDocCheckout", "fDocumentID=" . $aDocuments[$i]->getID(), "Check In") . "</td>"; 
+				$sToRender .= "<tr bgcolor=\"" . getColour($i) . "\"><td width=\"80%\">" . $aDocuments[$i]->getDisplayPath() . "</td>";
+				$sToRender .= "<td align=\"right\">" . generateControllerLink("editDocCheckout", "fDocumentID=" . $aDocuments[$i]->getID(), "Check In") . "</td></tr>"; 
 			}
 		}
 	}  else {
