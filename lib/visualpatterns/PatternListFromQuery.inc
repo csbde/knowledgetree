@@ -33,6 +33,9 @@ class PatternListFromQuery {
 	var $sTableHeading;	
 	/** set the table width */
 	var $iTableWidth = null;
+	/** Picture paths */
+	var $sChkPicPath = "widgets/checked.gif";
+	var $sUnChkPicPath = "widgets/unchecked.gif";	
 	
 	/**
 	* Default constructor
@@ -80,7 +83,7 @@ class PatternListFromQuery {
 		$sToRender .= "<table border=\"0\" cellpadding=\"5\" " . (isset($this->iTableWidth) ? " width=\"$this->iTableWidth\"" : "") . " >\n";
 		
 		if (isset($this->sTableHeading)) {
-			$sToRender .= "<caption colspan=\"" . count($this->aColumns) . "\" align=\"top\"><b>$this->sTableHeading</b></caption>\n";
+			$sToRender .= "<caption align=\"top\" colspan=\"" . count($this->aColumns) . "\"><b>$this->sTableHeading</b></caption>\n";
 		}
 		
 		if ($sql->num_rows() == 0) {
@@ -95,13 +98,35 @@ class PatternListFromQuery {
 					$sToRender .= "<tr>\n";				
 					switch ($this->aColumnTypes[$i]) {						
 						//plain text field
-						case 1:						
-							$sToRender .= "<td nowrap bgcolor=\"$sTDBGColour\">" . $this->aColumnNames[$i] . "</td><td width=\"100%\" bgcolor=\"" . getColour($iColour) ."\">" . stripslashes($sql->f($this->aColumns[$i])) . "</td>\n";
+						case 1:
+												
+							$sToRender .= "<td nowrap bgcolor=\"$sTDBGColour\">" . $this->aColumnNames[$i] . "</td><td width=\"100%\" bgcolor=\"" . getColour($iColour) ."\">";
+							if ($sql->f($this->aColumns[$i]) != null) {	 							
+								$sToRender .= stripslashes($sql->f($this->aColumns[$i])) . "</td>\n";
+							} else {
+								$sToRender .= "&nbsp;</td>";
+							}
+								
 							break;
 						//text area
 						case 2:
-							$sToRender .= "<td bgcolor=\"$sTDBGColour\">" . $this->aColumnNames[$i] . "</td><td bgcolor=\"" . getColour($iColour) ."\"><textarea cols=$this->iTextAreaColumns rows=$this->iTextAreaRows READONLY>" . $sql->f($this->aColumns[$i]) . "</textarea></td>\n";
-							break;
+							//boolean
+							$sToRender .= "<td nowrap bgcolor=\"$sTDBGColour\">" . $this->aColumnNames[$i] . "</td><td width=\"100%\" bgcolor=\"" . getColour($iColour) ."\">";
+							if ($sql->f($this->aColumns[$i]) != null) {									
+								$value = $sql->f($this->aColumns[$i]);
+								if ($value) { 
+									$sToRender .= "<img src=\"$default->graphicsUrl/" . $this->sChkPicPath . "\">";
+								} else {
+									$sToRender .= "<img src=\"$default->graphicsUrl/" . $this->sUnChkPicPath . "\">";
+								}
+								$sToRender .= "&nbsp;</td>";	
+							} else {
+								$sToRender .= "&nbsp;</td>";
+							}							
+
+							break;						
+							//$sToRender .= "<td bgcolor=\"$sTDBGColour\">" . $this->aColumnNames[$i] . "</td><td bgcolor=\"" . getColour($iColour) ."\"><textarea cols=$this->iTextAreaColumns rows=$this->iTextAreaRows READONLY>" . $sql->f($this->aColumns[$i]) . "</textarea></td>\n";
+							//break;
 						case 3:
 							$sToRender .= "<td bgcolor=\"$sTDBGColour\">" . $this->aColumnNames[$i] . "</b></td><td bgcolor=\"" . getColour($iColour) ."\"><a href=\"" . $this->aHyperLinkURL[$i] . "?" . $this->replaceValues($this->aQueryStringText[$i], $sql) . "\">" . stripslashes($sql->f($this->aColumns[$i])) . "</a></td>\n";
 							break;
