@@ -2,6 +2,7 @@
 require_once("$default->fileSystemRoot/lib/security/Permission.inc");
 require_once("$default->fileSystemRoot/lib/users/User.inc");
 require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
+require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentType.inc");
 require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
 /**
  * $Id$
@@ -132,6 +133,14 @@ class BrowseCriterion {
     function setOptions($aOptions) {
         $this->aOptions = $aOptions;
     }
+
+    function searchDisplay($aRequest) {
+        return "<tr><td>" . $this->headerDisplay() . ": </td><td>" . $this->searchWidget($aRequest) . "</td></tr>\n";
+    }
+
+    function searchWidget ($aRequest) {
+        return "<input type=\"text\" size=\"50\" name=\"bmd$k\" />";
+    }
 }
 
 class NameCriterion extends BrowseCriterion {
@@ -205,6 +214,16 @@ class CreatorCriterion extends BrowseCriterion {
     function folderDisplay($oFolder) {
         return $this->documentDisplay($oFolder);
     }
+    function searchWidget ($aRequest) {
+        $sRet = "<select size=\"1\" name=\"bmd$k\">\n";
+        $aUsers = User::getList();
+        $sRet .= "<option value=\"-1\">None</option>\n";
+        foreach ($aUsers as $oUser) {
+            $sRet .= "<option value=\"" . $oUser->getID() . "\">" . $oUser->getName() . "</option>\n";
+        }
+        $sRet .= "</select>\n";
+        return $sRet;
+    }
 }
 
 class DateCreatedCriterion extends BrowseCriterion {
@@ -236,6 +255,16 @@ class DocumentTypeCriterion extends BrowseCriterion {
             return $oDocumentType->getName();
         }
         return "&nbsp;";
+    }
+    function searchWidget ($aRequest) {
+        $sRet = "<select size=\"1\" name=\"bmd$k\">\n";
+        $aUsers = DocumentType::getList();
+        $sRet .= "<option value=\"-1\">None</option>\n";
+        foreach ($aUsers as $oUser) {
+            $sRet .= "<option value=\"" . $oUser->getID() . "\">" . $oUser->getName() . "</option>\n";
+        }
+        $sRet .= "</select>\n";
+        return $sRet;
     }
 }
 
@@ -277,7 +306,7 @@ class GenericMetadataCriterion extends BrowseCriterion {
 }
 
 class Criteria {
-    function &getCriterionByNumber($iID) {
+    function &_getBaseCriterionByNumber($iID) {
         global $default;
         switch ($iID) {
             case -1:
@@ -298,16 +327,70 @@ class Criteria {
             case -6:
                 $oCriterion =& new IDCriterion(_("ID"), 'id', 'id');
                 break;
-            default:
-                $aQuery = array("SELECT name FROM $default->document_fields_table WHERE id = ?", array($iID)); /*ok*/
-                $sName = DBUtil::getOneResultKey($aQuery, 'name');
-                $oCriterion =& new GenericMetadataCriterion($sName, 'id', 'id', $iID);
-                break;
         }
         return $oCriterion;
     }
 
     function initCriteria () {
+        global $aBaseCriteria;
+        if (isset($aBaseCriteria)) {
+            return;
+        }
+        $aBaseCriteria = array();
+        $aIDs = range(-1, -6); 
+        foreach ($aIDs as $iID) {
+            $oCriterion =& Criteria::_getBaseCriterionByNumber($iID);
+            $aBaseCriteria[$iID] =& $oCriterion;
+        }
+    }
+
+    function &getBaseCriteria () {
+        global $aBaseCriteria;
+        Criteria::initCriteria();
+        return $aBaseCriteria;
+    }
+
+    function &getGenericCriteria () {
+        global $aGenericCriteria;
+        global $default;
+        $aQuery = array("SELECT id FROM $default->document_fields_table", array()); /*ok*/
+        $aIDs = DBUtil::getResultArrayKey($aQuery, 'id');
+        foreach ($aIDs as $iID) {
+            $oCriterion =& Criteria::getCriterionByNumber($iID);
+            $aGenericCriteria[$iID] =& $oCriterion;
+        }
+        return $aGenericCriteria;
+    }
+
+    function &getAllCriteria () {
+        global $aAllCriteria;
+        global $aBaseCriteria;
+        global $default;
+        Criteria::initCriteria();
+        if (isset($aAllCriteria)) {
+            return $aAllCriteria;
+        }
+        $aQuery = array("SELECT id FROM $default->document_fields_table", array()); /*ok*/
+        $aIDs = DBUtil::getResultArrayKey($aQuery, 'id');
+        $aAllCriteriaIDs = array_merge(array_keys($aBaseCriteria), $aIDs);
+        foreach ($aAllCriteriaIDs as $iID) {
+            $oCriterion =& Criteria::getCriterionByNumber($iID);
+            $aAllCriteria[$iID] =& $oCriterion;
+        }
+        return $aAllCriteria;
+    }
+
+    function &getCriterionByNumber($iID) {
+        global $aBaseCriteria;
+        global $default;
+        Criteria::initCriteria();
+        if (array_key_exists($iID, $aBaseCriteria)) {
+            return $aBaseCriteria[$iID];
+        } else {
+            $aQuery = array("SELECT name FROM $default->document_fields_table WHERE id = ?", array($iID)); /*ok*/
+            $sName = DBUtil::getOneResultKey($aQuery, 'name');
+            return new GenericMetadataCriterion($sName, 'id', 'id', $iID);
+        }
     }
 }
 
