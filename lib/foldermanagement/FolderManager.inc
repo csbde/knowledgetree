@@ -28,12 +28,13 @@ class FolderManager {
 	*/
 	function insertFolder($sName, $sDescription, $iParentID, $iCreatorID, $iDocumentTypeID, $iUnitID, $bIsPublic = false) {
 		$sName = addslashes($sName);
+		$sDescription = addslashes($sDescription);
 		global $default, $lang_err_database;
 		//if the folder doesn't exist
-		if (!(FolderNamager::folderExistsName($sName, $iParentID)) {
+		if (!(FolderManager::folderExistsName($sName, $iParentID))) {
 			$sql = new Owl_DB();
 			$result = $sql->query("INSERT INTO " . $default->owl_folders_table . " (name, description, parent_id, creator_id, document_type_id, unit_id, is_public) " . 
-						"VALUES (" . $sName . . $sDescription . . $iParentID . . $iCreatorID .. $iDocumentTypeID .. $UnitID .. $bIsPublice")");
+						"VALUES ('" . $sName . "', '" . $sDescription . "', " . $iParentID . ", " . $iCreatorID . ", " . $iDocumentTypeID . ", " . $iUnitID . ", " . $bIsPublic . ")");
 			if (!$result) {
 				$_SESSION["errorMessage"] = $lang_err_database;
 				return false;
@@ -55,7 +56,7 @@ class FolderManager {
 	function deleteFolder($iFolderID) {
 		global $default,$lang_err_folder_not_exist;
 		//if the folder exists
-		if (folderExistsID($iFolderID)) {
+		if (FolderManager::folderExistsID($iFolderID)) {
 			$sql = new Owl_DB();
 			$result = $sql->query("DELETE FROM " . $default->owl_folders_table . " WHERE id = " . $iFolderID);
 			if (!$result) {
@@ -118,19 +119,15 @@ class FolderManager {
 	*/
 	function getFolderID($sName, $iParentID) {
 		$sName = addslashes($sName);
-		gobal $default, $lang_err_folder_exist;
+		global $default, $lang_err_folder_exist;
 		$sql = new Owl_DB();
-		$sql->query("SELECT id FROM " . $default->owl_folders_table . " WHERE name = '" . $sName . "' AND parent_id = " $iParentID);
+		$sql->query("SELECT id FROM " . $default->owl_folders_table . " WHERE name = '" . $sName . "' AND parent_id = " . $iParentID);
 		if ($sql->next_record()) {
 			return $sql->f("id");
 		}
 		$_SESSION["errorMessage"] = $lang_err_folder_exist . $sName;
 		return false;
 	}
-	
-	
-	
 }
-
 ?>
 
