@@ -27,29 +27,46 @@ if (checkSession()) {
 			if (isset($fForDelete)) {
 				//attempt to delete the new folder collaboration entry				
 				$oFolderCollaboration = FolderCollaboration::get($fFolderCollaborationID);
-				if ($oFolderCollaboration->delete()) {
-					//on successful deletion, redirect to the folder edit page
-					include_once("$default->owl_fs_root/presentation/Html.inc");
-					redirect("$default->owl_root_url/control.php?action=editFolder&fFolderID=$fFolderID");
-				} else {
-					//otherwise display an error message
+				if ($oFolderCollaboration->hasDocumentInProcess()) {
 					include_once("$default->owl_fs_root/lib/visualpatterns/PatternListBox.inc");			
-					include_once("$default->owl_fs_root/lib/visualpatterns/PatternCustom.inc");
-					
+					include_once("$default->owl_fs_root/lib/visualpatterns/PatternCustom.inc");			
 					include_once("$default->owl_fs_root/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
 					include_once("$default->owl_fs_root/presentation/Html.inc");
 					include_once("$default->owl_fs_root/presentation/webpageTemplate.inc");
 					include_once("deleteFolderCollaborationUI.inc");
-					
+						
 					$oPatternCustom = & new PatternCustom();
-					$oFolderCollaboration = FolderCollaboration::get($fFolderCollaborationID);
-					$oPatternCustom->setHtml(getPage($oFolderCollaboration->getFolderID(), $oFolderCollaboration->getGroupID(), $oFolderCollaboration->getRoleID(), $oFolderCollaboration->getSequenceNumber()));
-					$main->setErrorMessage("The folder collaboration entry could not be deleted from the database");
+					$oPatternCustom->setHtml("");
 					$main->setCentralPayload($oPatternCustom);
+					$main->setErrorMessage("You cannot delete this step as there is a ");
 					$main->setFormAction($_SERVER["PHP_SELF"] . "?fFolderID=$fFolderID&fFolderCollaborationID=$fFolderCollaborationID&fForDelete=1");
 					$main->setHasRequiredFields(true);
 					$main->render();
-					
+				} else {
+					if ($oFolderCollaboration->delete()) {
+						//on successful deletion, redirect to the folder edit page
+						include_once("$default->owl_fs_root/presentation/Html.inc");
+						redirect("$default->owl_root_url/control.php?action=editFolder&fFolderID=$fFolderID");
+					} else {
+						//otherwise display an error message
+						include_once("$default->owl_fs_root/lib/visualpatterns/PatternListBox.inc");			
+						include_once("$default->owl_fs_root/lib/visualpatterns/PatternCustom.inc");
+						
+						include_once("$default->owl_fs_root/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
+						include_once("$default->owl_fs_root/presentation/Html.inc");
+						include_once("$default->owl_fs_root/presentation/webpageTemplate.inc");
+						include_once("deleteFolderCollaborationUI.inc");
+						
+						$oPatternCustom = & new PatternCustom();
+						$oFolderCollaboration = FolderCollaboration::get($fFolderCollaborationID);
+						$oPatternCustom->setHtml(getPage($oFolderCollaboration->getFolderID(), $oFolderCollaboration->getGroupID(), $oFolderCollaboration->getRoleID(), $oFolderCollaboration->getSequenceNumber()));
+						$main->setErrorMessage("The folder collaboration entry could not be deleted from the database");
+						$main->setCentralPayload($oPatternCustom);
+						$main->setFormAction($_SERVER["PHP_SELF"] . "?fFolderID=$fFolderID&fFolderCollaborationID=$fFolderCollaborationID&fForDelete=1");
+						$main->setHasRequiredFields(true);
+						$main->render();
+						
+					}
 				}
 			} else {
 				//display the browse page

@@ -28,13 +28,6 @@ function getPage($iFolderID, $iGroupID, $iRoleID, $iSequenceNumber) {
 	$sToRender .= "</tr>\n";	
 	$sToRender .= "<table>\n";
 	
-	/*$sToRender .= "\n\n<script language=\"javascript\">\n<!--\n";
-	$sToRender .= "function validateForm(theForm) {\n";	
-	$sToRender .= "\tif (!(confirmMsg('Are you sure you wish to delete this folder collaboration step?'))) {\n";
-	$sToRender .= "\t\treturn false;\n\t}\n";
-	$sToRender .= "return true;\n}\n";
-	$sToRender .= "//-->\n</script>\n\n";*/
-	
 	$sToRender .= "\n\n<script language=\"javascript\">\n<!--\n";
 	$sToRender .= "function validateForm(theForm) {\n";	
 	$sToRender .= "\t return confirm('Are you sure you wish to delete this folder collaboration step?');}\n";	
