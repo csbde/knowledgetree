@@ -33,6 +33,7 @@ require_once("Html.inc");
 global $default;
 
 $redirect = $_REQUEST['redirect'];
+$errorMessage = $_REQUEST['errorMessage'];
 
 if ($_REQUEST['loginAction'] == "loginForm") {
     // TODO: build login form using PatternMainPage
