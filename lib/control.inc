@@ -8,7 +8,7 @@
  * Copyright (c) 1999-2002 The Owl Project Team
  * Licensed under the GNU GPL. For full terms see the file COPYING.
  * @version $Revision$
- * @author <a href="mailto:michael@jamwarehouse.com>Michael Joseph</a>, Jam Warehouse (Pty) Ltd, South Africa
+ * @author <a href="mailto:michael@jamwarehouse.com">Michael Joseph</a>, Jam Warehouse (Pty) Ltd, South Africa
  * @package dmslib
  */
  
@@ -20,7 +20,6 @@
 function redirect($url) {
     // everything is relative to the root url
     $url = $default->owl_root_url . $url;
-    //echo "redirect:url = $url<br>";
     header("Location: $url");
 }
 
