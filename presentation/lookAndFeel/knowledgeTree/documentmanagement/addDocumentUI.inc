@@ -11,8 +11,11 @@
 function getDocumentListForFolder($fFolderID) {
 	global $default;
 	$sQuery = "SELECT D.id AS id, D.folder_id AS folder_id, CONCAT('&nbsp;', D.name) AS name, COALESCE(CONCAT('$default->graphicsUrl/', MT.icon_path), '$default->graphicsUrl/unknown.gif') AS image_url " . 
-			"FROM $default->owl_documents_table AS D LEFT OUTER JOIN $default->owl_mime_table AS MT ON D.mime_id = MT.id " .
+			"FROM $default->owl_documents_table AS D " .
+			"INNER JOIN $default->owl_status_table AS SL on D.status_id=SL.id " .
+			"LEFT OUTER JOIN $default->owl_mime_table AS MT ON D.mime_id = MT.id " .
 			"WHERE folder_id = $fFolderID " .
+			"AND SL.name = 'Live' " .
 			"ORDER BY name ASC";
 	
 	$aColumns = array("name");
