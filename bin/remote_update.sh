@@ -6,7 +6,7 @@ tag=DMS_ITERATION1_29012003
 scpUser=michael
 remote=gobbler.jamwarehouse.com
 remotePath=/usr/local/www/owl
-remoteDir=dms-test
+remoteDir=dms
 
 # cleanup
 rm -rf $tmp* 2> /dev/null
