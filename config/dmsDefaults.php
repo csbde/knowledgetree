@@ -147,13 +147,17 @@ $default->siteMap->addPage("modifyDocument", "/presentation/lookAndFeel/knowledg
 $default->siteMap->addPage("emailDocument", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/emailBL.php", "Manage Documents", User, "Email A Document", false);
 $default->siteMap->addPage("modifyDocumentGenericMetaData", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/modifyGenericMetaDataBL.php", "Manage Documents", User, "Modify Document Generic MetaData", false);
 
-
 $default->siteMap->addPage("addFolder", "/presentation/lookAndFeel/knowledgeTree/foldermanagement/addFolderBL.php", "Manage Documents", User, "Add A Folder");
 $default->siteMap->addPage("addFolderDocType", "/presentation/lookAndFeel/knowledgeTree/foldermanagement/addFolderDocTypeBL.php", "Manage Documents", User, "");
 $default->siteMap->addPage("deleteFolderDocType", "/presentation/lookAndFeel/knowledgeTree/foldermanagement/deleteFolderDocTypeBL.php", "Manage Documents", User, "");
 $default->siteMap->addPage("editFolder", "/presentation/lookAndFeel/knowledgeTree/foldermanagement/editBL.php", "Manage Documents", UnitAdmin, "Modify Folder Properties");
 $default->siteMap->addPage("deleteFolder", "/presentation/lookAndFeel/knowledgeTree/foldermanagement/deleteFolderBL.php", "Manage Documents", UnitAdmin, "Delete A Folder");
 $default->siteMap->addPage("moveFolder", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/moveFolder.php", "Manage Documents", UnitAdmin, "Move A Folder", false);
+
+// folder access
+$default->siteMap->addPage("addGroupFolderLink", "/presentation/lookAndFeel/knowledgeTree/foldermanagement/addGroupFolderLinkBL.php", "Manage Documents", UnitAdmin, "Add Folder Access", false);
+$default->siteMap->addPage("modifyGroupFolderLink", "/presentation/lookAndFeel/knowledgeTree/foldermanagement/editGroupFolderLinkBL.php", "Manage Documents", UnitAdmin, "Edit Folder Access", false);
+$default->siteMap->addPage("deleteGroupFolderLink", "/presentation/lookAndFeel/knowledgeTree/foldermanagement/deleteGroupFolderLinkBL.php", "Manage Documents", UnitAdmin, "Delete Folder Access", false);
 
 $default->siteMap->addPage("addDocument", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentBL.php", "Manage Documents", User, "Add A Document");
 $default->siteMap->addPage("modifyDocumentRouting", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/collaborationBL.php", "Manage Documents", User, "");
