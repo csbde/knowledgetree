@@ -86,7 +86,7 @@ class PatternMainPage {
                                 "\t<a href=\"#\" onmouseover=\"scroll(7)\" onmouseout=\"noScroll()\"><img src=\"" . $default->system->get("graphicsUrl") . "/asc.gif\" width=\"14\" height=\"14\" alt=\"down\" border=\"0\"></a>" .
                                 "</div>" .                            
 							"<form name=\"MainForm\" " . (isset($this->sFormEncType) ? "enctype=\"$this->sFormEncType\" " : " ") . " action=\"".$this->sFormAction."\" method=\"POST\">\n" .
-								"<table border=\"1\" width=\"680\" height=\"600\">\n " .
+								"<table border=\"1\" width=\"700\" height=\"600\">\n " .
 
 									"<tr height=\"18%\">\n".
 										"<td width=\"5%\">\n";
