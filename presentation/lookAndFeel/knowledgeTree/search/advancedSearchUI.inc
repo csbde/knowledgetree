@@ -71,16 +71,26 @@ function getSearchPage($sSearchString = "", $aMetaTagIDs = array()) {
 	return $sToRender . getSearchValidationJavaScript();;
 }
 
-function getSearchResults($sSQLSearchString, $iStartIndex, $sSearchText, $sMetaTagIDs) {
-	global $default;	 
-	$sQuery = "SELECT DISTINCT '" . "$default->graphicsUrl/widgets/dfolder.gif" . "' AS folder_image_url, F.id folder_id, D.id document_id, D.name AS document_name " .
+//function getSearchResults($sSQLSearchString, $iStartIndex, $sSearchText, $sMetaTagIDs) {
+function getSearchResults($sMetaTagIDs, $sSQLSearchString, $iStartIndex) {
+	global $default;	
+	$sQuery = "SELECT '" . "$default->graphicsUrl/widgets/dfolder.gif" . "' AS folder_image_url, F.id folder_id, D.id document_id, D.name AS document_name, COUNT(D.id) AS doc_count " .
 			"FROM $default->owl_documents_table AS D INNER JOIN $default->owl_folders_table AS F ON D.folder_id = F.id " .
-			"WHERE D.id IN ($sSQLSearchString)" .	
-			"ORDER BY D.name ASC";
-	
-	$aColumns = array("folder_image_url", "document_name");
-	$aColumnTypes = array(4,3);
-	$aColumnHeaders = array("<font color=\"ffffff\">Folder</font>","<font color=\"ffffff\">Document</font>");
+			"INNER JOIN document_fields_link AS DFL ON DFL.document_id = D.id " .
+			"INNER JOIN document_fields AS DF ON DF.id = DFL.document_field_id " . 
+			"INNER JOIN search_document_user_link AS SDUL ON SDUL.document_id = D.ID " .			
+			//"WHERE D.id IN ($sSQLSearchString) " .
+			"WHERE DF.ID IN ($sMetaTagIDs) " .
+			"AND " . $sSQLSearchString . " " .
+			"AND SDUL.user_id = " . $_SESSION["userID"] . " " .
+			"GROUP BY D.id ";
+			"ORDER BY doc_count DESC ";
+			
+	//echo $sQuery;	
+		
+	$aColumns = array("folder_image_url", "document_name", "doc_count");
+	$aColumnTypes = array(4,3,3);
+	$aColumnHeaders = array("<font color=\"ffffff\">Folder</font>","<font color=\"ffffff\">Document</font>", "<font color=\"ffffff\">Matches</font>");
 	$aLinkURLs = array("$default->rootUrl/control.php?action=browse","$default->rootUrl/control.php?action=viewDocument");
 	$aDBQueryStringColumns = array("document_id","folder_id");
 	$aQueryStringVariableNames = array("fDocumentID", "fFolderID");
