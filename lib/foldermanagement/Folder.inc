@@ -407,13 +407,9 @@ class Folder {
 	*/
 	function getFolderDisplayPath($iFolderID) {
 		global $default;		
-		//if the folder has a parent
-		if (Folder::getParentFolderID($iFolderID) != 0) {		
-			
-			return Folder::getFolderDisplayPath(Folder::getParentFolderID($iFolderID)) . " > " . Folder::getFolderName($iFolderID);
-		} else {			
-		    return Folder::getFolderName($iFolderID);
-        }
+		//if the folder has a parent		
+		$oFolder = Folder::get($iFolderID);
+		return $oFolder->sFullPath . " > " . $oFolder->getName();
 	}
 	
 	/**
