@@ -281,6 +281,7 @@ class Document {
             $sql = $default->db;
 			$sQuery = "UPDATE " . $default->owl_documents_table . " SET " .
                                   "document_type_id = $this->iDocumentTypeID, " .
+								  "name = '" . addslashes($this->sName) . "', " .
                                   "filename = '" . addslashes($this->sFileName) . "', " .
                                   "size = $this->iSize, " .
                                   "creator_id = $this->iCreatorID, " .
@@ -613,6 +614,37 @@ class Document {
 			return true;
 		}
 		return false;
+	}
+	
+	/**
+	* On a document type change, delete all document field entries for the
+	* old document type
+	*/
+	function removeInvalidDocumentTypeEntries() {
+		global $default;
+		$sQuery = "SELECT field_id FROM $default->owl_document_type_fields_table DTFL " .
+					"INNER JOIN $default->owl_fields_table AS DF ON DF.id = DTFL.field_id " .
+					"WHERE DTFL.document_type_id = $this->iDocumentTypeID " .
+					"AND DF.is_generic = 0";
+		$sql = $default->db;
+		$sql->query($sQuery);
+		$aFieldIDs = array();
+		//get all the fields from the old document type
+		while ($sql->next_record()) {
+			$aFieldIDs[count($aFieldIDs)] = $sql->f("field_id");
+		}
+		if (count($aFieldIDs) > 0) {
+			//delete the entries
+			$sQuery = "DELETE FROM $default->owl_document_fields_table WHERE document_id = $this->iId AND document_field_id IN (" . implode(",",$aFieldIDs) . ")";
+			if ($sql->query($sQuery)) {
+				return true;
+			}
+			return false;
+		}
+		//none to remove if we get here
+		return true;
+		
+		
 	}
 }
 
