@@ -119,7 +119,7 @@ class DiscussionThread {
         	$sql->next_record();
         	$iThreadID = $sql->f("id");
         
-	        $result = $sql->query("SELECT id FROM $default->owl_discussion_comments_table WHERE thread_id = $iThreadID ORDER BY id");
+	        $result = $sql->query("SELECT id FROM $default->owl_discussion_comments_table WHERE thread_id = $iThreadID ORDER BY date Desc");
 	        
 	        if ($result) {           
 	            while ($sql->next_record()) {
