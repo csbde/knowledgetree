@@ -16,15 +16,15 @@ function getFolderPath($iFolderID) {
 
 function getFolderData($iFolderID) {
 	global $default;
-	$sQuery = "SELECT F.id, F.name AS folder_name, F.description, F.document_type_id, DTL.name AS document_type_name, F.is_public " .
-			"FROM $default->owl_folders_table AS F LEFT OUTER JOIN $default->owl_document_types_table AS DTL ON F.document_type_id = DTL.ID " .
+	$sQuery = "SELECT F.id, F.name AS folder_name, F.description, F.is_public " .
+			"FROM $default->owl_folders_table AS F " .
 			"WHERE F.id = $iFolderID";
 	
-	$aDisplayColumns = array("folder_name", "description", "document_type_name", "is_public");
-	$aStoreColumns = array("name", "description" , "document_type_id", "is_public");
-	$aColumnNames = array("Name", "Description", "Document type", "Public");
-	$aDisplayColumnTypes = array(1,1,3,2);
-	$aDatabaseColumnTypes = array(1,1,0,2);
+	$aDisplayColumns = array("folder_name", "description", "is_public");
+	$aStoreColumns = array("name", "description" , "is_public");
+	$aColumnNames = array("Name", "Description", "Public");
+	$aDisplayColumnTypes = array(1,1,2);
+	$aDatabaseColumnTypes = array(1,1,2);
 	$aDropDownListTableNames = array(2 => "$default->owl_document_types_table");
 	
 	$oPatternEditableListFromQuery = & new PatternEditableListFromQuery($sQuery, $default->owl_folders_table, $aDisplayColumns, $aStoreColumns, $aColumnNames, $aDisplayColumnTypes, $aDatabaseColumnTypes);
@@ -33,6 +33,27 @@ function getFolderData($iFolderID) {
 	$oPatternEditableListFromQuery->setColumnsRequired(array(1,0,1,0));
 	
 	return $oPatternEditableListFromQuery->render();
+	
+}
+
+function getFolderDocTypes($iFolderID) {
+	global $default;
+	$sQuery = "SELECT FDL.id, FDL.folder_id, FDL.document_type_id, DTL.name, 'Remove' AS del " .
+				"FROM $default->owl_folder_doctypes_table AS FDL INNER JOIN $default->owl_document_types_table AS DTL ON FDL.document_type_id = DTL.id " .
+				"WHERE FDL.folder_id = $iFolderID " .
+				"ORDER BY DTL.name ASC";
+	
+	$aColumns = array("name", "del");
+	$aColumnHeaders = array("","");
+	$aColumnTypes = array(1,3,3);
+	$aDBColumnArray = array("id","folder_id");
+	$aQueryStringVariableNames = array("fFolderDocTypeID", "fFolderID");
+	$aLinkURLs = array(1=>"$default->rootUrl/control.php?action=deleteFolderDocType");
+	
+	$oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaders, "90%", $aLinkURLs, $aDBColumnArray,$aQueryStringVariableNames);
+	$oPatternTableSqlQuery->setTableHeading("Document Types");
+	$oPatternTableSqlQuery->setDisplayColumnHeadings(true);
+	return $oPatternTableSqlQuery->render();
 	
 }
 
@@ -59,17 +80,77 @@ function getFolderRouting($iFolderID) {
 }
 
 function getPage($iFolderID) {
-	global $default;
-	$sToRender = "<table border=\"1\" width=\"100%\"><tr><td>" . getFolderPath($iFolderID) . "</td></tr></table>\n"; 
+	global $default;	
+	$sToRender = "<table border=\"1\" width=\"100%\"><tr><td>" . getFolderPath($iFolderID) . "</td></tr></table>\n";
+	
+	$sToRender .= "<table border  =\"0\">\n";
+	$sToRender .= "<tr>\n";
+	$sToRender .= "<td valign=\"top\">\n";
+	$sToRender .= getLeftSide($iFolderID);
+	$sToRender .= "</td>\n";
+	$sToRender .= "<td valign=\"top\">\n";
+	$sToRender .= getRightSide($iFolderID);
+	$sToRender .= "</td>\n";
+	$sToRender .= "</tr>\n";
+	$sToRender .= "</table>\n";
+	/*$sToRender = "<table border=\"1\" width=\"100%\"><tr><td>" . getFolderPath($iFolderID) . "</td></tr></table>\n"; 
 	$sToRender .= "<table border  =\"0\">\n";
 	$sToRender .= "<tr>\n";	
-	$sToRender .= "<td>" . wrapInTable(getFolderData($iFolderID)) . "</td>\n";
+	$sToRender .= "<td valign=\"top\">" . wrapInTable(getFolderData($iFolderID)) . "</td>\n";
+	$sToRender .= "<td>" . wrapInTable(getFolderDocTypes($iFolderID)) . "</td>\n";
+	$sToRender .= "</tr>\n";	
+	$sToRender .= "<tr>\n";	
+	$sToRender .= "<td><input type=\"image\" src=\"$default->graphicsUrl/widgets/update.gif\" border=\"0\" /></td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";	
 	$sToRender .= "<td>" . wrapInTable(getFolderRouting($iFolderID)) . "</td>\n";
 	$sToRender .= "</tr>\n";
-	$sToRender .= "<tr>\n";	
-	$sToRender .= "<td><table><tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/update.gif\" border=\"0\" /></td><td><a href=\"$default->rootUrl/control.php?action=addFolderCollaboration&fFolderID=$iFolderID\"><img src=\"$default->graphicsUrl/widgets/add.gif\" border=\"0\" /></a></td></tr></table></td>\n";	$sToRender .= "</tr>\n";
+	$sToRender .= "<tr>\n";
+	$sToRender .= "<td><a href=\"$default->rootUrl/control.php?action=addFolderCollaboration&fFolderID=$iFolderID\"><img src=\"$default->graphicsUrl/widgets/add.gif\" border=\"0\" /></a></td>\n";
+	$sToRender .= "</table>\n";*/
+	return $sToRender;
+}
+
+function getLeftSide($iFolderID) {
+	global $default;
+	$sToRender .= "<table border  =\"0\">\n";
+	$sToRender .= "<tr>\n";
+	$sToRender .= "<td>\n";
+	$sToRender .= wrapInTable(getFolderData($iFolderID));
+	$sToRender .= "</td>\n";
+	$sToRender .= "</tr>\n";
+	$sToRender .= "<tr>\n";
+	$sToRender .= "<td>\n";
+	$sToRender .= "<input type=\"image\" src=\"$default->graphicsUrl/widgets/update.gif\" border=\"0\" />\n";
+	$sToRender .= "</td>\n";
+	$sToRender .= "</tr>\n";
+	$sToRender .= "<tr>\n";
+	$sToRender .= "<td>\n";
+	$sToRender .=  wrapInTable(getFolderRouting($iFolderID)) . "\n";
+	$sToRender .= "</td>\n";
+	$sToRender .= "</tr>\n";
+	$sToRender .= "<tr>\n";
+	$sToRender .= "<td>\n";
+	$sToRender .=  "<a href=\"$default->rootUrl/control.php?action=addFolderCollaboration&fFolderID=$iFolderID\"><img src=\"$default->graphicsUrl/widgets/add.gif\" border=\"0\" /></a>\n";
+	$sToRender .= "</td>\n";
+	$sToRender .= "</tr>\n";
+	$sToRender .= "</table>\n";
+	return $sToRender;
+}
+
+function getRightSide($iFolderID) {
+	global $default;
+	$sToRender .= "<table border  =\"0\">\n";
+	$sToRender .= "<tr>\n";
+	$sToRender .= "<td>\n";
+	$sToRender .= wrapInTable(getFolderDocTypes($iFolderID));
+	$sToRender .= "</td>\n";
+	$sToRender .= "</tr>\n";
+	$sToRender .= "<tr>\n";
+	$sToRender .= "<td>\n";
+	$sToRender .=  "<a href=\"$default->rootUrl/control.php?action=addFolderDocType&fFolderID=$iFolderID\"><img src=\"$default->graphicsUrl/widgets/add.gif\" border=\"0\" /></a>\n";
+	$sToRender .= "</td>\n";
+	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
 	return $sToRender;
 }
