@@ -32,9 +32,9 @@ if (checkSession()) {
         // default browse- should resolve to root folder
         echo "default browse- starts at this users root folder<br>";
         $artifacts = $db->browseByFolder();
-        if (isset($_SESSION["errorMessage"])) {
+        if (!is_null($_SESSION["errorMessage"])) {
             echo "error: " . $_SESSION["errorMessage"] . "<br>";
-            $_SESSION["errorMessage"] = "NULL";
+            $_SESSION["errorMessage"] = NULL;
         }        
         print_r($artifacts);
         
@@ -42,18 +42,18 @@ if (checkSession()) {
         $folderID = 3;
         echo "browse- starting at folder (folderID=$folderID)<br>";
         $artifacts = $db->browseByFolder($folderID);
-        if (isset($_SESSION["errorMessage"])) {
+        if (!is_null($_SESSION["errorMessage"])) {
             echo "error: " . $_SESSION["errorMessage"] . "<br>";
-            $_SESSION["errorMessage"] = "NULL";
+            $_SESSION["errorMessage"] = NULL;
         }        
         print_r($artifacts);
 
         // browse by category
         echo "category browse- return a list of categories:<br>";        
         $categories = $db->browseByCategory();
-        if (isset($_SESSION["errorMessage"])) {
+        if (!is_null($_SESSION["errorMessage"])) {
             echo "error: " . $_SESSION["errorMessage"] . "<br>";
-            $_SESSION["errorMessage"] = "NULL";
+            $_SESSION["errorMessage"] = NULL;
         }        
         print_r($categories);
         
@@ -63,18 +63,18 @@ if (checkSession()) {
         $category = $categories[$rand_keys];
         echo "browsing by category = $category<br>";
         $artifacts = $db->browseByCategory($category);
-        if (isset($_SESSION["errorMessage"])) {
+        if (!is_null($_SESSION["errorMessage"])) {
             echo "error: " . $_SESSION["errorMessage"] . "<br>";
-            $_SESSION["errorMessage"] = "NULL";
-        }        
+            $_SESSION["errorMessage"] = NULL;
+        }         
         print_r($artifacts);
 
         // document type browsing
         echo "document type browse- get list of doc types<br>";
         $documentTypes = $db->browseByDocumentType();
-        if (isset($_SESSION["errorMessage"])) {
+        if (!is_null($_SESSION["errorMessage"])) {
             echo "error: " . $_SESSION["errorMessage"] . "<br>";
-            $_SESSION["errorMessage"] = "NULL";
+            $_SESSION["errorMessage"] = NULL;
         }        
         print_r($documentTypes);
         
@@ -84,9 +84,9 @@ if (checkSession()) {
                 
         echo "browsing by document type = " . $documentTypeID . "<br>";
         $artifacts = $db->browseByDocumentType($documentTypeID);
-        if (isset($_SESSION["errorMessage"])) {
+        if (!is_null($_SESSION["errorMessage"])) {
             echo "error: " . $_SESSION["errorMessage"] . "<br>";
-            $_SESSION["errorMessage"] = "NULL";
+            $_SESSION["errorMessage"] = NULL;
         }        
         print_r($artifacts);
 
