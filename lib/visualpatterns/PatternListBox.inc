@@ -10,6 +10,8 @@
 *
 * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
 * @date 16 January 2003
+* @todo - if the list is set to submit on change, it submits the form.  Investigate ways
+* to get a list action to occur, instead of the default form action
 * @package lib.visualpatterns
 *
 */
