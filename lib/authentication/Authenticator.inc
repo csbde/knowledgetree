@@ -109,6 +109,15 @@ class Authenticator {
     function checkPassword($sUserName, $sPassword) {}
 
     /**
+     * [Abstract] Searches the directory for a specific user
+     *
+     * @param string the username to search for
+     * @param array the attributes to return from the search
+     * @return array containing the users found
+     */ 
+    function getUser($sUserName, $aAttributes) {}
+        
+    /**
      * [Abstract] Searches the user store for users matching the supplied search string.
      * 
      * @param string the username to search for
