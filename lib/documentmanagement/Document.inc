@@ -370,68 +370,12 @@ class Document extends KTEntity {
         $res = parent::create();
 
         if ($res === true) {
-            $this->insertDocumentPermissions();
+            Permission::updateSearchPermissionsForDocument($this->getID());
         }
         return $res;
 
     }
     
-    function insertDocumentPermissions() {
-    	global $default;
-    	
-	    $sql = $default->db;
-
-	    // group permissions                
-	    $sGroupPerms = array("INSERT INTO $default->search_permissions_table (user_id, document_id) " .
-				       "SELECT UGL.user_id AS user_id, D.id AS document_id " ./*ok*/
-				       "FROM $default->documents_table AS D INNER JOIN folders AS F ON D.folder_id = F.id " .
-				       "INNER JOIN $default->groups_folders_table AS GFL ON GFL.folder_id = F.id " .
-				       "INNER JOIN $default->users_groups_table AS UGL ON UGL.group_id = GFL.group_id " .
-				       "WHERE D.id = ?", $this->iId);
-		$default->log->debug("addDocument groupPerms=$sGroupPerms");
-		if ($sql->query($sGroupPerms)) {
-			$default->log->debug("groupPerms succeeded");
-		} else {
-			$default->log->error("groupPerms failed");
-		}
-		// role permissions
-	    $sRolePerms = array("INSERT INTO $default->search_permissions_table (user_id, document_id) " .
-				      "SELECT user_id, document_id " ./*ok*/
-				      "FROM $default->folders_user_roles_table " .
-				      "WHERE document_id = ?", $this->iId);
-		$default->log->info("addDocument rolePerms=$sRolePerms");
-		if ($sql->query($sRolePerms)) {
-			$default->log->debug("rolePerms succeeded");
-		} else {
-			$default->log->error("rolePerms failed");
-		}
-										            
-		// public folders
-		$sPublicFolderPerms = array("INSERT INTO $default->search_permissions_table (user_id, document_id) " . 
-                			  "SELECT U.id, D.id " . /*ok*/
-                			  "FROM $default->users_table AS U, $default->documents_table AS D INNER JOIN $default->folders_table AS F ON D.folder_id = F.id " .
-							  "WHERE F.is_public = 1 " .
-							  "AND D.id = ?", $this->iId);
-		$default->log->debug("addDocument publicFolder=$sPublicFolderPerms");
-		if ($sql->query($sPublicFolderPerms)) {
-			$default->log->debug("publicFolder succeeded");
-		} else {
-			$default->log->error("publicFolder failed");
-		}
-							
-		// creator permissions
-		$sCreatorPerms = array("INSERT INTO $default->search_permissions_table (user_id, document_id) " .
-						 "SELECT creator_id, id " ./*ok*/
-						 "FROM $default->documents_table " .
-						 "WHERE id = ?", $this->iId);
-		$default->log->debug("addDocument creatorPerms=$sCreatorPerms");
-		if ($sql->query($sCreatorPerms)) {
-			$default->log->debug("creatorPerms succeeded");
-		} else {
-			$default->log->error("creatorPerms failed");
-		}		
-    }
-
 	/**
 	* Begin the current document's collaboration process
 	*
