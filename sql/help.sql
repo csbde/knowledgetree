@@ -77,4 +77,7 @@ INSERT INTO help VALUES (75,'addNews','addDashboardNewsHelp.html');
 INSERT INTO help VALUES (76,'modifyDocumentArchiveSettings','modifyDocumentArchiveSettingsHelp.html');
 INSERT INTO help VALUES (77,'addDocumentArchiveSettings','addDocumentArchiveSettingsHelp.html');
 INSERT INTO help VALUES (78,'listDocFields','listDocumentFieldsAdmin.html');
- 
+INSERT INTO help VALUES (79,'editDocFieldLookups','editDocFieldLookups.html');
+INSERT INTO help VALUES (80,'addMetaDataForField','addMetaDataForField.html'); 
+INSERT INTO help VALUES (81,'editMetaDataForField','editMetaDataForField.html'); 
+INSERT INTO help VALUES (82,'removeMetaDataFromField','removeMetaDataFromField.html'); 
