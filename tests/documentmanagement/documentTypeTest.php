@@ -6,9 +6,9 @@
 *
 */
 
-require_once ("../../../config/dmsDefaults.php");
+require_once ("../../config/dmsDefaults.php");
 require_once ("$default->owl_root_url/lib/owl.lib.php");
-require_once ("../../../lib/documentmanagement/documentManager.inc");
+require_once ("../../lib/documentmanagement/documentManager.inc");
 
 /**
 * Database backend unit tests for:
