@@ -124,13 +124,9 @@ class PatternListBox {
 		}
 		if (isset($this->sWhereClause)) {
 			$sQuery .= "WHERE " . $this->sWhereClause . " ";
-			
 		}
-		
 		$sQuery .= "ORDER BY ST.$this->sDisplayColumn " . ($this->bOrderAsc ? "ASC" : "DESC");		
-
 		$sql->query($sQuery);
-        $default->log->info("PLB query=$sQuery");
 		if ($sql->num_rows() > 0 || $this->bIncludeDefaultValue) {			
 			if (isset($this->sOnChangeAction)) {
 				$sToRender = "<SELECT NAME=\"$this->sSelectName\" ". ($this->bPostBackOnChange ? "onChange=\"$this->sOnChangeAction\" " : " ") . ">\n";
