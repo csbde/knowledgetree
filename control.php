@@ -41,10 +41,15 @@ if (checkSessionAndRedirect(false)) {
 // check for the presence of additional params
 $default->log->info("control.php qs=" . $_SERVER["QUERY_STRING"]);
 if (strstr($_SERVER["QUERY_STRING"], "&")) {
-    // save the querystring
+    // strip and save the querystring
     $queryString = substr($_SERVER["QUERY_STRING"], strpos($_SERVER["QUERY_STRING"], "&")+1, strlen($_SERVER["QUERY_STRING"]));
-    $default->log->info("control.php qs=$queryString; action=$action");
+} else if (strstr($_SERVER["QUERY_STRING"], "?")) {
+    // strip and save the querystring
+    $queryString = substr($_SERVER["QUERY_STRING"], strpos($_SERVER["QUERY_STRING"], "?")+1, strlen($_SERVER["QUERY_STRING"]));
+    // update
+    $action = substr($_SERVER["QUERY_STRING"], 0, strpos($_SERVER["QUERY_STRING"], "?"));
 }
+$default->log->info("control.php qs=$queryString; action=$action");
     
 // retrieve the page from the sitemap (checks whether this user has access to the requested page)
 $page = $default->siteMap->getPage($action, $_SESSION["userID"]);
