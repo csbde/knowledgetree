@@ -53,7 +53,7 @@ function getPage($iDocumentID, $iDocumentTypeID, $fFirstEdit) {
 	if (!isset($fFirstEdit)) {
 		//can't cancel if you're uploading for the first time, must fill out the generic meta data
 		$sToRender .= "<td>\n";
-		$sToRender .= "<a href=\"$default->rootUrl/control.php?action=viewDocument&fDocumentID=$iDocumentID\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\" /></a>\n";
+		$sToRender .= "<a href=\"$default->rootUrl/control.php?action=viewDocument&fDocumentID=$iDocumentID&fShowSection=genericMetaData\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\" /></a>\n";
 		$sToRender .= "</td>\n";
 		$sToRender .= "</tr>\n";
 	}
