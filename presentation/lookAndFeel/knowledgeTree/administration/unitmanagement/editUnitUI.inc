@@ -18,7 +18,7 @@ function getEditPage($iUnitID) {
 	
 	$sToRender .= renderHeading("Edit Unit");
 	$sToRender .= "<table>\n";
-	$sToRender .= "<tr><td>Please select a unit:</td></tr>\n";
+	$sToRender .= "<tr><td><strong>Please edit the Unit name</strong></td></tr>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>Unit Name: </td><td>" . getUnitDisplay($oUnit) . "</td>\n";
 	$sToRender .= "</tr>\n";
