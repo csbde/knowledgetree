@@ -1885,12 +1885,6 @@ INSERT INTO zseq_document_link VALUES (1);
 INSERT INTO zseq_document_subscriptions VALUES (1);
 
 -- 
--- Dumping data for table `zseq_document_text`
--- 
-
-INSERT INTO zseq_document_text VALUES (1);
-
--- 
 -- Dumping data for table `zseq_document_transaction_types_lookup`
 -- 
 
