@@ -51,7 +51,7 @@ class Permission {
             Permission::userHasWriteRoleForDocument($oDocument)) {
             return true;
         }
-        $_SESSION["errorMessage"] = $lang_err_user_doc_write . "id " . $iDocumentID;
+        $_SESSION["errorMessage"] = $lang_err_user_doc_write . "id " . $oDocument->getID();
         return false;
     }
     
@@ -128,7 +128,7 @@ class Permission {
             Permission::userHasGroupReadPermissionForFolder($oFolder)) {
             return true;
         }
-        $_SESSION["errorMessage"] = $lang_err_user_folder_write . "id " . $iFolderID;
+        $_SESSION["errorMessage"] = $lang_err_user_folder_write . "id " . $oFolder->getID();
         return false;
     }
     
@@ -160,7 +160,7 @@ class Permission {
         global $default, $lang_err_user_folder_write;
         
         if ($oFolder == null) {
-            $default->log->info("Failed to retrieve folder with ID $iFolderID from database");
+            $default->log->info("Failed to retrieve folder with ID " . $oFolder->getID() . " from database");
             return false;
         }       
         $sql = $default->db;
@@ -220,7 +220,7 @@ class Permission {
         $sql = $default->db;
         
         if ($oFolder == null) {
-            $default->log->info("Failed to retrieve folder with ID $iFolderID from database");
+            $default->log->info("Failed to retrieve folder with ID " . $oFolder->getID() . " from database");
             return false;
         }
         
@@ -233,7 +233,7 @@ class Permission {
             $sQuery .= "AND GFL.folder_id IN (" . (strlen($oFolder->getParentFolderIDs()) > 0 ? $oFolder->getParentFolderIDs() . "," . $oFolder->getID() : $oFolder->getID()) .  ")";
         } else {
             //otherwise we just use the current folder id
-            $sQuery .= "AND GFL.folder_id IN (" . $iFolderID .  ")";
+            $sQuery .= "AND GFL.folder_id IN (" . $oFolder->getID() .  ")";
         }                       
         $sql->query($sQuery);
         
