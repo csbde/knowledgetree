@@ -74,7 +74,7 @@ if ($loginAction == "loginForm") {
                     $url = urldecode($redirect);
                 // else redirect to the dashboard
                 } else {                                            
-                    $url = "/control.php?action=dashboard";
+                    $url = $default->owl_root_url . "/control.php?action=dashboard";
                 }
                 break;
             // login disabled                    
