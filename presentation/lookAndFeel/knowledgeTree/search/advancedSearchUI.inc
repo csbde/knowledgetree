@@ -9,6 +9,15 @@
 * 
 */
 
+function renderHeading() {
+    global $default;
+    $sColor = $default->siteMap->getSectionColour("Advanced Search", "td");
+    $sToRender .= "<tr align=\"left\"><th class=\"sectionHeading\" bgcolor=\"$sColor\">Advanced Search</th></tr>\n";
+    $sToRender .= "<tr/>\n";
+    $sToRender .= "<tr/>\n";
+    return $sToRender;
+}
+
 function getMetaData($aMetaTagIDs) {
 	global $default;	
 	$sQuery = "SELECT name, id FROM $default->owl_fields_table ORDER BY name ASC";
@@ -31,11 +40,12 @@ function getMetaData($aMetaTagIDs) {
 
 function getSearchPage($sSearchString = "", $aMetaTagIDs = array()) {
 	global $default;
-	$sToRender = "<table>\n";
+	$sToRender = "<table width=\"600\">\n";
+    $sToRender .= renderHeading();
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>Search text: <input type=\"text\" size=\"60\" name=\"fSearchString\" value=\"$sSearchString\" /></td>\n";
+	$sToRender .= "<td>Search text: <input type=\"text\" size=\"60\" name=\"fSearchString\" value=\"$sSearchString\" />\n";
 	//$sToRender .= "<td><input type=\"button\" src=\"$default->graphicsUrl/search.gif\" value=\"search\" onClick=\"validateAdvancedSearchText()\"/></td>\n";
-	$sToRender .= "<td><input type=\"button\" value=\"search\" onClick=\"validateAdvancedSearch()\"/></td>\n";
+	$sToRender .= "<input type=\"button\" value=\"search\" onClick=\"validateAdvancedSearch()\"/></td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>&nbsp</td>\n";
@@ -65,10 +75,9 @@ function getSearchResults($sSQLSearchString, $iStartIndex, $sSearchText, $sMetaT
 	$aDBQueryStringColumns = array("document_id","folder_id");
 	$aQueryStringVariableNames = array("fDocumentID", "fFolderID");
 	
-	
 	$oPatternBrowse = & new PatternBrowseableSearchResults($sQuery, 10, $aColumns, $aColumnTypes, $aColumnHeaders, $aLinkURLs, $aDBQueryStringColumns, $aQueryStringVariableNames);
 	$oPatternBrowse->setStartIndex($iStartIndex);
-	return $oPatternBrowse->render() . getSearchVariablesHtml($sSearchText, $sMetaTagIDs);
+	return "<table width=\"600\">" . renderHeading() . "</table>" . $oPatternBrowse->render() . getSearchVariablesHtml($sSearchText, $sMetaTagIDs);
 }
 
 function getSearchValidationJavaScript() {
