@@ -45,39 +45,18 @@ include_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/fo
 include_once("$default->fileSystemRoot/presentation/Html.inc");
 include_once("groupFolderLinkUI.inc");
 
-if (checkSession()) {
-    if (isset($fFolderID) && isset($fGroupFolderLinkID)) {
-        // if a folder has been selected
-        $oPatternCustom = & new PatternCustom();
-        $oPatternCustom->setHtml("");    
-           
-		$oFolder = Folder::get($fFolderID);
-        if (Permission::userHasFolderWritePermission($oFolder)) {
-            // can only delete group folder links if the user has folder write permission
-            if (isset($fForDelete)) {
-                $oGroupFolderLink = & GroupFolderLink::get($fGroupFolderLinkID);
-                if ($oGroupFolderLink->delete()) {
-                    // on successful deletion, redirect to the folder edit page
-                    controllerRedirect("editFolder", "fFolderID=$fFolderID&fShowSection=folderPermissions");
-                } else {
-                    // otherwise display an error message
-                    $sErrorMessage = _("The folder access entry could not be deleted from the database");
-                    $oGroupFolderLink = & GroupFolderLink::get($fGroupFolderLinkID);
-                    $oPatternCustom->setHtml(getPage($oGroupFolderLink));
-                }
-            } else {
-                $oGroupFolderLink = & GroupFolderLink::get($fGroupFolderLinkID);
-                $oPatternCustom->setHtml(getDeletePage($oGroupFolderLink, $fFolderID));
-            }
-        } else {
-            // display an error message
-            $sErrorMessage = _("You don't have permission to delete this folder access entry.");
-        }
-    } else {
-        $sErrorMessage = _("No folder currently selected");
-    }
-    
-    include_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
+if (!checkSession()) {
+    // Never returns, but just in case...
+    die();
+}
+
+include_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
+
+$oPatternCustom = & new PatternCustom();
+$oPatternCustom->setHtml("");    
+
+if (!(isset($fFolderID) && isset($fGroupFolderLinkID))) {
+    $sErrorMessage = _("No folder currently selected");
     $main->setCentralPayload($oPatternCustom);
     if (isset($sErrorMessage)) {
         $main->setErrorMessage($sErrorMessage);
@@ -85,5 +64,53 @@ if (checkSession()) {
     $main->setFormAction($_SERVER["PHP_SELF"] . "?fFolderID=$fFolderID&fGroupFolderLinkID=$fGroupFolderLinkID&fForDelete=1");
     $main->setHasRequiredFields(true);
     $main->render();    
+    exit(0);
 }
+// if a folder has been selected
+   
+$oFolder = Folder::get($fFolderID);
+if (!Permission::userHasFolderWritePermission($oFolder)) {
+    // display an error message
+    $sErrorMessage = _("You don't have permission to delete this folder access entry.");
+    $main->setCentralPayload($oPatternCustom);
+    if (isset($sErrorMessage)) {
+        $main->setErrorMessage($sErrorMessage);
+    }
+    $main->setFormAction($_SERVER["PHP_SELF"] . "?fFolderID=$fFolderID&fGroupFolderLinkID=$fGroupFolderLinkID&fForDelete=1");
+    $main->setHasRequiredFields(true);
+    $main->render();    
+    exit(0);
+}
+
+if (!isset($fForDelete)) {
+    $oGroupFolderLink = & GroupFolderLink::get($fGroupFolderLinkID);
+    $oPatternCustom->setHtml(getDeletePage($oGroupFolderLink, $fFolderID));
+    $main->setCentralPayload($oPatternCustom);
+    if (isset($sErrorMessage)) {
+        $main->setErrorMessage($sErrorMessage);
+    }
+    $main->setFormAction($_SERVER["PHP_SELF"] . "?fFolderID=$fFolderID&fGroupFolderLinkID=$fGroupFolderLinkID&fForDelete=1");
+    $main->setHasRequiredFields(true);
+    $main->render();    
+    exit(0);
+}
+
+$oGroupFolderLink = & GroupFolderLink::get($fGroupFolderLinkID);
+if (!$oGroupFolderLink->delete()) {
+    // otherwise display an error message
+    $sErrorMessage = _("The folder access entry could not be deleted from the database");
+    $oGroupFolderLink = & GroupFolderLink::get($fGroupFolderLinkID);
+    $oPatternCustom->setHtml(getPage($oGroupFolderLink));
+    $main->setCentralPayload($oPatternCustom);
+    if (isset($sErrorMessage)) {
+        $main->setErrorMessage($sErrorMessage);
+    }
+    $main->setFormAction($_SERVER["PHP_SELF"] . "?fFolderID=$fFolderID&fGroupFolderLinkID=$fGroupFolderLinkID&fForDelete=1");
+    $main->setHasRequiredFields(true);
+    $main->render();    
+    exit(0);
+}
+
+controllerRedirect("editFolder", "fFolderID=$fFolderID&fShowSection=folderPermissions");
+
 ?>
