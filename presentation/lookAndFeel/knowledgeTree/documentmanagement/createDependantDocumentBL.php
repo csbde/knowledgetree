@@ -38,7 +38,7 @@ if (checkSession()) {
 	            
 	            
 				$sBody = $oUser->getName() . ", a step in the document collaboration process requires you to create a new document.  " .
-								generateLink("/control.php","action=dashboard","Log onto KnowledgeTree") . " and select the relevant link under the 'Dependant Documents' heading on your dashboard when you are ready upload it.";
+								generateLink("/control.php","action=dashboard","Log onto KnowledgeTree") . " and select the relevant link under the 'Dependant Documents' heading on your dashboard when you are ready to upload it.  ";
 								//if we have a template document
 				if (!($oTemplateDocument === false)) {
 					$sBody .= "The document entitled " . generateLink("/control.php", "action=viewDocument&fDocumentID=" . $oTemplateDocument->getID(), $oTemplateDocument->getName()) . " " .
@@ -56,7 +56,7 @@ if (checkSession()) {
 			$oDocument = Document::get($fDocumentID);
 		
 			$oPatternCustom = & new PatternCustom();
-			$oPatternCustom->setHtml(getAddPage($oDocument->getFolderID(), $fDocumentID, $fUnitID, $fUserID, $fDocumentTitle, $fTemplateDocument));			
+			$oPatternCustom->setHtml(getPage($oDocument->getFolderID(), $fDocumentID, $fUnitID, $fUserID, $fDocumentTitle, $fTemplateDocument));			
 			$main->setCentralPayload($oPatternCustom);
 			$main->setFormAction($_SERVER["PHP_SELF"] . "?fDocumentID=$fDocumentID&fForStore=1");
 			$main->setErrorMessage("An error occured whilst trying to create the dependant document");
@@ -69,7 +69,7 @@ if (checkSession()) {
 		$oDocument = Document::get($fDocumentID);
 		
 		$oPatternCustom = & new PatternCustom();
-		$oPatternCustom->setHtml(getAddPage($oDocument->getFolderID(), $fDocumentID, $fUnitID, $fUserID, $fDocumentTitle, $fTemplateDocument));
+		$oPatternCustom->setHtml(getPage($oDocument->getFolderID(), $fDocumentID, $fUnitID, $fUserID, $fDocumentTitle, $fTemplateDocument));
 		$main->setCentralPayload($oPatternCustom);
 		$main->setFormAction($_SERVER["PHP_SELF"] . "?fDocumentID=$fDocumentID&fForStore=1");
 		$main->render();			

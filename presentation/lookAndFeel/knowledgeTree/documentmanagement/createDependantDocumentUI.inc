@@ -9,7 +9,7 @@ function getFolderPath($iFolderID) {
 	return "<table border=\"0\" width = 100%><tr><td bgcolor=\"$sTDBGColour\">$sFolderPathLink</td></tr></table>\n";    
 }
 
-function getAddPage($iFolderID, $iDocumentID, $iUnitID, $iUserID, $sDocumentTitle, $sTemplateDocument) {
+function getPage($iFolderID, $iDocumentID, $iUnitID, $iUserID, $sDocumentTitle, $sTemplateDocument) {
 	global $default;
 	$sToRender = renderHeading("Create a new dependant document");
     $sToRender .= getFolderPath($iFolderID);    
@@ -70,7 +70,7 @@ function getUnitDropDown($iDocumentID, $iUnitID) {
 	}
 	$oPatternListBox = & new PatternListBox($default->owl_units_table, "Name", "id", "fUnitID");	
 	$oPatternListBox->setPostBackOnChange(true);
-	$oPatternListBox->setOnChangeAction("setActionAndSubmit('" . $_SERVER["PHP_SELF"] . "?fDocumentID=$iDocumentID&fForAdd=1')");
+	$oPatternListBox->setOnChangeAction("setActionAndSubmit('" . $_SERVER["PHP_SELF"] . "?fDocumentID=$iDocumentID')");
 	if (isset($iUnitID)) {
 		$oPatternListBox->setSelectedValue($iUnitID);
 	}
