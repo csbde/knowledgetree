@@ -86,7 +86,7 @@ function getViewComment($iNum, $oThread, $oComment, $sIndent) {
 	 	
 	$sToRender .= "<tr>\n";
 	$sToRender .= "\t<td style=\"background-color:$BGcolor\" width=450>\n";
-	$sToRender .= "\t\t$sIndent<a href=\"" . generateControllerLink("viewComment", "iCommentID=" . $oComment->getID() . "&iDocumentID=" . $oThread->getDocumentID() . "&iThreadID=" . $oThread->getID()) . "\" title=\"" . $oComment->getSubject() . "\">\n";
+	$sToRender .= "\t\t$sIndent<a href=\"" . generateControllerLink("viewComment", "fCommentID=" . $oComment->getID() . "&fDocumentID=" . $oThread->getDocumentID() . "&fThreadID=" . $oThread->getID()) . "\" title=\"" . $oComment->getSubject() . "\">\n";
 	$sToRender .= substr($oComment->getSubject(),0,$iSubjectChars ) . $dotdot . "</a></td>\n";
 	$sToRender .= "\t<td style=\"background-color:$UserBGcolor\" width=\"100\" title=\"$sUserName\">\n";
 	$sToRender .= "\t\t$sUserName</td>\n";
