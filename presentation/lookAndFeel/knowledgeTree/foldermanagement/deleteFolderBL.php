@@ -12,6 +12,7 @@
 
 require_once("../../../../config/dmsDefaults.php");
 require_once("$default->owl_fs_root/lib/foldermanagement/Folder.inc");
+require_once("$default->owl_fs_root/lib/foldermanagement/PhysicalFolderManagement.inc");
 require_once("$default->owl_fs_root/lib/users/User.inc");
 require_once("$default->owl_fs_root/lib/subscriptions/SubscriptionEngine.inc");
 require_once("$default->owl_fs_root/lib/visualpatterns/PatternCustom.inc");
@@ -34,7 +35,7 @@ if (checkSession()) {
                     
 					$sFolderPath = Folder::getFolderPath($fFolderID);
 					if ($oFolder->delete()) {
-						if (unlink($sFolderPath)) {
+						if (PhysicalFolderManagement::deleteFolder($sFolderPath)) {
 							// successfully deleted the folder from the file system
                             
                             // fire subscription alerts for the deleted folder
@@ -44,8 +45,8 @@ if (checkSession()) {
                                             "parentFolderName" => Folder::getFolderName($oFolder->getParentID())));
                             $default->log->info("deleteFolderBL.php fired $count subscription alerts for removed folder " . $oFolder->getName());
                             
-							// redirect to the browse folder page							
-							redirect("$default->owl_root_url/control.php?action=browse&fFolderID=" . $fFolderID);
+							// redirect to the browse folder page with the parent folder id 
+							redirect("$default->owl_root_url/control.php?action=browse&fFolderID=" . $oFolder->getParentID());
 						} else {
 							// could not delete the folder from the file system, so reverse the folder deletion
 							$oFolder->create();
