@@ -172,7 +172,7 @@ if (checkSession()) {
              stopTable());
     
     $main->setCentralPayload($oContent);
-    
+    $main->setFormAction($_SERVER["PHP_SELF"]);
     $main->render();
     
 } else {
