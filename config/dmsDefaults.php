@@ -23,7 +23,6 @@
 
 // include the environment settings
 require_once("environment.php");
-
 // table mapping entries
 include("tableMappings.inc");
 // site map definition
@@ -31,6 +30,26 @@ include("siteMap.inc");
 // instantiate log
 require_once("$default->fileSystemRoot/lib/Log.inc");
 $default->log = new Log($default->fileSystemRoot . "/log", INFO);
+// setup i18n if gettext is installed
+if (in_array("gettext", get_loaded_extensions()) && function_exists('gettext') && function_exists('_')) {
+	require_once("$default->fileSystemRoot/lib/i18n/languageFunctions.inc");	
+	require_once("$default->fileSystemRoot/lib/i18n/accept-to-gettext.inc");	
+	if ($default->useAcceptLanguageHeader) {
+	    $aInstalledLocales = getInstalledLocales();
+	    $sLocale=al2gt($aInstalledLocales, 'text/html');
+	    putenv('LANG=' . $sLocale);
+	    setlocale(LC_MESSAGES, $sLocale);
+	} else {		
+		putenv('LANG=' . $default->defaultLanguage); 
+		setlocale(LC_MESSAGES, $default->defaultLanguage);
+	}
+	// Set the text domain
+	$sDomain = 'knowledgeTree';
+	bindtextdomain($sDomain, $default->fileSystemRoot . "/i18n"); 
+	textdomain($sDomain);
+} else {
+	$default->log->info("Gettext not installed, i18n disabled.");
+}
 require_once("$default->fileSystemRoot/phpmailer/class.phpmailer.php");
 require_once("$default->fileSystemRoot/lib/session/Session.inc");
 require_once("$default->fileSystemRoot/lib/session/control.inc");
