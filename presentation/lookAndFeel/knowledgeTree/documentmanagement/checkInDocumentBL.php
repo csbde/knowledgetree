@@ -59,7 +59,6 @@ if (checkSession()) {
                                 // clear the checked in user id
                                 $oDocument->setCheckedOutUserID(-1);
                                 // bump the version numbers
-                                $default->log->error("fCheckInType=$fCheckInType");
                                 if ($fCheckInType == "major") {
                                     // major version number rollover
                                     $oDocument->setMajorVersionNumber($oDocument->getMajorVersionNumber()+1);
@@ -68,11 +67,10 @@ if (checkSession()) {
                                 } else if ($fCheckInType == "minor") {
                                     $oDocument->setMinorVersionNumber($oDocument->getMinorVersionNumber()+1);
                                 }
-                                $default->log->error("major=" . $oDocument->getMajorVersionNumber() . ";minor=" . $oDocument->getMinorVersionNumber());
-                                
+
                                 // update it
                                 if ($oDocument->update()) {
-                                    
+
                                     // create the document transaction record
                                     $oDocumentTransaction = & new DocumentTransaction($oDocument->getID(), $fCheckInComment, CHECKIN);
                                     // TODO: check transaction creation status?
@@ -83,21 +81,22 @@ if (checkSession()) {
                                              SubscriptionConstants::subscriptionType("DocumentSubscription"),
                                              array( "modifiedDocumentName" => $oDocument->getName() ));
                                     $default->log->info("checkInDocumentBL.php fired $count subscription alerts for checked out document " . $oDocument->getName());
-        
+
                                     //redirect to the document view page
                                     redirect("$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $oDocument->getID());                        
                                     
                                 } else {
                                     // document update failed
-                                    $sErrorMessage = "An error occurred while storing this document in the database";
+                                    $oPatternCustom->setHtml(renderErrorPage("An error occurred while storing this document in the database"));
                                 }
                             } else {
                                 // reinstate the backup
                                 copy($sBackupPath, $oDocument->getPath());
-                                $sErrorMessage = "An error occurred while storing the new file on the filesystem";
+                                $oPatternCustom->setHtml(renderErrorPage("An error occurred while storing the new file on the filesystem"));
                             }
                         } else {
-                            $sErrorMessage = "Please select a document by first clicking on 'Browse'.  Then click 'Check-In'";                        
+                            $sErrorMessage = "Please select a document by first clicking on 'Browse'.  Then click 'Check-In'";
+                            $oPatternCustom->setHtml(renderCheckInPage($oDocument));
                         }
                     } else {
                         // prompt the user for a check in comment and the file
@@ -105,19 +104,20 @@ if (checkSession()) {
                     }
                 } else {
                     // this document isn't checked out
-                    $oPatternCustom->setHtml("<p class=\"errorText\">You can't check in this document because its not checked out</p>\n");                    
+                    $oPatternCustom->setHtml(renderErrorPage("You can't check in this document because its not checked out"));
+                        
                 }
             } else {
                 // no permission to checkout the document
-                $oPatternCustom->setHtml("<p class=\"errorText\">Could not check in this document</p>\n");
+                $oPatternCustom->setHtml(renderErrorPage("You do not have permission to check in this document"));
             }
         } else {
             // couldn't instantiate the document
-            $oPatternCustom->setHtml("<p class=\"errorText\">Could not check in this document</p>\n");
+            $oPatternCustom->setHtml(renderErrorPage("Could not check in this document"));
         }
     } else {
         // no document id was set when coming to this page,
-        $oPatternCustom->setHtml("<p class=\"errorText\">No document is currently selected for check in</p>\n");
+        $oPatternCustom->setHtml(renderErrorPage("No document is currently selected for check in"));
     }
 
     require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
@@ -127,7 +127,6 @@ if (checkSession()) {
     if (isset($sErrorMessage)) {
         $main->setErrorMessage($sErrorMessage);
     }
-    $oPatternCustom->setHtml(renderCheckInPage($oDocument));
     $main->render();
 }
 ?>
