@@ -109,7 +109,7 @@ function renderFolderList($iFolderID, $sLinkURL) {
     $aLinkURLs = array("$sLinkURL");
 
     $aLinkURLs = array();
-    if (strlen($default->rootUrl) > 0) {    	
+    if ((strlen($default->rootUrl) > 0) && (!strstr($sLinkURL, $default->rootUrl))) {
     	$aLinkURLs = array("$default->rootUrl/$sLinkURL");
     } else {
     	$aLinkURLs = array("$sLinkURL");
