@@ -134,7 +134,7 @@ for ($i = 0; $i < count($aKeys); $i++) {
 			}
 			//execute the query
 			$sql = $default->db;
-			$sql->query($sQuery);
+			$sql->query($sQuery);		
 			$iPrimaryKey = $sql->insert_id();
 		} else {
 			//perform an update
@@ -183,12 +183,6 @@ for ($i = 0; $i < count($aKeys); $i++) {
 			$sql = $default->db;
 			$sql->query($sQuery);
 		}
-		
-		//need to do some special checks for folders
-		if (strcmp($sTableName, "folders") == 0) {			
-				$oFolder = Folder::get($iPrimaryKey);
-				$oFolder->update(true);				
-		}		
 	}
 }
 redirect(urldecode($fReturnURL));
