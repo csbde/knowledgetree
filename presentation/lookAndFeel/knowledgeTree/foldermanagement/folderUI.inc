@@ -29,7 +29,6 @@ function displayFolderPathLink($aPathArray, $aPathNameArray, $sLinkPage = "") {
     for ($i=0; $i<count($aPathArray); $i++) {
         $iFolderID = $aPathArray[$i];		
         // retrieve the folder name for this folder
-        //$sFolderName = Folder::getFolderName($iFolderID);
 		$sFolderName = $aPathNameArray[$i];		
         // generate a link back to this page setting fFolderID		
         $sLink = generateLink($sLinkPage,
@@ -61,11 +60,15 @@ function displayFolderLink($oFolder, $sLinkPage = "") {
                         $oFolder->getName());
 }
 
-function renderFolderPath($iFolderID, $sLinkURL) {
+function renderFolderPath($iFolderID, $sLinkURL, $bDisplayLinks = true) {
 	global $default;
 	$sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
-	$sTDBGColour = $default->siteMap->getSectionColour($sSectionName, "td");	
-    $sFolderPath = displayFolderPathLink(Folder::getFolderPathAsArray($iFolderID), Folder::getFolderPathNamesAsArray($iFolderID), $sLinkURL);	
+	$sTDBGColour = $default->siteMap->getSectionColour($sSectionName, "td");
+	if ($bDisplayLinks) {	
+    	$sFolderPath = displayFolderPathLink(Folder::getFolderPathAsArray($iFolderID), Folder::getFolderPathNamesAsArray($iFolderID), $sLinkURL);
+	} else {
+		$sFolderPath = implode(" > ", Folder::getFolderPathNamesAsArray($iFolderID));
+	}	
     return "<table border=\"0\" cellpadding=\"5\" width=\"600\"><tr><td bgcolor=\"$sTDBGColour\">$sFolderPath</td></tr></table>\n";
 }
 
