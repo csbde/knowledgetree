@@ -1,4 +1,9 @@
 <?php
+
+define("DEBUG", 0);
+define("INFO", 1);
+define("ERROR", 2);
+
 /**
  * $Id$
  * 
@@ -7,13 +12,9 @@
  * Licensed under the GNU GPL. For full terms see the file COPYING.
  *
  * @version $Revision$
- * @author <a href="mailto:michael@jamwarehouse.com">Michael Joseph</a>, Jam Warehouse (Pty) Ltd, South Africa
- * @package dmslib
+ * @author Michael Joseph <michael@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
+ * @package lib
  */
-define("DEBUG", 0);
-define("INFO", 1);
-define("ERROR", 2);
-
 class Log {
     /**
      * The minimum logging level- log everything with
@@ -33,7 +34,8 @@ class Log {
     /**
      * Default constructor
      *
-     * @param $logLevel   the desired level to log at
+     * @param string the path to the logfile to write to
+     * @param int the desired level to log at
      */
     function Log($logFile, $logLevel = INFO) {
         $this->logFile = $logFile;
@@ -45,7 +47,7 @@ class Log {
     /**
      * Log a debug entry
      *
-     * @param $logEntry  the message to write to the log file
+     * @param string the message to write to the log file
      */
     function debug($logEntry) {
         $this->writeLog($this->prefixEntry($logEntry, "DEBUG"), DEBUG);
@@ -54,7 +56,7 @@ class Log {
     /**
      * Log an info entry
      *
-     * @param $logEntry  the message to write to the log file
+     * @param string the message to write to the log file
      */
     function info($logEntry) {
         $this->writeLog($this->prefixEntry($logEntry, " INFO"), INFO);
@@ -63,7 +65,7 @@ class Log {
     /**
      * Log an error entry
      *
-     * @param $logEntry  the message to write to the log file
+     * @param string the message to write to the log file
      */    
     function error($logEntry) {
         $this->writeLog($this->prefixEntry($logEntry, "ERROR"), ERROR);
@@ -73,8 +75,8 @@ class Log {
      * Writes to the log file, checking that the log level is within
      * the minimum logging level
      *
-     * @param $logEntry  the message to write to the log file
-     * @param $logLevel  the error level to log at
+     * @param string the message to write to the log file
+     * @param int the error level to log at
      */    
     function writeLog($logEntry, $logLevel) {        
         if ($logLevel >= $this->minimumLoggingLevel) {
@@ -88,6 +90,9 @@ class Log {
     /**
      * Prefixes the log entry with the current date time, the logging level
      * and the page that called it
+     *
+     * @param string the message to write to the log file
+     * @param int the error level to log at     
      */
     function prefixEntry($logEntry, $logLevel) {
        return getCurrentDateTime() . ":$logLevel: $logEntry\n";

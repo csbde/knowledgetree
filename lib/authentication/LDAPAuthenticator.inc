@@ -8,9 +8,11 @@ require_once("$default->owl_fs_root/lib/authentication/Authenticator.inc");
  * 
  * Perform authentication tasks against LDAP compliant directory server.
  * 
+ * Licensed under the GNU GPL. For full terms see the file COPYING.
+ *
  * @version $Revision$ 
- * @author <a href="mailto:michael@jamwarehouse.com">Michael Joseph</a>, Jam Warehouse (Pty) Ltd, South Africa
- * @package dmslib
+ * @author Michael Joseph <michael@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
+ * @package lib.authentication
  */
 class LDAPAuthenticator extends Authenticator {
      
@@ -26,10 +28,8 @@ class LDAPAuthenticator extends Authenticator {
      /**
       * Creates a new instance of the LDAPAuthenticator
       *
-      * @param $ldapServer
-      *        the LDAP server to connect to for validation
-      * @param $ldapDN
-      *        the dn branch to perform the authentication against
+      * @param string the LDAP server to connect to for validation
+      * @param string the dn branch to perform the authentication against
       */
      function LDAPAuthentication($ldapServer, $ldapDN) {
          $this->ldapServer = $ldapServer;
@@ -39,10 +39,8 @@ class LDAPAuthenticator extends Authenticator {
      /**
       * Checks the user's password against the LDAP directory
       *
-      * @param $userName
-      *        the name of the user to check
-      * @param $password
-      *        the password to check
+      * @param string the name of the user to check
+      * @param string the password to check
       * @return boolean true if the password is correct, else false
       */
      function checkPassword($userName, $password) {

@@ -4,16 +4,18 @@
  *
  * This class is used for session management.
  *
- * @author <a href="mailto:michael@jamwarehouse.com">Michael Joseph</a>, Jam Warehouse (Pty) Ltd, South Africa
+ * Licensed under the GNU GPL. For full terms see the file COPYING.
+ *
+ * @author Michael Joseph <michael@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
  * @version $Revision$
- * @package dmslib
+ * @package lib.session
  */
 class Session {
 
     /**
      * Creates a session.
      *
-     * @param $userID    the id of the user to create a session for
+     * @param int the id of the user to create a session for
      * @return string the generated sessionID
      */
 	function create($userID) {
@@ -64,8 +66,7 @@ class Session {
     /**
      * Removes any stale sessions for the specified userID
      *
-     * @param userID
-     *        the userID to remove stale sessions for
+     * @param int the userID to remove stale sessions for
      */
     function removeStaleSessions($userID) {
         global $default;
@@ -78,8 +79,7 @@ class Session {
     /**
      * Used to verify the current user's session.
      *
-     * @return 
-     *        array containing the userID, groupID and session verification status
+     * @return int session verification status
      */
     function verify() {
         global $default, $lang_sesstimeout, $lang_sessinuse, $lang_err_sess_notvalid;
