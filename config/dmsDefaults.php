@@ -57,6 +57,8 @@ $default->owl_document_types_table = "document_types_lookup";
 $default->owl_document_words_table = "document_words_link";
 // stores documents
 $default->owl_documents_table = "documents";
+//link folders to doc types
+$default->owl_folder_doctypes_table = "folder_doctypes_link";
 // stores folder subscriptions
 $default->owl_folder_subscriptions_table = "folder_subscriptions";
 // stores folders
@@ -111,8 +113,7 @@ $default->owl_web_sites_table = "web_sites";
 $default->owl_words_lookup_table = "words_lookup";
 //stores help text
 $default->owl_help_table = "help";
-//link folders to doc types
-$default->owl_folder_doctypes_table = "folder_doctypes_link";
+
 
 // Change this to reflect the authentication method you are using
 //require_once("$default->fileSystemRoot/lib/LDAPAuthenticator.inc");
@@ -240,8 +241,6 @@ $default->siteMap->addSectionColour("userAdministration", "th", "056DCE");
 $default->siteMap->addPage("doctype", "/presentation/lookAndFeel/knowledgeTree/administration/admin.php?sectionName=documentTypeAdministration", "doctypeAdministration", SysAdmin, "Document Type Management");
 $default->siteMap->addPage("docfield", "/presentation/lookAndFeel/knowledgeTree/administration/admin.php?sectionName=documentFieldAdministration", "doctypeAdministration", SysAdmin, "Document Field Management");
 
-$default->siteMap->addPage("assignDocTypeToField", "/presentation/lookAndFeel/knowledgeTree/administration/doctypefieldmanagement/assignDocTypeToFieldBL.php", "doctypeAdministration", SysAdmin, "Assign Field To Type");
-$default->siteMap->addPage("removeDocTypeFromField", "/presentation/lookAndFeel/knowledgeTree/administration/doctypefieldmanagement/removeDocTypeFromFieldBL.php", "doctypeAdministration", SysAdmin, "Remove Field from Type");
 
 // document type stuff
 $default->siteMap->addPage("addDocType", "/presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/addDocTypeBL.php", "documentTypeAdministration", SysAdmin, "Add a Document Type");
@@ -283,7 +282,7 @@ $default->siteMap->addSectionColour("linkAdministration", "th", "056DCE");
 //website management
 $default->siteMap->addPage("addWebsite", "/presentation/lookAndFeel/knowledgeTree/administration/websitemanagement/addWebsiteBL.php", "websiteAdministration", SysAdmin, "Add a Website");
 $default->siteMap->addPage("addWebsiteSuccess", "/presentation/lookAndFeel/knowledgeTree/administration/websitemanagement/addWebsiteSuccess.php", "websiteAdministration", SysAdmin, "Add A Website Success ",false);
-$default->siteMap->addPage("editWebsite", "/presentation/lookAndFeel/knowledgeTree/administration/websitemanagement/editWebsiteBL.php", "websiteAdministration", SysAdmin, "Edit Website");
+$default->siteMap->addPage("editWebSite", "/presentation/lookAndFeel/knowledgeTree/administration/websitemanagement/editWebsiteBL.php", "websiteAdministration", SysAdmin, "Edit Website");
 $default->siteMap->addPage("removeWebSite", "/presentation/lookAndFeel/knowledgeTree/administration/websitemanagement/removeWebsiteBL.php", "websiteAdministration", SysAdmin, "Remove a Website");
 
 // pages for subscriptions section

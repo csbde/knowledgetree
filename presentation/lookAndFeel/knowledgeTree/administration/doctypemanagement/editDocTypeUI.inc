@@ -28,10 +28,118 @@ function getEditPage($iDocTypeID) {
 	$sToRender .= "<tr>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
+	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "</tr>\n";
+	$sToRender .= "<tr>\n";
+	$sToRender .= "</tr>\n";
+	$sToRender .= "<tr>\n";
+	$sToRender .= "</tr>\n";
+	$sToRender .= "<tr>\n";
+	$sToRender .= "</tr>\n";	
+	$sToRender .= "<tr>\n";
 	$sToRender .= "<td></td>" . getUpdateButton($oDocType);	
 	$sToRender .= getCancelButton($oDocType);	
+	$sToRender .= "</tr>\n";
+	$sToRender .= "</table>\n";
+	
+	
+	return $sToRender;
+}
+
+// if its the manual edit page..then display normally
+function getDetailsPage($iDocTypeID,$aGeneric,$aSpecific, $aAllSpecific) {	
+	global $default;
+	$oDocType = null;
+	if (isset($iDocTypeID)) {
+		$oDocType = DocumentType::get($iDocTypeID);
+		
+	}
+	
+	$sToRender .= "<br></br>\n";
+	$sToRender .= "<b>Edit Document Type Properties:</b>\n";
+	$sToRender .= "<table>\n";
+	$sToRender .= "<tr><td><br></br></td></tr>\n";
+	$sToRender .= "<tr>\n";
+	$sToRender .= "<td>Document Type Name: </td><td>" . getDocTypeDisplay($oDocType) . "</td>\n";
+	$sToRender .= "</tr>\n";
+	$sToRender .= "<tr></tr>\n";
+	$sToRender .= "<tr></tr>\n";
+	$sToRender .= "<tr>\n";
+	$sToRender .= "<td>Current Generic Fields: </td><td>" . getGenericFieldsList($aGeneric) . "</td>\n";
+	$sToRender .= "</tr>\n";
+	$sToRender .= "<tr></tr>\n";
+	$sToRender .= "<tr></tr>\n";
+	$sToRender .= "<tr>\n";
+	$sToRender .= "<td>Current Type Specific Fields: </td></tr>" . getSpecificFieldsList($aSpecific) . "</td>\n";
+	
+	$sToRender .= "</tr>\n";	
+	$sToRender .= "<tr></tr>\n";
+	$sToRender .= "<tr><td><br></br></td></tr>\n";
+	$sToRender .= "<tr></tr>\n";
+	$sToRender .= "<tr>\n";
+	$sToRender .= "<td>Add New Type Specific Field: </td><td>" . addSpecificFieldsList($aAllSpecific) ; 
+	$sToRender .= "</td></tr><td></td><td>Mandatory: <input type=\"checkbox\" name=\"fIsMandatory\" value=\"1\" CHECKED></td><td>" . getAddSpecificFieldButton() . "</td>\n";
+	$sToRender .= "</tr>\n";
+	$sToRender .= "<tr><td><br></br></td></tr>\n";
+	$sToRender .= "<tr></tr>\n";
+	$sToRender .= "<tr>\n";	
+	$sToRender .= "<td></td>" . getUpdateButton($oDocType);	
+	$sToRender .= getCancelButton($oDocType);	
+	$sToRender .= "</tr>\n";
+	$sToRender .= "</table>\n";
+	
+	
+	return $sToRender;
+}
+
+// if its the manual edit page..then display normally
+function getMandatoryPage($iDocFieldID,$iDocTypeFieldID) {	
+	global $default;
+	$oDocField = null;
+	
+	if (isset($iDocFieldID)) {
+		$oDocField = DocumentField::get($iDocFieldID);
+		
+	}
+	
+	if (isset($iDocTypeFieldID)) {
+		$oDocTypeField = DocumentTypeFieldLink::get($iDocTypeFieldID);
+		
+	}
+	$sToRender .= "<input type=\"hidden\" name=\"fDocTypeID\" value=\"" . $oDocTypeField->iDocumentTypeID . "\">\n" ;
+	$sToRender .= "<input type=\"hidden\" name=\"fFieldID\" value=\"" . $oDocTypeField->iFieldID . "\">\n" .	
+	$sToRender .= "<br></br>\n";
+	$sToRender .= "<b>Change Mandatory Setting:</b>\n";
+	$sToRender .= "<table>\n";
+	$sToRender .= "<br></br>\n";
+	$sToRender .= "<tr></tr>\n";
+	$sToRender .= "<tr>\n";
+	$sToRender .= "<td>Document Field Name: </td><td>" . $oDocField->getName() . "</td>\n";
+	$sToRender .= "</tr>\n";
+	$sToRender .= "<tr>\n";
+	$sToRender .= "</tr>\n";
+	$sToRender .= "<tr>\n";
+	if($oDocTypeField->getIsMandatory() == 1)
+	{
+		$sToRender .= "<td>Is Mandatory:  </td><td><input type=\"checkbox\" name=\"fIsMandatory\" value=\"1\" CHECKED></td><td>\n";
+	}else{
+		$sToRender .= "<td>Is Mandatory:  </td><td><input type=\"checkbox\" name=\"fIsMandatory\" value=\"0\" ></td><td>\n";
+	}
+	
+	$sToRender .= "</tr>\n";
+	$sToRender .= "<tr>\n";
+	$sToRender .= "</tr>\n";
+	$sToRender .= "<tr>\n";
+	$sToRender .= "</tr>\n";
+	$sToRender .= "<tr>\n";
+	$sToRender .= "</tr>\n";
+	$sToRender .= "<tr>\n";
+	$sToRender .= "</tr>\n";	
+	$sToRender .= "<tr>\n";
+	$sToRender .= "<td></td>" . getDocTypeFieldUpdateButton();	
+	$sToRender .= "</tr>\n";
+	$
 	$sToRender .= "</table>\n";
 	
 	
@@ -65,7 +173,7 @@ function getEditPageFail() {
 	global $default;
 			
 	$sToRender .= "<br></br>\n";
-	$sToRender .= "<b>Success!</b>\n";
+	$sToRender .= "<b>Failure!</b>\n";
 	$sToRender .= "<table>\n";
 	$sToRender .= "<br></br>\n";
 	$sToRender .= "<tr></tr>\n";
@@ -92,11 +200,70 @@ function getDocTypeDisplay($oDocType) {
 		return $oPatternListBox->render();
 	} else {
 		return "<input type=\"hidden\" name=\"fDocTypeID\" value=\"" . $oDocType->iId . "\">\n" .
-		"<input size = \"40\" type=\"text\" name=\"fDocTypeName\" value=\"" . $oDocType->getName() . "\">";
+		"<input size = \"30\" type=\"text\" name=\"fDocTypeName\" value=\"" . $oDocType->getName() . "\">";
 	}
 	
 }
 
+function getGenericFieldsList($aGeneric) {
+	global $default;
+	
+	$sList = "</tr><tr><td></td><td>";
+	
+	for($i = 0; $i < count($aGeneric);$i++){
+		
+		//
+		
+		$sList .= "<li>" . $aGeneric[$i]["name"]. "</li>\n";
+	}
+	
+	$sList .= "</td></tr>";
+	
+	return $sList;
+}
+
+function getSpecificFieldsList($aSpecific) {
+	global $default;
+	
+	
+	
+	for($i = 0; $i < count($aSpecific);$i++){
+		
+		$oDocField = DocumentField::get($aSpecific[$i]);
+				
+		$sList .= "<tr><td></td><td><li>" . $oDocField->getName() . "</li></td><td>" .  getEditSpecificFieldButton($aSpecific[$i]) ." ". getRemoveSpecificFieldButton($aSpecific[$i]) . "</td></tr>\n";
+		
+	
+	}
+	
+	
+	
+	return $sList;
+}
+
+// show Group details on confirm deletion page
+function addSpecificFieldsList($aAllSpecific) {
+	global $default;
+
+		/*"select UGL.group_id, GL.name from users_groups_link as UGL
+		 inner join groups_lookup AS GL on UGL.group_id = GL.id
+		 where UGL.user_id=1"'*/
+
+		
+		$sDocFieldType = "<Select Name=\"fDocFieldTypeID\">";
+		 
+		 for ($i=0;$i < count($aAllSpecific);$i++){
+		 	
+		 	  // $oDocField= DocField::get($aAllSpecific[$i]["id"]);
+		 	    $Options .=  "<OPTION value= \"". $aAllSpecific[$i]["id"] . "\">". $aAllSpecific[$i]["name"] ."</OPTION>\n";
+		 	
+		 }
+		
+		$sDocFieldType .= $Options . "</SELECT>";
+		
+		return $sDocFieldType;
+	
+}
 
 // gets the updatebutton when a DocType is selected
 function getUpdateButton($oDocType) {
@@ -104,8 +271,36 @@ function getUpdateButton($oDocType) {
 	if (!isset($oDocType)) {
 		return "Please select a Document Type: ";
 	} else {
-		return "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/update.gif\" value=\"submit\" /></td>\n";
+		return "<td align = right><input ONCLICK=\" setActionAndSubmit('" . $_SERVER["PHP_SELF"] ."?fUpdate=1')\" type=\"image\" src =\"$default->graphicsUrl/widgets/update.gif\" value=\"submit\" /></td>\n";
 	}
+}
+
+// gets the updatebutton when a DocType is selected
+function getDocTypeFieldUpdateButton() {
+	global $default;
+		return "<td align = right><input ONCLICK=\" setActionAndSubmit('" . $_SERVER["PHP_SELF"] ."?fUpdateMandatory=1')\" type=\"image\" src =\"$default->graphicsUrl/widgets/update.gif\" value=\"submit\" /></td>\n";
+	
+}
+
+function getRemoveSpecificFieldButton($iNumber) {
+	global $default;
+		
+		return "<input ONCLICK=\" setActionAndSubmit('" . $_SERVER["PHP_SELF"] ."?fRemove=$iNumber')\" align = \"absmiddle\" type=\"image\" src =\"$default->graphicsUrl/widgets/remove.gif\" value=\"remove\" />\n";
+	
+}
+
+function getEditSpecificFieldButton($iNumber) {
+	global $default;
+		
+		return "<input ONCLICK=\" setActionAndSubmit('" . $_SERVER["PHP_SELF"] ."?fEdit=$iNumber')\" align = \"absmiddle\" type=\"image\" src =\"$default->graphicsUrl/widgets/edit.gif\" value=\"edit\" />\n";
+	
+}
+
+function getAddSpecificFieldButton() {
+	global $default;
+		
+		return "<input ONCLICK=\" setActionAndSubmit('" . $_SERVER["PHP_SELF"] ."?fAdd=1')\" align = \"absmiddle\" type=\"image\" src =\"$default->graphicsUrl/widgets/add.gif\" value=\"add\" />\n";
+	
 }
 
 // gets the cancel button when a DocType is selected

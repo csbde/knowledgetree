@@ -227,6 +227,59 @@ class DocumentField {
 		return false;
 	}
 	
+	
+	
+	/**
+	* Static function.
+	* Gets all generic fields
+	* DocumentFields object and populate it with the 
+	* corresponding database values
+	*
+	* @return DocumentField populated DocumentField object on successful query, false otherwise and set $_SESSION["errorMessage"]
+	*/
+	function getGenericFields() {
+		global $default, $lang_err_database;
+		$aFields;
+		settype($aFields, "array");
+		$sql = $default->db;
+		$result = $sql->query("SELECT name, id FROM " . $default->owl_fields_table  . " Where is_generic = 1");
+		if ($result) {			
+			$iCount = 0;
+			while ($sql->next_record()) {
+				
+				$aFields[$iCount]["id"] = $sql->f("id");
+				$aFields[$iCount]["name"] = $sql->f("name");
+				$iCount++;
+			}
+			return $aFields;
+		}
+		$_SESSION["errorMessage"] = $lang_err_database;
+		return false;
+	}
+	
+	/* Static function.  Given a documenttype...will find all fields belongin to it
+	*
+	* @return DocumentFieldLink populated DocumentFieldLink object on success, false otherwise and set $_SESSION["errorMessage"]
+	*/
+	function getAllSpecificFields() {
+		global $default, $lang_err_database;
+		$aFields;
+		settype($aFields, "array");
+		$sql = $default->db;
+		$result = $sql->query("SELECT id, name FROM " . $default->owl_fields_table  . " Where is_generic = 0");
+		if ($result) {			
+			$iCount = 0;
+			while ($sql->next_record()) {
+				
+				$aFields[$iCount]["id"] = $sql->f("id");
+				$aFields[$iCount]["name"] = $sql->f("name");
+				$iCount++;
+			}
+			return $aFields;
+		}
+		$_SESSION["errorMessage"] = $lang_err_database;
+		return false;
+	}
 }
 
 /**
