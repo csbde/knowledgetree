@@ -59,9 +59,9 @@ if (checkSession()) {
                 
 				//on successful update, redirect to the view page
 				if (isset($fFirstEdit)) {
-					redirect("$default->rootUrl/control.php?action=modifyDocumentGenericMetaData&fDocumentID=" . $oDocument->getID() . "&fFirstEdit=1");
+					controllerRedirect("modifyDocumentGenericMetaData", "fDocumentID=" . $oDocument->getID() . "&fFirstEdit=1");
 				} else {
-					redirect("$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $oDocument->getID());
+					controllerRedirect("viewDocument", "fDocumentID=" . $oDocument->getID());
 				}
 			} else {				
 				//display the update page with an error message
