@@ -25,66 +25,66 @@
  * @package administration.doctypemanagement
  */
  
-function getOptionPage($fDocTypeID = null){
+function getOptionPage($iDocTypeID = null){
 	global $default;
 	
 	$sToRender .= renderHeading("Add Type Specific Field to Document Type");
 	$sToRender .= "<br>";
 	$sToRender .= "<table>\n";
-	$sToRender .= "<tr><td>New type specific field?</td><td><a href=\"$default->rootUrl/control.php?action=addDocTypeFieldsLink&fNewField=1&fDocTypeID=$fDocTypeID\"><img src =\"$default->graphicsUrl/widgets/select.gif\" border = \"0\" /></a></td></tr>\n";
-	$sToRender .= "<tr><td>Choose from existing type specific fields</td><td><a href=\"$default->rootUrl/control.php?action=addDocTypeFieldsLink&fFromList=1&fDocTypeID=$fDocTypeID\"><img src =\"$default->graphicsUrl/widgets/select.gif\" border = \"0\" /></a></td></tr>\n";		
-	$sToRender .= "<tr><td></td><td>" . getCancelButton($fDocTypeID) . "</td></tr>\n";
+	$sToRender .= "<tr><td>New type specific field?</td><td><a href=\"$default->rootUrl/control.php?action=addDocTypeFieldsLink&fNewField=1&fDocTypeID=$iDocTypeID\"><img src =\"$default->graphicsUrl/widgets/select.gif\" border = \"0\" /></a></td></tr>\n";
+	$sToRender .= "<tr><td>Choose from existing type specific fields</td><td><a href=\"$default->rootUrl/control.php?action=addDocTypeFieldsLink&fFromList=1&fDocTypeID=$iDocTypeID\"><img src =\"$default->graphicsUrl/widgets/select.gif\" border = \"0\" /></a></td></tr>\n";		
+	$sToRender .= "<tr><td></td><td>" . getCancelButton($iDocTypeID) . "</td></tr>\n";
 	$sToRender .= "</table>\n";
 		
 	return $sToRender;
 }
 
 
-function genericMessage($sMsg, $fDocTypeID = null){
+function genericMessage($sMsg, $iDocTypeID = null){
 	global $default;
 	
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr><td>$sMsg</td></tr>\n";
-	$sToRender .= "<tr><td></td><td>" . getBackButton($fDocTypeID) . "</td></tr>\n";		
+	$sToRender .= "<tr><td></td><td>" . getBackButton($iDocTypeID) . "</td></tr>\n";		
 	$sToRender .= "</table>\n";
 		
 	return $sToRender;
 }
 
-function getCreateNewFail($fDocTypeID){	
-	$sToRender = genericMessage("Error creating new Type Specific Field and Linking it", $fDocTypeID);				
+function getCreateNewFail($iDocTypeID){	
+	$sToRender = genericMessage("Error creating new Type Specific Field and Linking it", $iDocTypeID);				
 	return $sToRender;
 }
 
 
-function getCreateNewSuccess($fDocTypeID){
-	$sToRender = genericMessage("New Type specific Field Created and Linked.", $fDocTypeID);				
+function getCreateNewSuccess($iDocTypeID){
+	$sToRender = genericMessage("New Type specific Field Created and Linked.", $iDocTypeID);				
 	return $sToRender;	
 }
 
-function getFail_NoFieldID($fDocTypeID = null){	
-	$sToRender = genericMessage("Linking cannot be done. Please select a field to link to.", $fDocTypeID);				
+function getFail_NoFieldID($iDocTypeID = null){	
+	$sToRender = genericMessage("Linking cannot be done. Please select a field to link to.", $iDocTypeID);				
 	return $sToRender;	
 }
 
-function addSuccessPage($fDocTypeID = null){
-	$sToRender = genericMessage("Field is successfully linked to the Document Type.", $fDocTypeID);				
+function addSuccessPage($iDocTypeID = null){
+	$sToRender = genericMessage("Field is successfully linked to the Document Type.", $iDocTypeID);				
 	return $sToRender;	
 }
 
-function addFailPage($fDocTypeID = null ){
-	$sToRender = genericMessage("Error: Field Could not be linked to the Document Type.", $fDocTypeID);				
+function addFailPage($iDocTypeID = null ){
+	$sToRender = genericMessage("Error: Field Could not be linked to the Document Type.", $iDocTypeID);				
 	return $sToRender;	
 }
 
 function getMissingDocTypeIDPage($iDocTypeID = null ){
-	$sToRender = genericMessage("Error: Page expects a Document Type ID.", $fDocTypeID);				
+	$sToRender = genericMessage("Error: Page expects a Document Type ID.", $iDocTypeID);				
 	return $sToRender;		
 }
 
 
 function getListFailPage($iDocTypeID = null){
-	$sToRender = genericMessage("There are no Non-generic fields in the database.", $fDocTypeID);				
+	$sToRender = genericMessage("There are no non-generic fields in the database.", $iDocTypeID);				
 	return $sToRender;	
 }
 
