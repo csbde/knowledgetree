@@ -33,7 +33,6 @@ class Session {
         // use the PHP generated session id
         $sessionID = session_id();
         
-
         // retrieve client ip
         if(getenv("HTTP_CLIENT_IP")) {
             $ip = getenv("HTTP_CLIENT_IP");
@@ -45,10 +44,12 @@ class Session {
         }
         
         $current = time();
+        
         // insert session information into db
         $sql = new Owl_DB;
-        $result = $sql->query("insert into $default->owl_sessions_table (id, user_id, lastused, ip) values ('$sessionID', '$userID', '$current', '$ip')");        
-        if(!'result') {
+        $query = "insert into $default->owl_sessions_table (id, user_id, lastused, ip) values ('$sessionID', '$userID', '" . date("Y-m-d H:i:s",$current) . "', '$ip')";
+        $result = $sql->query($query);        
+        if(!$result) {
             die("$lang_err_sess_write");
         }
 
@@ -123,7 +124,7 @@ class Session {
                 // check that ip matches
                 if ($ip == $sql->f("ip")) {
                     // if timeout not exceeded
-                    if(($time - $sql->f("lastused")) <= $default->owl_timeout) {
+                    if(($time - strtotime($sql->f("lastused"))) <= $default->owl_timeout) {
                         // set verified status
                         $verified["status"] = 1;
                         // update userID? this should be the same value on the session
@@ -138,14 +139,14 @@ class Session {
                         $sql->query("update $default->owl_sessions_table set lastused = '$lastused' where user_id = '$userID'");
 
                     } else {
-                        // session time out status
+                        // session timed out status
                         $verified["status"] = 2;
-                        $verified["errorMessage"] = $lang_sesstimeout;
+                        $default->errorMessage = $lang_sesstimeout;
                     }
                 } else {
                     // session in use status
                     $verified["status"] = 3;
-                    $verified["errorMessage"] = $lang_sessinuse;
+                    $default->errorMessage = $lang_sessinuse;
                 }
             }
         }
