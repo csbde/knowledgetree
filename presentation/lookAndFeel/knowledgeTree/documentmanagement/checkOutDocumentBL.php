@@ -73,7 +73,8 @@ if (checkSession()) {
                             // fire subscription alerts for the checked out document
                             $count = SubscriptionEngine::fireSubscription($fDocumentID, SubscriptionConstants::subscriptionAlertType("CheckOutDocument"),
                                      SubscriptionConstants::subscriptionType("DocumentSubscription"),
-                                     array( "modifiedDocumentName" => $oDocument->getName() ));
+                                     array( "folderID" => $oDocument->getFolderID(),
+                                            "modifiedDocumentName" => $oDocument->getName() ));
                             $default->log->info("checkOutDocumentBL.php fired $count subscription alerts for checked out document " . $oDocument->getName());
 
                             // display checkout success message in the document view page
