@@ -98,7 +98,7 @@ class LDAPAuthenticator extends Authenticator {
                 return $aUserResults;
             } else {
                 // the search failed, return empty array
-                return false;
+                return array();
             }
         } else {
             $_SESSION["errorMessage"] = "LDAP error: (" . $this->oLdap->ldapErrorCode . ") " . $this->oLdap->ldapErrorText;
