@@ -177,7 +177,7 @@ class Permission {
                 $aParentFolderIDs[] = $oFolder->getID();
                 $sQms = DBUtil::paramArray($aParentFolderIDs);
                 $sQuery .= $sQms;
-                $aParams += $aParentFolderIDs;
+                $aParams = array_merge($aParams, $aParentFolderIDs);
             } else {
                 $sQuery .= "?";
                 $aParams[] = $oFolder->getID();
@@ -188,12 +188,19 @@ class Permission {
             $sQuery .= "AND GFL.folder_id IN (?)";
             $aParams[] = $oFolder->getID();
         }
+
+        $res = DBUtil::runQuery(array($sQuery, $aParams));
         
-        $sql->query(array($sQuery, $aParams));
-        
-        if ($sql->next_record()) {
+        if (PEAR::isError($res)) {
+            $default->log->error("userHasGroupWritePermissionForFolder: Error in SQL statement -> follows:");
+            $default->log->error($res->toString());
+            return false;
+        }
+        if ($res->numRows()) {
+            $default->log->debug("FOLDER PERMISSIONS: Does have group write permission for folder");
             return true;
         }
+            
         $_SESSION["errorMessage"] = $lang_err_user_folder_write;
         return false;
     }
@@ -250,7 +257,7 @@ class Permission {
                 $aParentFolderIDs[] = $oFolder->getID();
                 $sQms = DBUtil::paramArray($aParentFolderIDs);
                 $sQuery .= $sQms;
-                $aParams += $aParentFolderIDs;
+                $aParams = array_merge($aParams, $aParentFolderIDs);
             } else {
                 $sQuery .= "?";
                 $aParams[] = $oFolder->getID();
@@ -261,13 +268,20 @@ class Permission {
             $sQuery .= "AND GFL.folder_id IN (?)";
             $aParams[] = $oFolder->getID();
         }
-        $sql->query(array($sQuery, $aParams));
         
-        $default->log->debug("userHasGroupReadPermissionForFolder sql: " . $sQuery);    
-        if ($sql->next_record()) {
+        //$sql->query(array($sQuery, $aParams));
+        $res = DBUtil::runQuery(array($sQuery, $aParams));
+        
+        if (PEAR::isError($res)) {
+            $default->log->error("userHasGroupReadPermissionForFolder: Error in SQL statement -> follows:");
+            $default->log->error($res->toString());
+            return false;
+        }
+        if ($res->numRows()) {
             $default->log->debug("FOLDER PERMISSIONS: Does have group read permission for folder");
             return true;
-        }       
+        }
+
         $_SESSION["errorMessage"] = $lang_err_user_folder_read;
         $default->log->debug("FOLDER PERMISSIONS: Does  NOT have group read permission for folder");
         return false;
