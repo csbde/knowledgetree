@@ -84,7 +84,9 @@ class PatternTableSqlQuery {
 	*
 	* @todo possibly add in image size restraints for link types 2 and 3
 	*/	
-	function & render() {		
+	function & render() {
+        global $default;
+        
 		$sToRender = "<table cellpadding = 5, border = 0>\n";
 		if (isset($this->sTableHeading)) {
 			$sToRender .= "<caption align=\"top\" colspan = " . count($this->aColumns) . ", align=left><b>$this->sTableHeading</b></caption>\n";
@@ -94,7 +96,7 @@ class PatternTableSqlQuery {
 				$sToRender .= "<th align=left>" . $this->aColumnHeaderNames[$i] . "</th>\n";
 			}
 		}
-		$sql = new Owl_DB();
+		$sql = $default->db;
 		$sql->query($this->sQuery);
 		if ($sql->num_rows() == 0) {
 			$sToRender .= "<tr>\n";	

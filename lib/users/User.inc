@@ -279,7 +279,7 @@ class User {
 		if ($this->iId < 0) 
 		{
 			//check to see if name exsits
-			$sql = new Owl_DB();
+			$sql = $default->db;
 			$query = "SELECT username FROM ". $default->owl_users_table ." WHERE username = '" . $this->sUserName . "'";
         		$sql->query($query);
        			$rows = $sql->num_rows($sql);
@@ -318,7 +318,7 @@ class User {
 		global $default, $lang_err_database, $lang_err_object_key;
 		//only update if the object has been stored
 		if ($this->iId > 0) {
-			$sql = new Owl_DB();
+			$sql = $default->db;
 			$result = $sql->query("UPDATE " . $default->owl_users_table . " SET username = '" . addslashes($this->sUserName) . "', name = '" . addslashes($this->sName) . "', " . ($this->bPasswordChanged ? "password = '" . addslashes(md5($this->sPassword)) . "', " : " ") . " quota_max = $this->iQuotaMax, email = '" . addslashes($this->sEmail) . "', mobile = '" . addslashes($this->sMobile) . "', email_notification = " . ($this->bEmailNotification ? 1 : 0) . ", sms_notification = " . ($this->bSmsNotification ? 1 : 0) . ", ldap_dn = '" . addslashes($this->sLdapDn) . "', max_sessions = $this->iMaxSessions, language_id = $this->iLanguageID WHERE id = $this->iId");
 			if ($result) {
 				return true;
@@ -340,7 +340,7 @@ class User {
 		global $default, $lang_err_database, $lang_err_object_key;
 		//only delete the object if it exists in the database
 		if ($this->iId >= 0) {
-			$sql = new Owl_DB();
+			$sql = $default->db;
 			$result = $sql->query("DELETE FROM $default->owl_users_table WHERE id = $this->iId");
 			if ($result) {
 				return true;
@@ -362,7 +362,7 @@ class User {
 	*/
 	function & get($iUserID) {
 		global $default;
-		$sql = new Owl_DB();
+		$sql = $default->db;
 		$result = $sql->query("SELECT * FROM $default->owl_users_table WHERE id = $iUserID");
 		if ($result) {
 			if ($sql->next_record()) {
@@ -389,7 +389,7 @@ class User {
 		global $default, $lang_err_database;
 		$aUserArray;
 		settype($aUserArray, "array");
-		$sql = new Owl_DB();
+		$sql = $default->db;
 		$result = $sql->query("SELECT * FROM " . $default->owl_users_table  . (isset($sWhereClause) ? " " . $sWhereClause : ""));
 		if ($result) {
 			$iCount = 0;
@@ -415,7 +415,7 @@ class User {
     function getUnitID($userID) {
         global $default, $lang_err_database;
         
-		$sql = new Owl_DB();        
+		$sql = $default->db;        
         $result = $sql->query("SELECT DISTINCT gul.unit_id FROM $default->owl_users_groups_table ugl " .
                               "INNER JOIN $default->owl_groups_units_table gul ON ugl.group_id = gul.group_id ".
                               "WHERE ugl.user_id=$userID");

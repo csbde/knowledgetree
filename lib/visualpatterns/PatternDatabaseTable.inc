@@ -103,7 +103,9 @@ class PatternDatabaseTable {
 	*
 	* @todo possibly add in image size restraints for link types 2 and 3
 	*/	
-	function & render() {		
+	function & render() {
+        global $default;
+        
 		$sToRender = "<table width=\"100%\" height=\"100%\">\n";
 		$sToRender .= "<tr>\n";
 		//$i starts at 1 because the $aColumns[0] is the ID column, which
@@ -113,7 +115,7 @@ class PatternDatabaseTable {
 		}
 		$sToRender .= "</tr>\n";
 		
-		$sql = & new Owl_DB();
+		$sql = & $default->db;
 		$sql->createSQLQueryWithOffset($this->sTableName, $this->aColumns, $this->iStartIndex, $this->iResultsToDisplay);
 		
 				

@@ -52,7 +52,7 @@ if(isset($default->owl_lang)) {
         die("$lang_err_lang_1 $langdir $lang_err_lang_2");
     } else {
 
-        $sql = new Owl_DB;
+        $sql = $default->db;
         $sql->query("select * from $default->owl_sessions_table where id = '" . session_id() . "'");       
         $sql->next_record();
         $numrows = $sql->num_rows($sql);

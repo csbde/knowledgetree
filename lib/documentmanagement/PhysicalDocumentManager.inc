@@ -158,7 +158,7 @@ class PhysicalDocumentManager {
 	*/
 	function getMimeTypeID($sName) {
 		global $default;
-		$sql = new Owl_DB();
+		$sql = $default->db;
 		//get the mime type		
 		if (isset($sName)) {
 			$sql->query("SELECT id FROM " . $default->owl_mime_table . " WHERE mimetypes = '$sName'");		
@@ -179,7 +179,7 @@ class PhysicalDocumentManager {
 	*/
 	function getDefaultMimeTypeID() {
 		global $default;
-		$sql = new Owl_DB();		
+		$sql = $default->db;		
 		$sql->query("SELECT id FROM " . $default->owl_mime_table . " WHERE mimetypes = 'text/plain'");		
 		$sql->next_record();
 		//get the mime type id
@@ -188,7 +188,7 @@ class PhysicalDocumentManager {
 
 	function getMimeTypeName($iMimeTypeID) {
 		global $default;
-		$sql = new Owl_DB();
+		$sql = $default->db;
 		$sql->query("SELECT mimetypes FROM " . $default->owl_mime_table . " WHERE id = " . $iMimeTypeID);
 		if ($sql->next_record()) {
 			return $sql->f("mimetypes");			

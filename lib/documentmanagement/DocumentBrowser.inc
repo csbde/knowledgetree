@@ -31,7 +31,7 @@ class DocumentBrowser {
 
         // instantiate and initialise
         $results = array();
-        $sql = new Owl_DB();
+        $sql = $default->db;
         
         // no folder specified, so depending on the users groups, resolve to the right folderID
         if ($folderID == -1) {
@@ -117,7 +117,7 @@ class DocumentBrowser {
         // TODO: add this to default inserts
         $categoryField = "Category";
         $results = array();
-        $sql = new Owl_DB();
+        $sql = $default->db;
 
         // lookup document_fields id for category
         $categoryFieldID = lookupID($default->owl_fields_table, "name", "$categoryField");
@@ -174,7 +174,7 @@ class DocumentBrowser {
         global $default;
         
         $results = array();
-        $sql = new Owl_DB();
+        $sql = $default->db;
         
         if ($documentTypeID == -1) {
             // no category value supplied, so return a list of categories
@@ -222,7 +222,7 @@ class DocumentBrowser {
      */
     function checkGroup($requiredGroupName, $groupIDs) {
         global $default;
-        $sql = new Owl_DB();
+        $sql = $default->db;
         // lookup the id of $requiredGroupName
         $requiredGroupID = lookupID($default->owl_groups_table, "name", "$requiredGroupName");
         $default->log->debug("DocumentBrowser::checkGroup reqGrpID=$requiredGroupID");
@@ -252,7 +252,7 @@ class DocumentBrowser {
         global $default;
         
         $folders = array();
-        $folderSql = new Owl_DB();
+        $folderSql = $default->db;
         // perform folder details query and loop through results
         if ($folderSql->query($folderQuery)) {
             // should only be one result
@@ -294,7 +294,7 @@ class DocumentBrowser {
         global $default;
         
         $documents = array();
-        $sql = new Owl_DB();
+        $sql = $default->db;
         
         // convert array to a comma separated string
         $documentIDStr = arrayToCSS($documentIDs);

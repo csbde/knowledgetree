@@ -70,7 +70,7 @@ class Unit {
 		//if the object hasn't been created
 		if ($this->iId < 0) 
 		{	//check to see if name exsits
-			$sql = new Owl_DB();
+			$sql = $default->db;
 			$query = "SELECT name FROM ". $default->owl_units_table ." WHERE name = '" . $this->sName . "'";
         		$sql->query($query);
        			$rows = $sql->num_rows($sql);
@@ -109,7 +109,7 @@ class Unit {
 		//only update if the object has been stored
 		if ($this->iId > 0) 
 		{
-			$sql = new Owl_DB();
+			$sql = $default->db;
 			$result = $sql->query("UPDATE " . $default->owl_units_table . " SET name = '" . addslashes($this->sName) . "' WHERE id = $this->iId");
 			if ($result)
 			 {
@@ -134,7 +134,7 @@ class Unit {
 		//only delete the object if it exists in the database
 		if ($this->iId >= 0) 
 		{
-			$sql = new Owl_DB();
+			$sql = $default->db;
 			$result = $sql->query("DELETE FROM $default->owl_units_table WHERE id = $this->iId");
 			if ($result) 
 			{
@@ -158,7 +158,7 @@ class Unit {
 	function & get($iUnitID) 
 	{
 		global $default;
-		$sql = new Owl_DB();
+		$sql = $default->db;
 		$result = $sql->query("SELECT * FROM $default->owl_units_table WHERE id = $iUnitID");
 		if ($result) 
 		{
@@ -207,7 +207,7 @@ class Unit {
 		global $default, $lang_err_database;
 		$aUnitArray;
 		settype($aUnitArray, "array");
-		$sql = new Owl_DB();
+		$sql = $default->db;
 		$result = $sql->query("SELECT * FROM " . $default->owl_units_table  . (isset($sWhereClause) ? " " . $sWhereClause : ""));
 		if ($result)
 		 {			

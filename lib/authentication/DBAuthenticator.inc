@@ -26,7 +26,7 @@ class DBAuthenticator extends Authenticator {
     function checkPassword($userName, $password) {        
         global $default;
 
-        $sql = new Owl_DB;
+        $sql = $default->db;
         $query = "select * from $default->owl_users_table where username = '$userName' and password = '" . md5($password) . "'";
         $sql->query($query);
         $numrows = $sql->num_rows($sql);

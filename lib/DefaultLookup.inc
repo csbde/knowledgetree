@@ -68,7 +68,7 @@ class DefaultLookup {
 		global $lang_err_database, $lang_err_object_exists;		
 		//don't create the object if it's aready been created
 		if ($this->iId < 0) {
-			$sql = new Owl_DB();
+			$sql = $default->db;
 			$result = $sql->query("INSERT INTO $this->sTableName (name) VALUES ( '". addslashes($this->sName) . "')");
 			if ($result) {
 				//set the primary key;
@@ -92,7 +92,7 @@ class DefaultLookup {
 		global $lang_err_database, $lang_err_object_key;
 		//can only update if the object has been stored
 		if ($this->iId >= 0) {
-			$sql = new Owl_DB();
+			$sql = $default->db;
 			$result = $sql->query("UPDATE $this->sTableName SET name = '" . addslashes($this->sName) . "' WHERE id = $this->iId");
 			if ($result) {
 				return true;
@@ -114,7 +114,7 @@ class DefaultLookup {
 		global $lang_err_database, $lang_err_object_not_exist;
 		//can only delete and object if it has been stored already
 		if ($this->iId >= 0) {
-			$sql = new Owl_DB();
+			$sql = $default->db;
 			$result = $sql->query("DELETE FROM $this->sTableName WHERE id = $this->iId");
 			if ($result) {
 				//reset the primary key
@@ -139,7 +139,7 @@ class DefaultLookup {
 	* @return Lookup lookup object populated with relevant values
 	*/
 	function & get($sTableName, $iId) {
-		$sql = new Owl_DB();
+		$sql = $default->db;
 		$result = $sql->query("SELECT * FROM $sTableName WHERE id = $iId");		
 		if ($result) {
 			if ($sql->next_record()) {

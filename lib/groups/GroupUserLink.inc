@@ -85,7 +85,7 @@ class GroupUserLink {
 		global $default, $lang_err_database, $lang_err_object_exists;
 		//if the object hasn't been created
 		if ($this->iId < 0) {
-			$sql = new Owl_DB();
+			$sql = $default->db;
 			$result = $sql->query("INSERT INTO " . $default->owl_users_groups_table . " (group_id, user_id) VALUES ($this->iGroupID, $this->iUserID)");
 			if ($result) {
 				$this->iId = $sql->insert_id();
@@ -108,7 +108,7 @@ class GroupUserLink {
 		global $default, $lang_err_database, $lang_err_object_key;
 		//only update if the object has been stored
 		if ($this->iId > 0) {
-			$sql = new Owl_DB();
+			$sql = $default->db;
 			$result = $sql->query("UPDATE " . $default->owl_users_groups_table . " SET group_id = $this->iGroupID, user_id = $this->iUserID WHERE id = $this->iId");
 			if ($result) {
 				return true;
@@ -130,7 +130,7 @@ class GroupUserLink {
 		global $default, $lang_err_database, $lang_err_object_key;
 		//only delete the object if it exists in the database
 		if ($this->iId >= 0) {
-			$sql = new Owl_DB();
+			$sql = $default->db;
 			$result = $sql->query("DELETE FROM $default->owl_users_groups_table WHERE id = $this->iId");
 			if ($result) {
 				return true;
@@ -152,7 +152,7 @@ class GroupUserLink {
 	*/
 	function & get($iGroupUserLinkID) {
 		global $default;
-		$sql = new Owl_DB();
+		$sql = $default->db;
 		$result = $sql->query("SELECT * FROM $default->owl_users_groups_table WHERE id = $iGroupUserLinkID");
 		if ($result) {
 			if ($sql->next_record()) {
@@ -179,7 +179,7 @@ class GroupUserLink {
 		global $default, $lang_err_database;
 		$aGroupUserLink;
 		settype($aGroupUserLink, "array");
-		$sql = new Owl_DB();
+		$sql = $default->db;
 		$result = $sql->query("SELECT * FROM " . $default->owl_users_groups_table  . (isset($sWhereClause) ? " " . $sWhereClause : ""));
 		if ($result) {			
 			$iCount = 0;

@@ -17,6 +17,8 @@
 class PatternMainPage {
 	
 	function PatternMainPage() {
+        global $default;
+        
 		$this->sFormAction = "$default->owl_root_url/control.php";
 	}
 	
