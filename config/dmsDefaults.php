@@ -89,7 +89,7 @@ $default->owl_subscriptions_table = "subscriptions";
 // stores default system settings
 $default->owl_system_settings_table = "system_settings"; 
 // Table with unit information
-$default->owl_unit_table = "units";
+$default->owl_units_table = "units";
 // Table with user info
 $default->owl_users_table	= "users";
 // links groups to users
@@ -140,7 +140,7 @@ $default->siteMap->addPage("addUser", "addUser.php", "Administration", "Unit Adm
 $default->siteMap->addPage("addUnit", "addUnit.php", "Administration", "Unit Administrators");
 $default->siteMap->addPage("addOrganisation", "addOrganisation.php", "Administration", "System Administrators");
 $default->siteMap->addPage("scratchPad", "tests/scratchPad.php", "Tests", "Unit Administrators");
-$default->siteMap->addPage("documentBrowserTest", "tests/documentmanagement/DocumentBrowser.php", "Tests", "Unit Administrators");
+$default->siteMap->addPage("documentBrowserTest", "tests/documentmanagement/DocumentBrowser.php", "Tests", "Anonymous");
 
 require_once("$default->owl_fs_root/lib/Log.inc");
 require_once("$default->owl_fs_root/lib/Session.inc");
