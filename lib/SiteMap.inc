@@ -58,6 +58,7 @@ class SiteMap {
         foreach ($this->siteMapArray as $section => $valArr) {
             // for each group, page array combination
             foreach ($valArr as $requiredGroup => $pageArr) {
+                $reqGrpID = lookup_id($default->owl_groups_table, "name", $requiredGroup);                 
                 if ($groupID <= lookup_id($default->owl_groups_table, "name", $requiredGroup)) {
                     // now loop through pages until we find the right one
                     foreach ($pageArr as $ackshin => $page) {
