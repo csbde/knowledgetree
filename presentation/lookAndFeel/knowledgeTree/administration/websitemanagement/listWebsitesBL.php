@@ -29,7 +29,7 @@ if (checkSession()) {
 if(checkSession()) {	
 		global $default;
 		
-		$oPatternCustom->addHtml(renderHeading("Link Management"));		// Create the Heading				
+		$oPatternCustom->addHtml(renderHeading("Website Management"));		// Create the Heading				
 		 		
 		$main->setFormAction($_SERVER['PHP_SELF']);
 				
