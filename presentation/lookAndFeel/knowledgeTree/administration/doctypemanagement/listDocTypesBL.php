@@ -35,21 +35,21 @@ if(checkSession()) {
 		 		
 		$main->setFormAction($_SERVER['PHP_SELF']);
 				
-		$sQuery = 	"SELECT id as DocFieldID, name as DocFieldName, data_type, is_generic, has_lookup, " . 
-					"'Edit', 'Delete', 'Edit Metadata' " .
-					"FROM " . $default->owl_fields_table . " " .
+		$sQuery = 	"SELECT id as DocTypeID, name as DocTypeName, " . 
+					"'Edit', 'Delete', 'Edit Fields' " .
+					"FROM " . $default->owl_document_types_table . " " .
 					"ORDER BY name";
 		
-	    $aColumns = array("DocFieldName", "data_type", "is_generic", "has_lookup","Edit", "Delete", "Edit Metadata" );
-	    $aColumnNames = array("Name", "Data type", "Generic?", "Lookup?", "Edit", "Delete", "Edit Metadata");
-	    $aColumnTypes = array(1,1,2,2,3,3,3);
-	    $aDBColumnArray = array("DocFieldID");
-	    $aQueryStringVariableNames = array("fDocFieldID");
+	    $aColumns = array("DocTypeName", "Edit", "Delete", "Edit Fields");
+	    $aColumnNames = array("Name", "Edit", "Delete", "Edit Fields");
+	    $aColumnTypes = array(1,3,3,3);
+	    $aDBColumnArray = array("DocTypeID");
+	    $aQueryStringVariableNames = array("fDocTypeID");
 	    	    
-	    $aHyperLinkURL = array(	4=> "$default->rootUrl/control.php?action=editDocField",                       			
-                       			5=> "$default->rootUrl/control.php?action=removeDocField",
-                       			6=> "$default->rootUrl/control.php?action=editDocFieldLookups");  
-                       				    	    
+	    $aHyperLinkURL = array(	1=> "$default->rootUrl/control.php?action=editDocType&fDocTypeSelected=1",                       			
+                       			2=> "$default->rootUrl/control.php?action=removeDocType",
+                       			3=> "$default->rootUrl/control.php?action=editDocTypeFields&fDocTypeSelected=1");
+	    	    
 	    $oSearchResults = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnNames, "100%", $aHyperLinkURL,$aDBColumnArray,$aQueryStringVariableNames);	    
 		$oSearchResults->setDisplayColumnHeadings(true);
 	    $htmlTables = $oSearchResults->render() ;
