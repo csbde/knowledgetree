@@ -30,7 +30,7 @@ if (checkSession()) {
 			
     // instantiate my content pattern
     $oContent = new PatternCustom();
-	$default->log->info(arrayToString($_REQUEST));    
+    
     if ($fDocumentID) {
     	// retrieve the appropriate settings given the document id
     	$oDocumentArchiving = DocumentArchiving::getFromDocumentID($fDocumentID);    	
