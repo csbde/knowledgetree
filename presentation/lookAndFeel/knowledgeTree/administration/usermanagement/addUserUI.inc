@@ -163,7 +163,7 @@ function getAddButton() {
 
 function getCancelButton() {
 	global $default;
-	return "<a href=\"$default->rootUrl/control.php?action=addUser\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" /></a>\n";
+	return generateControllerLink("listUsers", "", "<img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\" />");
 }
 
 function getGroupListBox() {
