@@ -148,7 +148,6 @@ $default->siteMap->addPage("loginForm", "/presentation/login.php?loginAction=log
 $default->siteMap->addPage("dashboard", "/presentation/dashboardBL.php", "General", Guest, "dashboard");
 
 //pages for manage documents section
-
 $default->siteMap->addDefaultPage("browse", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/browseBL.php", "Manage Documents", Guest, "browse documents");
 $default->siteMap->addPage("viewDocument", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/viewBL.php", "Manage Documents", Guest, "");
 $default->siteMap->addPage("addDocument", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentBL.php", "Manage Documents", User, "Add A Document", false);
