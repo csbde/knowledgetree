@@ -24,6 +24,7 @@ if (checkSession()) {
 	require_once("$default->fileSystemRoot/lib/roles/Role.inc");
 	require_once("$default->fileSystemRoot/lib/users/User.inc");
 	require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
+	require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentCollaboration.inc");
 	require_once("$default->fileSystemRoot/lib/email/Email.inc");
 	require_once("$default->fileSystemRoot/lib/groups/Group.inc");	
 	require_once("$default->fileSystemRoot/presentation/Html.inc");
