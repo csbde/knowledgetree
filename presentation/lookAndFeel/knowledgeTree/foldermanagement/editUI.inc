@@ -106,10 +106,12 @@ function getFolderDocTypes($iFolderID) {
 
 function getFolderRouting($iFolderID) {
 	global $default;
-	$sQuery = "SELECT GFAL.id as id, GFAL.folder_id AS folder_id, G.name AS group_name, G.id AS group_id, GFAL.role_id AS role_id, R.name AS role_name, GFAL.precedence AS precedence, U.id AS user_id, U.name AS user_name, 'Edit' as edit, 'Delete' as del, 'Dependant Docs' as depn " .	
+	//had to use coalesce and left outer join for user_id because this column was a new addition
+	//and the user_ids for existing documents before this change will be null
+	$sQuery = "SELECT GFAL.id as id, GFAL.folder_id AS folder_id, G.name AS group_name, G.id AS group_id, GFAL.role_id AS role_id, R.name AS role_name, GFAL.precedence AS precedence, COALESCE(U.id, -1) AS user_id, COALESCE(U.name, 'Not Assigned') AS user_name, 'Edit' as edit, 'Delete' as del, 'Dependant docs' as depn " .
 				"FROM $default->owl_groups_folders_approval_table AS GFAL INNER JOIN roles AS R ON GFAL.role_id = R.id " .
 				"INNER JOIN $default->owl_groups_table AS G ON G.id = GFAL.group_id " .
-				"INNER JOIN $default->owl_users_table AS U ON U.id = GFAL.user_id " .				 
+				"LEFT OUTER JOIN $default->owl_users_table AS U ON U.id = GFAL.user_id " .				 
 				"WHERE GFAL.folder_id = $iFolderID " .
 				"ORDER BY GFAL.precedence, role_name ASC";
 	
