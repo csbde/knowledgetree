@@ -50,6 +50,7 @@ if (checkSession()) {
 
     //render the page
     $main->setCentralPayload($oPatternCustom);
+    $main->setHasRequiredFields(true);
     $main->render();
 }
 ?>
