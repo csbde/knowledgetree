@@ -16,7 +16,7 @@
  *
  * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
  * @date 21 January 2003
- * @package presentation.lookAndFeel.knowledgeTree.documentManager
+ * @package presentation.lookAndFeel.knowledgeTree.documentmanagement
  */
 
 require_once("../../../../config/dmsDefaults.php");
