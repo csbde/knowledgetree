@@ -19,9 +19,12 @@ $default->owl_db_host           = "localhost";
 $default->owl_db_name           = "dms";
 
 // email settings
-$default->owl_email_server = "mail.jamwarehouse.com";
-$default->owl_email_from = "dms@jamwarehouse.com";
+$default->owl_email_server = "nazgul.mrc.ac.za";
+$default->owl_email_from = "archive@mrc.ac.com";
 $default->owl_email_fromname = "the knowledge tree";
+
+// web server name
+$default->serverName = "archive.mrc.ac.za";
 
 // url relative to website root
 $default->owl_root_url		= "/dms";
