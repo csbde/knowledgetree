@@ -81,14 +81,14 @@ if (checkSession()) {
 //						$_SESSION['Discussion' . $fDocumentID][0]->bViews = true;
 //					} 																
 			} else { // No current thread, option to create one					
-				$main->setErrorMessage("No discussion thread is currently available");
+				$main->setErrorMessage(_("No discussion thread is currently available"));
 				$oPatternCustom->addHtml(getNewThreadOption($fDocumentID));				
 			}	
 		} else { // Doument id  is negative 
-			$main->setErrorMessage("You did not specify a document.");
+			$main->setErrorMessage(_("You did not specify a document."));
 		}
 	} else { // If no discussion exists 
-		$main->setErrorMessage("Invalid function.  No such functionality exists for this page.");
+		$main->setErrorMessage(_("Invalid function.  No such functionality exists for this page."));
 	}
 	$main->setCentralPayload($oPatternCustom);
     $main->render();

@@ -74,7 +74,7 @@ if (checkSession()) {
 				$main->setOnLoadJavaScript("disable(document.MainForm.fTargetDocument)");
 			}			
 			$main->setFormAction($_SERVER["PHP_SELF"] . "?fDocumentID=$fDocumentID&fForStore=1");
-			$main->setErrorMessage("An error occurred whilst trying to create the dependant document");
+			$main->setErrorMessage(_("An error occurred whilst trying to create the dependant document"));
 			$main->render(); 
 		}		
 	} else {

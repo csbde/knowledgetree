@@ -40,13 +40,13 @@ function getPage($iFolderID, $iGroupID, $iRoleID, $iSequenceNumber) {
     $sToRender .= getFolderPath($iFolderID);
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>Group</td><td>" . getGroup($iGroupID) . "</td>\n";
+	$sToRender .= "<td>" . _("Group") . "</td><td>" . getGroup($iGroupID) . "</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>Role</td><td>" . getRole($iRoleID) . "</td>\n";
+	$sToRender .= "<td>" . _("Role") . "</td><td>" . getRole($iRoleID) . "</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>Sequence No.</td><td>$iSequenceNumber</td>\n";
+	$sToRender .= "<td>" . _("Sequence No.") . "</td><td>$iSequenceNumber</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td><table><tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/delete.gif\" border=\"0\"/></td>";

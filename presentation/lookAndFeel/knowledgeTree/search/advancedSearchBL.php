@@ -61,7 +61,7 @@ if (checkSession()) {
 				
 				$oPatternCustom->setHtml(getSearchPage($fSearchString));
 				$main->setCentralPayload($oPatternCustom);
-				$main->setErrorMessage("Please select at least one criteria to search by");
+				$main->setErrorMessage(_("Please select at least one criteria to search by"));
 				$main->setHasRequiredFields(true);
 				$main->setFormAction($_SERVER["PHP_SELF"] . "?fForSearch=1");                                
 				$main->render();
@@ -72,7 +72,7 @@ if (checkSession()) {
 				$oPatternCustom = & new PatternCustom();
 				$oPatternCustom->setHtml(getSearchPage($fSearchString, $aMetaTagIDs));
 				$main->setCentralPayload($oPatternCustom);
-				$main->setErrorMessage("Please enter text to search on");
+				$main->setErrorMessage(_("Please enter text to search on"));
 				$main->setHasRequiredFields(true);
 				$main->setFormAction($_SERVER["PHP_SELF"] . "?fForSearch=1");                                
 				$main->render();

@@ -60,7 +60,7 @@ if (checkSession()) {
 				$main->setCentralPayload($oPatternCustom);
 				$main->setFormAction($_SERVER["PHP_SELF"] . "?fDocumentID=$fDocumentID&fForStore=1");
 				$main->setHasRequiredFields(true);
-				$main->setErrorMessage("An error occured whilst attempting to link the two documents");	
+				$main->setErrorMessage(_("An error occured whilst attempting to link the two documents"));
 				$main->render();	
 			}			
 		} else {

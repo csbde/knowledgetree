@@ -64,7 +64,7 @@ if (checkSession()) {
 					$oPatternCustom->setHtml(getViewPage($fFolderCollaborationID, $fFolderID));
 	    			$main->setCentralPayload($oPatternCustom);
 	    	    	$main->setFormAction($_SERVER["PHP_SELF"] . "?fFolderID=$fFolderID&fFolderCollaborationID=$fFolderCollaborationID&fForAdd=1");
-	    	    	$main->setErrorMessage("An error occured attempting to store the dependant document");    		
+	    	    	$main->setErrorMessage(_("An error occured attempting to store the dependant document"));
 	    			$main->render();								 
 				} else {				
 					controllerRedirect("viewDependantDocument", "fFolderID=$fFolderID&fFolderCollaborationID=$fFolderCollaborationID");
@@ -79,7 +79,7 @@ if (checkSession()) {
 					$oPatternCustom->setHtml(getViewPage($fFolderCollaborationID, $fFolderID));
 	    			$main->setCentralPayload($oPatternCustom);
 		    	    $main->setFormAction($_SERVER["PHP_SELF"] . "?fFolderID=$fFolderID&fFolderCollaborationID=$fFolderCollaborationID&fForAdd=1");
-		    	    $main->setErrorMessage("You cannot add a new dependant document as there is currently a document in this folder undergoing collaboration");    		
+		    	    $main->setErrorMessage(_("You cannot add a new dependant document as there is currently a document in this folder undergoing collaboration"));
 	    			$main->render();
 					
 				} else {						
@@ -105,7 +105,7 @@ if (checkSession()) {
 					$oPatternCustom->setHtml(getViewPage($fFolderCollaborationID, $fFolderID));
 	    			$main->setCentralPayload($oPatternCustom);
 		    	    $main->setFormAction($_SERVER["PHP_SELF"] . "?fFolderID=$fFolderID&fFolderCollaborationID=$fFolderCollaborationID&fForUpdate=1");
-		    	    $main->setErrorMessage("You cannot add a new dependant document as there is currently a document in this folder undergoing collaboration");    		
+		    	    $main->setErrorMessage(_("You cannot add a new dependant document as there is currently a document in this folder undergoing collaboration"));
 	    			$main->render();
 					
 				} else {						

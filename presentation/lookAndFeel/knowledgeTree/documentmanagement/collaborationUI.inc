@@ -67,19 +67,19 @@ function getDocumentRoutingPage($iGroupID, $iUserID, $iRoleID, $iSequenceNumber,
 	return 	renderHeading(_("Edit Document Approval Routing")) .
 			displayDocumentPath($fDocumentID) .
 			"<table cellspacing=2, cellpadding=2, border=0>\n" .
-			"<caption><b>Document Routing</b></caption>\n" .
+			"<caption><b>" . _("Document Routing") . "</b></caption>\n" .
 			"<tr>\n" .
-			"<td bgcolor=\"$sTDBGColour\"><b>Group</b></td><td>".getGroupRow($iGroupID)."</td>\n" .
+			"<td bgcolor=\"$sTDBGColour\"><b>" . _("Group") . "</b></td><td>".getGroupRow($iGroupID)."</td>\n" .
 			"</tr>\n" .
 			"<tr>\n" .			
-			"<td bgcolor=\"$sTDBGColour\"><b>Role</b></td><td bgcolor=\"F5F6EE\">".getRole($iRoleID)."</td>\n" .			
+			"<td bgcolor=\"$sTDBGColour\"><b>" . _("Role") . "</b></td><td bgcolor=\"F5F6EE\">".getRole($iRoleID)."</td>\n" .			
 			"</tr>\n" .
 			"<tr>\n" .
-			"<td bgcolor=\"$sTDBGColour\"><b>Player</b></td><td>".getUserDropDown($iGroupID, $iUserID)."</td>\n" .
+			"<td bgcolor=\"$sTDBGColour\"><b>" . _("Player") . "</b></td><td>".getUserDropDown($iGroupID, $iUserID)."</td>\n" .
 			"</tr>\n" .
 			"<tr>\n" .
 			"<tr>\n" .
-			"<td bgcolor=\"$sTDBGColour\"><b>Seq. no.</b></td><td bgcolor=\"F5F6EE\">$iSequenceNumber</td>\n" .
+			"<td bgcolor=\"$sTDBGColour\"><b>" . _("Sequence No.") . "</b></td><td bgcolor=\"F5F6EE\">$iSequenceNumber</td>\n" .
 			"</tr>\n" .
 			"<tr>\n" .
 			"<td colspan=\"2\">&nbsp</td>\n" .

@@ -36,10 +36,10 @@ function getPage($iDocumentID) {
 	//javascript to set the onFocus attribute to blur 
 	if (!$default->bNN4) {
 		//for any other browser but netscape 4.7 do this	
-		$sToRender .= "<td>Document to link</td><td><input type=\"text\" DISABLED name=\"fTargetDocument\" value=\"\" /><input type=\"button\" value=\"Browse\" onClick=\"newWindow('" . generateControllerUrl("templateBrowse") . "','window2')\"></td>\n";
+		$sToRender .= "<td>" . _("Document to link") . "</td><td><input type=\"text\" DISABLED name=\"fTargetDocument\" value=\"\" /><input type=\"button\" value=\"Browse\" onClick=\"newWindow('" . generateControllerUrl("templateBrowse") . "','window2')\"></td>\n";
 	} else {
 		//for netscape 4.7 do this
-		$sToRender .= "<td>Document to link</td><td><input type=\"text\"  value=\"\" name=\"fTargetDocument\" onblur=\"disable(document.MainForm.fTargetDocument);\" /><input type=\"button\" value=\"Browse\" onClick=\"disable(document.MainForm.fTargetDocument);newWindow('" . generateControllerUrl("templateBrowse") . "','window2')\"></td>\n";
+		$sToRender .= "<td>" . _("Document to link") . "</td><td><input type=\"text\"  value=\"\" name=\"fTargetDocument\" onblur=\"disable(document.MainForm.fTargetDocument);\" /><input type=\"button\" value=\"Browse\" onClick=\"disable(document.MainForm.fTargetDocument);newWindow('" . generateControllerUrl("templateBrowse") . "','window2')\"></td>\n";
 	}		
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";	

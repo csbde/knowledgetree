@@ -34,18 +34,18 @@ function getDocumentHistory($iDocumentID) {
 			"WHERE DT.document_id = $iDocumentID ORDER BY DT.datetime DESC";
 	$sql = $default->db;
     $sToRender  = "<table cellpadding=\"5\" width=\"100%\">\n";
-    $sToRender .= "<caption align=\"top\" colspan=\"5\" align=\"left\"><b>Transaction History</b></caption>\n";
+    $sToRender .= "<caption align=\"top\" colspan=\"5\" align=\"left\"><b>" . _("Transaction History") . "</b></caption>\n";
     $sql->query($sQuery);
     if ($sql->num_rows() == 0) {
         $sToRender .= "<tr>\n";	
-        $sToRender .= "\t<td colspan=\"5\">No Transaction History data</td>\n";
+        $sToRender .= "\t<td colspan=\"5\">" . _("No Transaction History data") . "</td>\n";
         $sToRender .= "</tr>\n";
     } else {
-        $sToRender .= "<tr><th align=\"left\">Type</th>\n";
-        $sToRender .= "<th align=\"left\">Users</th>\n";
-        $sToRender .= "<th align=\"left\">Version</th>\n";
-        $sToRender .= "<th align=\"left\">Comment</th>\n";
-        $sToRender .= "<th align=\"left\">Datetime</th></tr>\n";
+        $sToRender .= "<tr><th align=\"left\">" . _("Type") . "</th>\n";
+        $sToRender .= "<th align=\"left\">" . _("Users") . "</th>\n";
+        $sToRender .= "<th align=\"left\">" . _("Version") . "</th>\n";
+        $sToRender .= "<th align=\"left\">" . _("Comment") . "</th>\n";
+        $sToRender .= "<th align=\"left\">" . _("Datetime") . "</th></tr>\n";
         $i = 0;
         while ($sql->next_record()) {
             if ($sql->f("transaction_name") == "Check Out") {

@@ -34,7 +34,7 @@ function renderCheckInPage($oDocument) {
 	global $default;
 	
 	$sToRender  = "<table>\n";
-	$sToRender .= "<tr><td>Select the file to check in:</td></tr>\n";
+	$sToRender .= "<tr><td>" . _("Select the file to check in") . ":</td></tr>\n";
 	$sToRender .= "<tr><td><input type=\"file\" name=\"fFile\">";
     /*
 	$sToRender .= "<tr><td><input type=\"file\" name=\"browse\" style=\"display:none\">";
@@ -46,7 +46,7 @@ function renderCheckInPage($oDocument) {
     $sToRender .= "</table>\n";
     
 	$sToRender .= "<table>\n";  
-	$sToRender .= "<tr><td>Enter a check in comment for '" . $oDocument->getName() . "'</td></tr>\n";
+	$sToRender .= "<tr><td>" . _("Enter a check in comment for the document") . "</td></tr>\n";
 	$sToRender .= "<tr/>\n";
 	$sToRender .= "<tr><td><input type=\"text\" name=\"fCheckInComment\" size=\"30\"/></td></tr>\n";
     $sToRender .= "<input type=\"hidden\" name=\"fForStore\" value=\"1\"/>\n";

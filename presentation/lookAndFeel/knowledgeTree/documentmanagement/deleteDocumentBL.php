@@ -58,8 +58,8 @@ if (checkSession()) {
 	// user does not have permission to delete the document
 	require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");			
 	$oPatternCustom = & new PatternCustom();
-	$oPatternCustom->setHtml(renderErrorPage("You do not have, at least, permission to delete one document: " . 
-						 $oDocument->getName() . "<br>Please deselect it and retry."));
+	$oPatternCustom->setHtml(renderErrorPage(_("You do not have, at least, permission to delete one document") . ": " . 
+						 $oDocument->getName() . "<br>" . _("Please deselect it and retry.")));
 	$main->setCentralPayload($oPatternCustom);
 	$main->render();
 	return;
@@ -80,8 +80,8 @@ if (checkSession()) {
 	  // there are active collaboration roles for this doc
 	  require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");			
 	  $oPatternCustom = & new PatternCustom();							
-	  $oPatternCustom->setHtml(renderErrorPage("You can't, at least, delete one document " . 
-						   $oDocument->getName() . " because it's still in collaboration"));
+	  $oPatternCustom->setHtml(renderErrorPage(_("You can't, at least, delete one document") . ": " . 
+						   $oDocument->getName() . "<br>" . _("It's still in collaboration")));
 	  $main->setCentralPayload($oPatternCustom);
 	  $main->render();
 	  return;
@@ -159,7 +159,7 @@ if (checkSession()) {
                                 $oDocumentTransaction->delete();
 	      
 	      // Store the doc with problem
-	      array_push($aNondeletedDocs, array($oDocument, "Could not delete document on file system"));
+	      array_push($aNondeletedDocs, array($oDocument, _("Could not delete document on file system")));
 	      	      
                             }
                         } else {
@@ -170,14 +170,14 @@ if (checkSession()) {
                             $oDocumentTransaction->delete();
 	    
 	    // Store the doc with problem
-	    array_push($aNondeletedDocs, array($oDocument, "Could not update document in database"));
+	    array_push($aNondeletedDocs, array($oDocument, _("Could not update document in database")));
 
                         }
                     } else {
                         //could not load document object
 	  
 	  // Store the doc with problem
-	  array_push($aNondeletedDocs, array($oDocument, "Could not load document in database"));
+	  array_push($aNondeletedDocs, array($oDocument, _("Could not load document in database")));
 	  
                     }
                 }
@@ -188,11 +188,11 @@ if (checkSession()) {
                 require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");			
                 $oPatternCustom = & new PatternCustom();							
 	  
-	$sError = "An error occured deleting the following document(s): <br><br>";
+	$sError = _("An error occured deleting the following document(s):") . "<br><br>";
 	foreach ($aNondeletedDocs as $oDoc) {
 	  $sError .= $oDoc[0]->getDisplayPath() . ":&nbsp;&nbsp;&nbsp;" .$oDoc[1] . "<br>";
 	} 
-	$sError .= "<br>The other documents are been deleted.";
+	$sError .= "<br>" . _("The other documents are been deleted.");
 	
 	$oPatternCustom->addHtml(renderErrorPage($sError));
                 $main->setCentralPayload($oPatternCustom);
@@ -218,7 +218,7 @@ if (checkSession()) {
 		//no document selected for deletion
 		require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 		$oPatternCustom = & new PatternCustom();							
-		$oPatternCustom->setHtml(renderErrorPage("No document currently selected"));
+		$oPatternCustom->setHtml(renderErrorPage(_("No document currently selected")));
 		$main->setCentralPayload($oPatternCustom);
 		$main->render();
 	}

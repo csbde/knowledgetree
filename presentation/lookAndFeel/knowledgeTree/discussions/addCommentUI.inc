@@ -32,7 +32,7 @@
  */
 function getSubmitSuccessPage($iDocumentID){	
 	global $default;
-	$sMessage = "Your submission has been successful.";	
+	$sMessage = _("Your submission has been successful.");
 	$sToRender .= "$sMessage<br><br><a href=\"" . generateControllerLink("viewDiscussion", "fDocumentID=" . $iDocumentID . "&fForDiscussion=1") . "\"><img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\" /></a>";
  	
 	return $sToRender;	
@@ -48,7 +48,7 @@ function getSubmitSuccessPage($iDocumentID){
 function getAddComment($fDocumentID, $sSubject, $sBody, $iCommentID, $fNewComment = null, $fThreadID) {
 	global $default;
 				
-	$sHeading = "Add a Comment";
+	$sHeading = _("Add a Comment");
 	$sToRender .= renderHeading($sHeading);
 	$sToRender .= displayDocumentPath($fDocumentID);	
 	$sToRender .= "<table width=\"100%\" border=\"0\" cellpadding=0 ><tr><td></td>\n";	
@@ -84,14 +84,14 @@ function getAddComment($fDocumentID, $sSubject, $sBody, $iCommentID, $fNewCommen
 function getCommentBody($sCommentBody, $sCommentSubject,$dDate,$iDocumentID, $sUserName) {
 	global $default;
 	
-	$sHeading = "Document Comment";
+	$sHeading = _("Document Comment");
 		
 	$sToRender .= renderHeading($sHeading);
 	$sToRender .= displayDocumentPath($iDocumentID);
 	$sToRender .= "<br>&nbsp;<b>Author: </b>$sUserName";
 	$sToRender .= "<table width=\"96%\" border=\"1\"><tr>"; 
-	$sToRender .= "<td width=\"1\" style=\"background-color:#F5F6EE;\" valign=\"top\"><b>Subject: </b></td><td width=405 style=\"background-color:#F5F6EE;\"> <font color=#056DCE>$sCommentSubject</font></td>";
-	$sToRender .= "<td><b>Date: </b><font color=\"#056DCE\">$dDate</font></td></tr><tr><td colspan=3><br>$sCommentBody</a></td>";
+	$sToRender .= "<td width=\"1\" style=\"background-color:#F5F6EE;\" valign=\"top\"><b>" . _("Subject") . ": </b></td><td width=405 style=\"background-color:#F5F6EE;\"> <font color=#056DCE>$sCommentSubject</font></td>";
+	$sToRender .= "<td><b>" . _("Date") . ": </b><font color=\"#056DCE\">$dDate</font></td></tr><tr><td colspan=3><br>$sCommentBody</a></td>";
 	$sToRender .= "</tr></table>";
 	return $sToRender;	
 }

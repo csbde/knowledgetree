@@ -42,8 +42,8 @@ function getEditableTypeSpecificMetaData($iDocumentID, $iDocumentTypeID) {
 	$aMetaDataColumnNames = array(2=>"field_name");
 
     $oPatternTableSqlQuery = & new PatternEditableTableSqlQuery($sQuery, "document_fields_link", $aStoreColumnNames, $aDisplayColumnNames, $aColumnsEditable, $aColumnsVisible, $aColumnDisplayTypes, $aColumnDatabaseTypes);
-    $oPatternTableSqlQuery->setTableCaption("Type specific meta data");
-    $oPatternTableSqlQuery->setEmptyTableMessage("No Type Specific Meta Data");
+    $oPatternTableSqlQuery->setTableCaption(_("Type specific meta data"));
+    $oPatternTableSqlQuery->setEmptyTableMessage(_("No Type Specific Meta Data"));
     $oPatternTableSqlQuery->setUniqueName("tsmd");
 	$oPatternTableSqlQuery->setMetaDataFields($aMetaDataColumnNames);	
     return $oPatternTableSqlQuery->render();

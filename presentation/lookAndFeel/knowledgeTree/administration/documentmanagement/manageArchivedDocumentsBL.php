@@ -95,8 +95,8 @@ if (checkSession()) {
 			        		// FIXME: refactor notification
 			        		// TODO: check email notification and valid email address
 		        			$oRequestUser = User::get($aRequests[$j]->getRequestUserID());
-							$sBody = _("The document") . " '" . generateControllerLink("viewDocument", "fDocumentID=" . $aDocuments[$i]->getID(), $aDocuments[$i]->getName()) . "'"; 
-							$sBody .= " " . _("has been restored from the archive.")."";								
+							$sBody = "The document '" . generateControllerLink("viewDocument", "fDocumentID=" . $aDocuments[$i]->getID(), $aDocuments[$i]->getName()) . "'"; 
+							$sBody .= " has been restored from the archive.";								
 							$oEmail = & new Email();
 							if ($oEmail->send($oRequestUser->getEmail(), _("Archived Document Restored"), $sBody)) {
 		        				$default->log->info("manageArchivedDocumentsBL.php sent email to " . $oRequestUser->getEmail());

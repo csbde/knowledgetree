@@ -90,7 +90,7 @@ function getFolderRouting($iFolderID, $sDivName, $bCollaboration) {
 	
 	$sToRender .= "<table>";
 	if ($bCollaboration) {
-		$sToRender .= "<tr><td><font color=\"red\">Documents in this folder are currently undergoing this collaboration process, so these steps can't be altered</font></td></tr>";
+		$sToRender .= "<tr><td><font color=\"red\">" . _("Documents in this folder are currently undergoing this collaboration process, so these steps can't be altered") . "</font></td></tr>";
 	}
 	$sToRender .= "<tr><td>" . $oPatternTableSqlQuery->render() . "</td></tr>";
     if (!$bCollaboration) {
@@ -187,10 +187,10 @@ function getPage($iFolderID, $sStatusMessage, $bCollaboration = false) {
 	// ie. effectively removes statusMessage on next click
 	$bDisplayLink = ($sStatusMessage) ? true : false;
 
-	$sToRender .= renderFolderSection("folderData", "Folder Data", $bDisplayLink, $iFolderID);
-	$sToRender .= renderFolderSection("folderRouting", "Document Routing", $bDisplayLink, $iFolderID);
-	$sToRender .= renderFolderSection("documentTypes", "Document Types", $bDisplayLink, $iFolderID);
-	$sToRender .= renderFolderSection("folderPermissions", "Folder Permissions", $bDisplayLink, $iFolderID);
+	$sToRender .= renderFolderSection("folderData", _("Folder Data"), $bDisplayLink, $iFolderID);
+	$sToRender .= renderFolderSection("folderRouting", _("Document Routing"), $bDisplayLink, $iFolderID);
+	$sToRender .= renderFolderSection("documentTypes", _("Document Types"), $bDisplayLink, $iFolderID);
+	$sToRender .= renderFolderSection("folderPermissions", _("Folder Permissions"), $bDisplayLink, $iFolderID);
 	$sToRender .= "</table>";
 	$sToRender .= "</td><td><table border=1>";
 	$sToRender .= "</table></td></tr></table>";		
@@ -223,10 +223,10 @@ function getStatusPage($iFolderID, $sStatusMessage) {
 	// ie. effectively removes statusMessage on next click
 	$bDisplayLink = ($sStatusMessage) ? true : false;
 
-	$sToRender .= renderFolderSection("folderData", "Folder Data", $bDisplayLink, $iFolderID);
-	$sToRender .= renderFolderSection("folderRouting", "Document Routing", $bDisplayLink, $iFolderID);
-	$sToRender .= renderFolderSection("documentTypes", "Document Types", $bDisplayLink, $iFolderID);
-	$sToRender .= renderFolderSection("folderPermissions", "Folder Permissions", $bDisplayLink, $iFolderID);
+	$sToRender .= renderFolderSection("folderData", _("Folder Data"), $bDisplayLink, $iFolderID);
+	$sToRender .= renderFolderSection("folderRouting", _("Document Routing"), $bDisplayLink, $iFolderID);
+	$sToRender .= renderFolderSection("documentTypes", _("Document Types"), $bDisplayLink, $iFolderID);
+	$sToRender .= renderFolderSection("folderPermissions", _("Folder Permissions"), $bDisplayLink, $iFolderID);
 
 	$sToRender .= "</table>";
 	$sToRender .= "</div>";

@@ -57,11 +57,11 @@ if (checkSession()) {
                         controllerRedirect("editFolder", "fFolderID=$fFolderID&fShowSection=folderPermissions");                        
                     } else {
                         //otherwise display an error message
-                        $sErrorMessage = "The folder access entry could not be created in the database";                        
+                        $sErrorMessage = _("The folder access entry could not be created in the database");
                         $oPatternCustom->setHtml(getPage($fFolderID));
                     }
                 } else {
-                    $sErrorMessage = "A folder access entry for the selected folder and group already exists.";
+                    $sErrorMessage = _("A folder access entry for the selected folder and group already exists.");
                     $oPatternCustom->setHtml(renderErrorPage($sErrorMessage, $fFolderID));
                 }
 			} else {
@@ -71,7 +71,7 @@ if (checkSession()) {
 		}
 	} else {
 		//display an error message
-        $sErrorMessage = "No folder currently selected";
+        $sErrorMessage = _("No folder currently selected");
 	}
     
     include_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");

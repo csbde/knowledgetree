@@ -34,7 +34,7 @@ function renderCheckOutPage($oDocument) {
 	global $default;
 	
 	$sToRender  = "<table>\n";
-	$sToRender .= "<tr><td>Enter a check out comment for '" . $oDocument->getName() . "'</td></tr>\n";
+	$sToRender .= "<tr><td>" . _("Enter a check out comment for the document") . "</td></tr>\n";
 	$sToRender .= "<tr/>\n";
 	$sToRender .= "<tr><td><input type=\"text\" name=\"fCheckOutComment\" size=\"30\"/></td></tr>\n";
     $sToRender .= "<tr><td><input type=\"hidden\" name=\"fForStore\" value=\"1\"/></td></tr>\n";
@@ -63,7 +63,7 @@ function getCheckOutPage($oDocument, $bCheckedOut = false) {
 	$sToRender .= renderDocumentPath($oDocument, false) . "\n\n";
     if ($bCheckedOut) {
     	$sToRender .= "<table>";
-        $sToRender .= "<tr><td>You have now checked out this document. No one else can make updates to the document while you have it checked out. Click the Download button to get the latest version of the file. Please check it back in, as soon as you finish working on it.</td></tr>\n";
+        $sToRender .= "<tr><td>" . _("You have now checked out this document. No one else can make updates to the document while you have it checked out. Click the Download button to get the latest version of the file. Please check it back in, as soon as you finish working on it.") . "</td></tr>\n";
         $sToRender .= "<tr><td><a href=\"$default->rootUrl/control.php?action=downloadDocument&fDocumentID=" . $oDocument->getID() . "\"><img src=\"$default->graphicsUrl/widgets/download.gif\" border=\"0\" /></a>\n";    
         $sToRender .= "<a href=\"$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $oDocument->getID() . "\"><img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\" /></a></td>\n";
         $sToRender .= "</table>";        

@@ -52,9 +52,9 @@ function getDocumentLinkFolderCollaborationData($iFolderCollaborationID) {
 	$aLinkURLs = array(2=>"$default->rootUrl/control.php?action=viewDocument", 3=>"$default->rootUrl/control.php?action=viewDependantDocument&fForEdit=1", 4=>"$default->rootUrl/control.php?action=deleteDependantDocument");	
 	
 	$oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaders, "90%", $aLinkURLs, $aDBColumnArray,$aQueryStringVariableNames);
-	$oPatternTableSqlQuery->setTableHeading("Dependant Documents");
+	$oPatternTableSqlQuery->setTableHeading(_("Dependant Documents"));
 	$oPatternTableSqlQuery->setDisplayColumnHeadings(true);
-	$oPatternTableSqlQuery->setEmptyTableMessage("No dependant documents");
+	$oPatternTableSqlQuery->setEmptyTableMessage(_("No dependant documents"));
 	
 	return $oPatternTableSqlQuery->render();
 	
@@ -85,13 +85,13 @@ function getEditPage($iFolderID, $iDependantDocumentID, $iFolderCollaborationID,
     $sToRender .= getFolderPath($iFolderID);    
 	$sToRender .= "<table border=\"0\" width=\"100%\">\n";	
 	$sToRender .= "<tr>\n";	
-	$sToRender .= "<td>Document title</td><td><input type=\"text\" name=\"fDocumentTitle\" value=\"$sDocumentTitle\" /></td>\n";
+	$sToRender .= "<td>" . _("Document Title") . "</td><td><input type=\"text\" name=\"fDocumentTitle\" value=\"$sDocumentTitle\" /></td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>User's Unit</td><td>" . getUnitDropDown($iFolderCollaborationID, $iFolderID, $iDefaultUserUnitID) . "</td>\n";
+	$sToRender .= "<td>" . _("User's Unit") . "</td><td>" . getUnitDropDown($iFolderCollaborationID, $iFolderID, $iDefaultUserUnitID) . "</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>User</td><td>" . getUserDropDown($iDefaultUserUnitID, $iUserID) . "</td>\n";
+	$sToRender .= "<td>" . _("User") . "</td><td>" . getUserDropDown($iDefaultUserUnitID, $iUserID) . "</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
 
@@ -99,10 +99,10 @@ function getEditPage($iFolderID, $iDependantDocumentID, $iFolderCollaborationID,
 	//javascript to set the onFocus attribute to blur 
 	if (!$default->bNN4) {
 		//for any other browser but netscape 4.7 do this	
-		$sToRender .= "<td>Template document</td><td><input type=\"text\" DISABLED name=\"fTargetDocument\" value=\"$sTemplateDocumentName\" /><input type=\"button\" value=\"Browse\" onClick=\"newWindow('" . generateControllerLink("templateBrowse", "") . "','window2')\"></td>\n";
+		$sToRender .= "<td>" . _("Template document") . "</td><td><input type=\"text\" DISABLED name=\"fTargetDocument\" value=\"$sTemplateDocumentName\" /><input type=\"button\" value=\"Browse\" onClick=\"newWindow('" . generateControllerLink("templateBrowse", "") . "','window2')\"></td>\n";
 	} else {
 		//for netscape 4.7 do this
-		$sToRender .= "<td>Template document</td><td><input type=\"text\"  value=\"$sTemplateDocumentName\" name=\"fTargetDocument\" onblur=\"disable(document.MainForm.fTargetDocument);\" /><input type=\"button\" value=\"Browse\" onClick=\"disable(document.MainForm.fTargetDocument);newWindow('http://ktdev/control.php?action=templateBrowse','window2')\"></td>\n";
+		$sToRender .= "<td>" . _("Template document") . "</td><td><input type=\"text\"  value=\"$sTemplateDocumentName\" name=\"fTargetDocument\" onblur=\"disable(document.MainForm.fTargetDocument);\" /><input type=\"button\" value=\"Browse\" onClick=\"disable(document.MainForm.fTargetDocument);newWindow('http://ktdev/control.php?action=templateBrowse','window2')\"></td>\n";
 	}		
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";	
@@ -121,13 +121,13 @@ function getAddPage($iFolderCollaborationID, $iFolderID, $iUnitID, $sDocumentTit
     $sToRender .= getFolderPath($iFolderID);    
 	$sToRender .= "<table border=\"0\" width=\"100%\">\n";	
 	$sToRender .= "<tr>\n";	
-	$sToRender .= "<td>Document title</td><td><input type=\"text\" name=\"fDocumentTitle\" value=\"$sDocumentTitle\" /></td>\n";
+	$sToRender .= "<td>" . _("Document Title") . "</td><td><input type=\"text\" name=\"fDocumentTitle\" value=\"$sDocumentTitle\" /></td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>User's Unit</td><td>" . getUnitDropDown($iFolderCollaborationID, $iFolderID, $iUnitID) . "</td>\n";
+	$sToRender .= "<td>" . _("User's Unit") . "</td><td>" . getUnitDropDown($iFolderCollaborationID, $iFolderID, $iUnitID) . "</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>User</td><td>" . getUserDropDown($iUnitID) . "</td>\n";
+	$sToRender .= "<td>" . _("User") . "</td><td>" . getUserDropDown($iUnitID) . "</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
 
@@ -135,10 +135,10 @@ function getAddPage($iFolderCollaborationID, $iFolderID, $iUnitID, $sDocumentTit
 	//javascript to set the onFocus attribute to blur 
 	if (!$default->bNN4) {
 		//for any other browser but netscape 4.7 do this	
-		$sToRender .= "<td>Template document</td><td><input type=\"text\" DISABLED name=\"fTargetDocument\" value=\"$sTemplateDocument\" /><input type=\"button\" value=\"Browse\" onClick=\"newWindow('$default->rootUrl/control.php?action=templateBrowse','window2')\"></td>\n";
+		$sToRender .= "<td>" . _("Template document") . "</td><td><input type=\"text\" DISABLED name=\"fTargetDocument\" value=\"$sTemplateDocument\" /><input type=\"button\" value=\"Browse\" onClick=\"newWindow('$default->rootUrl/control.php?action=templateBrowse','window2')\"></td>\n";
 	} else {
 		//for netscape 4.7 do this
-		$sToRender .= "<td>Template document</td><td><input type=\"text\"  name=\"fTargetDocument\" onblur=\"disable(document.MainForm.fTargetDocument);\" /><input type=\"button\" value=\"Browse\" onClick=\"disable(document.MainForm.fTargetDocument);newWindow('$default->rootUrl/control.php?action=templateBrowse','window2')\"></td>\n";
+		$sToRender .= "<td>" . _("Template document") . "</td><td><input type=\"text\"  name=\"fTargetDocument\" onblur=\"disable(document.MainForm.fTargetDocument);\" /><input type=\"button\" value=\"Browse\" onClick=\"disable(document.MainForm.fTargetDocument);newWindow('$default->rootUrl/control.php?action=templateBrowse','window2')\"></td>\n";
 	}		
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";	
@@ -178,7 +178,7 @@ function getUnitDropDown($iFolderCollaborationID, $iFolderID, $iUnitID = null) {
 function getValidationJavaScript() {
 	$sToRender .= "\n\n<script language=\"javascript\">\n<!--\n";
 	$sToRender .= "function validateForm(theForm) {\n";	
-	$sToRender .= "\tif (!(validRequired(theForm.fDocumentTitle,'Document title') && validRequired(theForm.fUserID,'User'))) {\n";
+	$sToRender .= "\tif (!(validRequired(theForm.fDocumentTitle,'" . _("Document Title") . "') && validRequired(theForm.fUserID,'" . _("User") . "'))) {\n";
 	$sToRender .= "\t\treturn false;\n\t}\n";
 	$sToRender .= "return true;\n}\n";
 	$sToRender .= "//-->\n</script>\n\n";

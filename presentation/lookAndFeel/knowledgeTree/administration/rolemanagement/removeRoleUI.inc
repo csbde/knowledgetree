@@ -32,7 +32,7 @@ function getDeletePage($iRoleID) {
         $oRole = Role::get($iRoleID);
         $sHeading .= "<b>" . _("Are you sure you wish to Remove this Role?:") . "</b>\n";
     } else {
-        $sHeading .= "Please select a Role:";
+        $sHeading .= _("Please select a Role:");
     }
 
     $sToRender .= renderHeading(_("Remove Role"));

@@ -29,7 +29,7 @@ function getConfirmationPage($iFolderID, $iDocumentIDs) {
 	global $default;
     $sToRender = renderHeading(_("Move Document"));
 	$sToRender .= "<table>\n";
-	$sToRender .= "<tr>\n<td>Are you sure you want to move </td></tr>";
+	$sToRender .= "<tr>\n<td>" . _("Are you sure you want to move") . ": </td></tr>";
 
 	for ($i = 0; $i < count($iDocumentIDs); $i++) {
 
@@ -60,7 +60,7 @@ function getPage($iFolderID, $iDocumentIDs, $sErrorMessage = "") {
 	if ($sErrorMessage) {
 		$sToRender .= "<tr><td><font color=\"red\">$sErrorMessage</font></td></tr>";
 	}
-  $sToRender .= "<tr><td>Move document(s): <br></td>\n";
+  $sToRender .= "<tr><td>" . _("Move document(s)") . ":<br></td>\n";
 
   for ($i = 0; $i < count($iDocumentIDs); $i++) {
     $sToRender .= "<tr>\n";
@@ -68,7 +68,7 @@ function getPage($iFolderID, $iDocumentIDs, $sErrorMessage = "") {
     $sQueryString .= "fDocumentIDs[]=$iDocumentIDs[$i]&";
   }
 
-  $sToRender .= "<tr><td> to:</td></tr>";
+  $sToRender .= "<tr><td>" . _("To Folder") . ":</td></tr>";
 	$sToRender .= "<tr>\n";
   $sToRender .= "<td>" . renderFolderPath($iFolderID, "/control.php?action=moveDocument&" . $sQueryString) . "</td>\n";
 	$sToRender .= "</tr>\n";
@@ -87,7 +87,7 @@ function renderErrorPage($sErrorMessage, $iDocumentID = "") {
   if ($iDocumentID) {
     return statusPage("Delete Document", "", $sErrorMessage, "viewDocument", "fDocumentID=$iDocumentID");
   } else {
-    $sToRender  = renderHeading("Delete Document");    
+    $sToRender  = renderHeading(_("Delete Document"));
     $sToRender .= "<table>\n";
     $sToRender .= "<tr><td><p class=\"errorText\">$sErrorMessage</p>\n" .
       "<a href=\"javascript:history.go(-2)\"><img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\"/></a>\n" .

@@ -123,7 +123,7 @@ function getUrl($oLink) {
     if (!isset($oLink)) {
         return "";
     } else {
-        return  "URL: </td><td>" . $oLink->getUrl();
+        return _("URL") . ": </td><td>" . $oLink->getUrl();
     }
 }
 
@@ -132,7 +132,7 @@ function getRank($oLink) {
     if (!isset($oLink)) {
         return "";
     } else {
-        return  "Rank: </td><td>" .$oLink->getRank();
+        return  _("Rank") . ": </td><td>" .$oLink->getRank();
     }
 }
 

@@ -89,7 +89,7 @@ if (checkSession()) {
                     } else {
                         // error creating subscription
                         $default->log->error("addSubscriptionBL.php error creating subscription for userID=$iUserID, subType=$iSubscriptionType, id=$iExternalID");                
-                        $oPatternCustom->setHtml(renderErrorPage("An error occurred while creating this subscription"));
+                        $oPatternCustom->setHtml(renderErrorPage(_("An error occurred while creating this subscription")));
                     }
                 } else {
                     // ask for confirmation
@@ -97,7 +97,7 @@ if (checkSession()) {
                 }
             } else {
                 // you're already subscribed
-                $oPatternCustom->setHtml(renderErrorPage("You are already subscribed to the " . ($fFolderID ? "folder '" . Folder::getFolderName($fFolderID) . "'" : "document '" . Document::getDocumentName($fDocumentID) . "'")));
+                $oPatternCustom->setHtml(renderErrorPage(_("You are already subscribed to this folder or document")));
             }
             
             require_once("../../../webpageTemplate.inc");
@@ -107,14 +107,14 @@ if (checkSession()) {
             
         } else {
             // no permission
-            $oPatternCustom->setHtml(renderErrorPage("You don't have permission to subscribe to this folder or document"));
+            $oPatternCustom->setHtml(renderErrorPage(_("You don't have permission to subscribe to this folder or document")));
             require_once("../../../webpageTemplate.inc");
             $main->setCentralPayload($oPatternCustom);
             $main->render();        
         }        
     } else {
         // neither document or folder chosen
-        $oPatternCustom->setHtml(renderErrorPage("You haven't chosen a folder or a document to subscribe to"));
+        $oPatternCustom->setHtml(renderErrorPage(_("You haven't chosen a folder or a document to subscribe to")));
         require_once("../../../webpageTemplate.inc");
         $main->setCentralPayload($oPatternCustom);
         $main->render();

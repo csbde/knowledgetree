@@ -35,7 +35,7 @@ function getDocumentPath($oDocument) {
 
 function renderGroupPicker() {	
 	
-	$sToRender .= "<tr><td valign=\"top\" colspan=\"3\"><strong>Groups</strong></td></tr>";
+	$sToRender .= "<tr><td valign=\"top\" colspan=\"3\"><strong>" . _("Groups") . "</strong></td></tr>";
 	$sToRender .= "<tr><td valign=\"top\" width=1%>\n";	
 	$sToRender .= "<select name=\"groupSelect\" size=\"4\" multiple>\n";
 	// retrieve all groups
@@ -58,7 +58,7 @@ function renderGroupPicker() {
 }
 
 function renderUserPicker() {
-	$sToRender .= "<tr><td colspan=\"3\"><strong>Users</strong></td><tr>\n";	
+	$sToRender .= "<tr><td colspan=\"3\"><strong>" . _("Users") . "</strong></td><tr>\n";
 	$sToRender .= "<tr><td><select name=\"userSelect\" size=\"4\" multiple>\n";
 	$oUserArray = User::getList("WHERE 1=1 ORDER BY name");	
 	for ($i = 0; $i < count($oUserArray); $i++) {
@@ -91,7 +91,7 @@ function getDocumentEmailPage($oDocument) {
 	$sToRender .= renderUserPicker();	
 	$sToRender .= "</table></td></tr>";
 	$sToRender .= "<tr><td><table>\n";
-	$sToRender .= "<tr><td valign=\"top\">Comment</td><td><textarea rows=\"5\" cols=\"30\" name=\"fComment\"></textarea></td>";//</tr>\n";
+	$sToRender .= "<tr><td valign=\"top\">" . _("Comment") . "</td><td><textarea rows=\"5\" cols=\"30\" name=\"fComment\"></textarea></td>";//</tr>\n";
 	$sToRender .= "<td valign=\"bottom\"><table><tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/email.gif\" border=\"0\" /></td><td><a href=\"$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $oDocument->getID() . "\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"/></a></td></tr></table></td></tr>\n";
 	$sToRender .= "</table></td></tr>\n";
 	$sToRender .= "</table>";
@@ -111,7 +111,7 @@ function getDocumentEmailPage($oDocument) {
 	$sToRender .= "<script language='javascript'>\n";
 	$sToRender .= "function validateForm(theForm) {\n";
 	$sToRender .= "\tif (isBlank(theForm.groupNewRight) && isBlank(theForm.userNewRight)) {\n";
-	$sToRender .= "\t\talert(\"Please choose either at least one Group or User to email a link to this document.\");return false;\n\t}\n";
+	$sToRender .= "\t\talert(\"" . _("Please choose either at least one Group or User to email a link to this document.") . "\");return false;\n\t}\n";
 	$sToRender .= "return true;\n}\n";
 	$sToRender .= "</script >\n";
 	return $sToRender;

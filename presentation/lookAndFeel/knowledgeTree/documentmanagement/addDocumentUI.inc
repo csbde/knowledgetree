@@ -33,13 +33,13 @@ function getDocumentType($iFolderID, $iDocumentTypeID, $iDependantDocumentID = n
 	// #3548 removed default document type
 	$oPatternListBox->setIncludeDefaultValue(false);
 	$oPatternListBox->setFromClause("INNER JOIN $default->folder_doctypes_table AS FDL ON ST.id = FDL.document_type_id");
-	$oPatternListBox->setEmptyErrorMessage("No document types defined! Please contact an Administrator");
+	$oPatternListBox->setEmptyErrorMessage(_("No document types defined! Please contact an Administrator"));
 	
 	if ($iDocumentTypeID) {
 		$oPatternListBox->setSelectedValue($iDocumentTypeID);
-		$sHeading = "Document Type";		
+		$sHeading = _("Document Type");
 	} else {
-		$sHeading = "Please select the document type:";		
+		$sHeading = _("Please select the document type:");
 	}
 	
 	$sToRender = "<table><tr><td><b>$sHeading<b></td></tr><tr><td>" . $oPatternListBox->render() . "</td></tr></table>";
@@ -60,7 +60,7 @@ function getUploadDocument() {
 	global $default;
 	$sToRender .= "<table border=\"0\">\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td colspan=\"2\"><b>Document to add:<b></td>\n";
+	$sToRender .= "<td colspan=\"2\"><b>" . _("Document to add") . ":<b></td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr><td>File</td><td><input type=\"file\" name=\"fFile\"></td></tr>\n";
 	$sToRender .= "<tr><td>Title</td><td><input type=\"text\" name=\"fName\" size=\"20\"></td></tr>\n";	
@@ -86,11 +86,11 @@ function getGenericMetaDataForm() {
     $aColumnDatabaseTypes = array(4,0,1);
     
     $oPatternTableSqlQuery = & new PatternEditableTableSqlQuery($sQuery, "document_fields_link", $aStoreColumnNames, $aDisplayColumnNames, $aColumnsEditable, $aColumnsVisible, $aColumnDisplayTypes, $aColumnDatabaseTypes);
-    $oPatternTableSqlQuery->setTableCaption("Generic Meta Data");
+    $oPatternTableSqlQuery->setTableCaption(_("Generic Meta Data"));
     $oPatternTableSqlQuery->setUniqueName("gmd");
 	$oPatternTableSqlQuery->setRequiredColumnNames(array("value"));
 	$oPatternTableSqlQuery->setMetaDataFields($aMetaDataColumnNames);
-	$oPatternTableSqlQuery->setEmptyTableMessage("No Generic Meta Data");
+	$oPatternTableSqlQuery->setEmptyTableMessage(_("No Generic Meta Data"));
 	$oPatternTableSqlQuery->setRenderJavascriptValidation(false);
     return $oPatternTableSqlQuery;
 }
@@ -115,8 +115,8 @@ function getTypeSpecificMetaDataForm($iFolderID, $iDocumentTypeID) {
 	$aMetaDataColumnNames = array(2=>"field_name");
 
     $oPatternTableSqlQuery = & new PatternEditableTableSqlQuery($sQuery, "document_fields_link", $aStoreColumnNames, $aDisplayColumnNames, $aColumnsEditable, $aColumnsVisible, $aColumnDisplayTypes, $aColumnDatabaseTypes);
-    $oPatternTableSqlQuery->setTableCaption("Type specific meta data");
-    $oPatternTableSqlQuery->setEmptyTableMessage("No Type Specific Meta Data");
+    $oPatternTableSqlQuery->setTableCaption(_("Type specific meta data"));
+    $oPatternTableSqlQuery->setEmptyTableMessage(_("No Type Specific Meta Data"));
     $oPatternTableSqlQuery->setUniqueName("tsmd");
 	$oPatternTableSqlQuery->setMetaDataFields($aMetaDataColumnNames);	
 	$oPatternTableSqlQuery->setRenderJavascriptValidation(false);
@@ -127,7 +127,7 @@ function getMetaDataForm($iFolderID, $iDocumentTypeID) {
 	$oGenericPattern = getGenericMetaDataForm();
 	$oTypeSpecificPattern = getTypeSpecificMetaDataForm($iFolderID, $iDocumentTypeID);
 	$sToRender .= "<table border=\"0\" width=\"100%\">\n";
-	$sToRender .= "<tr><td><b>Document Meta Data<b></td></tr>\n";	
+	$sToRender .= "<tr><td><b>" . _("Document Meta Data") . "<b></td></tr>\n";	
 	$sToRender .= "<tr><td valign=\"top\">" . $oGenericPattern->render() . "</td><td valign=\"top\">" . $oTypeSpecificPattern->render() . "</td></tr>";
 	$sToRender .= "</table>";
 
@@ -154,7 +154,11 @@ function getPage($iFolderID, $iDocumentTypeID, $iDependantDocumentID = null, $sM
     
     $sQueryString = "fFolderID=$iFolderID" . (isset($iDependantDocumentID) ? "&fDependantDocumentID=$iDependantDocumentID" : "");
     
-    $sToRender .= renderHeading("Add " . (isset($iDependantDocumentID) ? "Dependant " : "") . "Document");
+    if (isset($iDependantDocumentID)) {
+        $sToRender .= renderHeading(_("Add Dependant Document"));
+    } else {
+        $sToRender .= renderHeading(_("Add Document"));
+    }
     	    	
     $sToRender .= renderFolderPath($iFolderID, generateControllerUrl("addDocument", $sQueryString, false), true);
     	
@@ -167,7 +171,7 @@ function getPage($iFolderID, $iDocumentTypeID, $iDependantDocumentID = null, $sM
 	}
 	
 	if ($iDocumentTypeID) {
-		$sToRender .= "<table><tr><td><b>Document Type<b></td></tr><tr><td>" . lookupName($default->document_types_table, $iDocumentTypeID) . "</td></tr></table>";
+		$sToRender .= "<table><tr><td><b>" . _("Document Type") . "<b></td></tr><tr><td>" . lookupName($default->document_types_table, $iDocumentTypeID) . "</td></tr></table>";
 		$sToRender .= getUploadDocument();
 		$sToRender .= getMetaDataForm($iFolderID, $iDocumentTypeID);
 		$sActionButtons = "<input type=\"image\" src=\"$default->graphicsUrl/widgets/add.gif\" border=\"0\"/>";

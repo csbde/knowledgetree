@@ -69,7 +69,7 @@ if (checkSession()) {
                 }
             }
             if (strlen($sErrorMessage) > 0) {
-                $oPatternCustom->setHtml(renderErrorPage("There were errors removing the following subscriptions: $sErrorMessage"));
+                $oPatternCustom->setHtml(renderErrorPage(_("There were errors removing the following subscriptions:") . $sErrorMessage));
             } else {
                 // display the manage subscriptions page
                 $oPatternCustom->setHtml(renderManagePage());

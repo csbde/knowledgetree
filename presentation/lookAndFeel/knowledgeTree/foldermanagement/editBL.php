@@ -51,14 +51,14 @@ if (checkSession()) {
 				if (isset($fCollaborationEdit)) {
 	                //user attempted to edit the folder collaboration process but could not because there is
 	                //a document currently in this process
-	                $oPatternCustom->setHtml(getStatusPage($fFolderID, "You cannot edit this folder collaboration process as a document is currently undergoing this collaboration process"));
+	                $oPatternCustom->setHtml(getStatusPage($fFolderID, _("You cannot edit this folder collaboration process as a document is currently undergoing this collaboration process")));
 	                
 	                $main->setHasRequiredFields(true);
 	                $main->setFormAction("$default->rootUrl/presentation/lookAndFeel/knowledgeTree/store.php?fReturnURL=" . urlencode("$default->rootUrl/control.php?action=browse&fFolderID=$fFolderID"));
 	            } else if (isset($fCollaborationDelete)) {
 	                //user attempted to delete the folder collaboration process but could not because there is
 	                //a document currently in this process
-	                $oPatternCustom->setHtml(getStatusPage($fFolderID, "You cannot delete this folder collaboration process as a document is currently undergoing this collaboration process"));
+	                $oPatternCustom->setHtml(getStatusPage($fFolderID, _("You cannot delete this folder collaboration process as a document is currently undergoing this collaboration process")));
 	                $main->setHasRequiredFields(true);
 	                $main->setFormAction("$default->rootUrl/presentation/lookAndFeel/knowledgeTree/store.php?fReturnURL=" . urlencode("$default->rootUrl/control.php?action=browse&fFolderID=$fFolderID"));
 	            } else {
@@ -74,18 +74,18 @@ if (checkSession()) {
 	        } else {
 	            //user does not have write permission for this folder,
 	            $oPatternCustom->setHtml("<a href=\"javascript:history.go(-1)\"><img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\" /></a>\n");
-	            $main->setErrorMessage("You do not have permission to edit this folder");
+	            $main->setErrorMessage(_("You do not have permission to edit this folder"));
 	        }
     	} else {
     		// folder doesn't exist
 	        $oPatternCustom->setHtml("<a href=\"javascript:history.go(-1)\"><img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\" /></a>\n");
-	        $main->setErrorMessage("The folder you're trying to modify does not exist in the DMS");
+	        $main->setErrorMessage(_("The folder you're trying to modify does not exist in the DMS"));
 	        $main->setFormAction("$default->rootUrl/presentation/lookAndFeel/knowledgeTree/store.php?fReturnURL=" . urlencode("$default->rootUrl/control.php?action=browse&fFolderID=$fFolderID"));
     	}
     } else {
         //else display an error message
         $oPatternCustom->setHtml("<a href=\"javascript:history.go(-1)\"><img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\" /></a>\n");
-        $main->setErrorMessage("No folder currently selected");
+        $main->setErrorMessage(_("No folder currently selected"));
         $main->setFormAction("$default->rootUrl/presentation/lookAndFeel/knowledgeTree/store.php?fReturnURL=" . urlencode("$default->rootUrl/control.php?action=browse&fFolderID=$fFolderID"));
     }
 	$main->setCentralPayload($oPatternCustom);						

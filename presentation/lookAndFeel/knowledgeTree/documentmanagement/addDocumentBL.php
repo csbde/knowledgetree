@@ -142,7 +142,7 @@ if (checkSession()) {
                                     // delete the document from the database
                                     $oDocument->delete();
                                     $oPatternCustom = & new PatternCustom();
-                                	$oPatternCustom->setHtml(getStatusPage($fFolderID, "An error occured while storing the document on the file system, please try again.</td><td><a href=\"$default->rootUrl/control.php?action=browse&fFolderID=$fFolderID\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></a>"));                                    
+                                	$oPatternCustom->setHtml(getStatusPage($fFolderID, _("An error occured while storing the document on the file system, please try again.") . "</td><td><a href=\"$default->rootUrl/control.php?action=browse&fFolderID=$fFolderID\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></a>"));                                    
                                     $main->setCentralPayload($oPatternCustom);
                                     $main->render();
                                 }
@@ -151,7 +151,7 @@ if (checkSession()) {
                                 $default->log->error("addDocumentBL.php DB error storing document in folder " . Folder::getFolderPath($fFolderID) . " id=$fFolderID");                            	
                                 require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
                                 $oPatternCustom = & new PatternCustom();
-                                $oPatternCustom->setHtml(getStatusPage($fFolderID, "An error occured while storing the document in the database, please try again.</td><td><a href=\"$default->rootUrl/control.php?action=addDocument&fFolderID=$fFolderID&fDocumentTypeID=$fDocumentTypeID\"><img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\"></a>"));                                
+                                $oPatternCustom->setHtml(getStatusPage($fFolderID, _("An error occured while storing the document in the database, please try again.") . "</td><td><a href=\"$default->rootUrl/control.php?action=addDocument&fFolderID=$fFolderID&fDocumentTypeID=$fDocumentTypeID\"><img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\"></a>"));                                
                                 $main->setCentralPayload($oPatternCustom);
                                 $main->render();
                             }
@@ -160,7 +160,7 @@ if (checkSession()) {
                             $default->log->error("addDocumentBL.php Document exists with name " . $oDocument->getFileName() . " in folder " . Folder::getFolderPath($fFolderID) . " id=$fFolderID");                        	
                             require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
                             $oPatternCustom = & new PatternCustom();
-							$oPatternCustom->setHtml(getStatusPage($fFolderID, "A document with this file name already exists in this folder</td><td><a href=\"$default->rootUrl/control.php?action=addDocument&fFolderID=$fFolderID&fDocumentTypeID=$fDocumentTypeID\"><img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\"></a>"));                            
+							$oPatternCustom->setHtml(getStatusPage($fFolderID, _("A document with this file name already exists in this folder") . "</td><td><a href=\"$default->rootUrl/control.php?action=addDocument&fFolderID=$fFolderID&fDocumentTypeID=$fDocumentTypeID\"><img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\"></a>"));                            
                             $main->setCentralPayload($oPatternCustom);
                             $main->render();
                         }
@@ -168,7 +168,7 @@ if (checkSession()) {
                     	// no uploaded file
                         require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
                         $oPatternCustom = & new PatternCustom();
-						$oPatternCustom->setHtml(getStatusPage($fFolderID, "You did not select a valid document to upload</td><td><a href=\"$default->rootUrl/control.php?action=addDocument&fFolderID=$fFolderID&fDocumentTypeID=$fDocumentTypeID\"><img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\"></a>"));                        
+						$oPatternCustom->setHtml(getStatusPage($fFolderID, _("You did not select a valid document to upload") . "</td><td><a href=\"$default->rootUrl/control.php?action=addDocument&fFolderID=$fFolderID&fDocumentTypeID=$fDocumentTypeID\"><img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\"></a>"));                        
                         $main->setCentralPayload($oPatternCustom);
                         $main->render();
                     }
@@ -176,7 +176,7 @@ if (checkSession()) {
                     // no document type was selected
                     require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
                     $oPatternCustom = & new PatternCustom();
-                    $oPatternCustom->setHtml(getStatusPage($fFolderID, "A valid document type was not selected.</td><td><a href=\"$default->rootUrl/control.php?action=browse&fFolderID=$fFolderID\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></a>"));
+                    $oPatternCustom->setHtml(getStatusPage($fFolderID, _("A valid document type was not selected.") . "</td><td><a href=\"$default->rootUrl/control.php?action=browse&fFolderID=$fFolderID\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></a>"));
                     $main->setCentralPayload($oPatternCustom);
                     $main->render();
                 }                
@@ -198,7 +198,7 @@ if (checkSession()) {
             //so don't display add button
             require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
             $oPatternCustom = & new PatternCustom();
-            $oPatternCustom->setHtml(getPage($fFolderID, $fDocumentTypeID, $fDependantDocumentID, "You do not have permission to add a document to this folder</td><td><a href=\"$default->rootUrl/control.php?action=browse&fFolderID=$fFolderID\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></a>"));
+            $oPatternCustom->setHtml(getPage($fFolderID, $fDocumentTypeID, $fDependantDocumentID, _("You do not have permission to add a document to this folder") . "</td><td><a href=\"$default->rootUrl/control.php?action=browse&fFolderID=$fFolderID\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></a>"));
             $main->setCentralPayload($oPatternCustom);
             $main->render();
         }
@@ -207,7 +207,7 @@ if (checkSession()) {
         //so display an error message
         require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
         $oPatternCustom = & new PatternCustom();
-        $oPatternCustom->setHtml("<p class=\"errorText\">You haven't selected a folder to add a document to.</p>\n");
+        $oPatternCustom->setHtml("<p class=\"errorText\">" . _("You haven't selected a folder to add a document to.") . "</p>\n");
         $main->setCentralPayload($oPatternCustom);
         $main->render();
     }

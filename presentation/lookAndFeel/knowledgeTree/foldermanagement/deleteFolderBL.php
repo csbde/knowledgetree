@@ -103,7 +103,7 @@ if (checkSession()) {
 							require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");																	
 							$oPatternCustom->setHtml("");
 							$main->setCentralPayload($oPatternCustom);
-							$main->setErrorMessage("The folder could not be deleted from the file system");
+							$main->setErrorMessage(_("The folder could not be deleted from the file system"));
 							$main->render();
 						}
 					} else {
@@ -112,7 +112,7 @@ if (checkSession()) {
 						require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");			
 						$oPatternCustom->setHtml("");
 						$main->setCentralPayload($oPatternCustom);
-						$main->setErrorMessage("The folder could not be deleted from the database");
+						$main->setErrorMessage(_("The folder could not be deleted from the database"));
 						$main->render();
 					}
 				} else {
@@ -120,7 +120,7 @@ if (checkSession()) {
 					require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");									
 					$oPatternCustom->setHtml("");
 					$main->setCentralPayload($oPatternCustom);
-					$main->setErrorMessage("An error occured whilst retrieving the folder from the database");
+					$main->setErrorMessage(_("An error occured whilst retrieving the folder from the database"));
 					$main->render();
 				}
 			} else {
@@ -167,7 +167,7 @@ if (checkSession()) {
 			$oPatternCustom = & new PatternCustom();							
 			$oPatternCustom->setHtml("");
 			$main->setCentralPayload($oPatternCustom);
-			$main->setErrorMessage("You do not have permission to delete this folder");
+			$main->setErrorMessage(_("You do not have permission to delete this folder"));
 			$main->render();
 		}
 	} else {
@@ -176,7 +176,7 @@ if (checkSession()) {
 		$oPatternCustom = & new PatternCustom();							
 		$oPatternCustom->setHtml("");
 		$main->setCentralPayload($oPatternCustom);
-		$main->setErrorMessage("No folder currently selected");
+		$main->setErrorMessage(_("No folder currently selected"));
 		$main->render();
 	}
 }

@@ -62,7 +62,7 @@ if (checkSession()) {
 	    				$default->log->error("modifyArchiveSettingsBL.php error updating archive settings (documentID=$fDocumentID)");		    		
 			    	}
 		    	} else {
-		    		$oContent->setHtml(renderEditArchiveSettingsPage($fDocumentID, $oArchiveSettings, "You cannot select an expiration date in the past. Please try again."));
+		    		$oContent->setHtml(renderEditArchiveSettingsPage($fDocumentID, $oArchiveSettings, _("You cannot select an expiration date in the past. Please try again.")));
 		    	}	    	
 		    } elseif ($fDelete) {
 		    	if ($oDocumentArchiving->delete()) {
@@ -77,11 +77,11 @@ if (checkSession()) {
 		    }
 		} else {
 			// no archiving settings for this document
-			$oContent->setHtml(renderEditArchiveSettingsPage(null, null, "No document has been selected."));
+			$oContent->setHtml(renderEditArchiveSettingsPage(null, null, _("No document has been selected.")));
 		}
     } else {
     	// document id missing  	
-    	$oContent->setHtml(renderEditArchiveSettingsPage(null, null, "No document has been selected."));
+    	$oContent->setHtml(renderEditArchiveSettingsPage(null, null, _("No document has been selected.")));
     }
              
 	// build the page

@@ -147,7 +147,7 @@ function getTextPage($iDocFieldID = null) {
 function getAddButton($oDocField) {
     global $default;
     if (!isset($oDocField)) {
-        return "Please select a Document Field:";
+        return _("Please select a Document Field:");
     } else {
         return "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/add.gif\" value=\"submit\" border=\"0\"/></td>\n";
     }

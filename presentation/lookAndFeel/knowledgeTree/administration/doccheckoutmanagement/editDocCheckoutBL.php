@@ -58,7 +58,7 @@ if (checkSession()) {
 				}                                    
 				$oPatternCustom->setHtml(getEditCheckoutSuccessPage());
 			} else {
-				$oPatternCustom->setHtml(getErrorPage("Error while trying to update the document checkout."));
+				$oPatternCustom->setHtml(getErrorPage(_("Error while trying to update the document checkout.")));
 			}
 		} else {
 			$oPatternCustom->addHtml(getEditCheckoutPage($fDocumentID));
@@ -66,7 +66,7 @@ if (checkSession()) {
 		}
 	} else {
 		// no document selected
-		$oPatternCustom->setHtml(getErrorPage("No document selected to check back in"));
+		$oPatternCustom->setHtml(getErrorPage(_("No document selected to check back in")));
 	}
 	//render the page
 	$main->setCentralPayload($oPatternCustom);

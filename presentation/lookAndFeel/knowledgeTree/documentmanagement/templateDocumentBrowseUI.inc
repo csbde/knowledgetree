@@ -111,7 +111,7 @@ function renderCategoryResults($aResults) {
     } else {
         // else the first entry is the category name, so display the documents in the category
         // with full paths
-        $sToRender .= renderDocumentList($aResults, "This category contains no documents", "You don't have access to the documents in this category", true);
+        $sToRender .= renderDocumentList($aResults, _("This category contains no documents"), _("You don't have access to the documents in this category"), true);
     }
     return $sToRender;
 }
@@ -175,7 +175,7 @@ function renderDocumentTypeResults($aResults) {
     } else {
         // else the first entry is the document type name, so display the documents in the document type
         // with full paths
-        $sToRender .= renderDocumentList($aResults, "This document type contains no documents", "You don't have access to the documents in this document type", true);
+        $sToRender .= renderDocumentList($aResults, _("This document type contains no documents"), _("You don't have access to the documents in this document type"), true);
     }
     return $sToRender;
 }
@@ -212,10 +212,10 @@ function renderFolderResults($aResults) {
             $sToRender .= "</tr>\n";
         }
     } else {
-        $sToRender .= "<tr><td colspan=\"5\">This folder contains no sub folders</td></tr>";
+        $sToRender .= "<tr><td colspan=\"5\">" . _("This folder contains no sub folders") . "</td></tr>";
     }
         
-    $sToRender .= "<tr><td>" . renderDocumentList($aResults, "This folder contains no documents", "You don't have access to the documents in this folder") . "</td></tr>\n";
+    $sToRender .= "<tr><td>" . renderDocumentList($aResults, _("This folder contains no documents"), _("You don't have access to the documents in this folder")) . "</td></tr>\n";
     
     return $sToRender;
 }

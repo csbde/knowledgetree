@@ -63,7 +63,7 @@ function getAddPageFail() {
 			
     $sToRender .= renderHeading(_("Add Website"));
 	$sToRender .= "<table>\n";
-	$sToRender .= "<tr><td><b>Addition Unsuccessful</b></td></tr>\n";
+	$sToRender .= "<tr><td><b>" . _("Addition Unsuccessful") . "</b></td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";

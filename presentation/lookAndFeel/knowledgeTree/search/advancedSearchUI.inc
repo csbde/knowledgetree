@@ -125,7 +125,7 @@ function getSearchResults($sMetaTagIDs, $sSQLSearchString, $iStartIndex, $sSearc
 	$oPatternBrowse->setStartIndex($iStartIndex);
 	$oPatternBrowse->setSearchText($sSearchString);
     
-    $sRefreshMessage = "<table><tr><td align=\"center\">If your browser displays a 'Warning: Page has Expired' message when you attempt to return to these search results, please click your browser's 'Refresh' button</td></tr></table>";
+    $sRefreshMessage = "<table><tr><td align=\"center\">" . _("If your browser displays a 'Warning: Page has Expired' message when you attempt to return to these search results, please click your browser's 'Refresh' button") . "</td></tr></table>";
 	return renderHeading(_("Advanced Search")) . $oPatternBrowse->render() . $sRefreshMessage . getSearchVariablesHtml($sSearchString, $sStatus, $sMetaTagIDs);
 }
 

@@ -63,7 +63,7 @@ if (checkSession()) {
 					
 					$oPatternCustom = & new PatternCustom();
 					$oPatternCustom->setHtml(getPage($fFolderID, $fGroupID, $fRoleID, $fSequenceNumber));
-					$main->setErrorMessage("The folder collaboration entry could not be created in the database");
+					$main->setErrorMessage(_("The folder collaboration entry could not be created in the database"));
 					$main->setCentralPayload($oPatternCustom);
 					$main->setFormAction($_SERVER["PHP_SELF"] . "?fFolderID=$fFolderID&fForStore=1");
 					$main->setHasRequiredFields(true);
@@ -99,7 +99,7 @@ if (checkSession()) {
 		$oPatternCustom = & new PatternCustom();
 		$oPatternCustom->setHtml("");
 		$main->setCentralPayload($oPatternCustom);
-		$main->setErrorMessage("No folder currently selected");
+		$main->setErrorMessage(_("No folder currently selected"));
 		$main->setFormAction($_SERVER["PHP_SELF"] . "?fFolderID=$fFolderID&fForStore=1");
 		$main->setHasRequiredFields(true);
 		$main->render();

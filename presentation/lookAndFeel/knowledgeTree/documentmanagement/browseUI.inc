@@ -112,9 +112,9 @@ function renderCategoryResults($aResults) {
     } else {
     	if (count($aResults["categories"]) > 0) {
 	        // else the first entry is the category name, so display the documents in the category
-	        $sToRender .= renderDocumentList($aResults, "This category contains no documents", "You don't have access to the documents in this category");
+	        $sToRender .= renderDocumentList($aResults, _("This category contains no documents"), _("You don't have access to the documents in this category"));
     	} else {
-    		$sToRender .= "<tr><td colspan=\"5\"><font color=\"red\">There is no Category Document Field- contact a System Administrator.</font></td></tr>";
+    		$sToRender .= "<tr><td colspan=\"5\"><font color=\"red\">" . _("There is no Category Document Field- contact a System Administrator.") . "</font></td></tr>";
     	}
     }
     return $sToRender;
@@ -178,7 +178,7 @@ function renderDocumentTypeResults($aResults) {
         }
     } else {
         // else the first entry is the document type name, so display the documents in the document type
-        $sToRender .= renderDocumentList($aResults, "This document type contains no documents", "You don't have access to the documents in this document type");
+        $sToRender .= renderDocumentList($aResults, _("This document type contains no documents"), _("You don't have access to the documents in this document type"));
     }
     return $sToRender;
 }

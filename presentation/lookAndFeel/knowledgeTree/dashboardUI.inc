@@ -122,10 +122,10 @@ function renderCheckedOutDocuments($aCheckedOutDocumentList) {
     if (count($aCheckedOutDocumentList) > 0) {
         $sToRender .= "\t\t\t<tr>\n";
         $sToRender .= "\t\t\t\t<th align=\"left\" width=\"66%\" class=\"sectionColumns\">";
-        $sToRender .= "Title";
+        $sToRender .= _("Title");
         $sToRender .= "</th>\n";
         $sToRender .= "\t\t\t\t<th align=\"right\" width=\"33%\" class=\"sectionColumns\">";
-        $sToRender .= "Days";
+        $sToRender .= _("Days");
         $sToRender .= "\t\t\t\t</th>\n";
         $sToRender .= "\t\t\t</tr>\n";
     }
@@ -177,10 +177,10 @@ function renderDependantDocuments($aDependantDocumentList) {
     if (count($aDependantDocumentList) > 0) {
         $sToRender .= "\t\t\t<tr>\n";
         $sToRender .= "\t\t\t\t<th align=\"left\" width=\"33%\" class=\"sectionColumns\">";
-        $sToRender .= "Title";
+        $sToRender .= _("Title");
         $sToRender .= "</th>\n";
         $sToRender .= "\t\t\t\t<th align=\"left\" width=\"66%\" class=\"sectionColumns\">";
-        $sToRender .= "Template document";
+        $sToRender .= _("Template document");
         $sToRender .= "\t\t\t\t</th>\n";
         $sToRender .= "\t\t\t</tr>\n";
     }
@@ -194,7 +194,7 @@ function renderDependantDocuments($aDependantDocumentList) {
         if (!($oTemplateDocument === false)) {        
 	        $sToRender .= "<td>" . generateControllerLink("viewDocument", "fDocumentID=" . $oTemplateDocument->getID(), "<img src=\"" . imgSrc("widgets/dstatus.gif") . "\" border=\"0\"/>&nbsp;" . $oTemplateDocument->getName()) . "</td>\n";	     
         } else {
-        	$sToRender .= "<td>No template specified</td>\n";
+        	$sToRender .= "<td>" . _("No template specified") . "</td>\n";
         }
         $sToRender .= "\t\t\t</tr>\n";        
     }

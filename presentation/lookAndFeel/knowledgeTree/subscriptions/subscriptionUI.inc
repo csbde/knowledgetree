@@ -39,10 +39,10 @@ function renderManagePage() {
     $sToRender  = renderHeading(_("Subscriptions"), "Subscriptions");
     $sToRender .= "<table width=\"600\">\n";
     if ($bNoSubscriptions) {
-        $sToRender .= "<tr><td>You are not subscribed to any documents or folders.</td></tr>\n";       
+        $sToRender .= "<tr><td>" . _("You are not subscribed to any documents or folders.") . "</td></tr>\n";       
     } else {
-        $sToRender .= "<tr><td>The documents and folders you're subscribed to are listed below.</td></tr>\n";
-        $sToRender .= "<tr><td>Select the subscriptions you'd like to unsubscribe from, and click 'Unsubscribe'</td></tr>\n";
+        $sToRender .= "<tr><td>" . _("The documents and folders you're subscribed to are listed below.") . "</td></tr>\n";
+        $sToRender .= "<tr><td>" . _("Select the subscriptions you'd like to unsubscribe from, and click 'Unsubscribe'") . "</td></tr>\n";
     }
 	$sToRender .= "<tr/>\n";
     $sToRender .= "<tr/>\n";
@@ -97,7 +97,7 @@ function renderMultipleRemoveConfirmationPage($aFolderSubscriptions, $aDocumentS
     
 	$sToRender  = renderHeading(_("Subscriptions"), "Subscriptions");    
 	$sToRender .= "<table width=\"600\">\n";   
-    $sToRender .= "<tr><td>You have chosen to delete the following subscription(s):</td></tr>\n";
+    $sToRender .= "<tr><td>" . _("You have chosen to delete the following subscription(s):") . "</td></tr>\n";
 	$sToRender .= "<tr/>\n";
     $sToRender .= "<tr/>\n";
     
@@ -124,7 +124,7 @@ function renderMultipleRemoveConfirmationPage($aFolderSubscriptions, $aDocumentS
     $sToRender .= "<tr/>\n";
     $sToRender .= "<tr/>\n";
     $sToRender .= "<tr/>\n";
-	$sToRender .= "<td>Select 'Unsubscribe' to confirm the deletion(s), or 'Cancel' to cancel them</td>\n";
+	$sToRender .= "<td>" . _("Select 'Unsubscribe' to confirm the deletion(s), or 'Cancel' to cancel them") . "</td>\n";
     $sToRender .= "<tr/>\n";
     $sToRender .= "<tr/>\n";
     $sToRender .= "<input type=\"hidden\" name=\"fConfirmed\" value=\"1\"/>";
@@ -155,10 +155,10 @@ function renderRemoveConfirmationPage($oSubscription) {
  
  	$sToRender  = renderHeading(_("Subscriptions"), "Subscriptions");
 	$sToRender .= "<table width=\"600\">\n";
-	$sToRender .= "<tr><td>You have chosen to delete your $sContentType subscription to '$sContentName'.</td></tr>\n";
+	$sToRender .= "<tr><td>" . _("You have chosen to delete your subscription to:") . " '$sContentName'.</td></tr>\n";
 	$sToRender .= "<tr/>\n";
 	$sToRender .= "<tr/>\n";
-	$sToRender .= "<td>Select 'Unsubscribe' to confirm the deletion, or 'Cancel' to cancel it</td>\n";
+	$sToRender .= "<td>" . _("Select 'Unsubscribe' to confirm the deletion, or 'Cancel' to cancel it") . "</td>\n";
 	$sToRender .= "</tr>\n";
     $sToRender .= "<tr/>\n";
     $sToRender .= "<tr><td><a href=\"$default->rootUrl/control.php?action=removeSubscription&$sContentUrl&fConfirmed=1\"><img src =\"$default->graphicsUrl/widgets/unsubscribe.gif\" border=\"0\"/></a>\n";
@@ -188,10 +188,10 @@ function renderAddConfirmationPage($oSubscription) {
  
 	$sToRender  = renderHeading(_("Subscriptions"), "Subscriptions");
 	$sToRender .= "<table width=\"600\">\n";
-	$sToRender .= "<tr><td>You have chosen to subscribe to the $sContentType entitled '$sContentName'.</td></tr>\n";
+	$sToRender .= "<tr><td>" . _("You have chosen to subscribe to:") . " '$sContentName'.</td></tr>\n";
 	$sToRender .= "<tr/>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>Select 'Subscribe' to confirm the subscription, or 'Cancel' to cancel it</td>\n";
+	$sToRender .= "<td>" . _("Select 'Subscribe' to confirm the subscription, or 'Cancel' to cancel it") . "</td>\n";
 	$sToRender .= "</tr>\n";
     $sToRender .= "<tr/>\n";
     $sToRender .= "<tr><td><a href=\"$default->rootUrl/control.php?action=addSubscription&$sContentUrl&fConfirmed=1\"><img src =\"$default->graphicsUrl/widgets/subscribe.gif\" border=\"0\"/></a>\n";

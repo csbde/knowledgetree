@@ -86,7 +86,7 @@ if (checkSession()) {
             //return value from collaborationBL.php.  User attempted to edit
             //a step in the document collaboration process that is currently being
             //executed
-            $sStatusMessage = "You cannot edit a document collaboration step that is completed or currently underway";
+            $sStatusMessage = _("You cannot edit a document collaboration step that is completed or currently underway");
             $oPatternCustom->setHtml(getStatusPage($oDocument, $sStatusMessage));
             $main->setDHTMLScrolling(false);
         } else if (isset($fBeginCollaboration) && Permission::userHasDocumentWritePermission($oDocument)) {
@@ -103,7 +103,7 @@ if (checkSession()) {
 					//DocumentCollaboration::resetDocumentCollaborationSteps($fDocumentID);
                     
 					$oDocument->beginCollaborationProcess();
-					$sStatusMessage = "Document collaboration successfully started";
+					$sStatusMessage = _("Document collaboration successfully started");
 					$oPatternCustom->setHtml(getStatusPage($oDocument, $sStatusMessage));
 				} else {
 					// check that default users have been assigned to the routing steps before using them
@@ -114,17 +114,17 @@ if (checkSession()) {
 						
 						FolderUserRole::createDefaultFolderUserRoles($oDocument);
 						$oDocument->beginCollaborationProcess();
-						$sStatusMessage = "Document collaboration successfully started";					
+						$sStatusMessage = _("Document collaboration successfully started");
 						$oPatternCustom->setHtml(getStatusPage($oDocument, $sStatusMessage));
 					} else {
 						// the folder does not have default users assigned for the routing steps
-						$sStatusMessage = "Default users have not been assigned at the folder level.  Please set these up, or choose specific users for this document before attempting to start collaboration.";				
+						$sStatusMessage = _("Default users have not been assigned at the folder level.  Please set these up, or choose specific users for this document before attempting to start collaboration.");
 						$oPatternCustom->setHtml(getStatusPage($oDocument, $sStatusMessage));						
 					}
 				}
 			} else {
 				//the folder has no collaboration set up yet, so we can't start document collaboration
-				$sStatusMessage = "The collaboration steps for the folder must be set up before collaboration can begin";				
+				$sStatusMessage = _("The collaboration steps for the folder must be set up before collaboration can begin");
 				$oPatternCustom->setHtml(getStatusPage($oDocument, $sStatusMessage));
             }
             $main->setDHTMLScrolling(false);
@@ -157,7 +157,7 @@ if (checkSession()) {
                 }
                 				
 				//possibly set the document up for web publishing????
-				$sStatusMessage = "Document collaboration complete.  The document initiator has been notified";					
+				$sStatusMessage = _("Document collaboration complete.  The document initiator has been notified");
 				$oPatternCustom->setHtml(getStatusPage($oDocument, $sStatusMessage));					
 			} else {
 				//start the next steps if all criteria are met					
@@ -169,7 +169,7 @@ if (checkSession()) {
                 } else {
                 	$default->log->error("viewBL.php couldn't create collaboration accepted  document transaction for document ID=$fDocumentID");
                 }				
-				$sStatusMessage = "The next steps in the collaboration process have been started";					
+				$sStatusMessage = _("The next steps in the collaboration process have been started");
 				$oPatternCustom->setHtml(getStatusPage($oDocument, $sStatusMessage));
 			}
             $main->setDHTMLScrolling(false);
@@ -201,18 +201,18 @@ if (checkSession()) {
 	                    	DocumentCollaboration::notifyWebMaster($fDocumentID, $fComment);
 	                    }
 	                    if ($fWebSiteID) {
-	                    	$sStatusMessage = "The document has been marked as pending publishing and the web publisher has been notified";
+	                    	$sStatusMessage = _("The document has been marked as pending publishing and the web publisher has been notified");
 	                    } else {
-	                    	$sStatusMessage = "The document has been published";                    	
+	                    	$sStatusMessage = _("The document has been published");
 	                    }
 	                    $default->log->info("printing page");
 	                    $oPatternCustom->setHtml(getStatusPage($oDocument, $sStatusMessage));                    
 	                } else {
-	                    $sStatusMessage = "An error occured while attempting to update the document for publishing.  Please try again later.";                	
+	                    $sStatusMessage = _("An error occured while attempting to update the document for publishing.  Please try again later.");
 	                    $oPatternCustom->setHtml(getStatusPage($oDocument, $sStatusMessage));
 	                }
 				} else {
-					$sStatusMessage = "An error occured while attempting to update the document for publishing.  Please try again later.";                	
+					$sStatusMessage = _("An error occured while attempting to update the document for publishing.  Please try again later.");
 					$oPatternCustom->setHtml(getStatusPage($oDocument, $sStatusMessage));
 				}
             } else {
@@ -245,7 +245,7 @@ if (checkSession()) {
 
 	            $sJavaScript = "switchDiv('" . (isset($fShowSection) ? $fShowSection : "documentData") . "', 'document');";
 	            if ($fCheckedOut) {
-	            	$sCheckOutMessage = "You have now checked out this document. No one else can make updates to the document while you have it checked out. Save the document, make your changes and check it back in as soon as you finish working on it.";	            	
+	            	$sCheckOutMessage = _("You have now checked out this document. No one else can make updates to the document while you have it checked out. Save the document, make your changes and check it back in as soon as you finish working on it.");
 	            	$sJavaScript .= "redirectLink('$sCheckOutMessage', '" . generateControllerUrl("downloadDocument", "fDocumentID=$fDocumentID") . "')"; 
 	            } 	            
 	            $main->setOnLoadJavaScript($sJavaScript);
@@ -260,7 +260,7 @@ if (checkSession()) {
             	}            
             } else {
 	            $oPatternCustom->setHtml("<a href=\"" . generateControllerLink("browse", "fFolderID=" . $oDocument->getFolderID()) . "\"><img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\" /></a>\n");
-	            $main->setErrorMessage("The document you have chosen no longer exists in the DMS.");
+	            $main->setErrorMessage(_("The document you have chosen no longer exists in the DMS."));
             }
             $main->setFormAction("$default->rootUrl/control.php?action=modifyDocument&fDocumentID=" . $oDocument->getID());
         } else {
@@ -269,13 +269,13 @@ if (checkSession()) {
         	} else {
         		$oPatternCustom->setHtml("<a href=\"javascript:history.go(-1)\"><img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\" /></a>\n");
         	}
-            $main->setErrorMessage("Either you do not have permission to view this document, or the document you have chosen no longer exists on the file system.");
+            $main->setErrorMessage(_("Either you do not have permission to view this document, or the document you have chosen no longer exists on the file system."));
         }
         
     } else {
         require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
         $oPatternCustom->setHtml("<a href=\"javascript:history.go(-1)\"><img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\" /></a>\n");
-        $main->setErrorMessage("You have not chosen a document to view");
+        $main->setErrorMessage(_("You have not chosen a document to view"));
     }
     $main->setCentralPayload($oPatternCustom);            
     $main->render();

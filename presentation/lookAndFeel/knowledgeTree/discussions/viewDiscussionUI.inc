@@ -40,7 +40,7 @@ function getViewFailPage($sMessage) {
 	if ( strlen($sMessage)>0 ) {
 		$sToRender = $sMessage;
 	} else {
-		$sToRender = "Current document has no discussion.  Press the ADD button to start a discussion.";
+		$sToRender = _("Current document has no discussion.  Press the ADD button to start a discussion.");
 	}
 	return $sToRender;
 }
@@ -52,7 +52,7 @@ function getViewFailPage($sMessage) {
  */
 function getNewThreadOption($fDocumentID) {
 	global $default;   
-	$sToRender .= "Would you like to create a new Discussion thread for this document?";
+	$sToRender .= _("Would you like to create a new Discussion thread for this document?");
 	$sToRender .= "&nbsp;&nbsp;&nbsp;";
 	$sToRender .= "<a href=\"" . generateControllerLink("addComment", "fDocumentID=" . $fDocumentID . "&fNewThread=1") . "\"><img src=\"$default->graphicsUrl/widgets/new.gif\" border=\"0\"></a>";
 	$sToRender .= "<a href=\"" . generateControllerLink("viewDocument", "fDocumentID=" . $fDocumentID) . "\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></a>";
@@ -106,9 +106,9 @@ function getPage($iDocumentID, $aDocumentThreads) {
 	$sToRender .= getPageButtons($iDocumentID);		
 	$sToRender .= "<table border=\"0\" width=\"100%\">\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td><b>Subject</b></td>\n";
-	$sToRender .= "<td><b>Author</b></td>\n";
-	$sToRender .= "<td><b>Date</b></td>\n"; 
+	$sToRender .= "<td><b>" . _("Subject") . "</b></td>\n";
+	$sToRender .= "<td><b>" . _("Author") . "</b></td>\n";
+	$sToRender .= "<td><b>" . _("Date") . "</b></td>\n"; 
 	$sToRender .= "</tr>\n";
 	
 	$iCount = 0;

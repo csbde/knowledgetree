@@ -79,7 +79,7 @@ if (checkSession()) {
 	    }    	
     } else {
 		// error- no document reference
-		$oContent->setHtml(renderArchiveConfirmationPage(null, "No document supplied for archiving"));    	
+		$oContent->setHtml(renderArchiveConfirmationPage(null, _("No document supplied for archiving")));
     }    	
              
 	// build the page
