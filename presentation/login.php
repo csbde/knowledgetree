@@ -32,6 +32,8 @@ require_once("Html.inc");
 
 global $default;
 
+$redirect = $_REQUEST['redirect'];
+
 if ($_REQUEST['loginAction'] == "loginForm") {
     // TODO: build login form using PatternMainPage
     print "<html>
