@@ -1,3 +1,194 @@
+Version 2.0.0rc4 (2005/01/17)
+
+Bug Fixes
+=========
+* Fix Discussions by being consistent with parameter names
+* Can now use Next/Previous with Advanced Search
+* Fix Template/Dependent Document browsing
+* Fix various problems with rootUrl not being empty
+* Avoid print_r, as it doesn't return values prior to PHP 4.3.0
+
+Detailed ChangeLog
+==================
+
+2005-01-17 05:55  nbm
+
+	* presentation/lookAndFeel/knowledgeTree/discussions/addCommentBL.php:
+
+	fNewComment is no longer used.
+
+2005-01-17 05:54  nbm
+
+	* presentation/lookAndFeel/knowledgeTree/discussions/:
+	  addCommentUI.inc, viewDiscussionUI.inc:
+
+	Use fNewThread rather than the misnamed (and unworking) fNewComment
+
+2005-01-17 05:15  nbm
+
+	* lib/database/dbcompat.inc:
+
+	On compat queries, log query errors.
+
+2005-01-17 05:09  nbm
+
+	* presentation/lookAndFeel/knowledgeTree/search/advancedSearchBL.php:
+
+	No longer handle the removed "simple" "advanced" search.
+
+2005-01-17 05:08  nbm
+
+	* presentation/lookAndFeel/knowledgeTree/search/advancedSearchUI.inc:
+
+	Remove old-style advanced search user interface.
+
+2005-01-17 05:07  nbm
+
+	* presentation/lookAndFeel/knowledgeTree/discussions/viewDiscussionUI.inc:
+
+	Consistently use variables prefixed with 'f' for passing values between
+	requests.
+
+2005-01-17 04:58  nbm
+
+	* presentation/lookAndFeel/knowledgeTree/discussions/:
+	  addCommentUI.inc, viewCommentBL.php:
+
+	Consistently use form variables prefixed with 'f' for passing values.
+
+2005-01-17 04:57  nbm
+
+	* presentation/lookAndFeel/knowledgeTree/discussions/addCommentBL.php:
+
+	Consistently use fDocumentID for passing the document ID between pages.
+
+2005-01-17 04:55  nbm
+
+	* lib/discussions/DiscussionComment.inc:
+
+	Fix untested changes to discussion
+
+	Submitted by:	alepage
+
+2005-01-17 04:26  nbm
+
+	* i18n/it_IT/LC_MESSAGES/: knowledgeTree.mo, knowledgeTree.po:
+
+	Translation update from Andrea Toneguzzi at btz.it.
+
+2005-01-17 04:12  nbm
+
+	* i18n/knowledgeTree.po:
+
+	Update po file with translateable phrases.
+
+2005-01-17 03:26  nbm
+
+	* presentation/Html.inc:
+
+	Add getPreviousButton()
+
+2005-01-17 02:34  nbm
+
+	* lib/visualpatterns/PatternBrowsableSearchResults.inc:
+
+	Make it easy to pass on search parameters from the request environment.
+
+	Make the 'previous' button work properly (may not have affected all
+	browsers)
+
+2005-01-17 02:24  nbm
+
+	* graphics/widgets/previous.png:
+
+	Add "Previous" button.
+
+2005-01-17 02:23  nbm
+
+	* bin/generate-buttons.php:
+
+	Add "Previous" button
+
+2005-01-17 02:21  nbm
+
+	* lib/database/dbutil.inc:
+
+	Default db parameter to lastQuery method to null, like the rest.
+
+2005-01-17 01:23  nbm
+
+	* presentation/lookAndFeel/knowledgeTree/search/standardSearchUI.inc:
+
+	Use (int) casting instead of non-existent int() function.
+
+2005-01-17 01:13  nbm
+
+	* presentation/login.php:
+
+	Grab the 'redirect' request parameter into a local variable.
+
+2005-01-17 01:10  nbm
+
+	* lib/documentmanagement/PhysicalDocumentManager.inc:
+
+	Use both Pragma: no-cache and Cache-Control: no-cache to aid Internet
+	Explorer in not caching content.
+
+2005-01-14 04:55  nbm
+
+	* lib/foldermanagement/Folder.inc:
+
+	Deal with the Root Folder having a (non-existent) parent id of 0
+
+2005-01-14 04:46  nbm
+
+	* presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc:
+
+	Deal with rootUrl already being in the given URLs.
+
+2005-01-14 02:16  nbm
+
+	* lib/browse/Browser.inc:
+
+	foreach returns copies of objects, not the objects themselves, so work
+	around this.
+
+2005-01-14 02:03  nbm
+
+	* sql/mysql/install/tables.sql:
+
+	Remove insert into non-existent zseq_document_text
+
+2005-01-14 01:53  nbm
+
+	* lib/util/ktutil.inc:
+
+	Add arrayGet and requestValue
+
+2005-01-11 03:12  nbm
+
+	* sql/mysql/install/tables.sql:
+
+	Remove id and sequence from document_text.
+
+2005-01-11 03:02  nbm
+
+	* sql/mysql/upgrade/: 1.2.4-to-1.2.5.sql, 1.2.4-to-2.0.0.sql:
+
+	Rename 1.2.4-to-1.2.5.sql to 1.2.4-to-2.0.0.sql
+
+2005-01-11 02:57  nbm
+
+	* sql/mysql/upgrade/1.2.4-to-1.2.5.sql:
+
+	Drop the id and sequence from the document_text table.
+
+2005-01-10 11:42  nbm
+
+	* lib/i18n/accept-to-gettext.inc:
+
+	Remove use of print_r that will fail on PHP < 4.3.0
+
 Version 2.0.0rc2 (2005/01/10)
 
 Bug Fixes
