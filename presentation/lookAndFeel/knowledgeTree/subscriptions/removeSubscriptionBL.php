@@ -66,7 +66,7 @@ if (checkSession()) {
                 } else {
                     // error removing subscription
                     $default->log->error("removeSubscriptionBL.php error removing subscription for userID=$iUserID, subType=$iSubscriptionType, id=$iExternalID");                
-                    $oPatternCustom->setHtml(renderErrorPage("An error occurred while removing this subscription (" . $_SESSION["errorMessage"] . ")" ));
+                    $oPatternCustom->setHtml(renderErrorPage("An error occurred while removing this subscription." ));
                 }
             } else {
                 // ask for confirmation
@@ -100,7 +100,7 @@ if (checkSession()) {
             } else {
                 // error removing subscription
                 $default->log->error("removeSubscriptionBL.php error removing subscription for userID=$iUserID, subType=$iSubscriptionType, id=$iExternalID");                
-                $oPatternCustom->setHtml(renderErrorPage("An error occurred while removing this subscription (" . $_SESSION["errorMessage"] . ")" ));
+                $oPatternCustom->setHtml(renderErrorPage("An error occurred while removing this subscription." ));
             }
 
     } else {

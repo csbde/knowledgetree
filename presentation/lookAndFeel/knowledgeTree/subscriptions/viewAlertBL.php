@@ -59,7 +59,7 @@ if (checkSession()) {
         } else {
             // viewSubscription called failed
             require_once("../../../webpageTemplate.inc");
-            $main->setErrorMessage("This subscription alert does not exist (" . $_SESSION["errorMessage"] . ")");
+            $main->setErrorMessage("This subscription alert does not exist.");
             $oPatternCustom = & new PatternCustom();
             $main->setCentralPayload($oPatternCustom);
             $main->setFormAction($_SERVER["PHP_SELF"]);
