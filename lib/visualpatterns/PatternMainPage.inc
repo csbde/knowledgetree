@@ -18,12 +18,6 @@
 
 class PatternMainPage {
 	
-	function PatternMainPage() {
-        global $default;
-        
-		$this->sFormAction = "$default->rootUrl/control.php";
-	}
-	
 	/** property holder for $oNorthWestPayload */
 	var $oNorthWestPayload;
     /** bg colour **/
@@ -48,9 +42,11 @@ class PatternMainPage {
 	var $sFormAction;
 	/** form enctype */
 	var $sFormEncType;
+	/** form submit method */
+	var $sSubmitMethod = "POST";
 	/** whether the form has fields that require javascript checking */
 	var $bHasRequiredFields = false;
-	
+	/** default page error message */
 	var $sErrorMessage;
 	
 	var $sHelpContext = "browse";
@@ -59,6 +55,12 @@ class PatternMainPage {
 	/** whether or not to use dhtml scrolling **/
 	var $bScroll = true;
 	
+	
+	function PatternMainPage() {
+        global $default;
+		$this->sFormAction = "$default->rootUrl/control.php";
+	}
+		
 	function setNorthWestPayload($oNewVal) {		
 		$this->oNorthWestPayload = & $oNewVal;		
 	}
@@ -121,7 +123,11 @@ class PatternMainPage {
 
 	function setDHTMLScrolling($sNewValue) {
 		$this->bScroll = $sNewValue;
-	}	
+	}
+	
+	function setSubmitMethod($sNewValue) {
+		$this->sSubmitMethod = $sNewValue;
+	}
 	
 	/**
 	* Render the page in HTML
@@ -147,7 +153,7 @@ class PatternMainPage {
                                 "</div>\n";
         }
 
-		$sToRender .= 		    "<form name=\"MainForm\" " . (isset($this->sFormEncType) ? "enctype=\"$this->sFormEncType\" " : " ") . " action=\"".$this->sFormAction."\" method=\"POST\" " . (($this->bHasRequiredFields) ? "onsubmit=\"return validateForm(this)\" " : " ") . ">\n" .		
+		$sToRender .= 		    "<form name=\"MainForm\" " . (isset($this->sFormEncType) ? "enctype=\"$this->sFormEncType\" " : " ") . " action=\"".$this->sFormAction."\" method=\"$this->sSubmitMethod\" " . (($this->bHasRequiredFields) ? "onsubmit=\"return validateForm(this)\" " : " ") . ">\n" .		
 								"<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"700\" height=\"$default->pageHeight\">\n " .
 									"<tr>\n".
 										"<td height=\"0\" valign=\"top\" " . (isset($this->sNorthWestPayloadBackGroundColour) ? " bgcolor=\"" . $this->sNorthWestPayloadBackGroundColour . "\"" : "") . ">\n";
