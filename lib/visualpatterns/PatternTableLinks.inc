@@ -78,7 +78,7 @@ class PatternTableLinks {
 					$iArrayCount++;
 				}
 				$sToRender .= "<td cellspacing=\"20\" width=\"100%\">" . (strlen($sLink) > 0 ? $sLink : "&nbsp;") . "</td>";
-				$sToRender .= "</tr><tr></tr><tr><td></td>\n";
+				$sToRender .= "</tr><tr></tr><tr/><tr/><tr/><tr><td></td>\n";
 			}
 			$sToRender .= "</tr>\n";
 		}		
