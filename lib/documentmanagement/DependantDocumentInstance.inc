@@ -106,19 +106,19 @@ class DependantDocumentInstance {
 	*
 	*/
 	function create() {
-		global $default, $lang_err_database, $lang_err_object_exists;
+		global $default, $lang_err_database, $lang_err_object_exists;		
 		//if the object hasn't been created
-		if ($this -> iId < 0) {
+		if ($this -> iId < 0) {			
 			$sql = $default -> db;
-			$result = $sql -> query("INSERT INTO $default->owl_dependant_document_instance_table (document_title, user_id,template_document_id, parent_document_id) VALUES ('" . addslashes($this->sDocumentTitle) . "', $this->iUserID, " . (isset($this->iTemplateDocumentID) ? "$this->iTemplateDocumentID" : "NULL") . ", " . $this->iParentDocumentID + ")");
+			$result = $sql -> query("INSERT INTO $default->owl_dependant_document_instance_table (document_title, user_id,template_document_id, parent_document_id) VALUES ('" . addslashes($this->sDocumentTitle) . "', $this->iUserID, " . (isset($this->iTemplateDocumentID) ? "$this->iTemplateDocumentID" : "NULL") . ", " . $this->iParentDocumentID . ")");
 			if ($result) {
 				$this -> iId = $sql -> insert_id();
 				return true;
-			}
-			$_SESSION["errorMessage"] = $lang_err_database;
+			}			
+			$_SESSION["errorMessage"] = $lang_err_database;			
 			return false;
-		}
-		$_SESSION["errorMessage"] = $lang_err_object_exists."id = ".$this -> iId." table = document_fields";
+		}		
+		$_SESSION["errorMessage"] = $lang_err_object_exists."id = ".$this -> iId." table = dependant_document_instance";		
 		return false;
 	}
 
