@@ -44,10 +44,8 @@ class System {
      * @return string the setting
      */
     function get($sSettingName) {
-        global $default;
-        
         // select the value from the db
-        return lookupField($default->owl_system_settings_table, "value", "name", $sSettingName);
+        return lookupField("system_settings", "value", "name", $sSettingName);
     }
     
     /**
