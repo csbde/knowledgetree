@@ -109,7 +109,7 @@ if (checkSession()) {
 				$main->setErrorMessage("The collaboration steps for the folder must be set up before collaboration can begin");
 				$main->render();                
             }
-		} else if (isset($fCollaborationStepComplete)) {				
+		} else if ((isset($fCollaborationStepComplete)) && (Document::userIsPerformingCurrentCollaborationStep($fDocumentID))) {				
 				//the user has signled that they have completed their step in the collaboration process
 				if (Document::isLastStepInCollaborationProcess($fDocumentID)) {				
 					require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
@@ -142,8 +142,8 @@ if (checkSession()) {
 					$main->setCentralPayload($oPatternCustom);
 					$main->setErrorMessage("The next steps in the collaboration process have been started");
 					$main->render();
-				}
-        } else if (Permission::userHasDocumentWritePermission($fDocumentID) || Permission::userHasDocumentReadPermission($fDocumentID)) {
+				}					
+		} else if (Permission::userHasDocumentWritePermission($fDocumentID) || Permission::userHasDocumentReadPermission($fDocumentID)) {
             require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
             require_once("$default->fileSystemRoot/lib/subscriptions/SubscriptionEngine.inc");
 
