@@ -34,6 +34,7 @@ if (checkSession()) {
 				$oPatternCustom->setHtml(getPage($fFolderID));
 				$main->setErrorMessage("You cannot edit this folder collaboration process as a document is currently undergoing this collaboration process");
 				$main->setCentralPayload($oPatternCustom);
+				$main->setHasRequiredFields(true);
 				$main->setFormAction("../store.php?fReturnURL=" . urlencode("$default->owl_root_url/control.php?action=browse&fFolderID=$fFolderID"));
 				$main->render();
 			} else if (isset($fCollaborationDelete)) {
@@ -43,12 +44,14 @@ if (checkSession()) {
 				$oPatternCustom->setHtml(getPage($fFolderID));
 				$main->setErrorMessage("You cannot delete this folder collaboration process as a document is currently undergoing this collaboration process");
 				$main->setCentralPayload($oPatternCustom);
+				$main->setHasRequiredFields(true);
 				$main->setFormAction("../store.php?fReturnURL=" . urlencode("$default->owl_root_url/control.php?action=browse&fFolderID=$fFolderID"));
 				$main->render();
 			} else {
 				$oPatternCustom = & new PatternCustom();
 				$oPatternCustom->setHtml(getPage($fFolderID));
 				$main->setCentralPayload($oPatternCustom);
+				$main->setHasRequiredFields(true);
 				$main->setFormAction("../store.php?fReturnURL=" . urlencode("$default->owl_root_url/control.php?action=browse&fFolderID=$fFolderID"));
 				$main->render();
 			}
