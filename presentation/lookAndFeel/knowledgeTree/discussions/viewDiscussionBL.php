@@ -62,6 +62,9 @@ if(checkSession()) {
 					    $oSearchResults = & new PatternBrowseableSearchResults ($sQuery, 13, $aColumns, $aColumnTypes, $aColumnNames, $aHyperLinkURL, $aQueryStringCols, $aQueryStringVars);
 					    $oSearchResults->setStartIndex($iStartIndex);
 					    $oSearchResults->setQueryString("&fDocumentID=$fDocumentID&fForDiscussion=1");
+					    $sToRender .= renderHeading("Document Discussion Thread");
+						$sToRender .= renderDocumentPath($oThread->getDocumentID());
+					    $oPatternCustom->addHtml($sToRender);
 					    $oPatternCustom->addHtml(getPageButtons($oThread));
 					    $oPatternCustom->addHtml($oSearchResults->render());    
 						
