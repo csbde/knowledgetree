@@ -3,18 +3,31 @@
 DEFINE("PENDING",1);
 DEFINE("PUBLISHED", 2);
 DEFINE("NOT_PUBLISHED",3);
-
 /**
-* 
-* Class Web Documents
-*
-* Represents a web document as per the web_documents table in the database
-*
-* @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
-* @date 19 January 2003
-* @package lib.web
-*/
-
+ * $Id$
+ *
+ * Represents a web document as per the web_documents table in the database.
+ *
+ * Copyright (c) 2003 Jam Warehouse http://www.jamwarehouse.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ * @version $Revision$
+ * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
+ * @package lib.web
+ */
 class WebDocument {
 	
 	/** primary key of web document */
@@ -94,7 +107,7 @@ class WebDocument {
 		//if the object hasn't been created
 		if ($this->iId < 0) {
 			$sql = $default->db;
-			$result = $sql->query("INSERT INTO " . $default->owl_web_documents_table . " (document_id, web_site_id, unit_id, status_id, datetime) VALUES ($this->iDocumentID, $this->iWebSiteID, $this->iUnitID, $this->iStatusID, '$this->dDateTime')");
+			$result = $sql->query("INSERT INTO " . $default->web_documents_table . " (document_id, web_site_id, unit_id, status_id, datetime) VALUES ($this->iDocumentID, $this->iWebSiteID, $this->iUnitID, $this->iStatusID, '$this->dDateTime')");
 			if ($result) {
 				$this->iId = $sql->insert_id();
 				return  true;
@@ -117,7 +130,7 @@ class WebDocument {
 		//only update if the object has been stored
 		if ($this->iId > 0) {
 			$sql = $default->db;
-			$result = $sql->query("UPDATE " . $default->owl_web_documents_table . " SET document_id = $this->iDocumentID, web_site_id = $this->iWebSiteID, unit_id = $this->iUnitID, status_id = $this->iStatusID, datetime = '$this->dDateTime' WHERE id = $this->iId");
+			$result = $sql->query("UPDATE " . $default->web_documents_table . " SET document_id = $this->iDocumentID, web_site_id = $this->iWebSiteID, unit_id = $this->iUnitID, status_id = $this->iStatusID, datetime = '$this->dDateTime' WHERE id = $this->iId");
 			if ($result) {
 				return true;
 			}
@@ -139,7 +152,7 @@ class WebDocument {
 		//only delete the object if it exists in the database
 		if ($this->iId >= 0) {
 			$sql = $default->db;
-			$result = $sql->query("DELETE FROM $default->owl_web_documents_table WHERE id = $this->iId");
+			$result = $sql->query("DELETE FROM $default->web_documents_table WHERE id = $this->iId");
 			if ($result) {
 				return true;
 			}
@@ -161,14 +174,14 @@ class WebDocument {
 	function & get($iWebDocumentsID) {
 		global $default;
 		$sql = $default->db;
-		$result = $sql->query("SELECT * FROM $default->owl_web_documents_table WHERE id = $iWebDocumentsID");
+		$result = $sql->query("SELECT * FROM $default->web_documents_table WHERE id = $iWebDocumentsID");
 		if ($result) {
 			if ($sql->next_record()) {
 				$oWebDocument = & new WebDocument($sql->f("document_id"), $sql->f("web_site_id"), $sql->f("unit_id"), $sql->f("status_id"), $sql->f("datetime"));
 				$oWebDocument->iId = $iWebDocumentsID;
 				return $oWebDocument;
 			}
-			$_SESSION["errorMessage"] = $lang_err_object_not_exist . "id = " . $iWebDocumentsID . " table = $default->owl_web_documents_table";
+			$_SESSION["errorMessage"] = $lang_err_object_not_exist . "id = " . $iWebDocumentsID . " table = $default->web_documents_table";
 			return false;
 		}
 		$_SESSION["errorMessage"] = $lang_err_database;
@@ -188,7 +201,7 @@ class WebDocument {
 		$aWebDocumentArray;
 		settype($aWebDocumentArray, "array");
 		$sql = $default->db;
-		$result = $sql->query("SELECT * FROM " . $default->owl_web_documents_table  . (isset($sWhereClause) ? " WHERE " . $sWhereClause : ""));
+		$result = $sql->query("SELECT * FROM " . $default->web_documents_table  . (isset($sWhereClause) ? " WHERE " . $sWhereClause : ""));
 		if ($result) {			
 			while ($sql->next_record()) {
 				$aWebDocumentArray[]= & WebDocument::get($sql->f("id"));

@@ -1,29 +1,43 @@
 <?php
-
 /**
-* Class PatternEditableTableSqlQuery
-*
-* Will take a query that generates a table like
-* result and create and editable HTML table from it that can
-* be used as part of a form.  
-*
-* 1 columns is REQUIRED in the Sql query:
-*		o column giving primary key of entry in table (primary key column name specified in $aPrimaryKey)
-*
-* 3 hidden fields are generated for each editable entry:
-*	o <uniquename>_id:		holds the primary key of the entry in the table (-1 = no entry in table i.e. create not update)
-*	o <uniquename>_tn: 		holds the tablename for which the primary key is valid
-*	o <uniquename>_type:	holds the type of entry (text/boolean/list) - for parsing purposes
-*
-* The actual value is held in a form field name <uniquename>
-*
-* @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
-* @date 25 January 2003
-* @todo - add client side validation stuff
-* @todo - add column type 3 -> select field stuff
-* @package lib.visualpatterns
-*/
-
+ * $Id$
+ *
+ * Will take a query that generates a table like
+ * result and create and editable HTML table from it that can
+ * be used as part of a form.  
+ *
+ * 1 columns is REQUIRED in the Sql query:
+ *		o column giving primary key of entry in table (primary key column name specified in $aPrimaryKey)
+ *
+ * 3 hidden fields are generated for each editable entry:
+ *	o <uniquename>_id:		holds the primary key of the entry in the table (-1 = no entry in table i.e. create not update)
+ *	o <uniquename>_tn: 		holds the tablename for which the primary key is valid
+ *	o <uniquename>_type:	holds the type of entry (text/boolean/list) - for parsing purposes
+ *
+ * The actual value is held in a form field name <uniquename>
+ *
+ * Copyright (c) 2003 Jam Warehouse http://www.jamwarehouse.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ * @version $Revision$
+ * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
+ * @package lib.visualpatterns
+ * @todo - add client side validation stuff
+ * @todo - add column type 3 -> select field stuff 
+ */
 class PatternEditableTableSqlQuery {
 	
 	/** query to execute*/
