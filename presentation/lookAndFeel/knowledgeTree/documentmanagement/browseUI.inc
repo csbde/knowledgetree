@@ -251,7 +251,7 @@ function renderSortHeadings($sSortBy, $sSortDirection) {
     	// if the current heading is being sorted then flip the sort direction
     	if ($sSortBy == $key) {
     		$sCurrentSortDirection = ($sSortDirection == "asc" ? "desc" : "asc");
-    		$displayText = "<img border=\"0\" src=\"$default->graphicsUrl/" . $sCurrentSortDirection . ".gif\">" . $displayText;
+    		$displayText = "<img border=\"0\" src=\"" . imgSrc($sCurrentSortDirection . ".gif") . "\">" . $displayText;
     	}
 	  	switch ($fBrowseType) {
 	    	case "folder" : 		
