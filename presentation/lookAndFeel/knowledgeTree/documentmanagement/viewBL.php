@@ -30,6 +30,7 @@ require_once("$default->fileSystemRoot/lib/users/User.inc");
 require_once("$default->fileSystemRoot/lib/documentmanagement/PhysicalDocumentManager.inc");
 require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentTransaction.inc");
 require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
+require_once("$default->fileSystemRoot/lib/documentmanagement/DependantDocumentInstance.inc");
 require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentCollaboration.inc");
 
 require_once("$default->fileSystemRoot/lib/archiving/DocumentArchiving.inc");
