@@ -12,6 +12,8 @@
 *	@date 14 January 2003 
 */
 
+require_once($default->owl_fs_root . "/lib/documentmanagement/documentLib.php");
+
 class Permission {
 	
 	/**
@@ -25,7 +27,31 @@ class Permission {
 	* @return true is the current user has document write permission, false otherwise and set $_SESSION["errorMessage"]
 	*/	
 	function userHasDocumentWritePermission($iDocumentID) {
-		
+		if (Permission::userHasFolderWritePermission(DocumentLib::getDocumentFolderID) ||
+		Permission::userHasWriteRoleForFolder($iDocumentID)) {
+			return true;
+		}
+		$_SESSION["errorMessage"] = $lang_err_user_doc_write . "id " . $iDocumentID;
+		return false;
+	}
+	
+	/**
+	* Checks if the current user has read permission for a specific document.
+	* To have document write permission the user must satisfy ONE of the following conditions:
+	*	o have read permission for the folder in which the document resides
+	* 	o be assigned a role which has read permission for the document
+	*
+	* @param $iDocumentID		Primary key of document to check
+	*
+	* @return true is the current user has document read permission, false otherwise and set $_SESSION["errorMessage"]
+	*/	
+	function userHasDocumentReadPermission($iDocumentID) {
+		if (Permission::userHasFolderReadPermission(DocumentLib::getDocumentFolderID) ||
+		Permission::userHasReadRoleForFolder($iDocumentID)) {
+			return true;
+		}
+		$_SESSION["errorMessage"] = $lang_err_user_doc_read . "id " . $iDocumentID;
+		return false;		
 	}
 	
 	/**
@@ -202,6 +228,24 @@ class Permission {
 		global $default, $lang_err_user_role;	
 		$sql = new Owl_DB();
 		$sql->query("SELECT * FROM " . $default->owl_folders_user_table . " AS FURL INNER JOIN " . $default->owl_role_table . " AS R ON FURL.role_id = R.id WHERE folder_id = " . $iFolderID . " AND user_id = " . $_SESSION["user_id"] . " AND R.can_write = 1");
+		if ($sql->next_record()) {
+			return true;
+		}
+		$_SESSION["errorMessage"] = $lang_err_user_role;		
+		return false;		
+	}
+	
+	/**
+	* Check is the user is assigned a specific role that has read permission for a folder
+	*	
+	* @param $iFolderID 	Primary key of folder to check
+	*
+	* @return true is the user has the role assigned, false otherwise and set $_SESSION["errorMessage"]
+	*/
+	function userHasReadRoleForFolder($iFolderID) {
+		global $default, $lang_err_user_role;	
+		$sql = new Owl_DB();
+		$sql->query("SELECT * FROM " . $default->owl_folders_user_table . " AS FURL INNER JOIN " . $default->owl_role_table . " AS R ON FURL.role_id = R.id WHERE folder_id = " . $iFolderID . " AND user_id = " . $_SESSION["user_id"] . " AND R.can_read = 1");
 		if ($sql->next_record()) {
 			return true;
 		}
