@@ -40,10 +40,7 @@ function updateGroups($iUserID, $aToAddIDs, $aToRemoveIDs) {
 	foreach ($aToAddIDs as $iGroupID ) {
 		if ($iGroupID > 0) {
 			$oUserGroup = new GroupUserLink($iGroupID, $iUserID);
-			if($oUserGroup->create()) {
-   	    		// update group search permissions
-       			$oUserGroup->updateSearchPermissions();
-			} else {
+			if (!$oUserGroup->create()) {
            		return false;
        		}
 		}
@@ -54,10 +51,7 @@ function updateGroups($iUserID, $aToAddIDs, $aToRemoveIDs) {
 		if ($iGroupID > 0) {
 			$oUserGroup = new GroupUserLink($iGroupID, $iUserID);
 			$oUserGroup->setUserGroupID($iGroupID,$iUserID);
-        	if($oUserGroup->delete()) {
-			   	// update group search permissions
-       			$oUserGroup->updateSearchPermissions();
-			} else {
+        	if(!$oUserGroup->delete()) {
 	            return false;
    		    }
 		}
