@@ -33,12 +33,14 @@ class SubscriptionConstants {
      */
     function subscriptionAlertType($sType) {
         $aChangeType = array("AddFolder" => 1,
-                             "RemoveFolder" => 2,
-                             "AddDocument" => 3,
-                             "RemoveDocument" => 4,
-                             "ModifyDocument" => 5,
-                             "CheckInDocument" => 6,
-                             "CheckOutDocument" => 7);
+                             "RemoveSubscribedFolder" => 2,
+                             "RemoveChildFolder" => 3,
+                             "AddDocument" => 4,
+                             "RemoveSubscribedDocument" => 5,
+                             "RemoveChildDocument" => 6,
+                             "ModifyDocument" => 7,
+                             "CheckInDocument" => 8,
+                             "CheckOutDocument" => 9);
         return $aChangeType[$sType];
     }
 }
