@@ -42,8 +42,8 @@ $default->dbUser           = "dms";
 $default->dbPass           = "pass";
 
 // Change this to reflect the database you are using
-//require("$default->fileSystemRoot/phplib/db_pgsql.inc");
-require_once("$default->fileSystemRoot/phplib/db_mysql.inc");
+// currently mysql is the only supported type
+$default->dbType = "mysql";
 
 // single db instantiation
 require_once("$default->fileSystemRoot/lib/database/db.inc");
