@@ -73,3 +73,7 @@ text-decoration: none;
 background-color : #FFFACD;
 }
 
+INPUT:active {
+	font-size : 9pt;
+	font-family : Verdana,sans-serif;
+}
