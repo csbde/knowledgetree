@@ -71,10 +71,10 @@ function checkSession() {
     $session = new Session();
     $sessionStatus = $session->verify();
     
-    if ($sessionStatus["status"] != 1) {
+    if ($sessionStatus != 1) {
         // verification failed, redirect to login with error message
         $default->log->debug("checkSession:: session check failed");
-        $url = "/login.php?loginAction=loginForm";
+        $url = $default->owl_root_url . "/login.php?loginAction=loginForm";
         
         $redirect = $_SERVER[PHP_SELF];
         if ((strlen($redirect) > 1) && ($redirect != "/control.php")) {
