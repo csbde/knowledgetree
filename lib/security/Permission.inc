@@ -530,6 +530,131 @@ class Permission {
              "AND UGL.user_id = ?", $iUserID));
         return $sql->next_record();        
     }
+
+    function updateSearchPermissionsForDocument($iDocumentID) {
+    	global $default;
+    	
+	    $sql = $default->db;
+
+        $aDeleteCurrent = array("DELETE FROM $default->search_permissions_table WHERE document_id = ?", $iDocumentID);
+        $res = DBUtil::runQuery($aDeleteCurrent);
+        if (PEAR::isError($res)) {
+            $default->log->error("Unable to delete existing permissions for document: " . $res->toString());
+            // XXX: Carry on regardless...
+        }
+
+	    // group permissions                
+	    $sGroupPerms = array("INSERT INTO $default->search_permissions_table (user_id, document_id) " .
+				       "SELECT UGL.user_id AS user_id, D.id AS document_id " ./*ok*/
+				       "FROM $default->documents_table AS D INNER JOIN folders AS F ON D.folder_id = F.id " .
+				       "INNER JOIN $default->groups_folders_table AS GFL ON GFL.folder_id = F.permission_folder_id " .
+				       "INNER JOIN $default->users_groups_table AS UGL ON UGL.group_id = GFL.group_id " .
+				       "WHERE D.id = ?", $iDocumentID);
+		$default->log->debug("addDocument groupPerms=$sGroupPerms");
+		if ($sql->query($sGroupPerms)) {
+			$default->log->debug("groupPerms succeeded");
+		} else {
+			$default->log->error("groupPerms failed");
+		}
+		// role permissions
+	    $sRolePerms = array("INSERT INTO $default->search_permissions_table (user_id, document_id) " .
+				      "SELECT user_id, document_id " ./*ok*/
+				      "FROM $default->folders_user_roles_table " .
+				      "WHERE document_id = ?", $iDocumentID);
+		$default->log->info("addDocument rolePerms=$sRolePerms");
+		if ($sql->query($sRolePerms)) {
+			$default->log->debug("rolePerms succeeded");
+		} else {
+			$default->log->error("rolePerms failed");
+		}
+										            
+		// public folders
+		$sPublicFolderPerms = array("INSERT INTO $default->search_permissions_table (user_id, document_id) " . 
+                			  "SELECT U.id, D.id " . /*ok*/
+                			  "FROM $default->users_table AS U, $default->documents_table AS D INNER JOIN $default->folders_table AS F ON D.folder_id = F.id " .
+							  "WHERE F.is_public = 1 " .
+							  "AND D.id = ?", $iDocumentID);
+		$default->log->debug("addDocument publicFolder=$sPublicFolderPerms");
+		if ($sql->query($sPublicFolderPerms)) {
+			$default->log->debug("publicFolder succeeded");
+		} else {
+			$default->log->error("publicFolder failed");
+		}
+							
+		// creator permissions
+		$sCreatorPerms = array("INSERT INTO $default->search_permissions_table (user_id, document_id) " .
+						 "SELECT creator_id, id " ./*ok*/
+						 "FROM $default->documents_table " .
+						 "WHERE id = ?", $iDocumentID);
+		$default->log->debug("addDocument creatorPerms=$sCreatorPerms");
+		if ($sql->query($sCreatorPerms)) {
+			$default->log->debug("creatorPerms succeeded");
+		} else {
+			$default->log->error("creatorPerms failed");
+		}		
+    }
+
+    function updateSearchPermissionsForUser($iUserID) {
+    	global $default;
+    	
+	    $sql = $default->db;
+
+        $aDeleteCurrent = array("DELETE FROM $default->search_permissions_table WHERE user_id = ?", $iDocumentID);
+        $res = DBUtil::runQuery($aDeleteCurrent);
+        if (PEAR::isError($res)) {
+            $default->log->error("Unable to delete existing permissions for user: " . $res->toString());
+            // XXX: Carry on regardless...
+        }
+
+	    // group permissions                
+	    $sGroupPerms = array("INSERT INTO $default->search_permissions_table (user_id, document_id) " .
+				       "SELECT UGL.user_id AS user_id, D.id AS document_id " ./*ok*/
+				       "FROM $default->documents_table AS D INNER JOIN folders AS F ON D.folder_id = F.id " .
+				       "INNER JOIN $default->groups_folders_table AS GFL ON GFL.folder_id = F.permission_folder_id " .
+				       "INNER JOIN $default->users_groups_table AS UGL ON UGL.group_id = GFL.group_id " .
+				       "WHERE UGL.user_id = ?", $iUserID);
+		if ($sql->query($sGroupPerms)) {
+			$default->log->debug("groupPerms succeeded");
+		} else {
+			$default->log->error("groupPerms failed");
+		}
+		// role permissions
+	    $sRolePerms = array("INSERT INTO $default->search_permissions_table (user_id, document_id) " .
+				      "SELECT user_id, document_id " ./*ok*/
+				      "FROM $default->folders_user_roles_table " .
+				      "WHERE user_id = ?", $iUserID);
+		$default->log->info("addDocument rolePerms=$sRolePerms");
+		if ($sql->query($sRolePerms)) {
+			$default->log->debug("rolePerms succeeded");
+		} else {
+			$default->log->error("rolePerms failed");
+		}
+										            
+		// public folders
+		$sPublicFolderPerms = array("INSERT INTO $default->search_permissions_table (user_id, document_id) " . 
+                			  "SELECT U.id, D.id " . /*ok*/
+                			  "FROM $default->users_table AS U, $default->documents_table AS D INNER JOIN $default->folders_table AS F ON D.folder_id = F.id " .
+							  "WHERE F.is_public = 1 " .
+							  "AND U.id = ?", $iUserID);
+		$default->log->debug("addDocument publicFolder=$sPublicFolderPerms");
+		if ($sql->query($sPublicFolderPerms)) {
+			$default->log->debug("publicFolder succeeded");
+		} else {
+			$default->log->error("publicFolder failed");
+		}
+							
+		// creator permissions
+		$sCreatorPerms = array("INSERT INTO $default->search_permissions_table (user_id, document_id) " .
+						 "SELECT creator_id, id " ./*ok*/
+						 "FROM $default->documents_table " .
+						 "WHERE creator_id = ?", $iUserID);
+		$default->log->debug("addDocument creatorPerms=$sCreatorPerms");
+		if ($sql->query($sCreatorPerms)) {
+			$default->log->debug("creatorPerms succeeded");
+		} else {
+			$default->log->error("creatorPerms failed");
+		}		
+    }
 }
 
 ?>
