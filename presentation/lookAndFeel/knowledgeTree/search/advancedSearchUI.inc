@@ -91,7 +91,7 @@ function getSearchResults($sMetaTagIDs, $sSQLSearchString, $iStartIndex, $sStatu
 			"WHERE DF.ID IN ($sMetaTagIDs) " .
 			"AND (" . $sSQLSearchString . ") " .
 			"AND SDUL.user_id = " . $_SESSION["userID"] . " " .
-			"AND SL.name='$sStatus' " .			
+			"AND SL.name='$sStatus' " .
 			"GROUP BY D.id ";
 			"ORDER BY doc_count DESC ";
 	$default->log->info("getSearchResults $sQuery");
