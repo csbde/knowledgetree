@@ -17,16 +17,18 @@ function getDocumentPath($iFolderID, $sDocumentName) {
 
 function getDocumentHistory($iDocumentID) {
     global $default;
-    $sQuery = "DTT.name AS transaction_name, U.name AS user_name, DT.version AS version, DT.comment AS comment, DT.datetime AS datetime " .
+    $sQuery = "SELECT DTT.name AS transaction_name, U.name AS user_name, DT.version AS version, DT.comment AS comment, DT.datetime AS datetime " .
 			"FROM $default->owl_document_transactions_table AS DT INNER JOIN $default->owl_users_table AS U ON DT.user_id = U.id " .
 			"INNER JOIN $default->owl_transaction_types_table AS DTT ON DTT.id = DT.transaction_id " . 
-			"WHERE DT.documentID = $iDocumentID";
+			"WHERE DT.document_id = $iDocumentID";
 	
     $aColumns = array("transaction_name", "user_name", "version", "comment", "datetime");
     $aColumnHeaders = array("Type","Users","Version","Comment","Datetime");
     $aColumnTypes = array(1,1,1,1,1);
     $oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaders, "90%");
     $oPatternTableSqlQuery->setTableHeading("Transaction History");
+	$oPatternTableSqlQuery->setIncludeBorder(true);
+	$oPatternTableSqlQuery->setDisplayColumnHeadings(true);
     return $oPatternTableSqlQuery->render();
 }
 

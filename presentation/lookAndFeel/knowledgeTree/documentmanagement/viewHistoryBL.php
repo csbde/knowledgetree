@@ -22,6 +22,7 @@ require_once("$default->owl_fs_root/lib/users/User.inc");
 
 require_once("$default->owl_fs_root/lib/documentmanagement/DocumentTransaction.inc");
 require_once("$default->owl_fs_root/lib/documentmanagement/Document.inc");
+require_once("$default->owl_fs_root/lib/foldermanagement/Folder.inc");
 
 require_once("$default->owl_fs_root/lib/visualpatterns/PatternTableSqlQuery.inc");
 require_once("$default->owl_fs_root/lib/visualpatterns/PatternCustom.inc");
@@ -29,17 +30,30 @@ require_once("$default->owl_fs_root/lib/visualpatterns/PatternCustom.inc");
 require_once("$default->owl_fs_root/presentation/lookAndFeel/knowledgeTree/documentmanagement/viewHistoryUI.inc");
 require_once("$default->owl_fs_root/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
 //require_once("$default->owl_fs_root/presentation/Html.inc");
-require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");
 
 if (checkSession()) {	
-    if (isset($fDocumentID)) {
+	require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");
+    if (isset($fDocumentID)) {		
+		if (Permission::userHasDocumentReadPermission($fDocumentID)) {			
+			$oDocument = & Document::get($fDocumentID);
+			$oPatternCustom = & new PatternCustom();
+			$oPatternCustom->setHtml(getPage($oDocument->getID(), $oDocument->getFolderID(), $oDocument->getName()));
+			$main->setCentralPayload($oPatternCustom);   
+			$main->render();
+		} else {			
+			$oPatternCustom = & new PatternCustom();
+			$oPatternCustom->setHtml("");
+			$main->setErrorMessage("You do not have permission to view this document's history");
+			$main->setCentralPayload($oPatternCustom);   
+			$main->render();
+		}
 		
-		$oDocument = & Document::get($fDocumentID);
-        $oPatternCustom = & new PatternCustom();
-        $oPatternCustom->setHtml(getPage($oDocument->getID(), $oDocument->getFolderID(), $oDocument->getName()));
-        $main->setCentralPayload($oPatternCustom);   
-        $main->render();
-		
+	} else {
+		$oPatternCustom = & new PatternCustom();
+			$oPatternCustom->setHtml("");
+			$main->setErrorMessage("No document currently selected");
+			$main->setCentralPayload($oPatternCustom);   
+			$main->render();
 	}
 }
 
