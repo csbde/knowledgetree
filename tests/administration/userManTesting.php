@@ -27,8 +27,6 @@
 
 
 require ("./config/dmsDefaults.php");
-require ("$default->owl_fs_root/lib/db.inc");
-require ("$default->owl_fs_root/lib/dms.inc");
 require ("$default->owl_fs_root/lib/administration/UserManager.inc");
 
 $user = new UserManager;
