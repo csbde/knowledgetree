@@ -3,22 +3,29 @@
 require_once("$default->owl_fs_root/lib/visualpatterns/PatternCustom.inc");
 
 /**
-* Class NavBar.inc
+*  NavBar.inc
 *
-*  Contains all the functions to create the navbar...as well as possibly handling the 
-*  westpayload section.
+*  Create the top section of the navbar..
 *
 *
 * @author Mukhtar Dharsey
-* @date 20 January 2003
+* @date 22 January 2003
 */
 
 global $default;
 
+/**
+* 
+*
+*  Contains all the functions to create the navbar...
+*
+*
+* @author Mukhtar Dharsey
+* @date 22 January 2003
+*/
 class NavBar 
 {
 	//variable used to pass highlighting
-	var $highlightedSection;
 	var $home;
 	var $mdocs;
 	var $asearch;
@@ -26,93 +33,106 @@ class NavBar
 	var $prefs;
 	var $help;
 	var $logout;
+	var $nwColourbar;
 	
-	function setHighlightedSection($currentSection)
+	function NavBar()
 	{
-		return $this->$highlightedSection = $currentSection;
+		global $default;
+		$this->mdocs = "$default->owl_graphics_url/mdocs/norm.gif";
+		$this->home = "$default->owl_graphics_url/home/norm.gif";
+		$this->asearch = "$default->owl_graphics_url/asearch/norm.gif";
+		$this->admin = "$default->owl_graphics_url/admin/norm.gif";
+		$this->prefs = "$default->owl_graphics_url/prefs/norm.gif";
+		$this->help = "$default->owl_graphics_url/help/norm.gif";
+		$this->logout = "$default->owl_graphics_url/logout/norm.gif";
+		
 	}
 	
+	
+	/**
+	* gets the url for the colour bar
+	*
+	* @param	The section that needs to be highlighted
+	*/
+	function getNWColourbar()
+	{
+		return $this->nwColourBar;
+	}
+	
+	
+	
+	/**
+	* sets a highlighted section varaibles
+	*
+	* @param	The section that needs to be highlighted
+	*/
+	function setHighlightedSection($section)
+	{
+		global $default;
 		
-	// this function creates the navbar for a specific page...
-	// Todo take parameter to set page highlighting
+		// check for highlighting..and highlight as required
+		if($section == "General")
+		{
+			$this->home = "$default->owl_graphics_url/home/over.gif";
+			$this->nwColourBar = "$default->owl_graphics_url/home/def.gif";
+		}
+		
+		if($section == "Manage Documents")
+		{
+			$this->mdocs = "$default->owl_graphics_url/mdocs/over.gif";
+			$this->nwColourBar = "$default->owl_graphics_url/mdocs/def.gif";
+		}
+		
+		if($section == "Advanced Search")
+		{
+			$this->asearch = "$default->owl_graphics_url/asearch/over.gif";
+			$this->nwColourBar = "$default->owl_graphics_url/asearch/def.gif";
+		}
+		
+		
+		if($section == "Administration")
+		{
+			$this->admin = "$default->owl_graphics_url/admin/over.gif";
+			$this->nwColourBar = "$default->owl_graphics_url/admin/def.gif";
+		}
+				
+		if($section == "Preferences")
+		{
+			$this->prefs = "$default->owl_graphics_url/prefs/over.gif";
+			$this->nwColourBar = "$default->owl_graphics_url/prefs/def.gif";
+		}
+		
+		if($section == "Help")
+		{
+			$this->help = "$default->owl_graphics_url/help/over.gif";
+			$this->nwColourBar = "$default->owl_graphics_url/help/def.gif";
+		}
+		
+		
+		if($section == "Logout")
+		{
+			$this->logout = "$default->owl_graphics_url/logout/over.gif";
+			$this->nwColourBar = "$default->owl_graphics_url/logout/def.gif";
+		}
+	}
+	
+	
+	
+	/**
+	* 
+	* this function creates the navbar for a specific page...
+	* 
+	* 
+	*/		
 	function render()
 	{
 		global $default;
 		
-		if($this->$highlightedSection == "General")
-		{
-			$home = "$default->owl_graphics_url/home/over.gif";
-		}
-		else
-		{
-			$home = "$default->owl_graphics_url/home/norm.gif";
-		}
-		
-		if($this->$highlightedSection == "Manage Documents")
-		{
-			$mdocs = "$default->owl_graphics_url/mdocs/over.gif";
-		}
-		else
-		{
-			$mdocs = "$default->owl_graphics_url/mdocs/norm.gif";
-		}
-		
-		if($this->$highlightedSection == "Advanced Search")
-		{
-			$asearch = "$default->owl_graphics_url/asearch/over.gif";
-		}
-		else
-		{
-			$asearch = "$default->owl_graphics_url/asearch/norm.gif";
-		}
-		
-		if($this->$highlightedSection == "Administration")
-		{
-			$admin = "$default->owl_graphics_url/admin/over.gif";
-		}
-		else
-		{
-			$admin = "$default->owl_graphics_url/admin/norm.gif";
-		}
-		
-		if($this->$highlightedSection == "Preferences")
-		{
-			$prefs = "$default->owl_graphics_url/prefs/over.gif";
-		}
-		else
-		{
-			$prefs = "$default->owl_graphics_url/prefs/norm.gif";
-		}
-		
-		if($this->$highlightedSection == "Help")
-		{
-			$help = "$default->owl_graphics_url/help/over.gif";
-		}
-		else
-		{
-			$help = "$default->owl_graphics_url/help/norm.gif";
-		}
-		
-		if($this->$highlightedSection == "Logout")
-		{
-			$logout = "$default->owl_graphics_url/logout/over.gif";
-		}
-		else
-		{
-			$logout = "$default->owl_graphics_url/logout/norm.gif";
-		}
-		
-		
-		//$mdocs = "$default->owl_graphics_url/mdocs/norm.gif";
-		//$asearch = "$default->owl_graphics_url/asearch/norm.gif";
-		//$admin = "$default->owl_graphics_url/admin/norm.gif";
-		//$prefs = "$default->owl_graphics_url/prefs/norm.gif";
-		//$help = "$default->owl_graphics_url/help/norm.gif";
-		//$logout = "$default->owl_graphics_url/logout/norm.gif";
-		
+				//set up headings for row 1 and 2
 		$heading = "$default->owl_graphics_url/heading.gif";
 		$hStretched = "$default->owl_graphics_url/hrepeat.gif";
 		
+		// set colour pics for row 4 of navbar
 		$colourHome = "$default->owl_graphics_url/home/colour.gif";
 		$colourmdocs = "$default->owl_graphics_url/mdocs/colour.gif";
 		$colourasearch = "$default->owl_graphics_url/asearch/colour.gif";
@@ -122,11 +142,7 @@ class NavBar
 		$colourlogout = "$default->owl_graphics_url/logout/colour.gif";
 		
 		
-		
-		
-		// build the top menu of links
-      
-        // get list of sections
+      // get list of sections
         $aTopMenuLinks = array(generateControllerUrl("dashboard"),
         		       generateControllerUrl($default->siteMap->getDefaultAction("Manage Documents")), 
         		       generateControllerUrl($default->siteMap->getDefaultAction("Advanced Search")),
@@ -134,11 +150,22 @@ class NavBar
                                generateControllerUrl($default->siteMap->getDefaultAction("Preferences")),
                                generateControllerUrl($default->siteMap->getDefaultAction("Help")), 
                                generateControllerUrl($default->siteMap->getDefaultAction("Logout")));
-         	      
-        $aTopMenuImages = array($home,$mdocs,$asearch,$admin,$prefs,$help,$logout);
-	        
+
+
+	// create array of images for navbar sections         	      
+        $aTopMenuImages = array($this->home,
+        			$this->mdocs,
+        			$this->asearch,
+        			$this->admin,
+        			$this->prefs,
+        			$this->help,
+        			$this->logout);
+
+	  
+	// create array of menu colour images
         $row4MenuImages = array($colourHome,$colourmdocs,$colourasearch,$colouradmin,$colourprefs,$colourhelp,$colourlogout);
         
+        //set up the links
         $oPatternTableLinks = new PatternTableLinks($aTopMenuLinks, null, 1, 7,2,$aTopMenuImages);
 	$oColourTableLinks = new PatternTableLinks($aTopMenuLinks, null, 1, 7,2,$row4MenuImages);
 	
@@ -152,30 +179,33 @@ class NavBar
 	//array of coloured section images 
 	$row4 = $oColourTableLinks->render();
 
-		$toRender = new PatternCustom;
+	$toRender = new PatternCustom;
 		
-		//bar width based on main page sizes...80% of width(600)..30% of height(800)
-		$bar= "
-			<html> 
+		//bar is the actaul html creation of the nav bar
+	$bar= "
+		<html> 
 				
-			<Table border=\"0\" width=\"100%\" height=\"100%\">
+		<Table cellpadding = \"0\" cellspacing = \"1\" border=\"1\" width=\"100%\" height=\"100%\">
 			
-			<tr><td background = " . $hStretched ." width =\"100%\" height=\"20%\"></td></tr>
+		<tr height=\"20%\"><td background = " . $hStretched ." width =\"100%\">". $row1 ."</td></tr>
 			
-			<tr><td background = " . $hStretched ." width =\"100%\" height=\"20%\">
+		<tr height=\"20%\"><td background = " . $hStretched ." width =\"100%\" ></td></tr>
 			
-			<tr><td height= \"25%\">". $row3 . "</td></tr>
+		<tr height=\"10%\" ><td width =\"100%\">". $row3 . "</td></tr>
 			
-			<tr><td height=\"25%\">". $row4 . "</td></tr>
+		<tr height=\"10%\"><td width =\"100%\">". $row4 . "</td></tr>
 			
-			</table>
+		</table>
 			
-			</html>
-			";
+		</html>
+		";
 		
-		$toRender->setHtml($bar);
-				
-		return	$toRender->render();
+		
+	//set the bar as html to object
+	$toRender->setHtml($bar);
+	
+	//render the object			
+	return	$toRender->render();
 		
 	}
 
