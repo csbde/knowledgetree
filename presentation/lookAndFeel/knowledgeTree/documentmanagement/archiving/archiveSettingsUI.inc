@@ -25,7 +25,7 @@ function renderErrorMessage($sErrorMessage) {
 function renderDocumentTransactionListBox($iDocumentTransactionID) {
 	global $default;	
     $oPatternListBox = & new PatternListBox($default->owl_transaction_types_table, "name", "id", "fDocumentTransactionID");
-    $oPatternListBox->setWhereClause("ST.id in (6,10)");
+    $oPatternListBox->setWhereClause("ST.name in ('View','Download')");
     if (isset($iDocumentTransactionID)) {
     	$oPatternListBox->setSelectedValue($iDocumentTransactionID);    	
     }    
@@ -57,7 +57,7 @@ function renderChooseArchivingTypeForm() {
 	$sToRender .= "<tr><td>Archiving Type:</td><td>" . renderArchivingTypeListBox() . "</td></tr>";
 	// hidden archive settings references
 	$sToRender .= "<input type=\"hidden\" name=\"fDocumentID\" value=\"$fDocumentID\">\n";			
-	$sToRender .= "<tr><td><a href=\"$default->rootUrl/control.php?action=viewDocument&fDocumentID=$fDocumentID\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\" /></a></td></tr>\n";
+	$sToRender .= "<tr><td>" . generateControllerLink("viewDocument", "fDocumentID=$fDocumentID&fShowSection=archiveSettings", "<img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\" />") . "</td></tr>\n";
 	$sToRender .= "</table>";
 	return $sToRender;
 }
@@ -192,12 +192,12 @@ function renderArchiveSettingsForm($oDocumentArchiving = null) {
 	$sToRender .= "<input type=\"hidden\" name=\"fStore\" value=\"1\">\n";	
 	if ($oDocumentArchiving) {		
 		$sToRender .= "<tr><td colspan=\"2\"><input type=\"image\" src=\"$default->graphicsUrl/widgets/update.gif\" border=\"0\">\n";
-		$sToRender .= "<a href=\"$default->rootUrl/control.php?action=modifyDocumentArchiveSettings&fDocumentID=$fDocumentID&fDelete=1\"><img src=\"$default->graphicsUrl/widgets/remove.gif\" border=\"0\" /></a>\n";
+		$sToRender .= generateControllerLink("modifyDocumentArchiveSettings", "fDocumentID=$fDocumentID&fDelete=1", "<img src=\"$default->graphicsUrl/widgets/remove.gif\" border=\"0\"/>");
 	} else {
 		$sToRender .= "<tr><td colspan=\"2\"><input type=\"image\" src=\"$default->graphicsUrl/widgets/submit.gif\" border=\"0\">\n";
-		$sToRender .= "<a href=\"$default->rootUrl/control.php?action=addDocumentArchiveSettings&fDocumentID=$fDocumentID\"><img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\"></a>\n";
+		$sToRender .= generateControllerLink("addDocumentArchiveSettings", "fDocumentID=$fDocumentID", "<img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\">");
 	}	
-	$sToRender .= "<a href=\"$default->rootUrl/control.php?action=viewDocument&fDocumentID=$fDocumentID\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\" /></a></td></tr>\n";
+	$sToRender .= generateControllerLink("viewDocument", "fDocumentID=$fDocumentID&fShowSection=archiveSettings", "<img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\" />") . "</td></tr>\n";
 	$sToRender .= "</table>";
 
 	return $sToRender; 
@@ -261,7 +261,7 @@ function renderArchiveConfirmationPage($iDocumentID, $sErrorMessage = "") {
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>&nbsp</td>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td><table><tr><td><a href=\"" . $_SERVER["PHP_SELF"] . "?fDocumentID=$iDocumentID&fConfirmed=1\"><img src=\"$default->graphicsUrl/widgets/archive.gif\" border=\"0\"></a></td> <td><a href=\"$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $iDocumentID . "\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></a></td></tr></table></td>";	
+	$sToRender .= "<td><table><tr><td><a href=\"" . $_SERVER["PHP_SELF"] . "?fDocumentID=$iDocumentID&fConfirmed=1\"><img src=\"$default->graphicsUrl/widgets/archive.gif\" border=\"0\"></a></td><td>" . generateControllerLink("viewDocument", "fDocumentID=$iDocumentID&fShowSection=archiveSettings", "<img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\">") . "</td></tr></table></td>";	
 	$sToRender .= "</tr>";
 	$sToRender .= "</table>\n";
 	
