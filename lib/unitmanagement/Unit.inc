@@ -132,16 +132,31 @@ class Unit {
 	{
 		global $default, $lang_err_database, $lang_err_object_key;
 		//only delete the object if it exists in the database
-		if ($this->iId >= 0) 
-		{
+		
+		if ($this->iId >= 0) {
+			//check to see if group is linked to a unit
 			$sql = $default->db;
-			$result = $sql->query("DELETE FROM $default->owl_units_table WHERE id = $this->iId");
-			if ($result) 
-			{
-				return true;
+			$query = "SELECT unit_id FROM ". $default->owl_groups_units_table ." WHERE unit_id = '" . $this->iId . "'";
+        		$sql->query($query);
+       			$rows = $sql->num_rows($sql);
+        		
+        	
+        		
+      			if ($rows > 0){
+      			// duplicate link exists
+           		 $_SESSION["errorMessage"] = "Group::The Group " . $this->sName . " exits!";
+           		 return false;
+           		 
+	       		 }else{
+				$sql = $default->db;
+				$result = $sql->query("DELETE FROM $default->owl_units_table WHERE id = $this->iId");
+				if ($result) 
+				{
+					return true;
+				}
+				$_SESSION["errorMessage"] = $lang_err_database;
+				return false;
 			}
-			$_SESSION["errorMessage"] = $lang_err_database;
-			return false;
 		}
 		$_SESSION["errorMessage"] = $lang_err_object_key;
 		return false;
@@ -245,5 +260,17 @@ class Unit {
 	}
 	
 }
-
+/**
+* Static function
+*
+* Creates a unit object from an array
+*
+* @param 	Array		Array of parameters.  Must match order of parameters in constructor
+*
+* @return User user object
+*/
+function & unitCreateFromArray($aParameters) {
+	$oUnit = & new Unit($aParameters[0], $aParameters[1], $aParameters[2], $aParameters[3], $aParameters[4], $aParameters[5], $aParameters[6], $aParameters[7], $aParameters[8], $aParameters[9], $aParameters[10]);
+	return $oUnit;
+}
 ?>

@@ -77,6 +77,8 @@ class UnitOrganisationLink {
 		$this->iUnitID = $iNewValue;
 	}
 	
+	
+	
 	/**
 	* Create the current object in the database
 	*
@@ -90,7 +92,7 @@ class UnitOrganisationLink {
 		{
 			
 			$sql = $default->db;
-			$query = "SELECT unit_id and organisation_ID FROM ". $default->owl_units_organisations_link_table ." WHERE unit_id = '" . $this->iUnitID . "' and organisation_id = '". $this->iOrgID ."'";
+			$query = "SELECT unit_id and organisation_id FROM ". $default->owl_units_organisations_table ." WHERE unit_id = '" . $this->iUnitID . "' and organisation_id = '". $this->iOrgID ."'";
         		$sql->query($query);
        			$rows = $sql->num_rows($sql);
         
@@ -102,7 +104,7 @@ class UnitOrganisationLink {
 	       		 }
        			 else
        			 {
-				$result = $sql->query("INSERT INTO " . $default->owl_units_organisations_link_table . " (unit_id,organisation_id) VALUES ($this->iUnitID,$this->iOrgID,)");
+				$result = $sql->query("INSERT INTO " . $default->owl_units_organisations_table . " (unit_id,organisation_id) VALUES ($this->iUnitID,$this->iOrgID)");
 				if ($result) 
 				{
 					$this->iId = $sql->insert_id();
@@ -127,7 +129,7 @@ class UnitOrganisationLink {
 		//only update if the object has been stored
 		if ($this->iId > 0) {
 			$sql = $default->db;
-			$result = $sql->query("UPDATE " . $default->owl_units_organisations_link_table . " SET organisation_id = $this->iOrgID, unit_id = $this->iUnitID WHERE id = $this->iId");
+			$result = $sql->query("UPDATE " . $default->owl_units_organisations_table . " SET organisation_id = $this->iOrgID, unit_id = $this->iUnitID WHERE id = $this->iId");
 			if ($result) {
 				return true;
 			}
@@ -149,7 +151,7 @@ class UnitOrganisationLink {
 		//only delete the object if it exists in the database
 		if ($this->iId >= 0) {
 			$sql = $default->db;
-			$result = $sql->query("DELETE FROM $default->owl_units_organisations_link_table WHERE id = $this->iId");
+			$result = $sql->query("DELETE FROM $default->owl_units_organisations_table WHERE id = $this->iId");
 			if ($result) {
 				return true;
 			}
@@ -211,6 +213,45 @@ class UnitOrganisationLink {
 		$_SESSION["errorMessage"] = $lang_err_database;
 		return false;
 	}
+	
+		/*
+     * static function
+     *
+     * test to see if unit belongs to org
+     *
+     * @param   false or a value
+     *   
+     */
+     
+	function unitBelongsToOrg($unitId)
+	 {
+	       global $default;
+	
+	        $value = lookupField("$default->owl_units_organisations_table", "organisation_id", "unit_id", $unitId );
+	        
+	        return $value;
+	        
+	}
+	
+	/*
+     * static function
+     *
+     * sets the id of the unitorg using their unit id
+     *
+     * @param   String
+     *   The unit_ID
+     *   
+     */
+     
+	function setUnitOrgID($unitId)
+	 {
+	       global $default;
+	
+	        $id = lookupID($default->owl_units_organisations_table, "unit_id",  $unitId);
+	        
+	        $this->iId= $id;
+	}
+	
 	
 }
 ?>
