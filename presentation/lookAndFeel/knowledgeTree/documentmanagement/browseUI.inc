@@ -310,7 +310,7 @@ function renderDocumentList($aResults, $sNoDocumentsMessage, $sNoPermissionMessa
 		$sTDBGColour = $default->siteMap->getSectionColour($sSectionName, "td");    
 
 		$sToRender .= "<tr bgcolor=\"". $sTDBGColour . "\"><td colspan=\"5\" valign=\"bottom\">" . 
-					  "<input type=\"checkbox\" name=\"selectall\" onClick=\"selectAll()\"/> Select all documents</td></tr>";
+					  "<input type=\"checkbox\" name=\"selectall\" onClick=\"selectAll()\"/> " . _("Select all documents") . "</td></tr>";
 
 		$sToRender .= "<tr><td colspan=\"5\" >";
 		$sToRender .= "<input type=\"hidden\" name=\"fActions\">";
