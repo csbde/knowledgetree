@@ -16,6 +16,8 @@ function renderDocumentPath($oDocument) {
 
 function renderEditableDocumentData($oDocument, $iDocumentTypeID) {
     global $default;
+	$sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
+	$sTDBGColour = $default->siteMap->getSectionColour($sSectionName, "td");
     $sQuery = "SELECT D.id AS id, D.name AS name, D.document_type_id AS document_type_id " .
               "FROM $default->owl_documents_table AS D " .
               "WHERE D.id = " . $oDocument->getID();
@@ -25,8 +27,9 @@ function renderEditableDocumentData($oDocument, $iDocumentTypeID) {
 	$sToRender;
 	if ($sql->next_record()) {
 		$sToRender = "<table>\n";
+		$sToRender .= "<caption>Document Data</caption>\n";
 		$sToRender .= "<tr>\n";		
-		$sToRender .= "<td>\n";
+		$sToRender .= "<td bgcolor=\"$sTDBGColour\">\n";
 		$sToRender .= "<b>Document Title </b>\n";
 		$sToRender .= "</td>\n";
 		$sToRender .= "<td>\n";
@@ -34,7 +37,7 @@ function renderEditableDocumentData($oDocument, $iDocumentTypeID) {
 		$sToRender .= "</td>\n";
 		$sToRender .= "</tr>\n";
 		$sToRender .= "<tr>\n";	
-		$sToRender .= "<td>\n";
+		$sToRender .= "<td bgcolor=\"$sTDBGColour\">\n";
 		$sToRender .= "<b>Document Type </b>\n";
 		$sToRender .= "</td>\n";
 		$sToRender .= "<td>\n";

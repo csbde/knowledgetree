@@ -47,6 +47,7 @@ class PatternEditableTableSqlQuery {
 	
 	var $aRequiredColumnNames;
 	var $aRequiredFieldNames;
+	var $aMetaDataFields;	
 	
 	function PatternEditableTableSqlQuery($sTmpQuery, $sTmpTableName, $aTmpStoreColumnNames, $aTmpDisplayColumnNames, $aTmpColumnsEditable, $aTmpColumnsVisible, $aTmpColumnDisplayTypes, $aTmpColumnDatabaseTypes) {
 		$this->sQuery = $sTmpQuery;
@@ -56,8 +57,7 @@ class PatternEditableTableSqlQuery {
 		$this->aColumnsEditable = $aTmpColumnsEditable;
 		$this->sUniqueName = $sTmpUniqueName;
 		$this->aColumnsVisible = $aTmpColumnsVisible;
-		$this->aColumnDisplayTypes = $aTmpColumnDisplayTypes;
-		//echo "Types: " . $aTmpDatabaseColumnTypes;
+		$this->aColumnDisplayTypes = $aTmpColumnDisplayTypes;		
 		$this->aColumnDatabaseTypes = $aTmpColumnDatabaseTypes;
 	}
 	
@@ -65,6 +65,9 @@ class PatternEditableTableSqlQuery {
 		$this->sUniqueName = $sNewValue;
 	}
 	
+	function setMetaDataFields($aNewValue) {		
+		$this->aMetaDataFields = $aNewValue;
+	}
 	
 	function setDisplayColumnHeadings($bNewValue) {
 		$this->bDisplayColumnHeadings = $bNewValue;	
@@ -96,7 +99,7 @@ class PatternEditableTableSqlQuery {
 			$sToRender .= "<caption align=\"top\" colspan = " . count($this->aColumnsSql) . ", align=left><b>$this->sTableCaption</b></caption>\n";
 		}
 		if ($this->bDisplayColumnHeadings) {
-			for ($i = 0; $i < count($this->aColumnHeaderNames); $i++) {
+			for ($i = 0; $i < count($this->aColumnHeaderNames); $i++) {				 
 				$sToRender .= "<th align=left>" . $this->aColumnHeaderNames[$i] . "</th>\n";
 			}
 		}
@@ -161,7 +164,28 @@ class PatternEditableTableSqlQuery {
 						case 3:
 							$sToRender .= "<b>The column type for drop downs is not implemented yet</b>\n";
 							break;
-						default:
+						case 4:
+							//meta data
+							//could either be a drop down or a text field, depending
+							
+							//output the table column name
+							$sToRender .= "\t<input type=\"hidden\" name=\"tc_" . $this->sUniqueName . "_" . $iRowCount . $i . "_tc\" value=\"" . $this->aStoreColumnNames[$i] . "\" />\n";
+							//output the column type
+							$sToRender .= "\t<input type=\"hidden\" name=\"" . $this->sUniqueName . "_" . $iRowCount . $i . "_type\" value=\"" . $this->aColumnDatabaseTypes[$i] . "\" />\n";
+							if ($this->aColumnsVisible[$i]) {
+								if ($this->aColumnsEditable[$i]) {									
+									$oPattern = & new PatternMetaData($sql->f($this->aMetaDataFields[$i]), $this->sUniqueName . "_" . $iRowCount . $i . "_value", $sql->f($this->aStoreColumns[$i]));
+									$sToRender .= $oPattern->render();
+								} else {
+									$sToRender .= "\t<input type=\"hidden\" name=\"" . $this->sUniqueName . "_" . $iRowCount . $i . "_value\" value=\"" . $sql->f($this->aStoreColumnNames[$i]) . "\" />".$sql->f($this->aDisplayColumnNames[$i])."\n";
+								}
+							} else {
+								$sToRender .= "\t<input type=\"hidden\" name=\"" . $this->sUniqueName . "_" . $iRowCount . $i . "_value\" value=\"" . $sql->f($this->aStoreColumnNames[$i]) . "\" />\n";
+							}							
+							break;
+							
+							break;
+						default:							
 							$sToRender .= "<b>You are attempting to render an unknown column type " . ($this->aColumnTypes[$i]) . " in PatternEditableTableSqlQuery</b>\n";
 							break;
 					}
