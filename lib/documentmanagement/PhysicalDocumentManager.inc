@@ -104,6 +104,7 @@ class PhysicalDocumentManager {
 		//set the correct headers
         Header("Content-Type: " . PhysicalDocumentManager::getMimeTypeName($oDocument->getMimeTypeID()));
 		header("Content-Length: ". $oDocument->getFileSize());
+		// prefix the filename presented to the browser to preserve the document extension
 		header("Content-Disposition: attachment; filename=" . "$sVersion-" . $oDocument->getFileName());
         header("Pragma: no-store");
         header("Expires: 0");
