@@ -66,8 +66,8 @@ document_id INTEGER NOT NULL
 CREATE TABLE documents ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 document_type_id INTEGER NOT NULL,
-name CHAR(80) NOT NULL,
-filename CHAR(50) NOT NULL,
+name TEXT NOT NULL,
+filename TEXT NOT NULL,
 size BIGINT NOT NULL,
 creator_id INTEGER NOT NULL,
 modified DATETIME NOT NULL,
