@@ -94,6 +94,9 @@ class KTHtml {
     function getNextButton() {
         return imgSrc('widgets/next.png');
     }
+    function getPreviousButton() {
+        return imgSrc('widgets/previous.png');
+    }
     function getBackButton() {
         return imgSrc('widgets/back.png');
     }
