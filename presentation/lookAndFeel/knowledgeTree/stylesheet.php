@@ -121,21 +121,21 @@ SELECT {
 
 #divUp   {
     position:absolute; 
-    left: <?php echo $default->scroll["upArrowLeft"] ?>px; 
-    top: <?php echo $default->scroll["upArrowTop"] ?>px;}
+    left: <?php echo $default->upArrowLeft ?>px; 
+    top: <?php echo $default->upArrowTop ?>px;}
 
 #divDown {
     position:absolute; 
-    left: <?php echo $default->scroll["downArrowLeft"] ?>px; 
-    top: <?php echo $default->scroll["downArrowTop"] ?>px;}
+    left: <?php echo $default->downArrowLeft ?>px; 
+    top: <?php echo $default->downArrowTop ?>px;}
 
 #divScrollTextCont {
     position:absolute; 
-    left: <?php echo $default->scroll["textBoxLeft"] ?>px; 
-    top: <?php echo $default->scroll["textBoxTop"] ?>px; 
-    width: <?php echo $default->scroll["textBoxWidth"] ?>px; 
-    height: <?php echo $default->scroll["textBoxHeight"] ?>px; 
-    clip:rect(0px <?php echo $default->scroll["textBoxWidth"] ?>px <?php echo $default->scroll["textBoxHeight"] ?>px 0px); 
+    left: <?php echo $default->textBoxLeft ?>px; 
+    top: <?php echo $default->textBoxTop ?>px; 
+    width: <?php echo $default->textBoxWidth ?>px; 
+    height: <?php echo $default->textBoxHeight ?>px; 
+    clip:rect(0px <?php echo $default->textBoxWidth ?>px <?php echo $default->textBoxHeight ?>px 0px); 
     overflow:hidden; 
     visibility:hidden;
 }
