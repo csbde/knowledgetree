@@ -1,14 +1,29 @@
 <?php
 /**
-*
-* Class RoleFolderLink
-* Represents a role, folder links as per the folders_users_role_link table
-*
-* @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
-* @date 20 January 2003
-* @package lib.roles
-*/
-
+ * $Id$
+ *
+ * Represents a role, folder links as per the folders_users_role_link table.
+ *
+ * Copyright (c) 2003 Jam Warehouse http://www.jamwarehouse.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ * @version $Revision$
+ * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
+ * @package lib.roles
+ */
 class RoleFolderLink {
 	
 	var $iId;
@@ -162,7 +177,7 @@ class RoleFolderLink {
 		//if the object hasn't been created
 		if ($this->iId < 0) {
 			$sql = $default->db;
-			$result = $sql->query("INSERT INTO " . $default->owl_folders_user_roles_table . " (user_id, folder_id, role_type_id, datetime, done, active) VALUES ($this->iUserID, $this->iFolderID, $this->iRoleTypeID, '$this->dDateTime', " . ($this->bDone ? 1 : 0) . "), " . ($this->bActive ? 1 : 0) . ")");
+			$result = $sql->query("INSERT INTO " . $default->folders_user_roles_table . " (user_id, folder_id, role_type_id, datetime, done, active) VALUES ($this->iUserID, $this->iFolderID, $this->iRoleTypeID, '$this->dDateTime', " . ($this->bDone ? 1 : 0) . "), " . ($this->bActive ? 1 : 0) . ")");
 			if ($result) {
 				$this->iId = $sql->insert_id();
 				return  true;
@@ -170,7 +185,6 @@ class RoleFolderLink {
 			$_SESSION["errorMessage"] = $lang_err_database;
 			return false;
 		}
-		$_SESSION["errorMessage"] = $lang_err_object_exists . "id = " . $this->iId . " table = $default->owl_folder_user_roles_table";
 		return false;
 	}
 	
@@ -185,7 +199,7 @@ class RoleFolderLink {
 		//only update if the object has been stored
 		if ($this->iId > 0) {
 			$sql = $default->db;
-			$result = $sql->query("UPDATE " . $default->owl_folders_user_roles_table . " SET user_id = $this->iUserID, folder_id = $this->iFolderID, role_type_id = $this->iRoleTypeID, datetime = '$this->dDateTime', done = " . ($this->bDone ? 1 : 0) . ", active = " . ($this->bActive ? 1 : 0) . " WHERE id = $this->iId");
+			$result = $sql->query("UPDATE " . $default->folders_user_roles_table . " SET user_id = $this->iUserID, folder_id = $this->iFolderID, role_type_id = $this->iRoleTypeID, datetime = '$this->dDateTime', done = " . ($this->bDone ? 1 : 0) . ", active = " . ($this->bActive ? 1 : 0) . " WHERE id = $this->iId");
 			if ($result) {
 				return true;
 			}
@@ -207,7 +221,7 @@ class RoleFolderLink {
 		//only delete the object if it exists in the database
 		if ($this->iId >= 0) {
 			$sql = $default->db;
-			$result = $sql->query("DELETE FROM $default->owl_folders_user_roles_table WHERE id = $this->iId");
+			$result = $sql->query("DELETE FROM $default->folders_user_roles_table WHERE id = $this->iId");
 			if ($result) {
 				return true;
 			}
@@ -229,7 +243,7 @@ class RoleFolderLink {
 	function & get($iRolesFoldersID) {
 		global $default;
 		$sql = $default->db;
-		$result = $sql->query("SELECT * FROM $default->owl_folders_user_roles_table WHERE id = $iRolesFoldersID");
+		$result = $sql->query("SELECT * FROM $default->folders_user_roles_table WHERE id = $iRolesFoldersID");
 		if ($result) {
 			if ($sql->next_record()) {
 				$oRolesFoldersLink = & new RoleFolderLink($sql->f("user_id"), $sql->f("folder_id"), $sql->f("role_type_id"), $sql->f("datetime"));
@@ -238,7 +252,7 @@ class RoleFolderLink {
 				$oRolesFoldersLink->iId = $iRolesFoldersID;
 				return $oRolesFoldersLink;
 			}
-			$_SESSION["errorMessage"] = $lang_err_object_not_exist . "id = " . $iRolesFoldersID . " table = $default->owl_folders_user_roles_table";
+			$_SESSION["errorMessage"] = $lang_err_object_not_exist . "id = " . $iRolesFoldersID . " table = $default->folders_user_roles_table";
 			return false;
 		}
 		$_SESSION["errorMessage"] = $lang_err_database;
@@ -258,7 +272,7 @@ class RoleFolderLink {
 		$aRolesFoldersLinkArray;
 		settype($aRolesFoldersLinkArray, "array");
 		$sql = $default->db;
-		$result = $sql->query("SELECT * FROM " . $default->owl_folders_user_roles_table  . (isset($sWhereClause) ? " " . $sWhereClause : ""));
+		$result = $sql->query("SELECT * FROM " . $default->folders_user_roles_table  . (isset($sWhereClause) ? " " . $sWhereClause : ""));
 		if ($result) {			
 			$iCount = 0;
 			while ($sql->next_record()) {

@@ -2,14 +2,28 @@
 /**
  * $Id$
  *
- * This class is used for session management.
+ * Session management class.
  *
- * Licensed under the GNU GPL. For full terms see the file COPYING.
+ * Copyright (c) 2003 Jam Warehouse http://www.jamwarehouse.com
  *
- * @author Michael Joseph <michael@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
  * @version $Revision$
+ * @author Michael Joseph <michael@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
  * @package lib.session
- */
+ */ 
 class Session {
 
     /**
@@ -36,7 +50,7 @@ class Session {
         
         // insert session information into db
         $sql = $default->db;
-        $query = "INSERT INTO $default->owl_sessions_table (session_id, user_id, lastused, ip) VALUES ('$sessionID', $iUserID, '" . date("Y-m-d H:i:s", time()) . "', '$ip')";
+        $query = "INSERT INTO $default->sessions_table (session_id, user_id, lastused, ip) VALUES ('$sessionID', $iUserID, '" . date("Y-m-d H:i:s", time()) . "', '$ip')";
 
         $result = $sql->query($query);        
         if(!$result) {
@@ -58,7 +72,7 @@ class Session {
         
         // remove the session information from the database
         $sql = $default->db;
-        $query = "DELETE FROM $default->owl_sessions_table WHERE session_id = '$sSessionID' AND user_id=$iUserID";
+        $query = "DELETE FROM $default->sessions_table WHERE session_id = '$sSessionID' AND user_id=$iUserID";
         $default->log->info("Session::destroy $query");
         $sql->query($query);
 
@@ -77,7 +91,7 @@ class Session {
         // deletes any sessions for this userID where the default timeout has elapsed.
         $time = time() -  $default->sessionTimeout;
         $sql = $default->db;
-        $sQuery = "DELETE FROM $default->owl_sessions_table WHERE " . (($userID != -1) ? "user_id=$userID AND " : "") . "lastused <= '" . formatDateTime($time) . "'";
+        $sQuery = "DELETE FROM $default->sessions_table WHERE " . (($userID != -1) ? "user_id=$userID AND " : "") . "lastused <= '" . formatDateTime($time) . "'";
         $sql->query($sQuery);
     }
 
@@ -97,7 +111,7 @@ class Session {
             
             // this should be an existing session, so check the db
             $sql = $default->db; 
-            $sql->query("SELECT * FROM $default->owl_sessions_table WHERE session_id = '$sessionID'");
+            $sql->query("SELECT * FROM $default->sessions_table WHERE session_id = '$sessionID'");
             $numrows = $sql->num_rows($sql);
 
             // FIXME: if there aren't more rows that the max sessions for this user
@@ -123,7 +137,7 @@ class Session {
                             }
                             
                             // update last used timestamp
-                            $sql->query("UPDATE $default->owl_sessions_table SET lastused = '" . getCurrentDateTime() ."' " .
+                            $sql->query("UPDATE $default->sessions_table SET lastused = '" . getCurrentDateTime() ."' " .
                                         "WHERE user_id = $iUserID AND session_id = '$sessionID'");
                             // add the array to the session
                             $_SESSION["sessionStatus"] = $sessionStatus;

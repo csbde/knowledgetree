@@ -1,13 +1,29 @@
 <?php
 /**
-* Class User
-* Represents a user as per the users table in the database
-*
-* @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
-* @date 20 January 2003
-* @package lib.user
-*/
-
+ * $Id$
+ *
+ * Represents a user as per the users table in the database.
+ *
+ * Copyright (c) 2003 Jam Warehouse http://www.jamwarehouse.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ * @version $Revision$
+ * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
+ * @package lib.unitmanagement
+ */
 class User {
 
     /** object primary key */
@@ -297,7 +313,7 @@ class User {
         if ($this->iId < 0) {
             //check to see if name exsits
             $sql = $default->db;
-            $query = "SELECT username FROM ". $default->owl_users_table ." WHERE username = '" . $this->sUserName . "'";
+            $query = "SELECT username FROM ". $default->users_table ." WHERE username = '" . $this->sUserName . "'";
             $sql->query($query);
             $rows = $sql->num_rows($sql);
 
@@ -307,7 +323,7 @@ class User {
                 return false;
             }
             else {
-                $result = $sql->query("INSERT INTO " . $default->owl_users_table . " (username, name, password, quota_max, quota_current, email, mobile, email_notification, sms_notification, ldap_dn, max_sessions, language_id) " .
+                $result = $sql->query("INSERT INTO " . $default->users_table . " (username, name, password, quota_max, quota_current, email, mobile, email_notification, sms_notification, ldap_dn, max_sessions, language_id) " .
                                       "VALUES ('" . addslashes($this->sUserName) . "', '" . addslashes($this->sName) . "', '" . addslashes(md5($this->sPassword)) . "', $this->iQuotaMax, 0, '" . addslashes($this->sEmail) . "', '" . addslashes($this->sMobile) . "', " . ($this->bEmailNotification ? 1 : 0) . ", " . ($this->bSmsNotification ? 1 : 0) . ", '" . addslashes($this->sLdapDn) . "', $this->iMaxSessions, $this->iLanguageID)");
                 if ($result) {
                     $this->iId = $sql->insert_id();
@@ -317,7 +333,7 @@ class User {
                 return false;
             }
         }
-        $_SESSION["errorMessage"] = $lang_err_object_exists . "id = " . $this->iId . " table = $default->owl_users_table";
+        $_SESSION["errorMessage"] = $lang_err_object_exists . "id = " . $this->iId . " table = $default->users_table";
         return false;
     }
 
@@ -333,7 +349,7 @@ class User {
          if ($this->iId < 0) {
             //check to see if name exsits
             $sql = $default->db;
-            $query = "SELECT username FROM ". $default->owl_users_table ." WHERE username = '" . $this->sUserName . "'";
+            $query = "SELECT username FROM ". $default->users_table ." WHERE username = '" . $this->sUserName . "'";
             $sql->query($query);
             $rows = $sql->num_rows($sql);
 
@@ -344,7 +360,7 @@ class User {
             }
             else {
             	$sql = $default->db;
-            	$result = $sql->query("UPDATE " . $default->owl_users_table . " SET username = '" . addslashes($this->sUserName) . "', name = '" . addslashes($this->sName) . "', " . ($this->bPasswordChanged ? "password = '" . addslashes(md5($this->sPassword)) . "', " : " ") . " quota_max = $this->iQuotaMax, email = '" . addslashes($this->sEmail) . "', mobile = '" . addslashes($this->sMobile) . "', email_notification = " . ($this->bEmailNotification ? 1 : 0) . ", sms_notification = " . ($this->bSmsNotification ? 1 : 0) . ", ldap_dn = '" . addslashes($this->sLdapDn) . "', max_sessions = $this->iMaxSessions, language_id = $this->iLanguageID WHERE id = $this->iId");
+            	$result = $sql->query("UPDATE " . $default->users_table . " SET username = '" . addslashes($this->sUserName) . "', name = '" . addslashes($this->sName) . "', " . ($this->bPasswordChanged ? "password = '" . addslashes(md5($this->sPassword)) . "', " : " ") . " quota_max = $this->iQuotaMax, email = '" . addslashes($this->sEmail) . "', mobile = '" . addslashes($this->sMobile) . "', email_notification = " . ($this->bEmailNotification ? 1 : 0) . ", sms_notification = " . ($this->bSmsNotification ? 1 : 0) . ", ldap_dn = '" . addslashes($this->sLdapDn) . "', max_sessions = $this->iMaxSessions, language_id = $this->iLanguageID WHERE id = $this->iId");
             	if ($result) {
               	  return true;
             	}
@@ -367,7 +383,7 @@ class User {
         //only delete the object if it exists in the database
         if ($this->iId >= 0) {
             $sql = $default->db;
-            $result = $sql->query("DELETE FROM $default->owl_users_table WHERE id = $this->iId");
+            $result = $sql->query("DELETE FROM $default->users_table WHERE id = $this->iId");
             if ($result) {
                 return true;
             }
@@ -390,7 +406,7 @@ class User {
 		//only delete the object if it exists in the database
 		if ($this->iId >= 0) {
 			$sql = $default->db;
-			$result = $sql->query("DELETE FROM $default->owl_users_groups_table WHERE user_id = $this->iId");
+			$result = $sql->query("DELETE FROM $default->users_groups_table WHERE user_id = $this->iId");
 			if ($result) {
 				return true;
 			}
@@ -411,14 +427,14 @@ class User {
     function & get($iUserID) {
         global $default;
         $sql = $default->db;
-        $result = $sql->query("SELECT * FROM $default->owl_users_table WHERE id = $iUserID");
+        $result = $sql->query("SELECT * FROM $default->users_table WHERE id = $iUserID");
         if ($result) {
             if ($sql->next_record()) {
                 $oUser = & new User(stripslashes($sql->f("username")), stripslashes($sql->f("name")), stripslashes($sql->f("password")), $sql->f("quota_max"), stripslashes($sql->f("email")), stripslashes($sql->f("mobile")), $sql->f("email_notification"), $sql->f("sms_notification"), $sql->f("ldap_dn"), $sql->f("max_sessions"), $sql->f("language_id"));
                 $oUser->iId = $iUserID;
                 return $oUser;
             }
-            $_SESSION["errorMessage"] = $lang_err_object_not_exist . "id = " . $iUserID . " table = $default->owl_users_table";
+            $_SESSION["errorMessage"] = $lang_err_object_not_exist . "id = " . $iUserID . " table = $default->users_table";
             return false;
         }
         $_SESSION["errorMessage"] = $lang_err_database;
@@ -438,7 +454,7 @@ class User {
         $aUserArray;
         settype($aUserArray, "array");
         $sql = $default->db;
-        $result = $sql->query("SELECT * FROM " . $default->owl_users_table  . (isset($sWhereClause) ? " " . $sWhereClause : ""));
+        $result = $sql->query("SELECT * FROM " . $default->users_table  . (isset($sWhereClause) ? " " . $sWhereClause : ""));
         if ($result) {
             $iCount = 0;
             while ($sql->next_record()) {
@@ -465,8 +481,8 @@ class User {
         global $default, $lang_err_database;
 
         $sql = $default->db;
-        $result = $sql->query("SELECT DISTINCT gul.unit_id FROM $default->owl_users_groups_table ugl " .
-                              "INNER JOIN $default->owl_groups_units_table gul ON ugl.group_id = gul.group_id ".
+        $result = $sql->query("SELECT DISTINCT gul.unit_id FROM $default->users_groups_table ugl " .
+                              "INNER JOIN $default->groups_units_table gul ON ugl.group_id = gul.group_id ".
                               "WHERE ugl.user_id=$userID");
         if ($result) {
             if ($sql->next_record()) {
@@ -487,7 +503,7 @@ class User {
     function getUserID($sUsername) {
         global $default;
 
-        $id = lookupID($default->owl_users_table, "username",  $sUsername);
+        $id = lookupID($default->users_table, "username",  $sUsername);
 
         $this->iId = $id;
     }
@@ -505,7 +521,7 @@ class User {
             // if the user is in a unit, start at the unit's root folder
             
             // lookup the unit name
-            $unitName = lookupField($default->owl_units_table, "name", "id", $unitID);             
+            $unitName = lookupField($default->units_table, "name", "id", $unitID);             
 
             // the unit root folder has the same name as the unit
             // FIXME: dodgy i know, but its easy
@@ -516,12 +532,12 @@ class User {
             
             if (!$aFolders) {
                 // no folder exists with this name, so start at the root
-                $iFolderID = lookupID($default->owl_folders_table, "parent_id", 0);
+                $iFolderID = lookupID($default->folders_table, "parent_id", 0);
             } else {
             	$iFolderID = $aFolders[0]->getID();
             }
         } else {
-        	$iFolderID = lookupID($default->owl_folders_table, "parent_id", 0);
+        	$iFolderID = lookupID($default->folders_table, "parent_id", 0);
         }
          return $iFolderID;
     }
@@ -538,16 +554,16 @@ class User {
 	        // then find the group that is unit_admin
 	        $sql = $default->db;
 	        $sEmail = "";
-	        if ($sql->query("SELECT group_id FROM $default->owl_groups_units_table GUL " . 
-	                        "INNER JOIN $default->owl_groups_table GL on GUL.group_id=GL.id " .
+	        if ($sql->query("SELECT group_id FROM $default->groups_units_table GUL " . 
+	                        "INNER JOIN $default->groups_table GL on GUL.group_id=GL.id " .
 	                        "WHERE GL.is_unit_admin=1 " .
 	                        "AND unit_id=$iUnitID")) {
 	            // get the first record
 	            if ($sql->next_record()) {
 	                $iGroupID = $sql->f("group_id");
 	                // then find the first user in this group that has an email address
-	                if ($sql->query("SELECT U.id, U.email FROM $default->owl_users_table U " .
-	                                "INNER JOIN $default->owl_users_groups_table UGL on UGL.user_id=U.id " .
+	                if ($sql->query("SELECT U.id, U.email FROM $default->users_table U " .
+	                                "INNER JOIN $default->users_groups_table UGL on UGL.user_id=U.id " .
 	                                "WHERE group_id=$iGroupID")) {
 	                    while ($sql->next_record()) {
 	                        if (strlen($sql->f("email")) > 0) {

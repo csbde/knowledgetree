@@ -1,13 +1,29 @@
 <?php
 /**
-* Class Unit
-* Represents a unit as per the database table units
-*
-* @author Mukhtar Dharsey
-* @date 28 January 2003
-* @package lib.unitmanagement
-*/
-
+ * $Id$
+ *
+ * Represents a unit as per the database table units.
+ *
+ * Copyright (c) 2003 Jam Warehouse http://www.jamwarehouse.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ * @version $Revision$
+ * @author Mukhtar Dharsey, Jam Warehouse (Pty) Ltd, South Africa
+ * @package lib.unitmanagement
+ */
 class Unit {
 
     /** object's primary key */
@@ -64,7 +80,7 @@ class Unit {
         //if the object hasn't been created
         if ($this->iId < 0) { //check to see if name exsits
             $sql = $default->db;
-            $query = "SELECT name FROM ". $default->owl_units_table ." WHERE name = '" . $this->sName . "'";
+            $query = "SELECT name FROM ". $default->units_table ." WHERE name = '" . $this->sName . "'";
             $sql->query($query);
             $rows = $sql->num_rows($sql);
 
@@ -73,7 +89,7 @@ class Unit {
                 $_SESSION["errorMessage"] = "Unit::The name " . $this->sName . " is already in use!";
                 return false;
             } else {
-                $result = $sql->query("INSERT INTO " . $default->owl_units_table . " (name) VALUES ('" . addslashes($this->sName) . "')");
+                $result = $sql->query("INSERT INTO " . $default->units_table . " (name) VALUES ('" . addslashes($this->sName) . "')");
                 if ($result) {
                     $this->iId = $sql->insert_id();
                     // create a new unit root folder
@@ -98,7 +114,7 @@ class Unit {
                 return false;
             }
         }
-        $_SESSION["errorMessage"] = $lang_err_object_exists . "id = " . $this->iId . " table = $default->owl_units_table";
+        $_SESSION["errorMessage"] = $lang_err_object_exists . "id = " . $this->iId . " table = $default->units_table";
         return false;
     }
 
@@ -114,8 +130,8 @@ class Unit {
         if ($this->iId > 0) {
             $sql = $default->db;
             // lookup current name before updating
-            $sOldName = lookupField($default->owl_units_table, "name", "id", $this->iId);
-            $result = $sql->query("UPDATE " . $default->owl_units_table . " SET name = '" . addslashes($this->sName) . "' WHERE id = $this->iId");
+            $sOldName = lookupField($default->units_table, "name", "id", $this->iId);
+            $result = $sql->query("UPDATE " . $default->units_table . " SET name = '" . addslashes($this->sName) . "' WHERE id = $this->iId");
             if ($result) {
                 // need to update the units root folder also
                 $iFolderID = Folder::getFolderID($sOldName);
@@ -162,7 +178,7 @@ class Unit {
         //only delete the object if it exists in the database
         if ($this->iId >= 0) {
 			$sql = $default->db;
-			if ($sql->query("DELETE FROM $default->owl_units_table WHERE id = $this->iId")) {
+			if ($sql->query("DELETE FROM $default->units_table WHERE id = $this->iId")) {
 			    return true;
 			}
 			$_SESSION["errorMessage"] = $lang_err_database;
@@ -183,14 +199,14 @@ class Unit {
     function & get($iUnitID) {
         global $default;
         $sql = $default->db;
-        $result = $sql->query("SELECT * FROM $default->owl_units_table WHERE id = $iUnitID");
+        $result = $sql->query("SELECT * FROM $default->units_table WHERE id = $iUnitID");
         if ($result) {
             if ($sql->next_record()) {
                 $oUnit = & new Unit(stripslashes($sql->f("name")));
                 $oUnit->iId = $iUnitID;
                 return $oUnit;
             }
-            $_SESSION["errorMessage"] = $lang_err_object_not_exist . "id = " . $iUnitID . " table = $default->owl_units_table";
+            $_SESSION["errorMessage"] = $lang_err_object_not_exist . "id = " . $iUnitID . " table = $default->units_table";
             return false;
         }
         $_SESSION["errorMessage"] = $lang_err_database;
@@ -204,7 +220,7 @@ class Unit {
 		global $default;
 		// check to see if group is linked to a unit
 		$sql = $default->db;
-		$query = "SELECT unit_id FROM ". $default->owl_groups_units_table ." WHERE unit_id = " . $this->iId;
+		$query = "SELECT unit_id FROM ". $default->groups_units_table ." WHERE unit_id = " . $this->iId;
 		$sql->query($query);
 		if ($sql->num_rows($sql) > 0) {
 			return true;
@@ -222,7 +238,7 @@ class Unit {
      */
     function getUnitID($name) {
         global $default;
-        $id = lookupID($default->owl_units_table, "name",  $name);
+        $id = lookupID($default->units_table, "name",  $name);
         $this->iId= $id;
     }
 
@@ -236,7 +252,7 @@ class Unit {
      */
     function getUnitName($id) {
         global $default;
-        $name = lookupField("$default->owl_units_table", "name", "id", $id );
+        $name = lookupField("$default->units_table", "name", "id", $id );
         $this->sName= $name;
     }
 
@@ -253,7 +269,7 @@ class Unit {
         $aUnitArray;
         settype($aUnitArray, "array");
         $sql = $default->db;
-        $result = $sql->query("SELECT * FROM " . $default->owl_units_table  . (isset($sWhereClause) ? " " . $sWhereClause : ""));
+        $result = $sql->query("SELECT * FROM " . $default->units_table  . (isset($sWhereClause) ? " " . $sWhereClause : ""));
         if ($result) {
             $iCount = 0;
             while ($sql->next_record()) {
