@@ -80,26 +80,69 @@ if (checkSession()) {
             //first ensure that all steps in the collaboration process are assigned
             $oDocument = Document::get($fDocumentID);
             $aFolderCollaboration = FolderCollaboration::getList("WHERE folder_id = " . $oDocument->getFolderID());
-            $aFolderUserRoles = FolderUserRole::getList("WHERE document_id = " . $fDocumentID);
-            if (count($aFolderCollaboration) == count($aFolderUserRoles)) {
-                //if all the roles have been assigned we can start the collaboration process
-                $oDocument->beginCollaborationProcess();
-                $oPatternCustom = & new PatternCustom();
-                $oPatternCustom->setHtml(getEditPage($oDocument));
-                $main->setCentralPayload($oPatternCustom);
-                $main->setErrorMessage("Document collaboration successfully started");
-                $main->render();
-            } else {
-                //not all the roles have users assigned to them, so display an error message
-                require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
-
-                $oPatternCustom = & new PatternCustom();
-                $oPatternCustom->setHtml(getEditPage($oDocument));
-                $main->setCentralPayload($oPatternCustom);
-                $main->setErrorMessage("Document collaboration not started.  Not all steps in the process have been assigned");
-                $main->render();
+			if (count($aFolderCollaboration) > 0) {
+				//if the the folder has collaboration steps set up
+				$aFolderUserRoles = FolderUserRole::getList("WHERE document_id = " . $fDocumentID);
+				if (count($aFolderCollaboration) == count($aFolderUserRoles)) {
+					//if all the roles have been assigned we can start the collaboration process
+					$oDocument->beginCollaborationProcess();
+					$oPatternCustom = & new PatternCustom();
+					$oPatternCustom->setHtml(getEditPage($oDocument));
+					$main->setCentralPayload($oPatternCustom);
+					$main->setErrorMessage("Document collaboration successfully started");
+					$main->render();
+				} else {				
+					//not all the roles have users assigned to them, so display an error message
+					require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
+					$oPatternCustom = & new PatternCustom();
+					$oPatternCustom->setHtml(getEditPage($oDocument));
+					$main->setCentralPayload($oPatternCustom);
+					$main->setErrorMessage("Document collaboration not started.  Not all steps in the process have been assigned");
+					$main->render();					
+				}
+			} else {
+				//the folder has no collaboration set up yet, so we can't start document collaboration
+				require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
+				$oPatternCustom = & new PatternCustom();
+				$oPatternCustom->setHtml(getEditPage($oDocument));
+				$main->setCentralPayload($oPatternCustom);
+				$main->setErrorMessage("The collaboration steps for the folder must be set up before collaboration can begin");
+				$main->render();                
             }
-
+		} else if (isset($fCollaborationStepComplete)) {				
+				//the user has signled that they have completed their step in the collaboration process
+				if (Document::isLastStepInCollaborationProcess($fDocumentID)) {				
+					require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
+					//the last step in the collaboration process has been performed
+					//reset all the steps and email the document creator
+					Document::resetDocumentCollaborationSteps($fDocumentID);
+					$oDocument = Document::get($fDocumentID);
+					
+					$oUser = User::get($oDocument->getCreatorID());				
+					$sBody = $oUser->getUserName() . ", the collaboration process for the document, '<a href=\"https://" . $_SERVER["SERVER_NAME"] . "$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $oDocument->getID() . "\">" . $oDocument->getName() . "</a>', has been completed. ";								
+					$oEmail = & new Email($default->owl_email_from, $default->owl_email_fromname);
+					$oEmail->send($oUser->getEmail(), "Document collaboration complete", $sBody, $default->owl_email_from, $default->owl_email_fromname);
+					
+					//possibly set the document up for web publishing????
+					
+					$oDocument = Document::get($fDocumentID);
+					$oPatternCustom = & new PatternCustom();
+					$oPatternCustom->setHtml(getEditPage($oDocument));
+					$main->setCentralPayload($oPatternCustom);
+					$main->setErrorMessage("Document collaboration complete.  The document initiator has been notified");
+					$main->render();
+					
+				} else {
+					require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
+					//start the next steps if all criteria are met					
+					Document::beginNextStepInCollaborationProcess($fDocumentID, $_SESSION["userID"]);
+					$oDocument = Document::get($fDocumentID);
+					$oPatternCustom = & new PatternCustom();
+					$oPatternCustom->setHtml(getEditPage($oDocument));
+					$main->setCentralPayload($oPatternCustom);
+					$main->setErrorMessage("The next steps in the collaboration process have been started");
+					$main->render();
+				}
         } else if (Permission::userHasDocumentWritePermission($fDocumentID) || Permission::userHasDocumentReadPermission($fDocumentID)) {
             require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
             require_once("$default->fileSystemRoot/lib/subscriptions/SubscriptionEngine.inc");

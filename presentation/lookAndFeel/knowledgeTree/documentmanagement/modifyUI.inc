@@ -53,12 +53,10 @@ function getDocumentType($iFolderID, $iDocumentTypeID) {
 	$sWhereClause = "FDL.folder_id = $iFolderID";
 	$oPatternListBox = & new PatternListBox("$default->owl_document_types_table", "name", "id", "fDocumentTypeID",$sWhereClause);
 	$oPatternListBox->setIncludeDefaultValue(false);
-	$oPatternListBox->setFromClause("INNER JOIN $default->owl_folder_doctypes_table AS FDL ON ST.id = FDL.document_type_id");
-	//$oPatternListBox->setPostBackOnChange(true);	
+	$oPatternListBox->setFromClause("INNER JOIN $default->owl_folder_doctypes_table AS FDL ON ST.id = FDL.document_type_id");	
 	if (isset($iDocumentTypeID)) {
 		$oPatternListBox->setSelectedValue($iDocumentTypeID);
-	}
-	//$oPatternListBox->setOnChangeAction("setActionAndSubmit('" . $_SERVER["PHP_SELF"] . "&fDocumentID=$iDocumentID')");
+	}	
 	return $oPatternListBox->render();
 }
 
