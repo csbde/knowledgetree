@@ -26,13 +26,14 @@
  */
 
 // display the listbox initially ..then just display the text
-function getUnitDisplay($iUnitID) {
+function getUnitDisplay($aUnitIDs) {
     global $default;
     
     // #3519 only allow unit filters for system administrators
-    // unit administrators only see their unit.
+    // unit administrators only see their units.
     if (Permission::userIsSystemAdministrator()) {
-	    $oPatternListBox = & new PatternListBox($default->units_table, "name", "id", "fUnitID");
+	    $oPatternListBox = & new PatternListBox($default->units_table, "name", "id", "fUnitID");       
+        $oPatternListBox->setWhereClause("ST.unit_id IN (" . implode(",", $aUnitIDs) . ")");
 		$oPatternListBox->setPostBackOnChange(true);    
 		if ($iUnitID != 0) {
 			$oPatternListBox->setSelectedValue($iUnitID);
@@ -41,7 +42,7 @@ function getUnitDisplay($iUnitID) {
     }
 }
 
-function getGroups($fUnitID) {
+function getGroups($aUnitIDs) {
 	global $default;
 	$sQuery = 	"SELECT GL.id AS groupID, UL.name AS UnitNameB4, GL.name AS name, 'Edit' , 'Delete', 'Edit Unit', " .
 				"CASE WHEN UL.name IS NULL THEN '<font color=darkgrey>No Unit Assigned</font>' ELSE UL.name END AS UnitName " . 
@@ -50,8 +51,8 @@ function getGroups($fUnitID) {
 				
 	// #2978 don't display system admin groups if you're not a sys admin
 	// filter by unit				
-	if ($fUnitID) {
-		$sWhereClause = "WHERE GUL.unit_id =$fUnitID ";
+	if ($aUnitIDs) {
+		$sWhereClause = "WHERE GUL.unit_id IN (" . implode(",", $aUnitIDs) . ") ";
 	}
 	// #2978 don't display sys admin groups if you're not a sysadmin	
 	if (!Permission::userIsSystemAdministrator()) {
@@ -81,13 +82,13 @@ function getGroups($fUnitID) {
     return $oSearchResults->render() ;	
 }
 
-function getPage($fUnitID) {
+function getPage($aUnitIDs) {
 	global $default;
 	$sToRender .= renderHeading("Group Management");
 
 	$sToRender .= getAddLink("addGroup", "Add A Group");
-	$sToRender .= getUnitDisplay($fUnitID);
-	$sToRender .= getGroups($fUnitID);
+	$sToRender .= getUnitDisplay($aUnitIDs);
+	$sToRender .= getGroups($aUnitIDs);
 	return $sToRender;
 }
 ?>

@@ -37,10 +37,10 @@ require_once("listGroupsUI.inc");
 
 if (checkSession()) {	
     $oPatternCustom = & new PatternCustom();
-    // #3519 unit administrators only see their unit.
+    // #3519 unit administrators only see their units.
 	if (Permission::userIsUnitAdministrator()) {
-        $iUnitID = User::getUnitID($_SESSION["userID"]);
-        $oPatternCustom->setHtml(getPage($iUnitID));
+        $aUnitIDs = User::getUnitIDs($_SESSION["userID"]);
+        $oPatternCustom->setHtml(getPage($aUnitIDs));
 	} else {
     	$oPatternCustom->setHtml(getPage($fUnitID));
 	}
