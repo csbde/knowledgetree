@@ -26,7 +26,7 @@ function getPage() {
 	$aDropDownListDisplayColumns = array(2=>'username');
 
 	// create a text field that is required 
-	$oPatternCreate = & new PatternCreate("Website", "web/Website.inc",$aDisplayRowNames, $aParameterNumbers, $aDisplayColumnTypes, $aRequired,$aDropDownListTableNames,$aDropDownListValueColumns,$aDropDownListDisplayColumns);
+	$oPatternCreate = & new PatternCreate("Website", "web/WebSite.inc",$aDisplayRowNames, $aParameterNumbers, $aDisplayColumnTypes, $aRequired,$aDropDownListTableNames,$aDropDownListValueColumns,$aDropDownListDisplayColumns);
 	$oPatternCreate->setUniqueName("website");
 	
 	
