@@ -79,6 +79,9 @@ class KTLegacyLog {
                 return new PEAR_Error('Failed to create log file (check permissions)');
             }
         }
+        if (!is_writable($this->logFile)) {
+            return new PEAR_Error('Cannot write to log file (check permissions)');
+        }
     }
 
     /**
