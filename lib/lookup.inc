@@ -14,15 +14,11 @@
 /**
  * Performs an id field lookup on the specified table.
  *
- * @param $tableName
- *        the name of table to perform the id lookup.
- * @param $fieldName
- *        the db field to return.
- * @param $fieldValue
- *        the value to perform the lookup for
+ * @param $tableName    the name of table to perform the id lookup.
+ * @param $fieldName    the db field to return.
+ * @param $fieldValue   the value to perform the lookup for
  * @return the id of the row in the db with $fieldName=$fieldValue
  */
- 
 function lookupID($tableName, $fieldName, $fieldValue){
     $sql = new Owl_DB();
     $query = "select id from $tableName where $fieldName = '$fieldValue'";
@@ -40,14 +36,29 @@ function lookupID($tableName, $fieldName, $fieldValue){
     }
 }
 
-function lookupGroupID($userid) {
+/**
+ * Retrieves the groups that the user is a member of
+ *
+ * @param $userID    the user to lookup groups for
+ * @return an array containing the groupsIDs the user is a member of
+ */
+function lookupGroupIDs($userID) {
     global $default;
+    $groupIDs = array();
     $sql = new Owl_DB;
-    $sql->query("select group_id from $default->owl_groups_users_table where user_id = '$userid'");
-    while($sql->next_record()) 
-    {
-        $groupid = $sql->f("group_id");
-        return $groupid;
+    $sql->query("select group_id from $default->owl_groups_users_table where user_id = '$userID'");
+    while($sql->next_record()) {
+        $groupIDs[] = $sql->f("group_id");
     }
+    return $groupIDs;
+}
+
+    
+function arrayToString($array) {
+    ob_start();
+    print_r($array);
+    $arrToStr = ob_get_contents();
+    ob_end_clean();
+    return $arrToStr;
 }
 ?>
