@@ -8,7 +8,7 @@
  *
  * @version $Revision$ 
  * @author Mukhtar Dharsey
- * @package dmslib
+ * @package lib.database
  */
 /*-----------------------------------------------------------------*/
 
@@ -19,9 +19,7 @@
  *
  * @version v 1.1.1.1 2002/12/04
  * @author michael
- * @package Owl
  */
-
 class Owl_DB extends DB_Sql {
     
     /** Class name */
