@@ -140,8 +140,7 @@ function getFolderGroupAccess($iFolderID, $sDivName) {
 
 function renderSectionDiv($sDivName, $sHtml) {
 	global $default;
-	$bNN4 = (($default->browser == "moz") && ($default->version <= "4.79"));
-	if ($bNN4) {	
+	if ($default->bNN4) {	
 		return "<div id=\"$sDivName\" style=\"position:absolute;visibility:hidden;top:250px;left:130px;\">" .  $sHtml . " </div>";
 	} else {
 		return "<div id=\"$sDivName\" style=\"position:absolute;visibility:hidden;left:5px;\">$sHtml</div>";
@@ -181,15 +180,14 @@ function getPage($iFolderID, $sStatusMessage, $bCollaboration = false) {
     $sToRender .= "</div>";
 
 	// ugly netscape hacks
-	$bNN4 = (($default->browser == "moz") && ($default->version <= "4.79"));
-	if (!$bNN4) {
+	if (!$default->bNN4) {
 		$sToRender .= "<div id=\"contentDiv\" style=\"position:relative;visibility:hidden;width:500px;\">";
 	}
 	$sToRender .= getFolderData($iFolderID, "folderData");
 	$sToRender .= getFolderRouting($iFolderID, "folderRouting", $bCollaboration);
 	$sToRender .= getFolderDocTypes($iFolderID, "documentTypes");
 	$sToRender .= getFolderGroupAccess($iFolderID, "folderPermissions");
-	if (!$bNN4) {
+	if (!$default->bNN4) {
 		$sToRender .= "</div>";
 	}    
     return $sToRender;	
@@ -216,12 +214,11 @@ function getStatusPage($iFolderID, $sStatusMessage) {
 	$sToRender .= "</table>";
 	$sToRender .= "</div>";
 	// ugly netscape hacks
-	$bNN4 = (($default->browser == "moz") && ($default->version <= "4.79"));
-	if (!$bNN4) {
+	if (!$default->bNN4) {
 		$sToRender .= "<div id=\"contentDiv\" style=\"position:relative;visibility:hidden;top:10px;\">";
 	}
 	$sToRender .= getFolderData($iFolderID, "folderData", $sStatusMessage);
-	if (!$bNN4) {
+	if (!$default->bNN4) {
 		$sToRender .= "</div>";
 	}	
 	return $sToRender;
