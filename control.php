@@ -39,11 +39,10 @@ if (checkSessionAndRedirect(false)) {
 // need to strip query string params from action before attempting to retrieve from sitemap
 
 // check for the presence of additional params
-if (strstr($action, "?")) {
-    // strip them off
-    $queryString = substr($action, strpos($action, "?")+1, strlen($action));
-    // crop the action
-    $action = substr($action, 0, strpos($action, "?"));
+$default->log->info("control.php qs=" . $_SERVER["QUERY_STRING"]);
+if (strstr($_SERVER["QUERY_STRING"], "&")) {
+    // save the querystring
+    $queryString = substr($_SERVER["QUERY_STRING"], strpos($_SERVER["QUERY_STRING"], "&")+1, strlen($_SERVER["QUERY_STRING"]));
     $default->log->info("control.php qs=$queryString; action=$action");
 }
     
@@ -60,7 +59,9 @@ if (!$page) {
     $default->log->debug("control.php redirect=$redirect");
     $page = $default->owl_root_url . $page;
     // set authorised flag and redirect
-    // strip querystring form $page before setting page authorisation flag
+    // strip querystring from the page returned from the sitemap
+    // before setting page authorisation flag (since checkSession checks page level
+    // access by checking $_SESSION["pageAccess"][$_SERVER["PHP_SELF"] ie. without querystring(?)
     if (strstr($page, "?")) {
         $accessPage = substr($page, 0, strpos($page, "?"));
         $default->log->debug("control.php: page without querystring=$accessPage; with=$page");
@@ -68,6 +69,7 @@ if (!$page) {
         $accessPage = $page;
     }
     
+    // if we have a redirect url, then append it(??)
     if (strlen($redirect) > 0) {
         $page = $page . (strstr($page, "?") ? "&redirect=$redirect" : "?redirect=$redirect");
     }
