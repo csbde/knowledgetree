@@ -50,7 +50,7 @@ if (checkSession()) {
             $oPatternCustom->setHtml(getCreatePage($fRoleID));
         }
 
-        $main->setFormAction("$default->rootUrl/presentation/lookAndFeel/knowledgeTree/store.php?fReturnURL=" . urlencode("$default->rootUrl/control.php?action=editRoleSuccess"));
+        $main->setFormAction("$default->rootUrl/presentation/lookAndFeel/knowledgeTree/store.php?fReturnURL=" . urlencode("$default->rootUrl/control.php?action=listRoles"));
 
         // coming from manual edit page
     }
@@ -77,9 +77,8 @@ if (checkSession()) {
             $oRole->setWriteable(false);
         }
         if ($oRole->update()) {
-            // if successfull print out success message
-            $oPatternCustom->setHtml(getEditPageSuccess());
-
+            // if successfull redirec to list page        	
+        	controllerRedirect("listRoles");
         } else {
             // if fail print out fail message
             $oPatternCustom->setHtml(getEditPageFail());
