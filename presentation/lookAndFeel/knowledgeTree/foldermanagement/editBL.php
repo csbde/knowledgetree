@@ -37,7 +37,7 @@ if (checkSession()) {
 					$oFolder->setIsPublic(false);
 				}
 				$bSuccessfulUpdate = false;
-				if (strcmp($oFolder->getName(), $fFolderName) != 0) {					
+				if (isset($fFolderName) && strcmp($oFolder->getName(), $fFolderName) != 0) {					
 					//folder name has changed, update the full_path
 					$sOldName = $oFolder->getName();
 					$sOldPath = $default->documentRoot . "/" . $oFolder->getFullPath() . "/" . $oFolder->getName();
