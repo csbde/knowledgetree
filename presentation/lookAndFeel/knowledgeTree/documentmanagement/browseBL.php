@@ -61,7 +61,7 @@ if (checkSession()) {
     $oDocBrowser = new DocumentBrowser();
     // instantiate my content pattern
     $oContent = new PatternCustom();
-    
+
     switch ($fBrowseType) {
         case "folder" : // retrieve folderID if present
                         if (!$fFolderID) {
@@ -75,7 +75,7 @@ if (checkSession()) {
         case "category" :
                         $sectionName = "Manage Categories";
                         if (!$fCategoryName) {
-                            $aResults = $oDocBrowser->browseByCategory();
+                            $aResults = $oDocBrowser->browseByCategory("", $fSortBy, $fSortDirection);
                         } else {
                             $aResults = $oDocBrowser->browseByCategory($fCategoryName, $fSortBy, $fSortDirection);
                         }
@@ -84,7 +84,7 @@ if (checkSession()) {
         case "documentType" :
                         $sectionName = "Manage Document Types";
                         if (!$fDocumentTypeID) {
-                            $aResults = $oDocBrowser->browseByDocumentType();
+                            $aResults = $oDocBrowser->browseByDocumentType(-1, $fSortBy, $fSortDirection);
                         } else {
                             $aResults = $oDocBrowser->browseByDocumentType($fDocumentTypeID, $fSortBy, $fSortDirection);
                         }
