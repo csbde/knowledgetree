@@ -227,7 +227,7 @@ class Folder extends KTEntity {
 		//if the folder is not the root folder
 		if ($iFolderID != 0) {
 			$sql = $default->db;
-			$sql->query("SELECT parent_id FROM $default->folders_table WHERE ID = $iFolderID");
+			$sql->query(array("SELECT parent_id FROM $default->folders_table WHERE ID = ?", $iFolderID));/*ok*/
 			$sql->next_record();
 			return $this->generateParentFolderIDS($sql->f("parent_id")) . ",$iFolderID";
 		}
@@ -254,7 +254,7 @@ class Folder extends KTEntity {
 		//if the folder is not the root folder 
 		if ($iFolderID != 0) {
 			$sql = $default->db;
-			$sql->query("SELECT name, parent_id FROM $default->folders_table WHERE ID = $iFolderID");
+			$sql->query(array("SELECT name, parent_id FROM $default->folders_table WHERE ID = ?", $iFolderID));/*ok*/
 			$sql->next_record();
 			return $this->generateFullFolderPath($sql->f("parent_id")) . "/" . $sql->f("name");
 		}
@@ -321,7 +321,7 @@ class Folder extends KTEntity {
 		global $default;
 		//get the direct children
         $sql = $default->db;
-		$sql->query("SELECT id from $default->folders_table WHERE parent_id = $iID");						
+		$sql->query(array("SELECT id from $default->folders_table WHERE parent_id = ?", $iID));/*ok*/
 		while ($sql->next_record()) {
 			//force an update, this will cause this child's children to be updated			
 			$oFolder = Folder::get($sql->f("id"));			
@@ -341,7 +341,7 @@ class Folder extends KTEntity {
 	function getChildren($iFolderID, & $aChildren) {		
 		global $default;
 		$sql = $default->db;
-		$sql->query("SELECT id from $default->folders_table WHERE parent_id = $iFolderID");
+		$sql->query(array("SELECT id from $default->folders_table WHERE parent_id = ?", $iFolderID));/*ok*/
 		while ($sql->next_record()) {
 			$aChildren[count($aChildren)] = $sql->f("id");
 			Folder::getChildren($sql->f("id"), $aChildren);
@@ -355,7 +355,7 @@ class Folder extends KTEntity {
     function getDocumentIDs($iFolderID) {
 		global $default;
 		$sql = $default->db;
-		$sql->query("SELECT id from $default->documents_table WHERE folder_id = $iFolderID");
+		$sql->query(array("SELECT id from $default->documents_table WHERE folder_id = ?", $iFolderID));/*ok*/
 		while ($sql->next_record()) {
 			$sChildString .= $sql->f("id") . ",";
 		}
@@ -375,7 +375,7 @@ class Folder extends KTEntity {
 	function get($iFolderID) {		
 		global $default,  $lang_err_object_not_exist;
 		$sql = $default->db;		
-		$sql->query("SELECT * FROM " . $default->folders_table . " WHERE id = " . $iFolderID);
+		$sql->query(array("SELECT * FROM " . $default->folders_table . " WHERE id = ?", $iFolderID));/*ok*/
 		if ($sql->next_record()) {
 			$oFolder = & new Folder($sql->f("name"), $sql->f("description"), $sql->f("parent_id"), $sql->f("creator_id"), $sql->f("unit_id"), $sql->f("is_public"));
             $oFolder->iId = $iFolderID;
@@ -393,8 +393,9 @@ class Folder extends KTEntity {
 	function exists() {
 		global $default;
 		$sql = $default->db;
-		$sql->query("SELECT id FROM $default->folders_table WHERE name='" . $this->sName . "' " .
-					"AND parent_id=$this->iParentID");
+        $sQuery = "SELECT id FROM $default->folders_table WHERE name = ? AND parent_id = ?";/*ok*/
+        $aParams = array($this->sName, $this->iParentID);
+		$sql->query(array($sQuery, $aParams));
 		if ($sql->next_record()) {
 			return true;
 		} else {
@@ -415,7 +416,7 @@ class Folder extends KTEntity {
         $aFolderArray;
         settype($aFolderArray, "array");
         $sql = $default->db;
-        $result = $sql->query("SELECT * FROM " . $default->folders_table  . (isset($sWhereClause) ? " WHERE " . $sWhereClause : ""));
+        $result = $sql->query("SELECT * FROM " . $default->folders_table  . (isset($sWhereClause) ? " WHERE " . $sWhereClause : ""));/*wc*/
         if ($result) {
             $iCount = 0;
             while ($sql->next_record()) {
@@ -528,7 +529,7 @@ class Folder extends KTEntity {
 		if ($iFolderID != 0) {
 			global $default;		
 			$sql = $default->db;
-			$sql->query("SELECT parent_id FROM " . $default->folders_table . " WHERE id = " . $iFolderID);
+			$sql->query(array("SELECT parent_id FROM " . $default->folders_table . " WHERE id = ?", $iFolderID));/*ok*/
 			$sql->next_record();		
 			return $sql->f("parent_id");
 		}
@@ -547,7 +548,7 @@ class Folder extends KTEntity {
 		global $default, $lang_err_database;
 		if (Folder::folderExistsID($iFolderID)) {
 			$sql = $default->db;
-			$sql->query("SELECT document_type_id FROM " . $default->folder_doctypes_table . " WHERE folder_id = " . $iFolderID);			
+			$sql->query(array("SELECT document_type_id FROM " . $default->folder_doctypes_table . " WHERE folder_id = ?", $iFolderID));/*ok*/
 			if ($sql->next_record()) {
 				return $sql->f("document_type_id");
 			}
@@ -570,7 +571,9 @@ class Folder extends KTEntity {
 	function folderExistsName($sName, $iParentID) {
 		global $default, $lang_err_folder_exist;
 		$sql = $default->db;
-		$sql->query("SELECT * FROM " . $default->folders_table . " WHERE name = '$sName' AND parent_id = $iParentID");
+        $sQuery = "SELECT * FROM " . $default->folders_table . " WHERE name = ? AND parent_id = ?";/*ok*/
+        $aParams = array($sName, $iParentID);
+		$sql->query(array($sQuery, $aParams));
 		if ($sql->next_record()) {
 			return true;
 		}
@@ -588,7 +591,7 @@ class Folder extends KTEntity {
 	function folderExistsID($iFolderID) {
 		global $default, $lang_err_folder_exist;
 		$sql = $default->db;
-		$sql->query("SELECT * FROM " . $default->folders_table . " WHERE id = " . $iFolderID);
+		$sql->query(array("SELECT * FROM " . $default->folders_table . " WHERE id = ?", $iFolderID));/*ok*/
 		if ($sql->next_record()) {
 			return true;
 		}
@@ -606,7 +609,7 @@ class Folder extends KTEntity {
 	function getFolderName($iFolderID) {
 		global $default, $lang_err_database;
 		$sql = $default->db;
-		$sql->query("SELECT name FROM " . $default->folders_table . " WHERE id = " . $iFolderID);
+		$sql->query(array("SELECT name FROM " . $default->folders_table . " WHERE id = ?", $iFolderID));/*ok*/
 		if ($sql->next_record()) {
 			return $sql->f("name");
 		}
@@ -624,7 +627,7 @@ class Folder extends KTEntity {
 	function getFolderID($sFolderName) {
 		global $default, $lang_err_database;
 		$sql = $default->db;
-		$sql->query("SELECT id FROM " . $default->folders_table . " WHERE name = '$sFolderName'");
+		$sql->query(array("SELECT id FROM " . $default->folders_table . " WHERE name = ?", $sFolderName));/*ok*/
 		if ($sql->next_record()) {
 			return $sql->f("id");
 		}
@@ -640,7 +643,9 @@ class Folder extends KTEntity {
 	function folderIsLinkedToDocType($iFolderID, $iDocTypeID) {
 		global $default;
 		$sql = $default->db;
-		$sql->query("SELECT id FROM $default->folder_doctypes_table WHERE document_type_id = $iDocTypeID and folder_id = $iFolderID");
+        $sQuery = "SELECT id FROM $default->folder_doctypes_table WHERE document_type_id = ? and folder_id = ?";/*ok*/
+        $aParams = array($iDocTypeID, $iFolderID);
+		$sql->query(array($sQuery, $aParams));
 		if ($sql->next_record()) {
 			return true;
 		}
@@ -656,12 +661,13 @@ class Folder extends KTEntity {
 	*/
 	function folderIsUnitRootFolder($iFolderID) {
 		global $default;
-		$sQuery = "SELECT F.id FROM $default->folders_table AS F " .
+		$sQuery = "SELECT F.id FROM $default->folders_table AS F " ./*ok*/
 		          "INNER JOIN $default->units_table AS U ON F.name LIKE U.name " .
-		          "WHERE F.id = $iFolderID " .
+		          "WHERE F.id = ? " .
 		          "AND F.description LIKE '%Unit Root Folder'";	
+        $aParams = array($iFolderID);
 		$sql = $default->db;
-		$sql->query($sQuery);
+		$sql->query(array($sQuery, $aParams));
 		if ($sql->next_record()) {
 			return true;
 		}
@@ -675,9 +681,13 @@ class Folder extends KTEntity {
         global $default;
         $sDocumentIDs = Folder::getDocumentIDs($iFolderID);
         if (strlen($sDocumentIDs) > 0) {
-            $sQuery = "SELECT * FROM folders_users_roles_link WHERE document_id in ($sDocumentIDs) AND (active = 1)";
+            $aDocumentIDs = split(',', $sDocumentIDs);
+            $sQms = DBUtil::paramArray($aDocumentIDs);
+
+            $sQuery = "SELECT * FROM folders_users_roles_link WHERE document_id in ($sQms) AND (active = 1)";/*ok*/
+            $aParams = $aDocumentIDs;
             $sql = $default->db;
-            $sql->query($sQuery);
+            $sql->query(array($sQuery, $aParams));
             if ($sql->next_record()) {
                 return true;
             }

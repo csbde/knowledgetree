@@ -115,7 +115,7 @@ class Session {
             
             // this should be an existing session, so check the db
             $sql = $default->db; 
-            $sql->query("SELECT * FROM $default->sessions_table WHERE session_id = '$sessionID'");
+            $sql->query(array("SELECT * FROM $default->sessions_table WHERE session_id = ?", $sessionID));/*ok*/
             $numrows = $sql->num_rows($sql);
 
             // FIXME: if there aren't more rows that the max sessions for this user

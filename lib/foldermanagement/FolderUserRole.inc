@@ -136,7 +136,7 @@ class FolderUserRole extends KTEntity {
 	function & get($iFolderUserRoleID) {
 		global $default;
 		$sql = $default->db;
-		$result = $sql->query("SELECT * FROM $default->folders_user_roles_table WHERE id = $iFolderUserRoleID");
+		$result = $sql->query(array("SELECT * FROM $default->folders_user_roles_table WHERE id = ?", $iFolderUserRoleID));/*ok*/
 		if ($result) {
 			if ($sql->next_record()) {
 				$oFolderUserRole = & new FolderUserRole($sql->f("user_id"), $sql->f("document_id"), $sql->f("group_folder_approval_id"), $sql->f("done"), $sql->f("active"), $sql->f("dependant_documents_created"));
@@ -165,7 +165,7 @@ class FolderUserRole extends KTEntity {
 		$aFolderUserRoleArray;
 		settype($aFolderUserRoleArray, "array");
 		$sql = $default->db;
-		$result = $sql->query("SELECT * FROM " . $default->folders_user_roles_table  . (isset($sWhereClause) ? " WHERE " . $sWhereClause : ""));
+		$result = $sql->query("SELECT * FROM " . $default->folders_user_roles_table  . (isset($sWhereClause) ? " WHERE " . $sWhereClause : ""));/*wc*/
 		if ($result) {			
 			$iCount = 0;
 			while ($sql->next_record()) {
@@ -182,7 +182,9 @@ class FolderUserRole extends KTEntity {
 	function & getFromFolderCollaboration($iFolderCollaborationID, $iDocumentID) {
 		global $default, $lang_err_database;
 		$sql = $default->db;
-		$sql->query("SELECT id FROM $default->folders_user_roles_table WHERE group_folder_approval_id = $iFolderCollaborationID AND document_id = $iDocumentID");
+        $sQuery = "SELECT id FROM $default->folders_user_roles_table WHERE group_folder_approval_id = ? AND document_id = ?";/*ok*/
+        $aParams = array($iFolderCollaborationID, $iDocumentID);
+		$sql->query(array($sQuery, $aParams));
 		if ($sql->next_record()) {
 			return FolderUserRole::get($sql->f("id"));
 		}
@@ -195,11 +197,12 @@ class FolderUserRole extends KTEntity {
 	*/
 	function createDefaultFolderUserRoles($oDocument) {
 		global $default;
-		$sQuery = "SELECT GFAL.id, GFAL.user_id " .
+		$sQuery = "SELECT GFAL.id, GFAL.user_id " ./*ok*/
 				"FROM folders_users_roles_link AS FURL RIGHT OUTER JOIN groups_folders_approval_link AS GFAL ON FURL.group_folder_approval_id = GFAL.id AND group_folder_approval_id = NULL " .
-				"WHERE GFAL.folder_id = " . $oDocument->getFolderID();
+				"WHERE GFAL.folder_id = ?";
+        $aParams = array($oDocument->getFolderID());
 		$sql = $default->db;
-		$sql->query($sQuery);
+		$sql->query(array($sQuery, $aParams));
 		while ($sql->next_record()) {
 			$oFolderUserRole = & new FolderUserRole($sql->f("user_id"), $oDocument->getID(), $sql->f("id"));
 			$oFolderUserRole->create();			

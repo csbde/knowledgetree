@@ -154,7 +154,9 @@ class PhysicalDocumentManager {
 		// FIXME: refactor array getOldVersionPaths($iDocumentID)??
 		
 		$sql = $default->db;
-		$result = $sql->query("SELECT DISTINCT version FROM $default->document_transactions_table WHERE document_id=" . $oDocument->getID() . " AND transaction_id=" . CHECKOUT);
+        $sQuery = "SELECT DISTINCT version FROM $default->document_transactions_table WHERE document_id = ? AND transaction_id = ?";/*ok*/
+        $aParams = array($oDocument->getID(), CHECKOUT);
+		$result = $sql->query(array($sQuery, $aParams));
         if ($result) {
             while ($sql->next_record()) {
             	$sVersion = $sql->f("version");
@@ -228,7 +230,9 @@ class PhysicalDocumentManager {
 		// ie. interrogate transaction history for all CHECKIN transactions and retrieve the versions
 		// FIXME: refactor
 		$sql = $default->db;
-		$result = $sql->query("SELECT DISTINCT version FROM $default->document_transactions_table WHERE document_id=" . $oDocument->getID() . " AND transaction_id=" . CHECKOUT);
+        $sQuery = "SELECT DISTINCT version FROM $default->document_transactions_table WHERE document_id = ? AND transaction_id = ?";/*ok*/
+        $aParams = array($oDocument->getID(), CHECKOUT);
+		$result = $sql->query(array($sQuery, $aParams));
         if ($result) {
             while ($sql->next_record()) {
             	$sVersion = $sql->f("version");
@@ -270,7 +274,9 @@ class PhysicalDocumentManager {
 		// ie. interrogate transaction history for all CHECKIN transactions and retrieve the versions
 		// FIXME: refactor
 		$sql = $default->db;
-		$result = $sql->query("SELECT DISTINCT version FROM $default->document_transactions_table WHERE document_id=" . $oDocument->getID() . " AND transaction_id=" . CHECKOUT);
+        $sQuery = "SELECT DISTINCT version FROM $default->document_transactions_table WHERE document_id = ? AND transaction_id = ?";/*ok*/
+        $aParams = array($oDocument->getID(), CHECKOUT);
+		$result = $sql->query(array($sQuery, $aParams));
         if ($result) {
             while ($sql->next_record()) {
             	$sVersion = $sql->f("version");
@@ -329,7 +335,9 @@ class PhysicalDocumentManager {
 		// ie. interrogate transaction history for all CHECKIN transactions and retrieve the versions
 		// FIXME: refactor
 		$sql = $default->db;
-		$result = $sql->query("SELECT DISTINCT version FROM $default->document_transactions_table WHERE document_id=" . $oDocument->getID() . " AND transaction_id=" . CHECKOUT);
+        $sQuery = "SELECT DISTINCT version FROM $default->document_transactions_table WHERE document_id = ? AND transaction_id = ?";/*ok*/
+        $aParams = array($oDocument->getID(), CHECKOUT);
+		$result = $sql->query(array($sQuery, $aParams));
         if ($result) {
             while ($sql->next_record()) {
             	$sVersion = $sql->f("version");
@@ -424,7 +432,7 @@ class PhysicalDocumentManager {
         if (!$sMimeType) {
           // check by file extension
           $sExtension = PhysicalDocumentManager::stripAllButExtension($sFileName);
-          $sql->query("SELECT id FROM " . $default->mimetypes_table . " WHERE LOWER(filetypes) = '$sExtension'");
+          $sql->query(array("SELECT id FROM " . $default->mimetypes_table . " WHERE LOWER(filetypes) = ?", $sExtension));/*ok*/
           if ($sql->next_record()) {
               return $sql->f("id");
           }
@@ -432,7 +440,7 @@ class PhysicalDocumentManager {
         
         // get the mime type id
         if (isset($sMimeType)) {
-            $sql->query("SELECT id FROM " . $default->mimetypes_table . " WHERE mimetypes = '$sMimeType'");     
+            $sql->query(array("SELECT id FROM " . $default->mimetypes_table . " WHERE mimetypes = ?", $sMimeType));/*ok*/
             if ($sql->next_record()) {
                 return $sql->f("id");
             }
@@ -451,7 +459,7 @@ class PhysicalDocumentManager {
 	function getDefaultMimeTypeID() {
 		global $default;
 		$sql = $default->db;		
-		$sql->query("SELECT id FROM " . $default->mimetypes_table . " WHERE mimetypes = 'text/plain'");		
+		$sql->query("SELECT id FROM " . $default->mimetypes_table . " WHERE mimetypes = 'text/plain'");/*ok*/
 		$sql->next_record();
 		//get the mime type id
 		return $sql->f("id");
@@ -460,7 +468,7 @@ class PhysicalDocumentManager {
 	function getMimeTypeName($iMimeTypeID) {
 		global $default;
 		$sql = $default->db;
-		$sql->query("SELECT mimetypes FROM " . $default->mimetypes_table . " WHERE id = " . $iMimeTypeID);
+		$sql->query(array("SELECT mimetypes FROM " . $default->mimetypes_table . " WHERE id = ?", $iMimeTypeID));/*ok*/
 		if ($sql->next_record()) {
 			return $sql->f("mimetypes");			
 		}

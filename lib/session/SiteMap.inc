@@ -221,8 +221,14 @@ class SiteMap {
             // initialise result array
             $results = array("descriptions" => array(), "links" => array());
 
-            if ($sql->query("SELECT link_text, action, access_id FROM $default->sitemap_table WHERE section_id=$sectionID " . 
-            			    "AND is_enabled=1 AND is_default=0" . ( $bSortLinks ? " ORDER BY link_text ASC" : "" ) ) ) {
+            $sQuery = "SELECT link_text, action, access_id FROM $default->sitemap_table WHERE " ./*ok*/
+                "section_id = ? AND is_enabled=1 AND is_default=0";
+            if ($bSortLinks) {
+                $sQuery .= " ORDER BY link_text ASC";
+            }
+            $aParams = array($sectionID);
+
+            if ($sql->query(array($sQuery, $aParams))) {
                 while ($sql->next_record()) {
                     // check permissions
                   $default->log->info("SiteMap:: getSectionLinksDB calling hasPermission with access:  " . $sql->f("access_id"));
@@ -362,7 +368,7 @@ class SiteMap {
         global $default, $lang_err_database;
         $sql = $default->db;
         // lookup the page and access_id from the sitemap
-        if ($sql->query("SELECT page, access_id FROM $default->sitemap_table WHERE action='$action'")) {
+        if ($sql->query(array("SELECT page, access_id FROM $default->sitemap_table WHERE action = ?", $action))) {/*ok*/
             if ($sql->next_record()) {
                 // check permissions
                 $default->log->info("SiteMap:: getPageDB calling hasPermission with access:  " . $sql->f("access_id"));
@@ -437,9 +443,9 @@ class SiteMap {
         global $default, $lang_err_database;
         $sql = $default->db;
         // lookup the page and access_id from the sitemap
-        if ($sql->query("SELECT SSL.name FROM $default->sitemap_table AS S
-                        INNER JOIN $default->site_sections_table AS SSL ON S.section_id=SSL.id
-                        WHERE S.page='$sRequiredPage'")) {
+        $sQuery = "SELECT SSL.name FROM $default->sitemap_table AS S INNER JOIN $default->site_sections_table AS SSL ON S.section_id=SSL.id WHERE S.page = ?";/*ok*/
+        $aParams = array($sRequiredPage);
+        if ($sql->query(array($sQuery, $aParams))) {
             if ($sql->next_record()) {
                 // return the section name
                 return $sql->f("name");
@@ -502,9 +508,9 @@ class SiteMap {
         $sectionID = lookupID($default->site_sections_table, "name", $sSectionName);
         if ($sectionID) {
             // lookup the default action for the specified section
-            if ($sql->query("SELECT action FROM $default->sitemap_table
-                            WHERE section_id=$sectionID
-                            AND is_default=1 AND is_enabled=1")) {
+            $sQuery = "SELECT action FROM $default->sitemap_table WHERE section_id = ? AND is_default=1 AND is_enabled=1";/*ok*/
+            $aParams = array($sectionID);
+            if ($sql->query(array($sQuery, $aParams))) {
                 if ($sql->next_record()) {
                     // return the section name
                     return $sql->f("action");
@@ -581,7 +587,7 @@ class SiteMap {
         $sql = $default->db;
 
         // lookup the action for the specified page
-        if ($sql->query("SELECT action FROM $default->sitemap_table WHERE page='$sPage'")) {
+        if ($sql->query(array("SELECT action FROM $default->sitemap_table WHERE page = ?", $sPage))) {/*ok*/
             if ($sql->next_record()) {
                 // return the section name
                 return $sql->f("action");

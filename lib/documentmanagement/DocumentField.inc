@@ -173,7 +173,7 @@ class DocumentField extends KTEntity {
 	function & get($iDocumentFieldsID) {
 		global $default;
 		$sql = $default->db;
-		$result = $sql->query("SELECT * FROM $default->document_fields_table WHERE id = $iDocumentFieldsID");
+		$result = $sql->query(array("SELECT * FROM $default->document_fields_table WHERE id = ?", $iDocumentFieldsID));/*ok*/
 		if ($result) {
 			if ($sql->next_record()) {
 				$oDocumentField = & new DocumentField($sql->f("name"), $sql->f("data_type"), $sql->f("is_generic"), $sql->f("has_lookup"));
@@ -198,7 +198,7 @@ class DocumentField extends KTEntity {
 		global $default;
 		$aDocumentFieldArray = array();
 		$sql = $default->db;
-		$sQuery = "SELECT id FROM " . $default->document_fields_table  . (isset($sWhereClause) ? " WHERE $sWhereClause" : "");
+		$sQuery = "SELECT id FROM " . $default->document_fields_table  . (isset($sWhereClause) ? " WHERE $sWhereClause" : "");/*wc*/
 		$result = $sql->query($sQuery);
 		if ($result) {			
 			while ($sql->next_record()) {
@@ -216,8 +216,9 @@ class DocumentField extends KTEntity {
 		global $default;
 		$aDocumentTypes = array();
 		$sql = $default->db;
-		$query = "SELECT document_type_id FROM " . $default->document_type_fields_table  . " WHERE field_id = $this->iId";
-		if ($sql->query($query)) {
+		$sQuery = "SELECT document_type_id FROM " . $default->document_type_fields_table  . " WHERE field_id = ?";/*ok*/
+        $aParams = array($this->iId);
+		if ($sql->query(array($sQuery, $aParams))) {
 			while ($sql->next_record()) {
       			$aDocumentTypes[] = & DocumentType::get($sql->f("document_type_id"));
       		}
@@ -235,8 +236,9 @@ class DocumentField extends KTEntity {
 	function isFieldLinkedToType() {
 		global $default;
 		$sql = $default->db;
-		$query = "SELECT document_type_id FROM " . $default->document_type_fields_table  . " WHERE field_id = $this->iId";
-		if ($sql->query($query)) {
+		$sQuery = "SELECT document_type_id FROM " . $default->document_type_fields_table  . " WHERE field_id = ?";/*ok*/
+        $aParams = array($this->iId);
+		if ($sql->query(array($sQuery, $aParams))) {
 			$rows = $sql->num_rows($sql);
 	      	if ($rows > 0) {
 	      		// instantiate the document types and return
@@ -259,7 +261,7 @@ class DocumentField extends KTEntity {
 		$aDataTypes;
 		settype($aDataTypes, "array");
 		$sql = $default->db;
-		$result = $sql->query("SELECT id, name FROM " . $default->data_types_table );
+		$result = $sql->query("SELECT id, name FROM " . $default->data_types_table );/*ok*/
 		if ($result) {			
 			$iCount = 0;
 			while ($sql->next_record()) {
@@ -278,7 +280,7 @@ class DocumentField extends KTEntity {
 		global $default;
 			
 		$sql = $default->db;
-		$result = $sql->query("SELECT COUNT(*) AS count FROM " . $default->metadata_table . " WHERE document_field_id = " . $iDocumentFieldID);
+		$result = $sql->query(array("SELECT COUNT(*) AS count FROM " . $default->metadata_table . " WHERE document_field_id = ?", $iDocumentFieldID));/*ok*/
 		if ($result) {			
 			if ($sql->next_record()) {		
 				return $sql->f("count");

@@ -113,8 +113,9 @@ class GroupUserLink extends KTEntity {
 		//if the object hasn't been created
 		if ($this->iId < 0) {
 			$sql = $default->db;
-			$query = "SELECT user_id, group_id FROM ". $default->users_groups_table ." WHERE user_id = '" . $this->iUserID . "' and group_id = '". $this->iGroupID ."'";
-            $sql->query($query);
+			$query = "SELECT user_id, group_id FROM ". $default->users_groups_table ." WHERE user_id = ? and group_id = ?";/*ok*/
+            $aParams = array($this->iUserID, $this->iGroupID);
+            $sql->query(array($query, $aParams));
             $rows = $sql->num_rows($sql);
         
             if ($rows > 0) {
@@ -136,7 +137,7 @@ class GroupUserLink extends KTEntity {
 	function & get($iGroupUserLinkID) {
 		global $default;
 		$sql = $default->db;
-		$result = $sql->query("SELECT * FROM $default->users_groups_table WHERE id = $iGroupUserLinkID");
+		$result = $sql->query(array("SELECT * FROM $default->users_groups_table WHERE id = ?", $iGroupUserLinkID));/*ok*/
 		if ($result) {
 			if ($sql->next_record()) {
 				$oGroupUserLink = & new GroupUserLink($sql->f("group_id"), $sql->f("user_id"));
@@ -163,7 +164,7 @@ class GroupUserLink extends KTEntity {
 		$aGroupUserLink;
 		settype($aGroupUserLink, "array");
 		$sql = $default->db;
-		$result = $sql->query("SELECT * FROM " . $default->users_groups_table  . (isset($sWhereClause) ? " " . $sWhereClause : ""));
+		$result = $sql->query("SELECT * FROM " . $default->users_groups_table  . (isset($sWhereClause) ? " " . $sWhereClause : ""));/*wc*/
 		if ($result) {			
 			$iCount = 0;
 			while ($sql->next_record()) {
@@ -184,14 +185,15 @@ class GroupUserLink extends KTEntity {
 		global $default;
 	    // group permissions                
 	    $sGroupPerms = "INSERT INTO $default->search_permissions_table (user_id, document_id) " .
-				       "SELECT UGL.user_id AS user_id, D.id AS document_id " .
+				       "SELECT UGL.user_id AS user_id, D.id AS document_id " ./*ok*/
 				       "FROM $default->documents_table AS D INNER JOIN folders AS F ON D.folder_id = F.id " .
 				       "INNER JOIN $default->groups_folders_table AS GFL ON GFL.folder_id = F.id " .
 				       "INNER JOIN $default->users_groups_table AS UGL ON UGL.group_id = GFL.group_id " .
-				       "WHERE GFL.group_id=$this->iGroupID";
+				       "WHERE GFL.group_id = ?";
+        $aParams = array($this->iGroupID);
 		$default->log->info("GroupUserLink groupPerms=$sGroupPerms");
 		$sql = $default->db;
-		if ($sql->query($sGroupPerms)) {
+		if ($sql->query(array($sGroupPerms, $aParams))) {
 			$default->log->debug("groupPerms succeeded");
 			return true;
 		} else {
@@ -205,7 +207,7 @@ class GroupUserLink extends KTEntity {
 		$aGroupUserLink;
 		settype($aGroupUserLink, "array");
 		$sql = $default->db;
-		$result = $sql->query("SELECT group_id FROM " . $default->users_groups_table  . " Where user_id = ". $iUserID);
+		$result = $sql->query(array("SELECT group_id FROM " . $default->users_groups_table  . " Where user_id = ?", $iUserID));/*ok*/
 		if ($result) {			
 			$iCount = 0;
 			while ($sql->next_record()) {
@@ -242,7 +244,9 @@ class GroupUserLink extends KTEntity {
 	function setUserGroupID($iGroupId, $iUserId) {
 	   	global $default;
 		$sql = $default->db;
-		$result = $sql->query("SELECT id FROM $default->users_groups_table WHERE user_id = $iUserId and group_id = $iGroupId");
+        $sQuery = "SELECT id FROM $default->users_groups_table WHERE user_id = ? and group_id = ?";/*ok*/
+        $aParams = array($iUserId, $iGroupId);
+		$result = $sql->query(array($sQuery, $aParams));
 		if ($result) {
 			if ($sql->next_record()) {
 				$id = $sql->f("id");

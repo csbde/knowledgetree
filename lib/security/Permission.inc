@@ -164,19 +164,32 @@ class Permission {
             return false;
         }       
         $sql = $default->db;
-        $sQuery = "SELECT GFL.folder_id " .
+        $sQuery = "SELECT GFL.folder_id " ./*ok*/
                         "FROM $default->groups_folders_table AS GFL INNER JOIN $default->users_groups_table AS UGL ON GFL.group_id = UGL.group_id " .
-                        "WHERE UGL.user_id =  " . $_SESSION["userID"] . " " .
+                        "WHERE UGL.user_id = ? " .
                         "AND GFL.can_write = 1 ";
+        $aParams = array($_SESSION["userID"]);
         if ($oFolder->getInheritParentPermission()) {
             //if we use parent permissions, get the parent folder ids           
-            $sQuery .= "AND GFL.folder_id IN (" . (strlen($oFolder->getParentFolderIDs()) > 0 ? $oFolder->getParentFolderIDs() . "," . $oFolder->getID() : $oFolder->getID()) .  ")";
+            $sQuery .= "AND GFL.folder_id IN (";
+            if (strlen($oFolder->getParentFolderIDs()) > 0) {
+                $aParentFolderIDs = split(',', $oFolder->getParentFolderIDs());
+                $aParentFolderIDs[] = $oFolder->getID();
+                $sQms = DBUtil::paramArray($aParentFolderIDs);
+                $sQuery .= $sQms;
+                $aParams += $aParentFolderIDs;
+            } else {
+                $sQuery .= "?";
+                $aParams[] = $oFolder->getID();
+            }
+            $sQuery .= ") ";
         } else {
             //otherwise we just use the current folder id
-            $sQuery .= "AND GFL.folder_id IN (" . $oFolder->getID() .  ")";
+            $sQuery .= "AND GFL.folder_id IN (?)";
+            $aParams[] = $oFolder->getID();
         }
         
-        $sql->query($sQuery);
+        $sql->query(array($sQuery, $aParams));
         
         if ($sql->next_record()) {
             return true;
@@ -224,18 +237,31 @@ class Permission {
             return false;
         }
         
-        $sQuery = "SELECT GFL.folder_id " .
+        $sQuery = "SELECT GFL.folder_id " ./*ok*/
                   "FROM $default->groups_folders_table AS GFL INNER JOIN $default->users_groups_table AS UGL ON GFL.group_id = UGL.group_id " .
-                  "WHERE UGL.user_id =  " . $_SESSION["userID"] . " " .
+                  "WHERE UGL.user_id = ? " .
                   "AND GFL.can_read = 1 ";
+        $aParams = array($_SESSION["userID"]);
         if ($oFolder->getInheritParentPermission()) {
             //if we use parent permissions, get the parent folder ids           
-            $sQuery .= "AND GFL.folder_id IN (" . (strlen($oFolder->getParentFolderIDs()) > 0 ? $oFolder->getParentFolderIDs() . "," . $oFolder->getID() : $oFolder->getID()) .  ")";
+            $sQuery .= "AND GFL.folder_id IN (";
+            if (strlen($oFolder->getParentFolderIDs()) > 0) {
+                $aParentFolderIDs = split(',', $oFolder->getParentFolderIDs());
+                $aParentFolderIDs[] = $oFolder->getID();
+                $sQms = DBUtil::paramArray($aParentFolderIDs);
+                $sQuery .= $sQms;
+                $aParams += $aParentFolderIDs;
+            } else {
+                $sQuery .= "?";
+                $aParams[] = $oFolder->getID();
+            }
+            $sQuery .= ") ";
         } else {
             //otherwise we just use the current folder id
-            $sQuery .= "AND GFL.folder_id IN (" . $oFolder->getID() .  ")";
-        }                       
-        $sql->query($sQuery);
+            $sQuery .= "AND GFL.folder_id IN (?)";
+            $aParams[] = $oFolder->getID();
+        }
+        $sql->query(array($sQuery, $aParams));
         
         $default->log->debug("userHasGroupReadPermissionForFolder sql: " . $sQuery);    
         if ($sql->next_record()) {
@@ -257,7 +283,9 @@ class Permission {
     function userIsInGroupID($iGroupID) {       
         global $default, $lang_err_user_group;
         $sql = $default->db;
-        $sql->query("SELECT id FROM " . $default->users_groups_table . " WHERE group_id = " . $iGroupID . " AND user_id = " . $_SESSION["userID"]);
+        $sQuery = "SELECT id FROM " . $default->users_groups_table . " WHERE group_id = ? AND user_id = ?";/*ok*/
+        $aParams = array($iGroupID, $_SESSION["userID"]);
+        $sql->query(array($sQuery, $aParams));
         if ($sql->next_record()) {
             return true;
         }
@@ -275,7 +303,9 @@ class Permission {
     function userIsInGroupName($sGroupName) {       
         global $default, $lang_err_user_group;
         $sql = $default->db;
-        $sql->query("SELECT GULT.id FROM " . $default->users_groups_table . " AS GULT INNER JOIN " . $default->groups_table . " AS G ON GULT.group_id = G.ID WHERE G.name = '" . $sGroupName . "' AND user_id = " . $_SESSION["userID"]);
+        $sQuery = "SELECT GULT.id FROM " . $default->users_groups_table . " AS GULT INNER JOIN " . $default->groups_table . " AS G ON GULT.group_id = G.ID WHERE G.name = ? AND user_id = ?";/*ok*/
+        $aParams = array($sGroupName, $_SESSION["userID"]);
+        $sql->query(array($sQuery, $aParams));
         if ($sql->next_record()) {
             return true;
         }
@@ -294,12 +324,14 @@ class Permission {
     function userHasWriteRoleForDocument($oDocument) {
         global $default, $lang_err_user_role;   
         $sql = $default->db;
-        $sql->query("SELECT FURL.id FROM $default->folders_user_roles_table AS FURL INNER JOIN $default->groups_folders_approval_table AS GFAL ON FURL.group_folder_approval_id = GFAL.id " .
+        $sQuery = "SELECT FURL.id FROM $default->folders_user_roles_table AS FURL INNER JOIN $default->groups_folders_approval_table AS GFAL ON FURL.group_folder_approval_id = GFAL.id " ./*ok*/
                     "INNER JOIN $default->roles_table AS R ON GFAL.role_id = R.id " .                   
-                    "WHERE FURL.user_id = " . $_SESSION["userID"] . " " .
-                    "AND FURL.document_id = " . $oDocument->getID() .
-                    " AND R.can_write = 1 " . 
-                    "AND R.active = 1");
+                    "WHERE FURL.user_id = ? " .
+                    "AND FURL.document_id = ? " .
+                    "AND R.can_write = 1 " . 
+                    "AND R.active = 1";
+        $aParams = array($_SESSION["userID"], $oDocument->getID());
+        $sql->query(array($sQuery, $aParams));
         if ($sql->next_record()) {
             return true;
         }
@@ -317,11 +349,13 @@ class Permission {
     function userHasReadRoleForDocument($oDocument) {
         global $default, $lang_err_user_role;   
         $sql = $default->db;
-        $sql->query("SELECT * FROM $default->folders_user_roles_table AS FURL INNER JOIN $default->groups_folders_approval_table AS GFAL ON FURL.group_folder_approval_id = GFAL.id " .
+        $sQuery = "SELECT * FROM $default->folders_user_roles_table AS FURL INNER JOIN $default->groups_folders_approval_table AS GFAL ON FURL.group_folder_approval_id = GFAL.id " ./*ok*/
                     "INNER JOIN $default->roles_table AS R ON GFAL.role_id = R.id " .                   
-                    "WHERE FURL.user_id = " . $_SESSION["userID"] . " " .
-                    "AND FURL.document_id = " . $oDocument->getID()  .
-                    " AND R.can_read = 1");
+                    "WHERE FURL.user_id = ? " .
+                    "AND FURL.document_id = ? " .
+                    "AND R.can_read = 1";
+        $aParams = array($_SESSION["userID"], $oDocument->getID());
+        $sql->query(array($sQuery, $aParams));
         if ($sql->next_record()) {
             return true;
         }
@@ -337,7 +371,9 @@ class Permission {
     function documentIsTemplateForDependantDocument($oDocument) {
         global $default;
         $sql = $default->db;
-        $sql->query("SELECT id FROM $default->dependant_document_instance_table WHERE template_document_id = " . $oDocument->getID() . " and user_id = " . $_SESSION["userID"]);
+        $sQuery = "SELECT id FROM $default->dependant_document_instance_table WHERE template_document_id = ? and user_id = ?";/*ok*/
+        $aParams = array($oDocument->getID(), $_SESSION["userID"]);
+        $sql->query(array($sQuery, $aParams));
         if ($sql->next_record()) {
             return true;
         }
@@ -354,7 +390,7 @@ class Permission {
     function roleIDExists($iRoleID) {
         global $default, $lang_err_role_not_exist;
         $sql = $default->db;
-        $sql->query("SELECT id FROM " . $default->roles_table . " WHERE id = " . $iRoleID);
+        $sql->query(array("SELECT id FROM " . $default->roles_table . " WHERE id = ?", $iRoleID));/*ok*/
         if ($sql->next_record()) {
             return true;    
         }
@@ -372,7 +408,7 @@ class Permission {
     function roleNameExists($sRoleName) {
         global $default, $lang_err_role_not_exist;
         $sql = $default->db;
-        $sql->query("SELECT id FROM " . $default->roles_table . " WHERE name = '" . $sRoleName . "'");
+        $sql->query(array("SELECT id FROM " . $default->roles_table . " WHERE name = ?", $sRoleName));/*ok*/
         if ($sql->next_record()) {
             return true;    
         }
@@ -391,7 +427,7 @@ class Permission {
         global $default, $lang_err_database;
         if (roleExists($sRoleName)) {
             $sql = $default->db;
-            $sql->query("SELECT id FROM " . $default->roles_table . " WHERE name = '" . $sRoleName . "'");
+            $sql->query(array("SELECT id FROM " . $default->roles_table . " WHERE name = ?", $sRoleName));/*ok*/
             $sql->next_record();
             return $sql->f("id");   
         }
@@ -411,10 +447,10 @@ class Permission {
             $iUserID = $_SESSION["userID"];
         }
         $sql = $default->db;
-        $sql->query("SELECT UGL.group_id " . 
+        $sql->query(array("SELECT UGL.group_id " . /*ok*/
                     "FROM $default->users_groups_table AS UGL INNER JOIN $default->groups_table AS GL ON UGL.group_id = GL.id " .
-                    "WHERE UGL.user_id = $iUserID " .
-                    "AND is_sys_admin = 1");
+                    "WHERE UGL.user_id = ? " .
+                    "AND is_sys_admin = 1", $iUserID));
         if ($sql->next_record()) {
             return true;
         }
@@ -432,11 +468,11 @@ class Permission {
             $iUserID = $_SESSION["userID"];
         }        
         $sql = $default->db;
-        $sql->query("SELECT UGL.group_id " .
+        $sql->query(array("SELECT UGL.group_id " ./*ok*/
             "FROM $default->users_groups_table AS UGL INNER JOIN $default->groups_units_table AS GUL ON GUL.group_id = UGL.group_id " .
             "INNER JOIN $default->groups_table AS GL ON GL.id = UGL.group_id " .
-            "WHERE UGL.user_id = $iUserID " .
-            "AND GL.is_unit_admin = 1");
+            "WHERE UGL.user_id = ? " .
+            "AND GL.is_unit_admin = 1", $iUserID));
         return $sql->next_record();
     }
     
@@ -449,14 +485,16 @@ class Permission {
         global $default;
         $sql = $default->db;
                     
-        $sql->query("SELECT * " .
+        $sQuery = "SELECT * " ./*ok*/
                 "FROM $default->groups_folders_table AS GFL INNER JOIN $default->folders_table AS F ON GFL.folder_id = F.id " .
                 "INNER JOIN $default->groups_units_table AS GUL ON GUL.unit_id = F.unit_id " .
                 "INNER JOIN $default->groups_table AS GL ON GUL.group_id = GL.id " .
                 "INNER JOIN $default->users_groups_table AS UGL ON UGL.group_id = GL.id " .
                 "WHERE GL.is_unit_admin = 1 "  .
-                "AND GFL.folder_id = " . $oFolder->getID() .
-                " AND UGL.user_id = " . $_SESSION["userID"]);
+                "AND GFL.folder_id = ? " .
+                "AND UGL.user_id = ?";
+        $aParams = array($oFolder->getID(), $_SESSION["userID"]);
+        $sql->query(array($sQuery, $aParams));
         return $sql->next_record();
     }
     
@@ -472,10 +510,10 @@ class Permission {
         }        
         $sql = $default->db;
         // you're a guest user if you're in the Anonymous group
-        $sql->query("SELECT UGL.group_id 
-                     FROM $default->users_groups_table AS UGL INNER JOIN $default->groups_table AS GL ON GL.id = UGL.group_id
-                     WHERE GL.name = 'Anonymous'
-                     AND UGL.user_id = $iUserID");
+        $sql->query(array("SELECT UGL.group_id " ./*ok*/
+             "FROM $default->users_groups_table AS UGL INNER JOIN $default->groups_table AS GL ON GL.id = UGL.group_id " .
+             "WHERE GL.name = 'Anonymous' " .
+             "AND UGL.user_id = ?", $iUserID));
         return $sql->next_record();        
     }
 }

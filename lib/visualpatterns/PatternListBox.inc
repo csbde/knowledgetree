@@ -137,7 +137,7 @@ class PatternListBox {
 		if (isset($this->sQuery)) {
 			$sQuery = $this->sQuery;
 		} else {
-			$sQuery = "SELECT ";
+			$sQuery = "SELECT ";/*wc*/
 	        if (isset($this->sCompositeDisplayColumnName)) {
 	            $sQuery .= "$this->sCompositeDisplayColumnName";
 	        } else {
@@ -185,7 +185,7 @@ class PatternListBox {
         global $default;
         
 		$sql = $default->db;
-		$sQuery = "SELECT DISTINCT ST." . $this->sDisplayColumn . " AS display, ST." .  $this->sValueColumn . " AS value FROM $this->sTableName AS ST ";
+		$sQuery = "SELECT DISTINCT ST." . $this->sDisplayColumn . " AS display, ST." .  $this->sValueColumn . " AS value FROM $this->sTableName AS ST ";/*wc*/
 		if (isset($this->sFromClause)) {
 			$sQuery .= $this->sFromClause . " ";
 		}

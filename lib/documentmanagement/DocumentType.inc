@@ -98,7 +98,7 @@ class DocumentType extends KTEntity {
 		if ($this->iId > 0) {
 			//check to see if name exsits
 			$sql = $default->db;
-			$query = "SELECT folder_id FROM ". $default->folder_doctypes_table ." WHERE document_type_id = '" . $this->iId . "'";
+			$query = array("SELECT folder_id FROM ". $default->folder_doctypes_table ." WHERE document_type_id = ?", $this->iId);/*ok*/
         		$sql->query($query);
        			$rows = $sql->num_rows($sql);
         
@@ -109,7 +109,7 @@ class DocumentType extends KTEntity {
            		 
 	       		 }else{
 				$sql = $default->db;
-				$result = $sql->query("DELETE FROM " . $default->document_types_table . " WHERE id = '" . $this->iId . "'");
+				$result = $sql->query(array("DELETE FROM " . $default->document_types_table . " WHERE id = ?", $this->iId));/*ok*/
 				if ($result) {
 					return true;
 				}
@@ -153,7 +153,7 @@ class DocumentType extends KTEntity {
 	function & get($iDocumentTypeID) {
 		global $default;
 		$sql = $default->db;
-		$result = $sql->query("SELECT * FROM ". $default->document_types_table ." WHERE id = $iDocumentTypeID");
+		$result = $sql->query(array("SELECT * FROM ". $default->document_types_table ." WHERE id = ?", $iDocumentTypeID));/*ok*/
 		if ($result) {
 			if ($sql->next_record()) {
 				$oDocumentType = & new DocumentType($sql->f("name"));
@@ -178,7 +178,7 @@ class DocumentType extends KTEntity {
 		global $default, $lang_err_database;
 		$aDocumentTypeArray = array();
 		$sql = $default->db;
-		$result = $sql->query("SELECT * FROM " . $default->document_types_table  . (isset($sWhereClause) ? " WHERE $sWhereClause" : ""));
+		$result = $sql->query("SELECT * FROM " . $default->document_types_table  . (isset($sWhereClause) ? " WHERE $sWhereClause" : ""));/*wc*/
 		if ($result) {			
 			while ($sql->next_record()) {
 				$aDocumentTypeArray[] = & DocumentType::get($sql->f("id"));

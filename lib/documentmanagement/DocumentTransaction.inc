@@ -157,7 +157,7 @@ class DocumentTransaction {
         global $default, $lang_err_doc_not_exist;
         if (strlen($iDocumentTransactionID) > 0) {
 	        $sql = $default->db;
-	        $sql->query("SELECT * FROM $default->document_transactions_table WHERE id = $iDocumentTransactionID");
+	        $sql->query(array("SELECT * FROM $default->document_transactions_table WHERE id = ?", $iDocumentTransactionID));/*ok*/
 	        if ($sql->next_record()) {			
 	            $oDocumentTransaction = & new DocumentTransaction($sql->f("document_id"), $sql->f("comment"), $sql->f("transaction_id"));
 	            $oDocumentTransaction->iId = $sql->f("id");	
@@ -188,7 +188,7 @@ class DocumentTransaction {
         global $default, $lang_err_database;
         $aDocumentTransactionArray = array();
         $sql = $default->db;
-        $sQuery = "SELECT * FROM $default->document_transactions_table " . (isset($sWhereClause) ? " WHERE " . $sWhereClause : "");
+        $sQuery = "SELECT * FROM $default->document_transactions_table " . (isset($sWhereClause) ? " WHERE " . $sWhereClause : "");/*wc*/
         $result = $sql->query($sQuery);
         if ($result) {
             while ($sql->next_record()) {

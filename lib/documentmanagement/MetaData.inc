@@ -123,8 +123,9 @@ class MetaData extends KTEntity {
 		if ($this->iId < 0) {
 			//check to see if name exsits
 			$sql = $default->db;
-			$query = "SELECT name FROM ". $default->metadata_table ." WHERE name = '" . $this->sName . "' and document_field_id = '". $this->iDocFieldID . "'";
-            $sql->query($query);
+			$query = "SELECT name FROM ". $default->metadata_table ." WHERE name = ? and document_field_id = ?";/*ok*/
+            $aParams = array($this->sName, $this->iDocFieldID);
+            $sql->query(array($query, $aParams));
             $rows = $sql->num_rows($sql);
         
             if ($rows > 0){
@@ -146,7 +147,7 @@ class MetaData extends KTEntity {
 	function & get($iMetaDataID) {
 		global $default;
 		$sql = $default->db;
-		$result = $sql->query("SELECT * FROM ". $default->metadata_table." WHERE id = $iMetaDataID");
+		$result = $sql->query(array("SELECT * FROM ". $default->metadata_table." WHERE id = ?", $iMetaDataID));/*ok*/
 		if ($result) {
 			if ($sql->next_record()) {
 				$oDocumentType = & new MetaData($sql->f("document_field_id"),$sql->f("name"));
@@ -177,7 +178,9 @@ class MetaData extends KTEntity {
 	 {
 	   	global $default;
 		$sql = $default->db;
-		$result = $sql->query("SELECT id FROM $default->metadata_table WHERE document_field_id = $iDocFieldID and name = '" . $sMetaDataName . "' ");
+        $sQuery = "SELECT id FROM $default->metadata_table WHERE document_field_id = ? and name = ?";/*ok*/
+        $aParams = array($iDocFieldID, $sMetaDataName);
+		$result = $sql->query(array($sQuery, $aParams));
 		if ($result) {
 			if ($sql->next_record()) {
 				$id = $sql->f("id");

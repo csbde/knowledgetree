@@ -114,8 +114,9 @@ class GroupUnitLink extends KTEntity {
 		if ($this->iId < 0) 
 		{
 			$sql = $default->db;
-			$query = "SELECT unit_id, group_id FROM ". $default->groups_units_table ." WHERE unit_id = '" . $this->iUnitID . "' and group_id = '". $this->iGroupID ."'";
-            $sql->query($query);
+			$query = "SELECT unit_id, group_id FROM ". $default->groups_units_table ." WHERE unit_id = ? and group_id = ?";/*ok*/
+            $aParams = array($this->iUnitID, $this->iGroupID);
+            $sql->query(array($query, $aParams));
             $rows = $sql->num_rows($sql);
         
             if ($rows > 0) {
@@ -138,7 +139,7 @@ class GroupUnitLink extends KTEntity {
 	function & get($iGroupUnitLinkID) {
 		global $default;
 		$sql = $default->db;
-		$result = $sql->query("SELECT * FROM $default->groups_units_table WHERE id = $iGroupUnitLinkID");
+		$result = $sql->query(array("SELECT * FROM $default->groups_units_table WHERE id = ?", $iGroupUnitLinkID));/*ok*/
 		if ($result) {
 			if ($sql->next_record()) {
 				$oGroupUnitLink = & new GroupUnitLink($sql->f("group_id"), $sql->f("unit_id"));
@@ -165,7 +166,7 @@ class GroupUnitLink extends KTEntity {
 		$aGroupUnitLink;
 		settype($aGroupUnitLink, "array");
 		$sql = $default->db;
-		$result = $sql->query("SELECT * FROM " . $default->groups_units_table  . (isset($sWhereClause) ? " WHERE " . $sWhereClause : ""));
+		$result = $sql->query("SELECT * FROM " . $default->groups_units_table  . (isset($sWhereClause) ? " WHERE " . $sWhereClause : ""));/*wc*/
 		if ($result) {			
 			$iCount = 0;
 			while ($sql->next_record()) {

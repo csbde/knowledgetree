@@ -117,13 +117,14 @@ class FolderCollaboration extends KTEntity {
 	*/
 	function hasDocumentInProcess() {
 		global $default;
-		$sQuery = "SELECT FURL.id " .
+		$sQuery = "SELECT FURL.id " ./*ok*/
 				  "FROM $default->groups_folders_approval_table AS GFAL INNER JOIN documents AS D ON GFAL.folder_id = D.folder_id " .
                   "INNER JOIN $default->folders_user_roles_table AS FURL ON FURL.document_id = D.id " .
-                  "WHERE GFAL.id = " . $this->iId . " " .
+                  "WHERE GFAL.id = ? " .
                   "AND FURL.active != 0"; 
+        $aParams = array($this->iId);
 		$sql = $default->db;		
-		$sql->query($sQuery);
+		$sql->query(array($sQuery, $aParams));
 		return $sql->next_record();
 		
 	}
@@ -139,7 +140,7 @@ class FolderCollaboration extends KTEntity {
 	function & get($iFolderCollaborationID) {
 		global $default;
 		$sql = $default->db;
-		$result = $sql->query("SELECT * FROM $default->groups_folders_approval_table WHERE id = $iFolderCollaborationID");
+		$result = $sql->query(array("SELECT * FROM $default->groups_folders_approval_table WHERE id = ?", $iFolderCollaborationID));/*ok*/
 		if ($result) {
 			if ($sql->next_record()) {
 				$oFolderCollaboration = & new FolderCollaboration($sql->f("folder_id"), $sql->f("group_id"), $sql->f("precedence"), $sql->f("role_id"), $sql->f("user_id"));
@@ -166,7 +167,7 @@ class FolderCollaboration extends KTEntity {
 		$aFolderCollaborationArray;
 		settype($aFolderCollaborationArray, "array");
 		$sql = $default->db;
-		$result = $sql->query("SELECT * FROM " . $default->groups_folders_approval_table  . (isset($sWhereClause) ? " " . $sWhereClause : ""));
+		$result = $sql->query("SELECT * FROM " . $default->groups_folders_approval_table  . (isset($sWhereClause) ? " " . $sWhereClause : ""));/*wc*/
 		if ($result) {			
 			$iCount = 0;
 			while ($sql->next_record()) {

@@ -79,7 +79,7 @@ class FolderDocTypeLink extends KTEntity {
 	function get($iFolderDocTypeLinkID) {		
 		global $default,  $lang_err_object_not_exist;
 		$sql = $default->db;		
-		$sql->query("SELECT * FROM " . $default->folder_doctypes_table . " WHERE id = " . $iFolderDocTypeLinkID);
+		$sql->query(array("SELECT * FROM " . $default->folder_doctypes_table . " WHERE id = ?", $iFolderDocTypeLinkID));/*ok*/
 		if ($sql->next_record()) {
 			$oFolderDocTypeLink = & new FolderDocTypeLink($sql->f("folder_id"), $sql->f("document_type_id"));
             $oFolderDocTypeLink->iId = $iFolderDocTypeLinkID;			
@@ -103,7 +103,7 @@ class FolderDocTypeLink extends KTEntity {
         settype($aFolderDocTypeLinkArray, "array");
         $sql = $default->db;
         // TODO: join on sys_deleted
-        $result = $sql->query("SELECT * FROM " . $default->folder_doctypes_table  . (isset($sWhereClause) ? " WHERE " . $sWhereClause : ""));
+        $result = $sql->query("SELECT * FROM " . $default->folder_doctypes_table  . (isset($sWhereClause) ? " WHERE " . $sWhereClause : ""));/*wc*/
         if ($result) {
             $iCount = 0;
             while ($sql->next_record()) {

@@ -103,7 +103,9 @@ class GroupFolderLink extends KTEntity {
     function exists() {
         global $default;
         $sql = $default->db;
-        if ($sql->query("SELECT count(*) AS count FROM $default->groups_folders_table WHERE folder_id = $this->iFolderID AND group_id = $this->iGroupID")) {
+        $sQuery = "SELECT count(*) AS count FROM $default->groups_folders_table WHERE folder_id = ? AND group_id = ?";/*ok*/
+        $aParams = array($this->iFolderID, $this->iGroupID);
+        if ($sql->query(array($sQuery, $aParams))) {
             $sql->next_record();
             return ($sql->f("count") > 0) ? true : false;
         } else {
@@ -122,7 +124,7 @@ class GroupFolderLink extends KTEntity {
 	function & get($iGroupFolderID) {
 		global $default;
 		$sql = $default->db;
-		$result = $sql->query("SELECT * FROM $default->groups_folders_table WHERE id = $iGroupFolderID");
+		$result = $sql->query(array("SELECT * FROM $default->groups_folders_table WHERE id = ?", $iGroupFolderID));/*ok*/
 		if ($result) {
 			if ($sql->next_record()) {
 				$oGroupFolderLink = & new GroupFolderLink($sql->f("folder_id"), $sql->f("group_id"), $sql->f("can_read"), $sql->f("can_write"));
@@ -148,7 +150,7 @@ class GroupFolderLink extends KTEntity {
 		global $default, $lang_err_database;
 		$oGroupFolderLinkArray = array();
 		$sql = $default->db;
-		$result = $sql->query("SELECT * FROM " . $default->groups_folders_table  . (isset($sWhereClause) ? " " . $sWhereClause : ""));
+		$result = $sql->query("SELECT * FROM " . $default->groups_folders_table  . (isset($sWhereClause) ? " " . $sWhereClause : ""));/*wc*/
 		if ($result) {			
 			while ($sql->next_record()) {
 				$oGroupFolderLinkArray[] = & GroupFolderLink::get($sql->f("id"));
