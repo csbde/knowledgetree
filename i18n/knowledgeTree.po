@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-01-17 14:13+0200\n"
+"POT-Creation-Date: 2005-02-03 11:05+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -47,16 +47,14 @@ msgstr ""
 msgid "Access Rights"
 msgstr ""
 
-#: presentation/login.php:143
+#: presentation/login.php:144
 msgid "Account has been DISABLED, contact the System Adminstrator"
 msgstr ""
 
 #: presentation/lookAndFeel/knowledgeTree/administration/news/newsUI.inc:46
 #: presentation/lookAndFeel/knowledgeTree/administration/news/newsUI.inc:89
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:215
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:273
-#: config/.#dmsDefaults.php.1.173:54 config/.#dmsDefaults.php.1.177:214
-#: config/.#dmsDefaults.php.1.174:138
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:214
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:272
 msgid "Active"
 msgstr ""
 
@@ -114,12 +112,12 @@ msgstr ""
 msgid "Add Dashboard News"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentUI.inc:158
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentUI.inc:160
 msgid "Add Dependant Document"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentUI.inc:160
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentUI.inc:212
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentUI.inc:162
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentUI.inc:214
 msgid "Add Document"
 msgstr ""
 
@@ -392,7 +390,7 @@ msgstr ""
 msgid "Approve"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:397
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:396
 #: bin/generate-buttons.php:33
 msgid "Archive"
 msgstr ""
@@ -401,8 +399,8 @@ msgstr ""
 msgid "Archive Document"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:638
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:699
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:637
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:698
 msgid "Archive Settings"
 msgstr ""
 
@@ -433,11 +431,11 @@ msgstr ""
 msgid "Archived Documents Search Results"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:175
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:174
 msgid "Archiving Settings"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:168
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:167
 #: presentation/lookAndFeel/knowledgeTree/documentmanagement/archiving/archiveSettingsUI.inc:72
 msgid "Archiving Type"
 msgstr ""
@@ -446,7 +444,7 @@ msgstr ""
 msgid "Are you sure you want to Check In the document:"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:250
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:249
 msgid "Are you sure you want to approve?  You will not have access to this document until the collaboration process is complete (unless the document is rejected in a subsequent step)"
 msgstr ""
 
@@ -641,7 +639,7 @@ msgstr ""
 msgid "Checked out by"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:390
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:389
 msgid "Checkout"
 msgstr ""
 
@@ -653,7 +651,7 @@ msgstr ""
 msgid "Choose the archiving type for this document"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:718
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:717
 msgid "Choose the website to publish to:"
 msgstr ""
 
@@ -824,7 +822,7 @@ msgstr ""
 #: presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/listDocFieldsUI.inc:37
 #: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/listUnitsUI.inc:54
 #: presentation/lookAndFeel/knowledgeTree/administration/linkmanagement/listLinksUI.inc:36
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:391
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:390
 #: bin/generate-buttons.php:15
 msgid "Delete"
 msgstr ""
@@ -899,7 +897,7 @@ msgstr ""
 msgid "Dependant Documents"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:370
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:369
 #: presentation/lookAndFeel/knowledgeTree/foldermanagement/viewDependantDocumentsUI.inc:66
 #: presentation/lookAndFeel/knowledgeTree/foldermanagement/viewDependantDocumentsUI.inc:84
 #: presentation/lookAndFeel/knowledgeTree/foldermanagement/viewDependantDocumentsUI.inc:120
@@ -910,7 +908,7 @@ msgstr ""
 msgid "Description"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:396
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:395
 msgid "Discussion"
 msgstr ""
 
@@ -923,8 +921,8 @@ msgstr ""
 #: presentation/lookAndFeel/knowledgeTree/search/standardSearchUI.inc:65
 #: presentation/lookAndFeel/knowledgeTree/search/standardSearchUI.inc:101
 #: presentation/lookAndFeel/knowledgeTree/search/standardSearchUI.inc:134
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:306
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:335
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:305
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:334
 msgid "Document"
 msgstr ""
 
@@ -941,8 +939,8 @@ msgstr ""
 #: presentation/lookAndFeel/knowledgeTree/search/advancedSearchUI.inc:80
 #: presentation/lookAndFeel/knowledgeTree/documentmanagement/modifyUI.inc:36
 #: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:61
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:635
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:696
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:634
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:695
 msgid "Document Data"
 msgstr ""
 
@@ -952,9 +950,9 @@ msgstr ""
 #: tests/documentmanagement/viewUI.inc:531
 #: tests/documentmanagement/viewUI.inc:579
 #: tests/documentmanagement/viewUI.inc:616
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:624
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:688
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:713
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:623
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:687
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:712
 msgid "Document Detail"
 msgstr ""
 
@@ -1014,15 +1012,15 @@ msgstr ""
 msgid "Document Linking"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentUI.inc:130
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentUI.inc:132
 msgid "Document Meta Data"
 msgstr ""
 
 #: presentation/lookAndFeel/knowledgeTree/documentmanagement/collaborationUI.inc:70
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:222
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:276
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:639
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:700
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:221
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:275
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:638
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:699
 #: presentation/lookAndFeel/knowledgeTree/foldermanagement/editUI.inc:227
 #: presentation/lookAndFeel/knowledgeTree/foldermanagement/editUI.inc:263
 msgid "Document Routing"
@@ -1030,7 +1028,7 @@ msgstr ""
 
 #: presentation/lookAndFeel/knowledgeTree/documentmanagement/modifyUI.inc:39
 #: presentation/lookAndFeel/knowledgeTree/documentmanagement/createDependantDocumentUI.inc:43
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:363
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:362
 #: presentation/lookAndFeel/knowledgeTree/foldermanagement/viewDependantDocumentsUI.inc:88
 #: presentation/lookAndFeel/knowledgeTree/foldermanagement/viewDependantDocumentsUI.inc:124
 #: presentation/lookAndFeel/knowledgeTree/foldermanagement/viewDependantDocumentsUI.inc:181
@@ -1040,7 +1038,7 @@ msgstr ""
 #: lib/browse/Criteria.inc:418
 #: presentation/lookAndFeel/knowledgeTree/documentmanagement/modifyUI.inc:47
 #: presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentUI.inc:40
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentUI.inc:174
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentUI.inc:176
 #: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:58
 #: presentation/lookAndFeel/knowledgeTree/documentmanagement/browseUI.inc:51
 #: presentation/lookAndFeel/knowledgeTree/foldermanagement/addFolderUI.inc:57
@@ -1147,8 +1145,8 @@ msgstr ""
 msgid "Documents in this folder are currently undergoing this collaboration process, so these steps can't be altered"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:215
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:273
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:214
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:272
 #: bin/generate-buttons.php:22
 msgid "Done"
 msgstr ""
@@ -1166,7 +1164,7 @@ msgstr ""
 #: presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/listDocFieldsUI.inc:37
 #: presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/listUnitsUI.inc:54
 #: presentation/lookAndFeel/knowledgeTree/administration/linkmanagement/listLinksUI.inc:36
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:215
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:214
 #: bin/generate-buttons.php:20
 msgid "Edit"
 msgstr ""
@@ -1355,7 +1353,7 @@ msgstr ""
 msgid "Either you do not have permission to view this document, or the document you have chosen no longer exists on the file system."
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:389
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:388
 #: bin/generate-buttons.php:38
 msgid "Email"
 msgstr ""
@@ -1391,7 +1389,7 @@ msgstr ""
 msgid "Enter a check out comment for the document"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:724
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:723
 msgid "Enter a comment for the web master:"
 msgstr ""
 
@@ -1429,7 +1427,7 @@ msgstr ""
 msgid "Error! No user specified"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:155
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:154
 #: presentation/lookAndFeel/knowledgeTree/documentmanagement/archiving/archiveSettingsUI.inc:162
 msgid "Expiration Date"
 msgstr ""
@@ -1549,8 +1547,8 @@ msgstr ""
 
 #: presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentUI.inc:89
 #: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:94
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:636
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:697
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:635
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:696
 #: presentation/lookAndFeel/knowledgeTree/documentmanagement/modifyGenericMetaDataUI.inc:43
 msgid "Generic Meta Data"
 msgstr ""
@@ -1639,11 +1637,12 @@ msgstr ""
 msgid "Hi %1$s, welcome back to the %2$s DMS, part of the Knowledge Tree"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:392
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:391
 msgid "History"
 msgstr ""
 
 #: lib/browse/Criteria.inc:421
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:58
 msgid "ID"
 msgstr ""
 
@@ -1695,7 +1694,7 @@ msgstr ""
 msgid "Link Name"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:398
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:397
 msgid "Link New Doc"
 msgstr ""
 
@@ -1707,13 +1706,13 @@ msgstr ""
 msgid "Link object is empty."
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:640
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:701
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:639
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:700
 msgid "Linked Documents"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:313
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:342
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:312
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:341
 msgid "Linked documents"
 msgstr ""
 
@@ -1729,7 +1728,7 @@ msgstr ""
 msgid "Login"
 msgstr ""
 
-#: presentation/login.php:105 presentation/login.php:154
+#: presentation/login.php:106 presentation/login.php:155
 msgid "Login failure"
 msgstr ""
 
@@ -1776,7 +1775,7 @@ msgstr ""
 msgid "Max Sessions"
 msgstr ""
 
-#: presentation/login.php:147
+#: presentation/login.php:148
 msgid "Maximum sessions for user reached.<br>Contact the System Administrator"
 msgstr ""
 
@@ -1795,7 +1794,7 @@ msgstr ""
 msgid "Modify Folder Properties"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:393
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:392
 #: bin/generate-buttons.php:24
 msgid "Move"
 msgstr ""
@@ -1880,7 +1879,7 @@ msgstr ""
 msgid "No Document Data"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentUI.inc:93
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentUI.inc:95
 #: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:95
 #: presentation/lookAndFeel/knowledgeTree/documentmanagement/modifyGenericMetaDataUI.inc:47
 msgid "No Generic Meta Data"
@@ -1890,9 +1889,9 @@ msgstr ""
 msgid "No Transaction History data"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentUI.inc:119
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentUI.inc:121
 #: presentation/lookAndFeel/knowledgeTree/documentmanagement/modifySpecificMetaDataUI.inc:46
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:126
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:125
 msgid "No Type Specific Meta Data"
 msgstr ""
 
@@ -1901,7 +1900,7 @@ msgstr ""
 msgid "No Unit selected for deletion."
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:171
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:170
 msgid "No archiving settings"
 msgstr ""
 
@@ -2078,7 +2077,7 @@ msgstr ""
 msgid "Page expects a Document Type ID."
 msgstr ""
 
-#: presentation/login.php:79
+#: presentation/login.php:80
 #: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/addUserUI.inc:71
 msgid "Password"
 msgstr ""
@@ -2212,7 +2211,7 @@ msgstr ""
 msgid "Please enter a name AND Select the Organisation"
 msgstr ""
 
-#: presentation/login.php:74
+#: presentation/login.php:75
 msgid "Please enter your details below to login"
 msgstr ""
 
@@ -2310,7 +2309,7 @@ msgstr ""
 msgid "Public"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:399
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:398
 #: bin/generate-buttons.php:23
 msgid "Publish"
 msgstr ""
@@ -2500,8 +2499,8 @@ msgid "Return to document dashboard"
 msgstr ""
 
 #: presentation/lookAndFeel/knowledgeTree/documentmanagement/collaborationUI.inc:75
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:215
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:273
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:214
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:272
 #: presentation/lookAndFeel/knowledgeTree/foldermanagement/collaborationUI.inc:74
 #: presentation/lookAndFeel/knowledgeTree/foldermanagement/collaborationUI.inc:86
 #: presentation/lookAndFeel/knowledgeTree/foldermanagement/editUI.inc:81
@@ -2618,8 +2617,8 @@ msgstr ""
 msgid "Select the subscriptions you'd like to unsubscribe from, and click 'Unsubscribe'"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:215
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:273
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:214
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:272
 #: presentation/lookAndFeel/knowledgeTree/foldermanagement/editUI.inc:81
 msgid "Seq"
 msgstr ""
@@ -2684,7 +2683,7 @@ msgstr ""
 msgid "Submit"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:394
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:393
 #: bin/generate-buttons.php:11
 msgid "Subscribe"
 msgstr ""
@@ -2875,7 +2874,7 @@ msgstr ""
 msgid "The document"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:460
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:459
 #, php-format
 msgid "The document can only be checked back in by %s"
 msgstr ""
@@ -2893,11 +2892,11 @@ msgstr ""
 msgid "The document has been published"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:503
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:502
 msgid "The document is checked out and cannot be moved."
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:507
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:506
 msgid "The document is in collaboration and cannot be moved."
 msgstr ""
 
@@ -3132,7 +3131,7 @@ msgstr ""
 msgid "This category contains no documents"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:486
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:485
 msgid "This document can't be deleted because its checked out"
 msgstr ""
 
@@ -3145,11 +3144,11 @@ msgstr ""
 msgid "This document has been archived!"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:582
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:581
 msgid "This document has been marked as pending publishing and the web publisher has been notified."
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:468
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:467
 msgid "This document has been published and cannot be checked out"
 msgstr ""
 
@@ -3157,15 +3156,15 @@ msgstr ""
 msgid "This document is already checked out"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:580
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:579
 msgid "This document is already published."
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:545
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:544
 msgid "This document is checked out and cannot be archived."
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:542
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:541
 msgid "This document is in collaboration and cannot be archived"
 msgstr ""
 
@@ -3209,7 +3208,7 @@ msgstr ""
 msgid "This subscription alert does not exist."
 msgstr ""
 
-#: presentation/login.php:151
+#: presentation/login.php:152
 msgid "This user does not belong to a group and is therefore not allowed to log in."
 msgstr ""
 
@@ -3217,7 +3216,7 @@ msgstr ""
 msgid "This website can not be removed since it is still in use."
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:445
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:444
 msgid "This will download a copy of the document and is not the same as Checking Out a document.  Changes to this downloaded file will not be managed in the DMS."
 msgstr ""
 
@@ -3256,13 +3255,13 @@ msgstr ""
 msgid "Type"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:125
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:637
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:698
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:124
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:636
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:697
 msgid "Type Specific Meta Data"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentUI.inc:118
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentUI.inc:120
 #: presentation/lookAndFeel/knowledgeTree/documentmanagement/modifySpecificMetaDataUI.inc:45
 msgid "Type specific meta data"
 msgstr ""
@@ -3340,7 +3339,7 @@ msgstr ""
 msgid "Unlink document"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:395
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:394
 #: bin/generate-buttons.php:12
 msgid "Unsubscribe"
 msgstr ""
@@ -3374,9 +3373,9 @@ msgid "Update user password"
 msgstr ""
 
 #: presentation/lookAndFeel/knowledgeTree/documentmanagement/createDependantDocumentUI.inc:49
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:215
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:273
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:363
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:214
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:272
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:362
 #: presentation/lookAndFeel/knowledgeTree/foldermanagement/collaborationUI.inc:71
 #: presentation/lookAndFeel/knowledgeTree/foldermanagement/collaborationUI.inc:86
 #: presentation/lookAndFeel/knowledgeTree/foldermanagement/editUI.inc:81
@@ -3428,7 +3427,7 @@ msgstr ""
 msgid "User's Unit"
 msgstr ""
 
-#: presentation/login.php:77
+#: presentation/login.php:78
 #: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/addUserUI.inc:50
 #: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/addUserUI.inc:68
 #: presentation/lookAndFeel/knowledgeTree/administration/usermanagement/addUserUI.inc:106
@@ -3447,13 +3446,13 @@ msgstr ""
 msgid "Users"
 msgstr ""
 
-#: presentation/login.php:85
+#: presentation/login.php:86
 #: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:58
 #: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewHistoryUI.inc:46
 msgid "Version"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:388
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:387
 msgid "View"
 msgstr ""
 
@@ -3535,7 +3534,7 @@ msgstr ""
 msgid "You are not subscribed to any documents or folders."
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:567
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:566
 msgid "You are not the last collaborator and hence cannot publish this document"
 msgstr ""
 
@@ -3580,7 +3579,7 @@ msgstr ""
 msgid "You cannot edit this folder collaboration process as a document is currently undergoing this collaboration process"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:570
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:569
 msgid "You cannot publish this document until collaboration is complete"
 msgstr ""
 
@@ -3589,8 +3588,8 @@ msgstr ""
 msgid "You cannot select an expiration date in the past. Please try again."
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:247
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:287
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:246
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:286
 msgid "You currently have an active role in the collaboration process"
 msgstr ""
 
@@ -3610,7 +3609,7 @@ msgstr ""
 msgid "You did not specify a document."
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/discussions/viewCommentBL.php:50
+#: presentation/lookAndFeel/knowledgeTree/discussions/viewCommentBL.php:52
 msgid "You didn't specify a comment to view"
 msgstr ""
 
@@ -3656,7 +3655,7 @@ msgstr ""
 msgid "You do not have permission to edit this folder"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:575
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:574
 msgid "You do not have permission to publish this document."
 msgstr ""
 
@@ -3676,10 +3675,10 @@ msgstr ""
 msgid "You do not have the permission to email a link to this document"
 msgstr ""
 
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:472
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:489
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:510
-#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:548
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:471
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:488
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:509
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:547
 msgid "You do not have write access to this document"
 msgstr ""
 
