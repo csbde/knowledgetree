@@ -125,6 +125,26 @@ class Folder {
 	}
 	
 	/**
+	* Get the creator user id
+	*
+	* @return integer creator user id
+	*
+	*/
+	function getCreatorID() {
+		return $this->iCreatorID;
+	}
+	
+	/**
+	* Set the creator user id
+	*
+	* @param $iNewValue	New creator user id
+	*
+	*/
+	function setCreatorID($iNewValue) {
+		$this->iCreatorID = $iNewValue;
+	}
+		
+	/**
 	* Get the unit primary key
 	*
 	* @return integer primary key of unit to which the folder belongs
