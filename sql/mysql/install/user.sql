@@ -24,3 +24,4 @@ GRANT SELECT ON document_transactions TO archiver@localhost IDENTIFIED BY 'ar(h9
 GRANT SELECT ON document_archiving_link TO archiver@localhost IDENTIFIED BY 'ar(h923v3R';
 GRANT SELECT ON archiving_settings TO archiver@localhost IDENTIFIED BY 'ar(h923v3R';
 GRANT SELECT ON archiving_type_lookup TO archiver@localhost IDENTIFIED BY 'ar(h923v3R';
+GRANT SELECT ON folders_users_roles_link TO archiver@localhost IDENTIFIED BY 'ar(h923v3R';
