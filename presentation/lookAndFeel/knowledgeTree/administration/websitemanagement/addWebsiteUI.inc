@@ -22,6 +22,7 @@ function getPage() {
 	// create a text field that is required 
 	$oPatternCreate = & new PatternCreate("Website", "web/WebSite.inc",$aDisplayRowNames, $aParameterNumbers, $aDisplayColumnTypes, $aRequired,$aDropDownListTableNames,$aDropDownListValueColumns,$aDropDownListDisplayColumns);
 	$oPatternCreate->setUniqueName("website");
+    $oPatternCreate->setDefaultValues(array(1=>"http://"));
 	
     $sToRender .= "<table width=\"600\">" . renderHeading("Add Website") . "</table>";
 	$sToRender .= "<table>\n";
@@ -45,7 +46,6 @@ function getAddPageFail() {
     $sToRender .= "<table width=\"600\">" . renderHeading("Add Website") . "</table>";
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr><td><b>Addition Unsuccessful</b></td></tr>\n";
-	$sToRender .= "<tr><td>The Libn</td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
