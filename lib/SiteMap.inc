@@ -44,7 +44,21 @@ class SiteMap {
      */
     function getPage($action, $userID) {
         global $default;
-        $default->log->debug("Sitemap::getPage function start; action=$action; userID=$userID");
+        
+        $groupIDs = array();
+        
+        // if there is no session (ie. requesting login page)
+        // then userID will be "" or unset or something
+        if (!$userID) {
+            // no session, so set groupID to Anonymous group
+            $groupIDs[] = lookupID($default->owl_groups_table, "name", "Anonymous");
+        } else {
+            // lookup the groups this user is in
+            $groupIDs = lookupGroupIDs($userID);
+        }
+        
+        $default->log->debug("Sitemap::getPage function start; action=$action; userID=$userID; groupIDs=" . arrayToString($groupIDs));
+        
         // for each section
         foreach ($this->siteMapArray as $section => $valArr) {
             $default->log->debug("Sitemap::getPage section=$section");
@@ -56,16 +70,14 @@ class SiteMap {
                 // now loop through pages until we find the right one
                 foreach ($pageArr as $ackshin => $page) {
                     if ($ackshin == $action) {
-                        // lookup the groups this user is in
-                        $groupIDs = lookupGroupIDs($userID);
-                        // now check if we have the right group access by
-                        // looping through the groupID array and returning the page
-                        // if the current groupID <= $reqGrpID
-                        
                         // FIXME: this won't work once we have lots of groups will it??
                         // we're assuming that the default groups will be created in the right
                         // order, so that groups with sys and unit access have lower ids than
                         // the required ones!
+                        
+                        // now check if we have the right group access by
+                        // looping through the groupID array and returning the page
+                        // if the current groupID <= $reqGrpID
                         for ($i = 0; $i<count($groupIDs); $i++) {
                             $default->log->debug("Sitemap::getPage current groupid=" . $groupIDs[$i] . "; reqGrpID=$reqGrpID"); 
                             if ($groupIDs[$i] <= $reqGrpID) {
