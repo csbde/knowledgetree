@@ -24,7 +24,7 @@ if (checkSession()) {
 	$oPatternCustom = & new PatternCustom();
 	$oPatternCustom->setHtml(getPage());
 	$main->setCentralPayload($oPatternCustom);
-	$main->setFormAction("$default->rootUrl/presentation/lookAndFeel/knowledgeTree/create.php?fRedirectURL=".urlencode("$default->rootUrl/control.php?action=editDocField&fFromCreate=1&fDocFieldID="));
+	$main->setFormAction("$default->rootUrl/presentation/lookAndFeel/knowledgeTree/create.php?fRedirectURL=".urlencode("$default->rootUrl/control.php?action=addDocFieldSuccess&fFromCreate=1&fDocFieldID="));
 	$main->render();
 }
 ?>
