@@ -397,6 +397,21 @@ class Folder {
  		$_SESSION["errorMessage"] = $lang_err_object_not_exist . "id = " . $iFolderID . " table = folders";
 		return false;
 	}
+
+	/**
+	 * Checks if a folder with the same name, description and parent exists in the database already
+	 */
+	function exists() {
+		global $default;
+		$sql = $default->db;
+		$sql->query("SELECT id FROM $default->owl_folders_table WHERE name='" . $this->sName . "' " .
+					"AND description = '" . $this->sDescription . "' AND parent_id=$this->iParentID");
+		if ($sql->next_record()) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 	
 	/**
     * Static function

@@ -78,16 +78,20 @@ class Unit {
                     $this->iId = $sql->insert_id();
                     // create a new unit root folder
                     // FIXME: lookup the organisation for this unit and use the appropriate folder id for the org root folder
-                    // TODO: check if a folder with this name exists before creating it
                     $oFolder = new Folder($this->sName, $this->sName . " Unit Root Folder", 1, $_SESSION["userID"], $this->iId);
-                    if ($oFolder->create()) {
-                        if (PhysicalFolderManagement::createFolder(Folder::getFolderPath($oFolder->getID()))) {
-                            return true;
-                        } else {
-                            return false;
-                        }
+                    if (!$oFolder->exists()) {
+	                    if ($oFolder->create()) {
+	                        if (PhysicalFolderManagement::createFolder(Folder::getFolderPath($oFolder->getID()))) {
+	                            return true;
+	                        } else {
+	                            return false;
+	                        }
+	                    } else {
+	                        return false;
+	                    }
                     } else {
-                        return false;
+                    	// a unit root folder already exists in the database
+                    	return true;
                     }
                 }
                 $_SESSION["errorMessage"] = $lang_err_database;
