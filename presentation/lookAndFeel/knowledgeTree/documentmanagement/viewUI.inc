@@ -73,7 +73,7 @@ function renderGenericMetaData($oDocument, $sDivName, $bEditable) {
     $aColumns = array("name", "value");
     $aColumnHeaders = array("Tag", "Value");
     $aColumnTypes = array(1,1);
-    $oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaders, "540");
+    $oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaders, "500");
     $oPatternTableSqlQuery->setTableHeading("Generic Meta Data");
     
     $sToRender .= "\t<table border=\"0\" width=\"100%\">\n";    	
@@ -133,7 +133,7 @@ function renderEditableDocumentArchiveSettings($oDocument) {
     $aDBColumnArray = array("id");
     $aQueryStringVariableNames = array("fDocumentID");
     $aLinkURLs = array(1=>"$default->rootUrl/control.php?action=modifyDocumentArchiveSettings");
-    $oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaders, "540", $aLinkURLs ,$aDBColumnArray,$aQueryStringVariableNames);
+    $oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaders, "500", $aLinkURLs ,$aDBColumnArray,$aQueryStringVariableNames);
     $oPatternTableSqlQuery->setTableHeading("Archiving Settings");
     $oPatternTableSqlQuery->setEmptyTableMessage("No archiving settings");
     $oPatternTableSqlQuery->setDisplayColumnHeadings(true);
@@ -150,7 +150,7 @@ function renderNonEditableDocumentArchiveSettings($oDocument) {
     $aColumns = array("name");
     $aColumnHeaders = array("Archiving Type");
     $aColumnTypes = array(1);
-    $oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaders, "540", $aLinkURLs ,$aDBColumnArray,$aQueryStringVariableNames);
+    $oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaders, "500", $aLinkURLs ,$aDBColumnArray,$aQueryStringVariableNames);
     $oPatternTableSqlQuery->setTableHeading("Archiving Settings");
     $oPatternTableSqlQuery->setEmptyTableMessage("No archiving settings");
     $oPatternTableSqlQuery->setDisplayColumnHeadings(true);
@@ -192,7 +192,7 @@ function renderEditableDocumentRouting($oDocument, $sDivName) {
     $aQueryStringVariableNames = array("fFolderCollaborationID", "fDocumentID","fIsActive","fIsDone");
     $aLinkURLs = array(5=>"$default->rootUrl/control.php?action=modifyDocumentRouting");
 
-    $oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaders, "540", $aLinkURLs,$aDBColumnArray,$aQueryStringVariableNames);
+    $oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaders, "500", $aLinkURLs,$aDBColumnArray,$aQueryStringVariableNames);
     $oPatternTableSqlQuery->setTableHeading("Document Routing");
     $oPatternTableSqlQuery->setDisplayColumnHeadings(true);
     
@@ -251,7 +251,7 @@ function renderNonEditableDocumentRouting($oDocument, $sDivName) {
     $aColumns = array("role_name", "name", "precedence", "active", "done");
     $aColumnHeaders = array("Role", "User", "Seq", "Active", "Done");
     $aColumnTypes = array(1,1,1,1,1);
-    $oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaders, "540", "$default->rootUrl/control.php?action=modifyDocumentRouting",$aDBColumnArray,$aQueryStringVariableNames);
+    $oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaders, "500", "$default->rootUrl/control.php?action=modifyDocumentRouting",$aDBColumnArray,$aQueryStringVariableNames);
     $oPatternTableSqlQuery->setTableHeading("Document Routing");
     $oPatternTableSqlQuery->setDisplayColumnHeadings(true);
 
@@ -288,7 +288,7 @@ function renderEditableLinkedDocuments($oDocument, $sDivName) {
     $aQueryStringVariableNames = array("fParentDocumentID","fChildDocumentID", "fDocumentLinkID", "fDocumentID");
     $aLinkURLs = array(0=>"$default->rootUrl/control.php?action=viewDocument", 1=>"$default->rootUrl/control.php?action=removeDocumentLink");
 
-    $oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaders, "540", $aLinkURLs, $aDBColumnArray, $aQueryStringVariableNames);
+    $oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaders, "500", $aLinkURLs, $aDBColumnArray, $aQueryStringVariableNames);
     $oPatternTableSqlQuery->setTableHeading("Linked documents");
     $oPatternTableSqlQuery->setDisplayColumnHeadings(true);    
     
@@ -317,7 +317,7 @@ function renderNonEditableLinkedDocuments($oDocument, $sDivName) {
     $aQueryStringVariableNames = array("fDocumentID");
     $aLinkURLs = array(0=>"$default->rootUrl/control.php?action=viewDocument");
     
-    $oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaders, "540", $aLinkURLs, $aDBColumnArray, $aQueryStringVariableNames);
+    $oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaders, "500", $aLinkURLs, $aDBColumnArray, $aQueryStringVariableNames);
     $oPatternTableSqlQuery->setTableHeading("Linked documents");
     $oPatternTableSqlQuery->setDisplayColumnHeadings(true);
     
