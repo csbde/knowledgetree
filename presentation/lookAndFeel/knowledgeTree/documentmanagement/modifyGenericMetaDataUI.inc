@@ -37,7 +37,7 @@ function getPage($iDocumentID, $iDocumentTypeID, $fFirstEdit) {
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>\n";
-	$sToRender .= "<input type=\"image\" src=\"$default->graphicsUrl/widgets/update.gif\" />\n";
+	$sToRender .= "<input type=\"image\" src=\"$default->graphicsUrl/widgets/update.gif\" border=\"0\"/>\n";
 	$sToRender .= "</td>\n";
 	if (!isset($fFirstEdit)) {
 		//can't cancel if you're uploading for the first time, must fill out the generic meta data
