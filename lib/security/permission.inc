@@ -27,8 +27,8 @@ class Permission {
 	* @return boolean true if the current user has document write permission, false otherwise and set $_SESSION["errorMessage"]
 	*/	
 	function userHasDocumentWritePermission($iDocumentID) {
-		if (Permission::userHasFolderWritePermission(DocumentLib::getDocumentFolderID($iDocumentID)) ||
-		Permission::userHasWriteRoleForFolder($iDocumentID)) {
+		$oDocument = & Document::get($iDocumentID);
+		if (Permission::userHasFolderWritePermission($oDocument->getFolderID()) {
 			return true;
 		}
 		$_SESSION["errorMessage"] = $lang_err_user_doc_write . "id " . $iDocumentID;
@@ -37,7 +37,8 @@ class Permission {
 	
 	/**
 	* Checks if the current user has read permission for a specific document.
-	* To have document read permission the user must satisfy ONE of the following conditions:
+	* To have document read permission the folder must be public or the user must satisfy ONE of the following conditions:
+	*	o have write permission for the document
 	*	o have read permission for the folder in which the document resides
 	* 	o be assigned a role which has read permission for the document
 	*
@@ -47,8 +48,8 @@ class Permission {
 	*/	
 	function userHasDocumentReadPermission($iDocumentID) {
         $oDocument = & Document::get($iDocumentID);
-		if (Permission::userHasFolderReadPermission($oDocument->getFolderID()) ||
-		    Permission::userHasReadRoleForFolder($iDocumentID)) {
+		if (Permission::userHasDocumentWritePermission($iDocumentID) ||
+			Permission::userHasFolderReadPermission($oDocument->getFolderID()) {
 			return true;
 		}
 		$_SESSION["errorMessage"] = $lang_err_user_doc_read . "id " . $iDocumentID;
@@ -60,7 +61,8 @@ class Permission {
 	* To have write permission on a folder the user must satisfy ONE of the following conditions:
 	*	o be in the system administrator group
 	*	o be in the unit administrator group for the unit to which the folder belongs
-	*	o belong to a group that has write access to the folder 
+	*	o belong to a group that has write access to the folder
+	*	o be assigned a role that has write access to the folder
 	*	
 	* @param $iFolderID		Primary key of folder to check
 	*
@@ -69,8 +71,9 @@ class Permission {
 	function userHasFolderWritePermission($iFolderID) {
 		global $lang_err_user_folder_write;
 		if (Permission::userHasGroupWritePermissionForFolder($iFolderID) ||
-			Permission::userIsInGroupName("System Administrators") ||
-			Permission::userIsInUnitAdministratorGroup($iFolderID)) {
+			Permission::userHasWriteRoleForFolder($iFolderID) ||
+			Permission::userIsSystemAdministrator() ||
+			Permission::userIsUnitAdministrator($iFolderID)) {
 				return true;
 			}
 		$_SESSION["errorMessage"] = $lang_err_user_folder_write . "id " . $iFolderID; 
@@ -80,10 +83,10 @@ class Permission {
 	
 	/**
 	* Checks if the current user has read permission for a specific folder
-	* To have read permission on a folder the user must satisfy ONE of the following conditions
+	* To have read permission on a folder, the folder must be public or the user must satisfy ONE of the following conditions
 	*	o have write permission for the folder
 	*	o belong to a group that has read access to the folder
-	*	o the folder is a public folder
+	*	o be assigned a role that has read permission for the folder	
 	*
 	* @param $iFolderID		Primary key of folder to check
 	*
@@ -93,7 +96,8 @@ class Permission {
 		global $lang_err_user_folder_write;
 		if (Permission::folderIsPublic($iFolderID) ||
 			Permission::userHasFolderWritePermission($iFolderID) ||
-			Permission::userHasGroupReadPermissionForFolder($iFolderID)) {
+			Permission::userHasGroupReadPermissionForFolder($iFolderID)) 
+			Permission::userHasReadRoleForFolder($iFolderID) {
 			return true;
 		}
 		$_SESSION["errorMessage"] = $lang_err_user_folder_write . "id " . $iFolderID;
@@ -118,33 +122,6 @@ class Permission {
 		return false;		
 	}
 	
-	
-	/**
-	* Checks if the current user is in the unit administrator group for the unit
-	* to which the folder belongs
-	*
-	* @param $iFolderID		Primary key of folder to check
-	*
-	* @return boolean true if the user has folder write permission, false otherwise and set $_SESSION["errorMessage"]
-	*
-	* @todo Remove hardcoding of 'Unit Administrators'
-	*/
-	function userIsInUnitAdministratorGroup($iFolderID) {
-		global $lang_err_user_unitadmin_group, $default;
-		$sql = new Owl_DB();
-		$sql->query("SELECT * FROM " . $default->owl_groups_folders_table ." AS GFL INNER JOIN " . $default->owl_users_groups_table . " as GUL ON GFL.group_id = GUL.group_id " .
-					"INNER JOIN " . $default->owl_groups_table . " AS G ON G.ID = GFL.group_id " .
-					"WHERE GFL.folder_id = " . $iFolderID . " " .
-					"AND GUL.user_id = " . $_SESSION["userID"] . " " .
-					"AND G.Name = 'Unit Administrators' ");
-		if ($sql->next_record()) {
-			return true;
-		}
-		$_SESSION["errorMessage"] = $lang_err_user_unitadmin_group . " id = " . $iFolderID;
-		return false;
-					
-	}
-	
 	/**
 	* Checks if the current user has write permission through group membership for a particular folder
 	* 
@@ -154,18 +131,40 @@ class Permission {
 	*/
 	function userHasGroupWritePermissionForFolder($iFolderID) {
 		global $default, $lang_err_user_folder_write;
-		$sql = new Owl_DB();
-		//$sql->query("SELECT * FROM " . $default->owl_groups_folders_table . " WHERE folder_id = " . $iFolderID . " AND user_id = " . $_SESSION["userID"] . " AND can_write = 1");
-        $sql->query("SELECT * FROM " . $default->owl_groups_folders_table . " GLF, $default->owl_users_groups_table GUL " . 
-                    " WHERE GLF.folder_id = " . $iFolderID . 
-                    " AND GUL.user_id = " . $_SESSION["userID"] .
-                    " AND GLF.group_id = GUL.group_id " .
-                    " AND can_write = 1");
+		$sql = new Owl_DB();			
+		$sql->query("SELECT GFL.folder_id " .
+						"FROM groups_folders_link AS GFL INNER JOIN users_groups_link AS UGL ON GFL.group_id = UGL.group_id " .
+						"WHERE UGL.user_id =  " . $_SESSION["userID"] . " " .
+						"AND GFL.can_write = 1 " .
+						"AND GFL.folder_id IN (" . Permission::generateParentFolderString($iFolderID) .  ")");
 		if ($sql->next_record()) {
 			return true;
 		}
 		$_SESSION["errorMessage"] = $lang_err_user_folder_write;
 		return false;
+	}
+	
+	/**
+	* Generate a string to be used in a where clause
+	* that consists of a list of id that are a folders
+	* parent  Used this because user has read/write permission for a folder if s/he 
+	* has read/write permission for the folder's parent (have to recurse up
+	* entire hierarchy)
+	*
+	* @param 	int		Primary key of folder to start at
+	*
+	*/
+	function generateParentFolderString($iFolderID) {
+		$sFolderIDString = $iFolderID;
+		//$iParentFolderID = $iFolderID;
+		//recurse up the hierarchy, building the string as we go
+		$iParentFolderID = Folder::getParentFolderID($iFolderID);
+		while ($iParentFolderID != 0) {			
+			$sFolderIDString .= ", " . $iParentFolderID;			
+			$iFolderID = $iParentFolderID;
+			$iParentFolderID = Folder::getParentFolderID($iFolderID);
+		}		
+		return $sFolderIDString;
 	}
 	
 	/**
@@ -179,11 +178,11 @@ class Permission {
 		global $default, $lang_err_user_folder_read;
 		$sql = new Owl_DB();
 		//$sql->query("SELECT * FROM " . $default->owl_groups_folders_table = "groups_folders_link" . " WHERE folder_id = " . $iFolderID . " AND user_id = " . $_SESSION["userID"] . " AND can_read = 1");
-        $sql->query("SELECT * FROM " . $default->owl_groups_folders_table . " GLF, $default->owl_users_groups_table GUL " . 
-                    " WHERE GLF.folder_id = " . $iFolderID . 
-                    " AND GUL.user_id = " . $_SESSION["userID"] .
-                    " AND GLF.group_id = GUL.group_id " .
-                    " AND can_read = 1");
+        $sql->query("SELECT GFL.folder_id " .
+						"FROM groups_folders_link AS GFL INNER JOIN users_groups_link AS UGL ON GFL.group_id = UGL.group_id " .
+						"WHERE UGL.user_id =  " . $_SESSION["userID"] . " " .
+						"AND GFL.can_read = 1 " .
+						"AND GFL.folder_id IN (" . Permission::generateParentFolderString($iFolderID) .  ")");
 		if ($sql->next_record()) {
 			return true;
 		}
@@ -238,7 +237,10 @@ class Permission {
 	function userHasWriteRoleForFolder($iFolderID) {
 		global $default, $lang_err_user_role;	
 		$sql = new Owl_DB();
-		$sql->query("SELECT * FROM " . $default->owl_folders_user_table . " AS FURL INNER JOIN " . $default->owl_role_table . " AS R ON FURL.role_id = R.id WHERE folder_id = " . $iFolderID . " AND user_id = " . $_SESSION["userID"] . " AND R.can_write = 1");
+		$sql->query("SELECT * FROM " . $default->owl_folders_user_roles_table . " AS FURL INNER JOIN " . $default->owl_roles_table . " AS R ON FURL.role_type_id = R.id " .
+					"WHERE folder_id = " . $iFolderID . " " .
+					"AND user_id = " . $_SESSION["userID"] . " " .
+					"AND R.can_write = 1");
 		if ($sql->next_record()) {
 			return true;
 		}
@@ -256,7 +258,11 @@ class Permission {
 	function userHasReadRoleForFolder($iFolderID) {
 		global $default, $lang_err_user_role;	
 		$sql = new Owl_DB();
-		$sql->query("SELECT * FROM " . $default->owl_folders_user_table . " AS FURL INNER JOIN " . $default->owl_role_table . " AS R ON FURL.role_id = R.id WHERE folder_id = " . $iFolderID . " AND user_id = " . $_SESSION["userID"] . " AND R.can_read = 1");
+		$sql->query("SELECT * " . 
+					"FROM " . $default->owl_folders_user_roles_table . " AS FURL INNER JOIN " . $default->owl_roles_table . " AS R ON FURL.role_type_id = R.id " .
+					"WHERE folder_id = " . $iFolderID . " " .
+					"AND user_id = " . $_SESSION["userID"] . " " .
+					"AND R.can_read = 1");
 		if ($sql->next_record()) {
 			return true;
 		}
@@ -308,15 +314,50 @@ class Permission {
 	* @return ID if role exists, false otherwise and set $_SESSION["errorMessage"]
 	*/
 	function getRoleID($sRoleName) {
-		global $default, $lang_database_error;
+		global $default, $lang_err_database;
 		if (roleExists($sRoleName)) {
 			$sql = new Owl_DB();
 			$sql->query("SELECT id FROM " . $default->owl_roles_table . " WHERE name = '" . $sRoleName . "'");
 			$sql->next_record();
 			return $sql->f("id");	
 		}
-		$_SESSION["errorMessage"] = $lang_database_error;
+		$_SESSION["errorMessage"] = $lang_err_database;
 		return false;
+	}
+	
+	/**
+	* Check if the current user is a system administrator
+	*
+	* @return boolean true is user is system administrator, false otherwise and set $_SESSION["errorMessage"]
+	*
+	*/
+	function userIsSystemAdministrator() {
+		global $default, $lang_err_database;
+		$sql = new Owl_DB();
+		$sql->query("SELECT UGL.group_id " . 
+					"FROM $default->owl_users_groups_table AS UGL INNER JOIN $default->owl_groups_table AS GL ON UGL.group_id = GL.id " .
+					"WHERE UGL.user_id = " . $_SESSION["userID"] . " " .
+					"AND is_sys_admin = 1";);		
+		return $sql->next_record();
+	}
+	
+	/**
+	* Checks if the current user is the unit administrator
+	* for the unit to which the folder belongs
+	*
+	*
+	* @param 	int		Primary key of folder to check
+	*
+	* @return boolean true if the user is the unit administrator for the unit to which the folder belongs, false otherwise
+	*/
+	function userIsUnitAdministrator($iFolderID) {
+		$sql = new Owl_DB();
+		$sql->query("SELECT UGL.group_id " .
+			"FROM $default->owl_users_groups_table AS UGL INNER JOIN $default->owl_groups_units_table AS GUL ON GUL.group_id = UGL.group_id " .
+			"INNER JOIN $default->owl_groups_table AS GL ON GL.id = UGL.group_id " .
+			"WHERE UGL.user_id = " . $_SESSION["userID"] . " " .
+			"AND GL.is_unit_admin = 1";);
+		return $sql->next_record();
 	}
 	
 	
