@@ -24,6 +24,37 @@ function isEmailAddr(email)
   return result;
 }
 
+function isBlank(formField) {
+	var result = false;
+    if (formField){
+        switch(formField.type){
+            case "select-one":
+                if (formField.selectedIndex == 0 || formField.options[formField.selectedIndex].text == "" || formField.options[formField.selectedIndex].text == "None"){
+                    result = true;
+                }
+                break;
+            case "select-multiple":
+                if (formField.selectedIndex == -1){
+                    result = true;
+                }
+                break;
+            case "text":
+            case "textarea":
+                if (formField.value == "" || formField.value == null){
+                    result = true;
+                }
+                break;
+            default:
+                if (formField.value == "" || formField.value == null){
+                    result = true;
+                }
+        }
+    } else {
+		result = true;
+    }
+    return result;
+}
+
 function validRequired(formField,fieldLabel)
 {
 	var result = true;
@@ -155,15 +186,15 @@ function validDate(formField,fieldLabel,required)
   
  	if (result)
  	{
- 		var elems = formField.value.split("/");
+ 		var elems = formField.value.split("-");
  		
  		result = (elems.length == 3); // should be three components
  		
  		if (result)
  		{
- 			var month = parseInt(elems[0],10);
-  			var day = parseInt(elems[1],10);
- 			var year = parseInt(elems[2],10);
+ 			var year = parseInt(elems[0],10);
+  			var month = parseInt(elems[1],10);
+ 			var day = parseInt(elems[2],10);
 			result = allDigits(elems[0]) && (month > 0) && (month < 13) &&
 					 allDigits(elems[1]) && (day > 0) && (day < 32) &&
 					 allDigits(elems[2]) && ((elems[2].length == 2) || (elems[2].length == 4));
@@ -171,7 +202,7 @@ function validDate(formField,fieldLabel,required)
  		
   		if (!result)
  		{
- 			alert('Please enter a date in the format MM/DD/YYYY for the "' + fieldLabel +'" field.');
+ 			alert('Please enter a date in the format YYYY-MM-DD for the "' + fieldLabel +'" field.');
 			formField.focus();		
 		}
 	} 
