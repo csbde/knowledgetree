@@ -28,7 +28,7 @@ class Authenticator {
         if ($this->checkPassword($sUserName, $sPassword)) {
             // retrieve the userID
             $iUserID = lookupID($default->owl_users_table, "username", "$sUserName");
-            $default->log->info("Authenticator::login authenticated user, id=$iUserID");
+            $default->log->info("Authenticator::login authenticated ($sUserName, $sPassword), id=$iUserID");
             if ($iUserID) {
                 // add this to the return array
                 $aUserDetails["userID"] = $iUserID;
@@ -37,11 +37,12 @@ class Authenticator {
                 Session::removeStaleSessions($aUserDetails["userID"]);
 
                 // Check if Maxsessions has been reached
-                // lookup maxsessions
+                // FIXME: make this check work before production install
                 $maxSessions = lookupField($default->owl_users_table, "max_sessions", "id", $iUserID);
+                $default->log->debug("maxsessions=$maxSessions for userID=$iUserID");
                 $sql = $default->db;
                 if ($sql->query("SELECT * FROM $default->owl_sessions_table WHERE user_id = '".$aUserDetails["user_id"]."'")) {
-                    if ($sql->num_rows($sql) >= $maxSessions) {
+                    if ($sql->num_rows() >= $maxSessions) {
                         // return too many sessions status code
                         $aUserDetails["status"] = 3;
                     } else {
@@ -61,6 +62,7 @@ class Authenticator {
                 $aUserDetails["status"] = 0;
             }
         } else {
+            $default->log->info("Authenticator::login login failed ($sUserName, $sPassword)");        
             // authentication failed
             $aUserDetails["status"] = 0;
         }
@@ -73,9 +75,9 @@ class Authenticator {
      * @param int the ID of user logging out
      * @param string the user's sessionID
      */
-    function logout($iUserID, $iSessionID) {
+    function logout() {
         // remove session from db
-        Session::destroy($iSessionID);
+        Session::destroy();
     }
 
     /**
