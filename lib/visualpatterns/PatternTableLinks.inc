@@ -56,7 +56,7 @@ class PatternTableLinks {
 		global $default;
 
 		$iArraySize = count($this->aLinks);
-		$iArrayCount = 1;		 
+		$iArrayCount = 0;		 
 		$sToRender = "<table border=0 width=\"100%\" cellspacing = \"0\">\n";		
 		
 		//build the table
@@ -77,8 +77,11 @@ class PatternTableLinks {
 					}
 					$iArrayCount++;
 				}
-				$sToRender .= "<td cellspacing=\"20\" width=\"100%\">" . (strlen($sLink) > 0 ? $sLink : "&nbsp;") . "</td>";
-				$sToRender .= "</tr><tr></tr><tr/><tr/><tr/><tr><td></td>\n";
+				
+				if (strlen($sLink) > 0) {
+					$sToRender .= "<td cellspacing=\"20\" width=\"100%\">$sLink</td>";
+				}
+				$sToRender .= "</tr><tr></tr><tr/><tr/><tr/><tr><td></td>\n";				
 			}
 			$sToRender .= "</tr>\n";
 		}		
