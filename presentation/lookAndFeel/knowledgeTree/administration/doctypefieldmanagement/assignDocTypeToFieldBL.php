@@ -13,7 +13,6 @@ if (checkSession()) {
     require_once("$default->fileSystemRoot/lib/visualpatterns/PatternListBox.inc");
     require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCreate.inc");
     require_once("assignDocTypeToFieldUI.inc");
-    require_once("../adminUI.inc");
     require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentField.inc");
     require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentType.inc");
     require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentTypeFieldLink.inc");

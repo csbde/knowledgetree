@@ -9,7 +9,6 @@
 */
 
 require_once("../../../../../config/dmsDefaults.php");
-require_once("../adminUI.inc");
 
 global $default;
 
