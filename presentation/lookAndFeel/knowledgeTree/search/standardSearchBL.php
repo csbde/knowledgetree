@@ -71,7 +71,7 @@ if (checkSession()) {
 							
 			case "documentType" :
 							//user was browsing by document type - search all documents in that doc type
-							if (!$fDocumentTypeID) {
+							if (!$fDocTypeID) {
 								//no document type specified, so just start at the root folder
 								$fFolderID = 0;
 								$sFolderString = getApprovedFolderString($fFolderID);
@@ -81,7 +81,12 @@ if (checkSession()) {
                                 $main->setCentralPayload($oPatternCustom);
                                 $main->render();			
 							} else {
-								//TODO ONCE DOC TYPE/FOLDERS HAVE BEEN CHANGED
+								$sDocumentString = getApprovedDocsDocType($fDocTypeID);
+								require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
+								$oPatternCustom = & new PatternCustom();
+                                $oPatternCustom->setHtml(getPage($fStandardSearchString, $fBrowseType, $fFolderID, $fDocumentID, $fCategoryName, $fDocType, $sDocumentString, $fStartIndex, getSQLSearchString($fStandardSearchString), true));
+                                $main->setCentralPayload($oPatternCustom);
+                                $main->render();								
 							}
 							break;
 			default:
@@ -116,16 +121,6 @@ if (checkSession()) {
 			$main->setHasRequiredFields(true);
 			$main->render();							
 		}
-}
-
-
-function searchByFolder($iFolderID, $sSearchText) {
-	global $default;
-	//get a list of documents in the folder
-	//TODO - CHECK THAT USER HAS READ RIGHTS TO THIS FOLDER
-	echo getSearchByFolderPage($iFolderID, $sSearchText);
-	
-	
 }
 
 function getApprovedFolderString($iFolderID) {
@@ -231,13 +226,24 @@ function searchByCategory($sCategoryName) {
 	
 }
 
-function searchByDocType($iDocTypeID) {
+function getApprovedDocsDocType($iDocTypeID) {
+	global $default;
+	$sQuery = "SELECT D.id " . 
+			"FROM $default->owl_documents_table AS D " .
+			"WHERE D.document_type_id = $iDocTypeID";
 	
+	$sql = $default->db;
+	$sql->query($sQuery);	
+	while ($sql->next_record()) {
+		if (Permission::userHasDocumentReadPermission($sql->f("id"))) {					
+			$aDocuments[count($aDocuments)] = $sql->f("id");
+		}
+		if (count($aDocuments) > 0) {
+			return implode(",", $aDocuments);
+		}
+	}
+	return "0";
 }
-
-
-
-
 
 ?>
 
