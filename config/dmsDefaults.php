@@ -177,6 +177,7 @@ $default->siteMap->addPage("modifyFolderCollaboration", "/presentation/lookAndFe
 $default->siteMap->addPage("addFolderCollaboration", "/presentation/lookAndFeel/knowledgeTree/foldermanagement/addFolderCollaborationBL.php", "Manage Documents", User, "", false);
 $default->siteMap->addPage("deleteFolderCollaboration", "/presentation/lookAndFeel/knowledgeTree/foldermanagement/deleteFolderCollaborationBL.php", "Manage Documents", User, "", false);
 $default->siteMap->addPage("viewDependantDocument", "/presentation/lookAndFeel/knowledgeTree/foldermanagement/viewDependantDocumentsBL.php", "Manage Documents", User, "", false);
+$default->siteMap->addPage("deleteDependantDocument", "/presentation/lookAndFeel/knowledgeTree/foldermanagement/deleteDependantDocumentBL.php", "Manage Documents", User, "", false);
 
 $default->siteMap->addPage("addSubscription", "/presentation/lookAndFeel/knowledgeTree/subscriptions/addSubscriptionBL.php", "Manage Documents", User, "Add Folder Subscription");
 $default->siteMap->addPage("removeSubscription", "/presentation/lookAndFeel/knowledgeTree/subscriptions/removeSubscriptionBL.php", "Manage Documents", User, "Remove Folder Subscription");
