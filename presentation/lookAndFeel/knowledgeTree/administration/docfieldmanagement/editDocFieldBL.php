@@ -23,12 +23,13 @@ if (checkSession()) {
 	$oPatternCustom = & new PatternCustom();		
 	
 	 if (isset($fForStore)) {
+
 		$oDocField = DocumentField::get($fDocFieldID);
 		$oDocField->setName($fDocFieldName);
 		$oDocField->setDataType($fDocFieldDataType);
 		
-		//check if checkbox checked
-		if (isset($fDocFieldIsGeneric)) {
+		//check if checkbox checked || hidden value
+		if ($fDocFieldIsGeneric) {
 			$oDocField->setIsGeneric(true);
 		} else {
 			$oDocField->setIsGeneric(false);
@@ -49,8 +50,9 @@ if (checkSession()) {
 					controllerRedirect("addMetaDataForField", "fDocFieldID=$fDocFieldID");
 				}
 			}
-			// otherwise, print out success message
-			$oPatternCustom->setHtml(getEditPageSuccess());
+			// otherwise, go to the list page
+			controllerRedirect("listDocFields", "");
+			//$oPatternCustom->setHtml(getEditPageSuccess());
 		} else {
 			// if fail print out fail message
 			$oPatternCustom->setHtml(getEditPageFail());
