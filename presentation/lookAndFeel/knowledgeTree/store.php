@@ -86,7 +86,7 @@ for ($i = 0; $i < count($aKeys); $i++) {
 			}
 			switch ($aTypes[count($aColumns) - 1]) {
 				case 0:
-						//text
+						//id
 						$sQuery .= $aValues[count($aColumns) - 1] . ") ";
 						break;
 				case 1:
@@ -105,7 +105,35 @@ for ($i = 0; $i < count($aKeys); $i++) {
 			echo $sQuery. "<br>";
 		} else {
 			//perform an update
-			//$sQuery
+			$sQuery = "UPDATE $sTableName SET ";
+			for ($j = 0; $j < count($aColumns) -1; $j++) {
+				$sQuery .= $aColumns[$j] . " = ";
+				switch ($aTypes[$j]) {
+					case 0:
+						//id
+						$sQuery .= $aValues[$j] . ", ";
+						break;
+					case 1:
+						$sQuery .= "'" . addslashes($aValues[$j]) . "', ";
+						break;
+					default:
+						break;
+				}
+			}
+			$sQuery .= $aColumns[count($aTypes) -1] . " = ";
+			switch ($aTypes[count($aTypes) -1]) {
+				case 0:
+						//id
+						$sQuery .= $aValues[count($aTypes) -1] . " ";
+						break;
+					case 1:
+						$sQuery .= "'" . addslashes($aValues[count($aTypes) -1]) . "' ";
+						break;
+					default:
+						break;
+				}			
+			$sQuery .= "WHERE id = $iPrimaryKey";		
+			echo $sQuery. "<br>";
 		}
 		
 	}
