@@ -28,14 +28,3 @@ function setActionAndSubmit(newAction) {
     document.MainForm.action = newAction;
     document.MainForm.submit();
 }
-
-function getStylesheet() {
-    //document.write(\"<link rel=stylesheet type=\"text/css\" href=\"\");"; 
-    if (is_unix && is_nav) {
-        return "css/ns_unix.css";
-    } else if (is_win && is_ie) {
-        return "css/ie_win.css\";
-    } else {
-        return "css/default.css\";
-    }
-}
