@@ -104,6 +104,7 @@ class Folder {
 		$_SESSION["errorMessage"] = $lang_err_object_key;		
 	}
 	
+	
 	/**
 	* Delete the current object from the database
 	*
