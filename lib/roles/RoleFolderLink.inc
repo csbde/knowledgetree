@@ -17,6 +17,7 @@ class RoleFolderLink {
 	var $iRoleTypeID;
 	var $dDateTime;
 	var $bDone;
+	var $bActive;
 	
 	/**
 	* Default constructor
@@ -37,6 +38,7 @@ class RoleFolderLink {
 		$this->dDateTime = null;
 		//task cannot be done yet
 		$this->bDone = false;
+		$this->bActive = false;
 	}
 	
 	/**
@@ -160,7 +162,7 @@ class RoleFolderLink {
 		//if the object hasn't been created
 		if ($this->iId < 0) {
 			$sql = $default->db;
-			$result = $sql->query("INSERT INTO " . $default->owl_folders_user_roles_table . " (user_id, folder_id, role_type_id, datetime, done) VALUES ($this->iUserID, $this->iFolderID, $this->iRoleTypeID, '$this->dDateTime', " . ($this->bDone ? 1 : 0) . ")");
+			$result = $sql->query("INSERT INTO " . $default->owl_folders_user_roles_table . " (user_id, folder_id, role_type_id, datetime, done, active) VALUES ($this->iUserID, $this->iFolderID, $this->iRoleTypeID, '$this->dDateTime', " . ($this->bDone ? 1 : 0) . "), " . ($this->bActive ? 1 : 0) . ")");
 			if ($result) {
 				$this->iId = $sql->insert_id();
 				return  true;
@@ -183,7 +185,7 @@ class RoleFolderLink {
 		//only update if the object has been stored
 		if ($this->iId > 0) {
 			$sql = $default->db;
-			$result = $sql->query("UPDATE " . $default->owl_folders_user_roles_table . " SET user_id = $this->iUserID, folder_id = $this->iFolderID, role_type_id = $this->iRoleTypeID, datetime = '$this->dDateTime', done = " . ($this->bDone ? 1 : 0) . " WHERE id = $this->iId");
+			$result = $sql->query("UPDATE " . $default->owl_folders_user_roles_table . " SET user_id = $this->iUserID, folder_id = $this->iFolderID, role_type_id = $this->iRoleTypeID, datetime = '$this->dDateTime', done = " . ($this->bDone ? 1 : 0) . ", active = " . ($this->bActive ? 1 : 0) . " WHERE id = $this->iId");
 			if ($result) {
 				return true;
 			}
@@ -230,7 +232,9 @@ class RoleFolderLink {
 		$result = $sql->query("SELECT * FROM $default->owl_folders_user_roles_table WHERE id = $iRolesFoldersID");
 		if ($result) {
 			if ($sql->next_record()) {
-				$oRolesFoldersLink = & new RoleFolderLink($sql->f("user_id"), $sql->f("folder_id"), $sql->f("role_type_id"), $sql->f("datetime"), $sql->f("done"));
+				$oRolesFoldersLink = & new RoleFolderLink($sql->f("user_id"), $sql->f("folder_id"), $sql->f("role_type_id"), $sql->f("datetime"));
+				$oRolesFoldersLink->bDone = $sql->f("done");
+				$oRolesFoldersLink->bActive = $sql->f("active");
 				$oRolesFoldersLink->iId = $iRolesFoldersID;
 				return $oRolesFoldersLink;
 			}
