@@ -127,6 +127,8 @@ foreach ($aPermissions as $aRow) {
     }
 }
 
+$oFolder->updatePermissions();
+
 controllerRedirect("editFolder", "fFolderID=$fFolderID&fShowSection=folderPermissions");
 
 ?>
