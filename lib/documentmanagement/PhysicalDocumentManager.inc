@@ -27,21 +27,20 @@ class PhysicalDocumentManager {
 	* @param 	Array containing file information.  Must match $_FILES exactly
 	* @param 	Primary key of folder in which document will be stored
 	* @param 	Document description (should be passed through as a form variable)
-	* @param	Temporary path of file on server (get from $aFileArray['upfile']['tmp_name'])
+	* @param	Temporary path of file on server (get from $aFileArray['fFile']['tmp_name'])
 	*
 	* @return boolean true on successful upload and storage, false otherwise and set $_SESSION["errorMessage"]
 	*
 	* @todo add URL functionality
 	*/
 	
-	function uploadPhysicalDocument($aFileArray, $iFolderID, $sDescription, $sTmpFilePath) {
+	/*function uploadPhysicalDocument($aFileArray, $iFolderID, $sDescription, $sTmpFilePath) {
 		global $lang_fileexists, $lang_err_upload, $lang_err_database;
 		//create the document object
 		$oDocument = & PhysicalDocumentManager::createDocumentFromUploadedFile($aFileArray, $iFolderID);
 		$oDocument->setDescription($sDescription);		
 		//find the path on the system where the document should be stored
-		$sDocumentFileSystemPath = Folder::getFolderPath($oDocument->getFolderID()) . "/" . $oDocument->getName();
-		var_dump($sDocumentFileSystemPath);
+		$sDocumentFileSystemPath = Folder::getFolderPath($oDocument->getFolderID()) . "/" . $oDocument->getName();		
 		//copy the file accross
 		if (copy($sTmpFilePath, $sDocumentFileSystemPath)) {
 			//create the object in the database			
@@ -57,6 +56,21 @@ class PhysicalDocumentManager {
 				unlink($sTmpFilePath);
 				return false;
 			}
+		} else {
+			$_SESSION["errorMessage"] = $lang_err_upload;
+			return false;
+		}
+	}*/
+	
+	function uploadPhysicalDocument($oDocument, $iFolderID, $sDescription, $sTmpFilePath) {
+		global $lang_fileexists, $lang_err_upload, $lang_err_database;				
+		//find the path on the system where the document should be stored
+		$sDocumentFileSystemPath = Folder::getFolderPath($oDocument->getFolderID()) . "/" . $oDocument->getName();		
+		//copy the file accross
+		if (copy($sTmpFilePath, $sDocumentFileSystemPath)) {						
+			//remove the temporary file
+			unlink($sTmpFilePath);
+			return true;		
 		} else {
 			$_SESSION["errorMessage"] = $lang_err_upload;
 			return false;
@@ -130,7 +144,8 @@ class PhysicalDocumentManager {
 	*/
 	function & createDocumentFromUploadedFile($aFileArray, $iFolderID) {
 		//get the uploaded document information and put it into a document object		
-		$oDocument = & new Document($aFileArray['upfile']['name'], $aFileArray['upfiler']['name'], $aFileArray['upfile']['size'], $_SESSION["userID"], PhysicalDocumentManager::getMimeTypeID($aFileArray['upfile']['type']), $iFolderID);
+		//$oDocument = & new Document($aFileArray['fFile']['name'], $aFileArray['fFiler']['name'], $aFileArray['fFile']['size'], $_SESSION["userID"], PhysicalDocumentManager::getMimeTypeID($aFileArray['fFile']['type']), $iFolderID);
+		$oDocument = & new Document($aFileArray['name'], $aFileArray['name'], $aFileArray['size'], $_SESSION["userID"], PhysicalDocumentManager::getMimeTypeID($aFileArray['type']), $iFolderID);
 		return $oDocument;	
 	}
 	
