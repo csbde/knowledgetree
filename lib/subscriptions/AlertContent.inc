@@ -32,30 +32,32 @@ class AlertContent {
                                SubscriptionConstants::subscriptionAlertType("RemoveDocument") => $sSubject . "Removed Document",
                                SubscriptionConstants::subscriptionAlertType("ModifyDocument") => $sSubject . "Modified Document");
 
+        $sViewAlertUrl = "/presentation/lookAndFeel/knowledgeTree/subscriptions/viewAlertBL.php";
+        $sViewAlertParams = "fSubscriptionID=" . $aValues["subscriptionID"] . "&fSubscriptionType=" . $aValues["subscriptionType"];
         $aAlertContent = array(SubscriptionConstants::subscriptionAlertType("AddFolder") =>
                                "A new folder '" . $aValues["newFolderName"] . "' has been added to folder '" . $aValues["parentFolderName"] . "'.<br>" .
                                "Please clear this subscription alert by clicking on the following link: " .
-                               "<a href=\"https://" . $_SERVER["SERVER_NAME"] . "/presentation/lookAndFeel/knowledgeTree/subscriptions/viewAlertBL.php?fSubscriptionID=" . $aValues["subscriptionID"] . "&fSubscriptionType=" . $aValues["subscriptionType"] . "\">" . $aValues["parentFolderName"] . "</a>",
+                               generateLink($sViewAlertUrl, $sViewAlertParams, $aValues["parentFolderName"]),
 
                                SubscriptionConstants::subscriptionAlertType("RemoveFolder") =>
                                        "The folder '" . $aValues["removedFolderName"] . "' has been removed from folder '" . $aValues["parentFolderName"] . "'.<br>" .
                                        "Please clear this subscription alert by clicking on the following link: " .
-                                       "<a href=\"https://" . $_SERVER["SERVER_NAME"] . "/presentation/lookAndFeel/knowledgeTree/subscriptions/viewAlertBL.php?fSubscriptionID=" . $aValues["subscriptionID"] . "&fSubscriptionType=" . $aValues["subscriptionType"] . "\">" . $aValues["parentFolderName"] . "</a>",
+                                       generateLink($sViewAlertUrl, $sViewAlertParams, $aValues["parentFolderName"]),
 
                                SubscriptionConstants::subscriptionAlertType("AddDocument") =>
                                        "A new document '" . $aValues["newDocumentName"] . "' has been added to folder '" . $aValues["folderName"] . "'.<br>" .
                                        "Please clear this subscription alert by clicking on the following link: " .
-                                       "<a href=\"https://" . $_SERVER["SERVER_NAME"] . "/presentation/lookAndFeel/knowledgeTree/subscriptions/viewAlertBL.php?fSubscriptionID=" . $aValues["subscriptionID"] . "&fSubscriptionType=" . $aValues["subscriptionType"] . "\">" . $aValues["newDocumentName"] . "</a>",
+                                       generateLink($sViewAlertUrl, $sViewAlertParams, $aValues["newDocumentName"]),
 
                                SubscriptionConstants::subscriptionAlertType("RemoveDocument") =>
                                        "The document '" . $aValues["removedDocumentName"] . "' has been removed from folder '" . $aValues["folderName"] . "'.<br>" .
                                        "Please clear this subscription alert by clicking on the following link: " .
-                                       "<a href=\"https://" . $_SERVER["SERVER_NAME"] . "/presentation/lookAndFeel/knowledgeTree/subscriptions/viewAlertBL.php?fSubscriptionID=" . $aValues["subscriptionID"] . "&fSubscriptionType=" . $aValues["subscriptionType"] . "\">" . $aValues["folderName"] . "</a>",
+                                       generateLink($sViewAlertUrl, $sViewAlertParams, $aValues["folderName"]),
 
                                SubscriptionConstants::subscriptionAlertType("ModifyDocument") =>
                                        "The document '" . $aValues["modifiedDocumentName"] . "' has been modified.<br>" .
                                        "Please clear this subscription alert by clicking on the following link: " .
-                                       "<a href=\"https://" . $_SERVER["SERVER_NAME"] . "/presentation/lookAndFeel/knowledgeTree/subscriptions/viewAlertBL.php?fSubscriptionID=" . $aValues["subscriptionID"] . "&fSubscriptionType=" . $aValues["subscriptionType"] . "\">" . $aValues["modifiedDocumentName"] . "</a>");
+                                       generateLink($sViewAlertUrl, $sViewAlertParams, $aValues["modifiedDocumentName"]));
 
         return array ("subject" => $aAlertSubject[$iSubscriptionAlertType],
                       "text" => "Hello " . $aValues["subscriberName"] . "<br><br>" . $aAlertContent[$iSubscriptionAlertType]);

@@ -171,7 +171,7 @@ class SiteMap {
                             $results["descriptions"][] = $sql->f("link_text");
                             // if fFolderID is set and fFolderID is in the page string
                             // append folderID to the controller link
-                            $results["links"][] = $fFolderID ? generateControllerUrl($sql->f("action"), "fFolderID=$fFolderID") : generateControllerUrl($sql->f("action"));
+                            $results["links"][] = $fFolderID ? generateControllerLink($sql->f("action"), "fFolderID=$fFolderID") : generateControllerLink($sql->f("action"), "");
                         }
                     }
                 }
@@ -216,7 +216,7 @@ class SiteMap {
                             $results["descriptions"][] = $pages[$action]["description"];
                             // if fFolderID is set and fFolderID is in the page string
                             // append folderID to the controller link
-                            $results["links"][] = $fFolderID ? generateControllerUrl($action, "fFolderID=$fFolderID") : generateControllerUrl($action);
+                            $results["links"][] = $fFolderID ? generateControllerLink($action, "fFolderID=$fFolderID") : generateControllerLink($action, "");
                         }
                     }
                 }
