@@ -148,7 +148,7 @@ class PatternTableSqlQuery {
 								if ($sql->f($this->aColumns[$i]) != null) {	 							
 									$sToRender .= wordwrap(stripslashes($sql->f($this->aColumns[$i])), 25, " ", 1) . "</td>";
 								} else {
-									$sToRender .= "&nbsp</td>";
+									$sToRender .= "&nbsp;</td>";
 								}
 								break;
 						case 2:
@@ -163,7 +163,7 @@ class PatternTableSqlQuery {
 									}
 									$sToRender .= "&nbsp;</td>";	
 								} else {
-									$sToRender .= "&nbsp</td>";
+									$sToRender .= "&nbsp;</td>";
 								}							
 
 								break;
