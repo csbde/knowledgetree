@@ -48,15 +48,13 @@ function controllerRedirect($sAction, $sQueryString) {
 function generateLink($sTargetPage, $sQueryString, $sLinkText = "") {
     global $default;
 
-    $default->log->debug("generateLink ($sTargetPage, $sQueryString, $sLinkText)");
-
     if (strlen($sQueryString) > 0) {
         $sQueryStringDelimiter = (strstr($sTargetPage, "?") ? "&" : "?");
     }
     $sLink = "http" . ($default->sslEnabled ? "s" : "") . "://" . $default->serverName . 
              ((substr($sTargetPage, 0, strlen($default->owl_root_url)) != $default->owl_root_url) ? $default->owl_root_url : "") . 
              $sTargetPage . $sQueryStringDelimiter . $sQueryString;
-    $default->log->debug("generateLink: returning $sLink");
+
     return (strlen($sLinkText) > 0) ? "<a href=\"$sLink\">$sLinkText</a>" : $sLink;
 }
 
