@@ -110,7 +110,7 @@ if (checkSession()) {
 			
 			$sReplyBody = $oComment->getBody();			
 			
-			$sReplyBodyHeader .= "\n\n\n>------ Original Message ------";
+			$sReplyBodyHeader .= "\n\n\n\n\n>------ Original Message ------";
 			$sReplyBodyHeader .= "\n>User:     " . $oUser->getName();
 			$sReplyBodyHeader .= "\n>Date:     " . $oComment->getDate();
 			$sReplyBodyHeader .= "\n>Subject: " . $oComment->getSubject();
