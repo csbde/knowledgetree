@@ -12,12 +12,38 @@
  * @package presentation.lookAndFeel.knowledgeTree.documentmanagement
  */
  
+
+/* only used when users choose a template document when setting up document linking
+ * on the folder collaboration page.  Formats the link so that the child window
+ * lanuched by the javascript feeds back to the parent window 
+*/ 
+function displayDocumentLinkForTemplateBrowsing($oDocument, $bDisplayFullPath = false) {
+	global $default;
+    
+    $sIconUrl = $oDocument->getMimeTypeIconUrl();
+    $sIconPath = ($sIconUrl ? generateImage($sIconUrl) : generateImage("$default->graphicsUrl/unknown.gif"));
+
+    $sLinkText = $oDocument->getName();
+    if ($bDisplayFullPath) {
+        // prepend folder path
+        $sLinkText = Folder::getFolderDisplayPath($oDocument->getFolderID()) . " > " . $sLinkText;
+    }
+     
+
+    return generateLinkForTemplateDocumentBrowse("$default->rootUrl/control.php", 
+                        "action=viewDocument&fDocumentID=" . $oDocument->getID(),
+                        $sIconPath . "&nbsp;" . $sLinkText, $oDocument->getName(), $oDocument->getID());
+	
+	
+}
+
 /**
  * Displays a link to view document details
  * 
  * @param object the document to display
  * @param boolean whether to display the entire path to the document or not
  */
+ 
 function displayDocumentLink($oDocument, $bDisplayFullPath = false) {
     global $default;
     
