@@ -132,6 +132,7 @@ $default->owl_time_period_table = "time_period";
 $default->owl_time_unit_lookup_table = "time_unit_lookup";
 $default->owl_archive_restoration_table = "archive_restoration_request";
 $default->owl_status_table = "status_lookup";
+$default->search_permissions_table = "search_document_user_link";
 
 // logo file that must reside inside lang/graphics directory
 $default->logo = "kt.jpg";
@@ -412,6 +413,7 @@ require_once("$default->fileSystemRoot/presentation/Html.inc");
 $default->phpSniff = new phpSniff($_SERVER["HTTP_USER_AGENT"]);
 $default->browser = $default->phpSniff->property("browser");
 $default->version = $default->phpSniff->property("version");
+$default->bNN4 = ($default->browser == "moz") && ($default->version <= "4.79");
 
 require_once("$default->fileSystemRoot/lib/Log.inc");
 $default->log = new Log($default->fileSystemRoot . "/log", INFO);
