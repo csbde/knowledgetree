@@ -168,13 +168,13 @@ class NavBar {
 
         $toRender = new PatternCustom;
 
-        //bar is the actaul html creation of the nav bar
+        // build the nav bar
         $bar  = "<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\">\n";
         $bar .= "\t<tr height=\"30\">\n";
-        $bar .= "\t\t<td background=\"$hStretched\" width=\"100%\"><img src=\"$heading\"/></td>\n";
+        $bar .= "\t\t<td align=\"right\" valign=\"top\" width=\"100%\"><img src=\"$heading\"/><img src=\"$default->graphicsUrl/logo.jpg\"/></td>\n";        
         $bar .= "\t</tr>\n";
         $bar .= "\t<tr height=\"30\">\n";
-        $bar .= "\t\t<td bgcolor=\"#1A4383\" width=\"100%\" nowrap>";
+        $bar .= "\t\t<td colspan=\"2\" bgcolor=\"#1A4383\" width=\"100%\" nowrap>";
         $bar .= "<img align=\"absmiddle\" src=\"$default->graphicsUrl/arrow.gif\" ></img>\n";
 
         $bar .= "<INPUT type=\"hidden\" name=\"fForStandardSearch\" value=\"no\" />\n ";
