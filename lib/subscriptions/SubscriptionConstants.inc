@@ -47,3 +47,4 @@ class SubscriptionConstants {
         return $aChangeType[$sType];
     }
 }
+?>
