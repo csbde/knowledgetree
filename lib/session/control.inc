@@ -129,12 +129,13 @@ function generateControllerLink($sAction, $sQueryString, $sLinkText = "") {
  * if the redirect parameter is true.
  *
  * @param boolean whether to automatically redirect to the login page on session verification failure
+ * @param boolean optional parameter set if we're downloading a file
  */
-function checkSessionAndRedirect($bRedirect) {
+function checkSessionAndRedirect($bRedirect, $bDownload = false) {
     global $default;
 
     $session = new Session();
-    $sessionStatus = $session->verify();
+    $sessionStatus = $session->verify($bDownload);
 
     if ($sessionStatus != 1) {
         // verification failed
@@ -170,10 +171,11 @@ function checkSessionAndRedirect($bRedirect) {
 /**
  * Verifies the current session
  * Automatically redirects to the login page on session verification failure
+ * @param boolean optional parameter set if we're downloading a file 
  */
-function checkSession() {
+function checkSession($bDownload = false) {
     global $default;
-    if (checkSessionAndRedirect(true)) {
+    if (checkSessionAndRedirect(true, $bDownload)) {
         $default->log->debug("control.inc: print the session variables: " . arrayToString($_SESSION));
         // the session is cool, now check if we access to this page
         $default->log->debug("control.inc: page=" . $_SERVER['PHP_SELF'] . " ? " . $_SESSION["pageAccess"][$_SERVER['PHP_SELF']]);

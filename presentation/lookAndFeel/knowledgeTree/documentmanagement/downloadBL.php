@@ -36,7 +36,8 @@ require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentTransactio
 require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
 
-if (checkSession()) {
+// start the session for a download- workaround for the IE SSL bug
+if (checkSession(true)) {
     if (isset($fDocumentID)) {
     	$oDocument = Document::get($fDocumentID);
     	if (Permission::userHasDocumentReadPermission($fDocumentID)) {
