@@ -347,7 +347,7 @@ class Document extends KTEntity {
             'folder_id' => $this->iFolderID,
             'major_version' => $this->iMajorVersion,
             'minor_version' => $this->iMinorVersion,
-            'is_checked_out' => $this->bIsCheckedOut,
+            'is_checked_out' => KTUtil::anyToBool($this->bIsCheckedOut),
             'checked_out_user_id' => $this->iCheckedOutUserID,
             'parent_folder_ids' => $this->sParentFolderIDs,
             'full_path' => $this->sFullPath,

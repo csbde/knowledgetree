@@ -130,8 +130,8 @@ class Group extends KTEntity {
     function _fieldValues () {
         return array(
             'name' => $this->sName,
-            'is_sys_admin' => $this->bIsSysAdmin,
-            'is_unit_admin' => $this->bIsUnitAdmin,
+            'is_sys_admin' => KTUtil::anyToBool($this->bIsSysAdmin),
+            'is_unit_admin' => KTUtil::anyToBool($this->bIsUnitAdmin),
         );
     }
 

@@ -127,7 +127,7 @@ class DocumentTypeFieldLink extends KTEntity {
         return array(
             'document_type_id' => $this->iDocumentTypeID,
             'field_id' => $this->iFieldID,
-            'is_mandatory' => $this->bIsMandatory,
+            'is_mandatory' => KTUtil::anyToBool($this->bIsMandatory),
         );
     }
 

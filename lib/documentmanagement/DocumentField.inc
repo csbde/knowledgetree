@@ -152,8 +152,8 @@ class DocumentField extends KTEntity {
         return array(
             'name' => $this->sName,
             'data_type' => $this->sDataType,
-            'is_generic' => $this->bIsGeneric,
-            'has_lookup' => $this->bHasLookup,
+            'is_generic' => KTUtil::anyToBool($this->bIsGeneric),
+            'has_lookup' => KTUtil::anyToBool($this->bHasLookup),
         );
     }
 

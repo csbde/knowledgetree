@@ -200,7 +200,7 @@ class Subscription extends KTEntity {
         return array(
             'user_id' => $this->iUserID,
             $this->sIdFieldName => $this->iExternalID,
-            'is_alerted' => $this->bIsAlerted,
+            'is_alerted' => KTUtil::anyToBool($this->bIsAlerted),
         );
     }
 
