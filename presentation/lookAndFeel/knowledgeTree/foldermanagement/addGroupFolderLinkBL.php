@@ -42,45 +42,70 @@ include_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
 include_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
 include_once("groupFolderLinkUI.inc");                        
 
-if (checkSession()) {
-	if (isset($fFolderID)) {
-        $oPatternCustom = & new PatternCustom();
-        $oPatternCustom->setHtml("");
-        $oFolder = Folder::get($fFolderID);
-		// if a folder has been selected
-		if (Permission::userHasFolderWritePermission($oFolder)) {
-			// can only add access if the user has folder write permission
-			if (isset($fForStore)) {
-				// attempt to create the new folder access entry				
-				$oGroupFolderLink = & new GroupFolderLink($fFolderID, $fGroupID, $fCanRead, $fCanWrite);
-                // check if exists for the fFolderID, fGroupID combination
-                if (!$oGroupFolderLink->exists()) {
-                    if ($oGroupFolderLink->create()) {
-                        // on successful creation, redirect to the folder edit page
-                        controllerRedirect("editFolder", "fFolderID=$fFolderID&fShowSection=folderPermissions");                        
-                    } else {
-                        //otherwise display an error message
-                        $sErrorMessage = _("The folder access entry could not be created in the database");
-                        $oPatternCustom->setHtml(getPage($fFolderID));
-                    }
-                } else {
-                    $sErrorMessage = _("A folder access entry for the selected folder and group already exists.");
-                    $oPatternCustom->setHtml(renderErrorPage($sErrorMessage, $fFolderID));
-                }
-			} else {
-				// display the browse page
-				$oPatternCustom->setHtml(getAddPage($fFolderID));
-			}
-		}
-	} else {
-		//display an error message
-        $sErrorMessage = _("No folder currently selected");
-	}
-    
-    include_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
+if (!checkSession()) {
+    die();
+}
+include_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
+
+$oPatternCustom = & new PatternCustom();
+$oPatternCustom->setHtml("");
+
+if (!isset($fFolderID)) {
+    //display an error message
+    $sErrorMessage = _("No folder currently selected");
+    $oPatternCustom->setHtml(renderErrorPage($sErrorMessage, $fFolderID));
     $main->setCentralPayload($oPatternCustom);
     $main->setFormAction($_SERVER["PHP_SELF"] . "?fFolderID=$fFolderID&fForStore=1");
     $main->setHasRequiredFields(true);
     $main->render();    
+    exit(0);
 }
+
+$oFolder = Folder::get($fFolderID);
+// if a folder has been selected
+if (!Permission::userHasFolderWritePermission($oFolder)) {
+    $sErrorMessage = _("You do not have permission to edit this folder");
+    $oPatternCustom->setHtml(renderErrorPage($sErrorMessage, $fFolderID));
+    $main->setCentralPayload($oPatternCustom);
+    $main->setFormAction($_SERVER["PHP_SELF"] . "?fFolderID=$fFolderID&fForStore=1");
+    $main->setHasRequiredFields(true);
+    $main->render();    
+    exit(0);
+}
+
+// can only add access if the user has folder write permission
+if (!isset($fForStore)) {
+    // display the browse page
+    $oPatternCustom->setHtml(getAddPage($fFolderID));
+    $main->setCentralPayload($oPatternCustom);
+    $main->setFormAction($_SERVER["PHP_SELF"] . "?fFolderID=$fFolderID&fForStore=1");
+    $main->setHasRequiredFields(true);
+    $main->render();    
+    exit(0);
+}
+
+$oGroup =& Group::get($fGroupID);
+if (!$oGroup) {
+    $sErrorMessage = _("The given group does not exist");
+    $oPatternCustom->setHtml(renderErrorPage($sErrorMessage, $fFolderID));
+    $main->setCentralPayload($oPatternCustom);
+    $main->setFormAction($_SERVER["PHP_SELF"] . "?fFolderID=$fFolderID&fForStore=1");
+    $main->setHasRequiredFields(true);
+    $main->render();    
+    exit(0);
+}
+
+$res = $oFolder->addPermission($oGroup, $fCanRead, $fCanWrite);
+
+if (PEAR::isError($res)) {
+    $oPatternCustom->setHtml(renderErrorPage($res->getMessage(), $fFolderID));
+    $main->setCentralPayload($oPatternCustom);
+    $main->setFormAction($_SERVER["PHP_SELF"] . "?fFolderID=$fFolderID&fForStore=1");
+    $main->setHasRequiredFields(true);
+    $main->render();    
+    exit(0);
+}
+
+controllerRedirect("editFolder", "fFolderID=$fFolderID&fShowSection=folderPermissions");
+
 ?>
