@@ -107,7 +107,7 @@ class PatternBrowseableSearchResults {
 			$iDisplayed = 0;
 			//limit the result set displayed		
 			while($sql->next_record() && ($iDisplayed < $this->iResultsToDisplay)) {
-				$sToRender .= "<tr bgcolor=\"" . $this->getColour($iColour) . "\">";
+				$sToRender .= "<tr bgcolor=\"" . getColour($iColour) . "\">";
 				$iColour++;
 				
 				for ($i = 0; $i < count($this->aColumns); $i++) {
@@ -204,10 +204,5 @@ class PatternBrowseableSearchResults {
 		}
 		return 0;
 	}
-	
-	function getColour($iColourCount) {
-		return ($iColourCount%2 == 0) ? "F5F6EE" : "FFFFFF";
-	}
 }
-
 ?>

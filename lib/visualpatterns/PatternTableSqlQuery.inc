@@ -122,7 +122,7 @@ class PatternTableSqlQuery {
 		} else {
 			$iColour = 0;
 			while ($sql->next_record()) {			
-				$sToRender .= "<tr bgcolor=\"" . $this->getColour($iColour) . "\">\n";
+				$sToRender .= "<tr bgcolor=\"" . getColour($iColour) . "\">\n";
 				$iColour++;
 				for ($i = 0; $i < count($this->aColumns); $i++) {
 					switch ($this->aColumnTypes[$i]) {
@@ -186,11 +186,5 @@ class PatternTableSqlQuery {
 	function generateImageURL($sURL) {
 		return "<img src=\"" . $sURL . "\" border=\"0\"/>";
 	}
-	
-	function getColour($iColourCount) {
-		return ($iColourCount%2 == 0) ? "F5F6EE" : "FFFFFF";
-	}
-	
 }
-
 ?>
