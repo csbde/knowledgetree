@@ -1,3 +1,105 @@
+Version 2.0.1 (2005/03/11)
+
+New Features
+============
+* Pre- and Post-installation checkups.
+* Guess the values of sslEnabled and rootUrl.
+* File size in document details and as a browse criterion.
+
+Bug Fixes
+=========
+* Put labels next to the two dates in the date criteria search fields.
+* Remove check that we're not on Windows when using unzipCommand.
+* Lessen notices going into php_error_log.
+* Bring the dummy _() function out of class KTInit.
+
+Detailed ChangeLog
+==================
+
+2005-03-11 02:45  nbm
+
+	* docs/INSTALL.txt:
+
+	Point people to the pre- and post-installation checkup
+
+2005-03-11 02:31  nbm
+
+	* lib/browse/Criteria.inc:
+
+	Put labels next to the two dates in the date criteria search fields
+
+2005-03-11 02:24  nbm
+
+	* setup/precheckup.php:
+
+	Add a link to post-install checkup.
+
+2005-02-28 02:05  nbm
+
+	* lib/documentmanagement/BulkUploadManager.inc:
+
+	Remove check that we're not on Windows when using unzipCommand.
+
+2005-02-16 00:34  nbm
+
+	* lib/i18n/accept-to-gettext.inc:
+
+	Use KTUtil::arrayGet to reduce notices/warnings; we _expect_ the
+	majority of the keys not to exist in the dictionary, so no additional
+	checking code.
+
+2005-02-14 00:39  nbm
+
+	* config/dmsDefaults.php:
+
+	Add some support for postCheckup.
+
+2005-02-09 07:39  nbm
+
+	* setup/: index.php, postcheckup.php, precheckup.php:
+
+	Add some checkups that users can use to check if their environment is
+	ready for a KnowledgeTree install, and to check that their KnowledgeTree
+	configuration is working properly.
+
+2005-02-09 04:02  nbm
+
+	* config/environment.php:
+
+	sslEnabled and rootUrl are now automatically determined.  Reorganise and
+	header-ise the sections of configuration to help people figure out what
+	they might need to change.
+
+2005-02-09 03:52  nbm
+
+	* config/dmsDefaults.php:
+
+	Guess the values of sslEnabled and rootUrl, so the user doesn't have to
+	set them.
+
+	Bring the dummy _() function out of class KTInit.
+
+2005-02-07 03:30  nbm
+
+	* presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:
+
+	Display file size in Document Details.
+
+2005-02-07 03:15  nbm
+
+	* lib/browse/Criteria.inc:
+
+	Add a File Size criterion for the browser to use.  No search capability
+	(yet?).
+
+2005-02-07 01:13  nbm
+
+	* lib/documentmanagement/Document.inc:
+
+	Pass the parameters through to the query to check if the document
+	already exists in that location.
+
+
 Version 2.0.0 (2005/02/03)
 
 Bug Fixes
