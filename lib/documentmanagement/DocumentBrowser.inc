@@ -171,6 +171,8 @@ class DocumentBrowser {
             // its ok if we return an empty array- the UI's responsibility to check and print an error
             return $results;
         } else {
+            $results["categories"][] = $category;
+            
             $default->log->debug("DocumentBrowser::browseByCategory get documents for category $category");
             // we have a category to use, so find all the documents
             // with this category value
@@ -216,6 +218,7 @@ class DocumentBrowser {
         } else {
             // lookup document type name from the passed in id
             $documentTypeName = lookupField($default->owl_document_types_table, "name", "id", $documentTypeID);
+            $results["documentTypes"][] = $documentTypeName;
             
             // find all documents with this document type
             $query = "select id from $default->owl_documents_table where document_type_id=$documentTypeID";
