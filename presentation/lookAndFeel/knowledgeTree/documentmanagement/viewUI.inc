@@ -144,32 +144,40 @@ function renderDocumentArchiveSettingsDetails($oDocument, $bEditable) {
 	
 	// retrieve the appropriate settings given the document id
 	$oDocumentArchiving = DocumentArchiving::getFromDocumentID($oDocument->getID());
-	// retrieve the settings
-	$oArchiveSettings = ArchivingSettings::get($oDocumentArchiving->getArchivingSettingsID());  			
-	// switch on archiving type
-	$sArchivingType = lookupName($default->archiving_type_lookup_table, $oArchiveSettings->getArchivingTypeID());
-	$oTimePeriod = TimePeriod::get($oArchiveSettings->getTimePeriodID());
-		
-	switch ($sArchivingType) {
-		case "Date" : 
-			$sDisplayText  = "Expiration Date: " . $oArchiveSettings->getExpirationDate();
-			if ($oTimePeriod) {
-				$sDisplayText .= "<br/>Expires after " . $oTimePeriod->getUnits() . " ";
-				$sDisplayText .= lookupName($default->time_unit_lookup_table, $oTimePeriod->getTimeUnitID()) . " from document creation date";
-			}
-			break;		
-		case "Utilisation" :
-			$sDisplayText .= "Archive document " . $oTimePeriod->getUnits() . " ";
-			$sDisplayText .= lookupName($default->time_unit_lookup_table, $oTimePeriod->getTimeUnitID());
-			$sDisplayText .= " after the last " . lookupName($default->transaction_types_table, $oArchiveSettings->getDocumentTransactionID()) . " transaction";
-			break;		
-	}	
+	if ($oDocumentArchiving) {
+		// retrieve the settings
+		$oArchiveSettings = ArchivingSettings::get($oDocumentArchiving->getArchivingSettingsID());  			
+		// switch on archiving type
+		$sArchivingType = lookupName($default->archiving_type_lookup_table, $oArchiveSettings->getArchivingTypeID());
+		$oTimePeriod = TimePeriod::get($oArchiveSettings->getTimePeriodID());
+			
+		$sDisplayText = "<td>";
+		switch ($sArchivingType) {
+			case "Date" : 
+				$sDisplayText  .= "Expiration Date: " . $oArchiveSettings->getExpirationDate();
+				if ($oTimePeriod) {
+					$sDisplayText .= "<br/>Expires after " . $oTimePeriod->getUnits() . " ";
+					$sDisplayText .= lookupName($default->time_unit_lookup_table, $oTimePeriod->getTimeUnitID()) . " from document creation date";
+				}
+				break;		
+			case "Utilisation" :
+				$sDisplayText .= "Archive document " . $oTimePeriod->getUnits() . " ";
+				$sDisplayText .= lookupName($default->time_unit_lookup_table, $oTimePeriod->getTimeUnitID());
+				$sDisplayText .= " after the last " . lookupName($default->transaction_types_table, $oArchiveSettings->getDocumentTransactionID()) . " transaction";
+				break;		
+		}
+		$sDisplayText .= "</td>" . ($bEditable ? "<td>" . generateControllerLink("modifyDocumentArchiveSettings", "fDocumentID=" . $oDocument->getID(), "Edit") . "</td>" : "");
+		$sArchivingType = "Archiving Type: " . 	$sArchivingType;
+	} else {
+		$sArchivingType = "";
+		$sDisplayText = "No archiving settings";
+	}
 
 	$sToRender  = "<table cellpadding=\"5\" border=\"0\" width=\"500\">";
 	$sToRender .= "<caption align=\"top\" colspan=\"2\" align=\"left\"><b>Archiving Settings</b></caption>";
-	$sToRender .= "<th align=\"left\">Archiving Type: $sArchivingType</th>";
+	$sToRender .= "<th align=\"left\">" . $sArchivingType . "</th>";
 	$sToRender .= "<tr bgcolor=\"F5F6EE\">";
-	$sToRender .= "<td>$sDisplayText</td>" . ($bEditable ? "<td>" . generateControllerLink("modifyDocumentArchiveSettings", "fDocumentID=" . $oDocument->getID(), "Edit") . "</td>" : "");
+	$sToRender .= "<td>$sDisplayText</td>";
 	$sToRender .= "</tr>";
 	$sToRender .= "</table>";
     return  $sToRender;	
