@@ -119,7 +119,7 @@ class PatternListBox {
 				$sToRender = "<SELECT NAME=\"$this->sSelectName\" ". ($this->bPostBackOnChange ? "onChange=\"document.MainForm.submit();\" " : " ") . ">\n";
 			}
 			if ($this->bIncludeDefaultValue) {
-				$sToRender .= "<OPTION value=\"-1\">None</OPTION>\n";
+                $sToRender .= "<OPTION value=\"\">None</OPTION>\n";
 			}
 			while ($sql->next_record()) {
 				if ($this->selectedValue == $sql->f("value")) {
