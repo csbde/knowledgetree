@@ -112,23 +112,68 @@ class PhysicalDocumentManager {
     }
     
 	/**
-	* Move a document from a source to a destination
-	*
-	* return boolean true on successful move, false otherwhise
-	*
-	*/
+ 	 * Move a document to a new folder
+	 *
+	 * return boolean true on successful move, false otherwhise
+	 */
+	function moveDocument($sOldDocumentPath, $oDocument, $oFolder) {
+		global $default;
+		
+		// current document path
+		$sCurrentPath = $sOldDocumentPath;
+		
+		// the destination path
+		$sDestinationFolderPath = Folder::getFolderPath($oFolder->getID()) . $oDocument->getFileName();
+
+		// find all the previous versions of this document and move them
+		// ie. interrogate transaction history for all CHECKIN transactions and retrieve the versions
+		// FIXME: refactor array getOldVersionPaths($iDocumentID)??
+		
+		$sql = $default->db;
+		$result = $sql->query("SELECT DISTINCT version FROM $default->owl_document_transactions_table WHERE document_id=" . $oDocument->getID() . " AND transaction_id=" . CHECKOUT);
+        if ($result) {
+            while ($sql->next_record()) {
+            	$sVersion = $sql->f("version");
+				$sSourcePath = $sCurrentPath . "-" . $sVersion;
+				$sDestinationPath = $sDestinationFolderPath . "-" . $sVersion;
+				// move it to the new folder
+				$default->log->info("PhysicalDocumentManager::moveDocument moving $sSourcePath to $sDestinationPath");
+				if (!PhysicalDocumentManager::move($sSourcePath, $sDestinationPath)) {
+					// FIXME: can't bail now since we don't have transactions- so we doggedly continue deleting and logging errors					
+					$default->log->error("PhysicalDocumentManager::moveDocument error moving $sSourcePath to $sDestinationPath; documentID=" . $oDocument->getID() . "; folderID=" . $oFolder->getID());
+				}
+            }
+        } else {
+        	$default->log->error("PhysicalDocumentManager::moveDocument error looking up document versions, id=" . $oDocument->getID());
+        }	
+
+		// now move the current version		
+		if (PhysicalDocumentManager::move($sCurrentPath, $sDestinationFolderPath)) {
+			return true;
+		} else {
+			$default->log->error("PhysicalDocumentManager::moveDocument couldn't move $sCurrentPath to $sDestinationFolderPath, documentID=" . $oDocument->getID());
+			return false;
+		}
+	}
+	
+	/**
+	 * Move a file
+	 *
+	 * @param string source path
+	 * @param string destination path
+	 */
 	function move($sOldDocumentPath, $sNewDocumentPath) {
-		global $lang_fileexists, $lang_err_upload, $lang_err_database;		 
+		global $default;		
 		//copy the file	to the new destination
 		if (copy($sOldDocumentPath, $sNewDocumentPath)) {
 			//delete the old one
 			unlink($sOldDocumentPath);
 			return true;
 		} else {
-			$_SESSION["errorMessage"] = $lang_err_upload;
 			return false;
-		}
+		}		
 	}
+	
 	
 	/**
 	 * Deletes a document- moves it to the Deleted/ folder
@@ -152,18 +197,24 @@ class PhysicalDocumentManager {
 		// find all the previous versions of this document and move them
 		// ie. interrogate transaction history for all CHECKIN transactions and retrieve the versions
 		// FIXME: refactor
-		$aDocumentTransactions = DocumentTransaction::getList("document_id=" . $oDocument->getID() . " AND transaction_id=" . CHECKOUT);
-		for ($i=0; $i<count($aDocumentTransactions); $i++) {
-			$sVersionedPath = $sCurrentPath . "-" . $aDocumentTransactions[$i]->getVersion();
-			$sDeletedPath = $sDeletedPrefix . "-" . $aDocumentTransactions[$i]->getVersion();
-			// move it to the deleted folder
-			$default->log->info("PhysicalDocumentManager::delete moving $sVersionedPath to $sDeletedPath");
-			if (!PhysicalDocumentManager::move($sVersionedPath, $sDeletedPath)) {
-				$default->log->error("PhysicalDocumentManager::delete error moving $sVersionedPath to $sDeletedPath; documentID=" . $oDocument->getID());
-				// FIXME: can't bail now since we don't have transactions- so we doggedly continue deleting and logging errors
-			}
-		}
-		
+		$sql = $default->db;
+		$result = $sql->query("SELECT DISTINCT version FROM $default->owl_document_transactions_table WHERE document_id=" . $oDocument->getID() . " AND transaction_id=" . CHECKOUT);
+        if ($result) {
+            while ($sql->next_record()) {
+            	$sVersion = $sql->f("version");
+				$sVersionedPath = $sCurrentPath . "-" . $sVersion;
+				$sDeletedPath = $sDeletedPrefix . "-" . $sVersion;
+				// move it to the deleted folder
+				$default->log->info("PhysicalDocumentManager::delete moving $sVersionedPath to $sDeletedPath");
+				if (!PhysicalDocumentManager::move($sVersionedPath, $sDeletedPath)) {
+					$default->log->error("PhysicalDocumentManager::delete error moving $sVersionedPath to $sDeletedPath; documentID=" . $oDocument->getID());
+					// FIXME: can't bail now since we don't have transactions- so we doggedly continue deleting and logging errors
+				}
+            }
+        } else {
+        	$default->log->error("PhysicalDocumentManager::delete error looking up document versions, id=" . $oDocument->getID());
+        }	
+
 		// now move the current version		
 		if (PhysicalDocumentManager::move($sCurrentPath, $sDeletedPrefix)) {
 			return true;
@@ -185,17 +236,23 @@ class PhysicalDocumentManager {
 		
 		// find all the previous versions of this document and delete them
 		// ie. interrogate transaction history for all CHECKIN transactions and retrieve the versions
-		// FIXME: refactor		
-		$aDocumentTransactions = DocumentTransaction::getList("document_id=" . $oDocument->getID() . " AND transaction_id=" . CHECKOUT);
-		for ($i=0; $i<count($aDocumentTransactions); $i++) {
-			$sExpungePath = $sDeletedPrefix . "-" . $aDocumentTransactions[$i]->getVersion();
-			// zap it
-			$default->log->info("PhysicalDocumentManager::expunge rm'ing $sExpungePath");
-			if (!unlink($sExpungePath)) {
-				$default->log->error("PhysicalDocumentManager::expunge error deleting $sExpungePath; documentID=" . $oDocument->getID());
-				// FIXME: can't bail now since we don't have transactions- so we doggedly continue deleting and logging errors
-			}
-		}
+		// FIXME: refactor
+		$sql = $default->db;
+		$result = $sql->query("SELECT DISTINCT version FROM $default->owl_document_transactions_table WHERE document_id=" . $oDocument->getID() . " AND transaction_id=" . CHECKOUT);
+        if ($result) {
+            while ($sql->next_record()) {
+            	$sVersion = $sql->f("version");            	
+				$sExpungePath = $sDeletedPrefix . "-" . $sVersion;
+				// zap it
+				$default->log->info("PhysicalDocumentManager::expunge rm'ing $sExpungePath");
+				if (!unlink($sExpungePath)) {
+					$default->log->error("PhysicalDocumentManager::expunge error deleting $sExpungePath; documentID=" . $oDocument->getID());
+					// FIXME: can't bail now since we don't have transactions- so we doggedly continue deleting and logging errors
+				}
+            }
+        } else {
+        	$default->log->error("PhysicalDocumentManager::expunge error looking up document versions, id=" . $oDocument->getID());
+        }	
 
 		// now delete the current version
 		if (unlink($sDeletedPrefix)) {
@@ -224,17 +281,23 @@ class PhysicalDocumentManager {
 		// find all the previous versions of this document and move them
 		// ie. interrogate transaction history for all CHECKIN transactions and retrieve the versions
 		// FIXME: refactor
-		$aDocumentTransactions = DocumentTransaction::getList("document_id=" . $oDocument->getID() . " AND transaction_id=" . CHECKOUT);
-		for ($i=0; $i<count($aDocumentTransactions); $i++) {
-			$sVersionedDeletedPath = $sDeletedPath . "-" . $aDocumentTransactions[$i]->getVersion();
-			$sVersionedRestorePath = $sRestorePath . "-" . $aDocumentTransactions[$i]->getVersion();
-			// move it to the new folder
-			$default->log->info("PhysicalDocumentManager::restore moving $sVersionedDeletedPath to $sVersionedRestorePath");
-			if (!PhysicalDocumentManager::move($sVersionedDeletedPath, $sVersionedRestorePath)) {
-				$default->log->error("PhysicalDocumentManager::restore error moving $sVersionedDeletedPath to $sVersionedRestorePath; documentID=" . $oDocument->getID());
-				// FIXME: can't bail now since we don't have transactions- so we doggedly continue restoring and logging errors
-			}
-		}
+		$sql = $default->db;
+		$result = $sql->query("SELECT DISTINCT version FROM $default->owl_document_transactions_table WHERE document_id=" . $oDocument->getID() . " AND transaction_id=" . CHECKOUT);
+        if ($result) {
+            while ($sql->next_record()) {
+            	$sVersion = $sql->f("version");            	
+				$sVersionedDeletedPath = $sDeletedPath . "-" . $sVersion;
+				$sVersionedRestorePath = $sRestorePath . "-" . $sVersion;
+				// move it to the new folder
+				$default->log->info("PhysicalDocumentManager::restore moving $sVersionedDeletedPath to $sVersionedRestorePath");
+				if (!PhysicalDocumentManager::move($sVersionedDeletedPath, $sVersionedRestorePath)) {
+					$default->log->error("PhysicalDocumentManager::restore error moving $sVersionedDeletedPath to $sVersionedRestorePath; documentID=" . $oDocument->getID());
+					// FIXME: can't bail now since we don't have transactions- so we doggedly continue restoring and logging errors
+				}
+            }
+        } else {
+        	$default->log->error("PhysicalDocumentManager::expunge error looking up document versions, id=" . $oDocument->getID());
+        }
 		
 		// now move the current version		
 		if (PhysicalDocumentManager::move($sDeletedPath, $sRestorePath)) {
