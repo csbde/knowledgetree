@@ -58,7 +58,7 @@ function getMetaData($aMetaTagIDs) {
 	$sToRender .= "\t}\n";
 	$sToRender .= "-->\n";
 	$sToRender .= "</SCRIPT>\n\n";	
-	$sToRender .= "<tr><td colspan=\"3\"><a href=\"javascript:setChecked(1)\"><img src=\"$default->graphicsUrl/widgets/checkall.gif\" border=\"0\"/></a></td><td colspan=\"3\"><a href=\"javascript:setChecked(0)\"><img src=\"$default->graphicsUrl/widgets/clearall.gif\" border=\"0\"/></a></td></tr>"; 
+	$sToRender .= "<tr><td colspan=\"3\"><a href=\"javascript:setChecked(1)\"><img src=\"" . KTHtml::getCheckAllButton() . "\" border=\"0\"/></a></td><td colspan=\"3\"><a href=\"javascript:setChecked(0)\"><img src=\"" . KTHtml::getClearAllButton() . "\" border=\"0\"/></a></td></tr>"; 
 	$sToRender .= "</table>\n";
 	
 	return $sToRender;
