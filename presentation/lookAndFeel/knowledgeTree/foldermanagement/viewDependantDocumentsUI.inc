@@ -35,7 +35,7 @@ function getDocumentLinkFolderCollaborationData($iFolderCollaborationID) {
 	$aColumnTypes = array(1,1,3,3,3);
 	//$aDBColumnArray = array("id","group_folder_approval_link_id","template_document_id");
 	$aDBColumnArray = array("id","group_folder_approval_link_id","folder_id");
-	//$aQueryStringVariableNames = array("fDependantDocumentTemplateID", "fFolderCollaborationID", "fDocumentID");
+	//$aQueryStringVariableNames = array("fDependantDocumentTemplateID", "fFolderCollaborationID", "fTargetDocumentID");
 	$aQueryStringVariableNames = array("fDependantDocumentTemplateID","fFolderCollaborationID","fFolderID");
 	$aLinkURLs = array(2=>"$default->rootUrl/control.php?action=viewDocument", 3=>"$default->rootUrl/control.php?action=viewDependantDocument&fForEdit=1", 4=>"$default->rootUrl/control.php?action=deleteDependantDocument");	
 	
@@ -88,10 +88,10 @@ function getEditPage($iFolderID, $iDependantDocumentID, $iFolderCollaborationID,
 	$bAddNetscapeScript = false;
 	if (! (($default->phpSniff->property("browser") == "moz") && ($default->phpSniff->property("version") <= "4.79")) ) {
 		//for any other browser but netscape 4.7 do this	
-		$sToRender .= "<td>Template document</td><td><input type=\"text\" DISABLED name=\"fTemplateDocument\" value=\"$sTemplateDocumentName\" /><input type=\"button\" value=\"Browse\" onClick=\"newWindow('http://ktdev/control.php?action=templateBrowse','window2')\"></td>\n";
+		$sToRender .= "<td>Template document</td><td><input type=\"text\" DISABLED name=\"fTargetDocument\" value=\"$sTemplateDocumentName\" /><input type=\"button\" value=\"Browse\" onClick=\"newWindow('http://ktdev/control.php?action=templateBrowse','window2')\"></td>\n";
 	}else {
 		//for netscape 4.7 do this
-		$sToRender .= "<td>Template document</td><td><input type=\"text\"  value=\"$sTemplateDocumentName\" name=\"fTemplateDocument\" onblur=\"disable(document.MainForm.fTemplateDocument);\" /><input type=\"button\" value=\"Browse\" onClick=\"disable(document.MainForm.fTemplateDocument);newWindow('http://ktdev/control.php?action=templateBrowse','window2')\"></td>\n";
+		$sToRender .= "<td>Template document</td><td><input type=\"text\"  value=\"$sTemplateDocumentName\" name=\"fTargetDocument\" onblur=\"disable(document.MainForm.fTargetDocument);\" /><input type=\"button\" value=\"Browse\" onClick=\"disable(document.MainForm.fTargetDocument);newWindow('http://ktdev/control.php?action=templateBrowse','window2')\"></td>\n";
 		$bAddNetscapeScript = true;
 	}		
 	$sToRender .= "</tr>\n";
@@ -99,7 +99,7 @@ function getEditPage($iFolderID, $iDependantDocumentID, $iFolderCollaborationID,
 	$sToRender .= "<td><table><tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/update.gif\" border=\"0\"/></td><td><a href=\"" . $default->rootUrl . "/control.php?action=viewDependantDocument&fFolderID=$iFolderID&fFolderCollaborationID=$iFolderCollaborationID\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"/></a></td></tr></table>\n";	
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
-	$sToRender .= "<input type=\"hidden\" name=\"fTemplateDocumentID\" value=\"-1\" />\n";	
+	$sToRender .= "<input type=\"hidden\" name=\"fTargetDocumentID\" value=\"-1\" />\n";	
 	
 	return $sToRender . "\n\n" . getValidationJavaScript() . "\n\n" . getBrowseJavaScript() . ($bAddNetscapeScript ? getNetscapeDisableScript() : "");
 }
@@ -126,10 +126,12 @@ function getAddPage($iFolderCollaborationID, $iFolderID, $iUnitID, $sDocumentTit
 	$bAddNetscapeScript = false;
 	if (! (($default->phpSniff->property("browser") == "moz") && ($default->phpSniff->property("version") <= "4.79")) ) {
 		//for any other browser but netscape 4.7 do this	
-		$sToRender .= "<td>Template document</td><td><input type=\"text\" DISABLED name=\"fTemplateDocument\" value=\"$sTemplateDocument\" /><input type=\"button\" value=\"Browse\" onClick=\"newWindow('http://ktdev/control.php?action=templateBrowse','window2')\"></td>\n";
+		//$sToRender .= "<td>Template document</td><td><input type=\"text\" DISABLED name=\"fTargetDocument\" value=\"$sTemplateDocument\" /><input type=\"button\" value=\"Browse\" onClick=\"newWindow('http://ktdev/control.php?action=templateBrowse','window2')\"></td>\n";
+		$sToRender .= "<td>Template document</td><td><input type=\"text\" DISABLED name=\"fTargetDocument\" value=\"$sTemplateDocument\" /><input type=\"button\" value=\"Browse\" onClick=\"newWindow('$default->rootUrl/control.php?action=templateBrowse','window2')\"></td>\n";
 	}else {
 		//for netscape 4.7 do this
-		$sToRender .= "<td>Template document</td><td><input type=\"text\"  name=\"fTemplateDocument\" onblur=\"disable(document.MainForm.fTemplateDocument);\" /><input type=\"button\" value=\"Browse\" onClick=\"disable(document.MainForm.fTemplateDocument);newWindow('http://ktdev/control.php?action=templateBrowse','window2')\"></td>\n";
+		//$sToRender .= "<td>Template document</td><td><input type=\"text\"  name=\"fTargetDocument\" onblur=\"disable(document.MainForm.fTargetDocument);\" /><input type=\"button\" value=\"Browse\" onClick=\"disable(document.MainForm.fTargetDocument);newWindow('http://ktdev/control.php?action=templateBrowse','window2')\"></td>\n";
+		$sToRender .= "<td>Template document</td><td><input type=\"text\"  name=\"fTargetDocument\" onblur=\"disable(document.MainForm.fTargetDocument);\" /><input type=\"button\" value=\"Browse\" onClick=\"disable(document.MainForm.fTargetDocument);newWindow('$default->rootUrl/control.php?action=templateBrowse','window2')\"></td>\n";
 		$bAddNetscapeScript = true;
 	}		
 	$sToRender .= "</tr>\n";
@@ -137,7 +139,7 @@ function getAddPage($iFolderCollaborationID, $iFolderID, $iUnitID, $sDocumentTit
 	$sToRender .= "<td><table><tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/done.gif\" border=\"0\"/></td><td><a href=\"" . $default->rootUrl . "/control.php?action=viewDependantDocument&fFolderID=$iFolderID&fFolderCollaborationID=$iFolderCollaborationID\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"/></a></td></tr></table>\n";	
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
-	$sToRender .= "<input type=\"hidden\" name=\"fTemplateDocumentID\" value=\"-1\" />\n";	
+	$sToRender .= "<input type=\"hidden\" name=\"fTargetDocumentID\" value=\"-1\" />\n";	
 	
 	return $sToRender . "\n\n" . getValidationJavaScript() . "\n\n" . getBrowseJavaScript() . ($bAddNetscapeScript ? getNetscapeDisableScript() : "");
 }
