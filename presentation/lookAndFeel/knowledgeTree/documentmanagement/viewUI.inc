@@ -360,10 +360,9 @@ function displayCheckInOutButton($oDocument, $bEdit) {
 	$sQueryString = "fDocumentID=" . $oDocument->getID();
 	// display the check in button if the document is checked out and you checked the document out
 	if ($oDocument->getIsCheckedOut()) {
-		if ($oDocument->getCheckedOutUserID() == $_SESSION["userID"]) {
-	  		$sAction = "checkInDocument";
-	  		$sImageName = "checkin";
-	  	} else {
+  		$sAction = "checkInDocument";
+  		$sImageName = "checkin";		
+		if ($oDocument->getCheckedOutUserID() <> $_SESSION["userID"]) {
 	  		$oUser = User::get($oDocument->getCheckedOutUserID());
 	  		$sDisabledText = "The document can only be checked back in by " . $oUser->getName();
 	  	} 
