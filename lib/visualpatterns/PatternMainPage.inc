@@ -131,6 +131,7 @@ class PatternMainPage {
         $bNN4 = (($default->browser == "moz") && ($default->version <= "4.79") || ($default->browser == "ns"));
 		$sToRender  = 	"<html>\n";
 		$sToRender .= 	"<head>\n";
+		$sToRender .=   "<title>The KnowledgeTree</title>";
        	$sToRender .= 	"<meta http-equiv=\"refresh\" content=\"" . ($default->sessionTimeout+3) . ($bNN4 ? ";" : "") . "\">\n" .			
                             "<link rel=\"SHORTCUT ICON\" href=\"$default->graphicsUrl/tree.ico\">\n" .
                             "<link rel=\"stylesheet\" href=\"$default->uiUrl/stylesheet.php\">\n".                            
