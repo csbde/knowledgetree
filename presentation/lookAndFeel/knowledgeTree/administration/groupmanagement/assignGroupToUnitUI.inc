@@ -188,12 +188,6 @@ function getAssignButton($oGroup) {
 // show button after group selected
 function getCancelButton($oGroup) {
     global $default;
-    if (!isset($oGroup)) {
-        //return "<td align = right><a href=\"$default->rootUrl/control.php?action=groupManagement\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" value=\"cancel\" /></a></td>\n";
-    }
-    else {
-        
-    }
     return "<td align = right><a href=\"$default->rootUrl/control.php?action=groupManagement\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" /></a></td>\n";    
 }
 
