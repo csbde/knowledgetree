@@ -1,3 +1,20 @@
+Version 2.0.0rc1 (2005/01/10)
+
+Bug Fixes
+=========
+
+* Fixed bug in install SQL script
+
+Detailed ChangeLog
+==================
+
+2005-01-08 00:53  nbm
+
+        * sql/mysql/install/tables.sql:
+
+        Fix up hastily added changes
+
+
 Version 2.0.0rc1 (2005/01/07)
 
 Features
