@@ -72,7 +72,7 @@ if (checkSession()) {
             $main->setFormAction("$default->rootUrl/control.php?action=modifyDocument&fDocumentID=" . $oDocument->getID());
             $main->render();
         } else if (isset($fForInlineView) && Permission::userHasDocumentReadPermission($fDocumentID)) {
-			$oDocumentTransaction = & new DocumentTransaction($fDocumentID, "Inline view", DOWNLOAD);
+			$oDocumentTransaction = & new DocumentTransaction($fDocumentID, "Inline view", VIEW);
             $oDocumentTransaction->create();
             PhysicalDocumentManager::inlineViewPhysicalDocument($fDocumentID);			
 		} else if (isset($fForDownload) && Permission::userHasDocumentReadPermission($fDocumentID)) {
