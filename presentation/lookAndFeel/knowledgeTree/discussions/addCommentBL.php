@@ -113,7 +113,7 @@ if (checkSession()) {
 			$sReplyBodyHeader .= "\n\n\n\n\n>------ Original Message ------";
 			$sReplyBodyHeader .= "\n>User:     " . $oUser->getName();
 			$sReplyBodyHeader .= "\n>Date:     " . $oComment->getDate();
-			$sReplyBodyHeader .= "\n>Subject: " . $oComment->getSubject();
+			$sReplyBodyHeader .= "\n>Subject:  " . $oComment->getSubject();
 			$sReplyBodyHeader .= "\n>---------------------------------------";
 			
 			$sReplyBody = $sReplyBodyHeader . "\n>" .  str_replace("%0D%0A" ,"%0D%0A>", $sReplyBody); // Put in ">" as indentation for the reply
