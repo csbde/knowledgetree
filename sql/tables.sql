@@ -287,6 +287,8 @@ id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 document_id INTEGER,
 user_id INTEGER
 ) Type = InnoDB;
+ALTER TABLE search_document_user_link ADD INDEX search_document_user_link_user_id_indx (user_id);
+ALTER TABLE search_document_user_link ADD INDEX search_document_user_link_document_id_indx (document_id);
 
 -- sitemap tables
 CREATE TABLE site_sections_lookup (
