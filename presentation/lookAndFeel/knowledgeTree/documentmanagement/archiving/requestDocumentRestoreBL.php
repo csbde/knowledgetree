@@ -37,7 +37,10 @@ if (checkSession()) {
     	if ($oDocument) {
 
 		    // lookup the unit admin
-		    $oUnitAdminUser = getUnitAdminUser(); 
+		    $oUnitAdminUser = User::getUnitAdminUser(); 
+    		
+    		// FIXME: what if i can't find a unit administrator??
+    		// presumably find a system administrator then?
     		
 	    	// create the request
 	    	$oRestoreRequest = new ArchiveRestorationRequest($fDocumentID, $_SESSION["userID"], $oUnitAdminUser->getID());

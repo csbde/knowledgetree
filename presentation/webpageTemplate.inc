@@ -18,38 +18,6 @@ require_once("$default->fileSystemRoot/lib/visualpatterns/PatternTableLinks.inc"
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternTableSqlQuery.inc");
 require_once("$default->fileSystemRoot/lib/visualpatterns/NavBar.inc");
 
-
-function getUnitAdminUser() {
-    global $default;
-    // find out what unit we're in
-    $iUnitID = User::getUnitID($_SESSION["userID"]);
-    if ($iUnitID) {
-        // then find the group that is unit_admin
-        $sql = $default->db;
-        $sEmail = "";
-        if ($sql->query("SELECT group_id FROM $default->owl_groups_units_table GUL " . 
-                        "INNER JOIN $default->owl_groups_table GL on GUL.group_id=GL.id " .
-                        "WHERE GL.is_unit_admin=1 " .
-                        "AND unit_id=$iUnitID")) {
-            // get the first record
-            if ($sql->next_record()) {
-                $iGroupID = $sql->f("group_id");
-                // then find the first user in this group that has an email address
-                if ($sql->query("SELECT U.id, U.email FROM $default->owl_users_table U " .
-                                "INNER JOIN $default->owl_users_groups_table UGL on UGL.user_id=U.id " .
-                                "WHERE group_id=$iGroupID")) {
-                    while ($sql->next_record()) {
-                        if (strlen($sql->f("email")) > 0) {
-                            return User::get($sql->f("id"));
-                        }
-                    }
-                }
-            }
-        }
-    }
-    return false;
-}
-
 // create the navbar and north payload
 $navbar = & new NavBar($fBrowseType, $fFolderID, $fDocumentID, $fCategoryName, $fDocumentTypeID);
 
@@ -92,7 +60,7 @@ if ($sectionName != "General") {
 $cAdmin = "$default->graphicsUrl/leftnav/cadmin.gif" ;
 $uAdmin = "$default->graphicsUrl/leftnav/uadmin.gif" ;
 
-$oUnitAdmin = getUnitAdminUser();
+$oUnitAdmin = User::getUnitAdminUser();
 $sUnitAdminEmail = $oUnitAdmin ? $oUnitAdmin->getEmail() : $default->emailAdmin; 
 //setup the westpayload
 $westLoad = "<table cellspacing=\"0\" cellpadding=\"2\" border=\"0\" width=\"100%\" height=\"75%\">\n" .
