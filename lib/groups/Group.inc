@@ -39,6 +39,10 @@ class Group {
 		$this->iId = $iNewValue;
 	}
 	
+	function getID() {
+		return $this->iId;
+	}
+	
 	function getSysAdmin() {
 		return $this->bIsSysAdmin;
 	}
