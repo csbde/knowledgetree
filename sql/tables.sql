@@ -179,7 +179,8 @@ page CHAR(255),
 section_id INTEGER,
 access_id INTEGER,
 link_text CHAR(255),
-is_default BIT
+is_default BIT,
+is_enabled BIT DEFAULT 1
 );
 
 CREATE TABLE subscriptions ( 
@@ -998,27 +999,27 @@ INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default)
 -- manage documents section
 INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default) VALUES ("browse", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/browseBL.php", 2, 2, "browse documents", 1);
 INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default) VALUES ("viewDocument", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/viewBL.php", 2, 2, "", 0);
-INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default) VALUES ("addDocument", "/presentation/documentmanagement/addDocument.php", 2, 3, "Add A Document", 0);
-INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default) VALUES ("addFolder", "/presentation/documentmanagement/addFolder.php", 2, 4, "Add A Folder", 0);
-INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default) VALUES ("modifyFolderProperties", "/presentation/documentmanagement/modifyFolder.php", 2, 4, "Modify Folder Properties", 0);
-INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default) VALUES ("deleteFolder", "/presentation/documentmanagement/deleteFolder.php", 2, 4, "Delete A Folder", 0);
-INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default) VALUES ("moveFolder", "/presentation/documentmanagement/moveFolder.php", 2, 4, "Move A Folder", 0);
+INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default, is_enabled) VALUES ("addDocument", "/presentation/documentmanagement/addDocument.php", 2, 3, "Add A Document", 0, 0);
+INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default, is_enabled) VALUES ("addFolder", "/presentation/documentmanagement/addFolder.php", 2, 4, "Add A Folder", 0, 0);
+INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default, is_enabled) VALUES ("modifyFolderProperties", "/presentation/documentmanagement/modifyFolder.php", 2, 4, "Modify Folder Properties", 0, 0);
+INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default, is_enabled) VALUES ("deleteFolder", "/presentation/documentmanagement/deleteFolder.php", 2, 4, "Delete A Folder", 0, 0);
+INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default, is_enabled) VALUES ("moveFolder", "/presentation/documentmanagement/moveFolder.php", 2, 4, "Move A Folder", 0, 0);
 -- pages for administration section
-INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default) VALUES ("administration", "/admin.php", 3, 4, "Administration", 1);
-INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default) VALUES ("unitAdministration", "/presentation/unitAdmin.php", 3, 4, "Unit Administration", 0);
-INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default) VALUES ("systemAdministration", "/presentation/sysAdmin.php", 3, 5, "System Administration", 0);
+INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default, is_enabled) VALUES ("administration", "/admin.php", 3, 4, "Administration", 1, 0);
+INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default, is_enabled) VALUES ("unitAdministration", "/presentation/unitAdmin.php", 3, 4, "Unit Administration", 0, 0);
+INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default, is_enabled) VALUES ("systemAdministration", "/presentation/sysAdmin.php", 3, 5, "System Administration", 0, 0);
 -- pages for advanced search section
-INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default) VALUES ("advancedSearch", "/search.php", 4, 2, "Advanced Search", 1);
+INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default, is_enabled) VALUES ("advancedSearch", "/search.php", 4, 2, "Advanced Search", 1, 0);
 -- pages for prefs section
-INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default) VALUES ("preferences", "/preferences.php", 5, 3, "Preferences", 1);
-INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default) VALUES ("viewPreferences", "/preferences.php", 5, 3, "View Preferences", 0);
-INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default) VALUES ("editPreferences", "/preferences.php", 5, 3, "Edit Preferences", 0);
+INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default, is_enabled) VALUES ("preferences", "/preferences.php", 5, 3, "Preferences", 1, 0);
+INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default, is_enabled) VALUES ("viewPreferences", "/preferences.php", 5, 3, "View Preferences", 0, 0);
+INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default, is_enabled) VALUES ("editPreferences", "/preferences.php", 5, 3, "Edit Preferences", 0, 0);
 -- pages for Help section
 INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default) VALUES ("help", "/help.php", 6, 2, "Help", 1);
 -- pages for logout section section
 INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default) VALUES ("logout", "/presentation/logout.php", 7, 2, "Logout", 1);
 -- test pages
-INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default) VALUES ("scratchPad", "/tests/scratchPad.php", 8, 2, "scratch", 0);
-INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default) VALUES ("sitemap", "/tests/session/SiteMap.php", 8, 2, "sitemap", 0);
-INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default) VALUES ("documentBrowserTest", "/tests/documentmanagement/DocumentBrowser.php", 8, 2, "test the document browser", 0);
+INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default, is_enabled) VALUES ("scratchPad", "/tests/scratchPad.php", 8, 2, "scratch", 0, 0);
+INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default, is_enabled) VALUES ("sitemap", "/tests/session/SiteMap.php", 8, 2, "sitemap", 0, 0);
+INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default, is_enabled) VALUES ("documentBrowserTest", "/tests/documentmanagement/DocumentBrowser.php", 8, 2, "test the document browser", 0, 0);
 
