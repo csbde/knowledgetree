@@ -248,7 +248,7 @@ class NavBar {
         // build the nav bar
         $bar  = "<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"608\">\n";
         $bar .= "\t<tr height=\"30\">\n";
-        $bar .= "\t\t<td align=\"right\" valign=\"top\" width=\"100%\"><img src=\"$heading\"/><img src=\"$default->graphicsUrl/logo.jpg\" width=\"30\" height=\"36\"/></td>\n";        
+        $bar .= "\t\t<td valign=\"top\" width=\"100%\" colspan=\"2\" bgcolor=\"#1A4383\"><img src=\"$heading\"/><img src=\"$default->graphicsUrl/logo.jpg\" width=\"30\" height=\"36\" style=\"border-right:3px solid white;\"/></td>\n";        
         $bar .= "\t</tr>\n";
         $bar .= "\t<tr height=\"30\">\n";
         $bar .= "\t\t<td colspan=\"2\" bgcolor=\"#1A4383\" width=\"100%\">";
