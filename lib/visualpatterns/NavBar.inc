@@ -201,7 +201,7 @@ class NavBar
 		<tr  height=\"30%\">	<td VALIGN = \"absmiddle\" background = " . $hStretched ." width =\"100%\" NOWRAP >
 					<img align = \"absmiddle\" src = \"$default->owl_graphics_url/arrow.gif\" ></img> 
 					<INPUT type=\"Text\" name=\"searchField\" width=\"30\" height = \"10\" align = \"absmiddle\" >
-					<INPUT type=\"image\" name=\"search\" value=\"Search\" src = \"$default->owl_graphics_url/search.gif\" align = \"absmiddle\" >
+					<INPUT type=\"image\" name=\"search\" value=\"Search\" src=\"$default->owl_graphics_url/search.gif\" align = \"absmiddle\" border=\"0\">
 					</td>
 				   
 		</tr>
