@@ -23,26 +23,27 @@ require_once("$default->owl_fs_root/lib/Session.inc");
 // -------------------------------
 // page start
 // -------------------------------
-
+global $default;
 if ($loginAction == "loginForm") {
     // TODO: build login form using PatternMainPage
-    include("./lib/header.inc");
-	print("<CENTER>");
-	print("<IMG SRC='$default->owl_root_url/locale/$default->owl_lang/graphics/$default->logo'><BR>$lang_engine<BR>$lang_version: $default->version<BR><HR WIDTH=300>"); 
+    //include("./lib/header.inc");
+	print "<CENTER>";
+	print "<IMG SRC='$default->owl_root_url/locale/$default->owl_lang/graphics/$default->logo'>";
+    print "<BR><HR WIDTH=300>"; 
 	print "<FORM ACTION=\"login.php\" METHOD=\"POST\">";
 	
     if (isset($fileid)) {
         print "<INPUT TYPE=\"HIDDEN\" NAME=\"parent\" value=\"$parent\">";
         print "<INPUT TYPE=\"HIDDEN\" NAME=\"fileid\" value=\"$fileid\">";
     }
-    if (isset($errorMessage)) {
-        print "<font color=\"red\">$errorMessage</font><br>";
-    }
+    
+    print "<font color=\"red\">$errorMessage</font><br>";
         
-	print "<TABLE><TR><TD>$lang_username:</TD><TD><INPUT TYPE=\"TEXT\" NAME=\"fUserName\"><BR></TD></TR>";
-	print "<TR><TD>$lang_password:</TD><TD><INPUT TYPE=\"PASSWORD\" NAME=\"fPassword\"><BR></TD></TR></TABLE>";
+	print "<TABLE><TR><TD>$lang_username:</TD><TD>
+           <INPUT TYPE=\"TEXT\" NAME=\"fUserName\"><BR></TD></TR>";
+	print "<TR><TD>$lang_password:</TD><TD>
+           <INPUT TYPE=\"PASSWORD\" NAME=\"fPassword\"><BR></TD></TR></TABLE>";
     print "<input type=\"hidden\" name=\"redirect\" value=\"$redirect\"/>";
-    print "<INPUT TYPE=\"hidden\" name=\"action\" value=\"login\">\n";
 	print "<INPUT TYPE=\"hidden\" name=\"loginAction\" value=\"login\">\n";    
 	print "<INPUT TYPE=\"SUBMIT\" Value=\"$lang_login\">\n";
 	print "<BR><BR><HR WIDTH=300>";
@@ -53,18 +54,20 @@ if ($loginAction == "loginForm") {
     if (checkrequirements() == 1) {
         // TODO: appropriate error message
         echo "check requirements failed!<br>";
-        //exit;
+        exit;
     } else {
+        // set default url for login failure
+        $url = $url . "login.php?loginAction=loginForm";
         // if requirements are met and we have a username and password to authenticate
         if( isset($fUserName) && isset($fPassword) ) {
             // verifies the login and password of the user
-            $dbAuth = new DBAuthenticator();
+            $dbAuth = new $default->authentication_class;
             $userDetails = $dbAuth->login($fUserName, $fPassword);
+
             switch ($userDetails["status"]) {
                 // bad credentials
                 case 0:
-                    // this doesn't need to go back to the controller
-                    redirect("login.php?loginAction=loginForm&errorMessage=" . urlencode($lang_loginfail));
+                    $url = $url . "&errorMessage=$lang_loginfail";
                     break;
                 // successfully authenticated
                 case 1:
@@ -77,25 +80,27 @@ if ($loginAction == "loginForm") {
                     // check for a location to forward to
                     if (isset($redirect) && strlen(trim($redirect))>0) {
                         $url = urldecode($redirect);
+                    // else redirect to the dashboard
                     } else {
-                        $_SESSION["authorised"] = false;
-                        $url = "control.php?action=DASHBOARD";
+                        $_SESSION["authorised"] = false;                        
+                        $url = "control.php?action=dashboard";
                     }
                     break;
                 // login disabled                    
                 case 2:
-                    redirect("login.php?loginAction=loginForm&errorMessage=" . urlencode($lang_logindisabled));
+                    $url = $url . "&errorMessage=$lang_logindisabled";
                     break;
                 // too many sessions
                 case 3 :
-                    redirect("login.php?loginAction=loginForm&errorMessage=" . urlencode($lang_toomanysessions));
+                    $url = $url . "&errorMessage=$lang_toomanysessions";
                     break;
                 default :
-                    redirect("login.php?loginAction=loginForm&errorMessage=" . urlencode($lang_err_general));
+                    $url = $url . "&errorMessage=$lang_err_general";
             }
         } else {
             // didn't receive any login parameters, so redirect login form
-            $url = "control.php?action=LOGIN_FORM";
+            // TODO: set "no login parameters received error message?
+            // internal error message- should never happen
         }
         redirect($url);
     }
