@@ -1,6 +1,6 @@
 <?php
 /**
-* BL information for adding a group
+* BL information for editing a role's properties
 *
 * @author Mukhtar Dharsey
 * @date 5 February 2003
@@ -34,25 +34,25 @@ if (checkSession()) {
 		}
 		
 		$main->setFormAction("$default->rootUrl/presentation/lookAndFeel/knowledgeTree/store.php?fReturnURL=" . urlencode("$default->rootUrl/control.php?action=editRoleSuccess"));		
-	}/*	
+		
 	// coming from manual edit page	
 	} else if (isset($fForStore)) {
-		$oGroup = Group::get($fGroupID);
-		$oGroup->setName($fGroupName);
+		$oRole = Role::get($fRoleID);
+		$oRole->setName($fRoleName);
 		
 		//check if checkbox checked
-		if (isset($fGroupUnitAdmin)) {
-			$oGroup->setUnitAdmin(true);
+		if (isset($fReadable)) {
+			$oRole->setReadable(true);
 		} else {
-			$oGroup->setUnitAdmin(false);
+			$oRole->setReadable(false);
 		}
 		//check if checkbox checked
-		if (isset($fGroupSysAdmin)) {
-			$oGroup->setSysAdmin(true);
+		if (isset($fWriteable)) {
+			$oRole->setWriteable(true);
 		} else {
-			$oGroup->setSysAdmin(false);
+			$oRole->setWriteable(false);
 		}
-		if ($oGroup->update()) {
+		if ($oRole->update()) {
 				// if successfull print out success message
 				$oPatternCustom->setHtml(getEditPageSuccess());
 				
@@ -60,9 +60,9 @@ if (checkSession()) {
 				// if fail print out fail message
 				$oPatternCustom->setHtml(getEditPageFail());
 		}
-	} else if (isset($fGroupID)){		
+	} else if (isset($fRoleID)){		
 		// post back on group select from manual edit page	
-		$oPatternCustom->setHtml(getEditPage($fGroupID));
+		$oPatternCustom->setHtml(getEditPage($fRoleID));
 		$main->setFormAction($_SERVER["PHP_SELF"] . "?fForStore=1");
 		
 		
@@ -71,7 +71,7 @@ if (checkSession()) {
 		$oPatternCustom->setHtml(getEditPage(null));
 		$main->setFormAction($_SERVER["PHP_SELF"]);
 			
-	}*/
+	}
 	//render the page
 	$main->setCentralPayload($oPatternCustom);
 	$main->render();	

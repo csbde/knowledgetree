@@ -1,6 +1,6 @@
 <?php
 /**
-* BL information for adding a group
+* BL information for adding a new role
 *
 * @author Mukhtar Dharsey
 * @date 5 February 2003
