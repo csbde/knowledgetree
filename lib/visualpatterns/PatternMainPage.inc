@@ -55,7 +55,7 @@ class PatternMainPage {
 		$sToRender = 	"<html>
 							<head>
                             <meta http-equiv=\"refresh\" content=\"$default->owl_timeout\">
-                            <link rel=\"StyleSheet\" HREF=\"$default->owl_root_url/lib/knowledge_tree.css\" type=\"text/css\">
+                            <link rel=\"StyleSheet\" HREF=\"$default->owl_ui_url/stylesheet.css\" type=\"text/css\">
 							</head>
 							<body>
 							<form id=\"MainForm\" action=\"".$this->sFormAction."\" method=\"get\">
