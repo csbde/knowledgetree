@@ -98,7 +98,7 @@ if (checkSession()) {
                             
                         } else {
                             // document update failed
-                            $oPatternCustom->setHtml(renderErrorPage("An error occurred while storing this document in the database"));
+                            $oPatternCustom->setHtml(renderErrorPage(_("An error occurred while storing this document in the database")));
                         }
                     } else {
                         // prompt the user for a checkout comment
@@ -109,19 +109,19 @@ if (checkSession()) {
                     // TODO: for extra credit, tell the user who has this document checked out
                     //       but we don't display the check out button unless they have the document checked out already
                     //       so we should ever get here.
-                    $oPatternCustom->setHtml(renderErrorPage("This document is already checked out", $fDocumentID));                    
+                    $oPatternCustom->setHtml(renderErrorPage(_("This document is already checked out"), $fDocumentID));
                 }
             } else {
                 // no permission to checkout the document
-                $oPatternCustom->setHtml(renderErrorPage("You don't have permission to check out this document", $fDocumentID));
+                $oPatternCustom->setHtml(renderErrorPage(_("You don't have permission to check out this document"), $fDocumentID));
             }
         } else {
             // couldn't instantiate the document
-            $oPatternCustom->setHtml(renderErrorPage("Could not check out this document", $fDocumentID));
+            $oPatternCustom->setHtml(renderErrorPage(_("Could not check out this document"), $fDocumentID));
         }
     } else {
         // no document id was set when coming to this page,
-        $oPatternCustom->setHtml(renderErrorPage("No document is currently selected for check out"));
+        $oPatternCustom->setHtml(renderErrorPage(_("No document is currently selected for check out")));
     }
 
     require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");

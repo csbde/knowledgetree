@@ -47,7 +47,7 @@ if (checkSession()) {
 	  	$main->setFormAction("$default->rootUrl/presentation/lookAndFeel/knowledgeTree/discussions/addCommentBL.php?fDocumentID=$iDocumentID&fCommentID=$iCommentID&fReplyComment=1");		
 	  	$oPatternCustom->setHtml(getCommentBody($oComment,$iDocumentID,$oUser,$iThreadID));	  	
 	} else {
-		$main->setErrorMessage("You didn't specify a comment to view");
+		$main->setErrorMessage(_("You didn't specify a comment to view"));
 	}
 	$main->setCentralPayload($oPatternCustom);
     $main->render();

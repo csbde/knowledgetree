@@ -30,9 +30,9 @@ function getDeletePage($iUserID) {
     $oUser = null;
     if (isset($iUserID)) {
         $oUser = User::get($iUserID);
-        $sHeading .= "<tr><td><b>Are you sure you wish to Remove this User From the System?:</b></td></tr>\n";
+        $sHeading .= "<tr><td><b>" . _("Are you sure you wish to remove this user?") . ":</b></td></tr>\n";
     } else {
-        $sHeading .= "<tr><td><b>Please select a User:</b></td></tr>\n";
+        $sHeading .= "<tr><td><b>" . _("Please select a user") . ":</b></td></tr>\n";
     }
 
     $sToRender .= renderHeading(_("Remove User"));
@@ -61,7 +61,7 @@ function getDeleteSuccessPage() {
     $sToRender .= renderHeading(_("Remove User"));
     $sToRender .= "<table>\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "<td><b>User SuccessFully Removed!</b></td>\n";
+    $sToRender .= "<td><b>" . _("User SuccessFully Removed!") . "</b></td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr></tr>\n";
@@ -83,7 +83,7 @@ function getDeleteFailPage() {
     $sToRender .= renderHeading(_("Remove User"));
     $sToRender .= "<table>\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "<td><b>Deletion Failed!</b></td>\n";
+    $sToRender .= "<td><b>" . _("Deletion Failed") . "!</b></td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "</tr>\n";
@@ -103,10 +103,10 @@ function getDeleteConfirmedPage($iUserID) {
 
     $sToRender .= renderHeading(_("Remove User"));
     $sToRender .= "<table>\n";
-    $sToRender .= "<tr><td><b>Are you sure you wish to Remove this User?:</b></td></tr>";
-    $sToRender .= "<tr><td>Note: This User will be Removed from ALL Groups as well\n</td></tr>\n";
+    $sToRender .= "<tr><td><b>" . _("Are you sure you wish to remove this user?") . ":</b></td></tr>";
+    $sToRender .= "<tr><td>" . _("Note: This User will be Removed from ALL Groups as well") . "\n</td></tr>\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "<td>User Name: " . getUserDisplay($oUser) . "</td>\n";
+    $sToRender .= "<td>" . _("User Name") . ": " . getUserDisplay($oUser) . "</td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "<tr>\n";
     $sToRender .=  getUserDetails($oUser). "</td>\n";
@@ -147,13 +147,13 @@ function getUserDetails($oUser) {
     } else {
         return
             "<tr>\n".
-            "<td>Name: </td><td>". $oUser->getName() . "</td>\n" .
+            "<td>" . _("Name") . ": </td><td>". $oUser->getName() . "</td>\n" .
             "</tr>\n".
             "<tr>\n".
-            "<td>Email Address: </td><td>". $oUser->getEmail() . "</td>\n" .
+            "<td>" . _("Email Address") . ": </td><td>". $oUser->getEmail() . "</td>\n" .
             "</tr>\n".
             "<tr>\n".
-            "<td>Mobile Number: </td><td>". $oUser->getMobile() . "</td>\n" .
+            "<td>" . _("Mobile Number") . ": </td><td>". $oUser->getMobile() . "</td>\n" .
             "</tr>\n";
     }
 }

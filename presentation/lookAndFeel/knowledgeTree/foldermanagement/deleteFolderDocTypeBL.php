@@ -50,14 +50,14 @@ if (checkSession()) {
 				require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 				$oPatternCustom->setHtml(getPage($fFolderID));
 				$main->setCentralPayload($oPatternCustom);
-				$main->setErrorMessage("A document in this folder is currently assigned this type.  You may not delete it.");								
+				$main->setErrorMessage(_("A document in this folder is currently assigned this type.  You may not delete it."));
 				$main->render();
             } else if (count(FolderDocTypeLink::getList("folder_id=$fFolderID")) == 1) {
                 // there is only one document type mapped to this folder- not allowed to delete the last one
 				require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 				$oPatternCustom->setHtml(getPage($fFolderID));
 				$main->setCentralPayload($oPatternCustom);
-				$main->setErrorMessage("You may not delete the last document type for this folder.");								
+				$main->setErrorMessage(_("You may not delete the last document type for this folder."));
 				$main->render();
 			} else {
 				//go ahead and delete
@@ -69,7 +69,7 @@ if (checkSession()) {
 					require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 					$oPatternCustom->setHtml(getPage($fFolderID));
 					$main->setCentralPayload($oPatternCustom);
-					$main->setErrorMessage("An error was encountered while attempting to delete this link from the database");								
+					$main->setErrorMessage(_("An error was encountered while attempting to delete this link from the database"));
 					$main->render();
 				}
 			}
@@ -79,7 +79,7 @@ if (checkSession()) {
 		require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 		$oPatternCustom->setHtml(getPage($fFolderID));
 		$main->setCentralPayload($oPatternCustom);
-		$main->setErrorMessage("You do not have permission to remove this document type from this folder");		
+		$main->setErrorMessage(_("You do not have permission to remove this document type from this folder"));
 		$main->render();
 	}
 }

@@ -30,13 +30,13 @@ function getPage($iFolderID, $iFolderCollaborationID, $sDocumentTitle, $sUserNam
 	$sToRender = renderHeading(_("Delete dependant document"));
 	$sToRender .= "<table border=\"0\" width=\"100%\">\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>Document title</td><td>$sDocumentTitle</td>";
+	$sToRender .= "<td>" . _("Document title") . "</td><td>$sDocumentTitle</td>";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>User</td><td>$sUserName</td>";
+	$sToRender .= "<td>" . _("User") . "</td><td>$sUserName</td>";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>Template document</td><td>$sTemplateDocument</td>";
+	$sToRender .= "<td>" . _("Template document") . "</td><td>$sTemplateDocument</td>";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td><table><tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/delete.gif\" border=\"0\"/></td><td><a href=\"" . $default->rootUrl . "/control.php?action=viewDependantDocument&fFolderID=$iFolderID&fFolderCollaborationID=$iFolderCollaborationID\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"/></a></td></tr></table>\n";
 	$sToRender .= "</table\n";

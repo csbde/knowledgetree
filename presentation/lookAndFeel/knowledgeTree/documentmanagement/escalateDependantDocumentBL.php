@@ -41,7 +41,7 @@ if (checkSession()) {
 	require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
 
 	$oPatternCustom = & new PatternCustom();
-	$sTitle = "Dependant Document Send Escalation Message";	
+	$sTitle = _("Dependant Document Send Escalation Message");
 	if ($fInstanceID) {
 		$oDependantDocument = DependantDocumentInstance::get($fInstanceID);
 		if ($oDependantDocument) {
@@ -72,15 +72,15 @@ if (checkSession()) {
 							redirect(generateControllerUrl("viewDocument", "fDocumentID=" . $oDependantDocument->getParentDocumentID() . "&fShowSection=linkedDocuments"));
 						} else {
 							$default->log->error("escalateDependantDocumentBL.php email sending failed");
-							$oPatternCustom->setHtml(statusPage($sTitle, $sHeading, "The escalation message could not be sent due to a system error sending the notification.", "viewDocument", "fDocumentID=" . $oDependantDocument->getParentDocumentID() . "&fShowSection=linkedDocuments"));
+							$oPatternCustom->setHtml(statusPage($sTitle, $sHeading, _("The escalation message could not be sent due to a system error sending the notification."), "viewDocument", "fDocumentID=" . $oDependantDocument->getParentDocumentID() . "&fShowSection=linkedDocuments"));
 						}			
 					} else {
 						$default->log->info("escalateDependantDocumentBL.php user id (" . $oUser->getID() . ") doesn't have email notification on =" . arrayToString($oUser));
-						$oPatternCustom->setHtml(statusPage($sTitle, $sHeading, "The escalation message could not be sent because " . $oUser->getName() . " has disabled notification", "viewDocument", "fDocumentID=" . $oDependantDocument->getParentDocumentID() . "&fShowSection=linkedDocuments"));
+						$oPatternCustom->setHtml(statusPage($sTitle, $sHeading, _("The escalation message could not be sent because the user has disabled notification"), "viewDocument", "fDocumentID=" . $oDependantDocument->getParentDocumentID() . "&fShowSection=linkedDocuments"));
 					}
 				} else {
 					$default->log->info("escalateDependantDocumentBL.php couldn't instantiate user object for id=$fUserID");
-					$oPatternCustom->setHtml(statusPage($sTitle, "", "The dependant document user information could not be found.", "viewDocument", "fDocumentID=" . $oDependantDocument->getParentDocumentID() . "&fShowSection=linkedDocuments"));
+					$oPatternCustom->setHtml(statusPage($sTitle, "", _("The dependant document user information could not be found."), "viewDocument", "fDocumentID=" . $oDependantDocument->getParentDocumentID() . "&fShowSection=linkedDocuments"));
 				}
 			} else {	
 				// display escalation form
@@ -88,11 +88,11 @@ if (checkSession()) {
 			}
 		} else {
 			//dependant document instantiation failed- generic error (statusPage)
-			$oPatternCustom->setHtml(statusPage($sTitle, "", "The dependant document information could not be found.", "browse"));			
+			$oPatternCustom->setHtml(statusPage($sTitle, "", _("The dependant document information could not be found."), "browse"));
 		}		
 	} else {
 		// error page, no instance id supplied- generic error
-		$oPatternCustom->setHtml(statusPage($sTitle, "", "The dependant document information could not be found.", "browse"));
+		$oPatternCustom->setHtml(statusPage($sTitle, "", _("The dependant document information could not be found."), "browse"));
 	}
 	require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 	$main->setCentralPayload($oPatternCustom);

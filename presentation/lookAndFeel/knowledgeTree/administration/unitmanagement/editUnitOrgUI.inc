@@ -48,11 +48,11 @@ function getOrgPage($fUnitID = null){
 		$sOrgName = $oOrg->getName();
 		$bNoOrg = false;
 	} else { 
-		$sOrgName = "* No assigned Organisation";
+		$sOrgName = "* " . _("No assigned Organisation");
 		$bNoOrg = true;
 	}
         
-    $sToRender .= "<table width==100% border=0>\n";
+    $sToRender .= "<table width=100% border=0>\n";
     $sToRender .= "<tr>\n";
     $sToRender .= "<td width=300 valign=top>\n";    
     

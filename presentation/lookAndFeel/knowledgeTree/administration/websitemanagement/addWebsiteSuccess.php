@@ -37,14 +37,14 @@ if(checkSession()) {
     $Center .= "<TABLE BORDER=\"0\" CELLSPACING=\"2\" CELLPADDING=\"2\">\n";
     $Center .= "<tr>\n";
     if($fWebSiteID != -1) {
-        $Center .= "<td><b>New Website Added SuccessFully!<b></td>\n";
+        $Center .= "<td><b>" . _("New Website Added SuccessFully") . "!<b></td>\n";
     } else {
-        $Center .= "<td><b>Addition Unsuccessful</b>...</td>\n";
+        $Center .= "<td><b>" . _("Addition Unsuccessful") . "</b>...</td>\n";
         $Center .= "</tr>\n";
         $Center .= "<tr></tr>\n";
         $Center .= "<tr></tr>\n";
         $Center .= "<tr>\n";
-        $Center .= "<td>Please Check for duplicates!</td>\n";
+        $Center .= "<td>" . _("Please Check for duplicates!") . "</td>\n";
         $Center .= "</tr>\n";
         $Center .= "<tr>\n";
     }

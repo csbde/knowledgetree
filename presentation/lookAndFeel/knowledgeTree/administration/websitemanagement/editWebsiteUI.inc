@@ -31,16 +31,16 @@ function getEditWebSitePage($oWebSite) {
 
     $sToRender .= renderHeading(_("Edit Website"));
     $sToRender .= "<table>\n";
-    $sToRender .= "<tr><td>Update WebSite Properties</td></tr>\n";
+    $sToRender .= "<tr><td>" . _("Update Website Properties") . "</td></tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "<td>Webmaster:</td><td>" . getUserDisplay($oUser) . "</td>\n";
+    $sToRender .= "<td>" . _("Webmaster") . ":</td><td>" . getUserDisplay($oUser) . "</td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "<td>WebSite Name: </td><td>" . getWebSiteName($oWebSite) . "</td>\n";
+    $sToRender .= "<td>" . _("WebSite Name") . ": </td><td>" . getWebSiteName($oWebSite) . "</td>\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "<td>WebSite URL: </td><td>" . getWebSiteUrl($oWebSite,$iUserID) . "</td>\n";
+    $sToRender .= "<td>" . _("WebSite URL") . ": </td><td>" . getWebSiteUrl($oWebSite,$iUserID) . "</td>\n";
     $sToRender .= "</tr>\n";
 	$sToRender .= "<input type=\"hidden\" name=\"fWebSiteID\" value=\"" . $oWebSite->getID() . "\">\n";
     $sToRender .= "<tr></tr>\n";
@@ -93,11 +93,11 @@ function getWebSiteUrl($oWebSite) {
 }
 
 function getSuccessPage() {
-	return statusPage("Edit Website", "Website update success!", "The website has been updated.", "listWebsites");
+	return statusPage(_("Edit Website"), _("Website update success!"), _("The website has been updated."), "listWebsites");
 }
 
 function getFailPage() {
-	return statusPage("Edit Website", "Website update failure!", "There was an error updating the website, please try again later.", "listWebsites");
+	return statusPage(_("Edit Website"), _("Website update failure!"), _("There was an error updating the website, please try again later."), "listWebsites");
     return $sToRender;
 }
 

@@ -53,7 +53,7 @@ function getPage() {
 	$sToRender .= renderHeading(_("Website Management"));
 
 	// add user link
-	$sToRender .= getAddLink("addWebsite", "Add A Website");
+	$sToRender .= getAddLink("addWebsite", _("Add A Website"));
 	$sToRender .= getWebsites();
 	return $sToRender;
 }

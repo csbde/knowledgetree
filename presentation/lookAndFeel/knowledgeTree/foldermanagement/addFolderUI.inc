@@ -50,11 +50,11 @@ function getRightSide($iFolderID) {
 	global $default;
 	$sToRender .= "<table border=\"0\">\n";    
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td><b>Folder name: </b></td>\n";
+	$sToRender .= "<td><b>" . _("Folder Name" ) . ": </b></td>\n";
     $sToRender .= "<td><input type=\"text\" name=\"fFolderName\" value=\"\" /></td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td><b>Document Type: </b></td>\n";
+	$sToRender .= "<td><b>" . _("Document Type") . ": </b></td>\n";
 	$sToRender .= "<td>" . getDocumentTypeDropDown() . "</td>\n";
 	$sToRender .= "</tr>\n";    
 	$sToRender .= "<td><table border=\"0\"><tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/add.gif\" border=\"0\"></td><td><a href=\"$default->rootUrl/control.php?action=browse&fFolderID=$iFolderID\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></a></td></tr></table></td><td>&nbsp</td>\n";    
@@ -63,10 +63,10 @@ function getRightSide($iFolderID) {
     
 	$sToRender .= "\n\n<script language=\"javascript\">\n<!--\n";
 	$sToRender .= "function validateForm(theForm) {\n";
-	$sToRender .= "\tif (!(validRequired(theForm.fFolderName, 'Folder Name'))) {\n";
+	$sToRender .= "\tif (!(validRequired(theForm.fFolderName, '" . _("Folder Name") . "'))) {\n";
 	$sToRender .= "\t\treturn false;\n";
 	$sToRender .= "\t}\n";
-	$sToRender .= "\tif (!(validRequired(theForm.fDocumentTypeID, 'Document Type'))) {\n";
+	$sToRender .= "\tif (!(validRequired(theForm.fDocumentTypeID, '" . _("Document Type") . "'))) {\n";
 	$sToRender .= "\t\treturn false;\n";
 	$sToRender .= "\t}\n";	
 	$sToRender .= "return true;\n}\n";		

@@ -36,7 +36,7 @@
 function getCommentBody($oComment, $iDocumentID, $oUser, $iThreadID) {
 	global $default;
 	
-	$sHeading = "Document Comment";
+	$sHeading = _("Document Comment");
 		
 	$sToRender .= renderHeading($sHeading);
 	$sToRender .= displayDocumentPath($iDocumentID);
@@ -64,9 +64,9 @@ function getCommentBody($oComment, $iDocumentID, $oUser, $iThreadID) {
 	$sToRender .= "<td align=right>\n";	
 	$sToRender .= "<a href=\"" . generateControllerLink("addComment", "fDocumentID=" . $iDocumentID . "&fReplyComment=1&fCommentID=" . $oComment->getID()) . "&fThreadID=" . $iThreadID .  "\"><img src=\"$default->graphicsUrl/widgets/reply.gif\" border=\"0\" /></a>";	
 	$sToRender .= "</td><td width=30><a href=\"" . generateControllerLink("viewDiscussion", "fForDiscussion=1&fDocumentID=$iDocumentID") . "\"><img src=\"$default->graphicsUrl/widgets/back.gif\" border=0 ><a></td></tr>\n"; 
-	$sToRender .= "<tr><td width=\"1\" style=\"background-color:#F5F6EE;\" ><b>Subject: </b></td><td width=405 style=\"background-color:#F5F6EE;\">";	
+	$sToRender .= "<tr><td width=\"1\" style=\"background-color:#F5F6EE;\" ><b>" . _("Subject") . ": </b></td><td width=405 style=\"background-color:#F5F6EE;\">";	
 	$sToRender .= $oComment->getSubject();
-	$sToRender .= "</td><td colspan=2 nowrap style=\"background-color:#F5F6EE;\"><b>Date: </b><font color=\"#056DCE\">" . $oComment->getDate() . "</font>&nbsp;&nbsp;&nbsp;</td></tr><tr><td colspan=4 valign=top>";			
+	$sToRender .= "</td><td colspan=2 nowrap style=\"background-color:#F5F6EE;\"><b>" . _("Date") . ": </b><font color=\"#056DCE\">" . $oComment->getDate() . "</font>&nbsp;&nbsp;&nbsp;</td></tr><tr><td colspan=4 valign=top>";			
 	$sToRender .= "<table border=0><tr><td>";
 	$sToRender .= $sBody;
 	$sToRender .= "</td></tr></table>";

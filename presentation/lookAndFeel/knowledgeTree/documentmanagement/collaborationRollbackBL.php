@@ -64,7 +64,7 @@ if (checkSession()) {
 					$oPatternCustom->setHtml(getPage($oDocument->getFolderID(), $oDocument->getID(), $oDocument->getName()));
 					$main->setCentralPayload($oPatternCustom);
 					$main->setHasRequiredFields(true);
-					$main->setErrorMessage("An error occured while creating the document transaction");
+					$main->setErrorMessage(_("An error occured while creating the document transaction"));
 					$main->setFormAction($_SERVER["PHP_SELF"] . "?fDocumentID=$fDocumentID&fForStore=1");
 					$main->render();
 				}				

@@ -61,7 +61,7 @@ if (checkSession()) {
                     controllerRedirect("editFolder", "fFolderID=$fFolderID&fShowSection=folderPermissions");
                 } else {
                     // otherwise display an error message
-                    $sErrorMessage = "The folder access entry could not be deleted from the database";
+                    $sErrorMessage = _("The folder access entry could not be deleted from the database");
                     $oGroupFolderLink = & GroupFolderLink::get($fGroupFolderLinkID);
                     $oPatternCustom->setHtml(getEditPage($oGroupFolderLink, $fFolderID));
                 }
@@ -71,10 +71,10 @@ if (checkSession()) {
             }
         } else {
             // display an error message
-            $sErrorMessage = "You don't have permission to delete this folder access entry.";
+            $sErrorMessage = _("You don't have permission to delete this folder access entry.");
         }
     } else {
-        $sErrorMessage = "No folder currently selected";
+        $sErrorMessage = _("No folder currently selected");
     }
     
     include_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");

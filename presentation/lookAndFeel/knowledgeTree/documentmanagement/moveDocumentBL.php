@@ -99,27 +99,27 @@ if (checkSession()) {
 							$oDocument->update();						
 
 		  // Store the doc with problem
-		  array_push($aUnmovedDocs, array($oDocument, "Could not move document on file system"));
+		  array_push($aUnmovedDocs, array($oDocument, _("Could not move document on file system")));
 						}
 					} else {
 						require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 						//had a problem with the database					
 		// Store the doc with problem
-		array_push($aUnmovedDocs, array($oDocument, "Could not update document in database"));
+		array_push($aUnmovedDocs, array($oDocument, _("Could not update document in database")));
 					}
 				} else {
 					require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 
 	      // Permission problem
 	      // Store the doc with problem
-	      array_push($aUnmovedDocs, array($oDocument, "You do not have rights to move this document"));
+	      array_push($aUnmovedDocs, array($oDocument, _("You do not have rights to move this document")));
 	    }
 
 	  } else {
 	    require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 
 	    // Store the doc with problem
-	    array_push($aUnmovedDocs, array($oDocument, "This folder already contains a document of the same name. Please choose another directory"));
+	    array_push($aUnmovedDocs, array($oDocument, _("This folder already contains a document of the same name. Please choose another directory")));
 	  }
 	  
 	}
@@ -132,11 +132,11 @@ if (checkSession()) {
 	  require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");			
 					$oPatternCustom = & new PatternCustom();
 	  
-	  $sError = "An error occured moving the following document(s): <br><br>";
+	  $sError = _("An error occured moving the following document(s):") . " <br><br>";
 	  foreach ($aUnmovedDocs as $oDoc) {
 	    $sError .= $oDoc[0]->getDisplayPath() . ":&nbsp;&nbsp;&nbsp;" .$oDoc[1] . "<br>";
 	  } 
-	  $sError .= "<br>The other documents are been moved.";
+	  $sError .= "<br>" . _("The other documents are been moved.");
 
 	  $oPatternCustom = & new PatternCustom();
 	  $oPatternCustom->setHtml(renderErrorPage($sError));
@@ -168,16 +168,12 @@ if (checkSession()) {
 	      $oPatternCustom->setHtml(getConfirmationPage($fFolderID, $fDocumentIDs));
 					} else {
 						// filename collision
-	      $oPatternCustom->setHtml(getPage($fFolderID, $fDocumentIDs, "This folder already contains a document of the same name ('" . 
-					       $oDocument->getFileName() .
-					       "'). Please choose another directory"));
+	      $oPatternCustom->setHtml(getPage($fFolderID, $fDocumentIDs, _("This folder already contains a document of the same name.") . "  " . _("Please choose another directory")));
 	      break;
 					}
 				} else {
 					// the right document type isn't mapped
-	    $oPatternCustom->setHtml(getPage($fFolderID, $fDocumentIDs, "You can't move the document '" . 
-					     $oDocument->getFileName() . 
-					     "' to this folder because it cannot store the document type of your document. Please choose another directory"));
+	    $oPatternCustom->setHtml(getPage($fFolderID, $fDocumentIDs, _("You can't move the document to this folder because it cannot store the document type of your document.") . "  " . _("Please choose another directory")));
 	    break;
 	  }
 				}
@@ -198,7 +194,7 @@ if (checkSession()) {
 		$oPatternCustom = & new PatternCustom();
 		$oPatternCustom->setHtml("");
 		$main->setCentralPayload($oPatternCustom);
-		$main->setErrorMessage("No document/folder selected");
+		$main->setErrorMessage(_("No document/folder selected"));
 		$main->render();
 	}
 }

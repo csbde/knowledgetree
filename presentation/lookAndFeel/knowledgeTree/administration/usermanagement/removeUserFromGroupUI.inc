@@ -114,7 +114,7 @@ function getDeleteConfirmedPage($iUserID,$fGroupID) {
     // change headings if User selected
     if (isset($iUserID)) {
         $oUser = User::get($iUserID);
-        $heading = "<tr><td>Are you sure you wish to remove this user from the Group?</td></tr>";
+        $heading = "<tr><td>" . _("Are you sure you wish to remove this user from the Group?") . "</td></tr>";
     }
 
     // change headings if User selected
@@ -152,7 +152,7 @@ function getPageFail() {
 
     $sToRender .= renderHeading(_("Remove User From Group"));
     $sToRender .= "<table>\n";
-    $sToRender .= "<tr><td><b>Sorry, Removal Failed</b></td></tr>\n";
+    $sToRender .= "<tr><td><b>" . _("Sorry, Removal Failed") . "</b></td></tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "<tr>\n";

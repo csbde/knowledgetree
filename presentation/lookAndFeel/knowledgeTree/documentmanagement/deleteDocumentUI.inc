@@ -29,7 +29,7 @@ function getPage($fDocumentIDs) {
     $sToRender  = renderHeading(_("Delete Document"));
 	$sToRender .= "<table border=\"0\">\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>You have chosen to delete the following document(s): <br><br></td>\n";
+	$sToRender .= "<td>" . _("You have chosen to delete the following document(s):") . " <br><br></td>\n";
 	
 	for ($i = 0; $i < count($fDocumentIDs); $i++) {
 	  $oDocument = Document::get($fDocumentIDs[$i]);
@@ -39,7 +39,7 @@ function getPage($fDocumentIDs) {
 	}
 	$sToRender .= "<tr><tr><tr><tr>\n";
 
-	$sToRender .= "<td>Select 'Delete' to confirm the deletion, or 'Cancel' to cancel it</td>\n";
+	$sToRender .= "<td>" . _("Select 'Delete' to confirm the deletion, or 'Cancel' to cancel it") . "</td>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>&nbsp</td>\n";

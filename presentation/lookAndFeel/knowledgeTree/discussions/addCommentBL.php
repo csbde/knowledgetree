@@ -84,16 +84,16 @@ if(checkSession()) {
 						controllerRedirect("viewDiscussion", "fForDiscussion=1&fDocumentID=$iDocumentID");		
 						//$oPatternCustom->addHtml(getSubmitSuccessPage($iDocumentID));
 					} else {
-						$main->setErrorMessage("Thread Object failed to update");								
+						$main->setErrorMessage(_("Thread Object failed to update"));
 					}
 				} else {
-					$main->setErrorMessage("Comment Object failed in creation");							
+					$main->setErrorMessage(_("Comment Object failed in creation"));
 				}
 			} else {  
-				$main->setErrorMessage("Could not create a new discussion thread.");					
+				$main->setErrorMessage(_("Could not create a new discussion thread."));
 			}
 		} else { // the user has not entered BOTH a subject and a text body
-			$main->setErrorMessage("The subject line and/or body should not be empty.");				
+			$main->setErrorMessage(_("The subject line and/or body should not be empty."));
 			$main->setFormAction($_SERVER['PHP_SELF'] . "?fAddCommentSubmit=1&iDocumentID=$fDocumentID");
 			$oPatternCustom->addHtml(getAddComment($fDocumentID, $fSubject, $fComment, $fCommentID, 1, $fThreadID));
 		} // end of IF for Subject and Body test	 
@@ -129,7 +129,7 @@ if(checkSession()) {
 			$main->setFormAction($_SERVER['PHP_SELF'] . "?fAddCommentSubmit=1&iDocumentID=$fDocumentID");
 			$oPatternCustom->setHtml(getAddComment($fDocumentID,$sSubject,$sBody, $fCommentID, 1, $fThreadID));
 		} else {
-			$main->setErrorMessage("You did not specify a document to add a comment to.");			
+			$main->setErrorMessage(_("You did not specify a document to add a comment to."));
 		}		
 	}	    
 	$main->setCentralPayload($oPatternCustom);

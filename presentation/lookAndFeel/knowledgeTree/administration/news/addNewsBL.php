@@ -54,7 +54,7 @@ if (checkSession()) {
 				// don't accept it if it isn't an image
 				if (!$aSize) {
 					$default->log->error("addNewsBL.php attempted to upload a non-image:" . $_FILES['fImage']['tmp_name']);
-					$oContent->setHtml(renderAddNewsPage($oDashboardNews, "You may only upload an image file."));
+					$oContent->setHtml(renderAddNewsPage($oDashboardNews, _("You may only upload an image file.")));
 				} else {
 					// we have an image, now check the size
 					$iImgWidth = $aSize[0];

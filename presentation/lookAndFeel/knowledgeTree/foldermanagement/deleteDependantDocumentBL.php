@@ -59,7 +59,7 @@ if (checkSession()) {
 					$oPatternCustom->setHtml(getPage($fFolderID, $fFolderCollaborationID, $oDependantDocumentTemplate->getDocumentTitle(), $oUser->getName(), (!($oTemplateDocument->getName() === false)) ? $oTemplateDocument->getName() : ""));
 	    			$main->setCentralPayload($oPatternCustom);
 	    	    	$main->setFormAction($_SERVER["PHP_SELF"] . "?fFolderID=$fFolderID&fFolderCollaborationID=$fFolderCollaborationID&fDependantDocumentTemplateID=$fDependantDocumentTemplateID&fForDelete=1");
-	    	    	$main->setErrorMessage("An error occured while attempting to delete the dependant document");	    	        		
+	    	    	$main->setErrorMessage(_("An error occured while attempting to delete the dependant document"));
 	    			$main->render();						
 				}
 				

@@ -31,9 +31,9 @@ function getDeletePage($iWebSiteID) {
     $oWebSite = null;
     if (isset($iWebSiteID)) {
         $oWebSite = WebSite::get($iWebSiteID);
-        $sHeading .= "<b>Are you sure you wish to Remove this WebSite?:</b>\n";
+        $sHeading .= "<b>" . _("Are you sure you wish to Remove this WebSite?") . ":</b>\n";
     } else {
-        $sHeading .= "Select a WebSite:\n";
+        $sHeading .= _("Select a WebSite") . ":\n";
     }
 
     $sToRender .= renderHeading(_("Remove Website"));
@@ -41,7 +41,7 @@ function getDeletePage($iWebSiteID) {
     $sToRender .= "<table>\n";
     $sToRender .= "<tr><td colspan=\"2\">$sHeading</td></tr>\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "<td>WebSite Name: </td><td>" . getWebSiteDisplay($oWebSite) . "</td>\n";
+    $sToRender .= "<td>" . _("WebSite Name") . ": </td><td>" . getWebSiteDisplay($oWebSite) . "</td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "<tr>\n";
     $sToRender .= "</tr>\n";
@@ -69,7 +69,7 @@ function getDeleteSuccessPage() {
     $sToRender .= "<table>\n";
     $sToRender .= "<TABLE BORDER=\"0\" CELLSPACING=\"2\" CELLPADDING=\"2\">\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "<td><b>WebSite SuccessFully Removed!</b></td>\n";
+    $sToRender .= "<td><b>" . _("Website Successfully Removed!") . "</b></td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr></tr>\n";
@@ -92,11 +92,11 @@ function getDeleteFailPage() {
     $sToRender .= "<table>\n";
     $sToRender .= "<TABLE BORDER=\"0\" CELLSPACING=\"2\" CELLPADDING=\"2\">\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "<td><b>Deletion Failed!</b></td>\n";
+    $sToRender .= "<td><b>" . _("Deletion Failed!") . "</b></td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr></tr>\n";
-    $sToRender .= "<tr><td>Please Ensure that The WebSite has been Removed from any Unit it belongs to</td></tr>\n";
+    $sToRender .= "<tr><td>" . _("Please ensure that the website has been removed from any unit it belongs to") . "</td></tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "</tr>\n";

@@ -39,9 +39,9 @@ function getFolderNotEmptyPage($iFolderID, $iObjectCount, $sObjectType) {
 	$sToRender .= getFolderPath($iFolderID) . "<br>\n";
 	$sToRender .= "<table border=\"0\">\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>This folder cannot be deleted because there are still $iObjectCount $sObjectType in it.</td>\n";
+	$sToRender .= "<td>" . _("This folder cannot be deleted while it is not empty.") . "</td>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>Select 'Cancel' to return to the browse page.</td>\n";
+	$sToRender .= "<td>" . _("Select 'Cancel' to return to the browse page.") . "</td>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>&nbsp</td>\n";
@@ -58,10 +58,10 @@ function getConfirmPage($iFolderID, $sFolderName) {
 	$sToRender .= getFolderPath($iFolderID) . "<br>\n";
 	$sToRender .= "<table border=\"0\">\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>You have chosen to delete the folder entitled '" . $sFolderName . "'.</td>\n";
+	$sToRender .= "<td>" . _("You have chosen to delete the folder entitled") . " '" . $sFolderName . "'.</td>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>Select 'Delete' to confirm the deletion, or 'Cancel' to cancel it</td>\n";
+	$sToRender .= "<td>" . _("Select 'Delete' to confirm the deletion, or 'Cancel' to cancel it") . "</td>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>&nbsp</td>\n";

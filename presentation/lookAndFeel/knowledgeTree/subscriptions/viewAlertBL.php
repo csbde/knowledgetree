@@ -41,7 +41,7 @@ if (checkSession()) {
     // retrieve variables
     if ((!$fSubscriptionID) || (!$fSubscriptionType)) {
         require_once("../../../webpageTemplate.inc");
-        $main->setErrorMessage("You have not selected a subscription alert");
+        $main->setErrorMessage(_("You have not selected a subscription alert"));
         $oPatternCustom = & new PatternCustom();
         $main->setCentralPayload($oPatternCustom);
         $main->setFormAction($_SERVER["PHP_SELF"]);
@@ -59,7 +59,7 @@ if (checkSession()) {
         } else {
             // viewSubscription called failed
             require_once("../../../webpageTemplate.inc");
-            $main->setErrorMessage("This subscription alert does not exist.");
+            $main->setErrorMessage(_("This subscription alert does not exist."));
             $oPatternCustom = & new PatternCustom();
             $main->setCentralPayload($oPatternCustom);
             $main->setFormAction($_SERVER["PHP_SELF"]);

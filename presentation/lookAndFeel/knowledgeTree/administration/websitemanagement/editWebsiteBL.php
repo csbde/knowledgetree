@@ -59,10 +59,10 @@ if (checkSession()) {
 		        $main->setFormAction($_SERVER["PHP_SELF"] . "?fForStore=1");
 		    }
     	} else {
-			$oPatternCustom->setHtml(statusPage("Edit Website", "", "The selected website no longer exists in the database.", "listWebsites"));    		
+			$oPatternCustom->setHtml(statusPage(_("Edit Website"), "", _("The selected website no longer exists in the database."), "listWebsites"));    		
     	}
   	} else {
-  		$oPatternCustom->setHtml(statusPage("Edit Website", "", "No website has been selected for editing.", "listWebsites"));
+  		$oPatternCustom->setHtml(statusPage(_("Edit Website"), "", _("No website has been selected for editing."), "listWebsites"));
   	}
     	
     //render the page

@@ -66,8 +66,8 @@ function renderChooseArchivingTypeForm() {
 	global $default, $fDocumentID;
 	
 	$sToRender  = "<table border=\"0\">";
-	$sToRender .= "<tr><td colspan=\"2\">Choose the archiving type for this document</td></tr>";
-	$sToRender .= "<tr><td>Archiving Type:</td><td>" . renderArchivingTypeListBox() . "</td></tr>";
+	$sToRender .= "<tr><td colspan=\"2\">" . _("Choose the archiving type for this document") . "</td></tr>";
+	$sToRender .= "<tr><td>" . _("Archiving Type") . ":</td><td>" . renderArchivingTypeListBox() . "</td></tr>";
 	// hidden archive settings references
 	$sToRender .= "<input type=\"hidden\" name=\"fDocumentID\" value=\"$fDocumentID\">\n";			
 	$sToRender .= "<tr><td>" . generateControllerLink("viewDocument", "fDocumentID=$fDocumentID&fShowSection=archiveSettings", "<img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\" />") . "</td></tr>\n";
@@ -145,7 +145,7 @@ function renderArchiveSettingsForm($iDocumentID, $oArchiveSettings, $iArchivingT
 	global $default, $fDocumentID;
 
 	if ($oArchiveSettings) {
-		$sToRender .= "(in order to change the archiving type for this document, click the 'Remove' button and add new archiving settings)";
+		$sToRender .= "(" . _("in order to change the archiving type for this document, click the 'Remove' button and add new archiving settings") . ")";
 		$iArchivingTypeID = $oArchiveSettings->getArchivingTypeID();
 	}
 	
@@ -157,16 +157,16 @@ function renderArchiveSettingsForm($iDocumentID, $oArchiveSettings, $iArchivingT
 		case "Date" : 
 			
 			$sToRender .= "<tr><th align=\"left\" colspan=\"2\">Archive By Date</th></tr>";						
-			$sToRender .= "<tr><td>Expiration Date:</td>";
+			$sToRender .= "<tr><td>" . _("Expiration Date") . ":</td>";
 			$sToRender .= "<td valign=bottom><input type=\"text\" name=\"fExpirationDate\" size=\"10\" maxlength=\"10\" " . ($oArchiveSettings ? "value=\"" . ($oArchiveSettings->getExpirationDate() == "0000-00-00" ? "" : $oArchiveSettings->getExpirationDate()) . "\"" : "") . ">";			
 			$sToRender .= "&nbsp;&nbsp;<a href=\"javascript:show_calendar('MainForm.fExpirationDate',null,null,'YYYY-MM-DD');\" onmouseover=\"window.status='Date Picker';return true;\" onmouseout=\"window.status='';return true;\"><img src=\"$default->graphicsUrl/calendar/calendar.gif\" name=\"imgCalendar\" width=\"34\" height=\"21\" border=\"0\" alt=\"\"></a>";
 			$sToRender .= "&nbsp;&nbsp;<a href=\"javascript:void();\" onclick=\"document.MainForm.fExpirationDate.value=''\"><img src=\"$default->graphicsUrl/widgets/reset.gif\" border=\"0\"></a></td></tr>";
 					
 			if ($oArchiveSettings) {
 				$oTimePeriod = TimePeriod::get($oArchiveSettings->getTimePeriodID());
-				$sToRender .= renderTimePeriod("Expires after", "from document creation date", $oTimePeriod);
+				$sToRender .= renderTimePeriod(_("Expires after"), _("from document creation date"), $oTimePeriod);
 			} else {
-				$sToRender .= renderTimePeriod("Expires after", "from document creation date");
+				$sToRender .= renderTimePeriod(_("Expires after"), _("from document creation date"));
 			}
 			$sToRender .= getDateArchivingJavascript();
 			break;		
@@ -183,7 +183,7 @@ function renderArchiveSettingsForm($iDocumentID, $oArchiveSettings, $iArchivingT
 			if ($oArchiveSettings) {
 				$iDocumentTransactionID = $oArchiveSettings->getDocumentTransactionID();
 			}
-			$sToRender .= "<tr><td colspan=\"2\">after the last " . renderDocumentTransactionListBox($iDocumentTransactionID) . " transaction</td></tr>";
+			$sToRender .= "<tr><td colspan=\"2\">" . sprintf(_("after the last %s transactions"), renderDocumentTransactionListBox($iDocumentTransactionID)) . " </td></tr>";
 			$sToRender .= getUtilisationArchivingJavascript();
 			break;		
 	}	
@@ -256,9 +256,9 @@ function renderArchiveConfirmationPage($iDocumentID, $sErrorMessage = "") {
 	}	
     $sToRender .= "<table>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>You have chosen to archive the document entitled '" . Document::getDocumentName($iDocumentID) . "'.</td>\n";
+	$sToRender .= "<td>" . _("You have chosen to archive the document entitled") . " '" . Document::getDocumentName($iDocumentID) . "'.</td>\n";
 	$sToRender .= "<tr>\n<tr>\n";
-	$sToRender .= "<td>Select 'Archive' to confirm, or 'Cancel' to cancel.</td>\n";
+	$sToRender .= "<td>" . _("Select 'Archive' to confirm, or 'Cancel' to cancel.") . "</td>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>&nbsp</td>\n";

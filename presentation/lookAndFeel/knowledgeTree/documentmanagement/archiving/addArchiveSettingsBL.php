@@ -54,10 +54,10 @@ if (checkSession()) {
 	    		// error
 	    		$default->log->error("addArchiveSettingsBL.php error adding archive settings");
 	    		// display form with error
-				$oContent->setHtml(renderAddArchiveSettingsPage(null, "The archive settings for this document could not be added"));   
+				$oContent->setHtml(renderAddArchiveSettingsPage(null, _("The archive settings for this document could not be added")));   
 	    	}
     	} else {
-    		$oContent->setHtml(renderAddArchiveSettingsPage($fDocumentID, $fArchivingTypeID, "You cannot select an expiration date in the past. Please try again."));
+    		$oContent->setHtml(renderAddArchiveSettingsPage($fDocumentID, $fArchivingTypeID, _("You cannot select an expiration date in the past. Please try again.")));
     	}    	
     } elseif (isset($fArchivingTypeID)) {
     	// the archiving type has been chosen, so display the correct form   	

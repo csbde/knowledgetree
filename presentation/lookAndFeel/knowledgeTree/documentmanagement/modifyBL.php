@@ -92,7 +92,7 @@ if (checkSession()) {
 					$main->setFormAction($_SERVER["PHP_SELF"] . "?fForUpdate=1");
 				}	
 				$main->setHasRequiredFields(true);
-				$main->setErrorMessage("An error occured while attempting to update the document");
+				$main->setErrorMessage(_("An error occured while attempting to update the document"));
 				$main->render();
 			}
 			
@@ -119,7 +119,7 @@ if (checkSession()) {
 		$oPatternCustom = & new PatternCustom();
 		$oPatternCustom->setHtml("");
 		$main->setCentralPayload($oPatternCustom);		
-		$main->setErrorMessage("You do not have permission to edit this document");
+		$main->setErrorMessage(_("You do not have permission to edit this document"));
 		$main->render();
 	}
 }

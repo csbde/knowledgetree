@@ -31,12 +31,12 @@ function getPage($sParentDocumentName, $sChildDocumentName, $iParentDocumentID) 
 	$sToRender .= displayDocumentPath($iParentDocumentID);
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr>\n";	
-	$sToRender .= "<td>You have chosen to delete the link between the document '$sParentDocumentName' and the document '$sChildDocumentName'</td>\n";
+	$sToRender .= "<td>" . _("You have chosen to delete the link between these two documents") . ": '$sParentDocumentName' / '$sChildDocumentName'</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";	
 	$sToRender .= "<td>&nbsp</td>\n";
 	$sToRender .= "</tr>\n";
-	$sToRender .= "<td>Select 'Delete' to confirm or 'Cancel' to cancel</td>\n";
+	$sToRender .= "<td>" . _("Select 'Delete' to confirm or 'Cancel' to cancel") . "</td>\n";
 	$sToRender .= "</tr>\n";	
 	$sToRender .= "<tr>\n";	
 	$sToRender .= "<td>&nbsp</td>\n";

@@ -132,16 +132,16 @@ if (checkSession()) {
 			$oPatternCustom = & new PatternCustom();							
 			$oPatternCustom->setHtml("<a href=\"$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $fDocumentID . "\">Return to document view page</a>");
 			$main->setCentralPayload($oPatternCustom);
-			$main->setErrorMessage("You do not have permission to edit document routing details");
+			$main->setErrorMessage(_("You do not have permission to edit document routing details"));
 			$main->render();
 		}
 	} else {
 			//no document routing information selected
 			require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");			
 			$oPatternCustom = & new PatternCustom();							
-			$oPatternCustom->setHtml("<a href=\"$default->rootUrl/control.php?action=dashboard\">Return to document dashboard</a>");
+			$oPatternCustom->setHtml("<a href=\"$default->rootUrl/control.php?action=dashboard\">" . _("Return to document dashboard") . "</a>");
 			$main->setCentralPayload($oPatternCustom);
-			$main->setErrorMessage("No document/document routing details are currently selected");
+			$main->setErrorMessage(_("No document/document routing details are currently selected"));
 			$main->render();
 	}
 }

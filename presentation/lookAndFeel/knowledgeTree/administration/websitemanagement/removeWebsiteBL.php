@@ -59,7 +59,7 @@ if (checkSession()) {
 		} else {
 			// check that the website isn't involved in any publishing request
 			if ($oWebSite->inUse()) {
-				$oPatternCustom->setHtml(statusPage("Remove Website", "This website can not be removed since it is still in use.", "", "listWebsites"));
+				$oPatternCustom->setHtml(statusPage(_("Remove Website"), _("This website can not be removed since it is still in use."), "", "listWebsites"));
 			} else { 
 				// ask for confirmation
 				$oPatternCustom->setHtml(getDeletePage($fWebSiteID));

@@ -161,7 +161,7 @@ if (checkSession()) {
 				    // ask the user to specify users or groups to send the mail to
 				    require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 				    require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
-				    $main->setErrorMessage("You must select either a group or a user to send an email link to.");				    
+				    $main->setErrorMessage(_("You must select either a group or a user to send an email link to."));
 				    $oPatternCustom = & new PatternCustom();
 				    $oPatternCustom->setHtml(getDocumentEmailPage($oDocument));
 				    $main->setCentralPayload($oPatternCustom);
@@ -191,7 +191,7 @@ if (checkSession()) {
             require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
             $oPatternCustom = & new PatternCustom();
             $oPatternCustom->setHtml("");
-            $main->setErrorMessage("You do not have the permission to email a link to this document\n");
+            $main->setErrorMessage(_("You do not have the permission to email a link to this document") . "\n");
             $main->setCentralPayload($oPatternCustom);
             $main->render();
         }

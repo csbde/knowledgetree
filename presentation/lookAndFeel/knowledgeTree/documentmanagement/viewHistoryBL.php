@@ -62,7 +62,7 @@ if (checkSession()) {
 		} else {			
 			$oPatternCustom = & new PatternCustom();
 			$oPatternCustom->setHtml("");
-			$main->setErrorMessage("You do not have permission to view this document's history");
+			$main->setErrorMessage(_("You do not have permission to view this document's history"));
 			$main->setCentralPayload($oPatternCustom);   
 			$main->render();
 		}
@@ -70,7 +70,7 @@ if (checkSession()) {
 	} else {
 		$oPatternCustom = & new PatternCustom();
 			$oPatternCustom->setHtml("");
-			$main->setErrorMessage("No document currently selected");
+			$main->setErrorMessage(_("No document currently selected"));
 			$main->setCentralPayload($oPatternCustom);   
 			$main->render();
 	}

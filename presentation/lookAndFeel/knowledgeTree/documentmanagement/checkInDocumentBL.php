@@ -122,21 +122,21 @@ if (checkSession()) {
 	                                        redirect("$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $oDocument->getID());
 	                                    } else {
 	                                        // document update failed
-	                                        $oPatternCustom->setHtml(renderErrorPage("An error occurred while storing this document in the database"));
+	                                        $oPatternCustom->setHtml(renderErrorPage(_("An error occurred while storing this document in the database")));
 	                                    }
 	                                } else {
 	                                    // reinstate the backup
 	                                    copy($sBackupPath, $oDocument->getPath());
 	                                    // remove the backup
 	                                    unlink($sBackupPath);                                    
-	                                    $oPatternCustom->setHtml(renderErrorPage("An error occurred while storing the new file on the filesystem"));
+	                                    $oPatternCustom->setHtml(renderErrorPage(_("An error occurred while storing the new file on the filesystem")));
 	                                }
     							} else {
-	                                $sErrorMessage = "The file you selected does not match the current filename in the DMS.  Please try again.";
+	                                $sErrorMessage = _("The file you selected does not match the current filename in the DMS.  Please try again.");
 	                                $oPatternCustom->setHtml(getCheckInPage($oDocument));
     							}
                             } else {
-                                $sErrorMessage = "Please select a document by first clicking on 'Browse'.  Then click 'Check-In'";
+                                $sErrorMessage = _("Please select a document by first clicking on 'Browse'.  Then click 'Check-In'");
                                 $oPatternCustom->setHtml(getCheckInPage($oDocument));
                             }
                         } else {
@@ -146,23 +146,23 @@ if (checkSession()) {
                     } else {
                         // you don't have this doc checked out
                         $oUser = User::get($oDocument->getCheckedOutUserID()); 
-                        $oPatternCustom->setHtml(renderErrorPage("You can't check in this document because its checked out by " . $oUser->getName()));
+                        $oPatternCustom->setHtml(renderErrorPage(_("You can't check in this document because its checked out by") . $oUser->getName()));
                     }
                 } else {
                     // this document isn't checked out
-                    $oPatternCustom->setHtml(renderErrorPage("You can't check in this document because its not checked out"));
+                    $oPatternCustom->setHtml(renderErrorPage(_("You can't check in this document because its not checked out")));
                 }
             } else {
                 // no permission to checkout the document
-                $oPatternCustom->setHtml(renderErrorPage("You do not have permission to check in this document"));
+                $oPatternCustom->setHtml(renderErrorPage(_("You do not have permission to check in this document")));
             }
         } else {
             // couldn't instantiate the document
-            $oPatternCustom->setHtml(renderErrorPage("Could not check in this document"));
+            $oPatternCustom->setHtml(renderErrorPage(_("Could not check in this document")));
         }
     } else {
         // no document id was set when coming to this page,
-        $oPatternCustom->setHtml(renderErrorPage("No document is currently selected for check in"));
+        $oPatternCustom->setHtml(renderErrorPage(_("No document is currently selected for check in")));
     }
 
     require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");

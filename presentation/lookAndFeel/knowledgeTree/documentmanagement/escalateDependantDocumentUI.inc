@@ -33,22 +33,22 @@ function getPage($oDependantDocument) {
 	$iFolderID =  $oDocument->getFolderID();
 	$sToRender .= renderFolderPath($iFolderID, generateControllerUrl("browse", "fFolderID=$iFolderID"), false);
 	$sToRender .= "<table border=\"0\" width=\"100%\">\n";	
-	$sToRender .= "<tr><td colspan=\"2\"><strong>You have requested that the following document be created:</strong></td></tr>";	
+	$sToRender .= "<tr><td colspan=\"2\"><strong>" . _("You have requested that the following document be created:") . "</strong></td></tr>";	
 	$sToRender .= "<tr>\n";	
-	$sToRender .= "<td>Document title</td><td>" . $oDependantDocument->getDocumentTitle() . "</td>\n";
+	$sToRender .= "<td>" . _("Document title") . "</td><td>" . $oDependantDocument->getDocumentTitle() . "</td>\n";
 	$sToRender .= "</tr>\n";
 	
 	$oUser = User::get($oDependantDocument->getUserID());
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>User</td><td>" . ($oUser ? $oUser->getName() : "<font color=\"red\">Error! No user specified</font>") . "</td>\n";
+	$sToRender .= "<td>User</td><td>" . ($oUser ? $oUser->getName() : "<font color=\"red\">" . _("Error! No user specified") . "</font>") . "</td>\n";
 	$sToRender .= "</tr>\n";
 
 	$oTemplateDocument = Document::get($oDependantDocument->getTemplateDocumentID());
-	$sToRender .= "<tr><td>Template document</td><td>" . ($oTemplateDocument ? $oTemplateDocument->getDisplayPath() : "No template document") . "</td></tr>\n";
+	$sToRender .= "<tr><td>" . _("Template document") . "</td><td>" . ($oTemplateDocument ? $oTemplateDocument->getDisplayPath() : _("No template document")) . "</td></tr>\n";
 	$sToRender .= "<tr><td>&nbsp;</td></tr>";
 	
-	$sToRender .= "<tr><td colspan=\"2\">To send the user a reminder message, fill in the text box below and click 'Done'</td></tr>";
-	$sToRender .= "<tr><td>Reminder Message</td><td><textarea rows=\"5\" cols=\"30\" name=\"fReminderMessage\"></textarea></td></tr>\n";
+	$sToRender .= "<tr><td colspan=\"2\">" . _("To send the user a reminder message, fill in the text box below and click 'Done'") . "</td></tr>";
+	$sToRender .= "<tr><td>" . _("Reminder Message") . "</td><td><textarea rows=\"5\" cols=\"30\" name=\"fReminderMessage\"></textarea></td></tr>\n";
 	$sToRender .= "<tr>\n";	
 	$sToRender .= "<td><table><tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/done.gif\" onClick='return validateForm(document.MainForm);' border=\"0\"/></td>";
 	$sToRender .= "<td>" . generateControllerLink("viewDocument", "fDocumentID=" . $oDocument->getID() . "&fShowSection=linkedDocuments", "<img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"/>") . "</td></tr></table>\n";	

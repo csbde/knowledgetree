@@ -33,7 +33,7 @@ function getDeletePage($iGroupID) {
 		$oGroup = Group::get($iGroupID);
 		$sHeading = "<b>" . _("Are you sure you wish to Remove this Group?:") . "</b>\n";
 	} else {
-        $sHeading = "Please select a group: ";
+        $sHeading = _("Please select a group:");
     }
 	
     $sToRender .= renderHeading(_("Remove Group"));

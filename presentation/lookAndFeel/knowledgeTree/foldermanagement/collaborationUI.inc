@@ -65,16 +65,16 @@ function getEditPage($iFolderCollaborationID, $iFolderID, $iGroupID, $iUserID, $
     $sToRender .= getFolderPath($iFolderID);
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>Group</td><td>" . getGroupDropDown($iFolderCollaborationID, $iFolderID, $iGroupID) . "</td>\n";
+	$sToRender .= "<td>" . _("Group") . "</td><td>" . getGroupDropDown($iFolderCollaborationID, $iFolderID, $iGroupID) . "</td>\n";
 	$sToRender .= "</tr>";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>User</td><td>" . getUserDropDown($iGroupID, $iUserID) . "</td>\n";
+	$sToRender .= "<td>" . _("User") . "</td><td>" . getUserDropDown($iGroupID, $iUserID) . "</td>\n";
 	$sToRender .= "</tr>";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>Role</td><td>" . getRoleDropDown($iRoleID) . "</td>\n";
+	$sToRender .= "<td>" . _("Role") . "</td><td>" . getRoleDropDown($iRoleID) . "</td>\n";
 	$sToRender .= "</tr>";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>Sequence</td><td><input type=\"text\" name=\"fSequenceNumber\" value=\"$iSequenceNumber\" /></td>\n";
+	$sToRender .= "<td>" . _("Sequence") . "</td><td><input type=\"text\" name=\"fSequenceNumber\" value=\"$iSequenceNumber\" /></td>\n";
 	$sToRender .= "</tr>";			
 	$sToRender .= "<tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/update.gif\" border=\"0\"/></td>";
 	$sToRender .= "<td>" . generateControllerLink("editFolder", "fFolderID=$iFolderID&fShowSection=folderRouting", "<img border=\"0\" src=\"$default->graphicsUrl/widgets/cancel.gif\"/>")  . "</td>\n";
@@ -83,7 +83,7 @@ function getEditPage($iFolderCollaborationID, $iFolderID, $iGroupID, $iUserID, $
 	
 	$sToRender .= "\n\n<script language=\"javascript\">\n<!--\n";
 	$sToRender .= "function validateForm(theForm) {\n";	
-	$sToRender .= "\tif (!(validRequired(theForm.fGroupID,'Group')) || !(validRequired(theForm.fUserID,'User')) || !(validRequired(theForm.fRoleID,'Role')) || !(validNum(theForm.fSequenceNumber,'Sequence no.')) || !(validRequired(theForm.fSequenceNumber,'Sequence no.'))) {\n";
+	$sToRender .= "\tif (!(validRequired(theForm.fGroupID,'" . _("Group") . "')) || !(validRequired(theForm.fUserID,'" . _("User") . "')) || !(validRequired(theForm.fRoleID,'" . _("Role") . "')) || !(validNum(theForm.fSequenceNumber,'" . _("Sequence") . "')) || !(validRequired(theForm.fSequenceNumber,'" . _("Sequence") . "'))) {\n";
 	$sToRender .= "\t\treturn false;\n\t}\n";
 	$sToRender .= "return true;\n}\n";
 	$sToRender .= "//-->\n</script>\n\n";	
@@ -93,8 +93,8 @@ function getEditPage($iFolderCollaborationID, $iFolderID, $iGroupID, $iUserID, $
 
 function getRoleDropDown($iRoleID) {
 	global $default;
-	$oPatternListBox = & new PatternListBox("$default->roles_table", "name", "id", "fRoleID");		
-	$oPatternListBox->setEmptyErrorMessage("There are no users in this group");		
+	$oPatternListBox = & new PatternListBox("$default->roles_table", "name", "id", "fRoleID");
+	$oPatternListBox->setEmptyErrorMessage(_("There are no users in this group"));
 	if (isset($iRoleID)) {
 		$oPatternListBox->setSelectedValue($iRoleID);
 	}

@@ -64,17 +64,17 @@ if (checkSession()) {
                     // redirect to the dashboard
                     controllerRedirect("dashboard", "");
                 } else {
-                    $oContent->setHtml(renderErrorPage("There was an error updating the web document status"));
+                    $oContent->setHtml(renderErrorPage(_("There was an error updating the web document status")));
                 }
             } else {
                 // display the upload instructions for the web master
                 $oContent->setHtml(renderUploadPage($oWebDocument));
             }
         } else {
-            $oContent->setHtml(renderErrorPage("The web document could not be retrieved from the database"));
+            $oContent->setHtml(renderErrorPage(_("The web document could not be retrieved from the database")));
         }
     } else {
-        $oContent->setHtml(renderErrorPage("No web document selected"));
+        $oContent->setHtml(renderErrorPage(_("No web document selected")));
     }
     
     require_once("../../../webpageTemplate.inc");

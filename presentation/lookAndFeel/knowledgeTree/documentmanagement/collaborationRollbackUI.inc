@@ -35,12 +35,11 @@ function getDocumentPath($iFolderID, $iDocumentID, $sDocumentName) {
 function getPage($iFolderID, $iDocumentID, $sDocumentName) {
 	global $default;
 	$sToRender = getDocumentPath($iFolderID, $iDocumentID, $sDocumentName);	
-	$sToRender .= "<p>You have chosen to reject the previous collaboration step for the document, '$sDocumentName'. " .
-					"Please enter a valid reason</p>\n";	
+	$sToRender .= "<p>" . _("You have chosen to reject the previous collaboration step for the document.  Please provide a reason") . "</p>\n";	
 	$sToRender .= "<br>\n";
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td><b>Comment<b></td>\n";
+	$sToRender .= "<td><b>" . _("Comment") . "<b></td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td><textarea cols=\"40\" rows=\"5\" name=\"fComment\"></textarea></td>\n";	

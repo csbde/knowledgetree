@@ -33,16 +33,16 @@ function getPage($iFolderID, $iGroupID, $iRoleID, $iSequenceNumber) {
 	$sToRender .= "<br>\n";
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>Group</td><td>" . getGroupDropDown($iGroupID, $iFolderID) . "</td>\n";
+	$sToRender .= "<td>" . _("Group") . "</td><td>" . getGroupDropDown($iGroupID, $iFolderID) . "</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>User</td><td>" . getUserDropDown($iGroupID) . "</td>\n";
+	$sToRender .= "<td>" . _("User") . "</td><td>" . getUserDropDown($iGroupID) . "</td>\n";
 	$sToRender .= "</tr>\n";	
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>Role</td><td>" . getRoleDropDown($iRoleID) . "</td>\n";
+	$sToRender .= "<td>" . _("Role") . "</td><td>" . getRoleDropDown($iRoleID) . "</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>Sequence No.</td><td><input type=\"text\" name=\"fSequenceNumber\" size=\"5\" " . (isset($iSequenceNumber) ? "value=\"$iSequenceNumber\" " : " ") . "/></td>\n";
+	$sToRender .= "<td>" . _("Sequence No.") . "</td><td><input type=\"text\" name=\"fSequenceNumber\" size=\"5\" " . (isset($iSequenceNumber) ? "value=\"$iSequenceNumber\" " : " ") . "/></td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td><table><tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/add.gif\" border=\"0\"/></td><td>" . generateControllerLink("editFolder", "fFolderID=$iFolderID&fShowSection=folderRouting", "<img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"/>") . "</td></tr></table></td>\n";
@@ -107,7 +107,7 @@ function getUserDropDown($iGroupID) {
     $oPatternListBox->setFromClause("INNER JOIN $default->users_groups_table AS UGL ON ST.id = UGL.user_id");
     
     if ($iGroupID == -1) {         
-		$oPatternListBox->setEmptyErrorMessage("Select a group");
+		$oPatternListBox->setEmptyErrorMessage(_("Select a group"));
 		$oPatternListBox->setIncludeDefaultValue(false);
 	}	
 	return $oPatternListBox->render();
@@ -116,7 +116,7 @@ function getUserDropDown($iGroupID) {
 function getRoleDropDown($iRoleID) {
 	global $default;	
 	$oPatternListBox = & new PatternListBox("$default->roles_table", "name", "id", "fRoleID");
-	$oPatternListBox->setEmptyErrorMessage("There are no roles");
+	$oPatternListBox->setEmptyErrorMessage(_("There are no roles"));
 	$oPatternListBox->setIncludeDefaultValue(false);
 	if (isset($iRoleID)) {
 		$oPatternListBox->setSelectedValue($iRoleID);

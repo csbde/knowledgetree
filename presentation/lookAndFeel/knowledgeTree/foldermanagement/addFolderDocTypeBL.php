@@ -45,7 +45,7 @@ if (checkSession()) {
 				require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 				$oPatternCustom->setHtml(getPage($fFolderID, $fDocumentTypeID));
 				$main->setCentralPayload($oPatternCustom);
-				$main->setErrorMessage("The folder has already been assigned this document type");				
+				$main->setErrorMessage(_("The folder has already been assigned this document type"));
 				$main->setFormAction($_SERVER["PHP_SELF"] . "?fForAdd=1&fFolderID=$fFolderID");
                 $main->render();
 				
@@ -58,7 +58,7 @@ if (checkSession()) {
 					require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 					$oPatternCustom->setHtml(getPage($fFolderID, $fDocumentTypeID));
 					$main->setCentralPayload($oPatternCustom);
-					$main->setErrorMessage("A database error occured while attempting to assig the document type to the folder");					
+					$main->setErrorMessage(_("A database error occured while attempting to assign the document type to the folder"));
 					$main->setFormAction($_SERVER["PHP_SELF"] . "?fForAdd=1&fFolderID=$fFolderID");
 					$main->render();
 				}
@@ -76,7 +76,7 @@ if (checkSession()) {
 		require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 		$oPatternCustom->setHtml("");
 		$main->setCentralPayload($oPatternCustom);
-		$main->setErrorMessage("You do not have permission to assign a document type to this folder");						
+		$main->setErrorMessage(_("You do not have permission to assign a document type to this folder"));
 		$main->render();
 	}
 }

@@ -33,7 +33,7 @@ function getPage($iFolderID, $iDocumentTypeID) {
     $sToRender .= renderFolderPath($iFolderID, generateControllerUrl("browse", "", false));
     $sToRender .= "<table border=\"0\">\n";
     $sToRender .= "<tr>\n";	
-	$sToRender .= "<td bgcolor=\"$sTDBGColour\">Document type</td>\n";
+	$sToRender .= "<td bgcolor=\"$sTDBGColour\">" . _("Document type") . "</td>\n";
 	$sToRender .= "<td>" . getDocumentTypeDropDown($iDocumentTypeID, $iFolderID) . "</td>\n";	
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";

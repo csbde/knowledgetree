@@ -56,17 +56,17 @@ if (checkSession()) {
 			 				} else {
 			 					//update failed
 			 					$oPatternCustom->setHtml(getPage($oUser->getName()));
-			 					$main->setErrorMessage("An error occured while attempting to update the user's password");
+			 					$main->setErrorMessage(_("An error occured while attempting to update the user's password"));
 								$main->setFormAction($_SERVER["PHP_SELF"] . "?fForUpdate=1&fUserID=$fUserID");							
 			 				}
 			 			} else {
 			 				$oPatternCustom->setHtml(getPage($oUser->getName()));
-			 				$main->setErrorMessage("The password and its confirmation do not match.  Please try again.");
+			 				$main->setErrorMessage(_("The password and its confirmation do not match.  Please try again."));
 							$main->setFormAction($_SERVER["PHP_SELF"] . "?fForUpdate=1&fUserID=$fUserID");		 						 				
 			 			} 
 			 		} else {
 			 			$oPatternCustom->setHtml(getPage($oUser->getName()));
-		 				$main->setErrorMessage("Blank passwords are not valid.  Please try again.");
+		 				$main->setErrorMessage(_("Blank passwords are not valid.  Please try again."));
 						$main->setFormAction($_SERVER["PHP_SELF"] . "?fForUpdate=1&fUserID=$fUserID");		 			
 			 		}	 		
 			 	} else {					
@@ -75,12 +75,12 @@ if (checkSession()) {
 					$main->setFormAction($_SERVER["PHP_SELF"] . "?fForUpdate=1&fUserID=$fUserID");			
 			 	}
 			} else {
-				$main->setErrorMessage("Only an administrator can update a user password from here");						
+				$main->setErrorMessage(_("Only an administrator can update a user password from here"));
 			}
 		 }
 	} else {
 		$oPatternCustom->setHtml(getPage($oUser->getName()));
-		$main->setErrorMessage("Passwords can only be update in Knowledgew Tree when authentication is against the MySQL database, not against an LDAP server");
+		$main->setErrorMessage(_("Passwords can only be update in Knowledgew Tree when authentication is against the MySQL database, not against an LDAP server"));
 		$main->setFormAction($_SERVER["PHP_SELF"]);
 	}	
 	//render the page

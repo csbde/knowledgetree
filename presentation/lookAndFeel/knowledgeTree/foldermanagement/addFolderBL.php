@@ -60,7 +60,7 @@ if (checkSession()) {
             } else {
                 //otherwise just let the user browse
                 $oPatternCustom->setHtml(renderBrowsePage($fFolderID));
-                $main->setErrorMessage("You do not have permission to create new folders in this folder</td><td><a href=\"$default->rootUrl/control.php?action=browse&fFolderID=$fFolderID\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></a>");
+                $main->setErrorMessage(_("You do not have permission to create new folders in this folder") . "</td><td><a href=\"$default->rootUrl/control.php?action=browse&fFolderID=$fFolderID\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></a>");
             }
             $main->setCentralPayload($oPatternCustom);
             $main->setFormAction($_SERVER["PHP_SELF"] . "?fFolderID=$fFolderID");
@@ -85,7 +85,7 @@ if (checkSession()) {
 	                        require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 	                        $oPatternCustom->setHtml(renderBrowseAddPage($fFolderID));
 	                        $main->setCentralPayload($oPatternCustom);
-	                        $main->setErrorMessage("There is another folder named $fFolderName in this folder already");
+	                        $main->setErrorMessage(sprintf(_("There is another folder named %s in this folder already"), $fFolderName));
 	                        $main->setHasRequiredFields(true);
 	                        $main->setFormAction($_SERVER["PHP_SELF"] . "?fFolderID=$fFolderID");
 	                        $main->render();
@@ -117,7 +117,7 @@ if (checkSession()) {
 										require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 										$oPatternCustom->setHtml(renderBrowsePage($fFolderID));
 										$main->setCentralPayload($oPatternCustom);
-										$main->setErrorMessage("There was an error creating the folder $fFolderName on the filesystem");
+										$main->setErrorMessage(sprintf(_("There was an error creating the folder %s on the filesystem"), $fFolderName));
 										$main->setFormAction($_SERVER["PHP_SELF"] . "?fFolderID=$fFolderID");
 										$main->setHasRequiredFields(true);									
 										$main->render();
@@ -131,7 +131,7 @@ if (checkSession()) {
 									require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 									$oPatternCustom->setHtml(renderBrowsePage($fFolderID));
 									$main->setCentralPayload($oPatternCustom);
-									$main->setErrorMessage("There was an error creating the folder $fFolderName on the filesystem");
+									$main->setErrorMessage(sprintf(_("There was an error creating the folder %s on the filesystem"), $fFolderName));
 									$main->setFormAction($_SERVER["PHP_SELF"] . "?fFolderID=$fFolderID");
 									$main->setHasRequiredFields(true);
 									$main->render();								
@@ -143,7 +143,7 @@ if (checkSession()) {
 	                            require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 	                            $oPatternCustom->setHtml(renderBrowsePage($fFolderID));
 	                            $main->setCentralPayload($oPatternCustom);
-	                            $main->setErrorMessage("There was an error creating the folder $fFolderName in the database");
+	                            $main->setErrorMessage(sprintf(_("There was an error creating the folder %s in the database"), $fFolderName));
 	                            $main->setFormAction($_SERVER["PHP_SELF"] . "?fFolderID=$fFolderID");
 	                            $main->render();
 	                        }
@@ -153,7 +153,7 @@ if (checkSession()) {
 	                    require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 	                    $oPatternCustom->setHtml(renderBrowseAddPage($fFolderID));
 	                    $main->setCentralPayload($oPatternCustom);
-	                    $main->setErrorMessage("Folder not created. Folder names may not contain: '<', '>', '*', '/', '\', '|', '?' or '\"' ");
+	                    $main->setErrorMessage(_("Folder not created. Folder names may not contain: '<', '>', '*', '/', '\', '|', '?' or '\"' "));
 	                    $main->setHasRequiredFields(true);
 	                    $main->setFormAction($_SERVER["PHP_SELF"] . "?fFolderID=$fFolderID");
 	                    $main->render();
@@ -165,7 +165,7 @@ if (checkSession()) {
 	                require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 	                $oPatternCustom->setHtml(renderBrowsePage($fFolderID));
 	                $main->setCentralPayload($oPatternCustom);
-	                $main->setErrorMessage("You do not have permission to create new folders in this folder");
+	                $main->setErrorMessage(_("You do not have permission to create new folders in this folder"));
 	                $main->setFormAction($_SERVER["PHP_SELF"] . "?fFolderID=$fFolderID");
 	                $main->render();
 	            }
@@ -174,7 +174,7 @@ if (checkSession()) {
                 require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
                 $oPatternCustom->setHtml(renderBrowseAddPage($fFolderID));
                 $main->setCentralPayload($oPatternCustom);
-                $main->setErrorMessage("You did not specify a document type.  If there are no system document types, please contact a System Administrator.");
+                $main->setErrorMessage(_("You did not specify a document type.  If there are no system document types, please contact a System Administrator."));
                 $main->setFormAction($_SERVER["PHP_SELF"] . "?fFolderID=$fFolderID");
                 $main->render();        		
         	}
@@ -183,7 +183,7 @@ if (checkSession()) {
         require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
         $oPatternCustom->setHtml("");
         $main->setCentralPayload($oPatternCustom);
-        $main->setErrorMessage("No folder currently selected");
+        $main->setErrorMessage(_("No folder currently selected"));
         $main->render();
     }
 }

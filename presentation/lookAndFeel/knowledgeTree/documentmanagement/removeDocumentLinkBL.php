@@ -59,7 +59,7 @@ if (checkSession()) {
 				$oPatternCustom->setHtml(getPage($oParentDocument->getName(), $oChildDocument->getName(), $fParentDocumentID));
 				$main->setCentralPayload($oPatternCustom);
 				$main->setFormAction($_SERVER["PHP_SELF"] . "?fDocumentLinkID=$fDocumentLinkID&fParentDocumentID=$fParentDocumentID&fChildDocumentID=$fChildDocumentID&fForDelete=1");
-				$main->setErrorMessage("An error occured whilst attempting to delete the link between the two documents");	
+				$main->setErrorMessage(_("An error occured whilst attempting to delete the link between the two documents"));
 				$main->render();				
 			}			
 		} else {
@@ -83,7 +83,7 @@ if (checkSession()) {
 		$oPatternCustom = & new PatternCustom();
 		$oPatternCustom->setHtml("");
 		$main->setCentralPayload($oPatternCustom);
-		$main->setErrorMessage("You do not have permission to delete links between documents");			
+		$main->setErrorMessage(_("You do not have permission to delete links between documents"));
 		$main->render();
 	}
 }
