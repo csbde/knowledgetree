@@ -165,7 +165,7 @@ class DocumentSubscription {
 	* @return object document subscription object on successful retrieval, false otherwise and set $_SESSION["errorMessage"]
 	*/
 	function get($iDocumentSubscriptionID) {
-		global $default,  $lang_err_object_not_exist;
+		global $default, $lang_err_object_not_exist;
 		$sql = $default->db;
 		$sql->query("SELECT * FROM " . $default->owl_document_subscriptions_table . " WHERE id = " . $iDocumentSubscriptionID);
 		if ($sql->next_record()) {
@@ -174,6 +174,48 @@ class DocumentSubscription {
 			return $oDocumentSubscription;
 		} 
  		$_SESSION["errorMessage"] = $lang_err_object_not_exist . "id = " . $iDocumentSubscriptionID . " table = document_subscriptions";
+		return false;
+	}
+    
+	/**
+	 * Static function.
+	 * Given a document subscription's values will create
+	 * a document subscription object and populate it with the corresponding
+	 * primary key
+	 *
+     * @param integer the document ID
+     * @param integer the user ID
+	 * @return object document subscription object on successful retrieval, false otherwise and set $_SESSION["errorMessage"]
+	 */
+	function getByIDs($iDocumentID, $iUserID) {
+		global $default,  $lang_err_object_not_exist;
+		$sql = $default->db;
+		$sql->query("SELECT * FROM " . $default->owl_document_subscriptions_table . " " .
+                    "WHERE document_id = $iDocumentID AND user_id = $iUserID");
+		if ($sql->next_record()) {
+			$oDocumentSubscription = & new DocumentSubscription($sql->f("document_id"), $sql->f("user_id"));
+            $oDocumentSubscription->iID = $sql->f("id");
+			return $oDocumentSubscription;
+		} 
+ 		$_SESSION["errorMessage"] = $lang_err_object_not_exist . "id = " . $iDocumentSubscriptionID . " table = folder_subscriptions";
+		return false;
+	}
+    
+	/**
+     * Checks if a given document subscription already exists using the document and user ids
+ 	 *
+     * @param integer the document ID
+     * @param integer the user ID
+     * @return true if the document subscription exists, false otherwise
+     */
+	function exists($iDocumentID, $iUserID) {
+		global $default;
+		$sql = $default->db;
+		$sql->query("SELECT id FROM " . $default->owl_document_subscriptions_table . " " .
+                    "WHERE document_id = $iDocumentID AND user_id = $iUserID");
+		if ($sql->next_record()) {
+			return true;
+		}		
 		return false;
 	}    
 }
