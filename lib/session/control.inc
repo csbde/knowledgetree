@@ -53,7 +53,7 @@ function generateLink($sTargetPage, $sQueryString, $sLinkText = "") {
     if (strlen($sQueryString) > 0) {
         $sQueryStringDelimiter = (strstr($sTargetPage, "?") ? "&" : "?");
     }
-    $sLink = "http" . ($default->sslEnabled ? "s" : "") . "://" . $_SERVER["SERVER_NAME"] . 
+    $sLink = "http" . ($default->sslEnabled ? "s" : "") . "://" . $default->serverName . 
              ((substr($sTargetPage, 0, strlen($default->owl_root_url)) != $default->owl_root_url) ? $default->owl_root_url : "") . 
              $sTargetPage . $sQueryStringDelimiter . $sQueryString;
     $default->log->debug("generateLink: returning $sLink");
