@@ -14,6 +14,32 @@ require_once("$default->fileSystemRoot/lib/users/User.inc");
  * @package presentation
  */
 
+ /**
+ * Displays the pending web documents
+ *
+ * @param array of pending web documents
+ */
+function renderPendingWebDocuments($aPendingDocumentList) {
+    global $default;
+
+    if (count($aPendingDocumentList) > 0) {
+        $sBgColor = "#9D9D7F"; 
+        $sToRender  = "\t<tr align=\"left\" bgcolor=\"$sBgColor\">\n";
+            
+        $sToRender .= "\t\t<th class=\"sectionHeading\" colspan=\"2\">Pending Web Documents</th>\n";
+        $sToRender .= "\t</tr>\n";
+        for ($i = 0; $i < count($aPendingDocumentList); $i++) {
+            $oWebDocument = $aPendingDocumentList[$i];
+            $sToRender .= "\t<tr>\n";
+            $sToRender .= "<td colspan=\"2\">" . generateControllerLink("webDocument", "fWebDocumentID=" . $oWebDocument->getID(), "<img src=\"$default->graphicsUrl/widgets/dstatus.gif\" border=\"0\"/>&nbsp;" . $oWebDocument->getDisplayPath()) . "</td>\n";        
+            $sToRender .= "\t</tr>\n";
+        }
+        return $sToRender;
+    } else {
+        return "";
+    }
+}
+
 /**
  * Displays the pending collaboration documents
  *
@@ -123,7 +149,7 @@ function renderQuickLinks($aQuickLinks) {
  * @param array checked out documents for this user
  * @param array subscription alerts for this user
  */
-function renderPage($aPendingDocumentList, $aCheckedOutDocumentList, $aSubscriptionAlertList, $aQuickLinks) {
+function renderPage($aPendingDocumentList, $aCheckedOutDocumentList, $aSubscriptionAlertList, $aQuickLinks, $aWebDocuments) {
     global $default;
     
     $sToRender  = "<table border=\"0\" width=\"600\" >\n";
@@ -140,6 +166,7 @@ function renderPage($aPendingDocumentList, $aCheckedOutDocumentList, $aSubscript
     $sToRender .= "\t<tr>\n";
     $sToRender .= "\t\t<td width=\"50%\" valign=\"top\" colspan=2>\n";
     $sToRender .= "\t\t\t<table border=\"0\" width=\"100%\">\n";
+    $sToRender .= renderPendingWebDocuments($aWebDocuments) . "\n";    
     $sToRender .= renderPendingCollaborationDocuments($aPendingDocumentList);
     $sToRender .= renderCheckedOutDocuments($aCheckedOutDocumentList) . "\n";
     $sToRender .= renderSubscriptionAlerts($aSubscriptionAlertList) . "\n";
