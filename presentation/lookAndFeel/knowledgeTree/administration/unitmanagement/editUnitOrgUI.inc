@@ -74,15 +74,13 @@ function getUnitOrgEdit($bNoOrg, $fUnitID = null){
     $sToRender .= "  <tr><td><b>Options</b></td></tr>";
     if ($bNoOrg) {
 	    $sToRender .= "  <tr><td width=200 bgcolor=$sBgColor>";
-	    $sToRender .= "  <br>&nbsp;&nbsp;Add Unit to an Orgaisation<br><br>";
-	    $sToRender .= "  </td><td>";
-	    $sToRender .= "  <a href=\"$default->rootUrl/control.php?action=addUnitToOrg&fUnitID=" . $fUnitID . "\"><img border=0 src=\"$default->graphicsUrl/widgets/enter.gif\"></img></a>";
+	    $sToRender .= "  <br>&nbsp;&nbsp;<a href=\"$default->rootUrl/control.php?action=addUnitToOrg&fUnitID=" . $fUnitID . "\">Add Unit to an Orgaisation</a><br><br>";
+	    $sToRender .= "  </td><td>";	    
 	    $sToRender .= "  </td></tr>";
     } else {
 	    $sToRender .= "  <tr><td width=200 bgcolor=$sBgColor>";
-	    $sToRender .= "  <br>&nbsp;&nbsp;Remove Unit from an Orgaisation<br><br>";
-	    $sToRender .= "  </td><td>";
-	    $sToRender .= "  <a href=\"$default->rootUrl/control.php?action=removeUnitFromOrg&fUnitID=" . $fUnitID  . "\"><img border=0 src=\"$default->graphicsUrl/widgets/enter.gif\"></img></a>";
+	    $sToRender .= "  <br>&nbsp;&nbsp;<a href=\"$default->rootUrl/control.php?action=removeUnitFromOrg&fUnitID=" . $fUnitID  . "\">Remove Unit from an Orgaisation</a><br><br>";
+	    $sToRender .= "  </td><td>";	    
 	    $sToRender .= "  </td></tr>";
     }
     $sToRender .= "</table>\n";
