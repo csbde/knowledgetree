@@ -13,6 +13,7 @@ if (checkSession()) {
     require_once("$default->fileSystemRoot/lib/visualpatterns/PatternListBox.inc");
     require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCreate.inc");
     require_once("addUserUI.inc");
+    require_once("../adminUI.inc");
     require_once("$default->fileSystemRoot/lib/users/User.inc");
     require_once("$default->fileSystemRoot/lib/security/permission.inc");
     require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
@@ -23,23 +24,24 @@ if (checkSession()) {
 
     $oPatternCustom = & new PatternCustom();
     //create db object
-    $oDbAuth = new $default->authenticationClass;
-
+    $oAuth = new $default->authenticationClass;
+    // user attributes to search for
+    if ($default->authenticationClass == "DBAuthenticator")  {
+        $aAttributes = array ("username", "name", "email", "mobile", "email_notification", "sms_notification");
+        $bLdap = false;
+    } else {
+        //if its using LDAP get these attributes
+        $aAttributes = array ("dn", "uid", "givenname", "sn", "mail", "mobile");
+        $bLdap = true;
+    }
+    
     if (isset($fSearch)) {
         //get user name
         $sSearch = $fName;
 
-        // user attributes to search for
-        if ($default->authenticationClass == "DBAuthenticator")  {
-            $aAttributes = array ("username", "name", "email", "mobile", "email_notification", "sms_notification");
-            $aResults = $oDbAuth->searchUsers($sSearch, $aAttributes);
-            $bLdap = false;
-        } else {
-            //if its using LDAP get these attributes
-            $aAttributes = array ("dn", "uid", "givenname", "sn", "mail", "mobile");
-            $aResults = $oDbAuth->searchUsers($sSearch, $aAttributes);
-            $bLdap = true;
-        }
+        // search for users
+        $aResults = $oAuth->searchUsers($sSearch, $aAttributes);
+
         //post array to page
         if(isset($aResults)) {
             if(count($aResults) == 0) {
@@ -48,14 +50,14 @@ if (checkSession()) {
                 if (count($aResults) > 1) {
                     // display results in a listbox                    
                     $oPatternCustom->setHtml(getSelectUserPage($aResults));
-                    $main->setFormAction($_SERVER["PHP_SELF"]. "?fAddToDb=1&fFromDb=1&fSearch=1");
+                    $main->setFormAction($_SERVER["PHP_SELF"]. "?fSelectedUser=1");
                 } else {
-                    if($bLdap == false) {
-                        $oPatternCustom->setHtml(getDetailsDBPage($sSearch,$aResults));
-                        $main->setFormAction($_SERVER["PHP_SELF"]. "?fAddToDb=1&fFromDb=1");
-                    } else {
+                    if($bLdap) {
                         $oPatternCustom->setHtml(getDetailsLDAPPage($sSearch,$aResults));
                         $main->setFormAction($_SERVER["PHP_SELF"]. "?fAddToDb=1");
+                    } else {
+                        $oPatternCustom->setHtml(getDetailsDBPage($sSearch,$aResults));
+                        $main->setFormAction($_SERVER["PHP_SELF"]. "?fAddToDb=1&fFromDb=1");
                     }
                 }
             }
@@ -64,14 +66,29 @@ if (checkSession()) {
             $oPatternCustom->setHtml(getAddPageFail());
             $main->setFormAction($_SERVER["PHP_SELF"]);
         }
-    } else if(isset($fAddToDb)) { //if db authentication
+    } else if (isset($fSelectedUser)) {
+        // user has been selected
+        
+        // retrieve user details
+        $aResult = $oAuth->getUser($fName, $aAttributes);
+        // display details page
+        if ($bLdap) {
+            $oPatternCustom->setHtml(getDetailsLDAPPage($fName,$aResult));
+            $main->setFormAction($_SERVER["PHP_SELF"]. "?fAddToDb=1");
+        } else {
+            $oPatternCustom->setHtml(getDetailsDBPage($fName,$aResult));
+            $main->setFormAction($_SERVER["PHP_SELF"]. "?fAddToDb=1&fFromDb=1");
+        }
+        
+    } else if(isset($fAddToDb)) {
+        // if db authentication
         if(isset($fFromDb)) {
 
             //User($sNewUserName, $sNewName, $sNewPassword, $iNewQuotaMax, $sNewEmail, $sNewMobile, $bNewEmailNotification, $bNewSmsNotification, $sNewLdapDn, $iNewMaxSessions, $iNewLanguageID)
             $oUser = new User($fUsername,$fName,0,0,$fEmail,$fMobile,$fEmailNotification,$fSmsNotification,0,1,0);
 
         } else {
-            $oUser = new User($fUsername,$fName,0,0,$fEmail,$fMobile,1,0,$fLdap,1,0);
+            $oUser = new User($fUsername,$fName,0,0,$fEmail,$fMobile,$fEmailNotification,$fSmsNotification,$fLdap,1,0);
         }
 
         if($oUser->create()) {
