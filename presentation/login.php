@@ -25,7 +25,7 @@ if ($loginAction == "loginForm") {
     // TODO: build login form using PatternMainPage
     print "<html>
            <head>
-           <link rel=\"stylesheet\" href=\"/presentation/lookAndFeel/knowledgeTree/stylesheet.css\" type=\"text/css\">
+           <link rel=\"stylesheet\" href=\"$default->owl_ui_url/stylesheet.php\">
            </head>
            <body>
            <center>
@@ -43,7 +43,7 @@ if ($loginAction == "loginForm") {
            </td></tr>
            <input type=\"hidden\" name=\"redirect\" value=\"$redirect\"/>
            <input type=\"hidden\" name=\"loginAction\" value=\"login\">\n    
-           <tr align=\"right\"><td><input type=\"image\" src=\"$default->owl_graphics_url/icons/login.jpg\"></td></tr>\n
+           <tr align=\"right\"><td><input type=\"image\" src=\"$default->owl_graphics_url/icons/login.jpg\" border=\"0\"></td></tr>\n
            </table>
            </center>
            </body>
