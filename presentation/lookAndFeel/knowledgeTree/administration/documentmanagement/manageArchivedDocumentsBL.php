@@ -155,16 +155,21 @@ if (checkSession()) {
 function searchForDocuments($sMetaTagIDs, $sSQLSearchString, $sStatus = "Live") {	
 	global $default;
 	$aDocuments = array();
-	$sQuery = "SELECT DISTINCT D.id " .
+    $aMetaTagIDs = split(',', $sMetaTagIDs);
+    $sQms = DBUtil::paramArray($aMetaTagIDs);
+	/*ok*/ $sQuery = "SELECT DISTINCT D.id " .
 				"FROM $default->documents_table AS D INNER JOIN document_fields_link AS DFL ON DFL.document_id = D.id " .
 				"INNER JOIN $default->document_fields_table AS DF ON DF.id = DFL.document_field_id " .
 				"INNER JOIN $default->search_permissions_table AS SDUL ON SDUL.document_id = D.ID " .
 				"INNER JOIN $default->status_table AS SL on D.status_id=SL.id " .			
-				"WHERE DF.ID IN ($sMetaTagIDs) " .
+				"WHERE DF.ID IN ($sQms) " .
 				"AND (" . $sSQLSearchString . ") " .
-				"AND SL.name='$sStatus' " .
-				"AND SDUL.user_id = " . $_SESSION["userID"];
+				"AND SL.name = ? " .
+				"AND SDUL.user_id = ?";
 				$default->log->info("searchForDocuments $sQuery");
+    $aParams = $aMetaTagIDs;
+    $aParams[] = $sStatus;
+    $aParams[] = $_SESSION["userID"];
 	$sql = $default->db;
 	$sql->query($sQuery);
 	while ($sql->next_record()) {

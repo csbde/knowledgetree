@@ -38,9 +38,9 @@ function getFolderData($iFolderID, $sDivName, $sStatusMessage = "") {
 	global $default;
 	$sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
 	$sTDBGColour = $default->siteMap->getSectionColour($sSectionName, "td");
-	$sQuery = "SELECT F.id, F.name, F.description, F.is_public " .
+	/*ok*/ $sQuery = array("SELECT F.id, F.name, F.description, F.is_public " .
 			"FROM $default->folders_table AS F " .
-			"WHERE F.id = $iFolderID";
+			"WHERE F.id = ?", $iFolderID);
 			
 			
 	$aColumns = array("name", "description", "is_public");
@@ -70,12 +70,12 @@ function getFolderRouting($iFolderID, $sDivName, $bCollaboration) {
 	global $default;
 	//had to use coalesce and left outer join for user_id because this column was a new addition
 	//and the user_ids for existing documents before this change will be null
-	$sQuery = "SELECT GFAL.id as id, GFAL.folder_id AS folder_id, COALESCE(G.name, 'Not Assigned') AS group_name, G.id AS group_id, GFAL.role_id AS role_id, R.name AS role_name, GFAL.precedence AS precedence, COALESCE(U.id, -1) AS user_id, COALESCE(U.name, 'Not Assigned') AS user_name, 'Edit' as edit, 'Delete' as del, 'Dependant docs' as depn " .
+	/*ok*/ $sQuery = array("SELECT GFAL.id as id, GFAL.folder_id AS folder_id, COALESCE(G.name, 'Not Assigned') AS group_name, G.id AS group_id, GFAL.role_id AS role_id, R.name AS role_name, GFAL.precedence AS precedence, COALESCE(U.id, -1) AS user_id, COALESCE(U.name, 'Not Assigned') AS user_name, 'Edit' as edit, 'Delete' as del, 'Dependant docs' as depn " .
 			  "FROM $default->groups_folders_approval_table AS GFAL INNER JOIN roles AS R ON GFAL.role_id = R.id " .
 			  "LEFT OUTER JOIN $default->groups_table AS G ON G.id = GFAL.group_id " .
 			  "LEFT OUTER JOIN $default->users_table AS U ON U.id = GFAL.user_id " .				 
-			  "WHERE GFAL.folder_id = $iFolderID " .
-			  "ORDER BY GFAL.precedence, role_name ASC";
+			  "WHERE GFAL.folder_id = ? " .
+			  "ORDER BY GFAL.precedence, role_name ASC", $iFolderID);
 	
 	$aColumns = array("group_name", "role_name", "precedence", "user_name", "edit", "del", "depn");
 	$aColumnHeaders = array(_("Group"), _("Role"), _("Seq"), _("User"), "", "");
@@ -106,10 +106,10 @@ function getFolderRouting($iFolderID, $sDivName, $bCollaboration) {
 
 function getFolderDocTypes($iFolderID, $sDivName) {
 	global $default;
-	$sQuery = "SELECT FDL.id, FDL.folder_id, FDL.document_type_id, DTL.name, 'Remove' AS del " .
+	/*ok*/ $sQuery = array("SELECT FDL.id, FDL.folder_id, FDL.document_type_id, DTL.name, 'Remove' AS del " .
 				"FROM $default->folder_doctypes_table AS FDL INNER JOIN $default->document_types_table AS DTL ON FDL.document_type_id = DTL.id " .
-				"WHERE FDL.folder_id = $iFolderID " .
-				"ORDER BY DTL.name ASC";
+				"WHERE FDL.folder_id = ? " .
+				"ORDER BY DTL.name ASC", $iFolderID);
 	
 	$aColumns = array("name", "del");
 	$aColumnHeaders = array("","");
@@ -131,7 +131,7 @@ function getFolderDocTypes($iFolderID, $sDivName) {
 
 function getFolderGroupAccess($iFolderID, $sDivName) {
 	global $default;
-	$sQuery = "SELECT GFL.id as id, GFL.group_id AS group_id, GFL.folder_id AS folder_id, GFL.can_read AS can_read, GFL.can_write AS can_write, GL.name AS group_name, 'Edit' as edit, 'Delete' as del " .	
+	/*ok*/ $sQuery = "SELECT GFL.id as id, GFL.group_id AS group_id, GFL.folder_id AS folder_id, GFL.can_read AS can_read, GFL.can_write AS can_write, GL.name AS group_name, 'Edit' as edit, 'Delete' as del " .	
 			  "FROM $default->groups_folders_table AS GFL " .
               "INNER JOIN $default->groups_table AS GL ON GFL.group_id = GL.id " .
 			  "WHERE GFL.folder_id = ?";
@@ -141,12 +141,16 @@ function getFolderGroupAccess($iFolderID, $sDivName) {
         $bInherited = false;
         $oInheritedFolder = Folder::get($iInheritedFolderID);
         while ($bFoundPermissions !== true) {
-            $aCheckQuery = array('SELECT id FROM groups_folders_link WHERE folder_id = ? LIMIT 1', $iInheritedFolderID);
+            /*ok*/$aCheckQuery = array('SELECT id FROM groups_folders_link WHERE folder_id = ? LIMIT 1', $iInheritedFolderID);
             if (count(DBUtil::getResultArrayKey($aCheckQuery, 'id')) == 0) {
                 $default->log->info('No direct permissions on folder ' . $iInheritedFolderID);
                 $bInherited = true;
                 $iInheritedFolderID = $oInheritedFolder->getParentID();
                 $oInheritedFolder = Folder::get($iInheritedFolderID);
+                if ($oInheritedFolder === false) {
+                    $iInheritedFolderID = false;
+                    break;
+                }
                 $default->log->info('... trying parent: ' . $iInheritedFolderID);
             } else {
                 $default->log->info('Found direct permissions on folder ' . $iInheritedFolderID);
@@ -170,7 +174,7 @@ function getFolderGroupAccess($iFolderID, $sDivName) {
         }
 	$sToRender .= "<table>";
 	$sToRender .= "<tr><td>" . $oPatternTableSqlQuery->render() . "</td></tr>";
-        if ($bInherited === true) {
+        if (($bInherited === true) && ($iInheritedFolderID !== false)) {
             $sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
             $sTDBGColour = $default->siteMap->getSectionColour($sSectionName, "td");
             $sToRender .= '<tr><td>Inherited from: <span style="background-color: ' . $sTDBGColour . ';">';

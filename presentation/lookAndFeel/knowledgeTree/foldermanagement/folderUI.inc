@@ -96,10 +96,10 @@ function renderFolderPath($iFolderID, $sLinkURL, $bDisplayLinks = true) {
 */
 function renderFolderList($iFolderID, $sLinkURL) {
     global $default;
-    $sQuery = "SELECT F.id AS id, F.name AS name " .
+    /*ok*/ $sQuery = array("SELECT F.id AS id, F.name AS name " .
               "FROM $default->folders_table AS F " .
-              "WHERE F.parent_id = " . $iFolderID . " " .
-              "ORDER BY F.name ASC";
+              "WHERE F.parent_id = ? " .
+              "ORDER BY F.name ASC", $iFolderID);
      	
     $aColumns = array("name");
     $aColumnTypes = array(3);

@@ -35,11 +35,11 @@ function getFolderPath($iFolderID) {
 
 function getDocumentLinkFolderCollaborationData($iFolderCollaborationID) {
 	global $default;	
-	$sQuery = "SELECT DDT.id, GFAL.folder_id AS folder_id, U.name AS username, DDT.document_title, D.name AS template_document_name, D.id AS template_document_id, DDT.group_folder_approval_link_id, 'Edit' AS edit, 'Delete' AS del " .
+	/*ok*/ $sQuery = array("SELECT DDT.id, GFAL.folder_id AS folder_id, U.name AS username, DDT.document_title, D.name AS template_document_name, D.id AS template_document_id, DDT.group_folder_approval_link_id, 'Edit' AS edit, 'Delete' AS del " .
 				"FROM dependant_document_template AS DDT INNER JOIN groups_folders_approval_link AS GFAL ON DDT.group_folder_approval_link_id = GFAL.id " .
 				"INNER JOIN users AS U ON U.id = DDT.default_user_id " .
 				"LEFT OUTER JOIN documents AS D ON D.id = DDT.template_document_id " . 
-				"WHERE DDT.group_folder_approval_link_id = $iFolderCollaborationID";
+				"WHERE DDT.group_folder_approval_link_id = ?", $iFolderCollaborationID);
 				
 	//echo $sQuery;			
 	$aColumns = array("document_title", "username", "template_document_name", "edit", "del");

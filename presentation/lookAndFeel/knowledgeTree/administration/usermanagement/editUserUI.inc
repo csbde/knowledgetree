@@ -53,7 +53,7 @@ function getUserDetailsPage($iUserID) {
 	global $default;
 	$oUser = null;
 	
-	$sQuery =  "SELECT * FROM $default->users_table WHERE id = $iUserID";
+	/*ok*/ $sQuery = array("SELECT * FROM $default->users_table WHERE id = ?", $iUserID);
 	$aDisplayColumns = array( "username","name","email", "mobile", "email_notification", "max_sessions");
 	$aStoreColumns = array( "username","name","email", "mobile", "email_notification", "max_sessions") ;
 	$aColumnNames = array(_("Username") . ": ", _("Name") . ": ", _("Email Address") . ": ", _("Mobile Number") . ": ", _("Email Notification") . ": ", _("Max Sessions") . ": ");

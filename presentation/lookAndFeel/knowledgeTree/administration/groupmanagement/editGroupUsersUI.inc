@@ -142,13 +142,16 @@ function InitUsers($oGroup) {
 		}
 		
 	} elseif (Permission::userIsUnitAdministrator()) {
-
-		$sQuery = 	"SELECT DISTINCT U.id as userID " .
+        $aIds = User::getUnitIDs($_SESSION["userID"]);
+        $iNumIds = count($aIds);
+        $sQms = join(",", array_fill(0, $iNumIds, '?'));
+        
+		/*ok*/ $sQuery = array("SELECT DISTINCT U.id as userID " .
 				"FROM $default->users_table U " . 
 				"LEFT OUTER JOIN $default->users_groups_table UGL ON U.id = UGL.user_id " .
 				"LEFT OUTER JOIN $default->groups_table GL ON UGL.group_id = GL.id " .
 				"INNER JOIN $default->groups_units_table GUL on GL.id=GUL.group_id " .
-				"WHERE GUL.unit_id IN (" . implode(",", User::getUnitIDs($_SESSION["userID"])) . ")";
+				"WHERE GUL.unit_id IN ($sQms)", $aIds);
 		$sql = $default->db;
 		$sql->query($sQuery);
 

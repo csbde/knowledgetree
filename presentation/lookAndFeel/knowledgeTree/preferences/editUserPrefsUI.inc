@@ -28,7 +28,7 @@
 
 function getUserDetailsPage($iUserID) {
     global $default;    
-    $sQuery = "SELECT * FROM $default->users_table WHERE id = $iUserID";
+    /*ok*/ $sQuery = array("SELECT * FROM $default->users_table WHERE id = ?", $iUserID);
     $aDisplayColumns = array("name", "email", "mobile", "email_notification");
     $aStoreColumns = array("name", "email", "mobile", "email_notification");
     $aColumnNames = array(_("Name") . ": ", _("Email Address") . ": ", _("Mobile Number") . ": ", _("Email Notification") . ": ");

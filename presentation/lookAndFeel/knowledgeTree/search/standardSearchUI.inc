@@ -36,24 +36,27 @@ function getMessage() {
 function getSearchResultsByCategory($iFolderID, $sKeywords, $iStartIndex, $sCategory) {
 	global $default;
 
-	$sQuery = "SELECT DISTINCT '" . "$default->graphicsUrl/widgets/dfolder.gif" . "' AS folder_image_url, F.id AS folder_id, D.id AS document_id, D.name AS document_name, ROUND(MATCH(DT.document_text) AGAINST ('" . $sKeywords . "'),3) AS score " . 
+	/*ok*/ $sQuery = "SELECT DISTINCT '" . "$default->graphicsUrl/widgets/dfolder.gif" . "' AS folder_image_url, F.id AS folder_id, D.id AS document_id, D.name AS document_name, ROUND(MATCH(DT.document_text) AGAINST (?),3) AS score " . 
 				"FROM $default->documents_table AS D INNER JOIN $default->document_text_table AS DT ON D.id = DT.document_id " .
 				"INNER JOIN $default->document_fields_link_table AS DFL ON DT.document_id=DFL.document_id " .								
 				"INNER JOIN $default->document_fields_table AS DF ON DF.id = DFL.document_field_id " .
 				"INNER JOIN $default->status_table AS SL ON D.status_id = SL.id " .
 				"INNER JOIN $default->folders_table AS F on F.ID = D.folder_id " .
 				"INNER JOIN $default->search_permissions_table AS SDUL ON SDUL.document_id = D.id " .
-				"WHERE MATCH(DT.document_text) AGAINST ('" . $sKeywords . "') " .
-				"AND SDUL.user_id = " . $_SESSION["userID"] . " " .
+				"WHERE MATCH(DT.document_text) AGAINST (?) " .
+				"AND SDUL.user_id = ? " .
 				"AND SL.name='Live' ";
+    $aParams = array($sKeywords, $sKeywords, $_SESSION["userID"]);
 	//only check in the parent_folder_ids if we're not searching from the
 	//root folder down
 	if (isset($iFolderID) && ($iFolderID != 1)) { 
+        $iFolderID = int($iFolderID);
 		$sQuery .= "AND (F.parent_folder_ids LIKE '%,$iFolderID,%' OR F.id = $iFolderID) ";
 	}				
 	$sQuery .= "AND DF.name LIKE 'Category' ";
 	if (isset($sCategory)) {
-		$sQuery .= "AND DFL.value LIKE '$sCategory' ";
+		$sQuery .= "AND DFL.value LIKE ? ";
+        $aParams[] = $sCategory;
 	}
 	$sQuery .= "ORDER BY score DESC";
 				
@@ -64,7 +67,7 @@ function getSearchResultsByCategory($iFolderID, $sKeywords, $iStartIndex, $sCate
 	$aDBQueryStringColumns = array("document_id","folder_id");
 	$aQueryStringVariableNames = array("fDocumentID", "fFolderID");
 	
-	$oPatternBrowse = & new PatternBrowseableSearchResults($sQuery, 10, $aColumns, $aColumnTypes, $aColumnHeaders, $aLinkURLs, $aDBQueryStringColumns, $aQueryStringVariableNames);
+	$oPatternBrowse = & new PatternBrowseableSearchResults(array($sQuery, $aParams), 10, $aColumns, $aColumnTypes, $aColumnHeaders, $aLinkURLs, $aDBQueryStringColumns, $aQueryStringVariableNames);
 	$oPatternBrowse->setStartIndex($iStartIndex);
 	$oPatternBrowse->setSearchText($sKeywords);	
 	return getHeading() . $oPatternBrowse->render() . getSearchVariablesHtml($sKeywords, "category", $iFolderID, "", $sCategory, "") . getMessage();
@@ -72,20 +75,23 @@ function getSearchResultsByCategory($iFolderID, $sKeywords, $iStartIndex, $sCate
 
 function getSearchResultsByDocumentType($iFolderID, $sKeywords, $iStartIndex, $iDocTypeID) {
 	global $default;
-	$sQuery = "SELECT DISTINCT '" . "$default->graphicsUrl/widgets/dfolder.gif" . "' AS folder_image_url, F.id AS folder_id, D.id AS document_id, D.name AS document_name, ROUND(MATCH(DT.document_text) AGAINST ('" . $sKeywords . "'),3) AS score " . 
+	/*ok*/ $sQuery = "SELECT DISTINCT '" . "$default->graphicsUrl/widgets/dfolder.gif" . "' AS folder_image_url, F.id AS folder_id, D.id AS document_id, D.name AS document_name, ROUND(MATCH(DT.document_text) AGAINST (?),3) AS score " . 
 				"FROM $default->documents_table AS D INNER JOIN $default->document_text_table AS DT ON D.id = DT.document_id " .								 
 				"INNER JOIN $default->status_table AS SL ON D.status_id = SL.id " .
 				"INNER JOIN $default->folders_table AS F on F.ID = D.folder_id " .
 				"INNER JOIN $default->search_permissions_table AS SDUL ON SDUL.document_id = D.id " .
-				"WHERE MATCH(DT.document_text) AGAINST ('" . $sKeywords . "') " .
-				"AND SDUL.user_id = " . $_SESSION["userID"] . " ";
+				"WHERE MATCH(DT.document_text) AGAINST (?) " .
+				"AND SDUL.user_id = ? ";
+    $aParams = array($sKeywords, $sKeywords, $_SESSION["userID"]);
 	if (isset($iDocTypeID)) {
-		$sQuery .= "AND D.document_type_id = $iDocTypeID ";
+		$sQuery .= "AND D.document_type_id = ? ";
+        $aParams[] = $iDocTypeID;
 	}					 
 	$sQuery .= "AND SL.name='Live' "; 
 	//only check in the parent_folder_ids if we're not searching from the
 	//root folder down
 	if (isset($iFolderID) && ($iFolderID != 1)) { 
+        $iFolderID = int($iFolderID);
 		$sQuery .= "AND (F.parent_folder_ids LIKE '%,$iFolderID,%' OR F.id = $iFolderID) ";
 	}				
 	$sQuery .= "ORDER BY score DESC";
@@ -97,7 +103,7 @@ function getSearchResultsByDocumentType($iFolderID, $sKeywords, $iStartIndex, $i
 	$aDBQueryStringColumns = array("document_id","folder_id");
 	$aQueryStringVariableNames = array("fDocumentID", "fFolderID");
 	
-	$oPatternBrowse = & new PatternBrowseableSearchResults($sQuery, 10, $aColumns, $aColumnTypes, $aColumnHeaders, $aLinkURLs, $aDBQueryStringColumns, $aQueryStringVariableNames);
+	$oPatternBrowse = & new PatternBrowseableSearchResults(array($sQuery, $aParams), 10, $aColumns, $aColumnTypes, $aColumnHeaders, $aLinkURLs, $aDBQueryStringColumns, $aQueryStringVariableNames);
 	$oPatternBrowse->setStartIndex($iStartIndex);
 	$oPatternBrowse->setSearchText($sKeywords);
 	return getHeading() . $oPatternBrowse->render() . getSearchVariablesHtml($sKeywords, "documentType", $iFolderID, "", "", $iDocTypeID) . getMessage();
@@ -106,17 +112,19 @@ function getSearchResultsByDocumentType($iFolderID, $sKeywords, $iStartIndex, $i
 
 function getSeachResultsByFolder($iFolderID, $iStartIndex, $sKeywords) {
 	global $default;
-	$sQuery = "SELECT DISTINCT '" . "$default->graphicsUrl/widgets/dfolder.gif" . "' AS folder_image_url, F.id AS folder_id, D.id AS document_id, D.name AS document_name, ROUND(MATCH(DT.document_text) AGAINST ('" . $sKeywords . "'),3) AS score " . 
+	/*ok*/ $sQuery = "SELECT DISTINCT '" . "$default->graphicsUrl/widgets/dfolder.gif" . "' AS folder_image_url, F.id AS folder_id, D.id AS document_id, D.name AS document_name, ROUND(MATCH(DT.document_text) AGAINST (?),3) AS score " . 
 				"FROM $default->documents_table AS D INNER JOIN $default->document_text_table AS DT ON D.id = DT.document_id " .				
 				"INNER JOIN $default->status_table AS SL ON D.status_id = SL.id " .
 				"INNER JOIN $default->folders_table AS F on F.ID = D.folder_id " .
 				"INNER JOIN $default->search_permissions_table AS SDUL ON SDUL.document_id = D.id " .
-				"WHERE MATCH(DT.document_text) AGAINST ('" . $sKeywords . "') " .
-				"AND SDUL.user_id = " . $_SESSION["userID"] . " " .
+				"WHERE MATCH(DT.document_text) AGAINST (?) " .
+				"AND SDUL.user_id = ? " .
 				"AND SL.name='Live' "; 
+    $aParams = array($sKeywords, $sKeywords, $_SESSION["userID"]);
 	//only check in the parent_folder_ids if we're not searching from the
 	//root folder down
 	if (isset($iFolderID) && ($iFolderID != 1)) { 
+        $iFolderID = int($iFolderID);
 		$sQuery .= "AND (F.parent_folder_ids LIKE '%,$iFolderID,%' OR F.id = $iFolderID) ";
 	}				
 	$sQuery .= "ORDER BY score DESC";
@@ -128,7 +136,7 @@ function getSeachResultsByFolder($iFolderID, $iStartIndex, $sKeywords) {
 	$aDBQueryStringColumns = array("document_id","folder_id");
 	$aQueryStringVariableNames = array("fDocumentID", "fFolderID");
 	
-	$oPatternBrowse = & new PatternBrowseableSearchResults($sQuery, 10, $aColumns, $aColumnTypes, $aColumnHeaders, $aLinkURLs, $aDBQueryStringColumns, $aQueryStringVariableNames);
+	$oPatternBrowse = & new PatternBrowseableSearchResults(array($sQuery, $aParams), 10, $aColumns, $aColumnTypes, $aColumnHeaders, $aLinkURLs, $aDBQueryStringColumns, $aQueryStringVariableNames);
 	$oPatternBrowse->setStartIndex($iStartIndex);
 	$oPatternBrowse->setSearchText($sKeywords);
 	return getHeading() . $oPatternBrowse->render() . getSearchVariablesHtml($sKeywords, "", $iFolderID, "", "", "") . getMessage();

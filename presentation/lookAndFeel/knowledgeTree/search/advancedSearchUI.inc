@@ -27,7 +27,7 @@
 
 function getMetaData($aMetaTagIDs) {
 	global $default;	
-	$sQuery = "SELECT name, id FROM $default->document_fields_table ORDER BY name ASC";
+	/*ok*/ $sQuery = "SELECT name, id FROM $default->document_fields_table ORDER BY name ASC";
 	
 	$sql = $default->db;
 	$sql->query($sQuery);
@@ -100,19 +100,26 @@ function getSearchPage($sSearchString = "", $aMetaTagIDs = array(), $sHeading = 
 
 function getSearchResults($sMetaTagIDs, $sSQLSearchString, $iStartIndex, $sSearchString, $sStatus = "Live") {
 	global $default;
+
+    $aMetaTagIDs = split(',', $sMetaTagIDs);
+    $sQms = DBUtil::paramArray($aMetaTagIDs);
 					
-	$sQuery = "SELECT  F.name as folder_name, F.id folder_id, D.id document_id, D.name AS document_name, COUNT(D.id) AS doc_count " .
+	/*ok*/ $sQuery = "SELECT  F.name as folder_name, F.id folder_id, D.id document_id, D.name AS document_name, COUNT(D.id) AS doc_count " .
 			"FROM $default->documents_table AS D INNER JOIN $default->folders_table AS F ON D.folder_id = F.id " .
 			"INNER JOIN $default->document_fields_link_table AS DFL ON DFL.document_id = D.id " .
 			"INNER JOIN $default->document_fields_table AS DF ON DF.id = DFL.document_field_id " . 
 			"INNER JOIN $default->search_permissions_table AS SDUL ON SDUL.document_id = D.ID " .
 			"INNER JOIN $default->status_table AS SL on D.status_id=SL.id " .						
-			"WHERE DF.ID IN ($sMetaTagIDs) " .
+			"WHERE DF.ID IN ($sQms) " .
 			"AND (" . $sSQLSearchString . ") " .
-			"AND SDUL.user_id = " . $_SESSION["userID"] . " " .
-			"AND SL.name='$sStatus' " .
+			"AND SDUL.user_id = ? " .
+			"AND SL.name = ? " .
 			"GROUP BY D.id " .
 			"ORDER BY doc_count DESC ";
+    $aParams = $aMetaTagIDs;
+    $aParams[] = $_SESSION["userID"];
+    $aParams[] = $sStatus;
+
 	$default->log->info("getSearchResults $sQuery");
  	$aColumns = array("folder_name", "document_name", "doc_count");
  	$aColumnTypes = array(3,3,1);
@@ -121,7 +128,7 @@ function getSearchResults($sMetaTagIDs, $sSQLSearchString, $iStartIndex, $sSearc
 	$aDBQueryStringColumns = array("document_id","folder_id");
 	$aQueryStringVariableNames = array("fDocumentID", "fFolderID");
 	
-	$oPatternBrowse = & new PatternBrowseableSearchResults($sQuery, 10, $aColumns, $aColumnTypes, $aColumnHeaders, $aLinkURLs, $aDBQueryStringColumns, $aQueryStringVariableNames);
+	$oPatternBrowse = & new PatternBrowseableSearchResults(array($sQuery, $aParams), 10, $aColumns, $aColumnTypes, $aColumnHeaders, $aLinkURLs, $aDBQueryStringColumns, $aQueryStringVariableNames);
 	$oPatternBrowse->setStartIndex($iStartIndex);
 	$oPatternBrowse->setSearchText($sSearchString);
     

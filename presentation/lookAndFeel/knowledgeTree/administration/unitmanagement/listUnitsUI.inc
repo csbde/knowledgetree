@@ -37,14 +37,18 @@ function getOrganisationDisplay($iOrganisationID) {
 function getUnits($iOrganisationID) {
 	global $default;
 	
-	$sQuery = 	"SELECT units_lookup.id as unitID, units_lookup.name as name, " . 
+    $aParams = array();
+	/*ok*/ $sQuery = 	"SELECT units_lookup.id as unitID, units_lookup.name as name, " . 
 				"'Edit', 'Delete', 'Edit Organisations', " .
 				"CASE  WHEN organisations_lookup.name Is Null THEN '<font color=darkgrey>* No Organisation</font>' ELSE  organisations_lookup.name END AS OrgName " .
 				"FROM (units_lookup " .
 				"LEFT JOIN units_organisations_link ON units_lookup.id = units_organisations_link.unit_id) " . 
-				"LEFT JOIN organisations_lookup ON units_organisations_link.organisation_id = organisations_lookup.id " .
-				($iOrganisationID ? "WHERE units_organisations_link.organisation_id = $iOrganisationID " : "") .					
-				"ORDER BY units_lookup.name";
+				"LEFT JOIN organisations_lookup ON units_organisations_link.organisation_id = organisations_lookup.id ";
+    if ($iOrganisationID) {
+        $sQuery .= "WHERE units_organisations_link.organisation_id = ? ";
+        $aParams[] = $iOrganisationID;
+    }
+	$sQuery .= "ORDER BY units_lookup.name";
 		
     $aColumns = array("name", "OrgName", "Edit", "Delete");//, "Edit Organisations");
     $aColumnNames = array(_("Unit Name"), _("Organisation"), _("Edit"), _("Delete"));//, "Edit Organisations");

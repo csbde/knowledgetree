@@ -27,9 +27,9 @@
  
 function getEditableGenericMetaData($iDocumentID, $iDocumentTypeID) {
     global $default;
-    $sQuery = "SELECT DISTINCT $iDocumentID AS document_id, COALESCE(DFL.id, -1) AS id, DF.id AS document_field_id, DFL.value AS value, DF.name AS field_name " .
-				"FROM document_fields AS DF LEFT OUTER JOIN document_fields_link AS DFL ON DF.id = DFL.document_field_id AND DFL.document_id = $iDocumentID " .				
-				"WHERE DF.is_generic = 1 ";
+    /*ok*/ $sQuery = array("SELECT DISTINCT ? AS document_id, COALESCE(DFL.id, -1) AS id, DF.id AS document_field_id, DFL.value AS value, DF.name AS field_name " .
+        "FROM document_fields AS DF LEFT OUTER JOIN document_fields_link AS DFL ON DF.id = DFL.document_field_id AND DFL.document_id = ? " .				
+        "WHERE DF.is_generic = 1 ", array($iDocumentID, $iDocumentID));
 
     $aStoreColumnNames = array("document_id", "document_field_id","value");
     $aDisplayColumnNames = array("document_id", "field_name", "value");

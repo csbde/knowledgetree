@@ -28,10 +28,10 @@
 
 function getDocumentHistory($iDocumentID) {
     global $default;
-    $sQuery = "SELECT DTT.name AS transaction_name, U.name AS user_name, DT.version AS version, DT.comment AS comment, DT.datetime AS datetime " .
+    /*ok*/ $sQuery = array("SELECT DTT.name AS transaction_name, U.name AS user_name, DT.version AS version, DT.comment AS comment, DT.datetime AS datetime " .
 			"FROM $default->document_transactions_table AS DT INNER JOIN $default->users_table AS U ON DT.user_id = U.id " .
 			"INNER JOIN $default->transaction_types_table AS DTT ON DTT.id = DT.transaction_id " . 
-			"WHERE DT.document_id = $iDocumentID ORDER BY DT.datetime DESC";
+			"WHERE DT.document_id = ? ORDER BY DT.datetime DESC", $iDocumentID);
 	$sql = $default->db;
     $sToRender  = "<table cellpadding=\"5\" width=\"100%\">\n";
     $sToRender .= "<caption align=\"top\" colspan=\"5\" align=\"left\"><b>" . _("Transaction History") . "</b></caption>\n";

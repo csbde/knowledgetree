@@ -27,7 +27,7 @@
  
 function getWebsites() {
 	global $default;
-	$sQuery = 	"SELECT id as WebsiteID, web_site_name as WebsiteName, web_site_url WebsiteURL, web_master_id as WebmasterID, " . 
+	/*ok*/ $sQuery = 	"SELECT id as WebsiteID, web_site_name as WebsiteName, web_site_url WebsiteURL, web_master_id as WebmasterID, " . 
 				"'Edit', 'Delete' " .
 				"FROM " . $default->web_sites_table . " " .
 				"ORDER BY web_site_name";

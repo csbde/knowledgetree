@@ -43,7 +43,7 @@ function renderDocumentPath($oDocument, $bDisplayActions = false) {
 
 function renderDocumentData($oDocument, $bEditable, $sStatusMessage = "") {
     global $default;
-    $sQuery = "SELECT D.name, D.modified, DTT.datetime AS created, U.name AS initiator, CONCAT(CONCAT(D.major_version, '.'), D.minor_version) AS version, WDSL.name AS status, DTL.name AS document_type, D.is_checked_out,  COALESCE(U2.name, '') AS c_user " .
+    /*ok*/ $sQuery = array("SELECT D.name, D.modified, DTT.datetime AS created, U.name AS initiator, CONCAT(CONCAT(D.major_version, '.'), D.minor_version) AS version, WDSL.name AS status, DTL.name AS document_type, D.is_checked_out,  COALESCE(U2.name, '') AS c_user " .
               "FROM $default->documents_table AS D INNER JOIN $default->web_documents_table AS WD ON WD.document_id = D.ID " .
               "INNER JOIN $default->web_documents_status_table AS WDSL ON WD.status_id = WDSL.id " .
               "INNER JOIN $default->users_table AS U ON U.id = D.creator_id " .
@@ -51,8 +51,8 @@ function renderDocumentData($oDocument, $bEditable, $sStatusMessage = "") {
               "INNER JOIN $default->transaction_types_table AS TT ON DTT.transaction_id = TT.id " .
 			  "INNER JOIN $default->document_types_table AS DTL ON DTL.id = D.document_type_id " .
               "LEFT OUTER JOIN $default->users_table AS U2 ON U2.id = D.checked_out_user_id " .
-              "WHERE D.id = " . $oDocument->getID() . " " .
-              "AND TT.name LIKE 'Create'";
+              "WHERE D.id = ? " .
+              "AND TT.name LIKE 'Create'", $oDocument->getID());
 
     $aColumns = array("name", "modified", "created", "initiator", "document_type", "version", "status", "c_user");
     $aColumnNames = array(_("Document title"), _("Last updated"), _("Created"), _("Document initiator"), _("Document Type"), _("Version"), _("Status"), _("Checked out by"));
@@ -82,11 +82,11 @@ function renderDocumentData($oDocument, $bEditable, $sStatusMessage = "") {
 
 function renderGenericMetaData($oDocument, $bEditable) {
     global $default;
-    $sQuery = "SELECT DF.name AS name, DFL.value as value " .
+    /*ok*/ $sQuery = array("SELECT DF.name AS name, DFL.value as value " .
               "FROM $default->documents_table AS D INNER JOIN $default->document_fields_link_table AS DFL ON D.id = DFL.document_id " .
               "INNER JOIN $default->document_fields_table AS DF ON DF.id = DFL.document_field_id " .
-              "WHERE document_id = " . $oDocument->getID() . " " .
-              "AND DF.is_generic = 1";
+              "WHERE document_id = ? " .
+              "AND DF.is_generic = 1", $oDocument->getID());
     $aColumns = array("name", "value");
     $aColumnHeaders = array("Tag", "Value");
     $aColumnTypes = array(1,1);
@@ -111,13 +111,13 @@ function renderGenericMetaData($oDocument, $bEditable) {
 function renderTypeSpecificMetaData($oDocument, $bEditable) {
 	global $default;
 	
-    $sQuery = "SELECT DF.name AS name, DFL.value AS value " .
+    /*ok*/ $sQuery = array("SELECT DF.name AS name, DFL.value AS value " .
               "FROM $default->documents_table AS D INNER JOIN document_fields_link AS DFL ON D.id = DFL.document_id " .
               "INNER JOIN $default->document_fields_table AS DF ON DF.ID = DFL.document_field_id " .
-              "WHERE D.id = " . $oDocument->getID() . " " .
+              "WHERE D.id = ? " .
               "AND DF.name NOT LIKE 'Author' " .
               "AND DF.name NOT LIKE 'Category' " .
-              "AND DF.is_generic = 0";
+              "AND DF.is_generic = 0", $oDocument->getID());
     $aColumns = array("name", "value");
     $aColumnHeaders = array("Tag", "Value");
     $aColumnTypes = array(1,1);
@@ -203,14 +203,14 @@ function renderDocumentArchiveSettings($oDocument, $bEditable) {
 
 function renderEditableDocumentRouting($oDocument) {
     global $default;
-    $sQuery = "SELECT D.id as document_id, GFAL.id as id, R.name AS role_name, COALESCE(U.name, U2.name) AS name, GFAL.precedence AS precedence, COALESCE(FURL.active,0) AS active, COALESCE(FURL.done, 0) AS done, 'Edit User' as edit " .
+    /*ok*/ $sQuery = array("SELECT D.id as document_id, GFAL.id as id, R.name AS role_name, COALESCE(U.name, U2.name) AS name, GFAL.precedence AS precedence, COALESCE(FURL.active,0) AS active, COALESCE(FURL.done, 0) AS done, 'Edit User' as edit " .
               "FROM $default->documents_table AS D INNER JOIN $default->groups_folders_approval_table AS GFAL ON D.folder_id = GFAL.folder_id " .
               "INNER JOIN $default->roles_table AS R ON GFAL.role_id = R.id " .
               "LEFT OUTER JOIN $default->folders_user_roles_table AS FURL ON FURL.group_folder_approval_id = GFAL.id AND FURL.document_id = D.id " .
               "LEFT OUTER JOIN $default->users_table AS U ON FURL.user_id = U.id " .
               "LEFT OUTER JOIN $default->users_table AS U2 ON GFAL.user_id = U2.id " .              
-              "WHERE D.id = " . $oDocument->getID() . " " .
-              "ORDER BY GFAL.precedence, role_name ASC";
+              "WHERE D.id = ? " .
+              "ORDER BY GFAL.precedence, role_name ASC", $oDocument->getID());
     $aColumns = array("role_name", "name", "precedence", "active", "done", "edit");
     $aColumnHeaders = array(_("Role"), _("User"), _("Seq"), _("Active"), _("Done"), _("Edit"));
     $aColumnTypes = array(1,1,1,2,2,3);
@@ -261,13 +261,13 @@ function renderEditableDocumentRouting($oDocument) {
 
 function renderNonEditableDocumentRouting($oDocument) {
     global $default;
-    $sQuery = "SELECT D.id as document_id, GFAL.id as id, R.name AS role_name, COALESCE(U.Name, 'Not assigned') AS name, GFAL.precedence AS precedence, COALESCE(FURL.active,0) AS active, COALESCE(FURL.done, 0) AS done " .
+    /*ok*/ $sQuery = array("SELECT D.id as document_id, GFAL.id as id, R.name AS role_name, COALESCE(U.Name, 'Not assigned') AS name, GFAL.precedence AS precedence, COALESCE(FURL.active,0) AS active, COALESCE(FURL.done, 0) AS done " .
               "FROM $default->documents_table AS D INNER JOIN $default->groups_folders_approval_table AS GFAL ON D.folder_id = GFAL.folder_id " .
               "INNER JOIN $default->roles_table AS R ON GFAL.role_id = R.id " .
               "LEFT OUTER JOIN $default->folders_user_roles_table AS FURL ON FURL.group_folder_approval_id = GFAL.id AND FURL.document_id = D.id " .
               "LEFT OUTER JOIN $default->users_table AS U ON FURL.user_id = U.id " .
-              "WHERE D.id = " . $oDocument->getID() . " " .
-              "ORDER BY GFAL.precedence, role_name ASC";
+              "WHERE D.id = ? " .
+              "ORDER BY GFAL.precedence, role_name ASC", $oDocument->getID());
 
     $aColumns = array("role_name", "name", "precedence", "active", "done");
     $aColumnHeaders = array(_("Role"), _("User"), _("Seq"), _("Active"), _("Done"));
@@ -298,9 +298,9 @@ function renderNonEditableDocumentRouting($oDocument) {
 function renderEditableLinkedDocuments($oDocument) {
 	global $default;
 	
-	$sQuery = "SELECT D.id AS child_document_id, D.name, DL.id as document_link_id, DL.parent_document_id AS parent_document_id, 'Unlink' AS unlink " .
+	/*ok*/ $sQuery = array("SELECT D.id AS child_document_id, D.name, DL.id as document_link_id, DL.parent_document_id AS parent_document_id, 'Unlink' AS unlink " .
 			  "FROM $default->documents_table AS D INNER JOIN $default->document_link_table AS DL ON D.id = DL.child_document_id " .
-			  "WHERE DL.parent_document_id = " . $oDocument->getID();
+			  "WHERE DL.parent_document_id = ?", $oDocument->getID());
 	
 	$aColumns = array("name", "unlink");
     $aColumnHeaders = array(_("Document"));
@@ -327,9 +327,9 @@ function renderEditableLinkedDocuments($oDocument) {
 function renderNonEditableLinkedDocuments($oDocument) {
 	global $default;
 	
-	$sQuery = "SELECT D.id, D.name " .
+	/*ok*/ $sQuery = array("SELECT D.id, D.name " .
 			  "FROM $default->documents_table AS D INNER JOIN $default->document_link_table AS DL ON D.id = DL.child_document_id " .
-			  "WHERE DL.parent_document_id = " . $oDocument->getID();
+			  "WHERE DL.parent_document_id = ?", $oDocument->getID());
 	
 	$aColumns = array("name");
     $aColumnHeaders = array(_("Document"));
@@ -354,10 +354,10 @@ function renderDependantDocuments($oDocument, $bEdit) {
 	global $default;
 	// FIXME: only allow escalation if you have write access and are the same user that requested the
 	// dependant document?
-	$sQuery = "SELECT DDI.id AS instance_id, DDI.document_title, U.name AS user_name, 'Escalate' AS escalate " .
+	/*ok*/ $sQuery = array("SELECT DDI.id AS instance_id, DDI.document_title, U.name AS user_name, 'Escalate' AS escalate " .
 			  "FROM $default->dependant_document_instance_table DDI " . 
 			  "INNER JOIN $default->users_table AS U ON DDI.user_id = U.id " .
-			  "WHERE DDI.parent_document_id = " . $oDocument->getID();
+			  "WHERE DDI.parent_document_id = ?", $oDocument->getID());
 	
 	$aColumns = array("document_title", "user_name", "escalate");
     $aColumnHeaders = array(_("Document Title"), _("User"));

@@ -40,7 +40,7 @@ function renderErrorMessage($sErrorMessage) {
  */	
 function renderNewsTable() {
     global $default;
-    $sQuery = "SELECT id, synopsis, IF(LENGTH(body) > 25, CONCAT(LEFT(body,25),'...'), body) AS body, rank, IF(LENGTH(image)>0, 'yes', 'no') as image, active, 'Edit' AS edit, 'Preview' AS preview, 'Delete' AS del " .   
+    /*ok*/ $sQuery = "SELECT id, synopsis, IF(LENGTH(body) > 25, CONCAT(LEFT(body,25),'...'), body) AS body, rank, IF(LENGTH(image)>0, 'yes', 'no') as image, active, 'Edit' AS edit, 'Preview' AS preview, 'Delete' AS del " .   
               "FROM $default->news_table ORDER BY rank ASC";
     $aColumns = array("synopsis", "body", "rank", "image", "active", "edit", "preview", "del");
     $aColumnHeaders = array(_("Synopsis"), _("Body"), _("Rank"), _("Image"), _("Active"));

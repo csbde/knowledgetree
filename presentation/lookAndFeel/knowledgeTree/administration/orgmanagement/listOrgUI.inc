@@ -27,7 +27,7 @@
 
 function getOrganisations() {
 	global $default;
-	$sQuery = 	"SELECT org.id as orgID, org.name as name, " . 
+	/*ok*/ $sQuery = "SELECT org.id as orgID, org.name as name, " . 
 				//"'Edit', 'Delete' " .
 				"'Edit'" .
 				"FROM organisations_lookup as org " .
