@@ -98,6 +98,10 @@ class DependantDocumentInstance {
 	function setHasLookup($sNewValue) {
 		$this -> iTemplateDocumentID = $sNewValue;
 	}
+	
+	function getParentDocumentID() {
+		return $this->iParentDocumentID;
+	}
 
 	/**
 	* Store the current object in the database
@@ -180,7 +184,7 @@ class DependantDocumentInstance {
 		$result = $sql -> query("SELECT * FROM $default->owl_dependant_document_instance_table WHERE id = $iDependantDocumentID");
 		if ($result) {
 			if ($sql -> next_record()) {
-				$oDependantDocument = & new DependantDocument(stripslashes($sql -> f("document_title")), $sql -> f("user_id"), $sql -> f("template_document_id"), $sql->f("parent_document_id"));
+				$oDependantDocument = & new DependantDocumentInstance(stripslashes($sql -> f("document_title")), $sql -> f("user_id"), $sql -> f("template_document_id"), $sql->f("parent_document_id"));
 				$oDependantDocument -> iId = $sql -> f("id");
 				return $oDependantDocument;
 			}
