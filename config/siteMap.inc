@@ -100,7 +100,7 @@ $default->siteMap->addPage("manageCategories", "/presentation/lookAndFeel/knowle
 $default->siteMap->addSectionColour("Manage Categories", "td", "BDDFE0");
 $default->siteMap->addSectionColour("Manage Categories", "th", "57AFAE");
 // document type management
-$default->siteMap->addPage("manageDocumentTypes", "/presentation/lookAndFeel/knowledgeTree/administration/admin.php?sectionName=documentTypeAdministration", "Manage Document Types", SysAdmin, "Manage Document Types");
+$default->siteMap->addPage("manageDocumentTypes", "/control.php?action=doctype", "Manage Document Types", SysAdmin, "Manage Document Types");
 $default->siteMap->addSectionColour("Manage Document Types", "td", "BDDFE0");
 $default->siteMap->addSectionColour("Manage Document Types", "th", "57AFAE");
 
