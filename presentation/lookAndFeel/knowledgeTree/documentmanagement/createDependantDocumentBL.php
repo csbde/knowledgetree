@@ -61,7 +61,7 @@ if (checkSession()) {
 				$oEmail->send($oUser->getEmail(), "Dependant document creation required", $sBody);
 			}
 			//go back to the document page you were viewing
-			redirect($default->rootUrl . "/control.php?action=viewDocument&fDocumentID=$fDocumentID");			
+			redirect($default->rootUrl . "/control.php?action=viewDocument&fDocumentID=$fDocumentID&fShowSection=linkedDocuments");			
 		} else {
 			//dependant document creation failed - display an error message
 			require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");			
