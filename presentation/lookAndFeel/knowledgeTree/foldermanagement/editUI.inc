@@ -16,7 +16,7 @@ function getFolderPath($iFolderID) {
     global $default;
 	$sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
 	$sTDBGColour = $default->siteMap->getSectionColour($sSectionName, "td");
-    return "<table border=\"0\" width=\"610\"><tr><td bgcolor=\"$sTDBGColour\">" . displayFolderPathLink(Folder::getFolderPathAsArray($iFolderID), Folder::getFolderPathNamesAsArray($iFolderID),  "$default->rootUrl/control.php?action=browse") . "</td></tr></table>\n";
+    return "<table border=\"0\" cellpadding=\"0\" width=\"610\"><tr><td bgcolor=\"$sTDBGColour\">" . displayFolderPathLink(Folder::getFolderPathAsArray($iFolderID), Folder::getFolderPathNamesAsArray($iFolderID),  "$default->rootUrl/control.php?action=browse") . "</td></tr></table>\n";
 }
 
 function getFolderData($iFolderID, $sDivName, $sStatusMessage = "") {
@@ -29,10 +29,10 @@ function getFolderData($iFolderID, $sDivName, $sStatusMessage = "") {
 			
 	$sql = $default->db;
 	$sql->query($sQuery);
-	if ($sStatusMessage) {
-		$sToRender .= "<font color=\"red\">$sStatusMessage</font>";
-	}
-	$sToRender .= "<table>\n";
+	
+	$sToRender .= "<table>";
+	$sToRender .= "<tr><td><table cellpadding=\"5\" border=\"0\" width=\"610\">\n";
+	$sToRender .= "<table cellpadding=\"5\" border=\"0\" width=\"610\">\n";
 	$sToRender .= "<caption><strong>Folder Data</strong></caption>";
 	if ($sql->next_record()) {
 		$sToRender .= "<tr>\n";
@@ -40,12 +40,12 @@ function getFolderData($iFolderID, $sDivName, $sStatusMessage = "") {
 		if (Folder::folderIsUnitRootFolder($iFolderID)) {
 			$sToRender .= "<td>" . $sql->f("name") . "</td>\n";
 		} else {
-			$sToRender .= "<td><input type=\"text\" name=\"fFolderName\" value=\"" . $sql->f("name") . "\" size=\"30\"></td>\n";
+			$sToRender .= "<td><input type=\"text\" name=\"fFolderName\" value=\"" . $sql->f("name") . "\" size=\"50\"></td>\n";
 		}
 		$sToRender .= "</tr>\n";
 		$sToRender .= "<tr>\n";
 		$sToRender .= "<td bgcolor=\"" . $sTDBGColour . "\">Description</td>\n";
-		$sToRender .= "<td><input type=\"text\" name=\"fDescription\" value=\"" . $sql->f("description") . "\" size=\"30\"></td>\n";
+		$sToRender .= "<td><input type=\"text\" name=\"fDescription\" value=\"" . $sql->f("description") . "\" size=\"50\"></td>\n";
 		$sToRender .= "</tr>\n";
 		$sToRender .= "<tr>\n";
 		$sToRender .= "<td bgcolor=\"" . $sTDBGColour . "\">Public</td>\n";
@@ -56,6 +56,7 @@ function getFolderData($iFolderID, $sDivName, $sStatusMessage = "") {
 		$sToRender .= "</tr>\n";
 		
 	}
+	$sToRender .= "</table></td></tr>";
 	$sToRender .= "<tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/update.gif\" onClick=\"setActionAndSubmit('" . $_SERVER["PHP_SELF"] . "?fFolderID=$iFolderID&fForUpdate=1')\" border=\"0\" /></td></tr>\n";
 	$sToRender .= "</table>\n";
 
@@ -85,7 +86,7 @@ function getFolderRouting($iFolderID, $sDivName, $bCollaboration) {
 	$oPatternTableSqlQuery->setDisplayColumnHeadings(true);
 	
 	$sToRender .= "<table>";
-	$sToRender .= $oPatternTableSqlQuery->render();
+	$sToRender .= "<tr><td>" . $oPatternTableSqlQuery->render() . "</td></tr>";
     if (!$bCollaboration) {
         $sToRender .= "<tr>\n";
         $sToRender .= "<td>\n";
@@ -116,8 +117,8 @@ function getFolderDocTypes($iFolderID, $sDivName) {
 	$oPatternTableSqlQuery->setDisplayColumnHeadings(true);
 	
 	$sToRender .= "<table>";
-	$sToRender .= $oPatternTableSqlQuery->render();
-	$sToRender .=  "<tr><td><a href=\"$default->rootUrl/control.php?action=addFolderDocType&fFolderID=$iFolderID\"><img src=\"$default->graphicsUrl/widgets/add.gif\" border=\"0\" /></a></td></tr>";
+	$sToRender .= "<tr><td>" . $oPatternTableSqlQuery->render() . "</td></tr>";	
+	$sToRender .= "<tr><td><a href=\"$default->rootUrl/control.php?action=addFolderDocType&fFolderID=$iFolderID\"><img src=\"$default->graphicsUrl/widgets/add.gif\" border=\"0\" /></a></td></tr>";
     $sToRender .= "</table>";		
     return renderSectionDiv($sDivName, $sToRender);	
 }
@@ -141,7 +142,7 @@ function getFolderGroupAccess($iFolderID, $sDivName) {
 	$oPatternTableSqlQuery->setDisplayColumnHeadings(true);
    
 	$sToRender .= "<table>";
-	$sToRender .= $oPatternTableSqlQuery->render();
+	$sToRender .= "<tr><td>" . $oPatternTableSqlQuery->render() . "</td></tr>";	
 	$sToRender .=  "<tr><td><a href=\"$default->rootUrl/control.php?action=addGroupFolderLink&fFolderID=$iFolderID\"><img src=\"$default->graphicsUrl/widgets/add.gif\" border=\"0\" /></a></td></tr>";
     $sToRender .= "</table>";		
     return renderSectionDiv($sDivName, $sToRender);		 	
@@ -149,105 +150,95 @@ function getFolderGroupAccess($iFolderID, $sDivName) {
 
 function renderSectionDiv($sDivName, $sHtml) {
 	global $default;
-	
-	if ( $default->browser == "ie" ) {
-		return "<div id=\"$sDivName\" style=\"position:absolute;visibility:hidden;top:250px;left:135px;\">$sHtml</div>";
+		
+	$bNN4 = (($default->browser == "moz") && ($default->version <= "4.79"));
+	if ($bNN4) {	
+		return "<div id=\"$sDivName\" style=\"position:absolute;visibility:hidden;top:350;left:135px;\">$sHtml</div>";
 	} else {
-		return "<div id=\"$sDivName\" style=\"position:absolute;visibility:hidden;top:230px;left:133px;\">$sHtml</div>";		
+		return "<div id=\"$sDivName\" style=\"position:absolute;visibility:hidden;left:2px;\">$sHtml</div>";
 	}
 }
 
-function renderFolderSection($sHeading) {
-	return "<tr bgcolor=\"" . getColour($iColour) . "\"><td width=\"100%\">$sHeading</td></tr>\n";
+function renderFolderSection($sSectionName, $sHeadingText, $bDisplayLink, $iFolderID) {	
+	if ($bDisplayLink) {
+		$sLink = generateControllerLink("editFolder", "fFolderID=$iFolderID&fShowSection=$sSectionName", $sHeadingText);
+	} else {
+		$sLink = "<a href=\"javascript:void();\" onClick=\"switchDiv('$sSectionName', 'folder');\">$sHeadingText</a>";
+	}
+	return "<tr bgcolor=\"" . getColour($iColour) . "\"><td width=\"100%\">$sLink</td></tr>\n";
 }
 
-function getPage($iFolderID, $sStatusMessage = "", $bCollaboration = false) {
+function getPage($iFolderID, $sStatusMessage, $bCollaboration = false) {
 	global $default;
        
-	if ( $default->browser == "ie" ) {
-		$sToRender = "<div id=\"headings\" style=\"position:absolute;visibility:visible;top:120px;left:134px;\">";		
-	} else {
-		$sToRender = "<div id=\"headings\" style=\"position:absolute;visibility:visible;top:106px;left:134px;\">";
-	}
+	$sToRender = "<div id=\"headings\" style=\"position:relative;visibility:visible;top:2px;left:2px;\">";
+
     $sToRender .= renderHeading("Modify Folder Properties");
     $sToRender .= getFolderPath($iFolderID);    
 
-	$sToRender .= "<table border=\"0\" width=\"610\">";		
-	$sToRender .= renderFolderSection("<a href=\"javascript:void();\" onClick=\"switchDiv('folderData', 'folder');\">Folder Data</a>");
-	$sToRender .= renderFolderSection("<a href=\"javascript:void();\" onClick=\"switchDiv('folderRouting', 'folder');\">Document Routing</a>");
-	$sToRender .= renderFolderSection("<a href=\"javascript:void();\" onClick=\"switchDiv('documentTypes', 'folder');\">Document Types</a>");
-	$sToRender .= renderFolderSection("<a href=\"javascript:void();\" onClick=\"switchDiv('folderPermissions', 'folder');\">Folder Permissions</a>");
-	$sToRender .= "</table>";		
+	$sToRender .= "<table cellspacing=\"0\" cellpadding=\"0\" id=\"headingTable\">";
+	$sToRender .= "<tr><td valign=\"top\">";	
+	$sToRender .= "<table border=\"0\" width=\"610\">";
+
+	// if we have a status message, then make the section links refresh to viewDocument with the fShowSection variable
+	// ie. effectively removes statusMessage on next click
+	$bDisplayLink = ($sStatusMessage) ? true : false;
+	
+	$sToRender .= renderFolderSection("folderData", "Folder Data", $bDisplayLink, $iFolderID);
+	$sToRender .= renderFolderSection("folderRouting", "Document Routing", $bDisplayLink, $iFolderID);
+	$sToRender .= renderFolderSection("documentTypes", "Document Types", $bDisplayLink, $iFolderID);
+	$sToRender .= renderFolderSection("folderPermissions", "Folder Permissions", $bDisplayLink, $iFolderID);
+	$sToRender .= "</table>";
+	$sToRender .= "</td></tr>";
+	$sToRender .= "</table>";
     $sToRender .= "</div>";
-        
-	$sToRender .= getFolderData($iFolderID, "folderData", $sStatusMessage);
+
+	// ugly netscape hacks
+	$bNN4 = (($default->browser == "moz") && ($default->version <= "4.79"));
+	if (!$bNN4) {
+		$sToRender .= "<div id=\"contentDiv\" style=\"position:relative;visibility:visible;top:10px;\">";
+	}
+	if ($sStatusMessage) {
+		$sToRender .= "<table><tr><td><font color=\"red\">$sStatusMessage</font></td></tr></table>";
+	}	
+	$sToRender .= getFolderData($iFolderID, "folderData");
 	$sToRender .= getFolderRouting($iFolderID, "folderRouting", $bCollaboration);
 	$sToRender .= getFolderDocTypes($iFolderID, "documentTypes");
 	$sToRender .= getFolderGroupAccess($iFolderID, "folderPermissions");
+	if (!$bNN4) {
+		$sToRender .= "</div>";
+	}  	
 	return $sToRender;
 }
 
-function getLeftSide($iFolderID, $bCollaboration) {
-	global $default;
-	$sToRender .= "<table border=\"0\" width=\"100%\">\n";
-	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>\n";
-	$sToRender .= getFolderData($iFolderID);
-	$sToRender .= "</td>\n";
-	$sToRender .= "</tr>\n";
-	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>\n";	
-	$sToRender .= "<input type=\"image\" src=\"$default->graphicsUrl/widgets/update.gif\" onClick=\"setActionAndSubmit('" . $_SERVER["PHP_SELF"] . "?fFolderID=$iFolderID&fForUpdate=1')\" border=\"0\" />\n";	
-	$sToRender .= "</td>\n";
-	$sToRender .= "</tr>\n";
-	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>\n";
-	$sToRender .=  getFolderRouting($iFolderID) . "\n";
-	$sToRender .= "</td>\n";
-	$sToRender .= "</tr>\n";
-    if (!$bCollaboration) {
-        $sToRender .= "<tr>\n";
-        $sToRender .= "<td>\n";
-        $sToRender .=  "<a href=\"$default->rootUrl/control.php?action=addFolderCollaboration&fFolderID=$iFolderID\"><img src=\"$default->graphicsUrl/widgets/add.gif\" border=\"0\" /></a>\n";
-        $sToRender .= "</td>\n";
-        $sToRender .= "</tr>\n";
-    }
-    
-	$sToRender .= "</table>\n";
+function getStatusPage($iFolderID, $sStatusMessage) {
+    global $default;
+       
+	$sToRender = "<div id=\"headings\" style=\"position:relative;visibility:visible;top:2px;left:2px;\">";       
+    $sToRender .= renderHeading("Modify Folder Properties");
+    $sToRender .= getFolderPath($iFolderID);
+    $sToRender .= "<table border=\"0\" width=\"610\">";
+
+	// if we have a status message, then make the section links refresh to viewDocument with the fShowSection variable
+	// ie. effectively removes statusMessage on next click
+	$bDisplayLink = ($sStatusMessage) ? true : false;
+
+	$sToRender .= renderFolderSection("folderData", "Folder Data", $bDisplayLink, $iFolderID);
+	$sToRender .= renderFolderSection("folderRouting", "Document Routing", $bDisplayLink, $iFolderID);
+	$sToRender .= renderFolderSection("documentTypes", "Document Types", $bDisplayLink, $iFolderID);
+	$sToRender .= renderFolderSection("folderPermissions", "Folder Permissions", $bDisplayLink, $iFolderID);
+
+	$sToRender .= "</table>";
+	$sToRender .= "</div>";
+	// ugly netscape hacks
+	$bNN4 = (($default->browser == "moz") && ($default->version <= "4.79"));
+	if (!$bNN4) {
+		$sToRender .= "<div id=\"contentDiv\" style=\"position:relative;visibility:hidden;top:10px;\">";
+	}
+	$sToRender .= getFolderData($iFolderID, "folderData", $sStatusMessage);
+	if (!$bNN4) {
+		$sToRender .= "</div>";
+	}	
 	return $sToRender;
-}
-
-function getRightSide($iFolderID) {
-	global $default;
-	$sToRender .= "<table border=\"0\" width=\"100%\">\n";
-	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>\n";
-	$sToRender .= getFolderDocTypes($iFolderID);
-	$sToRender .= "</td>\n";
-	$sToRender .= "</tr>\n";
-	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>\n";
-	$sToRender .=  "<a href=\"$default->rootUrl/control.php?action=addFolderDocType&fFolderID=$iFolderID\"><img src=\"$default->graphicsUrl/widgets/add.gif\" border=\"0\" /></a>\n";
-	$sToRender .= "</td>\n";
-	$sToRender .= "</tr>\n";
-    
-	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>\n";
-	$sToRender .= getFolderGroupAccess($iFolderID);
-	$sToRender .= "</td>\n";
-	$sToRender .= "</tr>\n";
-	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>\n";
-	$sToRender .=  "<a href=\"$default->rootUrl/control.php?action=addGroupFolderLink&fFolderID=$iFolderID\"><img src=\"$default->graphicsUrl/widgets/add.gif\" border=\"0\" /></a>\n";
-	$sToRender .= "</td>\n";
-	$sToRender .= "</tr>\n";
-
-    
-	$sToRender .= "</table>\n";
-	return $sToRender;
-}
-
-function wrapInTable($sHtml) {
-	return "\n\t\t\t<table border = 1, width = 100%><tr><td>$sHtml</td></tr></table>\n";	
 }
 ?>
