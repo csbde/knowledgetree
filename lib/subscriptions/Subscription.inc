@@ -132,6 +132,17 @@ class Subscription {
     }
 
     /**
+     * Returns the display path to the subscription content
+     */
+    function getContentDisplayPath() {
+        if ($this->iSubscriptionType == SubscriptionConstants::subscriptionType("DocumentSubscription")) {
+            return Document::getDocumentDisplayPath($this->iExternalID);
+        } else if ($this->iSubscriptionType == SubscriptionConstants::subscriptionType("FolderSubscription")) {
+            return Folder::getFolderDisplayPath($this->iExternalID);
+        }
+    }
+    
+    /**
      * Returns the link to view the subscription content
      */
     function getContentLink() {
