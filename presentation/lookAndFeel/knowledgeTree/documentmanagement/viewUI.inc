@@ -100,7 +100,7 @@ function renderEditableDocumentRouting($oDocument) {
               "ORDER BY GFAL.precedence, role_name ASC";
 
     $aColumns = array("role_name", "name", "precedence", "active", "done", "edit");
-    $aColumnHeaders = array("Role", "Player", "Seq", "Active", "Done", "");
+    $aColumnHeaders = array("Role", "User", "Seq", "Active", "Done", "");
     $aColumnTypes = array(1,1,1,1,1,3);
     $aDBColumnArray = array("id","document_id","active","done");
     $aQueryStringVariableNames = array("fFolderCollaborationID", "fDocumentID","fIsActive","fIsDone");
@@ -124,7 +124,7 @@ function renderNonEditableDocumentRouting($oDocument) {
               "ORDER BY GFAL.precedence, role_name ASC";
 
     $aColumns = array("role_name", "name", "precedence", "active", "done");
-    $aColumnHeaders = array("Role", "Player", "Seq", "Active", "Done");
+    $aColumnHeaders = array("Role", "User", "Seq", "Active", "Done");
     $aColumnTypes = array(1,1,1,1,1);
     $oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaders, "10%", "$default->rootUrl/control.php?action=modifyDocumentRouting",$aDBColumnArray,$aQueryStringVariableNames);
     $oPatternTableSqlQuery->setTableHeading("Document Routing");
