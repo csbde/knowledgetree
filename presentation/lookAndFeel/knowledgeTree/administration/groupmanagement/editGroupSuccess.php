@@ -9,7 +9,7 @@
 */
 
 require_once("../../../../../config/dmsDefaults.php");
-require_once("../adminUI.inc");
+//require_once("../adminUI.inc");
 require_once("$default->fileSystemRoot/presentation/Html.inc");
 
 global $default;
