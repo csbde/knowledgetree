@@ -34,7 +34,7 @@ function renderPendingCollaborationDocuments($aPendingDocumentList) {
     for ($i = 0; $i < count($aPendingDocumentList); $i++) {
         $oDocument = $aPendingDocumentList[$i];
         $sToRender .= "\t<tr>\n";
-        $sToRender .= "<td nowrap colspan=\"2\">" . generateControllerLink("viewDocument", "fDocumentID=" . $oDocument->getID(), "<img src=\"$default->graphicsUrl/widgets/dstatus.gif\" border=\"0\"/>&nbsp;" . $oDocument->getDisplayPath()) . "</td>\n";        
+        $sToRender .= "<td colspan=\"2\">" . generateControllerLink("viewDocument", "fDocumentID=" . $oDocument->getID(), "<img src=\"$default->graphicsUrl/widgets/dstatus.gif\" border=\"0\"/>&nbsp;" . $oDocument->getDisplayPath()) . "</td>\n";        
         $sToRender .= "\t</tr>\n";
     }    
     return $sToRender;
@@ -70,7 +70,7 @@ function renderCheckedOutDocuments($aCheckedOutDocumentList) {
     for ($i = 0; $i < count($aCheckedOutDocumentList); $i++) {
         $oDocument = $aCheckedOutDocumentList[$i];
         $sToRender .= "\t<tr>\n";
-        $sToRender .= "<td nowrap>" . generateControllerLink("viewDocument", "fDocumentID=" . $oDocument->getID(), "<img src=\"$default->graphicsUrl/widgets/dstatus.gif\" border=\"0\"/>&nbsp;" . $oDocument->getDisplayPath()) . "</td>\n";
+        $sToRender .= "<td>" . generateControllerLink("viewDocument", "fDocumentID=" . $oDocument->getID(), "<img src=\"$default->graphicsUrl/widgets/dstatus.gif\" border=\"0\"/>&nbsp;" . $oDocument->getDisplayPath()) . "</td>\n";
         $sToRender .= "<td align=right>" . $oDocument->getDaysSinceLastModified() . "</td>\n";
         $sToRender .= "\t</tr>\n";
     }
@@ -94,7 +94,7 @@ function renderSubscriptionAlerts($aSubscriptionAlertList) {
     $sToRender .= "\t</tr>\n";
     for ($i = 0; $i < count($aSubscriptionAlertList); $i++) {
         $sToRender .= "\t<tr>\n";
-        $sToRender .= "<td nowrap colspan=\"2\">" . $aSubscriptionAlertList[$i]->getAlertLink() . "</td>\n";
+        $sToRender .= "<td colspan=\"2\">" . $aSubscriptionAlertList[$i]->getAlertLink() . "</td>\n";
         $sToRender .= "\t</tr>\n";
     }    
     return $sToRender;
@@ -110,7 +110,7 @@ function renderQuickLinks($aQuickLinks) {
     $sToRender .= "\t</tr>\n";
     for ($i = 0; $i < count($aQuickLinks); $i++) {
         $sToRender .= "\t<tr>\n";
-        $sToRender .= "<td nowrap colspan=\"2\"><a href=\"" . $aQuickLinks[$i]->getUrl() . "\" target=\"_new\"><img src=\"$default->graphicsUrl/widgets/qlink.gif\" border=\"0\"/>" . $aQuickLinks[$i]->getName() . "</a></td>\n";
+        $sToRender .= "<td colspan=\"2\"><a href=\"" . $aQuickLinks[$i]->getUrl() . "\" target=\"_new\"><img src=\"$default->graphicsUrl/widgets/qlink.gif\" border=\"0\"/>" . $aQuickLinks[$i]->getName() . "</a></td>\n";
         $sToRender .= "\t</tr>\n";
     }
     return $sToRender;
