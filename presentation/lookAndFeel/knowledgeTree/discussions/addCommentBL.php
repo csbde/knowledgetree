@@ -34,7 +34,7 @@ if (checkSession()) {
 				$oPatternCustom->setHtml(getAddComment($fDocumentID,$sSubject,$sBody));
 			}
 			else {	// And invalid Document ID was sent
-				main->setErrorMessage("The Document id cannot be lss than 0.  ID is invalid.");			
+				$main->setErrorMessage("The Document id cannot be lss than 0.  ID is invalid.");			
 			}			
 			
 		} else if (isset($fViewComment)){  // User wishes to view a comment
