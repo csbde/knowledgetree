@@ -8,8 +8,8 @@ require_once("$default->owl_fs_root/lib/authentication/Authenticator.inc");
  * Perform authentication tasks against the database.
  * 
  * @version $Revision$ 
- * @author <a href="mailto:michael@jamwarehouse.com">Michael Joseph</a>, Jam Warehouse (Pty) Ltd, South Africa
- * @package dmslib
+ * @author Michael Joseph <michael@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
+ * @package lib.authentication
  */
 
 class DBAuthenticator extends Authenticator {
@@ -17,10 +17,8 @@ class DBAuthenticator extends Authenticator {
     /**
      * Checks the user's password against the database
      *
-     * @param $userName
-     *        the name of the user to check
-     * @param $password
-     *        the password to check
+     * @param string the name of the user to check
+     * @param string the password to check
      * @return boolean true if the password is correct, else false
      */
     function checkPassword($userName, $password) {        
