@@ -67,7 +67,7 @@ $default->owl_documents_table = "documents";
 // stores folders 
 $default->owl_folders_table = "folders";
 // links folders to users (and roles) for approval collaboration
-$default->owl_folders_table	= "folders_user_roles_link";
+$default->owl_folders_user_roles_table	= "folders_user_roles_link";
 // stores approval collaboration information- approval roles mapped to folders with order
 $default->owl_groups_folders_approval_table	= "groups_folders_approval_link";
 // links groups to folders
@@ -75,7 +75,7 @@ $default->owl_groups_folders_table	= "groups_folders_link;"
 // stores group information
 $default->owl_groups_table	= "groups_lookup";
 // links groups to users and units
-$default->owl_groups_users_table	= "groups_users_link"; 
+$default->owl_groups_users_table = "groups_users_link"; 
 // links
 $default->owl_links_table = "links";
 // Table with mime info
