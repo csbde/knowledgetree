@@ -31,7 +31,7 @@ function getUserDetailsPage($iUserID) {
     $sQuery = "SELECT * FROM $default->users_table WHERE id = $iUserID";
     $aDisplayColumns = array("name", "email", "mobile", "email_notification");
     $aStoreColumns = array("name", "email", "mobile", "email_notification");
-    $aColumnNames = array("Name: ", "Email Address: ", "Mobile Number: ", "Email Notification: ");
+    $aColumnNames = array(_("Name") . ": ", _("Email Address") . ": ", _("Mobile Number") . ": ", _("Email Notification") . ": ");
     $aDisplayColumnTypes = array(1, 1, 1, 2);
     $aDatabaseColumnTypes = array(1, 1, 1, 2);
 
@@ -40,10 +40,10 @@ function getUserDetailsPage($iUserID) {
     $oPattern -> setUniqueName("userEdit");
     $oPattern -> setColumnsRequired(array(1, 0, 0, 0));
 
-    $sToRender.= renderHeading("Preferences");
+    $sToRender.= renderHeading(_("Preferences"));
     $sToRender.= "<table width=\"600\">\n";
     $sToRender.= "<tr></tr>\n";
-    $sToRender.= "<tr/><tr/><tr><td><b>Edit User Properties:</b></td></tr>\n";
+    $sToRender.= "<tr/><tr/><tr><td><b>" . _("Edit User Properties") . ":</b></td></tr>\n";
     $sToRender.= "<tr>\n";
     $sToRender.= "<td>".$oPattern -> render()."</td>\n";
     $sToRender.= "</tr>\n";
@@ -62,10 +62,10 @@ function getUserDetailsPage($iUserID) {
 
 function getEditPageSuccess() {
     global $default;
-    $sToRender.= renderHeading("Preferences");
+    $sToRender.= renderHeading(_("Preferences"));
     $sToRender.= "<table width=\"600\">\n";
-    $sToRender.= "<tr/><tr/><tr><td><b>Success!</b></td></tr>\n";
-    $sToRender.= "<tr><td>The User was successfully modified</td></tr>\n";
+    $sToRender.= "<tr/><tr/><tr><td><b>" . _("Success") . "!</b></td></tr>\n";
+    $sToRender.= "<tr><td>" . _("The User was successfully modified") . "</td></tr>\n";
     $sToRender.= "<tr></tr>\n";
     $sToRender.= "<tr></tr>\n";
     $sToRender.= "<tr>\n";
@@ -77,10 +77,10 @@ function getEditPageSuccess() {
 
 function getEditPageFail() {
     global $default;
-    $sToRender.= renderHeading("Preferences");
+    $sToRender.= renderHeading(_("Preferences"));
     $sToRender.= "<table>\n";
     $sToRender.= "<tr/><tr/>\n";
-    $sToRender.= "<tr><td>User modification Failed!</td></tr>\n";
+    $sToRender.= "<tr><td>" . _("User modification Failed!") . "</td></tr>\n";
     $sToRender.= "<tr></tr>\n";
     $sToRender.= "<tr></tr>\n";
     $sToRender.= "<tr>\n";
