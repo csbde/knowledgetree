@@ -73,7 +73,7 @@ if (checkSession()) {
 												
     				} else {
     					// the image is too big
-			    		$oContent->setHtml(renderEditNewsPage($oDashboardNews, "The image you have submitted is too big (" . $iImgHeight . "x" . $iImgWidth . " > " . $oDashboardNews->getMaxImageDimensions() . "), please correct and retry"));    					
+			    		$oContent->setHtml(renderEditNewsPage($oDashboardNews, "The image you have submitted is too big (" . $iImgWidth . "x" . $iImgHeight . " > " . $oDashboardNews->getMaxImageDimensions() . "), please correct and retry"));    					
     				}    			
     			}
     		} else {
