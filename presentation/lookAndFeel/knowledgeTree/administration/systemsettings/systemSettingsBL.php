@@ -35,14 +35,12 @@ if (checkSession()) {
                         "emailAdminName",
                         "emailFrom",
                         "emailFromName",
-                        "filesystemRoot",
                         "documentRoot",
                         "languageDirectory",
                         "uiDirectory",
                         "rootUrl",
                         "graphicsUrl",
                         "uiUrl",
-                        "useFs",
                         "defaultLanguage",
                         "sessionTimeout");
 
@@ -53,14 +51,12 @@ if (checkSession()) {
                          $femailAdminName,
                          $femailFrom,
                          $femailFromName,
-                         $ffilesystemRoot,
                          $fdocumentRoot,
                          $flanguageDirectory,
                          $fuiDirectory,
                          $frootUrl,
                          $fgraphicsUrl,
                          $fuiUrl,
-                         $fuseFs,
                          $fdefaultLanguage,
                          $fsessionTimeout);
 
