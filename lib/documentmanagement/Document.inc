@@ -830,12 +830,12 @@ class Document {
 	/**
 	 * Deletes content from document data tables
 	 */
-	function cleanupDocumentData() {
+	function cleanupDocumentData($iDocumentID) {
 		global $default;
 		$sql = $default->db;
-		$result = $sql->query("DELETE FROM $default->owl_document_text_table WHERE document_id = $this->iId") &&
-				  $sql->query("DELETE FROM $default->search_permissions_table WHERE document_id = $this->iId") &&
-				  $sql->query("DELETE FROM $default->owl_document_fields_table WHERE document_id = $this->iId");
+		$result = $sql->query("DELETE FROM $default->owl_document_text_table WHERE document_id = $iDocumentID") &&
+				  $sql->query("DELETE FROM $default->search_permissions_table WHERE document_id = $iDocumentID") &&
+				  $sql->query("DELETE FROM $default->owl_document_fields_table WHERE document_id = $iDocumentID");
 		return $result;
 	}		
 }
