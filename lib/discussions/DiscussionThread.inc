@@ -13,7 +13,7 @@ class DiscussionThread {
     /**
      * The underlying Discussion Comments class
      */
-    var $id;
+    var $iId;
 	var $iDocumentID;
 	var $iFirstCommentID;
 	var $iLastCommentID;
@@ -27,21 +27,21 @@ class DiscussionThread {
      */
     function DiscussionThread($iNewFirstCommentID, $iNewDocumentID, $iNewCreatorID) {
         global $default;
-        // create a new Discussion Thread object.
-        $this->iFirstCommentID = $iNewFirstCommentID;
+        // create a new Discussion Thread object.        
         $this->iDocumentID = $iNewDocumentID;
         $this->iCreatorID = $iNewCreatorID;
-        $this->id  = -1;
+        $this->iId  = -1;
+        $this->iFirstCommentID = $iNewFirstCommentID;
         $this->iLastCommentID = -1;
-        $this->iNumberOfViews = -1;
-        $this->iNumberOfReplies = -1;        
+        $this->iNumberOfViews = 0;
+        $this->iNumberOfReplies = 0;        
     }
 
     /**
-   	 * Get the id for current thread
+   	 * Get the iId for current thread
    	 */   
     function getID(){
-    	return $this->id;	
+    	return $this->iId;	
     }
        
     /**
@@ -61,21 +61,21 @@ class DiscussionThread {
     /**
    	 * Set the First Comment ID
    	 */
- 	function setFirstCommentID(){
-    	return $this->iFirstCommentID;
+ 	function setFirstCommentID($NewFirstCommentID){
+    	$this->iFirstCommentID = $NewFirstCommentID;
     }
     
     /**
    	 * get the id of the last comment
    	 */
     function getLastCommentID(){
-    	return $this->iFirstCommentID;
+    	return $this->iLastCommentID;
     }
     
     /**
    	 * Set the id of the last comment
    	 */
-    function setLastComment($iNewLastComment){
+    function setLastCommentID($iNewLastComment){
     	$this->iLastCommentID = $iNewLastComment;
     }
     
@@ -197,17 +197,20 @@ class DiscussionThread {
     function create(){
         global $default, $lang_err_database, $lang_err_object_exists;
         //if the object hasn't been created
+        $sQuery = "what the hell";
         if ($this->iId < 0) { //check to see if entry exists
 	        $sql = $default->db;
-	        $result = $sql->query(	"INSERT INTO " . $default->owl_discussion_threads_table . 
-	        						" (document_id, first_comment_id, last_comment_id, views, replies, creator_id) " . 
-	        					  	"VALUES (" . $this->iDocumentID . "," . $this->iFirstCommentID .  "," . $this->iLastCommentID .  "," . $this->iNumberOfViews .  "," . $this->iNumberOfReplies ."," . $this->iCreatorID . ")");
+	        $sQuery = 	"INSERT INTO " . $default->owl_discussion_threads_table . 
+	        		  	" (document_id, first_comment_id, last_comment_id, views, replies, creator_id) " . 
+	        			"VALUES (" . $this->iDocumentID . "," . $this->iFirstCommentID .  "," . $this->iLastCommentID .  "," . $this->iNumberOfViews .  "," . $this->iNumberOfReplies ."," . $this->iCreatorID . ")";
+	        $result = $sql->query($sQuery);
 								    
 	        if ($result) {	         
-	         return true;                    
+	        	$this->iId = $sql->insert_id();
+	         	return true;                    
 	        }
 	        $_SESSION["errorMessage"] = $lang_err_database;
-	        return false;        	
+	        return  false;        	
         }
         $_SESSION["errorMessage"] = $lang_err_object_exists . "id = " . $this->iId . " table = $default->owl_discussion_threads_table";
         return false;
@@ -222,13 +225,13 @@ class DiscussionThread {
         if ($this->iId > 0) {
             $sql = $default->db;
             $sQuery = "UPDATE " . $default->owl_discussion_threads_table . 
-					" SET document_id = " 		. $this->iDocumentID .
-					", first_comment_id = " 	. $this->iFirstCommentID .
+					" SET document_id = " 	. $this->iDocumentID .
+					", first_comment_id = " . $this->iFirstCommentID .
 					", last_comment_id = " 	. $this->iLastCommentID .
 					", views = " 			. $this->iNumberOfViews .
 					", replies = " 			. $this->iNumberOfReplies .
 					", creator_id = " 		. $this->iCreatorID .  
-					" WHERE id = " 				. $this->iId ;
+					" WHERE id = " 			. $this->iId ;
             // Do update query            
             $result = $sql->query( $sQuery);
             
