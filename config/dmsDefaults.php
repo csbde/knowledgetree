@@ -158,7 +158,6 @@ $default->siteMap->addPage("addFolder", "/presentation/lookAndFeel/knowledgeTree
 $default->siteMap->addPage("modifyFolderProperties", "/presentation/documentmanagement/modifyFolder.php", "Manage Documents", UnitAdmin, "Modify Folder Properties", false);
 $default->siteMap->addPage("deleteFolder", "/presentation/documentmanagement/deleteFolder.php?fFolderID=", "Manage Documents", UnitAdmin, "Delete A Folder", false);
 $default->siteMap->addPage("moveFolder", "/presentation/documentmanagement/moveFolder.php", "Manage Documents", UnitAdmin, "Move A Folder", false);
-$default->siteMap->addPage("emailDocument", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/emailLink.php", "Manage Documents", Guest, "");
 $default->siteMap->addPage("emailDocument", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/emailBL.php", "Manage Documents", User, "Email A Document");
 
 // pages for administration section
