@@ -14,14 +14,11 @@ function getEditPage($iOrgID) {
 	$oOrg = null;
 	if (isset($iOrgID)) {
 		$oOrg = Organisation::get($iOrgID);
-		
 	}
 	
-	$sToRender .= "<br></br>\n";
-	$sToRender .= "<b>Edit Organisation Properties:</b>\n";
+	$sToRender .= "<table width=\"600\">" . renderHeading("Edit Organisation") . "</table>";
 	$sToRender .= "<table>\n";
-	$sToRender .= "<br></br>\n";
-	$sToRender .= "<tr></tr>\n";
+	$sToRender .= "<tr><td>Please select an organisation:</td></tr>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>Organisation Name: </td><td>" . getOrgDisplay($oOrg) . "</td>\n";
 	$sToRender .= "</tr>\n";
@@ -31,9 +28,8 @@ function getEditPage($iOrgID) {
 	$sToRender .= "<tr>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<td></td>" . getUpdateButton($oOrg);	
-	$sToRender .= getCancelButton($oOrg);	
+	$sToRender .= getCancelButton($oOrg);
 	$sToRender .= "</table>\n";
-	
 	
 	return $sToRender;
 }
@@ -42,10 +38,9 @@ function getEditPage($iOrgID) {
 function getEditPageSuccess() {	
 	global $default;
 			
-	$sToRender .= "<br></br>\n";
-	$sToRender .= "<b>Success!</b>\n";
+	$sToRender .= "<table width=\"600\">" . renderHeading("Edit Organisation") . "</table>";
 	$sToRender .= "<table>\n";
-	$sToRender .= "<br></br>\n";
+	$sToRender .= "<tr><td><b>Success!</b></td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr><td>The Organisation was successfully modified</td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
@@ -64,10 +59,9 @@ function getEditPageSuccess() {
 function getEditPageFail() {	
 	global $default;
 			
-	$sToRender .= "<br></br>\n";
-	$sToRender .= "<b>Success!</b>\n";
+    $sToRender .= "<table width=\"600\">" . renderHeading("Edit Organisation") . "</table>";
 	$sToRender .= "<table>\n";
-	$sToRender .= "<br></br>\n";
+	$sToRender .= "<tr><td><b>Failure!</b>>/td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr><td>Organisation modification Failed!</td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
@@ -101,9 +95,7 @@ function getOrgDisplay($oOrg) {
 // gets the updatebutton when a Org is selected
 function getUpdateButton($oOrg) {
 	global $default;
-	if (!isset($oOrg)) {
-		return "Please select a Organisation: ";
-	} else {
+	if (isset($oOrg)) {
 		return "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/update.gif\" value=\"submit\" border=\"0\"/></td>\n";
 	}
 }
@@ -112,7 +104,7 @@ function getUpdateButton($oOrg) {
 function getCancelButton($oOrg) {
 	global $default;
 	if (!isset($oOrg)) {
-		//return "<td align = right><a href=\"$default->rootUrl/control.php?action=groupManagement\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" value=\"cancel\" /></a></td>\n";
+		return "<td align = right><a href=\"$default->rootUrl/control.php?action=orgManagement\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" value=\"cancel\" border=\"0\"/></a></td>\n";
 	} else {
 		return "<td align = right><a href=\"$default->rootUrl/control.php?action=editOrg\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" /></a></td>\n";
 	}
