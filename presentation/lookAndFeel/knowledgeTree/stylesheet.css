@@ -23,7 +23,6 @@ font-weight : lighter;
 font-style : normal;
 color : #000000;
 text-decoration: none;
-
 }
 
 P.footer {
@@ -33,8 +32,6 @@ font-weight : lighter;
 font-style : normal;
 color : #999999;
 text-decoration: none;
-
-
 }
 
 P.title {
@@ -80,3 +77,4 @@ font-style : normal;
 text-decoration: none;
 background-color : #FFFACD;
 }
+
