@@ -294,11 +294,15 @@ class PhysicalDocumentManager {
 				$default->log->info("PhysicalDocumentManager::expunge  unlinkied $sDeletedPrefix");			
 				return true;
 			} else {
-				$default->log->error("PhysicalDocumentManager::expunge couldn't unlink $sDeletedPrefix");
-				return false;
+				$default->log->info("PhysicalDocumentManager::expunge couldn't unlink $sDeletedPrefix");
+				if (file_exists($sDeletedPrefix)) {
+					return false;
+				} else {
+					return true;
+				}
 			}
 		} else {
-			$default->log->error("PhysicalDocumentManager::expunge can't rm $sDeletedPrefix because it doesn't exist");
+			$default->log->info("PhysicalDocumentManager::expunge can't rm $sDeletedPrefix because it doesn't exist");
 			return true;
 		}
 	}
