@@ -29,12 +29,12 @@ class AuthLdap {
 
   // 1.1 Public properties -----------------------------------------------------
 
-  var $server;	              // Array of server IP address or hostnames
-  var $dn;		      // The base DN (e.g. "dc=foo,dc=com")
-  var $people = "People";     // Where the user records are kept
-  var $groups = "Groups";     // Where the group definitions are kept
-  var $ldapErrorCode; 	      // The last error code returned by the LDAP server
-  var $ldapErrorText; 	      // Text of the error message
+  var $server;	         // Array of server IP address or hostnames
+  var $dn;		         // The base DN (e.g. "dc=foo,dc=com")
+  var $people;           // Where the user records are kept
+  var $groups;           // Where the group definitions are kept
+  var $ldapErrorCode; 	 // The last error code returned by the LDAP server
+  var $ldapErrorText; 	 // Text of the error message
 
   // 1.2 Private properties ----------------------------------------------------
 
@@ -327,6 +327,35 @@ class AuthLdap {
     }
   }
 
+  /**
+   * Sets and returns the appropriate dn, based on whether there
+   * are values in $this->people and $this->groups.
+   *
+   * @param $peopleOrGroups
+   *        this boolean specifies whether to build a groups
+   *        dn or a people dn ie. if the boolean is true: 
+   *               ou=$this->people,$this->dn else:
+   *               ou=$this->groups,$this->dn
+   * @return 
+   *        the dn to use
+   */
+  function setDn( $peopleOrGroups) {
+    
+    if ( $peopleOrGroups) {
+        if ( isset( $this->people) && ( strlen( $this->people) > 0)) {
+            $checkDn = "ou=" .$this->people. ", " .$this->dn;
+        }
+    } else {
+        if ( isset( $this->groups) && ( strlen( $this->groups) > 0)) {
+            $checkDn = "ou=" .$this->groups. ", " .$this->dn;
+        }        
+    }
+    
+    if ( !isset( $checkDn)) {
+      $checkDn = $this->dn;
+    }
+    return $checkDn;
+  }
   // 2.5 User methods ----------------------------------------------------------
 
   function getUsers( $search, $attributeArray) {
@@ -344,11 +373,26 @@ class AuthLdap {
     for( $i = 0; $i < $info["count"]; $i++){
       // Get the username, and create an array indexed by it...
       // Modify these as you see fit.
+<<<<<<< class.AuthLdap.php
       $uname			              = $info[$i]["uid"][0];
       // add to the array for each attribute in my list
       for ( $i = 0; $i < count( $attributeArray); $i++) {
           $userslist["$uname"]["$attributeArray[$i]"]      = $info[$i][strtolower($attributeArra[$i])][0];
       }
+      /*
+      $userslist["$uname"]["uid"]     = $info[$i]["uid"][0];      
+      $userslist["$uname"]["mail"]    = $info[$i]["mail"][0];
+      $userslist["$uname"]["phone"]   = $info[$i]["telephonenumber"][0];
+      $userslist["$uname"]["job"]     = $info[$i]["employeetype"][0];
+      $userslist["$uname"]["entryid"] = $info[$i]["entryid"][0];
+      */
+=======
+      $uname			              = $info[$i]["uid"][0];
+      // add to the array for each attribute in my list
+      for ( $i = 0; $i < count( $attributeArray); $i++) {
+          $userslist["$uname"]["$attributeArray[$i]"]      = $info[$i][strtolower($attributeArra[$i])][0];
+      }
+>>>>>>> 1.2
     }
 
     if ( !@asort( $userslist)) {
