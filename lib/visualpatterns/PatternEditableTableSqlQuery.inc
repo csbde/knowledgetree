@@ -38,7 +38,7 @@ class PatternEditableTableSqlQuery {
 	var $aColumnsEditable;
 	/** columns visible or not (store columns) */
 	var $aColumnsVisible;
-	/** column types: 1 = text, 2 = boolean, 3 = drop down list */
+	/** column types: 1 = text, 2 = boolean, 3 = drop down list, 4 = meta data lookup */
 	var $aColumnDisplayTypes;
 	/** 0 = id, 1 = text, 2 = boolean*/
 	var $aColumnDatabaseTypes;
@@ -93,8 +93,7 @@ class PatternEditableTableSqlQuery {
 	function & render() {
         global $default;
         
-		//$sToRender = "<table border = 0, width=$this->sWidth>\n";
-		$sToRender = "<table cellpadding = 5, border = 0>\n";
+		$sToRender = "<table cellpadding=\"5\" border=\"0\">\n";
 		if (isset($this->sTableCaption)) {
 			$sToRender .= "<caption align=\"top\" colspan = " . count($this->aColumnsSql) . ", align=left><b>$this->sTableCaption</b></caption>\n";
 		}
@@ -105,6 +104,7 @@ class PatternEditableTableSqlQuery {
 		}
 		$sql = $default->db;
 		$sql->query($this->sQuery);
+        
 		if ($sql->num_rows() == 0) {
 			$sToRender .= "<tr>\n";			
 			$sToRender .= "<td colspan=" . count($this->aColumnsSql) . ">No " . (isset($this->sTableCaption) ? $this->sTableCaption : "") . " data</td>\n";			
@@ -122,12 +122,12 @@ class PatternEditableTableSqlQuery {
 						for ($k = 0; $k < count($this->aRequiredColumnNames); $k++) {
 							if (strcmp($this->aStoreColumnNames[$i], $this->aRequiredColumnNames[$k]) == 0) {								
 								$aRequiredVariables[count($aRequiredVariables)]["formName"] = $this->sUniqueName . "_" . $iRowCount . $i . "_value";						
-								
 							}
 						}
 					}
+
 					//generate the right kind of editable field
-					$sToRender .= "\t<td>\n";					
+					$sToRender .= "\t<td>\n";
 					switch ($this->aColumnDisplayTypes[$i]) {
 						case 1:
 							//output the table column name
@@ -169,11 +169,11 @@ class PatternEditableTableSqlQuery {
 							//could either be a drop down or a text field, depending
 							
 							//output the table column name
-							$sToRender .= "\t<input type=\"hidden\" name=\"tc_" . $this->sUniqueName . "_" . $iRowCount . $i . "_tc\" value=\"" . $this->aStoreColumnNames[$i] . "\" />\n";
+                            $sToRender .= "\t<input type=\"hidden\" name=\"" . $this->sUniqueName . "_" . $iRowCount . $i . "_tc\" value=\"" . $this->aStoreColumnNames[$i] . "\" />\n";
 							//output the column type
 							$sToRender .= "\t<input type=\"hidden\" name=\"" . $this->sUniqueName . "_" . $iRowCount . $i . "_type\" value=\"" . $this->aColumnDatabaseTypes[$i] . "\" />\n";
 							if ($this->aColumnsVisible[$i]) {
-								if ($this->aColumnsEditable[$i]) {									
+								if ($this->aColumnsEditable[$i]) {
 									$oPattern = & new PatternMetaData($sql->f($this->aMetaDataFields[$i]), $this->sUniqueName . "_" . $iRowCount . $i . "_value", $sql->f($this->aStoreColumns[$i]));
 									$sToRender .= $oPattern->render();
 								} else {
