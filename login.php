@@ -4,7 +4,8 @@
 require_once("./config/owl.php");
 require_once("./lib/owl.lib.php");
 require_once("./config/html.php");
-require_once("./lib/Authenticator.php");
+require_once("./lib/Authenticator.inc");
+require_once("./lib/Session.php");
 
 // this page displays the login form
 // and performs the business logic login code
@@ -23,6 +24,7 @@ if ($loginAction == "loginForm") {
         
 	print "<TABLE><TR><TD>$lang_username:</TD><TD><INPUT TYPE=\"TEXT\" NAME=\"fUserName\"><BR></TD></TR>";
 	print "<TR><TD>$lang_password:</TD><TD><INPUT TYPE=\"PASSWORD\" NAME=\"fPassword\"><BR></TD></TR></TABLE>";
+    print "<INPUT TYPE=\"hidden\" name=\"action\" value=\"login\">\n";
 	print "<INPUT TYPE=\"hidden\" name=\"loginAction\" value=\"login\">\n";    
 	print "<INPUT TYPE=\"SUBMIT\" Value=\"$lang_login\">\n";
 	print "<BR><BR><HR WIDTH=300>";
@@ -43,8 +45,10 @@ if ($loginAction == "loginForm") {
             switch ($userDetails["status"]) {
                 // successfully authenticated
                 case 1:
-                    $sessionID = Owl_Session::create($userDetails["userID"]);
+                    $sessionID = Session::create($userDetails["userID"]);
                     // check query string and forward to requested page
+                    $qString = $_SERVER["QUERY_STRING"];
+                    // should be login.php?
                     // else forward to dashboard (config defined page/action)
                     break;
                 // login disabled                    
