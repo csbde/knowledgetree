@@ -78,6 +78,7 @@ class Unit {
                     $this->iId = $sql->insert_id();
                     // create a new unit root folder
                     // FIXME: lookup the organisation for this unit and use the appropriate folder id for the org root folder
+                    // TODO: check if a folder with this name exists before creating it
                     $oFolder = new Folder($this->sName, $this->sName . " Unit Root Folder", 1, $_SESSION["userID"], $this->iId);
                     if ($oFolder->create()) {
                         if (PhysicalFolderManagement::createFolder(Folder::getFolderPath($oFolder->getID()))) {
@@ -130,6 +131,7 @@ class Unit {
 	                        //reverse the database changes if the physical rename failed
 	                        $oFolder->setName($sOldName);
 	                        $oFolder->update(true);
+	                        // TODO: revert unit name change also
 	                        return false;
 	                    }
 	                }
@@ -152,31 +154,15 @@ class Unit {
     */
     function delete() {
         global $default, $lang_err_database, $lang_err_object_key;
+        
         //only delete the object if it exists in the database
-
         if ($this->iId >= 0) {
-            //check to see if group is linked to a unit
-            $sql = $default->db;
-            $query = "SELECT unit_id FROM ". $default->owl_groups_units_table ." WHERE unit_id = '" . $this->iId . "'";
-            $sql->query($query);
-            $rows = $sql->num_rows($sql);
-
-
-
-            if ($rows > 0) {
-                // duplicate link exists
-                $_SESSION["errorMessage"] = "Group::The Group " . $this->sName . " exits!";
-                return false;
-
-            } else {
-                $sql = $default->db;
-                $result = $sql->query("DELETE FROM $default->owl_units_table WHERE id = $this->iId");
-                if ($result) {
-                    return true;
-                }
-                $_SESSION["errorMessage"] = $lang_err_database;
-                return false;
-            }
+			$sql = $default->db;
+			if ($sql->query("DELETE FROM $default->owl_units_table WHERE id = $this->iId")) {
+			    return true;
+			}
+			$_SESSION["errorMessage"] = $lang_err_database;
+			return false;
         }
         $_SESSION["errorMessage"] = $lang_err_object_key;
         return false;
@@ -207,6 +193,22 @@ class Unit {
         return false;
     }
 
+	/**
+	 * Returns true if the unit has groups linked to it
+	 */
+	function hasGroups() {
+		global $default;
+		// check to see if group is linked to a unit
+		$sql = $default->db;
+		$query = "SELECT unit_id FROM ". $default->owl_groups_units_table ." WHERE unit_id = " . $this->iId;
+		$sql->query($query);
+		if ($sql->num_rows($sql) > 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+		
     /**
      * static function
      *
