@@ -538,6 +538,9 @@ insert into data_types (name) values ('TEXT');
 insert into data_types (name) values ('INT');
 insert into data_types (name) values ('FLOAT');
 
+-- category field
+INSERT INTO document_fields (name, data_type, is_generic) VALUES ("Category", "STRING", 1);
+
 -- supported languages (not really ;)
 INSERT INTO language_lookup (name) VALUES ("English");
 INSERT INTO language_lookup (name) VALUES ("Chinese");
