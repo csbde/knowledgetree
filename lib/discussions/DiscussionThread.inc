@@ -159,7 +159,6 @@ class DiscussionThread {
 	            }
 	            return $sAllCommentID ;            
 	        }
-	        $_SESSION["errorMessage"] = $lang_err_database;
 	        return false;
         } else {
          // No Thread for document
@@ -201,10 +200,8 @@ class DiscussionThread {
                 	return "false";
                 }
             }
-            $_SESSION["errorMessage"] = $lang_err_object_not_exist . "Document_id = " . $iDocumentID . " table = $default->discussion_threads_table";
             return false;
         }
-        $_SESSION["errorMessage"] = $lang_err_database;
         return false;
     }
     
@@ -234,10 +231,8 @@ class DiscussionThread {
                 $oDiscussionThread->iNumberOfReplies = $sql->f("replies");
                 return $oDiscussionThread;
             }
-            $_SESSION["errorMessage"] = $lang_err_object_not_exist . "id = " . $iNewThreadID . " table = $default->discussion_threads_table";
             return false;
         }
-        $_SESSION["errorMessage"] = $lang_err_database;
         return false;
     }
 
@@ -247,7 +242,6 @@ class DiscussionThread {
     function create(){
         global $default, $lang_err_database, $lang_err_object_exists;
         //if the object hasn't been created
-        $sQuery = "what the hell";
         if ($this->iId < 0) { //check to see if entry exists
 	        $sql = $default->db;
 	        $sQuery = 	"INSERT INTO " . $default->discussion_threads_table . 
@@ -259,10 +253,9 @@ class DiscussionThread {
 	        	$this->iId = $sql->insert_id();
 	         	return true;                    
 	        }
-	        $_SESSION["errorMessage"] = $lang_err_database;
 	        return  false;        	
         }
-        $_SESSION["errorMessage"] = $lang_err_object_exists . "id = " . $this->iId . " table = $default->discussion_threads_table";
+
         return false;
     }
     
@@ -288,10 +281,8 @@ class DiscussionThread {
             if ($result) {           
      	       return true;
             }
-            $_SESSION["errorMessage"] = $lang_err_database;
             return false;
         }
-        $_SESSION["errorMessage"] = $lang_err_object_key;
         return false;
     }
     
@@ -300,7 +291,7 @@ class DiscussionThread {
    	 * Delete a thread in the table
    	 */
    	function delete(){
-    	 global $default, $lang_err_database, $lang_err_object_key;
+    	 global $default;
         
         //only delete the object if it exists in the database
         if ($this->iId > 0) {
@@ -321,11 +312,9 @@ class DiscussionThread {
                 if ($result) {
                     return true;
                 }
-                $_SESSION["errorMessage"] = $lang_err_database;
                 return false;
             }
         }
-        $_SESSION["errorMessage"] = $lang_err_object_key;
         return false;
     }    
 }

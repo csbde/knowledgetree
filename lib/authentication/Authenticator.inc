@@ -35,7 +35,7 @@ class Authenticator {
      * @return array containing userID and authentication status code
      */
     function login($sUserName, $sPassword) {
-        global $default, $lang_err_database;
+        global $default;
         // initialise return array
         $aUserDetails = array();
 
