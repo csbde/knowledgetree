@@ -20,14 +20,12 @@ if (checkSession()) {
 	$oPatternCustom = & new PatternCustom();
 	$aDocuments = Document::getList("is_checked_out = 1");
 	$sToRender .= renderHeading("Checked out Documents");	
-	$sToRender .= "<table><tr><th width=\"80\">Document</th><th>Checked Out By</th><th>&nbsp;</th>";
+	$sToRender .= "<table><tr><th width=\"80%\">Document</th><th>&nbsp;</th>";
 	if (count($aDocuments) > 0) {
 		for ($i=0; $i<count($aDocuments); $i++) {
 			if ($aDocuments[$i]) {
-				$oUser = User::get($aDocuments[$i]->getCheckedOutUserID());
-				$sToRender .= "<tr><td>" . $aDocuments[$i]->getDisplayPath() . "</td>";
-				$sToRender .= "<td>" . $oUser->getName() . "</td>";
-				$sToRender .= "<td>" . generateControllerLink("editDocCheckout", "fDocumentID=" . $aDocuments[$i]->getID(), "Check In") . "</td>"; 
+				$sToRender .= "<tr><td width=\"80%\">" . $aDocuments[$i]->getDisplayPath() . "</td>";
+				$sToRender .= "<td align=\"right\">" . generateControllerLink("editDocCheckout", "fDocumentID=" . $aDocuments[$i]->getID(), "Check In") . "</td>"; 
 			}
 		}
 	}  else {
