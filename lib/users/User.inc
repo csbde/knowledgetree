@@ -495,7 +495,7 @@ class User {
     /** Static function
     * Gets the user's default top level folder for the current user
     */
-    function getUserRootFolder() {
+    function getUserRootFolderID() {
     	global $default;
     	
     	$unitID = User::getUnitID($_SESSION["userID"]);
