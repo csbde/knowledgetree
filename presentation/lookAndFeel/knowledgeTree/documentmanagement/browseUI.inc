@@ -80,7 +80,7 @@ function renderCategoryResults($aResults) {
     if ($aResults["categories"][0] == "Categories") {
         // loop through categories and display them
         for ($i=1; $i<count($aResults["categories"]); $i++) {
-            $sToRender .= "<tr bgcolor=\"" . getColour($i) . "\">";
+            $sToRender .= "<tr bgcolor=\"" . getColour($i-1) . "\">";
                      
             // category name
             $sToRender .= "<td>" . displayCategoryLink($aResults["categories"][$i]) . "</td>";
@@ -149,7 +149,7 @@ function renderDocumentTypeResults($aResults) {
     if ($aResults["documentTypes"][0]["name"] == "Document Types") {
         // loop through document types and display them
         for ($i=1; $i<count($aResults["documentTypes"]); $i++) {
-            $sToRender .= "<tr bgcolor=\"" . getColour($i) . "\">";			
+            $sToRender .= "<tr bgcolor=\"" . getColour($i-1) . "\">";			
             // document type name
             $sToRender .= "<td>" . displayDocumentTypeLink($aResults["documentTypes"][$i]) . "</td>";
             // blank filename
@@ -190,15 +190,15 @@ function renderFolderResults($aResults) {
             // the first element of the array contains the current folder name
             $sToRender .= "<tr bgcolor=\"" . getColour($i-1) . "\">";            
             // folder name
-            $sToRender .= "<td>" . $sFolderLink . "</td>";
+            $sToRender .= "<td valign=\"bottom\">" . $sFolderLink . "</td>";
             // blank filename (folder description?)
-            $sToRender .= "<td>" . $aResults["folders"][$i]->getDescription() . "</td>";
+            $sToRender .= "<td valign=\"bottom\">" . $aResults["folders"][$i]->getDescription() . "</td>";
             // creator name
-            $sToRender .= "<td>" . ($oCreator ? $oCreator->getName() : "&nbsp;") . "</td>";
+            $sToRender .= "<td valign=\"bottom\">" . ($oCreator ? $oCreator->getName() : "&nbsp;") . "</td>";
             // modified date (TODO: add to db)
-            $sToRender .= "<td>&nbsp;</td>";
+            $sToRender .= "<td valign=\"bottom\">&nbsp;</td>";
             // document type (??: display one of the mapped document types?)
-            $sToRender .= "<td>&nbsp;</td>";                        
+            $sToRender .= "<td valign=\"bottom\">&nbsp;</td>";                        
             $sToRender .= "</tr>\n";
         }
     } else {
@@ -271,15 +271,15 @@ function renderDocumentList($aResults, $sNoDocumentsMessage, $sNoPermissionMessa
         for ($i=0; $i<count($aResults["documents"]); $i++) {
         	// in order for candy striping to work we need to take the number of folders
         	// into account when alternating
-            $sToRender .= "<tr bgcolor=\"" . getColour($i+$iFolderCount) . "\" width=\"100%\"><td>" . displayDocumentLink($aResults["documents"][$i], $bDisplayFullPath) . "</td>";
-            $sToRender .= "<td>" . $aResults["documents"][$i]->getFileName() . "</td>";
+            $sToRender .= "<tr bgcolor=\"" . getColour($i+$iFolderCount) . "\" width=\"100%\"><td valign=\"bottom\">" . displayDocumentLink($aResults["documents"][$i], $bDisplayFullPath) . "</td>";
+            $sToRender .= "<td valign=\"bottom\">" . $aResults["documents"][$i]->getFileName() . "</td>";
             $oCreator = User::get($aResults["documents"][$i]->getCreatorID());
-            $sToRender .= "<td>" . ($oCreator ? $oCreator->getName() : "") . "</td>";
+            $sToRender .= "<td valign=\"bottom\">" . ($oCreator ? $oCreator->getName() : "") . "</td>";
             $aDocumentTransaction = DocumentTransaction::getList("transaction_id=1 AND document_id=" . $aResults["documents"][$i]->getID());
-            $sToRender .= "<td>" . $aDocumentTransaction[0]->dDateTime . "</td>";
+            $sToRender .= "<td valign=\"bottom\">" . $aDocumentTransaction[0]->dDateTime . "</td>";
             $oDocumentType = DocumentType::get($aResults["documents"][$i]->getDocumentTypeID());
             if ($oDocumentType) {
-            	$sToRender .= "<td>" . $oDocumentType->getName() . "</td>";
+            	$sToRender .= "<td valign=\"bottom\">" . $oDocumentType->getName() . "</td>";
             }
             $sToRender .= "</tr>\n";
         }
