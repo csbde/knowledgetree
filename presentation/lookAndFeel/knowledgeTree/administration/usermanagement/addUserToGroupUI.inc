@@ -120,16 +120,19 @@ function getPageFail() {
 // display the listbox initially ..then just display the text
 function getUserDisplay($oUser) {
 	global $default;
-	//$from = "," . $default->owl_Users_Groups_table . " AS GU";
-	//$where = "(ST.id = GU.User_id)";
-	
-	
 	if (!isset($oUser)) {
-		$oPatternListBox = & new PatternListBox($default->owl_users_table, "username", "id", "fUserID");
-		//$oPatternListBox->setWhereClause($where);
-		//$oPatternListBox->setFromClause($from);
-		//$oPatternListBox->setIncludeDefaultValue(true);
-		//$oPatternListBox->setPostBackOnChange(true);		
+        $oPatternListBox = & new PatternListBox($default->owl_users_table, "username", "id", "fUserID");
+        if (Permission::userIsUnitAdministrator()) {
+            $oPatternListBox->setFromClause("INNER JOIN $default->owl_users_groups_table UGL ON ST.id=UGL.user_id " .
+                                            "INNER JOIN $default->owl_groups_units_table GUL ON UGL.group_id=GUL.group_id");
+            $oPatternListBox->setWhereClause("GUL.unit_id=" . User::getUnitID($_SESSION["userID"]));
+            
+            $oUnassignedUsersLB = & new PatternListBox($default->owl_users_table, "username", "id", "fUserID");
+            $oUnassignedUsersLB->setFromClause("LEFT OUTER JOIN $default->owl_users_groups_table UGL ON ST.id=UGL.user_id");
+            $oUnassignedUsersLB->setWhereClause("ISNULL(UGL.group_id)");
+            $default->log->info(arrayToString($oUnassignedUsersLB->getEntries()));
+            $oPatternListBox->setAdditionalEntries($oUnassignedUsersLB->getEntries());
+        }
 		return $oPatternListBox->render();
 	} else {
 		return "<input type=\"hidden\" name=\"fUserID\" value=\"" . $oUser->iId . "\">\n" .
@@ -142,9 +145,17 @@ function getUserDisplay($oUser) {
 function getGroupDisplay($oGroup) {
 	global $default;
 	if (!isset($oGroup)) {
-		$oPatternListBox = & new PatternListBox($default->owl_groups_table, "name", "id", "fGroupID");
-		//$oPatternLiListBoxstBox->setPostBackOnChange(true);
-	return $oPatternListBox->render();
+        if (Permission::userIsSystemAdministrator()) {
+            // if this is the system administrator, prepend group names with unit name
+            $oPatternListBox = & new PatternListBox($default->owl_groups_table, "name", "id", "fGroupID");
+            //$oPatternListBox->setFromClause("INNER JOIN $default->");
+        } else if (Permission::userIsUnitAdministrator()) {
+            // else if this is a unit administrator, only display the groups in your unit
+            $oPatternListBox = & new PatternListBox($default->owl_groups_table, "name", "id", "fGroupID");
+            $oPatternListBox->setFromClause("INNER JOIN $default->owl_groups_units_table GUL on ST.id=GUL.group_id");
+            $oPatternListBox->setWhereClause("GUL.unit_id=" . User::getUnitID($_SESSION["userID"]));
+        }
+        return $oPatternListBox->render();
 	} else {
 		return "<input type=\"hidden\" name=\"fGroupID\" value=\"" . $oGroup->iId . "\">\n" .
 		$oGroup->getName();
