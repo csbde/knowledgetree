@@ -63,7 +63,7 @@ class Document {
         $this->sDescription = $sNewDescription;
         $this->iMimeTypeID = $iNewMimeID;
         $this->iFolderID = $iNewFolderID;
-        $this->iDocumentTypeID = Folder::getFolderDocumentType($this->iFolderID);
+        $this->iDocumentTypeID = Folder::getDefaultFolderDocumentType($this->iFolderID);
         $this->iMajorVersion = 0;
         $this->iMinorVersion = 1;
         $this->bIsCheckedOut = false;

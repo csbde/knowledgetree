@@ -502,17 +502,17 @@ class Folder {
 	
 	/**
 	* Static function
-	* Get the document type for a folder
+	* Gets the default document type for a folder (where default is simply the first one)
 	*
 	* @param $iFolderID
 	*
 	* @return integer document type primary key, false otherwise and set $_SESSION["errorMessage"]
 	*/
-	function getFolderDocumentType($iFolderID) {
+	function getDefaultFolderDocumentType($iFolderID) {
 		global $default, $lang_err_database;
 		if (Folder::folderExistsID($iFolderID)) {
 			$sql = $default->db;
-			$sql->query("SELECT document_type_id FROM " . $default->owl_folder_doctypes_table . " WHERE id = " . $iFolderID);
+			$sql->query("SELECT document_type_id FROM " . $default->owl_folder_doctypes_table . " WHERE folder_id = " . $iFolderID);			
 			if ($sql->next_record()) {
 				return $sql->f("document_type_id");
 			}
