@@ -8,7 +8,7 @@
 *
 */
 
-function getFields() {
+function getDocumentFields() {
 	global $default;
 	
 	$sQuery = 	"SELECT id as DocFieldID, name as DocFieldName, data_type, is_generic, has_lookup, " . 
@@ -37,7 +37,7 @@ function getPage() {
 
 	// add user link
 	$sToRender .= getAddLink("addDocField", "Add A Document Field");
-	$sToRender .= getFields();
+	$sToRender .= getDocumentFields();
 	return $sToRender;
 }
 ?>
