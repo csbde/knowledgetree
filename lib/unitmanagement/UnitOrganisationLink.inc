@@ -88,25 +88,20 @@ class UnitOrganisationLink {
 	function create() {
 		global $default, $lang_err_database, $lang_err_object_exists;
 		//if the object hasn't been created
-		if ($this->iId < 0) 
-		{
+		if ($this->iId < 0) {
 			
 			$sql = $default->db;
-			$query = "SELECT unit_id and organisation_id FROM ". $default->owl_units_organisations_table ." WHERE unit_id = '" . $this->iUnitID . "' and organisation_id = '". $this->iOrgID ."'";
-        		$sql->query($query);
-       			$rows = $sql->num_rows($sql);
+			$query = "SELECT unit_id FROM $default->owl_units_organisations_table WHERE unit_id = $this->iUnitID AND organisation_id = $this->iOrgID";
+    		$sql->query($query);
+   			$rows = $sql->num_rows($sql);
         
-      			if ($rows > 0) 
-       		 	{
-        	    		 // duplicate username
-           			 $_SESSION["errorMessage"] = "UnitOrganisationlink::The id " . $this->iUnitID . " is already exist!";
-           			 return false;
-	       		 }
-       			 else
-       			 {
+  			if ($rows > 0) {
+				// duplicate username
+				$_SESSION["errorMessage"] = "UnitOrganisationlink::The id " . $this->iUnitID . " is already exist!";
+				return false;
+       		} else{
 				$result = $sql->query("INSERT INTO " . $default->owl_units_organisations_table . " (unit_id,organisation_id) VALUES ($this->iUnitID,$this->iOrgID)");
-				if ($result) 
-				{
+				if ($result) {
 					$this->iId = $sql->insert_id();
 					return  true;
 				}
