@@ -32,7 +32,7 @@ class Session {
      * @param int the id of the user to create a session for
      * @return string the generated sessionID
      */
-	function create($iUserID) {
+    function create($iUserID) {
         global $default;
         
         session_start();
@@ -58,12 +58,11 @@ class Session {
         );
 
         $result = DBUtil::autoInsert($default->sessions_table, $aParams);
-        if($result != DB_OK) {
-            die("$lang_err_sess_write");
+        if (PEAR::isError($result)) {
+            die("Error creating session: " . $result->toString());
         }
-
-		return $sessionID;
-	}
+        return $sessionID;
+    }
     
     /**
      * Destroys the current session.
