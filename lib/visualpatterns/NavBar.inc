@@ -32,9 +32,24 @@ class NavBar
 	var $logout;
 	var $nwColourbar;
 	
-	function NavBar()
-	{
+	/**  variables used for searching */
+	var $sBrowseType;
+	var $iFolderID;
+	var $iDocumentID;
+	var $sCategoryName;
+	var $iDocTypeID;
+	
+	function NavBar($sTmpBrowseType, $iTmpFolderID, $iTmpDocumentID, $sTmpCategoryName, $iTmpDocTypeID) 
+	{	
 		global $default;
+		
+		$this->sBrowseType = $iTmpBrowseType;
+		$this->iFolderID = $iTmpFolderID;
+		$this->iDocumentID = $iTmpDocumentID;
+		$this->sCategoryName = $sTmpCategoryName;
+		$this->iDoctypeID = $iTmpDocTypeID;
+		
+		
 		$this->mdocs = "$default->owl_graphics_url/mdocs/norm.gif";
 		$this->home = "$default->owl_graphics_url/home/norm.gif";
 		$this->subscriptions = "$default->owl_graphics_url/subscriptions/norm.gif";
@@ -191,18 +206,22 @@ class NavBar
 
         //bar is the actaul html creation of the nav bar
         $bar= "
-              <Table cellpadding = \"1\" cellspacing = \"1\" border=\"1\" width=\"100%\" height=\"100%\">
-              <tr height=\"20%\"><td background = " . $hStretched ." width =\"100%\">". $row1 ."</td></tr>
-              <tr  height=\"30%\"> <td VALIGN = \"absmiddle\" background = " . $hStretched ." width =\"100%\" NOWRAP >
-              <img align = \"absmiddle\" src = \"$default->owl_graphics_url/arrow.gif\" ></img>
-              <INPUT type=\"Text\" name=\"searchField\" width=\"30\" height = \"10\" align = \"absmiddle\" >
-              <INPUT type=\"image\" name=\"search\" value=\"Search\" src=\"$default->owl_graphics_url/search.gif\" align = \"absmiddle\" border=\"0\">
-              </td>
-              </tr>
-              <tr height=\"25%\" ><td width =\"10%\">". $row3 . "</td></tr>
-              <tr height=\"25%\"><td width =\"100%\">". $row4 . "</td></tr>
-              </table>
-              ";
+              <Table cellpadding = \"1\" cellspacing = \"1\" border=\"1\" width=\"100%\" height=\"100%\">\n " .
+              "<tr height=\"20%\"><td background = " . $hStretched ." width =\"100%\">". $row1 ."</td></tr>\n " .
+              "<tr  height=\"30%\"> <td VALIGN = \"absmiddle\" background = " . $hStretched ." width =\"100%\" NOWRAP >\n " .
+              "<img align = \"absmiddle\" src = \"$default->owl_graphics_url/arrow.gif\" ></img>\n " .
+              "<INPUT type=\"Text\" name=\"fSearchText\" width=\"30\" height = \"10\" align = \"absmiddle\" />\n " .
+			  "<INPUT type=\"hidden\" name=\"fBrowseType\" value=\"" . $this->sBrowseType . "\"  />\n " .
+			  "<INPUT type=\"hidden\" name=\"fFolderID\"  value=\"" . $this->iFolderID . "\"  />\n " .
+			  "<INPUT type=\"hidden\" name=\"fDocumentID\" value=\"" . $this->iDocumentID . "\"  />\n " .
+			  "<INPUT type=\"hidden\" name=\"fCategoryName\" value=\"" . $this->sCategoryName . "\"  />\n " .
+			  "<INPUT type=\"hidden\" name=\"fDocTypeID\"  value=\"" . $this->iDocTypeID . "\"  />\n " .
+              "<INPUT type=\"button\" onClick=\"setActionAndSubmit('$default->owl_root_url/presentation/lookAndFeel/knowledgeTree/documentmanagement/searchDocumentBL.php')\" value=\"Search\" src=\"$default->owl_graphics_url/search.gif\" align = \"absmiddle\" border=\"0\" />\n " .
+              "</td>\n " .
+              "</tr>\n" .
+              "<tr height=\"25%\" ><td width =\"10%\">". $row3 . "</td></tr>\n" .
+              "<tr height=\"25%\"><td width =\"100%\">". $row4 . "</td></tr>\n" .
+              "</table>\n";
 
         //set the bar as html to object
         $toRender->setHtml($bar);
