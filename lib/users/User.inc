@@ -351,6 +351,28 @@ class User {
         return false;
     }
 
+
+	/**
+	* Delete the current object from the database
+	*
+	* @return boolean true on successful deletion, false otherwise and set $_SESSION["errorMessage"]
+	*
+	*/
+	function deleteFromSystem() {
+		global $default, $lang_err_database, $lang_err_object_key;
+		//only delete the object if it exists in the database
+		if ($this->iId >= 0) {
+			$sql = $default->db;
+			$result = $sql->query("DELETE FROM $default->owl_users_groups_table WHERE user_id = $this->iId");
+			if ($result) {
+				return true;
+			}
+			$_SESSION["errorMessage"] = $lang_err_database;
+			return false;
+		}
+		$_SESSION["errorMessage"] = $lang_err_object_key;
+		return false;
+	}
     /**
     * Static function.
     * Given a web_documents primary key it will create a 
