@@ -16,15 +16,15 @@
 */
 
 // Some urls
-$default->owl_root_url		= "/intranet";
+$default->owl_root_url		= "";
 $default->owl_graphics_url	= $default->owl_root_url . "/graphics";
 
 // Directory where owl is located
-$default->owl_fs_root		= "/var/www/html/intranet";
+$default->owl_fs_root		= "C:/Projects/MRC/Devel/owl";
 $default->owl_LangDir		= $default->owl_fs_root . "/locale";
 
 // Directory where The Documents Directory is On Disc
-$default->owl_FileDir           =  "/var/www/html/intranet";
+$default->owl_FileDir           =  "C:/Projects/MRC/Devel/";
 //$default->owl_FileDir           =  "/tmp";
 
 // Set to true to use the file system to store documents, false only uses the database
@@ -57,7 +57,7 @@ $default->owl_use_fs            = true;
 // Spanish
 
 $default->owl_lang		= "NewEnglish";
-$default->owl_notify_link       = "http://$SERVER_NAME$default->owl_root_url/";
+$default->owl_notify_link       = "http://$_SERVER[SERVER_NAME]$default->owl_root_url/";
 
 // Table with user info
 $default->owl_users_table	= "users";
@@ -95,10 +95,10 @@ require("$default->owl_fs_root/phplib/db_mysql.inc");
 
 //begin WES change
 // Database info
-$default->owl_db_user           = "root";
-$default->owl_db_pass           = "";
-$default->owl_db_host           = "localhost";
-$default->owl_db_name           = "intranet";
+$default->owl_db_user           = "rob";
+$default->owl_db_pass           = "rob";
+$default->owl_db_host           = "";
+$default->owl_db_name           = "owl";
 
 // logo file that must reside inside lang/graphics directory
 $default->logo = "owl.gif";
