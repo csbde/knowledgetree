@@ -30,16 +30,16 @@ function renderErrorMessage($sErrorMessage) {
  */	
 function renderNewsTable() {
     global $default;
-    $sQuery = "SELECT id, synopsis, IF(LENGTH(body) > 25, CONCAT(LEFT(body,25),'...'), body) AS body, rank, IF(LENGTH(image)>0, 'yes', 'no') as image, 'Edit' AS edit, 'Preview' AS preview, 'Delete' AS del " .   
+    $sQuery = "SELECT id, synopsis, IF(LENGTH(body) > 25, CONCAT(LEFT(body,25),'...'), body) AS body, rank, IF(LENGTH(image)>0, 'yes', 'no') as image, active, 'Edit' AS edit, 'Preview' AS preview, 'Delete' AS del " .   
               "FROM $default->owl_news_table ORDER BY rank ASC";
-    $aColumns = array("synopsis", "body", "rank", "image", "edit", "preview", "del");
-    $aColumnHeaders = array("Synopsis", "Body", "Rank", "Image");
-    $aColumnTypes = array(1,1,1,1,3,3,3);
+    $aColumns = array("synopsis", "body", "rank", "image", "active", "edit", "preview", "del");
+    $aColumnHeaders = array("Synopsis", "Body", "Rank", "Image", "Active");
+    $aColumnTypes = array(1,1,1,1,2,3,3,3);
     $aDBColumnArray = array("id");
     $aQueryStringVariableNames = array("fNewsID");
-    $aLinkURLs = array(4=> "$default->rootUrl/control.php?action=editNews",
-                       5=> "$default->rootUrl/control.php?action=previewNews",
-                       6=> "$default->rootUrl/control.php?action=removeNews");
+    $aLinkURLs = array(5=> "$default->rootUrl/control.php?action=editNews",
+                       6=> "$default->rootUrl/control.php?action=previewNews",
+                       7=> "$default->rootUrl/control.php?action=removeNews");
 
     $oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaders, "100%", $aLinkURLs,$aDBColumnArray,$aQueryStringVariableNames);
     $oPatternTableSqlQuery->setTableHeading("Dashboard News");
@@ -77,6 +77,7 @@ function renderEditAddNewsForm($oDashboardNews, $bUpdate) {
 	$sToRender .= "<tr><td>Body:</td><td><textarea name=\"fBody\" cols=\"35\" rows=\"10\">" . ($oDashboardNews ? $oDashboardNews->getBody() : "") . "</textarea></td></tr>";
 	$sToRender .= "<tr><td>Rank:</td><td><input type=\"text\" name=\"fRank\" value=\"" . ($oDashboardNews ? $oDashboardNews->getRank() : "") . "\"></td></tr>";	
 	$sToRender .= "<tr><td>Image:</td><td><input type=\"file\" name=\"fImage\"></td></tr>";
+	$sToRender .= "<tr><td>Active:</td><td><input type=\"checkbox\" name=\"fActive\" " . ($oDashboardNews ? ($oDashboardNews->getActive() ? "checked" : "") : "") . "\"></td></tr>";
 	
 	if ($bUpdate) {
 		$sToRender .= "<input type=\"hidden\" name=\"fNewsID\" value=\"" . $oDashboardNews->getID() . "\">";

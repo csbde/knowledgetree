@@ -41,6 +41,7 @@ if (checkSession()) {
     		if ($oDashboardNews->getRank() <> $fRank) {
     			$oDashboardNews->setRank($fRank);
     		}
+    		$oDashboardNews->setActive($fActive);
     		// if we have a new image  		
     		if (strlen($_FILES['fImage']['name']) > 0) {
     			// return the size of the image

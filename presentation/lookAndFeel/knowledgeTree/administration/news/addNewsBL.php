@@ -29,6 +29,7 @@ if (checkSession()) {
     if ($fStore) {
     	// construct the news object
     	$oDashboardNews = new DashboardNews($fSynopsis, $fBody, $fRank);
+    	$oDashboardNews->setActive($fActive);
 
 	    if (isset($fSynopsis) && isset($fBody) && isset($fRank)) {
 			// if we have a new image
