@@ -50,23 +50,23 @@ if (checkSession()) {
             echo "<li>folder subscription creation failed(" . $_SESSION["errorMessage"] . "): folderID=$i for userID=$iUserID</li>";
         }
     }
-    echo "</li></ul>";    
-    // now try to retrieve them
-    echo "<li>folder subscriptions for userID=$iUserID:";
-    $aFolders = $oSubscriptionManager->retrieveFolderSubscriptions($iUserID);
-    echo "<pre>" . arrayToString($aFolders) . "</pre></li>";
-    
+    echo "</li></ul>";
     echo "<li>Creating document subscriptions<ul>";
     for ($i = 6; $i>0; $i--) {
         if ($oSubscriptionManager->createDocumentSubscription($i, $iUserID)) {
             echo "<li>created document subscription documentID=$i for userID=$iUserID</li>";
         } else {
-            echo "<li>folder document creation failed(" . $_SESSION["errorMessage"] . "): documentID=$i for userID=$iUserID</li>";
+            echo "<li>document subscription creation failed(" . $_SESSION["errorMessage"] . "): documentID=$i for userID=$iUserID</li>";
         }
     }
-    echo "</li></ul>";    
-    // now try to retrieve them
-    echo "<li>folder subscriptions for userID=$iUserID:";    
+    echo "</li></ul>";     
+
+    // now try to retrieve them    
+    echo "<li>folder subscriptions for userID=$iUserID:";
+    $aFolders = $oSubscriptionManager->retrieveFolderSubscriptions($iUserID);
+    echo "<pre>" . arrayToString($aFolders) . "</pre></li>";
+
+    echo "<li>document subscriptions for userID=$iUserID:";    
     $aDocuments = $oSubscriptionManager->retrieveDocumentSubscriptions($iUserID);
     echo "<pre>" . arrayToString($aDocuments) . "</pre></li>";
 
@@ -76,6 +76,31 @@ if (checkSession()) {
     echo "<pre>" . arrayToString($oResults) . "</pre></li>";
     echo "</ul>";
 
+    // test subscribers retrieval methods
+    echo "<b>Testing subscriber retrieval</b><br>";
+    // add some subscriptions
+    $iDocumentID = 4;
+    $iFolderID = 20;
+    for ($i = 6; $i>0; $i--) {
+        if ($oSubscriptionManager->createFolderSubscription($iFolderID, $i)) {
+            echo "<li>created folder subscription documentID=$iFolderID for userID=$i</li>";
+        } else {
+            echo "<li>folder creation failed(" . $_SESSION["errorMessage"] . "): documentID=$iFolderID for userID=$i</li>";
+        }
+        if ($oSubscriptionManager->createDocumentSubscription($iDocumentID, $i)) {
+            echo "<li>created document subscription documentID=$iDocumentID for userID=$i</li>";
+        } else {
+            echo "<li>document creation failed(" . $_SESSION["errorMessage"] . "): documentID=$iDocumentID for userID=$i</li>";
+        }
+    }
+    
+    $aFolderSubscribers = $oSubscriptionManager->retrieveFolderSubscribers($iFolderID);
+    $aDocumentSubscribers = $oSubscriptionManager->retrieveDocumentSubscribers($iDocumentID);
+    echo "Subscribers for folderID=$iFolderID:";
+    echo "<pre>" . arrayToString($aFolderSubscribers) . "</pre>";
+    echo "Subscribers for documentID=$iDocumentID:";
+    echo "<pre>" . arrayToString($aDocumentSubscribers) . "</pre>";
+        
     // cleanup silently
     for ($i = 1; $i<=5; $i++) {       
         $oSubscriptionManager->removeFolderSubscription($i, $iUserID);
