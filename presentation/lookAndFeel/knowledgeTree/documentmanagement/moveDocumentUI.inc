@@ -24,7 +24,7 @@ function getPage($iFolderID, $iDocumentID) {
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>" . renderFolderList($iFolderID, "control.php?action=moveDocument&fDocumentID=$iDocumentID") . "</td>\n";
 	$sToRender .= "</tr>\n";	
-	$sToRender .= "<tr><td><table><tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/movehere.gif\" /></td></tr></table></td>\n";
+	$sToRender .= "<tr><td><table><tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/movehere.gif\" border=\"0\"/></td></tr></table></td>\n";
 	$sToRender .= "</table>\n";
 	return $sToRender;
 }
