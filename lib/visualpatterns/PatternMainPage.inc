@@ -41,6 +41,10 @@ class PatternMainPage {
 		$this->oCentralPayload = & $oNewVal;		
 	}
 	
+	function setWestPayload($oNewVal) {		
+		$this->oWestPayload = & $oNewVal;		
+	}
+	
 	function setFormAction($sNewVal) {
 		$this->sFormAction = & $sNewVal;
 	}
@@ -59,16 +63,16 @@ class PatternMainPage {
 							</head>
 							<body>
 							<form id=\"MainForm\" action=\"".$this->sFormAction."\" method=\"get\">
-								<table border=\"1\" width=\"600\" height=\"800\">\n
-									<tr height=\"30%\">\n
-										<td width=\"20%\">";
+								<table border=\"1\" width=\"850\" height=\"600\">\n
+									<tr height=\"18%\">\n
+										<td width=\"5%\">";
 										if (isset($this->oNorthWestPayload)) {											
 											$sToRender = $sToRender . $this->oNorthWestPayload->render();
 										} else {
 											$sToRender = $sToRender . "Northwest payload not set";
 										}
 										$sToRender = $sToRender . "</td>\n
-										<td width = \"80%\">\n";										
+										<td width = \"90%\">\n";										
 										if (isset($this->oNorthPayload)) {
 											$sToRender = $sToRender . $this->oNorthPayload->render();
 										} else {
@@ -76,8 +80,8 @@ class PatternMainPage {
 										}
 										$sToRender = $sToRender . "</td>\n
 									</tr>\n
-									<tr height=\"70%\" >\n
-										<td width=\"20%\">";
+									<tr border = \"1\" height=\"72%\" >\n
+										<td border = \"1\" width=\"5%\">";
 										if (isset($this->oWestPayload)) {
 											$sToRender = $sToRender . $this->oWestPayload->render();
 										} else {
