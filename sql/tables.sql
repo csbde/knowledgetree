@@ -241,7 +241,7 @@ INSERT INTO organisations (name) VALUES ("Medical Research Council");
 INSERT into units (name, organisation_id, parent_id) values ("Administration Unit", 1, 0);
 
 INSERT INTO users (group_id, name, username, password, quota_max, quota_current, email, mobile, email_notification, sms_notification, ldap_dn, max_sessions) 
-            VALUES (0, "Administrator", "admin", "admin", "0", "0", "", "", 1, 1, "", 0);
+            VALUES (1, "Administrator", "admin", "admin", "0", "0", "", "", 1, 1, "", 0);
 INSERT INTO users (group_id, username, name, password, quota_max, quota_current, email, mobile, email_notification, sms_notification, ldap_dn, max_sessions) 
             VALUES (4, "Anonymous", "guest", "guest", "0", "0", "", "", 0, 0, "", 19);
             
