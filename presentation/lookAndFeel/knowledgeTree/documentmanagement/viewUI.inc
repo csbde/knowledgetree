@@ -24,7 +24,7 @@ function renderDocumentPath($oDocument, $bDisplayActions = false) {
 	} else {
 		$sDocumentPath = $oDocument->getDisplayPath();
 	}    
-	return "<table border=0 cellpadding=\"0\" width=\"610\"><tr bgcolor=\"$sTDBGColour\"><td width=\"87%\">$sDocumentPath</td>" . ($bDisplayActions ? "<td width=\"15%\" align=\"center\" valign=\"top\">Actions</td>" : "") . "</tr></table>\n";
+	return "<table border=\"0\" cellpadding=\"5\" width=\"610\"><tr bgcolor=\"$sTDBGColour\"><td width=\"87%\">$sDocumentPath</td>" . ($bDisplayActions ? "<td width=\"15%\" align=\"center\" valign=\"middle\"><strong>Actions</strong></td>" : "") . "</tr></table>\n";
 }
 
 function renderDocumentData($oDocument, $bEditable, $sStatusMessage = "") {
@@ -47,10 +47,10 @@ function renderDocumentData($oDocument, $bEditable, $sStatusMessage = "") {
     $oPatternListFromQuery->setTableHeading("Document Data");
     $oPatternListFromQuery->setTableWidth("400");   
       
-	if ($sStatusMessage) {
-		$sToRender .= "<font color=\"red\">$sStatusMessage</font>";
-	}      
     $sToRender .= "\t<table cellspacing=\"0\" cellpadding=\"0\" border=\"0\" width=\"100%\">\n";
+	if ($sStatusMessage) {
+		$sToRender .= "<tr><td><font color=\"red\">$sStatusMessage</font></td></tr>";
+	}    
     $sToRender .= "\t<tr>\n";
     $sToRender .= "\t\t<td>" . $oPatternListFromQuery->render() . "</td>\n";    
     $sToRender .= "\t</tr>\n";
@@ -422,7 +422,7 @@ function getPage($oDocument, $bEdit, $sStatusMessage = "") {
 	// ugly netscape hacks
 	$bNN4 = (($default->browser == "moz") && ($default->version <= "4.79"));
 	if (!$bNN4) {
-		$sToRender .= "<div id=\"contentDiv\" style=\"position:relative;visibility:hidden;top:-8px;\">";
+		$sToRender .= "<div id=\"contentDiv\" style=\"position:relative;visibility:hidden;top:-80px;width:500px;\">";
 	}
 	$sToRender .= renderSectionDiv("documentData", renderDocumentData($oDocument, $bEdit, $sStatusMessage));
     $sToRender .= renderSectionDiv("genericMetaData", renderGenericMetaData($oDocument, $bEdit));
@@ -440,12 +440,14 @@ function getPage($oDocument, $bEdit, $sStatusMessage = "") {
 	}    
     return $sToRender;	
 }
+
 function getStatusPage($oDocument, $sStatusMessage) {
     global $default;
        
+	$sToRender = "<div id=\"headings\" style=\"position:relative;visibility:visible;top:2px;left:2px;\">";       
     $sToRender .= renderHeading("Document Detail");
     $sToRender .= renderDocumentPath($oDocument, false) . "\n\n";
-    $sToRender .= "<table cellspacing=\"0\" cellpadding=\"0\">";
+    $sToRender .= "<table border=\"0\" width=\"530\">";
 
 	// if we have a status message, then make the section links refresh to viewDocument with the fShowSection variable
 	// ie. effectively removes statusMessage on next click
@@ -458,7 +460,8 @@ function getStatusPage($oDocument, $sStatusMessage) {
 	$sToRender .= renderDocumentSection("documentRouting", "Document Routing", $bDisplayLink, $oDocument->getID());
 	$sToRender .= renderDocumentSection("linkedDocuments", "Linked Documents", $bDisplayLink, $oDocument->getID());
 	$sToRender .= "</table>";
-	$sToRender .= renderDocumentData($oDocument, false, $sStatusMessage);	
+    $sToRender .= "</div>";
+	$sToRender .= renderSectionDiv("documentData", renderDocumentData($oDocument, false, $sStatusMessage));
 	return $sToRender;
 }
 
