@@ -90,6 +90,17 @@ class KTUtil {
         }
         return $sString;
     }
+
+    function arrayGet($aArray, $sKey, $mDefault = null) {
+        if (array_key_exists($sKey, $aArray)) {
+            return $aArray[$sKey];
+        }
+        return $mDefault;
+    }
+
+    function requestValue($sKey, $mDefault = null) {
+        return KTUtil::arrayGet($_REQUEST, $sKey, $mDefault);
+    }
     
 }
 // }}}
