@@ -70,13 +70,19 @@ if (checkSession()) {
 						$oContent->setHtml(renderErrorPage("The document could not be restored.  Please try again later"));
 					}
 				} else {
-					require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");					
-			    	if (!Document::documentExists($oDocument->getFileName(), $fFolderID)) {
-						$oContent->setHtml(renderConfirmationPage($fDocumentID, $fFolderID));
-		    		} else {
-		    			// there is already a document with that filename here
-		    			$oContent->setHtml(statusPage("Restore Deleted Document", "", "A document with this file name (" . $oDocument->getFileName() . ") already exists in that folder.", "restoreDeletedDocument", "fDocumentID=$fDocumentID&fFolderID=$fFolderID"));
-		    		}
+					require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
+					// check if the selected folder has the same document type as the document we're moving
+					if (Folder::folderIsLinkedToDocType($fFolderID, $oDocument->getDocumentTypeID())) {
+				    	if (!Document::documentExists($oDocument->getFileName(), $fFolderID)) {
+							$oContent->setHtml(renderConfirmationPage($fDocumentID, $fFolderID));
+			    		} else {
+			    			// there is already a document with that filename here
+			    			$oContent->setHtml(statusPage("Restore Deleted Document", "", "A document with this file name (" . $oDocument->getFileName() . ") already exists in that folder.", "restoreDeletedDocument", "fDocumentID=$fDocumentID&fFolderID=$fFolderID"));
+			    		}
+					} else {
+						// the right document type isn't mapped
+						$oContent->setHtml(statusPage("Restored Deleted Document", "", "You can't restore the document to this folder because it cannot store the document type of your document.  Please choose another directory.", "restoreDeletedDocument", "fDocumentID=$fDocumentID&fFolderID=$fFolderID"));
+					}
 				}
 			} else {
 	    		// no document
