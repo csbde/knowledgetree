@@ -1,5 +1,7 @@
 <?php
 /**
+* @package lib.visualpatterns
+* 
 * Class PatternListBox
 *
 * Creates a drop down list box using a table name and

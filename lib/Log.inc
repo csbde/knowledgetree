@@ -5,6 +5,8 @@ define("INFO", 1);
 define("ERROR", 2);
 
 /**
+ * @package lib
+ *
  * $Id$
  * 
  * File logging class

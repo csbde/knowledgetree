@@ -1,6 +1,8 @@
 <?php
 
 /**
+* @package lib.foldermanagement
+*
 * Class Folder
 *
 * Represents as folder as the per the folders table in the database

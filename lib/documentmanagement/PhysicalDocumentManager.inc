@@ -1,6 +1,8 @@
 <?php
 
 /**
+* @package lib.documentmanagement
+*
 * Class PhysicalDocumentManager.inc
 *
 * Contains all functions required to upload, alter and

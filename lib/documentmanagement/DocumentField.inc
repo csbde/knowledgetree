@@ -1,5 +1,7 @@
 <?php
 /**
+* @package lib.documentmanagement
+*
 * Class DocumentField
 *
 * Represents a document field as per the database document_fields table

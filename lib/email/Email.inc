@@ -1,6 +1,8 @@
 <?php
 
 /**
+* @package lib.email
+*
 * Class Email
 *
 * Contains static functions concerned with sending emails
