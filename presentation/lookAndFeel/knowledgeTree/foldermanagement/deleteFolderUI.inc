@@ -10,15 +10,30 @@
  * @package presentation.lookAndFeel.knowledgeTree.foldermanagement
  */
 
+ function renderHeading($sHeading) {
+    global $default;
+    $sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
+    $sColor = $default->siteMap->getSectionColour($sSectionName, "th");
+    $sToRender  = "<table border=\"0\" width=\"600\">\n";
+    $sToRender .= "<tr align=\"left\"><th class=\"sectionHeading\" bgcolor=\"$sColor\">$sHeading</th></tr>\n";
+    $sToRender .= "<tr/>\n";
+    $sToRender .= "<tr/>\n";
+    $sToRender .= "</table>\n";
+    return $sToRender;
+}
+
 function getFolderPath($iFolderID) {
 	global $default;
+	$sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
+	$sTDBGColour = $default->siteMap->getSectionColour($sSectionName, "td");
 	$sFolderPath = displayFolderPathLink(Folder::getFolderPathAsArray($iFolderID), Folder::getFolderPathNamesAsArray($iFolderID),  "$default->rootUrl/control.php?action=browse");
-	return "<table border=1 width = 100%><tr><td>$sFolderPath</td></tr></table>\n";	
+	return "<table border=\"0\" width = 100%><tr><td bgcolor=\"$sTDBGColour\">$sFolderPath</td></tr></table>\n";	
 }
 
 function getFolderNotEmptyPage($iFolderID, $iObjectCount, $sObjectType) {
 	global $default;
-	$sToRender = getFolderPath($iFolderID) . "<br>\n";
+    $sToRender  = renderHeading("Delete Folder");    
+	$sToRender .= getFolderPath($iFolderID) . "<br>\n";
 	$sToRender .= "<table border=\"0\">\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>There are still $iObjectCount $sObjectType in this folder</td>\n";
@@ -36,7 +51,8 @@ function getFolderNotEmptyPage($iFolderID, $iObjectCount, $sObjectType) {
 
 function getConfirmPage($iFolderID, $sFolderName) {
 	global $default;
-	$sToRender = getFolderPath($iFolderID) . "<br>\n";
+    $sToRender  = renderHeading("Delete Folder");
+	$sToRender .= getFolderPath($iFolderID) . "<br>\n";
 	$sToRender .= "<table border=\"0\">\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>You have chosen to delete the folder entitled '" . $sFolderName . "'.</td>\n";

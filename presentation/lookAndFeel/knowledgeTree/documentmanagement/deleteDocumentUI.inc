@@ -9,15 +9,30 @@
 * 
 */
 
+function renderHeading($sHeading) {
+    global $default;
+    $sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
+    $sColor = $default->siteMap->getSectionColour($sSectionName, "th");
+    $sToRender  = "<table border=\"0\" width=\"600\">\n";
+    $sToRender .= "<tr align=\"left\"><th class=\"sectionHeading\" bgcolor=\"$sColor\">$sHeading</th></tr>\n";
+    $sToRender .= "<tr/>\n";
+    $sToRender .= "<tr/>\n";
+    $sToRender .= "</table>\n";
+    return $sToRender;
+}
+
 function getDocumentPath($iFolderID, $sDocumentName) {
 	global $default;
+	$sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
+	$sTDBGColour = $default->siteMap->getSectionColour($sSectionName, "td");	    
 	$sDocumentPath = displayFolderPathLink(Folder::getFolderPathAsArray($iFolderID), Folder::getFolderPathNamesAsArray($iFolderID), "$default->rootUrl/control.php?action=browse") . " > " . $sDocumentName;
-	return "<table border=1 width = 100%><tr><td>$sDocumentPath</td></tr></table>\n";	
+	return "<table border=\"0\" width = 100%><tr><td bgcolor=\"$sTDBGColour\">$sDocumentPath</td></tr></table>\n";	
 }
 
 function getPage($iDocumentID, $iFolderID, $sDocumentName) {
 	global $default;
-	$sToRender = getDocumentPath($iFolderID, $sDocumentName) . "<br>\n";
+    $sToRender  = renderHeading("Delete Document");
+	$sToRender .= getDocumentPath($iFolderID, $sDocumentName) . "<br>\n";
 	$sToRender .= "<table border=\"0\">\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>You have chosen to delete the document entitled '" . $sDocumentName . "'.</td>\n";
