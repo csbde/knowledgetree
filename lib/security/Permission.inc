@@ -230,12 +230,12 @@ class Permission {
 		}
 		
         $sQuery = "SELECT GFL.folder_id " .
-					"FROM groups_folders_link AS GFL INNER JOIN users_groups_link AS UGL ON GFL.group_id = UGL.group_id " .
-						"WHERE UGL.user_id =  " . $_SESSION["userID"] . " " .
-						"AND GFL.can_read = 1 ";
+                  "FROM groups_folders_link AS GFL INNER JOIN users_groups_link AS UGL ON GFL.group_id = UGL.group_id " .
+                  "WHERE UGL.user_id =  " . $_SESSION["userID"] . " " .
+                  "AND GFL.can_read = 1 ";
 		if ($oFolder->getInheritParentPermission()) {
 			//if we use parent permissions, get the parent folder ids			
-			$sQuery .= "AND GFL.folder_id IN (" . (strlen($oFolder->getParentFolderIDs()) > 0 ? $oFolder->getParentFolderIDs() . ",$iFolderID" : $iFolderID) .  ")";
+			$sQuery .= "AND GFL.folder_id IN (" . (strlen($oFolder->getParentFolderIDs()) > 0 ? $oFolder->getParentFolderIDs() . "," . $oFolder->getID() : $oFolder->getID()) .  ")";
 		} else {
 			//otherwise we just use the current folder id
 			$sQuery .= "AND GFL.folder_id IN (" . $iFolderID .  ")";
