@@ -146,7 +146,7 @@ function getFolderGroupAccess($iFolderID) {
 	return $oPatternTableSqlQuery->render();    
 }
 
-function getPage($iFolderID) {
+function getPage($iFolderID, $bCollaboration = false) {
 	global $default;
     
     $sToRender  = renderHeading();
@@ -154,7 +154,7 @@ function getPage($iFolderID) {
 	$sToRender .= "<table border=\"0\" width=\"100%\">\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td valign=\"top\">\n";
-	$sToRender .= getLeftSide($iFolderID);
+	$sToRender .= getLeftSide($iFolderID, $bCollaboration);
 	$sToRender .= "</td>\n";
 	$sToRender .= "<td valign=\"top\">\n";
 	$sToRender .= getRightSide($iFolderID);
@@ -164,7 +164,7 @@ function getPage($iFolderID) {
 	return $sToRender;
 }
 
-function getLeftSide($iFolderID) {
+function getLeftSide($iFolderID, $bCollaboration) {
 	global $default;
 	$sToRender .= "<table border=\"0\" width=\"100%\">\n";
 	$sToRender .= "<tr>\n";
@@ -182,11 +182,14 @@ function getLeftSide($iFolderID) {
 	$sToRender .=  getFolderRouting($iFolderID) . "\n";
 	$sToRender .= "</td>\n";
 	$sToRender .= "</tr>\n";
-	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>\n";
-	$sToRender .=  "<a href=\"$default->rootUrl/control.php?action=addFolderCollaboration&fFolderID=$iFolderID\"><img src=\"$default->graphicsUrl/widgets/add.gif\" border=\"0\" /></a>\n";
-	$sToRender .= "</td>\n";
-	$sToRender .= "</tr>\n";
+    if (!$bCollaboration) {
+        $sToRender .= "<tr>\n";
+        $sToRender .= "<td>\n";
+        $sToRender .=  "<a href=\"$default->rootUrl/control.php?action=addFolderCollaboration&fFolderID=$iFolderID\"><img src=\"$default->graphicsUrl/widgets/add.gif\" border=\"0\" /></a>\n";
+        $sToRender .= "</td>\n";
+        $sToRender .= "</tr>\n";
+    }
+    
 	$sToRender .= "</table>\n";
 	return $sToRender;
 }
