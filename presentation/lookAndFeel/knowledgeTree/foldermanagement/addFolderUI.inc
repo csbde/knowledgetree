@@ -55,7 +55,7 @@ function getRightSide($iFolderID) {
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td><b>" . _("Document Type") . ": </b></td>\n";
-	$sToRender .= "<td>" . getDocumentTypeDropDown() . "</td>\n";
+	$sToRender .= "<td>" . getDocumentTypeDropDown($iFolderID) . "</td>\n";
 	$sToRender .= "</tr>\n";    
 	$sToRender .= "<td><table border=\"0\"><tr><td><input type=\"image\" src=\"" . KTHtml::getAddButton() . "\" border=\"0\"></td><td><a href=\"$default->rootUrl/control.php?action=browse&fFolderID=$iFolderID\"><img src=\"" . KTHtml::getCancelButton() . "\" border=\"0\"></a></td></tr></table></td><td>&nbsp</td>\n";    
     $sToRender .= "</tr>\n";
@@ -75,11 +75,24 @@ function getRightSide($iFolderID) {
     return $sToRender;
 }
 
-function getDocumentTypeDropDown() {
+function getDocumentTypeDropDown($iFolderID) {
 	global $default;
-	$oPatternListBox = & new PatternListBox("$default->document_types_table", "name", "id", "fDocumentTypeID");
-	$oPatternListBox->setIncludeDefaultValue(false);
-	return $oPatternListBox->render();
+//	$oPatternListBox = & new PatternListBox("$default->document_types_table", "name", "id", "fDocumentTypeID");
+//	$oPatternListBox->setIncludeDefaultValue(false);
+//	return $oPatternListBox->render();
+    require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentType.inc");
+    $aDocumentTypes = DocumentType::getList();
+    $ret = "";
+    $ret .= sprintf("<SELECT NAME=\"%s\" SIZE=\"%d\" MULTIPLE=\"1\">\n", 'fDocumentTypeID[]', 5);
+    foreach ($aDocumentTypes as $oDocumentType) {
+        $sSelected = "";
+        if (Folder::folderIsLinkedToDocType($iFolderID, $oDocumentType->getID())) {
+            $sSelected = " SELECTED";
+        }
+        $ret .= sprintf("<OPTION VALUE=\"%s\"%s>%s</OPTION>\n", $oDocumentType->getID(), $sSelected, $oDocumentType->getName());
+    }
+    $ret .= "</SELECT>\n";
+    return $ret;
 }
 
 function renderBrowsePage($iFolderID) {
