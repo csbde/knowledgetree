@@ -74,11 +74,15 @@ for ($i = 0; $i < count($aKeys); $i++) {
 include_once("$default->fileSystemRoot/lib/$sObjectFolderName");
 
 $oObject = call_user_func(strtolower($sObjectName) . "createFromArray",$aParameterValues);
-$oObject->create();
+if ($oObject->create()) { 
+	$bSuccess = true;
+} else {
+	$bSuccess = false;
+}
 
 //redirect the user
 if (isset($fRedirectURL)) {
-	redirect(urldecode($fRedirectURL) . $oObject->iId);
+	redirect(urldecode($fRedirectURL) . $oObject->iId . "&fSuccess=" . $bSuccess);
 } else {
 	redirect("$default->rootUrl/control.php");
 }
