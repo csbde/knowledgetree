@@ -109,7 +109,7 @@ function renderQuickLinks($aQuickLinks) {
 function renderPage($aPendingDocumentList, $aCheckedOutDocumentList, $aSubscriptionAlertList, $aQuickLinks) {
     global $default;
     
-    $sToRender  = "<table border=\"1\" width=\"600\" >\n";
+    $sToRender  = "<table border=\"0\" width=\"600\" >\n";
 	$sToRender .= "\t<tr>\n";
     $sToRender .= "\t\t<td><img src=\"$default->graphicsUrl/welcome.gif\"/></td>\n";
     
@@ -121,7 +121,7 @@ function renderPage($aPendingDocumentList, $aCheckedOutDocumentList, $aSubscript
     // dashboard alerts
     $sToRender .= "\t<tr>\n";
     $sToRender .= "\t\t<td width=\"50%\" valign=\"top\">\n";
-    $sToRender .= "\t\t\t<table border=\"1\" width=\"100%\">\n";
+    $sToRender .= "\t\t\t<table border=\"0\" width=\"100%\">\n";
     $sToRender .= renderPendingCollaborationDocuments($aPendingDocumentList);
     $sToRender .= renderCheckedOutDocuments($aCheckedOutDocumentList) . "\n";
     $sToRender .= renderSubscriptionAlerts($aSubscriptionAlertList) . "\n";
