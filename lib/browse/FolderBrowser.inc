@@ -117,7 +117,7 @@ class FolderBrowser extends Browser {
             $oSortCriterion = $this->aSortCriteria[$this->sSortField];
             $aLookupCriteria = $oSortCriterion->getLookup();
 
-            $aQuery = $oSortCriterion->folderQuery($iFolderID);
+            $aQuery = $oSortCriterion->folderQuery($iFolderID, $this->sSortDirection);
 
             $oResult = DBUtil::runQuery($aQuery);
             if (PEAR::isError($oResult)) {
@@ -145,7 +145,7 @@ class FolderBrowser extends Browser {
 
             $default->log->debug("Going on to document checking");
 
-            $aQuery = $oSortCriterion->documentQuery($iFolderID);
+            $aQuery = $oSortCriterion->documentQuery($iFolderID, $this->sSortDirection);
             $oResult = DBUtil::runQuery($aQuery);
             if (PEAR::isError($oResult)) {
                 var_dump($oResult);
