@@ -64,13 +64,10 @@ class SiteMap {
         global $default;
         // for each section
         foreach ($this->siteMapArray as $section => $valArr) {
-            $default->log->debug("Sitemap::getSectionName section=$section; arr=" . arrayToString($valArr));
             // for each group, page array combination
             foreach ($valArr as $requiredGroupName => $pageArr) {
-                $default->log->debug("Sitemap::getSectionName ($requiredGroupName, " . arrayToString($pageArr) . ")");
                 // now loop through pages until we find the right one
                 foreach ($pageArr as $action => $page) {
-                    $default->log->debug("Sitemap::getSectionName ($sRequiredPage == " . $page["page"] . ")");
                     if ($sRequiredPage == $page["page"]) {
                         return $section;
                     }
@@ -93,7 +90,6 @@ class SiteMap {
             
             // need to loop through all (groupName, page) arrays in this section
             foreach ($this->siteMapArray[$sSectionName] as $requiredGroupName => $pages) {
-                $default->log->debug("Sitemap::getSectionLinks: requiredGroup=$requiredGroupName, pages=" . arrayToString($pages));
                 // if anonymous
                 // or the user is in the required group or the user is the SA
                 if ( ($requiredGroupName == "Anonymous") ||
@@ -101,11 +97,8 @@ class SiteMap {
                        Permission::userIsInGroupName("System Administrators") ) ) {
                     foreach ($pages as $action => $pageDetail) {
                         // add this array to the resultset array
-                        $default->log->debug("Sitemap::getSectionLinks: about to add " . arrayToString($pages));
                         $results["descriptions"][] = $pages[$action]["description"];
                         $results["links"][] = generateControllerUrl($action);
-                        $default->log->debug("Sitemap::getSectionLinks: added " . arrayToString($results));
-                        //$results = array_merge($results, $pages);
                     }
                 }
             }
@@ -176,9 +169,9 @@ class SiteMap {
             foreach ($this->siteMapArray[$sectionName] as $requiredGroupName => $pages) {
                 // don't need to check the permissions here, when the controller tries to
                 // retrieve the page from the action, the perms will be checked
-                $default->log->debug("Sitemap::getDefaultAction: (section=$sectionName, reqGrp=$requiredGroupName); pages=" . arrayToString($pages));
+                //$default->log->debug("Sitemap::getDefaultAction: (section=$sectionName, reqGrp=$requiredGroupName); pages=" . arrayToString($pages));
                 foreach ($pages as $action => $pageArray) {
-                    $default->log->debug("Sitemap::getDefaultAction: action=$action; pageArray" . arrayToString($pageArray));
+                    //$default->log->debug("Sitemap::getDefaultAction: action=$action; pageArray" . arrayToString($pageArray));
                     if ($pageArray["default"]) {
                         return $action;
                     }
