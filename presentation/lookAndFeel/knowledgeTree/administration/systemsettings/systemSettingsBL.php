@@ -27,67 +27,24 @@
 require_once("../../../../../config/dmsDefaults.php");
 
 if (checkSession()) {
-    require_once("$default->fileSystemRoot/lib/visualpatterns/PatternListBox.inc");
-    require_once("$default->fileSystemRoot/lib/visualpatterns/PatternEditableListFromQuery.inc");
-    require_once("systemSettingsUI.inc");
-    require_once("$default->fileSystemRoot/lib/security/Permission.inc");
-    require_once("$default->fileSystemRoot/lib/System.inc");
-    require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
+	require_once("$default->fileSystemRoot/lib/System.inc");
     require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
-    require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
-    require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
     require_once("$default->fileSystemRoot/presentation/Html.inc");
+    require_once("systemSettingsUI.inc");
 
-
+    require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
     $oPatternCustom = & new PatternCustom();
-
+    
     if(isset($fForStore)) {
-        $oSys = new System;
-
-        $aNames = array("ldapServer",
-                        "ldapRootDn",
-                        "ldapServerType",
-                        "emailServer",
-                        "emailAdmin",
-                        "emailAdminName",
-                        "emailFrom",
-                        "emailFromName",
-                        "documentRoot",
-                        "languageDirectory",
-                        "uiDirectory",
-                        "rootUrl",
-                        "graphicsUrl",
-                        "uiUrl",
-                        "defaultLanguage",
-                        "sessionTimeout");
-
-        $aValues = array($fldapServer,
-                         $fldapRootDn,
-                         $fldapServerType,
-                         $femailServer,
-                         $femailAdmin,
-                         $femailAdminName,
-                         $femailFrom,
-                         $femailFromName,
-                         $fdocumentRoot,
-                         $flanguageDirectory,
-                         $fuiDirectory,
-                         $frootUrl,
-                         $fgraphicsUrl,
-                         $fuiUrl,
-                         $fdefaultLanguage,
-                         $fsessionTimeout);
-
-
-        for($i = 0; $i < count($aNames);$i++) {
-            $oSys->set($aNames[$i], $aValues[$i]);
+        $oSystem = $default->system;
+        for($i = 0; $i < count($oSystem->aSettings); $i++) {
+            $oSystem->set($oSystem->aSettings[$i], $_POST[$oSystem->aSettings[$i]]);
         }
-        $oPatternCustom->setHtml(getPageSuccess());
+        controllerRedirect("systemAdministration");
     } else {
         $oPatternCustom->setHtml(getPage());
         $main->setFormAction($_SERVER["PHP_SELF"]. "?fForStore=1");
     }
-
     $main->setCentralPayload($oPatternCustom);
     $main->render();
 }
