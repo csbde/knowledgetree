@@ -107,19 +107,20 @@ function getViewComment($iNum,$oThread,$oComment,$oUser) {
 		$sToRender .= "<td  align=right><a href=\"" . generateControllerLink("addComment", "fDocumentID=" . $oThread->getDocumentID() . "&fAddComment=1") . "\"><img src=\"$default->graphicsUrl/widgets/addcomment.gif\" border=\"0\" /></a>";
 		$sToRender .= "<img src=\"$default->graphicsUrl/widgets/back.gif\" onmouseover=\"this.style.cursor='hand'\" onclick=\"javascript: history.go(-1);\" ></td>";
 		$sToRender .= "</tr></table><br>\n";			
-		$sToRender .= "<table border=\"0\" width=\"100%\" cellspacing=0><tr>\n";
+		$sToRender .= "<table border=\"0\" width=\"100%\">\n";
+		$sToRender .= "<tr><td></td>\n";
 		$sToRender .= "<td><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Subject</b></td>\n";
 		$sToRender .= "<td><b>Author</b></td>\n";
 		$sToRender .= "<td><b>Date</b></td>\n"; 
-		$sToRender .= "</tr>\n";
+		$sToRender .= "</tr>\n"; 
 	}
-
-	$sToRender .= "<tr><td style=\"background-color:$BGcolor\" width=450>$iNum. &nbsp;<a style=\"width:94%\" href=\"" . $_SERVER['PHP_SELF'] . "?fViewComment=1&iCommentID=" . $oComment->getID() . "&iDocumentID=" . $oThread->getDocumentID() . "\" title=\"" . $oComment->getSubject() . "\">" .  substr($oComment->getSubject(),0,$iSubjectChars ) . $dotdot . "</a></td>\n";
+	
+	$sToRender .= "<tr><td>$iNum </td><td style=\"background-color:$BGcolor\" width=450><a style=\"width:94%\" href=\"" . $_SERVER['PHP_SELF'] . "?fViewComment=1&iCommentID=" . $oComment->getID() . "&iDocumentID=" . $oThread->getDocumentID() . "\" title=\"" . $oComment->getSubject() . "\">" .  substr($oComment->getSubject(),0,$iSubjectChars ) . $dotdot . "</a></td>\n";
 	$sToRender .= "<td style=\"background-color:$UserBGcolor\" width=\"100\" title=\"$oUser->getUserName()\">" . substr($oUser->getUserName(),0,10) . $Userdotdot . "</td>\n"; 
 	$sToRender .= "<td style=\"background-color:$BGcolor\" width=\"70\">" . $oComment->getDate() . "<td></tr>\n";
 	
 	// If this is the last subject line then close the table
-	if ($iNum == $iNumMax) { $sToRender .= "</table>\n\n";}	
+	if ($iNum == ($oThread->getNumberOfReplies())) { $sToRender .= "\n</table>\n\n";}	
 	return $sToRender; 
 }
 
@@ -140,8 +141,9 @@ function getCommentBody($oComment, $iDocumentID, $oUser) {
 	
 	$sToRender .= "<br><table width=100% border=0><tr ><td colspan=2><b>Author: </b>" . $oUser->getUserName() . "</td>\n";	
 	$sToRender .= "<td align=right>\n"; 
-	$sToRender .= "<input onmouseover=\"this.style.cursor='hand'\" type=\"submit\" style=\"BORDER-RIGHT: 0px groove; BORDER-TOP: 0px groove; BACKGROUND-IMAGE: url($default->graphicsUrl/widgets/reply.gif); BORDER-LEFT: 0px groove; WIDTH: 40px; BORDER-BOTTOM: 0px groove; HEIGHT: 18; BACKGROUND-COLOR: white\" height=\"20\" value=\" \" width=\"200\"></td>";
-	$sToRender .= "<td width=30><img src=\"$default->graphicsUrl/widgets/back.gif\" onmouseover=\"this.style.cursor='hand'\" onclick=\"javascript: history.go(-1);\" ></td></tr>\n"; 
+	//$sToRender .= "<input onmouseover=\"this.style.cursor='hand'\" type=\"submit\" style=\"BORDER-RIGHT: 0px groove; BORDER-TOP: 0px groove; BACKGROUND-IMAGE: url($default->graphicsUrl/widgets/reply.gif); BORDER-LEFT: 0px groove; WIDTH: 40px; BORDER-BOTTOM: 0px groove; HEIGHT: 18; BACKGROUND-COLOR: white\" height=\"20\" value=\" \" width=\"200\">";
+	$sToRender .= "<input onmouseover=\"this.style.cursor='hand'\" type=\"image\" src=\"$default->graphicsUrl/widgets/reply.gif\">";
+	$sToRender .= "</td><td width=30><img src=\"$default->graphicsUrl/widgets/back.gif\" onmouseover=\"this.style.cursor='hand'\" onclick=\"javascript: history.go(-1);\" ></td></tr>\n"; 
 	$sToRender .= "<tr><td width=\"1\" style=\"background-color:#F5F6EE;\" valign=\"top\"><b>Subject: </b></td><td width=405 style=\"background-color:#F5F6EE;\">";
 	$sToRender .= "<input name=\"CommentSubject\" id=\"CommentSubject\" style=\"background-color:#F5F6EE;BORDER-TOP-WIDTH: 0px; BORDER-LEFT-WIDTH: 0px; BORDER-BOTTOM-WIDTH: 0px; WIDTH: 100%; BORDER-RIGHT-WIDTH: 0px;width=80%\" readOnly  value=\"" . $oComment->getSubject() . "\">";
 	$sToRender .= "</td><td colspan=2><b>Date: </b><font color=\"#056DCE\">" . $oComment->getDate() . "</font>&nbsp;&nbsp;&nbsp;</td></tr><tr><td colspan=4 valign=top>";	
