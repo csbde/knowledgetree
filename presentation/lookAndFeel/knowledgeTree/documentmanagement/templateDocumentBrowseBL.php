@@ -50,7 +50,6 @@ if (checkSession()) {
     }
        
     // fire up the document browser 
-    //$oDocBrowser = new DocumentBrowser();
     $oBrowser = BrowserFactory::create($fBrowseType, $fSortBy, $fSortDirection);
      
     // instantiate my content pattern
