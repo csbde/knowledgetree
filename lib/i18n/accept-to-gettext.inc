@@ -135,14 +135,16 @@ function al2gt($gettextlangs, $mime) {
     $allang=strtolower($tmp2[0]);
     $gtcs=strtoupper(KTUtil::arrayGet($tmp2, 1, null));
     $noct=@preg_split("/-/",$allang);
+    $noct0 = KTUtil::arrayGet($noct, 0);
 
     $testvals=array(
-         array($alscores[$allang], $acscores[$gtcs]),
-	 array($alscores[$noct[0]], $acscores[$gtcs]),
-	 array($alscores[$allang], $acscores["*"]),
-	 array($alscores[$noct[0]], $acscores["*"]),
-	 array($alscores["*"], $acscores[$gtcs]),
-	 array($alscores["*"], $acscores["*"]));
+         array(KTUtil::arrayGet($alscores, $allang), KTUtil::arrayGet($acscores, $gtcs)),
+	 array(KTUtil::arrayGet($alscores, $noct0), KTUtil::arrayGet($acscores, $gtcs)),
+	 array(KTUtil::arrayGet($alscores, $allang), KTUtil::arrayGet($acscores, "*")),
+	 array(KTUtil::arrayGet($alscores, $noct0), KTUtil::arrayGet($acscores, "*")),
+	 array(KTUtil::arrayGet($alscores, "*"), KTUtil::arrayGet($acscores, $gtcs)),
+	 array(KTUtil::arrayGet($alscores, "*"), KTUtil::arrayGet($acscores, "*"))
+    );
 
     $found=FALSE;
     foreach($testvals as $tval) {
