@@ -16,7 +16,7 @@ function getDocumentListForFolder($fFolderID) {
 			"ORDER BY name ASC";
 	
 	$aColumns = array("name");
-	$aColumnTypes = array(3);
+	$aColumnTypes = array(1);
 	$aColumnHeaderNames = ("Name");
 	$aDBColumns = array("id");
 	$aQueryStringVariableNames = array("fDocumentID");	
