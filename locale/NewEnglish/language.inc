@@ -229,6 +229,9 @@ $lang_err_email         = "Message could not be sent";
 $lang_err_fileexists    = "Move was Canceled<BR>File with the same name already exists.";
 $lang_err_nameempty    	= "Folder name cannot be empty";
 
+$lang_err_document_type_does_not_exist = "The following document type does not exist: ";
+$lang_err_document_type_field_does_not_exist = "The following document type field does not exist: ";
+
 //janu's change BEGIN 
 $lang_engine 		= "Owl Intranet Engine";
 $lang_version 		= "Version";
