@@ -28,6 +28,215 @@ require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
  * @author Michael Joseph <michael@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
  * @package lib.browse
  */
+
+class BrowseCriterion {
+    var $sDisplay;
+    var $sDocumentField;
+    var $sSortField;
+    var $aLookup = null;
+    var $oBrowser;
+    var $bFolderCriterion = false;
+
+    function BrowseCriterion ($sDisplay, $sDocumentField, $sSortField, &$oBrowser) {
+        $this->sDisplay =& $sDisplay;
+        $this->sDocumentField =& $sDocumentField;
+        $this->sSortField =& $sSortField;
+        $this->oBrowser =& $oBrowser;
+    }
+
+    function headerDisplay () {
+        return $this->sDisplay;
+    }
+
+    // dummy function
+    function documentDisplay ($oDocument) {
+        return $this->sDisplay;
+    }
+
+    function folderDisplay ($oDocument) {
+        return "&nbsp;";
+    }
+
+    function folderQuery ($iParentID) {
+        global $default;
+        $sFolderQuery = "SELECT f.id FROM $default->folders_table AS f ";/*ok*/
+        if (!$this->bFolderCriterion) {
+            $sFolderQuery .= "WHERE parent_id = ? ORDER BY f.name asc";
+            $aParams = array($iParentID);
+            return array($sFolderQuery, $aParams);
+        }
+
+        if (!is_null($this->aLookup)) {
+            $sFolderQuery .= "INNER JOIN " . $this->aLookup["table"] . " lt ON f.$this->sDocumentField = lt.id WHERE parent_id = ?";
+            $sFolderQuery .= " ORDER BY lt." . $this->aLookup["field"] . " " . $this->oBrowser->sSortDirection;
+            $aParams = array($iParentID);
+            return array($sFolderQuery, $aParams);
+        }
+
+        $sFolderQuery .= "WHERE parent_id = ? ORDER BY $this->sSortField " . $this->oBrowser->sSortDirection;
+        $aParams = array($iParentID);
+        return array($sFolderQuery, $aParams);
+    }
+
+    function documentQuery ($iFolderID) {
+        global $default;
+        // create query to retrieve documents in this folder
+        $documentQuery  = "SELECT d.id as id FROM $default->documents_table AS d ";/*wc*/
+
+        if (!is_null($this->aLookup)) {
+            $sDocumentJoinField = $this->getDocumentField();
+            $documentQuery .= "INNER JOIN " . $this->aLookup["table"] . " lt ON ";
+            if (array_key_exists('joinColumn', $this->aLookup)) {
+                $documentQuery .= "d.$sDocumentJoinField" . " = lt." . $this->aLookup["joinColumn"];
+            } else {
+                $documentQuery .= "d.$sDocumentJoinField" . " = lt.id";
+            }
+        }
+
+        $documentQuery .= " WHERE d.folder_id = ? ";
+        $aParams = array($iFolderID);
+        if (!is_null($this->aLookup)) {
+            if (array_key_exists("whereClause", $this->aLookup)) {
+                $documentQuery .= "AND lt." . $this->aLookup["whereClause"] . " ";
+            }
+
+            $documentQuery .= "ORDER BY lt." . $this->aLookup["field"] . " " . $this->oBrowser->sSortDirection;
+        } else {
+            $sDocumentJoinField = $this->getDocumentField();
+            // $sSortField = $this->getSortField();
+            $documentQuery .= "ORDER BY $this->sSortField " . $this->oBrowser->sSortDirection;
+        }
+        
+        return array($documentQuery, $aParams);
+    }
+
+    function getDocumentField () {
+        return $this->sDocumentField;
+    }
+
+    function getSortField () {
+        return $this->sSortField;
+    }
+
+    function getLookup () {
+        return $this->aLookup;
+    }
+}
+
+class NameCriterion extends BrowseCriterion {
+    var $bFolderCriterion = true;
+    function documentDisplay ($oDocument) {
+        $aOptions =& $this->oBrowser->getOptions();
+        if (array_key_exists('displayFullPath', $aOptions)) {
+            $bDisplayFullPath = $aOptions['displayFullPath'];
+        } else {
+            $bDisplayFullPath = false;
+        }
+        if (array_key_exists('templateBrowsing', $aOptions)) {
+            $bTemplateBrowsing = $aOptions['templateBrowsing'];
+        } else {
+            $bTemplateBrowsing = false;
+        }
+
+        if ($bTemplateBrowsing) {
+            return displayDocumentLinkForTemplateBrowsing($oDocument, $bDisplayFullPath);
+        } else {
+            return displayDocumentLink($oDocument, $bDisplayFullPath);
+        }
+    }
+
+    function folderDisplay($oFolder) {
+        return displayFolderLink($oFolder);
+    }
+}
+
+class TitleCriterion extends BrowseCriterion {
+    function documentDisplay ($oDocument) {
+        return $oDocument->getName();
+    }
+    function folderDisplay($oFolder) {
+        return $oFolder->getDescription();
+    }
+}
+
+class CreatorCriterion extends BrowseCriterion {
+    var $bFolderCriterion = true;
+    var $aLookup = array(
+        "table" => "users",
+        "field" => "name",
+    );
+    function documentDisplay ($oDocument) {
+        $oCreator = User::get($oDocument->getCreatorID());
+        if ($oCreator) {
+            return $oCreator->getName();
+        }
+        return "&nbsp;";
+    }
+    function folderDisplay($oFolder) {
+        return $this->documentDisplay($oFolder);
+    }
+}
+
+class DateCreatedCriterion extends BrowseCriterion {
+    var $aLookup = array(
+        "table" => "document_transactions",
+        "field" => "datetime",
+        "joinColumn" => "document_id",
+        "whereClause" => "transaction_id=1",
+    );
+
+    function documentDisplay ($oDocument) {
+        $aDocumentTransaction = DocumentTransaction::getList("transaction_id=1 AND document_id=" . $oDocument->getID());
+        return $aDocumentTransaction[0]->dDateTime;
+    }
+}
+
+class DocumentTypeCriterion extends BrowseCriterion {
+    var $aLookup = array(
+        "table" => "document_types_lookup",
+        "field" => "name"
+    );
+
+    function documentDisplay ($oDocument) {
+        $oDocumentType = DocumentType::get($oDocument->getDocumentTypeID());
+        if ($oDocumentType) {
+            return $oDocumentType->getName();
+        }
+        return "&nbsp;";
+    }
+}
+
+class GenericMetadataCriterion extends BrowseCriterion {
+    var $aLookup = array(
+        "table" => "document_fields_link",
+        "field" => "value",
+        "joinColumn" => "document_id",
+    );
+    var $iFieldID;
+
+    function GenericMetadataCriterion ($sDisplay, $sDocumentField, $sSortField, &$oBrowser, $iFieldID) {
+        $this->iFieldID = $iFieldID;
+        $this->BrowseCriterion($sDisplay, $sDocumentField, $sSortField, $oBrowser);
+        $this->aLookup['whereClause'] = 'document_field_id = ' .  $iFieldID;
+    }
+
+    function documentDisplay ($oDocument) {
+        global $default;
+        $sQuery = "SELECT DFL.value as value " .
+              "FROM $default->document_fields_link_table AS DFL " .
+              "WHERE DFL.document_id = ? " .
+              "AND DFL.document_field_id = ?";
+        $aParams = array($oDocument->getID(), $this->iFieldID);
+
+        $res = DBUtil::getOneResultKey(array($sQuery, $aParams), 'value');
+        if (PEAR::isError($res)) {
+            // WARN: Add log warning
+            return "&nbsp;";
+        }
+        return $res;
+    }
+}
+ 
 class Browser {
 
     /**
@@ -48,6 +257,8 @@ class Browser {
      * The direction to sort the results in
      */
     var $sSortDirection;
+
+    var $aOptions;
     
     /**
      * Constructs a new Browser instance
@@ -60,35 +271,12 @@ class Browser {
         // default sort criteria
         if (count($aNewSortCriteria) == 0) {
             $aNewSortCriteria = array (
-                "name" => array(
-                    "display" => _("Title"),
-                ),     
-                "filename" => array(
-                    "display" => _("Description"),
-                ),
-                "creator_id" => array(
-                    "display" => _("Creator"), 
-                    "lookup"  => array(
-                        "table" => "users",
-                        "field" => "name",
-                    ),
-                ),
-                "id" => array(
-                    "display" => _("Date Created"),
-                    "lookup"  => array(
-                        "table" => "document_transactions",
-                        "field" => "datetime",
-                        "joinColumn" => "document_id",
-                        "whereClause" => "transaction_id=1",
-                    ),
-                ),
-                "document_type_id" => array(
-                    "display" => _("Document Type"),
-                    "lookup"  => array(
-                        "table" => "document_types_lookup",
-                        "field" => "name"
-                    ),
-                ),
+                "name" => new NameCriterion(_("Title"), 'name', 'name', $this),
+                "filename" => new TitleCriterion(_("Description"), 'filename', 'filename', $this),
+                "creator_id" => new CreatorCriterion(_("Creator"), 'creator_id', 'creator_id', $this),
+                "id" => new DateCreatedCriterion(_("Date Created"), 'id', 'id', $this),
+                "document_type_id" => new DocumentTypeCriterion(_("Document Type"), 'document_type_id', 'document_type_id', $this),
+                "category" => new GenericMetadataCriterion("Category", 'id', 'id', $this, 1),
             );
     	}
 							 	 										   		      	
@@ -153,6 +341,15 @@ class Browser {
 		$this->sSortDirection = $sNewSortDirection;
 	}
 	 
+
+    function setOptions($aOptions) {
+        $this->aOptions = array_merge($this->aOptions, $aOptions);
+    }
+
+    function getOptions() {
+        return $this->aOptions;
+    }
+
     /**
      * [Abstract] Browse the documents
      *
@@ -160,5 +357,6 @@ class Browser {
      */
     function browse() {
     }
+
 
 }

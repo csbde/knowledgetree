@@ -95,7 +95,7 @@ if (!$fSortDirection) {
 }
    
 // fire up the document browser 
-$oBrowser = BrowserFactory::create($fBrowseType, $fSortBy, $fSortDirection);
+$oBrowser =& BrowserFactory::create($fBrowseType, $fSortBy, $fSortDirection);
 $sectionName = $oBrowser->getSectionName();
  
 // instantiate my content pattern

@@ -114,36 +114,28 @@ class FolderBrowser extends Browser {
             // now find all the child folders relative to this one
             // FIXME: in the same unit?
 
-            $aLookupCriteria = $this->aSortCriteria[$this->sSortField]["lookup"];
+            $oSortCriterion = $this->aSortCriteria[$this->sSortField];
+            $aLookupCriteria = $oSortCriterion->getLookup();
 
-            // if we're sorting by name or creator_id then sort folders in the appropriate direction
+            $aQuery = $oSortCriterion->folderQuery($iFolderID);
 
-            $aParams = array();
-            $sFolderQuery = "SELECT f.id FROM $default->folders_table AS f ";/*ok*/
-            if (in_array($this->sSortField, array("name", "creator_id"))) {
-                if (isset($aLookupCriteria)) {
-                    $sFolderQuery .= "INNER JOIN " . $aLookupCriteria["table"] . " lt ON f.$this->sSortField=lt.id WHERE parent_id = ?";
-                    $sFolderQuery .= " ORDER BY lt." . $aLookupCriteria["field"] . " $this->sSortDirection";
-                } else {
-                     $sFolderQuery .= "WHERE parent_id = ? ORDER BY $this->sSortField $this->sSortDirection";
-                }
-            } else {
-                $sFolderQuery .= "WHERE parent_id = ? ORDER BY f.name asc";
+            $oResult = DBUtil::runQuery($aQuery);
+            if (PEAR::isError($oResult)) {
+                var_dump($oResult);
+                exit(0);
             }
-            $aParams[] = $iFolderID;
-            $default->log->debug("Ordering folderQuery = $sFolderQuery");
 
-            if ($sql->query(array($sFolderQuery, $aParams))) {
-                while ($sql->next_record()) {
-                  $default->log->debug("In folder iteration while, with folder_id " . $sql->f("id"));
+            if ($oResult->numRows()) {
+                while ($aRow = $oResult->fetchRow()) {
+                  $default->log->debug("In folder iteration while, with folder_id " . $aRow["id"]);
                   // check whether to display folders which are not readable and display/hide these accordingly
-                      $oFolder = Folder::get($sql->f("id"));
+                      $oFolder = Folder::get($aRow["id"]);
                       if ($default->folderHidingFlag) {
                           if (Permission::userHasFolderReadPermission($oFolder)) {
-                              $default->log->debug("FOLDER PERMISSIONS: Does  have permission for folder " . $oFolder->getID() . ":" . $sql->f("id") );
+                              $default->log->debug("FOLDER PERMISSIONS: Does  have permission for folder " . $oFolder->getID() . ":" . $aRow["id"]);
                             $results["folders"][] =  $oFolder;
                           } else {
-                              $default->log->debug("FOLDER PERMISSIONS: Does  NOT have permission for folder " . $sql->f("id") );
+                              $default->log->debug("FOLDER PERMISSIONS: Does  NOT have permission for folder " . $aRow["id"] );
                           }
                       } else{
                         $results["folders"][] =  $oFolder;
@@ -153,29 +145,21 @@ class FolderBrowser extends Browser {
 
             $default->log->debug("Going on to document checking");
 
-            // create query to retrieve documents in this folder
-            $documentQuery  = "SELECT d.id as id FROM $default->documents_table AS d ";/*wc*/
-            if (isset($aLookupCriteria)) {
-                $documentQuery .= "INNER JOIN " .  $aLookupCriteria["table"] . " lt ON ";
-                $documentQuery .= "d.$this->sSortField" . "=lt." . (isset($aLookupCriteria["joinColumn"]) ? $aLookupCriteria["joinColumn"] : "id");
+            $aQuery = $oSortCriterion->documentQuery($iFolderID);
+            $oResult = DBUtil::runQuery($aQuery);
+            if (PEAR::isError($oResult)) {
+                var_dump($oResult);
+                exit(0);
             }
-            $documentQuery .= " WHERE d.folder_id=$iFolderID " . (isset($aLookupCriteria["whereClause"]) ? "AND lt." . $aLookupCriteria["whereClause"] : "") . " ";
-            if (isset($aLookupCriteria)) {
-                $documentQuery .= "ORDER BY lt." . $aLookupCriteria["field"] . " $this->sSortDirection";
-            } else {
-                $documentQuery .= "ORDER BY $this->sSortField $this->sSortDirection";
-            }
-            $default->log->debug("docQuery=$documentQuery");
 
             // initialise access flag;
             $results["accessDenied"] = false;
-            if ($sql->query($documentQuery)) {
-
+            if ($oResult->numRows()) {
                 // do the check for whether this documents have folder read permission, if they do, it's all good.
                 $hasFolderRead = Permission::userHasFolderReadPermission($rootFolder);
 
-                while ($sql->next_record()) {
-                    $oDocument = & Document::get($sql->f("id"));
+                while ($aRow = $oResult->fetchRow()) {
+                    $oDocument = &Document::get($aRow["id"]);
                     // proceed if the document is live
                     if ($oDocument->isLive()) {
                         // check permissions
