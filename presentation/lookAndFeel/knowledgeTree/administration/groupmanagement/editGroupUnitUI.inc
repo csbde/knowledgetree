@@ -100,14 +100,12 @@ function getUnitPage($iGroupID) {
     $sToRender .= "<table border=0 cellspacing=7>\n";
     $sToRender .= "<tr><td><b><font size=2 >Options</font></b></td></tr>";
     $sToRender .= "<tr><td width=200 bgcolor=$sBgColor>";
-    $sToRender .= "<br>&nbsp;&nbsp;Add Group to a Unit<br><br>";
-    $sToRender .= "</td><td>";
-    $sToRender .= "<a href=\"$default->rootUrl/control.php?action=assignGroupToUnit&fGroupID=$iGroupID\"><img border=0 src=\"$default->graphicsUrl/widgets/enter.gif\"></img></a>";
+    $sToRender .= "<br><a href=\"$default->rootUrl/control.php?action=assignGroupToUnit&fGroupID=$iGroupID\">&nbsp;&nbsp;Add Group to a Unit</a><br><br>";
+    $sToRender .= "</td><td>";    
     $sToRender .= "</td></tr>";
     $sToRender .= "<tr><td width=200 bgcolor=$sBgColor>";
-    $sToRender .= "<br>&nbsp;&nbsp;Remove Group from a Unit<br><br>";
-    $sToRender .= "</td><td>";
-    $sToRender .= "<a href=\"$default->rootUrl/control.php?action=removeGroupFromUnit&fGroupSet=1&fGroupID=$iGroupID\"><img border=0 src=\"$default->graphicsUrl/widgets/enter.gif\"></img></a>";
+    $sToRender .= "<br><a href=\"$default->rootUrl/control.php?action=removeGroupFromUnit&fGroupSet=1&fGroupID=$iGroupID\">&nbsp;&nbsp;Remove Group from a Unit</a><br><br>";
+    $sToRender .= "</td><td>";    
     $sToRender .= "</td></tr>";
     $sToRender .= "</table>\n";
     
