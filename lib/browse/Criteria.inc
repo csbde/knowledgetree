@@ -300,10 +300,7 @@ class DateCreatedCriterion extends BrowseCriterion {
         if ($sEnd) {
             return array($this->getSearchTable() . "." . $this->getSearchField() . " < ?", array($sEnd));
         }
-        var_dump($aRequest);
-        var_dump($sStart);
-        var_dump($sEnd);
-        return array('Huh = ?', array(1));
+        return null;
     }
 
 }
