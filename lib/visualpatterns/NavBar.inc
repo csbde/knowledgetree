@@ -182,22 +182,19 @@ class NavBar
 	$toRender = new PatternCustom;
 		
 		//bar is the actaul html creation of the nav bar
-	$bar= "
-		<html> 
-				
-		<Table cellpadding = \"0\" cellspacing = \"1\" border=\"1\" width=\"100%\" height=\"100%\">
+	$bar= "				
+		<Table cellpadding = \"1\" cellspacing = \"1\" border=\"1\" width=\"100%\" height=\"100%\">
 			
 		<tr height=\"20%\"><td background = " . $hStretched ." width =\"100%\">". $row1 ."</td></tr>
 			
-		<tr height=\"20%\"><td background = " . $hStretched ." width =\"100%\" ></td></tr>
+		<tr height=\"28%\"><td background = " . $hStretched ." width =\"100%\" >www</td></tr>
 			
-		<tr height=\"10%\" ><td width =\"100%\">". $row3 . "</td></tr>
+		<tr height=\"25%\" ><td width =\"10%\">". $row3 . "</td></tr>
 			
-		<tr height=\"10%\"><td width =\"100%\">". $row4 . "</td></tr>
+		<tr height=\"25%\"><td width =\"100%\">". $row4 . "</td></tr>
 			
 		</table>
-			
-		</html>
+		
 		";
 		
 		
