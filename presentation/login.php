@@ -71,7 +71,7 @@ if ($loginAction == "loginForm") {
                 
                 // check for a location to forward to
                 if (isset($redirect) && strlen(trim($redirect))>0) {
-                    $url = urldecode($redirect);
+                    $url = generateControllerUrl($default->siteMap->getActionFromPage(urldecode($redirect)));
                 // else redirect to the dashboard
                 } else {                                            
                     $url = generateControllerUrl("dashboard");
