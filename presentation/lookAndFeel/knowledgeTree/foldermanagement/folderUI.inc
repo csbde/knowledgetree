@@ -82,7 +82,7 @@ function renderFolderList($fFolderID, $sLinkURL) {
 	$aColumns = array("name");
 	$aColumnTypes = array(3);
 	$aColumnHeaderNames = array("Folder");
-	$aDBColumns = array("id");
+	$aDBColumns = array("id","id");
 	$aQueryStringVariableNames = array("fFolderID");
 	
 	$oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaderNames, "100%", "$default->owl_root_url/$sLinkURL", $aDBColumns, $aQueryStringVariableNames);
