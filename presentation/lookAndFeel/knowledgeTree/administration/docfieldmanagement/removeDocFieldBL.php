@@ -27,25 +27,30 @@ if (checkSession()) {
 	if (isset($fDocFieldID)) {
 		$oDocField = DocumentField::get($fDocFieldID);
 		if ($oDocField) {
-					
-			// check if the document field is mapped to a document type first
-			$aDocumentTypes = $oDocField->getDocumentTypes();
-			if (count($aDocumentTypes) > 0) {
-				// display status message- can't delete
-				$oPatternCustom->setHtml(getFieldMappedPage($oDocField->getName(), $aDocumentTypes));
-			} else {
-				// perform the deletion
-				if (isset($fForDelete)) {
-					if ($oDocField->delete()) {
-						$oPatternCustom->setHtml(getDeleteSuccessPage());
-					} else {
-						$oPatternCustom->setHtml(getDeleteFailPage());
-					}
+			// check if we're trying to delete the category field
+			if ($oDocField->getName() != "Category") {	
+				// check if the document field is mapped to a document type first
+				$aDocumentTypes = $oDocField->getDocumentTypes();
+				if (count($aDocumentTypes) > 0) {
+					// display status message- can't delete
+					$oPatternCustom->setHtml(getFieldMappedPage($oDocField->getName(), $aDocumentTypes));
 				} else {
-					// delete confirmation page
-					$oPatternCustom->setHtml(getDeletePage($fDocFieldID));
-					$main->setFormAction($_SERVER["PHP_SELF"] . "?fForDelete=1");
+					// perform the deletion
+					if (isset($fForDelete)) {
+						if ($oDocField->delete()) {
+							$oPatternCustom->setHtml(getDeleteSuccessPage());
+						} else {
+							$oPatternCustom->setHtml(getDeleteFailPage());
+						}
+					} else {
+						// delete confirmation page
+						$oPatternCustom->setHtml(getDeletePage($fDocFieldID));
+						$main->setFormAction($_SERVER["PHP_SELF"] . "?fForDelete=1");
+					}
 				}
+			} else {
+				// couldn't retrieve document field from db
+				$oPatternCustom->setHtml(getStatusPage("Read-only document field", "The 'Category' document field cannot be deleted."));
 			}
 		} else {
 			// couldn't retrieve document field from db
