@@ -24,22 +24,22 @@ if(checkSession()) {
 	if ($submit) {
 		//set up body and link
 		
-		$body = $message;
-		$hyperlink = $linkToBug;
+        $hyperlink = $linkToBug;
+		$body = $message . " <br>This bug can be found on this page: " . "<a href = ". $hyperlink .">". $hyperlink ."</a>";
 			
 		//create email object
 		$emailLink= new Email();
 		//send email
-		$success = $emailLink->sendHelpEmail($fromEmail,$fromName,$toEmail,$subject,$body, $hyperlink);
+		$success = $emailLink->send($toEmail,$subject,$body);
 		
 		//if successful ..rerender the page
-		if($success == True)	{
+		if ($success)	{
 			$Center = "<br>Email Successfully Sent</br>";
 			$oPatternCustom = & new PatternCustom();
 			$oPatternCustom->setHtml($Center); 
 			$main->setCentralPayload($oPatternCustom);
 			$main->render();
-		} Else	{
+		} else {
 			$Center = "<br>Email Unsuccessful</br>";
 			$oPatternCustom = & new PatternCustom();
 			$oPatternCustom->setHtml($Center); 

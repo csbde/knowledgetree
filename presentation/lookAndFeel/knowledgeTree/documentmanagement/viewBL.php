@@ -135,8 +135,8 @@ if (checkSession()) {
                     
 					$oUser = User::get($oDocument->getCreatorID());
 					$sBody = $oUser->getUserName() . ", the collaboration process for the document, '<a href=\"https://" . $_SERVER["SERVER_NAME"] . "$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $oDocument->getID() . "\">" . $oDocument->getName() . "</a>', has been completed. ";								
-					$oEmail = & new Email($default->owl_email_from, $default->owl_email_fromname);
-					$oEmail->send($oUser->getEmail(), "Document collaboration complete", $sBody, $default->owl_email_from, $default->owl_email_fromname);
+					$oEmail = & new Email();
+					$oEmail->send($oUser->getEmail(), "Document collaboration complete", $sBody);
 					
 					//possibly set the document up for web publishing????
 					$oPatternCustom = & new PatternCustom();

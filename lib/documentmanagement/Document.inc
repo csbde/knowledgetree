@@ -383,8 +383,8 @@ class Document {
 										"the document";
 										
 			
-			$oEmail = & new Email($default->owl_email_from, $default->owl_email_fromname);
-			$oEmail->send($oUser->getEmail(), "Document collaboration role active", $sBody, $default->owl_email_from, $default->owl_email_fromname);
+			$oEmail = & new Email();
+			$oEmail->send($oUser->getEmail(), "Document collaboration role active", $sBody);
 			
 			//check if there are any other parallel steps that have to be started
 			while ($sql->next_record()) {
@@ -402,8 +402,8 @@ class Document {
 											"Click <a href=\"https://" . $_SERVER["SERVER_NAME"] . "$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $this->iId . "\">here</a> to access " .
 											"the document";
 			
-					$oEmail = & new Email($default->owl_email_from, $default->owl_email_fromname);
-					$oEmail->send($oUser->getEmail(), "Document collaboration role active", $sBody, $default->owl_email_from, $default->owl_email_fromname);
+					$oEmail = & new Email();
+					$oEmail->send($oUser->getEmail(), "Document collaboration role active", $sBody);
 				} else {
 					return;
 				}
@@ -823,8 +823,8 @@ class Document {
 													"Click <a href=\"https://" . $_SERVER["SERVER_NAME"] . "$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $this->iId . "\">here</a> to access " .
 													"the document";
 					
-							$oEmail = & new Email($default->owl_email_from, $default->owl_email_fromname);
-							$oEmail->send($oUser->getEmail(), "Document collaboration role active", $sBody, $default->owl_email_from, $default->owl_email_fromname);
+							$oEmail = & new Email();
+							$oEmail->send($oUser->getEmail(), "Document collaboration role active", $sBody);
 						}
 					}
 					return true;
@@ -878,8 +878,8 @@ class Document {
 											"has been rejected by " . $oCurrentUser->getName() . " in the document collaboration process.  The collaboration process has been stopped. " .
 											"The comment entered by " . $oCurrentUser->getName() . " was: $sComment";
 			
-					$oEmail = & new Email($default->owl_email_from, $default->owl_email_fromname);
-					$oEmail->send($oUser->getEmail(), "Document rejected in collaboration process", $sBody, $default->owl_email_from, $default->owl_email_fromname);
+					$oEmail = & new Email();
+					$oEmail->send($oUser->getEmail(), "Document rejected in collaboration process", $sBody);
 				}
 			} else {
 				//there are steps prior to this step
@@ -908,8 +908,8 @@ class Document {
 											"has been rejected by " . $oCurrentUser->getName() . " in the document collaboration process.  Please re-perform you step in the collaboration process." .
 											"The comment entered by " . $oCurrentUser->getName() . " was: $sComment";
 			
-						$oEmail = & new Email($default->owl_email_from, $default->owl_email_fromname);
-						$oEmail->send($oUser->getEmail(), "Document rejected in collaboration process", $sBody, $default->owl_email_from, $default->owl_email_fromname);
+						$oEmail = & new Email();
+						$oEmail->send($oUser->getEmail(), "Document rejected in collaboration process", $sBody);
 					}
 					
 				}
@@ -958,8 +958,8 @@ class Document {
 					$sBody = $oUser->getUserName() . ", the document <a href=\"https://" . $_SERVER["SERVER_NAME"] . "$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $this->iId . "\">" . $oDocument->getName() . "</a> to access " .
 														"is pending web publishing";
 						
-					$oEmail = & new Email($default->owl_email_from, $default->owl_email_fromname);
-					$oEmail->send($oUser->getEmail(), "Document collaboration role active", $sBody, $default->owl_email_from, $default->owl_email_fromname);
+					$oEmail = & new Email();
+					$oEmail->send($oUser->getEmail(), "Document collaboration role active", $sBody);
 				}
 			}
 			
