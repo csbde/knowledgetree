@@ -39,7 +39,7 @@ class PhysicalFolderManagement {
 	}
 	
 	function renameFolder($sOldPath, $sNewPath) {		
-		rename($sOldPath, $sNewPath);
+		return rename($sOldPath, $sNewPath);
 	}
 	
 }
