@@ -53,7 +53,7 @@ class PatternMainPage {
 							</head>
 							<body>
 							<form id=\"MainForm\" action=\"".$this->sFormAction."\" method=\"get\">
-								<table border=\"1\" witdh=\"600\" height=\"800\">\n
+								<table border=\"1\" width=\"600\" height=\"800\">\n
 									<tr height=\"30%\">\n
 										<td width=\"20%\">";
 										if (isset($this->oNorthWestPayload)) {											
