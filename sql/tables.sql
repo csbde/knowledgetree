@@ -15,7 +15,8 @@ name CHAR(255) NOT NULL
 CREATE TABLE document_fields ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 name CHAR(255) NOT NULL,
-data_type CHAR(100) NOT NULL
+data_type CHAR(100) NOT NULL,
+is_generic BIT
 );
 
 CREATE TABLE document_fields_link ( 
@@ -46,7 +47,7 @@ CREATE TABLE document_type_fields_link (
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 document_type_id INTEGER NOT NULL,
 field_id INTEGER NOT NULL,
-is_mandatory BOOL NOT NULL
+is_mandatory BIT NOT NULL
 );
 
 CREATE TABLE document_types_lookup ( 
@@ -74,7 +75,7 @@ mime_id INTEGER NOT NULL,
 folder_id INTEGER NOT NULL,
 major_version INTEGER NOT NULL,
 minor_version INTEGER NOT NULL,
-is_checked_out BOOL NOT NULL
+is_checked_out BIT NOT NULL
 );
 
 CREATE TABLE folders ( 
@@ -85,7 +86,7 @@ parent_id INTEGER,
 creator_id INTEGER,
 document_type_id INTEGER NOT NULL,
 unit_id INTEGER,
-is_public BOOL NOT NULL
+is_public BIT NOT NULL
 );
 
 CREATE TABLE folders_users_roles_link ( 
@@ -154,8 +155,8 @@ name CHAR(100) NOT NULL
 CREATE TABLE roles ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 name CHAR(255) NOT NULL,
-can_read BOOL NOT NULL,
-can_write BOOL NOT NULL
+can_read BIT NOT NULL,
+can_write BIT NOT NULL
 );
 
 CREATE TABLE subscriptions ( 
@@ -186,8 +187,8 @@ quota_max INTEGER NOT NULL,
 quota_current INTEGER NOT NULL,
 email CHAR(255),
 mobile CHAR(255),
-email_notification BOOL NOT NULL,
-sms_notification BOOL NOT NULL,
+email_notification BIT NOT NULL,
+sms_notification BIT NOT NULL,
 ldap_dn CHAR(255),
 max_sessions INTEGER,
 language_id INTEGER
@@ -670,10 +671,10 @@ INSERT INTO users_groups_link (group_id, user_id) VALUES (17, 10);
 INSERT INTO users_groups_link (group_id, user_id) VALUES (18, 10);
 
 -- default document type fields
-INSERT INTO document_fields (name, data_type) VALUES ("Category", "String");
-INSERT INTO document_fields (name, data_type) VALUES ("Keywords", "String");
-INSERT INTO document_fields (name, data_type) VALUES ("Comments", "String");
-INSERT INTO document_fields (name, data_type) VALUES ("Author(s)", "String");
+INSERT INTO document_fields (name, data_type, is_generic) VALUES ("Category", "String", 1);
+INSERT INTO document_fields (name, data_type, is_generic) VALUES ("Keywords", "String", 1);
+INSERT INTO document_fields (name, data_type, is_generic) VALUES ("Comments", "String", 1);
+INSERT INTO document_fields (name, data_type, is_generic) VALUES ("Author(s)", "String", 1);
 
 -- default document types
 INSERT INTO document_types_lookup (name) VALUES ("Admin");
