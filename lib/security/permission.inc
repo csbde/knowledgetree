@@ -131,12 +131,13 @@ class Permission {
 	*/
 	function userHasGroupWritePermissionForFolder($iFolderID) {
 		global $default, $lang_err_user_folder_write;
+		$oFolder = Folder::get($iFolderID);
 		$sql = $default->db;			
 		$sql->query("SELECT GFL.folder_id " .
 						"FROM groups_folders_link AS GFL INNER JOIN users_groups_link AS UGL ON GFL.group_id = UGL.group_id " .
 						"WHERE UGL.user_id =  " . $_SESSION["userID"] . " " .
 						"AND GFL.can_write = 1 " .
-						"AND GFL.folder_id IN (" . Permission::generateParentFolderString($iFolderID) .  ")");
+						"AND GFL.folder_id IN (" . (strlen($oFolder->getParentFolderIDs()) > 0 ? $oFolder->getParentFolderIDs() . ",$iFolderID" : $iFolderID) .  ")");
 		if ($sql->next_record()) {
 			return true;
 		}
@@ -177,12 +178,13 @@ class Permission {
 	function userHasGroupReadPermissionForFolder($iFolderID) {
 		global $default, $lang_err_user_folder_read;
 		$sql = $default->db;
+		$oFolder = Folder::get($iFolderID);
 		//$sql->query("SELECT * FROM " . $default->owl_groups_folders_table = "groups_folders_link" . " WHERE folder_id = " . $iFolderID . " AND user_id = " . $_SESSION["userID"] . " AND can_read = 1");
         $sql->query("SELECT GFL.folder_id " .
 						"FROM groups_folders_link AS GFL INNER JOIN users_groups_link AS UGL ON GFL.group_id = UGL.group_id " .
 						"WHERE UGL.user_id =  " . $_SESSION["userID"] . " " .
 						"AND GFL.can_read = 1 " .
-						"AND GFL.folder_id IN (" . Permission::generateParentFolderString($iFolderID) .  ")");
+						"AND GFL.folder_id IN (" . (strlen($oFolder->getParentFolderIDs()) > 0 ? $oFolder->getParentFolderIDs() . ",$iFolderID" : $iFolderID) .  ")");
 		if ($sql->next_record()) {
 			return true;
 		}
