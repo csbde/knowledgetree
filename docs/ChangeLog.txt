@@ -1,5 +1,5 @@
 Version 1.2.1
-* Mon Aug 12 2003 Micheal Joseph <michael@jamwarehouse.com>
+* Mon October 14 2003 Michael Joseph <michael@jamwarehouse.com>
 - Email comments - comments can now be added when file links are emailed to users
 - Folder permission heirarchy - the backend functionality exists to allows folders to 
 inherit permissions from their parents or to allow them to define their own
