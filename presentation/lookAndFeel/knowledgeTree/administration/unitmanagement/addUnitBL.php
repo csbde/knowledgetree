@@ -48,13 +48,10 @@ if (checkSession()) {
             $oPatternCustom->setHtml(getPageFail());
         }
 
-    } else if (isset($fUnitID)) {
-        // post back on Unit select from manual edit page
-        $oPatternCustom->setHtml(getAddPage($fUnitID));
-        $main->setFormAction($_SERVER["PHP_SELF"] . "?fForStore=1");
     } else {
-        // if nothing happens...just reload edit page
-        $oPatternCustom->setHtml(getAddPage(null));
+		// display add unit page
+        $oPatternCustom->setHtml(getAddPage());
+        $main->setHasRequiredFields(true);
         $main->setFormAction($_SERVER["PHP_SELF"]. "?fForStore=1");
 
     }
