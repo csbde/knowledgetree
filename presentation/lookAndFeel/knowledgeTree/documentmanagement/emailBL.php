@@ -39,12 +39,11 @@ if (checkSession()) {
                         } else {
                             $sMessage = "Your colleague, " . $oUser->getName() . ", wishes you to view the document entitled '" . $oDocument->getName() . "'.\n  Click on the hyperlink below to view it";
                         }
-                        $sLink = "https://" . $_SERVER["SERVER_NAME"] . $default->owl_root_url . "/presentation/lookAndFeel/knowledgeTree/documentmanagement/viewBL.php?fDocumentID=" . $fDocumentID;
+                        $sHyperLink = generateLink("/presentation/lookAndFeel/knowledgeTree/documentmanagement/viewBL.php", "fDocumentID=$fDocumentID", $oDocument->getName());
 
-                        $sHyperlink = "<a href = " . $sLink .">" . $oDocument->getName() . "</a>";
                         //email the hyperlink
                         $oEmail = new Email();
-                        $oEmail->sendHyperlink($default->owl_email_from, "MRC DMS", $fToEmail, "Document link",  $sMessage, $sHyperlink);
+                        $oEmail->sendHyperlink($default->owl_email_from, "MRC DMS", $fToEmail, "Document link",  $sMessage, $sHyperLink);
                         //go back to the document view page
                         redirect("$default->owl_root_url/control.php?action=viewDocument&fDocumentID=$fDocumentID");
                     } else {
