@@ -55,7 +55,7 @@ function generateControllerUrl($action) {
  * @param string the controller action to generate a link for
  * @return string the generated href
  */
-function generateLink($action) {
+function generateControllerLink($action) {
     return "<a href=\"" . generateControllerUrl($action) . "\">";
 }
 
