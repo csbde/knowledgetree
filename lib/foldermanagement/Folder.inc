@@ -290,11 +290,30 @@ class Folder {
 		global $default;		
 		//if the folder has a parent
 		if (Folder::getParentFolderID($iFolderID) != 0) {			
-			$sCurrentPath = Folder::getFolderPath(Folder::getParentFolderID($iFolderID), Folder::getFolderName($iFolderID)) . "/" . $sCurremtPath;
+			$sCurrentPath = Folder::getFolderPath(Folder::getParentFolderID($iFolderID), Folder::getFolderName($iFolderID)) . "/" . $sCurrentPath;
 		}
 		return $default->owl_FileDir . "/" . Folder::getFolderName($iFolderID);
-		
 	}
+
+	/**
+     * Static function.
+     * Get the full path for a folder as an array
+     * 
+     * @param int primary key of folder to generate path for	
+     *
+     * @return array full path of folder as an array
+     */
+    function getFolderPathAsArray($iFolderID) {
+		global $default;		
+		//if the folder has a parent
+		if (Folder::getParentFolderID($iFolderID) != 0) {
+			$aPathArray = Folder::getFolderPathAsArray(Folder::getParentFolderID($iFolderID));
+            $aPathArray[] = Folder::getFolderName($iFolderID);
+		} else {
+            $aPathArray[] = Folder::getFolderName($iFolderID);
+        }
+		return $aPathArray;
+    }
 	
 	/**
 	* Static function
@@ -377,7 +396,7 @@ class Folder {
 	/**
 	* Get the folder name using the primary key
 	*
-	* @param $iFolderID		Primary key of folder to get name for
+	* @param int primary key of folder to get name for
 	*
 	* @return String name on success, false otherwise and set $_SESSION["errorMessage"]
 	*/
@@ -392,6 +411,23 @@ class Folder {
 		return false;
 	}
 	
+	/**
+	* Get the folder id using the folder name
+	*
+	* @param string the name of the folder to get the ID for
+	*
+	* @return int name on success, false otherwise and set $_SESSION["errorMessage"]
+	*/
+	function getFolderID($sFolderName) {
+		global $default, $lang_err_database;
+		$sql = new Owl_DB();
+		$sql->query("SELECT id FROM " . $default->owl_folders_table . " WHERE name = '" . addslashes($sFolderName) . "'");
+		if ($sql->next_record()) {
+			return $sql->f("id");
+		}
+		$_SESSION["errorMessage"] = $lang_err_database;
+		return false;
+	}    
 }
 
 ?>
