@@ -2,7 +2,9 @@
 /**
  * $Id$
  *
- * Contains the logic for constructing queries from Pattern generated forms
+ * Contains the logic for constructing queries from Pattern generated forms.
+ *
+ * Copyright (c) 2003 Jam Warehouse http://www.jamwarehouse.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,8 +19,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- * 
- * Copyright (c) 2003 Jam Warehouse - http://www.jamwarehouse.com
+ *
+ * @version $Revision$
+ * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
+ * @package administration.docfieldmanagement
  */
  
 function constructQuery($aKeys, $aSuppliedValues = null) {
