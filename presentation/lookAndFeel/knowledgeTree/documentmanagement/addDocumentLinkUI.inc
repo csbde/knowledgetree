@@ -61,7 +61,7 @@ function getValidationJavaScript() {
 function getBrowseJavaScript() {
 	$sToRender = "<script language=\"JavaScript\"><!--\n ";
 	$sToRender .= "function newWindow(file,window) {\n ";	
-    $sToRender .= "\tmsgWindow=open(file,window,'resizable=yes,scrollbars=yes, width=400,height=600');\n ";
+    $sToRender .= "\tmsgWindow=open(file,window,config='resizable=yes,scrollbars=yes,width=400,height=600');\n ";
     $sToRender .= "\tif (msgWindow.opener == null) msgWindow.opener = self; \n ";
     $sToRender .= "}\n";
     $sToRender .= "//--></script>\n";	
