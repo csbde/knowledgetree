@@ -41,13 +41,19 @@ class SubscriptionEngine {
 
         // if the subscription type is document, fire the folder subscriptions also
         if ($iSubscriptionType == SubscriptionConstants::subscriptionType("DocumentSubscription")) {
+            $default->log->info("SubscriptionEngine::fireSubscription firing folder subscriptions for the document subscription, id=$iExternalID");
             $oDocument = & Document::get($iExternalID);
-            $default->log->debug("document=$oDocument");
-            $iSubscriptionsSent = SubscriptionEngine::fireSubscription($oDocument->getFolderID(),
-                                  $iSubscriptionAlertType,
-                                  SubscriptionConstants::subscriptionType("FolderSubscription"),
-                                  $aValues);
-            $default->log->info("fired folder subscribers, count=$iSubscriptionsSent");
+            if ($oDocument) {
+                $default->log->debug("document=$oDocument");
+                $iSubscriptionsSent = SubscriptionEngine::fireSubscription($oDocument->getFolderID(),
+                                      $iSubscriptionAlertType,
+                                      SubscriptionConstants::subscriptionType("FolderSubscription"),
+                                      $aValues);
+                $default->log->info("fired folder subscribers, count=$iSubscriptionsSent");
+            } else {
+                $default->log->error("SubscriptionEngine::fireSubscription could not retrieve document from db, id=$iExternalID");
+                $default->log->error("SubscriptionEngine::fireSubscription not firing folder subscriptions for the parent folder of this document");
+            }
         }
         $default->log->info("subscribers=" . arrayToString($aSubscribers));
 
