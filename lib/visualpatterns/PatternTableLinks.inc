@@ -54,9 +54,9 @@ class PatternTableLinks {
 	*/
 	function & render() {
 		global $default;
-		
+
 		$iArraySize = count($this->aLinks);
-		$iArrayCount = 0;		 
+		$iArrayCount = 1;		 
 		$sToRender = "<table border=0 width=\"100%\" cellspacing = \"0\">\n";		
 		
 		//build the table
@@ -64,7 +64,7 @@ class PatternTableLinks {
 			$sToRender .= "<tr>\n";
 			$sLink = "";
 			for ($j = 0; $j < $this->iColumns; $j++) {
-				if ($iArrayCount < $iArraySize) {
+				if ($iArrayCount <= $iArraySize) {
 					if (strlen($this->aLinks[$iArrayCount]) > 0) {
 	                    $sLink = "<a href=\"" . $this->aLinks[$iArrayCount] . "\">";
 	                    if ($this->iLinkType == TEXT) {
