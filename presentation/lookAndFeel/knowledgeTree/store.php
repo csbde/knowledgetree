@@ -1,5 +1,14 @@
 <?php
-
+/**
+* Page used by all editable patterns to actually perform the db insert/updates
+*
+* Expected form variables
+*	o fReturnURL
+*
+* @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
+* @date 27 January 2003
+* @package presentation.lookAndFeel.knowledgeTree.documentmanagement
+*/
 require_once("../../../config/dmsDefaults.php");
 
 $aKeys = array_keys($_POST);
