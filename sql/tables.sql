@@ -948,4 +948,5 @@ INSERT INTO help VALUES (32,'systemAdministration','systemAdministrationHelp.htm
 INSERT INTO help VALUES (33,'deleteFolder','deleteFolderHelp.htm');
 INSERT INTO help VALUES (34,'editDocType','editDocTypeHelp.htm');
 INSERT INTO help VALUES (35,'removeDocType','removeDocTypeHelp.htm');
-
+INSERT INTO help VALUES (36,'addDocType','addDocTypeHelp.htm');
+INSERT INTO help VALUES (37,'addDocTypeSuccess','addDocTypeHelp.htm');
