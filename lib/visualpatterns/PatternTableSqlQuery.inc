@@ -140,6 +140,18 @@ class PatternTableSqlQuery {
 									$sToRender .= "&nbsp</td>";
 								}
 								break;
+						case 2:
+								//boolean
+								$sToRender .= "<td>";
+								if ($sql->f($this->aColumns[$i]) != null) {
+									$value = $sql->f($this->aColumns[$i]);
+									$sToRender .= "<input type=\"checkbox\" disabled" .  ($value ? " checked " : "") . ">";
+									$sToRender .= "</td>";	
+								} else {
+									$sToRender .= "&nbsp</td>";
+								}							
+
+								break;								
 						case 3:
 								//hyperlink								
 								$sToRender .= "<td><a href=\"" . $this->aLinkURLs[$i];
