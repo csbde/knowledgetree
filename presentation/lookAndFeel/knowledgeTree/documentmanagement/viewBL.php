@@ -154,7 +154,8 @@ if (checkSession()) {
                 // fire subscription alerts for the modified document
                 $count = SubscriptionEngine::fireSubscription($fDocumentID, SubscriptionConstants::subscriptionAlertType("ModifyDocument"),
                          SubscriptionConstants::subscriptionType("DocumentSubscription"),
-                         array( "modifiedDocumentName" => $oDocument->getName()));
+                         array( "folderID" => $oDocument->getFolderID(),
+                                "modifiedDocumentName" => $oDocument->getName()));
                 $default->log->info("viewBL.php fired $count subscription alerts for modified document $fFolderName");                
             }
             

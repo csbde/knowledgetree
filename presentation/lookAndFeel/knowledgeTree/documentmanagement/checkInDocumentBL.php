@@ -99,7 +99,8 @@ if (checkSession()) {
                                         // fire subscription alerts for the checked in document
                                         $count = SubscriptionEngine::fireSubscription($fDocumentID, SubscriptionConstants::subscriptionAlertType("CheckInDocument"),
                                                  SubscriptionConstants::subscriptionType("DocumentSubscription"),
-                                                 array( "modifiedDocumentName" => $oDocument->getName() ));
+                                                 array( "folderID" => $oDocument->getFolderID(),
+                                                        "modifiedDocumentName" => $oDocument->getName() ));
                                         $default->log->info("checkInDocumentBL.php fired $count subscription alerts for checked out document " . $oDocument->getName());
     
                                         //redirect to the document view page
