@@ -155,6 +155,31 @@ class DBUtil {
         return PEAR::raiseError('Unknown return value for autoUpdate');
     }
 
+    function &whereUpdate($sTable, $aFieldValues, $aWhereFieldValues, $db = null) {
+        global $default;
+        $default->log->info('WhereUpdate called for table ' . $sTable);
+        $db =& DBUtil::getDB();
+        $aWhereFields = array();
+        foreach (array_keys($aWhereFieldValues) as $k) {
+            $aWhereFields[] = $k . ' = ?';
+        }
+        $sWhere = join(' AND ', $aWhereFields);
+        $aValues = array_merge(array_values($aFieldValues), array_values($aWhereFieldValues));
+
+        $sth = $db->autoPrepare($sTable, array_keys($aFieldValues), DB_AUTOQUERY_UPDATE, $sWhere);
+        $ret =& $db->execute($sth, array_values($aValues));
+        $db->freePrepared($sth);
+
+        $default->log->info('Query: ' . DBUtil::lastQuery($db));
+        if ($res === DB_OK) {
+            return $res;
+        }
+        if (PEAR::isError($res)) {
+            return $res;
+        }
+        return PEAR::raiseError('Unknown return value for whereUpdate');
+    }
+
     function &lastQuery($db) {
         $db =& DBUtil::getDB();
         return $db->last_query;
