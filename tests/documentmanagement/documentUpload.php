@@ -1,7 +1,7 @@
 <?php
 /**
-* Contains unit test functionality for upload function of class DocumentModify found in 
-* /lib/documentmanagement/DocumentModify.inc
+* Contains unit test functionality for upload function of class PhysicalDocumentManager found in 
+* /lib/documentmanagement/PhysicalDocumentManager.inc
 *
 * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
 * @date 17 January 2003
@@ -11,7 +11,7 @@
 require_once("../../config/dmsDefaults.php");
 
 if (checkSession()) {
-	require_once("$default->owl_fs_root/lib/documentmanagement/DocumentModify.inc");
+	require_once("$default->owl_fs_root/lib/documentmanagement/PhysicalDocumentManager.inc");
 	require_once("$default->owl_fs_root/lib/folderManagement/FolderLib.inc");
 	require_once("$default->owl_fs_root/lib/visualpatterns/PatternListBox.inc");
 	
