@@ -84,10 +84,10 @@ function getSearchResults($sMetaTagIDs, $sSQLSearchString, $iStartIndex, $sStatu
 					
 	$sQuery = "SELECT '" . "$default->graphicsUrl/widgets/dfolder.gif" . "' AS folder_image_url, F.id folder_id, D.id document_id, D.name AS document_name, COUNT(D.id) AS doc_count " .
 			"FROM $default->owl_documents_table AS D INNER JOIN $default->owl_folders_table AS F ON D.folder_id = F.id " .
-			"INNER JOIN document_fields_link AS DFL ON DFL.document_id = D.id " .
-			"INNER JOIN document_fields AS DF ON DF.id = DFL.document_field_id " . 
-			"INNER JOIN search_document_user_link AS SDUL ON SDUL.document_id = D.ID " .
-			"INNER JOIN status_lookup AS SL on D.status_id=SL.id " .						
+			"INNER JOIN $default->owl_document_fields_table AS DFL ON DFL.document_id = D.id " .
+			"INNER JOIN $default->owl_fields_table AS DF ON DF.id = DFL.document_field_id " . 
+			"INNER JOIN $default->search_permissions_table AS SDUL ON SDUL.document_id = D.ID " .
+			"INNER JOIN $default->owl_status_table AS SL on D.status_id=SL.id " .						
 			"WHERE DF.ID IN ($sMetaTagIDs) " .
 			"AND (" . $sSQLSearchString . ") " .
 			"AND SDUL.user_id = " . $_SESSION["userID"] . " " .

@@ -139,10 +139,10 @@ function searchForDocuments($sMetaTagIDs, $sSQLSearchString, $sStatus = "Live") 
 	global $default;
 	$aDocuments = array();
 	$sQuery = "SELECT DISTINCT D.id " .
-				"FROM documents AS D INNER JOIN document_fields_link AS DFL ON DFL.document_id = D.id " .
-				"INNER JOIN document_fields AS DF ON DF.id = DFL.document_field_id " .
-				"INNER JOIN search_document_user_link AS SDUL ON SDUL.document_id = D.ID " .
-				"INNER JOIN status_lookup AS SL on D.status_id=SL.id " .			
+				"FROM $default->owl_documents_table AS D INNER JOIN document_fields_link AS DFL ON DFL.document_id = D.id " .
+				"INNER JOIN $default->owl_fields_table AS DF ON DF.id = DFL.document_field_id " .
+				"INNER JOIN $default->search_permissions_table AS SDUL ON SDUL.document_id = D.ID " .
+				"INNER JOIN $default->owl_status_table AS SL on D.status_id=SL.id " .			
 				"WHERE DF.ID IN ($sMetaTagIDs) " .
 				"AND (" . $sSQLSearchString . ") " .
 				"AND SL.name='$sStatus' " .
