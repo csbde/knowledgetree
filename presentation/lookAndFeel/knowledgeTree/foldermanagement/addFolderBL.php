@@ -38,6 +38,7 @@ if (checkSession()) {
 			}
 			$main->setCentralPayload($oPatternCustom);
 			$main->setFormAction("addFolderBL.php?fFolderID=$fFolderID");
+			$main->setHasRequiredFields(true);
 			$main->render();
 		} else {
 			//have a folder name to store
@@ -53,6 +54,7 @@ if (checkSession()) {
 						$oPatternCustom->setHtml(renderBrowseAddPage($fFolderID));
 						$main->setCentralPayload($oPatternCustom);
 						$main->setErrorMessage("There is another folder named $fFolderName in this folder already");
+						$main->setHasRequiredFields(true);
 						$main->setFormAction("addFolderBL.php?fFolderID=$fFolderID");
 						$main->render();
 					} else {
@@ -62,7 +64,7 @@ if (checkSession()) {
 						if ($oFolder->create()) {
 							//create the folder on the file system						
 							if (PhysicalFolderManagement::createFolder(Folder::getFolderPath($oFolder->getID()))) {							
-								redirect("$default->owl_root_url/control.php?action=browse&fBrowseType=folder&fFolderID=" . $oFolder->getID());
+								redirect("$default->owl_root_url/control.php?action=editFolder&fFolderID=" . $oFolder->getID());
 							} else {
 								//if we couldn't do that, remove the folder from the db and report and error
 								$oFolder->delete();
@@ -71,6 +73,7 @@ if (checkSession()) {
 								$main->setCentralPayload($oPatternCustom);
 								$main->setErrorMessage("There was an error creating the folder $fFolderName on the filesystem");
 								$main->setFormAction("addFolderBL.php?fFolderID=$fFolderID");
+								$main->setHasRequiredFields(true);
 								$main->render();
 							}
 						} else {
@@ -79,7 +82,7 @@ if (checkSession()) {
 							$oPatternCustom->setHtml(renderBrowsePage($fFolderID));
 							$main->setCentralPayload($oPatternCustom);
 							$main->setErrorMessage("There was an error creating the folder $fFolderName in the database");
-							$main->setFormAction("addFolderBL.php?fFolderID=$fFolderID");
+							$main->setFormAction("addFolderBL.php?fFolderID=$fFolderID");							
 							$main->render();
 						}
 					}
@@ -89,6 +92,7 @@ if (checkSession()) {
 					$oPatternCustom->setHtml(renderBrowseAddPage($fFolderID));
 					$main->setCentralPayload($oPatternCustom);
 					$main->setErrorMessage("Folder not created. Folder names may not contain: '<', '>', '*', '/', '\', '|', '?' or '\"' ");
+					$main->setHasRequiredFields(true);
 					$main->setFormAction("addFolderBL.php?fFolderID=$fFolderID");
 					$main->render();
 				}
