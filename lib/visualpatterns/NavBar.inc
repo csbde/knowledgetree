@@ -62,6 +62,15 @@ class NavBar {
         $this->prefs = "$default->graphicsUrl/prefs/norm.gif";
         $this->help = "$default->graphicsUrl/help/norm.gif";
         $this->logout = "$default->graphicsUrl/logout/norm.gif";
+
+        $this->mdocsClass = "dash";
+        $this->homeClass = "dash";
+        $this->subscriptionsClass = "dash";
+        $this->asearchClass = "dash";
+        $this->adminClass = "dash";
+        $this->prefsClass = "dash";
+        $this->helpClass = "dash";
+        $this->logoutClass = "dash";
     }
 
     /**
@@ -86,45 +95,54 @@ class NavBar {
         if($section == "General") {
             $this->home = "$default->graphicsUrl/home/over.gif";
             $this->nwColourBar = "$default->graphicsUrl/home/def.gif";
+            $this->homeClass = "dashactive";
         }
 
         if(($section == "Manage Documents") || ($section == "Manage Categories") || ($section == "Manage Document Types")) {
             $this->mdocs = "$default->graphicsUrl/mdocs/over.gif";
             $this->nwColourBar = "$default->graphicsUrl/mdocs/def.gif";
+            $this->mdocsClass = "dashactive";
         }
 		if($section == "Discussion Threads" )  {
             $this->mdocs = "$default->graphicsUrl/mdocs/over.gif";
             $this->nwColourBar = "$default->graphicsUrl/mdocs/def.gif";
+            $this->mdocsClass = "dashactive";
         }
 
         if($section == "Subscriptions") {
             $this->subscriptions = "$default->graphicsUrl/subscriptions/over.gif";
             $this->nwColourBar = "$default->graphicsUrl/subscriptions/def.gif";
+            $this->subscriptionsClass = "dashactive";
         }
 
         if(($section == "Standard Search") || ($section == "Advanced Search")) {
             $this->asearch = "$default->graphicsUrl/asearch/over.gif";
             $this->nwColourBar = "$default->graphicsUrl/asearch/def.gif";
+            $this->asearchClass = "dashactive";
         }
 
         if(substr($section, -14) == "Administration") {
             $this->admin = "$default->graphicsUrl/admin/over.gif";
             $this->nwColourBar = "$default->graphicsUrl/admin/def.gif";
+            $this->adminClass = "dashactive";
         }
 
         if($section == "Preferences") {
             $this->prefs = "$default->graphicsUrl/prefs/over.gif";
             $this->nwColourBar = "$default->graphicsUrl/prefs/def.gif";
+            $this->prefsClass = "dashactive";
         }
 
         if($section == "Help") {
             $this->help = "$default->graphicsUrl/help/over.gif";
             $this->nwColourBar = "$default->graphicsUrl/help/def.gif";
+            $this->helpClass = "dashactive";
         }
 
         if($section == "Logout") {
             $this->logout = "$default->graphicsUrl/logout/over.gif";
             $this->nwColourBar = "$default->graphicsUrl/logout/def.gif";
+            $this->logoutClass = "dashactive";
         }
     }
 
@@ -168,24 +186,67 @@ class NavBar {
                                 $this->help,
                                 $this->logout);
 
+        $aTopMenuClasses = array($this->homeClass,
+                                $this->mdocsClass,
+                                $this->subscriptionsClass,
+                                $this->asearchClass,
+                                $this->adminClass,
+                                $this->prefsClass,
+                                $this->helpClass,
+                                $this->logoutClass);
+
+        $aTopMenuWords = array(
+            _("Dashboard"),
+            _("Browse Collections"),
+            _("Subscriptions"),
+            _("Advanced Search"),
+            _("Admin"),
+            _("Preferences"),
+            _("Help"),
+            _("Logout"),
+        );
+
+        $aTopMenuColourClass = array(
+            "dashboard",
+            "browse",
+            "subscriptions",
+            "asearch",
+            "admin",
+            "prefs",
+            "help",
+            "logout",
+        );
+
         // create array of menu colour images
         $aColourMenuImages = array($colourHome,$colourmdocs,$coloursubscriptions,$colourasearch,$colouradmin,$colourprefs,$colourhelp,$colourlogout);
 
-        //set up the links
-        for ($i = 0; $i < count($aTopMenuLinks); $i++) {
-            if (strcmp($aTopMenuLinks[$i], "help") == 0) {
-                $sTopMenu .= "<td width=\"10\"><a href=\"#\" onClick=\"javascript:helpWindow();\"><image src=\"" . $aTopMenuImages[$i] . "\" border=\"0\" /></a></td>\n";
-                $sColourMenu .= "<td width=\"10\"><a href=\"#\" onClick=\"javascript:helpWindow();\"><image src=\"" . $aColourMenuImages[$i] . "\" border=\"0\" /></a></td>\n";
-            } else {
-                $sTopMenu .= "<td width=\"10\">" . (strlen($aTopMenuLinks[$i]) > 0 ? "<a href=\"" . $aTopMenuLinks[$i] . "\">" : "") . "<img src=\"" . $aTopMenuImages[$i] . "\" border=\"0\" /></a></td>\n";
-                $sColourMenu .= "<td width=\"10\">" . (strlen($aTopMenuLinks[$i]) > 0 ? "<a href=\"" . $aTopMenuLinks[$i] . "\">" : "") . "<img src=\"" . $aColourMenuImages[$i] . "\" border=\"0\"/></a></td>\n";
+        if ($default->useTextButtons === false) {
+            //set up the links
+            for ($i = 0; $i < count($aTopMenuLinks); $i++) {
+                if (strcmp($aTopMenuLinks[$i], "help") == 0) {
+                    $sTopMenu .= "<td width=\"10\"><a href=\"#\" onClick=\"javascript:helpWindow();\"><image src=\"" . $aTopMenuImages[$i] . "\" border=\"0\" /></a></td>\n";
+                    $sColourMenu .= "<td width=\"10\"><a href=\"#\" onClick=\"javascript:helpWindow();\"><image src=\"" . $aColourMenuImages[$i] . "\" border=\"0\" /></a></td>\n";
+                } else {
+                    $sTopMenu .= "<td width=\"10\">" . (strlen($aTopMenuLinks[$i]) > 0 ? "<a href=\"" . $aTopMenuLinks[$i] . "\">" : "") . "<img src=\"" . $aTopMenuImages[$i] . "\" border=\"0\" /></a></td>\n";
+                    $sColourMenu .= "<td width=\"10\">" . (strlen($aTopMenuLinks[$i]) > 0 ? "<a href=\"" . $aTopMenuLinks[$i] . "\">" : "") . "<img src=\"" . $aColourMenuImages[$i] . "\" border=\"0\"/></a></td>\n";
+                }
+            }
+        } else {
+            for ($i = 0; $i < count($aTopMenuLinks); $i++) {
+                if (strcmp($aTopMenuLinks[$i], "help") == 0) {
+                    $sTopMenu .= "<td valign=\"top\"><a href=\"#\" onClick=\"javascript:helpWindow();\"><span class=\"" . $aTopMenuClasses[$i] . "\">" . strtoupper($aTopMenuWords[$i]) . "</span></a></td>\n";
+                    $sColourMenu .= "<td valign=\"top\" class=\"colour_" . $aTopMenuColourClass[$i] . "\"><a href=\"#\" onClick=\"javascript:helpWindow();\"><span>&nbsp;</span></a></td>\n";
+                } else {
+                    $sTopMenu .= "<td valign=\"top\">" . (strlen($aTopMenuLinks[$i]) > 0 ? "<a href=\"" . $aTopMenuLinks[$i] . "\">" : "") . "<span class=\"" . $aTopMenuClasses[$i] . "\">" . strtoupper($aTopMenuWords[$i]) . "</span></a></td>\n";
+                    $sColourMenu .= "<td valign=\"top\" class=\"colour_" . $aTopMenuColourClass[$i] . "\">" . (strlen($aTopMenuLinks[$i]) > 0 ? "<a href=\"" . $aTopMenuLinks[$i] . "\">" : "") . "<span>&nbsp;</span></a></td>\n";
+                }
             }
         }
 
         $toRender = new PatternCustom;
 
         // build the nav bar
-        $bar  = "<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\">\n";
+        $bar  = "<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"608\">\n";
         $bar .= "\t<tr height=\"30\">\n";
         $bar .= "\t\t<td align=\"right\" valign=\"top\" width=\"100%\"><img src=\"$heading\"/><img src=\"$default->graphicsUrl/logo.jpg\" width=\"30\" height=\"36\"/></td>\n";        
         $bar .= "\t</tr>\n";
@@ -211,7 +272,8 @@ class NavBar {
         }
         $bar .= "\t\t</td>\n";
         $bar .= "\t</tr>\n";
-        $bar .= "<tr height=30><td ><table cellspacing=0 cellpadding=0 border=0><tr>$sTopMenu</tr>\n";
+        /* $bar .= "<tr height=30><td ><table cellspacing=0 cellpadding=0 border=0><tr>$sTopMenu</tr>\n"; */
+        $bar .= "<tr><td><table cellspacing=0 cellpadding=0 border=0><tr>$sTopMenu</tr>\n";
         $bar .= "<tr>$sColourMenu</tr></table></td></tr>\n";
         $bar .= "</table>\n";
 

@@ -176,3 +176,120 @@ span.disabledbutton {
         display: block;
         margin-top: 4px;
 }
+
+span.dash {
+        font-size: 7pt;
+        font-weight: 600;
+        /* height: 20px; */
+        /* border: 1px solid #FFF; */
+        border-left: 2px solid #FFF;
+        border-top: 2px solid #FFF;
+        background-color: #9D9D7F;
+        text-align: center;
+        white-space: nowrap;
+        display: block;
+        /* margin: 2px; */
+        /* padding: 1px; */
+        padding-left: 5px;
+        padding-right: 5px;
+        padding-top: 2px;
+        padding-bottom: 1px;
+        text-decoration: none;
+    font-style : normal;
+    color : #FFFFFF;
+}
+
+span.dash:Hover {
+        /* background-color: #EEE; */
+        text-decoration: none;
+}
+
+span.dashactive {
+        font-size: 7pt;
+        font-weight: 600;
+        /* height: 20px; */
+        /* border: 1px solid #FFF; */
+        border-left: 2px solid #FFF;
+        border-top: 2px solid #FFF;
+        background-color: #1A4383;
+        text-align: center;
+        white-space: nowrap;
+        display: block;
+        /* margin: 2px; */
+        padding-left: 5px;
+        padding-right: 5px;
+        padding-top: 2px;
+        padding-bottom: 1px;
+        text-decoration: none;
+    font-style : normal;
+    color : #FFFFFF;
+}
+
+span.dashactive:Hover {
+        /* background-color: #EEE; */
+        text-decoration: none;
+}
+
+td.colour_dashboard {
+    border-left: 2px solid #FFF;
+    border-top: 2px solid #FFF;
+    height: 10px;
+    width: 100%;
+    background-color: #007A3F;
+}
+
+td.colour_browse {
+    border-left: 2px solid #FFF;
+    border-top: 2px solid #FFF;
+    height: 10px;
+    width: 100%;
+    background-color: #57AFAE;
+}
+
+td.colour_subscriptions {
+    border-left: 2px solid #FFF;
+    border-top: 2px solid #FFF;
+    height: 10px;
+    width: 100%;
+    background-color: #FFC602;
+}
+
+td.colour_asearch {
+    border-left: 2px solid #FFF;
+    border-top: 2px solid #FFF;
+    height: 10px;
+    width: 100%;
+    background-color: #A1571B;
+}
+
+td.colour_admin {
+    border-left: 2px solid #FFF;
+    border-top: 2px solid #FFF;
+    height: 10px;
+    width: 100%;
+    background-color: #056DCE;
+}
+
+td.colour_prefs {
+    border-left: 2px solid #FFF;
+    border-top: 2px solid #FFF;
+    height: 10px;
+    width: 100%;
+    background-color: #F87308;
+}
+
+td.colour_help {
+    border-left: 2px solid #FFF;
+    border-top: 2px solid #FFF;
+    height: 10px;
+    width: 100%;
+    background-color: #80CE05;
+}
+
+td.colour_logout {
+    border-left: 2px solid #FFF;
+    border-top: 2px solid #FFF;
+    height: 10px;
+    width: 100%;
+    background-color: #CE0505;
+}
