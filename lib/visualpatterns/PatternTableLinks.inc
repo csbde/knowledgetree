@@ -60,7 +60,7 @@ class PatternTableLinks {
 		$sToRender = "<table border=0 width=\"100%\" cellspacing = \"0\">\n";		
 		
 		//build the table
-		for ($i = 0; $i < $this->iRows; $i++) {			
+		for ($i = 0; $i < ($this->iRows > $iArraySize ? $this->iRows : $iArraySize); $i++) {			
 			$sToRender .= "<tr>\n";
 			$sLink = "";
 			for ($j = 0; $j < $this->iColumns; $j++) {
@@ -74,13 +74,13 @@ class PatternTableLinks {
 	                        $sLink .= $oImage->render();
 	                    }
 	                    $sLink .= "</a>";
-						
 					}
 					$iArrayCount++;
 				}
-				$sToRender .= "<td cellspacing=\"20\" width=\"100%\">" . (strlen($sLink) > 0 ? $sLink : "&nbsp;") . "</td>";				
+				$sToRender .= "<td cellspacing=\"20\" width=\"100%\">" . (strlen($sLink) > 0 ? $sLink : "&nbsp;") . "</td>";
+				$sToRender .= "</tr><tr></tr><tr><td></td>\n";
 			}
-			$sToRender .= "</tr>\n";			
+			$sToRender .= "</tr>\n";
 		}		
 		$sToRender .= "</table>\n";				 
 		return $sToRender;		
