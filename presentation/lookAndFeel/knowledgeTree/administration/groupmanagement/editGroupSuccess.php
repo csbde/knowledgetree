@@ -9,11 +9,8 @@
 */
 
 require_once("../../../../../config/dmsDefaults.php");
-<<<<<<< editGroupSuccess.php
 require_once("../adminUI.inc");
 require_once("$default->fileSystemRoot/presentation/Html.inc");
-=======
->>>>>>> 1.7
 
 global $default;
 
