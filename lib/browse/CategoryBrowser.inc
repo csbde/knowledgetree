@@ -99,4 +99,8 @@ class CategoryBrowser extends Browser {
             return $results;
         }
     }
+    
+    function getSectionName() {
+    	return "Manage Categories";
+    }    
 }

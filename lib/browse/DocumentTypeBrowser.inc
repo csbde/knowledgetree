@@ -90,4 +90,8 @@ class DocumentTypeBrowser extends Browser {
             return $results;
         }
     }
+    
+    function getSectionName() {
+    	return "Manage Document Types";
+    }    
 }
