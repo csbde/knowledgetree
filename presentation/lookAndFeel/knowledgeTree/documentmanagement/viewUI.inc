@@ -386,7 +386,7 @@ function displayButton($sAction, $sQueryString, $sImageName, $sDisabledText = ""
 	if ($bActive) {
 		$sImage .= "$sImageName.gif\"";
 	} else {
-		$sImage .= "disabled-$sImageName.gif\" alt=\"$sDisabledText\"";		
+		$sImage .= "disabled-$sImageName.gif\" title=\"$sDisabledText\"";		
 	}
 	$sImage .= "/>";
 	if ($bActive) {
@@ -399,7 +399,7 @@ function displayButton($sAction, $sQueryString, $sImageName, $sDisabledText = ""
 function displayViewButton($oDocument, $bEdit) {
 	global $default;
 	$sViewAlert = "This will download a copy of the document and is not the same as Checking Out a document.  Changes to this downloaded file will not be managed in the DMS.";
-    return "<tr><td align=\"left\"><a onClick=\"alert('$sViewAlert '); return true;\" href=\"" . generateControllerLink("downloadDocument", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/docactions/view.gif\" border=\"0\" alt=\"View the document\"/></a></td></tr>\n";    
+    return "<tr><td align=\"left\"><a onClick=\"alert('$sViewAlert '); return true;\" href=\"" . generateControllerLink("downloadDocument", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/docactions/view.gif\" border=\"0\" title=\"View the document\"/></a></td></tr>\n";    
 }
 
 function displayCheckInOutButton($oDocument, $bEdit) {
