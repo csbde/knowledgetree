@@ -482,7 +482,9 @@ class Folder extends KTEntity {
     function getFolderPathAsArray($iFolderID) {
 		global $default;		
 		$oFolder = Folder::get($iFolderID);
-		$aPathArray;
+        if ($oFolder === false) {
+            return false;
+        }
 		if (strlen($oFolder->sParentFolderIDs) > 0) {
 			if (strlen($oFolder->sParentFolderIDs) > 1) {				
 				$aPathArray = explode(",",$oFolder->sParentFolderIDs);				
