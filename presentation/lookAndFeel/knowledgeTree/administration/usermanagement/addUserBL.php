@@ -58,7 +58,9 @@ if (checkSession()) {
                 } else {
                     if($bLdap) {
                         $oPatternCustom->setHtml(getDetailsLDAPPage($sSearch,$aResults, $oAuth->oLdap->getUserIdentifier()));
-                        $main->setOnLoadJavaScript("disable(document.MainForm.fLdap)");
+						if ($default->bNN4) {
+                        	$main->setOnLoadJavaScript("disable(document.MainForm.fLdap)");
+						}
                         $main->setFormAction($_SERVER["PHP_SELF"]. "?fAddToDb=1");
                     } else {
                         $oPatternCustom->setHtml(getDetailsDBPage($sSearch,$aResults));
@@ -78,7 +80,9 @@ if (checkSession()) {
         // display details page
         if ($bLdap) {
             $oPatternCustom->setHtml(getDetailsLDAPPage($fName,$aResult, $oAuth->oLdap->getUserIdentifier()));
-            $main->setOnLoadJavaScript("disable(document.MainForm.fLdap)");
+			if ($default->bNN4) {
+            	$main->setOnLoadJavaScript("disable(document.MainForm.fLdap)");
+			}
             $main->setFormAction($_SERVER["PHP_SELF"]. "?fAddToDb=1");
         } else {
             $oPatternCustom->setHtml(getDetailsDBPage($fName,$aResult));
