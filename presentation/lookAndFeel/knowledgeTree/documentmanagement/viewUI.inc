@@ -88,7 +88,46 @@ function renderDocumentRouting($oDocument) {
 	
 }
 
-function getPage($oDocument) {
+function getEditPage($oDocument) {
+	$sToRender = renderDocumentPath($oDocument) . "\n<br>\n"; 
+	$sToRender .= "<table border = 0>\n";
+	$sToRender .= "<tr>\n";
+	$sToRender .= "<td>\n";
+		$sToRender .= "\t<table border = 0 width = 280>\n";
+		$sToRender .= "\t<tr width>\n";
+		$sToRender .= "\t\t<td>" . wrapInTable(renderDocumentData($oDocument)) . "</td>\n";
+		//$sToRender .= "\t\t<td>" . renderGenericDocumentMetaData($oDocument) . "</td>\n";
+		$sToRender .= "\t</tr>\n";
+		$sToRender .= "\t<tr>\n";
+		$sToRender .= "\t<td>" . wrapInTable(renderGenericMetaData($oDocument)) . "</td>\n";
+		$sToRender .= "\t<tr>\n";
+		$sToRender .= "\t<tr>\n";
+		$sToRender .= "\t\t<td>" . wrapInTable(renderTypeSpecificMetaData($oDocument)) . "</td>\n";
+		//$sToRender .= "\t\t<td>" . renderTypeSpecificMetaData($oDocument) . "</td>\n";
+		$sToRender .= "\t</tr>\n";
+		$sToRender .= "\t</table>\n";
+	$sToRender .= "</td>\n";
+	$sToRender .= "<td valign=top>\n";
+		$sToRender .= "\t<table border = 0, width = 230>\n";
+		$sToRender .= "\t<tr>\n";
+		$sToRender .= "\t\t<td>" . wrapInTable(renderDocumentRouting($oDocument)) . "</td>\n";
+		//$sToRender .= "\t\t<td>" . renderDocumentRouting($oDocument) . "</td>\n";
+		$sToRender .= "\t</tr>";
+		$sToRender .= "\t</table>";
+	$sToRender .= "</td>\n";
+	$sToRender .= "</tr>\n";
+	$sToRender .= "</table>\n";
+	$sToRender .= "<table>\n";
+	$sToRender .= "<tr>\n";
+	$sToRender .= "<td><input type=\"submit\" value=\"Edit\"></td>\n";
+	$sToRender .= "<td><a href=\"" . $_SERVER["PHP_SELF"] . "?fDocumentID=" . $oDocument->getID() . "&fForDownload=1\">Download</a></td>\n";
+	$sToRender .= "</tr>\n";
+	$sToRender .= "</table>\n";
+		
+	return $sToRender;	
+}
+
+function getViewPage($oDocument) {
 	$sToRender = renderDocumentPath($oDocument) . "\n<br>\n"; 
 	$sToRender .= "<table border = 0>\n";
 	$sToRender .= "<tr>\n";
@@ -117,7 +156,11 @@ function getPage($oDocument) {
 	$sToRender .= "</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>";
-	$sToRender .= "<input type=\"submit\" value=\"Edit\">";
+	$sToRender .= "<table>\n";
+	$sToRender .= "<tr>\n";	
+	$sToRender .= "<td><a href=\"" . $_SERVER["PHP_SELF"] . "?fDocumentID=" . $oDocument->getID() . "&fForDownload=1\">Download</a></td>\n";
+	$sToRender .= "</tr>\n";
+	$sToRender .= "</table>\n";
 		
 	return $sToRender;	
 }
