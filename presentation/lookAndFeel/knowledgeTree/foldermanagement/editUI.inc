@@ -151,7 +151,7 @@ function getPage($iFolderID) {
     
     $sToRender  = renderHeading();
     $sToRender .= getFolderPath($iFolderID);
-	$sToRender .= "<table border=\"0\">\n";
+	$sToRender .= "<table border=\"0\" width=\"100%\">\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td valign=\"top\">\n";
 	$sToRender .= getLeftSide($iFolderID);
@@ -166,7 +166,7 @@ function getPage($iFolderID) {
 
 function getLeftSide($iFolderID) {
 	global $default;
-	$sToRender .= "<table border=\"0\">\n";
+	$sToRender .= "<table border=\"0\" width=\"100%\">\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>\n";
 	$sToRender .= getFolderData($iFolderID);
@@ -193,7 +193,7 @@ function getLeftSide($iFolderID) {
 
 function getRightSide($iFolderID) {
 	global $default;
-	$sToRender .= "<table border  =\"0\">\n";
+	$sToRender .= "<table border=\"0\" width=\"100%\">\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>\n";
 	$sToRender .= getFolderDocTypes($iFolderID);
