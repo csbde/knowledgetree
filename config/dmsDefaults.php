@@ -233,6 +233,7 @@ $default->siteMap->addPage("newsManagement", "/presentation/lookAndFeel/knowledg
 $default->siteMap->addPage("websiteManagement", "/presentation/lookAndFeel/knowledgeTree/administration/admin.php?sectionName=websiteAdministration", "Administration", SysAdmin, "Website Management");
 $default->siteMap->addPage("systemAdministration", "/presentation/lookAndFeel/knowledgeTree/administration/systemsettings/systemSettingsBL.php", "Administration", SysAdmin, "System Settings");
 $default->siteMap->addPage("archivedDocuments", "/presentation/lookAndFeel/knowledgeTree/administration/documentmanagement/manageArchivedDocumentsBL.php", "Administration", UnitAdmin, "Restore Archived Documents");
+$default->siteMap->addPage("deletedDocuments", "/presentation/lookAndFeel/knowledgeTree/administration/documentmanagement/listDeletedDocumentsBL.php", "Administration", UnitAdmin, "Deleted Documents");
 
 $default->siteMap->addSectionColour("Administration", "th", "056DCE");
 $default->siteMap->addSectionColour("Administration", "td", "6699CC");
@@ -355,12 +356,15 @@ $default->siteMap->addPage("removeWebSite", "/presentation/lookAndFeel/knowledge
 $default->siteMap->addSectionColour("websiteAdministration", "th", "056DCE");
 $default->siteMap->addSectionColour("websiteAdministration", "td", "6699CC");
 
+// deleted documents
+$default->siteMap->addPage("expungeDeletedDocuments", "/presentation/lookAndFeel/knowledgeTree/administration/documentmanagement/expungeDeletedDocumentsBL.php", "Administration", UnitAdmin, "Expunge Deleted Documents", false);
+$default->siteMap->addPage("restoreDeletedDocument", "/presentation/lookAndFeel/knowledgeTree/administration/documentmanagement/restoreDeletedDocumentBL.php", "Administration", UnitAdmin, "Restore Deleted Document", false);
+
 // pages for subscriptions section
 $default->siteMap->addDefaultPage("manageSubscriptions", "/presentation/lookAndFeel/knowledgeTree/subscriptions/manageSubscriptionsBL.php", "Subscriptions", User, "Manage Subscriptions");
 $default->siteMap->addPage("viewAlert", "/presentation/lookAndFeel/knowledgeTree/subscriptions/viewAlertBL.php", "Subscriptions", User, "Subscriptions", false);
 
 $default->siteMap->addSectionColour("Subscriptions", "th", "FFC602");
-
 
 // pages for advanced search section
 $default->siteMap->addDefaultPage("advancedSearch", "/presentation/lookAndFeel/knowledgeTree/search/advancedSearchBL.php", "Advanced Search", Guest, "Advanced Search", true);
@@ -370,7 +374,6 @@ $default->siteMap->addSectionColour("Advanced Search", "th", "A1571B");
 $default->siteMap->addSectionColour("Standard Search", "th", "A1571B");
 
 // pages for prefs section
-
 $default->siteMap->addDefaultPage("preferences", "/presentation/lookAndFeel/knowledgeTree/preferences/editUserPrefsBL.php", "Preferences", User, "Preferences");
 $default->siteMap->addPage("editPrefsSuccess", "/presentation/lookAndFeel/knowledgeTree/preferences/editPrefsSuccess.php", "Preferences", User, "Preferences",false);
 $default->siteMap->addSectionColour("Preferences", "th", "F87308");
