@@ -70,10 +70,6 @@ function getDocumentHistory($iDocumentID) {
     return $sToRender;
 }
 
-function getColour($iColourCount) {
-    return ($iColourCount%2 == 0) ? "F5F6EE" : "FFFFFF";
-}
-
 function getPage($iDocumentID, $iFolderID, $sDocumentName) {
     global $default;
     $sToRender  = renderHeading("Document History");

@@ -198,8 +198,4 @@ function renderErrorPage($sErrorMessage) {
                   "</p></td></tr></table>\n";
    return $sToRender;
 }
-
-function getColour($iColourCount) {
-		return ($iColourCount%2 == 0) ? "F5F6EE" : "FFFFFF";
-}
 ?>

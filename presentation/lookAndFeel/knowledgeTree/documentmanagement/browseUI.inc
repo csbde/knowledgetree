@@ -339,12 +339,4 @@ function renderPage($aResults, $sBrowseType, $sSortBy, $sSortDirection) {
     
     return $sToRender;
 }
-
-/**
- * Candy striping helper method
- */
-function getColour($iColourCount) {
-	return ($iColourCount%2 == 0) ? "F5F6EE" : "FFFFFF";
-}
-
 ?>
