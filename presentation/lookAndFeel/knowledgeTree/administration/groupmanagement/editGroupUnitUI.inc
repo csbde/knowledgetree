@@ -102,12 +102,12 @@ function getUnitPage($iGroupID) {
     $sToRender .= "<tr><td width=200 bgcolor=$sBgColor>";
     $sToRender .= "<br>&nbsp;&nbsp;Add Group to a Unit<br><br>";
     $sToRender .= "</td><td>";
-    $sToRender .= "<a href=\"$default->rootUrl/control.php?action=assignGroupToUnit&fGroupID=$iGroupID\"><img border=0 src=\"$default->graphicsUrl/widgets/select.gif\"></img></a>";
+    $sToRender .= "<a href=\"$default->rootUrl/control.php?action=assignGroupToUnit&fGroupID=$iGroupID\"><img border=0 src=\"$default->graphicsUrl/widgets/enter.gif\"></img></a>";
     $sToRender .= "</td></tr>";
     $sToRender .= "<tr><td width=200 bgcolor=$sBgColor>";
     $sToRender .= "<br>&nbsp;&nbsp;Remove Group from a Unit<br><br>";
     $sToRender .= "</td><td>";
-    $sToRender .= "<a href=\"$default->rootUrl/control.php?action=removeGroupFromUnit&fGroupSet=1&fGroupID=$iGroupID\"><img border=0 src=\"$default->graphicsUrl/widgets/select.gif\"></img></a>";
+    $sToRender .= "<a href=\"$default->rootUrl/control.php?action=removeGroupFromUnit&fGroupSet=1&fGroupID=$iGroupID\"><img border=0 src=\"$default->graphicsUrl/widgets/enter.gif\"></img></a>";
     $sToRender .= "</td></tr>";
     $sToRender .= "</table>\n";
     
