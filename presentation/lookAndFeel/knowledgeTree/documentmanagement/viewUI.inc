@@ -21,12 +21,17 @@ function renderDocumentPath($oDocument) {
 
 function renderDocumentData($oDocument) {
 	global $default;
-	$sQuery = "SELECT D.name, D.modified, D.creator_id AS initiator, CONCAT(CONCAT(D.major_version, '.'), D.minor_version) AS version, WDSL.name AS status " .
+	$sQuery = "SELECT D.name, D.modified, DTT.datetime AS created, U.name AS initiator, CONCAT(CONCAT(D.major_version, '.'), D.minor_version) AS version, WDSL.name AS status " .
 			"FROM $default->owl_documents_table AS D INNER JOIN $default->owl_web_documents_table AS WD ON WD.document_id = D.ID " .
 			"INNER JOIN $default->owl_web_documents_status_table AS WDSL ON WD.status_id = WDSL.id " .
-			"WHERE D.id = " . $oDocument->getID();
-	$aColumns = array("name", "last_modified", "initiator", "version", "status");
-	$aColumnNames = array("Document title", "Last updated", "Document initiator", "Version", "Status");
+			"INNER JOIN $default->owl_users_table AS U ON U.id = D.creator_id " .
+			"INNER JOIN $default->owl_document_transactions_table AS DTT ON DTT.document_id = D.id " .
+			"INNER JOIN $default->owl_transaction_types_table AS TT ON DTT.transaction_id = TT.id " .
+			"WHERE D.id = " . $oDocument->getID() . " " .
+			"AND TT.name LIKE 'Create'";
+			
+	$aColumns = array("name", "last_modified", "created", "initiator", "version", "status");
+	$aColumnNames = array("Document title", "Last updated", "Created", "Document initiator", "Version", "Status");
 	$aColumnTypes = array(1,1,1,1,1);
 	$oPatternListFromQuery = & new PatternListFromQuery($sQuery, $aColumns, $aColumnNames, $aColumnTypes);
 	$oPatternListFromQuery->setTableHeading("Document Data");
@@ -43,7 +48,8 @@ function renderGenericMetaData($oDocument) {
 			"AND DF.is_generic = 1";
 	$aColumns = array("name", "value");
 	$aColumnHeaders = array("Tag", "Value");
-	$oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnHeaders, "90%");
+	$aColumnTypes = array(1,1);
+	$oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaders, "90%");
 	$oPatternTableSqlQuery->setTableHeading("Generic Meta Data");
 	return $oPatternTableSqlQuery->render();
 	
@@ -59,7 +65,8 @@ function renderTypeSpecificMetaData($oDocument) {
 				"AND DF.name NOT LIKE 'Category'";
 	$aColumns = array("name", "value");
 	$aColumnHeaders = array("Tag", "Value");
-	$oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnHeaders, "90%");
+	$aColumnTypes = array(1,1);
+	$oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaders, "90%");
 	$oPatternTableSqlQuery->setTableHeading("Type Specific Meta Data");
 	return $oPatternTableSqlQuery->render();
 }
