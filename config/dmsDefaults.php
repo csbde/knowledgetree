@@ -135,7 +135,12 @@ $default->siteMap = new SiteMap(false);
 // general pages
 $default->siteMap->addPage("login", "/presentation/login.php?loginAction=login", "General", None, "");
 $default->siteMap->addPage("loginForm", "/presentation/login.php?loginAction=loginForm", "General", None, "login");
+
+// dashboard
 $default->siteMap->addPage("dashboard", "/presentation/lookAndFeel/knowledgeTree/dashboardBL.php", "General", Guest, "dashboard");
+// dashboard news
+$default->siteMap->addPage("viewNewsItem", "/presentation/lookAndFeel/knowledgeTree/dashboard/news/displayNewsItem.php", "General", User, "");
+$default->siteMap->addPage("viewNewsImage", "/presentation/lookAndFeel/knowledgeTree/dashboard/news/displayNewsImage.php", "General", User, "");
 
 //pages for manage documents section
 $default->siteMap->addDefaultPage("browse", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/browseBL.php", "Manage Documents", Guest, "browse documents");
@@ -292,15 +297,11 @@ $default->siteMap->addSectionColour("linkAdministration", "th", "056DCE");
 $default->siteMap->addSectionColour("linkAdministration", "td", "6699CC");
 
 // news management
-$default->siteMap->addPage("viewNews", "/presentation/lookAndFeel/knowledgeTree/administration/news/manageNewsBL.php", "newsAdministration", SysAdmin, "Manage News Items");
+$default->siteMap->addPage("listNews", "/presentation/lookAndFeel/knowledgeTree/administration/news/manageNewsBL.php", "newsAdministration", SysAdmin, "Manage News Items");
 $default->siteMap->addPage("addNews", "/presentation/lookAndFeel/knowledgeTree/administration/news/addNewsBL.php", "newsAdministration", SysAdmin, "Add A News Item");
 $default->siteMap->addPage("editNews", "/presentation/lookAndFeel/knowledgeTree/administration/news/editNewsBL.php", "newsAdministration", SysAdmin, "");
 $default->siteMap->addPage("previewNews", "/presentation/lookAndFeel/knowledgeTree/administration/news/previewNewsBL.php", "newsAdministration", SysAdmin, "");
 $default->siteMap->addPage("removeNews", "/presentation/lookAndFeel/knowledgeTree/administration/news/removeNewsBL.php", "newsAdministration", SysAdmin, "");
-
-$default->siteMap->addPage("viewNewsImage", "/presentation/lookAndFeel/knowledgeTree/dashboard/news/displayNewsImage.php", "newsAdministration", User, "");
-
-
 $default->siteMap->addSectionColour("newsAdministration", "th", "056DCE");
 $default->siteMap->addSectionColour("newsAdministration", "td", "6699CC");
 
@@ -330,7 +331,7 @@ $default->siteMap->addSectionColour("Standard Search", "th", "A1571B");
 // pages for prefs section
 
 $default->siteMap->addDefaultPage("preferences", "/presentation/lookAndFeel/knowledgeTree/preferences/editUserPrefsBL.php", "Preferences", User, "Preferences");
-$default->siteMap->addDefaultPage("editPrefsSuccess", "/presentation/lookAndFeel/knowledgeTree/preferences/editPrefsSuccess.php", "Preferences", User, "Preferences",false);
+$default->siteMap->addPage("editPrefsSuccess", "/presentation/lookAndFeel/knowledgeTree/preferences/editPrefsSuccess.php", "Preferences", User, "Preferences",false);
 $default->siteMap->addSectionColour("Preferences", "th", "F87308");
 $default->siteMap->addSectionColour("Preferences", "td", "FEE3CE");
 
