@@ -80,13 +80,17 @@ class PhysicalDocumentManager {
 		$oDocument = & Document::get($iDocumentID);
 		//get the path to the document on the server
         $sDocumentFileSystemPath = $oDocument->getPath();
-		//set the correct headers
-        Header("Content-Type: " . PhysicalDocumentManager::getMimeTypeName($oDocument->getMimeTypeID()));
-		Header("Content-Length: ". $oDocument->getFileSize());
-		Header("Content-Disposition: attachment; filename=" . $oDocument->getFileName());        
-        Header("Pragma: no-store");
-        Header("Expires: 0");
-		readfile($sDocumentFileSystemPath);
+        if (file_exists($sDocumentFileSystemPath)) {
+			//set the correct headers
+	        Header("Content-Type: " . PhysicalDocumentManager::getMimeTypeName($oDocument->getMimeTypeID()));
+			Header("Content-Length: ". $oDocument->getFileSize());
+			Header("Content-Disposition: attachment; filename=" . $oDocument->getFileName());        
+	        Header("Pragma: no-store");
+	        Header("Expires: 0");
+			readfile($sDocumentFileSystemPath);
+        } else {
+        	return false;
+        }
 	}
     
     /**
@@ -101,14 +105,18 @@ class PhysicalDocumentManager {
 		$oDocument = & Document::get($iDocumentID);
 		//get the path to the document on the server
         $sDocumentFileSystemPath = $oDocument->getPath() . "-$sVersion";
-		//set the correct headers
-        Header("Content-Type: " . PhysicalDocumentManager::getMimeTypeName($oDocument->getMimeTypeID()));
-		header("Content-Length: ". $oDocument->getFileSize());
-		// prefix the filename presented to the browser to preserve the document extension
-		header("Content-Disposition: attachment; filename=" . "$sVersion-" . $oDocument->getFileName());
-        header("Pragma: no-store");
-        header("Expires: 0");
-		readfile($sDocumentFileSystemPath);
+        if (file_exists($sDocumentFileSystemPath)) {
+			//set the correct headers
+	        Header("Content-Type: " . PhysicalDocumentManager::getMimeTypeName($oDocument->getMimeTypeID()));
+			header("Content-Length: ". $oDocument->getFileSize());
+			// prefix the filename presented to the browser to preserve the document extension
+			header("Content-Disposition: attachment; filename=" . "$sVersion-" . $oDocument->getFileName());
+	        header("Pragma: no-store");
+	        header("Expires: 0");
+			readfile($sDocumentFileSystemPath);
+        } else {
+        	return false;
+        }
     }
     
 	/**
@@ -134,14 +142,16 @@ class PhysicalDocumentManager {
         if ($result) {
             while ($sql->next_record()) {
             	$sVersion = $sql->f("version");
-				$sSourcePath = $sCurrentPath . "-" . $sVersion;
-				$sDestinationPath = $sDestinationFolderPath . "-" . $sVersion;
-				// move it to the new folder
-				$default->log->info("PhysicalDocumentManager::moveDocument moving $sSourcePath to $sDestinationPath");
-				if (!PhysicalDocumentManager::move($sSourcePath, $sDestinationPath)) {
-					// FIXME: can't bail now since we don't have transactions- so we doggedly continue deleting and logging errors					
-					$default->log->error("PhysicalDocumentManager::moveDocument error moving $sSourcePath to $sDestinationPath; documentID=" . $oDocument->getID() . "; folderID=" . $oFolder->getID());
-				}
+            	if ($sVersion <> $oDocument->getVersion()) {
+					$sSourcePath = $sCurrentPath . "-" . $sVersion;
+					$sDestinationPath = $sDestinationFolderPath . "-" . $sVersion;
+					// move it to the new folder
+					$default->log->info("PhysicalDocumentManager::moveDocument moving $sSourcePath to $sDestinationPath");
+					if (!PhysicalDocumentManager::move($sSourcePath, $sDestinationPath)) {
+						// FIXME: can't bail now since we don't have transactions- so we doggedly continue deleting and logging errors					
+						$default->log->error("PhysicalDocumentManager::moveDocument error moving $sSourcePath to $sDestinationPath; documentID=" . $oDocument->getID() . "; folderID=" . $oFolder->getID());
+					}
+            	}
             }
         } else {
         	$default->log->error("PhysicalDocumentManager::moveDocument error looking up document versions, id=" . $oDocument->getID());
@@ -163,12 +173,16 @@ class PhysicalDocumentManager {
 	 * @param string destination path
 	 */
 	function move($sOldDocumentPath, $sNewDocumentPath) {
-		global $default;		
-		//copy the file	to the new destination
-		if (copy($sOldDocumentPath, $sNewDocumentPath)) {
-			//delete the old one
-			unlink($sOldDocumentPath);
-			return true;
+		global $default;
+		if (file_exists($sOldDocumentPath)) {
+			//copy the file	to the new destination
+			if (copy($sOldDocumentPath, $sNewDocumentPath)) {
+				//delete the old one
+				unlink($sOldDocumentPath);
+				return true;
+			} else {
+				return false;
+			}
 		} else {
 			return false;
 		}		
@@ -202,14 +216,16 @@ class PhysicalDocumentManager {
         if ($result) {
             while ($sql->next_record()) {
             	$sVersion = $sql->f("version");
-				$sVersionedPath = $sCurrentPath . "-" . $sVersion;
-				$sDeletedPath = $sDeletedPrefix . "-" . $sVersion;
-				// move it to the deleted folder
-				$default->log->info("PhysicalDocumentManager::delete moving $sVersionedPath to $sDeletedPath");
-				if (!PhysicalDocumentManager::move($sVersionedPath, $sDeletedPath)) {
-					$default->log->error("PhysicalDocumentManager::delete error moving $sVersionedPath to $sDeletedPath; documentID=" . $oDocument->getID());
-					// FIXME: can't bail now since we don't have transactions- so we doggedly continue deleting and logging errors
-				}
+            	if ($sVersion <> $oDocument->getVersion()) {
+					$sVersionedPath = $sCurrentPath . "-" . $sVersion;
+					$sDeletedPath = $sDeletedPrefix . "-" . $sVersion;
+					// move it to the deleted folder
+					$default->log->info("PhysicalDocumentManager::delete moving $sVersionedPath to $sDeletedPath");
+					if (!PhysicalDocumentManager::move($sVersionedPath, $sDeletedPath)) {
+						$default->log->error("PhysicalDocumentManager::delete error moving $sVersionedPath to $sDeletedPath; documentID=" . $oDocument->getID());
+						// FIXME: can't bail now since we don't have transactions- so we doggedly continue deleting and logging errors
+					}
+            	}
             }
         } else {
         	$default->log->error("PhysicalDocumentManager::delete error looking up document versions, id=" . $oDocument->getID());
@@ -241,26 +257,37 @@ class PhysicalDocumentManager {
 		$result = $sql->query("SELECT DISTINCT version FROM $default->owl_document_transactions_table WHERE document_id=" . $oDocument->getID() . " AND transaction_id=" . CHECKOUT);
         if ($result) {
             while ($sql->next_record()) {
-            	$sVersion = $sql->f("version");            	
-				$sExpungePath = $sDeletedPrefix . "-" . $sVersion;
-				// zap it
-				$default->log->info("PhysicalDocumentManager::expunge rm'ing $sExpungePath");
-				if (!unlink($sExpungePath)) {
-					$default->log->error("PhysicalDocumentManager::expunge error deleting $sExpungePath; documentID=" . $oDocument->getID());
-					// FIXME: can't bail now since we don't have transactions- so we doggedly continue deleting and logging errors
-				}
+            	$sVersion = $sql->f("version");
+            	if ($sVersion <> $oDocument->getVersion()) {
+					$sExpungePath = $sDeletedPrefix . "-" . $sVersion;
+					// zap it
+					$default->log->info("PhysicalDocumentManager::expunge rm'ing $sExpungePath");
+					if (file_exists($sExpungePath)) {
+						if (!unlink($sExpungePath)) {
+							$default->log->error("PhysicalDocumentManager::expunge error deleting $sExpungePath; documentID=" . $oDocument->getID());
+							// FIXME: can't bail now since we don't have transactions- so we doggedly continue deleting and logging errors
+						}
+					} else {
+						$default->log->error("PhysicalDocumentManager::expunge can't rm $sExpungePath because it doesn't exist");
+					}
+            	}
             }
         } else {
         	$default->log->error("PhysicalDocumentManager::expunge error looking up document versions, id=" . $oDocument->getID());
         }	
 
-		// now delete the current version
-		if (unlink($sDeletedPrefix)) {
-			$default->log->info("PhysicalDocumentManager::expunge  unlinkied $sDeletedPrefix");			
-			return true;
+		if (file_exists($sDeletedPrefix)) {
+			// now delete the current version
+			if (unlink($sDeletedPrefix)) {
+				$default->log->info("PhysicalDocumentManager::expunge  unlinkied $sDeletedPrefix");			
+				return true;
+			} else {
+				$default->log->error("PhysicalDocumentManager::expunge couldn't unlink $sDeletedPrefix");
+				return false;
+			}
 		} else {
-			$default->log->error("PhysicalDocumentManager::expunge couldn't unlink $sDeletedPrefix");
-			return false;
+			$default->log->error("PhysicalDocumentManager::expunge can't rm $sDeletedPrefix because it doesn't exist");
+			return true;
 		}
 	}
 	
@@ -285,15 +312,17 @@ class PhysicalDocumentManager {
 		$result = $sql->query("SELECT DISTINCT version FROM $default->owl_document_transactions_table WHERE document_id=" . $oDocument->getID() . " AND transaction_id=" . CHECKOUT);
         if ($result) {
             while ($sql->next_record()) {
-            	$sVersion = $sql->f("version");            	
-				$sVersionedDeletedPath = $sDeletedPath . "-" . $sVersion;
-				$sVersionedRestorePath = $sRestorePath . "-" . $sVersion;
-				// move it to the new folder
-				$default->log->info("PhysicalDocumentManager::restore moving $sVersionedDeletedPath to $sVersionedRestorePath");
-				if (!PhysicalDocumentManager::move($sVersionedDeletedPath, $sVersionedRestorePath)) {
-					$default->log->error("PhysicalDocumentManager::restore error moving $sVersionedDeletedPath to $sVersionedRestorePath; documentID=" . $oDocument->getID());
-					// FIXME: can't bail now since we don't have transactions- so we doggedly continue restoring and logging errors
-				}
+            	$sVersion = $sql->f("version");
+            	if ($sVersion <> $oDocument->getVersion()) {
+					$sVersionedDeletedPath = $sDeletedPath . "-" . $sVersion;
+					$sVersionedRestorePath = $sRestorePath . "-" . $sVersion;
+					// move it to the new folder
+					$default->log->info("PhysicalDocumentManager::restore moving $sVersionedDeletedPath to $sVersionedRestorePath");
+					if (!PhysicalDocumentManager::move($sVersionedDeletedPath, $sVersionedRestorePath)) {
+						$default->log->error("PhysicalDocumentManager::restore error moving $sVersionedDeletedPath to $sVersionedRestorePath; documentID=" . $oDocument->getID());
+						// FIXME: can't bail now since we don't have transactions- so we doggedly continue restoring and logging errors
+					}
+            	}
             }
         } else {
         	$default->log->error("PhysicalDocumentManager::expunge error looking up document versions, id=" . $oDocument->getID());
@@ -323,11 +352,15 @@ class PhysicalDocumentManager {
 		$oDocument = & Document::get($iDocumentID);		
 		//get the path to the document on the server
         $sDocumentFileSystemPath = $oDocument->getPath();
-        Header("Content-Type: " . PhysicalDocumentManager::getMimeTypeName($oDocument->getMimeTypeID()));
-		Header("Content-Length: " . $oDocument->getFileSize());
-		Header("Content-Disposition: inline; filename=" . $oDocument->getFileName());
-        header("Pragma: no-store");
-		return readfile($sDocumentFileSystemPath);
+        if (file_exists($sDocumentFileSystemPath)) {
+	        Header("Content-Type: " . PhysicalDocumentManager::getMimeTypeName($oDocument->getMimeTypeID()));
+			Header("Content-Length: " . $oDocument->getFileSize());
+			Header("Content-Disposition: inline; filename=" . $oDocument->getFileName());
+	        header("Pragma: no-store");
+			return readfile($sDocumentFileSystemPath);
+        } else {
+        	return false;
+        }
 	}
 	
 	
