@@ -73,7 +73,7 @@ for ($i = 0; $i < count($aKeys); $i++) {
 //include the correct file for the object
 include_once("$default->owl_fs_root/lib/$sObjectFolderName");
 
-$oObject = call_user_func("createFromArray",$aParameterValues);
+$oObject = call_user_func(strtolower($sObjectName) . "createFromArray",$aParameterValues);
 $oObject->create();
 
 //redirect the user
