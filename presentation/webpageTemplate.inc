@@ -53,13 +53,10 @@ function getUnitAdminUser() {
 // create the navbar and north payload
 $navbar = & new NavBar($fBrowseType, $fFolderID, $fDocumentID, $fCategoryName, $fDocumentTypeID);
 
-
-if ($sectionName == "")
-    //get the section name if not specified in the url
-{
+//get the section name if not specified in the url
+if ($sectionName == "") {
     $sectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
 }
-
 
 //highlight the respective section
 $navbar->setHighlightedSection($sectionName);
@@ -70,7 +67,6 @@ $nwestLoad   = "<table cellspacing=0 cellpadding=0 border=0>\n" .
                "<tr><td><img valign=\"top\" src=\"$default->graphicsUrl/tree.gif\"/></td></tr>\n" .
                "<tr><td><img valign=\"top\" src=\"$colourBar\"/></td></tr>\n" .
                "</table>";
-               
 
 $nwPayLoad = new PatternCustom;
 $nwPayLoad ->setHtml($nwestLoad);
@@ -84,11 +80,11 @@ if ($sectionName != "General") {
     $output2["descriptions"] = $sectionArray["descriptions"];
 
     //create links
-    $westLinks = new PatternTableLinks($sectionArray["links"], $sectionArray["descriptions"], 40 , 1 ,1,null);
+    $westLinks = new PatternTableLinks($sectionArray["links"], $sectionArray["descriptions"], 20 , 1 ,1,null);
     $westRender = $westLinks->render();
 
 } else {
-    $westLinks = new PatternTableLinks(array(), array(), 40 , 1 ,1,null);
+    $westLinks = new PatternTableLinks(array(), array(), 20, 1 ,1,null);
     $westRender = $westLinks->render();
 }
 
@@ -99,13 +95,16 @@ $uAdmin = "$default->graphicsUrl/leftnav/uadmin.gif" ;
 $oUnitAdmin = getUnitAdminUser();
 $sUnitAdminEmail = $oUnitAdmin ? $oUnitAdmin->getEmail() : $default->emailAdmin; 
 //setup the westpayload
-$westLoad = "<table cellspacing=\"0\" cellpadding=\"2\"  border=\"0\" width=\"100%\" height=\"75%\">\n" .
+$westLoad = "<table cellspacing=\"0\" cellpadding=\"2\" border=\"0\" width=\"100%\" height=\"75%\">\n" .
             "\t<tr><td>$westRender</td></tr>\n" .
             "</table>" .
-            "<table cellspacing=\"0\" cellpadding=\"2\"  border=\"0\" width=\"100%\" height=\"25%\">\n" .            
+            "<div style=\"position:absolute;top:" . ($default->scroll["height"]-50) . "px;\">" . 
+            //"<div style=\"position:relative;top:-5px;\">" .
+            "<table cellspacing=\"0\" cellpadding=\"2\" border=\"0\" width=\"100%\">\n" .            
             "\t<tr valign=\"bottom\"><td align=left><a href=\"mailto:$default->emailAdmin\"><img src=\"$cAdmin\"/ border=\"0\"></a></td></tr>\n" .
-            "\t<tr valign=\"middle\"><td align=left><a href=\"mailto:$sUnitAdminEmail\"><img src=\"$uAdmin\"/ border=\"0\"></a></td></tr>\n" .
-            "</table>";
+            "\t<tr valign=\"top\"><td align=left><a href=\"mailto:$sUnitAdminEmail\"><img src=\"$uAdmin\"/ border=\"0\"></a></td></tr>\n" .
+            "</table>" .
+            "</div>";
 
 $westPayLoad = new PatternCustom;
 $westPayLoad->setHtml($westLoad);
@@ -115,6 +114,4 @@ $main->setNorthPayload($navbar);
 $main->setNorthWestPayload($nwPayLoad);
 $main->setWestPayload($westPayLoad);
 $main->setWestPayloadBackGroundColour("#F0F0E4");
-
 ?>
-
