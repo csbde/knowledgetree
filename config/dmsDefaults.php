@@ -131,6 +131,7 @@ $default->owl_archiving_date_settings_table = "archiving_date_settings";
 $default->owl_archiving_utilisation_settings_table = "archiving_utilisation_settings";
 $default->owl_time_period_table = "time_period";
 $default->owl_time_unit_lookup_table = "time_unit_lookup";
+$default->owl_archive_restoration_table = "archive_restoration_request";
 $default->owl_status_table = "status_lookup";
 
 // logo file that must reside inside lang/graphics directory
@@ -168,7 +169,7 @@ $default->siteMap->addPage("modifyDocumentGenericMetaData", "/presentation/lookA
 $default->siteMap->addPage("archiveDocument", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/archiving/archiveDocumentBL.php", "Manage Documents", User, "Archive Document", false);
 $default->siteMap->addPage("addDocumentArchiveSettings", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/archiving/addArchiveSettingsBL.php", "Manage Documents", User, "Add Document Archive Settings", false);
 $default->siteMap->addPage("modifyDocumentArchiveSettings", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/archiving/modifyArchiveSettingsBL.php", "Manage Documents", User, "Modify Document Archive Settings", false);
-
+$default->siteMap->addPage("requestDocumentRestore", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/archiving/requestDocumentRestoreBL.php", "Manage Documents", User, "Request Document Restoration", false);
 
 $default->siteMap->addPage("addFolder", "/presentation/lookAndFeel/knowledgeTree/foldermanagement/addFolderBL.php", "Manage Documents", User, "Add A Folder");
 $default->siteMap->addPage("addFolderDocType", "/presentation/lookAndFeel/knowledgeTree/foldermanagement/addFolderDocTypeBL.php", "Manage Documents", User, "");

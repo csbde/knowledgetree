@@ -26,6 +26,14 @@ document_transaction_id INTEGER,
 time_period_id INTEGER
 )  TYPE = InnoDB;
 
+CREATE TABLE archive_restoration_request (
+id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
+document_id INTEGER NOT NULL,
+request_user_id INTEGER NOT NULL,
+admin_user_id INTEGER NOT NULL,
+datetime DATETIME NOT NULL
+)  TYPE = InnoDB;
+
 CREATE TABLE dependant_document_instance ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 document_title TEXT NOT NULL,
@@ -41,25 +49,6 @@ default_user_id INTEGER NOT NULL,
 template_document_id INTEGER,
 group_folder_approval_link_id INTEGER
 ) TYPE = InnoDB;
-
-CREATE TABLE discussion_threads ( 
-id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
-document_id INTEGER NOT NULL,
-first_comment_id INTEGER NOT NULL,
-last_comment_id INTEGER NOT NULL,
-views INTEGER NOT NULL,
-replies INTEGER NOT NULL,
-creator_id INTEGER NOT NULL
-)TYPE = InnoDB;
-
-CREATE TABLE discussion_comments ( 
-id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
-thread_id INTEGER NOT NULL,
-user_id INTEGER NOT NULL,
-subject TEXT,
-body TEXT,
-date datetime
-)TYPE = InnoDB;
 
 CREATE TABLE document_link ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
@@ -79,17 +68,6 @@ archiving_settings_id INTEGER
 
 ALTER TABLE folders_users_roles_link ADD column dependant_documents_created bit;
 update folders_users_roles_link set dependant_documents_created = 1;
-
-CREATE TABLE news ( 
-id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
-synopsis VARCHAR(255) NOT NULL,
-body TEXT,
-rank INTEGER,
-image TEXT,
-image_size INTEGER,
-image_mime_type_id INTEGER,
-active BIT
-) TYPE = InnoDB;
 
 CREATE TABLE status_lookup  (
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,

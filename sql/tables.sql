@@ -7,6 +7,14 @@ lastused DATETIME,
 ip CHAR(30)
 ) TYPE = InnoDB;
 
+CREATE TABLE archive_restoration_request (
+id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
+document_id INTEGER NOT NULL,
+request_user_id INTEGER NOT NULL,
+admin_user_id INTEGER NOT NULL,
+datetime DATETIME NOT NULL
+)  TYPE = InnoDB;
+
 CREATE TABLE archiving_type_lookup ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 name CHAR(100)

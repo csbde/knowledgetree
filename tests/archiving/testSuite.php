@@ -17,7 +17,8 @@ require_once("../../config/dmsDefaults.php");
 
 echo "<pre>";
 
-$aClasses = array("archiving/DocumentArchiving" => array("DocumentID", "ArchivingTypeID", "ArchivingSettingsID"),
+$aClasses = array("archiving/ArchiveRestorationRequest" => array("DocumentID", "RequestUserID", "AdminUserID", "DateTime"),
+				  "archiving/DocumentArchiving" => array("DocumentID", "ArchivingTypeID", "ArchivingSettingsID"),
              	  "archiving/TimeUnit" => array("Name"),
 				  "archiving/ArchivingType" => array("Name"),
 				  "archiving/ArchivingUtilisationSettings" => array("DocumentTransactionID", "TimePeriodID"),
@@ -25,13 +26,15 @@ $aClasses = array("archiving/DocumentArchiving" => array("DocumentID", "Archivin
                   "archiving/ArchivingDateSettings" => array("ExpirationDate", "TimePeriodID"));
                   
 $aInitialValues = array("1,2,3",
+						"1,2,3",
 						"hour",
 						"\"blah's\"",
 						"5, 1",
 						"1, 10",
  						"'2002-10-10', 1");
  						
-$aSetValues = array(array(9,8,7),
+$aSetValues = array(array(4,5,6,"2010-10-10"),
+					array(9,8,7),
 					array("minute"),
 					array("fooblar's"),
 					array(6,6),
