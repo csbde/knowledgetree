@@ -45,15 +45,24 @@ require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/do
 require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
 require_once("$default->fileSystemRoot/presentation/Html.inc");
  
+$aUnmovedDocs = array();
+
 if (checkSession()) {
 	
-	if (isset($fDocumentID) && isset($fFolderID)) {		
+  if (isset($fDocumentIDs) && isset($fFolderID)) {
 		if (isset($fForMove)) {
 			if ($fConfirmed) {
+	for ($i = 0; $i < count($fDocumentIDs); $i++) {
+
 				//we're trying to move a document
-				$oDocument = & Document::get($fDocumentID);
+	  $oDocument = & Document::get($fDocumentIDs[$i]);
 				$oFolder = & Folder::get($fFolderID);
 				$iOldFolderID = $oDocument->getFolderID();
+
+	  // check that there is no filename collision in the destination directory				
+	  $sNewDocumentFileSystemPath = Folder::getFolderPath($fFolderID) . $oDocument->getFileName();
+	  if (!file_exists($sNewDocumentFileSystemPath)) {
+
 				if (Permission::userHasDocumentWritePermission($oDocument) && Permission::userHasFolderWritePermission($oFolder)) {
 					//if the user has both document and folder write permissions				
 					//get the old document path
@@ -65,9 +74,8 @@ if (checkSession()) {
 						$sOldDocumentFileSystemPath = Folder::getFolderPath($iOldFolderID) . $oDocument->getFileName();
 						//move the document on the file system
 						if (PhysicalDocumentManager::moveDocument($sOldDocumentFileSystemPath, $oDocument, $oFolder)) {							
-	                        
 	                        // fire subscription alerts for the moved document (and the folder its in)
-	                        $count = SubscriptionEngine::fireSubscription($fDocumentID, SubscriptionConstants::subscriptionAlertType("MovedDocument"),
+		  $count = SubscriptionEngine::fireSubscription($fDocumentIDs[$i], SubscriptionConstants::subscriptionAlertType("MovedDocument"),
 	                                 SubscriptionConstants::subscriptionType("DocumentSubscription"),
 	                                 array( "folderID" => $iOldFolderID,
 	                                        "modifiedDocumentName" => $oDocument->getName(),
@@ -76,82 +84,116 @@ if (checkSession()) {
 	                        $default->log->info("moveDocumentBL.php fired $count subscription alerts for moved document " . $oDocument->getName());
 	                        
 	                        // fire folder subscriptions for the destination folder
-	                        $count = SubscriptionEngine::fireSubscription($oDocument->getFolderID(), SubscriptionConstants::subscriptionAlertType("MovedDocument"),
+		  $count = SubscriptionEngine::fireSubscription($fDocumentIDs[$i], SubscriptionConstants::subscriptionAlertType("MovedDocument"),
 	                                 SubscriptionConstants::subscriptionType("FolderSubscription"),
-	                                 array( "modifiedDocumentName" => $oDocument->getName(),
+								array( "folderID" => $iOldFolderID,
+									   "modifiedDocumentName" => $oDocument->getName(),
 	                                        "oldFolderName" => Folder::getFolderName($iOldFolderID),
 	                                        "newFolderName" => Folder::getFolderName($fFolderID) ));
 	                        $default->log->info("moveDocumentBL.php fired $count (folderID=$fFolderID) folder subscription alerts for moved document " . $oDocument->getName());
-	                        
-	                        
-							//redirect to the view path
-							redirect("$default->rootUrl/control.php?action=viewDocument&fDocumentID=$fDocumentID");
 						} else {
 							require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 							//we couldn't move the document on the file system
 							//so reset the database values
 							$oDocument->setFolderID($iOldFolderID);
 							$oDocument->update();						
-							$oPatternCustom = & new PatternCustom();
-							$oPatternCustom->setHtml(getPage($fFolderID, $fDocumentID));
-							$main->setCentralPayload($oPatternCustom);   
-							$main->setErrorMessage("Could not move document on file system");
-							$main->setFormAction($_SERVER["PHP_SELF"] . "?fForMove=1");
-							$main->render();
+
+		  // Store the doc with problem
+		  array_push($aUnmovedDocs, array($oDocument, "Could not move document on file system"));
 						}
 					} else {
 						require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 						//had a problem with the database					
-						$oPatternCustom = & new PatternCustom();
-						$oPatternCustom->setHtml(getPage($fFolderID, $fDocumentID));
-						$main->setCentralPayload($oPatternCustom);   
-						$main->setErrorMessage("Could not update document in database");
-						$main->setFormAction($_SERVER["PHP_SELF"] . "?fForMove=1&fDocumentID=$fDocumentID&fFolderID=$fFolderID");
-						$main->render();
+		// Store the doc with problem
+		array_push($aUnmovedDocs, array($oDocument, "Could not update document in database"));
 					}
 				} else {
 					require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
+
+	      // Permission problem
+	      // Store the doc with problem
+	      array_push($aUnmovedDocs, array($oDocument, "You do not have rights to move this document"));
+	    }
+
+	  } else {
+	    require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
+
+	    // Store the doc with problem
+	    array_push($aUnmovedDocs, array($oDocument, "This folder already contains a document of the same name. Please choose another directory"));
+	  }
+	  
+	}
+
+	// Move terminated
+
+	// List undeleted documents
+	if (!empty($aUnmovedDocs) ) {
+	  
+	  require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");			
 					$oPatternCustom = & new PatternCustom();
-					$oPatternCustom->setHtml(getPage($fFolderID, $fDocumentID));
+	  
+	  $sError = "An error occured moving the following document(s): <br><br>";
+	  foreach ($aUnmovedDocs as $oDoc) {
+	    $sError .= $oDoc[0]->getDisplayPath() . ":&nbsp;&nbsp;&nbsp;" .$oDoc[1] . "<br>";
+	  } 
+	  $sError .= "<br>The other documents are been moved.";
+
+	  $oPatternCustom = & new PatternCustom();
+	  $oPatternCustom->setHtml(renderErrorPage($sError));
 					$main->setCentralPayload($oPatternCustom);   
-					$main->setFormAction($_SERVER["PHP_SELF"] . "?fForMove=1&fDocumentID=$fDocumentID&fFolderID=$fFolderID");
-					$main->setErrorMessage("You do not have rights to move this document");
 					$main->render();
-				}
+	  
+	  reset($aUnmovedDocs);
+	  
 			} else {
+	  // redirect to the browse folder page							
+	  redirect("$default->rootUrl/control.php?action=browse&fFolderID=" . $oDocument->getFolderID());
+	}
+	
+      } else {  // ($fConfirmed)
 				require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 				$oPatternCustom = & new PatternCustom();
 
-				$oDocument = Document::get($fDocumentID);
-				$oFolder = Folder::get($fFolderID);
+	// Check for all docs
+	for ($i = 0; $i < count($fDocumentIDs); $i++) {
+
+	  $oDocument = Document::get($fDocumentIDs[$i]);
+	  
 				// check if the selected folder has the same document type as the document we're moving
 				if (Folder::folderIsLinkedToDocType($fFolderID, $oDocument->getDocumentTypeID())) {
 					// check that there is no filename collision in the destination directory				
 					$sNewDocumentFileSystemPath = Folder::getFolderPath($fFolderID) . $oDocument->getFileName();
 					if (!file_exists($sNewDocumentFileSystemPath)) {
 						// display confirmation page
-						$oPatternCustom->setHtml(getConfirmationPage($oFolder, $oDocument));
+	      $oPatternCustom->setHtml(getConfirmationPage($fFolderID, $fDocumentIDs));
 					} else {
 						// filename collision
-						$oPatternCustom->setHtml(getPage($fFolderID, $fDocumentID, "This folder already contains a document of the same name.  Please choose another directory"));
+	      $oPatternCustom->setHtml(getPage($fFolderID, $fDocumentIDs, "This folder already contains a document of the same name ('" . 
+					       $oDocument->getFileName() .
+					       "'). Please choose another directory"));
+	      break;
 					}
 				} else {
 					// the right document type isn't mapped
-					$oPatternCustom->setHtml(getPage($fFolderID, $fDocumentID, "You can't move the document to this folder because it cannot store the document type of your document.  Please choose another directory"));
+	    $oPatternCustom->setHtml(getPage($fFolderID, $fDocumentIDs, "You can't move the document '" . 
+					     $oDocument->getFileName() . 
+					     "' to this folder because it cannot store the document type of your document. Please choose another directory"));
+	    break;
+	  }
 				}
 				$main->setFormAction($_SERVER["PHP_SELF"] . "?fForMove=1&fDocumentID=$fDocumentID&fFolderID=$fFolderID");				
 				$main->setCentralPayload($oPatternCustom);
 				$main->render();				
 			}			
-		} else {		
+    } else {  // (isset($fForMove))
 			require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 			$oPatternCustom = & new PatternCustom();
-			$oPatternCustom->setHtml(getPage($fFolderID, $fDocumentID));				
+      $oPatternCustom->setHtml(getPage($fFolderID, $fDocumentIDs));
 			$main->setCentralPayload($oPatternCustom);   
 			$main->setFormAction($_SERVER["PHP_SELF"] . "?fForMove=1&fDocumentID=$fDocumentID&fFolderID=$fFolderID");
 			$main->render();
 		}
-	} else {
+  } else {  // (isset($fDocumentIDs) && isset($fFolderID))
 		require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 		$oPatternCustom = & new PatternCustom();
 		$oPatternCustom->setHtml("");
@@ -160,4 +202,5 @@ if (checkSession()) {
 		$main->render();
 	}
 }
+
 ?>

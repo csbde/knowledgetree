@@ -25,46 +25,75 @@
  * @package documentmanagement
  */
  
-function getConfirmationPage($oFolder, $oDocument) {
+function getConfirmationPage($iFolderID, $iDocumentIDs) {
 	global $default;
     $sToRender = renderHeading(_("Move Document"));
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr>\n<td>Are you sure you want to move </td></tr>";
-	$sToRender .= "<tr><td><strong>" . $oDocument->getDisplayPath() . "</strong> to </td></tr>\n";
-	$sToRender .= "<tr><td><strong>" . Folder::getFolderDisplayPath($oFolder->getID()) . " > " . $oDocument->getFileName() . "</strong></td>\n";
+
+	for ($i = 0; $i < count($iDocumentIDs); $i++) {
+
+	  $oDocument = & Document::get($iDocumentIDs[$i]);
+	
+	  $sToRender .= "<tr><td><strong>" . $oDocument->getDisplayPath() . "</strong> <td>&nbsp;to&nbsp;</td> </td>\n";
+	  $sToRender .= "<td><strong>" . Folder::getFolderDisplayPath($iFolderID) . " > " . $oDocument->getFileName() . "</strong></td>\n";
+	  $sQueryString .= "fDocumentIDs[]=$iDocumentIDs[$i]&";
+	}
+
 	$sToRender .= "</tr>\n";
-	$sToRender .= "<tr><td><a href=\"$default->rootUrl/control.php?action=moveDocument&fDocumentID=" .
-                            $oDocument->getID() . "&fFolderID=" . $oFolder->getID() . 
+	$sToRender .= "<tr><td><a href=\"$default->rootUrl/control.php?action=moveDocument&" . $sQueryString . 
+                  "fFolderID=$iFolderID" .
                             "&fForMove=1&fConfirmed=1\">" .
                             "<img src=\"$default->graphicsUrl/widgets/move.gif\" border=\"0\"/>" . 
                             "</a>&nbsp;" . 
-                            "<a href=\"$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $oDocument->getID() . "\">" . 
-                            "<img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></a>" .
-                   "</td></tr>\n";
+                  "<a href=\"$default->rootUrl/control.php?action=browse&fFolderID=$iFolderID\">" . 
+                  "<img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></a></td></tr>\n";
 	$sToRender .= "</table>\n";
 	return $sToRender;
 }
 
-// FIXME: change these to object references instead of IDs
-function getPage($iFolderID, $iDocumentID, $sErrorMessage = "") {
+
+function getPage($iFolderID, $iDocumentIDs, $sErrorMessage = "") {
 	global $default;
     $sToRender = renderHeading(_("Move Document"));
 	$sToRender .= "<table>\n";
 	if ($sErrorMessage) {
 		$sToRender .= "<tr><td><font color=\"red\">$sErrorMessage</font></td></tr>";
 	}
-	$sToRender .= "<tr><td>Move document " . Document::getDocumentDisplayPath($iDocumentID) . " to:</td></tr>";
+  $sToRender .= "<tr><td>Move document(s): <br></td>\n";
+
+  for ($i = 0; $i < count($iDocumentIDs); $i++) {
+    $sToRender .= "<tr>\n";
+    $sToRender .= "<td>&nbsp;&nbsp;'" . Document::getDocumentDisplayPath($iDocumentIDs[$i]) . "'</td>\n";
+    $sQueryString .= "fDocumentIDs[]=$iDocumentIDs[$i]&";
+  }
+
+  $sToRender .= "<tr><td> to:</td></tr>";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>" . renderFolderPath($iFolderID, generateControllerUrl("moveDocument", "fDocumentID=$iDocumentID", false)) . "</td>\n";
+  $sToRender .= "<td>" . renderFolderPath($iFolderID, "/control.php?action=moveDocument&" . $sQueryString) . "</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
 	$sToRender .= "<table width=\"100%\">\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>" . renderFolderList($iFolderID, generateControllerUrl("moveDocument", "fDocumentID=$iDocumentID", false)) . "</td>\n";
+  $sToRender .= "<td>" . renderFolderList($iFolderID, "/control.php?action=moveDocument&" . $sQueryString) . "</td>\n";
 	$sToRender .= "</tr>\n";	
-	$sToRender .= "<tr><td><table><tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/movehere.gif\" border=\"0\"/></td><td><a href=\"$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $iDocumentID . "\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></a></td></tr></table></td>\n";
+  $sToRender .= "<td><table><tr><td><a href=\"" . $_SERVER["PHP_SELF"] . "?$sQueryString&fFolderID=$iFolderID&fForMove=1\"><img src=\"$default->graphicsUrl/widgets/movehere.gif\" border=\"0\"></a></td> <td><a href=\"$default->rootUrl/control.php?action=browse&fFolderID=$iFolderID\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></a></td></tr></table></td>";
+
 	$sToRender .= "</table>\n";
 	return $sToRender;
+}
+function renderErrorPage($sErrorMessage, $iDocumentID = "") {
+  global $default;
+  if ($iDocumentID) {
+    return statusPage("Delete Document", "", $sErrorMessage, "viewDocument", "fDocumentID=$iDocumentID");
+  } else {
+    $sToRender  = renderHeading("Delete Document");    
+    $sToRender .= "<table>\n";
+    $sToRender .= "<tr><td><p class=\"errorText\">$sErrorMessage</p>\n" .
+      "<a href=\"javascript:history.go(-2)\"><img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\"/></a>\n" .
+      "</p></td></tr></table>\n";
+    return $sToRender;
+  }
 }
 
 ?>
