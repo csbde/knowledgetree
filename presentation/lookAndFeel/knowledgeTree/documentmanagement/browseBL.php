@@ -87,7 +87,7 @@ if (!$fBrowseType) {
 // retrieve field to sort by
 if (!$fSortBy) {
     // no sort field specified- default is document name
-    $fSortBy = "name";
+    $fSortBy = "filename";
 }
 // retrieve sort direction
 if (!$fSortDirection) {
