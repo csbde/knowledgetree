@@ -1,19 +1,26 @@
 <?php
 
-function getFolderPath($iFolderID) {
+function renderHeading($sHeading) {
     global $default;
-    $sFolderPath = displayFolderPathLink(Folder::getFolderPathAsArray($iFolderID), Folder::getFolderPathNamesAsArray($iFolderID),  "$default->rootUrl/control.php?action=browse");
-    return "<table border=1 width = 100%><tr><td>$sFolderPath</td></tr></table>\n";
+    $sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
+    $sColor = $default->siteMap->getSectionColour($sSectionName, "th");
+    $sToRender  = "<table border=\"0\" width=\"100%\">\n";
+    $sToRender .= "<tr align=\"left\"><th class=\"sectionHeading\" bgcolor=\"$sColor\">$sHeading</th></tr>\n";
+    $sToRender .= "<tr/>\n";
+    $sToRender .= "<tr/>\n";
+    $sToRender .= "</table>\n";
+    return $sToRender;
 }
 
 function getPage($iFolderID, $iDocumentID) {
 	global $default;
+    $sToRender = renderHeading("Move Document");
 	$sToRender = "<table>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>" . getFolderPath($iFolderID) . "</td>\n";
+	$sToRender .= "<td>" . renderFolderPath($iFolderID, "/control.php?action=moveDocument&fDocumentID=$iDocumentID") . "</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
-	$sToRender .= "<table>\n";
+	$sToRender .= "<table width=\"100%\">\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>" . renderFolderList($iFolderID, "control.php?action=moveDocument&fDocumentID=$iDocumentID") . "</td>\n";
 	$sToRender .= "</tr>\n";	
