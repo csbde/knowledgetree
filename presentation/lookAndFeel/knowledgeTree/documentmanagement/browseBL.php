@@ -52,64 +52,66 @@ require_once("$default->fileSystemRoot/presentation/Html.inc");
  */
 
 // only if we have a valid session
-if (checkSession()) {
-    if (isset($fActions)) {
-        // tack on POSTed document ids and redirect to the expunge deleted documents page
-        $sQueryString = "";
-        if (isset($fDocumentIDs) ) {
-            foreach ($fDocumentIDs as $fDocumentID) {
-                $sQueryString .= "fDocumentIDs[]=$fDocumentID&";
-            }
-        }
-    
-        switch ($fActions) {
-        case "delete":
-            // delete all selected docs
-            controllerRedirect("deleteDocument", $sQueryString);
-            break;
-        case "move":
-            // Move selected docs to root folder
-            controllerRedirect("moveDocument", $sQueryString . "fFolderID=1");
-            break;
+if (!checkSession()) {
+    exit(0);
+}
+
+if (isset($fActions)) {
+    // tack on POSTed document ids and redirect to the expunge deleted documents page
+    $sQueryString = "";
+    if (isset($fDocumentIDs) ) {
+        foreach ($fDocumentIDs as $fDocumentID) {
+            $sQueryString .= "fDocumentIDs[]=$fDocumentID&";
         }
     }
 
-    // retrieve variables
-    if (!$fBrowseType) {
-        // required param not set- internal error or user querystring hacking
-        // set it to default= folder
-        $fBrowseType = "folder";
+    switch ($fActions) {
+    case "delete":
+        // delete all selected docs
+        controllerRedirect("deleteDocument", $sQueryString);
+        break;
+    case "move":
+        // Move selected docs to root folder
+        controllerRedirect("moveDocument", $sQueryString . "fFolderID=1");
+        break;
     }
-    
-    // retrieve field to sort by
-    if (!$fSortBy) {
-    	// no sort field specified- default is document name
-    	$fSortBy = "name";
-    }
-    // retrieve sort direction
-    if (!$fSortDirection) {
-    	$fSortDirection = "asc";
-    }
-       
-    // fire up the document browser 
-    $oBrowser = BrowserFactory::create($fBrowseType, $fSortBy, $fSortDirection);
-    $sectionName = $oBrowser->getSectionName();
-     
-    // instantiate my content pattern
-    $oContent = new PatternCustom();	
-	$aResults = $oBrowser->browse();
-	if (($fBrowseType == "folder") && (!isset($fFolderID))) {
-        // FIXME: check that the first folder in the array exists, no permission otherwise
-		controllerRedirect("browse", "fFolderID=" . $aResults["folders"][0]->getID());
-	}
-    
-    require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");    
-	// display the browse results
-    $oContent->addHtml(renderPage($aResults, $fBrowseType, $fSortBy, $fSortDirection));
-    $main->setCentralPayload($oContent);
-    $main->setFormAction($_SERVER["PHP_SELF"]);
-    $main->setSubmitMethod("GET");    
-    $main->render();    
 }
+
+// retrieve variables
+if (!$fBrowseType) {
+    // required param not set- internal error or user querystring hacking
+    // set it to default= folder
+    $fBrowseType = "folder";
+}
+
+// retrieve field to sort by
+if (!$fSortBy) {
+    // no sort field specified- default is document name
+    $fSortBy = "name";
+}
+// retrieve sort direction
+if (!$fSortDirection) {
+    $fSortDirection = "asc";
+}
+   
+// fire up the document browser 
+$oBrowser = BrowserFactory::create($fBrowseType, $fSortBy, $fSortDirection);
+$sectionName = $oBrowser->getSectionName();
+ 
+// instantiate my content pattern
+$oContent = new PatternCustom();	
+$aResults = $oBrowser->browse();
+if (($fBrowseType == "folder") && (!isset($fFolderID))) {
+    // FIXME: check that the first folder in the array exists, no permission otherwise
+    controllerRedirect("browse", "fFolderID=" . $aResults["folders"][0]->getID());
+}
+
+require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");    
+// display the browse results
+$oContent->addHtml(renderPage($aResults, $fBrowseType, $fSortBy, $fSortDirection));
+$main->setCentralPayload($oContent);
+$main->setFormAction($_SERVER["PHP_SELF"]);
+$main->setSubmitMethod("GET");    
+$main->render();    
 
 ?>
