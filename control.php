@@ -34,27 +34,32 @@ if (!checkSession()) {
     $action = "LOGIN_FORM";
     // redirect to login page with redirect
     $originalRequest = urlencode($_SERVER[REQUEST_URI]);// . $_SERVER[QUERY_STRING];
+} else {
+    // retrieve session array
+    $sessionStatus = $_SESSION["sessionStatus"];
 }
 
-// retrieve the login page to redirect to
-// FIXME: defaulting to A access
-$page = $default->siteMap->getPage($action, "A");
-//$page = $default->siteMap->getPage($action, getUserClass($userID));
+// check whether this group has access to the requested page
+$page = $default->siteMap->getPage($action, $_SESSION["groupID"]);
 
-// getPage returns false for no permisssion
 if (!$page) {
+    // this group doesn't have permission to access the page
+    // or there is no page mapping for the requested action
+    
     // TODO: build no permission page
-    print "you do not have access to view this page!  please go away, and come back when you do.";    
+    print "you do not have access to view this page!  please go away, and come back when you do.";
+    exit;
 } else {
+    // set authorised flag
+    $sessionStatus["authorised"] = true;
+    
     //echo "about to redirect to $page<br>";
     redirect($page);
     // FIXME: append original request if necessary
-    /*
-    if (isset($originalRequest)) {
-        redirect($page . "?fRedirect=$originalRequest");
-    } else {
-        redirect($page);        
-    }
-    */
+    //if (isset($originalRequest)) {
+        //redirect($page . "?fRedirect=$originalRequest");
+    //} else {
+        //redirect($page);        
+    //}
 }
 ?>
