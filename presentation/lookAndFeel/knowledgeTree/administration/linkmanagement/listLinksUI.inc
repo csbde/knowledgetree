@@ -27,7 +27,7 @@
 
 function getQuickLinks() {
 	global $default;
-	$sQuery = 	"SELECT id as LinkID, name as LinkName, url LinkURL, rank as LinkRank, " . 
+	/*ok*/ $sQuery =  "SELECT id as LinkID, name as LinkName, url LinkURL, rank as LinkRank, " . 
 				"'Edit', 'Delete' " .
 				"FROM " . $default->quicklinks_table . " " .
 				"ORDER BY name";

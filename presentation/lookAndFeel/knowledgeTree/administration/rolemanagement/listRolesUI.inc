@@ -26,7 +26,7 @@
  */
 function getRoles() {
 	global $default;
-	$sQuery = 	"SELECT id as roleID, name as name, can_read as reader, can_write as writer, " . 
+	/*ok*/ $sQuery = "SELECT id as roleID, name as name, can_read as reader, can_write as writer, " . 
 				"'Edit', 'Delete' " .
 				"FROM roles " .
 				"ORDER BY name";				

@@ -29,7 +29,7 @@ function getCreatePage($iRoleID) {
 	
 	global $default;
 	
-	$sQuery =  "SELECT * FROM $default->roles_table WHERE id = $iRoleID";
+	/*ok*/ $sQuery = array("SELECT * FROM $default->roles_table WHERE id = ?" , $iRoleID);
 	$aDisplayColumns = array("name", "can_read", "can_write");
 	$aStoreColumns = array("name", "can_read","can_write");
 	$aColumnNames = array(_("Name"), _("Read"), _("Write"));

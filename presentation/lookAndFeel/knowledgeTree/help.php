@@ -41,8 +41,8 @@ $headingBar .= "</table>\n";
 echo $headingBar;
 
 //Query the database for the helpURL based on the current action
-$sQuery = "SELECT HLP.help_info as helpinfo ".
-		"FROM $default->help_table AS HLP WHERE HLP.fSection = " . $_REQUEST['fAction'];
+/*ok*/ $sQuery = array("SELECT HLP.help_info as helpinfo ".
+		"FROM $default->help_table AS HLP WHERE HLP.fSection = ?", $_REQUEST['fAction']);
 		
 $sql = $default->db;
 $sql->query($sQuery);

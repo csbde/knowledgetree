@@ -28,7 +28,7 @@
 function getDocumentTypes() {
 	global $default;
 	
-	$sQuery = 	"SELECT id as DocTypeID, name as DocTypeName, " . 
+	/*ok*/ $sQuery = 	"SELECT id as DocTypeID, name as DocTypeName, " . 
 				"'Edit', 'Delete', 'Edit Fields' " .
 				"FROM " . $default->document_types_table . " " .
 				"ORDER BY name";

@@ -43,7 +43,7 @@ function getUnitDisplay($iUnitID) {
 
 function getGroups($aUnitIDs) {
 	global $default;
-	$sQuery = 	"SELECT GL.id AS groupID, UL.name AS UnitNameB4, GL.name AS name, 'Edit' , 'Delete', 'Edit Unit', 'Edit Users', " .
+	/*ok*/ $sQuery = "SELECT GL.id AS groupID, UL.name AS UnitNameB4, GL.name AS name, 'Edit' , 'Delete', 'Edit Unit', 'Edit Users', " .
 				"CASE WHEN UL.name IS NULL THEN '<font color=darkgrey>No Unit Assigned</font>' ELSE UL.name END AS UnitName " . 
 				"FROM ($default->groups_table GL LEFT JOIN $default->groups_units_table GUL ON GL.id = GUL.group_id) " . 
 				"LEFT JOIN $default->units_table UL ON UL.id = GUL.unit_id ";

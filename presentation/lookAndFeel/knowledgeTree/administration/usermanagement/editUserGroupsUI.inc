@@ -130,9 +130,9 @@ function InitGroups($iUserID) {
 	$aUserGroupIDs = GroupUserLink::getGroups($iUserID);
 	
 	if (Permission::userIsUnitAdministrator()) {
-		$sQuery = "SELECT ST.id FROM " . $default->groups_table . " ST " .
+		/*ok*/ $sQuery = array("SELECT ST.id FROM " . $default->groups_table . " ST " .
 			"INNER JOIN " . $default->groups_units_table . " GUL on ST.id=GUL.group_id " .
-			"WHERE GUL.unit_id=" . User::getUnitID($_SESSION["userID"]);
+			"WHERE GUL.unit_id = ?", User::getUnitID($_SESSION["userID"]));
 		$sql = $default->db;
 		$sql->query($sQuery);
 		

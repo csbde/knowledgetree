@@ -31,7 +31,7 @@ function getCreatePage($iGroupID) {
 	global $default;
 	$oGroup = null;
 	
-	$sQuery =  "SELECT * FROM $default->groups_table WHERE id = $iGroupID";
+	/*ok*/ $sQuery = array("SELECT * FROM $default->groups_table WHERE id = ?", $iGroupID);
 	// #2978 if you're not a system administrator, you can't add a sys admin group
 	// FIXME: there must be a more elegant way to do this?  possibly some exclusions to the pattern 
 	if (Permission::userIsSystemAdministrator()) {

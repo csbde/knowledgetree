@@ -28,7 +28,7 @@
 function getDocumentFields() {
 	global $default;
 	
-	$sQuery = 	"SELECT id as DocFieldID, name as DocFieldName, data_type, is_generic, has_lookup, " . 
+	/*ok*/ $sQuery = 	"SELECT id as DocFieldID, name as DocFieldName, data_type, is_generic, has_lookup, " . 
 				"'Edit', 'Delete', 'Edit Lookups' " .
 				"FROM " . $default->document_fields_table . " " .
 				"ORDER BY name";

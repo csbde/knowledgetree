@@ -57,11 +57,11 @@ function getPage($iUserID) {
 
 function getGroupUnitsList($iGroupID){
 
-    $sQuery = 	"SELECT groups_lookup.id as groupID, units_lookup.name as name, units_lookup.id as UnitID  " .
+    /*ok*/ $sQuery = array("SELECT groups_lookup.id as groupID, units_lookup.name as name, units_lookup.id as UnitID  " .
 				"FROM (groups_lookup inner join groups_units_link on groups_lookup.id = groups_units_link.group_id) " .
 				"inner join units_lookup on units_lookup.id = groups_units_link.unit_id " .
-				"Where groups_lookup.id = $iGroupID " .
-				"ORDER BY groups_lookup.name ";
+				"Where groups_lookup.id = ? " .
+				"ORDER BY groups_lookup.name ", $iGroupID);
     
 
     $aColumns = array("name");

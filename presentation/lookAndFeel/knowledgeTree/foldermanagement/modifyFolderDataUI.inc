@@ -29,9 +29,9 @@ function getFolderData($iFolderID, $sStatusMessage = "") {
 	global $default;
 	$sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
 	$sTDBGColour = $default->siteMap->getSectionColour($sSectionName, "td");
-	$sQuery = "SELECT F.id, F.name, F.description, F.is_public " .
+	/*ok*/ $sQuery = array("SELECT F.id, F.name, F.description, F.is_public " .
 			"FROM $default->folders_table AS F " .
-			"WHERE F.id = $iFolderID";
+			"WHERE F.id = ?", $iFolderID);
 			
 	$sql = $default->db;
 	$sql->query($sQuery);

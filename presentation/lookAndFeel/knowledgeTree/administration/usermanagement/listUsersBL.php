@@ -43,8 +43,8 @@ if (checkSession()) {
     if (Permission::userIsUnitAdministrator() && !$fGroupID) {
     	// #3519 select a group in your unit if you're a unit administrator and none has been selected
 	    $sql = $default->db;
-	    $sql->query("SELECT group_id FROM $default->groups_units_table WHERE unit_id = " . 
-	    		    User::getUnitID($_SESSION["userID"]) . " ORDER BY group_id");
+        /*ok*/ $sQuery = array("SELECT group_id FROM $default->groups_units_table WHERE unit_id = ? ORDER BY group_id", User::getUnitID($_SESSION["userID"]));
+	    $sql->query($sQuery);
 	    if ($sql->next_record()) {
 	        $fGroupID = $sql->f("group_id");
 	    }
