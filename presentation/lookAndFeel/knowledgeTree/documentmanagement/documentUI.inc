@@ -45,14 +45,21 @@ function renderCheckInPage($oDocument) {
 	global $default;
 	
 	$sToRender  = "<table>\n";
-	$sToRender .= "<tr><td>Select the file to check in:</td></tr>\n";    
-	$sToRender .= "<tr><td><input type=\"file\" name=\"fFile\"></td></tr>\n";
+	$sToRender .= "<tr><td>Select the file to check in:</td></tr>\n";
+	$sToRender .= "<tr><td><input type=\"file\" name=\"fFile\">";
+    /*
+	$sToRender .= "<tr><td><input type=\"file\" name=\"browse\" style=\"display:none\">";
+    $sToRender .= "<input type=\"text\" name=\"fFile\"\>\n";
+    $sToRender .= "<a href=\"#\" onClick=\"document.MainForm.browse.click();document.MainForm.fFile.value=document.MainForm.browse.value;return false;\">";
+    $sToRender .= "<img src=\"$default->graphicsUrl/widgets/browse.gif\" alt=\"browse\" border=\"0\"></a>\n";
+    */
+    $sToRender .= "</td></tr>\n";
     $sToRender .= "</table>\n";
     
 	$sToRender .= "<table>\n";  
 	$sToRender .= "<tr><td>Enter a check in comment for '" . $oDocument->getName() . "'</td></tr>\n";
 	$sToRender .= "<tr/>\n";
-	$sToRender .= "<tr><td><input type=\"text\" name=\"fCheckOutComment\" size=\"30\"/></td></tr>\n";
+	$sToRender .= "<tr><td><input type=\"text\" name=\"fCheckInComment\" size=\"30\"/></td></tr>\n";
     $sToRender .= "<tr><td><input type=\"hidden\" name=\"fForStore\" value=\"1\"/></td></tr>\n";
     $sToRender .= "<tr><td>\n";
     $sToRender .= "<input type=\"radio\" name=\"fCheckInType\" value=\"major\" checked /> Major CheckIn\n";
@@ -64,7 +71,7 @@ function renderCheckInPage($oDocument) {
 	$sToRender .= "<tr>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td><input type=\"image\" src =\"$default->graphicsUrl/widgets/checkin.gif\" value=\"Submit\" />\n";
+	$sToRender .= "<td><input type=\"image\" src =\"$default->graphicsUrl/widgets/checkin.gif\" value=\"Submit\" onClick=\"if (validRequired(document.MainForm.fFile, 'Check-In File') && validRequired(document.MainForm.fCheckInComment, 'Check-In Comment')) { return confirm('Are you sure you want to overwrite " . $oDocument->getName() . " with ' + document.MainForm.fFile.value + '?'); } else return false;\"/>\n";
 	$sToRender .= "<a href=\"$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $oDocument->getID() . "\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></a></td>\n";	    
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
@@ -89,11 +96,16 @@ function renderCheckOutPage($oDocument) {
 	$sToRender .= "<tr>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
-    $sToRender .= "<td><input type=\"image\" src =\"$default->graphicsUrl/widgets/checkout.gif\" value=\"Submit\" />\n";
+    $sToRender .= "<td><input type=\"image\" src =\"$default->graphicsUrl/widgets/checkout.gif\" value=\"Submit\" onClick=\"return validRequired(document.MainForm.fCheckOutComment, 'Check-Out Comment');\" />\n";
 	$sToRender .= "<a href=\"$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $oDocument->getID() . "\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></a></td>\n";	    
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
 	
 	return $sToRender;    
+}
+
+function renderErrorPage($sErrorMessage) {
+    return "<p class=\"errorText\">$sErrorMessage</p>\n" .
+           "<a href=\"$default->rootUrl/control.php?action=addOrg\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a>\n";
 }
 ?>
