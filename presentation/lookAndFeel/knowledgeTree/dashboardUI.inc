@@ -61,7 +61,7 @@ function renderCheckedOutDocuments($aCheckedOutDocumentList) {
         $sToRender .= "<th align=\"left\" width=\"66%\" class=\"sectionColumns\">\n";
         $sToRender .= "Title\n";
         $sToRender .= "</th>\n";
-        $sToRender .= "<th align=\"left\" width=\"33%\" class=\"sectionColumns\">\n";
+        $sToRender .= "<th align=\"right\" width=\"33%\" class=\"sectionColumns\">\n";
         $sToRender .= "Days\n";
         $sToRender .= "</th>";
         $sToRender .= "\t\t</tr>\n";
@@ -71,7 +71,7 @@ function renderCheckedOutDocuments($aCheckedOutDocumentList) {
         $oDocument = $aCheckedOutDocumentList[$i];
         $sToRender .= "\t<tr>\n";
         $sToRender .= "<td nowrap>" . generateControllerLink("viewDocument", "fDocumentID=" . $oDocument->getID(), "<img src=\"$default->graphicsUrl/widgets/dstatus.gif\" border=\"0\"/>&nbsp;" . $oDocument->getDisplayPath()) . "</td>\n";
-        $sToRender .= "<td>" . $oDocument->getDaysSinceLastModified() . "</td>\n";
+        $sToRender .= "<td align=right>" . $oDocument->getDaysSinceLastModified() . "</td>\n";
         $sToRender .= "\t</tr>\n";
     }
     return $sToRender;
