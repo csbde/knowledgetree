@@ -8,17 +8,23 @@ function switchDiv(div_id, object)
   var aDocumentDivs = new Array("documentData", "genericMetaData", "typeSpecificMetaData", 
                                 "archiveSettings", "documentRouting", "linkedDocuments");
   var aFolderDivs = new Array("folderData", "folderRouting", "documentTypes", "folderPermissions");
+  var aSearchDivs = new Array("searchLess", "searchMore");
                                 
   var style_sheet = getStyleObject(div_id);
+  var aDivs;
   if (style_sheet)
   {
     if (object == "document") {
-    	showAll(aDocumentDivs);    
-    	hideAll(aDocumentDivs);
-    } else {
-    	showAll(aFolderDivs);    	    
-    	hideAll(aFolderDivs);
+    	aDivs = aDocumentDivs;
     }
+    if (object == "folder") {
+    	aDivs = aFolderDivs;
+    }
+    if (object == "search") {
+    	aDivs = aSearchDivs;
+    }
+    showAll(aDivs);    
+    hideAll(aDivs);
     changeObjectVisibility(div_id,"visible");
   }
   else 
@@ -29,7 +35,7 @@ function switchDiv(div_id, object)
 
 // function hideAll()
 //  hides a bunch of divs
-//
+
 function hideAll(aDivs)
 {
    for (var i=0; i<aDivs.length; i++) {

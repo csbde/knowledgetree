@@ -25,6 +25,8 @@
  * @package search
  */
 
+require_once("$default->fileSystemRoot/lib/browse/Criteria.inc");
+
 function getMetaData($aMetaTagIDs) {
 	global $default;	
 	/*ok*/ $sQuery = "SELECT name, id FROM $default->document_fields_table ORDER BY name ASC";
@@ -63,16 +65,40 @@ function getMetaData($aMetaTagIDs) {
 	
 	return $sToRender;
 }
+
+function renderSearchSection($sSectionName, $sHeadingText, $bDisplayLink) {
+    static $iColour;
+    if ($bDisplayLink) {
+        $sLink = generateControllerLink("advancedSearch", "fShowSection=$sSectionName", $sHeadingText);
+    } else {
+        $sLink = "<a href=\"#\" onClick=\"switchDiv('$sSectionName', 'search');\">$sHeadingText</a>";
+    }
+    return "<tr bgcolor=\"" . getColour($iColour) . "\"><td width=\"100%\">$sLink</td></tr>\n";
+}
+
 function getSearchPage($sSearchString = "", $aMetaTagIDs = array(), $sHeading = null, $bSearchArchive = false) {
 	global $default;
 	if (is_null($sHeading)) {
 		$sHeading = _("Advanced Search");
 	}
+
     $sToRender  = renderHeading($sHeading);	
+
+    $sToRender .= "<div id=\"headings\">\n";
+    $sToRender .= "<table width=\"100%\">";
+    $sToRender .= renderSearchSection("searchLess", _("Simpler Search"), false);
+    $sToRender .= renderSearchSection("searchMore", _("More Options"), false);
+    $sToRender .= "</table>";
+    $sToRender .= "</div>";
+
+    $sToRender .= "<div id=\"contentDiv\" style=\"position:relative;visibility:hidden;width:500px;\" >\n";
+
+    $sToRender .= "<div id=\"searchLess\" style=\"position:absolute;visibility:hidden;left:5px;\" >\n";
+
 	$sToRender .= "<table width=\"600\">\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>" . _("Search text:") . " <input type=\"text\" size=\"50\" name=\"fSearchString\" value=\"$sSearchString\" />\n";
-	$sToRender .= "<input type=\"image\" src=\"" . KTHtml::getSearchButton() . "\" border=\"0\"/></td>\n";
+	$sToRender .= "<input name=\"simpleSearch\" type=\"image\" src=\"" . KTHtml::getSearchButton() . "\" border=\"0\"/></td>\n";
 	$sToRender .= "</tr>\n";
 		
 	if ($bSearchArchive) {
@@ -94,6 +120,31 @@ function getSearchPage($sSearchString = "", $aMetaTagIDs = array(), $sHeading = 
 	$sToRender .= "<td>&nbsp</td>\n";
 	$sToRender .= "</tr>\n";	
 	$sToRender .= "</table>\n";
+    $sToRender .= "</div>";
+
+
+    $sToRender .= "<div id=\"searchMore\" style=\"position:absolute;visibility:hidden;left:5px;\">";
+
+    $sToRender .= "<form name=\"advancedSearch\" method=\"POST\">";
+
+    $sToRender .= "<table width=\"100%\">\n";
+    $sToRender .= "<tr><td colspan=\"2\"><h3>Built-in metadata</h3></td></tr>";
+    $aBaseCriteria = Criteria::getBaseCriteria();
+    foreach ($aBaseCriteria as $k => $v) {
+        $sToRender .= $v->searchDisplay($_REQUEST);
+    }
+    $sToRender .= "<tr><td colspan=\"2\"><h3>Generic metadata</h3></td></tr>";
+    $aGenericCriteria = Criteria::getGenericCriteria();
+    foreach ($aGenericCriteria as $k => $v) {
+        $sToRender .= $v->searchDisplay($_REQUEST);
+    }
+    $sToRender .= "</table>\n";
+	$sToRender .= "<input name=\"advancedSearch\" type=\"image\" src=\"" . KTHtml::getSearchButton() . "\" border=\"0\"/></td>\n";
+    $sToRender .= "</form>";
+
+    $sToRender .= "</div>";
+    $sToRender .= "</div>";
+
 	
 	return $sToRender . getSearchValidationJavaScript();
 }
@@ -121,6 +172,7 @@ function getSearchResults($sMetaTagIDs, $sSQLSearchString, $iStartIndex, $sSearc
     $aParams[] = $sStatus;
 
 	$default->log->info("getSearchResults $sQuery");
+
  	$aColumns = array("folder_name", "document_name", "doc_count");
  	$aColumnTypes = array(3,3,1);
 	$aColumnHeaders = array("<font color=\"ffffff\"><img src=$default->graphicsUrl/widgets/dfolder.gif>" . _("Folder") . "</font>","<font color=\"ffffff\">" . _("Document") . "</font>", "<font color=\"ffffff\">" . _("Matches") . "</font>");
@@ -137,16 +189,15 @@ function getSearchResults($sMetaTagIDs, $sSQLSearchString, $iStartIndex, $sSearc
 }
 
 function getSearchValidationJavaScript() {
-	$sToRender = "\n\n<SCRIPT LANGUAGE=\"javascript\">\n ";
+	/*$sToRender = "\n\n<SCRIPT LANGUAGE=\"javascript\">\n ";
 	$sToRender .= "<!--\n";		
 	$sToRender .= "function validateForm() {\n";	
 	$sToRender .= "\tif (!(validRequired(document.MainForm.fSearchString, 'Search text'))) {\n";
 	$sToRender .= "\t\treturn false;\n\t}\n";
 	$sToRender .= "\treturn true;\n}\n";
 	$sToRender .= "-->\n";
-	$sToRender .= "</SCRIPT>\n\n";
+	$sToRender .= "</SCRIPT>\n\n";*/
 	return $sToRender;
-
 }
 
 function wasSelected($iID, $aMetaTagIDs) {
