@@ -12,7 +12,7 @@ DROP TABLE folders_user_roles_link;
 DROP TABLE groups_folders_approval_link;
 DROP TABLE groups_folders_link;
 DROP TABLE groups_lookup;
-DROP TABLE groups_users_link;
+DROP TABLE groups_units_link;
 DROP TABLE links;
 DROP TABLE mime_types;
 DROP TABLE organisations_lookup;
