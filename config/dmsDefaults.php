@@ -105,6 +105,8 @@ $default->owl_web_documents_status_table = "web_documents_status_lookup";
 $default->owl_web_sites_table = "web_sites";
 // stores indexed words
 $default->owl_words_lookup_table = "words_lookup";
+//stores help text
+$default->owl_help_table = "help";
 
 // Change this to reflect the authentication method you are using
 //require_once("$default->fileSystemRoot/lib/LDAPAuthenticator.inc");
