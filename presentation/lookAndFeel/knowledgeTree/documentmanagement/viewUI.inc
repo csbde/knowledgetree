@@ -72,7 +72,6 @@ function renderGenericMetaData($oDocument) {
 
 }
 
-
 function renderTypeSpecificMetaData($oDocument) {
     $sQuery = "SELECT DF.name AS name, DFL.value AS value " .
               "FROM documents AS D INNER JOIN document_fields_link AS DFL ON D.id = DFL.document_id " .
@@ -133,6 +132,24 @@ function renderNonEditableDocumentRouting($oDocument) {
 
 }
 
+function renderDocumentArchiveSettings($oDocument) {
+    global $default;
+    $sQuery = "SELECT d.id, expiration_date, utilisation_threshold, 'Edit' as edit FROM $default->owl_archive_settings_table AS a " .
+			  "INNER JOIN $default->owl_documents_table as d on a.document_id=d.id " .
+			  "WHERE d.id = " . $oDocument->getID();
+    
+    $aColumns = array("expiration_date", "utilisation_threshold", "edit");
+    $aColumnHeaders = array("Expiration Date", "Utilisation Threshold");
+    $aColumnTypes = array(1,1,3);
+    $aDBColumnArray = array("id");
+    $aQueryStringVariableNames = array("fDocumentID");
+    $oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaders, "90%", "$default->rootUrl/control.php?action=modifyDocumentArchiveSettings",$aDBColumnArray,$aQueryStringVariableNames);
+    $oPatternTableSqlQuery->setTableHeading("Archiving Settings");
+    $oPatternTableSqlQuery->setEmptyTableMessage("No archiving settings");
+    $oPatternTableSqlQuery->setDisplayColumnHeadings(true);
+    return $oPatternTableSqlQuery->render();	
+}
+
 function displayActionButtons($oDocument, $bEdit) {
     global $default;
     if ($bEdit) {
@@ -163,6 +180,7 @@ function displayActionButtons($oDocument, $bEdit) {
     }
     $sToRender .= "<td><a onClick=\"alert('This will download a copy of the document and is not the same as Checking Out a document- changes to this downloaded file will not be managed in the DMS.'); return true;\" href=\"" . generateControllerLink("viewDocument", "fDocumentID=" . $oDocument->getID() . "&fForDownload=1") . "\"><img src=\"$default->graphicsUrl/widgets/download.gif\" border=\"0\" /></a></td>\n";    
     $sToRender .= "<td><a href=\"" . generateControllerLink("viewDiscussion", "fDocumentID=" . $oDocument->getID() . "&fForDiscussion=1") . "\"><img src=\"$default->graphicsUrl/widgets/discussion.gif\" border=\"0\" /></a></td>\n";
+    //$sToRender .= "<td><a href=\"" . generateControllerLink("archiveDocument", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/archive.gif\" border=\"0\" /></a></td>\n";
     			
     return $sToRender;
 }
@@ -206,12 +224,27 @@ function getEditPage($oDocument) {
     $sToRender .= "</td>\n";
     $sToRender .= "<td valign=top>\n";
     
-    $sToRender .= "\t<table border = 0>\n";
+    $sToRender .= "\t<table border=\"0\">\n";
+    /*
+    $sToRender .= "\t<tr>\n";
+    $sToRender .= "\t\t<td>" . renderDocumentArchiveSettings($oDocument) . "</td>\n";
+    $sToRender .= "\t</tr>";
+    // if there are no archiving settings then allow their addition
+    $oArchiveSettings = ArchiveSettings::getFromDocumentID($iDocumentID);
+    if (!$oArchiveSettings) {
+    	$sToRender .= "\t<tr>\n";
+		$sToRender .= "\t\t<td><a href=\"$default->rootUrl/control.php?action=modifyDocumentArchiveSettings&fDocumentID=$iDocumentID\"><img src=\"$default->graphicsUrl/widgets/edit.gif\" border=\"0\"/></a></td>\n";
+		$sToRender .= "\t</tr>";
+    }
+    */
     $sToRender .= "\t<tr>\n";
     $sToRender .= "\t\t<td>" . renderEditableDocumentRouting($oDocument) . "</td>\n";
     $sToRender .= "\t</tr>";
+        
     $sToRender .= "\t<tr>\n";
-	if ($oDocument->hasCollaboration() && (!DocumentCollaboration::documentCollaborationStarted($oDocument->getID())) && ($_SESSION["userID"] == $oDocument->getCreatorID())) {
+    
+    // collaboration cannot be started or approved/rejected unless the document is not checked out    
+	if (!$oDocument->getIsCheckedOut() && $oDocument->hasCollaboration() && (!DocumentCollaboration::documentCollaborationStarted($oDocument->getID())) && ($_SESSION["userID"] == $oDocument->getCreatorID())) {
 		//if not all collaboration steps have been set, then you cannot start the collaboration process
 		//only the creator of the document can start the collaboration process		
 		$sToRender .= "\t\t<td><a href=" . $_SERVER['PHP_SELF'] . "?fDocumentID=" . $oDocument->getID() . "&fBeginCollaboration=1><img src=\"$default->graphicsUrl/widgets/begin.gif\" border=\"0\"/></a>";
@@ -219,9 +252,12 @@ function getEditPage($oDocument) {
 	} else if (DocumentCollaboration::userIsPerformingCurrentCollaborationStep($oDocument->getID())) {
 		//if the current user is responsible for an active step in the collaboration process		
 		$sToRender .= "\t\t<td><table border=\"0\"><tr>\n";
-		$sToRender .= "\t\t<td><b>You currently have an active role<br> in the collaboration process</b></td>\n";				
-		$sToRender .= "\t\t<td align=\"center\"><a href=" . $_SERVER['PHP_SELF'] . "?fDocumentID=" . $oDocument->getID() . "&fCollaborationStepComplete=1><img src=\"$default->graphicsUrl/widgets/approve.gif\" border=\"0\"/></a></td>\n";
-		$sToRender .= "\t\t<td align=\"center\"><a href=\"$default->rootUrl/control.php?action=collaborationStepReject&fDocumentID=$iDocumentID\"><img src=\"$default->graphicsUrl/widgets/reject.gif\" border=\"0\"/></a></td>\n";
+		$sToRender .= "\t\t<td><b>You currently have an active role<br> in the collaboration process</b></td>\n";
+		// collaboration cannot be started or approved/rejected unless the document is not checked out
+		if (!$oDocument->getIsCheckedOut()) {				
+			$sToRender .= "\t\t<td align=\"center\"><a onClick=\"return confirm('Are you sure you want to approve?  You will not have access to this document until the collaboration process is complete (unless the document is rejected in a subsequent step)');\" href=" . $_SERVER['PHP_SELF'] . "?fDocumentID=" . $oDocument->getID() . "&fCollaborationStepComplete=1><img src=\"$default->graphicsUrl/widgets/approve.gif\" border=\"0\"/></a></td>\n";
+			$sToRender .= "\t\t<td align=\"center\"><a href=\"$default->rootUrl/control.php?action=collaborationStepReject&fDocumentID=$iDocumentID\"><img src=\"$default->graphicsUrl/widgets/reject.gif\" border=\"0\"/></a></td>\n";
+		}
 		$sToRender .= "\t\t</tr></table></td>\n";
 	}
     
@@ -239,7 +275,7 @@ function getEditPage($oDocument) {
             $sToRender .= "<td><a href=" . $_SERVER['PHP_SELF'] . "?fDocumentID=" . $oDocument->getID() . "&fForPublish=1><img src=\"$default->graphicsUrl/widgets/publish.gif\" border=\"0\"/></a></td>\n";
         }
     }
-    $sToRender .= "\t</tr>";
+    $sToRender .= "\t</tr>";    
     $sToRender .= "\t</table>";
     $sToRender .= "</td>\n";
     $sToRender .= "</tr>\n";
