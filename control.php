@@ -12,7 +12,7 @@
  *
  * @version $Revision$
  * @author Michael Joseph <michael@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
- * @package control
+ * @package controller
  */
 
 // main library routines and defaults

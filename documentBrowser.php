@@ -13,7 +13,7 @@
  *
  * @version $Revision$
  * @author Michael Joseph <michael@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
- * @package dms
+ * @package presentation
  *
  * Querystring variables
  * ---------------------
