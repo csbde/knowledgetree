@@ -53,6 +53,13 @@ KnowledgeTree Installation Notes
 *  Login:
    - in a web browser goto http://$default->serverName/$default->rootUrl/
    - default user is "admin" with password "admin"
+
+*  Setting System Settings:
+   - Click on 'Admin'.
+   - Select System Settings.
+   - Check that the values are the same as the ones in your environment.php
+     (Note: If you are not using LDAP you can leave these settings as is)
+   - Click 'Update' to save these settings.
    
 Troubleshooting
 ---------------
