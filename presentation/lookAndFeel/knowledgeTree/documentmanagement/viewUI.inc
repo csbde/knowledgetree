@@ -234,7 +234,7 @@ function getEditPage($oDocument) {
                 $sToRender .= "<td><a href=" . $_SERVER['PHP_SELF'] . "?fDocumentID=" . $oDocument->getID() . "&fForPublish=1><img src=\"$default->graphicsUrl/widgets/publish.gif\" border=\"0\"/></a></td>\n";
             }
         } else if ($_SESSION["userID"] == $oDocument->getCreatorID()) {
-            // no collaboration for this folder, so only the originator can request publication
+            // no collaboration for this folder, so only the creator can request publication
             // ??: or an administrator?
             $sToRender .= "<td><a href=" . $_SERVER['PHP_SELF'] . "?fDocumentID=" . $oDocument->getID() . "&fForPublish=1><img src=\"$default->graphicsUrl/widgets/publish.gif\" border=\"0\"/></a></td>\n";
         }
