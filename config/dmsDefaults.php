@@ -10,7 +10,7 @@
  */
 
 // include the environment settings
-require_once("environment.php");
+require_once("myEnvironment.php");
 
 $default->owl_graphics_url = $default->owl_root_url . "/graphics";
 $default->owl_LangDir  = $default->owl_fs_root . "/locale";
@@ -166,13 +166,12 @@ $default->siteMap->addPage("viewDocument", "/presentation/lookAndFeel/knowledgeT
 $default->siteMap->addPage("deleteDocument", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/deleteDocumentBL.php", "Manage Documents", User, "Delete document", false);
 $default->siteMap->addPage("viewHistory", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/viewHistoryBL.php", "Manage Documents", User, "View Document History", false);
 $default->siteMap->addPage("modifyDocument", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/modifyBL.php", "Manage Documents", User, "Modify Document", false);
-$default->siteMap->addPage("removeDocument", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/removeDocumentBL.php", "Manage Documents", User, "Remove Document", false);
 $default->siteMap->addPage("emailDocument", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/emailBL.php", "Manage Documents", User, "Email A Document", false);
 
 $default->siteMap->addPage("addFolder", "/presentation/lookAndFeel/knowledgeTree/foldermanagement/addFolderBL.php", "Manage Documents", User, "Add A Folder");
-$default->siteMap->addPage("editFolder", "/presentation/lookAndFeel/knowledgeTree/folderManagement/editBL.php", "Manage Documents", UnitAdmin, "Modify Folder Properties", false);
-$default->siteMap->addPage("deleteFolder", "/presentation/documentmanagement/deleteFolder.php", "Manage Documents", UnitAdmin, "Delete A Folder", false);
-$default->siteMap->addPage("moveFolder", "/presentation/documentmanagement/moveFolder.php", "Manage Documents", UnitAdmin, "Move A Folder", false);
+$default->siteMap->addPage("editFolder", "/presentation/lookAndFeel/knowledgeTree/foldermanagement/editBL.php", "Manage Documents", UnitAdmin, "Modify Folder Properties");
+$default->siteMap->addPage("deleteFolder", "/presentation/lookAndFeel/knowledgeTree/foldermanagement/deleteFolderBL.php", "Manage Documents", UnitAdmin, "Delete A Folder");
+$default->siteMap->addPage("moveFolder", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/moveFolder.php", "Manage Documents", UnitAdmin, "Move A Folder", false);
 
 $default->siteMap->addPage("addDocument", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentBL.php", "Manage Documents", User, "Add A Document");
 $default->siteMap->addPage("modifyDocumentRouting", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/collaborationBL.php", "Manage Documents", User, "");
