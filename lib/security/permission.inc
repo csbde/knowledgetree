@@ -342,15 +342,11 @@ class Permission {
 	}
 	
 	/**
-	* Checks if the current user is the unit administrator
-	* for the unit to which the folder belongs
-	*
-	*
-	* @param 	int		Primary key of folder to check
+	* Checks if the current user is a unit administrator
 	*
 	* @return boolean true if the user is the unit administrator for the unit to which the folder belongs, false otherwise
 	*/
-	function userIsUnitAdministrator($iFolderID) {
+	function userIsUnitAdministrator() {
         global $default;
 		$sql = new Owl_DB();
 		$sql->query("SELECT UGL.group_id " .
