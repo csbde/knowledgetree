@@ -16,9 +16,9 @@ function getPage($iUserID, $iGroupID) {
 	
 	if (isset($iUserID)) {
 		$oUser = User::get($iUserID);
-		$heading = "<tr>Are you Sure you wish to assign the User to the Group? </tr>\n";
+		$heading = "<tr><td>Are you Sure you wish to assign the User to the Group?</td></tr>\n";
 	}else{
-		$heading = "<tr>Please Assign a User to a Group: </tr>\n";
+		$heading = "<tr><td>Please Assign a User to a Group:</td></tr>\n";
 	}
 	
 	
@@ -26,13 +26,10 @@ function getPage($iUserID, $iGroupID) {
 		$oGroup = Group::get($iGroupID);
 		
 	}
-		
-	$sToRender .= "<br></br>\n";
-	$sToRender .= "<b>Assign User to Group:</b>\n";
+
+    $sToRender .= "<table width=\"100%\">" . renderHeading("Add User to Group") . "</table>";
 	$sToRender .= "<table>\n";
-	$sToRender .= "<br></br>\n";
 	$sToRender .= $heading;
-	$sToRender .= "<br>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<td>User Name: </td><td>" . getUserDisplay($oUser) . "</td>\n";
@@ -57,12 +54,10 @@ function getPage($iUserID, $iGroupID) {
 // page that comes up when there is nothing selected
 function getPageNotSelected() {	
 	global $default;
-			
-	$sToRender .= "<br></br>\n";
-	$sToRender .= "<b>Sorry, Selection Failed</b>\n";
+
+    $sToRender .= "<table width=\"100%\">" . renderHeading("Add User to Group") . "</table>";
 	$sToRender .= "<table>\n";
-	$sToRender .= "<br></br>\n";
-	$sToRender .= "<tr></tr>\n";
+	$sToRender .= "<tr><td><b>Sorry, Selection Failed</b></td></tr>\n";
 	$sToRender .= "<tr><td>Please select BOTH a User AND a Group</td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
@@ -75,15 +70,13 @@ function getPageNotSelected() {
 	return $sToRender;
 }
 
-//if edition successful
-function getPageSuccess() {	
+//if addition successful
+function getPageSuccess() {
 	global $default;
-			
-	$sToRender .= "<br></br>\n";
-	$sToRender .= "<b>Success!</b>\n";
+
+    $sToRender .= "<table width=\"100%\">" . renderHeading("Add User to Group") . "</table>";            
 	$sToRender .= "<table>\n";
-	$sToRender .= "<br></br>\n";
-	$sToRender .= "<tr></tr>\n";
+	$sToRender .= "<tr><td><b>Success!</b></td></tr>\n";
 	$sToRender .= "<tr><td>The User was successfully assigned to the specified Group</td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
@@ -97,14 +90,12 @@ function getPageSuccess() {
 }
 
 //if edition successful
-function getPageFail() {	
+function getPageFail() {
 	global $default;
-			
-	$sToRender .= "<br></br>\n";
-	$sToRender .= "<b>Failed!</b>\n";
-	$sToRender .= "<table>\n";
-	$sToRender .= "<br></br>\n";
-	$sToRender .= "<tr></tr>\n";
+		
+    $sToRender .= "<table border=1 width=\"600\">" . renderHeading("Add User to Group") . "</table>";
+	$sToRender .= "<table border=1>\n";
+	$sToRender .= "<tr><td><b>Failed!</b></td></tr>\n";
 	$sToRender .= "<tr><td>The User already belongs to the specified Group</td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
@@ -148,7 +139,9 @@ function getGroupDisplay($oGroup) {
         if (Permission::userIsSystemAdministrator()) {
             // if this is the system administrator, prepend group names with unit name
             $oPatternListBox = & new PatternListBox($default->owl_groups_table, "name", "id", "fGroupID");
-            //$oPatternListBox->setFromClause("INNER JOIN $default->");
+            $oPatternListBox->setFromClause("LEFT OUTER JOIN groups_units_link GUL on ST.id=GUL.group_id " .
+                                            "INNER JOIN units_lookup UL on GUL.unit_id=UL.id");
+            $oPatternListBox->setCompositeDisplayName("DISTINCT CONCAT(CONCAT(UL.name, '-'),ST.name)");
         } else if (Permission::userIsUnitAdministrator()) {
             // else if this is a unit administrator, only display the groups in your unit
             $oPatternListBox = & new PatternListBox($default->owl_groups_table, "name", "id", "fGroupID");
@@ -167,9 +160,9 @@ function getGroupDisplay($oGroup) {
 function getAssignButton($oUser) {
 	global $default;
 	if (!isset($oUser)) {
-		return "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/select.gif\" value=\"submit\" /></td>\n";
+		return "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/select.gif\" value=\"submit\" border=\"0\"/></td>\n";
 	} else {
-		return "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/assign.gif\" value=\"submit\" /></td>\n";
+		return "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/assign.gif\" value=\"submit\" border=\"0\"/></td>\n";
 	}
 }
 // show button after User selected
