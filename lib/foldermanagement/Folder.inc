@@ -271,6 +271,7 @@ class Folder {
 		$sql->query("SELECT * FROM " . $default->owl_folders_table . " WHERE id = " . $iFolderID);
 		if ($sql->next_record()) {
 			$oFolder = & new Folder(stripslashes($sql->f("name")), stripslashes($sql->f("description")), $sql->f("parent_id"), $sql->f("creator_id"), $sql->f("document_type_id"), $sql->f("unit_id"), $sql->f("is_public"));
+            $oFolder->iId = $iFolderID;
 			return $oFolder;
 		} 
  		$_SESSION["errorMessage"] = $lang_err_object_not_exist . "id = " . $iFolderID . " table = folders";
