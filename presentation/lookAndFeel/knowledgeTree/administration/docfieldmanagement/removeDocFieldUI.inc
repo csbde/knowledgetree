@@ -34,10 +34,6 @@ function getDeletePage($fDocFieldID) {
 	$sToRender .= "<td>" . getDocFieldDataType($oDocField) . "</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>" . getIsGenericCheckBox($oDocField) . "</td>\n";
-	$sToRender .= "</tr>\n";
-	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>" . getHasLookupCheckBox($oDocField) . "</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "</tr>\n";
@@ -124,24 +120,7 @@ function getDocFieldDataType($oDocField) {
 	
 }
 
-// show check box
-function getIsGenericCheckBox($oDocField) {
-	if (!isset($oDocField)) {
-		return "";
-	} else {
-		return "Is Generic: </td><td> <input type=\"checkbox\" name=\"fDocFieldIsGeneric\" " . ($oDocField->getIsGeneric() ? "CHECKED " : " ") . " />";
-	}
-}
 
-// show text box
-function getHasLookupCheckBox($oDocField) {
-	if (!isset($oDocField)) {
-		return "";
-	} else {
-		return "Has Lookup: </td><td><input type=\"checkbox\" name=\"fDocFieldHasLookup\" " . ($oDocField->getHasLookup() ? "CHECKED " : " ") . " />";
-	}
-	
-}
 
 // show delete button
 function getDeleteButton($oDocField) {
