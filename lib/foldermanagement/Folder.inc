@@ -327,10 +327,10 @@ class Folder {
 		global $default;		
 		//if the folder has a parent
 		if (Folder::getParentFolderID($iFolderID) != 0) {			
-			$sCurrentPath = " > " . Folder::getFolderPath(Folder::getParentFolderID($iFolderID), Folder::getFolderName($iFolderID)) . " > " . $sCurremtPath;
-		}
-		return Folder::getFolderName($iFolderID);
-		
+			return Folder::getFolderDisplayPath(Folder::getParentFolderID($iFolderID)) . " > " . Folder::getFolderName($iFolderID);
+		} else {
+		    return Folder::getFolderName($iFolderID);
+        }
 	}
 	
 	/**
