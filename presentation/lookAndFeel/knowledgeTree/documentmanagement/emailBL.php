@@ -36,7 +36,7 @@ if (checkSession()) {
                         $oUser = User::get($_SESSION["userID"]);
                         $sMessage = "<font face=\"arial\" size=\"2\">";
                         if (isset($fToName)) {
-                            $sMessage .= "$fToName,<br><br>Your colleague, " . $oUser->getName() . ", wishes you to view the document entitled '" . $oDocument->getName() . "'.\n  Click on the hyperlink below to view it";
+                            $sMessage .= "$fToName,<br><br>Your colleague, " . $oUser->getName() . ", wishes you to view the document entitled '" . $oDocument->getName() . "'.\n  Click on the hyperlink below to view it.";
                         } else {
                             $sMessage .= "Your colleague, " . $oUser->getName() . ", wishes you to view the document entitled '" . $oDocument->getName() . "'.\n  Click on the hyperlink below to view it.";
                         }
