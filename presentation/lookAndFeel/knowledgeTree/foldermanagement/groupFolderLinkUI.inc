@@ -122,7 +122,7 @@ function getGroupDropDown($iGroupID = -1) {
     if (Permission::userIsSystemAdministrator()) {
         $oPatternListBox = & new PatternListBox("$default->groups_table", "name", "id", "fGroupID");
     } else {
-        $oPatternListBox = & new PatternListBox("$default->groups_table", "name", "id", "fGroupID", "GUL.unit_id=" . User::getUnitID($_SESSION["userID"]));
+        $oPatternListBox = & new PatternListBox("$default->groups_table", "name", "id", "fGroupID", "GUL.unit_id in (" . implode(",", User::getUnitIDs($_SESSION["userID"])) . ")");
         $oPatternListBox->setFromClause("INNER JOIN $default->groups_units_table AS GUL ON ST.id = GUL.group_id");
     }
 	$oPatternListBox->setEmptyErrorMessage("There are no groups");
