@@ -209,23 +209,16 @@ class UnitOrganisationLink {
 		return false;
 	}
 	
-		/*
+	/**
      * static function
      *
      * test to see if unit belongs to org
      *
      * @param   false or a value
-     *   
      */
-     
-	function unitBelongsToOrg($unitId)
-	 {
-	       global $default;
-	
-	        $value = lookupField("$default->owl_units_organisations_table", "organisation_id", "unit_id", $unitId );
-	        
-	        return $value;
-	        
+	function unitBelongsToOrg($unitId) {
+		global $default;
+		return lookupField("$default->owl_units_organisations_table", "organisation_id", "unit_id", $unitId );
 	}
 	
 	/*
@@ -237,32 +230,26 @@ class UnitOrganisationLink {
      *   The unit_ID
      *   
      */
-     
-	function setUnitOrgID($unitId)
-	 {
-	       global $default;
-	
-	        $id = lookupID($default->owl_units_organisations_table, "unit_id",  $unitId);
-	        
-	        $this->iId= $id;
+	function setUnitOrgID($unitId) {
+		global $default;
+		$id = lookupID($default->owl_units_organisations_table, "unit_id",  $unitId);
+		$this->iId= $id;
 	}
 	
-	
-	function getLinkByUnitID($unitId)
-	 {
-	       	global $default;
-	
-	    	$sql = $default->db;
-			$result = $sql->query("SELECT * FROM $default->owl_units_organisations_table WHERE unit_id = $unitId");
-			if ($result) {		    	
-	        	
-	        	if ($sql->next_record()) {
-	        		$oUnitOrganisationLink = & UnitOrganisationLink::get($sql->f("id"));
-	        		return $oUnitOrganisationLink;	        		
-	        	} else { return "error";}
-				
-			} else { return "apple"; }
+	function getByUnitID($unitId) {
+		global $default;
+		$sql = $default->db;
+		$result = $sql->query("SELECT * FROM $default->owl_units_organisations_table WHERE unit_id = $unitId");
+		if ($result) {		    	
+			if ($sql->next_record()) {
+				$oUnitOrganisationLink = & UnitOrganisationLink::get($sql->f("id"));
+				return $oUnitOrganisationLink;	        		
+			} else { 
+				return false;
+			}
+		} else { 
+			return false; 
+		}
 	}
-	
 }
 ?>
