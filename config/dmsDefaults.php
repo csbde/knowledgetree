@@ -140,16 +140,17 @@ $default->siteMap = new SiteMap();
 $default->siteMap->addPage("login", "/presentation/login.php?loginAction=login", "General", "Anonymous", "");
 $default->siteMap->addPage("loginForm", "/presentation/login.php?loginAction=loginForm", "General", "Anonymous", "login"); 
 $default->siteMap->addPage("logout", "/presentation/logout.php", "General", "Anonymous", "logout");
-$default->siteMap->addPage("dashboard", "/presentation/dashboardBL.php", "General", "Unit Administrators", "dashboard");
+$default->siteMap->addPage("dashboard", "/presentation/dashboardBL.php", "General", "Anonymous", "dashboard");
 
 //pages for manage documents section
-//$default->siteMap->addDefaultPage("browse", "/presentation/documentmanagement/browseBL.php", "Manage Documents", "Anonymous", "browse documents");
-$default->siteMap->addDefaultPage("browse", "/manage.php", "Manage Documents", "Anonymous", "Manage documents");
+$default->siteMap->addDefaultPage("browse", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/browseBL.php", "Manage Documents", "Anonymous", "browse documents");
+//$default->siteMap->addDefaultPage("browse", "/manage.php", "Manage Documents", "Anonymous", "Manage documents");
 $default->siteMap->addPage("addDocument", "/presentation/documentmanagement/addDocument.php", "Manage Documents", "Anonymous", "Add A Document");
 $default->siteMap->addPage("addFolder", "/presentation/documentmanagement/addFolder.php", "Manage Documents", "Unit Administrators", "Add A Folder");
 $default->siteMap->addPage("modifyFolderProperties", "/presentation/documentmanagement/modifyFolder.php", "Manage Documents", "Unit Administrators", "Modify Folder Properties");
 $default->siteMap->addPage("deleteFolder", "/presentation/documentmanagement/deleteFolder.php", "Manage Documents", "Unit Administrators", "Delete A Folder");
 $default->siteMap->addPage("moveFolder", "/presentation/documentmanagement/moveFolder.php", "Manage Documents", "Unit Administrators", "Move A Folder");
+$default->siteMap->addPage("viewDocument", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/documentViewBL.php", "Manage Documents", "Anonymous", "");
 
 
 // pages for administration section
