@@ -11,7 +11,7 @@
  * @author Michael Joseph <michael@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
  * @package lib.session
  */
- 
+
 /**
  * Redirects to the specified URL
  *
@@ -45,11 +45,14 @@ function controllerRedirect($action, $queryString) {
  * Returns a controller url.
  *
  * @param string the controller action to generate a url for
+ * @param string additional querystring parameters
  * @return string the controller url
  */
-function generateControllerUrl($action) {
+function generateControllerUrl($action, $queryString = "") {
     global $default;
-    return strlen($action) > 0 ? $default->owl_root_url . "/control.php?action=$action" : "";
+    $sUrl = strlen($action) > 0 ? $default->owl_root_url . "/control.php?action=$action" : "";
+    $sUrl .= strlen($queryString) > 0 ? "&$queryString" : "";
+    return $sUrl;
 }
 
 /**
@@ -58,8 +61,8 @@ function generateControllerUrl($action) {
  * @param string the controller action to generate a link for
  * @return string the generated href
  */
-function generateControllerLink($action) {
-    return "<a href=\"" . generateControllerUrl($action) . "\">";
+function generateControllerLink($action, $queryString = "") {
+    return "<a href=\"" . generateControllerUrl($action, $queryString) . "\">";
 }
 
 /**
@@ -67,22 +70,23 @@ function generateControllerLink($action) {
  * if the redirect parameter is true.
  *
  * @param boolean whether to automatically redirect to the login page on session verification failure
- */ 
+ */
 function checkSessionAndRedirect($bRedirect) {
     global $default;
-    
+
     $session = new Session();
     $sessionStatus = $session->verify();
-    
+
     if ($sessionStatus != 1) {
+        // verification failed
+        $default->log->debug("checkSession:: session check failed");
         if ($bRedirect) {
-            // verification failed, redirect to login with error message
-            $default->log->debug("checkSession:: session check failed");
+            // redirect to login with error message
             $url = $default->owl_root_url . "/control.php?action=loginForm";
-            $redirect = urlencode($_SERVER[PHP_SELF] . "?" . $_SERVER["QUERY_STRING"]);            
+            $redirect = urlencode($_SERVER[PHP_SELF] . "?" . $_SERVER["QUERY_STRING"]);
             if ((strlen($redirect) > 1)) {
                 $default->log->debug("checkSession:: redirect url=$redirect");
-                // this session verification failure represents either the first visit to 
+                // this session verification failure represents either the first visit to
                 // the site OR a session timeout etc. (in which case we still want to bounce
                 // the user to the login page, and then back to whatever page they're on now)
                 $url = $url . "&redirect=" . $redirect;
@@ -96,7 +100,7 @@ function checkSessionAndRedirect($bRedirect) {
     } else {
         $default->log->debug("checkSession:: returning true");
         return true;
-    }    
+    }
 }
 
 /**
