@@ -1,5 +1,13 @@
 <?php
 
+// main library routines and defaults
+require_once("../config/dmsDefaults.php");
+require_once("$default->owl_fs_root/lib/visualpatterns/PatternMainPage.inc");
+require_once("$default->owl_fs_root/lib/visualpatterns/PatternImage.inc");
+require_once("$default->owl_fs_root/lib/visualpatterns/PatternTableLinks.inc");
+require_once("$default->owl_fs_root/lib/visualpatterns/PatternTableSqlQuery.inc");
+require_once("$default->owl_fs_root/lib/visualpatterns/PatternCustom.inc");
+
 /**
  * $Id$
  *  
@@ -23,14 +31,7 @@
  * fCategoryName - the category to browse [optional depending on fBrowseType]
  * fDocumentTypeID - the document type id to browse [optional depending on fBrowseType]
  */
- 
-// main library routines and defaults
-require_once("./config/dmsDefaults.php");
-require_once("$default->owl_fs_root/lib/visualpatterns/PatternMainPage.inc");
-require_once("$default->owl_fs_root/lib/visualpatterns/PatternImage.inc");
-require_once("$default->owl_fs_root/lib/visualpatterns/PatternTableLinks.inc");
-require_once("$default->owl_fs_root/lib/visualpatterns/PatternTableSqlQuery.inc");
-require_once("$default->owl_fs_root/lib/visualpatterns/PatternCustom.inc");
+
 
 // -------------------------------
 // page start
