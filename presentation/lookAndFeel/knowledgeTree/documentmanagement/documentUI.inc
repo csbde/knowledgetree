@@ -63,12 +63,14 @@ function renderCheckInPage($oDocument) {
     $sToRender .= "<tr><td><input type=\"hidden\" name=\"fForStore\" value=\"1\"/></td></tr>\n";
     $sToRender .= "<tr><td><input type=\"hidden\" name=\"fDocumentID\" value=\"" . $oDocument->getID() . "\"/></td></tr>\n";    
     $sToRender .= "<tr><td>\n";
-    $sToRender .= "<input type=\"radio\" name=\"fCheckInType\" value=\"major\" checked /> Major CheckIn\n";
-    $sToRender .= "<input type=\"radio\" name=\"fCheckInType\" value=\"minor\" checked /> Minor CheckIn\n";
-    $sToRender .= "</tr></td>\n";    
+    $sToRender .= "<input type=\"radio\" name=\"fCheckInType\" value=\"minor\" checked /> Minor CheckIn\n";    
+    $sToRender .= "</tr></td>\n";
+    $sToRender .= "<tr><td>\n";
+    $sToRender .= "<input type=\"radio\" name=\"fCheckInType\" value=\"major\"/> Major CheckIn\n";
+    $sToRender .= "</tr></td>\n";
     $sToRender .= "</table>\n";
     
-    $sToRender .= "<table>\n";    
+    $sToRender .= "<table>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
