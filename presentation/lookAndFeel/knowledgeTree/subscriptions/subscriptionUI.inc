@@ -142,7 +142,7 @@ function renderRemoveConfirmationPage($oSubscription) {
  
  	$sToRender  = renderHeading("Subscriptions", "Subscriptions");
 	$sToRender .= "<table width=\"600\">\n";
-	$sToRender .= "<tr><td>You have chosen to delete the your $sContentType subscription to '$sContentName'.</td></tr>\n";
+	$sToRender .= "<tr><td>You have chosen to delete your $sContentType subscription to '$sContentName'.</td></tr>\n";
 	$sToRender .= "<tr/>\n";
 	$sToRender .= "<tr/>\n";
 	$sToRender .= "<td>Select 'Unsubscribe' to confirm the deletion, or 'Cancel' to cancel it</td>\n";
