@@ -26,7 +26,7 @@
  */
 require_once("$default->fileSystemRoot/lib/foldermanagement/PhysicalFolderManagement.inc");
 
-class Folder {
+class Folder extends KTEntity {
 	
 	/** folder primary key */
 	var $iId;
@@ -271,43 +271,27 @@ class Folder {
 		$sPath = addslashes($sPath);
 		return $sPath;			
 	}
-	
-	/**
-	* Create the current folder in the database
-	*
-	* @return boolean true and set $this->iId with new primary key, false otherwise and set $_SESSION["errorMessage"]
-	*/
-	function create() {
-		global $default;
 
-		if ($this->iId < 0) {
-			$this->sFullPath = $this->generateFolderPath($this->iParentID);
-			$this->sParentFolderIDs = $this->generateFolderIDs($this->iParentID);
+    function _fieldValues () {
+        $this->sFullPath = $this->generateFolderPath($this->iParentID);
+        $this->sParentFolderIDs = $this->generateFolderIDs($this->iParentID);
+        return array(
+            'name' => $this->sName,
+            'description' => $this->sDescription,
+            'parent_id' => $this->iParentID,
+            'creator_id' => $this->iCreatorID,
+            'unit_id' => $this->iUnitID,
+            'is_public' => $this->bIsPublic,
+            'full_path' => $this->sFullPath,
+            'parent_folder_ids' => $this->sParentFolderIDs,
+            'inherit_parent_folder_permission' => $this->bInheritParentPermissions,
+        );
+    }
 
-			$aFieldValues = array(
-                'name' => $this->sName,
-                'description' => $this->sDescription,
-                'parent_id' => $this->iParentID,
-                'creator_id' => $this->iCreatorID,
-                'unit_id' => $this->iUnitID,
-                'is_public' => $this->bIsPublic,
-                'full_path' => $this->sFullPath,
-                'parent_folder_ids' => $this->sParentFolderIDs,
-                'inherit_parent_folder_permission' => $this->bInheritParentPermissions,
-            );
-            $id =& DBUtil::autoInsert($default->folders_table, $aFieldValues);
-
-			if (PEAR::isError($id)) {
-                $_SESSION["errorMessage"] = $id->toString();
-                return false;
-            }
-            $this->iId = $id;
-            return true;
-		}
-
-		$_SESSION["errorMessage"] = "Can't create object that already exists" . "id = " . $this->iId . " table = $default->folders_table";
-		return false;
-	}
+    function _table () {
+        global $default;
+        return $default->folders_table;
+    }
 	
 	/**
 	* Update the current folder values in the database
@@ -315,37 +299,13 @@ class Folder {
 	* @return boolean true on successful update, false otherwise and set $_SESSION["errorMessage"]
 	*/
 	function update($bPathChange = false) {
-		global $default, $lang_err_database, $lang_err_object_key;
-		//can only update the object if it has already been stored
-		$sOldPath;
-		if ($this->iId >= 0) {			
-			$sql = $default->db;
-			$sQuery = "UPDATE " . $default->folders_table . " SET " .
-							"name = '$this->sName', " .
-							"description = '$this->sDescription', " .
-							"parent_id = $this->iParentID, " .
-							"creator_id = $this->iCreatorID, " .
-							"unit_id = $this->iUnitID, " . 
-							"inherit_parent_folder_permission = " . ($this->bInheritParentPermissions ? "1" : "0") . ", ";
-							if ($bPathChange) {
-								$this->sFullPath = $this->generateFolderPath($this->iParentID);
-								$this->sParentFolderIDs = $this->generateFolderIDs($this->iParentID);
-								$sQuery .= "parent_folder_ids = '$this->sParentFolderIDs'," .
-								  			"full_path = '$this->sFullPath', ";
-							}
-							$sQuery .= "is_public = " . ($this->bIsPublic ? 1 : 0) . " " .
-										"WHERE id = " . $this->iId;							
-			$result = $sql->query($sQuery);
-			if ($result && $bPathChange) {				
-				$this->updateChildPaths($this->iId, $sql);
-				return true;
-			} else if ($result) {
-				return true;
-			}
-			$_SESSION["errorMessage"] = $lang_err_database;
-			return false;			
-		}
-		$_SESSION["errorMessage"] = $lang_err_object_key;		
+        $res = parent::update();
+        if ($res === true) {
+            if ($bPathChange) {				
+                $this->updateChildPaths($this->iId, $sql);
+            }
+        }
+        return $res;
 	}
 	
 	function renameFolder($sOldPath) {
@@ -360,6 +320,7 @@ class Folder {
 	function updateChildPaths($iID, $sql) {
 		global $default;
 		//get the direct children
+        $sql = $default->db;
 		$sql->query("SELECT id from $default->folders_table WHERE parent_id = $iID");						
 		while ($sql->next_record()) {
 			//force an update, this will cause this child's children to be updated			
@@ -400,28 +361,6 @@ class Folder {
 		}
 		return substr($sChildString,0, strlen($sChildString)-1);
     }
-	
-	/**
-	* Delete the current object from the database
-	*
-	* @return boolean true and reset id to -1 on successful delete, false otherwise and set $_SESSION["errorMessage"]
-	*/
-	function delete() {
-		global $default, $lang_err_database, $lang_err_object_key;
-		if ($this->iId >= 0) {
-			$sql = $default->db;
-			$result = $sql->query("DELETE FROM " . $default->folders_table . " WHERE id = " . $this->iId);
-			if ($result) {
-				$this->iId = -1;
-				return true;
-			}
-			$_SESSION["errorMessage"] = $lang_err_database;
-			return false;
-		}
-		$_SESSION["errorMessage"] = $lang_err_object_key;
-		return false;
-		
-	}
 	
 	/**
 	* Static function.  

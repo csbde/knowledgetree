@@ -25,7 +25,7 @@
  * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
  * @package lib.foldermanagement 
  */
-class FolderUserRole {
+class FolderUserRole extends KTEntity {
 	
 	var $iId;
 	var $iUserID;
@@ -107,84 +107,23 @@ class FolderUserRole {
 		return $this->bDependantDocumentsCreated;
 		
 	}
-	
-	/**
-	* Create the current object in the database
-	*
-	* @return boolean on successful store, false otherwise and set $_SESSION["errorMessage"]
-	*
-	*/
-	function create() {
-		global $default, $lang_err_database, $lang_err_object_exists;
-		//if the object hasn't been created
-		if ($this->iId < 0) {
-            $sTable = $default->folders_user_roles_table;
-            $aFieldValues = array(
-                'user_id' => $this->iUserID,
-                'document_id' => $this->iDocumentID,
-                'group_folder_approval_id' => $this->iGroupFolderApprovalID,
-                'datetime' => $this->dDateTime,
-                'done' => $this->bDone,
-                'active' => $this->bActive,
-                'dependant_documents_created' => $this->bDependantDocumentsCreated,
-            );
-            $id =& DBUtil::autoInsert($sTable, $aFieldValues);
 
-            if (PEAR::isError($id)) {
-                $_SESSION["errorMessage"] = $id->toString();
-                return false;
-            }
-            $this->iId = $id;
-            return true;
-		}
-		$_SESSION["errorMessage"] = $lang_err_object_exists . "id = " . $this->iId . " table = folders_users_roles_link";
-		return false;
-	}
-	
-	/**
-	* Update the values in the database table with the object's current values
-	*
-	* @return boolean true on successful update, false otherwise and set $_SESSION["errorMessage"]
-	*
-	*/
-	function update() {
-		global $default, $lang_err_database, $lang_err_object_key;
-		//only update if the object has been stored
-		if ($this->iId > 0) {
-			$sql = $default->db;
-			//echo "UPDATE " . $default->folders_user_roles_table . " SET user_id = $this->iUserID, document_id = $this->iDocumentID, group_folder_approval_id = $this->iGroupFolderApprovalID, datetime = '$this->dDateTime', done = " . ($this->bDone ? "1" : "0") . ", active = " . ($this->bActive ? "1" : "0") . ", dependant_documents_created = " . ($this->bDependantDocumentsCreated ? "1" : "0") . " WHERE id = $this->iId";
-			$result = $sql->query("UPDATE " . $default->folders_user_roles_table . " SET user_id = $this->iUserID, document_id = $this->iDocumentID, group_folder_approval_id = $this->iGroupFolderApprovalID, datetime = '$this->dDateTime', done = " . ($this->bDone ? "1" : "0") . ", active = " . ($this->bActive ? "1" : "0") . ", dependant_documents_created = " . ($this->bDependantDocumentsCreated ? "1" : "0") . " WHERE id = $this->iId");
-			if ($result) {
-				return true;
-			}
-			$_SESSION["errorMessage"] = $lang_err_database;
-			return false;
-		}
-		$_SESSION["errorMessage"] = $lang_err_object_key;
-		return false;
-	}
-	
-	/**
-	* Delete the current object from the database
-	*
-	* @return boolean true on successful deletion, false otherwise and set $_SESSION["errorMessage"]
-	*
-	*/
-	function delete() {
-		global $default, $lang_err_database, $lang_err_object_key;
-		//only delete the object if it exists in the database
-		if ($this->iId >= 0) {
-			$sql = $default->db;
-			$result = $sql->query("DELETE FROM $default->folders_user_roles_table WHERE id = $this->iId");
-			if ($result) {
-				return true;
-			}
-			$_SESSION["errorMessage"] = $lang_err_database;
-			return false;
-		}
-		$_SESSION["errorMessage"] = $lang_err_object_key;
-		return false;
-	}
+    function _fieldValues () {
+        return array(
+            'user_id' => $this->iUserID,
+            'document_id' => $this->iDocumentID,
+            'group_folder_approval_id' => $this->iGroupFolderApprovalID,
+            'datetime' => $this->dDateTime,
+            'done' => $this->bDone,
+            'active' => $this->bActive,
+            'dependant_documents_created' => $this->bDependantDocumentsCreated,
+        );
+    }
+
+    function _table () {
+        global $default;
+        return $default->folders_user_roles_table;
+    }
 	
 	/**
 	* Static function.

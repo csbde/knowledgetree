@@ -24,7 +24,7 @@
  * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
  * @package lib.documentmanagement 
  */
-class DocumentType {
+class DocumentType extends KTEntity {
 	
 	/** primary key value */
 	var $iId;
@@ -74,56 +74,17 @@ class DocumentType {
 	function setName($sNewValue) {
 		$this->sName = $sNewValue;
 	}
-	
-     /**
-	* Store the current object in the database
-	*
-	* @return boolean on successful store, false otherwise and set $_SESSION["errorMessage"]
-	*
-	*/
-	function create() {
-		global $default, $lang_err_database, $lang_err_object_exists;
-		//if the object hasn't been created
-		if ($this->iId < 0) {
-            $sTable = $default->document_types_table;
-            $aFieldValues = array(
-                'name' => $this->sName,
-            );
-            $id =& DBUtil::autoInsert($sTable, $aFieldValues);
 
-            if (PEAR::isError($id)) {
-                $_SESSION["errorMessage"] = $id->toString();
-                return false;
-            }
-            $this->iId = $id;
-            return true;
-		}
-		
-		$_SESSION["errorMessage"] = $lang_err_object_exists . "id = " . $this->iId . " table = document_types";
-		return false;
-	}
-	
-	/**
-	* Update the values in the database table with the object's current values
-	*
-	* @return boolean true on successful update, false otherwise and set $_SESSION["errorMessage"]
-	*
-	*/
-	function update() {
-		global $default, $lang_err_database, $lang_err_object_key;
-		//only update if the object has been stored
-		if ($this->iId > 0) {
-			$sql = $default->db;
-			$result = $sql->query("UPDATE " . $default->document_types_table . " SET name = '$this->sName' WHERE id = $this->iId");
-			if ($result) {
-				return true;
-			}
-			$_SESSION["errorMessage"] = $lang_err_database;
-			return false;
-		}
-		$_SESSION["errorMessage"] = $lang_err_object_key;
-		return false;
-	}
+    function _fieldValues () {
+        return array(
+            'name' => $this->sName,
+        );
+    }
+
+    function _table () {
+        global $default;
+        return $default->document_types_table;
+    }
 	
 	/**
 	* Delete the current object from the database

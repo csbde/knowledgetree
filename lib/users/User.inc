@@ -24,10 +24,7 @@
  * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
  * @package lib.unitmanagement
  */
-class User {
-
-    /** object primary key */
-    var $iId;
+class User extends KTEntity {
     /** user's login name */
     var $sUserName;
     /** user's name (first and last) */
@@ -54,6 +51,7 @@ class User {
     var $iLanguageID;
     /** internal variable used to determine if the password has changed or not */
     var $bPasswordChanged;
+
 
     function User($sNewUserName, $sNewName, $sNewPassword, $iNewQuotaMax, $sNewEmail, $sNewMobile, $bNewEmailNotification, $bNewSmsNotification, $sNewLdapDn, $iNewMaxSessions, $iNewLanguageID) {
         //object not created in database yet
@@ -218,7 +216,7 @@ class User {
     *
     */
     function setEmailNotification($bNewValue) {
-        $this->bEmailNotification = $bNewValue;
+        $this->bEmailNotification = KTUtil::anyToBool($bNewValue);
     }
 
     /**
@@ -301,99 +299,27 @@ class User {
         $this->iLanguageIDID = $iNewValue;
     }
 
-    /**
-    * Create the current object in the database
-    *
-    * @return boolean on successful store, false otherwise and set $_SESSION["errorMessage"]
-    *
-    */
-    function create() {
-        global $default, $lang_err_database, $lang_err_object_exists;
-        //if the object hasn't been created
-        if ($this->iId < 0) {
-            $aFieldValues = array(
-                username => $this->sUserName,
-                name => $this->sName,
-                password => md5($this->sPassword),
-                quota_max => $this->iQuotaMax,
-                quota_current => 0,
-                email => $this->sEmail,
-                mobile => $this->sMobile,
-                email_notification => $this->bEmailNotification,
-                sms_notification => $this->bSmsNotification,
-                ldap_dn => $this->sLdapDn,
-                max_sessions => $this->iMaxSessions,
-                language_id => $this->iLanguageID,
-            );
-            $id = DBUtil::autoInsert($default->users_table, $aFieldValues);
-            if (PEAR::isError($id)) {
-                $_SESSION["errorMessage"] = $id->toString();
-                return false;
-            }
-            $this->iId = $id;
-            return true;
-        }
-        $_SESSION["errorMessage"] = $lang_err_object_exists . "id = " . $this->iId . " table = $default->users_table";
-        return false;
+    function _fieldValues() {
+        return array(
+            'username' => $this->sUserName,
+            'name' => $this->sName,
+            'password' => md5($this->sPassword),
+            'quota_max' => $this->iQuotaMax,
+            'quota_current' => 0,
+            'email' => $this->sEmail,
+            'mobile' => $this->sMobile,
+            'email_notification' => $this->bEmailNotification,
+            'sms_notification' => $this->bSmsNotification,
+            'ldap_dn' => $this->sLdapDn,
+            'max_sessions' => $this->iMaxSessions,
+            'language_id' => $this->iLanguageID,
+        );
     }
 
-    /**
-    * Update the values in the database table with the object's current values
-    *
-    * @return boolean true on successful update, false otherwise and set $_SESSION["errorMessage"]
-    *
-    */
-    function update() {
-        global $default, $lang_err_database, $lang_err_object_key;
-        //only update if the object has been stored                
-         if ($this->iId > 0) {         	         	
-            //check to see if name exsits
-            $sql = $default->db;
-            $query = "SELECT username FROM ". $default->users_table ." WHERE username = '" . $this->sUserName . "'";            
-            $sql->query($query);
-            $rows = $sql->num_rows($sql);
-
-            if ($rows > 1) {            	
-                // duplicate username
-                $_SESSION["errorMessage"] = "User::The username " . $this->sUserName . " is already in use!";
-                return false;
-            }
-            else {
-            	$sql = $default->db;            	
-            	$result = $sql->query("UPDATE " . $default->users_table . " SET username = '$this->sUserName', name = '$this->sName', " . ($this->bPasswordChanged ? "password = '" . md5($this->sPassword) . "', " : " ") . " quota_max = $this->iQuotaMax, email = '$this->sEmail', mobile = '$this->sMobile', email_notification = " . ($this->bEmailNotification ? 1 : 0) . ", sms_notification = " . ($this->bSmsNotification ? 1 : 0) . ", ldap_dn = '$this->sLdapDn', max_sessions = $this->iMaxSessions, language_id = $this->iLanguageID WHERE id = $this->iId");            	
-            	if ($result) {
-              	  return true;
-            	}
-            $_SESSION["errorMessage"] = $lang_err_database;
-            return false;
-        	}
-        }
-        $_SESSION["errorMessage"] = $lang_err_object_key;
-        return false;
+    function _table() {
+        global $default;
+        return $default->users_table;
     }
-
-    /**
-    * Delete the current object from the database
-    *
-    * @return boolean true on successful deletion, false otherwise and set $_SESSION["errorMessage"]
-    *
-    */
-    function delete() {
-        global $default, $lang_err_database, $lang_err_object_key;
-        //only delete the object if it exists in the database
-        if ($this->iId >= 0) {
-            $sql = $default->db;
-            $result = $sql->query("DELETE FROM $default->users_table WHERE id = $this->iId");
-            if ($result) {
-                return true;
-            }
-            $_SESSION["errorMessage"] = $lang_err_database;
-            return false;
-        }
-        $_SESSION["errorMessage"] = $lang_err_object_key;
-        return false;
-    }
-
 
 	/**
 	* Delete the current object from the database

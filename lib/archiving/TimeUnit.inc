@@ -24,8 +24,8 @@
  * @author Michael Joseph <michael@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
  * @package lib.archiving 
  */
-class TimeUnit {
 
+class TimeUnit extends KTEntity {
 	/**
 	 * The primary key
 	 */
@@ -71,72 +71,17 @@ class TimeUnit {
 		$this->sName = $sNewName;
 	}
 
-	/**
-	 * Inserts the time unit into the database
-	 *
-	 * @return boolean true on successful update, false otherwise
-	 */
-	function create(){
-        global $default;
-        //if the id >= 0, then the object has already been created
-        if ($this->iId < 0) {
-            $sTable = $default->time_unit_lookup_table;
-            $aFieldValues = array(
-                'name' => $this->sName,
-            );
-            $id =& DBUtil::autoInsert($sTable, $aFieldValues);
+    function _fieldValues () {
+        return array(
+            'name' => $this->sName,
+        );
+    }
 
-            if (PEAR::isError($id)) {
-                $_SESSION["errorMessage"] = $id->toString();
-                return false;
-            }
-            $this->iId = $id;
-            return true;
-        }
-        return false;
-	}
-
-    /**
-     * Update the current values in the database
-     *
-     * @return boolean true on successful update, false otherwise
-     */
-	function update(){
+    function _table () {
         global $default;
-        if ($this->iId >= 0) {			
-            $sql = $default->db;
-			$sQuery = "UPDATE $default->time_unit_lookup_table SET " .
-					  "name = '$this->sName' " .                                
-           			  "WHERE id = $this->iId";
-            $result = $sql->query($sQuery);
-            if ($result) {
-                return true;
-            }
-            return false;
-        }
-        return false;
-	}
+        $sTable = $default->time_unit_lookup_table;
+    }
 
-    /**
-     * Delete the current archive type from the database.  Set the primary key to -1 
-     * on successful deletion
-     *
-     * @return boolean true and reset id to -1 on successful deletion, false otherwise
-     */
-    function delete() {
-        global $default;
-        if ($this->iId >= 0) {
-            $sql = $default->db;
-            $result = $sql->query("DELETE FROM $default->time_unit_lookup_table WHERE id = $this->iId");
-            if ($result) {
-                $this->iId = -1;
-                return true;
-            }
-            return false;
-        }
-        return false;
-    }	
-   
     /**
      * Static function.  Given a news item primary key will create
      * a TimeUnit object and populate it with the corresponding

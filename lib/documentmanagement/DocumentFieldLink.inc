@@ -24,7 +24,7 @@
  * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
  * @package lib.documentmanagement 
  */
-class DocumentFieldLink {
+class DocumentFieldLink extends KTEntity {
 	
 	/** document field link primary key */
 	var $iId;
@@ -121,81 +121,19 @@ class DocumentFieldLink {
 	function setValue($sNewValue) {
 		$this->sValue = $sNewValue;
 	}
-	
-	/**
-	* Insert the current document into the database
-	*
-	* @return boolean true on successful insert, false otherwise and set $_SESSION["errorMessage"]
-	*/
-	function create() {
-		global $default, $lang_err_doc_exist, $lang_err_database;
-		//if the id >= 0, then the object has already been created
-		if ($this->iId < 0) {
-            $sTable = $default->document_fields_link_table;
-            $aFieldValues = array(
-                'document_id' => $this->iDocumentID,
-                'document_field_id' => $this->iDocumentFieldID,
-                'value' => $this->sValue,
-            );
-            $id =& DBUtil::autoInsert($sTable, $aFieldValues);
 
-            if (PEAR::isError($id)) {
-                $_SESSION["errorMessage"] = $id->toString();
-                return false;
-            }
-            $this->iId = $id;
-            return true;
-		}
-		$_SESSION["errorMessage"] = $lang_err_object_exists . "id = " . $this->iId . " table = $default->document_fields_link_table";
-		return false;
-		
-	}
-	
-	/**
-	* Update the documents current values in the database
-	*
-	* @return boolean true on successful update, false otherwise and set $_SESSION["errorMessage"]
-	*/
-	function update() {
-		global $default, $lang_err_database, $lang_err_object_key;
-		if ($this->iId >= 0) {
-			$sql = $default->db;
-			$result = $sql->query("UPDATE " . $default->document_fields_link_table . " SET " .
-					"document_id = $this->iDocumentID, document_field_id = $this->iDocumentFieldID, value = '$this->sValue'" .
-					"WHERE id = $this->iId");
-			if ($result) {
-				return true;
-			}
-			$_SESSION["errorMessage"] = $lang_err_database;
-			return false;
-		}
-		$_SESSION["errorMessage"] = $lang_err_object_key;
-		return false;
-		
-	}
-	
-	/**
-	* Delete the current document from the database.  Set the primary key to -1 
-	* on successful deletion
-	*
-	* @return boolean true and reset id to -1 on successful deletion, false otherwise and set $_SESSION["errorMessage"]
-	*/
-	function delete() {	
-		global $default, $lang_err_database, $lang_err_object_key;
-		if ($this->iId >= 0) {
-			$sql = $default->db;
-			$result = $sql->query("DELETE FROM  " . $default->document_fields_link_table . "  WHERE id = $this->iId");
-			if ($result) {
-				$this->iId = -1;
-				return true;
-			}			
-			$_SESSION["errorMessage"] = $lang_err_database;
-			return false;
-		}
-		$_SESSION["errorMessage"] = $lang_err_object_key;
-		return false;
-	}
-	
+    function _fieldValues () {
+        return array(
+            'document_id' => $this->iDocumentID,
+            'document_field_id' => $this->iDocumentFieldID,
+            'value' => $this->sValue,
+        );
+    }
+
+    function _table () {
+        global $default;
+        return $default->document_fields_link_table;
+    }
 	
 	/**
 	*

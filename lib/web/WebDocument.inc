@@ -31,7 +31,7 @@ DEFINE("NOT_PUBLISHED",3);
  * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
  * @package lib.web
  */
-class WebDocument {
+class WebDocument extends KTEntity {
 	
 	/** primary key of web document */
 	var $iId;
@@ -98,82 +98,22 @@ class WebDocument {
         $oDocument = Document::get($this->iDocumentID);
         return $oDocument->getDisplayPath();
     }
+
+    function _fieldValues () {
+        return array(
+            'document_id' => $this->iDocumentID,
+            'web_site_id' => $this->iWebSiteID,
+            'unit_id' => $this->iUnitID,
+            'status_id' => $this->iStatusID,
+            'datetime' => $this->dDateTime,
+        );
+    }
+
+    function _table () {
+        global $default;
+        return $default->web_documents_table;
+    }
     
-	/**
-	* Create the current object in the database
-	*
-	* @return boolean on successful store, false otherwise and set $_SESSION["errorMessage"]
-	*
-	*/
-	function create() {
-		global $default, $lang_err_database, $lang_err_object_exists;
-		//if the object hasn't been created
-		if ($this->iId < 0) {
-            $aFieldValues = array(
-                document_id => $this->iDocumentID,
-                web_site_id => $this->iWebSiteID,
-                unit_id => $this->iUnitID,
-                status_id => $this->iStatusID,
-                datetime => $this->dDateTime,
-            );
-
-            $id =& DBUtil::autoInsert($default->web_documents_table, $aFieldValues);
-
-            if (PEAR::isError($id)) {
-                $_SESSION["errorMessage"] = $id->toString();
-                return false;
-            }
-            $this->iId = $id;
-            return true;
-		}
-		$_SESSION["errorMessage"] = $lang_err_object_exists . "id = " . $this->iId . " table = document_fields";
-		return false;
-	}
-	
-	/**
-	* Update the values in the database table with the object's current values
-	*
-	* @return boolean true on successful update, false otherwise and set $_SESSION["errorMessage"]
-	*
-	*/
-	function update() {
-		global $default, $lang_err_database, $lang_err_object_key;
-		//only update if the object has been stored
-		if ($this->iId > 0) {
-			$sql = $default->db;
-			$result = $sql->query("UPDATE " . $default->web_documents_table . " SET document_id = $this->iDocumentID, web_site_id = $this->iWebSiteID, unit_id = $this->iUnitID, status_id = $this->iStatusID, datetime = '$this->dDateTime' WHERE id = $this->iId");
-			if ($result) {
-				return true;
-			}
-			$_SESSION["errorMessage"] = $lang_err_database;
-			return false;
-		}
-		$_SESSION["errorMessage"] = $lang_err_object_key;
-		return false;
-	}
-	
-	/**
-	* Delete the current object from the database
-	*
-	* @return boolean true on successful deletion, false otherwise and set $_SESSION["errorMessage"]
-	*
-	*/
-	function delete() {
-		global $default, $lang_err_database, $lang_err_object_key;
-		//only delete the object if it exists in the database
-		if ($this->iId >= 0) {
-			$sql = $default->db;
-			$result = $sql->query("DELETE FROM $default->web_documents_table WHERE id = $this->iId");
-			if ($result) {
-				return true;
-			}
-			$_SESSION["errorMessage"] = $lang_err_database;
-			return false;
-		}
-		$_SESSION["errorMessage"] = $lang_err_object_key;
-		return false;
-	}
-	
 	/**
 	* Static function.
 	* Given a web_documents primary key it will create a 

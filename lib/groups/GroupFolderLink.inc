@@ -25,7 +25,7 @@
  * @author Michael Joseph <michael@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
  * @package lib.groups 
  */ 
-class GroupFolderLink {
+class GroupFolderLink extends KTEntity {
 	
 	/** primary key of current object */
 	var $iId;
@@ -82,80 +82,21 @@ class GroupFolderLink {
 	function setCanWrite($iNewValue) {
 		$this->bCanWrite = $iNewValue;
 	}
-	
-	/**
-	* Create the current object in the database
-	*
-	* @return boolean on successful store, false otherwise and set $_SESSION["errorMessage"]
-	*
-	*/
-	function create() {
-		global $default, $lang_err_database, $lang_err_object_exists;
-		//if the object hasn't been created
-		if ($this->iId < 0) {
-            $sTable = $default->groups_folders_table;
-            $aFieldValues = array(
-                'folder_id' => $this->iFolderID,
-                'group_id' => $this->iGroupID,
-                'can_read' => $this->bCanRead,
-                'can_write' => $this->bCanWrite,
-            );
-            $id =& DBUtil::autoInsert($sTable, $aFieldValues);
 
-            if (PEAR::isError($id)) {
-                $_SESSION["errorMessage"] = $id->toString();
-                return false;
-            }
-            $this->iId = $id;
-            return true;
-		}
-		$_SESSION["errorMessage"] = $lang_err_object_exists . "id = " . $this->iId . " table = $default->groups_folders_table";
-		return false;
-	}
+    function _fieldValues () {
+        return array(
+            'folder_id' => $this->iFolderID,
+            'group_id' => $this->iGroupID,
+            'can_read' => $this->bCanRead,
+            'can_write' => $this->bCanWrite,
+        );
+    }
+
+    function _table () {
+        global $default;
+        return $default->groups_folders_table;
+    }
 	
-	/**
-	* Update the values in the database table with the object's current values
-	*
-	* @return boolean true on successful update, false otherwise and set $_SESSION["errorMessage"]
-	*
-	*/
-	function update() {
-		global $default, $lang_err_database, $lang_err_object_key;
-		//only update if the object has been stored
-		if ($this->iId > 0) {
-			$sql = $default->db;
-			$result = $sql->query("UPDATE $default->groups_folders_table SET group_id = $this->iGroupID, folder_id = $this->iFolderID, can_read = " . ($this->bCanRead ? 1 : 0) .", can_write = " . ($this->bCanWrite ? 1 : 0) . " WHERE id = $this->iId");
-			if ($result) {
-				return true;
-			}
-			$_SESSION["errorMessage"] = $lang_err_database;
-			return false;
-		}
-		$_SESSION["errorMessage"] = $lang_err_object_key;
-		return false;
-	}
-	
-	/**
-	* Delete the current object from the database
-	*
-	* @return boolean true on successful deletion, false otherwise and set $_SESSION["errorMessage"]
-	*
-	*/
-	function delete() {
-		global $default, $lang_err_database, $lang_err_object_key;
-		//only delete the object if it exists in the database
-		if ($this->iId >= 0) {
-			$sql = $default->db;
-			$result = $sql->query("DELETE FROM $default->groups_folders_table WHERE id = $this->iId");
-			if ($result) {
-				return true;
-			}
-			$_SESSION["errorMessage"] = $lang_err_database;
-			return false;
-		}
-		$_SESSION["errorMessage"] = $lang_err_object_key;
-		return false;
-	}
     /**
      * Whether the folder permission exists in the database
      */     

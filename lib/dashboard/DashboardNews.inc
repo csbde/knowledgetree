@@ -25,7 +25,7 @@ require_once("$default->fileSystemRoot/lib/documentmanagement/PhysicalDocumentMa
  * @author Michael Joseph <michael@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
  * @package lib.dashboard 
  */
-class DashboardNews {
+class DashboardNews extends KTEntity {
 
 	/**
 	 * The primary key of the news item
@@ -295,89 +295,22 @@ class DashboardNews {
 		}
 	}
 
-	/**
-	 * Inserts the current new item into the database
-	 *
-	 * @return boolean true on successful update, false otherwise and set $_SESSION["errorMessage"]
-	 */
-	function create(){
+    function _fieldValues () {
+        return array(
+            'synopsis' => $this->sSynopsis,
+            'body' => $this->sBody,
+            'rank' => $this->iRank,
+            'image' => $this->sImage,
+            'image_size' => $this->iImageSize,
+            'image_mime_type_id' => $this->iImageMimeTypeID,
+            'active' => $this->bActive,
+        );
+    }
+
+    function _table () {
         global $default;
-        //if the id >= 0, then the object has already been created
-        if ($this->iId < 0) {
-            $aFieldValues = array(
-                'synopsis' => $this->sSynopsis,
-                'body' => $this->sBody,
-                'rank' => $this->iRank,
-                'image' => $this->sImage,
-                'image_size' => $this->iImageSize,
-                'image_mime_type_id' => $this->iImageMimeTypeID,
-                'active' => $this->bActive,
-            );
-            $id =& DBUtil::autoInsert($default->news_table, $aFieldValues);
-
-            if (PEAR::isError($id)) {
-                $_SESSION["errorMessage"] = $id->toString();
-                return false;
-            }
-            $this->iId = $id;
-            return true;
-        }
-        return false;
-	}
-
-    /**
-     * Update the documents current values in the database
-     *
-     * @return boolean true on successful update, false otherwise
-     */
-	function update(){
-        global $default;
-        if ($this->iId >= 0) {			
-            $sql = $default->db;
-			$sQuery = "UPDATE " . $default->news_table . " SET " .
-								  "synopsis = '$this->sSynopsis', " .
-                                  "body = '$this->sBody', " .
-                                  "rank = $this->iRank, " .
-                                  "image = '" . addslashes($this->sImage) . "', " .
-                                  "image_size = $this->iImageSize " .
-                                  ($this->iImageMimeTypeID ? ", image_mime_type_id = $this->iImageMimeTypeID " : " ") .                                 
-           			 "WHERE id = $this->iId";
-
-            $result = $sql->query($sQuery);
-            if ($result) {
-                if ($this->bActive) {
-                	// now set our entry to active
-                	$sql->query("UPDATE $default->news_table SET active=1 where id=$this->iId");
-		} else {
-		       // set this to inactive
-		       $sql->query("UPDATE $default->news_table SET active=0 where id=$this->iId");
-		}
-                return true;                 
-            }
-            return false;
-        }
-        return false;
-	}
-
-    /**
-     * Delete the current news item from the database.  Set the primary key to -1 
-     * on successful deletion
-     *
-     * @return boolean true and reset id to -1 on successful deletion, false otherwise
-     */
-    function delete() {
-        global $default;
-        if ($this->iId >= 0) {
-            $sql = $default->db;
-            $result = $sql->query("DELETE FROM  " . $default->news_table . "  WHERE id = $this->iId");
-            if ($result) {
-                $this->iId = -1;
-                return true;
-            }
-            return false;
-        }
-        return false;
-    }	
+        return $default->news_table;
+    }
 
     /**
      * Static function.  Given a news item primary key will create

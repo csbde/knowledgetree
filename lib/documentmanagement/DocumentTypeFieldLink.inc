@@ -25,7 +25,7 @@ require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentField.inc"
  * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
  * @package lib.documentmanagement 
  */ 
-class DocumentTypeFieldLink {
+class DocumentTypeFieldLink extends KTEntity {
 	
 	/** document field link primary key */
 	var $iId;
@@ -122,6 +122,19 @@ class DocumentTypeFieldLink {
 	function setIsMandatory($bNewValue) {
 		$this->bIsMandatory = $bNewValue;
 	}
+
+    function _fieldValues () {
+        return array(
+            'document_type_id' => $this->iDocumentTypeID,
+            'field_id' => $this->iFieldID,
+            'is_mandatory' => $this->bIsMandatory,
+        );
+    }
+
+    function _table () {
+        global $default;
+        return $default->document_type_fields_table;
+    }
 	
 	/**
 	* Insert the current document into the database
@@ -142,73 +155,10 @@ class DocumentTypeFieldLink {
                 $_SESSION["errorMessage"] = "DocTypes::The DocumentType name " . $this->sName . " is already in use!";
                 return false;
             }
+		}
 
-            $sTable = $default->document_type_fields_table;
-            $aFieldValues = array(
-                'document_type_id' => $this->iDocumentTypeID,
-                'field_id' => $this->iFieldID,
-                'is_mandatory' => $this->bIsMandatory,
-            );
-            $id =& DBUtil::autoInsert($sTable, $aFieldValues);
-
-            if (PEAR::isError($id)) {
-                $_SESSION["errorMessage"] = $id->toString();
-                return false;
-            }
-            $this->iId = $id;
-            return true;
-		}
-		$_SESSION["errorMessage"] = $lang_err_object_exists . "id = " . $this->iId . " table = $default->document_type_fields_table";
-		return false;
-		
+        return parent::create();
 	}
-	
-	/**
-	* Update the documents current values in the database
-	*
-	* @return boolean true on successful update, false otherwise and set $_SESSION["errorMessage"]
-	*/
-	function update() {
-		global $default, $lang_err_database, $lang_err_object_key;
-		if ($this->iId >= 0) {
-			$sql = $default->db;
-			$sQuery = "UPDATE " . $default->document_type_fields_table . " SET " .
-					"document_type_id = $this->iDocumentTypeID, field_id = $this->iFieldID, is_mandatory = '" . $this->bIsMandatory . "'" .
-					"WHERE id = $this->iId";
-			$result = $sql->query($sQuery);
-			if ($result) {
-				return true;
-			}
-			$_SESSION["errorMessage"] = $lang_err_database;
-			return false;
-		}
-		$_SESSION["errorMessage"] = $lang_err_object_key;
-		return false;
-		
-	}
-	
-	/**
-	* Delete the current document from the database.  Set the primary key to -1 
-	* on successful deletion
-	*
-	* @return boolean true and reset id to -1 on successful deletion, false otherwise and set $_SESSION["errorMessage"]
-	*/
-	function delete() {	
-		global $default, $lang_err_database, $lang_err_object_key;
-		if ($this->iId >= 0) {
-			$sql = $default->db;
-			$result = $sql->query("DELETE FROM  " . $default->document_type_fields_table . "  WHERE id = $this->iId");
-			if ($result) {
-				$this->iId = -1;
-				return true;
-			}			
-			$_SESSION["errorMessage"] = $lang_err_database;
-			return false;
-		}
-		$_SESSION["errorMessage"] = $lang_err_object_key;
-		return false;
-	}
-	
 	
 	/**
 	*

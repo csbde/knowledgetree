@@ -27,7 +27,7 @@ require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
  * @author Michael Joseph <michael@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
  * @package lib.subscriptions
  */ 
-class Subscription {
+class Subscription extends KTEntity {
 
     /**
     * Primary key
@@ -195,86 +195,19 @@ class Subscription {
             return "folder";
         }
     }
+
+    function _fieldValues () {
+        return array(
+            'user_id' => $this->iUserID,
+            $this->sIdFieldName => $this->iExternalID,
+            'is_alerted' => $this->bIsAlerted,
+        );
+    }
+
+    function _table () {
+        return $this->sTableName;
+    }
     
-    /**
-    * Create the current document subscription in the database
-    *
-    * @return boolean true and set $this->iID with new primary key, false otherwise and set $_SESSION["errorMessage"]
-    */
-    function create() {
-        global $default, $lang_err_database;
-        $lang_err_object_exists;
-        //if the object has not already been stored
-        if ($this->iID < 0) {
-            $aFieldValues = array(
-                'user_id' => $this->iUserID,
-                $this->sIdFieldName => $this->iExternalID,
-                'is_alerted' => $this->bIsAlerted,
-            );
-            $id =& DBUtil::autoInsert($this->sTableName, $aFieldValues);
-
-            if (PEAR::isError($id)) {
-                $_SESSION["errorMessage"] = $id->toString();
-                return false;
-            }
-            $this->iId = $id;
-            return true;
-        } else {
-            $_SESSION["errorMessage"] = $lang_err_object_exists . "id = " . $this->iID . " table = $this->sTableName";
-        }
-        return false;
-    }
-
-    /**
-    * Update the current document subscription values in the database
-    *
-    * @return boolean true on successful update, false otherwise and set $_SESSION["errorMessage"]
-    */
-    function update() {
-        global $default, $lang_err_database, $lang_err_object_key;
-        //can only update the object if it has already been stored
-        if ($this->iID >= 0) {
-            $sql = $default->db;
-            // TODO: set table name and id_field_name
-            if ($sql->query("UPDATE " . $this->sTableName . " SET " .
-                            "user_id = $this->iUserID, " .
-                            "$this->sIdFieldName = $this->iExternalID, " .
-                            "is_alerted = " . (int)$this->bIsAlerted . " " .
-                            "WHERE id = " . $this->iID)) {
-                return true;
-            } else {
-                $_SESSION["errorMessage"] = $lang_err_database;
-            }
-        } else {
-            $_SESSION["errorMessage"] = $lang_err_object_key;
-        }
-        return false;
-    }
-
-
-    /**
-    * Delete the current object from the database
-    *
-    * @return boolean true and reset id to -1 on successful delete, false otherwise and set $_SESSION["errorMessage"]
-    */
-    function delete() {
-        global $default, $lang_err_database, $lang_err_object_key;
-        if ($this->iID >= 0) {
-            $sql = $default->db;
-            // TODO: set table name and id_field_name
-            if ($sql->query("DELETE FROM " . $this->sTableName . " WHERE id = " . $this->iID)) {
-                $this->iID = -1;
-                return true;
-            } else {
-                $_SESSION["errorMessage"] = $lang_err_database;
-            }
-        } else {
-            $_SESSION["errorMessage"] = $lang_err_object_key;
-        }
-        return false;
-
-    }
-
     /**
     * Static function.
     * Given a subscription primary key will create a subscription object and populate it with the corresponding

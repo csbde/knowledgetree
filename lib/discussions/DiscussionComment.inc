@@ -24,7 +24,7 @@
  * @author Omar Rahbeeni, CS Holdings, South Africa
  * @package lib.discussions 
  */
-class DiscussionComment {
+class DiscussionComment extends KTEntity {
 
     /**
      * The underlying Discussion Comments class
@@ -189,55 +189,22 @@ class DiscussionComment {
         }
         return false;
     }
-        
-    function create(){
-        global $default, $lang_err_database, $lang_err_object_exists;
-        //if the object hasn't been created
-        if ($this->iId < 0) { //check to see if comment exists
-            $sTable = $default->discussion_comments_table;
-            $aFieldValues = array(
-                'thread_id' => $this->iThreadID,
-                'user_id' => $this->iUserID,
-                'subject' => $this->sSubject,
-                'body' => $this->sBody,
-                'date' => getCurrentDate(),
-                'in_reply_to' => $this->iInReplyTo,
-            );
-            $id =& DBUtil::autoInsert($sTable, $aFieldValues);
 
-            if (PEAR::isError($id)) {
-                $_SESSION["errorMessage"] = $id->toString();
-                return false;
-            }
-            $this->iId = $id;
-            return true;
-        }
-        return false;	
+    function _fieldValues () {
+        return array(
+            'thread_id' => $this->iThreadID,
+            'user_id' => $this->iUserID,
+            'subject' => $this->sSubject,
+            'body' => $this->sBody,
+            'date' => getCurrentDate(),
+            'in_reply_to' => $this->iInReplyTo,
+        );
     }
-    
-    function update(){    	
-    	global $default;
-        //only update if the object has been stored
-        if ($this->iId > 0) {
-            $sql = $default->db;
-            // Do update query            
-            
-            $result = $sql->query(	"UPDATE " . $default->discussion_comments_table . 
-            						" SET thread_id = " 		. $this->iThreadID .
-            						" AND user_id = " 			. $this->iUserID .
-            						" AND subject = " 			. $this->sSubject .
-            						" AND body = " 				. $this->sBody .
-            						" AND in_reply_to = " 		. $this->iInReplyTo .            						
-            						" AND date = Now()" .
-            						" WHERE id = " 				. $this->iId);
-            if ($result) {           
-     	       return true;
-            }
-            return false;
-        }
-        return false;
+
+    function _table () {
+        return $default->discussion_comments_table;
     }
-    
+        
 	function delete(){
 		global $default;
 		  

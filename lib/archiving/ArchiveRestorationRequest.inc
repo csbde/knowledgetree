@@ -24,7 +24,7 @@
  * @author Michael Joseph <michael@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
  * @package lib.archiving 
  */ 
-class ArchiveRestorationRequest {
+class ArchiveRestorationRequest extends KTEntity {
 
 	/**
 	 * The primary key
@@ -135,79 +135,21 @@ class ArchiveRestorationRequest {
 	function setDateTime($dNewDateTime){
 		$this->dDateTime = $dNewDateTime;
 	}
+
+    function _fieldValues () {
+        return array(
+            'document_id' => $this->iDocumentID,
+            'request_user_id' => $this->iRequestUserID,
+            'admin_user_id' => $this->iAdminUserID,
+            'datetime' => $this->dDateTime,
+        );
+    }
+
+    function _table () {
+        global $default;
+        return $default->archive_restoration_table;
+    }
 			
-	/**
-	 * Inserts the restoration request into the database
-	 *
-	 * @return boolean true on successful update, false otherwise
-	 */
-	function create(){
-        global $default;
-        //if the id >= 0, then the object has already been created
-        if ($this->iId < 0) {
-            $sTable = $default->archive_restoration_table;
-            $aFieldValues = array(
-                'document_id' => $this->iDocumentID,
-                'request_user_id' => $this->iRequestUserID,
-                'admin_user_id' => $this->iAdminUserID,
-                'datetime' => $this->dDateTime,
-            );
-            $id =& DBUtil::autoInsert($sTable, $aFieldValues);
-
-            if (PEAR::isError($id)) {
-                $_SESSION["errorMessage"] = $id->toString();
-                return false;
-            }
-            $this->iId = $id;
-            return true;
-        }
-        return false;
-	}
-
-    /**
-     * Update the restoration request current values in the database
-     *
-     * @return boolean true on successful update, false otherwise
-     */
-	function update(){
-        global $default;
-        if ($this->iId >= 0) {			
-            $sql = $default->db;
-			$sQuery = "UPDATE $default->archive_restoration_table SET " .
-					  "document_id = $this->iDocumentID, " .								  
-                      "request_user_id = $this->iRequestUserID, " .
-                      "admin_user_id = $this->iAdminUserID, " .
-                      "datetime = '$this->dDateTime' " .                                  
-           			  "WHERE id = $this->iId";
-            $result = $sql->query($sQuery);
-            if ($result) {
-                return true;
-            }
-            return false;
-        }
-        return false;
-	}
-
-    /**
-     * Delete the current restoration request from the database.  Set the primary key to -1 
-     * on successful deletion
-     *
-     * @return boolean true and reset id to -1 on successful deletion, false otherwise
-     */
-    function delete() {
-        global $default;
-        if ($this->iId >= 0) {
-            $sql = $default->db;
-            $result = $sql->query("DELETE FROM $default->archive_restoration_table WHERE id = $this->iId");
-            if ($result) {
-                $this->iId = -1;
-                return true;
-            }
-            return false;
-        }
-        return false;
-    }	
-
     /**
      * Static function.  Given a document primary key will create
      * a ArchiveRestorationRequest object and populate it with the corresponding

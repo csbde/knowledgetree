@@ -25,7 +25,7 @@
  * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
  * @package lib.documentmanagement 
  */
-class DependantDocumentInstance {
+class DependantDocumentInstance extends KTEntity {
 
 	/** primary key value */
 	var $iId;
@@ -116,74 +116,19 @@ class DependantDocumentInstance {
 		return $this->iParentDocumentID;
 	}
 
-	/**
-	* Store the current object in the database
-	*
-	* @return boolean on successful store, false otherwise and set $_SESSION["errorMessage"]
-	*
-	*/
-	function create() {
-		global $default;		
-		//if the object hasn't been created
-		if ($this->iId < 0) {
-            $sTable = $default->dependant_document_instance_table;
-            $aFieldValues = array(
-                'document_title' => $this->sDocumentTitle,
-                'user_id' => $this->iUserID,
-                'template_document_id' => $this->iTemplateDocumentID,
-                'parent_document_id' => $this->iParentDocumentID,
-            );
-            $id =& DBUtil::autoInsert($sTable, $aFieldValues);
+    function _fieldValues () {
+        return array(
+            'document_title' => $this->sDocumentTitle,
+            'user_id' => $this->iUserID,
+            'template_document_id' => $this->iTemplateDocumentID,
+            'parent_document_id' => $this->iParentDocumentID,
+        );
+    }
 
-            if (PEAR::isError($id)) {
-                $_SESSION["errorMessage"] = $id->toString();
-                return false;
-            }
-            $this->iId = $id;
-            return true;
-		}				
-		return false;
-	}
-
-	/**
-	* Update the values in the database table with the object's current values
-	*
-	* @return boolean true on successful update, false otherwise and set $_SESSION["errorMessage"]
-	*
-	*/
-	function update() {
-		global $default;
-		//only update if the object has been stored
-		if ($this->iId > 0) {
-			$sql = $default->db;
-			$result = $sql->query("UPDATE $default->dependant_document_instance_table SET document_title = '$this->sDocumentTitle', user_id = $this->iUserID, template_document_id = $this->iTemplateDocumentID, parent_document_id = $this->iParentDocumentID WHERE id = $this->iId");
-			if ($result) {
-				return true;
-			}
-			return false;
-		}
-		return false;
-	}
-
-	/**
-	* Delete the current object from the database
-	*
-	* @return boolean true on successful deletion, false otherwise and set $_SESSION["errorMessage"]
-	*
-	*/
-	function delete() {
-		global $default;
-		//only delete the object if it exists in the database
-		if ($this->iId >= 0) {
-			$sql = $default->db;
-			$result = $sql->query("DELETE FROM $default->dependant_document_instance_table WHERE id = $this->iId");
-			if ($result) {
-				return true;
-			}
-			return false;
-		}
-		return false;
-	}
+    function _table () {
+        global $default;
+        return $default->dependant_document_instance_table;
+    }
 
 	/**
 	* Static function.

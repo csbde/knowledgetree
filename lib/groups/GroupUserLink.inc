@@ -24,7 +24,7 @@
  * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
  * @package lib.groups 
  */
-class GroupUserLink {
+class GroupUserLink extends KTEntity {
 	
 	/** primary key of object */
 	var $iId;
@@ -89,6 +89,18 @@ class GroupUserLink {
 	function setUserID($iNewValue) {
 		$this->iUserID = $iNewValue;
 	}
+
+    function _fieldValues () {
+        return array(
+            'group_id' => $this->iGroupID,
+            'user_id' => $this->iUserID,
+        );
+    }
+
+    function _table () {
+        global $default;
+        return $default->users_groups_table;
+    }
 	
 	/**
 	* Create the current object in the database
@@ -105,72 +117,12 @@ class GroupUserLink {
             $sql->query($query);
             $rows = $sql->num_rows($sql);
         
-            if ($rows > 0){
-                // duplicate username
+            if ($rows > 0) {
                 $_SESSION["errorMessage"] = "GroupUserLink::The id " . $this->iUnitID . " already exists!";
                 return false;
             }
-
-            $sTable = $default->users_groups_table;
-            $aFieldValues = array(
-                'group_id' => $this->iGroupID,
-                'user_id' => $this->iUserID,
-            );
-            $id =& DBUtil::autoInsert($sTable, $aFieldValues);
-
-            if (PEAR::isError($id)) {
-                $_SESSION["errorMessage"] = $id->toString();
-                return false;
-            }
-            $this->iId = $id;
-            return true;
-		}
-		$_SESSION["errorMessage"] = $lang_err_object_exists . "id = " . $this->iId . " table = $default->users_groups_table";
-		return false;
-	}
-	
-	/**
-	* Update the values in the database table with the object's current values
-	*
-	* @return boolean true on successful update, false otherwise and set $_SESSION["errorMessage"]
-	*
-	*/
-	function update() {
-		global $default, $lang_err_database, $lang_err_object_key;
-		//only update if the object has been stored
-		if ($this->iId > 0) {
-			$sql = $default->db;
-			$result = $sql->query("UPDATE " . $default->users_groups_table . " SET group_id = $this->iGroupID, user_id = $this->iUserID WHERE id = $this->iId");
-			if ($result) {
-				return true;
-			}
-			$_SESSION["errorMessage"] = $lang_err_database;
-			return false;
-		}
-		$_SESSION["errorMessage"] = $lang_err_object_key;
-		return false;
-	}
-	
-	/**
-	* Delete the current object from the database
-	*
-	* @return boolean true on successful deletion, false otherwise and set $_SESSION["errorMessage"]
-	*
-	*/
-	function delete() {
-		global $default, $lang_err_database, $lang_err_object_key;
-		//only delete the object if it exists in the database
-		if ($this->iId >= 0) {
-			$sql = $default->db;
-			$result = $sql->query("DELETE FROM $default->users_groups_table WHERE id = $this->iId");
-			if ($result) {
-				return true;
-			}
-			$_SESSION["errorMessage"] = $lang_err_database;
-			return false;
-		}
-		$_SESSION["errorMessage"] = $lang_err_object_key;
-		return false;
+        }
+        return parent::create();
 	}
 	
 	/**

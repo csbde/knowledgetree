@@ -24,7 +24,7 @@
  * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
  * @package lib.roles
  */
-class Role {
+class Role extends KTEntity {
 	
 	/** role object primary key */
 	var $iId;
@@ -90,57 +90,20 @@ class Role {
 	function setName($bNewValue) {
 		$this->sName = $bNewValue;
 	}
-	/**
-	* Create the current object in the database
-	*
-	* @return boolean on successful store, false otherwise and set $_SESSION["errorMessage"]
-	*
-	*/
-	function create() {
-		global $default, $lang_err_database, $lang_err_object_exists;
-		//if the object hasn't been created
-		if ($this->iId < 0) {
-            $sTable = $default->roles_table;
-            $aFieldValues = array(
-                'name' => $this->sName,
-                'active' => $this->bActive,
-                'can_read' => $this->bCanRead,
-                'can_write' => $this->bCanWrite,
-            );
-            $id =& DBUtil::autoInsert($sTable, $aFieldValues);
 
-            if (PEAR::isError($id)) {
-                $_SESSION["errorMessage"] = $id->toString();
-                return false;
-            }
-            $this->iId = $id;
-            return true;
-		}
-        $_SESSION["errorMessage"] = $lang_err_object_exists . "id = " . $this->iId . " table = document_fields";
-        return false;
-	}
-	
-	/**
-	* Update the values in the database table with the object's current values
-	*
-	* @return boolean true on successful update, false otherwise and set $_SESSION["errorMessage"]
-	*
-	*/
-	function update() {
-		global $default, $lang_err_database, $lang_err_object_key;
-		//only update if the object has been stored
-		if ($this->iId > 0) {
-			$sql = $default->db;
-			$result = $sql->query("UPDATE " . $default->roles_table . " SET name = '$this->sName', active = " . ($this->bActive ? 1 : 0) . ", can_read = " . ($this->bCanRead ? 1 : 0) . ", can_write = " . ($this->bCanWrite ? 1 : 0) . " WHERE id = $this->iId");
-			if ($result) {
-				return true;
-			}
-			$_SESSION["errorMessage"] = $lang_err_database;
-			return false;
-		}
-		$_SESSION["errorMessage"] = $lang_err_object_key;
-		return false;
-	}
+    function _fieldValues () {
+        return array(
+            'name' => $this->sName,
+            'active' => $this->bActive,
+            'can_read' => $this->bCanRead,
+            'can_write' => $this->bCanWrite,
+        );
+    }
+
+    function _table () {
+        global $default;
+        return $default->roles_table;
+    }
 	
 	/**
 	* Delete the current object from the database
@@ -155,26 +118,15 @@ class Role {
 			//check to see if role is linked to a folder
 			$sql = $default->db;
 			$query = "SELECT role_id FROM ". $default->groups_folders_approval_table ." WHERE role_id = '" . $this->iId . "'";
-        		$sql->query($query);
-       			$rows = $sql->num_rows($sql);
+            $sql->query($query);
+            $rows = $sql->num_rows($sql);
         
-      			 if ($rows > 0){
-            			 // duplicate link exists
-           			 $_SESSION["errorMessage"] = "Role::The Role " . $this->sName . " is Assigned to a folder!";
-           			 return false;
-           		 
-	       		 }else{
-				$sql = $default->db;
-				$result = $sql->query("DELETE FROM $default->roles_table WHERE id = $this->iId");
-				if ($result) {
-				return true;
-			}
-			$_SESSION["errorMessage"] = $lang_err_database;
-			return false;
-		}
-	}
-		$_SESSION["errorMessage"] = $lang_err_object_key;
-		return false;
+             if ($rows > 0){
+                 $_SESSION["errorMessage"] = "Role::The Role " . $this->sName . " is Assigned to a folder!";
+                 return false;
+             }
+        }
+        return parent::delete();
 	}
 	
 	/**

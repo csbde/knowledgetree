@@ -24,7 +24,7 @@
  * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
  * @package lib.foldermanagement 
  */
-class FolderDocTypeLink {
+class FolderDocTypeLink extends KTEntity {
 	
 	/** primary key of object */
 	var $iId;
@@ -64,56 +64,6 @@ class FolderDocTypeLink {
 		}
 		$_SESSION["errorMessage"] = $lang_err_object_exists . "id = " . $this->iId . " table = folders";
 		return false;
-	}
-	
-	/**
-	* Update the current folder values in the database
-	*
-	* @return boolean true on successful update, false otherwise and set $_SESSION["errorMessage"]
-	*/
-	function update() {
-		global $default, $lang_err_database, $lang_err_object_key;
-		//can only update the object if it has already been stored
-		$sOldPath;
-		if ($this->iId >= 0) {
-			if ($bPathChange){
-				$sOldPath = $default->documentRoot . "/" . $this->sFullPath . "/" . $this->sName;
-			}
-			$sql = $default->db;
-			$sQuery = "UPDATE " . $default->folder_doctypes_table . " SET " .
-							"folder_id = $this->iFolderID, " .
-							"document_type_id = $this->iDocumentTypeID " .							
-							"WHERE id = " . $this->iId;
-			$result = $sql->query($sQuery);
-			if ($result) {			
-				return true;
-			}
-			$_SESSION["errorMessage"] = $lang_err_database;
-			return false;			
-		}
-		$_SESSION["errorMessage"] = $lang_err_object_key;		
-	}
-	
-	/**
-	* Delete the current object from the database
-	*
-	* @return boolean true and reset id to -1 on successful delete, false otherwise and set $_SESSION["errorMessage"]
-	*/
-	function delete() {
-		global $default, $lang_err_database, $lang_err_object_key;
-		if ($this->iId >= 0) {
-			$sql = $default->db;
-			$result = $sql->query("DELETE FROM " . $default->folder_doctypes_table . " WHERE id = " . $this->iId);
-			if ($result) {
-				$this->iId = -1;
-				return true;
-			}
-			$_SESSION["errorMessage"] = $lang_err_database;
-			return false;
-		}
-		$_SESSION["errorMessage"] = $lang_err_object_key;
-		return false;
-		
 	}
 	
 	/**
