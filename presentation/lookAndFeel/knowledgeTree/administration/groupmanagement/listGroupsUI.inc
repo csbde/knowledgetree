@@ -42,13 +42,29 @@ function getUnitDisplay($iUnitID) {
 
 function getGroups($fUnitID) {
 	global $default;
-	$sQuery = 	"SELECT groups_lookup.id as groupID, units_lookup.name as UnitNameB4, groups_lookup.name as name, 'Edit' , 'Delete', 'Edit Unit', " .
-				"CASE  WHEN units_lookup.name Is Null THEN '<font color=darkgrey>No Unit Assigned</font>' ELSE  units_lookup.name END AS UnitName " . 
-				"FROM (groups_lookup LEFT join groups_units_link on groups_lookup.id = groups_units_link.group_id) " . 
-				"LEft join units_lookup on units_lookup.id = groups_units_link.unit_id " .
-				($fUnitID ? "WHERE groups_units_link.unit_id =$fUnitID " : "") .
-				"ORDER BY groups_lookup.name ";
-			
+	$sQuery = 	"SELECT GL.id AS groupID, UL.name AS UnitNameB4, GL.name AS name, 'Edit' , 'Delete', 'Edit Unit', " .
+				"CASE WHEN UL.name IS NULL THEN '<font color=darkgrey>No Unit Assigned</font>' ELSE UL.name END AS UnitName " . 
+				"FROM ($default->groups_table GL LEFT JOIN $default->groups_units_table GUL ON GL.id = GUL.group_id) " . 
+				"LEFT JOIN $default->units_table UL ON UL.id = GUL.unit_id ";
+				
+	// #2978 don't display system admin groups if you're not a sys admin
+	// filter by unit				
+	if ($fUnitID) {
+		$sWhereClause = "WHERE GUL.unit_id =$fUnitID ";
+	}
+	// #2978 don't display sys admin groups if you're not a sysadmin	
+	if (!Permission::userIsSystemAdministrator()) {
+		$sRestrictGroups = " GL.is_sys_admin = 0 ";
+		if (strlen($sWhereClause) > 0) {
+			$sWhereClause .= " AND $sRestrictGroups";
+		} else {
+			$sWhereClause = "WHERE $sRestrictGroups";
+		}
+	}
+
+	$sQuery .= $sWhereClause . "ORDER BY GL.name";
+	$default->log->info("groupQuery: $sQuery");	
+				
     $aColumns = array("name", "UnitName", "Edit", "Delete", "Edit Unit");
     $aColumnNames = array( "Name", "Unit Name", "Edit", "Delete", "Edit Unit");
     $aColumnTypes = array(1,1,3,3,3);
