@@ -22,10 +22,12 @@ require_once("./config/dmsDefaults.php");
 // page start
 // -------------------------------
 
+$action = $_REQUEST['action'];
+
 // check the session, but don't redirect if the check fails
 if (checkSessionAndRedirect(false)) {
     //get around the problem with search
-    if (strcmp($fForStandardSearch, "yes") == 0) {
+    if (strcmp($_REQUEST['fForStandardSearch'], "yes") == 0) {
         $action = "standardSearch";
     } else if (!isset($action)) {
     // session check succeeds, so default action should be the dashboard if no action was specified
