@@ -194,6 +194,7 @@ $default->siteMap->addPage("viewDependantDocument", "/presentation/lookAndFeel/k
 $default->siteMap->addPage("deleteDependantDocument", "/presentation/lookAndFeel/knowledgeTree/foldermanagement/deleteDependantDocumentBL.php", "Manage Documents", User, "", false);
 $default->siteMap->addPage("removeDocumentLink", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/removeDocumentLinkBL.php", "Manage Documents", User, "", false);
 $default->siteMap->addPage("addDocumentLink", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentLinkBL.php", "Manage Documents", User, "", false);
+$default->siteMap->addPage("createDependantDocument", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/createDependantDocumentBL.php", "Manage Documents", User, "", false);
 
 $default->siteMap->addPage("addSubscription", "/presentation/lookAndFeel/knowledgeTree/subscriptions/addSubscriptionBL.php", "Manage Documents", User, "Add Folder Subscription");
 $default->siteMap->addPage("removeSubscription", "/presentation/lookAndFeel/knowledgeTree/subscriptions/removeSubscriptionBL.php", "Manage Documents", User, "Remove Folder Subscription");
