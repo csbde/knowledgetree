@@ -1,0 +1,259 @@
+<?php
+
+/**
+*
+* Class DocumentTypeFieldLink
+*
+* Represents a document type field link as per the database table document_types_fields_link
+*
+* @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
+* @date 19 January 2003
+* @package lib.documentmanagement
+*/
+
+class DocumentTypeFieldLink {
+	
+	/** document field link primary key */
+	var $iId;
+	/** primary key of document to which field is linked */
+	var $iDocumentTypeID;
+	/** primary key of field to which document is linked */
+	var $iFieldID;
+	/** field value */
+	var $bIsMandatory;
+	
+	
+	/**
+	* Default constructor 
+	*
+	* @param 	Primary key of document to which field is linked
+	* @param 	Primary key of field to which document is linked
+	* @param 	Value of field
+	*
+	*/
+	function DocumentTypeFieldLink($iNewDocumentTypeID, $iNewFieldID, $bNewIsMandatory) {
+		//object not create in database yet
+		$this->iId = -1;
+		$this->iDocumentTypeID = $iNewDocumentTypeID;
+		$this->iFieldID = $iNewFieldID;
+		$this->bIsMandatory = $bNewIsMandatory;
+	}
+	
+	/**
+	* Get the document field link primary key
+	*
+	*  @return int document field link primary key
+	*
+	*/
+	function getID() {
+		return $this->iId;
+	}
+	
+	/**
+	* Get the primary key of the document to which the field is linked
+	*
+	* @return int document primary key to which the field is linked
+	*
+	*/
+	function getDocumentTypeID() {
+		return $this->iDocumentTypeID;
+	}
+	
+	/**
+	* Set the primary key of the document to which the field is linked
+	*
+	* @param 	Document primary key to which field is linked
+	*
+	*/
+	function setDocumentTypeID($iNewValue) {
+		$this->iDocumentTypeID = $iNewValue;
+	}
+	
+	/**
+	* Get the primary key of the field to which the document is linked
+	*
+	* @return int primary key of field to which the document is related
+	*
+	*/
+	function getFieldID() {
+		return $this->iFieldID;
+	}
+	
+	/**
+	* Set the primary key of the field to which the document is related
+	*
+	* @param 	New primary key of field to which document is related
+	*
+	*/
+	function setFieldID($iNewVale) {
+		$this->iFieldID = $iNewValue;
+	}
+	
+	/**
+	* Get the value of the field
+	*
+	* @return String value of the field
+	*
+	*/
+	function getIsMandatory() {
+		return $this->bIsMandatory;
+	}
+	
+	/**
+	* Set the value of the field
+	*
+	* @param 	New value of the field
+	*
+	*/
+	function setIsMandatory($bNewValue) {
+		$this->bIsMandatory = $bNewValue;
+	}
+	
+	/**
+	* Insert the current document into the database
+	*
+	* @return boolean true on successful insert, false otherwise and set $_SESSION["errorMessage"]
+	*/
+	function create() {
+		global $default, $lang_err_doc_exist, $lang_err_database;
+		//if the id >= 0, then the object has already been created
+		if ($this->iId < 0) {
+			$sql = $default->db;
+			$result = $sql->query("INSERT INTO " . $default->owl_document_type_fields_table . " (document_type_id, field_id, is_mandatory) " .
+						"VALUES ($this->iDocumentTypeID, $this->iFieldID, '" . $this->bIsMandatory . "')");
+			if ($result) {
+				//set the current documents primary key
+				$this->iId = $sql->insert_id();
+				return true;
+			}
+			$_SESSION["errorMessage"] = $lang_err_database;
+			return false;			
+		}
+		$_SESSION["errorMessage"] = $lang_err_object_exists . "id = " . $this->iId . " table = $default->owl_document_type_fields_table";
+		return false;
+		
+	}
+	
+	/**
+	* Update the documents current values in the database
+	*
+	* @return boolean true on successful update, false otherwise and set $_SESSION["errorMessage"]
+	*/
+	function update() {
+		global $default, $lang_err_database, $lang_err_object_key;
+		if ($this->iId >= 0) {
+			$sql = $default->db;
+			$result = $sql->query("UPDATE " . $default->owl_document_type_fields_table . " SET " .
+					"document_type_id = $this->iDocumentTypeID, field_id = $this->iFieldID, is_mandatory = '" . $this->bIsMandatory . "'" .
+					"WHERE id = $this->iId");
+			if ($result) {
+				return true;
+			}
+			$_SESSION["errorMessage"] = $lang_err_database;
+			return false;
+		}
+		$_SESSION["errorMessage"] = $lang_err_object_key;
+		return false;
+		
+	}
+	
+	/**
+	* Delete the current document from the database.  Set the primary key to -1 
+	* on successful deletion
+	*
+	* @return boolean true and reset id to -1 on successful deletion, false otherwise and set $_SESSION["errorMessage"]
+	*/
+	function delete() {	
+		global $default, $lang_err_database, $lang_err_object_key;
+		if ($this->iId >= 0) {
+			$sql = $default->db;
+			$result = $sql->query("DELETE FROM  " . $default->owl_document_type_fields_table . "  WHERE id = $this->iId");
+			if ($result) {
+				$this->iId = -1;
+				return true;
+			}			
+			$_SESSION["errorMessage"] = $lang_err_database;
+			return false;
+		}
+		$_SESSION["errorMessage"] = $lang_err_object_key;
+		return false;
+	}
+	
+	
+	/**
+	*
+	* Static function.  Given a document fields link primary key will create
+	* a DocumentFieldLink object and populate it with the corresponding
+	* database values
+	*
+	* @return DocumentFieldLink populated DocumentFieldLink object on success, false otherwise and set $_SESSION["errorMessage"]
+	*/
+	function & get($iDocumentTypeFieldLinkID) {
+		global $default, $lang_err_doc_not_exist;
+		$sql = $default->db;
+		$sql->query("SELECT * FROM " . $default->owl_document_type_fields_table . " WHERE id = " . $iDocumentTypeFieldLinkID);
+		if ($sql->next_record()) {			
+			$oDocumentTypeFieldLink = & new DocumentTypeFieldLink($sql->f("document_type_id"), $sql->f("field_id"), $sql->f("is_mandatory"));		
+			$oDocumentTypeFieldLink->iId = $iDocumentTypeFieldLinkID;
+			return $oDocumentTypeFieldLink;
+		}
+		$_SESSION["errorMessage"] = $lang_err_object_not_exist . "id = " . $iDocumentTypeID . " table = $default->owl_document_type_fields_table";
+		return false;		
+	}
+	
+	
+		/*
+     * static function
+     *
+     * find out wot doctype belongs to wot field
+     *
+     * @param   false or a value
+     *   
+     */
+     
+	function docTypeBelongsToField($doctypeId)
+	 {
+	       global $default;
+	
+	        $value = lookupField("$default->owl_document_type_fields_table", "field_id", "document_type_id", $doctypeId );
+	        
+	        return $value;
+	        
+	}
+	
+	/*
+     * static function
+     *
+     * sets the id of the docTypeField using their doc_type_id
+     *
+     * @param   String
+     *   The unit_ID
+     *   
+     */
+     
+	function setDocTypeFieldID($docTypeId)
+	 {
+	       global $default;
+	
+	        $id = lookupID($default->owl_document_type_fields_table, "document_type_id",  $docTypeId);
+	        
+	        $this->iId= $id;
+	}
+}
+
+
+/**
+* Static function
+*
+* Creates a document type object from an array
+*
+* @param 	Array		Array of parameters.  Must match order of parameters in constructor
+*
+* @return User user object
+*/
+function & documenttypefieldlinkCreateFromArray($aParameters) {
+	$oDocTypeField = & new DocumentTypeFieldLink($aParameters[0], $aParameters[1], $aParameters[2], $aParameters[3], $aParameters[4], $aParameters[5], $aParameters[6], $aParameters[7], $aParameters[8], $aParameters[9], $aParameters[10]);
+	return $oDocTypeField;
+}
+
+?>

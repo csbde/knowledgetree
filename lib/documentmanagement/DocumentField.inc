@@ -229,4 +229,19 @@ class DocumentField {
 	
 }
 
+/**
+* Static function
+*
+* Creates a document type object from an array
+*
+* @param 	Array		Array of parameters.  Must match order of parameters in constructor
+*
+* @return User user object
+*/
+function & documentfieldCreateFromArray($aParameters) {
+	$oDocField = & new DocumentField($aParameters[0], $aParameters[1], $aParameters[2], $aParameters[3], $aParameters[4], $aParameters[5], $aParameters[6], $aParameters[7], $aParameters[8], $aParameters[9], $aParameters[10]);
+	return $oDocField;
+}
+
+
 ?>
