@@ -1,12 +1,29 @@
 <?php
 /**
-* Presentation information for adding a group
-*
-* @author Mukhtar Dharsey
-* @date 5 February 2003
-* @package presentation.lookAndFeel.knowledgeTree.
-*
-*/
+ * $Id$
+ *
+ * Map a group to a unit UI functions.
+ *
+ * Copyright (c) 2003 Jam Warehouse http://www.jamwarehouse.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ * @version $Revision$
+ * @author Mukhtar Dharsey, Jam Warehouse (Pty) Ltd, South Africa
+ * @package administration.groupmanagement
+ */
 
 function getGotGroupPage($iGroupID,$iUnitID){
 	global $default;
@@ -196,8 +213,8 @@ function getGroupDisplay($oGroup) {
 
     if (!isset($oGroup)) {
         // only display unassigned groups
-        $oPatternListBox = & new PatternListBox($default->owl_groups_table, "name", "id", "fGroupID");
-        $oPatternListBox->setFromClause("LEFT OUTER JOIN $default->owl_groups_units_table GUL on ST.id=GUL.group_id");
+        $oPatternListBox = & new PatternListBox($default->groups_table, "name", "id", "fGroupID");
+        $oPatternListBox->setFromClause("LEFT OUTER JOIN $default->groups_units_table GUL on ST.id=GUL.group_id");
         $oPatternListBox->setWhereClause("ISNULL(GUL.group_id) AND ST.name <> 'Anonymous' AND ST.name <> 'System Administrators'");
         return $oPatternListBox->render();
     } else {
@@ -214,7 +231,7 @@ function getUnitDisplay($oUnit) {
         $oUnit = Unit::get(User::getUnitID($_SESSION["userID"]));
     }
     if (!isset($oUnit)) {
-        $oPatternListBox = & new PatternListBox($default->owl_units_table , "name", "id", "fUnitID");
+        $oPatternListBox = & new PatternListBox($default->units_table , "name", "id", "fUnitID");
         return $oPatternListBox->render();            
     } else {
         return "<input type=\"hidden\" name=\"fUnitID\" value=\"" . $oUnit->iId . "\">\n" .

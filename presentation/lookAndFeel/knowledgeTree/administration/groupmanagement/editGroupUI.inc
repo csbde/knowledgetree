@@ -1,19 +1,37 @@
 <?php
 /**
-* Presentation information for adding a group
-*
-* @author Mukhtar Dharsey
-* @date 5 February 2003
-* @package presentation.lookAndFeel.knowledgeTree.
-*
-*/
+ * $Id$
+ *
+ * Edit a group UI functions.
+ *
+ * Copyright (c) 2003 Jam Warehouse http://www.jamwarehouse.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ * @version $Revision$
+ * @author Mukhtar Dharsey, Jam Warehouse (Pty) Ltd, South Africa
+ * @package administration.groupmanagement
+ */
+
 // get hte edit page if it comes from the add page
 function getCreatePage($iGroupID) {
 	
 	global $default;
 	$oGroup = null;
 	
-	$sQuery =  "SELECT * FROM $default->owl_groups_table WHERE id = $iGroupID";
+	$sQuery =  "SELECT * FROM $default->groups_table WHERE id = $iGroupID";
 	$aDisplayColumns = array("name","is_sys_admin","is_unit_admin");
 	$aStoreColumns = array("name","is_sys_admin","is_unit_admin");
 	$aColumnNames = array("Name:","System admin:", "Unit admin:");
@@ -21,7 +39,7 @@ function getCreatePage($iGroupID) {
 	$aDatabaseColumnTypes = array(1,2,2);
 	
 	// get list of group properties...name...text field...is_Sys_admin and is_unit_admin..checkboxes
-	$oPattern = & new PatternEditableListFromQuery($sQuery, $default->owl_groups_table, $aDisplayColumns, $aStoreColumns, $aColumnNames, $aDisplayColumnTypes, $aDatabaseColumnTypes);
+	$oPattern = & new PatternEditableListFromQuery($sQuery, $default->groups_table, $aDisplayColumns, $aStoreColumns, $aColumnNames, $aDisplayColumnTypes, $aDatabaseColumnTypes);
 	$oPattern->setUniqueName("groupEdit");
 	$oPattern->setColumnsRequired(array(1,0,0));
 		
@@ -156,18 +174,18 @@ function getGroupDisplay($oGroup) {
 	if (!isset($oGroup)) {
         if (Permission::userIsSystemAdministrator()) {
             // if this is the system administrator, prepend group names with unit name
-            $oPatternListBox = & new PatternListBox($default->owl_groups_table, "name", "id", "fGroupID");
+            $oPatternListBox = & new PatternListBox($default->groups_table, "name", "id", "fGroupID");
             $oPatternListBox->setFromClause("LEFT OUTER JOIN groups_units_link GUL on ST.id=GUL.group_id " .
                                             "LEFT OUTER JOIN units_lookup UL on GUL.unit_id=UL.id");
             $oPatternListBox->setCompositeDisplayName("DISTINCT COALESCE(CONCAT(CONCAT(UL.name, '-'),ST.name),ST.name)");
         } else if (Permission::userIsUnitAdministrator()) {
             // else if this is a unit administrator, only display the groups in your unit
-            $oPatternListBox = & new PatternListBox($default->owl_groups_table, "name", "id", "fGroupID");
-            $oPatternListBox->setFromClause("INNER JOIN $default->owl_groups_units_table GUL on ST.id=GUL.group_id");
+            $oPatternListBox = & new PatternListBox($default->groups_table, "name", "id", "fGroupID");
+            $oPatternListBox->setFromClause("INNER JOIN $default->groups_units_table GUL on ST.id=GUL.group_id");
             $oPatternListBox->setWhereClause("GUL.unit_id=" . User::getUnitID($_SESSION["userID"]));
             
-            $oUnassignedUsersLB = & new PatternListBox($default->owl_groups_table, "name", "id", "fGroupID");
-            $oUnassignedUsersLB->setFromClause("LEFT OUTER JOIN $default->owl_groups_units_table GUL ON ST.id=GUL.group_id");
+            $oUnassignedUsersLB = & new PatternListBox($default->groups_table, "name", "id", "fGroupID");
+            $oUnassignedUsersLB->setFromClause("LEFT OUTER JOIN $default->groups_units_table GUL ON ST.id=GUL.group_id");
             $oUnassignedUsersLB->setWhereClause("ISNULL(GUL.unit_id) AND ST.name <> 'Anonymous' AND ST.name <> 'System Administrators'");
             $oPatternListBox->setAdditionalEntries($oUnassignedUsersLB->getEntries());            
         }
