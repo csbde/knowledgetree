@@ -39,30 +39,6 @@ if(checkSession()) {
 						$sAllCommentID = $oThread->getAllCommentID();
 						$arrAllCommentID = explode(",", $sAllCommentID);										
 						$iNumMax = $oThread->getNumberOfReplies();						
-						//$$$$$$$$$$$$$$$444
-						
-						/*$sQuery = 	"SELECT 1 as ForView, subject, username, date, discussion_comments.id as com_id, discussion_threads.document_id as doc_id " .
-						 			"FROM  (discussion_comments INNER JOIN users ON discussion_comments.user_id = users.id) INNER JOIN discussion_threads ON discussion_threads.id = discussion_comments.thread_id  " .
-						 			"WHERE discussion_threads.id = " . $iThreadID .
-						 			" ORDER BY date DESC";		
-		
-					    $aColumns = array("subject", "username", "date");
-					    $aColumnNames = array("Subject", "User", "Date");
-					    $aColumnTypes = array(3,1,1);
-					    
-					    $aDBColumnArray = array("ForView", "com_id", "doc_id");
-					    $aQueryStringVariableNames = array("ForView", "com_id", "doc_id");
-					    	    
-					    $aHyperLinkURL = array(	0=> $_SERVER['PHP_SELF']); 
-					    	    
-					    $oSearchResults = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnNames, "100%", $aHyperLinkURL,$aDBColumnArray,$aQueryStringVariableNames);
-						
-						$sToRender .= renderHeading("Document Discussion Thread");
-						$sToRender .= renderDocumentPath($oThread->getDocumentID());
-					    $oPatternCustom->addHtml($sToRender);
-					    $oPatternCustom->addHtml(getPageButtons($oThread));
-						$oPatternCustom->addHtml($oSearchResults->render());*/
-						//$$$$$$$$$$$$$$44
 						
 						$sQuery = 	"SELECT 1 as ForView, subject, username, date, discussion_comments.id as com_id, discussion_threads.document_id as doc_id " .
 						 			"FROM  (discussion_comments INNER JOIN users ON discussion_comments.user_id = users.id) INNER JOIN discussion_threads ON discussion_threads.id = discussion_comments.thread_id  " .
@@ -70,7 +46,7 @@ if(checkSession()) {
 						 			" ORDER BY date DESC";
 
 					    $aColumns = array("subject", "username", "date");
-					    $aColumnNames = array("Subject", "User", "Date");
+					    $aColumnNames = array("<font color=white>Subject </font>", "<font color=white>User</font>", "<font color=white>Date</font>");
 					    $aColumnTypes = array(3,1,1);
 					        
 					    $aQueryStringVars = array("fViewComment", "iCommentID", "iDocumentID");
