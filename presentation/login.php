@@ -73,8 +73,7 @@ if ($loginAction == "loginForm") {
                 if (isset($redirect) && strlen(trim($redirect))>0) {
                     $url = urldecode($redirect);
                 // else redirect to the dashboard
-                } else {
-                    $_SESSION["authorised"] = false;                        
+                } else {                                            
                     $url = "/control.php?action=dashboard";
                 }
                 break;
