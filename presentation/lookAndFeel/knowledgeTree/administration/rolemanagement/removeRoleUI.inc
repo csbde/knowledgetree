@@ -44,9 +44,6 @@ function getDeletePage($iRoleID) {
     $sToRender .= "<tr>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "<tr>\n";
-    $sToRender .=  getActiveCheckBox($oRole) . "</td>\n";
-    $sToRender .= "</tr>\n";
-    $sToRender .= "<tr>\n";
     $sToRender .=  getReadableCheckBox($oRole) . "</td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "<tr>\n";

@@ -59,8 +59,7 @@ if (checkSession()) {
         $oRole->setName($fRoleName);
 
         if ($oRole->delete()) {
-            $oPatternCustom->setHtml(getDeleteSuccessPage());
-
+        	controllerRedirect("listRoles");
         } else {
             $oPatternCustom->setHtml(getDeleteFailPage());
         }
