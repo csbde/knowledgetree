@@ -71,15 +71,29 @@ class DocumentType {
 		global $default, $lang_err_database, $lang_err_object_exists;
 		//if the object hasn't been created
 		if ($this->iId < 0) {
+			//check to see if name exsits
 			$sql = $default->db;
-			$result = $sql->query("INSERT INTO " . $default->owl_document_types_table . " (name) VALUES ('" . addslashes($this->sName) . "')");
-			if ($result) {
+			$query = "SELECT name FROM ". $default->owl_document_types_table ." WHERE name = '" . $this->sName . "'";
+        		$sql->query($query);
+       			$rows = $sql->num_rows($sql);
+        
+      			 if ($rows > 0){
+            		 	// duplicate username
+           		 	$_SESSION["errorMessage"] = "DocTypes::The DocumentType name " . $this->sName . " is already in use!";
+           		 	return false;
+           		 
+	       		 }else{
+				$sql = $default->db;
+				$result = $sql->query("INSERT INTO " . $default->owl_document_types_table . " (name) VALUES ('" . addslashes($this->sName) . "')");
+				if ($result) {
 				$this->iId = $sql->insert_id();
 				return  true;
 			}
 			$_SESSION["errorMessage"] = $lang_err_database;
 			return false;
+		   }
 		}
+		
 		$_SESSION["errorMessage"] = $lang_err_object_exists . "id = " . $this->iId . " table = document_types";
 		return false;
 	}
@@ -153,6 +167,21 @@ class DocumentType {
 		return false;
 	}
 	
+}
+
+
+/**
+* Static function
+*
+* Creates a document type object from an array
+*
+* @param 	Array		Array of parameters.  Must match order of parameters in constructor
+*
+* @return User user object
+*/
+function & documenttypeCreateFromArray($aParameters) {
+	$oDocType = & new DocumentType($aParameters[0], $aParameters[1], $aParameters[2], $aParameters[3], $aParameters[4], $aParameters[5], $aParameters[6], $aParameters[7], $aParameters[8], $aParameters[9], $aParameters[10]);
+	return $oDocType;
 }
 
 ?>
