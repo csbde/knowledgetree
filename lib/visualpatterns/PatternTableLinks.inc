@@ -46,15 +46,6 @@ class PatternTableLinks {
 		$this->iColumns = $iNewColumns;
 		$this->iLinkType = $iNewLinkType;
 	}	
-	
-    /**
-     * Sets the background colour
-     *
-     * @param string the colour to set
-     */
-    function setBackGroundColor($sColor) {
-        $this->sBackGroundColor = $sColor;
-    }
     
 	/**
 	* Build the HTML string used to render the object
@@ -70,7 +61,7 @@ class PatternTableLinks {
 		for ($i = 0; $i < $this->iRows; $i++) {			
 			$sToRender = $sToRender . "<tr >\n";			
 			for ($j = 0; $j < $this->iColumns; $j++) {
-				$sToRender = $sToRender . "<td cellspacing = \"20\" width =\"100%\"" . (isset($this->sBackGroundColor) ? " bgcolor=\"" . $this->sBackGroundColor . "\"" : "") . ">";
+				$sToRender = $sToRender . "<td cellspacing = \"20\" width =\"100%\">";
 				if ($iArrayCount < $iArraySize) {
                     $sToRender = $sToRender . ((strlen($this->aLinks[$iArrayCount]) > 0) ? "<a href=\"" . $this->aLinks[$iArrayCount] . "\" />" : "");
                     if ($this->iLinkType == TEXT) {
