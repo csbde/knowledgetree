@@ -1,13 +1,14 @@
 <?php
-
 /**
-* Presentation information for Deleting a DocField 
-*
-* @author Mukhtar Dharsey
-* @date 5 February 2003
-* @package presentation.lookAndFeel.knowledgeTree.
-*
-*/
+ * $Id$
+ *
+ * Presentation information for Deleting a DocField 
+ *
+ * @author Mukhtar Dharsey
+ * @date 5 February 2003
+ * @package presentation.lookAndFeel.knowledgeTree.
+ */
+ 
 // gets the delete stuff
 function getDeletePage($fDocFieldID) {
     global $default;
@@ -19,7 +20,7 @@ function getDeletePage($fDocFieldID) {
         $sHeading = "Please select a Document Field:";
     }
 
-    $sToRender .= "<table width=\"600\">" . renderHeading("Remove Document Field") . "</table>";
+    $sToRender .= renderHeading("Remove Document Field");
     $sToRender .= "<table>\n";
     $sToRender .= "<tr><td colspan=\"2\">$sHeading</td></tr>\n";
     $sToRender .= "<tr>\n";
@@ -48,7 +49,7 @@ function getDeleteSuccessPage() {
 
     global $default;
 
-    $sToRender .= "<table width=\"600\">" . renderHeading("Remove Document Field") . "</table>";
+    $sToRender .= renderHeading("Remove Document Field");
     $sToRender .= "<TABLE BORDER=\"0\" CELLSPACING=\"2\" CELLPADDING=\"2\">\n";
     $sToRender .= "<tr>\n";
     $sToRender .= "<td><b>Document Field SuccessFully Removed!</b></td>\n";
@@ -70,7 +71,7 @@ function getDeleteFailPage() {
 
     global $default;
 
-    $sToRender .= "<table width=\"600\">" . renderHeading("Remove Document Field") . "</table>";
+    $sToRender .= renderHeading("Remove Document Field");
     $sToRender .= "<TABLE BORDER=\"0\" CELLSPACING=\"2\" CELLPADDING=\"2\">\n";
     $sToRender .= "<tr>\n";
     $sToRender .= "<td><b>Deletion Failed!</b></td>\n";

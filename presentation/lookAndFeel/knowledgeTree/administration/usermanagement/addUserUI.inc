@@ -12,7 +12,7 @@
 function getSelectUserPage($aResults) {
 	global $default;
 	
-    $sToRender .= "<table width=\"600\">" . renderHeading("Add User To System") . "</table>";
+    $sToRender .= renderHeading("Add User To System");
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr><td>Select the User to add to the System:</td></tr>\n";
 	$sToRender .= "<tr><td><select name=\"fName\">\n";
@@ -31,7 +31,7 @@ function getAddPage($unitID) {
 
 	global $default;
 	
-    $sToRender .= "<table width=\"600\">" . renderHeading("Add User To System") . "</table>";
+    $sToRender .= renderHeading("Add User To System");
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr><td colspan=\"2\">Please enter a VALID Username to search for in the text box below</td></tr>\n";
 	$sToRender .= "<tr>\n";
@@ -51,7 +51,7 @@ function getAddPage($unitID) {
 function getDetailsDBPage($suserName, $aAttributes) {
 
  	global $default;
-    $sToRender .= "<table width=\"600\">" . renderHeading("Add User To System") . "</table>";
+    $sToRender .= renderHeading("Add User To System");
     foreach ($aAttributes as $sUserName => $aUserAttributes) {
         $sToRender .= "<table>\n";
         $sToRender .= "<tr><td><b>User Details: </b></td></tr>\n";
@@ -87,7 +87,7 @@ function getDetailsDBPage($suserName, $aAttributes) {
 
 function getDetailsLDAPPage($suserName, $aAttributes, $sUserIdentifier) {
 
-    $sToRender .= "<table width=\"600\">" . renderHeading("Add User To System") . "</table>";
+    $sToRender .= renderHeading("Add User To System");
  	global $default;
 	foreach ($aAttributes as $sUserName => $aUserAttributes) {
         $sToRender .= "<table>\n";
@@ -130,7 +130,7 @@ function getDetailsLDAPPage($suserName, $aAttributes, $sUserIdentifier) {
 function getPageSuccess() {	
 	global $default;
 			
-	$sToRender .= "<table width=\"600\">" . renderHeading("Add User To System") . "</table>";
+	$sToRender .= renderHeading("Add User To System");
 	$sToRender .= "<table>\n";
     $sToRender .= "<tr><td><b>Addition Successful!</b></td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
@@ -149,7 +149,7 @@ function getPageSuccess() {
 function getPageFail() {	
 	global $default;
 			
-	$sToRender .= "<table width=\"600\">" . renderHeading("Add User To System") . "</table>";
+	$sToRender .= renderHeading("Add User To System");
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr><td><b>Addition Successful!</b></td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
@@ -170,7 +170,7 @@ function getPageFail() {
 function getPageUsernameNotFound() {	
 	global $default;
 			
-	$sToRender .= "<table width=\"600\">" . renderHeading("Add User To System") . "</table>";
+	$sToRender .= renderHeading("Add User To System");
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr><td><b>Username not found!</b></td></tr>\n";
 	$sToRender .= "<tr></tr>\n";

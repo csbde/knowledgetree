@@ -8,7 +8,7 @@ function getSelectFieldPage($iDocFieldID) {
         $oDocField = DocumentField::get($iDocFieldID);
     }
 
-    $sToRender .= "<table width=\"600\">" . renderHeading("Add Document Field Lookup") . "</table>";
+    $sToRender .= renderHeading("Add Document Field Lookup");
     $sToRender .= "<table>\n";
     $sToRender .= "<tr>Please Select a Field</tr>\n";
     $sToRender .= "<tr>\n";
@@ -32,7 +32,7 @@ function getAddMetaDataPage($iDocFieldID) {
         $oDocField = DocumentField::get($iDocFieldID);
     }
 
-    $sToRender .= "<table width=\"600\">" . renderHeading("Add Document Field Lookup") . "</table>";
+    $sToRender .= renderHeading("Add Document Field Lookup");
     $sToRender .= "<table>\n";
     $sToRender .= "<tr>Please Enter a new lookup value to add to the Selected Field</tr>\n";
     $sToRender .= "<tr>\n";
@@ -68,7 +68,7 @@ function getAddMetaDataPage($iDocFieldID) {
 function getSuccessPage() {
     global $default;
 
-    $sToRender .= "<table width=\"600\">" . renderHeading("Add Document Field Lookup") . "</table>";
+    $sToRender .= renderHeading("Add Document Field Lookup");
     $sToRender .= "<table>\n";
     $sToRender .= "<tr><td><b>Success!</b></td></tr>\n";
     $sToRender .= "<tr><td>The lookup value was successfully added</td></tr>\n";
@@ -86,7 +86,7 @@ function getSuccessPage() {
 function getFailPage() {
     global $default;
 
-    $sToRender .= "<table width=\"600\">" . renderHeading("Add Document Field Lookup") . "</table>";
+    $sToRender .= renderHeading("Add Document Field Lookup");
     $sToRender .= "<table>\n";
     $sToRender .= "<tr><td><b>FAILURE!</b></td></tr>\n";
     $sToRender .= "<tr><td>The lookup value was not added</td></tr>\n";
@@ -105,7 +105,7 @@ function getFailPage() {
 function getTextPage() {
     global $default;
 
-    $sToRender .= "<table width=\"600\">" . renderHeading("Add Document Field Lookup") . "</table>";
+    $sToRender .= renderHeading("Add Document Field Lookup");
     $sToRender .= "<table>\n";
     $sToRender .= "<tr><td><b>FAILURE!</b></td></tr>\n";
     $sToRender .= "<tr><td>Please Enter a Value in the Text Box</td></tr>\n";

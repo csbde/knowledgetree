@@ -8,7 +8,7 @@ function getSelectWebMasterPage($iUserID) {
         $oUser = User::get($iUserID);
     }
 
-    $sToRender .= "<table width=\"600\">" . renderHeading("Edit Website") . "</table>";
+    $sToRender .= renderHeading("Edit Website");
     $sToRender .= "<table>\n";
     $sToRender .= "<tr><td>Please Select a WebMaster</td></tr>\n";
     $sToRender .= "<tr>\n";
@@ -37,7 +37,7 @@ function getSelectWebSitePage($iUserID, $iWebSiteID) {
         $oWebSite = WebSite::get($iWebSiteID);
     }
 
-    $sToRender .= "<table width=\"600\">" . renderHeading("Edit Website") . "</table>";
+    $sToRender .= renderHeading("Edit Website");
     $sToRender .= "<table>\n";
     $sToRender .= "<tr><td>Please Select the WebSite you wish to Edit:</td></tr>\n";
     $sToRender .= "<tr>\n";
@@ -71,7 +71,7 @@ function getEditWebSitePage($iUserID, $iWebSiteID) {
         $oWebSite = WebSite::get($iWebSiteID);
     }
 
-    $sToRender .= "<table width=\"600\">" . renderHeading("Edit Website") . "</table>";
+    $sToRender .= renderHeading("Edit Website");
     $sToRender .= "<table>\n";
     $sToRender .= "<tr><td>Enter WebSite Properties</td></tr>\n";
     $sToRender .= "<tr></tr>\n";
@@ -111,7 +111,7 @@ function getEditWebSitePage($iUserID, $iWebSiteID) {
 function getSuccessPage() {
     global $default;
 
-    $sToRender .= "<table width=\"600\">" . renderHeading("Edit Website") . "</table>";
+    $sToRender .= renderHeading("Edit Website");
     $sToRender .= "<table>\n";
     $sToRender .= "<b>Success!</b>\n";
     $sToRender .= "<table>\n";
@@ -133,7 +133,7 @@ function getSuccessPage() {
 function getFailPage() {
     global $default;
 
-    $sToRender .= "<table width=\"600\">" . renderHeading("Edit Website") . "</table>";
+    $sToRender .= renderHeading("Edit Website");
     $sToRender .= "<table>\n";
     $sToRender .= "<b>FAILURE!</b>\n";
     $sToRender .= "<table>\n";
@@ -156,7 +156,7 @@ function getFailPage() {
 function getTextPage() {
     global $default;
 
-    $sToRender .= "<table width=\"600\">" . renderHeading("Edit Website") . "</table>";
+    $sToRender .= renderHeading("Edit Website");
     $sToRender .= "<table>\n";
     $sToRender .= "<b>FAILURE!</b>\n";
     $sToRender .= "<table>\n";

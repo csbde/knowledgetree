@@ -18,7 +18,7 @@ if(checkSession()) {
     // include the page template (with navbar)
     require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 
-    $Center .= "<table width=\"600\">" . renderHeading("Edit Group") . "</table>";
+    $Center .= renderHeading("Edit Group");
     $Center .= "<TABLE BORDER=\"0\" CELLSPACING=\"2\" CELLPADDING=\"2\">\n";
     $Center .= "<tr>\n";
     $Center .= "<td>Update Successful!</td>\n";

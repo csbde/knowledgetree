@@ -23,7 +23,7 @@ function getPage() {
 	$oPatternCreate = & new PatternCreate("DocumentField", "documentmanagement/DocumentField.inc",$aDisplayRowNames, $aParameterNumbers, $aDisplayColumnTypes, $aRequired,$aDropDownListTableNames,$aDropDownListValueColumns,$aDropDownListDisplayColumns);
 	$oPatternCreate->setUniqueName("DocField");
 	
-	$sToRender .= "<table width=\"600\">" . renderHeading("Add Document Field") . "</table>";
+	$sToRender .= renderHeading("Add Document Field");
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";

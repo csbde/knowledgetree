@@ -25,7 +25,7 @@ function getCreatePage($iGroupID) {
 	$oPattern->setUniqueName("groupEdit");
 	$oPattern->setColumnsRequired(array(1,0,0));
 		
-	$sToRender .= "<table width=\"600\">" . renderHeading("Edit Group Properties") . "</table>";
+	$sToRender .= renderHeading("Edit Group Properties");
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
@@ -47,7 +47,7 @@ function getAddFailPage() {
 	
 	global $default;
     
-	$sToRender .= "<table width=\"600\">" . renderHeading("Edit Group Properties") . "</table>";
+	$sToRender .= renderHeading("Edit Group Properties");
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr><td><b>Add Group Failed:</b></td></tr>\n";
 	$sToRender .= "<tr>\n";
@@ -73,7 +73,7 @@ function getEditPage($iGroupID) {
 		
 	}
 	
-    $sToRender .= "<table width=\"600\">" . renderHeading("Edit Group Properties") . "</table>";
+    $sToRender .= renderHeading("Edit Group Properties");
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
@@ -111,7 +111,7 @@ function getEditPage($iGroupID) {
 function getEditPageSuccess() {	
 	global $default;
 			
-	$sToRender .= "<table width=\"600\">" . renderHeading("Edit Group Properties") . "</table>";
+	$sToRender .= renderHeading("Edit Group Properties");
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr><td><b>Success!</b></td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
@@ -132,7 +132,7 @@ function getEditPageSuccess() {
 function getEditPageFail() {	
 	global $default;
 			
-    $sToRender .= "<table width=\"600\">" . renderHeading("Edit Group Properties") . "</table>";
+    $sToRender .= renderHeading("Edit Group Properties");
 
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr><td><b>Failure!</b></td></tr>\n";

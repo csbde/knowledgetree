@@ -21,7 +21,7 @@ function getPage() {
 	$oPatternCreate = & new PatternCreate("Organisation", "orgmanagement/Organisation.inc",$aDisplayRowNames, $aParameterNumbers, $aDisplayColumnTypes, $aRequired);
 	$oPatternCreate->setUniqueName("organisation");
 	
-	$sToRender .= "<table width=\"600\">" . renderHeading("Add Organisation") . "</table>";
+	$sToRender .= renderHeading("Add Organisation");
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";

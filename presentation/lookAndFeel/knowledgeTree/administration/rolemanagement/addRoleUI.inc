@@ -20,7 +20,7 @@ function getPage() {
 	$oPatternCreate = & new PatternCreate("Role", "roles/Role.inc",$aDisplayRowNames, $aParameterNumbers, $aDisplayColumnTypes, $aRequired);
 	$oPatternCreate->setUniqueName("role");
 	
-	$sToRender .= "<table width=\"600\">" . renderHeading("Add Role") . "</table>";
+	$sToRender .= renderHeading("Add Role");
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";

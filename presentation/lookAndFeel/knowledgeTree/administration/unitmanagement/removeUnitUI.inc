@@ -19,7 +19,7 @@ function getDeletePage($iUnitID) {
         $sHeading .= "Please select a Unit: ";
     }
 
-    $sToRender .= "<table width=\"600\">" . renderHeading("Remove Unit") . "</table>";
+    $sToRender .= renderHeading("Remove Unit");
     $sToRender .= "<table>\n";
     $sToRender .= "<tr><td>$sHeading</td></tr>\n";
     $sToRender .= "<tr>\n";
@@ -46,7 +46,7 @@ function getDeleteSuccessPage() {
 
     global $default;
 
-    $sToRender .= "<table width=\"600\">" . renderHeading("Remove Unit") . "</table>";
+    $sToRender .= renderHeading("Remove Unit");
     $sToRender .= "<table>\n";
     $sToRender .= "<tr>\n";
     $sToRender .= "<td><b>Unit SuccessFully Removed!</b></td>\n";
@@ -68,7 +68,7 @@ function getDeleteFailPage() {
 
     global $default;
 
-    $sToRender .= "<table width=\"600\">" . renderHeading("Remove Unit") . "</table>";
+    $sToRender .= renderHeading("Remove Unit");
     $sToRender .= "<table>\n";
     $sToRender .= "<tr>\n";
     $sToRender .= "<td><b>Deletion Failed!</b></td>\n";
@@ -96,7 +96,7 @@ function getDeleteConfirmedPage($iUnitID,$iOrgID) {
         $oOrg = Organisation::get($iOrgID);
     }
 
-    $sToRender .= "<table width=\"600\">" . renderHeading("Remove Unit") . "</table>";
+    $sToRender .= renderHeading("Remove Unit");
     $sToRender .= "<table>\n";
     $sToRender .= "<tr><td><b>Are you sure you wish to Remove this Unit?:</b></td></tr>\n";
     $sToRender .= "<tr>\n";

@@ -23,7 +23,7 @@ function getEditPage($iDocFieldID) {
 
     }
 
-    $sToRender .= "<table width=\"600\">" . renderHeading("Edit Document Field") . "</table>";
+    $sToRender .= renderHeading("Edit Document Field");
     $sToRender .= "<table>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr>\n";
@@ -77,7 +77,7 @@ function getEditPage($iDocFieldID) {
 function getEditPageSuccess() {
     global $default;
 
-    $sToRender .= "<table width=\"600\">" . renderHeading("Edit Document Field") . "</table>";
+    $sToRender .= renderHeading("Edit Document Field");
     $sToRender .= "<b>Success!</b>\n";
     $sToRender .= "<table>\n";
     $sToRender .= "<br></br>\n";
@@ -98,7 +98,7 @@ function getEditPageSuccess() {
 function getEditPageFail() {
     global $default;
 
-    $sToRender .= "<table width=\"600\">" . renderHeading("Edit Document Field") . "</table>";
+    $sToRender .= renderHeading("Edit Document Field");
     $sToRender .= "<b>FAILURE!</b>\n";
     $sToRender .= "<table>\n";
     $sToRender .= "<br></br>\n";

@@ -21,7 +21,7 @@ function getPage() {
 	$oPatternCreate = & new PatternCreate("DocumentType", "documentmanagement/DocumentType.inc",$aDisplayRowNames, $aParameterNumbers, $aDisplayColumnTypes, $aRequired);
 	$oPatternCreate->setUniqueName("documentType");
 	
-	$sToRender .= "<table width=\"600\">" . renderHeading("Add Document Type") . "</table>";
+	$sToRender .= renderHeading("Add Document Type");
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";

@@ -26,7 +26,7 @@ function getPage($iUserID, $iGroupID) {
 	}
 	$sQueryString = "&fUserID=$iUserID";
     
-    $sToRender .= "<table width=\"600\">" . renderHeading("Add User to Group") . "</table>";
+    $sToRender .= renderHeading("Add User to Group");
 	$sToRender .= "<table>\n";
 	$sToRender .= $heading;
 	$sToRender .= "<tr>\n";
@@ -54,7 +54,7 @@ function getPage($iUserID, $iGroupID) {
 function getPageNotSelected($sQueryString) {	
 	global $default;
 
-    $sToRender .= "<table width=\"600\">" . renderHeading("Add User to Group") . "</table>";
+    $sToRender .= renderHeading("Add User to Group");
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr><td><b>Sorry, Selection Failed</b></td></tr>\n";
 	$sToRender .= "<tr><td>Please select Group</td></tr>\n";
@@ -73,7 +73,7 @@ function getPageNotSelected($sQueryString) {
 function getPageSuccess($sQueryString) {
 	global $default;
 
-    $sToRender .= "<table width=\"600\">" . renderHeading("Add User to Group") . "</table>";            
+    $sToRender .= renderHeading("Add User to Group");            
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr><td><b>Success!</b></td></tr>\n";
 	$sToRender .= "<tr><td>The User was successfully assigned to the specified Group</td></tr>\n";
@@ -92,7 +92,7 @@ function getPageSuccess($sQueryString) {
 function getPageFail() {
 	global $default;
 		
-    $sToRender .= "<table border=\"0\" width=\"600\">" . renderHeading("Add User to Group") . "</table>";
+    $sToRender .= "<table border=\"0\" width=\"600\">" . renderHeading("Add User to Group");
     $sToRender .= "<table>\n";
 	$sToRender .= "<tr><td><b>Failed!</b></td></tr>\n";
 	$sToRender .= "<tr><td>The User already belongs to the specified Group</td></tr>\n";

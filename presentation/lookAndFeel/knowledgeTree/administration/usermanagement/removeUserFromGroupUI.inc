@@ -21,7 +21,7 @@ function getPage($iUserID) {
         $heading = "<tr><td>Please select a User:</td></tr>\n";
     }
 
-    $sToRender .= "<table width=\"600\">" . renderHeading("Remove User From Group") . "</table>";
+    $sToRender .= renderHeading("Remove User From Group");
     $sToRender .= "<table>\n";
     $sToRender .= $heading;
     $sToRender .= "<tr>\n";
@@ -66,7 +66,7 @@ function getGroupPage($iUserID, $aGroup) {
         $Groupdisplay = "<td>Group Name: " . $oGroup->getName() . "</td>\n";
     }
 
-    $sToRender .= "<table width=\"600\">" . renderHeading("Remove User From Group") . "</table>";
+    $sToRender .= renderHeading("Remove User From Group");
     $sToRender .= "<table>\n";
     $sToRender .= "<tr><td>Select a Group to Remove User from:</td></tr>\n";
     $sToRender .= "<tr>\n";
@@ -107,7 +107,7 @@ function getDeleteConfirmedPage($iUserID,$fGroupID) {
         $Groupdisplay = "<td>Group Name: " . $oGroup->getName() . "</td>\n";
     }
 
-    $sToRender .= "<table width=\"600\">" . renderHeading("Remove User From Group") . "</table>";
+    $sToRender .= renderHeading("Remove User From Group");
     $sToRender .= "<table>\n";
     $sToRender .= "<tr>\n";
     $sToRender .= $heading;
@@ -134,7 +134,7 @@ function getDeleteConfirmedPage($iUserID,$fGroupID) {
 function getPageFail() {
     global $default;
 
-    $sToRender .= "<table width=\"600\">" . renderHeading("Remove User From Group") . "</table>";
+    $sToRender .= renderHeading("Remove User From Group");
     $sToRender .= "<table>\n";
     $sToRender .= "<tr><td><b>Sorry, Removal Failed</b></td></tr>\n";
     $sToRender .= "<tr></tr>\n";
@@ -155,7 +155,7 @@ function getPageFail() {
 function getPageSuccess($fUserID) {
     global $default;
 
-    $sToRender .= "<table width=\"600\">" . renderHeading("Remove User From Group") . "</table>";
+    $sToRender .= renderHeading("Remove User From Group");
     $sToRender .= "<table>\n";
     $sToRender .= "<tr><td><b>Success!</b></td></tr>\n";
     $sToRender .= "<tr></tr>\n";

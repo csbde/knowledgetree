@@ -1,6 +1,6 @@
 <?php
 require_once("../../../../config/dmsDefaults.php");
-require_once("adminUI.inc");
+require_once("$default->fileSystemRoot/presentation/Html.inc");
 
 /**
  * $Id$
@@ -14,21 +14,28 @@ require_once("adminUI.inc");
  * @package presentation.lookAndFeel.knowledgeTree.administration
  */
 
-if(checkSession()) {
+/**
+ * Display the heading for the admin section
+ */
+function renderAdminHeading($sHeading, $sSectionName = "") {
+    $sCenter .= renderHeading("Administration");
+    $sCenter .= "<table width=\"600\">\n";
+    $sCenter .=	"<tr/><tr/><tr><td><b> Welcome to the Administration Section</b></td></tr>\n";
+    $sCenter .=	"<tr><td>Please make a selection from the sidemenu.</td></tr>\n";
+    $sCenter .=	"</table>\n";
+    return $sCenter;	
+}
+
+if (checkSession()) {
 	require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 	
-	if (isset($sectionName)) {   
-	    $sCenter .= "<table width=\"600\">\n";
-	    if ($sectionName == "userAdministration") {
-	  		
-	  		$sCenter .= renderHeading("User Administration");
-	    }else if ($sectionName == "Administration"){
-	        $sCenter .= "<table width=\"600\">\n";
-	        $sCenter .= renderHeading("Administration");	        
-	    }
-	    $sCenter .=	"</table>\n";
-	}
-   	//$sCenter .= "<textarea cols=50 rows=50> $sCenter </textarea>";
+	if (!isset($sectionName)) {
+		$sectionName = "Administration";
+	}   
+    $sCenter .= "<table width=\"600\">\n";
+    $sCenter .= renderAdminHeading("Administration");	        
+    $sCenter .=	"</table>\n";
+
 	$oPatternCustom = & new PatternCustom();
 	$oPatternCustom->setHtml($sCenter);
 	$main->setCentralPayload($oPatternCustom);
