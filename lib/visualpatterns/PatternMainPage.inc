@@ -115,6 +115,7 @@ class PatternMainPage {
 		$sToRender = 	"<html>\n" .
 							"<head>\n" .
                             "<meta http-equiv=\"refresh\" content=\"" . ($default->sessionTimeout+3) . "\">\n" .
+                            "<link rel=\"SHORTCUT ICON\" href=\"$default->graphicsUrl/tree.ico\">\n" .
                             "<link rel=\"stylesheet\" href=\"$default->uiUrl/stylesheet.php\">\n".                            
 							PatternMainPage::getJavaScript() . "\n" .							
 							"</head>\n" .

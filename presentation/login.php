@@ -26,6 +26,7 @@ if ($loginAction == "loginForm") {
     print "<html>
     <head>
     <link rel=\"stylesheet\" href=\"$default->uiUrl/stylesheet.php\">
+    <link rel=\"SHORTCUT ICON\" href=\"$default->graphicsUrl/tree.ico\">
     </head>
     <body>
     <center>
