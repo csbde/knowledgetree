@@ -31,6 +31,10 @@ class FolderUserRole {
 		$this->bDependantDocumentsCreated = $bNewDependantDocumentsCreated;
 	}
 	
+	function getID() {
+		return $this->iId;
+	}
+	
 	function getUserID() {
 		return $this->iUserID;
 	}
@@ -99,7 +103,7 @@ class FolderUserRole {
 		//if the object hasn't been created
 		if ($this->iId < 0) {
 			$sql = $default->db;
-			$result = $sql->query("INSERT INTO " . $default->owl_folders_user_roles_table . " (user_id, document_id, group_folder_approval_id, datetime, done, active, dependant_documents_created) VALUES ($this->iUserID, $this->iDocumentID, $this->iGroupFolderApprovalID, '$this->dDateTime', " . ($this->bDone ? "1" : "0") . ", " . ($this->bActive ? "1" : "0") . ", " . ($this->bDependantDocumentsCreated) ? "1" : "0" . ")");
+			$result = $sql->query("INSERT INTO " . $default->owl_folders_user_roles_table . " (user_id, document_id, group_folder_approval_id, datetime, done, active, dependant_documents_created) VALUES ($this->iUserID, $this->iDocumentID, $this->iGroupFolderApprovalID, '$this->dDateTime', " . ($this->bDone ? "1" : "0") . ", " . ($this->bActive ? "1" : "0") . ", " . (($this->bDependantDocumentsCreated) ? "1" : "0") . ")");
 			if ($result) {
 				$this->iId = $sql->insert_id();
 				return  true;
@@ -122,6 +126,7 @@ class FolderUserRole {
 		//only update if the object has been stored
 		if ($this->iId > 0) {
 			$sql = $default->db;
+			//echo "UPDATE " . $default->owl_folders_user_roles_table . " SET user_id = $this->iUserID, document_id = $this->iDocumentID, group_folder_approval_id = $this->iGroupFolderApprovalID, datetime = '$this->dDateTime', done = " . ($this->bDone ? "1" : "0") . ", active = " . ($this->bActive ? "1" : "0") . ", dependant_documents_created = " . ($this->bDependantDocumentsCreated ? "1" : "0") . " WHERE id = $this->iId";
 			$result = $sql->query("UPDATE " . $default->owl_folders_user_roles_table . " SET user_id = $this->iUserID, document_id = $this->iDocumentID, group_folder_approval_id = $this->iGroupFolderApprovalID, datetime = '$this->dDateTime', done = " . ($this->bDone ? "1" : "0") . ", active = " . ($this->bActive ? "1" : "0") . ", dependant_documents_created = " . ($this->bDependantDocumentsCreated ? "1" : "0") . " WHERE id = $this->iId");
 			if ($result) {
 				return true;
