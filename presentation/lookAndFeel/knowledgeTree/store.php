@@ -1,6 +1,10 @@
 <?php
-//var_dump($_POST);
+
+require_once("../../../config/dmsDefaults.php");
+
 $aKeys = array_keys($_POST);
+
+
 
 for ($i = 0; $i < count($aKeys); $i++) {	
 	$sRowStart = $aKeys[$i];		
@@ -102,7 +106,9 @@ for ($i = 0; $i < count($aKeys); $i++) {
 					default:
 						break;
 			}
-			echo $sQuery. "<br>";
+			//execute the query
+			$sql = new Owl_DB();
+			$sql->query($sQuery);
 		} else {
 			//perform an update
 			$sQuery = "UPDATE $sTableName SET ";
@@ -132,13 +138,15 @@ for ($i = 0; $i < count($aKeys); $i++) {
 					default:
 						break;
 				}			
-			$sQuery .= "WHERE id = $iPrimaryKey";		
-			echo $sQuery. "<br>";
+			$sQuery .= "WHERE id = $iPrimaryKey";
+			//execute the query
+			$sql = new Owl_DB();
+			$sql->query($sQuery);
 		}
 		
 	}
-	
 }
+redirect(urldecode($fReturnURL));
 
 
 
