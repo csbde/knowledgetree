@@ -102,6 +102,8 @@ $default->owl_site_sections_table = "site_sections_lookup";
 $default->owl_sitemap_table = "sitemap";
 // stores document subscription information
 $default->owl_subscriptions_table = "subscriptions";
+// stores deleted files
+$default->owl_sys_deleted_table = "sys_deleted";
 // stores default system settings
 $default->owl_system_settings_table = "system_settings";
 // Table with unit information
@@ -160,20 +162,22 @@ $default->siteMap->addPage("dashboard", "/presentation/dashboardBL.php", "Genera
 
 //pages for manage documents section
 $default->siteMap->addDefaultPage("browse", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/browseBL.php", "Manage Documents", Guest, "browse documents");
-$default->siteMap->addPage("viewDocument", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/viewBL.php", "Manage Documents", Guest, "");
-$default->siteMap->addPage("viewDocumentHistory", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/viewHistoryBL.php", "Manage Documents", User, "View Document History");
-$default->siteMap->addPage("addDocument", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentBL.php", "Manage Documents", User, "Add A Document");
-$default->siteMap->addPage("modifyDocumentRouting", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/collaborationBL.php", "Manage Documents", User, "");
-$default->siteMap->addPage("modifyDocument", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/modifyBL.php", "Manage Documents", User, "");
+$default->siteMap->addPage("viewDocument", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/viewBL.php", "Manage Documents", Guest, "View Document", false);
+$default->siteMap->addPage("viewHistory", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/viewHistoryBL.php", "Manage Documents", User, "View Document History", false);
+$default->siteMap->addPage("modifyDocument", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/modifyBL.php", "Manage Documents", User, "Modify Document", false);
+$default->siteMap->addPage("removeDocument", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/removeDocumentBL.php", "Manage Documents", User, "Remove Document", false);
+$default->siteMap->addPage("emailDocument", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/emailBL.php", "Manage Documents", User, "Email A Document", false);
+
 $default->siteMap->addPage("addFolder", "/presentation/lookAndFeel/knowledgeTree/foldermanagement/addFolderBL.php", "Manage Documents", User, "Add A Folder");
 $default->siteMap->addPage("editFolder", "/presentation/lookAndFeel/knowledgeTree/folderManagement/editBL.php", "Manage Documents", UnitAdmin, "Modify Folder Properties", false);
-$default->siteMap->addPage("deleteFolder", "/presentation/documentmanagement/deleteFolder.php?fFolderID=", "Manage Documents", UnitAdmin, "Delete A Folder", false);
+$default->siteMap->addPage("deleteFolder", "/presentation/documentmanagement/deleteFolder.php", "Manage Documents", UnitAdmin, "Delete A Folder", false);
 $default->siteMap->addPage("moveFolder", "/presentation/documentmanagement/moveFolder.php", "Manage Documents", UnitAdmin, "Move A Folder", false);
+
+$default->siteMap->addPage("addDocument", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentBL.php", "Manage Documents", User, "Add A Document");
+$default->siteMap->addPage("modifyDocumentRouting", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/collaborationBL.php", "Manage Documents", User, "");
 $default->siteMap->addPage("modifyFolderCollaboration", "/presentation/lookAndFeel/knowledgeTree/foldermanagement/collaborationBL.php", "Manage Documents", User, "", false);
 $default->siteMap->addPage("addFolderCollaboration", "/presentation/lookAndFeel/knowledgeTree/folderManagement/addFolderCollaborationBL.php", "Manage Documents", User, "", false);
 $default->siteMap->addPage("deleteFolderCollaboration", "/presentation/lookAndFeel/knowledgeTree/folderManagement/deleteFolderCollaborationBL.php", "Manage Documents", User, "", false);
-$default->siteMap->addPage("emailDocument", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/emailBL.php", "Manage Documents", User, "Email A Document", false);
-
 
 // pages for administration section
 $default->siteMap->addDefaultPage("administration", "/admin.php", "Administration", UnitAdmin, "Administration");
@@ -183,7 +187,6 @@ $default->siteMap->addPage("unitManagement", "/admin.php?sectionName=SystemAdmin
 $default->siteMap->addPage("orgManagement", "/admin.php?sectionName=SystemAdministration", "Administration", SysAdmin, "Organisation Management");
 $default->siteMap->addPage("roleManagement", "/admin.php?sectionName=SystemAdministration", "Administration", SysAdmin, "Role Management");
 $default->siteMap->addPage("systemAdministration", "/presentation/admin.php?sectionName=SystemAdministration", "Administration", SysAdmin, "System Settings");
-
 
 /////////// pages for administration section
 //$default->siteMap->addDefaultPage("unitadministration", "/presentation/unitadmin.php", "UnitAdministration", UnitAdmin, "groAdministration");
@@ -201,7 +204,6 @@ $default->siteMap->addPage("addUsersToGroup", "/tests/groups/adduser.php", "User
 
 $default->siteMap->addPage("systemAdministration", "/presentation/blah.php", "UnitAdministration", SysAdmin, "systemBlaaah");
 
-
 /////// pages for subscriptions section
 $default->siteMap->addDefaultPage("subscriptions", "/subscriptions.php", "Subscriptions", Guest, "SubScriptions", false);
 $default->siteMap->addDefaultPage("viewAlert", "/presentation/lookAndFeel/knowledgeTree/subscriptions/viewAlertBL.php", "Subscriptions", User, "Subscriptions", false);
@@ -209,7 +211,6 @@ $default->siteMap->addDefaultPage("viewAlert", "/presentation/lookAndFeel/knowle
 // pages for advanced search section
 // $default->siteMap->addDefaultPage("advancedSearch", "/email.php", "Advanced Search", "Anonymous", "Advanced Search");
 $default->siteMap->addDefaultPage("advancedSearch", "/search.php", "Advanced Search", Guest, "Advanced Search", false);
-
 
 // pages for prefs section
 //$default->siteMap->addDefaultPage("preferences", "/presentation/lookAndFeel/knowledgeTree/Help/emailHelp.php", "Preferences", User, "Preferences",false);
