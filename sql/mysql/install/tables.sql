@@ -710,5 +710,5 @@ INSERT INTO users_groups_link (group_id, user_id) VALUES (3, 3);
 -- define folder structure
 INSERT INTO folders (name, description, parent_id, creator_id, unit_id, is_public)
              VALUES ("Root Folder", "Root Document Folder", 0, 1, 0, 0);
-INSERT INTO folders (name, description, parent_id, creator_id, unit_id, is_public)
-             VALUES ("Default Unit", "Default Unit Root Folder", 1, 1, 1, 0);
+INSERT INTO folders (name, description, parent_id, creator_id, unit_id, is_public, parent_folder_ids, full_path)
+             VALUES ("Default Unit", "Default Unit Root Folder", 1, 1, 1, 0, "1", "Root Folder");
