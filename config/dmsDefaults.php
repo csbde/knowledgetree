@@ -137,43 +137,43 @@ $default->siteMap = new SiteMap();
 // action, page, section, group with access, link text
 
 // general pages
-$default->siteMap->addPage("login", "/presentation/login.php?loginAction=login", "General", "Anonymous", "");
-$default->siteMap->addPage("loginForm", "/presentation/login.php?loginAction=loginForm", "General", "Anonymous", "login"); 
-$default->siteMap->addPage("logout", "/presentation/logout.php", "General", "Anonymous", "logout");
-$default->siteMap->addPage("dashboard", "/presentation/dashboardBL.php", "General", "Anonymous", "dashboard");
+$default->siteMap->addPage("login", "/presentation/login.php?loginAction=login", "General", A, "");
+$default->siteMap->addPage("loginForm", "/presentation/login.php?loginAction=loginForm", "General", A, "login"); 
+$default->siteMap->addPage("logout", "/presentation/logout.php", "General", A, "logout");
+$default->siteMap->addPage("dashboard", "/presentation/dashboardBL.php", "General", A, "dashboard");
 
 //pages for manage documents section
-$default->siteMap->addDefaultPage("browse", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/browseBL.php", "Manage Documents", "Anonymous", "browse documents");
-$default->siteMap->addPage("viewDocument", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/viewBL.php", "Manage Documents", "Anonymous", "");
-$default->siteMap->addPage("addDocument", "/presentation/documentmanagement/addDocument.php", "Manage Documents", "Anonymous", "Add A Document");
-$default->siteMap->addPage("addFolder", "/presentation/documentmanagement/addFolder.php", "Manage Documents", "Unit Administrators", "Add A Folder");
-$default->siteMap->addPage("modifyFolderProperties", "/presentation/documentmanagement/modifyFolder.php", "Manage Documents", "Unit Administrators", "Modify Folder Properties");
-$default->siteMap->addPage("deleteFolder", "/presentation/documentmanagement/deleteFolder.php", "Manage Documents", "Unit Administrators", "Delete A Folder");
-$default->siteMap->addPage("moveFolder", "/presentation/documentmanagement/moveFolder.php", "Manage Documents", "Unit Administrators", "Move A Folder");
+$default->siteMap->addDefaultPage("browse", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/browseBL.php", "Manage Documents", A, "browse documents");
+$default->siteMap->addPage("viewDocument", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/viewBL.php", "Manage Documents", A, "");
+$default->siteMap->addPage("addDocument", "/presentation/documentmanagement/addDocument.php", "Manage Documents", A, "Add A Document");
+$default->siteMap->addPage("addFolder", "/presentation/documentmanagement/addFolder.php", "Manage Documents", UA, "Add A Folder");
+$default->siteMap->addPage("modifyFolderProperties", "/presentation/documentmanagement/modifyFolder.php", "Manage Documents", UA, "Modify Folder Properties");
+$default->siteMap->addPage("deleteFolder", "/presentation/documentmanagement/deleteFolder.php", "Manage Documents", UA, "Delete A Folder");
+$default->siteMap->addPage("moveFolder", "/presentation/documentmanagement/moveFolder.php", "Manage Documents", UA, "Move A Folder");
 
 // pages for administration section
-$default->siteMap->addDefaultPage("administration", "/admin.php", "Administration", "Unit Administrators", "Administration");
-$default->siteMap->addPage("unitAdministration", "/presentation/unitAdmin.php", "Administration", "Unit Administrators", "Unit Administration");
-$default->siteMap->addPage("systemAdministration", "/presentation/sysAdmin.php", "Administration", "System Administrators", "System Administration");
+$default->siteMap->addDefaultPage("administration", "/admin.php", "Administration", UA, "Administration");
+$default->siteMap->addPage("unitAdministration", "/presentation/unitAdmin.php", "Administration", UA, "Unit Administration");
+$default->siteMap->addPage("systemAdministration", "/presentation/sysAdmin.php", "Administration", SA, "System Administration");
 
 // pages for advanced search section
-$default->siteMap->addDefaultPage("advancedSearch", "/search.php", "Advanced Search", "Anonymous", "Advanced Search");
+$default->siteMap->addDefaultPage("advancedSearch", "/search.php", "Advanced Search", A, "Advanced Search");
 
 // pages for prefs section
-$default->siteMap->addDefaultPage("preferences", "/preferences.php", "Preferences", "Anonymous", "Preferences");
-$default->siteMap->addPage("viewPreferences", "/preferences.php", "Preferences", "Anonymous", "View Preferences");
-$default->siteMap->addPage("editPreferences", "/preferences.php", "Preferences", "Anonymous", "Edit Preferences");
+$default->siteMap->addDefaultPage("preferences", "/preferences.php", "Preferences", A, "Preferences");
+$default->siteMap->addPage("viewPreferences", "/preferences.php", "Preferences", A, "View Preferences");
+$default->siteMap->addPage("editPreferences", "/preferences.php", "Preferences", A, "Edit Preferences");
 
 // pages for Help section
-$default->siteMap->addDefaultPage("help", "/help.php", "Help", "Anonymous", "Help");
+$default->siteMap->addDefaultPage("help", "/help.php", "Help", A, "Help");
 
 // pages for logout section section
-$default->siteMap->addDefaultPage("logout", "/presentation/logout.php", "Logout", "Anonymous", "Logout");
+$default->siteMap->addDefaultPage("logout", "/presentation/logout.php", "Logout", A, "Logout");
 
 // test pages
-$default->siteMap->addPage("scratchPad", "/tests/scratchPad.php", "Tests", "Anonymous", "scratch");
-$default->siteMap->addPage("sitemap", "/tests/session/SiteMap.php", "Tests", "Anonymous", "sitemap");
-$default->siteMap->addPage("documentBrowserTest", "/tests/documentmanagement/DocumentBrowser.php", "Tests", "Anonymous", "test the document browser");
+$default->siteMap->addPage("scratchPad", "/tests/scratchPad.php", "Tests", A, "scratch");
+$default->siteMap->addPage("sitemap", "/tests/session/SiteMap.php", "Tests", A, "sitemap");
+$default->siteMap->addPage("documentBrowserTest", "/tests/documentmanagement/DocumentBrowser.php", "Tests", A, "test the document browser");
 
 // default requires
 require_once("$default->owl_fs_root/lib/session/Session.inc");
