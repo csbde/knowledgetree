@@ -235,7 +235,11 @@ function getAssignButton($oGroup) {
 // show button after group selected
 function getCancelButton($oGroup) {
     global $default;
-    return "<td align = right><a href=\"$default->rootUrl/control.php?action=listGroups\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" /></a></td>\n";    
+	if ($oGroup){
+    	return "<td align = right><a href=\"$default->rootUrl/control.php?action=editGroupUnit&fGroupID=" . $oGroup->getID() . "\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" /></a></td>\n";    
+	} else {
+		return "<td align = right><a href=\"$default->rootUrl/control.php?action=listGroups\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" /></a></td>\n";
+	}
 }
 
 
