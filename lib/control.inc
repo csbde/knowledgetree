@@ -5,17 +5,17 @@
  *
  * Contains the controller helper functions
  *
- * Copyright (c) 1999-2002 The Owl Project Team
  * Licensed under the GNU GPL. For full terms see the file COPYING.
+ *
  * @version $Revision$
- * @author <a href="mailto:michael@jamwarehouse.com">Michael Joseph</a>, Jam Warehouse (Pty) Ltd, South Africa
- * @package dmslib
+ * @author Michael Joseph <michael@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
+ * @package lib.session
  */
  
 /**
  * Redirects to the specified URL
  *
- * @param $url  the URL to forward to
+ * @param string the URL to forward to
  */
 function redirect($url) {
     // everything is relative to the root url
@@ -27,8 +27,8 @@ function redirect($url) {
  * Performs a redirect through the controller.
  * Takes a controller action and queryString and builds url.
  *
- * @param $action the controller action
- * @param $queryString additional querystring vars
+ * @param string the controller action
+ * @param string additional querystring vars
  */
 function controllerRedirect($action, $queryString) {
     // generate url
@@ -42,9 +42,8 @@ function controllerRedirect($action, $queryString) {
 /**
  * Returns a controller url.
  *
- * @param $action  the controller action to generate a url for
- *
- * @return the controller url
+ * @param string the controller action to generate a url for
+ * @return string the controller url
  */
 function generateControllerUrl($action) {
     return "/control.php?action=$action";
@@ -53,41 +52,62 @@ function generateControllerUrl($action) {
 /**
  * Generates a link via the control page, with the passed action
  *
- * @param $action
- *        the controller action to generate a link for
- * @return the generated href
+ * @param string the controller action to generate a link for
+ * @return string the generated href
  */
 function generateLink($action) {
     return "<a href=\"" . generateControllerUrl($action) . "\">";
 }
 
 /**
- * Verifies the current session
- * Automatically redirects to
- */
-function checkSession() {
+ * Checks the current session and redirects to the login page
+ * if the redirect parameter is true.
+ *
+ * @param boolean whether to automatically redirect to the login page on session verification failure
+ */ 
+function checkSessionAndRedirect($bRedirect) {
     global $default;
     
     $session = new Session();
     $sessionStatus = $session->verify();
     
     if ($sessionStatus != 1) {
-        // verification failed, redirect to login with error message
-        $default->log->debug("checkSession:: session check failed");
-        $url = $default->owl_root_url . "/login.php?loginAction=loginForm";
-        
-        $redirect = $_SERVER[PHP_SELF];
-        if ((strlen($redirect) > 1) && ($redirect != "/control.php")) {
-            $default->log->debug("checkSession:: redirect url=$redirect");
-            // this session verification failure represents either the first visit to 
-            // the site OR a session timeout etc. (in which case we still want to bounce
-            // the user to the login page, and then back to whatever page they're on now)
-            $url = $url . "&redirect=" . $redirect;
+        if ($bRedirect) {
+            // verification failed, redirect to login with error message
+            $default->log->debug("checkSession:: session check failed");
+            $url = $default->owl_root_url . "/login.php?loginAction=loginForm";
+            
+            $redirect = $_SERVER[PHP_SELF];
+            if ((strlen($redirect) > 1) && ($redirect != "/control.php")) {
+                $default->log->debug("checkSession:: redirect url=$redirect");
+                // this session verification failure represents either the first visit to 
+                // the site OR a session timeout etc. (in which case we still want to bounce
+                // the user to the login page, and then back to whatever page they're on now)
+                $url = $url . "&redirect=" . $redirect;
+            }
+            $default->log->debug("checkSession:: about to redirect to $url");
+            redirect($url);
+        } else {
+            return false;
         }
-        $default->log->debug("checkSession:: about to redirect to $url");
-        redirect($url);
     } else {
         $default->log->debug("checkSession:: returning true");
         return true;
+    }    
+}
+
+/**
+ * Verifies the current session
+ * Automatically redirects to the login page on session verification failure
+ */
+function checkSession() {
+    if (checkSessionAndRedirect(true)) {
+        // the session is cool, now check if we access to this page
+        if ($_SESSION["pageAccess"][basename($_SERVER['SCRIPT_FILENAME'])]) {
+            return true;
+        } else {
+            return false;
+        }
     }
+    // if the check session fails, we'll be redirected to the login page
 }
