@@ -29,7 +29,7 @@ define("ERROR", 2);
  * @author Michael Joseph <michael@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
  * @package lib
  */ 
-class Log {
+class KTLegacyLog {
     /**
      * The minimum logging level- log everything with
      * this error level and higher
@@ -53,7 +53,7 @@ class Log {
      * @param int the desired level to log at
      * @param string log file name prefix     
      */
-    function Log($logDirectory, $logLevel = INFO, $sLogFilePrefix = "log") {
+    function KTLegacyLog($logDirectory, $logLevel = INFO, $sLogFilePrefix = "log") {
         $this->logDirectory = $logDirectory;
         $this->minimumLoggingLevel = $logLevel;
         $this->sLogFilePrefix = $sLogFilePrefix;
