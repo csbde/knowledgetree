@@ -12,6 +12,42 @@
  * @package presentation.lookAndFeel.knowledgeTree.subscriptions
  */
  
+
+/**
+ * Displays all current subscriptions with remove checkbox
+ */
+function renderManageSubscriptions() {
+    global $default;
+    
+    // retrieve subscriptions for this user
+    $aSubscriptionList = SubscriptionManager::listSubscriptions($_SESSION["userID"]);
+    
+	$sToRender  = "<table>\n";
+    // loop through them    
+    for ($i = 0; $i < count($aSubscriptionList); $i++) {
+        $sToRender .= "\t<tr>\n";
+        $sToRender .= "\t\t<td>\n";
+        $sToRender .= "<input type=\"checkbox\" name=\"fSubscriptionID\" value=\"" . $aSubscriptionList[$i]->getID() . "\"/>\n";        
+        if ($aSubscriptionList[$i]->getIsAlerted()) {
+            $sToRender .= $aSubscriptionList[$i]->getAlertLink() . "\n";
+        } else {
+            $sToRender .= $aSubscriptionList[$i]->getContentLink() . "\n";
+        }
+        $sToRender .= "\t\t</td>\n";
+        $sToRender .= "\t</tr>\n";
+    }
+
+    $sToRender .= "<tr><td><a href=\"$default->rootUrl/control.php?action=removeSubscription&$sContentUrl&fConfirmed=1\"><img src =\"$default->graphicsUrl/widgets/unsubscribe.gif\" border=\"0\"/></a>\n";
+	$sToRender .= "<a href=\"\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></a></td>\n";
+	$sToRender .= "</tr>\n";
+    
+    //$sToRender .= "<tr><td><a href=\"$default->rootUrl/control.php?action=removeSubscription&fRemoveMultiple=1\"><img src=\"$default->graphicsUrl/widgets/unsubscribe.gif\" border=\"0\"/></a></td></tr>\n";
+	//$sToRender .= "<a href=\"" . $oSubscription->getContentUrl() . "\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></a></td>\n";    
+    $sToRender .= "</table>\n";
+    
+    return $sToRender;
+}
+
  /**
  * Confirms the users subscription deletion
  *
