@@ -103,9 +103,13 @@ if (checkSession()) {
 				break;
 			} 
 		} else if (strlen($fFolderID) > 0) {
-			//the user was browsing a folder, search that folder			
-			//var_dump(Folder::getChildren($fFolderID));
-			echo count(Folder::getChildren($fFolderID));
+			//the user was browsing a folder, search that folder
+			$sFolderString = getFolderString($fFolderID);
+			require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
+			$oPatternCustom = & new PatternCustom();            
+            $oPatternCustom->setHtml(getPage($fStandardSearchString, $fBrowseType, $fFolderID, $fDocumentID, $fCategoryName, $fDocType, $sFolderString, $fStartIndex, $fStandardSearchString));
+            $main->setCentralPayload($oPatternCustom);
+            $main->render();
 			
 		} else  if (strlen($fDocumentID) > 0) {
 			//the user was viewing a document, search in that document's folder
