@@ -146,20 +146,20 @@ function getEditPage($oDocument) {
     $sToRender .= "\t\t<td>" . renderDocumentData($oDocument) . "</td>\n";    
     $sToRender .= "\t</tr>\n";
 	$sToRender .= "\t<tr>\n";
-	$sToRender .= "<td><input type=\"image\" src=\"$default->graphicsUrl/widgets/edit.gif\" onClick=\"setActionAndSubmit('$default->rootUrl/control.php?action=modifyDocument&fDocumentID=$iDocumentID')\"border=\"0\"></td>\n";
+    $sToRender .= "<td><a href=\"$default->rootUrl/control.php?action=modifyDocument&fDocumentID=$iDocumentID\"><image src=\"$default->graphicsUrl/widgets/edit.gif\" \"border=\"0\"></td>\n";
 	$sToRender .= "\t</tr>\n";
     $sToRender .= "\t<tr>\n";
     $sToRender .= "\t<td>" . renderGenericMetaData($oDocument) . "</td>\n";
     $sToRender .= "\t</tr>\n";
 	$sToRender .= "\t<tr>\n";
-	$sToRender .= "<td><input type=\"image\" src=\"$default->graphicsUrl/widgets/edit.gif\" onClick=\"setActionAndSubmit('$default->rootUrl/control.php?action=modifyDocumentGenericMetaData&fDocumentID=$iDocumentID')\"border=\"0\"></td>\n";
+    $sToRender .= "<td><a href=\"$default->rootUrl/control.php?action=modifyDocumentGenericMetaData&fDocumentID=$iDocumentID\"><image src=\"$default->graphicsUrl/widgets/edit.gif\" \"border=\"0\"></td>\n";    
 	$sToRender .= "\t</tr>\n";
     $sToRender .= "\t<tr>\n";
     $sToRender .= "\t\t<td>" . renderTypeSpecificMetaData($oDocument) . "</td>\n";
     
     $sToRender .= "\t</tr>\n";
 	$sToRender .= "\t<tr>\n";
-	$sToRender .= "<td><input type=\"image\" src=\"$default->graphicsUrl/widgets/edit.gif\" onClick=\"setActionAndSubmit('$default->rootUrl/control.php?action=modifyDocumentTypeMetaData&fDocumentID=$iDocumentID')\"border=\"0\"></td>\n";
+    $sToRender .= "<td><a href=\"$default->rootUrl/control.php?action=modifyDocumentTypeMetaData&fDocumentID=$iDocumentID\"><image src=\"$default->graphicsUrl/widgets/edit.gif\" \"border=\"0\"></td>\n";
 	$sToRender .= "\t</tr>\n";
     $sToRender .= "\t</table>\n";
     $sToRender .= "</td>\n";
