@@ -47,7 +47,7 @@ function displayCategoryPathLink($aCategories) {
         return displayCategoryLink($aCategories[0]);
     } else {
         // else the first entry is the category name, so build a little path
-        return displayCategoryLink("Categories") . " > " . displayCategoryLink($aCategories[0]);
+        return displayCategoryLink("Categories") . ($aCategories[0] ? " > " . displayCategoryLink($aCategories[0]) : "");
     }                                              
 }
 
@@ -96,9 +96,12 @@ function renderCategoryResults($aResults) {
             $sToRender .= "</tr>\n";
         }
     } else {
-        // else the first entry is the category name, so display the documents in the category
-        // with full paths
-        $sToRender .= renderDocumentList($aResults, "This category contains no documents", "You don't have access to the documents in this category");
+    	if (count($aResults["categories"]) > 0) {
+	        // else the first entry is the category name, so display the documents in the category
+	        $sToRender .= renderDocumentList($aResults, "This category contains no documents", "You don't have access to the documents in this category");
+    	} else {
+    		$sToRender .= "<tr><td colspan=\"5\"><font color=\"red\">There is no Category Document Field- contact a System Administrator.</font></td></tr>";
+    	}
     }
     return $sToRender;
 }
@@ -161,7 +164,6 @@ function renderDocumentTypeResults($aResults) {
         }
     } else {
         // else the first entry is the document type name, so display the documents in the document type
-        // with full paths
         $sToRender .= renderDocumentList($aResults, "This document type contains no documents", "You don't have access to the documents in this document type");
     }
     return $sToRender;
