@@ -47,12 +47,13 @@ class Authenticator {
                         Session::removeStaleSessions($aUserDetails["userID"]);
 
                         // Check if Maxsessions has been reached
-                        // FIXME: make this check work before production install
-                        $maxSessions = lookupField($default->owl_users_table, "max_sessions", "id", $iUserID);
-                        $default->log->debug("maxsessions=$maxSessions for userID=$iUserID");
+                        $iMaxSessions = lookupField($default->owl_users_table, "max_sessions", "id", $iUserID);
+                        $default->log->debug("maxsessions=$iMaxSessions for userID=$iUserID");
                         $sql = $default->db;
-                        if ($sql->query("SELECT * FROM $default->owl_sessions_table WHERE user_id = '".$aUserDetails["user_id"]."'")) {
-                            if ($sql->num_rows() >= $maxSessions) {
+                        if ($sql->query("SELECT count(*) as count FROM $default->owl_sessions_table WHERE user_id = $iUserID")) {
+                            $sql->next_record();
+                            $default->log->debug("sess count=" . $sql->f("count"));
+                            if ($sql->f("count") >= $iMaxSessions) {
                                 // return too many sessions status code
                                 $aUserDetails["status"] = 3;
                             } else {
