@@ -31,15 +31,17 @@ function getDocumentListForFolder($fFolderID) {
 function getBrowsePage($fFolderID) {
 	$sToRender = "<table border=\"0\">\n";
 	$sToRender .= "<tr>\n";	
-	$sToRender .= "\t<td>" . renderFolderPath($fFolderID, "$default->uiDirectory/documentmanagement/management/addDocument.php") . "</td>\n";
+	$sToRender .= "\t<td>" . renderFolderPath($fFolderID, "/control.php?action=addDocument") . "</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
 	$sToRender .= "<table border=\"0\">\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "\t<td>" . renderFolderList($fFolderID, "control.php?action=addDocument") . "<td>\n";
+	$sToRender .= "\t<td>" . renderFolderList($fFolderID, "/control.php?action=addDocument") . "<td>\n";
 	$sToRender .= "</tr>\n";	
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>" . getDocumentListForFolder($fFolderID) . "</td>\n";
+    if (Permission::userHasFolderReadPermission($fFolderID)) {
+        $sToRender .= "<td>" . getDocumentListForFolder($fFolderID) . "</td>\n";
+    }
 	$sToRender .= "</tr>";
 	$sToRender .= "</table><br>\n";
 	return $sToRender;
@@ -65,7 +67,7 @@ function getBrowseAddPage($fFolderID) {
 	$sToRender .= "</table>\n";    
 	$sToRender .= "<table border=\"0\" width=\"100%\">\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "\t<td>" . renderFolderList($fFolderID, "control.php?action=addDocument") . "<td>\n";
+	$sToRender .= "\t<td>" . renderFolderList($fFolderID, "/control.php?action=addDocument") . "<td>\n";
 	$sToRender .= "</tr>\n";	
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>" . getDocumentListForFolder($fFolderID) . "</td>\n";
