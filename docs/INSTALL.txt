@@ -74,9 +74,9 @@ In order to upgrade your KnowledgeTree installation, perform the following tasks
 - Run the appropriate database upgrade scripts against your database.  If you are upgrading more than one version, multiple 
   upgrade scripts will need to be executed.
   eg. if you're upgrading from version 1.1.2 to version 1.2.2, the following upgrade scripts need to be executed:
-  - sql/mysql/upgrade/1.2.0/1.2.0.sql
-  - sql/mysql/upgrade/1.2.1/1.2.1.sql
-  - sql/mysql/upgrade/1.2.2/1.2.2.sql
+  - sql/mysql/upgrade/1.1.2-to-1.2.0.sql
+  - sql/mysql/upgrade/1.2.0-to-1.2.1.sql
+  - sql/mysql/upgrade/1.2.1-to-1.2.2.sql
   
 -  Upgrade your application code, by unpacking the latest download into your webroot directory.
 
