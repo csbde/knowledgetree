@@ -504,7 +504,7 @@ INSERT INTO organisations_lookup (name) VALUES ("Medical Research Council");
 INSERT INTO units (name, organisation_id, parent_id) VALUES ("Administration Unit", 1, 0);
 
 INSERT INTO users (name, username, password, quota_max, quota_current, email, mobile, email_notification, sms_notification,ldap_dn, max_sessions) 
-            VALUES ("Administrator", "admin", "admin", "0", "0", "", "", 1, 1, "", 0);
+            VALUES ("Administrator", "admin", "admin", "0", "0", "", "", 1, 1, "", 1);
 INSERT INTO users (name, username, password, quota_max, quota_current, email, mobile, email_notification, sms_notification,ldap_dn, max_sessions) 
             VALUES ("Anonymous", "guest", "guest", "0", "0", "", "", 0, 0, "", 19);
             
