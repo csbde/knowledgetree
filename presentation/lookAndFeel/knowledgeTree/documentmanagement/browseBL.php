@@ -29,8 +29,6 @@ require_once("$default->owl_ui_directory/foldermanagement/folderUI.inc");
  * fFolderID - the folder to browse [optional depending on fBrowseType]
  * fCategoryName - the category to browse [optional depending on fBrowseType]
  * fDocumentTypeID - the document type id to browse [optional depending on fBrowseType]
- * fSortBy - the document/folder criteria to sort the browse results by
- * fSortDirection - the direction that the sort should happen in (asc|desc)
  */
 
 // -------------------------------
@@ -40,7 +38,6 @@ require_once("$default->owl_ui_directory/foldermanagement/folderUI.inc");
 // only if we have a valid session
 if (checkSession()) {
     require_once("../../../webpageTemplate.inc");
-    $oContent = new PatternCustom();
     
     // retrieve variables
     if (!$fBrowseType) {
@@ -51,7 +48,7 @@ if (checkSession()) {
     
     // fire up the document browser 
     $oDocBrowser = new DocumentBrowser();
-    
+    // instantiate my content pattern
     $oContent = new PatternCustom();
 
     $oContent->addHtml(
@@ -59,8 +56,9 @@ if (checkSession()) {
                  // pending documents
                  startTableRowCell() .
                      startTable("0", "100%") .
-                         tableRow("left", "", tableData(browseTypeSelect($fBrowseType))));
-                         
+                         tableRow("left", "", tableData(browseTypeSelect($fBrowseType))) .
+                         tableRow("", "", tabledata("")) .
+                         tableRow("", "", tabledata("")));
     // instantiate data arrays
     $folders = NULL;
     $categories = NULL;
@@ -109,7 +107,7 @@ if (checkSession()) {
                             
                             // we have a list of categories
                             // so loop through them and display
-                            $oContent->addHtml(tableRow("", "", tableData("Categories")));
+                            $oContent->addHtml(tableRow("", "", tableCssData("Categories", "browseTypeSelect")));
                             
                             // empty row for spacing
                             $oContent->addHtml(tableRow("", "", tableData("&nbsp;")));
@@ -142,7 +140,7 @@ if (checkSession()) {
                             
                             // we have a list of document types
                             // so loop through them and display
-                            $oContent->addHtml(tableRow("", "", tableData("Document Types")));
+                            $oContent->addHtml(tableRow("", "", tableCssData("Document Types", "browseTypeSelect")));
                             
                             // empty row for spacing
                             $oContent->addHtml(tableRow("", "", tableData("&nbsp;")));
