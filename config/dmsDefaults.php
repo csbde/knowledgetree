@@ -221,7 +221,7 @@ $default->siteMap->addPage("viewPreferences", "/preferences.php", "Preferences",
 $default->siteMap->addPage("editPreferences", "/preferences.php", "Preferences", User, "Edit Preferences", false);
 
 // pages for Help section
-$default->siteMap->addDefaultPage("help", "/presentation/lookAndFeel/knowledgeTree/Help/emailHelp.php", "Help", Guest, "Help");
+$default->siteMap->addDefaultPage("help", "/presentation/lookAndFeel/knowledgeTree/help.php", "Help", Guest, "Help");
 
 // pages for logout section section
 $default->siteMap->addDefaultPage("logout", "/presentation/logout.php", "Logout", Guest, "Logout");
@@ -247,10 +247,6 @@ $default->phpSniff = new phpSniff($_SERVER["HTTP_USER_AGENT"]);
 
 require_once("$default->fileSystemRoot/lib/Log.inc");
 $default->log = new Log($default->fileSystemRoot . "/log.txt", INFO);
-
-for ($i=0; $i<count($aSettings); $i++) {
-    $default->log->debug($aSettings[$i] . "=" . $default->$aSettings[$i]);
-}
 
 // import request variables and setup language
 require_once("$default->fileSystemRoot/lib/dms.inc");
