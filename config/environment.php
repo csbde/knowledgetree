@@ -15,6 +15,14 @@ $default->dbPass           = "djw9281js";
 $default->dbHost           = "localhost";
 $default->dbName           = "dms";
 
+// Change this to reflect the database you are using
+//require("$default->fileSystemRoot/phplib/db_pgsql.inc");
+require_once("$default->fileSystemRoot/phplib/db_mysql.inc");
+
+// single db instantiation
+require_once("$default->fileSystemRoot/lib/database/db.inc");
+$default->db = new Database();
+
 // install path
 $default->fileSystemRoot  = "/usr/local/www/owl/dms";
 
@@ -26,8 +34,8 @@ $default->system = new System();
 if ($default->system->initialised()) {
     $aSettings = array("ldapServer", "ldapRootDn", "emailServer", "emailFrom", "emailFromName",
                        "serverName", "fileSystemRoot", "documentRoot", "languageDirectory",
-                       "uiDirectory", "rootUrl", "graphicsUrl", "uiUrl", "useFS", "defaultLanguage");
-
+                       "uiDirectory", "rootUrl", "graphicsUrl", "uiUrl", "useFS", "defaultLanguage",
+                       "sessionTimeout", "sslEnabled");    
     
     for ($i=0; $i<count($aSettings); $i++) {
         $default->$aSettings[$i] = $default->system->get($aSettings[$i]);
