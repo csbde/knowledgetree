@@ -1,7 +1,14 @@
 Version 1.2.0
 * Mon Jul 28 2003 Michael Joseph <michael@jamwarehouse.com> 
-- TODO: compare with branch
-- Administration changes- 
+- Administration menu simplification and consistency.
+- Segmented configuration files for ease of maintenance.
+- Updated install documentation.
+- Archiving- add the ability to search for archived documents and request their restoration.
+- Document Details and Folder Properties- updated display- javascript content swapping.
+- Improved display of Document actions- disabled buttons when action not available.
+- Deletion of documents is now soft, additional Administration option to expunge/restore deleted documents.
+- Administration - Cancel document checkout status functionality added.
+- Additional online help files.
 
 Version 1.1.2 
 * Mon Jul 28 2003 Michael Joseph <michael@jamwarehouse.com> 
