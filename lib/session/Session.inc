@@ -141,8 +141,14 @@ class Session {
                             }
                             
                             // update last used timestamp
-                            $sql->query("UPDATE $default->sessions_table SET lastused = '" . getCurrentDateTime() ."' " .
-                                        "WHERE user_id = $iUserID AND session_id = '$sessionID'");
+                            $aFV = array(
+                                'lastused' => getCurrentDateTime(),
+                            );
+                            $aWFV = array(
+                                'user_id' => $iUserID,
+                                'session_id' => $sessionID,
+                            );
+                            $res = DBUtil::whereUpdate($default->sessions_table, $aFV, $aWFV);
                             // add the array to the session
                             $_SESSION["sessionStatus"] = $sessionStatus;
                         } else {
