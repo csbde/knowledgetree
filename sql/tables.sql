@@ -998,5 +998,9 @@ INSERT INTO help VALUES (56,'removeWebSite','removeWebSiteHelp.html');
 INSERT INTO help VALUES (57,'standardSearch','standardSearchHelp.html');
 INSERT INTO help VALUES (58,'modifyDocumentTypeMetaData','modifyDocumentTypeMetaDataHelp.html');
 INSERT INTO help VALUES (59,'addDocField','addDocFieldHelp.html');
-
+INSERT INTO help VALUES (60,'editDocField','editDocFieldHelp.html');
+INSERT INTO help VALUES (61,'removeDocField','removeDocFieldHelp.html');
+INSERT INTO help VALUES (62,'addMetaData','addMetaDataHelp.html');
+INSERT INTO help VALUES (63,'editMetaData','editMetaDataHelp.html');
+INSERT INTO help VALUES (64,'removeMetaData','removeMetaDataHelp.html');
 
