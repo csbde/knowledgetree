@@ -61,8 +61,11 @@ class FolderBrowser extends Browser {
         if ($iFolderID == "") {
             // no folder specified, so start at the root folder
                         
+            //TO DO: Need to look up all the Units           
             // look up this users unit
             $unitID = User::getUnitID($_SESSION["userID"]);
+           
+           $default->log->debug("Users UNIT = " . $unitID  ); 
             
             if ($unitID) {
                 // if the user is in a unit, start at the unit's root folder
@@ -76,12 +79,16 @@ class FolderBrowser extends Browser {
                
                 // now lookup the folderID
                 $aFolders = Folder::getList("name='$unitRootFolderName' and parent_id=1");
+               
+                $default->log->debug("Users UNIT Name = " . $unitRootFolderName  ); 
                 
                 if (!$aFolders) {
                     // no folder exists with this name, so start at the root
+                    $default->log->debug("Users UNIT Name NO FOLDER EXISTS WITH THIS NAME" . $unitRootFolderName  ); 
                     $iFolderID = lookupID($default->folders_table, "parent_id", 0);
                 } else {
                 	$iFolderID = $aFolders[0]->getID();
+                	$default->log->debug("FOLDER EXISTS WITH THIS NAME" . $unitRootFolderName  ); 
                 }
                 
             } else {
@@ -90,11 +97,16 @@ class FolderBrowser extends Browser {
                 $iFolderID = lookupID($default->folders_table, "parent_id", 0);
              }
         }
+        else
+        {
+         $default->log->debug("Folder specified " . $iFolderID );	
+        }
         
-        $default->log->debug("FolderBrowser::browseByFolder: folderID=$iFolderID");
+        $default->log->debug("FolderBrowser::browseByFolder: folderID=" . $iFolderID);
         
         // get the folder
-        $results["folders"][] = & Folder::get($iFolderID);
+        $rootFolder = Folder::get($iFolderID);
+        $results["folders"][] = & $rootFolder;
         if ($results["folders"][0]) {
             
             // now find all the child folders relative to this one 
@@ -103,6 +115,7 @@ class FolderBrowser extends Browser {
             $aLookupCriteria = $this->aSortCriteria[$this->sSortField]["lookup"];
                         
             // if we're sorting by name or creator_id then sort folders in the appropriate direction
+           
             $sFolderQuery = "SELECT f.id FROM $default->folders_table AS f ";
 			if (in_array($this->sSortField, array("name", "creator_id"))) {             
 	            if (isset($aLookupCriteria)) {
@@ -114,13 +127,34 @@ class FolderBrowser extends Browser {
 			} else {
 				$sFolderQuery .= "WHERE parent_id=$iFolderID ORDER BY f.name asc";
 			}
-			$default->log->debug("folderQuery = $sFolderQuery");
+			$default->log->debug("Ordering folderQuery = $sFolderQuery");
+           
             if ($sql->query($sFolderQuery)) {
                 while ($sql->next_record()) {
-                    // add the child folders to the array
-                    $results["folders"][] = & Folder::get($sql->f("id"));
+                  $default->log->debug("In folder iteration while, with folder_id " . $sql->f("id"));
+                  // check whether to display folders which are not readable and display/hide these accordingly
+                  	$oFolder = Folder::get($sql->f("id"));
+                  	if ($default->folderHidingFlag) 
+                  	{
+                  		if (Permission::userHasFolderReadPermission($oFolder))
+                  		{
+                  			$default->log->debug("FOLDER PERMISSIONS: Does  have permission for folder " . $oFolder->getID() . ":" . $sql->f("id") );
+                    		$results["folders"][] =  $oFolder;
+                  		}
+                  		else
+                  		{
+                  			$default->log->debug("FOLDER PERMISSIONS: Does  NOT have permission for folder " . $sql->f("id") );
+                  		}
+                  	}
+                  	else 
+                  	{
+                  	 $results["folders"][] =  $oFolder;
+                  	}   
+             
                 }
             }
+            
+            $default->log->debug("Going on to document checking");
             
             // create query to retrieve documents in this folder
             $documentQuery  = "SELECT d.id as id FROM $default->documents_table AS d ";
@@ -139,12 +173,17 @@ class FolderBrowser extends Browser {
             // initialise access flag;
             $results["accessDenied"] = false;
             if ($sql->query($documentQuery)) {
+            	
+            	// do the check for whether this documents have folder read permission, if they do, it's all good. 
+            	$hasFolderRead = Permission::userHasFolderReadPermission($rootFolder);
+            	
                 while ($sql->next_record()) {
+                	$oDocument = & Document::get($sql->f("id"));
                     // check permissions
-                    if (Permission::userHasDocumentReadPermission($sql->f("id"))) {
+                    if ($hasFolderRead || Permission::userHasDocumentReadPermission($oDocument)) {
                         // add documents to array
                         // set file attributes
-                        $oDocument = & Document::get($sql->f("id"));
+                        //$oDocument = & Document::get($sql->f("id"));
                         if ($oDocument->isLive()) {
                         	$results["documents"][] = $oDocument;
                         } 
@@ -157,6 +196,7 @@ class FolderBrowser extends Browser {
                 $_SESSION["errorMessage"] = "documents table select failed";
             }
             
+            $default->log->debug("Finished Documment permission checking I think ... end of browswe anyhow");
             return $results;
         }
     }
