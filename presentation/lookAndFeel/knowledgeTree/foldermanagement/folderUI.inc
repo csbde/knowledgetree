@@ -20,23 +20,23 @@
  * @param string the page to link to (defaults to the page this is called from)
  */
 function displayFolderPathLink($aPathArray, $sLinkPage = "") {
-    global $default;	
-   if (strlen($sLinkPage) == 0) {
-       $sLinkPage = $_SERVER["PHP_SELF"];
-   }
-   $default->log->debug("displayFolderPathLink: slinkPage=$sLinkPage");
-   // display a separate link to each folder in the path
-   for ($i=0; $i<count($aPathArray); $i++) {
-       $iFolderID = $aPathArray[$i];
-       // retrieve the folder name for this folder       
-       $sFolderName = Folder::getFolderName($iFolderID);
-       // generate a link back to this page setting fFolderID
-       $sLink = generateLink($sLinkPage,
-                            "fBrowseType=folder&fFolderID=$iFolderID", 
-                             $sFolderName);
-       $sPathLinks = (strlen($sPathLinks) > 0) ? $sPathLinks . " > " . $sLink : $sLink; 
-   }
-   return $sPathLinks;
+    global $default;
+    if (strlen($sLinkPage) == 0) {
+        $sLinkPage = $_SERVER["PHP_SELF"];
+    }
+    $default->log->debug("displayFolderPathLink: slinkPage=$sLinkPage");
+    // display a separate link to each folder in the path
+    for ($i=0; $i<count($aPathArray); $i++) {
+        $iFolderID = $aPathArray[$i];
+        // retrieve the folder name for this folder
+        $sFolderName = Folder::getFolderName($iFolderID);
+        // generate a link back to this page setting fFolderID
+        $sLink = generateLink($sLinkPage,
+                              "fBrowseType=folder&fFolderID=$iFolderID",
+                              $sFolderName);
+        $sPathLinks = (strlen($sPathLinks) > 0) ? $sPathLinks . " > " . $sLink : $sLink;
+    }
+    return $sPathLinks;
 }
 
 
@@ -48,9 +48,9 @@ function displayFolderPathLink($aPathArray, $sLinkPage = "") {
  */
 function displayFolderLink($oFolder, $sLinkPage = "") {
     global $default;
-    
+
     if (strlen($sLinkPage) == 0) {
-       $sLinkPage = $_SERVER["PHP_SELF"];
+        $sLinkPage = $_SERVER["PHP_SELF"];
     }
 
     $sFolderIconPath = generateImage($default->owl_graphics_url . "/widgets/dfolder.gif");
@@ -60,9 +60,9 @@ function displayFolderLink($oFolder, $sLinkPage = "") {
                         $oFolder->getName());
 }
 
-function renderFolderPath($fFolderID, $sLinkURL) {	
-	$sFolderPath = displayFolderPathLink(Folder::getFolderPathAsArray($fFolderID, $sLinkURL));
-	return "<table border=1 width = 100%><tr><td>$sFolderPath</td></tr></table>\n";	
+function renderFolderPath($fFolderID, $sLinkURL) {
+    $sFolderPath = displayFolderPathLink(Folder::getFolderPathAsArray($fFolderID, $sLinkURL));
+    return "<table border=1 width = 100%><tr><td>$sFolderPath</td></tr></table>\n";
 }
 
 /**
@@ -73,25 +73,22 @@ function renderFolderPath($fFolderID, $sLinkURL) {
 * @return String HTML table
 */
 function renderFolderList($fFolderID, $sLinkURL) {
-	global $default;
-	$sQuery = "SELECT F.id AS id, F.name AS name " .
-				"FROM $default->owl_folders_table AS F " .
-				"WHERE F.parent_id = " . $fFolderID . " " .
-				"ORDER BY F.name ASC";
-	
-	$aColumns = array("name");
-	$aColumnTypes = array(3);
-	$aColumnHeaderNames = array("Folder");
-	$aDBColumns = array("id");
-	$aQueryStringVariableNames = array("fFolderID");	
-	$aLinkURLs = array("$default->owl_root_url/$sLinkURL");	
+    global $default;
+    $sQuery = "SELECT F.id AS id, F.name AS name " .
+              "FROM $default->owl_folders_table AS F " .
+              "WHERE F.parent_id = " . $fFolderID . " " .
+              "ORDER BY F.name ASC";
 
-	$oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaderNames, "100%", $aLinkURLs, $aDBColumns, $aQueryStringVariableNames);
-	$oPatternTableSqlQuery->setImageURL("$default->owl_graphics_url/widgets/dfolder.gif");
-	$oPatternTableSqlQuery->setEmptyTableMessage("This folder contains no sub folders");
-	return $oPatternTableSqlQuery->render();
+    $aColumns = array("name");
+    $aColumnTypes = array(3);
+    $aColumnHeaderNames = array("Folder");
+    $aDBColumns = array("id");
+    $aQueryStringVariableNames = array("fFolderID");
+    $aLinkURLs = array("$default->owl_root_url/$sLinkURL");
+
+    $oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaderNames, "100%", $aLinkURLs, $aDBColumns, $aQueryStringVariableNames);
+    $oPatternTableSqlQuery->setImageURL("$default->owl_graphics_url/widgets/dfolder.gif");
+    $oPatternTableSqlQuery->setEmptyTableMessage("This folder contains no sub folders");
+    return $oPatternTableSqlQuery->render();
 }
-
-
-
 ?>
