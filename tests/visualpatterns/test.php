@@ -1,11 +1,5 @@
 <?php
-require_once ("./config/dmsDefaults.php");
-require_once ("./lib/owl.lib.php");
-require_once ("./lib/documentmanagement/documentManager.inc");
 
-echo DocumentManager::createDocumentType("bobby");
-/*
-//---------------------------------------------------------
 require_once ("./lib/visualpatterns/PatternMainPage.inc");
 require_once ("./lib/visualpatterns/PatternImage.inc");
 require_once ("./lib/visualpatterns/PatternTableLinks.inc");
@@ -38,5 +32,5 @@ $tmp->setNorthPayload($oPatternTableLinks);
 $tmp->setCentralPayload($oTableSqlQuery);
 $tmp->setFormAction("Navigate.inc");
 $tmp->render();
-*/
+
 ?>
