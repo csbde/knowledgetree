@@ -162,10 +162,14 @@ $default->siteMap->addPage("addDocument", "/presentation/lookAndFeel/knowledgeTr
 $default->siteMap->addPage("modifyDocumentRouting", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/collaborationBL.php", "Manage Documents", User, "");
 $default->siteMap->addPage("modifyDocument", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/modifyBL.php", "Manage Documents", User, "");
 $default->siteMap->addPage("addFolder", "/presentation/lookAndFeel/knowledgeTree/foldermanagement/addFolderBL.php", "Manage Documents", User, "Add A Folder");
-$default->siteMap->addPage("modifyFolderProperties", "/presentation/documentmanagement/modifyFolder.php", "Manage Documents", UnitAdmin, "Modify Folder Properties", false);
+$default->siteMap->addPage("editFolder", "/presentation/lookAndFeel/knowledgeTree/folderManagement/editBL.php", "Manage Documents", UnitAdmin, "Modify Folder Properties", false);
 $default->siteMap->addPage("deleteFolder", "/presentation/documentmanagement/deleteFolder.php?fFolderID=", "Manage Documents", UnitAdmin, "Delete A Folder", false);
 $default->siteMap->addPage("moveFolder", "/presentation/documentmanagement/moveFolder.php", "Manage Documents", UnitAdmin, "Move A Folder", false);
+$default->siteMap->addPage("modifyFolderCollaboration", "/presentation/lookAndFeel/knowledgeTree/foldermanagement/collaborationBL.php", "Manage Documents", User, "", false);
+$default->siteMap->addPage("addFolderCollaboration", "/presentation/lookAndFeel/knowledgeTree/folderManagement/addFolderCollaborationBL.php", "Manage Documents", User, "", false);
+$default->siteMap->addPage("deleteFolderCollaboration", "/presentation/lookAndFeel/knowledgeTree/folderManagement/deleteFolderCollaborationBL.php", "Manage Documents", User, "", false);
 $default->siteMap->addPage("emailDocument", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/emailBL.php", "Manage Documents", User, "Email A Document", false);
+
 
 // pages for administration section
 $default->siteMap->addDefaultPage("administration", "/admin.php", "Administration", UnitAdmin, "Administration", false);
