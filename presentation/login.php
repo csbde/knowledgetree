@@ -23,28 +23,30 @@ global $default;
 
 if ($loginAction == "loginForm") {
     // TODO: build login form using PatternMainPage
-    //include("./lib/header.inc");
-	print "<CENTER>";
-	print "<IMG SRC='$default->owl_root_url/locale/$default->owl_lang/graphics/$default->logo'>";
-    print "<BR><HR WIDTH=300>"; 
-	print "<FORM ACTION=\"login.php\" METHOD=\"POST\">";
-	
-    if (isset($fileid)) {
-        print "<INPUT TYPE=\"HIDDEN\" NAME=\"parent\" value=\"$parent\">";
-        print "<INPUT TYPE=\"HIDDEN\" NAME=\"fileid\" value=\"$fileid\">";
-    }
-    
-    print "<font color=\"red\">$errorMessage</font><br>";
-        
-	print "<TABLE><TR><TD>$lang_username:</TD><TD>
-           <INPUT TYPE=\"TEXT\" NAME=\"fUserName\"><BR></TD></TR>";
-	print "<TR><TD>$lang_password:</TD><TD>
-           <INPUT TYPE=\"PASSWORD\" NAME=\"fPassword\"><BR></TD></TR></TABLE>";
-    print "<input type=\"hidden\" name=\"redirect\" value=\"$redirect\"/>";
-	print "<INPUT TYPE=\"hidden\" name=\"loginAction\" value=\"login\">\n";    
-	print "<INPUT TYPE=\"SUBMIT\" Value=\"$lang_login\">\n";
-	print "<BR><BR><HR WIDTH=300>";
-    //include("./lib/footer.inc");
+    print "<html>
+           <head>
+           <link rel=\"stylesheet\" href=\"/presentation/lookAndFeel/knowledgeTree/stylesheet.css\" type=\"text/css\">
+           </head>
+           <body>
+           <center>
+           <img src=\"$default->owl_root_url/locale/$default->owl_lang/graphics/$default->logo\">
+           <br><br>
+           <table>\n
+           <form action=\"login.php\" method=\"post\">
+           <tr><td>Please enter your details below to login</P></td></tr>
+           <tr><td><font color=\"red\">$errorMessage</font><tr><td>
+           \t<tr><td>$lang_username:</td></tr>
+           \t<tr><td><input type=\"text\" name=\"fUserName\" size=\"35\"></td></tr>
+           \t<tr><td>$lang_password:</td></tr>
+           <tr><td><input type=\"password\" name=\"fPassword\" size=\"35\">
+           </td></tr>
+           <input type=\"hidden\" name=\"redirect\" value=\"$redirect\"/>
+           <input type=\"hidden\" name=\"loginAction\" value=\"login\">\n    
+           <tr align=\"right\"><td><input type=\"submit\" value=\"$lang_login\"></td></tr>\n
+           </table>
+           </center>
+           </body>
+           </html>";
     
 } elseif ($loginAction == "login") {
     // set default url for login failure
