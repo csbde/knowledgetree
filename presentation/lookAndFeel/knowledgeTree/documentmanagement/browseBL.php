@@ -58,7 +58,6 @@ if (checkSession()) {
     }
        
     // fire up the document browser 
-    //$oDocBrowser = new DocumentBrowser();
     $oBrowser = BrowserFactory::create($fBrowseType, $fSortBy, $fSortDirection);
     $sectionName = $oBrowser->getSectionName();
      
