@@ -207,14 +207,12 @@ class SiteMap {
             
             // need to loop through all (access, page) arrays in this section
             foreach ($this->aSiteMap[$sSectionName] as $requiredAccess => $pages) {
-                $default->log->debug("SiteMap::getSectionLinks section=$sSectionName, rq=$requiredAccess");//, pages=" . arrayToString($pages));
                 if ($this->hasPermission($requiredAccess)) {
                     foreach ($pages as $action => $pageDetail) {
                         // add this array to the resultset array if there is link text
-                        $default->log->debug("SiteMap::getSectionLinks page=" . arrayToString($pageDetail));
                         if ((strlen($pages[$action]["description"]) > 0) &&
                             ($pages[$action]["enabled"])) {
-                                $default->log->debug("SiteMap::getSectionLinks adding $action");
+
                             $results["descriptions"][] = $pages[$action]["description"];
                             // if fFolderID is set and fFolderID is in the page string
                             // append folderID to the controller link
