@@ -43,6 +43,10 @@ if (checkSession()) {
     echo "SiteMap::getActionFromPage(/presentation/lookAndFeel/knowledgeTree/documentmanagement/browseBL.php) = " . $default->siteMap->getActionFromPage("/presentation/lookAndFeel/knowledgeTree/documentmanagement/browseBL.php") . "<br>";
     echo "SiteMap::getActionFromPage(/presentation/documentmanagement/moveFolder.php) = " . $default->siteMap->getActionFromPage("/presentation/documentmanagement/moveFolder.php") . "<br>";    
 
+    // sync array to db
+    $default->siteMap->syncWithDB();
+    echo "SiteMap::syncWithDB just executed";
+    
     // DB
     $default->siteMap->setUseDB(true);
     echo "<br>---------------------------<br>";
