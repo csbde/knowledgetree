@@ -24,11 +24,18 @@ if (checkSession()) {
 	
 	$aDocumentDataArray;
 	settype($aDocumentDataArray, "array");
+	
+	$oDocument = & Document::get($fDocumentID);	
+	$oPatternCustom = & new PatternCustom();
+	$oPatternCustom->setHtml(renderPage($oDocument));
+	$main->setCentralPayload($oPatternCustom);
+	$main->setFormAction("../store.php");
+	$main->render();
 		
-	$oDocument = & Document::get($fDocumentID);
+	/*$oDocument = & Document::get($fDocumentID);
 	echo $sToRender = "<html><head></head><body><form method=\"POST\" action=\"../store.php\" >\n";
-	echo renderEditableGenericMetaData($oDocument);
-	echo "<input type=submit value=\"Submit\" /></form></body></html>";
+	echo ;
+	echo "<input type=submit value=\"Submit\" /></form></body></html>";*.
 	/*if (isset($fDocumentID)) {	
 		require_once("$default->owl_fs_root/lib/security/permission.inc");
 		require_once("$default->owl_fs_root/lib/documentmanagement/Document.inc");
