@@ -46,7 +46,8 @@ function controllerRedirect($action, $queryString) {
  * @return string the controller url
  */
 function generateControllerUrl($action) {
-    return "/control.php?action=$action";
+    global $default;
+    return $default->owl_root_url . "/control.php?action=$action";
 }
 
 /**
