@@ -316,6 +316,24 @@ class Folder {
     }
 	
 	/**
+	* Static function.
+	* Get the path for a folder that will be displated to the user
+	* 
+	* @param 	Primary key of folder to generate path for	
+	*
+	* @return String full path of folder
+	*/
+	function getFolderDisplayPath($iFolderID) {
+		global $default;		
+		//if the folder has a parent
+		if (Folder::getParentFolderID($iFolderID) != 0) {			
+			$sCurrentPath = " > " . Folder::getFolderPath(Folder::getParentFolderID($iFolderID), Folder::getFolderName($iFolderID)) . " > " . $sCurremtPath;
+		}
+		return Folder::getFolderName($iFolderID);
+		
+	}
+	
+	/**
 	* Static function
 	* Get the primary key of the parent folder
 	*
