@@ -36,7 +36,7 @@ class Permission {
     *   o have write permission for the folder in which the document resides
     *   o be assigned a role which has write permission for the document
     *
-    * @param $iDocumentID       Primary key of document to check
+    * @param $oDocument       Document to check
     *
     * @return boolean true if the current user has document write permission, false otherwise and set $_SESSION["errorMessage"]
     */  
@@ -44,7 +44,7 @@ class Permission {
         global $default;
         
         if ($oDocument == null) {
-            $default->log->info("Failed to retrieve document with ID $iDocumentID from database");
+            $default->log->info("Failed to retrieve document from database");
             return false;
         }
         if (Permission::userHasFolderWritePermission(Folder::get($oDocument->getFolderID())) ||
@@ -62,7 +62,7 @@ class Permission {
     *   o have read permission for the folder in which the document resides
     *   o be assigned a role which has read permission for the document
     *
-    * @param $iDocumentID       Primary key of document to check
+    * @param $oDocument       Document to check
     *
     * @return boolean true if the current user has document read permission, false otherwise and set $_SESSION["errorMessage"]
     */  
@@ -70,7 +70,7 @@ class Permission {
         global $default;
                 
         if ($oDocument == null) {
-            $default->log->info("Failed to retrieve document with ID " . $oDocument->getID() . " from database");
+            $default->log->info("Failed to retrieve document from database");
             return false;
         }
         if (Permission::userHasWriteRoleForDocument($oDocument) ||
