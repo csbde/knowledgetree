@@ -128,6 +128,11 @@ url CHAR(100) NOT NULL,
 rank INTEGER NOT NULL
 );
 
+CREATE TABLE language_lookup ( 
+id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
+name CHAR(100) NOT NULL
+);
+
 CREATE TABLE mime_types ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 filetypes CHAR(100) NOT NULL,
@@ -179,7 +184,7 @@ email_notification BOOL NOT NULL,
 sms_notification BOOL NOT NULL,
 ldap_dn CHAR(255),
 max_sessions INTEGER,
-language CHAR(100)
+language_id INTEGER
 ) 
 ;
 
@@ -275,6 +280,11 @@ PRIMARY KEY (id)
 
 ALTER TABLE groups_lookup 
 ADD CONSTRAINT PK_groups 
+PRIMARY KEY (id) 
+;
+
+ALTER TABLE language_lookup 
+ADD CONSTRAINT PK_language
 PRIMARY KEY (id) 
 ;
 
@@ -508,7 +518,7 @@ INSERT INTO users (name, username, password, quota_max, quota_current, email, mo
 INSERT INTO users (name, username, password, quota_max, quota_current, email, mobile, email_notification, sms_notification,ldap_dn, max_sessions) 
             VALUES ("Anonymous", "guest", "guest", "0", "0", "", "", 0, 0, "", 19);
             
-UPDATE users SET language = 'NewEnglish';
+--UPDATE users SET language = 'NewEnglish';
 UPDATE users SET password = '21232f297a57a5a743894a0e4a801fc3' WHERE name = "Administrator";
 UPDATE users SET password = '084e0343a0486ff05530df6c705c8bb4' WHERE name = "Anonymous";
 

@@ -13,6 +13,7 @@ DROP TABLE groups_folders_approval_link;
 DROP TABLE groups_folders_link;
 DROP TABLE groups_lookup;
 DROP TABLE groups_units_link;
+DROP TABLE language_lookup;
 DROP TABLE links;
 DROP TABLE mime_types;
 DROP TABLE organisations_lookup;
