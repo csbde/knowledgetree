@@ -34,7 +34,6 @@ class Authenticator {
             if ($userID) {
                 // add this to the return array
                 $userDetails["userID"] = $userID;
-                $default->log->info("Authenticator::login authenticated user, userDetails[userID]=" . $userDetails["userID"]);
                 // remove stale sessions from the database for the user
                 // that is signing on.
                 Session::removeStaleSessions($userDetails["userID"]);
