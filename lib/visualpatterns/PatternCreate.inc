@@ -22,7 +22,7 @@ class PatternCreate {
 	var $aDropDownListValueColumns;	
 	var $aDropDownListDisplayColumns;
 	var $sUniqueName;
-	
+    var $aDefaultValues;
 	
 	/**
 	* Default constructor
@@ -53,6 +53,10 @@ class PatternCreate {
 	function setUniqueName($sNewValue) {
 		$this->sUniqueName = $sNewValue;
 	}
+    
+    function setDefaultValues($aNewValue) {
+        $this->aDefaultValues = $aNewValue;
+    }
 	
 	function render() {
 		$sToRender = "<table border=\"0\">\n";
@@ -71,12 +75,7 @@ class PatternCreate {
 					//write the type (in this case text)
 					$sToRender .= "<input type=\"hidden\" name=\"" . $this->sUniqueName . "_" . $i . "_type\" value=\"1\" />\n";
 					//write the value
-					/*if ($this->aRequired[$i]) {						
-						$sToRender .= "<td>" . $this->aDisplayRowNames[$i] . "</td><td><input type=\"text\" name=" . $this->sUniqueName . "_" . $i . "_value value=\"\" onfocus=\"validRequired(" . $this->sUniqueName . "_" . $i . "_value, '" . $this->aDisplayRowNames[$i] . "')\" /></td>\n";
-					} else {
-						$sToRender .= "<td>" . $this->aDisplayRowNames[$i] . "</td><td><input type=\"text\" name=\"" . $this->sUniqueName . "_" . $i . "_value value=\"\" /></td>\n";						
-					}*/
-					$sToRender .= "<td>" . $this->aDisplayRowNames[$i] . "</td><td><input size = \"30\" type=\"text\" name=\"" . $this->sUniqueName . "_" . $i . "_value\" value=\"\" /></td>\n";
+					$sToRender .= "<td>" . $this->aDisplayRowNames[$i] . "</td><td><input size = \"30\" type=\"text\" name=\"" . $this->sUniqueName . "_" . $i . "_value\" value=\"" . (isset($this->aDefaultValues[$i]) ? $this->aDefaultValues[$i] : "") . "\" /></td>\n";
 					break;
 				case 2:
 					//write the type (in this case checkbox)
@@ -117,7 +116,6 @@ class PatternCreate {
 		$sToRender .= $this->generateRequiredFieldValidation();
 		
 		return $sToRender;
-		
 	}
 	
 	function generateRequiredFieldValidation() {
@@ -127,19 +125,12 @@ class PatternCreate {
 			if ($this->aRequired[$i]) {
 				$sToRender .= "\tif (!(validRequired(document.MainForm." . $this->sUniqueName . "_" . $i . "_value, '" . $this->aDisplayRowNames[$i] . "'))) {\n";
 				$sToRender .= "\t\treturn false;\n\t}\n";
-				//$sToRender .= "alert(\"You dumbass\");\n";
-				//$sToRender .= "alert(theForm." . $this->sUniqueName . "_" . $i . "_value);\n";
-				//$sToRender .= "validRequired(theForm." . $this->sUniqueName . "_" . $i . "_value, '" . $this->aDisplayRowNames[$i] . "');\n";
-				
 			}
 		}
 		$sToRender .= "return true;\n}\n";
-		
 		$sToRender .= "//-->\n</script>\n\n";
 		
 		return $sToRender;
-                
 	}
 }
-
 ?>
