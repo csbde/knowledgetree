@@ -87,6 +87,7 @@ function checkSessionAndRedirect($bRedirect) {
             }
             $default->log->debug("checkSession:: about to redirect to $url");
             redirect($url);
+            exit;
         } else {
             return false;
         }
