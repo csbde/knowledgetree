@@ -39,7 +39,11 @@ if ($default->system->initialised()) {
                        "sessionTimeout", "sslEnabled");    
     
     for ($i=0; $i<count($aSettings); $i++) {
-        $default->$aSettings[$i] = $default->system->get($aSettings[$i]);
+        if ($aSettings[$i] == "uMask") {
+            $default->$aSettings[$i] = $default->system->getInt($aSettings[$i]);
+        } else {
+            $default->$aSettings[$i] = $default->system->get($aSettings[$i]);
+        }
     }
 } else {
     // TODO: redirect to system setup form
