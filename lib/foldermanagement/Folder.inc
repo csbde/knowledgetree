@@ -240,14 +240,11 @@ class Folder {
 	*
 	* @return boolean true on successful update, false otherwise and set $_SESSION["errorMessage"]
 	*/
-	function update($bPathChange) {
+	function update($bPathChange = false) {
 		global $default, $lang_err_database, $lang_err_object_key;
 		//can only update the object if it has already been stored
 		$sOldPath;
-		if ($this->iId >= 0) {
-			if ($bPathChange){
-				$sOldPath = $default->documentRoot . "/" . $this->sFullPath . "/" . $this->sName;
-			}
+		if ($this->iId >= 0) {			
 			$sql = $default->db;
 			$sQuery = "UPDATE " . $default->owl_folders_table . " SET " .
 							"name = '" . addslashes($this->sName) . "', " .
@@ -266,12 +263,8 @@ class Folder {
 							$sQuery .= "is_public = " . ($this->bIsPublic ? 1 : 0) . " " .
 										"WHERE id = " . $this->iId;
 			$result = $sql->query($sQuery);
-			if ($result) {
-				if ($bPathChange) {
-					//must update all the children paths
-					$this->updateChildPaths($this->iId, $sql);
-					$this->renameFolder($sOldPath);
-				}
+			if ($result) {				
+				$this->updateChildPaths($this->iId, $sql);
 				return true;
 			}
 			$_SESSION["errorMessage"] = $lang_err_database;
@@ -606,6 +599,25 @@ class Folder {
 		global $default;
 		$sql = $default->db;
 		$sql->query("SELECT id FROM $default->owl_folder_doctypes_table WHERE document_type_id = $iDocTypeID and folder_id = $iFolderID");
+		if ($sql->next_record()) {
+			return true;
+		}
+		return false;
+	}
+	
+	
+	/**
+	* Checks if a folder is a unit's root folder.
+	* A folder is assumed to be a unit's root folder if it has the
+	* same name as a unit
+	* 
+	*/
+	function folderIsUnitRootFolder($iFolderID) {
+		global $default;
+		$sQuery ="SELECT F.id FROM $default->owl_folders_table AS F INNER JOIN $default->owl_units_table AS U ON F.name LIKE U.name WHERE F.id = $iFolderID";
+		
+		$sql = $default->db;
+		$sql->query($sQuery);
 		if ($sql->next_record()) {
 			return true;
 		}
