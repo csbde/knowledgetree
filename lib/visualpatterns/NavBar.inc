@@ -30,6 +30,7 @@ class NavBar {
     var $help;
     var $logout;
     var $nwColourbar;
+	var $sSection;
 
     /**  variables used for searching */
     var $sBrowseType;
@@ -78,6 +79,7 @@ class NavBar {
     */
     function setHighlightedSection($section) {
         global $default;
+		$this->sSection = $section;
 
         // check for highlighting..and highlight as required
         if($section == "General") {
@@ -94,8 +96,8 @@ class NavBar {
             $this->subscriptions = "$default->graphicsUrl/subscriptions/over.gif";
             $this->nwColourBar = "$default->graphicsUrl/subscriptions/def.gif";
         }
-
-        if($section == "Advanced Search") {
+		
+        if(($section == "Standard Search") || ($section == "Advanced Search")) {			
             $this->asearch = "$default->graphicsUrl/asearch/over.gif";
             $this->nwColourBar = "$default->graphicsUrl/asearch/def.gif";
         }
@@ -121,6 +123,7 @@ class NavBar {
             $this->logout = "$default->graphicsUrl/logout/over.gif";
             $this->nwColourBar = "$default->graphicsUrl/logout/def.gif";
         }
+		
     }
 
 
@@ -199,7 +202,7 @@ class NavBar {
         //array of coloured section images
         $row4 = $oColourTableLinks->render();
 
-        $toRender = new PatternCustom;
+        $toRender = new PatternCustom;		
 
         //bar is the actaul html creation of the nav bar
         $bar= "
@@ -208,19 +211,24 @@ class NavBar {
               "<tr  height=\"30%\"> <td VALIGN = \"absmiddle\" background = " . $hStretched ." width =\"100%\" NOWRAP >\n " .
               "<img align = \"absmiddle\" src = \"$default->graphicsUrl/arrow.gif\" ></img>\n " .
               "<img align = \"absmiddle\" src = \"$default->graphicsUrl/arrow.gif\" ></img>\n " .
-			  "<INPUT type=\"hidden\" name=\"fForStandardSearch\" value=\"no\" />\n " .
-              "<INPUT type=\"text\" name=\"fSearchText\" width=\"30\" height = \"10\" align = \"absmiddle\" />\n " .
-			  "<INPUT type=\"hidden\" name=\"fBrowseType\" value=\"" . $this->sBrowseType . "\"  />\n " .
-			  "<INPUT type=\"hidden\" name=\"fFolderID\"  value=\"" . $this->iFolderID . "\"  />\n " .
-			  "<INPUT type=\"hidden\" name=\"fDocumentID\" value=\"" . $this->iDocumentID . "\"  />\n " .
-			  "<INPUT type=\"hidden\" name=\"fCategoryName\" value=\"" . $this->sCategoryName . "\"  />\n " .
-			  "<INPUT type=\"hidden\" name=\"fDocTypeID\"  value=\"" . $this->iDocTypeID . "\"  />\n " .
-              "<INPUT type=\"image\" onClick=\"setActionAndSubmitSearch('" . $default->rootUrl . "/control.php')\" src=\"$default->graphicsUrl/search.gif\" align = \"absmiddle\" border=\"0\" />\n " .
-              "</td>\n " .
-              "</tr>\n" .
-              "<tr height=\"25%\" ><td width =\"10%\">". $row3 . "</td></tr>\n" .
-              "<tr height=\"25%\"><td width =\"100%\">". $row4 . "</td></tr>\n" .
-              "</table>\n";
+			  "<INPUT type=\"hidden\" name=\"fForStandardSearch\" value=\"no\" />\n ";
+			  //disable the search bar if we are browsing search results
+			  if (strcmp($this->sSection,"Standard Search") == 0) {
+				  $bar .= "<INPUT type=\"hidden\" name=\"fSearchText\" width=\"30\" height = \"10\" align = \"absmiddle\" />\n ";
+			  } else {
+				  $bar .= "<INPUT type=\"text\" name=\"fSearchText\" width=\"30\" height = \"10\" align = \"absmiddle\" />\n " .
+						"<INPUT type=\"hidden\" name=\"fBrowseType\" value=\"" . $this->sBrowseType . "\"  />\n " .
+						"<INPUT type=\"hidden\" name=\"fFolderID\"  value=\"" . $this->iFolderID . "\"  />\n " .
+						"<INPUT type=\"hidden\" name=\"fDocumentID\" value=\"" . $this->iDocumentID . "\"  />\n " .
+						"<INPUT type=\"hidden\" name=\"fCategoryName\" value=\"" . $this->sCategoryName . "\"  />\n " .
+						"<INPUT type=\"hidden\" name=\"fDocTypeID\"  value=\"" . $this->iDocTypeID . "\"  />\n " .
+						"<INPUT type=\"image\" onClick=\"setActionAndSubmitSearch('" . $default->rootUrl . "/control.php')\" src=\"$default->graphicsUrl/search.gif\" align = \"absmiddle\" border=\"0\" />\n ";
+			  }			  
+              $bar .= "</td>\n " .
+				  "</tr>\n" .
+				  "<tr height=\"25%\" ><td width =\"10%\">". $row3 . "</td></tr>\n" .
+				  "<tr height=\"25%\"><td width =\"100%\">". $row4 . "</td></tr>\n" .
+				  "</table>\n";
 
         //set the bar as html to object
         $toRender->setHtml($bar);
