@@ -279,6 +279,34 @@ class Folder {
 	}
 	
 	/**
+    * Static function
+    * Get a list of Documents
+    *
+    * @param  String  Where clause (not required)
+    *
+    * @return Array array of Documents objects, false otherwise and set $_SESSION["errorMessage"]
+    */
+    function getList($sWhereClause = null) {
+        global $default, $lang_err_database;
+        $aFolderArray;
+        settype($aFolderArray, "array");
+        $sql = $default->db;
+        // TODO: join on sys_deleted
+        $result = $sql->query("SELECT * FROM " . $default->owl_folders_table  . (isset($sWhereClause) ? " WHERE " . $sWhereClause : ""));
+        if ($result) {
+            $iCount = 0;
+            while ($sql->next_record()) {
+                $oFolder = & Folder::get($sql->f("id"));
+                $aFolderArray[$iCount] = $oFolder;
+                $iCount++;
+            }
+            return $aFolderArray;
+        }
+        $_SESSION["errorMessage"] = $lang_err_database;
+        return false;
+    }
+	
+	/**
 	* Static function.
 	* Get the full path for a folder
 	* 
@@ -290,7 +318,8 @@ class Folder {
 		global $default;		
 		//if the folder has a parent
 		if (Folder::getParentFolderID($iFolderID) != 0) {			
-			return Folder::getFolderPath(Folder::getParentFolderID($iFolderID)) . "/" . Folder::getFolderName($iFolderID);
+			$sCurrentPath = Folder::getFolderPath(Folder::getParentFolderID($iFolderID)) . Folder::getFolderName($iFolderID) . "/" . $sCurrentPath;
+			return $sCurrentPath;
 		}	
 		return $default->owl_FileDir . "/" . Folder::getFolderName($iFolderID) . "/";
 	}
@@ -326,9 +355,10 @@ class Folder {
 	function getFolderDisplayPath($iFolderID) {
 		global $default;		
 		//if the folder has a parent
-		if (Folder::getParentFolderID($iFolderID) != 0) {			
+		if (Folder::getParentFolderID($iFolderID) != 0) {		
+			
 			return Folder::getFolderDisplayPath(Folder::getParentFolderID($iFolderID)) . " > " . Folder::getFolderName($iFolderID);
-		} else {
+		} else {			
 		    return Folder::getFolderName($iFolderID);
         }
 	}
@@ -341,7 +371,7 @@ class Folder {
 	*
 	* @return integer primary key of parent folder
 	*/
-	function getParentFolderID($iFolderID) {
+	function getParentFolderID($iFolderID) {		
 		if ($iFolderID != 0) {
 			global $default;		
 			$sql = $default->db;
