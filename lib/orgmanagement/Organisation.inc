@@ -226,5 +226,17 @@ class Organisation
 	}
 	
 }
-
+/**
+* Static function
+*
+* Creates a Org object from an array
+*
+* @param 	Array		Array of parameters.  Must match order of parameters in constructor
+*
+* @return User user object
+*/
+function & organisationCreateFromArray($aParameters) {
+	$oOrg = & new Organisation($aParameters[0], $aParameters[1], $aParameters[2], $aParameters[3], $aParameters[4], $aParameters[5], $aParameters[6], $aParameters[7], $aParameters[8], $aParameters[9], $aParameters[10]);
+	return $oOrg;
+}
 ?>
