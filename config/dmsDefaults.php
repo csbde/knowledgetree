@@ -132,22 +132,23 @@ $default->debug = True;
 // define site mappings
 require_once("$default->owl_fs_root/lib/session/SiteMap.inc");
 $default->siteMap = new SiteMap();
-// action, page, section, group with access
-$default->siteMap->addPage("login", "/presentation/login.php?loginAction=login", "General", "Anonymous");
-$default->siteMap->addPage("loginForm", "/presentation/login.php?loginAction=loginForm", "General", "Anonymous"); 
-$default->siteMap->addPage("logout", "/presentation/logout.php", "General", "Anonymous");
-$default->siteMap->addPage("dashboard", "/presentation/dashboardBL.php", "General", "Unit Administrators");
+// action, page, section, group with access, link description
+$default->siteMap->addPage("login", "/presentation/login.php?loginAction=login", "General", "Anonymous", "");
+$default->siteMap->addPage("loginForm", "/presentation/login.php?loginAction=loginForm", "General", "Anonymous", "login"); 
+$default->siteMap->addPage("logout", "/presentation/logout.php", "General", "Anonymous", "logout");
+$default->siteMap->addPage("dashboard", "/presentation/dashboardBL.php", "General", "Unit Administrators", "dashboard");
 
-$default->siteMap->addDefaultPage("browse", "/presentation/documentmanagement/browseBL.php", "Manage Documents", "Anonymous");
-$default->siteMap->addPage("addFolder", "/presentation/documentmanagement/addFolder.php", "Manage Documents", "Unit Administrators");
-$default->siteMap->addPage("viewDocument", "/presentation/documentmanagement/viewDocumentBL.php", "Manage Documents", "Anonymous");
+$default->siteMap->addDefaultPage("browse", "/presentation/documentmanagement/browseBL.php", "Manage Documents", "Anonymous", "browse documents");
+$default->siteMap->addPage("addFolder", "/presentation/documentmanagement/addFolder.php", "Manage Documents", "Unit Administrators", "add a folder");
+$default->siteMap->addPage("viewDocument", "/presentation/documentmanagement/viewDocumentBL.php", "Manage Documents", "Anonymous", "view document details");
 
-$default->siteMap->addDefaultPage("addUser", "/presentation/addUser.php", "Administration", "Unit Administrators");
-$default->siteMap->addPage("addUnit", "/presentation/addUnit.php", "Administration", "Unit Administrators");
-$default->siteMap->addPage("addOrganisation", "/presentation/addOrganisation.php", "Administration", "System Administrators");
+$default->siteMap->addDefaultPage("addUser", "/presentation/addUser.php", "Administration", "Unit Administrators", "add user");
+$default->siteMap->addPage("addUnit", "/presentation/addUnit.php", "Administration", "Unit Administrators", "add unit");
+$default->siteMap->addPage("addOrganisation", "/presentation/addOrganisation.php", "Administration", "System Administrators", "add organisation");
 
-$default->siteMap->addPage("scratchPad", "/tests/scratchPad.php", "Tests", "Unit Administrators");
-$default->siteMap->addPage("documentBrowserTest", "/tests/documentmanagement/DocumentBrowser.php", "Tests", "Anonymous");
+$default->siteMap->addPage("scratchPad", "/tests/scratchPad.php", "Tests", "Anonymous", "scratch");
+$default->siteMap->addPage("sitemap", "/tests/session/SiteMap.php", "Tests", "Anonymous", "sitemap");
+$default->siteMap->addPage("documentBrowserTest", "/tests/documentmanagement/DocumentBrowser.php", "Tests", "Anonymous", "test the document browser");
 
 require_once("$default->owl_fs_root/lib/session/Session.inc");
 require_once("$default->owl_fs_root/lib/session/control.inc");
