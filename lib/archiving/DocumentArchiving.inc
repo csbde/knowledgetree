@@ -22,10 +22,7 @@ class DocumentArchiving {
 	 * The document ID
 	 */
 	var $iDocumentID;
-	/**
-	 * The archiving method- date or utilisation
-	 */
-	var $iArchivingTypeID;
+
 	/**
 	 * The archiving settings
 	 */
@@ -38,13 +35,12 @@ class DocumentArchiving {
 	 * @param integer the archiving type id
 	 * @param integer the archiving settings id
 	 */
-	function DocumentArchiving($iNewDocumentID, $iNewArchivingTypeID, $iNewArchivingSettingsID) {
+	function DocumentArchiving($iNewDocumentID, $iNewArchivingSettingsID) {
 		global $default;
 		
 		// primary key not set as this is not stored yet
 		$this->iId = -1;
 		$this->iDocumentID = $iNewDocumentID;
-		$this->iArchivingTypeID = $iNewArchivingTypeID;
 		$this->iArchivingSettingsID = $iNewArchivingSettingsID;
 	}
 
@@ -69,22 +65,6 @@ class DocumentArchiving {
 	 */
 	function setDocumentID($iNewDocumentID){
 		$this->iDocumentID = $iNewDocumentID;
-	}
-
-	/**
-	 * Gets the archiving type
-	 */
-	function getArchivingTypeID(){
-		return $this->iArchivingTypeID;
-	}
-
-	/**
-	 * Sets the archiving type
-	 * 
-	 * @param integer the new archiving type
-	 */ 
-	function setArchivingTypeID($iNewArchivingTypeID){
-		$this->iArchivingTypeID = $iNewArchivingTypeID;
 	}
 	
 	/**
@@ -113,8 +93,8 @@ class DocumentArchiving {
         //if the id >= 0, then the object has already been created
         if ($this->iId < 0) {
             $sql = $default->db;
-            $result = $sql->query("INSERT INTO $default->owl_document_archiving_table (document_id, archiving_type_id, archiving_settings_id) " .
-                                  "VALUES ($this->iDocumentID, $this->iArchivingTypeID, $this->iArchivingSettingsID)");
+            $result = $sql->query("INSERT INTO $default->owl_document_archiving_table (document_id, archiving_settings_id) " .
+                                  "VALUES ($this->iDocumentID, $this->iArchivingSettingsID)");
             if ($result) {
                 //set the current primary key
                 $this->iId = $sql->insert_id();
@@ -136,7 +116,6 @@ class DocumentArchiving {
             $sql = $default->db;
 			$sQuery = "UPDATE $default->owl_document_archiving_table SET " .
 					  "document_id = $this->iDocumentID, " .								  
-                      "archiving_type_id = $this->iArchivingTypeID, " .
                       "archiving_settings_id = $this->iArchivingSettingsID " .                                  
            			  "WHERE id = $this->iId";
             $result = $sql->query($sQuery);
@@ -180,7 +159,7 @@ class DocumentArchiving {
         $sql = $default->db;
         $sql->query("SELECT * FROM $default->owl_document_archiving_table WHERE document_id = $iDocumentID");
         if ($sql->next_record()) {
-            $oDocumentArchiving = & new DocumentArchiving($sql->f("document_id"), $sql->f("archiving_type_id"), $sql->f("archiving_settings_id"));
+            $oDocumentArchiving = & new DocumentArchiving($sql->f("document_id"), $sql->f("archiving_settings_id"));
             $oDocumentArchiving->iId = $sql->f("id");
             return $oDocumentArchiving;          
         }
@@ -199,7 +178,7 @@ class DocumentArchiving {
         $sql = $default->db;
         $sql->query("SELECT * FROM $default->owl_document_archiving_table WHERE id = $iDocumentArchivingID");
         if ($sql->next_record()) {
-            $oDocumentArchiving = & new DocumentArchiving($sql->f("document_id"), $sql->f("archiving_type_id"), $sql->f("archiving_settings_id"));
+            $oDocumentArchiving = & new DocumentArchiving($sql->f("document_id"), $sql->f("archiving_settings_id"));
             $oDocumentArchiving->iId = $iDocumentArchivingID;
             return $oDocumentArchiving;          
         }
