@@ -118,11 +118,12 @@ function renderTypeSpecificMetaData($oDocument) {
 
 function renderEditableDocumentRouting($oDocument) {
     global $default;
-    $sQuery = "SELECT D.id as document_id, GFAL.id as id, R.name AS role_name, COALESCE(U.Name, 'Not assigned') AS name, GFAL.precedence AS precedence, COALESCE(FURL.active,0) AS active, COALESCE(FURL.done, 0) AS done, 'Edit' as edit " .
+    $sQuery = "SELECT D.id as document_id, GFAL.id as id, R.name AS role_name, COALESCE(U.Name, U2.Name, 'Not assigned') AS name, GFAL.precedence AS precedence, COALESCE(FURL.active,0) AS active, COALESCE(FURL.done, 0) AS done, 'Edit' as edit " .
               "FROM documents AS D INNER JOIN $default->owl_groups_folders_approval_table AS GFAL ON D.folder_id = GFAL.folder_id " .
               "INNER JOIN roles AS R ON GFAL.role_id = R.id " .
+              "INNER JOIN users AS U2 ON U2.id = GFAL.user_id " .
               "LEFT OUTER JOIN folders_users_roles_link AS FURL ON FURL.group_folder_approval_id = GFAL.id AND FURL.document_id = D.id " .
-              "LEFT OUTER JOIN users AS U ON FURL.user_id = U.id " .
+              "LEFT OUTER JOIN users AS U ON FURL.user_id = U.id " .              
               "WHERE D.id = " . $oDocument->getID() . " " .
               "ORDER BY GFAL.precedence, role_name ASC";
     $aColumns = array("role_name", "name", "precedence", "active", "done", "edit");
