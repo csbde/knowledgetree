@@ -32,10 +32,12 @@ class SiteMap {
      * @param string the corresponding page for this action
      * @param string the section this page falls under
      * @param string the user group with access to this page
+     * @param string description of the page for link presentation
      */
-    function addPage($action, $page, $sectionName, $groupName) {
-        // add to map
-        $this->siteMapArray[$sectionName][$groupName][$action] = array ("page" =>$page, "default" => false);
+    function addPage($action, $page, $sectionName, $groupName, $description) {
+        $this->siteMapArray[$sectionName][$groupName][$action] = array ("page" => $page, 
+                                                                        "description" => $description, 
+                                                                        "default" => false);
     }
     
     /**
@@ -45,9 +47,12 @@ class SiteMap {
      * @param string the corresponding page for this action
      * @param string the section this page falls under
      * @param string the user group with access to this page
+     * @param string description of the page for link presentation     
      */    
-    function addDefaultPage($action, $page, $sectionName, $groupName) {
-        $this->siteMapArray[$sectionName][$groupName][$action] = array ("page" =>$page, "default" => true);
+    function addDefaultPage($action, $page, $sectionName, $groupName, $description) {
+        $this->siteMapArray[$sectionName][$groupName][$action] = array ("page" => $page, 
+                                                                        "description" => $description, 
+                                                                        "default" => true);
     }
 
     /**
@@ -65,8 +70,8 @@ class SiteMap {
                 $default->log->debug("Sitemap::getSectionName ($requiredGroupName, " . arrayToString($pageArr) . ")");
                 // now loop through pages until we find the right one
                 foreach ($pageArr as $action => $page) {
-                    $default->log->debug("Sitemap::getSectionName ($sRequiredPage == $page)");
-                    if ($sRequiredPage == $page) {
+                    $default->log->debug("Sitemap::getSectionName ($sRequiredPage == " . $page["page"] . ")");
+                    if ($sRequiredPage == $page["page"]) {
                         return $section;
                     }
                 }
@@ -84,7 +89,8 @@ class SiteMap {
         // check if the section exists
         if (is_array($this->siteMapArray[$sSectionName])) {
             // initialise result array
-            $results = array();
+            $results = array("descriptions" => array(), "links" => array());
+            
             // need to loop through all (groupName, page) arrays in this section
             foreach ($this->siteMapArray[$sSectionName] as $requiredGroupName => $pages) {
                 $default->log->debug("Sitemap::getSectionLinks: requiredGroup=$requiredGroupName, pages=" . arrayToString($pages));
@@ -93,10 +99,14 @@ class SiteMap {
                 if ( ($requiredGroupName == "Anonymous") ||
                      ( Permission::userIsInGroupName($requiredGroupName) || 
                        Permission::userIsInGroupName("System Administrators") ) ) {
-                    // add this array to the resultset array
-                    $default->log->debug("Sitemap::getSectionLinks: about to add " . arrayToString($pages));
-                    //$results = array_merge($results, $this->siteMapArray[$sectionName][$requiredGroupName]);
-                    $results = array_merge($results, $pages);
+                    foreach ($pages as $action => $pageDetail) {
+                        // add this array to the resultset array
+                        $default->log->debug("Sitemap::getSectionLinks: about to add " . arrayToString($pages));
+                        $results["descriptions"][] = $pages[$action]["description"];
+                        $results["links"][] = generateControllerUrl($action);
+                        $default->log->debug("Sitemap::getSectionLinks: added " . arrayToString($results));
+                        //$results = array_merge($results, $pages);
+                    }
                 }
             }
             // now check if we have anything in the results array before returning it
@@ -181,48 +191,7 @@ class SiteMap {
             return false;
         }        
     }
-      
-    /**
-     * Returns the pages in the specified section accessible to the 
-     * specified userClass.
-     *
-     * @param string the section to retrieve pages for
-     * @return array the actions for the specified section
-     */
-    function getSection($sectionName) {
-        // check if the section exists
-        if (is_array($this->siteMapArray[$sectionName])) {
-            // initialise result array
-            $results = array();
-            // need to loop through all (groupName, page) arrays in this section
-            foreach ($this->siteMapArray[$sectionName] as $requiredGroupName => $pages) {
-                // lookup groupID for requiredGroupName
-                $reqGrpID = lookupID($default->owl_groups_table, "name", "$requiredGroupName");
-                // lookup groupIDs for the user
-                $groupIDs = lookupGroupIDs($_SESSION["userID"]);
-                // loop through the user's groups and check against the requiredGroup
-                for ($i = 0; $i<count($groupIDs); $i++) {
-                    $default->log->debug("getPage current groupid=" . $groupIDs[$i] . "; reqGrpID=$reqGrpID"); 
-                    if ($groupIDs[$i] <= $reqGrpID) {
-                        // add this array to the resultset array
-                        $results = array_merge($results, $this->siteMapArray[$sectionName][$uc]);
-                    }
-                }
-            }
-            // now check if we have anything in the results array before returning it
-            if (count($results) > 0) {
-                return $results;
-            } else {
-                return false;
-            }
-        } else {
-            // supplied section not in sitemap
-            // TODO: internal error code?
-            $_SESSION["errorMessage"] = "$sectionName not in SiteMap!";
-            return false;
-        }
-    }
-    
+
     /**
      * Prints the current site map
      */
