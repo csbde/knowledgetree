@@ -38,6 +38,8 @@ class BrowseCriterion {
     var $bFolderCriterion = false;
     var $aOptions = array();
     var $iID;
+    var $bString = false;
+    var $sSearchTable = "D";
 
     function BrowseCriterion ($sDisplay, $sDocumentField, $sSortField, $iID) {
         $this->sDisplay =& $sDisplay;
@@ -124,9 +126,14 @@ class BrowseCriterion {
         return $this->sSortField;
     }
 
+    function getSearchField () {
+        return $this->sDocumentField;
+    }
+
     function getLookup () {
         return $this->aLookup;
     }
+
 
     function getName() {
         return $this->sDocumentField;
@@ -147,10 +154,23 @@ class BrowseCriterion {
     function searchWidget ($aRequest) {
         return "<input type=\"text\" size=\"50\" name=\"bmd" . $this->getID() . "\" />";
     }
+
+    function getSearchTable() {
+        return $this->sSearchTable;
+    }
+
+    function searchSQL ($aRequest) {
+        if ($this->bString) {
+            return array($this->getSearchTable() . "." . $this->getSearchField() . " LIKE '%" . DBUtil::escapeSimple($aRequest['bmd' . $this->getID()]) . "%'", array());
+        } else {
+            return array($this->getSearchTable() . "." . $this->getSearchField() . " = ?", array($aRequest['bmd' . $this->getID()]));
+        }
+    }
 }
 
 class NameCriterion extends BrowseCriterion {
     var $bFolderCriterion = true;
+    var $bString = true;
     function documentDisplay ($oDocument) {
         $aOptions = $this->aOptions;
         if (array_key_exists('displayFullPath', $aOptions)) {
@@ -192,6 +212,7 @@ class IDCriterion extends BrowseCriterion {
 
 class TitleCriterion extends BrowseCriterion {
     var $bFolderCriterion = true;
+    var $bString = true;
     function documentDisplay ($oDocument) {
         return $oDocument->getName();
     }
@@ -280,12 +301,12 @@ class GenericMetadataCriterion extends BrowseCriterion {
         "field" => "value",
         "joinColumn" => "document_id",
     );
-    var $iFieldID;
+    var $bString = true;
+    var $sSearchTable = "DFL";
 
-    function GenericMetadataCriterion ($sDisplay, $sDocumentField, $sSortField, $iFieldID) {
-        $this->iFieldID = $iFieldID;
-        $this->BrowseCriterion($sDisplay, $sDocumentField, $sSortField, $iFieldID);
-        $this->aLookup['whereClause'] = 'document_field_id = ' .  $iFieldID;
+    function GenericMetadataCriterion ($sDisplay, $sDocumentField, $sSortField, $iID) {
+        $this->BrowseCriterion($sDisplay, $sDocumentField, $sSortField, $iID);
+        $this->aLookup['whereClause'] = 'document_field_id = ' .  $iID;
     }
 
     function documentDisplay ($oDocument) {
@@ -294,7 +315,7 @@ class GenericMetadataCriterion extends BrowseCriterion {
               "FROM $default->document_fields_link_table AS DFL " .
               "WHERE DFL.document_id = ? " .
               "AND DFL.document_field_id = ?";
-        $aParams = array($oDocument->getID(), $this->iFieldID);
+        $aParams = array($oDocument->getID(), $this->getID());
 
         $res = DBUtil::getOneResultKey(array($sQuery, $aParams), 'value');
         if (PEAR::isError($res)) {
@@ -306,8 +327,12 @@ class GenericMetadataCriterion extends BrowseCriterion {
 
     function getName() {
         global $default;
-        $aQuery = array("SELECT name FROM $default->document_fields_table WHERE id = ?", array($this->iFieldID)); /*ok*/
+        $aQuery = array("SELECT name FROM $default->document_fields_table WHERE id = ?", array($this->getID())); /*ok*/
         return "gmd_" . DBUtil::getOneResultKey($aQuery, 'name');
+    }
+
+    function getSearchField () {
+        return $this->aLookup['field'];
     }
 }
 
