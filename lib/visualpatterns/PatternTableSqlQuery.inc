@@ -1,8 +1,5 @@
 <?php
 
-require_once ("../../config/environment.php");
-require_once ("$default->owl_root_url/lib/owl.lib.php");
-
 /**
 Builds a query using the table name and the array of specified columns
 and displays the results in an HTML table.  The ID column of the table is
