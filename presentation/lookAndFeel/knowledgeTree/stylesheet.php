@@ -1,19 +1,13 @@
 <?php
 header('mime_type', 'text/css');
-$sAgent = getenv("HTTP_USER_AGENT");
-echo $sAgent;
-$scroll = array();
-$scroll["upArrowLeft"] = "";
-$scroll["upArrowTop"] = "";
-$scroll["downArrowLeft"] = "";
-$scroll["downArrayTop"] = "";
-$scroll["textBoxLeft"] = "";
-$scroll["textBoxTop"] = "";
-$scroll["textBoxWidth"] = "";
-$scroll["textBoxHeight"] = "";
+require("../../../config/dmsDefaults.php");
 
-if ( ereg("Mozilla", $sAgent) && ereg("4.79", $sAgent) ) {
-    // Mozilla/4.79    
+$scroll = array();
+
+$browser = $default->phpSniff->property("browser");
+$version = $default->phpSniff->property("version");
+
+if ( ($browser == "moz") && ($version == "4.79")) {
     $scroll["upArrowLeft"] = "670";
     $scroll["upArrowTop"] = "190";
     $scroll["downArrowLeft"] = "670";
@@ -23,8 +17,7 @@ if ( ereg("Mozilla", $sAgent) && ereg("4.79", $sAgent) ) {
     $scroll["textBoxTop"] = "200";
     $scroll["textBoxWidth"] = "600";
     $scroll["textBoxHeight"] = "395";  
-} elseif ( ereg("Mozilla", $sAgent) && ereg("5.0", $sAgent) ) {
-    // Mozilla/5.0
+} elseif ( ($browser == "moz") && ($version == "5.0")) {
     $scroll["upArrowLeft"] = "650";
     $scroll["upArrowTop"] = "150";
     $scroll["downArrowLeft"] = "650";
@@ -34,8 +27,8 @@ if ( ereg("Mozilla", $sAgent) && ereg("4.79", $sAgent) ) {
     $scroll["textBoxTop"] = "150";
     $scroll["textBoxWidth"] = "500";
     $scroll["textBoxHeight"] = "440";
-} else if ( ereg("MSIE", $sAgent) && ereg("6.0", $sAgent) ) {
-   // MSIE 6.0
+} elseif ($browser == "ie") {
+    // MSIE 6.0
     $scroll["upArrowLeft"] = "650";
     $scroll["upArrowTop"] = "160";
     $scroll["downArrowLeft"] = "650";
