@@ -60,15 +60,12 @@ if (checkSession()) {
                             // make sure the user actually selected a file first
                             if (strlen($_FILES['fFile']['name']) > 0) {
     
-                                // backup the original document
-                                $sBackupPath = $oDocument->getPath() . ".bk";
+                                // save the original document
+                                $sBackupPath = $oDocument->getPath() . "-" . $oDocument->getMajorVersionNumber() . "." . $oDocument->getMinorVersionNumber();
                                 copy($oDocument->getPath(), $sBackupPath);
                                 
                                 // update the document with the uploaded one
                                 if (PhysicalDocumentManager::uploadPhysicalDocument($oDocument, $fFolderID, "", $_FILES['fFile']['tmp_name'])) {
-                                    // remove the backup
-                                    unlink($sBackupPath);
-                                    
                                     // now update the database                                
                                     // overwrite size
                                     $oDocument->setFileSize($_FILES['fFile']['size']);
@@ -112,6 +109,8 @@ if (checkSession()) {
                                 } else {
                                     // reinstate the backup
                                     copy($sBackupPath, $oDocument->getPath());
+                                    // remove the backup
+                                    unlink($sBackupPath);                                    
                                     $oPatternCustom->setHtml(renderErrorPage("An error occurred while storing the new file on the filesystem"));
                                 }
                             } else {
