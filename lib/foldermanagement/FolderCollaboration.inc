@@ -218,7 +218,18 @@ class FolderCollaboration {
 		return false;
 	}
 	
-	
-	
+	/**
+	 * Checks whether all the FolderCollaboration objects have the default user set
+	 *
+	 * @param array folder collaboration information for a specific document
+	 * @return true if all default users are set, false otherwise
+	 */
+	function defaultUsersAssigned($aFolderCollaboration) {
+		$bUsersSet = true;
+		for ($i=0; $i<count($aFolderCollaboration); $i++) {
+			$bUsersSet = $bUsersSet && $aFolderCollaboration[$i]->getUserID();
+		}
+		return $bUsersSet;
+	}
 }
 ?>
