@@ -1,3 +1,15 @@
+Version 1.2.1
+* Mon Aug 12 2003 Micheal Joseph <michael@jamwarehouse.com>
+- Email comments - comments can now be added when file links are emailed to users
+- Folder permission heirarchy - the backend functionality exists to allows folders to 
+inherit permissions from their parents or to allow them to define their own
+permissions.  This is currently NOT integrated into the user interface
+- Altering of user passwords - if KT is running in DBAuthentication mode (users
+are authenticated against the database), it is now possible for the system
+administrator to update user passwords through the user management section
+- Scrolling - javascript scrolling can be turned on or off in environment.php
+- Minor bug fixes
+
 Version 1.2.0
 * Tue Aug 12 2003 Michael Joseph <michael@jamwarehouse.com>
 - Document Details and Folder Properties- updated display- javascript content swapping.
