@@ -122,7 +122,7 @@ if (checkSession()) {
 
             $oPatternCustom = & new PatternCustom();
             $oPatternCustom->setHtml("");
-            $main->setErrorText("Either you do not have permission to view this document, or the document you have chosen no longer exists on the file system.");
+            $main->setErrorMessage("Either you do not have permission to view this document, or the document you have chosen no longer exists on the file system.");
             $main->setCentralPayload($oPatternCustom);
             $main->render();
         }
@@ -131,7 +131,7 @@ if (checkSession()) {
 
         $oPatternCustom = & new PatternCustom();
         $oPatternCustom->setHtml("");
-        $main->setErrorText("You have not chosen a document to view");
+        $main->setErrorMessage("You have not chosen a document to view");
         $main->setCentralPayload($oPatternCustom);
         $main->render();
     }
