@@ -27,7 +27,6 @@ $default->owl_FileDir           =  "c:/owl";
 //$default->owl_FileDir           =  "/tmp/";
 //$default->owl_compressed_database = 1;
 
-
 $default->owl_use_fs            = true;
 
 //****************************************************
@@ -53,11 +52,19 @@ $default->owl_use_fs            = true;
 $default->owl_lang		= "NewEnglish";
 $default->owl_notify_link       = "http://$_SERVER[SERVER_NAME]$default->owl_root_url/";
 
+// Table with unit information
+$default->owl_unit_table = "unit";
+
 // Table with user info
 $default->owl_users_table	= "users";
 
-// Table with group memebership for users 
+// User-unit mapping table
+$default->owl_user_unit_table = "users_unit";
+
+// Table with group membership for users 
 $default->owl_users_grpmem_table= "membergroup";
+
+/// Table with session information
 $default->owl_sessions_table = "active_sessions";
 
 // Table with file info
@@ -73,10 +80,10 @@ $default->owl_groups_table	= "groups";
 $default->owl_mime_table	= "mimes";
 
 // Table with html attributes
-$default->owl_html_table	= "html";
+$default->owl_html_table	= "intranet.html";
 
 // Table with html attributes
-$default->owl_prefs_table	= "prefs";
+$default->owl_prefs_table	= "intranet.prefs";
 
 // Table with file data info
 $default->owl_files_data_table  = "filedata";
@@ -90,11 +97,16 @@ require_once("$default->owl_fs_root/phplib/db_mysql.inc");
 require_once("$default->owl_fs_root/lib/Authenticator.inc");
 require_once("$default->owl_fs_root/lib/DBAuthenticator.inc");
 
+// ldap settings
+$default->ldapServer = "192.168.1.9";
+$default->ldapRootDn = "o=Medical Research Council";
+
 // Database info
 $default->owl_db_user           = "root";
 $default->owl_db_pass           = "pass123";
 $default->owl_db_host           = "";
-$default->owl_db_name           = "intranet";
+//$default->owl_db_name           = "intranet";
+$default->owl_db_name           = "dms";
 
 // logo file that must reside inside lang/graphics directory
 $default->logo = "kt.jpg";
@@ -130,7 +142,7 @@ define("U", 2);
 define("A", 3);
 
 // define site mappings
-require_once("/lib/SiteMap.inc");
+require_once("$default->owl_fs_root/lib/SiteMap.inc");
 $default->siteMap = new SiteMap();
 // action, section, page, userClass (SA, UA, U, A)
 $default->siteMap->addPage("LOGIN", "login.php?loginAction=login", "General", "A");
