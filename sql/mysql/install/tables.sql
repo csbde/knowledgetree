@@ -578,10 +578,8 @@ CREATE TABLE roles (
 -- 
 
 CREATE TABLE search_document_user_link (
-  id int(11) NOT NULL default '0',
   document_id int(11) default NULL,
   user_id int(11) default NULL,
-  UNIQUE KEY id (id),
   KEY fk_user_id (user_id),
   KEY fk_document_ids (document_id)
 ) TYPE=InnoDB;
