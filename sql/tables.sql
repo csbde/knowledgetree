@@ -174,7 +174,7 @@ name CHAR(255)
 
 CREATE TABLE sitemap (
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
-action CHAR(30),
+action CHAR(50),
 page CHAR(255),
 section_id INTEGER,
 access_id INTEGER,
