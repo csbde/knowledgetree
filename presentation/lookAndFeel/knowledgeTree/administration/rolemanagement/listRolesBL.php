@@ -41,8 +41,7 @@ if(checkSession()) {
 		$sQuery = 	"SELECT id as roleID, name as name, active, can_read as reader, can_write as writer, " . 
 					"'Edit', 'Delete' " .
 					"FROM roles " .
-					"ORDER BY name";
-				
+					"ORDER BY name";				
 		
 	    $aColumns = array("name", 	  "active", "reader", "writer", "Edit", "Delete");
 	    $aColumnNames = array("Name", "Active", "Read", "Write", "Edit", "Delete");
