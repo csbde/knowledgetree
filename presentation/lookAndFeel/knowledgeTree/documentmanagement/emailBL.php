@@ -39,7 +39,9 @@ if (checkSession()) {
 						} else {
 							$sMessage = "Your colleauge, " . $oUser->getName() . ", wishes you to view the document entitled '" . $oDocument->getName() . "'.\n  Click on the hyperlink below to view it";
 						}
-						$sHyperlink = "http://" . $_SERVER["SERVER_NAME"] . $default->owl_root_url . "/control.php?action=viewDocument&fDocumentID=" . $fDocumentID;
+						$sLink = "http://" . $_SERVER["SERVER_NAME"] . $default->owl_root_url . "/control.php?action=viewDocument&fDocumentID=" . $fDocumentID;
+						
+						$sHyperlink = "<a href = " . $sLink .">" . $oDocument->getName() . "</a>";
 						//email the hyperlink						
 						Email::sendHyperlink($default->owl_email_from, "MRC DMS", $fToEmail, "Document link",  $sMessage, $sHyperlink);
 						//go back to the document view page
