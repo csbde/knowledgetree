@@ -189,7 +189,7 @@ function getEditPage($oDocument) {
 		$sToRender .= "\t\t</tr></table></td>\n";
 	}
     
-    if (Document::documentIsPendingWebPublishing($iDocumentID)) {
+    if (!Document::documentIsPendingWebPublishing($iDocumentID)) {
         // only display for unpublished documents        
         // if there is collaboration
         if ($oDocument->hasCollaboration()) {
