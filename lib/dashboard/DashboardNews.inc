@@ -5,7 +5,7 @@ require_once("$default->fileSystemRoot/lib/documentmanagement/PhysicalDocumentMa
 /**
  * $Id$
  * 
- * Represents a dahsboard news item.
+ * Represents a dashboard news item.
  * 
  * Licensed under the GNU GPL. For full terms see the file COPYING.
  *
@@ -52,6 +52,10 @@ class DashboardNews {
 	 * The maximum allowable height of an image
 	 */
 	var $iMaxImageHeight = 40;
+	/**
+	 * Is this news item active
+	 */
+	var $bActive;
 	
 	/**
 	 * Constructs a news item
@@ -199,6 +203,22 @@ class DashboardNews {
 	}
 	
 	/**
+	 * Retrieve the active status
+	 */
+	function getActive() {
+		return $this->bActive;
+	}
+
+	/**
+	 * Set the active status
+	 *
+	 * @param boolean new active status	 
+	 */
+	function setActive($bNewActive) {
+		$this->bActive = $bNewActive;
+	}
+		
+	/**
 	 * Retrieve the maximum image width
 	 */
 	function getMaxImageWidth() {
@@ -274,9 +294,9 @@ class DashboardNews {
         //if the id >= 0, then the object has already been created
         if ($this->iId < 0) {
             $sql = $default->db;
-            $result = $sql->query("INSERT INTO $default->owl_news_table (synopsis, body, rank, image, image_size, image_mime_type_id) " .
+            $result = $sql->query("INSERT INTO $default->owl_news_table (synopsis, body, rank, image, image_size, image_mime_type_id, active) " .
                                   "VALUES ('" . addslashes($this->sSynopsis) . "', '" . addslashes($this->sBody) . "', $this->iRank, " .
-                                  "'" . addslashes($this->sImage) . "', $this->iImageSize, $this->iImageMimeTypeID)");
+                                  "'" . addslashes($this->sImage) . "', $this->iImageSize, $this->iImageMimeTypeID, " . ($this->bActive ? "1" : "0") . ")");
             if ($result) {
                 //set the current news item primary key
                 $this->iId = $sql->insert_id();
@@ -302,11 +322,21 @@ class DashboardNews {
                                   "rank = $this->iRank, " .
                                   "image = '" . addslashes($this->sImage) . "', " .
                                   "image_size = $this->iImageSize " .
-                                  ($this->iImageMimeTypeID ? ", image_mime_type_id = $this->iImageMimeTypeID " : "") .                                  
+                                  ($this->iImageMimeTypeID ? ", image_mime_type_id = $this->iImageMimeTypeID " : " ") .                                 
            			 "WHERE id = $this->iId";
+
             $result = $sql->query($sQuery);
             if ($result) {
-                return true;
+                if ($this->bActive) {
+                	// we're setting this entry to active, so set all the others to inactive
+                	$sql->query("UPDATE $default->owl_news_table SET active=0");
+                	// now set our entry to active
+                	$sql->query("UPDATE $default->owl_news_table SET active=1 where id=$this->iId");
+                } else {
+                	// set this to inactive
+                	$sql->query("UPDATE $default->owl_news_table SET active=0 where id=$this->iId");
+                }
+                return true;                 
             }
             return false;
         }
@@ -350,6 +380,7 @@ class DashboardNews {
             				 "mimetypeid" => $sql->f("image_mime_type_id") );			
             $oDashboardNews = & new DashboardNews(stripslashes($sql->f("synopsis")), stripslashes($sql->f("body")), $sql->f("rank"), $aImage);
             $oDashboardNews->iId = $iNewsID;
+            $oDashboardNews->setActive($sql->f("active"));
             return $oDashboardNews;          
         }
         return false;

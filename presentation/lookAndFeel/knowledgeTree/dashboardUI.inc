@@ -150,7 +150,7 @@ function renderDashboardNews() {
 	global $default;
 	
 	// retrieve all news items
-	$aDashboardNews = DashboardNews::getList();
+	$aDashboardNews = DashboardNews::getList("active=1");
 	
 	$sToRender .= "\t\t\t<table border=\"0\" width=\"100%\">\n";
 	// the main news item

@@ -250,7 +250,8 @@ body TEXT,
 rank INTEGER,
 image TEXT,
 image_size INTEGER,
-image_mime_type_id INTEGER
+image_mime_type_id INTEGER,
+active BIT
 ) TYPE = InnoDB;
 
 CREATE TABLE organisations_lookup ( 
