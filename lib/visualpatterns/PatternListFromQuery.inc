@@ -23,11 +23,7 @@ class PatternListFromQuery {
 	var $aColumnNames;
 	/** array of hyperlink URLS */
 	var $aHyperLinkURL;
-	/** array of text to be used on querystring with a hyperlink 
-	Each entry must take the format of:
-			<queryStringName>=<[columnName]>&<queryStringName2>=<columnName2> e.g. fId = [DOC.id] (the querystring will be
-			build by replacing <columnName> with the actual value from the column
-			retrieved from the query)*/
+	/** array of text to be used on querystring with a hyperlink */	
 	var $aQueryStringText;
 	/** number of rows for text area if text area option is being used */
 	var $iTextAreaRows = 6;
