@@ -114,6 +114,7 @@ ORDER BY doc_count DESC");
     $oPatternBrowse = & new PatternBrowseableSearchResults(array($sQuery, $aParams), 10, $aColumns, $aColumnTypes, $aColumnHeaders, $aLinkURLs, $aDBQueryStringColumns, $aQueryStringVariableNames);
     $oPatternBrowse->setStartIndex($iStartIndex);
     $oPatternBrowse->setSearchText("");
+    $oPatternBrowse->setRememberValues($aReq);
 
     $sRefreshMessage = "<table><tr><td align=\"center\">" . _("If your browser displays a 'Warning: Page has Expired' message when you attempt to return to these search results, please click your browser's 'Refresh' button") . "</td></tr></table>";
     return renderHeading(_("Advanced Search")) . $oPatternBrowse->render() . $sRefreshMessage . getSearchVariablesHtml($sSearchString, $sStatus, $sMetaTagIDs);
@@ -145,41 +146,7 @@ if (checkSession()) {
     }
 
 	if (strlen($fForSearch)) {		
-        if (array_key_exists('advancedSearch_x', $_REQUEST)) {
-            dealWithAdvancedSearch($_REQUEST, $fStartIndex);
-        } else if (strlen($fSearchString) > 0) {
-			$oPatternCustom = & new PatternCustom();
-			
-			//display search results
-			$sMetaTagIDs = getChosenMetaDataTags($_POST);	
-			
-			if (strlen($sMetaTagIDs) > 0) {
-				$sSQLSearchString = getSQLSearchString($fSearchString);
-				$oPatternCustom->setHtml(getSearchResults($sMetaTagIDs, $sSQLSearchString, $fStartIndex, $fSearchString, $fToSearch));
-				$main->setCentralPayload($oPatternCustom);				                                
-				$main->render();
-			} else {
-				$oPatternCustom->setHtml(getSearchPage($fSearchString));
-				$main->setCentralPayload($oPatternCustom);
-				$main->setErrorMessage(_("Please select at least one criteria to search by"));
-				$main->setHasRequiredFields(true);
-				$main->setFormAction($_SERVER["PHP_SELF"] . "?fForSearch=1");                                
-                $main->setOnLoadJavaScript("switchDiv('" . (isset($fShowSection) ? $fShowSection : "searchLess") . "', 'search')");
-				$main->render();
-			}
-		} else {
-				$sMetaTagIDs = getChosenMetaDataTags($_POST);
-				$aMetaTagIDs = explode(",", $sMetaTagIDs);				
-				$oPatternCustom = & new PatternCustom();
-				$oPatternCustom->setHtml(getSearchPage($fSearchString, $aMetaTagIDs));
-				$main->setCentralPayload($oPatternCustom);
-				$main->setErrorMessage(_("Please enter text to search on"));
-				$main->setHasRequiredFields(true);
-				$main->setFormAction($_SERVER["PHP_SELF"] . "?fForSearch=1");                                
-                $main->setOnLoadJavaScript("switchDiv('" . (isset($fShowSection) ? $fShowSection : "searchLess") . "', 'search')");
-				$main->render();
-		}
-		
+        dealWithAdvancedSearch($_REQUEST, $fStartIndex);
 	} else {	
 		//display search criteria
 		$oPatternCustom = & new PatternCustom();
@@ -187,7 +154,6 @@ if (checkSession()) {
 		$main->setHasRequiredFields(true);
 		$main->setCentralPayload($oPatternCustom);                                
 		$main->setFormAction($_SERVER["PHP_SELF"] . "?fForSearch=1");                                
-        $main->setOnLoadJavaScript("switchDiv('" . (isset($fShowSection) ? $fShowSection : "searchLess") . "', 'search')");
 		$main->render();
 	}	
 }
