@@ -8,12 +8,8 @@
 *
 */
 // get add pages
-function getAddPage($unitID) {
+function getAddPage() {
 	global $default;
-	
-	if (isset($iOrgID)) {
-        $oOrg = Organisation::get($iOrgID);
-	}
 	
     $sToRender .= renderHeading("Add Unit");
 	$sToRender .= "<table>\n";
@@ -22,12 +18,20 @@ function getAddPage($unitID) {
 	$sToRender .= "<td>Unit Name: </td><td><input size = \"40\" type=\"text\" name=\"fUnitName\"> </td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>Select an Organisation: </td><td>" . getOrgDisplay($oOrg) ;
+	$sToRender .= "<td>Select an Organisation: </td><td>" . getOrgDisplay() ;
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<td></td><td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/add.gif\" value=\"Submit\" border=\"0\"/></td>\n";	
 	$sToRender .= "</table>\n";
+	
+	// javascript validation
+	$sToRender .= "\n\n<script language=\"javascript\">\n<!--\n";
+	$sToRender .= "function validateForm(theForm) {\n";	
+	$sToRender .= "\tif (!validRequired(theForm.fUnitName,'Unit Name') || !validRequired(theForm.fOrgID, 'Organisation')) {\n";
+	$sToRender .= "\t\treturn false;\n\t}\n";
+	$sToRender .= "return true;\n}\n";
+	$sToRender .= "//-->\n</script>\n\n";	
 	
 	return $sToRender;
 }
@@ -44,7 +48,7 @@ function getAddPageSuccess() {
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=addUnit\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
+	$sToRender .= "<td></td><td align = right>" . generateControllerLink("listUnits", "", "<img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" />") . "</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
 	
@@ -71,8 +75,6 @@ function getAddPageFail() {
 	return $sToRender;
 }
 
-
-// if edition is successful print otu success page
 function getPageFail() {	
 	global $default;
 			
@@ -87,10 +89,9 @@ function getPageFail() {
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
 	
-	
 	return $sToRender;
 }
-// if edition is successful print otu success page
+
 function getAddPageToOrgFail() {	
 	global $default;
 			
@@ -106,23 +107,15 @@ function getAddPageToOrgFail() {
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
 	
-	
 	return $sToRender;
 }
 
-
-// show the list box when no unit selected
-// then shows a text box with the unit's name
-function getOrgDisplay($oOrg) {
+/**
+ * Displays a drop down list of organisations
+ */
+function getOrgDisplay() {
 	global $default;
-	if (!isset($oOrg)) {
-		$oPatternListBox = & new PatternListBox($default->owl_organisations_table, "name", "id", "fOrgID");
-		return $oPatternListBox->render();
-	} else {
-		return "<input type=\"hidden\" name=\"fOrgID\" value=\"" . $oOrg->iId . "\">\n" .
-		"" . $oOrg->getName() . "\">";
-	}
-	
+	$oPatternListBox = & new PatternListBox($default->owl_organisations_table, "name", "id", "fOrgID");
+	return $oPatternListBox->render();
 }
-
 ?>
