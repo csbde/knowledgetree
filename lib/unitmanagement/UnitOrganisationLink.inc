@@ -171,7 +171,7 @@ class UnitOrganisationLink {
 	* @return UnitsOrganisationsLink populated UnitsOrganisationLink object on successful query, false otherwise and set $_SESSION["errorMessage"]
 	*/
 	function & get($iUnitOrganisationLinkID) {
-		global $default;
+		global $default;	
 		$sql = $default->db;
 		$result = $sql->query("SELECT * FROM $default->owl_units_organisations_table WHERE id = $iUnitOrganisationLinkID");
 		if ($result) {
@@ -252,6 +252,22 @@ class UnitOrganisationLink {
 	        $this->iId= $id;
 	}
 	
+	
+	function getLinkByUnitID($unitId)
+	 {
+	       	global $default;
+	
+	    	$sql = $default->db;
+			$result = $sql->query("SELECT * FROM $default->owl_units_organisations_table WHERE unit_id = $unitId");
+			if ($result) {		    	
+	        	
+	        	if ($sql->next_record()) {
+	        		$oUnitOrganisationLink = & UnitOrganisationLink::get($sql->f("id"));
+	        		return $oUnitOrganisationLink;	        		
+	        	} else { return "error";}
+				
+			} else { return "apple"; }
+	}
 	
 }
 ?>
