@@ -74,7 +74,7 @@ if (checkSession()) {
 			
 			$oDocument = & Document::get($fDocumentID);	
 			$oPatternCustom = & new PatternCustom();
-			$oPatternCustom->setHtml(getEditPage($oDocument));
+			$oPatternCustom->setHtml(getViewPage($oDocument));
 			$main->setCentralPayload($oPatternCustom);
 			$main->setFormAction("$default->owl_root_url/control.php?action=modifyDocument&fDocumentID=" . $oDocument->getID());
 			$main->render();			
