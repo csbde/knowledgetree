@@ -47,7 +47,12 @@ function getFolderPath($iFolderID) {
 
 function getGroupDropDown($iGroupID) {
 	global $default;
-	$oPatternListBox = & new PatternListBox("$default->owl_groups_table", "name", "id", "fGroupID");
+    if (Permission::userIsSystemAdministrator()) {
+        $oPatternListBox = & new PatternListBox("$default->owl_groups_table", "name", "id", "fGroupID");
+    } else {
+        $oPatternListBox = & new PatternListBox("$default->owl_groups_table", "name", "id", "fGroupID", "GUL.unit_id=" . User::getUnitID($_SESSION["userID"]));
+        $oPatternListBox->setFromClause("INNER JOIN $default->owl_groups_units_table AS GUL ON ST.id = GUL.group_id");
+    }                                    
 	$oPatternListBox->setEmptyErrorMessage("There are no groups");
 	$oPatternListBox->setIncludeDefaultValue(false);
 	if (isset($iGroupID)) {
