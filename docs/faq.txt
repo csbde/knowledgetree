@@ -60,6 +60,13 @@ Answer:
 You're being redirected to the wrong webroot because of the following
 misconfigured entry:
 $default->rootUrl (this should = "/knowledgeTree" in your installation instead of the default "/dms")
+==========================================
+Question:
+Why does the the search not return words less than 3 characters long?
+Answer:
+To get MySql to search on words less than two letters depends on the version of MySql you are using.
+If it is less than version 4, then you have to recompile MySql, as this is an internally set variable.
+From version 4 onwards, the word length can be set dynamically - you'll just have to check the does on full text indexing to see where.
 
 Jam Warehouse – Smart Business Innovation
 Phone: +27 21 4477440
