@@ -35,7 +35,7 @@ class LDAPAuthenticator extends Authenticator {
      * @param string the LDAP server to connect to for validation (optional)
      * @param string the dn branch to perform the authentication against (optional)
      */
-    function LDAPAuthentication($sLdapServer = "", $sLdapDN = "") {
+    function LDAPAuthenticator($sLdapServer = "", $sLdapDN = "") {
         global $default;
 
         $this->sLdapServer = strlen($sLdapServer) > 0 ? $sLdapServer : $default->system->get("ldapServer");
@@ -70,7 +70,6 @@ class LDAPAuthenticator extends Authenticator {
      */
     function searchUsers($sUserNameSearch, $aAttributes) {
         global $default;
-
         // connect and search
         if ( $this->oLdap->connect() ) {
             // search for the users
