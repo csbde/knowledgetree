@@ -38,6 +38,11 @@ class FolderDocTypeLink extends KTEntity {
 		$this->iFolderID = $iNewFolderID;
 		$this->iDocumentTypeID = $iNewDocumentTypeID;
 	}
+
+        function _table() {
+            global $default;
+            return $default->folder_doctypes_table;
+        }
 	
 	/**
 	* Create the current folder in the database
