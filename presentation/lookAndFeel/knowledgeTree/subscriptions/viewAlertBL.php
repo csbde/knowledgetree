@@ -59,8 +59,5 @@ if (checkSession()) {
             $main->render();
         }
     }
-} else {
-    // redirect to no permission page
-    redirect("$default->uiUrl/noAccess.php");
 }
 ?>
