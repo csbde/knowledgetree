@@ -1,10 +1,9 @@
-<!-- Original:  desypfa@hotmail.com -->
-<!-- Modified:  Benjamin Wright, Editor -->
-<!-- This script and many more are available free online at -->
-<!-- The JavaScript Source!! http://javascript.internet.com -->
-
-function redirTimer(redirTime, redirURL) { 
-	self.setTimeout("self.location.href = redirURL;",redirTime); 
+/**
+ * Displays an alert message and then redirects to the specified url
+ */
+function redirectLink(alertMessage, url) {
+	alert(alertMessage);
+	self.location.href=url;
 }
 
 /**
