@@ -23,7 +23,7 @@ function getFolderPath($iFolderID) {
 
 function getDocumentLinkFolderCollaborationData($iFolderCollaborationID) {
 	global $default;	
-	$sQuery = "SELECT DDT.id, U.name AS username, DDT.document_title, D.name AS template_document_name, DDT.group_folder_approval_link_id, 'Edit' AS edit " .
+	$sQuery = "SELECT DDT.id, U.name AS username, DDT.document_title, D.name AS template_document_name, D.id AS template_document_id, DDT.group_folder_approval_link_id, 'Edit' AS edit " .
 				"FROM dependant_document_template AS DDT INNER JOIN groups_folders_approval_link AS GFAL ON DDT.group_folder_approval_link_id = GFAL.id " .
 				"INNER JOIN users AS U ON U.id = DDT.default_user_id " .
 				"LEFT OUTER JOIN documents AS D ON D.id = DDT.template_document_id " . 
@@ -32,13 +32,13 @@ function getDocumentLinkFolderCollaborationData($iFolderCollaborationID) {
 	//echo $sQuery;			
 	$aColumns = array("document_title", "username", "template_document_name","edit");
 	$aColumnHeaders = array("Document title", "Default creator", "Template document", "Edit");
-	$aColumnTypes = array(1,1,1,3);
-	$aDBColumnArray = array("id","group_folder_approval_link_id");
-	$aQueryStringVariableNames = array("fDependantDocumentTemplateID","fFolderCollaborationID");
-	$aLinkURLs = array(3=>"$default->rootUrl/control.php?action=linkDocFolderCollaboration");
+	$aColumnTypes = array(1,1,3,3);
+	$aDBColumnArray = array("id","group_folder_approval_link_id", "template_document_id");
+	$aQueryStringVariableNames = array("fDependantDocumentTemplateID","fFolderCollaborationID","fDocumentID");
+	$aLinkURLs = array(2=>"$default->rootUrl/control.php?action=viewDocument", 3=>"$default->rootUrl/control.php?action=linkDocFolderCollaboration");	
 	
 	$oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaders, "90%", $aLinkURLs, $aDBColumnArray,$aQueryStringVariableNames);
-	$oPatternTableSqlQuery->setTableHeading("Linked Documents");
+	$oPatternTableSqlQuery->setTableHeading("Dependant Documents");
 	$oPatternTableSqlQuery->setDisplayColumnHeadings(true);
 	$oPatternTableSqlQuery->setEmptyTableMessage("No dependant documents");
 	
@@ -67,7 +67,7 @@ function getEditPage() {
 	
 }
 
-function getAddPage($iFolderCollaborationID, $iFolderID, $iUnitID, $sDocumentTitle) {
+function getAddPage($iFolderCollaborationID, $iFolderID, $iUnitID, $sDocumentTitle, $sTemplateDocument, $iDocumentID) {
 	global $default;
 	$sToRender = renderHeading("Dependant documents");
     $sToRender .= getFolderPath($iFolderID);    
@@ -82,15 +82,26 @@ function getAddPage($iFolderCollaborationID, $iFolderID, $iUnitID, $sDocumentTit
 	$sToRender .= "<td>User</td><td>" . getUserDropDown($iUnitID) . "</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>Template document</td><td><input type=\"text\" DISABLED name=\"fTemplateDocument\" /><input type=\"button\" value=\"Browse\" onClick=\"newWindow('http://ktdev/control.php?action=templateBrowse','window2')\"></td>\n";	
+
+	//had a slight problem with netscape 4.7x - it doesn't support disabled.  So I had to use
+	//javascript to set the onFocus attribute to blur 
+	$bAddNetscapeScript = false;
+	if (! (($default->phpSniff->property("browser") == "moz") && ($default->phpSniff->property("version") <= "4.79")) ) {
+		//for any other browser but netscape 4.7 do this	
+		$sToRender .= "<td>Template document</td><td><input type=\"text\" DISABLED name=\"fTemplateDocument\" value=\"$sTemplateDocument\" /><input type=\"button\" value=\"Browse\" onClick=\"newWindow('http://ktdev/control.php?action=templateBrowse','window2')\"></td>\n";
+	}else {
+		//for netscape 4.7 do this
+		$sToRender .= "<td>Template document</td><td><input type=\"text\"  name=\"fTemplateDocument\" onblur=\"disable(document.MainForm.fTemplateDocument);\" /><input type=\"button\" value=\"Browse\" onClick=\"disable(document.MainForm.fTemplateDocument);newWindow('http://ktdev/control.php?action=templateBrowse','window2')\"></td>\n";
+		$bAddNetscapeScript = true;
+	}		
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";	
 	$sToRender .= "<td><table><tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/done.gif\" border=\"0\"/></td><td><a href=\"" . $default->rootUrl . "\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"/></a></td></tr></table>\n";	
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
-	$sToRender .= "<input type=\"hidden\" name=\"fTemplateDocumentID\" value=\"\" />\n";	
+	$sToRender .= "<input type=\"hidden\" name=\"fTemplateDocumentID\" value=\"-1\" />\n";	
 	
-	return $sToRender . "\n\n" . getValidationJavaScript() . "\n\n" . getBrowseJavaScript();
+	return $sToRender . "\n\n" . getValidationJavaScript() . "\n\n" . getBrowseJavaScript() . ($bAddNetscapeScript ? getNetscapeDisableScript() : "");
 }
 
 function getUserDropDown($iUnitID) {
@@ -131,6 +142,16 @@ function getBrowseJavaScript() {
     $sToRender .= "}\n";
     $sToRender .= "//--></script>\n";	
     return $sToRender;
+}
+
+function getNetscapeDisableScript() {
+	$sToRender = "<script language=\"JavaScript\"><!--\n ";
+	$sToRender .= "function disable(elem) {\n";
+  	$sToRender .= "\telem.onfocus=elem.blur;\n";
+	$sToRender .= "}\n";
+	$sToRender .= "//--></script>\n\n";
+	return $sToRender;
+	
 }
 
 	
