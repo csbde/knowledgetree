@@ -154,27 +154,21 @@ function getCommentBody($oComment, $iDocumentID, $oUser) {
 	$sBody = "";
 	$numChars = 80;  // number of chars in a line
 	
+
 	// Used for wrapping text that may be too long on one any line
 	for ($i=0; $i <= sizeof($aBody) ;$i++) {
-		if (strlen($aBody[$i]) >$numChars){
-			$loop = (strlen($aBody[$i]) - (strlen($aBody[$i])) % $numChars)/$numChars +1;			
-			
-			$j=$numChars;
-			for($j=0; $j < $loop; $j++ ) {
-				$sBody .= "<br>" . substr($aBody[$i],($j*$numChars), $numChars) . "";							
-			}  
-		} else { $sBody .= "<br>"  . $aBody[$i];	} 
-	}	
+		$sBody .= $aBody[$i] . "\n";
+	}
 			
 	$sToRender .= "<br><table width=100% border=0><tr ><td colspan=2><b>Author: </b>" . $oUser->getUserName() . "</td>\n";	
 	$sToRender .= "<td align=right>\n";	
 	$sToRender .= "<a href=\"" . generateControllerLink("addComment", "fDocumentID=" . $iDocumentID . "&fReplyComment=1&fCommentID=" . $oComment->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/reply.gif\" border=\"0\" /></a>";	
 	$sToRender .= "</td><td width=30><a href=\"" . generateControllerLink("viewDiscussion", "fForDiscussion=1&fDocumentID=$iDocumentID") . "\"><img src=\"$default->graphicsUrl/widgets/back.gif\" border=0 ><a></td></tr>\n"; 
-	$sToRender .= "<tr><td width=\"1\" style=\"background-color:#F5F6EE;\" valign=\"top\"><b>Subject: </b></td><td width=405 style=\"background-color:#F5F6EE;\">";	
+	$sToRender .= "<tr><td width=\"1\" style=\"background-color:#F5F6EE;\"><b>Subject: </b></td><td width=405 style=\"background-color:#F5F6EE;\">";	
 	$sToRender .= "<a>" . $oComment->getSubject() . "</a>";
 	$sToRender .= "</td><td colspan=2><b>Date: </b><font color=\"#056DCE\">" . $oComment->getDate() . "</font>&nbsp;&nbsp;&nbsp;</td></tr><tr><td colspan=4 valign=top>";			
 	$sToRender .= "<table width=10 border=0><tr><td><a>";
-	$sToRender .= $sBody; // Div Views as HTML
+	$sToRender .= wordwrap("<pre>" . $sBody . "</pre>", 80); // Div Views as HTML
 	$sToRender .= "</a></td></tr></table>";
 	$sToRender .= "</td>\n";	
 		
