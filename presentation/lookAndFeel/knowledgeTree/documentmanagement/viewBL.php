@@ -84,7 +84,7 @@ if (checkSession()) {
             $aFolderCollaboration = FolderCollaboration::getList("WHERE folder_id = " . $oDocument->getFolderID());
 			if (count($aFolderCollaboration) > 0) {
 				//if the the folder has collaboration steps set up
-				$aFolderUserRoles = FolderUserRole::getList("WHERE document_id = " . $fDocumentID);
+				$aFolderUserRoles = FolderUserRole::getList("document_id = " . $fDocumentID);
 				if (count($aFolderCollaboration) == count($aFolderUserRoles)) {
 					//if all the roles have been assigned we can start the collaboration process
 					$oDocument->beginCollaborationProcess();
