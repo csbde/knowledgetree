@@ -23,7 +23,7 @@ function getFolderPath($iFolderID) {
 
 function getDocumentLinkFolderCollaborationData($iFolderCollaborationID) {
 	global $default;	
-	$sQuery = "SELECT DDT.id, U.name AS username, DDT.document_title, D.name AS template_document_name, D.id AS template_document_id, DDT.group_folder_approval_link_id, 'Edit' AS edit " .
+	$sQuery = "SELECT DDT.id, GFAL.folder_id AS folder_id, U.name AS username, DDT.document_title, D.name AS template_document_name, D.id AS template_document_id, DDT.group_folder_approval_link_id, 'Edit' AS edit " .
 				"FROM dependant_document_template AS DDT INNER JOIN groups_folders_approval_link AS GFAL ON DDT.group_folder_approval_link_id = GFAL.id " .
 				"INNER JOIN users AS U ON U.id = DDT.default_user_id " .
 				"LEFT OUTER JOIN documents AS D ON D.id = DDT.template_document_id " . 
@@ -33,8 +33,10 @@ function getDocumentLinkFolderCollaborationData($iFolderCollaborationID) {
 	$aColumns = array("document_title", "username", "template_document_name","edit");
 	$aColumnHeaders = array("Document title", "Default creator", "Template document", "Edit");
 	$aColumnTypes = array(1,1,3,3);
-	$aDBColumnArray = array("id","group_folder_approval_link_id","template_document_id");
-	$aQueryStringVariableNames = array("fDependantDocumentTemplateID", "fFolderCollaborationID", "fDocumentID");
+	//$aDBColumnArray = array("id","group_folder_approval_link_id","template_document_id");
+	$aDBColumnArray = array("id","group_folder_approval_link_id","folder_id");
+	//$aQueryStringVariableNames = array("fDependantDocumentTemplateID", "fFolderCollaborationID", "fDocumentID");
+	$aQueryStringVariableNames = array("fDependantDocumentTemplateID","fFolderCollaborationID","fFolderID");
 	$aLinkURLs = array(2=>"$default->rootUrl/control.php?action=viewDocument", 3=>"$default->rootUrl/control.php?action=viewDependantDocument&fForEdit=1");	
 	
 	$oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaders, "90%", $aLinkURLs, $aDBColumnArray,$aQueryStringVariableNames);
@@ -63,9 +65,45 @@ function getViewPage($iFolderCollaborationID, $iFolderID) {
 	return $sToRender;
 }
 
-function getEditPage() {
+function getEditPage($iFolderID, $iDependantDocumentID, $iFolderCollaborationID, $sDocumentTitle, $sTemplateDocumentName, $iDocumentID, $iUserID) {
+	global $default;
+	$iDefaultUserUnitID = User::getUnitID($iUserID);
 	
+	$sToRender = renderHeading("Dependant documents");
+    $sToRender .= getFolderPath($iFolderID);    
+	$sToRender .= "<table border=\"0\" width=\"100%\">\n";	
+	$sToRender .= "<tr>\n";	
+	$sToRender .= "<td>Document title</td><td><input type=\"text\" name=\"fDocumentTitle\" value=\"$sDocumentTitle\" /></td>\n";
+	$sToRender .= "</tr>\n";
+	$sToRender .= "<tr>\n";
+	$sToRender .= "<td>User's Unit</td><td>" . getUnitDropDown($iFolderCollaborationID, $iFolderID, $iDefaultUserUnitID) . "</td>\n";
+	$sToRender .= "</tr>\n";
+	$sToRender .= "<tr>\n";
+	$sToRender .= "<td>User</td><td>" . getUserDropDown($iDefaultUserUnitID, $iUserID) . "</td>\n";
+	$sToRender .= "</tr>\n";
+	$sToRender .= "<tr>\n";
+
+	//had a slight problem with netscape 4.7x - it doesn't support disabled.  So I had to use
+	//javascript to set the onFocus attribute to blur 
+	$bAddNetscapeScript = false;
+	if (! (($default->phpSniff->property("browser") == "moz") && ($default->phpSniff->property("version") <= "4.79")) ) {
+		//for any other browser but netscape 4.7 do this	
+		$sToRender .= "<td>Template document</td><td><input type=\"text\" DISABLED name=\"fTemplateDocument\" value=\"$sTemplateDocumentName\" /><input type=\"button\" value=\"Browse\" onClick=\"newWindow('http://ktdev/control.php?action=templateBrowse','window2')\"></td>\n";
+	}else {
+		//for netscape 4.7 do this
+		$sToRender .= "<td>Template document</td><td><input type=\"text\"  value=\"$sTemplateDocumentName\" name=\"fTemplateDocument\" onblur=\"disable(document.MainForm.fTemplateDocument);\" /><input type=\"button\" value=\"Browse\" onClick=\"disable(document.MainForm.fTemplateDocument);newWindow('http://ktdev/control.php?action=templateBrowse','window2')\"></td>\n";
+		$bAddNetscapeScript = true;
+	}		
+	$sToRender .= "</tr>\n";
+	$sToRender .= "<tr>\n";	
+	$sToRender .= "<td><table><tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/update.gif\" border=\"0\"/></td><td><a href=\"" . $default->rootUrl . "/control.php?action=viewDependantDocument&fFolderID=$iFolderID&fFolderCollaborationID=$iFolderCollaborationID\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"/></a></td></tr></table>\n";	
+	$sToRender .= "</tr>\n";
+	$sToRender .= "</table>\n";
+	$sToRender .= "<input type=\"hidden\" name=\"fTemplateDocumentID\" value=\"-1\" />\n";	
+	
+	return $sToRender . "\n\n" . getValidationJavaScript() . "\n\n" . getBrowseJavaScript() . ($bAddNetscapeScript ? getNetscapeDisableScript() : "");
 }
+
 
 function getAddPage($iFolderCollaborationID, $iFolderID, $iUnitID, $sDocumentTitle, $sTemplateDocument, $iDocumentID) {
 	global $default;
@@ -96,7 +134,7 @@ function getAddPage($iFolderCollaborationID, $iFolderID, $iUnitID, $sDocumentTit
 	}		
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";	
-	$sToRender .= "<td><table><tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/done.gif\" border=\"0\"/></td><td><a href=\"" . $default->rootUrl . "\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"/></a></td></tr></table>\n";	
+	$sToRender .= "<td><table><tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/done.gif\" border=\"0\"/></td><td><a href=\"" . $default->rootUrl . "/control.php?action=viewDependantDocument&fFolderID=$iFolderID&fFolderCollaborationID=$iFolderCollaborationID\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"/></a></td></tr></table>\n";	
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
 	$sToRender .= "<input type=\"hidden\" name=\"fTemplateDocumentID\" value=\"-1\" />\n";	
@@ -104,23 +142,28 @@ function getAddPage($iFolderCollaborationID, $iFolderID, $iUnitID, $sDocumentTit
 	return $sToRender . "\n\n" . getValidationJavaScript() . "\n\n" . getBrowseJavaScript() . ($bAddNetscapeScript ? getNetscapeDisableScript() : "");
 }
 
-function getUserDropDown($iUnitID) {
+function getUserDropDown($iUnitID, $iUserID = null) {
 	global $default;	
 	$oPatternListBox = & new PatternListBox($default->owl_users_table, "Name", "id", "fUserID", "GUL.unit_id = $iUnitID");
 	$sFromClause = "INNER join users_groups_link AS UGL ON UGL.user_id = ST.id " .
 					"INNER JOIN groups_units_link AS GUL ON GUL.group_id = UGL.group_id ";
 	$oPatternListBox->setFromClause($sFromClause);
+	if (isset($iUserID)) {
+		$oPatternListBox->setSelectedValue($iUserID);
+	}
 	return $oPatternListBox->render();
 	
 	
 }
 
-function getUnitDropDown($iFolderCollaborationID, $iFolderID, $iUnitID) {
+function getUnitDropDown($iFolderCollaborationID, $iFolderID, $iUnitID = null) {
 	global $default;	
 	$oPatternListBox = & new PatternListBox($default->owl_units_table, "Name", "id", "fUnitID");	
 	$oPatternListBox->setPostBackOnChange(true);
 	$oPatternListBox->setOnChangeAction("setActionAndSubmit('" . $_SERVER["PHP_SELF"] . "?fFolderID=$iFolderID&fFolderCollaborationID=$iFolderCollaborationID&fForAdd=1')");
-	$oPatternListBox->setSelectedValue($iUnitID);
+	if (isset($iUnitID)) {
+		$oPatternListBox->setSelectedValue($iUnitID);
+	}
 	return $oPatternListBox->render();
 }
 
