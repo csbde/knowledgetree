@@ -61,60 +61,66 @@ if (checkSession()) {
                         if ($fForStore) {
                             // make sure the user actually selected a file first
                             if (strlen($_FILES['fFile']['name']) > 0) {
-    
-                                // save the original document
-                                $sBackupPath = $oDocument->getPath() . "-" . $oDocument->getMajorVersionNumber() . "." . $oDocument->getMinorVersionNumber();
-                                copy($oDocument->getPath(), $sBackupPath);
-                                
-                                // update the document with the uploaded one
-                                if (PhysicalDocumentManager::uploadPhysicalDocument($oDocument, $fFolderID, "", $_FILES['fFile']['tmp_name'])) {
-                                    // now update the database                                
-                                    // overwrite size
-                                    $oDocument->setFileSize($_FILES['fFile']['size']);
-                                    // update modified date
-                                    $oDocument->setLastModifiedDate(getCurrentDateTime());
-                                    // flip the check out status
-                                    $oDocument->setIsCheckedOut(false);
-                                    // clear the checked in user id
-                                    $oDocument->setCheckedOutUserID(-1);
-                                    // bump the version numbers
-                                    if ($fCheckInType == "major") {
-                                        // major version number rollover
-                                        $oDocument->setMajorVersionNumber($oDocument->getMajorVersionNumber()+1);
-                                        // reset minor version number
-                                        $oDocument->setMinorVersionNumber(0);
-                                    } else if ($fCheckInType == "minor") {
-                                        $oDocument->setMinorVersionNumber($oDocument->getMinorVersionNumber()+1);
-                                    }
-    
-                                    // update it
-                                    if ($oDocument->update()) {
-    
-                                        // create the document transaction record
-                                        $oDocumentTransaction = & new DocumentTransaction($oDocument->getID(), $fCheckInComment, CHECKIN);
-                                        // TODO: check transaction creation status?
-                                        $oDocumentTransaction->create();
-                                        
-                                        // fire subscription alerts for the checked in document
-                                        $count = SubscriptionEngine::fireSubscription($fDocumentID, SubscriptionConstants::subscriptionAlertType("CheckInDocument"),
-                                                 SubscriptionConstants::subscriptionType("DocumentSubscription"),
-                                                 array( "folderID" => $oDocument->getFolderID(),
-                                                        "modifiedDocumentName" => $oDocument->getName() ));
-                                        $default->log->info("checkInDocumentBL.php fired $count subscription alerts for checked out document " . $oDocument->getName());
-    
-                                        //redirect to the document view page
-                                        redirect("$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $oDocument->getID());
-                                    } else {
-                                        // document update failed
-                                        $oPatternCustom->setHtml(renderErrorPage("An error occurred while storing this document in the database"));
-                                    }
-                                } else {
-                                    // reinstate the backup
-                                    copy($sBackupPath, $oDocument->getPath());
-                                    // remove the backup
-                                    unlink($sBackupPath);                                    
-                                    $oPatternCustom->setHtml(renderErrorPage("An error occurred while storing the new file on the filesystem"));
-                                }
+                            	// and that the filename matches
+                            	$default->log->info("checkInDocumentBL.php uploaded filename=" . $_FILES['fFile']['name'] . "; current filename=" . $oDocument->getFileName());
+    							if ($oDocument->getFileName() == $_FILES['fFile']['name']) {
+	                                // save the original document
+	                                $sBackupPath = $oDocument->getPath() . "-" . $oDocument->getMajorVersionNumber() . "." . $oDocument->getMinorVersionNumber();
+	                                copy($oDocument->getPath(), $sBackupPath);
+	                                
+	                                // update the document with the uploaded one
+	                                if (PhysicalDocumentManager::uploadPhysicalDocument($oDocument, $fFolderID, "", $_FILES['fFile']['tmp_name'])) {
+	                                    // now update the database                                
+	                                    // overwrite size
+	                                    $oDocument->setFileSize($_FILES['fFile']['size']);
+	                                    // update modified date
+	                                    $oDocument->setLastModifiedDate(getCurrentDateTime());
+	                                    // flip the check out status
+	                                    $oDocument->setIsCheckedOut(false);
+	                                    // clear the checked in user id
+	                                    $oDocument->setCheckedOutUserID(-1);
+	                                    // bump the version numbers
+	                                    if ($fCheckInType == "major") {
+	                                        // major version number rollover
+	                                        $oDocument->setMajorVersionNumber($oDocument->getMajorVersionNumber()+1);
+	                                        // reset minor version number
+	                                        $oDocument->setMinorVersionNumber(0);
+	                                    } else if ($fCheckInType == "minor") {
+	                                        $oDocument->setMinorVersionNumber($oDocument->getMinorVersionNumber()+1);
+	                                    }
+	    
+	                                    // update it
+	                                    if ($oDocument->update()) {
+	    
+	                                        // create the document transaction record
+	                                        $oDocumentTransaction = & new DocumentTransaction($oDocument->getID(), $fCheckInComment, CHECKIN);
+	                                        // TODO: check transaction creation status?
+	                                        $oDocumentTransaction->create();
+	                                        
+	                                        // fire subscription alerts for the checked in document
+	                                        $count = SubscriptionEngine::fireSubscription($fDocumentID, SubscriptionConstants::subscriptionAlertType("CheckInDocument"),
+	                                                 SubscriptionConstants::subscriptionType("DocumentSubscription"),
+	                                                 array( "folderID" => $oDocument->getFolderID(),
+	                                                        "modifiedDocumentName" => $oDocument->getName() ));
+	                                        $default->log->info("checkInDocumentBL.php fired $count subscription alerts for checked out document " . $oDocument->getName());
+	    
+	                                        //redirect to the document view page
+	                                        redirect("$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $oDocument->getID());
+	                                    } else {
+	                                        // document update failed
+	                                        $oPatternCustom->setHtml(renderErrorPage("An error occurred while storing this document in the database"));
+	                                    }
+	                                } else {
+	                                    // reinstate the backup
+	                                    copy($sBackupPath, $oDocument->getPath());
+	                                    // remove the backup
+	                                    unlink($sBackupPath);                                    
+	                                    $oPatternCustom->setHtml(renderErrorPage("An error occurred while storing the new file on the filesystem"));
+	                                }
+    							} else {
+	                                $sErrorMessage = "The file you selected does not match the current filename in the DMS.  Please try again.";
+	                                $oPatternCustom->setHtml(getCheckInPage($oDocument));
+    							}
                             } else {
                                 $sErrorMessage = "Please select a document by first clicking on 'Browse'.  Then click 'Check-In'";
                                 $oPatternCustom->setHtml(getCheckInPage($oDocument));
