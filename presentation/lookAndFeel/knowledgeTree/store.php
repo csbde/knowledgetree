@@ -10,10 +10,11 @@
 * @package presentation.lookAndFeel.knowledgeTree.documentmanagement
 */
 require_once("../../../config/dmsDefaults.php");
+require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
+require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
 
 $aKeys = array_keys($_POST);
-
-
+$iPrimaryKey;
 
 for ($i = 0; $i < count($aKeys); $i++) {	
 	$sRowStart = $aKeys[$i];		
@@ -134,6 +135,7 @@ for ($i = 0; $i < count($aKeys); $i++) {
 			//execute the query
 			$sql = $default->db;
 			$sql->query($sQuery);
+			$iPrimaryKey = $sql->insert_id();
 		} else {
 			//perform an update
 			$sQuery = "UPDATE $sTableName SET ";
@@ -182,6 +184,11 @@ for ($i = 0; $i < count($aKeys); $i++) {
 			$sql->query($sQuery);
 		}
 		
+		//need to do some special checks for folders
+		if (strcmp($sTableName, "folders") == 0) {			
+				$oFolder = Folder::get($iPrimaryKey);
+				$oFolder->update(true);				
+		}		
 	}
 }
 redirect(urldecode($fReturnURL));
