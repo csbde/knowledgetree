@@ -118,7 +118,20 @@ class SubscriptionEngine {
         if ($sql->query("SELECT user_id FROM " . Subscription::getTableName($iSubscriptionType) .  " " .
                         "WHERE " . Subscription::getIdFieldName($iSubscriptionType) .  " = $iExternalID")) {
             while ($sql->next_record()) {
-                $aUsers[] = & User::get($sql->f("user_id"));
+            	$iUserID = $sql->f("user_id");
+            	$oUser = & User::get($iUserID );
+            	if ($oUser) {
+                	$aUsers[] = $oUser;
+	        	} else {
+	        		$default->log->error("SubscriptionEngine::fireSubscription subscriber id=$iUserID doesn't exist");
+	        		// remove this users subscription
+	        		if ($sql->query("DELETE FROM " . Subscription::getTableName($iSubscriptionType) . " " .
+	        						"WHERE user_id = $iUserID")) {
+	        			$default->log->info("SubscriptionEngine::fireSubscription successfully removed subscription for removed user id=$iUserID");
+	        		} else {
+	        			$default->log->error("SubscriptionEngine::fireSubscription error removing subscription for user id=$iUserID");	        			
+	        		}
+	        	}
             }
         } else {
             $_SESSION["errorMessage"] = $lang_err_database;
