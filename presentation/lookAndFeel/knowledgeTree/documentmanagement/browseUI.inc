@@ -159,7 +159,7 @@ function renderPage($aResults, $sBrowseType) {
     $sToRender .=  "<table border=\"1\" width=\"100%\">\n";
 	$sToRender .= "\t<tr><td>";    
     switch ($sBrowseType) {
-        case "folder"       : $sToRender .= displayFolderPathLink(Folder::getFolderPathAsArray($aResults["folders"][0]->getID())); break;
+        case "folder"       : $sToRender .= displayFolderPathLink(Folder::getFolderPathAsArray($aResults["folders"][0]->getID()), Folder::getFolderPathNamesAsArray($aResults["folders"][0]->getID())); break;
         case "category"     : $sToRender .= displayCategoryPathLink($aResults["categories"]); break;
         case "documentType" : $sToRender .= displayDocumentTypePathLink($aResults["documentTypes"]); break;
     }

@@ -28,7 +28,7 @@ if (checkSession()) {
 
         if (!isset($fFolderName)) {
             require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");
-            //we're still browsing
+            //we're still browsing			
             if (Permission::userHasFolderWritePermission($fFolderID)) {
                 //if the user is allowed to add folders, then display the add button
                 $oPatternCustom->setHtml(renderBrowseAddPage($fFolderID));

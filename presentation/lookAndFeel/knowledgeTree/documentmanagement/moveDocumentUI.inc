@@ -2,7 +2,7 @@
 
 function getFolderPath($iFolderID) {
     global $default;
-    $sFolderPath = displayFolderPathLink(Folder::getFolderPathAsArray($iFolderID), "$default->owl_root_url/control.php?action=browse");
+    $sFolderPath = displayFolderPathLink(Folder::getFolderPathAsArray($iFolderID), Folder::getFolderPathNamesAsArray($iFolderID),  "$default->owl_root_url/control.php?action=browse");
     return "<table border=1 width = 100%><tr><td>$sFolderPath</td></tr></table>\n";
 }
 
