@@ -594,7 +594,7 @@ function printprefs() {
            }
           print("<TR><TD ALIGN=RIGHT BGCOLOR=$default->table_header_bg>$lang_owl_def_file_owner</TD><TD align=left><SELECT NAME=def_file_owner>");
 	   
-	   loop through users
+	   // loop through users
 	   foreach($users as $g) 
 	   {
                 print("<OPTION VALUE=$g[0] ");
