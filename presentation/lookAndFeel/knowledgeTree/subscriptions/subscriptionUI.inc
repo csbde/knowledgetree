@@ -65,7 +65,7 @@ function renderManagePage() {
     if (!$bNoSubscriptions) {
         $sToRender .= "<input type=\"image\" src=\"$default->graphicsUrl/widgets/unsubscribe.gif\"/></a>\n";
     }
-  	$sToRender .= "<a href=\"javascript:history.go(-1)\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></a>\n";
+  	$sToRender .= "<a href=\"$default->rootUrl/control.php?action=dashboard\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></a>\n";
 	$sToRender .= "</td></tr>\n";
     $sToRender .= "</table>\n";
     
