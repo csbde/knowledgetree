@@ -149,13 +149,10 @@ class SiteMap {
             // if you're a system administrator, you've got access to everything
            
            // check whether global var intialised
-            if ($this->isSysAdmin)
-            {
+            if ($this->isSysAdmin) {
             	$default->log->debug("-- SiteMap - checking whether a sys admin - GLOBAL VAR SET ");
             	return true; 
-            }
-			else if ($this->isSysAdmin = Permission::userIsSystemAdministrator()) 
-			{
+            } else if ($this->isSysAdmin = Permission::userIsSystemAdministrator()) {
             	$default->log->debug("-- SiteMap - checking whether a sys admin ..."); 
                 return true;
             } else {
@@ -390,7 +387,7 @@ class SiteMap {
     function getPageArray($action) {
         global $default;
 
-        $default->log->info("SiteMap::getPage: checking ($action, " . $_SESSION["userID"] . ")");
+        $default->log->info("SiteMap::getPage: checking ($action, " . (isset($_SESSION["userID"]) ? $_SESSION["userID"] : "") . ")");
         $groupIDs = array();
 
         // for each section
