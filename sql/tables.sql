@@ -213,10 +213,12 @@ icon_path CHAR(255)
 
 CREATE TABLE news ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
-image TEXT,
 synopsis VARCHAR(255) NOT NULL,
 body TEXT,
-rank INTEGER
+rank INTEGER,
+image TEXT,
+image_size INTEGER,
+image_mime_type_id INTEGER
 ) TYPE = InnoDB;
 
 CREATE TABLE organisations_lookup ( 
