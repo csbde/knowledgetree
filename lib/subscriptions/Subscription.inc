@@ -32,7 +32,7 @@ class Subscription extends KTEntity {
     /**
     * Primary key
     */
-    var $iID;
+    var $iId;
     /**
     * The ID of the user subscribed to the document
     */
@@ -70,7 +70,7 @@ class Subscription extends KTEntity {
         global $default;
 
         //id of -1 means that the object has not yet been stored in the database
-        $this->iID = -1;
+        $this->iId = -1;
         $this->iUserID = $iUserID;
         $this->iExternalID = $iExternalID;
         $this->iSubscriptionType = $iSubscriptionType;
@@ -85,7 +85,7 @@ class Subscription extends KTEntity {
     * @return integer primary key of subscription
     */
     function getID() {
-        return $this->iID;
+        return $this->iId;
     }
 
     /**
@@ -179,7 +179,7 @@ class Subscription extends KTEntity {
     function getAlertLink() {
         global $default;
         // TODO: add alerted icon
-        $sViewAlertParams = "fSubscriptionID=" . $this->iID . "&fSubscriptionType=" . $this->iSubscriptionType;
+        $sViewAlertParams = "fSubscriptionID=" . $this->iId . "&fSubscriptionType=" . $this->iSubscriptionType;
 
         if ($this->iSubscriptionType == SubscriptionConstants::subscriptionType("DocumentSubscription")) {
             return generateControllerLink("viewAlert", $sViewAlertParams, "<img src=\"" . imgSrc("widgets/subsc.gif") . "\" border=\"0\"/>&nbsp;" . Document::getDocumentDisplayPath($this->iExternalID));
@@ -229,7 +229,7 @@ class Subscription extends KTEntity {
                                                     $sql->f(Subscription::getIdFieldName($iSubscriptionType)),
                                                     $iSubscriptionType,
                                                     $sql->f("is_alerted"));
-                $oSubscription->iID = $iSubscriptionID;
+                $oSubscription->iId = $iSubscriptionID;
                 return $oSubscription;
             } else {
                 $_SESSION["errorMessage"] = $lang_err_object_not_exist . "id = " . $iSubscriptionID . " table = " . Subscription::getTableName($iSubscriptionType);
@@ -261,7 +261,7 @@ class Subscription extends KTEntity {
                                                     $sql->f(Subscription::getIdFieldName($iSubscriptionType)),
                                                     $iSubscriptionType,
                                                     $sql->f("is_alerted"));
-                $oSubscription->iID = $sql->f("id");
+                $oSubscription->iId = $sql->f("id");
                 return $oSubscription;
             } else {
                 $_SESSION["errorMessage"] = $lang_err_object_not_exist . " extID=$iExternalID, uid=$iUserID; table = " . Subscription::getTableName($iSubscriptionType);
