@@ -76,6 +76,10 @@ class FolderCollaboration {
 		return $this->iUserID;
 	}
 	
+	function setUserID($iNewValue) {
+		$this->iUserID = $iNewValue;
+	}
+	
 	/**
 	* Create the current object in the database
 	*
