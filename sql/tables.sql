@@ -593,10 +593,10 @@ INSERT INTO time_unit_lookup (name) VALUES ("Years");
 INSERT INTO time_unit_lookup (name) VALUES ("Months");
 INSERT INTO time_unit_lookup (name) VALUES ("Days");
 
--- mrc organisation
+-- organisation
 INSERT INTO organisations_lookup (name) VALUES ("Default Organisation");
 
--- setup mrc units
+-- units
 INSERT INTO units_lookup (name) VALUES ("Default Unit");
 
 INSERT INTO units_organisations_link (unit_id, organisation_id) VALUES (1, 1);
@@ -627,6 +627,6 @@ INSERT INTO users (username, name, password, quota_max, quota_current, email, mo
 INSERT INTO users_groups_link (group_id, user_id) VALUES (3, 3);
             
 -- define folder structure
----- mrc organisation root folder
+---- organisation root folder
 INSERT INTO folders (name, description, parent_id, creator_id, unit_id, is_public)
              VALUES ("Root Folder", "Root Document Folder", 0, 1, 0, 0);
