@@ -58,6 +58,7 @@ function renderCheckInPage($oDocument) {
     
     $sToRender .= "<table>\n";
 	$sToRender .= "<tr>\n";
+	// FIXME: if the document name contains an apostrophe this js doesn't work
 	$sToRender .= "<td><input type=\"image\" border=\"0\" src =\"$default->graphicsUrl/widgets/checkin.gif\" value=\"Submit\" onClick=\"if (validRequired(document.MainForm.fFile, 'Check-In File') && validRequired(document.MainForm.fCheckInComment, 'Check-In Comment')) { return confirm('Are you sure you want to overwrite " . $oDocument->getName() . " with ' + document.MainForm.fFile.value + '?'); } else return false;\"/>\n";
 	$sToRender .= "<a href=\"$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $oDocument->getID() . "\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></a></td>\n";	    
 	$sToRender .= "</tr>\n";
@@ -95,6 +96,10 @@ function renderCheckInPage($oDocument) {
  * @param object the document to view and check out
  */
 function getCheckInPage($oDocument) {
-    return getPage($oDocument, false, renderCheckInPage($oDocument));
+    $sToRender .= renderHeading("Document Detail");
+    $sToRender .= renderDocumentPath($oDocument, false) . "\n\n";
+	$sToRender .= renderCheckInPage($oDocument);
+	$sToRender .= renderDocumentData($oDocument, $bEdit);   
+	return $sToRender;
 }
 ?>
