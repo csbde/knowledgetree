@@ -64,7 +64,7 @@ if ($loginAction == "loginForm") {
             case 1:
                 // start the session
                 $session = new Session();
-                $sessionID = $session->create($userDetails);
+                $sessionID = $session->create($userDetails["userID"]);
                 
                 // check for a location to forward to
                 if (isset($redirect) && strlen(trim($redirect))>0) {
