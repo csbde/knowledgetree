@@ -1,13 +1,13 @@
 <?php
 
-
-/* owl.lib.php
+/**
+ * $Id$
  *
- *  contains the major owl classes and functions
+ * Contains the major owl classes and functions.
  *
  * Copyright (c) 1999-2002 The Owl Project Team
  * Licensed under the GNU GPL. For full terms see the file COPYING.
- * @version v 1.1.1.1 2002/12/04
+ * @version $Revision$
  * @author michael
  * @package Owl
  */
@@ -137,15 +137,15 @@ class Owl_DB extends DB_Sql {
 	*	@return	int row count
 	*/
 	function & getLastQueryResultCount() {
-		if (isset($this->sLastTableName) {
+		if (isset($this->sLastTableName)) {
 			$sCountResultQuery = "SELECT COUNT(*) AS ResultCount FROM " . $this->sLastTableName;
 			
 			if (isset($this->sLastWhereClause)) {
 				sCountResultQuery . " WHERE " . $this->sLastWhereClause;
 			}
-			$sql = & $this->query($sCountResultQuery);
-			$sql->next_record();
-			return $sql->f("ResultCount");
+			$this->query($sCountResultQuery);
+			$this->next_record();
+			return $this->f("ResultCount");
 		} else {
 			return 0;
 		}
@@ -214,7 +214,7 @@ class Owl_Session {
 			$current = time();
 			$random = $this->sessuid . $current;
 			$this->sessid = md5($random);
-			$sql = ;
+			$sql = new Owl_DB;
  		
  			if(getenv("HTTP_CLIENT_IP")) 
  			{
@@ -239,7 +239,7 @@ class Owl_Session {
 		}
 
 		// else we have a session id, try to validate it...
-		$sql = ;
+		$sql = new Owl_DB;
 		$sql->query("select * from $default->owl_sessions_table where sessid = '$this->sessid'");
 
 		// any matching session ids?
@@ -281,7 +281,7 @@ function notify_users($groupid, $flag, $parent, $filename, $title, $desc, $type)
                 global $default;
                 global $lang_notif_subject_new, $lang_notif_subject_upd, $lang_notif_msg;
                 global $lang_title, $lang_description;
-                $sql = ; 
+                $sql = new Owl_DB; 
 // BEGIN BUG 548994
                 // get the fileid
                 $path = find_path($parent);
@@ -346,7 +346,7 @@ function notify_users($groupid, $flag, $parent, $filename, $title, $desc, $type)
                                         					unlink("$default->owl_FileDir/$filename");
                                 					}
                                 					$file = fopen("$default->owl_FileDir$filename", 'wb');
-									$getfile = ;	
+                                                    $getfile = new Owl_DB;	
                                 					$getfile->query("select data,compressed from $default->owl_files_data_table where id='$fileid'");
                                 					while ($getfile->next_record()) 
                                 					{
@@ -428,7 +428,7 @@ function notify_users($groupid, $flag, $parent, $filename, $title, $desc, $type)
                                                                         }
                                                                         
                                                                         $file = fopen("$default->owl_FileDir$filename", 'wb');
-                                                                        $getfile = ;
+                                                                        $getfile = new Owl_DB;
                                                                         $getfile->query("select data,compressed from $default->owl_files_data_table where id='$fileid'");
                                                                         
                                                                         // get file check if compressed, if so uncompress 
@@ -511,7 +511,7 @@ function notify_users($groupid, $flag, $parent, $filename, $title, $desc, $type)
 function verify_login($username, $password) 
 {
 	global $default;
-	$sql = ; 
+	$sql = new Owl_DB; 
 	$query = "select * from $default->owl_users_table where username = '$username' and password = '" . md5($password) . "'";
 	$sql->query("select * from $default->owl_users_table where username = '$username' and password = '" . md5($password) . "'");
 	$numrows = $sql->num_rows($sql);
@@ -556,11 +556,12 @@ function verify_login($username, $password)
         // that is signing on.
         //
         $time = time() -  $default->owl_timeout;
-	$sql = ; $sql->query("delete from $default->owl_sessions_table where uid = '".$verified["uid"]."' and lastused <= $time ");
+        $sql = new Owl_DB; 
+        $sql->query("delete from $default->owl_sessions_table where uid = '".$verified["uid"]."' and lastused <= $time ");
         // Check if Maxsessions has been reached
         //
 
-	$sql = ; 
+        $sql = new Owl_DB; 
         $sql->query("select * from $default->owl_sessions_table where uid = '".$verified["uid"]."'");
 
 	if ($sql->num_rows($sql) >= $maxsessions && $verified["bit"] != 0) {
@@ -592,8 +593,8 @@ function verify_session($sess) {
         $sess = ltrim($sess);
 	$verified["bit"] = 0;
 	
-	$sql = ; 
-        $sql->query("select * from $default->owl_sessions_table where sessid = '$sess'");
+	$sql = new Owl_DB; 
+    $sql->query("select * from $default->owl_sessions_table where sessid = '$sess'");
 	$numrows = $sql->num_rows($sql);
 	$time = time();
 	
@@ -673,7 +674,8 @@ function verify_session($sess) {
 function fid_to_name($parent) 
 {
 	global $default;
-	$sql = ; $sql->query("select name from $default->owl_folders_table where id = $parent");
+	$sql = new Owl_DB; 
+    $sql->query("select name from $default->owl_folders_table where id = $parent");
 	while($sql->next_record()) 
 	{
 		return $sql->f("name");
@@ -696,7 +698,8 @@ function fid_to_name($parent)
 function flid_to_name($id) 
 {
 	global $default;
-	$sql = ; $sql->query("select name from $default->owl_files_table where id = $id");
+	$sql = new Owl_DB; 
+    $sql->query("select name from $default->owl_files_table where id = $id");
 	while($sql->next_record()) 
 	{
 		return $sql->f("name");
@@ -718,7 +721,8 @@ function flid_to_name($id)
 // Usable 
 function flid_to_filename($id) {
 	global $default;
-	$sql = ; $sql->query("select filename from $default->owl_files_table where id = $id");
+	$sql = new Owl_DB; 
+    $sql->query("select filename from $default->owl_files_table where id = $id");
 	while($sql->next_record()) 
 	{
 		return $sql->f("filename");
@@ -740,7 +744,8 @@ function flid_to_filename($id) {
 function owlusergroup($userid) 
 {
 	global $default;
-	$sql = ; $sql->query("select groupid from $default->owl_users_table where id = '$userid'");
+	$sql = new Owl_DB;
+    $sql->query("select groupid from $default->owl_users_table where id = '$userid'");
 	while($sql->next_record()) 
 	{
 		$groupid = $sql->f("groupid");
@@ -762,7 +767,8 @@ function owlusergroup($userid)
 // Usable 
 function owlfilecreator($fileid) {
 	global $default;
-	$sql = ; $sql->query("select creatorid from ".$default->owl_files_table." where id = '$fileid'");
+	$sql = new Owl_DB;
+    $sql->query("select creatorid from ".$default->owl_files_table." where id = '$fileid'");
 	while($sql->next_record()) 
 	{
 		$filecreator = $sql->f("creatorid");
@@ -785,7 +791,8 @@ function owlfilecreator($fileid) {
 function owlfoldercreator($folderid) 
 {
 	global $default;
-	$sql = ; $sql->query("select creatorid from ".$default->owl_folders_table." where id = '$folderid'");
+	$sql = new Owl_DB; 
+    $sql->query("select creatorid from ".$default->owl_folders_table." where id = '$folderid'");
 	while($sql->next_record()) 
 	{
 		$foldercreator = $sql->f("creatorid");
@@ -808,7 +815,8 @@ function owlfoldercreator($folderid)
 function owlfilegroup($fileid)
  {
 	global $default;
-	$sql = ; $sql->query("select groupid from $default->owl_files_table where id = '$fileid'");
+	$sql = new Owl_DB; 
+    $sql->query("select groupid from $default->owl_files_table where id = '$fileid'");
 	while($sql->next_record())
 	{
 		 $filegroup = $sql->f("groupid");
@@ -831,7 +839,8 @@ function owlfilegroup($fileid)
 // Usable  
 function owlfoldergroup($folderid) {
 	global $default;
-	$sql = ; $sql->query("select groupid from $default->owl_folders_table where id = '$folderid'");
+	$sql = new Owl_DB; 
+    $sql->query("select groupid from $default->owl_folders_table where id = '$folderid'");
 	while($sql->next_record()) 
 	{
 		$foldergroup = $sql->f("groupid");
@@ -855,7 +864,8 @@ function owlfoldergroup($folderid) {
 function owlfolderparent($folderid)
  {
 	global $default;
-	$sql = ; $sql->query("select parent from $default->owl_folders_table where id = '$folderid'");
+	$sql = new Owl_DB;
+    $sql->query("select parent from $default->owl_folders_table where id = '$folderid'");
 	while($sql->next_record()) 
 	{
 		$folderparent = $sql->f("parent");
@@ -879,7 +889,7 @@ function owlfolderparent($folderid)
 function owlfileparent($fileid) 
 {
 	global $default;
-	$sql = ; $sql->query("select parent from $default->owl_files_table where id = '$fileid'");
+	$sql = new Owl_DB; $sql->query("select parent from $default->owl_files_table where id = '$fileid'");
 	while($sql->next_record()) 
 	{
 		$fileparent = $sql->f("parent");
@@ -903,9 +913,9 @@ function owlfileparent($fileid)
 function fid_to_creator($id) {
 
 	global $default;
-	$sql = ; 
+	$sql = new Owl_DB; 
 	$sql->query("select creatorid from ".$default->owl_files_table." where id = '$id'");
-	$sql2 = ; 
+	$sql2 = new Owl_DB; 
 	while($sql->next_record()) 
 	{
 		$creatorid = $sql->f("creatorid");
@@ -931,7 +941,7 @@ function fid_to_creator($id) {
 function group_to_name($id) 
 {
 	global $default;
-	$sql = ; 
+	$sql = new Owl_DB; 
 	$sql->query("select name from $default->owl_groups_table where id = '$id'");
 	while($sql->next_record()) 
 	{
@@ -954,7 +964,7 @@ function group_to_name($id)
 function uid_to_name($id) 
 {
 	global $default;
-	$sql = ; 
+	$sql = new Owl_DB; 
 	$sql->query("select name from $default->owl_users_table where id = '$id'");
 	while($sql->next_record()) 
 	{
@@ -983,7 +993,7 @@ function uid_to_name($id)
 function prefaccess($id) {
 	global $default;
 	$prefaccess = 1;
-	$sql = ; $sql->query("select noprefaccess from $default->owl_users_table where id = '$id'");
+	$sql = new Owl_DB; $sql->query("select noprefaccess from $default->owl_users_table where id = '$id'");
 	while($sql->next_record()) 
 	{
 		$prefaccess = !($sql->f("noprefaccess"));
@@ -1012,7 +1022,7 @@ function gen_navbar($parent)
 	$new = $parent;
 	while ($new != "1")
 	 {
-		$sql = ; $sql->query("select parent from $default->owl_folders_table where id = '$new'");
+		$sql = new Owl_DB; $sql->query("select parent from $default->owl_folders_table where id = '$new'");
 		while($sql->next_record()) $newparentid = $sql->f("parent");
 		$name = fid_to_name($newparentid);
 		$navbar = "<A HREF='browse.php?sess=$sess&parent=$newparentid&expand=$expand&order=$order&$sortorder=$sort'>$name</A>/" . $navbar;
@@ -1041,7 +1051,7 @@ function get_dirpath($parent) {
         $navbar = "$name";
         $new = $parent;
         while ($new != "1") {
-                $sql = ; $sql->query("select parent from $default->owl_folders_table where id = '$new'");
+                $sql = new Owl_DB; $sql->query("select parent from $default->owl_folders_table where id = '$new'");
                 while($sql->next_record()) $newparentid = $sql->f("parent");
                 $name = fid_to_name($newparentid);
                 $navbar = "$name/" . $navbar;
@@ -1232,7 +1242,7 @@ function printError($message, $submessage) {
 	include("./lib/header.inc");
 
 	if(check_auth($parent, "folder_view", $userid) != "1") {
- 		$sql = ;
+ 		$sql = new Owl_DB;
                 $sql->query("select * from $default->owl_folders_table where id = '$parent'");
                 $sql->next_record();
                 $parent = $sql->f("parent");
@@ -1267,7 +1277,7 @@ function getprefs ( )
 {
 	global $default;
 
-	$sql = ;
+	$sql = new Owl_DB;
 	//$sql->query("select * from $default->owl_prefs_table");
 	$sql->query("select * from prefs");
 	$sql->next_record();
@@ -1311,7 +1321,7 @@ function gethtmlprefs ( )
 {
 	global $default;
 
-	$sql = ;
+	$sql = new Owl_DB;
 	$sql->query("select * from $default->owl_html_table");
 	$sql->next_record();
 
@@ -1649,7 +1659,7 @@ if(isset($default->owl_lang)) {
         die("$lang_err_lang_1 $langdir $lang_err_lang_2");
     } else {
 
-        $sql = ;
+        $sql = new Owl_DB;
         $sql->query("select * from $default->owl_sessions_table where sessid = '$sess'");       
         $sql->next_record();
         $numrows = $sql->num_rows($sql);
@@ -1672,7 +1682,7 @@ if(isset($default->owl_lang)) {
 } else {
     die("$lang_err_lang_notfound");
 }
-
+/*
 if ($sess) {
     gethtmlprefs();
     $ok = verify_session($sess);
@@ -1697,7 +1707,7 @@ if ($sess) {
 		exit;
     } else {
 		$lastused = time();
-		$sql = ;
+		$sql = new Owl_DB;
 		$sql->query("update $default->owl_sessions_table set lastused = '$lastused' where uid = '$userid'");
 	}
 }
@@ -1709,4 +1719,5 @@ if (!$sess && !$loginname && !$login) {
 		header("Location: " . $default->owl_root_url . "/index.php?login=1&fileid=$fileid&parent=$parent");
     }
 }
+*/
 ?>
