@@ -36,12 +36,12 @@ if(checkSession()) {
 		$main->setFormAction($_SERVER['PHP_SELF']);
 				
 		$sQuery = 	"SELECT id as DocFieldID, name as DocFieldName, data_type, is_generic, has_lookup, " . 
-					"'Edit', 'Delete', 'Edit Metadata' " .
+					"'Edit', 'Delete', 'Edit Lookups' " .
 					"FROM " . $default->owl_fields_table . " " .
 					"ORDER BY name";
 		
-	    $aColumns = array("DocFieldName", "data_type", "is_generic", "has_lookup","Edit", "Delete", "Edit Metadata" );
-	    $aColumnNames = array("Name", "Data type", "Generic?", "Lookup?", "Edit", "Delete", "Edit Metadata");
+	    $aColumns = array("DocFieldName", "data_type", "is_generic", "has_lookup","Edit", "Delete", "Edit Lookups" );
+	    $aColumnNames = array("Name", "Data type", "Generic?", "Lookup?", "Edit", "Delete", "Edit Lookups");
 	    $aColumnTypes = array(1,1,2,2,3,3,3);
 	    $aDBColumnArray = array("DocFieldID");
 	    $aQueryStringVariableNames = array("fDocFieldID");
