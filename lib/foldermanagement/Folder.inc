@@ -257,27 +257,51 @@ class Folder {
 	*
 	* @return boolean true on successful update, false otherwise and set $_SESSION["errorMessage"]
 	*/
-	function update() {
+	function update($bPathChange) {
 		global $default, $lang_err_database, $lang_err_object_key;
 		//can only update the object if it has already been stored
 		if ($this->iId >= 0) {
 			$sql = $default->db;
-			$result = $sql->query("UPDATE " . $default->owl_folders_table . " SET " .
+			$sQuery = "UPDATE " . $default->owl_folders_table . " SET " .
 							"name = '" . addslashes($this->sName) . "', " .
 							"description = '" . addslashes($this->sDescription) . "', " .
 							"parent_id = $this->iParentID, " .
 							"creator_id = $this->iCreatorID, " .
 							"document_type_id = $this->iDocumentTypeID, " .
-							"unit_id = $this->iUnitID, " . 
-							"is_public = " . ($this->bIsPublic ? 1 : 0) . " " .
-						"WHERE id = " . $this->iId);
+							"unit_id = $this->iUnitID, ";
+							if ($bPathChange) {
+								$sFullPath = $this->generateFullFolderPath($this->iParentID);								
+								$this->sFullPath = substr($sFullPath, 1, strlen($sFullPath));
+								$sParentFolderIDs = $this->generateParentFolderIDS($this->iParentID);
+								$this->sParentFolderIDs = substr($sParentFolderIDs, 1, strlen($sParentFolderIDs));
+								$sQuery .= "parent_folder_ids = '" . addslashes($this->sParentFolderIDs) . "'," .
+								  			"full_path = '" . addslashes($this->sFullPath) . "', ";
+							}
+							$sQuery .= "is_public = " . ($this->bIsPublic ? 1 : 0) . " " .
+										"WHERE id = " . $this->iId;
+			$result = $sql->query($sQuery);
 			if ($result) {
+				if ($bPathChange) {
+					//must update all the children paths
+					$this->updateChildrenPaths($this->iId, $sql);
+				}
 				return true;
 			}
 			$_SESSION["errorMessage"] = $lang_err_database;
 			return false;			
 		}
 		$_SESSION["errorMessage"] = $lang_err_object_key;		
+	}
+	
+	function updateChildrenPaths($iID, $sql) {
+		global $default;
+		$sql->query("SELECT id from $default->owl_folders_table WHERE parent_id = $iID");
+		while ($sql->next_record()) {
+			$oFolder = Folder::get($sql->f("id"));
+			$oFolder->update(true);
+			$this->updateChildrenPaths($sql->f("id"), $sql);
+		}
+		return;
 	}
 	
 	
