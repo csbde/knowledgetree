@@ -35,10 +35,11 @@ function searchCriteria ($var) {
 }
 
 function criteriaNumber ($var) {
-    $res = preg_replace('/^bmd(_?\d+)\D.*/', '\\1', $var);
+    $res = preg_replace('/^bmd(_?\d+)(\D.*)?/', '\\1', $var);
     if ($res !== false) {
         $res = strtr($res, '_', '-');
     }
+    var_dump($res);
     return $res;
 }
 
