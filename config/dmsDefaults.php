@@ -147,5 +147,4 @@ require_once("$default->owl_fs_root/lib/control.inc");
 require_once("$default->owl_fs_root/lib/database/db.inc");
 require_once("$default->owl_fs_root/lib/database/lookup.inc");
 require_once("$default->owl_fs_root/lib/dms.inc");
-require_once("$default->owl_fs_root/lib/Log.inc");
 ?>
