@@ -39,6 +39,9 @@ require_once("$default->fileSystemRoot/lib/database/lookup.inc");
 require_once("$default->fileSystemRoot/lib/System.inc");
 $default->system = new System();
 
+// hack to set org to use
+$default->organisationID = 1;
+
 if ($default->system->initialised()) {
     $aSettings = array("ldapServer", "ldapRootDn", "ldapServerType", "emailServer", "emailFrom", "emailFromName",
                        "emailAdmin", "emailAdminName",
