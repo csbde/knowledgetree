@@ -20,7 +20,7 @@ function getOrganisations() {
     $aDBColumnArray = array("orgID");
     $aQueryStringVariableNames = array("fOrgID");
     $aHyperLinkURL = array(	1=> "$default->rootUrl/control.php?action=editOrg",                       			
-                     		2=> "$default->rootUrl/control.php?action=removeOrg"); //"$default->rootUrl/control.php?action=removeUserFromGroup");
+                     		2=> "$default->rootUrl/control.php?action=removeOrg");
     $oSearchResults = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnNames, "100%", $aHyperLinkURL,$aDBColumnArray,$aQueryStringVariableNames);
 	$oSearchResults->setDisplayColumnHeadings(true);
     return $oSearchResults->render() ;	
