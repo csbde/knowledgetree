@@ -11,8 +11,8 @@
  * Licensed under the GNU GPL. For full terms see the file COPYING.
  *
  * @version $Revision$
- * @author <a href="mailto:michael@jamwarehouse.com">Michael Joseph</a>, Jam Warehouse (Pty) Ltd, South Africa
- * @package dmslib
+ * @author Michael Joseph <michael@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
+ * @package control
  */
 
 // main library routines and defaults
@@ -23,7 +23,9 @@ require_once("$default->owl_fs_root/lib/SiteMap.inc");
 // page start
 // -------------------------------
 
-if (checkSession()) {
+// check the session, but don't redirect if the check fails
+
+if (checkSessionAndRedirect(false)) {
     // session check succeeds, so default action should be the dashboard if no action was specified
     if (!isset($action)) {
         $action = "dashboard";
@@ -35,17 +37,19 @@ if (checkSession()) {
     }
 }
 
-// reset authorisation flag before checking access
-$_SESSION["authorised"] = false;
+// (if there is no userID on the session and the action that we're looking up
+//  from the sitemap requires group access ie. !Anonymous then redirect to no
+//  permission page)
 
-$default->log->info("control.php: checking ($action, " . $_SESSION["userID"] . ")");
+// reset authorisation flag before checking access
+$_SESSION["pageAccess"] = NULL;
+
 // check whether the users group has access to the requested page
 $page = $default->siteMap->getPage($action, $_SESSION["userID"]);
 
 $default->log->debug("retrieved page=$page from SiteMap");
 if (!$page) {
-    $default->log->info("control.php: permission denied for ($action, " . $_SESSION["userID"] . ")");
-    // this group doesn't have permission to access the page
+    // this user doesn't have permission to access the page
     // or there is no page mapping for the requested action
     
     // FIXME: redirect to no permission page
@@ -55,9 +59,8 @@ if (!$page) {
     exit;
 } else {
     // set authorised flag and redirect
-    $_SESSION["authorised"] = true;
-    $default->log->debug("control.php: ($action, " . $_SESSION["userID"] . ")set authorised flag:" . $_SESSION["authorised"]);
-    
+    $_SESSION["pageAccess"][$page] = true;
+    $default->log->debug("control.php: just set SESSION[\"pageAccess\"][$page]=" . $_SESSION["pageAccess"][$page]); 
     redirect($page);
 }
 ?>
