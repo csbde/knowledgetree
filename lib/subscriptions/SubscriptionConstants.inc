@@ -41,7 +41,8 @@ class SubscriptionConstants {
                              "ModifyDocument" => 7,
                              "CheckInDocument" => 8,
                              "CheckOutDocument" => 9,
-                             "MovedDocument" => 10);
+                             "MovedDocument" => 10,
+                             "ArchivedDocument" => 11);
         return $aChangeType[$sType];
     }
 }
