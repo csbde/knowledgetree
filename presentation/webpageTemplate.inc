@@ -47,8 +47,7 @@ $nwPayLoad ->setHtml($nwestLoad);
          
 // set up the west payload
 //get section links
-if($sectionName != "General")
-{
+if ($sectionName != "General") {
 	$sectionArray = $default->siteMap->getSectionLinks($sectionName);
 
 	//format the array..by taking first element off
@@ -58,10 +57,9 @@ if($sectionName != "General")
 	//create links
 	$westLinks = new PatternTableLinks($sectionArray["links"], $sectionArray["descriptions"], 50 , 1 ,1,null);
 	$westRender = $westLinks->render();
-}
-Else
-{
-	$westRender = "";
+} else {
+    $westLinks = new PatternTableLinks(array(), array(), 50 , 1 ,1,null);
+	$westRender = $westLinks->render();
 }
 
 //set up links
