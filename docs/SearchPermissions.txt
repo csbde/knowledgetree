@@ -1,0 +1,43 @@
+Search Permissions
+------------------
+
+Search Permissions allow the two site searches to determine if a user is
+allowed to have a document returned as a result of their search.
+
+The user can have permission for the following reasons:
+
+	1) The user is in a group that has permission to view documents
+	in the folder the document is in.
+
+	2) The user is the creator of the document.
+
+	3) The user is currently assigned a role in the document
+	approval/routing process.
+
+	4) The user is a systems administrator.
+
+There are two times when search permissions need to be updated - when
+the document's permissions change somehow, or when a user gains or loses
+membership to a group.
+
+Search permissions on a document needs to be updated when:
+
+	1) The document is created. (done)
+
+	2) New permissions are added to the folder that determines the
+	permissions on that document. (done)
+
+	3) Permissions are removed to the folder that determines the
+	permissions on that document. (done)
+
+	4) The folder that determines the permissions on the document
+	changes by copying permissions to a folder. (done)
+
+	5) The folder that determines the permissions on the document
+	changes by the document being moved. (not done yet)
+
+Search permissions of a user needs to be updated when:
+
+	1) The user is added to a group. (not done yet)
+
+	2) The user is removed from a group. (not done yet)
