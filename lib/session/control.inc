@@ -18,8 +18,6 @@
  * @param string the URL to forward to
  */
 function redirect($url) {
-    // everything is relative to the root url
-    $url = $default->owl_root_url . $url;
     header("Location: $url");
 }
 
@@ -30,29 +28,47 @@ function redirect($url) {
  * @param string the controller action
  * @param string additional querystring vars
  */
-function controllerRedirect($action, $queryString) {
+function controllerRedirect($sAction, $sQueryString) {
     global $default;
     // generate url
-    $ctlUrl = generateControllerUrl($action);
-    // append the rest of the url
-    $url = $ctlUrl . "&$queryString";
+    $url = generateControllerUrl($sAction, $sQueryString);
     // now redirect
     $default->log->debug("controllerRedirect: redirect to $url");
     redirect($url);
+}
+
+
+/**
+ * Generates a link
+ *
+ * @param string the url to link to
+ * @param string the querystring
+ * @param string the link text (optional)
+ * @return string the html link if the link text is specified, otherwise just the url
+ */
+function generateLink($sTargetPage, $sQueryString, $sLinkText = "") {
+    global $default;
+
+    if (strlen($sQueryString) > 0) {
+        $sQueryStringDelimiter = (strstr($sTargetPage, "?") ? "&" : "?");
+    }
+    $sLink = "http" . ($default->sslEnabled ? "s" : "") . "://" . $_SERVER["SERVER_NAME"] . $default->owl_root_url . "$sTargetPage$sQueryStringDelimiter$sQueryString";
+    return (strlen($sLinkText) > 0) ? "<a href=\"$sLink\">$sLinkText</a>" : $sLink;
 }
 
 /**
  * Returns a controller url.
  *
  * @param string the controller action to generate a url for
- * @param string additional querystring parameters
- * @return string the controller url
+ * @param string additional querystring parameters (optional)
+ * @return string the controller url, empty string if no action is supplied
  */
-function generateControllerUrl($action, $queryString = "") {
-    global $default;
-    $sUrl = strlen($action) > 0 ? $default->owl_root_url . "/control.php?action=$action" : "";
-    $sUrl .= strlen($queryString) > 0 ? "&$queryString" : "";
-    return $sUrl;
+function generateControllerUrl($sAction, $sQueryString = "") {
+    if (strlen($sAction) > 0) {
+        return generateLink("/control.php?action=$sAction", $sQueryString);
+    } else {
+        return "";
+    }
 }
 
 /**
@@ -63,8 +79,8 @@ function generateControllerUrl($action, $queryString = "") {
  * @param string the querystring (optional)
  * @return string the generated href
  */
-function generateControllerLink($action, $linkText, $queryString = "") {
-    return "<a href=\"https://" . $_SERVER["SERVER_NAME"] . generateControllerUrl($action, $queryString) . "\">$linkText</a>";
+function generateControllerLink($sAction, $sQueryString, $sLinkText = "") {
+    return generateLink("/control.php?action=$sAction", $sQueryString, $sLinkText);
 }
 
 /**
@@ -84,7 +100,8 @@ function checkSessionAndRedirect($bRedirect) {
         $default->log->debug("checkSession:: session check failed");
         if ($bRedirect) {
             // redirect to login with error message
-            $url = $default->owl_root_url . "/control.php?action=loginForm";
+            $url = generateControllerUrl("loginForm");
+            //$url = $default->owl_root_url . "/control.php?action=loginForm";
             $redirect = urlencode($_SERVER[PHP_SELF] . "?" . $_SERVER["QUERY_STRING"]);
             if ((strlen($redirect) > 1)) {
                 $default->log->debug("checkSession:: redirect url=$redirect");
