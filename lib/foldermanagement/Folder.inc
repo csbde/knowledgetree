@@ -465,7 +465,7 @@ class Folder {
         $_SESSION["errorMessage"] = $lang_err_database;
         return false;
     }
-	
+
 	/**
 	* Static function.
 	* Get the full path for a folder
@@ -686,13 +686,15 @@ class Folder {
 	/**
 	* Checks if a folder is a unit's root folder.
 	* A folder is assumed to be a unit's root folder if it has the
-	* same name as a unit
+	* same name as a unit and has an appropriate description
 	* 
 	*/
 	function folderIsUnitRootFolder($iFolderID) {
 		global $default;
-		$sQuery ="SELECT F.id FROM $default->folders_table AS F INNER JOIN $default->units_table AS U ON F.name LIKE U.name WHERE F.id = $iFolderID";
-		
+		$sQuery = "SELECT F.id FROM $default->folders_table AS F " .
+		          "INNER JOIN $default->units_table AS U ON F.name LIKE U.name " .
+		          "WHERE F.id = $iFolderID " .
+		          "AND F.description LIKE '%Unit Root Folder'";	
 		$sql = $default->db;
 		$sql->query($sQuery);
 		if ($sql->next_record()) {
@@ -719,7 +721,6 @@ class Folder {
             // no documents
             return false;
         }
-    }
+    }   
 }
-
 ?>
