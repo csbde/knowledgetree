@@ -18,8 +18,10 @@ require_once("../config/dmsDefaults.php");
  * @package presentation
  */
 
-// destroy the session
-Session::destroy();
+// logout
+$oAuth = new $default->authentication_class;
+$oAuth->logout();
+
 // redirect to root
 redirect((strlen($default->owl_root_url) > 0 ? $default->owl_root_url : "/"));
 ?>
