@@ -18,7 +18,7 @@ function getPage() {
 	//$aDropDownListTableNames = array(10=>"document_types_lookup");
 
 	// create a text field that is required 
-	$oPatternCreate = & new PatternCreate("Organisation", "Orgmanagement\\Organisation.inc",$aDisplayRowNames, $aParameterNumbers, $aDisplayColumnTypes, $aRequired);
+	$oPatternCreate = & new PatternCreate("Organisation", "orgmanagement/Organisation.inc",$aDisplayRowNames, $aParameterNumbers, $aDisplayColumnTypes, $aRequired);
 	$oPatternCreate->setUniqueName("organisation");
 	
 	$sToRender .= "<br></br>\n";
