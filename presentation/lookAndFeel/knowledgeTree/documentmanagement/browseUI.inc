@@ -68,11 +68,15 @@ function displayCategoryPathLink($aCategories) {
  * @param string the category name to display
  */
 function displayCategoryLink($sCategoryName) {
-    return generateLink($_SERVER["PHP_SELF"],
-                        "fBrowseType=category" .
-                        // if the category title is passed in, link back to the list of categories
-                        (($sCategoryName == "Categories") ? "" : "&fCategoryName=" . urlencode($sCategoryName)),
-                        $sCategoryName);
+    if ($sCategoryName != "") {
+        return generateLink($_SERVER["PHP_SELF"],
+                            "fBrowseType=category" .
+                            // if the category title is passed in, link back to the list of categories
+                            (($sCategoryName == "Categories") ? "" : "&fCategoryName=" . urlencode($sCategoryName)),
+                            $sCategoryName);
+    } else {
+        return false;
+    }
 }
 
 function renderCategoryResults($aResults) {   
@@ -82,7 +86,7 @@ function renderCategoryResults($aResults) {
     if ($aResults["categories"][0] == "Categories") {
         // loop through categories and display them
         for ($i=1; $i<count($aResults["categories"]); $i++) {
-            $sToRender .= "<tr><td bgcolor=\"" . getColour($i) . "\">" . displayCategoryLink($aResults["categories"][$i]) . "</td></tr>";
+            $sToRender .= "<tr><td bgcolor=\"" . getColour($i) . "\">" . displayCategoryLink($aResults["categories"][$i]) . "</td></tr>\n";
         }
     } else {
         // else the first entry is the category name, so display the documents in the category
