@@ -74,10 +74,6 @@ class BulkUploadManager {
         global $_BulkUploadManager_unzipCommand;
         $bHaveUnzipCommand = false;
 
-        if (substr(PHP_OS, 0, 3) == 'WIN') {
-            return false;
-        }
-
         if (file_exists($default->unzipCommand)) {
             $_BulkUploadManager_unzipCommand = $default->unzipCommand;
             return true;
