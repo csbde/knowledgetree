@@ -88,4 +88,27 @@ class KTEntity {
     }
 }
 
+class KTEntityUtil {
+    function &getList($sTable, $sClassName, $sWhereClause = null) {
+        $sQuery = "SELECT id FROM " . $sTable;
+        $aParams = array();
+        if (!is_null($sWhereClause)) {
+            if (is_string($sWhereClause)) {
+                $sQuery .= ' ' . $sWhereClause;
+            } else if (is_array($sWhereClause)) {
+                $sQuery .= ' ' . $sWhereClause[0];
+                $aParams = $sWhereClause[1];
+            } else {
+                return new PEAR_Error('Weird WhereClause passed');
+            }
+        }
+        $aIDs = DBUtil::getResultArrayKey(array($sQuery, $aParams), 'id');
+        $aRet = array();
+        foreach ($aIDs as $iID) {
+            $aRet[] =& call_user_func(array($sClassName, 'get'), $iID);
+        }
+        return $aRet;
+    }
+}
+
 ?>
