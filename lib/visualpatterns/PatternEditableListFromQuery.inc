@@ -117,15 +117,22 @@ class PatternEditableListFromQuery {
 		$sTDBGColour = $default->siteMap->getSectionColour($sSectionName, "td");
 		//records the columns to generate validation javascript for
 		$aValidationColumnNames = array();
-        
+
+        $this->sUniqueName .= KTUtil::randomString();
+
 		$sql = $default->db;		
 		$sql->query($this->sQuery);
 		if ($sql->next_record()) {;
+            $_SESSION["pelfq_" . $this->sUniqueName . "_tn"] = $this->sTableName;
+            $_SESSION["pelfq_" . $this->sUniqueName . "_id"] = $sql->f("id");
+            $_SESSION["pelfq_" . $this->sUniqueName . "_columns"] = $this->aStoreColumns;
+            $_SESSION["pageAccess"][$default->rootUrl . '/presentation/lookAndFeel/knowledgeTree/store.php'] = true;
+        
 			$sToRender = "";
 			$sToRender .= "<table border = 0, cellpadding = 5 " . (isset($this->iTableWidth) ? ", width = $this->iTableWidth" : "") . " >\n";
 			$sToRender .= "<input type=\"hidden\" name=\"unique_start_" . $this->sUniqueName . "\" value=\"\" />\n";
-			$sToRender .= "<input type=\"hidden\" name=\"$this->sUniqueName\" value=\"" . $sql->f("id") . "\" />\n";
-			$sToRender .= "<input type=\"hidden\" name=\"" . $this->sUniqueName . "_tn\" value=\"$this->sTableName\" />\n";
+			// $sToRender .= "<input type=\"hidden\" name=\"$this->sUniqueName\" value=\"" . $sql->f("id") . "\" />\n";
+			// $sToRender .= "<input type=\"hidden\" name=\"" . $this->sUniqueName . "_tn\" value=\"$this->sTableName\" />\n";
 			
 			if (isset($this->sTableHeading)) {
 						$sToRender .= "<caption align=\"top\"><b>$this->sTableHeading</b></caption>\n";

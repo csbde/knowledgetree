@@ -74,13 +74,18 @@ class PatternCreate {
     }
 	
 	function render() {
+        $this->sUniqueName .= KTUtil::randomString();
+        $_SESSION["pelfq_" . $this->sUniqueName . "_object"] = $this->sObject;
+        $_SESSION["pelfq_" . $this->sUniqueName . "_fn"] = $this->sObjectPath;
+        $_SESSION["pageAccess"][$default->rootUrl . '/presentation/lookAndFeel/knowledgeTree/create.php'] = true;
+
 		$sToRender = "<table border=\"0\">\n";
 		//unique_start marks the start of information to be parsed from the HTML page by create.php
 		$sToRender .= "<input type=\"hidden\" name=\"unique_start_" . $this->sUniqueName . "\" />\n";
 		//write the name of the object to be created
-		$sToRender .= "<input type=\"hidden\" name=\"" . $this->sUniqueName . "_object\" value=\"" . $this->sObject . "\" />\n";
+		// $sToRender .= "<input type=\"hidden\" name=\"" . $this->sUniqueName . "_object\" value=\"" . $this->sObject . "\" />\n";
 		//name of folder in lib directory in which object .inc file is located
-		$sToRender .= "<input type=\"hidden\" name=\"" . $this->sUniqueName . "_fn\" value=\"" . $this->sObjectPath . "\" />\n";
+		// $sToRender .= "<input type=\"hidden\" name=\"" . $this->sUniqueName . "_fn\" value=\"" . $this->sObjectPath . "\" />\n";
 		for ($i = 0; $i < count($this->aDisplayRowNames); $i++) {
 			$sToRender .= "<tr>\n";	
 			//write the parameter number of this value in the object's constructor
