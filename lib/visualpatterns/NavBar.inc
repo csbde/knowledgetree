@@ -209,7 +209,7 @@ class NavBar {
         $sToRender .= "\t\tsetActionAndSubmitSearch(newAction);\n";
         $sToRender .= "\t}\n";
         $sToRender .= "}\n";
-        $sToRender .= "-->\n";
+        $sToRender .= "//-->\n";
         $sToRender .= "</SCRIPT>\n\n";
         return $sToRender;
     }
