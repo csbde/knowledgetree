@@ -2,6 +2,11 @@
 
 require_once("$default->owl_fs_root/lib/security/permission.inc");
 
+// define access constants
+define("SA", 0);
+define("UA", 1);
+define("A", 2);
+
 /**
  * $Id$
  * 
@@ -77,6 +82,47 @@ class SiteMap {
     }
     
     /**
+     * Returns true if the user has the necessary rights to access
+     * a sitemap entry
+     *
+     * @param int the required access (defined above class)
+     * @return boolean true if the user has the access, else false.
+     */
+    function hasPermission($requiredAccess) {
+        // sitemap access rules:
+        // if anonymous
+        // or the user is in the required group 
+        // or the user is a SA
+        switch ($requiredAccess) {
+            case A  : // everyone has access to anonymous pages
+                      return true;
+                      break;
+                      
+            case UA : // check that this user is in a group with unit admin access
+                      // or is a system adminstrator
+                      if (Permission::userIsSystemAdministrator() ||
+                          Permission::userIsUnitAdministrator()) {
+                          return true;
+                      } else {
+                          return false;
+                      }
+                      break;
+                      
+            case SA : // check that this user is a system administrator
+                      if (Permission::userIsSystemAdministrator()) {
+                          return true;
+                      } else {
+                         return false;
+                      }
+                      break;                     
+        }
+        // if we haven't returned by here, $requiredAccess is unknown
+        
+        // TODO: add a check in addPage/addDefaultPage
+        return false;
+    }
+    
+    /**
      * Returns controller links for a section
      *
      * @param string the section to return links for
@@ -89,12 +135,8 @@ class SiteMap {
             $results = array("descriptions" => array(), "links" => array());
             
             // need to loop through all (groupName, page) arrays in this section
-            foreach ($this->siteMapArray[$sSectionName] as $requiredGroupName => $pages) {
-                // if anonymous
-                // or the user is in the required group or the user is the SA
-                if ( ($requiredGroupName == "Anonymous") ||
-                     ( Permission::userIsInGroupName($requiredGroupName) || 
-                       Permission::userIsInGroupName("System Administrators") ) ) {
+            foreach ($this->siteMapArray[$sSectionName] as $requiredAccess => $pages) {
+                if ($this->hasPermission($requiredAccess)) {
                     foreach ($pages as $action => $pageDetail) {
                         // add this array to the resultset array
                         $results["descriptions"][] = $pages[$action]["description"];
@@ -130,24 +172,20 @@ class SiteMap {
         foreach ($this->siteMapArray as $section => $valArr) {
             $default->log->debug("Sitemap::getPage section=$section");
             // for each group, page array combination
-            foreach ($valArr as $requiredGroupName => $pageArr) {
+            foreach ($valArr as $requiredAccess => $pageArr) {
                 // now loop through pages until we find the right one
                 foreach ($pageArr as $ackshin => $page) {
                     if ($ackshin == $action) {
-                        $default->log->debug("Sitemap::getPage current requiredGroup=$requiredGroupName, action=$ackshin");
-                        // if anonymous
-                        // or the user is in the required group or the user is the SA
-                        if ( ($requiredGroupName == "Anonymous") ||
-                             ( Permission::userIsInGroupName($requiredGroupName) || 
-                               Permission::userIsInGroupName("System Administrators") ) ) {
+                        $default->log->debug("Sitemap::getPage current requiredAccess=$requiredAccess, action=$ackshin");
+                        if ($this->hasPermission($requiredAccess)) {
                             return $page["page"];
                         }
                     }
                 }
             }
         }
-        // if the function hasn't returned already then the specified
-        // userGroup does not have access to the action
+        // if the function hasn't returned already then the current
+        // user does not have access to the action
         $default->log->info("Sitemap::getPage: access denied for ($action, " . $_SESSION["userID"] . ")");
         return false;
     }
