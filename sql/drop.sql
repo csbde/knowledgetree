@@ -1,7 +1,6 @@
 DROP TABLE active_sessions;
 DROP TABLE document_fields;
 DROP TABLE document_fields_link;
-DROP TABLE document_fields_lookup;
 DROP TABLE document_transaction_types_lookup;
 DROP TABLE document_transactions;
 DROP TABLE document_type_fields_link;
