@@ -123,7 +123,8 @@ if (checkSession()) {
                         }
                     } else {
                         // you don't have this doc checked out
-                        $oPatternCustom->setHtml(renderErrorPage("You can't check in this document because its checked out by " . User::getName($oDocument->getCheckedOutUserID())));
+                        $oUser = User::get($oDocument->getCheckedOutUserID()); 
+                        $oPatternCustom->setHtml(renderErrorPage("You can't check in this document because its checked out by " . $oUser->getName()));
                     }
                 } else {
                     // this document isn't checked out
