@@ -63,13 +63,19 @@ class KTInit {
         require_once("$default->fileSystemRoot/lib/Log.inc");
         $default->log = new Log($default->fileSystemRoot . "/log", $default->logLevel);
         $res = $default->log->initialiseLogFile();
-        KTInit::handleInitError($res);
+        if (PEAR::isError($res)) {
+            KTInit::handleInitError($res);
+        }
         $default->queryLog = new Log($default->fileSystemRoot . "/log", $default->logLevel, "query");
         $res = $default->queryLog->initialiseLogFile();
-        KTInit::handleInitError($res);
+        if (PEAR::isError($res)) {
+            KTInit::handleInitError($res);
+        }
         $default->timerLog = new Log($default->fileSystemRoot . "/log", $default->logLevel, "timer");
         $res = $default->timerLog->initialiseLogFile();
-        KTInit::handleInitError($res);
+        if (PEAR::isError($res)) {
+            KTInit::handleInitError($res);
+        }
     }
     // }}}
 
