@@ -12,7 +12,6 @@ function getCreatePage($iRoleID) {
 	
 	global $default;
 	
-	
 	$sQuery =  "SELECT * FROM $default->owl_roles_table WHERE id = $iRoleID";
 	$aDisplayColumns = array("name","can_read","can_write");
 	$aStoreColumns = array("name","can_read","can_write");
@@ -27,7 +26,6 @@ function getCreatePage($iRoleID) {
 		
     $sToRender .= "<table width=\"600\">" . renderHeading("Edit Role") . "</table>";
 	$sToRender .= "<table>\n";
-	$sToRender .= "<br></br>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>" . $oPattern->render() . "</td>\n";
@@ -39,14 +37,9 @@ function getCreatePage($iRoleID) {
 	
 	$sToRender .= "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/update.gif\" value=\"Update\" border=\"0\"/><a href=\"$default->rootUrl/control.php?action=addRole\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" /></a></td>\n";
 	$sToRender .= "</table>\n";
-		
-	
-		
+    
 	return $sToRender;
-	
-	
 }
-
 
 // if fails ..
 function getAddFailPage() {
@@ -55,8 +48,6 @@ function getAddFailPage() {
 			
     $sToRender .= "<table width=\"600\">" . renderHeading("Edit Role") . "</table>";
 	$sToRender .= "<table>\n";
-	$sToRender .= "<br></br>\n";
-	$sToRender .= "<tr><b>Add Role Failed:</b></tr>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>Sorry, Role Already Exists!</td>\n";
 	$sToRender .= "</tr>\n";
@@ -68,7 +59,6 @@ function getAddFailPage() {
 	$sToRender .= "</table>\n";
 		
 	return $sToRender;
-	
 }
 
 // if its the manual edit page..then display normally
@@ -77,14 +67,10 @@ function getEditPage($iRoleID) {
 	$oRole = null;
 	if (isset($iRoleID)) {
 		$oRole = Role::get($iRoleID);
-		
 	}
 	
-	
     $sToRender .= "<table width=\"600\">" . renderHeading("Edit Role") . "</table>";
-	$sToRender .= "<b>Edit Role Properties:</b>\n";
 	$sToRender .= "<table>\n";
-	$sToRender .= "<br></br>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>Role Name: </td><td>" . getRoleDisplay($oRole) . "</td>\n";
@@ -106,14 +92,20 @@ function getEditPage($iRoleID) {
 		$sToRender .= "</tr>\n";
 	}
 
-
 	$sToRender .= "<tr>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<td></td>" . getUpdateButton($oRole);	
 	$sToRender .= getCancelButton($oRole);	
 	$sToRender .= "</table>\n";
 	
-	
+	$sToRender .= "\n\n<script language=\"javascript\">\n<!--\n";
+	$sToRender .= "function validateForm(theForm) {\n";
+	$sToRender .= "\tif (!(validRequired(theForm.fRoleName, 'Role Name'))) {\n";
+	$sToRender .= "\t\treturn false;\n";
+	$sToRender .= "\t}\n";	
+	$sToRender .= "return true;\n}\n";
+	$sToRender .= "//-->\n</script>\n\n";
+
 	return $sToRender;
 }
 
