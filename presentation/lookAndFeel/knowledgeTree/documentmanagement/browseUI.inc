@@ -212,7 +212,7 @@ function renderFolderResults($aResults, $bTemplateBrowsing = false) {
             $sToRender .= "<td valign=\"bottom\">" . ($oCreator ? $oCreator->getName() : "&nbsp;") . "</td>";
             // modified date (TODO: add to db)
             $sToRender .= "<td valign=\"bottom\">&nbsp;</td>";
-            // document type (??: display one of the mapped document types?)
+            // document type (??: display one of the mapped document types? which one?)
             $sToRender .= "<td valign=\"bottom\">&nbsp;</td>";                        
             $sToRender .= "</tr>\n";
         }
@@ -308,6 +308,18 @@ function renderDocumentList($aResults, $sNoDocumentsMessage, $sNoPermissionMessa
 }
 
 /**
+ * #3426
+ * Appends folder and document counts to the last folder path
+ */
+function appendCounts($aFolderPath, $iFolderCount, $iDocumentCount) {
+	// append to the last path component and return
+	$aFolderPath[count($aFolderPath)-1] = $aFolderPath[count($aFolderPath)-1] . 
+										  " ($iFolderCount folder" . ($iFolderCount > 1 ? "s" : "") . 
+										  ", $iDocumentCount document" . ($iDocumentCount > 1 ? "s" : "") . ")";
+	return $aFolderPath;
+}
+
+/**
  * Displays the browse page- lists folders and documents
  *
  * @param array the browse results to display
@@ -326,7 +338,10 @@ function renderPage($aResults, $sBrowseType, $sSortBy, $sSortDirection, $bTempla
     
     $sToRender .= "<table border=\"0\" cellpadding=\"5\" width=\"100%\"><tr><td bgcolor=\"$sTDBGColour\">"; 
     switch ($sBrowseType) {
-        case "folder"       : $sToRender .= displayFolderPathLink(Folder::getFolderPathAsArray($aResults["folders"][0]->getID()), Folder::getFolderPathNamesAsArray($aResults["folders"][0]->getID())); break;
+        case "folder"       : $sToRender .= displayFolderPathLink(Folder::getFolderPathAsArray($aResults["folders"][0]->getID()),
+        														  appendCounts(Folder::getFolderPathNamesAsArray($aResults["folders"][0]->getID()), 
+        														  count($aResults["folders"])-1,
+        														  count($aResults["documents"]))); break;
         case "category"     : $sToRender .= displayCategoryPathLink($aResults["categories"]); break;
         case "documentType" : $sToRender .= displayDocumentTypePathLink($aResults["documentTypes"]); break;
     }
