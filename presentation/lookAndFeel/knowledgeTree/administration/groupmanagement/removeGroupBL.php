@@ -31,22 +31,22 @@ if (checkSession()) {
 				if (isset($fForDelete)) {
 					if ($oGroup->delete()) {
 						// FIXME: refactor getStatusPage in Html.inc
-						$oPatternCustom->setHtml(statusPage("Remove Group", "Group successfully removed!", "listGroups"));
+						$oPatternCustom->setHtml(statusPage("Remove Group", "Group successfully removed!", "", "listGroups"));
 					} else {
-						$oPatternCustom->setHtml(statusPage("Remove Group", "Group deletion failed!", "listGroups", "There was an error deleting this group.  Please try again later."));
+						$oPatternCustom->setHtml(statusPage("Remove Group", "Group deletion failed!", "There was an error deleting this group.  Please try again later.", "listGroups"));
 					}
 				} else {
 					$oPatternCustom->setHtml(getDeletePage($fGroupID));
 					$main->setFormAction($_SERVER["PHP_SELF"] . "?fForDelete=1");
 				}
 			} else {
-				$oPatternCustom->setHtml(statusPage("Remove Group", "This group is in a unit!", "listGroups", "This group can not be deleted because it belongs to a unit."));
+				$oPatternCustom->setHtml(statusPage("Remove Group", "This group is in a unit!", "This group can not be deleted because it belongs to a unit.", "listGroups"));
 			}					
 		} else {
-			$oPatternCustom->setHtml(statusPage("Remove Group", "This group has users!", "listGroups", "This group can not be deleted because there are still users in it."));
+			$oPatternCustom->setHtml(statusPage("Remove Group", "This group has users!", "This group can not be deleted because there are still users in it.", "listGroups"));
 		}
 	} else {
-		$oPatternCustom->setHtml(statusPage("Remove Group", "No group was selected for deletion", "listGroups"));
+		$oPatternCustom->setHtml(statusPage("Remove Group", "No group was selected for deletion", "", "listGroups"));
 	}
 	
 	$main->setCentralPayload($oPatternCustom);				

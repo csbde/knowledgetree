@@ -23,7 +23,7 @@ function renderHeading($sHeading, $sSectionName = "") {
     return $sToRender;	
 }
 
-function statusPage($sTitle, $sHeading, $sCancelAction, $sText = "") {
+function statusPage($sTitle, $sHeading, $sText = "", $sCancelAction, $sQueryString = "") {
     global $default;
     $sToRender .= renderHeading($sTitle);
     $sToRender .= "<table>\n";
@@ -31,7 +31,7 @@ function statusPage($sTitle, $sHeading, $sCancelAction, $sText = "") {
     $sToRender .= "<td><b>$sHeading</b></td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "<tr><td>$sText</td></tr>\n";
-    $sToRender .= "<tr><td align=\"right\">" . generateControllerLink("listGroups", "", "<img src =\"$default->graphicsUrl/widgets/back.gif\" border=\"0\"/>") . "</td></tr>\n";
+    $sToRender .= "<tr><td align=\"right\">" . generateControllerLink($sCancelAction, $sQueryString, "<img src =\"$default->graphicsUrl/widgets/back.gif\" border=\"0\"/>") . "</td></tr>\n";
     $sToRender .= "</table>\n";
     return $sToRender;
 }
