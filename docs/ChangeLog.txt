@@ -6,7 +6,7 @@ Features
 * Improved database by:
   - adding indexes on all important foreign key fields
   - changing CHAR fields to VARCHAR to save space
-* Added support for multiple unit administration (Group and User Management)s
+* Added support for multiple unit administration (Group and User Management)
 * TODO:Installation improved- removed all spurious E_NOTICES caused by inconsistent variable initialisation and usage (#989328)
 * TODO:Added additional LDAP configuration to add support for Novell NDIS 6.0 as an auth server (Hendrik Lachmann via #996172)
   
@@ -18,11 +18,9 @@ Bug Fixes
 
 TODO:
 #999478:  Apostrophe handling in all character fields
-
 #987156:  Security: Lack of access control and validation in generic store.php/create.php scripts.
 #989526:  Document metadata SQL bug
 #989622:  Discussion comment SQL bug
-
 
 Version 1.2.2
 * Tue May 26 2004 Michael Joseph <michael@jamwarehouse.com>
