@@ -145,7 +145,7 @@ class DependantDocumentTemplate {
 		//only update if the object has been stored
 		if ($this -> iId > 0) {
 			$sql = $default -> db;
-			$result = $sql -> query("UPDATE $default->owl_dependant_document_template_table SET document_title = '".addslashes($this -> sDocumentTitle)."', default_user_id = $this->iDefaultUserID, template_document_id = $this->iTemplateDocumentID, group_folder_approval_link_id = $this->iGroupFolderApprovalLinkID WHERE id = $this->iId");
+			$result = $sql -> query("UPDATE $default->owl_dependant_document_template_table SET document_title = '".addslashes($this -> sDocumentTitle)."', default_user_id = $this->iDefaultUserID, template_document_id = " . (($this->iTemplateDocumentID == null) ? "NULL" : $this->iTemplateDocumentID) . ", group_folder_approval_link_id = $this->iGroupFolderApprovalLinkID WHERE id = $this->iId");
 			if ($result) {
 				return true;
 			}
