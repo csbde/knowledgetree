@@ -20,7 +20,7 @@ function renderBrowseAddPage($fFolderID) {
 	$sToRender .= "\t<td>" . renderFolderList($fFolderID, "control.php?action=addFolder") . "<td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table><br>\n";
-	$sToRender .= "<table border=\"1\">\n";
+	$sToRender .= "<table border=\"0\">\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td colspan=\"2\"><b>New folder name:<b></td>\n";
 	$sToRender .= "</tr>\n";
