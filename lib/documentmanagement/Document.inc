@@ -11,7 +11,7 @@
 *
 */
 
-require_once("$default->owl_root_url/lib/foldermanagement/FolderLib.inc");
+require_once("$default->owl_fs_root/lib/foldermanagement/FolderLib.inc");
 
 class Document {
 	/** primary key */
@@ -42,7 +42,7 @@ class Document {
 	var $bIsCheckedOut;
 	
 	/**
-	* Create a new document
+	* Document class constructor
 	*
 	* @param $sName				File Name	
 	* @param $iSize				File size in bytes
@@ -50,9 +50,7 @@ class Document {
 	* @param $sDescription		Description
 	* @param $iMimeID			Primary key of file mime type
 	* @param $iFolderID			Primary key of folder to which document belongs	
-	*
-	* @return Document document on successful creation
-	*
+	*	
 	*/
 	function Document($sNewName, $sNewFileName, $iNewSize, $iNewCreatorID, $sNewDescription, $iNewMimeID, $iNewFolderID) {
 		$this->iId = -1;	//primary key not set as document is not stored yet
@@ -86,11 +84,12 @@ class Document {
 				$this->iId = $sql->insert_id();
 				return true;
 			}
-			$_SESSION["errorMessage"] = $lang_err_object_exists . "id = " . $this->iId;
-			return false;
+			$_SESSION["errorMessage"] = $lang_err_database;
+			return false;			
 		}
-		$_SESSION["errorMessage"] = $lang_err_database;
+		$_SESSION["errorMessage"] = $lang_err_object_exists . "id = " . $this->iId . " table = documents";
 		return false;
+		
 	}
 	
 	/**
@@ -130,7 +129,7 @@ class Document {
 	* Delete the current document from the database.  Set the primary key to -1 
 	* on successful deletion
 	*
-	* @return boolean true on successful deletion, false otherwise and set $_SESSION["errorMessage"]
+	* @return boolean true and reset id to -1 on successful deletion, false otherwise and set $_SESSION["errorMessage"]
 	*/
 	function delete() {	
 		global $default, $lang_err_database, $lang_err_object_key;
@@ -169,7 +168,7 @@ class Document {
 			$doc->setIsCheckedOut($sql->f("is_checked_out"));
 			return $doc;
 		}
-		$_SESSION["errorMessage"] = $lang_err_doc_not_exist . "id " . $iDocumentID;
+		$_SESSION["errorMessage"] = $lang_err_object_not_exist . "id = " $iDocumentID . " table = documents";
 		return false;		
 	}
 	
