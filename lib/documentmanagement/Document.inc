@@ -238,10 +238,10 @@ class Document {
         //if the id >= 0, then the object has already been created
         if ($this->iId < 0) {
             $sql = $default->db;
-			$this->sParentFolderIDs = $this->generateParentFolderIDS($this->getFolderID());
-			$this->sFullPath = substr($this->sFullPath, 1, strlen($this->sFullPath));
-			$this->sParentFolderIDs = $this->generateParentFolderIDS($this->iParentID);
-			$this->sParentFolderIDs = substr($this->sParentFolderIDs, 1, strlen($this->sParentFolderIDs));
+			$sFullPath = $this->generateFullFolderPath($this->iFolderID); 
+			$this->sFullPath = substr($sFullPath, 1, strlen($sFullPath));
+			$sParentFolderIDs = $this->generateParentFolderIDS($this->iFolderID);
+			$this->sParentFolderIDs = substr($sParentFolderIDs, 1, strlen($sParentFolderIDs));
             $result = $sql->query("INSERT INTO " . $default->owl_documents_table . " (document_type_id, name, filename, size, creator_id, modified, description, mime_id, folder_id, major_version, minor_version, is_checked_out, parent_folder_ids, full_path) " .
                                   "VALUES (" . $this->iDocumentTypeID . ", '" . addslashes($this->sName) . "', '" . addslashes($this->sFileName) . "', $this->iSize, $this->iCreatorID, '" . getCurrentDateTime() . "', '" . addslashes($this->sDescription) . "', $this->iMimeTypeID, $this->iFolderID, $this->iMajorVersion, $this->iMinorVersion, " . ($this->bIsCheckedOut ? 1 : 0) . ", '" . $this->sParentFolderIDs . "','" . addslashes($this->sFullPath) . "')");
             if ($result) {
