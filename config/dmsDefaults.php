@@ -174,7 +174,7 @@ $default->siteMap->addPage("addFolder", "/presentation/lookAndFeel/knowledgeTree
 $default->siteMap->addPage("addFolderDocType", "/presentation/lookAndFeel/knowledgeTree/foldermanagement/addFolderDocTypeBL.php", "Manage Documents", User, "");
 $default->siteMap->addPage("deleteFolderDocType", "/presentation/lookAndFeel/knowledgeTree/foldermanagement/deleteFolderDocTypeBL.php", "Manage Documents", User, "");
 $default->siteMap->addPage("editFolder", "/presentation/lookAndFeel/knowledgeTree/foldermanagement/editBL.php", "Manage Documents", UnitAdmin, "Modify Folder Properties");
-$default->siteMap->addPage("deleteFolder", "/presentation/lookAndFeel/knowledgeTree/foldermanagement/deleteFolderBL.php", "Manage Documents", UnitAdmin, "Delete A Folder");
+$default->siteMap->addPage("deleteFolder", "/presentation/lookAndFeel/knowledgeTree/foldermanagement/deleteFolderBL.php", "Manage Documents", UnitAdmin, "Delete Current Folder");
 
 
 // folder access
@@ -228,6 +228,7 @@ $default->siteMap->addPage("linkManagement", "/presentation/lookAndFeel/knowledg
 $default->siteMap->addPage("newsManagement", "/presentation/lookAndFeel/knowledgeTree/administration/admin.php?sectionName=newsAdministration", "Administration", SysAdmin, "Dashboard News Management");
 $default->siteMap->addPage("websiteManagement", "/presentation/lookAndFeel/knowledgeTree/administration/admin.php?sectionName=websiteAdministration", "Administration", SysAdmin, "Website Management");
 $default->siteMap->addPage("systemAdministration", "/presentation/lookAndFeel/knowledgeTree/administration/systemsettings/systemSettingsBL.php", "Administration", SysAdmin, "System Settings");
+$default->siteMap->addPage("archivedDocuments", "/presentation/lookAndFeel/knowledgeTree/administration/documentmanagement/manageArchivedDocumentsBL.php", "Administration", SysAdmin, "Restore Archived Documents");
 
 $default->siteMap->addSectionColour("Administration", "th", "056DCE");
 $default->siteMap->addSectionColour("Administration", "td", "6699CC");
@@ -378,6 +379,7 @@ require_once("$default->fileSystemRoot/phpmailer/class.phpmailer.php");
 require_once("$default->fileSystemRoot/lib/session/Session.inc");
 require_once("$default->fileSystemRoot/lib/session/control.inc");
 require_once("$default->fileSystemRoot/phpSniff/phpSniff.class.php");
+require_once("$default->fileSystemRoot/presentation/Html.inc");
 
 // instantiate phpsniffer
 $default->phpSniff = new phpSniff($_SERVER["HTTP_USER_AGENT"]);
