@@ -232,6 +232,18 @@ $lang_err_nameempty    	= "Folder name cannot be empty";
 $lang_err_document_type_does_not_exist = "The following document type does not exist: ";
 $lang_err_document_type_field_does_not_exist = "The following document type field does not exist: ";
 
+$lang_err_role_not_exist = "The following role does not exist: ";
+$lang_err_user_role = "The user is not assigned the role for the specified folder";
+$lang_err_user_group = "The user does not belong to this group: ";
+$lang_err_user_unitadmin_group = "The user is not part of the unit administrator group for this folder: ";
+
+$lang_err_user_folder_write = "The current user does not have write permission for the folder: ";
+$lang_err_user_folder_read = "The current user does not have permission to read this folder: ";
+
+$lang_err_folder_not_public = "This folder is not public: ";
+
+$lang_err_database = "Database error";
+
 //janu's change BEGIN 
 $lang_engine 		= "Owl Intranet Engine";
 $lang_version 		= "Version";
