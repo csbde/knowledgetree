@@ -41,21 +41,54 @@ if (checkSession()) {
     		if ($oDashboardNews->getRank() <> $fRank) {
     			$oDashboardNews->setRank($fRank);
     		}
-    		// if we have a new image
-    		// TODO: check that it is an image   		
-    		if (strlen($_FILES['fImage']['name']) > 0) { 
-				$oDashboardNews->setImageFile($_FILES['fImage']['tmp_name']);
-    		}
-    		
-    		if ($oDashboardNews->update()) {
-    			$default->log->info("editNewsBL.php successfully updated dashboard news id=$fNewsID");
-    			// redirect to view page
-    			redirect("$default->rootUrl/control.php?action=viewNews");
+    		// if we have a new image  		
+    		if (strlen($_FILES['fImage']['name']) > 0) {
+    			// return the size of the image
+    			$aSize = getimagesize($_FILES['fImage']['tmp_name']);
+    			// don't accept it if it isn't an image
+    			if (!$aSize) {
+    				$default->log->error("editNewsBL.php attempted to upload a non-image:" . $_FILES['fImage']['name']);
+		    		// display the edit form, with error message    		
+		    		$oContent->setHtml(renderEditNewsPage($oDashboardNews, "You may only upload an image."));
+    				
+    			} else {
+    				// we have an image, now check the size
+    				$iImgWidth = $aSize[0];
+    				$iImgHeight = $aSize[1];
+    				if (DashboardNews::checkImageSize($iImgWidth, $iImgHeight)) {
+    					// size is fine, so set it
+						$oDashboardNews->setImageFile($_FILES['fImage']['tmp_name']);
+
+						// store it
+			    		if ($oDashboardNews->update()) {
+			    			$default->log->info("editNewsBL.php successfully updated dashboard news id=$fNewsID");
+			    			// redirect to view page
+			    			redirect("$default->rootUrl/control.php?action=viewNews");
+			    		} else {
+			    			// update failed
+			    			$default->log->error("editNewsBL.php DB error updating dashboard news id=$fNewsID; ($fSynopsis, $fBody, $fRank)");
+				    		// display the edit form, with error message    		
+				    		$oContent->setHtml(renderEditNewsPage($oDashboardNews, "An error occurred while updating this news item."));
+			    		}    		
+												
+    				} else {
+    					// the image is too big
+			    		$oContent->setHtml(renderEditNewsPage($oDashboardNews, "The image you have submitted is too big (" . $iImgHeight . "x" . $iImgWidth . " > " . $oDashboardNews->getMaxImageDimensions() . "), please correct and retry"));    					
+    				}    			
+    			}
     		} else {
-    			// update failed
-    			$default->log->error("editNewsBL.php DB error updating dashboard news id=$fNewsID; ($fSynopsis, $fBody, $fRank)");
-    			$oContent->setHtml(renderErrorMessage("An error occurred while updating this news item."));
-    		}	    		
+				// store it
+	    		if ($oDashboardNews->update()) {
+	    			$default->log->info("editNewsBL.php successfully updated dashboard news id=$fNewsID");
+	    			// redirect to view page
+	    			redirect("$default->rootUrl/control.php?action=viewNews");
+	    		} else {
+	    			// update failed
+	    			$default->log->error("editNewsBL.php DB error updating dashboard news id=$fNewsID; ($fSynopsis, $fBody, $fRank)");
+	    			$oContent->setHtml(renderErrorMessage("An error occurred while updating this news item."));
+	    		}    		
+    		}    			    		
+    		
     	} else {
     		// display the edit form    		
     		$oContent->setHtml(renderEditNewsPage($oDashboardNews));
