@@ -232,16 +232,16 @@ function getViewPage($oDocument) {
     $sToRender .= "\t<table border = 0, width = 230>\n";
     $sToRender .= "\t<tr>\n";
     $sToRender .= "\t\t<td>" . wrapInTable(renderNonEditableDocumentRouting($oDocument)) . "</td>\n";
-    //$sToRender .= "\t\t<td>" . renderDocumentRouting($oDocument) . "</td>\n";
+    //$sToRender .= "\t\t<td>" . renderDocumentRouting($oDocument) . "</td>\n";	
+    $sToRender .= "\t</tr>";
 	if (Document::userIsPerformingCurrentCollaborationStep($oDocument->getID())) {
 		//if the current user is responsible for an active step in the collaboration process		
-		$sToRender .= "\t\t<td><table border=\"0\"><tr>\n";
+		$sToRender .= "\t\t<tr><td><table border=\"0\"><tr>\n";
 		$sToRender .= "\t\t<td><b>You currently have an active role<br> in the collaboration process</b></td>\n";				
 		$sToRender .= "\t\t<td align=\"center\"><a href=" . $_SERVER['PHP_SELF'] . "?fDocumentID=" . $oDocument->getID() . "&fCollaborationStepComplete=1><img src=\"$default->graphicsUrl/widgets/update.gif\" border=\"0\"/></a></td>\n";
 		$sToRender .= "\t\t<td align=\"center\"><a href=\"$default->rootUrl/control.php?action=collaborationStepReject&fDocumentID=$iDocumentID\"><img src=\"$default->graphicsUrl/widgets/reject.gif\" border=\"0\"/></a></td>\n";
 		$sToRender .= "\t\t</tr></table></td>\n";
 	}
-    $sToRender .= "\t</tr>";
     $sToRender .= "\t</table>";
     $sToRender .= "</td>\n";
     $sToRender .= "</tr>\n";
