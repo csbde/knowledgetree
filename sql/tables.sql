@@ -25,8 +25,8 @@ creator_id INTEGER NOT NULL
 CREATE TABLE discussion_comments ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 thread_id INTEGER NOT NULL,
-user_comment_id INTEGER NOT NULL,
-subject_comment_id INTEGER NOT NULL,
+user_id INTEGER NOT NULL,
+subject INTEGER NOT NULL,
 body TEXT,
 date date
 )TYPE = InnoDB;
