@@ -118,7 +118,7 @@ function getDetailsLDAPPage($sUserName, $aAttributes, $sUserIdentifier) {
 	return $sToRender;
 }
 
-function getJavascriptValidation($bLdap) {
+function getJavascriptValidation($bLdap = false) {
 	// validation starts
 	$sToRender .= "\n\n<script language=\"javascript\">\n<!--\n";
 	$sToRender .= "function validateForm(theForm) {\n";
