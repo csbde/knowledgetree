@@ -22,9 +22,9 @@
  */ 
 
 // install path
-$default->fileSystemRoot  = "/usr/local/www/dms";
+$default->fileSystemRoot  = "C:/eclipse/workspace/knowledgeTree";
 // server settings
-$default->serverName = "change.to.your.hostname";
+$default->serverName = "ktjacqui";
 // whether ssl is enabled or not
 $default->sslEnabled = false;
 // Change this to reflect the authentication method you are using
@@ -32,11 +32,14 @@ $default->sslEnabled = false;
 $default->authenticationClass = "DBAuthenticator";
 require_once("$default->fileSystemRoot/lib/authentication/$default->authenticationClass.inc");
 
+//enable folder hiding flag
+$default->folderHidingFlag = 1;
+
 // Database info
 $default->dbHost           = "localhost";
 $default->dbName           = "dms";
 $default->dbUser           = "dms";
-$default->dbPass           = "pass";
+$default->dbPass           = "";
 
 // Change this to reflect the database you are using
 //require("$default->fileSystemRoot/phplib/db_pgsql.inc");
