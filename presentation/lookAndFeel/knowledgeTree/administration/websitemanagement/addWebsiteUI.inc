@@ -1,12 +1,29 @@
 <?php
 /**
-* Presentation information for adding a unit
-*
-* @author Mukhtar Dharsey
-* @date 5 February 2003
-* @package presentation.lookAndFeel.knowledgeTree.
-*
-*/
+ * $Id$
+ *
+ * Add a website UI functions.
+ *
+ * Copyright (c) 2003 Jam Warehouse http://www.jamwarehouse.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ * @version $Revision$
+ * @author Mukhtar Dharsey, Jam Warehouse (Pty) Ltd, South Africa
+ * @package administration.websitemanagement
+ */
 // get add pages
 function getPage() {
 	global $default;
@@ -15,7 +32,7 @@ function getPage() {
 	$aParameterNumbers = array(0,1,2);
 	$aDisplayColumnTypes = array(1,1,3);
 	$aRequired = array(1,1,1);
-	$aDropDownListTableNames = array(2 => "$default->owl_users_table");
+	$aDropDownListTableNames = array(2 => "$default->users_table");
 	$aDropDownListValueColumns = array(2=>'id');
 	$aDropDownListDisplayColumns = array(2=>'username');
 

@@ -1,13 +1,29 @@
 <?php
 /**
-* Presentation information for renaming a User
-*
-* @author Mukhtar Dharsey
-* @date 5 February 2003
-* @package presentation.lookAndFeel.knowledgeTree.
-*
-*/
-
+ * $Id$
+ *
+ * Edit user UI functions.
+ *
+ * Copyright (c) 2003 Jam Warehouse http://www.jamwarehouse.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ * @version $Revision$
+ * @author Mukhtar Dharsey, Jam Warehouse (Pty) Ltd, South Africa
+ * @package administration.usermanagement
+ */
 // if its the manual edit page..then display normally
 function getEditPage($iUserID) {	
 	global $default;
@@ -37,7 +53,7 @@ function getUserDetailsPage($iUserID) {
 	global $default;
 	$oUser = null;
 	
-	$sQuery =  "SELECT * FROM $default->owl_users_table WHERE id = $iUserID";
+	$sQuery =  "SELECT * FROM $default->users_table WHERE id = $iUserID";
 	$aDisplayColumns = array( "username","name","email", "mobile", "email_notification", "max_sessions");
 	$aStoreColumns = array( "username","name","email", "mobile", "email_notification", "max_sessions") ;
 	$aColumnNames = array("Username: ","Name: ", "Email Address: ", "Mobile Number: ", "Email Notification: ", "Max Sessions: ");
@@ -45,7 +61,7 @@ function getUserDetailsPage($iUserID) {
 	$aDatabaseColumnTypes = array(1,1,1,1,2,1,1,1,1);
 	
 	// get list of User properties...name...text field...is_Sys_admin and is_unit_admin..checkboxes
-	$oPattern = & new PatternEditableListFromQuery($sQuery, $default->owl_users_table, $aDisplayColumns, $aStoreColumns, $aColumnNames, $aDisplayColumnTypes, $aDatabaseColumnTypes) ;
+	$oPattern = & new PatternEditableListFromQuery($sQuery, $default->users_table, $aDisplayColumns, $aStoreColumns, $aColumnNames, $aDisplayColumnTypes, $aDatabaseColumnTypes) ;
 	$oPattern->setUniqueName("userEdit");
 	$oPattern->setColumnsRequired(array(1,1,0,0,0,0));
 	
@@ -110,7 +126,7 @@ function getEditPageFail() {
 function getUserDisplay($oUser) {
 	global $default;
 	if (!isset($oUser)) {
-		$oPatternListBox = & new PatternListBox($default->owl_users_table, "username", "id", "fUserID");
+		$oPatternListBox = & new PatternListBox($default->users_table, "username", "id", "fUserID");
 		$oPatternListBox->setPostBackOnChange(true);
 		return $oPatternListBox->render();
 	} else {

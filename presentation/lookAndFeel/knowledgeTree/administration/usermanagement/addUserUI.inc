@@ -1,13 +1,29 @@
 <?php
 /**
-* Presentation information for adding a unit
-*
-* @author Mukhtar Dharsey
-* @date 5 February 2003
-* @package presentation.lookAndFeel.knowledgeTree.
-*
-*/
-
+ * $Id$
+ *
+ * Add user UI functions.
+ *
+ * Copyright (c) 2003 Jam Warehouse http://www.jamwarehouse.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ * @version $Revision$
+ * @author Mukhtar Dharsey, Jam Warehouse (Pty) Ltd, South Africa
+ * @package administration.usermanagement
+ */
 // display multiple users
 function getSelectUserPage($aResults) {
 	global $default;
@@ -165,14 +181,14 @@ function getGroupListBox() {
 	global $default;
 	if (Permission::userIsSystemAdministrator()) {
 	    // if this is the system administrator, prepend group names with unit name
-	    $oPatternListBox = & new PatternListBox($default->owl_groups_table, "name", "id", "fGroupID");
+	    $oPatternListBox = & new PatternListBox($default->groups_table, "name", "id", "fGroupID");
 	    $oPatternListBox->setFromClause("LEFT OUTER JOIN groups_units_link GUL on ST.id=GUL.group_id " .
 	                                    "LEFT OUTER JOIN units_lookup UL on GUL.unit_id=UL.id");
 	    $oPatternListBox->setCompositeDisplayName("DISTINCT COALESCE(CONCAT(CONCAT(UL.name, '-'),ST.name),ST.name)");
 	} else if (Permission::userIsUnitAdministrator()) {
 	    // else if this is a unit administrator, only display the groups in your unit
-	    $oPatternListBox = & new PatternListBox($default->owl_groups_table, "name", "id", "fGroupID");
-	    $oPatternListBox->setFromClause("INNER JOIN $default->owl_groups_units_table GUL on ST.id=GUL.group_id");
+	    $oPatternListBox = & new PatternListBox($default->groups_table, "name", "id", "fGroupID");
+	    $oPatternListBox->setFromClause("INNER JOIN $default->groups_units_table GUL on ST.id=GUL.group_id");
 	    $oPatternListBox->setWhereClause("GUL.unit_id=" . User::getUnitID($_SESSION["userID"]));
 	}
 	return $oPatternListBox->render();
