@@ -10,7 +10,7 @@
 */
 
 function getMetaData($aMetaTagIDs) {
-	global $default;
+	global $default;	
 	$sQuery = "SELECT name, id FROM $default->owl_fields_table ORDER BY name ASC";
 	
 	$sql = $default->db;
