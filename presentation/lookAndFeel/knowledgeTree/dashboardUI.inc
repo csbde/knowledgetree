@@ -40,31 +40,28 @@ function renderPendingWebDocuments($aPendingDocumentList) {
     }
 }
 
-
 function renderRestorationRequests($aRestorationRequests) {
     global $default;
 
     if (count($aRestorationRequests) > 0) {
         $sBgColor = "#9D9D7F"; 
-        $sToRender  = "\t\t\t<tr align=\"left\" bgcolor=\"$sBgColor\">\n";
-            
-        $sToRender .= "\t\t\t\t<th class=\"sectionHeading\" colspan=\"2\"><font color=\"ffffff\">Archived Document Restoration Requests</font></th>\n";
-        $sToRender .= "\t\t\t</tr>\n";
-        for ($i = 0; $i < count($aRestorationRequests); $i++) {
-            $oDocument = Document::get($aRestorationRequests[$i]->getDocumentID());
-            if ($oDocument) {
-	            $sToRender .= "\t\t\t<tr>\n";
-	            $sToRender .= "\t\t\t\t<td colspan=\"2\">" . generateControllerLink("viewDocument", "fDocumentID=" . $oDocument->getID(), "<img src=\"$default->graphicsUrl/widgets/dstatus.gif\" border=\"0\"/>&nbsp;" . $oDocument->getDisplayPath()) . "</td>\n";        
-	            $sToRender .= "\t\t\t</tr>\n";
-            }
-        }
-        return $sToRender;
     } else {
-        return "";
-    }	
+        $sBgColor = "#CECEBF";
+    }            
+    $sToRender  = "\t\t\t<tr align=\"left\" bgcolor=\"$sBgColor\">\n";
+        
+    $sToRender .= "\t\t\t\t<th class=\"sectionHeading\" colspan=\"2\"><font color=\"ffffff\">Archived Document Restoration Requests</font></th>\n";
+    $sToRender .= "\t\t\t</tr>\n";
+    for ($i = 0; $i < count($aRestorationRequests); $i++) {
+        $oDocument = Document::get($aRestorationRequests[$i]->getDocumentID());
+        if ($oDocument) {
+          $sToRender .= "\t\t\t<tr>\n";
+          $sToRender .= "\t\t\t\t<td colspan=\"2\">" . generateControllerLink("viewDocument", "fDocumentID=" . $oDocument->getID(), "<img src=\"$default->graphicsUrl/widgets/dstatus.gif\" border=\"0\"/>&nbsp;" . $oDocument->getDisplayPath()) . "</td>\n";        
+          $sToRender .= "\t\t\t</tr>\n";
+        }
+    }
+    return $sToRender;
 }
-
-
 
 /**
  * Displays the pending collaboration documents
