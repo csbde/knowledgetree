@@ -44,10 +44,10 @@ function getSearchResultsByCategory($iFolderID, $sKeywords, $iStartIndex, $sCate
 	//var_dump($sQuery);
 	
 	$aColumns = array("folder_image_url", "document_name","score");
-	$aColumnTypes = array(4,3,3);
+	$aColumnTypes = array(4,3,1);
 	$aColumnHeaders = array("<font color=\"ffffff\">Folder</font>","<font color=\"ffffff\">Document</font>","<font color=\"ffffff\">Score</font>");
 	$aLinkURLs = array("$default->rootUrl/control.php?action=browse","$default->rootUrl/control.php?action=viewDocument");
-	$aDBQueryStringColumns = array("document_id","folder_id","score");
+	$aDBQueryStringColumns = array("document_id","folder_id");
 	$aQueryStringVariableNames = array("fDocumentID", "fFolderID");
 	
 	$oPatternBrowse = & new PatternBrowseableSearchResults($sQuery, 10, $aColumns, $aColumnTypes, $aColumnHeaders, $aLinkURLs, $aDBQueryStringColumns, $aQueryStringVariableNames);
@@ -78,10 +78,10 @@ function getSearchResultsByDocumentType($iFolderID, $sKeywords, $iStartIndex, $i
 	//var_dump($sQuery);
 	
 	$aColumns = array("folder_image_url", "document_name","score");
-	$aColumnTypes = array(4,3,3);
+	$aColumnTypes = array(4,3,1);
 	$aColumnHeaders = array("<font color=\"ffffff\">Folder</font>","<font color=\"ffffff\">Document</font>","<font color=\"ffffff\">Score</font>");
 	$aLinkURLs = array("$default->rootUrl/control.php?action=browse","$default->rootUrl/control.php?action=viewDocument");
-	$aDBQueryStringColumns = array("document_id","folder_id","score");
+	$aDBQueryStringColumns = array("document_id","folder_id");
 	$aQueryStringVariableNames = array("fDocumentID", "fFolderID");
 	
 	$oPatternBrowse = & new PatternBrowseableSearchResults($sQuery, 10, $aColumns, $aColumnTypes, $aColumnHeaders, $aLinkURLs, $aDBQueryStringColumns, $aQueryStringVariableNames);
@@ -110,10 +110,10 @@ function getSeachResultsByFolder($iFolderID, $iStartIndex, $sKeywords) {
 	//var_dump($sQuery);
 	
 	$aColumns = array("folder_image_url", "document_name","score");
-	$aColumnTypes = array(4,3,3);
+	$aColumnTypes = array(4,3,1);
 	$aColumnHeaders = array("<font color=\"ffffff\">Folder</font>","<font color=\"ffffff\">Document</font>","<font color=\"ffffff\">Score</font>");
 	$aLinkURLs = array("$default->rootUrl/control.php?action=browse","$default->rootUrl/control.php?action=viewDocument");
-	$aDBQueryStringColumns = array("document_id","folder_id","score");
+	$aDBQueryStringColumns = array("document_id","folder_id");
 	$aQueryStringVariableNames = array("fDocumentID", "fFolderID");
 	
 	$oPatternBrowse = & new PatternBrowseableSearchResults($sQuery, 10, $aColumns, $aColumnTypes, $aColumnHeaders, $aLinkURLs, $aDBQueryStringColumns, $aQueryStringVariableNames);
