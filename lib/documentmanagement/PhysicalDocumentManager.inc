@@ -178,7 +178,7 @@ class PhysicalDocumentManager {
 	*/
 	function & createDocumentFromUploadedFile($aFileArray, $iFolderID) {
 		//get the uploaded document information and put it into a document object		
-		$oDocument = & new Document($aFileArray['name'], $aFileArray['name'], $aFileArray['size'], $_SESSION["userID"], PhysicalDocumentManager::getMimeTypeID($aFileArray['type']), $iFolderID);
+		$oDocument = & new Document($aFileArray['name'], $aFileArray['name'], $aFileArray['size'], $_SESSION["userID"], PhysicalDocumentManager::getMimeTypeID($aFileArray['type'], $aFileArray['name']), $iFolderID);
 		return $oDocument;	
 	}
 	
@@ -189,21 +189,30 @@ class PhysicalDocumentManager {
 	*
 	* @return int mime type primary key if found, else default mime type primary key (text/plain)
 	*/
-	function getMimeTypeID($sName) {
+	function getMimeTypeID($sMimeType, $sFileName) {
 		global $default;
 		$sql = $default->db;
-		//get the mime type		
-		if (isset($sName)) {
-			$sql->query("SELECT id FROM " . $default->owl_mime_table . " WHERE mimetypes = '$sName'");		
+        
+        // check by file extension
+        $sExtension = strtolower(substr($sFileName, strpos($sFileName, ".")+1, strlen($sFileName) - strpos($sFileName, ".")));
+        $sql->query("SELECT id FROM " . $default->owl_mime_table . " WHERE LOWER(filetypes) = '$sExtension'");
+        if ($sql->next_record()) {
+            return $sql->f("id");
+        }
+        
+		//get the mime type	
+		if (isset($sMimeType)) {
+			$sql->query("SELECT id FROM " . $default->owl_mime_table . " WHERE mimetypes = '$sMimeType'");		
 			if ($sql->next_record()) {
 				//get the mime type id
 				return $sql->f("id");
 			}
 		}
+
 		//otherwise return the default mime type
 		return PhysicalDocumentManager::getDefaultMimeTypeID();
 	}
-	
+    
 	/**
 	* Get the default mime type, which is text/plain
 	*
