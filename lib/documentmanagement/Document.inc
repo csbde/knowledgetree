@@ -440,27 +440,6 @@ class Document {
     }
 
     /**
-    * Static function.
-    * Check if a document already exists
-    *
-    * @param String  File name of document
-    * @param int  Primary key of folder to which document is assigned
-    *
-    * @return boolean true if document exists, false otherwise and set $_SESSION["errorMessage"]
-    */
-    function documentExists($sFileName, $iFolderID) {
-        global $default, $lang_err_doc_not_exist;
-        $sql = $default->db;
-        // TODO: join on sys_deleted
-        $sql->query("SELECT * FROM $default->owl_documents_table WHERE name = '" . addslashes($sFileName) . "' AND folder_id = $iFolderID");
-        if ($sql->next_record()) {
-            return true;
-        }
-        $_SESSION["errorMessage"] = $lang_err_doc_not_exist . "name = " . $sName . " folder_id = " . $iFolderID;
-        return false;
-    }
-
-    /**
      * Returns the url to the file type icon associated with this document
      *
      * @return string the url to the relevant file icon, false if there is none
@@ -479,21 +458,36 @@ class Document {
             return false;
         }
     }
-
+    
     /**
-     * Get the full path for a document as an array
+     * Get the full path for a document
      *
      * @param int primary key of document to generate path for 
-     * @return array full path of document as an array
+     * @return string full path of document
      */
-    function getDocumentPathAsArray($iDocumentID) {
-        global $default;
-        // get the path of the folder as an array
-        $aPathArray = Folder::getFolderPathAsArray($this->iFolderID);
-        // add the document to the path
-        $aPathArray[] = $this->sName;
-        $default->log->debug("Document::getDocumentPathAsArray path=" . arrayToString($aPathArray));
-        return $aPathArray;
+    function getPath() {
+        return Folder::getFolderPath($this->iFolderID) . "/" . $this->sFileName;
+    }
+    
+    /**
+    * Static function.
+    * Check if a document already exists
+    *
+    * @param String  File name of document
+    * @param int  Primary key of folder to which document is assigned
+    *
+    * @return boolean true if document exists, false otherwise and set $_SESSION["errorMessage"]
+    */
+    function documentExists($sFileName, $iFolderID) {
+        global $default, $lang_err_doc_not_exist;
+        $sql = $default->db;
+        // TODO: join on sys_deleted
+        $sql->query("SELECT * FROM $default->owl_documents_table WHERE name = '" . addslashes($sFileName) . "' AND folder_id = $iFolderID");
+        if ($sql->next_record()) {
+            return true;
+        }
+        $_SESSION["errorMessage"] = $lang_err_doc_not_exist . "name = " . $sName . " folder_id = " . $iFolderID;
+        return false;
     }
 
     /**
