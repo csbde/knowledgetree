@@ -168,23 +168,38 @@ if (checkSession()) {
 					$main->render();
 				}
 		} else if ((isset($fForPublish)) && (!DocumentCollaboration::documentIsPendingWebPublishing($fDocumentID))) {
-            if (isset($fWebSiteID)) {
-                // user wishes to publish document
-                $oDocument = Document::get($fDocumentID);
-                $aWebDocument = WebDocument::getList("document_id = $fDocumentID");
-                $oWebDocument = $aWebDocument[0];
-                $oWebDocument->setStatusID(PENDING);
-                $oWebDocument->setWebSiteID($fWebSiteID);
+			if ($fSubmit) {
+	            // user wishes to publish document
+	            $oDocument = Document::get($fDocumentID);
+	            $aWebDocument = WebDocument::getList("document_id = $fDocumentID");
+	            $oWebDocument = $aWebDocument[0];
+
+	            if (strlen($fWebSiteID) > 0) {
+		            $oWebDocument->setStatusID(PENDING);
+		            $oWebDocument->setWebSiteID($fWebSiteID);
+		            $oWebDocument->setDateTime(getCurrentDateTime());
+	            } else {	            
+		            $oWebDocument->setStatusID(PUBLISHED);
+		            $oWebDocument->setWebSiteID(-1);
+	                $oWebDocument->setDateTime(getCurrentDateTime());
+	            }
+	            
                 if ($oWebDocument->update()) {
                     require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
                     $oDocumentTransaction = & new DocumentTransaction($fDocumentID, "Document sent for web publishing", UPDATE);
                     $oDocumentTransaction->create();
                     $oDocument = Document::get($fDocumentID);
-                    DocumentCollaboration::notifyWebMaster($fDocumentID, $fComment);
+                    if ((strlen($fWebSiteID) > 0) && (strlen($fComment) > 0)) {
+                    	DocumentCollaboration::notifyWebMaster($fDocumentID, $fComment);
+                    }
                     $oPatternCustom = & new PatternCustom();
                     $oPatternCustom->setHtml(getEditPage($oDocument));
                     $main->setCentralPayload($oPatternCustom);
-                    $main->setErrorMessage("The document has been marked as pending publishing and the web publisher has been notified");
+                    if ((strlen($fWebSiteID) > 0) && (strlen($fComment) > 0)) {
+                    	$main->setErrorMessage("The document has been marked as pending publishing and the web publisher has been notified");
+                    } else {
+                    	$main->setErrorMessage("The document has been published");                    	
+                    }
                     $main->render();
                     
                 } else {
@@ -204,7 +219,6 @@ if (checkSession()) {
                 $oPatternCustom->setHtml(getWebPublishPage($oDocument));
                 $main->setCentralPayload($oPatternCustom);
                 $main->setFormAction($_SERVER['PHP_SELF']);
-                $main->setHasRequiredFields(true);
                 $main->render();
             }
 			

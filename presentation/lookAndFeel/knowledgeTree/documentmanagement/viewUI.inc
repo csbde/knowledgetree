@@ -293,7 +293,7 @@ function getEditPage($oDocument) {
 		$sToRender .= "\t\t</tr></table></td>\n";
 	}
     
-    if (!DocumentCollaboration::documentIsPendingWebPublishing($iDocumentID)) {
+    if (!DocumentCollaboration::documentIsPendingWebPublishing($iDocumentID) && !DocumentCollaboration::documentIsPublished($iDocumentID)) {
         // only display for unpublished documents        
         // if there is collaboration
         if ($oDocument->hasCollaboration()) {
@@ -501,6 +501,7 @@ function getWebPublishPage($oDocument) {
     $sToRender .= "\t<tr>\n";
     $sToRender .= "\t\t<td>" . $oPatternListBox->render() . "</td>\n";
     $sToRender .= "\t\t<input type=\"hidden\" name=\"fForPublish\" value=\"1\" />\n";
+    $sToRender .= "\t\t<input type=\"hidden\" name=\"fSubmit\" value=\"1\" />\n";
     $sToRender .= "\t</tr>";
     $sToRender .= "\t<tr>\n";
     $sToRender .= "\t\t<th nowrap align=\"left\">Enter a comment for the web master:</th>\n";
@@ -516,15 +517,6 @@ function getWebPublishPage($oDocument) {
     $sToRender .= "</td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "</table>";
-
-	$sToRender .= "\n\n<script language=\"javascript\">\n<!--\n";
-	$sToRender .= "function validateForm(theForm) {\n";	
-	$sToRender .= "\tif (!(validRequired(document.MainForm.fWebSiteID,'Website'))) {\n";
-	$sToRender .= "\t\treturn false;\n\t}\n";
-    $sToRender .= "\tif (!(validRequired(document.MainForm.fComment,'Publish comment'))) {\n";
-	$sToRender .= "\t\treturn false;\n\t}\n";    
-	$sToRender .= "return true;\n}\n";
-	$sToRender .= "//-->\n</script>\n\n";
 
     return $sToRender;
 }
