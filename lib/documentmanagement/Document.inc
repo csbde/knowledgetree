@@ -375,6 +375,14 @@ class Document extends KTEntity {
         return $res;
 
     }
+
+    function update($bPathMove = false) {
+        $res = parent::update();
+        if (($res === true) && ($bPathMove === true)) {
+            Permission::updateSearchPermissionsForDocument($this->getID());
+        }
+        return $res;
+    }
     
 	/**
 	* Begin the current document's collaboration process
