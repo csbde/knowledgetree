@@ -19,7 +19,7 @@ function getMessage() {
 
 function getSearchResultsByCategory($iFolderID, $sKeywords, $iStartIndex, $sCategory) {
 	global $default;
-	$default->log->info("getSearchResultsByCategory($iFolderID, $sKeywords, $iStartIndex, $sCategory)");
+
 	$sQuery = "SELECT DISTINCT '" . "$default->graphicsUrl/widgets/dfolder.gif" . "' AS folder_image_url, F.id AS folder_id, D.id AS document_id, D.name AS document_name, ROUND(MATCH(DT.document_text) AGAINST ('" . $sKeywords . "'),3) AS score " . 
 				"FROM $default->owl_documents_table AS D INNER JOIN $default->owl_document_text_table AS DT ON D.id = DT.document_id " .
 				"INNER JOIN $default->owl_document_fields_table AS DFL ON DT.document_id=DFL.document_id " .								
