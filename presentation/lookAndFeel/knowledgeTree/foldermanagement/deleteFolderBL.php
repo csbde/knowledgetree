@@ -14,6 +14,7 @@ require_once("../../../../config/dmsDefaults.php");
 require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
 require_once("$default->fileSystemRoot/lib/foldermanagement/PhysicalFolderManagement.inc");
 require_once("$default->fileSystemRoot/lib/users/User.inc");
+require_once("$default->fileSystemRoot/lib/subscriptions/SubscriptionManager.inc");
 require_once("$default->fileSystemRoot/lib/subscriptions/SubscriptionEngine.inc");
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
 require_once("$default->fileSystemRoot/presentation/Html.inc");
@@ -38,12 +39,26 @@ if (checkSession()) {
 						if (PhysicalFolderManagement::deleteFolder($sFolderPath)) {
 							// successfully deleted the folder from the file system
                             
-                            // fire subscription alerts for the deleted folder
-                            $count = SubscriptionEngine::fireSubscription($fFolderID, SubscriptionConstants::subscriptionAlertType("RemoveFolder"),
+                            // fire subscription alerts for parent folder subscriptions to the deleted folder
+                            $count = SubscriptionEngine::fireSubscription($oFolder->getParentID(), SubscriptionConstants::subscriptionAlertType("RemoveChildFolder"),
                                      SubscriptionConstants::subscriptionType("FolderSubscription"),
                                      array( "removedFolderName" => $oFolder->getName(),
-                                            "parentFolderName" => Folder::getFolderName($oFolder->getParentID())));
-                            $default->log->info("deleteFolderBL.php fired $count subscription alerts for removed folder " . $oFolder->getName());
+                                            "parentFolderName" => Folder::getFolderDisplayPath($oFolder->getParentID())));
+                            $default->log->info("deleteFolderBL.php fired $count parent folder subscription alerts for removed folder " . $oFolder->getName());
+
+                            // fire subscription alerts for the deleted folder
+                            $count = SubscriptionEngine::fireSubscription($fFolderID, SubscriptionConstants::subscriptionAlertType("RemoveSubscribedFolder"),
+                                     SubscriptionConstants::subscriptionType("FolderSubscription"),
+                                     array( "removedFolderName" => $oFolder->getName(),
+                                            "parentFolderName" => Folder::getFolderDisplayPath($oFolder->getParentID())));
+                            $default->log->info("deleteFolderBL.php fired $count parent folder subscription alerts for removed folder " . $oFolder->getName());
+                            
+                            // remove folder subscriptions for this folder
+                            if (SubscriptionManager::removeSubscriptions($fFolderID, SubscriptionConstants::subscriptionType("FolderSubscription"))) {
+                                $default->log->info("deleteFolderBL.php removed all subscriptions for this folder");
+                            } else {
+                                $default->log->error("deleteFolderBL.php couldn't remove folder subscriptions");
+                            }                            
                             
 							// redirect to the browse folder page with the parent folder id 
 							redirect("$default->rootUrl/control.php?action=browse&fFolderID=" . $oFolder->getParentID());
