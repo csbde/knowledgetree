@@ -54,7 +54,7 @@ class Log {
     function initialiseLogFile() {
         global $default;
         if (!file_exists($this->logDirectory)) {
-            mkdir($this->logDirectory, $default->uMask);
+            mkdir($this->logDirectory, "0755");
         }
             
         $this->logFile = $this->logDirectory . "/log-" . date("d-m-Y") . ".txt";
