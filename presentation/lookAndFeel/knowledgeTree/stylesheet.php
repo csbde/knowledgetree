@@ -23,7 +23,7 @@ if ( ($browser == "moz") && ($version <= 4.79)) {
     $scroll["downArrowLeft"] = "750";
     $scroll["downArrowTop"] = "570";
     
-    $scroll["textBoxLeft"] = "140";
+    $scroll["textBoxLeft"] = "150";
     $scroll["textBoxTop"] = "150";
     $scroll["textBoxWidth"] = "610";
     $scroll["textBoxHeight"] = "440";
