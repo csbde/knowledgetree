@@ -1,3 +1,79 @@
+Version 2.0.0 (2005/02/03)
+
+Bug Fixes
+=========
+* Fix the upgrade SQL
+* Display error messages if login fails
+* Fix simple search using enter
+* Fix non-required generic metadata being required
+
+Detailed ChangeLog
+==================
+
+2005-02-03 01:42  nbm
+
+	* sql/mysql/: install/tables.sql, upgrade/1.2.4-to-2.0.0.sql:
+
+	Set version in database to 2.0.0
+
+2005-02-03 01:07  nbm
+
+	* i18n/knowledgeTree.po:
+
+	Update filenames and line numbers - no new phrases.
+
+2005-02-03 00:58  nbm
+
+	* docs/INSTALL.txt:
+
+	Point upgraders to UPGRADE.txt.
+
+2005-02-03 00:57  nbm
+
+	* docs/UPGRADE.txt:
+
+	Move upgrade instructions to a separate file, and give version-specific
+	upgrade instructions for KnowledgeTree 2.0.0
+
+2005-02-03 00:42  nbm
+
+	* sql/mysql/upgrade/1.2.4-to-2.0.0.sql:
+
+	Add semi-colon to last statement.
+
+2005-01-27 07:55  nbm
+
+	* sql/mysql/upgrade/1.2.4-to-2.0.0.sql:
+
+	Fix SQL error in upgrade script.
+
+	SF Tracker:	1109984
+	Submitted by:	montis
+
+2005-01-27 02:22  nbm
+
+	* presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:
+
+	Display the document ID.
+
+2005-01-27 02:18  nbm
+
+	* lib/visualpatterns/NavBar.inc:
+
+	Return false, cancelling keypress, if the search string is empty.
+
+2005-01-27 01:19  nbm
+
+	* presentation/login.php:
+
+	Grab errorMessage from the request parameters.
+
+2005-01-27 01:18  nbm
+
+	* presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentUI.inc:
+
+	Don't set the generic metadata as required despite the config option.
+
 Version 2.0.0rc6 (2005/01/26)
 
 Bug Fixes
