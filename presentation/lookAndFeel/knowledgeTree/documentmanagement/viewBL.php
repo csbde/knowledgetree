@@ -119,15 +119,20 @@ if (checkSession()) {
 					//reset all the steps and email the document creator
 					Document::resetDocumentCollaborationSteps($fDocumentID);
 					$oDocument = Document::get($fDocumentID);
-					
-					$oUser = User::get($oDocument->getCreatorID());				
+                    
+                    // on the last collaboration step- trigger a major revision
+                    // major version number rollover
+                    $oDocument->setMajorVersionNumber($oDocument->getMajorVersionNumber()+1);
+                    // reset minor version number
+                    $oDocument->setMinorVersionNumber(0);
+                    $oDocument->update();
+                    
+					$oUser = User::get($oDocument->getCreatorID());
 					$sBody = $oUser->getUserName() . ", the collaboration process for the document, '<a href=\"https://" . $_SERVER["SERVER_NAME"] . "$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $oDocument->getID() . "\">" . $oDocument->getName() . "</a>', has been completed. ";								
 					$oEmail = & new Email($default->owl_email_from, $default->owl_email_fromname);
 					$oEmail->send($oUser->getEmail(), "Document collaboration complete", $sBody, $default->owl_email_from, $default->owl_email_fromname);
 					
 					//possibly set the document up for web publishing????
-					
-					$oDocument = Document::get($fDocumentID);
 					$oPatternCustom = & new PatternCustom();
 					$oPatternCustom->setHtml(getEditPage($oDocument));
 					$main->setCentralPayload($oPatternCustom);
