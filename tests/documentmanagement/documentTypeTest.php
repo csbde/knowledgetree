@@ -10,7 +10,7 @@ require_once ("../../config/owl.php");
 require_once ($default->owl_fs_root . "/config/environment.php");
 require_once ($default->owl_fs_root . "/config/dmsDefaults.php");
 require_once ($default->owl_fs_root . "/lib/owl.lib.php");
-require_once ($default->owl_fs_root . "/lib/documentmanagement/documentManager.inc");
+require_once ($default->owl_fs_root . "/lib/documentmanagement/DocumentManager.inc");
 
 /**
 * Database backend unit tests for:
