@@ -33,6 +33,6 @@ function getAddLink($sAddAction, $sAddText) {
 
 function getCancelButton($sCancelAction, $sQueryString = "") {
 	global $default;
-	return generateControllerLink($sCancelAction, $sQueryString, "<img border=\"0\" src=\"$default->graphicsUrl/widgets/cancel.gif\"/>");
+	return generateControllerLink($sCancelAction, $sQueryString, "<img border=\"0\" src=\"" . KTHtml::getCancelButton() . "\"/>");
 }
 ?>

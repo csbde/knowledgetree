@@ -67,8 +67,8 @@ function getFolderData($iFolderID, $sStatusMessage = "") {
 		
 	}
 	$sToRender .= "</table></td></tr>";
-	$sToRender .= "<tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/update.gif\" border=\"0\" />";
-	$sToRender .= generateControllerLink("editFolder", "fFolderID=$iFolderID", "<image src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"/>") . "</td></tr>\n";
+	$sToRender .= "<tr><td><input type=\"image\" src=\"" . KTHtml::getUpdateButton() . "\" border=\"0\" />";
+	$sToRender .= generateControllerLink("editFolder", "fFolderID=$iFolderID", "<image src=\"" . KTHtml::getCancelButton() . "\" border=\"0\"/>") . "</td></tr>\n";
 	$sToRender .= "</table>\n";
 
     return $sToRender;

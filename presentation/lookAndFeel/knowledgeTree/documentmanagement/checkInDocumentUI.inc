@@ -40,7 +40,7 @@ function renderCheckInPage($oDocument) {
 	$sToRender .= "<tr><td><input type=\"file\" name=\"browse\" style=\"display:none\">";
     $sToRender .= "<input type=\"text\" name=\"fFile\"\>\n";
     $sToRender .= "<a href=\"#\" onClick=\"document.MainForm.browse.click();document.MainForm.fFile.value=document.MainForm.browse.value;return false;\">";
-    $sToRender .= "<img src=\"$default->graphicsUrl/widgets/browse.gif\" alt=\"browse\" border=\"0\"></a>\n";
+    $sToRender .= "<img src=\"" . KTHtml::getBrowseButton() . "\" alt=\"browse\" border=\"0\"></a>\n";
     */
     $sToRender .= "</td></tr>\n";
     $sToRender .= "</table>\n";
@@ -72,8 +72,8 @@ function renderCheckInPage($oDocument) {
     $sToRender .= "<table>\n";
 	$sToRender .= "<tr>\n";
 	// FIXME: if the document name contains an apostrophe this js doesn't work
-	$sToRender .= "<td><input type=\"image\" border=\"0\" src =\"$default->graphicsUrl/widgets/checkin.gif\" value=\"Submit\" onClick=\"if (validRequired(document.MainForm.fFile, 'Check-In File') && validRequired(document.MainForm.fCheckInComment, 'Check-In Comment')) { return confirm('Are you sure you want to overwrite " . $oDocument->getFileName() . " with ' + document.MainForm.fFile.value + '?'); } else return false;\"/>\n";
-	$sToRender .= "<a href=\"$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $oDocument->getID() . "\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></a></td>\n";	    
+	$sToRender .= "<td><input type=\"image\" border=\"0\" src =\"" . KTHtml::getCheckInButton() . "\" value=\"Submit\" onClick=\"if (validRequired(document.MainForm.fFile, 'Check-In File') && validRequired(document.MainForm.fCheckInComment, 'Check-In Comment')) { return confirm('Are you sure you want to overwrite " . $oDocument->getFileName() . " with ' + document.MainForm.fFile.value + '?'); } else return false;\"/>\n";
+	$sToRender .= "<a href=\"$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $oDocument->getID() . "\"><img src=\"" . KTHtml::getCancelButton() . "\" border=\"0\"></a></td>\n";	    
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
 

@@ -59,7 +59,7 @@ function getPage() {
 
     $sToRender .= "</tr>\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "<td></td><td></td><td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/update.gif\" value=\"Submit\" border=\"0\"/></td>\n";
+    $sToRender .= "<td></td><td></td><td align = right><input type=\"image\" src =\"" . KTHtml::getUpdateButton() . "\" value=\"Submit\" border=\"0\"/></td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "</table>\n";
 

@@ -34,7 +34,7 @@ function getPage($iFolderID) {
     $sToRender .= "</table>\n";
     $sToRender .= "<table border=\"0\">\n";    
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>" . generateControllerLink("editFolder", "fFolderID=$iFolderID&fShowSection=documentTypes", "<img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\">") . "</td>\n";
+	$sToRender .= "<td>" . generateControllerLink("editFolder", "fFolderID=$iFolderID&fShowSection=documentTypes", "<img src=\"" . KTHtml::getBackButton() . "\" border=\"0\">") . "</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table><br>\n";
 	

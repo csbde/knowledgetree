@@ -38,7 +38,7 @@ function getPage() {
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr/>\n";
     $sToRender .= "<tr><td><b>" . _("Unit") . "</b></td><td>" . getUnitListBox() . "</td></tr>\n";    
-	$sToRender .= "<td align=\"right\"><input type=\"image\" src=\"$default->graphicsUrl/widgets/add.gif\" value=\"Submit\" border=\"0\"/>";
+	$sToRender .= "<td align=\"right\"><input type=\"image\" src=\"" . KTHtml::getAddButton() . "\" value=\"Submit\" border=\"0\"/>";
 	$sToRender .= getCancelButton("listGroups") . "</td>\n";	
 	$sToRender .= "</table>\n";	
 	return $sToRender;

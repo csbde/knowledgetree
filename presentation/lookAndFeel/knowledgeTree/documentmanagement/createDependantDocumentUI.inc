@@ -61,7 +61,7 @@ function getPage($iFolderID, $iDocumentID, $iUnitID, $iUserID, $sDocumentTitle, 
 	}		
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";	
-	$sToRender .= "<td><table><tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/done.gif\" onClick='return validateForm(document.MainForm);' border=\"0\"/></td><td><a href=\"" . $default->rootUrl . "/control.php?action=viewDocument&fDocumentID=$iDocumentID&fShowSection=linkedDocuments\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"/></a></td></tr></table>\n";	
+	$sToRender .= "<td><table><tr><td><input type=\"image\" src=\"" . KTHtml::getDoneButton() . "\" onClick='return validateForm(document.MainForm);' border=\"0\"/></td><td><a href=\"" . $default->rootUrl . "/control.php?action=viewDocument&fDocumentID=$iDocumentID&fShowSection=linkedDocuments\"><img src=\"" . KTHtml::getCancelButton() . "\" border=\"0\"/></a></td></tr></table>\n";	
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
 	$sToRender .= "<input type=\"hidden\" name=\"fTargetDocumentID\" value=\"-1\" />\n";	

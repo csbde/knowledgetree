@@ -48,8 +48,8 @@ function renderConfirmDocuments($aDocuments) {
     }
     $sToRender .= "<tr/><tr/>";
     $sToRender .= "<input type=\"hidden\" name=\"fConfirm\" value=\"1\">";
-    $sToRender .= "<tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/expunge.gif\" border=\"0\"/></a>\n";
-    $sToRender .= generateControllerLink("deletedDocuments", "", "<img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></td></tr>");
+    $sToRender .= "<tr><td><input type=\"image\" src=\"" . KTHtml::getExpungeButton() . "\" border=\"0\"/></a>\n";
+    $sToRender .= generateControllerLink("deletedDocuments", "", "<img src=\"" . KTHtml::getCancelButton() . "\" border=\"0\"></td></tr>");
 	$sToRender .= "</table>";
     return $sToRender;	
 }
@@ -77,7 +77,7 @@ function renderStatusPage($aSuccessDocuments, $aErrorDocuments) {
 	    }
 	}
 	$sToRender .= "<tr/><tr/>";	
-    $sToRender .= "<tr><td>" . generateControllerLink("deletedDocuments", "", "<img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\"></td></tr>");
+    $sToRender .= "<tr><td>" . generateControllerLink("deletedDocuments", "", "<img src=\"" . KTHtml::getBackButton() . "\" border=\"0\"></td></tr>");
 	$sToRender .= "</table>";
     return $sToRender;	
 }

@@ -46,8 +46,8 @@ function getDetailsPage($iDocTypeID) {
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr><td valign=\"top\">" . _("Document Type Specific Fields:") . " </td>";    
     $sToRender .= "<td>" . getDocumentTypeFieldsList($iDocTypeID) . "</td></tr>\n";	
-    $sToRender .= "<tr><td >" . generateControllerLink("addDocTypeFieldsLink", "fDocTypeID=$iDocTypeID", _("Add new Type Specific Field") . " &nbsp; <img border=0 src=\"$default->graphicsUrl/widgets/add.gif\"/>");
-    $sToRender .= generateControllerLink("listDocTypes", "", "<img border=0 src=\"$default->graphicsUrl/widgets/back.gif\"/>"). "</td></tr>\n";    
+    $sToRender .= "<tr><td >" . generateControllerLink("addDocTypeFieldsLink", "fDocTypeID=$iDocTypeID", _("Add new Type Specific Field") . " &nbsp; <img border=0 src=\"" . KTHtml::getAddButton() . "\"/>");
+    $sToRender .= generateControllerLink("listDocTypes", "", "<img border=0 src=\"" . KTHtml::getBackButton() . "\"/>"). "</td></tr>\n";    
     $sToRender .= "</table>\n";
 
     return $sToRender;
@@ -67,8 +67,8 @@ function getDeleteConfirmationPage($iDocTypeID, $iDocFieldID) {
     $sToRender .= "<tr/><tr/>\n";
     $sToRender .= "<tr><td>" . _("Click 'Remove' to remove the link, or 'Cancel' to abort.") . "</td></tr>\n";
     $sToRender .= "<tr/><tr/>\n";
-	$sToRender .= "<td align=\"right\">" . generateControllerLink("editDocTypeFields", "fConfirm=1&fRemove=1&fDocFieldID=$iDocFieldID&fDocTypeID=$iDocTypeID", "<img src =\"$default->graphicsUrl/widgets/remove.gif\" border = \"0\" />");
-	$sToRender .= generateControllerLink("editDocTypeFields", "fDocTypeID=$iDocTypeID", "<img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" />") . "</td>\n";
+	$sToRender .= "<td align=\"right\">" . generateControllerLink("editDocTypeFields", "fConfirm=1&fRemove=1&fDocFieldID=$iDocFieldID&fDocTypeID=$iDocTypeID", "<img src =\"" . KTHtml::getRemoveButton() . "\" border = \"0\" />");
+	$sToRender .= generateControllerLink("editDocTypeFields", "fDocTypeID=$iDocTypeID", "<img src =\"" . KTHtml::getCancelButton() . "\" border = \"0\" />") . "</td>\n";
     $sToRender .= "</table>\n";
     return $sToRender;
 }
@@ -90,8 +90,8 @@ function getEditDocumentFieldLinkPage($oDocTypeFieldLink) {
     $sToRender .= "<tr>\n";
     $sToRender .= "<td>" . _("Mandatory") . ":  </td><td><input type=\"checkbox\" name=\"fIsMandatory\" value=\"1\" " . ($oDocTypeFieldLink->getIsMandatory() ? "CHECKED" : "") . "></td>\n";
     $sToRender .= "</tr>\n";
-    $sToRender .= "<tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/update.gif\"/>";
-    $sToRender .= generateControllerLink("editDocTypeFields", "fDocTypeID=" . $oDocTypeFieldLink->getDocumentTypeID(), "<img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" />") . "</td></tr>\n";
+    $sToRender .= "<tr><td><input type=\"image\" src=\"" . KTHtml::getUpdateButton() . "\"/>";
+    $sToRender .= generateControllerLink("editDocTypeFields", "fDocTypeID=" . $oDocTypeFieldLink->getDocumentTypeID(), "<img src =\"" . KTHtml::getCancelButton() . "\" border = \"0\" />") . "</td></tr>\n";
     $sToRender .= "</table>\n";
     return $sToRender;
 }
@@ -108,7 +108,7 @@ function getStatusPage($sHeading, $sText = "", $iDocTypeID) {
     $sToRender .= "<tr/><tr/>\n";
     $sToRender .= "<tr><td>$sText</td></tr>\n";
     $sToRender .= "<tr/><tr/>\n";
-	$sToRender .= "<td align=\"right\">" . generateControllerLink("editDocTypeFields", "fDocTypeID=$iDocTypeID", "<img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" />") . "</td>\n";
+	$sToRender .= "<td align=\"right\">" . generateControllerLink("editDocTypeFields", "fDocTypeID=$iDocTypeID", "<img src =\"" . KTHtml::getBackButton() . "\" border = \"0\" />") . "</td>\n";
     $sToRender .= "</table>\n";
     return $sToRender;
 }
@@ -156,11 +156,11 @@ function getDocumentTypeFieldsList($iDocTypeID) {
 
 function getEditSpecificFieldButton($iDocFieldID, $iDocTypeID) {
     global $default;
-	return generateControllerLink("editDocTypeFields", "fUpdateMandatory=1&fDocFieldID=$iDocFieldID&fDocTypeID=$iDocTypeID", "<img border=0 src =\"$default->graphicsUrl/widgets/edit.gif\" value=\"edit\" />");	
+	return generateControllerLink("editDocTypeFields", "fUpdateMandatory=1&fDocFieldID=$iDocFieldID&fDocTypeID=$iDocTypeID", "<img border=0 src =\"" . KTHtml::getEditButton() . "\" value=\"edit\" />");	
 }
 
 function getRemoveSpecificFieldButton($iDocFieldID, $iDocTypeID) {
     global $default;
-	return generateControllerLink("editDocTypeFields", "fRemove=1&fDocFieldID=$iDocFieldID&fDocTypeID=$iDocTypeID", "<img border=0 src =\"$default->graphicsUrl/widgets/remove.gif\" value=\"remove\" />");	
+	return generateControllerLink("editDocTypeFields", "fRemove=1&fDocFieldID=$iDocFieldID&fDocTypeID=$iDocTypeID", "<img border=0 src =\"" . KTHtml::getRemoveButton() . "\" value=\"remove\" />");	
 }
 ?>

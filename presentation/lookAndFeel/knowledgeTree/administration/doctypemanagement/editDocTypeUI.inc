@@ -151,7 +151,7 @@ function getEditPageSuccess() {
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=listDocTypes\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
+    $sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=listDocTypes\"><img src =\"" . KTHtml::getBackButton() . "\" border = \"0\" /></a></td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "</table>\n";
 
@@ -169,7 +169,7 @@ function getEditPageFail() {
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=listDocTypes\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
+    $sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=listDocTypes\"><img src =\"" . KTHtml::getBackButton() . "\" border = \"0\" /></a></td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "</table>\n";
 
@@ -235,39 +235,39 @@ function getUpdateButton($oDocType) {
     if (!isset($oDocType)) {
         return _("Please select a Document Type") . ": ";
     } else {
-        return "<td align = right><input ONCLICK=\"// setActionAndSubmit('" . $_SERVER["PHP_SELF"] ."?fUpdate=1');\" type=\"image\" src =\"$default->graphicsUrl/widgets/update.gif\" border=0 value=\"submit\" /></td>\n";
+        return "<td align = right><input ONCLICK=\"// setActionAndSubmit('" . $_SERVER["PHP_SELF"] ."?fUpdate=1');\" type=\"image\" src =\"" . KTHtml::getUpdateButton() . "\" border=0 value=\"submit\" /></td>\n";
     }
 }
 
 // gets the updatebutton when a DocType is selected
 function getDocTypeFieldUpdateButton() {
     global $default;
-    return "<td align = right><input ONCLICK=\" setActionAndSubmit('" . $_SERVER["PHP_SELF"] ."?fUpdateMandatory=1')\" type=\"image\" src =\"$default->graphicsUrl/widgets/update.gif\" border=0 value=\"submit\" /></td>\n";
+    return "<td align = right><input ONCLICK=\" setActionAndSubmit('" . $_SERVER["PHP_SELF"] ."?fUpdateMandatory=1')\" type=\"image\" src =\"" . KTHtml::getUpdateButton() . "\" border=0 value=\"submit\" /></td>\n";
 }
 
 function getRemoveSpecificFieldButton($iNumber) {
     global $default;
-    return "<input ONCLICK=\" setActionAndSubmit('" . $_SERVER["PHP_SELF"] ."?fRemove=$iNumber')\" align = \"absmiddle\" type=\"image\" src =\"$default->graphicsUrl/widgets/remove.gif\" value=\"remove\" />\n";
+    return "<input ONCLICK=\" setActionAndSubmit('" . $_SERVER["PHP_SELF"] ."?fRemove=$iNumber')\" align = \"absmiddle\" type=\"image\" src =\"" . KTHtml::getRemoveButton() . "\" value=\"remove\" />\n";
 }
 
 function getEditSpecificFieldButton($iNumber) {
     global $default;
-    return "<input ONCLICK=\" setActionAndSubmit('" . $_SERVER["PHP_SELF"] ."?fEdit=$iNumber')\" align = \"absmiddle\" type=\"image\" src =\"$default->graphicsUrl/widgets/edit.gif\" value=\"edit\" />\n";
+    return "<input ONCLICK=\" setActionAndSubmit('" . $_SERVER["PHP_SELF"] ."?fEdit=$iNumber')\" align = \"absmiddle\" type=\"image\" src =\"" . KTHtml::getEditButton() . "\" value=\"edit\" />\n";
 }
 
 function getAddSpecificFieldButton() {
     global $default;
-    return "<input ONCLICK=\" setActionAndSubmit('" . $_SERVER["PHP_SELF"] ."?fAdd=1')\" align = \"absmiddle\" type=\"image\" src =\"$default->graphicsUrl/widgets/add.gif\" value=\"add\" />\n";
+    return "<input ONCLICK=\" setActionAndSubmit('" . $_SERVER["PHP_SELF"] ."?fAdd=1')\" align = \"absmiddle\" type=\"image\" src =\"" . KTHtml::getAddButton() . "\" value=\"add\" />\n";
 }
 
 // gets the cancel button when a DocType is selected
 function getCancelButton($oDocType) {
     global $default;
     if (!isset($oDocType)) {
-        return "<td align = right><a href=\"$default->rootUrl/control.php?action=doctypeManagement\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" value=\"cancel\" border = \"0\"/></a></td>\n";
+        return "<td align = right><a href=\"$default->rootUrl/control.php?action=doctypeManagement\"><img src =\"" . KTHtml::getCancelButton() . "\" value=\"cancel\" border = \"0\"/></a></td>\n";
     }
     else {
-        return "<td align = right><a href=\"$default->rootUrl/control.php?action=listDocTypes\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" /></a></td>\n";
+        return "<td align = right><a href=\"$default->rootUrl/control.php?action=listDocTypes\"><img src =\"" . KTHtml::getCancelButton() . "\" border = \"0\" /></a></td>\n";
     }
 }
 ?>

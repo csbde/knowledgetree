@@ -48,7 +48,7 @@ function getPage() {
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "</tr>\n";
-	$sToRender .= "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/add.gif\" value=\"Submit\" border=\"0\"/>";
+	$sToRender .= "<td align = right><input type=\"image\" src =\"" . KTHtml::getAddButton() . "\" value=\"Submit\" border=\"0\"/>";
 	$sToRender .= getCancelButton("listRoles") . "</td>\n";	
 	$sToRender .= "</table>\n";
 	

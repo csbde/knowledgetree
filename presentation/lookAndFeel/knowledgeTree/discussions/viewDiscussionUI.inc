@@ -28,8 +28,8 @@
 function getPageButtons($iDocumentID){
 	global $default;
 	$sToRender .= "<table width=100%><tr>\n";
-	$sToRender .= "<td align=right width=100%><a href=\"" . generateControllerLink("addComment", "fDocumentID=$iDocumentID&fAddComment=1&fNewComment=1") . "\"><img src=\"$default->graphicsUrl/widgets/addcomment.gif\" border=\"0\" /></a></td>\n";
-	$sToRender .= "<td align=right width=10><a href=\"" . generateControllerLink("viewDocument", "fDocumentID=$iDocumentID&fAddComment=1") . "\"><img src=\"$default->graphicsUrl/widgets/back.gif\"  border=\"0\" /></a></td>\n";
+	$sToRender .= "<td align=right width=100%><a href=\"" . generateControllerLink("addComment", "fDocumentID=$iDocumentID&fAddComment=1&fNewComment=1") . "\"><img src=\"" . KTHtml::getAddCommentButton() . "\" border=\"0\" /></a></td>\n";
+	$sToRender .= "<td align=right width=10><a href=\"" . generateControllerLink("viewDocument", "fDocumentID=$iDocumentID&fAddComment=1") . "\"><img src=\"" . KTHtml::getBackButton() . "\"  border=\"0\" /></a></td>\n";
 	$sToRender .= "</tr></table>\n";
 	return $sToRender; 
 }
@@ -54,8 +54,8 @@ function getNewThreadOption($fDocumentID) {
 	global $default;   
 	$sToRender .= _("Would you like to create a new Discussion thread for this document?");
 	$sToRender .= "&nbsp;&nbsp;&nbsp;";
-	$sToRender .= "<a href=\"" . generateControllerLink("addComment", "fDocumentID=" . $fDocumentID . "&fNewThread=1") . "\"><img src=\"$default->graphicsUrl/widgets/new.gif\" border=\"0\"></a>";
-	$sToRender .= "<a href=\"" . generateControllerLink("viewDocument", "fDocumentID=" . $fDocumentID) . "\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></a>";
+	$sToRender .= "<a href=\"" . generateControllerLink("addComment", "fDocumentID=" . $fDocumentID . "&fNewThread=1") . "\"><img src=\"" . KTHtml::getNewButton() . "\" border=\"0\"></a>";
+	$sToRender .= "<a href=\"" . generateControllerLink("viewDocument", "fDocumentID=" . $fDocumentID) . "\"><img src=\"" . KTHtml::getCancelButton() . "\" border=\"0\"></a>";
 	return $sToRender;
 }
 

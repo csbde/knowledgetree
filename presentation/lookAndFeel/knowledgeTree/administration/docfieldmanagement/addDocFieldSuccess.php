@@ -62,7 +62,7 @@ if(checkSession()) {
     $Center .= "<tr></tr>\n";
     $Center .= "<tr></tr>\n";
     $Center .= "<tr>\n";
-    $Center .= "<td align = right><a href=\"$default->rootUrl/control.php?action=addDocField\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
+    $Center .= "<td align = right><a href=\"$default->rootUrl/control.php?action=addDocField\"><img src =\"" . KTHtml::getBackButton() . "\" border = \"0\" /></a></td>\n";
     $Center .= "</tr>\n";
     $Center .= "</table>\n";
 

@@ -57,7 +57,7 @@ function getRightSide($iFolderID) {
 	$sToRender .= "<td><b>" . _("Document Type") . ": </b></td>\n";
 	$sToRender .= "<td>" . getDocumentTypeDropDown() . "</td>\n";
 	$sToRender .= "</tr>\n";    
-	$sToRender .= "<td><table border=\"0\"><tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/add.gif\" border=\"0\"></td><td><a href=\"$default->rootUrl/control.php?action=browse&fFolderID=$iFolderID\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></a></td></tr></table></td><td>&nbsp</td>\n";    
+	$sToRender .= "<td><table border=\"0\"><tr><td><input type=\"image\" src=\"" . KTHtml::getAddButton() . "\" border=\"0\"></td><td><a href=\"$default->rootUrl/control.php?action=browse&fFolderID=$iFolderID\"><img src=\"" . KTHtml::getCancelButton() . "\" border=\"0\"></a></td></tr></table></td><td>&nbsp</td>\n";    
     $sToRender .= "</tr>\n";
     $sToRender .= "</table>\n";
     

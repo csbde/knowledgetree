@@ -38,7 +38,7 @@ function getPage($iFolderID, $iFolderCollaborationID, $sDocumentTitle, $sUserNam
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>" . _("Template document") . "</td><td>$sTemplateDocument</td>";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td><table><tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/delete.gif\" border=\"0\"/></td><td><a href=\"" . $default->rootUrl . "/control.php?action=viewDependantDocument&fFolderID=$iFolderID&fFolderCollaborationID=$iFolderCollaborationID\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"/></a></td></tr></table>\n";
+	$sToRender .= "<td><table><tr><td><input type=\"image\" src=\"" . KTHtml::getDeleteButton() . "\" border=\"0\"/></td><td><a href=\"" . $default->rootUrl . "/control.php?action=viewDependantDocument&fFolderID=$iFolderID&fFolderCollaborationID=$iFolderCollaborationID\"><img src=\"" . KTHtml::getCancelButton() . "\" border=\"0\"/></a></td></tr></table>\n";
 	$sToRender .= "</table\n";
 	
 	return $sToRender;	

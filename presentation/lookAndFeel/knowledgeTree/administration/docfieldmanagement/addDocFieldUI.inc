@@ -50,7 +50,7 @@ function getPage() {
 	$sToRender .= "<tr>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/add.gif\" value=\"Submit\" border=\"0\"/></td>\n";
+	$sToRender .= "<td align = right><input type=\"image\" src =\"" . KTHtml::getAddButton() . "\" value=\"Submit\" border=\"0\"/></td>\n";
     $sToRender .= "<td align = right>" . getCancelButton("listDocFields") . "</td>\n";
 	$sToRender .= "</tr>\n";	
 	$sToRender .= "</table>\n";

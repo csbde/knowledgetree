@@ -50,8 +50,8 @@ function renderUploadPage($oWebDocument) {
 	$sToRender .= "<tr>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
-    $sToRender .= "<td><input type=\"image\" border=\"0\" src =\"$default->graphicsUrl/widgets/done.gif\" value=\"Submit\" onClick=\"return validRequired(document.MainForm.fUploadUrl, 'upload URL');\" />\n";
-	$sToRender .= "<a href=\"$default->rootUrl/control.php?action=dashboard\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></a></td>\n";	    
+    $sToRender .= "<td><input type=\"image\" border=\"0\" src =\"" . KTHtml::getDoneButton() . "\" value=\"Submit\" onClick=\"return validRequired(document.MainForm.fUploadUrl, 'upload URL');\" />\n";
+	$sToRender .= "<a href=\"$default->rootUrl/control.php?action=dashboard\"><img src=\"" . KTHtml::getCancelButton() . "\" border=\"0\"></a></td>\n";	    
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
 	
@@ -64,6 +64,6 @@ function renderErrorPage($sErrorMessage, $iDocumentID = -1) {
            (($iDocumentID == -1) ? 
            "<a href=\"$default->rootUrl/control.php?action=viewDocument&fDocumentID=$iDocumentID\">" :
            "<a href=\"javascript:history.go(-1)\">") .
-           "<img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\"/></a>\n";
+           "<img src=\"" . KTHtml::getBackButton() . "\" border=\"0\"/></a>\n";
 }
 ?>

@@ -71,7 +71,7 @@ function getDeleteSuccessPage() {
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "<td align = right><a href=\"$default->rootUrl/control.php?action=listDocTypes\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
+    $sToRender .= "<td align = right><a href=\"$default->rootUrl/control.php?action=listDocTypes\"><img src =\"" . KTHtml::getBackButton() . "\" border = \"0\" /></a></td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "</table>\n";
 
@@ -93,7 +93,7 @@ function getDeleteFailPage() {
     $sToRender .= "<tr><td>" . _("Please Ensure that the Document Type has been Removed from ALL Folders") . "</td></tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "</tr>\n";
-    $sToRender .= "<tr><td align = right><a href=\"$default->rootUrl/control.php?action=listDocTypes\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td></tr>\n";
+    $sToRender .= "<tr><td align = right><a href=\"$default->rootUrl/control.php?action=listDocTypes\"><img src =\"" . KTHtml::getBackButton() . "\" border = \"0\" /></a></td></tr>\n";
     $sToRender .= "</table>\n";
 
     return $sToRender;
@@ -121,8 +121,8 @@ function getDocTypeDisplay($oDocType) {
 function getDeleteButton($oDocType) {
     global $default;
     if (isset($oDocType)) {
-        return "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/delete.gif\" value=\"submit\" border=\"0\"/></td>\n".
-               "<td align = right><a href=\"$default->rootUrl/control.php?action=listDocTypes\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" /></a></td>\n";
+        return "<td align = right><input type=\"image\" src =\"" . KTHtml::getDeleteButton() . "\" value=\"submit\" border=\"0\"/></td>\n".
+               "<td align = right><a href=\"$default->rootUrl/control.php?action=listDocTypes\"><img src =\"" . KTHtml::getCancelButton() . "\" border = \"0\" /></a></td>\n";
     }
 }
 ?>

@@ -53,11 +53,11 @@ function renderListDeletedDocumentsPage($aDocuments) {
 	        $sToRender .= "\t</tr>\n";
 	    }
 	    $sToRender .= "<tr/><tr/>";
-	    $sToRender .= "<tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/expunge.gif\" border=\"0\"/></td></tr>\n";	    
+	    $sToRender .= "<tr><td><input type=\"image\" src=\"" . KTHtml::getExpungeButton() . "\" border=\"0\"/></td></tr>\n";	    
 	} else {
 		$sToRender .= "<tr><td>" . _("There are currently no deleted documents in the system") . "</td></tr>";
 	    $sToRender .= "<tr/><tr/>";		
-		$sToRender .= "<tr><td><a href=\"javascript:history.go(-1)\"><img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\"/></a></td></tr>\n";		
+		$sToRender .= "<tr><td><a href=\"javascript:history.go(-1)\"><img src=\"" . KTHtml::getBackButton() . "\" border=\"0\"/></a></td></tr>\n";		
 		
 	}
 	$sToRender .= "</table>";

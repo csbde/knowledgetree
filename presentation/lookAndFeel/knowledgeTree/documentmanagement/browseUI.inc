@@ -315,8 +315,8 @@ function renderDocumentList($aResults, $sNoDocumentsMessage, $sNoPermissionMessa
 		$sToRender .= "<tr><td colspan=\"5\" >";
 		$sToRender .= "<input type=\"hidden\" name=\"fActions\">";
 
-		$sToRender .= "<input type=\"image\" onclick=\"document.MainForm.fActions.value='move'; document.MainForm.submit()\" src=\"$default->graphicsUrl/widgets/move.gif\" border=\"0\"/>";
-		$sToRender .= "<input type=\"image\" onclick=\"document.MainForm.fActions.value='delete'; document.MainForm.submit()\" src=\"$default->graphicsUrl/widgets/delete.gif\" border=\"0\"/>";
+		$sToRender .= "<input type=\"image\" onclick=\"document.MainForm.fActions.value='move'; document.MainForm.submit()\" src=\"" . KTHtml::getMoveButton() . "\" border=\"0\"/>";
+		$sToRender .= "<input type=\"image\" onclick=\"document.MainForm.fActions.value='delete'; document.MainForm.submit()\" src=\"" . KTHtml::getDeleteButton() . "\" border=\"0\"/>";
 		$sToRender .= "</td></tr>\n";
 		// Change for group Operations
 

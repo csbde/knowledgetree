@@ -43,7 +43,7 @@ function getPage($iDocumentID) {
 	}		
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";	
-	$sToRender .= "<td><table><tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/update.gif\" border=\"0\"/></td><td><a href=\"" . $default->rootUrl . "/control.php?action=viewDocument&fDocumentID=$iDocumentID\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"/></a></td></tr></table>\n";	
+	$sToRender .= "<td><table><tr><td><input type=\"image\" src=\"" . KTHtml::getUpdateButton() . "\" border=\"0\"/></td><td><a href=\"" . $default->rootUrl . "/control.php?action=viewDocument&fDocumentID=$iDocumentID\"><img src=\"" . KTHtml::getCancelButton() . "\" border=\"0\"/></a></td></tr></table>\n";	
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
 	$sToRender .= "<input type=\"hidden\" name=\"fTargetDocumentID\" value=\"-1\" />\n";	

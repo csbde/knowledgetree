@@ -49,8 +49,8 @@ function getPage($iFolderID, $iGroupID, $iRoleID, $iSequenceNumber) {
 	$sToRender .= "<td>" . _("Sequence No.") . "</td><td>$iSequenceNumber</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td><table><tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/delete.gif\" border=\"0\"/></td>";
-	$sToRender .= "<td>" . generateControllerLink("editFolder", "fFolderID=$iFolderID&fShowSection=folderRouting", "<img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"/>") . "</td>";
+	$sToRender .= "<td><table><tr><td><input type=\"image\" src=\"" . KTHtml::getDeleteButton() . "\" border=\"0\"/></td>";
+	$sToRender .= "<td>" . generateControllerLink("editFolder", "fFolderID=$iFolderID&fShowSection=folderRouting", "<img src=\"" . KTHtml::getCancelButton() . "\" border=\"0\"/>") . "</td>";
 	$sToRender .= "</tr></table></td>\n";
 	$sToRender .= "</tr>\n";	
 	$sToRender .= "</table>\n";

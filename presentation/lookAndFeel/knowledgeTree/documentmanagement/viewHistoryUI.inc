@@ -82,7 +82,7 @@ function getPage($iDocumentID, $iFolderID, $sDocumentName) {
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>" . getDocumentHistory($iDocumentID) . "</td>\n";
 	$sToRender .= "</tr>\n";
-    $sToRender .= "<tr><td><a href=\"$default->rootUrl/control.php?action=viewDocument&fDocumentID=$iDocumentID\"><img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\" /></a></td></tr>\n";
+    $sToRender .= "<tr><td><a href=\"$default->rootUrl/control.php?action=viewDocument&fDocumentID=$iDocumentID\"><img src=\"" . KTHtml::getBackButton() . "\" border=\"0\" /></a></td></tr>\n";
 	$sToRender .= "</table>\n";
 	return $sToRender;
 }

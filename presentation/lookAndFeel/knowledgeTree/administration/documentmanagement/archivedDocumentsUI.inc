@@ -48,7 +48,7 @@ function renderStatusPage($aSuccessDocuments, $aErrorDocuments) {
 	    }
 	}
 	$sToRender .= "<tr/><tr/>";	
-    $sToRender .= "<tr><td>" . generateControllerLink("archivedDocuments", "", "<img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\"></td></tr>");
+    $sToRender .= "<tr><td>" . generateControllerLink("archivedDocuments", "", "<img src=\"" . KTHtml::getBackButton() . "\" border=\"0\"></td></tr>");
 	$sToRender .= "</table>";
     return $sToRender;	
 }
@@ -76,8 +76,8 @@ function renderRestoreConfirmationPage($aDocuments) {
     }
     $sToRender .= "<tr/><tr/>";
     $sToRender .= "<input type=\"hidden\" name=\"fConfirm\" value=\"1\">";
-    $sToRender .= "<tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/restore.gif\" border=\"0\"/></a>\n";
-    $sToRender .= "<a href=\"javascript:history.go(-1)\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></a></td></tr>";
+    $sToRender .= "<tr><td><input type=\"image\" src=\"" . KTHtml::getRestoreButton() . "\" border=\"0\"/></a>\n";
+    $sToRender .= "<a href=\"javascript:history.go(-1)\"><img src=\"" . KTHtml::getCancelButton() . "\" border=\"0\"></a></td></tr>";
 	$sToRender .= "</table>";
     return $sToRender;	
 }
@@ -92,7 +92,7 @@ function renderSearchPage($aMetaTagIDs = array()) {
 	$sToRender .= "<table width=\"600\">\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>" . _("Search text:") . " <input type=\"text\" size=\"60\" name=\"fSearchString\" value=\"$sSearchString\" />\n";
-	$sToRender .= "<input type=\"image\" src=\"$default->graphicsUrl/widgets/submit.gif\" border=\"0\"></td>\n";
+	$sToRender .= "<input type=\"image\" src=\"" . KTHtml::getSubmitButton() . "\" border=\"0\"></td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>&nbsp</td>\n";
@@ -135,8 +135,8 @@ function renderArchivedDocumentsResultsPage($aDocuments) {
         $sToRender .= "\t\t</td>\n";
         $sToRender .= "\t</tr>\n";			
 	}
-	$sToRender .= "<tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/restore.gif\" border=\"0\"/></a>\n";
-	$sToRender .= generateControllerLink("archivedDocuments", "", "<img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></td></tr>");			
+	$sToRender .= "<tr><td><input type=\"image\" src=\"" . KTHtml::getRestoreButton() . "\" border=\"0\"/></a>\n";
+	$sToRender .= generateControllerLink("archivedDocuments", "", "<img src=\"" . KTHtml::getCancelButton() . "\" border=\"0\"></td></tr>");			
 	$sToRender .= "</table>";
 	
 	return $sToRender;

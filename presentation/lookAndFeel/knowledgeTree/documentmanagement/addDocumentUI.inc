@@ -174,10 +174,10 @@ function getPage($iFolderID, $iDocumentTypeID, $iDependantDocumentID = null, $sM
 		$sToRender .= "<table><tr><td><b>" . _("Document Type") . "<b></td></tr><tr><td>" . lookupName($default->document_types_table, $iDocumentTypeID) . "</td></tr></table>";
 		$sToRender .= getUploadDocument();
 		$sToRender .= getMetaDataForm($iFolderID, $iDocumentTypeID);
-		$sActionButtons = "<input type=\"image\" src=\"$default->graphicsUrl/widgets/add.gif\" border=\"0\"/>";
+		$sActionButtons = "<input type=\"image\" src=\"" . KTHtml::getAddButton() . "\" border=\"0\"/>";
 		$sToRender .= "<input type=\"hidden\" name=\"fStore\" value=\"1\">";
-		$sActionButtons .= generateControllerLink("addDocument", $sQueryString , "<img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\"/>") .
-						   generateControllerLink("browse", "fFolderID=$iFolderID", "<img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"/>");
+		$sActionButtons .= generateControllerLink("addDocument", $sQueryString , "<img src=\"" . KTHtml::getBackButton() . "\" border=\"0\"/>") .
+						   generateControllerLink("browse", "fFolderID=$iFolderID", "<img src=\"" . KTHtml::getCancelButton() . "\" border=\"0\"/>");
 
 		$sToRender .= "<table border=\"0\" width=\"100%\" >\n";
 		$sToRender .= "<tr><td>$sActionButtons</td></tr>";
@@ -188,8 +188,8 @@ function getPage($iFolderID, $iDocumentTypeID, $iDependantDocumentID = null, $sM
 		$oFolder = Folder::get($iFolderID);
 		if (Permission::userHasFolderWritePermission($oFolder)) {
 			$sToRender .= getDocumentType($iFolderID, $iDocumentTypeID, $iDependantDocumentID);
-			$sActionButtons .= generateControllerLink("browse", "fFolderID=$iFolderID", "<img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"/>");
-			$sActionButtons .= "<input type=\"image\" src=\"$default->graphicsUrl/widgets/next.gif\" border=\"0\"/>";			
+			$sActionButtons .= generateControllerLink("browse", "fFolderID=$iFolderID", "<img src=\"" . KTHtml::getCancelButton() . "\" border=\"0\"/>");
+			$sActionButtons .= "<input type=\"image\" src=\"" . KTHtml::getNextButton() . "\" border=\"0\"/>";			
 
 			$sToRender .= "<table border=\"0\" width=\"100%\" >\n";
 			$sToRender .= "<tr><td>$sActionButtons</td></tr>";

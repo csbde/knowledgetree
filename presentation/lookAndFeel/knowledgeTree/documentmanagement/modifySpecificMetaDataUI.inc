@@ -65,11 +65,11 @@ function getPage($iDocumentID, $iDocumentTypeID, $bFirstEdit) {
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>\n";
-	$sToRender .= "<input type=\"image\" src=\"$default->graphicsUrl/widgets/update.gif\" border=\"0\"/>\n";
+	$sToRender .= "<input type=\"image\" src=\"" . KTHtml::getUpdateButton() . "\" border=\"0\"/>\n";
 	$sToRender .= "</td>\n";
     if (!isset($bFirstEdit)) {    
         $sToRender .= "<td>\n";
-        $sToRender .= generateControllerLink("viewDocument", "fDocumentID=$iDocumentID&fShowSection=typeSpecificMetaData", "<img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"/>");
+        $sToRender .= generateControllerLink("viewDocument", "fDocumentID=$iDocumentID&fShowSection=typeSpecificMetaData", "<img src=\"" . KTHtml::getCancelButton() . "\" border=\"0\"/>");
         $sToRender .= "</td>\n";
     }
 	$sToRender .= "</tr>\n";

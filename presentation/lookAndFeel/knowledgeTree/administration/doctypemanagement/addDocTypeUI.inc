@@ -49,7 +49,7 @@ function getPage() {
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "</tr>\n";
-	$sToRender .= "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/add.gif\" value=\"submit\" border=\"0\"/>";
+	$sToRender .= "<td align = right><input type=\"image\" src =\"" . KTHtml::getAddButton() . "\" value=\"submit\" border=\"0\"/>";
 	$sToRender .= getCancelButton("listDocTypes") . "</td>\n";	
 	$sToRender .= "</table>\n";
 	

@@ -62,8 +62,8 @@ function getCommentBody($oComment, $iDocumentID, $oUser, $iThreadID) {
 			
 	$sToRender .= "<br><table width=100% border=0><tr ><td colspan=2><b>Author: </b>" . $oUser->getUserName() . "</td>\n";	
 	$sToRender .= "<td align=right>\n";	
-	$sToRender .= "<a href=\"" . generateControllerLink("addComment", "fDocumentID=" . $iDocumentID . "&fReplyComment=1&fCommentID=" . $oComment->getID()) . "&fThreadID=" . $iThreadID .  "\"><img src=\"$default->graphicsUrl/widgets/reply.gif\" border=\"0\" /></a>";	
-	$sToRender .= "</td><td width=30><a href=\"" . generateControllerLink("viewDiscussion", "fForDiscussion=1&fDocumentID=$iDocumentID") . "\"><img src=\"$default->graphicsUrl/widgets/back.gif\" border=0 ><a></td></tr>\n"; 
+	$sToRender .= "<a href=\"" . generateControllerLink("addComment", "fDocumentID=" . $iDocumentID . "&fReplyComment=1&fCommentID=" . $oComment->getID()) . "&fThreadID=" . $iThreadID .  "\"><img src=\"" . KTHtml::getReplyButton() . "\" border=\"0\" /></a>";	
+	$sToRender .= "</td><td width=30><a href=\"" . generateControllerLink("viewDiscussion", "fForDiscussion=1&fDocumentID=$iDocumentID") . "\"><img src=\"" . KTHtml::getBackButton() . "\" border=0 ><a></td></tr>\n"; 
 	$sToRender .= "<tr><td width=\"1\" style=\"background-color:#F5F6EE;\" ><b>" . _("Subject") . ": </b></td><td width=405 style=\"background-color:#F5F6EE;\">";	
 	$sToRender .= $oComment->getSubject();
 	$sToRender .= "</td><td colspan=2 nowrap style=\"background-color:#F5F6EE;\"><b>" . _("Date") . ": </b><font color=\"#056DCE\">" . $oComment->getDate() . "</font>&nbsp;&nbsp;&nbsp;</td></tr><tr><td colspan=4 valign=top>";			

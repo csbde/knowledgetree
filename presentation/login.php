@@ -3,6 +3,7 @@
 // main library routines and defaults
 require_once("../config/dmsDefaults.php");
 require_once("../lib/util/sanitize.inc");
+require_once("Html.inc");
 /**
  * $Id$
  *  
@@ -79,7 +80,7 @@ if ($loginAction == "loginForm") {
     </td></tr>
     <input type=\"hidden\" name=\"redirect\" value=\"$redirect\"/>
     <input type=\"hidden\" name=\"loginAction\" value=\"login\">\n
-    <tr align=\"right\"><td><input type=\"image\" src=\"$default->graphicsUrl/icons/login.jpg\" border=\"0\"></td></tr>\n
+    <tr align=\"right\"><td><input type=\"image\" src=\"" . KTHtml::getLoginButton() . "\" border=\"0\"></td></tr>\n
     <tr><td><font size=\"1\">" . _("Version") . ": " . $default->system->get("knowledgeTreeVersion") . "</font></td></tr>
     </table>
     </center>

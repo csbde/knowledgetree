@@ -83,10 +83,10 @@ function renderPage($oDocument, $iDocumentTypeID, $fFirstEdit) {
     $sToRender .= "</table>\n";
     $sToRender .= "<table>\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "<td><input type=\"image\" src=\"$default->graphicsUrl/widgets/update.gif\" border=\"0\"/><td>\n";	
+    $sToRender .= "<td><input type=\"image\" src=\"" . KTHtml::getUpdateButton() . "\" border=\"0\"/><td>\n";	
 	if (!isset($fFirstEdit)) {
 		//can't this action on a first time upload, you must fill out the necessary fields
-		$sToRender .= "<td><a href=\"$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $oDocument->getID() . "\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\" /></a><td>\n";
+		$sToRender .= "<td><a href=\"$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $oDocument->getID() . "\"><img src=\"" . KTHtml::getCancelButton() . "\" border=\"0\" /></a><td>\n";
 	}
     $sToRender .= "</tr>\n";
     $sToRender .= "</table>\n";

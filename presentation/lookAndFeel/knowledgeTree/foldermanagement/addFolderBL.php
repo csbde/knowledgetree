@@ -60,7 +60,7 @@ if (checkSession()) {
             } else {
                 //otherwise just let the user browse
                 $oPatternCustom->setHtml(renderBrowsePage($fFolderID));
-                $main->setErrorMessage(_("You do not have permission to create new folders in this folder") . "</td><td><a href=\"$default->rootUrl/control.php?action=browse&fFolderID=$fFolderID\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></a>");
+                $main->setErrorMessage(_("You do not have permission to create new folders in this folder") . "</td><td><a href=\"$default->rootUrl/control.php?action=browse&fFolderID=$fFolderID\"><img src=\"" . KTHtml::getCancelButton() . "\" border=\"0\"></a>");
             }
             $main->setCentralPayload($oPatternCustom);
             $main->setFormAction($_SERVER["PHP_SELF"] . "?fFolderID=$fFolderID");

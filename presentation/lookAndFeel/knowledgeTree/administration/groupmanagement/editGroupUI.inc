@@ -64,7 +64,7 @@ function getCreatePage($iGroupID) {
 	$sToRender .= "<tr>\n";
 	$sToRender .= "</tr>\n";
 	
-	$sToRender .= "<td align=\"right\"><input type=\"image\" src=\"$default->graphicsUrl/widgets/update.gif\" value=\"Update\" border=\"0\"/></td>\n";	
+	$sToRender .= "<td align=\"right\"><input type=\"image\" src=\"" . KTHtml::getUpdateButton() . "\" value=\"Update\" border=\"0\"/></td>\n";	
 	$sToRender .= "</table>\n";
 	return $sToRender;
 }
@@ -84,7 +84,7 @@ function getAddFailPage() {
 	$sToRender .= "<tr>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td align = right><a href=\"$default->rootUrl/control.php?action=listGroups\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
+	$sToRender .= "<td align = right><a href=\"$default->rootUrl/control.php?action=listGroups\"><img src =\"" . KTHtml::getBackButton() . "\" border = \"0\" /></a></td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
 		
@@ -149,7 +149,7 @@ function getEditPageSuccess() {
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=listGroups\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
+	$sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=listGroups\"><img src =\"" . KTHtml::getBackButton() . "\" border = \"0\" /></a></td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
 	
@@ -171,7 +171,7 @@ function getEditPageFail() {
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=listGroups\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
+	$sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=listGroups\"><img src =\"" . KTHtml::getBackButton() . "\" border = \"0\" /></a></td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
 	
@@ -237,7 +237,7 @@ function getUpdateButton($oGroup) {
 	if (!isset($oGroup)) {
 		return _("Please select a Group") . ": ";
 	} else {
-		return "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/update.gif\" value=\"submit\" border=\"0\"/></td>\n";
+		return "<td align = right><input type=\"image\" src =\"" . KTHtml::getUpdateButton() . "\" value=\"submit\" border=\"0\"/></td>\n";
 	}
 }
 
@@ -245,9 +245,9 @@ function getUpdateButton($oGroup) {
 function getCancelButton($oGroup) {
 	global $default;
 	if (!isset($oGroup)) {
-		return "<td align = right><a href=\"$default->rootUrl/control.php?action=groupManagement\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" value=\"cancel\" border=\"0\"/></a></td>\n";
+		return "<td align = right><a href=\"$default->rootUrl/control.php?action=groupManagement\"><img src =\"" . KTHtml::getCancelButton() . "\" value=\"cancel\" border=\"0\"/></a></td>\n";
 	} else {
-		return "<td align = right><a href=\"$default->rootUrl/control.php?action=listGroups\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"/></a></td>\n";
+		return "<td align = right><a href=\"$default->rootUrl/control.php?action=listGroups\"><img src =\"" . KTHtml::getCancelButton() . "\" border=\"0\"/></a></td>\n";
 	}
 }
 ?>

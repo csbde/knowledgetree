@@ -74,7 +74,7 @@ function renderDocumentData($oDocument, $bEditable, $sStatusMessage = "") {
     $sToRender .= "\t</tr>\n";
     if ($bEditable) {    
 		$sToRender .= "\t<tr>\n";
-	    $sToRender .= "<td colspan=\"2\"><a href=\"$default->rootUrl/control.php?action=modifyDocument&fDocumentID=" . $oDocument->getID() . "\"><image src=\"$default->graphicsUrl/widgets/edit.gif\" border=\"0\"></a></td>\n";
+	    $sToRender .= "<td colspan=\"2\"><a href=\"$default->rootUrl/control.php?action=modifyDocument&fDocumentID=" . $oDocument->getID() . "\"><image src=\"" . KTHtml::getEditButton() . "\" border=\"0\"></a></td>\n";
 		$sToRender .= "\t</tr>\n";
     }
 	$sToRender .= "\t</table>\n";
@@ -103,7 +103,7 @@ function renderGenericMetaData($oDocument, $bEditable) {
     $sToRender .= "\t</tr>\n";
     if ($bEditable) {
 		$sToRender .= "\t<tr>\n";
-	    $sToRender .= "<td><a href=\"$default->rootUrl/control.php?action=modifyDocumentGenericMetaData&fDocumentID=" . $oDocument->getID() . "\"><image src=\"$default->graphicsUrl/widgets/edit.gif\" border=\"0\"></a></td>\n";    
+	    $sToRender .= "<td><a href=\"$default->rootUrl/control.php?action=modifyDocumentGenericMetaData&fDocumentID=" . $oDocument->getID() . "\"><image src=\"" . KTHtml::getEditButton() . "\" border=\"0\"></a></td>\n";    
 		$sToRender .= "\t</tr>\n";
     }
 	$sToRender .= "\t</table>\n";
@@ -134,7 +134,7 @@ function renderTypeSpecificMetaData($oDocument, $bEditable) {
     $sToRender .= "\t</tr>\n";
     if ($bEditable) {
 		$sToRender .= "\t<tr>\n";
-	    $sToRender .= "<td><a href=\"$default->rootUrl/control.php?action=modifyDocumentTypeMetaData&fDocumentID=" . $oDocument->getID() . "\"><image src=\"$default->graphicsUrl/widgets/edit.gif\" border=\"0\"></a></td>\n";
+	    $sToRender .= "<td><a href=\"$default->rootUrl/control.php?action=modifyDocumentTypeMetaData&fDocumentID=" . $oDocument->getID() . "\"><image src=\"" . KTHtml::getEditButton() . "\" border=\"0\"></a></td>\n";
 		$sToRender .= "\t</tr>\n";
     }
     $sToRender .= "\t</table>\n";
@@ -196,7 +196,7 @@ function renderDocumentArchiveSettings($oDocument, $bEditable) {
 	   	$sToRender .= "\t<tr>\n";
 	    // if there are no archiving settings then allow their addition
 	    $oDocumentArchiving = DocumentArchiving::getFromDocumentID($oDocument->getID());
-	    $sToRender .= "\t\t<td>" . ($oDocumentArchiving ? "" : generateControllerLink("addDocumentArchiveSettings", "fDocumentID=" . $oDocument->getID(), "<img src=\"$default->graphicsUrl/widgets/add.gif\" border=\"0\"/>")) . "</td>\n";
+	    $sToRender .= "\t\t<td>" . ($oDocumentArchiving ? "" : generateControllerLink("addDocumentArchiveSettings", "fDocumentID=" . $oDocument->getID(), "<img src=\"" . KTHtml::getAddButton() . "\" border=\"0\"/>")) . "</td>\n";
 		$sToRender .= "\t</tr>";
     }        	    
 	$sToRender .= "\t</table>\n";
@@ -241,7 +241,7 @@ function renderEditableDocumentRouting($oDocument) {
 		( ($_SESSION["userID"] == $oDocument->getCreatorID())  || Permission::userIsSystemAdministrator() ) ) {
 		//if not all collaboration steps have been set, then you cannot start the collaboration process
 		//only the creator of the document can start the collaboration process		
-		$sToRender .= "\t\t<td><a href=" . $_SERVER['PHP_SELF'] . "?fDocumentID=" . $oDocument->getID() . "&fBeginCollaboration=1><img src=\"$default->graphicsUrl/widgets/begin.gif\" border=\"0\"/></a>";
+		$sToRender .= "\t\t<td><a href=" . $_SERVER['PHP_SELF'] . "?fDocumentID=" . $oDocument->getID() . "&fBeginCollaboration=1><img src=\"" . KTHtml::getBeginButton() . "\" border=\"0\"/></a>";
 		$sToRender .= "</td>\n";
 	// else if collboration has started and the current user has been assigned this step, display the approve/reject buttons
 	} else if (DocumentCollaboration::userIsPerformingCurrentCollaborationStep($oDocument->getID())) {
@@ -250,8 +250,8 @@ function renderEditableDocumentRouting($oDocument) {
 		$sToRender .= "\t\t<td><b>" . _("You currently have an active role in the collaboration process") . "</b></td>\n";
 		// collaboration cannot be started or approved/rejected if the document is checked out
 		if (!$oDocument->getIsCheckedOut()) {				
-			$sToRender .= "\t\t<td align=\"center\"><a onClick=\"return confirm('" . _("Are you sure you want to approve?  You will not have access to this document until the collaboration process is complete (unless the document is rejected in a subsequent step)") . "');\" href=" . $_SERVER['PHP_SELF'] . "?fDocumentID=" . $oDocument->getID() . "&fCollaborationStepComplete=1><img src=\"$default->graphicsUrl/widgets/approve.gif\" border=\"0\"/></a></td>\n";
-			$sToRender .= "\t\t<td align=\"center\"><a href=\"$default->rootUrl/control.php?action=collaborationStepReject&fDocumentID=" . $oDocument->getID() . "\"><img src=\"$default->graphicsUrl/widgets/reject.gif\" border=\"0\"/></a></td>\n";
+			$sToRender .= "\t\t<td align=\"center\"><a onClick=\"return confirm('" . _("Are you sure you want to approve?  You will not have access to this document until the collaboration process is complete (unless the document is rejected in a subsequent step)") . "');\" href=" . $_SERVER['PHP_SELF'] . "?fDocumentID=" . $oDocument->getID() . "&fCollaborationStepComplete=1><img src=\"" . KTHtml::getApproveButton() . "\" border=\"0\"/></a></td>\n";
+			$sToRender .= "\t\t<td align=\"center\"><a href=\"$default->rootUrl/control.php?action=collaborationStepReject&fDocumentID=" . $oDocument->getID() . "\"><img src=\"" . KTHtml::getRejectButton() . "\" border=\"0\"/></a></td>\n";
 		}	
 		$sToRender .= "\t\t</tr></table></td>\n";
 	}
@@ -288,8 +288,8 @@ function renderNonEditableDocumentRouting($oDocument) {
 		//if the current user is responsible for an active step in the collaboration process		
 		$sToRender .= "\t\t<tr><td><table border=\"0\"><tr>\n";
 		$sToRender .= "\t\t<td><b>" . _("You currently have an active role in the collaboration process") . "</b></td>\n";				
-		$sToRender .= "\t\t<td align=\"center\"><a href=" . $_SERVER['PHP_SELF'] . "?fDocumentID=" . $oDocument->getID() . "&fCollaborationStepComplete=1><img src=\"$default->graphicsUrl/widgets/approve.gif\" border=\"0\"/></a></td>\n";
-		$sToRender .= "\t\t<td align=\"center\"><a href=\"$default->rootUrl/control.php?action=collaborationStepReject&fDocumentID=" . $oDocument->getID() . "\"><img src=\"$default->graphicsUrl/widgets/reject.gif\" border=\"0\"/></a></td>\n";
+		$sToRender .= "\t\t<td align=\"center\"><a href=" . $_SERVER['PHP_SELF'] . "?fDocumentID=" . $oDocument->getID() . "&fCollaborationStepComplete=1><img src=\"" . KTHtml::getApproveButton() . "\" border=\"0\"/></a></td>\n";
+		$sToRender .= "\t\t<td align=\"center\"><a href=\"$default->rootUrl/control.php?action=collaborationStepReject&fDocumentID=" . $oDocument->getID() . "\"><img src=\"" . KTHtml::getRejectButton() . "\" border=\"0\"/></a></td>\n";
 		$sToRender .= "\t\t</tr></table></td></tr>\n";
 	}
 	    
@@ -321,7 +321,7 @@ function renderEditableLinkedDocuments($oDocument) {
     $sToRender .= "\t\t<td>" . $oPatternTableSqlQuery->render() . "</td>\n";
     $sToRender .= "\t</tr>";
     $sToRender .= "\t<tr>\n";
-    $sToRender .= "<td><a href=\"$default->rootUrl/control.php?action=addDocumentLink&fDocumentID=" . $oDocument->getID() ."\"><img src=\"$default->graphicsUrl/widgets/add.gif\" border=\"0\"/></a></td>\n";
+    $sToRender .= "<td><a href=\"$default->rootUrl/control.php?action=addDocumentLink&fDocumentID=" . $oDocument->getID() ."\"><img src=\"" . KTHtml::getAddButton() . "\" border=\"0\"/></a></td>\n";
     $sToRender .= "\t</tr>";     
 	$sToRender .= "\t</table>\n";
     return $sToRender;
@@ -378,7 +378,7 @@ function renderDependantDocuments($oDocument, $bEdit) {
     $sToRender .= "\t\t<td>" . $oPatternTableSqlQuery->render() . "</td>\n";
     $sToRender .= "\t</tr>";
     $sToRender .= "\t<tr>\n";
-    $sToRender .= "<td><a href=\"$default->rootUrl/control.php?action=createDependantDocument&fDocumentID=" . $oDocument->getID() ."\"><img src=\"$default->graphicsUrl/widgets/add.gif\" border=\"0\"/></a></td>\n";
+    $sToRender .= "<td><a href=\"$default->rootUrl/control.php?action=createDependantDocument&fDocumentID=" . $oDocument->getID() ."\"><img src=\"" . KTHtml::getAddButton() . "\" border=\"0\"/></a></td>\n";
     $sToRender .= "\t</tr>";     
 	$sToRender .= "\t</table>\n";
     return $sToRender;
@@ -704,8 +704,8 @@ function getWebPublishPage($oDocument) {
     $sToRender .= "\t\t<input type=\"hidden\" name=\"fForPublish\" value=\"1\"/>\n";    
     $sToRender .= "\t\t<input type=\"hidden\" name=\"fSubmit\" value=\"1\"/>\n";
     $sToRender .= "\t<tr>\n";
-    $sToRender .= "\t\t<td><input type=\"image\" src=\"$default->graphicsUrl/widgets/publish.gif\" border=\"0\"/></a>";
-    $sToRender .= "\t\t<a href=\"$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $oDocument->getID() . "\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\" /></a></td>\n";
+    $sToRender .= "\t\t<td><input type=\"image\" src=\"" . KTHtml::getPublishButton() . "\" border=\"0\"/></a>";
+    $sToRender .= "\t\t<a href=\"$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $oDocument->getID() . "\"><img src=\"" . KTHtml::getCancelButton() . "\" border=\"0\" /></a></td>\n";
     $sToRender .= "\t</tr>";
     $sToRender .= "</table>\n";
 
