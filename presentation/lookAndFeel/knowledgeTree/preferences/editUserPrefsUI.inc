@@ -7,6 +7,14 @@
 * @package presentation.lookAndFeel.knowledgeTree.
 *
 */
+function renderHeading() {
+    global $default;
+    $sColor = $default->siteMap->getSectionColour("Preferences", "td");
+    $sToRender .= "<tr align=\"left\"><th class=\"sectionHeading\" bgcolor=\"$sColor\">Preferences</th></tr>\n";
+    $sToRender .= "<tr/>\n";
+    $sToRender .= "<tr/>\n";
+    return $sToRender;
+}
 
 function getUserDetailsPage($iUserID) {
 	
@@ -28,10 +36,10 @@ function getUserDetailsPage($iUserID) {
 	$oPattern->setUniqueName("userEdit");
 	$oPattern->setColumnsRequired(array(1,1,0,0,0,0));
 	
-	$sToRender .= "<br></br>\n";	
-	$sToRender .= "<b>Edit User Properties:</b>\n";
-	$sToRender .= "<table>\n";
+	$sToRender .= "<table width=\"600\">\n";
+    $sToRender .= renderHeading();
 	$sToRender .= "<tr></tr>\n";
+    $sToRender .= "<tr/><tr/><tr><td><b>Edit User Properties:</b></td></tr>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>" . $oPattern->render() . "</td>\n";
 	$sToRender .= "</tr>\n";
@@ -40,35 +48,25 @@ function getUserDetailsPage($iUserID) {
 	$sToRender .= "<tr>\n";
 	$sToRender .= "</tr>\n";
 	
-	$sToRender .= "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/update.gif\" value=\"Update\" /></td>\n";	
+	$sToRender .= "<td><input type=\"image\" src =\"$default->graphicsUrl/widgets/update.gif\" value=\"Update\" /></td>\n";	
 	$sToRender .= "</table>\n";
-		
-	
-		
 	return $sToRender;
-	
-	
-	
 }
 
 // if edition is successful print otu success page
 function getEditPageSuccess() {	
 	global $default;
 			
-	$sToRender .= "<br></br>\n";
-	$sToRender .= "<b>Success!</b>\n";
-	$sToRender .= "<table>\n";
-	$sToRender .= "<br></br>\n";
-	$sToRender .= "<tr></tr>\n";
+	$sToRender .= "<table width=\"600\">\n";
+    $sToRender .= renderHeading();
+	$sToRender .= "<tr/><tr/><tr><td><b>Success!</b></td></tr>\n";
 	$sToRender .= "<tr><td>The User was successfully modified</td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=preferences\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
+	$sToRender .= "<td><a href=\"$default->rootUrl/control.php?action=preferences\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
-	
-	
 	return $sToRender;
 }
 
@@ -77,16 +75,14 @@ function getEditPageSuccess() {
 function getEditPageFail() {	
 	global $default;
 			
-	$sToRender .= "<br></br>\n";
-	$sToRender .= "<b>FAILED!</b>\n";
 	$sToRender .= "<table>\n";
-	$sToRender .= "<br></br>\n";
-	$sToRender .= "<tr></tr>\n";
+    $sToRender .= renderHeading();
+	$sToRender .= "<tr/><tr/>\n";
 	$sToRender .= "<tr><td>User modification Failed!</td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=preferences\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
+	$sToRender .= "<td></td><td align=\"right\"><a href=\"$default->rootUrl/control.php?action=preferences\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
 	
