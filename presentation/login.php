@@ -61,14 +61,15 @@ if ($loginAction == "loginForm") {
     <tr><td>Please enter your details below to login</td></tr>
     <tr><td></td></tr>
     <tr><td><font color=\"red\">" . urldecode($errorMessage) . "</font><tr><td>
-    \t<tr><td>$lang_username:</td></tr>
+    \t<tr><td>Username:</td></tr>
     \t<tr><td><input type=\"text\" name=\"fUserName\" size=\"35\"></td></tr>
-    \t<tr><td>$lang_password:</td></tr>
+    \t<tr><td>Password:</td></tr>
     <tr><td><input type=\"password\" name=\"fPassword\" size=\"35\" onKeyPress=\"return submitenter(this,event)\">
     </td></tr>
     <input type=\"hidden\" name=\"redirect\" value=\"$redirect\"/>
     <input type=\"hidden\" name=\"loginAction\" value=\"login\">\n
     <tr align=\"right\"><td><input type=\"image\" src=\"$default->graphicsUrl/icons/login.jpg\" border=\"0\"></td></tr>\n
+    <tr><td><font size=\"1\">Version: " . $default->system->get("knowledgeTreeVersion") . "</font></td></tr>
     </table>
     </center>
     </body>
