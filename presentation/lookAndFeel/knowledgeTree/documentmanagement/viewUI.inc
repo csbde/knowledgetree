@@ -16,7 +16,7 @@
 function renderDocumentPath($oDocument) {
 	//$sDocumentPath = Folder::getFolderDisplayPath($oDocument->getFolderID()) . " > " . $oDocument->getName();
 	$sDocumentPath = displayFolderPathLink(Folder::getFolderPathAsArray($oDocument->getFolderID())) . " > " . $oDocument->getName();
-	return "<table border=1><tr><td>$sDocumentPath</td></tr></table>\n";
+	return "<table border=1 width = 100%><tr><td>$sDocumentPath</td></tr></table>\n";	
 }
 
 function renderDocumentGenericMetaData($oDocument) {
@@ -45,6 +45,7 @@ function renderGenericDocumentMetaData($oDocument) {
 	
 	$oPatternListFromQuery = & new PatternListFromQuery($sQuery, $aColumns, $aColumnNames, $aColumnTypes);
 	$oPatternListFromQuery->setTableHeading("Generic Meta Data");
+	$oPatternListFromQuery->setTableWidth("90%");
 	//$oPatternListFromQuery->setRenderIndividualTableForEachResult(true);
 	return $oPatternListFromQuery->render();
 	
@@ -59,7 +60,7 @@ function renderTypeSpecificMetaData($oDocument) {
 				"AND DF.name NOT LIKE 'Category'";
 	$aColumns = array("name", "value");
 	$aColumnHeaders = array("Tag", "Value");
-	$oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnHeaders, "100%");
+	$oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnHeaders, "90%");
 	$oPatternTableSqlQuery->setTableHeading("Type Specific Meta Data");
 	return $oPatternTableSqlQuery->render();
 }
@@ -74,8 +75,8 @@ function renderDocumentRouting($oDocument) {
 				"ORDER BY GFAL.precedence, role_name ASC";
 		
 	$aColumns = array("role_name", "name", "precedence");
-	$aColumnHeaders = array("Role", "Player", "Sequence");
-	$oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnHeaders, "100%", true);
+	$aColumnHeaders = array("Role", "Player", "Seq");
+	$oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnHeaders, "10%", true);
 	$oPatternTableSqlQuery->setTableHeading("Document Routing");
 	return $oPatternTableSqlQuery->render();
 	
@@ -89,44 +90,30 @@ function getPage($oDocument) {
 		$sToRender .= "\t<table border = 0>\n";
 		$sToRender .= "\t<tr>\n";
 		$sToRender .= "\t\t<td>" . wrapInTable(renderGenericDocumentMetaData($oDocument)) . "</td>\n";
+		//$sToRender .= "\t\t<td>" . renderGenericDocumentMetaData($oDocument) . "</td>\n";
 		$sToRender .= "\t</tr>\n";
 		$sToRender .= "\t<tr>\n";
 		$sToRender .= "\t\t<td>" . wrapInTable(renderTypeSpecificMetaData($oDocument)) . "</td>\n";
+		//$sToRender .= "\t\t<td>" . renderTypeSpecificMetaData($oDocument) . "</td>\n";
 		$sToRender .= "\t</tr>\n";
 		$sToRender .= "\t</table>\n";
 	$sToRender .= "</td>\n";
 	$sToRender .= "<td valign=top>\n";
-		$sToRender .= "\t<table border = 0>\n";
+		$sToRender .= "\t<table border = 0, width = 100%>\n";
 		$sToRender .= "\t<tr>\n";
 		$sToRender .= "\t\t<td>" . wrapInTable(renderDocumentRouting($oDocument)) . "</td>\n";
+		//$sToRender .= "\t\t<td>" . renderDocumentRouting($oDocument) . "</td>\n";
 		$sToRender .= "\t</tr>";
 		$sToRender .= "\t</table>";
 	$sToRender .= "</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>";
 		
-	return $sToRender;
-	/*$sToRender = "<table border = 0 cellpadding = 4 width = 800>\n";
-	$sToRender .= "<tr>\n";
-	$sToRender .= "<td align = left colspan=2>" . wrapInTable(renderDocumentPath($oDocument)) . "</td>\n";
-	$sToRender .= "</tr>\n";
-	
-	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>" . wrapInTable(renderGenericDocumentMetaData($oDocument)) . "</td><td>" . wrapInTable(renderDocumentRouting($oDocument)) . "</td>\n";
-	$sToRender .= "</tr>\n";
-	
-	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>" . wrapInTable(renderTypeSpecificMetaData($oDocument)) . "</td><td>&nbsp</td>\n";	
-	$sToRender .= "</tr>";
-	
-	$sToRender .= "</table>";
-	
-	
-	echo $sToRender;*/
+	return $sToRender;	
 }
 
 function wrapInTable($sHtml) {
-	return "<table border = 1 width=400><tr><td>$sHtml</td></tr></table>";	
+	return "\n\t\t\t<table border = 1, width = 100%><tr><td>$sHtml</td></tr></table>\n";	
 }
 
 ?>
