@@ -770,8 +770,8 @@ class Document {
 		global $default;
 		$sql = $default->db;
 		$sql->query("SELECT * " . 
-					"FROM $default->owl_folder_doctypes_table AS FDL INNER JOIN $default->owl_folders_table AS F ON FDL.folder_id = F.id " .
-					"INNER JOIN $default->owl_documents_table AS D ON D.folder_id = F.ID  " .
+					"FROM $default->owl_folder_doctypes_table AS FDL " .
+					"INNER JOIN $default->owl_documents_table AS D ON D.document_type_id = FDL.document_type_id " .
 					"WHERE FDL.id = $iFolderDocTypeID " .
 					"AND D.folder_id = $iFolderID");
 		if ($sql->next_record()) {
