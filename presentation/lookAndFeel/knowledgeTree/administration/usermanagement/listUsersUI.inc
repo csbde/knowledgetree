@@ -36,7 +36,7 @@ function getGroupDisplay($iGroupID) {
 	    // else if this is a unit administrator, only display the groups in your unit
 	    $oPatternListBox = & new PatternListBox($default->groups_table, "name", "id", "fGroupID");
 	    $oPatternListBox->setFromClause("INNER JOIN $default->groups_units_table GUL on ST.id=GUL.group_id");
-        $oPatternListBox->setWhereClause("GUL.unit_id in (" . implode(",", User::getUnitIDs($_SESSION["userID"])) . ")");
+        $oPatternListBox->setWhereClause("GUL.unit_id IN (" . implode(",", User::getUnitIDs($_SESSION["userID"])) . ")");
 	    $oPatternListBox->setIncludeDefaultValue(false);
 	}
 	$oPatternListBox->setPostBackOnChange(true);
