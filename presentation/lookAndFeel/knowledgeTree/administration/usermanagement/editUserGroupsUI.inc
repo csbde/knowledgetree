@@ -21,7 +21,7 @@ function getPage($iUserID) {
         $heading = "<tr><td>Please select a User:</td></tr>\n";
     }
 
-    $sToRender .= "<table width=\"600\">" . renderHeading("Remove User From Group") . "</table>";
+    $sToRender .= "<table width=\"600\">" . renderHeading("Edit User Groups") . "</table>";
     $sToRender .= "<table>\n";
     $sToRender .= $heading;
     $sToRender .= "<tr>\n";
@@ -32,10 +32,9 @@ function getPage($iUserID) {
     $sToRender .= "<tr>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "</tr>\n";
-    
+    $sToRender .= "</tr>\n";    
     $sToRender .= "</td></table>\n";
-
+   
     return $sToRender;
 }
 
@@ -60,31 +59,53 @@ function getGroupPage($iUserID, $aGroup) {
 
     // when Groupid is gotten show the name
     if (!isset($oGroup)) {
-
-        $Groupdisplay = "<td>Group Name: " . getGroupDisplay($aGroup) . "</td>\n";
+        $Groupdisplay = "&nbsp;<b>Current Groups </b>" . getGroupDisplay($aGroup) . "\n";        
     } else {
         $Groupdisplay = "<td>Group Name: " . $oGroup->getName() . "</td>\n";
+        
     }
+	$OtherGroupdisplay = "&nbsp;&nbsp;Group Name: " . getOtherGroupDisplay($oGroup) . "\n";
+	$sFontTag  .= "<font face=\"Arial\" color=\"#0066cc\">";
+	$sTableTag .= "<table width=100% border=0 cellspacing=0>";
+	$sBgColor = "#F5F6EE";
+	
+	
+	
+    $sToRender .= "<table width=\"600\">";
+    $sToRender .= renderHeading("Edit User Groups");   
+    $sToRender .= "</table>";    
 
-    $sToRender .= "<table width=\"600\">" . renderHeading("Remove User From Group") . "</table>";
-    $sToRender .= "<table>\n";
-    $sToRender .= "<tr><td>Select a Group to Remove User from:</td></tr>\n";
-    $sToRender .= "<tr>\n";
-    $sToRender .= "</tr>\n";
-    $sToRender .= "<td>User Name: " . getUserDisplay($oUser) . "</td>\n";
-    $sToRender .= "<tr>\n";
-    $sToRender .= "</tr>\n";
-    $sToRender .= "<tr>\n";
-    $sToRender .= $Groupdisplay;
-    $sToRender .= "</tr>\n";
-    $sToRender .= "<tr>\n";
-    $sToRender .= "</tr>\n";
-    $sToRender .= "<tr>\n";
-    $sToRender .= "</tr>\n";
-    $sToRender .= "<td></td><td>" . getSelectButton($oUser);
-    $sToRender .= "<td></td><td>" . getCancelButton($oUser);
-    $sToRender .= "</td></table>\n";
-
+    $sToRender .= "<table width=\"600\" border=0>";
+    $sToRender .= "<tr><td width=100%><b>User Name: </b>" . getUserDisplay($oUser) . "</td><td>";
+    $sToRender .= "<a href=\"$default->rootUrl/control.php?action=listUsers\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a>";
+    $sToRender .= "</td></tr>\n";
+    $sToRender .= "</table>";    
+    
+    $sToRender .= "<table width=\"600\" border=0><tr><td>";
+    $sToRender .= "<table border=0 >";
+    
+	$sToRender .= "<tr ><td valign=top>" . $Groupdisplay . "</td></tr>\n";
+	$sToRender .= "<tr><td height=100><br></td></tr>\n";
+	$sToRender .= "</table>";    
+	
+	$sToRender .= "</td><td valign=top>\n";
+    
+    $sToRender .= "<table border=0 cellspacing=1>\n";
+    $sToRender .= "<tr><td><b>Options</b></td></tr>";
+    $sToRender .= "<tr><td width=200 bgcolor=$sBgColor>";
+    $sToRender .= "<br>&nbsp;&nbsp;Add user to a group<br><br>";
+    $sToRender .= "</td><td>";
+    $sToRender .= "<a href=\"$default->rootUrl/control.php?action=addUserToGroup&fUserID=$iUserID\"><img border=0 src=\"$default->graphicsUrl/widgets/select.gif\"></img></a>";
+    $sToRender .= "</td></tr>";
+    $sToRender .= "<tr><td width=200 bgcolor=$sBgColor>";
+    $sToRender .= "<br>&nbsp;&nbsp;Remove user from a group<br><br>";
+    $sToRender .= "</td><td>";
+    $sToRender .= "<a href=\"$default->rootUrl/control.php?action=removeUserFromGroup&fUserID=$iUserID\"><img border=0 src=\"$default->graphicsUrl/widgets/select.gif\"></img></a>";
+    $sToRender .= "</td></tr>";
+    $sToRender .= "</table>\n";
+    
+    $sToRender .= "</td></tr>";
+    $sToRender .= "</table>\n";
 
     return $sToRender;
 }
@@ -107,7 +128,7 @@ function getDeleteConfirmedPage($iUserID,$fGroupID) {
         $Groupdisplay = "<td>Group Name: " . $oGroup->getName() . "</td>\n";
     }
 
-    $sToRender .= "<table width=\"600\">" . renderHeading("Remove User From Group") . "</table>";
+    $sToRender .= "<table width=\"600\">" . renderHeading("Edit User Groups") . "</table>";
     $sToRender .= "<table>\n";
     $sToRender .= "<tr>\n";
     $sToRender .= $heading;
@@ -134,7 +155,7 @@ function getDeleteConfirmedPage($iUserID,$fGroupID) {
 function getPageFail() {
     global $default;
 
-    $sToRender .= "<table width=\"600\">" . renderHeading("Remove User From Group") . "</table>";
+    $sToRender .= "<table width=\"600\">" . renderHeading("Edit User Groups") . "</table>";
     $sToRender .= "<table>\n";
     $sToRender .= "<tr><td><b>Sorry, Removal Failed</b></td></tr>\n";
     $sToRender .= "<tr></tr>\n";
@@ -152,10 +173,10 @@ function getPageFail() {
 }
 
 // show success page if removed from Group successfully
-function getPageSuccess($fUserID) {
+function getPageSuccess() {
     global $default;
 
-    $sToRender .= "<table width=\"600\">" . renderHeading("Remove User From Group") . "</table>";
+    $sToRender .= "<table width=\"600\">" . renderHeading("Edit User Groups") . "</table>";
     $sToRender .= "<table>\n";
     $sToRender .= "<tr><td><b>Success!</b></td></tr>\n";
     $sToRender .= "<tr></tr>\n";
@@ -163,7 +184,7 @@ function getPageSuccess($fUserID) {
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=editUserGroups&fUserID=$fUserID\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
+    $sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=listUsers\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "</table>\n";
 
@@ -186,21 +207,52 @@ function getUserDisplay($oUser) {
         return "<input type=\"hidden\" name=\"fUserID\" value=\"" . $oUser->iId . "\">\n" .
                $oUser->getUserName();
     }
-
 }
 
+// display the listbox initially ..then just display the text
+function getOtherGroupDisplay($oGroup) {
+	global $default;
+	if (!isset($oGroup)) {
+        if (Permission::userIsSystemAdministrator()) {
+            // if this is the system administrator, prepend group names with unit name
+            $oPatternListBox = & new PatternListBox($default->owl_groups_table, "name", "id", "fOtherGroupID");
+            $oPatternListBox->setFromClause("LEFT OUTER JOIN groups_units_link GUL on ST.id=GUL.group_id " .
+                                            "LEFT OUTER JOIN units_lookup UL on GUL.unit_id=UL.id");
+            $oPatternListBox->setCompositeDisplayName("DISTINCT COALESCE(CONCAT(CONCAT(UL.name, '-'),ST.name),ST.name)");
+        } else if (Permission::userIsUnitAdministrator()) {
+            // else if this is a unit administrator, only display the groups in your unit
+            $oPatternListBox = & new PatternListBox($default->owl_groups_table, "name", "id", "fOtherGroupID");
+            $oPatternListBox->setFromClause("INNER JOIN $default->owl_groups_units_table GUL on ST.id=GUL.group_id");
+            $oPatternListBox->setWhereClause("GUL.unit_id=" . User::getUnitID($_SESSION["userID"]));
+        }
+        return $oPatternListBox->render();
+	} else {
+		return "<input type=\"hidden\" name=\"fOtherGroupID\" value=\"" . $oGroup->iId . "\">\n" .
+		$oGroup->getName();
+	}
+}
 // show Group details on confirm deletion page
 function getGroupDisplay($aGroup) {
     global $default;
-
+	
+	$sBgColor = "#F5F6EE";
     $oGroup= null;
+    $sGroup = "<table cellspacing=1 border=0>";
+    for ($i=0;$i < count($aGroup);$i++) {
+        $oGroup= Group::get($aGroup[$i]);
+        $Options .=  "<tr><td>" . ($i+1) . "</td><td bgcolor=$sBgColor>". $oGroup->getName() ."</td></tr>\n";
+    }
+    $sGroup .= $Options . "</table>";
+    return $sGroup;
+    
+    /*$oGroup= null;
     $sGroup = "<select name=\"fGroupID\">";
     for ($i=0;$i < count($aGroup);$i++) {
         $oGroup= Group::get($aGroup[$i]);
         $Options .=  "<OPTION value= \"". $oGroup->iId . "\">". $oGroup->getName() ."</OPTION>\n";
     }
     $sGroup .= $Options . "</SELECT>";
-    return $sGroup;
+    return $sGroup;*/
 }
 
 
@@ -219,9 +271,9 @@ function getDeleteButton($oUser) {
 function getSelectButton($oUser) {
     global $default;
     if (!isset($oUser)) {
-        return "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/select.gif\" value=\"submit\" border=\"0\"/></td>\n";
+        return "<input type=\"image\" src =\"$default->graphicsUrl/widgets/select.gif\" value=\"submit\" border=\"0\"/>\n";
     } else {
-        return "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/select.gif\" value=\"submit\" border=\"0\"/></td>\n";
+        return "<input type=\"image\" src =\"$default->graphicsUrl/widgets/select.gif\" value=\"submit\" border=\"0\"/>\n";
     }
 }
 // show cancel button
@@ -231,7 +283,7 @@ function getCancelButton($oUser) {
         //return "<td align = right><a href=\"$default->rootUrl/control.php?action=UserManagement\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" value=\"cancel\" /></a></td>\n";
     }
     else {
-        return "<td align = right><a href=\"$default->rootUrl/control.php?action=editUserGroups&fUserID=" . $oUser->getID() .  "\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" /></a></td>\n";
+        return "<a href=\"$default->rootUrl/control.php?action=listUsers\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" /></a>\n";
     }
 }
 
