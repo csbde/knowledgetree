@@ -37,7 +37,7 @@ function getPendingCollaborationDocuments($iUserID) {
     $aDocumentList = array();
     if ($default->db->query($sQuery)) {
         while ($default->db->next_record()) {
-            $aDocumentList[] = & Document::get($default->db->f("id"));
+            $aDocumentList[] = & Document::get($default->db->f("document_id"));
         }
     }
     return $aDocumentList;

@@ -20,14 +20,14 @@ require_once("$default->fileSystemRoot/lib/users/User.inc");
  * @param array of pending collaboration documents
  */
 function renderPendingCollaborationDocuments($aPendingDocumentList) {
+    global $default;
     $sToRender  = "\t<tr align=\"left\" bgcolor=\"#996600\">\n";
     $sToRender .= "\t\t<th class=\"sectionHeading\" colspan=\"2\">Pending Documents</th>\n";
     $sToRender .= "\t</tr>\n";
     for ($i = 0; $i < count($aPendingDocumentList); $i++) {
         $oDocument = $aPendingDocumentList[$i];
         $sToRender .= "\t<tr>\n";
-        //$sToRender .= "<td nowrap >" . $aPendingDocumentList[$i]->getTitleLink() . "</td>\n";
-        $sToRender .= "<td nowrap colspan=\"2\">" . generateControllerLink("viewDocument", "fDocumentID=" . $oDocument->getID(), $oDocument->getDisplayPath()) . "</td>\n";        
+        $sToRender .= "<td nowrap colspan=\"2\">" . generateControllerLink("viewDocument", "fDocumentID=" . $oDocument->getID(), "<img src=\"$default->graphicsUrl/widgets/dstatus.gif\" border=\"0\"/>" . $oDocument->getDisplayPath()) . "</td>\n";        
         $sToRender .= "\t</tr>\n";
     }    
     return $sToRender;
@@ -56,7 +56,7 @@ function renderCheckedOutDocuments($aCheckedOutDocumentList) {
     for ($i = 0; $i < count($aCheckedOutDocumentList); $i++) {
         $oDocument = $aCheckedOutDocumentList[$i];
         $sToRender .= "\t<tr>\n";
-        $sToRender .= "<td nowrap>" . generateControllerLink("viewDocument", "fDocumentID=" . $oDocument->getID(), "<img src=\"$default->graphicsUrl/widgets/dstatus.gif\" border=\"0\"/>" . $oDocument->getDisplayPath()) . "</td>\n";
+        $sToRender .= "<td nowrap>" . generateControllerLink("viewDocument", "fDocumentID=" . $oDocument->getID(), $oDocument->getDisplayPath()) . "</td>\n";
         $sToRender .= "<td>" . $oDocument->getDaysSinceLastModified() . "</td>\n";
         $sToRender .= "\t</tr>\n";
     }
