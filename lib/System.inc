@@ -82,19 +82,22 @@ class System {
     function set($sSettingName, $sSettingValue) {
         global $default;
         if (lookupField($default->system_settings_table, "name", "name", $sSettingName)) {
-            // the setting exists, so overwrite it
-            if ($default->db->query("UPDATE $default->system_settings_table SET value='$sSettingValue' where name='$sSettingName'")) {
-                return true;
-            } else {
-                return false;
-            }            
-        } else {
-            // the setting doesn't exist, lets insert it
-            if ($default->db->query("INSERT INTO $default->system_settings_table (name, value) VALUES ('$sSettingName', '$sSettingValue')")) {
-                return true;
-            } else {
+            $res = &DBUtil::whereUpdate($default->system_settings_table,
+                array('value' => $sSettingValue), array('name' => $sSettingName));
+            if (PEAR::isError($res)) {
                 return false;
             }
+            return true;
+        } else {
+            $aFieldValues = array(
+                'name' => $sSettingName,
+                'value' => $sSettingValue,
+            );
+            $res = DBUtil::autoInsert($default->system_settings_table, $aFieldValues);
+            if (PEAR::isError($res)) {
+                return false;
+            }
+            return true;
         }
     }    
 }
