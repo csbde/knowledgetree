@@ -5,7 +5,7 @@ require_once("../../../../config/dmsDefaults.php");
 if(checkSession()) {
 	
 
-	require_once("$default->fileSystemRoot/presentation/webPageTemplate.inc");
+	require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 	
 $Center = "
 	<br></br>
