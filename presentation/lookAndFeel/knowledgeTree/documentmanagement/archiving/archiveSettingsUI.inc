@@ -252,39 +252,31 @@ function renderAddArchiveSettingsPage($iArchivingTypeID, $sErrorMessage = "") {
 	return $sToRender;
 }
 
-function wrap($html) {
-	global $default;
-	
-	return "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">
-<html>
-<head>
-    <basefont size=\"2\" face=\"Arial,Helvetica,sans-serif\" color=\"#000000\">
-	<title>Javascript Calendar Example by Lea Smart</title>
-	<link rel=\"STYLESHEET\" type=\"text/css\" href=\"$default->uiUrl/calendar.css\">
-	<script language=\"JavaScript\" src=\"$default->uiUrl/js/simplecalendar.js\" type=\"text/javascript\"></script>
-	<style>
-	td{
-	  font-family : Arial,Helvetica,Sans-serif;
-	  font-size : 12px;
-	  color : #000000;
-	}
-	input{
-	  font-family : Arial,Helvetica,Sans-serif;
-	  font-size : 12px;
-	  color : #000000;
-	  width : 90px;
-	}
-	</style>
-</head>
-<body bgcolor=\"#FFFFFF\">" . $html . "</form>
-</body>
-</html>";
-}
-
 
 /**
  * Display the confirmation page for manual archiving of a document
  */ 
-function renderArchiveConfirmationPage() {
+function renderArchiveConfirmationPage($iDocumentID, $sErrorMessage = "") {
+	global $default;
+		
+	$sToRender .= renderHeading("Archive Document");
+	if (strlen($sErrorMessage) > 0) {
+		$sToRender .= renderErrorMessage($sErrorMessage);
+	}
+	
+    $sToRender .= "<table>\n";
+	$sToRender .= "<tr>\n";
+	$sToRender .= "<td>You have chosen to archive the document entitled </td></tr><tr><td>'" . Document::getDocumentName($iDocumentID) . "'.</td>\n";
+	$sToRender .= "<tr>\n<tr>\n";
+	$sToRender .= "<td>Select 'Archive' to confirm, or 'Cancel' to cancel.</td>\n";
+	$sToRender .= "<tr>\n";
+	$sToRender .= "<tr>\n";
+	$sToRender .= "<td>&nbsp</td>\n";
+	$sToRender .= "<tr>\n";
+	$sToRender .= "<td><table><tr><td><a href=\"" . $_SERVER["PHP_SELF"] . "?fDocumentID=$iDocumentID&fConfirmed=1\"><img src=\"$default->graphicsUrl/widgets/archive.gif\" border=\"0\"></a></td> <td><a href=\"$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $iDocumentID . "\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></a></td></tr></table></td>";	
+	$sToRender .= "</tr>";
+	$sToRender .= "</table>\n";
+	
+	return $sToRender;
 }
 ?>
