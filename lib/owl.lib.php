@@ -952,27 +952,7 @@ function group_to_name($id)
     }
 }
 
-/**
- * Performs an id field lookup on the specified table.
- *
- * @param $tableName
- *        the name of table to perform the id lookup.
- * @param $fieldName
- *        the db field to return.
- * @param $fieldValue
- *        the value to perform the lookup for
- * @return the id of the row in the db with $fieldName=$fieldValue
- */
- 
-function lookup_id($tableName, $fieldName, $fieldValue)
-{
-    $sql = new Owl_DB; 
-    $sql->query("select id from $tableName where $fieldName = '$fieldValue'");
-    while($sql->next_record()) 
-    {
-        return $sql->f("id");
-    }
-}
+
 //------------------------------------------------------------        
 /**
  * Function uid_to_name($id) 
