@@ -14,8 +14,7 @@
 
 function renderHeading() {
     global $default;
-    $sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
-    $sColor = $default->siteMap->getSectionColour($sSectionName, "th");
+    $sColor = $default->siteMap->getSectionColour("Subscriptions", "th");
     $sToRender .= "<tr align=\"left\"><th class=\"sectionHeading\" bgcolor=\"$sColor\">Subscriptions</th></tr>\n";
     $sToRender .= "<tr/>\n";
     $sToRender .= "<tr/>\n";
@@ -148,7 +147,7 @@ function renderRemoveConfirmationPage($oSubscription) {
         $sContentUrl = "fDocumentID=" . $oSubscription->getExternalID();        
     }
  
-	$sToRender  = "<table>\n";
+	$sToRender  = "<table width=\"600\">\n";
     $sToRender .= renderHeading();    
 	$sToRender .= "<tr><td>You have chosen to delete the your $sContentType subscription to '$sContentName'.</td></tr>\n";
 	$sToRender .= "<tr/>\n";
@@ -181,7 +180,7 @@ function renderAddConfirmationPage($oSubscription) {
         $sContentUrl = "fDocumentID=" . $oSubscription->getExternalID();        
     }
  
-	$sToRender  = "<table>\n";
+	$sToRender  = "<table width=\"600\">\n";
     $sToRender .= renderHeading();
 	$sToRender .= "<tr><td>You have chosen to subscribe to the $sContentType entitled '$sContentName'.</td></tr>\n";
 	$sToRender .= "<tr/>\n";
