@@ -190,7 +190,8 @@ class PatternTableSqlQuery {
 								break;
 						case 3:
 								//hyperlink								
-								$sToRender .= "<td><a href=\"" . $this->aLinkURLs[$i];
+								$sToRender .= "<td><a href=\"";
+								$sLink = $this->aLinkURLs[$i];
 								for ($j = 0; $j < count($this->aDBQueryStringColumns); $j++) {
 									if (strpos($sLink, "?") === false) {
 										$sLink .= "?" . $this->aQueryStringVariableNames[$j] . "=" . $sql->f($this->aDBQueryStringColumns[$j]);										
