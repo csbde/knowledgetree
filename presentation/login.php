@@ -2,6 +2,7 @@
 
 // main library routines and defaults
 require_once("../config/dmsDefaults.php");
+require_once("../lib/sanitize.inc");
 /**
  * $Id$
  *  
@@ -69,7 +70,7 @@ if ($loginAction == "loginForm") {
     <form name=\"loginForm\" action=\"" . $_SERVER["PHP_SELF"] . "\" method=\"post\">
     <tr><td>Please enter your details below to login</td></tr>
     <tr><td></td></tr>
-    <tr><td><font color=\"red\">" . urldecode($errorMessage) . "</font><tr><td>
+    <tr><td><font color=\"red\">" . sanitize($errorMessage) . "</font><tr><td>
     \t<tr><td>Username:</td></tr>
     \t<tr><td><input type=\"text\" name=\"fUserName\" size=\"35\"></td></tr>
     \t<tr><td>Password:</td></tr>
@@ -111,7 +112,7 @@ if ($loginAction == "loginForm") {
 
             // check for a location to forward to
             if (isset($redirect) && strlen(trim($redirect))>0) {
-                $redirect = urldecode($redirect);
+                $redirect = sanitize($redirect);
                 // remove any params from redirect before looking up from sitemap
                 if (strstr($redirect, "?")) {
                     $queryString = substr($redirect, strpos($redirect, "?")+1, strlen($redirect));
