@@ -427,7 +427,6 @@ INSERT INTO system_settings (name, value) values ("main_header_bgcolor", "#d0d0d
 
 INSERT INTO groups_lu (name) VALUES ("System Administrators");
 INSERT INTO groups_lu (name) VALUES ("Unit Administrators");
-INSERT INTO groups_lu (name) VALUES ("Unit User");
 INSERT INTO groups_lu (name) VALUES ("Anonymous");
 
 INSERT INTO organisations_lu (name) VALUES ("Medical Research Council");
