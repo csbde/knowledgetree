@@ -28,6 +28,7 @@ require_once("../../../../../config/dmsDefaults.php");
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternListBox.inc");
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCreate.inc");
 require_once("$default->fileSystemRoot/lib/unitmanagement/Unit.inc");
+require_once("$default->fileSystemRoot/lib/orgmanagement/Organisation.inc");
 require_once("$default->fileSystemRoot/lib/unitmanagement/UnitOrganisationLink.inc");
 require_once("$default->fileSystemRoot/lib/security/Permission.inc");
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
