@@ -31,7 +31,7 @@ if (checkSession()) {
 		if (isset($fAddComment)) {	// User wishes to add a comment		
 			if ($fDocumentID > 0) { // The document ID is positive
 				$main->setFormAction($_SERVER['PHP_SELF'] . "?fAddCommentSubmit=1&iDocumentID=$fDocumentID");
-				$oPatternCustom->setHtml(getAddComment($fDocumentID,$sSubject,$sBody));
+				$oPatternCustom->setHtml(getAddComment($fDocumentID,$sSubject,$sBody, $fCommentID, 1));
 			}
 			else {	// And invalid Document ID was sent
 				$main->setErrorMessage("The Document id cannot be lss than 0.  ID is invalid.");			
@@ -99,7 +99,7 @@ if (checkSession()) {
 			}else { // the user has not entered BOTH a subject and a text body
 				$main->setErrorMessage("The subject line and/or body may be empty" . $NewCommentSubject . "#" . $NewComment);				
 				$main->setFormAction($_SERVER['PHP_SELF'] . "?fAddCommentSubmit=1&iDocumentID=$fDocumentID");
-				$oPatternCustom->addHtml(getAddComment($fDocumentID,$_POST["NewCommentSubject"],$_POST["NewComment"]));
+				$oPatternCustom->addHtml(getAddComment($fDocumentID,$_POST["NewCommentSubject"],$_POST["NewComment"], $fCommentID, 1));
 			} // end of IF for Subject and Body test	
 				
 		} else if (isset($fReplyComment)){  // if user is replying to existing comment			
@@ -122,11 +122,11 @@ if (checkSession()) {
 				$sReply = "Re: ";
 			}else { $sReply = ""; }
 			
-			$oPatternCustom->addHtml(getAddComment($fDocumentID, $sReply . $oComment->getSubject() , urldecode($sReplyBody) ));	
+			$oPatternCustom->addHtml(getAddComment($fDocumentID, $sReply . $oComment->getSubject() , urldecode($sReplyBody), $fCommentID, "-1" ));	
 								
 		} else if (isset($fNewThread)){ // Start adding a new Thread 
 			$main->setFormAction($_SERVER['PHP_SELF'] . "?fAddCommentSubmit=1&iDocumentID=$fDocumentID&fNewThread=1");
-			$oPatternCustom->addHtml(getAddComment($fDocumentID, $CommentSubject , $Comment ));
+			$oPatternCustom->addHtml(getAddComment($fDocumentID, $CommentSubject , $Comment, $fCommentID, "1"));
 					
 		} else { // If no discussion exists			
 			$main->setErrorMessage("Error: No discussion thread available");			
