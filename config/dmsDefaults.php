@@ -297,7 +297,7 @@ $default->siteMap->addSectionColour("linkAdministration", "th", "056DCE");
 $default->siteMap->addSectionColour("linkAdministration", "td", "6699CC");
 
 // news management
-$default->siteMap->addPage("listNews", "/presentation/lookAndFeel/knowledgeTree/administration/news/manageNewsBL.php", "newsAdministration", SysAdmin, "Manage News Items");
+$default->siteMap->addPage("listNews", "/presentation/lookAndFeel/knowledgeTree/administration/news/listNewsBL.php", "newsAdministration", SysAdmin, "List News Items");
 $default->siteMap->addPage("addNews", "/presentation/lookAndFeel/knowledgeTree/administration/news/addNewsBL.php", "newsAdministration", SysAdmin, "Add A News Item");
 $default->siteMap->addPage("editNews", "/presentation/lookAndFeel/knowledgeTree/administration/news/editNewsBL.php", "newsAdministration", SysAdmin, "");
 $default->siteMap->addPage("previewNews", "/presentation/lookAndFeel/knowledgeTree/administration/news/previewNewsBL.php", "newsAdministration", SysAdmin, "");
