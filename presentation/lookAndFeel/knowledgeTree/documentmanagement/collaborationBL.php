@@ -59,11 +59,11 @@ if (checkSession()) {
 							//collaboration process
 							$oOldUser = User::get($oFolderUserRole->getUserID());
 							$oRole = Role::get($oFolderCollaboration->getRoleID());
-							$oEmail = & new Email($default->owl_email_from, $default->owl_email_fromname);							
+							$oEmail = & new Email();							
 							$oDocument = Document::get($fDocumentID);							
 							
 							$sBody = "You have been unassigned the role of '" . $oRole->getName() . "' in the collaboration process for the document entitled '" . $oDocument->getName() . "'";					
-							$oEmail->send($oOldUser->getEmail(), "Unassigment of role in document collaboration process", $sBody, $default->owl_email_from, $default->owl_email_fromname);
+							$oEmail->send($oOldUser->getEmail(), "Unassigment of role in document collaboration process", $sBody);
 						}
 						$oFolderUserRole->setUserID($fUserID);
 						$oFolderUserRole->update();
@@ -73,7 +73,7 @@ if (checkSession()) {
 						$oFolderUserRole->create();						
 					}					
 					//email the user to inform him of his newly assigned role in the collaboration process
-					$oEmail = & new Email($default->owl_email_from, $default->owl_email_fromname);			
+					$oEmail = & new Email();			
 					$oRole = Role::get($oFolderCollaboration->getRoleID());
 					$oDocument = Document::get($fDocumentID);
 					$oUser = User::get($_SESSION["userID"]);
