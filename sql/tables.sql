@@ -649,6 +649,12 @@ INSERT INTO system_settings (name, value) values ("ldapRootDn", "o=Medical Resea
 INSERT INTO system_settings (name, value) values ("emailServer", "mail.jamwarehouse.com");
 INSERT INTO system_settings (name, value) values ("emailFrom", "owl@jamwarehouse.com");
 INSERT INTO system_settings (name, value) values ("emailFromName", "MRC Document Management System");
+INSERT INTO system_settings (name, value) values ("emailAdmin", "dmsHelp@jamwarehouse.com");
+INSERT INTO system_settings (name, value) values ("emailAdminName", "DMS Administrator");
+-- server settings
+INSERT INTO system_settings (name, value) values ("serverName", "change.to.your.hostname");
+INSERT INTO system_settings (name, value) values ("sslEnabled", "true");
+INSERT INTO system_settings (name, value) values ("uMask", "0755");
 -- directories
 INSERT INTO system_settings (name, value) values ("filesystemRoot", "/usr/local/www/owl/dms");
 INSERT INTO system_settings (name, value) values ("documentRoot", "/usr/local/www/owl/dms/Documents");
@@ -661,10 +667,8 @@ INSERT INTO system_settings (name, value) values ("uiUrl", "/dms/presentation/lo
 -- general settings
 INSERT INTO system_settings (name, value) values ("useFs", "true");
 INSERT INTO system_settings (name, value) values ("defaultLanguage", "NewEnglish");
---INSERT INTO system_settings (name, value) values ("notificationLink", "http://$_SERVER[SERVER_NAME]$default->rootUrl/");
 INSERT INTO system_settings (name, value) values ("sessionTimeout", "1200");
-INSERT INTO system_settings (name, value) values ("lastIndexUpdate", "'2002-01-01'");
-
+INSERT INTO system_settings (name, value) values ("lastIndexUpdate", "2002-01-01");
 
 -- document statuses
 INSERT INTO web_documents_status_lookup (name) VALUES ("Pending");
