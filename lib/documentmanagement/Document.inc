@@ -256,6 +256,8 @@ class Document {
         global $default, $lang_err_database, $lang_err_object_key;
         if ($this->iId >= 0) {
             $sql = $default->db;
+            // TODO: insert into sys_deleted
+            //$result = $sql->query("INSERT INTO  " . $default->owl_sys_deleted_table . " () VALUES ()");
             $result = $sql->query("DELETE FROM  " . $default->owl_documents_table . "  WHERE id = $this->iId");
             if ($result) {
                 $this->iId = -1;
@@ -338,6 +340,7 @@ class Document {
     function & get($iDocumentID) {
         global $default, $lang_err_doc_not_exist;
         $sql = $default->db;
+        // TODO: join on sys_deleted
         $sql->query("SELECT * FROM $default->owl_documents_table WHERE id = $iDocumentID");
         if ($sql->next_record()) {
             $oDocument = & new Document(stripslashes($sql->f("name")), $sql->f("filename"), $sql->f("size"), stripslashes($sql->f("creator_id")), $sql->f("mime_id"), $sql->f("folder_id"), $sql->f("description"));
@@ -365,6 +368,7 @@ class Document {
         $aDocumentArray;
         settype($aDocumentArray, "array");
         $sql = $default->db;
+        // TODO: join on sys_deleted
         $result = $sql->query("SELECT * FROM " . $default->owl_documents_table  . (isset($sWhereClause) ? " WHERE " . $sWhereClause : ""));
         if ($result) {
             $iCount = 0;
@@ -447,6 +451,7 @@ class Document {
     function documentExists($sFileName, $iFolderID) {
         global $default, $lang_err_doc_not_exist;
         $sql = $default->db;
+        // TODO: join on sys_deleted
         $sql->query("SELECT * FROM $default->owl_documents_table WHERE name = '" . addslashes($sFileName) . "' AND folder_id = $iFolderID");
         if ($sql->next_record()) {
             return true;
