@@ -22,7 +22,7 @@ require_once("./config/dmsDefaults.php");
 // -------------------------------
 // page start
 // -------------------------------
-//echo $_SERVER["QUERY_STRING"];
+
 // check the session, but don't redirect if the check fails
 if (checkSessionAndRedirect(false)) {
 	//get around the problem with search
@@ -36,13 +36,21 @@ if (checkSessionAndRedirect(false)) {
     // session check fails, so default action should be the login form if no action was specified
     if (!isset($action)) {
         $action = "loginForm";
+    } elseif ($action <> "loginForm") {
+    	// we have a controller link and auth has failed, so redirect to the login page
+    	// with the controller link as the redirect
+        $url = generateControllerUrl("loginForm");
+        $redirect = urlencode($_SERVER[PHP_SELF] . "?" . $_SERVER['QUERY_STRING']);
+        if ((strlen($redirect) > 1)) {
+            $url = $url . "&redirect=" . $redirect;
+        }
+        redirect($url);
     }
 }
 
 // need to strip query string params from action before attempting to retrieve from sitemap
 
 // check for the presence of additional params
-//echo $_SERVER["QUERY_STRING"];
 if (strstr($_SERVER["QUERY_STRING"], "&")) {
     // strip and save the querystring
     $queryString = substr($_SERVER["QUERY_STRING"], strpos($_SERVER["QUERY_STRING"], "&")+1, strlen($_SERVER["QUERY_STRING"]));
