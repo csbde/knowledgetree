@@ -36,7 +36,8 @@ require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternBrowsableSearchResults.inc");    
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternListFromQuery.inc");
 require_once("$default->fileSystemRoot/lib/discussions/DiscussionThread.inc");  
-require_once("$default->fileSystemRoot/lib/discussions/DiscussionComment.inc");   
+require_once("$default->fileSystemRoot/lib/discussions/DiscussionComment.inc");
+require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/documentmanagement/documentUI.inc");  
 require_once("$default->fileSystemRoot/presentation/Html.inc");
 
 if (checkSession()) {
@@ -70,7 +71,7 @@ if (checkSession()) {
 				    
 				    $oSearchResults = & new PatternTableSqlQuery ($sQuery, $aColumns, $aColumnTypes, $aColumnNames, "100%",  $aHyperLinkURL, $aQueryStringCols, $aQueryStringVars);
 				    $sToRender .= renderHeading("Document Discussion Thread");
-					$sToRender .= renderDocumentPath($oThread->getDocumentID());
+					$sToRender .= displayDocumentPath($oThread->getDocumentID());
 				    $oPatternCustom->addHtml($sToRender);
 				    $oPatternCustom->addHtml(getPageButtons($oThread));				    
 				    $oPatternCustom->addHtml($oSearchResults->render());    

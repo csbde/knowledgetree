@@ -39,22 +39,6 @@ function getSubmitSuccessPage($iDocumentID){
 }
 
 /** 
- *	Renders the path for the document
- *
- *	@param $fDocumentID -> a valid document ID
- */
-function renderDocumentPath($iDocumentID) {
-    global $default;
-	
-	$oDocument = & Document::get($iDocumentID);
-	$sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
-	$sTDBGColour = $default->siteMap->getSectionColour($sSectionName, "td");	
-    $sDocumentPath = displayFolderPathLink(Folder::getFolderPathAsArray($oDocument->getFolderID()), Folder::getFolderPathNamesAsArray($oDocument->getFolderID()), "$default->rootUrl/control.php?action=browse") . " > ";
-    $sDocumentPath .= "<a href=\"$default->rootUrl/presentation/lookAndFeel/knowledgeTree/documentmanagement/viewBL.php?fDocumentID=" . $oDocument->getID() . "&fForInlineView=1\">" . $oDocument->getName() . "</a>";    
-    return "<table border=0 cellpadding=\"5\" width = 100%><tr><td bgcolor=\"$sTDBGColour\">$sDocumentPath</td></tr></table>\n";
-}
-
-/** 
  *	Display the ADD COMMENT page   
  *
  *	@param $fDocumentID -> a valid Document ID
@@ -66,7 +50,7 @@ function getAddComment($fDocumentID, $sSubject, $sBody, $iCommentID, $fNewCommen
 				
 	$sHeading = "Add a Comment";	
 	$sToRender .= renderHeading($sHeading);
-	$sToRender .= renderDocumentPath($fDocumentID);	
+	$sToRender .= displayDocumentPath($fDocumentID);	
 	$sToRender .= "<table width=\"100%\" border=\"0\" cellpadding=0 ><tr><td></td>\n";	
 	$sToRender .= "<td align=right width=500>";
 	$sToRender .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
@@ -100,7 +84,7 @@ function getCommentBody($sCommentBody, $sCommentSubject,$dDate,$iDocumentID, $sU
 	$sHeading = "Document Comment";
 		
 	$sToRender .= renderHeading($sHeading);
-	$sToRender .= renderDocumentPath($iDocumentID);
+	$sToRender .= displayDocumentPath($iDocumentID);
 	$sToRender .= "<br>&nbsp;<b>Author: </b>$sUserName";
 	$sToRender .= "<table width=\"96%\" border=\"1\"><tr>"; 
 	$sToRender .= "<td width=\"1\" style=\"background-color:#F5F6EE;\" valign=\"top\"><b>Subject: </b></td><td width=405 style=\"background-color:#F5F6EE;\"> <font color=#056DCE>$sCommentSubject</font></td>";
