@@ -36,12 +36,14 @@ if (checkSession()) {
 					if (!isset($fStartIndex)) {
 						$fStartIndex = 0;
 					}
-					$oPatternCustom->setHtml(getSearchResults($sDocument,$fStartIndex, $fSearchString, $sMetaTagIDs));
+					//$oPatternCustom->setHtml(getSearchResults($sDocument,$fStartIndex, $fSearchString, $sMetaTagIDs));					
+					$oPatternCustom->setHtml(getSearchResults($sMetaTagIDs,$sSQLSearchString, $fStartIndex));					
 					$main->setCentralPayload($oPatternCustom);				                                
 					$main->render();
 				} else {
-					$oPatternCustom = & new PatternCustom();
+					$oPatternCustom = & new PatternCustom();					
 					$oPatternCustom->setHtml(getSearchPage($fSearchString, explode(",",$sMetaTagIDs)));
+					//$oPatternCustom->setHtml(getSearchResults($sMetaTagIDs,$sSQLSearchString, $fStartIndex));
 					$main->setCentralPayload($oPatternCustom);
 					$main->setErrorMessage("No documents matched your search criteria");
 					$main->setFormAction("advancedSearchBL.php?fForSearch=1");                                
