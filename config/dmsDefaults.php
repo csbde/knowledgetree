@@ -61,20 +61,30 @@ class KTInit {
     function setupLogging () {
         global $default;
         require_once("$default->fileSystemRoot/lib/Log.inc");
-        $default->log = new Log($default->fileSystemRoot . "/log", $default->logLevel);
+        $default->log = new KTLegacyLog($default->fileSystemRoot . "/log", $default->logLevel);
         $res = $default->log->initialiseLogFile();
         if (PEAR::isError($res)) {
             KTInit::handleInitError($res);
         }
-        $default->queryLog = new Log($default->fileSystemRoot . "/log", $default->logLevel, "query");
+        $default->queryLog = new KTLegacyLog($default->fileSystemRoot . "/log", $default->logLevel, "query");
         $res = $default->queryLog->initialiseLogFile();
         if (PEAR::isError($res)) {
             KTInit::handleInitError($res);
         }
-        $default->timerLog = new Log($default->fileSystemRoot . "/log", $default->logLevel, "timer");
+        $default->timerLog = new KTLegacyLog($default->fileSystemRoot . "/log", $default->logLevel, "timer");
         $res = $default->timerLog->initialiseLogFile();
         if (PEAR::isError($res)) {
             KTInit::handleInitError($res);
+        }
+
+        require_once("Log.php");
+        $default->phpErrorLog =& Log::factory('composite');
+        $fileLog =& Log::factory('file', $default->fileSystemRoot . "/log/php_error_log", 'BLAH');
+        $default->phpErrorLog->addChild($fileLog);
+
+        if ($default->developmentWindowLog) {
+            $windowLog =& Log::factory('win', 'LogWindow', 'BLAH');
+            $default->phpErrorLog->addChild($windowLog);
         }
     }
     // }}}
@@ -206,12 +216,39 @@ class KTInit {
         die($oError->toString());
     }
     // }}}
+
+    // {{{ handlePHPError()
+    function handlePHPError($code, $message, $file, $line) {
+        global $default;
+
+        /* Map the PHP error to a Log priority. */
+        switch ($code) {
+        case E_WARNING:
+        case E_USER_WARNING:
+            $priority = PEAR_LOG_WARNING;
+            break;
+        case E_NOTICE:
+        case E_USER_NOTICE:
+            $priority = PEAR_LOG_NOTICE;
+            break;
+        case E_ERROR:
+        case E_USER_ERROR:
+            $priority = PEAR_LOG_ERR;
+            break;
+        default:
+            $priotity = PEAR_LOG_INFO;
+        }
+
+        $default->phpErrorLog->log($message . ' in ' . $file . ' at line ' . $line, $priority);
+        return false;
+    }
+    // }}}
 }
 // }}}
 
 // Application defaults
 //
-// Overriden in environment.php
+// Overridden in environment.php
 
 $default->fileSystemRoot = KT_DIR;
 $default->serverName = $_SERVER['HTTP_HOST'];
@@ -221,11 +258,21 @@ $default->unzipCommand = "unzip";
 $default->logLevel = 'INFO';
 
 $default->useDatabaseConfiguration = false;
+$default->developmentWindowLog = false;
 
 // include the environment settings
 require_once("environment.php");
 
+
 KTInit::prependPath(KT_DIR . '/pear');
+require_once('PEAR.php');
+
+// instantiate log
+KTInit::setupLogging();
+
+// Send all PHP errors to a file (and maybe a window)
+set_error_handler(array('KTInit', 'handlePHPError'));
+
 KTInit::setupDB();
 KTInit::setupRandomSeed();
 
@@ -252,9 +299,6 @@ if ($default->useDatabaseConfiguration && $default->system->initialised()) {
 
 // table mapping entries
 include("tableMappings.inc");
-
-// instantiate log
-KTInit::setupLogging();
 
 KTInit::setupI18n();
 
