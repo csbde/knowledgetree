@@ -59,10 +59,12 @@ function generateControllerUrl($action, $queryString = "") {
  * Generates a link via the control page, with the passed action
  *
  * @param string the controller action to generate a link for
+ * @param string the text of the link
+ * @param string the querystring (optional)
  * @return string the generated href
  */
-function generateControllerLink($action, $queryString = "") {
-    return "<a href=\"" . generateControllerUrl($action, $queryString) . "\">";
+function generateControllerLink($action, $linkText, $queryString = "") {
+    return "<a href=\"" . generateControllerUrl($action, $queryString) . "\">$linkText</a>";
 }
 
 /**
