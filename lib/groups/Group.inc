@@ -59,6 +59,39 @@ class Group {
 		$this->sName = $sNewValue;
 	}
 	
+
+	/**
+	 * Checks if this group has users mapped to it or not
+	 */
+	function hasUsers() {
+		global $default;
+		$sql = $default->db;
+		$sql->query("SELECT id FROM $default->owl_users_groups_table WHERE group_id = $this->iId");
+       	$rows = $sql->num_rows();
+        if ($rows > 0) {
+        	return true;
+        } else {
+        	return false;
+        }
+	}
+
+	/**
+	 * Checks if this group has users mapped to it or not
+	 */	
+	function hasUnit() {
+		global $default;
+
+		$sql = $default->db;
+		$query = "SELECT id FROM $default->owl_groups_units_table WHERE group_id = $this->iId";
+	    $sql->query($query);
+	   	$rows = $sql->num_rows();
+		if ($rows > 0){
+	    	return true;
+		} else {
+			return false;
+		}
+	}
+	
 	/**
 	* Create the current object in the database
 	*
@@ -72,15 +105,13 @@ class Group {
 			//check to see if name exsits
 			$sql = $default->db;
 			$query = "SELECT name FROM ". $default->owl_groups_table ." WHERE name = '" . $this->sName . "'";
-        		$sql->query($query);
-       			$rows = $sql->num_rows($sql);
-        
-      			 if ($rows > 0){
-            		 // duplicate username
-           		 $_SESSION["errorMessage"] = "Group::The Group name " . $this->sName . " is already in use!";
-           		 return false;
-	       		 }else
-	      		 {
+      		$sql->query($query);
+     		$rows = $sql->num_rows();
+   			if ($rows > 0) {
+				// duplicate username
+				$_SESSION["errorMessage"] = "Group::The Group name " . $this->sName . " is already in use!";
+				return false;
+	        } else {
 				$sql = $default->db;
 				$result = $sql->query("INSERT INTO " . $default->owl_groups_table . " (name, is_sys_admin, is_unit_admin) VALUES ('" . addslashes($this->sName) . "', " . ($this->bIsSysAdmin ? 1 : 0) . ", " . ($this->bIsUnitAdmin ? 1 : 0) . ")");
 				if ($result) {
@@ -127,26 +158,9 @@ class Group {
 		global $default, $lang_err_database, $lang_err_object_key;
 		//only delete the object if it exists in the database
 		if ($this->iId >= 0) {
-			//check to see if group is linked to a unit
 			$sql = $default->db;
-			$query = "SELECT group_id FROM ". $default->owl_groups_units_table ." WHERE group_id = '" . $this->iId . "'";
-        		$sql->query($query);
-       			$rows = $sql->num_rows($sql);
-        
-      			 if ($rows > 0){
-            		 // duplicate link exists
-           		 $_SESSION["errorMessage"] = "Group::The Group " . $this->sName . " exits!";
-           		 return false;
-           		 
-	       		 }else{
-				$sql = $default->db;
-				$result = $sql->query("DELETE FROM $default->owl_groups_table WHERE id = $this->iId");
-				if ($result) {
-				return true;
-				}
-				$_SESSION["errorMessage"] = $lang_err_database;
-				return false;
-			}
+			$result = $sql->query("DELETE FROM $default->owl_groups_table WHERE id = $this->iId");
+			return $result;
 		}
 		$_SESSION["errorMessage"] = $lang_err_object_key;
 		return false;
