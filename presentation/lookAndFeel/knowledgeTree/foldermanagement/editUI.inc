@@ -12,7 +12,7 @@ function renderHeading() {
     global $default;
     $sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
     $sColor = $default->siteMap->getSectionColour($sSectionName, "th");
-    $sToRender  = "<table border=\"0\" width=\"100%\">\n";
+    $sToRender  = "<table border=\"0\" width=\"600\">\n";
     $sToRender .= "<tr align=\"left\"><th class=\"sectionHeading\" bgcolor=\"$sColor\">Modify Folder</th></tr>\n";
     $sToRender .= "<tr/>\n";
     $sToRender .= "<tr/>\n";
