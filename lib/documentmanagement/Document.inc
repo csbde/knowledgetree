@@ -38,7 +38,7 @@ class Document {
     var $bIsCheckedOut;
 	/** comma delimited string of folder hierarch this document falls under */
 	var $sParentFolderIDs;
-	/** backlash deliminated path from file system root */
+	/** forward slash deliminated path from file system root */
 	var $sFullPath;
 
     /**
@@ -212,7 +212,7 @@ class Document {
 	}
 	
 	/**
-	* Backslash deliminated string giving full path of document
+	* Forward slash deliminated string giving full path of document
 	* from file system root url
 	* 
 	*/
@@ -223,7 +223,7 @@ class Document {
 			$sql = $default->db;
 			$sql->query("SELECT name, parent_id FROM $default->owl_folders_table WHERE ID = $iFolderID");
 			$sql->next_record();			
-			return $this->generateFullFolderPath($sql->f("parent_id")) . "\\" . stripslashes($sql->f("name"));
+			return $this->generateFullFolderPath($sql->f("parent_id")) . "/" . stripslashes($sql->f("name"));
 		}
 		return;
 	}
@@ -279,8 +279,12 @@ class Document {
                                   "minor_version =  $this->iMinorVersion, ";
 								  if ($aForMove) {
 									  //only update these if the document is being moved
-									  $sQuery .= "parent_folder_ids = '" . addslashes(substr($this->sFullPath, 1, strlen($this->sFullPath))) . "'," .
-									  			"full_path = '" . addslashes($this->sParentFolderIDs, 1, strlen($this->sParentFolderIDs)) . "', ";
+									  $sFullPath = $this->generateFullFolderPath($this->iFolderID); 
+									  $this->sFullPath = substr($sFullPath, 1, strlen($sFullPath));
+									  $sParentFolderIDs = $this->generateParentFolderIDS($this->iFolderID);
+									  $this->sParentFolderIDs = substr($sParentFolderIDs, 1, strlen($sParentFolderIDs));
+									  $sQuery .= "parent_folder_ids = '" . addslashes($this->sParentFolderIDs) . "'," .
+									  			"full_path = '" . addslashes($this->sFullPath) . "', ";
 								  }					
                                   $sQuery .= "is_checked_out = " . ($this->bIsCheckedOut ? "1" : "0") . " " .								  			  
                                   			"WHERE id = $this->iId";
