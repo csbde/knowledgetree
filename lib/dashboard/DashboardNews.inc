@@ -467,7 +467,12 @@ class DashboardNews {
     function getImageLink() {
     	global $default;
     	if ($this->iImageSize > 0) {
-			return "<img src=\"$default->rootUrl/" . $default->siteMap->getPage("viewNewsImage") . "?fNewsID=" . $this->getID() . "\" border=\"0\">";
+    		$sTargetPage = $default->siteMap->getPage("viewNewsImage");
+		    $sLink = "http" . ($default->sslEnabled ? "s" : "") . "://" . $default->serverName . 
+		             ((substr($sTargetPage, 0, strlen($default->rootUrl)) != $default->rootUrl) ? $default->rootUrl : "") . 
+		             $sTargetPage . "?fNewsID=" . $this->getID();    		
+    		
+			return "<img src=\"$sLink\" border=\"0\">";
     	} else {
     		return "";
     	}   	
