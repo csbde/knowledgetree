@@ -62,6 +62,14 @@ function getEditPage($iDocFieldID) {
     $sToRender .= getCancelButton($oDocField);
     $sToRender .= "</table>\n";
 
+	$sToRender .= "\n\n<script language=\"javascript\">\n<!--\n";
+	$sToRender .= "function validateForm(theForm) {\n";
+	$sToRender .= "\tif (!(validRequired(theForm.fDocFieldName, 'Document Field Name'))) {\n";
+	$sToRender .= "\t\treturn false;\n";
+	$sToRender .= "\t}\n";	
+	$sToRender .= "return true;\n}\n";
+	$sToRender .= "//-->\n</script>\n\n";
+    
     return $sToRender;
 }
 
