@@ -8,7 +8,7 @@ ip CHAR(30)
 ) TYPE = InnoDB;
 
 CREATE TABLE archive_settings ( 
-id INTEGER NOT NULL,
+id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 document_id INTEGER NOT NULL,
 expiration_date DATETIME,
 utilisation_threshold INTEGER
@@ -23,7 +23,7 @@ CREATE TABLE dependant_document_instance (
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 document_title TEXT NOT NULL,
 user_id INTEGER NOT NULL,
-template_document_id INTEGER,
+template_document_id INTEGER
 ) TYPE = InnoDB;
 
 CREATE TABLE dependant_document_template ( 
@@ -296,6 +296,11 @@ is_default BIT,
 is_enabled BIT DEFAULT 1
 )TYPE = InnoDB;
 
+CREATE TABLE status_lookup  (
+id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
+name CHAR(255)
+)TYPE = InnoDB;
+
 CREATE TABLE system_settings ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 name CHAR(255) NOT NULL,
@@ -542,6 +547,11 @@ ADD CONSTRAINT PK_sitemap
 PRIMARY KEY (id)
 ;
 
+ALTER TABLE status_lookup
+ADD CONSTRAINT PK_status_lookup
+PRIMARY KEY (id)
+;
+
 ALTER TABLE system_settings
 ADD CONSTRAINT PK_system_settings
 PRIMARY KEY (id)
@@ -761,6 +771,12 @@ INSERT INTO document_transaction_types_lookup (name) VALUES ("Download");
 INSERT INTO document_transaction_types_lookup (name) VALUES ("Check In");
 INSERT INTO document_transaction_types_lookup (name) VALUES ("Check Out");
 INSERT INTO document_transaction_types_lookup (name) VALUES ("Collaboration Step Rollback");
+
+-- document status
+INSERT INTO status_lookup (name) VALUES ("Live");
+INSERT INTO status_lookup (name) VALUES ("Published");
+INSERT INTO status_lookup (name) VALUES ("Deleted");
+INSERT INTO status_lookup (name) VALUES ("Archived");
 
 -- roles
 INSERT INTO roles (name, active, can_read, can_write) VALUES ('Editor', 1, 1, 1);
