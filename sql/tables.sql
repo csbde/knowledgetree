@@ -348,44 +348,6 @@ ADD CONSTRAINT PK_word_list
 PRIMARY KEY (id) 
 ;
 
--- insert into system_settings (these are from the old html table)
-INSERT INTO system_settings (name, value) values ("table_border", "0");
-INSERT INTO system_settings (name, value) values ("table_header_bg", "gray");
-INSERT INTO system_settings (name, value) values ("table_cell_bg", "#FFCCCC");
-INSERT INTO system_settings (name, value) values ("table_cell_bg_alt", "#CCCCFF");
-INSERT INTO system_settings (name, value) values ("table_expand_width", "90%");
-INSERT INTO system_settings (name, value) values ("table_collapse_width", "50%");
-INSERT INTO system_settings (name, value) values ("body_bgcolor", "#FFEEDD");
-INSERT INTO system_settings (name, value) values ("body_textcolor", "#000066");
-INSERT INTO system_settings (name, value) values ("body_link", "#000000");
-INSERT INTO system_settings (name, value) values ("body_vlink", "#000000");
-INSERT INTO system_settings (name, value) values ("main_header_bgcolor", "#d0d0d0");
-
---INSERT INTO prefs (email_from, email_fromname,email_replyto,email_server, lookathd, def_file_security, def_file_group_owner, def_file_owner, def_file_title, def_file_meta, def_fold_security, def_fold_group_owner, def_fold_owner,max_filesize, timeout, expand, version_control, restrict_view, dbdump_path, gzip_path, tar_path) values ("owl@yourdomain.com", "OWL Intranet","noreply@yourdomain.com","localhost", "false", "0", "0", "1", "<font color=red>No Info</font>", "not in db", "50", "1", "0", "5120000", "900","1","1","0", "/usr/bin/mysqldump", "/bin/gzip", "/bin/tar");
-
-INSERT INTO groups_lookup (name) VALUES ("System Administrators");
-INSERT INTO groups_lookup (name) VALUES ("Unit Administrators");
-INSERT INTO groups_lookup (name) VALUES ("Anonymous");
-
-INSERT INTO organisations_lookup (name) VALUES ("Medical Research Council");
-
-INSERT into units (name, organisation_id, parent_id) values ("Administration Unit", 1, 0);
-
-INSERT INTO users (name, username, password, quota_max, quota_current, email, mobile, email_notification, sms_notification,ldap_dn, max_sessions) 
-            VALUES ("Administrator", "admin", "admin", "0", "0", "", "", 1, 1, "", 0);
-INSERT INTO users (name, username, password, quota_max, quota_current, email, mobile, email_notification, sms_notification,ldap_dn, max_sessions) 
-            VALUES ("Anonymous", "guest", "guest", "0", "0", "", "", 0, 0, "", 19);
-            
-UPDATE users SET language = 'NewEnglish';
-UPDATE users SET password = '21232f297a57a5a743894a0e4a801fc3' WHERE name = "Administrator";
-UPDATE users SET password = '084e0343a0486ff05530df6c705c8bb4' WHERE name = "Anonymous";
-
-INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
-             VALUES ("Documents", "Root Document Folder", 0, 0, 51, 0, 0);
-             
-INSERT INTO documents (name, filename, size, creator_id, modified, description, security, mime_id, folder_id, major_version, minor_version, is_checked_out) 
-            VALUES ("Test File", "test.txt", "36", 0, "Dec 27th, 2000 at 05:17 pm", "", 0, 0, 0, 0, 1, 0);
-
 INSERT INTO mime_types (filetypes, mimetypes) VALUES ('ai', 'application/postscript');
 INSERT INTO mime_types (filetypes, mimetypes) VALUES ('aif', 'audio/x-aiff');
 INSERT INTO mime_types (filetypes, mimetypes) VALUES ('aifc', 'audio/x-aiff');
@@ -511,6 +473,68 @@ INSERT INTO mime_types (filetypes, mimetypes) VALUES ('xyz', 'chemical/x-pdb');
 INSERT INTO mime_types (filetypes, mimetypes) VALUES ('zip', 'application/zip');
 INSERT INTO mime_types (filetypes, mimetypes) VALUES ('gz', 'application/x-gzip');
 INSERT INTO mime_types (filetypes, mimetypes) VALUES ('tgz', 'application/x-gzip');
+
+-- insert into system_settings (these are from the old html table)
+INSERT INTO system_settings (name, value) values ("table_border", "0");
+INSERT INTO system_settings (name, value) values ("table_header_bg", "gray");
+INSERT INTO system_settings (name, value) values ("table_cell_bg", "#FFCCCC");
+INSERT INTO system_settings (name, value) values ("table_cell_bg_alt", "#CCCCFF");
+INSERT INTO system_settings (name, value) values ("table_expand_width", "90%");
+INSERT INTO system_settings (name, value) values ("table_collapse_width", "50%");
+INSERT INTO system_settings (name, value) values ("body_bgcolor", "#FFEEDD");
+INSERT INTO system_settings (name, value) values ("body_textcolor", "#000066");
+INSERT INTO system_settings (name, value) values ("body_link", "#000000");
+INSERT INTO system_settings (name, value) values ("body_vlink", "#000000");
+INSERT INTO system_settings (name, value) values ("main_header_bgcolor", "#d0d0d0");
+
+--INSERT INTO prefs (email_from, email_fromname,email_replyto,email_server, lookathd, def_file_security, def_file_group_owner, def_file_owner, def_file_title, def_file_meta, def_fold_security, def_fold_group_owner, def_fold_owner,max_filesize, timeout, expand, version_control, restrict_view, dbdump_path, gzip_path, tar_path) values ("owl@yourdomain.com", "OWL Intranet","noreply@yourdomain.com","localhost", "false", "0", "0", "1", "<font color=red>No Info</font>", "not in db", "50", "1", "0", "5120000", "900","1","1","0", "/usr/bin/mysqldump", "/bin/gzip", "/bin/tar");
+
+INSERT INTO groups_lookup (name) VALUES ("System Administrators");
+INSERT INTO groups_lookup (name) VALUES ("Unit Administrators");
+INSERT INTO groups_lookup (name) VALUES ("Anonymous");
+
+INSERT INTO organisations_lookup (name) VALUES ("Medical Research Council");
+
+INSERT INTO units (name, organisation_id, parent_id) VALUES ("Administration Unit", 1, 0);
+
+INSERT INTO users (name, username, password, quota_max, quota_current, email, mobile, email_notification, sms_notification,ldap_dn, max_sessions) 
+            VALUES ("Administrator", "admin", "admin", "0", "0", "", "", 1, 1, "", 0);
+INSERT INTO users (name, username, password, quota_max, quota_current, email, mobile, email_notification, sms_notification,ldap_dn, max_sessions) 
+            VALUES ("Anonymous", "guest", "guest", "0", "0", "", "", 0, 0, "", 19);
+            
+UPDATE users SET language = 'NewEnglish';
+UPDATE users SET password = '21232f297a57a5a743894a0e4a801fc3' WHERE name = "Administrator";
+UPDATE users SET password = '084e0343a0486ff05530df6c705c8bb4' WHERE name = "Anonymous";
+
+INSERT INTO groups_units_link (group_id, unit_id) VALUES (1, 1);
+INSERT INTO groups_units_link (group_id, unit_id) VALUES (3, 1);
+INSERT INTO user_group_link (group_id, user_id) VALUES (1, 1);
+INSERT INTO user_group_link (group_id, user_id) VALUES (3, 2);
+
+-- default document type field- category
+INSERT INTO document_fields (name, data_type) VALUES ("Category", "String");
+INSERT INTO document_fields (name, data_type) VALUES ("Keywords", "String");
+INSERT INTO document_fields (name, data_type) VALUES ("Comments", "String");
+
+INSERT INTO document_types_lookup (name) VALUES ("Proposal");
+INSERT INTO document_type_fields_link (document_type_id, field_id, is_mandatory) VALUES (1, 1, 1);
+INSERT INTO document_type_fields_link (document_type_id, field_id, is_mandatory) VALUES (1, 2, 0);
+INSERT INTO document_type_fields_link (document_type_id, field_id, is_mandatory) VALUES (1, 3, 0);
+
+INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
+             VALUES ("Documents", "Root Document Folder", 0, 1, 51, 0, 0);
+             
+INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
+             VALUES ("MRC Document Root", "MRC Root Document Folder", 1, 1, 51, 0, 0);
+
+INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
+             VALUES ("Administration Unit Document Root", "Administration Unit Root Document Folder", 2, 1, 51, 1, 0);             
+
+-- add a document             
+INSERT INTO documents (document_type_id, name, filename, size, creator_id, modified, description, security, mime_id, folder_id, major_version, minor_version, is_checked_out) 
+            VALUES (1, "Test File", "test.txt", "36", 0, "Dec 27th, 2000 at 05:17 pm", "", 0, 0, 0, 0, 1, 0);
+-- set the category metadata value
+INSERT INTO document_fields_link (document_id, document_field_id, value) VALUES (1, 1, "test");
 
 INSERT INTO web_documents_status_lookup (name) VALUES ("Pending");
 INSERT INTO web_documents_status_lookup (name) VALUES ("Published");
