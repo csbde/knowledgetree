@@ -193,6 +193,15 @@ function getEditPage($oDocument) {
     $sToRender .= "</table>\n";
     $sToRender .= "<table>\n";
     $sToRender .= "<tr>\n";
+    
+     // display the check in button if the document is checked out and you checked the document out
+    if ($oDocument->getIsCheckedOut() && ($oDocument->getCheckedOutUserID() == $_SESSION["userID"])) {
+        $sToRender .= "<td><a href=\"" . generateControllerLink("checkInDocument", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/checkin.gif\" border=\"0\" /></a></td>\n";
+    // otherwise display the check out button
+    } else {
+        $sToRender .= "<td><a href=\"" . generateControllerLink("checkOutDocument", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/checkout.gif\" border=\"0\" /></a></td>\n";
+    }
+    
     if ($default->phpSniff->property("browser") == "ie") {
         $sToRender .= "<td><a href=\"http://" . $default->serverName . $_SERVER["PHP_SELF"] . "?fDocumentID=" . $oDocument->getID() . "&fForDownload=1\"><img src=\"$default->graphicsUrl/widgets/download.gif\" border=\"0\" /></a></td>\n";
     } else {
@@ -202,14 +211,7 @@ function getEditPage($oDocument) {
     $sToRender .= "<td><a href=\"" . generateControllerLink("deleteDocument", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/delete.gif\" border=\"0\" /></a></td>\n";
     $sToRender .= "<td><a href=\"" . generateControllerLink("viewHistory", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/history.gif\" border=\"0\" /></a></td>\n";    
     
-    // display the check in button if the document is checked out and you checked the document out
-    if ($oDocument->getIsCheckedOut() && ($oDocument->getCheckedOutUserID() == $_SESSION["userID"])) {
-        $sToRender .= "<td><a href=\"" . generateControllerLink("checkInDocument", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/checkin.gif\" border=\"0\" /></a></td>\n";
-    // otherwise display the check out button
-    } else {
-        $sToRender .= "<td><a href=\"" . generateControllerLink("checkOutDocument", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/checkout.gif\" border=\"0\" /></a></td>\n";
-    }
-    
+       
     // display the unsubscribe button if the user is subscribed to the document
     if (Subscription::exists($_SESSION["userID"], $oDocument->getID(), SubscriptionConstants::subscriptionType("DocumentSubscription"))) {
         $sToRender .= "<td><a href=\"" . generateControllerLink("removeSubscription", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/unsubscribe.gif\" border=\"0\" /></a></td>\n";
