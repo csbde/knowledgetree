@@ -37,8 +37,10 @@ class PatternTableSqlQuery {
 	var $sWidth;	
 	/** link url used if a column type of 3 is specified */
 	var $sLinkURL;
-	/** database column value to append to link url if a column type of 3 is specified */
-	var $sDBQueryStringColumn;
+	/** database column values to append to link url if a column type of 3 is specified */
+	var $aDBQueryStringColumns;
+	/** variables names to give $aDBQueryStringColumns on the query string */
+	var $aQueryStringVariableNames;
 	/** display the column headings or not */
 	var $bDisplayColumnHeadings;
 	/** table heading */
@@ -50,7 +52,7 @@ class PatternTableSqlQuery {
 	/** message that will be displayed if the table is empty*/
 	var $sEmptyTableMessage;
 				
-	function PatternTableSqlQuery($sTmpQuery, $aTmpColumns, $aTmpColumnTypes, $aTmpColumnHeaderNames, $sTmpWidth, $sTmpLinkURL = null, $sTmpDBQueryStringColumn = null, $bTmpDisplayColumnHeadings = false) {
+	function PatternTableSqlQuery($sTmpQuery, $aTmpColumns, $aTmpColumnTypes, $aTmpColumnHeaderNames, $sTmpWidth, $sTmpLinkURL = null, $sTmpDBQueryStringColumns = null, $aNewQueryStringVariableNames = null) {
 		$this->sQuery = $sTmpQuery;
 		$this->aColumns = & $aTmpColumns;
 		$this->aColumnTypes = $aTmpColumnTypes;
@@ -58,7 +60,8 @@ class PatternTableSqlQuery {
 		$this->sWidth = $sTmpWidth;
 		$this->bDisplayColumnHeadings = $bTmpDisplayColumnHeadings;
 		$this->sLinkURL = $sTmpLinkURL;
-		$this->sDBQueryStringColumn = $sTmpDBQueryStringColumn;
+		$this->aDBQueryStringColumns = $sTmpDBQueryStringColumns;
+		$this->aQueryStringVariableNames = $aNewQueryStringVariableNames;
 	}
 	
 	function setEmptyTableMessage($sNewValue) {
@@ -75,6 +78,10 @@ class PatternTableSqlQuery {
 	
 	function setUseImageURLFromQuery($bNewValue) {
 		$this->bUseImageURLFromQuery = $bNewValue;
+	}
+	
+	function setDisplayColumnHeadings($bNewValue) {
+		$this->bDisplayColumnHeadings = $bNewValue;
 	}
 	
 	/**
@@ -121,7 +128,16 @@ class PatternTableSqlQuery {
 								$sToRender .= $sql->f($this->aColumns[$i]) . "</td>";
 								break;
 						case 3:
-								$sToRender .= "<td><a href=\"" . $this->sLinkURL  . $sql->f($this->sDBQueryStringColumn) . "\">";
+								$sToRender .= "<td><a href=\"" . $this->sLinkURL;
+								for ($j = 0; $j < count($this->aDBQueryStringColumns); $j++) {
+									if (strpos($sToRender, "?") === false) {
+										$sToRender .= "?" . $this->aQueryStringVariableNames[$j] . "=" . $sql->f($this->aDBQueryStringColumns[$j]);										
+									} else { 
+										$sToRender .= "&" . $this->aQueryStringVariableNames[$j] . "=" . $sql->f($this->aDBQueryStringColumns[$j]);
+									}									
+								}
+								$sToRender .= "\">";
+								
 								if (isset($this->sImageURL)) {
 									$sToRender .= $this->generateImageURL($this->sImageURL);
 								} else if ($this->bUseImageURLFromQuery) {

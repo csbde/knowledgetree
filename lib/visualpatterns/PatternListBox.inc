@@ -98,7 +98,10 @@ class PatternListBox {
         global $default;
         
 		$sql = $default->db;
-		$sQuery = "SELECT DISTINCT $this->sDisplayColumn AS display, $this->sValueColumn AS value FROM $this->sTableName ";
+		$sQuery = "SELECT DISTINCT ST." . $this->sDisplayColumn . " AS display, ST." .  $this->sValueColumn . " AS value FROM $this->sTableName AS ST ";
+		if (isset($this->sFromClause)) {
+			$sQuery .= $this->sFromClause . " ";
+		}
 		if (isset($this->sWhereClause)) {
 			$sQuery .= "WHERE " . $this->sWhereClause . " ";
 		}
