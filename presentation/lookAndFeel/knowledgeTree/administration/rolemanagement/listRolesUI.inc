@@ -26,19 +26,19 @@
  */
 function getRoles() {
 	global $default;
-	$sQuery = 	"SELECT id as roleID, name as name, active, can_read as reader, can_write as writer, " . 
+	$sQuery = 	"SELECT id as roleID, name as name, can_read as reader, can_write as writer, " . 
 				"'Edit', 'Delete' " .
 				"FROM roles " .
 				"ORDER BY name";				
 	
-    $aColumns = array("name", 	  "active", "reader", "writer", "Edit", "Delete");
-    $aColumnNames = array("Name", "Active", "Read", "Write", "Edit", "Delete");
-    $aColumnTypes = array(1,2,2,2,3,3);
+    $aColumns = array("name", "reader", "writer", "Edit", "Delete");
+    $aColumnNames = array("Name", "Read", "Write", "Edit", "Delete");
+    $aColumnTypes = array(1,2,2,3,3);
     $aDBColumnArray = array("roleID");
     $aQueryStringVariableNames = array("fRoleID");
     	    
-    $aHyperLinkURL = array(	4=> "$default->rootUrl/control.php?action=editRole",                       			
-                     			5=> "$default->rootUrl/control.php?action=removeRole"); //"$default->rootUrl/control.php?action=removeUserFromGroup");
+    $aHyperLinkURL = array(	3=> "$default->rootUrl/control.php?action=editRole",                       			
+                     		4=> "$default->rootUrl/control.php?action=removeRole"); //"$default->rootUrl/control.php?action=removeUserFromGroup");
     	    
     $oSearchResults = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnNames, "100%", $aHyperLinkURL,$aDBColumnArray,$aQueryStringVariableNames);	    
 	$oSearchResults->setDisplayColumnHeadings(true);	

@@ -30,16 +30,16 @@ function getCreatePage($iRoleID) {
 	global $default;
 	
 	$sQuery =  "SELECT * FROM $default->roles_table WHERE id = $iRoleID";
-	$aDisplayColumns = array("name","active","can_read","can_write");
-	$aStoreColumns = array("name","active", "can_read","can_write");
-	$aColumnNames = array("Name:","Active:", "Readable:", "Writable:");
-	$aDisplayColumnTypes = array(1,2,2,2);
-	$aDatabaseColumnTypes = array(1,2,2,2);
+	$aDisplayColumns = array("name", "can_read", "can_write");
+	$aStoreColumns = array("name", "can_read","can_write");
+	$aColumnNames = array("Name", "Read", "Write");
+	$aDisplayColumnTypes = array(1,2,2);
+	$aDatabaseColumnTypes = array(1,2,2);
 	
 	// get list of role properties...name...text field...is_Sys_admin and is_unit_admin..checkboxes
 	$oPattern = & new PatternEditableListFromQuery($sQuery, $default->roles_table, $aDisplayColumns, $aStoreColumns, $aColumnNames, $aDisplayColumnTypes, $aDatabaseColumnTypes) ;
 	$oPattern->setUniqueName("roleEdit");
-	$oPattern->setColumnsRequired(array(1,0,0,0));
+	$oPattern->setColumnsRequired(array(1,0,0));
 		
     $sToRender .= renderHeading("Edit Role");
 	$sToRender .= "<table>\n";
@@ -98,9 +98,6 @@ function getEditPage($iRoleID) {
 	
 	// if a Role selected...show checkboxes
 	if (isset($iRoleID)) {
-		$sToRender .= "</tr>\n";
-		$sToRender .= "<tr>\n";
-		$sToRender .= "<td>Active: </td><td>" . getActiveCheckBox($oRole) . "</td>\n";
 		$sToRender .= "</tr>\n";
 		$sToRender .= "<tr>\n";
 		$sToRender .= "<td>Readable: </td><td>" . getReadableCheckBox($oRole) . "</td>\n";
