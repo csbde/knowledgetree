@@ -1,17 +1,19 @@
 <?php
 
 require_once("$default->owl_fs_root/presentation/Html.inc");
+require_once("$default->owl_ui_directory/foldermanagement/folderUI.inc");
+require_once("$default->owl_ui_directory/documentmanagement/documentUI.inc");
 
 /**
  * $Id$
  *
  * Document browsing page html UI building functions.
  *
- * Licensed under the GNU GPL. For full terms see the file COPYING.
+ * Licensed under the GNU GPL. For full terms see the file DOCS/COPYING.
  *
  * @version $Revision$
  * @author Michael Joseph <michael@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
- * @package presentation.documentmanagement
+ * @package presentation.lookAndFeel.knowledgeTree.documentmanagement
  */
 
 /**
@@ -30,32 +32,48 @@ function browseTypeSelect($sBrowseType) {
                                (($sBrowseType=="documentType") ? "checked" : "") . "> Document Type\n</span>";
 }
 
+/**
+ * Displays the passed category path as a link
+ * 
+ * @param string the category name to display
+ */
 function displayCategoryPathLink($sCategoryName) {
-   return "<span class=\"browseTypeSelect\">Categories</span> > " . displayCategoryLink($sCategoryName);                                              
+   return displayCategoryLink("Categories") . " > " . displayCategoryLink($sCategoryName);                                              
 }
 
+/**
+ * Displays the passed category as a link
+ * 
+ * @param string the category name to display
+ */
 function displayCategoryLink($sCategoryName) {
     return generateLink($_SERVER["PHP_SELF"],
-                        "fBrowseType=category&fCategoryName=$sCategoryName",
+                        "fBrowseType=category" .
+                        // if the category title is passed in, link back to the list of categories
+                        (($sCategoryName == "Categories") ? "" : "&fCategoryName=$sCategoryName"),
                         $sCategoryName);
 }
 
+/**
+ * Displays the passed document type path as a link
+ * 
+ * @param string the document type to display 
+ */
+function displayDocumentTypePathLink($aDocumentType) {
+    return displayDocumentTypeLink(array("name"=>"Document Types")) . " > " . displayDocumentTypeLink($aDocumentType);    
+}
+
+/**
+ * Displays the passed document type as a link
+ * 
+ * @param string the document type to display 
+ */
 function displayDocumentTypeLink($aDocumentType) {
     return generateLink($_SERVER["PHP_SELF"],
-                        "fBrowseType=documentType&fDocumentTypeID=" . $aDocumentType["id"],
+                        "fBrowseType=documentType" .
+                        // if the document type title is passed in, link back to the list of document types
+                        (($aDocumentType["name"] == "Document Types") ? "" : "&fDocumentTypeID=" . $aDocumentType["id"]),
                         $aDocumentType["name"]);
 }
 
-function displayDocumentTypePathLink($aDocumentType) {
-    return "<span class=\"browseTypeSelect\">Document Types</span> > " . displayDocumentTypeLink($aDocumentType);
-}
-
-function displayDocumentLink($oDocument, $bDisplayFullPath = false) {
-    global $default;
-    $sIconPath = generateImage($oDocument->getMimeTypeIconUrl());
-    return generateLink("$default->owl_root_url/control.php?action=viewDocument", 
-                        "fDocumentID=" . $oDocument->getID(),
-                        ($sIconPath ? $sIconPath : "") . 
-                        ($bDisplayFullPath ? implode(" > ", $oDocument->getDocumentPathAsArray($oDocument->getID())) : $oDocument->getName()));
-}
 ?>
