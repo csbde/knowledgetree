@@ -587,7 +587,6 @@ class Document {
         $aDocumentArray;
         settype($aDocumentArray, "array");
         $sql = $default->db;
-        // TODO: join on sys_deleted
         $result = $sql->query("SELECT * FROM " . $default->owl_documents_table  . (isset($sWhereClause) ? " WHERE " . $sWhereClause : ""));
         if ($result) {
             $iCount = 0;
