@@ -77,7 +77,7 @@ if (checkSession()) {
 					$oEmail = & new Email();			
 					$oRole = Role::get($oFolderCollaboration->getRoleID());
 					$oDocument = Document::get($fDocumentID);
-					$oUser = User::get($_SESSION["userID"]);
+					$oUser = User::get($fUserID);
 					
 					$sBody = "You have been assigned the role of '" . $oRole->getName() . "' in the collaboration process for the document entitled '" . $oDocument->getName() . "'.  You will be informed when your role becomes active";					
 					$oEmail->send($oUser->getEmail(), "Assigment of role in document collaboration process", $sBody, $default->owl_email_from, $default->owl_email_fromname);
