@@ -9,29 +9,14 @@
 */
 // get add pages
 function getAddPage($unitID) {
-
 	global $default;
 	
-	$oOrg = null;
 	if (isset($iOrgID)) {
-		$oOrg = Organisation::get($iOrgID);
-		
+        $oOrg = Organisation::get($iOrgID);
 	}
 	
-	//$aDisplayRowNames = array("Unit Name:");
-	//$aParameterNumbers = array(0);
-	//$aDisplayColumnTypes = array(1);
-	//$aRequired = array(1);
-	//$aDropDownListTableNames = array(10=>"document_types_lookup");
-
-	// create a text field that is required 
-	//$oPatternCreate = & new PatternCreate("Unit", "unitmanagement\\Unit.inc",$aDisplayRowNames, $aParameterNumbers, $aDisplayColumnTypes, $aRequired);
-	//$oPatternCreate->setUniqueName("unit");
-	
-	$sToRender .= "<br></br>\n";
-	$sToRender .= "<b>Add a New Unit to the System:</b>\n";
+    $sToRender .= "<table width=\"600\">" . renderHeading("Add Unit") . "</table>";
 	$sToRender .= "<table>\n";
-	$sToRender .= "<br></br>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>Unit Name: </td><td><input size = \"40\" type=\"text\" name=\"fUnitName\"> </td>\n";
@@ -45,17 +30,15 @@ function getAddPage($unitID) {
 	$sToRender .= "</table>\n";
 	
 	return $sToRender;
-	
 }
 
-// if edition is successful print otu success page
+// if edition is successful print out success page
 function getAddPageSuccess() {	
 	global $default;
 			
-	$sToRender .= "<br></br>\n";
-	$sToRender .= "<b>Addition Successful!</b>\n";
+	$sToRender .= "<table width=\"600\">" . renderHeading("Add Unit") . "</table>";
 	$sToRender .= "<table>\n";
-	$sToRender .= "<br></br>\n";
+	$sToRender .= "<tr><td><b>Addition Successful!</b></td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr><td>New Unit was successfully added</td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
@@ -68,14 +51,13 @@ function getAddPageSuccess() {
 	return $sToRender;
 }
 
-// if edition is successful print otu success page
+// if edition is successful print out failure page
 function getAddPageFail() {	
 	global $default;
 			
-	$sToRender .= "<br></br>\n";
-	$sToRender .= "<b>Addition Unsuccessful</b>\n";
+    $sToRender .= "<table width=\"600\">" . renderHeading("Add Unit") . "</table>";
 	$sToRender .= "<table>\n";
-	$sToRender .= "<br></br>\n";
+	$sToRender .= "<tr><td><b>Addition Unsuccessful</b></td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr><td>The Unit was not added. Unit Name Already exists!</td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
@@ -94,10 +76,8 @@ function getAddPageFail() {
 function getPageFail() {	
 	global $default;
 			
-	$sToRender .= "<br></br>\n";
-	$sToRender .= "<b>Addition Unsuccessful</b>\n";
+    $sToRender .= "<table width=\"600\">" . renderHeading("Add Unit") . "</table>";
 	$sToRender .= "<table>\n";
-	$sToRender .= "<br></br>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr><td>Please enter a name AND Select the Organisation</td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
@@ -114,10 +94,9 @@ function getPageFail() {
 function getAddPageToOrgFail() {	
 	global $default;
 			
-	$sToRender .= "<br></br>\n";
-	$sToRender .= "<b>Addition to Organisation Unsuccessful</b>\n";
-	$sToRender .= "<table>\n";
-	$sToRender .= "<br></br>\n";
+    $sToRender .= "<table width=\"600\">" . renderHeading("Add Unit") . "</table>";
+    $sToRender .= "<table>\n";
+    $sToRender .= "<tr><td><b>Addition to Organisation Unsuccessful</b></td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr><td>The Unit was not added to the Organisation.</td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
@@ -138,8 +117,6 @@ function getOrgDisplay($oOrg) {
 	global $default;
 	if (!isset($oOrg)) {
 		$oPatternListBox = & new PatternListBox($default->owl_organisations_table, "name", "id", "fOrgID");
-		//$oPatternListBox->setIncludeDefaultValue(true);
-		//$oPatternListBox->setPostBackOnChange(true);		
 		return $oPatternListBox->render();
 	} else {
 		return "<input type=\"hidden\" name=\"fOrgID\" value=\"" . $oOrg->iId . "\">\n" .
