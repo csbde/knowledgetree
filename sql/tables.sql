@@ -25,6 +25,15 @@ value CHAR(255) NOT NULL
 ) 
 ;
 
+CREATE TABLE groups_folders_link (
+id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
+group_id INTEGER NOT NULL,
+folder_id INTEGER NOT NULL,
+can_read BIT NOT NULL,
+can_write BIT NOT NULL
+)
+;
+
 
 
 CREATE TABLE document_transaction_types_lu ( 
@@ -140,9 +149,10 @@ name CHAR(100) NOT NULL
 
 
 
-CREATE TABLE groups_units_link ( 
+CREATE TABLE groups_users_link ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 group_id INTEGER NOT NULL,
+user_id INTEGER NOT NULL,
 unit_id INTEGER NOT NULL
 ) 
 ;
@@ -227,13 +237,6 @@ sms_notification BOOL NOT NULL,
 language CHAR(100),
 ldap_dn CHAR(255),
 max_sessions INTEGER) 
-;
-
-CREATE TABLE user_group_link ( 
-id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
-user_id INTEGER NOT NULL,
-group_id INTEGER NOT NULL
-) 
 ;
 
 
@@ -337,7 +340,7 @@ ADD CONSTRAINT PK_groups
 PRIMARY KEY (id) 
 ;
 
-ALTER TABLE groups_units_link 
+ALTER TABLE groups_users_link 
 ADD CONSTRAINT PK_users_unit 
 PRIMARY KEY (id) 
 ;
@@ -349,7 +352,12 @@ PRIMARY KEY (id)
 
 ALTER TABLE mime_types 
 ADD CONSTRAINT PK_mimes 
-PRIMARY KEY (id) 
+PRIMARY KEY (id)
+;
+
+ALTER TABLE groups_folders_link 
+ADD CONSTRAINT PK_groups_folders_link 
+PRIMARY KEY (id)  
 ;
 
 ALTER TABLE organisations_lu 
@@ -377,10 +385,6 @@ ADD CONSTRAINT PK_units
 PRIMARY KEY (id) 
 ;
 
-ALTER TABLE user_group_link 
-ADD CONSTRAINT PK_membergroup 
-PRIMARY KEY (id) 
-;
 
 ALTER TABLE users 
 ADD CONSTRAINT PK_users 
