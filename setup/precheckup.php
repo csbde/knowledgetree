@@ -286,6 +286,9 @@ PHP you are running, and which modules are available.</p>
   </tbody>
 </table>
 
+<h2>Post-installation checkup</h2>
+
+<p>Once you have installed, check the <a href="postcheckup.php">Post-installation checkup</a>.</p>
   
   </body>
 </html>
