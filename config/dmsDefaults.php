@@ -11,6 +11,9 @@
 
 // include the environment settings
 require_once("environment.php");
+require_once($default->owl_root_url . "/lib/Session.inc");
+require_once($default->owl_root_url . "/lib/control.inc");
+require_once($default->owl_root_url . "/lib/db.inc");
 
 $default->owl_graphics_url	= $default->owl_root_url . "/graphics";
 $default->owl_LangDir		= $default->owl_fs_root . "/locale";
