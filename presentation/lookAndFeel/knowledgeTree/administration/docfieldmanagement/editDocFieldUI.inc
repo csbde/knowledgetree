@@ -18,7 +18,7 @@ function getEditPage($iDocFieldID) {
         $aDataTypes =  $oDocField->getAllDataTypes();
         $currentDataType = $oDocField->getDataType();
     }
-
+    
     $sToRender .= renderHeading("Edit Document Field");
     $sToRender .= "<table>\n";
     $sToRender .= "<tr></tr>\n";
@@ -28,7 +28,7 @@ function getEditPage($iDocFieldID) {
     $sToRender .= "<tr>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "<tr>\n";
-
+    
     // if a DocField selected...show checkboxes
     if (isset($iDocFieldID)) {
         $sToRender .= "</tr>\n";
@@ -36,15 +36,15 @@ function getEditPage($iDocFieldID) {
         $sToRender .= "<td>Data Type: </td><td>" . getDataTypesList($aDataTypes, $currentDataType ) . "</td>\n";
         $sToRender .= "</tr>\n";
         $sToRender .= "<tr>\n";
-
-		// allow changing the generic status if the field is not linked to a document type
-		// and if this isn't the category field
-        if ( ($checkBox == false) || $oDocField->getName() != "Category") {
+        
+        // allow changing the generic status if the field is not linked to a document type
+        // and if this isn't the category field
+        if ( ($checkBox == false) && $oDocField->getName() != "Category") {
             $sToRender .= "<td>Is Generic: </td><td>" . getIsGenericCheckBox($oDocField) . "</td>\n";
         } else {
             $sToRender .= "<input type=\"hidden\" name=\"fDocFieldIsGeneric\" value=\"" . $oDocField->getIsGeneric() . "\">\n";
         }
-
+        
         $sToRender .= "</tr>\n";
         $sToRender .= "<tr>\n";
         $sToRender .= "<td>Has MetaData Lookup: </td><td>" . getHasLookupCheckBox($oDocField) . "</td>\n";
@@ -52,21 +52,21 @@ function getEditPage($iDocFieldID) {
         $sToRender .= "<tr>\n";
         $sToRender .= "</tr>\n";
     }
-
-
+    
+    
     $sToRender .= "<tr>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "<td></td>" . getUpdateButton($oDocField);
     $sToRender .= getCancelButton($oDocField);
     $sToRender .= "</table>\n";
-
-	$sToRender .= "\n\n<script language=\"javascript\">\n<!--\n";
-	$sToRender .= "function validateForm(theForm) {\n";
-	$sToRender .= "\tif (!(validRequired(theForm.fDocFieldName, 'Document Field Name'))) {\n";
-	$sToRender .= "\t\treturn false;\n";
-	$sToRender .= "\t}\n";	
-	$sToRender .= "return true;\n}\n";
-	$sToRender .= "//-->\n</script>\n\n";
+    
+    $sToRender .= "\n\n<script language=\"javascript\">\n<!--\n";
+    $sToRender .= "function validateForm(theForm) {\n";
+    $sToRender .= "\tif (!(validRequired(theForm.fDocFieldName, 'Document Field Name'))) {\n";
+    $sToRender .= "\t\treturn false;\n";
+    $sToRender .= "\t}\n";
+    $sToRender .= "return true;\n}\n";
+    $sToRender .= "//-->\n</script>\n\n";
     
     return $sToRender;
 }
@@ -74,7 +74,7 @@ function getEditPage($iDocFieldID) {
 // if edition is successful print otu success page
 function getEditPageSuccess() {
     global $default;
-
+    
     $sToRender .= renderHeading("Edit Document Field");
     $sToRender .= "<b>Success!</b>\n";
     $sToRender .= "<table>\n";
@@ -87,7 +87,7 @@ function getEditPageSuccess() {
     $sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=listDocFields\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "</table>\n";
-
+    
     return $sToRender;
 }
 
@@ -95,7 +95,7 @@ function getEditPageSuccess() {
 // gets the page if edition fails
 function getEditPageFail() {
     global $default;
-
+    
     $sToRender .= renderHeading("Edit Document Field");
     $sToRender .= "<b>FAILURE!</b>\n";
     $sToRender .= "<table>\n";
@@ -108,7 +108,7 @@ function getEditPageFail() {
     $sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=listDocFields\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "</table>\n";
-
+    
     return $sToRender;
 }
 
@@ -122,19 +122,19 @@ function getDocFieldDisplay($oDocField) {
         return $oPatternListBox->render();
     } else {
         return "<input type=\"hidden\" name=\"fDocFieldID\" value=\"" . $oDocField->iId . "\">\n" .
-               "<input size=\"40\" type=\"text\" name=\"fDocFieldName\" value=\"" . $oDocField->getName() . "\"" . 
-               ($oDocField->getName() == "Category" ? "disabled=\"disabled\"" : "") . ">";
+        "<input size=\"40\" type=\"text\" name=\"fDocFieldName\" value=\"" . $oDocField->getName() . "\"" .
+        ($oDocField->getName() == "Category" ? "disabled=\"disabled\"" : "") . ">";
     }
 }
 
 // show Group details on confirm deletion page
 function getDataTypesList($aDataTypes, $sCurrent) {
     global $default;
-
+    
     $sDataype = "<Select Name=\"fDocFieldDataType\">";
-
+    
     for ($i=0;$i < count($aDataTypes);$i++) {
-
+        
         if($aDataTypes[$i]["name"] == $sCurrent) {
             $Options .=  "<OPTION value= \"". $aDataTypes[$i]["name"]. "\" SELECTED>". $aDataTypes[$i]["name"] ."</OPTION>\n";
         } else {
@@ -163,7 +163,7 @@ function getHasLookupCheckBox($oDocField) {
     } else {
         return "<input type=\"checkbox\" name=\"fDocFieldHasLookup\" " . ($oDocField->getHasLookup() ? "CHECKED " : " ") . " />";
     }
-
+    
 }
 
 // gets the updatebutton when a DocField is selected
