@@ -199,10 +199,12 @@ $default->siteMap->addPage("addOrgSuccess", "/presentation/lookAndFeel/knowledge
 $default->siteMap->addPage("removeOrg", "/presentation/lookAndFeel/knowledgeTree/administration/orgmanagement/removeOrgBL.php", "orgAdministration", SysAdmin, "Remove an Organisation");
 
 // user management
-$default->siteMap->addPage("addUser", "/tests/groups/adduser.php", "UserAdministration", UnitAdmin, "Add User to System");
-$default->siteMap->addPage("editUser", "/tests/groups/adduser.php", "UserAdministration", UnitAdmin, "Edit User Properties");
-$default->siteMap->addPage("removeUser", "/tests/groups/adduser.php", "UserAdministration", UnitAdmin, "Remove User from System");
-$default->siteMap->addPage("addUsersToGroup", "/tests/groups/adduser.php", "UserAdministration", UnitAdmin, "Add User to A Group");
+$default->siteMap->addPage("addUser", "/presentation/lookAndFeel/knowledgeTree/administration/usermanagement/addUserBL.php", "userAdministration", SysAdmin, "Add User to System");
+$default->siteMap->addPage("editUser", "/presentation/lookAndFeel/knowledgeTree/administration/usermanagement/editUserBL.php", "userAdministration", SysAdmin, "Edit User Properties");
+$default->siteMap->addPage("editUserSuccess", "/presentation/lookAndFeel/knowledgeTree/administration/usermanagement/editUserSuccess.php", "userAdministration", SysAdmin, "Edit User Properties Success", false);
+$default->siteMap->addPage("removeUser", "/presentation/lookAndFeel/knowledgeTree/administration/usermanagement/removeUserBL.php", "userAdministration", SysAdmin, "Remove User from System");
+$default->siteMap->addPage("addUserToGroup", "/presentation/lookAndFeel/knowledgeTree/administration/usermanagement/addUserToGroupBL.php", "userAdministration", UnitAdmin, "Add User to Group");
+$default->siteMap->addPage("removeUserFromGroup", "/presentation/lookAndFeel/knowledgeTree/administration/usermanagement/removeUserFromGroupBL.php", "userAdministration", UnitAdmin, "Remove User From Group");
 
 //document type management
 $default->siteMap->addPage("doctype", "/presentation/lookAndFeel/knowledgeTree/administration/admin.php?sectionName=documentTypeAdministration", "doctypeAdministration", SysAdmin, "Document Type Management");
