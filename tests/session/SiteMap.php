@@ -18,6 +18,7 @@ if (checkSession()) {
     echo "<pre>";
     
     // array
+    
     echo "SiteMap:: using the array<br>";
     
     // get section links
@@ -73,7 +74,7 @@ if (checkSession()) {
     
     // get action from page
     echo "SiteMap::getActionFromPage(/presentation/lookAndFeel/knowledgeTree/documentmanagement/browseBL.php) = " . $default->siteMap->getActionFromPage("/presentation/lookAndFeel/knowledgeTree/documentmanagement/browseBL.php") . "<br>";
-    echo "SiteMap::getActionFromPage(/presentation/documentmanagement/moveFolder.php) = " . $default->siteMap->getActionFromPage("/presentation/documentmanagement/moveFolder.php") . "<br>";    
+    echo "SiteMap::getActionFromPage(/presentation/documentmanagement/moveFolder.php) = " . $default->siteMap->getActionFromPage("/presentation/documentmanagement/moveFolder.php") . "<br>";
     echo "</pre>";
         
 } else {
