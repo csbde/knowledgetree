@@ -47,15 +47,22 @@ $nwPayLoad ->setHtml($nwestLoad);
          
 // set up the west payload
 //get section links
-$sectionArray = $default->siteMap->getSectionLinks($sectionName);
+if($sectionName != "General")
+{
+	$sectionArray = $default->siteMap->getSectionLinks($sectionName);
 
-//format the array..by taking first element off
-$output1["links"] = array_shift ($sectionArray["links"]);      
-$output2["descriptions"] = array_shift($sectionArray["descriptions"]);
+	//format the array..by taking first element off
+	$output1["links"] = array_shift ($sectionArray["links"]);      
+	$output2["descriptions"] = array_shift($sectionArray["descriptions"]);
 
-//create links
-$westLinks = new PatternTableLinks($sectionArray["links"], $sectionArray["descriptions"], 50 , 1 ,1,null);
-$westRender = $westLinks->render();
+	//create links
+	$westLinks = new PatternTableLinks($sectionArray["links"], $sectionArray["descriptions"], 50 , 1 ,1,null);
+	$westRender = $westLinks->render();
+}
+Else
+{
+	$westRender = "";
+}
 
 //set up links
 $cAdmin = "$default->owl_graphics_url/leftnav/cadmin.gif" ;
@@ -65,13 +72,19 @@ $link = "$default->owl_graphics_url/leftnav/links.gif" ;
 //setup the westpayload 
 // TODO -> change to links the images as well
 $westLoad = "
-        <html>
-         <table border  = \"1\" width = \"100%\" height = \"100%\">
+       
+         <table  cellspacing = \"5\"  cellpadding = \"5\"  border  = \"1\" width = \"100%\" height = \"75%\">
          <tr><td>". $westRender ."</td></tr>
-         <tr><td><img src = " . $cAdmin . "></img></td></tr>
-         <tr><td><img src = ". $link ."></img></td></tr>
          </table>
-         </html>
+         <hr>
+         <img src = " . $cAdmin . "></img>
+         </hr>
+         <hr>
+         <img src = ". $link ."></img>
+         </hr>
+         <hr>
+         </hr>
+       
          ";
          
 $westPayLoad = new PatternCustom;
