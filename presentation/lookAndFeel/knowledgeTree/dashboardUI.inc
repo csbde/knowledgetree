@@ -53,7 +53,7 @@ function renderPendingWebDocuments($aPendingDocumentList) {
 }
 
 function renderRestorationRequests($aRestorationRequests) {
-    global $default, $dashboard_archived_document_restoration_heading;
+    global $default;
 
     if (count($aRestorationRequests) > 0) {
         $sBgColor = "#9D9D7F"; 
@@ -62,7 +62,7 @@ function renderRestorationRequests($aRestorationRequests) {
     }            
     $sToRender  = "\t\t\t<tr align=\"left\" bgcolor=\"$sBgColor\">\n";
         
-    $sToRender .= "\t\t\t\t<th class=\"sectionHeading\" colspan=\"2\"><font color=\"ffffff\">" . $$dashboard_archived_document_restoration_heading . "</font></th>\n";
+    $sToRender .= "\t\t\t\t<th class=\"sectionHeading\" colspan=\"2\"><font color=\"ffffff\">" . _("Archived Document Restoration Requests") . "</font></th>\n";
     $sToRender .= "\t\t\t</tr>\n";
     for ($i = 0; $i < count($aRestorationRequests); $i++) {
         $oDocument = Document::get($aRestorationRequests[$i]->getDocumentID());
@@ -90,7 +90,7 @@ function renderPendingCollaborationDocuments($aPendingDocumentList) {
     }    
     $sToRender  = "\t\t\t<tr align=\"left\" bgcolor=\"$sBgColor\">\n";
         
-    $sToRender .= "\t\t\t\t<th class=\"sectionHeading\" colspan=\"2\"><font color=\"ffffff\">" . $dashboard_pending_documents_heading . "</font></th>\n";
+    $sToRender .= "\t\t\t\t<th class=\"sectionHeading\" colspan=\"2\"><font color=\"ffffff\">" . _("Pending Documents") . "</font></th>\n";
     $sToRender .= "\t\t\t</tr>\n";
     for ($i = 0; $i < count($aPendingDocumentList); $i++) {
         $oDocument = $aPendingDocumentList[$i];
@@ -109,14 +109,14 @@ function renderPendingCollaborationDocuments($aPendingDocumentList) {
  * @param array of checked out documents
  */
 function renderCheckedOutDocuments($aCheckedOutDocumentList) {
-    global $default, $dashboard_checked_out_documents_heading;
+    global $default;
     if (count($aCheckedOutDocumentList) > 0) {
         $sBgColor = "#9D9D7F";
     } else {
         $sBgColor = "#CECEBF";
     }    
     $sToRender  = "\t\t\t<tr align=\"left\" bgcolor=\"$sBgColor\">\n";   
-    $sToRender .= "\t\t\t\t<th class=\"sectionHeading\" colspan=\"2\"><font color=\"ffffff\">" . $dashboard_checked_out_documents_heading . "</font></th>\n";
+    $sToRender .= "\t\t\t\t<th class=\"sectionHeading\" colspan=\"2\"><font color=\"ffffff\">" . _("Checked Out Documents") . "</font></th>\n";
     $sToRender .= "\t\t\t</tr>\n";
     
     if (count($aCheckedOutDocumentList) > 0) {
@@ -146,14 +146,14 @@ function renderCheckedOutDocuments($aCheckedOutDocumentList) {
  * @param array of subscription alerts
  */
 function renderSubscriptionAlerts($aSubscriptionAlertList) {
-    global $default, $dashboard_subscription_alerts_heading;
+    global $default;
     if (count($aSubscriptionAlertList) > 0) {
         $sBgColor = "#9D9D7F";
     } else {
         $sBgColor = "#CECEBF";
     }    
     $sToRender  = "\t\t\t<tr align=\"left\" bgcolor=\"$sBgColor\">\n";
-    $sToRender .= "\t\t\t\t<th class=\"sectionHeading\" colspan=\"2\"><font color=\"ffffff\">" . $dashboard_subscription_alerts_heading . "</font></th>\n";
+    $sToRender .= "\t\t\t\t<th class=\"sectionHeading\" colspan=\"2\"><font color=\"ffffff\">" . _("Subscription Alerts") . "</font></th>\n";
     $sToRender .= "\t\t\t</tr>\n";
     for ($i = 0; $i < count($aSubscriptionAlertList); $i++) {
         $sToRender .= "\t\t\t<tr>\n";
@@ -164,14 +164,14 @@ function renderSubscriptionAlerts($aSubscriptionAlertList) {
 }
 
 function renderDependantDocuments($aDependantDocumentList) {
-	global $default, $dashboard_dependant_documents_heading;
+	global $default;
     if (count($aDependantDocumentList) > 0) {
         $sBgColor = "#9D9D7F";
     } else {
         $sBgColor = "#CECEBF";
     }    
     $sToRender  = "\t\t\t<tr align=\"left\" bgcolor=\"$sBgColor\">\n";   
-    $sToRender .= "\t\t\t\t<th class=\"sectionHeading\" colspan=\"2\"><font color=\"ffffff\">" . $dashboard_dependant_documents_heading . "</font></th>\n";
+    $sToRender .= "\t\t\t\t<th class=\"sectionHeading\" colspan=\"2\"><font color=\"ffffff\">" . _("Dependant Documents") . "</font></th>\n";
     $sToRender .= "\t\t\t</tr>\n";
     
     if (count($aDependantDocumentList) > 0) {
@@ -206,9 +206,9 @@ function renderDependantDocuments($aDependantDocumentList) {
  * Displays the quicklinks
  */
 function renderQuickLinks($aQuickLinks) {
-    global $default, $dashboard_quick_links_heading;
+    global $default;
     $sToRender .= "\t\t\t<tr align=\"left\" bgcolor=\"#9D9D7F\">\n";
-    $sToRender .= "\t\t\t\t<th class=\"sectionHeading\"><font color=\"ffffff\">" . $dashboard_quick_links_heading . "</font></th>\n";
+    $sToRender .= "\t\t\t\t<th class=\"sectionHeading\"><font color=\"ffffff\">" . _("Quick Links") . "</font></th>\n";
     $sToRender .= "\t\t\t</tr>\n";
     for ($i = 0; $i < count($aQuickLinks); $i++) {
         $sToRender .= "\t\t\t<tr>\n";
@@ -260,7 +260,7 @@ function renderDashboardNews() {
 
 	return $sToRender;
 }
- 
+
 /**
  * Renders the dashboard
  *
@@ -269,16 +269,18 @@ function renderDashboardNews() {
  * @param array subscription alerts for this user
  */
 function renderPage($aPendingDocumentList, $aCheckedOutDocumentList, $aSubscriptionAlertList, $aQuickLinks, $aWebDocuments, $aDependantDocuments, $aRestorationRequests) {
-    global $default, $dashboard_welcome;
+    global $default;
     
     $sToRender  = "<table border=\"0\" width=\"600\" >\n";
 	$sToRender .= "\t<tr valign=\"top\">\n";
-    $sToRender .= "\t\t<td><img src=\"$default->graphicsUrl/welcome.gif\" border=\"0\"/></td>\n";
+    $sToRender .= "\t\t<td><img src=\"" . imgSrc("welcome.gif") . "\" border=\"0\"/></td>\n";
     
     // some arb welcoming text goes here
     $oUser = & User::get($_SESSION["userID"]);
-    $sUserName = $oUser->getName();    
-    $sToRender .= "\t\t<td>" . getTranslatedString($dashboard_welcome, array(0 => (strlen($sUserName) > 0 ? " " . $sUserName : ""), 1 => lookupField($default->organisations_table, "name", "id", $default->organisationID))) . "</td>\n";    
+    $sUserName = $oUser->getName();
+    $sToRender .= "\t\t<td>" . sprintf(_('Hi %1$s, welcome back to the %2$s DMS, part of the Knowledge Tree'), 
+    									(strlen($sUserName) > 0 ? " " . $sUserName : ""), 
+    									lookupField($default->organisations_table, "name", "id", $default->organisationID)) . "</td>\n";
         
     // dashboard news
     $sToRender .= "\t\t<td>\n";
