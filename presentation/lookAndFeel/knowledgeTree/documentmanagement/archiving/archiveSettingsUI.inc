@@ -210,6 +210,7 @@ function renderEditArchiveSettingsPage($oDocumentArchiving, $sErrorMessage = "")
 	global $default;
 	
 	$sToRender .= renderHeading("Edit Document Archive Settings");
+	$sToRender .= displayDocumentPath($oDocumentArchiving->getDocumentID());	
 	if (strlen($sErrorMessage) > 0) {
 		$sToRender .= renderErrorMessage($sErrorMessage);
 	}
@@ -222,10 +223,11 @@ function renderEditArchiveSettingsPage($oDocumentArchiving, $sErrorMessage = "")
 /**
  * Displays the add document archive settings page
  */
-function renderAddArchiveSettingsPage($iArchivingTypeID, $sErrorMessage = "") {
+function renderAddArchiveSettingsPage($iDocumentID, $iArchivingTypeID = false, $sErrorMessage = "") {
 	global $default;
 	
 	$sToRender .= renderHeading("Add Document Archive Settings");
+	$sToRender .= displayDocumentPath($iDocumentID);
 	if (strlen($sErrorMessage) > 0) {
 		$sToRender .= renderErrorMessage($sErrorMessage);
 	}

@@ -1,5 +1,15 @@
 <?php
-
+/**
+ * $Id$
+ *  
+ * Business logic for setting document archive settings
+ *
+ * Licensed under the GNU GPL. For full terms see the file DOCS/COPYING.
+ *
+ * @version $Revision$
+ * @author Michael Joseph <michael@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
+ * @package presentation.lookAndFeel.knowledgeTree.documentmanagement
+ */
 require_once("../../../../../config/dmsDefaults.php");
 require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
 
@@ -12,18 +22,6 @@ require_once("$default->fileSystemRoot/lib/visualpatterns/PatternListBox.inc");
 require_once("$default->uiDirectory/documentmanagement/documentUI.inc");
 require_once("$default->uiDirectory/documentmanagement/archiving/archiveSettingsUI.inc");
 require_once("$default->fileSystemRoot/presentation/Html.inc");
-
-/**
- * $Id$
- *  
- * Business logic for setting document archive settings
- *
- * Licensed under the GNU GPL. For full terms see the file DOCS/COPYING.
- *
- * @version $Revision$
- * @author Michael Joseph <michael@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
- * @package presentation.lookAndFeel.knowledgeTree.documentmanagement
- */
 
 if (checkSession()) {	
 	global $default;
@@ -46,10 +44,10 @@ if (checkSession()) {
   		    	
     } elseif (isset($fArchivingTypeID)) {
     	// the archiving type has been chosen, so display the correct form   	
-		$oContent->setHtml(renderAddArchiveSettingsPage($fArchivingTypeID));    	
+		$oContent->setHtml(renderAddArchiveSettingsPage($fDocumentID, $fArchivingTypeID));    	
     } else {
 		// display the select archiving type page
-		$oContent->setHtml(renderAddArchiveSettingsPage(null));    	
+		$oContent->setHtml(renderAddArchiveSettingsPage($fDocumentID));    	
     }    	
              
 	// build the page
