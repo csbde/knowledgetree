@@ -8,7 +8,6 @@
 *
 */
 require_once("../../../../../config/dmsDefaults.php");
-require_once("../adminUI.inc");
 
 if (checkSession()) {
 	require_once("$default->fileSystemRoot/lib/visualpatterns/PatternListBox.inc");

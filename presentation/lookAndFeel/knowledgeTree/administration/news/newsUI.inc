@@ -1,8 +1,5 @@
 <?php
 
-require_once("../../../../../config/dmsDefaults.php");
-require_once("$default->uiDirectory/administration/adminUI.inc");
-
 /**
  * $Id$
  *  
