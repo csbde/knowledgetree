@@ -45,7 +45,7 @@ if (checkSession()) {
 		$oComment = DiscussionComment::get($iCommentID);
 	  	$oUser = User::get($oComment->getUserID());		
 	  	$main->setFormAction("$default->rootUrl/presentation/lookAndFeel/knowledgeTree/discussions/addCommentBL.php?fDocumentID=$iDocumentID&fCommentID=$iCommentID&fReplyComment=1");		
-	  	$oPatternCustom->setHtml(getCommentBody($oComment,$iDocumentID,$oUser));	  	
+	  	$oPatternCustom->setHtml(getCommentBody($oComment,$iDocumentID,$oUser,$iThreadID));	  	
 	} else {
 		$main->setErrorMessage("You didn't specify a comment to view");
 	}

@@ -31,8 +31,9 @@
  *	@param $iDocumentID -> a valid Document ID
  *	@param $oComment -> a valid Comment Object
  *	@param $oUser -> a valid User Object (Logged in user)
+  *	@param $iThreadID -> the ThreadID passed through
  */
-function getCommentBody($oComment, $iDocumentID, $oUser) {
+function getCommentBody($oComment, $iDocumentID, $oUser, $iThreadID) {
 	global $default;
 	
 	$sHeading = "Document Comment";
@@ -61,7 +62,7 @@ function getCommentBody($oComment, $iDocumentID, $oUser) {
 			
 	$sToRender .= "<br><table width=100% border=0><tr ><td colspan=2><b>Author: </b>" . $oUser->getUserName() . "</td>\n";	
 	$sToRender .= "<td align=right>\n";	
-	$sToRender .= "<a href=\"" . generateControllerLink("addComment", "fDocumentID=" . $iDocumentID . "&fReplyComment=1&fCommentID=" . $oComment->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/reply.gif\" border=\"0\" /></a>";	
+	$sToRender .= "<a href=\"" . generateControllerLink("addComment", "fDocumentID=" . $iDocumentID . "&fReplyComment=1&fCommentID=" . $oComment->getID()) . "&fThreadID=" . $iThreadID .  "\"><img src=\"$default->graphicsUrl/widgets/reply.gif\" border=\"0\" /></a>";	
 	$sToRender .= "</td><td width=30><a href=\"" . generateControllerLink("viewDiscussion", "fForDiscussion=1&fDocumentID=$iDocumentID") . "\"><img src=\"$default->graphicsUrl/widgets/back.gif\" border=0 ><a></td></tr>\n"; 
 	$sToRender .= "<tr><td width=\"1\" style=\"background-color:#F5F6EE;\" ><b>Subject: </b></td><td width=405 style=\"background-color:#F5F6EE;\">";	
 	$sToRender .= $oComment->getSubject();

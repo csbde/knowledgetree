@@ -86,7 +86,7 @@ function getViewComment($iNum, $oThread, $oComment, $sIndent) {
 	 	
 	$sToRender .= "<tr>\n";
 	$sToRender .= "\t<td style=\"background-color:$BGcolor\" width=450>\n";
-	$sToRender .= "\t\t$sIndent<a href=\"" . generateControllerLink("viewComment", "iCommentID=" . $oComment->getID() . "&iDocumentID=" . $oThread->getDocumentID()) . "\" title=\"" . $oComment->getSubject() . "\">\n";
+	$sToRender .= "\t\t$sIndent<a href=\"" . generateControllerLink("viewComment", "iCommentID=" . $oComment->getID() . "&iDocumentID=" . $oThread->getDocumentID() . "&iThreadID=" . $oThread->getID()) . "\" title=\"" . $oComment->getSubject() . "\">\n";
 	$sToRender .= substr($oComment->getSubject(),0,$iSubjectChars ) . $dotdot . "</a></td>\n";
 	$sToRender .= "\t<td style=\"background-color:$UserBGcolor\" width=\"100\" title=\"$sUserName\">\n";
 	$sToRender .= "\t\t$sUserName</td>\n";
@@ -119,7 +119,7 @@ function getPage($iDocumentID, $aDocumentThreads) {
 			$aCommentTree = getCommentTree($aDocumentThreads[$i]->getID(), -1);
 			// now loop through the comments, and indent comments that have the same reply_to at the same level .... ??
 			for ($j=0; $j<count($aCommentTree); $j++) {
-				$default->log->info("commentTree[$j][comment]=" . $aCommentTree[$j]["comment"]);
+				$default->log->info("commentTree[$j][comment]=" . arrayToString($aCommentTree[$j]["comment"]));
 				$sToRender .= getViewComment($iCount++, $aDocumentThreads[$i], $aCommentTree[$j]["comment"], getIndent($aCommentTree[$j]["level"]));
 			}
 		} 

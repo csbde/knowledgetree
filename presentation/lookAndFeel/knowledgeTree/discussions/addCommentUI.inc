@@ -45,7 +45,7 @@ function getSubmitSuccessPage($iDocumentID){
  *	@param $sSubject -> a Subject text
  *	@param $sBody -> a Body text 
  */
-function getAddComment($fDocumentID, $sSubject, $sBody, $iCommentID, $fNewComment = null) {
+function getAddComment($fDocumentID, $sSubject, $sBody, $iCommentID, $fNewComment = null, $fThreadID) {
 	global $default;
 				
 	$sHeading = "Add a Comment";
@@ -61,6 +61,7 @@ function getAddComment($fDocumentID, $sSubject, $sBody, $iCommentID, $fNewCommen
 		$sToRender .= "<input type=\"hidden\" name=\"fNewComment\" value=\"1\"/>";
 	} else {				// If the user is replying to a comment
 		$sToRender .= "<input type=\"hidden\" name=\"fInReplyTo\" value=\"$iCommentID\"/>";
+		$sToRender .= "<input type=\"hidden\" name=\"fThreadID\" value=\"". $fThreadID . "\"/>";
 		$sToRender .= "<td width=\"10\" valign=top><a href=\"" . generateControllerLink("viewComment", "fViewComment=1&iDocumentID=$fDocumentID&iCommentID=$iCommentID") . "\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=0 ></a></td></tr>\n";		
 	}
 	$sToRender .= "<br><tr><td valign=\"top\" width=10><b>Subject</b></td><td colspan=2>\n";
