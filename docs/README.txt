@@ -46,7 +46,7 @@ INSTALLATION
    $ mv knowledgeTree /path/to/your/html/directory/
 
 *  Create a database:
-   $ mysqladmin -p create intranet
+   $ mysqladmin -p create dms
 
 *  Create and populate the tables:
    $ mysql -p dms < sql/tables.sql
