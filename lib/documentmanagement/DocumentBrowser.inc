@@ -67,39 +67,43 @@ class DocumentBrowser {
         
         // get the folder
         $results["folders"][] = & Folder::get($folderID);
-        $default->log->debug("DocumentBrowser::browseByFolder: results=" . arrayToString($results));
-        
-        // now find all the child folders relative to this one 
-        // FIXME: in the same unit?
-        $folderQuery = "SELECT id from $default->owl_folders_table WHERE parent_id=" . $folderID;
-        $default->log->debug("DocumentBrowser::browseByFolder child folder query=$folderQuery");
-        if ($sql->query($folderQuery)) {
-            while ($sql->next_record()) {
-                // add the child folders to the array
-                $results["folders"][] = & Folder::get($sql->f("id"));
-            }
-        }
-        $default->log->debug("DocumentBrowser::browseByFolder: after child folders added; results=" . arrayToString($results));
-        
-        // create query to retrieve documents in this folder
-        $documentQuery = "SELECT id FROM $default->owl_documents_table WHERE folder_id=$folderID";
-        $default->log->debug("DocumentBrowser::browseByFolder about to execute $documentQuery");
-        if ($sql->query($documentQuery)) {
-            while ($sql->next_record()) {
-                // check permissions
-                if (Permission::userHasDocumentReadPermission($sql->f("id"))) {
-                    // add documents to array
-                    // set file attributes
-                    $results["documents"][] = & Document::get($sql->f("id")); 
-                } else {
-                    $default->log->debug("DocumentBrowser::browseByFolder: read permission denied for document id=" . $sql->f("id"));
+        if ($results["folders"][0]) {
+            $default->log->debug("DocumentBrowser::browseByFolder: results=" . arrayToString($results));
+            
+            // now find all the child folders relative to this one 
+            // FIXME: in the same unit?
+            $folderQuery = "SELECT id from $default->owl_folders_table WHERE parent_id=" . $folderID;
+            $default->log->debug("DocumentBrowser::browseByFolder child folder query=$folderQuery");
+            if ($sql->query($folderQuery)) {
+                while ($sql->next_record()) {
+                    // add the child folders to the array
+                    $results["folders"][] = & Folder::get($sql->f("id"));
                 }
             }
+            $default->log->debug("DocumentBrowser::browseByFolder: after child folders added; results=" . arrayToString($results));
+            
+            // create query to retrieve documents in this folder
+            $documentQuery = "SELECT id FROM $default->owl_documents_table WHERE folder_id=$folderID";
+            $default->log->debug("DocumentBrowser::browseByFolder about to execute $documentQuery");
+            if ($sql->query($documentQuery)) {
+                while ($sql->next_record()) {
+                    // check permissions
+                    if (Permission::userHasDocumentReadPermission($sql->f("id"))) {
+                        // add documents to array
+                        // set file attributes
+                        $results["documents"][] = & Document::get($sql->f("id")); 
+                    } else {
+                        $default->log->debug("DocumentBrowser::browseByFolder: read permission denied for document id=" . $sql->f("id"));
+                    }
+                }
+            } else {
+                $_SESSION["errorMessage"] = "documents table select failed";
+            }
+            
+            return $results;
         } else {
-            $_SESSION["errorMessage"] = "documents table select failed";
+            return false;
         }
-        
-        return $results;
     }
 
     /**
@@ -122,6 +126,8 @@ class DocumentBrowser {
         if ($category == "") {
             $default->log->debug("DocumentBrowser::browseByCategory no category supplied, returning list");
             // no category value supplied, so return a list of categories
+            // set the first value to "categories"
+            $results["categories"][] = "Categories";
            
             // get a list of category values
             $query = "select value from $default->owl_document_fields_table where document_field_id=$categoryFieldID";
@@ -171,6 +177,10 @@ class DocumentBrowser {
         $sql = new Owl_DB();
         
         if ($documentTypeID == -1) {
+            // no category value supplied, so return a list of categories
+            // set the first value to "categories"
+            $results["documentTypes"][] = array("name" => "Document Types");
+            
             // return a list of document types
             $query = "select * from $default->owl_document_types_table";
             $sql->query($query);
