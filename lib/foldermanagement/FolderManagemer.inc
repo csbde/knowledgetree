@@ -82,7 +82,7 @@ class FolderManager {
 		if ($sql->next_record()) {
 			return true;
 		}
-		$_SESSION["errorMessage"] =$lang_err_folder_exist . $sName;
+		$_SESSION["errorMessage"] = $lang_err_folder_exist . $sName . " parent_id " . $iParentID;
 		return false;
 	}
 	
@@ -100,7 +100,18 @@ class FolderManager {
 		if ($sql->next_record()) {
 			return true;
 		}
-		$_SESSION["errorMessage"] =$lang_err_folder_exist . $sName;
+		$_SESSION["errorMessage"] =$lang_err_folder_exist . "id " . $iFolderID;
+		return false;
+	}
+	
+	function getFolderID($sName, $iParentID) {
+		gobal $default, $lang_err_folder_exist;
+		$sql = new Owl_DB();
+		$sql->query("SELECT id FROM " . $default->owl_folders_table . " WHERE name = '" . $sName . "' AND parent_id = " $iParentID);
+		if ($sql->next_record()) {
+			return $sql->f("id");
+		}
+		$_SESSION["errorMessage"] = $lang_err_folder_exist . $sName;
 		return false;
 	}
 	
