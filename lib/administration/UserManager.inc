@@ -13,7 +13,7 @@ require_once("$default->owl_fs_root/lib/authentication/class.AuthLdap.php");
  * @package dmslib 
  */
 
-//common admin functions that dont really form part of class
+// uses function from groupamanager class
 require_once ("$default->owl_fs_root/lib/administration/GroupManager.inc");
  
 class UserManager
@@ -503,33 +503,11 @@ class UserManager
      
 	function getUserID($username)
 	 {
-	        global $default;
+	       global $default;
 	
-	        $sql = new Owl_DB;
+	        $id = lookupID($default->owl_users_table, "name",  $username);
 	        
-	             
-	        // check that username exists if it does'nt return false
-	        $query = "SELECT id FROM $default->owl_users_table WHERE username = '" . $username . "'";
-	        $sql->query($query);
-	        $rows = $sql->num_rows($sql);
-	        // go into record set
-	        $sql->next_record();
-	        
-	        // store the id in a variable
-	        $id = $sql->f("id");
-	        
-	        // if no entry..username does not exist
-	        if ($rows == 0) 
-	        {
-	            // duplicate username
-	            $default->errorMessage = "UserManager::The username " . $username . " does not exist<br>";
-	            $default->log->debug($default->errorMessage);
-	            return false;
-	        }
-	        else
-	        {
-	        	return $id;
-	        }
+	        return $id;
 	}
 	
     /*
