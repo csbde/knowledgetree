@@ -15,14 +15,14 @@ function getPage($iUserID, $iGroupID) {
 	$oGroup = null;
 	
 	if (isset($iUserID)) {
-		$heading = "<tr><td colspan=\"2\">Please Assign the User to a Group:</td></tr>\n";
 		$oUser = User::get($iUserID);		
-		//$heading = "<tr><td colspan=\"2\">Are you Sure you wish to assign the User to the Group?</td></tr>\n";
-	} else{
-		$heading = "<tr><td colspan=\"2\">Please Assign a User to a Group:</td></tr>\n";
 	}
+	
 	if (isset($iGroupID)) {
 		$oGroup = Group::get($iGroupID);
+		$heading = "<tr><td colspan=\"2\">Please confirm your choice by clicking 'Assign', or 'Cancel' to abort.</td></tr>\n";		
+	} else {
+		$heading = "<tr><td colspan=\"2\">Please choose the Group to assign to this user.</td></tr>\n";
 	}
 	$sQueryString = "&fUserID=$iUserID";
     
