@@ -20,20 +20,7 @@
  * @return the id of the row in the db with $fieldName=$fieldValue
  */
 function lookupID($tableName, $fieldName, $fieldValue){
-    $sql = new Owl_DB();
-    $query = "select id from $tableName where $fieldName = '$fieldValue'";
-    //echo "lookup.inc::lookupID: about to execute $query<br>";
-    if ($sql->query($query)) {
-        if ($sql->next_record()) {
-            return $sql->f("id");
-        } else {
-            $_SESSION["errorMessage"] = "id retrieval failed.";
-            return false;
-        }
-    } else {
-        $_SESSION["errorMessage"] = "lookup query ($query) failed.";
-        return false;
-    }
+    return lookupField($tableName, "id", $fieldName, $fieldValue);
 }
 
 /**
@@ -45,6 +32,7 @@ function lookupID($tableName, $fieldName, $fieldValue){
 function lookupGroupIDs($userID) {
     global $default;
     $groupIDs = array();
+    
     $sql = new Owl_DB;
     $sql->query("select group_id from $default->owl_groups_users_table where user_id = '$userID'");
     while($sql->next_record()) {
@@ -53,12 +41,67 @@ function lookupGroupIDs($userID) {
     return $groupIDs;
 }
 
-    
+/**
+ * Performs a generic one field lookup on a table
+ *
+ * @param $tableName          the name of the table to perform the lookup on
+ * @param $selectFieldName    the field to return
+ * @param $whereFieldName     the field to discriminate against(?!)
+ * @param $whereFieldValue    the field value to return rows for 
+ *                            (NOTE: the caller is responsible for quoting this value)
+ */
+function lookupField($tableName, $selectFieldName, $whereFieldName, $whereFieldValue) {
+    global $default;
+    $sql = new Owl_DB();
+    $query = "select $selectFieldName from $tableName where $whereFieldName = $whereFieldValue";
+    $default->log->debug("lookup.inc::lookupField query=$query"); 
+    if ($sql->query($query)) {
+        if ($sql->next_record()) {
+            return $sql->f($selectFieldName);
+        } else {
+            $_SESSION["errorMessage"] = "$selectFieldName field lookup retrieval failed ($query).";
+            return false;
+        }
+    } else {
+        $_SESSION["errorMessage"] = "lookup query failed ($query).";
+        return false;
+    }
+}
+
+
+/**
+ * Converts an array to a string
+ */
 function arrayToString($array) {
     ob_start();
     print_r($array);
     $arrToStr = ob_get_contents();
     ob_end_clean();
     return $arrToStr;
+}
+
+/**
+ * Converts an array to a comma separated string
+ *
+ * @param $array    the array to convert
+ * @return a comma separated string of the array values
+ */
+function arrayToCss($array) {
+    $css = "";
+    foreach ($array as $key=>$value) {
+        $css = $css . $value . ",";
+    }
+    // trim the last comma
+    $css = substr("$css", 0, -1);
+    return $css;
+}
+
+/**
+ * Returns the current date time
+ *
+ * @return String the current date time (Y-m-d H:i:s)
+ */
+function getCurrentDateTime() {
+    return date("Y-m-d H:i:s", time());
 }
 ?>
