@@ -7,7 +7,7 @@
  *
  * Licensed under the GNU GPL. For full terms see the file COPYING.
  * @version $Revision$
- * @author <a href="mailto:michael@jamwarehouse.com>Michael Joseph</a>, Jam Warehouse (Pty) Ltd, South Africa
+ * @author <a href="mailto:michael@jamwarehouse.com">Michael Joseph</a>, Jam Warehouse (Pty) Ltd, South Africa
  * @package dmslib
  */
  
