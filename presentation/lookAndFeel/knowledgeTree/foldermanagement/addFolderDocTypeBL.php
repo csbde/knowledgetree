@@ -46,7 +46,7 @@ if (checkSession()) {
 				$oPatternCustom->setHtml(getPage($fFolderID, $fDocumentTypeID));
 				$main->setCentralPayload($oPatternCustom);
 				$main->setErrorMessage("The folder has already been assigned this document type");				
-				$main->setFormAction("addFolderDocTypeBL.php?fForAdd=1&fFolderID=$fFolderID");
+				$main->setFormAction($_SERVER["PHP_SELF"] . "?fForAdd=1&fFolderID=$fFolderID");
                 $main->render();
 				
 			} else {
@@ -59,7 +59,7 @@ if (checkSession()) {
 					$oPatternCustom->setHtml(getPage($fFolderID, $fDocumentTypeID));
 					$main->setCentralPayload($oPatternCustom);
 					$main->setErrorMessage("A database error occured while attempting to assig the document type to the folder");					
-					$main->setFormAction("addFolderDocTypeBL.php?fForAdd=1&fFolderID=$fFolderID");
+					$main->setFormAction($_SERVER["PHP_SELF"] . "?fForAdd=1&fFolderID=$fFolderID");
 					$main->render();
 				}
 			}
@@ -68,7 +68,7 @@ if (checkSession()) {
 			require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 			$oPatternCustom->setHtml(getPage($fFolderID, $fDocumentTypeID));
 			$main->setCentralPayload($oPatternCustom);			
-			$main->setFormAction("addFolderDocTypeBL.php?fForAdd=1&fFolderID=$fFolderID");
+			$main->setFormAction($_SERVER["PHP_SELF"] . "?fForAdd=1&fFolderID=$fFolderID");
             $main->render();
 		}
 	} else {
