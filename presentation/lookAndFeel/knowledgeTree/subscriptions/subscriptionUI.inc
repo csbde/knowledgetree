@@ -11,15 +11,6 @@
  * @author Michael Joseph <michael@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
  * @package presentation.lookAndFeel.knowledgeTree.subscriptions
  */
-
-/*function renderHeading() {
-    global $default;
-    $sColor = $default->siteMap->getSectionColour("Subscriptions", "th");
-    $sToRender .= "<tr align=\"left\"><th class=\"sectionHeading\" bgcolor=\"$sColor\"><font color=\"ffffff\">Subscriptions</font></th></tr>\n";
-    $sToRender .= "<tr/>\n";
-    $sToRender .= "<tr/>\n";
-    return $sToRender;
-}*/
     
 /**
  * Displays all current subscriptions with remove checkbox
@@ -32,8 +23,8 @@ function renderManagePage() {
     $aDocumentSubscriptions = SubscriptionManager::retrieveUserSubscriptions($_SESSION["userID"], SubscriptionConstants::subscriptionType("DocumentSubscription"));    
     $bNoSubscriptions  = ( (count($aFolderSubscriptions) == 0) && (count($aDocumentSubscriptions) == 0) ) ? true : false;
 
-    $sToRender  = "<table width=\"600\">\n";
-    $sToRender .= renderHeading("Subscriptions");
+    $sToRender  = renderHeading("Subscriptions", "Subscriptions");
+    $sToRender .= "<table width=\"600\">\n";
     if ($bNoSubscriptions) {
         $sToRender .= "<tr><td>You are not subscribed to any documents or folders.</td></tr>\n";       
     } else {
@@ -91,8 +82,8 @@ $sToRender .= "<tr/>\n";
 function renderMultipleRemoveConfirmationPage($aFolderSubscriptions, $aDocumentSubscriptions) {
     global $default;
     
-	$sToRender  = "<table width=\"600\">\n";
-    $sToRender .= renderHeading();    
+	$sToRender  = renderHeading("Subscriptions", "Subscriptions");    
+	$sToRender .= "<table width=\"600\">\n";   
     $sToRender .= "<tr><td>You have chosen to delete the following subscription(s):</td></tr>\n";
 	$sToRender .= "<tr/>\n";
     $sToRender .= "<tr/>\n";
@@ -149,8 +140,8 @@ function renderRemoveConfirmationPage($oSubscription) {
         $sContentUrl = "fDocumentID=" . $oSubscription->getExternalID();        
     }
  
-	$sToRender  = "<table width=\"600\">\n";
-    $sToRender .= renderHeading();    
+ 	$sToRender  = renderHeading("Subscriptions", "Subscriptions");
+	$sToRender .= "<table width=\"600\">\n";
 	$sToRender .= "<tr><td>You have chosen to delete the your $sContentType subscription to '$sContentName'.</td></tr>\n";
 	$sToRender .= "<tr/>\n";
 	$sToRender .= "<tr/>\n";
@@ -182,8 +173,8 @@ function renderAddConfirmationPage($oSubscription) {
         $sContentUrl = "fDocumentID=" . $oSubscription->getExternalID();        
     }
  
-	$sToRender  = "<table width=\"600\">\n";
-    $sToRender .= renderHeading();
+	$sToRender  = renderHeading("Subscriptions", "Subscriptions");
+	$sToRender .= "<table width=\"600\">\n";
 	$sToRender .= "<tr><td>You have chosen to subscribe to the $sContentType entitled '$sContentName'.</td></tr>\n";
 	$sToRender .= "<tr/>\n";
 	$sToRender .= "<tr>\n";
@@ -200,8 +191,8 @@ function renderAddConfirmationPage($oSubscription) {
 
 function renderErrorPage($sErrorMessage) {
     global $default;
-    $sToRender  = "<table>\n";
-    $sToRender .= renderHeading();
+    $sToRender  = renderHeading("Subscriptions", "Subscriptions");
+    $sToRender .= "<table>\n";
     $sToRender .= "<tr><td><p class=\"errorText\">$sErrorMessage</p>\n" .
                   "<a href=\"javascript:history.go(-1)\"><img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\"/></a>\n" .
                   "</p></td></tr></table>\n";

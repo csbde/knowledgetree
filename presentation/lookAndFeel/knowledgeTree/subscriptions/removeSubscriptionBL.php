@@ -3,6 +3,9 @@
 require_once("../../../../config/dmsDefaults.php");
 require_once("$default->fileSystemRoot/lib/subscriptions/Subscription.inc");
 require_once("$default->fileSystemRoot/lib/subscriptions/SubscriptionManager.inc");
+require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
+require_once("subscriptionUI.inc");
+require_once("$default->fileSystemRoot/presentation/Html.inc");
 
 /**
  * $Id$
@@ -29,9 +32,6 @@ require_once("$default->fileSystemRoot/lib/subscriptions/SubscriptionManager.inc
 
 // only if we have a valid session
 if (checkSession()) {
-
-    require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
-    require_once("subscriptionUI.inc");
     
     $oPatternCustom = & new PatternCustom();
     
