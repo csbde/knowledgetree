@@ -43,6 +43,16 @@ class SiteMap {
      * Whether to use the database to store the sitemap or not
      */
     var $bUseDB;
+    
+     /**
+     * Whether to the user accessing the page is a Sysadmin
+     */
+    var $isSysAdmin;
+    
+     /**
+     * * Whether to the user accessing the page is a Unitadmin
+     */
+    var $isUnitAdmin;
 
     /**
      * Constructs a new SiteMap
@@ -137,10 +147,36 @@ class SiteMap {
             return true;
         } else {
             // if you're a system administrator, you've got access to everything
-            if (Permission::userIsSystemAdministrator()) {
+           
+           // check whether global var intialised
+            if ($this->isSysAdmin)
+            {
+            	$default->log->debug("-- SiteMap - checking whether a sys admin - GLOBAL VAR SET ");
+            	return true; 
+            }
+			else if ($this->isSysAdmin = Permission::userIsSystemAdministrator()) 
+			{
+            	$default->log->debug("-- SiteMap - checking whether a sys admin ..."); 
                 return true;
             } else {
-                if (Permission::userIsUnitAdministrator()) {
+                if ($this->isUnitAdmin || $this->isUnitAdmin = Permission::userIsUnitAdministrator()) {
+                    // if you're a unit administrator, then you have access to everything
+                    // including and less than UA
+                    return ($requiredAccess <= UnitAdmin) ?  true : false;
+                } else if (Permission::userIsGuest()) {
+                    return ($requiredAccess == Guest) ? true : false;
+                } else {
+                    // you're a "normal" unit user
+                    return ($requiredAccess <= User) ? true : false;
+                }
+            }
+           
+           // check whether global var intialised
+            if ($isSysAdmin || $isSysAdmin = Permission::userIsSystemAdministrator()) {
+            	$default->log->debug("-- SiteMap - checking whether a sys admin ..."); 
+                return true;
+            } else {
+                if ($isUnitAdmin || $isUnitAdmin = Permission::userIsUnitAdministrator()) {
                     // if you're a unit administrator, then you have access to everything
                     // including and less than UA
                     return ($requiredAccess <= UnitAdmin) ?  true : false;
@@ -191,6 +227,7 @@ class SiteMap {
             			    "AND is_enabled=1 AND is_default=0" . ( $bSortLinks ? " ORDER BY link_text ASC" : "" ) ) ) {
                 while ($sql->next_record()) {
                     // check permissions
+                  $default->log->info("SiteMap:: getSectionLinksDB calling hasPermission with access:  " . $sql->f("access_id"));
                     if ($this->hasPermission($sql->f("access_id"))) {
                         // add this array to the resultset array if there is link text
                         if (strlen($sql->f("link_text")) > 0) {
@@ -233,7 +270,9 @@ class SiteMap {
             // need to loop through all (access, page) arrays in this section
             foreach ($this->aSiteMap[$sSectionName] as $requiredAccess => $pages) {
             	//$default->log->info("SECTION:$sSectionName; access=" . arrayToString($requiredAccess) . ";pages=" . arrayToString($pages));
+            	$default->log->info("SiteMap:: getSectionLinksArray calling hasPermission with requiredAccess:  " . $requiredAccess);
                 if ($this->hasPermission($requiredAccess)) {
+                	
                     foreach ($pages as $action => $pageDetail) {
                         // add this array to the resultset array if there is link text and it is enabled
                         // but not if it is the default page
@@ -289,6 +328,7 @@ class SiteMap {
                 foreach ($pageArr as $ackshin => $page) {
                     if ($ackshin == $sAction) {
                     	$default->log->info("loop:$ackshin; test:$sAction");
+                    	$default->log->info("SiteMap:: getPageLinkText calling hasPermission with access:  " . $requiredAccess);
                         if ($this->hasPermission($requiredAccess)) {
                             return $page["description"];
                         }
@@ -326,6 +366,7 @@ class SiteMap {
         if ($sql->query("SELECT page, access_id FROM $default->sitemap_table WHERE action='$action'")) {
             if ($sql->next_record()) {
                 // check permissions
+                $default->log->info("SiteMap:: getPageDB calling hasPermission with access:  " . $sql->f("access_id"));
                 if ($this->hasPermission($sql->f("access_id"))) {
                     // return the page
                     return $sql->f("page");
@@ -354,13 +395,13 @@ class SiteMap {
 
         // for each section
         foreach ($this->aSiteMap as $section => $valArr) {
-            $default->log->debug("Sitemap::getPage section=$section");
+            //$default->log->debug("Sitemap::getPage section=$section");
             // for each group, page array combination
             foreach ($valArr as $requiredAccess => $pageArr) {
                 // now loop through pages until we find the right one
                 foreach ($pageArr as $ackshin => $page) {
                     if ($ackshin == $action) {
-                        $default->log->debug("Sitemap::getPage current requiredAccess=$requiredAccess, action=$ackshin");
+                        $default->log->debug("Sitemap::getPageArray calling hasPermission current requiredAccess=$requiredAccess, action=$ackshin");
                         if ($this->hasPermission($requiredAccess)) {
                             return $page["page"];
                         }
@@ -496,6 +537,7 @@ class SiteMap {
             $results = array();
             // need to loop through all (groupName, page) arrays in this section
             foreach ($this->aSiteMap[$sSectionName] as $requiredAccess => $pages) {
+            	$default->log->debug("Sitemap::getDefaultActionArray calling hasPermission current requiredAccess=$requiredAccess");
                 if ($this->hasPermission($requiredAccess)) {
                     foreach ($pages as $action => $pageArray) {
                         if ($pageArray["default"] && $pageArray["enabled"]) {
@@ -562,18 +604,18 @@ class SiteMap {
      */
     function getActionFromPageArray($sPage) {
         global $default;
-        $default->log->debug("Sitemap::getActionFromPage: page=$sPage");
+       // $default->log->debug("Sitemap::getActionFromPage: page=$sPage");
         // for each section
         foreach ($this->aSiteMap as $section => $valArr) {
-            $default->log->debug("Sitemap::getActionFromPage section=$section");
+            //$default->log->debug("Sitemap::getActionFromPage section=$section");
             // for each group, page array combination
             foreach ($valArr as $requiredAccess => $pageArr) {
-                $default->log->debug("Sitemap::getActionFromPage access=$requiredAccess");
+                //$default->log->debug("Sitemap::getActionFromPage access=$requiredAccess");
                 // now loop through pages until we find the right one
                 foreach ($pageArr as $action => $page) {
-                    $default->log->debug("Sitemap::getActionFromPage action=$action, reqPage=$sPage; page=" . $page["page"]);
+                    //$default->log->debug("Sitemap::getActionFromPage action=$action, reqPage=$sPage; page=" . $page["page"]);
                     if ($sPage == $page["page"]) {
-                        $default->log->debug("Sitemap::getActionFromPage found action=$action for page=$sPage");
+                        //$default->log->debug("Sitemap::getActionFromPage found action=$action for page=$sPage");
                         return $action;
                     }
                 }
