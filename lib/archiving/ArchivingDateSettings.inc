@@ -62,7 +62,7 @@ class ArchivingDateSettings {
 	 * @param date the new expiration date
 	 */
 	function setExpirationDate($dNewExpirationDate){
-		$this->dExpirationDate = strlen($dNewExpirationDate) == 0 ? "NULL" : "'$dNewExpirationDate'";
+		$this->dExpirationDate = strlen($dNewExpirationDate) == 0 ? "NULL" : $dNewExpirationDate;
 	}
 
 	/**
@@ -92,7 +92,7 @@ class ArchivingDateSettings {
         if ($this->iId < 0) {
             $sql = $default->db;
             $sQuery = "INSERT INTO $default->owl_archiving_date_settings_table (expiration_date, time_period_id) " .
-                      "VALUES ($this->dExpirationDate, $this->iTimePeriodID)";
+                      "VALUES (" . $this->addQuotes($this->dExpirationDate) . ", $this->iTimePeriodID)";
             $result = $sql->query($sQuery);
                                   $default->log->info($sQuery);
             if ($result) {
@@ -104,7 +104,14 @@ class ArchivingDateSettings {
         }
         return false;
 	}
-
+	function addQuotes($sDate) {
+		if ($sDate == "NULL") {
+			return $sDate;
+		} else {
+			return "'$sDate'";
+		}
+	}
+	
     /**
      * Update the archive date settings current values in the database
      *
@@ -115,7 +122,7 @@ class ArchivingDateSettings {
         if ($this->iId >= 0) {			
             $sql = $default->db;
 			$sQuery = "UPDATE $default->owl_archiving_date_settings_table SET " .
-					  "expiration_date = $this->dExpirationDate, " .								  
+					  "expiration_date = " . $this->addQuotes($this->dExpirationDate) . ", " .								  
                       "time_period_id = $this->iTimePeriodID " .                                  
            			  "WHERE id = $this->iId";
            			  $default->log->info($sQuery);
