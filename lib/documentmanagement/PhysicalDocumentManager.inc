@@ -107,6 +107,25 @@ class PhysicalDocumentManager {
 	}
 	
 	/**
+	* Move a document from a source to a destination
+	*
+	* return boolean true on successful move, false otherwhise
+	*
+	*/
+	function move($sOldDocumentPath, $sNewDocumentPath) {
+		global $lang_fileexists, $lang_err_upload, $lang_err_database;		 
+		//copy the file	to the new destination
+		if (copy($sOldDocumentPath, $sNewDocumentPath)) {
+			//delete the old one
+			unlink($sOldDocumentPath);
+			return true;
+		} else {
+			$_SESSION["errorMessage"] = $lang_err_upload;
+			return false;
+		}
+	}
+	
+	/**
 	* View a document using an inline viewer
 	*
 	* @param 	Primary key of document to view
