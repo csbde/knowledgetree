@@ -54,7 +54,7 @@ class PatternTableSqlQuery {
 	
 	var $bIncludeBorder = false;
 				
-	function PatternTableSqlQuery($sTmpQuery, $aTmpColumns, $aTmpColumnTypes, $aTmpColumnHeaderNames, $sTmpWidth, $aTmpLinkURLs = null, $sTmpDBQueryStringColumns = null, $aNewQueryStringVariableNames = null) {
+	function PatternTableSqlQuery($sTmpQuery, $aTmpColumns, $aTmpColumnTypes, $aTmpColumnHeaderNames, $sTmpWidth, $aTmpLinkURLs = null, $aTmpDBQueryStringColumns = null, $aNewQueryStringVariableNames = null) {
 		$this->sQuery = $sTmpQuery;
 		$this->aColumns = & $aTmpColumns;
 		$this->aColumnTypes = $aTmpColumnTypes;
@@ -62,7 +62,7 @@ class PatternTableSqlQuery {
 		$this->sWidth = $sTmpWidth;
 		$this->bDisplayColumnHeadings = $bTmpDisplayColumnHeadings;
 		$this->aLinkURLs = $aTmpLinkURLs;		
-		$this->aDBQueryStringColumns = $sTmpDBQueryStringColumns;
+		$this->aDBQueryStringColumns = $aTmpDBQueryStringColumns;
 		$this->aQueryStringVariableNames = $aNewQueryStringVariableNames;
 	}
 	
