@@ -29,13 +29,13 @@ if (isset($fViewImage)) {
 	// test creation of a dashboard news item
 	echo "<b>Testing dashboard news creation</b><br>";
 	
-	$oNews = & new DashboardNews("test synopsis", "test body", 1, $sTestImage);
+	$oNews = & new DashboardNews("test synopsis", "test body", 1);
 
 	if (isset($oNews)) {
 		echo "Passed dashboard news creation test<br><br>";
 		
 		echo "<b>Testing image retrieval</b><br>";
-		echo "<img src=\"" . $_SERVER['PHP_SELF'] . "?fViewImage\">";
+		echo "<img src=\"" . $_SERVER['PHP_SELF'] . "?fViewImage\"><br>";
 		
 		echo "<b>Testing setting and getting of dashboard news values</b><br>";		
 		echo "Current dashboard synopsis: " . $oNews->getSynopsis() . "<br>";		
@@ -74,6 +74,7 @@ if (isset($fViewImage)) {
 				$oRetrievedNews = DashboardNews::get($oNews->getID());
 				if ($oRetrievedNews) {
 					echo "Passed dashboard news retrieval test<br><br>";
+					echo "id=" . $oRetrievedNews->getID() .  "<br>";
 				}				
 			} else {
 				echo "Failed dashboard news update test: " . $_SESSION["errorMessage"];
