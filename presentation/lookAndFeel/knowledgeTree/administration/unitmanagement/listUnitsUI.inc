@@ -8,47 +8,57 @@
 *
 */
 
-function getSubmit() {
+function getAddUnitLink() {
 	global $default;
-	$sToRender = "<input type=\"image\" src =\"$default->graphicsUrl/widgets/select.gif\" value=\"submit\" border=\"0\"/>\n";
+	$sBGColor = $default->siteMap->getSectionColour("Administration", "td");
+	return "<table width=\"100%\"><tr><td bgcolor=\"$sBGColor\">" . generateControllerLink("addUnit", "", "<font color=\"#ffffff\">Add A Unit</font>") . "</td></tr></table>\n";	
+}
+
+function getOrganisationDisplay($fOrganisationID) {
+	global $default;
+	$oPatternListBox = & new PatternListBox($default->owl_organisations_table, "name", "id", "fOrganisationID");
+	$oPatternListBox->setPostBackOnChange(true);
+	if ($fOrganisationID != 0) {
+		$oPatternListBox->setSelectedValue($fOrganisationID);
+	}
+	return "<table><tr><td><b>Filter By Organisation </b></td><td>" . $oPatternListBox->render() . "</td></tr></table>";	        
+}
+
+function getUnits($fOrganisationID) {
+	global $default;
+	
+	$sQuery = 	"SELECT units_lookup.id as unitID, units_lookup.name as name, " . 
+				"'Edit', 'Delete', 'Edit Organisations', " .
+				"CASE  WHEN organisations_lookup.name Is Null THEN '<font color=darkgrey>* No Organisation</font>' ELSE  organisations_lookup.name END AS OrgName " .
+				"FROM (units_lookup " .
+				"LEFT JOIN units_organisations_link ON units_lookup.id = units_organisations_link.unit_id) " . 
+				"LEFT JOIN organisations_lookup ON units_organisations_link.organisation_id = organisations_lookup.id " .
+				($fOrganisationID ? "WHERE units_organisations_link.organisation_id = $fOrganisationID " : "") .					
+				"ORDER BY units_lookup.name";
+		
+    $aColumns = array("name", "OrgName", "Edit", "Delete", "Edit Organisations");
+    $aColumnNames = array("Unit Name", "Organisation", "Edit", "Delete", "Edit Organisations");
+    $aColumnTypes = array(1,1,3,3,3);
+    $aDBColumnArray = array("unitID");
+    $aQueryStringVariableNames = array("fUnitID");
+    	    
+    $aHyperLinkURL = array(	2=> "$default->rootUrl/control.php?action=editUnit",                       			
+                     			3=> "$default->rootUrl/control.php?action=removeUnit",
+                     			4=> "$default->rootUrl/control.php?action=editUnitOrg"); 
+	    	    
+	$oSearchResults = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnNames, "100%", $aHyperLinkURL,$aDBColumnArray,$aQueryStringVariableNames);
+	$oSearchResults->setDisplayColumnHeadings(true);
+    return $oSearchResults->render() ;	
+}
+
+function getPage($fOrganisationID) {
+	global $default;
+	$sToRender .= renderHeading("Current System Units");
+
+	// add user link
+	$sToRender .= getAddUnitLink();
+	$sToRender .= getOrganisationDisplay($fOrganisationID);
+	$sToRender .= getUnits($fOrganisationID);
 	return $sToRender;
 }
-
-// display the listbox initially ..then just display the text
-function getOrgDisplay($fOrgID, $iSelectedValue = 0) {
-	global $default;
-	    
-        // if this is the system administrator, prepend group names with unit name
-        $oPatternListBox = & new PatternListBox($default->owl_organisations_table, "name", "id", "fOrgID");
-               
-        if ($fOrgID != 0) {
-        	//$oPatternListBox->setSelectedValue($iSelectedValue);
-        	$oPatternListBox->setSelectedValue($fOrgID);
-        }
-                
-        return $oPatternListBox->render();	
-}
-
-
-function getFilterOptions($fOrgID = 0){
-	global $default;
-	
-	$sToRender .= "<table>\n";
-	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>\n";
-	$sToRender .= "<b>Filter by Organisation</b>";
-	$sToRender .= "</td>\n";
-	$sToRender .= "<td>\n";
-	$sToRender .= getOrgDisplay($fOrgID);
-	$sToRender .= "</td>\n";
-	$sToRender .= "<td>\n";
-	$sToRender .= "<input type=\"image\" src =\"$default->graphicsUrl/widgets/select.gif\" value=\"submit\" border=\"0\"/>\n";
-	$sToRender .= "</td>\n";
-	$sToRender .= "</tr>\n";
-	$sToRender .= "</table>\n";
-	
-	return $sToRender ;
-}
-
-
 ?>
