@@ -16,12 +16,12 @@ function getPage($iGroupID, $iUnitID) {
 
     if (isset($iGroupID)) {
         $oGroup = Group::get($iGroupID);
-        $heading = "<tr><td>Are you Sure you wish to assign the Group to the Unit?</td></tr>\n";
+        $heading = "<tr><td colspan=\"2\">Are you Sure you wish to assign the Group to the Unit?</td></tr>\n";
     } else {
         if (Permission::userIsUnitAdministrator()) {
-            $heading = "<tr><td>Please Assign a Group to your Unit:</td></tr>\n";
+            $heading = "<tr><td colspan=\"2\">Please Assign a Group to your Unit:</td></tr>\n";
         } else {
-            $heading = "<tr><td>Please Assign a Group to a Unit:</td></tr>\n";
+            $heading = "<tr><td colspan=\"2\">Please Assign a Group to a Unit:</td></tr>\n";
         }
     }
     
