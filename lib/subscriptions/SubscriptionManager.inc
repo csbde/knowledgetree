@@ -54,7 +54,7 @@ class SubscriptionManager {
         global $lang_sub_not_exists;
 
         // first retrieve all the subscribers to this content
-        $aSubscriptions = SubscriptionManager::retrieve($iExternalID, $iSubscriptionType);
+        $aSubscriptions = SubscriptionManager::retrieveSubscriptions($iExternalID, $iSubscriptionType);
         $bResult = true;
         for ($i = 0; $i < count($aSubscriptions); $i++) {
             // delete them
