@@ -63,11 +63,23 @@ function renderCheckInPage($oDocument) {
     $sToRender .= "<tr><td><input type=\"hidden\" name=\"fForStore\" value=\"1\"/></td></tr>\n";
     $sToRender .= "<tr><td><input type=\"hidden\" name=\"fDocumentID\" value=\"" . $oDocument->getID() . "\"/></td></tr>\n";    
     $sToRender .= "<tr><td>\n";
+  
+    // if collaboration has started then revisions are minor
+    if (Document::documentCollaborationStarted($oDocument->getID())) {
+        $sToRender .= "<input type=\"hidden\" name=\"fCheckInType\" value=\"minor\"/>\n";
+    // else there is no collaboration, revisions are major (or override?)        
+    } else {
+        $sToRender .= "<input type=\"hidden\" name=\"fCheckInType\" value=\"major\"/>\n";
+    }
+    $sToRender .= "</tr></td>\n";
+    /*
+    $sToRender .= "<tr><td>\n";
     $sToRender .= "<input type=\"radio\" name=\"fCheckInType\" value=\"minor\" checked /> Minor Revision\n";    
     $sToRender .= "</tr></td>\n";
     $sToRender .= "<tr><td>\n";
     $sToRender .= "<input type=\"radio\" name=\"fCheckInType\" value=\"major\"/> Major Revision\n";
     $sToRender .= "</tr></td>\n";
+    */
     $sToRender .= "</table>\n";
     
     $sToRender .= "<table>\n";
