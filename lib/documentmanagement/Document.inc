@@ -939,14 +939,17 @@ class Document {
 	}
 	
 	/**
-	* Notify the web master when a document is awaiting publishing 
-	* 
-	*/
-	function notifyWebMaster($iDocumentID) {
+	 * Notify the web master when a document is awaiting publishing 
+	 *
+     * @param integer the docoument to publish
+     * @param string comment to the web master from the publisher
+	 */
+	function notifyWebMaster($iDocumentID, $sComment) {
 		global $default;
-		$sQuery = "SELECT WS.web_master_id " .
-				"FROM $default->owl_web_sites_table AS WS INNER JOIN $default->owl_web_documents_table AS WD ON WS.id = WD.web_site_id " .
-				"WHERE WD.document_id = $iDocumentID";
+		$sQuery = "SELECT WS.web_master_id, WS.web_site_name, WS.web_site_url " .
+				  "FROM $default->owl_web_sites_table AS WS " .
+                  "INNER JOIN $default->owl_web_documents_table AS WD ON WS.id = WD.web_site_id " .
+				  "WHERE WD.document_id = $iDocumentID";
 		
 		$sql = $default->db;
 		$sql->query($sQuery);
@@ -956,10 +959,10 @@ class Document {
 				if ($oUser->getEmailNotification()) {
 					$oDocument = Document::get($iDocumentID);
                     $sBody = $oUser->getUserName() . ", the document, '" . generateControllerLink("viewDocument", "fDocumentID=" . $oDocument->iId, $oDocument->getName()) . "' " .                    
-														"is pending web publishing";
+							 "is pending web publishing to " . $sql->f("web_site_name") . " (" . $sql->f("web_site_url") . ").\n\n  The publisher had these additional comments to make:\n$sComment" ;
 						
 					$oEmail = & new Email();
-					$oEmail->send($oUser->getEmail(), "Document collaboration role active", $sBody);
+					$oEmail->send($oUser->getEmail(), "Document for Web Publishing", $sBody);
 				}
 			}
 			
