@@ -335,12 +335,15 @@ class Permission {
 	* @return boolean true is user is system administrator, false otherwise and set $_SESSION["errorMessage"]
 	*
 	*/
-	function userIsSystemAdministrator() {
+	function userIsSystemAdministrator($iUserID = "") {
 		global $default, $lang_err_database;
+        if ($iUserID == "") {
+            $iUserID = $_SESSION["userID"];
+        }
 		$sql = $default->db;
 		$sql->query("SELECT UGL.group_id " . 
 					"FROM $default->owl_users_groups_table AS UGL INNER JOIN $default->owl_groups_table AS GL ON UGL.group_id = GL.id " .
-					"WHERE UGL.user_id = " . $_SESSION["userID"] . " " .
+					"WHERE UGL.user_id = $iUserID " .
 					"AND is_sys_admin = 1");		
 		return $sql->next_record();
 	}
@@ -350,13 +353,16 @@ class Permission {
 	*
 	* @return boolean true if the user is the unit administrator for the unit to which the folder belongs, false otherwise
 	*/
-	function userIsUnitAdministrator() {
+	function userIsUnitAdministrator($iUserID = "") {
         global $default;
+        if ($iUserID == "") {
+            $iUserID = $_SESSION["userID"];
+        }        
 		$sql = $default->db;
 		$sql->query("SELECT UGL.group_id " .
 			"FROM $default->owl_users_groups_table AS UGL INNER JOIN $default->owl_groups_units_table AS GUL ON GUL.group_id = UGL.group_id " .
 			"INNER JOIN $default->owl_groups_table AS GL ON GL.id = UGL.group_id " .
-			"WHERE UGL.user_id = " . $_SESSION["userID"] . " " .
+			"WHERE UGL.user_id = $iUserID " .
 			"AND GL.is_unit_admin = 1");
 		return $sql->next_record();
 	}
@@ -384,14 +390,17 @@ class Permission {
      *
      * @return boolean true if the user is in the Anonymous group, else false
      */
-    function userIsGuest() {
+    function userIsGuest($iUserID = "") {
         global $default;
+        if ($iUserID == "") {
+            $iUserID = $_SESSION["userID"];
+        }        
 		$sql = $default->db;
         // you're a guest user if you're in the Anonymous group
 		$sql->query("SELECT UGL.group_id 
                      FROM $default->owl_users_groups_table AS UGL INNER JOIN $default->owl_groups_table AS GL ON GL.id = UGL.group_id
                      WHERE GL.name = 'Anonymous'
-                     AND UGL.user_id = " . $_SESSION["userID"]);
+                     AND UGL.user_id = $iUserID");
 		return $sql->next_record();        
     }
 }
