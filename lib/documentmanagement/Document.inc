@@ -451,7 +451,8 @@ class Document {
             $oDocument->setDocumentTypeID($sql->f("document_type_id"));
             $oDocument->setMajorVersionNumber($sql->f("major_version"));
             $oDocument->setMinorVersionNumber($sql->f("minor_version"));
-            $oDocument->setIsCheckedOut($sql->f("is_checked_out"));			
+            $oDocument->setIsCheckedOut($sql->f("is_checked_out"));
+            $oDocument->setLastModifiedDate($sql->f("modified"));			
 			$oDocument->sParentFolderIDs = stripslashes($sql->f("parent_folder_ids"));
 			$oDocument->sFullPath = stripslashes($sql->f("full_path"));
             $oDocument->iId = $iDocumentID;
