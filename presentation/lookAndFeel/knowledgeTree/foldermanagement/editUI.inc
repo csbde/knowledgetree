@@ -136,19 +136,20 @@ function getFolderGroupAccess($iFolderID, $sDivName) {
               "INNER JOIN $default->groups_table AS GL ON GFL.group_id = GL.id " .
 			  "WHERE GFL.folder_id = ?";
 
-        $iTestFolderID = $iFolderID;
+        $iInheritedFolderID = $iFolderID;
         $bFoundPermissions = false;
-        $bDisabled = false;
+        $bInherited = false;
+        $oInheritedFolder = Folder::get($iInheritedFolderID);
         while ($bFoundPermissions !== true) {
-            $aCheckQuery = array('SELECT id FROM groups_folders_link WHERE folder_id = ? LIMIT 1', $iTestFolderID);
+            $aCheckQuery = array('SELECT id FROM groups_folders_link WHERE folder_id = ? LIMIT 1', $iInheritedFolderID);
             if (count(DBUtil::getResultArrayKey($aCheckQuery, 'id')) == 0) {
-                $default->log->info('No direct permissions on folder ' . $iTestFolderID);
-                $bDisabled = true;
-                $oTestFolder = Folder::get($iTestFolderID);
-                $iTestFolderID = $oTestFolder->getParentID();
-                $default->log->info('... trying parent: ' . $iTestFolderID);
+                $default->log->info('No direct permissions on folder ' . $iInheritedFolderID);
+                $bInherited = true;
+                $iInheritedFolderID = $oInheritedFolder->getParentID();
+                $oInheritedFolder = Folder::get($iInheritedFolderID);
+                $default->log->info('... trying parent: ' . $iInheritedFolderID);
             } else {
-                $default->log->info('Found direct permissions on folder ' . $iTestFolderID);
+                $default->log->info('Found direct permissions on folder ' . $iInheritedFolderID);
                 break;
             }
         }
@@ -160,17 +161,25 @@ function getFolderGroupAccess($iFolderID, $sDivName) {
 	$aQueryStringVariableNames = array("fGroupFolderLinkID", "fFolderID");
 	$aLinkURLs = array(3=>"$default->rootUrl/control.php?action=modifyGroupFolderLink",4=>"$default->rootUrl/control.php?action=deleteGroupFolderLink");
 	
-	$oPatternTableSqlQuery = & new PatternTableSqlQuery(array($sQuery, $iTestFolderID), $aColumns, $aColumnTypes, $aColumnHeaders, "610", $aLinkURLs, $aDBColumnArray,$aQueryStringVariableNames);
+	$oPatternTableSqlQuery = & new PatternTableSqlQuery(array($sQuery, $iInheritedFolderID), $aColumns, $aColumnTypes, $aColumnHeaders, "610", $aLinkURLs, $aDBColumnArray,$aQueryStringVariableNames);
 	$oPatternTableSqlQuery->setTableHeading("Folder Permissions");
 	$oPatternTableSqlQuery->setDisplayColumnHeadings(true);
-        if ($bDisabled === true) {
-            $oPatternTableSqlQuery->setDisabled($bDisabled);
+        if ($bInherited === true) {
+            $oPatternTableSqlQuery->setDisabled(true);
             $oPatternTableSqlQuery->setTableHeading("Folder Permissions (inherited)");
         }
-   
 	$sToRender .= "<table>";
 	$sToRender .= "<tr><td>" . $oPatternTableSqlQuery->render() . "</td></tr>";
-	$sToRender .= "<tr><td><a href=\"$default->rootUrl/control.php?action=addGroupFolderLink&fFolderID=$iFolderID\"><img src=\"" . KTHtml::getAddButton() . "\" border=\"0\" /></a></td></tr>";
+        if ($bInherited === true) {
+            $sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
+            $sTDBGColour = $default->siteMap->getSectionColour($sSectionName, "td");
+            $sToRender .= '<tr><td>Inherited from: <span style="background-color: ' . $sTDBGColour . ';">';
+
+            $sToRender .= displayFolderPathLink(Folder::getFolderPathAsArray($iInheritedFolderID), Folder::getFolderPathNamesAsArray($iInheritedFolderID), "$default->rootUrl/control.php?action=editFolder");
+            $sToRender .= "</span></td></tr>";
+        } else {
+            $sToRender .= "<tr><td><a href=\"$default->rootUrl/control.php?action=addGroupFolderLink&fFolderID=$iFolderID\"><img src=\"" . KTHtml::getAddButton() . "\" border=\"0\" /></a></td></tr>";
+        }
     $sToRender .= "</table>";		
     return renderSectionDiv($sDivName, $sToRender);		 	
 }
