@@ -204,6 +204,12 @@ KTInit::prependPath(KT_DIR . '/pear');
 KTInit::setupDB();
 KTInit::setupRandomSeed();
 
+// Give everyone access to legacy PHP functions
+require_once(KT_LIB_DIR . '/util/legacy.inc');
+
+// Give everyone access to KTUtil utility functions
+require_once(KT_LIB_DIR . '/util/ktutil.inc');
+
 require_once("$default->fileSystemRoot/lib/authentication/$default->authenticationClass.inc");
 
 // instantiate system settings class
@@ -229,9 +235,6 @@ KTInit::setupI18n();
 
 KTInit::cleanGlobals();
 KTInit::cleanMagicQuotes();
-
-// Give everyone access to KTUtil utility functions
-require_once(KT_LIB_DIR . '/util/ktutil.inc');
 
 // site map definition
 include("siteMap.inc");
