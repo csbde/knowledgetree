@@ -28,7 +28,7 @@
 function getOrgPage($iUnitID = null){
 	global $default;
 	
-	$aUnitOrgLink = UnitOrganisationLink::getList("WHERE unit_id = $iUnitID");
+	$aUnitOrgLink = UnitOrganisationLink::getList(array("WHERE unit_id = ?", $iUnitID));/*ok*/
 	
 	if (count($aUnitOrgLink) > 0 ){
 		$oLink = $aUnitOrgLink[0];

@@ -35,7 +35,7 @@ require_once("$default->fileSystemRoot/presentation/Html.inc");
 if (checkSession()) {
 
 	$oPatternCustom = & new PatternCustom();
-	$aDocuments = Document::getList("is_checked_out = 1");
+	$aDocuments = Document::getList("is_checked_out = 1");/*ok*/
 	$sToRender .= renderHeading(_("Document Checkout Management"));
 	$sToRender .= "<table><tr/>";
 	if (count($aDocuments) > 0) {

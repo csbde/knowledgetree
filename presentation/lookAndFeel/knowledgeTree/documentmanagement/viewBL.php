@@ -94,10 +94,10 @@ if (checkSession()) {
         } else if (isset($fBeginCollaboration) && Permission::userHasDocumentWritePermission($oDocument)) {
             //begin the collaboration process
             //first ensure that all steps in the collaboration process are assigned
-            $aFolderCollaboration = FolderCollaboration::getList("WHERE folder_id = " . $oDocument->getFolderID());
+            $aFolderCollaboration = FolderCollaboration::getList(array("WHERE folder_id = ?", $oDocument->getFolderID()));/*ok*/
 			if (count($aFolderCollaboration) > 0) {
 				//if the the folder has collaboration steps set up
-				$aFolderUserRoles = FolderUserRole::getList("document_id = " . $fDocumentID);
+				$aFolderUserRoles = FolderUserRole::getList(array("document_id = ?", $fDocumentID));/*ok*/
 				if (count($aFolderCollaboration) == count($aFolderUserRoles)) {
 					//if all the roles have been assigned we can start the collaboration process
                     

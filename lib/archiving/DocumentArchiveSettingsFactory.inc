@@ -32,7 +32,8 @@ class DocumentArchiveSettingsFactory {
 	function handleTimePeriod($iTimeUnitID, $iUnits) {
 		if ($iTimeUnitID && $iUnits) {
 			// search for an existing time period id
-			$aTimePeriod = TimePeriod::getList("time_unit_id=$iTimeUnitID AND units=$iUnits");
+                        $aWhereClause = array('time_unit_id = ? AND units = ?', array($iTimeUnitID, $iUnits));
+			$aTimePeriod = TimePeriod::getList($aWhereClause);/*ok*/
 			if (count($aTimePeriod) > 0) {
 				$iTimePeriodID = $aTimePeriod[0]->getID();
 			} else {
@@ -71,6 +72,7 @@ class DocumentArchiveSettingsFactory {
 		$iTimePeriodID = $this->handleTimePeriod($iTimeUnitID, $iUnits);
 		
 		// construction strings
+                // XXX: eval?!
 		switch ($sArchivingType) {
 			case "Date" : 			$sSearchConstruction = "\$aArchiveSettings = ArchivingSettings::getList(\"";
 									$sSearchConstruction .= (isset($dExpirationDate) ? "expiration_date='$dExpirationDate'" :  "time_period_id=$iTimePeriodID") . "\");";

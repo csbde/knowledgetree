@@ -69,7 +69,7 @@ if (checkSession()) {
       } else {
 
             // check if there is collaboration for this document
-	$aFolderUserRoles = FolderUserRole::getList("document_id = $fDocumentIDs[$i]");
+	$aFolderUserRoles = FolderUserRole::getList(array("document_id = ?", $fDocumentIDs[$i]));/*ok*/
             // check if any of them are active
             $bActive = false;
 	for ($j=0; $j<count($aFolderUserRoles); $j++) {

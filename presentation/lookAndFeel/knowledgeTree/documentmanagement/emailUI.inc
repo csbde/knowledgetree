@@ -39,7 +39,7 @@ function renderGroupPicker() {
 	$sToRender .= "<tr><td valign=\"top\" width=1%>\n";	
 	$sToRender .= "<select name=\"groupSelect\" size=\"4\" multiple>\n";
 	// retrieve all groups
-	$aGroups = Group::getList("WHERE 1=1 ORDER BY name");
+	$aGroups = Group::getList("ORDER BY name");/*ok*/
 	for ($i = 0; $i < count($aGroups); $i++) {	
 		$sToRender .= "<OPTION value=\"" . $aGroups[$i]->getID() . "\" onDblClick=\"optGroup.transferRight()\" >\n";	
 		$sToRender .= $aGroups[$i]->getName();
@@ -60,7 +60,7 @@ function renderGroupPicker() {
 function renderUserPicker() {
 	$sToRender .= "<tr><td colspan=\"3\"><strong>" . _("Users") . "</strong></td><tr>\n";
 	$sToRender .= "<tr><td><select name=\"userSelect\" size=\"4\" multiple>\n";
-	$oUserArray = User::getList("WHERE 1=1 ORDER BY name");	
+	$oUserArray = User::getList("ORDER BY name");/*ok*/
 	for ($i = 0; $i < count($oUserArray); $i++) {
 		if(strlen($oUserArray[$i]->getEmail())>0){ // if an email address exists			
 			$sToRender .= "<OPTION value=\"" . $oUserArray[$i]->getID() . "\" onDblClick=\"optUser.transferRight()\">\n";

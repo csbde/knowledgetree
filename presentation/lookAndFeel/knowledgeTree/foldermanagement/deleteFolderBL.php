@@ -64,13 +64,13 @@ if (checkSession()) {
 							$default->log->info("deleteFolderBL.php successfully deleted folder " . $oFolder->getName() . " from parent folder " . Folder::getFolderPath($oFolder->getParentID()) . " id=" . $oFolder->getParentID());
                             
                             // delete folder collaboration entries
-                            $aFolderCollaboration = FolderCollaboration::getList("WHERE folder_id=$fFolderID");
+                            $aFolderCollaboration = FolderCollaboration::getList(array("folder_id = ?", $fFolderID));/*ok*/
                             for ($i=0; $i<count($aFolderCollaboration); $i++) {
                                 $aFolderCollaboration[$i]->delete();
                             }
                             
                             // delete folder document types link
-                            $aFolderDocTypeLink = FolderDocTypeLink::getList("folder_id=$fFolderID");
+                            $aFolderDocTypeLink = FolderDocTypeLink::getList(array("folder_id = ?", $fFolderID));/*ok*/
                             for ($i=0; $i<count($aFolderDocTypeLink); $i++) {
                                 $aFolderDocTypeLink[$i]->delete();
                             }                            
@@ -130,11 +130,11 @@ if (checkSession()) {
                 // check if there are any folders or documents in this folder
                                     
                 // get folders descended from this one
-                $aFolderArray = Folder::getList("parent_id=$fFolderID");
+                $aFolderArray = Folder::getList(array("parent_id = ?", $fFolderID));/*ok*/
                 // get live documents in this folder
-                $aLiveDocuments = Document::getList("folder_id=$fFolderID AND status_id=" . LIVE);
-				// get archived documents in this folder                
-                $aArchivedDocuments = Document::getList("folder_id=$fFolderID AND status_id=" . ARCHIVED);
+                $aLiveDocuments = Document::getList(array("folder_id = ? AND status_id = " . LIVE, $fFolderID));/*ok*/
+				// get archived documents in this folder
+                $aArchivedDocuments = Document::getList(array("folder_id = ? AND status_id = " . ARCHIVED, $fFolderID));/*ok*/
                 
                 if (count($aFolderArray) > 0) {
                     $oPatternCustom->setHtml(getFolderNotEmptyPage($fFolderID,  count($aFolderArray), "folder(s)"));
@@ -147,7 +147,7 @@ if (checkSession()) {
                 	$oFolder = Folder::get($fFolderID);
                 	
 					// check if this unit has any groups
-					$aGroupUnitLink = GroupUnitLink::getList("unit_id=" . $oFolder->getUnitID());
+					$aGroupUnitLink = GroupUnitLink::getList(array("unit_id = ?", $oFolder->getUnitID()));/*ok*/
 					$bUnitHasGroups = count($aGroupUnitLink) > 0;
 					   
                 	if (Folder::folderIsUnitRootFolder($fFolderID) && $bUnitHasGroups) {

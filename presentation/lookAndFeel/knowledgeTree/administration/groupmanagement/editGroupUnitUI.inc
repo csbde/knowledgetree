@@ -85,7 +85,8 @@ function getUnitPage($iGroupID) {
     $oUser = null;
     $oGroup = null;
 
-    $aGroupUnitLink = GroupUnitLink::getList($default->groups_units_table . ".group_id = $iGroupID");
+    // XXX: Require table name?
+    $aGroupUnitLink = GroupUnitLink::getList(array($default->groups_units_table . ".group_id = ?", $iGroupID));/*ok*/
     
     
     // change headings if User selected

@@ -134,7 +134,7 @@ function getAddPageToOrgFail() {
  */
 function getOrgDisplay() {
 	global $default;
-	$aOrganisations = Organisation::getList();
+	$aOrganisations = Organisation::getList();/*ok*/
 	if ($aOrganisations && (count($aOrganisations) > 0)) {
 		$oOrganisation = $aOrganisations[0];
 		return $oOrganisation->getName() . "<input type=\"hidden\" name=\"fOrgID\" value=\"" . $oOrganisation->getID() . "\"";;

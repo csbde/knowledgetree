@@ -67,7 +67,7 @@ class Dashboard {
 	 * Retrieves details of supporting documents that the current user must create
 	 */
 	function getArchiveRestorationRequestDocuments() {
-		return ArchiveRestorationRequest::getList("admin_user_id=" . $this->iUserID);
+		return ArchiveRestorationRequest::getList(array("admin_user_id = ?", $this->iUserID));/*ok*/
 	}
 
 	/**
@@ -95,7 +95,7 @@ class Dashboard {
 	 * @return array of documents
 	 */                         
 	function getCheckedOutDocuments(){
-		return Document::getList("checked_out_user_id=" . $this->iUserID);
+		return Document::getList(array("checked_out_user_id = ?", $this->iUserID));/*ok*/
 	}
 
 	/**
@@ -113,7 +113,7 @@ class Dashboard {
 	 * @return array of link objects
 	 */
 	function getQuickLinks(){
-		return Link::getList("ORDER BY rank");
+		return Link::getList("ORDER BY rank");/*ok*/
 	}
 		
 	/**

@@ -107,7 +107,7 @@ class Unit extends KTEntity {
         }
         // a unit root folder already exists in the database
         // update the description
-        $aFolders = Folder::getList("name='" . addslashes($this->sName) . "' AND parent_id=1");
+        $aFolders = Folder::getList(array("name = ? AND parent_id = 1", $this->sName));/*ok*/
         $oFolder = $aFolders[0];
         $oFolder->setDescription($this->sName . " Unit Root Folder");
         $oFolder->setUnitID($this->iId);
