@@ -29,10 +29,21 @@ require_once("$default->fileSystemRoot/lib/database/db.inc");
 class System {
     
     var $db;
-    
+    var $aSettings = array("ldapServer", "ldapRootDn", "ldapServerType",
+                           "ldapDomain", "ldapSearchUser", "ldapSearchPassword", 
+                       	   "emailServer", "emailFrom", "emailFromName", "emailAdmin", "emailAdminName",
+                           "documentRoot", "uiDirectory", 
+                           "rootUrl", "graphicsUrl", "uiUrl",
+                           "sessionTimeout", "contentPaneScrolling");
+    var $aLabels = array ("LDAP Server", "LDAP Root DN", "LDAP Server Type (iPlanet OR ActiveDirectory)",
+                          "LDAP Domain", "LDAP Search User (AD)", "LDAP Search Password",
+                          "Email Server", "Default Email Address", "Default Email Name", "Administrator Email Address", "Administrator Name",
+                          "Document Root", "User Interface Directory",
+                          "Root URL", "Graphics URL", "User Interface URL",
+                          "Session Timeout", "Content Pane Scrolling Enabled");
+                                                         
     function System() {
         global $default;
-        
         $this->db = new Database();
     }
     
@@ -56,7 +67,13 @@ class System {
      */
     function get($sSettingName) {
         // select the value from the db
-        return lookupField("system_settings", "value", "name", $sSettingName);
+        $value = lookupField("system_settings", "value", "name", $sSettingName);
+        // if there are semi-colon delimited values, return as an array
+        if (strstr($value, ";")) {
+        	return explode(";", $value);
+        } else {
+        	return $value;
+        }
     }
     
     function getInt($sSettingName) {
@@ -72,14 +89,12 @@ class System {
      * @param string the value of the system setting
      */
     function set($sSettingName, $sSettingValue) {
-        global $default, $lang_err_database;
-        
+        global $default;
         if (lookupField($default->system_settings_table, "name", "name", $sSettingName)) {
             // the setting exists, so overwrite it
             if ($default->db->query("UPDATE $default->system_settings_table SET value='$sSettingValue' where name='$sSettingName'")) {
                 return true;
             } else {
-                $_SESSION["errorMessage"] = $lang_err_database;
                 return false;
             }            
         } else {
@@ -87,27 +102,9 @@ class System {
             if ($default->db->query("INSERT INTO $default->system_settings_table (name, value) VALUES ('$sSettingName', '$sSettingValue')")) {
                 return true;
             } else {
-                $_SESSION["errorMessage"] = $lang_err_database;
                 return false;
             }
         }
-    }
-    
-    function generateRequiredFieldValidation($aValidationColumnNames,$aValidationDisplayColumnNames) {
-    		
-		$sToRender .= "\n\n<script language=\"javascript\">\n<!--\n";
-		$sToRender .= "function validateForm(theForm) {\n";			
-		for ($i = 0; $i < count($aValidationColumnNames); $i++) {			
-			$sToRender .= "\tif (!(validRequired(document.MainForm." . $aValidationColumnNames[$i] . ", '" . $aValidationDisplayColumnNames[$i] . "'))) {\n";
-			$sToRender .= "\t\treturn false;\n\t}\n";
-				
-		}
-		$sToRender .= "return true;\n}\n";
-		
-		$sToRender .= "//-->\n</script>\n\n";
-		
-		//return $sToRender;
-                
-	}
+    }    
 }
 ?>
