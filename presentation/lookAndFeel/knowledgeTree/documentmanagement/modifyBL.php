@@ -47,7 +47,7 @@ if (checkSession()) {
 			if ($oDocument->update()) {
 				//on successful update, redirect to the view page
 				if (isset($fFirstEdit)) {
-					redirect("$default->rootUrl/control.php?action=modifyDocumentGenericMetaData&fDocumentID=" . $oDocument->getID());
+					redirect("$default->rootUrl/control.php?action=modifyDocumentGenericMetaData&fDocumentID=" . $oDocument->getID() . "&fFirstEdit=1");
 				} else {
 					redirect("$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $oDocument->getID());
 				}
@@ -55,7 +55,7 @@ if (checkSession()) {
 				//display the update page with an error message
 				require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 				$oPatternCustom = & new PatternCustom();				
-				$oPatternCustom->setHtml(renderPage($oDocument, $oDocument->getDocumentTypeID()));
+				$oPatternCustom->setHtml(renderPage($oDocument, $oDocument->getDocumentTypeID(), $fFirstEdit));
 				$main->setCentralPayload($oPatternCustom);
 				$main->setHasRequiredFields(true);	
 				if (isset($fFirstEdit)) {
@@ -73,7 +73,7 @@ if (checkSession()) {
 			$oDocument = & Document::get($fDocumentID);
 			$oPatternCustom = & new PatternCustom();
 			require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
-			$oPatternCustom->setHtml(renderPage($oDocument, $oDocument->getDocumentTypeID()));
+			$oPatternCustom->setHtml(renderPage($oDocument, $oDocument->getDocumentTypeID(), $fFirstEdit));
 			$main->setCentralPayload($oPatternCustom);
 			$main->setHasRequiredFields(true);	
 			if (isset($fFirstEdit)) {
