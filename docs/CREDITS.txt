@@ -1,0 +1,16 @@
+KnowledgeTree(tm) depends on the following components:
+
+DB Abstraction Layer:
+http://phplib.sourceforge.net (LGPL)
+
+Email:
+phpmailer - http://phpmailer.sourceforge.net (LGPL)
+
+PHPSniff:
+http://phpsniff.sourceforge.net (LGPL)
+
+Mark Round's AuthLDAP class (class.AuthLDAP.php):
+http://phpclasses.dknss.com/browse/package/893.html (GPL)
+
+Wouter Verhelt's accept-to-gettext.inc class:
+http://www.grep.be/articles/php-accept.php (GPL)
