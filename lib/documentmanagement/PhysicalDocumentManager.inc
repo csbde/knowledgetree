@@ -100,7 +100,7 @@ class PhysicalDocumentManager {
 			//set the correct headers
 	        Header("Content-Type: " . PhysicalDocumentManager::getMimeTypeName($oDocument->getMimeTypeID()));
 			Header("Content-Length: ". $oDocument->getFileSize());
-			Header("Content-Disposition: attachment; filename=" . $oDocument->getFileName());        
+			Header("Content-Disposition: attachment; filename=\"" . $oDocument->getFileName() . "\"");        
 	        Header("Pragma: no-store");
 	        Header("Expires: 0");
 			readfile($sDocumentFileSystemPath);
