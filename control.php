@@ -22,14 +22,17 @@ require_once("./config/dmsDefaults.php");
 // -------------------------------
 // page start
 // -------------------------------
-
+//echo $_SERVER["QUERY_STRING"];
 // check the session, but don't redirect if the check fails
 if (checkSessionAndRedirect(false)) {
-    // session check succeeds, so default action should be the dashboard if no action was specified
-    if (!isset($action)) {
-        $action = "dashboard";
-    }
-} else {
+	//get around the problem with search
+	if (strcmp($fForStandardSearch, "yes") == 0) {			
+			$action = "standardSearch";
+	} else if (!isset($action)) {
+    // session check succeeds, so default action should be the dashboard if no action was specified    
+		$action = "dashboard";
+	}    
+} else {	
     // session check fails, so default action should be the login form if no action was specified
     if (!isset($action)) {
         $action = "loginForm";
@@ -39,6 +42,7 @@ if (checkSessionAndRedirect(false)) {
 // need to strip query string params from action before attempting to retrieve from sitemap
 
 // check for the presence of additional params
+//echo $_SERVER["QUERY_STRING"];
 if (strstr($_SERVER["QUERY_STRING"], "&")) {
     // strip and save the querystring
     $queryString = substr($_SERVER["QUERY_STRING"], strpos($_SERVER["QUERY_STRING"], "&")+1, strlen($_SERVER["QUERY_STRING"]));
