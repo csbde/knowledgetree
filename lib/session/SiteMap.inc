@@ -72,12 +72,13 @@ class SiteMap {
      * @param string  description of the page for link presentation
      * @param boolean whether this action is enabled or not
      */
-    function addPage($sAction, $sPage, $sSectionName, $sRequiredAccess, $sLinkText, $bEnabled = true) {
+    function addPage($sAction, $sPage, $sSectionName, $sRequiredAccess, $sLinkText, $bEnabled = true, $iOrder = 0) {
         if (!$this->bUseDB) {
             $this->aSiteMap[$sSectionName][$sRequiredAccess][$sAction] = array ("page" => $sPage,
                     "description" => $sLinkText,
                     "enabled" => (($bEnabled) ? "1" : "0"),
-                    "default" => "0");
+                    "default" => "0",
+                    "order" => $iOrder);
         }
     }
 	
@@ -98,12 +99,13 @@ class SiteMap {
      * @param int    the minimum access needed to access this page
      * @param string description of the page for link presentation     
      */
-    function addDefaultPage($sAction, $sPage, $sSectionName, $sRequiredAccess, $sLinkText, $bEnabled = true) {
+    function addDefaultPage($sAction, $sPage, $sSectionName, $sRequiredAccess, $sLinkText, $bEnabled = true, $iOrder = 0) {
         if (!$this->bUseDB) {
             $this->aSiteMap[$sSectionName][$sRequiredAccess][$sAction] = array ("page" => $sPage,
                     "description" => $sLinkText,
                     "enabled" => (($bEnabled) ? "1" : "0"),
-                    "default" => "1");
+                    "default" => "1",
+                    "order" => $iOrder);
         }
     }
 
@@ -150,11 +152,11 @@ class SiteMap {
      * 
      * @param string the section to return links for
      */
-    function getSectionLinks($sSectionName) {
+    function getSectionLinks($sSectionName, $bSortLinks = true) {
         if ($this->bUseDB) {
-            return $this->getSectionLinksUsingDB($sSectionName);
+            return $this->getSectionLinksDB($sSectionName, $bSortLinks);
         } else {
-            return $this->getSectionLinksUsingArray($sSectionName);
+            return $this->getSectionLinksArray($sSectionName, $bSortLinks);
         }
     }
 
@@ -163,7 +165,7 @@ class SiteMap {
      *
      * @param string the section to return links for
      */
-    function getSectionLinksUsingDB($sSectionName) {
+    function getSectionLinksDB($sSectionName, $bSortLinks) {
         global $default, $lang_err_database, $fFolderID;
         $sql = $default->db;
         // lookup sectionID
@@ -172,7 +174,8 @@ class SiteMap {
             // initialise result array
             $results = array("descriptions" => array(), "links" => array());
 
-            if ($sql->query("SELECT link_text, action, access_id FROM $default->owl_sitemap_table WHERE section_id=$sectionID AND is_enabled=1 AND is_default=0")) {
+            if ($sql->query("SELECT link_text, action, access_id FROM $default->owl_sitemap_table WHERE section_id=$sectionID " . 
+            			    "AND is_enabled=1 AND is_default=0" . ( $bSortLinks ? " ORDER BY link_text ASC" : "" ) ) ) {
                 while ($sql->next_record()) {
                     // check permissions
                     if ($this->hasPermission($sql->f("access_id"))) {
@@ -206,7 +209,7 @@ class SiteMap {
      *
      * @param string the section to return links for
      */
-    function getSectionLinksUsingArray($sSectionName) {
+    function getSectionLinksArray($sSectionName, $bSortLinks) {
         global $default, $fFolderID;
 
         // check if the section exists
@@ -216,26 +219,35 @@ class SiteMap {
 
             // need to loop through all (access, page) arrays in this section
             foreach ($this->aSiteMap[$sSectionName] as $requiredAccess => $pages) {
+            	//$default->log->info("SECTION:$sSectionName; access=" . arrayToString($requiredAccess) . ";pages=" . arrayToString($pages));
                 if ($this->hasPermission($requiredAccess)) {
                     foreach ($pages as $action => $pageDetail) {
                         // add this array to the resultset array if there is link text and it is enabled
                         // but not if it is the default page
+
                         if ((strlen($pages[$action]["description"]) > 0) &&
                                 ($pages[$action]["enabled"]) && (!$pages[$action]["default"])) {
-
-                            $results["descriptions"][] = $pages[$action]["description"];
-                            
-                            $results["links"][] = isset($fFolderID) ? generateControllerLink($action, "fFolderID=$fFolderID") : generateControllerLink($action, "");
+                            if (!$bSortLinks) {
+	                            $results["descriptions"][$pages[$action]["order"]] = $pages[$action]["description"];
+	                            
+	                            $results["links"][$pages[$action]["order"]] = isset($fFolderID) ? generateControllerLink($action, "fFolderID=$fFolderID") : generateControllerLink($action, "");
+                            } else {
+	                            $results["descriptions"][] = $pages[$action]["description"];
+	                            
+	                            $results["links"][] = isset($fFolderID) ? generateControllerLink($action, "fFolderID=$fFolderID") : generateControllerLink($action, "");
+                            }
                         }
                     }
                 }
             }
             // now check if we have anything in the results array before returning it
             if (count($results) > 0) {
-            	// alpha sort the results 
-            	array_multisort ($results["descriptions"], SORT_ASC,
-            	 				 $results["links"], SORT_ASC); 
-				reset ($results); 
+            	if ($bSortLinks) {
+	            	// alpha sort the results 
+	            	array_multisort ($results["descriptions"], SORT_ASC,
+	            	 				 $results["links"], SORT_ASC); 
+					reset ($results);
+            	}
                 return $results;
             } else {
                 return false;
@@ -247,6 +259,33 @@ class SiteMap {
     }
     
     /**
+     * Returns the link text for a page
+     *
+     * @param string the action to lookup the link text for
+     * @return string the link text
+     */
+    function getPageLinkText($sAction) {
+    	global $default;
+    	//$sAction = $this->getActionFromPage($sPage);
+    	$default->log->info("getPageLinkText action=$sAction");
+        // for each section
+        foreach ($this->aSiteMap as $section => $valArr) {
+            // for each group, page array combination
+            foreach ($valArr as $requiredAccess => $pageArr) {
+                // now loop through pages until we find the right one
+                foreach ($pageArr as $ackshin => $page) {
+                    if ($ackshin == $sAction) {
+                    	$default->log->info("loop:$ackshin; test:$sAction");
+                        if ($this->hasPermission($requiredAccess)) {
+                            return $page["description"];
+                        }
+                    }
+                }
+            }
+        }    	
+    }
+    
+    /**
      * Returns the page mapped to the (action, groupName) pair.
      * Checks whether to use the db or not and calls the appropriate method     
      *
@@ -255,9 +294,9 @@ class SiteMap {
      */
     function getPage($action) {
         if ($this->bUseDB) {
-            return $this->getPageUsingDB($action);
+            return $this->getPageDB($action);
         } else {
-            return $this->getPageUsingArray($action);
+            return $this->getPageArray($action);
         }
     }
 
@@ -267,7 +306,7 @@ class SiteMap {
      * @param string the action to lookup pages for
      * @return string the page to redirect to, or false if the user doesn't have access to the page
      */
-    function getPageUsingDB($action) {
+    function getPageDB($action) {
         global $default, $lang_err_database;
         $sql = $default->db;
         // lookup the page and access_id from the sitemap
@@ -294,7 +333,7 @@ class SiteMap {
      * @param string the action to lookup pages for
      * @return string the page to redirect to, or false if the user doesn't have access to the page
      */
-    function getPageUsingArray($action) {
+    function getPageArray($action) {
         global $default;
 
         $default->log->info("SiteMap::getPage: checking ($action, " . $_SESSION["userID"] . ")");
@@ -330,9 +369,9 @@ class SiteMap {
      */
     function getSectionName($sRequiredPage) {
         if ($this->bUseDB) {
-            return $this->getSectionNameUsingDB($sRequiredPage);
+            return $this->getSectionNameDB($sRequiredPage);
         } else {
-            return $this->getSectionNameUsingArray($sRequiredPage);
+            return $this->getSectionNameArray($sRequiredPage);
         }
     }
 
@@ -341,7 +380,7 @@ class SiteMap {
      *
      * @param string the page to lookup the section for
      */
-    function getSectionNameUsingDB($sRequiredPage) {
+    function getSectionNameDB($sRequiredPage) {
         global $default, $lang_err_database;
         $sql = $default->db;
         // lookup the page and access_id from the sitemap
@@ -366,7 +405,7 @@ class SiteMap {
      *
      * @param string the page to lookup the section for
      */
-    function getSectionNameUsingArray($sRequiredPage) {
+    function getSectionNameArray($sRequiredPage) {
         global $default;
         // for each section
         foreach ($this->aSiteMap as $section => $valArr) {
@@ -391,9 +430,9 @@ class SiteMap {
      */
     function getDefaultAction($sSectionName) {
         if ($this->bUseDB) {
-            return $this->getDefaultActionUsingDB($sSectionName);
+            return $this->getDefaultActionDB($sSectionName);
         } else {
-            return $this->getDefaultActionUsingArray($sSectionName);
+            return $this->getDefaultActionArray($sSectionName);
         }
     }
 
@@ -403,7 +442,7 @@ class SiteMap {
      * @param string the section name to return the default action for
      * @return string the controller action for the default page for this section
      */
-    function getDefaultActionUsingDB($sSectionName) {
+    function getDefaultActionDB($sSectionName) {
         global $default, $lang_err_database;
         $sql = $default->db;
         // lookup sectionID
@@ -436,7 +475,7 @@ class SiteMap {
      * @param string the section name to return the default action for
      * @return string the controller action for the default page for this section
      */
-    function getDefaultActionUsingArray($sSectionName) {
+    function getDefaultActionArray($sSectionName) {
         global $default;
         // check if the section exists
         if (is_array($this->aSiteMap[$sSectionName])) {
@@ -471,9 +510,9 @@ class SiteMap {
      */
     function getActionFromPage($sPage) {
         if ($this->bUseDB) {
-            return $this->getActionFromPageUsingDB($sPage);
+            return $this->getActionFromPageDB($sPage);
         } else {
-            return $this->getActionFromPageUsingArray($sPage);
+            return $this->getActionFromPageArray($sPage);
         }
     }
 
@@ -483,7 +522,7 @@ class SiteMap {
      * @param string the page to perform the reverse lookup for
      * @return string the action for this page, false if there is no mapping
      */
-    function getActionFromPageUsingDB($sPage) {
+    function getActionFromPageDB($sPage) {
         global $default, $lang_err_database;
         $sql = $default->db;
 
@@ -508,7 +547,7 @@ class SiteMap {
      * @param string the page to perform the reverse lookup for
      * @return string the action for this page, false if there is no mapping
      */
-    function getActionFromPageUsingArray($sPage) {
+    function getActionFromPageArray($sPage) {
         global $default;
         $default->log->debug("Sitemap::getActionFromPage: page=$sPage");
         // for each section
