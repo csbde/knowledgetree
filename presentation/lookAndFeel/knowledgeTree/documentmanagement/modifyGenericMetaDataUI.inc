@@ -8,13 +8,12 @@ function getEditableGenericMetaData($iDocumentID, $iDocumentTypeID) {
 
     $aStoreColumnNames = array("document_id", "document_field_id","value");
     $aDisplayColumnNames = array("document_id", "field_name", "value");
-	$aMetaDataColumnNames = array(2=>"field_name");
+    $aMetaDataColumnNames = array(2=>"field_name");
     $aColumnsEditable = array(0,0,1);
     $aColumnsVisible = array(0,1,1);
-    $aColumnDisplayTypes = array(1,1,1);
+    $aColumnDisplayTypes = array(1,1,4);
     $aColumnDatabaseTypes = array(0,0,1);
-
-
+    
     $oPatternTableSqlQuery = & new PatternEditableTableSqlQuery($sQuery, "document_fields_link", $aStoreColumnNames, $aDisplayColumnNames, $aColumnsEditable, $aColumnsVisible, $aColumnDisplayTypes, $aColumnDatabaseTypes);
 	$oPatternTableSqlQuery->setRequiredColumnNames(array("value"));
     $oPatternTableSqlQuery->setTableCaption("Generic Meta Data");
