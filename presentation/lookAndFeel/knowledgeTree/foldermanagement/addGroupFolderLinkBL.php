@@ -38,8 +38,8 @@ if (checkSession()) {
                 // check if exists for the fFolderID, fGroupID combination
                 if (!$oGroupFolderLink->exists()) {
                     if ($oGroupFolderLink->create()) {
-                        // on successful creation, redirect to the folder edit page                        
-                        redirect("$default->rootUrl/control.php?action=editFolder&fFolderID=$fFolderID");
+                        // on successful creation, redirect to the folder edit page
+                        controllerRedirect("editFolder", "fFolderID=$fFolderID&fShowSection=folderPermissions");                        
                     } else {
                         //otherwise display an error message
                         $sErrorMessage = "The folder access entry could not be created in the database";                        

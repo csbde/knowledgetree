@@ -38,7 +38,7 @@ if (checkSession()) {
 		}
 		$oFolderCollaboration->setSequenceNumber($fSequenceNumber);
 		$oFolderCollaboration->update();
-		redirect("$default->rootUrl/control.php?action=editFolder&fFolderID=$fFolderID");
+		controllerRedirect("editFolder", "fFolderID=$fFolderID&fShowSection=folderRouting");
 	} else {		
 		$oFolderCollaboration = FolderCollaboration::get($fFolderCollaborationID);
 		if ($oFolderCollaboration->hasDocumentInProcess()) {

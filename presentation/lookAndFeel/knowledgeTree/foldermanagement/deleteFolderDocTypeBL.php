@@ -44,7 +44,7 @@ if (checkSession()) {
 				//go ahead and delete
 				$oFolderDocTypeLink = FolderDocTypeLink::get($fFolderDocTypeID);
 				if ($oFolderDocTypeLink->delete()) {
-					redirect("$default->rootUrl/control.php?action=editFolder&fFolderID=$fFolderID");
+					controllerRedirect("editFolder", "fFolderID=$fFolderID&fShowSection=documentTypes");
 				} else {
 					//there was a problem deleting from the database
 					require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
