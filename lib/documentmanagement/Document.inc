@@ -722,11 +722,12 @@ class Document {
     function documentCollaborationDone($iDocumentID) {
 		global $default;
 		$sql = $default->db;
-		$sql->query("SELECT * FROM $default->owl_folders_user_roles_table WHERE document_id = $iDocumentID AND active = 0 AND done = 1");
-		if ($sql->next_record()) {
-			return true;
-		}
-		return false;
+		$sql->query("SELECT * FROM $default->owl_folders_user_roles_table WHERE document_id = $iDocumentID AND done = 0");
+		if ($sql->num_rows() > 0) {
+			return false;
+		} else {
+		    return true;
+        }
     }
 	
 	/**
