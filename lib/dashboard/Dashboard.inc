@@ -1,7 +1,7 @@
 <?php
 require_once("$default->fileSystemRoot/lib/subscriptions/SubscriptionManager.inc");
 require_once("$default->fileSystemRoot/lib/web/WebDocument.inc");
-require_once("$default->fileSystemRoot/lib/links/link.inc");
+require_once("$default->fileSystemRoot/lib/links/Link.inc");
 require_once("$default->fileSystemRoot/lib/documentmanagement/DependantDocumentInstance.inc");
 require_once("$default->fileSystemRoot/lib/archiving/ArchiveRestorationRequest.inc");
 /**
