@@ -1,0 +1,50 @@
+KnowledgeTree Upgrade instructions
+==================================
+
+Basic upgrade
+-------------
+
+In order to upgrade your KnowledgeTree installation, perform the following tasks:
+- Run the appropriate database upgrade scripts against your database.  If you are upgrading more than one version, multiple
+  upgrade scripts will need to be executed.
+  eg. if you're upgrading from version 1.2.2 to version 2.0.0, the following upgrade scripts need to be executed:
+  - sql/mysql/upgrade/1.2.2-to-1.2.3.sql
+  - sql/mysql/upgrade/1.2.3-to-1.2.4.sql
+  - sql/mysql/upgrade/1.2.4-to-2.0.0.sql
+
+- Upgrade your application code, by unpacking the latest download into your webroot directory.
+
+- Copy over the changes you made to the configuration to the configuration
+  file.
+
+Additional steps
+----------------
+
+KnowledgeTree 2.0.0
+-------------------
+
+When upgrading to KnowledgeTree 2.0.0, run the following commands from the
+KnowledgeTree root directory (not the Root Folder):
+
+	php bin/setPermissionFolder.php
+	php bin/rebuildSearchPermissions.php
+
+This requires the CGI or CLI php binary installed.  If there are no error
+messages, the process was successful.
+
+You can also run these commands via the web browser.  If your KnowledgeTree
+install is at http://example.org/kt/, then go to:
+
+	http://example.org/kt/bin/setPermissionFolder.php
+	http://example.org/kt/bin/rebuildSearchPermissions.php
+
+Only errors will be displayed.
+
+
+Jam Warehouse � Smart Business Innovation
+Phone: +27 21 4477440
+Fax: +27 21 4477449
+Email: info@jamwarehouse.com
+Web: http://www.jamwarehouse.com/
+
+$Id$
