@@ -17,7 +17,6 @@
  * @package test
  */
 
-*/
 require("./config/owl.php");
 require("./lib/owl.lib.php");
 require("./config/html.php");
