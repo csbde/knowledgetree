@@ -101,11 +101,17 @@ class DiscussionThread {
     function getNumberOfViews(){
     	return $this->iNumberOfViews;
     }
-    
+    /**
+   	 * Set the total number of times the thread was viewed
+   	 */
+    function setNumberOfViews($iValue) {
+    	$this->iNumberOfViews = $iValue;    	 
+    }
+        
     /**
    	 * Increment the total number of times the thread was viewed
    	 */
-    function setNumberOfViews(){
+    function incrementNumberOfViews() {
     	$this->iNumberOfViews += 1;    	 
     }
     
@@ -119,9 +125,15 @@ class DiscussionThread {
     /**
    	 * Increment the total number of replies (comments) in a thread
    	 */
-    function setNumberOfReplies(){
+    function incrementNumberOfReplies(){
     	$this->iNumberOfReplies += 1; 
     }
+    /**
+   	 * Set the total number of number of replies (comments) in a thread
+   	 */    
+    function setNumberOfReplies($iValue){
+    	$this->iNumberOfReplies = $iValue; 
+    }    
      
     /**
      * Get a All commentID's seperated by a comma ","
@@ -155,6 +167,28 @@ class DiscussionThread {
         }    	
     }    
     
+    /**
+     * Static function
+     * Get a list of DiscussionThreads
+     *
+     * @param  String  Where clause (optional)
+     *
+     * @return Array array of DiscussionThreads objects, false otherwise
+     */
+    function getList($sWhereClause = null) {
+        global $default;
+        $aDiscussionThreads = array();
+        $sql = $default->db;
+        $result = $sql->query("SELECT * FROM " . $default->discussion_threads_table  . (isset($sWhereClause) ? " WHERE " . $sWhereClause : ""));
+        if ($result) {
+            while ($sql->next_record()) {
+                $aDiscussionThreads[] = & DiscussionThread::get($sql->f("id"));
+            }
+            return $aDiscussionThreads;
+        }
+        return false;
+    }
+	     
     function getThreadIDforDoc($iDocumentID){
     	global $default;	
 		$sql = $default->db;
