@@ -1,3 +1,2130 @@
+Version 2.0.0rc1 (2005/01/07)
+
+Features
+========
+* Advanced search has more powerful search capabilities
+* The fields shown in the file browser are configurable
+* Development Log Window shows PHP errors in a separate browser window if
+  enabled.
+* Search Permissions no longer relies on fileIndexer.
+* Inherited folder permissions are now visible and copyable
+* Simplify group removal (no longer need to remove members, units)
+* Ability to set multiple document types when creating folder
+* Inherit default document types from parent folder
+* No longer need to configure fileSystemUrl or serverName
+* KnowledgeTree is now database-portable in the code (but not the queries)
+* Bulk upload support
+* Improved user->group interface for multiple membership changes
+* Complete translation hooks
+* Translated button support
+* Improve character set handling
+* Beginning of Italian translation
+* Separate icon for Unit Folders
+* Support for OpenLDAP2 if it doesn't offer anonymous bind or LDAPv2 bindings
+
+Bug Fixes
+=========
+* Display startup errors better
+* Remove most SQL injection opportunities
+* Remove other opportunities to construct queries via the browser
+* Place session and permission management around pages that were missing them
+* Remove use of register_globals
+* Remove use of magic_quotes_gpc
+* Recognise English if it's the most prefered locale - previously would use
+  the most-preferred non-English language if one existed.
+* Make the layout less dependent on CSS hacks.
+* Fix off-by-one in search results on whether to display the 'Next' button.
+* Fix display problems when contentPaneScrolling is not used.
+
+Other Changes
+=============
+* Disabled database-based configuration by default
+* Disabled the contentPaneScrolling scrollbars by default
+* Default to useAcceptLanguageHeader
+
+Detailed ChangeLog
+==================
+
+2005-01-07 05:16  nbm
+
+	* presentation/lookAndFeel/knowledgeTree/dashboardUI.inc:
+
+	Assign strings on first use (not using concatenation which might break
+	later)
+
+2005-01-07 03:54  nbm
+
+	* config/dmsDefaults.php:
+
+	Rename the legacy log class for the legacy log.
+
+	Introduce a PEAR Log instance to log all PHP errors.
+
+	Log all PHP errors to the PEAR Log instance.
+
+	Optionally, if default->developmentLogWindow is set, log all PHP errors
+	to a Javascript window.
+
+2005-01-07 03:53  nbm
+
+	* lib/Log.inc:
+
+	Rename the legacy Log class to KTLegacyLog
+
+2005-01-07 03:52  nbm
+
+	* pear/: Log.php, Log/composite.php, Log/console.php,
+	  Log/daemon.php, Log/display.php, Log/error_log.php, Log/file.php,
+	  Log/mail.php, Log/mcal.php, Log/null.php, Log/observer.php,
+	  Log/sql.php, Log/sqlite.php, Log/syslog.php, Log/win.php:
+
+	Add the PEAR Log class, version 1.8.7.
+
+2005-01-07 02:49  nbm
+
+	* lib/browse/Criteria.inc:
+
+	Take out debugging stuff for where neither start nor end date is given.
+
+2005-01-07 02:44  nbm
+
+	* docs/faq.txt:
+
+	Improve the full-text index minimum word length question.
+
+2005-01-07 02:19  nbm
+
+	* lib/browse/Criteria.inc:
+
+	If the document field is a lookup, provide a drop-down box with the
+	lookup values.
+
+2005-01-07 02:18  nbm
+
+	*
+	  presentation/lookAndFeel/knowledgeTree/search/advancedSearchBL.php:
+
+	Fix criteriaNumber for base widget names too.
+
+2005-01-07 02:18  nbm
+
+	* lib/documentmanagement/MetaData.inc:
+
+	Add a getList static method.
+
+2005-01-07 02:17  nbm
+
+	* lib/documentmanagement/DocumentField.inc:
+
+	Convert database values properly back to boolean.
+
+2005-01-07 01:37  nbm
+
+	* lib/browse/Criteria.inc:
+
+	Render negative numbers with underscore instead of dash to allow easier
+	manipulation in javascript.
+
+	Implement searching for date created, offering between A and B, after A,
+	and before B syntax.
+
+2005-01-07 01:35  nbm
+
+	*
+	  presentation/lookAndFeel/knowledgeTree/search/advancedSearchBL.php:
+
+	Negative numbers are now rendered as _1 for the form widgets - handle
+	that.
+
+	Deal with suffixes after the base form widget name.
+
+	Use LEFT JOIN instead of INNER JOIN onto the document_fields_link table
+	as the INNER form will lose documents without document fields.
+
+2005-01-07 01:32  nbm
+
+	* presentation/lookAndFeel/knowledgeTree/js/datePicker.js:
+
+	Make it easy to get a calendar that allows you to choose dates in the
+	past.
+
+2005-01-07 01:30  nbm
+
+	* lib/documentmanagement/Document.inc,
+	  sql/mysql/install/tables.sql,
+	  sql/mysql/upgrade/1.2.4-to-1.2.5.sql:
+
+	Moved created time into the document table.
+
+2005-01-06 08:47  nbm
+
+	* lib/security/Permission.inc:
+
+	In userHasFolder(Read|Write)Access, use the Permission Folder ID instead
+	of incorrectly using all parents to determine access.
+
+2005-01-06 08:43  nbm
+
+	*
+	  presentation/lookAndFeel/knowledgeTree/documentmanagement/emailBL.php:
+
+	Put the option transfers into the global scope.
+
+	Submitted by:	Nicolas Quienot
+
+2005-01-06 08:34  nbm
+
+	* lib/foldermanagement/Folder.inc:
+
+	Grab the Permission Folder for Folders created from the database.
+
+2005-01-06 06:07  nbm
+
+	* docs/SearchPermissions.txt:
+
+	Finished search permissions functionality as expressed in this file.
+
+2005-01-06 06:07  nbm
+
+	* lib/documentmanagement/Document.inc:
+
+	When the document is moved, update its search permissions.
+
+2005-01-06 05:56  nbm
+
+	* docs/SearchPermissions.txt:
+
+	Update with progress updating search permissions on group events.
+
+2005-01-06 05:56  nbm
+
+	*
+	  presentation/lookAndFeel/knowledgeTree/administration/usermanagement/editUserGroupsBL.php:
+
+	Don't worry about permissions - the GroupUserLink will take care of that
+	itself.
+
+2005-01-06 05:55  nbm
+
+	* lib/groups/GroupUserLink.inc:
+
+	Use Permission::updateSearchPermissionsForUser to redo permissions
+	instead of local attempt.  Automatically redo permissions when a link
+	has been successfully created or deleted.
+
+2005-01-06 05:52  nbm
+
+	* lib/security/Permission.inc:
+
+	Replace mis-copied iDocumentID to iUserID so that user permissions are
+	deleted.
+
+2005-01-06 05:35  nbm
+
+	* docs/SearchPermissions.txt:
+
+	Some documentation on how the Search Permissions system in KnowledgeTree
+	works, and the current information on how they are determined, and when
+	they need to be updated.
+
+2005-01-06 05:16  nbm
+
+	* bin/: rebuildSearchPermissions.php,
+	  rebuildSearchPermissionsbyUser.php:
+
+	Rebuild search permissions for all documents - either by doing it for
+	each document in turn (rebuildSearchPermissions.php) or for each user in
+	turn (rebuildSearchPermissionsbyUser.php).  Should produce the same
+	results.
+
+2005-01-06 05:11  nbm
+
+	* lib/visualpatterns/PatternTableSqlQuery.inc:
+
+	Lessen unnecessary verbosity since this stuff seems to be solid.
+
+2005-01-06 05:04  nbm
+
+	* lib/foldermanagement/Folder.inc:
+
+	updatePermissions now not only updates the folder and its children's
+	permission folder, but the permissions on each of the documents in those
+	folders.
+
+2005-01-06 05:02  nbm
+
+	* lib/documentmanagement/Document.inc:
+
+	Use the permission-handling in the Permission utility class instead of
+	doing so locally.
+
+2005-01-06 05:01  nbm
+
+	*
+	  presentation/lookAndFeel/knowledgeTree/foldermanagement/addGroupFolderLinkBL.php:
+
+	Import the Group class
+
+2005-01-06 05:01  nbm
+
+	* lib/security/Permission.inc:
+
+	Move permission-management of documents here in
+	updateSearchPermissionsForDocument.
+
+	updateSearchPermissionsForUser does the same, recalculating the
+	permission a user has on all documents.
+
+2005-01-06 02:38  nbm
+
+	*
+	  presentation/lookAndFeel/knowledgeTree/foldermanagement/deleteGroupFolderLinkBL.php:
+
+	Get the folder to update its permission folder if a permission is
+	removed.
+
+2005-01-05 13:51  nbm
+
+	* bin/setPermissionFolder.php:
+
+	setPermissionFolder.php will calculate permission_folder_id for folders
+	that don't have it set already - usually because they've just been added
+	via the upgrade SQL script.
+
+2005-01-05 13:49  nbm
+
+	*
+	  presentation/lookAndFeel/knowledgeTree/foldermanagement/copyInheritedPermissionsBL.php:
+
+	Call updatePermissions on the folder we've just copied the new
+	permissions to.
+
+2005-01-05 13:48  nbm
+
+	*
+	  presentation/lookAndFeel/knowledgeTree/foldermanagement/addGroupFolderLinkBL.php:
+
+	Use the Folder addPermissions method instead of a local copy.
+
+2005-01-05 13:47  nbm
+
+	* lib/foldermanagement/Folder.inc:
+
+	Implement support for the permission_folder_id - how to calculate it,
+	and how to update it on all a folder's children when it needs to be
+	changed.
+
+2005-01-05 13:44  nbm
+
+	* sql/mysql/: install/tables.sql, upgrade/1.2.4-to-1.2.5.sql:
+
+	Add permission_folder_id to the folder table, which provides us with a
+	link to the folder from which this folder gets its permissions - either
+	itself if it has permissions, or the folder from which it inherits its
+	permissions.
+
+2005-01-05 13:16  nbm
+
+	*
+	  presentation/lookAndFeel/knowledgeTree/foldermanagement/deleteGroupFolderLinkBL.php:
+
+	Flatten nested ifs to improve understandability.
+
+2005-01-05 09:14  nbm
+
+	* lib/visualpatterns/PatternCreate.inc:
+
+	Include global variable $default for the rootUrl of the KnowledgeTree.
+
+2005-01-05 04:58  nbm
+
+	* lib/groups/Group.inc,
+	  presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/removeGroupBL.php:
+
+	Allow the admin to remove a group despite it having members, since
+	all they're going to do is remove the users from that group, and remove
+	a group despite it being a member of the unit, since all they're going
+	to do is remove it from the unit.  So do it for them.  They still have
+	to confirm that they want to delete that group.
+
+2005-01-05 03:50  nbm
+
+	* presentation/lookAndFeel/knowledgeTree/foldermanagement/:
+	  addFolderBL.php, addFolderUI.inc:
+
+	Allow the user to choose multiple document types when creating a folder.
+
+	Default the document types to that of the parent folder.
+
+2005-01-05 03:10  nbm
+
+	*
+	  presentation/lookAndFeel/knowledgeTree/foldermanagement/addFolderBL.php:
+
+	Flatten nested ifs into more readable code.
+
+2005-01-05 02:51  nbm
+
+	* lib/database/dbutil.inc:
+
+	Use the query log for queries (but not errors containing queries).
+
+2005-01-05 02:16  nbm
+
+	* lib/: dashboard/DashboardNews.inc,
+	  documentmanagement/Document.inc,
+	  documentmanagement/DocumentField.inc,
+	  documentmanagement/DocumentTypeFieldLink.inc,
+	  foldermanagement/Folder.inc, foldermanagement/FolderUserRole.inc,
+	  groups/Group.inc, roles/Role.inc, subscriptions/Subscription.inc:
+
+	Use KTUtil::anyToBool for any boolean values being passed to the
+	database.
+
+2005-01-05 01:18  nbm
+
+	*
+	  presentation/lookAndFeel/knowledgeTree/administration/usermanagement/editUserGroupsBL.php:
+
+	Pick up the changes from the select boxes.
+
+2005-01-05 00:58  nbm
+
+	* config/dmsDefaults.php:
+
+	Oops, wasn't supposed to commit that version before.  Actually check we
+	have an error before trying to handle one.
+
+2005-01-05 00:56  nbm
+
+	* config/dmsDefaults.php, lib/Log.inc:
+
+	Handle startup errors slightly better - at least show them and stop
+	trying to continue on regardless.
+
+2005-01-04 03:35  nbm
+
+	* lib/users/User.inc:
+
+	Use KTUtil::anyToBool to fix any null/broken boolean.
+
+2005-01-04 03:20  nbm
+
+	* lib/foldermanagement/FolderDocTypeLink.inc:
+
+	Add an _table() (semi-static) method to get the table name.
+
+2005-01-04 03:19  nbm
+
+	* lib/database/dbutil.inc:
+
+	Lower queries and other flow logging to DEBUG level.
+
+2005-01-04 03:14  nbm
+
+	* lib/security/Permission.inc:
+
+	Replace erroneous array addition with array_merge.  Update sections to
+	use DBUtil.
+
+2005-01-03 04:56  nbm
+
+	* presentation/lookAndFeel/knowledgeTree/create.php:
+
+	Get object name and path from the session correctly.
+
+2005-01-03 04:55  nbm
+
+	* lib/subscriptions/Subscription.inc:
+
+	Use iId, since all the other classes use it.
+
+	(Even though all the non-class code uses iID...)
+
+2005-01-03 04:53  nbm
+
+	* lib/documentmanagement/DocumentTransaction.inc:
+
+	Modernise to use _table() for table name
+
+2005-01-03 04:11  nbm
+
+	* presentation/lookAndFeel/knowledgeTree/: dashboardUI.inc,
+	  administration/doccheckoutmanagement/listDocumentsBL.php,
+	  administration/doctypemanagement/editDocTypeFieldsUI.inc,
+	  administration/documentmanagement/listDeletedDocumentsBL.php,
+	  administration/documentmanagement/manageArchivedDocumentsBL.php,
+	  administration/groupmanagement/editGroupUnitUI.inc,
+	  administration/groupmanagement/editGroupUsersUI.inc,
+	  administration/unitmanagement/addUnitUI.inc,
+	  administration/unitmanagement/editUnitOrgUI.inc,
+	  administration/unitmanagement/removeUnitFromOrgBL.php,
+	  administration/usermanagement/editUserGroupsUI.inc,
+	  discussions/viewDiscussionBL.php,
+	  discussions/viewDiscussionUI.inc,
+	  documentmanagement/deleteDocumentBL.php,
+	  documentmanagement/emailUI.inc, documentmanagement/viewBL.php,
+	  foldermanagement/deleteFolderBL.php,
+	  foldermanagement/deleteFolderDocTypeBL.php:
+
+	Change getList users to using parameterised WhereClauses (if necessary)
+
+2005-01-03 04:06  nbm
+
+	* lib/: archiving/DocumentArchiveSettingsFactory.inc,
+	  browse/Criteria.inc, browse/FolderBrowser.inc,
+	  dashboard/Dashboard.inc, unitmanagement/Unit.inc, users/User.inc:
+
+	Change getList users to using parameterised WhereClauses (if necessary)
+
+2005-01-03 03:44  nbm
+
+	* lib/ktentity.inc:
+
+	Support having and not having the WHERE in the sWhereClause of getList,
+	since it was not standardised.
+
+2005-01-03 03:36  nbm
+
+	* lib/: archiving/ArchiveRestorationRequest.inc,
+	  archiving/ArchivingSettings.inc, archiving/ArchivingType.inc,
+	  archiving/DocumentArchiving.inc, archiving/TimePeriod.inc,
+	  archiving/TimeUnit.inc, dashboard/DashboardNews.inc,
+	  discussions/DiscussionComment.inc,
+	  discussions/DiscussionThread.inc,
+	  documentmanagement/DependantDocumentTemplate.inc,
+	  documentmanagement/Document.inc,
+	  documentmanagement/DocumentField.inc,
+	  documentmanagement/DocumentTransaction.inc,
+	  documentmanagement/DocumentType.inc, foldermanagement/Folder.inc,
+	  foldermanagement/FolderCollaboration.inc,
+	  foldermanagement/FolderDocTypeLink.inc,
+	  foldermanagement/FolderUserRole.inc, groups/Group.inc,
+	  groups/GroupFolderApprovalLink.inc, groups/GroupFolderLink.inc,
+	  groups/GroupUnitLink.inc, groups/GroupUserLink.inc,
+	  links/Link.inc, orgmanagement/Organisation.inc, roles/Role.inc,
+	  roles/RoleFolderLink.inc, unitmanagement/Unit.inc,
+	  unitmanagement/UnitOrganisationLink.inc, users/User.inc,
+	  web/WebDocument.inc, web/WebSite.inc:
+
+	Use KTEntityUtil::getList instead of disparate getList implementations.
+
+2005-01-03 03:34  nbm
+
+	* lib/ktentity.inc:
+
+	Note that KTEntityUtil::getList's SQL query is safe
+
+2005-01-03 03:13  nbm
+
+	* lib/ktentity.inc:
+
+	KTEntityUtil::getList simplifies the disparate getList implementations,
+	and provides for parameterised where clauses.
+
+2005-01-03 02:36  nbm
+
+	* sql/mysql/: install/tables.sql, upgrade/1.2.4-to-1.2.5.sql:
+
+	search_document_user_link doesn't need an ID field.
+
+2005-01-03 02:29  nbm
+
+	* presentation/lookAndFeel/knowledgeTree/:
+	  preferences/editUserPrefsBL.php,
+	  administration/groupmanagement/editGroupBL.php,
+	  administration/rolemanagement/editRoleBL.php,
+	  administration/usermanagement/editUserBL.php,
+	  documentmanagement/modifyGenericMetaDataBL.php,
+	  documentmanagement/modifySpecificMetaDataBL.php,
+	  foldermanagement/editBL.php,
+	  foldermanagement/modifyFolderDataBL.php:
+
+	Set up session page access to store.php if we're using it.
+
+2005-01-03 02:27  nbm
+
+	* presentation/lookAndFeel/knowledgeTree/store.inc:
+
+	Use DBUtil's autoInsert or autoUpdate for improved security and
+	simplified code, as well as correct sequence ids for inserts.
+
+2005-01-03 01:42  nbm
+
+	* presentation/lookAndFeel/knowledgeTree/store.inc:
+
+	Whitespace cleanup.
+
+2005-01-03 01:34  nbm
+
+	* lib/session/Session.inc:
+
+	autoInsert returns the ID of the inserted row, not success.  Use
+	PEAR::isError to determine failure.
+
+2004-12-23 13:59  nbm
+
+	* presentation/lookAndFeel/knowledgeTree/: js/divSwitch.js,
+	  search/advancedSearchBL.php, search/advancedSearchUI.inc:
+
+	Extra-advanced search functionality - choose your search terms for each
+	of filename, description, id, creator, document type, and each of your
+	document fields.
+
+2004-12-23 13:56  nbm
+
+	* lib/session/Session.inc:
+
+	Use DBUtil::autoInsert to manipulate active_sessions, as it now uses
+	sequences and not autoincrements.
+
+2004-12-23 13:55  nbm
+
+	* lib/database/dbcompat.inc:
+
+	Use DBUtil::runQuery to do our query, so we can get query logging.
+
+2004-12-23 13:47  nbm
+
+	* lib/browse/Criteria.inc:
+
+	Criteria now know how to generate the WHERE part of statements when
+	they're being searched on in HTML form submissions.
+
+2004-12-23 09:33  nbm
+
+	* lib/browse/Criteria.inc:
+
+	Each Criterion now knows what its ID is, fixing the search widgets.
+
+2004-12-23 09:05  nbm
+
+	* lib/browse/Criteria.inc:
+
+	Allow criteria to render their own search widgets.
+
+	Make it easy to get all the base metadata and all the generic document
+	fields.
+
+2004-12-23 06:48  nbm
+
+	* lib/browse/: Browser.inc, Criteria.inc, FolderBrowser.inc:
+
+	Untie Criteria from Browser, so it can be used by others easily.
+
+2004-12-23 05:39  nbm
+
+	*
+	  presentation/lookAndFeel/knowledgeTree/documentmanagement/browseUI.inc:
+
+	Use the browser columns method to determine table width for table-wide
+	announcements.
+
+2004-12-23 05:38  nbm
+
+	* lib/browse/Browser.inc:
+
+	Build the default criteria list from the browser_criteria table.
+
+	Add a columns helper method to make building the table easier.
+
+2004-12-23 05:36  nbm
+
+	*
+	  presentation/lookAndFeel/knowledgeTree/documentmanagement/browseBL.php:
+
+	Sort by "more" correct filename rather than name by default.
+
+2004-12-23 05:36  nbm
+
+	* lib/browse/FolderBrowser.inc:
+
+	Sort by "more" correct filename instead of name by default.
+
+2004-12-23 05:32  nbm
+
+	*
+	  presentation/lookAndFeel/knowledgeTree/administration/browsemanagement/editBrowserBL.php,
+	  presentation/lookAndFeel/knowledgeTree/administration/browsemanagement/editBrowserUI.inc,
+	  sql/mysql/install/tables.sql,
+	  sql/mysql/upgrade/1.2.4-to-1.2.5.sql, config/siteMap.inc:
+
+	Allow an administrator to determine which fields they want to display
+	and in what order in the collection browser.
+
+2004-12-23 02:57  nbm
+
+	* presentation/webpageTemplate.inc:
+
+	Allow more administration links.
+
+2004-12-23 02:35  nbm
+
+	*
+	  presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/editGroupUsersBL.php:
+
+	Extract more request variables to global scope so this works.
+
+2004-12-22 06:41  nbm
+
+	*
+	  presentation/lookAndFeel/knowledgeTree/administration/orgmanagement/editOrgUI.inc:
+
+	Fix broken HTML tag.
+
+	Submitted by:	Jorrit Jorritsma
+
+2004-12-22 06:35  nbm
+
+	* lib/browse/Browser.inc, lib/browse/BrowserFactory.inc,
+	  lib/browse/FolderBrowser.inc,
+	  presentation/lookAndFeel/knowledgeTree/documentmanagement/browseBL.php,
+	  presentation/lookAndFeel/knowledgeTree/documentmanagement/browseUI.inc:
+
+	Centralise browser logic into per-criterion objects, making the
+	interface respond to which criteria are set up in the browser.
+
+	Also support generic metadata in the browser - as evidenced by the
+	Category criterion added to the browser now.
+
+2004-12-22 02:32  nbm
+
+	*
+	  presentation/lookAndFeel/knowledgeTree/documentmanagement/browseUI.inc:
+
+	Fix some broken HTML in tables, and move checkboxes into their own column.
+
+2004-12-22 02:15  nbm
+
+	*
+	  presentation/lookAndFeel/knowledgeTree/documentmanagement/browseUI.inc:
+
+	Whitespace cleanup.
+
+2004-12-22 02:10  nbm
+
+	* lib/browse/FolderBrowser.inc:
+
+	Whitespace cleanup.
+
+2004-12-22 00:26  nbm
+
+	*
+	  presentation/lookAndFeel/knowledgeTree/documentmanagement/browseBL.php:
+
+	Flatten the code to make it more understandable.
+
+2004-12-22 00:25  nbm
+
+	* lib/browse/Browser.inc:
+
+	Pretty up and make more understandable the sort criteria
+
+2004-12-22 00:24  nbm
+
+	* lib/database/dbutil.inc:
+
+	Add compactQuery, which turns multi-line queries into single-line ones,
+	in case that's ever a problem (and to make the logs more log-like).
+
+2004-12-21 03:53  nbm
+
+	*
+	  presentation/lookAndFeel/knowledgeTree/foldermanagement/copyInheritedPermissionsBL.php,
+	  presentation/lookAndFeel/knowledgeTree/foldermanagement/editUI.inc,
+	  config/siteMap.inc:
+
+	Make it possible to copy inherited permissions directly onto folder
+
+2004-12-21 01:12  nbm
+
+	*
+	  presentation/lookAndFeel/knowledgeTree/foldermanagement/editBL.php:
+
+	Untangle nested ifs to simplify understanding of code.
+
+2004-12-21 00:22  nbm
+
+	* lib/visualpatterns/NavBar.inc,
+	  presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/foldermanagement/modifyFolderDataUI.inc,
+	  tests/documentmanagement/viewUI.inc:
+
+	Convert incorrect image tags to img
+
+	SF Tracker:	1081772
+	Submitted by:	Adam Monsen (meonkeys)
+
+2004-12-21 00:03  nbm
+
+	* sql/mysql/install/tables.sql:
+
+	Add missing comma from table definitions.
+
+	SF Tracker:	1085242
+	Submitted by:	joe1-1
+
+2004-12-20 13:25  nbm
+
+	* lib/: documentmanagement/DocumentField.inc,
+	  documentmanagement/DocumentFieldLink.inc,
+	  documentmanagement/DocumentLink.inc,
+	  documentmanagement/DocumentTransaction.inc,
+	  documentmanagement/DocumentType.inc,
+	  documentmanagement/DocumentTypeFieldLink.inc,
+	  documentmanagement/MetaData.inc,
+	  documentmanagement/PhysicalDocumentManager.inc,
+	  foldermanagement/Folder.inc,
+	  foldermanagement/FolderCollaboration.inc,
+	  foldermanagement/FolderDocTypeLink.inc,
+	  foldermanagement/FolderUserRole.inc, groups/Group.inc,
+	  groups/GroupFolderApprovalLink.inc, groups/GroupFolderLink.inc,
+	  groups/GroupUnitLink.inc, groups/GroupUserLink.inc,
+	  links/Link.inc, orgmanagement/Organisation.inc, roles/Role.inc,
+	  roles/RoleFolderLink.inc, security/Permission.inc,
+	  session/Session.inc, session/SiteMap.inc,
+	  subscriptions/Subscription.inc,
+	  subscriptions/SubscriptionEngine.inc,
+	  visualpatterns/PatternListBox.inc,
+	  visualpatterns/PatternMetaData.inc:
+
+	Parameterise (or vette/mark) remaining SQL statements.
+
+2004-12-20 05:52  nbm
+
+	* lib/: archiving/ArchiveRestorationRequest.inc,
+	  archiving/ArchivingSettings.inc, archiving/ArchivingType.inc,
+	  archiving/DocumentArchiving.inc, archiving/TimePeriod.inc,
+	  archiving/TimeUnit.inc, authentication/DBAuthenticator.inc,
+	  browse/DocumentTypeBrowser.inc, browse/FolderBrowser.inc,
+	  dashboard/Dashboard.inc, dashboard/DashboardNews.inc,
+	  discussions/DiscussionComment.inc,
+	  discussions/DiscussionThread.inc,
+	  documentmanagement/DependantDocumentInstance.inc,
+	  documentmanagement/DependantDocumentTemplate.inc,
+	  documentmanagement/Document.inc,
+	  documentmanagement/DocumentCollaboration.inc,
+	  subscriptions/SubscriptionManager.inc, unitmanagement/Unit.inc,
+	  unitmanagement/UnitOrganisationLink.inc, users/User.inc,
+	  web/WebDocument.inc:
+
+	Parameterise (or vette/mark) more SQL queries
+
+2004-12-20 03:03  nbm
+
+	* lib/: DefaultLookup.inc, System.inc,
+	  archiving/ArchiveRestorationRequest.inc,
+	  archiving/ArchivingSettings.inc, archiving/ArchivingType.inc,
+	  archiving/DocumentArchiving.inc, archiving/TimePeriod.inc,
+	  archiving/TimeUnit.inc, authentication/Authenticator.inc,
+	  authentication/DBAuthenticator.inc, browse/CategoryBrowser.inc,
+	  browse/DocumentTypeBrowser.inc, browse/FolderBrowser.inc,
+	  groups/GroupFolderLink.inc,
+	  visualpatterns/PatternBrowsableSearchResults.inc,
+	  visualpatterns/PatternMetaData.inc, web/WebDocument.inc,
+	  web/WebSite.inc:
+
+	Parameterise (or vette) some SQL statements
+
+2004-12-20 03:02  nbm
+
+	* lib/visualpatterns/PatternEditableTableSqlQuery.inc:
+
+	Use the safer store/create session variables.
+
+2004-12-20 03:01  nbm
+
+	* lib/visualpatterns/: PatternCreate.inc,
+	  PatternEditableListFromQuery.inc:
+
+	Use the safer create/store session variables.
+
+2004-12-20 02:56  nbm
+
+	* presentation/lookAndFeel/knowledgeTree/: help.php,
+	  administration/docfieldmanagement/listDocFieldsUI.inc,
+	  administration/doctypemanagement/listDocTypesUI.inc,
+	  administration/documentmanagement/manageArchivedDocumentsBL.php,
+	  administration/groupmanagement/editGroupUI.inc,
+	  administration/groupmanagement/editGroupUnitUI.inc,
+	  administration/groupmanagement/editGroupUsersUI.inc,
+	  administration/groupmanagement/listGroupsUI.inc,
+	  administration/linkmanagement/listLinksUI.inc,
+	  administration/news/newsUI.inc,
+	  administration/orgmanagement/listOrgUI.inc,
+	  administration/rolemanagement/editRoleUI.inc,
+	  administration/rolemanagement/listRolesUI.inc,
+	  administration/unitmanagement/listUnitsUI.inc,
+	  administration/usermanagement/editUserGroupsUI.inc,
+	  administration/usermanagement/editUserUI.inc,
+	  administration/usermanagement/listUsersBL.php,
+	  administration/usermanagement/listUsersUI.inc,
+	  administration/websitemanagement/listWebsitesUI.inc,
+	  documentmanagement/addDocumentUI.inc,
+	  documentmanagement/bulkUploadUI.inc,
+	  documentmanagement/collaborationBL.php,
+	  documentmanagement/modifyGenericMetaDataUI.inc,
+	  documentmanagement/modifySpecificMetaDataUI.inc,
+	  documentmanagement/viewHistoryUI.inc,
+	  documentmanagement/viewUI.inc,
+	  foldermanagement/addFolderDocTypeUI.inc,
+	  foldermanagement/editUI.inc, foldermanagement/folderUI.inc,
+	  foldermanagement/modifyFolderDataUI.inc,
+	  foldermanagement/viewDependantDocumentsUI.inc,
+	  preferences/editUserPrefsUI.inc, search/advancedSearchUI.inc,
+	  search/standardSearchUI.inc:
+
+	Parameterise SQL statements under presentation/
+
+2004-12-20 02:55  nbm
+
+	*
+	  presentation/lookAndFeel/knowledgeTree/discussions/viewDiscussionBL.php:
+
+	Remove commented-out code.
+
+2004-12-20 02:53  nbm
+
+	*
+	  presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentBL.php:
+
+	Make code easier to understand by flattening nested if statements.
+
+2004-12-20 02:52  nbm
+
+	* presentation/lookAndFeel/knowledgeTree/: create.php, store.inc,
+	  store.php:
+
+	Make create and store safer:
+
+	Require a built-up session.
+
+	Store static data in a session instead of using a hidden form variable,
+	out of the reach of attackers.
+
+2004-12-20 02:45  nbm
+
+	* lib/foldermanagement/Folder.inc:
+
+	Return false in getFolderPathAsArray if given folder doesn't exist.
+
+2004-12-20 02:44  nbm
+
+	* lib/database/dbcompat.inc:
+
+	Support parameterised queries in old database compatibility.
+
+2004-12-20 02:39  nbm
+
+	* lib/util/ktutil.inc:
+
+	Try harder to convert strings to bools.
+
+2004-12-20 01:06  nbm
+
+	* lib/database/dbutil.inc:
+
+	paramArray is useful when we have a variable-list sized IN (...) SQL
+	statement.
+
+	escapeSimple allows legacy code to use the loaded database's
+	escapeSimple until we can clean it up properly.
+
+2004-12-20 01:04  nbm
+
+	* config/dmsDefaults.php, lib/util/legacy.inc:
+
+	Include PHP-based versions of functions that KnowledgeTree uses that
+	aren't in earlier versions of PHP 4.
+
+2004-12-17 01:46  nbm
+
+	*
+	  presentation/lookAndFeel/knowledgeTree/foldermanagement/editUI.inc:
+
+	Rename TestFolder to more useful InheritedFolder, and try to match the
+	colour scheme a bit.
+
+2004-12-15 03:24  nbm
+
+	*
+	  presentation/lookAndFeel/knowledgeTree/foldermanagement/editUI.inc:
+
+	Show inherited permissions if there are no direct permissions on the folder.
+
+2004-12-15 03:23  nbm
+
+	* lib/visualpatterns/PatternTableSqlQuery.inc:
+
+	Extend from PatternTableGeneric, passing in an adaptered version of the
+	PEAR DB result set.
+
+2004-12-15 03:22  nbm
+
+	* lib/visualpatterns/PatternTableGeneric.inc:
+
+	PatternTableGeneric is a generic form of PatternTableSqlQuery, and takes
+	a ResultSet from which it expects Results that handle 'get' method
+	queries, so that we can also pass in standard arrays with dictionaries
+	inside (suitably adapterised).
+
+2004-12-15 03:20  nbm
+
+	* lib/database/dbutil.inc:
+
+	Work for non-parameterised queries too!
+
+2004-12-15 03:20  nbm
+
+	* lib/database/dbcompat.inc:
+
+	Turn off copious logging
+
+2004-12-03 04:53  nbm
+
+	* lib/: documentmanagement/DocumentCollaboration.inc,
+	  session/Session.inc:
+
+	Replace manual UPDATEs to whereUpdate
+
+2004-12-03 04:52  nbm
+
+	* lib/System.inc:
+
+	Convert manual queries to autoInsert and whereUpdate.
+
+2004-12-03 04:48  nbm
+
+	* lib/database/dbutil.inc:
+
+	Add DBUtill::whereUpdate, acts like autoUpdate except you can pass your
+	own where clause as dictionary (joined by AND)
+
+2004-12-03 04:47  nbm
+
+	* lib/documentmanagement/DocumentLink.inc:
+
+	Switch to using KTEntity
+
+2004-12-03 04:46  nbm
+
+	* lib/database/dbcompat.inc:
+
+	Check for an error as last result in fetchRow.
+
+2004-12-02 02:51  nbm
+
+	* lib/: DefaultLookup.inc, archiving/ArchiveRestorationRequest.inc,
+	  archiving/ArchivingSettings.inc, archiving/ArchivingType.inc,
+	  archiving/DocumentArchiving.inc, archiving/TimePeriod.inc,
+	  archiving/TimeUnit.inc, dashboard/DashboardNews.inc,
+	  discussions/DiscussionComment.inc,
+	  discussions/DiscussionThread.inc,
+	  documentmanagement/DependantDocumentInstance.inc,
+	  documentmanagement/DependantDocumentTemplate.inc,
+	  documentmanagement/Document.inc,
+	  documentmanagement/DocumentField.inc,
+	  documentmanagement/DocumentFieldLink.inc,
+	  documentmanagement/DocumentType.inc,
+	  documentmanagement/DocumentTypeFieldLink.inc,
+	  documentmanagement/MetaData.inc, foldermanagement/Folder.inc,
+	  foldermanagement/FolderCollaboration.inc,
+	  foldermanagement/FolderDocTypeLink.inc,
+	  foldermanagement/FolderUserRole.inc, groups/Group.inc,
+	  groups/GroupFolderApprovalLink.inc, groups/GroupFolderLink.inc,
+	  groups/GroupUnitLink.inc, groups/GroupUserLink.inc,
+	  links/Link.inc, orgmanagement/Organisation.inc, roles/Role.inc,
+	  roles/RoleFolderLink.inc, subscriptions/Subscription.inc,
+	  unitmanagement/Unit.inc, unitmanagement/UnitOrganisationLink.inc,
+	  users/User.inc, web/WebDocument.inc, web/WebSite.inc:
+
+	Move database-backed objects over to KTEntity
+
+2004-12-02 02:48  nbm
+
+	* sql/mysql/: install/tables.sql, upgrade/1.2.4-to-1.2.5.sql:
+
+	Add another unique name field.
+
+2004-12-01 13:32  nbm
+
+	* config/dmsDefaults.php:
+
+	Seed the randomiser, and make KTUtil and KTEntity available to all
+	pages.
+
+2004-12-01 13:30  nbm
+
+	* lib/session/control.inc:
+
+	By default, if page access has not been allowed, print an access
+	restricted message and exit.
+
+	(Solves the problem of empty pages.)
+
+2004-12-01 13:28  nbm
+
+	* lib/util/ktutil.inc:
+
+	Try harder in anyToBool to find what people meant.
+
+2004-12-01 13:23  nbm
+
+	* lib/ktentity.inc:
+
+	Common base class for standard database-backed objects in KnowledgeTree.
+
+2004-12-01 13:22  nbm
+
+	* lib/database/dbutil.inc:
+
+	Add autoUpdate and autoDelete as per autoInsert.
+
+2004-12-01 10:09  nbm
+
+	* lib/database/dbcompat.inc:
+
+	Stop using deprecated call_user_method_array and use
+	call_user_func_array instead.
+
+2004-12-01 07:17  nbm
+
+	*
+	  presentation/lookAndFeel/knowledgeTree/administration/usermanagement/editUserUI.inc:
+
+	Fix minor HTML tag error.
+
+	SF tracker:	1061175
+	Submitted by:	Paul Gier (gier21)
+
+2004-12-01 05:57  nbm
+
+	* lib/documentmanagement/Document.inc:
+
+	anyToBool is in KTUtil...
+
+2004-12-01 05:56  nbm
+
+	* lib/: groups/GroupUnitLink.inc, links/Link.inc, roles/Role.inc:
+
+	Cover up errors that didn't get picked up by my testing.
+
+2004-12-01 05:46  nbm
+
+	* lib/DefaultLookup.inc, lib/dms.inc,
+	  lib/archiving/ArchiveRestorationRequest.inc,
+	  lib/archiving/ArchivingSettings.inc,
+	  lib/archiving/ArchivingType.inc,
+	  lib/archiving/DocumentArchiving.inc,
+	  lib/archiving/TimePeriod.inc, lib/archiving/TimeUnit.inc,
+	  lib/dashboard/DashboardNews.inc,
+	  lib/discussions/DiscussionComment.inc,
+	  lib/discussions/DiscussionThread.inc,
+	  lib/documentmanagement/DependantDocumentInstance.inc,
+	  lib/documentmanagement/DependantDocumentTemplate.inc,
+	  lib/documentmanagement/Document.inc,
+	  lib/documentmanagement/DocumentField.inc,
+	  lib/documentmanagement/DocumentFieldLink.inc,
+	  lib/documentmanagement/DocumentLink.inc,
+	  lib/documentmanagement/DocumentTransaction.inc,
+	  lib/documentmanagement/DocumentType.inc,
+	  lib/documentmanagement/DocumentTypeFieldLink.inc,
+	  lib/documentmanagement/MetaData.inc,
+	  lib/foldermanagement/Folder.inc,
+	  lib/foldermanagement/FolderCollaboration.inc,
+	  lib/foldermanagement/FolderDocTypeLink.inc,
+	  lib/foldermanagement/FolderUserRole.inc, lib/groups/Group.inc,
+	  lib/groups/GroupFolderApprovalLink.inc,
+	  lib/groups/GroupFolderLink.inc, lib/groups/GroupUnitLink.inc,
+	  lib/groups/GroupUserLink.inc, lib/links/Link.inc,
+	  lib/orgmanagement/Organisation.inc, lib/roles/Role.inc,
+	  lib/roles/RoleFolderLink.inc, lib/session/SiteMap.inc,
+	  lib/subscriptions/Subscription.inc, lib/unitmanagement/Unit.inc,
+	  lib/unitmanagement/UnitOrganisationLink.inc, lib/users/User.inc,
+	  lib/util/ktutil.inc, lib/web/WebDocument.inc,
+	  lib/web/WebSite.inc, sql/mysql/install/tables.sql,
+	  sql/mysql/upgrade/1.2.4-to-1.2.5.sql:
+
+	Move over to PEAR::DB's autoExecute via DBUtil::autoInsert, which gets
+	rid of all non-portable insert_id calls and introduces portable
+	sequences.
+
+	You must run the commands in sql/mysql/upgrade/1.2.4-to-1.2.5.sql for
+	KnowledgeTree to function on your data.
+
+2004-12-01 04:31  nbm
+
+	* lib/Log.inc:
+
+	If we can't write the log, then we just don't, silently.
+
+2004-12-01 04:31  nbm
+
+	* config/dmsDefaults.php:
+
+	Make the DBUtil class available to all pages.
+
+2004-12-01 04:29  nbm
+
+	* lib/database/dbcompat.inc:
+
+	Set autofree on the compat database's results, as they're not explicitly
+	freed in legacy code.
+
+2004-12-01 04:28  nbm
+
+	* lib/database/dbutil.inc:
+
+	Database access utility class to reduce code repetition and complexity
+	and make it easier to make wide-spread changes in the database area.
+
+2004-11-30 01:15  nbm
+
+	* config/dmsDefaults.php:
+
+	Switch to using PEAR::DB for our database connectivity layer.  Use
+	DBCompat to remove our use of phplib's DB classes, but allow existing
+	use of phplib's DB API to work until we remove them.
+
+2004-11-30 00:57  nbm
+
+	* lib/database/dbcompat.inc:
+
+	DBCompat provides a phplib DB API using a PEAR::DB database object.
+
+2004-11-29 12:21  nbm
+
+	* presentation/lookAndFeel/knowledgeTree/: stylesheet.php,
+	  documentmanagement/viewUI.inc:
+
+	Make CSS-based buttons work better in IE.
+
+	SF tracker:	1069404
+	Submitted by:	Stefano Ciancio (sciancio)
+
+2004-11-27 09:14  nbm
+
+	* lib/System.inc:
+
+	Use the global database handle instead of creating our own.
+
+2004-11-27 09:13  nbm
+
+	* lib/System.inc:
+
+	Don't include db.inc directly - dmsDefaults.inc has done it for us
+	already.
+
+2004-11-27 08:57  nbm
+
+	* config/: dmsDefaults.php, environment.php:
+
+	Remove non-config stuff from environment.php and place them in
+	dmsDefaults.php.
+
+	Also disable database-based configuration by default.
+
+2004-11-27 08:19  nbm
+
+	* lib/database/db.inc:
+
+	Remove spurious haltmsg method.
+
+2004-11-27 08:17  nbm
+
+	* lib/database/db.inc:
+
+	Remove unused getLastQueryResultCount and getQueryString
+
+2004-11-27 08:13  nbm
+
+	* lib/database/db.inc:
+
+	Remove unused createSQLQuery and createSQLQueryWithOffset
+
+2004-11-27 08:12  nbm
+
+	* lib/visualpatterns/PatternDatabaseTable.inc:
+
+	Remove unused PatternDatabaseTable
+
+2004-11-27 02:26  nbm
+
+	* config/dmsDefaults.php, config/siteMap.inc,
+	  lib/documentmanagement/BulkUploadManager.inc,
+	  lib/documentmanagement/File.inc,
+	  lib/documentmanagement/PhysicalDocumentManager.inc,
+	  presentation/lookAndFeel/knowledgeTree/documentmanagement/bulkUploadBL.php,
+	  presentation/lookAndFeel/knowledgeTree/documentmanagement/bulkUploadUI.inc:
+
+	Bulk upload support for KnowledgeTree
+
+	SF tracker:	1072882
+	Submitted by:	Adam Monsen (meonkeys)
+
+2004-11-26 22:44  nbm
+
+	* pear/: DB.php, DB/common.php, DB/dbase.php, DB/fbsql.php,
+	  DB/ibase.php, DB/ifx.php, DB/msql.php, DB/mssql.php,
+	  DB/mysql.php, DB/mysqli.php, DB/oci8.php, DB/odbc.php,
+	  DB/pgsql.php, DB/sqlite.php, DB/storage.php, DB/sybase.php:
+
+	PEAR DB from DB-1.6.8
+
+2004-11-26 22:42  nbm
+
+	* pear/PEAR.php:
+
+	PEAR.php from PEAR-1.3.3.1
+
+2004-11-26 22:29  nbm
+
+	* control.php:
+
+	Don't rely on register_globals.
+
+2004-11-26 13:15  nbm
+
+	* config/dmsDefaults.php:
+
+	Recover somewhat gracefully if people insist on turning on
+	register_globals and magic_quotes_gpc.  Remove request parameters from
+	global scope, and if they're quoted by magic_quotes_gpc, dequote them.
+
+2004-11-26 13:10  nbm
+
+	* presentation/: login.php, webpageTemplate.inc,
+	  lookAndFeel/knowledgeTree/create.php,
+	  lookAndFeel/knowledgeTree/help.php,
+	  lookAndFeel/knowledgeTree/administration/doccheckoutmanagement/editDocCheckoutBL.php,
+	  lookAndFeel/knowledgeTree/administration/doccheckoutmanagement/editDocCheckoutUI.inc,
+	  lookAndFeel/knowledgeTree/administration/docfieldmanagement/addDocFieldSuccess.php,
+	  lookAndFeel/knowledgeTree/administration/docfieldmanagement/editDocFieldBL.php,
+	  lookAndFeel/knowledgeTree/administration/docfieldmanagement/editDocFieldLookupsBL.php,
+	  lookAndFeel/knowledgeTree/administration/docfieldmanagement/editDocFieldLookupsUI.inc,
+	  lookAndFeel/knowledgeTree/administration/docfieldmanagement/listDocFieldsBL.php,
+	  lookAndFeel/knowledgeTree/administration/docfieldmanagement/removeDocFieldBL.php,
+	  lookAndFeel/knowledgeTree/administration/docfieldmanagement/removeDocFieldUI.inc,
+	  lookAndFeel/knowledgeTree/administration/docfieldmanagement/metadatamanagement/addMetaDataBL.php,
+	  lookAndFeel/knowledgeTree/administration/docfieldmanagement/metadatamanagement/editMetaDataBL.php,
+	  lookAndFeel/knowledgeTree/administration/docfieldmanagement/metadatamanagement/removeMetaDataBL.php,
+	  lookAndFeel/knowledgeTree/administration/doctypemanagement/addDocTypeFieldsLinkBL.php,
+	  lookAndFeel/knowledgeTree/administration/doctypemanagement/addDocTypeSuccess.php,
+	  lookAndFeel/knowledgeTree/administration/doctypemanagement/editDocTypeBL.php,
+	  lookAndFeel/knowledgeTree/administration/doctypemanagement/editDocTypeFieldsBL.php,
+	  lookAndFeel/knowledgeTree/administration/doctypemanagement/listDocTypesBL.php,
+	  lookAndFeel/knowledgeTree/administration/doctypemanagement/removeDocTypeBL.php,
+	  lookAndFeel/knowledgeTree/administration/documentmanagement/expungeDeletedDocumentsBL.php,
+	  lookAndFeel/knowledgeTree/administration/documentmanagement/listDeletedDocumentsBL.php,
+	  lookAndFeel/knowledgeTree/administration/documentmanagement/manageArchivedDocumentsBL.php,
+	  lookAndFeel/knowledgeTree/administration/documentmanagement/restoreDeletedDocumentBL.php,
+	  lookAndFeel/knowledgeTree/administration/groupmanagement/addGroupBL.php,
+	  lookAndFeel/knowledgeTree/administration/groupmanagement/assignGroupToUnitBL.php,
+	  lookAndFeel/knowledgeTree/administration/groupmanagement/editGroupBL.php,
+	  lookAndFeel/knowledgeTree/administration/groupmanagement/editGroupUnitBL.php,
+	  lookAndFeel/knowledgeTree/administration/groupmanagement/editGroupUnitUI.inc,
+	  lookAndFeel/knowledgeTree/administration/groupmanagement/editGroupUsersBL.php,
+	  lookAndFeel/knowledgeTree/administration/groupmanagement/listGroupsBL.php,
+	  lookAndFeel/knowledgeTree/administration/groupmanagement/removeGroupBL.php,
+	  lookAndFeel/knowledgeTree/administration/groupmanagement/removeGroupFromUnitBL.php,
+	  lookAndFeel/knowledgeTree/administration/groupmanagement/removeGroupFromUnitUI.inc,
+	  lookAndFeel/knowledgeTree/administration/linkmanagement/addLinkSuccess.php,
+	  lookAndFeel/knowledgeTree/administration/linkmanagement/editLinkBL.php,
+	  lookAndFeel/knowledgeTree/administration/linkmanagement/listLinksBL.php,
+	  lookAndFeel/knowledgeTree/administration/linkmanagement/removeLinkBL.php,
+	  lookAndFeel/knowledgeTree/administration/news/addNewsBL.php,
+	  lookAndFeel/knowledgeTree/administration/news/editNewsBL.php,
+	  lookAndFeel/knowledgeTree/administration/news/listNewsBL.php,
+	  lookAndFeel/knowledgeTree/administration/news/previewNewsBL.php,
+	  lookAndFeel/knowledgeTree/administration/news/removeNewsBL.php,
+	  lookAndFeel/knowledgeTree/administration/orgmanagement/addOrgSuccess.php,
+	  lookAndFeel/knowledgeTree/administration/orgmanagement/editOrgBL.php,
+	  lookAndFeel/knowledgeTree/administration/orgmanagement/listOrgBL.php,
+	  lookAndFeel/knowledgeTree/administration/orgmanagement/removeOrgBL.php,
+	  lookAndFeel/knowledgeTree/administration/rolemanagement/editRoleBL.php,
+	  lookAndFeel/knowledgeTree/administration/rolemanagement/listRolesBL.php,
+	  lookAndFeel/knowledgeTree/administration/rolemanagement/removeRoleBL.php,
+	  lookAndFeel/knowledgeTree/administration/systemsettings/systemSettingsBL.php,
+	  lookAndFeel/knowledgeTree/administration/unitmanagement/addUnitBL.php,
+	  lookAndFeel/knowledgeTree/administration/unitmanagement/addUnitToOrgBL.php,
+	  lookAndFeel/knowledgeTree/administration/unitmanagement/editUnitBL.php,
+	  lookAndFeel/knowledgeTree/administration/unitmanagement/editUnitOrgBL.php,
+	  lookAndFeel/knowledgeTree/administration/unitmanagement/editUnitOrgUI.inc,
+	  lookAndFeel/knowledgeTree/administration/unitmanagement/listUnitsBL.php,
+	  lookAndFeel/knowledgeTree/administration/unitmanagement/listUnitsUI.inc,
+	  lookAndFeel/knowledgeTree/administration/unitmanagement/removeUnitBL.php,
+	  lookAndFeel/knowledgeTree/administration/unitmanagement/removeUnitFromOrgBL.php,
+	  lookAndFeel/knowledgeTree/administration/usermanagement/addUserBL.php,
+	  lookAndFeel/knowledgeTree/administration/usermanagement/editUserBL.php,
+	  lookAndFeel/knowledgeTree/administration/usermanagement/editUserGroupsBL.php,
+	  lookAndFeel/knowledgeTree/administration/usermanagement/listUsersBL.php,
+	  lookAndFeel/knowledgeTree/administration/usermanagement/listUsersUI.inc,
+	  lookAndFeel/knowledgeTree/administration/usermanagement/passwordManagementBL.php,
+	  lookAndFeel/knowledgeTree/administration/usermanagement/removeUserBL.php,
+	  lookAndFeel/knowledgeTree/administration/websitemanagement/addWebsiteSuccess.php,
+	  lookAndFeel/knowledgeTree/administration/websitemanagement/editWebsiteBL.php,
+	  lookAndFeel/knowledgeTree/administration/websitemanagement/listWebsitesBL.php,
+	  lookAndFeel/knowledgeTree/administration/websitemanagement/removeWebsiteBL.php,
+	  lookAndFeel/knowledgeTree/dashboard/news/displayNewsImage.php,
+	  lookAndFeel/knowledgeTree/dashboard/news/displayNewsItem.php,
+	  lookAndFeel/knowledgeTree/discussions/addCommentBL.php,
+	  lookAndFeel/knowledgeTree/discussions/addCommentUI.inc,
+	  lookAndFeel/knowledgeTree/discussions/viewDiscussionBL.php,
+	  lookAndFeel/knowledgeTree/discussions/viewDiscussionUI.inc,
+	  lookAndFeel/knowledgeTree/documentmanagement/addDocumentBL.php,
+	  lookAndFeel/knowledgeTree/documentmanagement/addDocumentLinkBL.php,
+	  lookAndFeel/knowledgeTree/documentmanagement/browseBL.php,
+	  lookAndFeel/knowledgeTree/documentmanagement/browseUI.inc,
+	  lookAndFeel/knowledgeTree/documentmanagement/checkInDocumentBL.php,
+	  lookAndFeel/knowledgeTree/documentmanagement/checkOutDocumentBL.php,
+	  lookAndFeel/knowledgeTree/documentmanagement/collaborationBL.php,
+	  lookAndFeel/knowledgeTree/documentmanagement/collaborationRollbackBL.php,
+	  lookAndFeel/knowledgeTree/documentmanagement/collaborationUI.inc,
+	  lookAndFeel/knowledgeTree/documentmanagement/createDependantDocumentBL.php,
+	  lookAndFeel/knowledgeTree/documentmanagement/deleteDocumentBL.php,
+	  lookAndFeel/knowledgeTree/documentmanagement/deleteDocumentUI.inc,
+	  lookAndFeel/knowledgeTree/documentmanagement/downloadBL.php,
+	  lookAndFeel/knowledgeTree/documentmanagement/emailBL.php,
+	  lookAndFeel/knowledgeTree/documentmanagement/escalateDependantDocumentBL.php,
+	  lookAndFeel/knowledgeTree/documentmanagement/modifyBL.php,
+	  lookAndFeel/knowledgeTree/documentmanagement/modifyGenericMetaDataBL.php,
+	  lookAndFeel/knowledgeTree/documentmanagement/modifyGenericMetaDataUI.inc,
+	  lookAndFeel/knowledgeTree/documentmanagement/modifySpecificMetaDataBL.php,
+	  lookAndFeel/knowledgeTree/documentmanagement/modifyUI.inc,
+	  lookAndFeel/knowledgeTree/documentmanagement/moveDocumentBL.php,
+	  lookAndFeel/knowledgeTree/documentmanagement/removeDocumentLinkBL.php,
+	  lookAndFeel/knowledgeTree/documentmanagement/templateDocumentBrowseBL.php,
+	  lookAndFeel/knowledgeTree/documentmanagement/templateDocumentBrowseUI.inc,
+	  lookAndFeel/knowledgeTree/documentmanagement/viewBL.php,
+	  lookAndFeel/knowledgeTree/documentmanagement/viewHistoryBL.php,
+	  lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc,
+	  lookAndFeel/knowledgeTree/documentmanagement/webDocumentBL.php,
+	  lookAndFeel/knowledgeTree/documentmanagement/archiving/addArchiveSettingsBL.php,
+	  lookAndFeel/knowledgeTree/documentmanagement/archiving/archiveDocumentBL.php,
+	  lookAndFeel/knowledgeTree/documentmanagement/archiving/archiveSettingsUI.inc,
+	  lookAndFeel/knowledgeTree/documentmanagement/archiving/modifyArchiveSettingsBL.php,
+	  lookAndFeel/knowledgeTree/documentmanagement/archiving/requestDocumentRestoreBL.php,
+	  lookAndFeel/knowledgeTree/foldermanagement/addFolderBL.php,
+	  lookAndFeel/knowledgeTree/foldermanagement/addFolderCollaborationBL.php,
+	  lookAndFeel/knowledgeTree/foldermanagement/addFolderDocTypeBL.php,
+	  lookAndFeel/knowledgeTree/foldermanagement/addFolderUI.inc,
+	  lookAndFeel/knowledgeTree/foldermanagement/addGroupFolderLinkBL.php,
+	  lookAndFeel/knowledgeTree/foldermanagement/collaborationBL.php,
+	  lookAndFeel/knowledgeTree/foldermanagement/deleteDependantDocumentBL.php,
+	  lookAndFeel/knowledgeTree/foldermanagement/deleteFolderBL.php,
+	  lookAndFeel/knowledgeTree/foldermanagement/deleteFolderCollaborationBL.php,
+	  lookAndFeel/knowledgeTree/foldermanagement/deleteFolderDocTypeBL.php,
+	  lookAndFeel/knowledgeTree/foldermanagement/deleteGroupFolderLinkBL.php,
+	  lookAndFeel/knowledgeTree/foldermanagement/editBL.php,
+	  lookAndFeel/knowledgeTree/foldermanagement/editGroupFolderLinkBL.php,
+	  lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc,
+	  lookAndFeel/knowledgeTree/foldermanagement/groupFolderLinkUI.inc,
+	  lookAndFeel/knowledgeTree/foldermanagement/modifyFolderDataBL.php,
+	  lookAndFeel/knowledgeTree/foldermanagement/viewDependantDocumentsBL.php,
+	  lookAndFeel/knowledgeTree/preferences/editUserPrefsBL.php,
+	  lookAndFeel/knowledgeTree/preferences/passwordManagementBL.php,
+	  lookAndFeel/knowledgeTree/search/advancedSearchBL.php,
+	  lookAndFeel/knowledgeTree/search/standardSearchBL.php,
+	  lookAndFeel/knowledgeTree/subscriptions/addSubscriptionBL.php,
+	  lookAndFeel/knowledgeTree/subscriptions/manageSubscriptionsBL.php,
+	  lookAndFeel/knowledgeTree/subscriptions/removeSubscriptionBL.php,
+	  lookAndFeel/knowledgeTree/subscriptions/viewAlertBL.php:
+
+	Don't rely on register_globals or similar mechanisms to access request
+	parameters.  Either use KTUtil::extractGPC to bring specific parameters
+	to global scope or access them via the $_REQUEST array.
+
+2004-11-26 12:51  nbm
+
+	* lib/documentmanagement/PhysicalDocumentManager.inc:
+
+	Remove outdated comments
+
+2004-11-26 12:48  nbm
+
+	* lib/: session/SiteMap.inc, browse/CategoryBrowser.inc,
+	  browse/DocumentTypeBrowser.inc, browse/FolderBrowser.inc:
+
+	Don't rely on register_globals for access to request variables.
+
+2004-11-26 09:27  nbm
+
+	* lib/util/ktutil.inc:
+
+	extractGPC moves specified request parameters to the global scope.
+
+2004-11-26 08:01  nbm
+
+	* graphics/widgets/: checkall.png, clearall.png:
+
+	Add checkall and clearall buttons
+
+2004-11-26 07:51  nbm
+
+	* config/dmsDefaults.php:
+
+	Autodetect paths and server name, and componentise and modernise the
+	initialisation process.
+
+2004-11-26 07:09  nbm
+
+	* control.php:
+
+	Fix up indentation and copious whitespace
+
+2004-11-23 00:13  michaeljoseph
+
+	* lib/System.inc:
+
+	Corrected folderHidingFlag typo
+
+	SF Patch:		1071308
+	Submitted by:	Adam Monsen (meonkeys)
+
+2004-11-22 05:25  nbm
+
+	* sql/mysql/install/tables.sql:
+
+	Update version information for new installs.
+
+2004-11-19 06:48  michaeljoseph
+
+	* sql/mysql/upgrade/: 1.2.3-to-1.2.4.sql, 1.2.4-to-1.2.5.sql:
+
+	Adding intermediate db upgrade scripts (just setting the version number)
+
+2004-11-18 06:43  nbm
+
+	*
+	  presentation/lookAndFeel/knowledgeTree/search/advancedSearchUI.inc:
+
+	Use getClearAllButton and getCheckAllButton instead of using directly.
+
+2004-11-18 06:42  nbm
+
+	*
+	  presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:
+
+	Translate the buttons properly.
+
+2004-11-18 06:40  nbm
+
+	*
+	  presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentUI.inc:
+
+	Hook up some words that slipped through.
+
+2004-11-18 06:36  nbm
+
+	* presentation/Html.inc:
+
+	Add getClearAllButton and getCheckAllButton
+
+2004-11-18 06:25  nbm
+
+	* lib/i18n/languageFunctions.inc:
+
+	Add English to the list of available locales.  Otherwise we'd skip past
+	an English preference to a lower-priority language.
+
+2004-11-18 06:24  nbm
+
+	* i18n/knowledgeTree.po:
+
+	Updated with new localisation hooks.
+
+2004-11-18 06:21  nbm
+
+	* bin/generate-buttons.php:
+
+	Generate Clear All and Check All buttons too.
+
+2004-11-18 05:16  nbm
+
+	* lib/visualpatterns/NavBar.inc:
+
+	Move the heading/logo to the left, and stylise a bit.
+
+2004-11-17 05:37  nbm
+
+	* presentation/webpageTemplate.inc:
+
+	Stop using absolute positioning for the contact images.
+
+2004-11-17 05:31  nbm
+
+	*
+	  presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:
+
+	Make the view layout less dependent on specific pixel sizes, and use
+	divs in place of merely table rows for some cases.
+
+2004-11-16 04:53  nbm
+
+	* lib/visualpatterns/PatternBrowsableSearchResults.inc:
+
+	Fix off-by-one in whether to display the 'Next' button.
+
+	SF Tracker:	1058334
+	Submitted by:	David Linsin (dlinsin) (bug report)
+
+2004-11-16 04:17  nbm
+
+	* lib/visualpatterns/PatternBrowsableSearchResults.inc:
+
+	Fix display problems when contentPaneScrolling is not used.
+
+	SF Tracker:	1064616
+	Submitted by:	Stefano Ciancio (sciancio)
+
+2004-11-16 03:52  nbm
+
+	* config/siteMap.inc,
+	  presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/editGroupUsersBL.php,
+	  presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/editGroupUsersUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/listGroupsUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/administration/usermanagement/editUserGroupsUI.inc:
+
+	Interface to quickly add/remove users from a chosen group.
+
+	SF tracker:	1064590
+	Submitted by:	Stefano Ciancio (sciancio)
+
+2004-11-16 03:35  nbm
+
+	* lib/security/Permission.inc:
+
+	Don't reference old iDocumentId or null document objects
+
+	SF tracker:	1066258
+	Submitted by:	Adam Monsen (meonkeys)
+
+2004-11-15 06:12  nbm
+
+	* graphics/icons/login.png, presentation/Html.inc:
+
+	Move from login.jpg to login.png
+
+2004-11-10 01:15  nbm
+
+	* config/siteMap.inc,
+	  presentation/lookAndFeel/knowledgeTree/administration/usermanagement/addUserToGroupBL.php,
+	  presentation/lookAndFeel/knowledgeTree/administration/usermanagement/addUserToGroupUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/administration/usermanagement/editUserGroupsBL.php,
+	  presentation/lookAndFeel/knowledgeTree/administration/usermanagement/editUserGroupsUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/administration/usermanagement/removeUserFromGroupBL.php,
+	  presentation/lookAndFeel/knowledgeTree/administration/usermanagement/removeUserFromGroupUI.inc:
+
+	Improve the User -> Group editing capability greatly.
+
+	SF Tracker:	1060116
+	Submitted by:	Stefano Ciancio (sciancio)
+
+2004-11-10 01:07  nbm
+
+	* presentation/lookAndFeel/knowledgeTree/js/OptionTransfer.js:
+
+	Add "Match" capability to the OptionTransfer code.
+
+	SF Tracker:	1060116
+	Submitted by:	Stefano Ciancio (sciancio)
+
+2004-11-10 00:37  nbm
+
+	* bin/generate-buttons.php:
+
+	Add login.png to the list of buttons to generate.
+
+2004-11-10 00:29  nbm
+
+	* lib/security/Permission.inc:
+
+	Replace left-over iFolderId references with oFolderId where iFolderId no
+	longer exists.
+
+	SF tracker:	1062969
+	Submitted by:	Stefano Ciancio (sciancio)
+
+2004-11-04 04:43  nbm
+
+	* config/environment.php:
+
+	Default to useAcceptLanguageHeader and not displaying the javascript
+	scrollbars.
+
+2004-11-04 04:28  nbm
+
+	* presentation/lookAndFeel/knowledgeTree/administration/:
+	  docfieldmanagement/addDocFieldUI.inc,
+	  groupmanagement/addGroupBL.php, usermanagement/removeUserUI.inc:
+
+	Standardise some translated text.
+
+2004-11-04 03:28  nbm
+
+	* presentation/login.php:
+
+	Remove Content-Type meta tag - already set in headers.
+
+2004-11-04 02:06  nbm
+
+	* lib/visualpatterns/PatternMainPage.inc:
+
+	Remove Content-Type meta tag - already set in header.
+
+	Also don't default value for bScroll, since it's overridden in the
+	constructor.
+
+2004-11-04 01:55  nbm
+
+	* lib/i18n/accept-to-gettext.inc:
+
+	Be wildly unfair, and if the character set hasn't been detected
+	properly, assume iso-8859-1.
+
+2004-11-03 10:18  nbm
+
+	* i18n/it_IT/graphics/widgets/: add.png, archive.png, assign.png,
+	  browse.png, cancel.png, checkin.png, checkout.png, delete.png,
+	  done.png, edit.png, email.png, expunge.png, move.png, new.png,
+	  remove.png, restore.png, search.png, select.png, update.png:
+
+	Italian version of form buttons.
+
+2004-11-03 08:34  nbm
+
+	* i18n/it_IT/LC_MESSAGES/: knowledgeTree.mo, knowledgeTree.po:
+
+	Add Italian translations performed by Andrea Toneguzzi and Emil Martini
+	at btz.it.
+
+	Manually added some extra words for buttons to be able to show off -
+	hopefully I didn't get it too wrong.
+
+	Thanks guys!
+
+2004-11-03 08:31  nbm
+
+	* i18n/knowledgeTree.po:
+
+	Update to reflect current state.
+
+2004-11-03 06:34  nbm
+
+	* graphics/widgets/add.gif, graphics/widgets/add.png,
+	  graphics/widgets/addcomment.gif, graphics/widgets/addcomment.png,
+	  graphics/widgets/approve.gif, graphics/widgets/approve.png,
+	  graphics/widgets/archive.gif, graphics/widgets/archive.png,
+	  graphics/widgets/assign.gif, graphics/widgets/assign.png,
+	  graphics/widgets/back.gif, graphics/widgets/back.png,
+	  graphics/widgets/begin.gif, graphics/widgets/begin.png,
+	  graphics/widgets/browse.gif, graphics/widgets/browse.png,
+	  graphics/widgets/cancel.gif, graphics/widgets/cancel.png,
+	  graphics/widgets/checkin.gif, graphics/widgets/checkin.png,
+	  graphics/widgets/checkout.gif, graphics/widgets/checkout.png,
+	  graphics/widgets/delete.gif, graphics/widgets/delete.png,
+	  graphics/widgets/done.gif, graphics/widgets/done.png,
+	  graphics/widgets/download.gif, graphics/widgets/download.png,
+	  graphics/widgets/edit.gif, graphics/widgets/edit.png,
+	  graphics/widgets/email.gif, graphics/widgets/email.png,
+	  graphics/widgets/expunge.gif, graphics/widgets/expunge.png,
+	  graphics/widgets/move.gif, graphics/widgets/move.png,
+	  graphics/widgets/movehere.gif, graphics/widgets/movehere.png,
+	  graphics/widgets/new.gif, graphics/widgets/new.png,
+	  graphics/widgets/next.gif, graphics/widgets/next.png,
+	  graphics/widgets/publish.gif, graphics/widgets/publish.png,
+	  graphics/widgets/reject.gif, graphics/widgets/reject.png,
+	  graphics/widgets/remove.gif, graphics/widgets/remove.png,
+	  graphics/widgets/reply.gif, graphics/widgets/reply.png,
+	  graphics/widgets/reset.gif, graphics/widgets/reset.png,
+	  graphics/widgets/restore.gif, graphics/widgets/restore.png,
+	  graphics/widgets/restorehere.gif,
+	  graphics/widgets/restorehere.png, graphics/widgets/search.gif,
+	  graphics/widgets/search.png, graphics/widgets/select.gif,
+	  graphics/widgets/select.png, graphics/widgets/submit.gif,
+	  graphics/widgets/submit.png, graphics/widgets/subscribe.gif,
+	  graphics/widgets/subscribe.png, graphics/widgets/unsubscribe.gif,
+	  graphics/widgets/unsubscribe.png, graphics/widgets/update.gif,
+	  graphics/widgets/update.png, graphics/widgets/updatePassword.gif,
+	  graphics/widgets/updatePassword.png, presentation/Html.inc:
+
+	Move to auto-generated PNG files from generate-button.php
+
+2004-11-03 06:10  nbm
+
+	* bin/generate-buttons.php:
+
+	A script that generates the Add/Back/Cancel/Next form buttons.  Can take
+	a locale, which will be used to get the correct wording in the buttons.
+
+2004-11-03 00:12  nbm
+
+	* docs/i18n.txt,
+	  lib/visualpatterns/PatternBrowsableSearchResults.inc,
+	  presentation/Html.inc, presentation/login.php,
+	  presentation/lookAndFeel/knowledgeTree/administration/adminUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/administration/doccheckoutmanagement/editDocCheckoutUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/addDocFieldSuccess.php,
+	  presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/addDocFieldUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/editDocFieldLookupsUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/editDocFieldUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/removeDocFieldUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/metadatamanagement/addMetaDataUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/metadatamanagement/editMetaDataUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/metadatamanagement/removeMetaDataUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/addDocTypeFieldsLinkUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/addDocTypeSuccess.php,
+	  presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/addDocTypeUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/editDocTypeFieldsUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/editDocTypeUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/removeDocTypeUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/administration/documentmanagement/archivedDocumentsUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/administration/documentmanagement/expungeDeletedDocumentsUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/administration/documentmanagement/listDeletedDocumentsUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/administration/documentmanagement/restoreDeletedDocumentsUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/addGroupUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/assignGroupToUnitUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/editGroupFail.php,
+	  presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/editGroupSuccess.php,
+	  presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/editGroupUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/editGroupUnitUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/removeGroupFail.php,
+	  presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/removeGroupFromUnitUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/removeGroupSuccess.php,
+	  presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/removeGroupUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/administration/linkmanagement/addLinkSuccess.php,
+	  presentation/lookAndFeel/knowledgeTree/administration/linkmanagement/addLinkUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/administration/linkmanagement/editLinkUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/administration/linkmanagement/removeLinkUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/administration/news/newsUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/administration/orgmanagement/addOrgSuccess.php,
+	  presentation/lookAndFeel/knowledgeTree/administration/orgmanagement/addOrgUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/administration/orgmanagement/editOrgUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/administration/orgmanagement/removeOrgUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/administration/rolemanagement/addRoleUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/administration/rolemanagement/editRoleSuccess.php,
+	  presentation/lookAndFeel/knowledgeTree/administration/rolemanagement/editRoleUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/administration/rolemanagement/removeRoleUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/administration/systemsettings/systemSettingsUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/addUnitToOrgUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/addUnitUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/editUnitOrgUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/editUnitUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/removeUnitFromOrgUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/removeUnitUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/administration/usermanagement/addUserToGroupUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/administration/usermanagement/addUserUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/administration/usermanagement/editUserGroupsUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/administration/usermanagement/editUserUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/administration/usermanagement/passwordManagementUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/administration/usermanagement/removeUserFromGroupUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/administration/usermanagement/removeUserUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/administration/websitemanagement/addWebsiteSuccess.php,
+	  presentation/lookAndFeel/knowledgeTree/administration/websitemanagement/addWebsiteUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/administration/websitemanagement/editWebsiteUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/administration/websitemanagement/removeWebsiteUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/discussions/addCommentUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/discussions/viewCommentUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/discussions/viewDiscussionUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentBL.php,
+	  presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentLinkUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/documentmanagement/browseUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/documentmanagement/checkInDocumentUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/documentmanagement/checkOutDocumentUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/documentmanagement/collaborationRollbackUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/documentmanagement/collaborationUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/documentmanagement/createDependantDocumentUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/documentmanagement/deleteDocumentUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/documentmanagement/documentUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/documentmanagement/downloadBL.php,
+	  presentation/lookAndFeel/knowledgeTree/documentmanagement/emailUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/documentmanagement/escalateDependantDocumentUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/documentmanagement/modifyGenericMetaDataUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/documentmanagement/modifySpecificMetaDataUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/documentmanagement/modifyUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/documentmanagement/moveDocumentUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/documentmanagement/removeDocumentLinkUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/documentmanagement/viewBL.php,
+	  presentation/lookAndFeel/knowledgeTree/documentmanagement/viewHistoryUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/documentmanagement/webDocumentUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/documentmanagement/archiving/archiveSettingsUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/documentmanagement/archiving/restoreArchivedDocumentUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/foldermanagement/addFolderBL.php,
+	  presentation/lookAndFeel/knowledgeTree/foldermanagement/addFolderCollaborationUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/foldermanagement/addFolderDocTypeUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/foldermanagement/addFolderUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/foldermanagement/collaborationUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/foldermanagement/deleteDependantDocumentUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/foldermanagement/deleteFolderCollaborationUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/foldermanagement/deleteFolderDocTypeUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/foldermanagement/deleteFolderUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/foldermanagement/editBL.php,
+	  presentation/lookAndFeel/knowledgeTree/foldermanagement/editUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/foldermanagement/groupFolderLinkUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/foldermanagement/modifyFolderDataUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/foldermanagement/viewDependantDocumentsUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/preferences/editUserPrefsUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/preferences/passwordManagementUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/search/advancedSearchUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/subscriptions/subscriptionUI.inc:
+
+	Replace direct image paths by getAddButton-style functions.
+
+2004-10-28 08:25  nbm
+
+	* presentation/lookAndFeel/knowledgeTree/: dashboardUI.inc,
+	  noAccess.php,
+	  administration/doccheckoutmanagement/editDocCheckoutBL.php,
+	  administration/docfieldmanagement/addDocFieldUI.inc,
+	  administration/docfieldmanagement/metadatamanagement/addMetaDataUI.inc,
+	  administration/documentmanagement/manageArchivedDocumentsBL.php,
+	  administration/groupmanagement/addGroupBL.php,
+	  administration/groupmanagement/removeGroupUI.inc,
+	  administration/linkmanagement/removeLinkUI.inc,
+	  administration/news/addNewsBL.php,
+	  administration/rolemanagement/removeRoleUI.inc,
+	  administration/unitmanagement/editUnitOrgUI.inc,
+	  administration/usermanagement/passwordManagementBL.php,
+	  administration/usermanagement/removeUserFromGroupUI.inc,
+	  administration/usermanagement/removeUserUI.inc,
+	  administration/websitemanagement/addWebsiteSuccess.php,
+	  administration/websitemanagement/addWebsiteUI.inc,
+	  administration/websitemanagement/editWebsiteBL.php,
+	  administration/websitemanagement/editWebsiteUI.inc,
+	  administration/websitemanagement/listWebsitesUI.inc,
+	  administration/websitemanagement/removeWebsiteBL.php,
+	  administration/websitemanagement/removeWebsiteUI.inc,
+	  discussions/addCommentBL.php, discussions/addCommentUI.inc,
+	  discussions/viewCommentBL.php, discussions/viewCommentUI.inc,
+	  discussions/viewDiscussionBL.php,
+	  discussions/viewDiscussionUI.inc,
+	  documentmanagement/addDocumentBL.php,
+	  documentmanagement/addDocumentLinkBL.php,
+	  documentmanagement/addDocumentLinkUI.inc,
+	  documentmanagement/addDocumentUI.inc,
+	  documentmanagement/browseUI.inc,
+	  documentmanagement/checkInDocumentBL.php,
+	  documentmanagement/checkInDocumentUI.inc,
+	  documentmanagement/checkOutDocumentBL.php,
+	  documentmanagement/checkOutDocumentUI.inc,
+	  documentmanagement/collaborationBL.php,
+	  documentmanagement/collaborationRollbackBL.php,
+	  documentmanagement/collaborationRollbackUI.inc,
+	  documentmanagement/collaborationUI.inc,
+	  documentmanagement/createDependantDocumentBL.php,
+	  documentmanagement/createDependantDocumentUI.inc,
+	  documentmanagement/deleteDocumentBL.php,
+	  documentmanagement/deleteDocumentUI.inc,
+	  documentmanagement/downloadBL.php,
+	  documentmanagement/emailBL.php, documentmanagement/emailUI.inc,
+	  documentmanagement/escalateDependantDocumentBL.php,
+	  documentmanagement/escalateDependantDocumentUI.inc,
+	  documentmanagement/modifyBL.php,
+	  documentmanagement/modifyGenericMetaDataUI.inc,
+	  documentmanagement/modifySpecificMetaDataUI.inc,
+	  documentmanagement/moveDocumentBL.php,
+	  documentmanagement/moveDocumentUI.inc,
+	  documentmanagement/removeDocumentLinkBL.php,
+	  documentmanagement/removeDocumentLinkUI.inc,
+	  documentmanagement/templateDocumentBrowseUI.inc,
+	  documentmanagement/viewBL.php,
+	  documentmanagement/viewHistoryBL.php,
+	  documentmanagement/viewHistoryUI.inc,
+	  documentmanagement/viewUI.inc,
+	  documentmanagement/webDocumentBL.php,
+	  documentmanagement/archiving/addArchiveSettingsBL.php,
+	  documentmanagement/archiving/archiveDocumentBL.php,
+	  documentmanagement/archiving/archiveSettingsUI.inc,
+	  documentmanagement/archiving/modifyArchiveSettingsBL.php,
+	  documentmanagement/archiving/restoreArchivedDocumentUI.inc,
+	  foldermanagement/addFolderBL.php,
+	  foldermanagement/addFolderCollaborationBL.php,
+	  foldermanagement/addFolderCollaborationUI.inc,
+	  foldermanagement/addFolderDocTypeBL.php,
+	  foldermanagement/addFolderDocTypeUI.inc,
+	  foldermanagement/addFolderUI.inc,
+	  foldermanagement/addGroupFolderLinkBL.php,
+	  foldermanagement/collaborationUI.inc,
+	  foldermanagement/deleteDependantDocumentBL.php,
+	  foldermanagement/deleteDependantDocumentUI.inc,
+	  foldermanagement/deleteFolderBL.php,
+	  foldermanagement/deleteFolderCollaborationBL.php,
+	  foldermanagement/deleteFolderCollaborationUI.inc,
+	  foldermanagement/deleteFolderDocTypeBL.php,
+	  foldermanagement/deleteFolderUI.inc,
+	  foldermanagement/deleteGroupFolderLinkBL.php,
+	  foldermanagement/editBL.php,
+	  foldermanagement/editGroupFolderLinkBL.php,
+	  foldermanagement/editUI.inc, foldermanagement/folderUI.inc,
+	  foldermanagement/groupFolderLinkUI.inc,
+	  foldermanagement/modifyFolderDataBL.php,
+	  foldermanagement/viewDependantDocumentsBL.php,
+	  foldermanagement/viewDependantDocumentsUI.inc,
+	  preferences/passwordManagementBL.php,
+	  search/advancedSearchBL.php, search/advancedSearchUI.inc,
+	  search/standardSearchUI.inc, subscriptions/addSubscriptionBL.php,
+	  subscriptions/manageSubscriptionsBL.php,
+	  subscriptions/removeSubscriptionBL.php,
+	  subscriptions/subscriptionUI.inc, subscriptions/viewAlertBL.php:
+
+	Another pass adding translation hooks.
+
+2004-10-28 02:03  michaeljoseph
+
+	* sql/mysql/install/user.sql:
+
+	Added SELECT privilege on document_text table for FileIndexer db user
+
+	Submitted by:   Alain Matsas
+
+2004-10-27 04:14  nbm
+
+	*
+	  presentation/lookAndFeel/knowledgeTree/documentmanagement/browseUI.inc:
+
+	Mark up new text for translation
+
+2004-10-26 05:52  nbm
+
+	* lib/visualpatterns/NavBar.inc:
+
+	Move navbar graphics under the navbar/ directory
+
+2004-10-26 05:52  nbm
+
+	* graphics/navbar/logout/: colour.gif, def.gif, norm.gif, over.gif,
+	  rest.gif, stretch.gif:
+
+	Move logout to navbar/
+
+2004-10-26 05:47  nbm
+
+	* graphics/navbar/help/: colour.gif, def.gif, norm.gif, over.gif,
+	  rest.gif, stretch.gif:
+
+	Move help to navbar/
+
+2004-10-26 05:41  nbm
+
+	* graphics/navbar/prefs/: colour.gif, def.gif, norm.gif, over.gif,
+	  rest.gif, stretch.gif:
+
+	Move prefs to navbar/
+
+2004-10-26 05:38  nbm
+
+	* graphics/navbar/asearch/: colour.gif, def.gif, norm.gif,
+	  over.gif, rest.gif, stretch.gif:
+
+	Move asearch to navbar/
+
+2004-10-26 05:33  nbm
+
+	* graphics/navbar/subscriptions/: colour.gif, def.gif, norm.gif,
+	  over.gif:
+
+	Move subscriptions to navbar/
+
+2004-10-26 05:30  nbm
+
+	* graphics/navbar/home/: colour.gif, def.gif, norm.gif, over.gif,
+	  rest.gif, stretch.gif:
+
+	Move home to navbar/
+
+2004-10-26 05:23  nbm
+
+	* graphics/navbar/admin/: colour.gif, def.gif, norm.gif, over.gif,
+	  rest.gif, stretch.gif:
+
+	Move admin to navbar/
+
+2004-10-26 05:13  nbm
+
+	* graphics/navbar/mdocs/: colour.gif, def.gif, norm.gif, over.gif,
+	  rest.gif, stretch.gif:
+
+	Move mdocs under navbar/
+
+2004-10-26 05:01  nbm
+
+	* lib/visualpatterns/PatternMainPage.inc:
+
+	Use UTF-8, not UTF8.
+
+2004-10-26 04:01  nbm
+
+	* lib/visualpatterns/NavBar.inc,
+	  presentation/lookAndFeel/knowledgeTree/stylesheet.php:
+
+	Default to using text menus rather than images, to ease translation.
+
+2004-10-12 13:23  nbm
+
+	* presentation/lookAndFeel/knowledgeTree/dashboardUI.inc:
+
+	Change capitalisation of ScrollingNews to scrollingNews to match
+	configuration.
+
+	SF tracker:	1045195
+	Submitted by:	Stefano Ciancio (sciancio)
+
+2004-10-11 07:45  nbm
+
+	*
+	  presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc:
+
+	Display docaction buttons using CSS and HTML by default.  Can still ask
+	for image buttons, if you so wish.
+
+2004-10-11 03:17  nbm
+
+	* graphics/widgets/dfolder_unit.gif,
+	  presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc:
+
+	Add a Unit Folder icon to distinguish unit root folders.
+
+	SF tracker:	1044466
+	Submitted by:	Stefano Ciancio (sciancio)
+
+2004-10-11 03:05  nbm
+
+	* lib/authentication/class.AuthLdap.php:
+
+	Add support for OpenLDAP2 servers that don't offer anonymous bind or
+	LDAPv2 bings.
+
+	SF tracker:	1025349
+	Submitted by:	daniel patrick
+
+2004-10-11 02:32  nbm
+
+	* presentation/lookAndFeel/knowledgeTree/:
+	  documentmanagement/browseBL.php, documentmanagement/browseUI.inc,
+	  documentmanagement/deleteDocumentBL.php,
+	  documentmanagement/deleteDocumentUI.inc,
+	  documentmanagement/moveDocumentBL.php,
+	  documentmanagement/moveDocumentUI.inc,
+	  documentmanagement/viewUI.inc, foldermanagement/folderUI.inc:
+
+	Allow the user to select multiple documents for deletion or moving.
+
+	Submitted by:	Stefano Ciancio <s.ciancio@pisa.iol.it>
+
+2004-10-08 02:55  nbm
+
+	* docs/RELEASE.txt:
+
+	Steps to perform for a KnowledgeTree release.
+
+2004-10-07 05:44  nbm
+
+	* presentation/lookAndFeel/knowledgeTree/stylesheet.php:
+
+	CSS necessary for text-based buttons
+
 Version 1.2.4 (2004/10/04)
 
 Features
