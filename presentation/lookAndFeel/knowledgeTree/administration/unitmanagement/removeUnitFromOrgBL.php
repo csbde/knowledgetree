@@ -47,7 +47,7 @@ if (checkSession()) {
 			}
 			   	    	   
 	    } else{
-	    	$oLink = UnitOrganisationLink::getLinkByUnitID($fUnitID);    	
+	    	$oLink = UnitOrganisationLink::getByUnitID($fUnitID);    	
 	    	
 	    	if($oLink){	    	
 		    	$oPatternCustom->addHtml(getRemoveUnitsPage($oLink));
