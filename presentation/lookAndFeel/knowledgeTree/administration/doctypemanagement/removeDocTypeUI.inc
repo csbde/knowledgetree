@@ -77,7 +77,7 @@ $sToRender .= "<td><b>Deletion Failed!</b></td>\n";
 $sToRender .= "</tr>\n";	
 $sToRender .= "<tr></tr>\n";
 $sToRender .= "<tr></tr>\n";
-$sToRender .= "<tr><td>Please Ensure that the Document Type have been Removed from the Fields it Belongs to</td></tr>\n";
+$sToRender .= "<tr><td>Please Ensure that the Document Type has been Removed from ALL Folders</td></tr>\n";
 $sToRender .= "<tr></tr>\n";
 $sToRender .= "</tr>\n";
 $sToRender .= "<tr><td align = right><a href=\"$default->rootUrl/control.php?action=removeDocType\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td></tr>\n";
