@@ -149,6 +149,14 @@ group_id INTEGER NOT NULL,
 unit_id INTEGER NOT NULL
 )TYPE = InnoDB;
 
+CREATE TABLE help (
+  id int(11) NOT NULL auto_increment,
+  fSection varchar(100) NOT NULL default '',
+  help_info text NOT NULL,
+  PRIMARY KEY  (id),
+  UNIQUE KEY id (id)
+) TYPE=InnoDB;
+
 CREATE TABLE links ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 name CHAR(100) NOT NULL,
@@ -891,4 +899,40 @@ INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default)
 INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default, is_enabled) VALUES ("scratchPad", "/tests/scratchPad.php", 8, 2, "scratch", 0, 0);
 INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default, is_enabled) VALUES ("sitemap", "/tests/session/SiteMap.php", 8, 2, "sitemap", 0, 0);
 INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default, is_enabled) VALUES ("documentBrowserTest", "/tests/documentmanagement/DocumentBrowser.php", 8, 2, "test the document browser", 0, 0);
+-- help pages
+INSERT INTO help VALUES (1,'browse','dochelp.htm');
+INSERT INTO help VALUES (2,'dashboard','dashboardHelp.htm');
+INSERT INTO help VALUES (3,'addFolder','addFolderHelp.htm');
+INSERT INTO help VALUES (4,'editFolder','editFolderHelp.htm');
+INSERT INTO help VALUES (5,'addFolderCollaboration','addFolderCollaborationHelp.htm');
+INSERT INTO help VALUES (6,'modifyFolderCollaboration','addFolderCollaborationHelp.htm');
+INSERT INTO help VALUES (7,'addDocument','addDocumentHelp.htm');
+INSERT INTO help VALUES (8,'viewDocument','viewDocumentHelp.htm');
+INSERT INTO help VALUES (9,'modifyDocument','modifyDocumentHelp.htm');
+INSERT INTO help VALUES (10,'modifyDocumentRouting','modifyDocumentRoutingHelp.htm');
+INSERT INTO help VALUES (11,'emailDocument','emailDocumentHelp.htm');
+INSERT INTO help VALUES (12,'deleteDocument','deleteDocumentHelp.htm');
+INSERT INTO help VALUES (13,'administration','administrationHelp.htm');
+INSERT INTO help VALUES (14,'addGroup','addGroupHelp.htm');
+INSERT INTO help VALUES (15,'editGroup','editGroupHelp.htm');
+INSERT INTO help VALUES (16,'removeGroup','removeGroupHelp.htm');
+INSERT INTO help VALUES (17,'assignGroupToUnit','assignGroupToUnitHelp.htm');
+INSERT INTO help VALUES (18,'removeGroupFromUnit','removeGroupFromUnitHelp.htm');
+INSERT INTO help VALUES (19,'addUnit','addUnitHelp.htm');
+INSERT INTO help VALUES (20,'editUnit','editUnitHelp.htm');
+INSERT INTO help VALUES (21,'removeUnit','removeUnitHelp.htm');
+INSERT INTO help VALUES (22,'addOrg','addOrgHelp.htm');
+INSERT INTO help VALUES (23,'editOrg','editOrgHelp.htm');
+INSERT INTO help VALUES (24,'removeOrg','removeOrgHelp.htm');
+INSERT INTO help VALUES (25,'addRole','addRoleHelp.htm');
+INSERT INTO help VALUES (26,'editRole','editRoleHelp.htm');
+INSERT INTO help VALUES (27,'removeRole','removeRoleHelp.htm');
+INSERT INTO help VALUES (28,'addLink','addLinkHelp.htm');
+INSERT INTO help VALUES (29,'addLinkSuccess','addLinkHelp.htm');
+INSERT INTO help VALUES (30,'editLink','editLinkHelp.htm');
+INSERT INTO help VALUES (31,'removeLink','removeLinkHelp.htm');
+INSERT INTO help VALUES (32,'systemAdministration','systemAdministrationHelp.htm');
+INSERT INTO help VALUES (33,'deleteFolder','deleteFolderHelp.htm');
+INSERT INTO help VALUES (34,'editDocType','editDocTypeHelp.htm');
+INSERT INTO help VALUES (35,'removeDocType','removeDocTypeHelp.htm');
 
