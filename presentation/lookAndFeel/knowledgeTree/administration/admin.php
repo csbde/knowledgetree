@@ -16,13 +16,19 @@ require_once("adminUI.inc");
 
 if(checkSession()) {
 	require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
-
-    $sCenter  = "<table width=\"600\">\n";
-    $sCenter .= renderHeading("Administration");
-    $sCenter .=	"<tr/><tr/><tr><td><b> Welcome to the Administration Section</b></td></tr>\n";
-    $sCenter .=	"<tr><td>Please make a selection from the sidemenu.</td></tr>\n";
-    $sCenter .=	"</table>";
-
+	
+	if (isset($sectionName)) {   
+	    $sCenter .= "<table width=\"600\">\n";
+	    if ($sectionName == "userAdministration") {
+	  		
+	  		$sCenter .= renderHeading("User Administration");
+	    }else if ($sectionName == "Administration"){
+	        $sCenter .= "<table width=\"600\">\n";
+	        $sCenter .= renderHeading("Administration");	        
+	    }
+	    $sCenter .=	"</table>\n";
+	}
+   	//$sCenter .= "<textarea cols=50 rows=50> $sCenter </textarea>";
 	$oPatternCustom = & new PatternCustom();
 	$oPatternCustom->setHtml($sCenter);
 	$main->setCentralPayload($oPatternCustom);

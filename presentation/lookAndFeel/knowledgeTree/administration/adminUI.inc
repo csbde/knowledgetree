@@ -3,7 +3,7 @@
 /**
  * Displays heading
  */
-function renderHeading($sHeading, $sSectionName = "") {
+function getHeading($sHeading, $sSectionName = "") {
     global $default;
     
     if ($sSectionName == "") {
@@ -15,5 +15,18 @@ function renderHeading($sHeading, $sSectionName = "") {
     $sToRender .= "<tr/>\n";
     $sToRender .= "<tr/>\n";
     return $sToRender;
+}
+
+function renderHeading($sHeading, $sSectionName = "") {
+	//global $default;
+	
+	
+    $sCenter .= getHeading($sHeading, $sSectionName);
+    if ($sHeading == "Administration"){
+	    $sCenter .=	"<tr/><tr/><tr><td><b> Welcome to the Administration Section</b></td></tr>\n";
+	    $sCenter .=	"<tr><td>Please make a selection from the sidemenu.</td></tr>\n";
+    }
+    
+    return $sCenter;	
 }
 ?>
