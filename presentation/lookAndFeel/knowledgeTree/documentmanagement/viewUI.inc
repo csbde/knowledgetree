@@ -387,7 +387,7 @@ function renderDocumentSection($sSectionName, $sHeadingText, $bDisplayLink, $iDo
 	if ($bDisplayLink) {
 		$sLink = generateControllerLink("viewDocument", "fDocumentID=$iDocumentID&fShowSection=$sSectionName", $sHeadingText);
 	} else {
-		$sLink = "<a href=\"javascript:void();\" onClick=\"switchDiv('$sSectionName', 'document');\">$sHeadingText</a>";
+		$sLink = "<a href=\"#\" onClick=\"switchDiv('$sSectionName', 'document');\">$sHeadingText</a>";
 	}
 	return "<tr bgcolor=\"" . getColour($iColour) . "\"><td width=\"100%\">$sLink</td></tr>\n";
 }
