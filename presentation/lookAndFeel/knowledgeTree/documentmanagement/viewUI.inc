@@ -428,7 +428,7 @@ function displayViewButton($oDocument, $bEdit) {
         if ($default->useTextButtons === false) {
     return "<tr><td align=\"left\"><a onClick=\"alert('$sViewAlert '); return true;\" href=\"" . generateControllerLink("downloadDocument", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/docactions/view.gif\" border=\"0\" title=\"" . _("View the document") . "\"/></a></td></tr>\n";
         } else {
-    return "<tr><td align=\"left\"><a onClick=\"alert('$sViewAlert '); return true;\" href=\"" . generateControllerLink("downloadDocument", "fDocumentID=" . $oDocument->getID()) . "\"><span class=\"button\" title=\"" . _("View the document") . "\">VIEW</span></a></td></tr>\n";
+    return "<a onClick=\"alert('$sViewAlert '); return true;\" href=\"" . generateControllerLink("downloadDocument", "fDocumentID=" . $oDocument->getID()) . "\"><span class=\"button\" title=\"" . _("View the document") . "\">VIEW</span></a>\n";
         }
 }
 
@@ -455,12 +455,12 @@ function displayCheckInOutButton($oDocument, $bEdit) {
     if (!$bEdit) {
     	$sDisabledText = _("You do not have write access to this document");
     }
-    return "<tr><td align=\"left\">"  . displayButton($sAction, $sQueryString, $sImageName, $sDisabledText) . "</td></tr>\n";    
+    return displayButton($sAction, $sQueryString, $sImageName, $sDisabledText);
 }
 
 function displayEmailButton($oDocument) {
 	global $default;
-	return "<tr><td align=\"left\">" . displayButton("emailDocument", "fDocumentID=" . $oDocument->getID(), "email") . "</td></tr>\n";
+	return displayButton("emailDocument", "fDocumentID=" . $oDocument->getID(), "email");
 }
 
 function displayDeleteButton($oDocument, $bEdit) {
@@ -472,12 +472,12 @@ function displayDeleteButton($oDocument, $bEdit) {
     } else {
     	$sDisabledText = _("You do not have write access to this document");
     }
-	return "<tr><td align=\"left\">"  . displayButton("deleteDocument", $sQueryString, "delete", $sDisabledText) . "</td></tr>\n";    
+	return displayButton("deleteDocument", $sQueryString, "delete", $sDisabledText);
 }
 
 function displayHistoryButton($oDocument) {
 	global $default;
-	return "<tr><td align=\"left\">" . displayButton("viewHistory", "fDocumentID=" . $oDocument->getID(), "history") . "</td></tr>\n";
+	return displayButton("viewHistory", "fDocumentID=" . $oDocument->getID(), "history");
 }	
 function displayMoveButton($oDocument, $bEdit) {
     if ($bEdit) {
@@ -493,7 +493,7 @@ function displayMoveButton($oDocument, $bEdit) {
     } else {
      	$sDisabledText = _("You do not have write access to this document");
     }
-	return "<tr><td align=\"left\">"  . displayButton("moveDocument", $sQueryString, "move", $sDisabledText) . "</td></tr>\n";
+	return displayButton("moveDocument", $sQueryString, "move", $sDisabledText);
 }
 
 function displaySubscriptionButton($oDocument) {
@@ -506,12 +506,12 @@ function displaySubscriptionButton($oDocument) {
 		$sAction = "addSubscription";
 		$sImageName = "subscribe";    	
     }
-	return "<tr><td align=\"left\">"  . displayButton($sAction, "fDocumentID=" . $oDocument->getID(), $sImageName) . "</td></tr>\n";    
+	return displayButton($sAction, "fDocumentID=" . $oDocument->getID(), $sImageName);
 }
 
 function displayDiscussionButton($oDocument, $bEdit) {
 	global $default;
-    return "<tr><td align=\"left\">" . displayButton("viewDiscussion", "fDocumentID=" . $oDocument->getID() . "&fForDiscussion=1", "discussion") . "</td></tr>\n";
+    return displayButton("viewDiscussion", "fDocumentID=" . $oDocument->getID() . "&fForDiscussion=1", "discussion");
 }
 	
 function displayArchiveButton($oDocument, $bEdit) {
@@ -531,12 +531,12 @@ function displayArchiveButton($oDocument, $bEdit) {
     } else {
      	$sDisabledText = _("You do not have write access to this document");
     }
-	return "<tr><td align=\"left\">"  . displayButton("archiveDocument", "fDocumentID=" . $oDocument->getID(), "archive", $sDisabledText) . "</td></tr>\n";	    
+	return displayButton("archiveDocument", "fDocumentID=" . $oDocument->getID(), "archive", $sDisabledText);
 }
 
 function displayDependantDocumentButton($oDocument, $bEdit) {
 	global $default;
-	return "<td align=\"left\">" . displayButton("createDependantDocument", "fDocumentID=" . $oDocument->getID(), "dependentdoc") . "</td>\n";	
+	return displayButton("createDependantDocument", "fDocumentID=" . $oDocument->getID(), "dependentdoc");
 }
 
 function displayPublishButton($oDocument, $bEdit) {
@@ -566,7 +566,7 @@ function displayPublishButton($oDocument, $bEdit) {
     		$sDisabledText = _("This document has been marked as pending publishing and the web publisher has been notified.");
     	}
     }
-	return "<tr><td align=\"left\">"  . displayButton("viewDocument", "fDocumentID=" . $oDocument->getID() . "&fForPublish=1", "publish", $sDisabledText) . "</td></tr>\n";    
+	return displayButton("viewDocument", "fDocumentID=" . $oDocument->getID() . "&fForPublish=1", "publish", $sDisabledText);
 }
 
 /**
@@ -590,11 +590,7 @@ function displayActionButtons($oDocument, $bEdit) {
 
 function renderSectionDiv($sDivName, $sHtml) {
 	global $default;
-	if ($default->bNN4) {	
-		return "<div id=\"$sDivName\" style=\"position:absolute;visibility:hidden;left:135px;\">$sHtml</div>";
-	} else {
-		return "<div id=\"$sDivName\" style=\"position:absolute;visibility:hidden;left:5px;\">$sHtml</div>";
-	}		
+	return "<div id=\"$sDivName\" style=\"visibility:hidden;position:absolute;top:5px;left:5px;\">$sHtml</div>";
 }
 
 function renderDocumentSection($sSectionName, $sHeadingText, $bDisplayLink, $iDocumentID) {	
@@ -603,18 +599,18 @@ function renderDocumentSection($sSectionName, $sHeadingText, $bDisplayLink, $iDo
 	} else {
 		$sLink = "<a href=\"#\" onClick=\"switchDiv('$sSectionName', 'document');\">$sHeadingText</a>";
 	}
-	return "<tr bgcolor=\"" . getColour($iColour) . "\"><td width=\"100%\">$sLink</td></tr>\n";
+	return '<span style="display:block; background-color:' . getColour($iColour) . '">' . $sLink . '</span>' . "\n";
 }
 	
 function getPage($oDocument, $bEdit, $sStatusMessage = "") {
     global $default;
    	  		
-	$sToRender = "<div id=\"headings\" style=\"position:relative;visibility:visible;top:2px;left:2px;\">";
     $sToRender .= renderHeading(_("Document Detail"));
     $sToRender .= renderDocumentPath($oDocument, true) . "\n\n";
 	$sToRender .= "<table cellspacing=\"0\" cellpadding=\"0\" id=\"headingTable\">";
 	$sToRender .= "<tr><td valign=\"top\">";	
 	$sToRender .= "<table border=\"0\" width=\"530\">";
+        $sToRender .= "<tr><td>";
 
 	// if we have a status message, then make the section links refresh to viewDocument with the fShowSection variable
 	// ie. effectively removes statusMessage on next click
@@ -626,19 +622,18 @@ function getPage($oDocument, $bEdit, $sStatusMessage = "") {
 	$sToRender .= renderDocumentSection("archiveSettings", _("Archive Settings"), $bDisplayLink, $oDocument->getID());
 	$sToRender .= renderDocumentSection("documentRouting", _("Document Routing"), $bDisplayLink, $oDocument->getID());
 	$sToRender .= renderDocumentSection("linkedDocuments", _("Linked Documents"), $bDisplayLink, $oDocument->getID());
-	$sToRender .= "</table>";		
-	$sToRender .= "</td><td>";
-    $sToRender .= "<table cellspacing=\"0\" cellpadding=\"0\">\n";
-	$sToRender .= displayActionButtons($oDocument, $bEdit);	    
-    $sToRender .= "</table>\n";
-	$sToRender .= "</td></tr>";
-	$sToRender .= "</table>";
-    $sToRender .= "</div>";
 
-	// ugly netscape hacks
-	if (!$default->bNN4) {
-		$sToRender .= "<div id=\"contentDiv\" style=\"position:relative;visibility:hidden;top:-80px;width:500px;\">";
-	}
+	$sToRender .= "</td></tr>";
+        $sToRender .= "</table>";
+	$sToRender .= '</td><td rowspan="2" valign="top">';
+        $sToRender .= "<table cellspacing=\"0\" cellpadding=\"0\">\n";
+	$sToRender .= displayActionButtons($oDocument, $bEdit);	    
+        $sToRender .= "</table>\n";
+	$sToRender .= "</td></tr>";
+
+        $sToRender .= "<tr><td>";
+
+        $sToRender .= '<div style="position:relative;">';
 	$sToRender .= renderSectionDiv("documentData", renderDocumentData($oDocument, $bEdit, $sStatusMessage));
     $sToRender .= renderSectionDiv("genericMetaData", renderGenericMetaData($oDocument, $bEdit));
    	$sToRender .= renderSectionDiv("typeSpecificMetaData", renderTypeSpecificMetaData($oDocument, $bEdit));
@@ -650,9 +645,23 @@ function getPage($oDocument, $bEdit, $sStatusMessage = "") {
     	$sToRender .= renderSectionDiv("documentRouting", renderNonEditableDocumentRouting($oDocument));
     	$sToRender .= renderSectionDiv("linkedDocuments", renderNonEditableLinkedDocuments($oDocument, $bEdit) . renderDependantDocuments($oDocument, $bEdit));
     }
-	if (!$default->bNN4) {
-		$sToRender .= "</div>";
-	}    
+        $sToRender .= "<br />";
+        $sToRender .= "<br />";
+        $sToRender .= "<br />";
+        $sToRender .= "<br />";
+        $sToRender .= "<br />";
+        $sToRender .= "<br />";
+        $sToRender .= "<br />";
+        $sToRender .= "<br />";
+        $sToRender .= "<br />";
+        $sToRender .= "<br />";
+        $sToRender .= "<br />";
+        $sToRender .= "<br />";
+        $sToRender .= "<br />";
+        $sToRender .= "<br />";
+        $sToRender .= "</div>";
+    $sToRender .= "</td></tr>";
+    $sToRender .= "</table>";
     return $sToRender;	
 }
 
