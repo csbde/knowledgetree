@@ -11,7 +11,6 @@
 $default->phpSniff = new phpSniff($_SERVER["HTTP_USER_AGENT"]);
 $default->browser = $default->phpSniff->property("browser");
 $default->version = $default->phpSniff->property("version");
-$default->log->info("browser=" . $default->browser . "; version=" . $default->version);
 $default->bNN4 = ($default->browser == "ns") && ($default->phpSniff->property("maj_ver") == "4");
 
 if ($default->browser == "ie") {
