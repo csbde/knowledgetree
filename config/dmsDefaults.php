@@ -180,12 +180,12 @@ $default->siteMap->addPage("addFolderCollaboration", "/presentation/lookAndFeel/
 $default->siteMap->addPage("deleteFolderCollaboration", "/presentation/lookAndFeel/knowledgeTree/foldermanagement/deleteFolderCollaborationBL.php", "Manage Documents", User, "", false);
 
 // pages for administration section
-$default->siteMap->addDefaultPage("administration", "/admin.php", "Administration", UnitAdmin, "Administration");
-$default->siteMap->addPage("userManagement", "/admin.php?sectionName=userAdministration", "Administration", UnitAdmin, "User Management");
-$default->siteMap->addPage("groupManagement", "/admin.php?sectionName=groupAdministration", "Administration", UnitAdmin, "Group Management");
-$default->siteMap->addPage("unitManagement", "/admin.php?sectionName=unitAdministration", "Administration", SysAdmin, "Unit Management");
-$default->siteMap->addPage("orgManagement", "/admin.php?sectionName=orgAdministration", "Administration", SysAdmin, "Organisation Management");
-$default->siteMap->addPage("roleManagement", "/admin.php?sectionName=roleAdministration", "Administration", SysAdmin, "Role Management");
+$default->siteMap->addDefaultPage("administration", "/presentation/lookAndFeel/knowledgeTree/administration/admin.php", "Administration", UnitAdmin, "Administration");
+$default->siteMap->addPage("userManagement", "/presentation/lookAndFeel/knowledgeTree/administration/admin.php?sectionName=userAdministration", "Administration", UnitAdmin, "User Management");
+$default->siteMap->addPage("groupManagement", "/presentation/lookAndFeel/knowledgeTree/administration/admin.php?sectionName=groupAdministration", "Administration", UnitAdmin, "Group Management");
+$default->siteMap->addPage("unitManagement", "/presentation/lookAndFeel/knowledgeTree/administration/admin.php?sectionName=unitAdministration", "Administration", SysAdmin, "Unit Management");
+$default->siteMap->addPage("orgManagement", "/presentation/lookAndFeel/knowledgeTree/administration/admin.php?sectionName=orgAdministration", "Administration", SysAdmin, "Organisation Management");
+$default->siteMap->addPage("roleManagement", "/presentation/lookAndFeel/knowledgeTree/administration/admin.php?sectionName=roleAdministration", "Administration", SysAdmin, "Role Management");
 $default->siteMap->addPage("systemAdministration", "/presentation/lookAndFeel/knowledgeTree/administration/systemsettings/systemSettingsBL.php", "Administration", SysAdmin, "System Settings");
 
 /////////// pages for administration section
@@ -218,7 +218,8 @@ $default->siteMap->addPage("editUser", "/tests/groups/adduser.php", "UserAdminis
 $default->siteMap->addPage("removeUser", "/tests/groups/adduser.php", "UserAdministration", UnitAdmin, "Remove User from System");
 $default->siteMap->addPage("addUsersToGroup", "/tests/groups/adduser.php", "UserAdministration", UnitAdmin, "Add User to A Group");
 
-//$default->siteMap->addPage("systemSettings", "/presentation/lookAndFeel/knowledgeTree/administration/systemsettings/systemSettingsBL.php", "systemAdministration", SysAdmin, "System Settings");
+//rolemanagement
+$default->siteMap->addPage("addRole", "/presentation/lookAndFeel/knowledgeTree/administration/rolemanagement/addRoleBL.php", "roleAdministration", SysAdmin, "Add New Role");
 
 /////// pages for subscriptions section
 $default->siteMap->addDefaultPage("subscriptions", "/subscriptions.php", "Subscriptions", Guest, "SubScriptions", false);
