@@ -856,7 +856,13 @@ INSERT INTO folders (name, description, parent_id, creator_id, unit_id, is_publi
 INSERT INTO folders (name, description, parent_id, creator_id, unit_id, is_public)
              VALUES ("Burden of Disease", "Burden of Disease Unit Root Folder", 1, 1, 4, 0);  -- id=5
              -- unit admins have write access
-             INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (5, 5, 0, 1);             
+             INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (5, 5, 0, 1);
+
+-- link the folders to document types
+INSERT INTO folder_doctypes_link (document_type_id, folder_id)
+	SELECT	F.id, DTL.id
+	FROM	folders AS F, document_types_lookup AS DTL;
+             
              
 -- TODO: populate categories_lookup
 
