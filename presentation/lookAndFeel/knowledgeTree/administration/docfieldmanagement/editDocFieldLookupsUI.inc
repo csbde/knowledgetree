@@ -83,7 +83,7 @@ function getGroupPage($fDocFieldID) {
 	$sTableTag .= "<table width=100% border=0 cellspacing=0>";
 	$sBgColor = "#F5F6EE";
 	
-    $sToRender .= renderHeading("Edit Docuemnt Field Lookups");
+    $sToRender .= renderHeading("Edit Document Field Lookups");
 	
     $sToRender .= "<table width=\"600\" border=0>";
     $sToRender .= "<tr><td width=100%><br><b>Field Name: &nbsp;</b>" . $oDocField->getName() . "<br><br></td><td>";
