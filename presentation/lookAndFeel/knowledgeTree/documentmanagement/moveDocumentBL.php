@@ -32,7 +32,7 @@ if (checkSession()) {
 				$sOldDocumentFileSystemPath = Folder::getFolderPath($iOldFolderID) . $oDocument->getFileName();
 				//put the document in the new folder
 				$oDocument->setFolderID($fFolderID);
-				if ($oDocument->update()) {					
+				if ($oDocument->update(true)) {					
 					//get the new document path
 					$sNewDocumentFileSystemPath = Folder::getFolderPath($oDocument->getFolderID()) . $oDocument->getFileName();
 					//move the document on the file system
