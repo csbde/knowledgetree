@@ -143,17 +143,22 @@ $default->siteMap->addPage("logout", "/presentation/logout.php", "General", "Ano
 $default->siteMap->addPage("dashboard", "/presentation/dashboardBL.php", "General", "Unit Administrators", "dashboard");
 
 //pages for manage documents section
-$default->siteMap->addDefaultPage("browse", "/presentation/documentmanagement/browseBL.php?fBrowseType=folder", "Manage Documents", "Anonymous", "browse documents");
-$default->siteMap->addPage("addFolder", "/presentation/documentmanagement/addFolder.php", "Manage Documents", "Unit Administrators", "add a folder");
-$default->siteMap->addPage("viewDocument", "/presentation/documentmanagement/viewDocumentBL.php", "Manage Documents", "Anonymous", "view document details");
+//$default->siteMap->addDefaultPage("browse", "/presentation/documentmanagement/browseBL.php", "Manage Documents", "Anonymous", "browse documents");
+$default->siteMap->addDefaultPage("browse", "/manage.php", "Manage Documents", "Anonymous", "Manage documents");
+$default->siteMap->addPage("addDocument", "/presentation/documentmanagement/addDocument.php", "Manage Documents", "Anonymous", "Add A Document");
+$default->siteMap->addPage("addFolder", "/presentation/documentmanagement/addFolder.php", "Manage Documents", "Unit Administrators", "Add A Folder");
+$default->siteMap->addPage("modifyFolderProperties", "/presentation/documentmanagement/modifyFolder.php", "Manage Documents", "Unit Administrators", "Modify Folder Properties");
+$default->siteMap->addPage("deleteFolder", "/presentation/documentmanagement/deleteFolder.php", "Manage Documents", "Unit Administrators", "Delete A Folder");
+$default->siteMap->addPage("moveFolder", "/presentation/documentmanagement/moveFolder.php", "Manage Documents", "Unit Administrators", "Move A Folder");
+
 
 // pages for administration section
-$default->siteMap->addDefaultPage("addUser", "/presentation/addUser.php", "Administration", "Unit Administrators", "add user");
-$default->siteMap->addPage("addUnit", "/presentation/addUnit.php", "Administration", "Unit Administrators", "add unit");
-$default->siteMap->addPage("addOrganisation", "/presentation/addOrganisation.php", "Administration", "System Administrators", "add organisation");
+$default->siteMap->addDefaultPage("administration", "/admin.php", "Administration", "Unit Administrators", "Administration");
+$default->siteMap->addPage("unitAdministration", "/presentation/unitAdmin.php", "Administration", "Unit Administrators", "Unit Administration");
+$default->siteMap->addPage("systemAdministration", "/presentation/sysAdmin.php", "Administration", "System Administrators", "System Administration");
 
 // pages for advanced search section
-//$default->siteMap->addDefaultPage("search", "/manage.php", "Advanced Search", "Anonymous");
+$default->siteMap->addDefaultPage("advancedSearch", "/search.php", "Advanced Search", "Anonymous", "Advanced Search");
 
 // pages for prefs section
 $default->siteMap->addDefaultPage("preferences", "/preferences.php", "Preferences", "Anonymous", "Preferences");
@@ -161,10 +166,10 @@ $default->siteMap->addPage("viewPreferences", "/preferences.php", "Preferences",
 $default->siteMap->addPage("editPreferences", "/preferences.php", "Preferences", "Anonymous", "Edit Preferences");
 
 // pages for Help section
-//$default->siteMap->addDefaultPage("help", "/manage2.php", "Help", "Anonymous");
+$default->siteMap->addDefaultPage("help", "/help.php", "Help", "Anonymous", "Help");
 
 // pages for logout section section
-//$default->siteMap->addDefaultPage("logout", "/manage3.php", "Logout", "Anonymous");
+$default->siteMap->addDefaultPage("logout", "/presentation/logout.php", "Logout", "Anonymous", "Logout");
 
 
 // test pages
