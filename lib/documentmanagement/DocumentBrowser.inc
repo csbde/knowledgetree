@@ -53,9 +53,13 @@ class DocumentBrowser {
                
                 // now lookup the folderID
                 $folderID = lookupID($default->owl_folders_table, "name", $unitRootFolderName);
-                $default->log->info("DocumentBrowser::browseByFolder looked up unit root folderID=$folderID; unit root foldername=$unitRootFolderName");                    
+                if (!$folderID) {
+                    // no folder exists with this name, so start at the root
+                    $folderID = lookupID($default->owl_folders_table, "parent_id", 0);
+                }
             } else {
                 // else just start at the root
+                // FIXME: start at the root folder for the default organisation
                 $folderID = lookupID($default->owl_folders_table, "parent_id", 0);
                 $default->log->info("DocumentBrowser::browseByFolder: starting at docroot folderID=$folderID");
              }
