@@ -42,7 +42,8 @@ if (checkSession()) {
         // TODO: this is a function of the sitemap
         // get list of sections
         $aTopMenuLinks = array(generateControllerUrl("dashboard"), generateControllerUrl("browse"), generateControllerUrl("subscriptions"),
-                               generateControllerUrl("search"), generateControllerUrl("administration"), generateControllerUrl("preferences"), generateControllerUrl("help"));
+                               generateControllerUrl("search"), generateControllerUrl("administration"), generateControllerUrl("preferences"),
+                               generateControllerUrl("help"), generateControllerUrl("logout"));
         $aTopMenuText = array("Dashboard", "Browse Documents", "Subscriptions", "Advanced Search", "Administration", "Preferences", "Help", "Logout");
         $aTopMenuImages = array("$default->owl_graphics_url/dashboard.jpg", "$default->owl_graphics_url/browse.jpg",
                                 "$default->owl_graphics_url/subscriptions.jpg", "$default->owl_graphics_url/search.jpg",
