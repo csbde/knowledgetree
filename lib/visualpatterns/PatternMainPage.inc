@@ -77,7 +77,7 @@ class PatternMainPage {
 							PatternMainPage::getNumberStringValidationJavaScript() . "\n" .
 							"</head>\n" .
 							"<body>\n" .
-							"<form id=\"MainForm\" " . (isset($this->sFormEncType) ? "enctype=\"$this->sFormEncType\" " : " ") . " action=\"".$this->sFormAction."\" method=\"POST\">\n" .
+							"<form name=\"MainForm\" " . (isset($this->sFormEncType) ? "enctype=\"$this->sFormEncType\" " : " ") . " action=\"".$this->sFormAction."\" method=\"POST\">\n" .
 								"<table border=\"1\" width=\"600\" height=\"600\">\n " .
 									"<tr height=\"18%\">\n".
 										"<td width=\"5%\">\n";
