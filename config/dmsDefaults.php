@@ -10,7 +10,7 @@
  */
 
 // include the environment settings
-require_once("myEnvironment.php");
+require_once("environment.php");
 
 //****************************************************
 // Pick your language system default language
