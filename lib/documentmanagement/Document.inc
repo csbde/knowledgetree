@@ -393,6 +393,23 @@ class Document {
             return false;
         }
     }
+    
+	/**
+     * Get the full path for a document as an array
+     * 
+     * @param int primary key of document to generate path for	
+     *
+     * @return array full path of document as an array
+     */
+    function getDocumentPathAsArray($iDocumentID) {
+		global $default;
+        // get the path of the folder as an array
+        $aPathArray = Folder::getFolderPathAsArray($this->iFolderID);
+        // add the document to the path
+        $aPathArray[] = $this->sName;
+        $default->log->debug("Document::getDocumentPathAsArray path=" . arrayToString($aPathArray));
+		return $aPathArray;
+    }    
 }
 
 ?>
