@@ -5,7 +5,8 @@ function setActionAndSubmit(newAction) {
 
 function setActionAndSubmitAsGet(newAction) {	
     document.MainForm.action = newAction;
-	document.MainForm.method = "GET";
+	document.MainForm.method = 'GET';
+	alert(document.MainForm.action);
     document.MainForm.submit();
 }
 
@@ -25,11 +26,14 @@ function isEmailAddr(email)
 
 function validRequired(formField,fieldLabel)
 {
-	var result = true;
-	
+	var result = true;	
 	if (formField.value.length == 0)
 	{
-		alert('Please enter a value for the "' + fieldLabel +'" field.');
+		if (fieldLabel == "selected") {
+			alert('Please enter a value for the ' + fieldLabel +' field.');
+		} else {
+			alert('Please enter a value for the "' + fieldLabel +'" field.');
+		}
 		formField.focus();
 		result = false;
 	}	
