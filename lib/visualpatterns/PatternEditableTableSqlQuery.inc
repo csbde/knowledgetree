@@ -116,6 +116,11 @@ class PatternEditableTableSqlQuery {
 				$sToRender .= "<input type=\"hidden\" name=\"unique_start_" . $this->sUniqueName . $iRowCount . "\" value=\"\" />\n";
 				$sToRender .= "<input type=\"hidden\" name=\"" . $this->sUniqueName . "_" . $iRowCount . "\" value=\"" . $sql->f("id") . "\" />\n";
 				$sToRender .= "<input type=\"hidden\" name=\"" . $this->sUniqueName . "_" . $iRowCount . "_tn\" value=\"" . $this->sTableName . "\" />\n";
+                
+                // check for is_mandatory field validation
+                if ($sql->f("is_mandatory") == "1") {
+                    $aRequiredVariables[]["formName"] = $this->sUniqueName . "_" . $iRowCount . (count($this->aStoreColumnNames)-1) . "_value";
+                }                
 				for ($i = 0; $i < count($this->aStoreColumnNames); $i++) {					
 					if (isset($this->aRequiredColumnNames)) {
 						for ($k = 0; $k < count($this->aRequiredColumnNames); $k++) {
@@ -197,7 +202,7 @@ class PatternEditableTableSqlQuery {
 			}
 		}
 		$sToRender .= "</table>";
-		if (isset($this->aRequiredColumnNames)) {
+		if (isset($aRequiredVariables)) {
 			$sToRender .= $this->generateRequiredFieldValidation($aRequiredVariables);
 		}
 		return $sToRender;
