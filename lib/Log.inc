@@ -24,23 +24,44 @@ class Log {
      * this error level and higher
      */
     var $minimumLoggingLevel = INFO;
-    
+
+    /**
+     * The directory to save logs to
+     */
+    var $logDirectory;
+
     /**
      * The file to log the output to
      */
     var $logFile;
-    
+
     /**
      * Default constructor
      *
      * @param string the path to the logfile to write to
      * @param int the desired level to log at
      */
-    function Log($logFile, $logLevel = INFO) {
-        $this->logFile = $logFile;
+    function Log($logDirectory, $logLevel = INFO) {
+        $this->logDirectory = $logDirectory;
         $this->minimumLoggingLevel = $logLevel;
+        $this->initialiseLogFile();
     }
-    
+
+
+    /**
+     * Creates the log file from the current datetime
+     */
+    function initialiseLogFile() {
+        if (!file_exists($this->logDirectory)) {
+            mkdir($this->logDirectory, "0700");
+        }
+            
+        $this->logFile = $this->logDirectory . "/log-" . date("d-m-Y") . ".txt";
+        if (!file_exists($this->logFile)) {
+            touch($this->logFile);
+        }
+    }
+
     /**
      * Log a debug entry
      *
@@ -49,7 +70,7 @@ class Log {
     function debug($logEntry) {
         $this->writeLog($this->prefixEntry($logEntry, "DEBUG"), DEBUG);
     }
-    
+
     /**
      * Log an info entry
      *
@@ -58,24 +79,24 @@ class Log {
     function info($logEntry) {
         $this->writeLog($this->prefixEntry($logEntry, " INFO"), INFO);
     }
-    
+
     /**
      * Log an error entry
      *
      * @param string the message to write to the log file
-     */    
+     */
     function error($logEntry) {
         $this->writeLog($this->prefixEntry($logEntry, "ERROR"), ERROR);
     }
-    
+
     /**
      * Writes to the log file, checking that the log level is within
      * the minimum logging level
      *
      * @param string the message to write to the log file
      * @param int the error level to log at
-     */    
-    function writeLog($logEntry, $logLevel) {        
+     */
+    function writeLog($logEntry, $logLevel) {
         if ($logLevel >= $this->minimumLoggingLevel) {
             if ($fp = fopen($this->logFile, "a")) {
                 fwrite($fp, $logEntry);
@@ -83,7 +104,7 @@ class Log {
             fclose($fp);
         }
     }
-    
+
     /**
      * Prefixes the log entry with the current date time, the logging level
      * and the page that called it
@@ -92,7 +113,7 @@ class Log {
      * @param int the error level to log at     
      */
     function prefixEntry($logEntry, $logLevel) {
-       return getCurrentDateTime() . ":$logLevel: $logEntry\n";
-    }      
+        return getCurrentDateTime() . ":$logLevel: $logEntry\n";
+    }
 }
 ?>
