@@ -173,16 +173,18 @@ function renderNonEditableDocumentRouting($oDocument) {
 
 function renderDocumentArchiveSettings($oDocument) {
     global $default;
-    $sQuery = "SELECT d.id, expiration_date, utilisation_threshold, 'Edit' as edit FROM $default->owl_archive_settings_table AS a " .
-			  "INNER JOIN $default->owl_documents_table as d on a.document_id=d.id " .
+    $sQuery = "SELECT d.id, atl.name, 'Edit' AS edit FROM $default->owl_document_archiving_table AS da " .
+    		  "INNER JOIN $default->owl_archiving_type_lookup_table AS atl ON da.archiving_type_id=atl.id " .
+			  "INNER JOIN $default->owl_documents_table AS d ON da.document_id=d.id " .
 			  "WHERE d.id = " . $oDocument->getID();
     
-    $aColumns = array("expiration_date", "utilisation_threshold", "edit");
-    $aColumnHeaders = array("Expiration Date", "Utilisation Threshold");
-    $aColumnTypes = array(1,1,3);
+    $aColumns = array("name", "edit");
+    $aColumnHeaders = array("Archiving Type");
+    $aColumnTypes = array(1,3);
     $aDBColumnArray = array("id");
     $aQueryStringVariableNames = array("fDocumentID");
-    $oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaders, "90%", "$default->rootUrl/control.php?action=modifyDocumentArchiveSettings",$aDBColumnArray,$aQueryStringVariableNames);
+    $aLinkURLs = array(1=>"$default->rootUrl/control.php?action=modifyDocumentArchiveSettings");
+    $oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaders, "90%", $aLinkURLs ,$aDBColumnArray,$aQueryStringVariableNames);
     $oPatternTableSqlQuery->setTableHeading("Archiving Settings");
     $oPatternTableSqlQuery->setEmptyTableMessage("No archiving settings");
     $oPatternTableSqlQuery->setDisplayColumnHeadings(true);
@@ -219,7 +221,7 @@ function displayActionButtons($oDocument, $bEdit) {
     }
     $sToRender .= "<td><a onClick=\"alert('This will download a copy of the document and is not the same as Checking Out a document- changes to this downloaded file will not be managed in the DMS.'); return true;\" href=\"" . generateControllerLink("viewDocument", "fDocumentID=" . $oDocument->getID() . "&fForDownload=1") . "\"><img src=\"$default->graphicsUrl/widgets/download.gif\" border=\"0\" /></a></td>\n";    
     $sToRender .= "<td><a href=\"" . generateControllerLink("viewDiscussion", "fDocumentID=" . $oDocument->getID() . "&fForDiscussion=1") . "\"><img src=\"$default->graphicsUrl/widgets/discussion.gif\" border=\"0\" /></a></td>\n";
-    //$sToRender .= "<td><a href=\"" . generateControllerLink("archiveDocument", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/archive.gif\" border=\"0\" /></a></td>\n";
+    $sToRender .= "<td><a href=\"" . generateControllerLink("archiveDocument", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/archive.gif\" border=\"0\" /></a></td>\n";
     			
     return $sToRender;
 }
@@ -264,19 +266,18 @@ function getEditPage($oDocument) {
     $sToRender .= "<td valign=top>\n";
     
     $sToRender .= "\t<table border=\"0\">\n";
-    /*
+    
     $sToRender .= "\t<tr>\n";
     $sToRender .= "\t\t<td>" . renderDocumentArchiveSettings($oDocument) . "</td>\n";
     $sToRender .= "\t</tr>";
     // if there are no archiving settings then allow their addition
-    $oArchiveSettings = ArchiveSettings::getFromDocumentID($iDocumentID);
-    if (!$oArchiveSettings) {
+    $oDocumentArchiving = DocumentArchiving::getFromDocumentID($iDocumentID);
+    if (!$oDocumentArchiving) {
     	$sToRender .= "\t<tr>\n";
-		$sToRender .= "\t\t<td><a href=\"$default->rootUrl/control.php?action=modifyDocumentArchiveSettings&fDocumentID=$iDocumentID\"><img src=\"$default->graphicsUrl/widgets/edit.gif\" border=\"0\"/></a></td>\n";
+		$sToRender .= "\t\t<td><a href=\"$default->rootUrl/control.php?action=addDocumentArchiveSettings&fDocumentID=$iDocumentID\"><img src=\"$default->graphicsUrl/widgets/add.gif\" border=\"0\"/></a></td>\n";
 		$sToRender .= "\t</tr>";
     }
-    */
-    
+
     $sToRender .= "\t<tr>\n";
     $sToRender .= "\t\t<td>" . renderEditableDocumentRouting($oDocument) . "</td>\n";
     $sToRender .= "\t</tr>";    
