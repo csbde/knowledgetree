@@ -20,13 +20,29 @@ require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
  */
 class DocumentBrowser {
     
+    var $aSortCriteria = array ( "name"       		=> array ("display" => "Title"), 	
+	 						 	 "filename"   		=> array ("display" => "Filename"),
+							 	 "creator_id" 		=> array ("display" => "Creator", 
+							 	 						      "lookup"  => array ("lookupTable" => "users",
+							 	 										   		  "lookupField" => "name")),
+								 "modified"         => array ("display" => "Modified"),
+								 "document_type_id" => array ("display" => "Document Type",
+							 	 						      "lookup"  => array ("lookupTable" => "document_types_lookup",
+							 	 										   		  "lookupField" => "name")) );
+	/**
+	 * Returns the document sort criteria
+	 */					
+	function getSortCriteria() {
+		return $this->aSortCriteria;
+	}
+								 	  
     /**
      * Browse the documents by folder
      *
      * @param int the folder to browse from
      * @return array folders and documents
      */
-    function browseByFolder($folderID = -1) {
+    function browseByFolder($folderID = -1, $sSortField = "name", $sSortDirection = "asc") {
         global $default;
 
         // instantiate and initialise
@@ -44,8 +60,7 @@ class DocumentBrowser {
                 // if the user is in a unit, start at the unit's root folder
                 
                 // lookup the unit name
-                $unitName = lookupField($default->owl_units_table, "name", "id", $unitID);
-                $default->log->debug("DocumentBrowser::browseByFolder: unitID=$unitID; unitName=$unitName");               
+                $unitName = lookupField($default->owl_units_table, "name", "id", $unitID);             
 
                 // the unit root folder has the same name as the unit
                 // FIXME: dodgy i know, but its easy
@@ -64,10 +79,7 @@ class DocumentBrowser {
                 // else just start at the root
                 // FIXME: start at the root folder for the default organisation
                 $folderID = lookupID($default->owl_folders_table, "parent_id", 0);
-                $default->log->info("DocumentBrowser::browseByFolder: starting at docroot folderID=$folderID");
              }
-        } else {
-            $default->log->info("DocumentBrowser::browseByFolder starting at passed in folderID=$folderID");
         }
         
         $default->log->debug("DocumentBrowser::browseByFolder: folderID=$folderID");
@@ -88,7 +100,17 @@ class DocumentBrowser {
             }
             
             // create query to retrieve documents in this folder
-            $documentQuery = "SELECT id FROM $default->owl_documents_table WHERE folder_id=$folderID ORDER BY name ASC";
+            $documentQuery  = "SELECT d.id as id FROM $default->owl_documents_table d ";                       
+            if ( isset($this->aSortCriteria[$sSortField]["lookup"]) ) {
+            	$documentQuery .= "INNER JOIN " .  $this->aSortCriteria[$sSortField]["lookup"]["lookupTable"] . " lt ON d.$sSortField=lt.id ";
+            }            
+            $documentQuery .= "WHERE d.folder_id=$folderID ";            
+			if ( isset($this->aSortCriteria[$sSortField]["lookup"]) ) {
+            	$documentQuery .= "ORDER BY lt." . $this->aSortCriteria[$sSortField]["lookup"]["lookupField"] . " $sSortDirection";
+            } else {
+            	$documentQuery .= "ORDER BY $sSortField $sSortDirection";
+            }
+            
             // initialise access flag;
             $results["accessDenied"] = false;
             if ($sql->query($documentQuery)) {
@@ -118,7 +140,7 @@ class DocumentBrowser {
      *
      * @param string the category to browse
      */    
-    function browseByCategory($category = "") {
+    function browseByCategory($category = "", $sSortField = "name", $sSortDirection = "asc") {
         global $default;
         
         // TODO: add this to default inserts
@@ -149,13 +171,20 @@ class DocumentBrowser {
         } else {
             $results["categories"][] = $category;
             
-            $default->log->debug("DocumentBrowser::browseByCategory get documents for category $category");
             // we have a category to use, so find all the documents
             // with this category value
-                        
-            $query = "SELECT document_id FROM $default->owl_document_fields_table WHERE document_field_id = $categoryFieldID " . 
-                     "AND value='$category' ORDER BY value ASC";
-            $default->log->debug("DocumentBrowser::browseByCategory documents in category query=$query");
+            $query = "SELECT df.document_id FROM $default->owl_document_fields_table df " .
+                     "INNER JOIN $default->owl_documents_table d ON df.document_id = d.id ";
+            if ( isset($this->aSortCriteria[$sSortField]["lookup"]) ) {
+            	$query .= "INNER JOIN " .  $this->aSortCriteria[$sSortField]["lookup"]["lookupTable"] . " lt ON d.$sSortField=lt.id ";
+            }                    
+			$query .= "WHERE df.document_field_id = $categoryFieldID AND value='$category' ";
+			if ( isset($this->aSortCriteria[$sSortField]["lookup"]) ) {
+            	$query .= "ORDER BY lt." . $this->aSortCriteria[$sSortField]["lookup"]["lookupField"] . " $sSortDirection";
+            } else {
+            	$query .= "ORDER BY d.$sSortField $sSortDirection";
+            }                    
+                     
             $sql->query($query);
             // loop through resultset and add to array
             $results["accessDenied"] = false;
@@ -177,15 +206,15 @@ class DocumentBrowser {
      *
      * @param int the document type ID to browse
      */    
-    function browseByDocumentType($documentTypeID = -1) {
+    function browseByDocumentType($documentTypeID = -1, $sSortField = "name", $sSortDirection = "asc") {
         global $default;
         
         $results = array();
         $sql = $default->db;
         
         if ($documentTypeID == -1) {
-            // no category value supplied, so return a list of categories
-            // set the first value to "categories"
+            // no document type idsupplied, so return a list of document types
+            // set the first value to "Document Types"
             $results["documentTypes"][] = array("name" => "Document Types");
             
             // return a list of document types
@@ -199,12 +228,21 @@ class DocumentBrowser {
             // lookup document type name from the passed in id
             $documentTypeName = lookupField($default->owl_document_types_table, "name", "id", $documentTypeID);
             $results["documentTypes"][] = array("id" => $documentTypeID, "name" => $documentTypeName);
-            
-            // find all documents with this document type
-            $query = "SELECT DISTINCT id FROM $default->owl_documents_table WHERE document_type_id=$documentTypeID";
-            $default->log->debug("DocumentBrowser::browseByDocumentType: documents from doc type query=$query");
-            // loop through resultset and build array of documentIDs
-            $sql->query($query);
+                       
+            // create query to retrieve documents with this document type
+            $documentQuery  = "SELECT d.id as id FROM $default->owl_documents_table d ";
+            if ( isset($this->aSortCriteria[$sSortField]["lookup"]) ) {
+            	$documentQuery .= "INNER JOIN " .  $this->aSortCriteria[$sSortField]["lookup"]["lookupTable"] . " lt ON d.$sSortField=lt.id ";
+            }
+            $documentQuery .= "WHERE document_type_id=$documentTypeID ";
+			if ( isset($this->aSortCriteria[$sSortField]["lookup"]) ) {
+            	$documentQuery .= "ORDER BY lt." . $this->aSortCriteria[$sSortField]["lookup"]["lookupField"] . " $sSortDirection";
+            } else {
+            	$documentQuery .= "ORDER BY $sSortField $sSortDirection";
+            }
+                        
+            // loop through resultset and populate array with document objects
+            $sql->query($documentQuery);
             $results["accessDenied"] = false;
             while ($sql->next_record()) {
                 // check permission
@@ -218,99 +256,5 @@ class DocumentBrowser {
             
             return $results;
         }
-    }
- 
-    /**
-     * Checks whether the required group is one of the
-     * groups in the $groupIDs array
-     *
-     * @param string the group name to check for
-     * @param array an array of groupIDs to check
-     * @return boolean true if $requiredGroupName is in the $groupIDs array, else false
-     */
-    function checkGroup($requiredGroupName, $groupIDs) {
-        global $default;
-        $sql = $default->db;
-        // lookup the id of $requiredGroupName
-        $requiredGroupID = lookupID($default->owl_groups_table, "name", "$requiredGroupName");
-        $default->log->debug("DocumentBrowser::checkGroup reqGrpID=$requiredGroupID");
-        if ($requiredGroupID) {
-            // now loop through the array and check if we're in the group
-            $default->log->debug("DocumentBrowser::checkGroup req=$requiredGroupName; ids=" . arrayToString($groupIDs)); 
-            if (in_array($requiredGroupID, $groupIDs)) {
-                return true;
-            } else {
-                return false;
-            }
-        } else {
-            // this group doesn't exist
-            // TODO: add this to language
-            $_SESSION["errorMessage"] = "group $requiredGroupName doesn't exist";
-            return false;
-        }
-    }
-    
-    /**
-     * Returns an array of folder details for the specified folder
-     *
-     * @param string the sql query to retrieve the correct folder
-     * @return array the folder details
-     */
-    function retrieveFolderDetails($folderQuery) {
-        global $default;
-        
-        $folders = array();
-        $folderSql = $default->db;
-        // perform folder details query and loop through results
-        if ($folderSql->query($folderQuery)) {
-            // should only be one result
-            if ($folderSql->next_record()) {
-               $default->log->debug("DocumentBrowser::retrieveFolderDetails got results for $folderQuery");
-               // add the folder details to the array
-               $folderName = $folderSql->f("name");
-               $folderID = $folderSql->f("id");
-
-               // set folder attributes
-               $folders[$folderName] = & new Folder($folderName, $folderSql->f("description"), $folderSql->f("parent_id"),
-                                                  $folderSql->f("creator_id"), $folderSql->f("unit_id"), 
-												  $folderSql->f("is_public"));
-            } else {
-                $_SESSION["errorMessage"] = "could not retrieve folder details: $folderQuery";
-                $default->log->debug("DocumentBrowser::retrieveFolderDetails error=" . $_SESSION["errorMessage"]);
-            }
-        } else {
-            $_SESSION["errorMessage"] = "could not retrieve folder details: $folderQuery";
-        }
-        return $folders;
-    }
-   
-    /**
-     * Lookup document details for all the document_ids in the input array
-     *
-     * @param array the documentIDs to retrieve details for
-     * @return array the details of all the documents
-     */
-    function lookupDocumentDetails($documentIDs) {
-        global $default;
-        
-        $documents = array();
-        $sql = $default->db;
-        
-        // convert array to a comma separated string
-        $documentIDStr = arrayToCSS($documentIDs);
-        $default->log->debug("DocumentBrowser::lookupDocumentDetails documentIDStr=$documentIDStr; documentIDs=" . arrayToString($documentIDs));
-        
-        // create query to retrieve the details of the specified documents
-        $documentQuery = "SELECT * FROM $default->owl_documents_table WHERE id in ($documentIDStr)";
-        if ($sql->query($documentQuery)) {
-            // TODO: check return status of query and die appropriately
-            while ($sql->next_record()) {
-                // set attributes
-                $documents[$sql->f("name")] &= Document::get($sql->f("id"));
-            }
-        } else {
-            $_SESSION["errorMessage"] = "document query failed";
-        }
-        return $documents;
     }
 }

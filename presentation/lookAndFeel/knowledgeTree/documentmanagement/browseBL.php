@@ -2,6 +2,7 @@
 
 require_once("../../../../config/dmsDefaults.php");
 require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentBrowser.inc");
+require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentType.inc");
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
 require_once("$default->uiDirectory/documentmanagement/browseUI.inc");
 
@@ -28,6 +29,8 @@ require_once("$default->uiDirectory/documentmanagement/browseUI.inc");
  * fFolderID - the folder to browse [optional depending on fBrowseType]
  * fCategoryName - the category to browse [optional depending on fBrowseType]
  * fDocumentTypeID - the document type id to browse [optional depending on fBrowseType]
+ * fSortBy - the document attribute to sort the browse results by
+ * fSortDirection - the direction to sort
  */
 
 // -------------------------------
@@ -44,6 +47,16 @@ if (checkSession()) {
         $fBrowseType = "folder";
     }
     
+    // retrieve field to sort by
+    if (!$fSortBy) {
+    	// no sort field specified- default is document name
+    	$fSortBy = "name";
+    }
+    // retrieve sort direction
+    if (!$fSortDirection) {
+    	$fSortDirection = "asc";
+    }
+       
     // fire up the document browser 
     $oDocBrowser = new DocumentBrowser();
     // instantiate my content pattern
@@ -55,7 +68,7 @@ if (checkSession()) {
                             $aResults = $oDocBrowser->browseByFolder();
                             controllerRedirect("browse", "fFolderID=" . $aResults["folders"][0]->getID());
                         } else {
-                            $aResults = $oDocBrowser->browseByFolder($fFolderID);
+                            $aResults = $oDocBrowser->browseByFolder($fFolderID, $fSortBy, $fSortDirection);
                         }
                         break;
                         
@@ -64,7 +77,7 @@ if (checkSession()) {
                         if (!$fCategoryName) {
                             $aResults = $oDocBrowser->browseByCategory();
                         } else {
-                            $aResults = $oDocBrowser->browseByCategory($fCategoryName);
+                            $aResults = $oDocBrowser->browseByCategory($fCategoryName, $fSortBy, $fSortDirection);
                         }
                         break;
                         
@@ -73,7 +86,7 @@ if (checkSession()) {
                         if (!$fDocumentTypeID) {
                             $aResults = $oDocBrowser->browseByDocumentType();
                         } else {
-                            $aResults = $oDocBrowser->browseByDocumentType($fDocumentTypeID);
+                            $aResults = $oDocBrowser->browseByDocumentType($fDocumentTypeID, $fSortBy, $fSortDirection);
                         }
                         break;
     }
@@ -81,7 +94,7 @@ if (checkSession()) {
     require_once("../../../webpageTemplate.inc");    
     if ($aResults) {
         // display the list of categories
-        $oContent->addHtml(renderPage($aResults, $fBrowseType));
+        $oContent->addHtml(renderPage($aResults, $fBrowseType, $fSortBy, $fSortDirection));
         
     } else {
         $main->setErrorMessage("There are no document types to display");
