@@ -135,7 +135,7 @@ class PatternTableSqlQuery {
 									$sToRender .= $this->generateImageURL($sql->f("image_url"));
 								}
 								if ($sql->f($this->aColumns[$i]) != null) {	 							
-									$sToRender .= wordwrap(stripslashes($sql->f($this->aColumns[$i])), 30, " ", 1) . "</td>";
+									$sToRender .= wordwrap(stripslashes($sql->f($this->aColumns[$i])), 25, " ", 1) . "</td>";
 								} else {
 									$sToRender .= "&nbsp</td>";
 								}
