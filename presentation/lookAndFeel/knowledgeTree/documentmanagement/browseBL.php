@@ -4,14 +4,7 @@
 require_once("../../../../config/dmsDefaults.php");
 require_once("$default->owl_ui_directory/documentmanagement/browseUI.inc");
 require_once("$default->owl_fs_root/lib/documentmanagement/DocumentBrowser.inc");
-
-require_once("$default->owl_fs_root/lib/visualpatterns/PatternMainPage.inc");
-require_once("$default->owl_fs_root/lib/visualpatterns/PatternImage.inc");
-require_once("$default->owl_fs_root/lib/visualpatterns/PatternTableLinks.inc");
-require_once("$default->owl_fs_root/lib/visualpatterns/PatternTableSqlQuery.inc");
-require_once("$default->owl_fs_root/lib/visualpatterns/PatternCustom.inc");
-require_once("$default->owl_fs_root/lib/visualpatterns/NavBar.inc");
-require_once("$default->owl_fs_root/presentation/lookandfeel/foldermanagement/folderUI.inc");
+require_once("$default->owl_ui_directory/foldermanagement/folderUI.inc");
 
 /**
  * $Id$
