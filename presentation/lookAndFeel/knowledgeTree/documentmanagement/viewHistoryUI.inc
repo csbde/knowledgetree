@@ -35,15 +35,38 @@ function getDocumentHistory($iDocumentID) {
 			"FROM $default->owl_document_transactions_table AS DT INNER JOIN $default->owl_users_table AS U ON DT.user_id = U.id " .
 			"INNER JOIN $default->owl_transaction_types_table AS DTT ON DTT.id = DT.transaction_id " . 
 			"WHERE DT.document_id = $iDocumentID";
-	
-    $aColumns = array("transaction_name", "user_name", "version", "comment", "datetime");
-    $aColumnHeaders = array("Type","Users","Version","Comment","Datetime");
-    $aColumnTypes = array(1,1,1,1,1);
-    $oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaders, "90%");
-    $oPatternTableSqlQuery->setTableHeading("Transaction History");
-	$oPatternTableSqlQuery->setIncludeBorder(true);
-	$oPatternTableSqlQuery->setDisplayColumnHeadings(true);
-    return $oPatternTableSqlQuery->render();
+	$sql = $default->db;
+    $sToRender  = "<table cellpadding=\"5\" border=\"1\" width=\"90%\">\n";
+    $sToRender .= "<caption align=\"top\" colspan=\"5\" align=\"left\"><b>Transaction History</b></caption>\n";
+    $sql->query($sQuery);
+    if ($sql->num_rows() == 0) {
+        $sToRender .= "<tr>\n";	
+        $sToRender .= "\t<td colspan=\"5\">No Transaction History data</td>\n";
+        $sToRender .= "</tr>\n";
+    } else {
+        $sToRender .= "<tr><th align=\"left\">Type</th>\n";
+        $sToRender .= "<th align=\"left\">Users</th>\n";
+        $sToRender .= "<th align=\"left\">Version</th>\n";
+        $sToRender .= "<th align=\"left\">Comment</th>\n";
+        $sToRender .= "<th align=\"left\">Datetime</th></tr>\n";
+        $i = 0;
+        while ($sql->next_record()) {
+            if ($sql->f("transaction_name") == "Check Out") {
+                $sVersion = generateControllerLink("viewDocument", "fDocumentID=$iDocumentID&fForDownload=1&fVersion=" . $sql->f("version"), $sql->f("version"));
+            } else {
+                $sVersion = $sql->f("version");
+            }
+            $sToRender .= "<tr bgcolor=\"" . getColour($i++) . "\">\n";
+            $sToRender .= "<td>" . $sql->f("transaction_name") . "</td><td>" . $sql->f("user_name") . "</td><td>$sVersion</td>\n";
+            $sToRender .= "<td>" . $sql->f("comment") . "</td><td>" . $sql->f("datetime") . "</td></tr>\n";
+        }
+        $sToRender .= "</table>\n";
+    }
+    return $sToRender;
+}
+
+function getColour($iColourCount) {
+    return ($iColourCount%2 == 0) ? "F5F6EE" : "FFFFFF";
 }
 
 function getPage($iDocumentID, $iFolderID, $sDocumentName) {
