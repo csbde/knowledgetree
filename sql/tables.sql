@@ -105,7 +105,7 @@ folder_id INTEGER NOT NULL
 
 CREATE TABLE folders_users_roles_link ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
-groups_folders_approval_id INTEGER NOT NULL,
+group_folder_approval_id INTEGER NOT NULL,
 user_id INTEGER NOT NULL,
 document_id INTEGER NOT NULL,
 datetime DATETIME,
