@@ -20,7 +20,7 @@ require_once("../../config/dmsDefaults.php");
  * @author Michael Joseph <michael@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
  * @package tests.authentication
  */
-if (checkSession()) {
+//if (checkSession()) {
     require_once("$default->fileSystemRoot/lib/authentication/DBAuthenticator.inc");
     echo "<b>Testing DB searching</b>";
     // user attributes to search for
@@ -36,9 +36,10 @@ if (checkSession()) {
     // user attributes to search for
     $aAttributes = array ("dn", "uid", "givenname", "sn", "mail", "mobile");
     $oLdapAuth = new LDAPAuthenticator();
-    $sSearch = "michael";
+    $sSearch = "mi";
     echo "<ul><li>searching for $sSearch with attributes=<pre>" . arrayToSTring($aAttributes) . "</pre></li>";
     $aResults = $oLdapAuth->searchUsers($sSearch, $aAttributes);
+    echo "<li><pre>first result=" . arrayToString($aResults[0]) . "</pre></li>";
     echo "<li><pre>" . arrayToString($aResults) . "</pre></li></ul>";
 
     echo "<b>Testing LDAP authentication</b>";
@@ -51,5 +52,5 @@ if (checkSession()) {
 
     $sUserName = "mukhtar"; $sPassword = "mukhtar123";
     echo "<ul><li>Authenticating ($sUserName, $sPassword) : " . ($oLdapAuth->checkPassword($sUserName, $sPassword) ? "true" : "false") . "</li></ul>";
-}
+//}
 ?>

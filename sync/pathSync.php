@@ -32,9 +32,9 @@ echo "<br>";
 for ($i = 0; $i < count($aDocuments); $i++) {
 	$oDocument = $aDocuments[$i];
 	echo "Updating document: " . $oDocument->getName() . "<br>";
-    if ($oDocument->getCheckedOutUserID() == "") {
-        $oDocument->setCheckedOutUserID(-1);
-    }
+        if (!$oDocument->getCheckedOutUserID()) {
+           $oDocument->setCheckedOutUserID(-1);
+        }
 	$oDocument->update(true);
 }
 
