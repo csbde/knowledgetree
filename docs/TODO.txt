@@ -4,7 +4,7 @@ KnowledgeTree DMS Development TODO List
 (In no particular order after office integration)
 
 - Microsoft Office integration- Open, Edit, Update documents in the KnowledgeTree
-  from within Microsoft Office programs
+  from within Microsoft Office programs (IN PROGRESS)
 - WebDAV integration
 - Reporting- Simple usage and statistics report generator
 - Code Review and Refactoring
@@ -38,5 +38,7 @@ KnowledgeTree DMS Development TODO List
 - Make logging robust, spin off as Log4Php?
 - Document Routing
   - Allow overrides on a per document basis
+- Search
+  - Search for document creator and folder names
 
 $Id$
