@@ -75,7 +75,7 @@ if (checkSession()) {
                 //user attempted to edit the folder collaboration process but could not because there is
                 //a document currently in this process
                 $oPatternCustom = & new PatternCustom();
-                $oPatternCustom->setHtml(getPage($fFolderID));
+                $oPatternCustom->setHtml(getPage($fFolderID, true));
                 $main->setErrorMessage("You cannot edit this folder collaboration process as a document is currently undergoing this collaboration process");
                 $main->setCentralPayload($oPatternCustom);
                 $main->setHasRequiredFields(true);
@@ -85,7 +85,7 @@ if (checkSession()) {
                 //user attempted to delete the folder collaboration process but could not because there is
                 //a document currently in this process
                 $oPatternCustom = & new PatternCustom();
-                $oPatternCustom->setHtml(getPage($fFolderID));
+                $oPatternCustom->setHtml(getPage($fFolderID, true));
                 $main->setErrorMessage("You cannot delete this folder collaboration process as a document is currently undergoing this collaboration process");
                 $main->setCentralPayload($oPatternCustom);
                 $main->setHasRequiredFields(true);
