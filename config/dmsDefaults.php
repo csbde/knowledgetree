@@ -75,7 +75,7 @@ $default->owl_groups_folders_table	= "groups_folders_link";
 // stores group information
 $default->owl_groups_table	= "groups_lookup";
 // links groups to units
-$default->owl_groups_units_table = "groups_units_link"
+$default->owl_groups_units_table = "groups_units_link";
 // links
 $default->owl_links_table = "links";
 // Table with mime info
