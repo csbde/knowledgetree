@@ -18,7 +18,7 @@ KnowledgeTree Installation Notes
    $ mysqladmin -p create dms
 
 *  Create and populate the tables:
-   $ mysql -p dms < sql/tables.sql
+   $ mysql -p dms < sql/mysql/install/tables.sql
 
 *  Configure your installation by changing the following attributes in config/environment.php:
    - The fileSystemRoot property should point to the directory you installed the KnowledgeTree in eg.
@@ -67,7 +67,21 @@ Troubleshooting
 Refer to docs/FAQ.txt.
 
 
-Jam Warehouse – Smart Business Innovation
+Upgrading
+---------
+
+In order to upgrade your KnowledgeTree installation, perform the following tasks:
+- Run the appropriate database upgrade scripts against your database.  If you are upgrading more than one version, multiple 
+  upgrade scripts will need to be executed.
+  eg. if you're upgrading from version 1.1.2 to version 1.2.2, the following upgrade scripts need to be executed:
+  - sql/mysql/upgrade/1.2.0/1.2.0.sql
+  - sql/mysql/upgrade/1.2.1/1.2.1.sql
+  - sql/mysql/upgrade/1.2.2/1.2.2.sql
+  
+-  Upgrade your application code, by unpacking the latest download into your webroot directory.
+
+
+Jam Warehouse ï¿½ Smart Business Innovation
 Phone: +27 21 4477440
 Fax: +27 21 4477449
 Email: info@jamwarehouse.com
