@@ -384,17 +384,37 @@ function renderDependantDocuments($oDocument, $bEdit) {
     return $sToRender;
 }
 
+$aImageNameToLabel = array(
+    "dependentdoc" => "Link new doc",
+);
+
 function displayButton($sAction, $sQueryString, $sImageName, $sDisabledText = "") {
 	global $default;
+        global $aImageNameToLabel;
 	// the active is active if there is no disabled text
 	$bActive = !strlen($sDisabledText) > 0;
-	$sImage = "<img border=\"0\" src=\"$default->graphicsUrl/widgets/docactions/";
-	if ($bActive) {
-		$sImage .= "$sImageName.gif\"";
-	} else {
-		$sImage .= "disabled-$sImageName.gif\" title=\"$sDisabledText\"";		
-	}
-	$sImage .= "/>";
+        if ($default->useTextButtons === false) {
+            $sImage = "<img border=\"0\" src=\"$default->graphicsUrl/widgets/docactions/";
+            if ($bActive) {
+                $sImage .= "$sImageName.gif\"";
+            } else {
+                $sImage .= "disabled-$sImageName.gif\" title=\"$sDisabledText\"";
+            }
+            $sImage .= "/>";
+        } else {
+            if (array_key_exists($sImageName, $aImageNameToLabel)) {
+                $sLabel = $aImageNameToLabel[$sImageName];
+            } else {
+                $sLabel = $sImageName;
+            }
+            $sLabel = strtoupper($sLabel);
+            if ($bActive) {
+                    $sClass = "button";
+            } else {
+                    $sClass = "disabledbutton";
+            }
+            $sImage = "<span class=\"$sClass\">$sLabel</span>";
+        }
 	if ($bActive) {
 		return generateControllerLink($sAction, $sQueryString, $sImage);
 	} else {
@@ -405,7 +425,11 @@ function displayButton($sAction, $sQueryString, $sImageName, $sDisabledText = ""
 function displayViewButton($oDocument, $bEdit) {
 	global $default;
 	$sViewAlert = _("This will download a copy of the document and is not the same as Checking Out a document.  Changes to this downloaded file will not be managed in the DMS.");
+        if ($default->useTextButtons === false) {
     return "<tr><td align=\"left\"><a onClick=\"alert('$sViewAlert '); return true;\" href=\"" . generateControllerLink("downloadDocument", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/docactions/view.gif\" border=\"0\" title=\"" . _("View the document") . "\"/></a></td></tr>\n";
+        } else {
+    return "<tr><td align=\"left\"><a onClick=\"alert('$sViewAlert '); return true;\" href=\"" . generateControllerLink("downloadDocument", "fDocumentID=" . $oDocument->getID()) . "\"><span class=\"button\" title=\"" . _("View the document") . "\">VIEW</span></a></td></tr>\n";
+        }
 }
 
 function displayCheckInOutButton($oDocument, $bEdit) {
@@ -436,7 +460,7 @@ function displayCheckInOutButton($oDocument, $bEdit) {
 
 function displayEmailButton($oDocument) {
 	global $default;
-	return "<tr><td align=\"left\"><a href=\"" . generateControllerLink("emailDocument", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/docactions/email.gif\" border=\"0\" /></a></td></tr>\n";
+	return "<tr><td align=\"left\">" . displayButton("emailDocument", "fDocumentID=" . $oDocument->getID(), "email") . "</td></tr>\n";
 }
 
 function displayDeleteButton($oDocument, $bEdit) {
@@ -453,7 +477,7 @@ function displayDeleteButton($oDocument, $bEdit) {
 
 function displayHistoryButton($oDocument) {
 	global $default;
-	return "<tr><td align=\"left\"><a href=\"" . generateControllerLink("viewHistory", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/docactions/history.gif\" border=\"0\" /></a></td></tr>\n";
+	return "<tr><td align=\"left\">" . displayButton("viewHistory", "fDocumentID=" . $oDocument->getID(), "history") . "</td></tr>\n";
 }	
 function displayMoveButton($oDocument, $bEdit) {
     if ($bEdit) {
@@ -487,7 +511,7 @@ function displaySubscriptionButton($oDocument) {
 
 function displayDiscussionButton($oDocument, $bEdit) {
 	global $default;
-    return "<tr><td align=\"left\"><a href=\"" . generateControllerLink("viewDiscussion", "fDocumentID=" . $oDocument->getID() . "&fForDiscussion=1") . "\"><img src=\"$default->graphicsUrl/widgets/docactions/discussion.gif\" border=\"0\" /></a></td></tr>\n";
+    return "<tr><td align=\"left\">" . displayButton("viewDiscussion", "fDocumentID=" . $oDocument->getID() . "&fForDiscussion=1", "discussion") . "</td></tr>\n";
 }
 	
 function displayArchiveButton($oDocument, $bEdit) {
@@ -512,7 +536,7 @@ function displayArchiveButton($oDocument, $bEdit) {
 
 function displayDependantDocumentButton($oDocument, $bEdit) {
 	global $default;
-	return "<td align=\"left\"><a href=\"" . generateControllerLink("createDependantDocument", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/docactions/dependentdoc.gif\" border=\"0\" /></a></td>\n";	
+	return "<td align=\"left\">" . displayButton("createDependantDocument", "fDocumentID=" . $oDocument->getID(), "dependentdoc") . "</td>\n";	
 }
 
 function displayPublishButton($oDocument, $bEdit) {
