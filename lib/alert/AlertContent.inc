@@ -49,7 +49,7 @@ class AlertContent {
      * @return string the alert content
      */
     function getSubscriptionAlert($iSubscriptionAlertType, $aValues) {
-        $sSubject = "MRC DMS Subscription Alert- ";
+        $sSubject = "DMS Subscription Alert- ";
         $aAlertSubject = array(SubscriptionConstants::subscriptionAlertType("AddFolder") => $sSubject . "New Folder",
                                SubscriptionConstants::subscriptionAlertType("RemoveSubscribedFolder") => $sSubject . "Removed Folder",
                                SubscriptionConstants::subscriptionAlertType("RemoveChildFolder") => $sSubject . "Removed Folder",
