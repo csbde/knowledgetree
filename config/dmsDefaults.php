@@ -99,7 +99,9 @@ $default->owl_subscriptions_table = "subscriptions";
 // stores default system settings
 $default->owl_system_settings_table = "system_settings"; 
 // Table with unit information
-$default->owl_units_table = "units";
+$default->owl_units_table = "units_lookup";
+// Table with unit organisation link tables
+$default->owl_units_organisations_link_table = "units_organisations_link";
 // Table with user info
 $default->owl_users_table	= "users";
 // links groups to users
