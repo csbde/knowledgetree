@@ -53,7 +53,8 @@ function getDocumentTypeDropDown($iDocumentTypeID, $iFolderID) {
 	$oPatternListBox->setQuery("SELECT DTL.name AS display, DTL.id AS value " .  
 							   "FROM $default->document_types_table AS DTL " .
 							   "LEFT OUTER JOIN $default->folder_doctypes_table AS FDL ON FDL.document_type_id = DTL.id AND FDL.folder_id = $iFolderID " .
-							   "WHERE folder_id IS NULL");
+							   "WHERE folder_id IS NULL " .
+							   "ORDER BY DTL.name");
 	$oPatternListBox->setSelectName("fDocumentTypeID");
 	$oPatternListBox->setIncludeDefaultValue(false);
 	if (isset($iDocumentTypeID)) {
