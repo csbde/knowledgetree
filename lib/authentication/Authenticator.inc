@@ -1,7 +1,5 @@
 <?php
 
-//require_once("$default->owl_fs_root/lib/administration/UserManager.inc");
-
 /**
  * $Id$
  * 
@@ -10,16 +8,16 @@
  * Licensed under the GNU GPL. For full terms see the file COPYING.
  *
  * @version $Revision$
- * @author <a href="mailto:michael@jamwarehouse.com">Michael Joseph</a>, Jam Warehouse (Pty) Ltd, South Africa
- * @package dmslib 
+ * @author Michael Joseph <michael@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
+ * @package lib.authentication 
  */
 class Authenticator {
     
     /**
      * Verifies the login credentials
      *
-     * @param userName         the user name of the user logging in
-     * @param password         the user's password
+     * @param string the user name of the user logging in
+     * @param string the user's password
      * @return array containing userID and authentication status code
      */
     function login($userName, $password) {
@@ -71,10 +69,8 @@ class Authenticator {
     /**
      * Logs the user out of the application
      *
-     * @param userID  
-     *        the ID of user logging out
-     * @param sessionID
-     *        the user's sessionID
+     * @param int the ID of user logging out
+     * @param string the user's sessionID
      */
      function logout($userID, $sessionID) {
          // remove session from db
@@ -84,10 +80,8 @@ class Authenticator {
      /**
       * [Abstract] Checks the user's password
       *
-      * @param $userName
-      *        the name of the user to check
-      * @param $password
-      *        the password to check
+      * @param string the name of the user to check
+      * @param string the password to check
       * @return boolean true if the password is correct, else false
       */
      function checkPassword($userName, $password) {
