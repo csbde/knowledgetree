@@ -11,7 +11,24 @@
  * @author Michael Joseph <michael@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
  * @package presentation.lookAndFeel.knowledgeTree.documentmanagement
  */
- 
+
+/**
+ *
+ */
+function displayDocumentPath($iDocumentID) {
+	global $default;
+	$oDocument = Document::get($iDocumentID);
+	if ($oDocument) {
+		$iFolderID = $oDocument->getFolderID();
+		$sDocumentName = $oDocument->getName();
+		$sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
+		$sTDBGColour = $default->siteMap->getSectionColour($sSectionName, "td");	    
+    	$sDocumentPath = displayFolderPathLink(Folder::getFolderPathAsArray($iFolderID), Folder::getFolderPathNamesAsArray($iFolderID),  "$default->rootUrl/control.php?action=browse") . " > " . $sDocumentName;
+		return "<table border=\"0\" width=\"600\"><tr><td bgcolor=\"$sTDBGColour\">$sDocumentPath</td></tr></table>\n";
+	} else {
+		return "";
+	}	
+}
 
 /* only used when users choose a template document when setting up document linking
  * on the folder collaboration page.  Formats the link so that the child window
