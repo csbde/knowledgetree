@@ -59,15 +59,15 @@ function renderDocumentData($oDocument) {
 function renderEditableLinkedDocuments($oDocument) {
 	global $default;
 	
-	$sQuery = "SELECT D.id AS document_id, D.name, DL.id as document_link_id, 'Unlink' AS unlink " .
+	$sQuery = "SELECT D.id AS child_document_id, D.name, DL.id as document_link_id, DL.parent_document_id AS parent_document_id, 'Unlink' AS unlink " .
 			"FROM documents AS D INNER JOIN document_link AS DL ON D.id = DL.child_document_id " .
 			"WHERE DL.parent_document_id = " . $oDocument->getID();
 	
 	$aColumns = array("name", "unlink");
     $aColumnHeaders = array("Document");
     $aColumnTypes = array(3,3);
-    $aDBColumnArray = array("document_id","document_link_id");
-    $aQueryStringVariableNames = array("fDocumentID", "fDocumentLinkID");
+    $aDBColumnArray = array("parent_document_id", "child_document_id","document_link_id");
+    $aQueryStringVariableNames = array("fParentDocumentID","fChildDocumentID", "fDocumentLinkID");
     $aLinkURLs = array(0=>"$default->rootUrl/control.php?action=viewDocument", 1=>"$default->rootUrl/control.php?action=removeDocumentLink");
 
     $oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaders, "100%", $aLinkURLs,$aDBColumnArray,$aQueryStringVariableNames);
