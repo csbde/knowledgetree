@@ -11,7 +11,7 @@
 
 function renderBrowseAddPage($iFolderID) {
     global $default;
-	$sToRender = "<table border=\"0\">\n";
+	$sToRender = "<table border=\"0\" width=\"100%\">\n";
     $sToRender .= "<tr>\n";
     $sToRender .= "\t<td>" . renderFolderPath($iFolderID, "$default->uiUrl/foldermanagement/addFolderBL.php") . "</td>\n";
     $sToRender .= "</tr>\n";
