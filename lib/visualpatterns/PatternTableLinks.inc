@@ -63,7 +63,7 @@ class PatternTableLinks {
 			for ($j = 0; $j < $this->iColumns; $j++) {
 				$sToRender = $sToRender . "<td cellspacing = \"20\" width =\"100%\">";
 				if ($iArrayCount < $iArraySize) {
-                    $sToRender = $sToRender . ((strlen($this->aLinks[$iArrayCount]) > 0) ? "<a href=\"" . $this->aLinks[$iArrayCount] . "\" />" : "");
+                    $sToRender = $sToRender . ((strlen($this->aLinks[$iArrayCount]) > 0) ? "<a href=\"" . $this->aLinks[$iArrayCount] . "\">" : "");
                     if ($this->iLinkType == TEXT) {
                         $sToRender = $sToRender . $this->aLinksText[$iArrayCount];
                     } else if ($this->iLinkType == IMAGE) {
