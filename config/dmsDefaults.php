@@ -12,8 +12,8 @@
 // include the environment settings
 require_once("environment.php");
 
-$default->owl_graphics_url	= $default->owl_root_url . "/graphics";
-$default->owl_LangDir		= $default->owl_fs_root . "/locale";
+$default->owl_graphics_url = $default->owl_root_url . "/graphics";
+$default->owl_LangDir  = $default->owl_fs_root . "/locale";
 // change this to reflect a directory with a different look and feel
 $default->owl_ui_directory  = $default->owl_fs_root . "/presentation/lookAndFeel/knowledgeTree";
 $default->owl_ui_url  = $default->owl_root_url . "/presentation/lookAndFeel/knowledgeTree";
@@ -45,7 +45,7 @@ $default->owl_use_fs            = true;
 // Portuguese
 // Spanish
 
-$default->owl_lang		= "NewEnglish";
+$default->owl_lang  = "NewEnglish";
 $default->owl_notify_link       = "http://$_SERVER[SERVER_NAME]$default->owl_root_url/";
 
 // Table mappings
@@ -63,7 +63,7 @@ $default->owl_document_subscriptions_table = "document_subscriptions";
 // document transaction types
 $default->owl_transaction_types_table = "document_transaction_types_lookup";
 // document transactions
-$default->owl_document_transactions_table = "document_transactions"; 
+$default->owl_document_transactions_table = "document_transactions";
 // links document types to document type fields
 $default->owl_document_type_fields_table = "document_type_fields_link";
 // document type information
@@ -77,19 +77,19 @@ $default->owl_folder_subscriptions_table = "folder_subscriptions";
 // stores folders
 $default->owl_folders_table = "folders";
 // links folders to users (and roles) for approval collaboration
-$default->owl_folders_user_roles_table	= "folders_users_roles_link";
+$default->owl_folders_user_roles_table = "folders_users_roles_link";
 // stores approval collaboration information- approval roles mapped to folders with order
-$default->owl_groups_folders_approval_table	= "groups_folders_approval_link";
+$default->owl_groups_folders_approval_table = "groups_folders_approval_link";
 // links groups to folders
-$default->owl_groups_folders_table	= "groups_folders_link";
+$default->owl_groups_folders_table = "groups_folders_link";
 // stores group information
-$default->owl_groups_table	= "groups_lookup";
+$default->owl_groups_table = "groups_lookup";
 // links groups to units
 $default->owl_groups_units_table = "groups_units_link";
 // links
 $default->owl_links_table = "links";
 // Table with mime info
-$default->owl_mime_table	= "mime_types";
+$default->owl_mime_table = "mime_types";
 // organisation information
 $default->owl_organisations_table = "organisations_lookup";
 // stores role information (name and access)
@@ -101,24 +101,24 @@ $default->owl_site_sections_table = "site_sections_lookup";
 // sitemap definition
 $default->owl_sitemap_table = "sitemap";
 // stores document subscription information
-$default->owl_subscriptions_table = "subscriptions"; 
+$default->owl_subscriptions_table = "subscriptions";
 // stores default system settings
-$default->owl_system_settings_table = "system_settings"; 
+$default->owl_system_settings_table = "system_settings";
 // Table with unit information
 $default->owl_units_table = "units_lookup";
 // Table with unit organisation link tables
 $default->owl_units_organisations_link_table = "units_organisations_link";
 // Table with user info
-$default->owl_users_table	= "users";
+$default->owl_users_table = "users";
 // links groups to users
-$default->owl_users_groups_table = "users_groups_link"; 
+$default->owl_users_groups_table = "users_groups_link";
 // Table with web documents info for web publishing
 $default->owl_web_documents_table = "web_documents";
- // Table with web documents info for web publishing
+// Table with web documents info for web publishing
 $default->owl_web_documents_status_table = "web_documents_status_lookup";
 // stores websites for web publishing
 $default->owl_web_sites_table = "web_sites";
-// stores indexed words 
+// stores indexed words
 $default->owl_words_lookup_table = "words_lookup";
 
 // Change this to reflect the database you are using
@@ -152,7 +152,7 @@ $default->siteMap = new SiteMap(false);
 
 // general pages
 $default->siteMap->addPage("login", "/presentation/login.php?loginAction=login", "General", None, "");
-$default->siteMap->addPage("loginForm", "/presentation/login.php?loginAction=loginForm", "General", None, "login"); 
+$default->siteMap->addPage("loginForm", "/presentation/login.php?loginAction=loginForm", "General", None, "login");
 $default->siteMap->addPage("dashboard", "/presentation/dashboardBL.php", "General", Guest, "dashboard");
 
 //pages for manage documents section
@@ -200,11 +200,10 @@ $default->siteMap->addPage("scroll", "/tests/scroll/textScrollTest.php", "Tests"
 $default->siteMap->addPage("folderSub", "/tests/subscriptions/folderSubscription.php", "Tests", Guest, "folder subscription unit test", false);
 $default->siteMap->addPage("documentSub", "/tests/subscriptions/documentSubscription.php", "Tests", Guest, "document subscription unit test", false);
 $default->siteMap->addPage("subManager", "/tests/subscriptions/subscriptionManager.php", "Tests", Guest, "manage subscription unit test", false);
-
-
+$default->siteMap->addPage("auth", "/tests/authentication/authentication.php", "Tests", Guest, "authentication unit test", false);
 
 // default requires
-require_once("$default->owl_fs_root/phpmailer/class.phpmailer.php");	
+require_once("$default->owl_fs_root/phpmailer/class.phpmailer.php");
 require_once("$default->owl_fs_root/lib/session/Session.inc");
 require_once("$default->owl_fs_root/lib/session/control.inc");
 require_once("$default->owl_fs_root/lib/database/db.inc");
