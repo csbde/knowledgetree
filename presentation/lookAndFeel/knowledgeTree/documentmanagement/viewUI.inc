@@ -29,7 +29,13 @@ function renderDocumentPath($oDocument) {
     global $default;
 	$sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
 	$sTDBGColour = $default->siteMap->getSectionColour($sSectionName, "td");	
-    $sDocumentPath = displayFolderPathLink(Folder::getFolderPathAsArray($oDocument->getFolderID()), Folder::getFolderPathNamesAsArray($oDocument->getFolderID()), "$default->rootUrl/control.php?action=browse") . " > <a href=\"$default->rootUrl/presentation/lookAndFeel/knowledgeTree/documentmanagement/viewBL.php?fDocumentID=" . $oDocument->getID() . "&fForInlineView=1\" target=\"View document\">" . $oDocument->getName() . "</a>";
+    $sDocumentPath = displayFolderPathLink(Folder::getFolderPathAsArray($oDocument->getFolderID()), Folder::getFolderPathNamesAsArray($oDocument->getFolderID()), "$default->rootUrl/control.php?action=browse") . " > ";
+    // IE ssl download hack- don't use ssl to download
+    if ($default->phpSniff->property("browser") == "ie") {
+        $sDocumentPath .= "<a href=\"http://" . $default->serverName . "$default->rootUrl/presentation/lookAndFeel/knowledgeTree/documentmanagement/viewBL.php?fDocumentID=" . $oDocument->getID() . "&fForInlineView=1\" target=\"View document\">" . $oDocument->getName() . "</a>";
+    } else {
+        $sDocumentPath .= "<a href=\"$default->rootUrl/presentation/lookAndFeel/knowledgeTree/documentmanagement/viewBL.php?fDocumentID=" . $oDocument->getID() . "&fForInlineView=1\" target=\"View document\">" . $oDocument->getName() . "</a>";    
+    }
     return "<table border=0 cellpadding=\"5\" width = 100%><tr><td bgcolor=\"$sTDBGColour\">$sDocumentPath</td></tr></table>\n";
 }
 
@@ -181,11 +187,20 @@ function getEditPage($oDocument) {
 		$sToRender .= "\t\t<td align=\"center\"><a href=" . $_SERVER['PHP_SELF'] . "?fDocumentID=" . $oDocument->getID() . "&fCollaborationStepComplete=1><img src=\"$default->graphicsUrl/widgets/approve.gif\" border=\"0\"/></a></td>\n";
 		$sToRender .= "\t\t<td align=\"center\"><a href=\"$default->rootUrl/control.php?action=collaborationStepReject&fDocumentID=$iDocumentID\"><img src=\"$default->graphicsUrl/widgets/reject.gif\" border=\"0\"/></a></td>\n";
 		$sToRender .= "\t\t</tr></table></td>\n";
-	} else if (!$oDocument->hasCollaboration() || Document::documentCollaborationDone($oDocument->getID())) {
-        // only display publish button if there is no collaboration or collaboration is complete
-		if (!Document::documentIsPendingWebPublishing($iDocumentID) && ($_SESSION["userID"] == $oDocument->getCreatorID())) {
-			$sToRender .= "<td><a href=" . $_SERVER['PHP_SELF'] . "?fDocumentID=" . $oDocument->getID() . "&fForPublish=1><img src=\"$default->graphicsUrl/widgets/publish.gif\" border=\"0\"/></a></td>\n";
-		}    
+	}
+    // only display for unpublished documents
+    if (Document::documentIsPendingWebPublishing($iDocumentID)) {
+        // if there is collaboration
+        if ($oDocument->hasCollaboration()) {
+            // only display publish button if collaboration is complete and you're the last user in the collaboration process
+            if (Document::documentCollaborationDone($oDocument->getID()) && ($_SESSION["userID"] == Document::getLastCollaboratorID($iDocumentID))) {
+                $sToRender .= "<td><a href=" . $_SERVER['PHP_SELF'] . "?fDocumentID=" . $oDocument->getID() . "&fForPublish=1><img src=\"$default->graphicsUrl/widgets/publish.gif\" border=\"0\"/></a></td>\n";
+            }
+        } else if ($_SESSION["userID"] == $oDocument->getCreatorID()) {
+            // no collaboration for this folder, so only the originator can request publication
+            // ??: or an administrator?
+            $sToRender .= "<td><a href=" . $_SERVER['PHP_SELF'] . "?fDocumentID=" . $oDocument->getID() . "&fForPublish=1><img src=\"$default->graphicsUrl/widgets/publish.gif\" border=\"0\"/></a></td>\n";
+        }
     }
     $sToRender .= "\t</tr>";
     $sToRender .= "\t</table>";
