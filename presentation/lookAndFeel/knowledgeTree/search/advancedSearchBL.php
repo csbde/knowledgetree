@@ -31,11 +31,15 @@ require_once("../../../../config/dmsDefaults.php");
 KTUtil::extractGPC('fForSearch', 'fSearchString', 'fShowSection', 'fStartIndex', 'fToSearch');
 
 function searchCriteria ($var) {
-    return preg_match('/^bmd(-?\d+)/', $var);
+    return preg_match('/^bmd(_?\d+)/', $var);
 }
 
 function criteriaNumber ($var) {
-    return preg_replace('/^bmd(-?\d+)/', '\\1', $var);
+    $res = preg_replace('/^bmd(_?\d+)\D.*/', '\\1', $var);
+    if ($res !== false) {
+        $res = strtr($res, '_', '-');
+    }
+    return $res;
 }
 
 function getAdvancedSearchResults($aOrigReq, $iStartIndex) {
@@ -81,8 +85,8 @@ SELECT
 FROM
     $default->documents_table AS D
     INNER JOIN $default->folders_table AS F ON D.folder_id = F.id
-    INNER JOIN $default->document_fields_link_table AS DFL ON DFL.document_id = D.id
-    INNER JOIN $default->document_fields_table AS DF ON DF.id = DFL.document_field_id
+    LEFT JOIN $default->document_fields_link_table AS DFL ON DFL.document_id = D.id
+    LEFT JOIN $default->document_fields_table AS DF ON DF.id = DFL.document_field_id
     INNER JOIN $default->search_permissions_table AS SDUL ON SDUL.document_id = D.id
     INNER JOIN $default->status_table AS SL on D.status_id=SL.id
 WHERE
