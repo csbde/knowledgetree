@@ -39,7 +39,7 @@ function getChosenMetaDataTags($aVariables) {
 			$i++;
 			$sRowStart = $aKeys[$i];
 			while ((strcmp("adv_search_end", $sRowStart) != 0)  && ($i < count($aKeys))) {				
-				$aTagIDs[count($aTagIDs)] = $_POST[$aKeys[$i]];
+				$aTagIDs[count($aTagIDs)] = $aVariables[$aKeys[$i]];
 				$i++;
 				$sRowStart = $aKeys[$i];
 			}
