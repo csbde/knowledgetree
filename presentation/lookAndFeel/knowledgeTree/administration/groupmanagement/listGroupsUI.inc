@@ -49,7 +49,7 @@ function getGroups($fUnitID) {
 
 function getPage($fUnitID) {
 	global $default;
-	$sToRender .= renderHeading("Current System Groups");
+	$sToRender .= renderHeading("Group Management");
 
 	$sToRender .= getAddLink("addGroup", "Add A Group");
 	$sToRender .= getUnitDisplay($fUnitID);
