@@ -78,7 +78,7 @@ function getUserDetailsPage($iUserID) {
     $sToRender .= getCancelButton(User::get($iUserID));
     if (strcmp($default->authenticationClass,"DBAuthenticator") == 0) {
     	//only update password if we are using the db
-    	$sToRender .= "<a href=\"$default->rootUrl/control.php?action=userPasswordManagement&fUserID=$iUserID\">Update password</td></tr>\n";
+    	$sToRender .= "<a href=\"$default->rootUrl/control.php?action=userPasswordManagement&fUserID=$iUserID\"><img src =\"$default->graphicsUrl/widgets/updatePassword.gif\" border=\"0\" /></td></tr>\n";
     }
 	$sToRender .= "</table>\n";
     
