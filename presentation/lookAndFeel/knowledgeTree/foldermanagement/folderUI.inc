@@ -20,9 +20,11 @@
  * @param string the page to link to (defaults to the page this is called from)
  */
 function displayFolderPathLink($aPathArray, $sLinkPage = "") {
-   if (strlen($sLinkPath) == 0) {
-       $sLinkPath = $_SERVER["PHP_SELF"];
+    global $default;
+   if (strlen($sLinkPage) == 0) {
+       $sLinkPage = $_SERVER["PHP_SELF"];
    }
+   $default->log->debug("displayFolderPathLink: slinkPage=$sLinkPage");
    // display a separate link to each folder in the path
    for ($i=0; $i<count($aPathArray); $i++) {
        $iFolderID = $aPathArray[$i];
@@ -47,8 +49,8 @@ function displayFolderPathLink($aPathArray, $sLinkPage = "") {
 function displayFolderLink($oFolder, $sLinkPage = "") {
     global $default;
     
-    if (strlen($sLinkPath) == 0) {
-       $sLinkPath = $_SERVER["PHP_SELF"];
+    if (strlen($sLinkPage) == 0) {
+       $sLinkPage = $_SERVER["PHP_SELF"];
     }
 
     $sFolderIconPath = generateImage($default->owl_graphics_url . "/widgets/dfolder.gif");
