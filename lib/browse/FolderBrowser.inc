@@ -73,6 +73,7 @@ class FolderBrowser extends Browser {
                 } else {
                 	$iFolderID = $aFolders[0]->getID();
                 }
+                
             } else {
                 // else just start at the root
                 // FIXME: start at the root folder for the default organisation
@@ -131,5 +132,9 @@ class FolderBrowser extends Browser {
             
             return $results;
         }
+    }
+    
+    function getSectionName() {
+    	return "Manage Documents";
     }
 }
