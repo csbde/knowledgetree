@@ -38,7 +38,7 @@ class ArchivingDateSettings {
 		
 		// primary key not set as this is not stored yet
 		$this->iId = -1;
-		$this->dExpirationDate = $dNewExpirationDate;
+		$this->setExpirationDate($dNewExpirationDate);
 		$this->iTimePeriodID = $iNewTimePeriodID;
 	}
 
@@ -62,7 +62,7 @@ class ArchivingDateSettings {
 	 * @param date the new expiration date
 	 */
 	function setExpirationDate($dNewExpirationDate){
-		$this->dExpirationDate = $dNewExpirationDate;
+		$this->dExpirationDate = strlen($dNewExpirationDate) == 0 ? "NULL" : "'$dNewExpirationDate'";
 	}
 
 	/**
@@ -91,8 +91,10 @@ class ArchivingDateSettings {
         //if the id >= 0, then the object has already been created
         if ($this->iId < 0) {
             $sql = $default->db;
-            $result = $sql->query("INSERT INTO $default->owl_archiving_date_settings_table (expiration_date, time_period_id) " .
-                                  "VALUES ('$this->dExpirationDate', $this->iTimePeriodID)");
+            $sQuery = "INSERT INTO $default->owl_archiving_date_settings_table (expiration_date, time_period_id) " .
+                      "VALUES ($this->dExpirationDate, $this->iTimePeriodID)";
+            $result = $sql->query($sQuery);
+                                  $default->log->info($sQuery);
             if ($result) {
                 //set the current primary key
                 $this->iId = $sql->insert_id();
@@ -113,9 +115,10 @@ class ArchivingDateSettings {
         if ($this->iId >= 0) {			
             $sql = $default->db;
 			$sQuery = "UPDATE $default->owl_archiving_date_settings_table SET " .
-					  "expiration_date = '$this->dExpirationDate', " .								  
+					  "expiration_date = $this->dExpirationDate, " .								  
                       "time_period_id = $this->iTimePeriodID " .                                  
            			  "WHERE id = $this->iId";
+           			  $default->log->info($sQuery);
             $result = $sql->query($sQuery);
             if ($result) {
                 return true;
