@@ -317,7 +317,24 @@ class SiteMap {
      *
      * @param string the page to lookup the section for
      */
-    function getSectionNameUsingDB($sRequiredPage) {   
+    function getSectionNameUsingDB($sRequiredPage) {
+      global $default, $lang_err_database;
+        $sql = new Owl_DB();
+        // lookup the page and access_id from the sitemap
+        if ($sql->query("SELECT SSL.name FROM $default->owl_sitemap_table AS S 
+                         INNER JOIN $default->owl_site_sections_table AS SSL ON S.section_id=SSL.id 
+                         WHERE S.page='$sRequiredPage'")) {                
+            if ($sql->next_record()) {
+                // return the section name
+                return $sql->f("name");
+            } else {
+                $_SESSION["errorMessage"] = $lang_err_database;
+                return false;
+            }
+        } else {
+            $_SESSION["errorMessage"] = $lang_err_database;
+            return false;
+        }
     }
     
     /**
@@ -363,6 +380,30 @@ class SiteMap {
      * @return string the controller action for the default page for this section
      */
     function getDefaultActionUsingDB($sSectionName) {
+        global $default, $lang_err_database;
+        $sql = new Owl_DB();
+        // lookup sectionID
+        $sectionID = lookupID($default->owl_site_sections_table, "name", $sSectionName);
+        if ($sectionID) {
+            // lookup the default action for the specified section
+            if ($sql->query("SELECT action FROM $default->owl_sitemap_table 
+                             WHERE section_id=$sectionID
+                             AND is_default=1")) {                
+                if ($sql->next_record()) {
+                    // return the section name
+                    return $sql->f("action");
+                } else {
+                    $_SESSION["errorMessage"] = $lang_err_database;
+                    return false;
+                }
+            } else {
+                $_SESSION["errorMessage"] = $lang_err_database;
+                return false;
+            }
+        } else {
+            $_SESSION["errorMessage"] = "No such section name ($sSectionName) in the sitemap";
+            return false;
+        }
     }
     
     /**
@@ -419,6 +460,22 @@ class SiteMap {
      * @return string the action for this page
      */
     function getActionFromPageUsingDB($sPage) {
+       global $default, $lang_err_database;
+        $sql = new Owl_DB();
+        
+        // lookup the action for the specified page
+        if ($sql->query("SELECT action FROM $default->owl_sitemap_table WHERE page='$sPage'")) {                
+            if ($sql->next_record()) {
+                // return the section name
+                return $sql->f("action");
+            } else {
+                $_SESSION["errorMessage"] = $lang_err_database;
+                return false;
+            }
+        } else {
+            $_SESSION["errorMessage"] = $lang_err_database;
+            return false;
+        }
     }
     
     /**
@@ -452,7 +509,9 @@ class SiteMap {
      * Prints the current site map
      */
     function printMap() {
-        return arrayToString($this->aSiteMap);
+        if (!$this->bUseDB) {
+            return arrayToString($this->aSiteMap);
+        }
     }
 }
 ?>
