@@ -68,6 +68,7 @@ class CategoryBrowser extends Browser {
 	            // set the first value to "categories"
 	            $results["categories"][] = "Categories";
 	            // get a list of category values
+                // FIXME: exclude deleted document metadata
 	            $query = "SELECT DISTINCT value FROM $default->document_fields_link_table WHERE document_field_id=$categoryFieldID ORDER BY value " . ($this->sSortField == "name" ? $this->sSortDirection : "ASC");
 	            $default->log->info("CategoryBrowser::browse() category listing query=$query; $this->sSortField");
 	            $sql->query($query);
