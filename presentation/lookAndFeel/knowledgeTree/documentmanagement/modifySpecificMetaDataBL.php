@@ -26,8 +26,12 @@ if (checkSession()) {
 		require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 		$oPatternCustom = & new PatternCustom();
 		$oPatternCustom->setHtml(getPage($fDocumentID, $oDocument->getDocumentTypeID(), $fFirstEdit));
-		$main->setCentralPayload($oPatternCustom);			
-		$main->setFormAction("../store.php?fReturnURL=" . urlencode("$default->rootUrl/control.php?action=viewDocument&fDocumentID=$fDocumentID&fShowSection=typeSpecificMetaData"));
+		$main->setCentralPayload($oPatternCustom);
+        if (isset($fFirstEdit)) {
+            $main->setFormAction("../store.php?fReturnURL=" . urlencode("$default->rootUrl/control.php?action=viewDocument&fDocumentID=$fDocumentID"));            
+        } else {
+			$main->setFormAction("../store.php?fReturnURL=" . urlencode("$default->rootUrl/control.php?action=viewDocument&fDocumentID=$fDocumentID&fShowSection=typeSpecificMetaData"));
+        }					
         $main->setHasRequiredFields(true);		
 		$main->render();
 	}
