@@ -14,21 +14,33 @@ DEFINE("EXPUNGE", 11);
 DEFINE("FORCE_CHECKIN", 12);
 DEFINE("EMAIL_LINK", 13);
 DEFINE("COLLAB_ACCEPT", 14);
-
 /**
-*
-* Class DocumentTransaction
-*
-* Represents a document transaction as per the database table document_transaction
-*
-* No delete or update functions are provided.  Once a transaction has been stored 
-* in the database it may not be changed.
-*
-* @author Rob Cherry, Jam Warehouse(Pty) Ltd, South Africa
-* @date 18 January 2003
-* @package lib.documentmanagement
-*/
-
+ * $Id$
+ *
+ * Represents a document transaction as per the database table document_transaction.
+  * No delete or update functions are provided.  Once a transaction has been stored 
+ * in the database it may not be changed.
+ *
+ * Copyright (c) 2003 Jam Warehouse http://www.jamwarehouse.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ * @version $Revision$
+ * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
+ * @package lib.documentmanagement 
+ */
 class DocumentTransaction {
 	
 	/** primary key of document transaction */
@@ -92,7 +104,7 @@ class DocumentTransaction {
 		//if the object hasn't been stored yet
 		if ($this->iId < 0) {
 			$sql = $default->db;
-			$result = $sql->query("INSERT INTO " . $default->owl_document_transactions_table . " (document_id, version, user_id, datetime, ip, filename, comment, transaction_id) " .
+			$result = $sql->query("INSERT INTO " . $default->document_transactions_table . " (document_id, version, user_id, datetime, ip, filename, comment, transaction_id) " .
 						"VALUES ($this->iDocumentID, '" . addslashes($this->sVersion) . "', $this->iUserID, '" . addslashes($this->dDateTime) . "', '" . addslashes($this->sIP) . "', '" . addslashes($this->sFileName) . "', '" . addslashes($this->sComment) . "', $this->iTransactionID)");
 			 if ($result) {
 				 //object has been stored, set the primary key
@@ -113,9 +125,7 @@ class DocumentTransaction {
 		global $default, $lang_err_database, $lang_err_object_key;
         if ($this->iId >= 0) {
             $sql = $default->db;
-            // TODO: insert into sys_deleted
-            //$result = $sql->query("INSERT INTO  " . $default->owl_sys_deleted_table . " () VALUES ()");
-            $result = $sql->query("DELETE FROM  " . $default->owl_document_transactions_table . "  WHERE id = " . $this->iId);
+            $result = $sql->query("DELETE FROM  " . $default->document_transactions_table . "  WHERE id = " . $this->iId);
             if ($result) {
                 $this->iId = -1;
                 return true;
@@ -138,7 +148,7 @@ class DocumentTransaction {
         global $default, $lang_err_doc_not_exist;
         if (strlen($iDocumentTransactionID) > 0) {
 	        $sql = $default->db;
-	        $sql->query("SELECT * FROM $default->owl_document_transactions_table WHERE id = $iDocumentTransactionID");
+	        $sql->query("SELECT * FROM $default->document_transactions_table WHERE id = $iDocumentTransactionID");
 	        if ($sql->next_record()) {			
 	            $oDocumentTransaction = & new DocumentTransaction($sql->f("document_id"), stripslashes($sql->f("comment")), $sql->f("transaction_id"));
 	            $oDocumentTransaction->iId = $sql->f("id");	
@@ -169,7 +179,7 @@ class DocumentTransaction {
         global $default, $lang_err_database;
         $aDocumentTransactionArray = array();
         $sql = $default->db;
-        $sQuery = "SELECT * FROM $default->owl_document_transactions_table " . (isset($sWhereClause) ? " WHERE " . $sWhereClause : "");
+        $sQuery = "SELECT * FROM $default->document_transactions_table " . (isset($sWhereClause) ? " WHERE " . $sWhereClause : "");
         $result = $sql->query($sQuery);
         if ($result) {
             while ($sql->next_record()) {

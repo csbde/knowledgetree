@@ -1,15 +1,29 @@
 <?php
 /**
-*
-* Class DocumentType
-*
-* Represents a MetaData as per the database document_types_lookup table
-*
-* @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
-* @date 19 January 2003
-* @package lib.documentmanagement
-*/
-
+ * $Id$
+ *
+ * Represents a document field lookups as per the database document_types_lookup table
+ *
+ * Copyright (c) 2003 Jam Warehouse http://www.jamwarehouse.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ * @version $Revision$
+ * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
+ * @package lib.documentmanagement 
+ */
 class MetaData {
 	
 	/** primary key value */
@@ -98,7 +112,7 @@ class MetaData {
 		if ($this->iId < 0) {
 			//check to see if name exsits
 			$sql = $default->db;
-			$query = "SELECT name FROM ". $default->owl_metadata_table ." WHERE name = '" . $this->sName . "' and document_field_id = '". $this->iDocFieldID . "'";
+			$query = "SELECT name FROM ". $default->metadata_table ." WHERE name = '" . $this->sName . "' and document_field_id = '". $this->iDocFieldID . "'";
         		$sql->query($query);
        			$rows = $sql->num_rows($sql);
         
@@ -109,7 +123,7 @@ class MetaData {
            		 
 	       		 }else{
 				$sql = $default->db;
-				$result = $sql->query("INSERT INTO " . $default->owl_metadata_table . " (document_field_id,name) VALUES ('". $this->iDocFieldID . "','" . addslashes($this->sName) . "')");
+				$result = $sql->query("INSERT INTO " . $default->metadata_table . " (document_field_id,name) VALUES ('". $this->iDocFieldID . "','" . addslashes($this->sName) . "')");
 				if ($result) {
 				$this->iId = $sql->insert_id();
 				return  true;
@@ -134,7 +148,7 @@ class MetaData {
 		//only update if the object has been stored
 		if ($this->iId > 0) {
 			$sql = $default->db;
-			$result = $sql->query("UPDATE " . $default->owl_metadata_table. " SET name = '" . addslashes($this->sName) . "' WHERE id = $this->iId");
+			$result = $sql->query("UPDATE " . $default->metadata_table. " SET name = '" . addslashes($this->sName) . "' WHERE id = $this->iId");
 			if ($result) {
 				return true;
 			}
@@ -156,7 +170,7 @@ class MetaData {
 		//only delete the object if it exists in the database
 		if ($this->iId >= 0) {
 			$sql = $default->db;
-			$result = $sql->query("DELETE FROM " . $default->owl_metadata_table. " WHERE id = $this->iId");
+			$result = $sql->query("DELETE FROM " . $default->metadata_table. " WHERE id = $this->iId");
 			if ($result) {
 				return true;
 			}
@@ -178,7 +192,7 @@ class MetaData {
 	function & get($iMetaDataID) {
 		global $default;
 		$sql = $default->db;
-		$result = $sql->query("SELECT * FROM ". $default->owl_metadata_table." WHERE id = $iMetaDataID");
+		$result = $sql->query("SELECT * FROM ". $default->metadata_table." WHERE id = $iMetaDataID");
 		if ($result) {
 			if ($sql->next_record()) {
 				$oDocumentType = & new MetaData($sql->f("document_field_id"),stripslashes($sql->f("name")));
@@ -209,7 +223,7 @@ class MetaData {
 	 {
 	   	global $default;
 		$sql = $default->db;
-		$result = $sql->query("SELECT id FROM $default->owl_metadata_table WHERE document_field_id = $iDocFieldID and name = '" . $sMetaDataName . "' ");
+		$result = $sql->query("SELECT id FROM $default->metadata_table WHERE document_field_id = $iDocFieldID and name = '" . $sMetaDataName . "' ");
 		if ($result) {
 			if ($sql->next_record()) {
 				$id = $sql->f("id");

@@ -1,23 +1,36 @@
 <?php
-
 // document statuses
 DEFINE("LIVE", 1);
 DEFINE("PUBLISHED", 2);
 DEFINE("DELETED", 3);
 DEFINE("ARCHIVED", 4);
-
 require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
-
 /**
  * $Id$
  *
- * Represents a document as per the documents database table
+ * Represents a document as per the documents database table.
+ *
+ * Copyright (c) 2003 Jam Warehouse http://www.jamwarehouse.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * @version $Revision$
  * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
  * @package lib.documentmanagement
  * @todo add in document change transaction functionality
- */
+ */ 
 class Document {
     /** primary key */
     var $iId;
@@ -273,7 +286,7 @@ class Document {
 		//if the folder is not the root folder 
 		if ($iFolderID != 0) {
 			$sql = $default->db;
-			$sql->query("SELECT parent_id FROM $default->owl_folders_table WHERE ID = $iFolderID");
+			$sql->query("SELECT parent_id FROM $default->folders_table WHERE ID = $iFolderID");
 			$sql->next_record();
 			return $this->generateParentFolderIDS($sql->f("parent_id")) . ",$iFolderID";
 		}
@@ -291,7 +304,7 @@ class Document {
 		//if the folder is not the root folder 
 		if ($iFolderID != 0) {
 			$sql = $default->db;
-			$sql->query("SELECT name, parent_id FROM $default->owl_folders_table WHERE ID = $iFolderID");
+			$sql->query("SELECT name, parent_id FROM $default->folders_table WHERE ID = $iFolderID");
 			$sql->next_record();			
 			return $this->generateFullFolderPath($sql->f("parent_id")) . "/" . stripslashes($sql->f("name"));
 		}
@@ -312,7 +325,7 @@ class Document {
 			$this->sFullPath = substr($sFullPath, 1, strlen($sFullPath));
 			$sParentFolderIDs = $this->generateParentFolderIDS($this->iFolderID);
 			$this->sParentFolderIDs = substr($sParentFolderIDs, 1, strlen($sParentFolderIDs));
-            $result = $sql->query("INSERT INTO " . $default->owl_documents_table . " (document_type_id, name, filename, size, creator_id, modified, description, mime_id, folder_id, major_version, minor_version, is_checked_out, checked_out_user_id, parent_folder_ids, full_path, status_id) " .
+            $result = $sql->query("INSERT INTO " . $default->documents_table . " (document_type_id, name, filename, size, creator_id, modified, description, mime_id, folder_id, major_version, minor_version, is_checked_out, checked_out_user_id, parent_folder_ids, full_path, status_id) " .
                                   "VALUES ($this->iDocumentTypeID, '" . addslashes($this->sName) . "', '" . addslashes($this->sFileName) . "', $this->iSize, $this->iCreatorID, '" . getCurrentDateTime() . "', '" . addslashes($this->sDescription) . "', $this->iMimeTypeID, $this->iFolderID, $this->iMajorVersion, $this->iMinorVersion, " . ($this->bIsCheckedOut ? 1 : 0) . ", $this->iCheckedOutUserID, '$this->sParentFolderIDs','" . addslashes($this->sFullPath) . "', $this->iStatusID)");
             if ($result) {
                 //set the current documents primary key
@@ -337,9 +350,9 @@ class Document {
 	    // group permissions                
 	    $sGroupPerms = "INSERT INTO $default->search_permissions_table (user_id, document_id) " .
 				       "SELECT UGL.user_id AS user_id, D.id AS document_id " .
-				       "FROM $default->owl_documents_table AS D INNER JOIN folders AS F ON D.folder_id = F.id " .
-				       "INNER JOIN $default->owl_groups_folders_table AS GFL ON GFL.folder_id = F.id " .
-				       "INNER JOIN $default->owl_users_groups_table AS UGL ON UGL.group_id = GFL.group_id " .
+				       "FROM $default->documents_table AS D INNER JOIN folders AS F ON D.folder_id = F.id " .
+				       "INNER JOIN $default->groups_folders_table AS GFL ON GFL.folder_id = F.id " .
+				       "INNER JOIN $default->users_groups_table AS UGL ON UGL.group_id = GFL.group_id " .
 				       "WHERE D.id=$this->iId";
 		$default->log->info("addDocument groupPerms=$sGroupPerms");
 		if ($sql->query($sGroupPerms)) {
@@ -350,7 +363,7 @@ class Document {
 		// role permissions
 	    $sRolePerms = "INSERT INTO $default->search_permissions_table (user_id, document_id) " .
 				      "SELECT user_id, document_id " .
-				      "FROM $default->owl_folders_user_roles_table " .
+				      "FROM $default->folders_user_roles_table " .
 				      "WHERE document_id=$this->iId";
 		$default->log->info("addDocument rolePerms=$sRolePerms");
 		if ($sql->query($sRolePerms)) {
@@ -362,7 +375,7 @@ class Document {
 		// public folders
 		$sPublicFolderPerms = "INSERT INTO $default->search_permissions_table (user_id, document_id) " . 
                 			  "SELECT U.id, D.id " . 
-                			  "FROM $default->owl_users_table AS U, $default->owl_documents_table AS D INNER JOIN $default->owl_folders_table AS F ON D.folder_id = F.id " .
+                			  "FROM $default->users_table AS U, $default->documents_table AS D INNER JOIN $default->folders_table AS F ON D.folder_id = F.id " .
 							  "WHERE F.is_public = 1 " .
 							  "AND D.id=$this->iId";
 		$default->log->info("addDocument publicFolder=$sPublicFolderPerms");
@@ -375,7 +388,7 @@ class Document {
 		// creator permissions
 		$sCreatorPerms = "INSERT INTO $default->search_permissions_table (user_id, document_id) " .
 						 "SELECT creator_id, id " .
-						 "FROM $default->owl_documents_table " .
+						 "FROM $default->documents_table " .
 						 "WHERE id=$this->iId";
 		$default->log->info("addDocument creatorPerms=$sCreatorPerms");
 		if ($sql->query($sCreatorPerms)) {
@@ -394,7 +407,7 @@ class Document {
         global $default, $lang_err_database, $lang_err_object_key;
         if ($this->iId >= 0) {			
             $sql = $default->db;
-			$sQuery = "UPDATE " . $default->owl_documents_table . " SET " .
+			$sQuery = "UPDATE " . $default->documents_table . " SET " .
                                   "document_type_id = $this->iDocumentTypeID, " .
 								  "name = '" . addslashes($this->sName) . "', " .
                                   "filename = '" . addslashes($this->sFileName) . "', " .
@@ -441,7 +454,7 @@ class Document {
         global $default, $lang_err_database, $lang_err_object_key;
         if ($this->iId >= 0) {
             $sql = $default->db;
-            $result = $sql->query("DELETE FROM  " . $default->owl_documents_table . "  WHERE id = $this->iId");
+            $result = $sql->query("DELETE FROM  " . $default->documents_table . "  WHERE id = $this->iId");
             if ($result) {
                 $this->iId = -1;
                 // clean up for this deleted document
@@ -463,7 +476,7 @@ class Document {
 		global $default;
 		//get the steps in this document's collaboration process
 		$sQuery = "SELECT FURL.id, GFAL.precedence " .
-				"FROM $default->owl_folders_user_roles_table AS FURL INNER JOIN $default->owl_groups_folders_approval_table AS GFAL ON FURL.group_folder_approval_id = GFAL.id " .
+				"FROM $default->folders_user_roles_table AS FURL INNER JOIN $default->groups_folders_approval_table AS GFAL ON FURL.group_folder_approval_id = GFAL.id " .
 				"WHERE document_id = " . $this->iId . " " .
 				"ORDER BY GFAL.precedence ASC";
 		$sql = $default->db;
@@ -522,7 +535,7 @@ class Document {
 		//if the user is assinged to two or more roles, make sure we get the current
 		//one by ordering by precedence
 		$sql->query("SELECT FURL.id AS id, GFAT.precedence " .
-					"FROM $default->owl_groups_folders_approval_table AS GFAT INNER JOIN $default->owl_folders_user_roles_table AS FURL ON GFAT.id = FURL.group_folder_approval_id " .
+					"FROM $default->groups_folders_approval_table AS GFAT INNER JOIN $default->folders_user_roles_table AS FURL ON GFAT.id = FURL.group_folder_approval_id " .
 					"WHERE document_id = $this->iId AND FURL.user_id = " . $_SESSION["userID"] . "  " . 
 					"AND done = 0 " . 
 					"ORDER BY precedence ASC");
@@ -550,7 +563,7 @@ class Document {
         if (strlen($iDocumentID) > 0) {
 	        $sql = $default->db;
 	        // TODO: join on sys_deleted
-	        $sql->query("SELECT * FROM $default->owl_documents_table WHERE id = $iDocumentID");
+	        $sql->query("SELECT * FROM $default->documents_table WHERE id = $iDocumentID");
 	        if ($sql->next_record()) {			
 	            $oDocument = & new Document(stripslashes($sql->f("name")), stripslashes($sql->f("filename")), $sql->f("size"), $sql->f("creator_id"), $sql->f("mime_id"), $sql->f("folder_id"), $sql->f("description"));
 	            $oDocument->setDocumentTypeID($sql->f("document_type_id"));
@@ -587,7 +600,7 @@ class Document {
         $aDocumentArray;
         settype($aDocumentArray, "array");
         $sql = $default->db;
-        $result = $sql->query("SELECT * FROM " . $default->owl_documents_table  . (isset($sWhereClause) ? " WHERE " . $sWhereClause : ""));
+        $result = $sql->query("SELECT * FROM " . $default->documents_table  . (isset($sWhereClause) ? " WHERE " . $sWhereClause : ""));
         if ($result) {
             $iCount = 0;
             while ($sql->next_record()) {
@@ -642,7 +655,7 @@ class Document {
         $aDocumentHistory;
         settype($aDocumentHistory, "array");
         $sql = $default->db;
-        $result = $sql->query("SELECT * FROM  " . $default->owl_document_transactions_table . " WHERE document_id = $this->iId ORDER BY datetime DESC");
+        $result = $sql->query("SELECT * FROM  " . $default->document_transactions_table . " WHERE document_id = $this->iId ORDER BY datetime DESC");
         if ($result) {
             $iCount = 0;
             while($sql->next_record()) {
@@ -666,7 +679,7 @@ class Document {
         global $default;
         if ($this->iMimeTypeID) {
             // lookup the icon from the table
-            $sIconPath = lookupField($default->owl_mime_table, "icon_path", "id", $this->iMimeTypeID);
+            $sIconPath = lookupField($default->mimetypes_table, "icon_path", "id", $this->iMimeTypeID);
             if (strlen($sIconPath) > 0) {
                 return $default->graphicsUrl . "/" . $sIconPath;
             } else {
@@ -717,7 +730,7 @@ class Document {
     function documentExists($sFileName, $iFolderID) {
         global $default;
         $sql = $default->db;
-        $sQuery = "SELECT * FROM $default->owl_documents_table " .
+        $sQuery = "SELECT * FROM $default->documents_table " .
         		  "WHERE filename = '" . addslashes($sFileName) . "' " . 
         		  "AND folder_id = $iFolderID " .
         		  "AND status_id = " . LIVE;
@@ -738,7 +751,7 @@ class Document {
         global $default, $lang_err_database, $lang_err_doc_not_exist;
         $sql = $default->db;
 
-        if ($sql->query("SELECT name FROM " . $default->owl_documents_table . " WHERE id = $iDocumentID")) {
+        if ($sql->query("SELECT name FROM " . $default->documents_table . " WHERE id = $iDocumentID")) {
             if ($sql->next_record()) {
                 return $sql->f("name");
             } else {
@@ -772,8 +785,8 @@ class Document {
 		global $default;
 		$sql = $default->db;
 		$sql->query("SELECT * " . 
-					"FROM $default->owl_folder_doctypes_table AS FDL " .
-					"INNER JOIN $default->owl_documents_table AS D ON D.document_type_id = FDL.document_type_id " .
+					"FROM $default->folder_doctypes_table AS FDL " .
+					"INNER JOIN $default->documents_table AS D ON D.document_type_id = FDL.document_type_id " .
 					"WHERE FDL.id = $iFolderDocTypeID " .
 					"AND D.folder_id = $iFolderID");
 		if ($sql->next_record()) {
@@ -788,8 +801,8 @@ class Document {
 	*/
 	function removeInvalidDocumentTypeEntries() {
 		global $default;
-		$sQuery = "SELECT field_id FROM $default->owl_document_type_fields_table DTFL " .
-					"INNER JOIN $default->owl_fields_table AS DF ON DF.id = DTFL.field_id " .
+		$sQuery = "SELECT field_id FROM $default->document_type_fields_table DTFL " .
+					"INNER JOIN $default->document_fields_table AS DF ON DF.id = DTFL.field_id " .
 					"WHERE DTFL.document_type_id = $this->iDocumentTypeID " .
 					"AND DF.is_generic = 0";
 		$sql = $default->db;
@@ -801,7 +814,7 @@ class Document {
 		}
 		if (count($aFieldIDs) > 0) {
 			//delete the entries
-			$sQuery = "DELETE FROM $default->owl_document_fields_table WHERE document_id = $this->iId AND document_field_id IN (" . implode(",",$aFieldIDs) . ")";
+			$sQuery = "DELETE FROM $default->document_fields_link_table WHERE document_id = $this->iId AND document_field_id IN (" . implode(",",$aFieldIDs) . ")";
 			if ($sql->query($sQuery)) {
 				return true;
 			}
@@ -821,7 +834,7 @@ class Document {
     function hasCollaboration() {
 		global $default;
 		$sql = $default->db;
-		$sql->query("SELECT id AS count from $default->owl_groups_folders_approval_table WHERE folder_id = $this->iFolderID");
+		$sql->query("SELECT id AS count from $default->groups_folders_approval_table WHERE folder_id = $this->iFolderID");
 		if ($sql->next_record()) {
 			return true;
 		}
@@ -834,9 +847,9 @@ class Document {
 	function cleanupDocumentData($iDocumentID) {
 		global $default;
 		$sql = $default->db;
-		$result = $sql->query("DELETE FROM $default->owl_document_text_table WHERE document_id = $iDocumentID") &&
+		$result = $sql->query("DELETE FROM $default->document_text_table WHERE document_id = $iDocumentID") &&
 				  $sql->query("DELETE FROM $default->search_permissions_table WHERE document_id = $iDocumentID") &&
-				  $sql->query("DELETE FROM $default->owl_document_fields_table WHERE document_id = $iDocumentID");
+				  $sql->query("DELETE FROM $default->document_fields_link_table WHERE document_id = $iDocumentID");
 		return $result;
 	}		
 }

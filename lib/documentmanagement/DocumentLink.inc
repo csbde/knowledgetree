@@ -1,18 +1,31 @@
 <?php 
 /**
-*
-* Class DocumentLink
-*
-* Represents a document link as per the database document_link table
-* Links a child document to a parent document.  Direction of relationship
-* is defined through document collaboration
-*
-* @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
-* @date 14 May 2003
-* @package lib.documentmanagement
-*/
-
-
+ * $Id$
+ *
+ * Represents a document link as per the database document_link table.
+ * Links a child document to a parent document.  Direction of relationship
+ * is defined through document collaboration.
+ *
+ * Copyright (c) 2003 Jam Warehouse http://www.jamwarehouse.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ * @version $Revision$
+ * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
+ * @package lib.documentmanagement 
+ */
 class DocumentLink {
 
 	/** primary key value */
@@ -141,7 +154,7 @@ class DocumentLink {
 		//only delete the object if it exists in the database
 		if ($this -> iId >= 0) {
 			$sql = $default -> db;
-			$result = $sql -> query("DELETE FROM $default->owl_document_link_table WHERE id = $this->iId");
+			$result = $sql -> query("DELETE FROM $default->document_link_table WHERE id = $this->iId");
 			if ($result) {
 				return true;
 			}
@@ -163,14 +176,14 @@ class DocumentLink {
 	function & get($iDocumentLinkID) {
 		global $default;
 		$sql = $default -> db;
-		$result = $sql -> query("SELECT * FROM $default->owl_document_link_table WHERE id = $iDocumentLinkID");
+		$result = $sql -> query("SELECT * FROM $default->document_link_table WHERE id = $iDocumentLinkID");
 		if ($result) {
 			if ($sql -> next_record()) {
 				$oDocumentLink = & new DocumentLink($sql -> f("parent_document_id"), $sql -> f("parent_document_id"));
 				$oDocumentLink -> iId = $sql -> f("id");
 				return $oDocumentLink;
 			}
-			$_SESSION["errorMessage"] = $lang_err_object_not_exist."id = ".$iDocumentLinkID." table = $default->owl_document_link_table";
+			$_SESSION["errorMessage"] = $lang_err_object_not_exist."id = ".$iDocumentLinkID." table = $default->document_link_table";
 			return false;
 		}
 		$_SESSION["errorMessage"] = $lang_err_database;

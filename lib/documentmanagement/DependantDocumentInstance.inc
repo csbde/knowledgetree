@@ -1,17 +1,30 @@
-<?php 
+<?php
 /**
-*
-* Class DependantDocumentInstance
-*
-* Represents a dependant document as per the database table dependant_document
-* Used to chain documents together in the collaboration process
-*
-* @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
-* @date 14 May 2003
-* @package lib.documentmanagement
-*/
-
-
+ * $Id$
+ *
+ * Represents a dependant document instance as per the database table dependant_document_instance.
+ * Used to chain documents together in the collaboration process/
+ *
+ * Copyright (c) 2003 Jam Warehouse http://www.jamwarehouse.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ * @version $Revision$
+ * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
+ * @package lib.documentmanagement 
+ */
 class DependantDocumentInstance {
 
 	/** primary key value */
@@ -114,7 +127,7 @@ class DependantDocumentInstance {
 		//if the object hasn't been created
 		if ($this -> iId < 0) {			
 			$sql = $default -> db;
-			$result = $sql -> query("INSERT INTO $default->owl_dependant_document_instance_table (document_title, user_id,template_document_id, parent_document_id) VALUES ('" . addslashes($this->sDocumentTitle) . "', $this->iUserID, " . (isset($this->iTemplateDocumentID) ? "$this->iTemplateDocumentID" : "NULL") . ", " . $this->iParentDocumentID . ")");
+			$result = $sql -> query("INSERT INTO $default->dependant_document_instance_table (document_title, user_id,template_document_id, parent_document_id) VALUES ('" . addslashes($this->sDocumentTitle) . "', $this->iUserID, " . (isset($this->iTemplateDocumentID) ? "$this->iTemplateDocumentID" : "NULL") . ", " . $this->iParentDocumentID . ")");
 			if ($result) {
 				$this -> iId = $sql -> insert_id();
 				return true;
@@ -159,7 +172,7 @@ class DependantDocumentInstance {
 		//only delete the object if it exists in the database
 		if ($this -> iId >= 0) {
 			$sql = $default -> db;
-			$result = $sql -> query("DELETE FROM $default->owl_dependant_document_instance_table WHERE id = $this->iId");
+			$result = $sql -> query("DELETE FROM $default->dependant_document_instance_table WHERE id = $this->iId");
 			if ($result) {
 				return true;
 			}
@@ -181,14 +194,14 @@ class DependantDocumentInstance {
 	function & get($iDependantDocumentID) {
 		global $default;
 		$sql = $default -> db;
-		$result = $sql -> query("SELECT * FROM $default->owl_dependant_document_instance_table WHERE id = $iDependantDocumentID");
+		$result = $sql -> query("SELECT * FROM $default->dependant_document_instance_table WHERE id = $iDependantDocumentID");
 		if ($result) {
 			if ($sql -> next_record()) {
 				$oDependantDocument = & new DependantDocumentInstance(stripslashes($sql -> f("document_title")), $sql -> f("user_id"), $sql -> f("template_document_id"), $sql->f("parent_document_id"));
 				$oDependantDocument -> iId = $sql -> f("id");
 				return $oDependantDocument;
 			}
-			$_SESSION["errorMessage"] = $lang_err_object_not_exist."id = ".$iDependantDocumentID." table = $default->owl_dependant_document_instance_table";
+			$_SESSION["errorMessage"] = $lang_err_object_not_exist."id = ".$iDependantDocumentID." table = $default->dependant_document_instance_table";
 			return false;
 		}
 		$_SESSION["errorMessage"] = $lang_err_database;

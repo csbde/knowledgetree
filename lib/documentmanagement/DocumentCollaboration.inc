@@ -1,12 +1,29 @@
 <?php
-/** 
+/**
+ * $Id$
  *
- * Static functions dealing with the document approval process
+ * Static functions dealing with the document approval process.
+ *
+ * Copyright (c) 2003 Jam Warehouse http://www.jamwarehouse.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
  * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ * @version $Revision$
  * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
  * @package lib.documentmanagement 
  */
-
 class DocumentCollaboration {
 	
 	/**
@@ -17,7 +34,7 @@ class DocumentCollaboration {
 	function documentCollaborationStarted($iDocumentID) {
 		global $default;
 		$sql = $default->db;
-		$sql->query("SELECT id FROM $default->owl_folders_user_roles_table WHERE document_id = $iDocumentID AND (active = 1 OR done = 1)");
+		$sql->query("SELECT id FROM $default->folders_user_roles_table WHERE document_id = $iDocumentID AND (active = 1 OR done = 1)");
 		if ($sql->next_record()) {
 			return true;
 		}
@@ -27,7 +44,7 @@ class DocumentCollaboration {
     function documentCollaborationDone($iDocumentID) {
 		global $default;
 		$sql = $default->db;
-		$sql->query("SELECT id FROM $default->owl_folders_user_roles_table WHERE document_id = $iDocumentID AND done = 0");
+		$sql->query("SELECT id FROM $default->folders_user_roles_table WHERE document_id = $iDocumentID AND done = 0");
 		if ($sql->num_rows() > 0) {
 			return false;
 		} else {
@@ -43,7 +60,7 @@ class DocumentCollaboration {
 	function userIsPerformingCurrentCollaborationStep($iDocumentID) {
 		global $default;
 		$sql = $default->db;
-		$sql->query("SELECT id FROM $default->owl_folders_user_roles_table WHERE document_id = $iDocumentID AND active = 1 AND user_id = " . $_SESSION["userID"]);
+		$sql->query("SELECT id FROM $default->folders_user_roles_table WHERE document_id = $iDocumentID AND active = 1 AND user_id = " . $_SESSION["userID"]);
 		if ($sql->next_record()) {
 			return true;
 		}
@@ -59,7 +76,7 @@ class DocumentCollaboration {
 	function resetDocumentCollaborationSteps($iDocumentID) {
 		global $default;
 		$sql = $default->db;		
-		if ($sql->query("UPDATE $default->owl_folders_user_roles_table SET active = 0, done = 0 WHERE document_id = $iDocumentID")) {		
+		if ($sql->query("UPDATE $default->folders_user_roles_table SET active = 0, done = 0 WHERE document_id = $iDocumentID")) {		
 			return true;
 		}
 		return false;
@@ -73,7 +90,7 @@ class DocumentCollaboration {
 	function isLastStepInCollaborationProcess($iDocumentID) {
 		global $default;
 		$sql = $default->db;
-        $sQuery = "SELECT id FROM $default->owl_folders_user_roles_table WHERE document_id = $iDocumentID AND done = 0";
+        $sQuery = "SELECT id FROM $default->folders_user_roles_table WHERE document_id = $iDocumentID AND done = 0";
 		$sql->query($sQuery);
         $default->log->info("lastCollabStep:$sQuery");
         if ($sql->num_rows() > 1) {
@@ -91,8 +108,8 @@ class DocumentCollaboration {
 		global $default;
 		$sql = $default->db;
         // returns all users, the sequence of their collaboration and the time of completion
-        $sQuery = "SELECT FURL.user_id, FURL.datetime, GFAL.precedence FROM $default->owl_folders_user_roles_table FURL " .
-                  "INNER JOIN $default->owl_groups_folders_approval_table GFAL ON FURL.group_folder_approval_id = GFAL.id " .
+        $sQuery = "SELECT FURL.user_id, FURL.datetime, GFAL.precedence FROM $default->folders_user_roles_table FURL " .
+                  "INNER JOIN $default->groups_folders_approval_table GFAL ON FURL.group_folder_approval_id = GFAL.id " .
                   "WHERE FURL.document_id = $iDocumentID " .
                   "ORDER BY GFAL.precedence";
 		$sql->query($sQuery);
@@ -124,8 +141,8 @@ class DocumentCollaboration {
 		//if the user is assigned to two or more roles, make sure we get the current
 		//one by ordering by precedence
 		$sql->query("SELECT FURL.id AS id, GFAT.precedence " .
-					"FROM $default->owl_groups_folders_approval_table AS GFAT " . 
-					"INNER JOIN $default->owl_folders_user_roles_table AS FURL ON GFAT.id = FURL.group_folder_approval_id " .
+					"FROM $default->groups_folders_approval_table AS GFAT " . 
+					"INNER JOIN $default->folders_user_roles_table AS FURL ON GFAT.id = FURL.group_folder_approval_id " .
 					"WHERE document_id = $iDocumentID AND FURL.user_id = " . $_SESSION["userID"] . " AND done=0 " . 
 					"ORDER BY precedence ASC");
 		if ($sql->next_record()) {
@@ -138,16 +155,16 @@ class DocumentCollaboration {
 			//get it's sequence number
 			$iCurrentSequenceNumber =  $sql->f("precedence");
 			$sql->query("SELECT MIN(precedence) AS precedence " . 
-						"FROM $default->owl_groups_folders_approval_table AS GFAT " . 
-						"INNER JOIN $default->owl_folders_user_roles_table AS FURL ON GFAT.id = FURL.group_folder_approval_id " . 
+						"FROM $default->groups_folders_approval_table AS GFAT " . 
+						"INNER JOIN $default->folders_user_roles_table AS FURL ON GFAT.id = FURL.group_folder_approval_id " . 
 						"WHERE document_id = $iDocumentID AND done = 0");			
 			if ($sql->next_record()) {
 				if ($sql->f("precedence") != $iCurrentSequenceNumber) {
 					//if there are no concurrent steps outstanding
 					$iNextSequenceNumber = $sql->f("precedence");
 					$sql->query("SELECT FURL.id " .
-								"FROM $default->owl_groups_folders_approval_table AS GFAT " . 
-								"INNER JOIN $default->owl_folders_user_roles_table AS FURL ON GFAT.id = FURL.group_folder_approval_id " . 
+								"FROM $default->groups_folders_approval_table AS GFAT " . 
+								"INNER JOIN $default->folders_user_roles_table AS FURL ON GFAT.id = FURL.group_folder_approval_id " . 
 								"WHERE document_id = $iDocumentID AND precedence = $iNextSequenceNumber");
 					while ($sql->next_record()) {
 						$oFolderUserRole = FolderUserRole::get($sql->f("id"));
@@ -187,7 +204,7 @@ class DocumentCollaboration {
 		global $default;
 		//only create the documents if they haven't been created		
 		if ($oFolderUserRole->getDependantDocumentsCreated() == false) {
-			$sQuery = "SELECT * FROM $default->owl_dependant_document_template_table WHERE group_folder_approval_link_id = " . $oFolderUserRole->getGroupFolderApprovalID();
+			$sQuery = "SELECT * FROM $default->dependant_document_template_table WHERE group_folder_approval_link_id = " . $oFolderUserRole->getGroupFolderApprovalID();
 			$sql = $default->db;
 			$sql->query($sQuery);
 			while ($sql->next_record()) {				
@@ -231,8 +248,8 @@ class DocumentCollaboration {
 		global $default;
 		//get the current sequence number		
 		$sQuery = "SELECT GFAT.precedence, GFAT.folder_id, FURL.id AS furl_id, FURL.document_id AS document_id " . 
-				"FROM $default->owl_folders_user_roles_table AS FURL " .
-				"INNER JOIN $default->owl_groups_folders_approval_table AS GFAT ON FURL.group_folder_approval_id = GFAT.id " .
+				"FROM $default->folders_user_roles_table AS FURL " .
+				"INNER JOIN $default->groups_folders_approval_table AS GFAT ON FURL.group_folder_approval_id = GFAT.id " .
 				"WHERE FURL.document_id = $iDocumentID " .
 				"AND FURL.user_id = " . $_SESSION["userID"] . " " .
 				"AND FURL.active = 1 " .
@@ -251,8 +268,8 @@ class DocumentCollaboration {
 			//if there are concurrent collaboration steps and one is rejected, then all
 			//must be rolled back, whether they were accepted or not			
 			$sQuery = "SELECT FURL.id, FURL.user_id  " .
-					  "FROM $default->owl_folders_user_roles_table AS FURL " . 
-					  "INNER JOIN $default->owl_groups_folders_approval_table AS GFAT ON FURL.group_folder_approval_id = GFAT.id " .
+					  "FROM $default->folders_user_roles_table AS FURL " . 
+					  "INNER JOIN $default->groups_folders_approval_table AS GFAT ON FURL.group_folder_approval_id = GFAT.id " .
 					  "WHERE FURL.document_id = $iDocumentID AND GFAT.precedence = $iCurrentSequenceNumber";			
 			$sql->query($sQuery);
 			   
@@ -287,7 +304,7 @@ class DocumentCollaboration {
 			
 			//get the previous sequence number
 			$sQuery = "SELECT COALESCE(MAX(precedence), -1) AS precedence " .
-						"FROM $default->owl_groups_folders_approval_table AS GFAT " .
+						"FROM $default->groups_folders_approval_table AS GFAT " .
 						"WHERE precedence < $iCurrentSequenceNumber";
 						"AND folder_id = $iFolderID";			
 			$sql->query($sQuery);			 
@@ -312,7 +329,7 @@ class DocumentCollaboration {
 			} else {
 				//there are steps prior to this step
 				$sQuery = "SELECT FURL.id AS furl_id " . 
-					"FROM $default->owl_folders_user_roles_table AS FURL INNER JOIN $default->owl_groups_folders_approval_table AS GFAT ON FURL.group_folder_approval_id = GFAT.id " .
+					"FROM $default->folders_user_roles_table AS FURL INNER JOIN $default->groups_folders_approval_table AS GFAT ON FURL.group_folder_approval_id = GFAT.id " .
 					"WHERE FURL.document_id = $iDocumentID " .
 					"AND GFAT.precedence = " . $sql->f("precedence");
 				
@@ -354,7 +371,7 @@ class DocumentCollaboration {
 	 */
 	function documentIsPendingWebPublishing($iDocumentID) {
 		global $default;
-		$sQuery = "SELECT id FROM $default->owl_web_documents_table WHERE document_id = $iDocumentID AND status_id = 1";
+		$sQuery = "SELECT id FROM $default->web_documents_table WHERE document_id = $iDocumentID AND status_id = 1";
 		$sql = $default->db;
 		$sql->query($sQuery);
 		if ($sql->next_record()) {
@@ -368,7 +385,7 @@ class DocumentCollaboration {
 	 */
 	function documentIsPublished($iDocumentID) {
 		global $default;
-		$sQuery = "SELECT id FROM $default->owl_web_documents_table WHERE document_id = $iDocumentID AND status_id = 2";
+		$sQuery = "SELECT id FROM $default->web_documents_table WHERE document_id = $iDocumentID AND status_id = 2";
 		$sql = $default->db;
 		$sql->query($sQuery);
 		if ($sql->next_record()) {
@@ -386,8 +403,8 @@ class DocumentCollaboration {
 	function notifyWebMaster($iDocumentID, $sComment) {
 		global $default;
 		$sQuery = "SELECT WS.web_master_id, WS.web_site_name, WS.web_site_url " .
-				  "FROM $default->owl_web_sites_table AS WS " .
-                  "INNER JOIN $default->owl_web_documents_table AS WD ON WS.id = WD.web_site_id " .
+				  "FROM $default->web_sites_table AS WS " .
+                  "INNER JOIN $default->web_documents_table AS WD ON WS.id = WD.web_site_id " .
 				  "WHERE WD.document_id = $iDocumentID";
 		
 		$sql = $default->db;

@@ -1,16 +1,29 @@
 <?php
-
 /**
-*
-* Class DocumentFieldLink
-*
-* Represents a document field link as per the database table document_fields_link
-*
-* @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
-* @date 19 January 2003
-* @package lib.documentmanagement
-*/
-
+ * $Id$
+ *
+ * Represents a document field link as per the database table document_fields_link.
+ *
+ * Copyright (c) 2003 Jam Warehouse http://www.jamwarehouse.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ * @version $Revision$
+ * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
+ * @package lib.documentmanagement 
+ */
 class DocumentFieldLink {
 	
 	/** document field link primary key */
@@ -119,7 +132,7 @@ class DocumentFieldLink {
 		//if the id >= 0, then the object has already been created
 		if ($this->iId < 0) {
 			$sql = $default->db;
-			$result = $sql->query("INSERT INTO " . $default->owl_document_fields_table . " (document_id, document_field_id, value) " .
+			$result = $sql->query("INSERT INTO " . $default->document_fields_link_table . " (document_id, document_field_id, value) " .
 						"VALUES ($this->iDocumentID, $this->iDocumentFieldID, '" . addslashes($this->sValue) . "')");
 			if ($result) {
 				//set the current documents primary key
@@ -129,7 +142,7 @@ class DocumentFieldLink {
 			$_SESSION["errorMessage"] = $lang_err_database;
 			return false;			
 		}
-		$_SESSION["errorMessage"] = $lang_err_object_exists . "id = " . $this->iId . " table = $default->owl_document_fields_table";
+		$_SESSION["errorMessage"] = $lang_err_object_exists . "id = " . $this->iId . " table = $default->document_fields_link_table";
 		return false;
 		
 	}
@@ -143,7 +156,7 @@ class DocumentFieldLink {
 		global $default, $lang_err_database, $lang_err_object_key;
 		if ($this->iId >= 0) {
 			$sql = $default->db;
-			$result = $sql->query("UPDATE " . $default->owl_document_fields_table . " SET " .
+			$result = $sql->query("UPDATE " . $default->document_fields_link_table . " SET " .
 					"document_id = $this->iDocumentID, document_field_id = $this->iDocumentFieldID, value = '" . addslashes($this->sValue) . "'" .
 					"WHERE id = $this->iId");
 			if ($result) {
@@ -167,7 +180,7 @@ class DocumentFieldLink {
 		global $default, $lang_err_database, $lang_err_object_key;
 		if ($this->iId >= 0) {
 			$sql = $default->db;
-			$result = $sql->query("DELETE FROM  " . $default->owl_document_fields_table . "  WHERE id = $this->iId");
+			$result = $sql->query("DELETE FROM  " . $default->document_fields_link_table . "  WHERE id = $this->iId");
 			if ($result) {
 				$this->iId = -1;
 				return true;
@@ -191,13 +204,13 @@ class DocumentFieldLink {
 	function & get($iDocumentFieldLinkID) {
 		global $default, $lang_err_doc_not_exist;
 		$sql = $default->db;
-		$sql->query("SELECT * FROM " . $default->owl_document_fields_table . " WHERE id = " . $iDocumentFieldLinkID);
+		$sql->query("SELECT * FROM " . $default->document_fields_link_table . " WHERE id = " . $iDocumentFieldLinkID);
 		if ($sql->next_record()) {			
 			$oDocumentFieldLink = & new DocumentFieldLink($sql->f("document_id"), $sql->f("document_field_id"), $sql->f("value"));		
 			$oDocumentFieldLink->iId = $iDocumentFieldLinkID;
 			return $oDocumentFieldLink;
 		}
-		$_SESSION["errorMessage"] = $lang_err_object_not_exist . "id = " . $iDocumentID . " table = $default->owl_document_fields_table";
+		$_SESSION["errorMessage"] = $lang_err_object_not_exist . "id = " . $iDocumentID . " table = $default->document_fields_link_table";
 		return false;		
 	}
 }
