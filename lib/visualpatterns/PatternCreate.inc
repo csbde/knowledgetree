@@ -76,7 +76,7 @@ class PatternCreate {
 					} else {
 						$sToRender .= "<td>" . $this->aDisplayRowNames[$i] . "</td><td><input type=\"text\" name=\"" . $this->sUniqueName . "_" . $i . "_value value=\"\" /></td>\n";						
 					}*/
-					$sToRender .= "<td>" . $this->aDisplayRowNames[$i] . "</td><td><input type=\"text\" name=\"" . $this->sUniqueName . "_" . $i . "_value\" value=\"\" /></td>\n";
+					$sToRender .= "<td>" . $this->aDisplayRowNames[$i] . "</td><td><input size = \"30\" type=\"text\" name=\"" . $this->sUniqueName . "_" . $i . "_value\" value=\"\" /></td>\n";
 					break;
 				case 2:
 					//write the type (in this case checkbox)
