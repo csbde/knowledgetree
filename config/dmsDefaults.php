@@ -141,7 +141,7 @@ $default->siteMap->addPage("addUnit", "addUnit.php", "Administration", "Unit Adm
 $default->siteMap->addPage("addOrganisation", "addOrganisation.php", "Administration", "System Administrators");
 $default->siteMap->addPage("scratchPad", "tests/scratchPad.php", "Tests", "Unit Administrators");
 
-require_once($default->owl_root_url " ./lib/Log.inc");
+require_once($default->owl_root_url . "/lib/Log.inc");
 require_once($default->owl_root_url . "/lib/Session.inc");
 require_once($default->owl_root_url . "/lib/control.inc");
 require_once($default->owl_root_url . "/lib/db.inc");
