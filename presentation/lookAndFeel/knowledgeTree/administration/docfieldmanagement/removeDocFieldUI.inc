@@ -21,7 +21,7 @@ function getDeletePage($fDocFieldID) {
 
     $sToRender .= "<table width=\"600\">" . renderHeading("Remove Document Field") . "</table>";
     $sToRender .= "<table>\n";
-    $sToRender .= "<tr><td>$sHeading</td></tr>\n";
+    $sToRender .= "<tr><td colspan=\"2\">$sHeading</td></tr>\n";
     $sToRender .= "<tr>\n";
     $sToRender .= "<td>Document Field Name: </td><td>" . getDocFieldDisplay($oDocField) . "</td>\n";
     $sToRender .= "</tr>\n";
@@ -35,7 +35,7 @@ function getDeletePage($fDocFieldID) {
     $sToRender .= "<tr>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "<td></td>" . getDeleteButton($oDocField) . getCancelButton($oDocField);
+    $sToRender .= "<td></td>" . getDeleteButton($oDocField);// . getCancelButton($oDocField);
     $sToRender .= "</tr>\n";
     $sToRender .= "</table>\n";
 
