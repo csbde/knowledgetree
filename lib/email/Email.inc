@@ -45,7 +45,7 @@ Class Email {
 		$emailHyperlink->From = $FromEmail;
 		$emailHyperlink->FromName = $FromName;
 		$emailHyperlink->AddAddress($ToEmail);
-		$emailHyperlink->Subject = $Subj;
+		$emailHyperlink->Subject = stripslashes($Subj);
 		$emailHyperlink->Body = stripslashes($EmailBody) . ' ' . $hyperlink;
 		$emailHyperlink->WordWrap = 100;
 		$emailHyperlink->IsHTML(true);
@@ -87,7 +87,7 @@ Class Email {
 		$emailHyperlink->From = $FromEmail;
 		$emailHyperlink->FromName = $FromName;
 		$emailHyperlink->AddAddress($ToEmail);
-		$emailHyperlink->Subject = $Subj  . ' ' . $hyperlink; //only difference from above
+		$emailHyperlink->Subject = stripslashes($Subj)  . ' ' . $hyperlink; //only difference from above
 		$emailHyperlink->Body = stripslashes($EmailBody) . " <br>This bug can be found on this page: " . "<a href = ". $hyperlink .">". $hyperlink ."</a>";
 		$emailHyperlink->WordWrap = 80;
 		$emailHyperlink->IsHTML(true);
