@@ -64,11 +64,16 @@ class AuthLdap {
         foreach ($this->server as $key => $host) {
             $this->connection = ldap_connect( $host);
             if ( $this->connection) {
-                // Connected, now try binding....
-                if ( $this->result=@ldap_bind( $this->connection)) {
-                    // Bound OK!
-                    $this->bound = $host;
+                // don't try anon bind for ad
+                if ($this->serverType == "ActiveDirectory") {
                     return true;
+                } else {
+                    // Connected, now try binding....
+                    if ( $this->result=@ldap_bind( $this->connection)) {
+                        // Bound OK!
+                        $this->bound = $host;
+                        return true;
+                    }
                 }
             }
         }
