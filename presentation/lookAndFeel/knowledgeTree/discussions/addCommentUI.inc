@@ -62,15 +62,19 @@ function renderDocumentPath($iDocumentID) {
  *	@param $sSubject -> a Subject text
  *	@param $sBody -> a Body text 
  */
-function getAddComment($fDocumentID, $sSubject, $sBody) {
+function getAddComment($fDocumentID, $sSubject, $sBody, $iCommentID, $fNewComment = null) {
 	global $default;
 				
 	$sHeading = "Add a Comment";	
 	$sToRender .= renderHeading($sHeading);
 	$sToRender .= renderDocumentPath($fDocumentID);	
 	$sToRender .= "<table width=\"100%\" border=\"0\" cellpadding=0 ><tr><td></td>\n";	
-	$sToRender .= "<td align=right width=100%><input onmouseover=\"this.style.cursor='hand'\" type=\"image\" src=\"$default->graphicsUrl/widgets/submit.gif\"></td>";
-	$sToRender .= "<td width=\"10\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" onmouseover=\"this.style.cursor='hand'\" onclick=\"javascript: history.go(-1);\" ></td></tr>\n";
+	$sToRender .= "<td align=right width=100%><input onmouseover=\"this.style.cursor='hand'\" type=\"image\" src=\"$default->graphicsUrl/widgets/submit.gif\"></td>";	
+	if($fNewComment>0){	// If user is creating a new comment
+		$sToRender .= "<td width=\"10\"><a href=\"" . generateControllerLink("viewDiscussion", "fForDiscussion=1&fDocumentID=$fDocumentID") . "\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=0 ></a></td></tr>\n";
+	}else {				// If the user is replying to a comment
+		$sToRender .= "<td width=\"10\"><a href=\"" . generateControllerLink("viewDiscussion", "fViewComment=1&iDocumentID=$fDocumentID&iCommentID=$iCommentID") . "\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=0 ></a></td></tr>\n";		
+	}
 	$sToRender .= "<br><tr><td valign=\"top\" width=10><b>Subject</b></td><td colspan=2>\n";
 	$sToRender .= "<input type=\"text\" style=\"width:385\"  name=\"NewCommentSubject\" id=\"NewCommentSubject\" value=\"$sSubject\"></td></tr>\n";	
 	$sToRender .= "<tr><td valign=\"top\"><b>Body</b></td><td colspan=2><textarea  cols=60 rows=\"21\" name=\"NewComment\" id=\"NewComment\" style=\"FONT-STYLE: normal; FONT-FAMILY: sans-serif; FONT-VARIANT: normal\">$sBody</textarea></td></tr></table>\n";		

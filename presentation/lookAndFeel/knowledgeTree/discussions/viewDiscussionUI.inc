@@ -13,8 +13,8 @@ function getPageButtons($oThread){
 	global $default;
 	
 	$sToRender .= "<table width=100%><tr>\n";
-	$sToRender .= "<td align=right width=100%><a href=\"" . generateControllerLink("addComment", "fDocumentID=" . $oThread->getDocumentID() . "&fAddComment=1") . "\"><img src=\"$default->graphicsUrl/widgets/addcomment.gif\" border=\"0\" /></a></td>\n";
-	$sToRender .= "<td align=right width=10><img src=\"$default->graphicsUrl/widgets/back.gif\" onmouseover=\"this.style.cursor='hand'\" onclick=\"javascript: history.go(-1);\" /></td>\n";
+	$sToRender .= "<td align=right width=100%><a href=\"" . generateControllerLink("addComment", "fDocumentID=" . $oThread->getDocumentID() . "&fAddComment=1&fNewComment=1") . "\"><img src=\"$default->graphicsUrl/widgets/addcomment.gif\" border=\"0\" /></a></td>\n";
+	$sToRender .= "<td align=right width=10><a href=\"" . generateControllerLink("viewDocument", "fDocumentID=" . $oThread->getDocumentID() . "&fAddComment=1") . "\"><img src=\"$default->graphicsUrl/widgets/back.gif\"  border=\"0\" /></a></td>\n";
 		
 	$sToRender .= "</tr></table>\n";
 	//$sToRender .= "<a href=\"" . generateControllerLink("addComment", "fDocumentID=" . $oThread->getDocumentID() . "&fAddComment=1") . "\"><img src=\"$default->graphicsUrl/widgets/addcomment.gif\" border=\"0\" /></a>\n";
@@ -118,7 +118,7 @@ function getViewComment($iNum,$oThread,$oComment,$oUser) {
 		$sToRender .= "<td width=100><b>Views: </b> " . $oThread->getNumberOfViews() . "</td>";    		
 		$sToRender .= "<td width=20></td>";
 		$sToRender .= "<td><b>Replies: </b> " . $oThread->getNumberOfReplies() . "</td>";
-		$sToRender .= "<td  align=right><a href=\"" . generateControllerLink("addComment", "fDocumentID=" . $oThread->getDocumentID() . "&fAddComment=1") . "\"><img src=\"$default->graphicsUrl/widgets/addcomment.gif\" border=\"0\" /></a>";
+		$sToRender .= "<td  align=right><a href=\"" . generateControllerLink("addComment", "fDocumentID=" . $oThread->getDocumentID() . "&fAddComment=1&fCommentID=" . $oComment->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/addcomment.gif\" border=\"0\" /></a>";
 		$sToRender .= "<img src=\"$default->graphicsUrl/widgets/back.gif\" onmouseover=\"this.style.cursor='hand'\" onclick=\"javascript: history.go(-1);\" ></td>";
 		$sToRender .= "</tr></table><br>\n";			
 		$sToRender .= "<table border=\"0\" width=\"100%\">\n";
@@ -156,7 +156,7 @@ function getCommentBody($oComment, $iDocumentID, $oUser) {
 	$sToRender .= "<br><table width=100% border=0><tr ><td colspan=2><b>Author: </b>" . $oUser->getUserName() . "</td>\n";	
 	$sToRender .= "<td align=right>\n";	
 	$sToRender .= "<a href=\"" . generateControllerLink("addComment", "fDocumentID=" . $iDocumentID . "&fReplyComment=1&fCommentID=" . $oComment->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/reply.gif\" border=\"0\" /></a>";	
-	$sToRender .= "</td><td width=30><img src=\"$default->graphicsUrl/widgets/back.gif\" onmouseover=\"this.style.cursor='hand'\" onclick=\"javascript: history.go(-1);\" ></td></tr>\n"; 
+	$sToRender .= "</td><td width=30><a href=\"" . generateControllerLink("viewDiscussion", "fForDiscussion=1&fDocumentID=$iDocumentID") . "\"><img src=\"$default->graphicsUrl/widgets/back.gif\" border=0 ><a></td></tr>\n"; 
 	$sToRender .= "<tr><td width=\"1\" style=\"background-color:#F5F6EE;\" valign=\"top\"><b>Subject: </b></td><td width=405 style=\"background-color:#F5F6EE;\">";	
 	$sToRender .= "<a>" . $oComment->getSubject() . "</a>";
 	$sToRender .= "</td><td colspan=2><b>Date: </b><font color=\"#056DCE\">" . $oComment->getDate() . "</font>&nbsp;&nbsp;&nbsp;</td></tr><tr><td colspan=4 valign=top>";	
