@@ -250,8 +250,9 @@ $default->siteMap->addDefaultPage("help", "/presentation/lookAndFeel/knowledgeTr
 $default->siteMap->addDefaultPage("logout", "/presentation/logout.php", "Logout", Guest, "Logout");
 
 // pages for discussion threads
-$default->siteMap->addDefaultPage("viewDiscussion", "/presentation/lookAndFeel/knowledgeTree/discussions/viewDiscussionBL.php", "Discussion Threads", User, "viewDiscussion"); 
-$default->siteMap->addDefaultPage("addComment", "/presentation/lookAndFeel/knowledgeTree/discussions/addCommentBL.php", "Discussion Threads", User, "addComment"); 
+$default->siteMap->addDefaultPage("viewDiscussion", "/presentation/lookAndFeel/knowledgeTree/discussions/viewDiscussionBL.php", "Discussion Threads", User, false); 
+$default->siteMap->addDefaultPage("viewComment", "/presentation/lookAndFeel/knowledgeTree/discussions/viewCommentBL.php", "Discussion Threads", User, false);
+$default->siteMap->addDefaultPage("addComment", "/presentation/lookAndFeel/knowledgeTree/discussions/addCommentBL.php", "Discussion Threads", User, false); 
 
 $default->siteMap->addSectionColour("Discussion Threads", "td", "BDDFE0");
 $default->siteMap->addSectionColour("Discussion Threads", "th", "57AFAE");
