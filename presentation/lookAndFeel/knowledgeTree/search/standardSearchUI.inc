@@ -50,7 +50,7 @@ function getSearchResultsByCategory($iFolderID, $sKeywords, $iStartIndex, $sCate
 	//only check in the parent_folder_ids if we're not searching from the
 	//root folder down
 	if (isset($iFolderID) && ($iFolderID != 1)) { 
-        $iFolderID = int($iFolderID);
+        $iFolderID = (int)$iFolderID;
 		$sQuery .= "AND (F.parent_folder_ids LIKE '%,$iFolderID,%' OR F.id = $iFolderID) ";
 	}				
 	$sQuery .= "AND DF.name LIKE 'Category' ";
@@ -91,7 +91,7 @@ function getSearchResultsByDocumentType($iFolderID, $sKeywords, $iStartIndex, $i
 	//only check in the parent_folder_ids if we're not searching from the
 	//root folder down
 	if (isset($iFolderID) && ($iFolderID != 1)) { 
-        $iFolderID = int($iFolderID);
+        $iFolderID = (int)$iFolderID;
 		$sQuery .= "AND (F.parent_folder_ids LIKE '%,$iFolderID,%' OR F.id = $iFolderID) ";
 	}				
 	$sQuery .= "ORDER BY score DESC";
@@ -124,7 +124,7 @@ function getSeachResultsByFolder($iFolderID, $iStartIndex, $sKeywords) {
 	//only check in the parent_folder_ids if we're not searching from the
 	//root folder down
 	if (isset($iFolderID) && ($iFolderID != 1)) { 
-        $iFolderID = int($iFolderID);
+        $iFolderID = (int)$iFolderID;
 		$sQuery .= "AND (F.parent_folder_ids LIKE '%,$iFolderID,%' OR F.id = $iFolderID) ";
 	}				
 	$sQuery .= "ORDER BY score DESC";
