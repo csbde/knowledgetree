@@ -1,6 +1,6 @@
 <?php
 
-require_once ("./lib/owl.lib.php");
+require_once ("$default->owl_root_url/lib/owl.lib.php");
 
 /**
 Builds a query using the table name and the array of specified columns
