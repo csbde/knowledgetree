@@ -38,12 +38,12 @@ function renderPendingWebDocuments($aPendingDocumentList) {
         $sBgColor = "#9D9D7F"; 
         $sToRender  = "\t\t\t<tr align=\"left\" bgcolor=\"$sBgColor\">\n";
             
-        $sToRender .= "\t\t\t\t<th class=\"sectionHeading\" colspan=\"2\"><font color=\"ffffff\">Pending Web Documents</font></th>\n";
+    	$sToRender .= "\t\t\t\t<th class=\"sectionHeading\" colspan=\"2\"><font color=\"ffffff\">" . _("Pending Web Documents") . "</font></th>\n";			        
         $sToRender .= "\t\t\t</tr>\n";
         for ($i = 0; $i < count($aPendingDocumentList); $i++) {
             $oWebDocument = $aPendingDocumentList[$i];
             $sToRender .= "\t\t\t<tr>\n";
-            $sToRender .= "\t\t\t\t<td colspan=\"2\">" . generateControllerLink("webDocument", "fWebDocumentID=" . $oWebDocument->getID(), "<img src=\"$default->graphicsUrl/widgets/dstatus.gif\" border=\"0\"/>&nbsp;" . $oWebDocument->getDisplayPath()) . "</td>\n";        
+            $sToRender .= "\t\t\t\t<td colspan=\"2\">" . generateControllerLink("webDocument", "fWebDocumentID=" . $oWebDocument->getID(), "<img src=\"" . imgSrc("widgets/dstatus.gif") . "\" border=\"0\"/>&nbsp;" . $oWebDocument->getDisplayPath()) . "</td>\n";        
             $sToRender .= "\t\t\t</tr>\n";
         }
         return $sToRender;
@@ -68,7 +68,7 @@ function renderRestorationRequests($aRestorationRequests) {
         $oDocument = Document::get($aRestorationRequests[$i]->getDocumentID());
         if ($oDocument) {
           $sToRender .= "\t\t\t<tr>\n";
-          $sToRender .= "\t\t\t\t<td colspan=\"2\">" . generateControllerLink("viewDocument", "fDocumentID=" . $oDocument->getID(), "<img src=\"$default->graphicsUrl/widgets/dstatus.gif\" border=\"0\"/>&nbsp;" . $oDocument->getDisplayPath()) . "</td>\n";        
+          $sToRender .= "\t\t\t\t<td colspan=\"2\">" . generateControllerLink("viewDocument", "fDocumentID=" . $oDocument->getID(), "<img src=\"" . imgSrc("widgets/dstatus.gif") . "\" border=\"0\"/>&nbsp;" . $oDocument->getDisplayPath()) . "</td>\n";        
           $sToRender .= "\t\t\t</tr>\n";
         }
     }
@@ -96,7 +96,7 @@ function renderPendingCollaborationDocuments($aPendingDocumentList) {
         $oDocument = $aPendingDocumentList[$i];
         if ($oDocument) {
 	        $sToRender .= "\t\t\t<tr>\n";
-	        $sToRender .= "\t\t\t\t<td colspan=\"2\">" . generateControllerLink("viewDocument", "fDocumentID=" . $oDocument->getID() . "&fShowSection=documentRouting", "<img src=\"$default->graphicsUrl/widgets/dstatus.gif\" border=\"0\"/>&nbsp;" . $oDocument->getDisplayPath()) . "</td>\n";        
+	        $sToRender .= "\t\t\t\t<td colspan=\"2\">" . generateControllerLink("viewDocument", "fDocumentID=" . $oDocument->getID() . "&fShowSection=documentRouting", "<img src=\"" . imgSrc("widgets/dstatus.gif") . "\" border=\"0\"/>&nbsp;" . $oDocument->getDisplayPath()) . "</td>\n";        
 	        $sToRender .= "\t\t\t</tr>\n";
         }
     }    
@@ -133,7 +133,7 @@ function renderCheckedOutDocuments($aCheckedOutDocumentList) {
     for ($i = 0; $i < count($aCheckedOutDocumentList); $i++) {
         $oDocument = $aCheckedOutDocumentList[$i];
         $sToRender .= "\t\t\t<tr>\n";
-        $sToRender .= "\t\t\t\t<td>" . generateControllerLink("viewDocument", "fDocumentID=" . $oDocument->getID(), "<img src=\"$default->graphicsUrl/widgets/dstatus.gif\" border=\"0\"/>&nbsp;" . $oDocument->getDisplayPath()) . "</td>\n";
+        $sToRender .= "\t\t\t\t<td>" . generateControllerLink("viewDocument", "fDocumentID=" . $oDocument->getID(), "<img src=\"" . imgSrc("widgets/dstatus.gif") . "\" border=\"0\"/>&nbsp;" . $oDocument->getDisplayPath()) . "</td>\n";
         $sToRender .= "\t\t\t\t<td align=right>" . $oDocument->getDaysSinceLastModified() . "</td>\n";
         $sToRender .= "\t\t\t</tr>\n";
     }
@@ -192,7 +192,7 @@ function renderDependantDocuments($aDependantDocumentList) {
         $sToRender .= "\t\t\t<tr>\n";
         $sToRender .= "\t\t\t\t<td>" . generateControllerLink("addDocument", "fFolderID=" . User::getUserRootFolderID() . "&fDependantDocumentID=" . $oDependantDocument->getID(), $oDependantDocument->getDocumentTitle()) . "</td>";
         if (!($oTemplateDocument === false)) {        
-	        $sToRender .= "<td>" . generateControllerLink("viewDocument", "fDocumentID=" . $oTemplateDocument->getID(), "<img src=\"$default->graphicsUrl/widgets/dstatus.gif\" border=\"0\"/>&nbsp;" . $oTemplateDocument->getName()) . "</td>\n";	     
+	        $sToRender .= "<td>" . generateControllerLink("viewDocument", "fDocumentID=" . $oTemplateDocument->getID(), "<img src=\"" . imgSrc("widgets/dstatus.gif") . "\" border=\"0\"/>&nbsp;" . $oTemplateDocument->getName()) . "</td>\n";	     
         } else {
         	$sToRender .= "<td>No template specified</td>\n";
         }
@@ -212,7 +212,7 @@ function renderQuickLinks($aQuickLinks) {
     $sToRender .= "\t\t\t</tr>\n";
     for ($i = 0; $i < count($aQuickLinks); $i++) {
         $sToRender .= "\t\t\t<tr>\n";
-        $sToRender .= "\t\t\t\t<td colspan=\"2\"><a href=\"" . $aQuickLinks[$i]->getUrl() . "\" target=\"_new\"><img src=\"$default->graphicsUrl/widgets/qlink.gif\" border=\"0\"/>" . $aQuickLinks[$i]->getName() . "</a></td>\n";
+        $sToRender .= "\t\t\t\t<td colspan=\"2\"><a href=\"" . $aQuickLinks[$i]->getUrl() . "\" target=\"_new\"><img src=\"" . imgSrc("widgets/qlink.gif") . "\" border=\"0\"/>" . $aQuickLinks[$i]->getName() . "</a></td>\n";
         $sToRender .= "\t\t\t</tr>\n";
     }
     return $sToRender;
