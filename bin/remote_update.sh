@@ -15,20 +15,24 @@ usage() {
 
 deploy() {
     # cleanup
-    rm -rf $tmp* 2> /dev/null
+    rm -rf $tmp 2> /dev/null
     mkdir $tmp
 
     # export owl
     cd $tmp
-    #cvs -d $cvsroot co -r $tag owl
-    cvs -d $cvsroot co owl
+    cvs -d $cvsroot co -r $tag owl
     cd owl/Documents
     cvs update -d
+
     # remove CVS directories
     find $tmp -name CVS -exec rm -rf {} \; 2> /dev/null
 
     # tar it up
     tar -czvf /tmp/owl.tgz $tmp
+    
+    # clean up
+    rm -rf $tmp 2> /dev/null
+
     # punt it over the wall
     scp /tmp/owl.tgz $host:/tmp/
 
