@@ -77,7 +77,7 @@ class Log {
      * @param string the message to write to the log file
      */
     function info($logEntry) {
-        $this->writeLog($this->prefixEntry($logEntry, " INFO"), INFO);
+        $this->writeLog($this->prefixEntry($logEntry, "INFO"), INFO);
     }
 
     /**
@@ -113,7 +113,7 @@ class Log {
      * @param int the error level to log at     
      */
     function prefixEntry($logEntry, $logLevel) {
-        return getCurrentDateTime() . ":$logLevel: $logEntry\n";
+        return getCurrentDateTime() . " (" . getenv("REMOTE_ADDR") . ") $logLevel: $logEntry\n";
     }
 }
 ?>
