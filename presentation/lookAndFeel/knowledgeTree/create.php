@@ -30,10 +30,14 @@
 require_once("../../../config/dmsDefaults.php");
 require_once("$default->fileSystemRoot/presentation/Html.inc");
 
+if (!checkSession()) {
+    exit(0);
+}
+    
 $aKeys = array_keys($_POST);
 $aParameterValues = array();
-$sObjectName;
-$sObjectFolderName;
+// $sObjectName;
+// $sObjectFolderName;
 //parse the information in the html page
 for ($i = 0; $i < count($aKeys); $i++) {	
 	$sRowStart = $aKeys[$i];		
@@ -41,11 +45,11 @@ for ($i = 0; $i < count($aKeys); $i++) {
 	if ($pos == 0) {		
 		$i++;
 		//get the object to create
-		$sObjectName = $_POST[$aKeys[$i]];
-		$i++;
+		//$sObjectName = $_POST[$aKeys[$i]];
+		//$i++;
 		//get the object folder name
-		$sObjectFolderName = $_POST[$aKeys[$i]];		
-		$i++;
+		//$sObjectFolderName = $_POST[$aKeys[$i]];		
+		//$i++;
 		
 		while ((strncasecmp("unique_end", $sRowStart, 10) != 0)  && ($i < count($aKeys))) {			
 			//get the paramater number

@@ -33,19 +33,40 @@ function constructQuery($aKeys, $aSuppliedValues = null) {
 		$pos = strncasecmp("unique_start", $sRowStart, 12);
 		
 		if ($pos == 0) {		
-			$aColumns = array();
+            $sRandomString = substr($sRowStart, 13);
+            if (!array_key_exists("pelfq_" . $sRandomString . "_tn", $_SESSION)) {
+                print "Hack attempt!  Session data not set up for store.\n";
+                return false;
+            }
+            if (!array_key_exists("pelfq_" . $sRandomString . "_id", $_SESSION)) {
+                print "Hack attempt!  Session data not set up for store.\n";
+                return false;
+            }
+            if (!array_key_exists("pelfq_" . $sRandomString . "_columns", $_SESSION)) {
+                print "Hack attempt!  Session data not set up for store.\n";
+                return false;
+            }
+			
+            $aColumns = array();
 			$aValues = array();
 			$aTypes = array();
 			
-			$iPrimaryKey = $_POST[$aKeys[++$i]];		
-			$sTableName = $_POST[$aKeys[++$i]];
+			// $iPrimaryKey = $_POST[$aKeys[++$i]];		
+			// $sTableName = $_POST[$aKeys[++$i]];
+            $iPrimaryKey = $_SESSION["pelfq_" . $sRandomString . "_id"];
+            $sTableName = $_SESSION["pelfq_" . $sRandomString . "_tn"];
+            $aColumnNames = $_SESSION["pelfq_" . $sRandomString . "_columns"];
 			
-			$i++;		
+			$i++;
 			$iColumnCount = 0;
 			
 			//get all the values for the table
 			while ((strncasecmp("unique_end", $sRowStart, 10) != 0) && ($i <= count($aKeys)))  {					
 				$aColumns[$iColumnCount] = $_POST[$aKeys[$i]];			
+                if (!in_array($aColumns[$iColumnCount], $aColumnNames)) {
+                    print "Hack attempt! $aColumns[$iColumnCount] is not in "; var_dump($aColumnNames);
+                    return false;
+                }
 				$aTypes[$iColumnCount]= $_POST[$aKeys[++$i]];
 				
 				switch ($aTypes[$iColumnCount]) {

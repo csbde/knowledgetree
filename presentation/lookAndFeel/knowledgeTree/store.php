@@ -32,16 +32,21 @@ require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
 require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
 require_once("store.inc");
 
+KTUtil::extractGPC('fReturnURL');
 
-if (count($_POST) > 0) {
-	$aKeys = array_keys($_POST);
-	$aQueries = constructQuery($aKeys);
-	
-	//execute the queries
-	for ($i=0; $i<count($aQueries); $i++) {
-		$sql = $default->db;
-		$sql->query($aQueries[$i]);
-	}
-	redirect(strip_tags(urldecode($fReturnURL)));
+if (checkSession()) {
+    if (count($_POST) > 0) {
+        $aKeys = array_keys($_POST);
+        $aQueries = constructQuery($aKeys);
+
+        //execute the queries
+        for ($i=0; $i<count($aQueries); $i++) {
+            $sql = $default->db;
+            $sql->query($aQueries[$i]);
+        }
+        $default->log->debug("store.php redirecting to $fReturnURL");
+        redirect(strip_tags(urldecode($fReturnURL)));
+    }
 }
+
 ?>
