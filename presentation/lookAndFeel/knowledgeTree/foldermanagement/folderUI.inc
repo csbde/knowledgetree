@@ -65,7 +65,10 @@ function displayFolderLink($oFolder, $sLinkPage = "") {
         $sLinkPage = $_SERVER["PHP_SELF"];
     }
 
-    $sFolderIconPath = generateImage($default->graphicsUrl . "/widgets/dfolder.gif");
+    $sFolderIconPath = (Folder::folderIsUnitRootFolder($oFolder->getID())) ?
+      generateImage($default->graphicsUrl . "/widgets/dfolder_unit.gif") :
+      generateImage($default->graphicsUrl . "/widgets/dfolder.gif");
+
     return generateLink($sLinkPage,
                         "fBrowseType=folder&fFolderID=" . $oFolder->getID(),
                         $sFolderIconPath .
