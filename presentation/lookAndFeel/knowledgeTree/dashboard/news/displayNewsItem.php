@@ -19,7 +19,6 @@ require_once("$default->uiDirectory/dashboardUI.inc");
 if (checkSession()) {
 	if (isset($fNewsID)) {
 		$oNews = DashboardNews::get($fNewsID);
-		//$oNews->displayImage();
 		if ($oNews) {
 			echo renderNewsItemPage($oNews);
 		} else {
