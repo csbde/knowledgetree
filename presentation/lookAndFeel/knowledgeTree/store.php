@@ -38,31 +38,43 @@ for ($i = 0; $i < count($aKeys); $i++) {
 		$iColumnCount = 0;
 		
 		//get all the values for the table
-		while (strncasecmp("unique_end", $sRowStart, 10) != 0) {			
-			$aColumns[$iColumnCount] = $_POST[$aKeys[$i]];
+		while ((strncasecmp("unique_end", $sRowStart, 10) != 0) && ($i <= count($aKeys)))  {					
+			$aColumns[$iColumnCount] = $_POST[$aKeys[$i]];			
 			$i++;
-			$aTypes[$iColumnCount]= $_POST[$aKeys[$i]];
-			$i++;
+			$aTypes[$iColumnCount]= $_POST[$aKeys[$i]];			
+
 			
-			//uncheck checkboxes don't generate any name/value pairs
-			//so if the next key doesn't contain the word "value" and it's type
-			//is checkbox, then we have an unchecked check box
-			/*echo "Type: " . $aTypes[$iColumnCount] . "<br>";
-			if ($aTypes[$iColumnCount] == 2) {				
-				if (strpos("value", $aKeys[$i]) == 0) {
-					//uncheck check box
-					$aValues[$iColumnCount] = 0;
-				} else {
-					$aValues[$iColumnCount] = 1;
+			switch ($aTypes[$iColumnCount]) {
+				case 0:
+					//id's
+					$i++;					
+					$aValues[$iColumnCount] = $_POST[$aKeys[$i]];					
+					break;
+				case 1:
+					//normal text
+					$i++;					
+					$aValues[$iColumnCount] = $_POST[$aKeys[$i]];					
+					break;
+				case 2:
+					//uncheck checkboxes don't generate any name/value pairs
+					//so if the next key doesn't contain the word "value" and it's type
+					//is checkbox, then we have an unchecked check box					
+					if (strpos($aKeys[$i + 1], "value") === false) {						
+						$aValues[$iColumnCount] = false;						
+					} else {						
+						$i++;						
+						$aValues[$iColumnCount] = true;						
+					}
+					//check box
+					break;
+				case 3:
+					//drop down
 					$i++;
-				}
-			} else {				
-				$aValues[$iColumnCount] = $_POST[$aKeys[$i]];
-				$i++;
-			}*/			
+					$aValues[$iColumnCount] = $_POST[$aKeys[$i]];					
+					break;
+			}
 			
-			
-			$aValues[$iColumnCount] = $_POST[$aKeys[$i]];
+			//$aValues[$iColumnCount] = $_POST[$aKeys[$i]];
 			$i++;
 			
 			$sRowStart = $aKeys[$i];			
@@ -88,9 +100,11 @@ for ($i = 0; $i < count($aKeys); $i++) {
 						$sQuery .= "'" . addslashes($aValues[$j]) . "', ";
 						break;
 					case 2:
+						$sQuery .= $aValues[$j] . ", ";
 						//boolean
 						break;
 					case 3:
+						$sQuery .= $aValues[$j] . ", ";
 						//drop down list
 						break;
 					default:
@@ -108,9 +122,11 @@ for ($i = 0; $i < count($aKeys); $i++) {
 						break;
 					case 2:
 						//boolean
+						$sQuery .= $aValues[count($aColumns) - 1] . ") ";
 						break;
-					case 3:
+					case 3:					
 						//drop down list
+						$sQuery .= $aValues[count($aColumns) - 1] . ") ";
 						break;
 					default:
 						break;
@@ -131,6 +147,12 @@ for ($i = 0; $i < count($aKeys); $i++) {
 					case 1:
 						$sQuery .= "'" . addslashes($aValues[$j]) . "', ";
 						break;
+					case 2:
+						$sQuery .= $aValues[$j] . ", ";
+						break;
+					case 3:
+						$sQuery .= $aValues[$j] . ", ";
+						break;
 					default:
 						break;
 				}
@@ -143,6 +165,12 @@ for ($i = 0; $i < count($aKeys); $i++) {
 						break;
 					case 1:
 						$sQuery .= "'" . addslashes($aValues[count($aTypes) -1]) . "' ";
+						break;
+					case 2:					
+						$sQuery .= ($aValues[count($aTypes) -1] ? 1 : 0) . " ";
+						break;
+					case 3:						
+						$sQuery .= $aValues[count($aTypes) -1] . " ";
 						break;
 					default:
 						break;
