@@ -30,7 +30,8 @@ CREATE TABLE dependant_document_instance (
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 document_title TEXT NOT NULL,
 user_id INTEGER NOT NULL,
-template_document_id INTEGER
+template_document_id INTEGER,
+parent_document_id INTEGER
 ) TYPE = InnoDB;
 
 CREATE TABLE dependant_document_template ( 
