@@ -52,7 +52,7 @@ if (checkSession()) {
 		$oPatternCustom = & new PatternCustom();
 		$oPatternCustom->setHtml(getEditPage($fFolderCollaborationID, $fFolderID));
 		$main->setCentralPayload($oPatternCustom);
-		$main->setFormAction("../store.php?fReturnURL=" . urlencode("$default->owl_root_url/control.php?action=editFolder&fFolderID$fFolderID"));
+		$main->setFormAction("../store.php?fReturnURL=" . urlencode("$default->owl_root_url/control.php?action=editFolder&fFolderID=$fFolderID"));
 		$main->render();
 	}
 	/*if (isset($fForAdd)) {
