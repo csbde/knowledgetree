@@ -21,6 +21,9 @@ class DBCompat {
         if (is_int($this->lastResult)) {
             return;
         }
+        if (PEAR::isError($this->lastResult)) {
+            return false;
+        }
         $this->lastRow = $this->lastResult->fetchRow(DB_FETCHMODE_ASSOC);
         return $this->lastRow;
     }
