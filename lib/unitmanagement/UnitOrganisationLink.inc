@@ -173,7 +173,7 @@ class UnitOrganisationLink {
 	function & get($iUnitOrganisationLinkID) {
 		global $default;
 		$sql = $default->db;
-		$result = $sql->query("SELECT * FROM $default->owl_units_organisations_link_table WHERE id = $iUnitOrganisationLinkID");
+		$result = $sql->query("SELECT * FROM $default->owl_units_organisations_table WHERE id = $iUnitOrganisationLinkID");
 		if ($result) {
 			if ($sql->next_record()) {
 				$oUnitOrganisationLink = & new UnitOrganisationLink($sql->f("unit_id"),$sql->f("organisation_id") );
@@ -200,7 +200,7 @@ class UnitOrganisationLink {
 		$aUnitOrganisationLink;
 		settype($aUnitOrganisationLink, "array");
 		$sql = $default->db;
-		$result = $sql->query("SELECT * FROM " . $default->owl_units_organisations_link_table  . (isset($sWhereClause) ? " " . $sWhereClause : ""));
+		$result = $sql->query("SELECT * FROM "  . $default->owl_units_organisations_table  . (isset($sWhereClause) ? " " . $sWhereClause : ""));
 		if ($result) {			
 			$iCount = 0;
 			while ($sql->next_record()) {
