@@ -31,7 +31,7 @@ class Folder {
 	var $bIsPublic;
 	/** comma deliminated string of parent ids */
 	var $sParentFolderIDs;
-	/** backlash deliminated path from file system root */
+	/** forward slash deliminated path from file system root */
 	var $sFullPath;
 	
 	
@@ -205,7 +205,7 @@ class Folder {
 	}
 	
 	/**
-	* Backslash deliminated string giving full path of document
+	* Forward slash deliminated string giving full path of document
 	* from file system root url
 	* 
 	*/
@@ -216,7 +216,7 @@ class Folder {
 			$sql = $default->db;
 			$sql->query("SELECT name, parent_id FROM $default->owl_folders_table WHERE ID = $iFolderID");
 			$sql->next_record();			
-			return $this->generateFullFolderPath($sql->f("parent_id")) . "\\" . stripslashes($sql->f("name"));
+			return $this->generateFullFolderPath($sql->f("parent_id")) . "/" . stripslashes($sql->f("name"));
 		}
 		return;
 	}
@@ -363,11 +363,13 @@ class Folder {
 	function getFolderPath($iFolderID) {
 		global $default;		
 		//if the folder has a parent
-		if (Folder::getParentFolderID($iFolderID) != 0) {			
+		/*if (Folder::getParentFolderID($iFolderID) != 0) {			
 			$sCurrentPath = Folder::getFolderPath(Folder::getParentFolderID($iFolderID)) . Folder::getFolderName($iFolderID) . "/" . $sCurrentPath;
 			return $sCurrentPath;
 		}	
-		return $default->owl_FileDir . "/" . Folder::getFolderName($iFolderID) . "/";
+		return $default->owl_FileDir . "/" . Folder::getFolderName($iFolderID) . "/";*/
+		$oFolder = Folder::get($iFolderID);
+		return $oFolder->sFullPath;
 	}
 
 	/**
@@ -381,12 +383,14 @@ class Folder {
     function getFolderPathAsArray($iFolderID) {
 		global $default;		
 		//if the folder has a parent
-		if (Folder::getParentFolderID($iFolderID) != 0) {
+		/*if (Folder::getParentFolderID($iFolderID) != 0) {
 			$aPathArray = Folder::getFolderPathAsArray(Folder::getParentFolderID($iFolderID));
             $aPathArray[] = $iFolderID;
 		} else {
             $aPathArray[] = $iFolderID;
-        }
+        }*/
+		$oFolder = Folder::get($iFolderID);
+		$aPathArray = explode($oFolder->sParentFolderIDs , ",");		
 		return $aPathArray;
     }
 	
