@@ -646,7 +646,7 @@ class Document extends KTEntity {
         		  " AND folder_id = ?" . 
         		  " AND status_id = ?";
         $aParams = array($sFileName, $iFolderID, LIVE);
-        $sql->query($sQuery);
+        $sql->query(array($sQuery, $aParams));
         if ($sql->next_record()) {
             return true;
         }
