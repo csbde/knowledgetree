@@ -11,30 +11,30 @@ BACKUP_FROM=/usr/local/cvsroot
 BACKUP_TO=/tmp/backup/Backups\ to\ tape/
 
 # check that we're not mounted already
-umount $LOCAL_MOUNT
+/sbin/umount $LOCAL_MOUNT
 
 # clear the backup mount point
-rm -rf $LOCAL_MOUNT
-mkdir -p $LOCAL_MOUNT
+/bin/rm -rf $LOCAL_MOUNT
+/bin/mkdir -p $LOCAL_MOUNT
 
 # mount the server
-mount_smbfs -N "$BACKUP_SERVER" $LOCAL_MOUNT
+/sbin/mount_smbfs -N "$BACKUP_SERVER" $LOCAL_MOUNT
 
 # tar up the cvs repository
 archive=mrc_dms_`date +%Y-%m-%d`.tgz
-tar czvf /tmp/$archive $BACKUP_FROM
+/usr/bin/tar czvf /tmp/$archive $BACKUP_FROM
 
 # copy to backup server
-cp /tmp/$archive "$BACKUP_TO"
+/bin/cp /tmp/$archive "$BACKUP_TO"
 
 # check that its there
-ls -al "$BACKUP_TO"
+/bin/ls -al "$BACKUP_TO"
 
 # clean up
-rm /tmp/$archive
+/bin/rm /tmp/$archive
 
 # disconnect twice (for safety and because the first try consistently doesn't work)
-umount $LOCAL_MOUNT
-umount $LOCAL_MOUNT
+/sbin/umount $LOCAL_MOUNT
+/sbin/umount $LOCAL_MOUNT
 
 exit
