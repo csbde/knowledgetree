@@ -31,7 +31,7 @@ require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
  * @package lib.documentmanagement
  * @todo add in document change transaction functionality
  */ 
-class Document {
+class Document extends KTEntity {
     /** primary key */
     var $iId;
     /** document type primary key */
@@ -332,6 +332,34 @@ class Document {
 		return $sPath;			
 	}	
 
+    function _fieldValues () {
+        $this->sFullPath = $this->generateFolderPath($this->iFolderID); 
+        $this->sParentFolderIDs = $this->generateFolderIDs($this->iFolderID);
+        return array(
+            'document_type_id' => $this->iDocumentTypeID,
+            'name' => $this->sName,
+            'filename' => $this->sFileName,
+            'size' => $this->iSize,
+            'creator_id' => $this->iCreatorID,
+            'modified' => getCurrentDateTime(),
+            'description' => $this->sDescription,
+            'mime_id' => $this->iMimeTypeID,
+            'folder_id' => $this->iFolderID,
+            'major_version' => $this->iMajorVersion,
+            'minor_version' => $this->iMinorVersion,
+            'is_checked_out' => $this->bIsCheckedOut,
+            'checked_out_user_id' => $this->iCheckedOutUserID,
+            'parent_folder_ids' => $this->sParentFolderIDs,
+            'full_path' => $this->sFullPath,
+            'status_id' => $this->iStatusID,
+        );
+    }
+
+    function _table () {
+        global $default;
+        return $default->documents_table;
+    }
+
 
     /**
     * Insert the current document into the database
@@ -339,41 +367,12 @@ class Document {
     * @return boolean true on successful insert, false otherwise
     */
     function create() {
-        global $default, $lang_err_doc_exist, $lang_err_database;
-        //if the id >= 0, then the object has already been created
-        if ($this->iId < 0) {
-			$this->sFullPath = $this->generateFolderPath($this->iFolderID); 
-			$this->sParentFolderIDs = $this->generateFolderIDs($this->iFolderID);
-            $sTable = $default->documents_table;
-            $aFieldValues = array(
-                'document_type_id' => $this->iDocumentTypeID,
-                'name' => $this->sName,
-                'filename' => $this->sFileName,
-                'size' => $this->iSize,
-                'creator_id' => $this->iCreatorID,
-                'modified' => getCurrentDateTime(),
-                'description' => $this->sDescription,
-                'mime_id' => $this->iMimeTypeID,
-                'folder_id' => $this->iFolderID,
-                'major_version' => $this->iMajorVersion,
-                'minor_version' => $this->iMinorVersion,
-                'is_checked_out' => $this->bIsCheckedOut,
-                'checked_out_user_id' => $this->iCheckedOutUserID,
-                'parent_folder_ids' => $this->sParentFolderIDs,
-                'full_path' => $this->sFullPath,
-                'status_id' => $this->iStatusID,
-            );
-            $id =& DBUtil::autoInsert($sTable, $aFieldValues);
+        $res = parent::create();
 
-            if (PEAR::isError($id)) {
-                $_SESSION["errorMessage"] = $id->toString();
-                return false;
-            }
-            $this->iId = $id;
+        if ($res === true) {
             $this->insertDocumentPermissions();
-            return true;
         }
-        return false;
+        return $res;
 
     }
     
@@ -433,72 +432,6 @@ class Document {
 		}		
     }
 
-    /**
-    * Update the documents current values in the database
-    *
-    * @return boolean true on successful update, false otherwise
-    */
-    function update($aForMove = false) {
-        global $default, $lang_err_database, $lang_err_object_key;
-        if ($this->iId >= 0) {			
-            $sql = $default->db;
-			$sQuery = "UPDATE " . $default->documents_table . " SET " .
-                      "document_type_id = " . quote($this->iDocumentTypeID) . ", " .
-                      "name = " . quote($this->sName) . ", " .
-                      "filename = " . quote($this->sFileName) . ", " .
-                      "size = " . quote($this->iSize) . ", " .
-                      "creator_id = " . quote($this->iCreatorID) . ", " .
-                      "modified = " . quote(getCurrentDateTime()) . ", " .
-                      "description = " . quote($this->sDescription) . ", " .
-                      "mime_id = " . quote($this->iMimeTypeID) . ", " .
-                      "folder_id = " . quote($this->iFolderID) . ", " .
-                      "major_version = " . quote($this->iMajorVersion) . ", " .
-                      "minor_version = " . quote($this->iMinorVersion) . ", ";
-			if ($aForMove) {
-				//only update these if the document is being moved
-				$this->sFullPath = $this->generateFolderPath($this->iFolderID); 
-				$this->sParentFolderIDs = $this->generateFolderIDs($this->iFolderID);
-	
-				$sQuery .= "parent_folder_ids = " . quote($this->sParentFolderIDs) . ", " .
-						   "full_path = " . quote($this->sFullPath) . ", ";
-			}					
-            $sQuery .= "is_checked_out = " . quote($this->bIsCheckedOut) . ", " .
-                       "checked_out_user_id = " . quote($this->iCheckedOutUserID) . ", " .
-                       "status_id = " . quote($this->iStatusID) . " " .
-                       "WHERE id = " . quote($this->iId);
-            $result = $sql->query($sQuery);
-            if ($result) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-        return false;
-    }
-
-    /**
-    * Delete the current document from the database.  Set the primary key to -1 
-    * on successful deletion
-    *
-    * @return boolean true and reset id to -1 on successful deletion, false otherwise
-    */
-    function delete() {
-        global $default, $lang_err_database, $lang_err_object_key;
-        if ($this->iId >= 0) {
-            $sql = $default->db;
-            $result = $sql->query("DELETE FROM  " . $default->documents_table . " " . 
-                                  "WHERE id = " . quote($this->iId));
-            if ($result) {
-                $this->iId = -1;
-                // clean up for this deleted document
-                return true;
-            }
-            return false;
-        }
-        return false;
-    }
-	
-	
 	/**
 	* Begin the current document's collaboration process
 	*

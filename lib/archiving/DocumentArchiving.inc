@@ -24,7 +24,8 @@
  * @author Michael Joseph <michael@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
  * @package lib.archiving 
  */
-class DocumentArchiving {
+
+class DocumentArchiving extends KTEntity {
 	/**
 	 * The primary key
 	 */
@@ -93,75 +94,19 @@ class DocumentArchiving {
 	function setArchivingSettingsID($iNewArchivingSettingsID){
 		$this->iArchivingSettingsID = $iNewArchivingSettingsID;
 	}
+
+    function _fieldValues () {
+        return array(
+            'document_id' => $this->iDocumentID,
+            'archiving_settings_id' => $this->iArchivingSettingsID,
+        );
+    }
+
+    function _table () {
+        global $default;
+        return $default->document_archiving_table;
+    }
 		
-	/**
-	 * Inserts the archive settings into the database
-	 *
-	 * @return boolean true on successful update, false otherwise
-	 */
-	function create(){
-        global $default;
-        //if the id >= 0, then the object has already been created
-        if ($this->iId < 0) {
-            $sTable = $default->document_archiving_table;
-            $aFieldValues = array(
-                'document_id' => $this->iDocumentID,
-                'archiving_settings_id' => $this->iArchivingSettingsID,
-            );
-            $id =& DBUtil::autoInsert($sTable, $aFieldValues);
-
-            if (PEAR::isError($id)) {
-                $_SESSION["errorMessage"] = $id->toString();
-                return false;
-            }
-            $this->iId = $id;
-            return true;
-        }
-        return false;
-	}
-
-    /**
-     * Update the archive settings current values in the database
-     *
-     * @return boolean true on successful update, false otherwise
-     */
-	function update(){
-        global $default;
-        if ($this->iId >= 0) {			
-            $sql = $default->db;
-			$sQuery = "UPDATE $default->document_archiving_table SET " .
-					  "document_id = $this->iDocumentID, " .								  
-                      "archiving_settings_id = $this->iArchivingSettingsID " .                                  
-           			  "WHERE id = $this->iId";
-            $result = $sql->query($sQuery);
-            if ($result) {
-                return true;
-            }
-            return false;
-        }
-        return false;
-	}
-
-    /**
-     * Delete the current archive settings from the database.  Set the primary key to -1 
-     * on successful deletion
-     *
-     * @return boolean true and reset id to -1 on successful deletion, false otherwise
-     */
-    function delete() {
-        global $default;
-        if ($this->iId >= 0) {
-            $sql = $default->db;
-            $result = $sql->query("DELETE FROM $default->document_archiving_table WHERE id = $this->iId");
-            if ($result) {
-                $this->iId = -1;
-                return true;
-            }
-            return false;
-        }
-        return false;
-    }	
-
     /**
      * Static function.  Given a document primary key will create
      * a DocumentArchiving object and populate it with the corresponding

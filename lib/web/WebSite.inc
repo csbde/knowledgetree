@@ -25,7 +25,8 @@
  * @package lib.web
  * @todo - add regex parsing to ensure URL is valid
  */
-class WebSite {
+
+class WebSite extends KTEntity {
 
     /** primary key of web site */
     var $iId;
@@ -122,77 +123,17 @@ class WebSite {
         $this->iWebMasterID = $iNewValue;
     }
 
-
-    /**
-    * Create the current object in the database
-    *
-    * @return boolean on successful store, false otherwise and set $_SESSION["errorMessage"]
-    *
-    */
-    function create() {
-        global $default, $lang_err_database, $lang_err_object_exists;
-        //if the object hasn't been created
-        if ($this->iId < 0) {
-            $aFieldValues = array(
-                'web_site_name' => $this->sWebSiteName,
-                'web_site_url' => $this->sWebSiteURL,
-                'web_master_id' => $this->iWebMasterID,
-            );
-            $id =& DBUtil::autoInsert($default->web_sites_table, $aFieldValues);
-
-            if (PEAR::isError($id)) {
-                $_SESSION["errorMessage"] = $id->toString();
-                return false;
-            }
-            $this->iId = $id;
-            return true;
-        }
-        $_SESSION["errorMessage"] = $lang_err_object_exists . "id = " . $this->iId . " table = $default->web_sites_table";
-        return false;
+    function _fieldValues () {
+        return array(
+            'web_site_name' => $this->sWebSiteName,
+            'web_site_url' => $this->sWebSiteURL,
+            'web_master_id' => $this->iWebMasterID,
+        );
     }
 
-    /**
-    * Update the values in the database table with the object's current values
-    *
-    * @return boolean true on successful update, false otherwise and set $_SESSION["errorMessage"]
-    *
-    */
-    function update() {
-        global $default, $lang_err_database, $lang_err_object_key;
-        //only update if the object has been stored
-        if ($this->iId > 0) {
-            $sql = $default->db;
-            $result = $sql->query("UPDATE " . $default->web_sites_table . " SET web_site_name = '$this->sWebSiteName', web_site_url = '$this->sWebSiteURL', web_master_id = '" . $this->iWebMasterID . "' WHERE id = $this->iId");
-            if ($result) {
-                return true;
-            }
-            $_SESSION["errorMessage"] = $lang_err_database;
-            return false;
-        }
-        $_SESSION["errorMessage"] = $lang_err_object_key;
-        return false;
-    }
-
-    /**
-    * Delete the current object from the database
-    *
-    * @return boolean true on successful deletion, false otherwise and set $_SESSION["errorMessage"]
-    *
-    */
-    function delete() {
-        global $default, $lang_err_database, $lang_err_object_key;
-        //only delete the object if it exists in the database
-        if ($this->iId >= 0) {
-            $sql = $default->db;
-            $result = $sql->query("DELETE FROM $default->web_sites_table WHERE id = $this->iId");
-            if ($result) {
-                return true;
-            }
-            $_SESSION["errorMessage"] = $lang_err_database;
-            return false;
-        }
-        $_SESSION["errorMessage"] = $lang_err_object_key;
-        return false;
+    function _table () {
+        global $default;
+        return $default->web_sites_table;
     }
 
     /**

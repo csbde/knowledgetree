@@ -25,7 +25,7 @@
  * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
  * @package lib
  */
-class DefaultLookup {
+class DefaultLookup extends KTEntity {
 	
 	/** database table name */
 	var $sTableName;
@@ -70,74 +70,17 @@ class DefaultLookup {
 	function setName($sNewValue) {
 		$this->sName = $sNewValue;
 	}
-	
-	/**
-	* Create the object in the database
-	*
-	* @return boolean true on successful creation, false otherwise and set $_SESSION["errorMessage"]
-	*
-	*/
-	function create() {
-		global $default;		
-		//don't create the object if it's aready been created
-		if ($this->iId < 0) {
-            $sTable = $this->sTableName;
-            $aFieldValues = array(
-                'name' => $this->sName,
-            );
-            $id =& DBUtil::autoInsert($sTable, $aFieldValues);
 
-            if (PEAR::isError($id)) {
-                $_SESSION["errorMessage"] = $id->toString();
-                return false;
-            }
-            $this->iId = $id;
-            return true;
-		}
-		return false;
-	}
-	
-	/**
-	* Update the entry in the database with the object's current values
-	*
-	* @return boolean true on successful update, false otherwise and set $_SESSION["errorMessage"]
-	*
-	*/
-	function update() {
-		global $default;
-		//can only update if the object has been stored
-		if ($this->iId >= 0) {
-			$sql = $default->db;
-			$result = $sql->query("UPDATE $this->sTableName SET name = '$this->sName' WHERE id = $this->iId");
-			if ($result) {
-				return true;
-			}
-			return false;
-		}
-		return false;
-	}
-	
-	/**
-	* Delete the current object from the database
-	*
-	* @return boolean true on successful deletion, false otherwise and set $_SESSION["errorMessage"]
-	*
-	*/
-	function delete() {
-		global $default;
-		//can only delete and object if it has been stored already
-		if ($this->iId >= 0) {
-			$sql = $default->db;
-			$result = $sql->query("DELETE FROM $this->sTableName WHERE id = $this->iId");
-			if ($result) {
-				//reset the primary key
-				$this->iId = -1;
-				return true;
-			}
-			return false;
-		}
-		return false;
-	}
+    function _fieldValues () {
+        return array(
+            'name' => $this->sName,
+        );
+
+    }
+
+    function _table () {
+        return $this->sTableName;
+    }
 	
 	/**
 	* Static function.

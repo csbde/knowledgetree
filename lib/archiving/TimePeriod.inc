@@ -24,7 +24,8 @@
  * @author Michael Joseph <michael@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
  * @package lib.archiving 
  */
-class TimePeriod {
+
+class TimePeriod extends KTEntity {
 	/**
 	 * The primary key
 	 */
@@ -92,74 +93,18 @@ class TimePeriod {
 		$this->iUnits = $iNewUnits;
 	}
 
-	/**
-	 * Inserts the time period into the database
-	 *
-	 * @return boolean true on successful update, false otherwise
-	 */
-	function create(){
-        global $default;
-        //if the id >= 0, then the object has already been created
-        if ($this->iId < 0) {
-            $sTable = $default->time_period_table;
-            $aFieldValues = array(
-                'time_unit_id' => $this->iTimeUnitID,
-                'units' => $this->iUnits
-            );
-            $id =& DBUtil::autoInsert($sTable, $aFieldValues);
+    function _fieldValues () {
+        return array(
+            'time_unit_id' => $this->iTimeUnitID,
+            'units' => $this->iUnits
+        );
+    }
 
-            if (PEAR::isError($id)) {
-                $_SESSION["errorMessage"] = $id->toString();
-                return false;
-            }
-            $this->iId = $id;
-            return true;
-        }
-        return false;
-	}
-
-    /**
-     * Update the time period current values in the database
-     *
-     * @return boolean true on successful update, false otherwise
-     */
-	function update(){
+    function _table () {
         global $default;
-        if ($this->iId >= 0) {			
-            $sql = $default->db;
-			$sQuery = "UPDATE $default->time_period_table SET " .
-					  "time_unit_id = $this->iTimeUnitID, " .								  
-                      "units = $this->iUnits " .                                  
-           			  "WHERE id = $this->iId";
-            $result = $sql->query($sQuery);
-            if ($result) {
-                return true;
-            }
-            return false;
-        }
-        return false;
-	}
+        return $default->time_period_table;
+    }
 
-    /**
-     * Delete the current time period from the database.  Set the primary key to -1 
-     * on successful deletion
-     *
-     * @return boolean true and reset id to -1 on successful deletion, false otherwise
-     */
-    function delete() {
-        global $default;
-        if ($this->iId >= 0) {
-            $sql = $default->db;
-            $result = $sql->query("DELETE FROM $default->time_period_table WHERE id = $this->iId");
-            if ($result) {
-                $this->iId = -1;
-                return true;
-            }
-            return false;
-        }
-        return false;
-    }	
-   
     /**
      * Static function.  Given a primary key will create
      * a TimePeriod object and populate it with the corresponding

@@ -24,7 +24,7 @@
  * @author Mukhtar Dharsey, Jam Warehouse (Pty) Ltd, South Africa
  * @package lib.unitmanagement
  */
-class Unit {
+class Unit extends KTEntity {
 
     /** object's primary key */
     var $iId;
@@ -68,6 +68,16 @@ class Unit {
         $this->sName = $sNewValue;
     }
 
+    function _fieldValues () {
+        return array(
+            'name' => $this->sName,
+        );
+    }
+
+    function _table () {
+        global $default;
+        return $default->units_table;
+    }
 
     /**
     * Create the current object in the database
@@ -76,58 +86,33 @@ class Unit {
     *
     */
     function create() {
-        global $default, $lang_err_database, $lang_err_object_exists;
-        //if the object hasn't been created
-        if ($this->iId < 0) { //check to see if name exsits
-            $sql = $default->db;
-            $query = "SELECT name FROM ". $default->units_table ." WHERE name = '" . $this->sName . "'";
-            $sql->query($query);
-            $rows = $sql->num_rows($sql);
+        $res = parent::create();
+        if ($res === false) {
+            return $res;
+        }
 
-            if ($rows > 0) {
-                // duplicate unit name
-                $_SESSION["errorMessage"] = "Unit::The name " . $this->sName . " is already in use!";
-                return false;
-            } else {
-                $sTable = $default->units_table;
-                $aFieldValues = array(
-                    'name' => $this->sName,
-                );
-                $id =& DBUtil::autoInsert($sTable, $aFieldValues);
-
-                if (PEAR::isError($id)) {
-                    $_SESSION["errorMessage"] = $id->toString();
+        // create a new unit root folder
+        // FIXME: lookup the organisation for this unit and use the appropriate folder id for the org root folder
+        $oFolder = new Folder($this->sName, $this->sName . " Unit Root Folder", 1, $_SESSION["userID"], $this->iId);
+        if (!$oFolder->exists()) {
+            if ($oFolder->create()) {
+                if (PhysicalFolderManagement::createFolder(Folder::getFolderPath($oFolder->getID()))) {
+                    return true;
+                } else {
                     return false;
                 }
-                $this->iId = $id;
-
-                // create a new unit root folder
-                // FIXME: lookup the organisation for this unit and use the appropriate folder id for the org root folder
-                $oFolder = new Folder($this->sName, $this->sName . " Unit Root Folder", 1, $_SESSION["userID"], $this->iId);
-                if (!$oFolder->exists()) {
-                    if ($oFolder->create()) {
-                        if (PhysicalFolderManagement::createFolder(Folder::getFolderPath($oFolder->getID()))) {
-                            return true;
-                        } else {
-                            return false;
-                        }
-                    } else {
-                        return false;
-                    }
-                } else {
-                    // a unit root folder already exists in the database
-                    // update the description
-                    $aFolders = Folder::getList("name='" . addslashes($this->sName) . "' AND parent_id=1");
-                    $oFolder = $aFolders[0];
-                    $oFolder->setDescription($this->sName . " Unit Root Folder");
-                    $oFolder->setUnitID($this->iId);
-                    $oFolder->update();
-                    return true;
-                }
+            } else {
+                return false;
             }
         }
-        $_SESSION["errorMessage"] = $lang_err_object_exists . "id = " . $this->iId . " table = $default->units_table";
-        return false;
+        // a unit root folder already exists in the database
+        // update the description
+        $aFolders = Folder::getList("name='" . addslashes($this->sName) . "' AND parent_id=1");
+        $oFolder = $aFolders[0];
+        $oFolder->setDescription($this->sName . " Unit Root Folder");
+        $oFolder->setUnitID($this->iId);
+        $oFolder->update();
+        return true;
     }
 
     /**
@@ -139,43 +124,39 @@ class Unit {
     function update() {
         global $default, $lang_err_database, $lang_err_object_key;
         //only update if the object has been stored
-        if ($this->iId > 0) {
-            $sql = $default->db;
-            // lookup current name before updating
-            $sOldName = addslashes(lookupField($default->units_table, "name", "id", $this->iId));
-            $result = $sql->query("UPDATE " . $default->units_table . " SET name = '$this->sName' WHERE id = $this->iId");
-            if ($result) {
-                // need to update the units root folder also
-                $iFolderID = Folder::getFolderID($sOldName);
-
-				if($iFolderID) {
-	                // lookup the folder with the old unit name
-	                $oFolder = Folder::get($iFolderID);
-			        // folder name has changed, update the full_path
-					$sOldPath = $default->documentRoot . "/" . $oFolder->getFullPath() . "/" . $oFolder->getName();
-	                // update the folder name
-	              	$sNewPath = $default->documentRoot . "/" . $oFolder->getFullPath() . "/" . $this->sName;	                
-	                $oFolder->setName(addslashes($this->sName));
-	                $oFolder->setDescription(addslashes($this->sName . " Unit Root Folder"));
-
-	                if ($oFolder->update(true)) {
-	                    if (!PhysicalFolderManagement::renameFolder($sOldPath, $sNewPath)) {
-	                        //reverse the database changes if the physical rename failed
-	                        $oFolder->setName($sOldName);
-	                        $oFolder->update(true);
-	                        // TODO: revert unit name change also
-	                        return false;
-	                    }
-	                }
-				}
-                return true;
-
-            }
-            $_SESSION["errorMessage"] = $lang_err_database;
+        if ($this->iId <= 0) {
+            $_SESSION["errorMessage"] = "Can't update an object not in the database.";
             return false;
         }
-        $_SESSION["errorMessage"] = $lang_err_object_key;
-        return false;
+
+        $sOldName = addslashes(lookupField($default->units_table, "name", "id", $this->iId));
+        $res = parent::update();
+        if ($res === false) {
+            return $res;
+        }
+        $iFolderID = Folder::getFolderID($sOldName);
+
+        if($iFolderID) {
+            // lookup the folder with the old unit name
+            $oFolder = Folder::get($iFolderID);
+            // folder name has changed, update the full_path
+            $sOldPath = $default->documentRoot . "/" . $oFolder->getFullPath() . "/" . $oFolder->getName();
+            // update the folder name
+            $sNewPath = $default->documentRoot . "/" . $oFolder->getFullPath() . "/" . $this->sName;	                
+            $oFolder->setName(addslashes($this->sName));
+            $oFolder->setDescription(addslashes($this->sName . " Unit Root Folder"));
+
+            if ($oFolder->update(true)) {
+                if (!PhysicalFolderManagement::renameFolder($sOldPath, $sNewPath)) {
+                    //reverse the database changes if the physical rename failed
+                    $oFolder->setName($sOldName);
+                    $oFolder->update(true);
+                    // TODO: revert unit name change also
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     /**

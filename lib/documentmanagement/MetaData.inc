@@ -24,7 +24,7 @@
  * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
  * @package lib.documentmanagement 
  */
-class MetaData {
+class MetaData extends KTEntity {
 	
 	/** primary key value */
 	var $iId;
@@ -97,6 +97,18 @@ class MetaData {
 	function getDocFieldID() {
 		return $this->iDocFieldID;
 	}
+
+    function _fieldValues () {
+        return array(
+            'document_field_id' => $this->iDocFieldID,
+            'name' => $this->sName,
+        );
+    }
+
+    function _table () {
+        global $default;
+        return $default->metadata_table;
+    }
 	
 	
 	
@@ -107,8 +119,7 @@ class MetaData {
 	*
 	*/
 	function create() {
-		global $default, $lang_err_database, $lang_err_object_exists;
-		//if the object hasn't been created
+		global $default;
 		if ($this->iId < 0) {
 			//check to see if name exsits
 			$sql = $default->db;
@@ -120,68 +131,8 @@ class MetaData {
                 $_SESSION["errorMessage"] = "MetaData::TheMetaData name " . $this->sName . " for the specfic field exists already!";
                 return false;
             }
-
-            $sTable = $default->metadata_table;
-            $aFieldValues = array(
-                'document_field_id' => $this->iDocFieldID,
-                'name' => $this->sName,
-            );
-            $id =& DBUtil::autoInsert($sTable, $aFieldValues);
-
-            if (PEAR::isError($id)) {
-                $_SESSION["errorMessage"] = $id->toString();
-                return false;
-            }
-            $this->iId = $id;
-            return true;
-		}
-		
-		$_SESSION["errorMessage"] = $lang_err_object_exists . "id = " . $this->iId . " table = document_types";
-		return false;
-	}
-	
-	/**
-	* Update the values in the database table with the object's current values
-	*
-	* @return boolean true on successful update, false otherwise and set $_SESSION["errorMessage"]
-	*
-	*/
-	function update() {
-		global $default, $lang_err_database, $lang_err_object_key;
-		//only update if the object has been stored
-		if ($this->iId > 0) {
-			$sql = $default->db;
-			$result = $sql->query("UPDATE " . $default->metadata_table. " SET name = '$this->sName' WHERE id = $this->iId");
-			if ($result) {
-				return true;
-			}
-			$_SESSION["errorMessage"] = $lang_err_database;
-			return false;
-		}
-		$_SESSION["errorMessage"] = $lang_err_object_key;
-		return false;
-	}
-	
-	/**
-	* Delete the current object from the database
-	*
-	* @return boolean true on successful deletion, false otherwise and set $_SESSION["errorMessage"]
-	*
-	*/
-	function delete() {
-		global $default, $lang_err_database, $lang_err_object_key;
-		//only delete the object if it exists in the database
-		if ($this->iId >= 0) {
-			$sql = $default->db;
-			$result = $sql->query("DELETE FROM " . $default->metadata_table. " WHERE id = $this->iId");
-			if ($result) {
-				return true;
-			}
-			$_SESSION["errorMessage"] = $lang_err_database;
-			return false;
-		}
-		$_SESSION["errorMessage"] = $lang_err_object_key;
-		return false;
+        }
+        return parent::create();
 	}
 	
 	/**

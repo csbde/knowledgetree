@@ -24,7 +24,8 @@
  * @author Michael Joseph <michael@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
  * @package lib.archiving 
  */
-class ArchivingSettings {
+
+class ArchivingSettings extends KTEntity {
 
 	/**
 	 * The primary key
@@ -135,33 +136,20 @@ class ArchivingSettings {
 		$this->iTimePeriodID = $iNewTimePeriodID;
 	}
 
-	/**
-	 * Inserts the archive date settings into the database
-	 *
-	 * @return boolean true on successful update, false otherwise
-	 */
-	function create(){
-        global $default;
-        //if the id >= 0, then the object has already been created
-        if ($this->iId < 0) {
-            $sTable = $default->archiving_settings_table;
-            $aFieldValues = array(
-                'archiving_type_id' => $this->iArchivingTypeID,
-                'expiration_date' => $this->dExpirationDate,
-                'document_transaction_id' => $this->iDocumentTransactionID,
-                'time_period_id' => $this->iTimePeriodID,
-            );
-            $id =& DBUtil::autoInsert($sTable, $aFieldValues);
+    function _fieldValues () {
+        return array(
+            'archiving_type_id' => $this->iArchivingTypeID,
+            'expiration_date' => $this->dExpirationDate,
+            'document_transaction_id' => $this->iDocumentTransactionID,
+            'time_period_id' => $this->iTimePeriodID,
+        );
+    }
 
-            if (PEAR::isError($id)) {
-                $_SESSION["errorMessage"] = $id->toString();
-                return false;
-            }
-            $this->iId = $id;
-            return true;
-        }
-        return false;
-	}
+    function _table () {
+        global $default;
+        return $default->archiving_settings_table;
+    }
+
 	function addQuotes($sDate) {
 		if ($sDate == "NULL") {
 			return $sDate;
@@ -169,51 +157,6 @@ class ArchivingSettings {
 			return "'$sDate'";
 		}
 	}
-	
-    /**
-     * Update the archive date settings current values in the database
-     *
-     * @return boolean true on successful update, false otherwise
-     */
-	function update(){
-        global $default;
-        if ($this->iId >= 0) {			
-            $sql = $default->db;
-			$sQuery = "UPDATE $default->archiving_settings_table SET " .
-                      "archiving_type_id = $this->iArchivingTypeID, " . 
-					  "expiration_date = " . $this->addQuotes($this->dExpirationDate) . ", " .
-					  "document_transaction_id = $this->iDocumentTransactionID, " .								  
-                      "time_period_id = $this->iTimePeriodID " .                                  
-           			  "WHERE id = $this->iId";
-           			  $default->log->info($sQuery);
-            $result = $sql->query($sQuery);
-            if ($result) {
-                return true;
-            }
-            return false;
-        }
-        return false;
-	}
-
-    /**
-     * Delete the current archive date settings from the database.  Set the primary key to -1 
-     * on successful deletion
-     *
-     * @return boolean true and reset id to -1 on successful deletion, false otherwise
-     */
-    function delete() {
-        global $default;
-        if ($this->iId >= 0) {
-            $sql = $default->db;
-            $result = $sql->query("DELETE FROM $default->archiving_settings_table WHERE id = $this->iId");
-            if ($result) {
-                $this->iId = -1;
-                return true;
-            }
-            return false;
-        }
-        return false;
-    }	
    
     /**
      * Static function.  Given a primary key will create

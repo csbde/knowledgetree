@@ -24,7 +24,7 @@
  * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
  * @package lib.groups 
  */
-class Link {
+class Link extends KTEntity {
 	
 	/** primary key of current object */
 	var $iId;
@@ -66,6 +66,19 @@ class Link {
 	function setName($sNewValue) {
 		$this->sName = $sNewValue;
 	}
+
+    function _fieldValues () {
+        return array(
+            'name' => $this->sName,
+            'url' => $this->sUrl,
+            'rank' => $this->iRank,
+        );
+    }
+
+    function _table () {
+        global $default;
+        return $default->quicklinks_table;
+    }
 	
 	/**
 	* Create the current object in the database
@@ -97,69 +110,8 @@ class Link {
                 $_SESSION["errorMessage"] = "Link::The Rank " . $this->iRank . " is already in use!";
                 return false;
             }
-
-            $sTable = $default->quicklinks_table;
-            $aFieldValues = array(
-                'name' => $this->sName,
-                'url' => $this->sUrl,
-                'rank' => $this->iRank,
-            );
-            $id =& DBUtil::autoInsert($sTable, $aFieldValues);
-
-            if (PEAR::isError($id)) {
-                $_SESSION["errorMessage"] = $id->toString();
-                return false;
-            }
-            $this->iId = $id;
-            return true;
-		}
-		$_SESSION["errorMessage"] = $lang_err_object_exists . "id = " . $this->iId . " table = document_fields";
-		return false;
-	}
-	
-	/**
-	* Update the values in the database table with the object's current values
-	*
-	* @return boolean true on successful update, false otherwise and set $_SESSION["errorMessage"]
-	*
-	*/
-	function update() {
-		global $default, $lang_err_database, $lang_err_object_key;
-		//only update if the object has been stored
-		if ($this->iId > 0) {
-			$sql = $default->db;
-			$result = $sql->query("UPDATE " . $default->quicklinks_table . " SET name = '$this->sName', url = '$this->sUrl', rank = $this->iRank WHERE id = $this->iId");
-			if ($result) {
-				return true;
-			}
-			$_SESSION["errorMessage"] = $lang_err_database;
-			return false;
-		}
-		$_SESSION["errorMessage"] = $lang_err_object_key;
-		return false;
-	}
-	
-	/**
-	* Delete the current object from the database
-	*
-	* @return boolean true on successful deletion, false otherwise and set $_SESSION["errorMessage"]
-	*
-	*/
-	function delete() {
-		global $default, $lang_err_database, $lang_err_object_key;
-		//only delete the object if it exists in the database
-		if ($this->iId >= 0) {
-				$sql = $default->db;
-				$result = $sql->query("DELETE FROM $default->quicklinks_table WHERE id = $this->iId");
-				if ($result) {
-				return true;
-				}
-				$_SESSION["errorMessage"] = $lang_err_database;
-				return false;
-			
-		}
-		$_SESSION["errorMessage"] = $lang_err_object_key;
-		return false;
+        }
+        return parent::create();
 	}
 	
 	/**

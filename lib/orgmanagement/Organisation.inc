@@ -24,7 +24,7 @@
  * @author Mukhtar Dharsey, Jam Warehouse (Pty) Ltd, South Africa
  * @package lib.orgmanagement
  */
-class Organisation {
+class Organisation extends KTEntity {
     /** object's primary key */
     var $iId;
     /** org's name */
@@ -61,53 +61,18 @@ class Organisation {
     function setName($sNewValue) {
         $this->sName = $sNewValue;
     }
-    /**
-    * Create the current object in the database
-    *
-    * @return boolean on successful store, false otherwise and set $_SESSION["errorMessage"]
-    *
-    */
-    function create() {
-        global $default, $lang_err_database, $lang_err_object_exists;
-        //if the object hasn't been created
-        if ($this->iId < 0) {
-            $sTable = $default->organisations_table;
-            $aFieldValues = array(
-                'name' => $this->sName,
-            );
-            $id =& DBUtil::autoInsert($sTable, $aFieldValues);
 
-            if (PEAR::isError($id)) {
-                $_SESSION["errorMessage"] = $id->toString();
-                return false;
-            }
-            $this->iId = $id;
-            return true;
-        }
-        $_SESSION["errorMessage"] = $lang_err_object_exists . "id = " . $this->iId . " table = $default->organisations_table";
-        return false;
+    function _fieldValues () {
+        return array(
+            'name' => $this->sName,
+        );
     }
-    /**
-    * Update the values in the database table with the object's current values
-    *
-    * @return boolean true on successful update, false otherwise and set $_SESSION["errorMessage"]
-    *
-    */
-    function update() {
-        global $default, $lang_err_database, $lang_err_object_key;
-        //only update if the object has been stored
-        if ($this->iId > 0) {
-            $sql = $default->db;
-            $result = $sql->query("UPDATE " . $default->organisations_table . " SET name = '$this->sName' WHERE id = $this->iId");
-            if ($result) {
-                return true;
-            }
-            $_SESSION["errorMessage"] = $lang_err_database;
-            return false;
-        }
-        $_SESSION["errorMessage"] = $lang_err_object_key;
-        return false;
+
+    function _table () {
+        global $default;
+        return $default->organisations_table;
     }
+
     /**
     * Delete the current object from the database
     *
@@ -127,18 +92,9 @@ class Organisation {
                 // duplicate link exists
                 $_SESSION["errorMessage"] = "Group::The Group " . $this->sName . " exits!";
                 return false;
-            } else {
-                $sql = $default->db;
-                $result = $sql->query("DELETE FROM $default->organisations_table WHERE id = $this->iId");
-                if ($result) {
-                    return true;
-                }
-                $_SESSION["errorMessage"] = $lang_err_database;
-                return false;
             }
         }
-        $_SESSION["errorMessage"] = $lang_err_object_key;
-        return false;
+        return parent::delete();
     }
     /**
     * Static function.
