@@ -187,7 +187,11 @@ class NavBar {
             (isset($this->iDocumentID) ? $bar .= "<INPUT type=\"hidden\" name=\"fDocumentID\" value=\"" . $this->iDocumentID . "\"  />\n " : $bar .= "");
             (isset($this->sCategoryName) ? $bar .= "<INPUT type=\"hidden\" name=\"fCategoryName\" value=\"" . $this->sCategoryName . "\"  />\n " : $bar .= "");
             (isset($this->iDocTypeID) ? $bar .= "<INPUT type=\"hidden\" name=\"fDocTypeID\" value=\"" . $this->iDocTypeID . "\"  />\n " : $bar .= "");
-            $bar .= "<INPUT type=\"image\" onClick=\"return validateStandardSearch('" . $default->rootUrl . "/control.php')\" src=\"$default->graphicsUrl/search.gif\" align = \"absmiddle\" border=\"0\" />\n";
+            //this next line works in IE, and Netscape 4.79 up, but NOT Netscape 4.79
+            //$bar .= "<INPUT type=\"image\" onClick=\"return validateStandardSearch('" . $default->rootUrl . "/control.php')\" src=\"$default->graphicsUrl/search.gif\" align = \"absmiddle\" border=\"0\" />\n";
+            //replaced with this line            
+            $bar .= "<a href=\"#\" onClick=\"return validateStandardSearch('" . $default->rootUrl . "/control.php')\"><image src=\"$default->graphicsUrl/search.gif\" border=\"0\" /></a>";
+            
         }
         $bar .= "\t\t</td>\n";
         $bar .= "\t</tr>\n";
@@ -206,11 +210,11 @@ class NavBar {
     function getSearchValidationJavaScript() {
         $sToRender = "\n\n<SCRIPT LANGUAGE=\"javascript\">\n ";
         $sToRender .= "<!--\n";
-        $sToRender .= "function validateStandardSearch(newAction) {\n";
+        $sToRender .= "function validateStandardSearch(newAction) {\n";        
         $sToRender .= "\tif (!(validRequired(document.MainForm.fStandardSearchString, 'Search text'))) {\n";
         $sToRender .= "\t\treturn false;\n\t}\n";
         $sToRender .= "\telse {\n";
-        $sToRender .= "\t\tsetActionAndSubmitSearch(newAction);\n";
+        $sToRender .= "\t\tsetActionAndSubmitSearch(newAction);\n";        
         $sToRender .= "\t}\n";
         $sToRender .= "}\n";
         $sToRender .= "//-->\n";
