@@ -307,7 +307,7 @@ class DashboardNews {
             $sql = $default->db;
             $result = $sql->query("INSERT INTO $default->news_table (synopsis, body, rank, image, image_size, image_mime_type_id, active) " .
                                   "VALUES ('$this->sSynopsis', '$this->sBody', $this->iRank, " .
-                                  "'$this->sImage', $this->iImageSize, $this->iImageMimeTypeID, " . ($this->bActive ? "1" : "0") . ")");
+                                  "'" . addslashes($this->sImage) . "', $this->iImageSize, $this->iImageMimeTypeID, " . ($this->bActive ? "1" : "0") . ")");
             if ($result) {
                 //set the current news item primary key
                 $this->iId = $sql->insert_id();
@@ -467,7 +467,7 @@ class DashboardNews {
     function getImageLink() {
     	global $default;
     	if ($this->iImageSize > 0) {
-			return "<img width=\"$this->iMaxImageWidth\" height=\"$this->iMaxImageHeight\" src=\"$default->rootUrl/" . $default->siteMap->getPage("viewNewsImage") . "?fNewsID=" . $this->getID() . "\" border=\"0\">";
+			return "<img src=\"$default->rootUrl/" . $default->siteMap->getPage("viewNewsImage") . "?fNewsID=" . $this->getID() . "\" border=\"0\">";
     	} else {
     		return "";
     	}   	
