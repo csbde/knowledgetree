@@ -88,7 +88,10 @@ function getGenericMetaDataForm() {
     $oPatternTableSqlQuery = & new PatternEditableTableSqlQuery($sQuery, "document_fields_link", $aStoreColumnNames, $aDisplayColumnNames, $aColumnsEditable, $aColumnsVisible, $aColumnDisplayTypes, $aColumnDatabaseTypes);
     $oPatternTableSqlQuery->setTableCaption(_("Generic Meta Data"));
     $oPatternTableSqlQuery->setUniqueName("gmd");
-	$oPatternTableSqlQuery->setRequiredColumnNames(array("value"));
+        if ($default->genericMetaDataRequired === true) {
+            $oPatternTableSqlQuery->setRequiredColumnNames(array("value"));
+        }
+        $oPatternTableSqlQuery->setRequiredColumnNames(array("value"));
 	$oPatternTableSqlQuery->setMetaDataFields($aMetaDataColumnNames);
 	$oPatternTableSqlQuery->setEmptyTableMessage(_("No Generic Meta Data"));
 	$oPatternTableSqlQuery->setRenderJavascriptValidation(false);
