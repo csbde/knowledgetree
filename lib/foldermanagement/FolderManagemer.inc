@@ -28,6 +28,7 @@ class FolderManager {
 	*/
 	function insertFolder($sName, $sDescription, $iParentID, $iCreatorID, $iDocumentTypeID, $iUnitID, $bIsPublic = false) {
 		global $default, $lang_err_database;
+		//if the folder doesn't exist
 		if (!(FolderNamager::folderExistsName($sName, $iParentID)) {
 			$sql = new Owl_DB();
 			$result = $sql->query("INSERT INTO " . $default->owl_folders_table . " (name, description, parent_id, creator_id, document_type_id, unit_id, is_public) " . 
@@ -51,7 +52,8 @@ class FolderManager {
 	* @return		true on successfuly deletion, false otherwise and set $_SESSION["errorMessage"]
 	*/
 	function deleteFolder($iFolderID) {
-		global $default,
+		global $default,$lang_err_folder_not_exist;
+		//if the folder exists
 		if (folderExistsID($iFolderID)) {
 			$sql = new Owl_DB();
 			$result = $sql->query("DELETE FROM " . $default->owl_folders_table . " WHERE id = " . $iFolderID);
