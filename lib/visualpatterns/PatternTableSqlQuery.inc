@@ -113,11 +113,19 @@ class PatternTableSqlQuery {
 								$sToRender .= "<td>";
 								if (isset($this->sImageURL)) {
 									$sToRender .= $this->generateImageURL($this->sImageURL);
+								} else if ($this->bUseImageURLFromQuery) {
+									$sToRender .= $this->generateImageURL($sql->f("image_url"));
 								}
 								$sToRender .= $sql->f($this->aColumns[$i]) . "</td>";
 								break;
 						case 3:
-								$sToRender .= "<td><a href=\"" . $this->sLinkURL . $sql->f($this->sDBQueryStringColumn) . "\">" . (isset($this->sImageURL) ? $this->generateImageURL() : "") . $sql->f($this->aColumns[$i]) . "</a></td>\n";
+								$sToRender .= "<td><a href=\"" . $this->sLinkURL  . $sql->f($this->sDBQueryStringColumn) . "\">";
+								if (isset($this->sImageURL)) {
+									$sToRender .= $this->generateImageURL($this->sImageURL);
+								} else if ($this->bUseImageURLFromQuery) {
+									$sToRender .= $this->generateImageURL($sql->f("image_url"));
+								}
+								$sToRender .= $sql->f($this->aColumns[$i]) . "</a></td>\n";
 								break;
 						default:
 								break;
