@@ -71,7 +71,7 @@ class DocumentBrowser {
             
             // now find all the child folders relative to this one 
             // FIXME: in the same unit?
-            $folderQuery = "SELECT id from $default->owl_folders_table WHERE parent_id=" . $folderID . " ORDER BY name ASC";
+            $folderQuery = "SELECT id FROM $default->owl_folders_table WHERE parent_id=" . $folderID . " ORDER BY name ASC";
             $default->log->debug("DocumentBrowser::browseByFolder child folder query=$folderQuery");
             if ($sql->query($folderQuery)) {
                 while ($sql->next_record()) {
@@ -128,7 +128,7 @@ class DocumentBrowser {
             $results["categories"][] = "Categories";
            
             // get a list of category values
-            $query = "select distinct value from $default->owl_document_fields_table where document_field_id=$categoryFieldID ORDER BY value ASC";
+            $query = "SELECT DISTINCT value FROM $default->owl_document_fields_table WHERE document_field_id=$categoryFieldID ORDER BY value ASC";
             $default->log->debug("DocumentBrowser::browseByCategory category listing query=$query");
             $sql->query($query);
             // loop through resultset, build array and return
@@ -144,8 +144,8 @@ class DocumentBrowser {
             // we have a category to use, so find all the documents
             // with this category value
                         
-            $query = "select document_id from $default->owl_document_fields_table where document_field_id = $categoryFieldID " . 
-                     "and value='$category' ORDER BY value ASC";
+            $query = "SELECT document_id FROM $default->owl_document_fields_table WHERE document_field_id = $categoryFieldID " . 
+                     "AND value='$category' ORDER BY value ASC";
             $default->log->debug("DocumentBrowser::browseByCategory documents in category query=$query");
             $sql->query($query);
             // loop through resultset and add to array
@@ -180,7 +180,7 @@ class DocumentBrowser {
             $results["documentTypes"][] = array("name" => "Document Types");
             
             // return a list of document types
-            $query = "select * from $default->owl_document_types_table";
+            $query = "SELECT * FRMO $default->owl_document_types_table";
             $sql->query($query);
             while ($sql->next_record()) {
                 $results["documentTypes"][] = array ("id" => $sql->f("id"), "name" => $sql->f("name"));
@@ -261,13 +261,6 @@ class DocumentBrowser {
                $folderID = $folderSql->f("id");
 
                // set folder attributes
-               /*
-               $folders[$folderName] = array("id" => $folderID,
-                                             "description" => $folderSql->f("description"),
-                                             "parent_id" => $folderSql->f("parent_id"),
-                                             "creator_id" => $folderSql->f("creator_id"),                                             
-                                             "unit_id" => $folderSql->f("unit_id"),
-                                             "is_public" => $folderSql->f("is_public"));*/
                $folders[$folderName] = & new Folder($folderName, $folderSql->f("description"), $folderSql->f("parent_id"),
                                                   $folderSql->f("creator_id"), $folderSql->f("unit_id"), 
 												  $folderSql->f("is_public"));
@@ -298,24 +291,11 @@ class DocumentBrowser {
         $default->log->debug("DocumentBrowser::lookupDocumentDetails documentIDStr=$documentIDStr; documentIDs=" . arrayToString($documentIDs));
         
         // create query to retrieve the details of the specified documents
-        $documentQuery = "select * from $default->owl_documents_table where id in ($documentIDStr)";
+        $documentQuery = "SELECT * FROM $default->owl_documents_table WHERE id in ($documentIDStr)";
         if ($sql->query($documentQuery)) {
             // TODO: check return status of query and die appropriately
             while ($sql->next_record()) {
                 // set attributes
-                /*$documents[$sql->f("name")] = array("id" => $sql->f("id"),
-                                                  "document_type_id" => $sql->f("id"),
-                                                  "name" => $sql->f("name"),
-                                                  "filename" => $sql->f("filename"),
-                                                  "size" => $sql->f("size"),
-                                                  "creator_id" => $sql->f("creator_id"),
-                                                  "modified" => $sql->f("modified"),
-                                                  "description" => $sql->f("description"),
-                                                  "mime_id" => $sql->f("mime_id"),
-                                                  "folder_id" => $sql->f("folder_id"),
-                                                  "major_version" => $sql->f("major_version"),
-                                                  "minor_version" => $sql->f("minor_version"),                                                            
-                                                  "is_checked_out" => $sql->f("is_checked_out"));*/
                 $documents[$sql->f("name")] &= Document::get($sql->f("id"));
             }
         } else {
