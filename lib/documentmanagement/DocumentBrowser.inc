@@ -11,89 +11,97 @@
  */
 class DocumentBrowser {
     
-    // TODO: need separation of logic from presentation
-    
     /**
      * Browse the documents by folder
      *
      * @param $folderID    the folder to browse from
+     * @return an multidimensional array of folders and documents
      */
     function browseByFolder($folderID = -1) {
         global $default;
 
         // instantiate and initialise
         $folders = array();
-        $folderSql = new Owl_DB();
-        $documentSql = new Owl_DB();
-        // TODO: put this in defaults?
-        $rootFolderName = "Root Document Folder";
+        $sql = new Owl_DB();
         
         if ($folderID == -1) {
-            // no folder specified, so start at the root
-            // TODO: unitID should be on session
+            // no folder specified, so start at the root for this users organisation
+            // TODO: organisationID (and name) should be on session
+            
+            // TODO: use the organisation to find the root folder
+            // eg. $rootFolderName = $_SESSION["organisationName"] . " Document Root";
             
             // if this is a system administrator, start her at the ROOT
-            // FIXME: implement checkGroup
-            if (checkGroup("System Administrators", $_SESSION["group_id"])) {
-               $folderQuery = "select * from $default->owl_folders_table where description='$rootFolderName'";
+            // TODO: add to default->sysadmin_group
+            if ($this->checkGroup("System Administrators", $_SESSION["groupID"])) {
+               $folderQuery = "SELECT * FROM $default->owl_folders_table WHERE name='$rootFolderName'";
             } else {
                // otherwise start everyone relative to their unit
-               $folderQuery = "select * from $default->owl_folders_table " . 
-                        "where unit_id=" . $_SESSION["unit_id"] . 
-                        " and description='$rootFolderName'";
+               
+               // lookup the id of the root folder
+               //$folderID = lookupID($default->owl_folders_table, "name", "'$rootFolderName'");
+               
+               // FIXME: actually need to lookup the unit root folder- which should map to the unitname
+               //        and descend directly from the organisation document root
+               $unitRootFolder = $_SESSION["unitName"] . " Document Root";
+               
+               $unitID = $_SESSION["unitID"];
+               // lookup descendant folders with the appropriate unit set
+               $folderQuery = "SELECT * from $default->owl_folders_table " . 
+                              "WHERE unit_id=" . $unitID . 
+                              " AND parent_id='$folderID'" .
+                              " AND name='$unitRootFolder'";
             }
         } else {
             // start from the specified folder
-            // TODO: check that the user has access to this folder?
-            //       should be done in checkPermissions routine.
-            $folderQuery = "select * from $default->owl_folders_table where id=$folderID";
+            $folderQuery = "SELECT * FROM $default->owl_folders_table WHERE id=$folderID";
         }
         
-        // perform query and loop through results
-        $folderSql->query($query);
-        // TODO: check return status of query and die appropriately
-        //$numrows = $folderSql->num_rows($sql);
-        while($folderSql->next_record()) {
-           // for each folder, add it to the array
-           $folderName = $folderSql->f("name");
-           $folders[$folderName] = array();
-            
-           // for convenience and reuse down below
-           $folderID = $folderSql->f("id");
-           // set folder attributes
-           // FIXME: should the ui do a lookup before displaying the id information
-           //        or should the additional lookups happen here and pass back names instead of ids?
-           //       or both?
-           $folders[$folderName] = array("id" => $folderID,
-                                         "description" => $folderSql->f("description"),
-                                         "parent_id" => $folderSql->f("parent_id"),
-                                         "creator_id" => $folderSql->f("creator_id"),
-                                         "document_type_id" => $folderSql->f("document_type_id"),
-                                         "unit_id" => $folderSql->f("unit_id"),
-                                         "is_public" => $folderSql->f("is_public"));                                         
-           // create query to retrieve documents in this folder
-           $documentQuery = "select * from default->owl_documents_table where folder_id=$folderID";
-           $documentSql->query($documentQuery);
-           // TODO: check return status of query and die appropriately
-           while ($documentSql->next_record()) {
-               // add documents to array
-               $documentName = $documentSql->f("name");
-               // set file attributes
-               $folders[$folderName][$documentName] = array("id" => $documentSql->f("id"),
-                                                            "document_type_id" => $documentSql->f("id"),
-                                                            "name" => $documentName,
-                                                            "filename" => $documentSql->f("filename"),
-                                                            "size" => $documentSql->f("size"),
-                                                            "creator_id" => $documentSql->f("creator_id"),
-                                                            "modified" => $documentSql->f("modified"),
-                                                            "description" => $documentSql->f("description"),
-                                                            "mime_id" => $documentSql->f("mime_id"),
-                                                            //"folder_id" => $documentSql->f("folder_id"),
-                                                            "major_version" => $documentSql->f("major_version"),
-                                                            "minor_version" => $documentSql->f("minor_version"),                                                            
-                                                            "is_checked_out" => $documentSql->f("is_checked_out")); 
-           }
+        // retrieve folder details
+        $folders = $this->retrieveFolderDetails($folderQuery);
+        // lookup the name of the root folder
+        $folderName = lookupField($default->owl_folders_table, "name", "id", $folderID);
+        
+        $default->log->debug("DocumentBrowser::browseByFolder folderID=$folderID; folderName=$folderName");
+        $default->log->debug("DocumentBrowser::browseByFolder folders=" . arrayToString($folders));
+        
+        // now find all the child folders relative to this one
+        $folderQuery = "SELECT * from $default->owl_folders_table WHERE parent_id=" . $folderID;
+        $default->log->debug("DocumentBrowser::browseByFolder child folder query=$folderQuery");
+        $childFolders = $this->retrieveFolderDetails($folderQuery);
+        $default->log->debug("DocumentBrowser::browseByFolder childFolders=" . arrayToString($childFolders));
+        
+        // add children to array
+        $folders[$folderName]["folders"] = $childFolders;
+        
+        // create query to retrieve documents in this folder
+        $documentQuery = "SELECT * FROM $default->owl_documents_table WHERE folder_id=$folderID";
+        $default->log->debug("DocumentBrowser::browseByFolder about to execute $documentQuery");
+        if ($sql->query($documentQuery)) {
+            while ($sql->next_record()) {
+                $default->log->debug("DocumentBrowser::browseByFolder got the next document record");
+                // add documents to array
+                $documentName = $sql->f("name");
+                // set file attributes
+                $folders[$folderName]["documents"][$documentName] = 
+                                                         array("id" => $sql->f("id"),
+                                                               "document_type_id" => $sql->f("id"),
+                                                               "name" => $documentName,
+                                                               "filename" => $sql->f("filename"),
+                                                               "size" => $sql->f("size"),
+                                                               "creator_id" => $sql->f("creator_id"),
+                                                               "modified" => $sql->f("modified"),
+                                                               "description" => $sql->f("description"),
+                                                               "mime_id" => $sql->f("mime_id"),
+                                                               "folder_id" => $sql->f("folder_id"),
+                                                               "major_version" => $sql->f("major_version"),
+                                                               "minor_version" => $sql->f("minor_version"),                                                            
+                                                               "is_checked_out" => $sql->f("is_checked_out")); 
+            }
+        } else {
+            $_SESSION["errorMessage"] = "documents table select failed";
         }
+        
         return $folders;        
     }
 
@@ -103,98 +111,56 @@ class DocumentBrowser {
      * @param $category    the category to browse
      */    
     function browseByCategory($category = "") {
-        $global default;
+        global $default;
         
         // TODO: add this to default inserts
         $categoryField = "Category";
-        $categories = new array();
-        $categorySql = new Owl_DB();
+        $categories = array();
+        $sql = new Owl_DB();
 
         // lookup document_fields id for category
-        $query = "select id from $default->owl_fields_table where name='$categoryField'";
-        // TODO: if there are no categories then die
-        $categorySql->query($query);
-        // TODO: check return status of query and die appropriately
-        $numrows = $categorySql->num_rows($sql);
-        if ($numrows == 1) {
-            $categorySql->next_record();
-            $category_fieldID = $categorySql->f("id");
-        } else {
-            // error
-            die("no category field in the db.  contact sysadmin.");
-        }
+        $categoryFieldID = lookupID($default->owl_fields_table, "name", "'$categoryField'");
+        $default->log->debug("DocumentBrowser::browseByCategory categoryFieldID=$categoryFieldID");
 
         if ($category == "") {
-            // no category supplied, so return a list of categories
+            $default->log->debug("DocumentBrowser::browseByCategory no category supplied, returning list");
+            // no category value supplied, so return a list of categories
             $categories = array();
             
             // now get a list of category values
-            $query = "select value from $default->owl_document_fields_table where document_field_id=$category_fieldID";
-            $categorySql->query($query);
+            $query = "select value from $default->owl_document_fields_table where document_field_id=$categoryFieldID";
+            $default->log->debug("DocumentBrowser::browseByCategory category listing query=$query");
+            $sql->query($query);
             // loop through resultset, build array and return
-            while ($categorySql->next_record()) {
-                $categories[] = $categorySql->f("value");
+            while ($sql->next_record()) {
+                $categories[] = $sql->f("value");
             }
             // its ok if we return an empty array- the UI's responsibility to check and print an error
             return $categories;
         } else {
+            $default->log->debug("DocumentBrowser::browseByCategory get documents for category $category");
             // we have a category to use, so find all the documents
             // with this category value
             
             // first lookup the document_field_id of this
-            $query = "select document_id from $default->owl_document_fields_table where document_field_id = $category_fieldID " . 
+            $query = "select document_id from $default->owl_document_fields_table where document_field_id = $categoryFieldID " . 
                      "and value='$category'";
-            $categorySql->query($query);
+            $default->log->debug("DocumentBrowser::browseByCategory documents in category query=$query");
+            $sql->query($query);
             // loop through resultset and build comma separated list of documentIDs
-            $documentIDs = "";
-            while ($categorySql->next_record()) {
-                $documentIDs = $categorySql->f("document_id") . ",";
-                //$categories[] = $categorySql->f("document_id");
+            $documentIDs = array();
+            while ($sql->next_record()) {
+                $documentIDs[] = $sql->f("document_id");
             }
-            // trim the last comma
-            $documentIDs = substr("$documentIDs", 0, -1);
+            $default->log->debug("DocumentBrowser::browseByCategory documentIDs=" . arrayToString($documentIDs));
             // use lookup function to retrieve details
             $documents = $this->lookupDocumentDetails($documentIDs);
             // add to array and return
-            $categories[$category] = $documents;
+            $categories[$category]["documents"] = $documents;
             return $categories;
         }
     }
     
-    /**
-     * Lookup document details for all the document_ids in the comma separated input string
-     *
-     * @param    $documentIDs
-     * @return an array containing the details of all the documents
-     */
-    function lookupDocumentDetails($documentIDs) {
-        global $default;
-        
-        $documents = array();
-        $sql = new Owl_DB();
-        
-        // create query to retrieve the details of the specified documents
-        $documentQuery = "select * from $default->owl_documents_table where document_id in ($documentIDs)";
-        $sql->query($documentQuery);
-        // TODO: check return status of query and die appropriately
-        while ($sql->next_record()) {
-            // set attributes
-            $documents[$sql->f("id")] = array("id" => $sql->f("id"),
-                                                      "document_type_id" => $sql->f("id"),
-                                                      "name" => $sql->f("name"),
-                                                      "filename" => $sql->f("filename"),
-                                                      "size" => $sql->f("size"),
-                                                      "creator_id" => $sql->f("creator_id"),
-                                                      "modified" => $sql->f("modified"),
-                                                      "description" => $sql->f("description"),
-                                                      "mime_id" => $sql->f("mime_id"),
-                                                      "folder_id" => $sql->f("folder_id"),
-                                                      "major_version" => $sql->f("major_version"),
-                                                      "minor_version" => $sql->f("minor_version"),                                                            
-                                                      "is_checked_out" => $sql->f("is_checked_out")); 
-        }
-        return $folders;
-    }
     /**
      * Browse the documents by document type
      *
@@ -204,7 +170,7 @@ class DocumentBrowser {
         global $default;
         
         $documentTypes = array();
-        $sql = new Owl_DB();        
+        $sql = new Owl_DB();
         
         if ($documentTypeID == -1) {
             // return a list of document types
@@ -215,20 +181,134 @@ class DocumentBrowser {
             }
             return $documentTypes;
         } else {
+            // lookup document type name
+            $documentTypeName = lookupField($default->owl_document_types_table, "name", "id", $documentTypeID);
+            
             // find all documents with this document type
-            $query = "select document_id from $default->owl_documents_table where document_type_id=$documentTypeID";
-            // loop through resultset and build comma separated list of documentIDs
-            $documentIDs = "";
+            $query = "select id from $default->owl_documents_table where document_type_id=$documentTypeID";
+            $default->log->debug("DocumentBrowser::browseByCategory documents from doc type query=$query");
+            // loop through resultset and build array of documentIDs
+            $documentIDs = array();
+            $sql->query($query);
             while ($sql->next_record()) {
-                $documentIDs = $sql->f("document_id") . ",";
+                $documentIDs[] = $sql->f("id");
             }
-            // trim the last comma
-            $documentIDs = substr("$documentIDs", 0, -1);
+            $default->log->debug("DocumentBrowser::browseByCategory documentIDs=" . arrayToString($documentIDs));
             // use lookup function to retrieve details
             $documents = $this->lookupDocumentDetails($documentIDs);
             // add to array and return
-            $documentTypes[$documentTypeID] = $documents;
+            $documentTypes[$documentTypeName]["documents"]= $documents;
             return $documentTypes;
         }
+    }
+ 
+    /**
+     * Checks whether the required group is one of the
+     * groups in the $groupIDs array
+     *
+     * @param $requiredGroupName  the group name to check for
+     * @param $groupIDS           an array of groupIDs to check
+     * @return true if $requiredGroupName is in the $groupIDs array, else false
+     */
+    function checkGroup($requiredGroupName, $groupIDs) {
+        global $default;
+        $sql = new Owl_DB();
+        // lookup the id of $requiredGroupName
+        $requiredGroupID = lookupID($default->owl_groups_table, "name", "'$requiredGroupName'");
+        $default->log->debug("DocumentBrowser::checkGroup reqGrpID=$requiredGroupID");
+        if ($requiredGroupID) {
+            // now loop through the array and check if we're in the group
+            $default->log->debug("DocumentBrowser::checkGroup req=$requiredGroupName; ids=" . arrayToString($groupIDs)); 
+            if (in_array($requiredGroupID, $groupIDs)) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            // this group doesn't exist
+            // TODO: add this to language
+            $_SESSION["errorMessage"] = "group $requiredGroupName doesn't exist";
+            return false;
+        }
+    }
+    
+    /**
+     * Returns an array of folder details for the specified folder
+     *
+     * @param     $folderQuery the sql query to retrieve the correct folder
+     * @return an array containing the folder details
+     */
+    function retrieveFolderDetails($folderQuery) {
+        global $default;
+        
+        $folders = array();
+        $folderSql = new Owl_DB();
+        // perform folder details query and loop through results
+        if ($folderSql->query($folderQuery)) {
+            // should only be one result
+            if ($folderSql->next_record()) {
+               $default->log->debug("DocumentBrowser::retrieveFolderDetails got results for $folderQuery");
+               // add the folder details to the array
+               $folderName = $folderSql->f("name");
+               $folderID = $folderSql->f("id");
+
+               // set folder attributes
+               $folders[$folderName] = array("id" => $folderID,
+                                             "description" => $folderSql->f("description"),
+                                             "parent_id" => $folderSql->f("parent_id"),
+                                             "creator_id" => $folderSql->f("creator_id"),
+                                             "document_type_id" => $folderSql->f("document_type_id"),
+                                             "unit_id" => $folderSql->f("unit_id"),
+                                             "is_public" => $folderSql->f("is_public"));
+            } else {
+                $_SESSION["errorMessage"] = "could not retrieve folder details: $folderQuery";
+                $default->log->debug("DocumentBrowser::retrieveFolderDetails error=" . $_SESSION["errorMessage"]);
+            }
+        } else {
+            $_SESSION["errorMessage"] = "could not retrieve folder details: $folderQuery";
+        }
+        return $folders;
+    }
+   
+    /**
+     * Lookup document details for all the document_ids in the input array
+     *
+     * @param    $documentIDs    an array containing the documentIDs to retrieve details for
+     * @return an array containing the details of all the documents
+     */
+    function lookupDocumentDetails($documentIDs) {
+        global $default;
+        
+        $documents = array();
+        $sql = new Owl_DB();
+        
+        // convert array to a comma separated string
+        $documentIDStr = arrayToCSS($documentIDs);
+        $default->log->debug("DocumentBrowser::lookupDocumentDetails documentIDStr=$documentIDStr; documentIDs=" . arrayToString($documentIDs));
+        
+        // create query to retrieve the details of the specified documents
+        $documentQuery = "select * from $default->owl_documents_table where id in ($documentIDStr)";
+        if ($sql->query($documentQuery)) {
+            // TODO: check return status of query and die appropriately
+            while ($sql->next_record()) {
+                // set attributes
+                $documents[$sql->f("name")] = array("id" => $sql->f("id"),
+                                                  "document_type_id" => $sql->f("id"),
+                                                  "name" => $sql->f("name"),
+                                                  "filename" => $sql->f("filename"),
+                                                  "size" => $sql->f("size"),
+                                                  "creator_id" => $sql->f("creator_id"),
+                                                  "modified" => $sql->f("modified"),
+                                                  "description" => $sql->f("description"),
+                                                  "mime_id" => $sql->f("mime_id"),
+                                                  "folder_id" => $sql->f("folder_id"),
+                                                  "major_version" => $sql->f("major_version"),
+                                                  "minor_version" => $sql->f("minor_version"),                                                            
+                                                  "is_checked_out" => $sql->f("is_checked_out")); 
+            }
+        } else {
+            $_SESSION["errorMessage"] = "document query failed";
+        }
+        return $documents;
     }
 }
