@@ -23,21 +23,21 @@ function getFolderPath($iFolderID) {
 
 function getDocumentLinkFolderCollaborationData($iFolderCollaborationID) {
 	global $default;	
-	$sQuery = "SELECT DDT.id, GFAL.folder_id AS folder_id, U.name AS username, DDT.document_title, D.name AS template_document_name, D.id AS template_document_id, DDT.group_folder_approval_link_id, 'Edit' AS edit " .
+	$sQuery = "SELECT DDT.id, GFAL.folder_id AS folder_id, U.name AS username, DDT.document_title, D.name AS template_document_name, D.id AS template_document_id, DDT.group_folder_approval_link_id, 'Edit' AS edit, 'Delete' AS del " .
 				"FROM dependant_document_template AS DDT INNER JOIN groups_folders_approval_link AS GFAL ON DDT.group_folder_approval_link_id = GFAL.id " .
 				"INNER JOIN users AS U ON U.id = DDT.default_user_id " .
 				"LEFT OUTER JOIN documents AS D ON D.id = DDT.template_document_id " . 
 				"WHERE DDT.group_folder_approval_link_id = $iFolderCollaborationID";
 				
 	//echo $sQuery;			
-	$aColumns = array("document_title", "username", "template_document_name","edit");
-	$aColumnHeaders = array("Document title", "Default creator", "Template document", "Edit");
-	$aColumnTypes = array(1,1,3,3);
+	$aColumns = array("document_title", "username", "template_document_name","edit", "del");
+	$aColumnHeaders = array("Document title", "Default creator", "Template document");
+	$aColumnTypes = array(1,1,3,3,3);
 	//$aDBColumnArray = array("id","group_folder_approval_link_id","template_document_id");
 	$aDBColumnArray = array("id","group_folder_approval_link_id","folder_id");
 	//$aQueryStringVariableNames = array("fDependantDocumentTemplateID", "fFolderCollaborationID", "fDocumentID");
 	$aQueryStringVariableNames = array("fDependantDocumentTemplateID","fFolderCollaborationID","fFolderID");
-	$aLinkURLs = array(2=>"$default->rootUrl/control.php?action=viewDocument", 3=>"$default->rootUrl/control.php?action=viewDependantDocument&fForEdit=1");	
+	$aLinkURLs = array(2=>"$default->rootUrl/control.php?action=viewDocument", 3=>"$default->rootUrl/control.php?action=viewDependantDocument&fForEdit=1", 4=>"$default->rootUrl/control.php?action=deleteDependantDocument");	
 	
 	$oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaders, "90%", $aLinkURLs, $aDBColumnArray,$aQueryStringVariableNames);
 	$oPatternTableSqlQuery->setTableHeading("Dependant Documents");
