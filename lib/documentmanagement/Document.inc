@@ -399,7 +399,7 @@ class Document {
 					$oUser = User::get($oFolderUserRole->getUserID());
 			
 					$sBody = $oUser->getUserName() . ", your role of '" . $oRole->getName() . "' in the document, '" . $this->sName . "' collaboration process is now active. " .
-											"Click <a href=\"https://" . $_SERVER["SERVER_NAME"] . "$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $this->iId . "\">here</a> to access " .
+                                            "Click " . generateControllerLink("viewDocument", "fDocumentID=" . $this->iId, "here") . " to access " .
 											"the document";
 			
 					$oEmail = & new Email();
@@ -820,7 +820,7 @@ class Document {
 						if ($oUser->getEmailNotification()) {
 					
 							$sBody = $oUser->getUserName() . ", your role of '" . $oRole->getName() . "' in the document, '" . $this->sName . "' collaboration process is now active. " .
-													"Click <a href=\"https://" . $_SERVER["SERVER_NAME"] . "$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $this->iId . "\">here</a> to access " .
+                                                    "Click " . generateControllerLink("viewDocument", "fDocumentID=" . $this->iId, "here") . " to access " .
 													"the document";
 					
 							$oEmail = & new Email();
@@ -874,7 +874,7 @@ class Document {
 				if ($oUser->getEmailNotification()) {
 					$oCurrentUser = User::get($_SESSION["userID"]);
 					
-					$sBody = $oUser->getUserName() . ", the document, '<a href=\"https://" . $_SERVER["SERVER_NAME"] . "$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $this->iId . "\">" . $oDocument->getName() . "</a>' " .
+                    $sBody = $oUser->getUserName() . ", the document, '" . generateControllerLink("viewDocument", "fDocumentID=" . $this->iId, $oDocument->getName()) . "' " .                    
 											"has been rejected by " . $oCurrentUser->getName() . " in the document collaboration process.  The collaboration process has been stopped. " .
 											"The comment entered by " . $oCurrentUser->getName() . " was: $sComment";
 			
@@ -904,7 +904,7 @@ class Document {
 						$oUser = User::get($oFolderUserRole->getUserID());
 						$oCurrentUser = User::get($_SESSION["userID"]);
 					
-						$sBody = $oUser->getUserName() . ", the document, '<a href=\"https://" . $_SERVER["SERVER_NAME"] . "$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $this->iId . "\">" . $oDocument->getName() . "</a>' " .
+                        $sBody = $oUser->getUserName() . ", the document, '" . generateControllerLink("viewDocument", "fDocumentID=" . $this->iId, $oDocument->getName()) . "' " .                        
 											"has been rejected by " . $oCurrentUser->getName() . " in the document collaboration process.  Please re-perform you step in the collaboration process." .
 											"The comment entered by " . $oCurrentUser->getName() . " was: $sComment";
 			
@@ -955,7 +955,7 @@ class Document {
 			if (!($oUser === false)) {
 				if ($oUser->getEmailNotification()) {
 					$oDocument = Document::get($iDocumentID);
-					$sBody = $oUser->getUserName() . ", the document <a href=\"https://" . $_SERVER["SERVER_NAME"] . "$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $this->iId . "\">" . $oDocument->getName() . "</a> to access " .
+                    $sBody = $oUser->getUserName() . ", the document, '" . generateControllerLink("viewDocument", "fDocumentID=" . $oDocument->iId, $oDocument->getName()) . "' " .                    
 														"is pending web publishing";
 						
 					$oEmail = & new Email();
