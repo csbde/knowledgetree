@@ -7,6 +7,26 @@
 * @package presentation.lookAndFeel.knowledgeTree.
 *
 */
+
+// display multiple users
+function getSelectUserPage($aResults) {
+	global $default;
+	
+	$sToRender .= "<br></br>\n";
+	$sToRender .= "<b>Select the User to add to the System:</b>\n";
+	$sToRender .= "<table>\n";
+    $sToRender .= "<br></br>\n";
+	$sToRender .= "<tr><td><select name=\"fName\">\n";
+    foreach ($aResults as $sName => $aAttributes) {
+        $sToRender .= "<option value=\"$sName\">$sName</option>";
+    }
+    $sToRender .= "</select></td></tr>\n";
+    $sToRender .= "<tr><td></td><td align=\"right\"><input type=\"image\" src=\"/owl/graphics/widgets/select.gif\" value=\"submit\"/></td></tr>\n";
+	$sToRender .= "</table>\n";
+	
+	return $sToRender;
+}
+
 // get add pages
 function getAddPage($unitID) {
 
@@ -40,7 +60,8 @@ function getDetailsDBPage($suserName, $aAttributes) {
 	$sToRender .= "<table>\n";
 	$sToRender .= "<br></br>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>Username: </td><td><input size = \"40\" type=\"text\" name=\"fUsername\" value = \"". $aAttributes[$suserName]["username"]. "\"> </td>\n";
+	$sToRender .= "<td>Username: </td><td><input disabled size = \"40\" type=\"text\" name=\"fUsername\" value = \"". $aAttributes[$suserName]["username"]. "\"> </td>\n";
+    $sToRender .= "<input type=\"hidden\" name=\"fUsername\" value = \"" . $aAttributes[$suserName]["username"] ."\">\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>Name: </td><td><input size = \"40\" type=\"text\" name=\"fName\" value = \"" . $aAttributes[$suserName]["name"] ."\"> </td>\n";
@@ -82,16 +103,19 @@ function getDetailsLDAPPage($suserName, $aAttributes) {
 	$sToRender .= "<table>\n";
 	$sToRender .= "<br></br>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>LDAP DN: </td><td><input size = \"40\" type=\"text\" name=\"fLdap\" value = \"". $aAttributes[$suserName]["dn"]. "\"> </td>\n";
+	$sToRender .= "<td>LDAP DN: </td><td><input disabled size = \"40\" type=\"text\" name=\"fLdap\" value = \"". $aAttributes[$suserName]["dn"]. "\"> </td>\n";
+    $sToRender .= "<input type=\"hidden\" name=\"fLdap\" value = \"". $aAttributes[$suserName]["dn"]. "\">\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>Username: </td><td><input size = \"40\" type=\"text\" name=\"fUsername\" value = \"" . $aAttributes[$suserName]["uid"] ."\"> </td>\n";
+	$sToRender .= "<td>Username: </td><td><input disabled size = \"40\" type=\"text\" name=\"fUsername\" value = \"" . $aAttributes[$suserName]["uid"] ."\"> </td>\n";
+    $sToRender .= "<input type=\"hidden\" name=\"fUsername\" value = \"" . $aAttributes[$suserName]["uid"] ."\">\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>Name: </td><td><input size = \"40\" type=\"text\" name=\"fName\" value = \"" . $aAttributes[$suserName]["givenname"] ." " . $aAttributes[$suserName]["sn"] ."\"> </td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>Email: </td><td><input size = \"40\" type=\"text\" name=\"fEmail\" value = \"" . $aAttributes[$suserName]["mail"] ."\"> </td>\n";
+	$sToRender .= "<td>Email: </td><td><input disabled size = \"40\" type=\"text\" name=\"fEmail\" value = \"" . $aAttributes[$suserName]["mail"] ."\"> </td>\n";
+    $sToRender .= "<input type=\"hidden\" name=\"fEmail\" value = \"" . $aAttributes[$suserName]["mail"] ."\">\n";    
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>Mobile Number: </td><td><input size = \"40\" type=\"text\" name=\"fMobile\" value = \"" . $aAttributes[$suserName]["mobile"] ."\"> </td>\n";
