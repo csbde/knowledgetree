@@ -198,7 +198,12 @@ class Document {
     function setMinorVersionNumber($iNewValue) {
         $this->iMinorVersion = $iNewValue;
     }
-
+	
+	/** returns the complete version number as a string */
+	function getVersion() {
+		return $this->iMajorVersion . "." . $this->iMinorVersion;
+	}
+	
     /** get the document check out status */
     function getIsCheckedOut() {
         return $this->bIsCheckedOut;
