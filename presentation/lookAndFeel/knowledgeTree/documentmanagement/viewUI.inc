@@ -177,7 +177,7 @@ function renderDocumentArchiveSettingsDetails($oDocument, $bEditable) {
 	$sToRender .= "<caption align=\"top\" colspan=\"2\" align=\"left\"><b>Archiving Settings</b></caption>";
 	$sToRender .= "<th align=\"left\">" . $sArchivingType . "</th>";
 	$sToRender .= "<tr bgcolor=\"F5F6EE\">";
-	$sToRender .= "<td>$sDisplayText</td>";
+	$sToRender .= $sDisplayText;
 	$sToRender .= "</tr>";
 	$sToRender .= "</table>";
     return  $sToRender;	
