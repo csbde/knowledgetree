@@ -62,7 +62,11 @@ if (checkSession()) {
             $main->setErrorMessage("You cannot edit a document collaboration step that is completed or currently underway");
             $main->setFormAction("$default->rootUrl/control.php?action=modifyDocument&fDocumentID=" . $oDocument->getID());
             $main->render();
-        } else if (isset($fForDownload) && Permission::userHasDocumentReadPermission($fDocumentID)) {
+        } else if (isset($fForInlineView) && Permission::userHasDocumentReadPermission($fDocumentID)) {
+			$oDocumentTransaction = & new DocumentTransaction($fDocumentID, "Inline view", DOWNLOAD);
+            $oDocumentTransaction->create();
+            PhysicalDocumentManager::inlineViewPhysicalDocument($fDocumentID);			
+		} else if (isset($fForDownload) && Permission::userHasDocumentReadPermission($fDocumentID)) {
             //if the user has document read permission, perform the download
             $oDocumentTransaction = & new DocumentTransaction($fDocumentID, "Document downloaded", DOWNLOAD);
             $oDocumentTransaction->create();
