@@ -80,8 +80,10 @@ function getSendInfoToParentJavaScript() {
 	$sToRender = "<script language=\"JavaScript\"><!--\n";
 	$sToRender .= "function load(documentName, documentID, target) {\n";
     $sToRender .= "\tif (target != '') {\n";    
-    $sToRender .= "\t\ttarget.window.document.MainForm.fTemplateDocument.value = documentName;\n";    
-    $sToRender .= "\t\ttarget.window.document.MainForm.fTemplateDocumentID.value = documentID;\n";
+    //$sToRender .= "\t\ttarget.window.document.MainForm.fTemplateDocument.value = documentName;\n";    
+    //$sToRender .= "\t\ttarget.window.document.MainForm.fTemplateDocumentID.value = documentID;\n";    
+    $sToRender .= "\t\ttarget.window.document.MainForm.fTargetDocumentID.value = documentID;\n";
+    $sToRender .= "\t\ttarget.window.document.MainForm.fTargetDocument.value = documentName;\n";
     $sToRender .= "\t}\n";
     $sToRender .= "\telse {\n";
     $sToRender .= "\t\twindow.location.href = file;\n";
