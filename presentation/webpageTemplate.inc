@@ -33,33 +33,31 @@ $image->setImgSize(114, 96);
 $img = $image->render();
 
 
-$nwestLoad   = "
-        <html>
-        <table width = \"100%\" height = \"100%\">
-        <td>". $img ."</td></tr>
-        <tr><td><img src = " . $colourBar . "></img></td></tr>
-        </table>
-        </html>
-         ";
+$nwestLoad   = "<html>
+               <table width = \"100%\" height = \"100%\">
+               <td>". $img ."</td></tr>
+               <tr><td><img src = " . $colourBar . "></img></td></tr>
+               </table>
+               </html>";
 
 $nwPayLoad = new PatternCustom;
-$nwPayLoad ->setHtml($nwestLoad);	     
-         
+$nwPayLoad ->setHtml($nwestLoad);
+
 // set up the west payload
 //get section links
 if ($sectionName != "General") {
-	$sectionArray = $default->siteMap->getSectionLinks($sectionName);
+    $sectionArray = $default->siteMap->getSectionLinks($sectionName);
 
-	//format the array..by taking first element off
-	$output1["links"] = array_shift ($sectionArray["links"]);      
-	$output2["descriptions"] = array_shift($sectionArray["descriptions"]);
+    //format the array..by taking first element off
+    $output1["links"] = array_shift ($sectionArray["links"]);
+    $output2["descriptions"] = array_shift($sectionArray["descriptions"]);
 
-	//create links
-	$westLinks = new PatternTableLinks($sectionArray["links"], $sectionArray["descriptions"], 50 , 1 ,1,null);
-	$westRender = $westLinks->render();
+    //create links
+    $westLinks = new PatternTableLinks($sectionArray["links"], $sectionArray["descriptions"], 50 , 1 ,1,null);
+    $westRender = $westLinks->render();
 } else {
     $westLinks = new PatternTableLinks(array(), array(), 50 , 1 ,1,null);
-	$westRender = $westLinks->render();
+    $westRender = $westLinks->render();
 }
 
 //set up links
@@ -67,26 +65,22 @@ $cAdmin = "$default->owl_graphics_url/leftnav/cadmin.gif" ;
 $link = "$default->owl_graphics_url/leftnav/links.gif" ;
 
 
-//setup the westpayload 
+//setup the westpayload
 // TODO -> change to links the images as well
-$westLoad = "
-       
-         <table  cellspacing = \"5\"  cellpadding = \"5\"  border  = \"0\" width = \"100%\" height = \"75%\">
-         <tr><td>". $westRender ."</td></tr>
-         </table>
-         <hr>
-         <img src = " . $cAdmin . "></img>
-         </hr>
-         <hr>
-         <img src = ". $link ."></img>
-         </hr>
-         <hr>
-         </hr>
-       
-         ";
-         
+$westLoad = "<table cellspacing = \"5\"  cellpadding = \"5\"  border  = \"0\" width = \"100%\" height = \"75%\">
+            <tr><td>". $westRender ."</td></tr>
+            </table>
+            <hr>
+            <img src = " . $cAdmin . "></img>
+            </hr>
+            <hr>
+            <img src = ". $link ."></img>
+            </hr>
+            <hr>
+            </hr>";
+
 $westPayLoad = new PatternCustom;
-$westPayLoad->setHtml($westLoad);	     
+$westPayLoad->setHtml($westLoad);
 
 $main = new PatternMainPage();
 $main->setNorthPayload($navbar);
