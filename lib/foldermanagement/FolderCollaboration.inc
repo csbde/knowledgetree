@@ -147,8 +147,9 @@ class FolderCollaboration {
 		$sQuery = "SELECT FURL.id " .
 				  "FROM $default->owl_groups_folders_approval_table AS GFAL INNER JOIN documents AS D ON GFAL.folder_id = D.folder_id " .
                   "INNER JOIN $default->owl_folders_user_roles_table AS FURL ON FURL.document_id = D.id " .
-                  "WHERE GFAL.id = " . $this->iId; 
-		$sql = $default->db;
+                  "WHERE GFAL.id = " . $this->iId . " " .
+                  "AND FURL.active != 0"; 
+		$sql = $default->db;		
 		$sql->query($sQuery);
 		return $sql->next_record();
 		
