@@ -131,19 +131,19 @@ function getEditPage($oDocument) {
     
     $sToRender .= "\t<table border = 0>\n";
     $sToRender .= "\t<tr width>\n";
-    $sToRender .= "\t\t<td>" . wrapInTable(renderDocumentData($oDocument)) . "</td>\n";    
+    $sToRender .= "\t\t<td>" . renderDocumentData($oDocument) . "</td>\n";    
     $sToRender .= "\t</tr>\n";
 	$sToRender .= "\t<tr>\n";
 	$sToRender .= "<td><input type=\"image\" src=\"$default->graphicsUrl/widgets/edit.gif\" onClick=\"setActionAndSubmit('$default->rootUrl/control.php?action=modifyDocument&fDocumentID=$iDocumentID')\"border=\"0\"></td>\n";
 	$sToRender .= "\t</tr>\n";
     $sToRender .= "\t<tr>\n";
-    $sToRender .= "\t<td>" . wrapInTable(renderGenericMetaData($oDocument)) . "</td>\n";
+    $sToRender .= "\t<td>" . renderGenericMetaData($oDocument) . "</td>\n";
     $sToRender .= "\t</tr>\n";
 	$sToRender .= "\t<tr>\n";
 	$sToRender .= "<td><input type=\"image\" src=\"$default->graphicsUrl/widgets/edit.gif\" onClick=\"setActionAndSubmit('$default->rootUrl/control.php?action=modifyDocumentGenericMetaData&fDocumentID=$iDocumentID')\"border=\"0\"></td>\n";
 	$sToRender .= "\t</tr>\n";
     $sToRender .= "\t<tr>\n";
-    $sToRender .= "\t\t<td>" . wrapInTable(renderTypeSpecificMetaData($oDocument)) . "</td>\n";
+    $sToRender .= "\t\t<td>" . renderTypeSpecificMetaData($oDocument) . "</td>\n";
     
     $sToRender .= "\t</tr>\n";
 	$sToRender .= "\t<tr>\n";
@@ -155,7 +155,7 @@ function getEditPage($oDocument) {
     
     $sToRender .= "\t<table border = 0>\n";
     $sToRender .= "\t<tr>\n";
-    $sToRender .= "\t\t<td>" . wrapInTable(renderEditableDocumentRouting($oDocument)) . "</td>\n";
+    $sToRender .= "\t\t<td>" . renderEditableDocumentRouting($oDocument) . "</td>\n";
     $sToRender .= "\t</tr>";
     $sToRender .= "\t<tr>\n";
 	if ((!Document::documentCollaborationStarted($oDocument->getID())) && ($_SESSION["userID"] == $oDocument->getCreatorID())) {
@@ -170,7 +170,7 @@ function getEditPage($oDocument) {
 		//if the current user is responsible for an active step in the collaboration process		
 		$sToRender .= "\t\t<td><table border=\"0\"><tr>\n";
 		$sToRender .= "\t\t<td><b>You currently have an active role<br> in the collaboration process</b></td>\n";				
-		$sToRender .= "\t\t<td align=\"center\"><a href=" . $_SERVER['PHP_SELF'] . "?fDocumentID=" . $oDocument->getID() . "&fCollaborationStepComplete=1><img src=\"$default->graphicsUrl/widgets/update.gif\" border=\"0\"/></a></td>\n";
+		$sToRender .= "\t\t<td align=\"center\"><a href=" . $_SERVER['PHP_SELF'] . "?fDocumentID=" . $oDocument->getID() . "&fCollaborationStepComplete=1><img src=\"$default->graphicsUrl/widgets/approve.gif\" border=\"0\"/></a></td>\n";
 		$sToRender .= "\t\t<td align=\"center\"><a href=\"$default->rootUrl/control.php?action=collaborationStepReject&fDocumentID=$iDocumentID\"><img src=\"$default->graphicsUrl/widgets/reject.gif\" border=\"0\"/></a></td>\n";
 		$sToRender .= "\t\t</tr></table></td>\n";
 	}
@@ -217,23 +217,20 @@ function getViewPage($oDocument) {
     $sToRender .= "<td>\n";
     $sToRender .= "\t<table border = 0 width = 280>\n";
     $sToRender .= "\t<tr width>\n";
-    $sToRender .= "\t\t<td>" . wrapInTable(renderDocumentData($oDocument)) . "</td>\n";
-    //$sToRender .= "\t\t<td>" . renderGenericDocumentMetaData($oDocument) . "</td>\n";
+    $sToRender .= "\t\t<td>" . renderDocumentData($oDocument) . "</td>\n";
     $sToRender .= "\t</tr>\n";
     $sToRender .= "\t<tr>\n";
-    $sToRender .= "\t<td>" . wrapInTable(renderGenericMetaData($oDocument)) . "</td>\n";
+    $sToRender .= "\t<td>" . renderGenericMetaData($oDocument) . "</td>\n";
     $sToRender .= "\t<tr>\n";
     $sToRender .= "\t<tr>\n";
-    $sToRender .= "\t\t<td>" . wrapInTable(renderTypeSpecificMetaData($oDocument)) . "</td>\n";
-    //$sToRender .= "\t\t<td>" . renderTypeSpecificMetaData($oDocument) . "</td>\n";
+    $sToRender .= "\t\t<td>" . renderTypeSpecificMetaData($oDocument) . "</td>\n";
     $sToRender .= "\t</tr>\n";
     $sToRender .= "\t</table>\n";
     $sToRender .= "</td>\n";
     $sToRender .= "<td valign=top>\n";
     $sToRender .= "\t<table border = 0, width = 230>\n";
     $sToRender .= "\t<tr>\n";
-    $sToRender .= "\t\t<td>" . wrapInTable(renderNonEditableDocumentRouting($oDocument)) . "</td>\n";
-    //$sToRender .= "\t\t<td>" . renderDocumentRouting($oDocument) . "</td>\n";	
+    $sToRender .= "\t\t<td>" . renderNonEditableDocumentRouting($oDocument) . "</td>\n";
     $sToRender .= "\t</tr>";
 	if (Document::userIsPerformingCurrentCollaborationStep($oDocument->getID())) {
 		//if the current user is responsible for an active step in the collaboration process		
@@ -281,30 +278,30 @@ function getCheckOutEditPage($oDocument, $bCheckedOut = false) {
     $sToRender .= "<td>\n";
     $sToRender .= "\t<table border = 0 width = 280>\n";
     $sToRender .= "\t<tr width>\n";
-    $sToRender .= "\t\t<td>" . wrapInTable(renderDocumentData($oDocument)) . "</td>\n";
+    $sToRender .= "\t\t<td>" . renderDocumentData($oDocument) . "</td>\n";
     $sToRender .= "\t</tr>\n";
     $sToRender .= "\t<tr>\n";
-    $sToRender .= "\t<td>" . wrapInTable(renderGenericMetaData($oDocument)) . "</td>\n";
+    $sToRender .= "\t<td>" . renderGenericMetaData($oDocument) . "</td>\n";
     $sToRender .= "\t<tr>\n";
     $sToRender .= "\t<tr>\n";
-    $sToRender .= "\t\t<td>" . wrapInTable(renderTypeSpecificMetaData($oDocument)) . "</td>\n";
+    $sToRender .= "\t\t<td>" . renderTypeSpecificMetaData($oDocument) . "</td>\n";
     $sToRender .= "\t</tr>\n";
     $sToRender .= "\t</table>\n";
     $sToRender .= "</td>\n";
     $sToRender .= "<td valign=top>\n";
     $sToRender .= "\t<table border = 0, width = 230>\n";
     $sToRender .= "\t<tr>\n";
-    $sToRender .= "\t\t<td>" . wrapInTable(renderNonEditableDocumentRouting($oDocument)) . "</td>\n";
+    $sToRender .= "\t\t<td>" . renderNonEditableDocumentRouting($oDocument) . "</td>\n";
     $sToRender .= "\t<tr>\n";
     $sToRender .= "\t<tr>\n";
     if ($bCheckedOut) {
-        $sToRender .= "\t\t<td>" . wrapInTable("You have now checked out this document. No one else can make updates to the document while you have it checked out. Click the Download button to get the latest version of the file. Please check it back in, as soon as you finish working on it.") . "</td>\n";
+        $sToRender .= "\t\t<td>You have now checked out this document. No one else can make updates to the document while you have it checked out. Click the Download button to get the latest version of the file. Please check it back in, as soon as you finish working on it.</td>\n";
         $sToRender .= "\t</tr>";
         $sToRender .= "\t<tr>\n";
         $sToRender .= "<td><a href=\"$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $oDocument->getID() . "&fForDownload=1\"><img src=\"$default->graphicsUrl/widgets/download.gif\" border=\"0\" /></a>\n";
         $sToRender .= "<a href=\"$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $oDocument->getID() . "\"><img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\" /></a></td>\n";        
     } else {
-        $sToRender .= "\t\t<td>" . wrapInTable(renderCheckOutPage($oDocument)) . "</td>\n";
+        $sToRender .= "\t\t<td>" . renderCheckOutPage($oDocument) . "</td>\n";
     }
     $sToRender .= "\t</tr>";
     $sToRender .= "\t</table>";
@@ -329,23 +326,23 @@ function getCheckInEditPage($oDocument) {
     $sToRender .= "<td>\n";
     $sToRender .= "\t<table border = 0 width = 280>\n";
     $sToRender .= "\t<tr width>\n";
-    $sToRender .= "\t\t<td>" . wrapInTable(renderDocumentData($oDocument)) . "</td>\n";
+    $sToRender .= "\t\t<td>" . renderDocumentData($oDocument) . "</td>\n";
     $sToRender .= "\t</tr>\n";
     $sToRender .= "\t<tr>\n";
-    $sToRender .= "\t<td>" . wrapInTable(renderGenericMetaData($oDocument)) . "</td>\n";
+    $sToRender .= "\t<td>" . renderGenericMetaData($oDocument) . "</td>\n";
     $sToRender .= "\t<tr>\n";
     $sToRender .= "\t<tr>\n";
-    $sToRender .= "\t\t<td>" . wrapInTable(renderTypeSpecificMetaData($oDocument)) . "</td>\n";
+    $sToRender .= "\t\t<td>" . renderTypeSpecificMetaData($oDocument) . "</td>\n";
     $sToRender .= "\t</tr>\n";
     $sToRender .= "\t</table>\n";
     $sToRender .= "</td>\n";
     $sToRender .= "<td valign=top>\n";
     $sToRender .= "\t<table border = 0, width = 230>\n";
     $sToRender .= "\t<tr>\n";
-    $sToRender .= "\t\t<td>" . wrapInTable(renderNonEditableDocumentRouting($oDocument)) . "</td>\n";
+    $sToRender .= "\t\t<td>" . renderNonEditableDocumentRouting($oDocument) . "</td>\n";
     $sToRender .= "\t<tr>\n";
     $sToRender .= "\t<tr>\n";
-    $sToRender .= "\t\t<td>" . wrapInTable(renderCheckInPage($oDocument)) . "</td>\n";
+    $sToRender .= "\t\t<td>" . renderCheckInPage($oDocument) . "</td>\n";
     $sToRender .= "\t</tr>";
     $sToRender .= "\t</table>";
     $sToRender .= "</td>\n";
