@@ -91,6 +91,16 @@ $default->owl_document_type_fields_table = "document_type_fields";
 //Table with document type field info
 $default->owl_fields_table = "document_fields";
 
+// Table with document transactions info
+$default->owl_document_transactions_table = "document_transactions";
+
+// Table with web documents info for web publishing
+$default->owl_web_documents_table = "web_documents";
+
+// Table with web documents info for web publishing
+$default->owl_web_documents_status_table = "web_documents_status";
+
+
 // Change this to reflect the database you are using
 require_once("$default->owl_fs_root/phplib/db_mysql.inc");
 //require("$default->owl_fs_root/phplib/db_pgsql.inc");
