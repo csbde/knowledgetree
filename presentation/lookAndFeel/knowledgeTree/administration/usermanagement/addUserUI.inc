@@ -104,7 +104,7 @@ function getDetailsLDAPPage($suserName, $aAttributes, $sUserIdentifier) {
         $sToRender .= "<td>Name: </td><td><input size = \"40\" type=\"text\" name=\"fName\" value = \"" . $aUserAttributes["givenname"] ." " . $aUserAttributes["sn"] ."\"> </td>\n";
         $sToRender .= "</tr>\n";
         $sToRender .= "<tr>\n";
-        $sToRender .= "<td>Email: </td><td><input disabled size = \"40\" type=\"text\" name=\"fEmail\" value = \"" . $aUserAttributes["mail"] ."\"> </td>\n";
+        $sToRender .= "<td>Email: </td><td><input " . ((strlen($aUserAttributes["mail"]) > 0) ? "disabled " : "") . "size = \"40\" type=\"text\" name=\"fEmail\" value = \"" . $aUserAttributes["mail"] ."\"> </td>\n";
         $sToRender .= "<input type=\"hidden\" name=\"fEmail\" value = \"" . $aUserAttributes["mail"] ."\">\n";    
         $sToRender .= "</tr>\n";
         $sToRender .= "<tr>\n";
