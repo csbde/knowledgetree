@@ -1,18 +1,30 @@
 <?php
-
 require_once("$default->fileSystemRoot/lib/authentication/class.AuthLdap.php");
 require_once("$default->fileSystemRoot/lib/authentication/Authenticator.inc");
-
 /**
  * $Id$
- * 
- * Perform authentication tasks against LDAP compliant directory server.
- * 
- * Licensed under the GNU GPL. For full terms see the file COPYING.
  *
- * @version $Revision$ 
+ * Perform authentication tasks against LDAP compliant directory server.
+ *
+ * Copyright (c) 2003 Jam Warehouse http://www.jamwarehouse.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ * @version $Revision$
  * @author Michael Joseph <michael@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
- * @package lib.authentication
+ * @package lib.authentication 
  */
 class LDAPAuthenticator extends Authenticator {
 
@@ -59,7 +71,7 @@ class LDAPAuthenticator extends Authenticator {
         global $default;
         if ($this->oLdap->connect()) {
             // lookup dn from username - must exist in db
-            $sBindDn = lookupField($default->owl_users_table, "ldap_dn", "username", $sUserName);
+            $sBindDn = lookupField($default->users_table, "ldap_dn", "username", $sUserName);
             if ($sBindDn && $sPassword) {
                 if ( $this->oLdap->authBind($sBindDn, $sPassword) ) {
                     return true;
