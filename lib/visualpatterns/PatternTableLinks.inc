@@ -59,7 +59,7 @@ class PatternTableLinks {
 		
 		//build the table
 		for ($i = 0; $i < $this->iRows; $i++) {			
-			$sToRender = $sToRender . "<tr >\n";			
+			$sToRender = $sToRender . "<tr>\n";			
 			for ($j = 0; $j < $this->iColumns; $j++) {
 				$sToRender = $sToRender . "<td cellspacing = \"20\" width =\"100%\">";
 				if ($iArrayCount < $iArraySize) {
