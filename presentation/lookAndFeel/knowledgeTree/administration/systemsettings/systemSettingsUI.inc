@@ -1,7 +1,7 @@
 <?php
 
 /**
-* Presentation information for Deleting a Unit 
+* Presentation information for changing system info
 *
 * @author Mukhtar Dharsey
 * @date 5 February 2003
@@ -18,8 +18,10 @@ function getPage() {
 	$aRowNames = array ("LDAP Server: ", 
 			       "LDAP Root DN: ",
 			       "Email Server:", 
-			       "Email From: ", 
-			       "Email From Name: ", 
+			       "Administrator Email Address: ", 
+			       "Administrator Name: ", 
+			       "Default Email Address: ", 
+			       "Default Email Name: ", 
 			       "File System Root: ", 
 			       "Document Root: ",
 			       "Language Directory: ",
@@ -34,6 +36,8 @@ function getPage() {
 	$aNames = array("fldapServer",
 			"fldapRootDn",
 			"femailServer",
+			"femailAdmin",
+			"femailAdminName",
 			"femailFrom",
 			"femailFromName",
 			"ffilesystemRoot",
