@@ -9,6 +9,9 @@
  * Licensed under the GNU GPL. For full terms see the file COPYING.
  */
 
+// install path
+$default->fileSystemRoot  = "/usr/local/www/owl/dms";
+
 // Database info
 $default->dbUser           = "dms";
 $default->dbPass           = "djw9281js";
@@ -22,9 +25,6 @@ require_once("$default->fileSystemRoot/phplib/db_mysql.inc");
 // single db instantiation
 require_once("$default->fileSystemRoot/lib/database/db.inc");
 $default->db = new Database();
-
-// install path
-$default->fileSystemRoot  = "/usr/local/www/owl/dms";
 
 // instantiate system settings class
 require_once("$default->fileSystemRoot/lib/database/lookup.inc");
