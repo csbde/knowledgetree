@@ -7,17 +7,30 @@
 * @package presentation.lookAndFeel.knowledgeTree.foldermanagement
 */
 
+function renderHeading($sHeading) {
+    global $default;
+    $sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
+    $sColor = $default->siteMap->getSectionColour($sSectionName, "th");
+    $sToRender  = "<table border=\"0\" width=\"600\">\n";
+    $sToRender .= "<tr align=\"left\"><th class=\"sectionHeading\" bgcolor=\"$sColor\">$sHeading</th></tr>\n";
+    $sToRender .= "<tr/>\n";
+    $sToRender .= "<tr/>\n";
+    $sToRender .= "</table>\n";
+    return $sToRender;
+}
+
 function getPage($iFolderID, $iDocumentTypeID) {
 	global $default;
 	$sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
 	$sTDBGColour = $default->siteMap->getSectionColour($sSectionName, "td");
-	$sToRender = "<table border=\"0\">\n";
+    $sToRender = renderHeading("Add Folder Document Type");
+	$sToRender .= "<table border=\"0\">\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "\t<td>" . renderFolderPath($iFolderID, "$default->uiUrl/foldermanagement/addFolderBL.php") . "</td>\n";
+    $sToRender .= "\t<td width=\"100%\">" . renderFolderPath($iFolderID, "$default->uiUrl/foldermanagement/addFolderBL.php") . "</td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "</table>\n";
 	$sToRender .= "<br>";
-    $sToRender .= "<table border=\"1\">\n";
+    $sToRender .= "<table border=\"0\">\n";
     $sToRender .= "<tr>\n";	
 	$sToRender .= "<td bgcolor=\"$sTDBGColour\">Document type</td>\n";
 	$sToRender .= "<td>" . getDocumentTypeDropDown($iDocumentTypeID) . "</td>\n";	

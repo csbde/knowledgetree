@@ -9,9 +9,23 @@
 *
 */
 
+function renderHeading($sHeading) {
+    global $default;
+    $sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
+    $sColor = $default->siteMap->getSectionColour($sSectionName, "th");
+    $sToRender  = "<table border=\"0\" width=\"600\">\n";
+    $sToRender .= "<tr align=\"left\"><th class=\"sectionHeading\" bgcolor=\"$sColor\">$sHeading</th></tr>\n";
+    $sToRender .= "<tr/>\n";
+    $sToRender .= "<tr/>\n";
+    $sToRender .= "</table>\n";
+    return $sToRender;
+}
+
+
 function getPage($iFolderID, $iGroupID, $iRoleID, $iSequenceNumber) {
 	global $default;
-	$sToRender = "<table border=\"1\" width=\"100%\"><tr><td>" . getFolderPath($iFolderID) . "</td></tr></table>\n";
+    $sToRender = renderHeading("Add Folder Collaboration Step");
+    $sToRender .= getFolderPath($iFolderID);
 	$sToRender .= "<br>\n";
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr>\n";
@@ -34,15 +48,16 @@ function getPage($iFolderID, $iGroupID, $iRoleID, $iSequenceNumber) {
 	$sToRender .= "\t\treturn false;\n\t}\n";
 	$sToRender .= "return true;\n}\n";
 	$sToRender .= "//-->\n</script>\n\n";
-				
 	
-	return $sToRender;	
-	
+	return $sToRender;
 }
 
 function getFolderPath($iFolderID) {
 	global $default;
-	return displayFolderPathLink(Folder::getFolderPathAsArray($iFolderID), Folder::getFolderPathNamesAsArray($iFolderID),  "$default->rootUrl/control.php?action=browse");		
+	$sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
+	$sTDBGColour = $default->siteMap->getSectionColour($sSectionName, "td");
+	$sFolderPathLink = displayFolderPathLink(Folder::getFolderPathAsArray($iFolderID), Folder::getFolderPathNamesAsArray($iFolderID),  "$default->rootUrl/control.php?action=browse");	    
+	return "<table border=\"0\" width = 100%><tr><td bgcolor=\"$sTDBGColour\">$sFolderPathLink</td></tr></table>\n";    
 }
 
 function getGroupDropDown($iGroupID) {
