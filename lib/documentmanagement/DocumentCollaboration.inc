@@ -75,11 +75,19 @@ class DocumentCollaboration {
 	*/
 	function resetDocumentCollaborationSteps($iDocumentID) {
 		global $default;
-		$sql = $default->db;		
-		if ($sql->query("UPDATE $default->folders_user_roles_table SET active = 0, done = 0 WHERE document_id = $iDocumentID")) {		
-			return true;
+        $aFieldValues = array(
+            'active' => 0,
+            'done' => 0,
+        );
+        $aWhereFieldValues = array(
+            'document_id' => $iDocumentID,
+        );
+        $res =& DBUtil::whereUpdate($default->folders_user_roles_table, $aFieldValues, $aWhereFieldValues);
+
+		if (PEAR::isError($res)) {
+            return false;
 		}
-		return false;
+        return true;
 	}
 	
 	/**
