@@ -854,6 +854,7 @@ class Document {
 					$oFolderUserRole->update();
 					
 					$oDocument = Document::get($iDocumentID);
+                    $oUser = User::get($oDocument->getCreatorID());
 					if ($oUser->getEmailNotification()) {
 						$oUser = User::get($oFolderUserRole->getUserID());
 						$oCurrentUser = User::get($_SESSION["userID"]);
