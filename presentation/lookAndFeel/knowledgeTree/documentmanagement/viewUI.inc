@@ -19,37 +19,36 @@ function renderDocumentPath($oDocument) {
 	return "<table border=1 width = 100%><tr><td>$sDocumentPath</td></tr></table>\n";	
 }
 
-function renderDocumentGenericMetaData($oDocument) {
-	echo "<table border=1>\n";
+function renderDocumentData($oDocument) {
+	global $default;
+	$sQuery = "SELECT D.name, D.modified, D.creator_id AS initiator, CONCAT(CONCAT(D.major_version, '.'), D.minor_version) AS version, WDSL.name AS status " .
+			"FROM $default->owl_documents_table AS D INNER JOIN $default->owl_web_documents_table AS WD ON WD.document_id = D.ID " .
+			"INNER JOIN $default->owl_web_documents_status_table AS WDSL ON WD.status_id = WDSL.id " .
+			"WHERE D.id = " . $oDocument->getID();
+	$aColumns = array("name", "last_modified", "initiator", "version", "status");
+	$aColumnNames = array("Document title", "Last updated", "Document initiator", "Version", "Status");
+	$aColumnTypes = array(1,1,1,1,1);
+	$oPatternListFromQuery = & new PatternListFromQuery($sQuery, $aColumns, $aColumnNames, $aColumnTypes);
+	$oPatternListFromQuery->setTableHeading("Document Data");
+	$oPatternListFromQuery->setTableWidth("90%");	
+	return $oPatternListFromQuery->render();
 }
 
-function renderGenericDocumentMetaData($oDocument) {
-	$sQuery = "SELECT D.name AS name, DT.datetime AS created_date, D.modified as last_modified, U.name as initiator, DFL.value as authors, CONCAT(CONCAT(D.major_version, \".\"), D.minor_version) AS version, WDSL.name AS status, DFL2.value AS category " . 
-				"FROM documents AS D INNER JOIN document_fields_link AS DFL on D.id = DFL.document_id  " .
-				"INNER JOIN users AS U on D.creator_id = U.id " .
-				"INNER JOIN document_transactions AS DT on DT.document_id = D.id " .
-				"INNER JOIN document_fields AS DF ON DF.id = DFL.document_field_id " .
-				"INNER JOIN document_transaction_types_lookup AS DTTL ON DTTL.id = DT.transaction_id " .
-				"INNER JOIN document_fields_link AS DFL2 ON DFL2.document_id = D.id " .
-				"INNER JOIN document_fields AS DF2 ON DF2.id = DFL2.document_field_id " .
-				"INNER JOIN web_documents AS WD ON WD.document_id = D.ID " .
-				"INNER JOIN web_documents_status_lookup AS WDSL ON WD.status_id = WDSL.id " .
-				"WHERE D.id = " . $oDocument->getID() . " " .
-				"AND DF.name LIKE 'Author' " . 
-				"AND DF2.name LIKE 'Category' " .
-				"AND DTTL.name LIKE 'Create'";
-				
-	$aColumns = array("name", "created_date", "last_modified", "initiator", "authors", "version", "status", "category");
-	$aColumnNames = array("Document title", "Date created", "Last updated", "Document initiator", "Author(s)", "Version", "Status", "Category");
-	$aColumnTypes = array(1,1,1,1,1,1,1,1);
-	
-	$oPatternListFromQuery = & new PatternListFromQuery($sQuery, $aColumns, $aColumnNames, $aColumnTypes);
-	$oPatternListFromQuery->setTableHeading("Generic Meta Data");
-	$oPatternListFromQuery->setTableWidth("90%");
-	//$oPatternListFromQuery->setRenderIndividualTableForEachResult(true);
-	return $oPatternListFromQuery->render();
+function renderGenericMetaData($oDocument) {
+	global $default;
+	$sQuery = "SELECT DF.name AS name, DFL.value as value " .
+			"FROM $default->owl_documents_table AS D INNER JOIN $default->owl_document_fields_table AS DFL ON D.id = DFL.document_id " .
+			"INNER JOIN $default->owl_fields_table AS DF ON DF.id = DFL.document_field_id " .
+			"WHERE document_id = " . $oDocument->getID() . " " .
+			"AND DF.is_generic = 1";
+	$aColumns = array("name", "value");
+	$aColumnHeaders = array("Tag", "Value");
+	$oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnHeaders, "90%");
+	$oPatternTableSqlQuery->setTableHeading("Generic Meta Data");
+	return $oPatternTableSqlQuery->render();
 	
 }
+
 
 function renderTypeSpecificMetaData($oDocument) {
 	$sQuery = "SELECT DF.name AS name, DFL.value AS value " .
@@ -87,11 +86,14 @@ function getPage($oDocument) {
 	$sToRender .= "<table border = 0>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>\n";
-		$sToRender .= "\t<table border = 0>\n";
-		$sToRender .= "\t<tr>\n";
-		$sToRender .= "\t\t<td>" . wrapInTable(renderGenericDocumentMetaData($oDocument)) . "</td>\n";
+		$sToRender .= "\t<table border = 0 width = 280>\n";
+		$sToRender .= "\t<tr width>\n";
+		$sToRender .= "\t\t<td>" . wrapInTable(renderDocumentData($oDocument)) . "</td>\n";
 		//$sToRender .= "\t\t<td>" . renderGenericDocumentMetaData($oDocument) . "</td>\n";
 		$sToRender .= "\t</tr>\n";
+		$sToRender .= "\t<tr>\n";
+		$sToRender .= "\t<td>" . wrapInTable(renderGenericMetaData($oDocument)) . "</td>\n";
+		$sToRender .= "\t<tr>\n";
 		$sToRender .= "\t<tr>\n";
 		$sToRender .= "\t\t<td>" . wrapInTable(renderTypeSpecificMetaData($oDocument)) . "</td>\n";
 		//$sToRender .= "\t\t<td>" . renderTypeSpecificMetaData($oDocument) . "</td>\n";
@@ -99,7 +101,7 @@ function getPage($oDocument) {
 		$sToRender .= "\t</table>\n";
 	$sToRender .= "</td>\n";
 	$sToRender .= "<td valign=top>\n";
-		$sToRender .= "\t<table border = 0, width = 100%>\n";
+		$sToRender .= "\t<table border = 0, width = 230>\n";
 		$sToRender .= "\t<tr>\n";
 		$sToRender .= "\t\t<td>" . wrapInTable(renderDocumentRouting($oDocument)) . "</td>\n";
 		//$sToRender .= "\t\t<td>" . renderDocumentRouting($oDocument) . "</td>\n";
