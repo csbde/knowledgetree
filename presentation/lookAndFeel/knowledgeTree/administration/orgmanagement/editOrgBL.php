@@ -14,7 +14,7 @@ if (checkSession()) {
 	require_once("$default->fileSystemRoot/lib/visualpatterns/PatternEditableListFromQuery.inc");
 	require_once("editOrgUI.inc");
 	require_once("$default->fileSystemRoot/lib/security/permission.inc");
-	require_once("$default->fileSystemRoot/lib/Orgmanagement/Organisation.inc");
+	require_once("$default->fileSystemRoot/lib/orgmanagement/Organisation.inc");
 	require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 	require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");	
 	require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
