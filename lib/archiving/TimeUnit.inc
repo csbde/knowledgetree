@@ -109,18 +109,6 @@ class TimeUnit extends KTEntity {
      * @return Array array of TimeUnit objects, false otherwise
      */
     function getList($sWhereClause = null) {
-        global $default;
-        $aTimeUnitArray = array();
-        $sql = $default->db;
-        $result = $sql->query("SELECT * FROM $default->time_unit_lookup_table " . (isset($sWhereClause) ? " WHERE " . $sWhereClause : ""));/*wc*/
-        if ($result) {
-            $iCount = 0;
-            while ($sql->next_record()) {
-                $oTimeUnit = & TimeUnit::get($sql->f("id"));
-                $aTimeUnitArray[$iCount++] = $oTimeUnit;
-            }
-            return $aTimeUnitArray;
-        }
-        return false;
+        return KTEntityUtil::getList(TimeUnit::_table(), 'TimeUnit', $sWhereClause);
     }    
 }

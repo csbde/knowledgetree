@@ -179,17 +179,7 @@ class DiscussionThread extends KTEntity{
      * @return Array array of DiscussionThreads objects, false otherwise
      */
     function getList($sWhereClause = null) {
-        global $default;
-        $aDiscussionThreads = array();
-        $sql = $default->db;
-        $result = $sql->query("SELECT * FROM " . $default->discussion_threads_table  . (isset($sWhereClause) ? " WHERE " . $sWhereClause : ""));/*wc*/
-        if ($result) {
-            while ($sql->next_record()) {
-                $aDiscussionThreads[] = & DiscussionThread::get($sql->f("id"));
-            }
-            return $aDiscussionThreads;
-        }
-        return false;
+        return KTEntityUtil::getList(DiscussionThread::_table(), 'DiscussionThread', $sWhereClause);
     }
 	     
     function getThreadIDforDoc($iDocumentID){

@@ -218,22 +218,7 @@ class RoleFolderLink extends KTEntity {
 	* @return Array array of RolesFoldersLink objects, false otherwise and set $_SESSION["errorMessage"]
 	*/
 	function getList($sWhereClause = null) {
-		global $default, $lang_err_database;
-		$aRolesFoldersLinkArray;
-		settype($aRolesFoldersLinkArray, "array");
-		$sql = $default->db;
-		$result = $sql->query("SELECT * FROM " . $default->folders_user_roles_table  . (isset($sWhereClause) ? " " . $sWhereClause : ""));/*wc*/
-		if ($result) {			
-			$iCount = 0;
-			while ($sql->next_record()) {
-				$oRolesFoldersLink = & RoleFolderLink::get($sql->f("id"));
-				$aRolesFoldersLinkArray[$iCount] = $oRolesFoldersLink;
-				$iCount++;
-			}
-			return $aRolesFoldersLinkArray;
-		}
-		$_SESSION["errorMessage"] = $lang_err_database;
-		return false;
+            return KTEntityUtil::getList(RoleFolderLink::_table(), 'RoleFolderLink', $sWhereClause);
 	}
 	
 }

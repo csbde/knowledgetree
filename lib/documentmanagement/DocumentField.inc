@@ -195,18 +195,7 @@ class DocumentField extends KTEntity {
 	 * @return Array array of DocumentField objects, false otherwise
 	*/
 	function getList($sWhereClause = null) {
-		global $default;
-		$aDocumentFieldArray = array();
-		$sql = $default->db;
-		$sQuery = "SELECT id FROM " . $default->document_fields_table  . (isset($sWhereClause) ? " WHERE $sWhereClause" : "");/*wc*/
-		$result = $sql->query($sQuery);
-		if ($result) {			
-			while ($sql->next_record()) {
-				$aDocumentFieldArray[] = & DocumentField::get($sql->f("id"));
-			}
-			return $aDocumentFieldArray;
-		}
-		return false;
+            return KTEntityUtil::getList(DocumentField::_table(), 'DocumentField', $sWhereClause);
 	}	
 
 	/**

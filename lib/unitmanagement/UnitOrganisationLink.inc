@@ -161,22 +161,7 @@ class UnitOrganisationLink extends KTEntity {
 	* @return Array array of UnitOrganisationLink objects, false otherwise and set $_SESSION["errorMessage"]
 	*/
 	function getList($sWhereClause = null) {
-		global $default, $lang_err_database;
-		$aUnitOrganisationLink;
-		settype($aUnitOrganisationLink, "array");
-		$sql = $default->db;
-		$result = $sql->query("SELECT * FROM "  . $default->units_organisations_table  . (isset($sWhereClause) ? " " . $sWhereClause : ""));/*wc*/
-		if ($result) {			
-			$iCount = 0;
-			while ($sql->next_record()) {
-				$oUnitOrganisationLink = & UnitOrganisationLink::get($sql->f("id"));
-				$aUnitOrganisationLink[$iCount] = $oUnitOrganisationLink;
-				$iCount++;
-			}
-			return $aUnitOrganisationLink;
-		}
-		$_SESSION["errorMessage"] = $lang_err_database;
-		return false;
+            return KTEntityUtil::getList(UnitOrganisationLink::_table(), 'UnitOrganisationLink', $sWhereClause);
 	}
 	
 	/**

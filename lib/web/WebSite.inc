@@ -167,23 +167,8 @@ class WebSite extends KTEntity {
     *
     * @return Array array of WebSite objects, false otherwise and set $_SESSION["errorMessage"]
     */
-    function getList() {
-        global $default, $lang_err_database;
-        $aWebSiteArray;
-        settype($aWebSiteArray, "array");
-        $sql = $default->db;
-        $result = $sql->query("SELECT * FROM " . $default->web_sites_table);/*ok*/
-        if ($result) {
-            $iCount = 0;
-            while ($sql->next_record()) {
-                $oWebSite = & WebSite::get($sql->f("id"));
-                $aWebSiteArray[$iCount] = $oWebSite;
-                $iCount++;
-            }
-            return $aWebSiteArray;
-        }
-        $_SESSION["errorMessage"] = $lang_err_database;
-        return false;
+    function getList($sWhereClause = null) {
+        return KTEntityUtil::getList(WebSite::_table(), 'WebSite', $sWhereClause);
     }
     
     /**

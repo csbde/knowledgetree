@@ -98,23 +98,7 @@ class FolderDocTypeLink extends KTEntity {
     * @return Array array of Documents objects, false otherwise and set $_SESSION["errorMessage"]
     */
     function getList($sWhereClause = null) {
-        global $default, $lang_err_database;
-        $aFolderDocTypeLinkArray;
-        settype($aFolderDocTypeLinkArray, "array");
-        $sql = $default->db;
-        // TODO: join on sys_deleted
-        $result = $sql->query("SELECT * FROM " . $default->folder_doctypes_table  . (isset($sWhereClause) ? " WHERE " . $sWhereClause : ""));/*wc*/
-        if ($result) {
-            $iCount = 0;
-            while ($sql->next_record()) {
-                $oFolderDocTypeLink = & FolderDocTypeLink::get($sql->f("id"));
-                $aFolderDocTypeLinkArray[$iCount] = $oFolderDocTypeLink;
-                $iCount++;
-            }
-            return $aFolderDocTypeLinkArray;
-        }
-        $_SESSION["errorMessage"] = $lang_err_database;
-        return false;
+        return KTEntityUtil::getList(FolderDocTypeLink::_table(), 'FolderDocTypeLink', $sWhereClause);
     }
 	
 }

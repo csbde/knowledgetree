@@ -161,22 +161,7 @@ class FolderUserRole extends KTEntity {
 	* @return Array array of FolderUserRole objects, false otherwise and set $_SESSION["errorMessage"]
 	*/
 	function getList($sWhereClause = null) {
-		global $default, $lang_err_database;
-		$aFolderUserRoleArray;
-		settype($aFolderUserRoleArray, "array");
-		$sql = $default->db;
-		$result = $sql->query("SELECT * FROM " . $default->folders_user_roles_table  . (isset($sWhereClause) ? " WHERE " . $sWhereClause : ""));/*wc*/
-		if ($result) {			
-			$iCount = 0;
-			while ($sql->next_record()) {
-				$oFolderUserRole = & FolderUserRole::get($sql->f("id"));
-				$aFolderUserRoleArray[$iCount] = $oFolderUserRole;
-				$iCount++;
-			}
-			return $aFolderUserRoleArray;
-		}
-		$_SESSION["errorMessage"] = $lang_err_database;
-		return false;
+            return KTEntityUtil::getList(FolderUserRole::_table(), 'FolderUserRole', $sWhereClause);
 	}
 	
 	function & getFromFolderCollaboration($iFolderCollaborationID, $iDocumentID) {

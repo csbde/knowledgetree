@@ -177,17 +177,7 @@ class DiscussionComment extends KTEntity {
      * @return Array array of DiscussionComments objects, false otherwise
      */
     function getList($sWhereClause = null) {
-        global $default;
-        $aDiscussionComments = array();
-        $sql = $default->db;
-        $result = $sql->query("SELECT * FROM " . $default->discussion_comments_table  . (isset($sWhereClause) ? " WHERE " . $sWhereClause : ""));/*wc*/
-        if ($result) {
-            while ($sql->next_record()) {
-                $aDiscussionComments[] = & DiscussionComment::get($sql->f("id"));
-            }
-            return $aDiscussionComments;
-        }
-        return false;
+        return KTEntityUtil::getList(DiscussionComment::_table(), 'DiscussionComment', $sWhereClause);
     }
 
     function _fieldValues () {

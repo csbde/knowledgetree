@@ -163,22 +163,7 @@ class FolderCollaboration extends KTEntity {
 	* @return Array array of FolderCollaboration objects, false otherwise and set $_SESSION["errorMessage"]
 	*/
 	function getList($sWhereClause = null) {
-		global $default, $lang_err_database;
-		$aFolderCollaborationArray;
-		settype($aFolderCollaborationArray, "array");
-		$sql = $default->db;
-		$result = $sql->query("SELECT * FROM " . $default->groups_folders_approval_table  . (isset($sWhereClause) ? " " . $sWhereClause : ""));/*wc*/
-		if ($result) {			
-			$iCount = 0;
-			while ($sql->next_record()) {
-				$oFolderCollaboration = & FolderCollaboration::get($sql->f("id"));
-				$aFolderCollaborationArray[$iCount] = $oFolderCollaboration;
-				$iCount++;
-			}
-			return $aFolderCollaborationArray;
-		}
-		$_SESSION["errorMessage"] = $lang_err_database;
-		return false;
+            return KTEntityUtil::getList(FolderCollaboration::_table(), 'FolderCollaboration', $sWhereClause);
 	}
 	
 	/**

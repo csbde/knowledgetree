@@ -132,18 +132,6 @@ class TimePeriod extends KTEntity {
      * @return Array array of TimePeriod objects, false otherwise
      */
     function getList($sWhereClause = null) {
-        global $default;
-        $aTimePeriodArray = array();
-        $sql = $default->db;
-        $result = $sql->query("SELECT * FROM $default->time_period_table " . (isset($sWhereClause) ? " WHERE " . $sWhereClause : ""));/*wc*/
-        if ($result) {
-            $iCount = 0;
-            while ($sql->next_record()) {
-                $oTimePeriod = & TimePeriod::get($sql->f("id"));
-                $aTimePeriodArray[$iCount++] = $oTimePeriod;
-            }
-            return $aTimePeriodArray;
-        }
-        return false;
+        return KTEntityUtil::getList(TimePeriod::_table(), 'TimePeriod', $sWhereClause);
     }    
 }

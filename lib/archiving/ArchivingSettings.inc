@@ -188,18 +188,7 @@ class ArchivingSettings extends KTEntity {
      * @return Array array of ArchivingSettings objects, false otherwise
      */
     function getList($sWhereClause = null) {
-        global $default;
-        $aArchivingSettings = array();
-        $sql = $default->db;
-        $result = $sql->query("SELECT * FROM $default->archiving_settings_table " . (isset($sWhereClause) ? " WHERE " . $sWhereClause : ""));/*wc*/
-        if ($result) {
-            while ($sql->next_record()) {
-                $oArchivingSettings = & ArchivingSettings::get($sql->f("id"));
-                $aArchivingSettings[] = $oArchivingSettings;
-            }
-            return $aArchivingSettings;
-        }
-        return false;
+        return KTEntityUtil::getList(ArchivingSettings::_table(), 'ArchivingSettings', $sWhereClause);
     }    
 }
 ?>

@@ -148,22 +148,7 @@ class WebDocument extends KTEntity {
 	* @return Array array of WebDocument objects, false otherwise and set $_SESSION["errorMessage"]
 	*/
 	function getList($sWhereClause = null) {
-		global $default, $lang_err_database;
-		$aWebDocumentArray = array();
-		$sql = $default->db;
-        $sQuery = "SELECT * FROM " . $default->web_documents_table;/*wc*/
-        if (isset($sWhereClause)) {
-            $sQuery .= " WHERE " . $sWhereClause;
-        }
-		$result = $sql->query($sQuery);
-		if ($result) {			
-			while ($sql->next_record()) {
-				$aWebDocumentArray[]= & WebDocument::get($sql->f("id"));
-			}
-			return $aWebDocumentArray;
-		}
-		$_SESSION["errorMessage"] = $lang_err_database;
-		return false;
+            return KTEntityUtil::getList(WebDocument::_table(), 'WebDocument', $sWhereClause);
 	}
 	
 }

@@ -185,20 +185,7 @@ class DocumentTransaction {
      * @return Array array of DocumentTransaction objects, false otherwise and set $_SESSION["errorMessage"]
      */
     function getList($sWhereClause = null) {
-        global $default, $lang_err_database;
-        $aDocumentTransactionArray = array();
-        $sql = $default->db;
-        $sQuery = "SELECT * FROM $default->document_transactions_table " . (isset($sWhereClause) ? " WHERE " . $sWhereClause : "");/*wc*/
-        $result = $sql->query($sQuery);
-        if ($result) {
-            while ($sql->next_record()) {
-            	$oDocumentTransaction = & DocumentTransaction::get($sql->f("id"));
-                $aDocumentTransactionArray[] = $oDocumentTransaction;
-            }
-            return $aDocumentTransactionArray;
-        }
-        $_SESSION["errorMessage"] = $lang_err_database;
-        return false;
+        return KTEntityUtil::getList(DocumentTransaction::_table(), 'DocumentTransaction', $sWhereClause);
     }
 }
 ?>

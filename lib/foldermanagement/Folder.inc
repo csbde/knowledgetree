@@ -412,22 +412,7 @@ class Folder extends KTEntity {
     * @return Array array of Documents objects, false otherwise and set $_SESSION["errorMessage"]
     */
     function getList($sWhereClause = null) {
-        global $default, $lang_err_database;
-        $aFolderArray;
-        settype($aFolderArray, "array");
-        $sql = $default->db;
-        $result = $sql->query("SELECT * FROM " . $default->folders_table  . (isset($sWhereClause) ? " WHERE " . $sWhereClause : ""));/*wc*/
-        if ($result) {
-            $iCount = 0;
-            while ($sql->next_record()) {
-                $oFolder = & Folder::get($sql->f("id"));
-                $aFolderArray[$iCount] = $oFolder;
-                $iCount++;
-            }
-            return $aFolderArray;
-        }
-        $_SESSION["errorMessage"] = $lang_err_database;
-        return false;
+        return KTEntityUtil::getList(Folder::_table(), 'Folder', $sWhereClause);
     }
 
 	/**

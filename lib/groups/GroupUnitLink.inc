@@ -162,22 +162,7 @@ class GroupUnitLink extends KTEntity {
 	* @return Array array of GroupUnitLink objects, false otherwise and set $_SESSION["errorMessage"]
 	*/
 	function getList($sWhereClause = null) {
-		global $default, $lang_err_database;
-		$aGroupUnitLink;
-		settype($aGroupUnitLink, "array");
-		$sql = $default->db;
-		$result = $sql->query("SELECT * FROM " . $default->groups_units_table  . (isset($sWhereClause) ? " WHERE " . $sWhereClause : ""));/*wc*/
-		if ($result) {			
-			$iCount = 0;
-			while ($sql->next_record()) {
-				$oGroupUnitLink = & GroupUnitLink::get($sql->f("id"));
-				$aGroupUnitLink[$iCount] = $oGroupUnitLink;
-				$iCount++;
-			}
-			return $aGroupUnitLink;
-		}
-		$_SESSION["errorMessage"] = $lang_err_database;
-		return false;
+            return KTEntityUtil::getList(GroupUnitLink::_table(), 'GroupUnitLink', $sWhereClause);
 	}
 	
 	

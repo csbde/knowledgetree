@@ -558,22 +558,7 @@ class Document extends KTEntity {
     * @return Array array of Documents objects, false otherwise.
     */
     function getList($sWhereClause = null) {
-        global $default, $lang_err_database;
-        $aDocumentArray;
-        settype($aDocumentArray, "array");
-        $sql = $default->db;
-        $result = $sql->query("SELECT * FROM " . $default->documents_table  . /*wc*/
-                              (isset($sWhereClause) ? " WHERE " . $sWhereClause : ""));
-        if ($result) {
-            $iCount = 0;
-            while ($sql->next_record()) {
-                $oDocument = & Document::get($sql->f("id"));
-                $aDocumentArray[$iCount] = $oDocument;
-                $iCount++;
-            }
-            return $aDocumentArray;
-        }
-        return false;
+        return KTEntityUtil::getList(Document::_table(), 'Document', $sWhereClause);
     }
 
     /**
