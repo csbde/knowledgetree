@@ -82,13 +82,18 @@ function renderFolderList($fFolderID, $sLinkURL) {
               "FROM $default->owl_folders_table AS F " .
               "WHERE F.parent_id = " . $fFolderID . " " .
               "ORDER BY F.name ASC";
-
+     	
     $aColumns = array("name");
     $aColumnTypes = array(3);
     $aColumnHeaderNames = array("Folder");
     $aDBColumns = array("id");
     $aQueryStringVariableNames = array("fFolderID");
-    $aLinkURLs = array("$default->rootUrl/$sLinkURL");
+    $aLinkURLs = array();
+    if (strlen($default->rootUrl) > 0) {    	
+    	$aLinkURLs = array("$default->rootUrl/$sLinkURL");
+    } else {
+    	$aLinkURLs = array("$sLinkURL");
+    }
 
     $oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaderNames, "100%", $aLinkURLs, $aDBColumns, $aQueryStringVariableNames);
     $oPatternTableSqlQuery->setImageURL("$default->graphicsUrl/widgets/dfolder.gif");
