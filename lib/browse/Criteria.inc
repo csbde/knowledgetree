@@ -2,7 +2,9 @@
 require_once("$default->fileSystemRoot/lib/security/Permission.inc");
 require_once("$default->fileSystemRoot/lib/users/User.inc");
 require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
+require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentField.inc");
 require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentType.inc");
+require_once("$default->fileSystemRoot/lib/documentmanagement/MetaData.inc");
 require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
 /**
  * $Id$
@@ -343,6 +345,7 @@ class GenericMetadataCriterion extends BrowseCriterion {
     function GenericMetadataCriterion ($sDisplay, $sDocumentField, $sSortField, $iID) {
         $this->BrowseCriterion($sDisplay, $sDocumentField, $sSortField, $iID);
         $this->aLookup['whereClause'] = 'document_field_id = ' .  $iID;
+        $this->oField =& DocumentField::get($iID);
     }
 
     function documentDisplay ($oDocument) {
@@ -369,6 +372,23 @@ class GenericMetadataCriterion extends BrowseCriterion {
 
     function getSearchField () {
         return $this->aLookup['field'];
+    }
+
+    function searchWidget ($aRequest) {
+        // If there's no lookup, just use the standard text input
+        if ($this->oField->getHasLookup() === false) {
+            return parent::searchWidget($aRequest);
+        }
+
+        $sRet = "<select size=\"1\" name=\"" . $this->getWidgetBase() . "\">\n";
+        $aSearch = array('document_field_id = ?', $this->getID());
+        $aMetaData = MetaData::getList($aSearch);/*ok*/
+        $sRet .= "<option value=\"-1\">None</option>\n";
+        foreach ($aMetaData as $oMetaData) {
+            $sRet .= "<option value=\"" . $oMetaData->getName() . "\">" . $oMetaData->getName() . "</option>\n";
+        }
+        $sRet .= "</select>\n";
+        return $sRet;
     }
 }
 
