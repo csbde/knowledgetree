@@ -289,6 +289,7 @@ function renderDocumentList($aResults, $sNoDocumentsMessage, $sNoPermissionMessa
         	// in order for candy striping to work we need to take the number of folders
         	// into account when alternating
             $sToRender .= "<tr bgcolor=\"" . getColour($i+$iFolderCount) . "\" width=\"100%\"><td valign=\"bottom\">" . 
+            	"<input type=\"checkbox\" name=\"fDocumentIDs[]\" value=\"" . $aResults["documents"][$i]->getID() . "\"/>" .
             			  ($bTemplateBrowsing ? displayDocumentLinkForTemplateBrowsing($aResults["documents"][$i], $bDisplayFullPath) : 
             			  						displayDocumentLink($aResults["documents"][$i], $bDisplayFullPath)) . "</td>";
                         
@@ -304,6 +305,22 @@ function renderDocumentList($aResults, $sNoDocumentsMessage, $sNoPermissionMessa
             }
             $sToRender .= "</tr>\n";
         }
+
+		$sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
+		$sTDBGColour = $default->siteMap->getSectionColour($sSectionName, "td");    
+
+		$sToRender .= "<tr bgcolor=\"". $sTDBGColour . "\"><td colspan=\"5\" valign=\"bottom\">" . 
+					  "<input type=\"checkbox\" name=\"selectall\" onClick=\"selectAll()\"/> Select all documents</td></tr>";
+
+		$sToRender .= "<tr><td colspan=\"5\" >";
+		$sToRender .= "<input type=\"hidden\" name=\"fActions\">";
+
+		$sToRender .= "<input type=\"image\" onclick=\"document.MainForm.fActions.value='move'; document.MainForm.submit()\" src=\"$default->graphicsUrl/widgets/move.gif\" border=\"0\"/>";
+		$sToRender .= "<input type=\"image\" onclick=\"document.MainForm.fActions.value='delete'; document.MainForm.submit()\" src=\"$default->graphicsUrl/widgets/delete.gif\" border=\"0\"/>";
+		$sToRender .= "</td></tr>\n";
+		// Change for group Operations
+
+
     } else if ($aResults["accessDenied"]) {
         $sToRender .= "<tr><td>$sNoPermissionMessage</td></tr>";
     } else {
@@ -341,6 +358,21 @@ function renderPage($aResults, $sBrowseType, $sSortBy, $sSortDirection, $bTempla
 
     $sToRender = renderHeading(_("Browse collection"));
     
+    // Script function to select all documents
+    $sToRender = "\n\n<SCRIPT LANGUAGE=\"javascript\">\n ";
+    $sToRender .= "<!--\n";
+    $sToRender .= "function selectAll() {\n";
+    $sToRender .= "\tf = document.MainForm;\n";
+    $sToRender .= "\tc = f.selectall.checked;\n";
+    $sToRender .= "\tif (f.elements['fDocumentIDs[]']) {\n";
+    $sToRender .= "\t\tif (f.elements['fDocumentIDs[]'].length > 1) {\n";
+    $sToRender .= "\t\t\tfor (i = 0; i < f.elements['fDocumentIDs[]'].length; i++) f.elements['fDocumentIDs[]'][i].checked = c;\n";
+    $sToRender .= "\t\t} else {\n";
+    $sToRender .= "\t\t\tf.elements['fDocumentIDs[]'].checked = c;\n";
+    $sToRender .= "\t}}}\n";
+    $sToRender .= "//-->\n";
+    $sToRender .= "</SCRIPT>\n\n";
+
     $sToRender .= "<table border=\"0\" cellpadding=\"5\" width=\"100%\"><tr><td bgcolor=\"$sTDBGColour\">"; 
     switch ($sBrowseType) {
         case "folder"       : $sToRender .= displayFolderPathLink(Folder::getFolderPathAsArray($aResults["folders"][0]->getID()),

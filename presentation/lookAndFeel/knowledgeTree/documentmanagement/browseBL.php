@@ -25,6 +25,7 @@ require_once("$default->fileSystemRoot/presentation/Html.inc");
  * fDocumentTypeID - the document type id to browse [optional depending on fBrowseType]
  * fSortBy - the document attribute to sort the browse results by
  * fSortDirection - the direction to sort
+ * fActions - action for group operations
  *
  * Copyright (c) 2003 Jam Warehouse http://www.jamwarehouse.com
  *
@@ -49,6 +50,27 @@ require_once("$default->fileSystemRoot/presentation/Html.inc");
 
 // only if we have a valid session
 if (checkSession()) {
+    if (isset($fActions)) {
+        // tack on POSTed document ids and redirect to the expunge deleted documents page
+        $sQueryString = "";
+        if (isset($fDocumentIDs) ) {
+            foreach ($fDocumentIDs as $fDocumentID) {
+                $sQueryString .= "fDocumentIDs[]=$fDocumentID&";
+            }
+        }
+    
+        switch ($fActions) {
+        case "delete":
+            // delete all selected docs
+            controllerRedirect("deleteDocument", $sQueryString);
+            break;
+        case "move":
+            // Move selected docs to root folder
+            controllerRedirect("moveDocument", $sQueryString . "fFolderID=1");
+            break;
+        }
+    }
+
     // retrieve variables
     if (!$fBrowseType) {
         // required param not set- internal error or user querystring hacking
@@ -86,4 +108,5 @@ if (checkSession()) {
     $main->setSubmitMethod("GET");    
     $main->render();    
 }
+
 ?>

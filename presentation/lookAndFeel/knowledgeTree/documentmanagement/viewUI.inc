@@ -441,7 +441,7 @@ function displayEmailButton($oDocument) {
 
 function displayDeleteButton($oDocument, $bEdit) {
     if ($bEdit) {
-    	$sQueryString = "fDocumentID=" . $oDocument->getID();
+    	$sQueryString = "fDocumentIDs[]=" . $oDocument->getID();
     	if ($oDocument->getIsCheckedOut()) {
     		$sDisabledText = _("This document can't be deleted because its checked out");
     	}
@@ -457,7 +457,7 @@ function displayHistoryButton($oDocument) {
 }	
 function displayMoveButton($oDocument, $bEdit) {
     if ($bEdit) {
-    	$sQueryString = "fFolderID=" . $oDocument->getFolderID() . "&fDocumentID=" . $oDocument->getID();
+    	$sQueryString = "fFolderID=" . $oDocument->getFolderID() . "&fDocumentIDs[]=" . $oDocument->getID();
     	// documents in collaboration and checked out documents can't be moved
 		if ($oDocument->getIsCheckedOut()) {
 			$sDisabledText = _("The document is checked out and cannot be moved.");

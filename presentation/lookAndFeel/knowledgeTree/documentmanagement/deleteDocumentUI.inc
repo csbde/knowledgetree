@@ -24,30 +24,27 @@
  * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
  * @package documentmanagement
  */
-
-function getDocumentPath($iFolderID, $sDocumentName) {
-	global $default;
-	$sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
-	$sTDBGColour = $default->siteMap->getSectionColour($sSectionName, "td");	    
-	$sDocumentPath = displayFolderPathLink(Folder::getFolderPathAsArray($iFolderID), Folder::getFolderPathNamesAsArray($iFolderID), "$default->rootUrl/control.php?action=browse") . " > " . $sDocumentName;
-	return "<table border=\"0\" width = 100%><tr><td bgcolor=\"$sTDBGColour\">$sDocumentPath</td></tr></table>\n";	
-}
-
-function getPage($iDocumentID, $iFolderID, $sDocumentName) {
+function getPage($fDocumentIDs) {
 	global $default;
     $sToRender  = renderHeading(_("Delete Document"));
-	$sToRender .= getDocumentPath($iFolderID, $sDocumentName) . "<br>\n";
 	$sToRender .= "<table border=\"0\">\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>You have chosen to delete the document entitled '" . $sDocumentName . "'.</td>\n";
+	$sToRender .= "<td>You have chosen to delete the following document(s): <br><br></td>\n";
+	
+	for ($i = 0; $i < count($fDocumentIDs); $i++) {
+	  $oDocument = Document::get($fDocumentIDs[$i]);
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<tr>\n";
+	  $sToRender .= "<td>&nbsp;&nbsp;'" .  $oDocument->getDisplayPath() . "'</td>\n";
+	  $sQueryString .= "fDocumentIDs[]=$fDocumentIDs[$i]&";
+	}
+	$sToRender .= "<tr><tr><tr><tr>\n";
+
 	$sToRender .= "<td>Select 'Delete' to confirm the deletion, or 'Cancel' to cancel it</td>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>&nbsp</td>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td><table><tr><td><a href=\"" . $_SERVER["PHP_SELF"] . "?fDocumentID=$iDocumentID&fDeleteConfirmed=1\"><img src=\"$default->graphicsUrl/widgets/delete.gif\" border=\"0\"></a></td> <td><a href=\"$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $iDocumentID . "\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></a></td></tr></table></td>";	
+	$sToRender .= "<td><table><tr><td><a href=\"" . $_SERVER["PHP_SELF"] . "?$sQueryString&fDeleteConfirmed=1\"><img src=\"$default->graphicsUrl/widgets/delete.gif\" border=\"0\"></a></td> <td><a href=\"javascript:history.go(-1)\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></a></td></tr></table></td>";	
 	$sToRender .= "</tr>";
 	$sToRender .= "</table>\n";
 	
@@ -63,7 +60,7 @@ function renderErrorPage($sErrorMessage, $iDocumentID = "") {
 	    $sToRender  = renderHeading(_("Delete Document"));    
 	    $sToRender .= "<table>\n";
 	    $sToRender .= "<tr><td><p class=\"errorText\">$sErrorMessage</p>\n" .
-	                  "<a href=\"javascript:history.go(-1)\"><img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\"/></a>\n" .
+	                  "<a href=\"javascript:history.go(-2)\"><img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\"/></a>\n" .
 	                  "</p></td></tr></table>\n";
 	   return $sToRender;
 	}

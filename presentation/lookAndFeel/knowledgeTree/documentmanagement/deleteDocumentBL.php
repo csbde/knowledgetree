@@ -42,45 +42,100 @@ require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/fo
 
 require_once("deleteDocumentUI.inc");
 
+$aNondeletedDocs = array();
+
+
 if (checkSession()) {
 	
-	if (isset($fDocumentID)) {
-		$oDocument = Document::get($fDocumentID);
-		if (Permission::userHasDocumentWritePermission($oDocument)) {
+  if (isset($fDocumentIDs)) {
+    
+    // Check permission and collaboration for all documents
+    for ($i = 0; $i < count($fDocumentIDs); $i++) {
+
+      $oDocument = Document::get($fDocumentIDs[$i]);
+      if (!Permission::userHasDocumentWritePermission($oDocument)) {
+	
+	// user does not have permission to delete the document
+	require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");			
+	$oPatternCustom = & new PatternCustom();
+	$oPatternCustom->setHtml(renderErrorPage("You do not have, at least, permission to delete one document: " . 
+						 $oDocument->getName() . "<br>Please deselect it and retry."));
+	$main->setCentralPayload($oPatternCustom);
+	$main->render();
+	return;
+
+      } else {
+
             // check if there is collaboration for this document
-            $aFolderUserRoles = FolderUserRole::getList("document_id = $fDocumentID");
+	$aFolderUserRoles = FolderUserRole::getList("document_id = $fDocumentIDs[$i]");
             // check if any of them are active
             $bActive = false;
-            for ($i=0; $i<count($aFolderUserRoles); $i++) {
-                $default->log->info("delDoc bActive=" . ($bActive ? "1" : "0") . ";folderUserRoleID=" . $aFolderUserRoles[$i]->getGroupFolderApprovalID() . "; active=" . ($aFolderUserRoles[$i]->getActive() ? "1" : "0"));
-                $bActive = $bActive || $aFolderUserRoles[$i]->getActive();
+	for ($j=0; $j<count($aFolderUserRoles); $j++) {
+	  $default->log->info("delDoc bActive=" . ($bActive ? "1" : "0") . ";folderUserRoleID=" . $aFolderUserRoles[$j]->getGroupFolderApprovalID() . "; active=" . ($aFolderUserRoles[$j]->getActive() ? "1" : "0"));
+	  $bActive = $bActive || $aFolderUserRoles[$j]->getActive();
+	}
+	
+	if ($bActive) {
+	  
+	  // there are active collaboration roles for this doc
+	  require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");			
+	  $oPatternCustom = & new PatternCustom();							
+	  $oPatternCustom->setHtml(renderErrorPage("You can't, at least, delete one document " . 
+						   $oDocument->getName() . " because it's still in collaboration"));
+	  $main->setCentralPayload($oPatternCustom);
+	  $main->render();
+	  return;
+	}
             }
-            if (!$bActive) {
-                // there aren't any active roles for this doc
+    }
+
+
+    /* Delete all files
+       If an error occured while deleting a file, then:
+       - make a rollback of the current file
+       - insert document object in $aNondeletedDocs array
+       - delete the other selected file
+
+       At the end check the $aNondeletedDocs array
+       - if is empty then OK
+       - if is not empty then show the nondeleted files list
+    */
+    
+    // Delete all files with possible rollback
                 if (isset($fDeleteConfirmed)) {
-                    //deletion of document is confirmed
-                    $oDocument = Document::get($fDocumentID);
+      
+      // deletion of all documents are confirmed
+      for ($i = 0; $i < count($fDocumentIDs); $i++) {
+	
+	$oDocument = Document::get($fDocumentIDs[$i]);
                     if (isset($oDocument)) {
+	  // New transaction
                         $sDocumentPath = Folder::getFolderPath($oDocument->getFolderID()) . $oDocument->getFileName();					
-                        $oDocumentTransaction = & new DocumentTransaction($fDocumentID, "Document deleted", DELETE);
+	  $oDocumentTransaction = & new DocumentTransaction($fDocumentIDs[$i], "Document deleted", DELETE);
                         $oDocumentTransaction->create();
+	  
                         // flip the status id
                         $oDocument->setStatusID(DELETED);
+	  
                         // store
                         if ($oDocument->update()) {
                         	// now move the document to the delete folder
                             if (PhysicalDocumentManager::delete($oDocument)) {
                                 // successfully deleted the document
-                                $default->log->info("deleteDocumentBL.php successfully deleted document " . $oDocument->getFileName() . " from folder " . Folder::getFolderPath($oDocument->getFolderID()) . " id=" . $oDocument->getFolderID());
+	      $default->log->info("deleteDocumentBL.php successfully deleted document " . 
+				  $oDocument->getFileName() . " from folder " . 
+				  Folder::getFolderPath($oDocument->getFolderID()) . 
+				  " id=" . $oDocument->getFolderID());
                                 
                                 // delete all collaboration roles
-                                for ($i=0; $i<count($aFolderUserRoles); $i++) {
-                                    $default->log->info("delDoc deleting folderuserroleID=" . $aFolderUserRoles[$i]->getGroupFolderApprovalID());
-                                    $aFolderUserRoles[$i]->delete();
+	      for ($j=0; $j<count($aFolderUserRoles); $j++) {
+		$default->log->info("delDoc deleting folderuserroleID=" . $aFolderUserRoles[$j]->getGroupFolderApprovalID());
+		$aFolderUserRoles[$j]->delete();
                                 }
                                 
                                 // fire subscription alerts for the deleted document
-                                $count = SubscriptionEngine::fireSubscription($fDocumentID, SubscriptionConstants::subscriptionAlertType("RemoveSubscribedDocument"),
+	      $count = SubscriptionEngine::fireSubscription($fDocumentIDs[$i], 
+							    SubscriptionConstants::subscriptionAlertType("RemoveSubscribedDocument"),
                                          SubscriptionConstants::subscriptionType("DocumentSubscription"),
                                          array( "folderID" => $oDocument->getFolderID(),
                                                 "removedDocumentName" => $oDocument->getName(),
@@ -88,14 +143,12 @@ if (checkSession()) {
                                 $default->log->info("deleteDocumentBL.php fired $count subscription alerts for removed document " . $oDocument->getName());
                                 
                                 // remove all document subscriptions for this document
-                                if (SubscriptionManager::removeSubscriptions($fDocumentID, SubscriptionConstants::subscriptionType("DocumentSubscription"))) {
+	      if (SubscriptionManager::removeSubscriptions($fDocumentIDs[$i], SubscriptionConstants::subscriptionType("DocumentSubscription"))) {
                                     $default->log->info("deleteDocumentBL.php removed all subscriptions for this document");
                                 } else {
                                     $default->log->error("deleteDocumentBL.php couldn't remove document subscriptions");
                                 }
                                 
-                                // redirect to the browse folder page							
-                                redirect("$default->rootUrl/control.php?action=browse&fFolderID=" . $oDocument->getFolderID());
                             } else {
                                 //could not delete the document from the file system
                                 $default->log->error("deleteDocumentBL.php Filesystem error deleting document " . $oDocument->getFileName() . " from folder " . Folder::getFolderPath($oDocument->getFolderID()) . " id=" . $oDocument->getFolderID());
@@ -104,11 +157,10 @@ if (checkSession()) {
                                 $oDocument->update();
                                 //get rid of the document transaction
                                 $oDocumentTransaction->delete();
-                                require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");			
-                                $oPatternCustom = & new PatternCustom();							
-                                $oPatternCustom->setHtml(renderErrorPage("The document could not be deleted from the file system", $fDocumentID));
-                                $main->setCentralPayload($oPatternCustom);
-                                $main->render();
+	      
+	      // Store the doc with problem
+	      array_push($aNondeletedDocs, array($oDocument, "Could not delete document on file system"));
+	      	      
                             }
                         } else {
                             //could not update the documents status in the db
@@ -116,42 +168,49 @@ if (checkSession()) {
                             
 							//get rid of the document transaction
                             $oDocumentTransaction->delete();
-                            require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");			
-                            $oPatternCustom = & new PatternCustom();							
-                            $oPatternCustom->setHtml(renderErrorPage("The document could not be deleted from the database", $fDocumentID));
-                            $main->setCentralPayload($oPatternCustom);
-                            $main->render();
+	    
+	    // Store the doc with problem
+	    array_push($aNondeletedDocs, array($oDocument, "Could not update document in database"));
+
                         }
                     } else {
                         //could not load document object
-                        require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");			
-                        $oPatternCustom = & new PatternCustom();							
-                        $oPatternCustom->setHtml(renderErrorPage("An error occured whilst retrieving the document from the database", $fDocumentID));
-                        $main->setCentralPayload($oPatternCustom);
-                        $main->render();
+	  
+	  // Store the doc with problem
+	  array_push($aNondeletedDocs, array($oDocument, "Could not load document in database"));
+	  
                     }
-                } else {
-                    //get confirmation first				
-                    require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");			
-                    $oPatternCustom = & new PatternCustom();
-                    $oDocument = Document::get($fDocumentID);
-                    $oPatternCustom->setHtml(getPage($fDocumentID, $oDocument->getFolderID(), $oDocument->getName()));				
-                    $main->setCentralPayload($oPatternCustom);				
-                    $main->render();
                 }
-            } else {
-                // there are active collaboration roles for this doc
+
+      // List nondeleted documents
+      if (!empty($aNondeletedDocs) ) {
+
                 require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");			
                 $oPatternCustom = & new PatternCustom();							
-                $oPatternCustom->setHtml(renderErrorPage("You can't delete this document because it's still in collaboration", $fDocumentID));
+	  
+	$sError = "An error occured deleting the following document(s): <br><br>";
+	foreach ($aNondeletedDocs as $oDoc) {
+	  $sError .= $oDoc[0]->getDisplayPath() . ":&nbsp;&nbsp;&nbsp;" .$oDoc[1] . "<br>";
+	} 
+	$sError .= "<br>The other documents are been deleted.";
+	
+	$oPatternCustom->addHtml(renderErrorPage($sError));
                 $main->setCentralPayload($oPatternCustom);
                 $main->render();
+
+	reset($aNondeletedDocs);
+
+      } else {
+	// redirect to the browse folder page							
+	redirect("$default->rootUrl/control.php?action=browse&fFolderID=" . $oDocument->getFolderID());
             }
+      
+      
 		} else {
-			//user does not have permission to delete the document
+      //get confirmation first				
 			require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");			
 			$oPatternCustom = & new PatternCustom();							
-			$oPatternCustom->setHtml(renderErrorPage("You do not have permission to delete this document", $fDocumentID));
+      $oPatternCustom->addHtml(getPage($fDocumentIDs));
 			$main->setCentralPayload($oPatternCustom);
 			$main->render();
 		}
@@ -164,3 +223,5 @@ if (checkSession()) {
 		$main->render();
 	}
 }
+
+?>
