@@ -30,7 +30,7 @@ function renderCheckOutPage($oDocument) {
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
     $sToRender .= "<td><input type=\"image\" border=\"0\" src =\"$default->graphicsUrl/widgets/checkout.gif\" value=\"Submit\"/>\n";
-	$sToRender .= "<a href=\"$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $oDocument->getID() . "\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></a></td>\n";	    
+	$sToRender .= generateControllerLink("viewDocument", "fDocumentID=" . $oDocument->getID(), "<img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\">") . "</td>\n";	    
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
 	
@@ -45,7 +45,9 @@ function renderCheckOutPage($oDocument) {
  */
 function getCheckOutPage($oDocument, $bCheckedOut = false) {
     global $default;
-    
+
+	$sToRender .= renderHeading("Document Detail");
+	$sToRender .= renderDocumentPath($oDocument, false) . "\n\n";
     if ($bCheckedOut) {
     	$sToRender .= "<table>";
         $sToRender .= "<tr><td>You have now checked out this document. No one else can make updates to the document while you have it checked out. Click the Download button to get the latest version of the file. Please check it back in, as soon as you finish working on it.</td></tr>\n";
@@ -55,7 +57,7 @@ function getCheckOutPage($oDocument, $bCheckedOut = false) {
     } else {
         $sToRender .= renderCheckOutPage($oDocument);
     }
-
-    return getPage($oDocument, false, $sToRender);
+   	$sToRender .= renderDocumentData($oDocument, $bEdit);       	
+    return $sToRender;
 }
 ?>
