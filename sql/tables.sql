@@ -153,8 +153,8 @@ quota_current INTEGER NOT NULL,
 email CHAR(100),
 mobile CHAR(30),
 email_notification BOOL NOT NULL,
-sms_notification BOOL NOT NULL
-ldap_dn CHAR(255) NOT NULL,
+sms_notification BOOL NOT NULL,
+ldap_dn CHAR(255) NOT NULL
 ); 
 
 CREATE TABLE users_unit ( 
