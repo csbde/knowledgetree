@@ -36,7 +36,7 @@ function renderManagePage() {
     // loop through them    
     for ($i = 0; $i < count($aFolderSubscriptions); $i++) {
         $sToRender .= "\t<tr>\n";
-        $sToRender .= "\t\t<td>\n";
+        $sToRender .= "\t\t<td bgcolor=\"" . getColour($i) . "\">\n";
         $sToRender .= "<input type=\"checkbox\" name=\"fFolderSubscriptionIDs[]\" value=\"" . $aFolderSubscriptions[$i]->getID() . "\"/>\n";        
         if ($aFolderSubscriptions[$i]->getIsAlerted()) {
             $sToRender .= $aFolderSubscriptions[$i]->getAlertLink() . "\n";
@@ -48,7 +48,7 @@ function renderManagePage() {
     }
     for ($i = 0; $i < count($aDocumentSubscriptions); $i++) {
         $sToRender .= "\t<tr>\n";
-        $sToRender .= "\t\t<td>\n";
+        $sToRender .= "\t\t<td bgcolor=\"" . getColour($i) . "\">\n";
         $sToRender .= "<input type=\"checkbox\" name=\"fDocumentSubscriptionIDs[]\" value=\"" . $aDocumentSubscriptions[$i]->getID() . "\"/>\n";        
         if ($aDocumentSubscriptions[$i]->getIsAlerted()) {
             $sToRender .= $aDocumentSubscriptions[$i]->getAlertLink() . "\n";
@@ -88,7 +88,7 @@ function renderMultipleRemoveConfirmationPage($aFolderSubscriptions, $aDocumentS
     // loop through them
     for ($i = 0; $i < count($aFolderSubscriptions); $i++) {
         $sToRender .= "\t<tr>\n";
-        $sToRender .= "\t\t<td>\n";
+        $sToRender .= "\t\t<td bgcolor=\"" . getColour($i) . "\">\n";
         $sToRender .= $aFolderSubscriptions[$i]->getContentDisplayPath() . "\n";
         $sToRender .= "\t\t</td>\n";
         $sToRender .= "\t</tr>\n";
@@ -97,7 +97,7 @@ function renderMultipleRemoveConfirmationPage($aFolderSubscriptions, $aDocumentS
     
     for ($i = 0; $i < count($aDocumentSubscriptions); $i++) {
         $sToRender .= "\t<tr>\n";
-        $sToRender .= "\t\t<td>\n";
+        $sToRender .= "\t\t<td bgcolor=\"" . getColour($i) . "\">\n";
         $sToRender .= $aDocumentSubscriptions[$i]->getContentDisplayPath() . "\n";
         $sToRender .= "\t\t</td>\n";
         $sToRender .= "\t</tr>\n";
@@ -186,5 +186,9 @@ function renderErrorPage($sErrorMessage) {
     global $default;
     return "<p class=\"errorText\">$sErrorMessage</p>\n" .
            "<a href=\"javascript:history.go(-1)\"><img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\"/></a>\n";
+}
+
+function getColour($iColourCount) {
+		return ($iColourCount%2 == 0) ? "F5F6EE" : "FFFFFF";
 }
 ?>
