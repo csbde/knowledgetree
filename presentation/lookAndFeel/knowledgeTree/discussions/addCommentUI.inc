@@ -48,7 +48,7 @@ function getSubmitSuccessPage($iDocumentID){
 function getAddComment($fDocumentID, $sSubject, $sBody, $iCommentID, $fNewComment = null) {
 	global $default;
 				
-	$sHeading = "Add a Comment";	
+	$sHeading = "Add a Comment";
 	$sToRender .= renderHeading($sHeading);
 	$sToRender .= displayDocumentPath($fDocumentID);	
 	$sToRender .= "<table width=\"100%\" border=\"0\" cellpadding=0 ><tr><td></td>\n";	
@@ -56,14 +56,16 @@ function getAddComment($fDocumentID, $sSubject, $sBody, $iCommentID, $fNewCommen
 	$sToRender .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 	$sToRender .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 	$sToRender .= "<input onmouseover=\"this.style.cursor='hand'\" type=\"image\" src=\"$default->graphicsUrl/widgets/submit.gif\" border=0></td>";	
-	if($fNewComment>0){	// If user is creating a new comment
+	if ($fNewComment>0) {	// If user is creating a new comment
 		$sToRender .= "<td width=\"10\" valign=top><a href=\"" . generateControllerLink("viewDiscussion", "fForDiscussion=1&fDocumentID=$fDocumentID") . "\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=0 ></a></td></tr>\n";
-	}else {				// If the user is replying to a comment
-		$sToRender .= "<td width=\"10\" valign=top><a href=\"" . generateControllerLink("viewDiscussion", "fViewComment=1&iDocumentID=$fDocumentID&iCommentID=$iCommentID") . "\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=0 ></a></td></tr>\n";		
+		$sToRender .= "<input type=\"hidden\" name=\"fNewComment\" value=\"1\"/>";
+	} else {				// If the user is replying to a comment
+		$sToRender .= "<input type=\"hidden\" name=\"fInReplyTo\" value=\"$iCommentID\"/>";
+		$sToRender .= "<td width=\"10\" valign=top><a href=\"" . generateControllerLink("viewComment", "fViewComment=1&iDocumentID=$fDocumentID&iCommentID=$iCommentID") . "\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=0 ></a></td></tr>\n";		
 	}
 	$sToRender .= "<br><tr><td valign=\"top\" width=10><b>Subject</b></td><td colspan=2>\n";
-	$sToRender .= "<input type=\"text\" style=\"width:385\"  name=\"NewCommentSubject\" id=\"NewCommentSubject\" value=\"$sSubject\"></td></tr>\n";
-	$sToRender .= "<tr><td valign=\"top\"><b>Body</b></td><td colspan=2><textarea cols=60 rows=\"21\" name=\"NewComment\" id=\"NewComment\" wrap=\"physical\" >$sBody</textarea></td></tr></table>\n";
+	$sToRender .= "<input type=\"text\" style=\"width:385\" name=\"fSubject\" value=\"$sSubject\"></td></tr>\n";
+	$sToRender .= "<tr><td valign=\"top\"><b>Body</b></td><td colspan=2><textarea cols=60 rows=\"18\" name=\"fComment\" wrap=\"physical\">$sBody</textarea></td></tr></table>\n";
 	return $sToRender;	
 }
 
