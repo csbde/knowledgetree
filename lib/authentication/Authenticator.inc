@@ -1,5 +1,7 @@
 <?php
 
+require_once("$default->fileSystemRoot/lib/users/User.inc");
+
 /**
  * $Id$
  * 
@@ -25,45 +27,61 @@ class Authenticator {
         // initialise return array
         $aUserDetails = array();
 
-        if ($this->checkPassword($sUserName, $sPassword)) {
-            // retrieve the userID
-            $iUserID = lookupID($default->owl_users_table, "username", "$sUserName");
-            $default->log->info("Authenticator::login authenticated ($sUserName, $sPassword), id=$iUserID");
-            if ($iUserID) {
-                // add this to the return array
-                $aUserDetails["userID"] = $iUserID;
-                // remove stale sessions from the database for the user
-                // that is signing on.
-                Session::removeStaleSessions($aUserDetails["userID"]);
+        // retrieve the userID
+        $iUserID = lookupID($default->owl_users_table, "username", "$sUserName");
+        if ($iUserID) {
+            $oUser = & User::get($iUserID);
 
-                // Check if Maxsessions has been reached
-                // FIXME: make this check work before production install
-                $maxSessions = lookupField($default->owl_users_table, "max_sessions", "id", $iUserID);
-                $default->log->debug("maxsessions=$maxSessions for userID=$iUserID");
-                $sql = $default->db;
-                if ($sql->query("SELECT * FROM $default->owl_sessions_table WHERE user_id = '".$aUserDetails["user_id"]."'")) {
-                    if ($sql->num_rows() >= $maxSessions) {
-                        // return too many sessions status code
-                        $aUserDetails["status"] = 3;
+            // only check the password if the user is a system administrator or a guest user
+            // or this user belongs to a unit (if its not a system admin)
+            if (Permission::userIsSystemAdministrator($iUserID) || Permission::userIsGuest($iUserID) || User::getUnitID($iUserID)) {
+
+                if ($this->checkPassword($sUserName, $sPassword)) {
+
+                    $default->log->info("Authenticator::login authenticated ($sUserName, $sPassword), id=$iUserID");
+                    if ($iUserID) {
+                        // add this to the return array
+                        $aUserDetails["userID"] = $iUserID;
+                        // remove stale sessions from the database for the user
+                        // that is signing on.
+                        Session::removeStaleSessions($aUserDetails["userID"]);
+
+                        // Check if Maxsessions has been reached
+                        // FIXME: make this check work before production install
+                        $maxSessions = lookupField($default->owl_users_table, "max_sessions", "id", $iUserID);
+                        $default->log->debug("maxsessions=$maxSessions for userID=$iUserID");
+                        $sql = $default->db;
+                        if ($sql->query("SELECT * FROM $default->owl_sessions_table WHERE user_id = '".$aUserDetails["user_id"]."'")) {
+                            if ($sql->num_rows() >= $maxSessions) {
+                                // return too many sessions status code
+                                $aUserDetails["status"] = 3;
+                            } else {
+                                // authenticated successfully
+                                $aUserDetails["status"] = 1;
+                            }
+                            // FIXME: account disabled status???
+                        }
+                        else {
+                            // db access failed
+                            $_SESSION["errorMessage"] = $lang_err_database;
+                            $aUserDetails["status"] = 0;
+                        }
                     } else {
-                        // authenticated successfully
-                        $aUserDetails["status"] = 1;
+                        // db access failed
+                        $_SESSION["errorMessage"] = $lang_err_database;
+                        $aUserDetails["status"] = 0;
                     }
-                    // FIXME: account disabled status???
-                }
-                else {
-                    // db access failed
-                    $_SESSION["errorMessage"] = $lang_err_database;
+                } else {
+                    $default->log->info("Authenticator::login login failed ($sUserName, $sPassword)");
+                    // authentication failed
                     $aUserDetails["status"] = 0;
                 }
             } else {
-                // db access failed
-                $_SESSION["errorMessage"] = $lang_err_database;
-                $aUserDetails["status"] = 0;
+                // not a unit user
+                $aUserDetails["status"] = 4;
             }
         } else {
-            $default->log->info("Authenticator::login login failed ($sUserName, $sPassword)");        
-            // authentication failed
+            // username doesn't exist
             $aUserDetails["status"] = 0;
         }
         return $aUserDetails;
