@@ -176,7 +176,7 @@ class DocumentField extends KTEntity {
 		$result = $sql->query(array("SELECT * FROM $default->document_fields_table WHERE id = ?", $iDocumentFieldsID));/*ok*/
 		if ($result) {
 			if ($sql->next_record()) {
-				$oDocumentField = & new DocumentField($sql->f("name"), $sql->f("data_type"), $sql->f("is_generic"), $sql->f("has_lookup"));
+				$oDocumentField = & new DocumentField($sql->f("name"), $sql->f("data_type"), (bool)$sql->f("is_generic"), (bool)$sql->f("has_lookup"));
 				$oDocumentField->iId = $sql->f("id");
 				return $oDocumentField;
 			}
