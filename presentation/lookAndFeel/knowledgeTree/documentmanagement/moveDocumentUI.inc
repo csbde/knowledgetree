@@ -15,7 +15,7 @@ function renderHeading($sHeading) {
 function getPage($iFolderID, $iDocumentID) {
 	global $default;
     $sToRender = renderHeading("Move Document");
-	$sToRender = "<table>\n";
+	$sToRender .= "<table>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>" . renderFolderPath($iFolderID, "/control.php?action=moveDocument&fDocumentID=$iDocumentID") . "</td>\n";
 	$sToRender .= "</tr>\n";
@@ -24,7 +24,7 @@ function getPage($iFolderID, $iDocumentID) {
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>" . renderFolderList($iFolderID, "control.php?action=moveDocument&fDocumentID=$iDocumentID") . "</td>\n";
 	$sToRender .= "</tr>\n";	
-	$sToRender .= "<tr><td><table><tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/movehere.gif\" border=\"0\"/></td></tr></table></td>\n";
+	$sToRender .= "<tr><td><table><tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/movehere.gif\" border=\"0\"/></td><td><a href=\"$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $iDocumentID . "\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></a></td></tr></table></td>\n";
 	$sToRender .= "</table>\n";
 	return $sToRender;
 }
