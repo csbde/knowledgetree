@@ -24,7 +24,7 @@ class Permission {
 	*
 	* @param $iDocumentID		Primary key of document to check
 	*
-	* @return boolean true is the current user has document write permission, false otherwise and set $_SESSION["errorMessage"]
+	* @return boolean true if the current user has document write permission, false otherwise and set $_SESSION["errorMessage"]
 	*/	
 	function userHasDocumentWritePermission($iDocumentID) {
 		if (Permission::userHasFolderWritePermission(DocumentLib::getDocumentFolderID($iDocumentID)) ||
@@ -37,13 +37,13 @@ class Permission {
 	
 	/**
 	* Checks if the current user has read permission for a specific document.
-	* To have document write permission the user must satisfy ONE of the following conditions:
+	* To have document read permission the user must satisfy ONE of the following conditions:
 	*	o have read permission for the folder in which the document resides
 	* 	o be assigned a role which has read permission for the document
 	*
 	* @param $iDocumentID		Primary key of document to check
 	*
-	* @return boolean true is the current user has document read permission, false otherwise and set $_SESSION["errorMessage"]
+	* @return boolean true if the current user has document read permission, false otherwise and set $_SESSION["errorMessage"]
 	*/	
 	function userHasDocumentReadPermission($iDocumentID) {
 		if (Permission::userHasFolderReadPermission(DocumentLib::getDocumentFolderID($iDocumentID)) ||
@@ -63,7 +63,7 @@ class Permission {
 	*	
 	* @param $iFolderID		Primary key of folder to check
 	*
-	* @return boolean true is the user has folder write permission, false otherwise and set $_SESSION["errorMessage"]
+	* @return boolean true if the user has folder write permission, false otherwise and set $_SESSION["errorMessage"]
 	*/
 	function userHasFolderWritePermission($iFolderID) {
 		global $lang_err_user_folder_write;
@@ -86,7 +86,7 @@ class Permission {
 	*
 	* @param $iFolderID		Primary key of folder to check
 	*
-	* @return boolean true is the user has folder write permission, false otherwise and set $_SESSION["errorMessage"]
+	* @return boolean true if the user has folder write permission, false otherwise and set $_SESSION["errorMessage"]
 	*/
 	function userHasFolderReadPermission($iFolderID) {
 		global $lang_err_user_folder_write;
@@ -124,7 +124,7 @@ class Permission {
 	*
 	* @param $iFolderID		Primary key of folder to check
 	*
-	* @return boolean true is the user has folder write permission, false otherwise and set $_SESSION["errorMessage"]
+	* @return boolean true if the user has folder write permission, false otherwise and set $_SESSION["errorMessage"]
 	*
 	* @todo Remove hardcoding of 'Unit Administrators'
 	*/
@@ -149,7 +149,7 @@ class Permission {
 	* 
 	* @param $iFolderID 	Primary key of folder to check
 	*
-	* @return boolean true is the user has folder write permission, false otherwise and set $_SESSION["errorMessage"]
+	* @return boolean true if the user has folder write permission, false otherwise and set $_SESSION["errorMessage"]
 	*/
 	function userHasGroupWritePermissionForFolder($iFolderID) {
 		global $default, $lang_err_user_folder_write;
@@ -167,7 +167,7 @@ class Permission {
 	*
 	* @param $iFolderID		Primary key of folder to check
 	*
-	* @return boolean true is the user has folder write permission, false otherwise and set $_SESSION["errorMessage"]
+	* @return boolean true if the user has folder write permission, false otherwise and set $_SESSION["errorMessage"]
 	*/
 	function userHasGroupReadPermissionForFolder($iFolderID) {
 		global $default, $lang_err_user_folder_read;
