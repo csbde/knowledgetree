@@ -12,6 +12,8 @@
 
 require_once("../../../../config/dmsDefaults.php");
 require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
+require_once("$default->fileSystemRoot/lib/foldermanagement/FolderCollaboration.inc");
+require_once("$default->fileSystemRoot/lib/foldermanagement/FolderDocTypeLink.inc");
 require_once("$default->fileSystemRoot/lib/foldermanagement/PhysicalFolderManagement.inc");
 require_once("$default->fileSystemRoot/lib/users/User.inc");
 require_once("$default->fileSystemRoot/lib/subscriptions/SubscriptionManager.inc");
@@ -38,6 +40,18 @@ if (checkSession()) {
 					if ($oFolder->delete()) {
 						if (PhysicalFolderManagement::deleteFolder($sFolderPath)) {
 							// successfully deleted the folder from the file system
+                            
+                            // delete folder collaboration entries
+                            $aFolderCollaboration = FolderCollaboration::getList("WHERE folder_id=$fFolderID");
+                            for ($i=0; $i<count($aFolderCollaboration); $i++) {
+                                $aFolderCollaboration[$i]->delete();
+                            }
+                            
+                            // delete folder document types link
+                            $aFolderDocTypeLink = FolderDocTypeLink::getList("folder_id=$fFolderID");
+                            for ($i=0; $i<count($aFolderDocTypeLink); $i++) {
+                                $aFolderDocTypeLink[$i]->delete();
+                            }                            
                             
                             // fire subscription alerts for parent folder subscriptions to the deleted folder
                             $count = SubscriptionEngine::fireSubscription($oFolder->getParentID(), SubscriptionConstants::subscriptionAlertType("RemoveChildFolder"),
