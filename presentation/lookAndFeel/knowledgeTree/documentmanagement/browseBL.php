@@ -1,10 +1,8 @@
 <?php
 
-// main library routines and defaults
 require_once("../../../../config/dmsDefaults.php");
-require_once("$default->owl_ui_directory/documentmanagement/browseUI.inc");
 require_once("$default->owl_fs_root/lib/documentmanagement/DocumentBrowser.inc");
-require_once("$default->owl_ui_directory/foldermanagement/folderUI.inc");
+require_once("$default->owl_ui_directory/documentmanagement/browseUI.inc");
 
 /**
  * $Id$
@@ -108,7 +106,7 @@ if (checkSession()) {
                             
                             // we have a list of categories
                             // so loop through them and display
-                            $oContent->addHtml(tableRow("", "", tableCssData("Categories", "browseTypeSelect")));
+                            $oContent->addHtml(tableRow("", "", tableData(displayCategoryLink("Categories"))));
                             
                             // empty row for spacing
                             $oContent->addHtml(tableRow("", "", tableData("&nbsp;")));
@@ -126,7 +124,7 @@ if (checkSession()) {
                             $oContent->addHtml(tableRow("", "", tableData("&nbsp;")));
                             
                             // now loop through the documents in the category (TODO: if any)
-                            // and display them (TODO: with hyperlinked paths)
+                            // and display them
                             for ($i=0; $i<count($results["documents"]); $i++) {
                                 $sDocumentLink = displayDocumentLink($results["documents"][$i], true);
                                 $oContent->addHtml(tableRow("", "", tableData($sDocumentLink)));                                    
@@ -141,7 +139,7 @@ if (checkSession()) {
                             
                             // we have a list of document types
                             // so loop through them and display
-                            $oContent->addHtml(tableRow("", "", tableCssData("Document Types", "browseTypeSelect")));
+                            $oContent->addHtml(tableRow("", "", tableData(displayDocumentTypeLink(array("name"=>"Document Types")))));
                             
                             // empty row for spacing
                             $oContent->addHtml(tableRow("", "", tableData("&nbsp;")));
@@ -159,7 +157,7 @@ if (checkSession()) {
                             $oContent->addHtml(tableRow("", "", tableData("&nbsp;")));
                             
                             // now loop through the documents in the category (TODO: if any)
-                            // and display them (TODO: with hyperlinked paths)
+                            // and display them
                             for ($i=0; $i<count($results["documents"]); $i++) {
                                 $sDocumentLink = displayDocumentLink($results["documents"][$i], true);
                                 $oContent->addHtml(tableRow("", "", tableData($sDocumentLink)));                                    
