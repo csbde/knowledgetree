@@ -25,13 +25,33 @@ if (checkSession()) {
 	require_once("$default->owl_fs_root/presentation/Html.inc");
 		
 	if (Permission::userHasFolderWritePermission($fFolderID)) {
-		//if the user can edit the folder
+		//if the user can edit the folder		
 		if (isset($fFolderID)) {
-			$oPatternCustom = & new PatternCustom();
-			$oPatternCustom->setHtml(getPage($fFolderID));
-			$main->setCentralPayload($oPatternCustom);
-			$main->setFormAction("../store.php?fReturnURL=" . urlencode("$default->owl_root_url/control.php?action=browse&fFolderID=$fFolderID"));
-			$main->render();
+			if (isset($fCollaborationEdit)) {
+				//user attempted to edit the folder collaboration process but could not because there is 
+				//a document currently in this process
+				$oPatternCustom = & new PatternCustom();
+				$oPatternCustom->setHtml(getPage($fFolderID));
+				$main->setErrorMessage("You cannot edit this folder collaboration process as a document is currently undergoing this collaboration process");
+				$main->setCentralPayload($oPatternCustom);
+				$main->setFormAction("../store.php?fReturnURL=" . urlencode("$default->owl_root_url/control.php?action=browse&fFolderID=$fFolderID"));
+				$main->render();
+			} else if (isset($fCollaborationDelete)) {
+				//user attempted to delete the folder collaboration process but could not because there is 
+				//a document currently in this process
+				$oPatternCustom = & new PatternCustom();
+				$oPatternCustom->setHtml(getPage($fFolderID));
+				$main->setErrorMessage("You cannot delete this folder collaboration process as a document is currently undergoing this collaboration process");
+				$main->setCentralPayload($oPatternCustom);
+				$main->setFormAction("../store.php?fReturnURL=" . urlencode("$default->owl_root_url/control.php?action=browse&fFolderID=$fFolderID"));
+				$main->render();
+			} else {
+				$oPatternCustom = & new PatternCustom();
+				$oPatternCustom->setHtml(getPage($fFolderID));
+				$main->setCentralPayload($oPatternCustom);
+				$main->setFormAction("../store.php?fReturnURL=" . urlencode("$default->owl_root_url/control.php?action=browse&fFolderID=$fFolderID"));
+				$main->render();
+			}
 		} else {
 			//else display an error message
 			$oPatternCustom = & new PatternCustom();

@@ -46,29 +46,21 @@ if (checkSession()) {
 		$oFolderCollaboration->setSequenceNumber($fSequenceNumber);
 		$oFolderCollaboration->update();
 		redirect("$default->owl_root_url/control.php?action=editFolder&fFolderID=$fFolderID");
-	} else {			
-		//we are editing an existing entry
-		require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");
-		$oPatternCustom = & new PatternCustom();
-		$oPatternCustom->setHtml(getEditPage($fFolderCollaborationID, $fFolderID));
-		$main->setCentralPayload($oPatternCustom);
-		$main->setFormAction("../store.php?fReturnURL=" . urlencode("$default->owl_root_url/control.php?action=editFolder&fFolderID=$fFolderID"));
-		$main->render();
-	}
-	/*if (isset($fForAdd)) {
-		require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");
-		$oPatternCustom = & new PatternCustom();
-		$oPatternCustom->setHtml(getEditPage($fFolderCollaborationID, $fFolderID));
-		$main->setCentralPayload($oPatternCustom);
-		$main->setFormAction($_SERVER["PHP_SELF"] . "?fFolderID=$fFolderID&fForCreate=1");
-		$main->render();
-	} else {
-		require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");
-		$oPatternCustom = & new PatternCustom();
-		$oPatternCustom->setHtml(getEditPage($fFolderCollaborationID, $fFolderID));
-		$main->setCentralPayload($oPatternCustom);
-		$main->setFormAction("../store.php?fReturnURL=" . urlencode("$default->owl_root_url/control.php?action=editFolder&fFolderID$fFolderID"));
-		$main->render();
-	}*/
+	} else {		
+		$oFolderCollaboration = FolderCollaboration::get($fFolderCollaborationID);
+		if ($oFolderCollaboration->hasDocumentInProcess()) {
+			//you cannot alter collaboration process at the folder level if a document is currently
+			//going through the process
+			redirect("$default->owl_root_url/control.php?action=editFolder&fFolderID=$fFolderID&fCollaborationEdit=0");			
+		} else {
+			//we are editing an existing entry
+			require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");
+			$oPatternCustom = & new PatternCustom();
+			$oPatternCustom->setHtml(getEditPage($fFolderCollaborationID, $fFolderID));
+			$main->setCentralPayload($oPatternCustom);
+			$main->setFormAction("../store.php?fReturnURL=" . urlencode("$default->owl_root_url/control.php?action=editFolder&fFolderID=$fFolderID"));
+			$main->render();
+		}
+	}	
 }
 ?>
