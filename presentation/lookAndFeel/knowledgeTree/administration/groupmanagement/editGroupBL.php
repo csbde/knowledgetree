@@ -54,8 +54,7 @@ if (checkSession()) {
         $main->setFormAction("$default->rootUrl/presentation/lookAndFeel/knowledgeTree/store.php?fReturnURL=" . urlencode("$default->rootUrl/control.php?action=editGroupSuccess"));
 
         // coming from manual edit page
-    }
-    else if (isset($fForStore)) {
+    } else if (isset($fForStore)) {
         $oGroup = Group::get($fGroupID);
         $oGroup->setName($fGroupName);
 
