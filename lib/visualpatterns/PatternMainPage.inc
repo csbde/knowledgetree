@@ -12,7 +12,7 @@
 * @date 12 December 2002
 * @package lib.visualpatterns
 *	
-*/
+*/	
 
 class PatternMainPage {
 	
@@ -111,7 +111,6 @@ class PatternMainPage {
 	*/
 	function render() {
         global $default;
-        
 		$sToRender = 	"<html>\n" .
 							"<head>\n" .
                             "<meta http-equiv=\"refresh\" content=\"" . ($default->sessionTimeout+3) . "\">\n" .
@@ -195,12 +194,17 @@ class PatternMainPage {
         global $default;
         $sUrl = $default->uiUrl;
         // hack to circumvent the crapness of ns 4.79
+ 
         if (! (($default->phpSniff->property("browser") == "moz") && ($default->phpSniff->property("version") <= "4.79")) ) {
-            return "<script type=\"text/javascript\" src=\"$sUrl/js/misc.js\"></script>
-                    <script type=\"text/javascript\" src=\"$sUrl/js/scroll.js\"></script>" .
-					$this->getHelpJavaScript();
+            return "<script type=\"text/javascript\" src=\"$sUrl/js/scroll.js\"></script>\n" .
+            	   "<script type=\"text/javascript\" src=\"$sUrl/js/datePicker.js\"></script>\n" .            
+            	   "<script type=\"text/javascript\" src=\"$sUrl/js/misc.js\"></script>" . 
+            	   $this->getHelpJavaScript();        
+
         } else {
-            return "<script type=\"text/javascript\" src=\"$sUrl/js/misc.js\"></script>" . $this->getHelpJavaScript();        
+            return "<script type=\"text/javascript\" src=\"$sUrl/js/datePicker.js\"></script>\n" .            
+            	   "<script type=\"text/javascript\" src=\"$sUrl/js/misc.js\"></script>" . 
+            	   $this->getHelpJavaScript();        
         }
         
 	}
