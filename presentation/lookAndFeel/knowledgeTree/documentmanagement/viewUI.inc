@@ -120,35 +120,42 @@ function renderNonEditableDocumentRouting($oDocument) {
 
 function getEditPage($oDocument) {
     global $default;
+	$iDocumentID = $oDocument->getID();
     $sToRender = renderDocumentPath($oDocument) . "\n<br>\n";
     $sToRender .= "<table border = 0>\n";
     $sToRender .= "<tr>\n";
     $sToRender .= "<td>\n";
-    //$sToRender .= "\t<table border = 0 width = 280>\n";
+    
     $sToRender .= "\t<table border = 0>\n";
     $sToRender .= "\t<tr width>\n";
-    $sToRender .= "\t\t<td>" . wrapInTable(renderDocumentData($oDocument)) . "</td>\n";
-    //$sToRender .= "\t\t<td>" . renderGenericDocumentMetaData($oDocument) . "</td>\n";
+    $sToRender .= "\t\t<td>" . wrapInTable(renderDocumentData($oDocument)) . "</td>\n";    
     $sToRender .= "\t</tr>\n";
+	$sToRender .= "\t<tr>\n";
+	$sToRender .= "<td><input type=\"image\" src=\"$default->graphicsUrl/widgets/edit.gif\" onClick=\"setActionAndSubmit('$default->rootUrl/control.php?action=modifyDocument&fDocumentID=$iDocumentID')\"border=\"0\"></td>\n";
+	$sToRender .= "\t</tr>\n";
     $sToRender .= "\t<tr>\n";
     $sToRender .= "\t<td>" . wrapInTable(renderGenericMetaData($oDocument)) . "</td>\n";
-    $sToRender .= "\t<tr>\n";
+    $sToRender .= "\t</tr>\n";
+	$sToRender .= "\t<tr>\n";
+	$sToRender .= "<td><input type=\"image\" src=\"$default->graphicsUrl/widgets/edit.gif\" onClick=\"setActionAndSubmit('$default->rootUrl/control.php?action=modifyDocumentGenericMetaData&fDocumentID=$iDocumentID')\"border=\"0\"></td>\n";
+	$sToRender .= "\t</tr>\n";
     $sToRender .= "\t<tr>\n";
     $sToRender .= "\t\t<td>" . wrapInTable(renderTypeSpecificMetaData($oDocument)) . "</td>\n";
-    //$sToRender .= "\t\t<td>" . renderTypeSpecificMetaData($oDocument) . "</td>\n";
+    
     $sToRender .= "\t</tr>\n";
+	$sToRender .= "\t<tr>\n";
+	$sToRender .= "<td><input type=\"image\" src=\"$default->graphicsUrl/widgets/edit.gif\" onClick=\"setActionAndSubmit('$default->rootUrl/control.php?action=modifyDocumentTypeMetaData&fDocumentID=$iDocumentID')\"border=\"0\"></td>\n";
+	$sToRender .= "\t</tr>\n";
     $sToRender .= "\t</table>\n";
     $sToRender .= "</td>\n";
     $sToRender .= "<td valign=top>\n";
-    //$sToRender .= "\t<table border = 0, width = 230>\n";
+    
     $sToRender .= "\t<table border = 0>\n";
     $sToRender .= "\t<tr>\n";
     $sToRender .= "\t\t<td>" . wrapInTable(renderEditableDocumentRouting($oDocument)) . "</td>\n";
-    //$sToRender .= "\t\t<td>" . renderDocumentRouting($oDocument) . "</td>\n";
     $sToRender .= "\t</tr>";
     $sToRender .= "\t<tr>\n";
-    $sToRender .= "\t\t<td><a href=" . $_SERVER['PHP_SELF'] . "?fDocumentID=" . $oDocument->getID() . "&fBeginCollaboration=1><img src=\"$default->graphicsUrl/widgets/begin.gif\" border=\"0\"/></a></td>\n";
-    //$sToRender .= "\t\t<td>" . renderDocumentRouting($oDocument) . "</td>\n";
+    $sToRender .= "\t\t<td><a href=" . $_SERVER['PHP_SELF'] . "?fDocumentID=" . $oDocument->getID() . "&fBeginCollaboration=1><img src=\"$default->graphicsUrl/widgets/begin.gif\" border=\"0\"/></a></td>\n";    
     $sToRender .= "\t</tr>";
     $sToRender .= "\t</table>";
     $sToRender .= "</td>\n";
@@ -156,8 +163,6 @@ function getEditPage($oDocument) {
     $sToRender .= "</table>\n";
     $sToRender .= "<table>\n";
     $sToRender .= "<tr>\n";
-    //$sToRender .= "<td><input type=\"image\" srcvalue=\"Edit\"></td>\n";
-    $sToRender .= "<td><input type=\"image\" src=\"$default->graphicsUrl/widgets/edit.gif\" border=\"0\"></td>\n";
     $sToRender .= "<td><a href=\"" . $_SERVER["PHP_SELF"] . "?fDocumentID=" . $oDocument->getID() . "&fForDownload=1\"><img src=\"$default->graphicsUrl/widgets/download.gif\" border=\"0\" /></a></td>\n";
     $sToRender .= "<td><a href=\"" . generateControllerLink("emailDocument", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/email.gif\" border=\"0\" /></a></td>\n";    
     $sToRender .= "<td><a href=\"" . generateControllerLink("deleteDocument", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/delete.gif\" border=\"0\" /></a></td>\n";
