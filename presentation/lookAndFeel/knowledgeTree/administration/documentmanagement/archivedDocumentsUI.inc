@@ -77,7 +77,7 @@ function renderRestoreConfirmationPage($aDocuments) {
     $sToRender .= "<tr/><tr/>";
     $sToRender .= "<input type=\"hidden\" name=\"fConfirm\" value=\"1\">";
     $sToRender .= "<tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/restore.gif\" border=\"0\"/></a>\n";
-    $sToRender .= "<a href=\"javascript:history.go(-1)\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></a></td></tr>");
+    $sToRender .= "<a href=\"javascript:history.go(-1)\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></a></td></tr>";
 	$sToRender .= "</table>";
     return $sToRender;	
 }
