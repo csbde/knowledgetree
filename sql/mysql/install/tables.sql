@@ -6,6 +6,7 @@ session_id CHAR(255),
 lastused DATETIME,
 ip CHAR(30)
 ) TYPE = InnoDB;
+ALTER TABLE active_sessions ADD INDEX session_id_idx (session_id);
 
 CREATE TABLE archive_restoration_request (
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
@@ -89,6 +90,11 @@ full_path TEXT,
 checked_out_user_id INTEGER,
 status_id INTEGER
 )TYPE = InnoDB;
+ALTER TABLE documents ADD INDEX fk_document_type_id (document_type_id);
+ALTER TABLE documents ADD INDEX fk_creator_id (creator_id);
+ALTER TABLE documents ADD INDEX fk_folder_id (folder_id);
+ALTER TABLE documents ADD INDEX fk_checked_out_user_id (checked_out_user_id);
+ALTER TABLE documents ADD INDEX fk_status_id (status_id);
 
 CREATE TABLE document_archiving_link ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
@@ -132,7 +138,6 @@ CREATE TABLE document_text (
   KEY document_text_document_id_indx (document_id)
 ) Type = MyISAM;
 
-
 CREATE TABLE document_transactions ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 document_id INTEGER NOT NULL,
@@ -144,6 +149,9 @@ filename CHAR(255) NOT NULL,
 comment CHAR(255) NOT NULL,
 transaction_id INTEGER
 )TYPE = InnoDB;
+ALTER TABLE document_transactions ADD INDEX fk_document_id (document_id);
+ALTER TABLE document_transactions ADD INDEX fk_user_id (user_id);
+ALTER TABLE document_transactions ADD INDEX fk_transaction_id (transaction_id);
 
 CREATE TABLE document_transaction_types_lookup ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
@@ -174,6 +182,9 @@ parent_folder_ids TEXT,
 full_path TEXT,
 inherit_parent_folder_permission INTEGER
 )TYPE = InnoDB;
+ALTER TABLE folders ADD INDEX fk_parent_id (parent_id);
+ALTER TABLE folders ADD INDEX fk_creator_id (creator_id);
+ALTER TABLE folders ADD INDEX fk_unit_id (unit_id);
 
 CREATE TABLE folder_subscriptions ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
@@ -199,6 +210,8 @@ folder_id int(11) NOT NULL default '0',
 document_type_id int(11) NOT NULL default '0',
 UNIQUE KEY id (id)
 ) TYPE=InnoDB;
+ALTER TABLE folder_doctypes_link ADD INDEX fk_folder_id (folder_id);
+ALTER TABLE folder_doctypes_link ADD INDEX fk_document_type_id (document_type_id);
 
 CREATE TABLE groups_folders_approval_link ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
@@ -216,6 +229,8 @@ folder_id INTEGER NOT NULL,
 can_read BIT NOT NULL,
 can_write BIT NOT NULL
 )TYPE = InnoDB;
+ALTER TABLE groups_folders_link ADD INDEX fk_group_id (group_id);
+ALTER TABLE groups_folders_link ADD INDEX fk_folder_id (folder_id);
 
 CREATE TABLE groups_lookup ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
@@ -229,6 +244,8 @@ id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 group_id INTEGER NOT NULL,
 unit_id INTEGER NOT NULL
 )TYPE = InnoDB;
+ALTER TABLE groups_units_link ADD INDEX fk_group_id (group_id);
+ALTER TABLE groups_units_link ADD INDEX fk_unit_id (unit_id);
 
 CREATE TABLE help (
   id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
@@ -242,12 +259,6 @@ name CHAR(100) NOT NULL,
 url CHAR(100) NOT NULL,
 rank INTEGER NOT NULL
 )TYPE = InnoDB;
-
-CREATE TABLE language_lookup ( 
-id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
-name CHAR(100) NOT NULL
-)TYPE = InnoDB;
-
 
 CREATE TABLE metadata_lookup ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
@@ -291,8 +302,8 @@ id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 document_id INTEGER,
 user_id INTEGER
 ) Type = InnoDB;
-ALTER TABLE search_document_user_link ADD INDEX search_document_user_link_user_id_indx (user_id);
-ALTER TABLE search_document_user_link ADD INDEX search_document_user_link_document_id_indx (document_id);
+ALTER TABLE search_document_user_link ADD INDEX fk_user_id (user_id);
+ALTER TABLE search_document_user_link ADD INDEX fk_document_ids (document_id);
 
 CREATE TABLE status_lookup  (
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
@@ -326,6 +337,8 @@ id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 unit_id INTEGER NOT NULL,
 organisation_id INTEGER NOT NULL
 )TYPE = InnoDB;
+ALTER TABLE units_organisations_link ADD INDEX fk_unit_id (unit_id);
+ALTER TABLE units_organisations_link ADD INDEX fk_organisation_id (organisation_id);
 
 CREATE TABLE users (
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
@@ -341,15 +354,15 @@ sms_notification BIT NOT NULL,
 ldap_dn CHAR(255),
 max_sessions INTEGER,
 language_id INTEGER
-) 
-TYPE = InnoDB;
+) TYPE = InnoDB;
 
 CREATE TABLE users_groups_link ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 user_id INTEGER NOT NULL,
 group_id INTEGER NOT NULL
-) 
-TYPE = InnoDB;
+) TYPE = InnoDB;
+ALTER TABLE users_groups_link ADD INDEX fk_user_id (user_id);
+ALTER TABLE users_groups_link ADD INDEX fk_group_id (group_id);
 
 CREATE TABLE web_documents ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
@@ -523,22 +536,9 @@ insert into data_types (name) values ('FLOAT');
 -- category field
 INSERT INTO document_fields (name, data_type, is_generic) VALUES ("Category", "STRING", 1);
 
--- supported languages (not really ;)
-INSERT INTO language_lookup (name) VALUES ("English");
-INSERT INTO language_lookup (name) VALUES ("Chinese");
-INSERT INTO language_lookup (name) VALUES ("Danish");
-INSERT INTO language_lookup (name) VALUES ("Deutsch");
-INSERT INTO language_lookup (name) VALUES ("Dutch");
-INSERT INTO language_lookup (name) VALUES ("Francais");
-INSERT INTO language_lookup (name) VALUES ("Hungarian");
-INSERT INTO language_lookup (name) VALUES ("Italian");
-INSERT INTO language_lookup (name) VALUES ("Norwegian");
-INSERT INTO language_lookup (name) VALUES ("Portuguese");
-INSERT INTO language_lookup (name) VALUES ("Spanish");
-
 -- system settings
 INSERT INTO system_settings (name, value) values ("lastIndexUpdate", "0");
-INSERT INTO system_settings (name, value) values ("knowledgeTreeVersion", "1.2.2");
+INSERT INTO system_settings (name, value) values ("knowledgeTreeVersion", "1.2.3");
 
 -- document statuses
 INSERT INTO web_documents_status_lookup (name) VALUES ("Pending");
