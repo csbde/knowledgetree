@@ -12,7 +12,7 @@ require_once("../../../../../config/dmsDefaults.php");
 if (checkSession()) {
 	require_once("$default->fileSystemRoot/lib/visualpatterns/PatternListBox.inc");
 	require_once("$default->fileSystemRoot/lib/visualpatterns/PatternEditableListFromQuery.inc");
-	require_once("editWebSiteUI.inc");
+	require_once("editWebsiteUI.inc");
 	require_once("$default->fileSystemRoot/lib/security/permission.inc");
 	require_once("$default->fileSystemRoot/lib/users/User.inc");
 	require_once("$default->fileSystemRoot/lib/web/WebSite.inc");
