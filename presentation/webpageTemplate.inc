@@ -67,7 +67,7 @@ if ($sectionName != "General") {
     $output2["descriptions"] = $sectionArray["descriptions"];
 
     //create links
-    $westLinks = new PatternTableLinks($sectionArray["links"], $sectionArray["descriptions"], 15 , 1 ,1,null);
+    $westLinks = new PatternTableLinks($sectionArray["links"], $sectionArray["descriptions"], 20 , 1 ,1,null);
     $westRender = $westLinks->render();
 
 } else {
