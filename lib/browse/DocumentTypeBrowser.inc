@@ -81,7 +81,7 @@ class DocumentTypeBrowser extends Browser {
                 // check permission
                 if (Permission::userHasDocumentReadPermission($sql->f("id"))) {
                 	$oDocument = & Document::get($sql->f("id"));
-                    if ($oDocument->getStatusID() == lookupStatusID("Live")) {
+                    if ($oDocument->isLive()) {
                     	$results["documents"][] = $oDocument;
                     }
                 } else {

@@ -1,24 +1,23 @@
 <?php
 /**
-* documentViewUI.php
-* Contains the business logic required to build the document view page.
-* Will use documentViewUI.php for HTML
-*
-* Expected form varaibles:
-*   o $fDocumentID - Primary key of document to view
-*
-* Optional form variables:
-*   o fCollaborationEdit - the user attempted to edit a collaboration step that is currently active 
-*   o fForDownload - the user is attempting to download the document
-*   o fBeginCollaboration - the user selected the 'Begin Collaboration' button
-*   o fFireSubscription - the document has been modified, and a subscription alert must be fired
-*
-*
-* @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
-* @date 21 January 2003
-* @package presentation.lookAndFeel.knowledgeTree.documentManager
-*/
-
+ * $Id$
+ * Contains the business logic required to build the document view page.
+ * Will use documentViewUI.php for HTML
+ *
+ * Expected form varaibles:
+ *   o $fDocumentID - Primary key of document to view
+ *
+ * Optional form variables:
+ *   o fCollaborationEdit - the user attempted to edit a collaboration step that is currently active 
+ *   o fForDownload - the user is attempting to download the document
+ *   o fBeginCollaboration - the user selected the 'Begin Collaboration' button
+ *   o fFireSubscription - the document has been modified, and a subscription alert must be fired
+ *
+ *
+ * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
+ * @date 21 January 2003
+ * @package presentation.lookAndFeel.knowledgeTree.documentManager
+ */
 
 require_once("../../../../config/dmsDefaults.php");
 
@@ -225,13 +224,13 @@ if (checkSession()) {
             }
             
             $oPatternCustom = & new PatternCustom();
-            if ($oDocument->getStatusID() == lookupStatusID("Live")) {
+            if ($oDocument->isLive()) {
 	            if (Permission::userHasDocumentWritePermission($fDocumentID)) {
 	                $oPatternCustom->setHtml(getEditPage($oDocument));
 	            } else if (Permission::userHasDocumentReadPermission($fDocumentID)) {
 	                $oPatternCustom->setHtml(getViewPage($oDocument));
 	            }
-            } else if ($oDocument->getStatusID() == lookupStatusID("Archived")) {
+            } else if ($oDocument->isArchived()) {
             	// cancel
 	            $oPatternCustom->setHtml("<a href=\"" . generateControllerLink("browse", "fFolderID=" . $oDocument->getFolderID()) . "\"><img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\" /></a>\n");
 	            $main->setErrorMessage("This document has been archived.");
