@@ -17,7 +17,7 @@ function getPage($iFolderID) {
     $sToRender .= "</table>\n";
     $sToRender .= "<table border=\"0\">\n";    
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td><a href=\"$default->rootUrl/control.php?action=editFolder&fFolderID=$iFolderID\"><img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\"></a></td>\n";
+	$sToRender .= "<td>" . generateControllerLink("editFolder", "fFolderID=$iFolderID&fShowSection=documentTypes", "<img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\">") . "</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table><br>\n";
 	
