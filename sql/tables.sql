@@ -532,6 +532,12 @@ INSERT INTO folders (name, description, parent_id, creator_id, document_type_id,
              
 INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
              VALUES ("MRC Document Root", "MRC Root Document Folder", 1, 1, 51, 0, 0);
+INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
+             VALUES ("Test folder 1", "Test folder 1", 1, 1, 51, 0, 0);
+INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
+             VALUES ("Test folder 2", "Test folder 2", 2, 1, 51, 0, 0);
+INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
+             VALUES ("Test folder 3", "Test folder 3", 3, 1, 51, 0, 0);
 
 INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
              VALUES ("Administration Unit Document Root", "Administration Unit Root Document Folder", 2, 1, 51, 1, 0);             
