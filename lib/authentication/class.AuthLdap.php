@@ -32,6 +32,10 @@
  * - Change documentation to phpdoc style (http://phpdocu.sourceforge.net)
  * - Added a constructor
  * - Added an attribute array parameter to the getUsers method
+ * 20040909, Daniel Patrick <daniel@geekmobile.biz>
+ * - Added server type OpenLDAP2
+ * - Added support for OpenLDAP2 servers that deny Anonymous Bind
+ * - Added support for OpenLDAP2 servers that deny LDAPv2 protocol
  */
 
 class AuthLdap {
@@ -125,8 +129,14 @@ class AuthLdap {
     function connect() {
         foreach ($this->server as $key => $host) {
             $this->connection = ldap_connect( $host);
+                       if ( $this->serverType == "OpenLDAP2" ) {
+                               ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3);
+                               }
             if ( $this->connection) {
-                if ($this->serverType == "ActiveDirectory") {
+                if (($this->serverType == "ActiveDirectory") ||
+                                  (($this->serverType == "OpenLDAP2") &&
+                                  (!$this->searchUser == "") &&
+                                  (!$this->searchPassword == ""))) {
                     return true;
                 } else {
                     // Connected, now try binding anonymously
@@ -423,7 +433,10 @@ class AuthLdap {
         // Perform the search and get the entry handles
         
         // if the directory is AD, then bind first with the search user first
-        if ($this->serverType == "ActiveDirectory") {
+               if (($this->serverType == "ActiveDirectory") ||
+                                  (($this->serverType == "OpenLDAP2") &&
+                                  (!$this->searchUser == "") &&
+                                  (!$this->searchPassword == ""))) {
             $this->authBind($this->searchUser, $this->searchPassword);
         }
         $this->result = ldap_search( $this->connection, $checkDn, $this->getUserIdentifier() . "=$search");
