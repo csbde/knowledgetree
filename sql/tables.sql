@@ -194,11 +194,15 @@ name CHAR(255) NOT NULL,
 value CHAR(255) NOT NULL
 );
 
-CREATE TABLE units ( 
+CREATE TABLE units_lookup ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
-name CHAR(100) NOT NULL,
-organisation_id INTEGER NOT NULL,
-parent_id INTEGER NOT NULL
+name CHAR(100) NOT NULL
+);
+
+CREATE TABLE units_organisations_link ( 
+id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
+unit_id INTEGER NOT NULL,
+organisation_id INTEGER NOT NULL
 );
 
 CREATE TABLE users (
@@ -377,8 +381,13 @@ ADD CONSTRAINT PK_system_settings
 PRIMARY KEY (id)
 ;
 
-ALTER TABLE units
-ADD CONSTRAINT PK_units
+ALTER TABLE units_lookup
+ADD CONSTRAINT PK_units_lookup
+PRIMARY KEY (id)
+;
+
+ALTER TABLE units_organisations_link
+ADD CONSTRAINT PK_units_organisations_link
 PRIMARY KEY (id)
 ;
 
@@ -584,10 +593,15 @@ INSERT INTO roles (name, can_read, can_write) VALUES ('Web Publisher', 1, 0);
 INSERT INTO organisations_lookup (name) VALUES ("Medical Research Council");
 
 -- setup mrc units
-INSERT INTO units (name, organisation_id, parent_id) VALUES ("ADARG", 1, 0); -- id=1
-INSERT INTO units (name, organisation_id, parent_id) VALUES ("AfroAids", 1, 0); -- id=2
-INSERT INTO units (name, organisation_id, parent_id) VALUES ("Diabetes", 1, 0); -- id=3
-INSERT INTO units (name, organisation_id, parent_id) VALUES ("Burden of Disease", 1, 0); -- id=4
+INSERT INTO units_lookup (name) VALUES ("ADARG"); -- id=1
+INSERT INTO units_lookup (name) VALUES ("AfroAids"); -- id=2
+INSERT INTO units_lookup (name) VALUES ("Diabetes"); -- id=3
+INSERT INTO units_lookup (name) VALUES ("Burden of Disease"); -- id=4
+
+INSERT INTO units_organisations_link (unit_id, organisation_id) VALUES (1, 1); -- id=1
+INSERT INTO units_organisations_link (unit_id, organisation_id) VALUES (2, 1); -- id=2
+INSERT INTO units_organisations_link (unit_id, organisation_id) VALUES (3, 1); -- id=3
+INSERT INTO units_organisations_link (unit_id, organisation_id) VALUES (4, 1); -- id=4
 
 -- setup groups
 INSERT INTO groups_lookup (name, is_sys_admin, is_unit_admin) VALUES ("System Administrators", 1, 0); -- id=1
