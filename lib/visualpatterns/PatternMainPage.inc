@@ -86,7 +86,7 @@ class PatternMainPage {
 							"</head>\n" .
 							"<body marginleft=\"0\" marginheight=\"0\">\n";
         // hack to circumvent the crapness of ns 4.79
-        if (! (($default->phpSniff->property("browser") == "moz") && ($default->phpSniff->property("version") == "4.79")) ) {
+        if (! (($default->phpSniff->property("browser") == "moz") && ($default->phpSniff->property("version") <= "4.79")) ) {
             $sToRender .=       "<div id=\"divUp\">" .
                                 "\t<a href=\"#\" onmouseover=\"scroll(-7)\" onmouseout=\"noScroll()\"><img src=\"" . $default->system->get("graphicsUrl") . "/desc.gif\" width=\"25\" height=\"30\" alt=\"up\" border=\"0\"></a>" .
                                 "</div>" .
@@ -126,7 +126,7 @@ class PatternMainPage {
                                         
 										if (isset($this->oCentralPayload)) {
                                             // hack to circumvent the crapness of ns 4.79
-                                            if (! (($default->phpSniff->property("browser") == "moz") && ($default->phpSniff->property("version") == "4.79")) ) {
+                                            if (! (($default->phpSniff->property("browser") == "moz") && ($default->phpSniff->property("version") <= "4.79")) ) {
                                                 $sToRender .= "\t<div id=\"divScrollTextCont\">\n
                                                                \t\t<div id=\"divText\">\n";
                                             }                                          
@@ -138,7 +138,7 @@ class PatternMainPage {
 											$sToRender = $sToRender . "\nCentral payload not set\n";
 										}
                                         // hack to circumvent the crapness of ns 4.79
-                                        if (! (($default->phpSniff->property("browser") == "moz") && ($default->phpSniff->property("version") == "4.79")) ) {
+                                        if (! (($default->phpSniff->property("browser") == "moz") && ($default->phpSniff->property("version") <= "4.79")) ) {
                                             $sToRender = $sToRender . "</div></div>\n";
                                         }
                                         $sToRender = $sToRender . "</td>\n" .
@@ -161,7 +161,7 @@ class PatternMainPage {
         global $default;
         $sUrl = $default->system->get("uiUrl");
         // hack to circumvent the crapness of ns 4.79
-        if (! (($default->phpSniff->property("browser") == "moz") && ($default->phpSniff->property("version") == "4.79")) ) {
+        if (! (($default->phpSniff->property("browser") == "moz") && ($default->phpSniff->property("version") <= "4.79")) ) {
             return "<script type=\"text/javascript\" src=\"$sUrl/js/misc.js\"></script>
                     <script type=\"text/javascript\" src=\"$sUrl/js/scroll.js\"></script>";
         } else {
