@@ -34,7 +34,7 @@ class System {
                        	   "emailServer", "emailFrom", "emailFromName", "emailAdmin", "emailAdminName",
                            "documentRoot", "uiDirectory", 
                            "rootUrl", "graphicsUrl", "uiUrl",
-                           "sessionTimeout", "contentPaneScrolling", "folderHideFlag");
+                           "sessionTimeout", "contentPaneScrolling", "folderHidingFlag");
     var $aLabels = array ("LDAP Server", "LDAP Root DN", "LDAP Server Type (iPlanet OR ActiveDirectory)",
                           "LDAP Domain", "LDAP Search User (AD)", "LDAP Search Password",
                           "Email Server", "Default Email Address", "Default Email Name", "Administrator Email Address", "Administrator Name",
