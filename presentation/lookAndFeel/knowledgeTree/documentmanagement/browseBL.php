@@ -74,12 +74,13 @@ if (checkSession()) {
     $oContent = new PatternCustom();	
 	$aResults = $oBrowser->browse();
 	if (($fBrowseType == "folder") && (!isset($fFolderID))) {
+        // FIXME: check that the first folder in the array exists, no permission otherwise
 		controllerRedirect("browse", "fFolderID=" . $aResults["folders"][0]->getID());
 	}
     
     require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");    
 	// display the browse results
-    $oContent->addHtml(renderPage($aResults, $fBrowseType, $fSortBy, $fSortDirection));    
+    $oContent->addHtml(renderPage($aResults, $fBrowseType, $fSortBy, $fSortDirection));
     $main->setCentralPayload($oContent);
     $main->setFormAction($_SERVER["PHP_SELF"]);
     $main->setSubmitMethod("GET");    
