@@ -718,8 +718,8 @@ class Document {
     function documentExists($sFileName, $iFolderID) {
         global $default, $lang_err_doc_not_exist;
         $sql = $default->db;
-        // TODO: join on sys_deleted
-        $sql->query("SELECT * FROM $default->owl_documents_table WHERE name = '" . addslashes($sFileName) . "' AND folder_id = $iFolderID");
+        $sQuery = "SELECT * FROM $default->owl_documents_table WHERE filename = '" . addslashes($sFileName) . "' AND folder_id = $iFolderID";
+        $sql->query($sQuery);
         if ($sql->next_record()) {
             return true;
         }
