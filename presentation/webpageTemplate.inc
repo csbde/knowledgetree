@@ -51,12 +51,13 @@ if ($sectionName != "General") {
 
     //create links
     $westLinks = new PatternTableLinks($sectionArray["links"], $sectionArray["descriptions"], 40 , 1 ,1,null);
+    $westLinks->setBackGroundColor("#F0F0E4");
     $westRender = $westLinks->render();
 
 } else {
     $westLinks = new PatternTableLinks(array(), array(), 40 , 1 ,1,null);
+    $westLinks->setBackGroundColor("#F0F0E4");
     $westRender = $westLinks->render();
-
 }
 
 //set up links
