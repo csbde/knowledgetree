@@ -36,15 +36,16 @@ class LDAPAuthenticator extends Authenticator {
      * @param string the dn branch to perform the authentication against (optional)
      * @param string the ldap server type (optional)
      */
-    function LDAPAuthenticator($sLdapServer = "", $sLdapDN = "", $sServerType = "") {
+    function LDAPAuthenticator($sLdapServer = "", $sLdapDN = "", $sServerType = "", $sLdapDomain = "") {
         global $default;
 
         $this->sLdapServer = strlen($sLdapServer) > 0 ? $sLdapServer : $default->ldapServer;
         $this->sBaseDN = strlen($sLdapDN) > 0 ? $sLdapDN : $default->ldapRootDn;
         $this->sServerType = strlen($sServerType) > 0 ? $sServerType : $default->ldapServerType;
+        $this->sLdapDomain = strlen($sLdapDomain) > 0 ? $sLdapDomain : $default->ldapDomain;
 
         // initialise and setup ldap class
-        $this->oLdap = new AuthLdap(array($this->sLdapServer), $this->sBaseDN, $this->sServerType);
+        $this->oLdap = new AuthLdap($this->sLdapServer, $this->sBaseDN, $this->sServerType, $this->sLdapDomain);
     }
 
     /**
@@ -57,6 +58,7 @@ class LDAPAuthenticator extends Authenticator {
     function checkPassword($sUserName, $sPassword) {
         global $default;
         if ($this->oLdap->connect()) {
+            if (
             // lookup dn from username - must exist in db
             $sBindDn = lookupField($default->owl_users_table, "ldap_dn", "username", $sUserName);
             if ($sBindDn && $sPassword) {
