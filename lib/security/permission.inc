@@ -1,4 +1,7 @@
 <?php
+
+//require_once("$default->owl_fs_root/lib/documentmanagement/documentLib.inc");
+
 /**
 * Class Permission
 *
@@ -11,8 +14,6 @@
 *	@author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
 *	@date 14 January 2003 
 */
-
-require_once($default->owl_fs_root . "/lib/documentmanagement/documentLib.inc");
 
 class Permission {
 	
@@ -208,7 +209,7 @@ class Permission {
 	function userIsInGroupName($sGroupName) {
 		global $default, $lang_err_user_group;
 		$sql = new Owl_DB();
-		$sql->query("SELECT id FROM " . $default->owl_groups_users_table . " AS GULT INNER JOIN " . $default->owl_groups_table . " AS G ON GULT.group_id = G.ID WHERE G.name = '" . $sGroupName . "' AND user_id = " . $_SESSION["userID"]);
+		$sql->query("SELECT GULT.id FROM " . $default->owl_users_groups_table . " AS GULT INNER JOIN " . $default->owl_groups_table . " AS G ON GULT.group_id = G.ID WHERE G.name = '" . $sGroupName . "' AND user_id = " . $_SESSION["userID"]);
 		if ($sql->next_record()) {
 			return true;
 		}
