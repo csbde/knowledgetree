@@ -21,7 +21,14 @@ require_once("$default->fileSystemRoot/lib/users/User.inc");
  */
 function renderPendingCollaborationDocuments($aPendingDocumentList) {
     global $default;
-    $sToRender  = "\t<tr align=\"left\" bgcolor=\"#996600\">\n";
+
+    if (count($aPendingDocumentList) > 0) {
+        $sBgColor = "#9D9D7F";
+    } else {
+        $sBgColor = "#CECEBF";
+    }    
+    $sToRender  = "\t<tr align=\"left\" bgcolor=\"$sBgColor\">\n";
+        
     $sToRender .= "\t\t<th class=\"sectionHeading\" colspan=\"2\">Pending Documents</th>\n";
     $sToRender .= "\t</tr>\n";
     for ($i = 0; $i < count($aPendingDocumentList); $i++) {
@@ -40,7 +47,12 @@ function renderPendingCollaborationDocuments($aPendingDocumentList) {
  */
 function renderCheckedOutDocuments($aCheckedOutDocumentList) {
     global $default;
-    $sToRender  = "\t<tr align=\"left\" bgcolor=\"#996600\">\n";    
+    if (count($aCheckedOutDocumentList) > 0) {
+        $sBgColor = "#9D9D7F";
+    } else {
+        $sBgColor = "#CECEBF";
+    }    
+    $sToRender  = "\t<tr align=\"left\" bgcolor=\"$sBgColor\">\n";   
     $sToRender .= "\t\t<th class=\"sectionHeading\" colspan=\"2\">Checked Out Documents</th>\n";
     $sToRender .= "\t</tr>\n";
     
@@ -72,7 +84,12 @@ function renderCheckedOutDocuments($aCheckedOutDocumentList) {
  */
 function renderSubscriptionAlerts($aSubscriptionAlertList) {
     global $default;
-    $sToRender  = "\t<tr align=\"left\" bgcolor=\"#996600\">\n";
+    if (count($aSubscriptionAlertList) > 0) {
+        $sBgColor = "#9D9D7F";
+    } else {
+        $sBgColor = "#CECEBF";
+    }    
+    $sToRender  = "\t<tr align=\"left\" bgcolor=\"$sBgColor\">\n";
     $sToRender .= "\t\t<th class=\"sectionHeading\" colspan=\"2\">Subscription Alerts</th>\n";
     $sToRender .= "\t</tr>\n";
     for ($i = 0; $i < count($aSubscriptionAlertList); $i++) {
@@ -88,7 +105,7 @@ function renderSubscriptionAlerts($aSubscriptionAlertList) {
  */
 function renderQuickLinks($aQuickLinks) {
     global $default;
-    $sToRender .= "\t<tr align=\"left\" bgcolor=\"#996600\">\n";
+    $sToRender .= "\t<tr align=\"left\" bgcolor=\"#9D9D7F\">\n";
     $sToRender .= "\t\t<th class=\"sectionHeading\">Quick Links</th>\n";
     $sToRender .= "\t</tr>\n";
     for ($i = 0; $i < count($aQuickLinks); $i++) {
