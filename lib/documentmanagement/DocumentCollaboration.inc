@@ -164,6 +164,7 @@ class DocumentCollaboration {
 							$oEmail = & new Email();
 							$oEmail->send($oUser->getEmail(), "Document collaboration role active", $sBody);
 						}
+						DocumentCollaboration::createDependantDocuments(& $oFolderUserRole);
 					}
 					return true;
 				}
@@ -175,9 +176,52 @@ class DocumentCollaboration {
 	}
 	
 	/**
+	* Creates any new documents that must be created for the
+	* folder collaboration step with primary key $iGroupFolderApprovalID.  Users
+	* responsible for their creation are notified via email 
+	*/
+	function createDependantDocuments($oFolderUserRole) {
+		global $default;
+		//only create the documents if they haven't been created		
+		if ($oFolderUserRole->getDependantDocumentsCreated() == false) {
+			$sQuery = "SELECT * FROM $default->owl_dependant_document_template_table WHERE group_folder_approval_link_id = " . $oFolderUserRole->getGroupFolderApprovalID();
+			$sql = $default->db;
+			$sql->query($sQuery);
+			while ($sql->next_record()) {				
+				$oDependantDocumentInstance = & new DependantDocumentInstance($sql->f("document_title"), $sql->f("default_user_id"), $sql->f("template_document_id"), $oFolderUserRole->getDocumentID());				
+				if ($oDependantDocumentInstance->create()) {
+					//get the user who is responsible for creating the new document
+					$oUser = User::get($oDependantDocumentInstance->getUserID());
+					//get the document that can be used as a template, if there is one
+					$oDocument = Document::get($oDependantDocumentInstance->getTemplateDocumentID());
+					//send the user notification via email
+					$sBody = $oUser->getName() . ", a step in the document collaboration process requires you to create a new document.  Click here or log onto " .
+								"KnowledgeTree and select the relevant link under the 'Dependant Documents' heading on your dashboard to upload it.";
+								//if we have a template document
+								if (!($oDocument === false)) {
+									$sBody .= "The document entitled " . generateLink("/control.php", "action=viewDocument&fDocumentID=" . $oDocument->getID(), $oDocument->getName()) . " " .
+									"can be used as a template";									
+								}						
+					$oEmail = & new Email();
+					$oEmail->send($oUser->getEmail(), "Dependant document creation required", $sBody);
+				} else {
+					$_SESSION["errorMessage"] = "Error creating dependant documents when moving to next collaboration step. FolderUserRoleID: " + $oFolderUserRole->getID();
+					return false;
+				}				
+			} 
+			$oFolderUserRole->setDependantDocumentsCreated(true);
+			$oFolderUserRole->update();
+		}
+	}
+	
+	/**
 	* Rolls back a collaboration step if it is
 	* rejected by the user.  This is a problem function as
 	* it really should have transactions, but doesn't
+	*
+	* Note that new documents created for a folder collaboration step
+	* are NOT rolled back - they are simply allowed to continue.  When
+	* this step is next reached, these documents won't be created again
 	* 
 	*/
 	function rollbackCollaborationStep($iDocumentID, $sComment = "") {
@@ -221,13 +265,16 @@ class DocumentCollaboration {
 				
 				
 				$oUserToNotify = User::get($sql->f("user_id"));
-				$oCurrentUser = User::get($_SESSION["userID"]);					
-                $sBody = $oUserToNotify->getUserName() . ", the document, '" . generateLink("/presentation/lookAndFeel/knowledgeTree/documentmanagement/viewBL.php", "fDocumentID=" . $this->iId, $oDocument->getName()) . "' " .                    
-											"has been rejected by " . $oUserToNotify->getName() . " in the document collaboration process.  The collaboration process has been rolled back to the previous step. " .
-											"Your role is no longer active and and any acceptances you may have made have been voided. " . 
-											"The comment entered by " . $oUserToNotify->getName() . " was: $sComment";
-				$oEmail = & new Email();
-				$oEmail->send($oUserToNotify->getEmail(), "Document rejected in collaboration process", $sBody);
+				//send an email only if the user is to be notified via email
+				if ($oUserToNotify->getEmailNotification()) {
+					$oCurrentUser = User::get($_SESSION["userID"]);					
+	                $sBody = $oUserToNotify->getUserName() . ", the document, '" . generateLink("/presentation/lookAndFeel/knowledgeTree/documentmanagement/viewBL.php", "fDocumentID=" . $this->iId, $oDocument->getName()) . "' " .                    
+												"has been rejected by " . $oUserToNotify->getName() . " in the document collaboration process.  The collaboration process has been rolled back to the previous step. " .
+												"Your role is no longer active and and any acceptances you may have made have been voided. " . 
+												"The comment entered by " . $oUserToNotify->getName() . " was: $sComment";
+					$oEmail = & new Email();
+					$oEmail->send($oUserToNotify->getEmail(), "Document rejected in collaboration process", $sBody);
+				}
 			}
 			
 			//get the previous sequence number
