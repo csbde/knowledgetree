@@ -110,8 +110,8 @@ require_once("$default->owl_fs_root/phplib/db_mysql.inc");
 // Change this to reflect the authentication method you are using
 //require_once("$default->owl_fs_root/lib/LDAPAuthenticator.inc");
 //require_once("$default->owl_fs_root/lib/Authenticator.inc");
-//$default->authentication_class = "DBAuthenticator";
-//require_once("$default->owl_fs_root/lib/authentication/$default->authentication_class.inc");
+$default->authentication_class = "DBAuthenticator";
+require_once("$default->owl_fs_root/lib/authentication/$default->authentication_class.inc");
 
 // logo file that must reside inside lang/graphics directory
 $default->logo = "kt.jpg";
@@ -142,10 +142,10 @@ $default->siteMap->addPage("addOrganisation", "addOrganisation.php", "Administra
 $default->siteMap->addPage("scratchPad", "tests/scratchPad.php", "Tests", "Unit Administrators");
 $default->siteMap->addPage("documentBrowserTest", "tests/documentmanagement/DocumentBrowser.php", "Tests", "Anonymous");
 
-require_once("$default->owl_fs_root/lib/Log.inc");
 require_once("$default->owl_fs_root/lib/Session.inc");
 require_once("$default->owl_fs_root/lib/control.inc");
 require_once("$default->owl_fs_root/lib/database/db.inc");
 require_once("$default->owl_fs_root/lib/database/lookup.inc");
 require_once("$default->owl_fs_root/lib/dms.inc");
+require_once("$default->owl_fs_root/lib/Log.inc");
 ?>
