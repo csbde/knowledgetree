@@ -436,12 +436,6 @@ class Folder {
 	*/
 	function getFolderPath($iFolderID) {
 		global $default;		
-		//if the folder has a parent
-		/*if (Folder::getParentFolderID($iFolderID) != 0) {			
-			$sCurrentPath = Folder::getFolderPath(Folder::getParentFolderID($iFolderID)) . Folder::getFolderName($iFolderID) . "/" . $sCurrentPath;
-			return $sCurrentPath;
-		}	
-		return $default->documentRoot . "/" . Folder::getFolderName($iFolderID) . "/";*/
 		$oFolder = Folder::get($iFolderID);
 		return $default->documentRoot . "/" . $oFolder->sFullPath . "/" . $oFolder->getName() . "/";
 	}
