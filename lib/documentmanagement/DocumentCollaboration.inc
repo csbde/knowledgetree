@@ -183,16 +183,14 @@ class DocumentCollaboration {
 	function rollbackCollaborationStep($iDocumentID, $sComment = "") {
 		global $default;
 		//get the current sequence number		
-		$sQuery = "SELECT GFAT.precedence, GFAT.folder_id, FURL.id AS furl_id " . 
+		$sQuery = "SELECT GFAT.precedence, GFAT.folder_id, FURL.id AS furl_id, FURL.document_id AS document_id " . 
 				"FROM $default->owl_folders_user_roles_table AS FURL INNER JOIN $default->owl_groups_folders_approval_table AS GFAT ON FURL.group_folder_approval_id = GFAT.id " .
 				"WHERE FURL.document_id = $iDocumentID " .
 				"AND user_id = " . $_SESSION["userID"] . " " .
 				"AND FURL.active = 1 " .
 				"ORDER BY GFAT.precedence ASC";
 				
-		//echo $sQuery;
-				
-		
+		//echo $sQuery;		
 				
 		$sql = $default->db;
 		$sql->query($sQuery);
@@ -200,6 +198,37 @@ class DocumentCollaboration {
 			$iCurrentSequenceNumber = $sql->f("precedence");
 			$iFolderID = $sql->f("folder_id");
 			$iCurrentFolderUserRoleID = $sql->f("furl_id");
+			$iDocumentID = $sql->f("document_id");
+			
+			$oDocument = Document::get($iDocumentID);			
+			
+			//if there are concurrent collaboration steps and one is rejected, then all
+			//must be rolled back, whether they were accepted or not			
+			$sQuery = "SELECT FURL.id, FURL.user_id  " .
+						"FROM $default->owl_folders_user_roles_table AS FURL INNER JOIN $default->owl_groups_folders_approval_table AS GFAT ON FURL.group_folder_approval_id = GFAT.id " .
+						"WHERE FURL.document_id = $iDocumentID AND GFAT.precedence = $iCurrentSequenceNumber";			
+			$sql->query($sQuery);
+			//echo $sQuery;
+			//echo $sQuery;
+			   
+			while ($sql->next_record()) {
+				//roll back each user's step and then email them to inform them
+				//of the change
+				$oFolderUserRole = FolderUserRole::get($sql->f("id"));				
+				$oFolderUserRole->setActive(false);
+				$oFolderUserRole->setDone(false);
+				$oFolderUserRole->update();
+				
+				
+				$oUserToNotify = User::get($sql->f("user_id"));
+				$oCurrentUser = User::get($_SESSION["userID"]);					
+                $sBody = $oUserToNotify->getUserName() . ", the document, '" . generateLink("/presentation/lookAndFeel/knowledgeTree/documentmanagement/viewBL.php", "fDocumentID=" . $this->iId, $oDocument->getName()) . "' " .                    
+											"has been rejected by " . $oUserToNotify->getName() . " in the document collaboration process.  The collaboration process has been rolled back to the previous step. " .
+											"Your role is no longer active and and any acceptances you may have made have been voided. " . 
+											"The comment entered by " . $oUserToNotify->getName() . " was: $sComment";
+				$oEmail = & new Email();
+				$oEmail->send($oUserToNotify->getEmail(), "Document rejected in collaboration process", $sBody);
+			}
 			
 			//get the previous sequence number
 			$sQuery = "SELECT COALESCE(MAX(precedence), -1) AS precedence " .
@@ -213,7 +242,7 @@ class DocumentCollaboration {
 				//the current step is the first step
 				//reset all steps and email the creator				
 				DocumentCollaboration::resetDocumentCollaborationSteps($iDocumentID);
-				$oDocument = Document::get($iDocumentID);				
+				//$oDocument = Document::get($iDocumentID);				
 				$oUser = User::get($oDocument->getCreatorID());
 				if ($oUser->getEmailNotification()) {
 					$oCurrentUser = User::get($_SESSION["userID"]);
