@@ -11,6 +11,7 @@ require_once("$default->owl_fs_root/lib/visualpatterns/PatternTableLinks.inc");
 require_once("$default->owl_fs_root/lib/visualpatterns/PatternTableSqlQuery.inc");
 require_once("$default->owl_fs_root/lib/visualpatterns/PatternCustom.inc");
 require_once("$default->owl_fs_root/lib/visualpatterns/NavBar.inc");
+require_once("$default->owl_fs_root/presentation/lookandfeel/foldermanagement/folderUI.inc");
 
 /**
  * $Id$
