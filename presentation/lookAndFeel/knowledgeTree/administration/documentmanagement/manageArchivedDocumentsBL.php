@@ -68,7 +68,7 @@ if (checkSession()) {
 	        	if ($aDocuments[$i]) {        		
 	        		
 	        		// set the status to live
-	        		$aDocuments[$i]->setStatusID(lookupStatusID("Live"));
+	        		$aDocuments[$i]->setStatusID(LIVE);
 	        		if ($aDocuments[$i]->update()) {
 	        			// success
 	        			$default->log->info("manageArchivedDocumentsBL.php set status for document id=" . $fDocumentIDs[$i]);
