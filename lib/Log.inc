@@ -8,8 +8,6 @@ define("INFO", 1);
 define("ERROR", 2);
 
 /**
- * @package lib
- *
  * $Id$
  * 
  * File logging class
@@ -31,10 +29,6 @@ class Log {
      * The file to log the output to
      */
     var $logFile;
-    
-    function Log($logFile) {
-        $this->logFile = $logFile;
-    }
     
     /**
      * Default constructor
