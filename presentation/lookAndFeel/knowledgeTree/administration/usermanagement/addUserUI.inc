@@ -98,7 +98,7 @@ function getDetailsLDAPPage($suserName, $aAttributes, $sUserIdentifier) {
         $sToRender .= "</tr>\n";
         $sToRender .= "<tr>\n";
         $sToRender .= "<td>Username: </td><td><input disabled size = \"40\" type=\"text\" name=\"fUsername\" value = \"" . $aUserAttributes[$sUserIdentifier] ."\"> </td>\n";
-        $sToRender .= "<input type=\"hidden\" name=\"fUsername\" value = \"" . $aUserAttributes["uid"] ."\">\n";
+        $sToRender .= "<input type=\"hidden\" name=\"fUsername\" value = \"" . $aUserAttributes[$sUserIdentifier] ."\">\n";
         $sToRender .= "</tr>\n";
         $sToRender .= "<tr>\n";
         $sToRender .= "<td>Name: </td><td><input size = \"40\" type=\"text\" name=\"fName\" value = \"" . $aUserAttributes["givenname"] ." " . $aUserAttributes["sn"] ."\"> </td>\n";
