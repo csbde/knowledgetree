@@ -29,7 +29,7 @@ if (checkSession()) {
 				//deletion of document is confirmed
 				$oDocument = Document::get($fDocumentID);
 				if (isset($oDocument)) {
-					$sDocumentPath = Folder::getFolderPath($oDocument->getFolderID()) . $oDocument->getFileName();
+					$sDocumentPath = Folder::getFolderPath($oDocument->getFolderID()) . $oDocument->getFileName();					
 					$oDocumentTransaction = & new DocumentTransaction($fDocumentID, "Document deleted", DELETE);
 					$oDocumentTransaction->create();
 					if ($oDocument->delete()) {
