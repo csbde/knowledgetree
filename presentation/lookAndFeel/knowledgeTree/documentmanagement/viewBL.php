@@ -32,6 +32,7 @@ require_once("$default->fileSystemRoot/lib/documentmanagement/PhysicalDocumentMa
 require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentTransaction.inc");
 require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
 require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentCollaboration.inc");
+require_once("$default->fileSystemRoot/lib/documentmanagement/ArchiveSettings.inc");
 
 require_once("$default->fileSystemRoot/lib/foldermanagement/FolderCollaboration.inc");
 require_once("$default->fileSystemRoot/lib/foldermanagement/FolderUserRole.inc");
@@ -178,7 +179,7 @@ if (checkSession()) {
                     $oDocumentTransaction = & new DocumentTransaction($fDocumentID, "Document sent for web publishing", UPDATE);
                     $oDocumentTransaction->create();
                     $oDocument = Document::get($fDocumentID);
-                    Document::notifyWebMaster($fDocumentID, $fComment);
+                    DocumentCollaboration::notifyWebMaster($fDocumentID, $fComment);
                     $oPatternCustom = & new PatternCustom();
                     $oPatternCustom->setHtml(getEditPage($oDocument));
                     $main->setCentralPayload($oPatternCustom);
