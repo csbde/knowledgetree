@@ -3,6 +3,7 @@
 // main library routines and defaults
 require_once("../../../config/dmsDefaults.php");
 require_once("$default->fileSystemRoot/lib/subscriptions/SubscriptionManager.inc");
+require_once("$default->fileSystemRoot/lib/web/WebDocument.inc");
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
 require_once("$default->fileSystemRoot/lib/links/link.inc");
 require_once("$default->uiDirectory/dashboardUI.inc");
@@ -44,6 +45,27 @@ function getPendingCollaborationDocuments($iUserID) {
     return $aDocumentList;
 }
 
+/**
+ * Retrieves the web documents that the current user has pending
+ *
+ * @param integer the user to retrieve pending web documents for
+ */
+function getPendingWebDocuments($iUserID) {
+    // TODO: move this to a more logical class/file
+    global $default;
+    $sQuery = "SELECT wd.id FROM web_documents wd " . 
+              "INNER JOIN web_sites ws ON wd.web_site_id = ws.id " .
+              "WHERE ws.web_master_id=$iUserID AND wd.status_id=1";
+    $aDocumentList = array();
+    $sql = $default->db;
+    if ($sql->query($sQuery)) {
+        while ($sql->next_record()) {
+            $aDocumentList[] = & WebDocument::get($sql->f("id"));
+        }
+    }
+    return $aDocumentList;
+}
+
 if (checkSession()) {
     // include the page template (with navbar)
     require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
@@ -62,8 +84,11 @@ if (checkSession()) {
     // retrieve quicklinks
     $aQuickLinks = Link::getList();
     
+    // retrieve pending web documents
+    $aPendingWebDocuments = getPendingWebDocuments($_SESSION["userID"]);
+    
     // generate the html
-    $oContent->setHtml(renderPage($aPendingDocumentList, $aCheckedOutDocumentList, $aSubscriptionAlertList, $aQuickLinks));
+    $oContent->setHtml(renderPage($aPendingDocumentList, $aCheckedOutDocumentList, $aSubscriptionAlertList, $aQuickLinks, $aPendingWebDocuments));
     
     // display
     $main->setCentralPayload($oContent);
