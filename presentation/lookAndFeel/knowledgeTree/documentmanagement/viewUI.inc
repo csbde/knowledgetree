@@ -210,6 +210,7 @@ function getEditPage($oDocument) {
 
 function getViewPage($oDocument) {
     global $default;
+	$iDocumentID = $oDocument->getID();
     $sToRender = renderDocumentPath($oDocument) . "\n<br>\n";
     $sToRender .= "<table border = 0>\n";
     $sToRender .= "<tr>\n";
