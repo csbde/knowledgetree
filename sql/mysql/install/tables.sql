@@ -329,12 +329,14 @@ CREATE TABLE documents (
   full_path text,
   checked_out_user_id int(11) default NULL,
   status_id int(11) default NULL,
+  created datetime NOT NULL default '0000-00-00 00:00:00',
   UNIQUE KEY id (id),
   KEY fk_document_type_id (document_type_id),
   KEY fk_creator_id (creator_id),
   KEY fk_folder_id (folder_id),
   KEY fk_checked_out_user_id (checked_out_user_id),
   KEY fk_status_id (status_id)
+  KEY created (created)
 ) TYPE=InnoDB;
 
 -- --------------------------------------------------------

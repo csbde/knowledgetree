@@ -67,6 +67,8 @@ class Document extends KTEntity {
 	var $sParentFolderIDs;
 	/** forward slash deliminated path from file system root */
 	var $sFullPath;
+    /** date the document was created */
+    var $dCreated;
 
     /**
     * Document class constructor
@@ -170,6 +172,10 @@ class Document extends KTEntity {
     /** set the document last modified date */
     function setLastModifiedDate($dNewValue) {
         $this->dModified = $dNewValue;
+    }
+
+    function getCreatedDateTime() {
+        return $this->dCreated;
     }
 
     /** get the document description */
@@ -352,6 +358,7 @@ class Document extends KTEntity {
             'parent_folder_ids' => $this->sParentFolderIDs,
             'full_path' => $this->sFullPath,
             'status_id' => $this->iStatusID,
+            'created' => $this->dCreated,
         );
     }
 
@@ -367,6 +374,7 @@ class Document extends KTEntity {
     * @return boolean true on successful insert, false otherwise
     */
     function create() {
+        $this->dCreated = getCurrentDateTime();
         $res = parent::create();
 
         if ($res === true) {
@@ -487,6 +495,7 @@ class Document extends KTEntity {
 	            $oDocument->setMinorVersionNumber($sql->f("minor_version"));
 	            $oDocument->setIsCheckedOut($sql->f("is_checked_out"));
 	            $oDocument->setLastModifiedDate($sql->f("modified"));			
+	            $oDocument->dCreated = $sql->f("created");
 				$oDocument->sParentFolderIDs = $sql->f("parent_folder_ids");
 				$oDocument->sFullPath = $sql->f("full_path");
 	            $oDocument->setCheckedOutUserID($sql->f("checked_out_user_id"));
