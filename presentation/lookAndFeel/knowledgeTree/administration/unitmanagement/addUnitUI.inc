@@ -75,14 +75,14 @@ function getAddPageSuccess() {
 }
 
 // if edition is successful print out failure page
-function getAddPageFail() {	
+function getAddPageFail($sMessage) {	
 	global $default;
 			
     $sToRender .= renderHeading("Add Unit");
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr><td><b>Addition Unsuccessful</b></td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
-	$sToRender .= "<tr><td>The Unit was not added. Unit Name Already exists!</td></tr>\n";
+	$sToRender .= "<tr><td>$sMessage</td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
