@@ -131,7 +131,7 @@ function getDeleteButton($oLink) {
 	if (!isset($oLink)) {
 		return "Please select a Link: ";
 	} else {
-		return "<td colspan=\"2\"><input type=\"image\" src =\"$default->graphicsUrl/widgets/delete.gif\" value=\"submit\" />\n".
+		return "<td colspan=\"2\"><input type=\"image\" src =\"$default->graphicsUrl/widgets/delete.gif\" value=\"submit\" border=\"0\"/>\n".
 		"<a href=\"$default->rootUrl/control.php?action=removeLink\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" /></a></td>\n";
 	}
 }
