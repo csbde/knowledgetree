@@ -104,6 +104,7 @@ class FolderBrowser extends Browser {
         
         // get the folder
         $rootFolder = Folder::get($iFolderID);
+        // FIXME: check permissions for the current folder before getting children
         $results["folders"][] = & $rootFolder;
         if ($results["folders"][0]) {
             
