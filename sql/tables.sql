@@ -171,6 +171,7 @@ name CHAR(100) NOT NULL
 CREATE TABLE roles ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 name CHAR(255) NOT NULL,
+active BIT NOT NULL,
 can_read BIT NOT NULL,
 can_write BIT NOT NULL
 );
@@ -627,9 +628,9 @@ INSERT INTO document_transaction_types_lookup (name) VALUES ("Move");
 INSERT INTO document_transaction_types_lookup (name) VALUES ("Download");
 
 -- roles
-INSERT INTO roles (name, can_read, can_write) VALUES ('Editor', 1, 1);
-INSERT INTO roles (name, can_read, can_write) VALUES ('Spell Checker', 1, 0);
-INSERT INTO roles (name, can_read, can_write) VALUES ('Web Publisher', 1, 0);
+INSERT INTO roles (name, active, can_read, can_write) VALUES ('Editor', 1, 1, 1);
+INSERT INTO roles (name, active, can_read, can_write) VALUES ('Spell Checker', 1, 1, 0);
+INSERT INTO roles (name, active, can_read, can_write) VALUES ('Web Publisher', 1, 1, 0);
 
 -- mrc organisation
 INSERT INTO organisations_lookup (name) VALUES ("Medical Research Council");
