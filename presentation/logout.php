@@ -21,5 +21,5 @@ require_once("../config/dmsDefaults.php");
 // destroy the session
 Session::destroy();
 // redirect to root
-redirect("$default->owl_root_url");
+redirect((strlen($default->owl_root_url) > 0 ? $default->owl_root_url : "/"));
 ?>
