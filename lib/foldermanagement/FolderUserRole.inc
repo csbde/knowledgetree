@@ -170,24 +170,6 @@ class FolderUserRole {
 		$_SESSION["errorMessage"] = $lang_err_database;
 		return false;
 	}
-	
-	function & getFromFolderCollaboration($iFolderCollaborationID) {
-		global $default;
-		$sql = $default->db;
-		$result = $sql->query("SELECT * FROM $default->owl_folders_user_roles_table WHERE group_folder_approval_id = $iFolderCollaborationID");
-		if ($result) {
-			if ($sql->next_record()) {
-				$oFolderUserRole = & new FolderUserRole($sql->f("user_id"), $sql->f("document_id"), $sql->f("group_folder_approval_id"), $sql->f("done"));
-				$oFolderUserRole->iId = $iFolderUserRoleID;
-				$oFolderUserRole->bDateTime =  $sql->f("datetime");
-				return $oFolderUserRole;
-			}
-			$_SESSION["errorMessage"] = $lang_err_object_not_exist . "id = " . $iFolderUserRoleID . " table = $default->owl_folders_user_roles_table";
-			return false;
-		}
-		$_SESSION["errorMessage"] = $lang_err_database;
-		return false;
-	}
 
 /**
 	* Static function
