@@ -10,7 +10,7 @@
  * @package presentation.lookAndFeel.knowledgeTree.foldermanagement
  */
 
- function renderHeading($sHeading) {
+ /*function renderHeading($sHeading) {
     global $default;
     $sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
     $sColor = $default->siteMap->getSectionColour($sSectionName, "th");
@@ -20,7 +20,7 @@
     $sToRender .= "<tr/>\n";
     $sToRender .= "</table>\n";
     return $sToRender;
-}
+}*/
 
 function getFolderPath($iFolderID) {
 	global $default;

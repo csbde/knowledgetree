@@ -7,7 +7,7 @@
 * @package presentation.lookAndFeel.knowledgeTree.
 *
 */
-function renderHeading() {
+/*function renderHeading() {
     global $default;
     $sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
     $sColor = $default->siteMap->getSectionColour($sSectionName, "th");
@@ -15,7 +15,7 @@ function renderHeading() {
     $sToRender .= "<tr/>\n";
     $sToRender .= "<tr/>\n";
     return $sToRender;
-}
+}*/
 
 function getUserDetailsPage($iUserID) {
 	
@@ -35,7 +35,7 @@ function getUserDetailsPage($iUserID) {
 	$oPattern->setColumnsRequired(array(1,0,0,0));
 	
 	$sToRender .= "<table width=\"600\">\n";
-    $sToRender .= renderHeading();
+    $sToRender .= renderHeading("Preferenes");
 	$sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr/><tr/><tr><td><b>Edit User Properties:</b></td></tr>\n";
 	$sToRender .= "<tr>\n";
@@ -56,7 +56,7 @@ function getEditPageSuccess() {
 	global $default;
 			
 	$sToRender .= "<table width=\"600\">\n";
-    $sToRender .= renderHeading();
+    $sToRender .= renderHeading("Preferences");
 	$sToRender .= "<tr/><tr/><tr><td><b>Success!</b></td></tr>\n";
 	$sToRender .= "<tr><td>The User was successfully modified</td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
@@ -74,7 +74,7 @@ function getEditPageFail() {
 	global $default;
 			
 	$sToRender .= "<table>\n";
-    $sToRender .= renderHeading();
+    $sToRender .= renderHeading("Preferences");
 	$sToRender .= "<tr/><tr/>\n";
 	$sToRender .= "<tr><td>User modification Failed!</td></tr>\n";
 	$sToRender .= "<tr></tr>\n";

@@ -18,7 +18,7 @@ require_once("../../../../../config/dmsDefaults.php");
  * Display the heading
  * FIXME: need to refactor this
  */
-function renderHeading($sHeading) {
+/*function renderHeading($sHeading) {
     global $default;
     $sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
     $sColor = $default->siteMap->getSectionColour($sSectionName, "th");
@@ -28,7 +28,7 @@ function renderHeading($sHeading) {
     $sToRender .= "<tr/>\n";
     $sToRender .= "</table>\n";
     return $sToRender;
-}
+}*/
 
 /**
  * Displays an error message

@@ -13,7 +13,7 @@
 * @package presentation.lookAndFeel.knowledgeTree.documentManager
 */
 
-function renderHeading() {
+/*function renderHeading() {
     global $default;
     $sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
     $sColor = $default->siteMap->getSectionColour($sSectionName, "th");
@@ -23,7 +23,7 @@ function renderHeading() {
     $sToRender .= "<tr/>\n";
     $sToRender .= "</table>\n";
     return $sToRender;
-}
+}*/
 
 function renderDocumentPath($oDocument) {
     global $default;
@@ -229,7 +229,7 @@ function displayActionButtons($oDocument, $bEdit) {
 function getEditPage($oDocument) {
     global $default;
 	$iDocumentID = $oDocument->getID();
-    $sToRender = renderHeading() . renderDocumentPath($oDocument) . "\n<br>\n";
+    $sToRender = renderHeading("Document Detail") . renderDocumentPath($oDocument) . "\n<br>\n";
     
     $sToRender .= "<table>\n";
     $sToRender .= "<tr>\n";
@@ -340,7 +340,7 @@ function getEditPage($oDocument) {
 function getViewPage($oDocument) {
     global $default;
 	$iDocumentID = $oDocument->getID();
-    $sToRender = renderHeading() . renderDocumentPath($oDocument) . "\n<br>\n";
+    $sToRender = renderHeading("Document Detail") . renderDocumentPath($oDocument) . "\n<br>\n";
     
     $sToRender .= "<table>\n";
     $sToRender .= "<tr>\n";
@@ -398,7 +398,7 @@ function getViewPage($oDocument) {
  */
 function getCheckOutEditPage($oDocument, $bCheckedOut = false) {
     global $default;
-    $sToRender = renderHeading() . renderDocumentPath($oDocument) . "\n<br>\n";
+    $sToRender = renderHeading("Document Detail") . renderDocumentPath($oDocument) . "\n<br>\n";
     $sToRender .= "<table border = 0>\n";
     $sToRender .= "<tr>\n";
     $sToRender .= "<td>\n";
@@ -446,7 +446,7 @@ function getCheckOutEditPage($oDocument, $bCheckedOut = false) {
  */
 function getCheckInEditPage($oDocument) {
     global $default;
-    $sToRender = renderHeading() . renderDocumentPath($oDocument) . "\n<br>\n";
+    $sToRender = renderHeading("Document Detail") . renderDocumentPath($oDocument) . "\n<br>\n";
     $sToRender .= "<table border = 0>\n";
     $sToRender .= "<tr>\n";
     $sToRender .= "<td>\n";
@@ -483,7 +483,7 @@ function getWebPublishPage($oDocument) {
     
     $oPatternListBox = & new PatternListBox($default->owl_web_sites_table, "web_site_name", "id", "fWebSiteID");
     
-    $sToRender = renderHeading() . renderDocumentPath($oDocument) . "\n<br>\n";
+    $sToRender = renderHeading("Document Detail") . renderDocumentPath($oDocument) . "\n<br>\n";
     $sToRender .= "<table border = 0>\n";
     $sToRender .= "<tr>\n";
     $sToRender .= "<td>\n";

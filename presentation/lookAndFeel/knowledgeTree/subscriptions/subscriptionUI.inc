@@ -12,14 +12,14 @@
  * @package presentation.lookAndFeel.knowledgeTree.subscriptions
  */
 
-function renderHeading() {
+/*function renderHeading() {
     global $default;
     $sColor = $default->siteMap->getSectionColour("Subscriptions", "th");
     $sToRender .= "<tr align=\"left\"><th class=\"sectionHeading\" bgcolor=\"$sColor\"><font color=\"ffffff\">Subscriptions</font></th></tr>\n";
     $sToRender .= "<tr/>\n";
     $sToRender .= "<tr/>\n";
     return $sToRender;
-}
+}*/
     
 /**
  * Displays all current subscriptions with remove checkbox
@@ -33,7 +33,7 @@ function renderManagePage() {
     $bNoSubscriptions  = ( (count($aFolderSubscriptions) == 0) && (count($aDocumentSubscriptions) == 0) ) ? true : false;
 
     $sToRender  = "<table width=\"600\">\n";
-    $sToRender .= renderHeading();
+    $sToRender .= renderHeading("Subscriptions");
     if ($bNoSubscriptions) {
         $sToRender .= "<tr><td>You are not subscribed to any documents or folders.</td></tr>\n";       
     } else {

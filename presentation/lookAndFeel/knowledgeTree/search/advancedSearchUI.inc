@@ -9,7 +9,7 @@
 * 
 */
 
-function renderHeading() {
+/*function renderHeading() {
     global $default;
     $sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
     $sColor = $default->siteMap->getSectionColour($sSectionName, "th");
@@ -17,7 +17,7 @@ function renderHeading() {
     $sToRender .= "<tr/>\n";
     $sToRender .= "<tr/>\n";
     return $sToRender;
-}
+}*/
 
 function getMetaData($aMetaTagIDs) {
 	global $default;	
@@ -51,7 +51,7 @@ function getMetaData($aMetaTagIDs) {
 function getSearchPage($sSearchString = "", $aMetaTagIDs = array()) {
 	global $default;
 	$sToRender = "<table width=\"600\">\n";
-    $sToRender .= renderHeading();
+    $sToRender .= renderHeading("Advanced Search");
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>Search text: <input type=\"text\" size=\"60\" name=\"fSearchString\" value=\"$sSearchString\" />\n";
 	//$sToRender .= "<td><input type=\"button\" src=\"$default->graphicsUrl/search.gif\" value=\"search\" onClick=\"validateAdvancedSearchText()\"/></td>\n";
@@ -99,7 +99,7 @@ function getSearchResults($sMetaTagIDs, $sSQLSearchString, $iStartIndex) {
 	$oPatternBrowse->setStartIndex($iStartIndex);
     
     $sRefreshMessage = "<table><tr><td align=\"center\">If your browser displays a 'Warning: Page has Expired' message when you attempt to return to these search results, please click your browser's 'Refresh' button</td></tr></table>";
-	return "<table width=\"600\">" . renderHeading() . "</table>" . $oPatternBrowse->render() . $sRefreshMessage . getSearchVariablesHtml($sSearchText, $sMetaTagIDs);
+	return "<table width=\"600\">" . renderHeading("Advanced Search") . "</table>" . $oPatternBrowse->render() . $sRefreshMessage . getSearchVariablesHtml($sSearchText, $sMetaTagIDs);
 }
 
 function getSearchValidationJavaScript() {

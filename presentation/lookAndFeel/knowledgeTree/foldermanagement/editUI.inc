@@ -8,7 +8,7 @@
 *
 */
 
-function renderHeading() {
+/*function renderHeading() {
     global $default;
     $sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
     $sColor = $default->siteMap->getSectionColour($sSectionName, "th");
@@ -18,7 +18,7 @@ function renderHeading() {
     $sToRender .= "<tr/>\n";
     $sToRender .= "</table>\n";
     return $sToRender;
-}
+}*/
 
 function getFolderPath($iFolderID) {
 	global $default;
@@ -149,7 +149,7 @@ function getFolderGroupAccess($iFolderID) {
 function getPage($iFolderID, $bCollaboration = false) {
 	global $default;
     
-    $sToRender  = renderHeading();
+    $sToRender  = renderHeading("Modify Folder");
     $sToRender .= getFolderPath($iFolderID);
 	$sToRender .= "<table border=\"0\" width=\"100%\">\n";
 	$sToRender .= "<tr>\n";

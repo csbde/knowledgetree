@@ -26,7 +26,7 @@ function getSubmitSuccessPage($iDocumentID){
  *
  *	@param $sHeading -> text heading for the page
  */
-function renderHeading($sHeading) {
+/*function renderHeading($sHeading) {
     global $default;
         
     $sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
@@ -37,7 +37,7 @@ function renderHeading($sHeading) {
     $sToRender .= "<tr/>\n";
     $sToRender .= "</table>\n";
     return $sToRender;
-}
+}*/
 
 /** 
  *	Renders the path for the document

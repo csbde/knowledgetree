@@ -17,7 +17,7 @@ require_once("$default->uiDirectory/foldermanagement/addFolderUI.inc");
  * @package presentation.lookAndFeel.knowledgeTree.documentmanagement
  */
 
-function renderHeading($sHeading) {
+/*function renderHeading($sHeading) {
     global $default;
     $sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
     $sColor = $default->siteMap->getSectionColour($sSectionName, "th");
@@ -25,7 +25,7 @@ function renderHeading($sHeading) {
     $sToRender .= "<tr align=\"left\"><th class=\"sectionHeading\" bgcolor=\"$sColor\"><font color=\"ffffff\">$sHeading</font></th></tr>\n";
     $sToRender .= "</table>\n";
     return $sToRender;
-}
+}*/
  
 /**
  * Generates radio button selects for document browse by type
