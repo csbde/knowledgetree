@@ -55,13 +55,13 @@ class PatternTableLinks {
 	function & render() {
 		$iArraySize = array_count_values($this->aLinks);
 		$iArrayCount = 0;		 
-		$sToRender = "<table width=\"100%\" height=\"100%\">\n";		
+		$sToRender = "<table width=\"100%\" height=\"100%\" cellspacing = \"0\">\n";		
 		
 		//build the table
 		for ($i = 0; $i < $this->iRows; $i++) {			
-			$sToRender = $sToRender . "<tr>\n";			
+			$sToRender = $sToRender . "<tr >\n";			
 			for ($j = 0; $j < $this->iColumns; $j++) {
-				$sToRender = $sToRender . "<td>";
+				$sToRender = $sToRender . "<td cellspacing = \"0\">";
 				if ($iArrayCount < $iArraySize) {
                     $sToRender = $sToRender . "<a href=\"" . $this->aLinks[$iArrayCount] . "\" />";
                     if ($this->iLinkType == TEXT) {
