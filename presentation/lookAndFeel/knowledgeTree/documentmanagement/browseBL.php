@@ -75,7 +75,8 @@ if (checkSession()) {
 	// display the browse results
     $oContent->addHtml(renderPage($aResults, $fBrowseType, $fSortBy, $fSortDirection));    
     $main->setCentralPayload($oContent);
-    $main->setFormAction($_SERVER["PHP_SELF"]);    
+    $main->setFormAction($_SERVER["PHP_SELF"]);
+    $main->setSubmitMethod("GET");    
     $main->render();    
 }
 ?>
