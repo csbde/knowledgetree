@@ -47,6 +47,8 @@ class PatternListBox {
     var $aAdditionalEntries;
     /** override display name */
     var $sCompositeDisplayColumnName;
+    /** override query */
+    var $sQuery;
 	
 	/**
 	* Constructor
@@ -64,6 +66,11 @@ class PatternListBox {
 		$this->sSelectName = $sNewSelectName;
 		$this->sWhereClause = $sNewWhereClause;
 		$this->bOrderAsc = $bNewOrderAsc;
+	}
+	
+	function PatternListBox($sQuery, $sNewSelectName) {
+		$this->sQuery = $sQuery;
+		$this->sSelectName = $sNewSelectName;
 	}
 	
 	function setPostBackOnChange($bNewValue) {
@@ -112,20 +119,24 @@ class PatternListBox {
         global $default;
         
 		$sql = $default->db;
-		$sQuery = "SELECT ";
-        if (isset($this->sCompositeDisplayColumnName)) {
-            $sQuery .= "$this->sCompositeDisplayColumnName";
-        } else {
-            $sQuery .= "DISTINCT ST." . $this->sDisplayColumn;
-        }
-        $sQuery .=  " AS display, ST." .  $this->sValueColumn . " AS value FROM $this->sTableName AS ST ";
-		if (isset($this->sFromClause)) {
-			$sQuery .= $this->sFromClause . " ";
+		if (isset($this->sQuery)) {
+			$sQuery = $this->sQuery;
+		} else {
+			$sQuery = "SELECT ";
+	        if (isset($this->sCompositeDisplayColumnName)) {
+	            $sQuery .= "$this->sCompositeDisplayColumnName";
+	        } else {
+	            $sQuery .= "DISTINCT ST." . $this->sDisplayColumn;
+	        }
+	        $sQuery .=  " AS display, ST." .  $this->sValueColumn . " AS value FROM $this->sTableName AS ST ";
+			if (isset($this->sFromClause)) {
+				$sQuery .= $this->sFromClause . " ";
+			}
+			if (isset($this->sWhereClause)) {
+				$sQuery .= "WHERE " . $this->sWhereClause . " ";
+			}
+			$sQuery .= "ORDER BY ST.$this->sDisplayColumn " . ($this->bOrderAsc ? "ASC" : "DESC");
 		}
-		if (isset($this->sWhereClause)) {
-			$sQuery .= "WHERE " . $this->sWhereClause . " ";
-		}
-		$sQuery .= "ORDER BY ST.$this->sDisplayColumn " . ($this->bOrderAsc ? "ASC" : "DESC");		
 		$sql->query($sQuery);
 		if ($sql->num_rows() > 0 || $this->bIncludeDefaultValue) {			
 			if (isset($this->sOnChangeAction)) {
