@@ -15,6 +15,5 @@ fi
 
 wwwroot=../`dirname $0`
 
-touch $wwwroot/log.txt
 chown -R $1 $wwwroot
 chmod -R 750 $wwwroot/Documents/*
