@@ -1,0 +1,280 @@
+<?php
+/**
+ * $Id$
+ *
+ * Contains static functions concerned with Discusion threads
+ *
+ * @author Omar Rahbeeni, CS Holdings, South Africa
+ * @version $Revision$
+ * @package lib.discussions
+ */
+class DiscussionThread {
+
+    /**
+     * The underlying Discussion Comments class
+     */
+    var $id;
+	var $iDocumentID;
+	var $iFirstCommentID;
+	var $iLastCommentID;
+	var $iNumberOfViews;
+	var $iNumberOfReplies;
+	var $iCreatorID;
+		
+	
+    /**
+     * DiscussionThread Constructor
+     */
+    function DiscussionThread($iNewFirstCommentID, $iNewDocumentID, $iNewCreatorID) {
+        global $default;
+        // create a new Discussion Thread object.
+        $this->iFirstCommentID = $iNewFirstCommentID;
+        $this->iDocumentID = $iNewDocumentID;
+        $this->iCreatorID = $iNewCreatorID;
+        $this->id  = -1;
+        $this->iLastCommentID = -1;
+        $this->iNumberOfViews = -1;
+        $this->iNumberOfReplies = -1;        
+    }
+
+    /**
+   	 * Get the id for current thread
+   	 */   
+    function getID(){
+    	return $this->id;	
+    }
+       
+    /**
+   	 * Get document id
+   	 */ 	
+    function getDocumentID(){
+    	return $this->iDocumentID;
+    }
+    
+    /**
+   	 * Get the id of the first comment
+   	 */
+    function getFirstCommentID(){
+    	return $this->iFirstCommentID;
+    }
+    
+    /**
+   	 * Set the First Comment ID
+   	 */
+ 	function setFirstCommentID(){
+    	return $this->iFirstCommentID;
+    }
+    
+    /**
+   	 * get the id of the last comment
+   	 */
+    function getLastCommentID(){
+    	return $this->iFirstCommentID;
+    }
+    
+    /**
+   	 * Set the id of the last comment
+   	 */
+    function setLastComment($iNewLastComment){
+    	$this->iLastCommentID = $iNewLastComment;
+    }
+    
+    /**
+   	 * Get the total number of time the thread was viewed
+   	 */
+    function getNumberOfViews(){
+    	return $this->iNumberOfViews;
+    }
+    
+    /**
+   	 * Increment the total number of times the thread was viewed
+   	 */
+    function setNumberOfViews(){
+    	$this->iNumberOfViews += 1;    	 
+    }
+    
+    /**
+   	 * Get the total number of replies(comments) in a thread
+   	 */
+    function getNumberOfReplies(){
+    	return $this->iNumberOfReplies;
+    }
+    
+    /**
+   	 * Increment the total number of replies (comments) in a thread
+   	 */
+    function setNumberOfReplies(){
+    	$this->iNumberOfReplies += 1; 
+    }
+     
+    /**
+     * Get a All commentID's seperated by a comma ","
+	 */
+    function getAllCommentID() {
+    	global $default;
+    	
+    	$sql = $default->db;
+        $result = $sql->query("SELECT id FROM $default->owl_discussion_threads_table WHERE document_id = $this->iDocumentID ORDER BY id");
+        if ($result) {
+        	$sql->next_record();
+        	$iThreadID = $sql->f("id");
+        
+	        $result = $sql->query("SELECT id FROM $default->owl_discussion_comments_table WHERE thread_id = $iThreadID ORDER BY id");
+	        
+	        if ($result) {           
+	            while ($sql->next_record()) {
+	                if ($sql->f("id") > 0) {
+	                	$sAllCommentID .= $sql->f("id") . ",";                		
+	                } else {
+	                	//ID not valid 
+	                }                
+	            }
+	            return $sAllCommentID ;            
+	        }
+	        $_SESSION["errorMessage"] = $lang_err_database;
+	        return false;
+        } else {
+         // No Thread for document
+         return false;
+        }    	
+    }    
+    
+    function getThreadIDforDoc($iDocumentID){
+    	global $default;	
+		$sql = $default->db;
+        $result = $sql->query("SELECT id FROM $default->owl_discussion_threads_table WHERE document_id = $iDocumentID");
+        if ($result) {        
+            if ($sql->next_record()) {
+                if ($sql->f("id") > 0) {
+                	return $sql->f("id");	
+                } else {
+                	return "false";
+                }
+            }
+            $_SESSION["errorMessage"] = $lang_err_object_not_exist . "Document_id = " . $iDocumentID . " table = $default->owl_discussion_threads_table";
+            return false;
+        }
+        $_SESSION["errorMessage"] = $lang_err_database;
+        return false;
+    }
+    
+    
+    /**
+    * Static function.
+    * Given a web_documents primary key it will create a 
+    * DiscussionThread object and populate it with the 
+    * corresponding database values
+    *
+    * @return Unit populated Unit object on successful query, false otherwise and set $_SESSION["errorMessage"]
+    */
+    function & get($iNewThreadID) {
+        global $default;
+        $sql = $default->db;
+        $result = $sql->query("SELECT * FROM $default->owl_discussion_threads_table WHERE id = $iNewThreadID");
+        if ($result) {
+            if ($sql->next_record()) {
+                			
+                $oDiscussionThread = & new DiscussionThread($sql->f("first_comment_id"),
+			                								$sql->f("document_id"),
+			                								$sql->f("creator_id"));
+              	
+                $oDiscussionThread->iId 			 = $iNewThreadID;
+                $oDiscussionThread->iLastCommentID   = $sql->f("last_comment_id");
+                $oDiscussionThread->iNumberOfViews   = $sql->f("views");
+                $oDiscussionThread->iNumberOfReplies = $sql->f("replies");
+                return $oDiscussionThread;
+            }
+            $_SESSION["errorMessage"] = $lang_err_object_not_exist . "id = " . $iNewThreadID . " table = $default->owl_discussion_threads_table";
+            return false;
+        }
+        $_SESSION["errorMessage"] = $lang_err_database;
+        return false;
+    }
+
+    /**
+   	 * Add a new record (thread) into the table
+   	 */
+    function create(){
+        global $default, $lang_err_database, $lang_err_object_exists;
+        //if the object hasn't been created
+        if ($this->iId < 0) { //check to see if entry exists
+	        $sql = $default->db;
+	        $result = $sql->query(	"INSERT INTO " . $default->owl_discussion_threads_table . 
+	        						" (document_id, first_comment_id, last_comment_id, views, replies, creator_id) " . 
+	        					  	"VALUES (" . $this->iDocumentID . "," . $this->iFirstCommentID .  "," . $this->iLastCommentID .  "," . $this->iNumberOfViews .  "," . $this->iNumberOfReplies ."," . $this->iCreatorID . ")");
+								    
+	        if ($result) {	         
+	         return true;                    
+	        }
+	        $_SESSION["errorMessage"] = $lang_err_database;
+	        return false;        	
+        }
+        $_SESSION["errorMessage"] = $lang_err_object_exists . "id = " . $this->iId . " table = $default->owl_discussion_threads_table";
+        return false;
+    }
+    
+    /**
+   	 * Update a thread in the table
+   	 */    
+    function update(){    	
+    	global $default, $lang_err_database, $lang_err_object_key;
+        //only update if the object has been stored
+        if ($this->iId > 0) {
+            $sql = $default->db;
+            $sQuery = "UPDATE " . $default->owl_discussion_threads_table . 
+					" SET document_id = " 		. $this->iDocumentID .
+					", first_comment_id = " 	. $this->iFirstCommentID .
+					", last_comment_id = " 	. $this->iLastCommentID .
+					", views = " 			. $this->iNumberOfViews .
+					", replies = " 			. $this->iNumberOfReplies .
+					", creator_id = " 		. $this->iCreatorID .  
+					" WHERE id = " 				. $this->iId ;
+            // Do update query            
+            $result = $sql->query( $sQuery);
+            
+            if ($result) {           
+     	       return true;
+            }
+            $_SESSION["errorMessage"] = $lang_err_database;
+            return false;
+        }
+        $_SESSION["errorMessage"] = $lang_err_object_key;
+        return false;
+    }
+    
+    
+    /**
+   	 * Delete a thread in the table
+   	 */
+   	function delete(){
+    	 global $default, $lang_err_database, $lang_err_object_key;
+        
+        //only delete the object if it exists in the database
+        if ($this->iId > 0) {
+            //check to see if group is linked to a unit
+            $sql = $default->db;
+            $query = "SELECT * FROM ". $default->owl_discussion_threads_table ." WHERE id = " . $this->iId  ;
+            $sql->query($query);
+            $rows = $sql->num_rows($sql);
+
+            if ($rows > 1) {
+                // duplicate Thread exists
+                $_SESSION["errorMessage"] = "Thread::The Thread id " . $this->iId . " has duplicates!";
+                return false;
+
+            } else {
+                $sql = $default->db;
+                $result = $sql->query("DELETE FROM $default->owl_discussion_threads_table WHERE id = $this->iId");
+                if ($result) {
+                    return true;
+                }
+                $_SESSION["errorMessage"] = $lang_err_database;
+                return false;
+            }
+        }
+        $_SESSION["errorMessage"] = $lang_err_object_key;
+        return false;
+    }    
+}
+
+?>

@@ -325,6 +325,11 @@ $default->siteMap->addDefaultPage("help", "/presentation/lookAndFeel/knowledgeTr
 // pages for logout section section
 $default->siteMap->addDefaultPage("logout", "/presentation/logout.php", "Logout", Guest, "Logout");
 
+// pages for discussion threads
+$default->siteMap->addDefaultPage("viewDiscussion", "/presentation/lookAndFeel/knowledgeTree/discussions/viewDiscussionBL.php", "Manage Documents", User, "viewDiscussion");
+//$default->siteMap->addDefaultPage("editPrefsSuccess", "/presentation/lookAndFeel/knowledgeTree/preferences/editPrefsSuccess.php", "Preferences", User, "Preferences",false);
+
+
 // test pages
 $default->siteMap->addPage("scratchPad", "/tests/scratchPad.php", "Tests", Guest, "scratch", false);
 $default->siteMap->addPage("sitemap", "/tests/session/SiteMap.php", "Tests", Guest, "sitemap", false);
