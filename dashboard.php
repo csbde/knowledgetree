@@ -51,56 +51,59 @@ if (checkSession()) {
                                 "$default->owl_graphics_url/help.jpg", "$default->owl_graphics_url/logout.jpg");
         
         $oPatternTableLinks = new PatternTableLinks($aTopMenuLinks, null, 1, 8, 2, $aTopMenuImages);
-       
-        
 
-        // build the central dashboard
-          //- pending documents (document approval)
-          //- checked out documents
-          //- subscriptions        
-        $sHtml = "<table border=\"1\" width=\"100%\">
+        $sHtml = "<table border=\"0\" width=\"100%\">
                             <tr><td>
-                                <table>
-                                    <tr>
-                                        <td colspan=\"3\">
-                                        Pending Documents
-                                        </td>
+                                <table width=\"100%\">
+                                    <tr align=\"left\" bgcolor=\"#996600\">
+                                        <th colspan=\"3\" >
+                                        <span class=\"dashboardHeadings\">Pending Documents</span>
+                                        </th>
                                     </tr>
                                     <tr>
-                                        <td width=\"33%\">
+                                        <th align=\"left\" width=\"33%\">
                                         Title
-                                        </td>
-                                        <td width=\"33%\">
+                                        </th>
+                                        <th align=\"left\" width=\"33%\">
                                         Status
-                                        </td>
-                                        <td width=\"33%\">
+                                        </th>
+                                        <th align=\"left\" width=\"33%\">
                                         Days
-                                        </td>
+                                        </th>
                                     </tr>";
                                     /*
                                     $aPendingDocumentList = getPendingDocuments($_SESSION["userID"]);
+                                    $sHtml = $sHtml . "<tr>";
                                     for ($i = 0; $i < count($aPendingDocumentList); $i++) {
-                                        $sHtml = $sHtml . "<tr><td>" . $aPendingDocumentList[$i] . "</td></tr>";
+                                        $sHtml = $sHtml .  "<td>" . $aPendingDocumentList[$i].getTitle() . "</td>" .
+                                                           "<td>" . $aPendingDocumentList[$i].getStatus() . "</td>" .
+                                                           "<td>" . $aPendingDocumentList[$i].getDays() . "</td>";
                                     }
+                                    $sHtml = $sHtml . "</tr>";
                                     */
-       $sHtml = $sHtml . "
-                                </table>
+       $sHtml = $sHtml . "          <tr>
+                                        <td>made up title</td>
+                                        <td>bad</td>
+                                        <td>5</td>
+                                    </tr>";
+                                    
+       $sHtml = $sHtml . "      </table>
                             </td></tr>
 
                             <tr><td  width=80%>
-                               <table border=2>
-                                    <tr align=\"center\">
-                                        <td colspan=2>
-                                        Checked Out Documents
-                                        </td>
+                               <table width=\"100%\">
+                                    <tr align=\"left\" bgcolor=\"#996600\">
+                                        <th colspan=2>
+                                        <span class=\"dashboardHeadings\">Checked Out Documents</span>
+                                        </th>
                                     </tr>
                                     <tr>
-                                        <td width=\"33%\">
+                                        <th align=\"left\" width=\"33%\">
                                         Title
-                                        </td>
-                                        <td width=\"66%\">
+                                        </th>
+                                        <th align=\"left\" width=\"66%\">
                                         Days
-                                        </td>
+                                        </th>
                                     </tr>";
                                     /*
                                     $aCheckedOutDocumentList = getCheckedOutDocuments($_SESSION["userID"]);
@@ -108,27 +111,32 @@ if (checkSession()) {
                                         $sHtml = $sHtml . "<tr><td>" . $aCheckedOutDocumentList[$i] . "</td></tr>";
                                     }
                                     */
-         $sHtml = $sHtml . "
-                                </table>
+                                    
+         $sHtml = $sHtml . "        <tr>
+                                        <td>another made up title</td>
+                                        <td>8.473</td>
+                                    </tr>";
+                                    
+         $sHtml = $sHtml . "    </table>
                             </td></tr>
 
                             <tr><td>
-                               <table>
-                                    <tr>
-                                        <td>
-                                        Subscriptions Alerts
-                                        </td>
+                               <table width=\"100%\">
+                                    <tr align=\"left\" bgcolor=\"#996600\">
+                                        <th colspan=\"3\">
+                                        <span class=\"dashboardHeadings\">Subscriptions Alerts</span>
+                                        </th>
                                     </tr>
                                     <tr>
-                                        <td width=\"33%\">
+                                        <th align=\"left\" width=\"33%\">
                                         Title
-                                        </td>
-                                        <td width=\"33%\">
+                                        </th>
+                                        <th align=\"left\" width=\"33%\">
                                         Status
-                                        </td>
-                                        <td width=\"33%\">
+                                        </th>
+                                        <th align=\"left\" width=\"33%\">
                                         Days
-                                        </td>
+                                        </th>
                                     </tr>";
                                     /*
                                     $aSubscriptionList = getSubscriptionAlerts($_SESSION["userID"]);
@@ -136,14 +144,19 @@ if (checkSession()) {
                                         $sHtml = $sHtml . "<tr><td>" . $aSubscriptionList[$i] . "</td></tr>";
                                     }
                                     */
-        $sHtml = $sHtml . "                                    
-                                </table>                            
-                            </td></tr>                            
+       $sHtml = $sHtml . "          <tr>
+                                        <td>the last made up title</td>
+                                        <td>poor to middling</td>
+                                        <td>1</td>
+                                    </tr>";
+                                    
+        $sHtml = $sHtml . "     </table>
+                            </td></tr>
                             </table>";
 
         
         $oContent = new PatternCustom();
-        $oContent->setHtml($html);
+        $oContent->setHtml($sHtml);
         
         /* get a page */
         $tmp = new PatternMainPage();
