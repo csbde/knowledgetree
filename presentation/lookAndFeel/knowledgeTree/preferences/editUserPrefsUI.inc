@@ -21,10 +21,7 @@ function getUserDetailsPage($iUserID) {
 	
 	global $default;
 	$oUser = null;
-	//if (isset($iUserID)) {
-	//	$oUser = User::get($iUserID);
-	//}
-	
+
 	$sQuery =  "SELECT * FROM $default->owl_users_table WHERE id = $iUserID";
 	$aDisplayColumns = array("name","email", "mobile", "email_notification", "sms_notification"); 
 	$aStoreColumns = array("name","email", "mobile", "email_notification", "sms_notification") ;
@@ -65,7 +62,7 @@ function getEditPageSuccess() {
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td><a href=\"$default->rootUrl/control.php?action=preferences\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
+	$sToRender .= "<td><a href=\"$default->rootUrl/control.php?action=preferences\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border=\"0\" /></a></td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
 	return $sToRender;
@@ -83,7 +80,7 @@ function getEditPageFail() {
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td></td><td align=\"right\"><a href=\"$default->rootUrl/control.php?action=preferences\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
+	$sToRender .= "<td></td><td align=\"right\"><a href=\"$default->rootUrl/control.php?action=preferences\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border=\"0\" /></a></td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
 	
