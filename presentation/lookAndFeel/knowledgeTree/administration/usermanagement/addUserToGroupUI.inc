@@ -110,7 +110,7 @@ function getUserDisplay($oUser) {
 	global $default;
 	if (!isset($oUser)) {
         $oPatternListBox = & new PatternListBox($default->owl_users_table, "username", "id", "fUserID");
-        if (Permission::userIsUnitAdministrator()) {
+        if (Permission::userIsUnitAdministrator() && !Permission::userIsSystemAdministrator()) {
             $oPatternListBox->setFromClause("INNER JOIN $default->owl_users_groups_table UGL ON ST.id=UGL.user_id " .
                                             "INNER JOIN $default->owl_groups_units_table GUL ON UGL.group_id=GUL.group_id");
             $oPatternListBox->setWhereClause("GUL.unit_id=" . User::getUnitID($_SESSION["userID"]));
