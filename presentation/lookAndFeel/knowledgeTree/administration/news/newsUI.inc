@@ -15,19 +15,6 @@ require_once("$default->uiDirectory/administration/adminUI.inc");
  * @package presentation.lookAndFeel.knowledgeTree.administration.news
  */
 
-
-function renderNewsPopupJavascript() {
-	global $default;
-	return "\n\n<SCRIPT LANGUAGE=\"javascript\">\n " .
-	"<!--\n" .		
-	"function popupNews() {\n" .			
-		"window.open ('" . generateControllerUrl("displayNews", "fNewsID=" ) . "', 'newwindow', config='height=400,width=600,left=400,top=300, toolbar=no, menubar=no, scrollbars=yes, resizable=no,location=no, directories=no, status=no');\n" .
-		"return false;\n" .
-	"}\n" .
-	"//-->\n" .
-	"</SCRIPT>\n\n";	
-}
-
 /**
  * Displays an error message
  */
@@ -67,9 +54,10 @@ function renderNewsItem($oDashboardNews) {
 	global $default;
 	
 	$sToRender .= "<tr><td>Synopsis:</td><td>" . $oDashboardNews->getSynopsis() . "</td></tr>";
+	
 	$sToRender .= "<tr><td>Body:</td><td>" . $oDashboardNews->getBody() . "</td></tr>";
 	$sToRender .= "<tr><td>Rank:</td><td>" . $oDashboardNews->getRank() . "</td></tr>";	
-	$sToRender .= "<tr><td colspan=\"2\">" . $oDashboardNews->getImageLink() . "</td></tr>";	
+	//$sToRender .= "<tr><td colspan=\"2\">" . $oDashboardNews->getImageLink() . "</td></tr>";	
 		
 	$sToRender .= "<input type=\"hidden\" name=\"fNewsID\" value=\"" . $oDashboardNews->getID() . "\">";
     return $sToRender;
@@ -192,18 +180,4 @@ function renderDeleteNewsConfirmationPage($oDashboardNews) {
 	$sToRender .= "</table>\n";
 	return $sToRender;	
 }
-
-/**
- * Displays a news item.
- */
-function renderNewsItemPage($oDashboardNews) {
-	global $default;
-	
-    $sToRender .= "<table>\n";	
-	$sToRender .= renderNewsItem($oDashboardNews);		
-	//$sToRender .= "<tr><td><a href=\"javascript:window.close()"><img src=\"$default->graphicsUrl/widgets/close.gif\" border=\"0\"></a></td></tr>\n";    	
-	$sToRender .= "<tr><td><a href=\"javascript:window.close()\">close</a></td></tr>\n";
-	$sToRender .= "</table>\n";
-	return $sToRender;		
-} 
 ?>
