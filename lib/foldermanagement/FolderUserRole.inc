@@ -118,14 +118,24 @@ class FolderUserRole {
 		global $default, $lang_err_database, $lang_err_object_exists;
 		//if the object hasn't been created
 		if ($this->iId < 0) {
-			$sql = $default->db;
-			$result = $sql->query("INSERT INTO " . $default->folders_user_roles_table . " (user_id, document_id, group_folder_approval_id, datetime, done, active, dependant_documents_created) VALUES ($this->iUserID, $this->iDocumentID, $this->iGroupFolderApprovalID, '$this->dDateTime', " . ($this->bDone ? "1" : "0") . ", " . ($this->bActive ? "1" : "0") . ", " . (($this->bDependantDocumentsCreated) ? "1" : "0") . ")");
-			if ($result) {
-				$this->iId = $sql->insert_id();
-				return  true;
-			}
-			$_SESSION["errorMessage"] = $lang_err_database;
-			return false;
+            $sTable = $default->folders_user_roles_table;
+            $aFieldValues = array(
+                'user_id' => $this->iUserID,
+                'document_id' => $this->iDocumentID,
+                'group_folder_approval_id' => $this->iGroupFolderApprovalID,
+                'datetime' => $this->dDateTime,
+                'done' => $this->bDone,
+                'active' => $this->bActive,
+                'dependant_documents_created' => $this->bDependantDocumentsCreated,
+            );
+            $id =& DBUtil::autoInsert($sTable, $aFieldValues);
+
+            if (PEAR::isError($id)) {
+                $_SESSION["errorMessage"] = $id->toString();
+                return false;
+            }
+            $this->iId = $id;
+            return true;
 		}
 		$_SESSION["errorMessage"] = $lang_err_object_exists . "id = " . $this->iId . " table = folders_users_roles_link";
 		return false;

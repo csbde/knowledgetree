@@ -135,25 +135,20 @@ class Group {
 		global $default, $lang_err_database, $lang_err_object_exists;
 		//if the object hasn't been created
 		if ($this->iId < 0) {
-			//check to see if name exsits
-			$sql = $default->db;
-			$query = "SELECT name FROM ". $default->groups_table ." WHERE name = '" . $this->sName . "'";
-      		$sql->query($query);
-     		$rows = $sql->num_rows();
-   			if ($rows > 0) {
-				// duplicate username
-				$_SESSION["errorMessage"] = "Group::The Group name " . $this->sName . " is already in use!";
-				return false;
-	        } else {
-				$sql = $default->db;
-				$result = $sql->query("INSERT INTO " . $default->groups_table . " (name, is_sys_admin, is_unit_admin) VALUES ('$this->sName', " . ($this->bIsSysAdmin ? 1 : 0) . ", " . ($this->bIsUnitAdmin ? 1 : 0) . ")");
-				if ($result) {
-					$this->iId = $sql->insert_id();
-					return  true;
-				}
-				$_SESSION["errorMessage"] = $lang_err_database;
-				return false;
-			}
+            $sTable = $default->groups_table;
+            $aFieldValues = array(
+                'name' => $this->sName,
+                'is_sys_admin' => $this->bIsSysAdmin,
+                'is_unit_admin' => $this->bIsUnitAdmin,
+            );
+            $id =& DBUtil::autoInsert($sTable, $aFieldValues);
+
+            if (PEAR::isError($id)) {
+                $_SESSION["errorMessage"] = $id->toString();
+                return false;
+            }
+            $this->iId = $id;
+            return true;
 		}
 		$_SESSION["errorMessage"] = $lang_err_object_exists . "id = " . $this->iId . " table = document_fields";
 		return false;

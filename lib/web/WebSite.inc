@@ -133,27 +133,19 @@ class WebSite {
         global $default, $lang_err_database, $lang_err_object_exists;
         //if the object hasn't been created
         if ($this->iId < 0) {
-            //check to see if name exsits
-            $sql = $default->db;
-            $query = "SELECT web_site_name FROM ". $default->web_sites_table ." WHERE web_site_name = '" . $this->sWebSiteName . "' and web_site_url = '" . $this->sWebSiteURL . "' and web_master_id = '" . $this->iWebMasterID . "'";
-            $sql->query($query);
-            $rows = $sql->num_rows($sql);
-            if ($rows > 0) {
-                // duplicate username
-                $_SESSION["errorMessage"] = "Website::The Wesbite name " . $this->sWebSiteName . " is already in use!";
-                return false;
+            $aFieldValues = array(
+                'web_site_name' => $this->sWebSiteName,
+                'web_site_url' => $this->sWebSiteURL,
+                'web_master_id' => $this->iWebMasterID,
+            );
+            $id =& DBUtil::autoInsert($default->web_sites_table, $aFieldValues);
 
-            } else {
-
-                $sql = $default->db;
-                $result = $sql->query("INSERT INTO " . $default->web_sites_table . " (web_site_name, web_site_url, web_master_id) VALUES ('$this->sWebSiteName', '$this->sWebSiteURL', $this->iWebMasterID)");
-                if ($result) {
-                    $this->iId = $sql->insert_id();
-                    return  true;
-                }
-                $_SESSION["errorMessage"] = $lang_err_database;
+            if (PEAR::isError($id)) {
+                $_SESSION["errorMessage"] = $id->toString();
                 return false;
             }
+            $this->iId = $id;
+            return true;
         }
         $_SESSION["errorMessage"] = $lang_err_object_exists . "id = " . $this->iId . " table = $default->web_sites_table";
         return false;

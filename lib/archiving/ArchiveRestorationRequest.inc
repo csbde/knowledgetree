@@ -145,15 +145,21 @@ class ArchiveRestorationRequest {
         global $default;
         //if the id >= 0, then the object has already been created
         if ($this->iId < 0) {
-            $sql = $default->db;
-            $result = $sql->query("INSERT INTO $default->archive_restoration_table (document_id, request_user_id, admin_user_id, datetime) " .
-                                  "VALUES ($this->iDocumentID, $this->iRequestUserID, $this->iAdminUserID, '$this->dDateTime')");
-            if ($result) {
-                //set the current primary key
-                $this->iId = $sql->insert_id();
-                return true;
+            $sTable = $default->archive_restoration_table;
+            $aFieldValues = array(
+                'document_id' => $this->iDocumentID,
+                'request_user_id' => $this->iRequestUserID,
+                'admin_user_id' => $this->iAdminUserID,
+                'datetime' => $this->dDateTime,
+            );
+            $id =& DBUtil::autoInsert($sTable, $aFieldValues);
+
+            if (PEAR::isError($id)) {
+                $_SESSION["errorMessage"] = $id->toString();
+                return false;
             }
-            return false;
+            $this->iId = $id;
+            return true;
         }
         return false;
 	}

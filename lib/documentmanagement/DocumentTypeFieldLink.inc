@@ -135,26 +135,28 @@ class DocumentTypeFieldLink {
 			//check to see if name exsits
 			$sql = $default->db;
 			$query = "SELECT id FROM ". $default->document_type_fields_table ." WHERE document_type_id = '" . $this->iDocumentTypeID . "' and field_id = '". $this->iFieldID . "'";
-        		$sql->query($query);
-       			$rows = $sql->num_rows($sql);
+            $sql->query($query);
+            $rows = $sql->num_rows($sql);
         
-      			 if ($rows > 0){
-            		 	// duplicate username
-           		 	$_SESSION["errorMessage"] = "DocTypes::The DocumentType name " . $this->sName . " is already in use!";
-           		 	return false;
-           		 
-	       		 }else{
-				$sql = $default->db;
-				$result = $sql->query("INSERT INTO " . $default->document_type_fields_table . " (document_type_id, field_id, is_mandatory) " .
-							"VALUES ($this->iDocumentTypeID, $this->iFieldID, '" . $this->bIsMandatory . "')");
-				if ($result) {
-					//set the current documents primary key
-					$this->iId = $sql->insert_id();
-					return true;
-				}
-			$_SESSION["errorMessage"] = $lang_err_database;
-			return false;
-			}			
+             if ($rows > 0){
+                $_SESSION["errorMessage"] = "DocTypes::The DocumentType name " . $this->sName . " is already in use!";
+                return false;
+            }
+
+            $sTable = $default->document_type_fields_table;
+            $aFieldValues = array(
+                'document_type_id' => $this->iDocumentTypeID,
+                'field_id' => $this->iFieldID,
+                'is_mandatory' => $this->bIsMandatory,
+            );
+            $id =& DBUtil::autoInsert($sTable, $aFieldValues);
+
+            if (PEAR::isError($id)) {
+                $_SESSION["errorMessage"] = $id->toString();
+                return false;
+            }
+            $this->iId = $id;
+            return true;
 		}
 		$_SESSION["errorMessage"] = $lang_err_object_exists . "id = " . $this->iId . " table = $default->document_type_fields_table";
 		return false;

@@ -108,14 +108,19 @@ class DocumentLink {
 		global $default, $lang_err_database, $lang_err_object_exists;
 		//if the object hasn't been created
 		if ($this->iId < 0) {
-			$sql = $default->db;
-			$result = $sql->query("INSERT INTO $default->document_link_table (parent_document_id, child_document_id) VALUES ($this->iParentDocumentID, $this->iChildDocumentID)");
-			if ($result) {
-				$this->iId = $sql->insert_id();
-				return true;
-			}
-			$_SESSION["errorMessage"] = $lang_err_database;
-			return false;
+            $sTable = $default->document_link_table;
+            $aFieldValues = array(
+                'parent_document_id' => $this->iParentDocumentID,
+                'child_document_id' => $this->iChildDocumentID,
+            );
+            $id =& DBUtil::autoInsert($sTable, $aFieldValues);
+
+            if (PEAR::isError($id)) {
+                $_SESSION["errorMessage"] = $id->toString();
+                return false;
+            }
+            $this->iId = $id;
+            return true;
 		}
 		$_SESSION["errorMessage"] = $lang_err_object_exists."id = ".$this->iId." table = document_fields";
 		return false;

@@ -48,15 +48,19 @@ class FolderDocTypeLink {
 		global $default, $lang_err_database; $lang_err_object_exists;
 		//if the object has not already been stored		
 		if ($this->iId < 0) {			
-			$sql = $default->db;
-			$result = $sql->query("INSERT INTO " . $default->folder_doctypes_table . " (folder_id, document_type_id) " .
-						"VALUES ($this->iFolderID, $this->iDocumentTypeID)");
-			if ($result) {
-				$this->iId = $sql->insert_id();
-				return true;
-			}
-			$_SESSION["errorMessage"] = $lang_err_database;
-			return false;
+            $sTable = $default->folder_doctypes_table;
+            $aFieldValues = array(
+                'folder_id' => $this->iFolderID,
+                'document_type_id' => $this->iDocumentTypeID,
+            );
+            $id =& DBUtil::autoInsert($sTable, $aFieldValues);
+
+            if (PEAR::isError($id)) {
+                $_SESSION["errorMessage"] = $id->toString();
+                return false;
+            }
+            $this->iId = $id;
+            return true;
 		}
 		$_SESSION["errorMessage"] = $lang_err_object_exists . "id = " . $this->iId . " table = folders";
 		return false;

@@ -194,16 +194,23 @@ class DiscussionComment {
         global $default, $lang_err_database, $lang_err_object_exists;
         //if the object hasn't been created
         if ($this->iId < 0) { //check to see if comment exists
-            $sql = $default->db;            																																
-            
-            $result = $sql->query("INSERT INTO " . $default->discussion_comments_table . " (thread_id,user_id,subject, body, date, in_reply_to)" .
-             				       "VALUES (" . $this->iThreadID . "," . $this->iUserID . ",\"" . $this->sSubject . "\",\"" . $this->sBody . "\", Now(), " . $this->iInReplyTo . ")");
-            if ($result) {
-	          	$this->iId = $sql->insert_id();
-	         	return true;                    
-	        }
-	        return false;    
-            
+            $sTable = $default->discussion_comments_table;
+            $aFieldValues = array(
+                'thread_id' => $this->iThreadID,
+                'user_id' => $this->iUserID,
+                'subject' => $this->sSubject,
+                'body' => $this->sBody,
+                'date' => getCurrentDate(),
+                'in_reply_to' => $this->iInReplyTo,
+            );
+            $id =& DBUtil::autoInsert($sTable, $aFieldValues);
+
+            if (PEAR::isError($id)) {
+                $_SESSION["errorMessage"] = $id->toString();
+                return false;
+            }
+            $this->iId = $id;
+            return true;
         }
         return false;	
     }

@@ -34,6 +34,43 @@ class KTUtil {
             }
         }
     }
+
+    function strToBool ($sString, $null = false, $empty = false) {
+        $sString = strtoupper($sString);
+        if ($sString == "Y") {
+            return true;
+        } elseif (($sString == "N")) {
+            return false;
+        } elseif (($sString == "")) {
+            return $empty;
+        } else {
+            return $null;
+        }
+    }
+
+
+    function anyToBool ($sString, $null = false) {
+        if (is_bool($sString)) {
+            return $sString;
+        }
+
+        if (is_string($sString)) {
+            if (strToBool($sString) === true) {
+                return true;
+            }
+        }
+
+        if (is_int($sString)) {
+            return intToBool($sString);
+        }
+
+        if (is_null($sString)) {
+            return $null;
+        }
+
+        return false;
+    }
+
     
 }
 // }}}

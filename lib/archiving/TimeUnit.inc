@@ -80,15 +80,18 @@ class TimeUnit {
         global $default;
         //if the id >= 0, then the object has already been created
         if ($this->iId < 0) {
-            $sql = $default->db;
-            $result = $sql->query("INSERT INTO $default->time_unit_lookup_table (name) " .
-                                  "VALUES ('$this->sName')");
-            if ($result) {
-                //set the current primary key
-                $this->iId = $sql->insert_id();
-                return true;
+            $sTable = $default->time_unit_lookup_table;
+            $aFieldValues = array(
+                'name' => $this->sName,
+            );
+            $id =& DBUtil::autoInsert($sTable, $aFieldValues);
+
+            if (PEAR::isError($id)) {
+                $_SESSION["errorMessage"] = $id->toString();
+                return false;
             }
-            return false;
+            $this->iId = $id;
+            return true;
         }
         return false;
 	}

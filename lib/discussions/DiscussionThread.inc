@@ -243,17 +243,23 @@ class DiscussionThread {
         global $default, $lang_err_database, $lang_err_object_exists;
         //if the object hasn't been created
         if ($this->iId < 0) { //check to see if entry exists
-	        $sql = $default->db;
-	        $sQuery = 	"INSERT INTO " . $default->discussion_threads_table . 
-	        		  	" (document_id, first_comment_id, last_comment_id, views, replies, creator_id) " . 
-	        			"VALUES (" . $this->iDocumentID . "," . $this->iFirstCommentID .  "," . $this->iLastCommentID .  "," . $this->iNumberOfViews .  "," . $this->iNumberOfReplies ."," . $this->iCreatorID . ")";
-	        $result = $sql->query($sQuery);
-								    
-	        if ($result) {	         
-	        	$this->iId = $sql->insert_id();
-	         	return true;                    
-	        }
-	        return  false;        	
+            $sTable = $default->discussion_threads_table;
+            $aFieldValues = array(
+                'document_id' => $this->iDocumentID,
+                'first_comment_id' => $this->iFirstCommentID,
+                'last_comment_id' => $this->iLastCommentID,
+                'views' => $this->iNumberOfViews,
+                'replies' => $this->iNumberOfReplies,
+                'creator_id' => $this->iCreatorID,
+            );
+            $id =& DBUtil::autoInsert($sTable, $aFieldValues);
+
+            if (PEAR::isError($id)) {
+                $_SESSION["errorMessage"] = $id->toString();
+                return false;
+            }
+            $this->iId = $id;
+            return true;
         }
 
         return false;

@@ -103,15 +103,19 @@ class DocumentArchiving {
         global $default;
         //if the id >= 0, then the object has already been created
         if ($this->iId < 0) {
-            $sql = $default->db;
-            $result = $sql->query("INSERT INTO $default->document_archiving_table (document_id, archiving_settings_id) " .
-                                  "VALUES ($this->iDocumentID, $this->iArchivingSettingsID)");
-            if ($result) {
-                //set the current primary key
-                $this->iId = $sql->insert_id();
-                return true;
+            $sTable = $default->document_archiving_table;
+            $aFieldValues = array(
+                'document_id' => $this->iDocumentID,
+                'archiving_settings_id' => $this->iArchivingSettingsID,
+            );
+            $id =& DBUtil::autoInsert($sTable, $aFieldValues);
+
+            if (PEAR::isError($id)) {
+                $_SESSION["errorMessage"] = $id->toString();
+                return false;
             }
-            return false;
+            $this->iId = $id;
+            return true;
         }
         return false;
 	}

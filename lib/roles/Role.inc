@@ -100,26 +100,21 @@ class Role {
 		global $default, $lang_err_database, $lang_err_object_exists;
 		//if the object hasn't been created
 		if ($this->iId < 0) {
-			//check to see if name exsits
-			$sql = $default->db;
-			$query = "SELECT name FROM ". $default->roles_table ." WHERE name = '" . $this->sName . "'";
-        		$sql->query($query);
-       			$rows = $sql->num_rows($sql);
-        
-      			 if ($rows > 0){
-            			 // duplicate username
-           			 $_SESSION["errorMessage"] = "Role::The Role name " . $this->sName . " is already in use!";
-           			 return false;
-	       		 }else
-	      		 {
-				$sql = $default->db;
-				$result = $sql->query("INSERT INTO " . $default->roles_table . " (name, active, can_read, can_write) VALUES ('$this->sName', " . ($this->bActive ? 1 : 0) . ", "  . ($this->bCanRead ? 1 : 0) . ", " . ($this->bCanWrite ? 1 : 0) . ")");
-				if ($result) {
-				$this->iId = $sql->insert_id();
-				return  true;
-			}
-			$_SESSION["errorMessage"] = $lang_err_database;
-			return false;
+            $sTable = $default->roles_table;
+            $aFieldValues = array(
+                'name' => $this->sName,
+                'active' => $this->bActive,
+                'can_read' => $this->bCanRead,
+                'can_write' => $this->bCanWrite,
+            );
+            $id =& DBUtil::autoInsert($sTable, $aFieldValues);
+
+            if (PEAR::isError($id)) {
+                $_SESSION["errorMessage"] = $id->toString();
+                return false;
+            }
+            $this->iId = $id;
+            return true;
 		}
 	}
 	$_SESSION["errorMessage"] = $lang_err_object_exists . "id = " . $this->iId . " table = document_fields";

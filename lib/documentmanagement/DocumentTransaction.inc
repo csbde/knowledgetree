@@ -104,17 +104,25 @@ class DocumentTransaction {
 		global $default, $lang_err_object_exists;
 		//if the object hasn't been stored yet
 		if ($this->iId < 0) {
-			$sql = $default->db;
-			$result = $sql->query("INSERT INTO " . $default->document_transactions_table . " (document_id, version, user_id, datetime, ip, filename, comment, transaction_id) " .
-						"VALUES ($this->iDocumentID, '$this->sVersion', $this->iUserID, '$this->dDateTime', '$this->sIP', '$this->sFileName', '$this->sComment', $this->iTransactionID)");
-			 if ($result) {
-				 //object has been stored, set the primary key
-				 $this->iId = $sql->insert_id();
-				 return true;
-			 } else {
-				 $_SESSION["errorMessage"] = $lang_err_database;
-				 return false;
-			 }
+            $sTable = $default->document_transactions_table;
+            $aFieldValues = array(
+                document_id => $this->iDocumentID,
+                version => $this->sVersion,
+                user_id => $this->iUserID,
+                datetime => $this->dDateTime,
+                ip => $this->sIP,
+                filename => $this->sFileName,
+                comment => $this->sComment,
+                transaction_id => $this->iTransactionID,
+            );
+            $id =& DBUtil::autoInsert($sTable, $aFieldValues);
+
+            if (PEAR::isError($id)) {
+                $_SESSION["errorMessage"] = $id->toString();
+                return false;
+            }
+            $this->iId = $id;
+            return true;
 		} else {
 			$_SESSION["errorMessage"] = $lang_err_object_exists;
 			return false;

@@ -176,14 +176,23 @@ class RoleFolderLink {
 		global $default, $lang_err_database, $lang_err_object_exists;
 		//if the object hasn't been created
 		if ($this->iId < 0) {
-			$sql = $default->db;
-			$result = $sql->query("INSERT INTO " . $default->folders_user_roles_table . " (user_id, folder_id, role_type_id, datetime, done, active) VALUES ($this->iUserID, $this->iFolderID, $this->iRoleTypeID, '$this->dDateTime', " . ($this->bDone ? 1 : 0) . "), " . ($this->bActive ? 1 : 0) . ")");
-			if ($result) {
-				$this->iId = $sql->insert_id();
-				return  true;
-			}
-			$_SESSION["errorMessage"] = $lang_err_database;
-			return false;
+            $sTable = $default->folders_user_roles_table;
+            $aFieldValues = array(
+                'user_id' => $this->iUserID,
+                'folder_id' => $this->iFolderID,
+                'role_type_id' => $this->iRoleTypeID,
+                'datetime' => $this->dDateTime,
+                'done' => $this->bDone,
+                'active' => $this->bActive,
+            );
+            $id =& DBUtil::autoInsert($sTable, $aFieldValues);
+
+            if (PEAR::isError($id)) {
+                $_SESSION["errorMessage"] = $id->toString();
+                return false;
+            }
+            $this->iId = $id;
+            return true;
 		}
 		return false;
 	}

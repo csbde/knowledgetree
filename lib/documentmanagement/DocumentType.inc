@@ -85,27 +85,18 @@ class DocumentType {
 		global $default, $lang_err_database, $lang_err_object_exists;
 		//if the object hasn't been created
 		if ($this->iId < 0) {
-			//check to see if name exsits
-			$sql = $default->db;
-			$query = "SELECT name FROM ". $default->document_types_table ." WHERE name = '" . $this->sName . "'";
-        		$sql->query($query);
-       			$rows = $sql->num_rows($sql);
-        
-      			 if ($rows > 0){
-            		 	// duplicate username
-           		 	$_SESSION["errorMessage"] = "DocTypes::The DocumentType name " . $this->sName . " is already in use!";
-           		 	return false;
-           		 
-	       		 }else{
-				$sql = $default->db;
-				$result = $sql->query("INSERT INTO " . $default->document_types_table . " (name) VALUES ('$this->sName')");
-				if ($result) {
-				$this->iId = $sql->insert_id();
-				return  true;
-			}
-			$_SESSION["errorMessage"] = $lang_err_database;
-			return false;
-		   }
+            $sTable = $default->document_types_table;
+            $aFieldValues = array(
+                'name' => $this->sName,
+            );
+            $id =& DBUtil::autoInsert($sTable, $aFieldValues);
+
+            if (PEAR::isError($id)) {
+                $_SESSION["errorMessage"] = $id->toString();
+                return false;
+            }
+            $this->iId = $id;
+            return true;
 		}
 		
 		$_SESSION["errorMessage"] = $lang_err_object_exists . "id = " . $this->iId . " table = document_types";
