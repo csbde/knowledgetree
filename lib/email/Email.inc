@@ -99,6 +99,34 @@ Class Email {
 		}
 		return true;
 	}
+	
+	function sendEmail($FromEmail, $FromName, $ToEmail, $Subj, $EmailBody)
+	{
+		global $default;
+			
+		// create a new phpmailer object.
+		$emailHyperlink = new phpmailer();
+		
+		//set up info
+		$emailHyperlink->isSMTP();
+		$emailHyperlink->Host = $default->owl_email_server; // SMTP server
+		
+		//get info from relevant fields.
+		$emailHyperlink->From = $FromEmail;
+		$emailHyperlink->FromName = $FromName;
+		$emailHyperlink->AddAddress($ToEmail);
+		$emailHyperlink->Subject = stripslashes($Subj);
+		$emailHyperlink->Body = stripslashes($EmailBody);
+		$emailHyperlink->WordWrap = 100;
+		$emailHyperlink->IsHTML(true);
+		   
+		//send the email       
+		if(!$emailHyperlink->Send()) {
+		   $_SESSION["errorMessage"] = $lang_err_email;
+		   return false;	
+		}
+		return true;
+	}
 }
 
 ?>
