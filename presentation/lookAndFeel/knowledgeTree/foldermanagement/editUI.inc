@@ -38,6 +38,9 @@ function getFolderData($iFolderID, $sDivName, $sStatusMessage = "") {
 	$oPatternListFromQuery->setTableWidth("610");
 	
 	$sToRender .= "<table>";
+	if ($sStatusMessage) {
+		$sToRender .= "<tr><td><font color=\"red\">$sStatusMessage</font></td></tr>";
+	}
 	$sToRender .= "<tr><td>" . $oPatternListFromQuery->render() . "</td></tr>";	
 	$sToRender .= "<tr><td><a href=\"$default->rootUrl/control.php?action=modifyFolderData&fFolderID=$iFolderID\"><img src=\"$default->graphicsUrl/widgets/edit.gif\" border=\"0\" /></a></td></tr>";
     $sToRender .= "</table>";;
@@ -172,15 +175,8 @@ function getPage($iFolderID, $sStatusMessage, $bCollaboration = false) {
 	$sToRender .= renderFolderSection("folderRouting", "Document Routing", $bDisplayLink, $iFolderID);
 	$sToRender .= renderFolderSection("documentTypes", "Document Types", $bDisplayLink, $iFolderID);
 	$sToRender .= renderFolderSection("folderPermissions", "Folder Permissions", $bDisplayLink, $iFolderID);
-//	for ($i=0; $i<8; $i++) {
-//		$sToRender .= "<tr><td align=\"left\">&nbsp;</td></tr>\n";
-//	}	
 	$sToRender .= "</table>";
 	$sToRender .= "</td><td><table border=1>";
-	// spacing hack
-//	for ($i=0; $i<8; $i++) {
-//		$sToRender .= "<tr><td align=\"left\">&nbsp;</td></tr>\n";
-//	}
 	$sToRender .= "</table></td></tr></table>";		
     $sToRender .= "</div>";
 
