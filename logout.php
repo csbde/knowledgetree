@@ -26,6 +26,6 @@ require_once("./lib/Session.inc");
 
 // destroy the session
 Session::destroy();
-// redirect to login
-redirect("control.php");
+// redirect to root
+redirect("/");
 ?>
