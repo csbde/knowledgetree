@@ -148,7 +148,7 @@ class Unit {
 			        // folder name has changed, update the full_path
 					$sOldPath = $default->documentRoot . "/" . $oFolder->getFullPath() . "/" . $oFolder->getName();
 	                // update the folder name
-	              	$sNewPath = $default->documentRoot . "/" . $oFolder->getFullPath() . "/" . $oFolder->getName();	                
+	              	$sNewPath = $default->documentRoot . "/" . $oFolder->getFullPath() . "/" . $this->sName;	                
 	                $oFolder->setName(addslashes($this->sName));
 	                $oFolder->setDescription(addslashes($this->sName . " Unit Root Folder"));
 
