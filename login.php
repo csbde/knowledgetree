@@ -9,18 +9,12 @@
  * Licensed under the GNU GPL. For full terms see the file COPYING.
  *
  * @version $Revision$
- * @author <a href="mailto:michael@jamwarehouse.com>Michael Joseph</a>, Jam Warehouse (Pty) Ltd, South Africa
+ * @author <a href="mailto:michael@jamwarehouse.com">Michael Joseph</a>, Jam Warehouse (Pty) Ltd, South Africa
  * @package dms
  */
  
 // main library routines and defaults
 require_once("./config/dmsDefaults.php");
-require_once("$default->owl_fs_root/lib/db.inc");
-require_once("$default->owl_fs_root/lib/dms.inc");
-require_once("$default->owl_fs_root/lib/lookup.inc");
-//require_once("$default->owl_fs_root/config/html.php");
-require_once("$default->owl_fs_root/lib/control.inc");
-require_once("$default->owl_fs_root/lib/Session.inc");
 
 // -------------------------------
 // page start
