@@ -42,7 +42,7 @@ class System {
     function initialised() {
         global $default;
         
-        if ($this->db->query("SELECT count(*) AS count FROM system_settings WHERE name<>'lastIndexUpdate' AND name<>'filesystemRoot' AND value<>''")) {
+        if ($this->db->query("SELECT count(*) AS count FROM system_settings WHERE name<>'lastIndexUpdate' AND name<>'filesystemRoot' AND name<>'knowledgeTreeVersion' AND value<>''")) {
             $this->db->next_record();
             return ($this->db->f("count") > 0) ? true : false;
         }
