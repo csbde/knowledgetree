@@ -63,10 +63,10 @@ function renderCheckInPage($oDocument) {
     $sToRender .= "<tr><td><input type=\"hidden\" name=\"fForStore\" value=\"1\"/></td></tr>\n";
     $sToRender .= "<tr><td><input type=\"hidden\" name=\"fDocumentID\" value=\"" . $oDocument->getID() . "\"/></td></tr>\n";    
     $sToRender .= "<tr><td>\n";
-    $sToRender .= "<input type=\"radio\" name=\"fCheckInType\" value=\"minor\" checked /> Minor CheckIn\n";    
+    $sToRender .= "<input type=\"radio\" name=\"fCheckInType\" value=\"minor\" checked /> Minor Revision\n";    
     $sToRender .= "</tr></td>\n";
     $sToRender .= "<tr><td>\n";
-    $sToRender .= "<input type=\"radio\" name=\"fCheckInType\" value=\"major\"/> Major CheckIn\n";
+    $sToRender .= "<input type=\"radio\" name=\"fCheckInType\" value=\"major\"/> Major Revision\n";
     $sToRender .= "</tr></td>\n";
     $sToRender .= "</table>\n";
     
@@ -108,9 +108,12 @@ function renderCheckOutPage($oDocument) {
 	return $sToRender;    
 }
 
-function renderErrorPage($sErrorMessage) {
+function renderErrorPage($sErrorMessage, $iDocumentID = -1) {
     global $default;
     return "<p class=\"errorText\">$sErrorMessage</p>\n" .
-           "<a href=\"javascript:history.go(-1)\"><img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\"/></a>\n";
+           (($iDocumentID == -1) ? 
+           "<a href=\"$default->rootUrl/control.php?action=viewDocument&fDocumentID=$iDocumentID\">" :
+           "<a href=\"javascript:history.go(-1)\">") .
+           "<img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\"/></a>\n";
 }
 ?>
