@@ -345,78 +345,173 @@ function renderNonEditableLinkedDocuments($oDocument) {
     return $sToRender;    
 }
 
-function displayButton($sControllerLink, $sQueryString, $sImageName, $bActive, $sInactiveTooltip = "") {
+function displayButton($sAction, $sQueryString, $sImageName, $sDisabledText = "") {
+	global $default;
+
+	// the active is active if there is no disabled text
+	$bActive = !strlen($sDisabledText) > 0;
 	$sImage = "<img border=\"0\" src=\"$default->graphicsUrl/widgets/docactions/";
 	if ($bActive) {
 		$sImage .= "$sImageName.gif\"";
 	} else {
-		$sImage .= "disabled-$sImageName.gif\" alt=\"$sInactiveTooltip\"";		
+		$sImage .= "disabled-$sImageName.gif\" alt=\"$sDisabledText\"";		
 	}
 	$sImage .= "/>";
-	return generateControllerLink($sControllerLink, $sQueryString, $sImage);
+	if ($bActive) {
+		return generateControllerLink($sAction, $sQueryString, $sImage);
+	} else {
+		return $sImage;
+	}
 }
 
-function displayActionButtons($oDocument, $bEdit) {
-    global $default;
-    
-    $iDummyButtons = 2;
-    
-    // view
-    $sToRender .= "<tr><td align=\"left\"><a onClick=\"alert('This will download a copy of the document and is not the same as Checking Out a document.  Changes to this downloaded file will not be managed in the DMS.'); return true;\" href=\"" . generateControllerLink("downloadDocument", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/docactions/view.gif\" border=\"0\" alt=\"View the document\"/></a></td></tr>\n";    
+function displayViewButton($oDocument, $bEdit) {
+	global $default;
+	$sViewAlert = "This will download a copy of the document and is not the same as Checking Out a document.  Changes to this downloaded file will not be managed in the DMS.";
+    return "<tr><td align=\"left\"><a onClick=\"alert('$sViewAlert '); return true;\" href=\"" . generateControllerLink("downloadDocument", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/docactions/view.gif\" border=\"0\" alt=\"View the document\"/></a></td></tr>\n";    
+}
+
+function displayCheckInOutButton($oDocument, $bEdit) {
     if ($bEdit) {
+    	$sQueryString = "fDocumentID=" . $oDocument->getID();
          // display the check in button if the document is checked out and you checked the document out
-        if ($oDocument->getIsCheckedOut() && ($oDocument->getCheckedOutUserID() == $_SESSION["userID"])) {
-            $sToRender .= "<tr><td align=\"left\"><a href=\"" . generateControllerLink("checkInDocument", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/docactions/checkin.gif\" border=\"0\" /></a></td></tr>\n";
+        if ($oDocument->getIsCheckedOut()) {
+        	if ($oDocument->getCheckedOutUserID() == $_SESSION["userID"]) {
+        		$sAction = "checkInDocument";
+        		$sImageName = "checkin";
+        	} else {
+        		$oUser = User::get($oDocument->getCheckedOutUserID());
+        		$sDisabledText = "The document can only be checked back in by " . $oUser->getName();
+        	} 
         // otherwise display the check out button
         } else {
-            $sToRender .= "<tr><td align=\"left\"><a href=\"" . generateControllerLink("checkOutDocument", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/docactions/checkout.gif\" border=\"0\" /></a></td></tr>\n";
+        	$sAction = "checkOutDocument";
+        	$sImageName = "checkout";
         }
     } else {
-    	// display spacing button
-    	$iDummyButtons++;
+    	$sDisabledText = "You do not have write access to this document";
     }
-    
-    $sToRender .= "<tr><td align=\"left\"><a href=\"" . generateControllerLink("emailDocument", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/docactions/email.gif\" border=\"0\" /></a></td></tr>\n";    
-    if ($bEdit && !$oDocument->getIsCheckedOut()) {
-        $sToRender .= "<tr><td align=\"left\"><a href=\"" . generateControllerLink("deleteDocument", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/docactions/delete.gif\" border=\"0\" /></a></td></tr>\n";
-    } else {
-    	$iDummyButtons++;
-    }
-    	
-    $sToRender .= "<tr><td align=\"left\"><a href=\"" . generateControllerLink("viewHistory", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/docactions/history.gif\" border=\"0\" /></a></td></tr>\n";
+    return "<tr><td align=\"left\">"  . displayButton($sAction, $sQueryString, $sImageName, $sDisabledText) . "</td></tr>\n";    
+}
+
+function displayEmailButton($oDocument) {
+	global $default;
+	return "<tr><td align=\"left\"><a href=\"" . generateControllerLink("emailDocument", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/docactions/email.gif\" border=\"0\" /></a></td></tr>\n";
+}
+
+function displayDeleteButton($oDocument, $bEdit) {
     if ($bEdit) {
+    	$sQueryString = "fDocumentID=" . $oDocument->getID();
+    	if ($oDocument->getIsCheckedOut()) {
+    		$sDisabledText = "This document can't be deleted because its checked out";
+    	}
+    } else {
+    	$sDisabledText = "You do not have write access to this document";
+    }
+	return "<tr><td align=\"left\">"  . displayButton("deleteDocument", $sQueryString, "delete", $sDisabledText) . "</td></tr>\n";    
+}
+
+function displayHistoryButton($oDocument) {
+	global $default;
+	return "<tr><td align=\"left\"><a href=\"" . generateControllerLink("viewHistory", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/docactions/history.gif\" border=\"0\" /></a></td></tr>\n";
+}	
+function displayMoveButton($oDocument, $bEdit) {
+    if ($bEdit) {
+    	$sQueryString = "fFolderID=" . $oDocument->getFolderID() . "&fDocumentID=" . $oDocument->getID();
     	// documents in collaboration and checked out documents can't be moved
-		if (!$oDocument->getIsCheckedOut() && (!DocumentCollaboration::documentCollaborationStarted($oDocument->getID()))) {
-        	$sToRender .= "<tr><td align=\"left\"><a href=\"" . generateControllerLink("moveDocument", "fFolderID=" . $oDocument->getFolderID() . "&fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/docactions/move.gif\" border=\"0\" /></a></td></tr>\n";
+		if ($oDocument->getIsCheckedOut()) {
+			$sDisabledText = "The document is checked out";
+		}
+		if (DocumentCollaboration::documentCollaborationStarted($oDocument->getID())) {
+			$sDisabledText = "The document is in collaboration";
 		}
     } else {
-    	$iDummyButtons++;
+     	$sDisabledText = "You do not have write access to this document";
     }
-    
+	return "<tr><td align=\"left\">"  . displayButton("moveDocument", $sQueryString, "move", $sDisabledText) . "</td></tr>\n";
+}
+
+function displaySubscriptionButton($oDocument) {
     // display the unsubscribe button if the user is subscribed to the document
     if (Subscription::exists($_SESSION["userID"], $oDocument->getID(), SubscriptionConstants::subscriptionType("DocumentSubscription"))) {
-        $sToRender .= "<tr><td align=\"left\"><a href=\"" . generateControllerLink("removeSubscription", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/docactions/unsubscribe.gif\" border=\"0\" /></a></td></tr>\n";
+    	$sAction = "removeSubscription";
+    	$sImageName = "unsubscribe";
     // otherwise display the subscribe button
     } else {
-        $sToRender .= "<tr><td align=\"left\"><a href=\"" . generateControllerLink("addSubscription", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/docactions/subscribe.gif\" border=\"0\" /></a></td></tr>\n";
-    }   
-    $sToRender .= "<tr><td align=\"left\"><a href=\"" . generateControllerLink("viewDiscussion", "fDocumentID=" . $oDocument->getID() . "&fForDiscussion=1") . "\"><img src=\"$default->graphicsUrl/widgets/docactions/discussion.gif\" border=\"0\" /></a></td></tr>\n";
+		$sAction = "addSubscription";
+		$sImageName = "subscribe";    	
+    }
+	return "<tr><td align=\"left\">"  . displayButton($sAction, "fDocumentID=" . $oDocument->getID(), $sImageName) . "</td></tr>\n";    
+}
+
+function displayDiscussionButton($oDocument, $bEdit) {
+	global $default;
+    return "<tr><td align=\"left\"><a href=\"" . generateControllerLink("viewDiscussion", "fDocumentID=" . $oDocument->getID() . "&fForDiscussion=1") . "\"><img src=\"$default->graphicsUrl/widgets/docactions/discussion.gif\" border=\"0\" /></a></td></tr>\n";
+}
+	
+function displayArchiveButton($oDocument, $bEdit) {
     // only display the archive button for available documents
     // if the document is not checked out
     // and if the document is not in collaboration
-    if (!$oDocument->getIsCheckedOut() && (!$oDocument->hasCollaboration() || !DocumentCollaboration::documentCollaborationStarted($oDocument->getID()))) {
-    	$sToRender .= "<tr><td align=\"left\"><a href=\"" . generateControllerLink("archiveDocument", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/docactions/archive.gif\" border=\"0\" /></a></td></tr>\n";
+    if ($bEdit) {
+	    if (!$oDocument->getIsCheckedOut()) {
+	    	if ($oDocument->hasCollaboration() || DocumentCollaboration::documentCollaborationStarted($oDocument->getID())) {
+	    		$sDisabledText = "This document is in collaboration and cannot be archived";
+	    	}
+	    } else {
+	    	$sDisabledText = "This document is checked out and cannot be archived.";
+	    }
     } else {
-    	$iDummyButtons++;
+     	$sDisabledText = "You do not have write access to this document";
     }
-    	
-    $sToRender .= "<td align=\"left\"><a href=\"" . generateControllerLink("createDependantDocument", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/docactions/dependentdoc.gif\" border=\"0\" /></a></td>\n";
+	return "<tr><td align=\"left\">"  . displayButton("archiveDocument", "fDocumentID=" . $oDocument->getID(), "archive", $sDisabledText) . "</td></tr>\n";	    
+}
 
+function displayDependantDocumentButton($oDocument, $bEdit) {
+	global $default;
+	return "<td align=\"left\"><a href=\"" . generateControllerLink("createDependantDocument", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/docactions/dependentdoc.gif\" border=\"0\" /></a></td>\n";	
+}
+
+/*
+function displayPublishButton($oDocument, $bEdit) {
+   // only display the publish button for unpublished documents	
+    if (!DocumentCollaboration::documentIsPendingWebPublishing($oDocument->getID())) {      
+        // if there is collaboration
+        if ($oDocument->hasCollaboration()) {
+            // only display publish button if collaboration is complete and you're the last user in the collaboration process (or a sysadmin)
+            if (DocumentCollaboration::documentCollaborationDone($oDocument->getID()) && 
+               ( ($_SESSION["userID"] == DocumentCollaboration::getLastCollaboratorID($oDocument->getID())) || Permission::userIsSystemAdministrator() ) ) {
+                $sToRender .= "<td><a href=" . $_SERVER['PHP_SELF'] . "?fDocumentID=" . $oDocument->getID() . "&fForPublish=1><img src=\"$default->graphicsUrl/widgets/publish.gif\" border=\"0\"/></a></td>\n";
+            }
+        } else if ( ($_SESSION["userID"] == $oDocument->getCreatorID()) || Permission::userIsSystemAdministrator() ) {
+            // no collaboration for this folder, so only the creator (or an administrator) can request publication
+            $sToRender .= "<td><a href=" . $_SERVER['PHP_SELF'] . "?fDocumentID=" . $oDocument->getID() . "&fForPublish=1><img src=\"$default->graphicsUrl/widgets/publish.gif\" border=\"0\"/></a></td>\n";
+        }
+    } else {
+    	$sDisabledText = "This document is already published.";
+    }
+    // FIXME: need to disabled publish button
+	return "<tr><td align=\"left\">"  . displayButton("archiveDocument", "fDocumentID=" . $oDocument->getID(), "archive", $sDisabledText) . "</td></tr>\n";    
+}
+*/
+	
+function displayActionButtons($oDocument, $bEdit) {
+    $sToRender .= displayViewButton($oDocument, $bEdit);
+    $sToRender .= displayEmailButton($oDocument);
+    $sToRender .= displayDeleteButton($oDocument, $bEdit);
+    $sToRender .= displayHistoryButton($oDocument);
+	$sToRender .= displayMoveButton($oDocument, $bEdit);    	
+	$sToRender .= displaySubscriptionButton($oDocument);
+	$sToRender .= displayDiscussionButton($oDocument, $bEdit);
+    $sToRender .= displayArchiveButton($oDocument, $bEdit);
+	$sToRender .= displayDependantDocumentButton($oDocument, $bEdit);
+	// FIXME: need disabled publish button
+	//$sToRender .= displayPublishButton($oDocument, $bEdit);
+	
+	$iDummyButtons = 1;
 	// spacing hack
 	for ($i=0; $i<$iDummyButtons; $i++) {
 		$sToRender .= "<tr><td align=\"left\">&nbsp;</td></tr>\n";
-	}
-	    			
+	}	
     return $sToRender;
 }
 
