@@ -20,11 +20,12 @@ function getMessage() {
 function getSearchResultsByCategory($iFolderID, $sKeywords, $iStartIndex, $sCategory) {
 	global $default;
 	$sQuery = "SELECT DISTINCT '" . "$default->graphicsUrl/widgets/dfolder.gif" . "' AS folder_image_url, F.id AS folder_id, D.id AS document_id, D.name AS document_name, ROUND(MATCH(DT.document_text) AGAINST ('" . $sKeywords . "'),3) AS score " . 
-				"FROM documents AS D INNER JOIN document_text AS DT ON D.id = DT.document_id " .				
+				"FROM $default->owl_documents_table AS D INNER JOIN $default->owl_document_text_table AS DT ON D.id = DT.document_id " .
+				"INNER JOIN $default->owl_document_fields_table AS DFL ON DT.document_id=DFL.document_id " .								
 				"INNER JOIN $default->owl_fields_table AS DF ON DF.id = DFL.document_field_id " .
-				"INNER JOIN status_lookup AS SL ON D.status_id = SL.id " .
-				"INNER JOIN folders AS F on F.ID = D.folder_id " .
-				"INNER JOIN search_document_user_link AS SDUL ON SDUL.document_id = D.id " .
+				"INNER JOIN $default->owl_status_table AS SL ON D.status_id = SL.id " .
+				"INNER JOIN $default->owl_folders_table AS F on F.ID = D.folder_id " .
+				"INNER JOIN $default->search_permissions_table AS SDUL ON SDUL.document_id = D.id " .
 				"WHERE MATCH(DT.document_text) AGAINST ('" . $sKeywords . "') " .
 				"AND SDUL.user_id = " . $_SESSION["userID"] . " " .
 				"AND SL.name='Live' ";
@@ -57,10 +58,10 @@ function getSearchResultsByCategory($iFolderID, $sKeywords, $iStartIndex, $sCate
 function getSearchResultsByDocumentType($iFolderID, $sKeywords, $iStartIndex, $iDocTypeID) {
 	global $default;
 	$sQuery = "SELECT DISTINCT '" . "$default->graphicsUrl/widgets/dfolder.gif" . "' AS folder_image_url, F.id AS folder_id, D.id AS document_id, D.name AS document_name, ROUND(MATCH(DT.document_text) AGAINST ('" . $sKeywords . "'),3) AS score " . 
-				"FROM documents AS D INNER JOIN document_text AS DT ON D.id = DT.document_id " .								 
-				"INNER JOIN status_lookup AS SL ON D.status_id = SL.id " .
-				"INNER JOIN folders AS F on F.ID = D.folder_id " .
-				"INNER JOIN search_document_user_link AS SDUL ON SDUL.document_id = D.id " .
+				"FROM $default->owl_documents_table AS D INNER JOIN $default->owl_document_text_table AS DT ON D.id = DT.document_id " .								 
+				"INNER JOIN $default->owl_status_table AS SL ON D.status_id = SL.id " .
+				"INNER JOIN $default->owl_folders_table AS F on F.ID = D.folder_id " .
+				"INNER JOIN $default->search_permissions_table AS SDUL ON SDUL.document_id = D.id " .
 				"WHERE MATCH(DT.document_text) AGAINST ('" . $sKeywords . "') " .
 				"AND SDUL.user_id = " . $_SESSION["userID"] . " ";
 				if (isset($iDocTypeID)) {
@@ -92,10 +93,10 @@ function getSearchResultsByDocumentType($iFolderID, $sKeywords, $iStartIndex, $i
 function getSeachResultsByFolder($iFolderID, $iStartIndex, $sKeywords) {
 	global $default;
 	$sQuery = "SELECT DISTINCT '" . "$default->graphicsUrl/widgets/dfolder.gif" . "' AS folder_image_url, F.id AS folder_id, D.id AS document_id, D.name AS document_name, ROUND(MATCH(DT.document_text) AGAINST ('" . $sKeywords . "'),3) AS score " . 
-				"FROM documents AS D INNER JOIN document_text AS DT ON D.id = DT.document_id " .				
-				"INNER JOIN status_lookup AS SL ON D.status_id = SL.id " .
-				"INNER JOIN folders AS F on F.ID = D.folder_id " .
-				"INNER JOIN search_document_user_link AS SDUL ON SDUL.document_id = D.id " .
+				"FROM $default->owl_documents_table AS D INNER JOIN $default->owl_document_text_table AS DT ON D.id = DT.document_id " .				
+				"INNER JOIN $default->owl_status_table AS SL ON D.status_id = SL.id " .
+				"INNER JOIN $default->owl_folders_table AS F on F.ID = D.folder_id " .
+				"INNER JOIN $default->search_permissions_table AS SDUL ON SDUL.document_id = D.id " .
 				"WHERE MATCH(DT.document_text) AGAINST ('" . $sKeywords . "') " .
 				"AND SDUL.user_id = " . $_SESSION["userID"] . " " .
 				"AND SL.name='Live' "; 
