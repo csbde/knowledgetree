@@ -2,7 +2,7 @@
 
 // main library routines and defaults
 require_once("../config/dmsDefaults.php");
-require_once("../lib/sanitize.inc");
+require_once("../lib/util/sanitize.inc");
 /**
  * $Id$
  *  
