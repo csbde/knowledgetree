@@ -228,23 +228,36 @@ function renderDashboardNews() {
 	// retrieve all news items
 	$aDashboardNews = DashboardNews::getList("active=1");
 	
+	if ($default->ScrollingNews) {
+	  
+	  $sToRender .= "<MARQUEE onmouseover=this.stop() onmouseout=this.start() scrollAmount=1 direction=up width='100%' height='100'>";
 	$sToRender .= "\t\t\t<table border=\"0\" width=\"100%\">\n";
-	// the main news item
-	$oMainDashboardNews = $aDashboardNews[0];
-	if ($oMainDashboardNews) {
-		$sToRender .= "\t\t\t\t<tr><td><strong>" . $oMainDashboardNews->getSynopsis() . "</strong></td></tr>\n";	
-		$sToRender .= "\t\t\t\t<tr><td>" . $oMainDashboardNews->getImageLink() . "</td></tr>\n";
-		$sToRender .= "\t\t\t\t<tr><td>" . $oMainDashboardNews->getBodyFragment() . "..... <a href=\"#\" onClick=\"javascript:window.open('" . generateControllerUrl("viewNewsItem", "fNewsID=" . $oMainDashboardNews->getID()) . "', 'newwindow', config='height=200,width=300,left=0,top=0, toolbar=no, menubar=no, scrollbars=yes, resizable=no,location=no, directories=no, status=no');return false;\">more</a></td></tr>\n";
-	}
-		
-	// links to old news items
-	/*
-	for ($i=1; $i<count($aDashboardNews); $i++) {
-		$sToRender .= "\t\t\t\t<tr><td>" . generateControllerLink("viewNewsItem", "fNewsID=" . $aDashboardNews[$i]->getID(), $aDashboardNews[$i]->getSynopsis()) . "</td></tr>\n";
-	}
-	*/
-	$sToRender .= "\t\t\t</table>\n";
+
+	  // For each news ...
+	  foreach($aDashboardNews as $key => $oMainDashboardNews) {
 	    
+	    $sToRender .= "\t\t\t\t<tr><td>". $oMainDashboardNews->getImageLink() . "\t<strong><a href=\"#\" onClick=\"javascript:window.open('" . generateControllerUrl("viewNewsItem", "fNewsID=" . $oMainDashboardNews->getID()) . "', 'newwindow', config='height=200,width=300,left=0,top=0, toolbar=no, menubar=no, scrollbars=yes, resizable=no,location=no, directories=no, status=no');return false;\">".$oMainDashboardNews->getSynopsis() . "...</strong></a></td></tr>\n";
+	    
+	  }
+
+	  $sToRender .= "\t\t\t</table>\n";
+	  $sToRender .= "</MARQUEE>";
+	
+	} else {
+	  
+	  $sToRender .= "\t\t\t<table border=\"0\" width=\"100%\">\n";
+	  
+	  // the main news item
+	  $oMainDashboardNews = $aDashboardNews[0];
+	  if ($oMainDashboardNews) {
+	    $sToRender .= "\t\t\t\t<tr><td><strong>" . $oMainDashboardNews->getSynopsis() . "</strong></td></tr>\n";	
+	    $sToRender .= "\t\t\t\t<tr><td>" . $oMainDashboardNews->getImageLink() . "</td></tr>\n";
+	    $sToRender .= "\t\t\t\t<tr><td>" . $oMainDashboardNews->getBodyFragment() . "..... <a href=\"#\" onClick=\"javascript:window.open('" . generateControllerUrl("viewNewsItem", "fNewsID=" . $oMainDashboardNews->getID()) . "', 'newwindow', config='height=200,width=300,left=0,top=0, toolbar=no, menubar=no, scrollbars=yes, resizable=no,location=no, directories=no, status=no');return false;\">more</a></td></tr>\n";
+	  }
+	  $sToRender .= "\t\t\t</table>\n";
+	  
+	}
+
 	return $sToRender;
 }
  
