@@ -106,13 +106,13 @@ function getChosenMetaDataTags() {
 * Generate a string onsisting of all documents that match the search criteria
 * and that the user is allowed to see
 */
-function getApprovedDocumentString($sMetaTagIDs, $sSQLSearchString) {
+function getApprovedDocumentString($sMetaTagIDs, $sSQLSearchString) {	
 	global $default;
 	$aApprovedDocumentIDs = array();
 	$sQuery = "SELECT DISTINCT D.id " .
 				"FROM documents AS D INNER JOIN document_fields_link AS DFL ON DFL.document_id = D.id " .
-				"INNER JOIN document_fields AS DF ON DF.id = DFL.document_field_id " .
-				"WHERE DF.ID IN (1,2,3,4) " .
+				"INNER JOIN document_fields AS DF ON DF.id = DFL.document_field_id " .				
+				"WHERE DF.ID IN ($sMetaTagIDs) " .
 				"AND " . $sSQLSearchString;
 				
 	$sql = $default->db;
