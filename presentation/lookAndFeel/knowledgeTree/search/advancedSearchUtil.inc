@@ -29,8 +29,8 @@
 /**
  * Interrogates the posted variables for the chosen metadata tags
  */
-function getChosenMetaDataTags() {
-	$aKeys = array_keys($_POST);
+function getChosenMetaDataTags($aVariables) {
+	$aKeys = array_keys($aVariables);
 	$aTagIDs = array();
 	for ($i = 0; $i < count($aKeys); $i++) {	
 		$sRowStart = $aKeys[$i];		
