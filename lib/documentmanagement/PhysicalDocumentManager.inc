@@ -136,7 +136,7 @@ class PhysicalDocumentManager {
 	 */
 	function delete($oDocument) {
 		global $default;
-		// current document path (includes old versions)
+		// current document path
 		$sCurrentPath = $oDocument->getPath();
 		
 		// check if the deleted folder exists and create it if not
@@ -148,14 +148,15 @@ class PhysicalDocumentManager {
 		// move the file to the deleted folder, prefixed by its document id
 		$sDeletedPrefix = $default->documentRoot . "/Deleted/" . $oDocument->getID() . "-" . $oDocument->getFileName();
 
-		// find all the previous versions of this document and rename them
-		// ie. interrogate transaction history for all CHECKIN transactions and retrieve the versions		
+		// find all the previous versions of this document and move them
+		// ie. interrogate transaction history for all CHECKIN transactions and retrieve the versions
+		// FIXME: refactor
 		$aDocumentTransactions = DocumentTransaction::getList("document_id=" . $oDocument->getID() . " AND transaction_id=" . CHECKOUT);
 		for ($i=0; $i<count($aDocumentTransactions); $i++) {
 			$sVersionedPath = $sCurrentPath . "-" . $aDocumentTransactions[$i]->getVersion();
 			$sDeletedPath = $sDeletedPrefix . "-" . $aDocumentTransactions[$i]->getVersion();
 			// move it to the deleted folder
-			$default->log->info("delete: moving $sVersionedPath to $sDeletedPath");
+			$default->log->info("PhysicalDocumentManager::delete moving $sVersionedPath to $sDeletedPath");
 			if (!PhysicalDocumentManager::move($sVersionedPath, $sDeletedPath)) {
 				$default->log->error("PhysicalDocumentManager::delete error moving $sVersionedPath to $sDeletedPath; documentID=" . $oDocument->getID());
 				// FIXME: can't bail now since we don't have transactions- so we doggedly continue deleting and logging errors
@@ -177,23 +178,70 @@ class PhysicalDocumentManager {
 	 * return boolean true on successful move, false otherwhise
 	 */	
 	function expunge($oDocument) {
-		// deleted document path (includes previous versions)
-		$sDeletedPath = $default->documentRoot . "/Deleted/" . $oDocument->getID() . "-" . $oDocument->getFileName() . "*";
-		// zap 'em
-		// FIXME: same problem as delete, can't use wildcards, must step through checkin transactions
+		global $default;
+		// deleted document path
+		$sDeletedPrefix = $default->documentRoot . "/Deleted/" . $oDocument->getID() . "-" . $oDocument->getFileName();
+		
+		// find all the previous versions of this document and delete them
+		// ie. interrogate transaction history for all CHECKIN transactions and retrieve the versions
+		// FIXME: refactor		
+		$aDocumentTransactions = DocumentTransaction::getList("document_id=" . $oDocument->getID() . " AND transaction_id=" . CHECKOUT);
+		for ($i=0; $i<count($aDocumentTransactions); $i++) {
+			$sExpungePath = $sDeletedPrefix . "-" . $aDocumentTransactions[$i]->getVersion();
+			// zap it
+			$default->log->info("PhysicalDocumentManager::expunge rm'ing $sExpungePath");
+			if (!unlink($sExpungePath)) {
+				$default->log->error("PhysicalDocumentManager::expunge error deleting $sExpungePath; documentID=" . $oDocument->getID());
+				// FIXME: can't bail now since we don't have transactions- so we doggedly continue deleting and logging errors
+			}
+		}
+
+		// now delete the current version
+		if (unlink($sDeletedPrefix)) {
+			$default->log->info("PhysicalDocumentManager::expunge  unlinkied $sDeletedPrefix");			
+			return true;
+		} else {
+			$default->log->error("PhysicalDocumentManager::expunge couldn't unlink $sDeletedPrefix");
+			return false;
+		}
 	}
 	
 	/**
-	 * Completely remove a document from the Deleted/ folder to the specified folder
+	 * Restore a document from the Deleted/ folder to the specified folder
 	 *
 	 * return boolean true on successful move, false otherwhise
 	 */	
 	function restore($oDocument) {
+		global $default;
+		
 		// deleted document path (includes previous versions)
-		$sDeletedPrefix = $default->documentRoot . "/Deleted/" . $oDocument->getID() . "-" . $oDocument->getFileName();		
-		// move the document to the folder
-		$sNewDocumentFileSystemPath = Folder::getFolderPath($oDocument->getFolderID()) . "/" . $oDocument->getFileName();
-		// FIXME: same problem as delete, can't use wildcards, must step through checkin transactions
+		$sDeletedPath = $default->documentRoot . "/Deleted/" . $oDocument->getID() . "-" . $oDocument->getFileName();
+				
+		// build the path to the new folder
+		$sRestorePath = Folder::getFolderPath($oDocument->getFolderID()) . "/" . $oDocument->getFileName();
+				
+		// find all the previous versions of this document and move them
+		// ie. interrogate transaction history for all CHECKIN transactions and retrieve the versions
+		// FIXME: refactor
+		$aDocumentTransactions = DocumentTransaction::getList("document_id=" . $oDocument->getID() . " AND transaction_id=" . CHECKOUT);
+		for ($i=0; $i<count($aDocumentTransactions); $i++) {
+			$sVersionedDeletedPath = $sDeletedPath . "-" . $aDocumentTransactions[$i]->getVersion();
+			$sVersionedRestorePath = $sRestorePath . "-" . $aDocumentTransactions[$i]->getVersion();
+			// move it to the new folder
+			$default->log->info("PhysicalDocumentManager::restore moving $sVersionedDeletedPath to $sVersionedRestorePath");
+			if (!PhysicalDocumentManager::move($sVersionedDeletedPath, $sVersionedRestorePath)) {
+				$default->log->error("PhysicalDocumentManager::restore error moving $sVersionedDeletedPath to $sVersionedRestorePath; documentID=" . $oDocument->getID());
+				// FIXME: can't bail now since we don't have transactions- so we doggedly continue restoring and logging errors
+			}
+		}
+		
+		// now move the current version		
+		if (PhysicalDocumentManager::move($sDeletedPath, $sRestorePath)) {
+			return true;
+		} else {
+			$default->log->error("PhysicalDocumentManager::restore couldn't move $sDeletedPath to $sRestorePath, documentID=" . $oDocument->getID());
+			return false;
+		}		
 	}
 	
 	
