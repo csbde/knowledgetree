@@ -134,7 +134,7 @@ if (checkSession()) {
                     // TODO: create a transaction?
                     
 					$oUser = User::get($oDocument->getCreatorID());
-					$sBody = $oUser->getUserName() . ", the collaboration process for the document, '" . getControllerLink("viewDocument", "fDocumentID=" . $oDocument->getID(), $oDocument->getName()) . "', has been completed. ";								
+					$sBody = $oUser->getUserName() . ", the collaboration process for the document, '" . generateControllerLink("viewDocument", "fDocumentID=" . $oDocument->getID(), $oDocument->getName()) . "', has been completed. ";								
 					$oEmail = & new Email();
 					$oEmail->send($oUser->getEmail(), "Document collaboration complete", $sBody);
 					
@@ -171,7 +171,7 @@ if (checkSession()) {
                         $oDocumentTransaction = & new DocumentTransaction($fDocumentID, "Document sent for web publishing", UPDATE);
                         $oDocumentTransaction->create();
                         $oDocument = Document::get($fDocumentID);
-                        Document::notifyWebMaster($fDocumentID);
+                        Document::notifyWebMaster($fDocumentID, $fComment);
                         $oPatternCustom = & new PatternCustom();
                         $oPatternCustom->setHtml(getEditPage($oDocument));
                         $main->setCentralPayload($oPatternCustom);
@@ -205,6 +205,7 @@ if (checkSession()) {
                 $oPatternCustom->setHtml(getWebPublishPage($oDocument));
                 $main->setCentralPayload($oPatternCustom);
                 $main->setFormAction($_SERVER['PHP_SELF']);
+                $main->setHasRequiredFields(true);
                 $main->render();
             }
 			
