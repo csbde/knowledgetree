@@ -408,6 +408,7 @@ class User {
 		$_SESSION["errorMessage"] = $lang_err_database;
 		return false;
 	}
+
 	
     /**
      * Static function
@@ -450,4 +451,19 @@ class User {
 	        $this->iId = $id;
 	}
 }
+
+/**
+* Static function
+*
+* Creates a User object from an array
+*
+* @param 	Array		Array of parameters.  Must match order of parameters in constructor
+*
+* @return User user object
+*/
+function & createFromArray($aParameters) {
+	$oUser = & new User($aParameters[0], $aParameters[1], $aParameters[2], $aParameters[3], $aParameters[4], $aParameters[5], $aParameters[6], $aParameters[7], $aParameters[8], $aParameters[9], $aParameters[10]);
+	return $oUser;
+}
+
 ?>
