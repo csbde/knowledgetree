@@ -1,19 +1,30 @@
 <?php
-
 require_once("$default->fileSystemRoot/lib/documentmanagement/PhysicalDocumentManager.inc");
-
 /**
  * $Id$
- * 
+ *
  * Represents a dashboard news item.
+ *
+ * Copyright (c) 2003 Jam Warehouse http://www.jamwarehouse.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
  * 
- * Licensed under the GNU GPL. For full terms see the file COPYING.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * @version $Revision$
  * @author Michael Joseph <michael@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
  * @package lib.dashboard 
  */
-
 class DashboardNews {
 
 	/**
@@ -294,7 +305,7 @@ class DashboardNews {
         //if the id >= 0, then the object has already been created
         if ($this->iId < 0) {
             $sql = $default->db;
-            $result = $sql->query("INSERT INTO $default->owl_news_table (synopsis, body, rank, image, image_size, image_mime_type_id, active) " .
+            $result = $sql->query("INSERT INTO $default->news_table (synopsis, body, rank, image, image_size, image_mime_type_id, active) " .
                                   "VALUES ('" . addslashes($this->sSynopsis) . "', '" . addslashes($this->sBody) . "', $this->iRank, " .
                                   "'" . addslashes($this->sImage) . "', $this->iImageSize, $this->iImageMimeTypeID, " . ($this->bActive ? "1" : "0") . ")");
             if ($result) {
@@ -303,7 +314,7 @@ class DashboardNews {
             
                 if ($this->bActive) {
                 	// we're setting this entry to active, so set all the others to inactive
-                	$sql->query("UPDATE $default->owl_news_table SET active=0 WHERE id <> $this->iId");
+                	$sql->query("UPDATE $default->news_table SET active=0 WHERE id <> $this->iId");
                 }                
                             
                 return true;
@@ -322,7 +333,7 @@ class DashboardNews {
         global $default;
         if ($this->iId >= 0) {			
             $sql = $default->db;
-			$sQuery = "UPDATE " . $default->owl_news_table . " SET " .
+			$sQuery = "UPDATE " . $default->news_table . " SET " .
 								  "synopsis = '" . addslashes($this->sSynopsis) . "', " .
                                   "body = '" . addslashes($this->sBody) . "', " .
                                   "rank = $this->iRank, " .
@@ -335,12 +346,12 @@ class DashboardNews {
             if ($result) {
                 if ($this->bActive) {
                 	// we're setting this entry to active, so set all the others to inactive
-                	$sql->query("UPDATE $default->owl_news_table SET active=0");
+                	$sql->query("UPDATE $default->news_table SET active=0");
                 	// now set our entry to active
-                	$sql->query("UPDATE $default->owl_news_table SET active=1 where id=$this->iId");
+                	$sql->query("UPDATE $default->news_table SET active=1 where id=$this->iId");
                 } else {
                 	// set this to inactive
-                	$sql->query("UPDATE $default->owl_news_table SET active=0 where id=$this->iId");
+                	$sql->query("UPDATE $default->news_table SET active=0 where id=$this->iId");
                 }
                 return true;                 
             }
@@ -359,7 +370,7 @@ class DashboardNews {
         global $default;
         if ($this->iId >= 0) {
             $sql = $default->db;
-            $result = $sql->query("DELETE FROM  " . $default->owl_news_table . "  WHERE id = $this->iId");
+            $result = $sql->query("DELETE FROM  " . $default->news_table . "  WHERE id = $this->iId");
             if ($result) {
                 $this->iId = -1;
                 return true;
@@ -379,7 +390,7 @@ class DashboardNews {
     function & get($iNewsID) {
         global $default;
         $sql = $default->db;
-        $sql->query("SELECT * FROM $default->owl_news_table WHERE id = $iNewsID");
+        $sql->query("SELECT * FROM $default->news_table WHERE id = $iNewsID");
         if ($sql->next_record()) {
             $aImage = array( "image" => $sql->f("image"),
             				 "filesize" => $sql->f("image_size"),
@@ -403,7 +414,7 @@ class DashboardNews {
         global $default;
         $aDashboardNewsArray = array();
         $sql = $default->db;
-        $result = $sql->query("SELECT * FROM " . $default->owl_news_table  . (isset($sWhereClause) ? " WHERE " . $sWhereClause : "") . " ORDER BY rank ASC");
+        $result = $sql->query("SELECT * FROM " . $default->news_table  . (isset($sWhereClause) ? " WHERE " . $sWhereClause : "") . " ORDER BY rank ASC");
         if ($result) {
             $iCount = 0;
             while ($sql->next_record()) {

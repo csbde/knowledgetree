@@ -1,23 +1,34 @@
 <?php
-
 require_once("$default->fileSystemRoot/lib/subscriptions/SubscriptionManager.inc");
 require_once("$default->fileSystemRoot/lib/web/WebDocument.inc");
 require_once("$default->fileSystemRoot/lib/links/link.inc");
 require_once("$default->fileSystemRoot/lib/documentmanagement/DependantDocumentInstance.inc");
 require_once("$default->fileSystemRoot/lib/archiving/ArchiveRestorationRequest.inc");
-
 /**
  * $Id$
+ *
+ * Contains dashboard helper functions.
+ *
+ * Copyright (c) 2003 Jam Warehouse http://www.jamwarehouse.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
  * 
- * Contains dashboard helper functions
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  * 
- * Licensed under the GNU GPL. For full terms see the file COPYING.
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * @version $Revision$
  * @author Michael Joseph <michael@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
  * @package lib.dashboard 
  */
-
 class Dashboard {
 
 	/**
@@ -66,7 +77,7 @@ class Dashboard {
 	function getPendingCollaborationDocuments(){
 	    global $default;
 	    
-	    $sQuery = "SELECT document_id FROM $default->owl_folders_user_roles_table WHERE active=1 AND user_id=" . $this->iUserID;
+	    $sQuery = "SELECT document_id FROM $default->folders_user_roles_table WHERE active=1 AND user_id=" . $this->iUserID;
 	    $aDocumentList = array();
 	    $sql = $default->db;
 	    if ($sql->query($sQuery)) {
@@ -109,7 +120,7 @@ class Dashboard {
 	 */
 	function getDependantDocuments() {
 		global $default;
-		$sQuery = "SELECT id FROM $default->owl_dependant_document_instance_table WHERE user_id = " . $this->iUserID;
+		$sQuery = "SELECT id FROM $default->dependant_document_instance_table WHERE user_id = " . $this->iUserID;
 		$aDocumentList = array();
 		$sql = $default->db;
 		$sql->query($sQuery);

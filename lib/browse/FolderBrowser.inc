@@ -1,23 +1,33 @@
 <?php
-
 require_once("$default->fileSystemRoot/lib/browse/Browser.inc");
 require_once("$default->fileSystemRoot/lib/security/permission.inc");
 require_once("$default->fileSystemRoot/lib/users/User.inc");
 require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
 require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
-
 /**
- * 
  * $Id$
- * 
- * Contains document browsing business logic.
  *
- * Licensed under the GNU GPL. For full terms see the file COPYING.
+ * Contains folder view document browsing business logic.
+ *
+ * Copyright (c) 2003 Jam Warehouse http://www.jamwarehouse.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * @version $Revision$ 
  * @author Michael Joseph <michael@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
- *
- * @package lib.documentmanagement
+ * @package lib.browse
  */
 class FolderBrowser extends Browser {
 
@@ -58,7 +68,7 @@ class FolderBrowser extends Browser {
                 // if the user is in a unit, start at the unit's root folder
                 
                 // lookup the unit name
-                $unitName = lookupField($default->owl_units_table, "name", "id", $unitID);             
+                $unitName = lookupField($default->units_table, "name", "id", $unitID);             
 
                 // the unit root folder has the same name as the unit
                 // FIXME: dodgy i know, but its easy
@@ -69,7 +79,7 @@ class FolderBrowser extends Browser {
                 
                 if (!$aFolders) {
                     // no folder exists with this name, so start at the root
-                    $iFolderID = lookupID($default->owl_folders_table, "parent_id", 0);
+                    $iFolderID = lookupID($default->folders_table, "parent_id", 0);
                 } else {
                 	$iFolderID = $aFolders[0]->getID();
                 }
@@ -77,7 +87,7 @@ class FolderBrowser extends Browser {
             } else {
                 // else just start at the root
                 // FIXME: start at the root folder for the default organisation
-                $iFolderID = lookupID($default->owl_folders_table, "parent_id", 0);
+                $iFolderID = lookupID($default->folders_table, "parent_id", 0);
              }
         }
         
@@ -93,7 +103,7 @@ class FolderBrowser extends Browser {
             $aLookupCriteria = $this->aSortCriteria[$this->sSortField]["lookup"];
                         
             // if we're sorting by name or creator_id then sort folders in the appropriate direction
-            $sFolderQuery = "SELECT f.id FROM $default->owl_folders_table AS f ";
+            $sFolderQuery = "SELECT f.id FROM $default->folders_table AS f ";
 			if (in_array($this->sSortField, array("name", "creator_id"))) {             
 	            if (isset($aLookupCriteria)) {
 	            	$sFolderQuery .= "INNER JOIN " .  $aLookupCriteria["table"] . " lt ON f.$this->sSortField=lt.id WHERE parent_id=" . $iFolderID;
@@ -113,7 +123,7 @@ class FolderBrowser extends Browser {
             }
             
             // create query to retrieve documents in this folder
-            $documentQuery  = "SELECT d.id as id FROM $default->owl_documents_table AS d ";
+            $documentQuery  = "SELECT d.id as id FROM $default->documents_table AS d ";
             if ( isset($aLookupCriteria) ) {
             	$documentQuery .= "INNER JOIN " .  $aLookupCriteria["table"] . " lt ON ";
             	$documentQuery .= "d.$this->sSortField" . "=lt." . (isset($aLookupCriteria["joinColumn"]) ? $aLookupCriteria["joinColumn"] : "id");
