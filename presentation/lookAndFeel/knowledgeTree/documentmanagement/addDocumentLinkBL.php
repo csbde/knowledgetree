@@ -31,7 +31,7 @@ if (checkSession()) {
 			//create a new document link
 			$oDocumentLink = & new DocumentLink($fDocumentID, $fTargetDocumentID);			
 			if ($oDocumentLink->create()) {
-				redirect($default->rootUrl . "/control.php?action=viewDocument&fDocumentID=$fDocumentID");
+				controllerRedirect("viewDocument", "fDocumentID=$fDocumentID&fShowSection=linkedDocuments");
 			} else {
 				require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 				//an error occured while trying to create the document link
