@@ -121,9 +121,34 @@ class PhysicalDocumentManager {
         Header("Pragma: no-cache");
         Header("Expires: 0");
 		readfile($sDocumentFileSystemPath);
-
 	}
-	
+    
+    /**
+	 * Stream a particular version of a document to a client over http
+	 *
+	 * @param 	Primary key of document to stream
+	 * @param 	Primary key of document to stream
+	 * @return int number of bytes read from file on success or false otherwise;
+ 	 */
+	function downloadVersionedPhysicalDocument($iDocumentID, $sVersion) {
+		//get the document
+		$oDocument = & Document::get($iDocumentID);
+		//get the path to the document on the server
+        $sDocumentFileSystemPath = $oDocument->getPath() . "-$sVersion";
+		//set the correct headers
+		if (strstr($_SERVER["HTTP_USER_AGENT"], "MSIE")) {
+			header ("Content-type: application/" . PhysicalDocumentManager::getMimeTypeName($oDocument->getMimeTypeID()));
+		} else {
+			header ("Content-type: application/octect-stream");
+		}
+								
+		header("Content-Length: ". $oDocument->getFileSize());
+		header("Content-Disposition: attachment; filename=" . $oDocument->getFileName() . "-$sVersion");
+        header("Pragma: no-cache");
+        header("Expires: 0");
+		readfile($sDocumentFileSystemPath);
+    }
+    
 	/**
 	* Move a document from a source to a destination
 	*
