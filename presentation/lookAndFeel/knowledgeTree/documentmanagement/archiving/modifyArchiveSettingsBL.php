@@ -9,6 +9,7 @@ require_once("$default->fileSystemRoot/lib/visualpatterns/PatternMainPage.inc");
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternTableSqlQuery.inc");
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternListBox.inc");
+require_once("$default->fileSystemRoot/presentation/Html.inc");
 require_once("$default->uiDirectory/documentmanagement/documentUI.inc");
 require_once("$default->uiDirectory/documentmanagement/archiving/archiveSettingsUI.inc");
 
