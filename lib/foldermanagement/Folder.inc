@@ -342,11 +342,14 @@ class Folder {
 	* @return integer primary key of parent folder
 	*/
 	function getParentFolderID($iFolderID) {
-		global $default;
-		$sql = new Owl_DB();
-		$sql->query("SELECT parent_id FROM " . $default->owl_folders_table . " WHERE id = " . $iFolderID);
-		$sql->next_record();
-		return $sql->f("parent_id");
+		if ($iFolderID != 0) {
+			global $default;		
+			$sql = new Owl_DB();
+			$sql->query("SELECT parent_id FROM " . $default->owl_folders_table . " WHERE id = " . $iFolderID);
+			$sql->next_record();		
+			return $sql->f("parent_id");
+		}
+		return 0;
 	}
 	
 	/**
