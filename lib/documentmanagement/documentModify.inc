@@ -49,6 +49,7 @@ class DocumentModify {
 						  return false;					
                 	}				
 				}
+			}
 		}
 		
 	}
