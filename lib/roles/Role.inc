@@ -170,7 +170,7 @@ class Role {
 		$result = $sql->query("SELECT * FROM $default->owl_roles_table WHERE id = $iRoleID");
 		if ($result) {
 			if ($sql->next_record()) {
-				$oRole = & new Role($sql->f("name"), $sql->f("can_read"), $sql->f("can_write"));
+				$oRole = & new Role(stripslashes($sql->f("name")), $sql->f("can_read"), $sql->f("can_write"));
 				$oRole->iId = $iRoleID;
 				return $oRole;
 			}
