@@ -28,7 +28,7 @@ if (checkSession()) {
 				if ($oFolderCollaboration->create()) {
 					//on successful creation, redirect to the folder edit page
 					include_once("$default->fileSystemRoot/presentation/Html.inc");
-					redirect("$default->rootUrl/control.php?action=editFolder&fFolderID=$fFolderID");
+					controllerRedirect("editFolder", "fFolderID=$fFolderID&fShowSection=folderRouting");
 				} else {
 					//otherwise display an error message
 					include_once("$default->fileSystemRoot/lib/visualpatterns/PatternListBox.inc");			
