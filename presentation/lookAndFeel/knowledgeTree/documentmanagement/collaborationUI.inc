@@ -43,21 +43,23 @@ function getRole($iRoleID) {
 
 function getDocumentRoutingPage($iGroupID, $iUserID, $iRoleID, $iSequenceNumber, $fDocumentID) {
 	global $default;
+	$sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
+	$sTDBGColour = $default->siteMap->getSectionColour($sSectionName, "td");
+	$sTHBGColour = $default->siteMap->getSectionColour($sSectionName, "th");
 	return "<table cellspacing=2, cellpadding=2, border=0>\n" .
 			"<caption><b>Document Routing</b></caption>\n" .
 			"<tr>\n" .
-			"<td><b>Group</b></td><td>".getGroupRow($iGroupID)."</td>\n" .
+			"<td bgcolor=\"$sTDBGColour\"><b>Group</b></td><td>".getGroupRow($iGroupID)."</td>\n" .
+			"</tr>\n" .
+			"<tr>\n" .			
+			"<td bgcolor=\"$sTDBGColour\"><b>Role</b></td><td bgcolor=\"F5F6EE\">".getRole($iRoleID)."</td>\n" .			
 			"</tr>\n" .
 			"<tr>\n" .
-			//"<td><b>Role</b></td><td>".getRoleDropDown($iRoleID)."</td>\n" .
-			"<td><b>Role</b></td><td>".getRole($iRoleID)."</td>\n" .			
-			"</tr>\n" .
-			"<tr>\n" .
-			"<td><b>Player</b></td><td>".getUserDropDown($iGroupID, $iUserID)."</td>\n" .
+			"<td bgcolor=\"$sTDBGColour\"><b>Player</b></td><td>".getUserDropDown($iGroupID, $iUserID)."</td>\n" .
 			"</tr>\n" .
 			"<tr>\n" .
 			"<tr>\n" .
-			"<td><b>Seq. no.</b></td><td>$iSequenceNumber</td>\n" .
+			"<td bgcolor=\"$sTDBGColour\"><b>Seq. no.</b></td><td bgcolor=\"F5F6EE\">$iSequenceNumber</td>\n" .
 			"</tr>\n" .
 			"<tr>\n" .
 			"<td colspan=\"2\">&nbsp</td>\n" .

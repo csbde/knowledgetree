@@ -161,8 +161,11 @@ function getEditPage($oDocument) {
 	if ((!Document::documentCollaborationStarted($oDocument->getID())) && ($_SESSION["userID"] == $oDocument->getCreatorID())) {
 		//if not all collaboration steps have been set, then you cannot start the collaboration process
 		//only the creator of the document can start the collaboration process		
-		$sToRender .= "\t\t<td><a href=" . $_SERVER['PHP_SELF'] . "?fDocumentID=" . $oDocument->getID() . "&fBeginCollaboration=1><img src=\"$default->graphicsUrl/widgets/begin.gif\" border=\"0\"/></a>".
-						"<a href=" . $_SERVER['PHP_SELF'] . "?fDocumentID=" . $oDocument->getID() . "&fPublish=1><img src=\"$default->graphicsUrl/widgets/begin.gif\" border=\"0\"/></a></td>\n";		
+		$sToRender .= "\t\t<td><a href=" . $_SERVER['PHP_SELF'] . "?fDocumentID=" . $oDocument->getID() . "&fBeginCollaboration=1><img src=\"$default->graphicsUrl/widgets/begin.gif\" border=\"0\"/></a>";
+		if (!Document::documentIsPendingWebPublishing($iDocumentID)) {
+			$sToRender .= "<a href=" . $_SERVER['PHP_SELF'] . "?fDocumentID=" . $oDocument->getID() . "&fForPublish=1><img src=\"$default->graphicsUrl/widgets/publish.gif\" border=\"0\"/></a>\n";
+		}
+		$sToRender .= "</td>\n";
 	} else if (Document::userIsPerformingCurrentCollaborationStep($oDocument->getID())) {
 		//if the current user is responsible for an active step in the collaboration process		
 		$sToRender .= "\t\t<td><table border=\"0\"><tr>\n";
