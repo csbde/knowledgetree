@@ -238,7 +238,7 @@ if (checkSession()) {
 	            $main->setErrorMessage("This document has been archived.");
             }
             $main->setCentralPayload($oPatternCustom);
-            //$main->setOnLoadJavaScript("switchDiv('documentData')");
+            $main->setOnLoadJavaScript("switchDiv('documentData')");
             $main->setFormAction("$default->rootUrl/control.php?action=modifyDocument&fDocumentID=" . $oDocument->getID());
             $main->render();
         } else {
