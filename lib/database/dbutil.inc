@@ -206,6 +206,10 @@ class DBUtil {
         return $db->escapeSimple($sString);
     }
 
+    function compactQuery($sQuery) {
+        return str_replace("\n", " ", $sQuery);
+    }
+
 }
 
 ?>
