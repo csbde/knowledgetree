@@ -53,5 +53,22 @@ class System {
             }
         }
     }
+    
+    function generateRequiredFieldValidation($aValidationColumnNames,$aValidationDisplayColumnNames) {
+    		
+		$sToRender .= "\n\n<script language=\"javascript\">\n<!--\n";
+		$sToRender .= "function validateForm(theForm) {\n";			
+		for ($i = 0; $i < count($aValidationColumnNames); $i++) {			
+			$sToRender .= "\tif (!(validRequired(document.MainForm." . $aValidationColumnNames[$i] . ", '" . $aValidationDisplayColumnNames[$i] . "'))) {\n";
+			$sToRender .= "\t\treturn false;\n\t}\n";
+				
+		}
+		$sToRender .= "return true;\n}\n";
+		
+		$sToRender .= "//-->\n</script>\n\n";
+		
+		//return $sToRender;
+                
+	}
 }
 ?>
