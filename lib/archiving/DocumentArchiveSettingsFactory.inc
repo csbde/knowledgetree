@@ -1,7 +1,6 @@
 <?php
 require_once("$default->fileSystemRoot/lib/archiving/DocumentArchiving.inc");
-require_once("$default->fileSystemRoot/lib/archiving/ArchivingUtilisationSettings.inc");
-require_once("$default->fileSystemRoot/lib/archiving/ArchivingDateSettings.inc");
+require_once("$default->fileSystemRoot/lib/archiving/ArchivingSettings.inc");
 require_once("$default->fileSystemRoot/lib/archiving/TimePeriod.inc");
 
 /**
@@ -17,19 +16,7 @@ require_once("$default->fileSystemRoot/lib/archiving/TimePeriod.inc");
  */
 
 class DocumentArchiveSettingsFactory {
-	var $iArchivingTypeID;
-	var $sArchivingType;
 	
-	/**
-	 * Constructs a new factory for the specified archiving type
-	 */
-	function DocumentArchiveSettingsFactory($iArchivingTypeID) {
-		global $default;
-				
-		$this->iArchivingTypeID = $iArchivingTypeID;
-		$this->sArchivingType = lookupName($default->owl_archiving_type_lookup_table, $iArchivingTypeID);		
-	}
-
 	function handleTimePeriod($iTimeUnitID, $iUnits) {
 		if ($iTimeUnitID && $iUnits) {
 			// search for an existing time period id
@@ -52,20 +39,22 @@ class DocumentArchiveSettingsFactory {
 		return $iTimePeriodID;
 	}
 		
-	function create($iDocumentID, $dExpirationDate, $iDocumentTransactionID, $iTimeUnitID, $iUnits) {
+	function create($iArchivingTypeID, $iDocumentID, $dExpirationDate, $iDocumentTransactionID, $iTimeUnitID, $iUnits) {
 		global $default;
 		
+		$sArchivingType = lookupName($default->owl_archiving_type_lookup_table, $iArchivingTypeID);
+				
 		// process time period (if any)
 		$iTimePeriodID = $this->handleTimePeriod($iTimeUnitID, $iUnits);
 		
 		// construction strings
-		switch ($this->sArchivingType) {
-			case "Date" : 			$sSearchConstruction = "\$aArchiveSettings = ArchivingDateSettings::getList(\"";
+		switch ($sArchivingType) {
+			case "Date" : 			$sSearchConstruction = "\$aArchiveSettings = ArchivingSettings::getList(\"";
 									$sSearchConstruction .= (isset($dExpirationDate) ? "expiration_date='$dExpirationDate'" :  "time_period_id=$iTimePeriodID") . "\");";
-									$sConstruction  = "\$oArchiveSettings = new ArchivingDateSettings(\$dExpirationDate, $iTimePeriodID);";
+									$sConstruction  = "\$oArchiveSettings = new ArchivingSettings($iArchivingTypeID, \$dExpirationDate, -1, $iTimePeriodID);";
 									break;
-			case "Utilisation" : 	$sSearchConstruction = "\$aArchiveSettings = ArchivingUtilisationSettings::getList(\"document_transaction_id=$iDocumentTransactionID AND time_period_id=$iTimePeriodID\");";
-									$sConstruction  = "\$oArchiveSettings = new ArchivingUtilisationSettings($iDocumentTransactionID, $iTimePeriodID);";
+			case "Utilisation" : 	$sSearchConstruction = "\$aArchiveSettings = ArchivingSettings::getList(\"document_transaction_id=$iDocumentTransactionID AND time_period_id=$iTimePeriodID\");";
+									$sConstruction  = "\$oArchiveSettings = new ArchivingSettings($iArchivingTypeID, \"NULL\", $iDocumentTransactionID, $iTimePeriodID);";
 									break;
 		}
 				
@@ -86,7 +75,7 @@ class DocumentArchiveSettingsFactory {
 		}
 			
 		// now link to the documents
-		$oDocumentArchiving = new DocumentArchiving($iDocumentID, $this->iArchivingTypeID, $iArchiveSettingsID);
+		$oDocumentArchiving = new DocumentArchiving($iDocumentID, $iArchiveSettingsID);
 		if ($oDocumentArchiving->create()) {
 			return true;
 		} else {
@@ -99,16 +88,16 @@ class DocumentArchiveSettingsFactory {
 		global $default;
 				
 		// retrieve the settings
-		$sRetrieveConstruction = "\$oArchiveSettings = Archiving" . $this->sArchivingType . "Settings::get(\"" . $oDocumentArchiving->getArchivingSettingsID(). "\");";
-		eval($sRetrieveConstruction);
+		$oArchiveSettings = ArchivingSettings::get($oDocumentArchiving->getArchivingSettingsID());
 		if ($oArchiveSettings) {
 					
 			// process time period (if any)
 			$iTimePeriodID = $this->handleTimePeriod($iTimeUnitID, $iUnits);
 			$oArchiveSettings->setTimePeriodID($iTimePeriodID);
 								
+			$sArchivingType = lookupName($default->owl_archiving_type_lookup_table, $oArchiveSettings->getArchivingTypeID());
 			// update it based on the type
-			switch ($this->sArchivingType) {
+			switch ($sArchivingType) {
 				case "Date" : 			$oArchiveSettings->setExpirationDate($dExpirationDate);										
 										break;
 				case "Utilisation" : 	$oArchiveSettings->setDocumentTransactionID($iDocumentTransactionID);
