@@ -320,7 +320,7 @@ function getEditPage($oDocument) {
     $sToRender .= "\t\t<td>" . renderEditableLinkedDocuments($oDocument) . "</td>\n";
     $sToRender .= "\t</tr>";
     $sToRender .= "\t<tr>\n";
-    $sToRender .= "<td><a href=" . $_SERVER['PHP_SELF'] . "?fDocumentID=" . $oDocument->getID() . "&fForPublish=1><img src=\"$default->graphicsUrl/widgets/add.gif\" border=\"0\"/></a></td>\n";
+    $sToRender .= "<td><a href=\"$default->rootUrl/control.php?action=addDocumentLink&fDocumentID=" . $oDocument->getID() ."\"><img src=\"$default->graphicsUrl/widgets/add.gif\" border=\"0\"/></a></td>\n";
     $sToRender .= "\t</tr>";     
     $sToRender .= "\t</table>";
     $sToRender .= "</td>\n";
