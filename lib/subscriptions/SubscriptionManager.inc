@@ -43,29 +43,52 @@ class SubscriptionManager {
     }
 
     /**
-     * Removes a subscription.
+     * Removes all subscriptions
      *
      * @param int the user to create the subscription for     
      * @param int the external id to create the subscription for
      * @param int the subscription type     
      * @return true if the subscription creation succeed, false and error message otherwise
      */
-    function removeSubscription($iUserID, $iExternalID, $iSubscriptionType ) {
+    function removeSubscriptions($iExternalID, $iSubscriptionType ) {
         global $lang_sub_not_exists;
 
-        if (Subscription::exists($iUserID, $iExternalID, $iSubscriptionType)) {
-            $oSubscription = Subscription::getByIDs($iUserID, $iExternalID, $iSubscriptionType);
-            if ($oSubscription->delete()) {
-                return true;
+        // first retrieve all the subscribers to this content
+        $aSubscriptions = SubscriptionManager::retrieve($iExternalID, $iSubscriptionType);
+        $bResult = true;
+        for ($i = 0; $i < count($aSubscriptions); $i++) {
+            // delete them
+            if ($aSubscriptions[$i]->delete()) {
+                $bResult = $bResult && true;
             } else {
-                // error message set in Subscription::delete
-                return false;
+                $bResult = $bResult && false;
+            }
+        }
+        return $bResult;
+    }
+    
+    /**
+     * Retrieves all subscriptions for the specified content.
+     *
+     * @param int the external id to create the subscription for
+     * @param int the subscription type
+     */
+    function retrieveSubscriptions($iExternalID, $iSubscriptionType) {
+        global $default;
+
+        $sql = $default->db;
+        if ($sql->query("SELECT id FROM " . Subscription::getTableName($iSubscriptionType) .  " " .
+                        "WHERE " . Subscription::getIdFieldName($iSubscriptionType) . " = $iExternalID")) {
+            $aSubscriptions = array();
+            while ($sql->next_record()) {
+                $aSubscriptions[] = & Subscription::get($sql->f("id"), $iSubscriptionType);
             }
         } else {
-            $_SESSION["errorMessage"] = $lang_sub_not_exists;
+            $_SESSION["errorMessage"] = $lang_err_database;
             return false;
         }
-    }
+        return $aSubscriptions;
+    }        
 
     /**
      * Clears the alert from the selected subscription and returns the
@@ -102,8 +125,8 @@ class SubscriptionManager {
     * @return array of subscription objects
     */
     function listSubscriptions($iUserID) {
-        return $aSubscriptions = array_merge(SubscriptionManager::retrieveSubscriptions($iUserID, SubscriptionConstants::subscriptionType("FolderSubscription")),
-                                             SubscriptionManager::retrieveSubscriptions($iUserID, SubscriptionConstants::subscriptionType("DocumentSubscription")));
+        return $aSubscriptions = array_merge(SubscriptionManager::retrieveUserSubscriptions($iUserID, SubscriptionConstants::subscriptionType("FolderSubscription")),
+                                             SubscriptionManager::retrieveUserSubscriptions($iUserID, SubscriptionConstants::subscriptionType("DocumentSubscription")));
     }
     
     /**
@@ -112,7 +135,7 @@ class SubscriptionManager {
     * @param integer the ID of the user to retrieve subscriptions for
     * @return array of subscription objects, false if the database interaction fails
     */
-    function retrieveSubscriptions($iUserID, $iSubscriptionType) {
+    function retrieveUserSubscriptions($iUserID, $iSubscriptionType) {
         global $default;
 
         $sql = $default->db;
