@@ -11,7 +11,7 @@ function getSelectFieldPage($iDocFieldID) {
 	
 	
 	$sToRender .= "<br></br>\n";
-	$sToRender .= "<b>Add MetaData:</b>\n";
+	$sToRender .= "<b>Add Document Field Lookups:</b>\n";
 	$sToRender .= "<table>\n";
 	$sToRender .= "<br></br>\n";
 	$sToRender .= "<tr>Please Select a Field</tr>\n";
@@ -43,10 +43,10 @@ function getAddMetaDataPage($iDocFieldID) {
 	
 	
 	$sToRender .= "<br></br>\n";
-	$sToRender .= "<b>Add New MetaData:</b>\n";
+	$sToRender .= "<b>Add New Document Field Lookup:</b>\n";
 	$sToRender .= "<table>\n";
 	$sToRender .= "<br></br>\n";
-	$sToRender .= "<tr>Please Enter a new MetaData Name to add to the Selected Field</tr>\n";
+	$sToRender .= "<tr>Please Enter a new lookup value to add to the Selected Field</tr>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
@@ -55,7 +55,7 @@ function getAddMetaDataPage($iDocFieldID) {
 	$sToRender .= "<td>Document Field: </td><td><b>" . getDocFieldDisplay($oDocField) . "</br></td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>MetaData: </td><td><input type=\"text\" name=\"fMetaDataName\">\n" ;
+	$sToRender .= "<td>Lookup: </td><td><input type=\"text\" name=\"fMetaDataName\">\n" ;
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "</tr>\n";
@@ -80,7 +80,7 @@ function getSuccessPage() {
 	$sToRender .= "<table>\n";
 	$sToRender .= "<br></br>\n";
 	$sToRender .= "<tr></tr>\n";
-	$sToRender .= "<tr><td>The metadata was successfully edited</td></tr>\n";
+	$sToRender .= "<tr><td>The lookup value was successfully added</td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
@@ -101,7 +101,7 @@ function getFailPage() {
 	$sToRender .= "<table>\n";
 	$sToRender .= "<br></br>\n";
 	$sToRender .= "<tr></tr>\n";
-	$sToRender .= "<tr><td>The metadata was not updated</td></tr>\n";
+	$sToRender .= "<tr><td>The lookup value was not added</td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";

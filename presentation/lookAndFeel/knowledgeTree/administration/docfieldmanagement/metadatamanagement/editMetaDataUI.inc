@@ -11,7 +11,7 @@ function getSelectFieldPage($iDocFieldID) {
 	
 	
 	$sToRender .= "<br></br>\n";
-	$sToRender .= "<b>Edit MetaData:</b>\n";
+	$sToRender .= "<b>Edit Document Field Lookups:</b>\n";
 	$sToRender .= "<table>\n";
 	$sToRender .= "<br></br>\n";
 	$sToRender .= "<tr>Please Select a Field</tr>\n";
@@ -49,15 +49,15 @@ function getSelectMetaDataPage($iDocFieldID, $iMetaDataID) {
 	
 	
 	$sToRender .= "<br></br>\n";
-	$sToRender .= "<b>Edit MetaData:</b>\n";
+	$sToRender .= "<b>Edit Document Field Lookups:</b>\n";
 	$sToRender .= "<table>\n";
 	$sToRender .= "<br></br>\n";
-	$sToRender .= "<tr>Please Select the Metadata you wish to Edit</tr>\n";
+	$sToRender .= "<tr>Please Select the Document Field Lookup you wish to Edit</tr>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>Document Field: </td><td>" . getDocFieldDisplay($oDocField) . "</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>MetaData: </td><td>" . getMetaDataDisplay($oMetaData,$iDocFieldID) . "</td>\n";
+	$sToRender .= "<td>Lookup: </td><td>" . getMetaDataDisplay($oMetaData,$iDocFieldID) . "</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "</tr>\n";
@@ -87,7 +87,7 @@ function getEditMetaDataPage($iDocFieldID, $iMetaDataID) {
 	
 	
 	$sToRender .= "<br></br>\n";
-	$sToRender .= "<b>Edit MetaData:</b>\n";
+	$sToRender .= "<b>Edit Document Field Lookups:</b>\n";
 	$sToRender .= "<table>\n";
 	$sToRender .= "<br></br>\n";
 	$sToRender .= "<tr>Enter a Different Value</tr>\n";
@@ -95,7 +95,7 @@ function getEditMetaDataPage($iDocFieldID, $iMetaDataID) {
 	$sToRender .= "<td>Document Field: </td><td>" . getDocFieldDisplay($oDocField) . "</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>MetaData: </td><td>" . getMetaDataDisplay($oMetaData,$iDocFieldID) . "</td>\n";
+	$sToRender .= "<td>Lookup: </td><td>" . getMetaDataDisplay($oMetaData,$iDocFieldID) . "</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
@@ -120,7 +120,7 @@ function getSuccessPage() {
 	$sToRender .= "<table>\n";
 	$sToRender .= "<br></br>\n";
 	$sToRender .= "<tr></tr>\n";
-	$sToRender .= "<tr><td>The metadata was successfully edited</td></tr>\n";
+	$sToRender .= "<tr><td>The Document Field Lookup was successfully edited</td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
@@ -141,7 +141,7 @@ function getFailPage() {
 	$sToRender .= "<table>\n";
 	$sToRender .= "<br></br>\n";
 	$sToRender .= "<tr></tr>\n";
-	$sToRender .= "<tr><td>The metadata was not updated</td></tr>\n";
+	$sToRender .= "<tr><td>The Document Field Lookup was not updated</td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
