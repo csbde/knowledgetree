@@ -434,27 +434,6 @@ class Document {
     }
 
     /**
-     * Get the folder id for the document
-     *
-     * @param int the ID of the document to lookup the folderID for
-     * @return int folderID on success, false otherwise and set $_SESSION["errorMessage"]
-     */
-    function getFolderID($iDocumentID) {
-        global $default, $lang_err_database, $lang_err_doc_not_exist;
-        $sql = $default->db;
-        if ($sql->query("SELECT folder_id FROM " . $default->owl_documents_table . " WHERE id = $iDocumentID")) {
-            if ($sql->next_record()) {
-                return $sql->f("folder_id");
-            } else {
-                $_SESSION["errorMessage"] = $lang_err_doc_not_exist;
-            }
-        } else {
-            $_SESSION["errorMessage"] = $lang_err_database;
-        }
-        return false;
-    }
-
-    /**
     * Lookup the document name for the document
     *
     * @param int the ID of the document to lookup the document name for
@@ -463,6 +442,7 @@ class Document {
     function getDocumentName($iDocumentID) {
         global $default, $lang_err_database, $lang_err_doc_not_exist;
         $sql = $default->db;
+
         if ($sql->query("SELECT name FROM " . $default->owl_documents_table . " WHERE id = $iDocumentID")) {
             if ($sql->next_record()) {
                 return $sql->f("name");
@@ -483,7 +463,9 @@ class Document {
     * @return string full path to document
     */
     function getDocumentDisplayPath($iDocumentID) {
-        return Folder::getFolderDisplayPath(Document::getFolderID($iDocumentID)) . " > " . Document::getDocumentName($iDocumentID);
+        global $default;
+        $oDocument = & Document::get($iDocumentID);
+        return Folder::getFolderDisplayPath($oDocument->getFolderID()) . " > " . Document::getDocumentName($iDocumentID);
     }
 }
 
