@@ -160,6 +160,7 @@ $default->siteMap->addPage("userManagement", "/presentation/lookAndFeel/knowledg
 $default->siteMap->addPage("groupManagement", "/presentation/lookAndFeel/knowledgeTree/administration/admin.php?sectionName=groupAdministration", "Administration", UnitAdmin, "Group Management");
 $default->siteMap->addPage("unitManagement", "/presentation/lookAndFeel/knowledgeTree/administration/admin.php?sectionName=unitAdministration", "Administration", SysAdmin, "Unit Management");
 $default->siteMap->addPage("orgManagement", "/presentation/lookAndFeel/knowledgeTree/administration/admin.php?sectionName=orgAdministration", "Administration", SysAdmin, "Organisation Management");
+$default->siteMap->addPage("doctypeManagement", "/presentation/lookAndFeel/knowledgeTree/administration/admin.php?sectionName=doctypeAdministration", "Administration", SysAdmin, "Document Type & Field Management");
 $default->siteMap->addPage("roleManagement", "/presentation/lookAndFeel/knowledgeTree/administration/admin.php?sectionName=roleAdministration", "Administration", SysAdmin, "Role Management");
 $default->siteMap->addPage("linkManagement", "/presentation/lookAndFeel/knowledgeTree/administration/admin.php?sectionName=linkAdministration", "Administration", SysAdmin, "QuickLink Management");
 $default->siteMap->addPage("systemAdministration", "/presentation/lookAndFeel/knowledgeTree/administration/systemsettings/systemSettingsBL.php", "Administration", SysAdmin, "System Settings");
@@ -194,11 +195,28 @@ $default->siteMap->addPage("editUser", "/tests/groups/adduser.php", "UserAdminis
 $default->siteMap->addPage("removeUser", "/tests/groups/adduser.php", "UserAdministration", UnitAdmin, "Remove User from System");
 $default->siteMap->addPage("addUsersToGroup", "/tests/groups/adduser.php", "UserAdministration", UnitAdmin, "Add User to A Group");
 
+/************document type management*/
+$default->siteMap->addPage("doctype", "/presentation/lookAndFeel/knowledgeTree/administration/admin.php?sectionName=documentTypeAdministration", "doctypeAdministration", SysAdmin, "Document Type Management");
+$default->siteMap->addPage("docfield", "/presentation/lookAndFeel/knowledgeTree/administration/admin.php?sectionName=documentFieldAdministration", "doctypeAdministration", SysAdmin, "Document Field Management");
+
+//document type stuff
+$default->siteMap->addPage("addDocType", "/presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/addDocTypeBL.php", "documentTypeAdministration", SysAdmin, "Add a Document Type");
+$default->siteMap->addPage("addDocTypeSuccess", "/presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/addDocTypeSuccess.php", "documentTypeAdministration", SysAdmin, "Add a Document Type success", False);
+$default->siteMap->addPage("editDocType", "/presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/editDocTypeBL.php", "documentTypeAdministration", SysAdmin, "Edit a Document Type");
+$default->siteMap->addPage("removeDocType", "/presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/removeDocTypeBL.php", "documentTypeAdministration", SysAdmin, "Remove a Document Type");
+//doc field stuff
+$default->siteMap->addPage("addDocField", "/presentation/lookAndFeel/knowledgeTree/administration/admin.php", "documentFieldAdministration", SysAdmin, "Add a Document Field");
+
+/*************************/
+
 //rolemanagement
 $default->siteMap->addPage("addRole", "/presentation/lookAndFeel/knowledgeTree/administration/rolemanagement/addRoleBL.php", "roleAdministration", SysAdmin, "Add New Role");
 $default->siteMap->addPage("editRole", "/presentation/lookAndFeel/knowledgeTree/administration/rolemanagement/editRoleBL.php", "roleAdministration", SysAdmin, "Edit Role Properties");
 $default->siteMap->addPage("editRoleSuccess", "/presentation/lookAndFeel/knowledgeTree/administration/rolemanagement/editRoleSuccess.php", "roleAdministration", SysAdmin, "Edit Role Properties", false);
 $default->siteMap->addPage("removeRole", "/presentation/lookAndFeel/knowledgeTree/administration/rolemanagement/removeRoleBL.php", "roleAdministration", SysAdmin, "Remove a Role");
+
+
+
 
 //link management
 $default->siteMap->addPage("addLink", "/presentation/lookAndFeel/knowledgeTree/administration/linkmanagement/addLinkBL.php", "linkAdministration", SysAdmin, "Add A Link");
