@@ -144,6 +144,9 @@ $default->phpversion = "4.0.2";
 $default->owl_timeout = 1200;
 $default->debug = True;
 
+// whether ssl is enabled or not
+$default->sslEnabled = false;
+
 // define site mappings
 require_once("$default->owl_fs_root/lib/session/SiteMap.inc");
 $default->siteMap = new SiteMap(false);
@@ -199,7 +202,8 @@ $default->siteMap->addPage("systemAdministration", "/presentation/blah.php", "Un
 
 
 /////// pages for subscriptions section
-$default->siteMap->addDefaultPage("subscriptions", "/subscriptions.php", "Subscriptions", Guest, "SubScriptions",false);
+$default->siteMap->addDefaultPage("subscriptions", "/subscriptions.php", "Subscriptions", Guest, "SubScriptions", false);
+$default->siteMap->addDefaultPage("viewAlert", "/presentation/lookAndFeel/knowledgeTree/subscriptions/viewAlertBL.php", "Subscriptions", User, "Subscriptions", false);
 
 // pages for advanced search section
 // $default->siteMap->addDefaultPage("advancedSearch", "/email.php", "Advanced Search", "Anonymous", "Advanced Search");
@@ -223,7 +227,6 @@ $default->siteMap->addPage("sitemap", "/tests/session/SiteMap.php", "Tests", Gue
 $default->siteMap->addPage("documentBrowserTest", "/tests/documentmanagement/DocumentBrowser.php", "Tests", Guest, "test the document browser", false);
 $default->siteMap->addPage("scroll", "/tests/scroll/textScrollTest.php", "Tests", Guest, "test scrolling", false);
 $default->siteMap->addPage("subTest", "/tests/subscriptions/subscription.php", "Tests", Guest, "subscription unit test", false);
-$default->siteMap->addPage("documentSub", "/tests/subscriptions/documentSubscription.php", "Tests", Guest, "document subscription unit test", false);
 $default->siteMap->addPage("subManager", "/tests/subscriptions/subscriptionManager.php", "Tests", Guest, "manage subscription unit test", false);
 $default->siteMap->addPage("subEngine", "/tests/subscriptions/subscriptionEngine.php", "Tests", Guest, "subscription firing unit test", false);
 $default->siteMap->addPage("auth", "/tests/authentication/authentication.php", "Tests", Guest, "authentication unit test", false);
@@ -244,7 +247,7 @@ $default->db = new Database();
 $default->system = new System();
 
 // instantiate phpsniffer
-$default->phpSniff = new phpSniff();
+$default->phpSniff = new phpSniff($_SERVER["HTTP_USER_AGENT"]);
 
 // import request variables and setup language
 require_once("$default->owl_fs_root/lib/dms.inc");
