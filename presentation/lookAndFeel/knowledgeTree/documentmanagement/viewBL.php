@@ -26,8 +26,10 @@ if (checkSession()) {
 	require_once("$default->owl_fs_root/lib/visualpatterns/PatternListFromQuery.inc");	
 	require_once("$default->owl_fs_root/lib/visualpatterns/PatternTableSqlQuery.inc");
 	require_once("$default->owl_fs_root/lib/visualpatterns/PatternCustom.inc");
-	require_once("$default->owl_fs_root/presentation/lookAndFeel/knowledgeTree/documentmanagement/documentViewUI.php");
+	require_once("$default->owl_fs_root/presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc");
+	require_once("$default->owl_fs_root/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
 	require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");
+	require_once("$default->owl_fs_root/presentation/Html.inc");
 
 	$oDocument = & Document::get(12);	
 	$oPatternCustom = & new PatternCustom();

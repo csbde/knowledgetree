@@ -14,7 +14,8 @@
 */
 
 function renderDocumentPath($oDocument) {
-	$sDocumentPath = Folder::getFolderDisplayPath($oDocument->getFolderID()) . " > " . $oDocument->getName();
+	//$sDocumentPath = Folder::getFolderDisplayPath($oDocument->getFolderID()) . " > " . $oDocument->getName();
+	$sDocumentPath = displayFolderPathLink(Folder::getFolderPathAsArray($oDocument->getFolderID())) . " > " . $oDocument->getName();
 	return "<table border=1><tr><td>$sDocumentPath</td></tr></table>\n";
 }
 
@@ -58,7 +59,7 @@ function renderTypeSpecificMetaData($oDocument) {
 				"AND DF.name NOT LIKE 'Category'";
 	$aColumns = array("name", "value");
 	$aColumnHeaders = array("Tag", "Value");
-	$oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnHeaders, 150);
+	$oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnHeaders, "100%");
 	$oPatternTableSqlQuery->setTableHeading("Type Specific Meta Data");
 	return $oPatternTableSqlQuery->render();
 }
@@ -74,7 +75,7 @@ function renderDocumentRouting($oDocument) {
 		
 	$aColumns = array("role_name", "name", "precedence");
 	$aColumnHeaders = array("Role", "Player", "Sequence");
-	$oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnHeaders, 150, true);
+	$oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnHeaders, "100%", true);
 	$oPatternTableSqlQuery->setTableHeading("Document Routing");
 	return $oPatternTableSqlQuery->render();
 	
