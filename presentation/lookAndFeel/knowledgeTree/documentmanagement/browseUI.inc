@@ -132,7 +132,7 @@ function renderFolderResults($aResults) {
     // now loop through the rest of the folders and display links
     for ($i=1; $i<count($aResults["folders"]); $i++) {
         $sRow = displayFolderLink($aResults["folders"][$i]);
-        $sToRender .= "<tr><td width=\"100%\" bgcolor=\"" . getColour($i) . "\">" . $sRow . "</td></tr>";
+        $sToRender .= "<tr><td nowrap width=\"100%\" bgcolor=\"" . getColour($i) . "\">" . $sRow . "</td></tr>";
     }
     
     $sToRender .= "<tr><td>&nbsp;</td></tr>";
