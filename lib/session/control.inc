@@ -75,10 +75,10 @@ function checkSessionAndRedirect($bRedirect) {
         if ($bRedirect) {
             // verification failed, redirect to login with error message
             $default->log->debug("checkSession:: session check failed");
-            $url = $default->owl_root_url . "/login.php?loginAction=loginForm";
+            $url = $default->owl_root_url . "/control.php?action=loginForm";
             
             $redirect = $_SERVER[PHP_SELF];
-            if ((strlen($redirect) > 1) && ($redirect != "/control.php")) {
+            if ((strlen($redirect) > 1)) {
                 $default->log->debug("checkSession:: redirect url=$redirect");
                 // this session verification failure represents either the first visit to 
                 // the site OR a session timeout etc. (in which case we still want to bounce
@@ -104,7 +104,7 @@ function checkSession() {
     global $default;
     if (checkSessionAndRedirect(true)) {
         // the session is cool, now check if we access to this page
-        $default->log->debug("control.inc page=" . $_SERVER['PHP_SELF']);
+        $default->log->debug("control.inc page=" . $_SERVER['PHP_SELF'] . "?" . $_SESSION["pageAccess"][$_SERVER['PHP_SELF']]);
         if ($_SESSION["pageAccess"][$_SERVER['PHP_SELF']]) {
             return true;
         } else {
