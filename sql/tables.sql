@@ -7,13 +7,6 @@ lastused DATETIME,
 ip CHAR(30)
 ) TYPE = InnoDB;
 
-CREATE TABLE archive_settings ( 
-id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
-document_id INTEGER NOT NULL,
-expiration_date DATETIME,
-utilisation_threshold INTEGER
-)  TYPE = InnoDB;
-
 CREATE TABLE data_types ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 name CHAR(255) NOT NULL
@@ -53,6 +46,36 @@ body TEXT,
 date date
 )TYPE = InnoDB;
 
+CREATE TABLE documents ( 
+id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
+document_type_id INTEGER NOT NULL,
+name TEXT NOT NULL,
+filename TEXT NOT NULL,
+size BIGINT NOT NULL,
+creator_id INTEGER NOT NULL,
+modified DATETIME NOT NULL,
+description CHAR(200) NOT NULL,
+security INTEGER NOT NULL,
+mime_id INTEGER NOT NULL,
+folder_id INTEGER NOT NULL,
+major_version INTEGER NOT NULL,
+minor_version INTEGER NOT NULL,
+is_checked_out BIT NOT NULL,
+parent_folder_ids TEXT,
+full_path TEXT,
+checked_out_user_id INTEGER,
+status_id INTEGER
+)TYPE = InnoDB;
+
+
+CREATE TABLE document_archive_settings ( 
+id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
+document_id INTEGER NOT NULL,
+expiration_date DATETIME,
+document_transaction_id INTEGER,
+utilisation_threshold INTEGER
+)  TYPE = InnoDB;
+
 CREATE TABLE document_fields ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 name CHAR(255) NOT NULL,
@@ -73,6 +96,13 @@ id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 parent_document_id INTEGER NOT NULL,
 child_document_id INTEGER NOT NULL
 ) TYPE = InnoDB;
+
+CREATE TABLE document_subscriptions ( 
+id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
+user_id INTEGER NOT NULL,
+document_id INTEGER NOT NULL,
+is_alerted BIT
+)TYPE = InnoDB;
 
 CREATE TABLE document_text (
   id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
@@ -108,34 +138,6 @@ is_mandatory BIT NOT NULL
 CREATE TABLE document_types_lookup ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 name CHAR(100)
-)TYPE = InnoDB;
-
-CREATE TABLE documents ( 
-id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
-document_type_id INTEGER NOT NULL,
-name TEXT NOT NULL,
-filename TEXT NOT NULL,
-size BIGINT NOT NULL,
-creator_id INTEGER NOT NULL,
-modified DATETIME NOT NULL,
-description CHAR(200) NOT NULL,
-security INTEGER NOT NULL,
-mime_id INTEGER NOT NULL,
-folder_id INTEGER NOT NULL,
-major_version INTEGER NOT NULL,
-minor_version INTEGER NOT NULL,
-is_checked_out BIT NOT NULL,
-parent_folder_ids TEXT,
-full_path TEXT,
-checked_out_user_id INTEGER,
-status_id INTEGER
-)TYPE = InnoDB;
-
-CREATE TABLE document_subscriptions ( 
-id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
-user_id INTEGER NOT NULL,
-document_id INTEGER NOT NULL,
-is_alerted BIT
 )TYPE = InnoDB;
 
 CREATE TABLE folders ( 
