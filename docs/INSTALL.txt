@@ -6,45 +6,33 @@ KnowledgeTree Installation Notes
    -  MySQL 4.0 or above with INNODB support
    -  PHP 4.3.0 or above, but not yet PHP 5.0
 
-*  Check that the following PHP configuration options are set appropriately in php.ini:
-		error_reporting  =  E_ALL & ~E_NOTICE
-		file_uploads = On
-		upload_tmp_dir = C:\PHP\uploadtemp
-		upload_max_filesize = 2M
-		session.use_cookies = 1
-		magic_quotes_gpc = On
-		magic_quotes_runtime = Off
-		
+
 *  Move the knowledgeTree folder to the directory it is going to be served from:
    $ mv knowledgeTree /path/to/your/html/directory/
+
+
+*  Check the pre-installation checkup:
+
+   If your knowledgeTree installation is at http://localhost/, go to:
+
+       http://localhost/setup/
+
 
 *  Create a database:
    $ mysqladmin -p create dms
 
+
 *  Create and populate the tables:
    $ mysql -p dms < sql/mysql/install/tables.sql
 
+
 *  Configure your installation by changing the following attributes in config/environment.php:
-   - The fileSystemRoot property should point to the directory you installed the KnowledgeTree in eg.
-		$default->fileSystemRoot  = "C:\Documents and Settings\michael\Desktop\php\knowledgeTree";
-		
-   - The serverName property should be the name of the webserver you're accessing the KnowledgeTree from eg.
-   		$default->serverName = "localhost";
-   		
-   - If the KnowledgeTree is not install in the root of your webserver, ie. you access the KnowledgeTree via a URL like 
-     http://localhost/knowledgeTree, you must set the rootUrl property appropriately.
-     Eg. If your webserver root is "c:\myWebServerRoot" and you install KnowledgeTree into that directory (ie. 
-     $default->fileSystemRoot = "c:\myWebServerRoot\knowledgeTree") then you must set your as follows:
-        $default->rootUrl  = "/knowledgeTree";
-     
-   - If your webserver is SSL enabled then set this to true (in most cases this will be false) eg.
-        $default->sslEnabled = false;
-        
    - Set the database properties to point to your MySQL installation
-		$default->dbUser           = "root";
-		$default->dbPass           = "pass123";
-		$default->dbHost           = "localhost";
-		$default->dbName           = "release112";
+        $default->dbUser           = "root";
+        $default->dbPass           = "pass123";
+        $default->dbHost           = "localhost";
+        $default->dbName           = "release112";
+
 
 *  Check permissions on the Documents folder
    - The "/Documents" folder MUST be able to be written to by your web server.
@@ -54,9 +42,29 @@ KnowledgeTree Installation Notes
      *nix: 'chown -R nobody.nobody Documents'
      Windows: Check the permissions and security tabs
 
+
+*  Check permissions on the log folder
+   - The "/log" folder MUST be able to be written to by your web server.
+     If your web server is running as user "nobody" and group "nobody" (apache default)
+     then cd to the files directory and type:
+
+     *nix: 'chown -R nobody.nobody log'
+     Windows: Check the permissions and security tabs
+
+
+*  Check the post-installation checklist:
+
+   If your knowledgeTree installation is at http://localhost/, go to:
+
+       http://localhost/setup/
+
+   And click on "Post-installation checkup".
+
+
 *  Login:
    - in a web browser goto http://$default->serverName/$default->rootUrl/
    - default user is "admin" with password "admin"
+
 
 *  Setting System Settings:
    - Click on 'Admin'.
@@ -64,9 +72,13 @@ KnowledgeTree Installation Notes
    - Check that the values are the same as the ones in your environment.php
      (Note: If you are not using LDAP you can leave these settings as is)
    - Click 'Update' to save these settings.
+
    
 Troubleshooting
 ---------------
+
+Make sure you pre- and post-installation checkups aren't highlighting problems
+first:
 
 Refer to docs/FAQ.txt.
 
