@@ -358,15 +358,15 @@ class Document {
 	* Static function.
 	* Check if a document already exists
 	*
-	* @param $sName			Name of document
-	* @param $sFolderID		Primary key of folder to which document is assigned
+	* @param String		File name of document
+	* @param int		Primary key of folder to which document is assigned
 	*
 	* @return boolean true if document exists, false otherwise and set $_SESSION["errorMessage"]
 	*/	
-	function documentExists($sName, $iFolderID) {
+	function documentExists($sFileName, $iFolderID) {
 		global $default, $lang_err_doc_not_exist;
 		$sql = new Owl_DB();
-		$sql->query("SELECT * FROM $default->owl_documents_table WHERE name = '" . addslashes($sName) . "' AND folder_id = $iFolderID");
+		$sql->query("SELECT * FROM $default->owl_documents_table WHERE name = '" . addslashes($sFileName) . "' AND folder_id = $iFolderID");
 		if ($sql->next_record()) {
 			return true;
 		}
