@@ -31,11 +31,13 @@ function redirect($url) {
  * @param string additional querystring vars
  */
 function controllerRedirect($action, $queryString) {
+    global $default;
     // generate url
     $ctlUrl = generateControllerUrl($action);
     // append the rest of the url
     $url = $ctlUrl . "&$queryString";
     // now redirect
+    $default->log->debug("controllerRedirect: redirect to $url");
     redirect($url);
 }
 
@@ -77,8 +79,7 @@ function checkSessionAndRedirect($bRedirect) {
             // verification failed, redirect to login with error message
             $default->log->debug("checkSession:: session check failed");
             $url = $default->owl_root_url . "/control.php?action=loginForm";
-            
-            $redirect = urlencode($_SERVER[PHP_SELF]);
+            $redirect = urlencode($_SERVER[PHP_SELF] . "?" . $_SERVER["QUERY_STRING"]);            
             if ((strlen($redirect) > 1)) {
                 $default->log->debug("checkSession:: redirect url=$redirect");
                 // this session verification failure represents either the first visit to 
