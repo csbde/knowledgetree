@@ -98,7 +98,9 @@ parent_id INTEGER,
 creator_id INTEGER,
 document_type_id INTEGER NOT NULL,
 unit_id INTEGER,
-is_public BIT NOT NULL
+is_public BIT NOT NULL,
+parent_folder_ids CHAR(100),
+full_path CHAR(255)
 )TYPE = InnoDB;
 
 CREATE TABLE folder_subscriptions ( 
