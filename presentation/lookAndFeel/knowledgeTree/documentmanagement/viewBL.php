@@ -160,42 +160,30 @@ if (checkSession()) {
             if (isset($fWebSiteID)) {
                 // user wishes to publish document
                 $oDocument = Document::get($fDocumentID);
-                if ($_SESSION["userID"] == $oDocument->getCreatorID()) {
-                    //only the creator can send the document for publishing
-                    $aWebDocument = WebDocument::getList("document_id = $fDocumentID");
-                    $oWebDocument = $aWebDocument[0];
-                    $oWebDocument->setStatusID(PENDING);
-                    $oWebDocument->setWebSiteID($fWebSiteID);
-                    if ($oWebDocument->update()) {
-                        require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
-                        $oDocumentTransaction = & new DocumentTransaction($fDocumentID, "Document sent for web publishing", UPDATE);
-                        $oDocumentTransaction->create();
-                        $oDocument = Document::get($fDocumentID);
-                        Document::notifyWebMaster($fDocumentID, $fComment);
-                        $oPatternCustom = & new PatternCustom();
-                        $oPatternCustom->setHtml(getEditPage($oDocument));
-                        $main->setCentralPayload($oPatternCustom);
-                        $main->setErrorMessage("The document has been marked as pending publishing and the web publisher has been notified");
-                        $main->render();
-                        
-                    } else {
-                        require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");					
-                        $oDocument = Document::get($fDocumentID);
-                        $oPatternCustom = & new PatternCustom();
-                        $oPatternCustom->setHtml(getEditPage($oDocument));
-                        $main->setCentralPayload($oPatternCustom);
-                        $main->setErrorMessage("An error occured while attempting to update the document for publishing");
-                        $main->render();					
-                    }
+                $aWebDocument = WebDocument::getList("document_id = $fDocumentID");
+                $oWebDocument = $aWebDocument[0];
+                $oWebDocument->setStatusID(PENDING);
+                $oWebDocument->setWebSiteID($fWebSiteID);
+                if ($oWebDocument->update()) {
+                    require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
+                    $oDocumentTransaction = & new DocumentTransaction($fDocumentID, "Document sent for web publishing", UPDATE);
+                    $oDocumentTransaction->create();
+                    $oDocument = Document::get($fDocumentID);
+                    Document::notifyWebMaster($fDocumentID, $fComment);
+                    $oPatternCustom = & new PatternCustom();
+                    $oPatternCustom->setHtml(getEditPage($oDocument));
+                    $main->setCentralPayload($oPatternCustom);
+                    $main->setErrorMessage("The document has been marked as pending publishing and the web publisher has been notified");
+                    $main->render();
+                    
                 } else {
-                    // you're can't publish if you're not the originator
                     require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");					
                     $oDocument = Document::get($fDocumentID);
                     $oPatternCustom = & new PatternCustom();
                     $oPatternCustom->setHtml(getEditPage($oDocument));
                     $main->setCentralPayload($oPatternCustom);
-                    $main->setErrorMessage("You can't publish this document because you're not the document originator");
-                    $main->render();
+                    $main->setErrorMessage("An error occured while attempting to update the document for publishing");
+                    $main->render();					
                 }
             } else {
                 // prompt for the website to publish to
