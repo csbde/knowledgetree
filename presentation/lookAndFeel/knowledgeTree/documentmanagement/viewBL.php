@@ -5,12 +5,12 @@
 * Will use documentViewUI.php for HTML
 *
 * Expected form varaibles:
-*			o $fDocumentID - Primary key of document to view
+*   o $fDocumentID - Primary key of document to view
 *
 * Optional form variables:
-*			o fCollaborationEdit - the user attempted to edit a collaboration step that is currently active 
-*			o fForDownload - the user is attempting to download the document
-*			o fBeginCollaboration - the user selected the 'Begin Collaboration' button
+*   o fCollaborationEdit - the user attempted to edit a collaboration step that is currently active 
+*   o fForDownload - the user is attempting to download the document
+*   o fBeginCollaboration - the user selected the 'Begin Collaboration' button
 *
 *
 * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
@@ -22,11 +22,11 @@
 require_once("../../../../config/dmsDefaults.php");
 
 require_once("$default->owl_fs_root/lib/security/permission.inc");
-		
+
 require_once("$default->owl_fs_root/lib/email/Email.inc");
 
 require_once("$default->owl_fs_root/lib/users/User.inc");
-		
+
 require_once("$default->owl_fs_root/lib/documentmanagement/PhysicalDocumentManager.inc");
 require_once("$default->owl_fs_root/lib/documentmanagement/DocumentTransaction.inc");
 require_once("$default->owl_fs_root/lib/documentmanagement/Document.inc");
@@ -36,100 +36,98 @@ require_once("$default->owl_fs_root/lib/foldermanagement/FolderUserRole.inc");
 require_once("$default->owl_fs_root/lib/roles/Role.inc");
 require_once("$default->owl_fs_root/lib/foldermanagement/Folder.inc");
 
-require_once("$default->owl_fs_root/lib/visualpatterns/PatternListFromQuery.inc");	
+require_once("$default->owl_fs_root/lib/visualpatterns/PatternListFromQuery.inc");
 require_once("$default->owl_fs_root/lib/visualpatterns/PatternTableSqlQuery.inc");
 require_once("$default->owl_fs_root/lib/visualpatterns/PatternCustom.inc");
-require_once("$default->owl_fs_root/lib/visualpatterns/PatternListFromQuery.inc");	
+require_once("$default->owl_fs_root/lib/visualpatterns/PatternListFromQuery.inc");
 require_once("$default->owl_fs_root/lib/visualpatterns/PatternTableSqlQuery.inc");
 
 require_once("$default->owl_fs_root/presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc");
 require_once("$default->owl_fs_root/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
-require_once("$default->owl_fs_root/presentation/Html.inc");		
+require_once("$default->owl_fs_root/presentation/Html.inc");
 
-if (checkSession()) {	
-	if (isset($fDocumentID)) {	
-		
-		
-		if (isset($fCollaborationEdit) && Permission::userHasDocumentWritePermission($fDocumentID)) {
-			//return value from collaborationBL.php.  User attempted to edt
-			//a step in the document collaboration process that is currently being 
-			//executed
-			require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");
-			
-			$oDocument = & Document::get($fDocumentID);	
-			$oPatternCustom = & new PatternCustom();
-			$oPatternCustom->setHtml(getEditPage($oDocument));
-			$main->setCentralPayload($oPatternCustom);
-			$main->setErrorMessage("You cannot edit a document collaboration step that is completed or currently underway");
-			$main->setFormAction("$default->owl_root_url/control.php?action=modifyDocument&fDocumentID=" . $oDocument->getID());
-			$main->render();			
-		} else if (isset($fForDownload) && Permission::userHasDocumentReadPermission()) {			
-				//if the user has document read permission, perform the download
-				$oDocumentTransaction = & new DocumentTransaction($fDocumentID, "Document downloaded", DOWNLOAD);
-				$oDocumentTransaction->create();
-				PhysicalDocumentManager::downloadPhysicalDocument($fDocumentID);							
-		} else if (isset($fBeginCollaboration) && Permission::userHasDocumentWritePermission($fDocumentID)) {
-			require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");
-			//begin the collaboration process
-			//first ensure that all steps in the collaboration process are assigned
-			$oDocument = Document::get($fDocumentID);			
-			$aFolderCollaboration = FolderCollaboration::getList("WHERE folder_id = " . $oDocument->getFolderID());
-			$aFolderUserRoles = FolderUserRole::getList("WHERE document_id = " . $fDocumentID);			
-			if (count($aFolderCollaboration) == count($aFolderUserRoles)) {
-				//if all the roles have been assigned we can start the collaboration process
-				$oDocument->beginCollaborationProcess();
-				$oPatternCustom = & new PatternCustom();
-				$oPatternCustom->setHtml(getEditPage($oDocument));
-				$main->setCentralPayload($oPatternCustom);	
-				$main->setErrorMessage("Document collaboration successfully started");
-				$main->render();				
-			} else {
-				//not all the roles have users assigned to them, so display an error message
-				require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");
-				
-				$oPatternCustom = & new PatternCustom();
-				$oPatternCustom->setHtml(getEditPage($oDocument));
-				$main->setCentralPayload($oPatternCustom);
-				$main->setErrorMessage("Document collaboration not started.  Not all steps in the process have been assigned");
-				$main->render();
-			}
-			
-		} else if (Permission::userHasDocumentWritePermission($fDocumentID)) {
-			require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");
-		
-			$oDocument = & Document::get($fDocumentID);	
-			$oPatternCustom = & new PatternCustom();
-			$oPatternCustom->setHtml(getEditPage($oDocument));
-			$main->setCentralPayload($oPatternCustom);
-			$main->setFormAction("$default->owl_root_url/control.php?action=modifyDocument&fDocumentID=" . $oDocument->getID());
-			$main->render();
-		} else if (Permission::userHasDocumentReadPermission($fDocumentID)) {			
-			require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");						
-			
-			$oDocument = & Document::get($fDocumentID);	
-			$oPatternCustom = & new PatternCustom();
-			$oPatternCustom->setHtml(getViewPage($oDocument));
-			$main->setCentralPayload($oPatternCustom);
-			$main->setFormAction("$default->owl_root_url/control.php?action=modifyDocument&fDocumentID=" . $oDocument->getID());
-			$main->render();			
-		} else {
-			require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");			
-			
-			$oPatternCustom = & new PatternCustom();
-			$oPatternCustom->setHtml("");
-			$main->setErrorText("Either you do not have permission to view this document, or the document you have chosen no longer exists on the file system.");
-			$main->setCentralPayload($oPatternCustom);
-			$main->render();
-		}
-	} else {
-		require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");
-		
-		$oPatternCustom = & new PatternCustom();
-		$oPatternCustom->setHtml("");
-		$main->setErrorText("You have not chosen a document to view");
-		$main->setCentralPayload($oPatternCustom);
-		$main->render();			
-	}
+if (checkSession()) {
+    if (isset($fDocumentID)) {
+        if (isset($fCollaborationEdit) && Permission::userHasDocumentWritePermission($fDocumentID)) {
+            //return value from collaborationBL.php.  User attempted to edt
+            //a step in the document collaboration process that is currently being
+            //executed
+            require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");
+
+            $oDocument = & Document::get($fDocumentID);
+            $oPatternCustom = & new PatternCustom();
+            $oPatternCustom->setHtml(getEditPage($oDocument));
+            $main->setCentralPayload($oPatternCustom);
+            $main->setErrorMessage("You cannot edit a document collaboration step that is completed or currently underway");
+            $main->setFormAction("$default->owl_root_url/control.php?action=modifyDocument&fDocumentID=" . $oDocument->getID());
+            $main->render();
+        } else if (isset($fForDownload) && Permission::userHasDocumentReadPermission($fDocumentID)) {
+            //if the user has document read permission, perform the download
+            $oDocumentTransaction = & new DocumentTransaction($fDocumentID, "Document downloaded", DOWNLOAD);
+            $oDocumentTransaction->create();
+            PhysicalDocumentManager::downloadPhysicalDocument($fDocumentID);
+        } else if (isset($fBeginCollaboration) && Permission::userHasDocumentWritePermission($fDocumentID)) {
+            require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");
+            //begin the collaboration process
+            //first ensure that all steps in the collaboration process are assigned
+            $oDocument = Document::get($fDocumentID);
+            $aFolderCollaboration = FolderCollaboration::getList("WHERE folder_id = " . $oDocument->getFolderID());
+            $aFolderUserRoles = FolderUserRole::getList("WHERE document_id = " . $fDocumentID);
+            if (count($aFolderCollaboration) == count($aFolderUserRoles)) {
+                //if all the roles have been assigned we can start the collaboration process
+                $oDocument->beginCollaborationProcess();
+                $oPatternCustom = & new PatternCustom();
+                $oPatternCustom->setHtml(getEditPage($oDocument));
+                $main->setCentralPayload($oPatternCustom);
+                $main->setErrorMessage("Document collaboration successfully started");
+                $main->render();
+            } else {
+                //not all the roles have users assigned to them, so display an error message
+                require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");
+
+                $oPatternCustom = & new PatternCustom();
+                $oPatternCustom->setHtml(getEditPage($oDocument));
+                $main->setCentralPayload($oPatternCustom);
+                $main->setErrorMessage("Document collaboration not started.  Not all steps in the process have been assigned");
+                $main->render();
+            }
+
+        } else if (Permission::userHasDocumentWritePermission($fDocumentID)) {
+            require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");
+
+            $oDocument = & Document::get($fDocumentID);
+            $oPatternCustom = & new PatternCustom();
+            $oPatternCustom->setHtml(getEditPage($oDocument));
+            $main->setCentralPayload($oPatternCustom);
+            $main->setFormAction("$default->owl_root_url/control.php?action=modifyDocument&fDocumentID=" . $oDocument->getID());
+            $main->render();
+        } else if (Permission::userHasDocumentReadPermission($fDocumentID)) {
+            require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");
+
+            $oDocument = & Document::get($fDocumentID);
+            $oPatternCustom = & new PatternCustom();
+            $oPatternCustom->setHtml(getViewPage($oDocument));
+            $main->setCentralPayload($oPatternCustom);
+            $main->setFormAction("$default->owl_root_url/control.php?action=modifyDocument&fDocumentID=" . $oDocument->getID());
+            $main->render();
+        } else {
+            require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");
+
+            $oPatternCustom = & new PatternCustom();
+            $oPatternCustom->setHtml("");
+            $main->setErrorText("Either you do not have permission to view this document, or the document you have chosen no longer exists on the file system.");
+            $main->setCentralPayload($oPatternCustom);
+            $main->render();
+        }
+    } else {
+        require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");
+
+        $oPatternCustom = & new PatternCustom();
+        $oPatternCustom->setHtml("");
+        $main->setErrorText("You have not chosen a document to view");
+        $main->setCentralPayload($oPatternCustom);
+        $main->render();
+    }
 }
 
 ?>
