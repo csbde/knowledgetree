@@ -45,4 +45,8 @@ function generateLink($sTargetPage, $sQueryString, $sLinkText) {
     return "<a href=\"$sTargetPage?$sQueryString\">$sLinkText</a>\n";
 }
 
+function generateImage($sImageSource) {
+    return "<img border=\"0\" src=\"$sImageSource\">";
+}
+
 ?>
