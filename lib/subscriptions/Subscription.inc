@@ -166,14 +166,15 @@ class Subscription {
     }
 
     function getAlertLink() {
+        global $default;
         // TODO: add alerted icon
         $sViewAlertUrl = "/control.presentation/lookAndFeel/knowledgeTree/subscriptions/viewAlertBL.php";
         $sViewAlertParams = "fSubscriptionID=" . $this->iID . "&fSubscriptionType=" . $this->iSubscriptionType;
 
         if ($this->iSubscriptionType == SubscriptionConstants::subscriptionType("DocumentSubscription")) {
-            return generateControllerLink("viewAlert", $sViewAlertParams, Document::getDocumentDisplayPath($this->iExternalID));
+            return generateControllerLink("viewAlert", $sViewAlertParams, "<img src=\"$default->graphicsUrl/widgets/subsc.gif\" border=\"0\"/>" . Document::getDocumentDisplayPath($this->iExternalID));
         } else if ($this->iSubscriptionType == SubscriptionConstants::subscriptionType("FolderSubscription")) {
-            return generateControllerLink("viewAlert", $sViewAlertParams, Folder::getFolderDisplayPath($this->iExternalID));
+            return generateControllerLink("viewAlert", $sViewAlertParams, "<img src=\"$default->graphicsUrl/widgets/subsc.gif\" border=\"0\"/>" . Folder::getFolderDisplayPath($this->iExternalID));
         }
     }
     
