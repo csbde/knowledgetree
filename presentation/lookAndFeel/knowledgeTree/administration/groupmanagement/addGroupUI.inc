@@ -34,7 +34,7 @@ function getPage() {
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>Group Name:</td>\n";
-    $sToRender .= "<td><input size = \"40\" type=\"text\" name=\"fGroupName\" \"> </td>\n";    
+    $sToRender .= "<td><input size = \"40\" type=\"text\" name=\"fGroupName\" /></td>\n";    
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr/>\n";
     $sToRender .= "<tr><td><b>Unit</b></td><td>" . getUnitListBox() . "</td></tr>\n";    
