@@ -35,9 +35,10 @@ function getPendingCollaborationDocuments($iUserID) {
     global $default;
     $sQuery = "SELECT document_id FROM $default->owl_folders_user_roles_table WHERE active=1 AND user_id=" . $_SESSION["userID"];
     $aDocumentList = array();
-    if ($default->db->query($sQuery)) {
-        while ($default->db->next_record()) {
-            $aDocumentList[] = & Document::get($default->db->f("document_id"));
+    $sql = $default->db;
+    if ($sql->query($sQuery)) {
+        while ($sql->next_record()) {
+            $aDocumentList[] = & Document::get($sql->f("document_id"));
         }
     }
     return $aDocumentList;
