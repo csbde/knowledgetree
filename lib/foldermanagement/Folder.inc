@@ -277,14 +277,17 @@ class Folder {
 								$this->sFullPath = substr($sFullPath, 1, strlen($sFullPath));
 								$sParentFolderIDs = $this->generateParentFolderIDS($this->iParentID);
 								$this->sParentFolderIDs = substr($sParentFolderIDs, 1, strlen($sParentFolderIDs));
+								
 								$sQuery .= "parent_folder_ids = '" . addslashes($this->sParentFolderIDs) . "'," .
 								  			"full_path = '" . addslashes($this->sFullPath) . "', ";
 							}
 							$sQuery .= "is_public = " . ($this->bIsPublic ? 1 : 0) . " " .
-										"WHERE id = " . $this->iId;
+										"WHERE id = " . $this->iId;							
 			$result = $sql->query($sQuery);
-			if ($result) {				
+			if ($result && $bPathChange) {				
 				$this->updateChildPaths($this->iId, $sql);
+				return true;
+			} else if ($result) {
 				return true;
 			}
 			$_SESSION["errorMessage"] = $lang_err_database;
@@ -304,11 +307,13 @@ class Folder {
 	*/
 	function updateChildPaths($iID, $sql) {
 		global $default;
-		$sql->query("SELECT id from $default->owl_folders_table WHERE parent_id = $iID");
+		//get the direct children
+		$sql->query("SELECT id from $default->owl_folders_table WHERE parent_id = $iID");						
 		while ($sql->next_record()) {
-			$oFolder = Folder::get($sql->f("id"));
-			$oFolder->update(true);
-			$this->updateChildPaths($sql->f("id"), $sql);
+			//force an update, this will cause this child's children to be updated			
+			$oFolder = Folder::get($sql->f("id"));			
+			$oFolder->update(true);		
+						
 		}
 		return;
 	}
