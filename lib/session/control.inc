@@ -101,9 +101,11 @@ function checkSessionAndRedirect($bRedirect) {
  * Automatically redirects to the login page on session verification failure
  */
 function checkSession() {
+    global $default;
     if (checkSessionAndRedirect(true)) {
         // the session is cool, now check if we access to this page
-        if ($_SESSION["pageAccess"][basename($_SERVER['SCRIPT_FILENAME'])]) {
+        $default->log->debug("control.inc page=" . $_SERVER['PHP_SELF']);
+        if ($_SESSION["pageAccess"][$_SERVER['PHP_SELF']]) {
             return true;
         } else {
             return false;
