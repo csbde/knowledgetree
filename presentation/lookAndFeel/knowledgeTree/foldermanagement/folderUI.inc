@@ -69,7 +69,7 @@ function renderFolderPath($iFolderID, $sLinkURL, $bDisplayLinks = true) {
 	} else {
 		$sFolderPath = implode(" > ", Folder::getFolderPathNamesAsArray($iFolderID));
 	}	
-    return "<table border=\"0\" cellpadding=\"5\" width=\"600\"><tr><td bgcolor=\"$sTDBGColour\">$sFolderPath</td></tr></table>\n";
+    return "<table border=\"0\" cellpadding=\"5\" width=\"100%\"><tr><td bgcolor=\"$sTDBGColour\">$sFolderPath</td></tr></table>\n";
 }
 
 /**
