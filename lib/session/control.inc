@@ -102,7 +102,7 @@ function checkSessionAndRedirect($bRedirect) {
         $default->log->debug("checkSession:: session check failed");
         if ($bRedirect) {
             // redirect to login with error message
-            $url = generateControllerUrl("loginForm");
+            $url = generateControllerUrl("loginForm", "errorMessage=" . urlencode("Session timed out"));
             $redirect = urlencode($_SERVER[PHP_SELF] . "?" . $_SERVER["QUERY_STRING"]);
             if ((strlen($redirect) > 1)) {
                 $default->log->debug("checkSession:: redirect url=$redirect");
