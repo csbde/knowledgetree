@@ -123,7 +123,7 @@ class DependantDocumentInstance {
 	*
 	*/
 	function create() {
-		global $default, $lang_err_database, $lang_err_object_exists;		
+		global $default;		
 		//if the object hasn't been created
 		if ($this->iId < 0) {			
 			$sql = $default->db;
@@ -131,11 +131,9 @@ class DependantDocumentInstance {
 			if ($result) {
 				$this->iId = $sql->insert_id();
 				return true;
-			}			
-			$_SESSION["errorMessage"] = $lang_err_database;			
+			}					
 			return false;
-		}		
-		$_SESSION["errorMessage"] = $lang_err_object_exists."id = ".$this->iId." table = dependant_document_instance";		
+		}				
 		return false;
 	}
 
@@ -146,7 +144,7 @@ class DependantDocumentInstance {
 	*
 	*/
 	function update() {
-		global $default, $lang_err_database, $lang_err_object_key;
+		global $default;
 		//only update if the object has been stored
 		if ($this->iId > 0) {
 			$sql = $default->db;
@@ -154,10 +152,8 @@ class DependantDocumentInstance {
 			if ($result) {
 				return true;
 			}
-			$_SESSION["errorMessage"] = $lang_err_database;
 			return false;
 		}
-		$_SESSION["errorMessage"] = $lang_err_object_key;
 		return false;
 	}
 
@@ -168,7 +164,7 @@ class DependantDocumentInstance {
 	*
 	*/
 	function delete() {
-		global $default, $lang_err_database, $lang_err_object_key;
+		global $default;
 		//only delete the object if it exists in the database
 		if ($this->iId >= 0) {
 			$sql = $default->db;
@@ -176,10 +172,8 @@ class DependantDocumentInstance {
 			if ($result) {
 				return true;
 			}
-			$_SESSION["errorMessage"] = $lang_err_database;
 			return false;
 		}
-		$_SESSION["errorMessage"] = $lang_err_object_key;
 		return false;
 	}
 

@@ -131,7 +131,7 @@ class DependantDocumentTemplate {
 	*
 	*/
 	function create() {
-		global $default, $lang_err_database, $lang_err_object_exists;		 
+		global $default;		 
 		//if the object hasn't been created	
 		if ($this->iId < 0) {
 			$sql = $default->db;
@@ -140,10 +140,8 @@ class DependantDocumentTemplate {
 				$this->iId = $sql->insert_id();
 				return true;
 			}
-			$_SESSION["errorMessage"] = $lang_err_database;
 			return false;
 		}
-		$_SESSION["errorMessage"] = $lang_err_object_exists."id = ".$this->iId." Table = $default->dependant_document_template_table";
 		return false;
 	}
 
@@ -154,7 +152,7 @@ class DependantDocumentTemplate {
 	*
 	*/
 	function update() {
-		global $default, $lang_err_database, $lang_err_object_key;
+		global $default;
 		//only update if the object has been stored
 		if ($this->iId > 0) {
 			$sql = $default->db;
@@ -162,10 +160,8 @@ class DependantDocumentTemplate {
 			if ($result) {
 				return true;
 			}
-			$_SESSION["errorMessage"] = $lang_err_database;
 			return false;
 		}
-		$_SESSION["errorMessage"] = $lang_err_object_key;
 		return false;
 	}
 
@@ -176,7 +172,7 @@ class DependantDocumentTemplate {
 	*
 	*/
 	function delete() {
-		global $default, $lang_err_database, $lang_err_object_key;
+		global $default;
 		//only delete the object if it exists in the database
 		if ($this->iId >= 0) {
 			$sql = $default->db;
@@ -184,10 +180,8 @@ class DependantDocumentTemplate {
 			if ($result) {
 				return true;
 			}
-			$_SESSION["errorMessage"] = $lang_err_database;
 			return false;
 		}
-		$_SESSION["errorMessage"] = $lang_err_object_key;
 		return false;
 	}
 
@@ -212,10 +206,8 @@ class DependantDocumentTemplate {
 				}*/
 				return $DependantDocumentTemplate;
 			}
-			$_SESSION["errorMessage"] = $lang_err_object_not_exist."id = ".$iDependantDocumentID." table = $default->dependant_document_template_table";
 			return false;
 		}
-		$_SESSION["errorMessage"] = $lang_err_database;
 		return false;
 	}
 	
@@ -228,9 +220,8 @@ class DependantDocumentTemplate {
     * @return Array array of DependantDocumentTemplates objects, false otherwise and set $_SESSION["errorMessage"]
     */
     function getList($sWhereClause = null) {
-        global $default, $lang_err_database;
-        $aDependantDocumentTemplateArray;
-        settype($aDependatDocumentTemplateArray, "array");
+        global $default;
+        $aDependantDocumentTemplateArray = array();
         $sql = $default->db;
         // TODO: join on sys_deleted
         $result = $sql->query("SELECT * FROM " . $default->dependant_document_template_table  . (isset($sWhereClause) ? " WHERE " . $sWhereClause : ""));
@@ -243,7 +234,6 @@ class DependantDocumentTemplate {
             }
             return $aDependantDocumentTemplateArray;
         }
-        $_SESSION["errorMessage"] = $lang_err_database;
         return false;
     }
 }

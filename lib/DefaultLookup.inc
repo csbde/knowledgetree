@@ -78,7 +78,7 @@ class DefaultLookup {
 	*
 	*/
 	function create() {
-		global $lang_err_database, $lang_err_object_exists;		
+		global $default;		
 		//don't create the object if it's aready been created
 		if ($this->iId < 0) {
 			$sql = $default->db;
@@ -88,10 +88,8 @@ class DefaultLookup {
 				$this->iId = $sql->insert_id();
 				return true;
 			} 
-			$_SESSION["errorMessage"] = $lang_err_database;
 			return false;
 		}
-		$_SESSION["errorMessage"] = $lang_err_object_exists . "id = " . $this->iId . " table = $this->sTableName";
 		return false;
 	}
 	
@@ -102,7 +100,7 @@ class DefaultLookup {
 	*
 	*/
 	function update() {
-		global $lang_err_database, $lang_err_object_key;
+		global $default;
 		//can only update if the object has been stored
 		if ($this->iId >= 0) {
 			$sql = $default->db;
@@ -110,10 +108,8 @@ class DefaultLookup {
 			if ($result) {
 				return true;
 			}
-			$_SESSION["errorMessage"] = $lang_err_database;
 			return false;
 		}
-		$_SESSION["errorMessage"] = $lang_err_object_key;
 		return false;
 	}
 	
@@ -124,7 +120,7 @@ class DefaultLookup {
 	*
 	*/
 	function delete() {
-		global $lang_err_database, $lang_err_object_not_exist;
+		global $default;
 		//can only delete and object if it has been stored already
 		if ($this->iId >= 0) {
 			$sql = $default->db;
@@ -134,10 +130,8 @@ class DefaultLookup {
 				$this->iId = -1;
 				return true;
 			}
-			$_SESSION["errorMessage"] = $lang_err_database;
 			return false;
 		}
-		$_SESSION["errorMessage"] = $lang_err_object_key;
 		return false;
 	}
 	
@@ -159,11 +153,9 @@ class DefaultLookup {
 				$oLookup = & new DefaultLookup($sTableName, $sql->f("name"));
 				$oLookup->iId = $iId;
 				return $oLookup;
-			}
-			$_SESSION["errorMessage"] = $lang_err_object_not_exist . "id = " . $iId . " table = $sTableName";			 
+			}		 
 			return false;
 		}
-		$_SESSION["errorMessage"] = $lang_err_database;
 		return false;		
 	}
 	
