@@ -15,6 +15,7 @@ require_once("$default->fileSystemRoot/lib/users/User.inc");
 require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
 require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentTransaction.inc");
 require_once("$default->fileSystemRoot/lib/subscriptions/SubscriptionEngine.inc");
+require_once("$default->fileSystemRoot/lib/subscriptions/SubscriptionManager.inc");
 
 require_once("$default->fileSystemRoot/presentation/Html.inc");
 
@@ -37,13 +38,20 @@ if (checkSession()) {
 							// successfully deleted the document from the file system
                             
                             // fire subscription alerts for the deleted document
-                            $count = SubscriptionEngine::fireSubscription($oDocument->getFolderID(), SubscriptionConstants::subscriptionAlertType("RemoveDocument"),
-                                     SubscriptionConstants::subscriptionType("FolderSubscription"),
-                                     array( "removedDocumentName" => $oDocument->getName(),
-                                            "folderName" => Folder::getFolderName($oDocument->getFolderID())));
+                            $count = SubscriptionEngine::fireSubscription($fDocumentID, SubscriptionConstants::subscriptionAlertType("RemoveSubscribedDocument"),
+                                     SubscriptionConstants::subscriptionType("DocumentSubscription"),
+                                     array( "folderID" => $oDocument->getFolderID(),
+                                            "removedDocumentName" => $oDocument->getName(),
+                                            "folderName" => Folder::getFolderDisplayPath($oDocument->getFolderID())));
                             $default->log->info("deleteDocumentBL.php fired $count subscription alerts for removed document " . $oDocument->getName());
                             
-
+                            // TODO: remove all document subscriptions for this document
+                            if (SubscriptionManager::removeSubscriptions($fDocumentID, SubscriptionConstants::subscriptionType("DocumentSubscription"))) {
+                                $default->log->info("deleteDocumentBL.php removed all subscriptions for this document");
+                            } else {
+                                $default->log->error("deleteDocumentBL.php couldn't remove document subscriptions");
+                            }
+                         
 							// redirect to the browse folder page							
 							redirect("$default->rootUrl/control.php?action=browse&fFolderID=" . $oDocument->getFolderID());
 						} else {
