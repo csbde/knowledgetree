@@ -120,9 +120,8 @@ if (checkSession()) {
     $tmp->render();
         
 } else {
-    // FIXME: redirect to no permission page
-    print "you do not have access to view this page!  please go away, and come back when you do.<br>";
-    echo generateLink("logout") . "logout</a>";    
+    // redirect to no permission page
+    redirect("$default->owl_ui_url/noAccess.php");
 }
 ?>
 
