@@ -32,7 +32,8 @@ function getPage() {
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "</tr>\n";
-	$sToRender .= "<td></td><td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/add.gif\" value=\"Submit\" border=\"0\"/></td>\n";	
+	$sToRender .= "<td></td><td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/add.gif\" value=\"Submit\" border=\"0\"/>";
+	$sToRender .= getCancelButton("listWebsites") . "</td>\n";	
 	$sToRender .= "</table>\n";
 	
 	return $sToRender;
@@ -54,15 +55,5 @@ function getAddPageFail() {
 	$sToRender .= "</table>\n";
 	
 	return $sToRender;
-}
-
-// gets the cancel button when a website is selected
-function getCancelButton($oWebsite) {
-	global $default;
-	if (!isset($oWebsite)) {
-		return "<td align = right><a href=\"$default->rootUrl/control.php?action=websiteManagement\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" value=\"cancel\" /></a></td>\n";
-	} else {
-		return "<td align = right><a href=\"$default->rootUrl/control.php?action=editLink\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" /></a></td>\n";
-	}
 }
 ?>
