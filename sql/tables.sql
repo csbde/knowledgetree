@@ -78,8 +78,8 @@ folder_id INTEGER NOT NULL,
 major_version INTEGER NOT NULL,
 minor_version INTEGER NOT NULL,
 is_checked_out BIT NOT NULL,
-parent_folder_ids CHAR(100),
-full_path CHAR(255)
+parent_folder_ids TEXT,
+full_path TEXT
 
 )TYPE = InnoDB;
 
@@ -99,8 +99,8 @@ creator_id INTEGER,
 document_type_id INTEGER NOT NULL,
 unit_id INTEGER,
 is_public BIT NOT NULL,
-parent_folder_ids CHAR(100),
-full_path CHAR(255)
+parent_folder_ids TEXT,
+full_path TEXT
 )TYPE = InnoDB;
 
 CREATE TABLE folder_subscriptions ( 
