@@ -15,12 +15,13 @@ require_once("$default->owl_fs_root/presentation/Html.inc");
  */
 
 function browseTypeSelect($sBrowseType) {
-    return "View documents by: <input type=\"radio\" name=\"fBrowseType\" value=\"folder\"" .
-                               ((($sBrowseType=="folder") || (strlen($sBrowseType)==0)) ? "checked" : "") . "> Folders" .
-                               "<input type=\"radio\" name=\"fBrowseType\" value=\"category\"" .
-                               (($sBrowseType=="category") ? "checked" : "") . "> Category" .
-                               "<input type=\"radio\" name=\"fBrowseType\" value=\"documentType\"" .
-                               (($sBrowseType=="documentType") ? "checked" : "") . "> Document Type";
+    return "<span class=\"browseTypeSelect\">\n
+            \tView documents by: <input type=\"radio\" name=\"fBrowseType\" onClick=\"document.forms[0].submit()\" value=\"folder\"" .
+                               ((($sBrowseType=="folder") || (strlen($sBrowseType)==0)) ? "checked" : "") . "> Folders\n" .
+                               "<input type=\"radio\" name=\"fBrowseType\" onClick=\"document.forms[0].submit()\" value=\"category\"" .
+                               (($sBrowseType=="category") ? "checked" : "") . "> Category\n" .
+                               "<input type=\"radio\" name=\"fBrowseType\" onClick=\"document.forms[0].submit()\" value=\"documentType\"" .
+                               (($sBrowseType=="documentType") ? "checked" : "") . "> Document Type\n</span>";
 }
 
 function displayCategoryPathLink($sCategoryName) {
@@ -46,7 +47,7 @@ function displayDocumentTypePathLink($aDocumentType) {
 function displayDocumentLink($oDocument, $bDisplayFullPath = false) {
     global $default;
     $sIconPath = generateImage($oDocument->getMimeTypeIconUrl());
-    return generateLink("$default->owl_ui_url/documentmanagement/documentViewBL.php", 
+    return generateLink("$default->owl_root_url/control.php?action=viewDocument", 
                         "fDocumentID=" . $oDocument->getID(),
                         ($sIconPath ? $sIconPath : "") . 
                         ($bDisplayFullPath ? implode(" > ", $oDocument->getDocumentPathAsArray($oDocument->getID())) : $oDocument->getName()));
