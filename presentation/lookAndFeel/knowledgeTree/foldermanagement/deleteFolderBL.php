@@ -110,13 +110,17 @@ if (checkSession()) {
                                     
                 // get folders descended from this one
                 $aFolderArray = Folder::getList("parent_id=$fFolderID");
-                // get documents in this folder
-                $aDocumentArray = Document::getList("folder_id=$fFolderID AND status_id=" . LIVE);
+                // get live documents in this folder
+                $aLiveDocuments = Document::getList("folder_id=$fFolderID AND status_id=" . LIVE);
+				// get archived documents in this folder                
+                $aArchivedDocuments = Document::getList("folder_id=$fFolderID AND status_id=" . ARCHIVED);
                 
                 if (count($aFolderArray) > 0) {
                     $oPatternCustom->setHtml(getFolderNotEmptyPage($fFolderID,  count($aFolderArray), "folder(s)"));
-                } else if (count($aDocumentArray) > 0) {
-                    $oPatternCustom->setHtml(getFolderNotEmptyPage($fFolderID, count($aDocumentArray), "document(s)"));                                                                  
+                } else if (count($aLiveDocuments) > 0) {
+                    $oPatternCustom->setHtml(getFolderNotEmptyPage($fFolderID, count($aDocumentArray), "document(s)"));
+                } else if (count($aArchivedDocuments) > 0) {
+                    $oPatternCustom->setHtml(getFolderNotEmptyPage($fFolderID, "", " archived documents"));                	
                 } else {                
                     // get confirmation first
                     $oFolder = Folder::get($fFolderID);

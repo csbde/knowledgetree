@@ -10,18 +10,6 @@
  * @package presentation.lookAndFeel.knowledgeTree.foldermanagement
  */
 
- /*function renderHeading($sHeading) {
-    global $default;
-    $sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
-    $sColor = $default->siteMap->getSectionColour($sSectionName, "th");
-    $sToRender  = "<table border=\"0\" width=\"600\">\n";
-    $sToRender .= "<tr align=\"left\"><th class=\"sectionHeading\" bgcolor=\"$sColor\">$sHeading</th></tr>\n";
-    $sToRender .= "<tr/>\n";
-    $sToRender .= "<tr/>\n";
-    $sToRender .= "</table>\n";
-    return $sToRender;
-}*/
-
 function getFolderPath($iFolderID) {
 	global $default;
 	$sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
@@ -36,7 +24,7 @@ function getFolderNotEmptyPage($iFolderID, $iObjectCount, $sObjectType) {
 	$sToRender .= getFolderPath($iFolderID) . "<br>\n";
 	$sToRender .= "<table border=\"0\">\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>There are still $iObjectCount $sObjectType in this folder</td>\n";
+	$sToRender .= "<td>This folder cannot be deleted because there are still $iObjectCount $sObjectType in it.</td>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>Select 'Cancel' to return to the browse page.</td>\n";
 	$sToRender .= "<tr>\n";
