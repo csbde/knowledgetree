@@ -48,7 +48,7 @@ function checkSession() {
     // TODO: error handling in here with appropriate actions
     //       error messages are in $sessionStatus["errorMessage"]
     switch ($sessionStatus["status"]) {
-        case 1 : // session verified, update lastused time
+        case 1 : // session verified, update lastused time                 
                  return true;
                  break;
         case 2 : // session timed out                 
