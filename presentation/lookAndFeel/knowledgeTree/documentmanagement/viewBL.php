@@ -155,37 +155,47 @@ if (checkSession()) {
 			}
             $main->setDHTMLScrolling(false);
 			
-		} else if ((isset($fForPublish)) && (!DocumentCollaboration::documentIsPendingWebPublishing($fDocumentID))) {
+		} else if (isset($fForPublish) && 
+				   !DocumentCollaboration::documentIsPublished($fDocumentID) &&
+				   !DocumentCollaboration::documentIsPendingWebPublishing($fDocumentID)) {
+				   	
 			if ($fSubmit) {
 	            // user wishes to publish document
-	            $aWebDocument = WebDocument::get(lookupID($default->owl_web_documents_table, "document_id", $fDocumentID));
-
-	            if (strlen($fWebSiteID) > 0) {
-		            $oWebDocument->setStatusID(PENDING);
-		            $oWebDocument->setWebSiteID($fWebSiteID);
-		            $oWebDocument->setDateTime(getCurrentDateTime());
-	            } else {	            
-		            $oWebDocument->setStatusID(PUBLISHED);
-		            $oWebDocument->setWebSiteID(-1);
-	                $oWebDocument->setDateTime(getCurrentDateTime());
-	            }
-	            
-                if ($oWebDocument->update()) {
-                    $oDocumentTransaction = & new DocumentTransaction($fDocumentID, "Document sent for web publishing", UPDATE);
-                    $oDocumentTransaction->create();
-                    if ((strlen($fWebSiteID) > 0) && (strlen($fComment) > 0)) {
-                    	DocumentCollaboration::notifyWebMaster($fDocumentID, $fComment);
-                    }
-                    if ((strlen($fWebSiteID) > 0) && (strlen($fComment) > 0)) {
-                    	$sStatusMessage = "The document has been marked as pending publishing and the web publisher has been notified";
-                    } else {
-                    	$sStatusMessage = "The document has been published";                    	
-                    }
-                    $oPatternCustom->setHtml(getPage($oDocument, true, $sStatusMessage));                    
-                } else {
-                    $sStatusMessage = "An error occured while attempting to update the document for publishing";                	
-                    $oPatternCustom->setHtml(getStatusPage($oDocument, $sStatusMessage));
-                }
+	            $oWebDocument = WebDocument::get(lookupID($default->owl_web_documents_table, "document_id", $fDocumentID));
+	            $default->log->info("retrieved web document=" . arrayToString($oWebDocument));
+				if ($oWebDocument) {
+		            if ($fWebSiteID) {
+			            $oWebDocument->setStatusID(PENDING);
+			            $oWebDocument->setWebSiteID($fWebSiteID);
+			            $oWebDocument->setDateTime(getCurrentDateTime());
+		            } else {	            
+			            $oWebDocument->setStatusID(PUBLISHED);
+			            $oWebDocument->setWebSiteID(-1);
+		                $oWebDocument->setDateTime(getCurrentDateTime());
+		            }
+		            
+	                if ($oWebDocument->update()) {
+	                	$default->log->info("updated status=" . arrayToString($oWebDocument));
+	                    $oDocumentTransaction = & new DocumentTransaction($fDocumentID, "Document sent for web publishing", UPDATE);
+	                    $oDocumentTransaction->create();
+	                    if ((strlen($fWebSiteID) > 0)) {
+	                    	DocumentCollaboration::notifyWebMaster($fDocumentID, $fComment);
+	                    }
+	                    if ($fWebSiteID) {
+	                    	$sStatusMessage = "The document has been marked as pending publishing and the web publisher has been notified";
+	                    } else {
+	                    	$sStatusMessage = "The document has been published";                    	
+	                    }
+	                    $default->log->info("printing page");
+	                    $oPatternCustom->setHtml(getStatusPage($oDocument, $sStatusMessage));                    
+	                } else {
+	                    $sStatusMessage = "An error occured while attempting to update the document for publishing.  Please try again later.";                	
+	                    $oPatternCustom->setHtml(getStatusPage($oDocument, $sStatusMessage));
+	                }
+				} else {
+					$sStatusMessage = "An error occured while attempting to update the document for publishing.  Please try again later.";                	
+					$oPatternCustom->setHtml(getStatusPage($oDocument, $sStatusMessage));
+				}
             } else {
                 // prompt for the website to publish to
                 $oPatternCustom->setHtml(getWebPublishPage($oDocument));
