@@ -2,11 +2,27 @@
 /**
  * $Id$
  *
- * Contains static functions concerned with Discusion threads
+ * Represents a document discussion thread.
  *
- * @author Omar Rahbeeni, CS Holdings, South Africa
+ * Copyright (c) 2003 Jam Warehouse http://www.jamwarehouse.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
  * @version $Revision$
- * @package lib.discussions
+ * @author Omar Rahbeeni, CS Holdings, South Africa
+ * @package lib.discussions 
  */
 class DiscussionThread {
 
@@ -114,12 +130,12 @@ class DiscussionThread {
     	global $default;
     	
     	$sql = $default->db;
-        $result = $sql->query("SELECT id FROM $default->owl_discussion_threads_table WHERE document_id = $this->iDocumentID ORDER BY id");
+        $result = $sql->query("SELECT id FROM $default->discussion_threads_table WHERE document_id = $this->iDocumentID ORDER BY id");
         if ($result) {
         	$sql->next_record();
         	$iThreadID = $sql->f("id");
         
-	        $result = $sql->query("SELECT id FROM $default->owl_discussion_comments_table WHERE thread_id = $iThreadID ORDER BY date Desc");
+	        $result = $sql->query("SELECT id FROM $default->discussion_comments_table WHERE thread_id = $iThreadID ORDER BY date Desc");
 	        
 	        if ($result) {           
 	            while ($sql->next_record()) {
@@ -142,7 +158,7 @@ class DiscussionThread {
     function getThreadIDforDoc($iDocumentID){
     	global $default;	
 		$sql = $default->db;
-        $result = $sql->query("SELECT id FROM $default->owl_discussion_threads_table WHERE document_id = $iDocumentID");
+        $result = $sql->query("SELECT id FROM $default->discussion_threads_table WHERE document_id = $iDocumentID");
         if ($result) {        
             if ($sql->next_record()) {
                 if ($sql->f("id") > 0) {
@@ -151,7 +167,7 @@ class DiscussionThread {
                 	return "false";
                 }
             }
-            $_SESSION["errorMessage"] = $lang_err_object_not_exist . "Document_id = " . $iDocumentID . " table = $default->owl_discussion_threads_table";
+            $_SESSION["errorMessage"] = $lang_err_object_not_exist . "Document_id = " . $iDocumentID . " table = $default->discussion_threads_table";
             return false;
         }
         $_SESSION["errorMessage"] = $lang_err_database;
@@ -170,7 +186,7 @@ class DiscussionThread {
     function & get($iNewThreadID) {
         global $default;
         $sql = $default->db;
-        $result = $sql->query("SELECT * FROM $default->owl_discussion_threads_table WHERE id = $iNewThreadID");
+        $result = $sql->query("SELECT * FROM $default->discussion_threads_table WHERE id = $iNewThreadID");
         if ($result) {
             if ($sql->next_record()) {
                 			
@@ -184,7 +200,7 @@ class DiscussionThread {
                 $oDiscussionThread->iNumberOfReplies = $sql->f("replies");
                 return $oDiscussionThread;
             }
-            $_SESSION["errorMessage"] = $lang_err_object_not_exist . "id = " . $iNewThreadID . " table = $default->owl_discussion_threads_table";
+            $_SESSION["errorMessage"] = $lang_err_object_not_exist . "id = " . $iNewThreadID . " table = $default->discussion_threads_table";
             return false;
         }
         $_SESSION["errorMessage"] = $lang_err_database;
@@ -200,7 +216,7 @@ class DiscussionThread {
         $sQuery = "what the hell";
         if ($this->iId < 0) { //check to see if entry exists
 	        $sql = $default->db;
-	        $sQuery = 	"INSERT INTO " . $default->owl_discussion_threads_table . 
+	        $sQuery = 	"INSERT INTO " . $default->discussion_threads_table . 
 	        		  	" (document_id, first_comment_id, last_comment_id, views, replies, creator_id) " . 
 	        			"VALUES (" . $this->iDocumentID . "," . $this->iFirstCommentID .  "," . $this->iLastCommentID .  "," . $this->iNumberOfViews .  "," . $this->iNumberOfReplies ."," . $this->iCreatorID . ")";
 	        $result = $sql->query($sQuery);
@@ -212,7 +228,7 @@ class DiscussionThread {
 	        $_SESSION["errorMessage"] = $lang_err_database;
 	        return  false;        	
         }
-        $_SESSION["errorMessage"] = $lang_err_object_exists . "id = " . $this->iId . " table = $default->owl_discussion_threads_table";
+        $_SESSION["errorMessage"] = $lang_err_object_exists . "id = " . $this->iId . " table = $default->discussion_threads_table";
         return false;
     }
     
@@ -224,7 +240,7 @@ class DiscussionThread {
         //only update if the object has been stored
         if ($this->iId > 0) {
             $sql = $default->db;
-            $sQuery = "UPDATE " . $default->owl_discussion_threads_table . 
+            $sQuery = "UPDATE " . $default->discussion_threads_table . 
 					" SET document_id = " 	. $this->iDocumentID .
 					", first_comment_id = " . $this->iFirstCommentID .
 					", last_comment_id = " 	. $this->iLastCommentID .
@@ -256,7 +272,7 @@ class DiscussionThread {
         if ($this->iId > 0) {
             //check to see if group is linked to a unit
             $sql = $default->db;
-            $query = "SELECT * FROM ". $default->owl_discussion_threads_table ." WHERE id = " . $this->iId  ;
+            $query = "SELECT * FROM ". $default->discussion_threads_table ." WHERE id = " . $this->iId  ;
             $sql->query($query);
             $rows = $sql->num_rows($sql);
 
@@ -267,7 +283,7 @@ class DiscussionThread {
 
             } else {
                 $sql = $default->db;
-                $result = $sql->query("DELETE FROM $default->owl_discussion_threads_table WHERE id = $this->iId");
+                $result = $sql->query("DELETE FROM $default->discussion_threads_table WHERE id = $this->iId");
                 if ($result) {
                     return true;
                 }

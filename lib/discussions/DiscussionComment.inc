@@ -2,11 +2,27 @@
 /**
  * $Id$
  *
- * Contains static functions concerned with sending emails
+ * Represents a document discussion comment.
  *
- * @author Omar Rahbeeni, CS Holdings, South Africa
+ * Copyright (c) 2003 Jam Warehouse http://www.jamwarehouse.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
  * @version $Revision$
- * @package lib.discussions
+ * @author Omar Rahbeeni, CS Holdings, South Africa
+ * @package lib.discussions 
  */
 class DiscussionComment {
 
@@ -123,7 +139,7 @@ class DiscussionComment {
     function & get($iNewCommentID) {
         global $default;
         $sql = $default->db;
-        $result = $sql->query("SELECT * FROM $default->owl_discussion_comments_table WHERE id = $iNewCommentID");
+        $result = $sql->query("SELECT * FROM $default->discussion_comments_table WHERE id = $iNewCommentID");
         if ($result) {
             if ($sql->next_record()) {                
                 $oDiscussionComment = & new DiscussionComment($sql->f("body"),$sql->f("subject"),$sql->f("user_id"),$sql->f("thread_id"));
@@ -131,7 +147,7 @@ class DiscussionComment {
                 $oDiscussionComment->dDate = $sql->f("date");
                 return $oDiscussionComment;
             }
-            $_SESSION["errorMessage"] = $lang_err_object_not_exist . "id = " . $iNewCommentID . " table = $default->owl_discussion_comments_table";
+            $_SESSION["errorMessage"] = $lang_err_object_not_exist . "id = " . $iNewCommentID . " table = $default->discussion_comments_table";
             return false;
         }
         $_SESSION["errorMessage"] = $lang_err_database;
@@ -144,7 +160,7 @@ class DiscussionComment {
         if ($this->iId < 0) { //check to see if comment exists
             $sql = $default->db;            																																
             
-            $result = $sql->query("INSERT INTO " . $default->owl_discussion_comments_table . " (thread_id,user_id,subject, body, date)" .
+            $result = $sql->query("INSERT INTO " . $default->discussion_comments_table . " (thread_id,user_id,subject, body, date)" .
              				       "VALUES (" . $this->iThreadID . "," . $this->iUserID . ",\"" . $this->sSubject . "\",\"" . $this->sBody . "\",Now())");
             if ($result) {
 	          	$this->iId = $sql->insert_id();
@@ -154,7 +170,7 @@ class DiscussionComment {
 	        return false;    
             
         }
-        $_SESSION["errorMessage"] = $lang_err_object_exists . "id = " . $this->iId . " table = $default->owl_units_table";
+        $_SESSION["errorMessage"] = $lang_err_object_exists . "id = " . $this->iId . " table = $default->units_table";
         return false;	
     }
     
@@ -165,7 +181,7 @@ class DiscussionComment {
             $sql = $default->db;
             // Do update query            
             
-            $result = $sql->query(	"UPDATE " . $default->owl_discussion_comments_table . 
+            $result = $sql->query(	"UPDATE " . $default->discussion_comments_table . 
             						" SET thread_id = " 		. $this->iThreadID .
             						" AND user_id = " 			. $this->iUserID .
             						" AND subject = " 			. $this->sSubject .
@@ -189,7 +205,7 @@ class DiscussionComment {
         if ($this->iId > 0) {
             //check to see if group is linked to a unit
             $sql = $default->db;
-            $query = "SELECT * FROM ". $default->owl_discussion_comments_table . " WHERE id = " . $this->iId  ;
+            $query = "SELECT * FROM ". $default->discussion_comments_table . " WHERE id = " . $this->iId  ;
             $sql->query($query);
             $rows = $sql->num_rows($sql);
 
@@ -200,7 +216,7 @@ class DiscussionComment {
 
             } else {
                 $sql = $default->db;
-                $result = $sql->query("DELETE FROM $default->owl_discussion_comments_table WHERE id = $this->iId");
+                $result = $sql->query("DELETE FROM $default->discussion_comments_table WHERE id = $this->iId");
                 if ($result) {
                     return true;
                 }

@@ -1,22 +1,32 @@
 <?php
-
 require_once("$default->fileSystemRoot/lib/security/permission.inc");
 require_once("$default->fileSystemRoot/lib/users/User.inc");
 require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
 require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
-
 /**
- * 
  * $Id$
- * 
- * Contains document browsing business logic.
  *
- * Licensed under the GNU GPL. For full terms see the file COPYING.
+ * Contains document type view document browsing business logic.
+ *
+ * Copyright (c) 2003 Jam Warehouse http://www.jamwarehouse.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * @version $Revision$ 
  * @author Michael Joseph <michael@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
- *
- * @package lib.documentmanagement
+ * @package lib.browse
  */
 class DocumentTypeBrowser extends Browser {    
 
@@ -51,7 +61,7 @@ class DocumentTypeBrowser extends Browser {
             $results["documentTypes"][] = array("name" => "Document Types");
             
             // return a list of document types
-            $query = "SELECT * FROM $default->owl_document_types_table ORDER BY name " . ($this->sSortField == "name" ? $this->sSortDirection : "ASC");
+            $query = "SELECT * FROM $default->document_types_table ORDER BY name " . ($this->sSortField == "name" ? $this->sSortDirection : "ASC");
              
             $sql->query($query);
             while ($sql->next_record()) {
@@ -62,11 +72,11 @@ class DocumentTypeBrowser extends Browser {
         	$aLookupCriteria = $this->aSortCriteria[$this->sSortField]["lookup"];
         	
             // lookup document type name from the passed in id
-            $documentTypeName = lookupField($default->owl_document_types_table, "name", "id", $iDocumentTypeID);
+            $documentTypeName = lookupField($default->document_types_table, "name", "id", $iDocumentTypeID);
             $results["documentTypes"][] = array("id" => $iDocumentTypeID, "name" => $documentTypeName);
                        
             // create query to retrieve documents with this document type
-            $documentQuery  = "SELECT d.id as id FROM $default->owl_documents_table d ";
+            $documentQuery  = "SELECT d.id as id FROM $default->documents_table d ";
             if ( isset($aLookupCriteria) ) {
             	//$documentQuery .= "INNER JOIN " .  $aLookupCriteria["table"] . " lt ON d.$this->sSortField=lt.id ";
             	$documentQuery .= "INNER JOIN " .  $aLookupCriteria["table"] . " lt ON ";
