@@ -38,8 +38,9 @@ if (checkSession()) {
 	require_once("documentUI.inc");
 	require_once("modifySpecificMetaDataUI.inc");
 	
-	if (Permission::userHasDocumentWritePermission($fDocumentID)) {
-		$oDocument = Document::get($fDocumentID);
+	$oDocument = Document::get($fDocumentID);
+	if (Permission::userHasDocumentWritePermission($oDocument)) {
+		
 		require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 		$oPatternCustom = & new PatternCustom();
 		$oPatternCustom->setHtml(getPage($fDocumentID, $oDocument->getDocumentTypeID(), $fFirstEdit));

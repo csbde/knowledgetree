@@ -54,7 +54,7 @@ if (checkSession()) {
 				$oDocument = & Document::get($fDocumentID);
 				$oFolder = & Folder::get($fFolderID);
 				$iOldFolderID = $oDocument->getFolderID();
-				if (Permission::userHasDocumentWritePermission($fDocumentID) && Permission::userHasFolderWritePermission($fFolderID)) {
+				if (Permission::userHasDocumentWritePermission($oDocument) && Permission::userHasFolderWritePermission($oFolder)) {
 					//if the user has both document and folder write permissions				
 					//get the old document path
 					$sOldDocumentFileSystemPath = Folder::getFolderPath($iOldFolderID) . $oDocument->getFileName();

@@ -37,10 +37,12 @@ if (checkSession()) {
 	require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");	
 	require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentLink.inc");
 	require_once("$default->fileSystemRoot/presentation/Html.inc");
+	require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
 	require_once("documentUI.inc");
 	require_once("removeDocumentLinkUI.inc");
 
-	if (Permission::userHasDocumentWritePermission($fParentDocumentID)) {
+	$oDocument = Document::get($fDocumentID);
+	if (Permission::userHasDocumentWritePermission($oDocument)) {
 		if (isset($fForDelete)) {
 			//deleting a document link
 			$oDocumentLink = DocumentLink::get($fDocumentLinkID);

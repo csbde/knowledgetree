@@ -60,13 +60,13 @@ if (checkSession()) {
     require_once("$default->fileSystemRoot/lib/subscriptions/SubscriptionEngine.inc");
 
     $oPatternCustom = & new PatternCustom();
-
+    
     if (isset($fDocumentID)) {
         // instantiate the document
         $oDocument = & Document::get($fDocumentID);
         if ($oDocument) {
             // user has permission to check the document in
-            if (Permission::userHasDocumentWritePermission($fDocumentID)) {
+            if (Permission::userHasDocumentWritePermission($oDocument)) {
                 // and the document is checked out
                 if ($oDocument->getIsCheckedOut()) {
                     // by you

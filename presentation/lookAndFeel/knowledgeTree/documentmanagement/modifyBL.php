@@ -50,9 +50,9 @@ if (checkSession()) {
 	require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");				
 	require_once("$default->fileSystemRoot/presentation/Html.inc");
 	
-	if (Permission::userHasDocumentWritePermission($fDocumentID)) {
+	$oDocument = & Document::get($fDocumentID);
+	if (Permission::userHasDocumentWritePermission($oDocument)) {
 		//if the user has write permission
-		$oDocument = & Document::get($fDocumentID);
 		if (isset($fForUpdate)) {
 			//if the user is updating the values
 			$oDocument->setName($fDocumentName);

@@ -43,8 +43,10 @@ require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/fo
 require_once("deleteDocumentUI.inc");
 
 if (checkSession()) {
+	
 	if (isset($fDocumentID)) {
-		if (Permission::userHasDocumentWritePermission($fDocumentID)) {
+		$oDocument = Document::get($fDocumentID);
+		if (Permission::userHasDocumentWritePermission($oDocument)) {
             // check if there is collaboration for this document
             $aFolderUserRoles = FolderUserRole::getList("document_id = $fDocumentID");
             // check if any of them are active
