@@ -66,7 +66,7 @@ if ($loginAction == "loginForm") {
     <img src=\"$default->graphicsUrl/ktLogin.jpg\">
     <br><br>
     <table>\n
-    <form name=\"loginForm\" action=\"login.php\" method=\"post\">
+    <form name=\"loginForm\" action=\"" . $_SERVER["PHP_SELF"] . "\" method=\"post\">
     <tr><td>Please enter your details below to login</td></tr>
     <tr><td></td></tr>
     <tr><td><font color=\"red\">" . urldecode($errorMessage) . "</font><tr><td>
