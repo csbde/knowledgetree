@@ -23,7 +23,7 @@ if (checkSession()) {
 		require_once("$default->owl_fs_root/lib/foldermanagement/PhysicalFolderManagement.inc");		
 		require_once("$default->owl_fs_root/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
 		require_once("$default->owl_fs_root/presentation/Html.inc");
-		require_once("addFolderUI.inc");	
+		require_once("addFolderUI.inc");		
 		
 		if (!isset($fFolderName)) {
 			require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");
