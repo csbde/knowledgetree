@@ -9,6 +9,11 @@
 */
 
 require_once("../../../../../config/dmsDefaults.php");
+<<<<<<< editGroupSuccess.php
+require_once("../adminUI.inc");
+require_once("$default->fileSystemRoot/presentation/Html.inc");
+=======
+>>>>>>> 1.7
 
 global $default;
 
@@ -27,7 +32,7 @@ if(checkSession()) {
     $Center .= "<tr></tr>\n";
     $Center .= "<tr></tr>\n";
     $Center .= "<tr>\n";
-    $Center .= "<td align = right><a href=\"$default->rootUrl/control.php?action=editGroup\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
+    $Center .= "<td align = right><a href=\"$default->rootUrl/control.php?action=listGroups\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
     $Center .= "</tr>\n";
     $Center .= "</table>\n";
 
