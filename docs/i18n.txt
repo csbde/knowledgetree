@@ -62,6 +62,34 @@ Here are some guidelines for adding gettext support to the KnowledgeTree.
     $sToRender .= "\t\t<td><img src=\"$default->graphicsUrl/welcome.gif\" border=\"0\"/></td>\n";		
 	i18n'd:
     $sToRender .= "\t\t<td><img src=\"" . imgSrc("welcome.gif") . "\" border=\"0\"/></td>\n";	
+
+Images to translate
+-------------------
+heading.gif: Document Management System
+welcome.gif: Welcome to the Knowledge Tree
+search.gif: SEARCH
+tree.gif: KnowledgeTree (no translate?)
+
+admin/over.gif: ADMIN
+admin/norm.gif: ADMIN
+asearch/over.gif: ADVANCED SEARCH
+asearch/norm.gif: ADVANCED SEARCH
+help/over.gif: HELP
+help/norm.gif: HELP
+home/over.gif: DASHBOARD
+home/norm.gif: DASHBOARD
+leftnav/links.gif: Links
+leftnav/uadmin.gif: Contact Unit Admin
+leftnav/cadmin.gif: Contact Admin
+logout/over.gif: LOGOUT
+logout/norm.gif: LOGOUT
+mdocs/over.gif: BROWSE COLLECTION
+mdocs/norm.gif: BROWSE COLLECTION
+prefs/over.gif: PREFERENCES
+prefs/norm.gif: PREFERENCES
+subscriptions/over.gif: SUBSCRIPTIONS
+subscriptions/norm.gif: SUBSCRIPTIONS
+
 	
 Testing
 -------
