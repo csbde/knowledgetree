@@ -1,8 +1,10 @@
 CREATE TABLE active_sessions ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 user_id INTEGER,
+session_id CHAR(255),
 lastused DATETIME,
 ip CHAR(30)
+
 );
 
 CREATE TABLE document_fields ( 
