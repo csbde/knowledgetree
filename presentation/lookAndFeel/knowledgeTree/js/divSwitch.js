@@ -17,7 +17,6 @@ function switchDiv(div_id, object)
     } else {
     	hideAll(aFolderDivs);
     }
-    	
     changeObjectVisibility(div_id,"visible");
   }
   else 
