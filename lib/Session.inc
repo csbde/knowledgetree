@@ -25,8 +25,6 @@ class Session {
         
         // bind userID to session
         $_SESSION['userID'] = $userID;
-        // lookup user class and add to session
-        //$_SESSION['userClass'] = lookupUserClass($userID);
         
         // lookup group id and add to session
         //$_SESSION['groupID'] = lookupGroupID($userID);
@@ -129,7 +127,7 @@ class Session {
                         // set verified status
                         $verified["status"] = 1;
                         // update userID? this should be the same value on the session
-                        $verified["userID"] = $sql->f("uid");
+                        $verified["userID"] = $sql->f("user_id");
                         $sql->query("select * from $default->owl_users_table where id = '".$verified["userid"]."'");
                         while($sql->next_record()) {
                             $verified["groupID"] = $sql->f("groupid");
@@ -151,6 +149,10 @@ class Session {
                 }
             }
         }
+        // add this array to the session
+        session_register($sessionStatus);
+        
+        // also return the array for good measure
         return $verified;
     }    
 }
