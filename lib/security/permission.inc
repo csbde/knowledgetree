@@ -155,7 +155,12 @@ class Permission {
 	function userHasGroupWritePermissionForFolder($iFolderID) {
 		global $default, $lang_err_user_folder_write;
 		$sql = new Owl_DB();
-		$sql->query("SELECT * FROM " . $default->owl_groups_folders_table . " WHERE folder_id = " . $iFolderID . " AND user_id = " . $_SESSION["userID"] . " AND can_write = 1");
+		//$sql->query("SELECT * FROM " . $default->owl_groups_folders_table . " WHERE folder_id = " . $iFolderID . " AND user_id = " . $_SESSION["userID"] . " AND can_write = 1");
+        $sql->query("SELECT * FROM " . $default->owl_groups_folders_table . " GLF, $default->owl_users_groups_table GUL " . 
+                    " WHERE GLF.folder_id = " . $iFolderID . 
+                    " AND GUL.user_id = " . $_SESSION["userID"] .
+                    " AND GLF.group_id = GUL.group_id " .
+                    " AND can_write = 1");
 		if ($sql->next_record()) {
 			return true;
 		}
@@ -173,7 +178,12 @@ class Permission {
 	function userHasGroupReadPermissionForFolder($iFolderID) {
 		global $default, $lang_err_user_folder_read;
 		$sql = new Owl_DB();
-		$sql->query("SELECT * FROM " . $default->owl_groups_folders_table = "groups_folders_link" . " WHERE folder_id = " . $iFolderID . " AND user_id = " . $_SESSION["userID"] . " AND can_read = 1");
+		//$sql->query("SELECT * FROM " . $default->owl_groups_folders_table = "groups_folders_link" . " WHERE folder_id = " . $iFolderID . " AND user_id = " . $_SESSION["userID"] . " AND can_read = 1");
+        $sql->query("SELECT * FROM " . $default->owl_groups_folders_table . " GLF, $default->owl_users_groups_table GUL " . 
+                    " WHERE GLF.folder_id = " . $iFolderID . 
+                    " AND GUL.user_id = " . $_SESSION["userID"] .
+                    " AND GLF.group_id = GUL.group_id " .
+                    " AND can_read = 1");
 		if ($sql->next_record()) {
 			return true;
 		}
