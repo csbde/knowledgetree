@@ -29,8 +29,8 @@ if (checkSession()) {
 	$oDocument = & Document::get($fDocumentID);	
 	$oPatternCustom = & new PatternCustom();
 	$oPatternCustom->setHtml(renderPage($oDocument));
-	$main->setCentralPayload($oPatternCustom);
-	$main->setFormAction("../store.php");
+	$main->setCentralPayload($oPatternCustom);	
+	$main->setFormAction("../store.php?fReturnURL=" . urlencode("$default->owl_root_url/control.php?action=viewDocument&fDocumentID=" . $oDocument->getID()));
 	$main->render();
 		
 	/*$oDocument = & Document::get($fDocumentID);
