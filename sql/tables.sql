@@ -7,7 +7,7 @@ lastused DATETIME,
 ip CHAR(30)
 ) TYPE = InnoDB;
 
-CREATE TABLE document_fields ( 
+CREATE TABLE document_fields( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 name CHAR(255) NOT NULL,
 data_type CHAR(100) NOT NULL,
@@ -22,11 +22,6 @@ document_field_id INTEGER NOT NULL,
 value CHAR(255) NOT NULL
 )TYPE = InnoDB;
 
-CREATE TABLE document_fields_lookup (
-id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
-document_field_id INTEGER NOT NULL,
-name CHAR(255) NOT NULL
-)TYPE = InnoDB;
 
 CREATE TABLE document_transaction_types_lookup ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
