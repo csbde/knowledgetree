@@ -234,7 +234,7 @@ function getEditPage($oDocument) {
     $sToRender .= "<td>\n";
     
     $sToRender .= "\t<table border = 0>\n";
-    $sToRender .= "\t<tr width>\n";
+    $sToRender .= "\t<tr>\n";
     $sToRender .= "\t\t<td>" . renderDocumentData($oDocument) . "</td>\n";    
     $sToRender .= "\t</tr>\n";
 	$sToRender .= "\t<tr>\n";
@@ -344,7 +344,7 @@ function getViewPage($oDocument) {
     $sToRender .= "<tr>\n";
     $sToRender .= "<td>\n";
     $sToRender .= "\t<table border = 0 width = 280>\n";
-    $sToRender .= "\t<tr width>\n";
+    $sToRender .= "\t<tr>\n";
     $sToRender .= "\t\t<td>" . renderDocumentData($oDocument) . "</td>\n";
     $sToRender .= "\t</tr>\n";
     $sToRender .= "\t<tr>\n";
@@ -395,7 +395,7 @@ function getCheckOutEditPage($oDocument, $bCheckedOut = false) {
     $sToRender .= "<tr>\n";
     $sToRender .= "<td>\n";
     $sToRender .= "\t<table border = 0 width = 280>\n";
-    $sToRender .= "\t<tr width>\n";
+    $sToRender .= "\t<tr>\n";
     $sToRender .= "\t\t<td>" . renderDocumentData($oDocument) . "</td>\n";
     $sToRender .= "\t</tr>\n";
     $sToRender .= "\t<tr>\n";
@@ -443,7 +443,7 @@ function getCheckInEditPage($oDocument) {
     $sToRender .= "<tr>\n";
     $sToRender .= "<td>\n";
     $sToRender .= "\t<table border = 0 width = 280>\n";
-    $sToRender .= "\t<tr width>\n";
+    $sToRender .= "\t<tr>\n";
     $sToRender .= "\t\t<td>" . renderDocumentData($oDocument) . "</td>\n";
     $sToRender .= "\t</tr>\n";
     $sToRender .= "\t<tr>\n";
@@ -480,7 +480,7 @@ function getWebPublishPage($oDocument) {
     $sToRender .= "<tr>\n";
     $sToRender .= "<td>\n";
     $sToRender .= "\t<table border = 0 width = 280>\n";
-    $sToRender .= "\t<tr width>\n";
+    $sToRender .= "\t<tr>\n";
     $sToRender .= "\t\t<td>" . renderDocumentData($oDocument) . "</td>\n";
     $sToRender .= "\t</tr>\n";
     $sToRender .= "\t<tr>\n";
@@ -522,8 +522,10 @@ function getWebPublishPage($oDocument) {
     return $sToRender;
 }
 
+/**
+ * Wraps html in a bordered table
+ */
 function wrapInTable($sHtml) {
     return "\n\t\t\t<table border = 1, width = 100%><tr><td>$sHtml</td></tr></table>\n";
 }
-
 ?>
