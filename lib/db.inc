@@ -1,5 +1,17 @@
 <?php
 
+
+/**
+ * $Id$
+ * 
+ * Performs db tasks
+ *
+ * @version $Revision$ 
+ * @author Mukhtar Dharsey
+ * @package dmslib
+ *//
+/*-----------------------------------------------------------------*/
+
 /**
  * class Owl_DB extends DB_Sql 
  *
