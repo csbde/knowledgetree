@@ -1,0 +1,79 @@
+<?php
+
+require_once("config/dmsDefaults.php");
+require_once("$default->owl_fs_root/lib/documentmanagement/Document.inc");
+require_once("$default->owl_fs_root/lib/foldermanagement/Folder.inc");
+
+$aMissingDocuments = array();
+$aMissingFolders = array();
+
+$aDocuments = Document::getList();
+$aFolders = Folder::getList();
+
+for ($i = 0; $i < count($aFolders); $i++) {
+	$oFolder = $aFolders[$i];
+	checkFolder($oFolder, $fDelete);
+}
+
+for ($i = 0; $i < count($aDocuments); $i++) {
+	$oDocument = $aDocuments[$i];
+	checkDoc($oDocument, $fDelete);
+}
+
+$sToRender = "<html><head></head><body>\n";
+$sToRender .= "The following is a list of documents and folders that are in the database but not on the file system<br>\n";
+$sToRender .= "These folders/documents will have to be recreated/recaptured.<br><br>\n";
+if (isset($fDelete)) {
+	$sToRender .= "<b>These folders/documents HAVE BEEN DELETED.</b><br><br>\n";
+} else {
+	$sToRender .= "<b>These folders/documents have NOT BEEN DELETED YET.</b><br><br>\n";
+	$sToRender .= "Click on the link entitled 'Deleted' below to delete these documents/folders<br><br>\n";
+}
+
+$sToRender .= "The following <b>folders</b> must be recreated:<br>\n<ul>\n";
+
+for ($i = 0; $i < count($aMissingFolders); $i++) {
+	$oFolder = $aMissingFolders[$i];
+	$sToRender .= "<li>" . Folder::getFolderPath($oFolder->getID()) . "</li>\n";
+}
+
+$sToRender .= "</ul><br>The following <b>documents</b> must be recaptured:<br>\n<ul>\n";
+
+for ($i = 0; $i < count($aMissingDocuments); $i++) {	
+	$oDocument = $aMissingDocuments[$i];
+	$sToRender .= "<li>" . Folder::getFolderPath($oDocument->getFolderID()) . $oDocument->getFileName() . "</li>\n";
+}
+
+$sToRender .= "</ul><br>\n";
+if (!isset($fDelete)) {
+	$sToRender .= "<a href=\"" . $_SERVER["PHP_SELF"] . "?fDelete=1\">Delete</a>\n";
+}
+$sToRender .= "</body></html>";
+
+echo $sToRender;
+
+function checkDoc($oDocument, $bForDelete) {	
+	global $aMissingDocuments;	
+	$sDocPath = Folder::getFolderPath($oDocument->getFolderID()) . $oDocument->getFileName();	
+	if (file_exists($sDocPath) === false) {		
+		$aMissingDocuments[count($aMissingDocuments)] = $oDocument;
+		if (isset($bForDelete)) {
+			$oDocument->delete();
+		}
+	}
+}
+
+function checkFolder($oFolder, $bForDelete) {	
+	global $aMissingFolders;
+	$sFolderPath = Folder::getFolderPath($oFolder->getID());	
+	if (file_exists($sFolderPath)) {
+		return;
+	} else {
+		$aMissingFolders[count($aMissingFolders)] = $oFolder;
+		if (isset($bForDelete)) {
+			$oFolder->delete();
+		}
+	}
+}
+
+?>
