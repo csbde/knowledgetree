@@ -10,7 +10,7 @@
 
 function getEditableTypeSpecificMetaData($iDocumentID, $iDocumentTypeID) {
     global $default;    
-	$sQuery = "SELECT DISTINCT $iDocumentID AS document_id, COALESCE(DFL.id, -1) AS id, DF.id AS document_field_id, DFL.value AS value, DF.name AS field_name " .
+	$sQuery = "SELECT DISTINCT $iDocumentID AS document_id, COALESCE(DFL.id, -1) AS id, DF.id AS document_field_id, DFL.value AS value, DF.name AS field_name, DTFL.is_mandatory AS is_mandatory " .
 				"FROM document_type_fields_link AS DTFL INNER JOIN document_fields AS DF ON DTFL.field_id = DF.id " .
 				"LEFT OUTER JOIN document_fields_link AS DFL ON DFL.document_field_id = DTFL.field_id AND DFL.document_id = $iDocumentID " .
 				"WHERE DF.is_generic = 0 " .
