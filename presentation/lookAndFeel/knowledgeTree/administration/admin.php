@@ -19,6 +19,7 @@ if(checkSession()) {
     $sCenter .= renderHeading();
     $sCenter .=	"<tr/><tr/><tr><td><b> Welcome to the Administration Section</b></td></tr>\n";
     $sCenter .=	"<tr><td>Please make a selection from the sidemenu.</td></tr>\n";
+    $sCenter .=	"</table>";
 
 	$oPatternCustom = & new PatternCustom();
 	$oPatternCustom->setHtml($sCenter);
