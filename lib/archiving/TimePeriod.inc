@@ -135,7 +135,7 @@ class TimePeriod extends KTEntity {
         global $default;
         $aTimePeriodArray = array();
         $sql = $default->db;
-        $result = $sql->query("SELECT * FROM $default->time_period_table " . (isset($sWhereClause) ? " WHERE " . $sWhereClause : ""));
+        $result = $sql->query("SELECT * FROM $default->time_period_table " . (isset($sWhereClause) ? " WHERE " . $sWhereClause : ""));/*wc*/
         if ($result) {
             $iCount = 0;
             while ($sql->next_record()) {

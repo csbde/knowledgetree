@@ -151,7 +151,7 @@ class WebDocument extends KTEntity {
 		global $default, $lang_err_database;
 		$aWebDocumentArray = array();
 		$sql = $default->db;
-        $sQuery = "SELECT * FROM " . $default->web_documents_table;
+        $sQuery = "SELECT * FROM " . $default->web_documents_table;/*wc*/
         if (isset($sWhereClause)) {
             $sQuery .= " WHERE " . $sWhereClause;
         }

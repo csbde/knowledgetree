@@ -119,7 +119,7 @@ class FolderBrowser extends Browser {
             // if we're sorting by name or creator_id then sort folders in the appropriate direction
            
             $aParams = array();
-            $sFolderQuery = "SELECT f.id FROM $default->folders_table AS f ";
+            $sFolderQuery = "SELECT f.id FROM $default->folders_table AS f ";/*ok*/
 			if (in_array($this->sSortField, array("name", "creator_id"))) {             
 	            if (isset($aLookupCriteria)) {
 	            	$sFolderQuery .= "INNER JOIN " . $aLookupCriteria["table"] . " lt ON f.$this->sSortField=lt.id WHERE parent_id = ?";
@@ -154,7 +154,7 @@ class FolderBrowser extends Browser {
             $default->log->debug("Going on to document checking");
             
             // create query to retrieve documents in this folder
-            $documentQuery  = "SELECT d.id as id FROM $default->documents_table AS d ";
+            $documentQuery  = "SELECT d.id as id FROM $default->documents_table AS d ";/*wc*/
             if (isset($aLookupCriteria)) {
             	$documentQuery .= "INNER JOIN " .  $aLookupCriteria["table"] . " lt ON ";
             	$documentQuery .= "d.$this->sSortField" . "=lt." . (isset($aLookupCriteria["joinColumn"]) ? $aLookupCriteria["joinColumn"] : "id");

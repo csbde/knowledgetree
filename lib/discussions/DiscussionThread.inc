@@ -142,12 +142,16 @@ class DiscussionThread extends KTEntity{
     	global $default;
     	
     	$sql = $default->db;
-        $result = $sql->query("SELECT id FROM $default->discussion_threads_table WHERE document_id = $this->iDocumentID ORDER BY id");
+        $aQuery = array("SELECT id FROM $default->discussion_threads_table WHERE document_id = ? ORDER BY id",/*ok*/
+            $this->iDocumentID);
+        $result = $sql->query($aQuery);
         if ($result) {
         	$sql->next_record();
         	$iThreadID = $sql->f("id");
         
-	        $result = $sql->query("SELECT id FROM $default->discussion_comments_table WHERE thread_id = $iThreadID ORDER BY date Desc");
+            $aQuery = array("SELECT id FROM $default->discussion_comments_table WHERE thread_id = ? ORDER BY date DESC",/*ok*/
+                $iThreadID);
+	        $result = $sql->query($aQuery);
 	        
 	        if ($result) {           
 	            while ($sql->next_record()) {
@@ -178,7 +182,7 @@ class DiscussionThread extends KTEntity{
         global $default;
         $aDiscussionThreads = array();
         $sql = $default->db;
-        $result = $sql->query("SELECT * FROM " . $default->discussion_threads_table  . (isset($sWhereClause) ? " WHERE " . $sWhereClause : ""));
+        $result = $sql->query("SELECT * FROM " . $default->discussion_threads_table  . (isset($sWhereClause) ? " WHERE " . $sWhereClause : ""));/*wc*/
         if ($result) {
             while ($sql->next_record()) {
                 $aDiscussionThreads[] = & DiscussionThread::get($sql->f("id"));
@@ -191,7 +195,7 @@ class DiscussionThread extends KTEntity{
     function getThreadIDforDoc($iDocumentID){
     	global $default;	
 		$sql = $default->db;
-        $result = $sql->query("SELECT id FROM $default->discussion_threads_table WHERE document_id = $iDocumentID");
+        $result = $sql->query(array("SELECT id FROM $default->discussion_threads_table WHERE document_id = ?", $iDocumentID));/*ok*/
         if ($result) {        
             if ($sql->next_record()) {
                 if ($sql->f("id") > 0) {
@@ -217,7 +221,7 @@ class DiscussionThread extends KTEntity{
     function & get($iNewThreadID) {
         global $default;
         $sql = $default->db;
-        $result = $sql->query("SELECT * FROM $default->discussion_threads_table WHERE id = $iNewThreadID");
+        $result = $sql->query(array("SELECT * FROM $default->discussion_threads_table WHERE id = ?", $iNewThreadID));/*ok*/
         if ($result) {
             if ($sql->next_record()) {
                 			
@@ -262,7 +266,7 @@ class DiscussionThread extends KTEntity{
         if ($this->iId > 0) {
             //check to see if group is linked to a unit
             $sql = $default->db;
-            $query = "SELECT * FROM ". $default->discussion_threads_table ." WHERE id = " . $this->iId  ;
+            $query = array("SELECT * FROM ". $default->discussion_threads_table ." WHERE id = ?", $this->iId);/*ok*/
             $sql->query($query);
             $rows = $sql->num_rows($sql);
 

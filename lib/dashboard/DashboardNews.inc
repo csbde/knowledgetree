@@ -322,7 +322,7 @@ class DashboardNews extends KTEntity {
     function & get($iNewsID) {
         global $default;
         $sql = $default->db;
-        $sql->query("SELECT * FROM $default->news_table WHERE id = $iNewsID");
+        $sql->query(array("SELECT * FROM $default->news_table WHERE id = ?", $iNewsID));/*ok*/
         if ($sql->next_record()) {
             $aImage = array( "image" => $sql->f("image"),
             				 "filesize" => $sql->f("image_size"),
@@ -346,7 +346,7 @@ class DashboardNews extends KTEntity {
         global $default;
         $aDashboardNewsArray = array();
         $sql = $default->db;
-        $result = $sql->query("SELECT * FROM " . $default->news_table  . (isset($sWhereClause) ? " WHERE " . $sWhereClause : "") . " ORDER BY rank ASC");
+        $result = $sql->query("SELECT * FROM " . $default->news_table  . (isset($sWhereClause) ? " WHERE " . $sWhereClause : "") . " ORDER BY rank ASC");/*wc*/
         if ($result) {
             $iCount = 0;
             while ($sql->next_record()) {

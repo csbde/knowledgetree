@@ -62,14 +62,15 @@ class DBAuthenticator extends Authenticator {
         global $default;
 
         $sql = $default->db;
-        $sQuery = "SELECT ";
+        $sQuery = "SELECT ";/*ok*/
         // build select
         for ($i=0; $i<count($aAttributes); $i++) {
             $sQuery .= $aAttributes[$i] . (( ($i+1) == count($aAttributes) ) ? "" : ", ");
         }
-        $sQuery .= " FROM $default->users_table WHERE username = '$sUserName'";
+        $sQuery .= " FROM $default->users_table WHERE username = ?";
+        $aParams = array($sUserName);
 
-        if ($sql->query($sQuery)) {
+        if ($sql->query(array($sQuery, $aParams))) {
             $aUserResults = array();
             while ($sql->next_record()) {
                 for ($i=0; $i<count($aAttributes); $i++) {
@@ -93,12 +94,12 @@ class DBAuthenticator extends Authenticator {
         global $default;
 
         $sql = $default->db;
-        $sQuery = "SELECT ";
+        $sQuery = "SELECT ";/*ok*/
         // build select
         for ($i=0; $i<count($aAttributes); $i++) {
             $sQuery .= $aAttributes[$i] . (( ($i+1) == count($aAttributes) ) ? "" : ", ");
         }
-        $sQuery .= " FROM $default->users_table where username like '%$sUserNameSearch%'";
+        $sQuery .= " FROM $default->users_table where username like '%" . DBUtil::escapeSimple($sUserNameSearch) . "%'";
 
         if ($sql->query($sQuery)) {
             $aUserResults = array();

@@ -79,7 +79,7 @@ class DocumentTypeBrowser extends Browser {
             $results["documentTypes"][] = array("id" => $iDocumentTypeID, "name" => $documentTypeName);
                        
             // create query to retrieve documents with this document type
-            $documentQuery  = "SELECT d.id as id FROM $default->documents_table d ";
+            $documentQuery  = "SELECT d.id as id FROM $default->documents_table d ";/*wc*/
             if ( isset($aLookupCriteria) ) {
             	//$documentQuery .= "INNER JOIN " .  $aLookupCriteria["table"] . " lt ON d.$this->sSortField=lt.id ";
             	$documentQuery .= "INNER JOIN " .  $aLookupCriteria["table"] . " lt ON ";

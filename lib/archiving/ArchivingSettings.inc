@@ -191,7 +191,7 @@ class ArchivingSettings extends KTEntity {
         global $default;
         $aArchivingSettings = array();
         $sql = $default->db;
-        $result = $sql->query("SELECT * FROM $default->archiving_settings_table " . (isset($sWhereClause) ? " WHERE " . $sWhereClause : ""));
+        $result = $sql->query("SELECT * FROM $default->archiving_settings_table " . (isset($sWhereClause) ? " WHERE " . $sWhereClause : ""));/*wc*/
         if ($result) {
             while ($sql->next_record()) {
                 $oArchivingSettings = & ArchivingSettings::get($sql->f("id"));

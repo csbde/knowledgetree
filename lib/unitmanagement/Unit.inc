@@ -192,7 +192,7 @@ class Unit extends KTEntity {
     function & get($iUnitID) {
         global $default;
         $sql = $default->db;
-        $result = $sql->query("SELECT * FROM $default->units_table WHERE id = $iUnitID");
+        $result = $sql->query(array("SELECT * FROM $default->units_table WHERE id = ?", $iUnitID));/*ok*/
         if ($result) {
             if ($sql->next_record()) {
                 $oUnit = & new Unit($sql->f("name"));
@@ -213,7 +213,7 @@ class Unit extends KTEntity {
 		global $default;
 		// check to see if group is linked to a unit
 		$sql = $default->db;
-		$query = "SELECT unit_id FROM ". $default->groups_units_table ." WHERE unit_id = " . $this->iId;
+		$query = array("SELECT unit_id FROM ". $default->groups_units_table ." WHERE unit_id = ?", $this->iId);/*ok*/
 		$sql->query($query);
 		if ($sql->num_rows($sql) > 0) {
 			return true;
@@ -262,7 +262,7 @@ class Unit extends KTEntity {
         $aUnitArray;
         settype($aUnitArray, "array");
         $sql = $default->db;
-        $result = $sql->query("SELECT * FROM " . $default->units_table  . (isset($sWhereClause) ? " " . $sWhereClause : ""));
+        $result = $sql->query("SELECT * FROM " . $default->units_table  . (isset($sWhereClause) ? " " . $sWhereClause : ""));/*wc*/
         if ($result) {
             $iCount = 0;
             while ($sql->next_record()) {
