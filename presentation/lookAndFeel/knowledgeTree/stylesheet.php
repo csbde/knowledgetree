@@ -4,8 +4,8 @@ require("../../../config/dmsDefaults.php");
 
 $scroll = array();
 
-$browser = $default->phpSniff->property("browser");
-$version = $default->phpSniff->property("version");
+$browser = $default->browser;
+$version = $default->version;
 echo "$browser-$version";
 if ( ($browser == "moz") && ($version <= 4.79)) {
     $scroll["upArrowLeft"] = "780";
