@@ -30,7 +30,7 @@ function getDocumentPath($oDocument) {
 
 function getDocumentEmailPage($oDocument,$oUserArray) {
 	global $default;
-    $sToRender = renderHeading("Email document link");
+    $sToRender = renderHeading("Email Document Link");
 	$sToRender .= getDocumentPath($oDocument) . "\n<br>\n";	 
 	$sToRender .= "<table>\n";	
 	$sToRender .= "<tr><td>Recipient name:</td><td>\n";	
