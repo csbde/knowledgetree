@@ -1,6 +1,9 @@
 <?php
 
 require_once("../../../../../config/dmsDefaults.php");
+
+KTUtil::extractGPC('fNewsID');
+
 require_once("$default->fileSystemRoot/lib/dashboard/DashboardNews.inc");
 require_once("$default->uiDirectory/dashboardUI.inc");
 

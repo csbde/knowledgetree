@@ -27,6 +27,8 @@
 
 require_once("../../../../config/dmsDefaults.php");
 
+KTUtil::extractGPC('fDocumentID', 'fComment', 'fForStore');
+
 require_once("$default->fileSystemRoot/lib/security/Permission.inc");
 
 require_once("$default->fileSystemRoot/lib/email/Email.inc");

@@ -82,16 +82,16 @@ function getDocumentTypeDropDown() {
 	return $oPatternListBox->render();
 }
 
-function renderBrowsePage($fFolderID) {
+function renderBrowsePage($iFolderID) {
     global $default;
     $sToRender = "<table border=\"0\">\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "\t<td>" . renderFolderPath($fFolderID, generateControllerUrl("addFolder", "", false)) . "</td>\n";
+    $sToRender .= "\t<td>" . renderFolderPath($iFolderID, generateControllerUrl("addFolder", "", false)) . "</td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "</table>\n";
     $sToRender .= "<table border=\"0\">\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "\t<td>" . renderFolderList($fFolderID, generateControllerUrl("addFolder", "", false)) . "<td>\n";
+    $sToRender .= "\t<td>" . renderFolderList($iFolderID, generateControllerUrl("addFolder", "", false)) . "<td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "</table><br>\n";
 

@@ -49,7 +49,7 @@ function getEditableGenericMetaData($iDocumentID, $iDocumentTypeID) {
 
 }
 
-function getPage($iDocumentID, $iDocumentTypeID, $fFirstEdit) {
+function getPage($iDocumentID, $iDocumentTypeID, $bFirstEdit) {
 	global $default;
 	
 	$sToRender .= renderHeading(_("Edit Generic Meta Data"));
@@ -68,7 +68,7 @@ function getPage($iDocumentID, $iDocumentTypeID, $fFirstEdit) {
 	$sToRender .= "<td>\n";
 	$sToRender .= "<input type=\"image\" src=\"" . KTHtml::getUpdateButton() . "\" border=\"0\"/>\n";
 	$sToRender .= "</td>\n";
-	if (!isset($fFirstEdit)) {
+	if (!isset($bFirstEdit)) {
 		//can't cancel if you're uploading for the first time, must fill out the generic meta data
 		$sToRender .= "<td>\n";
 		$sToRender .= "<a href=\"$default->rootUrl/control.php?action=viewDocument&fDocumentID=$iDocumentID&fShowSection=genericMetaData\"><img src=\"" . KTHtml::getCancelButton() . "\" border=\"0\" /></a>\n";

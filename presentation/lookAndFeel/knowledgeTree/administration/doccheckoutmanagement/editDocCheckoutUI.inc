@@ -34,10 +34,10 @@ function getErrorPage($sMessage) {
 	return statusPage(_("Edit Document Checkout"), _("Error checking in document"), $sMessage, "listDocs");
 }	
 
-function getEditCheckoutPage($fDocumentID){
+function getEditCheckoutPage($iDocumentID){
 	global $default;
 	
-	$oDocument = Document::get($fDocumentID);
+	$oDocument = Document::get($iDocumentID);
 	$oUser = User::get($oDocument->getCheckedOutUserID());
 	$sToRender .= renderHeading(_("Edit Document Checkout"));	
 	$sToRender .= "<table>\n";
@@ -45,7 +45,7 @@ function getEditCheckoutPage($fDocumentID){
 	$sToRender .= "<tr><td width=\"20%\">" . _("Path") . "</td><td><b>" . $oDocument->getDisplayPath() . "</b></td></tr>";
 	$sToRender .= "<tr><td>" . _("Checked Out By") . "</td><td><b>" . ($oUser ? $oUser->getName() : _("Unknown")) . "</b></td></tr>";
  	$sToRender .= "<input type=\"hidden\" name=\"fUpdate\" value=\"1\">\n";
- 	$sToRender .= "<input type=\"hidden\" name=\"fDocumentID\" value=\"$fDocumentID\">\n";
+ 	$sToRender .= "<input type=\"hidden\" name=\"fDocumentID\" value=\"$iDocumentID\">\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td colspan=\"2\" align=right>\n";	
 	$sToRender .= getUpdateButton();	

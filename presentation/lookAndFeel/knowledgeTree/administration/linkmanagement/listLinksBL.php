@@ -26,6 +26,9 @@
  */
 
 require_once("../../../../../config/dmsDefaults.php");
+
+KTUtil::extractGPC('fGroupID');
+
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCreate.inc");
 require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
 require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");

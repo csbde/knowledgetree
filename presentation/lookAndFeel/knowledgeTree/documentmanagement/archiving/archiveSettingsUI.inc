@@ -25,6 +25,8 @@
  * @package documentmanagement.archiving
  */
 
+KTUtil::extractGPC('fArchivingTypeID', 'fDocumentID');
+
 /**
  * Displays an error message
  */

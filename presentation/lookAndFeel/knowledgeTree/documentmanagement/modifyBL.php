@@ -34,6 +34,8 @@
 
 require_once("../../../../config/dmsDefaults.php");
 
+KTUtil::extractGPC('fDocumentID', 'fDocumentName', 'fDocumentTypeID', 'fFirstEdit', 'fForUpdate');
+	
 if (checkSession()) {
 	
 	require_once("$default->fileSystemRoot/lib/security/Permission.inc");
@@ -49,7 +51,7 @@ if (checkSession()) {
 	require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/documentmanagement/documentUI.inc");
 	require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");				
 	require_once("$default->fileSystemRoot/presentation/Html.inc");
-	
+
 	$oDocument = & Document::get($fDocumentID);
 	if (Permission::userHasDocumentWritePermission($oDocument)) {
 		//if the user has write permission

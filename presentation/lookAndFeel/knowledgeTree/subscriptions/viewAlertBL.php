@@ -1,6 +1,9 @@
 <?php
 
 require_once("../../../../config/dmsDefaults.php");
+
+KTUtil::extractGPC('fSubscriptionID', 'fSubscriptionType'); 
+
 require_once("$default->fileSystemRoot/lib/subscriptions/SubscriptionManager.inc");
 /**
  * $Id$

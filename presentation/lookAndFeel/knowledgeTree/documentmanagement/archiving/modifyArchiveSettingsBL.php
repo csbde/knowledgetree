@@ -26,6 +26,9 @@
  */
 
 require_once("../../../../../config/dmsDefaults.php");
+
+KTUtil::extractGPC('fDelete', 'fDocumentID', 'fDocumentTransactionID', 'fExpirationDate', 'fStore', 'fTimeUnitID', 'fUnits');
+
 require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
 
 require_once("$default->fileSystemRoot/lib/archiving/DocumentArchiveSettingsFactory.inc");

@@ -1,6 +1,9 @@
 <?php
 
 require_once("../../../../../config/dmsDefaults.php");
+
+KTUtil::extractGPC('fConfirm', 'fDocumentIDs');
+
 require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
 require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentTransaction.inc");
 require_once("$default->fileSystemRoot/lib/documentmanagement/PhysicalDocumentManager.inc");

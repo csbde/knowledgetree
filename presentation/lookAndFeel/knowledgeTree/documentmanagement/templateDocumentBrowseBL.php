@@ -1,6 +1,9 @@
 <?php
 
 require_once("../../../../config/dmsDefaults.php");
+
+KTUtil::extractGPC('fBrowseType', 'fSortBy', 'fSortDirection');
+
 require_once("$default->fileSystemRoot/lib/browse/BrowserFactory.inc");
 require_once("$default->fileSystemRoot/lib/browse/Browser.inc");
 require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentType.inc");

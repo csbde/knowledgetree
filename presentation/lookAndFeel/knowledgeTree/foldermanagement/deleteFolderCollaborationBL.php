@@ -32,6 +32,8 @@
 
 require_once("../../../../config/dmsDefaults.php");
 
+KTUtil::extractGPC('fFolderCollaborationID', 'fFolderID', 'fForDelete');
+
 if (checkSession()) {
     if (isset($fFolderID) && isset($fFolderCollaborationID)) {
         //if a folder has been selected

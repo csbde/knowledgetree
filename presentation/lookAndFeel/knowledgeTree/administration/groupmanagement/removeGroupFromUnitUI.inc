@@ -25,12 +25,12 @@
  * @package administration.groupmanagement
  */
 
-function getNoUnitPage($fGroupID){
+function getNoUnitPage($iGroupID){
 	global $default;
 	$sToRender .= "<table><tr><td>\n";
 	$sToRender .= "<br>" . _("Group does not belong to an existing Unit.") . "\n";
 	$sToRender .= "</td><td></td></tr><tr><td></td><td>\n";
-	$sToRender .= "<a href=\"$default->rootUrl/control.php?action=editGroupUnit&fGroupID=$fGroupID\"><img src =\"" . KTHtml::getBackButton() . "\" border = \"0\" /></a>\n";
+	$sToRender .= "<a href=\"$default->rootUrl/control.php?action=editGroupUnit&fGroupID=$iGroupID\"><img src =\"" . KTHtml::getBackButton() . "\" border = \"0\" /></a>\n";
 	$sToRender .= "</td></tr></table>\n";
 	return $sToRender;
 	

@@ -5,9 +5,6 @@
  * Contains HTML information required to build the document view page.
  * Will be used by documentViewBL.
  *
- * Variables expected:
- *   o $fDocumentID  Primary key of document to view
- *
  * Copyright (c) 2003 Jam Warehouse http://www.jamwarehouse.com
  *
  * This program is free software; you can redistribute it and/or modify

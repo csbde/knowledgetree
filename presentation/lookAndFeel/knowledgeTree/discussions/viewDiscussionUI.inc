@@ -48,14 +48,14 @@ function getViewFailPage($sMessage) {
 /** 
  *	Page to create a new thread
  *
- *	@param $fDocumentID -> a valid document ID
+ *	@param $iDocumentID -> a valid document ID
  */
-function getNewThreadOption($fDocumentID) {
+function getNewThreadOption($iDocumentID) {
 	global $default;   
 	$sToRender .= _("Would you like to create a new Discussion thread for this document?");
 	$sToRender .= "&nbsp;&nbsp;&nbsp;";
-	$sToRender .= "<a href=\"" . generateControllerLink("addComment", "fDocumentID=" . $fDocumentID . "&fNewThread=1") . "\"><img src=\"" . KTHtml::getNewButton() . "\" border=\"0\"></a>";
-	$sToRender .= "<a href=\"" . generateControllerLink("viewDocument", "fDocumentID=" . $fDocumentID) . "\"><img src=\"" . KTHtml::getCancelButton() . "\" border=\"0\"></a>";
+	$sToRender .= "<a href=\"" . generateControllerLink("addComment", "fDocumentID=" . $iDocumentID . "&fNewThread=1") . "\"><img src=\"" . KTHtml::getNewButton() . "\" border=\"0\"></a>";
+	$sToRender .= "<a href=\"" . generateControllerLink("viewDocument", "fDocumentID=" . $iDocumentID) . "\"><img src=\"" . KTHtml::getCancelButton() . "\" border=\"0\"></a>";
 	return $sToRender;
 }
 

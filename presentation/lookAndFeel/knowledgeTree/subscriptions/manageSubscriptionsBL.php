@@ -1,6 +1,9 @@
 <?php
 
 require_once("../../../../config/dmsDefaults.php");
+
+KTUtil::extractGPC('fConfirmed', 'fDocumentSubscriptionIDs', 'fFolderSubscriptionIDs');
+
 require_once("$default->fileSystemRoot/lib/subscriptions/Subscription.inc");
 require_once("$default->fileSystemRoot/lib/subscriptions/SubscriptionManager.inc");
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");

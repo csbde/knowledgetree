@@ -112,9 +112,9 @@ function getAddPage($iFolderID) {
 	return $sToRender;
 }
 
-function getAccessCheckBoxes($bReadOnly, $fCanRead = false, $fCanWrite = false) {
-    return "<input name=\"fCanRead\" type=\"checkbox\" " . ($bReadOnly ? "disabled " : "") . ($fCanRead ? "checked " : "") . "/>" . _("Read") . "\n" .
-           "<input name=\"fCanWrite\" type=\"checkbox\" " . ($bReadOnly ? "disabled " : "") . ($fCanWrite ? "checked " : "") . "/>" . _("Write") . "\n";
+function getAccessCheckBoxes($bReadOnly, $bCanRead = false, $bCanWrite = false) {
+    return "<input name=\"fCanRead\" type=\"checkbox\" " . ($bReadOnly ? "disabled " : "") . ($bCanRead ? "checked " : "") . "/>" . _("Read") . "\n" .
+           "<input name=\"fCanWrite\" type=\"checkbox\" " . ($bReadOnly ? "disabled " : "") . ($bCanWrite ? "checked " : "") . "/>" . _("Write") . "\n";
 }
 
 function getGroupDropDown($iGroupID = -1) {
@@ -133,9 +133,9 @@ function getGroupDropDown($iGroupID = -1) {
 	return $oPatternListBox->render();
 }
 
-function renderErrorPage($sErrorMessage, $fFolderID) {
+function renderErrorPage($sErrorMessage, $iFolderID) {
     global $default;
     return "<p class=\"errorText\">$sErrorMessage</p>\n" .
-           "<a href=\"$default->rootUrl/control.php?action=editFolder&fFolderID=$fFolderID\"><img src=\"" . KTHtml::getBackButton() . "\" border=\"0\"/></a>\n";
+           "<a href=\"$default->rootUrl/control.php?action=editFolder&fFolderID=$iFolderID\"><img src=\"" . KTHtml::getBackButton() . "\" border=\"0\"/></a>\n";
 }
 ?>

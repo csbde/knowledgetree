@@ -55,12 +55,12 @@ function getPage($iUserID) {
     return $sToRender;
 }
 
-function getGroupUnitsList($fGroupID){
+function getGroupUnitsList($iGroupID){
 
     $sQuery = 	"SELECT groups_lookup.id as groupID, units_lookup.name as name, units_lookup.id as UnitID  " .
 				"FROM (groups_lookup inner join groups_units_link on groups_lookup.id = groups_units_link.group_id) " .
 				"inner join units_lookup on units_lookup.id = groups_units_link.unit_id " .
-				"Where groups_lookup.id = $fGroupID " .
+				"Where groups_lookup.id = $iGroupID " .
 				"ORDER BY groups_lookup.name ";
     
 
@@ -132,7 +132,7 @@ function getUnitPage($iGroupID) {
 }
 
 // get page for removal
-function getDeleteConfirmedPage($iUserID,$fGroupID) {
+function getDeleteConfirmedPage($iUserID,$iGroupID) {
     global $default;
     $oUser = null;
     $oGroup = null;
@@ -144,8 +144,8 @@ function getDeleteConfirmedPage($iUserID,$fGroupID) {
     }
 
     // change headings if User selected
-    if (isset($fGroupID)) {
-        $oGroup = Group::get($fGroupID);
+    if (isset($iGroupID)) {
+        $oGroup = Group::get($iGroupID);
         $Groupdisplay = "<td>" . _("Group Name") . ": " . $oGroup->getName() . "</td>\n";
     }
 

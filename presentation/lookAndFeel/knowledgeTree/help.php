@@ -25,6 +25,7 @@
  */
  
 require_once("../../../config/dmsDefaults.php");
+
 require_once("$default->fileSystemRoot/presentation/Html.inc");
 global $default;
 $heading = "$default->graphicsUrl/heading.gif";
@@ -41,7 +42,7 @@ echo $headingBar;
 
 //Query the database for the helpURL based on the current action
 $sQuery = "SELECT HLP.help_info as helpinfo ".
-		"FROM $default->help_table AS HLP WHERE '$fAction' = HLP.fSection";
+		"FROM $default->help_table AS HLP WHERE HLP.fSection = " . $_REQUEST['fAction'];
 		
 $sql = $default->db;
 $sql->query($sQuery);
@@ -49,6 +50,6 @@ $sql->query($sQuery);
 if ($sql->next_record()) {
 	require_once("$default->uiDirectory/help/" . $sql->f("helpinfo"));
 } else {
-	echo "No help available for $fAction";
+	echo "No help available for " . $_REQUEST['fAction'];
 }
 ?>

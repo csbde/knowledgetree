@@ -31,6 +31,8 @@
 
 require_once("../../../../config/dmsDefaults.php");
 
+KTUtil::extractGPC('fDocumentID', 'fFirstEdit');
+
 if (checkSession()) {
 	
 	require_once("$default->fileSystemRoot/lib/security/Permission.inc");
@@ -41,8 +43,7 @@ if (checkSession()) {
 	require_once("$default->fileSystemRoot/presentation/Html.inc");
 	require_once("documentUI.inc");
 	require_once("modifyGenericMetaDataUI.inc");
-	
-	
+
 	$oDocument = Document::get($fDocumentID);
 	if (Permission::userHasDocumentWritePermission($oDocument)) {
 		

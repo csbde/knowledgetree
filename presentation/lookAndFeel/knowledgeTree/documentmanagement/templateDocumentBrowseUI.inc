@@ -1,5 +1,7 @@
 <?php
 
+KTUtil::extractGPC('fBrowseType', 'fCategoryName', 'fDocumentTypeID', 'fFolderID');
+
 require_once("$default->fileSystemRoot/presentation/Html.inc");
 require_once("$default->uiDirectory/foldermanagement/folderUI.inc");
 require_once("$default->uiDirectory/documentmanagement/documentUI.inc");

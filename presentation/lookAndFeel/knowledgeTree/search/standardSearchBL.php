@@ -34,6 +34,9 @@
  */
 
 require_once("../../../../config/dmsDefaults.php");
+
+KTUtil::extractGPC('fBrowseType', 'fCategoryName', 'fDocTypeID', 'fDocumentID', 'fFolderID', 'fSearchText', 'fStartIndex');
+
 if (checkSession()) {	
 	require_once("$default->fileSystemRoot/lib/visualpatterns/PatternBrowsableSearchResults.inc");
 	require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");	

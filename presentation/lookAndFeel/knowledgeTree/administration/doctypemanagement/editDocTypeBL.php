@@ -27,6 +27,10 @@
  
 require_once("../../../../../config/dmsDefaults.php");
 
+KTUtil::extractGPC('fAdd', 'fDocFieldTypeID', 'fDocTypeID', 'fDocTypeName');
+KTUtil::extractGPC('fDocTypeSelected', 'fEdit', 'fFieldID', 'fIsMandatory');
+KTUtil::extractGPC('fMandatory', 'fRemove', 'fUpdate', 'fUpdateMandatory');
+
 if (checkSession()) {
 	require_once("$default->fileSystemRoot/lib/visualpatterns/PatternListBox.inc");
 	require_once("$default->fileSystemRoot/lib/visualpatterns/PatternEditableListFromQuery.inc");

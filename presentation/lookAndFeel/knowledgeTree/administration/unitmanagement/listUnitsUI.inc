@@ -24,17 +24,17 @@
  * @author Omar Rahbeeni, Jam Warehouse (Pty) Ltd, South Africa
  * @package administration.unitmanagement
  */
-function getOrganisationDisplay($fOrganisationID) {
+function getOrganisationDisplay($iOrganisationID) {
 	global $default;
-	$oPatternListBox = & new PatternListBox($default->organisations_table, "name", "id", "fOrganisationID");
+	$oPatternListBox = & new PatternListBox($default->organisations_table, "name", "id", "iOrganisationID");
 	$oPatternListBox->setPostBackOnChange(true);
-	if ($fOrganisationID != 0) {
-		$oPatternListBox->setSelectedValue($fOrganisationID);
+	if ($iOrganisationID != 0) {
+		$oPatternListBox->setSelectedValue($iOrganisationID);
 	}
 	return "<table><tr><td><b>" . _("Filter By Organisation") . " </b></td><td>" . $oPatternListBox->render() . "</td></tr></table>";	        
 }
 
-function getUnits($fOrganisationID) {
+function getUnits($iOrganisationID) {
 	global $default;
 	
 	$sQuery = 	"SELECT units_lookup.id as unitID, units_lookup.name as name, " . 
@@ -43,7 +43,7 @@ function getUnits($fOrganisationID) {
 				"FROM (units_lookup " .
 				"LEFT JOIN units_organisations_link ON units_lookup.id = units_organisations_link.unit_id) " . 
 				"LEFT JOIN organisations_lookup ON units_organisations_link.organisation_id = organisations_lookup.id " .
-				($fOrganisationID ? "WHERE units_organisations_link.organisation_id = $fOrganisationID " : "") .					
+				($iOrganisationID ? "WHERE units_organisations_link.organisation_id = $iOrganisationID " : "") .					
 				"ORDER BY units_lookup.name";
 		
     $aColumns = array("name", "OrgName", "Edit", "Delete");//, "Edit Organisations");
@@ -61,13 +61,13 @@ function getUnits($fOrganisationID) {
     return $oSearchResults->render() ;	
 }
 
-function getPage($fOrganisationID) {
+function getPage($iOrganisationID) {
 	global $default;
 	$sToRender .= renderHeading(_("Unit Management"));
 
 	$sToRender .= getAddLink("addUnit", _("Add A Unit"));
-	//$sToRender .= getOrganisationDisplay($fOrganisationID);
-	$sToRender .= getUnits($fOrganisationID);
+	//$sToRender .= getOrganisationDisplay($iOrganisationID);
+	$sToRender .= getUnits($iOrganisationID);
 	return $sToRender;
 }
 ?>

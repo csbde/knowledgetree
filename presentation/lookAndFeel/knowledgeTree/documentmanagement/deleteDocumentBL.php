@@ -27,6 +27,9 @@
  */
 
 require_once("../../../../config/dmsDefaults.php");
+
+KTUtil::extractGPC('fDeleteConfirmed', 'fDocumentIDs');
+
 require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
 require_once("$default->fileSystemRoot/lib/foldermanagement/FolderUserRole.inc");
 require_once("$default->fileSystemRoot/lib/users/User.inc");
@@ -43,7 +46,6 @@ require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/fo
 require_once("deleteDocumentUI.inc");
 
 $aNondeletedDocs = array();
-
 
 if (checkSession()) {
 	

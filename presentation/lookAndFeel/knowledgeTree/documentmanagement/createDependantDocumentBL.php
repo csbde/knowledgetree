@@ -28,6 +28,8 @@
 
 require_once("../../../../config/dmsDefaults.php");
 
+KTUtil::extractGPC('fDocumentID', 'fDocumentTitle', 'fForStore', 'fTargetDocumentID', 'fTemplateDocument', 'fUnitID', 'fUserID');
+
 if (checkSession()) {
 	require_once("createDependantDocumentUI.inc");
 	require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
@@ -39,7 +41,7 @@ if (checkSession()) {
 	require_once("$default->fileSystemRoot/lib/documentmanagement/DependantDocumentInstance.inc");
 	require_once("$default->fileSystemRoot/presentation/Html.inc");
 	require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
-	
+
 	if (isset($fForStore)) {
 		$oDependantDocument = & new DependantDocumentInstance($fDocumentTitle, $fUserID, $fTargetDocumentID, $fDocumentID);		
 		if ($oDependantDocument->create()) {		

@@ -31,6 +31,9 @@
  */
 
 require_once("../../../../config/dmsDefaults.php");
+
+KTUtil::extractGPC('fCanRead', 'fCanWrite', 'fFolderID', 'fForStore', 'fGroupFolderLinkID');
+
 include_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
 include_once("$default->fileSystemRoot/lib/security/Permission.inc");
 include_once("$default->fileSystemRoot/lib/groups/GroupFolderLink.inc");

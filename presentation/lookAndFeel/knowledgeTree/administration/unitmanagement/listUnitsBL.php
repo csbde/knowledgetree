@@ -25,6 +25,9 @@
  * @package administration.unitmanagement
  */
 require_once("../../../../../config/dmsDefaults.php");
+
+KTUtil::extractGPC('fOrganisationID');
+
 require_once("$default->fileSystemRoot/lib/users/User.inc");    
 require_once("$default->fileSystemRoot/lib/security/Permission.inc");
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");    

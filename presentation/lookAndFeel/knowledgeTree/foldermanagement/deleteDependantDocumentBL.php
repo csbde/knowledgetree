@@ -32,6 +32,8 @@
 
 require_once("../../../../config/dmsDefaults.php");
 
+KTUtil::extractGPC('fDependantDocumentTemplateID', 'fFolderCollaborationID', 'fFolderID', 'fForDelete'); 
+
 if (checkSession()) {	
 	if (isset($fFolderID) && isset($fFolderCollaborationID)) {
 		require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");

@@ -1,6 +1,9 @@
 <?php
 
 require_once("../../../../../config/dmsDefaults.php");
+
+KTUtil::extractGPC('fConfirm', 'fDocumentIDs', 'fSearchString');
+
 require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
 require_once("$default->fileSystemRoot/lib/archiving/ArchiveRestorationRequest.inc");
 require_once("$default->fileSystemRoot/lib/email/Email.inc");

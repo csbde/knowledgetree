@@ -26,6 +26,9 @@
  */
  
 require_once("../../../../config/dmsDefaults.php");
+
+KTUtil::extractGPC('fDocumentID', 'fForDiscussion');
+
 require_once("viewDiscussionUI.inc");     
 require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
 require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");

@@ -26,11 +26,11 @@
  */
  
 // gets the delete stuff
-function getDeletePage($fDocFieldID) {
+function getDeletePage($iDocFieldID) {
     global $default;
     $oDocField = null;
-    if (isset($fDocFieldID)) {
-        $oDocField = DocumentField::get($fDocFieldID);
+    if (isset($iDocFieldID)) {
+        $oDocField = DocumentField::get($iDocFieldID);
         $sHeading = "<b>" . _("Are you sure you wish to Remove this Document Field?") . ":</b>\n";
     } else {
         $sHeading = _("Please select a Document Field:");

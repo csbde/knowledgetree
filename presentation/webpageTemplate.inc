@@ -25,6 +25,8 @@
  * @author Mukhtar Dharsey, Jam Warehouse (Pty) Ltd, South Africa
  */
 
+KTUtil::extractGPC('fBrowseType', 'fFolderID', 'fDocumentID', 'fCategoryName', 'fDocumentTypeID');
+
 require_once("$default->fileSystemRoot/lib/users/User.inc");
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternMainPage.inc");
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternImage.inc");

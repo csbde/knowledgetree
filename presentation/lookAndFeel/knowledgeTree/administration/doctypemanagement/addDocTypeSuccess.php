@@ -27,6 +27,9 @@
  
 require_once("../../../../../config/dmsDefaults.php");
 
+KTUtil::extractGPC('fDocTypeID');
+
+// XXX: huh?
 global $default;
 
 if(checkSession()) {

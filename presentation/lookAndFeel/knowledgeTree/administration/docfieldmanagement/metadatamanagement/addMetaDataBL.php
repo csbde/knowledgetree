@@ -26,6 +26,8 @@
  */
 require_once("../../../../../../config/dmsDefaults.php");
 
+KTUtil::extractGPC('fDocFieldID', 'fForStore', 'fMetaDataName');
+
 if (checkSession()) {
     require_once("$default->fileSystemRoot/lib/visualpatterns/PatternListBox.inc");
     require_once("$default->fileSystemRoot/lib/visualpatterns/PatternEditableListFromQuery.inc");

@@ -24,18 +24,18 @@
  * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
  * @package documentmanagement
  */
-function getPage($fDocumentIDs) {
+function getPage($aDocumentIDs) {
 	global $default;
     $sToRender  = renderHeading(_("Delete Document"));
 	$sToRender .= "<table border=\"0\">\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>" . _("You have chosen to delete the following document(s):") . " <br><br></td>\n";
 	
-	for ($i = 0; $i < count($fDocumentIDs); $i++) {
-	  $oDocument = Document::get($fDocumentIDs[$i]);
+	for ($i = 0; $i < count($aDocumentIDs); $i++) {
+	  $oDocument = Document::get($aDocumentIDs[$i]);
 	$sToRender .= "<tr>\n";
 	  $sToRender .= "<td>&nbsp;&nbsp;'" .  $oDocument->getDisplayPath() . "'</td>\n";
-	  $sQueryString .= "fDocumentIDs[]=$fDocumentIDs[$i]&";
+	  $sQueryString .= "fDocumentIDs[]=$aDocumentIDs[$i]&";
 	}
 	$sToRender .= "<tr><tr><tr><tr>\n";
 

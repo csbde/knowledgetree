@@ -41,19 +41,9 @@ if (checkSession()) {
 	
 	$oPatternCustom = & new PatternCustom();		
 	
-	// if (isset($fUserID)){		
-		// post back on User select from manual edit page	
-		$oPatternCustom->setHtml(getUserDetailsPage($_SESSION['userID']));
-		$main->setFormAction("$default->rootUrl/presentation/lookAndFeel/knowledgeTree/store.php?fReturnURL=" . urlencode("$default->rootUrl/control.php?action=editPrefsSuccess"));		
+    $oPatternCustom->setHtml(getUserDetailsPage($_SESSION['userID']));
+    $main->setFormAction("$default->rootUrl/presentation/lookAndFeel/knowledgeTree/store.php?fReturnURL=" . urlencode("$default->rootUrl/control.php?action=editPrefsSuccess"));		
 		
-		
-	//} else {
-	//	// if nothing happens...just reload edit page
-//		$oPatternCustom->setHtml(getUserDetailsPagePage(null));
-//		$main->setFormAction($_SERVER["PHP_SELF"]);
-			
-//	}
-	//render the page
 	$main->setCentralPayload($oPatternCustom);
 	$main->render();	
 }

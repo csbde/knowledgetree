@@ -31,6 +31,7 @@
 
 require_once("../../../../config/dmsDefaults.php");
 
+KTUtil::extractGPC('fFolderID', 'fForStore', 'fGroupID', 'fRoleID', 'fSequenceNumber', 'fUserID');
 
 if (checkSession()) {
 	if (isset($fFolderID)) {

@@ -35,6 +35,8 @@
 
 require_once("../../../../config/dmsDefaults.php");
 
+KTUtil::extractGPC('fDocumentID', 'fFolderCollaborationID', 'fIsActive', 'fIsDone', 'fForStore', 'fUserID');
+
 if (checkSession()) {
 	require_once("$default->fileSystemRoot/lib/visualpatterns/PatternListBox.inc");
 	require_once("$default->fileSystemRoot/lib/foldermanagement/FolderCollaboration.inc");
@@ -51,7 +53,6 @@ if (checkSession()) {
 	require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
 	require_once("documentUI.inc");
 	require_once("collaborationUI.inc");
-	
 	
 	//if the required form variabled are set
 	if (isset($fFolderCollaborationID) && isset($fDocumentID)) {
