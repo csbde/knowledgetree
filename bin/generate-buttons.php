@@ -5,6 +5,7 @@ function getButtons() {
         "add.png" => _("Add"),
         "cancel.png" => _("Cancel"),
         "next.png" => _("Next"),
+        "previous.png" => _("Previous"),
         "back.png" => _("Back"),
         "addcomment.png" => _("Add Comment"),
         "subscribe.png" => _("Subscribe"),
