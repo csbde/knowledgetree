@@ -26,8 +26,21 @@ class PatternListBox {
 	var $sSelectName;
 	/** Where clause */
 	var $sWhereClause;
+	/**from clause, use to add extra inner joins.  The default selected table gets
+	a name of ST and the two selected columns are 'value' and 'display' */
+	var $sFromClause;
 	/** Order columns ascending*/
 	var $bOrderAsc;
+	/** set this to true to cause the list box to post back on a change */
+	var $bPostBackOnChange = false;
+	/** action to perform on a postback */
+	var $sOnChangeAction = "document.MainForm.submit();";
+	/** currently selected value */
+	var $selectedValue;
+	/** error message for an empty list box */
+	var $sEmptyErrorMessage = "No values";
+	/** whether to include 'None' as an option*/
+	var $bIncludeDefaultValue = true;
 	
 	/**
 	* Constructor
@@ -47,6 +60,34 @@ class PatternListBox {
 		$this->bOrderAsc = $bNewOrderAsc;
 	}
 	
+	function setPostBackOnChange($bNewValue) {
+		$this->bPostBackOnChange = $bNewValue;
+	}
+	
+	function setOnChangeAction($sNewValue) {
+		$this->sOnChangeAction = $sNewValue;
+	}
+	
+	function setSelectedValue($NewValue) {
+		$this->selectedValue = $NewValue;
+	}
+	
+	function setWhereClause($sNewValue) {
+		$this->sWhereClause = $sNewValue;
+	}
+	
+	function setFromClause($sNewValue) {
+		$this->sFromClause = $sNewValue;
+	}
+	
+	function setEmptyErrorMessage($sNewValue) {
+		$this->sEmptyErrorMessage = $sNewValue;
+	}
+	
+	function setIncludeDefaultValue($bNewValue) {
+		$this->bIncludeDefaultValue = $bNewValue;
+	}
+	
 	/**
 	* Create the HTML string that will be used to render the list box
 	*
@@ -62,13 +103,24 @@ class PatternListBox {
 			$sQuery .= "WHERE " . $this->sWhereClause . " ";
 		}
 		
-		$sQuery .= "ORDER BY $this->sDisplayColumn " . ($this->bOrderAsc ? "ASC" : "DESC");
+		$sQuery .= "ORDER BY $this->sDisplayColumn " . ($this->bOrderAsc ? "ASC" : "DESC");		
 		$sql->query($sQuery);
-		$sToRender = "<SELECT NAME = \"$this->sSelectName\">\n";
-		while ($sql->next_record()) {
-			$sToRender .= "<OPTION value=\"" . $sql->f("value") . "\">" . $sql->f("display") . "</OPTION>\n";
-		}
-		$sToRender .= "</SELECT><br><br>";
+		if ($sql->num_rows() > 0) {			
+			$sToRender = "<SELECT NAME = \"$this->sSelectName\" ". ($this->bPostBackOnChange ? "onChange=\"$this->sOnChangeAction\" " : " ") . ">\n";
+			if ($this->bIncludeDefaultValue) {
+				$sToRender .= "<OPTION value=\"-1\">None</OPTION>\n";
+			}
+			while ($sql->next_record()) {
+				if ($this->selectedValue == $sql->f("value")) {
+					$sToRender .= "<OPTION value=\"" . $sql->f("value") . "\" SELECTED>" . $sql->f("display") . "</OPTION>\n";
+				} else {
+					$sToRender .= "<OPTION value=\"" . $sql->f("value") . "\">" . $sql->f("display") . "</OPTION>\n";
+				}
+			}
+			$sToRender .= "</SELECT>\n";
+		} else {
+			$sToRender .= "<label class=\"errorText\">$this->sEmptyErrorMessage</label>\n";
+		}		
 		return $sToRender;
 	}
 }
