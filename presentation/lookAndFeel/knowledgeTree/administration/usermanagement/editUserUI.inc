@@ -74,7 +74,12 @@ function getUserDetailsPage($iUserID) {
 	$sToRender .= "<tr>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr><td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/update.gif\" value=\"Update\" border=\"0\"/>\n";
-    $sToRender .= getCancelButton(User::get($iUserID)) . "</td></tr>";
+    //$sToRender .= getCancelButton(User::get($iUserID)) . "</td></tr>";
+    $sToRender .= getCancelButton(User::get($iUserID));
+    if (strcmp($default->authenticationClass,"DBAuthenticator") == 0) {
+    	//only update password if we are using the db
+    	$sToRender .= "<a href=\"$default->rootUrl/control.php?action=userPasswordManagement&fUserID=$iUserID\">Update password</td></tr>\n";
+    }
 	$sToRender .= "</table>\n";
     
 	return $sToRender;
