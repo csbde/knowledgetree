@@ -21,9 +21,9 @@
 require_once("./config/owl.php");
 require_once("./lib/owl.lib.php");
 require_once("./config/html.php");
-require_once("./lib/Authenticator.inc");
 require_once("./lib/control.inc");
 require_once("./lib/SiteMap.inc");
+require_once("./lib/Session.inc");
 
 // -------------------------------
 // page start
@@ -34,6 +34,7 @@ if (!checkSession($sessionID)) {
     $action = "loginForm";
 }
 
+// retrieve the login page to redirect to
 $page = $default->siteMap->getPage($action, getUserClass($userID))
 
 if (isset($page)) {
