@@ -48,6 +48,7 @@ if (checkSession()) {
 				if (DocumentField::getLookupCount($fDocFieldID) == 0) {
 					// then redirect to the edit metadata page
 					controllerRedirect("addMetaDataForField", "fDocFieldID=$fDocFieldID");
+					exit;
 				}
 			}
 			// otherwise, go to the list page
