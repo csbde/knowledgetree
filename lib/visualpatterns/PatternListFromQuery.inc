@@ -96,8 +96,7 @@ class PatternListFromQuery {
 					switch ($this->aColumnTypes[$i]) {						
 						//plain text field
 						case 1:						
-						// TODO: make nowrap optional
-							$sToRender .= "<td nowrap bgcolor=\"$sTDBGColour\">" . $this->aColumnNames[$i] . "</td><td width=\"100%\" nowrap bgcolor=\"" . getColour($iColour) ."\">" . stripslashes($sql->f($this->aColumns[$i])) . "</td>\n";
+							$sToRender .= "<td nowrap bgcolor=\"$sTDBGColour\">" . $this->aColumnNames[$i] . "</td><td width=\"100%\" bgcolor=\"" . getColour($iColour) ."\">" . stripslashes($sql->f($this->aColumns[$i])) . "</td>\n";
 							break;
 						//text area
 						case 2:
