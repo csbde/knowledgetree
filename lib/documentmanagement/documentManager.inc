@@ -3,7 +3,7 @@
 /**
 * Class DocumentManager
 *
-* Contains all functions required for document management,
+* Contains static functions required for document management,
 * such as the creation/deletion/removal of document types.
 *
 * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
@@ -13,8 +13,8 @@
 * 
 */
 
-require_once ("$default->owl_root_url/lib/owl.lib.php");
-require_once("./phpmailer/class.phpmailer.php"); // for emailing
+//require_once ($default->owl_root_fs . "/lib/owl.lib.php");
+require_once($default->owl_fs_root . "/phpmailer/class.phpmailer.php"); // for emailing
 
 class DocumentManager {
 	
@@ -31,9 +31,9 @@ class DocumentManager {
 		//Get hold of the global error string
 		global $default;
 		//if the document type doesn't exist
-		if (!($this->documentTypeExists($sName))) {
+		if (!(DocumentManager::documentTypeExists($sName))) {
 			$sql = new Owl_DB();
-			$result = $sql->query("INSERT INTO  " . $default->owl_document_types_table . "  (name) values ('" . $sName . "')");
+			$result = $sql->query("INSERT INTO  " . $default->owl_document_types_table . "  (name) values ('" . $sName . "')");			
 			if (!$result) {
 				$_SESSION["errorMessage"] = "Database Error. Failed to insert document type " . $sName;
 				return false;
@@ -57,7 +57,7 @@ class DocumentManager {
 		//Get hold of the global error string
 		global $default;
 		//only remove the document type if it exists
-		if ($this->documentTypeExists($sName)) {
+		if (DocumentManager::documentTypeExists($sName)) {
 			$sql = new Owl_DB();
 			$result = $sql->query("DELETE FROM  " . $default->owl_document_types_table . "  WHERE name = '" . $sName . "'");
 			if (!$result) {
@@ -95,7 +95,7 @@ class DocumentManager {
 		//escape special characters that may interfere with the db query
 		$sName = addslashes($sName);
 		
-		if ($this->documentTypeExists($sName)) {
+		if (DocumentManager::documentTypeExists($sName)) {
 			$sql = new Owl_DB();
 			$sql->query("SELECT ID FROM " .  $default->owl_document_types_table . " WHERE name = '" . $sName . "'");
 			$sql->next_record();
@@ -136,7 +136,7 @@ class DocumentManager {
 		//Get hold of the global error string
 		global $default;
 		//if the document field type is not associated with the document
-		if (!($this->documentTypeFieldExistsForDocumentType($iDocumentTypeID, $iDocumentTypeFieldID))) {
+		if (!(DocumentManager::documentTypeFieldExistsForDocumentType($iDocumentTypeID, $iDocumentTypeFieldID))) {
 			$sql = new Owl_DB();
 			$result = $sql->query("INSERT INTO  " . $default->owl_document_type_fields_table . "  (document_type_id, field_id, is_mandatory) VALUES (" . $iDocumentTypeID . ", " . $iDocumentTypeFieldID . ", " . $bIsMandatory . ")");
 			if (!$result) {
@@ -159,7 +159,7 @@ class DocumentManager {
 		global $default;
 		//Get hold of the global error string
 		global $default;
-		if ($this->documentTypeFieldExistsForDocumentType($iDocumentTypeID, $iDocumentTypeFieldID)) {
+		if (DocumentManager::documentTypeFieldExistsForDocumentType($iDocumentTypeID, $iDocumentTypeFieldID)) {
 			$sql = new Owl_DB();
 			$result = $sql->query("DELETE FROM  " . $default->owl_document_type_fields_table . "  where document_type_id = " . $iDocumentTypeID . " AND field_id = " . $iDocumentTypeFieldID);
 			if (!result) {
@@ -203,7 +203,7 @@ class DocumentManager {
 		$sDataType = addslashes($sDataType);
 		//Get hold of the global error string
 		global $default;
-		if (!$this->documentTypeFieldExists($sName)) {
+		if (!DocumentManager::documentTypeFieldExists($sName)) {
 			$sql = new Owl_DB();
 			$result = $sql->query("INSERT INTO " . $default->owl_fields_table . " (name, data_type) VALUES ('" . $sName . "', '" . $sDataType . "')");			
 			if (!$result) {
@@ -228,7 +228,7 @@ class DocumentManager {
 		$sName = addslashes($sName);
 		//Get hold of the global error string
 		global $default;
-		if ($this->documentTypeFieldExists($sName)) {
+		if (DocumentManager::documentTypeFieldExists($sName)) {
 			$sql = new Owl_DB();
 			$result = $sql->query("DELETE FROM " . $default->owl_fields_table . " WHERE Name = '" . $sName . "'");
 			if (!$result) {
@@ -251,7 +251,7 @@ class DocumentManager {
 	function & getDocumentTypeFieldID($sName) {
 		global $lang_err_document_type_field_does_not_exist, $default;
 		$sName = addslashes($sName);
-		if ($this->documentTypeFieldExists($sName)) {
+		if (DocumentManager::documentTypeFieldExists($sName)) {
 			$sql = new Owl_DB();
 			$sql->query("SELECT id FROM " . $default->owl_fields_table . " WHERE name = '" . $sName . "'");
 			$sql->next_record();

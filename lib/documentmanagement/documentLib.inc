@@ -20,10 +20,10 @@ class DocumentLib {
 		global $lang_err_doc_no_folder;
 		$sql = new Owl_DB();
 		$sql->query("SELECT folder_id from " . $default->owl_documents_table . " WHERE id = " . $iDocumentID);
-		if (sql->next_record()) {
-			return sql->f("folder_id");
+		if ($sql->next_record()) {
+			return $sql->f("folder_id");
 		}
-		$_SESSION["errorMessage"] = $lang_err_doc_no_folder
+		$_SESSION["errorMessage"] = $lang_err_doc_no_folder . "document id " . $iDocumentID;
 		return false;
 	}
 	
