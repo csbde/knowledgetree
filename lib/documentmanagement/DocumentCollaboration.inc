@@ -121,10 +121,11 @@ class DocumentCollaboration {
 		global $default;
 		$sql = $default->db;
 		//get the current step
-		//if the user is assinged to two or more roles, make sure we get the current
+		//if the user is assigned to two or more roles, make sure we get the current
 		//one by ordering by precedence
 		$sql->query("SELECT FURL.id AS id, GFAT.precedence " .
-					"FROM $default->owl_groups_folders_approval_table AS GFAT INNER JOIN $default->owl_folders_user_roles_table AS FURL ON GFAT.id = FURL.group_folder_approval_id " .
+					"FROM $default->owl_groups_folders_approval_table AS GFAT " . 
+					"INNER JOIN $default->owl_folders_user_roles_table AS FURL ON GFAT.id = FURL.group_folder_approval_id " .
 					"WHERE document_id = $iDocumentID AND FURL.user_id = " . $_SESSION["userID"] . " AND done=0 " . 
 					"ORDER BY precedence ASC");
 		if ($sql->next_record()) {
@@ -137,14 +138,16 @@ class DocumentCollaboration {
 			//get it's sequence number
 			$iCurrentSequenceNumber =  $sql->f("precedence");
 			$sql->query("SELECT MIN(precedence) AS precedence " . 
-						"FROM $default->owl_groups_folders_approval_table AS GFAT INNER JOIN $default->owl_folders_user_roles_table AS FURL ON GFAT.id = FURL.group_folder_approval_id " . 
+						"FROM $default->owl_groups_folders_approval_table AS GFAT " . 
+						"INNER JOIN $default->owl_folders_user_roles_table AS FURL ON GFAT.id = FURL.group_folder_approval_id " . 
 						"WHERE document_id = $iDocumentID AND done = 0");			
 			if ($sql->next_record()) {
 				if ($sql->f("precedence") != $iCurrentSequenceNumber) {
 					//if there are no concurrent steps outstanding
 					$iNextSequenceNumber = $sql->f("precedence");
 					$sql->query("SELECT FURL.id " .
-								"FROM $default->owl_groups_folders_approval_table AS GFAT INNER JOIN $default->owl_folders_user_roles_table AS FURL ON GFAT.id = FURL.group_folder_approval_id " . 
+								"FROM $default->owl_groups_folders_approval_table AS GFAT " . 
+								"INNER JOIN $default->owl_folders_user_roles_table AS FURL ON GFAT.id = FURL.group_folder_approval_id " . 
 								"WHERE document_id = $iDocumentID AND precedence = $iNextSequenceNumber");
 					while ($sql->next_record()) {
 						$oFolderUserRole = FolderUserRole::get($sql->f("id"));
@@ -235,8 +238,6 @@ class DocumentCollaboration {
 				"AND FURL.active = 1 " .
 				"ORDER BY GFAT.precedence ASC";
 				
-		//echo $sQuery;		
-				
 		$sql = $default->db;
 		$sql->query($sQuery);
 		if ($sql->next_record()) {
@@ -250,11 +251,10 @@ class DocumentCollaboration {
 			//if there are concurrent collaboration steps and one is rejected, then all
 			//must be rolled back, whether they were accepted or not			
 			$sQuery = "SELECT FURL.id, FURL.user_id  " .
-						"FROM $default->owl_folders_user_roles_table AS FURL INNER JOIN $default->owl_groups_folders_approval_table AS GFAT ON FURL.group_folder_approval_id = GFAT.id " .
-						"WHERE FURL.document_id = $iDocumentID AND GFAT.precedence = $iCurrentSequenceNumber";			
+					  "FROM $default->owl_folders_user_roles_table AS FURL " . 
+					  "INNER JOIN $default->owl_groups_folders_approval_table AS GFAT ON FURL.group_folder_approval_id = GFAT.id " .
+					  "WHERE FURL.document_id = $iDocumentID AND GFAT.precedence = $iCurrentSequenceNumber";			
 			$sql->query($sQuery);
-			//echo $sQuery;
-			//echo $sQuery;
 			   
 			while ($sql->next_record()) {
 				//roll back each user's step and then email them to inform them
@@ -262,19 +262,26 @@ class DocumentCollaboration {
 				$oFolderUserRole = FolderUserRole::get($sql->f("id"));				
 				$oFolderUserRole->setActive(false);
 				$oFolderUserRole->setDone(false);
-				$oFolderUserRole->update();
-				
-				
-				$oUserToNotify = User::get($sql->f("user_id"));
-				//send an email only if the user is to be notified via email
-				if ($oUserToNotify->getEmailNotification()) {
-					$oCurrentUser = User::get($_SESSION["userID"]);					
-	                $sBody = $oUserToNotify->getUserName() . ", the document, '" . generateLink("/presentation/lookAndFeel/knowledgeTree/documentmanagement/viewBL.php", "fDocumentID=" . $oDocument->getID(), $oDocument->getName()) . "' " .                    
-												"has been rejected by " . $oUserToNotify->getName() . " in the document collaboration process.  The collaboration process has been rolled back to the previous step. " .
-												"Your role is no longer active and and any acceptances you may have made have been voided. " . 
-												"The comment entered by " . $oUserToNotify->getName() . " was: $sComment";
-					$oEmail = & new Email();
-					$oEmail->send($oUserToNotify->getEmail(), "Document rejected in collaboration process", $sBody);
+				if ($oFolderUserRole->update()) {
+					$default->log->debug("DocumentCollaboration::rollbackCollaborationStep successfully updated folderUserRole=" . arrayToString($oFolderUserRole));
+				} else {
+					$default->log->error("DocumentCollaboration::rollbackCollaborationStep couldn't update folderUserRole=" . arrayToString($oFolderUserRole));
+					// FIXME: shouldn't attempt to email the user- how to die gracefully is a problem....
+				}
+
+				$oUserToNotify = User::get($sql->f("user_id"));				
+				// only send a mail to users other than yourself
+				if ($oUserToNotify->getID() <> $_SESSION["userID"]) {
+					//send an email only if the user is to be notified via email
+					if ($oUserToNotify->getEmailNotification()) {
+						$oCurrentUser = User::get($_SESSION["userID"]);					
+		                $sBody = $oUserToNotify->getUserName() . ", the document, '" . generateLink("/presentation/lookAndFeel/knowledgeTree/documentmanagement/viewBL.php", "fDocumentID=" . $oDocument->getID(), $oDocument->getName()) . "' " .                    
+													"has been rejected by " . $oCurrentUser->getName() . " in the document collaboration process.  The collaboration process has been rolled back to the previous step. " .
+													"Your role is no longer active and and any acceptances you may have made have been voided. " . 
+													(strlen($sComment) > 0 ? "The comment entered by " . $oUserToNotify->getName() . " was: $sComment" : "");
+						$oEmail = & new Email();
+						$oEmail->send($oUserToNotify->getEmail(), "Document rejected in collaboration process", $sBody);
+					}
 				}
 			}
 			
@@ -297,7 +304,7 @@ class DocumentCollaboration {
 					
                     $sBody = $oUser->getUserName() . ", the document, '" . generateLink("/presentation/lookAndFeel/knowledgeTree/documentmanagement/viewBL.php", "fDocumentID=" . $this->iId, $oDocument->getName()) . "' " .                    
 											"has been rejected by " . $oCurrentUser->getName() . " in the document collaboration process.  The collaboration process has been stopped. " .
-											"The comment entered by " . $oCurrentUser->getName() . " was: $sComment";
+											(strlen($sComment) > 0 ? "The comment entered by " . $oCurrentUser->getName() . " was: $sComment" : "");
 			
 					$oEmail = & new Email();
 					$oEmail->send($oUser->getEmail(), "Document rejected in collaboration process", $sBody);
@@ -320,14 +327,13 @@ class DocumentCollaboration {
 					$oFolderUserRole->update();
 					
 					$oDocument = Document::get($iDocumentID);
-                    $oUser = User::get($oDocument->getCreatorID());
+                    $oUser = User::get($oFolderUserRole->getUserID());
 					if ($oUser->getEmailNotification()) {
-						$oUser = User::get($oFolderUserRole->getUserID());
 						$oCurrentUser = User::get($_SESSION["userID"]);
 					
                         $sBody = $oUser->getUserName() . ", the document, '" . generateLink("/presentation/lookAndFeel/knowledgeTree/documentmanagement/viewBL.php", "fDocumentID=$iDocumentID", $oDocument->getName()) . "' " .                        
 											"has been rejected by " . $oCurrentUser->getName() . " in the document collaboration process.  Please re-perform your step in the collaboration process." .
-											"The comment entered by " . $oCurrentUser->getName() . " was: $sComment";
+											(strlen($sComment) > 0 ? "The comment entered by " . $oCurrentUser->getName() . " was: $sComment" : "");
 			
 						$oEmail = & new Email();
 						$oEmail->send($oUser->getEmail(), "Document rejected in collaboration process", $sBody);
