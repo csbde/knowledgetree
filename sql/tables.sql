@@ -7,6 +7,32 @@ lastused DATETIME,
 ip CHAR(30)
 ) TYPE = InnoDB;
 
+CREATE TABLE archiving_type_lookup ( 
+id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
+name CHAR(100)
+)  TYPE = InnoDB;
+
+-- proposed
+CREATE TABLE archiving_settings ( 
+id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
+expiration_date DATE,
+document_transaction_id INTEGER,
+time_period_id INTEGER
+)  TYPE = InnoDB;
+
+CREATE TABLE archiving_date_settings ( 
+id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
+expiration_date DATE,
+time_period_id INTEGER
+)  TYPE = InnoDB;
+
+CREATE TABLE archiving_utilisation_settings ( 
+id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
+document_transaction_id INTEGER,
+time_period_id INTEGER
+)  TYPE = InnoDB;
+
+
 CREATE TABLE data_types ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 name CHAR(255) NOT NULL
@@ -53,6 +79,7 @@ name TEXT NOT NULL,
 filename TEXT NOT NULL,
 size BIGINT NOT NULL,
 creator_id INTEGER NOT NULL,
+created DATETIME NOT NULL,
 modified DATETIME NOT NULL,
 description CHAR(200) NOT NULL,
 security INTEGER NOT NULL,
@@ -67,13 +94,11 @@ checked_out_user_id INTEGER,
 status_id INTEGER
 )TYPE = InnoDB;
 
-
-CREATE TABLE document_archive_settings ( 
+CREATE TABLE document_archiving ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 document_id INTEGER NOT NULL,
-expiration_date DATETIME,
-document_transaction_id INTEGER,
-utilisation_threshold INTEGER
+archiving_type_id INTEGER,
+archiving_settings_id INTEGER
 )  TYPE = InnoDB;
 
 CREATE TABLE document_fields ( 
@@ -314,6 +339,17 @@ id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 table_name CHAR(255) NOT NULL,
 datetime DATETIME NOT NULL
 )TYPE = InnoDB;
+
+CREATE TABLE time_period ( 
+id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
+time_unit_id INTEGER,
+units INTEGER
+)  TYPE = InnoDB;
+
+CREATE TABLE time_unit_lookup ( 
+id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
+name CHAR(100)
+)  TYPE = InnoDB;
 
 CREATE TABLE units_lookup ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
@@ -740,7 +776,6 @@ insert into data_types (name) values ('TEXT');
 insert into data_types (name) values ('INT');
 insert into data_types (name) values ('FLOAT');
 
-
 -- supported languages (not really ;)
 INSERT INTO language_lookup (name) VALUES ("English");
 INSERT INTO language_lookup (name) VALUES ("Chinese");
@@ -784,6 +819,15 @@ INSERT INTO status_lookup (name) VALUES ("Archived");
 INSERT INTO roles (name, active, can_read, can_write) VALUES ('Editor', 1, 1, 1);
 INSERT INTO roles (name, active, can_read, can_write) VALUES ('Spell Checker', 1, 1, 0);
 INSERT INTO roles (name, active, can_read, can_write) VALUES ('Web Publisher', 1, 1, 0);
+
+-- archiving types lookup
+INSERT INTO archiving_type_lookup (name) VALUES ("Date");
+INSERT INTO archiving_type_lookup (name) VALUES ("Utilisation");
+
+-- time lookups
+INSERT INTO time_unit_lookup (name) VALUES ("Years");
+INSERT INTO time_unit_lookup (name) VALUES ("Months");
+INSERT INTO time_unit_lookup (name) VALUES ("Days");
 
 -- mrc organisation
 INSERT INTO organisations_lookup (name) VALUES ("Medical Research Council");
