@@ -51,7 +51,7 @@ $default->owl_sessions_table = "active_sessions";
 // document type fields
 $default->owl_fields_table = "document_fields";
 // links document
-$default->owl_document_type_fields_table = "document_fields_link";
+$default->owl_document_fields_table = "document_fields_link";
 // document transaction types
 $default->owl_transaction_types_table = "document_transaction_types_lookup";
 // document transactions
