@@ -54,6 +54,7 @@ if (!$page) {
 
     exit;
 } else {
+    $page = $default->owl_root_url . $page;
     // set authorised flag and redirect
     $_SESSION["pageAccess"][$page] = true;
     $default->log->debug("control.php: just set SESSION[\"pageAccess\"][$page]=" . $_SESSION["pageAccess"][$page]); 
