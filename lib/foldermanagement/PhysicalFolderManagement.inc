@@ -22,7 +22,9 @@ class PhysicalFolderManagement {
 	*
 	*/
 	function createFolder($sPath) {
-		return mkdir($sPath, 0700);
+        global $default;
+        
+		return mkdir($sPath, $default->uMask);
 	}
 	
 	/**
