@@ -69,6 +69,13 @@ class DocumentTransaction {
 	}
 	
 	/**
+	 * Returns the current version
+	 */
+	function getVersion() {
+		return $this->sVersion;
+	}
+	
+	/**
 	* Create the document transaction in the database
 	*
 	* @return boolean true on successful creation, false otherwise and set $_SESSION["errorMessage"]
