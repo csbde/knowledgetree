@@ -31,7 +31,7 @@ if (checkSession()) {
 	$oPatternCustom->setHtml(renderPage($oDocument));
 	$main->setCentralPayload($oPatternCustom);
 	$main->setHasRequiredFields(true);	
-	$main->setFormAction("../store.php?fReturnURL=" . urlencode("$default->owl_root_url/control.php?action=viewDocument&fDocumentID=" . $oDocument->getID()));
+	$main->setFormAction("../store.php?fReturnURL=" . urlencode("$default->owl_root_url/control.php?action=viewDocument&fDocumentID=" . $oDocument->getID() . "&fFireSubscription=1"));
 	$main->render();	
 }
 
