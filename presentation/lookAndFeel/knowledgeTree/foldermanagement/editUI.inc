@@ -16,11 +16,39 @@ function getFolderPath($iFolderID) {
 
 function getFolderData($iFolderID) {
 	global $default;
-	$sQuery = "SELECT F.id, F.name AS folder_name, F.description, F.is_public " .
+	$sQuery = "SELECT F.id, F.name, F.description, F.is_public " .
 			"FROM $default->owl_folders_table AS F " .
 			"WHERE F.id = $iFolderID";
+			
+	$sql = $default->db;
+	$sql->query($sQuery);
+	$sToRender = "<table>\n";
+	if ($sql->next_record()) {
+		$sToRender .= "<tr>\n";
+		$sToRender .= "<td>Name</td>\n";
+		if (Folder::folderIsUnitRootFolder($iFolderID)) {
+			$sToRender .= "<td>" . $sql->f("name") . "</td>\n";
+		} else {
+			$sToRender .= "<td><input type=\"text\" name=\"fFolderName\" value=\"" . $sql->f("name") . "\" size=\"30\"></td>\n";
+		}
+		$sToRender .= "</tr>\n";
+		$sToRender .= "<tr>\n";
+		$sToRender .= "<td>Description</td>\n";
+		$sToRender .= "<td><input type=\"text\" name=\"fDescription\" value=\"" . $sql->f("description") . "\" size=\"30\"></td>\n";
+		$sToRender .= "</tr>\n";
+		$sToRender .= "<tr>\n";
+		$sToRender .= "<td>Public</td>\n";
+		$sToRender .= "<td><input type=\"checkbox\" name=\"fIsPublic\" " . ($sql->f("is_public") ? "CHECKED" : "") ." ></td>\n";
+		$sToRender .= "</tr>\n";
+		$sToRender .= "<tr>\n";
+		$sToRender .= "<td></td>\n";
+		$sToRender .= "</tr>\n";
+		
+	}
+	$sToRender .= "</table>\n";
 	
-	$aDisplayColumns = array("folder_name", "description", "is_public");
+	
+	/*$aDisplayColumns = array("folder_name", "description", "is_public");
 	$aStoreColumns = array("name", "description" , "is_public");
 	$aColumnNames = array("Name", "Description", "Public");
 	$aDisplayColumnTypes = array(1,1,2);
@@ -32,7 +60,9 @@ function getFolderData($iFolderID) {
 	$oPatternEditableListFromQuery->setDropDownListTableNames($aDropDownListTableNames);
 	$oPatternEditableListFromQuery->setColumnsRequired(array(1,0,1,0));
 	
-	return $oPatternEditableListFromQuery->render();
+	return $oPatternEditableListFromQuery->render();*/
+	
+	return $sToRender;
 	
 }
 
@@ -92,22 +122,7 @@ function getPage($iFolderID) {
 	$sToRender .= getRightSide($iFolderID);
 	$sToRender .= "</td>\n";
 	$sToRender .= "</tr>\n";
-	$sToRender .= "</table>\n";
-	/*$sToRender = "<table border=\"1\" width=\"100%\"><tr><td>" . getFolderPath($iFolderID) . "</td></tr></table>\n"; 
-	$sToRender .= "<table border  =\"0\">\n";
-	$sToRender .= "<tr>\n";	
-	$sToRender .= "<td valign=\"top\">" . wrapInTable(getFolderData($iFolderID)) . "</td>\n";
-	$sToRender .= "<td>" . wrapInTable(getFolderDocTypes($iFolderID)) . "</td>\n";
-	$sToRender .= "</tr>\n";	
-	$sToRender .= "<tr>\n";	
-	$sToRender .= "<td><input type=\"image\" src=\"$default->graphicsUrl/widgets/update.gif\" border=\"0\" /></td>\n";
-	$sToRender .= "</tr>\n";
-	$sToRender .= "<tr>\n";	
-	$sToRender .= "<td>" . wrapInTable(getFolderRouting($iFolderID)) . "</td>\n";
-	$sToRender .= "</tr>\n";
-	$sToRender .= "<tr>\n";
-	$sToRender .= "<td><a href=\"$default->rootUrl/control.php?action=addFolderCollaboration&fFolderID=$iFolderID\"><img src=\"$default->graphicsUrl/widgets/add.gif\" border=\"0\" /></a></td>\n";
-	$sToRender .= "</table>\n";*/
+	$sToRender .= "</table>\n";	
 	return $sToRender;
 }
 
@@ -120,8 +135,8 @@ function getLeftSide($iFolderID) {
 	$sToRender .= "</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>\n";
-	$sToRender .= "<input type=\"image\" src=\"$default->graphicsUrl/widgets/update.gif\" border=\"0\" />\n";
+	$sToRender .= "<td>\n";	
+	$sToRender .= "<input type=\"image\" src=\"$default->graphicsUrl/widgets/update.gif\" onClick=\"setActionAndSubmit('" . $_SERVER["PHP_SELF"] . "?fFolderID=$iFolderID&fForUpdate=1')\" border=\"0\" />\n";	
 	$sToRender .= "</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
