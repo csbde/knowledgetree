@@ -48,20 +48,25 @@ class KTUtil {
         }
     }
 
+    function intToBool ($sString) {
+        $iInt = (int)$sString;
+        return $iInt !== 0;
+    }
+
 
     function anyToBool ($sString, $null = false) {
         if (is_bool($sString)) {
             return $sString;
         }
 
-        if (is_string($sString)) {
-            if (strToBool($sString) === true) {
-                return true;
-            }
+        if (is_numeric($sString)) {
+            return KTUtil::intToBool($sString);
         }
 
-        if (is_int($sString)) {
-            return intToBool($sString);
+        if (is_string($sString)) {
+            if (KTUtil::strToBool($sString) === true) {
+                return true;
+            }
         }
 
         if (is_null($sString)) {
@@ -71,6 +76,16 @@ class KTUtil {
         return false;
     }
 
+    function randomString($length=16, $sRandom="ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"){
+        $sString = "";
+        $iCurLen = 0;
+        $iRandomLen = strlen($sRandom);
+        while ($length > $iCurLen) {
+            $sString .= substr($sRandom, mt_rand(0, $iRandomLen -1), 1);
+            $iCurLen++;
+        }
+        return $sString;
+    }
     
 }
 // }}}
