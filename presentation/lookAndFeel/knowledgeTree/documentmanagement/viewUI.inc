@@ -103,7 +103,7 @@ function renderEditableDocumentRouting($oDocument) {
 
 function renderNonEditableDocumentRouting($oDocument) {
     global $default;
-    $sQuery = "SELECT D.id as document_id, GFAL.id as id, R.name AS role_name, COALESCE(U.Name, 'Not assigned') AS name, GFAL.precedence AS precedence " .
+    $sQuery = "SELECT D.id as document_id, GFAL.id as id, R.name AS role_name, COALESCE(U.Name, 'Not assigned') AS name, GFAL.precedence AS precedence, COALESCE(FURL.active,0) AS active, COALESCE(FURL.done, 0) AS done " .
               "FROM documents AS D INNER JOIN $default->owl_groups_folders_approval_table AS GFAL ON D.folder_id = GFAL.folder_id " .
               "INNER JOIN roles AS R ON GFAL.role_id = R.id " .
               "LEFT OUTER JOIN folders_users_roles_link AS FURL ON FURL.group_folder_approval_id = GFAL.id " .
@@ -111,9 +111,9 @@ function renderNonEditableDocumentRouting($oDocument) {
               "WHERE D.id = " . $oDocument->getID() . " " .
               "ORDER BY GFAL.precedence, role_name ASC";
 
-    $aColumns = array("role_name", "name", "precedence");
-    $aColumnHeaders = array("Role", "Player", "Seq");
-    $aColumnTypes = array(1,1,1);
+    $aColumns = array("role_name", "name", "precedence", "active", "done");
+    $aColumnHeaders = array("Role", "Player", "Seq", "Active", "Done");
+    $aColumnTypes = array(1,1,1,1,1);
     $oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaders, "10%", "$default->rootUrl/control.php?action=modifyDocumentRouting",$aDBColumnArray,$aQueryStringVariableNames);
     $oPatternTableSqlQuery->setTableHeading("Document Routing");
     $oPatternTableSqlQuery->setDisplayColumnHeadings(true);
