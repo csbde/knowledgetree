@@ -11,18 +11,6 @@
  * @author Michael Joseph <michael@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
  * @package presentation.lookAndFeel.knowledgeTree.documentmanagement
  */
-
-/*function renderHeading() {
-    global $default;
-    $sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
-    $sColor = $default->siteMap->getSectionColour($sSectionName, "th");
-    $sToRender  = "<table border=\"0\" width=\"100%\">\n";
-    $sToRender .= "<tr align=\"left\"><th class=\"sectionHeading\" bgcolor=\"$sColor\">Web Document</th></tr>\n";
-    $sToRender .= "<tr/>\n";
-    $sToRender .= "<tr/>\n";
-    $sToRender .= "</table>\n";
-    return $sToRender;
-}*/
  
 /**
  * Prompts the user for a checkout comment
