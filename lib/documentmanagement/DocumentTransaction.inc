@@ -1,4 +1,12 @@
 <?php
+
+DEFINE("CREATE", 1);
+DEFINE("UPDATE", 2);
+DEFINE("DELETE", 3);
+DEFINE("RENAME", 4);
+DEFINE("MOVE", 5);
+DEFINE("DOWNLOAD", 5);
+
 /**
 *
 * Class DocumentTransaction
