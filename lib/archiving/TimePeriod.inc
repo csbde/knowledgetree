@@ -33,13 +33,13 @@ class TimePeriod {
 	 * @param date the time unit
 	 * @param integer the expiration time period id
 	 */
-	function TimePeriod($dNewExpirationDate, $iNewTimePeriodID) {
+	function TimePeriod($iNewTimeUnitID, $iNewUnits) {
 		global $default;
 		
 		// primary key not set as this is not stored yet
 		$this->iId = -1;
-		$this->iTimeUnitID = $dNewExpirationDate;
-		$this->iUnits = $iNewTimePeriodID;
+		$this->iTimeUnitID = $iNewTimeUnitID;
+		$this->iUnits = $iNewUnits;
 	}
 
 	/**
