@@ -131,14 +131,27 @@ class Role {
 		global $default, $lang_err_database, $lang_err_object_key;
 		//only delete the object if it exists in the database
 		if ($this->iId >= 0) {
+			//check to see if role is linked to a folder
 			$sql = $default->db;
-			$result = $sql->query("DELETE FROM $default->owl_roles_table WHERE id = $this->iId");
-			if ($result) {
+			$query = "SELECT role_id FROM ". $default->owl_groups_folders_approval_table ." WHERE role_id = '" . $this->iId . "'";
+        		$sql->query($query);
+       			$rows = $sql->num_rows($sql);
+        
+      			 if ($rows > 0){
+            			 // duplicate link exists
+           			 $_SESSION["errorMessage"] = "Role::The Role " . $this->sName . " is Assigned to a folder!";
+           			 return false;
+           		 
+	       		 }else{
+				$sql = $default->db;
+				$result = $sql->query("DELETE FROM $default->owl_roles_table WHERE id = $this->iId");
+				if ($result) {
 				return true;
 			}
 			$_SESSION["errorMessage"] = $lang_err_database;
 			return false;
 		}
+	}
 		$_SESSION["errorMessage"] = $lang_err_object_key;
 		return false;
 	}
