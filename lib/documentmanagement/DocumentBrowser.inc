@@ -180,7 +180,7 @@ class DocumentBrowser {
             $results["documentTypes"][] = array("name" => "Document Types");
             
             // return a list of document types
-            $query = "SELECT * FRMO $default->owl_document_types_table";
+            $query = "SELECT * FROM $default->owl_document_types_table";
             $sql->query($query);
             while ($sql->next_record()) {
                 $results["documentTypes"][] = array ("id" => $sql->f("id"), "name" => $sql->f("name"));
