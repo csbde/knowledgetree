@@ -51,6 +51,8 @@ class PatternTableSqlQuery {
 	var $bUseImageURLFromQuery = false;
 	/** message that will be displayed if the table is empty*/
 	var $sEmptyTableMessage;
+	/** Picture path */
+	var $sPicPath;
 	
 	var $bIncludeBorder = false;
 				
@@ -88,6 +90,14 @@ class PatternTableSqlQuery {
 	
 	function setIncludeBorder($bNewValue) {
 		$this->bIncludeBorder = $bNewValue;
+	}
+	
+	function setPicPath($sNewPicPath) {
+		$this->sPicPath = $sNewPicPath;	
+	}
+	
+	function getPicPath() {
+		return $this->sPicPath ;	
 	}
 	
 	/**
@@ -170,6 +180,20 @@ class PatternTableSqlQuery {
 									$sToRender .= $this->generateImageURL($sql->f("image_url"));
 								}
 								$sToRender .= stripslashes($sql->f($this->aColumns[$i])) . "</a></td>\n";
+								break;
+						case 4:
+								//pic
+								$sToRender .= "<td>";
+								if ($sql->f($this->aColumns[$i]) != null) {									
+									$value = $sql->f($this->aColumns[$i]);
+									if ($value) { 
+										$sToRender .= "<img src='" . $this->sPicPath . "'>";
+									}
+									$sToRender .= "&nbsp;</td>";	
+								} else {
+									$sToRender .= "&nbsp</td>";
+								}							
+
 								break;
 						default:
 								break;
