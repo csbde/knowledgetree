@@ -92,8 +92,18 @@ class DocumentBrowser {
             // FIXME: in the same unit?
             
             // if we're sorting by name then sort folders in the appropriate direction
-            $folderQuery = "SELECT id FROM $default->owl_folders_table WHERE parent_id=" . $folderID . " ORDER BY name " . ($sSortField == "name" ? $sSortDirection : "ASC");
-            $default->log->debug("DocumentBrowser::browseByFolder child folder query=$folderQuery");
+            $folderQuery = "SELECT f.id FROM $default->owl_folders_table f ";
+                     
+            if ( $sSortField == "creator_id" ) {
+            	$folderQuery .= "INNER JOIN " .  $this->aSortCriteria["creator_id"]["lookup"]["lookupTable"] . " lt ON f.$sSortField=lt.id ";
+            }            
+            $folderQuery .= "WHERE f.parent_id=$folderID ";            
+            if ( $sSortField == "creator_id" ) {
+            	$folderQuery .= "ORDER BY lt." . $this->aSortCriteria["creator_id"]["lookup"]["lookupField"] . " $sSortDirection";
+            } else {
+            	$folderQuery .= "ORDER BY name " . ($sSortField == "name" ? $sSortDirection : "ASC");
+            }
+            
             if ($sql->query($folderQuery)) {
                 while ($sql->next_record()) {
                     // add the child folders to the array
@@ -161,8 +171,10 @@ class DocumentBrowser {
             $results["categories"][] = "Categories";
            
             // get a list of category values
-            $query = "SELECT DISTINCT value FROM $default->owl_document_fields_table WHERE document_field_id=$categoryFieldID ORDER BY value ASC";
-            $default->log->debug("DocumentBrowser::browseByCategory category listing query=$query");
+            $query = "SELECT DISTINCT value FROM $default->owl_document_fields_table " .
+                     "WHERE document_field_id=$categoryFieldID " .
+                     "ORDER BY value " . ($sSortField == "name" ? $sSortDirection : "ASC");
+ 
             $sql->query($query);
             // loop through resultset, build array and return
             while ($sql->next_record()) {
@@ -210,7 +222,7 @@ class DocumentBrowser {
      */    
     function browseByDocumentType($documentTypeID = -1, $sSortField = "name", $sSortDirection = "asc") {
         global $default;
-        
+
         $results = array();
         $sql = $default->db;
         
@@ -220,7 +232,8 @@ class DocumentBrowser {
             $results["documentTypes"][] = array("name" => "Document Types");
             
             // return a list of document types
-            $query = "SELECT * FROM $default->owl_document_types_table";
+            $query = "SELECT * FROM $default->owl_document_types_table ORDER BY name " . ($sSortField == "name" ? $sSortDirection : "ASC");
+
             $sql->query($query);
             while ($sql->next_record()) {
                 $results["documentTypes"][] = array ("id" => $sql->f("id"), "name" => $sql->f("name"));

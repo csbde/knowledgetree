@@ -21,7 +21,7 @@ function renderHeading($sHeading) {
     global $default;
     $sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
     $sColor = $default->siteMap->getSectionColour($sSectionName, "th");
-    $sToRender  = "<table border=\"0\" width=\"100%\">\n";
+    $sToRender  = "<table border=\"0\" width=\"600\">\n";
     $sToRender .= "<tr align=\"left\"><th class=\"sectionHeading\" bgcolor=\"$sColor\"><font color=\"ffffff\">$sHeading</font></th></tr>\n";
     $sToRender .= "<tr/>\n";
     $sToRender .= "<tr/>\n";
@@ -46,7 +46,7 @@ function renderBrowseTypeSelect($sBrowseType) {
                                (($sBrowseType=="documentType") ? " checked=\"checked\"" : "") . "/> Document Type\n</span>";
 }
 
-// <category display helper methods>
+// <category browse helper methods>
 
 /**
  * Displays the passed category path as a link
@@ -92,7 +92,20 @@ function renderCategoryResults($aResults) {
     if ($aResults["categories"][0] == "Categories") {
         // loop through categories and display them
         for ($i=1; $i<count($aResults["categories"]); $i++) {
-            $sToRender .= "<tr><td bgcolor=\"" . getColour($i) . "\">" . displayCategoryLink($aResults["categories"][$i]) . "</td></tr>\n";
+            $sToRender .= "<tr bgcolor=\"" . getColour($i) . "\">";
+                     
+            // category name
+            $sToRender .= "<td>" . displayCategoryLink($aResults["categories"][$i]) . "</td>";
+            // blank filename
+            $sToRender .= "<td></td>";
+            // creator name
+            $sToRender .= "<td></td>";
+            // modified date
+            $sToRender .= "<td></td>";
+            // document type
+            $sToRender .= "<td></td>";                      
+
+            $sToRender .= "</tr>\n";
         }
     } else {
         // else the first entry is the category name, so display the documents in the category
@@ -102,7 +115,7 @@ function renderCategoryResults($aResults) {
     return $sToRender;
 }
 
-// </category display helper methods>
+// </category browse helper methods>
 
 // <document type display helper methods>
 /**
@@ -145,7 +158,18 @@ function renderDocumentTypeResults($aResults) {
     if ($aResults["documentTypes"][0]["name"] == "Document Types") {
         // loop through document types and display them
         for ($i=1; $i<count($aResults["documentTypes"]); $i++) {
-            $sToRender .= "<tr><td bgcolor=\"" . getColour($i) . "\">" . displayDocumentTypeLink($aResults["documentTypes"][$i]) . "</td></tr>";
+            $sToRender .= "<tr bgcolor=\"" . getColour($i) . "\">";			
+            // document type name
+            $sToRender .= "<td>" . displayDocumentTypeLink($aResults["documentTypes"][$i]) . "</td>";
+            // blank filename
+            $sToRender .= "<td></td>";
+            // creator name
+            $sToRender .= "<td></td>";
+            // modified date
+            $sToRender .= "<td></td>";
+            // document type
+            $sToRender .= "<td></td>";                      
+            $sToRender .= "</tr>\n";                   	
         }
     } else {
         // else the first entry is the document type name, so display the documents in the document type
@@ -154,8 +178,47 @@ function renderDocumentTypeResults($aResults) {
     }
     return $sToRender;
 }
-// </document type display helper methods>
+// </document type browse helper methods>
 
+
+// <folder browse helper methods>
+/**
+ * Displays the folders in the browse results
+ *
+ * @param array the browse result objects
+ */
+function renderFolderResults($aResults) {
+    global $default;
+    $sToRender = "";
+	    
+    // now loop through the rest of the folders and display links
+    if (count($aResults["folders"]) > 1) {
+        for ($i=1; $i<count($aResults["folders"]); $i++) {
+            $sFolderLink = displayFolderLink($aResults["folders"][$i]);
+            $oCreator = User::get($aResults["folders"][$i]->getCreatorID());
+            
+            $sToRender .= "<tr bgcolor=\"" . getColour($i) . "\">";            
+            // folder name
+            $sToRender .= "<td>" . $sFolderLink . "</td>";
+            // blank filename (??: folder description?)
+            $sToRender .= "<td></td>";
+            // creator name
+            $sToRender .= "<td>" . $oCreator->getName() . "</td>";
+            // modified date (TODO: add to db)
+            $sToRender .= "<td></td>";
+            // document type (??: display one of the mapped document types?)
+            $sToRender .= "<td></td>";                        
+            $sToRender .= "</tr>\n";
+        }
+    } else {
+        $sToRender .= "<tr><td colspan=\"5\">This folder contains no sub folders</td></tr>";
+    }
+        
+    $sToRender .= "<tr><td>" . renderDocumentList($aResults, "This folder contains no documents", "You don't have access to the documents in this folder") . "</td></tr>\n";
+    
+    return $sToRender;
+}
+// </folder browse helper methods>
 
 /**
  * Displays the headings for the displayed document details and enables
@@ -197,31 +260,6 @@ function renderSortHeadings($sSortBy, $sSortDirection) {
 	}
 
     $sToRender .= "</tr>\n";
-    return $sToRender;
-}
-
-/**
- * Displays the folders in the browse results
- *
- * @param array the browse result objects
- */
-function renderFolderResults($aResults) {
-    global $default;
-    $sToRender = "";
-	    
-    // now loop through the rest of the folders and display links
-    if (count($aResults["folders"]) > 1) {
-        for ($i=1; $i<count($aResults["folders"]); $i++) {
-            $sFolderLink = displayFolderLink($aResults["folders"][$i]);
-            $oCreator = User::get($aResults["folders"][$i]->getCreatorID());
-            $sToRender .= "<tr bgcolor=\"" . getColour($i) . "\"><td colspan=\"2\" nowrap width=\"100%\">" . $sFolderLink . "</td><td>" . $oCreator->getName() . "</td><td colspan=\"2\"></td></tr>\n";
-        }
-    } else {
-        $sToRender .= "<tr><td>This folder contains no sub folders</td></tr>";
-    }
-        
-    $sToRender .= "<tr><td>" . renderDocumentList($aResults, "This folder contains no documents", "You don't have access to the documents in this folder") . "</td></tr>\n";
-    
     return $sToRender;
 }
 
