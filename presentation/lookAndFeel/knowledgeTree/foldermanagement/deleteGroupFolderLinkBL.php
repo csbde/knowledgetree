@@ -46,8 +46,10 @@ if (checkSession()) {
     if (isset($fFolderID) && isset($fGroupFolderLinkID)) {
         // if a folder has been selected
         $oPatternCustom = & new PatternCustom();
-        $oPatternCustom->setHtml("");        
-        if (Permission::userHasFolderWritePermission($fFolderID)) {
+        $oPatternCustom->setHtml("");    
+           
+		$oFolder = Folder::get($fFolderID);
+        if (Permission::userHasFolderWritePermission($oFolder)) {
             // can only delete group folder links if the user has folder write permission
             if (isset($fForDelete)) {
                 $oGroupFolderLink = & GroupFolderLink::get($fGroupFolderLinkID);

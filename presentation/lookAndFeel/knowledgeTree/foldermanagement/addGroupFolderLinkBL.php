@@ -43,8 +43,9 @@ if (checkSession()) {
 	if (isset($fFolderID)) {
         $oPatternCustom = & new PatternCustom();
         $oPatternCustom->setHtml("");
+        $oFolder = Folder::get($fFolderID);
 		// if a folder has been selected
-		if (Permission::userHasFolderWritePermission($fFolderID)) {
+		if (Permission::userHasFolderWritePermission($oFolder)) {
 			// can only add access if the user has folder write permission
 			if (isset($fForStore)) {
 				// attempt to create the new folder access entry				
