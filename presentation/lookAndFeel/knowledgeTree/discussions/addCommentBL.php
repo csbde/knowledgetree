@@ -132,7 +132,7 @@ if (checkSession()) {
 			$main->setErrorMessage("Error: No discussion thread available");			
 		}	
 	} // end of if checksession
-	
+	    
     $main->setCentralPayload($oPatternCustom);
     $main->render();    
 }
