@@ -130,9 +130,13 @@ function renderFolderResults($aResults) {
     global $default;
     $sToRender = "";
     // now loop through the rest of the folders and display links
-    for ($i=1; $i<count($aResults["folders"]); $i++) {
-        $sRow = displayFolderLink($aResults["folders"][$i]);
-        $sToRender .= "<tr><td nowrap width=\"100%\" bgcolor=\"" . getColour($i) . "\">" . $sRow . "</td></tr>\n";
+    if (count($aResults["folders"]) > 1) {
+        for ($i=1; $i<count($aResults["folders"]); $i++) {
+            $sRow = displayFolderLink($aResults["folders"][$i]);
+            $sToRender .= "<tr><td nowrap width=\"100%\" bgcolor=\"" . getColour($i) . "\">" . $sRow . "</td></tr>\n";
+        }
+    } else {
+        $sToRender .= "<tr><td>This folder contains no sub folders</td></tr>";
     }
     
     $sToRender .= "<tr><td>&nbsp;</td></tr>";
@@ -143,8 +147,12 @@ function renderFolderResults($aResults) {
 
 function renderDocumentList($aDocuments, $bDisplayFullPath = false) {
     // loop through the files and display links
-    for ($i=0; $i<count($aDocuments); $i++) {
-        $sToRender .= "<tr><td bgcolor=\"" . getColour($i) . "\">" . displayDocumentLink($aDocuments[$i], $bDisplayFullPath) . "</td></tr>";
+    if (count($aDocuments) > 0) {
+        for ($i=0; $i<count($aDocuments); $i++) {
+            $sToRender .= "<tr><td bgcolor=\"" . getColour($i) . "\">" . displayDocumentLink($aDocuments[$i], $bDisplayFullPath) . "</td></tr>";
+        }
+    } else {
+        $sToRender .= "<tr><td>This folder contains no documents</td></tr>";
     }
     return $sToRender;
 }
