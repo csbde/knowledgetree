@@ -40,6 +40,10 @@ class WebDocument {
 		$this->dDateTime = $dNewDateTime;
 	}
 	
+	function setStatusID($iNewValue) {
+		$this->iStatusID = $iNewValue;
+	}
+	
 	/**
 	* Create the current object in the database
 	*
@@ -145,7 +149,7 @@ class WebDocument {
 		$aWebDocumentArray;
 		settype($aWebDocumentArray, "array");
 		$sql = $default->db;
-		$result = $sql->query("SELECT * FROM " . $default->owl_web_documents_table  . (isset($sWhereClause) ? " " . $sWhereClause : ""));
+		$result = $sql->query("SELECT * FROM " . $default->owl_web_documents_table  . (isset($sWhereClause) ? " WHERE " . $sWhereClause : ""));
 		if ($result) {			
 			$iCount = 0;
 			while ($sql->next_record()) {
