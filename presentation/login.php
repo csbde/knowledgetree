@@ -27,6 +27,7 @@ if ($loginAction == "loginForm") {
     <head>
     <link rel=\"stylesheet\" href=\"$default->uiUrl/stylesheet.php\">
     <link rel=\"SHORTCUT ICON\" href=\"$default->graphicsUrl/tree.ico\">
+    <title>The KnowledgeTree</title>
     </head>
     <body>
     <center>
