@@ -195,8 +195,8 @@ class DocumentCollaboration {
 					//get the document that can be used as a template, if there is one
 					$oDocument = Document::get($oDependantDocumentInstance->getTemplateDocumentID());
 					//send the user notification via email
-					$sBody = $oUser->getName() . ", a step in the document collaboration process requires you to create a new document.  Click here or log onto " .
-								"KnowledgeTree and select the relevant link under the 'Dependant Documents' heading on your dashboard to upload it.";
+					$sBody = $oUser->getName() . ", a step in the document collaboration process requires you to create a new document.  " .
+								generateLink("/control.php","action=dashboard","Log onto KnowledgeTree") . " and select the relevant link under the 'Dependant Documents' heading on your dashboard when you are ready to upload it.  ";
 								//if we have a template document
 								if (!($oDocument === false)) {
 									$sBody .= "The document entitled " . generateLink("/control.php", "action=viewDocument&fDocumentID=" . $oDocument->getID(), $oDocument->getName()) . " " .
