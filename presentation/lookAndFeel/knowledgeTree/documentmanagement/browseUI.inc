@@ -132,11 +132,11 @@ function renderFolderResults($aResults) {
     // now loop through the rest of the folders and display links
     for ($i=1; $i<count($aResults["folders"]); $i++) {
         $sRow = displayFolderLink($aResults["folders"][$i]);
-        $sToRender .= "<tr><td nowrap width=\"100%\" bgcolor=\"" . getColour($i) . "\">" . $sRow . "</td></tr>";
+        $sToRender .= "<tr><td nowrap width=\"100%\" bgcolor=\"" . getColour($i) . "\">" . $sRow . "</td></tr>\n";
     }
     
     $sToRender .= "<tr><td>&nbsp;</td></tr>";
-    $sToRender .= "<tr><td>" . renderDocumentList($aResults["documents"]) . "</td></tr>";
+    $sToRender .= "<tr><td>" . renderDocumentList($aResults["documents"]) . "</td></tr>\n";
     
     return $sToRender;
 }
@@ -150,24 +150,26 @@ function renderDocumentList($aDocuments, $bDisplayFullPath = false) {
 }
 
 function renderPage($aResults, $sBrowseType) {
+    global $default;
+    
+	$sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
+	$sTDBGColour = $default->siteMap->getSectionColour($sSectionName, "td");
+    
     // browse type select
-   	$sToRender =  "<table border=\"0\" width=\"100%\">\n";
-    $sToRender .= "\t<tr><td>" . renderBrowseTypeSelect($sBrowseType) . "</tr></td>";
+   	$sToRender =  "<table border=\"0\" width=\"600\">\n";
+    $sToRender .= "\t<tr><td bgcolor=\"$sTDBGColour\">" . renderBrowseTypeSelect($sBrowseType) . "</td></tr>";
     $sToRender .= "\t</table>";
     
-    // current path
-    $sToRender .=  "<table border=\"1\" width=\"100%\">\n";
-	$sToRender .= "\t<tr><td>";    
+    $sToRender .= "<table border=\"0\" cellpadding=\"5\" width=\"100%\"><tr><td bgcolor=\"$sTDBGColour\">"; 
     switch ($sBrowseType) {
         case "folder"       : $sToRender .= displayFolderPathLink(Folder::getFolderPathAsArray($aResults["folders"][0]->getID()), Folder::getFolderPathNamesAsArray($aResults["folders"][0]->getID())); break;
         case "category"     : $sToRender .= displayCategoryPathLink($aResults["categories"]); break;
         case "documentType" : $sToRender .= displayDocumentTypePathLink($aResults["documentTypes"]); break;
     }
-    $sToRender .= "</tr></td>\n";
-    $sToRender .= "\t</table>";
+    $sToRender .= "</td></tr></table>\n";
     
     // display folders|documents
-	$sToRender .= "<table border=\"0\">\n";
+	$sToRender .= "<table border=\"0\" width=\"100%\">\n";
 	$sToRender .= "<tr><td>\n";    
     switch ($sBrowseType) {
         case "folder"       : $sToRender .= renderFolderResults($aResults); break;
@@ -182,6 +184,6 @@ function renderPage($aResults, $sBrowseType) {
 
 function getColour($iColourCount) {
 		return ($iColourCount%2 == 0) ? "F5F6EE" : "FFFFFF";
-	}
+}
 
 ?>
