@@ -1,6 +1,5 @@
 <?php
 
-//require_once("$default->fileSystemRoot/presentation/Html.inc");
 require_once("$default->fileSystemRoot/lib/users/User.inc");
 
 /**
