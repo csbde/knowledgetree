@@ -38,7 +38,8 @@ function getEditPage($iDocFieldID) {
         $sToRender .= "<tr>\n";
 
 		// allow changing the generic status if the field is not linked to a document type
-        if($checkBox == false) {
+		// and if this isn't the category field
+        if ( ($checkBox == false) || $oDocField->getName() != "Category") {
             $sToRender .= "<td>Is Generic: </td><td>" . getIsGenericCheckBox($oDocField) . "</td>\n";
         } else {
             $sToRender .= "<input type=\"hidden\" name=\"fDocFieldIsGeneric\" value=\"" . $oDocField->getIsGeneric() . "\">\n";
@@ -121,7 +122,8 @@ function getDocFieldDisplay($oDocField) {
         return $oPatternListBox->render();
     } else {
         return "<input type=\"hidden\" name=\"fDocFieldID\" value=\"" . $oDocField->iId . "\">\n" .
-               "<input size = \"40\" type=\"text\" name=\"fDocFieldName\" value=\"" . $oDocField->getName() . "\">";
+               "<input size=\"40\" type=\"text\" name=\"fDocFieldName\" value=\"" . $oDocField->getName() . "\"" . 
+               ($oDocField->getName() == "Category" ? "disabled=\"disabled\"" : "") . ">";
     }
 }
 
