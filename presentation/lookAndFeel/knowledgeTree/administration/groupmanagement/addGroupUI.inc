@@ -35,7 +35,7 @@ function getPage() {
 	$aRequired = array(1);
 
 	// create a text field that is required 
-	$oPatternCreate = & new PatternCreate("Group", "groups/Group.inc",$aDisplayRowNames, $aParameterNumbers, $aDisplayColumnTypes, $aRequired);
+	$oPatternCreate = & new PatternCreate("Group", "groups/Group.inc", $aDisplayRowNames, $aParameterNumbers, $aDisplayColumnTypes, $aRequired);
 	$oPatternCreate->setUniqueName("group");
 	
 	$sToRender .= renderHeading("Add Group");
