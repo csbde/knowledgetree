@@ -65,6 +65,8 @@ class SubscriptionEngine {
 
                 // get the subscription id
                 $aValues["subscriptionID"] = $oSubscription->getID();
+                // and type
+                $aValues["subscriptionType"] = $iSubscriptionType;
                 // and subscriber name
                 $aValues["subscriberName"] = $aSubscribers[$i]->getName();
 
