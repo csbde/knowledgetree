@@ -1,12 +1,12 @@
 <?php
 /**
-* package lib.roles
 * 
 * Class Role
 * Represents a role as per the roles database table
 *
 * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
 * @date 20 January 2003
+* package lib.roles
 */
 
 class Role {

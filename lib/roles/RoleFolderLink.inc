@@ -1,12 +1,12 @@
 <?php
 /**
-* @package lib.roles
 *
 * Class RoleFolderLink
 * Represents a role, folder links as per the folders_users_role_link table
 *
 * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
 * @date 20 January 2003
+* @package lib.roles
 */
 
 class RoleFolderLink {

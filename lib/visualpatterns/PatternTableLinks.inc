@@ -1,6 +1,5 @@
 <?php
 /*
-* @package lib.visualpatterns
 * 
 *
 * Given an array of URLs, this class will render them as an
@@ -8,6 +7,7 @@
 *
 * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
 * @date 7 January 2003
+* @package lib.visualpatterns
 */
 
 define("TEXT", 1);

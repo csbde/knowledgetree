@@ -1,6 +1,5 @@
 <?php
 /**
-* @package lib.visualpatterns
 * 
 * Class PatternListBox
 *
@@ -11,6 +10,7 @@
 *
 * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
 * @date 16 January 2003
+* @package lib.visualpatterns
 *
 */
 

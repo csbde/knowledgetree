@@ -1,7 +1,6 @@
 <?php
 
 /**
-* @package lib.email
 *
 * Class Email
 *
@@ -9,6 +8,7 @@
 *
 * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
 * @date 19 January 2003
+* @package lib.email
 */
 
 Class Email {

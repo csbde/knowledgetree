@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * @package lib
+ * 
  * $Id$
  *
  * DMS default routines and functions

@@ -1,7 +1,6 @@
 <?php
 
 /**
-* @package lib.web
 *
 * Class WebSite
 * Represents a web site as per the web_sites database table
@@ -9,7 +8,8 @@
 * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
 * @date 20 January 2003
 *
-* @todo - add regex parsing to ensure URL is valid 
+* @todo - add regex parsing to ensure URL is valid
+* @package lib.web 
 */
 
 class WebSite {
