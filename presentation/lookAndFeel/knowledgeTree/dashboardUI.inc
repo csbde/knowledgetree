@@ -73,12 +73,6 @@ function getSubscriptionDocuments() {
     return array(new tmpDocument(), new tmpDocument(), new tmpDocument());
 }
 
-function tableHeading($cssClassName, $colspan, $text) {
-    return "<th colspan=\"$colspan\">
-            <span class=\"$cssClassName\">$text</span>
-            </th>";
-}
-
 function pendingDocumentsHeaders() {
     return "<th align=\"left\" width=\"33%\">
             <span class=\"sectionColumns\">Title</span>
