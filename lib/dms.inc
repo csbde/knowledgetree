@@ -53,37 +53,4 @@ if (substr(phpversion(),0,5) >= "4.1.0") {
         extract($HTTP_POST_FILES);
     }
 }
-
-// set default language
-if(isset($default->defaultLanguage)) {
-
-    $langdir = "$default->fileSystemRoot/locale/$default->defaultLanguage";
-
-    if(is_dir("$langdir") != 1) {
-        die("$lang_err_lang_1 $langdir $lang_err_lang_2");
-    } else {
-
-        $sql = $default->db;
-        $sql->query("select * from $default->sessions_table where id = '" . session_id() . "'");       
-        $sql->next_record();
-        $numrows = $sql->num_rows($sql);
-        $userID = $sql->f("user_id");
-        if($numrows == 1) {
-            $sql->query("select * from $default->users_table where id = $userID");
-            $sql->next_record();
-            $language = $sql->f("language");
-            // BEGIN wes fix
-            if(!$language) {
-                $language = $default->defaultLanguage;
-            }
-            // END wes fix
-            require("$default->fileSystemRoot/locale/$language/language.inc");
-            $default->defaultLanguage = $language;
-        } else {
-            require("$default->fileSystemRoot/locale/$default->defaultLanguage/language.inc");
-        }
-    }
-} else {
-    die("$lang_err_lang_notfound");
-}
 ?>
