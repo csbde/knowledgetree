@@ -36,7 +36,6 @@ if ($loginAction == "loginForm") {
     // TODO: build login form using PatternMainPage
     print "<html>
     <head>
-    <META http-equiv=\"Content-Type\" content=\"text/html; charset=UTF8\">
     <link rel=\"stylesheet\" href=\"$default->uiUrl/stylesheet.php\">
     <link rel=\"SHORTCUT ICON\" href=\"$default->graphicsUrl/tree.ico\">
     <title>The KnowledgeTree</title>
