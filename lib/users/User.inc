@@ -117,6 +117,10 @@ class User {
 		$this->iQuotaMax = $iNewValue;
 	}
 	
+	function getName() {
+		return $this->sName;
+	}
+	
 	/**
 	* Get the user's currrently used quota
 	*
