@@ -80,6 +80,7 @@ function renderEditableTypeSpecificMetaData($oDocument) {
 }
 
 function renderPage($oDocument) {
+	global $default;
 	$sToRender = "<table border = 0>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>\n";
@@ -96,7 +97,12 @@ function renderPage($oDocument) {
 	$sToRender .= "</td>\n";	
 	$sToRender .= "</tr>\n";	
 	$sToRender .= "</table>\n";
-	$sToRender .= "<input type=\"submit\" value=\"Submit\" />\n";
+	$sToRender .= "<table>\n";
+	$sToRender .= "<tr>\n";	
+	$sToRender .= "<td><input type=\"submit\" value=\"Submit\" /><td>\n";
+	$sToRender .= "<td><a href=\"$default->owl_root_url/control.php?action=viewDocument&fDocumentID=" . $oDocument->getID() . "\">Cancel</a><td>\n";
+	$sToRender .= "</tr>\n";
+	$sToRender .= "</table>\n";
 	return $sToRender;
 }
 
