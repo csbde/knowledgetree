@@ -1,12 +1,14 @@
 <?php
 /**
-* Business logic used to perform advanced search.  Advanced search allows
-* users to search by meta data types
-* 
-* @author Rob Cherry, Jam Warehouse South Africa (Pty) Ltd
-* @date 26 February 2003
-* @package presentation.knowledgeTree.search
-*/
+ * $Id$
+ *
+ * Business logic used to perform advanced search.  Advanced search allows
+ * users to search by meta data types
+ * 
+ * @author Rob Cherry, Jam Warehouse South Africa (Pty) Ltd
+ * @date 26 February 2003
+ * @package presentation.knowledgeTree.search
+ */
 
 require_once("../../../../config/dmsDefaults.php");
 
@@ -22,7 +24,6 @@ if (checkSession()) {
 	
 	require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 
-	//if (isset($fForSearch)) {
 	if (strlen($fSearchString) > 0) {		
 		if (strlen($fSearchString) > 0) {
 			//display search results
@@ -36,15 +37,13 @@ if (checkSession()) {
 					$oPatternCustom = & new PatternCustom();
 					if (!isset($fStartIndex)) {
 						$fStartIndex = 0;
-					}
-					//$oPatternCustom->setHtml(getSearchResults($sDocument,$fStartIndex, $fSearchString, $sMetaTagIDs));					
+					}				
 					$oPatternCustom->setHtml(getSearchResults($sMetaTagIDs,$sSQLSearchString, $fStartIndex));					
 					$main->setCentralPayload($oPatternCustom);				                                
 					$main->render();
 				} else {
 					$oPatternCustom = & new PatternCustom();					
 					$oPatternCustom->setHtml(getSearchPage($fSearchString, explode(",",$sMetaTagIDs)));
-					//$oPatternCustom->setHtml(getSearchResults($sMetaTagIDs,$sSQLSearchString, $fStartIndex));
 					$main->setCentralPayload($oPatternCustom);
 					$main->setErrorMessage("No documents matched your search criteria");
 					$main->setFormAction("advancedSearchBL.php?fForSearch=1");                                
@@ -115,17 +114,16 @@ function getApprovedDocumentString($sMetaTagIDs, $sSQLSearchString) {
 	$sQuery = "SELECT DISTINCT D.id " .
 				"FROM documents AS D INNER JOIN document_fields_link AS DFL ON DFL.document_id = D.id " .
 				"INNER JOIN document_fields AS DF ON DF.id = DFL.document_field_id " .
-				"INNER JOIN search_document_user_link AS SDUL ON SDUL.document_id = D.ID " .			
+				"INNER JOIN search_document_user_link AS SDUL ON SDUL.document_id = D.ID " .
+				"INNER JOIN status_lookup AS SL on D.status_id=SL.id " .			
 				"WHERE DF.ID IN ($sMetaTagIDs) " .
 				"AND " . $sSQLSearchString . " " .
+				"AND SL.name='Live' " .
 				"AND SDUL.user_id = " . $_SESSION["userID"];
-	
+	$default->log->info("search doc query=$sQuery");
 	$sql = $default->db;
 	$sql->query($sQuery);	
 	while ($sql->next_record()) {
-		/*if (Permission::userHasDocumentReadPermission($sql->f("id"))) {
-				$aApprovedDocuments[count($aApprovedDocuments)] = $sql->f("id");
-		}*/
 		$aApprovedDocuments[count($aApprovedDocuments)] = $sql->f("id");
 	}
 	if (count($aApprovedDocuments) > 1) {
@@ -147,6 +145,5 @@ function getSQLSearchString($sSearchString) {
 	}
 	$sSQLSearchString .= "(DFL.value LIKE '%" . $aWords[count($aWords) -1] . "%')";
 	return $sSQLSearchString;
-} 
-
+}
 ?>
