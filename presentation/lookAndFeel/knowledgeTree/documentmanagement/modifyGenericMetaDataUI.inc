@@ -40,7 +40,7 @@ function getPage($iDocumentID, $iDocumentTypeID) {
 	$sToRender .= "<input type=\"image\" src=\"$default->graphicsUrl/widgets/update.gif\" />\n";
 	$sToRender .= "</td>\n";
 	$sToRender .= "<td>\n";
-	$sToRender .= "<a href=\"$default->rootUrl/control.php?action=viewDocument&fDocumentID=$iDocumentID\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\" /></a>\n";
+	$sToRender .= "<a href=\"$default->rootUrl/control.php?action=viewDocument&fDocumentID=$iDocumentID\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" onClick=\"return validateForm(document.MainForm)\" border=\"0\" /></a>\n";
 	$sToRender .= "</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";

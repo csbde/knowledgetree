@@ -2,6 +2,13 @@
 /**
 * Business logic data used to modify documents (will use modifyUI.inc)
 *
+* Expected form variables:
+*	o fDocumentID - primary key of document being edited
+* Optional form variables
+*	o fForUpdate - generated when user clicks update on page and results in database update
+*	o fFirstEdit - generated from the document upload page when the user first uploads a document.
+*				   Is used to force the user to enter the necessary generic meta data
+*
 * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
 * @date 24 January 2003
 * @package presentation.lookAndFeel.knowledgeTree.documentmanagement
@@ -39,7 +46,11 @@ if (checkSession()) {
 			
 			if ($oDocument->update()) {
 				//on successful update, redirect to the view page
-				redirect("$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $oDocument->getID());
+				if (isset($fFirstEdit)) {
+					redirect("$default->rootUrl/control.php?action=modifyDocumentGenericMetaData&fDocumentID=" . $oDocument->getID());
+				} else {
+					redirect("$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $oDocument->getID());
+				}
 			} else {				
 				//display the update page with an error message
 				require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
@@ -47,7 +58,11 @@ if (checkSession()) {
 				$oPatternCustom->setHtml(renderPage($oDocument, $oDocument->getDocumentTypeID()));
 				$main->setCentralPayload($oPatternCustom);
 				$main->setHasRequiredFields(true);	
-				$main->setFormAction($_SERVER["PHP_SELF"] . "?fForUpdate=1");	
+				if (isset($fFirstEdit)) {
+					$main->setFormAction($_SERVER["PHP_SELF"] . "?fForUpdate=1&fFirstEdit=1");
+				} else {
+					$main->setFormAction($_SERVER["PHP_SELF"] . "?fForUpdate=1");
+				}	
 				$main->setHasRequiredFields(true);
 				$main->setErrorMessage("An error occured while attempting to update the document");
 				$main->render();
@@ -61,7 +76,12 @@ if (checkSession()) {
 			$oPatternCustom->setHtml(renderPage($oDocument, $oDocument->getDocumentTypeID()));
 			$main->setCentralPayload($oPatternCustom);
 			$main->setHasRequiredFields(true);	
-			$main->setFormAction($_SERVER["PHP_SELF"] . "?fForUpdate=1");	
+			if (isset($fFirstEdit)) {
+				$main->setFormAction($_SERVER["PHP_SELF"] . "?fForUpdate=1&fFirstEdit=1");
+			} else {
+				$main->setFormAction($_SERVER["PHP_SELF"] . "?fForUpdate=1");
+			}
+				
 			$main->setHasRequiredFields(true);
 			$main->render();
 		}

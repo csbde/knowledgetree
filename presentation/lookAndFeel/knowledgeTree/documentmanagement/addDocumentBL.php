@@ -55,7 +55,7 @@ if (checkSession()) {
                                 $default->log->info("addDocumentBL.php fired $count subscription alerts for new document " . $oDocument->getName());
                                 
                                 //redirect to the document view page
-                                redirect("$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $oDocument->getID());
+                                redirect("$default->rootUrl/control.php?action=modifyDocument&fDocumentID=" . $oDocument->getID(). "&fFirstEdit=1");
                             } else {
                                 require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
                                 $oDocument->delete();
