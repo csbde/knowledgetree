@@ -19,8 +19,8 @@ function renderManagePage() {
     global $default;
     
     // retrieve subscriptions for this user
-    $aFolderSubscriptions = SubscriptionManager::retrieveSubscriptions($_SESSION["userID"], SubscriptionConstants::subscriptionType("FolderSubscription"));
-    $aDocumentSubscriptions = SubscriptionManager::retrieveSubscriptions($_SESSION["userID"], SubscriptionConstants::subscriptionType("DocumentSubscription"));    
+    $aFolderSubscriptions = SubscriptionManager::retrieveUserSubscriptions($_SESSION["userID"], SubscriptionConstants::subscriptionType("FolderSubscription"));
+    $aDocumentSubscriptions = SubscriptionManager::retrieveUserSubscriptions($_SESSION["userID"], SubscriptionConstants::subscriptionType("DocumentSubscription"));    
     $bNoSubscriptions  = ( (count($aFolderSubscriptions) == 0) && (count($aDocumentSubscriptions) == 0) ) ? true : false; 
 
 	$sToRender  = "<table>\n";
