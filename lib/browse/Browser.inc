@@ -40,7 +40,7 @@ class Browser {
     var $sSortDirection;
     
     /**
-     * Constructs a new Browse instance
+     * Constructs a new Browser instance
      *
      * @param string the field to sort by
      * @param string the direction to sort in
@@ -52,12 +52,17 @@ class Browser {
 	    	$aNewSortCriteria = array ( "name"       		=> array ("display" => "Title"), 	
 		 					  	 	    "filename"   		=> array ("display" => "Filename"),
 								 	 	"creator_id" 		=> array ("display" => "Creator", 
-								 	 						      	  "lookup"  => array ("lookupTable" => "users",
-								 	 										   		  	  "lookupField" => "name")),
-									 	"modified"         => array ("display" => "Modified"),
-									 	"document_type_id" => array ("display" => "Document Type",
-								 	 						      	 "lookup"  => array ("lookupTable" => "document_types_lookup",
-								 	 										   		  	 "lookupField" => "name")) );
+								 	 						      	  "lookup"  => array ("table" => "users",
+								 	 										   		  	  "field" => "name")),
+								 	 										   		  	  
+									 	"id"                => array ("display" => "Date Created",
+									 			 					  "lookup"  => array("table" => "document_transactions",
+									 								 					 "field" => "datetime",
+									 								 					 "joinColumn" => "document_id",
+									 								 					 "whereClause" => "transaction_id=1")),
+									 	"document_type_id"  => array ("display" => "Document Type",
+								 	 						      	  "lookup"  => array ("table" => "document_types_lookup",
+								 	 										   		  	  "field" => "name")) );
     	}
 							 	 										   		      	
     	$this->aSortCriteria = $aNewSortCriteria;
@@ -122,9 +127,9 @@ class Browser {
 	}
 	 
     /**
-     * [Abstract] Browse the documents by folder
+     * [Abstract] Browse the documents
      *
-     * @return array folders and documents
+     * @return array documentCollections and documents
      */
     function browse() {
     }
