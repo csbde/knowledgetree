@@ -59,7 +59,7 @@ class Document {
 		$this->sDescription = $sNewDescription;
 		$this->iMimeTypeID = $iNewMimeID;
 		$this->iFolderID = $iNewFolderID;
-		$this->iDocumentTypeID = FolderLib::getFolderDocumentType($this->iFolderID);
+		$this->iDocumentTypeID = Folder::getFolderDocumentType($this->iFolderID);
 		$this->iMajorVersion = 0;
 		$this->iMinorVersion = 1;
 		$this->bIsCheckedOut = false;
@@ -282,15 +282,15 @@ class Document {
 	function & get($iDocumentID) {
 		global $default, $lang_err_doc_not_exist;
 		$sql = new Owl_DB();
-		$sql->query("SELECT * FROM " . $default->owl_documents_table . " WHERE id = " . $iDocumentID);
-		if ($sql->next_record()) {
+		$sql->query("SELECT * FROM $default->owl_documents_table WHERE id = $iDocumentID");
+		if ($sql->next_record()) {			
 			$oDocument = & new Document(stripslashes($sql->f("name")), $sql->f("filename"), $sql->f("size"), stripslashes($sql->f("creator_id")), $sql->f("mime_id"), $sql->f("folder_id"), $sql->f("description"));			
 			$oDocument->setDocumentTypeID($sql->f("document_type_id"));
 			$oDocument->setMajorVersionNumber($sql->f("major_version"));
 			$oDocument->setMinorVersionNumber($sql->f("minor_version"));
 			$oDocument->setIsCheckedOut($sql->f("is_checked_out"));
 			$oDocument->iId = $iDocumentID;
-			return $doc;
+			return $oDocument;
 		}
 		$_SESSION["errorMessage"] = $lang_err_object_not_exist . "id = " . $iDocumentID . " table = documents";
 		return false;		
@@ -364,7 +364,7 @@ class Document {
 	function documentExists($sName, $iFolderID) {
 		global $default, $lang_err_doc_not_exist;
 		$sql = new Owl_DB();
-		$sql->query("SELECT * FROM " . $default->owl_documents_table . " WHERE name = '" . $sName "' AND folder_id = " . $iFolderID);
+		$sql->query("SELECT * FROM $default->owl_documents_table WHERE name = '" . addslashes($sName) . "' AND folder_id = $iFolderID");
 		if ($sql->next_record()) {
 			return true;
 		}
