@@ -50,7 +50,7 @@ class DBUtil {
             $sQuery = $query;
         }
         $res = $db->query($sQuery, $aParams);
-        $default->log->info('Query: ' . DBUtil::lastQuery($db));
+        $default->log->debug('Query: ' . DBUtil::lastQuery($db));
         return $res;
     }
 
@@ -126,13 +126,13 @@ class DBUtil {
 
     function &autoInsert($sTable, $aFieldValues, $db = null) {
         global $default;
-        $default->log->info('AutoInsert called for table ' . $sTable);
+        // $default->log->debug('AutoInsert called for table ' . $sTable);
         $db =& DBUtil::getDB();
         if (!array_key_exists('id', $aFieldValues)) {
             $aFieldValues['id'] = DBUtil::nextId($sTable, null, $db);
         }
         $res = $db->autoExecute($sTable, $aFieldValues);
-        $default->log->info('Query: ' . DBUtil::lastQuery($db));
+        $default->log->debug('Query: ' . DBUtil::lastQuery($db));
         if ($res === DB_OK) {
             return $aFieldValues['id'];
         }
@@ -144,10 +144,10 @@ class DBUtil {
 
     function &autoUpdate($sTable, $aFieldValues, $iId, $db = null) {
         global $default;
-        $default->log->info('AutoUpdate called for table ' . $sTable . ' with id ' . $iId);
+        // $default->log->debug('AutoUpdate called for table ' . $sTable . ' with id ' . $iId);
         $db =& DBUtil::getDB();
         $res = $db->autoExecute($sTable, $aFieldValues, DB_AUTOQUERY_UPDATE, 'id = ' . $iId);
-        $default->log->info('Query: ' . DBUtil::lastQuery($db));
+        $default->log->debug('Query: ' . DBUtil::lastQuery($db));
         if ($res === DB_OK) {
             return $res;
         }
@@ -159,7 +159,7 @@ class DBUtil {
 
     function &whereUpdate($sTable, $aFieldValues, $aWhereFieldValues, $db = null) {
         global $default;
-        $default->log->info('WhereUpdate called for table ' . $sTable);
+        //$default->log->debug('WhereUpdate called for table ' . $sTable);
         $db =& DBUtil::getDB();
         $aWhereFields = array();
         foreach (array_keys($aWhereFieldValues) as $k) {
@@ -172,7 +172,7 @@ class DBUtil {
         $ret =& $db->execute($sth, array_values($aValues));
         $db->freePrepared($sth);
 
-        $default->log->info('Query: ' . DBUtil::lastQuery($db));
+        $default->log->debug('Query: ' . DBUtil::lastQuery($db));
         if ($res === DB_OK) {
             return $res;
         }
@@ -189,7 +189,7 @@ class DBUtil {
 
     function &autoDelete($sTable, $iId, $db = null) {
         global $default;
-        $default->log->info('AutoDelete called for table ' . $sTable . ' with id ' . $iId);
+        // $default->log->debug('AutoDelete called for table ' . $sTable . ' with id ' . $iId);
         $db =& DBUtil::getDB();
         $sQuery = "DELETE FROM " . $sTable . " WHERE id = ?";
         $aParams = array($iId);
