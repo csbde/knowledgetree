@@ -74,3 +74,7 @@ INSERT INTO help VALUES (72,'listNews','listDashboardNewsHelp.html');
 INSERT INTO help VALUES (73,'editNews','editDashboardNewsHelp.html');
 INSERT INTO help VALUES (74,'previewNews','previewDashboardNewsHelp.html');
 INSERT INTO help VALUES (75,'addNews','addDashboardNewsHelp.html');
+INSERT INTO help VALUES (76,'modifyDocumentArchiveSettings','modifyDocumentArchiveSettingsHelp.html');
+INSERT INTO help VALUES (77,'addDocumentArchiveSettings','addDocumentArchiveSettingsHelp.html');
+ 
+ 
