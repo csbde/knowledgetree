@@ -742,8 +742,8 @@ class Document {
 		//one by ordering by precedence
 		$sql->query("SELECT FURL.id AS id, GFAT.precedence " .
 					"FROM $default->owl_groups_folders_approval_table AS GFAT INNER JOIN $default->owl_folders_user_roles_table AS FURL ON GFAT.id = FURL.group_folder_approval_id " .
-					"WHERE document_id = $iDocumentID AND user_id = " . $_SESSION["userID"] . " " . 
-					"ORDER BY precedence ASC");		
+					"WHERE document_id = $iDocumentID AND user_id = " . $_SESSION["userID"] . " AND done=0 " . 
+					"ORDER BY precedence ASC");
 		if ($sql->next_record()) {
 			//set it as done
 			$oFolderUserRole = FolderUserRole::get($sql->f("id"));
@@ -752,14 +752,14 @@ class Document {
 			$oFolderUserRole->setDateTime(getCurrentDateTime());
 			$oFolderUserRole->update();
 			//get it's sequence number
-			$iCurrentSequenceNumber =  $sql->f("precedence");			
+			$iCurrentSequenceNumber =  $sql->f("precedence");
 			$sql->query("SELECT MIN(precedence) AS precedence " . 
 						"FROM $default->owl_groups_folders_approval_table AS GFAT INNER JOIN $default->owl_folders_user_roles_table AS FURL ON GFAT.id = FURL.group_folder_approval_id " . 
 						"WHERE document_id = $iDocumentID AND done = 0");			
 			if ($sql->next_record()) {
 				if ($sql->f("precedence") != $iCurrentSequenceNumber) {
 					//if there are no concurrent steps outstanding
-					$iNextSequenceNumber = $sql->f("precedence");					
+					$iNextSequenceNumber = $sql->f("precedence");
 					$sql->query("SELECT FURL.id " .
 								"FROM $default->owl_groups_folders_approval_table AS GFAT INNER JOIN $default->owl_folders_user_roles_table AS FURL ON GFAT.id = FURL.group_folder_approval_id " . 
 								"WHERE document_id = $iDocumentID AND precedence = $iNextSequenceNumber");
