@@ -45,7 +45,7 @@ function getDocumentEmailPage($oDocument,$oUserArray) {
 		}
 	}	
 	$sToRender .= "</select></td></tr>\n";	
-	$sToRender .= "<tr><td>Email address:</td><td><input type=\"text\" name=\"fToEmail\" style=\"width:270\"/></td><td><img src=\"$default->graphicsUrl/widgets/clear.gif\" onclick=\"document.getElementsByName('fToEmail')[0].value='';document.getElementsByName('UserSelect')[0].selectedIndex=0\" onmouseover=\"this.style.cursor='hand'\"></td></tr>\n";	
+	$sToRender .= "<tr><td>Select Recipient:</td><td><input type=\"text\" name=\"fToEmail\" style=\"width:270\"/></td><td><img src=\"$default->graphicsUrl/widgets/clear.gif\" onclick=\"document.getElementsByName('fToEmail')[0].value='';document.getElementsByName('UserSelect')[0].selectedIndex=0\" onmouseover=\"this.style.cursor='hand'\"></td></tr>\n";	
 	$sToRender .= "<tr><td></td><td>(separate multiple addresses with a semicolon)</td></tr>";
 	$sToRender .= "<tr><td>&nbsp</td><td>&nbsp</td></tr>\n";
 	$sToRender .= "<tr><td><table><tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/email.gif\" border=\"0\"/></td><td><a href=\"$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $oDocument->getID() . "\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"/></a></td></tr></table></td>\n";
