@@ -12,7 +12,12 @@ require_once("$default->owl_fs_root/lib/class.AuthLdap.php");
  * @author Mukhtar Dharsey
  * @package dmslib 
  */
-class UserManager {
+
+//common admin functions that dont really form part of class
+require ("$default->owl_fs_root/lib/administration/adminLib.inc");
+ 
+class UserManager
+ {
 
     /**
      * Handle to the ldap util class
@@ -29,7 +34,8 @@ class UserManager {
      * @return  array
      *          returns an array containing the users found
      */
-    function listLdapUsers($userNameSearch) {
+    function listLdapUsers($userNameSearch) 
+    {
         global $default;
 
         // user attributes to search for
@@ -40,19 +46,25 @@ class UserManager {
         $ldap->server = $server;       
         $ldap->dn = $default->ldapRootDn;
         
-        if ( $ldap->connect()) {
+        if ( $ldap->connect())
+         {
             // search for the users
             // append and prepend wildcards
             $userArray = $ldap->getUsers("*" . $userNameSearch . "*", $attributes);
-            if ($userArray) {
+            if ($userArray)
+             {
                 // return the array
                 return $userArray;                
-            } else {
+            } 
+            else 
+            {
                 // the search failed, bail
                 return false;
             }
-        } else {
-            $_SESSION["errorMessage"] = "LDAP error: (" . $ldap->ldapErrorCode ") " . $ldap->ldapErrorText;
+          }
+         else 
+        {
+           // $_SESSION["errorMessage"] = "LDAP error: (" . $ldap->ldapErrorCode ") " . $ldap->ldapErrorText;
             return false;
         }
     }
@@ -165,7 +177,8 @@ class UserManager {
      * @return boolean
      *    True if the deletion was successful, else false if not or nonexistant.
      */
-	function removeUser($userID) {
+	function removeUser($userID)
+	 {
 		global $default;
 		// create a connection
         	$sql = new Owl_DB;
@@ -266,7 +279,8 @@ class UserManager {
      * @return array
      *     An array of usernames
      */
-	function listUsers(){
+	function listUsers()
+	{
 		
 		global $default;
 		$users = array ();
@@ -359,7 +373,7 @@ class UserManager {
         	$sql = new Owl_DB;
         
         	//do validation that userid exists
-        	$query = "SELECT * FROM $default->owl_user_group_table WHERE user_id = $userID AND group_id = $groupID";
+        	$query = "SELECT * FROM $default->owl_users_groups_table WHERE user_id = $userID AND group_id = $groupID";
         	$result = $sql->query($query);
         	$row = $sql->num_rows($result);
         	        	
@@ -370,7 +384,7 @@ class UserManager {
         	}
         	
                	//add user to the table
-               	$query = "INSERT INTO $default->owl_user_group_table (user_id, group_id) VALUES($userID, $groupID)" ;
+               	$query = "INSERT INTO $default->owl_users_groups_table (user_id, group_id) VALUES($userID, $groupID)" ;
                	$result = $sql->query($query);
                	
         	if(!'result') 
@@ -404,7 +418,7 @@ class UserManager {
         	$sql = new Owl_DB;
         
         	//do validation that userid exists
-        	$query = "SELECT * FROM $default->owl_user_group_table WHERE user_id = $userID AND group_id = $groupID";
+        	$query = "SELECT * FROM $default->owl_users_groups_table WHERE user_id = $userID AND group_id = $groupID";
         	$result = $sql->query($query);
         	$row = $sql->num_rows($result);
         	
@@ -416,7 +430,7 @@ class UserManager {
         	}
         	
                	//if user id exists delete it from the users table
-               	$query = "DELETE FROM $default->owl_user_group_table WHERE user_id = $userID AND group_id = $groupID";
+               	$query = "DELETE FROM $default->owl_users_groups_table WHERE user_id = $userID AND group_id = $groupID";
                	$result = $sql->query($query);
         	
         	if(!'result') 
@@ -447,7 +461,7 @@ class UserManager {
         	$sql = new Owl_DB;
         
         	//do validation that userid exists
-        	$query = "SELECT * FROM $default->owl_user_group_table WHERE user_id = $userID";
+        	$query = "SELECT * FROM $default->owl_users_groups_table WHERE user_id = $userID";
         	$result = $sql->query($query);
         	$row = $sql->num_rows($result);
         	
@@ -459,7 +473,7 @@ class UserManager {
         	}
         	
                	//if user id exists delete it from the users table
-               	$query = "DELETE FROM $default->owl_user_group_table WHERE user_id = $userID";
+               	$query = "DELETE FROM $default->owl_users_groups_table WHERE user_id = $userID";
                	$result = $sql->query($query);
         	
         	if(!'result') 
@@ -475,14 +489,18 @@ class UserManager {
 			
 	 }
 
-    /**
-     * Adds a user to the unit.
+
+    /*
+     * Function getUserID($username)
+     *
+     * gets the id of a user using their username
      *
      * @param    $username
      *   The username for which we want its ID
      * @return Integer
      *   The username's Id
      */
+     
 	function getUserID($username)
 	 {
 	        global $default;
@@ -504,13 +522,99 @@ class UserManager {
 	        if ($rows == 0) 
 	        {
 	            // duplicate username
-	            $default->errorMessage = "UserManagerThe username " . $username . " does not exist<br>";
+	            $default->errorMessage = "UserManager::The username " . $username . " does not exist<br>";
 	            $default->log->debug($default->errorMessage);
 	            return false;
 	        }
 	        else
 	        {
 	        	return $id;
+	        }
+	}
+	
+    /*
+     * Function getGroups($userID)
+     *
+     * Gets the group that the user belongs to
+     *
+     * @param    $userID
+     *   The ID of the user 
+     * @return Array
+     *   array of groupID's and name
+     */
+     function getGroups($userID)
+	 {
+	        global $default;
+		$groups = array();
+	        $sql = new Owl_DB;
+	        
+	             
+	        // check that username exists if it does'nt return false
+	        $query = "SELECT group_id FROM $default->owl_users_groups_table WHERE  user_id = '" . $userID . "'";
+	        $sql->query($query);
+	        $rows = $sql->num_rows($sql);
+	        
+	        // if no entry..user does not belong to any groups
+	        if ($rows == 0) 
+	        {
+	            // duplicate username
+	            $default->errorMessage = "UserManager::The user does not belong to any groups<br>";
+	            $default->log->debug($default->errorMessage);
+	            return false;
+	        }
+	        
+	        $i =0;
+	        
+	        while($sql->next_record())
+	        {
+	        	$groups[$i] = array("id" => $sql->f("group_id"),
+	        			"name" => $this->getGroupName($sql->f("group_id"))
+	        			);
+	        	$i++;
+	        }
+	        
+	        return $groups;
+	}
+	
+    /*
+     * Function getGroupName($groupID)
+     *
+     * gets the id of a user using their username
+     *
+     * @param    $username
+     *   The username for which we want its ID
+     * @return char
+     *   name of group
+     */
+     
+	function getGroupName($groupID)
+	 {
+	        global $default;
+	
+	        $sql = new Owl_DB;
+	        
+	             
+	        // check that username exists if it does'nt return false
+	        $query = "SELECT name FROM $default->owl_groups_table WHERE id = '" . $groupID . "'";
+	        $sql->query($query);
+	        $rows = $sql->num_rows($sql);
+	        // go into record set
+	        $sql->next_record();
+	        
+	        // store the id in a variable
+	        $name = $sql->f("name");
+	        
+	        // if no entry..group name does'nt exist
+	        if ($rows == 0) 
+	        {
+	            // duplicate username
+	            $default->errorMessage = "UserManager::The group does not exist<br>";
+	            $default->log->debug($default->errorMessage);
+	            return false;
+	        }
+	        else
+	        {
+	        	return $name;
 	        }
 	}
     
