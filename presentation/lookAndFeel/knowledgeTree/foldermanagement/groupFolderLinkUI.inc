@@ -8,8 +8,22 @@
  * @package presentation.lookAndFeel.knowledgeTree.foldermanagement
  */
 
+ 
+function renderHeading($sHeading) {
+    global $default;
+    $sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
+    $sColor = $default->siteMap->getSectionColour($sSectionName, "th");
+    $sToRender  = "<table border=\"0\" width=\"600\">\n";
+    $sToRender .= "<tr align=\"left\"><th class=\"sectionHeading\" bgcolor=\"$sColor\">$sHeading</th></tr>\n";
+    $sToRender .= "<tr/>\n";
+    $sToRender .= "<tr/>\n";
+    $sToRender .= "</table>\n";
+    return $sToRender;
+}
+
 function getDeletePage($oGroupFolderLink) {
 	global $default;
+    $sToRender  = renderHeading("Delete Folder Access");
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>Group</td><td>" . Group::getGroupName($oGroupFolderLink->getGroupID()) . "</td>\n";
@@ -33,6 +47,7 @@ function getDeletePage($oGroupFolderLink) {
 
 function getEditPage($oGroupFolderLink) {
 	global $default;
+    $sToRender  = renderHeading("Edit Folder Access");
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>Group</td><td>" . getGroupDropDown($oGroupFolderLink->getGroupID()) . "</td>\n";
@@ -57,6 +72,7 @@ function getEditPage($oGroupFolderLink) {
 
 function getAddPage($iFolderID) {
 	global $default;
+    $sToRender  = renderHeading("Add Folder Access");
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>Group</td><td>" . getGroupDropDown() . "</td>\n";
