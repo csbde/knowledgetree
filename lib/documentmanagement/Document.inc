@@ -929,7 +929,7 @@ class Document {
 	*/
 	function documentIsPendingWebPublishing($iDocumentID) {
 		global $default;
-		$sQuery = "SELECT * FROM $default->owl_web_documents_table WHERE document_id = $iDocumentID AND status_id = 1";
+		$sQuery = "SELECT * FROM $default->owl_web_documents_table WHERE document_id = $iDocumentID AND status_id = 3";
 		$sql = $default->db;
 		$sql->query($sQuery);
 		if ($sql->next_record()) {
