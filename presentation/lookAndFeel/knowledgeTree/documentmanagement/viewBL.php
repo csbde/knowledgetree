@@ -74,9 +74,17 @@ if (checkSession()) {
             PhysicalDocumentManager::inlineViewPhysicalDocument($fDocumentID);			
 		} else if (isset($fForDownload) && Permission::userHasDocumentReadPermission($fDocumentID)) {
             //if the user has document read permission, perform the download
-            $oDocumentTransaction = & new DocumentTransaction($fDocumentID, "Document downloaded", DOWNLOAD);
-            $oDocumentTransaction->create();
-            PhysicalDocumentManager::downloadPhysicalDocument($fDocumentID);
+            if (isset($fVersion)) {
+                // we're downloading an old version of the document
+                $oDocumentTransaction = & new DocumentTransaction($fDocumentID, "Document version $fVersion downloaded", DOWNLOAD);
+                $oDocumentTransaction->create();
+                PhysicalDocumentManager::downloadVersionedPhysicalDocument($fDocumentID, $fVersion);
+            } else {
+                // download the current version
+                $oDocumentTransaction = & new DocumentTransaction($fDocumentID, "Document downloaded", DOWNLOAD);
+                $oDocumentTransaction->create();
+                PhysicalDocumentManager::downloadPhysicalDocument($fDocumentID);
+            }
         } else if (isset($fBeginCollaboration) && Permission::userHasDocumentWritePermission($fDocumentID)) {
             require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
             //begin the collaboration process
