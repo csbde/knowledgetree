@@ -38,8 +38,8 @@ class LDAPAuthenticator extends Authenticator {
     function LDAPAuthenticator($sLdapServer = "", $sLdapDN = "") {
         global $default;
 
-        $this->sLdapServer = strlen($sLdapServer) > 0 ? $sLdapServer : $default->system->get("ldapServer");
-        $this->sBaseDN = strlen($sLdapDN) > 0 ? $sLdapDN : $default->system->get("ldapRootDn");
+        $this->sLdapServer = strlen($sLdapServer) > 0 ? $sLdapServer : $default->ldapServer;
+        $this->sBaseDN = strlen($sLdapDN) > 0 ? $sLdapDN : $default->ldapRootDn;
 
         // initialise and setup ldap class
         $this->oLdap = new AuthLdap();
