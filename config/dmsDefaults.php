@@ -145,7 +145,7 @@ $default->owl_timeout = 1200;
 $default->debug = True;
 
 // whether ssl is enabled or not
-$default->sslEnabled = false;
+$default->sslEnabled = true;
 
 // define site mappings
 require_once("$default->owl_fs_root/lib/session/SiteMap.inc");
