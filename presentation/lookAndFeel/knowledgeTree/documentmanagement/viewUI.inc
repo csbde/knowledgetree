@@ -358,7 +358,10 @@ function displayActionButtons($oDocument, $bEdit) {
     }
     $sToRender .= "<tr><td align=\"left\"><a href=\"" . generateControllerLink("viewHistory", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/docactions/history.gif\" border=\"0\" /></a></td></tr>\n";
     if ($bEdit) {
-        $sToRender .= "<tr><td align=\"left\"><a href=\"" . generateControllerLink("moveDocument", "fFolderID=" . $oDocument->getFolderID() . "&fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/docactions/move.gif\" border=\"0\" /></a></td></tr>\n";
+    	// documents in collaboration and checked out documents can't be moved
+		if (!$oDocument->getIsCheckedOut() && (!DocumentCollaboration::documentCollaborationStarted($oDocument->getID()))) {
+        	$sToRender .= "<tr><td align=\"left\"><a href=\"" . generateControllerLink("moveDocument", "fFolderID=" . $oDocument->getFolderID() . "&fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/docactions/move.gif\" border=\"0\" /></a></td></tr>\n";
+		}
     }
     
     // display the unsubscribe button if the user is subscribed to the document
@@ -370,7 +373,7 @@ function displayActionButtons($oDocument, $bEdit) {
     }   
     $sToRender .= "<tr><td align=\"left\"><a href=\"" . generateControllerLink("viewDiscussion", "fDocumentID=" . $oDocument->getID() . "&fForDiscussion=1") . "\"><img src=\"$default->graphicsUrl/widgets/docactions/discussion.gif\" border=\"0\" /></a></td></tr>\n";
     // only display the archive button for available documents
-    if (!$oDocument->getIsCheckedOut() || !$oDocument->hasCollaboration() || (!DocumentCollaboration::documentCollaborationStarted($oDocument->getID()))) {
+    if (!$oDocument->getIsCheckedOut() && !$oDocument->hasCollaboration() && (!DocumentCollaboration::documentCollaborationStarted($oDocument->getID()))) {
     	$sToRender .= "<tr><td align=\"left\"><a href=\"" . generateControllerLink("archiveDocument", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/docactions/archive.gif\" border=\"0\" /></a></td></tr>\n";
     }
     $sToRender .= "<td align=\"left\"><a href=\"" . generateControllerLink("createDependantDocument", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/docactions/dependentdoc.gif\" border=\"0\" /></a></td>\n";
