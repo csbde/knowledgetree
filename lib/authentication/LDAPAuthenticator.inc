@@ -59,7 +59,7 @@ class LDAPAuthenticator extends Authenticator {
         if ($this->oLdap->connect()) {
             // lookup dn from username - must exist in db
             $sBindDn = lookupField($default->owl_users_table, "ldap_dn", "username", $sUserName);
-            if ($sBindDn) {
+            if ($sBindDn && $sPassword) {
                 if ( $this->oLdap->authBind($sBindDn, $sPassword) ) {
                     return true;
                 } else {
