@@ -8,13 +8,70 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-05-07 12:53+0200\n"
+"POT-Creation-Date: 2004-05-14 12:44+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: presentation/login.php:71
+msgid "Please enter your details below to login"
+msgstr ""
+
+#: presentation/login.php:74
+msgid "Username"
+msgstr ""
+
+#: presentation/login.php:76
+msgid "Password"
+msgstr ""
+
+#: presentation/login.php:82
+msgid "Version"
+msgstr ""
+
+#: presentation/login.php:141
+msgid "Account has been DISABLED, contact the System Adminstrator"
+msgstr ""
+
+#: presentation/login.php:145
+msgid "Maximum sessions for user reached.<br>Contact the System Administrator"
+msgstr ""
+
+#: presentation/login.php:149
+msgid "Not unit user- contact an Administrator"
+msgstr ""
+
+#: presentation/login.php:152
+msgid "Login failure"
+msgstr ""
+
+#: lib/browse/Browser.inc:62
+msgid "Title"
+msgstr ""
+
+#: lib/browse/Browser.inc:63
+msgid "Description"
+msgstr ""
+
+#: lib/browse/Browser.inc:64
+msgid "Creator"
+msgstr ""
+
+#: lib/browse/Browser.inc:68
+msgid "Date Created"
+msgstr ""
+
+#: lib/browse/Browser.inc:73
+#: presentation/lookAndFeel/knowledgeTree/documentmanagement/browseUI.inc:47
+msgid "Document Type"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/dashboardUI.inc:41
+msgid "Pending Web Documents"
+msgstr ""
 
 #: presentation/lookAndFeel/knowledgeTree/dashboardUI.inc:65
 msgid "Archived Document Restoration Requests"
@@ -31,6 +88,14 @@ msgstr "Uitgecheckde Dokumente"
 #: presentation/lookAndFeel/knowledgeTree/dashboardUI.inc:156
 msgid "Subscription Alerts"
 msgstr "Subskripsie Alerte"
+
+#: presentation/lookAndFeel/knowledgeTree/dashboardUI.inc:174
+msgid "Dependant Documents"
+msgstr ""
+
+#: presentation/lookAndFeel/knowledgeTree/dashboardUI.inc:211
+msgid "Quick Links"
+msgstr ""
 
 #: presentation/lookAndFeel/knowledgeTree/dashboardUI.inc:281
 #, php-format
