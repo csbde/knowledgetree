@@ -55,7 +55,6 @@ function getPage() {
 	// then loop a database entry to add everything...
 	// and then when submit...run a set thingy..
 		
-			
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr><b>Current System Settings: </b></tr>\n";
 	$sToRender .= "<tr>\n";
@@ -90,6 +89,26 @@ function getPage() {
 	return $sToRender;
 }
 
+// if edition is successful print otu success page
+function getPageSuccess() {	
+	global $default;
+			
+	$sToRender .= "<br></br>\n";
+	$sToRender .= "<b>Success!</b>\n";
+	$sToRender .= "<table>\n";
+	$sToRender .= "<br></br>\n";
+	$sToRender .= "<tr></tr>\n";
+	$sToRender .= "<tr><td>The Settings successfully modified</td></tr>\n";
+	$sToRender .= "<tr></tr>\n";
+	$sToRender .= "<tr></tr>\n";
+	$sToRender .= "<tr>\n";
+	$sToRender .= "<td></td><td align = right><a href=\"$default_owl_root_url/control.php?action=systemAdministration\"><img src =\"$default->owl_graphics_url/widgets/back.gif\" border = \"0\" /></a></td>\n";
+	$sToRender .= "</tr>\n";
+	$sToRender .= "</table>\n";
+	
+	
+	return $sToRender;
+}
 
 	
 

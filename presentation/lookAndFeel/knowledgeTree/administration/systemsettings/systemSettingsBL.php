@@ -65,22 +65,16 @@ if (checkSession()) {
 			$oSys->set($aNames[$i], $aValues[$i]);
 			//echo "<br>Name: " . $aNames[$i];
 			//echo "<br>Value: " . $aValues[$i];
-			
 		}
-		
-		
-		$oPatternCustom->setHtml(getPage());	
+			
+		$oPatternCustom->setHtml(getPageSuccess());	
 		
 	}else{
 		
 		$oPatternCustom->setHtml(getPage());
-		
 		$main->setFormAction($_SERVER["PHP_SELF"]. "?fForStore=1");
 	}
 		
-	
-	
-	
 	
 	$main->setCentralPayload($oPatternCustom);				
 	$main->render();		
