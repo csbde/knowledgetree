@@ -35,7 +35,7 @@ if ($loginAction == "loginForm") {
     <form action=\"login.php\" method=\"post\">
     <tr><td>Please enter your details below to login</td></tr>
     <tr><td></td></tr>
-    <tr><td><font color=\"red\">$errorMessage</font><tr><td>
+    <tr><td><font color=\"red\">" . urldecode($errorMessage) . "</font><tr><td>
     \t<tr><td>$lang_username:</td></tr>
     \t<tr><td><input type=\"text\" name=\"fUserName\" size=\"35\"></td></tr>
     \t<tr><td>$lang_password:</td></tr>
@@ -62,7 +62,7 @@ elseif ($loginAction == "login") {
         switch ($userDetails["status"]) {
             // bad credentials
         case 0:
-                $url = $url . "&errorMessage=$lang_loginfail";
+                $url = $url . "&errorMessage=" . urlencode($lang_loginfail);
             break;
             // successfully authenticated
         case 1:
