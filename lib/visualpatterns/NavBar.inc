@@ -102,10 +102,12 @@ class NavBar {
             $this->nwColourBar = "$default->graphicsUrl/asearch/def.gif";
         }
 
-
+	
         if(substr($section, -14) == "Administration") {
+        		
             $this->admin = "$default->graphicsUrl/admin/over.gif";
             $this->nwColourBar = "$default->graphicsUrl/admin/def.gif";
+            
         }
 
         if($section == "Preferences") {
@@ -234,6 +236,7 @@ class NavBar {
 
         //render the object
         return $toRender->render() . $this->getSearchValidationJavaScript();
+
     }
 	
 	function getSearchValidationJavaScript() {
@@ -252,4 +255,5 @@ class NavBar {
 	
 	}
 }
+        //render the object
 ?>
