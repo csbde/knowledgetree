@@ -4,14 +4,30 @@
  *
  * Presentation logic used by advancedSearchBL.php
  *
- * @author Rob Cherry, Jam Warehouse South Africa (Pty) Ltd
- * @date 26 February 2003 
- * @package presentation.lookAndFeel.knowledgeTree.search
+ * Copyright (c) 2003 Jam Warehouse http://www.jamwarehouse.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ * @version $Revision$
+ * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
+ * @package search
  */
 
 function getMetaData($aMetaTagIDs) {
 	global $default;	
-	$sQuery = "SELECT name, id FROM $default->owl_fields_table ORDER BY name ASC";
+	$sQuery = "SELECT name, id FROM $default->document_fields_table ORDER BY name ASC";
 	
 	$sql = $default->db;
 	$sql->query($sQuery);
@@ -83,11 +99,11 @@ function getSearchResults($sMetaTagIDs, $sSQLSearchString, $iStartIndex, $sStatu
 	global $default;
 					
 	$sQuery = "SELECT '" . "$default->graphicsUrl/widgets/dfolder.gif" . "' AS folder_image_url, F.id folder_id, D.id document_id, D.name AS document_name, COUNT(D.id) AS doc_count " .
-			"FROM $default->owl_documents_table AS D INNER JOIN $default->owl_folders_table AS F ON D.folder_id = F.id " .
-			"INNER JOIN $default->owl_document_fields_table AS DFL ON DFL.document_id = D.id " .
-			"INNER JOIN $default->owl_fields_table AS DF ON DF.id = DFL.document_field_id " . 
+			"FROM $default->documents_table AS D INNER JOIN $default->folders_table AS F ON D.folder_id = F.id " .
+			"INNER JOIN $default->document_fields_link_table AS DFL ON DFL.document_id = D.id " .
+			"INNER JOIN $default->document_fields_table AS DF ON DF.id = DFL.document_field_id " . 
 			"INNER JOIN $default->search_permissions_table AS SDUL ON SDUL.document_id = D.ID " .
-			"INNER JOIN $default->owl_status_table AS SL on D.status_id=SL.id " .						
+			"INNER JOIN $default->status_table AS SL on D.status_id=SL.id " .						
 			"WHERE DF.ID IN ($sMetaTagIDs) " .
 			"AND (" . $sSQLSearchString . ") " .
 			"AND SDUL.user_id = " . $_SESSION["userID"] . " " .

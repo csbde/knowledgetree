@@ -1,12 +1,29 @@
 <?php
 /**
-* Presentation data for collaborationBL.php
-*
-* @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
-* @date 28 January 2003
-* @package presentation.lookAndFeel.knowledgeTree.documentmanagement
-*
-*/
+ * $Id$
+ *
+ * Presentation data for collaborationBL.php.
+ *
+ * Copyright (c) 2003 Jam Warehouse http://www.jamwarehouse.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ * @version $Revision$
+ * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
+ * @package foldermanagement
+ */
 
 function getFolderPath($iFolderID) {
 	global $default;
@@ -18,7 +35,7 @@ function getFolderPath($iFolderID) {
 
 function getGroupDropDown($iFolderCollaborationID, $iFolderID, $iGroupID) {
 	global $default;
-	$oPatternListBox = & new PatternListBox($default->owl_groups_table, "Name", "ID", "fGroupID");
+	$oPatternListBox = & new PatternListBox($default->groups_table, "Name", "ID", "fGroupID");
 	$oPatternListBox->setPostBackOnChange(true);
 	$oPatternListBox->setOnChangeAction("setActionAndSubmit('" . $_SERVER["userID"] . "?fFolderID=$iFolderID&fFolderCollaborationID=$iFolderCollaborationID');");
 	if (isset($iGroupID)) {
@@ -33,8 +50,8 @@ function getUserDropDown($iGroupID, $iUserID) {
 	if (!(isset($iGroupID))) {
 		$iGroupID = -1;
 	}
-	$oPatternListBox = & new PatternListBox($default->owl_users_table, "Name", "ID", "fUserID", "UGL.group_id = $iGroupID");
-	$oPatternListBox->setFromClause("INNER JOIN $default->owl_users_groups_table AS UGL ON UGL.user_id = ST.id");	
+	$oPatternListBox = & new PatternListBox($default->users_table, "Name", "ID", "fUserID", "UGL.group_id = $iGroupID");
+	$oPatternListBox->setFromClause("INNER JOIN $default->users_groups_table AS UGL ON UGL.user_id = ST.id");	
 	if (isset($iUserID)) {
 		$oPatternListBox->setSelectedValue($iUserID);
 	}
@@ -76,7 +93,7 @@ function getEditPage($iFolderCollaborationID, $iFolderID, $iGroupID, $iUserID, $
 
 function getRoleDropDown($iRoleID) {
 	global $default;
-	$oPatternListBox = & new PatternListBox("$default->owl_roles_table", "name", "id", "fRoleID");		
+	$oPatternListBox = & new PatternListBox("$default->roles_table", "name", "id", "fRoleID");		
 	$oPatternListBox->setEmptyErrorMessage("There are no users in this group");		
 	if (isset($iRoleID)) {
 		$oPatternListBox->setSelectedValue($iRoleID);

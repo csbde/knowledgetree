@@ -2,11 +2,27 @@
 /**
  * $Id$
  *
- * Presentation functionality used to searchDocumentBL.php
+ * Presentation functionality used to searchDocumentBL.php.
+ *
+ * Copyright (c) 2003 Jam Warehouse http://www.jamwarehouse.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
  * 
- * @author Rob Cherry, Jam Warehouse South Africa (Pty) Ltd
- * @date 20 February 2003
- * @package presentation.lookAndFeel.documentmanagement
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ * @version $Revision$
+ * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
+ * @package search
  */
 
 function getHeading() {
@@ -21,11 +37,11 @@ function getSearchResultsByCategory($iFolderID, $sKeywords, $iStartIndex, $sCate
 	global $default;
 
 	$sQuery = "SELECT DISTINCT '" . "$default->graphicsUrl/widgets/dfolder.gif" . "' AS folder_image_url, F.id AS folder_id, D.id AS document_id, D.name AS document_name, ROUND(MATCH(DT.document_text) AGAINST ('" . $sKeywords . "'),3) AS score " . 
-				"FROM $default->owl_documents_table AS D INNER JOIN $default->owl_document_text_table AS DT ON D.id = DT.document_id " .
-				"INNER JOIN $default->owl_document_fields_table AS DFL ON DT.document_id=DFL.document_id " .								
-				"INNER JOIN $default->owl_fields_table AS DF ON DF.id = DFL.document_field_id " .
-				"INNER JOIN $default->owl_status_table AS SL ON D.status_id = SL.id " .
-				"INNER JOIN $default->owl_folders_table AS F on F.ID = D.folder_id " .
+				"FROM $default->documents_table AS D INNER JOIN $default->document_text_table AS DT ON D.id = DT.document_id " .
+				"INNER JOIN $default->document_fields_link_table AS DFL ON DT.document_id=DFL.document_id " .								
+				"INNER JOIN $default->document_fields_table AS DF ON DF.id = DFL.document_field_id " .
+				"INNER JOIN $default->status_table AS SL ON D.status_id = SL.id " .
+				"INNER JOIN $default->folders_table AS F on F.ID = D.folder_id " .
 				"INNER JOIN $default->search_permissions_table AS SDUL ON SDUL.document_id = D.id " .
 				"WHERE MATCH(DT.document_text) AGAINST ('" . $sKeywords . "') " .
 				"AND SDUL.user_id = " . $_SESSION["userID"] . " " .
@@ -56,9 +72,9 @@ function getSearchResultsByCategory($iFolderID, $sKeywords, $iStartIndex, $sCate
 function getSearchResultsByDocumentType($iFolderID, $sKeywords, $iStartIndex, $iDocTypeID) {
 	global $default;
 	$sQuery = "SELECT DISTINCT '" . "$default->graphicsUrl/widgets/dfolder.gif" . "' AS folder_image_url, F.id AS folder_id, D.id AS document_id, D.name AS document_name, ROUND(MATCH(DT.document_text) AGAINST ('" . $sKeywords . "'),3) AS score " . 
-				"FROM $default->owl_documents_table AS D INNER JOIN $default->owl_document_text_table AS DT ON D.id = DT.document_id " .								 
-				"INNER JOIN $default->owl_status_table AS SL ON D.status_id = SL.id " .
-				"INNER JOIN $default->owl_folders_table AS F on F.ID = D.folder_id " .
+				"FROM $default->documents_table AS D INNER JOIN $default->document_text_table AS DT ON D.id = DT.document_id " .								 
+				"INNER JOIN $default->status_table AS SL ON D.status_id = SL.id " .
+				"INNER JOIN $default->folders_table AS F on F.ID = D.folder_id " .
 				"INNER JOIN $default->search_permissions_table AS SDUL ON SDUL.document_id = D.id " .
 				"WHERE MATCH(DT.document_text) AGAINST ('" . $sKeywords . "') " .
 				"AND SDUL.user_id = " . $_SESSION["userID"] . " ";
@@ -89,9 +105,9 @@ function getSearchResultsByDocumentType($iFolderID, $sKeywords, $iStartIndex, $i
 function getSeachResultsByFolder($iFolderID, $iStartIndex, $sKeywords) {
 	global $default;
 	$sQuery = "SELECT DISTINCT '" . "$default->graphicsUrl/widgets/dfolder.gif" . "' AS folder_image_url, F.id AS folder_id, D.id AS document_id, D.name AS document_name, ROUND(MATCH(DT.document_text) AGAINST ('" . $sKeywords . "'),3) AS score " . 
-				"FROM $default->owl_documents_table AS D INNER JOIN $default->owl_document_text_table AS DT ON D.id = DT.document_id " .				
-				"INNER JOIN $default->owl_status_table AS SL ON D.status_id = SL.id " .
-				"INNER JOIN $default->owl_folders_table AS F on F.ID = D.folder_id " .
+				"FROM $default->documents_table AS D INNER JOIN $default->document_text_table AS DT ON D.id = DT.document_id " .				
+				"INNER JOIN $default->status_table AS SL ON D.status_id = SL.id " .
+				"INNER JOIN $default->folders_table AS F on F.ID = D.folder_id " .
 				"INNER JOIN $default->search_permissions_table AS SDUL ON SDUL.document_id = D.id " .
 				"WHERE MATCH(DT.document_text) AGAINST ('" . $sKeywords . "') " .
 				"AND SDUL.user_id = " . $_SESSION["userID"] . " " .
