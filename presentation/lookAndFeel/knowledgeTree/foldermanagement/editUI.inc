@@ -3,13 +3,27 @@ require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
 /**
  * $Id$
  *
- * Presentation information used for folder editing.  Used by editBL.php
+ * Presentation information used for folder editing.  Used by editBL.php.
  *
- * Licensed under the GNU GPL. For full terms see the file DOCS/COPYING.
+ * Copyright (c) 2003 Jam Warehouse http://www.jamwarehouse.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
  * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ * @version $Revision$
  * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
- * @date 2 February 2003
- * @package presentation.lookAndFeel.knowledgeTree.foldermanagement
+ * @package foldermanagement
  */
 
 function getFolderPath($iFolderID) {
@@ -25,7 +39,7 @@ function getFolderData($iFolderID, $sDivName, $sStatusMessage = "") {
 	$sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
 	$sTDBGColour = $default->siteMap->getSectionColour($sSectionName, "td");
 	$sQuery = "SELECT F.id, F.name, F.description, F.is_public " .
-			"FROM $default->owl_folders_table AS F " .
+			"FROM $default->folders_table AS F " .
 			"WHERE F.id = $iFolderID";
 			
 			
@@ -57,9 +71,9 @@ function getFolderRouting($iFolderID, $sDivName, $bCollaboration) {
 	//had to use coalesce and left outer join for user_id because this column was a new addition
 	//and the user_ids for existing documents before this change will be null
 	$sQuery = "SELECT GFAL.id as id, GFAL.folder_id AS folder_id, G.name AS group_name, G.id AS group_id, GFAL.role_id AS role_id, R.name AS role_name, GFAL.precedence AS precedence, COALESCE(U.id, -1) AS user_id, COALESCE(U.name, 'Not Assigned') AS user_name, 'Edit' as edit, 'Delete' as del, 'Dependant docs' as depn " .
-				"FROM $default->owl_groups_folders_approval_table AS GFAL INNER JOIN roles AS R ON GFAL.role_id = R.id " .
-				"INNER JOIN $default->owl_groups_table AS G ON G.id = GFAL.group_id " .
-				"LEFT OUTER JOIN $default->owl_users_table AS U ON U.id = GFAL.user_id " .				 
+				"FROM $default->groups_folders_approval_table AS GFAL INNER JOIN roles AS R ON GFAL.role_id = R.id " .
+				"INNER JOIN $default->groups_table AS G ON G.id = GFAL.group_id " .
+				"LEFT OUTER JOIN $default->users_table AS U ON U.id = GFAL.user_id " .				 
 				"WHERE GFAL.folder_id = $iFolderID " .
 				"ORDER BY GFAL.precedence, role_name ASC";
 	
@@ -90,7 +104,7 @@ function getFolderRouting($iFolderID, $sDivName, $bCollaboration) {
 function getFolderDocTypes($iFolderID, $sDivName) {
 	global $default;
 	$sQuery = "SELECT FDL.id, FDL.folder_id, FDL.document_type_id, DTL.name, 'Remove' AS del " .
-				"FROM $default->owl_folder_doctypes_table AS FDL INNER JOIN $default->owl_document_types_table AS DTL ON FDL.document_type_id = DTL.id " .
+				"FROM $default->folder_doctypes_table AS FDL INNER JOIN $default->document_types_table AS DTL ON FDL.document_type_id = DTL.id " .
 				"WHERE FDL.folder_id = $iFolderID " .
 				"ORDER BY DTL.name ASC";
 	
@@ -115,8 +129,8 @@ function getFolderDocTypes($iFolderID, $sDivName) {
 function getFolderGroupAccess($iFolderID, $sDivName) {
 	global $default;
 	$sQuery = "SELECT GFL.id as id, GFL.group_id AS group_id, GFL.folder_id AS folder_id, GFL.can_read AS can_read, GFL.can_write AS can_write, GL.name AS group_name, 'Edit' as edit, 'Delete' as del " .	
-			  "FROM $default->owl_groups_folders_table AS GFL " .
-              "INNER JOIN $default->owl_groups_table AS GL ON GFL.group_id = GL.id " .
+			  "FROM $default->groups_folders_table AS GFL " .
+              "INNER JOIN $default->groups_table AS GL ON GFL.group_id = GL.id " .
 			  "WHERE GFL.folder_id = $iFolderID";
 	
 	$aColumns = array("group_name", "can_read", "can_write", "edit", "del");

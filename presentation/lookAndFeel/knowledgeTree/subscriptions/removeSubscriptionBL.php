@@ -6,29 +6,36 @@ require_once("$default->fileSystemRoot/lib/subscriptions/SubscriptionManager.inc
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
 require_once("subscriptionUI.inc");
 require_once("$default->fileSystemRoot/presentation/Html.inc");
-
 /**
  * $Id$
- *  
+ *
  * Removes a document or folder subscription for a user.
  *
- * Licensed under the GNU GPL. For full terms see the file DOCS/COPYING.
- *
- * @version $Revision$
- * @author Michael Joseph <michael@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
- * @package presentation.lookAndFeel.knowledgeTree.subscriptions
- */
-
-/*
  * Querystring variables
  * ---------------------
  * fFolderID - the folder to subscribe the current user to (optional)
- * fDocumentID - the document to subscribe the current user to (optional)
+ * fDocumentID - the document to subscribe the current user to (optional) 
+ *
+ * Copyright (c) 2003 Jam Warehouse http://www.jamwarehouse.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ * @version $Revision$
+ * @author Michael Joseph <michael@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
+ * @package subscriptions
  */
-
-// -------------------------------
-// page start
-// -------------------------------
 
 // only if we have a valid session
 if (checkSession()) {

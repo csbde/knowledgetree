@@ -1,25 +1,30 @@
 <?php
 /**
-* Presentation information for deletion of folder collaboration entry. 
-* Will be used by deleteFolderCollaborationBL.php
-*
-* @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
-* @date 6 February 2003
-* @package presentation.lookAndFeel.knowledgeTree.
-*
-*/
-
-/*function renderHeading($sHeading) {
-    global $default;
-    $sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
-    $sColor = $default->siteMap->getSectionColour($sSectionName, "th");
-    $sToRender  = "<table border=\"0\" width=\"600\">\n";
-    $sToRender .= "<tr align=\"left\"><th class=\"sectionHeading\" bgcolor=\"$sColor\">$sHeading</th></tr>\n";
-    $sToRender .= "<tr/>\n";
-    $sToRender .= "<tr/>\n";
-    $sToRender .= "</table>\n";
-    return $sToRender;
-}*/
+ * $Id$
+ *
+ * Presentation information for deletion of folder collaboration entry. 
+ * Will be used by deleteFolderCollaborationBL.php.
+ *
+ * Copyright (c) 2003 Jam Warehouse http://www.jamwarehouse.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ * @version $Revision$
+ * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
+ * @package foldermanagement
+ */
 
 function getFolderPath($iFolderID) {
 	global $default;

@@ -1,26 +1,30 @@
 <?php
 /**
-* Presentation information for adding a new step to the folder collaboration flow
-* Used by addFolderCollaborationBL.php
-*
-* @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
-* @date 5 February 2003
-* @package presentation.lookAndFeel.knowledgeTree.
-*
-*/
-
-/*function renderHeading($sHeading) {
-    global $default;
-    $sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
-    $sColor = $default->siteMap->getSectionColour($sSectionName, "th");
-    $sToRender  = "<table border=\"0\" width=\"600\">\n";
-    $sToRender .= "<tr align=\"left\"><th class=\"sectionHeading\" bgcolor=\"$sColor\">$sHeading</th></tr>\n";
-    $sToRender .= "<tr/>\n";
-    $sToRender .= "<tr/>\n";
-    $sToRender .= "</table>\n";
-    return $sToRender;
-}*/
-
+ * $Id$
+ *
+ * Presentation information for adding a new step to the folder collaboration flow
+ * Used by addFolderCollaborationBL.ph
+ *
+ * Copyright (c) 2003 Jam Warehouse http://www.jamwarehouse.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ * @version $Revision$
+ * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
+ * @package foldermanagement
+ */
 
 function getPage($iFolderID, $iGroupID, $iRoleID, $iSequenceNumber) {
 	global $default;
@@ -65,7 +69,7 @@ function getFolderPath($iFolderID) {
 
 function getGroupDropDown($iGroupID, $iFolderID) {
 	global $default;
-	$oPatternListBox = & new PatternListBox("$default->owl_groups_table", "name", "id", "fGroupID");
+	$oPatternListBox = & new PatternListBox("$default->groups_table", "name", "id", "fGroupID");
 	$oPatternListBox->setPostBackOnChange(true);
 	$oPatternListBox->setOnChangeAction("setActionAndSubmit('" . $_SERVER["PHP_SELF"] . "?fFolderID=$iFolderID');");
 	if (isset($iGroupID)) {
@@ -77,10 +81,10 @@ function getGroupDropDown($iGroupID, $iFolderID) {
 	//the groups in their unit
 	/*$oPatternListBox;
     if (Permission::userIsSystemAdministrator()) {
-        $oPatternListBox = & new PatternListBox("$default->owl_groups_table", "name", "id", "fGroupID");
+        $oPatternListBox = & new PatternListBox("$default->groups_table", "name", "id", "fGroupID");
     } else {
-        $oPatternListBox = & new PatternListBox("$default->owl_groups_table", "name", "id", "fGroupID", "GUL.unit_id=" . User::getUnitID($_SESSION["userID"]));
-        $oPatternListBox->setFromClause("INNER JOIN $default->owl_groups_units_table AS GUL ON ST.id = GUL.group_id");
+        $oPatternListBox = & new PatternListBox("$default->groups_table", "name", "id", "fGroupID", "GUL.unit_id=" . User::getUnitID($_SESSION["userID"]));
+        $oPatternListBox->setFromClause("INNER JOIN $default->groups_units_table AS GUL ON ST.id = GUL.group_id");
     }                                    
 	$oPatternListBox->setEmptyErrorMessage("There are no groups");
 	$oPatternListBox->setIncludeDefaultValue(false);
@@ -98,8 +102,8 @@ function getUserDropDown($iGroupID) {
 		$iGroupID = -1;
 	}
 	
-	$oPatternListBox = & new PatternListBox("$default->owl_users_table", "name", "id", "fUserID", "UGL.group_id = $iGroupID");
-    $oPatternListBox->setFromClause("INNER JOIN $default->owl_users_groups_table AS UGL ON ST.id = UGL.user_id");
+	$oPatternListBox = & new PatternListBox("$default->users_table", "name", "id", "fUserID", "UGL.group_id = $iGroupID");
+    $oPatternListBox->setFromClause("INNER JOIN $default->users_groups_table AS UGL ON ST.id = UGL.user_id");
     
     if ($iGroupID == -1) {         
 		$oPatternListBox->setEmptyErrorMessage("Select a group");
@@ -110,7 +114,7 @@ function getUserDropDown($iGroupID) {
 
 function getRoleDropDown($iRoleID) {
 	global $default;	
-	$oPatternListBox = & new PatternListBox("$default->owl_roles_table", "name", "id", "fRoleID");
+	$oPatternListBox = & new PatternListBox("$default->roles_table", "name", "id", "fRoleID");
 	$oPatternListBox->setEmptyErrorMessage("There are no roles");
 	$oPatternListBox->setIncludeDefaultValue(false);
 	if (isset($iRoleID)) {
