@@ -41,7 +41,7 @@ if (in_array("gettext", get_loaded_extensions()) && function_exists('gettext') &
 	    $default->defaultLanguage = $sLocale;
 	}		
 	putenv('LANG=' . $default->defaultLanguage); 
-	setlocale(LC_MESSAGES, $default->defaultLanguage);
+	setlocale(LC_ALL, $default->defaultLanguage);
 	// Set the text domain
 	$sDomain = 'knowledgeTree';
 	bindtextdomain($sDomain, $default->fileSystemRoot . "/i18n"); 
