@@ -8,6 +8,9 @@ function redirTimer(redirTime, redirURL) {
 	alert("set redirect time=" + redirTime + ", url=" + redirURL);
 }
 
+/**
+ * Disables an element by blurring as soon as it focuses
+ */
 function disable(elem) {
 	elem.onfocus=elem.blur;
 }
