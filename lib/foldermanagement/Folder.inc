@@ -393,6 +393,7 @@ class Folder extends KTEntity {
             $oFolder->iId = $iFolderID;
 			$oFolder->sFullPath = $sql->f("full_path");
 			$oFolder->sParentFolderIDs = $sql->f("parent_folder_ids");
+			$oFolder->iPermissionFolderID = $sql->f("permission_folder_id");
 			return $oFolder;
 		} 
  		$_SESSION["errorMessage"] = $lang_err_object_not_exist . "id = " . $iFolderID . " table = folders";
