@@ -76,6 +76,10 @@ class NavBar {
             $this->mdocs = "$default->graphicsUrl/mdocs/over.gif";
             $this->nwColourBar = "$default->graphicsUrl/mdocs/def.gif";
         }
+		if($section == "Discussion Threads" )  {
+            $this->mdocs = "$default->graphicsUrl/mdocs/over.gif";
+            $this->nwColourBar = "$default->graphicsUrl/mdocs/def.gif";
+        }
 
         if($section == "Subscriptions") {
             $this->subscriptions = "$default->graphicsUrl/subscriptions/over.gif";
