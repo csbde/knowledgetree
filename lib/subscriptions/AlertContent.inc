@@ -30,7 +30,9 @@ class AlertContent {
                                SubscriptionConstants::subscriptionAlertType("RemoveFolder") => $sSubject . "Removed Folder",
                                SubscriptionConstants::subscriptionAlertType("AddDocument") => $sSubject . "New Document",
                                SubscriptionConstants::subscriptionAlertType("RemoveDocument") => $sSubject . "Removed Document",
-                               SubscriptionConstants::subscriptionAlertType("ModifyDocument") => $sSubject . "Modified Document");
+                               SubscriptionConstants::subscriptionAlertType("ModifyDocument") => $sSubject . "Modified Document",
+                               SubscriptionConstants::subscriptionAlertType("CheckInDocument") => $sSubject . "Checked In Document",
+                               SubscriptionConstants::subscriptionAlertType("CheckOutDocument") => $sSubject . "Checked Out Document");
 
         $sViewAlertUrl = "/presentation/lookAndFeel/knowledgeTree/subscriptions/viewAlertBL.php";
         $sViewAlertParams = "fSubscriptionID=" . $aValues["subscriptionID"] . "&fSubscriptionType=" . $aValues["subscriptionType"];
@@ -56,6 +58,16 @@ class AlertContent {
 
                                SubscriptionConstants::subscriptionAlertType("ModifyDocument") =>
                                        "The document '" . $aValues["modifiedDocumentName"] . "' has been modified.<br>" .
+                                       "Please clear this subscription alert by clicking on the following link: " .
+                                       generateLink($sViewAlertUrl, $sViewAlertParams, $aValues["modifiedDocumentName"]),
+
+                               SubscriptionConstants::subscriptionAlertType("CheckInDocument") =>
+                                       "The document '" . $aValues["modifiedDocumentName"] . "' has been checked in.<br>" .
+                                       "Please clear this subscription alert by clicking on the following link: " .
+                                       generateLink($sViewAlertUrl, $sViewAlertParams, $aValues["modifiedDocumentName"]),
+                                       
+                               SubscriptionConstants::subscriptionAlertType("CheckOutDocument") =>
+                                       "The document '" . $aValues["modifiedDocumentName"] . "' has been checked out.<br>" .
                                        "Please clear this subscription alert by clicking on the following link: " .
                                        generateLink($sViewAlertUrl, $sViewAlertParams, $aValues["modifiedDocumentName"]));
 
