@@ -28,7 +28,100 @@
 
 require_once("../../../../config/dmsDefaults.php");
 
-KTUtil::extractGPC('fForSearch', 'fSearchString', 'fStartIndex', 'fToSearch');
+KTUtil::extractGPC('fForSearch', 'fSearchString', 'fShowSection', 'fStartIndex', 'fToSearch');
+
+function searchCriteria ($var) {
+    return preg_match('/^bmd(-?\d+)/', $var);
+}
+
+function criteriaNumber ($var) {
+    return preg_replace('/^bmd(-?\d+)/', '\\1', $var);
+}
+
+function getAdvancedSearchResults($aOrigReq, $iStartIndex) {
+    global $default;
+    $aReq = array();
+    foreach ($aOrigReq as $k => $v) {
+        if (searchCriteria($k) === 1) {
+            $v = trim($v);
+            if ($v === "") {
+                continue;
+            }
+            if ($v === "-1") {
+                continue;
+            }
+            $aReq[$k] = $v;
+        }
+    }
+    $aIDs = array_unique(array_map("criteriaNumber", array_keys($aReq)));
+    $aSQL = array();
+    foreach ($aIDs as $iID) {
+        $oCriterion =& Criteria::getCriterionByNumber($iID);
+        $res = $oCriterion->searchSQL($aReq);
+        if (!is_null($res)) {
+            $aSQL[] = $res;
+        }
+    }
+    $aCritParams = array();
+    $aCritQueries = array();
+    foreach ($aSQL as $sSQL) {
+        if (is_array($sSQL)) {
+            $aCritQueries[] = $sSQL[0];
+            $aCritParams = array_merge($aCritParams , $sSQL[1]);
+        } else {
+            $aCritQueries[] = $sSQL;
+        }
+    }
+    $sSQLSearchString = join(" AND ", $aCritQueries);
+
+    $sQuery = DBUtil::compactQuery("
+SELECT
+    F.name AS folder_name, F.id AS folder_id, D.id AS document_id,
+    D.name AS document_name, COUNT(D.id) AS doc_count
+FROM
+    $default->documents_table AS D
+    INNER JOIN $default->folders_table AS F ON D.folder_id = F.id
+    INNER JOIN $default->document_fields_link_table AS DFL ON DFL.document_id = D.id
+    INNER JOIN $default->document_fields_table AS DF ON DF.id = DFL.document_field_id
+    INNER JOIN $default->search_permissions_table AS SDUL ON SDUL.document_id = D.id
+    INNER JOIN $default->status_table AS SL on D.status_id=SL.id
+WHERE
+    SDUL.user_id = ?
+    AND SL.name = ?
+    AND ($sSQLSearchString)
+GROUP BY D.id
+ORDER BY doc_count DESC");
+
+    $aParams = array();
+    $aParams[] = $_SESSION["userID"];
+    $aParams[] = "Live";
+    $aParams = array_merge($aParams, $aCritParams);
+
+    //var_dump(DBUtil::getResultArray(array($sQuery, $aParams)));
+    //exit(0);
+
+    $aColumns = array("folder_name", "document_name", "doc_count");
+    $aColumnTypes = array(3,3,1);
+    $aColumnHeaders = array("<font color=\"ffffff\"><img src=$default->graphicsUrl/widgets/dfolder.gif>" . _("Folder") . "</font>","<font color=\"ffffff\">" . _("Document") . "</font>", "<font color=\"ffffff\">" . _("Matches") . "</font>");
+    $aLinkURLs = array("$default->rootUrl/control.php?action=browse","$default->rootUrl/control.php?action=viewDocument");
+    $aDBQueryStringColumns = array("document_id","folder_id");
+    $aQueryStringVariableNames = array("fDocumentID", "fFolderID");
+
+    $oPatternBrowse = & new PatternBrowseableSearchResults(array($sQuery, $aParams), 10, $aColumns, $aColumnTypes, $aColumnHeaders, $aLinkURLs, $aDBQueryStringColumns, $aQueryStringVariableNames);
+    $oPatternBrowse->setStartIndex($iStartIndex);
+    $oPatternBrowse->setSearchText("");
+
+    $sRefreshMessage = "<table><tr><td align=\"center\">" . _("If your browser displays a 'Warning: Page has Expired' message when you attempt to return to these search results, please click your browser's 'Refresh' button") . "</td></tr></table>";
+    return renderHeading(_("Advanced Search")) . $oPatternBrowse->render() . $sRefreshMessage . getSearchVariablesHtml($sSearchString, $sStatus, $sMetaTagIDs);
+}
+
+function dealWithAdvancedSearch($aReq, $iStartIndex) {
+    global $main;
+    $oPatternCustom = & new PatternCustom();
+    $oPatternCustom->setHtml(getAdvancedSearchResults($aReq, $iStartIndex));
+    $main->setCentralPayload($oPatternCustom);				                                
+    $main->render();
+}
 
 if (checkSession()) {	
 	require_once("$default->fileSystemRoot/lib/visualpatterns/PatternBrowsableSearchResults.inc");
@@ -43,8 +136,14 @@ if (checkSession()) {
 	
 	require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 
+    if (!isset($fStartIndex)) {
+        $fStartIndex = 1;
+    }
+
 	if (strlen($fForSearch)) {		
-		if (strlen($fSearchString) > 0) {
+        if (array_key_exists('advancedSearch_x', $_REQUEST)) {
+            dealWithAdvancedSearch($_REQUEST, $fStartIndex);
+        } else if (strlen($fSearchString) > 0) {
 			$oPatternCustom = & new PatternCustom();
 			
 			//display search results
@@ -52,24 +151,20 @@ if (checkSession()) {
 			
 			if (strlen($sMetaTagIDs) > 0) {
 				$sSQLSearchString = getSQLSearchString($fSearchString);
-				
-				if (!isset($fStartIndex)) {
-					$fStartIndex = 1;
-				}
 				$oPatternCustom->setHtml(getSearchResults($sMetaTagIDs, $sSQLSearchString, $fStartIndex, $fSearchString, $fToSearch));
 				$main->setCentralPayload($oPatternCustom);				                                
 				$main->render();
 			} else {
-				
 				$oPatternCustom->setHtml(getSearchPage($fSearchString));
 				$main->setCentralPayload($oPatternCustom);
 				$main->setErrorMessage(_("Please select at least one criteria to search by"));
 				$main->setHasRequiredFields(true);
 				$main->setFormAction($_SERVER["PHP_SELF"] . "?fForSearch=1");                                
+                $main->setOnLoadJavaScript("switchDiv('" . (isset($fShowSection) ? $fShowSection : "searchLess") . "', 'search')");
 				$main->render();
 			}
 		} else {
-				$sMetaTagIDs = getChosenMetaDataTags();				
+				$sMetaTagIDs = getChosenMetaDataTags($_POST);
 				$aMetaTagIDs = explode(",", $sMetaTagIDs);				
 				$oPatternCustom = & new PatternCustom();
 				$oPatternCustom->setHtml(getSearchPage($fSearchString, $aMetaTagIDs));
@@ -77,6 +172,7 @@ if (checkSession()) {
 				$main->setErrorMessage(_("Please enter text to search on"));
 				$main->setHasRequiredFields(true);
 				$main->setFormAction($_SERVER["PHP_SELF"] . "?fForSearch=1");                                
+                $main->setOnLoadJavaScript("switchDiv('" . (isset($fShowSection) ? $fShowSection : "searchLess") . "', 'search')");
 				$main->render();
 		}
 		
@@ -87,6 +183,7 @@ if (checkSession()) {
 		$main->setHasRequiredFields(true);
 		$main->setCentralPayload($oPatternCustom);                                
 		$main->setFormAction($_SERVER["PHP_SELF"] . "?fForSearch=1");                                
+        $main->setOnLoadJavaScript("switchDiv('" . (isset($fShowSection) ? $fShowSection : "searchLess") . "', 'search')");
 		$main->render();
 	}	
 }
