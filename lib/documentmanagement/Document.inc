@@ -7,11 +7,9 @@
 * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
 * @date 15 January 2003
 *
-* @todo add in document change tracking functionality
+* @todo add in document change transaction functionality
 *
 */
-
-require_once("$default->owl_fs_root/lib/foldermanagement/FolderLib.inc");
 
 class Document {
 	/** primary key */
@@ -52,7 +50,7 @@ class Document {
 	* @param $iFolderID			Primary key of folder to which document belongs	
 	*	
 	*/
-	function Document($sNewName, $sNewFileName, $iNewSize, $iNewCreatorID, $sNewDescription, $iNewMimeID, $iNewFolderID) {
+	function Document($sNewName, $sNewFileName, $iNewSize, $iNewCreatorID, $iNewMimeID, $iNewFolderID, $sNewDescription = "None") {
 		$this->iId = -1;	//primary key not set as document is not stored yet
 		$this->sName = $sNewName;
 		$this->iSize = $iNewSize;
@@ -168,7 +166,7 @@ class Document {
 			$doc->setIsCheckedOut($sql->f("is_checked_out"));
 			return $doc;
 		}
-		$_SESSION["errorMessage"] = $lang_err_object_not_exist . "id = " $iDocumentID . " table = documents";
+		$_SESSION["errorMessage"] = $lang_err_object_not_exist . "id = " . $iDocumentID . " table = documents";
 		return false;		
 	}
 	
@@ -205,6 +203,16 @@ class Document {
 	/** set the document path on the file system */
 	function setFileName() {
 		$this->sFileName = $sNewValue;
+	}
+	
+	/** get the primary key of the folder in which the document is stored */
+	function getFolderID() {
+		return $this->iFolderID;
+	}
+	
+	/** set the primary key of the folder in which the document is stored */
+	function setFolderID($iNewValue) {
+		$this->iFolderID = $iNewValue;
 	}
 	
 	/** get the document file size in bytes */
