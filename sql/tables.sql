@@ -643,31 +643,6 @@ INSERT INTO language_lookup (name) VALUES ("Spanish");
 
 ---- system settings
 -- ldap
-INSERT INTO system_settings (name, value) values ("ldapServer", "192.168.1.9");
-INSERT INTO system_settings (name, value) values ("ldapRootDn", "o=Medical Research Council");
--- email settings
-INSERT INTO system_settings (name, value) values ("emailServer", "mail.jamwarehouse.com");
-INSERT INTO system_settings (name, value) values ("emailFrom", "owl@jamwarehouse.com");
-INSERT INTO system_settings (name, value) values ("emailFromName", "MRC Document Management System");
-INSERT INTO system_settings (name, value) values ("emailAdmin", "dmsHelp@jamwarehouse.com");
-INSERT INTO system_settings (name, value) values ("emailAdminName", "DMS Administrator");
--- server settings
-INSERT INTO system_settings (name, value) values ("serverName", "change.to.your.hostname");
-INSERT INTO system_settings (name, value) values ("sslEnabled", "true");
-INSERT INTO system_settings (name, value) values ("uMask", "0755");
--- directories
-INSERT INTO system_settings (name, value) values ("filesystemRoot", "/usr/local/www/owl/dms");
-INSERT INTO system_settings (name, value) values ("documentRoot", "/usr/local/www/owl/dms/Documents");
-INSERT INTO system_settings (name, value) values ("languageDirectory", "/usr/local/www/owl/dms/locale");
-INSERT INTO system_settings (name, value) values ("uiDirectory", "/usr/local/www/owl/dms/presentation/lookAndFeel/knowledgeTree");
--- urls
-INSERT INTO system_settings (name, value) values ("rootUrl", "/dms");
-INSERT INTO system_settings (name, value) values ("graphicsUrl", "/dms/graphics");
-INSERT INTO system_settings (name, value) values ("uiUrl", "/dms/presentation/lookAndFeel/knowledgeTree");
--- general settings
-INSERT INTO system_settings (name, value) values ("useFs", "true");
-INSERT INTO system_settings (name, value) values ("defaultLanguage", "NewEnglish");
-INSERT INTO system_settings (name, value) values ("sessionTimeout", "1200");
 INSERT INTO system_settings (name, value) values ("lastIndexUpdate", "2002-01-01");
 
 -- document statuses
@@ -863,29 +838,29 @@ INSERT INTO folders (name, description, parent_id, creator_id, unit_id, is_publi
 
 ---- adarg unit folders
 -- [7,8,9]
-INSERT INTO folders (name, description, parent_id, creator_id, unit_id, is_public)
-             VALUES ("ADARG", "ADARG Unit Root Folder", 1, 1, 1, 0);  -- id=2
+INSERT INTO folders (name, description, parent_id, creator_id, unit_id, is_public, parent_folder_ids, full_path)
+             VALUES ("ADARG", "ADARG Unit Root Folder", 1, 1, 1, 0, 1, 'Medical Research Council');  -- id=2
              -- unit admins have write access
              INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (2, 2, 0, 1);
                  
 ---- afroaids unit folders
 -- [10,11,12]
-INSERT INTO folders (name, description, parent_id, creator_id, unit_id, is_public)
-             VALUES ("AfroAIDS", "AfroAIDS Unit Root Folder", 1, 1, 2, 0); -- id=3
+INSERT INTO folders (name, description, parent_id, creator_id, unit_id, is_public, parent_folder_ids, full_path)
+             VALUES ("AfroAIDS", "AfroAIDS Unit Root Folder", 1, 1, 2, 0, 1, 'Medical Research Council'); -- id=3
              -- unit admins have write access
              INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (3, 3, 0, 1);             
              
 ---- diabetes unit folders
 --[13,14,15]
-INSERT INTO folders (name, description, parent_id, creator_id, unit_id, is_public)
-             VALUES ("Diabetes", "Diabetes Unit Root Folder", 1, 1, 3, 0);  -- id=4
+INSERT INTO folders (name, description, parent_id, creator_id, unit_id, is_public, parent_folder_ids, full_path)
+             VALUES ("Diabetes", "Diabetes Unit Root Folder", 1, 1, 3, 0, 1, 'Medical Research Council');  -- id=4
              -- unit admins have write access
              INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (4, 4, 0, 1);
              
 ---- burden of disease unit folders
 -- [16,17,18]
-INSERT INTO folders (name, description, parent_id, creator_id, unit_id, is_public)
-             VALUES ("Burden of Disease", "Burden of Disease Unit Root Folder", 1, 1, 4, 0);  -- id=5
+INSERT INTO folders (name, description, parent_id, creator_id, unit_id, is_public, parent_folder_ids, full_path)
+             VALUES ("Burden of Disease", "Burden of Disease Unit Root Folder", 1, 1, 4, 0, 1, 'Medical Research Council');  -- id=5
              -- unit admins have write access
              INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (5, 5, 0, 1);
 
