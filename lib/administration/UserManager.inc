@@ -11,6 +11,7 @@ require_once("$default->owl_fs_root/lib/class.AuthLdap.php");
  * @author Mukhtar Dharsey
  * @package dmslib
  */
+ 
 /*-----------------------------------------------------------------*/
 /**
  * Class User Manager
@@ -70,9 +71,9 @@ class UserManager
             // TODO: error handling
             return false;
             /*
-            echo "There was a problem.<br>";
-            echo "Error code : " . $ldap->ldapErrorCode . "<br>";
-            echo "Error text : " . $ldap->ldapErrorText . "<br>";
+            $default->log->debug "There was a problem.<br>";
+            $default->log->debug "Error code : " . $ldap->ldapErrorCode . "<br>";
+            $default->log->debug "Error text : " . $ldap->ldapErrorText . "<br>";
             */
         }
     }
@@ -106,8 +107,8 @@ class UserManager
         if ($rows > 0) 
         {
             // duplicate username
-            $default->errorMessage = "The username " . $userDetails['username'] . " is already in use, please choose another one";
-            echo $default->errorMessage;
+            $default->errorMessage = "UserManager::The username " . $userDetails['username'] . " is already in use, please choose another one";
+            $default->log->debug($default->errorMessage);
             return false;
         }
         // insert the user
@@ -130,12 +131,12 @@ class UserManager
         
         if(!'result') 
         {
-            echo "Addition Unsuccessful!<br>";
+            $default->log->debug( "UserManager::Addition Unsuccessful!<br>");
             return false;
         } 
         else 
         {
-            echo "User added Successfully!<br>";
+            $default->log->debug ("UserManager::User added Successfully!<br>");
         }
          return true;
          
@@ -152,12 +153,12 @@ class UserManager
         if ($numrows == "1") {
             while($sql->next_record()) {
                 $userID = $sql->f("id");
-                echo "read userID=$userID from db<br>";
+                $default->log->debug "read userID=$userID from db<br>";
             }
          } else {
              select failed, bail
            // FIXME: need a rollback here
-            echo "id select failed<br>";
+            $default->log->debug "id select failed<br>";
             return false;
         }
 
@@ -166,12 +167,12 @@ class UserManager
         $result = $sql->query($query);
         if (!'result') {
             // FIXME: rollback!
-            echo "insert into user-unit table failed<br>";
+            $default->log->debug "insert into user-unit table failed<br>";
             return false;
         } 
         else 
         {
-            echo "insert into user-unit table worked!<br>";
+            $default->log->debug "insert into user-unit table worked!<br>";
         }*/
         
 		
@@ -206,7 +207,7 @@ class UserManager
         	// check if result was found..0 if not
         	if($row == 0)
         	{
-        		printf("User does not exist in the database<br>");
+        		$default->log->debug("UserManager::User does not exist in the database<br>");
         		return false;
         	}
         	
@@ -216,12 +217,12 @@ class UserManager
         	
         	if(!'result') 
         	{
-        		echo "Deletion unsuccessful<br>";
+        		$default->log->debug("UserManager::Deletion unsuccessful<br>");
            		return false;
         	} 
         	else
         	 {
-            		echo "Deletion from user table Successful<br>";
+            		$default->log->debug ("UserManager::Deletion from user table Successful<br>");
             		//check if belongs to group
             		$result= $this->removeUserFromAllGroups($userID);
             		return true;
@@ -259,7 +260,7 @@ class UserManager
         	//if row = 0 ...then no entry was found..so return false
         	if($row == 0)
         	{
-        		printf("User does not exist in the database<br>");
+        		$default->log->debug("UserManager::User does not exist in the database<br>");
         		return false;
         	}
         	
@@ -282,12 +283,12 @@ class UserManager
                // error checking to see if success	
         	if(!'result') 
         	{
-           		printf("Not Updated");
+           		$default->log->debug("UserManager::Not Updated");
            		return false;
         	} 
         	else
         	 {
-            		printf("Update Successful<br>");
+            		$default->log->debug("UserManager::Update Successful<br>");
             		return true;
         	 }
 	}
@@ -312,6 +313,13 @@ class UserManager
         	//Get list of all the usernames
         	$query = "SELECT username FROM $default->owl_users_table";
         	$result = $sql->query($query);
+        	$row = $sql->num_rows($result);
+        	
+        	if($row == 0)
+        	{
+        		$default->log->debug("UserManager::No users in table");
+        		return false;
+        	}
         
         	while($sql->next_record())
         	{
@@ -348,7 +356,7 @@ class UserManager
         	
         	if($row == 0)
         	{
-        		printf("User does not exist in the database<br>");
+        		$default->log->debug("UserManager::User does not exist in the database<br>");
         		return false;
         	}
         	
@@ -398,7 +406,7 @@ class UserManager
         	        	
         	if($row >= 1)
         	{
-        		printf("User already belongs to group<br>");
+        		$default->log->debug("UserManager::User already belongs to group<br>");
         		return false;
         	}
         	
@@ -408,12 +416,12 @@ class UserManager
                	
         	if(!'result') 
         	{
-        		echo "Insertion into user_group table unsuccessful<br>";
+        		$default->log->debug("UserManager::Insertion into user_group table unsuccessful<br>");
            		return false;
         	} 
         	else
         	 {
-            		printf("Insertion into user_group table Successful<br>");
+            		$default->log->debug("UserManager::Insertion into user_group table Successful<br>");
             		return true;
         	 }
 			
@@ -448,7 +456,7 @@ class UserManager
         	// check if result was found..0 if not
         	if($row == 0)
         	{
-        		printf("User does not exist in the database<br>");
+        		$default->log->debug("UserManager::User does not exist in the database<br>");
         		return false;
         	}
         	
@@ -458,12 +466,12 @@ class UserManager
         	
         	if(!'result') 
         	{
-        		echo "Deletion unsuccessful<br>";
+        		$default->log->debug ("UserManager::Deletion unsuccessful<br>");
            		return false;
         	} 
         	else
         	 {
-            		echo "Deletion from user_group_link table Successful<br>";
+            		$default->log->debug("UserManager::Deletion from user_group_link table Successful<br>");
             		return true;
         	 }
 			
@@ -495,7 +503,7 @@ class UserManager
         	// check if result was found..0 if not
         	if($row == 0)
         	{
-        		printf("User does not exist in the database<br>");
+        		$default->log->debug("UserManager::User does not exist in the database<br>");
         		return false;
         	}
         	
@@ -505,12 +513,12 @@ class UserManager
         	
         	if(!'result') 
         	{
-        		echo "Deletion unsuccessful<br>";
+        		$default->log->debug ("UserManager::Deletion unsuccessful<br>");
            		return false;
         	} 
         	else
         	 {
-            		echo "Deletion from user_group_link table Successful<br>";
+            		$default->log->debug ("UserManager::Deletion from user_group_link table Successful<br>");
             		return true;
         	 }
 			
@@ -548,8 +556,8 @@ class UserManager
 	        if ($rows == 0) 
 	        {
 	            // duplicate username
-	            $default->errorMessage = "The username " . $username . " does not exist<br>";
-	            echo $default->errorMessage;
+	            $default->errorMessage = "UserManagerThe username " . $username . " does not exist<br>";
+	            $default->log->debug($default->errorMessage);
 	            return false;
 	        }
 	        else
