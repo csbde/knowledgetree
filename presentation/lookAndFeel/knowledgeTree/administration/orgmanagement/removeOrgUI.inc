@@ -55,7 +55,7 @@ function getDeleteSuccessPage() {
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "<td align = right><a href=\"$default->rootUrl/control.php?action=removeOrg\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
+    $sToRender .= "<td align = right><a href=\"$default->rootUrl/control.php?action=listOrg\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "</table>\n";
 
@@ -77,7 +77,7 @@ function getDeleteFailPage() {
     $sToRender .= "<tr><td>Please Ensure that ALL Units has been Removed the Organisation it belongs to</td></tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "</tr>\n";
-    $sToRender .= "<tr><td align = right><a href=\"$default->rootUrl/control.php?action=removeOrg\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td></tr>\n";
+    $sToRender .= "<tr><td align = right><a href=\"$default->rootUrl/control.php?action=listOrg\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td></tr>\n";
     $sToRender .= "</table>\n";
 
     return $sToRender;
@@ -104,7 +104,7 @@ function getDeleteButton($oOrg) {
     global $default;
     if (isset($oOrg)) {
          return "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/delete.gif\" value=\"submit\" border=\"0\"/></td>\n".
-               "<td align = right><a href=\"$default->rootUrl/control.php?action=removeOrg\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" /></a></td>\n";
+               "<td align = right><a href=\"$default->rootUrl/control.php?action=listOrg\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" /></a></td>\n";
     }
 }
 ?>
