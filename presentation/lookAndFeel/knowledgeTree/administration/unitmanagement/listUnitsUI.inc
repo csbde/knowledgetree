@@ -46,15 +46,15 @@ function getUnits($fOrganisationID) {
 				($fOrganisationID ? "WHERE units_organisations_link.organisation_id = $fOrganisationID " : "") .					
 				"ORDER BY units_lookup.name";
 		
-    $aColumns = array("name", "OrgName", "Edit", "Delete", "Edit Organisations");
-    $aColumnNames = array("Unit Name", "Organisation", "Edit", "Delete", "Edit Organisations");
-    $aColumnTypes = array(1,1,3,3,3);
+    $aColumns = array("name", "OrgName", "Edit", "Delete");//, "Edit Organisations");
+    $aColumnNames = array("Unit Name", "Organisation", "Edit", "Delete");//, "Edit Organisations");
+    $aColumnTypes = array(1,1,3,3);//,3);
     $aDBColumnArray = array("unitID");
     $aQueryStringVariableNames = array("fUnitID");
     	    
     $aHyperLinkURL = array(	2=> "$default->rootUrl/control.php?action=editUnit",                       			
-                     			3=> "$default->rootUrl/control.php?action=removeUnit",
-                     			4=> "$default->rootUrl/control.php?action=editUnitOrg"); 
+                     			3=> "$default->rootUrl/control.php?action=removeUnit");
+                     			//4=> "$default->rootUrl/control.php?action=editUnitOrg"); 
 	    	    
 	$oSearchResults = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnNames, "100%", $aHyperLinkURL,$aDBColumnArray,$aQueryStringVariableNames);
 	$oSearchResults->setDisplayColumnHeadings(true);
@@ -66,7 +66,7 @@ function getPage($fOrganisationID) {
 	$sToRender .= renderHeading("Unit Management");
 
 	$sToRender .= getAddLink("addUnit", "Add A Unit");
-	$sToRender .= getOrganisationDisplay($fOrganisationID);
+	//$sToRender .= getOrganisationDisplay($fOrganisationID);
 	$sToRender .= getUnits($fOrganisationID);
 	return $sToRender;
 }
