@@ -8,7 +8,6 @@
  * authentication and forwards the request to the appropriate handling
  * page.  
  *
- *
  * Licensed under the GNU GPL. For full terms see the file COPYING.
  *
  * @version $Revision$
@@ -39,11 +38,13 @@ if (checkSession()) {
 // reset authorisation flag before checking access
 $_SESSION["authorised"] = false;
 
+$default->log->info("control.php: checking ($action, " . $_SESSION["userID"] . ")");
 // check whether the users group has access to the requested page
-$page = $default->siteMap->getPage($action, $_SESSION["groupID"]);
+$page = $default->siteMap->getPage($action, $_SESSION["userID"]);
 
-$default->log->debug("control.php retrieved page=$page from SiteMap");
+$default->log->debug("retrieved page=$page from SiteMap");
 if (!$page) {
+    $default->log->info("control.php: permission denied for ($action, " . $_SESSION["userID"] . ")");
     // this group doesn't have permission to access the page
     // or there is no page mapping for the requested action
     
@@ -55,7 +56,7 @@ if (!$page) {
 } else {
     // set authorised flag and redirect
     $_SESSION["authorised"] = true;
-    $default->log->debug("control.php:: set authorised flag:" . $_SESSION["authorised"]);
+    $default->log->debug("control.php: ($action, " . $_SESSION["userID"] . ")set authorised flag:" . $_SESSION["authorised"]);
     
     redirect($page);
 }
