@@ -45,7 +45,7 @@ function getPage($iDocumentID, $iDocumentTypeID, $bFirstEdit) {
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>\n";
-	$sToRender .= "<input type=\"image\" src=\"$default->graphicsUrl/widgets/update.gif\" />\n";
+	$sToRender .= "<input type=\"image\" src=\"$default->graphicsUrl/widgets/update.gif\" border=\"0\"/>\n";
 	$sToRender .= "</td>\n";
     if (!isset($bFirstEdit)) {    
         $sToRender .= "<td>\n";

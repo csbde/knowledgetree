@@ -86,7 +86,7 @@ function renderCheckInPage($oDocument) {
 	$sToRender .= "<tr>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td><input type=\"image\" src =\"$default->graphicsUrl/widgets/checkin.gif\" value=\"Submit\" onClick=\"if (validRequired(document.MainForm.fFile, 'Check-In File') && validRequired(document.MainForm.fCheckInComment, 'Check-In Comment')) { return confirm('Are you sure you want to overwrite " . $oDocument->getName() . " with ' + document.MainForm.fFile.value + '?'); } else return false;\"/>\n";
+	$sToRender .= "<td><input type=\"image\" border=\"0\" src =\"$default->graphicsUrl/widgets/checkin.gif\" value=\"Submit\" onClick=\"if (validRequired(document.MainForm.fFile, 'Check-In File') && validRequired(document.MainForm.fCheckInComment, 'Check-In Comment')) { return confirm('Are you sure you want to overwrite " . $oDocument->getName() . " with ' + document.MainForm.fFile.value + '?'); } else return false;\"/>\n";
 	$sToRender .= "<a href=\"$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $oDocument->getID() . "\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></a></td>\n";	    
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
@@ -112,7 +112,7 @@ function renderCheckOutPage($oDocument) {
 	$sToRender .= "<tr>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
-    $sToRender .= "<td><input type=\"image\" src =\"$default->graphicsUrl/widgets/checkout.gif\" value=\"Submit\" onClick=\"return validRequired(document.MainForm.fCheckOutComment, 'Check-Out Comment');\" />\n";
+    $sToRender .= "<td><input type=\"image\" border=\"0\" src =\"$default->graphicsUrl/widgets/checkout.gif\" value=\"Submit\" onClick=\"return validRequired(document.MainForm.fCheckOutComment, 'Check-Out Comment');\" />\n";
 	$sToRender .= "<a href=\"$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $oDocument->getID() . "\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></a></td>\n";	    
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";

@@ -48,7 +48,7 @@ function renderUploadPage($oWebDocument) {
 	$sToRender .= "<tr>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
-    $sToRender .= "<td><input type=\"image\" src =\"$default->graphicsUrl/widgets/done.gif\" value=\"Submit\" onClick=\"return validRequired(document.MainForm.fUploadUrl, 'upload URL');\" />\n";
+    $sToRender .= "<td><input type=\"image\" border=\"0\" src =\"$default->graphicsUrl/widgets/done.gif\" value=\"Submit\" onClick=\"return validRequired(document.MainForm.fUploadUrl, 'upload URL');\" />\n";
 	$sToRender .= "<a href=\"$default->rootUrl/control.php?action=dashboard\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></a></td>\n";	    
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
