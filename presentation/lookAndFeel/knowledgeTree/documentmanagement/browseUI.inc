@@ -91,7 +91,7 @@ function renderCategoryResults($aResults) {
     } else {
         // else the first entry is the category name, so display the documents in the category
         // with full paths
-        $sToRender .= renderDocumentList($aResults["documents"], "This category contains no documents", true);
+        $sToRender .= renderDocumentList($aResults, "This category contains no documents", "You don't have access to the documents in this category", true);
     }
     return $sToRender;
 }
@@ -137,7 +137,7 @@ function renderDocumentTypeResults($aResults) {
     } else {
         // else the first entry is the document type name, so display the documents in the document type
         // with full paths
-        $sToRender .= renderDocumentList($aResults["documents"], "This document type contains no documents", true);
+        $sToRender .= renderDocumentList($aResults, "This document type contains no documents", "You don't have access to the documents in this document type", true);
     }
     return $sToRender;
 }
@@ -157,19 +157,19 @@ function renderFolderResults($aResults) {
     }
     
     $sToRender .= "<tr><td>&nbsp;</td></tr>";
-    $sToRender .= "<tr><td>" . renderDocumentList($aResults, "This folder contains no documents") . "</td></tr>\n";
+    $sToRender .= "<tr><td>" . renderDocumentList($aResults, "This folder contains no documents", "You don't have access to the documents in this folder") . "</td></tr>\n";
     
     return $sToRender;
 }
 
-function renderDocumentList($aResults, $sNoDocumentsMessage, $bDisplayFullPath = false) {
+function renderDocumentList($aResults, $sNoDocumentsMessage, $sNoPermissionMessage, $bDisplayFullPath = false) {
     // loop through the files and display links
     if (count($aResults["documents"]) > 0) {
         for ($i=0; $i<count($aResults["documents"]); $i++) {
             $sToRender .= "<tr><td bgcolor=\"" . getColour($i) . "\">" . displayDocumentLink($aResults["documents"][$i], $bDisplayFullPath) . "</td></tr>";
         }
     } else if ($aResults["accessDenied"]) {
-        $sToRender .= "<tr><td>You don't have access to the documents in this folder</td></tr>";
+        $sToRender .= "<tr><td>$sNoPermissionMessage</td></tr>";
     } else {
         $sToRender .= "<tr><td>$sNoDocumentsMessage</td></tr>";
     }
