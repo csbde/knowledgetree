@@ -46,10 +46,9 @@ require_once("$default->fileSystemRoot/phplib/db_mysql.inc");
 require_once("$default->fileSystemRoot/lib/database/db.inc");
 $default->db = new Database();
 
-//language translation functions
-require_once("$default->fileSystemRoot/i18n/LanguageFunctions.inc");
-//change this to reflect the language to use
-require_once("$default->fileSystemRoot/i18n/en/Language.inc");
+// default language
+$default->defaultLanguage = "en";
+$default->useAcceptLanguageHeader = false;
 
 // instantiate system settings class
 require_once("$default->fileSystemRoot/lib/database/lookup.inc");
