@@ -53,11 +53,12 @@ class DocumentBrowser {
                
                 // now lookup the folderID
                 $aFolders = Folder::getList("name='$unitRootFolderName' and parent_id=1");
-                $folderID = $aFolders[0]->getID();
                 
-                if (!$folderID) {
+                if (!$aFolders) {
                     // no folder exists with this name, so start at the root
                     $folderID = lookupID($default->owl_folders_table, "parent_id", 0);
+                } else {
+                	$folderID = $aFolders[0]->getID();
                 }
             } else {
                 // else just start at the root
