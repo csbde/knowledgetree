@@ -12,27 +12,34 @@ require_once("../../config/dmsDefaults.php");
 */
 
 if (checkSession) {
-	require_once("$default->owl_fs_root/lib/units/Unit.inc");
+	require_once("$default->owl_fs_root/lib/unitmanagement/Unit.inc");
 	
-	$oUnit = & new Unit("test unit", 1, 2);
+	$oUnit = & new Unit("test unit20");
 	echo "Create ? " . ($oUnit->create() ? "Yes" : "No") . "<br>";
-	$oUnit = & new Unit("test unit", 1, 2);
-	$oUnit->create();
-	$oUnit = & new Unit("test unit", 1, 2);
-	$oUnit->create();
-	$oUnit = & new Unit("test unit", 1, 2);
-	$oUnit->create();
-	$oUnit = & new Unit("test unit", 1, 2);
-	$oUnit->create();
+	//$oUnit = & new Unit("test unit");
+	//$oUnit->create();
+	//$oUnit = & new Unit("test unit2");
+	//$oUnit->create();
+	//$oUnit = & new Unit("test unit");
+	//$oUnit->create();
+	//$oUnit->setName("suckaaa");
+	
+	//echo $oUnit->iId;
+	//
+	//$oUnit->getUnitID("test unit20");	
+	///$oUnit->create();
+	$oUnit->setName("test unit200000");
 	echo "Update ? " . ($oUnit->update() ? "Yes" : "No") . "<br>";
-	echo "Delete ? " . ($oUnit->delete() ? "Yes" : "No") . "<br>";
-	$oNewUnit = Unit::get(1);
+	
+	//echo "Delete ? " . ($oUnit->delete() ? "Yes" : "No") . "<br>";
+	
+	/*$oNewUnit = Unit::get(1);
 	echo "Get ? <pre>" . print_r($oNewUnit) . "</pre>";
 	$oNewUnit = Unit::getList();
 	echo "GetList ? <pre>" . print_r($oNewUnit) . "</pre>";
 	$oNewUnit = Unit::getList("WHERE id > 2");
 	echo "GetList ? <pre>" . print_r($oNewUnit) . "</pre>";
-	
+	*/
 }
 
 ?>
