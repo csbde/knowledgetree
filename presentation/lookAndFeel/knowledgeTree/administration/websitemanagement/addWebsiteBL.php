@@ -20,6 +20,7 @@ if (checkSession()) {
 	require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
 	require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
 	require_once("$default->fileSystemRoot/presentation/Html.inc");
+	require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/administration/adminUI.inc");
 			
 	$oPatternCustom = & new PatternCustom();
 	$oPatternCustom->setHtml(getPage());
