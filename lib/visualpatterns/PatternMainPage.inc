@@ -154,8 +154,13 @@ class PatternMainPage {
 	function getJavaScript() {
         global $default;
         $sUrl = $default->system->get("uiUrl");
-        return "<script type=\"text/javascript\" src=\"$sUrl/js/misc.js\"></script>
-                <script type=\"text/javascript\" src=\"$sUrl/js/scroll.js\"></script>";
+        // hack to circumvent the crapness of ns 4.79
+        if (! (($default->phpSniff->property("browser") == "moz") && ($default->phpSniff->property("version") == "4.79")) ) {
+            return "<script type=\"text/javascript\" src=\"$sUrl/js/misc.js\"></script>
+                    <script type=\"text/javascript\" src=\"$sUrl/js/scroll.js\"></script>";
+        } else {
+            return "<script type=\"text/javascript\" src=\"$sUrl/js/misc.js\"></script>";        
+        }
         
 	}
 }
