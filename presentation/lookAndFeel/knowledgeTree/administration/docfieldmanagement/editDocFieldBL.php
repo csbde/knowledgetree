@@ -52,7 +52,6 @@ if (checkSession()) {
 			}
 			// otherwise, go to the list page
 			controllerRedirect("listDocFields", "");
-			//$oPatternCustom->setHtml(getEditPageSuccess());
 		} else {
 			// if fail print out fail message
 			$oPatternCustom->setHtml(getEditPageFail());
