@@ -1,4 +1,4 @@
-Version 1.2.3 (release.date)
+Version 1.2.3 (2004/09/09)
 
 Features
 ========
@@ -16,11 +16,472 @@ Bug Fixes
 #986627:  Email Link- Overzealous input sanitisation broke the ability to email a document link.
 #986726:  Problems when changing unit name: the rename operation was renaming the folder to the old folder name (Paul Gier)
 
-TODO:
-#999478:  Apostrophe handling in all character fields
-#987156:  Security: Lack of access control and validation in generic store.php/create.php scripts.
-#989526:  Document metadata SQL bug
-#989622:  Discussion comment SQL bug
+Detailed ChangeLog
+==================
+
+2004-09-03 06:37  nbm
+
+	* lib/Log.inc:
+
+	Log into files with non-ambiguous (and more common) date format:
+	year-month-day.
+
+	Suggested by:	Marcel Berteler
+
+2004-09-03 01:34  michaeljoseph
+
+	* docs/ChangeLog.txt:
+
+	Minor typo and spacing correction.
+
+2004-09-01 00:10  michaeljoseph
+
+	* presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/addGroupUI.inc:
+
+	Corrected HTML syntax error.
+
+2004-08-26 06:31  michaeljoseph
+
+	* presentation/lookAndFeel/knowledgeTree/foldermanagement/groupFolderLinkUI.inc:
+
+	Updated to include all units.
+
+2004-08-25 04:51  michaeljoseph
+
+	* presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/:
+	  addGroupBL.php, addGroupUI.inc:
+
+	Added the ability to specify the unit when creating a group.
+
+2004-08-23 02:35  michaeljoseph
+
+	* lib/database/escape.inc:
+
+	Added check for the appropriate mysql escape function name
+
+2004-08-20 00:56  michaeljoseph
+
+	* phplib/db_mysql.inc:
+
+	Added DEBUG SQL query logging.
+
+2004-08-19 06:16  michaeljoseph
+
+	* presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/:
+	  listGroupsBL.php, listGroupsUI.inc:
+
+	Corrected multiple unit administration bug for system administrator.
+
+2004-08-18 02:37  michaeljoseph
+
+	* presentation/lookAndFeel/knowledgeTree/documentmanagement/:
+	  moveDocumentBL.php, moveDocumentUI.inc:
+
+	Corrected display error when moving a document.  Also implemented more efficient object instead of id passing.
+
+2004-08-18 02:36  michaeljoseph
+
+	* lib/util/sanitize.inc, presentation/login.php:
+
+	Moved sanitize function to the util directory.
+
+2004-08-18 02:34  michaeljoseph
+
+	* lib/: documentmanagement/DocumentCollaboration.inc,
+	  foldermanagement/Folder.inc:
+
+	Corrected some object reference passing semantics.
+
+2004-08-18 02:33  michaeljoseph
+
+	* lib/documentmanagement/Document.inc:
+
+	[999478] Added quoting for all db values.
+
+2004-08-18 02:27  michaeljoseph
+
+	* lib/database/: db.inc, escape.inc:
+
+	Added reference to database type.
+	Added db quoting library functions.
+
+2004-08-18 02:25  michaeljoseph
+
+	* config/environment.php:
+
+	Added dbType config entry
+
+2004-08-12 09:02  michaeljoseph
+
+	* docs/ChangeLog.txt:
+
+	Updated.
+
+2004-08-12 09:00  michaeljoseph
+
+	* presentation/lookAndFeel/knowledgeTree/stylesheet.php:
+
+	Added explicit background colour and formatted.
+
+2004-08-12 08:57  michaeljoseph
+
+	* sql/mysql/: install/tables.sql, upgrade/1.2.2-to-1.2.3.sql:
+
+	SQL changes in preparation for the next release.
+
+2004-08-12 08:35  michaeljoseph
+
+	* lib/browse/CategoryBrowser.inc:
+
+	Added FIXME
+
+2004-08-12 07:39  michaeljoseph
+
+	* presentation/lookAndFeel/knowledgeTree/administration/usermanagement/listUsersUI.inc:
+
+	Corrected SQL keyword case.
+
+2004-08-12 07:37  michaeljoseph
+
+	* presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/:
+	  listGroupsBL.php, listGroupsUI.inc:
+
+	Added support for multiple units in group adminstration.
+
+2004-08-12 07:37  michaeljoseph
+
+	* lib/users/User.inc:
+
+	Added function to return an array of unit IDs
+
+2004-08-12 07:26  michaeljoseph
+
+	* presentation/lookAndFeel/knowledgeTree/administration/usermanagement/listUsersUI.inc:
+
+	Added support for multiple units in user adminstration.
+
+2004-07-29 04:01  michaeljoseph
+
+	* presentation/lookAndFeel/knowledgeTree/documentmanagement/moveDocumentUI.inc:
+
+	Changed to standard usage of controller link helper function.
+
+2004-07-29 03:47  michaeljoseph
+
+	* lib/browse/FolderBrowser.inc:
+
+	Added FIXME for folder permission check bug.
+
+2004-07-29 03:35  michaeljoseph
+
+	* presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc:
+
+	Removed rootUrl appending code, callers should now use controller link construction helper function.
+
+2004-07-29 03:33  michaeljoseph
+
+	* presentation/lookAndFeel/knowledgeTree/foldermanagement/:
+	  addFolderDocTypeUI.inc, addFolderUI.inc,
+	  deleteFolderDocTypeUI.inc, modifyFolderDataUI.inc:
+
+	Changed to standard usage of controller link helper function.
+
+2004-07-29 03:33  michaeljoseph
+
+	* presentation/lookAndFeel/knowledgeTree/documentmanagement/browseBL.php:
+
+	Added FIXME for folder permission check bug.
+
+2004-07-29 03:27  michaeljoseph
+
+	* presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/editGroupBL.php:
+
+	Corrected style convention violations.
+
+2004-07-29 03:26  michaeljoseph
+
+	* presentation/lookAndFeel/knowledgeTree/administration/documentmanagement/restoreDeletedDocumentsUI.inc:
+
+	Changed to standard usage of controller link helper function.
+
+2004-07-29 03:24  michaeljoseph
+
+	* presentation/webpageTemplate.inc:
+
+	Corrected Mozilla unclickable link CSS bug (Peter S. Griffin)
+
+2004-07-29 03:20  michaeljoseph
+
+	* lib/session/SiteMap.inc:
+
+	Corrected style convention violations.
+	Added some variable initialisation and instantiation checking (to remove spurious E_NOTICEs)
+
+2004-07-29 03:19  michaeljoseph
+
+	* lib/session/control.inc:
+
+	Added check for a leading slash on the target page.
+
+2004-07-29 03:15  michaeljoseph
+
+	* control.php:
+
+	Added some variable initialisation and instantiation checking (to remove spurious E_NOTICEs)
+
+2004-07-29 03:01  michaeljoseph
+
+	* lib/session/Session.inc:
+
+	Changed logging level to INFO.
+
+2004-07-26 09:05  michaeljoseph
+
+	* lib/security/Permission.inc:
+
+	Corrected style convention violations.
+
+2004-07-26 09:01  michaeljoseph
+
+	* lib/browse/: DocumentTypeBrowser.inc, CategoryBrowser.inc:
+
+	Check if a document is live _before_ checking its permission.
+
+2004-07-26 09:01  michaeljoseph
+
+	* lib/browse/FolderBrowser.inc:
+
+	Corrected style convention violations.
+	Check if a document is live _before_ checking its permission.
+
+2004-07-26 08:58  michaeljoseph
+
+	* presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/addDocTypeFieldsLinkUI.inc:
+
+	Corrected all naming convention violations and fixed 'Back' button link construction for  'no Non-generic fields' case.
+
+2004-07-26 07:41  michaeljoseph
+
+	* lib/security/Permission.inc:
+
+	Corrected usage error- we're dealing with an object now instead of a passed in folderID
+
+2004-07-19 06:38  michaeljoseph
+
+	* lib/unitmanagement/Unit.inc:
+
+	#986726- the rename operation was renaming the folder to the old folder name (Paul Gier)
+
+2004-07-15 02:09  michaeljoseph
+
+	* config/environment.php:
+
+	Reverted to neutral configuration defaults.
+
+2004-07-15 01:57  michaeljoseph
+
+	* presentation/lookAndFeel/knowledgeTree/:
+	  documentmanagement/modifyGenericMetaDataBL.php,
+	  documentmanagement/modifySpecificMetaDataBL.php,
+	  foldermanagement/editBL.php,
+	  foldermanagement/modifyFolderDataBL.php:
+
+	Changed all references to store.php from relative to absolute.
+
+2004-07-14 01:37  jacquiz
+
+	* lib/security/Permission.inc:
+
+	Type:			Bug fix
+	Description:		Added the userHasFolderReadPermission to the
+	userHasDocumentReadPermission check
+
+2004-07-13 03:49  jacquiz
+
+	* presentation/lookAndFeel/knowledgeTree/foldermanagement/addFolderCollaborationBL.php:
+
+	Type:			functionality change
+	Description:		Passing through folder object instead of folder id to permissions
+	checks to avoid redundant DB accesses to intsantiate db model objects
+
+2004-07-13 02:34  jacquiz
+
+	* presentation/lookAndFeel/knowledgeTree/:
+	  documentmanagement/addDocumentBL.php,
+	  documentmanagement/addDocumentUI.inc,
+	  foldermanagement/addFolderCollaborationBL.php,
+	  foldermanagement/addGroupFolderLinkBL.php,
+	  foldermanagement/deleteDependantDocumentBL.php,
+	  foldermanagement/deleteFolderBL.php,
+	  foldermanagement/deleteFolderDocTypeBL.php,
+	  foldermanagement/deleteGroupFolderLinkBL.php,
+	  foldermanagement/editGroupFolderLinkBL.php,
+	  foldermanagement/viewDependantDocumentsBL.php,
+	  foldermanagement/addFolderDocTypeBL.php,
+	  foldermanagement/deleteFolderCollaborationBL.php:
+
+	Type:			functionality change
+	Description:		Passing through folder object instead of folder id to permissions
+	checks to avoid redundant DB accesses to intsantiate db model objects
+
+2004-07-13 02:21  jacquiz
+
+	* presentation/lookAndFeel/knowledgeTree/subscriptions/addSubscriptionBL.php,
+	  lib/browse/CategoryBrowser.inc,
+	  lib/browse/DocumentTypeBrowser.inc,
+	  presentation/lookAndFeel/knowledgeTree/documentmanagement/downloadBL.php,
+	  presentation/lookAndFeel/knowledgeTree/documentmanagement/emailBL.php,
+	  presentation/lookAndFeel/knowledgeTree/documentmanagement/viewHistoryBL.php:
+
+	Type:			functionality change
+	Description:		Passing through document object instead of document id to permissions checks to avoid redundant DB accesses to intsantiate db model objects
+
+2004-07-13 02:13  jacquiz
+
+	* presentation/lookAndFeel/knowledgeTree/documentmanagement/checkInDocumentBL.php,
+	  presentation/lookAndFeel/knowledgeTree/documentmanagement/checkOutDocumentBL.php,
+	  presentation/lookAndFeel/knowledgeTree/documentmanagement/collaborationBL.php,
+	  presentation/lookAndFeel/knowledgeTree/documentmanagement/deleteDocumentBL.php,
+	  presentation/lookAndFeel/knowledgeTree/documentmanagement/moveDocumentBL.php,
+	  presentation/lookAndFeel/knowledgeTree/documentmanagement/removeDocumentLinkBL.php,
+	  presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentLinkBL.php,
+	  presentation/lookAndFeel/knowledgeTree/documentmanagement/modifyBL.php,
+	  presentation/lookAndFeel/knowledgeTree/documentmanagement/modifyGenericMetaDataBL.php,
+	  presentation/lookAndFeel/knowledgeTree/documentmanagement/modifySpecificMetaDataBL.php,
+	  presentation/lookAndFeel/knowledgeTree/documentmanagement/viewBL.php,
+	  tests/documentmanagement/viewBL.php:
+
+	Type:			functionality change
+	Description:		Passing through document object instead of document id to permissions
+	checks to avoid redundant DB accesses to intsantiate db model objects
+
+2004-07-12 08:17  jacquiz
+
+	* presentation/lookAndFeel/knowledgeTree/foldermanagement/addFolderBL.php:
+
+	Type:			functionality change
+	Description:		Passing through folder object instead of folder id to permissions
+	checks to avoid redundant DB accesses to intsantiate db model objects
+
+2004-07-12 05:16  jacquiz
+
+	* presentation/lookAndFeel/knowledgeTree/foldermanagement/editBL.php:
+
+	Type:			functionality change
+	Description:		Passing through folder object instead of folder id to permissions
+	checks to avoid redundant DB accesses to intsantiate db model objects
+
+2004-07-12 04:52  jacquiz
+
+	* presentation/lookAndFeel/knowledgeTree/documentmanagement/viewBL.php:
+
+	Type:			functionality change
+	Description:		Pass the document object around to the permission checks instead of the
+	documentID to avoid redundant db checks
+
+2004-07-12 03:10  jacquiz
+
+	* lib/browse/FolderBrowser.inc:
+
+	Type:			functionality change
+	Description:		Now checks folder permissions before displaying folders
+
+2004-07-12 03:09  jacquiz
+
+	* presentation/lookAndFeel/knowledgeTree/discussions/:
+	  addCommentBL.php, addCommentUI.inc, viewCommentBL.php,
+	  viewCommentUI.inc, viewDiscussionUI.inc:
+
+	Type:			Bug fix
+	Description:		Pass through the TreadID so that the comments for the correct
+	thread is displayed
+
+2004-07-12 03:07  jacquiz
+
+	* lib/System.inc:
+
+	Type:			functionality change
+	Description:		Added the folderHiding configuration parameter
+
+2004-07-12 03:06  jacquiz
+
+	* lib/session/SiteMap.inc:
+
+	Type:			functionality change
+	Description:	Rationalised some fot he permissions checks, eg sysadmin and unit admin checks
+	to avoid redundant db accesses
+
+2004-07-12 03:04  jacquiz
+
+	* lib/security/Permission.inc:
+
+	Type:			functionality change
+	Description:		Ensured folder and document objects were being passed around
+	instead of the IDs. This avoids redundant object initialisation from the Database. Removed from
+	redundant calls to permission checks in more complicated checking methods.
+
+2004-07-12 03:00  jacquiz
+
+	* config/environment.php:
+
+	Type:			functionality change
+	Description:		Added a global variable $default->folderHidingFlag that determines whether or not
+	to enable folder hiding of folders to which users do not have permission.
+	Behaviour before fix:	All navigation was viewable to the user
+	Behaviour after fix:	Now the user is only have to see folders to which they have access
+
+2004-07-09 06:44  michaeljoseph
+
+	* tests/authentication/ldap.php:
+
+	Updating old test with a less believable test password.
+
+2004-07-08 02:52  michaeljoseph
+
+	* config/dmsDefaults.php:
+
+	#987152- changed locale category to LC_ALL.
+
+2004-07-08 02:45  michaeljoseph
+
+	* presentation/login.php:
+
+	#986627- removed redirect variable sanitisation- the redirect variable is used to lookup a page in the SiteMap, so this prevents a malicious redirect from being used.
+
+2004-07-08 02:35  michaeljoseph
+
+	* config/siteMap.inc,
+	  presentation/lookAndFeel/knowledgeTree/preferences/editUserPrefsUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/preferences/passwordManagementBL.php,
+	  presentation/lookAndFeel/knowledgeTree/preferences/passwordManagementUI.inc:
+
+	William Hawkins' patch to allow users to change their own passwords.
+
+2004-06-24 06:09  michael
+
+	* presentation/login.php:
+
+	Type:			Cosmetic
+	Description:		Changed the login error message to be more accurate/informative.
+
+2004-06-15 03:22  michael
+
+	* lib/Log.inc:
+
+	Added the ability to specify logging filename prefix.
+
+2004-06-15 03:21  michael
+
+	* config/dmsDefaults.php:
+
+	Added timer logging instance
+	Added dummy gettext function when its not installed.
+
+2004-05-27 01:50  michael
+
+	* config/environment.php:
+
+	Change default ssl status to false.
 
 Version 1.2.2
 * Tue May 26 2004 Michael Joseph <michael@jamwarehouse.com>
