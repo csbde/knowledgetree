@@ -78,30 +78,38 @@ class PatternListFromQuery {
 		$sql->query($this->sQuery);		
 		$sToRender = "";
 		$sToRender .= "<table border = 0, cellpadding = 5 " . (isset($this->iTableWidth) ? ", width = $this->iTableWidth" : "") . " >\n";
-		while ($sql->next_record()) {
-			if (isset($this->sTableHeading)) {
-				$sToRender .= "<caption align = left><b>$this->sTableHeading</b></caption>\n";
-			}
-			
-			$sToRender .= "<tr><td>\n";
-			for ($i = 0; $i < count($this->aColumns); $i++) {		
-				$sToRender .= "<tr>\n";				
-				switch ($this->aColumnTypes[$i]) {						
-					//plain text field
-					case 1:						
-						$sToRender .= "<td>" . $this->aColumnNames[$i] . "</td><td>" . $sql->f($this->aColumns[$i]) . "</td>\n";
-						break;
-					//text area
-					case 2:
-						$sToRender .= "<td>" . $this->aColumnNames[$i] . "</td><td><textarea cols=$this->iTextAreaColumns rows=$this->iTextAreaRows READONLY>" . $sql->f($this->aColumns[$i]) . "</textarea></td>\n";
-						break;
-					case 3:
-						$sToRender .= "<td>" . $this->aColumnNames[$i] . "</b></td><td><a href=\"" . $this->aHyperLinkURL[$i] . "?" . $this->replaceValues($this->aQueryStringText[$i], $sql) . "\">" . $sql->f($this->aColumns[$i]) . "</a></td>\n";
-						break;
-					default:
-						break;
-				}				
-				$sToRender .= "</tr>\n";
+		
+		if (isset($this->sTableHeading)) {
+					$sToRender .= "<caption align = left><b>$this->sTableHeading</b></caption>\n";
+		}
+		
+		if ($sql->num_rows() == 0) {
+			$sToRender .= "<tr>\n";					
+			$sToRender .= "<td colspan=" . count($this->aColumns) . ">No " . (isset($this->sTableHeading) ? "$this->sTableHeading" : "") . " data</td>\n";
+			$sToRender .= "</tr>\n";
+		} else {
+		
+			while ($sql->next_record()) {
+				$sToRender .= "<tr><td>\n";
+				for ($i = 0; $i < count($this->aColumns); $i++) {		
+					$sToRender .= "<tr>\n";				
+					switch ($this->aColumnTypes[$i]) {						
+						//plain text field
+						case 1:						
+							$sToRender .= "<td>" . $this->aColumnNames[$i] . "</td><td>" . $sql->f($this->aColumns[$i]) . "</td>\n";
+							break;
+						//text area
+						case 2:
+							$sToRender .= "<td>" . $this->aColumnNames[$i] . "</td><td><textarea cols=$this->iTextAreaColumns rows=$this->iTextAreaRows READONLY>" . $sql->f($this->aColumns[$i]) . "</textarea></td>\n";
+							break;
+						case 3:
+							$sToRender .= "<td>" . $this->aColumnNames[$i] . "</b></td><td><a href=\"" . $this->aHyperLinkURL[$i] . "?" . $this->replaceValues($this->aQueryStringText[$i], $sql) . "\">" . $sql->f($this->aColumns[$i]) . "</a></td>\n";
+							break;
+						default:
+							break;
+					}				
+					$sToRender .= "</tr>\n";
+				}
 			}
 		}
 		$sToRender .= "</table>\n";		

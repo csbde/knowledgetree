@@ -16,32 +16,47 @@
 
 require_once("../../../../config/dmsDefaults.php");
 
-if (checkSession()) {
-	
-	require_once("$default->owl_fs_root/lib/security/permission.inc");
-	require_once("$default->owl_fs_root/lib/documentmanagement/Document.inc");
-	require_once("$default->owl_fs_root/lib/foldermanagement/Folder.inc");
-	
-	if (Permission::userHasDocumentReadPermission($fDocumentID)) {
-	
+if (checkSession()) {	
+	if (isset($fDocumentID)) {	
 		require_once("$default->owl_fs_root/lib/security/permission.inc");
 		require_once("$default->owl_fs_root/lib/documentmanagement/Document.inc");
 		require_once("$default->owl_fs_root/lib/foldermanagement/Folder.inc");
-		require_once("$default->owl_fs_root/lib/visualpatterns/PatternListFromQuery.inc");	
-		require_once("$default->owl_fs_root/lib/visualpatterns/PatternTableSqlQuery.inc");
-		require_once("$default->owl_fs_root/lib/visualpatterns/PatternCustom.inc");
-		require_once("$default->owl_fs_root/presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc");
-		require_once("$default->owl_fs_root/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
+		
+		if (Permission::userHasDocumentReadPermission($fDocumentID)) {		
+			require_once("$default->owl_fs_root/lib/security/permission.inc");
+			require_once("$default->owl_fs_root/lib/documentmanagement/Document.inc");
+			require_once("$default->owl_fs_root/lib/foldermanagement/Folder.inc");
+			require_once("$default->owl_fs_root/lib/visualpatterns/PatternListFromQuery.inc");	
+			require_once("$default->owl_fs_root/lib/visualpatterns/PatternTableSqlQuery.inc");
+			require_once("$default->owl_fs_root/lib/visualpatterns/PatternCustom.inc");
+			require_once("$default->owl_fs_root/presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc");
+			require_once("$default->owl_fs_root/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
+			require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");
+			require_once("$default->owl_fs_root/presentation/Html.inc");
+		
+			$oDocument = & Document::get($fDocumentID);	
+			$oPatternCustom = & new PatternCustom();
+			$oPatternCustom->setHtml(getPage($oDocument));
+			$main->setCentralPayload($oPatternCustom);
+			$main->render();
+		} else {
 		require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");
-		require_once("$default->owl_fs_root/presentation/Html.inc");
-	
-		$oDocument = & Document::get($fDocumentID);	
+		require_once("$default->owl_fs_root/lib/visualpatterns/PatternCustom.inc");
+		
 		$oPatternCustom = & new PatternCustom();
-		$oPatternCustom->setHtml(getPage($oDocument));
+		$oPatternCustom->setHtml("<p class=\"errorText\">Either you do not have permission to view this document,<br>" .
+								"or the document you have chosen no longer exists on the file sytem.</p>\n");
 		$main->setCentralPayload($oPatternCustom);
 		$main->render();
+		}
 	} else {
-		echo "You do not have permission to view this document";
+		require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");
+		require_once("$default->owl_fs_root/lib/visualpatterns/PatternCustom.inc");
+		
+		$oPatternCustom = & new PatternCustom();
+		$oPatternCustom->setHtml("<p class=\"errorText\">You have not chosen a document to view</p>\n");
+		$main->setCentralPayload($oPatternCustom);
+		$main->render();			
 	}
 }
 
