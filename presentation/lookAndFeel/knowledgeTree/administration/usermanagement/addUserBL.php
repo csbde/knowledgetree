@@ -78,7 +78,7 @@ if (checkSession()) {
         $aResult = $oAuth->getUser($fName, $aAttributes);
         // display details page
         if ($bLdap) {
-            $oPatternCustom->setHtml(getDetailsLDAPPage($fName,$aResult));
+            $oPatternCustom->setHtml(getDetailsLDAPPage($fName,$aResult, $oAuth->oLdap->getUserIdentifier()));
             $main->setFormAction($_SERVER["PHP_SELF"]. "?fAddToDb=1");
         } else {
             $oPatternCustom->setHtml(getDetailsDBPage($fName,$aResult));
