@@ -81,6 +81,29 @@ class DocumentManager {
 		
 	}
 	
+	
+	/**
+	* Get the primary key for a document type
+	*
+	* @param $sName		Name of document type to get ID for
+	*
+	* @return int document type id if the document type exists, false otherwise
+	*/
+	function & getDocumentTypeID($sName) {
+		global $lang_err_document_type_field_does_not_exist, $default;
+		//escape special characters that may interfere with the db query
+		$sName = addslashes($sName);
+		
+		if ($this->documentTypeExists($sName)) {
+			$sql = new Owl_DB();
+			$sql->query("SELECT ID FROM " .  $default->owl_document_types_table . " WHERE name = '" . $sName . "'");
+			$sql->next_record();
+			return $sql->f("ID");
+		}
+		$default->errorMessage = $lang_err_document_type_does_not_exist . $sName;
+		return false;
+	}
+	
 	/**
 	* Checks to see if a document type with a given name
 	* already exists
@@ -112,9 +135,9 @@ class DocumentManager {
 		//Get hold of the global error string
 		global $default;
 		//if the document field type is not associated with the document
-		if (!$this->documentTypeFieldExistsForDocumentType($iDocumentTypeID, $iDocumentTypeFieldID)) {
+		if (!($this->documentTypeFieldExistsForDocumentType($iDocumentTypeID, $iDocumentTypeFieldID))) {
 			$sql = new Owl_DB();
-			$result = $sql->query("INSERT INTO  " . $default->document_type_fields_table . "  (document_type_id, field_id, is_mandatory) VALUES (" . $iDocumentTypeID . ", " . $iDocumentTypeFieldID . ", " . $bIsMandatory . ")");
+			$result = $sql->query("INSERT INTO  " . $default->owl_document_type_fields_table . "  (document_type_id, field_id, is_mandatory) VALUES (" . $iDocumentTypeID . ", " . $iDocumentTypeFieldID . ", " . $bIsMandatory . ")");
 			if (!$result) {
 				$default->errorMessage =  "Database Error.  Failed to insert document field type with ID " . $iDocumentTypeFieldID;
 				return false;
@@ -132,11 +155,12 @@ class DocumentManager {
 	* @param $iDocumentTypeFieldID	Primary key of document type field
 	*/
 	function deleteDocumentTypeFieldLink($iDocumentTypeID, $iDocumentTypeFieldID) {
+		global $default;
 		//Get hold of the global error string
 		global $default;
 		if ($this->documentTypeFieldExistsForDocumentType($iDocumentTypeID, $iDocumentTypeFieldID)) {
 			$sql = new Owl_DB();
-			$result = $sql->query("DELETE FROM  " . $default->document_type_fields_table . "  where document_type_id = " . $iDocumentTypeID . " AND field_id = " . $iDocumentTypeFieldID);
+			$result = $sql->query("DELETE FROM  " . $default->owl_document_type_fields_table . "  where document_type_id = " . $iDocumentTypeID . " AND field_id = " . $iDocumentTypeFieldID);
 			if (!result) {
 				$default->errorMessage = "Database Error. Failed to deleted document type field with document_type_id " . $iDocumentTypeID . " and field_id " . $iDocumentTypeFieldID;
 				return false;
@@ -157,9 +181,10 @@ class DocumentManager {
 	*
 	* @return true is the document field type is linked to the document type, false otherwise
 	*/
-	function documentTypeFieldExistsForDocumentType($iDocumentTypeID, $iDocumentTypeFieldID) {		
+	function documentTypeFieldExistsForDocumentType($iDocumentTypeID, $iDocumentTypeFieldID) {
+		global $default;
 		$sql = new Owl_DB();
-		$sql->query("SELECT * FROM  " . $default->document_type_fields_table . "  WHERE document_type_id = " . $iDocumentTypeID . " AND field_id = " . $iDocumentTypeFieldID);
+		$sql->query("SELECT * FROM  " . $default->owl_document_type_fields_table . "  WHERE document_type_id = " . $iDocumentTypeID . " AND field_id = " . $iDocumentTypeFieldID);
 		return $sql->next_record();
 	}
 	
@@ -216,6 +241,26 @@ class DocumentManager {
 	}
 	
 	/**
+	* Get the primary key for a document type field
+	*
+	* @param $sName		Document type field name to get primary key for
+	*
+	* @return ID if document type field exists, false otherwise and sets $default->errorMessage
+	*/
+	function & getDocumentTypeFieldID($sName) {
+		global $lang_err_document_type_field_does_not_exist, $default;
+		$sName = addslashes($sName);
+		if ($this->documentTypeFieldExists($sName)) {
+			$sql = new Owl_DB();
+			$sql->query("SELECT id FROM " . $default->owl_fields_table . " WHERE name = '" . $sName . "'");
+			$sql->next_record();
+			return $sql->f("id");
+		}
+		$default->errorMessage = $lang_err_document_type_field_does_not_exist . $sName;
+		return false;
+	}
+	
+	/**
 	* Checks whether a document type field exists
 	*
 	* @param $sName		Document type field name to check
@@ -232,6 +277,4 @@ class DocumentManager {
 	
 	
 }
-
-
 ?>
