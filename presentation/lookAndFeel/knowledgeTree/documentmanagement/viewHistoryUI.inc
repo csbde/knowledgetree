@@ -34,7 +34,7 @@ function getDocumentHistory($iDocumentID) {
     $sQuery = "SELECT DTT.name AS transaction_name, U.name AS user_name, DT.version AS version, DT.comment AS comment, DT.datetime AS datetime " .
 			"FROM $default->owl_document_transactions_table AS DT INNER JOIN $default->owl_users_table AS U ON DT.user_id = U.id " .
 			"INNER JOIN $default->owl_transaction_types_table AS DTT ON DTT.id = DT.transaction_id " . 
-			"WHERE DT.document_id = $iDocumentID";
+			"WHERE DT.document_id = $iDocumentID ORDER BY DT.datetime DESC";
 	$sql = $default->db;
     $sToRender  = "<table cellpadding=\"5\" border=\"1\" width=\"90%\">\n";
     $sToRender .= "<caption align=\"top\" colspan=\"5\" align=\"left\"><b>Transaction History</b></caption>\n";
