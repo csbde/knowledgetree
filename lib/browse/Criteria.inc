@@ -389,6 +389,15 @@ class GenericMetadataCriterion extends BrowseCriterion {
     }
 }
 
+class DateModifiedCriterion extends DateCreatedCriterion {
+    function documentDisplay ($oDocument) {
+        return $oDocument->getLastModifiedDate();
+    }
+    function getName() {
+        return "datemodified";
+    }
+}
+
 class Criteria {
     function &_getBaseCriterionByNumber($iID) {
         global $default;
@@ -411,6 +420,9 @@ class Criteria {
             case -6:
                 $oCriterion =& new IDCriterion(_("ID"), 'id', 'id', -6);
                 break;
+            case -7:
+                $oCriterion =& new DateModifiedCriterion(_("Date Modified"), 'modified', 'modified', -7);
+                break;
         }
         return $oCriterion;
     }
@@ -421,7 +433,7 @@ class Criteria {
             return;
         }
         $aBaseCriteria = array();
-        $aIDs = range(-1, -6); 
+        $aIDs = range(-1, -7); 
         foreach ($aIDs as $iID) {
             $oCriterion =& Criteria::_getBaseCriterionByNumber($iID);
             $aBaseCriteria[$iID] =& $oCriterion;
