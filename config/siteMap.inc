@@ -53,6 +53,7 @@ $default->siteMap->addPage("modifyDocumentArchiveSettings", "/presentation/lookA
 $default->siteMap->addPage("requestDocumentRestore", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/archiving/requestDocumentRestoreBL.php", "Manage Documents", User, "Request Document Restoration", false);
 
 $default->siteMap->addPage("addDocument", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentBL.php", "Manage Documents", User, _("Add A Document"));
+$default->siteMap->addPage("bulkUpload", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/bulkUploadBL.php", "Manage Documents", User, _("Bulk Upload"));
 
 // folder management
 $default->siteMap->addPage("addFolder", "/presentation/lookAndFeel/knowledgeTree/foldermanagement/addFolderBL.php", "Manage Documents", User, _("Add A Folder"));

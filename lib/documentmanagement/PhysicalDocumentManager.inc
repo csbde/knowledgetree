@@ -25,6 +25,12 @@
  * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
  * @package lib.documentmanagement 
  */
+
+// used for well-known MIME deterministic techniques
+if (!extension_loaded('fileinfo')) {
+    @dl('fileinfo.' . PHP_SHLIB_SUFFIX);
+}
+
 class PhysicalDocumentManager {
 	
 	/**
@@ -392,38 +398,50 @@ class PhysicalDocumentManager {
 		$oDocument = & new Document($aFileArray['name'], $aFileArray['name'], $aFileArray['size'], $_SESSION["userID"], PhysicalDocumentManager::getMimeTypeID($aFileArray['type'], $aFileArray['name']), $iFolderID);
 		return $oDocument;	
 	}
-	
-	/**
-	* Get the mime type primary key for a specific mime type
-	*
-	* @param mime type
-	*
-	* @return int mime type primary key if found, else default mime type primary key (text/plain)
-	*/
-	function getMimeTypeID($sMimeType, $sFileName) {
-		global $default;
-		$sql = $default->db;
+
+    /**
+    * Strip all but the extension from a file. For instance, input of
+    * 'foo.tif' would return 'tif'.
+    *
+    * @param string filename
+    * @return string extension for given file, without filename itself
+    */
+    function stripAllButExtension($sFileName) {
+        return strtolower(substr($sFileName, strpos($sFileName, ".")+1, strlen($sFileName) - strpos($sFileName, ".")));
+    }
+
+    /**
+    * Get the mime type primary key for a specific mime type
+    *
+    * @param string detected mime type
+    * @param string filename
+    * @return int mime type primary key if found, else default mime type primary key (text/plain)
+    */
+    function getMimeTypeID($sMimeType, $sFileName) {
+        global $default;
+        $sql = $default->db;
         
-        // check by file extension
-        $sExtension = strtolower(substr($sFileName, strpos($sFileName, ".")+1, strlen($sFileName) - strpos($sFileName, ".")));
-        $sql->query("SELECT id FROM " . $default->mimetypes_table . " WHERE LOWER(filetypes) = '$sExtension'");
-        if ($sql->next_record()) {
-            return $sql->f("id");
+        if (!$sMimeType) {
+          // check by file extension
+          $sExtension = PhysicalDocumentManager::stripAllButExtension($sFileName);
+          $sql->query("SELECT id FROM " . $default->mimetypes_table . " WHERE LOWER(filetypes) = '$sExtension'");
+          if ($sql->next_record()) {
+              return $sql->f("id");
+          }
         }
         
-		//get the mime type	
-		if (isset($sMimeType)) {
-			$sql->query("SELECT id FROM " . $default->mimetypes_table . " WHERE mimetypes = '$sMimeType'");		
-			if ($sql->next_record()) {
-				//get the mime type id
-				return $sql->f("id");
-			}
-		}
+        // get the mime type id
+        if (isset($sMimeType)) {
+            $sql->query("SELECT id FROM " . $default->mimetypes_table . " WHERE mimetypes = '$sMimeType'");     
+            if ($sql->next_record()) {
+                return $sql->f("id");
+            }
+        }
 
-		//otherwise return the default mime type
-		return PhysicalDocumentManager::getDefaultMimeTypeID();
-	}
-    
+        //otherwise return the default mime type
+        return PhysicalDocumentManager::getDefaultMimeTypeID();
+    }
+
 	/**
 	* Get the default mime type, which is text/plain
 	*
@@ -448,7 +466,31 @@ class PhysicalDocumentManager {
 		}
 		return "application/octet-stream";
 	}
-	
+
+    /**
+    * Try well-defined methods for getting the MIME type for a file on disk.
+    * First try PECL's Fileinfo library, then try mime_content_type() builtin.
+    * If neither are available, returns NULL.
+    *
+    * @param string file on disk
+    * @return string mime time for given filename, or NULL
+    */
+    function getMimeTypeFromFile($sFileName) {
+        if (extension_loaded('fileinfo')) {
+            $res = finfo_open(FILEINFO_MIME);
+            $sType = finfo_file($res, $sFileName);
+        }
+
+        if (!$sType && function_exists('mime_content_type')) {
+            $sType = @mime_content_type($sFileName);
+        }
+
+        if ($sType) {
+            return preg_replace('/;.*$/', '', $sType);
+        }
+
+        return NULL;
+    }
 }
 
 ?>

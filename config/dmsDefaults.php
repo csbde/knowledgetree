@@ -61,8 +61,8 @@ class KTInit {
     function setupLogging () {
         global $default;
         require_once("$default->fileSystemRoot/lib/Log.inc");
-        $default->log = new Log($default->fileSystemRoot . "/log", INFO);
-        $default->timerLog = new Log($default->fileSystemRoot . "/log", INFO, "timer");
+        $default->log = new Log($default->fileSystemRoot . "/log", $default->logLevel);
+        $default->timerLog = new Log($default->fileSystemRoot . "/log", $default->logLevel, "timer");
     }
     // }}}
 
@@ -146,6 +146,11 @@ class KTInit {
 $default->fileSystemRoot = KT_DIR;
 $default->serverName = $_SERVER['HTTP_HOST'];
 
+$default->execSearchPath = $_SERVER['PATH'];
+$default->unzipCommand = "unzip";
+$default->logLevel = INFO;
+$default->pearPath = KT_DIR . '/pear';
+
 // include the environment settings
 require_once("environment.php");
 
@@ -153,7 +158,7 @@ require_once("environment.php");
 // table mapping entries
 include("tableMappings.inc");
 
-KTInit::prependPath($default->pear_path);
+KTInit::prependPath($default->pearPath);
 
 // instantiate log
 KTInit::setupLogging();
