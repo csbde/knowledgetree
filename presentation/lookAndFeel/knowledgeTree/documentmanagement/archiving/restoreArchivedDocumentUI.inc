@@ -31,7 +31,7 @@
 function getRestoreArchivedDocumentPage($oDocument) {
 	global $default;
 	
-    $sToRender = renderHeading("Restore Archived Document") . renderDocumentPath($oDocument) . "\n<br>\n";
+    $sToRender = renderHeading(_("Restore Archived Document")) . renderDocumentPath($oDocument) . "\n<br>\n";
     
     $sToRender .= "<table>\n";
     $sToRender .= "\t<tr>\n\t\t<td><strong>This document has been archived!</strong></td>\n\t</tr>\n";
@@ -52,7 +52,7 @@ function getRestoreArchivedDocumentPage($oDocument) {
 function getRequestRestoreDocumentPage($oDocument) {
 	global $default;
 	
-    $sToRender = renderHeading("Request Archived Document Restoration") . renderDocumentPath($oDocument) . "\n<br>\n";
+    $sToRender = renderHeading(_("Request Archived Document Restoration")) . renderDocumentPath($oDocument) . "\n<br>\n";
     
     $sToRender .= "<table>\n";
 $sToRender .= "\t<tr>\n\t\t<td><strong>This document has been archived!</strong></td>\n\t</tr>\n";    
@@ -73,7 +73,7 @@ $sToRender .= "\t<tr>\n\t\t<td><strong>This document has been archived!</strong>
 function renderRequestSuccessPage($oDocument) {
 	global $default;
 	
-    $sToRender = renderHeading("Restore Archived Document");
+    $sToRender = renderHeading(_("Restore Archived Document"));
     $sToRender .= "<table>\n";
     $sToRender .= "\t<tr><td>Your request has been processed, you will be notified when the document is restored.</td></tr>\n";
     $sToRender .= "\t<tr><td><a href=\"$default->rootUrl/control.php?action=browse&fFolderID=" . $oDocument->getFolderID() . "\"><img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\" /></a></td></tr>\n";    
@@ -86,7 +86,7 @@ function renderRequestSuccessPage($oDocument) {
  */ 
 function renderRequestFailurePage($oDocument, $oUnitAdminUser) {
 	global $default;
-    $sToRender = renderHeading("Restore Archived Document");
+    $sToRender = renderHeading(_("Restore Archived Document"));
     $sToRender .= "<table>\n";
     $sToRender .= "\t<tr><td>There was an error requesting the restoration of this document from the archive.  Please try again later.</td></tr>\n";
     $sToRender .= "\t<tr><td><a href=\"$default->rootUrl/control.php?action=browse&fFolderID=" . $oDocument->getFolderID() . "\"><img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\" /></a></td></tr>\n";    

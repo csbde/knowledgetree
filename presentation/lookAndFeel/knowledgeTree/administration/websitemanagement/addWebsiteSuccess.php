@@ -33,7 +33,7 @@ if(checkSession()) {
     // include the page template (with navbar)
     require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 
-    $Center .= renderHeading("Add Website");
+    $Center .= renderHeading(_("Add Website"));
     $Center .= "<TABLE BORDER=\"0\" CELLSPACING=\"2\" CELLPADDING=\"2\">\n";
     $Center .= "<tr>\n";
     if($fWebSiteID != -1) {

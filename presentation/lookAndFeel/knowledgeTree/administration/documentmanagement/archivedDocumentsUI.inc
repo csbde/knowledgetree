@@ -31,7 +31,7 @@
 function renderStatusPage($aSuccessDocuments, $aErrorDocuments) {
 	global $default;
 	
-	$sToRender  = renderHeading("Archived Documents Restoration Status");
+	$sToRender  = renderHeading(_("Archived Documents Restoration Status"));
 	$sToRender .= "<table>";
 	if (count($aSuccessDocuments) > 0) {
 	    $sToRender .= "<tr><td>" . _("The following documents were successfully restored:") . "</td></tr>\n";
@@ -59,7 +59,7 @@ function renderStatusPage($aSuccessDocuments, $aErrorDocuments) {
 function renderRestoreConfirmationPage($aDocuments) {
 	global $default;
 	
-	$sToRender  = renderHeading("Restore Archived Documents");
+	$sToRender  = renderHeading(_("Restore Archived Documents"));
 	$sToRender .= "<table>";
     $sToRender .= "<tr><td>" . _("The documents you have chosen to restore from the archive are listed below.") . "</td></tr>\n";
     $sToRender .= "<tr><td>" . _("Click 'Restore' to confirm restoration, or 'Cancel' to abort.") . "</td></tr>\n";
@@ -87,7 +87,7 @@ function renderRestoreConfirmationPage($aDocuments) {
  */ 
 function renderSearchPage($aMetaTagIDs = array()) {
 	global $default;
-    $sToRender  = renderHeading("Archived Documents Search");
+    $sToRender  = renderHeading(_("Archived Documents Search"));
     
 	$sToRender .= "<table width=\"600\">\n";
 	$sToRender .= "<tr>\n";
@@ -123,7 +123,7 @@ function renderSearchPage($aMetaTagIDs = array()) {
 function renderArchivedDocumentsResultsPage($aDocuments) {
 	global $default;
 
-	$sToRender  = renderHeading("Archived Documents Search Results");
+	$sToRender  = renderHeading(_("Archived Documents Search Results"));
 	$sToRender .= "<table>";			
     $sToRender .= "<tr><td>" . _("Select the archived documents you'd like to restore, and click 'Restore', or 'Cancel' to abort") . "</td></tr>\n";
 	for ($i=0; $i<count($aDocuments); $i++) {

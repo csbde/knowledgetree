@@ -28,7 +28,7 @@
 function getPage() {
 	global $default;
 
-	$aDisplayRowNames = array("Website Name:", "Website URL: ", "WebMaster");
+	$aDisplayRowNames = array(_("Website Name") . ":", _("Website URL") . ": ", _("WebMaster"));
 	$aParameterNumbers = array(0,1,2);
 	$aDisplayColumnTypes = array(1,1,3);
 	$aRequired = array(1,1,1);
@@ -41,7 +41,7 @@ function getPage() {
 	$oPatternCreate->setUniqueName("website");
     $oPatternCreate->setDefaultValues(array(1=>"http://"));
 	
-    $sToRender .= renderHeading("Add Website");
+    $sToRender .= renderHeading(_("Add Website"));
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<tr>\n";
@@ -61,7 +61,7 @@ function getPage() {
 function getAddPageFail() {	
 	global $default;
 			
-    $sToRender .= renderHeading("Add Website");
+    $sToRender .= renderHeading(_("Add Website"));
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr><td><b>Addition Unsuccessful</b></td></tr>\n";
 	$sToRender .= "<tr></tr>\n";

@@ -35,7 +35,7 @@ function getFolderPath($iFolderID) {
 
 function getFolderNotEmptyPage($iFolderID, $iObjectCount, $sObjectType) {
 	global $default;
-    $sToRender  = renderHeading("Delete Folder");    
+    $sToRender  = renderHeading(_("Delete Folder"));    
 	$sToRender .= getFolderPath($iFolderID) . "<br>\n";
 	$sToRender .= "<table border=\"0\">\n";
 	$sToRender .= "<tr>\n";
@@ -54,7 +54,7 @@ function getFolderNotEmptyPage($iFolderID, $iObjectCount, $sObjectType) {
 
 function getConfirmPage($iFolderID, $sFolderName) {
 	global $default;
-    $sToRender  = renderHeading("Delete Folder");
+    $sToRender  = renderHeading(_("Delete Folder"));
 	$sToRender .= getFolderPath($iFolderID) . "<br>\n";
 	$sToRender .= "<table border=\"0\">\n";
 	$sToRender .= "<tr>\n";

@@ -31,7 +31,7 @@
 function renderStatusPage($oDocument) {
 	global $default;
 	
-	$sToRender  = renderHeading("Restore Deleted Document Status");
+	$sToRender  = renderHeading(_("Restore Deleted Document"));
 	$sToRender .= "<table>";
     $sToRender .= "<tr><td>" . _("The document") . " <strong>" . $oDocument->getName() . "</strong> " . _("was successfully restored:") . "</td></tr>\n";
     $sToRender .= "<tr><td>" . generateControllerLink("viewDocument", "fDocumentID=" . $oDocument->getID(), $oDocument->getDisplayPath(true)) . "\n";
@@ -47,7 +47,7 @@ function renderStatusPage($oDocument) {
  */
 function renderConfirmationPage($iDocumentID, $iFolderID) {
 	global $default;
-    $sToRender = renderHeading("Restore Deleted Document");
+    $sToRender = renderHeading(_("Restore Deleted Document"));
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr>\n<td>" . 
 		sprintf(_("Are you sure you want to restore deleted document <strong>%s</strong>"),Document::getDocumentName($iDocumentID)) .
@@ -65,7 +65,7 @@ function renderConfirmationPage($iDocumentID, $iFolderID) {
  */
 function renderFolderBrowsePage($iDocumentID, $iFolderID) {
 	global $default;
-    $sToRender = renderHeading("Restore Deleted Document");
+    $sToRender = renderHeading(_("Restore Deleted Document"));
 	$sToRender .= "<table width=100%>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>" . renderFolderPath($iFolderID, generateControllerUrl("restoreDeletedDocument", "fDocumentID=$iDocumentID", false)) . "</td>\n";

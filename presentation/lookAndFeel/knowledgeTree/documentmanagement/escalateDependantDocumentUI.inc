@@ -28,7 +28,7 @@
 
 function getPage($oDependantDocument) {
 	global $default;
-	$sToRender = renderHeading("Dependant Document Send Escalation Message");
+	$sToRender = renderHeading(_("Dependant Document Send Escalation Message"));
 	$oDocument = Document::get($oDependantDocument->getParentDocumentID());
 	$iFolderID =  $oDocument->getFolderID();
 	$sToRender .= renderFolderPath($iFolderID, generateControllerUrl("browse", "fFolderID=$iFolderID"), false);

@@ -61,7 +61,7 @@ function getUserDropDown($iGroupID, $iUserID) {
 
 function getEditPage($iFolderCollaborationID, $iFolderID, $iGroupID, $iUserID, $iRoleID, $iSequenceNumber) {
 	global $default;
-	$sToRender = renderHeading("Edit Folder Collaboration Step");
+	$sToRender = renderHeading(_("Edit Folder Collaboration Step"));
     $sToRender .= getFolderPath($iFolderID);
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr>\n";

@@ -33,10 +33,10 @@ function renderEditableDocumentData($oDocument, $iDocumentTypeID) {
 	$sToRender;
 	if ($oDocument) {
 		$sToRender .= "<table>\n";
-		$sToRender .= "<caption><strong>Document Data</strong></caption>\n";
+		$sToRender .= "<caption><strong>" . _("Document Data") . "</strong></caption>\n";
 		$sToRender .= "<tr>\n";		
 		$sToRender .= "<td bgcolor=\"$sTDBGColour\">\n";
-		$sToRender .= "<b>Document Title </b>\n";
+		$sToRender .= "<b>" . _("Document Title") . " </b>\n";
 		$sToRender .= "</td>\n";
 		$sToRender .= "<td>\n";
 		$sToRender .= "<input type=\"text\" name=\"fDocumentName\" value=\"" . $oDocument->getName() . "\" />\n";
@@ -44,7 +44,7 @@ function renderEditableDocumentData($oDocument, $iDocumentTypeID) {
 		$sToRender .= "</tr>\n";
 		$sToRender .= "<tr>\n";	
 		$sToRender .= "<td bgcolor=\"$sTDBGColour\">\n";
-		$sToRender .= "<b>Document Type </b>\n";
+		$sToRender .= "<b>" . _("Document Type") . " </b>\n";
 		$sToRender .= "</td>\n";
 		$sToRender .= "<td>\n";
 		$sToRender .= getDocumentType($oDocument->getFolderID(), $iDocumentTypeID);
@@ -73,7 +73,7 @@ function getDocumentType($iFolderID, $iDocumentTypeID) {
 
 function renderPage($oDocument, $iDocumentTypeID, $fFirstEdit) {
     global $default;	
-	$sToRender = renderHeading("Edit Document Details");
+	$sToRender = renderHeading(_("Edit Document Details"));
 	$sToRender .= displayDocumentPath($oDocument->getID());	
     $sToRender .= "<table border = 0>\n";
     $sToRender .= "<tr>\n";

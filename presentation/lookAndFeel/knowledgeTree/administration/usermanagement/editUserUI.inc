@@ -31,7 +31,7 @@ function getEditPage($iUserID) {
 	if (isset($iUserID)) {
 		$oUser = User::get($iUserID);
 	}
-	$sToRender .= renderHeading("Edit User Properties");
+	$sToRender .= renderHeading(_("Edit User Properties"));
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr><td>" . _("Please select a User") . ": </td></tr>\n";
 	$sToRender .= "<tr>\n";
@@ -65,7 +65,7 @@ function getUserDetailsPage($iUserID) {
 	$oPattern->setUniqueName("userEdit");
 	$oPattern->setColumnsRequired(array(1,1,0,0,0,0));
 	
-	$sToRender .= renderHeading("Edit User Properties");	
+	$sToRender .= renderHeading(_("Edit User Properties"));	
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
@@ -89,7 +89,7 @@ function getUserDetailsPage($iUserID) {
 function getEditPageSuccess() {	
 	global $default;
 			
-	$sToRender .= renderHeading("Edit User Properties");
+	$sToRender .= renderHeading(_("Edit User Properties"));
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr><td><b>" . _("Success") . "!</b></td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
@@ -110,7 +110,7 @@ function getEditPageSuccess() {
 function getEditPageFail() {	
 	global $default;
 			
-	$sToRender .= renderHeading("Edit User Properties");
+	$sToRender .= renderHeading(_("Edit User Properties"));
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr><td><b>" . strtoupper(_("Failure")) . "!</b></td></tr>\n";
 	$sToRender .= "<tr></tr>\n";

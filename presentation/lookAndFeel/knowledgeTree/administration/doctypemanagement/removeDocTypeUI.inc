@@ -36,7 +36,7 @@ function getDeletePage($iDocTypeID) {
         $sHeading .= _("Please select a Document Type") . ":";
     }
 
-    $sToRender .= renderHeading("Remove Document Type");
+    $sToRender .= renderHeading(_("Remove Document Type"));
     $sToRender .= "<table>\n";
     $sToRender .= "<tr><td>$sHeading</td></tr>\n";
     $sToRender .= "<tr>\n";
@@ -61,7 +61,7 @@ function getDeleteSuccessPage() {
 
     global $default;
 
-    $sToRender .= renderHeading("Remove Document Type");
+    $sToRender .= renderHeading(_("Remove Document Type"));
     $sToRender .= "<TABLE BORDER=\"0\" CELLSPACING=\"2\" CELLPADDING=\"2\">\n";
     $sToRender .= "<tr>\n";
     $sToRender .= "<td><b>" . _("DocumentType SuccessFully Removed!") . "</b></td>\n";
@@ -83,7 +83,7 @@ function getDeleteFailPage() {
 
     global $default;
 
-    $sToRender .= renderHeading("Remove Document Type");
+    $sToRender .= renderHeading(_("Remove Document Type"));
     $sToRender .= "<TABLE BORDER=\"0\" CELLSPACING=\"2\" CELLPADDING=\"2\">\n";
     $sToRender .= "<tr>\n";
     $sToRender .= "<td><b>" . _("Deletion Failed!") . "</b></td>\n";

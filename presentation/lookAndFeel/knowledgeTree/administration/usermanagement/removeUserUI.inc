@@ -35,7 +35,7 @@ function getDeletePage($iUserID) {
         $sHeading .= "<tr><td><b>Please select a User:</b></td></tr>\n";
     }
 
-    $sToRender .= renderHeading("Remove User");
+    $sToRender .= renderHeading(_("Remove User"));
     $sToRender .= "<table>\n";
     $sToRender .= $sHeading;
     $sToRender .= "<tr></tr>\n";
@@ -58,7 +58,7 @@ function getDeleteSuccessPage() {
 
     global $default;
 
-    $sToRender .= renderHeading("Remove User");
+    $sToRender .= renderHeading(_("Remove User"));
     $sToRender .= "<table>\n";
     $sToRender .= "<tr>\n";
     $sToRender .= "<td><b>User SuccessFully Removed!</b></td>\n";
@@ -80,7 +80,7 @@ function getDeleteFailPage() {
 
     global $default;
 
-    $sToRender .= renderHeading("Remove User");
+    $sToRender .= renderHeading(_("Remove User"));
     $sToRender .= "<table>\n";
     $sToRender .= "<tr>\n";
     $sToRender .= "<td><b>Deletion Failed!</b></td>\n";
@@ -101,7 +101,7 @@ function getDeleteConfirmedPage($iUserID) {
         $oUser = User::get($iUserID);
     }
 
-    $sToRender .= renderHeading("Remove User");
+    $sToRender .= renderHeading(_("Remove User"));
     $sToRender .= "<table>\n";
     $sToRender .= "<tr><td><b>Are you sure you wish to Remove this User?:</b></td></tr>";
     $sToRender .= "<tr><td>Note: This User will be Removed from ALL Groups as well\n</td></tr>\n";

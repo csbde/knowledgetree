@@ -60,7 +60,7 @@ function getPage($iGroupID, $iUnitID) {
 		$unitdisplay = "";
 	}
 		
-	$sToRender .= renderHeading("Remove Group From Unit");
+	$sToRender .= renderHeading(_("Remove Group From Unit"));
 	$sToRender .= "<table>\n";
 	$sToRender .= $heading;
 	$sToRender .= "<br>\n";
@@ -98,7 +98,7 @@ function getPageFail($iGroupID) {
 	
 	$oUnit= Unit::get($iUnitID);
 		
-	$sToRender .= renderHeading("Remove Group From Unit");
+	$sToRender .= renderHeading(_("Remove Group From Unit"));
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr><td><b>" . _("Sorry, Removal Failed") . "</b></td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
@@ -118,7 +118,7 @@ function getPageFail($iGroupID) {
 function getPageNotSelected() {	
 	global $default;
 			
-	$sToRender .= renderHeading("Remove Group From Unit");
+	$sToRender .= renderHeading(_("Remove Group From Unit"));
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr><td><b>" . _("Sorry, Selection Failed") . "</b></td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
@@ -137,7 +137,7 @@ function getPageNotSelected() {
 function getPageSuccess($iGroupID) {	
 	global $default;
 			
-	$sToRender .= renderHeading("Remove Group From Unit");
+	$sToRender .= renderHeading(_("Remove Group From Unit"));
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr><td><b>" . _("Success") . "!</b></td></tr>\n";
 	$sToRender .= "<tr></tr>\n";

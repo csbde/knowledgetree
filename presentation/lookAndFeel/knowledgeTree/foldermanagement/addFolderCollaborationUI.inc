@@ -28,7 +28,7 @@
 
 function getPage($iFolderID, $iGroupID, $iRoleID, $iSequenceNumber) {
 	global $default;
-    $sToRender = renderHeading("Add Folder Collaboration Step");
+    $sToRender = renderHeading(_("Add Folder Collaboration Step"));
     $sToRender .= getFolderPath($iFolderID);
 	$sToRender .= "<br>\n";
 	$sToRender .= "<table>\n";

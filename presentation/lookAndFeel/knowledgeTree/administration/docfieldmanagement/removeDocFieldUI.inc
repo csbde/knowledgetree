@@ -63,7 +63,7 @@ function getDeletePage($fDocFieldID) {
 function getStatusPage($sHeading, $sText = "") {
 	global $default;
 	
-    $sToRender .= renderHeading("Remove Document Field");
+    $sToRender .= renderHeading(_("Remove Document Field"));
     $sToRender .= "<table border=\"0\" cellspacing=\"2\" cellpadding=\"2\">\n";
     $sToRender .= "<tr>\n";
     $sToRender .= "<td><b>$sHeading</b></td>\n";

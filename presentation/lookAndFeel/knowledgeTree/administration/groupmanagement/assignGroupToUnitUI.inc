@@ -45,7 +45,7 @@ function getGotGroupPage($iGroupID,$iUnitID){
         $oUnit = Unit::get($iUnitID);
     }
 
-    $sToRender .= renderHeading("Assign Group to Unit");
+    $sToRender .= renderHeading(_("Assign Group to Unit"));
     $sToRender .= "<table>\n";
     $sToRender .= $heading;
     $sToRender .= "<br>\n";
@@ -100,7 +100,7 @@ function getPage($iGroupID, $iUnitID) {
         }
     }
 
-    $sToRender .= renderHeading("Assign Group to Unit");
+    $sToRender .= renderHeading(_("Assign Group to Unit"));
     $sToRender .= "<table>\n";
     $sToRender .= $heading;
     $sToRender .= "<tr>\n";
@@ -148,7 +148,7 @@ function getPageFail($iGroupID) {
     // get the id of that unit
     $oUnit= Unit::get($iUnitID);
 
-    $sToRender .= renderHeading("Assign Group to Unit");
+    $sToRender .= renderHeading(_("Assign Group to Unit"));
     $sToRender .= "<table>\n";
     $sToRender .= "<tr><td><b>" . _("Sorry, Assignment Failed") . "</b></td></tr>\n";
     $sToRender .= "<tr></tr>\n";
@@ -176,7 +176,7 @@ function getPageFail($iGroupID) {
 function getPageNotSelected() {
     global $default;
 
-    $sToRender .= renderHeading("Assign Group to Unit");
+    $sToRender .= renderHeading(_("Assign Group to Unit"));
     $sToRender .= "<table border=1>\n";
     $sToRender .= "<tr><td><b>" . _("Sorry, Selection Failed") . "</b></td></tr>\n";
     $sToRender .= "<tr></tr>\n";
@@ -196,7 +196,7 @@ function getPageNotSelected() {
 function getPageSuccess() {
     global $default;
 
-    $sToRender .= renderHeading("Assign Group to Unit");
+    $sToRender .= renderHeading(_("Assign Group to Unit"));
     $sToRender .= "<table>\n";
     $sToRender .= "<tr><td><b>" . _("Success") . "!</b></td></tr>\n";
     $sToRender .= "<tr></tr>\n";

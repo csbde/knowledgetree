@@ -35,7 +35,7 @@ function getDeletePage($iRoleID) {
         $sHeading .= "Please select a Role:";
     }
 
-    $sToRender .= renderHeading("Remove Role");
+    $sToRender .= renderHeading(_("Remove Role"));
     $sToRender .= "<table>\n";
     $sToRender .= "<tr><td>$sHeading</td></tr>\n";
     $sToRender .= "<tr>\n";
@@ -64,7 +64,7 @@ function getDeleteSuccessPage() {
 
     global $default;
 
-    $sToRender .= renderHeading("Remove Role");
+    $sToRender .= renderHeading(_("Remove Role"));
     $sToRender .= "<TABLE BORDER=\"0\" CELLSPACING=\"2\" CELLPADDING=\"2\">\n";
     $sToRender .= "<tr>\n";
     $sToRender .= "<td><b>" . _("Role SuccessFully Removed!") . "</b></td>\n";
@@ -86,7 +86,7 @@ function getDeleteFailPage() {
 
     global $default;
 
-    $sToRender .= renderHeading("Remove Role");
+    $sToRender .= renderHeading(_("Remove Role"));
     $sToRender .= "<TABLE BORDER=\"0\" CELLSPACING=\"2\" CELLPADDING=\"2\">\n";
     $sToRender .= "<tr>\n";
     $sToRender .= "<td><b>" . _("Deletion Failed!") . "</b></td>\n";

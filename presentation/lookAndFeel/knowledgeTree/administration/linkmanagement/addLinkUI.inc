@@ -39,7 +39,7 @@ function getPage() {
 	$oPatternCreate->setUniqueName("link");
     $oPatternCreate->setDefaultValues(array(1=>"http://"));
 	
-	$sToRender .= renderHeading("Add QuickLink");
+	$sToRender .= renderHeading(_("Add QuickLink"));
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<tr>\n";
@@ -59,7 +59,7 @@ function getPage() {
 function getAddPageFail() {	
 	global $default;
 			
-    $sToRender .= renderHeading("Add QuickLink");
+    $sToRender .= renderHeading(_("Add QuickLink"));
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr><td><b>" . _("Addition Unsuccessful") . "</b></td></tr>\n";
 	$sToRender .= "<tr></tr>\n";

@@ -43,7 +43,7 @@ function getDocumentLinkFolderCollaborationData($iFolderCollaborationID) {
 				
 	//echo $sQuery;			
 	$aColumns = array("document_title", "username", "template_document_name", "edit", "del");
-	$aColumnHeaders = array("Document title", "Default creator", "Template document");
+	$aColumnHeaders = array(_("Document title"), _("Default creator"), _("Template document"));
 	$aColumnTypes = array(1,1,3,3,3);
 	//$aDBColumnArray = array("id","group_folder_approval_link_id","template_document_id");
 	$aDBColumnArray = array("id","group_folder_approval_link_id","folder_id");
@@ -63,7 +63,7 @@ function getDocumentLinkFolderCollaborationData($iFolderCollaborationID) {
 
 function getViewPage($iFolderCollaborationID, $iFolderID) {
 	global $default;	
-	$sToRender = renderHeading("Dependant documents");
+	$sToRender = renderHeading(_("Dependant documents"));
     $sToRender .= getFolderPath($iFolderID);
 	$sToRender .= "<table border=\"0\" width=\"100%\">\n";	
 	$sToRender .= "<tr>\n";	
@@ -81,7 +81,7 @@ function getEditPage($iFolderID, $iDependantDocumentID, $iFolderCollaborationID,
 	global $default;
 	$iDefaultUserUnitID = User::getUnitID($iUserID);
 	
-	$sToRender = renderHeading("Dependant documents");
+	$sToRender = renderHeading(_("Dependant documents"));
     $sToRender .= getFolderPath($iFolderID);    
 	$sToRender .= "<table border=\"0\" width=\"100%\">\n";	
 	$sToRender .= "<tr>\n";	
@@ -117,7 +117,7 @@ function getEditPage($iFolderID, $iDependantDocumentID, $iFolderCollaborationID,
 
 function getAddPage($iFolderCollaborationID, $iFolderID, $iUnitID, $sDocumentTitle, $sTemplateDocument, $iDocumentID) {
 	global $default;
-	$sToRender = renderHeading("Dependant documents");
+	$sToRender = renderHeading(_("Dependant documents"));
     $sToRender .= getFolderPath($iFolderID);    
 	$sToRender .= "<table border=\"0\" width=\"100%\">\n";	
 	$sToRender .= "<tr>\n";	

@@ -49,7 +49,7 @@ function getQuickLinks() {
 
 function getPage() {
 	global $default;
-	$sToRender .= renderHeading("QuickLinks Management");
+	$sToRender .= renderHeading(_("QuickLinks Management"));
 
 	// add user link
 	$sToRender .= getAddLink("addLink", "Add A QuickLink");

@@ -36,7 +36,7 @@ function getFolderData($iFolderID, $sStatusMessage = "") {
 	$sql = $default->db;
 	$sql->query($sQuery);
 	
-    $sToRender .= renderHeading("Modify Folder Properties");
+    $sToRender .= renderHeading(_("Modify Folder Properties"));
     $sToRender .= renderFolderPath($iFolderID, generateControllerUrl("browse", "", false));	
 	$sToRender .= "<table>";
 	$sToRender .= "<tr><td>";

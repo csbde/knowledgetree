@@ -37,7 +37,7 @@ function getPage($iUserID) {
         $heading = "<tr><td>Please select a User:</td></tr>\n";
     }
 
-    $sToRender .= renderHeading("Remove User From Group");
+    $sToRender .= renderHeading(_("Remove User From Group"));
     $sToRender .= "<table>\n";
     $sToRender .= $heading;
     $sToRender .= "<tr>\n";
@@ -82,9 +82,9 @@ function getGroupPage($iUserID, $aGroup) {
         $Groupdisplay = "<td>Group Name: " . $oGroup->getName() . "</td>\n";
     }
 
-    $sToRender .= renderHeading("Remove User From Group");
+    $sToRender .= renderHeading(_("Remove User From Group"));
     $sToRender .= "<table>\n";
-    $sToRender .= "<tr><td>Select a Group to Remove User from:</td></tr>\n";
+    $sToRender .= "<tr><td>" . _("Select a Group to Remove User from") . ":</td></tr>\n";
     $sToRender .= "<tr>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "<td>User Name: " . getUserDisplay($oUser) . "</td>\n";
@@ -120,10 +120,10 @@ function getDeleteConfirmedPage($iUserID,$fGroupID) {
     // change headings if User selected
     if (isset($fGroupID)) {
         $oGroup = Group::get($fGroupID);
-        $Groupdisplay = "<td>Group Name: " . $oGroup->getName() . "</td>\n";
+        $Groupdisplay = "<td>" . _("Group Name") . ": " . $oGroup->getName() . "</td>\n";
     }
 
-    $sToRender .= renderHeading("Remove User From Group");
+    $sToRender .= renderHeading(_("Remove User From Group"));
     $sToRender .= "<table>\n";
     $sToRender .= "<tr>\n";
     $sToRender .= $heading;
@@ -150,7 +150,7 @@ function getDeleteConfirmedPage($iUserID,$fGroupID) {
 function getPageFail() {
     global $default;
 
-    $sToRender .= renderHeading("Remove User From Group");
+    $sToRender .= renderHeading(_("Remove User From Group"));
     $sToRender .= "<table>\n";
     $sToRender .= "<tr><td><b>Sorry, Removal Failed</b></td></tr>\n";
     $sToRender .= "<tr></tr>\n";
@@ -171,11 +171,11 @@ function getPageFail() {
 function getPageSuccess($fUserID) {
     global $default;
 
-    $sToRender .= renderHeading("Remove User From Group");
+    $sToRender .= renderHeading(_("Remove User From Group"));
     $sToRender .= "<table>\n";
-    $sToRender .= "<tr><td><b>Success!</b></td></tr>\n";
+    $sToRender .= "<tr><td><b>" . _("Success") . "!</b></td></tr>\n";
     $sToRender .= "<tr></tr>\n";
-    $sToRender .= "<tr><td>The User was successfully removed from the Group</td></tr>\n";
+    $sToRender .= "<tr><td>" . _("The User was successfully removed from the Group") . "</td></tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr>\n";

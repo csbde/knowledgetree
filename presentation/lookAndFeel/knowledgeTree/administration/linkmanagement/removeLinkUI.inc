@@ -36,7 +36,7 @@ function getDeletePage($iLinkID) {
         $sHeading .= _("Please select a Link:");
     }
 
-    $sToRender .= renderHeading("Remove QuickLink");
+    $sToRender .= renderHeading(_("Remove QuickLink"));
     $sToRender .= "<table>\n";
     $sToRender .= "<tr><td colspan=\"2\">$sHeading</td></tr>\n";
     $sToRender .= "<tr>\n";
@@ -65,7 +65,7 @@ function getDeleteSuccessPage() {
 
     global $default;
 
-    $sToRender .= renderHeading("Remove QuickLink");
+    $sToRender .= renderHeading(_("Remove QuickLink"));
     $sToRender .= "<TABLE BORDER=\"0\" CELLSPACING=\"2\" CELLPADDING=\"2\">\n";
     $sToRender .= "<tr>\n";
     $sToRender .= "<td><b>" . _("Link SuccessFully Removed!") . "</b></td>\n";
@@ -87,7 +87,7 @@ function getDeleteFailPage() {
 
     global $default;
 
-    $sToRender .= renderHeading("Remove QuickLink");
+    $sToRender .= renderHeading(_("Remove QuickLink"));
     $sToRender .= "<TABLE BORDER=\"0\" CELLSPACING=\"2\" CELLPADDING=\"2\">\n";
     $sToRender .= "<tr>\n";
     $sToRender .= "<td><b>" . _("Deletion Failed!") . "</b></td>\n";

@@ -33,7 +33,7 @@ function getSelectFieldPage($iDocFieldID) {
 		$oDocField = DocumentField::get($iDocFieldID);
 	}
 	
-    $sToRender .= renderHeading("Remove Document Field Lookup");
+    $sToRender .= renderHeading(_("Remove Document Field Lookup"));
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr>" . _("Please Select a Field") . "</tr>\n";
 	$sToRender .= "<tr>\n";
@@ -95,7 +95,7 @@ function getDeleteConfirmedPage($iDocFieldID, $iMetaDataID) {
 		$oMetaData = MetaData::get($iMetaDataID);
 	}
 	
-    $sToRender .= renderHeading("Remove Document Field Lookup");
+    $sToRender .= renderHeading(_("Remove Document Field Lookup"));
 	$sToRender .= "<table border=0>\n";
 	$sToRender .= "<tr><td colspan=\"2\">" . _("Are you sure you wish to Remove the specified lookup from the Field?") . "</td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
@@ -121,7 +121,7 @@ function getDeleteConfirmedPage($iDocFieldID, $iMetaDataID) {
 function getSuccessPage($iDocFieldID = null) {	
 	global $default;
 			
-    $sToRender .= renderHeading("Remove Document Field Lookup");
+    $sToRender .= renderHeading(_("Remove Document Field Lookup"));
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr><td><b>" . _("Success") . "!</b></td></tr>\n";
 	$sToRender .= "<tr><td>" . _("The lookup was successfully deleted") . "</td></tr>\n";
@@ -139,7 +139,7 @@ function getSuccessPage($iDocFieldID = null) {
 function getFailPage($iDocFieldID = null) {	
 	global $default;
 			
-    $sToRender .= renderHeading("Remove Document Field Lookup");
+    $sToRender .= renderHeading(_("Remove Document Field Lookup"));
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr><td><b>" . strtoupper(_("Failure")) . "!</b></td></tr>\n";
 	$sToRender .= "<tr><td>" . _("The lookup was not deleted") . "</td></tr>\n";

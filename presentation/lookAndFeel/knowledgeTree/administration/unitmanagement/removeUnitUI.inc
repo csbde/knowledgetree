@@ -28,7 +28,7 @@
 function getConfirmDeletePage($oUnit, $oOrg) {
     global $default;
 
-    $sToRender .= renderHeading("Remove Unit");
+    $sToRender .= renderHeading(_("Remove Unit"));
     $sToRender .= "<table>\n";
     $sToRender .= "<tr><td><b>" . _("Are you sure you wish to Remove this Unit:") . "</b></td></tr>\n";
     $sToRender .= "<tr>\n";
@@ -53,7 +53,7 @@ function getStatusPage($sHeading, $sText = "") {
 
     global $default;
 
-    $sToRender .= renderHeading("Remove Unit");
+    $sToRender .= renderHeading(_("Remove Unit"));
     $sToRender .= "<table>\n";
     $sToRender .= "<tr>\n";
     $sToRender .= "<td><b>$sHeading</b></td>\n";

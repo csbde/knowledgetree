@@ -101,7 +101,7 @@ function getViewComment($iNum, $oThread, $oComment, $sIndent) {
 function getPage($iDocumentID, $aDocumentThreads) {
 	global $default;
 	
-	$sToRender .= renderHeading("Document Discussion Comments");
+	$sToRender .= renderHeading(_("Document Discussion Comments"));
 	$sToRender .= displayDocumentPath($iDocumentID);
 	$sToRender .= getPageButtons($iDocumentID);		
 	$sToRender .= "<table border=\"0\" width=\"100%\">\n";

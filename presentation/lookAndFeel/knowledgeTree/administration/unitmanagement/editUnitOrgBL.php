@@ -47,7 +47,7 @@ if (checkSession()) {
         if($fUnitID == -1) {
             $oPatternCustom->setHtml(getPageNotSelected());
         } else {
-			$oPatternCustom->setHtml(renderHeading("Edit Unit Organisation"));
+			$oPatternCustom->setHtml(renderHeading(_("Edit Unit Organisation")));
 			            
             $oPatternCustom->addHtml(getOrgPage($fUnitID));
         }

@@ -68,7 +68,7 @@ if (checkSession()) {
 //					}
 //				    
 //				    $oSearchResults = & new PatternTableSqlQuery ($sQuery, $aColumns, $aColumnTypes, $aColumnNames, "100%",  $aHyperLinkURL, $aQueryStringCols, $aQueryStringVars);
-//				    $sToRender .= renderHeading("Document Discussion Thread");
+//				    $sToRender .= renderHeading(_("Document Discussion Thread"));
 //					$sToRender .= displayDocumentPath($fDocumentID);
 //				    $oPatternCustom->addHtml($sToRender);
 //				    $oPatternCustom->addHtml(getPageButtons($fDocumentID));				    

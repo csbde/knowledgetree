@@ -27,7 +27,7 @@
 
 function getPage($sParentDocumentName, $sChildDocumentName, $iParentDocumentID) {
 	global $default;
-	$sToRender = renderHeading("Unlink document");
+	$sToRender = renderHeading(_("Unlink document"));
 	$sToRender .= displayDocumentPath($iParentDocumentID);
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr>\n";	

@@ -37,7 +37,7 @@ function renderDocumentPath($oDocument, $bDisplayActions = false) {
 	$sDocumentPath = displayFolderPathLink(Folder::getFolderPathAsArray($oDocument->getFolderID()), Folder::getFolderPathNamesAsArray($oDocument->getFolderID()), "$default->rootUrl/control.php?action=browse") . " > ";
 	// #3425 for consistency
 	if ($bDisplayActions) {
-	    $sDocumentPath .= "<a onClick=\"alert('This will view a copy of the current version of this document in the DMS.  Any changes to this file will not be managed in the DMS.'); return true;\" href=\"" . generateControllerUrl("downloadDocument", "fDocumentID=" . $oDocument->getID() . "&fForInlineView=1") . "\">" . $oDocument->getFileName() . "</a>";
+	    $sDocumentPath .= "<a onClick=\"alert('" . _("This will view a copy of the current version of this document in the DMS.  Any changes to this file will not be managed in the DMS.") . "'); return true;\" href=\"" . generateControllerUrl("downloadDocument", "fDocumentID=" . $oDocument->getID() . "&fForInlineView=1") . "\">" . $oDocument->getFileName() . "</a>";
 	} else {
 		$sDocumentPath .= $oDocument->getFileName();
 	}    
@@ -58,11 +58,11 @@ function renderDocumentData($oDocument, $bEditable, $sStatusMessage = "") {
               "AND TT.name LIKE 'Create'";
 
     $aColumns = array("name", "modified", "created", "initiator", "document_type", "version", "status", "c_user");
-    $aColumnNames = array("Document title", "Last updated", "Created", "Document initiator", "Document Type", "Version", "Status", "Checked out by");
+    $aColumnNames = array(_("Document title"), _("Last updated"), _("Created"), _("Document initiator"), _("Document Type"), _("Version"), _("Status"), _("Checked out by"));
     $aColumnTypes = array(1,1,1,1,1,1,1,1);
     $oPatternListFromQuery = & new PatternListFromQuery($sQuery, $aColumns, $aColumnNames, $aColumnTypes);
-    $oPatternListFromQuery->setTableHeading("Document Data");
-    $oPatternListFromQuery->setEmptyTableMessage("No Document Data");
+    $oPatternListFromQuery->setTableHeading(_("Document Data"));
+    $oPatternListFromQuery->setEmptyTableMessage(_("No Document Data"));
     $oPatternListFromQuery->setTableWidth("400");
       
     $sToRender .= "\t<table cellspacing=\"0\" cellpadding=\"0\" border=\"0\" width=\"100%\">\n";
@@ -94,8 +94,8 @@ function renderGenericMetaData($oDocument, $bEditable) {
     $aColumnHeaders = array("Tag", "Value");
     $aColumnTypes = array(1,1);
     $oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaders, "500");
-    $oPatternTableSqlQuery->setTableHeading("Generic Meta Data");
-    $oPatternTableSqlQuery->setEmptyTableMessage("No Generic Meta Data");
+    $oPatternTableSqlQuery->setTableHeading(_("Generic Meta Data"));
+    $oPatternTableSqlQuery->setEmptyTableMessage(_("No Generic Meta Data"));
     
     $sToRender .= "\t<table cellspacing=\"0\" cellpadding=\"0\" border=\"0\" width=\"100%\">\n";    	
     $sToRender .= "\t<tr>\n";
@@ -125,8 +125,8 @@ function renderTypeSpecificMetaData($oDocument, $bEditable) {
     $aColumnHeaders = array("Tag", "Value");
     $aColumnTypes = array(1,1);
     $oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaders, "500");
-    $oPatternTableSqlQuery->setTableHeading("Type Specific Meta Data");
-	$oPatternTableSqlQuery->setEmptyTableMessage("No Type Specific Meta Data");
+    $oPatternTableSqlQuery->setTableHeading(_("Type Specific Meta Data"));
+	$oPatternTableSqlQuery->setEmptyTableMessage(_("No Type Specific Meta Data"));
     
     $sToRender .= "\t<table cellspacing=\"0\" cellpadding=\"0\" border=\"0\" width=\"100%\">\n";	
     $sToRender .= "\t<tr>\n";
@@ -155,7 +155,7 @@ function renderDocumentArchiveSettingsDetails($oDocument, $bEditable) {
 		$sDisplayText = "<td>";
 		switch ($sArchivingType) {
 			case "Date" : 
-				$sDisplayText  .= "Expiration Date: " . $oArchiveSettings->getExpirationDate();
+				$sDisplayText  .= _("Expiration Date") . ": " . $oArchiveSettings->getExpirationDate();
 				if ($oTimePeriod) {
 					$sDisplayText .= "<br/>Expires after " . $oTimePeriod->getUnits() . " ";
 					$sDisplayText .= lookupName($default->time_unit_lookup_table, $oTimePeriod->getTimeUnitID()) . " from document creation date";
@@ -168,14 +168,14 @@ function renderDocumentArchiveSettingsDetails($oDocument, $bEditable) {
 				break;		
 		}
 		$sDisplayText .= "</td>" . ($bEditable ? "<td>" . generateControllerLink("modifyDocumentArchiveSettings", "fDocumentID=" . $oDocument->getID(), "Edit") . "</td>" : "");
-		$sArchivingType = "Archiving Type: " . 	$sArchivingType;
+		$sArchivingType = _("Archiving Type") . ": " . 	$sArchivingType;
 	} else {
 		$sArchivingType = "";
-		$sDisplayText = "No archiving settings";
+		$sDisplayText = _("No archiving settings");
 	}
 
 	$sToRender  = "<table cellpadding=\"5\" border=\"0\" width=\"500\">";
-	$sToRender .= "<caption align=\"top\" colspan=\"2\" align=\"left\"><b>Archiving Settings</b></caption>";
+	$sToRender .= "<caption align=\"top\" colspan=\"2\" align=\"left\"><b>" . _("Archiving Settings") . "</b></caption>";
 	$sToRender .= "<th align=\"left\">" . $sArchivingType . "</th>";
 	$sToRender .= "<tr bgcolor=\"F5F6EE\">";
 	$sToRender .= $sDisplayText;
@@ -215,14 +215,14 @@ function renderEditableDocumentRouting($oDocument) {
               "WHERE D.id = " . $oDocument->getID() . " " .
               "ORDER BY GFAL.precedence, role_name ASC";
     $aColumns = array("role_name", "name", "precedence", "active", "done", "edit");
-    $aColumnHeaders = array("Role", "User", "Seq", "Active", "Done", "");
+    $aColumnHeaders = array(_("Role"), _("User"), _("Seq"), _("Active"), _("Done"), _("Edit"));
     $aColumnTypes = array(1,1,1,2,2,3);
     $aDBColumnArray = array("id","document_id","active","done");
     $aQueryStringVariableNames = array("fFolderCollaborationID", "fDocumentID","fIsActive","fIsDone");
     $aLinkURLs = array(5=>"$default->rootUrl/control.php?action=modifyDocumentRouting");
 
     $oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaders, "500", $aLinkURLs,$aDBColumnArray,$aQueryStringVariableNames);
-    $oPatternTableSqlQuery->setTableHeading("Document Routing");
+    $oPatternTableSqlQuery->setTableHeading(_("Document Routing"));
     $oPatternTableSqlQuery->setDisplayColumnHeadings(true);
     
     $sToRender .= "\t<table cellspacing=\"0\" cellpadding=\"0\" border=\"0\" width=\"100%\">\n";
@@ -273,10 +273,10 @@ function renderNonEditableDocumentRouting($oDocument) {
               "ORDER BY GFAL.precedence, role_name ASC";
 
     $aColumns = array("role_name", "name", "precedence", "active", "done");
-    $aColumnHeaders = array("Role", "User", "Seq", "Active", "Done");
+    $aColumnHeaders = array(_("Role"), _("User"), _("Seq"), _("Active"), _("Done"));
     $aColumnTypes = array(1,1,1,2,2);
     $oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaders, "500", "$default->rootUrl/control.php?action=modifyDocumentRouting",$aDBColumnArray,$aQueryStringVariableNames);
-    $oPatternTableSqlQuery->setTableHeading("Document Routing");
+    $oPatternTableSqlQuery->setTableHeading(_("Document Routing"));
     $oPatternTableSqlQuery->setDisplayColumnHeadings(true);
 
    	$sToRender .= "\t<table cellspacing=\"0\" cellpadding=\"0\" border=\"0\" width=\"100%\">\n";
@@ -287,7 +287,7 @@ function renderNonEditableDocumentRouting($oDocument) {
 	if (DocumentCollaboration::userIsPerformingCurrentCollaborationStep($oDocument->getID())) {
 		//if the current user is responsible for an active step in the collaboration process		
 		$sToRender .= "\t\t<tr><td><table border=\"0\"><tr>\n";
-		$sToRender .= "\t\t<td><b>You currently have an active role<br> in the collaboration process</b></td>\n";				
+		$sToRender .= "\t\t<td><b>" . _("You currently have an active role in the collaboration process") . "</b></td>\n";				
 		$sToRender .= "\t\t<td align=\"center\"><a href=" . $_SERVER['PHP_SELF'] . "?fDocumentID=" . $oDocument->getID() . "&fCollaborationStepComplete=1><img src=\"$default->graphicsUrl/widgets/approve.gif\" border=\"0\"/></a></td>\n";
 		$sToRender .= "\t\t<td align=\"center\"><a href=\"$default->rootUrl/control.php?action=collaborationStepReject&fDocumentID=" . $oDocument->getID() . "\"><img src=\"$default->graphicsUrl/widgets/reject.gif\" border=\"0\"/></a></td>\n";
 		$sToRender .= "\t\t</tr></table></td></tr>\n";
@@ -306,14 +306,14 @@ function renderEditableLinkedDocuments($oDocument) {
 			  "WHERE DL.parent_document_id = " . $oDocument->getID();
 	
 	$aColumns = array("name", "unlink");
-    $aColumnHeaders = array("Document");
+    $aColumnHeaders = array(_("Document"));
     $aColumnTypes = array(3,3);
     $aDBColumnArray = array("parent_document_id", "child_document_id","document_link_id", "child_document_id");
     $aQueryStringVariableNames = array("fParentDocumentID","fChildDocumentID", "fDocumentLinkID", "fDocumentID");
     $aLinkURLs = array(0=>"$default->rootUrl/control.php?action=viewDocument", 1=>"$default->rootUrl/control.php?action=removeDocumentLink");
 
     $oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaders, "500", $aLinkURLs, $aDBColumnArray, $aQueryStringVariableNames);
-    $oPatternTableSqlQuery->setTableHeading("Linked documents");
+    $oPatternTableSqlQuery->setTableHeading(_("Linked documents"));
     $oPatternTableSqlQuery->setDisplayColumnHeadings(true);    
     
     $sToRender .= "\t<table cellspacing=\"0\" cellpadding=\"0\" border=\"0\" width=\"100%\">\n";    
@@ -335,14 +335,14 @@ function renderNonEditableLinkedDocuments($oDocument) {
 			  "WHERE DL.parent_document_id = " . $oDocument->getID();
 	
 	$aColumns = array("name");
-    $aColumnHeaders = array("Document");
+    $aColumnHeaders = array(_("Document"));
     $aColumnTypes = array(3);
     $aDBColumnArray = array("id");
     $aQueryStringVariableNames = array("fDocumentID");
     $aLinkURLs = array(0=>"$default->rootUrl/control.php?action=viewDocument");
     
     $oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaders, "500", $aLinkURLs, $aDBColumnArray, $aQueryStringVariableNames);
-    $oPatternTableSqlQuery->setTableHeading("Linked documents");
+    $oPatternTableSqlQuery->setTableHeading(_("Linked documents"));
     $oPatternTableSqlQuery->setDisplayColumnHeadings(true);
     
     $sToRender .= "\t<table cellspacing=\"0\" cellpadding=\"0\" border=\"0\" width=\"100%\">\n";    
@@ -363,14 +363,14 @@ function renderDependantDocuments($oDocument, $bEdit) {
 			  "WHERE DDI.parent_document_id = " . $oDocument->getID();
 	
 	$aColumns = array("document_title", "user_name", "escalate");
-    $aColumnHeaders = array("Document Title", "User");
+    $aColumnHeaders = array(_("Document Title"), _("User"));
     $aColumnTypes = array(1,1,3);
     $aDBColumnArray = array("instance_id");
     $aQueryStringVariableNames = array("fInstanceID");
     $aLinkURLs = array(2=>generateControllerUrl("escalateDependantDocument"));
 
     $oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaders, "500", $aLinkURLs, $aDBColumnArray, $aQueryStringVariableNames);
-    $oPatternTableSqlQuery->setTableHeading("Dependant documents");
+    $oPatternTableSqlQuery->setTableHeading(_("Dependant documents"));
     $oPatternTableSqlQuery->setDisplayColumnHeadings(true);    
     
     $sToRender .= "\t<table cellspacing=\"0\" cellpadding=\"0\" border=\"0\" width=\"100%\">\n";    
@@ -404,8 +404,8 @@ function displayButton($sAction, $sQueryString, $sImageName, $sDisabledText = ""
 
 function displayViewButton($oDocument, $bEdit) {
 	global $default;
-	$sViewAlert = "This will download a copy of the document and is not the same as Checking Out a document.  Changes to this downloaded file will not be managed in the DMS.";
-    return "<tr><td align=\"left\"><a onClick=\"alert('$sViewAlert '); return true;\" href=\"" . generateControllerLink("downloadDocument", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/docactions/view.gif\" border=\"0\" title=\"View the document\"/></a></td></tr>\n";    
+	$sViewAlert = _("This will download a copy of the document and is not the same as Checking Out a document.  Changes to this downloaded file will not be managed in the DMS.");
+    return "<tr><td align=\"left\"><a onClick=\"alert('$sViewAlert '); return true;\" href=\"" . generateControllerLink("downloadDocument", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/docactions/view.gif\" border=\"0\" title=\"" . _("View the document") . "\"/></a></td></tr>\n";
 }
 
 function displayCheckInOutButton($oDocument, $bEdit) {
@@ -417,7 +417,7 @@ function displayCheckInOutButton($oDocument, $bEdit) {
   		$sImageName = "checkin";		
 		if ($oDocument->getCheckedOutUserID() <> $_SESSION["userID"]) {
 	  		$oUser = User::get($oDocument->getCheckedOutUserID());
-	  		$sDisabledText = "The document can only be checked back in by " . $oUser->getName();
+	  		$sDisabledText = sprintf(_("The document can only be checked back in by %s"), $oUser->getName());
 	  	} 
 	// otherwise display the check out button
 	} else {
@@ -425,11 +425,11 @@ function displayCheckInOutButton($oDocument, $bEdit) {
 	  	$sImageName = "checkout";
     	// #3481 if the document is published don't allow checkout
     	if (DocumentCollaboration::documentIsPublished($oDocument->getID())) {
-    		$sDisabledText = "This document has been published and cannot be checked out";
+    		$sDisabledText = _("This document has been published and cannot be checked out");
     	}	  	
 	}
     if (!$bEdit) {
-    	$sDisabledText = "You do not have write access to this document";
+    	$sDisabledText = _("You do not have write access to this document");
     }
     return "<tr><td align=\"left\">"  . displayButton($sAction, $sQueryString, $sImageName, $sDisabledText) . "</td></tr>\n";    
 }
@@ -443,10 +443,10 @@ function displayDeleteButton($oDocument, $bEdit) {
     if ($bEdit) {
     	$sQueryString = "fDocumentID=" . $oDocument->getID();
     	if ($oDocument->getIsCheckedOut()) {
-    		$sDisabledText = "This document can't be deleted because its checked out";
+    		$sDisabledText = _("This document can't be deleted because its checked out");
     	}
     } else {
-    	$sDisabledText = "You do not have write access to this document";
+    	$sDisabledText = _("You do not have write access to this document");
     }
 	return "<tr><td align=\"left\">"  . displayButton("deleteDocument", $sQueryString, "delete", $sDisabledText) . "</td></tr>\n";    
 }
@@ -460,14 +460,14 @@ function displayMoveButton($oDocument, $bEdit) {
     	$sQueryString = "fFolderID=" . $oDocument->getFolderID() . "&fDocumentID=" . $oDocument->getID();
     	// documents in collaboration and checked out documents can't be moved
 		if ($oDocument->getIsCheckedOut()) {
-			$sDisabledText = "The document is checked out and cannot be moved.";
+			$sDisabledText = _("The document is checked out and cannot be moved.");
 		}
 		if (DocumentCollaboration::documentCollaborationStarted($oDocument->getID()) &&
 		    !DocumentCollaboration::documentCollaborationDone($oDocument->getID())) {
-			$sDisabledText = "The document is in collaboration and cannot be moved.";
+			$sDisabledText = _("The document is in collaboration and cannot be moved.");
 		}
     } else {
-     	$sDisabledText = "You do not have write access to this document";
+     	$sDisabledText = _("You do not have write access to this document");
     }
 	return "<tr><td align=\"left\">"  . displayButton("moveDocument", $sQueryString, "move", $sDisabledText) . "</td></tr>\n";
 }
@@ -499,13 +499,13 @@ function displayArchiveButton($oDocument, $bEdit) {
 	    	if ($oDocument->hasCollaboration() && 
 	    		DocumentCollaboration::documentCollaborationStarted($oDocument->getID()) &&
 	    		!DocumentCollaboration::documentCollaborationDone($oDocument->getID())) {
-	    		$sDisabledText = "This document is in collaboration and cannot be archived";
+	    		$sDisabledText = _("This document is in collaboration and cannot be archived");
 	    	}
 	    } else {
-	    	$sDisabledText = "This document is checked out and cannot be archived.";
+	    	$sDisabledText = _("This document is checked out and cannot be archived.");
 	    }
     } else {
-     	$sDisabledText = "You do not have write access to this document";
+     	$sDisabledText = _("You do not have write access to this document");
     }
 	return "<tr><td align=\"left\">"  . displayButton("archiveDocument", "fDocumentID=" . $oDocument->getID(), "archive", $sDisabledText) . "</td></tr>\n";	    
 }
@@ -524,22 +524,22 @@ function displayPublishButton($oDocument, $bEdit) {
             // only display publish button if collaboration is complete and you're the last user in the collaboration process (or a sysadmin)
             if (DocumentCollaboration::documentCollaborationDone($oDocument->getID())) { 
                 if ( !($_SESSION["userID"] == DocumentCollaboration::getLastCollaboratorID($oDocument->getID())) && !Permission::userIsSystemAdministrator() ) {
-                	$sDisabledText = "You are not the last collaborator and hence cannot publish this document";
+                	$sDisabledText = _("You are not the last collaborator and hence cannot publish this document");
                 }
             } else {
-            	$sDisabledText = "You cannot publish this document until collaboration is complete";
+            	$sDisabledText = _("You cannot publish this document until collaboration is complete");
             }
         } else {
         	// no collaboration, check the user permissions
         	if ( !($_SESSION["userID"] == $oDocument->getCreatorID()) && !Permission::userIsSystemAdministrator() ) {
-        		$sDisabledText = "You do not have permission to publish this document.";
+        		$sDisabledText = _("You do not have permission to publish this document.");
         	}
         }
     } else {
     	if (DocumentCollaboration::documentIsPublished($oDocument->getID())) {
-    		$sDisabledText = "This document is already published.";
+    		$sDisabledText = _("This document is already published.");
     	} else if (DocumentCollaboration::documentIsPendingWebPublishing($oDocument->getID())) {
-    		$sDisabledText = "This document has been marked as pending publishing and the web publisher has been notified.";
+    		$sDisabledText = _("This document has been marked as pending publishing and the web publisher has been notified.");
     	}
     }
 	return "<tr><td align=\"left\">"  . displayButton("viewDocument", "fDocumentID=" . $oDocument->getID() . "&fForPublish=1", "publish", $sDisabledText) . "</td></tr>\n";    
@@ -586,7 +586,7 @@ function getPage($oDocument, $bEdit, $sStatusMessage = "") {
     global $default;
    	  		
 	$sToRender = "<div id=\"headings\" style=\"position:relative;visibility:visible;top:2px;left:2px;\">";
-    $sToRender .= renderHeading("Document Detail");
+    $sToRender .= renderHeading(_("Document Detail"));
     $sToRender .= renderDocumentPath($oDocument, true) . "\n\n";
 	$sToRender .= "<table cellspacing=\"0\" cellpadding=\"0\" id=\"headingTable\">";
 	$sToRender .= "<tr><td valign=\"top\">";	
@@ -596,12 +596,12 @@ function getPage($oDocument, $bEdit, $sStatusMessage = "") {
 	// ie. effectively removes statusMessage on next click
 	$bDisplayLink = ($sStatusMessage) ? true : false;
 
-	$sToRender .= renderDocumentSection("documentData", "Document Data", $bDisplayLink, $oDocument->getID());	
-	$sToRender .= renderDocumentSection("genericMetaData", "Generic Meta Data", $bDisplayLink, $oDocument->getID());
-	$sToRender .= renderDocumentSection("typeSpecificMetaData", "Type Specific Meta Data", $bDisplayLink, $oDocument->getID());
-	$sToRender .= renderDocumentSection("archiveSettings", "Archive Settings", $bDisplayLink, $oDocument->getID());
-	$sToRender .= renderDocumentSection("documentRouting", "Document Routing", $bDisplayLink, $oDocument->getID());
-	$sToRender .= renderDocumentSection("linkedDocuments", "Linked Documents", $bDisplayLink, $oDocument->getID());
+	$sToRender .= renderDocumentSection("documentData", _("Document Data"), $bDisplayLink, $oDocument->getID());	
+	$sToRender .= renderDocumentSection("genericMetaData", _("Generic Meta Data"), $bDisplayLink, $oDocument->getID());
+	$sToRender .= renderDocumentSection("typeSpecificMetaData", _("Type Specific Meta Data"), $bDisplayLink, $oDocument->getID());
+	$sToRender .= renderDocumentSection("archiveSettings", _("Archive Settings"), $bDisplayLink, $oDocument->getID());
+	$sToRender .= renderDocumentSection("documentRouting", _("Document Routing"), $bDisplayLink, $oDocument->getID());
+	$sToRender .= renderDocumentSection("linkedDocuments", _("Linked Documents"), $bDisplayLink, $oDocument->getID());
 	$sToRender .= "</table>";		
 	$sToRender .= "</td><td>";
     $sToRender .= "<table cellspacing=\"0\" cellpadding=\"0\">\n";
@@ -636,7 +636,7 @@ function getStatusPage($oDocument, $sStatusMessage) {
     global $default;
        
 	$sToRender = "<div id=\"headings\" style=\"position:relative;visibility:visible;top:2px;left:2px;\">";       
-    $sToRender .= renderHeading("Document Detail");
+    $sToRender .= renderHeading(_("Document Detail"));
     $sToRender .= renderDocumentPath($oDocument, false) . "\n\n";
     $sToRender .= "<table border=\"0\" width=\"610\">";
 
@@ -644,12 +644,12 @@ function getStatusPage($oDocument, $sStatusMessage) {
 	// ie. effectively removes statusMessage on next click
 	$bDisplayLink = ($sStatusMessage) ? true : false;
 
-	$sToRender .= renderDocumentSection("documentData", "Document Data", $bDisplayLink, $oDocument->getID());	
-	$sToRender .= renderDocumentSection("genericMetaData", "Generic Meta Data", $bDisplayLink, $oDocument->getID());
-	$sToRender .= renderDocumentSection("typeSpecificMetaData", "Type Specific Meta Data", $bDisplayLink, $oDocument->getID());
-	$sToRender .= renderDocumentSection("archiveSettings", "Archive Settings", $bDisplayLink, $oDocument->getID());
-	$sToRender .= renderDocumentSection("documentRouting", "Document Routing", $bDisplayLink, $oDocument->getID());
-	$sToRender .= renderDocumentSection("linkedDocuments", "Linked Documents", $bDisplayLink, $oDocument->getID());
+	$sToRender .= renderDocumentSection("documentData", _("Document Data"), $bDisplayLink, $oDocument->getID());	
+	$sToRender .= renderDocumentSection("genericMetaData", _("Generic Meta Data"), $bDisplayLink, $oDocument->getID());
+	$sToRender .= renderDocumentSection("typeSpecificMetaData", _("Type Specific Meta Data"), $bDisplayLink, $oDocument->getID());
+	$sToRender .= renderDocumentSection("archiveSettings", _("Archive Settings"), $bDisplayLink, $oDocument->getID());
+	$sToRender .= renderDocumentSection("documentRouting", _("Document Routing"), $bDisplayLink, $oDocument->getID());
+	$sToRender .= renderDocumentSection("linkedDocuments", _("Linked Documents"), $bDisplayLink, $oDocument->getID());
 	$sToRender .= "</table>";
     $sToRender .= "</div>";
 	$sToRender .= renderDocumentData($oDocument, false, $sStatusMessage);
@@ -661,18 +661,18 @@ function getWebPublishPage($oDocument) {
     
     $oPatternListBox = & new PatternListBox($default->web_sites_table, "web_site_name", "id", "fWebSiteID");
     
-    $sToRender .= renderHeading("Document Detail");
+    $sToRender .= renderHeading(_("Document Detail"));
     $sToRender .= renderDocumentPath($oDocument, false) . "\n\n";
     
     $sToRender .= "<table>\n";
     $sToRender .= "\t<tr>";    
-    $sToRender .= "\t\t<th align=\"left\">Choose the website to publish to:</th>\n";
+    $sToRender .= "\t\t<th align=\"left\">" . _("Choose the website to publish to:") . "</th>\n";
     $sToRender .= "\t</tr>";
     $sToRender .= "\t<tr>\n";
     $sToRender .= "\t\t<td>" . $oPatternListBox->render() . "</td>\n";
     $sToRender .= "\t</tr>";    
     $sToRender .= "\t<tr>\n";
-    $sToRender .= "\t\t<th nowrap align=\"left\">Enter a comment for the web master:</th>\n";
+    $sToRender .= "\t\t<th nowrap align=\"left\">" . _("Enter a comment for the web master:") . "</th>\n";
     $sToRender .= "\t</tr>";
     $sToRender .= "\t<tr>\n";
     $sToRender .= "\t\t<td><input type=\"text\" name=\"fComment\" size=\"30\"/></td>\n";

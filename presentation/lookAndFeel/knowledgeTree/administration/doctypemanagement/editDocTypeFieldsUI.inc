@@ -33,7 +33,7 @@ function getDetailsPage($iDocTypeID) {
         $oDocType = DocumentType::get($iDocTypeID);
     }
 
-    $sToRender .= renderHeading("Edit Document Type");
+    $sToRender .= renderHeading(_("Edit Document Type"));
     
     $sToRender .= "<table border=0 width=100%>\n";
     
@@ -59,7 +59,7 @@ function getDeleteConfirmationPage($iDocTypeID, $iDocFieldID) {
     $oDocType = DocumentType::get($iDocTypeID);
     $oDocField = DocumentField::get($iDocFieldID);
 	
-    $sToRender .= renderHeading("Edit Document Type - Delete Document Field Link");
+    $sToRender .= renderHeading(_("Edit Document Type") . " - " . _("Delete Document Field Link"));
     $sToRender .= "<table border=\"0\" cellspacing=\"2\" cellpadding=\"2\">\n";
     $sToRender .= "<tr><td>" . 
 	sprintf(_("Are you sure you want to remove field '%s' from document type '%s'?"), $oDocField->getName(), $oDocType->getName()) .
@@ -78,7 +78,7 @@ function getEditDocumentFieldLinkPage($oDocTypeFieldLink) {
 
     $oDocField = DocumentField::get($oDocTypeFieldLink->getFieldID());	
 	
-    $sToRender .= renderHeading("Edit Document Type - Update Document Field Link Mandatory Setting");
+    $sToRender .= renderHeading(_("Edit Document Type") . " - " . _("Update Document Field Link Mandatory Setting"));
     $sToRender .= "<table>\n";
 	$sToRender .= "<input type=\"hidden\" name=\"fConfirm\" value=\"1\">\n";    
     $sToRender .= "<input type=\"hidden\" name=\"fDocTypeID\" value=\"" . $oDocTypeFieldLink->getDocumentTypeID() . "\">\n";
@@ -100,7 +100,7 @@ function getEditDocumentFieldLinkPage($oDocTypeFieldLink) {
 function getStatusPage($sHeading, $sText = "", $iDocTypeID) {
 	global $default;
 	
-    $sToRender .= renderHeading("Edit Document Type");
+    $sToRender .= renderHeading(_("Edit Document Type"));
     $sToRender .= "<table border=\"0\" cellspacing=\"2\" cellpadding=\"2\">\n";
     $sToRender .= "<tr>\n";
     $sToRender .= "<td><b>$sHeading</b></td>\n";

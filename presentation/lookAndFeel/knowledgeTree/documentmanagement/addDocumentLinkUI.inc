@@ -28,7 +28,7 @@
 function getPage($iDocumentID) {
 	global $default;
 	
-	$sToRender = renderHeading("Document Linking");
+	$sToRender = renderHeading(_("Document Linking"));
 	$sToRender .= displayDocumentPath($iDocumentID);	
 	$sToRender .= "<table>";
 	$sToRender .= "<tr>";

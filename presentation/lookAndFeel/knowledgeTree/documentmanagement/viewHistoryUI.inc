@@ -72,7 +72,7 @@ function displaySpace($sHtml) {
 
 function getPage($iDocumentID, $iFolderID, $sDocumentName) {
     global $default;
-    $sToRender  = renderHeading("Document History");
+    $sToRender  = renderHeading(_("Document History"));
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>" . displayDocumentPath($iDocumentID) . "</td>\n";

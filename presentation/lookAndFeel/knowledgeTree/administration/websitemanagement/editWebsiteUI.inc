@@ -29,7 +29,7 @@ function getEditWebSitePage($oWebSite) {
     
     $oUser = User::get($oWebSite->getWebMasterID());
 
-    $sToRender .= renderHeading("Edit Website");
+    $sToRender .= renderHeading(_("Edit Website"));
     $sToRender .= "<table>\n";
     $sToRender .= "<tr><td>Update WebSite Properties</td></tr>\n";
     $sToRender .= "<tr></tr>\n";

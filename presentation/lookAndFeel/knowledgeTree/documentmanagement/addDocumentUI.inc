@@ -205,7 +205,7 @@ function getPage($iFolderID, $iDocumentTypeID, $iDependantDocumentID = null, $sM
 }
 
 function getStatusPage($iFolderID, $sMessage) {
-    $sToRender .= renderHeading("Add Document");
+    $sToRender .= renderHeading(_("Add Document"));
     $sToRender .= renderFolderPath($iFolderID, generateControllerUrl("addDocument", "fFolderID=$iFolderID", false), true);
 
 	$sToRender .= "<table border=\"0\" width=\"100%\">\n";

@@ -31,7 +31,7 @@
 function renderConfirmDocuments($aDocuments) {
 	global $default;
 	
-	$sToRender  = renderHeading("Expunge Deleted Documents");
+	$sToRender  = renderHeading(_("Expunge Deleted Documents"));
 	$sToRender .= "<table>";
     $sToRender .= "<tr><td>" . _("The documents you have chosen to expunge are listed below.") . "</td></tr>\n";
     $sToRender .= "<tr><td>" . _("Click 'Expunge' to confirm deletion, or 'Cancel' to abort.") . "</td></tr>\n";
@@ -60,7 +60,7 @@ function renderConfirmDocuments($aDocuments) {
 function renderStatusPage($aSuccessDocuments, $aErrorDocuments) {
 	global $default;
 	
-	$sToRender  = renderHeading("Expunge Deleted Documents Status");
+	$sToRender  = renderHeading(_("Expunge Deleted Documents Status"));
 	$sToRender .= "<table>";
 	if (count($aSuccessDocuments) > 0) {
 	    $sToRender .= "<tr><td>" . _("The following documents were successfully expunged:") . "</td></tr>\n";

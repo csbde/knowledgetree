@@ -48,7 +48,7 @@ function getRoles() {
 
 function getPage() {
 	global $default;
-	$sToRender .= renderHeading("Role Management");
+	$sToRender .= renderHeading(_("Role Management"));
 
 	// add user link
 	$sToRender .= getAddLink("addRole", _("Add A Role"));

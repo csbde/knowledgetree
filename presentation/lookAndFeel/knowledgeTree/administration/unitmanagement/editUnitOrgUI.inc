@@ -119,7 +119,7 @@ function getPage($iUserID) {
         $heading = "<tr><td>" . _("Please select a User") . ":</td></tr>\n";
     }
 
-    $sToRender .= renderHeading("Edit User Groups");
+    $sToRender .= renderHeading(_("Edit User Groups"));
     $sToRender .= "<table>\n";
     $sToRender .= $heading;
     $sToRender .= "<tr>\n";
@@ -140,7 +140,7 @@ function getPage($iUserID) {
 function getPageFail() {
     global $default;
 
-    $sToRender .= "<table width=\"600\">" . renderHeading("Edit User Groups") . "</table>";
+    $sToRender .= "<table width=\"600\">" . renderHeading(_("Edit User Groups")) . "</table>";
     $sToRender .= "<table>\n";
     $sToRender .= "<tr><td><b>" . _("Sorry, Removal Failed") . "</b></td></tr>\n";
     $sToRender .= "<tr></tr>\n";
@@ -159,7 +159,7 @@ function getPageFail() {
 function getPageSuccess() {
     global $default;
 
-    $sToRender .= "<table width=\"600\">" . renderHeading("Edit User Groups") . "</table>";
+    $sToRender .= "<table width=\"600\">" . renderHeading(_("Edit User Groups")) . "</table>";
     $sToRender .= "<table>\n";
     $sToRender .= "<tr><td><b>" . _("Success") . "!</b></td></tr>\n";
     $sToRender .= "<tr></tr>\n";

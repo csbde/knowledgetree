@@ -78,7 +78,7 @@ function getUsers($fGroupID, $sName) {
 	}
 	$sQuery .= $sWhereClause . "ORDER BY U.username";
 	
-    $aColumns = array("name", "username",  _("Edit"), _("Delete"), _("Edit Groups"));
+    $aColumns = array("name", "username", "Edit", "Delete", "Edit Groups");
     $aColumnNames = array(_("Name"), _("Username"), _("Edit"), _("Delete"), _("Edit Groups"));
     $aColumnTypes = array(1,1,3,3,3);
     $aDBColumnArray = array("userID");

@@ -59,7 +59,7 @@ function renderCheckOutPage($oDocument) {
 function getCheckOutPage($oDocument, $bCheckedOut = false) {
     global $default;
 
-	$sToRender .= renderHeading("Check Out Document");
+	$sToRender .= renderHeading(_("Check Out Document"));
 	$sToRender .= renderDocumentPath($oDocument, false) . "\n\n";
     if ($bCheckedOut) {
     	$sToRender .= "<table>";

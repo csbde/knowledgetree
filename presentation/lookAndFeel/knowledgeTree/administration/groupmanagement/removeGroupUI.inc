@@ -36,7 +36,7 @@ function getDeletePage($iGroupID) {
         $sHeading = "Please select a group: ";
     }
 	
-    $sToRender .= renderHeading("Remove Group");
+    $sToRender .= renderHeading(_("Remove Group"));
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr><td>$sHeading</td></tr>\n";
 	$sToRender .= "<tr>\n";

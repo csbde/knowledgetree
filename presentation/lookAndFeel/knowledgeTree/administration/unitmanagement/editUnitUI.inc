@@ -32,7 +32,7 @@ function getEditPage($iUnitID) {
 		$oUnit = Unit::get($iUnitID);
     }
 	
-	$sToRender .= renderHeading("Edit Unit");
+	$sToRender .= renderHeading(_("Edit Unit"));
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr><td><strong>" . _("Please edit the Unit name") . "</strong></td></tr>\n";
 	$sToRender .= "<tr>\n";
@@ -53,7 +53,7 @@ function getEditPage($iUnitID) {
 function getEditPageSuccess() {	
 	global $default;
 			
-	$sToRender .= renderHeading("Edit Unit");
+	$sToRender .= renderHeading(_("Edit Unit"));
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr><td><b>" . _("Success") . "!</b></td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
@@ -74,7 +74,7 @@ function getEditPageSuccess() {
 function getEditPageFail() {	
 	global $default;
 			
-	$sToRender .= renderHeading("Edit Unit");
+	$sToRender .= renderHeading(_("Edit Unit"));
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr><td><b>" . strtoupper(_("Failure")) . "!</b></td></tr>\n";
 	$sToRender .= "<tr></tr>\n";

@@ -39,7 +39,7 @@ function getEditCheckoutPage($fDocumentID){
 	
 	$oDocument = Document::get($fDocumentID);
 	$oUser = User::get($oDocument->getCheckedOutUserID());
-	$sToRender .= renderHeading("Edit Document Checkout");	
+	$sToRender .= renderHeading(_("Edit Document Checkout"));	
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr><td colspan=\"2\">" . _("Are you sure you want to Check In the document:") . "</tr></td>";
 	$sToRender .= "<tr><td width=\"20%\">" . _("Path") . "</td><td><b>" . $oDocument->getDisplayPath() . "</b></td></tr>";

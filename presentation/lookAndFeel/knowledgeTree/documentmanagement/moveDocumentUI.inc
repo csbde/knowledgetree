@@ -27,7 +27,7 @@
  
 function getConfirmationPage($oFolder, $oDocument) {
 	global $default;
-    $sToRender = renderHeading("Move Document");
+    $sToRender = renderHeading(_("Move Document"));
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr>\n<td>Are you sure you want to move </td></tr>";
 	$sToRender .= "<tr><td><strong>" . $oDocument->getDisplayPath() . "</strong> to </td></tr>\n";
@@ -48,7 +48,7 @@ function getConfirmationPage($oFolder, $oDocument) {
 // FIXME: change these to object references instead of IDs
 function getPage($iFolderID, $iDocumentID, $sErrorMessage = "") {
 	global $default;
-    $sToRender = renderHeading("Move Document");
+    $sToRender = renderHeading(_("Move Document"));
 	$sToRender .= "<table>\n";
 	if ($sErrorMessage) {
 		$sToRender .= "<tr><td><font color=\"red\">$sErrorMessage</font></td></tr>";
