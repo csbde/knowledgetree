@@ -176,7 +176,7 @@ function renderArchiveSettingsForm($iDocumentID, $oArchiveSettings, $iArchivingT
 			$sToRender .= "<tr><td colspan=\"2\">Archive document </td></tr>";
 			if ($oArchiveSettings) {
 				$oTimePeriod = TimePeriod::get($oArchiveSettings->getTimePeriodID());
-				$sToRender .= renderTimePeriod("", $oTimePeriod);
+				$sToRender .= renderTimePeriod("", "", $oTimePeriod);
 			} else {
 				$sToRender .= renderTimePeriod("");
 			}
