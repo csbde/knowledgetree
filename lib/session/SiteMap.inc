@@ -63,17 +63,19 @@ class SiteMap {
     /**
      * Adds a site page mapping entry.
      *
-     * @param string the controller action
-     * @param string the corresponding page for this action
-     * @param string the section this page falls under
-     * @param int    the minimum access needed to access this page
-     * @param string description of the page for link presentation
+     * @param string  the controller action
+     * @param string  the corresponding page for this action
+     * @param string  the section this page falls under
+     * @param int     the minimum access needed to access this page
+     * @param string  description of the page for link presentation
+     * @param boolean whether this action is enabled or not
      */
-    function addPage($action, $page, $sectionName, $requiredAccess, $description) {
+    function addPage($sAction, $sPage, $sSectionName, $sRequiredAccess, $sLinkText, $bEnabled = true) {
         if (!$this->bUseDB) {
-            $this->aSiteMap[$sectionName][$requiredAccess][$action] = array ("page" => $page, 
-                                                                             "description" => $description, 
-                                                                             "default" => false);
+            $this->aSiteMap[$sSectionName][$sRequiredAccess][$sAction] = array ("page" => $sPage, 
+                                                                                "description" => $sLinkText,
+                                                                                "enabled" => (($bEnabled) ? "1" : "0"),
+                                                                                "default" => "0");                                                                               
         }
     }
     
@@ -86,11 +88,12 @@ class SiteMap {
      * @param int    the minimum access needed to access this page
      * @param string description of the page for link presentation     
      */    
-    function addDefaultPage($action, $page, $sectionName, $requiredAccess, $description) {
+    function addDefaultPage($sAction, $sPage, $sSectionName, $sRequiredAccess, $sLinkText, $bEnabled = true) {
         if (!$this->bUseDB) {
-            $this->aSiteMap[$sectionName][$requiredAccess][$action] = array ("page" => $page, 
-                                                                             "description" => $description, 
-                                                                             "default" => true);
+            $this->aSiteMap[$sSectionName][$sRequiredAccess][$sAction] = array ("page" => $sPage, 
+                                                                                "description" => $sLinkText,
+                                                                                "enabled" => (($bEnabled) ? "1" : "0"),
+                                                                                "default" => "1");                                                                               
         }
     }
     
@@ -103,7 +106,7 @@ class SiteMap {
      */
     function hasPermission($requiredAccess) {
         global $default;
-        $default->log->debug("SiteMap::hasPermission: reqAcces=$requiredAccess");
+
         // if no access control is required
         if ($requiredAccess == None) {
             return true;
@@ -125,7 +128,7 @@ class SiteMap {
             }
         }
         // shouldn't ever get here
-        $default->log->error("SiteMap::hasPermission THERE IS A WHOLE IN THE PAGE LEVEL ACCESS SECURITY MODEL!!!");
+        $default->log->error("SiteMap::hasPermission THERE IS A HOLE IN THE PAGE LEVEL ACCESS SECURITY MODEL!!!");
         $default->log->error("SiteMap::hasPermission requiredAccess=$requiredAccess; userID=" . $_SESSION["userID"]);
         // return false anyway
         return false;
@@ -159,13 +162,14 @@ class SiteMap {
             // initialise result array
             $results = array("descriptions" => array(), "links" => array());
             
-            if ($sql->query("SELECT link_text, action, access_id FROM $default->owl_sitemap_table WHERE section_id=$sectionID")) {                
+            if ($sql->query("SELECT link_text, action, access_id FROM $default->owl_sitemap_table WHERE section_id=$sectionID AND is_enabled=1")) {                
                 while ($sql->next_record()) {
                     // check permissions
                     if ($this->hasPermission($sql->f("access_id"))) {
                         // add this array to the resultset array if there is link text
                         if (strlen($sql->f("link_text")) > 0) {
                             $results["descriptions"][] = $sql->f("link_text");
+                            // FIXME: need to pass params to some links
                             $results["links"][] = generateControllerUrl($sql->f("action"));
                         }
                     }
@@ -200,10 +204,14 @@ class SiteMap {
             
             // need to loop through all (access, page) arrays in this section
             foreach ($this->aSiteMap[$sSectionName] as $requiredAccess => $pages) {
+                $default->log->debug("SiteMap::getSectionLinks section=$sSectionName, rq=$requiredAccess");//, pages=" . arrayToString($pages));
                 if ($this->hasPermission($requiredAccess)) {
                     foreach ($pages as $action => $pageDetail) {
                         // add this array to the resultset array if there is link text
-                        if (strlen($pages[$action]["description"]) > 0) {
+                        $default->log->debug("SiteMap::getSectionLinks page=" . arrayToString($pageDetail));
+                        if ((strlen($pages[$action]["description"]) > 0) &&
+                            ($pages[$action]["enabled"])) {
+                                $default->log->debug("SiteMap::getSectionLinks adding $action");
                             $results["descriptions"][] = $pages[$action]["description"];
                             $results["links"][] = generateControllerUrl($action);
                         }
@@ -388,7 +396,7 @@ class SiteMap {
             // lookup the default action for the specified section
             if ($sql->query("SELECT action FROM $default->owl_sitemap_table 
                              WHERE section_id=$sectionID
-                             AND is_default=1")) {                
+                             AND is_default=1 AND is_enabled=1")) {                
                 if ($sql->next_record()) {
                     // return the section name
                     return $sql->f("action");
@@ -425,7 +433,7 @@ class SiteMap {
                 //$default->log->debug("Sitemap::getDefaultAction: (section=$sectionName, reqGrp=$requiredGroupName); pages=" . arrayToString($pages));
                 foreach ($pages as $action => $pageArray) {
                     //$default->log->debug("Sitemap::getDefaultAction: action=$action; pageArray" . arrayToString($pageArray));
-                    if ($pageArray["default"]) {
+                    if ($pageArray["default"] && $pageArray["enabled"]) {
                         return $action;
                     }
                 }
@@ -529,6 +537,12 @@ class SiteMap {
             } else {
                 $default->log->error("Sitemap::syncWithDB remove sections failed");
             }
+            // clear sitemap table
+            if ($sql->query("DELETE from $default->owl_sitemap_table")) {
+                $default->log->debug("Sitemap::syncWithDB removed sitemap");
+            } else {
+                $default->log->error("Sitemap::syncWithDB remove sitemap failed");
+            }            
             // for each section
             foreach ($this->aSiteMap as $section => $valArr) {
                 // insert into the section
@@ -546,8 +560,8 @@ class SiteMap {
                 foreach ($valArr as $requiredAccess => $pageArr) {
                     // now loop through all the pages
                     foreach ($pageArr as $action => $page) {
-                        $sSiteMapSql = "INSERT INTO $default->owl_sitemap_table (action, page, section_id, access_id, link_text, is_default) " .
-                                       "VALUES ('$action', '" . $page["page"] . "', $sectionID, $requiredAccess, '" . $page["description"] . "', " . settype($page["default"], bool) . ")";
+                        $sSiteMapSql = "INSERT INTO $default->owl_sitemap_table (action, page, section_id, access_id, link_text, is_default, is_enabled) " .
+                                       "VALUES ('$action', '" . $page["page"] . "', $sectionID, $requiredAccess, '" . $page["description"] . "', " . $page["default"] . ", " . $page["enabled"] . ")";
                         if ($sql->query($sSiteMapSql)) {
                             $default->log->debug("Sitemap::syncWithDb sitemap insert worked for ($action, " . $page["page"] . ")");
                         } else {
