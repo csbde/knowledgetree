@@ -1,0 +1,2 @@
+# perform backups at five minutes past midnight daily
+5 0 * * * $HOME/bin/dms-backup.sh > $HOME/bklog-`date +%Y-%m-%d` 2>&1
