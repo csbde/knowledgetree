@@ -125,7 +125,6 @@ class DBUtil {
     function &autoInsert($sTable, $aFieldValues, $db = null) {
         global $default;
         $default->log->info('AutoInsert called for table ' . $sTable);
-        global $default;
         $db =& DBUtil::getDB();
         if (!array_key_exists('id', $aFieldValues)) {
             $aFieldValues['id'] = DBUtil::nextId($sTable, null, $db);
@@ -141,9 +140,33 @@ class DBUtil {
         return PEAR::raiseError('Unknown return value for autoInsert');
     }
 
+    function &autoUpdate($sTable, $aFieldValues, $iId, $db = null) {
+        global $default;
+        $default->log->info('AutoUpdate called for table ' . $sTable . ' with id ' . $iId);
+        $db =& DBUtil::getDB();
+        $res = $db->autoExecute($sTable, $aFieldValues, DB_AUTOQUERY_UPDATE, 'id = ' . $iId);
+        $default->log->info('Query: ' . DBUtil::lastQuery($db));
+        if ($res === DB_OK) {
+            return $res;
+        }
+        if (PEAR::isError($res)) {
+            return $res;
+        }
+        return PEAR::raiseError('Unknown return value for autoUpdate');
+    }
+
     function &lastQuery($db) {
         $db =& DBUtil::getDB();
         return $db->last_query;
+    }
+
+    function &autoDelete($sTable, $iId, $db = null) {
+        global $default;
+        $default->log->info('AutoDelete called for table ' . $sTable . ' with id ' . $iId);
+        $db =& DBUtil::getDB();
+        $sQuery = "DELETE FROM " . $sTable . " WHERE id = ?";
+        $aParams = array($iId);
+        return DBUtil::runQuery(array($sQuery, $aParams), $db);
     }
 
 }
