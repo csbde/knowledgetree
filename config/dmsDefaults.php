@@ -116,7 +116,7 @@ $default->owl_help_table = "help";
 
 
 // Change this to reflect the authentication method you are using
-$default->authenticationClass = "LDAPAuthenticator";
+$default->authenticationClass = "DBAuthenticator";
 
 require_once("$default->fileSystemRoot/lib/authentication/$default->authenticationClass.inc");
 
@@ -177,11 +177,11 @@ $default->siteMap->addSectionColour("Manage Documents", "td", "BDDFE0");
 $default->siteMap->addSectionColour("Manage Documents", "th", "57AFAE");
 
 // category management
-$default->siteMap->addPage("manageCategories", "/presentation/lookAndFeel/knowledgeTree/administration/manageCategoriesBL.php", "Manage Categories", SysAdmin, "Manage Categories");
+$default->siteMap->addPage("manageCategories", "/presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/editDocFieldBL.php?fDocFieldID=1", "Manage Categories", SysAdmin, "Manage Categories");
 $default->siteMap->addSectionColour("Manage Categories", "td", "BDDFE0");
 $default->siteMap->addSectionColour("Manage Categories", "th", "57AFAE");
 // document type management
-$default->siteMap->addPage("manageDocumentTypes", "/presentation/lookAndFeel/knowledgeTree/administration/manageDocumentTypesBL.php?", "Manage Document Types", SysAdmin, "Manage Document Types");
+$default->siteMap->addPage("manageDocumentTypes", "/presentation/lookAndFeel/knowledgeTree/administration/admin.php?sectionName=documentTypeAdministration", "Manage Document Types", SysAdmin, "Manage Document Types");
 $default->siteMap->addSectionColour("Manage Document Types", "td", "BDDFE0");
 $default->siteMap->addSectionColour("Manage Document Types", "th", "57AFAE");
 
@@ -329,7 +329,7 @@ require_once("$default->fileSystemRoot/phpSniff/phpSniff.class.php");
 $default->phpSniff = new phpSniff($_SERVER["HTTP_USER_AGENT"]);
 
 require_once("$default->fileSystemRoot/lib/Log.inc");
-$default->log = new Log($default->fileSystemRoot . "/log.txt", DEBUG);
+$default->log = new Log($default->fileSystemRoot . "/log.txt", INFO);
 
 // import request variables and setup language
 require_once("$default->fileSystemRoot/lib/dms.inc");
