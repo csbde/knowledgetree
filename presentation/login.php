@@ -29,12 +29,12 @@ if ($loginAction == "loginForm") {
     <link rel=\"SHORTCUT ICON\" href=\"$default->graphicsUrl/tree.ico\">
     <title>The KnowledgeTree</title>
     </head>
-    <body>
+    <body onload=\"javascript:document.loginForm.fUserName.focus()\">
     <center>
     <img src=\"$default->rootUrl/locale/$default->defaultLanguage/graphics/$default->logo\">
     <br><br>
     <table>\n
-    <form action=\"login.php\" method=\"post\">
+    <form name=\"loginForm\" action=\"login.php\" method=\"post\">
     <tr><td>Please enter your details below to login</td></tr>
     <tr><td></td></tr>
     <tr><td><font color=\"red\">" . urldecode($errorMessage) . "</font><tr><td>
