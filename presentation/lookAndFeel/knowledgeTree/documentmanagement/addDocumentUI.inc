@@ -156,24 +156,24 @@ function getPage($iFolderID, $iDocumentTypeID, $iDependantDocumentID = null, $sM
 		$sToRender .= "</table>";
 		
 	} else {
-		// only allow document type choosing if the user has write permission
+		// only allow document type choosing and display folder list if the user has write permission
 		if (Permission::userHasFolderWritePermission($iFolderID)) {
 			$sToRender .= getDocumentType($iFolderID, $iDocumentTypeID, $iDependantDocumentID);
 			$sActionButtons .= generateControllerLink("browse", "fFolderID=$iFolderID", "<img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"/>");
-		}
 
-		$sToRender .= "<table border=\"0\" width=\"100%\" >\n";
-		$sToRender .= "<tr><td>$sActionButtons</td></tr>";
-		$sToRender .= "</table>";
-		
-		// display folders for browsing
-		$sToRender .= "<table border=\"0\" width=\"100%\">\n";
-		$sToRender .= "<tr>\n";
-		$sToRender .= "\t<td>" . renderFolderList($iFolderID, "/control.php?action=addDocument" . $sQueryString) . "<td>\n";
-		$sToRender .= "</tr>\n";	
-		$sToRender .= "<tr>\n";
-		$sToRender .= "</tr>";
-		$sToRender .= "</table><br>\n";
+			$sToRender .= "<table border=\"0\" width=\"100%\" >\n";
+			$sToRender .= "<tr><td>$sActionButtons</td></tr>";
+			$sToRender .= "</table>";
+			
+			// display folders for browsing
+			$sToRender .= "<table border=\"0\" width=\"100%\">\n";
+			$sToRender .= "<tr>\n";
+			$sToRender .= "\t<td>" . renderFolderList($iFolderID, "/control.php?action=addDocument" . $sQueryString) . "<td>\n";
+			$sToRender .= "</tr>\n";	
+			$sToRender .= "<tr>\n";
+			$sToRender .= "</tr>";
+			$sToRender .= "</table><br>\n";
+		}
 	}
 
 	return $sToRender;
