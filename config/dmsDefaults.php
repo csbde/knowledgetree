@@ -15,7 +15,8 @@ require_once("environment.php");
 $default->owl_graphics_url	= $default->owl_root_url . "/graphics";
 $default->owl_LangDir		= $default->owl_fs_root . "/locale";
 // change this to reflect a directory with a different look and feel
-$default->owl_ui_directory  = $default->owl_fs_root . "/presentation/knowledgeTree";
+$default->owl_ui_directory  = $default->owl_fs_root . "/presentation/lookAndFeel/knowledgeTree";
+$default->owl_ui_url  = $default->owl_root_url . "/presentation/lookAndFeel/knowledgeTree";
 
 // Set to true to use the file system to store documents, false only uses the database
 $default->owl_use_fs            = true;
@@ -132,15 +133,15 @@ $default->debug = True;
 require_once("$default->owl_fs_root/lib/session/SiteMap.inc");
 $default->siteMap = new SiteMap();
 // action, section, page, userClass (SA, UA, U, A)
-$default->siteMap->addPage("login", "/login.php?loginAction=login", "General", "Anonymous");
-$default->siteMap->addPage("loginForm", "/login.php?loginAction=loginForm", "General", "Anonymous"); 
-$default->siteMap->addPage("logout", "/logout.php", "General", "Anonymous");
+$default->siteMap->addPage("login", "/presentation/login.php?loginAction=login", "General", "Anonymous");
+$default->siteMap->addPage("loginForm", "/presentation/login.php?loginAction=loginForm", "General", "Anonymous"); 
+$default->siteMap->addPage("logout", "/presentation/logout.php", "General", "Anonymous");
 $default->siteMap->addPage("dashboard", "/presentation/dashboardBL.php", "General", "Unit Administrators");
-$default->siteMap->addPage("browse", "/browse.php", "Browse Collections", "Anonymous");
-$default->siteMap->addPage("addFolder", "/addFolder.php", "Browse Collections", "Unit Administrators");
-$default->siteMap->addPage("addUser", "/addUser.php", "Administration", "Unit Administrators");
-$default->siteMap->addPage("addUnit", "/addUnit.php", "Administration", "Unit Administrators");
-$default->siteMap->addPage("addOrganisation", "/addOrganisation.php", "Administration", "System Administrators");
+$default->siteMap->addPage("browse", "/presentation/documentmanagement/browse.php", "Browse Collections", "Anonymous");
+$default->siteMap->addPage("addFolder", "/presentation/addFolder.php", "Browse Collections", "Unit Administrators");
+$default->siteMap->addPage("addUser", "/presentation/addUser.php", "Administration", "Unit Administrators");
+$default->siteMap->addPage("addUnit", "/presentation/addUnit.php", "Administration", "Unit Administrators");
+$default->siteMap->addPage("addOrganisation", "/presentation/addOrganisation.php", "Administration", "System Administrators");
 $default->siteMap->addPage("scratchPad", "/tests/scratchPad.php", "Tests", "Unit Administrators");
 $default->siteMap->addPage("documentBrowserTest", "/tests/documentmanagement/DocumentBrowser.php", "Tests", "Anonymous");
 
