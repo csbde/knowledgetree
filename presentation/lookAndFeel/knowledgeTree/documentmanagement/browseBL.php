@@ -40,10 +40,6 @@ require_once("$default->uiDirectory/documentmanagement/browseUI.inc");
 
 // only if we have a valid session
 if (checkSession()) {
-    require_once("../../../../phpSniff/phpTimer.class.php");
-    $timer = new phpTimer();
-    $timer->start();
-    
     // retrieve variables
     if (!$fBrowseType) {
         // required param not set- internal error or user querystring hacking
@@ -64,6 +60,7 @@ if (checkSession()) {
     // fire up the document browser 
     //$oDocBrowser = new DocumentBrowser();
     $oBrowser = BrowserFactory::create($fBrowseType, $fSortBy, $fSortDirection);
+    $sectionName = $oBrowser->getSectionName();
      
     // instantiate my content pattern
     $oContent = new PatternCustom();
