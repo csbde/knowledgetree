@@ -81,7 +81,7 @@ class PhysicalDocumentManager {
 		//get the path to the document on the server
         $sDocumentFileSystemPath = $oDocument->getPath();
 		//set the correct headers
-        Header("Content-type: " . PhysicalDocumentManager::getMimeTypeName($oDocument->getMimeTypeID()));
+        Header("Content-Type: " . PhysicalDocumentManager::getMimeTypeName($oDocument->getMimeTypeID()));
 		Header("Content-Length: ". $oDocument->getFileSize());
 		Header("Content-Disposition: attachment; filename=" . $oDocument->getFileName());        
         Header("Pragma: no-store");
@@ -102,7 +102,7 @@ class PhysicalDocumentManager {
 		//get the path to the document on the server
         $sDocumentFileSystemPath = $oDocument->getPath() . "-$sVersion";
 		//set the correct headers
-        Header("Content-type: " . PhysicalDocumentManager::getMimeTypeName($oDocument->getMimeTypeID()));
+        Header("Content-Type: " . PhysicalDocumentManager::getMimeTypeName($oDocument->getMimeTypeID()));
 		header("Content-Length: ". $oDocument->getFileSize());
 		header("Content-Disposition: attachment; filename=" . "$sVersion-" . $oDocument->getFileName());
         header("Pragma: no-store");
@@ -145,8 +145,8 @@ class PhysicalDocumentManager {
         $sDocumentFileSystemPath = $oDocument->getPath();
 		$total=$url . $files[$i];		
 		
-        Header ("Content-type: " . PhysicalDocumentManager::getMimeTypeName($oDocument->getMimeTypeID()));
-		Header("Content-Length: " . $oDocument->getFileSize() * 1024);
+        Header("Content-Type: " . PhysicalDocumentManager::getMimeTypeName($oDocument->getMimeTypeID()));
+		Header("Content-Length: " . $oDocument->getFileSize());
 		Header("Content-Disposition: inline; filename=" . $oDocument->getName());
         header("Pragma: no-store");
 		return readfile($sDocumentFileSystemPath);
@@ -221,7 +221,7 @@ class PhysicalDocumentManager {
 		if ($sql->next_record()) {
 			return $sql->f("mimetypes");			
 		}
-		return "application/octect-stream";
+		return "application/octet-stream";
 	}
 	
 }
