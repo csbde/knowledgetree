@@ -2,6 +2,9 @@
 /**
 * Page used by PatternCreate.  Creates the actual object and stores it
 *
+* Expected form variables:
+*	o $fRedirectURL - URL to redirect to after object creation (must be URL encoded)
+*
 * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
 * @date 5 February 2003
 * @package presentation.lookAndFeel.knowledgeTree
@@ -9,6 +12,7 @@
 */
 
 require_once("../../../config/dmsDefaults.php");
+require_once("$default->owl_fs_root/presentation/Html.inc");
 
 $aKeys = array_keys($_POST);
 $aParameterValues = array();
@@ -72,6 +76,11 @@ include_once("$default->owl_fs_root/lib/$sObjectFolderName");
 $oObject = call_user_func("createFromArray",$aParameterValues);
 $oObject->create();
 
-
+//redirect the user
+if (isset($fRedirectURL)) {
+	redirect(urldecode($fRedirectURL));
+} else {
+	redirect("$default->owl_root_url/control.php");
+}
 
 ?>
