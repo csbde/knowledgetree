@@ -1025,6 +1025,22 @@ class Document {
         $_SESSION["errorMessage"] = $lang_err_object_key;
         return false;
 	}
+	
+	function deleteDocumentFieldsLinks($iDocumentID) {
+		global $default, $lang_err_database, $lang_err_object_key;
+        if ($this->iId >= 0) {
+            $sql = $default->db;            
+            $result = $sql->query("DELETE FROM  " . $default->owl_document_fields_table . "  WHERE document_id = $iDocumentID");
+            if ($result) {
+                $this->iId = -1;
+                return true;
+            }
+            $_SESSION["errorMessage"] = $lang_err_database;
+            return false;
+        }
+        $_SESSION["errorMessage"] = $lang_err_object_key;
+        return false;		
+	}
 }
 
 ?>
