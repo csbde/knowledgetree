@@ -61,6 +61,24 @@ if (checkSession()) {
                                     	if ($oDocumentLink->create()) {
                                     		//no longer a dependant document, but a linked document
                                     		$oDependantDocument->delete();                         
+                                    	} else {
+                                    		//an error occured whilst trying to link the two documents automatically.  Email the parent document
+                                    		//original to inform him/her that the two documents must be linked manually
+                                    		$oParentDocument = Document::get($oDependantDocument->getParentDocumentID());
+                                    		$oUserDocCreator = User::get($oParentDocument->getCreatorID());
+                                    		
+                                    		$sBody = $oUserDocCreator->getName() . ", an error occured whilst attempting to automatically link the document, '" .
+                                    				$oDocument->getName() . "' to the document, '" . $oParentDocument->getName() . "'.  These two documents " .
+                                    				" are meant to be linked for collaboration purposes.  As creator of the document, ' " . $oParentDocument->getName() . "', you are requested to " .
+                                    				"please link them manually by browsing to the parent document, " .
+                                    				generateControllerLink("viewDocument","fDocumentID=" . $oParentDocument->getID(), $oParentDocument->getName()) . 
+                                    				"  and selecting the link button.  " . $oDocument->getName() . " can be found at " . $oDocument->generateFullFolderPath($oDocument->getFolderID());
+                                    		
+                                    		$oEmail = & new Email();
+											$oEmail->send($oUserDocCreator->getEmail(), "Automatic document linking failed", $sBody);
+											
+											//document no longer dependant document, but must be linked manually
+											$oDependantDocument->delete();                                    				
                                     	}
                                     }
                                     
@@ -147,7 +165,7 @@ if (checkSession()) {
             //so don't display add button
             require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
             $oPatternCustom = & new PatternCustom();
-            $oPatternCustom->setHtml(getBrowsePage($fFolderID));
+            $oPatternCustom->setHtml(getBrowsePage($fFolderID, $fDependantDocumentID));
             $main->setCentralPayload($oPatternCustom);
             $main->setErrorMessage("You do not have permission to add a document to this folder</td><td><a href=\"$default->rootUrl/control.php?action=browse&fFolderID=$fFolderID\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></a>");
             $main->render();
