@@ -23,6 +23,7 @@ if (checkSession()) {
     require_once("$default->owl_fs_root/lib/documentmanagement/PhysicalDocumentManager.inc");
     require_once("$default->owl_fs_root/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
     require_once("$default->owl_fs_root/presentation/Html.inc");
+    require_once("$default->owl_fs_root/lib/subscriptions/SubscriptionEngine.inc");
     require_once("addDocumentUI.inc");
 
     if (isset($fFolderID)) {
@@ -45,6 +46,14 @@ if (checkSession()) {
                                 //create the document transaction record
                                 $oDocumentTransaction = & new DocumentTransaction($oDocument->getID(), "Document created", CREATE);
                                 $oDocumentTransaction->create();
+                                
+                                // fire subscription alerts for the new document
+                                $count = SubscriptionEngine::fireSubscription($fFolderID, SubscriptionConstants::subscriptionAlertType("AddDocument"),
+                                         SubscriptionConstants::subscriptionType("FolderSubscription"),
+                                         array( "newDocumentName" => $oDocument->getName(),
+                                                "folderName" => Folder::getFolderName($fFolderID)));
+                                $default->log->info("addDocumentBL.php fired $count subscription alerts for new document " . $oDocument->getName());
+                                
                                 //redirect to the document view page
                                 redirect("$default->owl_root_url/control.php?action=viewDocument&fDocumentID=" . $oDocument->getID());
                             } else {
