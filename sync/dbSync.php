@@ -9,7 +9,7 @@
 * 
 */
 
-require_once("config/dmsDefaults.php");
+require_once("../config/dmsDefaults.php");
 require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
 require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
 
@@ -40,20 +40,22 @@ if (isset($fDelete)) {
 }
 
 $sToRender .= "The following <b>folders</b> must be recreated:<br>\n<ul>\n";
-
+$sToRender .= "<table>";
 for ($i = 0; $i < count($aMissingFolders); $i++) {
 	$oFolder = $aMissingFolders[$i];
-	$sToRender .= "<li>" . Folder::getFolderPath($oFolder->getID()) . "</li>\n";
+	$sToRender .= "<tr><td nowrap>" . Folder::getFolderPath($oFolder->getID()) . "</td></tr>\n";	
 }
+$sToRender .= "</table>";
 
-$sToRender .= "</ul><br>The following <b>documents</b> must be recaptured:<br>\n<ul>\n";
-
+$sToRender .= "<br>The following <b>documents</b> must be recaptured:<br>\n";
+$sToRender .= "<table>";
 for ($i = 0; $i < count($aMissingDocuments); $i++) {	
 	$oDocument = $aMissingDocuments[$i];
-	$sToRender .= "<li>" . Folder::getFolderPath($oDocument->getFolderID()) . $oDocument->getFileName() . "</li>\n";
+	$sToRender .= "<tr><td nowrap>(" . $oDocument->getID() . ", " . $oDocument->getLastModifiedDate() . ") " .  Folder::getFolderPath($oDocument->getFolderID()) . $oDocument->getFileName() . "</td></tr>";	
 }
+$sToRender .= "</table>";
 
-$sToRender .= "</ul><br>\n";
+$sToRender .= "<br>\n";
 if (!isset($fDelete)) {
 	$sToRender .= "<a href=\"" . $_SERVER["PHP_SELF"] . "?fDelete=1\">Delete</a>\n";
 }
