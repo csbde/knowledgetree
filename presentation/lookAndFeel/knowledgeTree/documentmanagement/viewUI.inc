@@ -17,7 +17,7 @@ function renderHeading() {
     global $default;
     $sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
     $sColor = $default->siteMap->getSectionColour($sSectionName, "th");
-    $sToRender  = "<table border=\"0\" width=\"100%\">\n";
+    $sToRender  = "<table border=\"0\" width=\"600\">\n";
     $sToRender .= "<tr align=\"left\"><th class=\"sectionHeading\" bgcolor=\"$sColor\"><font color=\"ffffff\">Document Detail</font></th></tr>\n";
     $sToRender .= "<tr/>\n";
     $sToRender .= "<tr/>\n";
@@ -133,10 +133,50 @@ function renderNonEditableDocumentRouting($oDocument) {
 
 }
 
+function displayActionButtons($oDocument, $bEdit) {
+    global $default;
+    if ($bEdit) {
+         // display the check in button if the document is checked out and you checked the document out
+        if ($oDocument->getIsCheckedOut() && ($oDocument->getCheckedOutUserID() == $_SESSION["userID"])) {
+            $sToRender = "<td><a href=\"" . generateControllerLink("checkInDocument", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/checkin.gif\" border=\"0\" /></a></td>\n";
+        // otherwise display the check out button
+        } else {
+            $sToRender = "<td><a href=\"" . generateControllerLink("checkOutDocument", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/checkout.gif\" border=\"0\" /></a></td>\n";
+        }
+    }
+    
+    $sToRender .= "<td><a href=\"" . generateControllerLink("emailDocument", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/email.gif\" border=\"0\" /></a></td>\n";    
+    if ($bEdit) {
+        $sToRender .= "<td><a href=\"" . generateControllerLink("deleteDocument", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/delete.gif\" border=\"0\" /></a></td>\n";
+    }
+    $sToRender .= "<td><a href=\"" . generateControllerLink("viewHistory", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/history.gif\" border=\"0\" /></a></td>\n";
+    if ($bEdit) {
+        $sToRender .= "<td><a href=\"" . generateControllerLink("moveDocument", "fFolderID=" . $oDocument->getFolderID() . "&fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/move.gif\" border=\"0\" /></a></td>\n";
+    }
+    
+    // display the unsubscribe button if the user is subscribed to the document
+    if (Subscription::exists($_SESSION["userID"], $oDocument->getID(), SubscriptionConstants::subscriptionType("DocumentSubscription"))) {
+        $sToRender .= "<td><a href=\"" . generateControllerLink("removeSubscription", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/unsubscribe.gif\" border=\"0\" /></a></td>\n";
+    // otherwise display the subscribe button
+    } else {
+        $sToRender .= "<td><a href=\"" . generateControllerLink("addSubscription", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/subscribe.gif\" border=\"0\" /></a></td>\n";
+    }
+    $sToRender .= "<td><a onClick=\"alert('This will download a copy of the document and is not the same as Checking Out a document- changes to this downloaded file will not be managed in the DMS.'); return true;\" href=\"" . generateControllerLink("viewDocument", "fDocumentID=" . $oDocument->getID() . "&fForDownload=1") . "\"><img src=\"$default->graphicsUrl/widgets/download.gif\" border=\"0\" /></a></td>\n";    
+    
+    return $sToRender;
+}
+
 function getEditPage($oDocument) {
     global $default;
 	$iDocumentID = $oDocument->getID();
     $sToRender = renderHeading() . renderDocumentPath($oDocument) . "\n<br>\n";
+    
+    $sToRender .= "<table>\n";
+    $sToRender .= "<tr>\n";
+    $sToRender .= displayActionButtons($oDocument, true);
+    $sToRender .= "</tr>\n";
+    $sToRender .= "</table>\n";
+    
     $sToRender .= "<table border = 0>\n";
     $sToRender .= "<tr>\n";
     $sToRender .= "<td>\n";
@@ -203,31 +243,10 @@ function getEditPage($oDocument) {
     $sToRender .= "</td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "</table>\n";
+    
     $sToRender .= "<table>\n";
     $sToRender .= "<tr>\n";
-    
-     // display the check in button if the document is checked out and you checked the document out
-    if ($oDocument->getIsCheckedOut() && ($oDocument->getCheckedOutUserID() == $_SESSION["userID"])) {
-        $sToRender .= "<td><a href=\"" . generateControllerLink("checkInDocument", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/checkin.gif\" border=\"0\" /></a></td>\n";
-    // otherwise display the check out button
-    } else {
-        $sToRender .= "<td><a href=\"" . generateControllerLink("checkOutDocument", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/checkout.gif\" border=\"0\" /></a></td>\n";
-    }
-    
-    $sToRender .= "<td><a href=\"" . generateControllerLink("emailDocument", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/email.gif\" border=\"0\" /></a></td>\n";    
-    $sToRender .= "<td><a href=\"" . generateControllerLink("deleteDocument", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/delete.gif\" border=\"0\" /></a></td>\n";
-    $sToRender .= "<td><a href=\"" . generateControllerLink("viewHistory", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/history.gif\" border=\"0\" /></a></td>\n";
-    $sToRender .= "<td><a href=\"" . generateControllerLink("moveDocument", "fFolderID=" . $oDocument->getFolderID() . "&fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/move.gif\" border=\"0\" /></a></td>\n";
-    
-    // display the unsubscribe button if the user is subscribed to the document
-    if (Subscription::exists($_SESSION["userID"], $oDocument->getID(), SubscriptionConstants::subscriptionType("DocumentSubscription"))) {
-        $sToRender .= "<td><a href=\"" . generateControllerLink("removeSubscription", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/unsubscribe.gif\" border=\"0\" /></a></td>\n";
-    // otherwise display the subscribe button
-    } else {
-        $sToRender .= "<td><a href=\"" . generateControllerLink("addSubscription", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/subscribe.gif\" border=\"0\" /></a></td>\n";
-    }
-    $sToRender .= "<td><a onClick=\"alert('This will download a copy of the document and is not the same as Checking Out a document- changes to this downloaded file will not be managed in the DMS.'); return true;\" href=\"" . generateControllerLink("viewDocument", "fDocumentID=" . $oDocument->getID() . "&fForDownload=1") . "\"><img src=\"$default->graphicsUrl/widgets/download.gif\" border=\"0\" /></a></td>\n";    
-    
+    $sToRender .= displayActionButtons($oDocument, true);
     $sToRender .= "</tr>\n";
     $sToRender .= "</table>\n";
 
@@ -238,6 +257,13 @@ function getViewPage($oDocument) {
     global $default;
 	$iDocumentID = $oDocument->getID();
     $sToRender = renderHeading() . renderDocumentPath($oDocument) . "\n<br>\n";
+    
+    $sToRender .= "<table>\n";
+    $sToRender .= "<tr>\n";
+    $sToRender .= displayActionButtons($oDocument, false);
+    $sToRender .= "</tr>\n";
+    $sToRender .= "</table>\n";
+    
     $sToRender .= "<table border = 0>\n";
     $sToRender .= "<tr>\n";
     $sToRender .= "<td>\n";
@@ -270,20 +296,10 @@ function getViewPage($oDocument) {
     $sToRender .= "</td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "</table>";
+    
     $sToRender .= "<table>\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "<td><a href=\"" . generateControllerLink("emailDocument", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/email.gif\" border=\"0\" /></a></td>\n";
-    $sToRender .= "<td><a href=\"" . generateControllerLink("viewHistory", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/history.gif\" border=\"0\" /></a></td>\n";
-    
-    // display the unsubscribe button if the user is subscribed to the document
-    if (Subscription::exists($_SESSION["userID"], $oDocument->getID(), SubscriptionConstants::subscriptionType("DocumentSubscription"))) {
-        $sToRender .= "<td><a href=\"" . generateControllerLink("removeSubscription", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/unsubscribe.gif\" border=\"0\" /></a></td>\n";
-    // otherwise display the subscribe button
-    } else {
-        $sToRender .= "<td><a href=\"" . generateControllerLink("addSubscription", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/subscribe.gif\" border=\"0\" /></a></td>\n";
-    }
-    $sToRender .= "<td><a onClick=\"alert('This will download a copy of the document and is not the same as Checking Out a document- changes to this downloaded file will not be managed in the DMS.'); return true;\" href=\"" . generateControllerLink("viewDocument", "fDocumentID=" . $oDocument->getID() . "&fForDownload=1") . "\"><img src=\"$default->graphicsUrl/widgets/download.gif\" border=\"0\" /></a></td>\n";    
-    
+    $sToRender .= displayActionButtons($oDocument, false);
     $sToRender .= "</tr>\n";
     $sToRender .= "</table>\n";
 
