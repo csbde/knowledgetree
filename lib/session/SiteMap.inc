@@ -24,6 +24,7 @@ class SiteMap {
      * The underlying site map storage array
      */
     var $aSiteMap;
+	var $aSectionColours;
 
     /**
      * Whether to use the database to store the sitemap or not
@@ -41,6 +42,7 @@ class SiteMap {
         if (!$this->bUseDB) {
             $this->aSiteMap = array();
         }
+		$this->aSectionColours = array();
     }
 
     /**
@@ -78,6 +80,14 @@ class SiteMap {
                     "default" => "0");
         }
     }
+	
+	function addSectionColour($sSectionName, $sHtmlElement, $sColour) {
+		$this->aSectionColours[$sSectionName][$sHtmlElement] = $sColour;		
+	}
+	
+	function getSectionColour($sSectionName, $sHtmlElement) {		
+		return $this->aSectionColours[$sSectionName][$sHtmlElement];
+	}
 
     /**
      * Adds a site page mapping entry- the default page for the section.
