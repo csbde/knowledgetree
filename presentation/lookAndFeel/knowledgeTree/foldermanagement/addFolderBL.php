@@ -70,6 +70,8 @@ if (checkSession()) {
 							if ($oFolderDocTypeLink->create()) {
 								//create the folder on the file system
 								if (PhysicalFolderManagement::createFolder(Folder::getFolderPath($oFolder->getID()))) {
+									$default->log->info("addFolderBL.php successfully added folder $fFolderName to parent folder " . Folder::getFolderPath($fFolderID) . " id=$fFolderID");
+									
 									// fire subscription alerts for the new folder
 									$count = SubscriptionEngine::fireSubscription($oParentFolder->getID(), SubscriptionConstants::subscriptionAlertType("AddFolder"),
 											 SubscriptionConstants::subscriptionType("FolderSubscription"),
@@ -78,8 +80,10 @@ if (checkSession()) {
 									$default->log->info("addFolderBL.php fired $count subscription alerts for new folder $fFolderName");
 									redirect("$default->rootUrl/control.php?action=editFolder&fFolderID=" . $oFolder->getID());
 								} else {
-									//if we couldn't do that, remove the folder and its doc type link
-									//from the db and report and error
+									//if we couldn't do that
+									$default->log->error("addDocumentBL.php Filesystem error attempting to store folder name=$fFolderName in parent folder '" . Folder::getFolderPath($fFolderID) . "' id=$fFolderID");
+									
+									// remove the folder and its doc type link from the db and report and error
 									$oFolderDocTypeLink->delete();
 									$oFolder->delete();
 									require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
@@ -87,12 +91,14 @@ if (checkSession()) {
 									$main->setCentralPayload($oPatternCustom);
 									$main->setErrorMessage("There was an error creating the folder $fFolderName on the filesystem");
 									$main->setFormAction("addFolderBL.php?fFolderID=$fFolderID");
-									$main->setHasRequiredFields(true);
+									$main->setHasRequiredFields(true);									
 									$main->render();
 								}
 							} else {
 								//couldn't associate the chosen document type with this folder
-								//remove the folder from the database
+								$default->log->error("addDocumentBL.php DB error storing folder-document type link for folder name=$fFolderName in parent folder '" . Folder::getFolderPath($fFolderID) . "' folderID=$fFolderID; docTypeID=$fDocumentTypeID");
+								
+								//remove the folder from the database								
 								$oFolder->delete();
 								require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 								$oPatternCustom->setHtml(renderBrowsePage($fFolderID));
@@ -104,6 +110,8 @@ if (checkSession()) {
 							}
                         } else {
                             //if we couldn't create the folder in the db, report an error
+                            $default->log->error("addDocumentBL.php DB error attempting to store folder name=$fFolderName in parent folder '" . Folder::getFolderPath($fFolderID) . "' id=$fFolderID");
+                            									
                             require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
                             $oPatternCustom->setHtml(renderBrowsePage($fFolderID));
                             $main->setCentralPayload($oPatternCustom);
