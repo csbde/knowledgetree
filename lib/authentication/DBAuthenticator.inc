@@ -45,7 +45,6 @@ class DBAuthenticator extends Authenticator {
                 return false;
             }
         } else {
-            $_SESSION["errorMessage"] = $lang_err_database;
             return false;
         }
     }
@@ -58,7 +57,7 @@ class DBAuthenticator extends Authenticator {
      * @return array containing the users found
      */ 
     function getUser($sUserName, $aAttributes) {
-        global $default, $lang_err_database;
+        global $default;
 
         $sql = $default->db;
         $sQuery = "SELECT ";
@@ -77,7 +76,6 @@ class DBAuthenticator extends Authenticator {
             }
             return $aUserResults;
         } else {
-            $_SESSION["errorMessage"] = $lang_err_database;
             return false;
         }
     }
@@ -90,7 +88,7 @@ class DBAuthenticator extends Authenticator {
      * @return array containing the users found
      */
     function searchUsers($sUserNameSearch, $aAttributes) {
-        global $default, $lang_err_database;
+        global $default;
 
         $sql = $default->db;
         $sQuery = "SELECT ";
@@ -110,7 +108,6 @@ class DBAuthenticator extends Authenticator {
             }
             return $aUserResults;
         } else {
-            $_SESSION["errorMessage"] = $lang_err_database;
             return false;
         }
     }
