@@ -17,7 +17,7 @@ class FolderLib {
 	*/
 	function isPublicFolder($iFolderID) {
 		global $default, $lang_err_database;
-		if (FolderManager::folderExists($iFolderID)) {
+		if (FolderManager::folderExistsID($iFolderID)) {
 			$sql = new Owl_DB();
 			$sql->query("SELECT is_public FROM " . $default->owl_folders_table . " WHERE id = " . $iFolderID);
 			if ($sql->next_record()) {
@@ -39,9 +39,9 @@ class FolderLib {
 	*/
 	function getFolderDocumentType($iFolderID) {
 		global $default, $lang_err_database;
-		if (FolderManager::folderExists($iFolderID)) {
+		if (FolderManager::folderExistsID($iFolderID)) {
 			$sql = new Owl_DB();
-			$sql->query("SELECT document_type_id FROM " . $default->owl_documents_table . " WHERE id = " . $iFolderID);
+			$sql->query("SELECT document_type_id FROM " . $default->owl_folders_table . " WHERE id = " . $iFolderID);
 			if ($sql->next_record()) {
 				return $sql->f("document_type_id");
 			}
@@ -51,9 +51,23 @@ class FolderLib {
 		//error message set by FolderManager::folderExists
 		return false;
 	}
-	
-	function getFolderName($iFolderID) {
 		
+	/**
+	* Get the folder name using the primary key
+	*
+	* @param $iFolderID		Primary key of folder to get name for
+	*
+	* @return String name on success, false otherwise and set $_SESSION["errorMessage"]
+	*/
+	function getFolderName($iFolderID) {
+		global $default, $lang_err_database;
+		$sql = new Owl_DB();
+		$sql->query("SELECT name FROM " . $default->owl_folders_table . " WHERE id = " . $iFolderID);
+		if ($sql->next_record()) {
+			return stripslashes($sql->f("name"));
+		}
+		$_SESSION["errorMessage"] = $lang_err_database;
+		return false;
 	}
 	
 	/**
@@ -64,6 +78,7 @@ class FolderLib {
 	* @return integer primary key of parent folder
 	*/
 	function getParentFolderID($iFolderID) {
+		global $default;
 		$sql = new Owl_DB();
 		$sql->query("SELECT parent_id FROM " . $default->owl_folders_table . " WHERE id = " . $iFolderID);
 		$sql->next_record();
@@ -81,10 +96,10 @@ class FolderLib {
 	function getFolderPath($iFolderID, $sFolderName) {
 		global $default;
 		//if the folder has a parent
-		if (getParentFolderID($iFolderID) != 0) {			
-			$sCurrentPath = getFolderPath(getParentFolder($iFolderID), getFolderName($iFolderID)) . "/" . $sCurremtPath;
+		if (FolderLib::getParentFolderID($iFolderID) != 0) {			
+			$sCurrentPath = FolderLib::getFolderPath(FolderLib::getParentFolderID($iFolderID), FolderLib::getFolderName($iFolderID)) . "/" . $sCurremtPath;
 		}
-		return $default->owl_fs_root . "/" . getFolderName($iFolderID);
+		return $default->owl_fs_root . "/" . FolderLib::getFolderName($iFolderID);
 		
 	}
 }

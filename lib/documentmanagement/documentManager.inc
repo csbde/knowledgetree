@@ -18,12 +18,62 @@ require_once("$default->owl_root_url/phpmailer/class.phpmailer.php"); // for ema
 
 class DocumentManager {
 	
+	/**
+	* Create a new document
+	*
+	* @param $sName				File Name	
+	* @param $iSize				File size in bytes
+	* @param $iCreatorID		Primary key of user who created document
+	* @param $sDescription		Description
+	* @param $iMimeID			Primary key of file mime type
+	* @param $iFolderID			Primary key of folder to which document belongs
+	*
+	* @return integer primary key of new file on successful insert, false otherwise and set $_SESSION["errorMessage"]
+	*
+	*/
+	function createDocument($sName, $iSize, $iCreatorID, $sDescription, $iMimeID, $iFolderID) {
+		global $default, $lang_err_doc_exist, $lang_err_database;
+		if (!DocumentManager::documentExists($sName, $iFolderID)) {
+			$sql = new Owl_DB();
+			$result = $sql->query("INSERT INTO " . $default->owl_documents_table . " (document_type_id, name, file_name, size, creator_id, modified, description, mime_id, folder_id, major_version, minor_version, is_checked_out" .
+						"VALUES (" . FolderLib::getFolderDocumentType($iFolderID) . ", '$sName', '$sFileName', $iSize, $iCreatorID, " . getCurrentDateTime() . ", '$sDescription', $iMimeID, $iFolderID, 0, 1, 0)");
+			if ($result) {
+				return $sql->insert_id();
+			}
+			$_SESSION["errorMessage"] = $lang_err_database;
+			return false;			
+		} 
+		$_SESSION["errorMessage"] = $lang_err_doc_exist . "name = " . $sName . " folder_id = " . $iFolderID;
+		return false;
+		
+		
+	}
+	
+	/**
+	* Check if a document already exists
+	*
+	* @param $sName			Name of document
+	* @param $sFolderID		Primary key of folder to which document is assigned
+	*
+	* @return boolean true if document exists, false otherwise and set $_SESSION["errorMessage"]
+	*/	
+	function documentExists($sName, $iFolderID) {
+		global $default, $lang_err_doc_not_exist;
+		$sql = new Owl_DB();
+		$sql->query("SELECT * FROM " . $default->owl_documents_table . " WHERE name = '" . $sName "' AND folder_id = " . $iFolderID);
+		if ($sql->next_record()) {
+			return true;
+		}
+		$_SESSION["errorMessage"] = $lang_err_doc_not_exist . "name = " . $sName . " folder_id = " . $iFolderID;
+		return false;
+	}
+	
 	/** 
 	* Create a new document type
 	* 
 	* @param $sName		Name of new document type
 	*
-	* @return true on successful creation, false otherwise and set $default->errorMessage 
+	* @return boolean true on successful creation, false otherwise and set $default->errorMessage 
 	*/
 	function createDocumentType($sName) {
 		//escape all the necessary characters that may affect db query
@@ -49,7 +99,7 @@ class DocumentManager {
 	*
 	* @param $sName		Name of document type to delete
 	* 
-	* @return true on successful removal, false otherwise and set $default->errorMessage
+	* @return boolean true on successful removal, false otherwise and set $default->errorMessage
 	*/
 	function deleteDocumentType($sName) {
 		//escape all the necessary characters that may affect db query
@@ -76,7 +126,7 @@ class DocumentManager {
 	* @param $iDocumentTypeID	Primary key of document type to updatee
 	* @param $sName				New document type name
 	*
-	* @return true on successful update, false otherwise and set $default->errorMessage
+	* @return boolean true on successful update, false otherwise and set $default->errorMessage
 	*/
 	function updateDocumentType($iDocumentTypeID, $sName) {
 		
@@ -111,7 +161,7 @@ class DocumentManager {
 	*
 	* @param $sName		Name of document type to check
 	*
-	* @return true if the document type exists, false otherwise
+	* @return boolean true if the document type exists, false otherwise
 	*/
 	function documentTypeExists($sName) {
 		//escape all the necessary characters that may affect db query
@@ -130,7 +180,7 @@ class DocumentManager {
 	* @param $iDocumentTypeFieldID	Primary key of document field type
 	* @param $bIsMandatory			Whether or not the field is mandatory
 	*
-	* @return true on successful creation, false otherwise and set $default->errorMessage
+	* @return boolean true on successful creation, false otherwise and set $default->errorMessage
 	*/
 	function createDocumentTypeFieldLink($iDocumentTypeID, $iDocumentTypeFieldID, $bIsMandatory) {
 		//Get hold of the global error string
@@ -154,6 +204,8 @@ class DocumentManager {
 	*
 	* @param $iDocumentTypeID		Primary key of document type
 	* @param $iDocumentTypeFieldID	Primary key of document type field
+	*
+	* @return boolean true on successful deletion, false otherwise and set $_SESSION["errorMessage"]
 	*/
 	function deleteDocumentTypeFieldLink($iDocumentTypeID, $iDocumentTypeFieldID) {
 		global $default;
@@ -180,7 +232,7 @@ class DocumentManager {
 	* @param $iDocumentTypeID		Primary key of document type
 	* @param $iDocumentTypeFieldID	Primary key of document field type
 	*
-	* @return true is the document field type is linked to the document type, false otherwise
+	* @return boolean true is the document field type is linked to the document type, false otherwise
 	*/
 	function documentTypeFieldExistsForDocumentType($iDocumentTypeID, $iDocumentTypeFieldID) {
 		global $default;
@@ -195,7 +247,7 @@ class DocumentManager {
 	* @param $sName		Document type field name
 	* @param $sDataType	Field data type
 	*
-	* @return true on successful insertion, false otherwise and sets $default->errorMessage
+	* @return boolean true on successful insertion, false otherwise and sets $default->errorMessage
 	*/
 	function createDocumentTypeField($sName, $sDataType) {
 		//escape all the necessary characters that may affect db query
@@ -221,7 +273,7 @@ class DocumentManager {
 	*
 	* @param $sName		Name of document field type to delete
 	*
-	* @return true on successful deletion, false otherwise and set $default->errorMessage
+	* @return boolean true on successful deletion, false otherwise and set $default->errorMessage
 	*/
 	function deleteDocumentTypeField($sName) {
 		//escape any characters that may affect db query
@@ -246,7 +298,7 @@ class DocumentManager {
 	*
 	* @param $sName		Document type field name to get primary key for
 	*
-	* @return ID if document type field exists, false otherwise and sets $default->errorMessage
+	* @return int id if document type field exists, false otherwise and sets $default->errorMessage
 	*/
 	function & getDocumentTypeFieldID($sName) {
 		global $lang_err_document_type_field_does_not_exist, $default;
@@ -266,7 +318,7 @@ class DocumentManager {
 	*
 	* @param $sName		Document type field name to check
 	*
-	* @return true if document type field exists, false otherwise
+	* @return boolean true if document type field exists, false otherwise
 	*/
 	function documentTypeFieldExists($sName) {
 		global $default;

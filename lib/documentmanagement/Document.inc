@@ -7,6 +7,8 @@
 * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
 * @date 15 January 2003
 *
+* @todo add in document change tracking functionality
+*
 */
 
 require_once("$default->owl_root_url/lib/foldermanagement/FolderLib.inc");
@@ -21,13 +23,13 @@ class Document {
 	/** document file name (path to document on file system) */
 	var $sFileName;
 	/** document file size */
-	var $iSize
+	var $iSize;
 	/** primary key of user who created document */
 	var $iCreatorID;
 	/** date the document was last modified */
 	var $dModified;
 	/** file description */
-	var $sDescription
+	var $sDescription;
 	/** primary key of file mime type */
 	var $iMimeTypeID;
 	/** primary key of folder under which document is stored */
@@ -49,21 +51,22 @@ class Document {
 	* @param $iMimeID			Primary key of file mime type
 	* @param $iFolderID			Primary key of folder to which document belongs	
 	*
-	* @return Document document on successful creation, false otherwise and set $_SESSION["errorMessage"]
+	* @return Document document on successful creation
 	*
 	*/
-	function Document($sNewName, $iNewSize, $iNewCreatorID, $sNewDescription, $iNewMimeID, $iNewFolderID) {
+	function Document($sNewName, $sNewFileName, $iNewSize, $iNewCreatorID, $sNewDescription, $iNewMimeID, $iNewFolderID) {
 		$this->iId = -1;	//primary key not set as document is not stored yet
 		$this->sName = $sNewName;
 		$this->iSize = $iNewSize;
 		$this->iCreatorID = $iNewCreatorID;
+		$this->sFileName = $sNewFileName;
 		$this->sDescription = $sNewDescription;
 		$this->iMimeTypeID = $iNewMimeID;
 		$this->iFolderID = $iNewFolderID;
 		$this->iDocumentTypeID = FolderLib::getFolderDocumentType($this->iFolderID);
-		$this->iMajorRevision = 0;
-		$this->iMinorRevision = 1;
-		$this->bIsCheckOut = false;
+		$this->iMajorVersion = 0;
+		$this->iMinorVersion = 1;
+		$this->bIsCheckedOut = false;
 	}
 	
 	/**
@@ -73,19 +76,20 @@ class Document {
 	*/
 	function create() {
 		global $default, $lang_err_doc_exist, $lang_err_database;
-		if (!DocumentManager::documentExists($sName, $iFolderID)) {
+		//if the id >= 0, then the object has already been created
+		if ($this->iId < 0) {
 			$sql = new Owl_DB();
-			$result = $sql->query("INSERT INTO " . $default->owl_documents_table . " (document_type_id, name, file_name, size, creator_id, modified, description, mime_id, folder_id, major_version, minor_version, is_checked_out" .
-						"VALUES (" . $this->iDocumentTypeID . ", '. " addslashes($this->sName) . "', '" . addslashes($this->sFileName) . "', $this->iSize, $this->iCreatorID, " . getCurrentDateTime() . ", '" . addslashes($this->sDescription) . "', $this->iMimeTypeID, $this->iFolderID, $this->iMajorRevision, $this->iMinorRevision, $this->bIsCheckOut)");
+			$result = $sql->query("INSERT INTO " . $default->owl_documents_table . " (document_type_id, name, filename, size, creator_id, modified, description, mime_id, folder_id, major_version, minor_version, is_checked_out) " .
+						"VALUES (" . $this->iDocumentTypeID . ", '" . addslashes($this->sName) . "', '" . addslashes($this->sFileName) . "', $this->iSize, $this->iCreatorID, '" . getCurrentDateTime() . "', '" . addslashes($this->sDescription) . "', $this->iMimeTypeID, $this->iFolderID, $this->iMajorVersion, $this->iMinorVersion, " . ($this->bIsCheckedOut ? 1 : 0) . ")");
 			if ($result) {
 				//set the current documents primary key
 				$this->iId = $sql->insert_id();
 				return true;
 			}
-			$_SESSION["errorMessage"] = $lang_err_database;
-			return false;			
-		} 
-		$_SESSION["errorMessage"] = $lang_err_doc_exist . "name = " . $sName . " folder_id = " . $iFolderID;
+			$_SESSION["errorMessage"] = $lang_err_object_exists . "id = " . $this->iId;
+			return false;
+		}
+		$_SESSION["errorMessage"] = $lang_err_database;
 		return false;
 	}
 	
@@ -100,7 +104,7 @@ class Document {
 			$sql = new Owl_DB();
 			$result = $sql->query("UPDATE " . $default->owl_documents_table . " SET " .
 						"document_typeid = $this->iDocumentTypeID, " . 
-						"file_name = '" . addslashes($this->file_name)"', " .
+						"file_name = '" . addslashes($this->file_name) . "', " .
 						"size = $this->iSize, " .
 						"creator_id = $this->iCreatorID, " .
 						"modified = " . getCurrentDateTime() . ", " .
@@ -132,7 +136,7 @@ class Document {
 		global $default, $lang_err_database, $lang_err_object_key;
 		if ($this->iId >= 0) {
 			$sql = new Owl_DB();
-			$result = $sql->query("DELETE FROM  " . $default->owl_documents_table . "  WHERE id = $this->id");
+			$result = $sql->query("DELETE FROM  " . $default->owl_documents_table . "  WHERE id = $this->iId");
 			if ($result) {
 				$this->iId = -1;
 				return true;
@@ -156,17 +160,22 @@ class Document {
 	function & get($iDocumentID) {
 		global $default, $lang_err_doc_not_exist;
 		$sql = new Owl_DB();
-		$sql->query("SELECT * FROM " . $default->owl_documents_table " WHERE id = " $iDocumentID);
+		$sql->query("SELECT * FROM " . $default->owl_documents_table . " WHERE id = " . $iDocumentID);
 		if ($sql->next_record()) {
-			doc = new Document(stripslashes($sql->f("name")), $sql->("size"), $sql->f("creator_id"), $sql->f("description"), $sql->f("mime_id"), $sql->f("folder_id"));
-			doc->setDocumentTypeID($sql->f("document_type_id"));
-			doc->setMajorRevision($sql->f("major_revision"));
-			doc->setMinorRevision($sql->f("minor_revision"));
-			doc->setIsCheckedOut(sql->f("is_checked_out"));
-			return doc;
+			$doc = & new Document(stripslashes($sql->f("name")), $sql->f("size"), $sql->f("creator_id"), stripslashes($sql->f("description")), $sql->f("mime_id"), $sql->f("folder_id"));			
+			$doc->setDocumentTypeID($sql->f("document_type_id"));
+			$doc->setMajorRevision($sql->f("major_revision"));
+			$doc->setMinorRevision($sql->f("minor_revision"));
+			$doc->setIsCheckedOut($sql->f("is_checked_out"));
+			return $doc;
 		}
 		$_SESSION["errorMessage"] = $lang_err_doc_not_exist . "id " . $iDocumentID;
 		return false;		
+	}
+	
+	/** Get the document primary key */
+	function getID() {
+		return $this->iID;
 	}
 	
 	/** Get the document type id */
