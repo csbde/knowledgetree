@@ -36,6 +36,10 @@ class Role {
 		$this->bCanWrite = $bNewCanWrite;
 	}
 	
+	function getName() {
+		return $this->sName;
+	}
+	
 	/**
 	* Create the current object in the database
 	*
@@ -117,7 +121,7 @@ class Role {
 		$result = $sql->query("SELECT * FROM $default->owl_roles_table WHERE id = $iRoleID");
 		if ($result) {
 			if ($sql->next_record()) {
-				$oRole = & new Role($sql->f("document_id"), $sql->f("web_site_id"), $sql->f("unit_id"), $sql->f("status_id"), $sql->f("datetime"));
+				$oRole = & new Role($sql->f("name"), $sql->f("can_read"), $sql->f("can_write"));
 				$oRole->iId = $iRoleID;
 				return $oRole;
 			}
