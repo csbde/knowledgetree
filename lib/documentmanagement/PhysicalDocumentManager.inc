@@ -90,7 +90,7 @@ class PhysicalDocumentManager {
 		//get the document
 		$oDocument = & Document::get($iDocumentID);		
 		//get the path to the document on the server		
-		$sDocumentFileSystemPath = Folder::getFolderPath($oDocument->getFolderID()) . "/" . $oDocument->getName();		
+		$sDocumentFileSystemPath = Folder::getFolderPath($oDocument->getFolderID()) . "/" . $oDocument->getFileName();		
 		//set the correct headers
 		if (strstr($_SERVER["HTTP_USER_AGENT"], "MSIE")) {		
 			Header ("Content-type: application/" . PhysicalDocumentManager::getMimeTypeName($oDocument->getMimeTypeID()));
@@ -99,7 +99,7 @@ class PhysicalDocumentManager {
 		}
 								
 		Header("Content-Length: ". $oDocument->getFileSize());
-		Header("Content-Disposition: attachment; filename=" . $oDocument->getName());        
+		Header("Content-Disposition: attachment; filename=" . $oDocument->getFileName());        
         Header("Pragma: no-cache");
         Header("Expires: 0");
 		readfile($sDocumentFileSystemPath);
