@@ -16,6 +16,8 @@ function getFolderPath($iFolderID) {
 
 function getFolderData($iFolderID) {
 	global $default;
+	$sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
+	$sTDBGColour = $default->siteMap->getSectionColour($sSectionName, "td");
 	$sQuery = "SELECT F.id, F.name, F.description, F.is_public " .
 			"FROM $default->owl_folders_table AS F " .
 			"WHERE F.id = $iFolderID";
@@ -25,7 +27,7 @@ function getFolderData($iFolderID) {
 	$sToRender = "<table>\n";
 	if ($sql->next_record()) {
 		$sToRender .= "<tr>\n";
-		$sToRender .= "<td>Name</td>\n";
+		$sToRender .= "<td bgcolor=\"" . $sTDBGColour . "\">Name</td>\n";
 		if (Folder::folderIsUnitRootFolder($iFolderID)) {
 			$sToRender .= "<td>" . $sql->f("name") . "</td>\n";
 		} else {
@@ -33,11 +35,11 @@ function getFolderData($iFolderID) {
 		}
 		$sToRender .= "</tr>\n";
 		$sToRender .= "<tr>\n";
-		$sToRender .= "<td>Description</td>\n";
+		$sToRender .= "<td bgcolor=\"" . $sTDBGColour . "\">Description</td>\n";
 		$sToRender .= "<td><input type=\"text\" name=\"fDescription\" value=\"" . $sql->f("description") . "\" size=\"30\"></td>\n";
 		$sToRender .= "</tr>\n";
 		$sToRender .= "<tr>\n";
-		$sToRender .= "<td>Public</td>\n";
+		$sToRender .= "<td bgcolor=\"" . $sTDBGColour . "\">Public</td>\n";
 		$sToRender .= "<td><input type=\"checkbox\" name=\"fIsPublic\" " . ($sql->f("is_public") ? "CHECKED" : "") ." ></td>\n";
 		$sToRender .= "</tr>\n";
 		$sToRender .= "<tr>\n";

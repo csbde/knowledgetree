@@ -71,6 +71,9 @@ class PatternListFromQuery {
 	
 	function & render() {
         global $default;
+		$sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
+		$sTDBGColour = $default->siteMap->getSectionColour($sSectionName, "td");
+		
         
 		$sql = $default->db;
 		$sql->query($this->sQuery);		
@@ -86,7 +89,7 @@ class PatternListFromQuery {
 			$sToRender .= "<td colspan=" . count($this->aColumns) . ">No " . (isset($this->sTableHeading) ? "$this->sTableHeading" : "") . " data</td>\n";
 			$sToRender .= "</tr>\n";
 		} else {
-		
+			$iColour = 0;
 			while ($sql->next_record()) {
 				$sToRender .= "<tr><td>\n";
 				for ($i = 0; $i < count($this->aColumns); $i++) {		
@@ -94,19 +97,20 @@ class PatternListFromQuery {
 					switch ($this->aColumnTypes[$i]) {						
 						//plain text field
 						case 1:						
-							$sToRender .= "<td>" . $this->aColumnNames[$i] . "</td><td>" . stripslashes($sql->f($this->aColumns[$i])) . "</td>\n";
+							$sToRender .= "<td bgcolor=\"$sTDBGColour\">" . $this->aColumnNames[$i] . "</td><td bgcolor=\"" . $this->getColour($iColour) ."\">" . stripslashes($sql->f($this->aColumns[$i])) . "</td>\n";
 							break;
 						//text area
 						case 2:
-							$sToRender .= "<td>" . $this->aColumnNames[$i] . "</td><td><textarea cols=$this->iTextAreaColumns rows=$this->iTextAreaRows READONLY>" . $sql->f($this->aColumns[$i]) . "</textarea></td>\n";
+							$sToRender .= "<td bgcolor=\"$sTDBGColour\">" . $this->aColumnNames[$i] . "</td><td bgcolor=\"" . $this->getColour($iColour) ."\"><textarea cols=$this->iTextAreaColumns rows=$this->iTextAreaRows READONLY>" . $sql->f($this->aColumns[$i]) . "</textarea></td>\n";
 							break;
 						case 3:
-							$sToRender .= "<td>" . $this->aColumnNames[$i] . "</b></td><td><a href=\"" . $this->aHyperLinkURL[$i] . "?" . $this->replaceValues($this->aQueryStringText[$i], $sql) . "\">" . stripslashes($sql->f($this->aColumns[$i])) . "</a></td>\n";
+							$sToRender .= "<td bgcolor=\"$sTDBGColour\">" . $this->aColumnNames[$i] . "</b></td><td bgcolor=\"" . $this->getColour($iColour) ."\"><a href=\"" . $this->aHyperLinkURL[$i] . "?" . $this->replaceValues($this->aQueryStringText[$i], $sql) . "\">" . stripslashes($sql->f($this->aColumns[$i])) . "</a></td>\n";
 							break;
 						default:
 							break;
 					}				
 					$sToRender .= "</tr>\n";
+					$iColour++;
 				}
 			}
 		}
@@ -116,6 +120,10 @@ class PatternListFromQuery {
 	
 	function replaceValues($sQueryStringText, $sql) {
 		return $sQueryStringText;
+	}
+	
+	function getColour($iColourCount) {
+		return ($iColourCount%2 == 0) ? "F5F6EE" : "FFFFFF";
 	}
 	
 }
