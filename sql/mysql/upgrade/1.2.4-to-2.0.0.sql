@@ -1,4 +1,4 @@
-UPDATE system_settings SET value="1.2.5" WHERE name="knowledgeTreeVersion";
+UPDATE system_settings SET value="2.0.0rc6" WHERE name="knowledgeTreeVersion";
 
 DROP TABLE IF EXISTS zseq_active_sessions;
 CREATE TABLE zseq_active_sessions (
