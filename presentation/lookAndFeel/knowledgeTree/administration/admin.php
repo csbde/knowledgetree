@@ -18,7 +18,7 @@ $Center = "
 	$oPatternCustom->setHtml($Center); 
 	$main->setCentralPayload($oPatternCustom);
 	$main->render();
-	$main->render();
+
 }
 
 ?>
