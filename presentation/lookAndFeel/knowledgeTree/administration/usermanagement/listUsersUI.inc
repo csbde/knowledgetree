@@ -48,11 +48,25 @@ function getGroupDisplay($iGroupID) {
 
 function getUsers($fGroupID) {
 	global $default;
-	$sQuery = 	"SELECT users.id as userID, users.name as name, username, " . 
-				"'Edit' , 'Delete', 'Edit Groups' " .
-				"FROM users " . 
-				($fGroupID ? "INNER JOIN users_groups_link ON users.id = users_groups_link.user_id WHERE users_groups_link.group_id = $fGroupID " : "") .  
-				"ORDER BY users.name";			
+	$sQuery = 	"SELECT U.id as userID, U.name as name, U.username, " . 
+				"'Edit', 'Delete', 'Edit Groups' " .
+				"FROM $default->users_table U " . 
+				"INNER JOIN $default->users_groups_table UGL ON U.id = UGL.user_id " .
+				"INNER JOIN $default->groups_table GL ON UGL.group_id = GL.id ";
+	// filter by group				
+	if ($fGroupID) {
+		$sWhereClause = "WHERE UGL.group_id = $fGroupID ";
+	}
+	// #2978 don't display sys admin accounts if you're not a sysadmin	
+	if (!Permission::userIsSystemAdministrator()) {
+		$sRestrictUsers = " GL.is_sys_admin = 0 ";
+		if (strlen($sWhereClause) > 0) {
+			$sWhereClause .= " AND $sRestrictUsers";
+		} else {
+			$sWhereClause = "WHERE $sRestrictUsers";
+		}
+	}
+	$sQuery .= $sWhereClause . "ORDER BY U.name";
 	
     $aColumns = array("name", "username",  "Edit", "Delete", "Edit Groups");
     $aColumnNames = array("Name", "Username", "Edit", "Delete", "Edit Groups");
