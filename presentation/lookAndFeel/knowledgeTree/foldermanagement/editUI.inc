@@ -106,18 +106,18 @@ function getFolderDocTypes($iFolderID) {
 
 function getFolderRouting($iFolderID) {
 	global $default;
-	$sQuery = "SELECT GFAL.id as id, GFAL.folder_id AS folder_id, G.name AS group_name, R.name AS role_name, GFAL.precedence AS precedence, 'Edit' as edit, 'Delete' as del, 'Linked Docs' as linked " .	
+	$sQuery = "SELECT GFAL.id as id, GFAL.folder_id AS folder_id, G.name AS group_name, R.name AS role_name, GFAL.precedence AS precedence, 'Edit' as edit, 'Delete' as del, 'Dependant Docs' as depn " .	
 				"FROM $default->owl_groups_folders_approval_table AS GFAL INNER JOIN roles AS R ON GFAL.role_id = R.id " .
 				"INNER JOIN $default->owl_groups_table AS G ON G.id = GFAL.group_id " .
 				"WHERE GFAL.folder_id = $iFolderID " .
 				"ORDER BY GFAL.precedence, role_name ASC";
 	
-	$aColumns = array("group_name", "role_name", "precedence", "edit", "del", "linked");
+	$aColumns = array("group_name", "role_name", "precedence", "edit", "del", "depn");
 	$aColumnHeaders = array("Group", "Role", "Seq", "", "");
 	$aColumnTypes = array(1,1,1,3,3,3);
 	$aDBColumnArray = array("id","folder_id");
 	$aQueryStringVariableNames = array("fFolderCollaborationID", "fFolderID");
-	$aLinkURLs = array(3=>"$default->rootUrl/control.php?action=modifyFolderCollaboration",4=>"$default->rootUrl/control.php?action=deleteFolderCollaboration", 5=>"$default->rootUrl/control.php?action=linkDocFolderCollaboration");
+	$aLinkURLs = array(3=>"$default->rootUrl/control.php?action=modifyFolderCollaboration",4=>"$default->rootUrl/control.php?action=deleteFolderCollaboration", 5=>"$default->rootUrl/control.php?action=viewDependantDocument");
 	
 	$oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaders, "90%", $aLinkURLs, $aDBColumnArray,$aQueryStringVariableNames);
 	$oPatternTableSqlQuery->setTableHeading("Document Routing");
