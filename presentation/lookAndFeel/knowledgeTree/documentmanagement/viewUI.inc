@@ -43,7 +43,7 @@ function renderDocumentPath($oDocument, $bDisplayActions = false) {
 
 function renderDocumentData($oDocument, $bEditable, $sStatusMessage = "") {
     global $default;
-    /*ok*/ $sQuery = array("SELECT D.name, D.modified, DTT.datetime AS created, U.name AS initiator, CONCAT(CONCAT(D.major_version, '.'), D.minor_version) AS version, WDSL.name AS status, DTL.name AS document_type, D.is_checked_out,  COALESCE(U2.name, '') AS c_user " .
+    /*ok*/ $sQuery = array("SELECT D.id, D.name, D.modified, DTT.datetime AS created, U.name AS initiator, CONCAT(CONCAT(D.major_version, '.'), D.minor_version) AS version, WDSL.name AS status, DTL.name AS document_type, D.is_checked_out,  COALESCE(U2.name, '') AS c_user " .
               "FROM $default->documents_table AS D INNER JOIN $default->web_documents_table AS WD ON WD.document_id = D.ID " .
               "INNER JOIN $default->web_documents_status_table AS WDSL ON WD.status_id = WDSL.id " .
               "LEFT JOIN $default->users_table AS U ON U.id = D.creator_id " .
@@ -54,9 +54,9 @@ function renderDocumentData($oDocument, $bEditable, $sStatusMessage = "") {
               "WHERE D.id = ? " .
               "AND TT.name LIKE 'Create'", $oDocument->getID());
 
-    $aColumns = array("name", "modified", "created", "initiator", "document_type", "version", "status", "c_user");
-    $aColumnNames = array(_("Document title"), _("Last updated"), _("Created"), _("Document initiator"), _("Document Type"), _("Version"), _("Status"), _("Checked out by"));
-    $aColumnTypes = array(1,1,1,1,1,1,1,1);
+    $aColumns = array("id", "name", "modified", "created", "initiator", "document_type", "version", "status", "c_user");
+    $aColumnNames = array(_("Id"), _("Document title"), _("Last updated"), _("Created"), _("Document initiator"), _("Document Type"), _("Version"), _("Status"), _("Checked out by"));
+    $aColumnTypes = array(1,1,1,1,1,1,1,1,1);
     $oPatternListFromQuery = & new PatternListFromQuery($sQuery, $aColumns, $aColumnNames, $aColumnTypes);
     $oPatternListFromQuery->setTableHeading(_("Document Data"));
     $oPatternListFromQuery->setEmptyTableMessage(_("No Document Data"));
