@@ -4,7 +4,7 @@ require_once("$default->owl_fs_root/presentation/Html.inc");
 
 /**
  * $Id$
- *  
+ *
  * Dashboard page html UI building functions.
  *
  * Licensed under the GNU GPL. For full terms see the file COPYING.
@@ -18,13 +18,13 @@ require_once("$default->owl_fs_root/presentation/Html.inc");
  * just a tmp document forging class
  */
 class tmpDocument {
+
     var $title;
     var $id;
     var $status;
     var $days;
-    
     var $statuses = array("good", "bad", "indifferent");
-    
+
     /**
      * generate random attribute data on instantiation
      */
@@ -33,10 +33,13 @@ class tmpDocument {
         srand ((float) microtime() * 10000000);
         
         // generate a random document title
-        $this->title = "document title " . rand(0,100);
-        $this->id = rand(0,500);
+        $number = rand(0,500);
+        $this->title = "document title $number";
+        $this->id = $number;
+
         // generate a random status
         $this->status = $this->statuses[array_rand($this->statuses, 1)];
+
         // random days
         $this->days = rand(0,25);
     }
@@ -69,8 +72,6 @@ function getSubscriptionDocuments() {
     // you know the drill
     return array(new tmpDocument(), new tmpDocument(), new tmpDocument());
 }
-
-
 
 function tableHeading($cssClassName, $colspan, $text) {
     return "<th colspan=\"$colspan\">
