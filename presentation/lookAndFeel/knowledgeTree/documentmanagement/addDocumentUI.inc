@@ -63,7 +63,7 @@ function getBrowseAddPage($fFolderID) {
 	$sToRender .= "<td><a href=\"$default->rootUrl/control.php?action=browse&fFolderID=$fFolderID\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></a></td>\n";    
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";    
-	$sToRender .= "<table border=\"0\">\n";
+	$sToRender .= "<table border=\"0\" width=\"100%\">\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "\t<td>" . renderFolderList($fFolderID, "control.php?action=addDocument") . "<td>\n";
 	$sToRender .= "</tr>\n";	
