@@ -113,7 +113,8 @@ group_folder_approval_id INTEGER NOT NULL,
 user_id INTEGER NOT NULL,
 document_id INTEGER NOT NULL,
 datetime DATETIME,
-done BIT
+done BIT,
+active BIT
 );
 
 CREATE TABLE groups_folders_approval_link ( 
