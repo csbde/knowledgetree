@@ -441,11 +441,10 @@ class Document {
         global $default, $lang_err_database, $lang_err_object_key;
         if ($this->iId >= 0) {
             $sql = $default->db;
-            // TODO: insert into sys_deleted
-            //$result = $sql->query("INSERT INTO  " . $default->owl_sys_deleted_table . " () VALUES ()");
             $result = $sql->query("DELETE FROM  " . $default->owl_documents_table . "  WHERE id = $this->iId");
             if ($result) {
                 $this->iId = -1;
+                // clean up for this deleted document
                 return true;
             }
             $_SESSION["errorMessage"] = $lang_err_database;
@@ -702,7 +701,9 @@ class Document {
     * @return string full path to document
     */
     function getDisplayPath($bDisplayIcon = false) {
-        return ($bDisplayIcon ? $this->getIcon() : "") . Folder::getFolderDisplayPath($this->iFolderID) . " > " . $this->sName;
+    	$sFolderPath = Folder::getFolderDisplayPath($this->iFolderID);
+        return ($bDisplayIcon ? $this->getIcon() : "") . 
+        	   ($sFolderPath == "" ? "Deleted Folder" : $sFolderPath) . " > " . $this->sName;
     }
     
     /**
@@ -826,14 +827,16 @@ class Document {
 		return false;
     }    
 		
-	/** Static function 
-	* Deletes text in document_text table used for searching	
-	*/
-	function deleteFromDocumentText($iDocumentID) {
+	/**
+	 * Deletes content from document data tables
+	 */
+	function cleanupDocumentData() {
 		global $default;
 		$sql = $default->db;
-		return $sql->query("DELETE FROM $default->owl_document_text_table WHERE document_id = $iDocumentID");				
-	}
+		$result = $sql->query("DELETE FROM $default->owl_document_text_table WHERE document_id = $this->iId") &&
+				  $sql->query("DELETE FROM $default->search_permissions_table WHERE document_id = $this->iId") &&
+				  $sql->query("DELETE FROM $default->owl_document_fields_table WHERE document_id = $this->iId");
+		return $result;
+	}		
 }
-
 ?>
