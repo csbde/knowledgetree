@@ -80,8 +80,7 @@ if (checkSession()) {
                             $default->log->info("checkOutDocumentBL.php fired $count subscription alerts for checked out document " . $oDocument->getName());
 
                             // display checkout success message in the document view page
-                            //controllerRedirect("downloadDocument", "fDocumentID=$fDocumentID&fCheckedOut=1");
-                            $oPatternCustom->setHtml(getCheckOutPage($oDocument, true));                            
+                            controllerRedirect("viewDocument", "fDocumentID=$fDocumentID&fCheckedOut=1");
                             
                         } else {
                             // document update failed
@@ -110,7 +109,6 @@ if (checkSession()) {
         // no document id was set when coming to this page,
         $oPatternCustom->setHtml(renderErrorPage("No document is currently selected for check out"));
     }
-
 
     require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
     $main->setCentralPayload($oPatternCustom);
