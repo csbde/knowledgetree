@@ -59,41 +59,6 @@ class Database extends DB_Sql {
       $this->databaseType = $default->dbType;
     }
     
-    /**
-    *   Get the result count for the previously executed query.  Meant
-    *   to be used in conjuction with createSSQLQueryWithOffset so that
-    *   the total number of results can be calculated
-    *   
-    *   @return int row count
-    */
-    function & getLastQueryResultCount() {
-        if (isset($this->sLastTableName)) {
-            $sCountResultQuery = "SELECT COUNT(*) AS ResultCount FROM " . $this->sLastTableName;
-            
-            if (isset($this->sLastWhereClause)) {
-                sCountResultQuery . " WHERE " . $this->sLastWhereClause;
-            }
-            $this->query($sCountResultQuery);
-            $this->next_record();
-            return $this->f("ResultCount");
-        } else {
-            return 0;
-        }
-    }
-    
-    /**
-    *   Execute the query and return the results
-    *   
-    *   @returns    Results of query
-    */
-    function & getQueryResults() {
-        $result = null;
-        if (isset($this->sQuery)) {
-            $result = $this->query($this->sQuery);          
-        }
-        return $result;
-    }
-    
    /**
    * Display any database errors encountered
    */
