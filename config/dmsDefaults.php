@@ -44,62 +44,62 @@ $default->owl_use_fs            = true;
 $default->owl_lang		= "NewEnglish";
 $default->owl_notify_link       = "http://$_SERVER[SERVER_NAME]$default->owl_root_url/";
 
-// Table with unit information
-$default->owl_unit_table = "unit";
+// Table mappings
 
+// session information
+$default->owl_sessions_table = "active_sessions";
+// document type fields
+$default->owl_fields_table = "document_fields";
+// links document
+$default->owl_document_type_fields_table = "document_fields_link";
+// document transaction types
+$default->owl_transaction_types_table = "document_transaction_types_lu";
+// document transactions
+$default->owl_document_transactions_table = "document_transactions"; 
+// links document types to document type fields
+$default->owl_document_type_fields_table = "document_type_fields_link";
+// document type information
+$default->owl_document_types_table = "document_types_lu";
+// links documents to words
+$default->owl_document_words_table = "document_words_link";
+// stores documents
+$default->owl_documents_table = "documents";
+// stores folders 
+$default->owl_folders_table = "folders";
+// links folders to users (and roles) for approval collaboration
+$default->owl_folders_table	= "folders_user_roles_link";
+// stores approval collaboration information- approval roles mapped to folders with order
+$default->owl_groups_folders_approval_table	= "groups_folders_approval_link";
+// links groups to folders
+$default->owl_groups_folders_table	= "groups_folders_link;"
+// stores group information
+$default->owl_groups_table	= "groups_lookup";
+// links groups to users and units
+$default->owl_groups_users_table	= "groups_users_link"; 
+// links
+$default->owl_links_table = "links";
+// Table with mime info
+$default->owl_mime_table	= "mime_types";
+// organisation information
+$default->owl_organisations_table = "organisations_lookup";
+// stores role information (name and access)
+$default->owl_roles_table = "roles";
+// stores document subscription information
+$default->owl_subscriptions_table = "subscriptions"; 
+// stores default system settings
+$default->owl_system_settings_table = "system_settings"; 
+// Table with unit information
+$default->owl_unit_table = "units";
 // Table with user info
 $default->owl_users_table	= "users";
-
-// User-unit mapping table
-$default->owl_user_unit_table = "users_unit";
-
-// Table with group membership for users 
-$default->owl_users_grpmem_table= "membergroup";
-
-/// Table with session information
-$default->owl_sessions_table = "active_sessions";
-
-// Table with file info
-$default->owl_files_table	= "files";
-
-// Table with folders info
-$default->owl_folders_table	= "folders";
-
-// Table with group info
-$default->owl_groups_table	= "groups";
-
-// Table with mime info
-$default->owl_mime_table	= "mimes";
-
-// Table with html attributes
-$default->owl_html_table	= "intranet.html";
-
-// Table with html attributes
-$default->owl_prefs_table	= "intranet.prefs";
-
-// Table with file data info
-$default->owl_files_data_table  = "filedata";
-
-//Table with document type info
-$default->owl_document_types_table = "document_types";
-
-//Table that links document types to document type fields
-$default->owl_document_type_fields_table = "document_type_fields";
-
-//Table with document type field info
-$default->owl_fields_table = "document_fields";
-
-// Table with document transactions info
-$default->owl_document_transactions_table = "document_transactions";
-
 // Table with web documents info for web publishing
 $default->owl_web_documents_table = "web_documents";
-
-// Table with web documents info for web publishing
-$default->owl_web_documents_status_table = "web_documents_status";
-
-// This is the defualt MailServer Host for emailing 
-$default->owl_mail_server = "mail.jamwarehouse.com";
+ // Table with web documents info for web publishing
+$default->owl_web_documents_status_table = "web_documents_status_lookup";
+// stores websites for web publishing
+$default->owl_web_sites_table = "web_sites";
+// stores indexed words 
+$default->owl_words_lookup_table = "words_lookup";
 
 // Change this to reflect the database you are using
 require_once("$default->owl_fs_root/phplib/db_mysql.inc");
