@@ -251,6 +251,24 @@ class Group {
 		return false;
 	}
 	
+	/**
+	 * Returns an array of Users in this group.
+	 */
+	function getUsers() {
+		global $default;
+		$sql = $default->db;
+		$result = $sql->query("SELECT user_id FROM $default->users_groups_table WHERE group_id = $this->iId");
+		$aUsers = array();		
+		if ($result) {			
+			$iCount = 0;
+			while ($sql->next_record()) {
+				$oUser = & User::get($sql->f("user_id"));
+				$aUsers[$iCount++] = $oUser;
+			}
+		}
+		return $aUsers;		
+	}
+	
     /**
      * static function
      *
