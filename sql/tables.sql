@@ -1,5 +1,24 @@
 -- table definitions
 
+CREATE TABLE discussion_threads ( 
+id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
+document_id INTEGER NOT NULL,
+forst_comment_id INTEGER NOT NULL,
+last_comment_id INTEGER NOT NULL,
+views INTEGER NOT NULL,
+replies INTEGER NOT NULL,
+creator_id INTEGER NOT NULL
+)TYPE = InnoDB;
+
+CREATE TABLE discussion_comments ( 
+id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
+thread_id INTEGER NOT NULL,
+user_comment_id INTEGER NOT NULL,
+subject_comment_id INTEGER NOT NULL,
+body TEXT,
+date date
+)TYPE = InnoDB;
+
 CREATE TABLE document_text (
   id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
   document_id integer,
@@ -317,8 +336,6 @@ id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 name CHAR(50) NOT NULL
 )TYPE = InnoDB;
 
-
-
 CREATE TABLE web_sites ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 web_site_name CHAR(100) NOT NULL,
@@ -332,6 +349,16 @@ word CHAR(255) NOT NULL
 )TYPE = InnoDB;
 
 -- pk constraints
+ALTER TABLE discussion_threads
+ADD CONSTRAINT PK_discussion_threads
+PRIMARY KEY (id)
+;
+
+ALTER TABLE discussion_comments
+ADD CONSTRAINT PK_discussion_comments
+PRIMARY KEY (id)
+;
+
 ALTER TABLE active_sessions
 ADD CONSTRAINT PK_active_sessions
 PRIMARY KEY (id)
