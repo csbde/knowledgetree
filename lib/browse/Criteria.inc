@@ -270,9 +270,9 @@ class DateCreatedCriterion extends BrowseCriterion {
         global $default;
         $sStartWidget = $this->getWidgetBase() . "_start";
         $sEndWidget = $this->getWidgetBase() . "_end";
-        $sToRender = "<input type=\"text\" size=\"10\" name=\"" . $sStartWidget . "\" />";
+        $sToRender = "After date: <input type=\"text\" size=\"10\" name=\"" . $sStartWidget . "\" />";
         $sToRender .= "&nbsp;&nbsp;<a href=\"javascript:show_calendar('MainForm." . $sStartWidget . "',null,null,'YYYY-MM-DD', false);\" onmouseover=\"window.status='Date Picker';return true;\" onmouseout=\"window.status='';return true;\"><img src=\"$default->graphicsUrl/calendar/calendar.gif\" name=\"imgCalendar\" width=\"34\" height=\"21\" border=\"0\" alt=\"\"></a>";
-        $sToRender .= "<input type=\"text\" size=\"10\" name=\"" . $sEndWidget . "\" />";
+        $sToRender .= " &nbsp; Before date: <input type=\"text\" size=\"10\" name=\"" . $sEndWidget . "\" />";
         $sToRender .= "&nbsp;&nbsp;<a href=\"javascript:show_calendar('MainForm." . $sEndWidget . "',null,null,'YYYY-MM-DD', false);\" onmouseover=\"window.status='Date Picker';return true;\" onmouseout=\"window.status='';return true;\"><img src=\"$default->graphicsUrl/calendar/calendar.gif\" name=\"imgCalendar\" width=\"34\" height=\"21\" border=\"0\" alt=\"\"></a>";
         return $sToRender;
     }
