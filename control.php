@@ -13,7 +13,7 @@
  *
  * @version $Id$
  * @Copyright (c) 1999-2002 The Owl Project Team
- * @author <a href="mailto:michael@jamwarehouse.com>Michael Joseph</a>, Jam Warehouse (Pty) Ltd, South Africa
+ * @author <a href="mailto:michael@jamwarehouse.com">Michael Joseph</a>, Jam Warehouse (Pty) Ltd, South Africa
  * @package dms
  */
 
