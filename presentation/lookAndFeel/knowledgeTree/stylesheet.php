@@ -151,6 +151,7 @@ SELECT {
 }
 
 span.button {
+        cursor: hand;
         font-size: 6pt;
         width: 100%;
         /* height: 20px; */
@@ -160,9 +161,6 @@ span.button {
         display: block;
         margin-top: 4px;
         text-decoration: none;
-}
-span.button:Hover {
-        background-color: #EEEEEE;
 }
 span.disabledbutton {
         font-size: 6pt;

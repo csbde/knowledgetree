@@ -404,7 +404,7 @@ $aImageNameToLabel = array(
     "dependentdoc" => "Link new doc",
 );
 
-function displayButton($sAction, $sQueryString, $sImageName, $sDisabledText = "") {
+function displayButton($sAction, $sQueryString, $sImageName, $sDisabledText = "", $sJS = "") {
 	global $default;
         global $aImageNameToLabel;
 	// the active is active if there is no disabled text
@@ -427,10 +427,11 @@ function displayButton($sAction, $sQueryString, $sImageName, $sDisabledText = ""
             $sLabel = strtoupper($sTranslatedWords);
             if ($bActive) {
                     $sClass = "button";
+                    $sJS = $sJS . " onMouseOver=\"javascript:this.style.backgroundColor='#EEEEEE';\" onMouseOut=\"javascript:this.style.backgroundColor='#FFFFFF';\"";
             } else {
                     $sClass = "disabledbutton";
             }
-            $sImage = "<span class=\"$sClass\">$sLabel</span>";
+            $sImage = "<span class=\"$sClass\" $sJS>$sLabel</span>";
         }
 	if ($bActive) {
 		return generateControllerLink($sAction, $sQueryString, $sImage);
@@ -440,13 +441,11 @@ function displayButton($sAction, $sQueryString, $sImageName, $sDisabledText = ""
 }
 
 function displayViewButton($oDocument, $bEdit) {
-	global $default;
+    $sQueryString = "fDocumentID=" . $oDocument->getID();
 	$sViewAlert = _("This will download a copy of the document and is not the same as Checking Out a document.  Changes to this downloaded file will not be managed in the DMS.");
-        if ($default->useTextButtons === false) {
-    return "<tr><td align=\"left\"><a onClick=\"alert('$sViewAlert '); return true;\" href=\"" . generateControllerLink("downloadDocument", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/docactions/view.gif\" border=\"0\" title=\"" . _("View the document") . "\"/></a></td></tr>\n";
-        } else {
-    return "<a onClick=\"alert('$sViewAlert '); return true;\" href=\"" . generateControllerLink("downloadDocument", "fDocumentID=" . $oDocument->getID()) . "\"><span class=\"button\" title=\"" . _("View the document") . "\">" . strtoupper(_("View")) . "</span></a>\n";
-        }
+    $sJS = "onClick=\"alert('$sViewAlert '); return true;\"";
+    return displayButton("downloadDocument", $sQueryString, "view", $sDisabledText, $sJS);
+
 }
 
 function displayCheckInOutButton($oDocument, $bEdit) {
