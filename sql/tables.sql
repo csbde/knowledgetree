@@ -597,7 +597,7 @@ INSERT INTO system_settings (name, value) values ("ldapRootDn", "o=Medical Resea
 -- email settings
 INSERT INTO system_settings (name, value) values ("emailServer", "mail.jamwarehouse.com");
 INSERT INTO system_settings (name, value) values ("emailFrom", "owl@jamwarehouse.com");
-INSERT INTO system_settings (name, value) values ("emailFromName", "owl");
+INSERT INTO system_settings (name, value) values ("emailFromName", "MRC Document Management System");
 -- directories
 INSERT INTO system_settings (name, value) values ("filesystemRoot", "/usr/local/www/owl/dms");
 INSERT INTO system_settings (name, value) values ("documentRoot", "/usr/local/www/owl/dms/Documents");
