@@ -1,7 +1,7 @@
 <?php
 
 /**
-* Class PatternTableSqlQuer
+* Class PatternTableSqlQuery
 *
 * Renders query results in a table.
 *
@@ -24,35 +24,46 @@ class PatternTableSqlQuery {
 	var $sQuery;
 	/* Columns in table to query (ID is included by default) */
 	var $aColumns;
-	/* Column types.  Possibles are 1 = text, 2 = boolean*/
+	/* Column types.  Possibles are 1 = text, 2 = boolean, 3 = hyperlink url */
 	var $aColumnTypes;
 	/** header names to display */	
 	var $aColumnHeaderNames;
 	/** table width, either in pixels or as a percentage e.g. 600 or 100%*/
-	var $sWidth;
-	/* Where clause */
-	var $sWhereClause;
-	/* Order by clause */
-	var $sOrderByClause;	
+	var $sWidth;	
+	/** link url used if a column type of 3 is specified */
+	var $sLinkURL;
+	/** database column value to append to link url if a column type of 3 is specified */
+	var $sDBQueryStringColumn;
 	/** display the column headings or not */
 	var $bDisplayColumnHeadings;
 	/** table heading */
 	var $sTableHeading;
-	
-	
-	function PatternTableSqlQuery($sTmpQuery, $aTmpColumns, $aTmpColumnTypes, $aTmpColumnHeaderNames, $sTmpWidth, $bTmpDisplayColumnHeadings = false, $sTmpWhereClause = null, $sTmpOrderByClause = null) {
+	/** specify an image at the start of each row in the table */
+	var $sImageURL;
+	/** message that will be displayed if the table is empty*/
+	var $sEmptyTableMessage;
+				
+	function PatternTableSqlQuery($sTmpQuery, $aTmpColumns, $aTmpColumnTypes, $aTmpColumnHeaderNames, $sTmpWidth, $sTmpLinkURL = null, $sTmpDBQueryStringColumn, $bTmpDisplayColumnHeadings = false) {
 		$this->sQuery = $sTmpQuery;
 		$this->aColumns = & $aTmpColumns;
 		$this->aColumnTypes = $aTmpColumnTypes;
 		$this->aColumnHeaderNames = $aTmpColumnHeaderNames;
 		$this->sWidth = $sTmpWidth;
-		$this->sWhereClause = & $sTmpWhereClause;
-		$this->sOrderByClause = $sTmpOrderByClause;
 		$this->bDisplayColumnHeadings = $bTmpDisplayColumnHeadings;
+		$this->sLinkURL = $sTmpLinkURL;
+		$this->sDBQueryStringColumn = $sTmpDBQueryStringColumn;
+	}
+	
+	function setEmptyTableMessage($sNewValue) {
+		$this->sEmptyTableMessage = $sNewValue;
 	}
 	
 	function setTableHeading($sNewValue) {
 		$this->sTableHeading = $sNewValue;
+	}
+	
+	function setImageURL($sNewValue) {
+		$this->sImageURL = $sNewValue;
 	}
 	
 	/**
@@ -62,8 +73,7 @@ class PatternTableSqlQuery {
 	*
 	* @todo possibly add in image size restraints for link types 2 and 3
 	*/	
-	function & render() {
-		//$sToRender = "<table border = 0, width=$this->sWidth>\n";
+	function & render() {		
 		$sToRender = "<table cellpadding = 5, border = 0>\n";
 		if (isset($this->sTableHeading)) {
 			$sToRender .= "<caption colspan = " . count($this->aColumns) . ", align=left><b>$this->sTableHeading</b></caption>\n";
@@ -76,8 +86,12 @@ class PatternTableSqlQuery {
 		$sql = new Owl_DB();
 		$sql->query($this->sQuery);
 		if ($sql->num_rows() == 0) {
-			$sToRender .= "<tr>\n";			
-			$sToRender .= "<td colspan=" . count($this->aColumns) . ">No " . (isset($this->sTableHeading) ? $this->sTableHeading : "") . " data</td>\n";			
+			$sToRender .= "<tr>\n";	
+			if (isset($this->sEmptyTableMessage)) {
+				$sToRender .= "<td colspan=" . count($this->aColumns) . ">$this->sEmptyTableMessage</td>\n";
+			} else {
+				$sToRender .= "<td colspan=" . count($this->aColumns) . ">No " . (isset($this->sTableHeading) ? $this->sTableHeading : "") . " data</td>\n";
+			}
 			$sToRender .= "</tr>\n";		
 		} else {
 			while ($sql->next_record()) {			
@@ -85,7 +99,10 @@ class PatternTableSqlQuery {
 				for ($i = 0; $i < count($this->aColumns); $i++) {
 					switch ($this->aColumnTypes[$i]) {
 						case 1:
-								$sToRender .= "<td>" . $sql->f($this->aColumns[$i]) . "</td>";
+								$sToRender .= "<td>" . (isset($this->sImageURL) ? $this->generateImageURL() : "") . $sql->f($this->aColumns[$i]) . "</td>";
+								break;
+						case 3:
+								$sToRender .= "<td><a href=\"" . $this->sLinkURL . $sql->f($this->sDBQueryStringColumn) . "\">" . (isset($this->sImageURL) ? $this->generateImageURL() : "") . $sql->f($this->aColumns[$i]) . "</a></td>\n";
 								break;
 						default:
 								break;
@@ -97,6 +114,12 @@ class PatternTableSqlQuery {
 		$sToRender .= "</table>";		
 		return $sToRender;
 	}
+	
+	
+	function generateImageURL() {
+		return "<img src=\"" . $this->sImageURL . "\" border=\"0\"/>";
+	}
+	
 	
 }
 
