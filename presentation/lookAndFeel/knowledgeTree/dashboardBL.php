@@ -82,7 +82,7 @@ if (checkSession()) {
     $aSubscriptionAlertList = SubscriptionManager::listSubscriptionAlerts($_SESSION["userID"]);
     
     // retrieve quicklinks
-    $aQuickLinks = Link::getList();
+    $aQuickLinks = Link::getList("ORDER BY rank");
     
     // retrieve pending web documents
     $aPendingWebDocuments = getPendingWebDocuments($_SESSION["userID"]);
