@@ -190,14 +190,15 @@ function renderDocumentTypeResults($aResults) {
 function renderFolderResults($aResults) {
     global $default;
     $sToRender = "";
-	    
+
     // now loop through the rest of the folders and display links
     if (count($aResults["folders"]) > 1) {
         for ($i=1; $i<count($aResults["folders"]); $i++) {
             $sFolderLink = displayFolderLink($aResults["folders"][$i]);
             $oCreator = User::get($aResults["folders"][$i]->getCreatorID());
             
-            $sToRender .= "<tr bgcolor=\"" . getColour($i) . "\">";            
+            // the first element of the array contains the current folder name
+            $sToRender .= "<tr bgcolor=\"" . getColour($i-1) . "\">";            
             // folder name
             $sToRender .= "<td>" . $sFolderLink . "</td>";
             // blank filename (??: folder description?)
@@ -272,11 +273,13 @@ function renderSortHeadings($sSortBy, $sSortDirection) {
  * @param boolean whether to display the complete path to the document or not
  */
 function renderDocumentList($aResults, $sNoDocumentsMessage, $sNoPermissionMessage, $bDisplayFullPath = false) {
+	$iFolderCount = count($aResults["folders"]) - 1;
     // loop through the files and display links
     if (count($aResults["documents"]) > 0) {
         for ($i=0; $i<count($aResults["documents"]); $i++) {
-            $sToRender .= "<tr bgcolor=\"" . getColour($i) . "\" width=\"100%\"><td>" . displayDocumentLink($aResults["documents"][$i], $bDisplayFullPath) . "</td>";
-            //$sToRender .= "<tr>";
+        	// in order for candy striping to work we need to take the number of folders
+        	// into account when alternating
+            $sToRender .= "<tr bgcolor=\"" . getColour($i+$iFolderCount) . "\" width=\"100%\"><td>" . displayDocumentLink($aResults["documents"][$i], $bDisplayFullPath) . "</td>";
             $sToRender .= "<td>" . $aResults["documents"][$i]->getFileName() . "</td>";
             $oCreator = User::get($aResults["documents"][$i]->getCreatorID());
             $sToRender .= "<td>" . $oCreator->getName() . "</td>";
