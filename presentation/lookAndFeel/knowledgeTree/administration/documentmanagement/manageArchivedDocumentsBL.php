@@ -140,6 +140,7 @@ if (checkSession()) {
 	$main->setCentralPayload($oContent);
 	$main->setFormAction($_SERVER['PHP_SELF']);	
 	$main->setHasRequiredFields(true);
+	$main->setSubmitAction("GET");
 	$main->render();
 }
 
