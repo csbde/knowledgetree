@@ -1,16 +1,30 @@
 <?php
 require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentField.inc");
-
 /**
- *
- * Class DocumentTypeFieldLink
+ * $Id$
  *
  * Represents a document type field link as per the database table document_types_fields_link
  *
+ * Copyright (c) 2003 Jam Warehouse http://www.jamwarehouse.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ * @version $Revision$
  * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
- * @date 19 January 2003
- * @package lib.documentmanagement
- */
+ * @package lib.documentmanagement 
+ */ 
 class DocumentTypeFieldLink {
 	
 	/** document field link primary key */
@@ -120,7 +134,7 @@ class DocumentTypeFieldLink {
 		if ($this->iId < 0) {
 			//check to see if name exsits
 			$sql = $default->db;
-			$query = "SELECT id FROM ". $default->owl_document_type_fields_table ." WHERE document_type_id = '" . $this->iDocumentTypeID . "' and field_id = '". $this->iFieldID . "'";
+			$query = "SELECT id FROM ". $default->document_type_fields_table ." WHERE document_type_id = '" . $this->iDocumentTypeID . "' and field_id = '". $this->iFieldID . "'";
         		$sql->query($query);
        			$rows = $sql->num_rows($sql);
         
@@ -131,7 +145,7 @@ class DocumentTypeFieldLink {
            		 
 	       		 }else{
 				$sql = $default->db;
-				$result = $sql->query("INSERT INTO " . $default->owl_document_type_fields_table . " (document_type_id, field_id, is_mandatory) " .
+				$result = $sql->query("INSERT INTO " . $default->document_type_fields_table . " (document_type_id, field_id, is_mandatory) " .
 							"VALUES ($this->iDocumentTypeID, $this->iFieldID, '" . $this->bIsMandatory . "')");
 				if ($result) {
 					//set the current documents primary key
@@ -142,7 +156,7 @@ class DocumentTypeFieldLink {
 			return false;
 			}			
 		}
-		$_SESSION["errorMessage"] = $lang_err_object_exists . "id = " . $this->iId . " table = $default->owl_document_type_fields_table";
+		$_SESSION["errorMessage"] = $lang_err_object_exists . "id = " . $this->iId . " table = $default->document_type_fields_table";
 		return false;
 		
 	}
@@ -156,7 +170,7 @@ class DocumentTypeFieldLink {
 		global $default, $lang_err_database, $lang_err_object_key;
 		if ($this->iId >= 0) {
 			$sql = $default->db;
-			$sQuery = "UPDATE " . $default->owl_document_type_fields_table . " SET " .
+			$sQuery = "UPDATE " . $default->document_type_fields_table . " SET " .
 					"document_type_id = $this->iDocumentTypeID, field_id = $this->iFieldID, is_mandatory = '" . $this->bIsMandatory . "'" .
 					"WHERE id = $this->iId";
 			$result = $sql->query($sQuery);
@@ -181,7 +195,7 @@ class DocumentTypeFieldLink {
 		global $default, $lang_err_database, $lang_err_object_key;
 		if ($this->iId >= 0) {
 			$sql = $default->db;
-			$result = $sql->query("DELETE FROM  " . $default->owl_document_type_fields_table . "  WHERE id = $this->iId");
+			$result = $sql->query("DELETE FROM  " . $default->document_type_fields_table . "  WHERE id = $this->iId");
 			if ($result) {
 				$this->iId = -1;
 				return true;
@@ -205,7 +219,7 @@ class DocumentTypeFieldLink {
 	function & get($iDocumentTypeFieldLinkID) {
 		global $default;
 		$sql = $default->db;
-		$sql->query("SELECT * FROM " . $default->owl_document_type_fields_table . " WHERE id = " . $iDocumentTypeFieldLinkID);
+		$sql->query("SELECT * FROM " . $default->document_type_fields_table . " WHERE id = " . $iDocumentTypeFieldLinkID);
 		if ($sql->next_record()) {			
 			$oDocumentTypeFieldLink = & new DocumentTypeFieldLink($sql->f("document_type_id"), $sql->f("field_id"), $sql->f("is_mandatory"));		
 			$oDocumentTypeFieldLink->iId = $iDocumentTypeFieldLinkID;
@@ -222,7 +236,7 @@ class DocumentTypeFieldLink {
      */
 	function docTypeBelongsToField($iDocTypeID) {
 		global $default;
-		return lookupField("$default->owl_document_type_fields_table", "field_id", "document_type_id", $iDocTypeID );
+		return lookupField("$default->document_type_fields_table", "field_id", "document_type_id", $iDocTypeID );
 	}
 
 	/**
@@ -235,7 +249,7 @@ class DocumentTypeFieldLink {
 	function getByFieldAndTypeIDs($iDocTypeID, $iDocFieldID) {
 	   	global $default;
 		$sql = $default->db;
-		$sQuery = "SELECT id FROM $default->owl_document_type_fields_table WHERE field_id = $iDocFieldID AND document_type_id = $iDocTypeID";
+		$sQuery = "SELECT id FROM $default->document_type_fields_table WHERE field_id = $iDocFieldID AND document_type_id = $iDocTypeID";
 		$result = $sql->query($sQuery);
 		if ($result) {
 			if ($sql->next_record()) {
@@ -258,7 +272,7 @@ class DocumentTypeFieldLink {
 		global $default;
 		$aFields = array();
 		$sql = $default->db;
-		$result = $sql->query("SELECT field_id FROM " . $default->owl_document_type_fields_table  . " WHERE document_type_id = ". $iDocTypeID);
+		$result = $sql->query("SELECT field_id FROM " . $default->document_type_fields_table  . " WHERE document_type_id = ". $iDocTypeID);
 		if ($result) {			
 			while ($sql->next_record()) {
 				$aFields[] = DocumentField::get($sql->f("field_id"));

@@ -11,14 +11,26 @@
  *		o $fFolderID - primary key of folder into which file will be placed
  * 	o When calling deleteDocument:
  *
- * Licensed under the GNU GPL. For full terms see the file DOCS/COPYING.
+ * Copyright (c) 2003 Jam Warehouse http://www.jamwarehouse.com
  *
- * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
  * @version $Revision$
- * @date 13 January 2003
- * @package lib.documentmanagement
+ * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
+ * @package lib.documentmanagement 
  */
-
 class PhysicalDocumentManager {
 	
 	/**
@@ -138,7 +150,7 @@ class PhysicalDocumentManager {
 		// FIXME: refactor array getOldVersionPaths($iDocumentID)??
 		
 		$sql = $default->db;
-		$result = $sql->query("SELECT DISTINCT version FROM $default->owl_document_transactions_table WHERE document_id=" . $oDocument->getID() . " AND transaction_id=" . CHECKOUT);
+		$result = $sql->query("SELECT DISTINCT version FROM $default->document_transactions_table WHERE document_id=" . $oDocument->getID() . " AND transaction_id=" . CHECKOUT);
         if ($result) {
             while ($sql->next_record()) {
             	$sVersion = $sql->f("version");
@@ -212,7 +224,7 @@ class PhysicalDocumentManager {
 		// ie. interrogate transaction history for all CHECKIN transactions and retrieve the versions
 		// FIXME: refactor
 		$sql = $default->db;
-		$result = $sql->query("SELECT DISTINCT version FROM $default->owl_document_transactions_table WHERE document_id=" . $oDocument->getID() . " AND transaction_id=" . CHECKOUT);
+		$result = $sql->query("SELECT DISTINCT version FROM $default->document_transactions_table WHERE document_id=" . $oDocument->getID() . " AND transaction_id=" . CHECKOUT);
         if ($result) {
             while ($sql->next_record()) {
             	$sVersion = $sql->f("version");
@@ -254,7 +266,7 @@ class PhysicalDocumentManager {
 		// ie. interrogate transaction history for all CHECKIN transactions and retrieve the versions
 		// FIXME: refactor
 		$sql = $default->db;
-		$result = $sql->query("SELECT DISTINCT version FROM $default->owl_document_transactions_table WHERE document_id=" . $oDocument->getID() . " AND transaction_id=" . CHECKOUT);
+		$result = $sql->query("SELECT DISTINCT version FROM $default->document_transactions_table WHERE document_id=" . $oDocument->getID() . " AND transaction_id=" . CHECKOUT);
         if ($result) {
             while ($sql->next_record()) {
             	$sVersion = $sql->f("version");
@@ -309,7 +321,7 @@ class PhysicalDocumentManager {
 		// ie. interrogate transaction history for all CHECKIN transactions and retrieve the versions
 		// FIXME: refactor
 		$sql = $default->db;
-		$result = $sql->query("SELECT DISTINCT version FROM $default->owl_document_transactions_table WHERE document_id=" . $oDocument->getID() . " AND transaction_id=" . CHECKOUT);
+		$result = $sql->query("SELECT DISTINCT version FROM $default->document_transactions_table WHERE document_id=" . $oDocument->getID() . " AND transaction_id=" . CHECKOUT);
         if ($result) {
             while ($sql->next_record()) {
             	$sVersion = $sql->f("version");
@@ -392,14 +404,14 @@ class PhysicalDocumentManager {
         
         // check by file extension
         $sExtension = strtolower(substr($sFileName, strpos($sFileName, ".")+1, strlen($sFileName) - strpos($sFileName, ".")));
-        $sql->query("SELECT id FROM " . $default->owl_mime_table . " WHERE LOWER(filetypes) = '$sExtension'");
+        $sql->query("SELECT id FROM " . $default->mimetypes_table . " WHERE LOWER(filetypes) = '$sExtension'");
         if ($sql->next_record()) {
             return $sql->f("id");
         }
         
 		//get the mime type	
 		if (isset($sMimeType)) {
-			$sql->query("SELECT id FROM " . $default->owl_mime_table . " WHERE mimetypes = '$sMimeType'");		
+			$sql->query("SELECT id FROM " . $default->mimetypes_table . " WHERE mimetypes = '$sMimeType'");		
 			if ($sql->next_record()) {
 				//get the mime type id
 				return $sql->f("id");
@@ -419,7 +431,7 @@ class PhysicalDocumentManager {
 	function getDefaultMimeTypeID() {
 		global $default;
 		$sql = $default->db;		
-		$sql->query("SELECT id FROM " . $default->owl_mime_table . " WHERE mimetypes = 'text/plain'");		
+		$sql->query("SELECT id FROM " . $default->mimetypes_table . " WHERE mimetypes = 'text/plain'");		
 		$sql->next_record();
 		//get the mime type id
 		return $sql->f("id");
@@ -428,7 +440,7 @@ class PhysicalDocumentManager {
 	function getMimeTypeName($iMimeTypeID) {
 		global $default;
 		$sql = $default->db;
-		$sql->query("SELECT mimetypes FROM " . $default->owl_mime_table . " WHERE id = " . $iMimeTypeID);
+		$sql->query("SELECT mimetypes FROM " . $default->mimetypes_table . " WHERE id = " . $iMimeTypeID);
 		if ($sql->next_record()) {
 			return $sql->f("mimetypes");			
 		}

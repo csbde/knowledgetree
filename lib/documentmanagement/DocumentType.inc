@@ -1,15 +1,29 @@
 <?php
 /**
-*
-* Class DocumentType
-*
-* Represents a document type as per the database document_types_lookup table
-*
-* @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
-* @date 19 January 2003
-* @package lib.documentmanagement
-*/
-
+ * $Id$
+ *
+ * Represents a document type as per the database document_types_lookup table.
+ *
+ * Copyright (c) 2003 Jam Warehouse http://www.jamwarehouse.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ * @version $Revision$
+ * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
+ * @package lib.documentmanagement 
+ */
 class DocumentType {
 	
 	/** primary key value */
@@ -73,7 +87,7 @@ class DocumentType {
 		if ($this->iId < 0) {
 			//check to see if name exsits
 			$sql = $default->db;
-			$query = "SELECT name FROM ". $default->owl_document_types_table ." WHERE name = '" . $this->sName . "'";
+			$query = "SELECT name FROM ". $default->document_types_table ." WHERE name = '" . $this->sName . "'";
         		$sql->query($query);
        			$rows = $sql->num_rows($sql);
         
@@ -84,7 +98,7 @@ class DocumentType {
            		 
 	       		 }else{
 				$sql = $default->db;
-				$result = $sql->query("INSERT INTO " . $default->owl_document_types_table . " (name) VALUES ('" . addslashes($this->sName) . "')");
+				$result = $sql->query("INSERT INTO " . $default->document_types_table . " (name) VALUES ('" . addslashes($this->sName) . "')");
 				if ($result) {
 				$this->iId = $sql->insert_id();
 				return  true;
@@ -109,7 +123,7 @@ class DocumentType {
 		//only update if the object has been stored
 		if ($this->iId > 0) {
 			$sql = $default->db;
-			$result = $sql->query("UPDATE " . $default->owl_document_types_table . " SET name = '" . addslashes($this->sName) . "' WHERE id = $this->iId");
+			$result = $sql->query("UPDATE " . $default->document_types_table . " SET name = '" . addslashes($this->sName) . "' WHERE id = $this->iId");
 			if ($result) {
 				return true;
 			}
@@ -132,7 +146,7 @@ class DocumentType {
 		if ($this->iId > 0) {
 			//check to see if name exsits
 			$sql = $default->db;
-			$query = "SELECT folder_id FROM ". $default->owl_folder_doctypes_table ." WHERE document_type_id = '" . $this->iId . "'";
+			$query = "SELECT folder_id FROM ". $default->folder_doctypes_table ." WHERE document_type_id = '" . $this->iId . "'";
         		$sql->query($query);
        			$rows = $sql->num_rows($sql);
         
@@ -143,7 +157,7 @@ class DocumentType {
            		 
 	       		 }else{
 				$sql = $default->db;
-				$result = $sql->query("DELETE FROM " . $default->owl_document_types_table . " WHERE id = '" . $this->iId . "'");
+				$result = $sql->query("DELETE FROM " . $default->document_types_table . " WHERE id = '" . $this->iId . "'");
 				if ($result) {
 					return true;
 				}
@@ -165,7 +179,7 @@ class DocumentType {
 		global $default, $lang_err_database, $lang_err_object_key;
 		if ($this->iId >= 0) {
 			$sql = $default->db;
-			$result = $sql->query("DELETE FROM  " . $default->owl_document_type_fields_table . "  WHERE document_type_id = $this->iId");
+			$result = $sql->query("DELETE FROM  " . $default->document_type_fields_table . "  WHERE document_type_id = $this->iId");
 			if ($result) {
 				$this->iId = -1;
 				return true;
@@ -187,7 +201,7 @@ class DocumentType {
 	function & get($iDocumentTypeID) {
 		global $default;
 		$sql = $default->db;
-		$result = $sql->query("SELECT * FROM ". $default->owl_document_types_table ." WHERE id = $iDocumentTypeID");
+		$result = $sql->query("SELECT * FROM ". $default->document_types_table ." WHERE id = $iDocumentTypeID");
 		if ($result) {
 			if ($sql->next_record()) {
 				$oDocumentType = & new DocumentType(stripslashes($sql->f("name")));
@@ -212,7 +226,7 @@ class DocumentType {
 		global $default, $lang_err_database;
 		$aDocumentTypeArray = array();
 		$sql = $default->db;
-		$result = $sql->query("SELECT * FROM " . $default->owl_document_types_table  . (isset($sWhereClause) ? " WHERE $sWhereClause" : ""));
+		$result = $sql->query("SELECT * FROM " . $default->document_types_table  . (isset($sWhereClause) ? " WHERE $sWhereClause" : ""));
 		if ($result) {			
 			while ($sql->next_record()) {
 				$aDocumentTypeArray[] = & DocumentType::get($sql->f("id"));

@@ -1,15 +1,30 @@
 <?php
 require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentType.inc");
 /**
+ * $Id$
  *
- * Class DocumentField
+ * Represents a document field as per the database document_fields table.
  *
- * Represents a document field as per the database document_fields table
+ * Copyright (c) 2003 Jam Warehouse http://www.jamwarehouse.com
  *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ * @version $Revision$
  * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
- * @date 19 January 2003
- * @package lib.documentmanagement
- */
+ * @package lib.documentmanagement 
+ */ 
 class DocumentField {
 	
 	/** primary key value */
@@ -146,7 +161,7 @@ class DocumentField {
 		//if the object hasn't been created
 		if ($this->iId < 0) {
 			$sql = $default->db;
-			$result = $sql->query("INSERT INTO " . $default->owl_fields_table . " (name, data_type,is_generic,has_lookup) VALUES ('" . addslashes($this->sName) . "', '" . addslashes($this->sDataType) . "', '" . $this->bIsGeneric . "', '" . $this->bHasLookup ."')");
+			$result = $sql->query("INSERT INTO " . $default->document_fields_table . " (name, data_type,is_generic,has_lookup) VALUES ('" . addslashes($this->sName) . "', '" . addslashes($this->sDataType) . "', '" . $this->bIsGeneric . "', '" . $this->bHasLookup ."')");
 			if ($result) {
 				$this->iId = $sql->insert_id();
 				return  true;
@@ -169,7 +184,7 @@ class DocumentField {
 		//only update if the object has been stored
 		if ($this->iId > 0) {
 			$sql = $default->db;
-			$result = $sql->query("UPDATE " . $default->owl_fields_table . " SET name = '" . addslashes($this->sName) . "', data_type = '" . addslashes($this->sDataType) . "', is_generic = '" . $this->bIsGeneric . "', has_lookup = '" . $this->bHasLookup . "' WHERE id = $this->iId");
+			$result = $sql->query("UPDATE " . $default->document_fields_table . " SET name = '" . addslashes($this->sName) . "', data_type = '" . addslashes($this->sDataType) . "', is_generic = '" . $this->bIsGeneric . "', has_lookup = '" . $this->bHasLookup . "' WHERE id = $this->iId");
 			if ($result) {
 				return true;
 			}
@@ -191,7 +206,7 @@ class DocumentField {
 		//only delete the object if it exists in the database
 		if ($this->iId >= 0) {
 			$sql = $default->db;
-			$result = $sql->query("DELETE FROM $default->owl_fields_table WHERE id = $this->iId");
+			$result = $sql->query("DELETE FROM $default->document_fields_table WHERE id = $this->iId");
 			if ($result) {
 				return true;
 			}
@@ -213,14 +228,14 @@ class DocumentField {
 	function & get($iDocumentFieldsID) {
 		global $default;
 		$sql = $default->db;
-		$result = $sql->query("SELECT * FROM $default->owl_fields_table WHERE id = $iDocumentFieldsID");
+		$result = $sql->query("SELECT * FROM $default->document_fields_table WHERE id = $iDocumentFieldsID");
 		if ($result) {
 			if ($sql->next_record()) {
 				$oDocumentField = & new DocumentField(stripslashes($sql->f("name")), stripslashes($sql->f("data_type")), $sql->f("is_generic"), $sql->f("has_lookup"));
 				$oDocumentField->iId = $sql->f("id");
 				return $oDocumentField;
 			}
-			$_SESSION["errorMessage"] = $lang_err_object_not_exist . "id = " . $iDocumentID . " table = $default->owl_fields_table";
+			$_SESSION["errorMessage"] = $lang_err_object_not_exist . "id = " . $iDocumentID . " table = $default->document_fields_table";
 			return false;
 		}
 		$_SESSION["errorMessage"] = $lang_err_database;
@@ -238,7 +253,7 @@ class DocumentField {
 		global $default;
 		$aDocumentFieldArray = array();
 		$sql = $default->db;
-		$sQuery = "SELECT id FROM " . $default->owl_fields_table  . (isset($sWhereClause) ? " WHERE $sWhereClause" : "");
+		$sQuery = "SELECT id FROM " . $default->document_fields_table  . (isset($sWhereClause) ? " WHERE $sWhereClause" : "");
 		$result = $sql->query($sQuery);
 		if ($result) {			
 			while ($sql->next_record()) {
@@ -256,7 +271,7 @@ class DocumentField {
 		global $default;
 		$aDocumentTypes = array();
 		$sql = $default->db;
-		$query = "SELECT document_type_id FROM " . $default->owl_document_type_fields_table  . " WHERE field_id = $this->iId";
+		$query = "SELECT document_type_id FROM " . $default->document_type_fields_table  . " WHERE field_id = $this->iId";
 		if ($sql->query($query)) {
 			while ($sql->next_record()) {
       			$aDocumentTypes[] = & DocumentType::get($sql->f("document_type_id"));
@@ -275,7 +290,7 @@ class DocumentField {
 	function isFieldLinkedToType() {
 		global $default;
 		$sql = $default->db;
-		$query = "SELECT document_type_id FROM " . $default->owl_document_type_fields_table  . " WHERE field_id = $this->iId";
+		$query = "SELECT document_type_id FROM " . $default->document_type_fields_table  . " WHERE field_id = $this->iId";
 		if ($sql->query($query)) {
 			$rows = $sql->num_rows($sql);
 	      	if ($rows > 0) {
@@ -299,7 +314,7 @@ class DocumentField {
 		$aDataTypes;
 		settype($aDataTypes, "array");
 		$sql = $default->db;
-		$result = $sql->query("SELECT id, name FROM " . $default->owl_data_types_table );
+		$result = $sql->query("SELECT id, name FROM " . $default->data_types_table );
 		if ($result) {			
 			$iCount = 0;
 			while ($sql->next_record()) {
@@ -318,7 +333,7 @@ class DocumentField {
 		global $default;
 			
 		$sql = $default->db;
-		$result = $sql->query("SELECT COUNT(*) AS count FROM " . $default->owl_metadata_table . " WHERE document_field_id = " . $iDocumentFieldID);
+		$result = $sql->query("SELECT COUNT(*) AS count FROM " . $default->metadata_table . " WHERE document_field_id = " . $iDocumentFieldID);
 		if ($result) {			
 			if ($sql->next_record()) {		
 				return $sql->f("count");
