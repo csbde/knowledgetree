@@ -27,8 +27,7 @@ if (checkSession()) {
 	//escape the search string
 	$fStandardSearchString = addslashes($fStandardSearchString);
 	
-		if (strlen($fBrowseType) > 0) {
-			echo "browse type";
+		if (strlen($fBrowseType) > 0) {			
 			//the user was browsing by a specific type
 			switch ($fBrowseType) {
 			case "folder" : 
