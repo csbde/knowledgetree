@@ -74,7 +74,7 @@ function renderTypeSpecificMetaData($oDocument) {
 
 function renderEditableDocumentRouting($oDocument) {
 	global $default;
-	$sQuery = "SELECT D.id as document_id, GFAL.id as id, R.name AS role_name, COALESCE(U.Name, 'Not assigned') AS name, GFAL.precedence AS precedence, 'Edit' as edit " .	
+	$sQuery = "SELECT D.id as document_id, GFAL.id as id, R.name AS role_name, COALESCE(U.Name, 'Not assigned') AS name, GFAL.precedence AS precedence, COALESCE(FURL.active,0) AS active, COALESCE(FURL.done, 0) AS done, 'Edit' as edit " .	
 				"FROM documents AS D INNER JOIN $default->owl_groups_folders_approval_table AS GFAL ON D.folder_id = GFAL.folder_id " .
 				"INNER JOIN roles AS R ON GFAL.role_id = R.id " .
 				"LEFT OUTER JOIN folders_users_roles_link AS FURL ON FURL.group_folder_approval_id = GFAL.id " .
@@ -82,12 +82,12 @@ function renderEditableDocumentRouting($oDocument) {
 				"WHERE D.id = " . $oDocument->getID() . " " .
 				"ORDER BY GFAL.precedence, role_name ASC";
 	
-	$aColumns = array("role_name", "name", "precedence", "edit");
-	$aColumnHeaders = array("Role", "Player", "Seq", "");
-	$aColumnTypes = array(1,1,1,3);
-	$aDBColumnArray = array("id","document_id");
-	$aQueryStringVariableNames = array("fFolderCollaborationID", "fDocumentID");
-	$aLinkURLs = array(3=>"$default->owl_root_url/control.php?action=modifyDocumentRouting");
+	$aColumns = array("role_name", "name", "precedence", "active", "done", "edit");
+	$aColumnHeaders = array("Role", "Player", "Seq", "Active", "Done", "");
+	$aColumnTypes = array(1,1,1,1,1,3);
+	$aDBColumnArray = array("id","document_id","active","done");
+	$aQueryStringVariableNames = array("fFolderCollaborationID", "fDocumentID","fIsActive","fIsDone");
+	$aLinkURLs = array(5=>"$default->owl_root_url/control.php?action=modifyDocumentRouting");
 	
 	$oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaders, "10%", $aLinkURLs,$aDBColumnArray,$aQueryStringVariableNames);
 	$oPatternTableSqlQuery->setTableHeading("Document Routing");
@@ -142,6 +142,10 @@ function getEditPage($oDocument) {
 		$sToRender .= "\t<table border = 0>\n";
 		$sToRender .= "\t<tr>\n";
 		$sToRender .= "\t\t<td>" . wrapInTable(renderEditableDocumentRouting($oDocument)) . "</td>\n";
+		//$sToRender .= "\t\t<td>" . renderDocumentRouting($oDocument) . "</td>\n";
+		$sToRender .= "\t</tr>";
+		$sToRender .= "\t<tr>\n";
+		$sToRender .= "\t\t<td><a href=" . $_SERVER['PHP_SELF'] . "?fDocumentID=" . $oDocument->getID() . "&fBeginCollaboration=1><img src=\"$default->owl_graphics_url/widgets/approve.gif\" border=\"0\"/></a></td>\n";
 		//$sToRender .= "\t\t<td>" . renderDocumentRouting($oDocument) . "</td>\n";
 		$sToRender .= "\t</tr>";
 		$sToRender .= "\t</table>";

@@ -6,6 +6,7 @@
 * Required form variables:
 *	o fFolderCollaborationID - primary key of folder collaboration entry we are viewing
 *	o fDocumentID - primary key of document this folder collaboration entry is for
+*	o fIsActive - whether the document collaboration set is active or not
 *
 * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
 * @date 28 January 2003
@@ -20,17 +21,31 @@ if (checkSession()) {
 	require_once("$default->owl_fs_root/lib/foldermanagement/FolderCollaboration.inc");
 	require_once("$default->owl_fs_root/lib/foldermanagement/FolderUserRole.inc");
 	require_once("$default->owl_fs_root/lib/foldermanagement/Folder.inc");
+	require_once("$default->owl_fs_root/lib/roles/Role.inc");
+	require_once("$default->owl_fs_root/lib/users/User.inc");
 	require_once("$default->owl_fs_root/lib/documentmanagement/Document.inc");
+	require_once("$default->owl_fs_root/lib/email/Email.inc");
 	require_once("$default->owl_fs_root/lib/groups/Group.inc");	
 	require_once("$default->owl_fs_root/presentation/Html.inc");
 	require_once("$default->owl_fs_root/lib/security/permission.inc");	
 	require_once("$default->owl_fs_root/lib/visualpatterns/PatternCustom.inc");
 	require_once("collaborationUI.inc");
 	
+	
 	//if the required form variabled are set
 	if (isset($fFolderCollaborationID) && isset($fDocumentID)) {
 		//if the user has write permission for the document
 		if (Permission::userHasDocumentWritePermission($fDocumentID)) {
+			if ($fIsActive) {
+				//if the document collaboration step the user is attempting to edit is underway, you may not edit it
+				//so bounce the user back to the document view page and display an error message
+				redirect("$default->owl_root_url/control.php?action=viewDocument&fDocumentID=$fDocumentID&fCollaborationEdit=0");
+			}
+			if ($fIsDone) {
+				//the user is attempting to edit a step in the document collaboration process that has already been done
+				//so bounce the user back to the document view page and display an error message
+				redirect("$default->owl_root_url/control.php?action=viewDocument&fDocumentID=$fDocumentID&fCollaborationEdit=0");
+			}
 			if (isset($fForStore)) {
 				//if we are storing, get the folder collaboration entry from the database
 				$oFolderCollaboration = & FolderCollaboration::get($fFolderCollaborationID);			
@@ -39,19 +54,33 @@ if (checkSession()) {
 					$oFolderUserRole = & FolderUserRole::getFromFolderCollaboration($fFolderCollaborationID);
 					if (!($oFolderUserRole === false)) {
 						//if we have an entry, just update it
+						if ($oFolderUserRole->getUserID() != $fUserID) {
+							//the user assigned has been changed, so inform the old user of his removal from the 
+							//collaboration process
+							$oOldUser = User::get($oFolderUserRole->getUserID());
+							$oRole = Role::get($oFolderCollaboration->getRoleID());
+							$oEmail = & new Email($default->owl_email_from, $default->owl_email_fromname);							
+							$oDocument = Document::get($fDocumentID);							
+							
+							$sBody = "You have been unassigned the role of '" . $oRole->getName() . "' in the collaboration process for the document entitled '" . $oDocument->getName() . "'";					
+							$oEmail->send($oOldUser->getEmail(), "Unassigment of role in document collaboration process", $sBody, $default->owl_email_from, $default->owl_email_fromname);
+						}
 						$oFolderUserRole->setUserID($fUserID);
 						$oFolderUserRole->update();
 					} else {
 						//otherwise, create a new one
-						$oFolderUserRole = & new FolderUserRole($fUserID, $fDocumentID, $fFolderCollaborationID, 0);
-						$oFolderUserRole->create();
-					}
-				}
-				if (isset($fRoleID) & ($fRoleID != -1)) {
-					//if a role was chosen then update the folder collaboration entry in the db
-					$oFolderCollaboration->setRoleID($fRoleID);
-					$oFolderCollaboration->update();
-				}
+						$oFolderUserRole = & new FolderUserRole($fUserID, $fDocumentID, $fFolderCollaborationID, 0);						
+						$oFolderUserRole->create();						
+					}					
+					//email the user to inform him of his newly assigned role in the collaboration process
+					$oEmail = & new Email($default->owl_email_from, $default->owl_email_fromname);			
+					$oRole = Role::get($oFolderCollaboration->getRoleID());
+					$oDocument = Document::get($fDocumentID);
+					$oUser = User::get($_SESSION["userID"]);
+					
+					$sBody = "You have been assigned the role of '" . $oRole->getName() . "' in the collaboration process for the document entitled '" . $oDocument->getName() . "'.  You will be informed when your role becomes active";					
+					$oEmail->send($oUser->getEmail(), "Assigment of role in document collaboration process", $sBody, $default->owl_email_from, $default->owl_email_fromname);
+				}				
 				//go back to the document view page
 				redirect("$default->owl_root_url/control.php?action=viewDocument&fDocumentID=$fDocumentID");
 			} else {
@@ -75,7 +104,7 @@ if (checkSession()) {
 			$main->render();
 		}
 	} else {
-		//user does not have permission to edit these details
+			//no document routing information selected
 			require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");			
 			$oPatternCustom = & new PatternCustom();							
 			$oPatternCustom->setHtml("<a href=\"$default->owl_root_url/control.php?action=dashboard\">Return to document dashboard</a>");
