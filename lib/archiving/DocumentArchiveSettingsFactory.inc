@@ -38,6 +38,17 @@ class DocumentArchiveSettingsFactory {
 		}
 		return $iTimePeriodID;
 	}
+	
+	function validateDate($dExpirationDate) {
+		if ($dExpirationDate) {
+			$sTime = strtotime($dExpirationDate);
+			// check that its later than today	
+			if ($sTime <= time()) {
+				return false;
+			}		
+		}
+		return true;
+	}
 		
 	function create($iArchivingTypeID, $iDocumentID, $dExpirationDate, $iDocumentTransactionID, $iTimeUnitID, $iUnits) {
 		global $default;
