@@ -71,6 +71,28 @@ if (checkSession()) {
 	    	    $main->setHasRequiredFields(true);    		
 	    		$main->render();
 			}
+		} else if (isset($fForEdit)) {
+			$oFolderCollaboration = FolderCollaboration::get($fFolderCollaborationID);
+			if ($oFolderCollaboration->hasDocumentInProcess()) {
+				include_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
+			
+				$oPatternCustom = & new PatternCustom();
+				$oPatternCustom->setHtml(getViewPage($fFolderCollaborationID, $fFolderID));
+    			$main->setCentralPayload($oPatternCustom);
+	    	    $main->setFormAction($_SERVER["PHP_SELF"] . "?fFolderID=$fFolderID&fFolderCollaborationID=$fFolderCollaborationID&fForAdd=1");
+	    	    $main->setErrorMessage("You cannot add a new depedant document as there is currently a document in this folder undergoing collaboration");    		
+    			$main->render();
+				
+			} else {						
+				include_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");		
+				
+				$oPatternCustom = & new PatternCustom();
+				$oPatternCustom->setHtml(getAddPage($fFolderCollaborationID, $fFolderID, (isset($fUnitID) ? $fUnitID : -1), (isset($fDocumentTitle) ? $fDocumentTitle : ""), (isset($fTemplateDocument) ? $fTemplateDocument : ""), (isset($fDocumentID) ? $fDocumentID : "") ));
+	    		$main->setCentralPayload($oPatternCustom);
+	    	    $main->setFormAction($_SERVER["PHP_SELF"] . "?fFolderID=$fFolderID&fFolderCollaborationID=$fFolderCollaborationID&fForStore=1");
+	    	    $main->setHasRequiredFields(true);    		
+	    		$main->render();
+			}			
 		} else {
 			include_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 			

@@ -33,9 +33,9 @@ function getDocumentLinkFolderCollaborationData($iFolderCollaborationID) {
 	$aColumns = array("document_title", "username", "template_document_name","edit");
 	$aColumnHeaders = array("Document title", "Default creator", "Template document", "Edit");
 	$aColumnTypes = array(1,1,3,3);
-	$aDBColumnArray = array("id","group_folder_approval_link_id", "template_document_id");
-	$aQueryStringVariableNames = array("fDependantDocumentTemplateID","fFolderCollaborationID","fDocumentID");
-	$aLinkURLs = array(2=>"$default->rootUrl/control.php?action=viewDocument", 3=>"$default->rootUrl/control.php?action=linkDocFolderCollaboration");	
+	$aDBColumnArray = array("id","group_folder_approval_link_id","template_document_id");
+	$aQueryStringVariableNames = array("fDependantDocumentTemplateID", "fFolderCollaborationID", "fDocumentID");
+	$aLinkURLs = array(2=>"$default->rootUrl/control.php?action=viewDocument", 3=>"$default->rootUrl/control.php?action=viewDependantDocument&fForEdit=1");	
 	
 	$oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaders, "90%", $aLinkURLs, $aDBColumnArray,$aQueryStringVariableNames);
 	$oPatternTableSqlQuery->setTableHeading("Dependant Documents");
