@@ -8,7 +8,8 @@ class DBCompat {
             $aParams = $sQuery[1];
             $sQuery = $sQuery[0];
         }
-        $this->lastResult =& $default->_db->query($sQuery, $aParams);
+        #$this->lastResult =& $default->_db->query($sQuery, $aParams);
+        $this->lastResult =& DBUtil::runQuery(array($sQuery, $aParams));
         $this->lastInsertID = mysql_insert_id($default->_db->connection);
         $this->lastResult->autofree = true;
         return $this->lastResult;
@@ -18,7 +19,7 @@ class DBCompat {
         global $default;
         if (PEAR::isError($this->lastResult)) {
             // var_dump($this->lastResult);
-            $default->log->warn("DBCompat::numrows: lastResult was an error");
+            $default->log->error("DBCompat::numrows: lastResult was an error");
             return $this->lastResult;
         }
         $default->log->debug("Number of rows was: " . $this->lastResult->numRows());
