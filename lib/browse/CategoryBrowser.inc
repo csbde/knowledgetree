@@ -58,8 +58,8 @@ class CategoryBrowser extends Browser {
             $results["categories"][] = "Categories";
            
             // get a list of category values
-            $query = "SELECT DISTINCT value FROM $default->owl_document_fields_table WHERE document_field_id=$categoryFieldID ORDER BY value ASC";
-            $default->log->debug("CategoryBrowser::browse() category listing query=$query");
+            $query = "SELECT DISTINCT value FROM $default->owl_document_fields_table WHERE document_field_id=$categoryFieldID ORDER BY value " . ($this->sSortField == "name" ? $this->sSortDirection : "ASC");
+            $default->log->info("CategoryBrowser::browse() category listing query=$query; $this->sSortField");
             $sql->query($query);
             // loop through resultset, build array and return
             while ($sql->next_record()) {
@@ -68,23 +68,29 @@ class CategoryBrowser extends Browser {
             // its ok if we return an empty array- the UI's responsibility to check and print an error
             return $results;
         } else {
+			$aLookupCriteria = $this->aSortCriteria[$this->sSortField]["lookup"];
+			        	
             $results["categories"][] = $sCategoryName;
             
             // we have a category to use, so find all the documents
             // with this category value
-            $query = "SELECT df.document_id FROM $default->owl_document_fields_table df " .
+            $categoryQuery = "SELECT df.document_id FROM $default->owl_document_fields_table df " .
                      "INNER JOIN $default->owl_documents_table d ON df.document_id = d.id ";
-            if ( isset($this->aSortCriteria[$sSortField]["lookup"]) ) {
-            	$query .= "INNER JOIN " .  $this->aSortCriteria[$sSortField]["lookup"]["lookupTable"] . " lt ON d.$this->sSortField=lt.id ";
+            if ( isset($aLookupCriteria) ) {
+            	$categoryQuery .= "INNER JOIN " .  $aLookupCriteria["table"] . " lt ON ";
+            	$categoryQuery .= "d.$this->sSortField" . "=lt." . (isset($aLookupCriteria["joinColumn"]) ? $aLookupCriteria["joinColumn"] : "id");
+            	
             }                    
-			$query .= "WHERE df.document_field_id = $categoryFieldID AND value='$sCategoryName' ";
-			if ( isset($this->aSortCriteria[$sSortField]["lookup"]) ) {
-            	$query .= "ORDER BY lt." . $this->aSortCriteria[$sSortField]["lookup"]["lookupField"] . " $this->sSortDirection";
+			$categoryQuery .= " WHERE df.document_field_id = $categoryFieldID AND value='$sCategoryName' " . (isset($aLookupCriteria["whereClause"]) ? "AND lt." . $aLookupCriteria["whereClause"] : "") . " ";;
+			if ( isset($aLookupCriteria) ) {
+            	$categoryQuery .= "ORDER BY lt." . $aLookupCriteria["field"] . " $this->sSortDirection";
             } else {
-            	$query .= "ORDER BY d.$this->sSortField $this->sSortDirection";
+            	$categoryQuery .= "ORDER BY d.$this->sSortField $this->sSortDirection";
             }                    
+              
+            $default->log->debug("categoryQuery=$categoryQuery");                                        
                      
-            $sql->query($query);
+            $sql->query($categoryQuery);
             // loop through resultset and add to array
             $results["accessDenied"] = false;
             while ($sql->next_record()) {

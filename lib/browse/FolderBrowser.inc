@@ -90,10 +90,22 @@ class FolderBrowser extends Browser {
             // now find all the child folders relative to this one 
             // FIXME: in the same unit?
             
-            // if we're sorting by name then sort folders in the appropriate direction
-            $folderQuery = "SELECT id FROM $default->owl_folders_table WHERE parent_id=" . $iFolderID . " ORDER BY name " . ($this->sSortField == "name" ? $this->sSortDirection : "ASC");
-
-            if ($sql->query($folderQuery)) {
+            $aLookupCriteria = $this->aSortCriteria[$this->sSortField]["lookup"];
+                        
+            // if we're sorting by name or creator_id then sort folders in the appropriate direction
+            $sFolderQuery = "SELECT f.id FROM $default->owl_folders_table AS f ";
+			if (in_array($this->sSortField, array("name", "creator_id"))) {             
+	            if (isset($aLookupCriteria)) {
+	            	$sFolderQuery .= "INNER JOIN " .  $aLookupCriteria["table"] . " lt ON f.$this->sSortField=lt.id WHERE parent_id=" . $iFolderID;
+	            	$sFolderQuery .= " ORDER BY lt." . $aLookupCriteria["field"] . " $this->sSortDirection";
+	            } else {
+	             	$sFolderQuery .= "WHERE parent_id=$iFolderID ORDER BY $this->sSortField $this->sSortDirection";
+	            }
+			} else {
+				$sFolderQuery .= "WHERE parent_id=$iFolderID ORDER BY f.name asc";
+			}
+			$default->log->debug("folderQuery = $sFolderQuery");
+            if ($sql->query($sFolderQuery)) {
                 while ($sql->next_record()) {
                     // add the child folders to the array
                     $results["folders"][] = & Folder::get($sql->f("id"));
@@ -101,16 +113,18 @@ class FolderBrowser extends Browser {
             }
             
             // create query to retrieve documents in this folder
-            $documentQuery  = "SELECT d.id as id FROM $default->owl_documents_table d ";                       
-            if ( isset($this->aSortCriteria[$sSortField]["lookup"]) ) {
-            	$documentQuery .= "INNER JOIN " .  $this->aSortCriteria[$sSortField]["lookup"]["lookupTable"] . " lt ON d.$this->sSortField=lt.id ";
+            $documentQuery  = "SELECT d.id as id FROM $default->owl_documents_table AS d ";
+            if ( isset($aLookupCriteria) ) {
+            	$documentQuery .= "INNER JOIN " .  $aLookupCriteria["table"] . " lt ON ";
+            	$documentQuery .= "d.$this->sSortField" . "=lt." . (isset($aLookupCriteria["joinColumn"]) ? $aLookupCriteria["joinColumn"] : "id");
             }            
-            $documentQuery .= "WHERE d.folder_id=$iFolderID ";            
-			if ( isset($this->aSortCriteria[$sSortField]["lookup"]) ) {
-            	$documentQuery .= "ORDER BY lt." . $this->aSortCriteria[$sSortField]["lookup"]["lookupField"] . " $this->sSortDirection";
+            $documentQuery .= " WHERE d.folder_id=$iFolderID " . (isset($aLookupCriteria["whereClause"]) ? "AND lt." . $aLookupCriteria["whereClause"] : "") . " ";            
+			if ( isset($aLookupCriteria) ) {
+            	$documentQuery .= "ORDER BY lt." . $aLookupCriteria["field"] . " $this->sSortDirection";
             } else {
             	$documentQuery .= "ORDER BY $this->sSortField $this->sSortDirection";
             }
+            $default->log->debug("docQuery=$documentQuery");
             
             // initialise access flag;
             $results["accessDenied"] = false;

@@ -51,28 +51,37 @@ class DocumentTypeBrowser extends Browser {
             $results["documentTypes"][] = array("name" => "Document Types");
             
             // return a list of document types
-            $query = "SELECT * FROM $default->owl_document_types_table";
+            $query = "SELECT * FROM $default->owl_document_types_table ORDER BY name " . ($this->sSortField == "name" ? $this->sSortDirection : "ASC");
+             
             $sql->query($query);
             while ($sql->next_record()) {
                 $results["documentTypes"][] = array ("id" => $sql->f("id"), "name" => $sql->f("name"));
             }
             return $results;
         } else {
+        	$aLookupCriteria = $this->aSortCriteria[$this->sSortField]["lookup"];
+        	
             // lookup document type name from the passed in id
             $documentTypeName = lookupField($default->owl_document_types_table, "name", "id", $iDocumentTypeID);
             $results["documentTypes"][] = array("id" => $iDocumentTypeID, "name" => $documentTypeName);
                        
             // create query to retrieve documents with this document type
             $documentQuery  = "SELECT d.id as id FROM $default->owl_documents_table d ";
-            if ( isset($this->aSortCriteria[$sSortField]["lookup"]) ) {
-            	$documentQuery .= "INNER JOIN " .  $this->aSortCriteria[$sSortField]["lookup"]["lookupTable"] . " lt ON d.$this->sSortField=lt.id ";
+            if ( isset($aLookupCriteria) ) {
+            	//$documentQuery .= "INNER JOIN " .  $aLookupCriteria["table"] . " lt ON d.$this->sSortField=lt.id ";
+            	$documentQuery .= "INNER JOIN " .  $aLookupCriteria["table"] . " lt ON ";
+            	$documentQuery .= "d.$this->sSortField" . "=lt." . (isset($aLookupCriteria["joinColumn"]) ? $aLookupCriteria["joinColumn"] : "id");
+            	
             }
-            $documentQuery .= "WHERE document_type_id=$iDocumentTypeID ";
-			if ( isset($this->aSortCriteria[$sSortField]["lookup"]) ) {
-            	$documentQuery .= "ORDER BY lt." . $this->aSortCriteria[$sSortField]["lookup"]["lookupField"] . " $this->sSortDirection";
+            //$documentQuery .= "WHERE document_type_id=$iDocumentTypeID ";
+            $documentQuery .= " WHERE document_type_id=$iDocumentTypeID " . (isset($aLookupCriteria["whereClause"]) ? "AND lt." . $aLookupCriteria["whereClause"] : "") . " ";           
+			if ( isset($aLookupCriteria) ) {
+            	$documentQuery .= "ORDER BY lt." . $aLookupCriteria["field"] . " $this->sSortDirection";
             } else {
             	$documentQuery .= "ORDER BY $this->sSortField $this->sSortDirection";
             }
+            
+            $default->log->debug("docTypeQuery=$documentQuery");            
                         
             // loop through resultset and populate array with document objects
             $sql->query($documentQuery);
