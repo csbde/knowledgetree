@@ -99,6 +99,7 @@ function renderCategoryResults($aResults) {
         // loop through categories and display them
         for ($i=1; $i<count($aResults["categories"]); $i++) {
             $sToRender .= "<tr bgcolor=\"" . getColour($i-1) . "\">";
+            $sToRender .= "<td>&nbsp;</td>\n"; // for the checkboxes
 
             // category name
             $sToRender .= "<td>" . displayCategoryLink($aResults["categories"][$i]) . "</td>";
@@ -167,17 +168,18 @@ function renderDocumentTypeResults($aResults) {
     if ($aResults["documentTypes"][0]["name"] == "Document Types") {
         // loop through document types and display them
         for ($i=1; $i<count($aResults["documentTypes"]); $i++) {
-            $sToRender .= "<tr bgcolor=\"" . getColour($i-1) . "\">";            
+            $sToRender .= "<tr bgcolor=\"" . getColour($i-1) . "\">\n";            
+            $sToRender .= "<td>&nbsp;</td>\n"; // for the checkboxes
             // document type name
-            $sToRender .= "<td>" . displayDocumentTypeLink($aResults["documentTypes"][$i]) . "</td>";
+            $sToRender .= "<td>" . displayDocumentTypeLink($aResults["documentTypes"][$i]) . "</td>\n";
             // blank filename
-            $sToRender .= "<td>&nbsp;</td>";
+            $sToRender .= "<td>&nbsp;</td>\n";
             // creator name
-            $sToRender .= "<td>&nbsp;</td>";
+            $sToRender .= "<td>&nbsp;</td>\n";
             // modified date
-            $sToRender .= "<td>&nbsp;</td>";
+            $sToRender .= "<td>&nbsp;</td>\n";
             // document type
-            $sToRender .= "<td>&nbsp;</td>";
+            $sToRender .= "<td>&nbsp;</td>\n";
             $sToRender .= "</tr>\n";                       
         }
     } else {
@@ -206,27 +208,27 @@ function renderFolderResults($aResults, $bTemplateBrowsing = false) {
             $oCreator = User::get($aResults["folders"][$i]->getCreatorID());
 
             // the first element of the array contains the current folder name
-            $sToRender .= "<tr bgcolor=\"" . getColour($i-1) . "\">";
+            $sToRender .= "<tr bgcolor=\"" . getColour($i-1) . "\">\n";
+            $sToRender .= "<td width=\"10\">&nbsp;</td>\n"; // for the checkboxes
             // folder name
-            $sToRender .= "<td valign=\"bottom\">" . $sFolderLink . "</td>";
+            $sToRender .= "<td valign=\"bottom\">" . $sFolderLink . "</td>\n";
             // blank filename (folder description?)
-            $sToRender .= "<td valign=\"bottom\">" . $aResults["folders"][$i]->getDescription() . "</td>";
+            $sToRender .= "<td valign=\"bottom\">" . $aResults["folders"][$i]->getDescription() . "</td>\n";
             // creator name
-            $sToRender .= "<td valign=\"bottom\">" . ($oCreator ? $oCreator->getName() : "&nbsp;") . "</td>";
+            $sToRender .= "<td valign=\"bottom\">" . ($oCreator ? $oCreator->getName() : "&nbsp;") . "</td>\n";
             // modified date (TODO: add to db)
-            $sToRender .= "<td valign=\"bottom\">&nbsp;</td>";
+            $sToRender .= "<td valign=\"bottom\">&nbsp;</td>\n";
             // document type (??: display one of the mapped document types? which one?)
-            $sToRender .= "<td valign=\"bottom\">&nbsp;</td>";
+            $sToRender .= "<td valign=\"bottom\">&nbsp;</td>\n";
             $sToRender .= "</tr>\n";
         }
     } else {
         $sToRender .= "<tr><td colspan=\"5\">" . _("This folder contains no sub folders") . "</td></tr>";
     }
 
-    $sToRender .= "<tr><td>" . renderDocumentList($aResults, _("This folder contains no documents"),
+    $sToRender .= renderDocumentList($aResults, _("This folder contains no documents"),
         _("You don't have access to the documents in this folder"),
-        false, $bTemplateBrowsing) .
-        "</td></tr>\n";
+        false, $bTemplateBrowsing) . "\n";
 
     return $sToRender;
 }
@@ -248,7 +250,8 @@ function renderSortHeadings($sSortBy, $sSortDirection) {
     // need list of display criteria and sort name
     $aSortCriteria = $oBrowser->getSortCriteria();                                                                     
     
-    $sToRender .= "<tr bgcolor=\"$sTDBGColour\">";
+    $sToRender .= "<tr bgcolor=\"$sTDBGColour\">\n";
+    $sToRender .= "<td width=\"10\">&nbsp;</td>\n"; // For the checkboxes
     while (list($key, $value) = each ($aSortCriteria)) {        
         $sCurrentSortDirection = "asc";
         $displayText = $value["display"];
@@ -268,7 +271,7 @@ function renderSortHeadings($sSortBy, $sSortDirection) {
                 $queryString = "fDocumentTypeID=$fDocumentTypeID";            
                 break;
         }        
-        $sToRender .= "<td>" . generateLink($_SERVER["PHP_SELF"], "fBrowseType=$fBrowseType&$queryString&fSortBy=$key&fSortDirection=$sCurrentSortDirection", $displayText) . "</td>";                                    
+        $sToRender .= "<td>" . generateLink($_SERVER["PHP_SELF"], "fBrowseType=$fBrowseType&$queryString&fSortBy=$key&fSortDirection=$sCurrentSortDirection", $displayText) . "</td>\n";                                    
     }
 
     $sToRender .= "</tr>\n";
@@ -292,11 +295,11 @@ function renderDocumentList($aResults, $sNoDocumentsMessage, $sNoPermissionMessa
         for ($i=0; $i<count($aResults["documents"]); $i++) {
             // in order for candy striping to work we need to take the number of folders
             // into account when alternating
-            $sToRender .= "<tr bgcolor=\"" . getColour($i+$iFolderCount) . "\" width=\"100%\"><td valign=\"bottom\">" .
-                "<input type=\"checkbox\" name=\"fDocumentIDs[]\" value=\"" . $aResults["documents"][$i]->getID() . "\"/>" .
-                          ($bTemplateBrowsing ? displayDocumentLinkForTemplateBrowsing($aResults["documents"][$i], $bDisplayFullPath) :
+            $sToRender .= "<tr bgcolor=\"" . getColour($i+$iFolderCount) . "\" width=\"100%\">\n";
+            $sToRender .= "<td valign=\"bottom\" width=\"10\">" .
+                "<input type=\"checkbox\" name=\"fDocumentIDs[]\" value=\"" . $aResults["documents"][$i]->getID() . "\"/></td>\n";
+            $sToRender .= "<td>" . ($bTemplateBrowsing ? displayDocumentLinkForTemplateBrowsing($aResults["documents"][$i], $bDisplayFullPath) :
                                                   displayDocumentLink($aResults["documents"][$i], $bDisplayFullPath)) . "</td>";
-
             // #3425 the title is now the filename, and the description is the title
             $sToRender .= "<td valign=\"bottom\">" . $aResults["documents"][$i]->getName() . "</td>";
             $oCreator = User::get($aResults["documents"][$i]->getCreatorID());
@@ -326,9 +329,9 @@ function renderDocumentList($aResults, $sNoDocumentsMessage, $sNoPermissionMessa
 
 
     } else if ($aResults["accessDenied"]) {
-        $sToRender .= "<tr><td>$sNoPermissionMessage</td></tr>";
+        $sToRender .= "<tr><td colspan=\"5\">$sNoPermissionMessage</td></tr>";
     } else {
-        $sToRender .= "<tr><td>$sNoDocumentsMessage</td></tr>";
+        $sToRender .= "<tr><td colspan=\"5\">$sNoDocumentsMessage</td></tr>";
     }
     return $sToRender;
 }
@@ -401,7 +404,7 @@ function renderPage($aResults, $sBrowseType, $sSortBy, $sSortDirection, $bTempla
     // display folders|documents
     $sToRender .= "<table border=\"0\" width=\"100%\">\n";
     $sToRender .= renderSortHeadings($sSortBy, $sSortDirection);    
-    $sToRender .= "<tr><td>\n";
+    // $sToRender .= "<tr><td>\n";
     switch ($sBrowseType) {
         case "folder":
             $sToRender .= renderFolderResults($aResults, $bTemplateBrowsing);
@@ -413,7 +416,7 @@ function renderPage($aResults, $sBrowseType, $sSortBy, $sSortDirection, $bTempla
             $sToRender .= renderDocumentTypeResults($aResults);
             break;
     }
-    $sToRender .= "</tr></td>\n";
+    // $sToRender .= "</tr></td>\n";
     $sToRender .= "\t</table>";
 
     return $sToRender;
