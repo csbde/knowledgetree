@@ -109,15 +109,22 @@ if (checkSession()) {
 				require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 				$oPatternCustom = & new PatternCustom();
 
-				$oDocument= Document::get($fDocumentID);
-				// check that there is no filename collision in the destination directory				
-				$sNewDocumentFileSystemPath = Folder::getFolderPath($fFolderID) . $oDocument->getFileName();
-				if (!file_exists($sNewDocumentFileSystemPath)) {
-					// display confirmation page
-					$oPatternCustom->setHtml(getConfirmationPage($fFolderID, $fDocumentID));
+				$oDocument = Document::get($fDocumentID);
+				
+				// check if the selected folder has the same document type as the document we're moving
+				if (Folder::folderIsLinkedToDocType($fFolderID, $oDocument->getDocumentTypeID())) {
+					// check that there is no filename collision in the destination directory				
+					$sNewDocumentFileSystemPath = Folder::getFolderPath($fFolderID) . $oDocument->getFileName();
+					if (!file_exists($sNewDocumentFileSystemPath)) {
+						// display confirmation page
+						$oPatternCustom->setHtml(getConfirmationPage($fFolderID, $fDocumentID));
+					} else {
+						// filename collision
+						$oPatternCustom->setHtml(getPage($fFolderID, $fDocumentID, "This folder already contains a document of the same name.  Please choose another directory"));
+					}
 				} else {
-					// filename collision
-					$oPatternCustom->setHtml(getPage($fFolderID, $fDocumentID, "This folder already contains a document of the same name.  Please choose another directory"));
+					// the right document type isn't mapped
+					$oPatternCustom->setHtml(getPage($fFolderID, $fDocumentID, "You can't move the document to this folder because it cannot store the document type of your document.  Please choose another directory"));
 				}
 				$main->setFormAction($_SERVER["PHP_SELF"] . "?fForMove=1&fDocumentID=$fDocumentID&fFolderID=$fFolderID");				
 				$main->setCentralPayload($oPatternCustom);
