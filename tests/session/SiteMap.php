@@ -21,6 +21,7 @@ if (checkSession()) {
         echo "SiteMap::getSectionLinks(Administration) = ";
               print_r($default->siteMap->getSectionLinks("Administration"));
         echo "SiteMap::getDefaultAction(Manage Documents) = " . $default->siteMap->getDefaultAction("Manage Documents") . "<br>";
+        echo "SiteMap::getActionFromPage(/presentation/documentmanagement/browseBL.php) = " . $default->siteMap->getActionFromPage("/presentation/documentmanagement/browseBL.php") . "<br>";
         echo "</pre>";
         
 } else {
