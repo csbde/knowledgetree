@@ -58,8 +58,9 @@ if (checkSession()) {
 			$oPatternCustom = & new PatternCustom();
 			$oPatternCustom->setHtml(getPage($oDocument->getFolderID(), $fDocumentID, $fUnitID, $fUserID, $fDocumentTitle, $fTemplateDocument));			
 			$main->setCentralPayload($oPatternCustom);
+	        $main->setOnLoadJavaScript("disable(document.MainForm.fTargetDocument)");			
 			$main->setFormAction($_SERVER["PHP_SELF"] . "?fDocumentID=$fDocumentID&fForStore=1");
-			$main->setErrorMessage("An error occured whilst trying to create the dependant document");
+			$main->setErrorMessage("An error occurred whilst trying to create the dependant document");
 			$main->render(); 
 			
 		}		
@@ -70,6 +71,7 @@ if (checkSession()) {
 		
 		$oPatternCustom = & new PatternCustom();
 		$oPatternCustom->setHtml(getPage($oDocument->getFolderID(), $fDocumentID, $fUnitID, $fUserID, $fDocumentTitle, $fTemplateDocument));
+	    $main->setOnLoadJavaScript("disable(document.MainForm.fTargetDocument)");		
 		$main->setCentralPayload($oPatternCustom);
 		$main->setFormAction($_SERVER["PHP_SELF"] . "?fDocumentID=$fDocumentID&fForStore=1");
 		$main->render();			

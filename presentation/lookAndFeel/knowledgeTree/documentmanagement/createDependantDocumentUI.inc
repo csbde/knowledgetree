@@ -27,14 +27,12 @@ function getPage($iFolderID, $iDocumentID, $iUnitID, $iUserID, $sDocumentTitle, 
 
 	//had a slight problem with netscape 4.7x - it doesn't support disabled.  So I had to use
 	//javascript to set the onFocus attribute to blur 
-	$bAddNetscapeScript = false;
-	if (! (($default->phpSniff->property("browser") == "moz") && ($default->phpSniff->property("version") <= "4.79")) ) {
+	if (!$default->bNN4) {
 		//for any other browser but netscape 4.7 do this		
 		$sToRender .= "<td>Template document</td><td><input type=\"text\" DISABLED name=\"fTargetDocument\" value=\"$sTemplateDocument\" /><input type=\"button\" value=\"Browse\" onClick=\"newWindow('$default->rootUrl/control.php?action=templateBrowse','window2')\"></td>\n";
-	}else {
+	} else {
 		//for netscape 4.7 do this		
 		$sToRender .= "<td>Template document</td><td><input type=\"text\"  name=\"fTargetDocument\" onblur=\"disable(document.MainForm.fTargetDocument);\" /><input type=\"button\" value=\"Browse\" onClick=\"disable(document.MainForm.fTargetDocument);newWindow('$default->rootUrl/control.php?action=templateBrowse','window2')\"></td>\n";
-		$bAddNetscapeScript = true;
 	}		
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";	
@@ -43,7 +41,7 @@ function getPage($iFolderID, $iDocumentID, $iUnitID, $iUserID, $sDocumentTitle, 
 	$sToRender .= "</table>\n";
 	$sToRender .= "<input type=\"hidden\" name=\"fTargetDocumentID\" value=\"-1\" />\n";	
 	
-	return $sToRender . "\n\n" . getValidationJavaScript() . "\n\n" . getBrowseJavaScript() . ($bAddNetscapeScript ? getNetscapeDisableScript() : "");
+	return $sToRender . "\n\n" . getValidationJavaScript() . "\n\n" . getBrowseJavaScript();
 }
 
 function getUserDropDown($iUnitID, $iUserID) {
@@ -96,18 +94,4 @@ function getBrowseJavaScript() {
     $sToRender .= "//--></script>\n";	
     return $sToRender;
 }
-
-function getNetscapeDisableScript() {
-	$sToRender = "<script language=\"JavaScript\"><!--\n ";
-	$sToRender .= "function disable(elem) {\n";
-  	$sToRender .= "\telem.onfocus=elem.blur;\n";
-	$sToRender .= "}\n";
-	$sToRender .= "//--></script>\n\n";
-	return $sToRender;
-	
-}
-
-	
-
-
 ?>
