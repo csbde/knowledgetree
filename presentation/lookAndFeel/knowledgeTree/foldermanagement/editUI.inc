@@ -17,14 +17,14 @@ function getFolderPath($iFolderID) {
 function getFolderData($iFolderID) {
 	global $default;
 	$sQuery = "SELECT F.id, F.name AS folder_name, F.description, F.document_type_id, DTL.name AS document_type_name, F.is_public " .
-			"FROM $default->owl_folders_table AS F INNER JOIN $default->owl_document_types_table AS DTL ON F.document_type_id = DTL.ID " .
+			"FROM $default->owl_folders_table AS F LEFT OUTER JOIN $default->owl_document_types_table AS DTL ON F.document_type_id = DTL.ID " .
 			"WHERE F.id = $iFolderID";
 	
 	$aDisplayColumns = array("folder_name", "description", "document_type_name", "is_public");
-	$aDisplayColumns = array("folder_name", "description" , "document_type_id", "is_public");
+	$aStoreColumns = array("name", "description" , "document_type_id", "is_public");
 	$aColumnNames = array("Name", "Description", "Document type", "Public");
 	$aDisplayColumnTypes = array(1,1,3,2);
-	$aDatabaseColumnTypes = array(0,1,0,2);
+	$aDatabaseColumnTypes = array(1,1,0,2);
 	$aDropDownListTableNames = array(2 => "$default->owl_document_types_table");
 	
 	$oPatternEditableListFromQuery = & new PatternEditableListFromQuery($sQuery, $default->owl_folders_table, $aDisplayColumns, $aStoreColumns, $aColumnNames, $aDisplayColumnTypes, $aDatabaseColumnTypes);
@@ -67,8 +67,7 @@ function getPage($iFolderID) {
 	$sToRender .= "<td>" . wrapInTable(getFolderRouting($iFolderID)) . "</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";	
-	$sToRender .= "<td><table><tr><td><a href=\"$default->owl_root_url/control.php?action=addFolderCollaboration&fFolderID=$iFolderID\"><img src=\"$default->owl_graphics_url/widgets/add.gif\" border=\"0\" /></a></td><td>&nbsp</td></tr></table></td>\n";
-	$sToRender .= "</tr>\n";
+	$sToRender .= "<td><table><tr><td><input type=\"image\" src=\"$default->owl_graphics_url/widgets/update.gif\" border=\"0\" /></td><td><a href=\"$default->owl_root_url/control.php?action=addFolderCollaboration&fFolderID=$iFolderID\"><img src=\"$default->owl_graphics_url/widgets/add.gif\" border=\"0\" /></a></td></tr></table></td>\n";	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
 	return $sToRender;
 }
