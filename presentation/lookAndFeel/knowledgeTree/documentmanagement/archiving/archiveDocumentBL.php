@@ -1,10 +1,9 @@
 <?php
 
 require_once("../../../../../config/dmsDefaults.php");
-require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
-
 require_once("$default->fileSystemRoot/lib/archiving/DocumentArchiveSettingsFactory.inc");
-
+require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
+require_once("$default->fileSystemRoot/lib/subscriptions/SubscriptionEngine.inc");
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternMainPage.inc");
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternTableSqlQuery.inc");
@@ -39,8 +38,16 @@ if (checkSession()) {
 		    	$oDocument->setStatusID(lookupStatusID("Archived"));
 		    	
 		    	if ($oDocument->update()) {
-					// redirect to folder browse
 					$default->log->info("archiveDocumentBL.php successfully archived document id $fDocumentID");
+							    		
+                    // fire subscription alerts for the archived document
+                    $count = SubscriptionEngine::fireSubscription($fDocumentID, SubscriptionConstants::subscriptionAlertType("ArchivedDocument"),
+                             									  SubscriptionConstants::subscriptionType("DocumentSubscription"),
+                             									  array( "folderID" => $oDocument->getFolderID(),
+                             									         "modifiedDocumentName" => $oDocument->getName()));
+                    $default->log->info("archiveDocumentBL.php fired $count subscription alerts for archived document " . $oDocument->getName());
+		    		
+					// redirect to folder browse
 					redirect("$default->rootUrl/control.php?action=browse&fBrowseType=folder&fFolderID=" . $oDocument->getFolderID());
 		    	} else {
 		    		// error
