@@ -50,7 +50,7 @@ class Browser {
     	// default sort criteria
     	if (count($aNewSortCriteria) == 0) {
 	    	$aNewSortCriteria = array ( "name"       		=> array ("display" => "Title"), 	
-		 					  	 	    "filename"   		=> array ("display" => "Filename"),
+		 					  	 	    "filename"   		=> array ("display" => "Description"),
 								 	 	"creator_id" 		=> array ("display" => "Creator", 
 								 	 						      	  "lookup"  => array ("table" => "users",
 								 	 										   		  	  "field" => "name")),
