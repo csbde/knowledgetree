@@ -14,7 +14,7 @@ if (checkSession()) {
 	require_once("$default->fileSystemRoot/lib/visualpatterns/PatternListBox.inc");
 	require_once("$default->fileSystemRoot/lib/visualpatterns/PatternEditableListFromQuery.inc");
 	require_once("editDocCheckoutUI.inc");
-	require_once("$default->fileSystemRoot/lib/documentmanagement/document.inc");
+	require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
 	require_once("$default->fileSystemRoot/lib/security/permission.inc");
 	require_once("$default->fileSystemRoot/lib/links/link.inc");
 	require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
@@ -34,9 +34,8 @@ if (checkSession()) {
 			
 			if (($oDoc->getIsCheckedOut() > 0 && $fDocCheckout=="on" ) ||
 				($oDoc->getIsCheckedOut() == 0 && $fDocCheckout=="" )){
-			
-				$oPatternCustom->setErrorMessage("No changes were made to the document checkout.");
-			}else {
+				$main->setErrorMessage("No changes were made to the document checkout.");
+			} else {
 				if ($fDocCheckout=="on"){
 					$oDoc->setIsCheckedOut(1);				
 				}else {
@@ -46,7 +45,7 @@ if (checkSession()) {
 				if ($oDoc->update()){
 					$oPatternCustom->addHtml(getEditCheckoutSuccessPage());
 				} else {
-					$oPatternCustom->setErrorMessage("Error while trying to update the document checkout.");
+					$main->setErrorMessage("Error while trying to update the document checkout.");
 				}
 			}			
 		}
