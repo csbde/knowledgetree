@@ -48,7 +48,7 @@ function getGroupDisplay($iGroupID) {
 
 function getUsers($fGroupID) {
 	global $default;
-	$sQuery = 	"SELECT U.id as userID, U.name as name, U.username, " . 
+	$sQuery = 	"SELECT DISTINCT U.id as userID, U.name as name, U.username, " . 
 				"'Edit', 'Delete', 'Edit Groups' " .
 				"FROM $default->users_table U " . 
 				"INNER JOIN $default->users_groups_table UGL ON U.id = UGL.user_id " .
