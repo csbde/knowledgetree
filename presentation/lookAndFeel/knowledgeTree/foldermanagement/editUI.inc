@@ -180,7 +180,9 @@ function getFolderGroupAccess($iFolderID, $sDivName) {
             $sToRender .= '<tr><td>Inherited from: <span style="background-color: ' . $sTDBGColour . ';">';
 
             $sToRender .= displayFolderPathLink(Folder::getFolderPathAsArray($iInheritedFolderID), Folder::getFolderPathNamesAsArray($iInheritedFolderID), "$default->rootUrl/control.php?action=editFolder");
-            $sToRender .= "</span></td></tr>";
+            $sToRender .= "</span>";
+            $sToRender .= " (" . generateLink("/control.php", "action=copyFolderPermissions&fFolderID=$iFolderID&fInheritedFolderID=$iInheritedFolderID", _("Copy")) . ")";
+            $sToRender .= "</td></tr>";
         } else {
             $sToRender .= "<tr><td><a href=\"$default->rootUrl/control.php?action=addGroupFolderLink&fFolderID=$iFolderID\"><img src=\"" . KTHtml::getAddButton() . "\" border=\"0\" /></a></td></tr>";
         }
