@@ -37,6 +37,7 @@ if (checkSession()) {
 			$oPatternCustom = & new PatternCustom();
 			$oPatternCustom->setHtml(getPage($oDocument));
 			$main->setCentralPayload($oPatternCustom);
+			$main->setFormAction("$default->owl_root_url/control.php?action=modifyDocument&fDocumentID=" . $oDocument->getID());
 			$main->render();
 		} else {
 		require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");
