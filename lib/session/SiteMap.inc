@@ -3,9 +3,11 @@
 require_once("$default->owl_fs_root/lib/security/permission.inc");
 
 // define access constants
-define("SA", 0);
-define("UA", 1);
-define("A", 2);
+define("None", -1);
+define("Guest", 0);
+define("User", 1);
+define("UnitAdmin", 2);
+define("SysAdmin", 3);
 
 /**
  * $Id$
@@ -59,27 +61,6 @@ class SiteMap {
                                                                              "description" => $description, 
                                                                              "default" => true);
     }
-
-    /**
-     * Returns the section name of the supplied page
-     *
-     * @param string the page to lookup the section for
-     */
-    function getSectionName($sRequiredPage) {
-        global $default;
-        // for each section
-        foreach ($this->siteMapArray as $section => $valArr) {
-            // for each access, page array combination
-            foreach ($valArr as $requiredAccess => $pageArr) {
-                // now loop through pages until we find the right one
-                foreach ($pageArr as $action => $page) {
-                    if ($sRequiredPage == $page["page"]) {
-                        return $section;
-                    }
-                }
-            }
-        }        
-    }
     
     /**
      * Returns true if the user has the necessary rights to access
@@ -89,33 +70,31 @@ class SiteMap {
      * @return boolean true if the user has the access, else false.
      */
     function hasPermission($requiredAccess) {
-
-        switch ($requiredAccess) {
-            case A  : // everyone has access to anonymous pages
-                      return true;
-                      break;
-                      
-            case UA : // check that this user is in a group with unit admin access
-                      // or is a system adminstrator
-                      if (Permission::userIsSystemAdministrator() ||
-                          Permission::userIsUnitAdministrator()) {
-                          return true;
-                      } else {
-                          return false;
-                      }
-                      break;
-                      
-            case SA : // check that this user is a system administrator
-                      if (Permission::userIsSystemAdministrator()) {
-                          return true;
-                      } else {
-                         return false;
-                      }
-                      break;                     
+        global $default;
+        // if no access control is required
+        if ($requiredAccess == None) {
+            return true;
+        } else {
+            // if you're a system administrator, you've got access to everything
+            if (Permission::userIsSystemAdministrator()) {
+                return true;
+            } else {              
+                if (Permission::userIsUnitAdministrator()) {
+                    // if you're a unit administrator, then you have access to everything
+                    // including and less than UA
+                    return ($requiredAccess <= UnitAdmin) ?  true : false;
+                } else if (Permission::userIsGuest()) {
+                    return ($requiredAccess == Guest) ? true : false;
+                } else {
+                    // you're a "normal" unit user
+                    return ($requiredAccess <= User) ? true : false;
+                }
+            }
         }
-        // if we haven't returned by here, $requiredAccess is unknown
-        
-        // TODO: add a check in addPage/addDefaultPage
+        // shouldn't ever get here
+        $default->log->error("SiteMap::hasPermission THERE IS A WHOLE IN THE PAGE LEVEL ACCESS SECURITY MODEL!!!");
+        $default->log->error("SiteMap::hasPermission requiredAccess=$requiredAccess; userID=" . $_SESSION["userID"]);
+        // return false anyway
         return false;
     }
     
@@ -187,6 +166,26 @@ class SiteMap {
         return false;
     }
     
+    /**
+     * Returns the section name of the supplied page
+     *
+     * @param string the page to lookup the section for
+     */
+    function getSectionName($sRequiredPage) {
+        global $default;
+        // for each section
+        foreach ($this->siteMapArray as $section => $valArr) {
+            // for each access, page array combination
+            foreach ($valArr as $requiredAccess => $pageArr) {
+                // now loop through pages until we find the right one
+                foreach ($pageArr as $action => $page) {
+                    if ($sRequiredPage == $page["page"]) {
+                        return $section;
+                    }
+                }
+            }
+        }        
+    }
     
     /**
      * Returns the default action for the supplied section
