@@ -160,11 +160,11 @@ class Session {
                 }
             } else {
                 // the session doesn't exist in the db
-                $default->log->error("Session::verify sessionID=$sessionID, not in db");
+                $default->log->info("Session::verify sessionID=$sessionID, not in db");
                 $sessionStatus = false;
             }
         } else {
-            $default->log->error("Session::verify session not in db");
+            $default->log->info("Session::verify session not in db");
             // there is no session
             $sessionStatus = false;
         }
