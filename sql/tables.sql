@@ -5,7 +5,7 @@ CREATE TABLE document_text (
   document_id integer,
   document_text MEDIUMTEXT,
   FULLTEXT (document_text)
-) Type = InnoDB;
+) Type = MyISAM;
 
 
 CREATE TABLE active_sessions ( 
