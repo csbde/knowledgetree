@@ -41,7 +41,7 @@ function getCreatePage($iGroupID) {
 	$sToRender .= "<tr>\n";
 	$sToRender .= "</tr>\n";
 	
-	$sToRender .= "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/update.gif\" value=\"Update\" /></td>\n";	
+	$sToRender .= "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/update.gif\" value=\"Update\" border=\"0\"/></td>\n";	
 	$sToRender .= "</table>\n";
 		
 	
@@ -169,8 +169,24 @@ function getEditPageFail() {
 function getGroupDisplay($oGroup) {
 	global $default;
 	if (!isset($oGroup)) {
-		$oPatternListBox = & new PatternListBox($default->owl_groups_table, "name", "id", "fGroupID");
-		//$oPatternListBox->setIncludeDefaultValue(true);
+        if (Permission::userIsSystemAdministrator()) {
+            // if this is the system administrator, prepend group names with unit name
+            $oPatternListBox = & new PatternListBox($default->owl_groups_table, "name", "id", "fGroupID");
+            $oPatternListBox->setFromClause("LEFT OUTER JOIN groups_units_link GUL on ST.id=GUL.group_id " .
+                                            "LEFT OUTER JOIN units_lookup UL on GUL.unit_id=UL.id");
+            $oPatternListBox->setCompositeDisplayName("DISTINCT COALESCE(CONCAT(CONCAT(UL.name, '-'),ST.name),ST.name)");
+        } else if (Permission::userIsUnitAdministrator()) {
+            // else if this is a unit administrator, only display the groups in your unit
+            $oPatternListBox = & new PatternListBox($default->owl_groups_table, "name", "id", "fGroupID");
+            $oPatternListBox->setFromClause("INNER JOIN $default->owl_groups_units_table GUL on ST.id=GUL.group_id");
+            $oPatternListBox->setWhereClause("GUL.unit_id=" . User::getUnitID($_SESSION["userID"]));
+            
+            $oUnassignedUsersLB = & new PatternListBox($default->owl_groups_table, "name", "id", "fGroupID");
+            $oUnassignedUsersLB->setFromClause("LEFT OUTER JOIN $default->owl_groups_units_table GUL ON ST.id=GUL.group_id");
+            $oUnassignedUsersLB->setWhereClause("ISNULL(GUL.unit_id) AND ST.name <> 'Anonymous' AND ST.name <> 'System Administrators'");
+            $oPatternListBox->setAdditionalEntries($oUnassignedUsersLB->getEntries());            
+        }
+
 		$oPatternListBox->setPostBackOnChange(true);		
 		return $oPatternListBox->render();
 	} else {
@@ -206,7 +222,7 @@ function getUpdateButton($oGroup) {
 	if (!isset($oGroup)) {
 		return "Please select a group: ";
 	} else {
-		return "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/update.gif\" value=\"submit\" /></td>\n";
+		return "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/update.gif\" value=\"submit\" border=\"0\"/></td>\n";
 	}
 }
 
