@@ -2,15 +2,14 @@
 
 // main library routines and defaults
 require_once("./config/dmsDefaults.php");
-//require_once("$default->fileSystemRoot/lib/session/SiteMap.inc");
 
 /**
- * $Id$ 
- *  
+ * $Id$
+ *
  * Controller page -- controls the web application by responding to a set of
  * defined actions.  The controller performs session handling, page-level
  * authentication and forwards the request to the appropriate handling
- * page.  
+ * page.
  *
  * Licensed under the GNU GPL. For full terms see the file DOCS/COPYING.
  *
@@ -25,20 +24,20 @@ require_once("./config/dmsDefaults.php");
 
 // check the session, but don't redirect if the check fails
 if (checkSessionAndRedirect(false)) {
-	//get around the problem with search
-	if (strcmp($fForStandardSearch, "yes") == 0) {			
-			$action = "standardSearch";
-	} else if (!isset($action)) {
-    // session check succeeds, so default action should be the dashboard if no action was specified    
-		$action = "dashboard";
-	}    
-} else {	
+    //get around the problem with search
+    if (strcmp($fForStandardSearch, "yes") == 0) {
+        $action = "standardSearch";
+    } else if (!isset($action)) {
+    // session check succeeds, so default action should be the dashboard if no action was specified
+        $action = "dashboard";
+    }
+} else {
     // session check fails, so default action should be the login form if no action was specified
     if (!isset($action)) {
         $action = "loginForm";
     } elseif ($action <> "loginForm") {
-    	// we have a controller link and auth has failed, so redirect to the login page
-    	// with the controller link as the redirect
+        // we have a controller link and auth has failed, so redirect to the login page
+        // with the controller link as the redirect
         $url = generateControllerUrl("loginForm");
         $redirect = urlencode($_SERVER[PHP_SELF] . "?" . $_SERVER['QUERY_STRING']);
         if ((strlen($redirect) > 1)) {
@@ -60,7 +59,7 @@ if (strstr($_SERVER["QUERY_STRING"], "&")) {
     // update
     $action = substr($_SERVER["QUERY_STRING"], 0, strpos($_SERVER["QUERY_STRING"], "?"));
 }
-    
+
 // retrieve the page from the sitemap (checks whether this user has access to the requested page)
 $page = $default->siteMap->getPage($action, isset($_SESSION["userID"]) ? $_SESSION["userID"] : "");
 
@@ -81,7 +80,6 @@ if (!$page) {
     } else {
         $accessPage = $page;
     }
-    
     $_SESSION["pageAccess"][$accessPage] = true;
     // if we have a querystring add it on
     if (strlen($queryString) > 0) {
@@ -90,4 +88,5 @@ if (!$page) {
     }
     redirect($page);
 }
+
 ?>
