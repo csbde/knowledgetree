@@ -8,59 +8,38 @@
 *
 */
 
-	require_once("../../../../../config/dmsDefaults.php");
+require_once("../../../../../config/dmsDefaults.php");
+require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
+require_once("$default->fileSystemRoot/lib/users/User.inc");
+require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
+require_once("$default->fileSystemRoot/lib/visualpatterns/PatternTableSqlQuery.inc");
+require_once("$default->fileSystemRoot/presentation/Html.inc");
+	
+if (checkSession()) {
 
-if (checkSession()) {    
-    require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCreate.inc");    
-    //require_once("listOrgUI.inc"); 
-	require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
-    require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
-    require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
-    require_once("$default->fileSystemRoot/lib/users/User.inc");    
-    require_once("$default->fileSystemRoot/lib/security/permission.inc");
-    require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
-    require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");    
-    require_once("$default->fileSystemRoot/lib/visualpatterns/PatternTableSqlQuery.inc");    
-    require_once("$default->fileSystemRoot/lib/visualpatterns/PatternBrowsableSearchResults.inc");
-    require_once("$default->fileSystemRoot/lib/visualpatterns/PatternListBox.inc");    
-    require_once("$default->fileSystemRoot/lib/discussions/DiscussionThread.inc");  
-    require_once("$default->fileSystemRoot/lib/discussions/DiscussionComment.inc");   
-    require_once("$default->fileSystemRoot/presentation/Html.inc");
-	
-	
-    $oPatternCustom = & new PatternCustom();
+	$oPatternCustom = & new PatternCustom();
+	$aDocuments = Document::getList("is_checked_out = 1");
+	$sToRender .= renderHeading("Checked out Documents");	
+	$sToRender .= "<table><tr><th width=\"80\">Document</th><th>Checked Out By</th><th>&nbsp;</th>";
+	if (count($aDocuments) > 0) {
+		for ($i=0; $i<count($aDocuments); $i++) {
+			if ($aDocuments[$i]) {
+				$oUser = User::get($aDocuments[$i]->getCheckedOutUserID());
+				$sToRender .= "<tr><td>" . $aDocuments[$i]->getDisplayPath() . "</td>";
+				$sToRender .= "<td>" . $oUser->getName() . "</td>";
+				$sToRender .= "<td>" . generateControllerLink("editDocCheckout", "fDocumentID=" . $aDocuments[$i]->getID(), "Check In") . "</td>"; 
+			}
+		}
+	}  else {
+		$sToRender .= "<tr><td colspan=\"3\">There are no checked out document</td></tr>";
+	}
+	$sToRender .= "</table>";
 
-if(checkSession()) {	
-
-		$oPatternCustom->addHtml(renderHeading("Checked out Documents"));		// Create the Heading				
-		 
-		
-		$main->setFormAction($_SERVER['PHP_SELF']);
-				
-		$sQuery = "SELECT documents.id as DocId, documents.name as Name, documents.filename as File, " .
-				"CASE  WHEN users.name Is Null THEN '<font color=blue>* No one</font>' ELSE  users.name END AS UserName, " .
-				"'Check In' " .
-				"FROM documents left join users " .
-				"on documents.checked_out_user_id = users.id " .
-				"WHERE documents.is_checked_out = 1";
-
-	    $aColumns = array("Name", "File", "UserName", "Check In");
-	    $aColumnNames = array("Name", "File", "Checked Out by", "");
-	    $aColumnTypes = array(1,1,1,3);
-	    $aDBColumnArray = array("DocId");
-	    $aQueryStringVariableNames = array("fDocID");
-	    	    
-	    $aHyperLinkURL = array(	3=> "$default->rootUrl/control.php?action=editDocCheckout");
-	    	    
-	    $oSearchResults = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnNames, "100%", $aHyperLinkURL,$aDBColumnArray,$aQueryStringVariableNames);
-		$oSearchResults->setDisplayColumnHeadings(true);
-		$oSearchResults->setEmptyTableMessage("No checked out documents");
-	
-	    $oPatternCustom->addHtml($oSearchResults->render());	    
-	
-	} // end of if checksession
-	
+    $oPatternCustom->setHtml($sToRender);
+   	    
+	require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");    	    
 	$main->setCentralPayload($oPatternCustom);
+	$main->setFormAction($_SERVER['PHP_SELF']);	
     $main->render();
 }
 ?>
