@@ -71,33 +71,33 @@ text-decoration: none;
 
 
 A {
-font-size : 10pt;
+font-size : 8pt;
 font-family : Verdana, sans-serif;
-font-style : normal;
+text-decoration: none;
 color : #000000;
 }
 
 
 A:Visited  {
-font-size : 10pt;
+font-size : 8pt;
 font-family : Verdana, sans-serif;
 font-style : normal;
-color : #0000FF;
+color : #000000;
 }
 
 A:Active  {
 color : #000000;
-font-size : 10pt;
+font-size : 8pt;
 font-family : Verdana, sans-serif;
 font-style : normal;
 }
 
 A:hover {
 color : #000000;
-font-size : 10pt;
+font-size : 8pt;
 font-family : Verdana,sans-serif;
 font-style : normal;
-background-color : #FFFACD;
+text-decoration: underline;
 }
 
 TABLE {
@@ -138,13 +138,13 @@ text-decoration: none;
 
 .browseTypeSelect {
     color : #000000;
-    font-size : 10pt;
+    font-size : 8pt;
     font-family : Verdana,sans-serif;
 }
 
 .errorText {
 	color : #FF0000;
-	font-size : 10pt;
+	font-size : 8pt;
 	text-align : center;
 	font-family : Verdana,sans-serif;
 }
