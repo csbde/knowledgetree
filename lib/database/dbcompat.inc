@@ -1,11 +1,14 @@
 <?php
 
 class DBCompat {
-    function & query () {
+    function & query ($sQuery) {
         global $default;
-        $args = func_get_args();
-        $default->log->debug("Query was: " . $args[0]);
-        $this->lastResult = &call_user_func_array(array(&$default->_db, 'query'), $args);
+        $aParams = array();
+        if (is_array($sQuery)) {
+            $aParams = $sQuery[1];
+            $sQuery = $sQuery[0];
+        }
+        $this->lastResult =& $default->_db->query($sQuery, $aParams);
         $this->lastInsertID = mysql_insert_id($default->_db->connection);
         $this->lastResult->autofree = true;
         return $this->lastResult;
@@ -13,6 +16,11 @@ class DBCompat {
 
     function num_rows () {
         global $default;
+        if (PEAR::isError($this->lastResult)) {
+            // var_dump($this->lastResult);
+            $default->log->warn("DBCompat::numrows: lastResult was an error");
+            return $this->lastResult;
+        }
         $default->log->debug("Number of rows was: " . $this->lastResult->numRows());
         return $this->lastResult->numRows();
     }
