@@ -4,7 +4,7 @@
 # todo: return code checking, mail status
 
 # define paths
-BACKUP_USER=guest
+BACKUP_USER=jambackup
 BACKUP_SERVER="//$BACKUP_USER@Jam001/JAM Backups"
 LOCAL_MOUNT=/tmp/backup
 BACKUP_FROM=/usr/local/cvsroot
@@ -18,7 +18,7 @@ rm -rf $LOCAL_MOUNT
 mkdir -p $LOCAL_MOUNT
 
 # mount the server
-mount_smbfs "$BACKUP_SERVER" $LOCAL_MOUNT
+mount_smbfs -N "$BACKUP_SERVER" $LOCAL_MOUNT
 
 # tar onto the local mount point
 archive=mrc_dms_`date +%Y-%m-%d`.tgz
@@ -30,13 +30,8 @@ cp /tmp/$archive "$BACKUP_TO"
 # check that its there
 ls -al "$BACKUP_TO"
 
-# sleep for a bit
-sleep 6 
-
-pwd
-ps auxww | grep -i smb
-
-# disconnect
+# disconnect twice (for safety and because the first try consistently doesn't work)
+umount $LOCAL_MOUNT
 umount $LOCAL_MOUNT
 
 exit
