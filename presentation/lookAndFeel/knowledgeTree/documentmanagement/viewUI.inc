@@ -338,7 +338,7 @@ function displayActionButtons($oDocument, $bEdit) {
     global $default;
     
     // TODO: change to view
-    $sToRender .= "<tr><td align=\"left\"><a onClick=\"alert('This will download a copy of the document and is not the same as Checking Out a document.  Changes to this downloaded file will not be managed in the DMS.'); return true;\" href=\"" . generateControllerLink("downloadDocument", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/docactions/download.gif\" border=\"0\" /></a></td></tr>\n";    
+    $sToRender .= "<tr><td align=\"left\"><a onClick=\"alert('This will download a copy of the document and is not the same as Checking Out a document.  Changes to this downloaded file will not be managed in the DMS.'); return true;\" href=\"" . generateControllerLink("downloadDocument", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/docactions/view.gif\" border=\"0\" /></a></td></tr>\n";    
     if ($bEdit) {
          // display the check in button if the document is checked out and you checked the document out
         if ($oDocument->getIsCheckedOut() && ($oDocument->getCheckedOutUserID() == $_SESSION["userID"])) {
