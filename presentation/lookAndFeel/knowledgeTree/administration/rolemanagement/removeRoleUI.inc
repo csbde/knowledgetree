@@ -28,6 +28,9 @@ function getDeletePage($iRoleID) {
     $sToRender .= "<tr>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "<tr>\n";
+    $sToRender .=  getActiveCheckBox($oRole) . "</td>\n";
+    $sToRender .= "</tr>\n";
+    $sToRender .= "<tr>\n";
     $sToRender .=  getReadableCheckBox($oRole) . "</td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "<tr>\n";
@@ -58,7 +61,7 @@ function getDeleteSuccessPage() {
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "<td align = right><a href=\"$default->rootUrl/control.php?action=removeRole\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
+    $sToRender .= "<td align = right><a href=\"$default->rootUrl/control.php?action=listRole\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "</table>\n";
 
@@ -81,7 +84,7 @@ function getDeleteFailPage() {
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "</tr>\n";
-    $sToRender .= "<tr><td align = right><a href=\"$default->rootUrl/control.php?action=removeRole\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td></tr>\n";
+    $sToRender .= "<tr><td align = right><a href=\"$default->rootUrl/control.php?action=listRole\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td></tr>\n";
     $sToRender .= "</table>\n";
 
     return $sToRender;
@@ -100,6 +103,15 @@ function getRoleDisplay($oRole) {
                "<b>" . $oRole->getName() . "</b>";
     }
 
+}
+
+// show check box
+function getActiveCheckBox($oRole) {
+    if (!isset($oRole)) {
+        return "";
+    } else {
+        return "<td>Active: </td><td><input disabled=\"true\" type=\"checkbox\" name=\"fActive\" " . ($oRole->getActive() ? "CHECKED " : " ") . " />";
+    }
 }
 
 // show check box
@@ -126,7 +138,7 @@ function getDeleteButton($oRole) {
     global $default;
     if (isset($oRole)) {
         return "<td></td><td><td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/delete.gif\" value=\"submit\" border=\"0\"/></td>\n".
-               "<td align = right><a href=\"$default->rootUrl/control.php?action=removeRole\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" /></a></td>\n";
+               "<td align = right><a href=\"$default->rootUrl/control.php?action=listRole\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" /></a></td>\n";
     }
 }
 ?>

@@ -13,16 +13,16 @@ function getCreatePage($iRoleID) {
 	global $default;
 	
 	$sQuery =  "SELECT * FROM $default->owl_roles_table WHERE id = $iRoleID";
-	$aDisplayColumns = array("name","can_read","can_write");
-	$aStoreColumns = array("name","can_read","can_write");
-	$aColumnNames = array("Name:","Readable:", "Writable:");
-	$aDisplayColumnTypes = array(1,2,2);
-	$aDatabaseColumnTypes = array(1,2,2);
+	$aDisplayColumns = array("name","active","can_read","can_write");
+	$aStoreColumns = array("name","active", "can_read","can_write");
+	$aColumnNames = array("Name:","Active:", "Readable:", "Writable:");
+	$aDisplayColumnTypes = array(1,2,2,2);
+	$aDatabaseColumnTypes = array(1,2,2,2);
 	
 	// get list of role properties...name...text field...is_Sys_admin and is_unit_admin..checkboxes
 	$oPattern = & new PatternEditableListFromQuery($sQuery, $default->owl_roles_table, $aDisplayColumns, $aStoreColumns, $aColumnNames, $aDisplayColumnTypes, $aDatabaseColumnTypes) ;
 	$oPattern->setUniqueName("roleEdit");
-	$oPattern->setColumnsRequired(array(1,0,0));
+	$oPattern->setColumnsRequired(array(1,0,0,0));
 		
     $sToRender .= renderHeading("Edit Role");
 	$sToRender .= "<table>\n";
@@ -83,6 +83,9 @@ function getEditPage($iRoleID) {
 	if (isset($iRoleID)) {
 		$sToRender .= "</tr>\n";
 		$sToRender .= "<tr>\n";
+		$sToRender .= "<td>Active: </td><td>" . getActiveCheckBox($oRole) . "</td>\n";
+		$sToRender .= "</tr>\n";
+		$sToRender .= "<tr>\n";
 		$sToRender .= "<td>Readable: </td><td>" . getReadableCheckBox($oRole) . "</td>\n";
 		$sToRender .= "</tr>\n";
 		$sToRender .= "<tr>\n";
@@ -122,7 +125,7 @@ function getEditPageSuccess() {
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=editRole\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
+	$sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=listRole\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
 	
@@ -144,7 +147,7 @@ function getEditPageFail() {
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=editRole\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
+	$sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=listRole\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
 	
@@ -165,6 +168,15 @@ function getRoleDisplay($oRole) {
 		"<input size = \"40\" type=\"text\" name=\"fRoleName\" value=\"" . $oRole->getName() . "\">";
 	}
 	
+}
+
+// returns the checkbox ticked or unticked
+function getActiveCheckBox($oRole) {
+	if (!isset($oRole)) {
+		return "";
+	} else {
+		return "<input type=\"checkbox\" name=\"fActive\" " . ($oRole->getActive() ? "CHECKED " : " ") . " />";
+	}
 }
 
 
@@ -203,7 +215,7 @@ function getCancelButton($oRole) {
 	if (!isset($oRole)) {
 		//return "<td align = right><a href=\"$default->rootUrl/control.php?action=groupManagement\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" value=\"cancel\" /></a></td>\n";
 	} else {
-		return "<td align = right><a href=\"$default->rootUrl/control.php?action=editRole\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" /></a></td>\n";
+		return "<td align = right><a href=\"$default->rootUrl/control.php?action=listRole\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" /></a></td>\n";
 	}
 }
 ?>
