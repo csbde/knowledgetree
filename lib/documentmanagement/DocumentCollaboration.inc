@@ -269,7 +269,7 @@ class DocumentCollaboration {
 				//send an email only if the user is to be notified via email
 				if ($oUserToNotify->getEmailNotification()) {
 					$oCurrentUser = User::get($_SESSION["userID"]);					
-	                $sBody = $oUserToNotify->getUserName() . ", the document, '" . generateLink("/presentation/lookAndFeel/knowledgeTree/documentmanagement/viewBL.php", "fDocumentID=" . $this->iId, $oDocument->getName()) . "' " .                    
+	                $sBody = $oUserToNotify->getUserName() . ", the document, '" . generateLink("/presentation/lookAndFeel/knowledgeTree/documentmanagement/viewBL.php", "fDocumentID=" . $oDocument->getID(), $oDocument->getName()) . "' " .                    
 												"has been rejected by " . $oUserToNotify->getName() . " in the document collaboration process.  The collaboration process has been rolled back to the previous step. " .
 												"Your role is no longer active and and any acceptances you may have made have been voided. " . 
 												"The comment entered by " . $oUserToNotify->getName() . " was: $sComment";
@@ -325,8 +325,8 @@ class DocumentCollaboration {
 						$oUser = User::get($oFolderUserRole->getUserID());
 						$oCurrentUser = User::get($_SESSION["userID"]);
 					
-                        $sBody = $oUser->getUserName() . ", the document, '" . generateLink("/presentation/lookAndFeel/knowledgeTree/documentmanagement/viewBL.php", "fDocumentID=" . $this->iId, $oDocument->getName()) . "' " .                        
-											"has been rejected by " . $oCurrentUser->getName() . " in the document collaboration process.  Please re-perform you step in the collaboration process." .
+                        $sBody = $oUser->getUserName() . ", the document, '" . generateLink("/presentation/lookAndFeel/knowledgeTree/documentmanagement/viewBL.php", "fDocumentID=$iDocumentID", $oDocument->getName()) . "' " .                        
+											"has been rejected by " . $oCurrentUser->getName() . " in the document collaboration process.  Please re-perform your step in the collaboration process." .
 											"The comment entered by " . $oCurrentUser->getName() . " was: $sComment";
 			
 						$oEmail = & new Email();
