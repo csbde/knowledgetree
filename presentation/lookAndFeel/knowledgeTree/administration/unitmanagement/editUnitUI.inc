@@ -14,14 +14,11 @@ function getEditPage($iUnitID) {
 	$oUnit = null;
 	if (isset($iUnitID)) {
 		$oUnit = Unit::get($iUnitID);
-		
-	}
+    }
 	
-	$sToRender .= "<br></br>\n";
-	$sToRender .= "<b>Edit Unit Properties:</b>\n";
+	$sToRender .= "<table width=\"600\">" . renderHeading("Edit Unit") . "</table>";
 	$sToRender .= "<table>\n";
-	$sToRender .= "<br></br>\n";
-	$sToRender .= "<tr></tr>\n";
+	$sToRender .= "<tr><td>Please select a unit:</td></tr>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>Unit Name: </td><td>" . getUnitDisplay($oUnit) . "</td>\n";
 	$sToRender .= "</tr>\n";
@@ -30,10 +27,8 @@ function getEditPage($iUnitID) {
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "</tr>\n";
-	$sToRender .= "<td></td>" . getUpdateButton($oUnit);	
-	$sToRender .= getCancelButton($oUnit);	
+	$sToRender .= "<tr><td colspan=\"2\" align = right>" . getUpdateButton($oUnit) . getCancelButton($oUnit) . "</td></tr>";
 	$sToRender .= "</table>\n";
-	
 	
 	return $sToRender;
 }
@@ -42,10 +37,9 @@ function getEditPage($iUnitID) {
 function getEditPageSuccess() {	
 	global $default;
 			
-	$sToRender .= "<br></br>\n";
-	$sToRender .= "<b>Success!</b>\n";
+	$sToRender .= "<table width=\"600\">" . renderHeading("Edit Unit") . "</table>";
 	$sToRender .= "<table>\n";
-	$sToRender .= "<br></br>\n";
+	$sToRender .= "<tr><td><b>Success!</b></td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr><td>The Unit was successfully modified</td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
@@ -64,10 +58,9 @@ function getEditPageSuccess() {
 function getEditPageFail() {	
 	global $default;
 			
-	$sToRender .= "<br></br>\n";
-	$sToRender .= "<b>FAILED!</b>\n";
+	$sToRender .= "<table width=\"600\">" . renderHeading("Edit Unit") . "</table>";
 	$sToRender .= "<table>\n";
-	$sToRender .= "<br></br>\n";
+	$sToRender .= "<tr><td><b>FAILED!</b></td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr><td>Unit modification Failed!</td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
@@ -76,8 +69,6 @@ function getEditPageFail() {
 	$sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=editUnit\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
-	
-	
 	return $sToRender;
 }
 
@@ -87,24 +78,20 @@ function getUnitDisplay($oUnit) {
 	global $default;
 	if (!isset($oUnit)) {
 		$oPatternListBox = & new PatternListBox($default->owl_units_table, "name", "id", "fUnitID");
-		//$oPatternListBox->setIncludeDefaultValue(true);
 		$oPatternListBox->setPostBackOnChange(true);		
 		return $oPatternListBox->render();
 	} else {
 		return "<input type=\"hidden\" name=\"fUnitID\" value=\"" . $oUnit->iId . "\">\n" .
 		"<input size = \"40\" type=\"text\" name=\"fUnitName\" value=\"" . $oUnit->getName() . "\">";
 	}
-	
 }
 
 
 // gets the updatebutton when a unit is selected
 function getUpdateButton($oUnit) {
 	global $default;
-	if (!isset($oUnit)) {
-		return "Please select a unit: ";
-	} else {
-		return "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/update.gif\" value=\"submit\" border=\"0\"/></td>\n";
+	if (isset($oUnit)) {
+		return "<input type=\"image\" src =\"$default->graphicsUrl/widgets/update.gif\" value=\"submit\" border=\"0\"/>\n";
 	}
 }
 
@@ -112,9 +99,9 @@ function getUpdateButton($oUnit) {
 function getCancelButton($oUnit) {
 	global $default;
 	if (!isset($oUnit)) {
-		//return "<td align = right><a href=\"$default->rootUrl/control.php?action=groupManagement\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" value=\"cancel\" /></a></td>\n";
+		return "<a href=\"$default->rootUrl/control.php?action=unitManagement\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" value=\"cancel\" border=\"0\"/></a>\n";
 	} else {
-		return "<td align = right><a href=\"$default->rootUrl/control.php?action=editUnit\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" /></a></td>\n";
+		return "<a href=\"$default->rootUrl/control.php?action=editUnit\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\" /></a>\n";
 	}
 }
 ?>
