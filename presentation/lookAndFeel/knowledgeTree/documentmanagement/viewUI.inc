@@ -15,7 +15,7 @@
 
 function renderDocumentPath($oDocument) {
     global $default;
-    $sDocumentPath = displayFolderPathLink(Folder::getFolderPathAsArray($oDocument->getFolderID()), "$default->owl_root_url/control.php?action=browse") . " > " . $oDocument->getName();
+    $sDocumentPath = displayFolderPathLink(Folder::getFolderPathAsArray($oDocument->getFolderID()), Folder::getFolderPathNamesAsArray($oDocument->getFolderID()), "$default->owl_root_url/control.php?action=browse") . " > " . $oDocument->getName();
     return "<table border=1 width = 100%><tr><td>$sDocumentPath</td></tr></table>\n";
 }
 
@@ -69,6 +69,7 @@ function renderTypeSpecificMetaData($oDocument) {
     $aColumnTypes = array(1,1);
     $oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaders, "90%");
     $oPatternTableSqlQuery->setTableHeading("Type Specific Meta Data");
+	$oPatternTableSqlQuery->setEmptyTableMessage("No Type Specific Meta Data");
     return $oPatternTableSqlQuery->render();
 }
 
@@ -145,7 +146,7 @@ function getEditPage($oDocument) {
     //$sToRender .= "\t\t<td>" . renderDocumentRouting($oDocument) . "</td>\n";
     $sToRender .= "\t</tr>";
     $sToRender .= "\t<tr>\n";
-    $sToRender .= "\t\t<td><a href=" . $_SERVER['PHP_SELF'] . "?fDocumentID=" . $oDocument->getID() . "&fBeginCollaboration=1><img src=\"$default->owl_graphics_url/widgets/approve.gif\" border=\"0\"/></a></td>\n";
+    $sToRender .= "\t\t<td><a href=" . $_SERVER['PHP_SELF'] . "?fDocumentID=" . $oDocument->getID() . "&fBeginCollaboration=1><img src=\"$default->owl_graphics_url/widgets/begin.gif\" border=\"0\"/></a></td>\n";
     //$sToRender .= "\t\t<td>" . renderDocumentRouting($oDocument) . "</td>\n";
     $sToRender .= "\t</tr>";
     $sToRender .= "\t</table>";
