@@ -10,6 +10,11 @@
 * the $sLinkPageURL to specify the page URL to link to and $sLinkImageURL to specify
 * the image to display in the case of either a $iLinkType of 2 (image only) or 3 (image + text)
 *
+* If you wish to include images, there are two ways to do this
+*		o set the image url - this means that all rows will use the same image
+*		o set $bUseImageURLFromQuery to true - this will look for a column entitled image_url in
+*		  the sql result set, allowing you to specify different images for each entry
+*
 * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
 * @date 7 January 2003
 *
@@ -40,10 +45,12 @@ class PatternTableSqlQuery {
 	var $sTableHeading;
 	/** specify an image at the start of each row in the table */
 	var $sImageURL;
+	/** specify whether to use $sImageURL or to get the image url from the sql result set */
+	var $bUseImageURLFromQuery = false;
 	/** message that will be displayed if the table is empty*/
 	var $sEmptyTableMessage;
 				
-	function PatternTableSqlQuery($sTmpQuery, $aTmpColumns, $aTmpColumnTypes, $aTmpColumnHeaderNames, $sTmpWidth, $sTmpLinkURL = null, $sTmpDBQueryStringColumn, $bTmpDisplayColumnHeadings = false) {
+	function PatternTableSqlQuery($sTmpQuery, $aTmpColumns, $aTmpColumnTypes, $aTmpColumnHeaderNames, $sTmpWidth, $sTmpLinkURL = null, $sTmpDBQueryStringColumn = null, $bTmpDisplayColumnHeadings = false) {
 		$this->sQuery = $sTmpQuery;
 		$this->aColumns = & $aTmpColumns;
 		$this->aColumnTypes = $aTmpColumnTypes;
@@ -64,6 +71,10 @@ class PatternTableSqlQuery {
 	
 	function setImageURL($sNewValue) {
 		$this->sImageURL = $sNewValue;
+	}
+	
+	function setUseImageURLFromQuery($bNewValue) {
+		$this->bUseImageURLFromQuery = $bNewValue;
 	}
 	
 	/**
