@@ -36,7 +36,6 @@ function constructQuery($aKeys, $aSuppliedValues = null) {
 			
 			$iPrimaryKey = $_POST[$aKeys[++$i]];		
 			$sTableName = $_POST[$aKeys[++$i]];
-			$default->log->info("primaryKey=$iPrimaryKey; tableName=$sTableName");
 			
 			$i++;		
 			$iColumnCount = 0;
@@ -75,11 +74,10 @@ function constructQuery($aKeys, $aSuppliedValues = null) {
 						break;
 				}
 				
-				//$aValues[$iColumnCount] = $_POST[$aKeys[$i]];
 				$sRowStart = $aKeys[++$i];			
 				$iColumnCount++;
 			}
-			$default->log->info("columns: " . arrayToString($aColumns));
+
 			if ($iPrimaryKey < 0) {
 				//perform an insert
 				$sQuery = "INSERT INTO $sTableName (";
@@ -107,7 +105,6 @@ function constructQuery($aKeys, $aSuppliedValues = null) {
 							break;
 						case 4:
 							// user supplied values
-							$default->log->info("supplied values: aColumns[j]=" . $aColumns[$j] . "suppliedValues=" . $aSuppliedValues[$aColumns[$j]]);
 						    $sQuery .= $aSuppliedValues[$aColumns[$j]] . ", ";
 						    break;
 						default:
@@ -133,7 +130,6 @@ function constructQuery($aKeys, $aSuppliedValues = null) {
 							break;
 						case 4:
 							// user supplied values
-							$default->log->info("supplied values: suppliedValues=" . $aSuppliedValues[$aColumns[count($aColumns) - 1]]);							
 						    $sQuery .= $aSuppliedValues[$aColumns[count($aColumns) - 1]] . ", ";
 						    break;							
 						default:
