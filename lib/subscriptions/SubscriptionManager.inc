@@ -1,5 +1,5 @@
 <?php
-require_once("$default->owl_fs_root/lib/subscriptions/Subscription.inc");
+require_once("$default->fileSystemRoot/lib/subscriptions/Subscription.inc");
 
 /**
  * 

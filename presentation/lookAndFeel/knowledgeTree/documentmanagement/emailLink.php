@@ -13,7 +13,7 @@
 require_once("../../../../config/dmsDefaults.php");
 
 global $default;
-require_once("$default->owl_fs_root/lib/email/Email.inc");
+require_once("$default->fileSystemRoot/lib/email/Email.inc");
 	
 	
 if(checkSession())
@@ -21,7 +21,7 @@ if(checkSession())
 
 
 // include the page template (with navbar)
-require_once("$default->owl_fs_root/presentation/webPageTemplate.inc");  	
+require_once("$default->fileSystemRoot/presentation/webPageTemplate.inc");  	
  // when email button sent..send email
 if ($submit) 
 {

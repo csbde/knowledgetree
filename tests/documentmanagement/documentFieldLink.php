@@ -11,7 +11,7 @@ require_once("../../config/dmsDefaults.php");
 */
 
 if (checkSession) {
-	require_once("$default->owl_fs_root/lib/documentmanagement/DocumentFieldLink.inc");
+	require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentFieldLink.inc");
 	
 	$oDocumentFieldLink = & new DocumentFieldLink(1, 1, "test");
 	echo "Create ? " . ($oDocumentFieldLink->create() ? "Yes" : "No") . "<br>";

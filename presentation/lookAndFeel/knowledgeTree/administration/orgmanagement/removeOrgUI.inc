@@ -58,7 +58,7 @@ $sToRender .= "<tr></tr>\n";
 $sToRender .= "<tr></tr>\n";
 $sToRender .= "<tr></tr>\n";
 $sToRender .= "<tr>\n";
-$sToRender .= "<td align = right><a href=\"$default_owl_root_url/control.php?action=removeOrg\"><img src =\"$default->owl_graphics_url/widgets/back.gif\" border = \"0\" /></a></td>\n";
+$sToRender .= "<td align = right><a href=\"$default_rootUrl/control.php?action=removeOrg\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
 $sToRender .= "</tr>\n";
 $sToRender .= "</table>\n";
 		
@@ -80,7 +80,7 @@ $sToRender .= "<tr></tr>\n";
 $sToRender .= "<tr><td>Please Ensure that ALL Units has been Removed the Organisation it belongs to</td></tr>\n";
 $sToRender .= "<tr></tr>\n";
 $sToRender .= "</tr>\n";
-$sToRender .= "<tr><td align = right><a href=\"$default_owl_root_url/control.php?action=removeOrg\"><img src =\"$default->owl_graphics_url/widgets/back.gif\" border = \"0\" /></a></td></tr>\n";
+$sToRender .= "<tr><td align = right><a href=\"$default_rootUrl/control.php?action=removeOrg\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td></tr>\n";
 $sToRender .= "</table>\n";
 		
 return $sToRender;
@@ -108,8 +108,8 @@ function getDeleteButton($oOrg) {
 	if (!isset($oOrg)) {
 		return "Please select a Org: ";
 	} else {
-		return "<td align = right><input type=\"image\" src =\"$default->owl_graphics_url/widgets/Delete.gif\" value=\"submit\" /></td>\n".
-		"<td align = right><a href=\"$default_owl_root_url/control.php?action=removeOrg\"><img src =\"$default->owl_graphics_url/widgets/Cancel.gif\" border = \"0\" /></a></td>\n";
+		return "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/Delete.gif\" value=\"submit\" /></td>\n".
+		"<td align = right><a href=\"$default_rootUrl/control.php?action=removeOrg\"><img src =\"$default->graphicsUrl/widgets/Cancel.gif\" border = \"0\" /></a></td>\n";
 	}
 }
 ?>

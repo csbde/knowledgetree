@@ -15,27 +15,27 @@ require_once("../../../../config/dmsDefaults.php");
 if (checkSession()) {
 	if (isset($fFolderID)) {
 		//if a folder has been selected
-		include_once("$default->owl_fs_root/lib/foldermanagement/Folder.inc");
-		include_once("$default->owl_fs_root/lib/security/permission.inc");
-        include_once("$default->owl_fs_root/lib/users/User.inc");
+		include_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
+		include_once("$default->fileSystemRoot/lib/security/permission.inc");
+        include_once("$default->fileSystemRoot/lib/users/User.inc");
 		if (Permission::userHasFolderWritePermission($fFolderID)) {
 			//can only create new collaboration steps if the user has folder write permission
 			if (isset($fForStore)) {
 				//attempt to create the new folder collaboration entry
-				include_once("$default->owl_fs_root/lib/foldermanagement/FolderCollaboration.inc");
+				include_once("$default->fileSystemRoot/lib/foldermanagement/FolderCollaboration.inc");
 				$oFolderCollaboration = & new FolderCollaboration($fFolderID, $fGroupID, $fSequenceNumber, $fRoleID);
 				if ($oFolderCollaboration->create()) {
 					//on successful creation, redirect to the folder edit page
-					include_once("$default->owl_fs_root/presentation/Html.inc");
-					redirect("$default->owl_root_url/control.php?action=editFolder&fFolderID=$fFolderID");
+					include_once("$default->fileSystemRoot/presentation/Html.inc");
+					redirect("$default->rootUrl/control.php?action=editFolder&fFolderID=$fFolderID");
 				} else {
 					//otherwise display an error message
-					include_once("$default->owl_fs_root/lib/visualpatterns/PatternListBox.inc");			
-					include_once("$default->owl_fs_root/lib/visualpatterns/PatternCustom.inc");
+					include_once("$default->fileSystemRoot/lib/visualpatterns/PatternListBox.inc");			
+					include_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
 					
-					include_once("$default->owl_fs_root/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
-					include_once("$default->owl_fs_root/presentation/Html.inc");
-					include_once("$default->owl_fs_root/presentation/webpageTemplate.inc");
+					include_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
+					include_once("$default->fileSystemRoot/presentation/Html.inc");
+					include_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 					include_once("addFolderCollaborationUI.inc");
 					
 					$oPatternCustom = & new PatternCustom();
@@ -49,11 +49,11 @@ if (checkSession()) {
 				}
 			} else {
 				//display the browse page
-				include_once("$default->owl_fs_root/lib/visualpatterns/PatternListBox.inc");			
-				include_once("$default->owl_fs_root/lib/visualpatterns/PatternCustom.inc");			
-				include_once("$default->owl_fs_root/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
-				include_once("$default->owl_fs_root/presentation/Html.inc");
-				include_once("$default->owl_fs_root/presentation/webpageTemplate.inc");
+				include_once("$default->fileSystemRoot/lib/visualpatterns/PatternListBox.inc");			
+				include_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");			
+				include_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
+				include_once("$default->fileSystemRoot/presentation/Html.inc");
+				include_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 				include_once("addFolderCollaborationUI.inc");
 						
 				$oPatternCustom = & new PatternCustom();
@@ -66,11 +66,11 @@ if (checkSession()) {
 		}
 	} else {
 		//display an error message
-		include_once("$default->owl_fs_root/lib/visualpatterns/PatternListBox.inc");			
-		include_once("$default->owl_fs_root/lib/visualpatterns/PatternCustom.inc");			
-		include_once("$default->owl_fs_root/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
-		include_once("$default->owl_fs_root/presentation/Html.inc");
-		include_once("$default->owl_fs_root/presentation/webpageTemplate.inc");
+		include_once("$default->fileSystemRoot/lib/visualpatterns/PatternListBox.inc");			
+		include_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");			
+		include_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
+		include_once("$default->fileSystemRoot/presentation/Html.inc");
+		include_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 		include_once("addFolderCollaborationUI.inc");
 						
 		$oPatternCustom = & new PatternCustom();

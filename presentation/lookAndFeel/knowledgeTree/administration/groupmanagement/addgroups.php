@@ -1,7 +1,7 @@
 <?php
 
 require_once("../../config/dmsDefaults.php");
-require_once("$default->owl_fs_root/lib/visualpatterns/PatternListBox.inc");
+require_once("$default->fileSystemRoot/lib/visualpatterns/PatternListBox.inc");
 
 global $default;
 	
@@ -9,7 +9,7 @@ if(checkSession())
 {
 
 // include the page template (with navbar)
-require_once("$default->owl_fs_root/presentation/webPageTemplate.inc");  	
+require_once("$default->fileSystemRoot/presentation/webPageTemplate.inc");  	
  // when email button sent..send email
 if ($submit) 
 {

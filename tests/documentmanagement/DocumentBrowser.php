@@ -1,7 +1,7 @@
 <?php
 
 require_once ("../../config/dmsDefaults.php");
-require_once ("$default->owl_fs_root/lib/documentmanagement/DocumentBrowser.inc");
+require_once ("$default->fileSystemRoot/lib/documentmanagement/DocumentBrowser.inc");
 
 /**
  * $Id$

@@ -12,8 +12,8 @@
 */
 
 require_once("../config/dmsDefaults.php");
-require_once("$default->owl_fs_root/lib/documentmanagement/Document.inc");
-require_once("$default->owl_fs_root/lib/foldermanagement/Folder.inc");
+require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
+require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
 
 
 $aFolders = Folder::getList("parent_folder_ids IS NULL");

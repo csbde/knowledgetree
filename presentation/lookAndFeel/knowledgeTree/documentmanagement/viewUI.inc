@@ -15,7 +15,7 @@
 
 function renderDocumentPath($oDocument) {
     global $default;
-    $sDocumentPath = displayFolderPathLink(Folder::getFolderPathAsArray($oDocument->getFolderID()), Folder::getFolderPathNamesAsArray($oDocument->getFolderID()), "$default->owl_root_url/control.php?action=browse") . " > " . $oDocument->getName();
+    $sDocumentPath = displayFolderPathLink(Folder::getFolderPathAsArray($oDocument->getFolderID()), Folder::getFolderPathNamesAsArray($oDocument->getFolderID()), "$default->rootUrl/control.php?action=browse") . " > " . $oDocument->getName();
     return "<table border=1 width = 100%><tr><td>$sDocumentPath</td></tr></table>\n";
 }
 
@@ -88,7 +88,7 @@ function renderEditableDocumentRouting($oDocument) {
     $aColumnTypes = array(1,1,1,1,1,3);
     $aDBColumnArray = array("id","document_id","active","done");
     $aQueryStringVariableNames = array("fFolderCollaborationID", "fDocumentID","fIsActive","fIsDone");
-    $aLinkURLs = array(5=>"$default->owl_root_url/control.php?action=modifyDocumentRouting");
+    $aLinkURLs = array(5=>"$default->rootUrl/control.php?action=modifyDocumentRouting");
 
     $oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaders, "10%", $aLinkURLs,$aDBColumnArray,$aQueryStringVariableNames);
     $oPatternTableSqlQuery->setTableHeading("Document Routing");
@@ -110,7 +110,7 @@ function renderNonEditableDocumentRouting($oDocument) {
     $aColumns = array("role_name", "name", "precedence");
     $aColumnHeaders = array("Role", "Player", "Seq");
     $aColumnTypes = array(1,1,1);
-    $oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaders, "10%", "$default->owl_root_url/control.php?action=modifyDocumentRouting",$aDBColumnArray,$aQueryStringVariableNames);
+    $oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaders, "10%", "$default->rootUrl/control.php?action=modifyDocumentRouting",$aDBColumnArray,$aQueryStringVariableNames);
     $oPatternTableSqlQuery->setTableHeading("Document Routing");
     $oPatternTableSqlQuery->setDisplayColumnHeadings(true);
     return $oPatternTableSqlQuery->render();
@@ -146,7 +146,7 @@ function getEditPage($oDocument) {
     //$sToRender .= "\t\t<td>" . renderDocumentRouting($oDocument) . "</td>\n";
     $sToRender .= "\t</tr>";
     $sToRender .= "\t<tr>\n";
-    $sToRender .= "\t\t<td><a href=" . $_SERVER['PHP_SELF'] . "?fDocumentID=" . $oDocument->getID() . "&fBeginCollaboration=1><img src=\"$default->owl_graphics_url/widgets/begin.gif\" border=\"0\"/></a></td>\n";
+    $sToRender .= "\t\t<td><a href=" . $_SERVER['PHP_SELF'] . "?fDocumentID=" . $oDocument->getID() . "&fBeginCollaboration=1><img src=\"$default->graphicsUrl/widgets/begin.gif\" border=\"0\"/></a></td>\n";
     //$sToRender .= "\t\t<td>" . renderDocumentRouting($oDocument) . "</td>\n";
     $sToRender .= "\t</tr>";
     $sToRender .= "\t</table>";
@@ -156,10 +156,10 @@ function getEditPage($oDocument) {
     $sToRender .= "<table>\n";
     $sToRender .= "<tr>\n";
     //$sToRender .= "<td><input type=\"image\" srcvalue=\"Edit\"></td>\n";
-    $sToRender .= "<td><input type=\"image\" src=\"$default->owl_graphics_url/widgets/edit.gif\" border=\"0\"></td>\n";
-    $sToRender .= "<td><a href=\"" . $_SERVER["PHP_SELF"] . "?fDocumentID=" . $oDocument->getID() . "&fForDownload=1\"><img src=\"$default->owl_graphics_url/widgets/download.gif\" border=\"0\" /></a></td>\n";
-    $sToRender .= "<td><a href=\"" . generateControllerLink("emailDocument", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->owl_graphics_url/widgets/email.gif\" border=\"0\" /></a></td>\n";    
-    $sToRender .= "<td><a href=\"" . generateControllerLink("deleteDocument", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->owl_graphics_url/widgets/delete.gif\" border=\"0\" /></a></td>\n";   
+    $sToRender .= "<td><input type=\"image\" src=\"$default->graphicsUrl/widgets/edit.gif\" border=\"0\"></td>\n";
+    $sToRender .= "<td><a href=\"" . $_SERVER["PHP_SELF"] . "?fDocumentID=" . $oDocument->getID() . "&fForDownload=1\"><img src=\"$default->graphicsUrl/widgets/download.gif\" border=\"0\" /></a></td>\n";
+    $sToRender .= "<td><a href=\"" . generateControllerLink("emailDocument", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/email.gif\" border=\"0\" /></a></td>\n";    
+    $sToRender .= "<td><a href=\"" . generateControllerLink("deleteDocument", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/delete.gif\" border=\"0\" /></a></td>\n";   
     $sToRender .= "</tr>\n";
     $sToRender .= "</table>\n";
 
@@ -198,8 +198,8 @@ function getViewPage($oDocument) {
     $sToRender .= "</table>";
     $sToRender .= "<table>\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "<td><a href=\"" . $_SERVER["PHP_SELF"] . "?fDocumentID=" . $oDocument->getID() . "&fForDownload=1\"><img src=\"$default->owl_graphics_url/widgets/download.gif\" border=\"0\" /></a></td>\n";
-    $sToRender .= "<td><a href=\"" . generateControllerLink("emailDocument", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->owl_graphics_url/widgets/email.gif\" border=\"0\" /></a></td>\n";
+    $sToRender .= "<td><a href=\"" . $_SERVER["PHP_SELF"] . "?fDocumentID=" . $oDocument->getID() . "&fForDownload=1\"><img src=\"$default->graphicsUrl/widgets/download.gif\" border=\"0\" /></a></td>\n";
+    $sToRender .= "<td><a href=\"" . generateControllerLink("emailDocument", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/email.gif\" border=\"0\" /></a></td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "</table>\n";
 

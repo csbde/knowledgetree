@@ -371,9 +371,9 @@ class Folder {
 			$sCurrentPath = Folder::getFolderPath(Folder::getParentFolderID($iFolderID)) . Folder::getFolderName($iFolderID) . "/" . $sCurrentPath;
 			return $sCurrentPath;
 		}	
-		return $default->owl_FileDir . "/" . Folder::getFolderName($iFolderID) . "/";*/
+		return $default->documentRoot . "/" . Folder::getFolderName($iFolderID) . "/";*/
 		$oFolder = Folder::get($iFolderID);
-		return $default->owl_FileDir . "/" . $oFolder->sFullPath . "/" . $oFolder->getName() . "/";
+		return $default->documentRoot . "/" . $oFolder->sFullPath . "/" . $oFolder->getName() . "/";
 	}
 
 	/**

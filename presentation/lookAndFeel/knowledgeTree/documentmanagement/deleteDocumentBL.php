@@ -10,15 +10,15 @@
 */
 
 require_once("../../../../config/dmsDefaults.php");
-require_once("$default->owl_fs_root/lib/foldermanagement/Folder.inc");
-require_once("$default->owl_fs_root/lib/users/User.inc");
-require_once("$default->owl_fs_root/lib/documentmanagement/Document.inc");
-require_once("$default->owl_fs_root/lib/documentmanagement/DocumentTransaction.inc");
-require_once("$default->owl_fs_root/lib/subscriptions/SubscriptionEngine.inc");
+require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
+require_once("$default->fileSystemRoot/lib/users/User.inc");
+require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
+require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentTransaction.inc");
+require_once("$default->fileSystemRoot/lib/subscriptions/SubscriptionEngine.inc");
 
-require_once("$default->owl_fs_root/presentation/Html.inc");
+require_once("$default->fileSystemRoot/presentation/Html.inc");
 
-require_once("$default->owl_fs_root/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
+require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
 
 require_once("deleteDocumentUI.inc");
 
@@ -45,14 +45,14 @@ if (checkSession()) {
                             
 
 							// redirect to the browse folder page							
-							redirect("$default->owl_root_url/control.php?action=browse&fFolderID=" . $oDocument->getFolderID());
+							redirect("$default->rootUrl/control.php?action=browse&fFolderID=" . $oDocument->getFolderID());
 						} else {
 							//could not delete the document from the file system
 							//reverse the document deletion
 							$oDocument->create();
 							//get rid of the document transaction
 							$oDocumentTransaction->delete();
-							require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");			
+							require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");			
 							$oPatternCustom = & new PatternCustom();							
 							$oPatternCustom->setHtml("");
 							$main->setCentralPayload($oPatternCustom);
@@ -62,7 +62,7 @@ if (checkSession()) {
 					} else {
 						//could not delete the document in the db
 						$oDocumentTransaction->delete();
-						require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");			
+						require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");			
 						$oPatternCustom = & new PatternCustom();							
 						$oPatternCustom->setHtml("");
 						$main->setCentralPayload($oPatternCustom);
@@ -71,7 +71,7 @@ if (checkSession()) {
 					}
 				} else {
 					//could not load document object
-					require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");			
+					require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");			
 					$oPatternCustom = & new PatternCustom();							
 					$oPatternCustom->setHtml("");
 					$main->setCentralPayload($oPatternCustom);
@@ -80,7 +80,7 @@ if (checkSession()) {
 				}
 			} else {
 				//get confirmation first				
-				require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");			
+				require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");			
 				$oPatternCustom = & new PatternCustom();
 				$oDocument = Document::get($fDocumentID);
 				$oPatternCustom->setHtml(getPage($fDocumentID, $oDocument->getFolderID(), $oDocument->getName()));				
@@ -89,7 +89,7 @@ if (checkSession()) {
 			}
 		} else {
 			//user does not have permission to delete the document
-			require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");			
+			require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");			
 			$oPatternCustom = & new PatternCustom();							
 			$oPatternCustom->setHtml("");
 			$main->setCentralPayload($oPatternCustom);
@@ -98,7 +98,7 @@ if (checkSession()) {
 		}
 	} else {
 		//no document selected for deletion
-		require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");			
+		require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");			
 		$oPatternCustom = & new PatternCustom();							
 		$oPatternCustom->setHtml("");
 		$main->setCentralPayload($oPatternCustom);

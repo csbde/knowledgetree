@@ -1,9 +1,9 @@
 <?php
 
-require_once("$default->owl_fs_root/presentation/Html.inc");
-require_once("$default->owl_ui_directory/foldermanagement/folderUI.inc");
-require_once("$default->owl_ui_directory/documentmanagement/documentUI.inc");
-require_once("$default->owl_ui_directory/foldermanagement/addFolderUI.inc");
+require_once("$default->fileSystemRoot/presentation/Html.inc");
+require_once("$default->uiDirectory/foldermanagement/folderUI.inc");
+require_once("$default->uiDirectory/documentmanagement/documentUI.inc");
+require_once("$default->uiDirectory/foldermanagement/addFolderUI.inc");
 
 /**
  * $Id$

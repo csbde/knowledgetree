@@ -8,35 +8,62 @@
  * Copyright (c) 1999-2002 The Owl Project Team
  * Licensed under the GNU GPL. For full terms see the file COPYING.
  */
- 
-// ldap settings
-$default->ldapServer = "192.168.1.9";
-$default->ldapRootDn = "o=Medical Research Council";
+
 // Database info
-$default->owl_db_user           = "dms";
-$default->owl_db_pass           = "djw9281js";
-$default->owl_db_host           = "localhost";
-$default->owl_db_name           = "dms";
+$default->dbUser           = "dms";
+$default->dbPass           = "djw9281js";
+$default->dbHost           = "localhost";
+$default->dbName           = "dms";
 
-// email settings
-$default->owl_email_server = "nazgul.mrc.ac.za";
-$default->owl_email_from = "archive@mrc.ac.com";
-$default->owl_email_fromname = "the knowledge tree";
+// install path
+$default->fileSystemRoot  = "/usr/local/www/owl/dms";
 
-// web server name
-$default->serverName = "archive.mrc.ac.za";
+// instantiate system settings class
+require_once("$default->fileSystemRoot/lib/database/lookup.inc");
+require_once("$default->fileSystemRoot/lib/System.inc");
+$default->system = new System();
+/*
+if ($default->system->initialised()) {
+    $aSettings = array("ldapServer", "ldapRootDn", "emailServer", "emailFrom", "emailFromName",
+                       "serverName", "fileSystemRoot", "documentRoot", "languageDirectory",
+                       "uiDirectory", "rootUrl", "graphicsUrl", "uiUrl", "useFS", "defaultLanguage");
 
-// url relative to website root
-$default->owl_root_url		= "/dms";
-// Directory where owl is located
-$default->owl_fs_root		= "/usr/local/www/owl/dms";
-// Directory where The Documents Directory is On Disc
-$default->owl_FileDir           =  "/usr/local/www/owl/dms/Documents";
-// url of graphics dir
-$default->owl_graphics_url	= $default->owl_root_url . "/graphics";
-// file creation umask
-$default->uMask = 0700;
+    
+    for ($i=0; $i<count($aSettings); $i++) {
+        $default->$aSettings[$i] = $default->system->get($aSettings[$i]);
+    }
+} else {*/
+    // TODO: redirect to system setup form
 
-require_once("$default->owl_fs_root/lib/Log.inc");
-$default->log = new Log($default->owl_fs_root . "/log.txt", DEBUG);
+    // ldap settings
+    $default->ldapServer = "192.168.1.9";
+    $default->ldapRootDn = "o=Medical Research Council";
+    
+
+    // email settings
+    $default->emailServer = "mail.jamwarehouse.com";
+    $default->emailFrom = "dms@jamwarehouse.com";
+    $default->emaiFromName = "MRC Document Management System";
+    
+    $default->serverName = "archive.mrc.ac.za";
+    
+    // directories
+    $default->documentRoot  =  "/usr/local/www/owl/dms/Documents";
+    $default->languageDirectory  = $default->fileSystemRoot . "/locale";
+    $default->uiDirectory  = $default->fileSystemRoot . "/presentation/lookAndFeel/knowledgeTree";
+    
+    // urls
+    $default->rootUrl  = "/owl";
+    $default->graphicsUrl = $default->rootUrl . "/graphics";
+    $default->uiUrl  = $default->rootUrl . "/presentation/lookAndFeel/knowledgeTree";
+    
+    // app settings
+    // TODO: in browse- scan current folder and sync db
+    $default->useFS            = true;
+    $default->defaultLanguage  = "NewEnglish";
+    // session timeout (in seconds)
+    $default->sessionTimeout = 1200;
+    // whether ssl is enabled or not
+    $default->sslEnabled = true;
+//}
 ?>

@@ -13,7 +13,7 @@ require_once("../../config/dmsDefaults.php");
 
 
 if (checkSession) {
-	require_once("$default->owl_fs_root/lib/groups/GroupFolderApprovalLink.inc");
+	require_once("$default->fileSystemRoot/lib/groups/GroupFolderApprovalLink.inc");
 	
 	$oGroupFolderApprovalLink = & new GroupFolderApprovalLink(1,2,3,4);
 	echo "Create ? " . ($oGroupFolderApprovalLink->create() ? "Yes" : "No") . "<br>";

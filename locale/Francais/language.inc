@@ -15,13 +15,13 @@
   Boston, MA 02111-1307, USA.
 
 */
-//$lang_logout            = "<IMG SRC='$default->owl_root_url/locale/$default->owl_lang/graphics/btn_logout.gif' BORDER=0>";
+//$lang_logout            = "<IMG SRC='$default->rootUrl/locale/$default->owl_lang/graphics/btn_logout.gif' BORDER=0>";
 $lang_logout            = "(Déconnexion)";
 $lang_login             = "Connexion";
 $lang_successlogout     = "Vous êtes bien déconnecté";
 $lang_loginfail         = "Erreur de connexion";
 $lang_logindisabled     = "Account has been DISABLED, contact the System Adminstrator";
-$lang_sessinuse         = "Accès refusé, ce compte est en cours d'utilisation<BR><A HREF='$default->owl_root_url/'>Connexion</A>";
+$lang_sessinuse         = "Accès refusé, ce compte est en cours d'utilisation<BR><A HREF='$default->rootUrl/'>Connexion</A>";
 $lang_invalidsess       = "Index de session invalide, connectez vous depuis la page d'accueil<BR>";
 $lang_sesstimeout       = "Votre session s'est terminée, veuillez vous reconnecter<BR>";
 
@@ -276,7 +276,7 @@ $lang_owl_def_fold_group_owner  = "Default Folder Group Owner:";
 $lang_owl_def_fold_owner        = "Default Folder Owner:";
 $lang_owl_title_other   = "OTHER SETINGS";
 $lang_owl_max_filesize  = "Maximum Upload File Size:";
-$lang_owl_owl_timeout   = "Session Timeout in Seconds:";
+$lang_owl_sessionTimeout   = "Session Timeout in Seconds:";
 $lang_owl_owl_expand    = "Default Browser View (Expand):";
 $lang_owl_version_control= "Enable Version Control Feature:";
 $lang_owl_restrict_view = "Enable Restricted View Feature:";

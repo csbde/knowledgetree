@@ -14,7 +14,7 @@ require_once("../../config/dmsDefaults.php");
 
 
 if (checkSession) {
-	require_once("$default->owl_fs_root/lib/roles/RoleFolderLink.inc");
+	require_once("$default->fileSystemRoot/lib/roles/RoleFolderLink.inc");
 	
 	$oRoleFolderLink = & new RoleFolderLink(1,1,1,getCurrentDateTime(), true);
 	echo "Create ? " . ($oRoleFolderLink->create() ? "Yes" : "No") . "<br>";

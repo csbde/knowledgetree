@@ -12,7 +12,7 @@
 
 function getFolderPath($iFolderID) {
 	global $default;
-	$sFolderPath = displayFolderPathLink(Folder::getFolderPathAsArray($iFolderID), Folder::getFolderPathNamesAsArray($iFolderID),  "$default->owl_root_url/control.php?action=browse");
+	$sFolderPath = displayFolderPathLink(Folder::getFolderPathAsArray($iFolderID), Folder::getFolderPathNamesAsArray($iFolderID),  "$default->rootUrl/control.php?action=browse");
 	return "<table border=1 width = 100%><tr><td>$sFolderPath</td></tr></table>\n";	
 }
 
@@ -28,7 +28,7 @@ function getFolderNotEmptyPage($iFolderID, $iObjectCount, $sObjectType) {
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>&nbsp</td>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td><table><tr><td><a href=\"$default->owl_root_url/control.php?action=browse&fFolderID=" . $iFolderID . "\"><img src=\"$default->owl_graphics_url/widgets/cancel.gif\" border=\"0\"></a></td></tr></table></td>";
+	$sToRender .= "<td><table><tr><td><a href=\"$default->rootUrl/control.php?action=browse&fFolderID=" . $iFolderID . "\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></a></td></tr></table></td>";
 	$sToRender .= "</tr>";
 	$sToRender .= "</table>\n";
 	return $sToRender;    
@@ -47,7 +47,7 @@ function getConfirmPage($iFolderID, $sFolderName) {
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>&nbsp</td>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td><table><tr><td><a href=\"" . $_SERVER["PHP_SELF"] . "?fFolderID=$iFolderID&fDeleteConfirmed=1\"><img src=\"$default->owl_graphics_url/widgets/delete.gif\" border=\"0\"></a></td> <td><a href=\"$default->owl_root_url/control.php?action=browse&fFolderID=" . $iFolderID . "\"><img src=\"$default->owl_graphics_url/widgets/cancel.gif\" border=\"0\"></a></td></tr></table></td>";
+	$sToRender .= "<td><table><tr><td><a href=\"" . $_SERVER["PHP_SELF"] . "?fFolderID=$iFolderID&fDeleteConfirmed=1\"><img src=\"$default->graphicsUrl/widgets/delete.gif\" border=\"0\"></a></td> <td><a href=\"$default->rootUrl/control.php?action=browse&fFolderID=" . $iFolderID . "\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></a></td></tr></table></td>";
 	$sToRender .= "</tr>";
 	$sToRender .= "</table>\n";
 	return $sToRender;

@@ -25,11 +25,11 @@ if ($loginAction == "loginForm") {
     // TODO: build login form using PatternMainPage
     print "<html>
     <head>
-    <link rel=\"stylesheet\" href=\"$default->owl_ui_url/stylesheet.php\">
+    <link rel=\"stylesheet\" href=\"$default->uiUrl/stylesheet.php\">
     </head>
     <body>
     <center>
-    <img src=\"$default->owl_root_url/locale/$default->owl_lang/graphics/$default->logo\">
+    <img src=\"$default->rootUrl/locale/$default->defaultLanguage/graphics/$default->logo\">
     <br><br>
     <table>\n
     <form action=\"login.php\" method=\"post\">
@@ -43,7 +43,7 @@ if ($loginAction == "loginForm") {
     </td></tr>
     <input type=\"hidden\" name=\"redirect\" value=\"$redirect\"/>
     <input type=\"hidden\" name=\"loginAction\" value=\"login\">\n
-    <tr align=\"right\"><td><input type=\"image\" src=\"$default->owl_graphics_url/icons/login.jpg\" border=\"0\"></td></tr>\n
+    <tr align=\"right\"><td><input type=\"image\" src=\"$default->graphicsUrl/icons/login.jpg\" border=\"0\"></td></tr>\n
     </table>
     </center>
     </body>
@@ -56,7 +56,7 @@ elseif ($loginAction == "login") {
     // if requirements are met and we have a username and password to authenticate
     if( isset($fUserName) && isset($fPassword) ) {
         // verifies the login and password of the user
-        $dbAuth = new $default->authentication_class;
+        $dbAuth = new $default->authenticationClass;
         $userDetails = $dbAuth->login($fUserName, $fPassword);
 
         switch ($userDetails["status"]) {
@@ -82,11 +82,11 @@ elseif ($loginAction == "login") {
                     $default->log->debug("login.php redirect=$redirect; querystring=$queryString");
                 }
 
-                // need to strip owl_root_url off $redirect
-                if (strlen($default->owl_root_url) > 0) {
+                // need to strip rootUrl off $redirect
+                if (strlen($default->rootUrl) > 0) {
                     $tmp = urldecode($redirect);
-                    $default->log->debug("login.php: substr($tmp, strpos($tmp, $default->owl_root_url)+strlen($default->owl_root_url), strlen($tmp))");
-                    $redirect = substr($tmp, strpos($tmp, $default->owl_root_url)+strlen($default->owl_root_url), strlen($tmp));
+                    $default->log->debug("login.php: substr($tmp, strpos($tmp, $default->rootUrl)+strlen($default->rootUrl), strlen($tmp))");
+                    $redirect = substr($tmp, strpos($tmp, $default->rootUrl)+strlen($default->rootUrl), strlen($tmp));
                     $default->log->debug("login.php: redirect=$redirect");
                 }
                 $action = $default->siteMap->getActionFromPage($redirect);

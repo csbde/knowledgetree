@@ -1,6 +1,6 @@
 <?php
 
-require_once("$default->owl_fs_root/lib/authentication/Authenticator.inc");
+require_once("$default->fileSystemRoot/lib/authentication/Authenticator.inc");
 
 /**
  * $Id$

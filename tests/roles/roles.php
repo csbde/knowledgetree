@@ -14,7 +14,7 @@ require_once("../../config/dmsDefaults.php");
 
 
 if (checkSession) {
-	require_once("$default->owl_fs_root/lib/roles/Role.inc");
+	require_once("$default->fileSystemRoot/lib/roles/Role.inc");
 	
 	$oRole = & new Role("test role",true, true);
 	echo "Create ? " . ($oRole->create() ? "Yes" : "No") . "<br>";

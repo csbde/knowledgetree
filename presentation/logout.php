@@ -19,9 +19,9 @@ require_once("../config/dmsDefaults.php");
  */
 
 // logout
-$oAuth = new $default->authentication_class;
+$oAuth = new $default->authenticationClass;
 $oAuth->logout();
 
 // redirect to root
-redirect((strlen($default->owl_root_url) > 0 ? $default->owl_root_url : "/"));
+redirect((strlen($default->rootUrl) > 0 ? $default->rootUrl : "/"));
 ?>

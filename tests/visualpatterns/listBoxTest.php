@@ -1,7 +1,7 @@
 <?php
 
 require_once("../../config/dmsDefaults.php");
-require_once("$default->owl_fs_root/lib/visualpatterns/PatternListBox.inc");
+require_once("$default->fileSystemRoot/lib/visualpatterns/PatternListBox.inc");
 
 /**
 * Unit test code from PatternListBox class in /lib/visualpatterns/PatternListBox.inc

@@ -1,11 +1,11 @@
 <?php
-require_once("$default->owl_fs_root/lib/users/User.inc");
-require_once("$default->owl_fs_root/lib/documentmanagement/Document.inc");
-require_once("$default->owl_fs_root/lib/foldermanagement/Folder.inc");
-require_once("$default->owl_fs_root/lib/subscriptions/Subscription.inc");
-require_once("$default->owl_fs_root/lib/subscriptions/AlertContent.inc");
-require_once("$default->owl_fs_root/lib/subscriptions/alert/EmailAlert.inc");
-require_once("$default->owl_fs_root/lib/subscriptions/alert/SMSAlert.inc");
+require_once("$default->fileSystemRoot/lib/users/User.inc");
+require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
+require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
+require_once("$default->fileSystemRoot/lib/subscriptions/Subscription.inc");
+require_once("$default->fileSystemRoot/lib/subscriptions/AlertContent.inc");
+require_once("$default->fileSystemRoot/lib/subscriptions/alert/EmailAlert.inc");
+require_once("$default->fileSystemRoot/lib/subscriptions/alert/SMSAlert.inc");
 
 /**
  * 

@@ -14,16 +14,16 @@
 require_once("../../../../config/dmsDefaults.php");
 
 if (checkSession()) {
-    require_once("$default->owl_fs_root/lib/visualpatterns/PatternTableSqlQuery.inc");
-    require_once("$default->owl_fs_root/lib/visualpatterns/PatternCustom.inc");
-    require_once("$default->owl_fs_root/lib/foldermanagement/Folder.inc");
-    require_once("$default->owl_fs_root/lib/documentmanagement/Document.inc");
-    require_once("$default->owl_fs_root/lib/documentmanagement/DocumentTransaction.inc");
-    require_once("$default->owl_fs_root/lib/web/WebDocument.inc");
-    require_once("$default->owl_fs_root/lib/documentmanagement/PhysicalDocumentManager.inc");
-    require_once("$default->owl_fs_root/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
-    require_once("$default->owl_fs_root/presentation/Html.inc");
-    require_once("$default->owl_fs_root/lib/subscriptions/SubscriptionEngine.inc");
+    require_once("$default->fileSystemRoot/lib/visualpatterns/PatternTableSqlQuery.inc");
+    require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
+    require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
+    require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
+    require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentTransaction.inc");
+    require_once("$default->fileSystemRoot/lib/web/WebDocument.inc");
+    require_once("$default->fileSystemRoot/lib/documentmanagement/PhysicalDocumentManager.inc");
+    require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
+    require_once("$default->fileSystemRoot/presentation/Html.inc");
+    require_once("$default->fileSystemRoot/lib/subscriptions/SubscriptionEngine.inc");
     require_once("addDocumentUI.inc");
 
     if (isset($fFolderID)) {
@@ -55,9 +55,9 @@ if (checkSession()) {
                                 $default->log->info("addDocumentBL.php fired $count subscription alerts for new document " . $oDocument->getName());
                                 
                                 //redirect to the document view page
-                                redirect("$default->owl_root_url/control.php?action=viewDocument&fDocumentID=" . $oDocument->getID());
+                                redirect("$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $oDocument->getID());
                             } else {
-                                require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");
+                                require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
                                 $oDocument->delete();
                                 $oPatternCustom = & new PatternCustom();
                                 $oPatternCustom->setHtml(getBrowseAddPage($fFolderID));
@@ -68,7 +68,7 @@ if (checkSession()) {
                                 $main->render();
                             }
                         } else {
-                            require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");
+                            require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
                             $oPatternCustom = & new PatternCustom();
                             $oPatternCustom->setHtml(getBrowseAddPage($fFolderID));
                             $main->setCentralPayload($oPatternCustom);
@@ -78,7 +78,7 @@ if (checkSession()) {
                             $main->render();
                         }
                     } else {
-                        require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");
+                        require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
                         $oPatternCustom = & new PatternCustom();
                         $oPatternCustom->setHtml(getBrowseAddPage($fFolderID));
                         $main->setCentralPayload($oPatternCustom);
@@ -88,7 +88,7 @@ if (checkSession()) {
                         $main->render();
                     }
                 } else {
-                    require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");
+                    require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
                     $oPatternCustom = & new PatternCustom();
                     $oPatternCustom->setHtml(getBrowseAddPage($fFolderID));
                     $main->setCentralPayload($oPatternCustom);
@@ -100,7 +100,7 @@ if (checkSession()) {
 
             } else {
                 //we're still just browsing
-                require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");
+                require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
                 $oPatternCustom = & new PatternCustom();
                 $oPatternCustom->setHtml(getBrowseAddPage($fFolderID));
                 $main->setCentralPayload($oPatternCustom);
@@ -111,7 +111,7 @@ if (checkSession()) {
         } else {
             //user does not have write permission for this folder,
             //so don't display add button
-            require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");
+            require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
             $oPatternCustom = & new PatternCustom();
             $oPatternCustom->setHtml(getBrowsePage($fFolderID));
             $main->setCentralPayload($oPatternCustom);
@@ -121,7 +121,7 @@ if (checkSession()) {
     } else {
         //no folder id was set when coming to this page,
         //so display an error message
-        require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");
+        require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
         $oPatternCustom = & new PatternCustom();
         $oPatternCustom->setHtml("<p class=\"errorText\">No folder to which a document can be added is currently selected</p>\n");
         $main->setCentralPayload($oPatternCustom);

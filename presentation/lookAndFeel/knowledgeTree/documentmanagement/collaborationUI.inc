@@ -63,7 +63,7 @@ function getDocumentRoutingPage($iGroupID, $iUserID, $iRoleID, $iSequenceNumber,
 			"<td colspan=\"2\">&nbsp</td>\n" .
 			"</tr>\n" .
 			"<tr>\n" .
-			"<td><b><input type=\"image\" src=\"$default->owl_graphics_url\widgets\update.gif\" /></b></td><td><a href=\"$default->owl_root_url/control.php?action=viewDocument&fDocumentID=$fDocumentID \"><img src=\"$default->owl_graphics_url\widgets\cancel.gif\" border=\"0\"></a></td>\n" .
+			"<td><b><input type=\"image\" src=\"$default->graphicsUrl/widgets/update.gif\" /></b></td><td><a href=\"$default->rootUrl/control.php?action=viewDocument&fDocumentID=$fDocumentID \"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></a></td>\n" .
 			"</tr>\n" .
 			"</table>\n";
 }

@@ -10,17 +10,17 @@
 require_once("../../../../../config/dmsDefaults.php");
 
 if (checkSession()) {
-	require_once("$default->owl_fs_root/lib/visualpatterns/PatternListBox.inc");
-	require_once("$default->owl_fs_root/lib/visualpatterns/PatternCreate.inc");
+	require_once("$default->fileSystemRoot/lib/visualpatterns/PatternListBox.inc");
+	require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCreate.inc");
 	require_once("addUnitUI.inc");
-	require_once("$default->owl_fs_root/lib/unitmanagement/Unit.inc");
-	require_once("$default->owl_fs_root/lib/unitmanagement/UnitOrganisationLink.inc");
-	require_once("$default->owl_fs_root/lib/security/permission.inc");
-	require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");
-	require_once("$default->owl_fs_root/lib/visualpatterns/PatternCustom.inc");	
-	require_once("$default->owl_fs_root/lib/foldermanagement/Folder.inc");
-	require_once("$default->owl_fs_root/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
-	require_once("$default->owl_fs_root/presentation/Html.inc");
+	require_once("$default->fileSystemRoot/lib/unitmanagement/Unit.inc");
+	require_once("$default->fileSystemRoot/lib/unitmanagement/UnitOrganisationLink.inc");
+	require_once("$default->fileSystemRoot/lib/security/permission.inc");
+	require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
+	require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");	
+	require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
+	require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
+	require_once("$default->fileSystemRoot/presentation/Html.inc");
 	
 	$oPatternCustom = & new PatternCustom();
 	
@@ -68,7 +68,7 @@ if (checkSession()) {
 
 	//$oPatternCustom->setHtml(getPage());
 	
-	//$main->setFormAction("$default->owl_root_url/presentation/lookAndFeel/knowledgeTree/create.php?fRedirectURL=".urlencode("$default->owl_root_url/control.php?action=addUnitSuccess&fUnit"));
+	//$main->setFormAction("$default->rootUrl/presentation/lookAndFeel/knowledgeTree/create.php?fRedirectURL=".urlencode("$default->rootUrl/control.php?action=addUnitSuccess&fUnit"));
 	$main->setCentralPayload($oPatternCustom);
 	$main->render();
 }

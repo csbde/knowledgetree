@@ -24,7 +24,7 @@ function getPage($iFolderID, $iGroupID, $iRoleID, $iSequenceNumber) {
 	$sToRender .= "<td>Sequence No.</td><td>$iSequenceNumber</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td><table><tr><td><input type=\"image\" src=\"$default->owl_graphics_url/widgets/delete.gif\" /></td><td><a href=\"$default->owl_root_url/control.php?action=editFolder&fFolderID=$iFolderID\"><img src=\"$default->owl_graphics_url/widgets/cancel.gif\" border=\"0\" /></a></td></tr></table></td>\n";
+	$sToRender .= "<td><table><tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/delete.gif\" /></td><td><a href=\"$default->rootUrl/control.php?action=editFolder&fFolderID=$iFolderID\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\" /></a></td></tr></table></td>\n";
 	$sToRender .= "</tr>\n";	
 	$sToRender .= "<table>\n";
 	
@@ -38,7 +38,7 @@ function getPage($iFolderID, $iGroupID, $iRoleID, $iSequenceNumber) {
 
 function getFolderPath($iFolderID) {
 	global $default;
-	return displayFolderPathLink(Folder::getFolderPathAsArray($iFolderID), Folder::getFolderPathNamesAsArray($iFolderID),  "$default->owl_root_url/control.php?action=browse");		
+	return displayFolderPathLink(Folder::getFolderPathAsArray($iFolderID), Folder::getFolderPathNamesAsArray($iFolderID),  "$default->rootUrl/control.php?action=browse");		
 }
 
 

@@ -12,10 +12,10 @@ require_once("../../config/dmsDefaults.php");
 */
 
 if (checkSession()) {
-	require_once("$default->owl_fs_root/lib/documentmanagement/PhysicalDocumentManager.inc");
-	require_once("$default->owl_fs_root/lib/documentmanagement/Document.inc");
-	require_once("$default->owl_fs_root/lib/folderManagement/Folder.inc");
-	require_once("$default->owl_fs_root/lib/folderManagement/FolderManager.inc");	
+	require_once("$default->fileSystemRoot/lib/documentmanagement/PhysicalDocumentManager.inc");
+	require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
+	require_once("$default->fileSystemRoot/lib/folderManagement/Folder.inc");
+	require_once("$default->fileSystemRoot/lib/folderManagement/FolderManager.inc");	
 	
 	echo "<html><head></head><body>\n";
 	echo "<form method=\"POST\"  action=\"documentDownload2.php\">\n";

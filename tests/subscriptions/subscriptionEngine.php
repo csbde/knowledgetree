@@ -2,8 +2,8 @@
 include("../../config/dmsDefaults.php");
 
 if (checkSession()) {
-    require_once("$default->owl_fs_root/lib/subscriptions/SubscriptionManager.inc");
-    require_once("$default->owl_fs_root/lib/subscriptions/SubscriptionEngine.inc");
+    require_once("$default->fileSystemRoot/lib/subscriptions/SubscriptionManager.inc");
+    require_once("$default->fileSystemRoot/lib/subscriptions/SubscriptionEngine.inc");
     $oSubscriptionManager = new SubscriptionManager();
 
     echo "<ul><li><b>create some test subscriptions for subscription firing testing</b></li>";

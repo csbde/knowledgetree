@@ -615,7 +615,7 @@ INSERT INTO system_settings (name, value) values ("uiUrl", "/dms/presentation/lo
 -- general settings
 INSERT INTO system_settings (name, value) values ("useFs", "true");
 INSERT INTO system_settings (name, value) values ("defaultLanguage", "NewEnglish");
---INSERT INTO system_settings (name, value) values ("notificationLink", "http://$_SERVER[SERVER_NAME]$default->owl_root_url/");
+--INSERT INTO system_settings (name, value) values ("notificationLink", "http://$_SERVER[SERVER_NAME]$default->rootUrl/");
 INSERT INTO system_settings (name, value) values ("sessionTimeout", "1200");
 
 

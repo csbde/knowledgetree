@@ -100,8 +100,8 @@ function renderPage($oDocument) {
     $sToRender .= "</table>\n";
     $sToRender .= "<table>\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "<td><input type=\"image\" src=\"$default->owl_graphics_url/widgets/update.gif\" /><td>\n";
-    $sToRender .= "<td><a href=\"$default->owl_root_url/control.php?action=viewDocument&fDocumentID=" . $oDocument->getID() . "\"><img src=\"$default->owl_graphics_url/widgets/cancel.gif\" border=\"0\" /></a><td>\n";
+    $sToRender .= "<td><input type=\"image\" src=\"$default->graphicsUrl/widgets/update.gif\" /><td>\n";
+    $sToRender .= "<td><a href=\"$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $oDocument->getID() . "\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\" /></a><td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "</table>\n";
     return $sToRender;

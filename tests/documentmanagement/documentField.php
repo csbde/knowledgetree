@@ -11,7 +11,7 @@ require_once("../../config/dmsDefaults.php");
 */
 
 if (checkSession) {
-	require_once("$default->owl_fs_root/lib/documentmanagement/DocumentField.inc");
+	require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentField.inc");
 	
 	$oDocumentField = & new DocumentField("Test", "S*#(*##@#% Arb data type");
 	echo "Create ? " . ($oDocumentField->create() ? "Yes" : "No") . "<br>";

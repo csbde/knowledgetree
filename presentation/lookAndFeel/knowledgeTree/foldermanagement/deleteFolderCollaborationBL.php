@@ -17,27 +17,27 @@ require_once("../../../../config/dmsDefaults.php");
 if (checkSession()) {
     if (isset($fFolderID) && isset($fFolderCollaborationID)) {
         //if a folder has been selected
-        include_once("$default->owl_fs_root/lib/foldermanagement/Folder.inc");
-        include_once("$default->owl_fs_root/lib/security/permission.inc");
-        include_once("$default->owl_fs_root/lib/foldermanagement/FolderCollaboration.inc");
-        include_once("$default->owl_fs_root/lib/groups/Group.inc");
-        include_once("$default->owl_fs_root/lib/roles/Role.inc");
+        include_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
+        include_once("$default->fileSystemRoot/lib/security/permission.inc");
+        include_once("$default->fileSystemRoot/lib/foldermanagement/FolderCollaboration.inc");
+        include_once("$default->fileSystemRoot/lib/groups/Group.inc");
+        include_once("$default->fileSystemRoot/lib/roles/Role.inc");
         if (Permission::userHasFolderWritePermission($fFolderID)) {
             //can only delete new collaboration steps if the user has folder write permission
             if (isset($fForDelete)) {
                 $oFolderCollaboration = & FolderCollaboration::get($fFolderCollaborationID);
                 if ($oFolderCollaboration->delete()) {
                     //on successful deletion, redirect to the folder edit page
-                    include_once("$default->owl_fs_root/presentation/Html.inc");
-                    redirect("$default->owl_root_url/control.php?action=editFolder&fFolderID=$fFolderID");
+                    include_once("$default->fileSystemRoot/presentation/Html.inc");
+                    redirect("$default->rootUrl/control.php?action=editFolder&fFolderID=$fFolderID");
                 } else {
                     //otherwise display an error message
-                    include_once("$default->owl_fs_root/lib/visualpatterns/PatternListBox.inc");
-                    include_once("$default->owl_fs_root/lib/visualpatterns/PatternCustom.inc");
+                    include_once("$default->fileSystemRoot/lib/visualpatterns/PatternListBox.inc");
+                    include_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
 
-                    include_once("$default->owl_fs_root/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
-                    include_once("$default->owl_fs_root/presentation/Html.inc");
-                    include_once("$default->owl_fs_root/presentation/webpageTemplate.inc");
+                    include_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
+                    include_once("$default->fileSystemRoot/presentation/Html.inc");
+                    include_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
                     include_once("deleteFolderCollaborationUI.inc");
 
                     $oPatternCustom = & new PatternCustom();
@@ -54,14 +54,14 @@ if (checkSession()) {
                 if ($oFolderCollaboration->hasDocumentInProcess()) {
                     //can't delete a step in the folder collaboration process if there is a document
                     //currently undergoing the process
-                    redirect("$default->owl_root_url/control.php?action=editFolder&fFolderID=$fFolderID&fCollaborationDelete=0");
+                    redirect("$default->rootUrl/control.php?action=editFolder&fFolderID=$fFolderID&fCollaborationDelete=0");
                 } else {
                     //display the browse page
-                    include_once("$default->owl_fs_root/lib/visualpatterns/PatternListBox.inc");
-                    include_once("$default->owl_fs_root/lib/visualpatterns/PatternCustom.inc");
-                    include_once("$default->owl_fs_root/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
-                    include_once("$default->owl_fs_root/presentation/Html.inc");
-                    include_once("$default->owl_fs_root/presentation/webpageTemplate.inc");
+                    include_once("$default->fileSystemRoot/lib/visualpatterns/PatternListBox.inc");
+                    include_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
+                    include_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
+                    include_once("$default->fileSystemRoot/presentation/Html.inc");
+                    include_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
                     include_once("deleteFolderCollaborationUI.inc");
 
                     $oPatternCustom = & new PatternCustom();
@@ -75,11 +75,11 @@ if (checkSession()) {
             }
         } else {
             //display an error message
-            include_once("$default->owl_fs_root/lib/visualpatterns/PatternListBox.inc");
-            include_once("$default->owl_fs_root/lib/visualpatterns/PatternCustom.inc");
-            include_once("$default->owl_fs_root/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
-            include_once("$default->owl_fs_root/presentation/Html.inc");
-            include_once("$default->owl_fs_root/presentation/webpageTemplate.inc");
+            include_once("$default->fileSystemRoot/lib/visualpatterns/PatternListBox.inc");
+            include_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
+            include_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
+            include_once("$default->fileSystemRoot/presentation/Html.inc");
+            include_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
             include_once("deleteFolderCollaborationUI.inc");
 
             $oPatternCustom = & new PatternCustom();

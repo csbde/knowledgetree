@@ -15,7 +15,7 @@ require_once("../../config/dmsDefaults.php");
  * @package tests.subscriptions
  */
 if (checkSession()) {
-    require_once("$default->owl_fs_root/lib/subscriptions/Subscription.inc");
+    require_once("$default->fileSystemRoot/lib/subscriptions/Subscription.inc");
 
     echo "<b>Testing creation of new folder subscription object</b><br>";
     $oFolderSubscription = & new Subscription(1, 1, SubscriptionConstants::subscriptionType("FolderSubscription"));

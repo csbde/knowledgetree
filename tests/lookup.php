@@ -11,7 +11,7 @@
 require_once("../config/dmsDefaults.php");
 
 if (checkSession()) {
-	require_once("$default->owl_fs_root/lib/DefaultLookup.inc");
+	require_once("$default->fileSystemRoot/lib/DefaultLookup.inc");
 	
 	$oLookup = & new DefaultLookup("document_transaction_types_lookup", "View");
 	echo "Store? " . ($oLookup->create() ? "Yes" : "No: " . $_SESSION["errorMessage"]) . "<br>";

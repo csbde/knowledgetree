@@ -17,18 +17,18 @@
 require_once("../../../../config/dmsDefaults.php");
 
 if (checkSession()) {
-	require_once("$default->owl_fs_root/lib/visualpatterns/PatternListBox.inc");
-	require_once("$default->owl_fs_root/lib/foldermanagement/FolderCollaboration.inc");
-	require_once("$default->owl_fs_root/lib/foldermanagement/FolderUserRole.inc");
-	require_once("$default->owl_fs_root/lib/foldermanagement/Folder.inc");
-	require_once("$default->owl_fs_root/lib/roles/Role.inc");
-	require_once("$default->owl_fs_root/lib/users/User.inc");
-	require_once("$default->owl_fs_root/lib/documentmanagement/Document.inc");
-	require_once("$default->owl_fs_root/lib/email/Email.inc");
-	require_once("$default->owl_fs_root/lib/groups/Group.inc");	
-	require_once("$default->owl_fs_root/presentation/Html.inc");
-	require_once("$default->owl_fs_root/lib/security/permission.inc");	
-	require_once("$default->owl_fs_root/lib/visualpatterns/PatternCustom.inc");
+	require_once("$default->fileSystemRoot/lib/visualpatterns/PatternListBox.inc");
+	require_once("$default->fileSystemRoot/lib/foldermanagement/FolderCollaboration.inc");
+	require_once("$default->fileSystemRoot/lib/foldermanagement/FolderUserRole.inc");
+	require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
+	require_once("$default->fileSystemRoot/lib/roles/Role.inc");
+	require_once("$default->fileSystemRoot/lib/users/User.inc");
+	require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
+	require_once("$default->fileSystemRoot/lib/email/Email.inc");
+	require_once("$default->fileSystemRoot/lib/groups/Group.inc");	
+	require_once("$default->fileSystemRoot/presentation/Html.inc");
+	require_once("$default->fileSystemRoot/lib/security/permission.inc");	
+	require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
 	require_once("collaborationUI.inc");
 	
 	
@@ -39,12 +39,12 @@ if (checkSession()) {
 			if ($fIsActive) {
 				//if the document collaboration step the user is attempting to edit is underway, you may not edit it
 				//so bounce the user back to the document view page and display an error message
-				redirect("$default->owl_root_url/control.php?action=viewDocument&fDocumentID=$fDocumentID&fCollaborationEdit=0");
+				redirect("$default->rootUrl/control.php?action=viewDocument&fDocumentID=$fDocumentID&fCollaborationEdit=0");
 			}
 			if ($fIsDone) {
 				//the user is attempting to edit a step in the document collaboration process that has already been done
 				//so bounce the user back to the document view page and display an error message
-				redirect("$default->owl_root_url/control.php?action=viewDocument&fDocumentID=$fDocumentID&fCollaborationEdit=0");
+				redirect("$default->rootUrl/control.php?action=viewDocument&fDocumentID=$fDocumentID&fCollaborationEdit=0");
 			}
 			if (isset($fForStore)) {
 				//if we are storing, get the folder collaboration entry from the database
@@ -80,6 +80,9 @@ if (checkSession()) {
 					
 					$sBody = "You have been assigned the role of '" . $oRole->getName() . "' in the collaboration process for the document entitled '" . $oDocument->getName() . "'.  You will be informed when your role becomes active";					
 					$oEmail->send($oUser->getEmail(), "Assigment of role in document collaboration process", $sBody, $default->owl_email_from, $default->owl_email_fromname);
+                    
+					//go back to the document view page
+					redirect("$default->rootUrl/control.php?action=viewDocument&fDocumentID=$fDocumentID");                    
 				} else {
 					//the may have been unassigned and no new user assigned
 					//if this is true, delete the folder_user_role_link
@@ -88,11 +91,11 @@ if (checkSession()) {
 						$oFolderUserRole->delete();
 					}
 					//go back to the document view page
-					redirect("$default->owl_root_url/control.php?action=viewDocument&fDocumentID=$fDocumentID");
+					redirect("$default->rootUrl/control.php?action=viewDocument&fDocumentID=$fDocumentID");
 				}
 			} else {
 				//we're still browsing, so just display the document routing details
-				require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");			
+				require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");			
 				$oPatternCustom = & new PatternCustom();
 				
 				$aFolderCollaborationArray = getFolderCollaborationArray($fFolderCollaborationID);			
@@ -103,18 +106,18 @@ if (checkSession()) {
 			}
 		} else {
 			//user does not have permission to edit these details
-			require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");			
+			require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");			
 			$oPatternCustom = & new PatternCustom();							
-			$oPatternCustom->setHtml("<a href=\"$default->owl_root_url/control.php?action=viewDocument&fDocumentID=" . $fDocumentID . "\">Return to document view page</a>");
+			$oPatternCustom->setHtml("<a href=\"$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $fDocumentID . "\">Return to document view page</a>");
 			$main->setCentralPayload($oPatternCustom);
 			$main->setErrorMessage("You do not have permission to edit document routing details");
 			$main->render();
 		}
 	} else {
 			//no document routing information selected
-			require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");			
+			require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");			
 			$oPatternCustom = & new PatternCustom();							
-			$oPatternCustom->setHtml("<a href=\"$default->owl_root_url/control.php?action=dashboard\">Return to document dashboard</a>");
+			$oPatternCustom->setHtml("<a href=\"$default->rootUrl/control.php?action=dashboard\">Return to document dashboard</a>");
 			$main->setCentralPayload($oPatternCustom);
 			$main->setErrorMessage("No document/document routing details are currently selected");
 			$main->render();

@@ -1,8 +1,8 @@
 <?php
 
 require_once("../../../../config/dmsDefaults.php");
-require_once("$default->owl_fs_root/lib/documentmanagement/DocumentBrowser.inc");
-require_once("$default->owl_ui_directory/documentmanagement/browseUI.inc");
+require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentBrowser.inc");
+require_once("$default->uiDirectory/documentmanagement/browseUI.inc");
 
 /**
  * $Id$
@@ -92,6 +92,6 @@ if (checkSession()) {
     
 } else {
     // redirect to no permission page
-    redirect("$default->owl_ui_url/noAccess.php");
+    redirect("$default->uiUrl/noAccess.php");
 }
 ?>

@@ -11,7 +11,7 @@
 
 function getDocumentPath($iFolderID, $sDocumentName) {
 	global $default;
-	$sDocumentPath = displayFolderPathLink(Folder::getFolderPathAsArray($iFolderID), Folder::getFolderPathNamesAsArray($iFolderID), "$default->owl_root_url/control.php?action=browse") . " > " . $sDocumentName;
+	$sDocumentPath = displayFolderPathLink(Folder::getFolderPathAsArray($iFolderID), Folder::getFolderPathNamesAsArray($iFolderID), "$default->rootUrl/control.php?action=browse") . " > " . $sDocumentName;
 	return "<table border=1 width = 100%><tr><td>$sDocumentPath</td></tr></table>\n";	
 }
 
@@ -28,7 +28,7 @@ function getPage($iDocumentID, $iFolderID, $sDocumentName) {
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>&nbsp</td>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td><table><tr><td><a href=\"" . $_SERVER["PHP_SELF"] . "?fDocumentID=$iDocumentID&fDeleteConfirmed=1\"><img src=\"$default->owl_graphics_url\widgets\delete.gif\" border=\"0\"></a></td> <td><a href=\"$default->owl_root_url/control.php?action=viewDocument&fDocumentID=" . $iDocumentID . "\"><img src=\"$default->owl_graphics_url\widgets\cancel.gif\" border=\"0\"></a></td></tr></table></td>";	
+	$sToRender .= "<td><table><tr><td><a href=\"" . $_SERVER["PHP_SELF"] . "?fDocumentID=$iDocumentID&fDeleteConfirmed=1\"><img src=\"$default->graphicsUrl\widgets\delete.gif\" border=\"0\"></a></td> <td><a href=\"$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $iDocumentID . "\"><img src=\"$default->graphicsUrl\widgets\cancel.gif\" border=\"0\"></a></td></tr></table></td>";	
 	$sToRender .= "</tr>";
 	$sToRender .= "</table>\n";
 	

@@ -4,9 +4,9 @@
 <?php
 
 require ("./config/dmsDefaults.php");
-//require ("$default->owl_fs_root/lib/db.inc");
-require ("$default->owl_fs_root/lib/dms.inc");
-require ("$default->owl_fs_root/lib/administration/UserManager.inc");
+//require ("$default->fileSystemRoot/lib/db.inc");
+require ("$default->fileSystemRoot/lib/dms.inc");
+require ("$default->fileSystemRoot/lib/administration/UserManager.inc");
 
 /*-----------------------------------------------------------------*/
 /**
@@ -51,7 +51,7 @@ $Details['email_notification'] = 1;
 $Details['sms_notification'] = 1;
 $Details['ldap_dn'] = 10202020;
 $Details['max_sessions'] = 50;
-$Details['language'] = $default->owl_lang;
+$Details['language'] = $default->defaultLanguage;
 
 $user->createUser($Details);
 

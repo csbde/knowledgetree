@@ -12,7 +12,7 @@
 */
 
 require_once("../../../config/dmsDefaults.php");
-require_once("$default->owl_fs_root/presentation/Html.inc");
+require_once("$default->fileSystemRoot/presentation/Html.inc");
 
 $aKeys = array_keys($_POST);
 $aParameterValues = array();
@@ -71,7 +71,7 @@ for ($i = 0; $i < count($aKeys); $i++) {
 
 
 //include the correct file for the object
-include_once("$default->owl_fs_root/lib/$sObjectFolderName");
+include_once("$default->fileSystemRoot/lib/$sObjectFolderName");
 
 $oObject = call_user_func(strtolower($sObjectName) . "createFromArray",$aParameterValues);
 $oObject->create();
@@ -80,7 +80,7 @@ $oObject->create();
 if (isset($fRedirectURL)) {
 	redirect(urldecode($fRedirectURL) . $oObject->iId);
 } else {
-	redirect("$default->owl_root_url/control.php");
+	redirect("$default->rootUrl/control.php");
 }
 
 ?>

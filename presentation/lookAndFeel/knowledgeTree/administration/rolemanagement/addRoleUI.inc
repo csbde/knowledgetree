@@ -36,7 +36,7 @@ function getPage() {
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "</tr>\n";
-	$sToRender .= "<td align = right><input type=\"image\" src =\"$default->owl_graphics_url/widgets/add.gif\" value=\"Submit\" /></td>\n";	
+	$sToRender .= "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/add.gif\" value=\"Submit\" /></td>\n";	
 	$sToRender .= "</table>\n";
 	
 	return $sToRender;

@@ -52,7 +52,7 @@ function generateLink($sTargetPage, $sQueryString, $sLinkText = "") {
         $sQueryStringDelimiter = (strstr($sTargetPage, "?") ? "&" : "?");
     }
     $sLink = "http" . ($default->sslEnabled ? "s" : "") . "://" . $default->serverName . 
-             ((substr($sTargetPage, 0, strlen($default->owl_root_url)) != $default->owl_root_url) ? $default->owl_root_url : "") . 
+             ((substr($sTargetPage, 0, strlen($default->rootUrl)) != $default->rootUrl) ? $default->rootUrl : "") . 
              $sTargetPage . $sQueryStringDelimiter . $sQueryString;
 
     return (strlen($sLinkText) > 0) ? "<a href=\"$sLink\">$sLinkText</a>" : $sLink;
@@ -103,7 +103,6 @@ function checkSessionAndRedirect($bRedirect) {
         if ($bRedirect) {
             // redirect to login with error message
             $url = generateControllerUrl("loginForm");
-            //$url = $default->owl_root_url . "/control.php?action=loginForm";
             $redirect = urlencode($_SERVER[PHP_SELF] . "?" . $_SERVER["QUERY_STRING"]);
             if ((strlen($redirect) > 1)) {
                 $default->log->debug("checkSession:: redirect url=$redirect");

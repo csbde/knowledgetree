@@ -1,5 +1,9 @@
 <?php
 
+require_once("$default->fileSystemRoot/phplib/db_mysql.inc");
+require_once("$default->fileSystemRoot/lib/database/db.inc");
+
+
 /**
  * $Id$
  * 
@@ -12,6 +16,27 @@
  * @package lib
  */
 class System {
+    
+    var $db;
+    
+    function System() {
+        global $default;
+        
+        $this->db = new Database();
+    }
+    
+    /**
+     * Returns true if there are entries in the system_settings table
+     */
+    function initialised() {
+        global $default;
+        
+        if ($this->db->query("SELECT count(*) AS count FROM system_settings")) {
+            $this->db->next_record();
+            return ($this->db->f("count") > 0) ? true : false;
+        }
+    }
+    
     /**
      * Retrieves a system setting
      *

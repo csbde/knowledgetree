@@ -22,7 +22,7 @@ function displayDocumentLink($oDocument, $bDisplayFullPath = false) {
     global $default;
     
     $sIconUrl = $oDocument->getMimeTypeIconUrl();
-    $sIconPath = ($sIconUrl ? generateImage($sIconUrl) : generateImage("$default->owl_graphics_url/star.gif"));
+    $sIconPath = ($sIconUrl ? generateImage($sIconUrl) : generateImage("$default->graphicsUrl/star.gif"));
 
     $sLinkText = $oDocument->getName();
     if ($bDisplayFullPath) {
@@ -30,7 +30,7 @@ function displayDocumentLink($oDocument, $bDisplayFullPath = false) {
         $sLinkText = Folder::getFolderDisplayPath($oDocument->getFolderID()) . " > " . $sLinkText;
     }
 
-    return generateLink("$default->owl_root_url/control.php", 
+    return generateLink("$default->rootUrl/control.php", 
                         "action=viewDocument&fDocumentID=" . $oDocument->getID(),
                         $sIconPath . 
                         $sLinkText);

@@ -12,7 +12,7 @@ require_once("../../config/dmsDefaults.php");
 */
 
 if (checkSession) {
-	require_once("$default->owl_fs_root/lib/unitmanagement/Unit.inc");
+	require_once("$default->fileSystemRoot/lib/unitmanagement/Unit.inc");
 	
 	$oUnit = & new Unit("test unit20");
 	echo "Create ? " . ($oUnit->create() ? "Yes" : "No") . "<br>";

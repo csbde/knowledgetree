@@ -13,21 +13,21 @@
 
 require_once("../../../../config/dmsDefaults.php");
 if (checkSession()) {
-    require_once("$default->owl_fs_root/lib/visualpatterns/PatternCustom.inc");
+    require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
 
     $oPatternCustom = & new PatternCustom();
 
     if (isset($fFolderID)) {
-        require_once("$default->owl_fs_root/lib/visualpatterns/PatternTableSqlQuery.inc");
-        require_once("$default->owl_fs_root/lib/foldermanagement/Folder.inc");
-        require_once("$default->owl_fs_root/lib/foldermanagement/PhysicalFolderManagement.inc");
-        require_once("$default->owl_fs_root/lib/subscriptions/SubscriptionEngine.inc");
-        require_once("$default->owl_fs_root/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
-        require_once("$default->owl_fs_root/presentation/Html.inc");
+        require_once("$default->fileSystemRoot/lib/visualpatterns/PatternTableSqlQuery.inc");
+        require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
+        require_once("$default->fileSystemRoot/lib/foldermanagement/PhysicalFolderManagement.inc");
+        require_once("$default->fileSystemRoot/lib/subscriptions/SubscriptionEngine.inc");
+        require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
+        require_once("$default->fileSystemRoot/presentation/Html.inc");
         require_once("addFolderUI.inc");
 
         if (!isset($fFolderName)) {
-            require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");
+            require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
             //we're still browsing			
             if (Permission::userHasFolderWritePermission($fFolderID)) {
                 //if the user is allowed to add folders, then display the add button
@@ -52,7 +52,7 @@ if (checkSession()) {
 					 strpos($fFolderName, "\"") === false) {
 						 
                     if (Folder::folderExistsName($fFolderName, $fFolderID)) {
-                        require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");
+                        require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
                         $oPatternCustom->setHtml(renderBrowseAddPage($fFolderID));
                         $main->setCentralPayload($oPatternCustom);
                         $main->setErrorMessage("There is another folder named $fFolderName in this folder already");
@@ -72,11 +72,11 @@ if (checkSession()) {
                                          array( "newFolderName" => $fFolderName,
                                                 "parentFolderName" => $oParentFolder->getName()) );
                                 $default->log->info("addFolderBL.php fired $count subscription alerts for new folder $fFolderName");
-                                redirect("$default->owl_root_url/control.php?action=editFolder&fFolderID=" . $oFolder->getID());
+                                redirect("$default->rootUrl/control.php?action=editFolder&fFolderID=" . $oFolder->getID());
                             } else {
                                 //if we couldn't do that, remove the folder from the db and report and error
                                 $oFolder->delete();
-                                require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");
+                                require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
                                 $oPatternCustom->setHtml(renderBrowsePage($fFolderID));
                                 $main->setCentralPayload($oPatternCustom);
                                 $main->setErrorMessage("There was an error creating the folder $fFolderName on the filesystem");
@@ -86,7 +86,7 @@ if (checkSession()) {
                             }
                         } else {
                             //if we couldn't create the folder in the db, report an error
-                            require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");
+                            require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
                             $oPatternCustom->setHtml(renderBrowsePage($fFolderID));
                             $main->setCentralPayload($oPatternCustom);
                             $main->setErrorMessage("There was an error creating the folder $fFolderName in the database");
@@ -96,7 +96,7 @@ if (checkSession()) {
                     }
                 } else {
                     //the user entered an illegal character in the folder name
-                    require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");
+                    require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
                     $oPatternCustom->setHtml(renderBrowseAddPage($fFolderID));
                     $main->setCentralPayload($oPatternCustom);
                     $main->setErrorMessage("Folder not created. Folder names may not contain: '<', '>', '*', '/', '\', '|', '?' or '\"' ");
@@ -108,7 +108,7 @@ if (checkSession()) {
             } else {
                 //if the user doesn't have write permission for this folder,
                 //give them only browse facilities
-                require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");
+                require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
                 $oPatternCustom->setHtml(renderBrowsePage($fFolderID));
                 $main->setCentralPayload($oPatternCustom);
                 $main->setErrorMessage("You do not have permission to create new folders in this folder");
@@ -117,7 +117,7 @@ if (checkSession()) {
             }
         }
     } else {
-        require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");
+        require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
         $oPatternCustom->setHtml("");
         $main->setCentralPayload($oPatternCustom);
         $main->setErrorMessage("No folder currently selected");
