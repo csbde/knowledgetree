@@ -24,7 +24,7 @@ if (checkSession()) {
 			if (isset($fForStore)) {
 				//attempt to create the new folder collaboration entry
 				include_once("$default->fileSystemRoot/lib/foldermanagement/FolderCollaboration.inc");
-				$oFolderCollaboration = & new FolderCollaboration($fFolderID, $fGroupID, $fSequenceNumber, $fRoleID);
+				$oFolderCollaboration = & new FolderCollaboration($fFolderID, $fGroupID, $fSequenceNumber, $fRoleID, $fUserID);
 				if ($oFolderCollaboration->create()) {
 					//on successful creation, redirect to the folder edit page
 					include_once("$default->fileSystemRoot/presentation/Html.inc");

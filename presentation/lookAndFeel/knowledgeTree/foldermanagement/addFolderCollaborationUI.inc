@@ -29,8 +29,11 @@ function getPage($iFolderID, $iGroupID, $iRoleID, $iSequenceNumber) {
 	$sToRender .= "<br>\n";
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>Group</td><td>" . getGroupDropDown($iGroupID) . "</td>\n";
+	$sToRender .= "<td>Group</td><td>" . getGroupDropDown($iGroupID, $iFolderID) . "</td>\n";
 	$sToRender .= "</tr>\n";
+	$sToRender .= "<tr>\n";
+	$sToRender .= "<td>User</td><td>" . getUserDropDown($iGroupID) . "</td>\n";
+	$sToRender .= "</tr>\n";	
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>Role</td><td>" . getRoleDropDown($iRoleID) . "</td>\n";
 	$sToRender .= "</tr>\n";
@@ -44,7 +47,7 @@ function getPage($iFolderID, $iGroupID, $iRoleID, $iSequenceNumber) {
 	
 	$sToRender .= "\n\n<script language=\"javascript\">\n<!--\n";
 	$sToRender .= "function validateForm(theForm) {\n";	
-	$sToRender .= "\tif (!(validNum(theForm.fSequenceNumber,'Sequence no.')) || !(validRequired(theForm.fSequenceNumber,'Sequence no.'))) {\n";
+	$sToRender .= "\tif (!(validRequired(theForm.fGroupID,'Group')) || !(validRequired(theForm.fUserID,'User')) || !(validNum(theForm.fSequenceNumber,'Sequence no.')) || !(validRequired(theForm.fSequenceNumber,'Sequence no.'))) {\n";
 	$sToRender .= "\t\treturn false;\n\t}\n";
 	$sToRender .= "return true;\n}\n";
 	$sToRender .= "//-->\n</script>\n\n";
@@ -60,8 +63,19 @@ function getFolderPath($iFolderID) {
 	return "<table border=\"0\" width=\"100%\"><tr><td bgcolor=\"$sTDBGColour\">$sFolderPathLink</td></tr></table>\n";    
 }
 
-function getGroupDropDown($iGroupID) {
+function getGroupDropDown($iGroupID, $iFolderID) {
 	global $default;
+	$oPatternListBox = & new PatternListBox("$default->owl_groups_table", "name", "id", "fGroupID");
+	$oPatternListBox->setPostBackOnChange(true);
+	$oPatternListBox->setOnChangeAction("setActionAndSubmit('" . $_SERVER["PHP_SELF"] . "?fFolderID=$iFolderID');");
+	if (isset($iGroupID)) {
+		$oPatternListBox->setSelectedValue($iGroupID);		
+	}
+	
+
+	//this code restricts the user to seeing only
+	//the groups in their unit
+	/*$oPatternListBox;
     if (Permission::userIsSystemAdministrator()) {
         $oPatternListBox = & new PatternListBox("$default->owl_groups_table", "name", "id", "fGroupID");
     } else {
@@ -70,9 +84,27 @@ function getGroupDropDown($iGroupID) {
     }                                    
 	$oPatternListBox->setEmptyErrorMessage("There are no groups");
 	$oPatternListBox->setIncludeDefaultValue(false);
+	$oPatternListBox->setPostBackOnChange(true);
+	$oPatternListBox->setOnChangeAction("setActionAndSubmit('" . $_SERVER["PHP_SELF"] . "?fFolderID=$iFolderID');");
 	if (isset($iGroupID)) {
 		$oPatternListBox->setSelectedValue($iGroupID);
+	}*/
+	return $oPatternListBox->render();
+}
+
+function getUserDropDown($iGroupID) {
+	global $default;
+	if (!(isset($iGroupID))) {
+		$iGroupID = -1;
 	}
+	
+	$oPatternListBox = & new PatternListBox("$default->owl_users_table", "name", "id", "fUserID", "UGL.group_id = $iGroupID");
+    $oPatternListBox->setFromClause("INNER JOIN $default->owl_users_groups_table AS UGL ON ST.id = UGL.user_id");
+    
+    if ($iGroupID == -1) {         
+		$oPatternListBox->setEmptyErrorMessage("Select a group");
+		$oPatternListBox->setIncludeDefaultValue(false);
+	}	
 	return $oPatternListBox->render();
 }
 
