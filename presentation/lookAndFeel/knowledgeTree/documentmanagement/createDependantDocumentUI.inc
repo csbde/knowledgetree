@@ -71,7 +71,7 @@ function getPage($iFolderID, $iDocumentID, $iUnitID, $iUserID, $sDocumentTitle, 
 
 function getUserDropDown($iUnitID, $iUserID) {
 	global $default;	
-	if (!isset($iUnitID)) {
+	if (!$iUnitID) {
 		$iUnitID = -1;		
 	}
 	$oPatternListBox = & new PatternListBox($default->users_table, "Name", "id", "fUserID", "GUL.unit_id = $iUnitID");
@@ -88,7 +88,7 @@ function getUserDropDown($iUnitID, $iUserID) {
 
 function getUnitDropDown($iDocumentID, $iUnitID) {
 	global $default;
-	if (!isset($iUnitID)) {
+	if (!$iUnitID) {
 		$iUnitID = -1;
 	}
 	$oPatternListBox = & new PatternListBox($default->units_table, "Name", "id", "fUnitID");	
