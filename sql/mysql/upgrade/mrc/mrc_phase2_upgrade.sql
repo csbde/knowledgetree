@@ -75,7 +75,7 @@ ALTER TABLE documents MODIFY filename text NOT NULL;
 ALTER TABLE documents MODIFY name text NOT NULL;
 ALTER TABLE folders_users_roles_link ADD column dependant_documents_created tinyint(1) default NULL;
 -- does this make sense??! what are the implications
-UPDATE folders_users_roles_link set dependant_documents_created = 1;
+UPDATE folders_users_roles_link set dependant_documents_created = 0;
 ALTER TABLE groups_folders_approval_link ADD COLUMN user_id INT DEFAULT NULL;
 
 -- old tables
