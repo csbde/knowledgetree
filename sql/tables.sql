@@ -575,6 +575,9 @@ INSERT INTO document_transaction_types_lookup (name) VALUES ("Check Out");
 INSERT INTO document_transaction_types_lookup (name) VALUES ("Collaboration Step Rollback");
 INSERT INTO document_transaction_types_lookup (name) VALUES ("View");
 INSERT INTO document_transaction_types_lookup (name) VALUES ("Expunge");
+INSERT INTO document_transaction_types_lookup (name) VALUES ("Force CheckIn");
+INSERT INTO document_transaction_types_lookup (name) VALUES ("Email Link");
+INSERT INTO document_transaction_types_lookup (name) VALUES ("Collaboration Step Approve");
 
 -- document status
 INSERT INTO status_lookup (name) VALUES ("Live");
