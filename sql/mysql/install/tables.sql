@@ -235,10 +235,8 @@ CREATE TABLE document_subscriptions (
 -- 
 
 CREATE TABLE document_text (
-  id int(11) NOT NULL default '0',
   document_id int(11) default NULL,
   document_text mediumtext,
-  UNIQUE KEY id (id),
   KEY document_text_document_id_indx (document_id),
   FULLTEXT KEY document_text (document_text)
 ) TYPE=MyISAM;
@@ -908,17 +906,6 @@ CREATE TABLE zseq_document_link (
 -- 
 
 CREATE TABLE zseq_document_subscriptions (
-  id int(10) unsigned NOT NULL auto_increment,
-  PRIMARY KEY  (id)
-) TYPE=MyISAM;
-
--- --------------------------------------------------------
-
--- 
--- Table structure for table `zseq_document_text`
--- 
-
-CREATE TABLE zseq_document_text (
   id int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (id)
 ) TYPE=MyISAM;
