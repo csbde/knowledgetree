@@ -9,16 +9,21 @@
 
 function getPage($iFolderID, $iDocumentTypeID) {
 	global $default;
+	$sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
+	$sTDBGColour = $default->siteMap->getSectionColour($sSectionName, "td");
 	$sToRender = "<table border=\"0\">\n";
     $sToRender .= "<tr>\n";
     $sToRender .= "\t<td>" . renderFolderPath($iFolderID, "$default->uiUrl/foldermanagement/addFolderBL.php") . "</td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "</table>\n";
-    $sToRender .= "<table border=\"0\">\n";
+	$sToRender .= "<br>";
+    $sToRender .= "<table border=\"1\">\n";
     $sToRender .= "<tr>\n";	
-	$sToRender .= "<td><b>Document type:</b></td>\n";
+	$sToRender .= "<td bgcolor=\"$sTDBGColour\">Document type</td>\n";
 	$sToRender .= "<td>" . getDocumentTypeDropDown($iDocumentTypeID) . "</td>\n";	
 	$sToRender .= "</tr>\n";
+	$sToRender .= "</table>\n";
+	$sToRender .= "<table>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td><table border=\"0\"><tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/add.gif\"></td><td><a href=\"$default->rootUrl/control.php?action=editFolder&fFolderID=$iFolderID\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></a></td></tr></table></td><td>&nbsp</td>\n";
 	$sToRender .= "</tr>\n";

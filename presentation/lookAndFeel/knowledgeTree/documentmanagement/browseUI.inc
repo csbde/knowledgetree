@@ -69,7 +69,7 @@ function renderCategoryResults($aResults) {
     if ($aResults["categories"][0] == "Categories") {
         // loop through categories and display them
         for ($i=1; $i<count($aResults["categories"]); $i++) {
-            $sToRender .= "<tr><td>" . displayCategoryLink($aResults["categories"][$i]) . "</td></tr>";
+            $sToRender .= "<tr><td bgcolor=\"" . getColour($i) . "\">" . displayCategoryLink($aResults["categories"][$i]) . "</td></tr>";
         }
     } else {
         // else the first entry is the category name, so display the documents in the category
@@ -115,7 +115,7 @@ function renderDocumentTypeResults($aResults) {
     if ($aResults["documentTypes"][0]["name"] == "Document Types") {
         // loop through document types and display them
         for ($i=1; $i<count($aResults["documentTypes"]); $i++) {
-            $sToRender .= "<tr><td>" . displayDocumentTypeLink($aResults["documentTypes"][$i]) . "</td></tr>";
+            $sToRender .= "<tr><td bgcolor=\"" . getColour($i) . "\">" . displayDocumentTypeLink($aResults["documentTypes"][$i]) . "</td></tr>";
         }
     } else {
         // else the first entry is the document type name, so display the documents in the document type
@@ -132,7 +132,7 @@ function renderFolderResults($aResults) {
     // now loop through the rest of the folders and display links
     for ($i=1; $i<count($aResults["folders"]); $i++) {
         $sRow = displayFolderLink($aResults["folders"][$i]);
-        $sToRender .= "<tr><td>" . $sRow . "</td></tr>";
+        $sToRender .= "<tr><td width=\"100%\" bgcolor=\"" . getColour($i) . "\">" . $sRow . "</td></tr>";
     }
     
     $sToRender .= "<tr><td>&nbsp;</td></tr>";
@@ -144,7 +144,7 @@ function renderFolderResults($aResults) {
 function renderDocumentList($aDocuments, $bDisplayFullPath = false) {
     // loop through the files and display links
     for ($i=0; $i<count($aDocuments); $i++) {
-        $sToRender .= "<tr><td>" . displayDocumentLink($aDocuments[$i], $bDisplayFullPath) . "</td></tr>";
+        $sToRender .= "<tr><td bgcolor=\"" . getColour($i) . "\">" . displayDocumentLink($aDocuments[$i], $bDisplayFullPath) . "</td></tr>";
     }
     return $sToRender;
 }
@@ -179,5 +179,9 @@ function renderPage($aResults, $sBrowseType) {
     
     return $sToRender;
 }
+
+function getColour($iColourCount) {
+		return ($iColourCount%2 == 0) ? "F5F6EE" : "FFFFFF";
+	}
 
 ?>

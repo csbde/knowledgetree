@@ -15,8 +15,10 @@
 
 function renderDocumentPath($oDocument) {
     global $default;
+	$sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
+	$sTDBGColour = $default->siteMap->getSectionColour($sSectionName, "td");	
     $sDocumentPath = displayFolderPathLink(Folder::getFolderPathAsArray($oDocument->getFolderID()), Folder::getFolderPathNamesAsArray($oDocument->getFolderID()), "$default->rootUrl/control.php?action=browse") . " > <a href=\"$default->rootUrl/presentation/lookAndFeel/knowledgeTree/documentmanagement/viewBL.php?fDocumentID=" . $oDocument->getID() . "&fForInlineView=1\" target=\"View document\">" . $oDocument->getName() . "</a>";
-    return "<table border=1 width = 100%><tr><td>$sDocumentPath</td></tr></table>\n";
+    return "<table border=0 cellpadding=\"5\" width = 100%><tr><td bgcolor=\"$sTDBGColour\">$sDocumentPath</td></tr></table>\n";
 }
 
 function renderDocumentData($oDocument) {
@@ -165,6 +167,7 @@ function getEditPage($oDocument) {
 		$sToRender .= "\t\t<td><table border=\"0\"><tr>\n";
 		$sToRender .= "\t\t<td><b>You currently have an active role<br> in the collaboration process</b></td>\n";				
 		$sToRender .= "\t\t<td align=\"center\"><a href=" . $_SERVER['PHP_SELF'] . "?fDocumentID=" . $oDocument->getID() . "&fCollaborationStepComplete=1><img src=\"$default->graphicsUrl/widgets/update.gif\" border=\"0\"/></a></td>\n";
+		$sToRender .= "\t\t<td align=\"center\"><a href=" . $_SERVER['PHP_SELF'] . "?fDocumentID=" . $oDocument->getID() . "&fCollaborationStepReject=1><img src=\"$default->graphicsUrl/widgets/update.gif\" border=\"0\"/></a></td>\n";
 		$sToRender .= "\t\t</tr></table></td>\n";
 	}
     $sToRender .= "\t</tr>";
