@@ -29,18 +29,28 @@ class AuthLdap {
 
     // 1.1 Public properties -----------------------------------------------------
 
-    var $server;          // Array of server IP address or hostnames
-    var $dn;           // The base DN (e.g. "dc=foo,dc=com")
-    var $people;           // Where the user records are kept
-    var $groups;           // Where the group definitions are kept
-    var $ldapErrorCode;   // The last error code returned by the LDAP server
-    var $ldapErrorText;   // Text of the error message
+    var $server;         // Array of server IP address or hostnames
+    var $dn;             // The base DN (e.g. "dc=foo,dc=com")    
+    var $serverType;     // the directory server, currently supports iPlanet and Active Directory    
+    var $bindDn;         // The current authenticated dn
+    var $bindPwd;        // The current users pwd
+    var $people;         // Where the user records are kept
+    var $groups;         // Where the group definitions are kept
+    var $ldapErrorCode;  // The last error code returned by the LDAP server
+    var $ldapErrorText;  // Text of the error message
 
     // 1.2 Private properties ----------------------------------------------------
 
     var $connection;  // The internal LDAP connection handle
     var $result;   // Result of any connections etc.
 
+    // Constructor
+    function AuthLdap ($sLdapServer, $sBaseDN, $sServerType) {
+        $this->server = array($sLdapServer);
+        $this->dn = $sBaseDN;
+        $this->serverType = $sServerType;
+    }
+    
     // 2.1 Connection handling methods -------------------------------------------
 
     function connect() {
@@ -135,8 +145,13 @@ class AuthLdap {
             $this->ldapErrorCode = ldap_errno( $this->connection);
             $this->ldapErrorText = ldap_error( $this->connection);
             return false;
-        } else
+        } else {
+            // bound successfully, so save the dn
+            $this->bindDn = $bindDn;
+            // and password! (not good but necessary for AD)
+            $this->bindPwd = $pass;
             return true;
+        }
     }
 
     // 2.2 Password methods ------------------------------------------------------
@@ -150,7 +165,6 @@ class AuthLdap {
         /* Construct the full DN, eg:-
         ** "uid=username, ou=People, dc=orgname,dc=com"
         */
-        //$checkDn = "uid=" .$uname. ", ou=" .$this->people. ", " .$this->dn;
         $checkDn = "uid=" . $uname . ", " . $this->setDn(true);
         // Try and connect...
         $this->result = @ldap_bind( $this->connection,$checkDn,$pass);
@@ -180,7 +194,6 @@ class AuthLdap {
         ** password attribute (userPassword). Otherwise this will fail.
         */
 
-        //$checkDn = "uid=" .$uname. ", ou=" .$this->people. ", " .$this->dn;
         // builds the appropriate dn, based on whether $this->people and/or $this->group is set
         $checkDn = "uid=" . $uname . ", " . $this->setDn(true);
         $this->result = @ldap_bind( $this->connection,$checkDn,$oldPass);
@@ -251,7 +264,6 @@ class AuthLdap {
         ** error occurs (eg:- no such user, no group by that name etc.)
         */
 
-        //$checkDn = "ou=" .$this->groups. ", " .$this->dn;
         // builds the appropriate dn, based on whether $this->people and/or $this->group is set
         $checkDn = $this->setDn(false);
 
@@ -383,7 +395,15 @@ class AuthLdap {
         $checkDn = $this->setDn( true);
 
         // Perform the search and get the entry handles
-        $this->result = ldap_search( $this->connection, $checkDn, "uid=" .$search);
+        
+        // if the directory is AD, then bind first
+        if ($this->serverType == "ActiveDirectory") {
+            $this->authBind($this->bindDn, $this->bindPwd);
+            $this->result = ldap_search( $this->connection, $checkDn, "samaccountname=" .$search);            
+        } else {
+            $this->result = ldap_search( $this->connection, $checkDn, "uid=" .$search);
+        }
+        
         $info = ldap_get_entries( $this->connection, $this->result);
         for( $i = 0; $i < $info["count"]; $i++) {
             // Get the username, and create an array indexed by it...
