@@ -21,6 +21,11 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */ 
 
+// ----------------------------------------------------------------
+// The options in this section should automatically be detected by
+// KnowledgeTree.  
+// ----------------------------------------------------------------
+
 // install path (file path)
 //
 // Leave commented to have it automatically detected.
@@ -33,15 +38,27 @@
 // 
 // $default->serverName = "";
 
-// whether ssl is enabled or not
-$default->sslEnabled = false;
+// Whether ssl is enabled or not
+//
+// Leave commented to have it automatically detected.
+//
+//$default->sslEnabled = false;
 
-// Change this to reflect the authentication method you are using
-// valid choices are: DBAuthenticator, LDAPAuthenticator
-$default->authenticationClass = "DBAuthenticator";
+// Path to the web application from the root of the web site.
+// If KT is at http://example.org/foo/, then rootUrl should be '/foo'
+//
+// Leave commented to have it automatically detected.
+//
+//$default->rootUrl  = "";
 
-// enable folder hiding flag
-$default->folderHidingFlag = 1;
+// ----------------------------------------------------------------
+// At a minimum, you may need to change some of settings in this
+// section.
+// ----------------------------------------------------------------
+
+// Change this to reflect the database you are using
+// currently mysql is the only supported type
+$default->dbType = "mysql";
 
 // Database info
 $default->dbHost           = "localhost";
@@ -49,9 +66,16 @@ $default->dbName           = "dms";
 $default->dbUser           = "dms";
 $default->dbPass           = "pass";
 
-// Change this to reflect the database you are using
-// currently mysql is the only supported type
-$default->dbType = "mysql";
+// ----------------------------------------------------------------
+// This section is for more esoteric settings.
+// ----------------------------------------------------------------
+
+// Change this to reflect the authentication method you are using
+// valid choices are: DBAuthenticator, LDAPAuthenticator
+$default->authenticationClass = "DBAuthenticator";
+
+// enable folder hiding flag
+$default->folderHidingFlag = 1;
 
 // default language
 $default->defaultLanguage = "en";
@@ -67,6 +91,10 @@ $default->organisationID = 1;
 //       effect your clients.
 // $default->scrollingNews = true;
 $default->scrollingNews = false; 
+
+// If you don't require all documents to have all their generic metadata
+// filled in, then set $default->genericMetaDataRequired = false;
+$default->genericMetaDataRequired = true;
 
 // ----------------------------------------------------------------
 // WARNING: Settings below here may be overridden if using database
@@ -95,11 +123,10 @@ $default->emailAdmin = "kt@jamwarehouse.com";
 $default->emailAdminName = "DMS Administrator";
     
 // directories
-$default->documentRoot  =  $default->fileSystemRoot . "/Documents";
-$default->uiDirectory  = $default->fileSystemRoot . "/presentation/lookAndFeel/knowledgeTree";
+$default->documentRoot = $default->fileSystemRoot . "/Documents";
+$default->uiDirectory = $default->fileSystemRoot . "/presentation/lookAndFeel/knowledgeTree";
      
 // urls
-$default->rootUrl  = "";
 $default->graphicsUrl = $default->rootUrl . "/graphics";
 $default->uiUrl  = $default->rootUrl . "/presentation/lookAndFeel/knowledgeTree";
     
