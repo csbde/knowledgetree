@@ -22,7 +22,7 @@ function getDeletePage($iWebSiteID) {
     $sToRender .= "<table width=\"600\">" . renderHeading("Remove Website") . "</table>";
     $sToRender .= "<table>\n";
     $sToRender .= "<table>\n";
-    $sToRender .= "<tr><td>$sHeading</td></tr>\n";
+    $sToRender .= "<tr><td colspan=\"2\">$sHeading</td></tr>\n";
     $sToRender .= "<tr>\n";
     $sToRender .= "<td>WebSite Name: </td><td>" . getWebSiteDisplay($oWebSite) . "</td>\n";
     $sToRender .= "</tr>\n";

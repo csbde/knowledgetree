@@ -91,6 +91,17 @@ function getEditWebSitePage($iUserID, $iWebSiteID) {
     $sToRender .= "</tr>\n";
     $sToRender .= "</table>\n";
 
+    $sToRender .= "\n\n<script language=\"javascript\">\n<!--\n";
+	$sToRender .= "function validateForm(theForm) {\n";
+	$sToRender .= "\tif (!(validRequired(theForm.fWebSiteName, 'WebSite Name'))) {\n";
+	$sToRender .= "\t\treturn false;\n";
+	$sToRender .= "\t}\n";        
+	$sToRender .= "\tif (!(validRequired(theForm.fWebSiteURL, 'WebSite URL'))) {\n";
+	$sToRender .= "\t\treturn false;\n";
+	$sToRender .= "\t}\n";
+	$sToRender .= "return true;\n}\n";
+	$sToRender .= "//-->\n</script>\n\n";
+    
     return $sToRender;
 }
 
