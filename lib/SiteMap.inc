@@ -45,25 +45,38 @@ class SiteMap {
      *
      * @param $action
      *        the action to lookup pages for
-     * @param $groupID
-     *        the user group ID to perform page level validation against
+     * @param $groupIDs
+     *        array of user group IDs to perform page level validation against
      * @return
      *        the page to redirect to, or false if the user class doesn't
      *        have access to the page
      */
-    function getPage($action, $groupID) {
+    function getPage($action, $groupIDs) {
         global $default;
-        
+        $default->log->debug("Sitemap::getPage function start; action=$action; groupIDs=" . arrayToString($groupIDs));
         // for each section
         foreach ($this->siteMapArray as $section => $valArr) {
+            $default->log->debug("Sitemap::getPage section=$section");
             // for each group, page array combination
             foreach ($valArr as $requiredGroup => $pageArr) {
-                $reqGrpID = lookup_id($default->owl_groups_table, "name", $requiredGroup);                 
-                if ($groupID <= lookup_id($default->owl_groups_table, "name", $requiredGroup)) {
-                    // now loop through pages until we find the right one
-                    foreach ($pageArr as $ackshin => $page) {
-                        if ($ackshin == $action) {
-                            return $page;
+                $reqGrpID = lookupID($default->owl_groups_table, "name", $requiredGroup);
+                $default->log->debug("Sitemap::getPage requiredGroup=$requiredGroup; reqGrpID=$reqGrpID");
+                // now loop through pages until we find the right one
+                foreach ($pageArr as $ackshin => $page) {
+                    if ($ackshin == $action) {
+                        // now check if we have the right group access by
+                        // looping through the groupID array and returning the page
+                        // if the current groupID <= $reqGrpID
+                        
+                        // FIXME: this won't work once we have lots of groups will it??
+                        // we're assuming that the default groups will be created in the right
+                        // order, so that groups with sys and unit access have lower ids than
+                        // the required ones!
+                        for ($i = 0; $i<count($groupIDs); $i++) {
+                            $default->log->debug("Sitemap::getPage current groupid=" . $groupIDs[$i] . "; reqGrpID=$reqGrpID"); 
+                            if ($groupIDs[$i] <= $reqGrpID) {
+                                return $page;
+                            }
                         }
                     }
                 }
@@ -106,6 +119,7 @@ class SiteMap {
         } else {
             // supplied section not in sitemap
             // TODO: internal error code?
+            $_SESSION["errorMessage"] = "$sectionName not in SiteMap!";
             return false;
         }
     }
@@ -114,7 +128,7 @@ class SiteMap {
      * Prints the current site map
      */
     function printMap() {
-        print_r($this->siteMapArray);
+        return arrayToString($this->siteMapArray);
     }
 }
 ?>
