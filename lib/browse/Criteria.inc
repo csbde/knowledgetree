@@ -480,6 +480,12 @@ class Criteria {
         global $aBaseCriteria;
         global $default;
         Criteria::initCriteria();
+
+        // array_key_exists 4.3.2 (at least, tested on RHEL3) returns
+        // false if '-1' (the string) is the key given, and the real key
+        // is -1 (the integer).
+        $iID = (int)$iID;
+
         if (array_key_exists($iID, $aBaseCriteria)) {
             return $aBaseCriteria[$iID];
         } else {
