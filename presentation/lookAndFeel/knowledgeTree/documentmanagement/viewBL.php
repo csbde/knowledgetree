@@ -126,6 +126,7 @@ if (checkSession()) {
                     // reset minor version number
                     $oDocument->setMinorVersionNumber(0);
                     $oDocument->update();
+                    // TODO: create a transaction?
                     
 					$oUser = User::get($oDocument->getCreatorID());
 					$sBody = $oUser->getUserName() . ", the collaboration process for the document, '<a href=\"https://" . $_SERVER["SERVER_NAME"] . "$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $oDocument->getID() . "\">" . $oDocument->getName() . "</a>', has been completed. ";								
