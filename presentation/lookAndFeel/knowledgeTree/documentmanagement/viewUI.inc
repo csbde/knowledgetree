@@ -20,7 +20,7 @@ function renderDocumentPath($oDocument, $bDisplayActions) {
 	$sTDBGColour = $default->siteMap->getSectionColour($sSectionName, "td");
 	if ($bDisplayActions) {	
 	    $sDocumentPath = displayFolderPathLink(Folder::getFolderPathAsArray($oDocument->getFolderID()), Folder::getFolderPathNamesAsArray($oDocument->getFolderID()), "$default->rootUrl/control.php?action=browse") . " > ";
-	    $sDocumentPath .= "<a onClick=\"alert('This will view a copy of the document current in the DMS.  Any changes to this file will not be managed in the DMS.'); return true;\" href=\"" . generateControllerUrl("viewDocument", "fDocumentID=" . $oDocument->getID() . "&fForInlineView=1") . "\">" . $oDocument->getName() . "</a>";
+	    $sDocumentPath .= "<a onClick=\"alert('This will view a copy of the document current in the DMS.  Any changes to this file will not be managed in the DMS.'); return true;\" href=\"" . generateControllerUrl("downloadDocument", "fDocumentID=" . $oDocument->getID() . "&fForInlineView=1") . "\">" . $oDocument->getName() . "</a>";
 	    //$sDocumentPath .= generateControllerLink("viewDocument", "fDocumentID=" . $oDocument->getID() . "&fForInlineView=1", $oDocument->getName());
 	} else {
 		$sDocumentPath = $oDocument->getDisplayPath();
@@ -358,7 +358,7 @@ function displayActionButtons($oDocument, $bEdit) {
     } else {
         $sToRender .= "<tr><td align=\"left\"><a href=\"" . generateControllerLink("addSubscription", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/docactions/subscribe.gif\" border=\"0\" /></a></td></tr>\n";
     }
-    $sToRender .= "<tr><td align=\"left\"><a onClick=\"alert('This will download a copy of the document and is not the same as Checking Out a document.  Changes to this downloaded file will not be managed in the DMS.'); return true;\" href=\"" . generateControllerLink("viewDocument", "fDocumentID=" . $oDocument->getID() . "&fForDownload=1") . "\"><img src=\"$default->graphicsUrl/widgets/docactions/download.gif\" border=\"0\" /></a></td></tr>\n";    
+    $sToRender .= "<tr><td align=\"left\"><a onClick=\"alert('This will download a copy of the document and is not the same as Checking Out a document.  Changes to this downloaded file will not be managed in the DMS.'); return true;\" href=\"" . generateControllerLink("downloadDocument", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/docactions/download.gif\" border=\"0\" /></a></td></tr>\n";    
     $sToRender .= "<tr><td align=\"left\"><a href=\"" . generateControllerLink("viewDiscussion", "fDocumentID=" . $oDocument->getID() . "&fForDiscussion=1") . "\"><img src=\"$default->graphicsUrl/widgets/docactions/discussion.gif\" border=\"0\" /></a></td></tr>\n";
     // only display the archive button for available documents
     if (!$oDocument->getIsCheckedOut() || !$oDocument->hasCollaboration() || (!DocumentCollaboration::documentCollaborationStarted($oDocument->getID()))) {
@@ -402,12 +402,12 @@ function getPage($oDocument, $bEdit, $sHtml = "") {
 	    $sToRender .= renderDocumentPath($oDocument, ($sHtml == "")) . "\n\n";
 	
 		$sToRender .= "<table border=\"0\" width=\"530\">";		
-		$sToRender .= renderDocumentSection("<a href=\"javascript:void();\" onClick=\"switchDiv('documentData');\">Document Data</a>");
-		$sToRender .= renderDocumentSection("<a href=\"javascript:void();\" onClick=\"switchDiv('genericMetaData');\">Generic Meta Data</a>");
-		$sToRender .= renderDocumentSection("<a href=\"javascript:void();\" onClick=\"switchDiv('typeSpecificMetaData');\">Type Specific Meta Data</a>");
-		$sToRender .= renderDocumentSection("<a href=\"javascript:void();\" onClick=\"switchDiv('archiveSettings');\">Archive Settings</a>");
-		$sToRender .= renderDocumentSection("<a href=\"javascript:void();\" onClick=\"switchDiv('documentRouting');\">Document Routing</a>");
-		$sToRender .= renderDocumentSection("<a href=\"javascript:void();\" onClick=\"switchDiv('linkedDocuments');\">Linked Documents</a>");
+		$sToRender .= renderDocumentSection("<a href=\"javascript:void();\" onClick=\"switchDiv('documentData', 'document');\">Document Data</a>");
+		$sToRender .= renderDocumentSection("<a href=\"javascript:void();\" onClick=\"switchDiv('genericMetaData', 'document');\">Generic Meta Data</a>");
+		$sToRender .= renderDocumentSection("<a href=\"javascript:void();\" onClick=\"switchDiv('typeSpecificMetaData', 'document');\">Type Specific Meta Data</a>");
+		$sToRender .= renderDocumentSection("<a href=\"javascript:void();\" onClick=\"switchDiv('archiveSettings', 'document');\">Archive Settings</a>");
+		$sToRender .= renderDocumentSection("<a href=\"javascript:void();\" onClick=\"switchDiv('documentRouting', 'document');\">Document Routing</a>");
+		$sToRender .= renderDocumentSection("<a href=\"javascript:void();\" onClick=\"switchDiv('linkedDocuments', 'document');\">Linked Documents</a>");
 		$sToRender .= "</table>";		
 	    $sToRender .= "</div>";
 	    
