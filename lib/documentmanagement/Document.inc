@@ -767,13 +767,45 @@ class Document {
 	function isLastStepInCollaborationProcess($iDocumentID) {
 		global $default;
 		$sql = $default->db;
-		$sql->query("SELECT * FROM $default->owl_folders_user_roles_table WHERE document_id = $iDocumentID AND active = 0 AND done = 0");
-		if ($sql->next_record()) {
-			return false;
-		}
-		return true;
+        $sQuery = "SELECT * FROM $default->owl_folders_user_roles_table WHERE document_id = $iDocumentID AND done = 0";
+		$sql->query($sQuery);
+        $default->log->info("lastCollabStep:$sQuery");
+        if ($sql->num_rows() > 1) {
+            return false;
+        } else {
+            return true;
+        }
 	}
 	
+    /**
+     * Returns the userID of the last user in the collaboration process
+     */
+    function getLastCollaboratorID($iDocumentID) {
+        
+		global $default;
+		$sql = $default->db;
+        // returns all users, the sequence of their collaboration and the time of completion
+        $sQuery = "SELECT FURL.user_id, FURL.datetime, GFAL.precedence FROM $default->owl_folders_user_roles_table FURL " .
+                  "INNER JOIN $default->owl_groups_folders_approval_table GFAL ON FURL.group_folder_approval_id = GFAL.id " .
+                  "WHERE FURL.document_id = $iDocumentID " .
+                  "ORDER BY GFAL.precedence";
+		$sql->query($sQuery);
+        $iPrecedence = -1;
+        $iDateTime = 0;
+        $iUserID = -1;
+        while ($sql->next_record()) {
+            if ($sql->f("precedence") >= $iPrecedence) {
+                $iPrecedence = $sql->f("precedence");
+                $iDateCompleted = strtotime($sql->f("datetime"));
+                if ($iDateCompleted > $iDateTime) {
+                    $iDateTime = $iDateCompleted;
+                    $iUserID = $sql->f("user_id");
+                }
+            }
+        }
+        return ($iUserID == -1) ? false : $iUserID;
+    }
+    
 	/**
 	* Begins the next step(s) in the document
 	* collaboration process
@@ -818,9 +850,9 @@ class Document {
 						//get the user to email
 						$oUser = User::get($oFolderUserRole->getUserID());
 						if ($oUser->getEmailNotification()) {
-					
-							$sBody = $oUser->getUserName() . ", your role of '" . $oRole->getName() . "' in the document, '" . $this->sName . "' collaboration process is now active. " .
-                                                    "Click " . generateControllerLink("viewDocument", "fDocumentID=" . $this->iId, "here") . " to access " .
+                            $oDocument = & Document::get($iDocumentID);
+							$sBody = $oUser->getName() . ", your role of '" . $oRole->getName() . "' in the document, '" . $oDocument->getName() . "' collaboration process is now active. " .
+                                                    "Click " . generateControllerLink("viewDocument", "fDocumentID=$iDocumentID", "here") . " to access " .
 													"the document";
 					
 							$oEmail = & new Email();
