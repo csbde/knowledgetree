@@ -35,7 +35,8 @@ function displayDocumentPath($iDocumentID) {
 	$oDocument = Document::get($iDocumentID);
 	if ($oDocument) {
 		$iFolderID = $oDocument->getFolderID();
-		$sDocumentName = $oDocument->getName();
+		// #3425 for consistency
+		$sDocumentName = $oDocument->getFileName();
 		$sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
 		$sTDBGColour = $default->siteMap->getSectionColour($sSectionName, "td");	    
     	$sDocumentPath = displayFolderPathLink(Folder::getFolderPathAsArray($iFolderID), Folder::getFolderPathNamesAsArray($iFolderID),  "$default->rootUrl/control.php?action=browse") . " > " . $sDocumentName;

@@ -34,11 +34,11 @@ function renderDocumentPath($oDocument, $bDisplayActions = false) {
 	$sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
 	$sTDBGColour = $default->siteMap->getSectionColour($sSectionName, "td");
 	
-	$sDocumentPath = displayFolderPathLink(Folder::getFolderPathAsArray($oDocument->getFolderID()), Folder::getFolderPathNamesAsArray($oDocument->getFolderID()), "$default->rootUrl/control.php?action=browse") . " > ";	
+	$sDocumentPath = displayFolderPathLink(Folder::getFolderPathAsArray($oDocument->getFolderID()), Folder::getFolderPathNamesAsArray($oDocument->getFolderID()), "$default->rootUrl/control.php?action=browse") . " > ";
+	// #3425 for consistency
+	$sDocumentPath .= $oDocument->getFileName();	
 	if ($bDisplayActions) {	
-	    $sDocumentPath .= "<a onClick=\"alert('This will view a copy of the current version of this document in the DMS.  Any changes to this file will not be managed in the DMS.'); return true;\" href=\"" . generateControllerUrl("downloadDocument", "fDocumentID=" . $oDocument->getID() . "&fForInlineView=1") . "\">" . $oDocument->getName() . "</a>";
-	} else {
-		$sDocumentPath .= $oDocument->getName();
+	    $sDocumentPath = "<a onClick=\"alert('This will view a copy of the current version of this document in the DMS.  Any changes to this file will not be managed in the DMS.'); return true;\" href=\"" . generateControllerUrl("downloadDocument", "fDocumentID=" . $oDocument->getID() . "&fForInlineView=1") . "\">" . $sDocumentPath . "</a>";
 	}    
 	return "<table border=\"0\" cellpadding=\"5\" width=\"610\"><tr bgcolor=\"$sTDBGColour\"><td width=\"87%\">$sDocumentPath</td>" . ($bDisplayActions ? "<td width=\"15%\" align=\"center\" valign=\"middle\"><strong>Actions</strong></td>" : "") . "</tr></table>\n";
 }
@@ -539,7 +539,10 @@ function displayPublishButton($oDocument, $bEdit) {
     }
 	return "<tr><td align=\"left\">"  . displayButton("viewDocument", "fDocumentID=" . $oDocument->getID() . "&fForPublish=1", "publish", $sDisabledText) . "</td></tr>\n";    
 }
-	
+
+/**
+ * Displays document action buttons
+ */
 function displayActionButtons($oDocument, $bEdit) {
     $sToRender .= displayViewButton($oDocument, $bEdit);
     $sToRender .= displayEmailButton($oDocument);

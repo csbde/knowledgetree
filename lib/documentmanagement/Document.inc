@@ -733,8 +733,9 @@ class Document {
     */
     function getDisplayPath($bDisplayIcon = false) {
     	$sFolderPath = Folder::getFolderDisplayPath($this->iFolderID);
+    	// #3425 for consistency
         return ($bDisplayIcon ? $this->getIcon() : "") . 
-        	   ($sFolderPath == "" ? "Deleted Folder" : $sFolderPath) . " > " . $this->sName;
+        	   ($sFolderPath == "" ? "Deleted Folder" : $sFolderPath) . " > " . $this->sFileName;        	   
     }
     
     /**
