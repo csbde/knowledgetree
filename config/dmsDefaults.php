@@ -18,6 +18,7 @@ $default->owl_LangDir		= $default->owl_fs_root . "/locale";
 $default->owl_ui_directory  = $default->owl_fs_root . "/presentation/lookAndFeel/knowledgeTree";
 $default->owl_ui_url  = $default->owl_root_url . "/presentation/lookAndFeel/knowledgeTree";
 
+
 // Set to true to use the file system to store documents, false only uses the database
 $default->owl_use_fs            = true;
 //$default->owl_use_fs            = false;
@@ -132,23 +133,52 @@ $default->debug = True;
 // define site mappings
 require_once("$default->owl_fs_root/lib/session/SiteMap.inc");
 $default->siteMap = new SiteMap();
-// action, page, section, group with access, link description
+
+// action, page, section, group with access
+
+// general pages
 $default->siteMap->addPage("login", "/presentation/login.php?loginAction=login", "General", "Anonymous", "");
 $default->siteMap->addPage("loginForm", "/presentation/login.php?loginAction=loginForm", "General", "Anonymous", "login"); 
 $default->siteMap->addPage("logout", "/presentation/logout.php", "General", "Anonymous", "logout");
 $default->siteMap->addPage("dashboard", "/presentation/dashboardBL.php", "General", "Unit Administrators", "dashboard");
 
+//pages for manage documents section
 $default->siteMap->addDefaultPage("browse", "/presentation/documentmanagement/browseBL.php", "Manage Documents", "Anonymous", "browse documents");
 $default->siteMap->addPage("addFolder", "/presentation/documentmanagement/addFolder.php", "Manage Documents", "Unit Administrators", "add a folder");
 $default->siteMap->addPage("viewDocument", "/presentation/documentmanagement/viewDocumentBL.php", "Manage Documents", "Anonymous", "view document details");
 
+// pages for administration section
 $default->siteMap->addDefaultPage("addUser", "/presentation/addUser.php", "Administration", "Unit Administrators", "add user");
 $default->siteMap->addPage("addUnit", "/presentation/addUnit.php", "Administration", "Unit Administrators", "add unit");
 $default->siteMap->addPage("addOrganisation", "/presentation/addOrganisation.php", "Administration", "System Administrators", "add organisation");
 
+// pages for advanced search section
+//$default->siteMap->addDefaultPage("search", "/manage.php", "Advanced Search", "Anonymous");
+
+// pages for prefs section
+$default->siteMap->addDefaultPage("preferences", "/preferences.php", "Preferences", "Anonymous", "Preferences");
+$default->siteMap->addPage("viewPreferences", "/preferences.php", "Preferences", "Anonymous", "View Preferences");
+$default->siteMap->addPage("editPreferences", "/preferences.php", "Preferences", "Anonymous", "Edit Preferences");
+
+// pages for Help section
+//$default->siteMap->addDefaultPage("help", "/manage2.php", "Help", "Anonymous");
+
+// pages for logout section section
+//$default->siteMap->addDefaultPage("logout", "/manage3.php", "Logout", "Anonymous");
+
+
+// test pages
 $default->siteMap->addPage("scratchPad", "/tests/scratchPad.php", "Tests", "Anonymous", "scratch");
 $default->siteMap->addPage("sitemap", "/tests/session/SiteMap.php", "Tests", "Anonymous", "sitemap");
 $default->siteMap->addPage("documentBrowserTest", "/tests/documentmanagement/DocumentBrowser.php", "Tests", "Anonymous", "test the document browser");
+
+// action, page, section, group with access, link description
+
+
+
+
+
+
 
 require_once("$default->owl_fs_root/lib/session/Session.inc");
 require_once("$default->owl_fs_root/lib/session/control.inc");
