@@ -205,6 +205,34 @@ class DependantDocumentTemplate {
 		$_SESSION["errorMessage"] = $lang_err_database;
 		return false;
 	}
+	
+	/**
+    * Static function
+    * Get a list of DependantDocumentTemplate
+    *
+    * @param  String  Where clause (not required)
+    *
+    * @return Array array of DependantDocumentTemplates objects, false otherwise and set $_SESSION["errorMessage"]
+    */
+    function getList($sWhereClause = null) {
+        global $default, $lang_err_database;
+        $aDependantDocumentTemplateArray;
+        settype($aDependatDocumentTemplateArray, "array");
+        $sql = $default->db;
+        // TODO: join on sys_deleted
+        $result = $sql->query("SELECT * FROM " . $default->owl_dependant_document_template_table  . (isset($sWhereClause) ? " WHERE " . $sWhereClause : ""));
+        if ($result) {
+            $iCount = 0;
+            while ($sql->next_record()) {
+                $oDependantDocumentTemplate = & DependantDocumentTemplate::get($sql->f("id"));
+                $aDependantDocumentTemplateArray[$iCount] = $oDependantDocumentTemplate;
+                $iCount++;
+            }
+            return $aDependantDocumentTemplateArray;
+        }
+        $_SESSION["errorMessage"] = $lang_err_database;
+        return false;
+    }
 }
 
 ?>
