@@ -55,7 +55,6 @@ if (checkSession()) {
         } else {
             $oPatternCustom->setHtml(getPage($fUserID,$fGroupID));
             $main->setFormAction($_SERVER["PHP_SELF"] . "?fUserSet=1&fUserAssign=1");
-       
         }      
     }
 
@@ -63,6 +62,8 @@ if (checkSession()) {
         // else add to db and then goto page succes
         $oUserGroup = new GroupUserLink($fGroupID,$fUserID);
         if($oUserGroup->create()) {
+        	// update group search permissions
+        	$oUserGroup->updateSearchPermissions();
             $oPatternCustom->setHtml(getPageSuccess("&fUserID=$fUserID"));
         } else {
             $oPatternCustom->setHtml(getPageFail("&fUserID=$fUserID"));
