@@ -49,7 +49,7 @@ function getBrowsePage($fFolderID) {
 function getBrowseAddPage($fFolderID) {
     global $default;
     
-	$sToRender = "<table border=\"0\">\n";
+	$sToRender = "<table border=\"0\" width=\"600\">\n";
 	$sToRender .= "<tr>\n";	
 	$sToRender .= "\t<td>" . renderFolderPath($fFolderID, "/control.php?action=addDocument") . "</td>\n";
 	$sToRender .= "</tr>\n";
