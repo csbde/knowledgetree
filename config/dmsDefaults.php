@@ -211,7 +211,8 @@ $default->siteMap->addPage("removeUserFromGroup", "/presentation/lookAndFeel/kno
 //document type management
 $default->siteMap->addPage("doctype", "/presentation/lookAndFeel/knowledgeTree/administration/admin.php?sectionName=documentTypeAdministration", "doctypeAdministration", SysAdmin, "Document Type Management");
 $default->siteMap->addPage("docfield", "/presentation/lookAndFeel/knowledgeTree/administration/admin.php?sectionName=documentFieldAdministration", "doctypeAdministration", SysAdmin, "Document Field Management");
-
+$default->siteMap->addPage("assignDocTypeToField", "/presentation/lookAndFeel/knowledgeTree/administration/doctypefieldmanagement/assignDocTypeToFieldBL.php", "doctypeAdministration", SysAdmin, "Assign Document Type To Field");
+$default->siteMap->addPage("removeDocTypeFromField", "/presentation/lookAndFeel/knowledgeTree/administration/doctypefieldmanagement/removeDocTypeFromFieldBL.php", "doctypeAdministration", SysAdmin, "Remove Document Type From Field");
 // document type stuff
 $default->siteMap->addPage("addDocType", "/presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/addDocTypeBL.php", "documentTypeAdministration", SysAdmin, "Add a Document Type");
 $default->siteMap->addPage("addDocTypeSuccess", "/presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/addDocTypeSuccess.php", "documentTypeAdministration", SysAdmin, "Add a Document Type success", False);
