@@ -8,56 +8,26 @@
 *
 */
 
-	require_once("../../../../../config/dmsDefaults.php");
+require_once("../../../../../config/dmsDefaults.php");
+require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCreate.inc");
+require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
+require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
+require_once("$default->fileSystemRoot/lib/users/User.inc");    
+require_once("$default->fileSystemRoot/lib/security/permission.inc");
+require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");    
+require_once("$default->fileSystemRoot/lib/visualpatterns/PatternTableSqlQuery.inc");    
+require_once("$default->fileSystemRoot/lib/visualpatterns/PatternBrowsableSearchResults.inc");
+require_once("$default->fileSystemRoot/lib/visualpatterns/PatternListBox.inc");    
+require_once("$default->fileSystemRoot/presentation/Html.inc");
+require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/administration/adminUI.inc");
+require_once("listLinksUI.inc");
 
-if (checkSession()) {    
-    require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCreate.inc");
-	require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
-    require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
-    require_once("$default->fileSystemRoot/lib/users/User.inc");    
-    require_once("$default->fileSystemRoot/lib/security/permission.inc");
-    require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
-    require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");    
-    require_once("$default->fileSystemRoot/lib/visualpatterns/PatternTableSqlQuery.inc");    
-    require_once("$default->fileSystemRoot/lib/visualpatterns/PatternBrowsableSearchResults.inc");
-    require_once("$default->fileSystemRoot/lib/visualpatterns/PatternListBox.inc");    
-    require_once("$default->fileSystemRoot/presentation/Html.inc");
-	
-	
+if (checkSession()) {	
     $oPatternCustom = & new PatternCustom();
-
-if(checkSession()) {	
-		global $default;
-		
-		$oPatternCustom->addHtml(renderHeading("Link Management"));		// Create the Heading				
-		 		
-		$main->setFormAction($_SERVER['PHP_SELF']);
-				
-		
-		$sQuery = 	"SELECT id as LinkID, name as LinkName, url LinkURL, rank as LinkRank, " . 
-					"'Edit', 'Delete' " .
-					"FROM " . $default->owl_links_table . " " .
-					"ORDER BY name";
-		
-	    $aColumns = array("LinkName", "LinkURL", "LinkRank", "Edit", "Delete");
-	    $aColumnNames = array("Link Name","URL", "Rank", "Edit", "Delete");
-	    $aColumnTypes = array(1,1,1,3,3);
-	    $aDBColumnArray = array("LinkID");
-	    $aQueryStringVariableNames = array("fLinkID");
-	    	    
-	    $aHyperLinkURL = array(	3=> "$default->rootUrl/control.php?action=editLink",                       			
-                       			4=> "$default->rootUrl/control.php?action=removeLink");
-                     			
-	    	    
-	    $oSearchResults = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnNames, "100%", $aHyperLinkURL,$aDBColumnArray,$aQueryStringVariableNames);	    
-		$oSearchResults->setDisplayColumnHeadings(true);
-	    $htmlTables = $oSearchResults->render() ;
-	
-	    $oPatternCustom->addHtml($htmlTables);	    
-	
-	} // end of if checksession
-	
+    $oPatternCustom->setHtml(getPage($fGroupID));
+	require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 	$main->setCentralPayload($oPatternCustom);
-    $main->render();
+	$main->setFormAction($_SERVER['PHP_SELF']);	
+    $main->render();	
 }
 ?>
