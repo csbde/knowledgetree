@@ -7,6 +7,18 @@ lastused DATETIME,
 ip CHAR(30)
 ) TYPE = InnoDB;
 
+CREATE TABLE search_document_user_link (
+id integer unique auto_increment,
+document_id integer,
+user_id integer
+) Type = InnoDB;
+
+CREATE TABLE document_word_offset (                                                                                                                                                                                                     
+id integer NOT NULL UNIQUE auto_increment,                                                                                                                                                                                                    
+document_id integer NOT NULL default,                                                                                                                                                               
+word_offset integer default NULL,                                                                                                                                                                                                      
+word_id integer default NULL) TYPE=InnoDB;
+
 CREATE TABLE document_fields( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 name CHAR(255) NOT NULL,
