@@ -38,6 +38,6 @@ Search permissions on a document needs to be updated when:
 
 Search permissions of a user needs to be updated when:
 
-	1) The user is added to a group. (not done yet)
+	1) The user is added to a group. (done)
 
-	2) The user is removed from a group. (not done yet)
+	2) The user is removed from a group. (done)
