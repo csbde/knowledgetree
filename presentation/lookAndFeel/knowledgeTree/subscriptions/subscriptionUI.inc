@@ -15,7 +15,7 @@
 function renderHeading() {
     global $default;
     $sColor = $default->siteMap->getSectionColour("Subscriptions", "th");
-    $sToRender .= "<tr align=\"left\"><th class=\"sectionHeading\" bgcolor=\"$sColor\">Subscriptions</th></tr>\n";
+    $sToRender .= "<tr align=\"left\"><th class=\"sectionHeading\" bgcolor=\"$sColor\"><font color=\"ffffff\">Subscriptions</font></th></tr>\n";
     $sToRender .= "<tr/>\n";
     $sToRender .= "<tr/>\n";
     return $sToRender;
@@ -42,6 +42,8 @@ function renderManagePage() {
     }
 	$sToRender .= "<tr/>\n";
     $sToRender .= "<tr/>\n";
+$sToRender .= "<tr/>\n";
+    $sToRender .= "<tr/>\n";    
     
     // loop through them    
     for ($i = 0; $i < count($aFolderSubscriptions); $i++) {
@@ -73,7 +75,7 @@ function renderManagePage() {
 	$sToRender .= "<tr/>\n";
     $sToRender .= "<tr><td>";
     if (!$bNoSubscriptions) {
-        $sToRender .= "<input type=\"image\" src=\"$default->graphicsUrl/widgets/unsubscribe.gif\"/></a>\n";
+        $sToRender .= "<input type=\"image\" src=\"$default->graphicsUrl/widgets/unsubscribe.gif\" border=\"0\"/></a>\n";
     }
 	$sToRender .= "</td></tr>\n";
     $sToRender .= "</table>\n";
@@ -122,7 +124,7 @@ function renderMultipleRemoveConfirmationPage($aFolderSubscriptions, $aDocumentS
     $sToRender .= "<tr/>\n";
     $sToRender .= "<tr/>\n";
     $sToRender .= "<input type=\"hidden\" name=\"fConfirmed\" value=\"1\"/>";
-    $sToRender .= "<tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/unsubscribe.gif\"/></a>\n";    
+    $sToRender .= "<tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/unsubscribe.gif\" border=\"0\"/></a>\n";    
 	$sToRender .= "<a href=\"javascript:history.go(-1)\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></a></td>\n";
 	$sToRender .= "</tr>\n";
     $sToRender .= "</table>\n";
