@@ -25,15 +25,23 @@ if (checkSession()) {
 	
 	require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 
-	if (strlen($fSearchString) > 0) {		
+	if (strlen($fForSearch)) {		
 		if (strlen($fSearchString) > 0) {
 			//display search results
 			$sMetaTagIDs = getChosenMetaDataTags();	
 			
 			if (strlen($sMetaTagIDs) > 0) {
 				$sSQLSearchString = getSQLSearchString($fSearchString);
-				$sDocument = getApprovedDocumentString($sMetaTagIDs, $sSQLSearchString, (isset($fSearchArchive) ? "Archived" : "Live"));
-				if (strlen($sDocument) > 0) {
+				
+				if (!isset($fStartIndex)) {
+						$fStartIndex = 0;
+				}
+				
+				$oPatternCustom->setHtml(getSearchResults($sMetaTagIDs,$sSQLSearchString, $fStartIndex));					
+				$main->setCentralPayload($oPatternCustom);				                                
+				$main->render();
+				//$sDocument = getApprovedDocumentString($sMetaTagIDs, $sSQLSearchString, (isset($fSearchArchive) ? "Archived" : "Live"));
+				/*if (strlen($sDocument) > 0) {
 					//if there are documents to view					
 					$oPatternCustom = & new PatternCustom();
 					if (!isset($fStartIndex)) {
@@ -49,7 +57,7 @@ if (checkSession()) {
 					$main->setErrorMessage("No documents matched your search criteria");
 					$main->setFormAction("advancedSearchBL.php?fForSearch=1");                                
 					$main->render();
-				}
+				}*/
 				
 			} else {
 				$oPatternCustom = & new PatternCustom();
