@@ -657,15 +657,17 @@ INSERT INTO users_groups_link (group_id, user_id) VALUES (10, 8);
 -- diabetes unit user
 INSERT INTO users (username, name, password, quota_max, quota_current, email, mobile, email_notification, sms_notification, ldap_dn, max_sessions, language_id)
             VALUES ("diabetesUser", "diabetesUser", "084e0343a0486ff05530df6c705c8bb4", "0", "0", "", "", 0, 0, "", 1, 1);
--- just editor            
+-- editor and finance
 INSERT INTO users_groups_link (group_id, user_id) VALUES (14, 9);
+INSERT INTO users_groups_link (group_id, user_id) VALUES (15, 9);
 
 -- disease unit user
 INSERT INTO users (username, name, password, quota_max, quota_current, email, mobile, email_notification, sms_notification, ldap_dn, max_sessions, language_id)
             VALUES ("diseaseUser", "diseaseUser", "084e0343a0486ff05530df6c705c8bb4", "0", "0", "", "", 0, 0, "", 1, 1);
--- spell checker and editor
+-- spell checker, editor and finance
 INSERT INTO users_groups_link (group_id, user_id) VALUES (16, 10);
 INSERT INTO users_groups_link (group_id, user_id) VALUES (17, 10);
+INSERT INTO users_groups_link (group_id, user_id) VALUES (18, 10);
 
 -- default document type fields
 INSERT INTO document_fields (name, data_type) VALUES ("Category", "String");
