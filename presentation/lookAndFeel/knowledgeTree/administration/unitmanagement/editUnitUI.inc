@@ -65,7 +65,7 @@ function getEditPageFail() {
 	global $default;
 			
 	$sToRender .= "<br></br>\n";
-	$sToRender .= "<b>Success!</b>\n";
+	$sToRender .= "<b>FAILED!</b>\n";
 	$sToRender .= "<table>\n";
 	$sToRender .= "<br></br>\n";
 	$sToRender .= "<tr></tr>\n";

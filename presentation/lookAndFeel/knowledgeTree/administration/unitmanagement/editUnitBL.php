@@ -30,7 +30,10 @@ if (checkSession()) {
 		$oUnit = Unit::get($fUnitID);
 		$oUnit->setName($fUnitName);
 		
-		if ($oUnit->update()) {
+		if($fUnitName== "")
+		{
+			$oPatternCustom->setHtml(getEditPageFail());
+		}elseif ($oUnit->update()) {
 				// if successfull print out success message
 				$oPatternCustom->setHtml(getEditPageSuccess());
 				
