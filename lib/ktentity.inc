@@ -94,8 +94,18 @@ class KTEntityUtil {
         $aParams = array();
         if (!is_null($sWhereClause)) {
             if (is_string($sWhereClause)) {
+                if (substr($sWhereClause, 0, 5) != 'WHERE') {
+                    if (substr($sWhereClause, 0, 5) != 'ORDER') {
+                        $sQuery .= ' WHERE';
+                    }
+                }
                 $sQuery .= ' ' . $sWhereClause;
             } else if (is_array($sWhereClause)) {
+                if (substr($sWhereClause[0], 0, 5) != 'WHERE') {
+                    if (substr($sWhereClause[0], 0, 5) != 'ORDER') {
+                        $sQuery .= ' WHERE';
+                    }
+                }
                 $sQuery .= ' ' . $sWhereClause[0];
                 $aParams = $sWhereClause[1];
             } else {
