@@ -44,7 +44,7 @@ function getPage($iFolderID, $iGroupID, $iRoleID, $iSequenceNumber) {
 	
 	$sToRender .= "\n\n<script language=\"javascript\">\n<!--\n";
 	$sToRender .= "function validateForm(theForm) {\n";	
-	$sToRender .= "\tif (!(validRequired(document.MainForm.fSequenceNumber,'Sequence no.'))) {\n";
+	$sToRender .= "\tif (!(validNum(theForm.fSequenceNumber,'Sequence no.')) || !(validRequired(theForm.fSequenceNumber,'Sequence no.'))) {\n";
 	$sToRender .= "\t\treturn false;\n\t}\n";
 	$sToRender .= "return true;\n}\n";
 	$sToRender .= "//-->\n</script>\n\n";
