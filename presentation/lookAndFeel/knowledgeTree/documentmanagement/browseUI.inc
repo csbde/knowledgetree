@@ -317,8 +317,8 @@ function renderDocumentList($aResults, $sNoDocumentsMessage, $sNoPermissionMessa
 function appendCounts($aFolderPath, $iFolderCount, $iDocumentCount) {
 	// append to the last path component and return
 	$aFolderPath[count($aFolderPath)-1] = $aFolderPath[count($aFolderPath)-1] . 
-										  " ($iFolderCount folder" . ($iFolderCount > 1 ? "s" : "") . 
-										  ", $iDocumentCount document" . ($iDocumentCount > 1 ? "s" : "") . ")";
+										  " ($iFolderCount folder" . (($iFolderCount > 1) || ($iFolderCount == 0) ? "s" : "") . 
+										  ", $iDocumentCount document" . (($iDocumentCount > 1) || ($iDocumentCount == 0) ? "s" : "") . ")";
 	return $aFolderPath;
 }
 
