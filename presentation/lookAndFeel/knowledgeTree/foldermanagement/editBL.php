@@ -93,7 +93,10 @@ if (checkSession()) {
                 $main->render();
             } else {
                 $oPatternCustom = & new PatternCustom();
-                $oPatternCustom->setHtml(getPage($fFolderID));
+                // does this folder have a document in it that has started collaboration?
+                $bCollaboration = Folder::hasDocumentInCollaboration($fFolderID);
+                    
+                $oPatternCustom->setHtml(getPage($fFolderID, $bCollaboration));
                 $main->setCentralPayload($oPatternCustom);
                 $main->setHasRequiredFields(true);
                 $main->setFormAction("../store.php?fReturnURL=" . urlencode("$default->rootUrl/control.php?action=browse&fFolderID=$fFolderID"));
