@@ -35,9 +35,9 @@ if (checkSession()) {
 						global $default;
 						$oUser = User::get($_SESSION["userID"]);						
 						if (isset($fToName)) {
-							$sMessage = "$fToName,\n\nYour colleauge, " . $oUser->getName() . ", wishes you to view the document entitled '" . $oDocument->getName() . "'.\n  Click on the hyperlink below to view it";
+							$sMessage = "$fToName,<br><br>Your colleauge, " . $oUser->getName() . ", wishes you to view the document entitled '" . $oDocument->getName() . "'.\n  Click on the hyperlink below to view it";
 						} else {
-							$sMessage = "Your colleauge, " . $oUser->getName() . ", wishes you to view the document entitled '" . $oDocument->getName() . "'.\n  Click on the hyperlink below to view it";
+							$sMessage = "Your colleague, " . $oUser->getName() . ", wishes you to view the document entitled '" . $oDocument->getName() . "'.\n  Click on the hyperlink below to view it";
 						}
 						$sLink = "https://" . $_SERVER["SERVER_NAME"] . $default->owl_root_url . "/control.php?action=viewDocument&fDocumentID=" . $fDocumentID;
 						
