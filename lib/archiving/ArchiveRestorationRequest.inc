@@ -242,7 +242,7 @@ class ArchiveRestorationRequest {
         $result = $sql->query("SELECT * FROM $default->owl_archive_restoration_table " . (isset($sWhereClause) ? " WHERE " . $sWhereClause : ""));
         if ($result) {
             while ($sql->next_record()) {
-                $aArchiveRestorationRequestArray[] = & new ArchiveRestorationRequest($sql->f("document_id"), $sql->f("request_user_id"), $sql->f("admin_user_id"), $sql->f("datetime"));
+                $aArchiveRestorationRequestArray[] = & ArchiveRestorationRequest::get($sql->f("id"));
             }
             return $aArchiveRestorationRequestArray;
         }
