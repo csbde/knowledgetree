@@ -39,53 +39,8 @@ function getDeletePage($iGroupID) {
 	$sToRender .= "</tr>\n";
 	$sToRender .= getDeleteButton($oGroup);	
 	$sToRender .= "</table>\n";
-	
-	
+
 	return $sToRender;
-}
-
-// get successfully deletion page
-function getDeleteSuccessPage() {	
-	
-global $default;
-
-$sToRender .= renderHeading("Remove Group");
-$sToRender .= "<table>\n";
-$sToRender .= "<tr>\n";
-$sToRender .= "<td><b>Group SuccessFully Removed!</b></td>\n";
-$sToRender .= "</tr>\n";	
-$sToRender .= "<tr></tr>\n";
-$sToRender .= "<tr></tr>\n";
-$sToRender .= "<tr></tr>\n";
-$sToRender .= "<tr></tr>\n";
-$sToRender .= "<tr>\n";
-$sToRender .= "<td align = right><a href=\"$default->rootUrl/control.php?action=listGroups\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
-$sToRender .= "</tr>\n";
-$sToRender .= "</table>\n";
-		
-return $sToRender;
-}
-
-// get deletion failed page
-function getDeleteFailPage() {	
-
-global $default;	
-
-$sToRender .= renderHeading("Remove Group");
-$sToRender .= "<table>\n";
-$sToRender .= "<tr>\n";
-$sToRender .= "<td><b>Deletion Failed!</b></td>\n";
-$sToRender .= "</tr>\n";	
-$sToRender .= "<tr></tr>\n";
-$sToRender .= "<tr></tr>\n";
-$sToRender .= "<tr><td>Please Ensure that The Group has been Removed from any Unit it belongs to</td></tr>\n";
-$sToRender .= "<tr></tr>\n";
-$sToRender .= "<tr></tr>\n";
-$sToRender .= "</tr>\n";
-$sToRender .= "<tr><td align = right><a href=\"$default->rootUrl/control.php?action=listGroups\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td></tr>\n";
-$sToRender .= "</table>\n";
-		
-return $sToRender;
 }
 
 // show listbox...or the text name
@@ -100,26 +55,20 @@ function getGroupDisplay($oGroup) {
 		return "<input type=\"hidden\" name=\"fGroupID\" value=\"" . $oGroup->iId . "\">\n" .
 		"<b>" . $oGroup->getName() . "</b>";
 	}
-	
 }
 
 // show check box
 function getUnitAdminCheckBox($oGroup) {
-	if (!isset($oGroup)) {
-		return "";
-	} else {
+	if (isset($oGroup)) {
 		return "Unit Administrator: <input disabled=\"true\" type=\"checkbox\" name=\"fGroupUnitAdmin\" " . ($oGroup->getUnitAdmin() ? "CHECKED " : " ") . " />";
 	}
 }
 
 // show text box
 function getSysAdminCheckBox($oGroup) {
-	if (!isset($oGroup)) {
-		return "";
-	} else {
+	if (isset($oGroup)) {
 		return "System Administrator: <input disabled=\"true\" type=\"checkbox\" name=\"fGroupSysAdmin\" " . ($oGroup->getSysAdmin() ? "CHECKED " : " ") . " />";
 	}
-	
 }
 
 // show delete button
