@@ -15,6 +15,11 @@ is_generic BIT,
 has_lookup BIT
 )TYPE = InnoDB;
 
+CREATE TABLE data_types( 
+id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
+name CHAR(255) NOT NULL
+)TYPE = InnoDB;
+
 CREATE TABLE document_fields_link ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 document_id INTEGER NOT NULL,
@@ -576,6 +581,14 @@ INSERT INTO mime_types (filetypes, mimetypes) VALUES ('xyz', 'chemical/x-pdb');
 INSERT INTO mime_types (filetypes, mimetypes) VALUES ('zip', 'application/zip');
 INSERT INTO mime_types (filetypes, mimetypes) VALUES ('gz', 'application/x-gzip');
 INSERT INTO mime_types (filetypes, mimetypes) VALUES ('tgz', 'application/x-gzip');
+
+-- data_types
+insert into data_types (name) values ('STRING');
+insert into data_types (name) values ('CHAR');
+insert into data_types (name) values ('TEXT');
+insert into data_types (name) values ('INT');
+insert into data_types (name) values ('FLOAT');
+
 
 -- supported languages (not really ;)
 INSERT INTO language_lookup (name) VALUES ("English");
