@@ -1,4 +1,16 @@
 -- table definitions
+CREATE TABLE active_sessions ( 
+id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
+user_id INTEGER,
+session_id CHAR(255),
+lastused DATETIME,
+ip CHAR(30)
+) TYPE = InnoDB;
+
+CREATE TABLE data_types ( 
+id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
+name CHAR(255) NOT NULL
+)TYPE = InnoDB;
 
 CREATE TABLE discussion_threads ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
@@ -19,45 +31,12 @@ body TEXT,
 date date
 )TYPE = InnoDB;
 
-CREATE TABLE document_text (
-  id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
-  document_id integer,
-  document_text MEDIUMTEXT,
-  FULLTEXT (document_text)
-) Type = MyISAM;
-
-
-CREATE TABLE active_sessions ( 
-id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
-user_id INTEGER,
-session_id CHAR(255),
-lastused DATETIME,
-ip CHAR(30)
-) TYPE = InnoDB;
-
-CREATE TABLE search_document_user_link (
-id integer unique auto_increment,
-document_id integer,
-user_id integer
-) Type = InnoDB;
-
-CREATE TABLE document_word_offset (                                                                                                                                                                                                     
-id integer NOT NULL UNIQUE auto_increment,                                                                                                                                                                                                    
-document_id integer NOT NULL default,                                                                                                                                                               
-word_offset integer default NULL,                                                                                                                                                                                                      
-word_id integer default NULL) TYPE=InnoDB;
-
-CREATE TABLE document_fields( 
+CREATE TABLE document_fields ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 name CHAR(255) NOT NULL,
 data_type CHAR(100) NOT NULL,
 is_generic BIT,
 has_lookup BIT
-)TYPE = InnoDB;
-
-CREATE TABLE data_types( 
-id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
-name CHAR(255) NOT NULL
 )TYPE = InnoDB;
 
 CREATE TABLE document_fields_link ( 
@@ -67,11 +46,12 @@ document_field_id INTEGER NOT NULL,
 value CHAR(255) NOT NULL
 )TYPE = InnoDB;
 
-
-CREATE TABLE document_transaction_types_lookup ( 
-id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
-name CHAR(100) NOT NULL
-)TYPE = InnoDB;
+CREATE TABLE document_text (
+  id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
+  document_id integer,
+  document_text MEDIUMTEXT,
+  FULLTEXT (document_text)
+) Type = MyISAM;
 
 CREATE TABLE document_transactions ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
@@ -85,6 +65,11 @@ comment CHAR(255) NOT NULL,
 transaction_id INTEGER
 )TYPE = InnoDB;
 
+CREATE TABLE document_transaction_types_lookup ( 
+id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
+name CHAR(100) NOT NULL
+)TYPE = InnoDB;
+
 CREATE TABLE document_type_fields_link ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 document_type_id INTEGER NOT NULL,
@@ -95,12 +80,6 @@ is_mandatory BIT NOT NULL
 CREATE TABLE document_types_lookup ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 name CHAR(100)
-)TYPE = InnoDB;
-
-CREATE TABLE document_words_link ( 
-id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
-word_id INTEGER NOT NULL,
-document_id INTEGER NOT NULL
 )TYPE = InnoDB;
 
 CREATE TABLE documents ( 
@@ -158,7 +137,6 @@ datetime DATETIME,
 done BIT,
 active BIT
 )TYPE = InnoDB;
-
 
 CREATE TABLE folder_doctypes_link (
 id int(11) NOT NULL auto_increment,
@@ -253,6 +231,12 @@ can_read BIT NOT NULL,
 can_write BIT NOT NULL
 )TYPE = InnoDB;
 
+CREATE TABLE search_document_user_link (
+id integer unique auto_increment,
+document_id integer,
+user_id integer
+) Type = InnoDB;
+
 -- sitemap tables
 CREATE TABLE site_sections_lookup (
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
@@ -341,11 +325,6 @@ id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 web_site_name CHAR(100) NOT NULL,
 web_site_url CHAR(50) NOT NULL,
 web_master_id INTEGER NOT NULL
-)TYPE = InnoDB;
-
-CREATE TABLE words_lookup ( 
-id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
-word CHAR(255) NOT NULL
 )TYPE = InnoDB;
 
 -- pk constraints
