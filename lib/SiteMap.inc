@@ -32,12 +32,12 @@ class SiteMap {
      *        the corresponding page for this action
      * @param $sectionName
      *        the section this page falls under
-     * @param $userClass
-     *        the user class with access to this page
+     * @param $groupID
+     *        the user group with access to this page
      */
-    function addPage($action, $page, $sectionName, $userClass) {
+    function addPage($action, $page, $sectionName, $groupID) {
         // add to map
-        $this->siteMapArray[$sectionName][$userClass][$action] = $page;
+        $this->siteMapArray[$sectionName][$groupID][$action] = $page;
     }
     
     /**
@@ -45,23 +45,20 @@ class SiteMap {
      *
      * @param $action
      *        the action to lookup pages for
-     * @param $userGroup
-     *        the user group to perform page level validation against
+     * @param $groupID
+     *        the user group ID to perform page level validation against
      * @return
      *        the page to redirect to, or false if the user class doesn't
      *        have access to the page
      */
-    function getPage($action, $userGroup) {
-        // map incoming userClass to number
-        //$uc = constant($userClass);
+    function getPage($action, $groupID) {
+        global $default;
         
-        // look up the id for this group
-        $groupID = group_to_name($userGroup);        
-
-        // iterate through multidim sitemap array
+        // for each section
         foreach ($this->siteMapArray as $section => $valArr) {
+            // for each group, page array combination
             foreach ($valArr as $requiredGroup => $pageArr) {
-                if ($groupID <= group_to_name($requiredGroup)) {
+                if ($groupID <= lookup_id($default->owl_groups_table, "name", $requiredGroup)) {
                     // now loop through pages until we find the right one
                     foreach ($pageArr as $ackshin => $page) {
                         if ($ackshin == $action) {
