@@ -9,287 +9,139 @@
 */
 
 // if its the manual edit page..then display normally
-function getEditPage($iDocTypeID) {
+function getDetailsPage($iDocTypeID) {
     global $default;
     $oDocType = null;
     if (isset($iDocTypeID)) {
         $oDocType = DocumentType::get($iDocTypeID);
-
-    }
-
-    $sToRender .= renderHeading("Edit Document Type");
-    $sToRender .= "<table>\n";
-    $sToRender .= "<tr></tr>\n";
-    $sToRender .= "<tr>\n";
-    $sToRender .= "<td>Document Type Name: </td><td>" . getDocTypeDisplay($oDocType) . "</td>\n";
-    $sToRender .= "</tr>\n";
-    $sToRender .= "<tr>\n";
-    $sToRender .= "</tr>\n";
-    $sToRender .= "<tr>\n";
-    $sToRender .= "</tr>\n";
-    $sToRender .= "<tr>\n";
-    $sToRender .= "</tr>\n";
-    $sToRender .= "<tr>\n";
-    $sToRender .= "</tr>\n";
-    $sToRender .= "<tr>\n";
-    $sToRender .= "</tr>\n";
-    $sToRender .= "<tr>\n";
-    $sToRender .= "</tr>\n";
-    $sToRender .= "<tr>\n";
-    $sToRender .= "<td></td>" . getUpdateButton($oDocType);
-    $sToRender .= getCancelButton($oDocType);
-    $sToRender .= "</tr>\n";
-    $sToRender .= "</table>\n";
-
-
-    return $sToRender;
-}
-
-// if its the manual edit page..then display normally
-function getDetailsPage($iDocTypeID,$aGeneric,$aSpecific, $aAllSpecific) {
-    global $default;
-    $oDocType = null;
-    if (isset($iDocTypeID)) {
-        $oDocType = DocumentType::get($iDocTypeID);
-
     }
 
     $sToRender .= renderHeading("Edit Document Type");
     
     $sToRender .= "<table border=0 width=100%>\n";
-    $sToRender .= "<tr><td><br></br></td><td><td></td><td></td><td></td>" . getCancelButton($oDocType) . "</td></tr>\n";
+    
     $sToRender .= "<tr>\n";
-    $sToRender .= "<td>Document Type Name: </td><td><input type=hidden name=\"fDocTypeID\"  value=\"" . $iDocTypeID . "\">" . getDocTypeDisplay($oDocType) . "</td>\n";
+    $sToRender .= "<td width=\"45%\">Document Type Name: </td><td>" . $oDocType->getName() . "</td>\n";
     $sToRender .= "</tr>\n";
+    $sToRender .= "<tr><input type=hidden name=\"fDocTypeID\"  value=\"" . $iDocTypeID . "\"></tr>\n";
     $sToRender .= "<tr></tr>\n";
+    $sToRender .= "<tr><td valign=\"top\">Generic Document Fields: </td><td>" . getGenericFieldsList() . "</td></tr>\n";
     $sToRender .= "<tr></tr>\n";
-    $sToRender .= "<tr>\n";
-    $sToRender .= "<td>Current Generic Fields: </td><td>" . getGenericFieldsList($aGeneric) . "</td>\n";
-    $sToRender .= "</tr>\n";
-    $sToRender .= "<tr></tr>\n";
-    $sToRender .= "<tr></tr>\n";
-    $sToRender .= "<tr>\n";
-    $sToRender .= "<td>Current Type Specific Fields: </td>";    
-    $sToRender .= "</td></tr>" . getSpecificFieldsList($aSpecific, $iDocTypeID) . "</td>\n";	
-    $sToRender .= "<td></td><td colspan=3>";
-    $sToRender .= "<hr><a href=\"$default->rootUrl/control.php?action=addDocTypeFieldsLink&fDocTypeID=$iDocTypeID\" ><img border=0 src =\"$default->graphicsUrl/widgets/add.gif\"  /><a>";
-    $sToRender .= "&nbsp;Add new Type Specific Field ";
-    $sToRender .= "</td>";
-    $sToRender .= "</tr>\n";
-    $sToRender .= "<tr></tr>\n";
-    $sToRender .= "<tr><td><br></br></td></tr>\n";
-    $sToRender .= "<tr></tr>\n";
-    $sToRender .= "<tr>\n";
-    /*if(count($aAllSpecific) > 0) {
-        $sToRender .= "<td>Add New Type Specific Field: </td><td>" . addSpecificFieldsList($aAllSpecific) ;
-        $sToRender .= "</td></tr><td></td><td>Mandatory: <input type=\"checkbox\" name=\"fIsMandatory\" value=\"1\" CHECKED></td><td>" . getAddSpecificFieldButton() . "</td>\n";
-    }*/
-    $sToRender .= "</tr>\n";
-    $sToRender .= "<tr><td><br></br></td></tr>\n";
-    $sToRender .= "<tr></tr>\n";
-    $sToRender .= "<tr>\n";
-    //$sToRender .= "<td></td>" . getUpdateButton($oDocType);    
-    $sToRender .= "</tr>\n";
+    $sToRender .= "<tr><td valign=\"top\">Document Type Specific Fields: </td>";    
+    $sToRender .= "<td>" . getDocumentTypeFieldsList($iDocTypeID) . "</td></tr>\n";	
+    $sToRender .= "<tr><td >" . generateControllerLink("addDocTypeFieldsLink", "fDocTypeID=$iDocTypeID", "Add new Type Specific Field &nbsp; <img border=0 src=\"$default->graphicsUrl/widgets/add.gif\"/>");
+    $sToRender .= generateControllerLink("listDocTypes", "", "<img border=0 src=\"$default->graphicsUrl/widgets/back.gif\"/>"). "</td></tr>\n";    
     $sToRender .= "</table>\n";
-
 
     return $sToRender;
 }
 
-// if its the manual edit page..then display normally
-function getMandatoryPage($iDocFieldID,$iDocTypeFieldID) {
-    global $default;
-    $oDocField = null;
+function getDeleteConfirmationPage($iDocTypeID, $iDocFieldID) {
+	global $default;
+
+    $oDocType = DocumentType::get($iDocTypeID);
+    $oDocField = DocumentField::get($iDocFieldID);
 	
-    if (isset($iDocFieldID)) {
-        $oDocField = DocumentField::get($iDocFieldID);
+    $sToRender .= renderHeading("Edit Document Type - Delete Document Field Link");
+    $sToRender .= "<table border=\"0\" cellspacing=\"2\" cellpadding=\"2\">\n";
+    $sToRender .= "<tr><td>Are you sure you want to remove field '" . $oDocField->getName(). "' from document type '" . $oDocType->getName() ."'?</td></tr>\n";
+    $sToRender .= "<tr/><tr/>\n";
+    $sToRender .= "<tr><td>Click 'Remove' to remove the link, or 'Cancel' to abort.</td></tr>\n";
+    $sToRender .= "<tr/><tr/>\n";
+	$sToRender .= "<td align=\"right\">" . generateControllerLink("editDocTypeFields", "fConfirm=1&fRemove=1&fDocFieldID=$iDocFieldID&fDocTypeID=$iDocTypeID", "<img src =\"$default->graphicsUrl/widgets/remove.gif\" border = \"0\" />");
+	$sToRender .= generateControllerLink("editDocTypeFields", "fDocTypeID=$iDocTypeID", "<img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" />") . "</td>\n";
+    $sToRender .= "</table>\n";
+    return $sToRender;
+}
 
-    }
+function getEditDocumentFieldLinkPage($oDocTypeFieldLink) {
+    global $default;
 
-    if (isset($iDocTypeFieldID)) {
-        $oDocTypeField = DocumentTypeFieldLink::get($iDocTypeFieldID);
-
-    }
-    
-    $sToRender .= "<input type=\"hidden\" height=0 name=\"fDocTypeID\" value=\"" . $oDocTypeField->iDocumentTypeID . "\">\n" ;
-    $sToRender .= "<input type=\"hidden\" height=0 name=\"fFieldID\" value=\"" . $oDocTypeField->iFieldID . "\">\n" .
-    //$sToRender .= renderHeading("Edit Mandatory settings");
-    $sToRender .= "<br></br>\n";
-    
-    $sToRender .= "<b>Change Mandatory Setting:</b>\n";
+    $oDocField = DocumentField::get($oDocTypeFieldLink->getFieldID());	
+	
+    $sToRender .= renderHeading("Edit Document Type - Update Document Field Link Mandatory Setting");
     $sToRender .= "<table>\n";
-    $sToRender .= "<br></br>\n";
-    $sToRender .= "<tr></tr>\n";
+	$sToRender .= "<input type=\"hidden\" name=\"fConfirm\" value=\"1\">\n";    
+    $sToRender .= "<input type=\"hidden\" name=\"fDocTypeID\" value=\"" . $oDocTypeFieldLink->getDocumentTypeID() . "\">\n";
+    $sToRender .= "<input type=\"hidden\" name=\"fDocFieldID\" value=\"" . $oDocTypeFieldLink->getFieldID() . "\">\n";
     $sToRender .= "<tr>\n";
     $sToRender .= "<td>Document Field Name: </td><td>" . $oDocField->getName() . "</td>\n";
     $sToRender .= "</tr>\n";
+    $sToRender .= "<tr/>\n";
     $sToRender .= "<tr>\n";
+    $sToRender .= "<td>Mandatory:  </td><td><input type=\"checkbox\" name=\"fIsMandatory\" value=\"1\" " . ($oDocTypeFieldLink->getIsMandatory() ? "CHECKED" : "") . "></td>\n";
     $sToRender .= "</tr>\n";
-    $sToRender .= "<tr>\n";
-    if($oDocTypeField->getIsMandatory() == 1) {
-        $sToRender .= "<td>Is Mandatory:  </td><td><input type=\"checkbox\" name=\"fIsMandatory\" value=\"1\" CHECKED></td><td>\n";
-    } else {
-        $sToRender .= "<td>Is Mandatory:  </td><td><input type=\"checkbox\" name=\"fIsMandatory\" value=\"0\" ></td><td>\n";
-    }
-
-    $sToRender .= "</tr>\n";
-    $sToRender .= "<tr>\n";
-    $sToRender .= "</tr>\n";
-    $sToRender .= "<tr>\n";
-    $sToRender .= "</tr>\n";
-    $sToRender .= "<tr>\n";
-    $sToRender .= "</tr>\n";
-    $sToRender .= "<tr>\n";
-    $sToRender .= "</tr>\n";
-    $sToRender .= "<tr>\n";
-    $sToRender .= "<td></td>" . getDocTypeFieldUpdateButton() ;
-    $sToRender .= "</tr>\n";
-    
+    $sToRender .= "<tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/update.gif\"/>";
+    $sToRender .= generateControllerLink("editDocTypeFields", "fDocTypeID=" . $oDocTypeFieldLink->getDocumentTypeID(), "<img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" />") . "</td></tr>\n";
     $sToRender .= "</table>\n";
-
-
     return $sToRender;
 }
 
-// if edition is successful print otu success page
-function getEditPageSuccess() {
-    global $default;
 
+function getStatusPage($sHeading, $sText = "", $iDocTypeID) {
+	global $default;
+	
     $sToRender .= renderHeading("Edit Document Type");
-    $sToRender .= "<table>\n";
-    $sToRender .= "<tr><td><b>Success!</b></td></tr>\n";
-    $sToRender .= "<tr><td>The Document Type was successfully modified</td></tr>\n";
-    $sToRender .= "<tr></tr>\n";
-    $sToRender .= "<tr></tr>\n";
+    $sToRender .= "<table border=\"0\" cellspacing=\"2\" cellpadding=\"2\">\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=listDocTypes\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
+    $sToRender .= "<td><b>$sHeading</b></td>\n";
     $sToRender .= "</tr>\n";
+    $sToRender .= "<tr/><tr/>\n";
+    $sToRender .= "<tr><td>$sText</td></tr>\n";
+    $sToRender .= "<tr/><tr/>\n";
+	$sToRender .= "<td align=\"right\">" . generateControllerLink("editDocTypeFields", "fDocTypeID=$iDocTypeID", "<img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" />") . "</td>\n";
     $sToRender .= "</table>\n";
-
     return $sToRender;
+}
+
+// if addition is successful print otu success page
+function getSuccessPage($sMessage, $iDocTypeID) {
+	return getStatusPage("Success!", $sMessage, $iDocTypeID);
 }
 
 // gets the page if editing fails
-function getEditPageFail() {
+function getFailurePage($sMessage, $iDocTypeID) {
+	return getStatusPage("Failure!", $sMessage, $iDocTypeID);
+}
+
+function getGenericFieldsList() {
     global $default;
-
-    $sToRender .= renderHeading("Edit Document Type");
-    $sToRender .= "<table>\n";
-    $sToRender .= "<tr><td><b>Failure!</b></td></tr>\n";
-    $sToRender .= "<tr><td>Document Type modification Failed!</td></tr>\n";
-    $sToRender .= "<tr></tr>\n";
-    $sToRender .= "<tr></tr>\n";
-    $sToRender .= "<tr>\n";
-    $sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=listDocTypes\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
-    $sToRender .= "</tr>\n";
-    $sToRender .= "</table>\n";
-
+    $aGenericDocumentFields = DocumentField::getList("is_generic=1");
+    for($i = 0; $i < count($aGenericDocumentFields); $i++) {
+        $sToRender .= "<li>" . $aGenericDocumentFields[$i]->getName() . "</li>\n";
+    }
     return $sToRender;
 }
 
-// show the list box when no DocType selected
-// then shows a text box with the DocType's name
-function getDocTypeDisplay($oDocType) {
+function getDocumentTypeFieldsList($iDocTypeID) {
     global $default;
-    if (!isset($oDocType)) {
-        $oPatternListBox = & new PatternListBox($default->owl_document_types_table, "name", "id", "fDocTypeID");
-        // only restrict doc type editing for non sys admins
-        if (!Permission::userIsSystemAdministrator()) {
-            $oPatternListBox->setFromClause("LEFT OUTER JOIN $default->owl_documents_table D on ST.id=D.document_type_id");
-            $oPatternListBox->setWhereClause("ISNULL(D.id)");
+    $aDocumentTypeFields = DocumentTypeFieldLink::getDocumentTypeFields($iDocTypeID);
+	$sToRender .= "<table border=0>";
+    for($i = 0; $i < count($aDocumentTypeFields); $i++) {
+        $oDocField = $aDocumentTypeFields[$i];
+        if ($oDocField) {
+	        $oDocumentTypeFieldLink = DocumentTypeFieldLink::getByFieldAndTypeIDs($iDocTypeID, $oDocField->getID());
+	        $sToRender .= "<tr>";
+	        $sToRender .= "<td>" . $oDocField->getName() . "</td>";
+	        $sToRender .= "<td><img src=\"$default->graphicsUrl/widgets/" . ($oDocumentTypeFieldLink->getIsMandatory() ? "checked" : "unchecked") . ".gif\"/></td>";
+	        $sToRender .= "<td>" . getEditSpecificFieldButton($oDocField->getID(), $iDocTypeID) . "</td>";
+	        $sToRender .= "<td>" . getRemoveSpecificFieldButton($oDocField->getID(), $iDocTypeID) . "</td>";
+	        $sToRender .= "</tr>"; 
+        } else {
+        	// FIXME: what about broken links?        	
         }
-        $oPatternListBox->setPostBackOnChange(true);
-        return $oPatternListBox->render();
-    } else {
-        return $oDocType->getName();        		
     }
-
+	$sToRender .= "</table>\n";    
+    return $sToRender;
 }
 
-function getGenericFieldsList($aGeneric) {
+function getEditSpecificFieldButton($iDocFieldID, $iDocTypeID) {
     global $default;
-
-    $sList = "</tr><tr><td></td><td>";
-    for($i = 0; $i < count($aGeneric);$i++) {
-        $sList .= "<li>" . $aGeneric[$i]["name"]. "</li>\n";
-    }
-    $sList .= "</td></tr>";
-    return $sList;
+	return generateControllerLink("editDocTypeFields", "fUpdateMandatory=1&fDocFieldID=$iDocFieldID&fDocTypeID=$iDocTypeID", "<img border=0 src =\"$default->graphicsUrl/widgets/edit.gif\" value=\"edit\" />");	
 }
 
-function getSpecificFieldsList1($aSpecific) {
+function getRemoveSpecificFieldButton($iDocFieldID, $iDocTypeID) {
     global $default;
-    $sList .= "<select name=fEdit>";
-    for($i = 0; $i < count($aSpecific);$i++) {
-        $oDocField = DocumentField::get($aSpecific[$i]);
-        $sList .= "<tr><td></td><td><li>" . $oDocField->getName() . "</li></td><td>" .  getEditSpecificFieldButton($aSpecific[$i]) ." ". getRemoveSpecificFieldButton($aSpecific[$i]) . "</td></tr>\n";
-    }
-    return $sList;
-}
-
-function getSpecificFieldsList($aSpecific, $iDocTypeID = null) {
-    global $default;
-    for($i = 0; $i < count($aSpecific);$i++) {
-        $oDocField = DocumentField::get($aSpecific[$i]);
-        $sList .= "<tr><td></td><td><li>" . $oDocField->getName() . "</li></td><td>" .  getEditSpecificFieldButton($aSpecific[$i],$iDocTypeID) ." ". getRemoveSpecificFieldButton($aSpecific[$i], $iDocTypeID) . "</td></tr>\n";
-    }
-    return $sList;
-}
-
-// show Group details on confirm deletion page
-function addSpecificFieldsList($aAllSpecific) {
-    global $default;
-
-    $sDocFieldType = "<Select Name=\"fDocFieldTypeID\">";
-    for ($i=0;$i < count($aAllSpecific);$i++) {
-        $Options .=  "<OPTION value= \"". $aAllSpecific[$i]["id"] . "\">". $aAllSpecific[$i]["name"] ."</OPTION>\n";
-    }
-    $sDocFieldType .= $Options . "</SELECT>";
-
-    return $sDocFieldType;
-}
-
-// gets the updatebutton when a DocType is selected
-function getUpdateButton($oDocType) {
-    global $default;
-    if (!isset($oDocType)) {
-        return "Please select a Document Type: ";
-    } else {
-        return "<td align = right><input ONCLICK=\" setActionAndSubmit('" . $_SERVER["PHP_SELF"] ."?fUpdate=1')\" type=\"image\" src =\"$default->graphicsUrl/widgets/update.gif\" value=\"submit\" /></td>\n";
-    }
-}
-
-// gets the updatebutton when a DocType is selected
-function getDocTypeFieldUpdateButton() {
-    global $default;
-    return "<td align = right><input ONCLICK=\" setActionAndSubmit('" . $_SERVER["PHP_SELF"] ."?fUpdateMandatory=1')\" type=\"image\" src =\"$default->graphicsUrl/widgets/update.gif\" value=\"submit\" /></td>\n";
-}
-
-function getRemoveSpecificFieldButton($iNumber, $iDocTypeID=null) {
-    global $default;
-    //Return "<input ONCLICK=\" setActionAndSubmit('" . $_SERVER["PHP_SELF"] ."?fRemove=$iNumber')\" align = \"absmiddle\" type=\"image\" src =\"$default->graphicsUrl/widgets/remove.gif\" value=\"remove\" />\n";
-	return "<a href=\"" . $_SERVER["PHP_SELF"] . "?fRemove=" . $iNumber . "&fDocTypeID=" . $iDocTypeID . "\"> <img border=0 src =\"$default->graphicsUrl/widgets/remove.gif\" value=\"edit\" /></a>\n";
-}
-
-function getEditSpecificFieldButton($iNumber, $iDocTypeID=null) {
-    global $default;
-    //return "<input ONCLICK=\" setActionAndSubmit('" . $_SERVER["PHP_SELF"] ."?fEdit=$iNumber')\" align = \"absmiddle\" type=\"image\" src =\"$default->graphicsUrl/widgets/edit.gif\" value=\"edit\" />\n";
-	return "<a href=\"" . $_SERVER["PHP_SELF"] . "?fEdit=" . $iNumber . "&fDocTypeID=" . $iDocTypeID . "\"> <img border=0 src =\"$default->graphicsUrl/widgets/edit.gif\" value=\"edit\" /></a>\n";
-}
-
-function getAddSpecificFieldButton() {
-    global $default;
-    return "<input ONCLICK=\" setActionAndSubmit('" . $_SERVER["PHP_SELF"] ."?fAdd=1')\" align = \"absmiddle\" type=\"image\" src =\"$default->graphicsUrl/widgets/add.gif\" value=\"add\" />\n";
-}
-
-// gets the cancel button when a DocType is selected
-function getCancelButton($oDocType) {
-    global $default;
-    if (!isset($oDocType)) {
-        return "<td align = right><a href=\"$default->rootUrl/control.php?action=doctypeManagement\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" value=\"cancel\" border = \"0\"/></a></td>\n";
-    }
-    else {
-        return "<td align = right><a href=\"$default->rootUrl/control.php?action=listDocTypes\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
-    }
+	return generateControllerLink("editDocTypeFields", "fRemove=1&fDocFieldID=$iDocFieldID&fDocTypeID=$iDocTypeID", "<img border=0 src =\"$default->graphicsUrl/widgets/remove.gif\" value=\"remove\" />");	
 }
 ?>
