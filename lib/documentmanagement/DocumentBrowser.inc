@@ -90,7 +90,9 @@ class DocumentBrowser {
             
             // now find all the child folders relative to this one 
             // FIXME: in the same unit?
-            $folderQuery = "SELECT id FROM $default->owl_folders_table WHERE parent_id=" . $folderID . " ORDER BY name ASC";
+            
+            // if we're sorting by name then sort folders in the appropriate direction
+            $folderQuery = "SELECT id FROM $default->owl_folders_table WHERE parent_id=" . $folderID . " ORDER BY name " . ($sSortField == "name" ? $sSortDirection : "ASC");
             $default->log->debug("DocumentBrowser::browseByFolder child folder query=$folderQuery");
             if ($sql->query($folderQuery)) {
                 while ($sql->next_record()) {
