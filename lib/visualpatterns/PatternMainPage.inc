@@ -19,7 +19,7 @@ class PatternMainPage {
 	function PatternMainPage() {
         global $default;
         
-		$this->sFormAction = "$default->owl_root_url/control.php";
+		$this->sFormAction = "$default->rootUrl/control.php";
 	}
 	
 	/** property holder for $oNorthWestPayload */
@@ -80,18 +80,18 @@ class PatternMainPage {
         
 		$sToRender = 	"<html>\n" .
 							"<head>\n" .
-                            "<meta http-equiv=\"refresh\" content=\"" . ($default->owl_timeout+3) . "\">\n" .
-                            "<link rel=\"stylesheet\" href=\"$default->owl_ui_url/stylesheet.php\">\n".                            
+                            "<meta http-equiv=\"refresh\" content=\"" . ($default->sessionTimeout+3) . "\">\n" .
+                            "<link rel=\"stylesheet\" href=\"$default->uiUrl/stylesheet.php\">\n".                            
 							PatternMainPage::getJavaScript() . "\n" .							
 							"</head>\n" .
 							"<body marginleft=\"0\" marginheight=\"0\">\n";
         // hack to circumvent the crapness of ns 4.79
         if (! (($default->phpSniff->property("browser") == "moz") && ($default->phpSniff->property("version") <= "4.79")) ) {
             $sToRender .=       "<div id=\"divUp\">" .
-                                "\t<a href=\"#\" onmouseover=\"scroll(-7)\" onmouseout=\"noScroll()\"><img src=\"" . $default->system->get("graphicsUrl") . "/desc.gif\" width=\"25\" height=\"30\" alt=\"up\" border=\"0\"></a>" .
+                                "\t<a href=\"#\" onmouseover=\"scroll(-7)\" onmouseout=\"noScroll()\"><img src=\"" . $default->graphicsUrl . "/desc.gif\" width=\"25\" height=\"30\" alt=\"up\" border=\"0\"></a>" .
                                 "</div>" .
                                 "<div id=\"divDown\">" .
-                                "\t<a href=\"#\" onmouseover=\"scroll(7)\" onmouseout=\"noScroll()\"><img src=\"" . $default->system->get("graphicsUrl") . "/asc.gif\" width=\"25\" height=\"30\" alt=\"down\" border=\"0\"></a>" .
+                                "\t<a href=\"#\" onmouseover=\"scroll(7)\" onmouseout=\"noScroll()\"><img src=\"" . $default->graphicsUrl . "/asc.gif\" width=\"25\" height=\"30\" alt=\"down\" border=\"0\"></a>" .
                                 "</div>";
         }
                             
@@ -159,7 +159,7 @@ class PatternMainPage {
 	*/
 	function getJavaScript() {
         global $default;
-        $sUrl = $default->system->get("uiUrl");
+        $sUrl = $default->uiUrl;
         // hack to circumvent the crapness of ns 4.79
         if (! (($default->phpSniff->property("browser") == "moz") && ($default->phpSniff->property("version") <= "4.79")) ) {
             return "<script type=\"text/javascript\" src=\"$sUrl/js/misc.js\"></script>

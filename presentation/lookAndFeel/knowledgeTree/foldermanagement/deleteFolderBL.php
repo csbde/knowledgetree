@@ -11,13 +11,13 @@
  */
 
 require_once("../../../../config/dmsDefaults.php");
-require_once("$default->owl_fs_root/lib/foldermanagement/Folder.inc");
-require_once("$default->owl_fs_root/lib/foldermanagement/PhysicalFolderManagement.inc");
-require_once("$default->owl_fs_root/lib/users/User.inc");
-require_once("$default->owl_fs_root/lib/subscriptions/SubscriptionEngine.inc");
-require_once("$default->owl_fs_root/lib/visualpatterns/PatternCustom.inc");
-require_once("$default->owl_fs_root/presentation/Html.inc");
-require_once("$default->owl_fs_root/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
+require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
+require_once("$default->fileSystemRoot/lib/foldermanagement/PhysicalFolderManagement.inc");
+require_once("$default->fileSystemRoot/lib/users/User.inc");
+require_once("$default->fileSystemRoot/lib/subscriptions/SubscriptionEngine.inc");
+require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
+require_once("$default->fileSystemRoot/presentation/Html.inc");
+require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
 
 require_once("deleteFolderUI.inc");
 
@@ -46,11 +46,11 @@ if (checkSession()) {
                             $default->log->info("deleteFolderBL.php fired $count subscription alerts for removed folder " . $oFolder->getName());
                             
 							// redirect to the browse folder page with the parent folder id 
-							redirect("$default->owl_root_url/control.php?action=browse&fFolderID=" . $oFolder->getParentID());
+							redirect("$default->rootUrl/control.php?action=browse&fFolderID=" . $oFolder->getParentID());
 						} else {
 							// could not delete the folder from the file system, so reverse the folder deletion
 							$oFolder->create();
-							require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");																	
+							require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");																	
 							$oPatternCustom->setHtml("");
 							$main->setCentralPayload($oPatternCustom);
 							$main->setErrorMessage("The folder could not be deleted from the file system");
@@ -58,7 +58,7 @@ if (checkSession()) {
 						}
 					} else {
 						// could not delete the folder in the db
-						require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");			
+						require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");			
 						$oPatternCustom->setHtml("");
 						$main->setCentralPayload($oPatternCustom);
 						$main->setErrorMessage("The folder could not be deleted from the database");
@@ -66,7 +66,7 @@ if (checkSession()) {
 					}
 				} else {
 					// could not load folder object
-					require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");									
+					require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");									
 					$oPatternCustom->setHtml("");
 					$main->setCentralPayload($oPatternCustom);
 					$main->setErrorMessage("An error occured whilst retrieving the folder from the database");
@@ -90,13 +90,13 @@ if (checkSession()) {
                     $oPatternCustom->setHtml(getConfirmPage($fFolderID, $oFolder->getName()));
                 }
                 // render the page
-                require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");
+                require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
                 $main->setCentralPayload($oPatternCustom);				
                 $main->render();
 			}
 		} else {
 			// user does not have permission to delete the folder
-			require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");			
+			require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");			
 			$oPatternCustom = & new PatternCustom();							
 			$oPatternCustom->setHtml("");
 			$main->setCentralPayload($oPatternCustom);
@@ -105,7 +105,7 @@ if (checkSession()) {
 		}
 	} else {
 		// no folder selected for deletion
-		require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");			
+		require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");			
 		$oPatternCustom = & new PatternCustom();							
 		$oPatternCustom->setHtml("");
 		$main->setCentralPayload($oPatternCustom);

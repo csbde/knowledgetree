@@ -12,7 +12,7 @@ require_once("../../config/dmsDefaults.php");
 
 
 if (checkSession) {
-	require_once("$default->owl_fs_root/lib/web/WebDocument.inc");
+	require_once("$default->fileSystemRoot/lib/web/WebDocument.inc");
 	
 	$oWebDocument = & new WebDocument(1, 1, 1, 1, getCurrentDateTime());
 	echo "Create ? " . ($oWebDocument->create() ? "Yes" : "No") . "<br>";

@@ -16,23 +16,23 @@
 
 require_once("../../../../config/dmsDefaults.php");
 
-require_once("$default->owl_fs_root/lib/security/permission.inc");
+require_once("$default->fileSystemRoot/lib/security/permission.inc");
 
-require_once("$default->owl_fs_root/lib/users/User.inc");
+require_once("$default->fileSystemRoot/lib/users/User.inc");
 
-require_once("$default->owl_fs_root/lib/documentmanagement/DocumentTransaction.inc");
-require_once("$default->owl_fs_root/lib/documentmanagement/Document.inc");
-require_once("$default->owl_fs_root/lib/foldermanagement/Folder.inc");
+require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentTransaction.inc");
+require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
+require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
 
-require_once("$default->owl_fs_root/lib/visualpatterns/PatternTableSqlQuery.inc");
-require_once("$default->owl_fs_root/lib/visualpatterns/PatternCustom.inc");
+require_once("$default->fileSystemRoot/lib/visualpatterns/PatternTableSqlQuery.inc");
+require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
 
-require_once("$default->owl_fs_root/presentation/lookAndFeel/knowledgeTree/documentmanagement/viewHistoryUI.inc");
-require_once("$default->owl_fs_root/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
-//require_once("$default->owl_fs_root/presentation/Html.inc");
+require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/documentmanagement/viewHistoryUI.inc");
+require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
+//require_once("$default->fileSystemRoot/presentation/Html.inc");
 
 if (checkSession()) {	
-	require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");
+	require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
     if (isset($fDocumentID)) {		
 		if (Permission::userHasDocumentReadPermission($fDocumentID)) {			
 			$oDocument = & Document::get($fDocumentID);

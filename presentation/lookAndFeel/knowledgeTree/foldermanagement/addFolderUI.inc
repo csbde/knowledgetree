@@ -13,7 +13,7 @@ function renderBrowseAddPage($fFolderID) {
     global $default;
     $sToRender = "<table border=\"0\">\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "\t<td>" . renderFolderPath($fFolderID, "$default->owl_ui_directory/foldermanagement/addFolderBL.php") . "</td>\n";
+    $sToRender .= "\t<td>" . renderFolderPath($fFolderID, "$default->uiDirectory/foldermanagement/addFolderBL.php") . "</td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "</table>\n";
     $sToRender .= "<table border=\"0\">\n";
@@ -26,7 +26,7 @@ function renderBrowseAddPage($fFolderID) {
     $sToRender .= "<td colspan=\"2\"><b>New folder name:<b></td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "<td><input type=\"text\" name=\"fFolderName\" value=\"\" /></td>\n";
-    $sToRender .= "<td><input type=\"image\" src=\"$default->owl_graphics_url/widgets/add.gif\"></td>\n";
+    $sToRender .= "<td><input type=\"image\" src=\"$default->graphicsUrl/widgets/add.gif\"></td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "</table>\n";
 
@@ -37,7 +37,7 @@ function renderBrowsePage($fFolderID) {
     global $default;
     $sToRender = "<table border=\"0\">\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "\t<td>" . renderFolderPath($fFolderID, "$default->owl_ui_directory/foldermanagement/addFolderBL.php") . "</td>\n";
+    $sToRender .= "\t<td>" . renderFolderPath($fFolderID, "$default->uiDirectory/foldermanagement/addFolderBL.php") . "</td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "</table>\n";
     $sToRender .= "<table border=\"0\">\n";

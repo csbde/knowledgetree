@@ -2,7 +2,7 @@
 
 // main library routines and defaults
 require_once("./config/dmsDefaults.php");
-require_once("$default->owl_fs_root/lib/session/SiteMap.inc");
+//require_once("$default->fileSystemRoot/lib/session/SiteMap.inc");
 
 /**
  * $Id$ 
@@ -56,9 +56,9 @@ if (!$page) {
     // this user doesn't have permission to access the page
     // or there is no page mapping for the requested action
     // redirect to no permission page
-    redirect("$default->owl_ui_url/noAccess.php");
+    redirect("$default->uiUrl/noAccess.php");
 } else {
-    $page = $default->owl_root_url . $page;
+    $page = $default->rootUrl . $page;
     // set authorised flag and redirect
     // strip querystring from the page returned from the sitemap
     // before setting page authorisation flag (since checkSession checks page level

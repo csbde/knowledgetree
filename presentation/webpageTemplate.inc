@@ -11,11 +11,11 @@
 * @package presentation.lookandfeel
 */
 
-require_once("$default->owl_fs_root/lib/visualpatterns/PatternMainPage.inc");
-require_once("$default->owl_fs_root/lib/visualpatterns/PatternImage.inc");
-require_once("$default->owl_fs_root/lib/visualpatterns/PatternTableLinks.inc");
-require_once("$default->owl_fs_root/lib/visualpatterns/PatternTableSqlQuery.inc");
-require_once("$default->owl_fs_root/lib/visualpatterns/NavBar.inc");
+require_once("$default->fileSystemRoot/lib/visualpatterns/PatternMainPage.inc");
+require_once("$default->fileSystemRoot/lib/visualpatterns/PatternImage.inc");
+require_once("$default->fileSystemRoot/lib/visualpatterns/PatternTableLinks.inc");
+require_once("$default->fileSystemRoot/lib/visualpatterns/PatternTableSqlQuery.inc");
+require_once("$default->fileSystemRoot/lib/visualpatterns/NavBar.inc");
 
 // create the navbar and north payload
 $navbar = new NavBar($fBrowseType, $fFolderID, $fDocumentID, $fCategoryName, $fDocTypeID);
@@ -24,7 +24,7 @@ $navbar = new NavBar($fBrowseType, $fFolderID, $fDocumentID, $fCategoryName, $fD
 if ($sectionName == "")
 //get the section name if not specified in the url
 {
-	$sectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->owl_root_url), strlen($_SERVER["PHP_SELF"])));
+	$sectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
 }
 
 
@@ -33,7 +33,7 @@ $navbar->setHighlightedSection($sectionName);
 
 // setup nw payload
 $colourBar = $navbar->getNWColourbar();
-$image = new PatternImage("$default->owl_graphics_url/tree.gif");
+$image = new PatternImage("$default->graphicsUrl/tree.gif");
 $image->setImgSize(114, 96);
 $img = $image->render();
 
@@ -74,8 +74,8 @@ if ($sectionName != "General") {
 }
 
 //set up links
-$cAdmin = "$default->owl_graphics_url/leftnav/cadmin.gif" ;
-$link = "$default->owl_graphics_url/leftnav/links.gif" ;
+$cAdmin = "$default->graphicsUrl/leftnav/cadmin.gif" ;
+$link = "$default->graphicsUrl/leftnav/links.gif" ;
 
 
 //setup the westpayload

@@ -75,7 +75,7 @@ class Session {
     function removeStaleSessions($userID) {
         global $default;
         // deletes any sessions for this userID where the default timeout has elapsed.
-        $time = time() -  $default->owl_timeout;
+        $time = time() -  $default->sessionTimeout;
         $sql = $default->db;
         $sql->query("DELETE FROM $default->owl_sessions_table WHERE user_id = '" . $userID . "' AND lastused <= '" . formatDateTime($time) . "'");
     }
@@ -113,8 +113,8 @@ class Session {
                         $default->log->debug("Session::verify() lastused=$lastused; str=" . strtotime($lastused));
                         $default->log->debug("Session::verify() current time=" . time());
                         $diff = time() - strtotime($lastused);
-                        $default->log->debug("Session::verify() timeout = " . $default->owl_timeout . "; diff=$diff");                        
-                        if($diff <= $default->owl_timeout) {
+                        $default->log->debug("Session::verify() timeout = " . $default->sessionTimeout . "; diff=$diff");                        
+                        if($diff <= $default->sessionTimeout) {
                             // session has been verified, update status
                             $sessionStatus = 1;
                             // use userID to refresh user details and set on session

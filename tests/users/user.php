@@ -13,7 +13,7 @@ require_once("../../config/dmsDefaults.php");
 
 
 if (checkSession) {
-	require_once("$default->owl_fs_root/lib/users/User.inc");
+	require_once("$default->fileSystemRoot/lib/users/User.inc");
 	
 	$oUser = & new User("johnny", "tester", "test password", 200, "ropb@jamwarehouse.com", "+27 82 422 3685", true, true, "!@#%^&*()", 3, 1);
 	echo "Create ? " . ($oUser->create() ? "Yes" : "No") . "<br>";

@@ -2,7 +2,7 @@
 
 // main library routines and defaults
 require_once("../config/dmsDefaults.php");
-require_once("$default->owl_ui_directory/dashboardUI.inc");
+require_once("$default->uiDirectory/dashboardUI.inc");
 
 /**
  * $Id$
@@ -72,6 +72,7 @@ if (checkSession()) {
                          // FIXME: replace with the real method when its implemented
                          // something like:
                          //    SubscriptionManager::getAlerts();
+                         
                          $aSubscriptionList = getSubscriptionDocuments($_SESSION["userID"]);
                          for ($i = 0; $i < count($aSubscriptionList); $i++) {
                              $row = tableData($aSubscriptionList[$i]->getTitleLink()) .
@@ -87,13 +88,14 @@ if (checkSession()) {
     
     $oContent = new PatternCustom();
     $oContent->setHtml($sHtml);
+    //$oContent->setHtml(getPage());
     
     $main->setCentralPayload($oContent);
     $main->render();
         
 } else {
     // redirect to no permission page
-    redirect("$default->owl_ui_url/noAccess.php");
+    redirect("$default->uiUrl/noAccess.php");
 }
 ?>
 

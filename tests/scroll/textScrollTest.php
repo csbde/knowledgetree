@@ -111,6 +111,6 @@ if (checkSession()) {
     
 } else {
     // redirect to no permission page
-    redirect("$default->owl_ui_url/noAccess.php");
+    redirect("$default->uiUrl/noAccess.php");
 }
 ?>

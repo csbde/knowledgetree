@@ -2,8 +2,8 @@
 
 // main library routines and defaults
 require_once("../../config/dmsDefaults.php");
-require_once("$default->owl_fs_root/lib/owl.lib.php");
-require_once("$default->owl_fs_root/lib/administration/UnitManager.inc");
+require_once("$default->fileSystemRoot/lib/owl.lib.php");
+require_once("$default->fileSystemRoot/lib/administration/UnitManager.inc");
 
 /**
  * $Id$

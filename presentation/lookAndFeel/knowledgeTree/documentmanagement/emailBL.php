@@ -11,15 +11,15 @@
 require_once("../../../../config/dmsDefaults.php");
 if (checkSession()) {
     if (isset($fDocumentID)) {
-        require_once("$default->owl_fs_root/lib/security/permission.inc");
-        require_once("$default->owl_fs_root/lib/documentmanagement/Document.inc");
-        require_once("$default->owl_fs_root/lib/email/Email.inc");
-        require_once("$default->owl_fs_root/lib/users/User.inc");
-        require_once("$default->owl_fs_root/lib/documentmanagement/PhysicalDocumentManager.inc");
-        require_once("$default->owl_fs_root/lib/documentmanagement/DocumentTransaction.inc");
-        require_once("$default->owl_fs_root/lib/foldermanagement/Folder.inc");
-        require_once("$default->owl_fs_root/presentation/Html.inc");
-        require_once("$default->owl_fs_root/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
+        require_once("$default->fileSystemRoot/lib/security/permission.inc");
+        require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
+        require_once("$default->fileSystemRoot/lib/email/Email.inc");
+        require_once("$default->fileSystemRoot/lib/users/User.inc");
+        require_once("$default->fileSystemRoot/lib/documentmanagement/PhysicalDocumentManager.inc");
+        require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentTransaction.inc");
+        require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
+        require_once("$default->fileSystemRoot/presentation/Html.inc");
+        require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
         require_once("emailUI.inc");
 
         //get the document to send
@@ -45,11 +45,11 @@ if (checkSession()) {
                         $oEmail = new Email();
                         $oEmail->sendHyperlink($default->owl_email_from, "MRC DMS", $fToEmail, "Document link",  $sMessage, $sHyperLink);
                         //go back to the document view page
-                        redirect("$default->owl_root_url/control.php?action=viewDocument&fDocumentID=$fDocumentID");
+                        redirect("$default->rootUrl/control.php?action=viewDocument&fDocumentID=$fDocumentID");
                     } else {
                         //ask the user to enter a valid email address
-                        require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");
-                        require_once("$default->owl_fs_root/lib/visualpatterns/PatternCustom.inc");
+                        require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
+                        require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
 
 
                         $oPatternCustom = & new PatternCustom();
@@ -63,8 +63,8 @@ if (checkSession()) {
                 }
             } else {
                 //ask for an email address
-                require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");
-                require_once("$default->owl_fs_root/lib/visualpatterns/PatternCustom.inc");
+                require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
+                require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
 
                 $oPatternCustom = & new PatternCustom();
                 $oPatternCustom->setHtml(getDocumentEmailPage($oDocument));
@@ -74,8 +74,8 @@ if (checkSession()) {
                 $main->render();
             }
         } else {
-            require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");
-            require_once("$default->owl_fs_root/lib/visualpatterns/PatternCustom.inc");
+            require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
+            require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
             $oPatternCustom = & new PatternCustom();
             $oPatternCustom->setHtml("");
             $main->setErrorMessage("You do not have the permission to email a link to this document\n");

@@ -10,18 +10,18 @@
 require_once("../../../../../config/dmsDefaults.php");
 
 if (checkSession()) {
-	require_once("$default->owl_fs_root/lib/visualpatterns/PatternListBox.inc");
-	require_once("$default->owl_fs_root/lib/visualpatterns/PatternEditableListFromQuery.inc");
+	require_once("$default->fileSystemRoot/lib/visualpatterns/PatternListBox.inc");
+	require_once("$default->fileSystemRoot/lib/visualpatterns/PatternEditableListFromQuery.inc");
 	require_once("removeUnitUI.inc");
-	require_once("$default->owl_fs_root/lib/security/permission.inc");
-	require_once("$default->owl_fs_root/lib/unitmanagement/Unit.inc");
-	require_once("$default->owl_fs_root/lib/orgmanagement/Organisation.inc");
-	require_once("$default->owl_fs_root/lib/unitmanagement/UnitOrganisationLink.inc");
-	require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");
-	require_once("$default->owl_fs_root/lib/visualpatterns/PatternCustom.inc");	
-	require_once("$default->owl_fs_root/lib/foldermanagement/Folder.inc");
-	require_once("$default->owl_fs_root/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
-	require_once("$default->owl_fs_root/presentation/Html.inc");
+	require_once("$default->fileSystemRoot/lib/security/permission.inc");
+	require_once("$default->fileSystemRoot/lib/unitmanagement/Unit.inc");
+	require_once("$default->fileSystemRoot/lib/orgmanagement/Organisation.inc");
+	require_once("$default->fileSystemRoot/lib/unitmanagement/UnitOrganisationLink.inc");
+	require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
+	require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");	
+	require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
+	require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
+	require_once("$default->fileSystemRoot/presentation/Html.inc");
 	
 	$oPatternCustom = & new PatternCustom();	
 	

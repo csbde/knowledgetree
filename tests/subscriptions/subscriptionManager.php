@@ -2,7 +2,7 @@
 include("../../config/dmsDefaults.php");
 
 if (checkSession()) {
-    require_once("$default->owl_fs_root/lib/subscriptions/SubscriptionManager.inc");
+    require_once("$default->fileSystemRoot/lib/subscriptions/SubscriptionManager.inc");
     $oSubscriptionManager = new SubscriptionManager();
     echo "<b>Testing folder subscriptions</b><br>";
     $iFolderID = 1;

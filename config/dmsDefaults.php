@@ -12,19 +12,6 @@
 // include the environment settings
 require_once("environment.php");
 
-$default->owl_graphics_url = $default->owl_root_url . "/graphics";
-$default->owl_LangDir  = $default->owl_fs_root . "/locale";
-// change this to reflect a directory with a different look and feel
-$default->owl_ui_directory  = $default->owl_fs_root . "/presentation/lookAndFeel/knowledgeTree";
-$default->owl_ui_url  = $default->owl_root_url . "/presentation/lookAndFeel/knowledgeTree";
-
-
-// Set to true to use the file system to store documents, false only uses the database
-$default->owl_use_fs            = true;
-//$default->owl_use_fs            = false;
-// the Trailing Slash is important here.
-//$default->owl_compressed_database = 1;
-
 //****************************************************
 // Pick your language system default language
 // now each user can pick his language
@@ -45,11 +32,7 @@ $default->owl_use_fs            = true;
 // Portuguese
 // Spanish
 
-$default->owl_lang  = "NewEnglish";
-$default->owl_notify_link       = "http://$_SERVER[SERVER_NAME]$default->owl_root_url/";
-
 // Table mappings
-
 // session information
 $default->owl_sessions_table = "active_sessions";
 // document type fields
@@ -123,34 +106,34 @@ $default->owl_web_sites_table = "web_sites";
 // stores indexed words
 $default->owl_words_lookup_table = "words_lookup";
 
-// Change this to reflect the database you are using
-require_once("$default->owl_fs_root/phplib/db_mysql.inc");
-//require("$default->owl_fs_root/phplib/db_pgsql.inc");
-
 // Change this to reflect the authentication method you are using
-//require_once("$default->owl_fs_root/lib/LDAPAuthenticator.inc");
-//require_once("$default->owl_fs_root/lib/Authenticator.inc");
-$default->authentication_class = "DBAuthenticator";
-require_once("$default->owl_fs_root/lib/authentication/$default->authentication_class.inc");
+//require_once("$default->fileSystemRoot/lib/LDAPAuthenticator.inc");
+//require_once("$default->fileSystemRoot/lib/Authenticator.inc");
+$default->authenticationClass = "DBAuthenticator";
+/*
+echo "<pre>";
+print_r($default);
+echo "</pre>";
+exit;
+*/
+require_once("$default->fileSystemRoot/lib/authentication/$default->authenticationClass.inc");
 
 // logo file that must reside inside lang/graphics directory
 $default->logo = "kt.jpg";
 
-// BUG Number: 457588
-// This is to display the version information in the footer
-//$default->version = "owl 0.7 20021129";
 $default->version = "owl-dms 1.0 @build-date@";
 $default->phpversion = "4.0.2";
 
-// session timeout (in seconds)
-$default->owl_timeout = 1200;
-$default->debug = True;
+// Change this to reflect the database you are using
+//require("$default->fileSystemRoot/phplib/db_pgsql.inc");
+require_once("$default->fileSystemRoot/phplib/db_mysql.inc");
 
-// whether ssl is enabled or not
-$default->sslEnabled = false;
+// single db instantiation
+require_once("$default->fileSystemRoot/lib/database/db.inc");
+$default->db = new Database();
 
 // define site mappings
-require_once("$default->owl_fs_root/lib/session/SiteMap.inc");
+require_once("$default->fileSystemRoot/lib/session/SiteMap.inc");
 $default->siteMap = new SiteMap(false);
 
 // action, page, section, group with access, link text
@@ -253,25 +236,21 @@ $default->siteMap->addPage("subEngine", "/tests/subscriptions/subscriptionEngine
 $default->siteMap->addPage("auth", "/tests/authentication/authentication.php", "Tests", Guest, "authentication unit test", false);
 
 // default requires
-require_once("$default->owl_fs_root/phpmailer/class.phpmailer.php");
-require_once("$default->owl_fs_root/lib/session/Session.inc");
-require_once("$default->owl_fs_root/lib/session/control.inc");
-require_once("$default->owl_fs_root/lib/database/db.inc");
-require_once("$default->owl_fs_root/lib/database/lookup.inc");
-require_once("$default->owl_fs_root/lib/System.inc");
-require_once("$default->owl_fs_root/phpSniff/phpSniff.class.php");
-
-// single db instantiation
-$default->db = new Database();
-
-// instantiate system settings class
-$default->system = new System();
+require_once("$default->fileSystemRoot/phpmailer/class.phpmailer.php");
+require_once("$default->fileSystemRoot/lib/session/Session.inc");
+require_once("$default->fileSystemRoot/lib/session/control.inc");
+require_once("$default->fileSystemRoot/phpSniff/phpSniff.class.php");
 
 // instantiate phpsniffer
 $default->phpSniff = new phpSniff($_SERVER["HTTP_USER_AGENT"]);
 
+require_once("$default->fileSystemRoot/lib/Log.inc");
+$default->log = new Log($default->fileSystemRoot . "/log.txt", INFO);
+
+for ($i=0; $i<count($aSettings); $i++) {
+    $default->log->debug($aSettings[$i] . "=" . $default->$aSettings[$i]);
+}
+
 // import request variables and setup language
-require_once("$default->owl_fs_root/lib/dms.inc");
-
-
+require_once("$default->fileSystemRoot/lib/dms.inc");
 ?>

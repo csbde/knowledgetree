@@ -1,34 +1,21 @@
 <?php
-
-
 /**
  * $Id$
- * 
- * Performs db tasks
  *
+ * The default database wrapper class.
+ *
+ * Licensed under the GNU GPL. For full terms see the file COPYING.
+ *  
  * @version $Revision$ 
  * @author Mukhtar Dharsey
  * @package lib.database
- */
-/*-----------------------------------------------------------------*/
-
-/**
- * class Owl_DB extends DB_Sql 
- *
- * This class is used for DB connections
- *
- * @version v 1.1.1.1 2002/12/04
- * @author michael
  */
 class Database extends DB_Sql {
     
     /** Class name */
     var $classname = "Database";
-
-    // BEGIN wes changes -- moved these settings to config/owl.php
-    // Server where the database resides
-    
-    /** Host name.  Retrieved from config/owl.php */
+  
+    /** Host name.  Retrieved from config/environment.php */
     var $Host = ""; 
     /** Database name */
     var $Database = "";
@@ -48,10 +35,10 @@ class Database extends DB_Sql {
     /** Default Constructor */
     function Database() {
       global $default;
-      $this->Host = $default->owl_db_host;
-      $this->Database = $default->owl_db_name;
-      $this->User = $default->owl_db_user;
-      $this->Password = $default->owl_db_pass;
+      $this->Host = $default->dbHost;
+      $this->Database = $default->dbName;
+      $this->User = $default->dbUser;
+      $this->Password = $default->dbPass;
     }
     // END wes changes
     

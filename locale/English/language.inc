@@ -15,13 +15,13 @@
 
 */
 
-$lang_logout 		= "<IMG SRC='$default->owl_root_url/locale/$default->owl_lang/graphics/btn_logout.gif' BORDER=0>";
+$lang_logout 		= "<IMG SRC='$default->rootUrl/locale/$default->owl_lang/graphics/btn_logout.gif' BORDER=0>";
 //$lang_logout		= "Logout";
 $lang_login		= "Login";
 $lang_successlogout 	= "You have sucessfully logged out";
 $lang_loginfail		= "Login failure";
 $lang_logindisabled	= "Account has been DISABLED, contact the System Adminstrator";
-$lang_sessinuse		= "This session is in use on another computer, access denied<BR><A HREF='$default->owl_root_url/'>Login</A>";
+$lang_sessinuse		= "This session is in use on another computer, access denied<BR><A HREF='$default->rootUrl/'>Login</A>";
 $lang_invalidsess	= "Invalid session id, please login from the main page<BR>";
 $lang_sesstimeout	= "Your session has timed out, please re-login<BR>";
 
@@ -274,7 +274,7 @@ $lang_owl_def_fold_group_owner  = "Default Folder Group Owner:";
 $lang_owl_def_fold_owner        = "Default Folder Owner:";
 $lang_owl_title_other   = "OTHER SETINGS";
 $lang_owl_max_filesize  = "Maximum Upload File Size:";
-$lang_owl_owl_timeout   = "Session Timeout in Seconds:";
+$lang_owl_sessionTimeout   = "Session Timeout in Seconds:";
 $lang_owl_owl_expand    = "Default Browser View (Expand):";
 $lang_owl_version_control= "Enable Version Control Feature:";
 $lang_owl_restrict_view = "Enable Restricted View Feature:";

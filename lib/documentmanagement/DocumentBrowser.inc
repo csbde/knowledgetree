@@ -1,9 +1,9 @@
 <?php
 
-require_once("$default->owl_fs_root/lib/security/permission.inc");
-require_once("$default->owl_fs_root/lib/users/User.inc");
-require_once("$default->owl_fs_root/lib/documentmanagement/Document.inc");
-require_once("$default->owl_fs_root/lib/foldermanagement/Folder.inc");
+require_once("$default->fileSystemRoot/lib/security/permission.inc");
+require_once("$default->fileSystemRoot/lib/users/User.inc");
+require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
+require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
 
 /**
  * 

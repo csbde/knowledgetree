@@ -85,7 +85,7 @@ function getPage() {
 	
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td></td><td></td><td align = right><input type=\"image\" src =\"$default->owl_graphics_url/widgets/update.gif\" value=\"Submit\" /></td>\n";	
+	$sToRender .= "<td></td><td></td><td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/update.gif\" value=\"Submit\" /></td>\n";	
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
 	
@@ -106,7 +106,7 @@ function getPageSuccess() {
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td></td><td align = right><a href=\"$default_owl_root_url/control.php?action=systemAdministration\"><img src =\"$default->owl_graphics_url/widgets/back.gif\" border = \"0\" /></a></td>\n";
+	$sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=systemAdministration\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
 	

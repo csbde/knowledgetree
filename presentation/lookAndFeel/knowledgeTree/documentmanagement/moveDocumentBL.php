@@ -3,21 +3,21 @@
 
 require_once("../../../../config/dmsDefaults.php");
 
-require_once("$default->owl_fs_root/lib/security/permission.inc");
+require_once("$default->fileSystemRoot/lib/security/permission.inc");
 
-require_once("$default->owl_fs_root/lib/users/User.inc");
+require_once("$default->fileSystemRoot/lib/users/User.inc");
 
-require_once("$default->owl_fs_root/lib/documentmanagement/DocumentTransaction.inc");
-require_once("$default->owl_fs_root/lib/documentmanagement/Document.inc");
-require_once("$default->owl_fs_root/lib/documentmanagement/PhysicalDocumentManager.inc");
-require_once("$default->owl_fs_root/lib/foldermanagement/Folder.inc");
+require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentTransaction.inc");
+require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
+require_once("$default->fileSystemRoot/lib/documentmanagement/PhysicalDocumentManager.inc");
+require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
 
-require_once("$default->owl_fs_root/lib/visualpatterns/PatternTableSqlQuery.inc");
-require_once("$default->owl_fs_root/lib/visualpatterns/PatternCustom.inc");
+require_once("$default->fileSystemRoot/lib/visualpatterns/PatternTableSqlQuery.inc");
+require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
 
-require_once("$default->owl_fs_root/presentation/lookAndFeel/knowledgeTree/documentmanagement/moveDocumentUI.inc");
-require_once("$default->owl_fs_root/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
-require_once("$default->owl_fs_root/presentation/Html.inc");
+require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/documentmanagement/moveDocumentUI.inc");
+require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
+require_once("$default->fileSystemRoot/presentation/Html.inc");
 
 if (checkSession()) {
 	
@@ -38,9 +38,9 @@ if (checkSession()) {
 					//move the document on the file system
 					if (PhysicalDocumentManager::move($sOldDocumentFileSystemPath, $sNewDocumentFileSystemPath)) {
 						//redirect to the view path
-						redirect("$default->owl_root_url/control.php?action=viewDocument&fDocumentID=$fDocumentID");
+						redirect("$default->rootUrl/control.php?action=viewDocument&fDocumentID=$fDocumentID");
 					} else {
-						require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");
+						require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 						//we couldn't move the document on the file system
 						//so reset the database values
 						$oDocument->setFolderID($iOldFolderID);
@@ -53,7 +53,7 @@ if (checkSession()) {
 						$main->render();
 					}
 				} else {
-					require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");
+					require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 					//had a problem with the database					
 					$oPatternCustom = & new PatternCustom();
 					$oPatternCustom->setHtml(getPage($fFolderID, $fDocumentID));
@@ -63,7 +63,7 @@ if (checkSession()) {
 					$main->render();
 				}
 			} else {
-				require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");
+				require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 				$oPatternCustom = & new PatternCustom();
 				$oPatternCustom->setHtml(getPage($fFolderID, $fDocumentID));
 				$main->setCentralPayload($oPatternCustom);   
@@ -73,7 +73,7 @@ if (checkSession()) {
 			}
 			
 		} else {		
-			require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");
+			require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 			$oPatternCustom = & new PatternCustom();
 			$oPatternCustom->setHtml(getPage($fFolderID, $fDocumentID));
 			$main->setCentralPayload($oPatternCustom);   
@@ -81,7 +81,7 @@ if (checkSession()) {
 			$main->render();
 		}
 	} else {
-		require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");
+		require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 		$oPatternCustom = & new PatternCustom();
 		$oPatternCustom->setHtml("");
 		$main->setCentralPayload($oPatternCustom);

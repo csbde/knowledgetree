@@ -13,7 +13,7 @@ require_once("../../config/dmsDefaults.php");
 
 
 if (checkSession) {
-	require_once("$default->owl_fs_root/lib/web/Subscription.inc");
+	require_once("$default->fileSystemRoot/lib/web/Subscription.inc");
 	
 	$oSubscription = & new Subscription(1,1);
 	echo "Create ? " . ($oSubscription->create() ? "Yes" : "No") . "<br>";

@@ -370,7 +370,7 @@ class Document {
 					$oUser = User::get($oFolderUserRole->getUserID());
 			
 					$sBody = $oUser->getUserName() . ", your role of '" . $oRole->getName() . "' in the document, '" . $this->sName . "' collaboration process is now active. " .
-											"Click <a href=\"https://" . $_SERVER["SERVER_NAME"] . "$default->owl_root_url/control.php?action=viewDocument&fDocumentID=" . $this->iId . "\">here</a> to access " .
+											"Click <a href=\"https://" . $_SERVER["SERVER_NAME"] . "$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $this->iId . "\">here</a> to access " .
 											"the document";
 			
 					$oEmail = & new Email($default->owl_email_from, $default->owl_email_fromname);
@@ -506,7 +506,7 @@ class Document {
             // lookup the icon from the table
             $sIconPath = lookupField($default->owl_mime_table, "icon_path", "id", $this->iMimeTypeID);
             if (strlen($sIconPath) > 0) {
-                return $default->owl_graphics_url . "/" . $sIconPath;
+                return $default->graphicsUrl . "/" . $sIconPath;
             } else {
                 return false;
             }

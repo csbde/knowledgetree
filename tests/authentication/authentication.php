@@ -21,7 +21,7 @@ require_once("../../config/dmsDefaults.php");
  * @package tests.authentication
  */
 if (checkSession()) {
-    require_once("$default->owl_fs_root/lib/authentication/DBAuthenticator.inc");
+    require_once("$default->fileSystemRoot/lib/authentication/DBAuthenticator.inc");
     echo "<b>Testing DB searching</b>";
     // user attributes to search for
     $aAttributes = array ("username", "name", "email", "mobile", "email_notification", "sms_notification");
@@ -31,7 +31,7 @@ if (checkSession()) {
     $aResults = $oDbAuth->searchUsers($sSearch, $aAttributes);
     echo "<li><pre>" . arrayToString($aResults) . "</pre></li></ul>";
 
-    require_once("$default->owl_fs_root/lib/authentication/LDAPAuthenticator.inc");
+    require_once("$default->fileSystemRoot/lib/authentication/LDAPAuthenticator.inc");
     echo "<b>Testing LDAP searching</b>";
     // user attributes to search for
     $aAttributes = array ("dn", "uid", "givenname", "sn", "mail", "mobile");

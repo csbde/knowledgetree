@@ -42,11 +42,11 @@ if (substr(phpversion(),0,5) >= "4.1.0") {
         extract($HTTP_POST_FILES);
     }
 }
- 
-// set default language
-if(isset($default->owl_lang)) {
 
-    $langdir = "$default->owl_fs_root/locale/$default->owl_lang";
+// set default language
+if(isset($default->defaultLanguage)) {
+
+    $langdir = "$default->fileSystemRoot/locale/$default->defaultLanguage";
 
     if(is_dir("$langdir") != 1) {
         die("$lang_err_lang_1 $langdir $lang_err_lang_2");
@@ -63,13 +63,13 @@ if(isset($default->owl_lang)) {
             $language = $sql->f("language");
             // BEGIN wes fix
             if(!$language) {
-                $language = $default->owl_lang;
+                $language = $default->defaultLanguage;
             }
             // END wes fix
-            require("$default->owl_fs_root/locale/$language/language.inc");
-            $default->owl_lang = $language;
+            require("$default->fileSystemRoot/locale/$language/language.inc");
+            $default->defaultLanguage = $language;
         } else {
-            require("$default->owl_fs_root/locale/$default->owl_lang/language.inc");
+            require("$default->fileSystemRoot/locale/$default->defaultLanguage/language.inc");
         }
     }
 } else {

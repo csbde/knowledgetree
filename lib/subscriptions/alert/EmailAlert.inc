@@ -1,5 +1,5 @@
 <?php
-require_once("$default->owl_fs_root/lib/email/Email.inc");
+require_once("$default->fileSystemRoot/lib/email/Email.inc");
 
 /**
  * 

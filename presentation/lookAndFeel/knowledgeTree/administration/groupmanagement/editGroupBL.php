@@ -10,16 +10,16 @@
 require_once("../../../../../config/dmsDefaults.php");
 
 if (checkSession()) {
-	require_once("$default->owl_fs_root/lib/visualpatterns/PatternListBox.inc");
-	require_once("$default->owl_fs_root/lib/visualpatterns/PatternEditableListFromQuery.inc");
+	require_once("$default->fileSystemRoot/lib/visualpatterns/PatternListBox.inc");
+	require_once("$default->fileSystemRoot/lib/visualpatterns/PatternEditableListFromQuery.inc");
 	require_once("editGroupUI.inc");
-	require_once("$default->owl_fs_root/lib/security/permission.inc");
-	require_once("$default->owl_fs_root/lib/groups/Group.inc");
-	require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");
-	require_once("$default->owl_fs_root/lib/visualpatterns/PatternCustom.inc");	
-	require_once("$default->owl_fs_root/lib/foldermanagement/Folder.inc");
-	require_once("$default->owl_fs_root/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
-	require_once("$default->owl_fs_root/presentation/Html.inc");
+	require_once("$default->fileSystemRoot/lib/security/permission.inc");
+	require_once("$default->fileSystemRoot/lib/groups/Group.inc");
+	require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
+	require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");	
+	require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
+	require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
+	require_once("$default->fileSystemRoot/presentation/Html.inc");
 	
 	
 	$oPatternCustom = & new PatternCustom();		
@@ -33,7 +33,7 @@ if (checkSession()) {
 			$oPatternCustom->setHtml(getCreatePage($fGroupID));
 		}
 		
-		$main->setFormAction("$default->owl_root_url/presentation/lookAndFeel/knowledgeTree/store.php?fReturnURL=" . urlencode("$default->owl_root_url/control.php?action=editGroupSuccess"));		
+		$main->setFormAction("$default->rootUrl/presentation/lookAndFeel/knowledgeTree/store.php?fReturnURL=" . urlencode("$default->rootUrl/control.php?action=editGroupSuccess"));		
 		
 	// coming from manual edit page	
 	} else if (isset($fForStore)) {

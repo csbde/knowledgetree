@@ -1,6 +1,6 @@
 <?php
 
-require_once("$default->owl_fs_root/lib/security/permission.inc");
+require_once("$default->fileSystemRoot/lib/security/permission.inc");
 
 // define access constants
 define("None", 1);
@@ -170,8 +170,8 @@ class SiteMap {
                         if (strlen($sql->f("link_text")) > 0) {
                             $results["descriptions"][] = $sql->f("link_text");
                             // if fFolderID is set and fFolderID is in the page string
-                            // append folderID to the controller link
-                            $results["links"][] = $fFolderID ? generateControllerLink($sql->f("action"), "fFolderID=$fFolderID") : generateControllerLink($sql->f("action"), "");
+                            // append folderID to the controller link                            
+                            $results["links"][] = isset($fFolderID) ? generateControllerLink($sql->f("action"), "fFolderID=$fFolderID") : generateControllerLink($sql->f("action"), "");
                         }
                     }
                 }
@@ -197,8 +197,7 @@ class SiteMap {
      * @param string the section to return links for
      */
     function getSectionLinksUsingArray($sSectionName) {
-        global $default, $fFolderID, $fDocumentID;
-        // TODO: same for documentID
+        global $default, $fFolderID;
 
         // check if the section exists
         if (is_array($this->aSiteMap[$sSectionName])) {
@@ -209,14 +208,13 @@ class SiteMap {
             foreach ($this->aSiteMap[$sSectionName] as $requiredAccess => $pages) {
                 if ($this->hasPermission($requiredAccess)) {
                     foreach ($pages as $action => $pageDetail) {
-                        // add this array to the resultset array if there is link text
+                        // add this array to the resultset array if there is link text and it is enabled
                         if ((strlen($pages[$action]["description"]) > 0) &&
                                 ($pages[$action]["enabled"])) {
 
                             $results["descriptions"][] = $pages[$action]["description"];
-                            // if fFolderID is set and fFolderID is in the page string
-                            // append folderID to the controller link
-                            $results["links"][] = $fFolderID ? generateControllerLink($action, "fFolderID=$fFolderID") : generateControllerLink($action, "");
+                            
+                            $results["links"][] = isset($fFolderID) ? generateControllerLink($action, "fFolderID=$fFolderID") : generateControllerLink($action, "");
                         }
                     }
                 }
@@ -232,7 +230,7 @@ class SiteMap {
             return false;
         }
     }
-
+    
     /**
      * Returns the page mapped to the (action, groupName) pair.
      * Checks whether to use the db or not and calls the appropriate method     

@@ -14,15 +14,15 @@
 require_once("../../../../config/dmsDefaults.php");
 
 if (checkSession()) {
-    require_once("$default->owl_fs_root/lib/visualpatterns/PatternListBox.inc");
-    require_once("$default->owl_fs_root/lib/visualpatterns/PatternEditableListFromQuery.inc");
+    require_once("$default->fileSystemRoot/lib/visualpatterns/PatternListBox.inc");
+    require_once("$default->fileSystemRoot/lib/visualpatterns/PatternEditableListFromQuery.inc");
     require_once("editUI.inc");
-    require_once("$default->owl_fs_root/lib/security/permission.inc");
-    require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");
-    require_once("$default->owl_fs_root/lib/visualpatterns/PatternCustom.inc");
-    require_once("$default->owl_fs_root/lib/foldermanagement/Folder.inc");
-    require_once("$default->owl_fs_root/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
-    require_once("$default->owl_fs_root/presentation/Html.inc");
+    require_once("$default->fileSystemRoot/lib/security/permission.inc");
+    require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
+    require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
+    require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
+    require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
+    require_once("$default->fileSystemRoot/presentation/Html.inc");
 
     if (isset($fFolderID)) {
         //if the user can edit the folder
@@ -35,7 +35,7 @@ if (checkSession()) {
                 $main->setErrorMessage("You cannot edit this folder collaboration process as a document is currently undergoing this collaboration process");
                 $main->setCentralPayload($oPatternCustom);
                 $main->setHasRequiredFields(true);
-                $main->setFormAction("../store.php?fReturnURL=" . urlencode("$default->owl_root_url/control.php?action=browse&fFolderID=$fFolderID"));
+                $main->setFormAction("../store.php?fReturnURL=" . urlencode("$default->rootUrl/control.php?action=browse&fFolderID=$fFolderID"));
                 $main->render();
             } else if (isset($fCollaborationDelete)) {
                 //user attempted to delete the folder collaboration process but could not because there is
@@ -45,19 +45,19 @@ if (checkSession()) {
                 $main->setErrorMessage("You cannot delete this folder collaboration process as a document is currently undergoing this collaboration process");
                 $main->setCentralPayload($oPatternCustom);
                 $main->setHasRequiredFields(true);
-                $main->setFormAction("../store.php?fReturnURL=" . urlencode("$default->owl_root_url/control.php?action=browse&fFolderID=$fFolderID"));
+                $main->setFormAction("../store.php?fReturnURL=" . urlencode("$default->rootUrl/control.php?action=browse&fFolderID=$fFolderID"));
                 $main->render();
             } else {
                 $oPatternCustom = & new PatternCustom();
                 $oPatternCustom->setHtml(getPage($fFolderID));
                 $main->setCentralPayload($oPatternCustom);
                 $main->setHasRequiredFields(true);
-                $main->setFormAction("../store.php?fReturnURL=" . urlencode("$default->owl_root_url/control.php?action=browse&fFolderID=$fFolderID"));
+                $main->setFormAction("../store.php?fReturnURL=" . urlencode("$default->rootUrl/control.php?action=browse&fFolderID=$fFolderID"));
                 $main->render();
             }
         } else {
             //user does not have write permission for this folder,
-            require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");
+            require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
             $oPatternCustom = & new PatternCustom();
             $oPatternCustom->setHtml("");
             $main->setCentralPayload($oPatternCustom);
@@ -70,7 +70,7 @@ if (checkSession()) {
         $oPatternCustom->setHtml("");
         $main->setCentralPayload($oPatternCustom);
         $main->setErrorMessage("No folder currently selected");
-        $main->setFormAction("../store.php?fReturnURL=" . urlencode("$default->owl_root_url/control.php?action=browse&fFolderID=$fFolderID"));
+        $main->setFormAction("../store.php?fReturnURL=" . urlencode("$default->rootUrl/control.php?action=browse&fFolderID=$fFolderID"));
         $main->render();
     }
 }

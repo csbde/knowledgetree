@@ -12,16 +12,16 @@ require_once("../../../../config/dmsDefaults.php");
 
 if (checkSession()) {
 	
-	require_once("$default->owl_fs_root/lib/security/permission.inc");
-	require_once("$default->owl_fs_root/lib/documentmanagement/Document.inc");
-	require_once("$default->owl_fs_root/lib/foldermanagement/Folder.inc");						
-	require_once("$default->owl_fs_root/lib/visualpatterns/PatternCustom.inc");
-	require_once("$default->owl_fs_root/lib/visualpatterns/PatternEditableTableSqlQuery.inc");
-	require_once("$default->owl_fs_root/lib/visualpatterns/PatternEditableListFromQuery.inc");
-	require_once("$default->owl_fs_root/presentation/lookAndFeel/knowledgeTree/documentmanagement/modifyUI.inc");
-	require_once("$default->owl_fs_root/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
-	require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");			
-	require_once("$default->owl_fs_root/presentation/Html.inc");
+	require_once("$default->fileSystemRoot/lib/security/permission.inc");
+	require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
+	require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");						
+	require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
+	require_once("$default->fileSystemRoot/lib/visualpatterns/PatternEditableTableSqlQuery.inc");
+	require_once("$default->fileSystemRoot/lib/visualpatterns/PatternEditableListFromQuery.inc");
+	require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/documentmanagement/modifyUI.inc");
+	require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
+	require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");			
+	require_once("$default->fileSystemRoot/presentation/Html.inc");
 	
 	$aDocumentDataArray;
 	settype($aDocumentDataArray, "array");
@@ -31,7 +31,7 @@ if (checkSession()) {
 	$oPatternCustom->setHtml(renderPage($oDocument));
 	$main->setCentralPayload($oPatternCustom);
 	$main->setHasRequiredFields(true);	
-	$main->setFormAction("../store.php?fReturnURL=" . urlencode("$default->owl_root_url/control.php?action=viewDocument&fDocumentID=" . $oDocument->getID() . "&fFireSubscription=1"));
+	$main->setFormAction("../store.php?fReturnURL=" . urlencode("$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $oDocument->getID() . "&fFireSubscription=1"));
 	$main->render();	
 }
 

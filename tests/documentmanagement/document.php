@@ -15,8 +15,8 @@ require_once("../../config/dmsDefaults.php");
 */
 
 if (checkSession()) {
-	require_once("$default->owl_fs_root/lib/documentmanagement/Document.inc");
-	require_once("$default->owl_fs_root/lib/foldermanagement/FolderManager.inc");
+	require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
+	require_once("$default->fileSystemRoot/lib/foldermanagement/FolderManager.inc");
 	
 	//test creation of a document
 	echo "<b>Testing document creation</b><br>";

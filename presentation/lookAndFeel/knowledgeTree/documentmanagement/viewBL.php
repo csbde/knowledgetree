@@ -22,30 +22,30 @@
 
 require_once("../../../../config/dmsDefaults.php");
 
-require_once("$default->owl_fs_root/lib/security/permission.inc");
+require_once("$default->fileSystemRoot/lib/security/permission.inc");
 
-require_once("$default->owl_fs_root/lib/email/Email.inc");
+require_once("$default->fileSystemRoot/lib/email/Email.inc");
 
-require_once("$default->owl_fs_root/lib/users/User.inc");
+require_once("$default->fileSystemRoot/lib/users/User.inc");
 
-require_once("$default->owl_fs_root/lib/documentmanagement/PhysicalDocumentManager.inc");
-require_once("$default->owl_fs_root/lib/documentmanagement/DocumentTransaction.inc");
-require_once("$default->owl_fs_root/lib/documentmanagement/Document.inc");
+require_once("$default->fileSystemRoot/lib/documentmanagement/PhysicalDocumentManager.inc");
+require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentTransaction.inc");
+require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
 
-require_once("$default->owl_fs_root/lib/foldermanagement/FolderCollaboration.inc");
-require_once("$default->owl_fs_root/lib/foldermanagement/FolderUserRole.inc");
-require_once("$default->owl_fs_root/lib/roles/Role.inc");
-require_once("$default->owl_fs_root/lib/foldermanagement/Folder.inc");
+require_once("$default->fileSystemRoot/lib/foldermanagement/FolderCollaboration.inc");
+require_once("$default->fileSystemRoot/lib/foldermanagement/FolderUserRole.inc");
+require_once("$default->fileSystemRoot/lib/roles/Role.inc");
+require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
 
-require_once("$default->owl_fs_root/lib/visualpatterns/PatternListFromQuery.inc");
-require_once("$default->owl_fs_root/lib/visualpatterns/PatternTableSqlQuery.inc");
-require_once("$default->owl_fs_root/lib/visualpatterns/PatternCustom.inc");
-require_once("$default->owl_fs_root/lib/visualpatterns/PatternListFromQuery.inc");
-require_once("$default->owl_fs_root/lib/visualpatterns/PatternTableSqlQuery.inc");
+require_once("$default->fileSystemRoot/lib/visualpatterns/PatternListFromQuery.inc");
+require_once("$default->fileSystemRoot/lib/visualpatterns/PatternTableSqlQuery.inc");
+require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
+require_once("$default->fileSystemRoot/lib/visualpatterns/PatternListFromQuery.inc");
+require_once("$default->fileSystemRoot/lib/visualpatterns/PatternTableSqlQuery.inc");
 
-require_once("$default->owl_fs_root/presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc");
-require_once("$default->owl_fs_root/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
-require_once("$default->owl_fs_root/presentation/Html.inc");
+require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc");
+require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
+require_once("$default->fileSystemRoot/presentation/Html.inc");
 
 if (checkSession()) {
     if (isset($fDocumentID)) {
@@ -53,14 +53,14 @@ if (checkSession()) {
             //return value from collaborationBL.php.  User attempted to edt
             //a step in the document collaboration process that is currently being
             //executed
-            require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");
+            require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 
             $oDocument = & Document::get($fDocumentID);
             $oPatternCustom = & new PatternCustom();
             $oPatternCustom->setHtml(getEditPage($oDocument));
             $main->setCentralPayload($oPatternCustom);
             $main->setErrorMessage("You cannot edit a document collaboration step that is completed or currently underway");
-            $main->setFormAction("$default->owl_root_url/control.php?action=modifyDocument&fDocumentID=" . $oDocument->getID());
+            $main->setFormAction("$default->rootUrl/control.php?action=modifyDocument&fDocumentID=" . $oDocument->getID());
             $main->render();
         } else if (isset($fForDownload) && Permission::userHasDocumentReadPermission($fDocumentID)) {
             //if the user has document read permission, perform the download
@@ -68,7 +68,7 @@ if (checkSession()) {
             $oDocumentTransaction->create();
             PhysicalDocumentManager::downloadPhysicalDocument($fDocumentID);
         } else if (isset($fBeginCollaboration) && Permission::userHasDocumentWritePermission($fDocumentID)) {
-            require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");
+            require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
             //begin the collaboration process
             //first ensure that all steps in the collaboration process are assigned
             $oDocument = Document::get($fDocumentID);
@@ -84,7 +84,7 @@ if (checkSession()) {
                 $main->render();
             } else {
                 //not all the roles have users assigned to them, so display an error message
-                require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");
+                require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 
                 $oPatternCustom = & new PatternCustom();
                 $oPatternCustom->setHtml(getEditPage($oDocument));
@@ -94,8 +94,8 @@ if (checkSession()) {
             }
 
         } else if (Permission::userHasDocumentWritePermission($fDocumentID) || Permission::userHasDocumentReadPermission($fDocumentID)) {
-            require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");
-            require_once("$default->owl_fs_root/lib/subscriptions/SubscriptionEngine.inc");
+            require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
+            require_once("$default->fileSystemRoot/lib/subscriptions/SubscriptionEngine.inc");
 
             $oDocument = & Document::get($fDocumentID);
             
@@ -115,10 +115,10 @@ if (checkSession()) {
                 $oPatternCustom->setHtml(getViewPage($oDocument));
             }
             $main->setCentralPayload($oPatternCustom);
-            $main->setFormAction("$default->owl_root_url/control.php?action=modifyDocument&fDocumentID=" . $oDocument->getID());
+            $main->setFormAction("$default->rootUrl/control.php?action=modifyDocument&fDocumentID=" . $oDocument->getID());
             $main->render();
         } else {
-            require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");
+            require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 
             $oPatternCustom = & new PatternCustom();
             $oPatternCustom->setHtml("");
@@ -127,7 +127,7 @@ if (checkSession()) {
             $main->render();
         }
     } else {
-        require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");
+        require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 
         $oPatternCustom = & new PatternCustom();
         $oPatternCustom->setHtml("");

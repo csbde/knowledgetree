@@ -16,7 +16,7 @@ require_once("../../config/dmsDefaults.php");
 
 
 if (checkSession()) {
-	require_once("$default->owl_fs_root/lib/foldermanagement/Folder.inc");
+	require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
 	
 	echo "<b>Testing creation of new folder object</b><br>";
 	$oFol = & new Folder("Test folder object", "Test folder's #%&4#@% object", 1, $_SESSION["userID"], 1, 1, false);

@@ -13,7 +13,7 @@ require_once("../../config/dmsDefaults.php");
 
 
 if (checkSession()) {
-	require_once("$default->owl_fs_root/lib/web/WebSite.inc");
+	require_once("$default->fileSystemRoot/lib/web/WebSite.inc");
 	
 	$oWebSite = & new WebSite("test web !@43&!@*& site", "http://www.google.com", 1);
 	echo "Create ? " . ($oWebSite->create() ? "Yes" : "No") . "<br>";

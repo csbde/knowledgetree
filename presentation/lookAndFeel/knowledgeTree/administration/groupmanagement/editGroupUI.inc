@@ -41,7 +41,7 @@ function getCreatePage($iGroupID) {
 	$sToRender .= "<tr>\n";
 	$sToRender .= "</tr>\n";
 	
-	$sToRender .= "<td align = right><input type=\"image\" src =\"$default->owl_graphics_url/widgets/update.gif\" value=\"Update\" /></td>\n";	
+	$sToRender .= "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/update.gif\" value=\"Update\" /></td>\n";	
 	$sToRender .= "</table>\n";
 		
 	
@@ -67,7 +67,7 @@ function getAddFailPage() {
 	$sToRender .= "<tr>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td align = right><a href=\"$default_owl_root_url/control.php?action=addGroup\"><img src =\"$default->owl_graphics_url/widgets/back.gif\" border = \"0\" /></a></td>\n";
+	$sToRender .= "<td align = right><a href=\"$default_rootUrl/control.php?action=addGroup\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
 		
@@ -134,7 +134,7 @@ function getEditPageSuccess() {
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td></td><td align = right><a href=\"$default_owl_root_url/control.php?action=editGroup\"><img src =\"$default->owl_graphics_url/widgets/back.gif\" border = \"0\" /></a></td>\n";
+	$sToRender .= "<td></td><td align = right><a href=\"$default_rootUrl/control.php?action=editGroup\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
 	
@@ -156,7 +156,7 @@ function getEditPageFail() {
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td></td><td align = right><a href=\"$default_owl_root_url/control.php?action=editGroup\"><img src =\"$default->owl_graphics_url/widgets/back.gif\" border = \"0\" /></a></td>\n";
+	$sToRender .= "<td></td><td align = right><a href=\"$default_rootUrl/control.php?action=editGroup\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
 	
@@ -206,7 +206,7 @@ function getUpdateButton($oGroup) {
 	if (!isset($oGroup)) {
 		return "Please select a group: ";
 	} else {
-		return "<td align = right><input type=\"image\" src =\"$default->owl_graphics_url/widgets/update.gif\" value=\"submit\" /></td>\n";
+		return "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/update.gif\" value=\"submit\" /></td>\n";
 	}
 }
 
@@ -214,9 +214,9 @@ function getUpdateButton($oGroup) {
 function getCancelButton($oGroup) {
 	global $default;
 	if (!isset($oGroup)) {
-		//return "<td align = right><a href=\"$default_owl_root_url/control.php?action=groupManagement\"><img src =\"$default->owl_graphics_url/widgets/cancel.gif\" value=\"cancel\" /></a></td>\n";
+		//return "<td align = right><a href=\"$default_rootUrl/control.php?action=groupManagement\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" value=\"cancel\" /></a></td>\n";
 	} else {
-		return "<td align = right><a href=\"$default_owl_root_url/control.php?action=editGroup\"><img src =\"$default->owl_graphics_url/widgets/cancel.gif\" border = \"0\" /></a></td>\n";
+		return "<td align = right><a href=\"$default_rootUrl/control.php?action=editGroup\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" /></a></td>\n";
 	}
 }
 ?>

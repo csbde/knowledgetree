@@ -1,7 +1,7 @@
 <?php
 
 require_once("../../../../config/dmsDefaults.php");
-require_once("$default->owl_fs_root/lib/subscriptions/SubscriptionManager.inc");
+require_once("$default->fileSystemRoot/lib/subscriptions/SubscriptionManager.inc");
 
 /**
  * $Id$
@@ -61,6 +61,6 @@ if (checkSession()) {
     }
 } else {
     // redirect to no permission page
-    redirect("$default->owl_ui_url/noAccess.php");
+    redirect("$default->uiUrl/noAccess.php");
 }
 ?>

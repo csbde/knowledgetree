@@ -14,7 +14,7 @@ require_once("../../config/dmsDefaults.php");
 
 
 if (checkSession) {
-	require_once("$default->owl_fs_root/lib/groups/GroupUserLink.inc");
+	require_once("$default->fileSystemRoot/lib/groups/GroupUserLink.inc");
 	
 	$oGroupUserLink = & new GroupUserLink(1,1);	
 	echo "Create ? " . ($oGroupUserLink->create() ? "Yes" : "No" . $_SESSION["errorMessage"]) . "<br>";
