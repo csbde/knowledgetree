@@ -33,7 +33,7 @@ function getGroupDisplay($iGroupID) {
 		$oPatternListBox->setSelectedValue($iGroupID);
 	}
 	        
-	return "<table><tr><td><b>Filter by group </b></td><td>" . $oPatternListBox->render() . "</td></tr></table>";	        
+	return "<table><tr><td><b>Filter By Group </b></td><td>" . $oPatternListBox->render() . "</td></tr></table>";	        
 }
 
 function getUsers($fGroupID) {
