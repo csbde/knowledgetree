@@ -163,6 +163,7 @@ $default->siteMap->addPage("dashboard", "/presentation/dashboardBL.php", "Genera
 //pages for manage documents section
 $default->siteMap->addDefaultPage("browse", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/browseBL.php", "Manage Documents", Guest, "browse documents");
 $default->siteMap->addPage("viewDocument", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/viewBL.php", "Manage Documents", Guest, "View Document", false);
+$default->siteMap->addPage("deleteDocument", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/deleteDocumentBL.php", "Manage Documents", User, "Delete document", false);
 $default->siteMap->addPage("viewHistory", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/viewHistoryBL.php", "Manage Documents", User, "View Document History", false);
 $default->siteMap->addPage("modifyDocument", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/modifyBL.php", "Manage Documents", User, "Modify Document", false);
 $default->siteMap->addPage("removeDocument", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/removeDocumentBL.php", "Manage Documents", User, "Remove Document", false);
