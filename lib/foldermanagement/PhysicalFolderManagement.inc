@@ -51,7 +51,12 @@ class PhysicalFolderManagement {
 	* @return boolean true on successful delete, false otherwise
 	*/
 	function deleteFolder($sPath) {
-		return rmdir(rtrim($sPath));
+		rmdir(rtrim($sPath));
+		if (file_exists($sPath)) {
+			return false;
+		} else {
+			return true;
+		}
 	}
 	
 	function renameFolder($sOldPath, $sNewPath) {		
