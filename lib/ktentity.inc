@@ -90,7 +90,7 @@ class KTEntity {
 
 class KTEntityUtil {
     function &getList($sTable, $sClassName, $sWhereClause = null) {
-        $sQuery = "SELECT id FROM " . $sTable;
+        $sQuery = "SELECT id FROM " . $sTable;/*ok*/
         $aParams = array();
         if (!is_null($sWhereClause)) {
             if (is_string($sWhereClause)) {
