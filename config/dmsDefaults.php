@@ -153,8 +153,8 @@ $default->siteMap->addPage("loginForm", "/presentation/login.php?loginAction=log
 // dashboard
 $default->siteMap->addPage("dashboard", "/presentation/lookAndFeel/knowledgeTree/dashboardBL.php", "General", Guest, "dashboard");
 // dashboard news
-$default->siteMap->addPage("viewNewsItem", "/presentation/lookAndFeel/knowledgeTree/dashboard/news/displayNewsItem.php", "General", User, "");
-$default->siteMap->addPage("viewNewsImage", "/presentation/lookAndFeel/knowledgeTree/dashboard/news/displayNewsImage.php", "General", User, "");
+$default->siteMap->addPage("viewNewsItem", "/presentation/lookAndFeel/knowledgeTree/dashboard/news/displayNewsItem.php", "General", Guest, "");
+$default->siteMap->addPage("viewNewsImage", "/presentation/lookAndFeel/knowledgeTree/dashboard/news/displayNewsImage.php", "General", Guest, "");
 
 //pages for manage documents section
 $default->siteMap->addDefaultPage("browse", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/browseBL.php", "Manage Documents", Guest, "browse documents");
@@ -403,6 +403,8 @@ require_once("$default->fileSystemRoot/presentation/Html.inc");
 
 // instantiate phpsniffer
 $default->phpSniff = new phpSniff($_SERVER["HTTP_USER_AGENT"]);
+$default->browser = $default->phpSniff->property("browser");
+$default->version = $default->phpSniff->property("version");
 
 require_once("$default->fileSystemRoot/lib/Log.inc");
 $default->log = new Log($default->fileSystemRoot . "/log", INFO);
