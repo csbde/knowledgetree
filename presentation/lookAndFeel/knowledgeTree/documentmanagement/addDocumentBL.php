@@ -18,6 +18,8 @@ if (checkSession()) {
     require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
     require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
     require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
+    require_once("$default->fileSystemRoot/lib/documentmanagement/DependantDocumentInstance.inc");
+    require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentLink.inc");
     require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentTransaction.inc");
     require_once("$default->fileSystemRoot/lib/web/WebDocument.inc");
     require_once("$default->fileSystemRoot/lib/documentmanagement/PhysicalDocumentManager.inc");
@@ -51,6 +53,17 @@ if (checkSession()) {
                                     $oDocumentTransaction->create();
                                     $default->log->info("addDocumentBL.php successfully added document " . $oDocument->getFileName() . " to folder " . Folder::getFolderPath($fFolderID) . " id=$fFolderID");
                                     
+                                    //the document was created/uploaded due to a collaboration step in another
+                                    //document and must be linked to that document
+                                    if (isset($fDependantDocumentID)) {
+                                    	$oDependantDocument = DependantDocumentInstance::get($fDependantDocumentID);
+                                    	$oDocumentLink = & new DocumentLink($oDependantDocument->getParentDocumentID(), $oDocument->getID());
+                                    	if ($oDocumentLink->create()) {
+                                    		//no longer a dependant document, but a linked document
+                                    		$oDependantDocument->delete();                         
+                                    	}
+                                    }
+                                    
                                     // fire subscription alerts for the new document
                                     $count = SubscriptionEngine::fireSubscription($fFolderID, SubscriptionConstants::subscriptionAlertType("AddDocument"),
                                              SubscriptionConstants::subscriptionType("FolderSubscription"),
@@ -65,9 +78,9 @@ if (checkSession()) {
                                     require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
                                     $oDocument->delete();
                                     $oPatternCustom = & new PatternCustom();
-                                    $oPatternCustom->setHtml(getBrowseAddPage($fFolderID));
+                                    $oPatternCustom->setHtml(getBrowseAddPage($fFolderID, $fDependantDocumentID));
                                     $main->setCentralPayload($oPatternCustom);
-                                    $main->setFormAction($_SERVER["PHP_SELF"] . "?fFolderID=$fFolderID&fForStore=1");
+                                    $main->setFormAction($_SERVER["PHP_SELF"] . "?fFolderID=$fFolderID&fForStore=1" . (isset($fDependantDocumentID) ? "&fDependantDocumentID=$fDependantDocumentID" : ""));
                                     $main->setFormEncType("multipart/form-data");
                                     $main->setErrorMessage("An error occured while storing the document on the file system");
                                     $default->log->error("addDocumentBL.php Filesystem error attempting to store document " . $oDocument->getFileName() . " in folder " . Folder::getFolderPath($fFolderID) . " id=$fFolderID");
@@ -77,9 +90,9 @@ if (checkSession()) {
                             	// couldn't store document on fs
                                 require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
                                 $oPatternCustom = & new PatternCustom();
-                                $oPatternCustom->setHtml(getBrowseAddPage($fFolderID));
+                                $oPatternCustom->setHtml(getBrowseAddPage($fFolderID, $fDependantDocumentID));
                                 $main->setCentralPayload($oPatternCustom);
-                                $main->setFormAction($_SERVER["PHP_SELF"] . "?fFolderID=$fFolderID&fForStore=1");
+                                $main->setFormAction($_SERVER["PHP_SELF"] . "?fFolderID=$fFolderID&fForStore=1"  . (isset($fDependantDocumentID) ? "&fDependantDocumentID=$fDependantDocumentID" : ""));
                                 $main->setFormEncType("multipart/form-data");
                                 $main->setErrorMessage("An error occured while storing the document in the database");
                                 $default->log->error("addDocumentBL.php DB error storing document in folder " . Folder::getFolderPath($fFolderID) . " id=$fFolderID");
@@ -89,9 +102,9 @@ if (checkSession()) {
                         	// document already exists in folder
                             require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
                             $oPatternCustom = & new PatternCustom();
-                            $oPatternCustom->setHtml(getBrowseAddPage($fFolderID));
+                            $oPatternCustom->setHtml(getBrowseAddPage($fFolderID, $fDependantDocumentID));
                             $main->setCentralPayload($oPatternCustom);
-                            $main->setFormAction($_SERVER["PHP_SELF"] . "?fFolderID=$fFolderID&fForStore=1");
+                            $main->setFormAction($_SERVER["PHP_SELF"] . "?fFolderID=$fFolderID&fForStore=1"  . (isset($fDependantDocumentID) ? "&fDependantDocumentID=$fDependantDocumentID" : ""));
                             $main->setFormEncType("multipart/form-data");
                             $main->setErrorMessage("A document with this file name already exists in this folder");
                             $default->log->error("addDocumentBL.php Document exists with name " . $oDocument->getFileName() . " in folder " . Folder::getFolderPath($fFolderID) . " id=$fFolderID");
@@ -100,9 +113,9 @@ if (checkSession()) {
                     } else {
                         require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
                         $oPatternCustom = & new PatternCustom();
-                        $oPatternCustom->setHtml(getBrowseAddPage($fFolderID));
+                        $oPatternCustom->setHtml(getBrowseAddPage($fFolderID, $fDependantDocumentID));
                         $main->setCentralPayload($oPatternCustom);
-                        $main->setFormAction($_SERVER["PHP_SELF"] . "?fFolderID=$fFolderID&fForStore=1");
+                        $main->setFormAction($_SERVER["PHP_SELF"] . "?fFolderID=$fFolderID&fForStore=1" . (isset($fDependantDocumentID) ? "&fDependantDocumentID=$fDependantDocumentID" : ""));
                         $main->setFormEncType("multipart/form-data");
                         $main->setErrorMessage("Please select a document by first clicking on 'Browse'.  Then click 'Add'");
                         $main->render();
@@ -111,7 +124,7 @@ if (checkSession()) {
                     // the folder doesn't have a default document type
                     require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
                     $oPatternCustom = & new PatternCustom();
-                    $oPatternCustom->setHtml(getBrowsePage($fFolderID));
+                    $oPatternCustom->setHtml(getBrowsePage($fFolderID, $fDependantDocumentID));
                     $main->setCentralPayload($oPatternCustom);
                     $main->setFormAction($_SERVER["PHP_SELF"] . "?fFolderID=$fFolderID&fForStore=1");
                     $main->setFormEncType("multipart/form-data");
@@ -120,12 +133,12 @@ if (checkSession()) {
                 }                
 
             } else {
-                //we're still just browsing
+                //we're still just browsing                
                 require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
                 $oPatternCustom = & new PatternCustom();
-                $oPatternCustom->setHtml(getBrowseAddPage($fFolderID));
+                $oPatternCustom->setHtml(getBrowseAddPage($fFolderID, $fDependantDocumentID));
                 $main->setCentralPayload($oPatternCustom);
-                $main->setFormAction($_SERVER["PHP_SELF"] . "?fFolderID=$fFolderID&fForStore=1");
+                $main->setFormAction($_SERVER["PHP_SELF"] . "?fFolderID=$fFolderID&fForStore=1" . (isset($fDependantDocumentID) ? "&fDependantDocumentID=$fDependantDocumentID" : ""));
                 $main->setFormEncType("multipart/form-data");
                 $main->render();
             }

@@ -28,7 +28,7 @@ function getDocumentListForFolder($fFolderID) {
 }
 
 
-function getBrowsePage($fFolderID) {
+function getBrowsePage($fFolderID, $iDependantDocumentID) {
 	$sToRender = "<table border=\"0\">\n";
 	$sToRender .= "<tr>\n";	
 	$sToRender .= "\t<td>" . renderFolderPath($fFolderID, "/control.php?action=addDocument") . "</td>\n";
@@ -36,7 +36,7 @@ function getBrowsePage($fFolderID) {
 	$sToRender .= "</table>\n";
 	$sToRender .= "<table border=\"0\">\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "\t<td>" . renderFolderList($fFolderID, "/control.php?action=addDocument") . "<td>\n";
+	$sToRender .= "\t<td>" . renderFolderList($fFolderID, "/control.php?action=addDocument" .(isset($fDependantDocumentID) ? "&fDependantDocumentID=$iDependantDocumentID" : "")) . "<td>\n";
 	$sToRender .= "</tr>\n";	
 	$sToRender .= "<tr>\n";
     if (Permission::userHasFolderReadPermission($fFolderID)) {
@@ -48,7 +48,7 @@ function getBrowsePage($fFolderID) {
 }
 
 
-function getBrowseAddPage($fFolderID) {
+function getBrowseAddPage($fFolderID, $iDependantDocumentID = null) {
     global $default;
     
 	$sToRender = "<table border=\"0\" width=\"600\">\n";
@@ -67,7 +67,7 @@ function getBrowseAddPage($fFolderID) {
 	$sToRender .= "</table>\n";    
 	$sToRender .= "<table border=\"0\" width=\"100%\">\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "\t<td>" . renderFolderList($fFolderID, "/control.php?action=addDocument") . "<td>\n";
+	$sToRender .= "\t<td>" . renderFolderList($fFolderID, "/control.php?action=addDocument" . (isset($iDependantDocumentID) ? "&fDependantDocumentID=$iDependantDocumentID" : "")) . "<td>\n";
 	$sToRender .= "</tr>\n";	
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>" . getDocumentListForFolder($fFolderID) . "</td>\n";
