@@ -8,6 +8,7 @@
 *
 * @author Mukhtar Dharsey
 * @date 20 January 2003
+* @package presentation.lookandfeel
 */
 
 require_once("$default->owl_fs_root/lib/visualpatterns/PatternMainPage.inc");
@@ -16,12 +17,11 @@ require_once("$default->owl_fs_root/lib/visualpatterns/PatternTableLinks.inc");
 require_once("$default->owl_fs_root/lib/visualpatterns/PatternTableSqlQuery.inc");
 require_once("$default->owl_fs_root/lib/visualpatterns/NavBar.inc");
 
-
 // create the navbar and north payload
 $navbar = new NavBar();
 
 //get the section name
-$sectionName = $default->siteMap->getSectionName($_SERVER["PHP_SELF"]);
+$sectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->owl_root_url), strlen($_SERVER["PHP_SELF"])));
 
 //highlight the respective section
 $navbar->setHighlightedSection($sectionName);
@@ -47,7 +47,7 @@ $nwPayLoad ->setHtml($nwestLoad);
          
 // set up the west payload
 //get section links
-$sectionArray =$default->siteMap->getSectionLinks($sectionName);
+$sectionArray = $default->siteMap->getSectionLinks($sectionName);
 
 //format the array..by taking first element off
 $output1["links"] = array_shift ($sectionArray["links"]);      
