@@ -92,6 +92,8 @@ if (checkSession()) {
                 } else {
                     // this document is already checked out
                     // TODO: for extra credit, tell the user who has this document checked out
+                    //       but we don't display the check out button unless they have the document checked out already
+                    //       so we should ever get here.
                     $oPatternCustom->setHtml(renderErrorPage("This document is already checked out", $fDocumentID));                    
                 }
             } else {
