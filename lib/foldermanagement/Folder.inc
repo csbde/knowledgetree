@@ -475,10 +475,9 @@ class Folder {
 	* @return String full path of folder
 	*/
 	function getFolderDisplayPath($iFolderID) {
-		global $default;		
-		//if the folder has a parent		
-		$oFolder = Folder::get($iFolderID);
-		return (strlen($oFolder->sFullPath) > 0 ?  $oFolder->sFullPath . " > " : "")  . $oFolder->getName();
+		global $default;
+        $aPathNamesArray = Folder::getFolderPathNamesAsArray($iFolderID);
+        return implode(" > ", $aPathNamesArray);
 	}
 	
 	/**
