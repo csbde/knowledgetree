@@ -1,5 +1,4 @@
 <?php
-
 /**
  * $Id$
  *
@@ -11,6 +10,8 @@
  * @author Michael Joseph <michael@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
  * @package presentation.lookAndFeel.knowledgeTree.documentmanagement
  */
+ 
+require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
 
 /**
  *
