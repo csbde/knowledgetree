@@ -175,7 +175,7 @@ function checkSessionAndRedirect($bRedirect, $bDownload = false) {
  * Automatically redirects to the login page on session verification failure
  * @param boolean optional parameter set if we're downloading a file 
  */
-function checkSession($bDownload = false) {
+function checkSession($bDownload = false, $bHandleNoAccess = true) {
     global $default;
     if (checkSessionAndRedirect(true, $bDownload)) {
         $default->log->debug("control.inc: print the session variables: " . arrayToString($_SESSION));
@@ -184,6 +184,10 @@ function checkSession($bDownload = false) {
         if ($_SESSION["pageAccess"][$_SERVER['PHP_SELF']]) {
             return true;
         } else {
+            if ($bHandleNoAccess === true) {
+                print "Access restricted\n";
+                exit(0);
+            }
             return false;
         }
     }
