@@ -104,12 +104,12 @@ function getGroupPage($fDocFieldID) {
     $sToRender .= "<table border=0 cellspacing=1>\n";
     $sToRender .= "<tr><td><b>Options</b></td></tr>";
     $sToRender .= "<tr><td width=200 bgcolor=$sBgColor>";
-    $sToRender .= "<br><a href=\"$default->rootUrl/control.php?action=addMetaDataForField&fDocFieldID=$fDocFieldID\">&nbsp;&nbsp;Add a Docuemnt Field Lookups</a><br><br>";
+    $sToRender .= "<br><a href=\"$default->rootUrl/control.php?action=addMetaDataForField&fDocFieldID=$fDocFieldID\">&nbsp;&nbsp;Add Docuemnt Field Lookups</a><br><br>";
     $sToRender .= "</td><td>"; 	
     $sToRender .= "</td></tr>";
 	
 	$sToRender .= "<tr><td width=200 bgcolor=$sBgColor>";
-    $sToRender .= "<br><a href=\"$default->rootUrl/control.php?action=editMetadataForField&fDocFieldID=$fDocFieldID\">&nbsp;&nbsp;Edit a Docuemnt Field Lookups</a><br><br>";
+    $sToRender .= "<br><a href=\"$default->rootUrl/control.php?action=editMetadataForField&fDocFieldID=$fDocFieldID\">&nbsp;&nbsp;Edit Docuemnt Field Lookups</a><br><br>";
     $sToRender .= "</td><td>"; 	
     $sToRender .= "</td></tr>";
     
