@@ -6,7 +6,6 @@ $scroll = array();
 
 $browser = $default->phpSniff->property("browser");
 $version = $default->phpSniff->property("version");
-echo $browser . ":" . $version;
 if ( ($browser == "moz") && ($version <= 4.79)) {
     $scroll["upArrowLeft"] = "780";
     $scroll["upArrowTop"] = "190";
