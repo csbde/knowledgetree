@@ -74,7 +74,7 @@ if (checkSession()) {
 			$oUser = new User($fUsername,$fName,0,0,$fEmail,$fMobile,$fEmailNotification,$fSmsNotification,0,0,0);
 			
 		}else{
-			$oUser = new User($fUsername,$fName,0,0,$fEmail,$fMobile,0,0,$Ldap,0,0);
+			$oUser = new User($fUsername,$fName,0,0,$fEmail,$fMobile,0,0,$fLdap,0,0);
 		}
 		
 		if($oUser->create()){
