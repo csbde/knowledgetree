@@ -131,3 +131,6 @@ INSERT INTO help VALUES (95,'addUnitToOrg','addUnitToOrgHelp.html');
 INSERT INTO help VALUES (96,'listUsers','listUsersHelp.html'); 
 INSERT INTO help VALUES (97,'editUserGroups','editUserGroupsHelp.html'); 
 INSERT INTO help VALUES (98,'listWebsites','listWebsitesHelp.html');
+
+ALTER TABLE folders ADD COLUMN inherit_parent_folder_permission BIT;
+UPDATE folders SET inherit_parent_folder_permission = 1;
