@@ -32,7 +32,7 @@ if (checkSession) {
 	echo "Get ? <pre>" . print_r($oNewGroupUnitLink) . "</pre>";
 	$oNewGroupUnitLink = GroupUnitLink::getList();
 	echo "GetList ? <pre>" . print_r($oNewGroupUnitLink) . "</pre>";
-	$oNewGroupUnitLink = GroupUnitLink::getList("WHERE id > 2");
+	$oNewGroupUnitLink = GroupUnitLink::getList("id > 2");
 	echo "GetList ? <pre>" . print_r($oNewGroupUnitLink) . "</pre>";
 	
 }

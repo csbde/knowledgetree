@@ -85,8 +85,7 @@ function getUnitPage($iGroupID) {
     $oUser = null;
     $oGroup = null;
 
-    $sWhereClause = "WHERE " . $default->groups_units_table . ".group_id = $iGroupID";
-    $aGroupUnitLink = GroupUnitLink::getList($sWhereClause);
+    $aGroupUnitLink = GroupUnitLink::getList($default->groups_units_table . ".group_id = $iGroupID");
     
     
     // change headings if User selected

@@ -211,7 +211,7 @@ class GroupUnitLink {
 		$aGroupUnitLink;
 		settype($aGroupUnitLink, "array");
 		$sql = $default->db;
-		$result = $sql->query("SELECT * FROM " . $default->groups_units_table  . (isset($sWhereClause) ? " " . $sWhereClause : ""));
+		$result = $sql->query("SELECT * FROM " . $default->groups_units_table  . (isset($sWhereClause) ? " WHERE " . $sWhereClause : ""));
 		if ($result) {			
 			$iCount = 0;
 			while ($sql->next_record()) {
