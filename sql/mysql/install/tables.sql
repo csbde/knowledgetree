@@ -71,6 +71,21 @@ CREATE TABLE archiving_type_lookup (
 -- --------------------------------------------------------
 
 -- 
+-- Table structure for table `browse_criteria`
+-- 
+
+CREATE TABLE `browse_criteria` (
+  `id` int(11) NOT NULL default '0',
+  `criteria_id` int(11) NOT NULL default '0',
+  `precedence` int(11) NOT NULL default '0',
+  PRIMARY KEY  (`id`),
+  UNIQUE KEY `criteria_id` (`criteria_id`),
+  UNIQUE KEY `precedence` (`precedence`)
+) TYPE=InnoDB;
+
+-- --------------------------------------------------------
+
+-- 
 -- Table structure for table `data_types`
 -- 
 
@@ -777,6 +792,17 @@ CREATE TABLE zseq_archiving_type_lookup (
 -- --------------------------------------------------------
 
 -- 
+-- Table structure for table `zseq_browse_criteria`
+-- 
+
+CREATE TABLE `zseq_browse_criteria` (
+  `id` int(10) unsigned NOT NULL auto_increment,
+  PRIMARY KEY  (`id`)
+) TYPE=MyISAM;
+
+-- --------------------------------------------------------
+
+-- 
 -- Table structure for table `zseq_data_types`
 -- 
 
@@ -1261,6 +1287,15 @@ CREATE TABLE zseq_web_sites (
 -- Dumping data for table `archiving_settings`
 -- 
 
+-- 
+-- Dumping data for table `browse_criteria`
+-- 
+
+INSERT INTO `browse_criteria` VALUES (1, -1, 0);
+INSERT INTO `browse_criteria` VALUES (2, -2, 1);
+INSERT INTO `browse_criteria` VALUES (3, -3, 2);
+INSERT INTO `browse_criteria` VALUES (4, -4, 3);
+INSERT INTO `browse_criteria` VALUES (5, -5, 4);
 
 -- 
 -- Dumping data for table `archiving_type_lookup`
@@ -1781,6 +1816,12 @@ INSERT INTO zseq_active_sessions VALUES (1);
 -- 
 
 INSERT INTO zseq_archive_restoration_request VALUES (1);
+
+-- 
+-- Dumping data for table `zseq_browse_criteria`
+-- 
+
+INSERT INTO `zseq_browse_criteria` VALUES (5);
 
 -- 
 -- Dumping data for table `zseq_archiving_settings`
