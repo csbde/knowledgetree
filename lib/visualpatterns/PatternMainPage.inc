@@ -75,12 +75,19 @@ class PatternMainPage {
 		$sToRender = 	"<html>\n" .
 							"<head>\n" .
                             "<meta http-equiv=\"refresh\" content=\"" . ($default->owl_timeout+3) . "\">\n" .
-                            "<link rel=\"StyleSheet\" HREF=\"$default->owl_ui_url/stylesheet.css\" type=\"text/css\">\n".							
+                            "<link rel=\"stylesheet\" href=\"$default->owl_ui_url/stylesheet.php\">\n".                            
 							PatternMainPage::getJavaScript() . "\n" .							
 							"</head>\n" .
-							"<body>\n" .
+							"<body marginleft=\"0\" marginheight=\"0\">\n" .
+                                "<div id=\"divUp\">" .
+                                "\t<a href=\"#\" onmouseover=\"scroll(-7)\" onmouseout=\"noScroll()\"><img src=\"" . $default->system->get("graphicsUrl") . "/desc.gif\" width=\"14\" height=\"14\" alt=\"up\" border=\"0\"></a>" .
+                                "</div>" .
+                                "<div id=\"divDown\">" .
+                                "\t<a href=\"#\" onmouseover=\"scroll(7)\" onmouseout=\"noScroll()\"><img src=\"" . $default->system->get("graphicsUrl") . "/asc.gif\" width=\"14\" height=\"14\" alt=\"down\" border=\"0\"></a>" .
+                                "</div>" .                            
 							"<form name=\"MainForm\" " . (isset($this->sFormEncType) ? "enctype=\"$this->sFormEncType\" " : " ") . " action=\"".$this->sFormAction."\" method=\"POST\">\n" .
 								"<table border=\"1\" width=\"600\" height=\"600\">\n " .
+
 									"<tr height=\"18%\">\n".
 										"<td width=\"5%\">\n";
 										if (isset($this->oNorthWestPayload)) {											
@@ -106,7 +113,10 @@ class PatternMainPage {
 										}
 										$sToRender = $sToRender . "</td>\n
 										<td width=\"80%\" valign=\"top\">\n";
+                                        
 										if (isset($this->oCentralPayload)) {
+                                            $sToRender .= "\t<div id=\"divScrollTextCont\">\n
+                                                           \t\t<div id=\"divText\">\n";                                            
 											if (isset($this->sErrorMessage)) {
 												$sToRender .= "<table border=\"0\"><tr><td><p class=\"errorText\">$this->sErrorMessage</td></tr></table>\n ";
 											}
@@ -114,7 +124,8 @@ class PatternMainPage {
 										} else {											
 											$sToRender = $sToRender . "\nCentral payload not set\n";
 										}
-										$sToRender = $sToRender . "</td>\n" .
+										$sToRender = $sToRender . "</div></div></td>\n" .
+                                        //$sToRender = $sToRender . "</td>\n" .
 									"</tr>\n" .								
 								"</table>\n" .
 								"</form>\n" .
@@ -124,49 +135,19 @@ class PatternMainPage {
 	}
 	
 	/**
-	* Returns java scrip that has 3 functions:
+	* Returns links to javascript that has 3 functions:
 	*	o validateString - validates a string
 	*	o validateNumber - validates a number
 	*	o setActionAndSubmit - sets the MainForm action to newAction and submits
+    * And includes the dhtml text scrolling routine
 	*/
 	function getJavaScript() {
-		return "<script language=\"JavaScript\">\n".
-					"<!--\n" .
-						"function validateString(field, msg, min, max) {\n" .
-							"\tif (!min) { min = 1 }\n" .
-							"\tif (!max) { max = 65535 }\n\n" .
-			
-							"\tif (!field.value || field.value.length < min || field.value.max > max) {\n" .
-							"\t\talert(msg);\n" .
-							"\t\tfield.focus();\n" .
-							"\t\tfield.select();\n" .
-							"\t\treturn false;\n" .
-							"\t}\n" .
-						"\treturn true;\n" .
-						"}\n\n" .
-						
-						"function validateNumber(field, msg, min, max) {\n" .
-							"\tif (!min) { min = 0 }\n" .
-							"\tif (!max) { max = 255 }\n" .
-							
-							"\tif ( (parseInt(field.value) != field.value) || field.value.length < min || field.value.length > max) {\n" .
-								"\t\talert(msg);\n" .
-								"\t\tfield.focus();\n" .
-								"\t\tfield.select();\n" .
-								"\t\treturn false;\n" .
-							"\t}\n" .
-						"\treturn true;\n" .
-						"}\n\n" .
-						
-					"function setActionAndSubmit(newAction) {\n ".
-						"\tdocument.MainForm.action = newAction;\n" .
-						"\tdocument.MainForm.submit();\n" .
-					"}\n" .
-						"//-->\n" .
-					"</script>\n";
+        global $default;
+        $sUrl = $default->system->get("uiUrl");
+        return "<script type=\"text/javascript\" src=\"$sUrl/js/misc.js\"></script>
+                <script type=\"text/javascript\" src=\"$sUrl/js/scroll.js\"></script>";
+        
 	}
-	
-	
 }
 
 ?>
