@@ -7,6 +7,7 @@ class DBCompat {
         $default->log->debug("Query was: " . $args[0]);
         $this->lastResult = &call_user_method_array('query', $default->_db, $args);
         $this->lastInsertID = mysql_insert_id($default->_db->connection);
+        $this->lastResult->autofree = true;
         return $this->lastResult;
     }
 
