@@ -55,7 +55,8 @@ function displayDocumentLinkForTemplateBrowsing($oDocument, $bDisplayFullPath = 
     $sIconUrl = $oDocument->getMimeTypeIconUrl();
     $sIconPath = ($sIconUrl ? generateImage($sIconUrl) : generateImage("$default->graphicsUrl/unknown.gif"));
 
-    $sLinkText = $oDocument->getName();
+    // #3425 the title is now the filename, and the description is the title
+    $sLinkText = $oDocument->getFileName();
     if ($bDisplayFullPath) {
         // prepend folder path
         $sLinkText = Folder::getFolderDisplayPath($oDocument->getFolderID()) . " > " . $sLinkText;
@@ -82,7 +83,8 @@ function displayDocumentLink($oDocument, $bDisplayFullPath = false) {
     $sIconUrl = $oDocument->getMimeTypeIconUrl();
     $sIconPath = ($sIconUrl ? generateImage($sIconUrl) : generateImage("$default->graphicsUrl/unknown.gif"));
 
-    $sLinkText = $oDocument->getName();
+	// #3425 the title is now the filename, and the description is the title 
+    $sLinkText = $oDocument->getFileName();
     if ($bDisplayFullPath) {
         // prepend folder path
         $sLinkText = Folder::getFolderDisplayPath($oDocument->getFolderID()) . " > " . $sLinkText;

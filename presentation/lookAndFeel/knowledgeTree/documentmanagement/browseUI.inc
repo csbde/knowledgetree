@@ -279,16 +279,19 @@ function renderSortHeadings($sSortBy, $sSortDirection) {
  */
 function renderDocumentList($aResults, $sNoDocumentsMessage, $sNoPermissionMessage, $bDisplayFullPath = false, $bTemplateBrowsing = false) {
 	global $default;
-	
+
 	$iFolderCount = count($aResults["folders"]) - 1;
     // loop through the files and display links
     if (count($aResults["documents"]) > 0) {
         for ($i=0; $i<count($aResults["documents"]); $i++) {
         	// in order for candy striping to work we need to take the number of folders
         	// into account when alternating
-            $sToRender .= "<tr bgcolor=\"" . getColour($i+$iFolderCount) . "\" width=\"100%\"><td valign=\"bottom\">" . ($bTemplateBrowsing ? displayDocumentLinkForTemplateBrowsing($aResults["documents"][$i], $bDisplayFullPath) : displayDocumentLink($aResults["documents"][$i], $bDisplayFullPath)) . "</td>";
+            $sToRender .= "<tr bgcolor=\"" . getColour($i+$iFolderCount) . "\" width=\"100%\"><td valign=\"bottom\">" . 
+            			  ($bTemplateBrowsing ? displayDocumentLinkForTemplateBrowsing($aResults["documents"][$i], $bDisplayFullPath) : 
+            			  						displayDocumentLink($aResults["documents"][$i], $bDisplayFullPath)) . "</td>";
                         
-            $sToRender .= "<td valign=\"bottom\">" . $aResults["documents"][$i]->getFileName() . "</td>";
+            // #3425 the title is now the filename, and the description is the title
+            $sToRender .= "<td valign=\"bottom\">" . $aResults["documents"][$i]->getName() . "</td>";
             $oCreator = User::get($aResults["documents"][$i]->getCreatorID());
             $sToRender .= "<td valign=\"bottom\">" . ($oCreator ? $oCreator->getName() : "") . "</td>";
             $aDocumentTransaction = DocumentTransaction::getList("transaction_id=1 AND document_id=" . $aResults["documents"][$i]->getID());
@@ -357,7 +360,7 @@ function renderPage($aResults, $sBrowseType, $sSortBy, $sSortDirection, $bTempla
 	$sToRender .= renderSortHeadings($sSortBy, $sSortDirection);	
 	$sToRender .= "<tr><td>\n";    
     switch ($sBrowseType) {
-        case "folder"       : $sToRender .= renderFolderResults($aResults, $sSortBy, $sSortDirection, $bTemplateBrowsing); break;
+        case "folder"       : $sToRender .= renderFolderResults($aResults, $bTemplateBrowsing); break;
         case "category"     : $sToRender .= renderCategoryResults($aResults); break;
         case "documentType" : $sToRender .= renderDocumentTypeResults($aResults); break;
     }
