@@ -47,6 +47,8 @@ function getBrowsePage($fFolderID) {
 
 
 function getBrowseAddPage($fFolderID) {
+    global $default;
+    
 	$sToRender = "<table border=\"0\">\n";
 	$sToRender .= "<tr>\n";	
 	$sToRender .= "\t<td>" . renderFolderPath($fFolderID, "$default->owl_ui_directory/documentmanagement/management/addDocument.php") . "</td>\n";
@@ -65,7 +67,7 @@ function getBrowseAddPage($fFolderID) {
 	$sToRender .= "<td colspan=\"2\"><b>Document to add:<b></td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<td><input type=\"file\" name=\"fFile\"></td>\n";
-	$sToRender .= "<td><input type=\"image\" value=\"Add\"></td>\n";
+	$sToRender .= "<td><input type=\"image\" src=\"$default->owl_graphics_url/widgets/add.gif\" border=\"0\" value=\"Add\"></td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
 	
