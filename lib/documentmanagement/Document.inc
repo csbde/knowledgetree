@@ -668,6 +668,125 @@ class Document {
 		
 		
 	}
+	
+	/**
+	* Checks if the collaboration process for the document
+	* is started yet
+	* 
+	*/
+	function documentCollaborationStarted($iDocumentID) {
+		global $default;
+		$sql = $default->db;
+		$sql->query("SELECT * FROM $default->owl_folders_user_roles_table WHERE document_id = $iDocumentID AND (active = 1 OR done = 1)");
+		if ($sql->next_record()) {
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	* Checks if the current user has an active role in the document
+	* collaboration process
+	* 
+	*/
+	function userIsPerformingCurrentCollaborationStep($iDocumentID) {
+		global $default;
+		$sql = $default->db;
+		$sql->query("SELECT * FROM $default->owl_folders_user_roles_table WHERE document_id = $iDocumentID AND active = 1 AND user_id = " . $_SESSION["userID"]);
+		if ($sql->next_record()) {
+			return true;
+		}
+		return false;
+	}
+	
+	
+	/**
+	* Reset the entire document collaboration process by setting all roles
+	* to inactive and undone
+	* 
+	*/
+	function resetDocumentCollaborationSteps($iDocumentID) {
+		global $default;
+		$sql = $default->db;		
+		if ($sql->query("UPDATE $default->owl_folders_user_roles_table SET active = 0, done = 0 WHERE document_id = $iDocumentID")) {		
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	* Checks if a there are any more steps to be be performed in
+	* the current document collaboration process
+	* 
+	*/
+	function isLastStepInCollaborationProcess($iDocumentID) {
+		global $default;
+		$sql = $default->db;
+		$sql->query("SELECT * FROM $default->owl_folders_user_roles_table WHERE document_id = $iDocumentID AND active = 0 AND done = 0");
+		if ($sql->next_record()) {
+			return false;
+		}
+		return true;
+	}
+	
+	/**
+	* Begins the next step(s) in the document
+	* collaboration process
+	* 
+	*/
+	function beginNextStepInCollaborationProcess($iDocumentID, $iUserID) {
+		global $default;
+		$sql = $default->db;
+		//get the current step
+		//if the user is assinged to two or more roles, make sure we get the current
+		//one by ordering by precedence
+		$sql->query("SELECT FURL.id AS id, GFAT.precedence " .
+					"FROM $default->owl_groups_folders_approval_table AS GFAT INNER JOIN $default->owl_folders_user_roles_table AS FURL ON GFAT.id = FURL.group_folder_approval_id " .
+					"WHERE document_id = $iDocumentID AND user_id = " . $_SESSION["userID"] . " " . 
+					"ORDER BY precedence ASC");		
+		if ($sql->next_record()) {
+			//set it as done
+			$oFolderUserRole = FolderUserRole::get($sql->f("id"));
+			$oFolderUserRole->setActive(false);
+			$oFolderUserRole->setDone(true);
+			$oFolderUserRole->update();
+			//get it's sequence number
+			$iCurrentSequenceNumber =  $sql->f("precedence");			
+			$sql->query("SELECT MIN(precedence) AS precedence " . 
+						"FROM $default->owl_groups_folders_approval_table AS GFAT INNER JOIN $default->owl_folders_user_roles_table AS FURL ON GFAT.id = FURL.group_folder_approval_id " . 
+						"WHERE document_id = $iDocumentID AND done = 0");			
+			if ($sql->next_record()) {
+				if ($sql->f("precedence") != $iCurrentSequenceNumber) {
+					//if there are no concurrent steps outstanding
+					$iNextSequenceNumber = $sql->f("precedence");					
+					$sql->query("SELECT FURL.id " .
+								"FROM $default->owl_groups_folders_approval_table AS GFAT INNER JOIN $default->owl_folders_user_roles_table AS FURL ON GFAT.id = FURL.group_folder_approval_id " . 
+								"WHERE document_id = $iDocumentID AND precedence = $iNextSequenceNumber");
+					while ($sql->next_record()) {
+						$oFolderUserRole = FolderUserRole::get($sql->f("id"));
+						$oFolderUserRole->setActive(true);
+						$oFolderUserRole->update();
+						$oFolderCollaboration = FolderCollaboration::get($oFolderUserRole->getGroupFolderApprovalID());
+						//get the role the user must perform
+						$oRole = Role::get($oFolderCollaboration->getRoleID());
+						//get the user to email
+						$oUser = User::get($oFolderUserRole->getUserID());
+				
+						$sBody = $oUser->getUserName() . ", your role of '" . $oRole->getName() . "' in the document, '" . $this->sName . "' collaboration process is now active. " .
+												"Click <a href=\"https://" . $_SERVER["SERVER_NAME"] . "$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $this->iId . "\">here</a> to access " .
+												"the document";
+				
+						$oEmail = & new Email($default->owl_email_from, $default->owl_email_fromname);
+						$oEmail->send($oUser->getEmail(), "Document collaboration role active", $sBody, $default->owl_email_from, $default->owl_email_fromname);						
+					}
+					return true;
+				}
+				return false;
+			}
+			return false;
+		}
+		return false;
+	}
 }
 
 ?>
