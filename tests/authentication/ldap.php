@@ -1,8 +1,7 @@
 <?php
 echo "<pre>";
 $user="michael";
-$password="psychOPomPous03";
-//$password="michael";
+s$password="michael";
 $ldap["domain"]="jamwarehouse.com";
 $ldap["dn"]=$user."@".$ldap["domain"]; //microsoft ldap wants the username@domai
 n for authentication
