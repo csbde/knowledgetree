@@ -141,7 +141,7 @@ if (checkSession()) {
         $oDocument = Document::get($fDocumentID);
 
         //if the user can view the document, they can email a link to it
-        if (Permission::userHasDocumentReadPermission($fDocumentID)) {
+        if (Permission::userHasDocumentReadPermission($oDocument)) {
             if (isset($fSendEmail)) {
 	          	// explode group and user ids
 	          	$aGroupIDs = explode(",", $groupNewRight);

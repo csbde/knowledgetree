@@ -42,10 +42,12 @@ require_once("$default->fileSystemRoot/presentation/Html.inc");
  * @param integer the subscription type
  */
 function checkPermission($iExternalID, $iSubscriptionType) {
-    if  ($iSubscriptionType == SubscriptionConstants::subscriptionType("FolderSubscription")) {
-        return Permission::userHasFolderReadPermission($iExternalID);
+	if  ($iSubscriptionType == SubscriptionConstants::subscriptionType("FolderSubscription")) {
+		$oFolder = Folder::get($iExternalID);
+        return Permission::userHasFolderReadPermission($oFolder);
     } else {
-        return Permission::userHasDocumentReadPermission($iExternalID);
+    	$oDocument = Document::get($iExternalID);
+        return Permission::userHasDocumentReadPermission($oDocument);
     }
 }
 // only if we have a valid session
@@ -53,6 +55,8 @@ if (checkSession()) {
 
     require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
     require_once("subscriptionUI.inc");
+	require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
+	require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
     
     $oPatternCustom = & new PatternCustom();
     
