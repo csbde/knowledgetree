@@ -2,8 +2,8 @@
 #
 # deploy-dms.sh - cvs update the current dev build and update the version/builddate
 
-wwwroot=/usr/local/www/owl/intranet
-version=/usr/local/www/owl/intranet/config/owl.php
+wwwroot=/usr/local/www/owl/owl
+version=/usr/local/www/owl/owl/config/owl.php
 tmp=/tmp/owl.php
 
 cd $wwwroot
