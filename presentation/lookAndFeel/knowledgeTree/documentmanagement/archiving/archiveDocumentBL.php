@@ -36,7 +36,7 @@ if (checkSession()) {
 	    	$oDocument = Document::get($fDocumentID);
 	    	if ($oDocument) {
 	    		// change the document status to archived
-		    	$oDocument->setStatusID(lookupStatusID("Archived"));
+		    	$oDocument->setStatusID(ARCHIVED);
 		    	
 		    	if ($oDocument->update()) {
 					$default->log->info("archiveDocumentBL.php successfully archived document id $fDocumentID");
