@@ -54,7 +54,7 @@ function lookupField($tableName, $selectFieldName, $whereFieldName, $whereFieldV
     global $default;
     $sql = new Owl_DB();
     $query = "select $selectFieldName from $tableName where $whereFieldName = '". $whereFieldValue . "'" ;
-    $default->log->debug("lookup.inc::lookupField query=$query"); 
+ 
     if ($sql->query($query)) {
         if ($sql->next_record()) {
             return $sql->f($selectFieldName);
