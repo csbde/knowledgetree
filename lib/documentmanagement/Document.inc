@@ -184,12 +184,12 @@ class Document {
 
     /** get the document check out status */
     function getIsCheckedOut() {
-        return $this->bCheckedOut;
+        return $this->bIsCheckedOut;
     }
 
     /** set the document check out status */
     function setIsCheckedOut($bNewValue) {
-        $this->bCheckedOut = $bNewValue;
+        $this->bIsCheckedOut = $bNewValue;
     }
 	
 	/**
