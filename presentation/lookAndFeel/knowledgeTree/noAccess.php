@@ -22,7 +22,6 @@
  *
  * @version $Revision$
  * @author Michael Joseph <michael@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
- * @package administration.docfieldmanagement
  */
  
 require_once("../../../config/dmsDefaults.php");

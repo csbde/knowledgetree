@@ -25,7 +25,6 @@
  *
  * @version $Revision$
  * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
- * @package administration.docfieldmanagement
  */
 
 require_once("../../../config/dmsDefaults.php");
