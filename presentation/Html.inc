@@ -83,112 +83,112 @@ function imgSrc($sImage) {
 
 class KTHtml {
     function getAddButton() {
-        return imgSrc('widgets/add.gif');
+        return imgSrc('widgets/add.png');
     }
     function getCancelButton() {
-        return imgSrc('widgets/cancel.gif');
+        return imgSrc('widgets/cancel.png');
     }
     function getLoginButton() {
         return imgSrc('icons/login.jpg');
     }
     function getNextButton() {
-        return imgSrc('widgets/next.gif');
+        return imgSrc('widgets/next.png');
     }
     function getBackButton() {
-        return imgSrc('widgets/back.gif');
+        return imgSrc('widgets/back.png');
     }
     function getAddCommentButton() {
-        return imgSrc('widgets/addcomment.gif');
+        return imgSrc('widgets/addcomment.png');
     }
     function getSubscribeButton() {
-        return imgSrc('widgets/subscribe.gif');
+        return imgSrc('widgets/subscribe.png');
     }
     function getUnsubscribeButton() {
-        return imgSrc('widgets/unsubscribe.gif');
+        return imgSrc('widgets/unsubscribe.png');
     }
     function getRejectButton() {
-        return imgSrc('widgets/reject.gif');
+        return imgSrc('widgets/reject.png');
     }
     function getUpdatePasswordButton() {
-        return imgSrc('widgets/updatePassword.gif');
+        return imgSrc('widgets/updatePassword.png');
     }
     function getDeleteButton() {
-        return imgSrc('widgets/delete.gif');
+        return imgSrc('widgets/delete.png');
     }
     function getSelectButton() {
-        return imgSrc('widgets/select.gif');
+        return imgSrc('widgets/select.png');
     }
     function getUpdateButton() {
-        return imgSrc('widgets/update.gif');
+        return imgSrc('widgets/update.png');
     }
     function getAssignButton() {
-        return imgSrc('widgets/assign.gif');
+        return imgSrc('widgets/assign.png');
     }
     function getSearchButton() {
-        return imgSrc('widgets/search.gif');
+        return imgSrc('widgets/search.png');
     }
     function getEditButton() {
-        return imgSrc('widgets/edit.gif');
+        return imgSrc('widgets/edit.png');
     }
     function getApproveButton() {
-        return imgSrc('widgets/approve.gif');
+        return imgSrc('widgets/approve.png');
     }
     function getDoneButton() {
-        return imgSrc('widgets/done.gif');
+        return imgSrc('widgets/done.png');
     }
     function getPublishButton() {
-        return imgSrc('widgets/publish.gif');
+        return imgSrc('widgets/publish.png');
     }
     function getMoveButton() {
-        return imgSrc('widgets/move.gif');
+        return imgSrc('widgets/move.png');
     }
     function getRemoveButton() {
-        return imgSrc('widgets/remove.gif');
+        return imgSrc('widgets/remove.png');
     }
     function getRestoreButton() {
-        return imgSrc('widgets/restore.gif');
+        return imgSrc('widgets/restore.png');
     }
     function getSubmitButton() {
-        return imgSrc('widgets/submit.gif');
+        return imgSrc('widgets/submit.png');
     }
     function getExpungeButton() {
-        return imgSrc('widgets/expunge.gif');
+        return imgSrc('widgets/expunge.png');
     }
     function getRestoreHereButton() {
-        return imgSrc('widgets/restorehere.gif');
+        return imgSrc('widgets/restorehere.png');
     }
     function getReplyButton() {
-        return imgSrc('widgets/reply.gif');
+        return imgSrc('widgets/reply.png');
     }
     function getNewButton() {
-        return imgSrc('widgets/new.gif');
+        return imgSrc('widgets/new.png');
     }
     function getResetButton() {
-        return imgSrc('widgets/reset.gif');
+        return imgSrc('widgets/reset.png');
     }
     function getArchiveButton() {
-        return imgSrc('widgets/archive.gif');
+        return imgSrc('widgets/archive.png');
     }
     function getBrowseButton() {
-        return imgSrc('widgets/browse.gif');
+        return imgSrc('widgets/browse.png');
     }
     function getCheckInButton() {
-        return imgSrc('widgets/checkin.gif');
+        return imgSrc('widgets/checkin.png');
     }
     function getCheckOutButton() {
-        return imgSrc('widgets/checkout.gif');
+        return imgSrc('widgets/checkout.png');
     }
     function getDownloadButton() {
-        return imgSrc('widgets/download.gif');
+        return imgSrc('widgets/download.png');
     }
     function getEmailButton() {
-        return imgSrc('widgets/email.gif');
+        return imgSrc('widgets/email.png');
     }
     function getMoveHereButton() {
-        return imgSrc('widgets/movehere.gif');
+        return imgSrc('widgets/movehere.png');
     }
     function getBeginButton() {
-        return imgSrc('widgets/begin.gif');
+        return imgSrc('widgets/begin.png');
     }
 }
 
