@@ -58,7 +58,12 @@ function quote($value) {
         // ??: is the api function still available to php if its not compiled in
         // ??: it is in by default isn't it?
 		if ($default->dbType == "mysql") {
-			$value = "'" . mysql_real_escape_string($value) . "'";
+            if (function_exists('mysql_real_escape_string')) {
+                // TODO: include the relevant connection id to take charset into account 
+                $value = "'" . mysql_real_escape_string($value) . "'";
+            } elseif (function_exists('mysql_escape_string')) {
+                $value = "'" . mysql_escape_string($value) . "'";
+            }
 		} else {
             $value = "'" . addslashes($value) . "'";
         }
