@@ -51,6 +51,7 @@ require_once("$default->fileSystemRoot/lib/web/WebDocument.inc");
 
 require_once("$default->fileSystemRoot/lib/subscriptions/Subscription.inc");
 
+require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/documentmanagement/archiving/restoreArchivedDocumentUI.inc");
 require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/documentmanagement/documentUI.inc");
 require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc");
 require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
@@ -259,9 +260,15 @@ if (checkSession()) {
 	                $oPatternCustom->setHtml(getViewPage($oDocument));
 	            }
             } else if ($oDocument->isArchived()) {
-            	// cancel
-	            $oPatternCustom->setHtml("<a href=\"" . generateControllerLink("browse", "fFolderID=" . $oDocument->getFolderID()) . "\"><img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\" /></a>\n");
 	            $main->setErrorMessage("This document has been archived.");
+	                        	
+            	// allow admins to restore the document
+            	if (Permission::userIsSystemAdministrator() || Permission::userIsUnitAdministrator()) {
+					$oPatternCustom->setHtml(getRestoreArchivedDocumentPage($oDocument));
+            	} else {
+            		// and ordinary users to request that the document be restored
+					$oPatternCustom->setHtml(getRequestRestoreDocumentPage($oDocument));
+            	}            
             }
             $main->setCentralPayload($oPatternCustom);
             $main->setFormAction("$default->rootUrl/control.php?action=modifyDocument&fDocumentID=" . $oDocument->getID());
