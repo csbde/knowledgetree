@@ -89,7 +89,7 @@ function getPageSuccess($sQueryString) {
 }
 
 //if edition successful
-function getPageFail() {
+function getPageFail($sQueryString) {
 	global $default;
 		
     $sToRender .= "<table border=\"0\" width=\"600\">" . renderHeading("Add User to Group");
@@ -99,7 +99,7 @@ function getPageFail() {
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=addUserToGroup\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
+	$sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=addUserToGroup$sQueryString\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
 	
