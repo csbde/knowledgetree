@@ -49,11 +49,11 @@ function getApprovedDocumentString($sMetaTagIDs, $sSQLSearchString, $sStatus = "
 				"INNER JOIN search_document_user_link AS SDUL ON SDUL.document_id = D.ID " .
 				"INNER JOIN status_lookup AS SL on D.status_id=SL.id " .			
 				"WHERE DF.ID IN ($sMetaTagIDs) " .
-				"AND " . $sSQLSearchString . " " .
+				"AND (" . $sSQLSearchString . ") " .
 				"AND SL.name='$sStatus' " .
 				"AND SDUL.user_id = " . $_SESSION["userID"];
 	$sql = $default->db;
-	$sql->query($sQuery);	
+	$sql->query($sQuery);
 	while ($sql->next_record()) {
 		$aApprovedDocuments[count($aApprovedDocuments)] = $sql->f("id");
 	}
