@@ -71,7 +71,14 @@ if ($loginAction == "loginForm") {
                 
                 // check for a location to forward to
                 if (isset($redirect) && strlen(trim($redirect))>0) {
-                    $url = generateControllerUrl($default->siteMap->getActionFromPage(urldecode($redirect)));
+                    // need to strip owl_root_url off $redirect
+                    if (strlen($default->owl_root_url) > 0) {
+                        $tmp = urldecode($redirect);
+                        $default->log->debug("login.php: substr($tmp, strpos($tmp, $default->owl_root_url), strlen($tmp))");
+                        $redirect = substr($tmp, strpos($tmp, $default->owl_root_url), strlen($tmp));
+                        $default->log->debug("login.php: redirect=$redirect");
+                    }
+                    $url = generateControllerUrl($default->siteMap->getActionFromPage($redirect));
                 // else redirect to the dashboard
                 } else {                                            
                     $url = generateControllerUrl("dashboard");
