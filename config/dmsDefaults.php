@@ -109,7 +109,7 @@ $default->owl_system_settings_table = "system_settings";
 // Table with unit information
 $default->owl_units_table = "units_lookup";
 // Table with unit organisation link tables
-$default->owl_units_organisations_link_table = "units_organisations_link";
+$default->owl_units_organisations_table = "units_organisations_link";
 // Table with user info
 $default->owl_users_table = "users";
 // links groups to users
@@ -183,8 +183,8 @@ $default->siteMap->addPage("deleteFolderCollaboration", "/presentation/lookAndFe
 $default->siteMap->addDefaultPage("administration", "/admin.php", "Administration", UnitAdmin, "Administration");
 $default->siteMap->addPage("userManagement", "/admin.php?sectionName=UserAdministration", "Administration", UnitAdmin, "User Management");
 $default->siteMap->addPage("groupManagement", "/admin.php?sectionName=groupAdministration", "Administration", UnitAdmin, "Group Management");
-$default->siteMap->addPage("unitManagement", "/admin.php?sectionName=SystemAdministration", "Administration", SysAdmin, "Unit Management");
-$default->siteMap->addPage("orgManagement", "/admin.php?sectionName=SystemAdministration", "Administration", SysAdmin, "Organisation Management");
+$default->siteMap->addPage("unitManagement", "/admin.php?sectionName=unitAdministration", "Administration", SysAdmin, "Unit Management");
+$default->siteMap->addPage("orgManagement", "/admin.php?sectionName=orgAdministration", "Administration", SysAdmin, "Organisation Management");
 $default->siteMap->addPage("roleManagement", "/admin.php?sectionName=SystemAdministration", "Administration", SysAdmin, "Role Management");
 $default->siteMap->addPage("systemAdministration", "/presentation/admin.php?sectionName=SystemAdministration", "Administration", SysAdmin, "System Settings");
 
@@ -197,6 +197,20 @@ $default->siteMap->addPage("editGroupSuccess", "/presentation/lookAndFeel/knowle
 $default->siteMap->addPage("removeGroup", "/presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/removeGroupBL.php", "groupAdministration", UnitAdmin, "Remove a Group");
 $default->siteMap->addPage("assignGroupToUnit", "/presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/assignGroupToUnitBL.php", "groupAdministration", UnitAdmin, "Assign Group to Unit");
 $default->siteMap->addPage("removeGroupFromUnit", "/presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/removeGroupFromUnitBL.php", "groupAdministration", UnitAdmin, "Remove Group From Unit");
+
+//Unit management
+$default->siteMap->addPage("addUnit", "/presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/addUnitBL.php", "unitAdministration", SysAdmin, "Add A Unit");
+$default->siteMap->addPage("editUnit", "/presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/editUnitBL.php", "unitAdministration", SysAdmin, "Edit Unit Properties");
+$default->siteMap->addPage("addUnitSuccess", "/presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/addUnitSuccess.php", "unitAdministration", SysAdmin, "Unit added Successfully",false);
+$default->siteMap->addPage("removeUnit", "/presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/removeUnitBL.php", "unitAdministration", SysAdmin, "Remove a Unit");
+//$default->siteMap->addPage("assignGroupToUnit", "/presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/assignGroupToUnitBL.php", "groupAdministration", UnitAdmin, "Assign Group to Unit");
+//$default->siteMap->addPage("removeGroupFromUnit", "/presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/removeGroupFromUnitBL.php", "groupAdministration", UnitAdmin, "Remove Group From Unit");
+
+//Organisation management
+$default->siteMap->addPage("addOrg", "/presentation/lookAndFeel/knowledgeTree/administration/orgmanagement/addOrgBL.php", "orgAdministration", SysAdmin, "Add An Organisation");
+$default->siteMap->addPage("editOrg", "/presentation/lookAndFeel/knowledgeTree/administration/orgmanagement/editOrgBL.php", "orgAdministration", SysAdmin, "Edit Organisation Properties");
+$default->siteMap->addPage("addOrgSuccess", "/presentation/lookAndFeel/knowledgeTree/administration/orgmanagement/addOrgSuccess.php", "orgAdministration", SysAdmin, "Organisation added Successfully",false);
+$default->siteMap->addPage("removeOrg", "/presentation/lookAndFeel/knowledgeTree/administration/orgmanagement/removeOrgBL.php", "orgAdministration", SysAdmin, "Remove an Organisation");
 
 //user management
 $default->siteMap->addPage("addUser", "/tests/groups/adduser.php", "UserAdministration", UnitAdmin, "Add User to System");

@@ -12,7 +12,7 @@ require_once("../../../../../config/dmsDefaults.php");
 if (checkSession()) {
 	require_once("$default->owl_fs_root/lib/visualpatterns/PatternListBox.inc");
 	require_once("$default->owl_fs_root/lib/visualpatterns/PatternCreate.inc");
-	require_once("removeGroupFromUnit.inc");
+	require_once("removeGroupFromUnitUI.inc");
 	require_once("$default->owl_fs_root/lib/unitmanagement/Unit.inc");
 	require_once("$default->owl_fs_root/lib/groups/Group.inc");
 	require_once("$default->owl_fs_root/lib/groups/GroupUnitLink.inc");
