@@ -82,14 +82,15 @@ function getAddPage($iFolderCollaborationID, $iFolderID, $iUnitID, $sDocumentTit
 	$sToRender .= "<td>User</td><td>" . getUserDropDown($iUnitID) . "</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>Template document</td><td><input type=\"text\" /></td>\n";	
+	$sToRender .= "<td>Template document</td><td><input type=\"text\" DISABLED name=\"fTemplateDocument\" /><input type=\"button\" value=\"Browse\" onClick=\"newWindow('http://ktdev/control.php?action=templateBrowse','window2')\"></td>\n";	
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";	
-	$sToRender .= "<td><table><tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/add.gif\" border=\"0\"/></td><td></td></tr></table>\n";
+	$sToRender .= "<td><table><tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/done.gif\" border=\"0\"/></td><td><a href=\"" . $default->rootUrl . "\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"/></a></td></tr></table>\n";	
 	$sToRender .= "</tr>\n";
-	$sToRender .= "</table>\n";	
+	$sToRender .= "</table>\n";
+	$sToRender .= "<input type=\"hidden\" name=\"fTemplateDocumentID\" value=\"\" />\n";	
 	
-	return $sToRender;
+	return $sToRender . "\n\n" . getValidationJavaScript() . "\n\n" . getBrowseJavaScript();
 }
 
 function getUserDropDown($iUnitID) {
@@ -111,6 +112,28 @@ function getUnitDropDown($iFolderCollaborationID, $iFolderID, $iUnitID) {
 	$oPatternListBox->setSelectedValue($iUnitID);
 	return $oPatternListBox->render();
 }
+
+function getValidationJavaScript() {
+	$sToRender .= "\n\n<script language=\"javascript\">\n<!--\n";
+	$sToRender .= "function validateForm(theForm) {\n";	
+	$sToRender .= "\tif (!(validRequired(theForm.fDocumentTitle,'Document title') && validRequired(theForm.fUserID,'User'))) {\n";
+	$sToRender .= "\t\treturn false;\n\t}\n";
+	$sToRender .= "return true;\n}\n";
+	$sToRender .= "//-->\n</script>\n\n";
+	return $sToRender;
+}
+
+function getBrowseJavaScript() {
+	$sToRender = "<script language=\"JavaScript\"><!--\n ";
+	$sToRender .= "function newWindow(file,window) {\n ";	
+    $sToRender .= "\tmsgWindow=open(file,window,'resizable=yes,scrollbars=yes, width=400,height=600');\n ";
+    $sToRender .= "\tif (msgWindow.opener == null) msgWindow.opener = self; \n ";
+    $sToRender .= "}\n";
+    $sToRender .= "//--></script>\n";	
+    return $sToRender;
+}
+
+	
 
 
 ?>
