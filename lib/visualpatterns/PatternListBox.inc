@@ -103,7 +103,6 @@ class PatternListBox {
 		$sQuery = "SELECT DISTINCT ST." . $this->sDisplayColumn . " AS display, ST." .  $this->sValueColumn . " AS value FROM $this->sTableName AS ST ";
 		if (isset($this->sFromClause)) {
 			$sQuery .= $this->sFromClause . " ";
-			
 		}
 		if (isset($this->sWhereClause)) {
 			$sQuery .= "WHERE " . $this->sWhereClause . " ";
@@ -114,11 +113,10 @@ class PatternListBox {
 
 		$sql->query($sQuery);
 		if ($sql->num_rows() > 0 || $this->bIncludeDefaultValue) {			
-			//$sToRender = "<SELECT NAME = \"$this->sSelectName\" ". ($this->bPostBackOnChange ? "onChange=\"location=$this->sOnChangeAction;\" " : " ") . ">\n";
 			if (isset($this->sOnChangeAction)) {
-				$sToRender = "<SELECT NAME = \"$this->sSelectName\" ". ($this->bPostBackOnChange ? "onChange=\"$this->sOnChangeAction\" " : " ") . ">\n";
+				$sToRender = "<SELECT NAME=\"$this->sSelectName\" ". ($this->bPostBackOnChange ? "onChange=\"$this->sOnChangeAction\" " : " ") . ">\n";
 			} else {
-				$sToRender = "<SELECT NAME = \"$this->sSelectName\" ". ($this->bPostBackOnChange ? "onChange=\"document.MainForm.submit();\" " : " ") . ">\n";
+				$sToRender = "<SELECT NAME=\"$this->sSelectName\" ". ($this->bPostBackOnChange ? "onChange=\"document.MainForm.submit();\" " : " ") . ">\n";
 			}
 			if ($this->bIncludeDefaultValue) {
 				$sToRender .= "<OPTION value=\"-1\">None</OPTION>\n";
