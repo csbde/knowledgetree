@@ -111,16 +111,19 @@ function getApprovedDocumentString($sMetaTagIDs, $sSQLSearchString) {
 	$aApprovedDocumentIDs = array();
 	$sQuery = "SELECT DISTINCT D.id " .
 				"FROM documents AS D INNER JOIN document_fields_link AS DFL ON DFL.document_id = D.id " .
-				"INNER JOIN document_fields AS DF ON DF.id = DFL.document_field_id " .				
+				"INNER JOIN document_fields AS DF ON DF.id = DFL.document_field_id " .
+				"INNER JOIN search_document_user_link AS SDUL ON SDUL.document_id = D.ID " .			
 				"WHERE DF.ID IN ($sMetaTagIDs) " .
-				"AND " . $sSQLSearchString;
-				
+				"AND " . $sSQLSearchString . " " .
+				"AND SDUL.user_id = " . $_SESSION["userID"];
+	
 	$sql = $default->db;
 	$sql->query($sQuery);	
 	while ($sql->next_record()) {
-		if (Permission::userHasDocumentReadPermission($sql->f("id"))) {
+		/*if (Permission::userHasDocumentReadPermission($sql->f("id"))) {
 				$aApprovedDocuments[count($aApprovedDocuments)] = $sql->f("id");
-		}
+		}*/
+		$aApprovedDocuments[count($aApprovedDocuments)] = $sql->f("id");
 	}
 	if (count($aApprovedDocuments) > 1) {
 		return implode(",",$aApprovedDocuments);
