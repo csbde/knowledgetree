@@ -8,7 +8,7 @@ require_once("$default->owl_fs_root/lib/Authenticator.inc");
  * Perform authentication tasks against the database.
  * 
  * @version $Revision$ 
- * @author michael@jamwarehouse.com
+ * @author <a href="mailto:michael@jamwarehouse.com>Michael Joseph</a>, Jam Warehouse (Pty) Ltd, South Africa
  * @package dmslib
  */
 
@@ -25,11 +25,12 @@ class DBAuthenticator extends Authenticator {
      */
     function checkPassword($userName, $password) {        
         global $default;
-        
-        $sql = new Owl_DB; 
+
+        $sql = new Owl_DB;
         $query = "select * from $default->owl_users_table where username = '$userName' and password = '" . md5($password) . "'";
         $sql->query($query);
         $numrows = $sql->num_rows($sql);
+
         if ($numrows == "1") {            
             return true;
         } else {
