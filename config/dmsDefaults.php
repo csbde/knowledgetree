@@ -172,12 +172,33 @@ $default->siteMap->addPage("emailDocument", "/presentation/lookAndFeel/knowledge
 
 
 // pages for administration section
-$default->siteMap->addDefaultPage("administration", "/admin.php", "Administration", UnitAdmin, "Administration", false);
-$default->siteMap->addPage("unitAdministration", "/presentation/unitAdmin.php", "Administration", UnitAdmin, "Unit Administration", false);
-$default->siteMap->addPage("systemAdministration", "/presentation/sysAdmin.php", "Administration", SysAdmin, "System Administration", false);
+$default->siteMap->addDefaultPage("administration", "/admin.php", "Administration", UnitAdmin, "Administration");
+$default->siteMap->addPage("userManagement", "/admin.php?sectionName=UserAdministration", "Administration", UnitAdmin, "User Management");
+$default->siteMap->addPage("groupManagement", "/admin.php?sectionName=groupAdministration", "Administration", UnitAdmin, "Group Management");
+$default->siteMap->addPage("unitManagement", "/admin.php?sectionName=SystemAdministration", "Administration", SysAdmin, "Unit Management");
+$default->siteMap->addPage("orgManagement", "/admin.php?sectionName=SystemAdministration", "Administration", SysAdmin, "Organisation Management");
+$default->siteMap->addPage("roleManagement", "/admin.php?sectionName=SystemAdministration", "Administration", SysAdmin, "Role Management");
+$default->siteMap->addPage("systemAdministration", "/presentation/admin.php?sectionName=SystemAdministration", "Administration", SysAdmin, "System Settings");
 
 
-// pages for subscriptions section
+/////////// pages for administration section
+//$default->siteMap->addDefaultPage("unitadministration", "/presentation/unitadmin.php", "UnitAdministration", UnitAdmin, "groAdministration");
+//group management
+$default->siteMap->addPage("addGroup", "/presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/addGroupBL.php", "groupAdministration", UnitAdmin, "Add A Group");
+$default->siteMap->addPage("editGroup", "/presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/editGroupBL.php", "groupAdministration", UnitAdmin, "Edit Group Properties");
+$default->siteMap->addPage("removeGroup", "/tests/groups/addgroups.php", "groupAdministration", UnitAdmin, "Remove a Group");
+$default->siteMap->addPage("addGroupToUnit", "/tests/groups/addgroups.php", "groupAdministration", UnitAdmin, "Assign Group to Unit");
+
+//user management
+$default->siteMap->addPage("addUser", "/tests/groups/adduser.php", "UserAdministration", UnitAdmin, "Add User to System");
+$default->siteMap->addPage("editUser", "/tests/groups/adduser.php", "UserAdministration", UnitAdmin, "Edit User Properties");
+$default->siteMap->addPage("removeUser", "/tests/groups/adduser.php", "UserAdministration", UnitAdmin, "Remove User from System");
+$default->siteMap->addPage("addUsersToGroup", "/tests/groups/adduser.php", "UserAdministration", UnitAdmin, "Add User to A Group");
+
+$default->siteMap->addPage("systemAdministration", "/presentation/blah.php", "UnitAdministration", SysAdmin, "systemBlaaah");
+
+
+/////// pages for subscriptions section
 $default->siteMap->addDefaultPage("subscriptions", "/subscriptions.php", "Subscriptions", Guest, "SubScriptions",false);
 
 // pages for advanced search section
@@ -186,7 +207,7 @@ $default->siteMap->addDefaultPage("advancedSearch", "/search.php", "Advanced Sea
 
 
 // pages for prefs section
-$default->siteMap->addDefaultPage("preferences", "/presentation/lookAndFeel/knowledgeTree/Help/emailHelp.php", "Preferences", User, "Preferences",false);
+//$default->siteMap->addDefaultPage("preferences", "/presentation/lookAndFeel/knowledgeTree/Help/emailHelp.php", "Preferences", User, "Preferences",false);
 $default->siteMap->addPage("viewPreferences", "/preferences.php", "Preferences", User, "View Preferences", false);
 $default->siteMap->addPage("editPreferences", "/preferences.php", "Preferences", User, "Edit Preferences", false);
 
