@@ -27,11 +27,15 @@ if (checkSession()) {
     // if a new unit has been added
     // coming from manual edit page
     if (isset($fForStore)) {
+            $oPatternCustom->setHtml("hello");
+        
         $oUnit = Unit::get($fUnitID);
+        
         $oUnit->setName($fUnitName);
+                
         if ($fUnitName== "") {
             $oPatternCustom->setHtml(getEditPageFail());
-        } elseif ($oUnit->update()) {
+        }elseif ($oUnit->update()) {
             // if successfull print out success message
             $oPatternCustom->setHtml(getEditPageSuccess());
         } else {
@@ -41,7 +45,7 @@ if (checkSession()) {
     } else if (isset($fUnitID)) {
         // post back on Unit select from manual edit page
         $oPatternCustom->setHtml(getEditPage($fUnitID));
-        $main->setFormAction($_SERVER["PHP_SELF"] . "?fForStore=1");
+        $main->setFormAction($_SERVER["PHP_SELF"] . "?fForStore=1&fUnitID=$fUnitID");
     } else {
         // if nothing happens...just reload edit page
         $oPatternCustom->setHtml(getEditPage(null));

@@ -1,0 +1,209 @@
+<?php
+/**
+* Presentation information for adding a User
+*
+* @author Mukhtar Dharsey
+* @date 5 February 2003
+* @package presentation.lookAndFeel.knowledgeTree.
+*
+*/
+
+function getOrgPage($fUnitID = null){
+	global $default;
+	
+	$aUnitOrgLink = UnitOrganisationLink::getList("WHERE unit_id = $fUnitID");
+	
+	if (count($aUnitOrgLink) > 0 ){
+		$oLink = $aUnitOrgLink[0];
+	}
+			
+	$sBgColor = "#F5F6EE";
+	
+	$sToRender .= "<table width=\"600\" border=0>";
+    $sToRender .= "<tr><td width=100%></td><td>";
+    $sToRender .= "<a href=\"$default->rootUrl/control.php?action=listUnits\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a>";
+    $sToRender .= "</td></tr>\n";
+    $sToRender .= "</table>";    
+    
+	
+	if ($oLink) {
+		$oOrg = Organisation::get($oLink->getOrgID());
+		$sOrgName = $oOrg->getName();
+		$bNoOrg = false;
+	} else { 
+		$sOrgName = "* No assigned Organisation";
+		$bNoOrg = true;
+	}
+        
+    $sToRender .= "<table width==100% border=0>\n";
+    $sToRender .= "<tr>\n";
+    $sToRender .= "<td width=300 valign=top>\n";    
+    
+	    $sToRender .= "<table width=100% border=0>\n";
+	    $sToRender .= "<tr>\n";
+	    $sToRender .= "<td><b>\n";
+	    $sToRender .= "Current Orginisation\n";
+	    $sToRender .= "</b></td>\n";
+	    $sToRender .= "</tr>\n";    
+	    $sToRender .= "<tr>\n";
+	    $sToRender .= "<td bgcolor=$sBgColor>\n";
+	  
+	    $sToRender .= $sOrgName;
+	  
+	    $sToRender .= "</td>\n";    
+	    $sToRender .= "</tr>\n";    
+	    $sToRender .= "</table>\n";  	 	
+
+	$sToRender .= "</td>\n";
+	$sToRender .= "<td>\n";
+	$sToRender .= getUnitOrgEdit($bNoOrg, $fUnitID);
+	$sToRender .= "</td>\n";        
+    $sToRender .= "</table>\n";
+   	
+
+    return $sToRender;
+
+}
+
+function getUnitOrgEdit($bNoOrg, $fUnitID = null){
+	global $default;
+	
+	$sBgColor = "#F5F6EE";
+	       
+    $sToRender .= "<table border=0 cellspacing=1>\n";
+    $sToRender .= "  <tr><td><b>Options</b></td></tr>";
+    if ($bNoOrg) {
+	    $sToRender .= "  <tr><td width=200 bgcolor=$sBgColor>";
+	    $sToRender .= "  <br>&nbsp;&nbsp;Add Unit to an Orgaisation<br><br>";
+	    $sToRender .= "  </td><td>";
+	    $sToRender .= "  <a href=\"$default->rootUrl/control.php?action=addUnitToOrg&fUnitID=" . $fUnitID . "\"><img border=0 src=\"$default->graphicsUrl/widgets/select.gif\"></img></a>";
+	    $sToRender .= "  </td></tr>";
+    } else {
+	    $sToRender .= "  <tr><td width=200 bgcolor=$sBgColor>";
+	    $sToRender .= "  <br>&nbsp;&nbsp;Remove Unit from an Orgaisation<br><br>";
+	    $sToRender .= "  </td><td>";
+	    $sToRender .= "  <a href=\"$default->rootUrl/control.php?action=removeUnitFromOrg&fUnitID=" . $fUnitID  . "\"><img border=0 src=\"$default->graphicsUrl/widgets/select.gif\"></img></a>";
+	    $sToRender .= "  </td></tr>";
+    }
+    $sToRender .= "</table>\n";
+	
+	return $sToRender;
+	
+}
+
+// get page for removal
+function getPage($iUserID) {
+    global $default;
+    $oUser = null;
+    $oGroup = null;
+
+    // change headings if User selected
+    if (isset($iUserID)) {
+        $oUser = User::get($iUserID);
+    } else {
+        $heading = "<tr><td>Please select a User:</td></tr>\n";
+    }
+
+    $sToRender .= renderHeading("Edit User Groups");
+    $sToRender .= "<table>\n";
+    $sToRender .= $heading;
+    $sToRender .= "<tr>\n";
+    $sToRender .= "</tr>\n";
+    $sToRender .= "<td>User Name: " . getUserDisplay($oUser) . "</td>\n";
+    $sToRender .= "<tr>\n";
+    $sToRender .= "</tr>\n";
+    $sToRender .= "<tr>\n";
+    $sToRender .= "</tr>\n";
+    $sToRender .= "<tr>\n";
+    $sToRender .= "</tr>\n";    
+    $sToRender .= "</td></table>\n";
+  
+    return $sToRender;
+}
+
+// show paig if deletion fails
+function getPageFail() {
+    global $default;
+
+    $sToRender .= "<table width=\"600\">" . renderHeading("Edit User Groups") . "</table>";
+    $sToRender .= "<table>\n";
+    $sToRender .= "<tr><td><b>Sorry, Removal Failed</b></td></tr>\n";
+    $sToRender .= "<tr></tr>\n";
+    $sToRender .= "</tr>\n";
+    $sToRender .= "<tr>\n";
+    $sToRender .= "</tr>\n";
+    $sToRender .= "<tr>\n";
+    $sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=removeUserFromGroup\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
+    $sToRender .= "</tr>\n";
+    $sToRender .= "</table>\n";
+
+    return $sToRender;
+}
+
+// show success page if removed from Group successfully
+function getPageSuccess() {
+    global $default;
+
+    $sToRender .= "<table width=\"600\">" . renderHeading("Edit User Groups") . "</table>";
+    $sToRender .= "<table>\n";
+    $sToRender .= "<tr><td><b>Success!</b></td></tr>\n";
+    $sToRender .= "<tr></tr>\n";
+    $sToRender .= "<tr><td>The User was successfully removed from the Group</td></tr>\n";
+    $sToRender .= "<tr></tr>\n";
+    $sToRender .= "<tr></tr>\n";
+    $sToRender .= "<tr>\n";
+    $sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=listUsers\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
+    $sToRender .= "</tr>\n";
+    $sToRender .= "</table>\n";
+
+    return $sToRender;
+}
+
+// show Group details on confirm deletion page
+function getGroupDisplay($aGroup) {
+    global $default;
+	
+	$sBgColor = "#F5F6EE";
+    $oGroup= null;
+    $sGroup = "<table cellspacing=1 border=0>";
+    for ($i=0;$i < count($aGroup);$i++) {
+        $oGroup= Group::get($aGroup[$i]);
+        $Options .=  "<tr><td>" . ($i+1) . "</td><td bgcolor=$sBgColor>". $oGroup->getName() ."</td></tr>\n";
+    }
+    $sGroup .= $Options . "</table>";
+    return $sGroup;   
+}
+
+// show delete button or select button
+function getDeleteButton($oUser) {
+    global $default;
+    if (!isset($oUser)) {
+        return "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/select.gif\" value=\"submit\" border=\"0\"/></td>\n";
+    } else {
+        return "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/delete.gif\" value=\"submit\" border=\"0\"/></td>\n";
+    }
+}
+
+
+// show delete button or select button
+function getSelectButton($oUser) {
+    global $default;
+    if (!isset($oUser)) {
+        return "<input type=\"image\" src =\"$default->graphicsUrl/widgets/select.gif\" value=\"submit\" border=\"0\"/>\n";
+    } else {
+        return "<input type=\"image\" src =\"$default->graphicsUrl/widgets/select.gif\" value=\"submit\" border=\"0\"/>\n";
+    }
+}
+// show cancel button
+function getCancelButton($oUser) {
+    global $default;
+    if (!isset($oUser)) {
+        //return "<td align = right><a href=\"$default->rootUrl/control.php?action=UserManagement\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" value=\"cancel\" /></a></td>\n";
+    }
+    else {
+        return "<a href=\"$default->rootUrl/control.php?action=listUsers\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" /></a>\n";
+    }
+}
+
+
+?>

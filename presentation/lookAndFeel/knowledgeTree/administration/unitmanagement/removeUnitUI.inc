@@ -23,7 +23,7 @@ function getDeletePage($iUnitID) {
     $sToRender .= "<table>\n";
     $sToRender .= "<tr><td>$sHeading</td></tr>\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "<td>Unit Name: " . getUnitDisplay($oUnit) . "</td>\n";
+    $sToRender .= "<td>Unit Name: </td>" . getUnitDisplay($oUnit) . "\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "<tr>\n";
     $sToRender .= "</tr>\n";
@@ -32,7 +32,6 @@ function getDeletePage($iUnitID) {
     $sToRender .= "<tr>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "<tr>\n";
-
     $sToRender .= getDeleteButton($oUnit);
     $sToRender .= "</tr>\n";
     $sToRender .= "</table>\n";
@@ -56,7 +55,7 @@ function getDeleteSuccessPage() {
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "<td align = right><a href=\"$default->rootUrl/control.php?action=removeUnit\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
+    $sToRender .= "<td align = right><a href=\"$default->rootUrl/control.php?action=listUnits\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "</table>\n";
 
@@ -78,7 +77,7 @@ function getDeleteFailPage() {
     $sToRender .= "<tr><td>Please Ensure that the unit has no groups belonging to it</td></tr>\n";
     $sToRender .= "<tr></tr>\n";
     $sToRender .= "</tr>\n";
-    $sToRender .= "<tr><td align = right><a href=\"$default->rootUrl/control.php?action=removeUnit\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td></tr>\n";
+    $sToRender .= "<tr><td align = right><a href=\"$default->rootUrl/control.php?action=listUnits\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a></td></tr>\n";
     $sToRender .= "</table>\n";
 
     return $sToRender;
@@ -96,6 +95,12 @@ function getDeleteConfirmedPage($iUnitID,$iOrgID) {
         $oOrg = Organisation::get($iOrgID);
     }
 
+	if($oOrg){
+		$sOrgValue = getOrgDisplay($oOrg);
+	} else {
+			$sOrgValue = "<b>* Not Assigned to an Organisation<b>";
+	}	
+
     $sToRender .= renderHeading("Remove Unit");
     $sToRender .= "<table>\n";
     $sToRender .= "<tr><td><b>Are you sure you wish to Remove this Unit?:</b></td></tr>\n";
@@ -105,7 +110,7 @@ function getDeleteConfirmedPage($iUnitID,$iOrgID) {
     $sToRender .= "<tr>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "<td>Organisation Name: " . getOrgDisplay($oOrg) . "</td>\n";
+    $sToRender .= "<td>Organisation Name: " . $sOrgValue . "</td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "<tr>\n";
     $sToRender .= "</tr>\n";
@@ -148,7 +153,7 @@ function getDeleteButton($oUnit) {
     global $default;
     if (isset($oUnit)) {
         return "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/delete.gif\" value=\"submit\" border=\"0\"/></td>\n".
-               "<td align = right><a href=\"$default->rootUrl/control.php?action=removeUnit\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" /></a></td>\n";
+               "<td align = right><a href=\"$default->rootUrl/control.php?action=listUnits\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" /></a></td>\n";
     }
 }
 
@@ -159,7 +164,7 @@ function getCancelButton($oUnit) {
     if (!isset($oUnit)) {
         return "<td align = right><a href=\"$default->rootUrl/control.php?action=unitManagement\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" value=\"cancel\" /></a></td>\n";
     } else {
-        return "<td align = right><a href=\"$default->rootUrl/control.php?action=removeUnit\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" /></a></td>\n";
+        return "<td align = right><a href=\"$default->rootUrl/control.php?action=listUnits\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" /></a></td>\n";
     }
 }
 
