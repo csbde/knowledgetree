@@ -91,6 +91,7 @@ function displayCategoryLink($sCategoryName) {
  * @param array the category browse results
  */
 function renderCategoryResults($aResults) {    
+    global $oBrowser;
     $sToRender = "";
 
     //var_dump($aResults["categories"][0]);
@@ -119,7 +120,7 @@ function renderCategoryResults($aResults) {
             // else the first entry is the category name, so display the documents in the category
             $sToRender .= renderDocumentList($aResults, _("This category contains no documents"), _("You don't have access to the documents in this category"));
         } else {
-            $sToRender .= "<tr><td colspan=\"5\"><font color=\"red\">" . _("There is no Category Document Field- contact a System Administrator.") . "</font></td></tr>";
+            $sToRender .= "<tr><td colspan=\"" . ($oBrowser->columns() + 1) . "\"><font color=\"red\">" . _("There is no Category Document Field- contact a System Administrator.") . "</font></td></tr>";
         }
     }
     return $sToRender;
@@ -220,7 +221,7 @@ function renderFolderResults($aResults, $bTemplateBrowsing = false) {
             $sToRender .= "</tr>\n";
         }
     } else {
-        $sToRender .= "<tr><td colspan=\"5\">" . _("This folder contains no sub folders") . "</td></tr>";
+        $sToRender .= "<tr><td colspan=\"" . ($oBrowser->columns() + 1) . "\">" . _("This folder contains no sub folders") . "</td></tr>";
     }
 
     $sToRender .= renderDocumentList($aResults, _("This folder contains no documents"),
@@ -327,10 +328,10 @@ function renderDocumentList($aResults, $sNoDocumentsMessage, $sNoPermissionMessa
         $sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
         $sTDBGColour = $default->siteMap->getSectionColour($sSectionName, "td");
 
-        $sToRender .= "<tr bgcolor=\"". $sTDBGColour . "\"><td colspan=\"5\" valign=\"bottom\">" .
+        $sToRender .= "<tr bgcolor=\"". $sTDBGColour . "\"><td colspan=\"" . ($oBrowser->columns() + 1) . "\" valign=\"bottom\">" .
                       "<input type=\"checkbox\" name=\"selectall\" onClick=\"selectAll()\"/> " . _("Select all documents") . "</td></tr>";
 
-        $sToRender .= "<tr><td colspan=\"5\" >";
+        $sToRender .= "<tr><td colspan=\"" . ($oBrowser->columns() + 1) . "\" >";
         $sToRender .= "<input type=\"hidden\" name=\"fActions\">";
 
         $sToRender .= "<input type=\"image\" onclick=\"document.MainForm.fActions.value='move'; document.MainForm.submit()\" src=\"" . KTHtml::getMoveButton() . "\" border=\"0\"/>";
@@ -340,9 +341,9 @@ function renderDocumentList($aResults, $sNoDocumentsMessage, $sNoPermissionMessa
 
 
     } else if ($aResults["accessDenied"]) {
-        $sToRender .= "<tr><td colspan=\"5\">$sNoPermissionMessage</td></tr>";
+        $sToRender .= "<tr><td colspan=\"" . ($oBrowser->columns() + 1) . "\">$sNoPermissionMessage</td></tr>";
     } else {
-        $sToRender .= "<tr><td colspan=\"5\">$sNoDocumentsMessage</td></tr>";
+        $sToRender .= "<tr><td colspan=\"" . ($oBrowser->columns() + 1) . "\">$sNoDocumentsMessage</td></tr>";
     }
     return $sToRender;
 }
