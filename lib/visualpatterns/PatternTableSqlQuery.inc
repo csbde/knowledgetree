@@ -134,7 +134,7 @@ class PatternTableSqlQuery {
 								} else if ($this->bUseImageURLFromQuery) {
 									$sToRender .= $this->generateImageURL($sql->f("image_url"));
 								}
-	 							if ($sql->f($this->aColumns[$i] != null)) {
+								if ($sql->f($this->aColumns[$i]) != null) {	 							
 									$sToRender .= stripslashes($sql->f($this->aColumns[$i])) . "</td>";
 								} else {
 									$sToRender .= "&nbsp</td>";
