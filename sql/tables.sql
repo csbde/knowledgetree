@@ -557,9 +557,22 @@ INSERT INTO groups_lookup (name, is_sys_admin, is_unit_admin) VALUES ("AfroAids 
 INSERT INTO groups_lookup (name, is_sys_admin, is_unit_admin) VALUES ("Diabetes Unit Administrators", 0, 1); -- id=4
 INSERT INTO groups_lookup (name, is_sys_admin, is_unit_admin) VALUES ("Burden of Disease Unit Administrators", 0, 1); -- id=5
 INSERT INTO groups_lookup (name, is_sys_admin, is_unit_admin) VALUES ("Anonymous", 0, 0); -- id=6
+-- adarg unit groups
 INSERT INTO groups_lookup (name, is_sys_admin, is_unit_admin) VALUES ("Spell Checkers", 0, 0); -- id=7
 INSERT INTO groups_lookup (name, is_sys_admin, is_unit_admin) VALUES ("Editors", 0, 0); -- id=8
 INSERT INTO groups_lookup (name, is_sys_admin, is_unit_admin) VALUES ("Finance", 0, 0); -- id=9
+-- afroaids unit groups
+INSERT INTO groups_lookup (name, is_sys_admin, is_unit_admin) VALUES ("Spell Checkers", 0, 0); -- id=10
+INSERT INTO groups_lookup (name, is_sys_admin, is_unit_admin) VALUES ("Editors", 0, 0); -- id=11
+INSERT INTO groups_lookup (name, is_sys_admin, is_unit_admin) VALUES ("Finance", 0, 0); -- id=12
+-- diabetes unit groups
+INSERT INTO groups_lookup (name, is_sys_admin, is_unit_admin) VALUES ("Spell Checkers", 0, 0); -- id=13
+INSERT INTO groups_lookup (name, is_sys_admin, is_unit_admin) VALUES ("Editors", 0, 0); -- id=14
+INSERT INTO groups_lookup (name, is_sys_admin, is_unit_admin) VALUES ("Finance", 0, 0); -- id=15
+-- disease unit groups
+INSERT INTO groups_lookup (name, is_sys_admin, is_unit_admin) VALUES ("Spell Checkers", 0, 0); -- id=16
+INSERT INTO groups_lookup (name, is_sys_admin, is_unit_admin) VALUES ("Editors", 0, 0); -- id=17
+INSERT INTO groups_lookup (name, is_sys_admin, is_unit_admin) VALUES ("Finance", 0, 0); -- id=18
 
 ------ map groups to units
 ---- adarg
@@ -568,27 +581,31 @@ INSERT INTO groups_units_link (group_id, unit_id) VALUES (2, 1);
 -- other groups
 INSERT INTO groups_units_link (group_id, unit_id) VALUES (7, 1);
 INSERT INTO groups_units_link (group_id, unit_id) VALUES (8, 1);
+INSERT INTO groups_units_link (group_id, unit_id) VALUES (9, 1);
 
 ---- afroaids
 -- administrators
 INSERT INTO groups_units_link (group_id, unit_id) VALUES (3, 2);
 -- other groups
-INSERT INTO groups_units_link (group_id, unit_id) VALUES (7, 2);
-INSERT INTO groups_units_link (group_id, unit_id) VALUES (8, 2);
+INSERT INTO groups_units_link (group_id, unit_id) VALUES (10, 2);
+INSERT INTO groups_units_link (group_id, unit_id) VALUES (11, 2);
+INSERT INTO groups_units_link (group_id, unit_id) VALUES (12, 2);
 
 ---- diabetes
 -- administrators
 INSERT INTO groups_units_link (group_id, unit_id) VALUES (4, 3);
 -- other groups
-INSERT INTO groups_units_link (group_id, unit_id) VALUES (7, 3);
-INSERT INTO groups_units_link (group_id, unit_id) VALUES (8, 3);
+INSERT INTO groups_units_link (group_id, unit_id) VALUES (13, 3);
+INSERT INTO groups_units_link (group_id, unit_id) VALUES (14, 3);
+INSERT INTO groups_units_link (group_id, unit_id) VALUES (15, 3);
 
 ---- disease
 -- administrators
 INSERT INTO groups_units_link (group_id, unit_id) VALUES (5, 4);
 -- other groups
-INSERT INTO groups_units_link (group_id, unit_id) VALUES (7, 4);
-INSERT INTO groups_units_link (group_id, unit_id) VALUES (8, 4);
+INSERT INTO groups_units_link (group_id, unit_id) VALUES (16, 4);
+INSERT INTO groups_units_link (group_id, unit_id) VALUES (17, 4);
+INSERT INTO groups_units_link (group_id, unit_id) VALUES (18, 4);
 
 
 ------ users & map users to groups
@@ -635,20 +652,20 @@ INSERT INTO users_groups_link (group_id, user_id) VALUES (8, 7);
 INSERT INTO users (username, name, password, quota_max, quota_current, email, mobile, email_notification, sms_notification, ldap_dn, max_sessions, language_id)
             VALUES ("afroaidsUser", "afroaidsUser", "084e0343a0486ff05530df6c705c8bb4", "0", "0", "", "", 0, 0, "", 1, 1);
 -- just spell checker
-INSERT INTO users_groups_link (group_id, user_id) VALUES (7, 8);
+INSERT INTO users_groups_link (group_id, user_id) VALUES (10, 8);
 
 -- diabetes unit user
 INSERT INTO users (username, name, password, quota_max, quota_current, email, mobile, email_notification, sms_notification, ldap_dn, max_sessions, language_id)
             VALUES ("diabetesUser", "diabetesUser", "084e0343a0486ff05530df6c705c8bb4", "0", "0", "", "", 0, 0, "", 1, 1);
 -- just editor            
-INSERT INTO users_groups_link (group_id, user_id) VALUES (8, 9);
+INSERT INTO users_groups_link (group_id, user_id) VALUES (14, 9);
 
 -- disease unit user
 INSERT INTO users (username, name, password, quota_max, quota_current, email, mobile, email_notification, sms_notification, ldap_dn, max_sessions, language_id)
             VALUES ("diseaseUser", "diseaseUser", "084e0343a0486ff05530df6c705c8bb4", "0", "0", "", "", 0, 0, "", 1, 1);
 -- spell checker and editor
-INSERT INTO users_groups_link (group_id, user_id) VALUES (7, 10);
-INSERT INTO users_groups_link (group_id, user_id) VALUES (8, 10);
+INSERT INTO users_groups_link (group_id, user_id) VALUES (16, 10);
+INSERT INTO users_groups_link (group_id, user_id) VALUES (17, 10);
 
 -- default document type fields
 INSERT INTO document_fields (name, data_type) VALUES ("Category", "String");
@@ -688,6 +705,7 @@ INSERT INTO folders (name, description, parent_id, creator_id, document_type_id,
              VALUES ("Medical Research Council", "MRC Root Document Folder", 0, 1, 0, 0, 0); -- id=1
 
 ---- adarg unit folders
+-- [7,8,9]
 INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
              VALUES ("ADARG", "ADARG Unit Root Folder", 1, 1, 0, 1, 0);  -- id=2
              
@@ -741,6 +759,7 @@ INSERT INTO folders (name, description, parent_id, creator_id, document_type_id,
                  INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (7, 13, 1, 0);
                  
 ---- afroaids unit folders
+-- [10,11,12]
 INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
              VALUES ("AfroAIDS", "AfroAIDS Unit Root Folder", 1, 1, 0, 2, 0); -- id=14
              
@@ -750,12 +769,12 @@ INSERT INTO folders (name, description, parent_id, creator_id, document_type_id,
                  INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
                  VALUES ("Leave", "Applications for leave", 15, 1, 1, 1, 0); -- id=16
                  -- spell checkers have read
-                 INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (7, 16, 1, 0);
+                 INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (10, 16, 1, 0);
                  
                  INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
                  VALUES ("Invoices", "Unpaid bills", 15, 1, 1, 1, 0); -- id=17
                  -- finance has write access
-                 INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (9, 17, 0, 1);
+                 INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (12, 17, 0, 1);
              
              -- Proposals folder
              INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
@@ -763,12 +782,12 @@ INSERT INTO folders (name, description, parent_id, creator_id, document_type_id,
                  INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
                  VALUES ("Accepted", "accepted proposal", 18, 1, 1, 1, 0); -- id=19
                  -- spell checkers have read
-                 INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (7, 19, 1, 0);
+                 INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (10, 19, 1, 0);
                  
                  INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
                  VALUES ("Pending", "pending proposals", 18, 1, 1, 1, 0); -- id=20
                  -- spell checkers have read
-                 INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (7, 20, 1, 0);
+                 INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (10, 20, 1, 0);
              
              -- Publications Folder
              INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
@@ -776,7 +795,7 @@ INSERT INTO folders (name, description, parent_id, creator_id, document_type_id,
                  INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
                  VALUES ("Published", "published publications", 21, 1, 1, 1, 0); -- id=22
                  -- editors have write
-                 INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (8, 22, 0, 1);
+                 INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (11, 22, 0, 1);
 
              -- Research Folder
              INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
@@ -784,15 +803,16 @@ INSERT INTO folders (name, description, parent_id, creator_id, document_type_id,
                  INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
                  VALUES ("Current", "current research", 23, 1, 1, 1, 0); -- id=24
                  -- spell checkers have read
-                 INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (7, 24, 1, 0);
+                 INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (10, 24, 1, 0);
 
                  INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
                  VALUES ("Archived", "archived research", 23, 1, 1, 1, 0); -- id=25
                  -- spell checkers have read
-                 INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (7, 25, 1, 0);
+                 INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (10, 25, 1, 0);
              
 -- done
 ---- diabetes unit folders
+--[13,14,15]
 INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
              VALUES ("Diabetes", "Diabetes Unit Root Folder", 1, 1, 0, 3, 0);  -- id=26
              -- Admin Folder
@@ -802,12 +822,12 @@ INSERT INTO folders (name, description, parent_id, creator_id, document_type_id,
                  INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
                  VALUES ("Leave", "Applications for leave", 27, 1, 1, 1, 0); -- id=28
                  -- spell checkers have read
-                 INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (7, 28, 1, 0);
+                 INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (13, 28, 1, 0);
                  
                  INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
                  VALUES ("Invoices", "Unpaid bills", 27, 1, 1, 1, 0); -- id=29
                  -- finance has write access
-                 INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (9, 29, 0, 1);
+                 INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (15, 29, 0, 1);
              
              -- Proposal Folder
              INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
@@ -815,33 +835,34 @@ INSERT INTO folders (name, description, parent_id, creator_id, document_type_id,
                  INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
                  VALUES ("Accepted", "accepted proposal", 30, 1, 1, 1, 0); -- id=31
                  -- spell checkers have read
-                 INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (7, 31, 1, 0);
+                 INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (13, 31, 1, 0);
                  
                  INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
                  VALUES ("Pending", "pending proposals", 30, 1, 1, 1, 0); -- id=32
                  -- spell checkers have read
-                 INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (7, 32, 1, 0);
+                 INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (13, 32, 1, 0);
                  
              INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
              VALUES ("Publications", "Diabetes Unit Publications Folder", 26, 1, 3, 3, 0);  -- id=33
                  INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
                  VALUES ("Published", "published publications", 33, 1, 1, 1, 0); -- id=34
                  -- editors have write
-                 INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (8, 34, 0, 1);
+                 INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (14, 34, 0, 1);
              
              INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
              VALUES ("Research", "Diabetes Unit Research Folder", 26, 1, 4, 3, 0);  -- id=35
                  INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
                  VALUES ("Current", "current research", 35, 1, 1, 1, 0); -- id=36
                  -- spell checkers have read
-                 INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (7, 36, 1, 0);
+                 INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (13, 36, 1, 0);
 
                  INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
                  VALUES ("Archived", "archived research", 35, 1, 1, 1, 0); -- id=37
                  -- spell checkers have read
-                 INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (7, 37, 1, 0);             
+                 INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (13, 37, 1, 0);             
              
 ---- burden of disease unit folders
+-- [16,17,18]
 INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
              VALUES ("Burden of Disease", "Burden of Disease Unit Root Folder", 1, 1, 0, 4, 0);  -- id=38
              
@@ -851,43 +872,43 @@ INSERT INTO folders (name, description, parent_id, creator_id, document_type_id,
                  INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
                  VALUES ("Leave", "Applications for leave", 39, 1, 1, 1, 0); -- id=40
                  -- spell checkers have read
-                 INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (7, 40, 1, 0);
+                 INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (16, 40, 1, 0);
                  
                  INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
                  VALUES ("Invoices", "Unpaid bills", 39, 1, 1, 1, 0); -- id=41
                  -- finance has write access
-                 INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (9, 41, 0, 1);
+                 INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (18, 41, 0, 1);
                  
              INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
              VALUES ("Proposals", "Burden of Disease Unit Proposals Folder", 38, 1, 2, 4, 0);  -- id=42
                  INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
                  VALUES ("Accepted", "accepted proposal", 42, 1, 1, 1, 0); -- id=43
                  -- spell checkers have read
-                 INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (7, 43, 1, 0);
+                 INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (16, 43, 1, 0);
                  
                  INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
                  VALUES ("Pending", "pending proposals", 42, 1, 1, 1, 0); -- id=44
                  -- spell checkers have read
-                 INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (7, 44, 1, 0);
+                 INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (16, 44, 1, 0);
                  
              INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
              VALUES ("Publications", "Burden of Disease Unit Publications Folder", 38, 1, 3, 4, 0);  -- id=45
                  INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
                  VALUES ("Published", "published publications", 45, 1, 1, 1, 0); -- id=46
                  -- editors have write
-                 INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (8, 46, 0, 1);
+                 INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (17, 46, 0, 1);
              
              INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
              VALUES ("Research", "Burden of Disease Unit Research Folder", 38, 1, 4, 4, 0);  -- id=47
                  INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
                  VALUES ("Current", "current research", 47, 1, 1, 1, 0); -- id=48
                  -- spell checkers have read
-                 INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (7, 48, 1, 0);
+                 INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (16, 48, 1, 0);
 
                  INSERT INTO folders (name, description, parent_id, creator_id, document_type_id, unit_id, is_public)
                  VALUES ("Archived", "archived research", 47, 1, 1, 1, 0); -- id=49
                  -- spell checkers have read
-                 INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (7, 48, 1, 0);      
+                 INSERT INTO groups_folders_link (group_id, folder_id, can_read, can_write) VALUES (16, 48, 1, 0);      
              
 -- add one document to each folder             
 INSERT INTO documents (document_type_id, name, filename, size, creator_id, modified, description, security, mime_id, 
