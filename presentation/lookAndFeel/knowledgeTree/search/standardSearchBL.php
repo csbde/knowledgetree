@@ -109,7 +109,8 @@ if (checkSession()) {
 		} else  if (strlen($fDocumentID) > 0) {
 			//the user was viewing a document, search in that document's folder
 			$oDocument = Document::get($fDocumentID);
-			$sFolderString = getApprovedFolderString($oDocument->getFolderID());
+			//$sFolderString = getApprovedFolderString($oDocument->getFolderID());
+			$sFolderString = getFolderString($oDocument->getFolderID());
 			require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 			$oPatternCustom = & new PatternCustom();
 			//$oPatternCustom->setHtml(getPage($fStandardSearchString, $fBrowseType, $fFolderID, $fDocumentID, $fCategoryName, $fDocType, $sFolderString, $fStartIndex, getSQLSearchString($fStandardSearchString)));
