@@ -35,6 +35,7 @@ function getEmailPage($oDocument) {
 }
 
 function getDocumentEmailPage($oDocument) {
+	global $default;
 	$sToRender = getDocumentPath($oDocument) . "\n<br>\n";	 
 	$sToRender .= "<table>\n";
 	$sToRender .= "<th colspan=\"2\" align=\"left\">Email details</th>\n";	
@@ -42,7 +43,7 @@ function getDocumentEmailPage($oDocument) {
 	$sToRender .= "<tr><td>Recipient name:</td><td><input type=\"text\" name=\"fToName\" /></td></tr>\n";
 	$sToRender .= "<tr><td>Email address:</td><td><input type=\"text\" name=\"fToEmail\" /></td></tr>\n";
 	$sToRender .= "<tr><td>&nbsp</td><td>&nbsp</td></tr>\n";
-	$sToRender .= "<tr><td><input type=\"submit\" value=\"Send link\"</td><td>&nbsp</td></tr>\n";
+	$sToRender .= "<tr><td><input type=\"image\" src=\"$default->owl_graphics_url\widgets\email.gif\" /></td><td>&nbsp</td></tr>\n";
 	$sToRender .= "</table>\n";
 	return $sToRender;
 }
