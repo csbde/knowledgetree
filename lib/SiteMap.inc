@@ -52,14 +52,12 @@ class SiteMap {
      *        have access to the page
      */
     function getPage($action, $userClass) {
-        // TODO: need to accomodate SA having all the access of the userclasses below it
         // map incoming userClass to number
         $uc = constant($userClass);
-        echo "userclass = $userClass; uc=$uc\n";
+
         // iterate through multidim sitemap array
         foreach ($this->siteMapArray as $section => $valArr) {
             foreach ($valArr as $userAccess => $pageArr) {
-                echo "userAccess=($userAccess)" . constant($userAccess) . "; uc=$uc\n";
                 if ($uc <= constant($userAccess)) {
                     // now loop through pages until we find the right one
                     foreach ($pageArr as $ackshin => $page) {
