@@ -96,10 +96,8 @@ class FolderBrowser extends Browser {
                 // FIXME: start at the root folder for the default organisation
                 $iFolderID = lookupID($default->folders_table, "parent_id", 0);
              }
-        }
-        else
-        {
-         $default->log->debug("Folder specified " . $iFolderID );	
+        } else{
+            $default->log->debug("Folder specified " . $iFolderID );	
         }
         
         $default->log->debug("FolderBrowser::browseByFolder: folderID=" . $iFolderID);
@@ -134,23 +132,16 @@ class FolderBrowser extends Browser {
                   $default->log->debug("In folder iteration while, with folder_id " . $sql->f("id"));
                   // check whether to display folders which are not readable and display/hide these accordingly
                   	$oFolder = Folder::get($sql->f("id"));
-                  	if ($default->folderHidingFlag) 
-                  	{
-                  		if (Permission::userHasFolderReadPermission($oFolder))
-                  		{
+                  	if ($default->folderHidingFlag) {
+                  		if (Permission::userHasFolderReadPermission($oFolder)) {
                   			$default->log->debug("FOLDER PERMISSIONS: Does  have permission for folder " . $oFolder->getID() . ":" . $sql->f("id") );
                     		$results["folders"][] =  $oFolder;
-                  		}
-                  		else
-                  		{
+                  		} else {
                   			$default->log->debug("FOLDER PERMISSIONS: Does  NOT have permission for folder " . $sql->f("id") );
                   		}
-                  	}
-                  	else 
-                  	{
-                  	 $results["folders"][] =  $oFolder;
+                  	} else{
+                        $results["folders"][] =  $oFolder;
                   	}   
-             
                 }
             }
             
@@ -158,12 +149,12 @@ class FolderBrowser extends Browser {
             
             // create query to retrieve documents in this folder
             $documentQuery  = "SELECT d.id as id FROM $default->documents_table AS d ";
-            if ( isset($aLookupCriteria) ) {
+            if (isset($aLookupCriteria)) {
             	$documentQuery .= "INNER JOIN " .  $aLookupCriteria["table"] . " lt ON ";
             	$documentQuery .= "d.$this->sSortField" . "=lt." . (isset($aLookupCriteria["joinColumn"]) ? $aLookupCriteria["joinColumn"] : "id");
             }            
             $documentQuery .= " WHERE d.folder_id=$iFolderID " . (isset($aLookupCriteria["whereClause"]) ? "AND lt." . $aLookupCriteria["whereClause"] : "") . " ";            
-			if ( isset($aLookupCriteria) ) {
+			if (isset($aLookupCriteria)) {
             	$documentQuery .= "ORDER BY lt." . $aLookupCriteria["field"] . " $this->sSortDirection";
             } else {
             	$documentQuery .= "ORDER BY $this->sSortField $this->sSortDirection";
@@ -179,24 +170,23 @@ class FolderBrowser extends Browser {
             	
                 while ($sql->next_record()) {
                 	$oDocument = & Document::get($sql->f("id"));
-                    // check permissions
-                    if ($hasFolderRead || Permission::userHasDocumentReadPermission($oDocument)) {
-                        // add documents to array
-                        // set file attributes
-                        //$oDocument = & Document::get($sql->f("id"));
-                        if ($oDocument->isLive()) {
+                    // proceed if the document is live
+                    if ($oDocument->isLive()) {
+                        // check permissions
+                        if ($hasFolderRead || Permission::userHasDocumentReadPermission($oDocument)) {
+                            // add documents to array
+                            // set file attributes
                         	$results["documents"][] = $oDocument;
-                        } 
-                    } else {
-                        // set access denied message
-                        $results["accessDenied"] = true;
+                        } else {
+                            // set access denied message
+                            $results["accessDenied"] = true;
+                        }
                     }
                 }
             } else {
                 $_SESSION["errorMessage"] = "documents table select failed";
             }
             
-            $default->log->debug("Finished Documment permission checking I think ... end of browswe anyhow");
             return $results;
         }
     }
