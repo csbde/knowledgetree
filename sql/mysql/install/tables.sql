@@ -538,7 +538,7 @@ INSERT INTO document_fields (name, data_type, is_generic) VALUES ("Category", "S
 
 -- system settings
 INSERT INTO system_settings (name, value) values ("lastIndexUpdate", "0");
-INSERT INTO system_settings (name, value) values ("knowledgeTreeVersion", "1.2.3");
+INSERT INTO system_settings (name, value) values ("knowledgeTreeVersion", "1.2.5");
 
 -- document statuses
 INSERT INTO web_documents_status_lookup (name) VALUES ("Pending");
