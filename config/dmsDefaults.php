@@ -65,16 +65,22 @@ class KTInit {
         $res = $default->log->initialiseLogFile();
         if (PEAR::isError($res)) {
             KTInit::handleInitError($res);
+            // returns only in checkup
+            return $res;
         }
         $default->queryLog = new KTLegacyLog($default->fileSystemRoot . "/log", $default->logLevel, "query");
         $res = $default->queryLog->initialiseLogFile();
         if (PEAR::isError($res)) {
             KTInit::handleInitError($res);
+            // returns only in checkup
+            return $res;
         }
         $default->timerLog = new KTLegacyLog($default->fileSystemRoot . "/log", $default->logLevel, "timer");
         $res = $default->timerLog->initialiseLogFile();
         if (PEAR::isError($res)) {
             KTInit::handleInitError($res);
+            // returns only in checkup
+            return $res;
         }
 
         require_once("Log.php");
@@ -141,7 +147,8 @@ class KTInit {
         $default->_db = &DB::connect($dsn, $options);
         if (PEAR::isError($default->_db)) {
             KTInit::handleInitError($default->_db);
-            // never returns
+            // returns only in checkup
+            return $res;
         }
         $default->_db->setFetchMode(DB_FETCHMODE_ASSOC);
 
@@ -210,6 +217,10 @@ class KTInit {
 
     // {{{ handleInitError()
     function handleInitError($oError) {
+        global $checkup;
+        if ($checkup === true) {
+            return;
+        }
         // XXX: Make it look pretty
         die($oError->toString());
     }
@@ -304,7 +315,7 @@ KTInit::prependPath(KT_DIR . '/pear');
 require_once('PEAR.php');
 
 // instantiate log
-KTInit::setupLogging();
+$loggingSupport = KTInit::setupLogging();
 
 // Send all PHP errors to a file (and maybe a window)
 set_error_handler(array('KTInit', 'handlePHPError'));
@@ -315,7 +326,7 @@ require_once(KT_LIB_DIR . '/util/legacy.inc');
 // Give everyone access to KTUtil utility functions
 require_once(KT_LIB_DIR . '/util/ktutil.inc');
 
-KTInit::setupDB();
+$dbSupport = KTInit::setupDB();
 KTInit::setupRandomSeed();
 
 require_once("$default->fileSystemRoot/lib/authentication/$default->authenticationClass.inc");
