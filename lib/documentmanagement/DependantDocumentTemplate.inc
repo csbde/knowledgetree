@@ -70,7 +70,7 @@ class DependantDocumentTemplate {
 	*
 	*/
 	function setDocumentTitle($sNewValue) {
-		$this -> sDocumentTitle = $sNewValue;
+		$this->sDocumentTitle = $sNewValue;
 	}
 
 	/**
@@ -90,7 +90,7 @@ class DependantDocumentTemplate {
 	*
 	*/
 	function getTemplateDocumentID() {
-		return $this -> iTemplateDocumentID;
+		return $this->iTemplateDocumentID;
 	}
 
 	/**
@@ -100,7 +100,7 @@ class DependantDocumentTemplate {
 	*
 	*/
 	function setTemplateDocumentID($iNewValue) {
-		$this -> iTemplateDocumentID = $iNewValue;
+		$this->iTemplateDocumentID = $iNewValue;
 	}
 	
 	function getGroupFolderApprovalLinkID() {
