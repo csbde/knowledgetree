@@ -1,6 +1,8 @@
 <?php
-/*
+/**
  * browse.php -- Browse page
+ * 
+ * Browse a list of files/folders
  *
  * Copyright (c) 1999-2002 The Owl Project Team
  * Licensed under the GNU GPL. For full terms see the file COPYING.
@@ -22,7 +24,7 @@ if(!isset($sortname)) $sortname = "ASC";
 // Daphne change
 if(!isset($sortver)) $sortver = "ASC, minor_revision ASC";
 if(!isset($sortcheckedout)) $sortcheckedout = "ASC";
-// end daphne change
+// end Daphne change
 if(!isset($sortfilename)) $sortfilename = "DESC";
 if(!isset($sortsize)) $sortsize = "DESC";
 if(!isset($sortposted)) $sortposted = "DESC";
@@ -67,6 +69,7 @@ switch ($order) {
 // END 496814 Column Sorts are not persistant
 
 
+//if the user does not have permission to view the folder
 if(check_auth($parent, "folder_view", $userid) != "1") {
  	printError($lang_nofolderaccess,"");
 	exit;
@@ -123,38 +126,45 @@ if ($expand == 1) {
 	print("\t\t<HR WIDTH=$default->table_collapse_width>\n");
 }
 
-//
-// functions to create/show the links to be sorted on
-//
+/**
+* Creates links that can be sorted
+*
+* @param $column	current column
+* @param $sortname
+* @param $sortvalue	ASC or DESC
+* @param $order		column to order by
+* @param $sess
+* @param $expand
+* @param $parent
+* @param $lang_title
+* @param $url
+*/
+
 function show_link($column,$sortname,$sortvalue,$order,$sess,$expand,$parent,$lang_title,$url) {
 
-                if ($sortvalue == "ASC")
-                {
-                     print("\t\t\t\t<TD align=left><A HREF='browse.php?sess=$sess&expand=$expand&parent=$parent&order=$column&$sortname=DESC' STYLE='toplink'>$lang_title");
-                     if ($order == $column)
-                     {
-                       print("<img border='0' src='$url/graphics/asc.gif' width='16' height='16'></A></TD>");
-                     }
-                     else
-                     {
-                       print("</A></TD>");
-                     }
-
-                }
-                else
-                {
-                     print("\t\t\t\t<TD align=left><A HREF='browse.php?sess=$sess&expand=$expand&parent=$parent&order=$column&$sortname=ASC' STYLE='toplink'>$lang_title");
-                     if ($order == $column)
-                     {
-                       print("<img border='0' src='$url/graphics/desc.gif' width='16' height='16'></A></TD>");
-                     }
-                     else
-                     {
-                       print("</A></TD>");
-                     }
-                }
+	if ($sortvalue == "ASC") {
+	     print("\t\t\t\t<TD align=left><A HREF='browse.php?sess=$sess&expand=$expand&parent=$parent&order=$column&$sortname=DESC' STYLE='toplink'>$lang_title");
+	     if ($order == $column)
+	     {
+	       print("<img border='0' src='$url/graphics/asc.gif' width='16' height='16'></A></TD>");
+	     }
+	     else
+	     {
+	       print("</A></TD>");
+	     }
+	
+	}
+	else {
+	     print("\t\t\t\t<TD align=left><A HREF='browse.php?sess=$sess&expand=$expand&parent=$parent&order=$column&$sortname=ASC' STYLE='toplink'>$lang_title");
+	     if ($order == $column)
+	     {
+	       print("<img border='0' src='$url/graphics/desc.gif' width='16' height='16'></A></TD>");
+	     }
+	     else {
+	       print("</A></TD>");
+	     }
+	}
 }
-
 
 
 if ($expand == 1) {
@@ -209,7 +219,9 @@ if ($order == "creatorid") {
 //**********************
 
 while($sql->next_record()) {
+	//if the current user has a restricted view
 	if($default->restrict_view == 1) {
+		//if the current user does not have permission to view the folder
 		if(!check_auth($sql->f("id"), "folder_view", $userid)) 
 			continue;
 	}
