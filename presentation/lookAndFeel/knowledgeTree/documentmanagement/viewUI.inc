@@ -71,7 +71,7 @@ function renderDocumentData($oDocument, $bEditable, $sStatusMessage = "") {
     $sToRender .= "\t</tr>\n";
     if ($bEditable) {    
 		$sToRender .= "\t<tr>\n";
-	    $sToRender .= "<td colspan=\"2\"><a href=\"$default->rootUrl/control.php?action=modifyDocument&fDocumentID=" . $oDocument->getID() . "\"><image src=\"" . KTHtml::getEditButton() . "\" border=\"0\"></a></td>\n";
+	    $sToRender .= "<td colspan=\"2\"><a href=\"$default->rootUrl/control.php?action=modifyDocument&fDocumentID=" . $oDocument->getID() . "\"><img src=\"" . KTHtml::getEditButton() . "\" border=\"0\"></a></td>\n";
 		$sToRender .= "\t</tr>\n";
     }
 	$sToRender .= "\t</table>\n";
@@ -100,7 +100,7 @@ function renderGenericMetaData($oDocument, $bEditable) {
     $sToRender .= "\t</tr>\n";
     if ($bEditable) {
 		$sToRender .= "\t<tr>\n";
-	    $sToRender .= "<td><a href=\"$default->rootUrl/control.php?action=modifyDocumentGenericMetaData&fDocumentID=" . $oDocument->getID() . "\"><image src=\"" . KTHtml::getEditButton() . "\" border=\"0\"></a></td>\n";    
+	    $sToRender .= "<td><a href=\"$default->rootUrl/control.php?action=modifyDocumentGenericMetaData&fDocumentID=" . $oDocument->getID() . "\"><img src=\"" . KTHtml::getEditButton() . "\" border=\"0\"></a></td>\n";    
 		$sToRender .= "\t</tr>\n";
     }
 	$sToRender .= "\t</table>\n";
@@ -131,7 +131,7 @@ function renderTypeSpecificMetaData($oDocument, $bEditable) {
     $sToRender .= "\t</tr>\n";
     if ($bEditable) {
 		$sToRender .= "\t<tr>\n";
-	    $sToRender .= "<td><a href=\"$default->rootUrl/control.php?action=modifyDocumentTypeMetaData&fDocumentID=" . $oDocument->getID() . "\"><image src=\"" . KTHtml::getEditButton() . "\" border=\"0\"></a></td>\n";
+	    $sToRender .= "<td><a href=\"$default->rootUrl/control.php?action=modifyDocumentTypeMetaData&fDocumentID=" . $oDocument->getID() . "\"><img src=\"" . KTHtml::getEditButton() . "\" border=\"0\"></a></td>\n";
 		$sToRender .= "\t</tr>\n";
     }
     $sToRender .= "\t</table>\n";

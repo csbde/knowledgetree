@@ -224,8 +224,8 @@ class NavBar {
             //set up the links
             for ($i = 0; $i < count($aTopMenuLinks); $i++) {
                 if (strcmp($aTopMenuLinks[$i], "help") == 0) {
-                    $sTopMenu .= "<td width=\"10\"><a href=\"#\" onClick=\"javascript:helpWindow();\"><image src=\"" . $aTopMenuImages[$i] . "\" border=\"0\" /></a></td>\n";
-                    $sColourMenu .= "<td width=\"10\"><a href=\"#\" onClick=\"javascript:helpWindow();\"><image src=\"" . $aColourMenuImages[$i] . "\" border=\"0\" /></a></td>\n";
+                    $sTopMenu .= "<td width=\"10\"><a href=\"#\" onClick=\"javascript:helpWindow();\"><img src=\"" . $aTopMenuImages[$i] . "\" border=\"0\" /></a></td>\n";
+                    $sColourMenu .= "<td width=\"10\"><a href=\"#\" onClick=\"javascript:helpWindow();\"><img src=\"" . $aColourMenuImages[$i] . "\" border=\"0\" /></a></td>\n";
                 } else {
                     $sTopMenu .= "<td width=\"10\">" . (strlen($aTopMenuLinks[$i]) > 0 ? "<a href=\"" . $aTopMenuLinks[$i] . "\">" : "") . "<img src=\"" . $aTopMenuImages[$i] . "\" border=\"0\" /></a></td>\n";
                     $sColourMenu .= "<td width=\"10\">" . (strlen($aTopMenuLinks[$i]) > 0 ? "<a href=\"" . $aTopMenuLinks[$i] . "\">" : "") . "<img src=\"" . $aColourMenuImages[$i] . "\" border=\"0\"/></a></td>\n";
@@ -267,7 +267,7 @@ class NavBar {
             //this next line works in IE, and Netscape 4.79 up, but NOT Netscape 4.79
             //$bar .= "<INPUT type=\"image\" onClick=\"return validateStandardSearch('" . $default->rootUrl . "/control.php')\" src=\"$default->graphicsUrl/search.gif\" align = \"absmiddle\" border=\"0\" />\n";
             //replaced with this line            
-            $bar .= "<a href=\"#\" onClick=\"return validateStandardSearch('" . $default->rootUrl . "/control.php')\"><image align=\"absmiddle\" src=\"$default->graphicsUrl/search.gif\" border=\"0\" /></a>";
+            $bar .= "<a href=\"#\" onClick=\"return validateStandardSearch('" . $default->rootUrl . "/control.php')\"><img align=\"absmiddle\" src=\"$default->graphicsUrl/search.gif\" border=\"0\" /></a>";
             
         }
         $bar .= "\t\t</td>\n";
