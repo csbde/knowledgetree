@@ -17,7 +17,7 @@
 
 // main library routines and defaults
 require_once("./config/dmsDefaults.php");
-require_once("$default->owl_fs_root/lib/SiteMap.inc");
+require_once("$default->owl_fs_root/lib/session/SiteMap.inc");
 
 // -------------------------------
 // page start
