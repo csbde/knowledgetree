@@ -77,7 +77,7 @@ class Session {
         // deletes any sessions for this userID where the default timeout has elapsed.
         $time = time() -  $default->sessionTimeout;
         $sql = $default->db;
-        $sql->query("DELETE FROM $default->owl_sessions_table WHERE user_id =$userID AND lastused <= '" . formatDateTime($time) . "'");
+        $sql->query("DELETE FROM $default->owl_sessions_table WHERE user_id=$userID AND lastused <= '" . formatDateTime($time) . "'");
     }
 
     /**
@@ -104,6 +104,7 @@ class Session {
             if ($numrows >= 1) {
                 $default->log->debug("Session::verify() found session in db");
                 while($sql->next_record()) {
+                    $iUserID = $sql->f("user_id");
                     $ip = $this->getClientIP();
                     // check that ip matches
                     if ($ip == $sql->f("ip")) {
@@ -117,7 +118,6 @@ class Session {
                             // session has been verified, update status
                             $sessionStatus = 1;
                             // use userID to refresh user details and set on session
-                            $iUserID = $sql->f("user_id");
                             
                             // ??: will this change during a user session?
                             // only set the userID if its not in the array already 
