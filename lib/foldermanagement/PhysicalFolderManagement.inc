@@ -38,6 +38,10 @@ class PhysicalFolderManagement {
 		return rmdir($sPath);
 	}
 	
+	function renameFolder($sOldPath, $sNewPath) {		
+		rename($sOldPath, $sNewPath);
+	}
+	
 }
 
 ?>
