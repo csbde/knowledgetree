@@ -99,22 +99,4 @@ function arrayToCss($array) {
     return $css;
 }
 
-/**
- * Returns the current date time
- *
- * @return string the current date time (Y-m-d H:i:s)
- */
-function getCurrentDateTime() {
-    return date("Y-m-d H:i:s", time());
-}
-
-/**
- * Returns the specified date time, formatted as Y-m-d H:i:s
- *
- * @param int the date time to format
- * @return string the formatted date time
- */
-function formatDateTime($dateTime) {
-    return date("Y-m-d H:i:s", $dateTime);
-}
 ?>
