@@ -80,7 +80,8 @@ if (checkSession()) {
                             $default->log->info("checkOutDocumentBL.php fired $count subscription alerts for checked out document " . $oDocument->getName());
 
                             // display checkout success message in the document view page
-                            $oPatternCustom->setHtml(getCheckOutPage($oDocument, true));
+                            //controllerRedirect("downloadDocument", "fDocumentID=$fDocumentID&fCheckedOut=1");
+                            $oPatternCustom->setHtml(getCheckOutPage($oDocument, true));                            
                             
                         } else {
                             // document update failed
