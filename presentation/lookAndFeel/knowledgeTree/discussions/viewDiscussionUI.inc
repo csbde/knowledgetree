@@ -9,9 +9,18 @@
 */
 
 
-function goBack(){
+function getPageButtons($oThread){
 	global $default;
-	return "<table width=100%><tr><td align=right><img src=\"$default->graphicsUrl/widgets/back.gif\" onmouseover=\"this.style.cursor='hand'\" onclick=\"javascript: history.go(-1);\" ></td></tr></table>";
+	
+	$sToRender .= "<table width=100%><tr>\n";
+	$sToRender .= "<td align=right width=100%><a href=\"" . generateControllerLink("addComment", "fDocumentID=" . $oThread->getDocumentID() . "&fAddComment=1") . "\"><img src=\"$default->graphicsUrl/widgets/addcomment.gif\" border=\"0\" /></a></td>\n";
+	$sToRender .= "<td align=right width=10><img src=\"$default->graphicsUrl/widgets/back.gif\" onmouseover=\"this.style.cursor='hand'\" onclick=\"javascript: history.go(-1);\" /></td>\n";
+		
+	$sToRender .= "</tr></table>\n";
+	//$sToRender .= "<a href=\"" . generateControllerLink("addComment", "fDocumentID=" . $oThread->getDocumentID() . "&fAddComment=1") . "\"><img src=\"$default->graphicsUrl/widgets/addcomment.gif\" border=\"0\" /></a>\n";
+	//$sToRender .= "<img src=\"$default->graphicsUrl/widgets/back.gif\" onmouseover=\"this.style.cursor='hand'\" onclick=\"javascript: history.go(-1);\" />\n";
+	
+	return $sToRender ; 
 }
 
 // If there are no threads to view for a document

@@ -62,7 +62,7 @@ if(checkSession()) {
 					    $oSearchResults = & new PatternBrowseableSearchResults ($sQuery, 13, $aColumns, $aColumnTypes, $aColumnNames, $aHyperLinkURL, $aQueryStringCols, $aQueryStringVars);
 					    $oSearchResults->setStartIndex($iStartIndex);
 					    $oSearchResults->setQueryString("&fDocumentID=$fDocumentID&fForDiscussion=1");
-					    $oPatternCustom->addHtml(goBack());
+					    $oPatternCustom->addHtml(getPageButtons($oThread));
 					    $oPatternCustom->addHtml($oSearchResults->render());    
 						
 						// On opening, increment the number of views of current thread & update database

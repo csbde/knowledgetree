@@ -47,7 +47,7 @@ if (checkSession()) {
 			}		
 			
 		} else if (isset($fAddCommentSubmit)) {					
-			if ($_POST["NewComment"] != "" and $_POST["NewCommentSubject"] != "")						{
+			if ($_POST["NewComment"] != "" && $_POST["NewCommentSubject"] != "")						{
 				
 				if (isset($fNewThread)){ // Create a New Thread for this document as it doesn't exist
 					 
@@ -97,7 +97,7 @@ if (checkSession()) {
 				}// End Of if for THREAD ID test
 									
 			}else { // the user has not entered BOTH a subject and a text body
-				$main->setErrorMessage("The subject line and/or body may be empty");				
+				$main->setErrorMessage("The subject line and/or body may be empty" . $NewCommentSubject . "#" . $NewComment);				
 				$main->setFormAction($_SERVER['PHP_SELF'] . "?fAddCommentSubmit=1&iDocumentID=$fDocumentID");
 				$oPatternCustom->addHtml(getAddComment($fDocumentID,$_POST["NewCommentSubject"],$_POST["NewComment"]));
 			} // end of IF for Subject and Body test	
