@@ -51,6 +51,8 @@ class PatternTableSqlQuery {
 	var $bUseImageURLFromQuery = false;
 	/** message that will be displayed if the table is empty*/
 	var $sEmptyTableMessage;
+	
+	var $bIncludeBorder = false;
 				
 	function PatternTableSqlQuery($sTmpQuery, $aTmpColumns, $aTmpColumnTypes, $aTmpColumnHeaderNames, $sTmpWidth, $aTmpLinkURLs = null, $sTmpDBQueryStringColumns = null, $aNewQueryStringVariableNames = null) {
 		$this->sQuery = $sTmpQuery;
@@ -84,6 +86,10 @@ class PatternTableSqlQuery {
 		$this->bDisplayColumnHeadings = $bNewValue;
 	}
 	
+	function setIncludeBorder($bNewValue) {
+		$this->bIncludeBorder = $bNewValue;
+	}
+	
 	/**
 	* Build the HTML string used to render the object
 	*
@@ -94,7 +100,7 @@ class PatternTableSqlQuery {
 	function & render() {
         global $default;
         
-		$sToRender = "<table cellpadding = 5, border = 0>\n";
+		$sToRender = "<table cellpadding = 5, border=\"" . ($this->bIncludeBorder ? "1" : "0") . "\" >\n";
 		if (isset($this->sTableHeading)) {
 			$sToRender .= "<caption align=\"top\" colspan = " . count($this->aColumns) . ", align=left><b>$this->sTableHeading</b></caption>\n";
 		}
