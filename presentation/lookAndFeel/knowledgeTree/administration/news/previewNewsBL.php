@@ -10,7 +10,7 @@ require_once("$default->uiDirectory/administration/news/newsUI.inc");
 /**
  * $Id$
  *  
- * This page handles the administration of dashboard news items
+ * This page previews a news item
  *
  * Licensed under the GNU GPL. For full terms see the file DOCS/COPYING.
  *
@@ -25,9 +25,10 @@ if (checkSession()) {
     $oContent = new PatternCustom();
     
     if (isset($fNewsID)) {
-    	// we have an id, so we're either deleting, editing or previewing a current item
+    	// we have an id, so we're can proceed
+    	$oContent->setHtml(renderPreviewNewsPage(DashboardNews::get($fNewsID)));
     } else {
-    	// no news id, so list the current news items
+    	// no news id, nothing to preview
     	$oContent->setHtml(renderListNewsPage());
     }        
 

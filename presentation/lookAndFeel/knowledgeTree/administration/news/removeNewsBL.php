@@ -31,13 +31,14 @@ if (checkSession()) {
     	if ($fDeleteConfirmed) {
     		// confirmation received, so delete    		
     		if ($oDashboardNews->delete()) {
-    			$default->log->info("deleteNewsBL.php successfully delete dashboard news id=$fNewsID");
+    			$default->log->info("deleteNewsBL.php successfully deleted dashboard news id=$fNewsID");
     			// redirect to view page
     			redirect("$default->rootUrl/control.php?action=viewNews");
     		} else {
     			// delete failed
     			$default->log->error("deleteNewsBL.php DB error deleting dashboard news (" . arrayToString($oDashboardNews) . ")");
     			$oContent->setHtml(renderErrorMessage("An error occurred while deleting this news item."));
+    			// TODO: incorporate message into another page
     		}	    		
     	} else {
     		// display the delete confirmation page		
@@ -46,6 +47,7 @@ if (checkSession()) {
     } else {
     	// no news id, so display an error message
     	$oContent->setHtml(renderErrorMessage("No news item was selected for deletion"));
+    	// TODO: incorporate message into another page
     }        
 
 	// build the page
