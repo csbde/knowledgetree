@@ -73,15 +73,14 @@ class PatternListFromQuery {
         global $default;
 		$sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
 		$sTDBGColour = $default->siteMap->getSectionColour($sSectionName, "td");
-		
         
 		$sql = $default->db;
 		$sql->query($this->sQuery);		
 		$sToRender = "";
-		$sToRender .= "<table border = 0, cellpadding = 5 " . (isset($this->iTableWidth) ? ", width = $this->iTableWidth" : "") . " >\n";
+		$sToRender .= "<table border=\"0\" cellpadding=\"5\" " . (isset($this->iTableWidth) ? " width=\"$this->iTableWidth\"" : "") . " >\n";
 		
 		if (isset($this->sTableHeading)) {
-					$sToRender .= "<caption colspan=\"" . count($this->aColumns) . "\" align=\"top\"><b>$this->sTableHeading</b></caption>\n";
+			$sToRender .= "<caption colspan=\"" . count($this->aColumns) . "\" align=\"top\"><b>$this->sTableHeading</b></caption>\n";
 		}
 		
 		if ($sql->num_rows() == 0) {
@@ -97,7 +96,8 @@ class PatternListFromQuery {
 					switch ($this->aColumnTypes[$i]) {						
 						//plain text field
 						case 1:						
-							$sToRender .= "<td bgcolor=\"$sTDBGColour\">" . $this->aColumnNames[$i] . "</td><td bgcolor=\"" . getColour($iColour) ."\">" . stripslashes($sql->f($this->aColumns[$i])) . "</td>\n";
+						// TODO: make nowrap optional
+							$sToRender .= "<td nowrap bgcolor=\"$sTDBGColour\">" . $this->aColumnNames[$i] . "</td><td width=\"100%\" nowrap bgcolor=\"" . getColour($iColour) ."\">" . stripslashes($sql->f($this->aColumns[$i])) . "</td>\n";
 							break;
 						//text area
 						case 2:
