@@ -78,14 +78,18 @@ class PatternMainPage {
                             "<link rel=\"stylesheet\" href=\"$default->owl_ui_url/stylesheet.php\">\n".                            
 							PatternMainPage::getJavaScript() . "\n" .							
 							"</head>\n" .
-							"<body marginleft=\"0\" marginheight=\"0\">\n" .
-                                "<div id=\"divUp\">" .
+							"<body marginleft=\"0\" marginheight=\"0\">\n";
+        // hack to circumvent the crapness of ns 4.79
+        if (! (($default->phpSniff->property("browser") == "moz") && ($default->phpSniff->property("version") == "4.79")) ) {
+            $sToRender .=       "<div id=\"divUp\">" .
                                 "\t<a href=\"#\" onmouseover=\"scroll(-7)\" onmouseout=\"noScroll()\"><img src=\"" . $default->system->get("graphicsUrl") . "/desc.gif\" width=\"14\" height=\"14\" alt=\"up\" border=\"0\"></a>" .
                                 "</div>" .
                                 "<div id=\"divDown\">" .
                                 "\t<a href=\"#\" onmouseover=\"scroll(7)\" onmouseout=\"noScroll()\"><img src=\"" . $default->system->get("graphicsUrl") . "/asc.gif\" width=\"14\" height=\"14\" alt=\"down\" border=\"0\"></a>" .
-                                "</div>" .                            
-							"<form name=\"MainForm\" " . (isset($this->sFormEncType) ? "enctype=\"$this->sFormEncType\" " : " ") . " action=\"".$this->sFormAction."\" method=\"POST\">\n" .
+                                "</div>";
+        }
+                            
+		$sToRender .= 		    "<form name=\"MainForm\" " . (isset($this->sFormEncType) ? "enctype=\"$this->sFormEncType\" " : " ") . " action=\"".$this->sFormAction."\" method=\"POST\">\n" .
 								"<table border=\"1\" width=\"700\" height=\"600\">\n " .
 
 									"<tr height=\"18%\">\n".
@@ -115,8 +119,11 @@ class PatternMainPage {
 										<td width=\"80%\" valign=\"top\">\n";
                                         
 										if (isset($this->oCentralPayload)) {
-                                            $sToRender .= "\t<div id=\"divScrollTextCont\">\n
-                                                           \t\t<div id=\"divText\">\n";                                            
+                                            // hack to circumvent the crapness of ns 4.79
+                                            if (! (($default->phpSniff->property("browser") == "moz") && ($default->phpSniff->property("version") == "4.79")) ) {
+                                                $sToRender .= "\t<div id=\"divScrollTextCont\">\n
+                                                               \t\t<div id=\"divText\">\n";
+                                            }                                          
 											if (isset($this->sErrorMessage)) {
 												$sToRender .= "<table border=\"0\"><tr><td><p class=\"errorText\">$this->sErrorMessage</td></tr></table>\n ";
 											}
@@ -124,8 +131,11 @@ class PatternMainPage {
 										} else {											
 											$sToRender = $sToRender . "\nCentral payload not set\n";
 										}
-										$sToRender = $sToRender . "</div></div></td>\n" .
-                                        //$sToRender = $sToRender . "</td>\n" .
+                                        // hack to circumvent the crapness of ns 4.79
+                                        if (! (($default->phpSniff->property("browser") == "moz") && ($default->phpSniff->property("version") == "4.79")) ) {
+                                            $sToRender = $sToRender . "</div></div>\n";
+                                        }
+                                        $sToRender = $sToRender . "</td>\n" .
 									"</tr>\n" .								
 								"</table>\n" .
 								"</form>\n" .
