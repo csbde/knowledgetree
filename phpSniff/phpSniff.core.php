@@ -1,6 +1,6 @@
 <?php
 /*******************************************************************************
-	$Id: phpSniff.core.php,v 1.8 2002/09/13 21:49:43 epsilon7 Exp $
+	$Id: phpSniff.core.php,v 1.16 2003/07/02 23:30:29 epsilon7 Exp $
     
     phpSniff: HTTP_USER_AGENT Client Sniffer for PHP
 	Copyright (C) 2001 Roger Raymond ~ epsilon7@users.sourceforge.net
@@ -68,7 +68,7 @@ class phpSniff_core
 		);
 
 	var $_get_languages_ran_once = false;
-	var $_browser_search_regex = '([a-z]+)([0-9]*)([0-9.]*)(up|dn)?';
+	var $_browser_search_regex = '([a-z]+)([0-9]*)([0-9.]*)(up|dn|\+|\-)?';
 	var $_language_search_regex = '([a-z-]{2,})';
 	
     /**
@@ -84,6 +84,8 @@ class phpSniff_core
         	$this->_test_cookies();
 		//  rip the user agent to pieces
         	$this->_get_browser_info();
+        //	gecko build
+			$this->_get_gecko();
 		//  look for other languages
         	$this->_get_languages();
 		//  establish the operating platform
@@ -94,9 +96,7 @@ class phpSniff_core
 			$this->_get_features();
 		//	point out any quirks
 			$this->_get_quirks();
-		//	gecko build
-			$this->_get_gecko();
-    }
+	}
 
     /**
      *  property
@@ -202,10 +202,12 @@ class phpSniff_core
         {   $majv = $search['maj_ver'] ? $this->_browser_info['maj_ver'] : '';
             $minv = $search['min_ver'] ? $this->_browser_info['min_ver'] : '';
             $what_we_are = $majv.$minv;
-            if($search['direction'] == 'up' && ($what_we_are >= $looking_for))
+            if(($search['direction'] == 'up' || $search['direction'] == '+') 
+               && ($what_we_are >= $looking_for))
             {   return true;
             }
-			elseif($search['direction'] == 'dn' && ($what_we_are <= $looking_for))
+			elseif(($search['direction'] == 'dn' || $search['direction'] == '-')
+                   && ($what_we_are <= $looking_for))
 			{	return true;
 			}
             elseif($what_we_are == $looking_for)
@@ -249,6 +251,7 @@ class phpSniff_core
         $regex_sco      = '/sco|unix_sv/i';
         $regex_linux    = '/x11|inux/i';
         $regex_bsd      = '/(free)?(bsd)/i';
+        $regex_amiga    = '/amiga[os]?/i';
 
         // look for Windows Box
         if(preg_match_all($regex_windows,$this->_browser_info['ua'],$match))
@@ -271,6 +274,23 @@ class phpSniff_core
             if(empty($v)) $v = 'win';
             $this->_set_browser('os',strtolower($v));
             $this->_set_browser('platform','win');
+        }
+        //  look for amiga OS
+        elseif(preg_match($regex_amiga,$this->_browser_info['ua'],$match))
+        {   $this->_set_browser('platform','amiga');
+            if(stristr($this->_browser_info['ua'],'morphos')) {
+                // checking for MorphOS
+                $this->_set_browser('os','morphos');
+            } elseif(stristr($this->_browser_info['ua'],'mc680x0')) {
+                // checking for MC680x0
+                $this->_set_browser('os','mc680x0');
+            } elseif(stristr($this->_browser_info['ua'],'ppc')) {
+                // checking for PPC
+                $this->_set_browser('os','ppc');
+            } elseif(preg_match('/(AmigaOS [\.1-9]?)/i',$this->_browser_info['ua'],$match)) {
+                // checking for AmigaOS version string
+                $this->_set_browser('os',$match[1]);
+            }
         }
         // look for OS2
         elseif( preg_match($regex_os2,$this->_browser_info['ua']))
@@ -327,22 +347,22 @@ class phpSniff_core
             $this->_set_browser('os','sco');
         }
         //  unixware sets: platform = *nix ; os = unixware
-        elseif(stristr('unix_system_v',$this->_browser_info['ua']))
+        elseif(stristr($this->_browser_info['ua'],'unix_system_v'))
         {   $this->_set_browser('platform','*nix');
             $this->_set_browser('os','unixware');
         }
         //  mpras sets: platform = *nix ; os = mpras
-        elseif(stristr('ncr',$this->_browser_info['ua']))
+        elseif(stristr($this->_browser_info['ua'],'ncr'))
         {   $this->_set_browser('platform','*nix');
             $this->_set_browser('os','mpras');
         }
         //  reliant sets: platform = *nix ; os = reliant
-        elseif(stristr('reliantunix',$this->_browser_info['ua']))
+        elseif(stristr($this->_browser_info['ua'],'reliantunix'))
         {   $this->_set_browser('platform','*nix');
             $this->_set_browser('os','reliant');
         }
         //  sinix sets: platform = *nix ; os = sinix
-        elseif(stristr('sinix',$this->_browser_info['ua']))
+        elseif(stristr($this->_browser_info['ua'],'sinix'))
         {   $this->_set_browser('platform','*nix');
             $this->_set_browser('os','sinix');
         }
@@ -400,7 +420,7 @@ class phpSniff_core
         {   if(!empty($browsers)) $browsers .= "|";
             $browsers .= $k;
         }
-        $version_string = "[\/\sa-z]*([0-9]+)([\.0-9a-z]+)?";
+        $version_string = "[\/\sa-z(]*([0-9]+)([\.0-9a-z]+)?";
         $this->_browser_regex = "/($browsers)$version_string/i";
     }
 
@@ -408,43 +428,22 @@ class phpSniff_core
     {   return $this->_browsers[strtolower($long_name)];
     }
 
-    /*
-    function _test_cookies ()
-    {   global $ctest,$phpSniff_testCookie;
-        if($this->_check_cookies)
-        {   if ($ctest != 1)
-            {   SetCookie('phpSniff_testCookie','test',0,'/');
-                // See if we were passed anything in the QueryString we might need
-                $QS = getenv('QUERY_STRING');
-                // fix compatability issues when PHP is
-                // running as CGI ~ 6/28/2001 v2.0.2 ~ RR
-                $script_path = getenv('PATH_INFO') ? getenv('PATH_INFO') : getenv('SCRIPT_NAME');
-                $location = $script_path . ($QS=="" ? "?ctest=1" : "?" . $QS . "&ctest=1");
-                header("Location: $location");
-                exit;
-            }
-            // Check for the cookie on page reload
-            elseif ($phpSniff_testCookie == "test")
-            {   $this->_set_browser('cookies',true);
-            }
-            else
-            {   $this->_set_browser('cookies',false);
-            }
-        }
-        else $this->_set_browser('cookies',false);
-
-    }
-    */
     // medianes :: new test cookie routine
     function _test_cookies()
-    {   global $phpSniff_session,$phpSniff_stored;
+    {   global $HTTP_COOKIE_VARS;
+        $cookies = array();
+        if(isset($_COOKIE)) {
+            $cookies = $_COOKIE;
+        } elseif(isset($HTTP_COOKIE_VARS)) {
+            $cookies = $HTTP_COOKIE_VARS;
+        }
         if($this->_check_cookies)
         {   $fp = @fopen($this->_temp_file_path.$this->property('ip'),'r');
             if(!$fp)
             {   $fp = @fopen($this->_temp_file_path.$this->property('ip'),'a');
                 fclose($fp);
-                setcookie('phpSniff_session','ss');
-                setcookie('phpSniff_stored','st',time()+3600*24*365);
+                setcookie('phpSniff_session','ss',0,'/');
+                setcookie('phpSniff_stored','st',time()+3600*24*365,'/');
                 $QS=getenv('QUERY_STRING');
                 $script_path=getenv('PATH_INFO')?getenv('PATH_INFO'):getenv('SCRIPT_NAME');
                 if(is_integer($pos=strpos(strrev($script_path),"php.xedni/"))&&!$pos) {
@@ -457,12 +456,12 @@ class phpSniff_core
             else
             {   unlink($this->_temp_file_path.$this->property('ip'));
                 fclose($fp);
-                // remains for backwards compatability
-                $this->_set_browser('cookies',$phpSniff_session=='ss'?'true':'false');
-                // new cookie settings
-                $this->_set_browser('ss_cookies',$phpSniff_session=='ss'?'true':'false');
-                $this->_set_browser('st_cookies',$phpSniff_stored=='st'?'true':'false');
-                setcookie('phpSniff_stored','');
+                $this->_set_browser('ss_cookies',isset($cookies['phpSniff_session'])?'true':'false');
+                $this->_set_browser('st_cookies',isset($cookies['phpSniff_stored'])?'true':'false');
+                // delete the old cookies
+                setcookie('phpSniff_session','',0,'/');
+                setcookie('phpSniff_stored','',0,'/');
+                
             }
         }
     }
@@ -510,12 +509,26 @@ class phpSniff_core
     function _get_gecko ()
 	{	if(preg_match('/gecko\/([0-9]+)/i',$this->property('ua'),$match))
 		{	$this->_set_browser('gecko',$match[1]);
-            if (preg_match('/rv:([0-9a-z.+]+)/i',$this->property('ua'),$mozv))
-            {   $this->_set_browser('gecko_ver',$mozv[1]);
+            if (preg_match('/rv[: ]?([0-9a-z.+]+)/i',$this->property('ua'),$mozv)) {   
+				// mozilla release
+				$this->_set_browser('gecko_ver',$mozv[1]);
+            } elseif (preg_match('/(m[0-9]+)/i',$this->property('ua'),$mozv)) {   
+				// mozilla milestone version
+				$this->_set_browser('gecko_ver',$mozv[1]);
             }
-            elseif (preg_match('/(m[0-9]+)/i',$this->property('ua'),$mozv))
-            {   $this->_set_browser('gecko_ver',$mozv[1]);
-            }
+			// if this is a mozilla browser, get the rv: information
+			if($this->browser_is($this->_get_short_name('mozilla'))) {
+                if(preg_match('/([0-9]+)([\.0-9]+)([a-z0-9+]?)/i',$mozv[1],$match)) {
+				    $this->_set_browser('version',$mozv[1]);
+				    $this->_set_browser('maj_ver',$match[1]);
+				    $this->_set_browser('min_ver',$match[2]);
+				    $this->_set_browser('letter_ver',$match[3]);
+                }
+			}
+        } elseif($this->is('b:'.$this->_get_short_name('mozilla'))) {
+			// this is probably a netscape browser or compatible
+			$this->_set_browser('long_name','netscape');
+			$this->_set_browser('browser',$this->_get_short_name('netscape'));
 		}
 	}
 	

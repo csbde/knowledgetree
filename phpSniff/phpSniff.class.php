@@ -1,6 +1,6 @@
 <?php
 /*******************************************************************************
-	$Id: phpSniff.class.php,v 1.11 2002/09/13 21:40:34 epsilon7 Exp $
+	$Id: phpSniff.class.php,v 1.21 2003/07/02 23:28:35 epsilon7 Exp $
     
     phpSniff: HTTP_USER_AGENT Client Sniffer for PHP
 	Copyright (C) 2001 Roger Raymond ~ epsilon7@users.sourceforge.net
@@ -21,8 +21,14 @@
 *******************************************************************************/
 require_once('phpSniff.core.php');
 
+//===============================================================
+//  the following defines are used to create the short
+//  browser name used throughout the script.
+//  change these to suit your needs
+//===============================================================
+
 class phpSniff extends phpSniff_core
-{   var $_version = '2.1.1';
+{   var $_version = '2.1.3';
 	/**
      *  Configuration
      *
@@ -87,30 +93,42 @@ class phpSniff extends phpSniff_core
     var $_php_version           = '';
     
     var $_browsers = array(
-        'microsoft internet explorer' => 'ie',
-        'msie'                        => 'ie',
-        'netscape6'                   => 'ns',
-        'netscape'                    => 'ns',
-        'mozilla'                     => 'moz',
-        'opera'                       => 'op',
-        'konqueror'                   => 'konq',
-        'icab'                        => 'icab',
-        'lynx'                        => 'lynx',
-		'links'                       => 'links',					
-        'ncsa mosaic'                 => 'mosaic',
-        'amaya'                       => 'amaya',
-        'omniweb'                     => 'ow',
-		'hotjava'					  => 'hj'
+        'microsoft internet explorer' => 'IE',
+        'msie'                        => 'IE',
+        'netscape6'                   => 'NS',
+        'netscape'                    => 'NS',
+        'galeon'                      => 'GA',
+        'phoenix'                     => 'PX',
+        'mozilla firebird'            => 'FB',
+        'firebird'                    => 'FB',
+        'chimera'                     => 'CH',
+        'camino'                      => 'CA',
+        'safari'                      => 'SF',
+        'k-meleon'                    => 'KM',
+        'mozilla'                     => 'MZ',
+        'opera'                       => 'OP',
+        'konqueror'                   => 'KQ',
+        'icab'                        => 'IC',
+        'lynx'                        => 'LX',
+		'links'                       => 'LI',					
+        'ncsa mosaic'                 => 'MO',
+        'amaya'                       => 'AM',
+        'omniweb'                     => 'OW',
+		'hotjava'					  => 'HJ',
+        'browsex'                     => 'BX',
+        'amigavoyager'                => 'AV',
+        'amiga-aweb'                  => 'AW',
+        'ibrowse'                     => 'IB'
 		);
 
     var $_javascript_versions = array(
-        '1.5'   =>  'IE5.5UP,NS5UP',
+        '1.5'   =>  'NS5+,MZ,PX,FB,GA,CH,CA,SF,KQ3+,KM', // browsers that support JavaScript 1.5
         '1.4'   =>  '',
-        '1.3'   =>  'NS4.05UP,OP5UP,IE5UP',
-        '1.2'   =>  'NS4UP,IE4UP',
-        '1.1'   =>  'NS3UP,OP,KQ',
-        '1.0'   =>  'NS2UP,IE3UP',
-		'0'     =>	'LN,LX,HJ'	
+        '1.3'   =>  'NS4.05+,OP5+,IE5+',
+        '1.2'   =>  'NS4+,IE4+',
+        '1.1'   =>  'NS3+,OP,KQ',
+        '1.0'   =>  'NS2+,IE3+',
+		'0'     =>	'LI,LX,HJ'	
         );
 		
 	var $_browser_features = array(
@@ -120,28 +138,28 @@ class phpSniff extends phpSniff_core
 		 *	browsers listed here will be set to false
 		 **/
 		'html'		=>	'',
-		'images'	=>	'LN,LX',
-		'frames' 	=>	'LN,LX',
+		'images'	=>	'LI,LX',
+		'frames' 	=>	'LI,LX',
 		'tables'	=>	'',
-		'java'		=>	'OP3,LX,LN,NS1,MO,IE1,IE2',
-		'plugins'	=>	'IE1,IE2,LX,LN',
+		'java'		=>	'OP3,LI,LX,NS1,MO,IE1,IE2',
+		'plugins'	=>	'IE1,IE2,LI,LX',
 		/**  
 		 *	the following are false by default
 		 *	(see phpSniff.core.php $_feature_set array)
 		 *	browsers listed here will be set to true
 		 **/
-		'css2'		=>	'NS5UP,IE5UP',
-		'css1'		=>	'NS4UP,IE4UP',
-		'iframes'	=>	'IE3UP,NS5UP',
-		'xml'		=>	'IE5UP,NS5UP',
-		'dom'		=>	'IE5UP,NS5UP',
+		'css2'		=>	'NS5+,IE5+,MZ,PX,FB,CH,CA,SF,GA,KQ3+,OP7+,KM',
+		'css1'		=>	'NS4+,IE4+,MZ,PX,FB,CH,CA,SF,GA,KQ,OP7+,KM',
+		'iframes'	=>	'IE3+,NS5+,MZ,PX,FB,CH,CA,SF,GA,KQ,OP7+,KM',
+		'xml'		=>	'IE5+,NS5+,MZ,PX,FB,CH,CA,SF,GA,KQ,OP7+,KM',
+		'dom'		=>	'IE5+,NS5+,MZ,PX,FB,CH,CA,SF,GA,KQ,OP7+,KM',
 		'hdml'		=>	'',
 		'wml'		=>	''
 		);
 		
 	var $_browser_quirks = array(
-		'must_cache_forms'			=>	'NS',
-		'avoid_popup_windows'		=>	'IE3,LX,LN',
+		'must_cache_forms'			=>	'NS,MZ,FB,PX',
+		'avoid_popup_windows'		=>	'IE3,LI,LX',
 		'cache_ssl_downloads'		=>	'IE',
 		'break_disposition_header'	=>	'IE5.5',
 		'empty_file_input_value'	=>	'KQ',
