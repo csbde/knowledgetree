@@ -8,6 +8,9 @@ HTML table with with specified number of rows and columns
 @date 7 January 2003
 */
 
+define("TEXT", 1);
+define("IMAGE", 2);
+
 class PatternTableLinks {
 	
 	/** Array of link URLS to display in tables */
@@ -33,7 +36,7 @@ class PatternTableLinks {
 	* @param $iLinkType		Link type (1 = Text or 2 = Button). Default is 1
 	* @param $aLinkImages	Array of images URL placed over links
 	*/	
-	function PatternTableLinks($aNewLinks, $aNewLinksText, $iNewRows, $iNewColumns, $iNewLinkType = 1, $aNewLinkImages = null) {
+	function PatternTableLinks($aNewLinks, $aNewLinksText, $iNewRows, $iNewColumns, $iNewLinkType = TEXT, $aNewLinkImages = null) {
 		$this->aLinks = $aNewLinks;
 		$this->aLinksText = $aNewLinksText;
 		$this->aLinkImages = $aNewLinkImages;
@@ -58,7 +61,14 @@ class PatternTableLinks {
 			for ($j = 0; $j < $this->iColumns; $j++) {
 				$sToRender = $sToRender . "<td>";
 				if ($iArrayCount < $iArraySize) {
-					$sToRender = $sToRender . "<a href=\"" . $this->aLinks[$iArrayCount] . "\" />" . $this->aLinksText[$iArrayCount];
+                    $sToRender = $sToRender . "<a href=\"" . $this->aLinks[$iArrayCount] . "\" />";
+                    if ($this->iLinkType == TEXT) {
+                        $sToRender = $sToRender . $this->aLinksText[$iArrayCount];
+                    } else if ($this->iLinkType == IMAGE) {
+                        $oImage = new PatternImage($this->aLinkImages[$iArrayCount]);
+                        $sToRender = $sToRender . $oImage->render();
+                    }
+                    $sToRender = $sToRender . "</a>";
 					$iArrayCount++;
 				}
 				$sToRender = $sToRender . "</td>\n";
