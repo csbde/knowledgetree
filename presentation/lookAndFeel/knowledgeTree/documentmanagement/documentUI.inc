@@ -107,7 +107,8 @@ function renderCheckOutPage($oDocument) {
 }
 
 function renderErrorPage($sErrorMessage) {
+    global $default;
     return "<p class=\"errorText\">$sErrorMessage</p>\n" .
-           "<a href=\"$default->rootUrl/control.php?action=addOrg\"><img src =\"$default->graphicsUrl/widgets/back.gif\" border = \"0\" /></a>\n";
+           "<a href=\"javascript:history.go(-1)\"><img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\"/></a>\n";
 }
 ?>
