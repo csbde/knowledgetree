@@ -27,9 +27,9 @@ class Email {
         // create a new phpmailer object.
         $this->oMailer = new phpmailer();
         $this->oMailer->isSMTP();
-        $this->oMailer->Host = $default->system->get("emailServer");
-        $this->oMailer->From = (strlen($sFromEmail) == 0) ? $default->system->get("emailFrom") : $sFromEmail;
-        $this->oMailer->FromName = (strlen($sFromName) == 0) ? $default->system->get("emailFromName") : $sFromName;
+        $this->oMailer->Host = $default->emailServer;
+        $this->oMailer->From = (strlen($sFromEmail) == 0) ? $default->emailFrom : $sFromEmail;
+        $this->oMailer->FromName = (strlen($sFromName) == 0) ? $default->emailFromName : $sFromName;
         $this->oMailer->WordWrap = 100;
         $this->oMailer->IsHTML(true);
     }
@@ -37,11 +37,11 @@ class Email {
     /**
      * Sends an email to a specified recipient.
      *
-     * @param string the sender's email address (optional)
-     * @param string the sender's name (optional)
      * @param string the recipients email address
      * @param string the subject of the email
      * @param string the body of the email
+     * @param string the sender's email address (optional)
+     * @param string the sender's name (optional)     
      * @return boolean true on email successfully sent, false otherwise and set $_SESSION["errorMessage"]
      */
     function send($sToEmail, $sSubject, $sBody, $sFromEmail = "", $sFromName = "") {
@@ -58,7 +58,19 @@ class Email {
         if ((strlen($sFromName) > 0) && ($sFromName != "")) {
             $this->oMailer->FromName = $sFromName;
         }
-        $this->oMailer->AddAddress($sToEmail);
+        
+        // if there are multiple addresses (; separated)
+        $aEmailAddresses = array();
+        if (strpos($sToEmail, ";") > 0) {
+            // explode them
+            $aEmailAddresses = explode(";", $sToEmail);
+            for ($i=0; $i<count($aEmailAddresses); $i++) {
+                $this->oMailer->AddAddress($aEmailAddresses[$i]);
+                $default->log->info("Email.inc adding " . $aEmailAddresses[$i]);
+            }
+        } else {
+            $this->oMailer->AddAddress($sToEmail);
+        }
         $this->oMailer->Subject = stripslashes($sSubject);
         $this->oMailer->Body = stripslashes($sBody);
 
