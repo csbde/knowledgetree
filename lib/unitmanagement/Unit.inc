@@ -89,35 +89,41 @@ class Unit {
                 $_SESSION["errorMessage"] = "Unit::The name " . $this->sName . " is already in use!";
                 return false;
             } else {
-                $result = $sql->query("INSERT INTO " . $default->units_table . " (name) VALUES ('$this->sName')");
-                if ($result) {
-                    $this->iId = $sql->insert_id();
-                    // create a new unit root folder
-                    // FIXME: lookup the organisation for this unit and use the appropriate folder id for the org root folder
-                    $oFolder = new Folder($this->sName, $this->sName . " Unit Root Folder", 1, $_SESSION["userID"], $this->iId);
-                    if (!$oFolder->exists()) {
-	                    if ($oFolder->create()) {
-	                        if (PhysicalFolderManagement::createFolder(Folder::getFolderPath($oFolder->getID()))) {
-	                            return true;
-	                        } else {
-	                            return false;
-	                        }
-	                    } else {
-	                        return false;
-	                    }
-                    } else {
-                    	// a unit root folder already exists in the database
-                    	// update the description
-                    	$aFolders = Folder::getList("name='" . addslashes($this->sName) . "' AND parent_id=1");
-                    	$oFolder = $aFolders[0];
-                    	$oFolder->setDescription($this->sName . " Unit Root Folder");
-                    	$oFolder->setUnitID($this->iId);
-                    	$oFolder->update();
-                    	return true;
-                    }
+                $sTable = $default->units_table;
+                $aFieldValues = array(
+                    'name' => $this->sName,
+                );
+                $id =& DBUtil::autoInsert($sTable, $aFieldValues);
+
+                if (PEAR::isError($id)) {
+                    $_SESSION["errorMessage"] = $id->toString();
+                    return false;
                 }
-                $_SESSION["errorMessage"] = $lang_err_database;
-                return false;
+                $this->iId = $id;
+
+                // create a new unit root folder
+                // FIXME: lookup the organisation for this unit and use the appropriate folder id for the org root folder
+                $oFolder = new Folder($this->sName, $this->sName . " Unit Root Folder", 1, $_SESSION["userID"], $this->iId);
+                if (!$oFolder->exists()) {
+                    if ($oFolder->create()) {
+                        if (PhysicalFolderManagement::createFolder(Folder::getFolderPath($oFolder->getID()))) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    } else {
+                        return false;
+                    }
+                } else {
+                    // a unit root folder already exists in the database
+                    // update the description
+                    $aFolders = Folder::getList("name='" . addslashes($this->sName) . "' AND parent_id=1");
+                    $oFolder = $aFolders[0];
+                    $oFolder->setDescription($this->sName . " Unit Root Folder");
+                    $oFolder->setUnitID($this->iId);
+                    $oFolder->update();
+                    return true;
+                }
             }
         }
         $_SESSION["errorMessage"] = $lang_err_object_exists . "id = " . $this->iId . " table = $default->units_table";

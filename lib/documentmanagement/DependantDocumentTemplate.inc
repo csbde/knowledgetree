@@ -134,13 +134,21 @@ class DependantDocumentTemplate {
 		global $default;		 
 		//if the object hasn't been created	
 		if ($this->iId < 0) {
-			$sql = $default->db;
-			$result = $sql->query("INSERT INTO $default->dependant_document_template_table (document_title, default_user_id,template_document_id, group_folder_approval_link_id) VALUES ('$this->sDocumentTitle', $this->iDefaultUserID, " . (($this->iTemplateDocumentID == null) ? "NULL" : $this->iTemplateDocumentID) . ", $this->iGroupFolderApprovalLinkID)");
-			if ($result) {
-				$this->iId = $sql->insert_id();
-				return true;
-			}
-			return false;
+            $sTable = $default->dependant_document_template_table;
+            $aFieldValues = array(
+                'document_title' => $this->sDocumentTitle,
+                'default_user_id' => $this->iDefaultUserID,
+                'template_document_id' => $this->iTemplateDocumentID,
+                'group_folder_approval_link_id' => $this->iGroupFolderApprovalLinkID,
+            );
+            $id =& DBUtil::autoInsert($sTable, $aFieldValues);
+
+            if (PEAR::isError($id)) {
+                $_SESSION["errorMessage"] = $id->toString();
+                return false;
+            }
+            $this->iId = $id;
+            return true;
 		}
 		return false;
 	}

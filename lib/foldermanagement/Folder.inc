@@ -278,22 +278,34 @@ class Folder {
 	* @return boolean true and set $this->iId with new primary key, false otherwise and set $_SESSION["errorMessage"]
 	*/
 	function create() {
-		global $default, $lang_err_database; $lang_err_object_exists;
-		//if the object has not already been stored		
+		global $default;
+
 		if ($this->iId < 0) {
 			$this->sFullPath = $this->generateFolderPath($this->iParentID);
 			$this->sParentFolderIDs = $this->generateFolderIDs($this->iParentID);
-			$sql = $default->db;
-			$result = $sql->query("INSERT INTO " . $default->folders_table . " (name, description, parent_id, creator_id, unit_id, is_public, full_path, parent_folder_ids, inherit_parent_folder_permission) " .
-						"VALUES ('$this->sName', '$this->sDescription', $this->iParentID, $this->iCreatorID, $this->iUnitID, " . ($this->bIsPublic ? 1 : 0) . ",'$this->sFullPath','$this->sParentFolderIDs'," . ($this->bInheritParentPermissions ? "1" : "0") . ")");
-			if ($result) {
-				$this->iId = $sql->insert_id();
-				return true;
-			}
-			$_SESSION["errorMessage"] = $lang_err_database;
-			return false;
+
+			$aFieldValues = array(
+                'name' => $this->sName,
+                'description' => $this->sDescription,
+                'parent_id' => $this->iParentID,
+                'creator_id' => $this->iCreatorID,
+                'unit_id' => $this->iUnitID,
+                'is_public' => $this->bIsPublic,
+                'full_path' => $this->sFullPath,
+                'parent_folder_ids' => $this->sParentFolderIDs,
+                'inherit_parent_folder_permission' => $this->bInheritParentPermissions,
+            );
+            $id =& DBUtil::autoInsert($default->folders_table, $aFieldValues);
+
+			if (PEAR::isError($id)) {
+                $_SESSION["errorMessage"] = $id->toString();
+                return false;
+            }
+            $this->iId = $id;
+            return true;
 		}
-		$_SESSION["errorMessage"] = $lang_err_object_exists . "id = " . $this->iId . " table = folders";
+
+		$_SESSION["errorMessage"] = "Can't create object that already exists" . "id = " . $this->iId . " table = $default->folders_table";
 		return false;
 	}
 	

@@ -224,7 +224,7 @@ class Document {
 
     /** set the document check out status */
     function setIsCheckedOut($bNewValue) {
-        $this->bIsCheckedOut = $bNewValue;
+        $this->bIsCheckedOut = anyToBool($bNewValue);
     }
 	
     /** get the user id that has the document checked out **/
@@ -342,34 +342,36 @@ class Document {
         global $default, $lang_err_doc_exist, $lang_err_database;
         //if the id >= 0, then the object has already been created
         if ($this->iId < 0) {
-            $sql = $default->db;
 			$this->sFullPath = $this->generateFolderPath($this->iFolderID); 
 			$this->sParentFolderIDs = $this->generateFolderIDs($this->iFolderID);
-            $result = $sql->query("INSERT INTO " . $default->documents_table . " (document_type_id, name, filename, size, creator_id, modified, description, mime_id, folder_id, major_version, minor_version, is_checked_out, checked_out_user_id, parent_folder_ids, full_path, status_id) " .
-                                  "VALUES (" . quote($this->iDocumentTypeID) . ", " . 
-                                               quote($this->sName) . ", " . 
-                                               quote($this->sFileName) . ", " . 
-                                               quote($this->iSize) . ", " . 
-                                               quote($this->iCreatorID) . ", " . 
-                                               quote(getCurrentDateTime()) . ", " . 
-                                               quote($this->sDescription) . ", " . 
-                                               quote($this->iMimeTypeID) . ", " . 
-                                               quote($this->iFolderID) . ", " . 
-                                               quote($this->iMajorVersion) . ", " . 
-                                               quote($this->iMinorVersion) . ", " . 
-                                               quote($this->bIsCheckedOut) . ", " . 
-                                               quote($this->iCheckedOutUserID) . ", " . 
-                                               quote($this->sParentFolderIDs) . ", " . 
-                                               quote($this->sFullPath) . ", " . 
-                                               quote($this->iStatusID) . ")");
-            if ($result) {
-                //set the current documents primary key
-                $this->iId = $sql->insert_id();
-                // also insert into search permissions table to enable immediate metadata searching (#2681)
-				$this->insertDocumentPermissions();
-                return true;
+            $sTable = $default->documents_table;
+            $aFieldValues = array(
+                'document_type_id' => $this->iDocumentTypeID,
+                'name' => $this->sName,
+                'filename' => $this->sFileName,
+                'size' => $this->iSize,
+                'creator_id' => $this->iCreatorID,
+                'modified' => getCurrentDateTime(),
+                'description' => $this->sDescription,
+                'mime_id' => $this->iMimeTypeID,
+                'folder_id' => $this->iFolderID,
+                'major_version' => $this->iMajorVersion,
+                'minor_version' => $this->iMinorVersion,
+                'is_checked_out' => $this->bIsCheckedOut,
+                'checked_out_user_id' => $this->iCheckedOutUserID,
+                'parent_folder_ids' => $this->sParentFolderIDs,
+                'full_path' => $this->sFullPath,
+                'status_id' => $this->iStatusID,
+            );
+            $id =& DBUtil::autoInsert($sTable, $aFieldValues);
+
+            if (PEAR::isError($id)) {
+                $_SESSION["errorMessage"] = $id->toString();
+                return false;
             }
-            return false;
+            $this->iId = $id;
+            $this->insertDocumentPermissions();
+            return true;
         }
         return false;
 

@@ -80,35 +80,38 @@ class Link {
 			//check to see if name exsits
 			$sql = $default->db;
 			$query = "SELECT name FROM ". $default->quicklinks_table ." WHERE name = '" . $this->sName . "'";
-        		$sql->query($query);
-       			$rows = $sql->num_rows($sql);
+            $sql->query($query);
+            $rows = $sql->num_rows($sql);
         
-      			 if ($rows > 0){
-            		 // duplicate username
-           		 $_SESSION["errorMessage"] = "Link::The Link name " . $this->sName . " is already in use!";
-           		 return false;
-           		 
-	       		 }else{
-	       		 	$sql = $default->db;
-				$query = "SELECT rank FROM ". $default->quicklinks_table ." WHERE rank = '" . $this->iRank . "'";
-        			$sql->query($query);
-       				$rows = $sql->num_rows($sql);
+            if ($rows > 0){
+                $_SESSION["errorMessage"] = "Link::The Link name " . $this->sName . " is already in use!";
+                return false;
+            }
+
+	       	$sql = $default->db;
+			$query = "SELECT rank FROM ". $default->quicklinks_table ." WHERE rank = '" . $this->iRank . "'";
+        	$sql->query($query);
+       		$rows = $sql->num_rows($sql);
 	       		 
-	       		 	if ($rows > 0){
-            		 	// duplicate username
-           			 $_SESSION["errorMessage"] = "Link::The Rank " . $this->iRank . " is already in use!";
-           		 	return false;
-	       			
-	       			}else{
-					$sql = $default->db;
-					$result = $sql->query("INSERT INTO " . $default->quicklinks_table . " (name, url, rank) VALUES ('$this->sName', '$this->sUrl', $this->iRank)");
-					if ($result) {
-						$this->iId = $sql->insert_id();
-						return  true;
-					}
-				$_SESSION["errorMessage"] = $lang_err_database;
-				return false;
-			}
+	       	if ($rows > 0){
+                $_SESSION["errorMessage"] = "Link::The Rank " . $this->iRank . " is already in use!";
+                return false;
+            }
+
+            $sTable = $default->quicklinks_table;
+            $aFieldValues = array(
+                'name' => $this->sName,
+                'url' => $this->sUrl,
+                'rank' => $this->iRank,
+            );
+            $id =& DBUtil::autoInsert($sTable, $aFieldValues);
+
+            if (PEAR::isError($id)) {
+                $_SESSION["errorMessage"] = $id->toString();
+                return false;
+            }
+            $this->iId = $id;
+            return true;
 		}
 	}
 		$_SESSION["errorMessage"] = $lang_err_object_exists . "id = " . $this->iId . " table = document_fields";

@@ -71,24 +71,18 @@ class Organisation {
         global $default, $lang_err_database, $lang_err_object_exists;
         //if the object hasn't been created
         if ($this->iId < 0) {
-            //check to see if name exsits
-            $sql = $default->db;
-            $query = "SELECT name FROM ". $default->organisations_table ." WHERE name = '" . $this->sName . "'";
-            $sql->query($query);
-            $rows = $sql->num_rows($sql);
-            if ($rows > 0) {
-                // duplicate username
-                $_SESSION["errorMessage"] = "Organisation::The name " . $this->sName . " is already in use!";
-                return false;
-            } else {
-                $result = $sql->query("INSERT INTO " . $default->organisations_table . " (name) VALUES ('$this->sName')");
-                if ($result) {
-                    $this->iId = $sql->insert_id();
-                    return true;
-                }
-                $_SESSION["errorMessage"] = $lang_err_database;
+            $sTable = $default->organisations_table;
+            $aFieldValues = array(
+                'name' => $this->sName,
+            );
+            $id =& DBUtil::autoInsert($sTable, $aFieldValues);
+
+            if (PEAR::isError($id)) {
+                $_SESSION["errorMessage"] = $id->toString();
                 return false;
             }
+            $this->iId = $id;
+            return true;
         }
         $_SESSION["errorMessage"] = $lang_err_object_exists . "id = " . $this->iId . " table = $default->organisations_table";
         return false;

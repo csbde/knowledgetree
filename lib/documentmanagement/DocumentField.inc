@@ -160,14 +160,21 @@ class DocumentField {
 		global $default, $lang_err_database, $lang_err_object_exists;
 		//if the object hasn't been created
 		if ($this->iId < 0) {
-			$sql = $default->db;
-			$result = $sql->query("INSERT INTO " . $default->document_fields_table . " (name, data_type,is_generic,has_lookup) VALUES ('" . $this->sName . "', '" . $this->sDataType . "', '" . $this->bIsGeneric . "', '" . $this->bHasLookup ."')");
-			if ($result) {
-				$this->iId = $sql->insert_id();
-				return  true;
-			}
-			$_SESSION["errorMessage"] = $lang_err_database;
-			return false;
+            $sTable = $default->document_fields_table;
+            $aFieldValues = array(
+                'name' => $this->sName,
+                'data_type' => $this->sDataType,
+                'is_generic' => $this->bIsGeneric,
+                'has_lookup' => $this->bHasLookup,
+            );
+            $id =& DBUtil::autoInsert($sTable, $aFieldValues);
+
+            if (PEAR::isError($id)) {
+                $_SESSION["errorMessage"] = $id->toString();
+                return false;
+            }
+            $this->iId = $id;
+            return true;
 		}
 		$_SESSION["errorMessage"] = $lang_err_object_exists . "id = " . $this->iId . " table = document_fields";
 		return false;

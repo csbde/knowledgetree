@@ -131,16 +131,20 @@ class DocumentFieldLink {
 		global $default, $lang_err_doc_exist, $lang_err_database;
 		//if the id >= 0, then the object has already been created
 		if ($this->iId < 0) {
-			$sql = $default->db;
-			$result = $sql->query("INSERT INTO " . $default->document_fields_link_table . " (document_id, document_field_id, value) " .
-						"VALUES ($this->iDocumentID, $this->iDocumentFieldID, '$this->sValue')");
-			if ($result) {
-				//set the current documents primary key
-				$this->iId = $sql->insert_id();
-				return true;
-			}
-			$_SESSION["errorMessage"] = $lang_err_database;
-			return false;			
+            $sTable = $default->document_fields_link_table;
+            $aFieldValues = array(
+                'document_id' => $this->iDocumentID,
+                'document_field_id' => $this->iDocumentFieldID,
+                'value' => $this->sValue,
+            );
+            $id =& DBUtil::autoInsert($sTable, $aFieldValues);
+
+            if (PEAR::isError($id)) {
+                $_SESSION["errorMessage"] = $id->toString();
+                return false;
+            }
+            $this->iId = $id;
+            return true;
 		}
 		$_SESSION["errorMessage"] = $lang_err_object_exists . "id = " . $this->iId . " table = $default->document_fields_link_table";
 		return false;

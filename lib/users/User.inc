@@ -311,27 +311,27 @@ class User {
         global $default, $lang_err_database, $lang_err_object_exists;
         //if the object hasn't been created
         if ($this->iId < 0) {
-            //check to see if name exsits
-            $sql = $default->db;
-            $query = "SELECT username FROM ". $default->users_table ." WHERE username = '" . $this->sUserName . "'";
-            $sql->query($query);
-            $rows = $sql->num_rows($sql);
-
-            if ($rows > 0) {
-                // duplicate username
-                $_SESSION["errorMessage"] = "User::The username " . $this->sUserName . " is already in use!";
+            $aFieldValues = array(
+                username => $this->sUserName,
+                name => $this->sName,
+                password => md5($this->sPassword),
+                quota_max => $this->iQuotaMax,
+                quota_current => 0,
+                email => $this->sEmail,
+                mobile => $this->sMobile,
+                email_notification => $this->bEmailNotification,
+                sms_notification => $this->bSmsNotification,
+                ldap_dn => $this->sLdapDn,
+                max_sessions => $this->iMaxSessions,
+                language_id => $this->iLanguageID,
+            );
+            $id = DBUtil::autoInsert($default->users_table, $aFieldValues);
+            if (PEAR::isError($id)) {
+                $_SESSION["errorMessage"] = $id->toString();
                 return false;
             }
-            else {
-                $result = $sql->query("INSERT INTO " . $default->users_table . " (username, name, password, quota_max, quota_current, email, mobile, email_notification, sms_notification, ldap_dn, max_sessions, language_id) " .
-                                      "VALUES ('$this->sUserName', '$this->sName', '" . md5($this->sPassword) . "', $this->iQuotaMax, 0, '$this->sEmail', '$this->sMobile', " . ($this->bEmailNotification ? 1 : 0) . ", " . ($this->bSmsNotification ? 1 : 0) . ", '$this->sLdapDn', $this->iMaxSessions, $this->iLanguageID)");
-                if ($result) {
-                    $this->iId = $sql->insert_id();
-                    return  true;
-                }
-                $_SESSION["errorMessage"] = $lang_err_database;
-                return false;
-            }
+            $this->iId = $id;
+            return true;
         }
         $_SESSION["errorMessage"] = $lang_err_object_exists . "id = " . $this->iId . " table = $default->users_table";
         return false;

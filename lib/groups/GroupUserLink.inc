@@ -102,23 +102,28 @@ class GroupUserLink {
 		if ($this->iId < 0) {
 			$sql = $default->db;
 			$query = "SELECT user_id, group_id FROM ". $default->users_groups_table ." WHERE user_id = '" . $this->iUserID . "' and group_id = '". $this->iGroupID ."'";
-        		$sql->query($query);
-       			$rows = $sql->num_rows($sql);
+            $sql->query($query);
+            $rows = $sql->num_rows($sql);
         
-      			if ($rows > 0){
-        	    	// duplicate username
-           			$_SESSION["errorMessage"] = "GroupUserLink::The id " . $this->iUnitID . " already exists!";
-           			return false;
-	       		 } else {
-					$sql = $default->db;
-					$result = $sql->query("INSERT INTO " . $default->users_groups_table . " (group_id, user_id) VALUES ($this->iGroupID, $this->iUserID)");
-					if ($result) {
-						$this->iId = $sql->insert_id();
-						return  true;
-					}
-					$_SESSION["errorMessage"] = $lang_err_database;
-					return false;
-				}
+            if ($rows > 0){
+                // duplicate username
+                $_SESSION["errorMessage"] = "GroupUserLink::The id " . $this->iUnitID . " already exists!";
+                return false;
+            }
+
+            $sTable = $default->users_groups_table;
+            $aFieldValues = array(
+                'group_id' => $this->iGroupID,
+                'user_id' => $this->iUserID,
+            );
+            $id =& DBUtil::autoInsert($sTable, $aFieldValues);
+
+            if (PEAR::isError($id)) {
+                $_SESSION["errorMessage"] = $id->toString();
+                return false;
+            }
+            $this->iId = $id;
+            return true;
 		}
 		$_SESSION["errorMessage"] = $lang_err_object_exists . "id = " . $this->iId . " table = $default->users_groups_table";
 		return false;

@@ -109,14 +109,22 @@ class WebDocument {
 		global $default, $lang_err_database, $lang_err_object_exists;
 		//if the object hasn't been created
 		if ($this->iId < 0) {
-			$sql = $default->db;
-			$result = $sql->query("INSERT INTO " . $default->web_documents_table . " (document_id, web_site_id, unit_id, status_id, datetime) VALUES ($this->iDocumentID, $this->iWebSiteID, $this->iUnitID, $this->iStatusID, '$this->dDateTime')");
-			if ($result) {
-				$this->iId = $sql->insert_id();
-				return  true;
-			}
-			$_SESSION["errorMessage"] = $lang_err_database;
-			return false;
+            $aFieldValues = array(
+                document_id => $this->iDocumentID,
+                web_site_id => $this->iWebSiteID,
+                unit_id => $this->iUnitID,
+                status_id => $this->iStatusID,
+                datetime => $this->dDateTime,
+            );
+
+            $id =& DBUtil::autoInsert($default->web_documents_table, $aFieldValues);
+
+            if (PEAR::isError($id)) {
+                $_SESSION["errorMessage"] = $id->toString();
+                return false;
+            }
+            $this->iId = $id;
+            return true;
 		}
 		$_SESSION["errorMessage"] = $lang_err_object_exists . "id = " . $this->iId . " table = document_fields";
 		return false;

@@ -113,15 +113,21 @@ class UnitOrganisationLink {
 				// duplicate username
 				$_SESSION["errorMessage"] = "UnitOrganisationlink::The id " . $this->iUnitID . " is already exist!";
 				return false;
-       		} else{
-				$result = $sql->query("INSERT INTO " . $default->units_organisations_table . " (unit_id,organisation_id) VALUES ($this->iUnitID,$this->iOrgID)");
-				if ($result) {
-					$this->iId = $sql->insert_id();
-					return  true;
-				}
-				$_SESSION["errorMessage"] = $lang_err_database;
-				return false;
-			}
+       		}
+
+            $sTable = $default->units_organisations_table;
+            $aFieldValues = array(
+                'unit_id' => $this->iUnitID,
+                'organisation_id' => $this->iOrgID,
+            );
+            $id =& DBUtil::autoInsert($sTable, $aFieldValues);
+
+            if (PEAR::isError($id)) {
+                $_SESSION["errorMessage"] = $id->toString();
+                return false;
+            }
+            $this->iId = $id;
+            return true;
 		}
 		return false;
 	}

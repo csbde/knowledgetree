@@ -125,14 +125,22 @@ class DependantDocumentInstance {
 	function create() {
 		global $default;		
 		//if the object hasn't been created
-		if ($this->iId < 0) {			
-			$sql = $default->db;
-			$result = $sql->query("INSERT INTO $default->dependant_document_instance_table (document_title, user_id,template_document_id, parent_document_id) VALUES ('$this->sDocumentTitle', $this->iUserID, " . (isset($this->iTemplateDocumentID) ? "$this->iTemplateDocumentID" : "NULL") . ", " . $this->iParentDocumentID . ")");
-			if ($result) {
-				$this->iId = $sql->insert_id();
-				return true;
-			}					
-			return false;
+		if ($this->iId < 0) {
+            $sTable = $default->dependant_document_instance_table;
+            $aFieldValues = array(
+                'document_title' => $this->sDocumentTitle,
+                'user_id' => $this->iUserID,
+                'template_document_id' => $this->iTemplateDocumentID,
+                'parent_document_id' => $this->iParentDocumentID,
+            );
+            $id =& DBUtil::autoInsert($sTable, $aFieldValues);
+
+            if (PEAR::isError($id)) {
+                $_SESSION["errorMessage"] = $id->toString();
+                return false;
+            }
+            $this->iId = $id;
+            return true;
 		}				
 		return false;
 	}

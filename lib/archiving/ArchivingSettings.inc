@@ -144,17 +144,21 @@ class ArchivingSettings {
         global $default;
         //if the id >= 0, then the object has already been created
         if ($this->iId < 0) {
-            $sql = $default->db;
-            $sQuery = "INSERT INTO $default->archiving_settings_table (archiving_type_id, expiration_date, document_transaction_id, time_period_id) " .
-                      "VALUES ($this->iArchivingTypeID, " . $this->addQuotes($this->dExpirationDate) . ", $this->iDocumentTransactionID, $this->iTimePeriodID)";
-            $result = $sql->query($sQuery);
-                                  $default->log->info($sQuery);
-            if ($result) {
-                //set the current primary key
-                $this->iId = $sql->insert_id();
-                return true;
+            $sTable = $default->archiving_settings_table;
+            $aFieldValues = array(
+                'archiving_type_id' => $this->iArchivingTypeID,
+                'expiration_date' => $this->dExpirationDate,
+                'document_transaction_id' => $this->iDocumentTransactionID,
+                'time_period_id' => $this->iTimePeriodID,
+            );
+            $id =& DBUtil::autoInsert($sTable, $aFieldValues);
+
+            if (PEAR::isError($id)) {
+                $_SESSION["errorMessage"] = $id->toString();
+                return false;
             }
-            return false;
+            $this->iId = $id;
+            return true;
         }
         return false;
 	}

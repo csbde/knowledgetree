@@ -29,6 +29,7 @@
  * Initialises the web application by making current
  * request parameters global and loading the default language
  */ 
+
 // make request parameters global
 if (substr(phpversion(),0,5) >= "4.1.0") {
     // if supported by the installed version of PHP

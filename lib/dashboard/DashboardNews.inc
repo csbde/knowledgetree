@@ -66,7 +66,7 @@ class DashboardNews {
 	/**
 	 * Is this news item active
 	 */
-	var $bActive;
+	var $bActive = true;
 	
 	/**
 	 * Constructs a news item
@@ -226,7 +226,7 @@ class DashboardNews {
 	 * @param boolean new active status	 
 	 */
 	function setActive($bNewActive) {
-		$this->bActive = $bNewActive;
+		$this->bActive = KTUtil::anyToBool($bNewActive);
 	}
 		
 	/**
@@ -304,22 +304,23 @@ class DashboardNews {
         global $default;
         //if the id >= 0, then the object has already been created
         if ($this->iId < 0) {
-            $sql = $default->db;
-            $result = $sql->query("INSERT INTO $default->news_table (synopsis, body, rank, image, image_size, image_mime_type_id, active) " .
-                                  "VALUES ('$this->sSynopsis', '$this->sBody', $this->iRank, " .
-                                  "'" . addslashes($this->sImage) . "', $this->iImageSize, $this->iImageMimeTypeID, " . ($this->bActive ? "1" : "0") . ")");
-            if ($result) {
-                //set the current news item primary key
-                $this->iId = $sql->insert_id();
-            
-//                 if ($this->bActive) {
-//                 	// we're setting this entry to active, so set all the others to inactive
-//                 	$sql->query("UPDATE $default->news_table SET active=0 WHERE id <> $this->iId");
-//                 }                
-                            
-                return true;
+            $aFieldValues = array(
+                'synopsis' => $this->sSynopsis,
+                'body' => $this->sBody,
+                'rank' => $this->iRank,
+                'image' => $this->sImage,
+                'image_size' => $this->iImageSize,
+                'image_mime_type_id' => $this->iImageMimeTypeID,
+                'active' => $this->bActive,
+            );
+            $id =& DBUtil::autoInsert($default->news_table, $aFieldValues);
+
+            if (PEAR::isError($id)) {
+                $_SESSION["errorMessage"] = $id->toString();
+                return false;
             }
-            return false;
+            $this->iId = $id;
+            return true;
         }
         return false;
 	}

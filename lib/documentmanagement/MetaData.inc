@@ -113,24 +113,27 @@ class MetaData {
 			//check to see if name exsits
 			$sql = $default->db;
 			$query = "SELECT name FROM ". $default->metadata_table ." WHERE name = '" . $this->sName . "' and document_field_id = '". $this->iDocFieldID . "'";
-        		$sql->query($query);
-       			$rows = $sql->num_rows($sql);
+            $sql->query($query);
+            $rows = $sql->num_rows($sql);
         
-      			 if ($rows > 0){
-            		 	// duplicate username
-           		 	$_SESSION["errorMessage"] = "MetaData::TheMetaData name " . $this->sName . " for the specfic field exists already!";
-           		 	return false;
-           		 
-	       		 }else{
-				$sql = $default->db;
-				$result = $sql->query("INSERT INTO " . $default->metadata_table . " (document_field_id,name) VALUES ('". $this->iDocFieldID . "','$this->sName')");
-				if ($result) {
-				$this->iId = $sql->insert_id();
-				return  true;
-			}
-			$_SESSION["errorMessage"] = $lang_err_database;
-			return false;
-		   }
+            if ($rows > 0){
+                $_SESSION["errorMessage"] = "MetaData::TheMetaData name " . $this->sName . " for the specfic field exists already!";
+                return false;
+            }
+
+            $sTable = $default->metadata_table;
+            $aFieldValues = array(
+                'document_field_id' => $this->iDocFieldID,
+                'name' => $this->sName,
+            );
+            $id =& DBUtil::autoInsert($sTable, $aFieldValues);
+
+            if (PEAR::isError($id)) {
+                $_SESSION["errorMessage"] = $id->toString();
+                return false;
+            }
+            $this->iId = $id;
+            return true;
 		}
 		
 		$_SESSION["errorMessage"] = $lang_err_object_exists . "id = " . $this->iId . " table = document_types";

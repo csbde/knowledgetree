@@ -81,14 +81,18 @@ class DefaultLookup {
 		global $default;		
 		//don't create the object if it's aready been created
 		if ($this->iId < 0) {
-			$sql = $default->db;
-			$result = $sql->query("INSERT INTO $this->sTableName (name) VALUES ('$this->sName')");
-			if ($result) {
-				//set the primary key;
-				$this->iId = $sql->insert_id();
-				return true;
-			} 
-			return false;
+            $sTable = $this->sTableName;
+            $aFieldValues = array(
+                'name' => $this->sName,
+            );
+            $id =& DBUtil::autoInsert($sTable, $aFieldValues);
+
+            if (PEAR::isError($id)) {
+                $_SESSION["errorMessage"] = $id->toString();
+                return false;
+            }
+            $this->iId = $id;
+            return true;
 		}
 		return false;
 	}

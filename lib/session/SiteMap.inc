@@ -656,26 +656,38 @@ class SiteMap {
             // for each section
             foreach ($this->aSiteMap as $section => $valArr) {
                 // insert into the section
-                $sSectionSql = "INSERT INTO $default->site_sections_table (name) VALUES ('$section')";
-                $default->log->debug("Sitemap::syncWithDB insert=$sSectionSql");
+                $aFieldValue = array(
+                    'name' => $section,
+                );
+                $id =& DBUtil::autoInsert($default->site_sections_table, $aFieldValues);
 
-                if ($sql->query($sSectionSql)) {
-                    $sectionID = $sql->insert_id();
-                    $default->log->debug("Sitemap::syncWithDB added section $section; $sectionID");
-                } else {
+                // $default->log->debug("Sitemap::syncWithDB insert=$sSectionSql");
+
+                if (PEAR::isError($id)) {
                     $default->log->error("Sitemap::syncWithDB add section $section failed");
+                } else {
+                    $sectionID = $id;
+                    $default->log->debug("Sitemap::syncWithDB added section $section; $sectionID");
                 }
 
                 // for each group, page array combination
                 foreach ($valArr as $requiredAccess => $pageArr) {
                     // now loop through all the pages
                     foreach ($pageArr as $action => $page) {
-                        $sSiteMapSql = "INSERT INTO $default->sitemap_table (action, page, section_id, access_id, link_text, is_default, is_enabled) " .
-                                       "VALUES ('$action', '" . $page["page"] . "', $sectionID, $requiredAccess, '" . $page["description"] . "', " . $page["default"] . ", " . $page["enabled"] . ")";
-                        if ($sql->query($sSiteMapSql)) {
-                            $default->log->debug("Sitemap::syncWithDb sitemap insert worked for ($action, " . $page["page"] . ")");
-                        } else {
+                        $aFieldValues = array(
+                            action => $action,
+                            page => $page["page"],
+                            section_id => $sectionID,
+                            access_id => $requiredAccess,
+                            link_text => $page["description"],
+                            is_default => $page["default"],
+                            is_enabled => $page["enabled"],
+                        );
+                        $id =& DBUtil::autoInsert($default->sitemap_table, $aFieldValues);
+                        if (PEAR::isError($id)) {
                             $default->log->debug("Sitemap::syncWithDB sitemap insert failed ($sSiteMapSql)");
+                        } else {
+                            $default->log->debug("Sitemap::syncWithDb sitemap insert worked for ($action, " . $page["page"] . ")");
                         }
                     }
                 }

@@ -206,15 +206,19 @@ class Subscription {
         $lang_err_object_exists;
         //if the object has not already been stored
         if ($this->iID < 0) {
-            $sql = $default->db;
-            // TODO: set table name and id_field_name
-            if ($sql->query("INSERT INTO " . $this->sTableName . " (user_id, $this->sIdFieldName, is_alerted) " .
-                            "VALUES ($this->iUserID, $this->iExternalID, " . (int)$this->bIsAlerted . ")")) {
-                $this->iID = $sql->insert_id();
-                return true;
-            } else {
-                $_SESSION["errorMessage"] = $lang_err_database;
+            $aFieldValues = array(
+                'user_id' => $this->iUserID,
+                $this->sIdFieldName => $this->iExternalID,
+                'is_alerted' => $this->bIsAlerted,
+            );
+            $id =& DBUtil::autoInsert($this->sTableName, $aFieldValues);
+
+            if (PEAR::isError($id)) {
+                $_SESSION["errorMessage"] = $id->toString();
+                return false;
             }
+            $this->iId = $id;
+            return true;
         } else {
             $_SESSION["errorMessage"] = $lang_err_object_exists . "id = " . $this->iID . " table = $this->sTableName";
         }
