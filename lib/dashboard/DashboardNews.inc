@@ -63,7 +63,7 @@ class DashboardNews {
 			// then the image details are in it
 			$this->setImage($mImage["image"]);
 			$this->setImageSize($mImage["filesize"]);
-			$this->setImageMimeTypeID($mImage["mimetype"]);
+			$this->setImageMimeTypeID($mImage["mimetypeid"]);
 		} else {			
 			if (file_exists($mImage)) {
 				// we've been passed a file, so read it in
@@ -282,8 +282,7 @@ class DashboardNews {
         if ($sql->next_record()) {
             $aImage = array( "image" => $sql->f("image"),
             				 "filesize" => $sql->f("image_size"),
-            				 "mimetypeid" => $sql->f("image_mime_type_id") );
-        				
+            				 "mimetypeid" => $sql->f("image_mime_type_id") );			
             $oDashboardNews = & new DashboardNews(stripslashes($sql->f("synopsis")), stripslashes($sql->f("body")), $sql->f("rank"), $aImage);
             $oDashboardNews->iId = $iNewsID;
             return $oDashboardNews;          
