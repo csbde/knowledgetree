@@ -11,7 +11,7 @@ function renderHeading() {
     global $default;
     $sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
     $sColor = $default->siteMap->getSectionColour($sSectionName, "th");
-    $sToRender .= "<tr align=\"left\"><th class=\"sectionHeading\" bgcolor=\"$sColor\">Preferences</th></tr>\n";
+    $sToRender .= "<tr align=\"left\"><th class=\"sectionHeading\" bgcolor=\"$sColor\"><font color=\"ffffff\">Preferences</font></th></tr>\n";
     $sToRender .= "<tr/>\n";
     $sToRender .= "<tr/>\n";
     return $sToRender;
@@ -49,7 +49,7 @@ function getUserDetailsPage($iUserID) {
 	$sToRender .= "<tr>\n";
 	$sToRender .= "</tr>\n";
 	
-	$sToRender .= "<td><input type=\"image\" src =\"$default->graphicsUrl/widgets/update.gif\" value=\"Update\" /></td>\n";	
+	$sToRender .= "<td><input type=\"image\" src =\"$default->graphicsUrl/widgets/update.gif\" value=\"Update\" border=\"0\"/></td>\n";	
 	$sToRender .= "</table>\n";
 	return $sToRender;
 }
