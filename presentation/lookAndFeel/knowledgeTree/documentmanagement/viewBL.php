@@ -158,6 +158,7 @@ if (checkSession()) {
 					$oDocumentTransaction = & new DocumentTransaction($fDocumentID, "Document sent for web publishing", UPDATE);
 					$oDocumentTransaction->create();
 					$oDocument = Document::get($fDocumentID);
+					Document::notifyWebMaster($fDocumentID);
 					$oPatternCustom = & new PatternCustom();
 					$oPatternCustom->setHtml(getEditPage($oDocument));
 					$main->setCentralPayload($oPatternCustom);
