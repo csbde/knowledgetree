@@ -1,4 +1,6 @@
 <?php
+require_once("$default->fileSystemRoot/phplib/db_" . $default->dbType .".inc");
+require_once("$default->fileSystemRoot/lib/database/escape.inc");
 /**
  * $Id$
  *
@@ -28,7 +30,8 @@ class Database extends DB_Sql {
     
     /** Class name */
     var $classname = "Database";
-  
+    /** Database type */
+    var $databaseType = "mysql";
     /** Host name.  Retrieved from config/environment.php */
     var $Host = ""; 
     /** Database name */
@@ -53,8 +56,8 @@ class Database extends DB_Sql {
       $this->Database = $default->dbName;
       $this->User = $default->dbUser;
       $this->Password = $default->dbPass;
+      $this->databaseType = $default->dbType;
     }
-    // END wes changes
     
     /**
     *   Create a query from the provided paramaters.  The ID column
