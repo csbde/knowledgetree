@@ -50,6 +50,9 @@ for ($i = 0; $i < count($aKeys); $i++) {
 		//get the object folder name
 		//$sObjectFolderName = $_POST[$aKeys[$i]];		
 		//$i++;
+                $sRandomString = substr($sRowStart, 13);
+                $sObjectName = $_SESSION["pelfq_" . $sRandomString . "_object"];
+                $sObjectFolderName = $_SESSION["pelfq_" . $sRandomString . "_fn"];
 		
 		while ((strncasecmp("unique_end", $sRowStart, 10) != 0)  && ($i < count($aKeys))) {			
 			//get the paramater number
