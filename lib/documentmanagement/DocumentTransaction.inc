@@ -21,14 +21,13 @@ DEFINE("DOWNLOAD", 5);
 * @package lib.documentmanagement
 */
 
+define(1, "CREATE");
+define(2, "UPDATE");
+define(3, "DELETE");
+define(4, "RENAME");
+define(5, "MOVE");
+
 class DocumentTransaction {
-	
-	//these values must match the values in database table document_transaction_type_lookup
-	/*define(1, "CREATE");
-	define(2, "UPDATE");
-	define(3, "DELETE");
-	define(4, "RENAME");
-	define(5, "MOVE");*/
 	
 	/** primary key of document transaction */
 	var $iId;
@@ -97,6 +96,24 @@ class DocumentTransaction {
 			return false;
 		}
 		
+	}
+	
+	function delete() {
+		global $default, $lang_err_database, $lang_err_object_key;
+        if ($this->iId >= 0) {
+            $sql = $default->db;
+            // TODO: insert into sys_deleted
+            //$result = $sql->query("INSERT INTO  " . $default->owl_sys_deleted_table . " () VALUES ()");
+            $result = $sql->query("DELETE FROM  " . $default->owl_document_transactions_table . "  WHERE id = " . $this->iId);
+            if ($result) {
+                $this->iId = -1;
+                return true;
+            }
+            $_SESSION["errorMessage"] = $lang_err_database;
+            return false;
+        }
+        $_SESSION["errorMessage"] = $lang_err_object_key;
+        return false;
 	}
 	
 	
