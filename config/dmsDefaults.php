@@ -56,6 +56,10 @@ $default->owl_sessions_table = "active_sessions";
 $default->owl_fields_table = "document_fields";
 // links document
 $default->owl_document_fields_table = "document_fields_link";
+// meta data value lookup table
+$default->owl_document_fields_lookup_tables = "document_fields_lookup";
+// document subscriptions
+$default->owl_document_subscriptions_table = "document_subscriptions";
 // document transaction types
 $default->owl_transaction_types_table = "document_transaction_types_lookup";
 // document transactions
@@ -68,7 +72,9 @@ $default->owl_document_types_table = "document_types_lookup";
 $default->owl_document_words_table = "document_words_link";
 // stores documents
 $default->owl_documents_table = "documents";
-// stores folders 
+// stores folder subscriptions
+$default->owl_folder_subscriptions_table = "folder_subscriptions";
+// stores folders
 $default->owl_folders_table = "folders";
 // links folders to users (and roles) for approval collaboration
 $default->owl_folders_user_roles_table	= "folders_users_roles_link";
@@ -191,6 +197,9 @@ $default->siteMap->addPage("scratchPad", "/tests/scratchPad.php", "Tests", Guest
 $default->siteMap->addPage("sitemap", "/tests/session/SiteMap.php", "Tests", Guest, "sitemap", false);
 $default->siteMap->addPage("documentBrowserTest", "/tests/documentmanagement/DocumentBrowser.php", "Tests", Guest, "test the document browser", false);
 $default->siteMap->addPage("scroll", "/tests/scroll/textScrollTest.php", "Tests", Guest, "test scrolling", false);
+$default->siteMap->addPage("folderSub", "/tests/subscriptions/folderSubscription.php", "Tests", Guest, "folder subscription unit test", false);
+$default->siteMap->addPage("documentSub", "/tests/subscriptions/documentSubscription.php", "Tests", Guest, "document subscription unit test", false);
+$default->siteMap->addPage("subManager", "/tests/subscriptions/subscriptionManager.php", "Tests", Guest, "manage subscription unit test", false);
 
 
 
