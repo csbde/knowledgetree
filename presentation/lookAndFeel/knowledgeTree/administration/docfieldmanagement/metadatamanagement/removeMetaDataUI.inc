@@ -71,8 +71,8 @@ function getDeleteConfirmedPage($iDocFieldID, $iMetaDataID) {
 	}
 	
     $sToRender .= "<table width=\"600\">" . renderHeading("Remove Document Field Lookup") . "</table>";
-	$sToRender .= "<table>\n";
-	$sToRender .= "<tr><td>Are you sure you wish to Remove</td></tr><tr><td> the specified lookup from the Field?</td></tr>\n";
+	$sToRender .= "<table border=1>\n";
+	$sToRender .= "<tr><td colspan=\"2\">Are you sure you wish to Remove the specified lookup from the Field?</td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
