@@ -300,6 +300,30 @@ class DocumentField {
 		$_SESSION["errorMessage"] = $lang_err_database;
 		return false;
 	}
+	
+	/* Static function.  Given a documenttype...will find all fields belongin to it
+	*
+	* @return DocumentFieldLink populated DocumentFieldLink object on success, false otherwise and set $_SESSION["errorMessage"]
+	*/
+	function getAllDataTypes() {
+		global $default, $lang_err_database;
+		$aDataTypes;
+		settype($aDataTypes, "array");
+		$sql = $default->db;
+		$result = $sql->query("SELECT id, name FROM " . $default->owl_data_types_table );
+		if ($result) {			
+			$iCount = 0;
+			while ($sql->next_record()) {
+				
+				$aDataTypes[$iCount]["id"] = $sql->f("id");
+				$aDataTypes[$iCount]["name"] = $sql->f("name");
+				$iCount++;
+			}
+			return $aDataTypes;
+		}
+		$_SESSION["errorMessage"] = $lang_err_database;
+		return false;
+	}
 }
 
 /**
