@@ -72,7 +72,7 @@ class Authenticator {
                         $aUserDetails["status"] = 0;
                     }
                 } else {
-                    $default->log->info("Authenticator::login login failed ($sUserName, $sPassword) [". $_SESSION["errorMessage"] . "]");
+                    $default->log->info("Authenticator::login login failed ($sUserName) [". $_SESSION["errorMessage"] . "]");
                     // authentication failed
                     $aUserDetails["status"] = 0;
                 }
