@@ -7,16 +7,12 @@ lastused DATETIME,
 ip CHAR(30)
 );
 
-CREATE TABLE categories_lookup (
-id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
-name CHAR(255) NOT NULL
-);
-
 CREATE TABLE document_fields ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 name CHAR(255) NOT NULL,
 data_type CHAR(100) NOT NULL,
-is_generic BIT
+is_generic BIT,
+has_lookup BIT
 );
 
 CREATE TABLE document_fields_link ( 
@@ -24,6 +20,12 @@ id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 document_id INTEGER NOT NULL,
 document_field_id INTEGER NOT NULL,
 value CHAR(255) NOT NULL
+);
+
+CREATE TABLE document_fields_lookup (
+id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
+document_field_id INTEGER NOT NULL,
+name CHAR(255) NOT NULL
 );
 
 CREATE TABLE document_transaction_types_lookup ( 
@@ -255,11 +257,6 @@ ADD CONSTRAINT PK_active_sessions
 PRIMARY KEY (id)
 ;
 
-ALTER TABLE categories_lookup
-ADD CONSTRAINT PK_categories_lookup
-PRIMARY KEY (id)
-;
-
 ALTER TABLE document_fields
 ADD CONSTRAINT PK_document_fields
 PRIMARY KEY (id)
@@ -267,6 +264,11 @@ PRIMARY KEY (id)
 
 ALTER TABLE document_fields_link
 ADD CONSTRAINT PK_document_fields_link
+PRIMARY KEY (id)
+;
+
+ALTER TABLE document_fields_lookup
+ADD CONSTRAINT PK_document_fields_lookup
 PRIMARY KEY (id)
 ;
 
@@ -980,7 +982,7 @@ INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default)
 INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default) VALUES ("loginForm", "/presentation/login.php?loginAction=loginForm", 1, 0, "login", 0); 
 INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default) VALUES ("dashboard", "/presentation/dashboardBL.php", 1, 1, "dashboard", 0);
 -- manage documents section
-INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default) VALUES ("browse", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/browseBL.php", 2, 2, "browse documents", 0);
+INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default) VALUES ("browse", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/browseBL.php", 2, 2, "browse documents", 1);
 INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default) VALUES ("viewDocument", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/viewBL.php", 2, 2, "", 0);
 INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default) VALUES ("addDocument", "/presentation/documentmanagement/addDocument.php", 2, 3, "Add A Document", 0);
 INSERT INTO sitemap (action, page, section_id, access_id, link_text, is_default) VALUES ("addFolder", "/presentation/documentmanagement/addFolder.php", 2, 4, "Add A Folder", 0);
