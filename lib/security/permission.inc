@@ -46,8 +46,9 @@ class Permission {
 	* @return boolean true if the current user has document read permission, false otherwise and set $_SESSION["errorMessage"]
 	*/	
 	function userHasDocumentReadPermission($iDocumentID) {
-		if (Permission::userHasFolderReadPermission(DocumentLib::getDocumentFolderID($iDocumentID)) ||
-		Permission::userHasReadRoleForFolder($iDocumentID)) {
+        $oDocument = & Document::get($iDocumentID);
+		if (Permission::userHasFolderReadPermission($oDocument->getFolderID()) ||
+		    Permission::userHasReadRoleForFolder($iDocumentID)) {
 			return true;
 		}
 		$_SESSION["errorMessage"] = $lang_err_user_doc_read . "id " . $iDocumentID;
