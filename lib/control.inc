@@ -48,7 +48,7 @@ function controllerRedirect($action, $queryString) {
  * @return the controller url
  */
 function generateControllerUrl($action) {
-    return "control.php?action=$action";
+    return "/control.php?action=$action";
 }
 
 /**
@@ -64,34 +64,30 @@ function generateLink($action) {
 
 /**
  * Verifies the current session
+ * Automatically redirects to
  */
 function checkSession() {
+    global $default;
+    
     session_start();
     $session = new Session();
     $sessionStatus = $session->verify();
+    // ??: do i need all this stuff?
     if ($sessionStatus["status"] != 1) {
         // verification failed, redirect to login with error message
-        $url = "login.php?loginAction=loginForm";
-        if (isset($default->errorMessage) && (strlen($default->errorMessage) > 0) ) {
-            $url = $url . "&errorMessage=$default->errorMessage";
-        }
-        $qs = $_SERVER[QUERY_STRING];
-        // redirect to login page with original uri unless the original uri is the login page,
-        // which means that the login attempt failed
-        if (strstr($qs, "action=LOGIN_FORM")) {
-            // redirecting to login- ensure error message is set
-            // FIXME: is this presumptious?  more rigor?  use $default?
-            $url = $url . "&errorMessage=" . urlencode($errorMessage);
-        } else if (strlen($_SERVER[QUERY_STRING]) > 1) {
+        $url = "/login.php?loginAction=loginForm";
+        
+        $redirect = $_SERVER[PHP_SELF];
+        //echo "redirect url = $redirect<br>";
+        if (strlen($redirect) > 1) {
             // not redirecting to login, so this session verification failure
             // represents either the first visit to the site
             // OR a session timeout etc. (in which case we still want to bounce
             // the user to the login page, and then back to whatever page they're on now)
-            $originalRequest = $_SERVER[QUERY_STRING];
-            $url = $url . "&redirect=" . $originalRequest;
+            $url = $url . "&redirect=" . $redirect;
         }
-            
         redirect($url);
-        
-    }   
+    } else {
+        return true;
+    }
 }
