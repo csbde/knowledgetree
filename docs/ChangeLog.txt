@@ -1,3 +1,43 @@
+Version 2.0.0rc2 (2005/01/10)
+
+Bug Fixes
+=========
+* Fix misnamed variable in uncommonly used database utility function
+* Remove a debug messsage that snuck in
+
+Detailed ChangeLog
+==================
+
+2005-01-10 02:45  nbm
+
+        * presentation/lookAndFeel/knowledgeTree/administration/browsemanagement/editBrowserUI.inc:
+
+        Change over fully to the new Criteria implementation.
+
+2005-01-10 02:08  nbm
+
+        * lib/database/dbutil.inc:
+
+        Correct misnamed return variable.
+
+2005-01-10 02:06  nbm
+
+        * lib/browse/Criteria.inc:
+
+        Add a criteria for a document's last modified date.
+
+2005-01-10 02:05  nbm
+
+        * config/dmsDefaults.php:
+
+        Load up legacy and utility functions as early as possible
+
+2005-01-10 01:09  nbm
+
+        * presentation/lookAndFeel/knowledgeTree/search/advancedSearchBL.php:
+
+        Remove debug message
+
 Version 2.0.0rc1 (2005/01/10)
 
 Bug Fixes
