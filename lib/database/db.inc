@@ -58,14 +58,6 @@ class Database extends DB_Sql {
       $this->Password = $default->dbPass;
       $this->databaseType = $default->dbType;
     }
-    
-   /**
-   * Display any database errors encountered
-   */
-   function haltmsg($msg) {
-       printf("</td></table><b>Database error:</b> %s<br>\n", $msg);
-       printf("<b>SQL Error</b>: %s (%s)<br>\n",$this->Errno, $this->Error);
-   }
 }
 
 ?>
