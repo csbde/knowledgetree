@@ -59,7 +59,7 @@ function getEditPage($iFolderCollaborationID, $iFolderID) {
 	$sToRender .= "<td>" . getFolderCollaborationData($iFolderCollaborationID) . "</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";	
-	$sToRender .= "<td><table><tr><td><input type=\"image\" src=\"$default->graphicsUrl\widgets\update.gif\" /></td><td><a href=\"$default->rootUrl/control.php?action=editFolder&fFolderID=" . $iFolderID . "\"><img src=\"$default->graphicsUrl\widgets\cancel.gif\" border=\"0\" /></a></td></tr></table>\n";
+	$sToRender .= "<td><table><tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/update.gif\" /></td><td><a href=\"$default->rootUrl/control.php?action=editFolder&fFolderID=" . $iFolderID . "\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\" /></a></td></tr></table>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";	
 	
@@ -99,7 +99,7 @@ function getAddPage() {
 			"<td colspan=\"2\">&nbsp</td>\n" .
 			"</tr>\n" .
 			"<tr>\n" .
-			"<td><b><input type=\"image\" src=\"$default->graphicsUrl\widgets\update.gif\" /></b></td><td><a href=\"$default->rootUrl/control.php?action=editFolder&fFolderID=$iFolderID \"><img src=\"$default->graphicsUrl\widgets\cancel.gif\" border=\"0\" /></a></td>\n" .
+			"<td><b><input type=\"image\" src=\"$default->graphicsUrl/widgets/update.gif\" /></b></td><td><a href=\"$default->rootUrl/control.php?action=editFolder&fFolderID=$iFolderID \"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\" /></a></td>\n" .
 			"</tr>\n" .
 			"</table>\n";
 }
