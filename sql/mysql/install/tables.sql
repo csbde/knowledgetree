@@ -170,7 +170,8 @@ creator_id INTEGER,
 unit_id INTEGER,
 is_public BIT NOT NULL,
 parent_folder_ids TEXT,
-full_path TEXT
+full_path TEXT,
+inherit_parent_folder_permission INTEGER
 )TYPE = InnoDB;
 
 CREATE TABLE folder_subscriptions ( 
