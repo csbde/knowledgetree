@@ -11,6 +11,7 @@ require_once("../../config/dmsDefaults.php");
  * - storing of object
  * - updating of object
  * - deletion of object
+ *
  * @package tests.subscriptions
  */
 if (checkSession()) {
