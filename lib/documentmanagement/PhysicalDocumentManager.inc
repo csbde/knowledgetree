@@ -65,7 +65,7 @@ class PhysicalDocumentManager {
 	function uploadPhysicalDocument($oDocument, $iFolderID, $sDescription, $sTmpFilePath) {
 		global $lang_fileexists, $lang_err_upload, $lang_err_database;				
 		//find the path on the system where the document should be stored
-		$sDocumentFileSystemPath = Folder::getFolderPath($oDocument->getFolderID()) . "/" . $oDocument->getName();		
+        $sDocumentFileSystemPath = $oDocument->getPath();		
 		//copy the file accross
 		if (copy($sTmpFilePath, $sDocumentFileSystemPath)) {						
 			//remove the temporary file
@@ -76,7 +76,25 @@ class PhysicalDocumentManager {
 			return false;
 		}
 	}
-	
+    
+    /**
+     * Renames a document on the filesystem
+     *
+     * @param object the document to rename
+     * @param string the new document filename
+     * @return true on success, false on failure
+     */
+    function renamePhysicalDocument($oDocument, $sNewFileName) {
+        global $default;
+      
+        // create new and old paths
+        $sDocumentFileSystemPath = $oDocument->getPath();
+        $sNewDocumentFileSystemPath = Folder::getFolderPath($oDocument->getFolderID()) . "/" . $sNewFileName;
+        $default->log->debug("renaming $sDocumentFileSystemPath to $sNewDocumentFileSystemPath");
+        // move it
+        return rename($sDocumentFileSystemPath, $sNewDocumentFileSystemPath);
+    }
+    
 	/**
 	* Stream a document to a client over http
 	*
@@ -88,11 +106,11 @@ class PhysicalDocumentManager {
 	*/
 	function downloadPhysicalDocument($iDocumentID) {
 		//get the document
-		$oDocument = & Document::get($iDocumentID);		
-		//get the path to the document on the server		
-		$sDocumentFileSystemPath = Folder::getFolderPath($oDocument->getFolderID()) . "/" . $oDocument->getFileName();		
+		$oDocument = & Document::get($iDocumentID);
+		//get the path to the document on the server
+        $sDocumentFileSystemPath = $oDocument->getPath();
 		//set the correct headers
-		if (strstr($_SERVER["HTTP_USER_AGENT"], "MSIE")) {		
+		if (strstr($_SERVER["HTTP_USER_AGENT"], "MSIE")) {
 			Header ("Content-type: application/" . PhysicalDocumentManager::getMimeTypeName($oDocument->getMimeTypeID()));
 		} else {
 			Header ("Content-type: application/octect-stream");
@@ -138,7 +156,7 @@ class PhysicalDocumentManager {
 		//get the document
 		$oDocument = & Document::get($iDocumentID);		
 		//get the path to the document on the server
-		$sDocumentFileSystemPath = Folder::getFolderPath($oDocument->getFolderID()) . "/" . $oDocument->getName();
+        $sDocumentFileSystemPath = $oDocument->getPath();
 		$total=$url . $files[$i];		
 		
 		if (strstr($_SERVER["HTTP_USER_AGENT"], "MSIE")) {		
@@ -163,7 +181,6 @@ class PhysicalDocumentManager {
 	*/
 	function & createDocumentFromUploadedFile($aFileArray, $iFolderID) {
 		//get the uploaded document information and put it into a document object		
-		//$oDocument = & new Document($aFileArray['fFile']['name'], $aFileArray['fFiler']['name'], $aFileArray['fFile']['size'], $_SESSION["userID"], PhysicalDocumentManager::getMimeTypeID($aFileArray['fFile']['type']), $iFolderID);
 		$oDocument = & new Document($aFileArray['name'], $aFileArray['name'], $aFileArray['size'], $_SESSION["userID"], PhysicalDocumentManager::getMimeTypeID($aFileArray['type']), $iFolderID);
 		return $oDocument;	
 	}
