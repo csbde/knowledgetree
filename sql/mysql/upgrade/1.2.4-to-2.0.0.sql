@@ -380,7 +380,7 @@ ALTER TABLE `roles` ADD UNIQUE (
 ); 
 ALTER TABLE `units_lookup` ADD UNIQUE (
 `name`
-)
+);
 
 DROP TABLE IF EXISTS `browse_criteria`;
 CREATE TABLE `browse_criteria` (
