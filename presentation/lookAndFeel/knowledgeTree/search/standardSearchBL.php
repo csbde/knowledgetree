@@ -3,7 +3,7 @@
 * Business logic used to perform document searches
 * 
 * Expected form variables
-*	o	fStandardSearchString - text to search on
+*	o	fSearchText - text to search on
 *	o	fBrowseType - current browse type
 *	o	fFolderID - folder currently being browsed (if a folder is being browsed)
 *	o	fDocumentID - document currently being browsed (if a document is being browsed)
@@ -33,7 +33,8 @@ if (checkSession()) {
 		if (strlen($fBrowseType) > 0) {			
 			//the user was browsing by a specific type
 			switch ($fBrowseType) {
-			case "folder" : 
+			case "folder" :
+							 //echo "searching by folder browsetype";
 							//user was browsing a specific folder - search that folder							
 							if (!$fFolderID) {
 								//start at the root folder
@@ -46,6 +47,7 @@ if (checkSession()) {
                             $main->render();
 							break;
 			case "category" :
+							//echo "searching by category browse type";
 							//user was browsing by category - search all documents in that category
 							if (!$fCategoryName) {
 								//no category name specified, so just start at the root folder								
@@ -58,6 +60,7 @@ if (checkSession()) {
                             $main->render();
 							break;							
 			case "documentType" :
+							//echo "searching by documentType browseType";
 							//user was browsing by document type - search all documents in that doc type
 							if (!$fDocTypeID) {
 								//no document type specified, so just start at the root folder
@@ -71,11 +74,12 @@ if (checkSession()) {
 							break;
 			default:
 				//search from the root folder down i.e. all documents
-				echo "unknown search type";
+				//echo "unknown search type";
 				break;
 			}
 		} else if (strlen($fFolderID) > 0) {
-			//the user was browsing a folder, search that folder			
+			//the user was browsing a folder, search that folder
+			//echo "searching by folder id";			
 			require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 			$oPatternCustom = & new PatternCustom();            
             $oPatternCustom->setHtml(getSeachResultsByFolder($fFolderID, $fStartIndex, $fSearchText));
@@ -83,6 +87,7 @@ if (checkSession()) {
             $main->render();
 			
 		} else  if (strlen($fDocumentID) > 0) {
+			//echo "searching by document id";
 			//the user was viewing a document, search in that document's folder
 			$oDocument = Document::get($fDocumentID);
 			require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
@@ -91,7 +96,7 @@ if (checkSession()) {
 			$main->setCentralPayload($oPatternCustom);
 			$main->render();												
 		} else {
-			echo "still searching by folder";
+			//echo "searching by folder";
 			//search from the root folder down i.e. all documents			
 			$fFolderID = 1;
 			require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
@@ -99,7 +104,8 @@ if (checkSession()) {
 			$oPatternCustom->setHtml(getSeachResultsByFolder($fFolderID, $fStartIndex, $fSearchText));
 			$main->setCentralPayload($oPatternCustom);
 			$main->render();							
-		}
+		}		
 }
+//echo "not searching"
 ?>
 
