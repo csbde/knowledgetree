@@ -32,7 +32,7 @@ function getQuickLinks() {
 
 function getPage() {
 	global $default;
-	$sToRender .= renderHeading("Current System QuickLinks");
+	$sToRender .= renderHeading("QuickLinks Management");
 
 	// add user link
 	$sToRender .= getAddLink("addLink", "Add A QuickLink");

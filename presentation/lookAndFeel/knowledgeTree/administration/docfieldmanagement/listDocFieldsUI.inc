@@ -33,7 +33,7 @@ function getDocumentFields() {
 
 function getPage() {
 	global $default;
-	$sToRender .= renderHeading("Current Document Fields");
+	$sToRender .= renderHeading("Document Field Management");
 
 	// add user link
 	$sToRender .= getAddLink("addDocField", "Add A Document Field");

@@ -55,7 +55,7 @@ function getUsers($fGroupID) {
 
 function getPage($fGroupID) {
 	global $default;
-	$sToRender .= renderHeading("Current System Users");
+	$sToRender .= renderHeading("User Management");
 
 	// add user link
 	$sToRender .= getAddLink("addUser", "Add A User");

@@ -19,7 +19,7 @@ if (checkSession()) {
 
 	$oPatternCustom = & new PatternCustom();
 	$aDocuments = Document::getList("is_checked_out = 1");
-	$sToRender .= renderHeading("Checked out Documents");	
+	$sToRender .= renderHeading("Document Checkout Management");	
 	$sToRender .= "<table><tr><th width=\"80%\">Document</th><th>&nbsp;</th>";
 	if (count($aDocuments) > 0) {
 		for ($i=0; $i<count($aDocuments); $i++) {

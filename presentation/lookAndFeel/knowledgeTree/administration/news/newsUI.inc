@@ -132,7 +132,7 @@ function renderAddNewsPage($oDashboardNews, $sErrorMessage = "") {
 function renderListNewsPage() {
 	global $default;
 	
-	$sToRender .= renderHeading("List Dashboard News");
+	$sToRender .= renderHeading("Dashboard News Management");
 	$sToRender .= getAddLink("addNews", "Add Dashboard News Item");	
     $sToRender .= "<table>\n";
 	$sToRender .= renderNewsTable();
