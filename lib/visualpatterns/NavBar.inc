@@ -259,8 +259,7 @@ class NavBar {
         if ((strcmp($this->sSection,"Standard Search") == 0) || (strcmp($this->sSection,"Advanced Search") == 0)) {
             $bar .= "<INPUT type=\"hidden\" name=\"fSearchText\"/>\n ";
         } else {
-            $bar .= "<INPUT type=\"text\" name=\"fSearchText\" width=\"30\" height = \"10\" onKeyPress=\"checkKeyPressed(event,
-validateStandardSearch, '" . $default->rootUrl . "/control.php')\"/>\n";
+            $bar .= "<INPUT type=\"text\" name=\"fSearchText\" width=\"30\" height = \"10\" onKeyPress=\"return checkKeyPressed(event, validateStandardSearch, '" . $default->rootUrl . "/control.php')\"/>\n";
             (isset($this->iFolderID) ? $bar .= "<INPUT type=\"hidden\" name=\"fFolderID\" value=\"" . $this->iFolderID . "\"  />\n " : $bar .= "");
             (isset($this->iDocumentID) ? $bar .= "<INPUT type=\"hidden\" name=\"fDocumentID\" value=\"" . $this->iDocumentID . "\"  />\n " : $bar .= "");
             (isset($this->sCategoryName) ? $bar .= "<INPUT type=\"hidden\" name=\"fCategoryName\" value=\"" . $this->sCategoryName . "\"  />\n " : $bar .= "");
@@ -282,7 +281,7 @@ validateStandardSearch, '" . $default->rootUrl . "/control.php')\"/>\n";
         $toRender->setHtml($bar);
 
         //render the object
-        return $toRender->render() . $this->getSearchValidationJavaScript();
+        return $this->getSearchValidationJavaScript() . $toRender->render();
 
     }
 
@@ -300,8 +299,9 @@ function checkKeyPressed(evt, func, params)
     var charCode = (evt.charCode) ? evt.charCode :
                    ((evt.keyCode) ? evt.keyCode :
                    ((evt.which) ? evt.which : 0));
-    if (charCode == 13) func(params);
-  }    
+    if (charCode == 13) return func(params);
+  }
+  return true;
 }';
 
         $sToRender .= "function validateStandardSearch(newAction) {\n";        
