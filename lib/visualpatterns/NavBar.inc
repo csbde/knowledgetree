@@ -19,113 +19,136 @@ global $default;
 * @author Mukhtar Dharsey
 * @date 22 January 2003
 */
-class NavBar {
-    //variable used to pass highlighting
-    var $home;
-    var $mdocs;
-    var $subscriptions;
-    var $asearch;
-    var $admin;
-    var $prefs;
-    var $help;
-    var $logout;
-    var $nwColourbar;
+class NavBar 
+{
+	//variable used to pass highlighting
+	var $home;
+	var $mdocs;
+	var $subscriptions;
+	var $asearch;
+	var $admin;
+	var $prefs;
+	var $help;
+	var $logout;
+	var $nwColourbar;
+	
+	function NavBar()
+	{
+		global $default;
+		$this->mdocs = "$default->owl_graphics_url/mdocs/norm.gif";
+		$this->home = "$default->owl_graphics_url/home/norm.gif";
+		$this->subscriptions = "$default->owl_graphics_url/subscriptions/norm.gif";
+		$this->asearch = "$default->owl_graphics_url/asearch/norm.gif";
+		$this->admin = "$default->owl_graphics_url/admin/norm.gif";
+		$this->prefs = "$default->owl_graphics_url/prefs/norm.gif";
+		$this->help = "$default->owl_graphics_url/help/norm.gif";
+		$this->logout = "$default->owl_graphics_url/logout/norm.gif";
+		
+	}
+	
+	
+	/**
+	* gets the url for the colour bar
+	*
+	* @param	The section that needs to be highlighted
+	*/
+	function getNWColourbar()
+	{
+		return $this->nwColourBar;
+	}
+	
+	
+	
+	/**
+	* sets a highlighted section varaibles
+	*
+	* @param	The section that needs to be highlighted
+	*/
+	function setHighlightedSection($section)
+	{
+		global $default;
+		
+		// check for highlighting..and highlight as required
+		if($section == "General")
+		{
+			$this->home = "$default->owl_graphics_url/home/over.gif";
+			$this->nwColourBar = "$default->owl_graphics_url/home/def.gif";
+		}
+		
+		if($section == "Manage Documents")
+		{
+			$this->mdocs = "$default->owl_graphics_url/mdocs/over.gif";
+			$this->nwColourBar = "$default->owl_graphics_url/mdocs/def.gif";
+		}
+		
+		if($section == "Subscriptions")
+		{
+			$this->subscriptions = "$default->owl_graphics_url/subscriptions/over.gif";
+			$this->nwColourBar = "$default->owl_graphics_url/subscriptions/def.gif";
+		}
+		
+		if($section == "Advanced Search")
+		{
+			$this->asearch = "$default->owl_graphics_url/asearch/over.gif";
+			$this->nwColourBar = "$default->owl_graphics_url/asearch/def.gif";
+		}
+		
+		
+		if(substr($section, -14) == "Administration")
+		{
+			$this->admin = "$default->owl_graphics_url/admin/over.gif";
+			$this->nwColourBar = "$default->owl_graphics_url/admin/def.gif";
+		}
+				
+		if($section == "Preferences")
+		{
+			$this->prefs = "$default->owl_graphics_url/prefs/over.gif";
+			$this->nwColourBar = "$default->owl_graphics_url/prefs/def.gif";
+		}
+		
+		if($section == "Help")
+		{
+			$this->help = "$default->owl_graphics_url/help/over.gif";
+			$this->nwColourBar = "$default->owl_graphics_url/help/def.gif";
+		}
+		
+		
+		if($section == "Logout")
+		{
+			$this->logout = "$default->owl_graphics_url/logout/over.gif";
+			$this->nwColourBar = "$default->owl_graphics_url/logout/def.gif";
+		}
+	}
+	
+	
+	
+	/**
+	* 
+	* this function creates the navbar for a specific page...
+	* 
+	* 
+	*/		
+	function render()
+	{
+		global $default;
+		
+				//set up headings for row 1 and 2
+		$heading = "$default->owl_graphics_url/heading.gif";
+		$hStretched = "$default->owl_graphics_url/hrepeat.gif";
+		
+		// set colour pics for row 4 of navbar
+		$colourHome = "$default->owl_graphics_url/home/colour.gif";
+		$colourmdocs = "$default->owl_graphics_url/mdocs/colour.gif";
+		$coloursubscriptions = "$default->owl_graphics_url/subscriptions/colour.gif";
+		$colourasearch = "$default->owl_graphics_url/asearch/colour.gif";
+		$colouradmin = "$default->owl_graphics_url/admin/colour.gif";
+		$colourprefs = "$default->owl_graphics_url/prefs/colour.gif";
+		$colourhelp = "$default->owl_graphics_url/help/colour.gif";
+		$colourlogout = "$default->owl_graphics_url/logout/colour.gif";
+		
+		
+      // get list of sections
 
-    function NavBar() {
-        global $default;
-        $this->mdocs = "$default->owl_graphics_url/mdocs/norm.gif";
-        $this->home = "$default->owl_graphics_url/home/norm.gif";
-        $this->subscriptions = "$default->owl_graphics_url/subscriptions/norm.gif";
-        $this->asearch = "$default->owl_graphics_url/asearch/norm.gif";
-        $this->admin = "$default->owl_graphics_url/admin/norm.gif";
-        $this->prefs = "$default->owl_graphics_url/prefs/norm.gif";
-        $this->help = "$default->owl_graphics_url/help/norm.gif";
-        $this->logout = "$default->owl_graphics_url/logout/norm.gif";
-
-    }
-
-    /**
-    * gets the url for the colour bar
-    *
-    * @param The section that needs to be highlighted
-    */
-    function getNWColourbar() {
-        return $this->nwColourBar;
-    }
-
-    /**
-    * sets a highlighted section varaibles
-    *
-    * @param The section that needs to be highlighted
-    */
-    function setHighlightedSection($section) {
-        global $default;
-
-        // check for highlighting..and highlight as required
-        if($section == "General") {
-            $this->home = "$default->owl_graphics_url/home/over.gif";
-            $this->nwColourBar = "$default->owl_graphics_url/home/def.gif";
-        }
-
-        if($section == "Manage Documents") {
-            $this->mdocs = "$default->owl_graphics_url/mdocs/over.gif";
-            $this->nwColourBar = "$default->owl_graphics_url/mdocs/def.gif";
-        }
-
-        if($section == "Subscriptions") {
-            $this->subscriptions = "$default->owl_graphics_url/subscriptions/over.gif";
-            $this->nwColourBar = "$default->owl_graphics_url/subscriptions/def.gif";
-        }
-
-        if($section == "Advanced Search") {
-            $this->asearch = "$default->owl_graphics_url/asearch/over.gif";
-            $this->nwColourBar = "$default->owl_graphics_url/asearch/def.gif";
-        }
-
-
-        if($section == "Administration") {
-            $this->admin = "$default->owl_graphics_url/admin/over.gif";
-            $this->nwColourBar = "$default->owl_graphics_url/admin/def.gif";
-        }
-
-        if($section == "Preferences") {
-            $this->prefs = "$default->owl_graphics_url/prefs/over.gif";
-            $this->nwColourBar = "$default->owl_graphics_url/prefs/def.gif";
-        }
-
-        if($section == "Help") {
-            $this->help = "$default->owl_graphics_url/help/over.gif";
-            $this->nwColourBar = "$default->owl_graphics_url/help/def.gif";
-        }
-
-        if($section == "Logout") {
-            $this->logout = "$default->owl_graphics_url/logout/over.gif";
-            $this->nwColourBar = "$default->owl_graphics_url/logout/def.gif";
-        }
-    }
-
-    /**
-    * this function creates the navbar for a specific page...
-    */
-    function render() {
-        global $default;
-
-        //set up headings for row 1 and 2
-        $heading = "$default->owl_graphics_url/heading.gif";
-        $hStretched = "$default->owl_graphics_url/hrepeat.gif";
-
-        // set colour pics for row 4 of navbar
-        $colourHome = "$default->owl_graphics_url/home/colour.gif";
-        $colourmdocs = "$default->owl_graphics_url/mdocs/colour.gif";
-        $coloursubscriptions = "$default->owl_graphics_url/subscriptions/colour.gif";
-        $colourasearch = "$default->owl_graphics_url/asearch/colour.gif";
-        $colouradmin = "$default->owl_graphics_url/admin/colour.gif";
-        $colourprefs = "$default->owl_graphics_url/prefs/colour.gif";
-        $colourhelp = "$default->owl_graphics_url/help/colour.gif";
-        $colourlogout = "$default->owl_graphics_url/logout/colour.gif";
-
-
-        // get list of sections
         $aTopMenuLinks = array(generateControllerUrl("dashboard"),
                                generateControllerUrl($default->siteMap->getDefaultAction("Manage Documents")),
                                generateControllerUrl($default->siteMap->getDefaultAction("Subscriptions")),

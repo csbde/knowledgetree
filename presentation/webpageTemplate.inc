@@ -20,8 +20,13 @@ require_once("$default->owl_fs_root/lib/visualpatterns/NavBar.inc");
 // create the navbar and north payload
 $navbar = new NavBar();
 
-//get the section name
-$sectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->owl_root_url), strlen($_SERVER["PHP_SELF"])));
+
+if ($sectionName == "")
+//get the section name if not specified in the url
+{
+	$sectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->owl_root_url), strlen($_SERVER["PHP_SELF"])));
+}
+
 
 //highlight the respective section
 $navbar->setHighlightedSection($sectionName);
@@ -48,16 +53,24 @@ $nwPayLoad ->setHtml($nwestLoad);
 if ($sectionName != "General") {
     $sectionArray = $default->siteMap->getSectionLinks($sectionName);
 
-    //format the array..by taking first element off
-    $output1["links"] = array_shift ($sectionArray["links"]);
-    $output2["descriptions"] = array_shift($sectionArray["descriptions"]);
+	//format the array..by taking first element off if its not an admin section
+	if((substr($sectionName, -14)) == "Administration" and (strlen($sectionName) > 15)){
+		$output1["links"] = $sectionArray["links"];
+		$output2["descriptions"] = $sectionArray["descriptions"];
+	}
+	else{
+		$output1["links"] = array_shift ($sectionArray["links"]);      
+		$output2["descriptions"] = array_shift($sectionArray["descriptions"]);
+	}
 
-    //create links
-    $westLinks = new PatternTableLinks($sectionArray["links"], $sectionArray["descriptions"], 50 , 1 ,1,null);
-    $westRender = $westLinks->render();
+	//create links
+	$westLinks = new PatternTableLinks($sectionArray["links"], $sectionArray["descriptions"], 40 , 1 ,1,null);
+	$westRender = $westLinks->render();
+
 } else {
-    $westLinks = new PatternTableLinks(array(), array(), 50 , 1 ,1,null);
-    $westRender = $westLinks->render();
+    $westLinks = new PatternTableLinks(array(), array(), 40 , 1 ,1,null);
+	$westRender = $westLinks->render();
+
 }
 
 //set up links
