@@ -31,6 +31,8 @@ class PatternMainPage {
 	/** form action*/
 	var $sFormAction;
 	
+	var $sErrorMessage;
+	
 	function setNorthWestPayload($oNewVal) {		
 		$this->oNorthWestPayload = & $oNewVal;		
 	}
@@ -50,6 +52,10 @@ class PatternMainPage {
 	function setFormAction($sNewVal) {
 		$this->sFormAction = & $sNewVal;
 	}	
+	
+	function setErrorMessage($sNewValue) {
+		$this->sErrorMessage = $sNewValue;
+	}
 	
 	
 	/**
@@ -83,16 +89,19 @@ class PatternMainPage {
 										}
 										$sToRender = $sToRender . "</td>\n
 									</tr>\n
-									<tr border = \"1\" height=\"72%\" >\n
+									<tr border = \"1\" height=\"72%\" >\n										
 										<td border = \"1\" width=\"5%\">";
-										if (isset($this->oWestPayload)) {
+										if (isset($this->oWestPayload)) {											
 											$sToRender = $sToRender . "\n" . $this->oWestPayload->render() . "\n";
 										} else {
 											$sToRender = $sToRender . "\nWest payload not set\n";
 										}
 										$sToRender = $sToRender . "</td>\n
 										<td width=\"80%\" valign=\"top\">\n";
-										if (isset($this->oCentralPayload)) {											
+										if (isset($this->oCentralPayload)) {
+											if (isset($this->sErrorMessage)) {
+												$sToRender .= "<table border=\"0\"><tr><td><p class=\"errorText\">$this->sErrorMessage</td></tr></table>\n ";
+											}
 											$sToRender = $sToRender . "\n" . $this->oCentralPayload->render() . "\n";
 										} else {											
 											$sToRender = $sToRender . "\nCentral payload not set\n";
