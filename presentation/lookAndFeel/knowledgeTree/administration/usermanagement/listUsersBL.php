@@ -48,7 +48,7 @@ if (checkSession()) {
     } else {
     	$default->log->info("fGroupID=$fGroupID");
     }
-    $oPatternCustom->setHtml(getPage($fGroupID));
+    $oPatternCustom->setHtml(getPage($fGroupID, $fName));
 	require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 	$main->setCentralPayload($oPatternCustom);
 	$main->setFormAction($_SERVER['PHP_SELF']);	

@@ -47,7 +47,11 @@ function getGroupDisplay($iGroupID) {
 	return "<table><tr><td><b>Filter By Group </b></td><td>" . $oPatternListBox->render() . "</td></tr></table>";	        
 }
 
-function getUsers($fGroupID) {
+function getNameDisplay($sName) {
+       return "<table><tr><td><b>Filter By Name </b></td><td><input type=\"text\" size=\"20\" name=\"fName\" value=\"$sName\" /> <input type=\"button\" value=\"Go\" onCLick=\"document.MainForm.submit()\"></td></tr></table>";
+}
+
+function getUsers($fGroupID, $sName) {
 	global $default;
 	// changed from inner to outer joins to include users that aren't in any groups (Stefano Ciancio [s.ciancio@pisa.iol.it]) 
 	$sQuery = 	"SELECT DISTINCT U.id as userID, U.name as name, U.username, " . 
@@ -58,6 +62,10 @@ function getUsers($fGroupID) {
 	// filter by group				
 	if ($fGroupID) {
 		$sWhereClause = "WHERE UGL.group_id = $fGroupID ";
+	}
+	// filter by name				
+	if ($sName) {
+		$sWhereClause = "WHERE U.name like '%$sName%' ";
 	}
 	// #2978 don't display sys admin accounts if you're not a sysadmin	
 	if (!Permission::userIsSystemAdministrator()) {
@@ -85,7 +93,7 @@ function getUsers($fGroupID) {
     return $oSearchResults->render() ;	
 }
 
-function getPage($fGroupID) {
+function getPage($fGroupID, $sName) {
 	global $default;
 	$sToRender .= renderHeading("User Management");
 
@@ -94,7 +102,8 @@ function getPage($fGroupID) {
 		$sToRender .= getAddLink("addUser", "Add A User");
 	}
 	$sToRender .= getGroupDisplay($fGroupID);
-	$sToRender .= getUsers($fGroupID);
+	$sToRender .= getNameDisplay($sName);
+	$sToRender .= getUsers($fGroupID, $sName);
 	return $sToRender;
 }
 ?>
