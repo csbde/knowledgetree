@@ -47,7 +47,7 @@ if (checkSession()) {
         $aResults = $oAuth->searchUsers($sSearch, $aAttributes);
 
         //post array to page
-        if(isset($aResults)) {
+        if (isset($aResults)) {
             if(count($aResults) == 0) {
                 $oPatternCustom->setHtml(getPageUsernameNotFound());
             } else {
@@ -65,7 +65,6 @@ if (checkSession()) {
                     }
                 }
             }
-
         } else {
             $oPatternCustom->setHtml(getAddPageFail());
             $main->setFormAction($_SERVER["PHP_SELF"]);
@@ -87,7 +86,6 @@ if (checkSession()) {
     } else if(isset($fAddToDb)) {
         // if db authentication
         if(isset($fFromDb)) {
-            //User($sNewUserName, $sNewName, $sNewPassword, $iNewQuotaMax, $sNewEmail, $sNewMobile, $bNewEmailNotification, $bNewSmsNotification, $sNewLdapDn, $iNewMaxSessions, $iNewLanguageID)
             $oUser = new User($fUsername,$fName,$fPassword,0,$fEmail,$fMobile,$fEmailNotification,$fSmsNotification,0,1,0);
 
         } else {
@@ -100,13 +98,17 @@ if (checkSession()) {
             $oPatternCustom->setHtml(getPageFail());
         }
     } else {
-        // if nothing happens...just reload edit page
-        $oPatternCustom->setHtml(getAddPage(null));
-        $main->setFormAction($_SERVER["PHP_SELF"]. "?fSearch=1");
-
+    	if ($default->authenticationClass == "DBAuthenticator")  {
+			$aAttributes = array("" => array ("username", "name", "email", "mobile", "email_notification", "sms_notification"));    		
+            $oPatternCustom->setHtml(getDetailsDBPage(null,$aAttributes));
+            $main->setFormAction($_SERVER["PHP_SELF"]. "?fAddToDb=1&fFromDb=1");
+    	} else {
+	        // if nothing happens...just reload edit page
+	        $oPatternCustom->setHtml(getSearchPage(null));
+	        $main->setFormAction($_SERVER["PHP_SELF"]. "?fSearch=1");
+    	}
     }
 
-    //$main->setFormAction("$default->rootUrl/presentation/lookAndFeel/knowledgeTree/create.php?fRedirectURL=".urlencode("$default->rootUrl/control.php?action=addUnitSuccess&fUnit"));
     $main->setCentralPayload($oPatternCustom);
     $main->render();
 }

@@ -27,11 +27,11 @@ function getSelectUserPage($aResults) {
 }
 
 // get add pages
-function getAddPage($unitID) {
+function getSearchPage($unitID) {
 
 	global $default;
 	
-    $sToRender .= renderHeading("Add User To System");
+    $sToRender .= renderHeading("Search For A User To Add");
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr><td colspan=\"2\">Please enter a VALID Username to search for in the text box below</td></tr>\n";
 	$sToRender .= "<tr>\n";
