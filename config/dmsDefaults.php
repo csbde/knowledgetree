@@ -195,9 +195,13 @@ require_once("$default->owl_fs_root/lib/session/Session.inc");
 require_once("$default->owl_fs_root/lib/session/control.inc");
 require_once("$default->owl_fs_root/lib/database/db.inc");
 require_once("$default->owl_fs_root/lib/database/lookup.inc");
+require_once("$default->owl_fs_root/lib/System.inc");
 
 // single db instantiation
 $default->db = new Database();
+
+// instantiate system settings class
+$default->system = new System();
 
 // import request variables and setup language
 require_once("$default->owl_fs_root/lib/dms.inc");
