@@ -72,7 +72,7 @@ class DocumentBrowser {
             
             // now find all the child folders relative to this one 
             // FIXME: in the same unit?
-            $folderQuery = "SELECT id from $default->owl_folders_table WHERE parent_id=" . $folderID;
+            $folderQuery = "SELECT id from $default->owl_folders_table WHERE parent_id=" . $folderID . " ORDER BY name ASC";
             $default->log->debug("DocumentBrowser::browseByFolder child folder query=$folderQuery");
             if ($sql->query($folderQuery)) {
                 while ($sql->next_record()) {
@@ -83,7 +83,7 @@ class DocumentBrowser {
             $default->log->debug("DocumentBrowser::browseByFolder: after child folders added; results=" . arrayToString($results));
             
             // create query to retrieve documents in this folder
-            $documentQuery = "SELECT id FROM $default->owl_documents_table WHERE folder_id=$folderID";
+            $documentQuery = "SELECT id FROM $default->owl_documents_table WHERE folder_id=$folderID ORDER BY name ASC";
             $default->log->debug("DocumentBrowser::browseByFolder about to execute $documentQuery");
             if ($sql->query($documentQuery)) {
                 while ($sql->next_record()) {
@@ -130,7 +130,7 @@ class DocumentBrowser {
             $results["categories"][] = "Categories";
            
             // get a list of category values
-            $query = "select value from $default->owl_document_fields_table where document_field_id=$categoryFieldID";
+            $query = "select value from $default->owl_document_fields_table where document_field_id=$categoryFieldID ORDER BY value ASC";
             $default->log->debug("DocumentBrowser::browseByCategory category listing query=$query");
             $sql->query($query);
             // loop through resultset, build array and return
@@ -147,7 +147,7 @@ class DocumentBrowser {
             // with this category value
                         
             $query = "select document_id from $default->owl_document_fields_table where document_field_id = $categoryFieldID " . 
-                     "and value='$category'";
+                     "and value='$category' ORDER BY value ASC";
             $default->log->debug("DocumentBrowser::browseByCategory documents in category query=$query");
             $sql->query($query);
             // loop through resultset and add to array
