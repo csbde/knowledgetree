@@ -347,7 +347,6 @@ function renderNonEditableLinkedDocuments($oDocument) {
 
 function displayButton($sAction, $sQueryString, $sImageName, $sDisabledText = "") {
 	global $default;
-
 	// the active is active if there is no disabled text
 	$bActive = !strlen($sDisabledText) > 0;
 	$sImage = "<img border=\"0\" src=\"$default->graphicsUrl/widgets/docactions/";
@@ -497,6 +496,7 @@ function displayPublishButton($oDocument, $bEdit) {
 function displayActionButtons($oDocument, $bEdit) {
     $sToRender .= displayViewButton($oDocument, $bEdit);
     $sToRender .= displayEmailButton($oDocument);
+    $sToRender .= displayCheckInOutButton($oDocument, $bEdit);
     $sToRender .= displayDeleteButton($oDocument, $bEdit);
     $sToRender .= displayHistoryButton($oDocument);
 	$sToRender .= displayMoveButton($oDocument, $bEdit);    	
