@@ -9,25 +9,19 @@
  * Licensed under the GNU GPL. For full terms see the file COPYING.
  */
 
-// Some urls
-$default->owl_root_url		= "";
-$default->owl_graphics_url	= $default->owl_root_url . "/graphics";
+// include the environment settings
+require_once("environment.php");
 
-// Directory where owl is located
-$default->owl_fs_root		= "C:/Projects/MRC/Devel/owl";
+$default->owl_graphics_url	= $default->owl_root_url . "/graphics";
 $default->owl_LangDir		= $default->owl_fs_root . "/locale";
 
-// Directory where The Documents Directory is On Disc
-$default->owl_FileDir           =  "C:/Projects/MRC/Devel/owl";
-//$default->owl_FileDir           =  "/tmp";
-
 // Set to true to use the file system to store documents, false only uses the database
+$default->owl_use_fs            = true;
 //$default->owl_use_fs            = false;
 // the Trailing Slash is important here.
-//$default->owl_FileDir           =  "/tmp/";
 //$default->owl_compressed_database = 1;
 
-$default->owl_use_fs            = true;
+
 
 //****************************************************
 // Pick your language system default language
@@ -106,17 +100,6 @@ require_once("$default->owl_fs_root/phplib/db_mysql.inc");
 require_once("$default->owl_fs_root/lib/Authenticator.inc");
 require_once("$default->owl_fs_root/lib/DBAuthenticator.inc");
 
-// ldap settings
-$default->ldapServer = "192.168.1.9";
-$default->ldapRootDn = "o=Medical Research Council";
-
-// Database info
-$default->owl_db_user           = "rob";
-$default->owl_db_pass           = "rob";
-$default->owl_db_host           = "";
-//$default->owl_db_name           = "intranet";
-$default->owl_db_name           = "owl";
-
 // logo file that must reside inside lang/graphics directory
 $default->logo = "kt.jpg";
 
@@ -138,18 +121,20 @@ $default->debug = True;
 //$default->owl_launch_in_browser = 0;
 //$default->owl_restrict_linkto   = true;
 
-$default->owl_email_server = "mail.jamwarehouse.com";
-$default->owl_email_from = "owl@rob.jamwarehouse.com";
-$default->owl_email_fromname = "owl";
-
 // user class constant definitions
 // a numerical mapping is used to allow super user classes access
 // to lower classes; ie. the permission check will allow the SA class
 // to view pages with UA access.
+// FIXME: these are just default groups- the order that they're inserted
+//        preserves the access relationship (even though the id column is auto_incremented
+//        and ideally shouldn't be used this way....., but if this was an ideal world i wouldn't
+//        really be doing this, would i? ;)
+/*
 define("SA", 0);
 define("UA", 1);
 define("U", 2);
 define("A", 3);
+*/
 
 // define site mappings
 require_once("$default->owl_fs_root/lib/SiteMap.inc");
