@@ -9,4 +9,5 @@ Coding Standard Doc
 	to this is a function which inserts into a link table.  It must begin its name with "add" e.g. addUserToGroup()
 4)	All database tables that consist of id, name pairs will end in the word "lookup" e.g. groups_lookup
 5)	All database tables that link two or more tables together will end in the word "link"
-
+6)	When using the @return tag in the case of mixed return types, the return type should always be the
+	type that is returned if the function succeedes i.e. does what it is supposed to do 
