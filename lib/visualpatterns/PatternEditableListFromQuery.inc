@@ -89,7 +89,7 @@ class PatternEditableListFromQuery {
 			$sToRender .= "<input type=\"hidden\" name=\"" . $this->sUniqueName . "_tn\" value=\"$this->sTableName\" />\n";
 			
 			if (isset($this->sTableHeading)) {
-						$sToRender .= "<caption align = left><b>$this->sTableHeading</b></caption>\n";
+						$sToRender .= "<caption align=\"top\"><b>$this->sTableHeading</b></caption>\n";
 			}		
 			
 			for ($i = 0; $i < count($this->aDisplayColumns); $i++) {		

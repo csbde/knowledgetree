@@ -76,7 +76,7 @@ class PatternListFromQuery {
 		$sToRender .= "<table border = 0, cellpadding = 5 " . (isset($this->iTableWidth) ? ", width = $this->iTableWidth" : "") . " >\n";
 		
 		if (isset($this->sTableHeading)) {
-					$sToRender .= "<caption align = left><b>$this->sTableHeading</b></caption>\n";
+					$sToRender .= "<caption align=\"top\"><b>$this->sTableHeading</b></caption>\n";
 		}
 		
 		if ($sql->num_rows() == 0) {
