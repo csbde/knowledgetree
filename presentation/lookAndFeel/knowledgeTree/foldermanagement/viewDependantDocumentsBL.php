@@ -86,12 +86,12 @@ if (checkSession()) {
 			} else {						
 				include_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");		
 				
-				$oPatternCustom = & new PatternCustom();
+				/*$oPatternCustom = & new PatternCustom();
 				$oPatternCustom->setHtml(getAddPage($fFolderCollaborationID, $fFolderID, (isset($fUnitID) ? $fUnitID : -1), (isset($fDocumentTitle) ? $fDocumentTitle : ""), (isset($fTemplateDocument) ? $fTemplateDocument : ""), (isset($fDocumentID) ? $fDocumentID : "") ));
 	    		$main->setCentralPayload($oPatternCustom);
 	    	    $main->setFormAction($_SERVER["PHP_SELF"] . "?fFolderID=$fFolderID&fFolderCollaborationID=$fFolderCollaborationID&fForStore=1");
 	    	    $main->setHasRequiredFields(true);    		
-	    		$main->render();
+	    		$main->render();*/
 			}			
 		} else {
 			include_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
