@@ -18,7 +18,7 @@ require_once("$default->owl_fs_root/lib/visualpatterns/PatternTableSqlQuery.inc"
 require_once("$default->owl_fs_root/lib/visualpatterns/NavBar.inc");
 
 // create the navbar and north payload
-$navbar = new NavBar();
+$navbar = new NavBar($fBrowseType, $fFolderID, $fDocumentID, $fCategoryName, $fDocTypeID);
 
 
 if ($sectionName == "")
