@@ -343,10 +343,8 @@ class DocumentCollaboration {
 	}
 	
 	/**
-	* Checks if a document is pending web publishing
-	* 
-	* 
-	*/
+ 	 * Checks if a document is pending web publishing
+	 */
 	function documentIsPendingWebPublishing($iDocumentID) {
 		global $default;
 		$sQuery = "SELECT id FROM $default->owl_web_documents_table WHERE document_id = $iDocumentID AND status_id = 1";
@@ -358,6 +356,20 @@ class DocumentCollaboration {
 		return false;
 	}
 	
+	/**
+ 	 * Checks if a document is published
+	 */
+	function documentIsPublished($iDocumentID) {
+		global $default;
+		$sQuery = "SELECT id FROM $default->owl_web_documents_table WHERE document_id = $iDocumentID AND status_id = 2";
+		$sql = $default->db;
+		$sql->query($sQuery);
+		if ($sql->next_record()) {
+			return true;;
+		}
+		return false;
+	}
+		
 	/**
 	 * Notify the web master when a document is awaiting publishing 
 	 *
