@@ -190,6 +190,12 @@ class KTHtml {
     function getBeginButton() {
         return imgSrc('widgets/begin.png');
     }
+    function getClearAllButton() {
+        return imgSrc('widgets/clearall.png');
+    }
+    function getCheckAllButton() {
+        return imgSrc('widgets/checkall.png');
+    }
 }
 
 ?>
