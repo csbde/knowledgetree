@@ -91,7 +91,6 @@ function getGenericMetaDataForm() {
         if ($default->genericMetaDataRequired === true) {
             $oPatternTableSqlQuery->setRequiredColumnNames(array("value"));
         }
-        $oPatternTableSqlQuery->setRequiredColumnNames(array("value"));
 	$oPatternTableSqlQuery->setMetaDataFields($aMetaDataColumnNames);
 	$oPatternTableSqlQuery->setEmptyTableMessage(_("No Generic Meta Data"));
 	$oPatternTableSqlQuery->setRenderJavascriptValidation(false);
