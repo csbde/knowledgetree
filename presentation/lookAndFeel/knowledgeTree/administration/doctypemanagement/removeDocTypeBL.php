@@ -40,7 +40,12 @@ if (checkSession()) {
 			$oDocType = DocumentType::get($fDocTypeID);
 			$oDocType->setName($fDocTypeName);
 			
+			
 		if ($oDocType->delete()) {
+			
+			//delete all fields as well
+			$oDocType->deleteAllFieldLinks();
+			
 			$oPatternCustom->setHtml(getDeleteSuccessPage());
 			
 		} else {
