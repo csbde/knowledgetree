@@ -14,14 +14,10 @@ function getEditPage($iUserID) {
 	$oUser = null;
 	if (isset($iUserID)) {
 		$oUser = User::get($iUserID);
-		
 	}
-	
-	$sToRender .= "<br></br>\n";
-	$sToRender .= "<b>Edit User Properties:</b>\n";
+	$sToRender .= "<table width=\"600\">" . renderHeading("Edit User Properties") . "</table>";
 	$sToRender .= "<table>\n";
-	$sToRender .= "<br></br>\n";
-	$sToRender .= "<tr></tr>\n";
+	$sToRender .= "<tr><td>Please select a User: </td></tr>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>Username: </td><td>" . getUserDisplay($oUser) . "</td>\n";
 	$sToRender .= "</tr>\n";
@@ -30,10 +26,8 @@ function getEditPage($iUserID) {
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "</tr>\n";
-	$sToRender .= "<td></td>" . getUpdateButton($oUser);	
-	$sToRender .= getCancelButton($oUser);	
+	$sToRender .= "<tr><td colspan=\"2\" align=\"right\">" . getCancelButton($oUser) . "</td></tr>";
 	$sToRender .= "</table>\n";
-	
 	
 	return $sToRender;
 }
@@ -42,9 +36,6 @@ function getUserDetailsPage($iUserID) {
 	
 	global $default;
 	$oUser = null;
-	//if (isset($iUserID)) {
-	//	$oUser = User::get($iUserID);
-	//}
 	
 	$sQuery =  "SELECT * FROM $default->owl_users_table WHERE id = $iUserID";
 	$aDisplayColumns = array( "username","name","email", "mobile", "email_notification", "sms_notification", "max_sessions"); 
@@ -58,8 +49,7 @@ function getUserDetailsPage($iUserID) {
 	$oPattern->setUniqueName("userEdit");
 	$oPattern->setColumnsRequired(array(1,1,0,0,0,0,0));
 	
-	$sToRender .= "<br></br>\n";	
-	$sToRender .= "<b>Edit User Properties:</b>\n";
+	$sToRender .= "<table width=\"600\">" . renderHeading("Edit User Properties") . "</table>";	
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
@@ -67,28 +57,20 @@ function getUserDetailsPage($iUserID) {
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "</tr>\n";
-	$sToRender .= "<tr>\n";
-	$sToRender .= "</tr>\n";
-	
-	$sToRender .= "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/update.gif\" value=\"Update\" border=\"0\"/></td>\n";	
+	$sToRender .= "<tr><td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/update.gif\" value=\"Update\" border=\"0\"/>\n";
+    $sToRender .= getCancelButton(User::get($iUserID)) . "</td></tr>";
 	$sToRender .= "</table>\n";
-		
-	
-		
+    
 	return $sToRender;
-	
-	
-	
 }
 
 // if edition is successful print otu success page
 function getEditPageSuccess() {	
 	global $default;
 			
-	$sToRender .= "<br></br>\n";
-	$sToRender .= "<b>Success!</b>\n";
+	$sToRender .= "<table width=\"600\">" . renderHeading("Edit User Properties") . "</table>";
 	$sToRender .= "<table>\n";
-	$sToRender .= "<br></br>\n";
+	$sToRender .= "<tr><td><b>Success!</b></td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr><td>The User was successfully modified</td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
@@ -107,10 +89,9 @@ function getEditPageSuccess() {
 function getEditPageFail() {	
 	global $default;
 			
-	$sToRender .= "<br></br>\n";
-	$sToRender .= "<b>FAILED!</b>\n";
+	$sToRender .= "<table width=\"600\">" . renderHeading("Edit User Properties") . "</table>";
 	$sToRender .= "<table>\n";
-	$sToRender .= "<br></br>\n";
+    $sToRender .= "<tr><td><b>Failed!</b></td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr><td>User modification Failed!</td></tr>\n";
 	$sToRender .= "<tr></tr>\n";
@@ -130,8 +111,7 @@ function getUserDisplay($oUser) {
 	global $default;
 	if (!isset($oUser)) {
 		$oPatternListBox = & new PatternListBox($default->owl_users_table, "username", "id", "fUserID");
-		//$oPatternListBox->setIncludeDefaultValue(true);
-		$oPatternListBox->setPostBackOnChange(true);		
+		$oPatternListBox->setPostBackOnChange(true);
 		return $oPatternListBox->render();
 	} else {
 		return "<input type=\"hidden\" name=\"fUserID\" value=\"" . $oUser->iId . "\">\n" .
@@ -145,8 +125,6 @@ function getUserDisplay($oUser) {
 function getUpdateButton($oUser) {
 	global $default;
 	if (!isset($oUser)) {
-		return "Please select a User: ";
-	} else {
 		return "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/update.gif\" value=\"submit\" border=\"0\"/></td>\n";
 	}
 }
@@ -155,9 +133,9 @@ function getUpdateButton($oUser) {
 function getCancelButton($oUser) {
 	global $default;
 	if (!isset($oUser)) {
-		//return "<td align = right><a href=\"$default->rootUrl/control.php?action=UserManagement\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" value=\"cancel\" /></a></td>\n";
+		return "<a href=\"$default->rootUrl/control.php?action=userManagement\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" value=\"cancel\" border=\"0\"/></a>\n";
 	} else {
-		return "<td align = right><a href=\"$default->rootUrl/control.php?action=editUser\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" /></a></td>\n";
+		return "<a href=\"$default->rootUrl/control.php?action=editUser\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\" /></a>\n";
 	}
 }
 ?>
