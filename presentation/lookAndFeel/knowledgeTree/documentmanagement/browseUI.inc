@@ -23,8 +23,6 @@ function renderHeading($sHeading) {
     $sColor = $default->siteMap->getSectionColour($sSectionName, "th");
     $sToRender  = "<table border=\"0\" width=\"600\">\n";
     $sToRender .= "<tr align=\"left\"><th class=\"sectionHeading\" bgcolor=\"$sColor\"><font color=\"ffffff\">$sHeading</font></th></tr>\n";
-    $sToRender .= "<tr/>\n";
-    $sToRender .= "<tr/>\n";
     $sToRender .= "</table>\n";
     return $sToRender;
 }
