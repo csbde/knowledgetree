@@ -106,10 +106,19 @@ class PatternBrowseableSearchResults {
 				
 		// now add the limit and offset stuff for cutting down result set
 		// decrement startIndex because LIMIT starts at zero and startIndex starts at 1 (for display purposes)
-		$sLimitQuery = $this->sQuery . " LIMIT " . ($this->iStartIndex-1) . ", " . $this->iResultsToDisplay;
+        if (is_array($this->sQuery)) {
+            $sQuery = $this->sQuery[0];
+            $aParams = $this->sQuery[1];
+        } else {
+            $sQuery = $this->sQuery;
+            $aParams = array();
+        }
+		$sQuery = $sQuery . " LIMIT ?, ?";
+        $aParams[] = $this->iStartIndex - 1;
+        $aParams[] = $this->iResultsToDisplay;
 
 		$sql = & $default->db;
-		$sql->query($sLimitQuery);
+		$sql->query(array($sQuery, $aParams));
 
 		if ($sql->num_rows() == 0) {
 			//no results

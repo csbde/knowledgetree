@@ -147,7 +147,7 @@ class WebSite extends KTEntity {
     function & get($iWebSiteID) {
         global $default;
         $sql = $default->db;
-        $result = $sql->query("SELECT * FROM $default->web_sites_table WHERE id = $iWebSiteID");
+        $result = $sql->query(array("SELECT * FROM $default->web_sites_table WHERE id = ?", $iWebSiteID));/*ok*/
         if ($result) {
             if ($sql->next_record()) {
                 $oWebSite = & new WebSite($sql->f("web_site_name"), $sql->f("web_site_url"), $sql->f("web_master_id"));
@@ -172,7 +172,7 @@ class WebSite extends KTEntity {
         $aWebSiteArray;
         settype($aWebSiteArray, "array");
         $sql = $default->db;
-        $result = $sql->query("SELECT * FROM " . $default->web_sites_table);
+        $result = $sql->query("SELECT * FROM " . $default->web_sites_table);/*ok*/
         if ($result) {
             $iCount = 0;
             while ($sql->next_record()) {
@@ -192,10 +192,10 @@ class WebSite extends KTEntity {
     function inUse() {
     	global $default;
     	$sql = $default->db;
-    	$sQuery = "SELECT WS.id FROM $default->web_sites_table WS " . 
+    	/*ok*/ $sQuery = array("SELECT WS.id FROM $default->web_sites_table WS " . 
     			  "INNER JOIN $default->web_documents_table WD ON WS.id=WD.web_site_id " .
-    			  "WHERE WS.id = $this->iId " . 
-    			  "AND WD.status_id=1";
+    			  "WHERE WS.id = ? " . 
+    			  "AND WD.status_id=1", $this->iId);
     	$sql->query($sQuery);
 		$rows = $sql->num_rows();
 		if ($rows > 0){

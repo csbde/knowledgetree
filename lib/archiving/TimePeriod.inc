@@ -115,7 +115,7 @@ class TimePeriod extends KTEntity {
     function & get($iTimePeriodID) {
         global $default;
         $sql = $default->db;
-        $sql->query("SELECT * FROM $default->time_period_table WHERE id = $iTimePeriodID");
+        $sql->query(array("SELECT * FROM $default->time_period_table WHERE id = ?", $iTimePeriodID));/*ok*/
         if ($sql->next_record()) {
             $oTimePeriod = & new TimePeriod($sql->f("time_unit_id"), $sql->f("units"));
             $oTimePeriod->iId = $iTimePeriodID;

@@ -168,7 +168,7 @@ class ArchivingSettings extends KTEntity {
     function & get($iArchivingSettingsID) {
         global $default;
         $sql = $default->db;
-        $sql->query("SELECT * FROM $default->archiving_settings_table WHERE id = $iArchivingSettingsID");
+        $sql->query(array("SELECT * FROM $default->archiving_settings_table WHERE id = ?", $iArchivingSettingsID));/*ok*/
         if ($sql->next_record()) {
             $oArchivingSettings = & new ArchivingSettings($sql->f("archiving_type_id"), 
             											  $sql->f("expiration_date"),

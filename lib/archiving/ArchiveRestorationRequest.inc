@@ -160,7 +160,7 @@ class ArchiveRestorationRequest extends KTEntity {
     function & getFromDocumentID($iDocumentID) {
         global $default;
         $sql = $default->db;
-        $sql->query("SELECT * FROM $default->archive_restoration_table WHERE document_id = $iDocumentID");
+        $sql->query(array("SELECT * FROM $default->archive_restoration_table WHERE document_id = ?", $iDocumentID));/*ok*/
         if ($sql->next_record()) {
             $oArchiveRestorationRequest = & new ArchiveRestorationRequest($sql->f("document_id"), $sql->f("request_user_id"), $sql->f("admin_user_id"), $sql->f("datetime"));
             $oArchiveRestorationRequest->iId = $sql->f("id");
@@ -179,7 +179,7 @@ class ArchiveRestorationRequest extends KTEntity {
     function & get($iArchiveRestorationRequestID) {
         global $default;
         $sql = $default->db;
-        $sql->query("SELECT * FROM $default->archive_restoration_table WHERE id = $iArchiveRestorationRequestID");
+        $sql->query(array("SELECT * FROM $default->archive_restoration_table WHERE id = ?", $iArchiveRestorationRequestID));/*ok*/
         if ($sql->next_record()) {
             $oArchiveRestorationRequest = & new ArchiveRestorationRequest($sql->f("document_id"), $sql->f("request_user_id"), $sql->f("admin_user_id"), $sql->f("datetime"));
             $oArchiveRestorationRequest->iId = $iArchiveRestorationRequestID;

@@ -117,7 +117,7 @@ class DocumentArchiving extends KTEntity {
     function & getFromDocumentID($iDocumentID) {
         global $default;
         $sql = $default->db;
-        $sql->query("SELECT * FROM $default->document_archiving_table WHERE document_id = $iDocumentID");
+        $sql->query(array("SELECT * FROM $default->document_archiving_table WHERE document_id = ?", $iDocumentID));/*ok*/
         if ($sql->next_record()) {
             $oDocumentArchiving = & new DocumentArchiving($sql->f("document_id"), $sql->f("archiving_settings_id"));
             $oDocumentArchiving->iId = $sql->f("id");
@@ -136,7 +136,7 @@ class DocumentArchiving extends KTEntity {
     function & get($iDocumentArchivingID) {
         global $default;
         $sql = $default->db;
-        $sql->query("SELECT * FROM $default->document_archiving_table WHERE id = $iDocumentArchivingID");
+        $sql->query(array("SELECT * FROM $default->document_archiving_table WHERE id = ?", $iDocumentArchivingID));/*ok*/
         if ($sql->next_record()) {
             $oDocumentArchiving = & new DocumentArchiving($sql->f("document_id"), $sql->f("archiving_settings_id"));
             $oDocumentArchiving->iId = $iDocumentArchivingID;
