@@ -128,7 +128,6 @@ class PatternMainPage {
 	*/
 	function render() {
         global $default;
-        $bNN4 = (($default->browser == "moz") && ($default->version <= "4.79") || ($default->browser == "ns"));
 		$sToRender  = 	"<html>\n";
 		$sToRender .= 	"<head>\n";
 		$sToRender .=   "<title>The KnowledgeTree</title>";
@@ -139,7 +138,7 @@ class PatternMainPage {
 							"</head>\n" .
 							"<body marginleft=\"0\" marginheight=\"0\" " . (isset($this->onLoadJavaScript) ? "onload=\"$this->onLoadJavaScript\"" : "") . ">\n";							
         // hack to circumvent the crapness of ns 4.79
-        if (!$bNN4 ) {
+        if (!$default->bNN4 && $this->bScroll) {
             $sToRender .=       "<div id=\"divUp\">" .
                                 "\t<a href=\"#\" onmouseover=\"scroll(-7)\" onmouseout=\"noScroll()\"><img src=\"" . $default->graphicsUrl . "/down.gif\" width=\"18\" height=\"9\" alt=\"up\" border=\"0\"></a>" .
                                 "</div>" .
@@ -178,7 +177,7 @@ class PatternMainPage {
                                         
 										if (isset($this->oCentralPayload)) {
                                             // hack to circumvent the crapness of ns 4.79
-                                            if (!$bNN4 && $this->bScroll) {
+                                            if (!$default->bNN4 && $this->bScroll) {
                                                 $sToRender .= "\t<div id=\"divScrollTextCont\">\n
                                                                \t\t<div id=\"divText\">\n";												
                                             }                                          
@@ -190,7 +189,7 @@ class PatternMainPage {
 											$sToRender = $sToRender . "\nCentral payload not set\n";
 										}
                                         // hack to circumvent the crapness of ns 4.79
-                                        if (! $bNN4 ) {
+                                        if (!$default->bNN4 && $this->bScroll) {
                                             $sToRender = $sToRender . "</div></div>\n";
                                         }
                                         $sToRender = $sToRender . "</td>\n" .
@@ -214,7 +213,7 @@ class PatternMainPage {
         $sUrl = $default->uiUrl;
         // hack to circumvent the crapness of ns 4.79
  
-        if (!$bNN4 && $this->bScroll) {
+        if (!$default->bNN4 && $this->bScroll) {
             $sJavaScript = "<script type=\"text/javascript\" src=\"$sUrl/js/scroll.js\"></script>\n";
         }
         $sJavaScript .= "<script type=\"text/javascript\" src=\"$sUrl/js/datePicker.js\"></script>\n";            
