@@ -48,12 +48,12 @@ function getPage($iFolderID, $iDocumentID, $sErrorMessage = "") {
 	}
 	$sToRender .= "<tr><td>Move document " . Document::getDocumentDisplayPath($iDocumentID) . " to:</td></tr>";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>" . renderFolderPath($iFolderID, "/control.php?action=moveDocument&fDocumentID=$iDocumentID") . "</td>\n";
+	$sToRender .= "<td>" . renderFolderPath($iFolderID, generateControllerUrl("moveDocument", "fDocumentID=$iDocumentID", false)) . "</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
 	$sToRender .= "<table width=\"100%\">\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>" . renderFolderList($iFolderID, "/control.php?action=moveDocument&fDocumentID=$iDocumentID") . "</td>\n";
+	$sToRender .= "<td>" . renderFolderList($iFolderID, generateControllerUrl("moveDocument", "fDocumentID=$iDocumentID", false)) . "</td>\n";
 	$sToRender .= "</tr>\n";	
 	$sToRender .= "<tr><td><table><tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/movehere.gif\" border=\"0\"/></td><td><a href=\"$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $iDocumentID . "\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></a></td></tr></table></td>\n";
 	$sToRender .= "</table>\n";
