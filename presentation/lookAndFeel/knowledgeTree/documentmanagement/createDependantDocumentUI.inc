@@ -75,7 +75,7 @@ function getUserDropDown($iUnitID, $iUserID) {
 		$iUnitID = -1;		
 	}
 	$oPatternListBox = & new PatternListBox($default->users_table, "Name", "id", "fUserID", "GUL.unit_id = $iUnitID");
-	$sFromClause = "INNER join users_groups_link AS UGL ON UGL.user_id = ST.id " .
+	$sFromClause = "INNER join $default->users_groups_table AS UGL ON UGL.user_id = ST.id " .
 					"INNER JOIN groups_units_link AS GUL ON GUL.group_id = UGL.group_id ";
 	$oPatternListBox->setFromClause($sFromClause);
 	if (isset($iUserID)) {
