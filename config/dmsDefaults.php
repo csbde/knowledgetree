@@ -73,7 +73,7 @@ $default->owl_group_folders_table = "group_folders_link";
 // stores approval collaboration information- approval roles mapped to folders with order
 $default->owl_groups_folders_approval_table	= "groups_folders_approval_link";
 // links groups to folders
-$default->owl_groups_folders_table	= "groups_folders_link;"
+$default->owl_groups_folders_table	= "groups_folders_link";
 // stores group information
 $default->owl_groups_table	= "groups_lookup";
 // links groups to users and units
