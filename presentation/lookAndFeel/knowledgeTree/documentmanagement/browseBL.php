@@ -3,7 +3,6 @@
 require_once("../../../../config/dmsDefaults.php");
 require_once("$default->fileSystemRoot/lib/browse/BrowserFactory.inc");
 require_once("$default->fileSystemRoot/lib/browse/Browser.inc");
-require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentBrowser.inc");
 require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentType.inc");
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
 require_once("$default->uiDirectory/documentmanagement/browseUI.inc");
