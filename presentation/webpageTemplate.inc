@@ -18,7 +18,7 @@ require_once("$default->fileSystemRoot/lib/visualpatterns/PatternTableSqlQuery.i
 require_once("$default->fileSystemRoot/lib/visualpatterns/NavBar.inc");
 
 // create the navbar and north payload
-$navbar = new NavBar($fBrowseType, $fFolderID, $fDocumentID, $fCategoryName, $fDocTypeID);
+$navbar = & new NavBar($fBrowseType, $fFolderID, $fDocumentID, $fCategoryName, $fDocumentTypeID);
 
 
 if ($sectionName == "")
