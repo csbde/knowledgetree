@@ -239,9 +239,9 @@ $default->siteMap->addDefaultPage("advancedSearch", "/presentation/lookAndFeel/k
 $default->siteMap->addPage("standardSearch", "/presentation/lookAndFeel/knowledgeTree/search/standardSearchBL.php", "Standard Search", Guest, "Standard Search", false);
 
 // pages for prefs section
-$default->siteMap->addPage("viewPreferences", "/preferences.php", "Preferences", User, "View Preferences", false);
-$default->siteMap->addPage("editPreferences", "/preferences.php", "Preferences", User, "Edit Preferences", false);
 
+$default->siteMap->addDefaultPage("preferences", "/presentation/lookAndFeel/knowledgeTree/preferences/editUserPrefsBL.php", "Preferences", User, "Preferences");
+$default->siteMap->addDefaultPage("editPrefsSuccess", "/presentation/lookAndFeel/knowledgeTree/preferences/editPrefsSuccess.php", "Preferences", User, "Preferences",false);
 // pages for Help section
 $default->siteMap->addDefaultPage("help", "/presentation/lookAndFeel/knowledgeTree/help.php", "Help", Guest, "Help");
 
