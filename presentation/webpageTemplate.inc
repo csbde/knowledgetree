@@ -98,12 +98,12 @@ $sUnitAdminEmail = $oUnitAdmin ? $oUnitAdmin->getEmail() : $default->emailAdmin;
 $westLoad = "<table cellspacing=\"0\" cellpadding=\"2\" border=\"0\" width=\"100%\" height=\"75%\">\n" .
             "\t<tr><td>$westRender</td></tr>\n" .
             "</table>" .
-            "<div style=\"position:absolute;top:" . ($default->scroll["height"]-50) . "px;\">" . 
+            (isset($default->contactAdminPosition) ? "<div style=\"position:absolute;top:" . $default->contactAdminPosition . "px;left:7px\">" : "") . 
             "<table cellspacing=\"0\" cellpadding=\"2\" border=\"0\" width=\"100%\">\n" .            
             "\t<tr valign=\"bottom\"><td align=left><a href=\"mailto:$default->emailAdmin\"><img src=\"$cAdmin\"/ border=\"0\"></a></td></tr>\n" .
             "\t<tr valign=\"top\"><td align=left><a href=\"mailto:$sUnitAdminEmail\"><img src=\"$uAdmin\"/ border=\"0\"></a></td></tr>\n" .
             "</table>" .
-            "</div>";
+            (isset($default->contactAdminPosition) ? "</div>" : "");
 
 $westPayLoad = new PatternCustom;
 $westPayLoad->setHtml($westLoad);
