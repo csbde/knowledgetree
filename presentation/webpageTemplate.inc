@@ -22,9 +22,9 @@ $navbar = new NavBar($fBrowseType, $fFolderID, $fDocumentID, $fCategoryName, $fD
 
 
 if ($sectionName == "")
-//get the section name if not specified in the url
+    //get the section name if not specified in the url
 {
-	$sectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
+    $sectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
 }
 
 
@@ -56,13 +56,13 @@ if ($sectionName != "General") {
     $output1["links"] = $sectionArray["links"];
     $output2["descriptions"] = $sectionArray["descriptions"];
 
-	//create links
-	$westLinks = new PatternTableLinks($sectionArray["links"], $sectionArray["descriptions"], 40 , 1 ,1,null);
-	$westRender = $westLinks->render();
+    //create links
+    $westLinks = new PatternTableLinks($sectionArray["links"], $sectionArray["descriptions"], 40 , 1 ,1,null);
+    $westRender = $westLinks->render();
 
 } else {
     $westLinks = new PatternTableLinks(array(), array(), 40 , 1 ,1,null);
-	$westRender = $westLinks->render();
+    $westRender = $westLinks->render();
 
 }
 
