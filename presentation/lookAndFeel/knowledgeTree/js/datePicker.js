@@ -516,9 +516,10 @@ Calendar.prototype.format_data = function(p_day) {
 	return vData;
 }
 
-function Build(p_item, p_month, p_year, p_format) {
+function Build(p_item, p_month, p_year, p_format, p_afterToday) {
 	var p_WinCal = ggWinCal;
 	gCal = new Calendar(p_item, p_WinCal, p_month, p_year, p_format);
+	gCal.gAfterToday = p_afterToday
 
 	// Customize your Calendar here..
 	gCal.gBGColor="white";
@@ -552,18 +553,22 @@ function show_calendar() {
 		p_format = "MM/DD/YYYY";
 	else
 		p_format = arguments[3];
+	if (arguments[4] == null)
+		p_afterToday = true;
+	else
+		p_afterToday = arguments[4];
 
 	vWinCal = window.open("", "Calendar", 
 		"width=250,height=250,status=no,resizable=no,top=200,left=200");
 	vWinCal.opener = self;
 	ggWinCal = vWinCal;
 
-	Build(p_item, p_month, p_year, p_format);
+	Build(p_item, p_month, p_year, p_format, p_afterToday);
 }
 /*
 Yearly Calendar Code Starts here
 */
-function show_yearly_calendar(p_item, p_year, p_format) {
+function show_yearly_calendar(p_item, p_year, p_format, p_afterToday) {
 	// Load the defaults..
 	if (p_year == null || p_year == "")
 		p_year = new String(gNow.getFullYear().toString());
@@ -574,5 +579,5 @@ function show_yearly_calendar(p_item, p_year, p_format) {
 	vWinCal.opener = self;
 	ggWinCal = vWinCal;
 
-	Build(p_item, null, p_year, p_format);
+	Build(p_item, null, p_year, p_format, p_afterToday);
 }
