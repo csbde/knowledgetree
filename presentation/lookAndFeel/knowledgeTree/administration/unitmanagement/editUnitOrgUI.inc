@@ -73,12 +73,12 @@ function getUnitOrgEdit($bNoOrg, $fUnitID = null){
     $sToRender .= "<table border=0 cellspacing=1>\n";
     $sToRender .= "  <tr><td><b>Options</b></td></tr>";
     if ($bNoOrg) {
-	    $sToRender .= "  <tr><td width=200 bgcolor=$sBgColor>";
+	    $sToRender .= "  <tr><td bgcolor=$sBgColor>";
 	    $sToRender .= "  <br>&nbsp;&nbsp;<a href=\"$default->rootUrl/control.php?action=addUnitToOrg&fUnitID=" . $fUnitID . "\">Add Unit to an Organisation</a><br><br>";
 	    $sToRender .= "  </td><td>";	    
 	    $sToRender .= "  </td></tr>";
     } else {
-	    $sToRender .= "  <tr><td width=200 bgcolor=$sBgColor>";
+	    $sToRender .= "  <tr><td bgcolor=$sBgColor>";
 	    $sToRender .= "  <br>&nbsp;&nbsp;<a href=\"$default->rootUrl/control.php?action=removeUnitFromOrg&fUnitID=" . $fUnitID  . "\">Remove Unit from an Organisation</a><br><br>";
 	    $sToRender .= "  </td><td>";	    
 	    $sToRender .= "  </td></tr>";
