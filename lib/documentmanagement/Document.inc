@@ -65,111 +65,6 @@ class Document {
 		$this->bIsCheckedOut = false;
 	}
 	
-	/**
-	* Insert the current document into the database
-	*
-	* @return boolean true on successful insert, false otherwise and set $_SESSION["errorMessage"]
-	*/
-	function create() {
-		global $default, $lang_err_doc_exist, $lang_err_database;
-		//if the id >= 0, then the object has already been created
-		if ($this->iId < 0) {
-			$sql = new Owl_DB();
-			$result = $sql->query("INSERT INTO " . $default->owl_documents_table . " (document_type_id, name, filename, size, creator_id, modified, description, mime_id, folder_id, major_version, minor_version, is_checked_out) " .
-						"VALUES (" . $this->iDocumentTypeID . ", '" . addslashes($this->sName) . "', '" . addslashes($this->sFileName) . "', $this->iSize, $this->iCreatorID, '" . getCurrentDateTime() . "', '" . addslashes($this->sDescription) . "', $this->iMimeTypeID, $this->iFolderID, $this->iMajorVersion, $this->iMinorVersion, " . ($this->bIsCheckedOut ? 1 : 0) . ")");
-			if ($result) {
-				//set the current documents primary key
-				$this->iId = $sql->insert_id();
-				return true;
-			}
-			$_SESSION["errorMessage"] = $lang_err_database;
-			return false;			
-		}
-		$_SESSION["errorMessage"] = $lang_err_object_exists . "id = " . $this->iId . " table = documents";
-		return false;
-		
-	}
-	
-	/**
-	* Update the documents current values in the database
-	*
-	* @return boolean true on successful update, false otherwise and set $_SESSION["errorMessage"]
-	*/
-	function update() {
-		global $default, $lang_err_database, $lang_err_object_key;
-		if ($this->iId >= 0) {
-			$sql = new Owl_DB();
-			$result = $sql->query("UPDATE " . $default->owl_documents_table . " SET " .
-						"document_typeid = $this->iDocumentTypeID, " . 
-						"file_name = '" . addslashes($this->file_name) . "', " .
-						"size = $this->iSize, " .
-						"creator_id = $this->iCreatorID, " .
-						"modified = " . getCurrentDateTime() . ", " .
-						"description = '" . addslashes($this->sDescription) . "', " .
-						"mime_id = $this->iMimeTypeID, " .
-						"folder_id = $this->iFolderID, " .
-						"major_revision = $this->iMajorRevision, " .
-						"minor_revision =  $this->iMinorRevision, " .
-						"is_checked_out = $this->bIsCheckedOut " .
-					"WHERE id = $this->id");
-			if ($result) {
-				return true;
-			}
-			$_SESSION["errorMessage"] = $lang_err_database;
-			return false;
-		}
-		$_SESSION["errorMessage"] = $lang_err_object_key;
-		return false;
-		
-	}
-	
-	/**
-	* Delete the current document from the database.  Set the primary key to -1 
-	* on successful deletion
-	*
-	* @return boolean true and reset id to -1 on successful deletion, false otherwise and set $_SESSION["errorMessage"]
-	*/
-	function delete() {	
-		global $default, $lang_err_database, $lang_err_object_key;
-		if ($this->iId >= 0) {
-			$sql = new Owl_DB();
-			$result = $sql->query("DELETE FROM  " . $default->owl_documents_table . "  WHERE id = $this->iId");
-			if ($result) {
-				$this->iId = -1;
-				return true;
-			}			
-			$_SESSION["errorMessage"] = $lang_err_database;
-			return false;
-		}
-		$_SESSION["errorMessage"] = $lang_err_object_key;
-		return false;
-	}
-	
-	
-	/**
-	*
-	* Static function.  Given a document primary key will create
-	* a document object and populate it with the corresponding
-	* database values
-	*
-	* @return Document populated Document object on success, false otherwise and set $_SESSION["errorMessage"]
-	*/
-	function & get($iDocumentID) {
-		global $default, $lang_err_doc_not_exist;
-		$sql = new Owl_DB();
-		$sql->query("SELECT * FROM " . $default->owl_documents_table . " WHERE id = " . $iDocumentID);
-		if ($sql->next_record()) {
-			$doc = & new Document(stripslashes($sql->f("name")), $sql->f("filename"), $sql->f("size"), stripslashes($sql->f("creator_id")), $sql->f("mime_id"), $sql->f("folder_id"), $sql->f("description"));			
-			$doc->setDocumentTypeID($sql->f("document_type_id"));
-			$doc->setMajorVersionNumber($sql->f("major_version"));
-			$doc->setMinorVersionNumber($sql->f("minor_version"));
-			$doc->setIsCheckedOut($sql->f("is_checked_out"));
-			return $doc;
-		}
-		$_SESSION["errorMessage"] = $lang_err_object_not_exist . "id = " . $iDocumentID . " table = documents";
-		return false;		
-	}
-	
 	/** Get the document primary key */
 	function getID() {
 		return $this->iID;
@@ -293,6 +188,142 @@ class Document {
 	/** set the document check out status */
 	function setIsCheckedOut($bNewValue) {
 		$this->bCheckedOut = $bNewValue;
+	}
+	
+	/**
+	* Insert the current document into the database
+	*
+	* @return boolean true on successful insert, false otherwise and set $_SESSION["errorMessage"]
+	*/
+	function create() {
+		global $default, $lang_err_doc_exist, $lang_err_database;
+		//if the id >= 0, then the object has already been created
+		if ($this->iId < 0) {
+			$sql = new Owl_DB();
+			$result = $sql->query("INSERT INTO " . $default->owl_documents_table . " (document_type_id, name, filename, size, creator_id, modified, description, mime_id, folder_id, major_version, minor_version, is_checked_out) " .
+						"VALUES (" . $this->iDocumentTypeID . ", '" . addslashes($this->sName) . "', '" . addslashes($this->sFileName) . "', $this->iSize, $this->iCreatorID, '" . getCurrentDateTime() . "', '" . addslashes($this->sDescription) . "', $this->iMimeTypeID, $this->iFolderID, $this->iMajorVersion, $this->iMinorVersion, " . ($this->bIsCheckedOut ? 1 : 0) . ")");
+			if ($result) {
+				//set the current documents primary key
+				$this->iId = $sql->insert_id();
+				return true;
+			}
+			$_SESSION["errorMessage"] = $lang_err_database;
+			return false;			
+		}
+		$_SESSION["errorMessage"] = $lang_err_object_exists . "id = " . $this->iId . " table = documents";
+		return false;
+		
+	}
+	
+	/**
+	* Update the documents current values in the database
+	*
+	* @return boolean true on successful update, false otherwise and set $_SESSION["errorMessage"]
+	*/
+	function update() {
+		global $default, $lang_err_database, $lang_err_object_key;
+		if ($this->iId >= 0) {
+			$sql = new Owl_DB();
+			$result = $sql->query("UPDATE " . $default->owl_documents_table . " SET " .
+						"document_typeid = $this->iDocumentTypeID, " . 
+						"file_name = '" . addslashes($this->file_name) . "', " .
+						"size = $this->iSize, " .
+						"creator_id = $this->iCreatorID, " .
+						"modified = " . getCurrentDateTime() . ", " .
+						"description = '" . addslashes($this->sDescription) . "', " .
+						"mime_id = $this->iMimeTypeID, " .
+						"folder_id = $this->iFolderID, " .
+						"major_revision = $this->iMajorRevision, " .
+						"minor_revision =  $this->iMinorRevision, " .
+						"is_checked_out = $this->bIsCheckedOut " .
+					"WHERE id = $this->id");
+			if ($result) {
+				return true;
+			}
+			$_SESSION["errorMessage"] = $lang_err_database;
+			return false;
+		}
+		$_SESSION["errorMessage"] = $lang_err_object_key;
+		return false;
+		
+	}
+	
+	/**
+	* Delete the current document from the database.  Set the primary key to -1 
+	* on successful deletion
+	*
+	* @return boolean true and reset id to -1 on successful deletion, false otherwise and set $_SESSION["errorMessage"]
+	*/
+	function delete() {	
+		global $default, $lang_err_database, $lang_err_object_key;
+		if ($this->iId >= 0) {
+			$sql = new Owl_DB();
+			$result = $sql->query("DELETE FROM  " . $default->owl_documents_table . "  WHERE id = $this->iId");
+			if ($result) {
+				$this->iId = -1;
+				return true;
+			}			
+			$_SESSION["errorMessage"] = $lang_err_database;
+			return false;
+		}
+		$_SESSION["errorMessage"] = $lang_err_object_key;
+		return false;
+	}
+	
+	
+	/**
+	*
+	* Static function.  Given a document primary key will create
+	* a document object and populate it with the corresponding
+	* database values
+	*
+	* @return Document populated Document object on success, false otherwise and set $_SESSION["errorMessage"]
+	*/
+	function & get($iDocumentID) {
+		global $default, $lang_err_doc_not_exist;
+		$sql = new Owl_DB();
+		$sql->query("SELECT * FROM " . $default->owl_documents_table . " WHERE id = " . $iDocumentID);
+		if ($sql->next_record()) {
+			$oDocument = & new Document(stripslashes($sql->f("name")), $sql->f("filename"), $sql->f("size"), stripslashes($sql->f("creator_id")), $sql->f("mime_id"), $sql->f("folder_id"), $sql->f("description"));			
+			$oDocument->setDocumentTypeID($sql->f("document_type_id"));
+			$oDocument->setMajorVersionNumber($sql->f("major_version"));
+			$oDocument->setMinorVersionNumber($sql->f("minor_version"));
+			$oDocument->setIsCheckedOut($sql->f("is_checked_out"));
+			$oDocument->iId = $iDocumentID;
+			return $doc;
+		}
+		$_SESSION["errorMessage"] = $lang_err_object_not_exist . "id = " . $iDocumentID . " table = documents";
+		return false;		
+	}
+	
+	/**
+	* Static function.
+	* Get all the document field's associated with a document type
+	*
+	* @param 	Document type primary key
+	* @param 	Get only the mandatory fields
+	*
+	* @return array array of document field objects, false otherwise and $_SESSION["errorMessage"]
+	*/
+	function getDocumentFieldsForDocumentType($iDocumentTypeID, $bMandatoryOnly = false) {
+		$aDocumentFieldArray;
+		settype($aDocumentFieldArray,"array");
+		$sql = new Owl_DB();
+		$result = $sql->query("SELECT DF.id AS id, DF.name AS name, DF.data_type AS data_type FROM document_fields AS DF INNER JOIN document_type_fields_link AS DTFL ON DF.id = DTFL.field_id WHERE DTFL.document_type_id = $iDocumentTypeID " . ($bMandatoryOnly ? "AND DFTL.is_mandatory = 1 " : " ") . "ORDER BY DF.name ASC");
+		if ($result) {
+			$iCount = 0;
+			while ($sql->next_record()) {
+				$oDocumentField = DocumentField::get($sql->f("id"));
+				if (!($oDocumentField === false)) {
+					$aDocumentFieldArray[$iCount] = $oDocumentField;
+					$iCount++;
+				}
+			}
+			return $aDocumentFieldArray;
+		}
+		$_SESSION["errorMessage"] = $lang_err_database;
+		return false;
+		
 	}
 	
 }
