@@ -77,7 +77,7 @@ if ($loginAction == "loginForm") {
 } elseif ($loginAction == "login") {
     // set default url for login failure
     // with redirect appended if set
-    $url = $url . "login.php?loginAction=loginForm" . (isset($redirect) ? "&redirect=$redirect" : "");
+    $url = $url . "login.php?loginAction=loginForm" . (isset($redirect) ? "&redirect=" . urlencode($redirect) : "");
     
     // if requirements are met and we have a username and password to authenticate
     if( isset($fUserName) && isset($fPassword) ) {
