@@ -90,7 +90,7 @@ class NavBar
 			$this->nwColourBar = "$default->graphicsUrl/home/def.gif";
 		}
 		
-		if($section == "Manage Documents")
+		if(($section == "Manage Documents") || ($section == "Manage Categories") || ($section == "Manage Document Types"))
 		{
 			$this->mdocs = "$default->graphicsUrl/mdocs/over.gif";
 			$this->nwColourBar = "$default->graphicsUrl/mdocs/def.gif";
@@ -190,13 +190,12 @@ class NavBar
         $row4MenuImages = array($colourHome,$colourmdocs,$coloursubscriptions,$colourasearch,$colouradmin,$colourprefs,$colourhelp,$colourlogout);
 
         //set up the links
-        //$oPatternTableLinks = new PatternTableLinks($aTopMenuLinks, null, 1, 8,2,$aTopMenuImages);
 		$sTopMenu = "<table width=\"100%\" height=\"100%\" cellspacing = \"0\">\n<tr>\n";
 		for ($i = 0; $i < count($aTopMenuLinks); $i++) {			
 			if (strcmp($aTopMenuLinks[$i], "help") == 0) {				
 				$sTopMenu .= "<td cellspacing = \"20\"><input type=\"image\" src=\"" . $aTopMenuImages[$i] . "\" onClick=\"return helpWindow();\" border=\"0\" /></a></td>\n";
 			} else {
-				$sTopMenu .= "<td cellspacing = \"20\"><a href=\"" . $aTopMenuLinks[$i] . "\"><img src=\"" . $aTopMenuImages[$i] . "\" border=\"0\" /></a></td>\n";
+				$sTopMenu .= "<td cellspacing = \"20\">" . (strlen($aTopMenuLinks[$i]) > 0 ? "<a href=\"" . $aTopMenuLinks[$i] . "\">" : "") . "<img src=\"" . $aTopMenuImages[$i] . "\" border=\"0\" /></a></td>\n";
 			}
 		}
 		$sTopMenu .= "</tr>\n</table>\n";		
