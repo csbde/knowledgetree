@@ -17,12 +17,11 @@ require_once("$default->uiDirectory/foldermanagement/addFolderUI.inc");
  * @package presentation.lookAndFeel.knowledgeTree.documentmanagement
  */
 
- 
 function renderHeading($sHeading) {
     global $default;
     $sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
     $sColor = $default->siteMap->getSectionColour($sSectionName, "th");
-    $sToRender  = "<table border=\"0\" width=\"600\">\n";
+    $sToRender  = "<table border=\"0\" width=\"100%\">\n";
     $sToRender .= "<tr align=\"left\"><th class=\"sectionHeading\" bgcolor=\"$sColor\"><font color=\"ffffff\">$sHeading</font></th></tr>\n";
     $sToRender .= "<tr/>\n";
     $sToRender .= "<tr/>\n";
@@ -142,21 +141,63 @@ function renderDocumentTypeResults($aResults) {
     return $sToRender;
 }
 
+/**
+ * Displays the headings for the displayed document details and enables
+ * resorting the contents
+ *
+ * @param string the field currently sorting by
+ * @param string the direction currently sorted in
+ */
+function renderSortHeadings($sSortBy, $sSortDirection) {
+ 	global $default, $oDocBrowser, $fBrowseType, $fFolderID, $fCategoryName, $fDocumentTypeID;
+ 	
+	$sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
+	$sTDBGColour = $default->siteMap->getSectionColour($sSectionName, "td");    
+
+	// need list of display criteria and sort name
+    $aSortCriteria = $oDocBrowser->getSortCriteria();							 										 
+	
+    $sToRender .= "<tr bgcolor=\"$sTDBGColour\">";
+    while (list($key, $value) = each ($aSortCriteria)) {    	
+    	$sCurrentSortDirection = "asc";
+    	$displayText = $value["display"];
+    	// if the current heading is being sorted then flip the sort direction
+    	if ($sSortBy == $key) {
+    		$sCurrentSortDirection = ($sSortDirection == "asc" ? "desc" : "asc");
+    		$displayText = "<img border=\"0\" src=\"$default->graphicsUrl/" . $sCurrentSortDirection . ".gif\">" . $displayText;
+    	}
+	  	switch ($fBrowseType) {
+	    	case "folder" : 		
+	    					$queryString = "fFolderID=$fFolderID"; 
+	                        break;
+	    	case "category" :
+			    	 		$queryString = "fCategoryName=$fCategoryName";
+	                        break;    	
+	    	case "documentType" :
+							$queryString = "fDocumentTypeID=$fDocumentTypeID";	    	 
+	                        break;
+	  	}    	
+	    $sToRender .= "<td>" . generateLink($_SERVER["PHP_SELF"], "fBrowseType=$fBrowseType&$queryString&fSortBy=$key&fSortDirection=$sCurrentSortDirection", $displayText) . "</td>";	                            	
+	}
+
+    $sToRender .= "</tr>\n";
+    return $sToRender;
+}
 
 function renderFolderResults($aResults) {
     global $default;
     $sToRender = "";
+	    
     // now loop through the rest of the folders and display links
     if (count($aResults["folders"]) > 1) {
         for ($i=1; $i<count($aResults["folders"]); $i++) {
             $sRow = displayFolderLink($aResults["folders"][$i]);
-            $sToRender .= "<tr><td nowrap width=\"100%\" bgcolor=\"" . getColour($i) . "\">" . $sRow . "</td></tr>\n";
+            $sToRender .= "<tr><td colspan=\"5\" nowrap width=\"100%\" bgcolor=\"" . getColour($i) . "\">" . $sRow . "</td></tr>\n";
         }
     } else {
         $sToRender .= "<tr><td>This folder contains no sub folders</td></tr>";
     }
-    
-    $sToRender .= "<tr><td>&nbsp;</td></tr>";
+        
     $sToRender .= "<tr><td>" . renderDocumentList($aResults, "This folder contains no documents", "You don't have access to the documents in this folder") . "</td></tr>\n";
     
     return $sToRender;
@@ -166,7 +207,15 @@ function renderDocumentList($aResults, $sNoDocumentsMessage, $sNoPermissionMessa
     // loop through the files and display links
     if (count($aResults["documents"]) > 0) {
         for ($i=0; $i<count($aResults["documents"]); $i++) {
-            $sToRender .= "<tr><td bgcolor=\"" . getColour($i) . "\">" . displayDocumentLink($aResults["documents"][$i], $bDisplayFullPath) . "</td></tr>";
+            $sToRender .= "<tr bgcolor=\"" . getColour($i) . "\" width=\"100%\"><td>" . displayDocumentLink($aResults["documents"][$i], $bDisplayFullPath) . "</td>";
+            //$sToRender .= "<tr>";
+            $sToRender .= "<td>" . $aResults["documents"][$i]->getFileName() . "</td>";
+            $oCreator = User::get($aResults["documents"][$i]->getCreatorID());
+            $sToRender .= "<td>" . $oCreator->getName() . "</td>";
+            $sToRender .= "<td>" . $aResults["documents"][$i]->getLastModifiedDate() . "</td>";
+            $oDocumentType = DocumentType::get($aResults["documents"][$i]->getDocumentTypeID());
+            $sToRender .= "<td>" . $oDocumentType->getName() . "</td>";
+            $sToRender .= "</tr>\n";
         }
     } else if ($aResults["accessDenied"]) {
         $sToRender .= "<tr><td>$sNoPermissionMessage</td></tr>";
@@ -176,12 +225,19 @@ function renderDocumentList($aResults, $sNoDocumentsMessage, $sNoPermissionMessa
     return $sToRender;
 }
 
-function renderPage($aResults, $sBrowseType) {
+/**
+ * Displays the browse page- lists folders and documents
+ *
+ * @param array the browse results to display
+ * @param string the browse view (folder, category, document type)
+ * @param string the field to sort the results by
+ * @param string the direction to sort
+ */
+function renderPage($aResults, $sBrowseType, $sSortBy, $sSortDirection) {
     global $default;
     
 	$sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
-	$sTDBGColour = $default->siteMap->getSectionColour($sSectionName, "td");
-    
+	$sTDBGColour = $default->siteMap->getSectionColour($sSectionName, "td");    
 
     $sToRender = renderHeading("Browse Collection");
     
@@ -194,15 +250,16 @@ function renderPage($aResults, $sBrowseType) {
     $sToRender .= "</td></tr></table>\n";
     
     // browse type select 
-   	$sToRender .=  "<table border=\"0\" width=\"600\">\n";
+   	$sToRender .=  "<table border=\"0\" width=\"100%\">\n";
     $sToRender .= "\t<tr><td bgcolor=\"$sTDBGColour\">" . renderBrowseTypeSelect($sBrowseType) . "</td></tr>";
     $sToRender .= "\t</table>";
-        
+    	
     // display folders|documents
 	$sToRender .= "<table border=\"0\" width=\"100%\">\n";
+	$sToRender .= renderSortHeadings($sSortBy, $sSortDirection);	
 	$sToRender .= "<tr><td>\n";    
     switch ($sBrowseType) {
-        case "folder"       : $sToRender .= renderFolderResults($aResults); break;
+        case "folder"       : $sToRender .= renderFolderResults($aResults, $sSortBy, $sSortDirection); break;
         case "category"     : $sToRender .= renderCategoryResults($aResults); break;
         case "documentType" : $sToRender .= renderDocumentTypeResults($aResults); break;
     }
@@ -212,8 +269,9 @@ function renderPage($aResults, $sBrowseType) {
     return $sToRender;
 }
 
+
 function getColour($iColourCount) {
-		return ($iColourCount%2 == 0) ? "F5F6EE" : "FFFFFF";
+	return ($iColourCount%2 == 0) ? "F5F6EE" : "FFFFFF";
 }
 
 ?>
