@@ -119,7 +119,7 @@ class WebSite extends KTEntity {
     * @param  int  Primary key of user that is web master
     *
     */
-    function setWebMasterID() {
+    function setWebMasterID($iNewValue) {
         $this->iWebMasterID = $iNewValue;
     }
 
