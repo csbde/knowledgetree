@@ -23,10 +23,11 @@ if (checkSession()) {
     require_once("$default->fileSystemRoot/presentation/Html.inc");
 
     $oPatternCustom = & new PatternCustom();
-    if(isset($fDocFieldID)) {
-        // post back on DocField select from manual edit page
-        $oPatternCustom->setHtml(getSelectMetaDataPage($fDocFieldID,$fMetaDataID));
-        $main->setFormAction($_SERVER["PHP_SELF"] . "?fSelected=1");
+    if(isset($fDocFieldID)) {        
+	        // post back on DocField select from manual edit page
+	        $oPatternCustom->setHtml(getSelectMetaDataPage($fDocFieldID,$fMetaDataID));
+	        $main->setFormAction($_SERVER["PHP_SELF"] . "?fSelected=1");	    
+        	//$oPatternCustom->setHtml(getEditMetaDataFailPage($fDocFieldID));        
     } else {
         // if nothing happens...just reload edit page
         $oPatternCustom->setHtml(getSelectFieldPage(null));
@@ -34,8 +35,9 @@ if (checkSession()) {
     }
 
     if(isset($fSelected)) {
-        $oPatternCustom->setHtml(getEditMetaDataPage($fDocFieldID,$fMetaDataID));
-        $main->setFormAction($_SERVER["PHP_SELF"] . "?fForStore=1");
+        
+	        $oPatternCustom->setHtml(getEditMetaDataPage($fDocFieldID,$fMetaDataID));
+	        $main->setFormAction($_SERVER["PHP_SELF"] . "?fForStore=1");       
     }
 
     if(isset($fForStore)) {
