@@ -14,6 +14,8 @@ require_once("environment.php");
 
 $default->owl_graphics_url	= $default->owl_root_url . "/graphics";
 $default->owl_LangDir		= $default->owl_fs_root . "/locale";
+// change this to reflect a directory with a different look and feel
+$default->owl_ui_directory  = $default->owl_fs_root . "/presentation/knowledgeTree";
 
 // Set to true to use the file system to store documents, false only uses the database
 $default->owl_use_fs            = true;
@@ -133,7 +135,7 @@ $default->siteMap = new SiteMap();
 $default->siteMap->addPage("login", "/login.php?loginAction=login", "General", "Anonymous");
 $default->siteMap->addPage("loginForm", "/login.php?loginAction=loginForm", "General", "Anonymous"); 
 $default->siteMap->addPage("logout", "/logout.php", "General", "Anonymous");
-$default->siteMap->addPage("dashboard", "/dashboard.php", "General", "Unit Administrators");
+$default->siteMap->addPage("dashboard", "/presentation/dashboardBL.php", "General", "Unit Administrators");
 $default->siteMap->addPage("browse", "/browse.php", "Browse Collections", "Anonymous");
 $default->siteMap->addPage("addFolder", "/addFolder.php", "Browse Collections", "Unit Administrators");
 $default->siteMap->addPage("addUser", "/addUser.php", "Administration", "Unit Administrators");

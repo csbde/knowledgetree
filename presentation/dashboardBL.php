@@ -1,8 +1,8 @@
 <?php
 
 // main library routines and defaults
-require_once("./config/dmsDefaults.php");
-require_once("$default->owl_fs_root/presentation/DashboardUI.inc");
+require_once("../config/dmsDefaults.php");
+require_once("$default->owl_ui_directory/dashboardUI.inc");
 require_once("$default->owl_fs_root/lib/visualpatterns/PatternMainPage.inc");
 require_once("$default->owl_fs_root/lib/visualpatterns/PatternImage.inc");
 require_once("$default->owl_fs_root/lib/visualpatterns/PatternTableLinks.inc");
