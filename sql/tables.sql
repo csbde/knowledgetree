@@ -80,6 +80,12 @@ minor_version INTEGER NOT NULL,
 is_checked_out BIT NOT NULL
 );
 
+CREATE TABLE document_subscriptions ( 
+id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
+user_id INTEGER NOT NULL,
+document_id INTEGER NOT NULL
+);
+
 CREATE TABLE folders ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 name CHAR(255),
@@ -91,15 +97,20 @@ unit_id INTEGER,
 is_public BIT NOT NULL
 );
 
-CREATE TABLE folders_users_roles_link ( 
+CREATE TABLE folder_subscriptions ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 user_id INTEGER NOT NULL,
-folder_id INTEGER NOT NULL,
-role_type_id INTEGER NOT NULL,
+folder_id INTEGER NOT NULL
+);
+
+CREATE TABLE folders_users_roles_link ( 
+id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
+groups_folders_approval_id INTEGER NOT NULL,
+user_id INTEGER NOT NULL,
+document_id INTEGER NOT NULL,
 datetime DATETIME,
 done BIT
-) 
-;
+);
 
 CREATE TABLE groups_folders_approval_link ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
@@ -181,12 +192,6 @@ access_id INTEGER,
 link_text CHAR(255),
 is_default BIT,
 is_enabled BIT DEFAULT 1
-);
-
-CREATE TABLE subscriptions ( 
-id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
-user_id INTEGER NOT NULL,
-document_id INTEGER NOT NULL
 );
 
 CREATE TABLE system_settings ( 
@@ -307,6 +312,21 @@ ADD CONSTRAINT PK_documents
 PRIMARY KEY (id)
 ;
 
+ALTER TABLE document_subscriptions
+ADD CONSTRAINT PK_document_subscriptions
+PRIMARY KEY (id)
+;
+
+ALTER TABLE folders
+ADD CONSTRAINT PK_folders
+PRIMARY KEY (id)
+;
+
+ALTER TABLE folder_subscriptions
+ADD CONSTRAINT PK_folder_subscriptions
+PRIMARY KEY (id)
+;
+
 ALTER TABLE folders_users_roles_link
 ADD CONSTRAINT PK_folders_users_roles_link
 PRIMARY KEY (id)
@@ -369,11 +389,6 @@ PRIMARY KEY (id)
 
 ALTER TABLE sitemap
 ADD CONSTRAINT PK_sitemap
-PRIMARY KEY (id)
-;
-
-ALTER TABLE subscriptions
-ADD CONSTRAINT PK_subscriptions
 PRIMARY KEY (id)
 ;
 
