@@ -30,13 +30,23 @@ if (checkSession()) {
 			if (strlen($sMetaTagIDs) > 0) {
 				$sSQLSearchString = getSQLSearchString($fSearchString);
 				$sDocument = getApprovedDocumentString($sMetaTagIDs, $sSQLSearchString);
-				$oPatternCustom = & new PatternCustom();
-				if (!isset($fStartIndex)) {
-					$fStartIndex = 0;
+				if (strlen($sDocument) > 0) {
+					//if there are documents to view					
+					$oPatternCustom = & new PatternCustom();
+					if (!isset($fStartIndex)) {
+						$fStartIndex = 0;
+					}
+					$oPatternCustom->setHtml(getSearchResults($sDocument,$fStartIndex, $fSearchString, $sMetaTagIDs));
+					$main->setCentralPayload($oPatternCustom);				                                
+					$main->render();
+				} else {
+					$oPatternCustom = & new PatternCustom();
+					$oPatternCustom->setHtml(getSearchPage($fSearchString, explode(",",$sMetaTagIDs)));
+					$main->setCentralPayload($oPatternCustom);
+					$main->setErrorMessage("No documents matched your search criteria");
+					$main->setFormAction("advancedSearchBL.php?fForSearch=1");                                
+					$main->render();
 				}
-				$oPatternCustom->setHtml(getSearchResults($sDocument,$fStartIndex, $fSearchString, $sMetaTagIDs));
-				$main->setCentralPayload($oPatternCustom);				                                
-				$main->render();
 				
 			} else {
 				$oPatternCustom = & new PatternCustom();
@@ -86,7 +96,10 @@ function getChosenMetaDataTags() {
 			
 		}
 	}
-	return implode(",",$aTagIDs);
+	if (count($aTagIDs) > 1) {
+		return implode(",",$aTagIDs);
+	}
+	return $aTagIDs[0];
 }
 
 /**
@@ -109,7 +122,11 @@ function getApprovedDocumentString($sMetaTagIDs, $sSQLSearchString) {
 				$aApprovedDocuments[count($aApprovedDocuments)] = $sql->f("id");
 		}
 	}
-	return implode(",",$aApprovedDocuments);	
+	if (count($aApprovedDocuments) > 1) {
+		return implode(",",$aApprovedDocuments);
+	}
+	return $aApprovedDocuments[0];
+
 }
 
 /*
