@@ -668,7 +668,7 @@ class Folder {
         global $default;
         $sDocumentIDs = Folder::getDocumentIDs($iFolderID);
         if (strlen($sDocumentIDs) > 0) {
-            $sQuery = "SELECT * FROM folders_users_roles_link WHERE document_id in ($sDocumentIDs) AND (active = 1 OR done = 1)";
+            $sQuery = "SELECT * FROM folders_users_roles_link WHERE document_id in ($sDocumentIDs) AND (active = 1)";
             $sql = $default->db;
             $sql->query($sQuery);
             if ($sql->next_record()) {
