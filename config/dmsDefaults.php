@@ -21,8 +21,6 @@ $default->owl_use_fs            = true;
 // the Trailing Slash is important here.
 //$default->owl_compressed_database = 1;
 
-
-
 //****************************************************
 // Pick your language system default language
 // now each user can pick his language
@@ -102,17 +100,17 @@ $default->owl_web_documents_status_table = "web_documents_status";
 
 
 // This is the defualt MailServer Host for emailing 
-$default->owl_mail_server = "mail.jamwarehouse.com"
+$default->owl_mail_server = "mail.jamwarehouse.com";
 
 
 // Change this to reflect the database you are using
-require_once("$default->owl_fs_root/phplib/db_mysql.inc");
+//require_once("$default->owl_fs_root/phplib/db_mysql.inc");
 //require("$default->owl_fs_root/phplib/db_pgsql.inc");
 
 // Change this to reflect the authentication method you are using
 //require_once("$default->owl_fs_root/lib/LDAPAuthenticator.inc");
-require_once("$default->owl_fs_root/lib/Authenticator.inc");
-require_once("$default->owl_fs_root/lib/DBAuthenticator.inc");
+//require_once("$default->owl_fs_root/lib/Authenticator.inc");
+//require_once("$default->owl_fs_root/lib/DBAuthenticator.inc");
 
 // logo file that must reside inside lang/graphics directory
 $default->logo = "kt.jpg";
@@ -151,7 +149,7 @@ define("A", 3);
 */
 
 // define site mappings
-require_once("$default->owl_fs_root/lib/SiteMap.inc");
+/*require_once("$default->owl_fs_root/lib/SiteMap.inc");
 $default->siteMap = new SiteMap();
 // action, section, page, userClass (SA, UA, U, A)
 $default->siteMap->addPage("LOGIN", "login.php?loginAction=login", "General", "A");
@@ -162,5 +160,5 @@ $default->siteMap->addPage("BROWSE", "browse.php", "Browse Collections", "A");
 $default->siteMap->addPage("ADDFOLDER", "addFolder.php", "Browse Collections", "UA");
 $default->siteMap->addPage("ADDUSER", "addUser.php", "Administration", "UA");
 $default->siteMap->addPage("ADDUNIT", "addUnit.php", "Administration", "SA");
-$default->siteMap->addPage("ADDORG", "addOrganisation.php", "Administration", "SA");
+$default->siteMap->addPage("ADDORG", "addOrganisation.php", "Administration", "SA");*/
 ?>
