@@ -17,16 +17,6 @@ require_once("$default->uiDirectory/foldermanagement/addFolderUI.inc");
  * @package presentation.lookAndFeel.knowledgeTree.documentmanagement
  */
 
-/*function renderHeading($sHeading) {
-    global $default;
-    $sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
-    $sColor = $default->siteMap->getSectionColour($sSectionName, "th");
-    $sToRender  = "<table border=\"0\" width=\"600\">\n";
-    $sToRender .= "<tr align=\"left\"><th class=\"sectionHeading\" bgcolor=\"$sColor\"><font color=\"ffffff\">$sHeading</font></th></tr>\n";
-    $sToRender .= "</table>\n";
-    return $sToRender;
-}*/
- 
 /**
  * Generates radio button selects for document browse by type
  * Javascript refreshes the form when it changes
@@ -95,20 +85,20 @@ function renderCategoryResults($aResults) {
             // category name
             $sToRender .= "<td>" . displayCategoryLink($aResults["categories"][$i]) . "</td>";
             // blank filename
-            $sToRender .= "<td></td>";
+            $sToRender .= "<td>&nbsp;</td>";
             // creator name
-            $sToRender .= "<td></td>";
+            $sToRender .= "<td>&nbsp;</td>";
             // modified date
-            $sToRender .= "<td></td>";
+            $sToRender .= "<td>&nbsp;</td>";
             // document type
-            $sToRender .= "<td></td>";                      
+            $sToRender .= "<td>&nbsp;</td>";                      
 
             $sToRender .= "</tr>\n";
         }
     } else {
         // else the first entry is the category name, so display the documents in the category
         // with full paths
-        $sToRender .= renderDocumentList($aResults, "This category contains no documents", "You don't have access to the documents in this category", true);
+        $sToRender .= renderDocumentList($aResults, "This category contains no documents", "You don't have access to the documents in this category");
     }
     return $sToRender;
 }
@@ -160,19 +150,19 @@ function renderDocumentTypeResults($aResults) {
             // document type name
             $sToRender .= "<td>" . displayDocumentTypeLink($aResults["documentTypes"][$i]) . "</td>";
             // blank filename
-            $sToRender .= "<td></td>";
+            $sToRender .= "<td>&nbsp;</td>";
             // creator name
-            $sToRender .= "<td></td>";
+            $sToRender .= "<td>&nbsp;</td>";
             // modified date
-            $sToRender .= "<td></td>";
+            $sToRender .= "<td>&nbsp;</td>";
             // document type
-            $sToRender .= "<td></td>";                      
+            $sToRender .= "<td>&nbsp;</td>";                      
             $sToRender .= "</tr>\n";                   	
         }
     } else {
         // else the first entry is the document type name, so display the documents in the document type
         // with full paths
-        $sToRender .= renderDocumentList($aResults, "This document type contains no documents", "You don't have access to the documents in this document type", true);
+        $sToRender .= renderDocumentList($aResults, "This document type contains no documents", "You don't have access to the documents in this document type");
     }
     return $sToRender;
 }
@@ -200,13 +190,13 @@ function renderFolderResults($aResults) {
             // folder name
             $sToRender .= "<td>" . $sFolderLink . "</td>";
             // blank filename (??: folder description?)
-            $sToRender .= "<td></td>";
+            $sToRender .= "<td>&nbsp;</td>";
             // creator name
-            $sToRender .= "<td>" . $oCreator->getName() . "</td>";
+            $sToRender .= "<td>" . ($oCreator ? $oCreator->getName() : "&nbsp;") . "</td>";
             // modified date (TODO: add to db)
-            $sToRender .= "<td></td>";
+            $sToRender .= "<td>&nbsp;</td>";
             // document type (??: display one of the mapped document types?)
-            $sToRender .= "<td></td>";                        
+            $sToRender .= "<td>&nbsp;</td>";                        
             $sToRender .= "</tr>\n";
         }
     } else {
@@ -271,6 +261,8 @@ function renderSortHeadings($sSortBy, $sSortDirection) {
  * @param boolean whether to display the complete path to the document or not
  */
 function renderDocumentList($aResults, $sNoDocumentsMessage, $sNoPermissionMessage, $bDisplayFullPath = false) {
+	global $default;
+	
 	$iFolderCount = count($aResults["folders"]) - 1;
     // loop through the files and display links
     if (count($aResults["documents"]) > 0) {
@@ -280,8 +272,9 @@ function renderDocumentList($aResults, $sNoDocumentsMessage, $sNoPermissionMessa
             $sToRender .= "<tr bgcolor=\"" . getColour($i+$iFolderCount) . "\" width=\"100%\"><td>" . displayDocumentLink($aResults["documents"][$i], $bDisplayFullPath) . "</td>";
             $sToRender .= "<td>" . $aResults["documents"][$i]->getFileName() . "</td>";
             $oCreator = User::get($aResults["documents"][$i]->getCreatorID());
-            $sToRender .= "<td>" . $oCreator->getName() . "</td>";
-            $sToRender .= "<td>" . $aResults["documents"][$i]->getLastModifiedDate() . "</td>";
+            $sToRender .= "<td>" . ($oCreator ? $oCreator->getName() : "") . "</td>";
+            $aDocumentTransaction = DocumentTransaction::getList("transaction_id=1 AND document_id=" . $aResults["documents"][$i]->getID());
+            $sToRender .= "<td>" . $aDocumentTransaction[0]->dDateTime . "</td>";
             $oDocumentType = DocumentType::get($aResults["documents"][$i]->getDocumentTypeID());
             if ($oDocumentType) {
             	$sToRender .= "<td>" . $oDocumentType->getName() . "</td>";
