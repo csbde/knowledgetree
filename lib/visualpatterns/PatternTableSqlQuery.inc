@@ -36,7 +36,7 @@ class PatternTableSqlQuery {
 	/** table width, either in pixels or as a percentage e.g. 600 or 100%*/
 	var $sWidth;	
 	/** link url used if a column type of 3 is specified */
-	var $sLinkURL;
+	var $aLinkURLs;
 	/** database column values to append to link url if a column type of 3 is specified */
 	var $aDBQueryStringColumns;
 	/** variables names to give $aDBQueryStringColumns on the query string */
@@ -52,14 +52,14 @@ class PatternTableSqlQuery {
 	/** message that will be displayed if the table is empty*/
 	var $sEmptyTableMessage;
 				
-	function PatternTableSqlQuery($sTmpQuery, $aTmpColumns, $aTmpColumnTypes, $aTmpColumnHeaderNames, $sTmpWidth, $sTmpLinkURL = null, $sTmpDBQueryStringColumns = null, $aNewQueryStringVariableNames = null) {
+	function PatternTableSqlQuery($sTmpQuery, $aTmpColumns, $aTmpColumnTypes, $aTmpColumnHeaderNames, $sTmpWidth, $aTmpLinkURLs = null, $sTmpDBQueryStringColumns = null, $aNewQueryStringVariableNames = null) {
 		$this->sQuery = $sTmpQuery;
 		$this->aColumns = & $aTmpColumns;
 		$this->aColumnTypes = $aTmpColumnTypes;
 		$this->aColumnHeaderNames = $aTmpColumnHeaderNames;
 		$this->sWidth = $sTmpWidth;
 		$this->bDisplayColumnHeadings = $bTmpDisplayColumnHeadings;
-		$this->sLinkURL = $sTmpLinkURL;
+		$this->aLinkURLs = $aTmpLinkURLs;		
 		$this->aDBQueryStringColumns = $sTmpDBQueryStringColumns;
 		$this->aQueryStringVariableNames = $aNewQueryStringVariableNames;
 	}
@@ -133,8 +133,8 @@ class PatternTableSqlQuery {
 								}
 								break;
 						case 3:
-								//hyperlink
-								$sToRender .= "<td><a href=\"" . $this->sLinkURL;
+								//hyperlink								
+								$sToRender .= "<td><a href=\"" . $this->aLinkURLs[$i];
 								for ($j = 0; $j < count($this->aDBQueryStringColumns); $j++) {
 									if (strpos($sToRender, "?") === false) {
 										$sToRender .= "?" . $this->aQueryStringVariableNames[$j] . "=" . $sql->f($this->aDBQueryStringColumns[$j]);										
