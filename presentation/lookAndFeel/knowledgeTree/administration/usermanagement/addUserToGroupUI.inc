@@ -16,9 +16,9 @@ function getPage($iUserID, $iGroupID) {
 	
 	if (isset($iUserID)) {
 		$oUser = User::get($iUserID);
-		$heading = "<tr><td>Are you Sure you wish to assign the User to the Group?</td></tr>\n";
+		$heading = "<tr><td colspan=\"2\">Are you Sure you wish to assign the User to the Group?</td></tr>\n";
 	} else{
-		$heading = "<tr><td>Please Assign a User to a Group:</td></tr>\n";
+		$heading = "<tr><td colspan=\"2\">Please Assign a User to a Group:</td></tr>\n";
 	}
 	if (isset($iGroupID)) {
 		$oGroup = Group::get($iGroupID);
