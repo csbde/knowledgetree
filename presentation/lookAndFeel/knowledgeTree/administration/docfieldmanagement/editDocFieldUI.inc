@@ -7,9 +7,6 @@
 * @package presentation.lookAndFeel.knowledgeTree.
 *
 */
-// get hte edit page if it comes from the add page
-
-
 
 // if its the manual edit page..then display normally
 function getEditPage($iDocFieldID) {
