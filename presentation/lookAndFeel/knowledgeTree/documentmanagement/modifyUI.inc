@@ -73,10 +73,13 @@ function renderEditableGenericMetaData($oDocument) {
 	$aDisplayColumnNames = array("document_id", "name", "value");
 	$aColumnsEditable = array(0,0,1);
 	$aColumnsVisible = array(0,1,1);
-	$aColumnTypes = array(1,1,1);
+	$aColumnDisplayTypes = array(1,1,1);
+	$aColumnDatabaseTypes = array(0,0,1);
 	
-	$oPatternTableSqlQuery = & new PatternEditableTableSqlQuery($sQuery, "document_fields_links", $aStoreColumnNames, $aDisplayColumnNames, $aColumnsEditable, $aColumnsVisible, $aColumnTypes, "gmd");
+	
+	$oPatternTableSqlQuery = & new PatternEditableTableSqlQuery($sQuery, "document_fields_links", $aStoreColumnNames, $aDisplayColumnNames, $aColumnsEditable, $aColumnsVisible, $aColumnDisplayTypes, $aColumnDatabaseTypes);
 	$oPatternTableSqlQuery->setTableCaption("Generic Meta Data");
+	$oPatternTableSqlQuery->setUniqueName("gmd");
 	return $oPatternTableSqlQuery->render();
 	
 }
@@ -96,10 +99,12 @@ function renderEditableTypeSpecificMetaData($oDocument) {
 	$aDisplayColumnNames = array("document_id", "field_name", "field_value");
 	$aColumnsEditable = array(0,0,1);
 	$aColumnsVisible = array(0,1,1);
-	$aColumnTypes = array(1,1,1);
+	$aColumnDisplayTypes = array(1,1,1);
+	$aColumnDatabaseTypes = array(0,0,1);
 	
-	$oPatternTableSqlQuery = & new PatternEditableTableSqlQuery($sQuery, "document_fields_links", $aStoreColumnNames, $aDisplayColumnNames, $aColumnsEditable, $aColumnsVisible, $aColumnTypes, "tsmd");
+	$oPatternTableSqlQuery = & new PatternEditableTableSqlQuery($sQuery, "document_fields_links", $aStoreColumnNames, $aDisplayColumnNames, $aColumnsEditable, $aColumnsVisible, $aColumnDisplayTypes, $aColumnDatabaseTypes);																
 	$oPatternTableSqlQuery->setTableCaption("Type specific meta data");
+	$oPatternTableSqlQuery->setUniqueName("tsmd");
 	return $oPatternTableSqlQuery->render();
 }
 
