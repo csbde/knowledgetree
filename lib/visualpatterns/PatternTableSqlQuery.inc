@@ -100,9 +100,9 @@ class PatternTableSqlQuery {
 	function & render() {
         global $default;
         
-		$sToRender = "<table cellpadding = 5, border=\"" . ($this->bIncludeBorder ? "1" : "0") . "\" >\n";
+		$sToRender = "<table cellpadding=\"5\" border=\"" . ($this->bIncludeBorder ? "1" : "0") . "\" width=\"" . $this->sWidth . "\">\n";
 		if (isset($this->sTableHeading)) {
-			$sToRender .= "<caption align=\"top\" colspan = " . count($this->aColumns) . ", align=left><b>$this->sTableHeading</b></caption>\n";
+			$sToRender .= "<caption align=\"top\" colspan=\"" . count($this->aColumns) . "\" align=\"left\"><b>$this->sTableHeading</b></caption>\n";
 		}
 		if ($this->bDisplayColumnHeadings) {
 			for ($i = 0; $i < count($this->aColumnHeaderNames); $i++) {
