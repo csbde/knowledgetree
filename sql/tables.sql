@@ -584,14 +584,14 @@ INSERT INTO system_settings (name, value) values ("emailServer", "mail.jamwareho
 INSERT INTO system_settings (name, value) values ("emailFrom", "owl@jamwarehouse.com");
 INSERT INTO system_settings (name, value) values ("emailFromName", "owl");
 -- directories
-INSERT INTO system_settings (name, value) values ("filesystemRoot", "c:/owl");
-INSERT INTO system_settings (name, value) values ("documentRoot", "c:/owl/Documents");
-INSERT INTO system_settings (name, value) values ("languageDirectory", "c:/owl/locale");
-INSERT INTO system_settings (name, value) values ("uiDirectory", "c:/owl/presentation/lookAndFeel/knowledgeTree");
+INSERT INTO system_settings (name, value) values ("filesystemRoot", "/usr/local/www/owl/dms");
+INSERT INTO system_settings (name, value) values ("documentRoot", "/usr/local/www/owl/dms/Documents");
+INSERT INTO system_settings (name, value) values ("languageDirectory", "/usr/local/www/owl/dms/locale");
+INSERT INTO system_settings (name, value) values ("uiDirectory", "/usr/local/www/owl/dms/presentation/lookAndFeel/knowledgeTree");
 -- urls
-INSERT INTO system_settings (name, value) values ("rootUrl", "");
-INSERT INTO system_settings (name, value) values ("graphicsUrl", "/graphics");
-INSERT INTO system_settings (name, value) values ("uiUrl", "/presentation/lookAndFeel/knowledgeTree");
+INSERT INTO system_settings (name, value) values ("rootUrl", "/dms");
+INSERT INTO system_settings (name, value) values ("graphicsUrl", "/dms/graphics");
+INSERT INTO system_settings (name, value) values ("uiUrl", "/dms/presentation/lookAndFeel/knowledgeTree");
 -- general settings
 INSERT INTO system_settings (name, value) values ("useFs", "true");
 INSERT INTO system_settings (name, value) values ("defaultLanguage", "NewEnglish");
