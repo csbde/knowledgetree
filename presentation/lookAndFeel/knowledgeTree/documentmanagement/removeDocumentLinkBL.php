@@ -30,7 +30,7 @@ if (checkSession()) {
 			//deleting a document link
 			$oDocumentLink = DocumentLink::get($fDocumentLinkID);
 			if ($oDocumentLink->delete()) {
-				redirect("$default->rootUrl/control.php?action=viewDocument&fDocumentID=$fParentDocumentID");				
+				controllerRedirect("viewDocument", "fDocumentID=$fParentDocumentID&fShowSection=linkedDocuments");			
 			} else {
 				//an error occured whilst trying to delete the document link
 				require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
