@@ -337,7 +337,7 @@ class DashboardNews {
 								  "synopsis = '$this->sSynopsis', " .
                                   "body = '$this->sBody', " .
                                   "rank = $this->iRank, " .
-                                  "image = '$this->sImage', " .
+                                  "image = '" . addslashes($this->sImage) . "', " .
                                   "image_size = $this->iImageSize " .
                                   ($this->iImageMimeTypeID ? ", image_mime_type_id = $this->iImageMimeTypeID " : " ") .                                 
            			 "WHERE id = $this->iId";
