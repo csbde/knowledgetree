@@ -17,13 +17,32 @@
 require_once("../../../../config/dmsDefaults.php");
 
 if (checkSession()) {
-    require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
-    require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
-    require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
-    require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentTransaction.inc");
+    
+    require_once("$default->fileSystemRoot/lib/email/Email.inc");
+    
+    require_once("$default->fileSystemRoot/lib/users/User.inc");
+    
     require_once("$default->fileSystemRoot/lib/documentmanagement/PhysicalDocumentManager.inc");
-    require_once("$default->fileSystemRoot/lib/subscriptions/SubscriptionEngine.inc");    
-    require_once("documentUI.inc");
+    require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentTransaction.inc");
+    require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
+    
+    require_once("$default->fileSystemRoot/lib/foldermanagement/FolderCollaboration.inc");
+    require_once("$default->fileSystemRoot/lib/foldermanagement/FolderUserRole.inc");
+    require_once("$default->fileSystemRoot/lib/roles/Role.inc");
+    require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
+    
+    require_once("$default->fileSystemRoot/lib/visualpatterns/PatternListFromQuery.inc");
+    require_once("$default->fileSystemRoot/lib/visualpatterns/PatternTableSqlQuery.inc");
+    require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
+    require_once("$default->fileSystemRoot/lib/visualpatterns/PatternListFromQuery.inc");
+    require_once("$default->fileSystemRoot/lib/visualpatterns/PatternTableSqlQuery.inc");
+    
+    require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/documentmanagement/documentUI.inc");
+    require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc");
+    require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
+    require_once("$default->fileSystemRoot/presentation/Html.inc");
+    
+    require_once("$default->fileSystemRoot/lib/subscriptions/SubscriptionEngine.inc");
 
     $oPatternCustom = & new PatternCustom();
 
@@ -41,6 +60,8 @@ if (checkSession()) {
                         $oDocument->setIsCheckedOut(true);
                         // set the user checking the document out
                         $oDocument->setCheckedOutUserID($_SESSION["userID"]);
+                        // update modification time
+                        $oDocument->setLastModifiedDate(getCurrentDateTime());
                         // update it
                         if ($oDocument->update()) {
                             
@@ -55,8 +76,9 @@ if (checkSession()) {
                                      array( "modifiedDocumentName" => $oDocument->getName() ));
                             $default->log->info("checkOutDocumentBL.php fired $count subscription alerts for checked out document " . $oDocument->getName());
 
-                            //redirect to the document view page
-                            redirect("$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $oDocument->getID());                        
+                            // display checkout success message in the document view page
+                            $oPatternCustom->setHtml(getCheckOutEditPage($oDocument, true));
+                            
                             
                         } else {
                             // document update failed
@@ -64,7 +86,7 @@ if (checkSession()) {
                         }
                     } else {
                         // prompt the user for a checkout comment
-                        $oPatternCustom->setHtml(renderCheckOutPage($oDocument));
+                        $oPatternCustom->setHtml(getCheckOutEditPage($oDocument));
                     }
                 } else {
                     // this document is already checked out
