@@ -46,6 +46,8 @@ class Folder {
 	var $sParentFolderIDs;
 	/** forward slash deliminated path from file system root */
 	var $sFullPath;
+	/** whether to inherit parent permissions or not */
+	var $bInheritParentPermission;
 	
 	
 	/**
@@ -68,6 +70,7 @@ class Folder {
 		$this->iCreatorID = $iNewCreatorID;		
 		$this->iUnitID = $iNewUnitID;
 		$this->bIsPublic = $bNewIsPublic;
+		$this->bInheritParentPermissions = true;
 	}
 	
     /**
@@ -205,6 +208,14 @@ class Folder {
 		return $this->sParentFolderIDs;
 	}
 	
+	function getInheritParentPermission() {
+		return $this->bInheritParentPermissions;
+	}
+	
+	function setInheritParentPermission($bNewValue) {
+		$this->bInheritParentPermissions = $bNewValue;
+	}
+	
 	/**
 	 * Recursive function to generate a comma delimited string containing
 	 * the parent folder ids
@@ -273,8 +284,8 @@ class Folder {
 			$this->sFullPath = $this->generateFolderPath($this->iParentID);
 			$this->sParentFolderIDs = $this->generateFolderIDs($this->iParentID);
 			$sql = $default->db;
-			$result = $sql->query("INSERT INTO " . $default->folders_table . " (name, description, parent_id, creator_id, unit_id, is_public, full_path, parent_folder_ids) " .
-						"VALUES ('$this->sName', '$this->sDescription', $this->iParentID, $this->iCreatorID, $this->iUnitID, " . ($this->bIsPublic ? 1 : 0) . ",'$this->sFullPath','$this->sParentFolderIDs')");
+			$result = $sql->query("INSERT INTO " . $default->folders_table . " (name, description, parent_id, creator_id, unit_id, is_public, full_path, parent_folder_ids, inherit_parent_folder_permission) " .
+						"VALUES ('$this->sName', '$this->sDescription', $this->iParentID, $this->iCreatorID, $this->iUnitID, " . ($this->bIsPublic ? 1 : 0) . ",'$this->sFullPath','$this->sParentFolderIDs'," . ($this->bInheritParentPermissions ? "1" : "0") . ")");
 			if ($result) {
 				$this->iId = $sql->insert_id();
 				return true;
@@ -302,7 +313,8 @@ class Folder {
 							"description = '$this->sDescription', " .
 							"parent_id = $this->iParentID, " .
 							"creator_id = $this->iCreatorID, " .
-							"unit_id = $this->iUnitID, ";
+							"unit_id = $this->iUnitID, " . 
+							"inherit_parent_folder_permission = " . ($this->bInheritParentPermissions ? "1" : "0") . ", ";
 							if ($bPathChange) {
 								$this->sFullPath = $this->generateFolderPath($this->iParentID);
 								$this->sParentFolderIDs = $this->generateFolderIDs($this->iParentID);
