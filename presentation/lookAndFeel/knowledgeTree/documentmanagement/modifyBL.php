@@ -1,19 +1,21 @@
 <?php
 /**
-* Business logic data used to modify documents (will use modifyUI.inc)
-*
-* Expected form variables:
-*	o fDocumentID - primary key of document being edited
-* Optional form variables
-*	o fForUpdate - generated when user clicks update on page and results in database update
-*	o fFirstEdit - generated from the document upload page when the user first uploads a document.
-*				   Is used to force the user to enter the necessary generic meta data
-*
-* @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
-* @date 24 January 2003
-* @package presentation.lookAndFeel.knowledgeTree.documentmanagement
-*
-*/
+ * $Id$
+ *
+ * Business logic data used to modify documents (will use modifyUI.inc)
+ *
+ * Expected form variables:
+ *	o fDocumentID - primary key of document being edited
+ * Optional form variables
+ *	o fForUpdate - generated when user clicks update on page and results in database update
+ *	o fFirstEdit - generated from the document upload page when the user first uploads a document.
+ *				   Is used to force the user to enter the necessary generic meta data
+ *
+ * Licensed under the GNU GPL. For full terms see the file DOCS/COPYING.
+ *
+ * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
+ * @package presentation.lookAndFeel.knowledgeTree.documentmanagement
+ */
 
 require_once("../../../../config/dmsDefaults.php");
 
@@ -29,6 +31,7 @@ if (checkSession()) {
 	require_once("$default->fileSystemRoot/lib/visualpatterns/PatternEditableTableSqlQuery.inc");
 	require_once("$default->fileSystemRoot/lib/visualpatterns/PatternEditableListFromQuery.inc");
 	require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/documentmanagement/modifyUI.inc");
+	require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/documentmanagement/documentUI.inc");
 	require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");				
 	require_once("$default->fileSystemRoot/presentation/Html.inc");
 	

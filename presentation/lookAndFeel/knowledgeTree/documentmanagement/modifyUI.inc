@@ -1,13 +1,14 @@
 <?php
-
 /**
-* Presentation data used to modify documents (will be used by modifyBL.inc)
-*
-* @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
-* @date 24 January 2003
-* @package presentation.lookAndFeel.knowledgeTree.documentmanagement
-*
-*/
+ * $Id$
+ *
+ * Presentation data used to modify documents (will be used by modifyBL.inc)
+ *
+ * Licensed under the GNU GPL. For full terms see the file DOCS/COPYING.
+ *
+ * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
+ * @package presentation.lookAndFeel.knowledgeTree.documentmanagement
+ */
 
 function renderDocumentPath($oDocument) {
     $sDocumentPath = displayFolderPathLink(Folder::getFolderPathAsArray($oDocument->getFolderID()), Folder::getFolderPathNamesAsArray($oDocument->getFolderID())) . " > " . $oDocument->getName();
@@ -21,8 +22,8 @@ function renderEditableDocumentData($oDocument, $iDocumentTypeID) {
 	
 	$sToRender;
 	if ($oDocument) {
-		$sToRender = "<table>\n";
-		$sToRender .= "<caption>Document Data</caption>\n";
+		$sToRender .= "<table>\n";
+		$sToRender .= "<caption><strong>Document Data</strong></caption>\n";
 		$sToRender .= "<tr>\n";		
 		$sToRender .= "<td bgcolor=\"$sTDBGColour\">\n";
 		$sToRender .= "<b>Document Title </b>\n";
@@ -62,7 +63,9 @@ function getDocumentType($iFolderID, $iDocumentTypeID) {
 
 function renderPage($oDocument, $iDocumentTypeID, $fFirstEdit) {
     global $default;	
-    $sToRender = "<table border = 0>\n";
+	$sToRender = renderHeading("Edit Document Details");
+	$sToRender .= displayDocumentPath($oDocument->getID());	
+    $sToRender .= "<table border = 0>\n";
     $sToRender .= "<tr>\n";
     $sToRender .= "<td>\n";
     $sToRender .= renderEditableDocumentData($oDocument, $iDocumentTypeID) . "\n";

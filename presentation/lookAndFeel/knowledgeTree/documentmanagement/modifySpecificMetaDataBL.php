@@ -1,16 +1,16 @@
 <?php
 /**
-* Business logic to modify type specific meta data for a document
-* 
-* @author Rob Cherry, Jam Warehouse South Africa (Pty) Ltd
-* @date 28 February 2003
-* @package presentation.lookAndFeel.knowledgeTree.documentmanagement
-*/
+ * $Id$
+ *
+ * Business logic to modify type specific meta data for a document
+ * 
+ * @author Rob Cherry, Jam Warehouse South Africa (Pty) Ltd
+ * @package presentation.lookAndFeel.knowledgeTree.documentmanagement
+ */
 
 require_once("../../../../config/dmsDefaults.php");
 
-if (checkSession()) {
-	
+if (checkSession()) {	
 	require_once("$default->fileSystemRoot/lib/security/permission.inc");
 	require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
 	require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
@@ -18,6 +18,7 @@ if (checkSession()) {
 	require_once("$default->fileSystemRoot/lib/visualpatterns/PatternEditableTableSqlQuery.inc");
 	require_once("$default->fileSystemRoot/lib/visualpatterns/PatternMetaData.inc");					
 	require_once("$default->fileSystemRoot/presentation/Html.inc");
+	require_once("documentUI.inc");
 	require_once("modifySpecificMetaDataUI.inc");
 	
 	if (Permission::userHasDocumentWritePermission($fDocumentID)) {
@@ -30,7 +31,5 @@ if (checkSession()) {
         $main->setHasRequiredFields(true);		
 		$main->render();
 	}
-	
 }
-
 ?>

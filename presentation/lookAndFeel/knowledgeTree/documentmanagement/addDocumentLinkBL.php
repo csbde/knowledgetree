@@ -1,16 +1,18 @@
 <?php
-
 /**
-* Business Logic to link a two documents together in a parent child
-* relationship
-*
-* Expected form variable:
-* o $fDocumentID - primary key of document user is currently viewing
-*
-* @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
-* @date 22 May 2003
-* @package presentation.lookAndFeel.knowledgeTree.documentmanagement
-*/
+ * $Id$
+ *  
+ * Business Logic to link a two documents together in a parent child
+ * relationship
+ *
+ * Expected form variable:
+ * o $fDocumentID - primary key of document user is currently viewing
+ *
+ * Licensed under the GNU GPL. For full terms see the file DOCS/COPYING.
+ *
+ * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
+ * @package presentation.lookAndFeel.knowledgeTree.documentmanagement
+ */
 
 require_once("../../../../config/dmsDefaults.php");
 
@@ -20,6 +22,7 @@ if (checkSession()) {
 	require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
 	require_once("$default->fileSystemRoot/lib/security/permission.inc");
 	require_once("$default->fileSystemRoot/presentation/Html.inc");
+	require_once("documentUI.inc");
 	require_once("addDocumentLinkUI.inc");
 	
 	if (Permission::userHasDocumentWritePermission($fDocumentID)) {
@@ -40,7 +43,6 @@ if (checkSession()) {
 				$main->setHasRequiredFields(true);
 				$main->setErrorMessage("An error occured whilst attempting to link the two documents");	
 				$main->render();	
-				
 			}			
 		} else {
 			//display the add page
@@ -53,10 +55,6 @@ if (checkSession()) {
 			$main->setHasRequiredFields(true);				
 			$main->render();
 		}
-		
-	}
-		
-		
+	}		
 }
-
 ?>

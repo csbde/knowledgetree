@@ -1,12 +1,12 @@
 <?php
-
 /**
-* Presentation information used by modifySpecificMetaDataBL.php
-* 
-* @author Rob Cherry, Jam Warehouse South Africa (Pty) Ltd
-* @date 28 February 2003
-* @package presentation.lookAndFeel.knowledgeTree.documentmanagement
-*/
+ * $Id$
+ *
+ * Presentation information used by modifySpecificMetaDataBL.php
+ * 
+ * @author Rob Cherry, Jam Warehouse South Africa (Pty) Ltd
+ * @package presentation.lookAndFeel.knowledgeTree.documentmanagement
+ */
 
 function getEditableTypeSpecificMetaData($iDocumentID, $iDocumentTypeID) {
     global $default;    
@@ -34,7 +34,9 @@ function getEditableTypeSpecificMetaData($iDocumentID, $iDocumentTypeID) {
 
 function getPage($iDocumentID, $iDocumentTypeID, $bFirstEdit) {
 	global $default;
-	$sToRender = "<table>\n";
+	$sToRender .= renderHeading("Edit Type Specific Meta Data");
+	$sToRender .= displayDocumentPath($iDocumentID);	
+	$sToRender .= "<table>\n";
 	$sToRender .= "<tr>\n";		
 	$sToRender .= "<td>\n";
 	$sToRender .= getEditableTypeSpecificMetaData($iDocumentID, $iDocumentTypeID);
@@ -62,7 +64,4 @@ function getPage($iDocumentID, $iDocumentTypeID, $bFirstEdit) {
 	
 	return $sToRender;
 }
-
 ?>
-
-

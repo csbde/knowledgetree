@@ -1,29 +1,20 @@
 <?php
 /**
-* Presentation logic used to link one document to another
-*
-* @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
-* @date 22 May 2003
-* @package presentation.lookAndFeel.knowledgeTree.documentmanagement
-*/
-
-
-/*function renderHeading($sHeading) {
-    global $default;
-    $sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
-    $sColor = $default->siteMap->getSectionColour($sSectionName, "th");
-    $sToRender  = "<table border=\"0\" width=\"100%\">\n";
-    $sToRender .= "<tr align=\"left\"><th class=\"sectionHeading\" bgcolor=\"$sColor\"><font color=\"ffffff\">$sHeading</font></th></tr>\n";
-    $sToRender .= "<tr/>\n";
-    $sToRender .= "<tr/>\n";
-    $sToRender .= "</table>\n";
-    return $sToRender;
-}*/
+ * $Id$
+ *
+ * Presentation logic used to link one document to another
+ *
+ * Licensed under the GNU GPL. For full terms see the file DOCS/COPYING.
+ *
+ * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
+ * @package presentation.lookAndFeel.knowledgeTree.documentmanagement
+ */
 
 function getPage($iDocumentID) {
 	global $default;
 	
 	$sToRender = renderHeading("Document Linking");
+	$sToRender .= displayDocumentPath($iDocumentID);	
 	$sToRender .= "<table>";
 	$sToRender .= "<tr>";
 	//had a slight problem with netscape 4.7x - it doesn't support disabled.  So I had to use
@@ -75,8 +66,5 @@ function getNetscapeDisableScript() {
 	$sToRender .= "}\n";
 	$sToRender .= "//--></script>\n\n";
 	return $sToRender;
-	
 }
-
-
 ?>

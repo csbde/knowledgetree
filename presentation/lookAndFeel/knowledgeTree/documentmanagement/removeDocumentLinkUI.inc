@@ -21,6 +21,7 @@
 function getPage($sParentDocumentName, $sChildDocumentName, $iParentDocumentID) {
 	global $default;
 	$sToRender = renderHeading("Unlink document");
+	$sToRender .= displayDocumentPath($iParentDocumentID);
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr>\n";	
 	$sToRender .= "<td>You have chosen to delete the link between the document '$sParentDocumentName' and the document '$sChildDocumentName'</td>\n";

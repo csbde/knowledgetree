@@ -1,18 +1,20 @@
 <?php
 /**
-* Document collaboration business logic - contains business logic to set up
-* document approval process
-*
-* Required form variables:
-*	o fFolderCollaborationID - primary key of folder collaboration entry we are viewing
-*	o fDocumentID - primary key of document this folder collaboration entry is for
-*	o fIsActive - whether the document collaboration set is active or not
-*
-* @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
-* @date 28 January 2003
-* @package presentation.lookAndFeel.knowledgeTree.documentmanagement
-*
-*/
+ * $Id$
+ *  
+ * Document collaboration business logic - contains business logic to set up
+ * document approval process
+ *
+ * Licensed under the GNU GPL. For full terms see the file DOCS/COPYING.
+ *
+ * Required form variables:
+ *	o fFolderCollaborationID - primary key of folder collaboration entry we are viewing
+ *	o fDocumentID - primary key of document this folder collaboration entry is for
+ *	o fIsActive - whether the document collaboration set is active or not
+ *
+ * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
+ * @package presentation.lookAndFeel.knowledgeTree.documentmanagement
+ */
 
 require_once("../../../../config/dmsDefaults.php");
 
@@ -30,6 +32,7 @@ if (checkSession()) {
 	require_once("$default->fileSystemRoot/presentation/Html.inc");
 	require_once("$default->fileSystemRoot/lib/security/permission.inc");	
 	require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
+	require_once("documentUI.inc");
 	require_once("collaborationUI.inc");
 	
 	
