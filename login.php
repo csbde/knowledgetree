@@ -21,7 +21,6 @@ require_once("./config/html.php");
 require_once("./lib/Session.inc");
 
 
-
 if ($loginAction == "loginForm") {
     // TODO: build login form using PatternMainPage
     include("./lib/header.inc");
@@ -39,7 +38,7 @@ if ($loginAction == "loginForm") {
         
 	print "<TABLE><TR><TD>$lang_username:</TD><TD><INPUT TYPE=\"TEXT\" NAME=\"fUserName\"><BR></TD></TR>";
 	print "<TR><TD>$lang_password:</TD><TD><INPUT TYPE=\"PASSWORD\" NAME=\"fPassword\"><BR></TD></TR></TABLE>";
-    print "<input type=\"hidden\" name=\"redirect\" value=\"<?php echo $redirect ?>\"/>";
+    print "<input type=\"hidden\" name=\"redirect\" value=\"$redirect\"/>";
     print "<INPUT TYPE=\"hidden\" name=\"action\" value=\"login\">\n";
 	print "<INPUT TYPE=\"hidden\" name=\"loginAction\" value=\"login\">\n";    
 	print "<INPUT TYPE=\"SUBMIT\" Value=\"$lang_login\">\n";
@@ -50,7 +49,8 @@ if ($loginAction == "loginForm") {
     // check the requirements
     if (checkrequirements() == 1) {
         // TODO: appropriate error message
-        exit;
+        echo "check requirements failed!<br>";
+        //exit;
     } else {
         // if requirements are met and we have a username and password to authenticate
         if( isset($fUserName) && isset($fPassword) ) {
@@ -61,7 +61,10 @@ if ($loginAction == "loginForm") {
                 // successfully authenticated
                 case 1:
                     // start the session
-                    $sessionID = Session::create($userDetails["userID"]);
+                    $sessionID = Session::create($userDetails["user_id"]);
+                    // add the user details array to the session
+                    $_SESSION["userDetails"] = $userDetails;
+                    
                     // check for a location to forward to
                     //echo "started session, with id=$sessionID<br>";
                     /*
