@@ -20,7 +20,9 @@ deploy() {
 
     # export kt
     cd $tmp
-    cvs -d $cvsroot export -r $branch knowledgeTree
+    cvs -d $cvsroot co -r $branch -N knowledgeTree
+    cvs -d $cvsroot co -r $branch -N "knowledgeTree/Documents/Root Folder/Default Unit"
+    find . -name CVS -exec rm -rf {} \; 2> /dev/null
 
     # tar it up
     rm /tmp/knowledgeTree-$version.tgz 2> /dev/null
