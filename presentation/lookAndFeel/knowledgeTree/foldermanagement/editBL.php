@@ -23,12 +23,25 @@ if (checkSession()) {
 	require_once("$default->owl_fs_root/lib/foldermanagement/Folder.inc");
 	require_once("$default->owl_fs_root/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
 	require_once("$default->owl_fs_root/presentation/Html.inc");
-			
-	$oPatternCustom = & new PatternCustom();
-	$oPatternCustom->setHtml(getPage($fFolderID));
-	$main->setCentralPayload($oPatternCustom);
-	$main->setFormAction("$default->owl_root_url/control.php?action=viewDocument&fDocumentID=1");
-	$main->render();
+		
+	if (Permission::userHasFolderWritePermission($fFolderID)) {
+		//if the user can edit the folder
+		if (isset($fFolderID)) {
+			$oPatternCustom = & new PatternCustom();
+			$oPatternCustom->setHtml(getPage($fFolderID));
+			$main->setCentralPayload($oPatternCustom);
+			$main->setFormAction("../store.php?fReturnURL=" . urlencode("$default->owl_root_url/control.php?action=browse&fFolderID=$fFolderID"));
+			$main->render();
+		} else {
+			//else display an error message
+			$oPatternCustom = & new PatternCustom();
+			$oPatternCustom->setHtml("");
+			$main->setCentralPayload($oPatternCustom);
+			$mail->setErrorMessage("No folder currently selected");
+			$main->setFormAction("../store.php?fReturnURL=" . urlencode("$default->owl_root_url/control.php?action=browse&fFolderID=$fFolderID"));
+			$main->render();
+		}
+	}
 }
 
 ?>
