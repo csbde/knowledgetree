@@ -53,15 +53,8 @@ $nwPayLoad ->setHtml($nwestLoad);
 if ($sectionName != "General") {
     $sectionArray = $default->siteMap->getSectionLinks($sectionName);
 
-	//format the array..by taking first element off if its not an admin section
-	if((substr($sectionName, -14)) == "Administration" and (strlen($sectionName) > 15)){
-		$output1["links"] = $sectionArray["links"];
-		$output2["descriptions"] = $sectionArray["descriptions"];
-	}
-	else{
-		$output1["links"] = array_shift ($sectionArray["links"]);      
-		$output2["descriptions"] = array_shift($sectionArray["descriptions"]);
-	}
+    $output1["links"] = $sectionArray["links"];
+    $output2["descriptions"] = $sectionArray["descriptions"];
 
 	//create links
 	$westLinks = new PatternTableLinks($sectionArray["links"], $sectionArray["descriptions"], 40 , 1 ,1,null);
