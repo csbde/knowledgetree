@@ -49,6 +49,7 @@ function getEditPage($oGroupFolderLink, $iFolderID) {
 	$sToRender .= "<td>Group</td><td>" . getGroupDropDown($oGroupFolderLink->getGroupID()) . "</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
+	$default->log->info("getEditPage: " . arrayToString($oGroupFolderLink));
 	$sToRender .= "<td>Access</td><td>" . getAccessCheckBoxes(false, $oGroupFolderLink->getCanRead(), $oGroupFolderLink->getCanWrite()) . "</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
@@ -94,8 +95,8 @@ function getAddPage($iFolderID) {
 }
 
 function getAccessCheckBoxes($bReadOnly, $fCanRead = false, $fCanWrite = false) {
-    return "<input name=\"fCanRead\" type=\"checkbox\" " . ($bReadOnly ? "disabled " : "") . ($fCanRead ? "checked" : "") . "/>Read\n" .
-           "<input name=\"fCanWrite\" type=\"checkbox\" " . ($bReadOnly ? "disabled " : "") . ($fCanWrite ? "checked" : "") . "/>Write\n";
+    return "<input name=\"fCanRead\" type=\"checkbox\" " . ($bReadOnly ? "disabled " : "") . ($fCanRead ? "checked " : "") . "/>Read\n" .
+           "<input name=\"fCanWrite\" type=\"checkbox\" " . ($bReadOnly ? "disabled " : "") . ($fCanWrite ? "checked " : "") . "/>Write\n";
 }
 
 function getGroupDropDown($iGroupID = -1) {
