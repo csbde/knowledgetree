@@ -148,13 +148,16 @@ $default->siteMap->addPage("loginForm", "/presentation/login.php?loginAction=log
 $default->siteMap->addPage("dashboard", "/presentation/dashboardBL.php", "General", Guest, "dashboard");
 
 //pages for manage documents section
-$default->siteMap->addDefaultPage("browse", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/browseBL.php", "Manage Documents", Guest, "browse documents");
-$default->siteMap->addPage("viewDocument", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/viewBL.php", "Manage Documents", Guest, "");
-$default->siteMap->addPage("addDocument", "/presentation/documentmanagement/addDocument.php", "Manage Documents", User, "Add A Document");
-$default->siteMap->addPage("addFolder", "/presentation/documentmanagement/addFolder.php", "Manage Documents", UnitAdmin, "Add A Folder");
-$default->siteMap->addPage("modifyFolderProperties", "/presentation/documentmanagement/modifyFolder.php", "Manage Documents", UnitAdmin, "Modify Folder Properties");
-$default->siteMap->addPage("deleteFolder", "/presentation/documentmanagement/deleteFolder.php", "Manage Documents", UnitAdmin, "Delete A Folder");
-$default->siteMap->addPage("moveFolder", "/presentation/documentmanagement/moveFolder.php", "Manage Documents", UnitAdmin, "Move A Folder");
+
+$default->siteMap->addDefaultPage("browse", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/browseBL.php", "Manage Documents", "Anonymous", "browse documents");
+$default->siteMap->addPage("viewDocument", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/viewBL.php", "Manage Documents", "Anonymous", "");
+$default->siteMap->addPage("addDocument", "/presentation/documentmanagement/addDocument.php", "Manage Documents", "Anonymous", "Add A Document");
+$default->siteMap->addPage("addFolder", "/presentation/documentmanagement/addFolder.php", "Manage Documents", "Unit Administrators", "Add A Folder");
+$default->siteMap->addPage("modifyFolderProperties", "/presentation/documentmanagement/modifyFolder.php", "Manage Documents", "Unit Administrators", "Modify Folder Properties");
+$default->siteMap->addPage("deleteFolder", "/presentation/documentmanagement/deleteFolder.php", "Manage Documents", "Unit Administrators", "Delete A Folder");
+$default->siteMap->addPage("moveFolder", "/presentation/documentmanagement/moveFolder.php", "Manage Documents", "Unit Administrators", "Move A Folder");
+$default->siteMap->addPage("emailDocument", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/emailLink.php", "Manage Documents", "Anonymous", "Email");
+
 
 // pages for administration section
 $default->siteMap->addDefaultPage("administration", "/admin.php", "Administration", UnitAdmin, "Administration");
@@ -162,7 +165,10 @@ $default->siteMap->addPage("unitAdministration", "/presentation/unitAdmin.php", 
 $default->siteMap->addPage("systemAdministration", "/presentation/sysAdmin.php", "Administration", SysAdmin, "System Administration");
 
 // pages for advanced search section
+
+// $default->siteMap->addDefaultPage("advancedSearch", "/email.php", "Advanced Search", "Anonymous", "Advanced Search");
 $default->siteMap->addDefaultPage("advancedSearch", "/search.php", "Advanced Search", Guest, "Advanced Search");
+
 
 // pages for prefs section
 $default->siteMap->addDefaultPage("preferences", "/preferences.php", "Preferences", User, "Preferences");
@@ -181,6 +187,7 @@ $default->siteMap->addPage("sitemap", "/tests/session/SiteMap.php", "Tests", Gue
 $default->siteMap->addPage("documentBrowserTest", "/tests/documentmanagement/DocumentBrowser.php", "Tests", Guest, "test the document browser");
 
 // default requires
+require_once("$default->owl_fs_root/phpmailer/class.phpmailer.php");	
 require_once("$default->owl_fs_root/lib/session/Session.inc");
 require_once("$default->owl_fs_root/lib/session/control.inc");
 require_once("$default->owl_fs_root/lib/database/db.inc");
