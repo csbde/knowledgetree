@@ -34,7 +34,7 @@ Search permissions on a document needs to be updated when:
 	changes by copying permissions to a folder. (done)
 
 	5) The folder that determines the permissions on the document
-	changes by the document being moved. (not done yet)
+	changes by the document being moved. (done)
 
 Search permissions of a user needs to be updated when:
 
