@@ -806,6 +806,7 @@ INSERT INTO document_transaction_types_lookup (name) VALUES ("Check In");
 INSERT INTO document_transaction_types_lookup (name) VALUES ("Check Out");
 INSERT INTO document_transaction_types_lookup (name) VALUES ("Collaboration Step Rollback");
 INSERT INTO document_transaction_types_lookup (name) VALUES ("View");
+INSERT INTO document_transaction_types_lookup (name) VALUES ("Expunge");
 
 -- document status
 INSERT INTO status_lookup (name) VALUES ("Live");
