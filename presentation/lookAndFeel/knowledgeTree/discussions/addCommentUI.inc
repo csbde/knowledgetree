@@ -8,31 +8,24 @@
 *
 */
 
-// On a successful save
+/** 
+ *	Submission of comment SUCCESS page   
+ *
+ *	@param $iDocumentID -> a valid Document ID 
+ */
 function getSubmitSuccessPage($iDocumentID){	
 	global $default;
-	$sMessage = "Your submission has been successful.";
-	
+	$sMessage = "Your submission has been successful.";	
 	$sToRender .= "$sMessage<br><br><a href=\"" . generateControllerLink("viewDiscussion", "fDocumentID=" . $iDocumentID . "&fForDiscussion=1") . "\"><img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\" /></a>";
-//	$sToRender .= "";
-//	$sToRender .= "";
  	
 	return $sToRender;	
 }
 
-// If there are no threads to view for a document
-function getViewFailPage($sMessage)
-{
-	global $default;
-	
-	if (strlen($sMessage)>0){
-		$sToRender = $sMessage;
-	}
-	else $sToRender = "Current document has no discussion.  Press the ADD button to start a discussion.";
-	
-	return $sToRender;
-}
-
+/** 
+ *	Renders the heading for the page
+ *
+ *	@param $sHeading -> text heading for the page
+ */
 function renderHeading($sHeading) {
     global $default;
         
@@ -46,6 +39,11 @@ function renderHeading($sHeading) {
     return $sToRender;
 }
 
+/** 
+ *	Renders the path for the document
+ *
+ *	@param $fDocumentID -> a valid document ID
+ */
 function renderDocumentPath($iDocumentID) {
     global $default;
 	
@@ -57,13 +55,16 @@ function renderDocumentPath($iDocumentID) {
     return "<table border=0 cellpadding=\"5\" width = 100%><tr><td bgcolor=\"$sTDBGColour\">$sDocumentPath</td></tr></table>\n";
 }
 
-
+/** 
+ *	Display the ADD COMMENT page   
+ *
+ *	@param $fDocumentID -> a valid Document ID
+ *	@param $sSubject -> a Subject text
+ *	@param $sBody -> a Body text 
+ */
 function getAddComment($fDocumentID, $sSubject, $sBody) {
 	global $default;
-	
-	//$iThreadID = DiscussionThread::getThreadIDforDoc($fDocumentID);
-	
-			
+				
 	$sHeading = "Add a Comment";	
 	$sToRender .= renderHeading($sHeading);
 	$sToRender .= renderDocumentPath($fDocumentID);	
@@ -71,13 +72,22 @@ function getAddComment($fDocumentID, $sSubject, $sBody) {
 	$sToRender .= "<td align=right><input onmouseover=\"this.style.cursor='hand'\" type=\"submit\" style=\"BORDER-RIGHT: 0px groove; BORDER-TOP: 0px groove; BACKGROUND-IMAGE: url($default->graphicsUrl/widgets/submit.gif); BORDER-LEFT: 0px groove; WIDTH: 45px; BORDER-BOTTOM: 0px groove; HEIGHT: 18; BACKGROUND-COLOR: white\" width=\"45\" height=\"20\" value=\" \" width=\"100\"></td></tr>\n";
 	$sToRender .= "<br><tr><td valign=\"top\" width=10><b>Subject</b></td><td>\n";
 	$sToRender .= "<input type=\"text\" style=\"width:100%\" name=\"NewCommentSubject\" id=\"NewCommentSubject\" value=\"$sSubject\"></td></tr>\n";
-	$sToRender .= "<tr><td valign=\"top\"><b>Body</b></td><td><textarea style=\"width:100%\" rows=\"21\" name=\"NewComment\" id=\"NewComment\" style=\"FONT-STYLE: normal; FONT-FAMILY: sans-serif; FONT-VARIANT: normal\">$sBody</textarea></td></tr></table>\n";
-		
+	$sToRender .= "<tr><td valign=\"top\"><b>Body</b></td><td><textarea style=\"width:100%\" rows=\"21\" name=\"NewComment\" id=\"NewComment\" style=\"FONT-STYLE: normal; FONT-FAMILY: sans-serif; FONT-VARIANT: normal\">$sBody</textarea></td></tr></table>\n";		
 
-	return $sToRender;
-	
+	return $sToRender;	
 }
 
+/** 
+ *	Display the comment: Body text included 
+ *  Prints out 1 comment 
+ *  User needs to call this function many times to list all comments  
+ *
+ *	@param $sCommentBody -> Some body text
+ *	@param $iComment Subject -> Some subject text
+ *	@param $dDate -> Date comment was created
+ *	@param $iDocumentID -> a valid document ID
+ *	@param $sUserName -> Name of creator of comment
+ */
 function getCommentBody($sCommentBody, $sCommentSubject,$dDate,$iDocumentID, $sUserName) {
 	global $default;
 	
@@ -93,10 +103,4 @@ function getCommentBody($sCommentBody, $sCommentSubject,$dDate,$iDocumentID, $sU
 	return $sToRender;	
 }
 
-function viewDiscussionPage() {
-	global $default;
-	
-	$sToRender = "";
-	return $sToRender;	
-}
 ?>

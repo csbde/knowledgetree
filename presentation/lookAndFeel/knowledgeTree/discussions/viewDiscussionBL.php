@@ -26,7 +26,7 @@ if (checkSession()) {
 
     $oPatternCustom = & new PatternCustom();
 
-if(checksession) {	
+if(checkSession()) {	
 		if (isset($fForDiscussion)) {		
 			if ($fDocumentID > 0) { 	
 				$iThreadID = DiscussionThread::getThreadIDforDoc($fDocumentID);						
@@ -49,33 +49,29 @@ if(checksession) {
 							if($oThread->Update() == false) $oPatternCustom->addHtml("Failed to update. Please Contact Database Administrator in this regard") ;
 							$_SESSION['Discussion' . $fDocumentID][0]->bViews = true;
 						} 																
-					} else { $oPatternCustom->setHtml(getViewFailPage("")) ;}						
-				} else { // No current thread, option to create one		
-					
-					$oPatternCustom->addHtml(getNewThreadOption($fDocumentID)); 
-					
-					
-					}	
-			} else { }
-		} else if (isset($fViewComment)){		
-			if (isset($iCommentID)) {
+					} else { 
+						$main->setErrorMessage("Error creating discussion thread object");
+					}						
+				} else { // No current thread, option to create one					
+					$main->setErrorMessage("No discussion thread is currently available");
+					$oPatternCustom->addHtml(getNewThreadOption($fDocumentID));				
+				}	
+			} else { // Doument id  is negative 
+				$main->setErrorMessage("Invalid Document ID.  ID may not be negative.");
+			}
+		} else if (isset($fViewComment)){	// User wants to view a comment
+			if (isset($iCommentID)) {		// Check if a comment ID exists
 				$oComment = DiscussionComment::get($iCommentID);
-			  	$oUser = User::get($oComment->getUserID());	  	
-		
+			  	$oUser = User::get($oComment->getUserID());		
 			  	$main->setFormAction("/presentation/lookAndFeel/knowledgeTree/discussions/addCommentBL.php?fDocumentID=$iDocumentID&fCommentID=$iCommentID&fReplyComment=1");		
 			  	$oPatternCustom->setHtml(getCommentBody($oComment,$iDocumentID,$oUser)) ;	  	
 			}
-		} else if (isset($fNewThread)){
-			
-			
-						
-		} else { // If no discussion exists 
+		}else { // If no discussion exists 
+			$main->setErrorMessage("Invalid function.  No such functionality exists for this page.");
 		}	
-
 	} // end of if checksession
 	
 	$main->setCentralPayload($oPatternCustom);
-    $main->render();    
-
+    $main->render();
 }
 ?>
