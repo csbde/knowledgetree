@@ -26,7 +26,7 @@ class FolderManager {
 	*
 	* @return 	true on sucessful insertion, false otherwise and set $_SESSION["errorMessage"]
 	*/
-	function insertFolder($sName, $sDescription, $iParentID, $iCreatorID, $iDocumentTypeID, $iUnitID, $bIsPublic = false) {
+	function createFolder($sName, $sDescription, $iParentID, $iCreatorID, $iDocumentTypeID, $iUnitID, $bIsPublic = false) {
 		$sName = addslashes($sName);
 		$sDescription = addslashes($sDescription);
 		global $default, $lang_err_database;
