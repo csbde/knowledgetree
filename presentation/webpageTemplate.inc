@@ -99,7 +99,6 @@ $westLoad = "<table cellspacing=\"0\" cellpadding=\"2\" border=\"0\" width=\"100
             "\t<tr><td>$westRender</td></tr>\n" .
             "</table>" .
             "<div style=\"position:absolute;top:" . ($default->scroll["height"]-50) . "px;\">" . 
-            //"<div style=\"position:relative;top:-5px;\">" .
             "<table cellspacing=\"0\" cellpadding=\"2\" border=\"0\" width=\"100%\">\n" .            
             "\t<tr valign=\"bottom\"><td align=left><a href=\"mailto:$default->emailAdmin\"><img src=\"$cAdmin\"/ border=\"0\"></a></td></tr>\n" .
             "\t<tr valign=\"top\"><td align=left><a href=\"mailto:$sUnitAdminEmail\"><img src=\"$uAdmin\"/ border=\"0\"></a></td></tr>\n" .
