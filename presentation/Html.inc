@@ -12,37 +12,37 @@
  */
 
 function startTable($border, $width) {
-    return "<table border=\"$border\" width=\"$width\">";
+    return "<table border=\"$border\" width=\"$width\">\n";
 }
 
 function stopTable() {
-    return "</table>";
+    return "</table>\n";
 }
 
 function tableRow($align, $bgcolor, $html) {
-    return "<tr align=\"$align\" bgcolor=\"$bgcolor\">$html</tr>";
+    return "<tr align=\"$align\" bgcolor=\"$bgcolor\">$html</tr>\n";
 }
 
 function tableHeading($cssClassName, $colspan, $text) {
-    return "<th colspan=\"$colspan\">
-            <span class=\"$cssClassName\">$text</span>
-            </th>";
+    return "<th colspan=\"$colspan\">\n
+            <span class=\"$cssClassName\">$text</span>\n
+            </th>\n";
 }
 
 function tableData($html) {
-    return "<td>$html</td>";
+    return "<td>$html</td>\n";
 }
 
 function startTableRowCell() {
-    return "<tr><td>";
+    return "<tr><td>\n";
 }
 
 function endTableRowCell() {
-    return "</td></tr>";
+    return "</td></tr>\n";
 }
 
 function generateLink($sTargetPage, $sQueryString, $sLinkText) {
-    return "<a href=\"$sTargetPage?$sQueryString\">$sLinkText</a>";
+    return "<a href=\"$sTargetPage?$sQueryString\">$sLinkText</a>\n";
 }
 
 ?>
