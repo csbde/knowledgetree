@@ -66,6 +66,9 @@ if (checkSession()) {
     $oContent = new PatternCustom();
 	
 	$aResults = $oBrowser->browse();
+	if (($fBrowseType == "folder") && (!isset($fFolderID))) {
+		controllerRedirect("browse", "fFolderID=" . $aResults["folders"][0]->getID());
+	}
     
     require_once("../../../webpageTemplate.inc");    
 	// display the browse results
