@@ -49,7 +49,7 @@ class Email {
         $this->oMailer->WordWrap = 100;
         $this->oMailer->IsHTML(true);
     }
-
+	
     /**
      * Sends an email to a specified recipient.
      *
@@ -60,34 +60,42 @@ class Email {
      * @param string the sender's name (optional)     
      * @return boolean true on email successfully sent, false otherwise and set $_SESSION["errorMessage"]
      */
-    function send($sToEmail, $sSubject, $sBody, $sFromEmail = "", $sFromName = "") {
+    function send($mToEmail, $sSubject, $sBody, $sFromEmail = "", $sFromName = "") {
         global $default, $lang_err_email;
         
-        if (strlen($sToEmail) > 0) {
-	        // set defaults for optional params
-	        $sFromEmail = ((strlen($sFromEmail) == 0) || ($sFromEmail == "")) ? $default->system->get("emailFrom") : $sFromEmail;
-	        $sFromName = ((strlen($sFromName) == 0) || ($sFromName == "")) ? $default->system->get("emailFromName") : $sFromName;
-	
-	        // set optional params
-	        if ((strlen($sFromEmail) > 0) && ($sFromEmail != "")) {
-	            $this->oMailer->From = $sFromEmail;
-	        }
-	        if ((strlen($sFromName) > 0) && ($sFromName != "")) {
-	            $this->oMailer->FromName = $sFromName;
-	        }
-	        
-	        // if there are multiple addresses (; separated)
+        // set defaults for optional params
+        $sFromEmail = ((strlen($sFromEmail) == 0) || ($sFromEmail == "")) ? $default->system->get("emailFrom") : $sFromEmail;
+        $sFromName = ((strlen($sFromName) == 0) || ($sFromName == "")) ? $default->system->get("emailFromName") : $sFromName;
+
+        // set optional params
+        if ((strlen($sFromEmail) > 0) && ($sFromEmail != "")) {
+            $this->oMailer->From = $sFromEmail;
+        }
+        if ((strlen($sFromName) > 0) && ($sFromName != "")) {
+            $this->oMailer->FromName = $sFromName;
+        }
+              
+        if ( (is_string($mToEmail) && (strlen($mToEmail) > 0)) || 
+        	 (is_array($mToEmail) && (count($mToEmail) > 0)) ) {        
+
 	        $aEmailAddresses = array();
-	        if (strpos($sToEmail, ";") > 0) {
-	            // explode them
-	            $aEmailAddresses = explode(";", $sToEmail);
+	        // just one email address, add it
+	        if (is_string($mToEmail) && (strpos($mToEmail, ";") === false)) {
+	            $this->oMailer->AddAddress($mToEmail);
+	        } else {
+	        	// if we're passed an array, then use it
+	        	if (is_array($mToEmail)) {
+	        		$aEmailAddresses = $mToEmail;
+	        	// if there are multiple addresses (; separated), explode it	        	
+	        	} elseif (strpos($mToEmail, ";") > 0) {
+		            $aEmailAddresses = explode(";", $mToEmail);
+	        	}
 	            for ($i=0; $i<count($aEmailAddresses); $i++) {
 	                $this->oMailer->AddAddress($aEmailAddresses[$i]);
-	                $default->log->info("Email.inc adding " . $aEmailAddresses[$i]);
+	                $default->log->debug("Email.inc adding " . $aEmailAddresses[$i]);
 	            }
-	        } else {
-	            $this->oMailer->AddAddress($sToEmail);
 	        }
+
 	        $this->oMailer->Subject = stripslashes($sSubject);
 	        $this->oMailer->Body = stripslashes($sBody);
 	
@@ -98,7 +106,7 @@ class Email {
 	        }
 	        return true;
         } else {
-        	// no valid email address supplied
+        	// no valid email addresses supplied
         	return false;
         }
     }
