@@ -11,6 +11,8 @@
 * @package lib.foldermanagement
 */
 
+require_once("$default->fileSystemRoot/lib/foldermanagement/PhysicalFolderManagement.inc");
+
 class Folder {
 	
 	/** folder primary key */
@@ -260,7 +262,11 @@ class Folder {
 	function update($bPathChange) {
 		global $default, $lang_err_database, $lang_err_object_key;
 		//can only update the object if it has already been stored
+		$sOldPath;
 		if ($this->iId >= 0) {
+			if ($bPathChange){
+				$sOldPath = $default->documentRoot . "/" . $this->sFullPath . "/" . $this->sName;
+			}
 			$sql = $default->db;
 			$sQuery = "UPDATE " . $default->owl_folders_table . " SET " .
 							"name = '" . addslashes($this->sName) . "', " .
@@ -283,7 +289,8 @@ class Folder {
 			if ($result) {
 				if ($bPathChange) {
 					//must update all the children paths
-					$this->updateChildrenPaths($this->iId, $sql);
+					$this->updateChildPaths($this->iId, $sql);
+					$this->renameFolder($sOldPath);
 				}
 				return true;
 			}
@@ -293,15 +300,44 @@ class Folder {
 		$_SESSION["errorMessage"] = $lang_err_object_key;		
 	}
 	
-	function updateChildrenPaths($iID, $sql) {
+	function renameFolder($sOldPath) {
+		PhysicalFolderManagement::renameFolder($sOldPath, $default->documentRoot . "/" . $this->sFullPath . "/" . $this->sName);
+	}
+	
+	/**
+	* When a folder is renamed, we must update
+	* the paths of the children in the database
+	* 
+	*/
+	function updateChildPaths($iID, $sql) {
 		global $default;
 		$sql->query("SELECT id from $default->owl_folders_table WHERE parent_id = $iID");
 		while ($sql->next_record()) {
 			$oFolder = Folder::get($sql->f("id"));
 			$oFolder->update(true);
-			$this->updateChildrenPaths($sql->f("id"), $sql);
+			$this->updateChildPaths($sql->f("id"), $sql);
 		}
 		return;
+	}
+	
+	/**
+	* Get a folder's sub-folders
+	* 
+	* @param int	primary key of folder to get children for
+	* 
+	* @return Array array of child ids
+	*/
+	function getChildren($iFolderID, $aChildren = array()) {		
+		global $default;
+		$sql = $default->db;
+		$sql->query("SELECT id from $default->owl_folders_table WHERE parent_id = $iFolderID");
+		while ($sql->next_record()) {
+			$aChildren[count($aChildren)] = $sql->f("id");
+			Folder::getChildren($sql->f("id"), & $aChildren);
+			//$sChildString .= $sql->f("id") . "," . Folder::getChildren($sql->f("id"));
+		}		
+		//return $sChildString;
+		return $aChildren;
 	}
 	
 	
