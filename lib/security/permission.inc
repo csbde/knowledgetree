@@ -9,7 +9,7 @@
 *	o has read/write access for a specific folder/directory
 *
 *	@author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
-*	@date 14 January 2003
+*	@date 14 January 2003 
 */
 
 class Permission {
@@ -41,7 +41,7 @@ class Permission {
 	* Checks if the current user has read permission for a specific folder
 	* To have read permission on a folder the user must satisfy ONE of the following conditions
 	*	o have write permission for the folder
-	*	o belong to a group that has write access to the folder
+	*	o belong to a group that has read access to the folder
 	*	o the folder is a public folder
 	*
 	* @param $iFolderID		Primary key of folder to check
