@@ -14,7 +14,8 @@
  * @version $Revision$
  * @author Michael Joseph <michael@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
  * @package presentation
- *
+ */
+ /*
  * Querystring variables
  * ---------------------
  * fBrowseType - determines whether to browse by (folder, category, documentType) [mandatory]
