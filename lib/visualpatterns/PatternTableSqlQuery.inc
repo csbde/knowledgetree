@@ -1,6 +1,6 @@
 <?php
 
-require_once ("c:/temp/test/DatabaseConnection.inc");
+require_once ("./lib/owl.lib.php");
 
 /**
 Builds a query using the table name and the array of specified columns
@@ -110,7 +110,7 @@ class PatternTableSqlQuery {
 		}
 		$sToRender .= "</tr>\n";
 		
-		$oDBConnection = & new DatabaseConnection();
+		$oDBConnection = & new Owl_DB();
 		$oDBConnection->createSQLQueryWithOffset($this->sTableName, $this->aColumns, $this->iStartIndex, $this->iResultsToDisplay);
 		$oQueryResults = & $oDBConnection->getQueryResults();
 		
