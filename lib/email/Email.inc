@@ -88,7 +88,7 @@ Class Email {
 		$emailHyperlink->FromName = $FromName;
 		$emailHyperlink->AddAddress($ToEmail);
 		$emailHyperlink->Subject = $Subj  . ' ' . $hyperlink; //only difference from above
-		$emailHyperlink->Body = stripslashes($EmailBody) . " <br>This bug can be found on this page: " . "<a href = ". $hyperlink .">" . $hyperlink . "</a>";
+		$emailHyperlink->Body = stripslashes($EmailBody) . " <br>This bug can be found on this page: " . "<a href = ". $hyperlink .">". $hyperlink ."</a>";
 		$emailHyperlink->WordWrap = 80;
 		$emailHyperlink->IsHTML(true);
 		   
