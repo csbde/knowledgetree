@@ -253,7 +253,8 @@ $lang_err_folder_not_public = "This folder is not public: ";
 $lang_err_database = "Database error";
 
 $lang_err_object_key = "Object does not have a primary key.  Call object create to insert object into database first";
-$lang_err_doc_object_key = "A document with this primary key does not exist: ";
+$lang_err_object_exists = "Object already created in database: ";
+$lang_err_object_not_exist = "Object does not exist in database: ";
 
 //janu's change BEGIN 
 $lang_engine 		= "Owl Intranet Engine";
