@@ -49,12 +49,12 @@ class Folder {
 		$this->sDescription = $sNewDescription;
 		$this->iParentID = $iNewParentID;
 		$this->iCreatorID = $iNewCreatorID;
-		$this->iNewDocumentTypeID = $iNewDocumentTypeID;
+		$this->iDocumentTypeID = $iNewDocumentTypeID;
 		$this->iUnitID = $iNewUnitID;
 		$this->bIsPublic = $bNewIsPublic;
 	}
 	
-		/**
+    /**
 	* Get the primary key of the current folder object
 	*
 	* @return integer primary key of folder
