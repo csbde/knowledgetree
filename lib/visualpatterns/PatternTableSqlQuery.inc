@@ -192,13 +192,13 @@ class PatternTableSqlQuery {
 								//hyperlink								
 								$sToRender .= "<td><a href=\"" . $this->aLinkURLs[$i];
 								for ($j = 0; $j < count($this->aDBQueryStringColumns); $j++) {
-									if (strpos($sToRender, "?") === false) {
-										$sToRender .= "?" . $this->aQueryStringVariableNames[$j] . "=" . $sql->f($this->aDBQueryStringColumns[$j]);										
+									if (strpos($sLink, "?") === false) {
+										$sLink .= "?" . $this->aQueryStringVariableNames[$j] . "=" . $sql->f($this->aDBQueryStringColumns[$j]);										
 									} else { 
-										$sToRender .= "&" . $this->aQueryStringVariableNames[$j] . "=" . $sql->f($this->aDBQueryStringColumns[$j]);
+										$sLink .= "&" . $this->aQueryStringVariableNames[$j] . "=" . $sql->f($this->aDBQueryStringColumns[$j]);
 									}									
 								}
-								$sToRender .= "\">";
+								$sToRender .= $sLink . "\">";
 								
 								if (isset($this->sImageURL)) {
 									$sToRender .= $this->generateImageURL($this->sImageURL);
