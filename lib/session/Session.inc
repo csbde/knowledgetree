@@ -53,9 +53,13 @@ class Session {
         global $default;
 
         session_start();
+        $sSessionID = session_id();
+        $iUserID = $_SESSION["userID"];
+        
         // remove the session information from the database
         $sql = $default->db;
-        $query = "DELETE FROM $default->owl_sessions_table WHERE session_id = '" . session_id() . "'";
+        $query = "DELETE FROM $default->owl_sessions_table WHERE session_id = '$sSessionID' AND user_id=$iUserID";
+        $default->log->info("Session::destroy $query");
         $sql->query($query);
 
         // remove the php4 session
