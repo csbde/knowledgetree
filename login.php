@@ -79,18 +79,21 @@ if ($loginAction == "loginForm") {
                     break;
                 // login disabled                    
                 case 2:
-                    $url = "control.php?action=loginForm&loginFailureMessage=$lang_logindisabled";
+                    controllerRedirect("LOGIN_FORM", "errorMessage=$lang_logindisabled");
+                    //$url = "control.php?action=LOGIN_FORM&loginFailureMessage=$lang_logindisabled";
                     break;
                 // too many sessions
                 case 3 :
-                    $url = "control.php?action=loginForm&loginFailureMessage=$lang_toomanysessions";
+                    controllerRedirect("LOGIN_FORM", "errorMessage=$lang_toomanysessions");
+                    //$url = "control.php?action=LOGIN_FORM&loginFailureMessage=$lang_toomanysessions";
                     break;
                 default :
-                    $url = "control.php?action=loginForm&loginFailureMessage=$lang_err_general";
+                    controllerRedirect("LOGIN_FORM", "errorMessage=$lang_err_general");
+                    //$url = "control.php?action=LOGIN_FORM&loginFailureMessage=$lang_err_general";
             }
         } else {
             // didn't receive any login parameters, so redirect login form
-            $url = "control.php?action=loginForm";
+            $url = "control.php?action=LOGIN_FORM";
         }
         //echo "about to redirect to $url<br>";
         redirect($url);
