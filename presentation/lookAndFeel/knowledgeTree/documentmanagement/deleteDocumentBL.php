@@ -17,6 +17,7 @@ require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
 require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentTransaction.inc");
 require_once("$default->fileSystemRoot/lib/subscriptions/SubscriptionEngine.inc");
 require_once("$default->fileSystemRoot/lib/subscriptions/SubscriptionManager.inc");
+require_once("$default->fileSystemRoot/lib/web/WebDocument.inc");
 
 require_once("$default->fileSystemRoot/presentation/Html.inc");
 
@@ -62,7 +63,7 @@ if (checkSession()) {
                                                 "folderName" => Folder::getFolderDisplayPath($oDocument->getFolderID())));
                                 $default->log->info("deleteDocumentBL.php fired $count subscription alerts for removed document " . $oDocument->getName());
                                 
-                                // TODO: remove all document subscriptions for this document
+                                // remove all document subscriptions for this document
                                 if (SubscriptionManager::removeSubscriptions($fDocumentID, SubscriptionConstants::subscriptionType("DocumentSubscription"))) {
                                     $default->log->info("deleteDocumentBL.php removed all subscriptions for this document");
                                 } else {
@@ -75,6 +76,10 @@ if (checkSession()) {
 								//delete all fields associated with the document
 								Document::deleteDocumentFieldsLinks($fDocumentID);
 								
+                                // delete the corresponding web document entry
+                                $oWebDocument = WebDocument::get(lookupID($default->owl_web_documents_table, "document_id", $fDocumentID));
+                                $oWebDocument->delete();
+                                
                                 // redirect to the browse folder page							
                                 redirect("$default->rootUrl/control.php?action=browse&fFolderID=" . $oDocument->getFolderID());
                             } else {
