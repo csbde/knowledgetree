@@ -99,6 +99,7 @@ if ($loginAction == "loginForm") {
         // TODO: set "no login parameters received error message?
         // internal error message- should never happen
     }
+    $default->log->debug("login.php: about to redirect to $url");
     redirect($url);
 }
 ?>
