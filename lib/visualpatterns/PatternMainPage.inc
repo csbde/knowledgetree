@@ -123,10 +123,10 @@ class PatternMainPage {
         // hack to circumvent the crapness of ns 4.79
         if (! (($default->phpSniff->property("browser") == "moz") && ($default->phpSniff->property("version") <= "4.79")) ) {
             $sToRender .=       "<div id=\"divUp\">" .
-                                "\t<a href=\"#\" onmouseover=\"scroll(-7)\" onmouseout=\"noScroll()\"><img src=\"" . $default->graphicsUrl . "/desc.gif\" width=\"18\" height=\"9\" alt=\"up\" border=\"0\"></a>" .
+                                "\t<a href=\"#\" onmouseover=\"scroll(-7)\" onmouseout=\"noScroll()\"><img src=\"" . $default->graphicsUrl . "/down.gif\" width=\"18\" height=\"9\" alt=\"up\" border=\"0\"></a>" .
                                 "</div>" .
                                 "<div id=\"divDown\">" .
-                                "\t<a href=\"#\" onmouseover=\"scroll(7)\" onmouseout=\"noScroll()\"><img src=\"" . $default->graphicsUrl . "/asc.gif\" width=\"18\" height=\"9\" alt=\"down\" border=\"0\"></a>" .
+                                "\t<a href=\"#\" onmouseover=\"scroll(7)\" onmouseout=\"noScroll()\"><img src=\"" . $default->graphicsUrl . "/up.gif\" width=\"18\" height=\"9\" alt=\"down\" border=\"0\"></a>" .
                                 "</div>";
         }
 
