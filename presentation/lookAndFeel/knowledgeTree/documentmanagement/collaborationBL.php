@@ -83,7 +83,7 @@ if (checkSession()) {
 					$oUser = User::get($fUserID);
 					
 					$sBody = "You have been assigned the role of '" . $oRole->getName() . "' in the collaboration process for the document entitled '" . $oDocument->getName() . "'.  You will be informed when your role becomes active";					
-					$oEmail->send($oUser->getEmail(), "Assigment of role in document collaboration process", $sBody, $default->owl_email_from, $default->owl_email_fromname);
+					$oEmail->send($oUser->getEmail(), "Assigment of role in document collaboration process", $sBody);
                     
 					//go back to the document view page
 					controllerRedirect("viewDocument", "fDocumentID=$fDocumentID&fShowSection=documentRouting");                   
@@ -131,7 +131,7 @@ if (checkSession()) {
 function getFolderCollaborationArray($fFolderCollaborationID, $fDocumentID) {
 	global $default;
 	$sQuery = "SELECT GFL.group_id AS group_id, GFL.folder_id AS folder_id, GFL.precedence AS precedence, GFL.role_id, COALESCE(U.id, U2.id) AS user_id " .
-			"FROM $default->owl_groups_folders_approval_table AS GFL LEFT OUTER JOIN folders_users_roles_link AS FURL ON FURL.group_folder_approval_id = GFL.id AND FURL.document_id = $fDocumentID " .
+			"FROM $default->groups_folders_approval_table AS GFL LEFT OUTER JOIN folders_users_roles_link AS FURL ON FURL.group_folder_approval_id = GFL.id AND FURL.document_id = $fDocumentID " .
 			"LEFT OUTER JOIN users AS U ON FURL.user_id = U.id " .
 			"LEFT OUTER JOIN users AS U2 ON GFL.user_id = U2.id " .
 			"WHERE GFL.id = $fFolderCollaborationID";
