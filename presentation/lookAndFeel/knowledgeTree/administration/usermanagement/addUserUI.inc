@@ -71,7 +71,7 @@ function getDetailsDBPage($sUserName, $aAttributes) {
         $sToRender .= "</tr>\n";
         $sToRender .= "<tr><td><b>Initial Group</b></td><td>" . getGroupListBox() . "</td></tr>\n";        
         $sToRender .= "<tr>\n";
-        $sToRender .= "<td colspan=\"2\" align=\"right\">" . getAddButton() . getCancelButton() . "</td>";
+        $sToRender .= "<td colspan=\"2\" align=\"right\">" . getAddButton() . getCancelButton("listUsers") . "</td>";
         $sToRender .= "</tr>\n";
         $sToRender .= "</table>\n";
 		$sToRender .= getJavascriptValidation();        
@@ -110,7 +110,7 @@ function getDetailsLDAPPage($sUserName, $aAttributes, $sUserIdentifier) {
         $sToRender .= "</tr>\n";
         $sToRender .= "<tr><td><b>Group</b></td><td>" . getGroupListBox() . "</td></tr>\n";        
         $sToRender .= "<tr>\n";
-        $sToRender .= "<td colspan=\"2\" align=\"right\">" . getAddButton() . getCancelButton() . "</td>";
+        $sToRender .= "<td colspan=\"2\" align=\"right\">" . getAddButton() . getCancelButton("listUsers") . "</td>";
         $sToRender .= "</tr>\n";
         $sToRender .= "</table>\n";
         $sToRender .= getJavascriptValidation(true);
@@ -159,11 +159,6 @@ function getPageUsernameNotFound() {
 function getAddButton() {
 	global $default;
 	return "<input type=\"image\" src =\"$default->graphicsUrl/widgets/add.gif\" value=\"submit\" border=\"0\"/>\n";
-}
-
-function getCancelButton() {
-	global $default;
-	return generateControllerLink("listUsers", "", "<img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\" />");
 }
 
 function getGroupListBox() {

@@ -15,7 +15,6 @@ function getPage() {
 	$aParameterNumbers = array(0);
 	$aDisplayColumnTypes = array(1);
 	$aRequired = array(1);
-	//$aDropDownListTableNames = array(10=>"document_types_lookup");
 
 	// create a text field that is required 
 	$oPatternCreate = & new PatternCreate("Organisation", "orgmanagement/Organisation.inc",$aDisplayRowNames, $aParameterNumbers, $aDisplayColumnTypes, $aRequired);
@@ -31,7 +30,8 @@ function getPage() {
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "</tr>\n";
-	$sToRender .= "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/add.gif\" value=\"Submit\" border=\"0\"/></td>\n";	
+	$sToRender .= "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/add.gif\" value=\"Submit\" border=\"0\"/>";
+	$sToRender .= getCancelButton("listOrg") . "</td>\n";	
 	$sToRender .= "</table>\n";
 	
 	return $sToRender;
