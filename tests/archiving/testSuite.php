@@ -13,7 +13,7 @@
  * @package tests.archiving
  */
  
-require_once("../config/dmsDefaults.php");
+require_once("../../config/dmsDefaults.php");
 
 echo "<pre>";
 
