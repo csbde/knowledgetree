@@ -50,8 +50,8 @@ if(checkSession()) {
 		$default->log->info("adding comment: subject=$fSubject; comment=$fComment");
 		if ( (strlen($fSubject) > 0) && (strlen($fComment) > 0) ) {
 			// create a new thread, unless we're replying
-			if (isset($fNewComment)) {
-				$oThread = & new DiscussionThread(-1, $iDocumentID, $_SESSION["userID"]);
+			if (isset($fNewThread)) {
+				$oThread = & new DiscussionThread(-1, $fDocumentID, $_SESSION["userID"]);
 				$oThread->create();
 				$iThreadID = $oThread->getID();
 				// if this is a new thread, then set inReplyTo to -1
@@ -77,15 +77,15 @@ if(checkSession()) {
 						$oThread->setFirstCommentID($oComment->getID());								
 					}
 					// Session variable is set to true if user views the thread
-					if ($_SESSION['Discussion' . $iDocumentID][0]->bViews != true ){
+					if ($_SESSION['Discussion' . $fDocumentID][0]->bViews != true ){
 						$oThread->incrementNumberOfViews();							
-						$_SESSION['Discussion' . $iDocumentID][0]->bViews = true;								
+						$_SESSION['Discussion' . $fDocumentID][0]->bViews = true;								
 					}							
 					$oThread->incrementNumberOfReplies();
 					
 					if ($oThread->Update()) {  //
-						controllerRedirect("viewDiscussion", "fForDiscussion=1&fDocumentID=$iDocumentID");		
-						//$oPatternCustom->addHtml(getSubmitSuccessPage($iDocumentID));
+						controllerRedirect("viewDiscussion", "fForDiscussion=1&fDocumentID=$fDocumentID");		
+						//$oPatternCustom->addHtml(getSubmitSuccessPage($fDocumentID));
 					} else {
 						$main->setErrorMessage(_("Thread Object failed to update"));
 					}
@@ -97,11 +97,11 @@ if(checkSession()) {
 			}
 		} else { // the user has not entered BOTH a subject and a text body
 			$main->setErrorMessage(_("The subject line and/or body should not be empty."));
-			$main->setFormAction($_SERVER['PHP_SELF'] . "?fAddCommentSubmit=1&iDocumentID=$fDocumentID");
+			$main->setFormAction($_SERVER['PHP_SELF'] . "?fAddCommentSubmit=1&fDocumentID=$fDocumentID");
 			$oPatternCustom->addHtml(getAddComment($fDocumentID, $fSubject, $fComment, $fCommentID, 1, $fThreadID));
 		} // end of IF for Subject and Body test	 
 	} else if (isset($fReplyComment)) {  // if user is replying to existing comment			
-		$main->setFormAction($_SERVER['PHP_SELF'] . "?fAddCommentSubmit=1&iDocumentID=$fDocumentID");
+		$main->setFormAction($_SERVER['PHP_SELF'] . "?fAddCommentSubmit=1&fDocumentID=$fDocumentID");
 		
 		$oComment = DiscussionComment::get($fCommentID);						
 		$oUser = User::get($oComment->getUserID());
@@ -124,12 +124,12 @@ if(checkSession()) {
 		$oPatternCustom->addHtml(getAddComment($fDocumentID, $sReply . $oComment->getSubject() , urldecode($sReplyBody), $fCommentID, "-1" , $fThreadID));	
 							
 	} else if (isset($fNewThread)){ // Start adding a new Thread 
-		$main->setFormAction($_SERVER['PHP_SELF'] . "?fAddCommentSubmit=1&iDocumentID=$fDocumentID&fNewThread=1");
+		$main->setFormAction($_SERVER['PHP_SELF'] . "?fAddCommentSubmit=1&fDocumentID=$fDocumentID&fNewThread=1");
 		$oPatternCustom->addHtml(getAddComment($fDocumentID, $CommentSubject ,$Comment, $fCommentID, "1", $fThreadID));
 	} else {
 		// input validation	
 		if (isset($fDocumentID)) {
-			$main->setFormAction($_SERVER['PHP_SELF'] . "?fAddCommentSubmit=1&iDocumentID=$fDocumentID");
+			$main->setFormAction($_SERVER['PHP_SELF'] . "?fAddCommentSubmit=1&fDocumentID=$fDocumentID");
 			$oPatternCustom->setHtml(getAddComment($fDocumentID,$sSubject,$sBody, $fCommentID, 1, $fThreadID));
 		} else {
 			$main->setErrorMessage(_("You did not specify a document to add a comment to."));
