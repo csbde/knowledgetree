@@ -63,6 +63,8 @@ if (checkSession()) {
                         $oDocument = & PhysicalDocumentManager::createDocumentFromUploadedFile($_FILES['fFile'], $fFolderID);
                         // set the document title
                         $oDocument->setName($fName);
+                        // set the document type id
+                        $oDocument->setDocumentTypeID($fDocumentTypeID);
                         if (!(Document::documentExists($oDocument->getFileName(), $oDocument->getFolderID()))) {
                             if ($oDocument->create()) {
                                 //if the document was successfully created in the db, then store it on the file system
