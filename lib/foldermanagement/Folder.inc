@@ -1,16 +1,29 @@
 <?php
-
 /**
-*
-* Class Folder
-*
-* Represents as folder as the per the folders table in the database
-*
-* @author Rob Cherry, Jam Warehouse (Pty), Ltd, South Africa
-* @date 16 Janurary 2003
-* @package lib.foldermanagement
-*/
-
+ * $Id$
+ *
+ * Represents as folder as the per the folders table in the database.
+ *
+ * Copyright (c) 2003 Jam Warehouse http://www.jamwarehouse.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ * @version $Revision$
+ * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
+ * @package lib.foldermanagement 
+ */
 require_once("$default->fileSystemRoot/lib/foldermanagement/PhysicalFolderManagement.inc");
 
 class Folder {
@@ -203,7 +216,7 @@ class Folder {
 		//if the folder is not the root folder
 		if ($iFolderID != 0) {
 			$sql = $default->db;
-			$sql->query("SELECT parent_id FROM $default->owl_folders_table WHERE ID = $iFolderID");
+			$sql->query("SELECT parent_id FROM $default->folders_table WHERE ID = $iFolderID");
 			$sql->next_record();
 			return $this->generateParentFolderIDS($sql->f("parent_id")) . ",$iFolderID";
 		}
@@ -221,7 +234,7 @@ class Folder {
 		//if the folder is not the root folder 
 		if ($iFolderID != 0) {
 			$sql = $default->db;
-			$sql->query("SELECT name, parent_id FROM $default->owl_folders_table WHERE ID = $iFolderID");
+			$sql->query("SELECT name, parent_id FROM $default->folders_table WHERE ID = $iFolderID");
 			$sql->next_record();			
 			return $this->generateFullFolderPath($sql->f("parent_id")) . "/" . stripslashes($sql->f("name"));
 		}
@@ -242,7 +255,7 @@ class Folder {
 			$this->sParentFolderIDs = $this->generateParentFolderIDS($this->iParentID);
 			$this->sParentFolderIDs = substr($this->sParentFolderIDs, 1, strlen($this->sParentFolderIDs));
 			$sql = $default->db;
-			$result = $sql->query("INSERT INTO " . $default->owl_folders_table . " (name, description, parent_id, creator_id, unit_id, is_public, full_path, parent_folder_ids) " .
+			$result = $sql->query("INSERT INTO " . $default->folders_table . " (name, description, parent_id, creator_id, unit_id, is_public, full_path, parent_folder_ids) " .
 						"VALUES ('" . addslashes($this->sName) . "', '" . addslashes($this->sDescription) . "', $this->iParentID, $this->iCreatorID, $this->iUnitID, " . ($this->bIsPublic ? 1 : 0) . ",'" . addslashes($this->sFullPath) . "','" . addslashes($this->sParentFolderIDs) . "')");
 			if ($result) {
 				$this->iId = $sql->insert_id();
@@ -266,7 +279,7 @@ class Folder {
 		$sOldPath;
 		if ($this->iId >= 0) {			
 			$sql = $default->db;
-			$sQuery = "UPDATE " . $default->owl_folders_table . " SET " .
+			$sQuery = "UPDATE " . $default->folders_table . " SET " .
 							"name = '" . addslashes($this->sName) . "', " .
 							"description = '" . addslashes($this->sDescription) . "', " .
 							"parent_id = $this->iParentID, " .
@@ -308,7 +321,7 @@ class Folder {
 	function updateChildPaths($iID, $sql) {
 		global $default;
 		//get the direct children
-		$sql->query("SELECT id from $default->owl_folders_table WHERE parent_id = $iID");						
+		$sql->query("SELECT id from $default->folders_table WHERE parent_id = $iID");						
 		while ($sql->next_record()) {
 			//force an update, this will cause this child's children to be updated			
 			$oFolder = Folder::get($sql->f("id"));			
@@ -328,7 +341,7 @@ class Folder {
 	function getChildren($iFolderID, $aChildren = array()) {		
 		global $default;
 		$sql = $default->db;
-		$sql->query("SELECT id from $default->owl_folders_table WHERE parent_id = $iFolderID");
+		$sql->query("SELECT id from $default->folders_table WHERE parent_id = $iFolderID");
 		while ($sql->next_record()) {
 			$aChildren[count($aChildren)] = $sql->f("id");
 			Folder::getChildren($sql->f("id"), & $aChildren);
@@ -344,7 +357,7 @@ class Folder {
     function getDocumentIDs($iFolderID) {
 		global $default;
 		$sql = $default->db;
-		$sql->query("SELECT id from $default->owl_documents_table WHERE folder_id = $iFolderID");
+		$sql->query("SELECT id from $default->documents_table WHERE folder_id = $iFolderID");
 		while ($sql->next_record()) {
 			$sChildString .= $sql->f("id") . ",";
 		}
@@ -360,7 +373,7 @@ class Folder {
 		global $default, $lang_err_database, $lang_err_object_key;
 		if ($this->iId >= 0) {
 			$sql = $default->db;
-			$result = $sql->query("DELETE FROM " . $default->owl_folders_table . " WHERE id = " . $this->iId);
+			$result = $sql->query("DELETE FROM " . $default->folders_table . " WHERE id = " . $this->iId);
 			if ($result) {
 				$this->iId = -1;
 				return true;
@@ -386,7 +399,7 @@ class Folder {
 	function get($iFolderID) {		
 		global $default,  $lang_err_object_not_exist;
 		$sql = $default->db;		
-		$sql->query("SELECT * FROM " . $default->owl_folders_table . " WHERE id = " . $iFolderID);
+		$sql->query("SELECT * FROM " . $default->folders_table . " WHERE id = " . $iFolderID);
 		if ($sql->next_record()) {
 			$oFolder = & new Folder(stripslashes($sql->f("name")), stripslashes($sql->f("description")), $sql->f("parent_id"), $sql->f("creator_id"), $sql->f("unit_id"), $sql->f("is_public"));
             $oFolder->iId = $iFolderID;
@@ -404,7 +417,7 @@ class Folder {
 	function exists() {
 		global $default;
 		$sql = $default->db;
-		$sql->query("SELECT id FROM $default->owl_folders_table WHERE name='" . $this->sName . "' " .
+		$sql->query("SELECT id FROM $default->folders_table WHERE name='" . $this->sName . "' " .
 					"AND description = '" . $this->sDescription . "' AND parent_id=$this->iParentID");
 		if ($sql->next_record()) {
 			return true;
@@ -427,7 +440,7 @@ class Folder {
         settype($aFolderArray, "array");
         $sql = $default->db;
         // TODO: join on sys_deleted
-        $result = $sql->query("SELECT * FROM " . $default->owl_folders_table  . (isset($sWhereClause) ? " WHERE " . $sWhereClause : ""));
+        $result = $sql->query("SELECT * FROM " . $default->folders_table  . (isset($sWhereClause) ? " WHERE " . $sWhereClause : ""));
         if ($result) {
             $iCount = 0;
             while ($sql->next_record()) {
@@ -537,7 +550,7 @@ class Folder {
 		if ($iFolderID != 0) {
 			global $default;		
 			$sql = $default->db;
-			$sql->query("SELECT parent_id FROM " . $default->owl_folders_table . " WHERE id = " . $iFolderID);
+			$sql->query("SELECT parent_id FROM " . $default->folders_table . " WHERE id = " . $iFolderID);
 			$sql->next_record();		
 			return $sql->f("parent_id");
 		}
@@ -556,7 +569,7 @@ class Folder {
 		global $default, $lang_err_database;
 		if (Folder::folderExistsID($iFolderID)) {
 			$sql = $default->db;
-			$sql->query("SELECT document_type_id FROM " . $default->owl_folder_doctypes_table . " WHERE folder_id = " . $iFolderID);			
+			$sql->query("SELECT document_type_id FROM " . $default->folder_doctypes_table . " WHERE folder_id = " . $iFolderID);			
 			if ($sql->next_record()) {
 				return $sql->f("document_type_id");
 			}
@@ -580,7 +593,7 @@ class Folder {
 		$sName = addslashes($sName);
 		global $default, $lang_err_folder_exist;
 		$sql = $default->db;
-		$sql->query("SELECT * FROM " . $default->owl_folders_table . " WHERE name = '" . $sName . "' AND parent_id = " . $iParentID);
+		$sql->query("SELECT * FROM " . $default->folders_table . " WHERE name = '" . $sName . "' AND parent_id = " . $iParentID);
 		if ($sql->next_record()) {
 			return true;
 		}
@@ -598,7 +611,7 @@ class Folder {
 	function folderExistsID($iFolderID) {
 		global $default, $lang_err_folder_exist;
 		$sql = $default->db;
-		$sql->query("SELECT * FROM " . $default->owl_folders_table . " WHERE id = " . $iFolderID);
+		$sql->query("SELECT * FROM " . $default->folders_table . " WHERE id = " . $iFolderID);
 		if ($sql->next_record()) {
 			return true;
 		}
@@ -616,7 +629,7 @@ class Folder {
 	function getFolderName($iFolderID) {
 		global $default, $lang_err_database;
 		$sql = $default->db;
-		$sql->query("SELECT name FROM " . $default->owl_folders_table . " WHERE id = " . $iFolderID);
+		$sql->query("SELECT name FROM " . $default->folders_table . " WHERE id = " . $iFolderID);
 		if ($sql->next_record()) {
 			return stripslashes($sql->f("name"));
 		}
@@ -634,7 +647,7 @@ class Folder {
 	function getFolderID($sFolderName) {
 		global $default, $lang_err_database;
 		$sql = $default->db;
-		$sql->query("SELECT id FROM " . $default->owl_folders_table . " WHERE name = '" . addslashes($sFolderName) . "'");
+		$sql->query("SELECT id FROM " . $default->folders_table . " WHERE name = '" . addslashes($sFolderName) . "'");
 		if ($sql->next_record()) {
 			return $sql->f("id");
 		}
@@ -650,7 +663,7 @@ class Folder {
 	function folderIsLinkedToDocType($iFolderID, $iDocTypeID) {
 		global $default;
 		$sql = $default->db;
-		$sql->query("SELECT id FROM $default->owl_folder_doctypes_table WHERE document_type_id = $iDocTypeID and folder_id = $iFolderID");
+		$sql->query("SELECT id FROM $default->folder_doctypes_table WHERE document_type_id = $iDocTypeID and folder_id = $iFolderID");
 		if ($sql->next_record()) {
 			return true;
 		}
@@ -666,7 +679,7 @@ class Folder {
 	*/
 	function folderIsUnitRootFolder($iFolderID) {
 		global $default;
-		$sQuery ="SELECT F.id FROM $default->owl_folders_table AS F INNER JOIN $default->owl_units_table AS U ON F.name LIKE U.name WHERE F.id = $iFolderID";
+		$sQuery ="SELECT F.id FROM $default->folders_table AS F INNER JOIN $default->units_table AS U ON F.name LIKE U.name WHERE F.id = $iFolderID";
 		
 		$sql = $default->db;
 		$sql->query($sQuery);

@@ -1,16 +1,30 @@
 <?php
 /**
-* Class FolderCollaboration.inc
-*
-* Represents the group_folders_approval_link table in the db used to map out a
-* document approval process
-*
-* @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
-* @date 29 January 2003
-* @package lib.foldermanagement
-*
-*/
-
+ * $Id$
+ *
+ * Represents the group_folders_approval_link table in the db used to map out a
+ * document approval process.
+ *
+ * Copyright (c) 2003 Jam Warehouse http://www.jamwarehouse.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ * @version $Revision$
+ * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
+ * @package lib.foldermanagement 
+ */
 class FolderCollaboration {
 	
 	/** primary key of current object */
@@ -91,7 +105,7 @@ class FolderCollaboration {
 		//if the object hasn't been created
 		if ($this->iId < 0) {
 			$sql = $default->db;
-			$result = $sql->query("INSERT INTO " . $default->owl_groups_folders_approval_table . " (folder_id, group_id, precedence, role_id, user_id) VALUES ($this->iFolderID, $this->iGroupID, $this->iSequenceNumber, $this->iRoleID, $this->iUserID)");
+			$result = $sql->query("INSERT INTO " . $default->groups_folders_approval_table . " (folder_id, group_id, precedence, role_id, user_id) VALUES ($this->iFolderID, $this->iGroupID, $this->iSequenceNumber, $this->iRoleID, $this->iUserID)");
 			if ($result) {
 				$this->iId = $sql->insert_id();
 				return  true;
@@ -99,7 +113,7 @@ class FolderCollaboration {
 			$_SESSION["errorMessage"] = $lang_err_database;
 			return false;
 		}
-		$_SESSION["errorMessage"] = $lang_err_object_exists . "id = " . $this->iId . " table = $default->owl_groups_folders_approval_table";
+		$_SESSION["errorMessage"] = $lang_err_object_exists . "id = " . $this->iId . " table = $default->groups_folders_approval_table";
 		return false;
 	}
 	
@@ -114,7 +128,7 @@ class FolderCollaboration {
 		//only update if the object has been stored
 		if ($this->iId > 0) {
 			$sql = $default->db;
-			$result = $sql->query("UPDATE " . $default->owl_groups_folders_approval_table . " SET group_id = $this->iGroupID, folder_id = $this->iFolderID, precedence = $this->iSequenceNumber, role_id = $this->iRoleID, user_id = $this->iUserID WHERE id = $this->iId");
+			$result = $sql->query("UPDATE " . $default->groups_folders_approval_table . " SET group_id = $this->iGroupID, folder_id = $this->iFolderID, precedence = $this->iSequenceNumber, role_id = $this->iRoleID, user_id = $this->iUserID WHERE id = $this->iId");
 			if ($result) {
 				return true;
 			}
@@ -136,7 +150,7 @@ class FolderCollaboration {
 		//only delete the object if it exists in the database
 		if ($this->iId >= 0) {
 			$sql = $default->db;
-			$result = $sql->query("DELETE FROM $default->owl_groups_folders_approval_table WHERE id = $this->iId");
+			$result = $sql->query("DELETE FROM $default->groups_folders_approval_table WHERE id = $this->iId");
 			if ($result) {
 				return true;
 			}
@@ -156,8 +170,8 @@ class FolderCollaboration {
 	function hasDocumentInProcess() {
 		global $default;
 		$sQuery = "SELECT FURL.id " .
-				  "FROM $default->owl_groups_folders_approval_table AS GFAL INNER JOIN documents AS D ON GFAL.folder_id = D.folder_id " .
-                  "INNER JOIN $default->owl_folders_user_roles_table AS FURL ON FURL.document_id = D.id " .
+				  "FROM $default->groups_folders_approval_table AS GFAL INNER JOIN documents AS D ON GFAL.folder_id = D.folder_id " .
+                  "INNER JOIN $default->folders_user_roles_table AS FURL ON FURL.document_id = D.id " .
                   "WHERE GFAL.id = " . $this->iId . " " .
                   "AND FURL.active != 0"; 
 		$sql = $default->db;		
@@ -177,14 +191,14 @@ class FolderCollaboration {
 	function & get($iFolderCollaborationID) {
 		global $default;
 		$sql = $default->db;
-		$result = $sql->query("SELECT * FROM $default->owl_groups_folders_approval_table WHERE id = $iFolderCollaborationID");
+		$result = $sql->query("SELECT * FROM $default->groups_folders_approval_table WHERE id = $iFolderCollaborationID");
 		if ($result) {
 			if ($sql->next_record()) {
 				$oFolderCollaboration = & new FolderCollaboration($sql->f("folder_id"), $sql->f("group_id"), $sql->f("precedence"), $sql->f("role_id"), $sql->f("user_id"));
 				$oFolderCollaboration->iId = $iFolderCollaborationID;
 				return $oFolderCollaboration;
 			}
-			$_SESSION["errorMessage"] = $lang_err_object_not_exist . "id = " . $iFolderCollaborationID . " table = $default->owl_groups_folders_approval_table";
+			$_SESSION["errorMessage"] = $lang_err_object_not_exist . "id = " . $iFolderCollaborationID . " table = $default->groups_folders_approval_table";
 			return false;
 		}
 		$_SESSION["errorMessage"] = $lang_err_database;
@@ -204,7 +218,7 @@ class FolderCollaboration {
 		$aFolderCollaborationArray;
 		settype($aFolderCollaborationArray, "array");
 		$sql = $default->db;
-		$result = $sql->query("SELECT * FROM " . $default->owl_groups_folders_approval_table  . (isset($sWhereClause) ? " " . $sWhereClause : ""));
+		$result = $sql->query("SELECT * FROM " . $default->groups_folders_approval_table  . (isset($sWhereClause) ? " " . $sWhereClause : ""));
 		if ($result) {			
 			$iCount = 0;
 			while ($sql->next_record()) {
