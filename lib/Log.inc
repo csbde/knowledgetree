@@ -48,9 +48,7 @@ class Log {
      * @param $logEntry  the message to write to the log file
      */
     function debug($logEntry) {
-        // prefix entry
-        $logEntry = date("Y-m-d H:i:s",time()) . ":DEBUG:" . $logEntry . "\n";
-        $this->writeLog($logEntry, DEBUG);
+        $this->writeLog($this->prefixEntry($logEntry, "DEBUG"), DEBUG);
     }
     
     /**
@@ -59,8 +57,7 @@ class Log {
      * @param $logEntry  the message to write to the log file
      */
     function info($logEntry) {
-        $logEntry = date("Y-m-d H:i:s",time()) . ":INFO:" . $logEntry . "\n";
-        $this->writeLog($logEntry, INFO);
+        $this->writeLog($this->prefixEntry($logEntry, " INFO"), INFO);
     }
     
     /**
@@ -69,8 +66,7 @@ class Log {
      * @param $logEntry  the message to write to the log file
      */    
     function error($logEntry) {
-        $logEntry = date("Y-m-d H:i:s",time()) . ":ERROR:" . $logEntry . "\n";
-        $this->writeLog($logEntry, ERROR);
+        $this->writeLog($this->prefixEntry($logEntry, "ERROR"), ERROR);
     }
     
     /**
@@ -88,5 +84,13 @@ class Log {
             fclose($fp);
         }
     }
+    
+    /**
+     * Prefixes the log entry with the current date time, the logging level
+     * and the page that called it
+     */
+    function prefixEntry($logEntry, $logLevel) {
+       return getCurrentDateTime() . ":$logLevel: $logEntry\n";
+    }      
 }
 ?>
