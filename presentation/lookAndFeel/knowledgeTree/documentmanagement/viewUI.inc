@@ -423,6 +423,10 @@ function displayCheckInOutButton($oDocument, $bEdit) {
 	} else {
 	  	$sAction = "checkOutDocument";
 	  	$sImageName = "checkout";
+    	// #3481 if the document is published don't allow checkout
+    	if (DocumentCollaboration::documentIsPublished($oDocument->getID())) {
+    		$sDisabledText = "This document has been published and cannot be checked out";
+    	}	  	
 	}
     if (!$bEdit) {
     	$sDisabledText = "You do not have write access to this document";
