@@ -20,6 +20,7 @@ function getPage() {
 	// create a text field that is required 
 	$oPatternCreate = & new PatternCreate("Link", "links/link.inc",$aDisplayRowNames, $aParameterNumbers, $aDisplayColumnTypes, $aRequired);
 	$oPatternCreate->setUniqueName("link");
+    $oPatternCreate->setDefaultValues(array(1=>"http://"));
 	
 	$sToRender .= "<table width=\"600\">" . renderHeading("Add QuickLink") . "</table>";
 	$sToRender .= "<table>\n";
