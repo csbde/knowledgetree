@@ -98,7 +98,7 @@ if ($oObject->create()) {
 
 //redirect the user
 if (isset($fRedirectURL)) {
-	redirect(urldecode($fRedirectURL) . $oObject->iId . "&fSuccess=" . $bSuccess);
+	redirect(strip_tags(urldecode($fRedirectURL)) . $oObject->iId . "&fSuccess=" . $bSuccess);
 } else {
 	redirect("$default->rootUrl/control.php");
 }

@@ -42,6 +42,6 @@ if (count($_POST) > 0) {
 		$sql = $default->db;
 		$sql->query($aQueries[$i]);
 	}
-	redirect(urldecode($fReturnURL));
+	redirect(strip_tags(urldecode($fReturnURL)));
 }
 ?>
