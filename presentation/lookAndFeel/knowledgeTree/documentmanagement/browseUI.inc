@@ -192,7 +192,7 @@ function renderDocumentTypeResults($aResults) {
  *
  * @param array the browse result objects
  */
-function renderFolderResults($aResults) {
+function renderFolderResults($aResults, $bTemplateBrowsing = false) {
     global $default, $browse_no_sub_folders, $browse_no_documents, $browse_no_document_permission;
     $sToRender = "";
 
@@ -220,7 +220,7 @@ function renderFolderResults($aResults) {
         $sToRender .= "<tr><td colspan=\"5\">" . $browse_no_sub_folders . "</td></tr>";
     }
         
-    $sToRender .= "<tr><td>" . renderDocumentList($aResults, $browse_no_documents, $browse_no_document_permission) . "</td></tr>\n";
+    $sToRender .= "<tr><td>" . renderDocumentList($aResults, $browse_no_documents, $browse_no_document_permission, false, $bTemplateBrowsing) . "</td></tr>\n";
     
     return $sToRender;
 }
@@ -277,7 +277,7 @@ function renderSortHeadings($sSortBy, $sSortDirection) {
  * @param string the message to display if the current user doesn't have permission to view the documents
  * @param boolean whether to display the complete path to the document or not
  */
-function renderDocumentList($aResults, $sNoDocumentsMessage, $sNoPermissionMessage, $bDisplayFullPath = false) {
+function renderDocumentList($aResults, $sNoDocumentsMessage, $sNoPermissionMessage, $bDisplayFullPath = false, $bTemplateBrowsing = false) {
 	global $default;
 	
 	$iFolderCount = count($aResults["folders"]) - 1;
@@ -286,7 +286,8 @@ function renderDocumentList($aResults, $sNoDocumentsMessage, $sNoPermissionMessa
         for ($i=0; $i<count($aResults["documents"]); $i++) {
         	// in order for candy striping to work we need to take the number of folders
         	// into account when alternating
-            $sToRender .= "<tr bgcolor=\"" . getColour($i+$iFolderCount) . "\" width=\"100%\"><td valign=\"bottom\">" . displayDocumentLink($aResults["documents"][$i], $bDisplayFullPath) . "</td>";
+            $sToRender .= "<tr bgcolor=\"" . getColour($i+$iFolderCount) . "\" width=\"100%\"><td valign=\"bottom\">" . ($bTemplateBrowsing ? displayDocumentLinkForTemplateBrowsing($aResults["documents"][$i], $bDisplayFullPath) : displayDocumentLink($aResults["documents"][$i], $bDisplayFullPath)) . "</td>";
+                        
             $sToRender .= "<td valign=\"bottom\">" . $aResults["documents"][$i]->getFileName() . "</td>";
             $oCreator = User::get($aResults["documents"][$i]->getCreatorID());
             $sToRender .= "<td valign=\"bottom\">" . ($oCreator ? $oCreator->getName() : "") . "</td>";
@@ -314,7 +315,8 @@ function renderDocumentList($aResults, $sNoDocumentsMessage, $sNoPermissionMessa
  * @param string the field to sort the results by
  * @param string the direction to sort
  */
-function renderPage($aResults, $sBrowseType, $sSortBy, $sSortDirection) {
+
+function renderPage($aResults, $sBrowseType, $sSortBy, $sSortDirection, $bTemplateBrowsing = false) {
     global $default, $browse_collection_heading;
     
 	$sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
@@ -340,7 +342,7 @@ function renderPage($aResults, $sBrowseType, $sSortBy, $sSortDirection) {
 	$sToRender .= renderSortHeadings($sSortBy, $sSortDirection);	
 	$sToRender .= "<tr><td>\n";    
     switch ($sBrowseType) {
-        case "folder"       : $sToRender .= renderFolderResults($aResults, $sSortBy, $sSortDirection); break;
+        case "folder"       : $sToRender .= renderFolderResults($aResults, $sSortBy, $sSortDirection, $bTemplateBrowsing); break;
         case "category"     : $sToRender .= renderCategoryResults($aResults); break;
         case "documentType" : $sToRender .= renderDocumentTypeResults($aResults); break;
     }
