@@ -211,6 +211,14 @@ mimetypes CHAR(100) NOT NULL,
 icon_path CHAR(255) 
 )TYPE = InnoDB;
 
+CREATE TABLE news ( 
+id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
+image TEXT,
+synopsis VARCHAR(255) NOT NULL,
+body TEXT,
+rank INTEGER
+) TYPE = InnoDB;
+
 CREATE TABLE organisations_lookup ( 
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 name CHAR(100) NOT NULL
@@ -415,6 +423,11 @@ PRIMARY KEY (id)
 ALTER TABLE metadata_lookup
 ADD CONSTRAINT PK_metadata_lookup
 PRIMARY KEY (id)
+;
+
+ALTER TABLE news 
+ADD CONSTRAINT PK_news 
+PRIMARY KEY (id) 
 ;
 
 ALTER TABLE groups_units_link
