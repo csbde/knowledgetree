@@ -44,7 +44,7 @@ class DocumentBrowser {
             
             // look up this users unit
             // FIXME: what if the user belongs to multiple units?
-            $unitID = lookupID($default->owl_groups_units_table, "group_id", $groupIDs[0]);
+            $unitID = lookupField($default->owl_groups_units_table, "unit_id", "group_id", $groupIDs[0]);
             // lookup the unit name
             $unitName = lookupField($default->owl_units_table, "name", "id", $unitID);
             $default->log->debug("DocumentBrowser::browseByFolder: unitID=$unitID; unitName=$unitName");
@@ -218,7 +218,7 @@ class DocumentBrowser {
         } else {
             // lookup document type name from the passed in id
             $documentTypeName = lookupField($default->owl_document_types_table, "name", "id", $documentTypeID);
-            $results["documentTypes"][] = $documentTypeName;
+            $results["documentTypes"][] = array("id" => $documentTypeID, "name" => $documentTypeName);
             
             // find all documents with this document type
             $query = "select id from $default->owl_documents_table where document_type_id=$documentTypeID";
