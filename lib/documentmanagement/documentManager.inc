@@ -14,6 +14,7 @@
 */
 
 require_once ("$default->owl_root_url/lib/owl.lib.php");
+require_once("./phpmailer/class.phpmailer.php"); // for emailing
 
 class DocumentManager {
 	
@@ -274,7 +275,213 @@ class DocumentManager {
 		return $sql->next_record();
 	}
 	
+//------------------------------------------------------------        
+/**
+ * Function viewDocumentHistory($DocumentID)
+ *
+ * This function gets all revision history for a particular document
+ *
+ * @param $DocumentID
+ *	The id of the document whose history we wish to retrieve
+ * 
+*/
+//------------------------------------------------------------
+function viewDocumentHistory($DocumentID)
+{
+	// we need to first connect to the db
+	// then we run the query...getting all info for specific document id
+	// we then return the array???? or print out the info
+				
+	global $default;
+	$db = new Owl_DB();
+		
+	$Sql = "SELECT * FROM  " . $default->owl_document_transactions_table . " WHERE document_id = $DocumentID";
+		
+	$result = $db->query($Sql);
+	$rows = $db->num_rows($result);
+		
 	
+	// return the result set..
+	return $result;
+
+}	
+	
+	
+//------------------------------------------------------------        
+/**
+ * Function sendHyperLink($FromEmail, $FromName, $ToEmail, $Subject, $EmailBody, $hyperlink)
+ *
+ * Sends an email containing a hyperlink to a specified recipient
+ *
+ * @param $FromEmail
+ *	The sender's email address
+ * @param $FromName
+ *	The sender's Name
+ * @param $ToEmail
+ *	The recipients email address
+ * @param $Subject
+ *	The subject heading for the email
+ * @param $EmailBody
+ *	The Body of the email
+ * @param $hyperlink
+ *	The hyperlink that should be sent
+ * 
+ * @Todo ...take out the error handling or modify it 
+ 	 Also check for special characters
+*/
+//------------------------------------------------------------
+function sendHyperLink($FromEmail, $FromName, $ToEmail, $Subject, $EmailBody, $hyperlink)
+{
+	global $default;
+		
+	// create a new phpmailer object.
+	$mail = new phpmailer();
+	
+	//set up info
+	$mail->IsSMTP(); // telling the class to use SMTP
+	$mail->Host = $default->owl_mail_server; // SMTP server
+	
+	//get info from relevant fields.
+	$mail->From = $FromEmail;
+	$mail->FromName = $FromName;
+	$mail->AddAddress($ToEmail);
+	$mail->Subject = $Subj;
+	$mail->Body = $EmailBody  . ' ' . $hyperlink;
+	$mail->WordWrap = 100;
+	$mail->IsHTML(true);
+	   
+	//send the email       
+	if(!$mail->Send())
+	{
+	   echo "Message was not sent";
+	   echo "Mailer Error: " . $mail->ErrorInfo;
+	}
+	else
+	{
+	   echo "Message has been sent";
+	}
+	
+}
+
+
+//------------------------------------------------------------        
+/**
+ * Function publishDocument($DocumentID,$WebsiteID, $UnitID, $DTime)
+ *
+ * This function sets up a document for publication by 
+ * inserting the various parameters into the web_documents table
+ * and then sets the status id corresponding to the 'Pending' Status
+ *
+ * @param $DocumentID
+ *	The id of the document that we wish to publish
+ * @param $WebsiteID
+ *	The id of the website 
+ * @param $UnitID
+ *	The id of the unit the document belongs to
+ * @param $DTime
+ *	The Date and Time that the document was uploaded for publication 
+ *	approval...should be 'Now' where now is the D & T it was uploaded
+ */
+//------------------------------------------------------------
+function publishDocument($DocumentID,$WebsiteID, $UnitID, $DTime)
+{
+	// First need to get all info..ie docid, websiteid, unitid,
+	// then set the status to pending..awaiting final approval from 
+	// whoever needs to publish it.
+	// then store it in the web_documents 
+
+	global $default;
+	$db = new Owl_DB();
+			
+	$Sql = "SELECT * FROM  " . $default->owl_web_documents_table . " WHERE document_id = $DocumentID";
+		
+	$result = $db->query($Sql);
+	$row = $db->num_rows($result);
+	
+	//get the id when status set to pending
+	$Sql2 = "SELECT id FROM " . $default->owl_web_documents_status_table . " WHERE name = 'Pending' ";
+	$pending = $db->query($Sql2);
+	$db->next_record();
+	$PendingID = $db->f("id");
+	
+	// make sure document does'nt exist in the db already
+	if($row == 1)
+	{
+		printf("Document already awaiting approval");
+		return false;
+	}
+	Else
+	{	// insert new entry
+		$Sql = "INSERT INTO  " . $default->owl_web_documents_table . " (document_id,web_site_id,unit_id,status_id, datetime) VALUES ($DocumentID,$WebsiteID,$UnitID, $PendingID, '$DTime')";
+		$result = $db->query($Sql) ;
+		return true;
+	
+	}
+	
+}
+
+//------------------------------------------------------------        
+/**
+ * Function publishDocumentToWeb($DocumentID,$DTime)
+ *
+ * This function changes the publication status of a document to the WEB..ie it 
+ * has received the required approval so its status has to change
+ * The web_documents table is update with The status id corresponding to the 'Published' 
+ * Status  and the DateTime is updated as well
+ *
+ * @param $DocumentID
+ *	The id of the document that we wish to publish
+ * @param $DTime
+ *	The Date and Time that the document was uploaded for publication
+ *	or approval was given
+ * 
+*/
+//------------------------------------------------------------
+function publishDocumentToWeb($DocumentID,$DTime)
+{
+
+	global $default;
+	$db = new Owl_DB();			
+	
+	// need to determine if a document has been published to the web already
+	$Sql = "SELECT status_id FROM " . $default->owl_web_documents_table . " WHERE document_id = $DocumentID";
+	$result = $db->query($Sql);
+	$row = $db->num_rows($result);
+	$db->next_record();
+	$isAlreadyPublishedID = $db->f("status_id");
+	
+	// get id where name is Published (to prevent errors from change of id)
+	$Sql2 = "SELECT id FROM " . $default->owl_web_documents_status_table . " WHERE name = 'Published'";
+	$published = $db->query($Sql2);
+	$db->next_record();
+	$publishID = $db->f("id");
+	
+	// make sure entry exists and then check status
+	if($row == 1)
+	{
+		if($isAlreadyPublishedID == $publishID)
+		{
+			
+			printf("\nDocument already published");
+			return false;
+		}
+	
+		Else
+		{	//status is pending..therefore update it to published
+			$Sql = "UPDATE " . $default->owl_web_documents_table . " SET status_id = $publishID, datetime = '$DTime' WHERE document_id = $DocumentID";
+			$result = $db->query($Sql) ;
+			return true;
+		}
+	}
+	Else
+	{
+		printf("Document is not yet been sent for Publication approval");
+	}
+}
+
+
+
+
 	
 }
 ?>
