@@ -30,11 +30,17 @@
  */
 
 function sanitize($string) {
-	// Remove '(' and ')'
-        $xss_array = array("(" => "#&40;", ")" => "#&41;");
-	// Remove all HTML tags.
-        $string = strtr(strip_tags(urldecode($string)), $xss_array);
-        return $string;
+	// This should be set if you've read the INSTALL instructions.
+	// Better to be safe though.
+	if (get_magic_quotes_gpc()) {
+        	$string = strip_tags(urldecode(trim($string)));
+ 	} else {
+        	$string = addslashes(strip_tags(urldecode(trim($string))));
+	}
+
+	// This might be a little too aggressive
+	$pattern = "([^[:alpha:]|^_\.\ \:-])";
+	return ereg_replace($pattern, '', $string);
 }
 
 ?>
