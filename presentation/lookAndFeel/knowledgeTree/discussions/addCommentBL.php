@@ -43,22 +43,7 @@ require_once("$default->fileSystemRoot/presentation/Html.inc");
 if(checkSession()) {
 	$oPatternCustom = & new PatternCustom();
 	require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
-	// input validation
-	if (isset($fAddComment)) {		
-		if (isset($fDocumentID)) {
-			$main->setFormAction($_SERVER['PHP_SELF'] . "?fAddCommentSubmit=1&iDocumentID=$fDocumentID");
-			$oPatternCustom->setHtml(getAddComment($fDocumentID,$sSubject,$sBody, $fCommentID, 1));
-		} else {
-			$main->setErrorMessage("You did not specify a document to add a comment to.");			
-		}
-	// User wishes to view a comment
-	} else if (isset($fViewComment)) {
-		if (isset($iCommentID)) {
-			$oComment = DiscussionComment::get($iCommentID);
-		  	$oUser =  User::get($oComment->getUserID());
-		  	$oPatternCustom->setHtml(getCommentBody($oComment->getBody(), $oComment->getSubject(), $oComment->getDate(), $iDocumentID,$oUser->getUserName())) ;			  	
-		}		
-	} else if (isset($fAddCommentSubmit)) {
+	if (isset($fAddCommentSubmit)) {
 		$default->log->info("adding comment: subject=$fSubject; comment=$fComment");
 		if ( (strlen($fSubject) > 0) && (strlen($fComment) > 0) ) {
 			// create a new thread, unless we're replying
@@ -108,8 +93,8 @@ if(checkSession()) {
 			$main->setErrorMessage("The subject line and/or body should not be empty.");				
 			$main->setFormAction($_SERVER['PHP_SELF'] . "?fAddCommentSubmit=1&iDocumentID=$fDocumentID");
 			$oPatternCustom->addHtml(getAddComment($fDocumentID, $fSubject, $fComment, $fCommentID, 1));
-		} // end of IF for Subject and Body test	
-	} else if (isset($fReplyComment)){  // if user is replying to existing comment			
+		} // end of IF for Subject and Body test	 
+	} else if (isset($fReplyComment)) {  // if user is replying to existing comment			
 		$main->setFormAction($_SERVER['PHP_SELF'] . "?fAddCommentSubmit=1&iDocumentID=$fDocumentID");
 		
 		$oComment = DiscussionComment::get($fCommentID);						
@@ -135,12 +120,16 @@ if(checkSession()) {
 	} else if (isset($fNewThread)){ // Start adding a new Thread 
 		$main->setFormAction($_SERVER['PHP_SELF'] . "?fAddCommentSubmit=1&iDocumentID=$fDocumentID&fNewThread=1");
 		$oPatternCustom->addHtml(getAddComment($fDocumentID, $CommentSubject ,$Comment, $fCommentID, "1"));
-				
-	} else { // If no discussion exists			
-		$main->setErrorMessage("Error: No discussion thread available");			
-	}
-		    
+	} else {
+		// input validation	
+		if (isset($fDocumentID)) {
+			$main->setFormAction($_SERVER['PHP_SELF'] . "?fAddCommentSubmit=1&iDocumentID=$fDocumentID");
+			$oPatternCustom->setHtml(getAddComment($fDocumentID,$sSubject,$sBody, $fCommentID, 1));
+		} else {
+			$main->setErrorMessage("You did not specify a document to add a comment to.");			
+		}		
+	}	    
 	$main->setCentralPayload($oPatternCustom);
 	$main->render();    
-} // end of if checksession
+}
 ?>
