@@ -88,6 +88,12 @@ $default->owl_mime_table	= "mime_types";
 $default->owl_organisations_table = "organisations_lookup";
 // stores role information (name and access)
 $default->owl_roles_table = "roles";
+// sitemap access classes
+$default->owl_site_access_table = "site_access_lookup";
+// sitemap sections
+$default->owl_site_sections_table = "site_sections_lookup";
+// sitemap definition
+$default->owl_sitemap_table = "sitemap";
 // stores document subscription information
 $default->owl_subscriptions_table = "subscriptions"; 
 // stores default system settings
@@ -132,48 +138,47 @@ $default->debug = True;
 
 // define site mappings
 require_once("$default->owl_fs_root/lib/session/SiteMap.inc");
-$default->siteMap = new SiteMap();
+$default->siteMap = new SiteMap(false);
 
 // action, page, section, group with access, link text
 
 // general pages
-$default->siteMap->addPage("login", "/presentation/login.php?loginAction=login", "General", A, "");
-$default->siteMap->addPage("loginForm", "/presentation/login.php?loginAction=loginForm", "General", A, "login"); 
-$default->siteMap->addPage("logout", "/presentation/logout.php", "General", A, "logout");
-$default->siteMap->addPage("dashboard", "/presentation/dashboardBL.php", "General", A, "dashboard");
+$default->siteMap->addPage("login", "/presentation/login.php?loginAction=login", "General", None, "");
+$default->siteMap->addPage("loginForm", "/presentation/login.php?loginAction=loginForm", "General", None, "login"); 
+$default->siteMap->addPage("dashboard", "/presentation/dashboardBL.php", "General", Guest, "dashboard");
 
 //pages for manage documents section
-$default->siteMap->addDefaultPage("browse", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/browseBL.php", "Manage Documents", A, "browse documents");
-$default->siteMap->addPage("viewDocument", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/viewBL.php", "Manage Documents", A, "");
-$default->siteMap->addPage("addDocument", "/presentation/documentmanagement/addDocument.php", "Manage Documents", A, "Add A Document");
-$default->siteMap->addPage("addFolder", "/presentation/documentmanagement/addFolder.php", "Manage Documents", UA, "Add A Folder");
-$default->siteMap->addPage("modifyFolderProperties", "/presentation/documentmanagement/modifyFolder.php", "Manage Documents", UA, "Modify Folder Properties");
-$default->siteMap->addPage("deleteFolder", "/presentation/documentmanagement/deleteFolder.php", "Manage Documents", UA, "Delete A Folder");
-$default->siteMap->addPage("moveFolder", "/presentation/documentmanagement/moveFolder.php", "Manage Documents", UA, "Move A Folder");
+$default->siteMap->addDefaultPage("browse", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/browseBL.php", "Manage Documents", Guest, "browse documents");
+$default->siteMap->addPage("viewDocument", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/viewBL.php", "Manage Documents", Guest, "");
+$default->siteMap->addPage("addDocument", "/presentation/documentmanagement/addDocument.php", "Manage Documents", User, "Add A Document");
+$default->siteMap->addPage("addFolder", "/presentation/documentmanagement/addFolder.php", "Manage Documents", UnitAdmin, "Add A Folder");
+$default->siteMap->addPage("modifyFolderProperties", "/presentation/documentmanagement/modifyFolder.php", "Manage Documents", UnitAdmin, "Modify Folder Properties");
+$default->siteMap->addPage("deleteFolder", "/presentation/documentmanagement/deleteFolder.php", "Manage Documents", UnitAdmin, "Delete A Folder");
+$default->siteMap->addPage("moveFolder", "/presentation/documentmanagement/moveFolder.php", "Manage Documents", UnitAdmin, "Move A Folder");
 
 // pages for administration section
-$default->siteMap->addDefaultPage("administration", "/admin.php", "Administration", UA, "Administration");
-$default->siteMap->addPage("unitAdministration", "/presentation/unitAdmin.php", "Administration", UA, "Unit Administration");
-$default->siteMap->addPage("systemAdministration", "/presentation/sysAdmin.php", "Administration", SA, "System Administration");
+$default->siteMap->addDefaultPage("administration", "/admin.php", "Administration", UnitAdmin, "Administration");
+$default->siteMap->addPage("unitAdministration", "/presentation/unitAdmin.php", "Administration", UnitAdmin, "Unit Administration");
+$default->siteMap->addPage("systemAdministration", "/presentation/sysAdmin.php", "Administration", SysAdmin, "System Administration");
 
 // pages for advanced search section
-$default->siteMap->addDefaultPage("advancedSearch", "/search.php", "Advanced Search", A, "Advanced Search");
+$default->siteMap->addDefaultPage("advancedSearch", "/search.php", "Advanced Search", Guest, "Advanced Search");
 
 // pages for prefs section
-$default->siteMap->addDefaultPage("preferences", "/preferences.php", "Preferences", A, "Preferences");
-$default->siteMap->addPage("viewPreferences", "/preferences.php", "Preferences", A, "View Preferences");
-$default->siteMap->addPage("editPreferences", "/preferences.php", "Preferences", A, "Edit Preferences");
+$default->siteMap->addDefaultPage("preferences", "/preferences.php", "Preferences", User, "Preferences");
+$default->siteMap->addPage("viewPreferences", "/preferences.php", "Preferences", User, "View Preferences");
+$default->siteMap->addPage("editPreferences", "/preferences.php", "Preferences", User, "Edit Preferences");
 
 // pages for Help section
-$default->siteMap->addDefaultPage("help", "/help.php", "Help", A, "Help");
+$default->siteMap->addDefaultPage("help", "/help.php", "Help", Guest, "Help");
 
 // pages for logout section section
-$default->siteMap->addDefaultPage("logout", "/presentation/logout.php", "Logout", A, "Logout");
+$default->siteMap->addDefaultPage("logout", "/presentation/logout.php", "Logout", Guest, "Logout");
 
 // test pages
-$default->siteMap->addPage("scratchPad", "/tests/scratchPad.php", "Tests", A, "scratch");
-$default->siteMap->addPage("sitemap", "/tests/session/SiteMap.php", "Tests", A, "sitemap");
-$default->siteMap->addPage("documentBrowserTest", "/tests/documentmanagement/DocumentBrowser.php", "Tests", A, "test the document browser");
+$default->siteMap->addPage("scratchPad", "/tests/scratchPad.php", "Tests", Guest, "scratch");
+$default->siteMap->addPage("sitemap", "/tests/session/SiteMap.php", "Tests", Guest, "sitemap");
+$default->siteMap->addPage("documentBrowserTest", "/tests/documentmanagement/DocumentBrowser.php", "Tests", Guest, "test the document browser");
 
 // default requires
 require_once("$default->owl_fs_root/lib/session/Session.inc");
