@@ -26,11 +26,11 @@ require_once("$default->owl_ui_directory/foldermanagement/addFolderUI.inc");
 function renderBrowseTypeSelect($sBrowseType) {
     // TODO: write function for onChange that checks if the new value
     return "<span class=\"browseTypeSelect\">\n
-            \tView documents by: <input type=\"radio\" name=\"fBrowseType\" onclick=\"document.forms[0].submit()\" value=\"folder\"" .
+            \tView documents by: <input type=\"radio\" name=\"fBrowseType\" onclick=\"document.MainForm.submit()\" value=\"folder\"" .
                                ((($sBrowseType=="folder") || (strlen($sBrowseType)==0)) ? " checked" : "") . "> Folders\n" .
-                               "<input type=\"radio\" name=\"fBrowseType\" onclick=\"document.forms[0].submit()\" value=\"category\"" .
+                               "<input type=\"radio\" name=\"fBrowseType\" onclick=\"document.MainForm.submit()\" value=\"category\"" .
                                (($sBrowseType=="category") ? " checked" : "") . "> Category\n" .
-                               "<input type=\"radio\" name=\"fBrowseType\" onclick=\"if (document.forms[0]. document.forms[0].submit()\" value=\"documentType\"" .
+                               "<input type=\"radio\" name=\"fBrowseType\" onclick=\"document.MainForm.submit()\" value=\"documentType\"" .
                                (($sBrowseType=="documentType") ? " checked" : "") . "> Document Type\n</span>";
 }
 
