@@ -2,7 +2,9 @@
 
 require_once("../../../../../config/dmsDefaults.php");
 require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
-
+require_once("$default->fileSystemRoot/lib/archiving/ArchiveRestorationRequest.inc");
+require_once("$default->fileSystemRoot/lib/email/Email.inc");
+require_once("$default->fileSystemRoot/lib/users/User.inc");
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternMainPage.inc");
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternBrowsableSearchResults.inc");
@@ -63,10 +65,7 @@ if (checkSession()) {
 			$aErrorDocuments = array();
 			$aSuccessDocuments = array();
 	        for ($i = 0; $i < count($aDocuments); $i++) {
-	        	if ($aDocuments[$i]) {
-	        		// TODO: check if there are requests for this document to be archived
-	        		//       and email them
-	        		// FIXME: refactor notification
+	        	if ($aDocuments[$i]) {        		
 	        		
 	        		// set the status to live
 	        		$aDocuments[$i]->setStatusID(lookupStatusID("Live"));
@@ -74,6 +73,31 @@ if (checkSession()) {
 	        			// success
 	        			$default->log->info("manageArchivedDocumentsBL.php set status for document id=" . $fDocumentIDs[$i]);
 	        			$aSuccessDocuments[] = $aDocuments[$i];
+	        			
+		        		// check if there are requests for this document to be archived
+		        		$aRequests = ArchiveRestorationRequest::getList("document_id=" . $aDocuments[$i]->getID());
+		        		$default->log->info("manageArchivedDocumentsBL.php about to send notification for " . count($aRequests) . " restoration requests for document id " . $aDocuments[$i]->getID());
+		        		for ($j=0; $j<count($aRequests); $j++) {
+			        		// email the users
+			        		// FIXME: refactor notification
+			        		// TODO: check email notification and valid email address
+		        			$oRequestUser = User::get($aRequests[$j]->getRequestUserID());
+							$sBody = "The document '" . generateControllerLink("viewDocument", "fDocumentID=" . $aDocuments[$i]->getID(), $aDocuments[$i]->getName()) . "'"; 
+							$sBody .= " has been restored from the archive.";								
+							$oEmail = & new Email();
+							if ($oEmail->send($oRequestUser->getEmail(), "Archived Document Restored", $sBody)) {
+		        				$default->log->info("manageArchivedDocumentsBL.php sent email to " . $oRequestUser->getEmail());
+		        				// now delete the request
+		        				$iRequestID = $aRequests[$j]->getID();
+		        				if ($aRequests[$j]->delete()) {
+		        					$default->log->info("manageArchivedDocumentsBL.php removing restoration request $iRequestID");
+		        				} else {
+		        					$default->log->error("manageArchivedDocumentsBL.php error removing request $iRequestID");
+		        				}
+							} else {
+								$default->log->error("manageArchivedDocumentsBL.php error notifying " . arrayToString($oEmail) . " for document id " . $aDocuments[$i]->getID() . " restoration");
+							}								
+		        		}
 	        		} else{
 	                    // error updating status change
 	                    $default->log->error("manageArchivedDocumentsBL.php couldn't retrieve document id=" . $fDocumentIDs[$i]);	                    
