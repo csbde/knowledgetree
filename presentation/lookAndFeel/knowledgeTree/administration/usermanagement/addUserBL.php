@@ -58,7 +58,7 @@ if (checkSession()) {
                     $main->setFormAction($_SERVER["PHP_SELF"]. "?fSelectedUser=1");
                 } else {
                     if($bLdap) {
-                        $oPatternCustom->setHtml(getDetailsLDAPPage($sSearch,$aResults, $oAuth->getUserIdentifier()));
+                        $oPatternCustom->setHtml(getDetailsLDAPPage($sSearch,$aResults, $oAuth->oLdap->getUserIdentifier()));
                         $main->setFormAction($_SERVER["PHP_SELF"]. "?fAddToDb=1");
                     } else {
                         $oPatternCustom->setHtml(getDetailsDBPage($sSearch,$aResults));
