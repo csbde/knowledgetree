@@ -12,6 +12,8 @@ require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
 require_once("$default->fileSystemRoot/lib/documentmanagement/PhysicalDocumentManager.inc");
 require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
 
+require_once("$default->fileSystemRoot/lib/subscriptions/SubscriptionEngine.inc");
+
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternTableSqlQuery.inc");
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
 
@@ -32,11 +34,30 @@ if (checkSession()) {
 				$sOldDocumentFileSystemPath = Folder::getFolderPath($iOldFolderID) . $oDocument->getFileName();
 				//put the document in the new folder
 				$oDocument->setFolderID($fFolderID);
-				if ($oDocument->update(true)) {					
+				if ($oDocument->update(true)) {
 					//get the new document path
 					$sNewDocumentFileSystemPath = Folder::getFolderPath($oDocument->getFolderID()) . $oDocument->getFileName();
 					//move the document on the file system
 					if (PhysicalDocumentManager::move($sOldDocumentFileSystemPath, $sNewDocumentFileSystemPath)) {
+                        
+                        // fire subscription alerts for the moved document (and the folder its in)
+                        $count = SubscriptionEngine::fireSubscription($fDocumentID, SubscriptionConstants::subscriptionAlertType("MovedDocument"),
+                                 SubscriptionConstants::subscriptionType("DocumentSubscription"),
+                                 array( "folderID" => $iOldFolderID,
+                                        "modifiedDocumentName" => $oDocument->getName(),
+                                        "oldFolderName" => Folder::getFolderName($iOldFolderID),
+                                        "newFolderName" => Folder::getFolderName($fFolderID) ));
+                        $default->log->info("moveDocumentBL.php fired $count subscription alerts for moved document " . $oDocument->getName());
+                        
+                        // fire folder subscriptions for the destination folder
+                        $count = SubscriptionEngine::fireSubscription($oDocument->getFolderID(), SubscriptionConstants::subscriptionAlertType("MovedDocument"),
+                                 SubscriptionConstants::subscriptionType("FolderSubscription"),
+                                 array( "modifiedDocumentName" => $oDocument->getName(),
+                                        "oldFolderName" => Folder::getFolderName($iOldFolderID),
+                                        "newFolderName" => Folder::getFolderName($fFolderID) ));
+                        $default->log->info("moveDocumentBL.php fired $count (folderID=$fFolderID) folder subscription alerts for moved document " . $oDocument->getName());
+                        
+                        
 						//redirect to the view path
 						redirect("$default->rootUrl/control.php?action=viewDocument&fDocumentID=$fDocumentID");
 					} else {
