@@ -14,17 +14,14 @@ function getDeletePage($iGroupID) {
 	$oGroup = null;
 	if (isset($iGroupID)) {
 		$oGroup = Group::get($iGroupID);
-		$sToRender .= "<br></br>\n";
-		$sToRender .= "<b>Are you sure you wish to Remove this Group?:</b>\n";
-	}
-	else{
-		$sToRender .= "<br></br>\n";		
-		$sToRender .= "<b>Remove Group From System:</b>\n";
-	}
+		$sHeading = "<b>Are you sure you wish to Remove this Group?:</b>\n";
+	} else {
+        $sHeading = "Please select a group: ";
+    }
 	
+    $sToRender .= "<table width=\"600\">" . renderHeading("Remove Group") . "</table>";
 	$sToRender .= "<table>\n";
-	$sToRender .= "<br></br>\n";
-	$sToRender .= "<tr></tr>\n";
+	$sToRender .= "<tr><td>$sHeading</td></tr>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>Group Name: " . getGroupDisplay($oGroup) . "</td>\n";
 	$sToRender .= "</tr>\n";
@@ -52,8 +49,8 @@ function getDeleteSuccessPage() {
 	
 global $default;
 
-$sToRender  = "<br></br>\n" ;
-$sToRender .= "<TABLE BORDER=\"0\" CELLSPACING=\"2\" CELLPADDING=\"2\">\n";
+$sToRender .= "<table width=\"600\">" . renderHeading("Remove Group") . "</table>";
+$sToRender .= "<table>\n";
 $sToRender .= "<tr>\n";
 $sToRender .= "<td><b>Group SuccessFully Removed!</b></td>\n";
 $sToRender .= "</tr>\n";	
@@ -74,8 +71,8 @@ function getDeleteFailPage() {
 
 global $default;	
 
-$sToRender  = "<br></br>\n" ;
-$sToRender .= "<TABLE BORDER=\"0\" CELLSPACING=\"2\" CELLPADDING=\"2\">\n";
+$sToRender .= "<table width=\"600\">" . renderHeading("Remove Group") . "</table>";
+$sToRender .= "<table>\n";
 $sToRender .= "<tr>\n";
 $sToRender .= "<td><b>Deletion Failed!</b></td>\n";
 $sToRender .= "</tr>\n";	
@@ -111,7 +108,7 @@ function getUnitAdminCheckBox($oGroup) {
 	if (!isset($oGroup)) {
 		return "";
 	} else {
-		return "Unit Administrator: <input type=\"checkbox\" name=\"fGroupUnitAdmin\" " . ($oGroup->getUnitAdmin() ? "CHECKED " : " ") . " />";
+		return "Unit Administrator: <input disabled=\"true\" type=\"checkbox\" name=\"fGroupUnitAdmin\" " . ($oGroup->getUnitAdmin() ? "CHECKED " : " ") . " />";
 	}
 }
 
@@ -120,7 +117,7 @@ function getSysAdminCheckBox($oGroup) {
 	if (!isset($oGroup)) {
 		return "";
 	} else {
-		return "System Administrator: <input type=\"checkbox\" name=\"fGroupSysAdmin\" " . ($oGroup->getSysAdmin() ? "CHECKED " : " ") . " />";
+		return "System Administrator: <input disabled=\"true\" type=\"checkbox\" name=\"fGroupSysAdmin\" " . ($oGroup->getSysAdmin() ? "CHECKED " : " ") . " />";
 	}
 	
 }
@@ -128,11 +125,9 @@ function getSysAdminCheckBox($oGroup) {
 // show delete button
 function getDeleteButton($oGroup) {
 	global $default;
-	if (!isset($oGroup)) {
-		return "Please select a group: ";
-	} else {
-		return "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/delete.gif\" value=\"submit\" border=\"0\"/></td>\n".
-		"<td align = right><a href=\"$default->rootUrl/control.php?action=removeGroup\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" /></a></td>\n";
-	}
+	if (isset($oGroup)) {
+        return "<td align = right><input type=\"image\" src =\"$default->graphicsUrl/widgets/delete.gif\" value=\"submit\" border=\"0\"/></td>\n".
+        "<td align = right><a href=\"$default->rootUrl/control.php?action=removeGroup\"><img src =\"$default->graphicsUrl/widgets/cancel.gif\" border = \"0\" /></a></td>\n";
+    }
 }
 ?>
