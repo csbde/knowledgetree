@@ -21,6 +21,7 @@ function getRestoreArchivedDocumentPage($oDocument) {
     $sToRender = renderHeading("Restore Archived Document") . renderDocumentPath($oDocument) . "\n<br>\n";
     
     $sToRender .= "<table>\n";
+    $sToRender .= "\t<tr>\n\t\t<td><strong>This document has been archived!</strong></td>\n\t</tr>\n";
     $sToRender .= "\t<tr>\n\t\t<td>Please click 'Restore' to restore this archived document.</td>\n\t</tr>\n";
     $sToRender .= "\t<tr><td><input type=\"hidden\" name=\"fDocumentIDs[]\" value=\"" . $oDocument->getID() . "\"/></td></tr>\n";    
     $sToRender .= "\t<tr>\n";
@@ -41,6 +42,7 @@ function getRequestRestoreDocumentPage($oDocument) {
     $sToRender = renderHeading("Request Archived Document Restoration") . renderDocumentPath($oDocument) . "\n<br>\n";
     
     $sToRender .= "<table>\n";
+$sToRender .= "\t<tr>\n\t\t<td><strong>This document has been archived!</strong></td>\n\t</tr>\n";    
     $sToRender .= "\t<tr>\n\t\t<td>To request that the document be unarchived, please click the 'Restore' button.</td>\n\t</tr>\n";
     $sToRender .= "\t<tr><td><input type=\"hidden\" name=\"fDocumentIDs[]\" value=\"" . $oDocument->getID() . "\"/></td></tr>\n";    
     $sToRender .= "\t<tr>\n";
