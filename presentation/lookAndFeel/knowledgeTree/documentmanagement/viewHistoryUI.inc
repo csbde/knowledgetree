@@ -56,7 +56,7 @@ function getDocumentHistory($iDocumentID) {
                 if ($default->phpSniff->property("browser") == "ie") {
                     $sVersion = "<a href=\"http://" . $default->serverName . "$default->rootUrl/control.php?action=viewDocument&fDocumentID=$iDocumentID&fForDownload=1&fVersion=" . $sql->f("version") . "\">" . $sql->f("version") . "</a>";
                 } else {
-                    $sVersion = generateControllerLink("viewDocument", "fDocumentID=$iDocumentID&fForDownload=1&fVersion=" . $sql->f("version"), $sql->f("version"));
+                    $sVersion = generateControllerLink("viewDocument", "fDocumentID=$iDocumentID&fForDownload=1&fVersion=" . $sql->f("version"), "<strong>" . $sql->f("version") . "</strong>");
                 }
             } else {
                 $sVersion = $sql->f("version");
