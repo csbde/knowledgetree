@@ -11,6 +11,7 @@
 *   o fCollaborationEdit - the user attempted to edit a collaboration step that is currently active 
 *   o fForDownload - the user is attempting to download the document
 *   o fBeginCollaboration - the user selected the 'Begin Collaboration' button
+*   o fFireSubscription - the document has been modified, and a subscription alert must be fired
 *
 *
 * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
@@ -92,21 +93,27 @@ if (checkSession()) {
                 $main->render();
             }
 
-        } else if (Permission::userHasDocumentWritePermission($fDocumentID)) {
+        } else if (Permission::userHasDocumentWritePermission($fDocumentID) || Permission::userHasDocumentReadPermission($fDocumentID)) {
             require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");
+            require_once("$default->owl_fs_root/lib/subscriptions/SubscriptionEngine.inc");
 
             $oDocument = & Document::get($fDocumentID);
+            
+            // check subscription flag
+            if (isset($fFireSubscription)) {
+                // fire subscription alerts for the modified document
+                $count = SubscriptionEngine::fireSubscription($fDocumentID, SubscriptionConstants::subscriptionAlertType("ModifyDocument"),
+                         SubscriptionConstants::subscriptionType("DocumentSubscription"),
+                         array( "modifiedDocumentName" => $oDocument->getName()));
+                $default->log->info("viewBL.php fired $count subscription alerts for modified document $fFolderName");                
+            }
+            
             $oPatternCustom = & new PatternCustom();
-            $oPatternCustom->setHtml(getEditPage($oDocument));
-            $main->setCentralPayload($oPatternCustom);
-            $main->setFormAction("$default->owl_root_url/control.php?action=modifyDocument&fDocumentID=" . $oDocument->getID());
-            $main->render();
-        } else if (Permission::userHasDocumentReadPermission($fDocumentID)) {
-            require_once("$default->owl_fs_root/presentation/webpageTemplate.inc");
-
-            $oDocument = & Document::get($fDocumentID);
-            $oPatternCustom = & new PatternCustom();
-            $oPatternCustom->setHtml(getViewPage($oDocument));
+            if (Permission::userHasDocumentWritePermission($fDocumentID)) {
+                $oPatternCustom->setHtml(getEditPage($oDocument));
+            } else if (Permission::userHasDocumentReadPermission($fDocumentID)) {
+                $oPatternCustom->setHtml(getViewPage($oDocument));
+            }
             $main->setCentralPayload($oPatternCustom);
             $main->setFormAction("$default->owl_root_url/control.php?action=modifyDocument&fDocumentID=" . $oDocument->getID());
             $main->render();
