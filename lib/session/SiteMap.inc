@@ -193,6 +193,32 @@ class SiteMap {
     }
 
     /**
+     * Returns the action for a specific page- to enable redirects
+     *
+     * @param string the page to perform the reverse lookup for
+     * @return string the action for this page
+     */
+    function getActionFromPage($sPage) {
+        global $default;
+        // for each section
+        foreach ($this->siteMapArray as $section => $valArr) {
+            $default->log->debug("Sitemap::getActionFromPage section=$section");
+            // for each group, page array combination
+            foreach ($valArr as $requiredGroupName => $pageArr) {
+                $default->log->debug("Sitemap::getActionFromPage grp=$requiredGroupName");
+                // now loop through pages until we find the right one
+                foreach ($pageArr as $action => $page) {
+                    $default->log->debug("Sitemap::getActionFromPage action=$action, page=" . $page["page"]);
+                    if ($sPage == $page["page"]) {
+                        $default->log->debug("Sitemap::getActionFromPage found action=$action for page=$sPage");
+                        return $action;
+                    }
+                }
+            }
+        }
+    }
+    
+    /**
      * Prints the current site map
      */
     function printMap() {
