@@ -40,10 +40,12 @@ function renderErrorMessage($sErrorMessage) {
 	return $sToRender;
 }
 
- 
-function renderDocumentTransactionListBox() {
+function renderDocumentTransactionListBox($iDocumentTransactionID) {
 	global $default;	
     $oPatternListBox = & new PatternListBox($default->owl_transaction_types_table, "name", "id", "fDocumentTransactionID");
+    if (isset($iDocumentTransactionID)) {
+    	$oPatternListBox->setSelectedValue($iDocumentTransactionID);    	
+    }    
     return $oPatternListBox->render();	
 }
 
@@ -55,9 +57,12 @@ function renderArchivingTypeListBox() {
     return $oPatternListBox->render();		
 }
 
-function renderTimeUnitsListBox($sVariableName) {
+function renderTimeUnitsListBox($iTimeUnitID) {
 	global $default;
-    $oPatternListBox = & new PatternListBox($default->owl_time_unit_lookup_table, "name", "id", $sVariableName);
+    $oPatternListBox = & new PatternListBox($default->owl_time_unit_lookup_table, "name", "id", "fTimeUnitID");
+    if (isset($iTimeUnitID)) {
+    	$oPatternListBox->setSelectedValue($iTimeUnitID);    	
+    }
     return $oPatternListBox->render();		
 }	
 	
@@ -74,78 +79,139 @@ function renderChooseArchivingTypeForm() {
 	return $sToRender;
 }
 
+function getDateArchivingJavascript() {
+	$sToRender .= "\n\n<script language=\"javascript\">\n<!--\n";
+	$sToRender .= "function validateForm(theForm) {\n";
+	$sToRender .= "\tif (isBlank(theForm.fExpirationDate) && isBlank(theForm.fUnits) && isBlank(theForm.fTimeUnitID)) {\n";
+	$sToRender .= "\t\talert('You must specify an expiration date OR an expiration period');\n";
+	$sToRender .= "\t\treturn false;\n";
+	$sToRender .= "\t}\n";
+	// if expirationDate is not blank
+	// and either units or unit id are not blank
+	$sToRender .= "\tif (!isBlank(theForm.fExpirationDate) && (!isBlank(theForm.fUnits) || !isBlank(theForm.fTimeUnitID))) {\n";
+	$sToRender .= "\t\talert('You must specify EITHER an expiration date OR an expiration period');\n";
+	$sToRender .= "\t\treturn false;\n";	
+	$sToRender .= "\t}\n";	
+
+	$sToRender .= "\tif (!isBlank(theForm.fUnits) || !isBlank(theForm.fTimeUnitID)) {\n";		
+	$sToRender .= "\t\tif (!validNum(theForm.fUnits, 'Units', true) ) {\n";
+	$sToRender .= "\t\t\treturn false;\n";
+	$sToRender .= "\t\t}\n";
+	$sToRender .= "\t\tif (!validRequired(theForm.fTimeUnitID, 'Date Unit')) {\n";
+	$sToRender .= "\t\t\treturn false;\n";
+	$sToRender .= "\t\t}\n";		
+	$sToRender .= "\t} else {\n";		
+	$sToRender .= "\t\tif (isBlank(theForm.fExpirationDate)) {\n";
+	$sToRender .= "\t\t\tif (!validDate(theForm.fExpirationDate, 'Expiration Date', true)) {\n";
+	$sToRender .= "\t\t\t\treturn false;\n";
+	$sToRender .= "\t\t\t}\n";
+	$sToRender .= "\t\t}\n";
+	$sToRender .= "\t}\n";				
+	$sToRender .= "\treturn true;\n";		
+	$sToRender .= "}\n";
+	$sToRender .= "//-->\n</script>\n\n";
+	return $sToRender;
+}
+
+function getUtilisationArchivingJavascript() {
+	$sToRender .= "\n\n<script language=\"javascript\">\n<!--\n";
+	$sToRender .= "function validateForm(theForm) {\n";
+	$sToRender .= "\tif (!validRequired(theForm.fDocumentTransactionID,'Document Transaction')) {\n";
+	$sToRender .= "\t\treturn false;\n\t}\n";
+    $sToRender .= "\tif (!validNum(theForm.fUnits,'Units', true)) {\n";
+	$sToRender .= "\t\treturn false;\n\t}\n";
+	$sToRender .= "\tif (!validRequired(theForm.fTimeUnitID,'Date Unit')) {\n";
+	$sToRender .= "\t\treturn false;\n\t}\n";
+	$sToRender .= "return true;\n}\n";
+	$sToRender .= "//-->\n</script>\n\n";	
+	return $sToRender;
+}
+	
+function renderTimePeriod($sHeading, $oTimePeriod = null) {
+	global $default;
+	if (strlen($sHeading) > 0) {
+		$sToRender .= "<tr><td colspan=\"3\">$sHeading:</td></tr>";
+	}
+	$sToRender .= "<tr valign=\"middle\"><td><input type=\"text\" size=\"11\" name=\"fUnits\" value=\"" . ($oTimePeriod ? $oTimePeriod->getUnits() : "") . "\">";
+	$sToRender .= "&nbsp;&nbsp;" . renderTimeUnitsListBox( ($oTimePeriod ? $oTimePeriod->getTimeUnitID() : null) );
+	$sToRender .= "&nbsp;&nbsp;<a href=\"javascript:void();\" onclick=\"document.MainForm.fUnits.value='';document.MainForm.fTimeUnitID.value='';\"><img src=\"$default->graphicsUrl/widgets/clear.gif\" border=\"0\"></a></td></tr>";	
+	return $sToRender;		
+}
+	
 /**
  * Displays the edit archive settings form
  *
- * @param ArchiveSettings the archive settings to modify
+ * @param integer the archive settings to modify, null display an add form
  */
-function renderAddArchiveSettingsForm($iArchivingTypeID) {
+function renderArchiveSettingsForm($oDocumentArchiving = null) {
 	global $default, $fDocumentID;
 
+	if (is_a($oDocumentArchiving, "DocumentArchiving")) {
+		$sToRender .= "(in order to change the archiving type for this document, click the 'Remove' button and add new archiving settings)";
+		$iArchivingTypeID = $oDocumentArchiving->getArchivingTypeID();
+	} else {
+		$iArchivingTypeID = (integer)$oDocumentArchiving;
+		unset($oDocumentArchiving);
+	}
 	$sArchivingType = lookupName($default->owl_archiving_type_lookup_table, $iArchivingTypeID);
-		
-	$sToRender  = "<table border=\"0\">";
-	// TODO: form instructions and calendar control integration
-	if ($sArchivingType == "Date") {	
-		$sToRender .= "<tr><th colspan=\"2\">Archive By Date</th></tr>";
-		$sToRender .= "<tr><td>Expiration Date:</td></tr>";	
-		$sToRender .= "<tr><td><input type=\"text\" name=\"fExpirationDate\" size=\"11\"></td><td align=\"right\"><a href=\"javascript: void(0);\" onmouseover=\"if (timeoutId) clearTimeout(timeoutId);window.status='Show Calendar';return true;\" onmouseout=\"if (timeoutDelay) calendarTimeout();window.status='';\" onclick=\"g_Calendar.show(event,'MainForm.fExpirationDate', false, 'yyyy-mm-dd', new Date()); return false;\"><img src=\"$default->graphicsUrl/calendar/calendar.gif\" name=\"imgCalendar\" width=\"34\" height=\"21\" border=\"0\" alt=\"\"></a></td></tr>";
-		$sToRender .= "<tr><td colspan=\"3\">Expiration Period:</td></tr>";		
-		$sToRender .= "<tr><td><input type=\"text\" size=\"11\" name=\"fUnits\"></td>";
-		$sToRender .= "<td>" . renderTimeUnitsListBox("fTimeUnitID") . "</td></tr>";
-		
-		$sToRender .= "\n\n<script language=\"javascript\">\n<!--\n";
-		$sToRender .= "function validateForm(theForm) {\n";
-		$sToRender .= "\tif (isBlank(theForm.fExpirationDate) && isBlank(theForm.fUnits) && isBlank(theForm.fTimeUnitID)) {\n";
-		$sToRender .= "\t\talert('You must specify an expiration date OR an expiration period');\n";
-		$sToRender .= "\t\treturn false;\n";
-		$sToRender .= "\t}\n";
-
-		$sToRender .= "\tif (!isBlank(theForm.fUnits) || !isBlank(theForm.fTimeUnitID)) {\n";		
-		$sToRender .= "\t\tif (!validNum(theForm.fUnits, 'Units', true) ) {\n";
-		$sToRender .= "\t\t\treturn false;\n";
-		$sToRender .= "\t\t}\n";
-		$sToRender .= "\t\tif (!validRequired(theForm.fTimeUnitID, 'Date Unit')) {\n";
-		$sToRender .= "\t\t\treturn false;\n";
-		$sToRender .= "\t\t}\n";		
-		$sToRender .= "\t} else {\n";		
-		$sToRender .= "\t\tif (isBlank(theForm.fExpirationDate)) {\n";
-		$sToRender .= "\t\t\talert('Please enter a value for the \"Expiration Date\" field');\n";		
-		$sToRender .= "\t\t\ttheForm.fExpirationDate.focus();\n\t\treturn false;\n";
-		$sToRender .= "\t\t}\n";
-		$sToRender .= "\t}\n";				
-		$sToRender .= "\t\treturn true;\n";		
-		$sToRender .= "}\n";
-		$sToRender .= "//-->\n</script>\n\n";
-
+					
+	$sToRender .= "<table border=\"0\">";
+	// TODO: calendar control integration
+	switch ($sArchivingType) {
+		case "Date" : 
 			
-	} elseif ($sArchivingType == "Utilisation") {
-		$sToRender .= "<tr><th colspan=\"2\">Archive By Utilisation</th></tr>";
-		$sToRender .= "<tr><td>Document Transaction:</td><td>" . renderDocumentTransactionListBox() . "</td></tr>"; 	
-		$sToRender .= "<tr><td>Units</td><td colspan=\"2\"><input type=\"text\" size=\"11\" name=\"fUnits\">" . renderTimeUnitsListBox("fTimeUnitID") . "</td></tr>";
-		
-		$sToRender .= "\n\n<script language=\"javascript\">\n<!--\n";
-		$sToRender .= "function validateForm(theForm) {\n";
-		$sToRender .= "\tif (!validRequired(theForm.fDocumentTransactionID,'Document Transaction')) {\n";
-		$sToRender .= "\t\treturn false;\n\t}\n";
-	    $sToRender .= "\tif (!validNum(theForm.fUnits,'Units', true)) {\n";
-		$sToRender .= "\t\treturn false;\n\t}\n";
-		$sToRender .= "\tif (!validRequired(theForm.fTimeUnitID,'Date Unit')) {\n";
-		$sToRender .= "\t\treturn false;\n\t}\n";
-		$sToRender .= "return true;\n}\n";
-		$sToRender .= "//-->\n</script>\n\n";
+			if ($oDocumentArchiving) {
+				// get date settings from document archiving
+				$oDateArchivingSettings = ArchivingDateSettings::get($oDocumentArchiving->getArchivingSettingsID());
+			}			
+			$sToRender .= "<tr><th align=\"left\" colspan=\"2\">Archive By Date</th></tr>";						
+			$sToRender .= "<tr><td>Expiration Date:</td></tr>";
+			$sToRender .= "<tr><td valign=bottom><input type=\"text\" name=\"fExpirationDate\" size=\"11\" " . ($oDateArchivingSettings ? "value=\"" . ($oDateArchivingSettings->getExpirationDate() == "0000-00-00" ? "" : $oDateArchivingSettings->getExpirationDate()) : "") . "\">";
+			$sToRender .= "&nbsp;&nbsp;<a href=\"javascript:show_calendar('MainForm.fExpirationDate',null,null,'YYYY-MM-DD');\" onmouseover=\"window.status='Date Picker';return true;\" onmouseout=\"window.status='';return true;\"><img src=\"$default->graphicsUrl/calendar/calendar.gif\" name=\"imgCalendar\" width=\"34\" height=\"21\" border=\"0\" alt=\"\"></a>";
+			$sToRender .= "&nbsp;&nbsp;<a href=\"javascript:void();\" onclick=\"document.MainForm.fExpirationDate.value=''\"><img src=\"$default->graphicsUrl/widgets/clear.gif\" border=\"0\"></a></td></tr>";
+					
+			if ($oDateArchivingSettings) {
+				$oTimePeriod = TimePeriod::get($oDateArchivingSettings->getTimePeriodID());
+				$sToRender .= renderTimePeriod("Expires after", $oTimePeriod);
+			} else {
+				$sToRender .= renderTimePeriod("Expires after");
+			}				
+			$sToRender .= getDateArchivingJavascript();
+			break;		
+		case "Utilisation" :
+			if ($oDocumentArchiving) {
+				// get date settings from document archiving
+				$oUtilisationArchivingSettings = ArchivingUtilisationSettings::get($oDocumentArchiving->getArchivingSettingsID());
+				$iDocumentTransactionID = $oUtilisationArchivingSettings->getDocumentTransactionID();
+			}
+				
+			$sToRender .= "<tr><th align=\"left\" colspan=\"2\">Archive By Utilisation</th></tr>";	
+			$sToRender .= "<tr><td>Document Transaction:</td><td>" . 
+						   renderDocumentTransactionListBox($iDocumentTransactionID) . 
+						   "</td></tr>";	
+			
+			if ($oUtilisationArchivingSettings) {
+				$oTimePeriod = TimePeriod::get($oUtilisationArchivingSettings->getTimePeriodID());
+				$sToRender .= renderTimePeriod("Time since last transaction", $oTimePeriod);
+			} else {
+				$sToRender .= renderTimePeriod("Time since last transaction");
+			}
+			$sToRender .= getUtilisationArchivingJavascript();
+			break;		
 	}	
 	
 	// hidden archive settings references
 	$sToRender .= "<input type=\"hidden\" name=\"fDocumentID\" value=\"$fDocumentID\">\n";
 	$sToRender .= "<input type=\"hidden\" name=\"fArchivingTypeID\" value=\"$iArchivingTypeID\">\n";
-	$sToRender .= "<input type=\"hidden\" name=\"fStore\" value=\"1\">\n";			
-	$sToRender .= "<tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/submit.gif\" border=\"0\">\n";
-	$sToRender .= $sJavaScript;
-	$sToRender .= "<a href=\"$default->rootUrl/control.php?action=addDocumentArchiveSettings&fDocumentID=$fDocumentID\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\" /></a></td></tr>\n";
+	$sToRender .= "<input type=\"hidden\" name=\"fStore\" value=\"1\">\n";	
+	if ($oDocumentArchiving) {		
+		$sToRender .= "<tr><td colspan=\"2\"><input type=\"image\" src=\"$default->graphicsUrl/widgets/update.gif\" border=\"0\">\n";
+		$sToRender .= "<a href=\"$default->rootUrl/control.php?action=modifyDocumentArchiveSettings&fDocumentID=$fDocumentID&fDelete=1\"><img src=\"$default->graphicsUrl/widgets/remove.gif\" border=\"0\" /></a>\n";
+	} else {
+		$sToRender .= "<tr><td colspan=\"2\"><input type=\"image\" src=\"$default->graphicsUrl/widgets/submit.gif\" border=\"0\">\n";		
+	}	
+	$sToRender .= "<a href=\"$default->rootUrl/control.php?action=viewDocument&fDocumentID=$fDocumentID\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\" /></a></td></tr>\n";
 	$sToRender .= "</table>";
-
-
 
 	return $sToRender; 
 } 
@@ -153,20 +219,15 @@ function renderAddArchiveSettingsForm($iArchivingTypeID) {
 /**
  * Displays the edit document archive settings page
  */
-function renderEditArchiveSettingsPage($oArchiveSettings, $sErrorMessage = "") {
+function renderEditArchiveSettingsPage($oDocumentArchiving, $sErrorMessage = "") {
 	global $default;
 	
-	//$sToRender .= "<table width=\"600\">" . renderHeading("Edit Document Archive Settings") . "</table>";
 	$sToRender .= renderHeading("Edit Document Archive Settings");
 	if (strlen($sErrorMessage) > 0) {
 		$sToRender .= renderErrorMessage($sErrorMessage);
 	}
     $sToRender .= "<table>\n";
-    if ($oArchiveSettings) {
-		$sToRender .= renderEditArchiveSettingsForm($oArchiveSettings);
-    } else {
-		$sToRender .= renderAddArchiveSettingsForm($oArchiveSettings);    	
-    }
+	$sToRender .= renderArchiveSettingsForm($oDocumentArchiving);
 	$sToRender .= "</table>\n";
 	return $sToRender;
 }
@@ -183,7 +244,7 @@ function renderAddArchiveSettingsPage($iArchivingTypeID, $sErrorMessage = "") {
 	}
     $sToRender .= "<table>\n";
     if ($iArchivingTypeID) {
-		$sToRender .= renderAddArchiveSettingsForm($iArchivingTypeID);
+		$sToRender .= renderArchiveSettingsForm($iArchivingTypeID);
     } else {
 		$sToRender .= renderChooseArchivingTypeForm();    	
     }

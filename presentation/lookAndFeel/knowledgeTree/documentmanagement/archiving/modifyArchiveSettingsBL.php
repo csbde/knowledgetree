@@ -2,7 +2,9 @@
 
 require_once("../../../../../config/dmsDefaults.php");
 require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
-require_once("$default->fileSystemRoot/lib/documentmanagement/ArchiveSettings.inc");
+
+require_once("$default->fileSystemRoot/lib/archiving/DocumentArchiveSettingsFactory.inc");
+
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternMainPage.inc");
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternTableSqlQuery.inc");
@@ -27,34 +29,38 @@ if (checkSession()) {
 			
     // instantiate my content pattern
     $oContent = new PatternCustom();
+	$default->log->info(arrayToString($_REQUEST));    
     if ($fDocumentID) {
-    	$oArchiveSettings = ArchiveSettings::getFromDocumentID($fDocumentID);
-	    if ($fStore) {
-			// we're updating the settings- check the parameters
-			if (isset($fExpirationDate) || isset($fExpirationUnits) && isset($fExpirationDatePart)) {
-				// setting archiving by date			
-		    	// update the object		    	
-	    		if ($fExpirationDate) {
-	    			$oArchiveSettings->setExpirationDate($fExpirationDate);
-	    		} else if ($fExpirationUnits && $fExpirationDatePart) {
-	    			$oArchiveSettings->setExpirationDate(time() + $fExpirationUnits*$oArchiveSettings->aDateUnits[$fExpirationDatePart]);
-	    		}
-			} else if (isset($fDocumentTransactionID) && isset($fUtilisationUnits) && isset($fUtilisationDatePart)) {
-				// setting by utilisation
-
-	    		// update the object
-	    		$oArchiveSettings->setDocumentTransactionID($fDocumentTransactionID);
-	    		$oArchiveSettings->setUtilisationThreshold($fUtilisationUnits*$oArchiveSettings->aDateUnits[$fUtilisationDatePart]);
-		    } else {
-		    	// all params not present, so display an error message
-		    	$oContent->setHtml(renderEditArchiveSettingsPage($oArchiveSettings, "Please complete the form before submitting."));
-		    }    		    	
-	    } else {   	
-			// display the edit page
-			$oContent->setHtml(renderEditArchiveSettingsPage($oArchiveSettings));    	
-	    }
+    	// retrieve the appropriate settings given the document id
+    	$oDocumentArchiving = DocumentArchiving::getFromDocumentID($fDocumentID);    	
+		if ($oDocumentArchiving) {
+		    if ($fStore) {
+		    	$oDASFactory = new DocumentArchiveSettingsFactory($oDocumentArchiving->getArchivingTypeID());
+		    	
+		    	if ($oDASFactory->update($oDocumentArchiving, $fExpirationDate, $fDocumentTransactionID, $fTimeUnitID, $fUnits)) {
+		    		$default->log->info("modifyArchiveSettingsBL.php successfully updated archive settings (documentID=$fDocumentID)");
+					// created, redirect to view page
+					redirect("$default->rootUrl/control.php?action=viewDocument&fDocumentID=$fDocumentID");
+		    	} else {
+    				$default->log->error("modifyArchiveSettingsBL.php error updating archive settings (documentID=$fDocumentID)");		    		
+		    	}	    	
+		    } elseif ($fDelete) {
+		    	if ($oDocumentArchiving->delete()) {
+		    		$default->log->info("modifyArchiveSettingsBL.php successfully deleted archive settings (documentID=$fDocumentID)");
+					redirect("$default->rootUrl/control.php?action=viewDocument&fDocumentID=$fDocumentID");		    		
+		    	} else {
+		    		$default->log->error("modifyArchiveSettingsBL.php error deleting archive settings (documentID=$fDocumentID)");
+		    	}
+		    } else {   	
+				// display the edit page
+				$oContent->setHtml(renderEditArchiveSettingsPage($oDocumentArchiving));    	
+		    }
+		} else {
+			// no archiving settings for this document
+			$oContent->setHtml(renderEditArchiveSettingsPage(null, "No document has been selected."));
+		}
     } else {
-    	// document id missing
+    	// document id missing  	
     	$oContent->setHtml(renderEditArchiveSettingsPage(null, "No document has been selected."));
     }
              
