@@ -122,17 +122,16 @@ function getMetaDataForm($iFolderID, $iDocumentTypeID) {
 	$sToRender .= "//-->\n</script>\n\n";	
 
 	return $sToRender;
-}	
+}
+
 function getPage($iFolderID, $iDocumentTypeID, $iDependantDocumentID = null, $sMessage = "") {
     global $default;
     
-    if (isset($iDependantDocumentID)) {
-    	$sQueryString =  "&fDependantDocumentID=$iDependantDocumentID";
-    }
+    $sQueryString = "fFolderID=$iFolderID" . (isset($iDependantDocumentID) ? "&fDependantDocumentID=$iDependantDocumentID" : "");
     
     $sToRender .= renderHeading("Add " . (isset($iDependantDocumentID) ? "Dependant " : "") . "Document");
     	    	
-    $sToRender .= renderFolderPath($iFolderID, "/control.php?action=addDocument" . $sQueryString, (isset($iDependantDocumentID) ? true : false));
+    $sToRender .= renderFolderPath($iFolderID, generateControllerUrl("addDocument", $sQueryString, false), true);
     	
 	if ($sMessage) {
 		$sToRender .= "<table border=\"0\" width=\"100%\">\n";
@@ -148,7 +147,7 @@ function getPage($iFolderID, $iDocumentTypeID, $iDependantDocumentID = null, $sM
 		$sToRender .= getMetaDataForm($iFolderID, $iDocumentTypeID);
 		$sActionButtons = "<input type=\"image\" src=\"$default->graphicsUrl/widgets/add.gif\" border=\"0\"/>";
 		$sToRender .= "<input type=\"hidden\" name=\"fStore\" value=\"1\">";
-		$sActionButtons .= generateControllerLink("addDocument", "fFolderID=$iFolderID" . $sQueryString , "<img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\"/>") .
+		$sActionButtons .= generateControllerLink("addDocument", $sQueryString , "<img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\"/>") .
 						   generateControllerLink("browse", "fFolderID=$iFolderID", "<img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"/>");
 
 		$sToRender .= "<table border=\"0\" width=\"100%\" >\n";
@@ -156,7 +155,7 @@ function getPage($iFolderID, $iDocumentTypeID, $iDependantDocumentID = null, $sM
 		$sToRender .= "</table>";
 		
 	} else {
-		// only allow document type choosing and display folder list if the user has write permission
+		// only allow document type choosing if the user has write permission
 		if (Permission::userHasFolderWritePermission($iFolderID)) {
 			$sToRender .= getDocumentType($iFolderID, $iDocumentTypeID, $iDependantDocumentID);
 			$sActionButtons .= generateControllerLink("browse", "fFolderID=$iFolderID", "<img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"/>");
@@ -164,16 +163,16 @@ function getPage($iFolderID, $iDocumentTypeID, $iDependantDocumentID = null, $sM
 			$sToRender .= "<table border=\"0\" width=\"100%\" >\n";
 			$sToRender .= "<tr><td>$sActionButtons</td></tr>";
 			$sToRender .= "</table>";
-			
-			// display folders for browsing
-			$sToRender .= "<table border=\"0\" width=\"100%\">\n";
-			$sToRender .= "<tr>\n";
-			$sToRender .= "\t<td>" . renderFolderList($iFolderID, "/control.php?action=addDocument" . $sQueryString) . "<td>\n";
-			$sToRender .= "</tr>\n";	
-			$sToRender .= "<tr>\n";
-			$sToRender .= "</tr>";
-			$sToRender .= "</table><br>\n";
-		}
+		}			
+		// display folders for browsing
+		$sToRender .= "<table border=\"0\" width=\"100%\">\n";
+		$sToRender .= "<tr>\n";
+		$sToRender .= "\t<td>" . renderFolderList($iFolderID, generateControllerUrl("addDocument", $sQueryString, false)) . "<td>\n";
+		$sToRender .= "</tr>\n";	
+		$sToRender .= "<tr>\n";
+		$sToRender .= "</tr>";
+		$sToRender .= "</table><br>\n";
+
 	}
 
 	return $sToRender;
@@ -181,7 +180,7 @@ function getPage($iFolderID, $iDocumentTypeID, $iDependantDocumentID = null, $sM
 
 function getStatusPage($iFolderID, $sMessage) {
     $sToRender .= renderHeading("Add Document");
-    $sToRender .= renderFolderPath($iFolderID, "", false);
+    $sToRender .= renderFolderPath($iFolderID, generateControllerUrl("addDocument", "fFolderID=$iFolderID"), true);
 
 	$sToRender .= "<table border=\"0\" width=\"100%\">\n";
 	$sToRender .= "<tr>\n";	
