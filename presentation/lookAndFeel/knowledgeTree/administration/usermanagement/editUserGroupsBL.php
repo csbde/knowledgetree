@@ -27,6 +27,44 @@
  
 require_once("../../../../../config/dmsDefaults.php");
 
+
+/*
+ * Update all User/Groups association
+ * Return 1 if success
+ *        0 if fail
+ */
+function updateGroups($iUserID, $aToAddIDs, $aToRemoveIDs) {
+
+	// Add groups
+	foreach ($aToAddIDs as $iGroupID ) {
+		if ($iGroupID > 0) {
+			$oUserGroup = new GroupUserLink($iGroupID, $iUserID);
+			if($oUserGroup->create()) {
+   	    		// update group search permissions
+       			$oUserGroup->updateSearchPermissions();
+			} else {
+           		return false;
+       		}
+		}
+	}
+
+	// Remove groups
+	foreach ($aToRemoveIDs as $iGroupID ) {
+		if ($iGroupID > 0) {
+			$oUserGroup = new GroupUserLink($iGroupID, $iUserID);
+			$oUserGroup->setUserGroupID($iGroupID,$iUserID);
+        	if($oUserGroup->delete()) {
+			   	// update group search permissions
+       			$oUserGroup->updateSearchPermissions();
+			} else {
+	            return false;
+   		    }
+		}
+	}
+
+	return true;
+}
+
 if (checkSession()) {
     require_once("$default->fileSystemRoot/lib/visualpatterns/PatternListBox.inc");
     require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCreate.inc");
@@ -43,43 +81,57 @@ if (checkSession()) {
 
     $oPatternCustom = & new PatternCustom();
 
-    if(isset($fUserID)) { //isset($fUserSet)) {
+    if(isset($fUserID)) { // isset($fUserSet))
         // do a check to see both drop downs selected
         if($fUserID == -1) {
             $oPatternCustom->setHtml(getPageNotSelected());
         } else {
-            $faGroupID = GroupUserLink::getGroups($fUserID);
-            $oPatternCustom->setHtml(getGroupPage($fUserID,$faGroupID));
-            $main->setFormAction($_SERVER["PHP_SELF"] . "?fUserSet=1&fGroupSet=1");
-        }
+			  	$oPatternCustom->setHtml(renderGroupPicker($fUserID));
+				$main->setOnLoadJavaScript("optGroup.init(document.forms[0]);");
+				$main->setHasRequiredFields(false);
+				$main->setAdditionalJavaScript(initialiseOptionTransferJavaScript());
+				$main->setFormAction($_SERVER["PHP_SELF"] . "?fUserID=$fUserID&fAssign=1");
+				$main->setDHTMLScrolling(false);
+				
+				if (isset($fAssign)) {
+				
+					$aGroupToAddIDs = explode(",", $groupAddedLeft);
+					$aGroupToRemoveIDs = explode(",", $groupAddedRight);
+					
+					// Add/Remove new groups to user 
+					if ( updateGroups($fUserID, $aGroupToAddIDs, $aGroupToRemoveIDs) ) {
+						// Redirect edit groups page
+						redirect($_SERVER["PHP_SELF"] . "?fUserID=$fUserID");
+					} else {
+						$main->setErrorMessage("Some problems in updating groups. Please contact your administrator");
+					}
+				}
+		}
     } else {
         // build first page
-        $oPatternCustom->setHtml(getPage(null,null));
+        $oPatternCustom->setHtml(getPage(null));
         $main->setFormAction($_SERVER["PHP_SELF"] . "?fUserSet=1");
     }
 
-    if(isset($fGroupSet)) {
-        if($fOtherGroupID) {
-        	$oPatternCustom->setHtml("Add");
-        } else {	                
-	        $oPatternCustom->setHtml("Delete");
-	        $main->setFormAction($_SERVER["PHP_SELF"] . "?fDeleteConfirmed=1&fGroupID=$fGroupID"); 		   
-        }        
-    }
-
-    if (isset($fDeleteConfirmed)) {
-        // else add to db and then goto page succes
-        $oUserGroup = new GroupUserLink($fGroupID, $fUserID);
-        $oUserGroup->setUserGroupID($fGroupID,$fUserID);
-        if($oUserGroup->delete()) {
-            $oPatternCustom->setHtml(getPageSuccess());
-        } else {
-            $oPatternCustom->setHtml(getPageFail());
-        }
-    }
-
-    // render page
+	// render page
     $main->setCentralPayload($oPatternCustom);
-    $main->render();
+	$main->render();
 }
+
+
+
+function initialiseOptionTransferJavascript() {
+	return "<script LANGUAGE=\"JavaScript\">\n" .
+		"var optGroup = new OptionTransfer(\"groupSelect\",\"chosenGroups\");\n" .
+		"optGroup.setAutoSort(true);\n" .
+		"optGroup.setDelimiter(\",\");\n" .
+		"optGroup.saveNewLeftOptions(\"groupNewLeft\");\n" .
+		"optGroup.saveNewRightOptions(\"groupNewRight\");\n" .
+		"optGroup.saveRemovedLeftOptions(\"groupRemovedLeft\");\n" .
+		"optGroup.saveRemovedRightOptions(\"groupRemovedRight\");\n" .
+		"optGroup.saveAddedLeftOptions(\"groupAddedLeft\");\n" .
+		"optGroup.saveAddedRightOptions(\"groupAddedRight\");\n" .
+	"</SCRIPT>";		
+}
+
 ?>

@@ -137,8 +137,6 @@ $default->siteMap->addPage("listUsers", "/presentation/lookAndFeel/knowledgeTree
 $default->siteMap->addPage("addUser", "/presentation/lookAndFeel/knowledgeTree/administration/usermanagement/addUserBL.php", "Administration", SysAdmin, "Add User", false);
 $default->siteMap->addDefaultPage("editUser", "/presentation/lookAndFeel/knowledgeTree/administration/usermanagement/editUserBL.php", "Administration", UnitAdmin, _("Edit User Properties"));
 $default->siteMap->addDefaultPage("removeUser", "/presentation/lookAndFeel/knowledgeTree/administration/usermanagement/removeUserBL.php", "Administration", SysAdmin, "Remove User from System", false);
-$default->siteMap->addDefaultPage("addUserToGroup", "/presentation/lookAndFeel/knowledgeTree/administration/usermanagement/addUserToGroupBL.php", "Administration", UnitAdmin, "Add User to Group", false);
-$default->siteMap->addDefaultPage("removeUserFromGroup", "/presentation/lookAndFeel/knowledgeTree/administration/usermanagement/removeUserFromGroupBL.php", "Administration", UnitAdmin, "Remove User From Group", false);
 
 // group management
 $default->siteMap->addDefaultPage("editGroupUnit", "/presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/editGroupUnitBL.php", "Administration", UnitAdmin, "editGroupUnit", false);
