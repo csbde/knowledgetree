@@ -43,6 +43,8 @@ require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternListFromQuery.inc");
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternTableSqlQuery.inc");
 
+require_once("$default->fileSystemRoot/lib/web/WebDocument.inc");
+
 require_once("$default->fileSystemRoot/lib/subscriptions/Subscription.inc");
 
 require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/documentmanagement/documentUI.inc");
@@ -142,7 +144,39 @@ if (checkSession()) {
 					$main->setCentralPayload($oPatternCustom);
 					$main->setErrorMessage("The next steps in the collaboration process have been started");
 					$main->render();
-				}					
+				}
+		} else if ((isset($fForPublish)) && (!Document::documentIsPendingWebPublishing($fDocumentID))) {
+			//user wishes to public document
+			$oDocument = Document::get($fDocumentID);
+			if ($_SESSION["userID"] == $oDocument->getCreatorID()) {
+				//only the creator can send the document for publishing
+				$aWebDocument = WebDocument::getList("document_id = $fDocumentID");
+				$oWebDocument = $aWebDocument[0];
+				$oWebDocument->setStatusID(PENDING);
+				if ($oWebDocument->update()) {
+					require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
+					$oDocumentTransaction = & new DocumentTransaction($fDocumentID, "Document sent for web publishing", UPDATE);
+					$oDocumentTransaction->create();
+					$oDocument = Document::get($fDocumentID);
+					$oPatternCustom = & new PatternCustom();
+					$oPatternCustom->setHtml(getEditPage($oDocument));
+					$main->setCentralPayload($oPatternCustom);
+					$main->setErrorMessage("The document has been marked as pending publishing and the web publisher has been notified");
+					$main->render();
+					
+				} else {
+					require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");					
+					$oDocument = Document::get($fDocumentID);
+					$oPatternCustom = & new PatternCustom();
+					$oPatternCustom->setHtml(getEditPage($oDocument));
+					$main->setCentralPayload($oPatternCustom);
+					$main->setErrorMessage("An error occured while attempting to update the document for publishing");
+					$main->render();					
+				}
+			} else {
+				
+			}
+			
 		} else if (Permission::userHasDocumentWritePermission($fDocumentID) || Permission::userHasDocumentReadPermission($fDocumentID)) {
             require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
             require_once("$default->fileSystemRoot/lib/subscriptions/SubscriptionEngine.inc");
