@@ -51,8 +51,9 @@ class PatternTableSqlQuery {
 	var $bUseImageURLFromQuery = false;
 	/** message that will be displayed if the table is empty*/
 	var $sEmptyTableMessage;
-	/** Picture path */
-	var $sChkPicPath = "/graphics/widgets/checked.gif";
+	/** Picture paths */
+	var $sChkPicPath = "widgets/checked.gif";
+	var $sUnChkPicPath = "widgets/unchecked.gif";
 	
 	var $bIncludeBorder = false;
 				
@@ -151,12 +152,14 @@ class PatternTableSqlQuery {
 								}
 								break;
 						case 2:
-								//pic
+								//boolean
 								$sToRender .= "<td>";
 								if ($sql->f($this->aColumns[$i]) != null) {									
 									$value = $sql->f($this->aColumns[$i]);
 									if ($value) { 
-										$sToRender .= "<img src='" . $this->sChkPicPath . "'>";
+										$sToRender .= "<img src=\"$default->graphicsUrl/" . $this->sChkPicPath . "\">";
+									} else {
+										$sToRender .= "<img src=\"$default->graphicsUrl/" . $this->sUnChkPicPath . "\">";
 									}
 									$sToRender .= "&nbsp;</td>";	
 								} else {
