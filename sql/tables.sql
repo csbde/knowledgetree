@@ -84,7 +84,6 @@ CREATE TABLE document_subscriptions (
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 user_id INTEGER NOT NULL,
 document_id INTEGER NOT NULL,
-datetime_alerted DATETIME,
 is_alerted BIT
 );
 
@@ -103,7 +102,6 @@ CREATE TABLE folder_subscriptions (
 id INTEGER NOT NULL UNIQUE AUTO_INCREMENT,
 user_id INTEGER NOT NULL,
 folder_id INTEGER NOT NULL,
-datetime_alerted DATETIME,
 is_alerted BIT
 );
 
