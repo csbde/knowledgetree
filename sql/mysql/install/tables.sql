@@ -335,7 +335,7 @@ CREATE TABLE documents (
   KEY fk_creator_id (creator_id),
   KEY fk_folder_id (folder_id),
   KEY fk_checked_out_user_id (checked_out_user_id),
-  KEY fk_status_id (status_id)
+  KEY fk_status_id (status_id),
   KEY created (created)
 ) TYPE=InnoDB;
 
@@ -1422,8 +1422,8 @@ INSERT INTO folder_doctypes_link VALUES (1, 2, 1);
 -- Dumping data for table `folders`
 -- 
 
-INSERT INTO folders VALUES (1, 'Root Folder', 'Root Document Folder', 0, 1, 0, 0, NULL, NULL, NULL);
-INSERT INTO folders VALUES (2, 'Default Unit', 'Default Unit Root Folder', 1, 1, 1, 0, '1', 'Root Folder', NULL);
+INSERT INTO folders VALUES (1, 'Root Folder', 'Root Document Folder', 0, 1, 0, 0, NULL, NULL, NULL, 1);
+INSERT INTO folders VALUES (2, 'Default Unit', 'Default Unit Root Folder', 1, 1, 1, 0, '1', 'Root Folder', NULL, 1);
 
 -- 
 -- Dumping data for table `folders_users_roles_link`
