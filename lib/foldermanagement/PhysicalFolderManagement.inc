@@ -22,9 +22,12 @@ class PhysicalFolderManagement {
 	*
 	*/
 	function createFolder($sPath) {
-        global $default;
-        
-		return mkdir($sPath, 0755);
+        // check if a folder with this name exists before creating it        
+        if (!file_exists($sPath)) {
+			return mkdir($sPath, 0755);
+        } else {
+        	return true;
+        }
 	}
 	
 	/**
