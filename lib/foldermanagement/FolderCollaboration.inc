@@ -137,6 +137,24 @@ class FolderCollaboration {
 	}
 	
 	/**
+	* Checks whether there is a document which is currently
+	* going through this folder collaboration process
+	*
+	* return boolean true if there is a document currently going through this process, false otherwise
+	*/
+	function hasDocumentInProcess() {
+		global $default;
+		$sQuery = "SELECT FURL.id " .
+					"FROM groups_folders_approval_link AS GFAL INNER JOIN documents AS D ON GFAL.folder_id = D.folder_id " .
+					"INNER JOIN folders_users_roles_link AS FURL ON FURL.document_id = D.id " .
+					"WHERE GFAL.id = " . $this->iId; 
+		$sql = $default->db;
+		$sql->query($sQuery);
+		return $sql->next_record();
+		
+	}
+	
+	/**
 	* Static function.
 	* Given a web_documents primary key it will create a 
 	* FolderCollaboration object and populate it with the 
@@ -187,6 +205,8 @@ class FolderCollaboration {
 		$_SESSION["errorMessage"] = $lang_err_database;
 		return false;
 	}
+	
+	
 	
 }
 ?>
