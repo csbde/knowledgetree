@@ -6,6 +6,8 @@ require_once("$default->owl_fs_root/lib/authentication/Authenticator.inc");
  * $Id$
  * 
  * Perform authentication tasks against the database.
+ *
+ * Licensed under the GNU GPL. For full terms see the file COPYING.
  * 
  * @version $Revision$ 
  * @author Michael Joseph <michael@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
