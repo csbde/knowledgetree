@@ -142,10 +142,10 @@ $default->siteMap->addPage("addOrganisation", "addOrganisation.php", "Administra
 $default->siteMap->addPage("scratchPad", "tests/scratchPad.php", "Tests", "Unit Administrators");
 $default->siteMap->addPage("documentBrowserTest", "tests/documentmanagement/DocumentBrowser.php", "Tests", "Unit Administrators");
 
-require_once("$default->owl_root_url/lib/Log.inc");
-require_once("$default->owl_root_url/lib/Session.inc");
-require_once("$default->owl_root_url/lib/control.inc");
-require_once("$default->owl_root_url/lib/db.inc");
-require_once("$default->owl_root_url/lib/lookup.inc");
+require_once("$default->owl_fs_root/lib/Log.inc");
+require_once("$default->owl_fs_root/lib/Session.inc");
+require_once("$default->owl_fs_root/lib/control.inc");
+require_once("$default->owl_fs_root/lib/db.inc");
+require_once("$default->owl_fs_root/lib/lookup.inc");
 
 ?>
