@@ -45,7 +45,7 @@ class PatternCreate {
 		$this->aDisplayColumnTypes = $aNewDisplayColumnTypes;
 		$this->aRequired = $aNewRequired;
 		$this->aDropDownListTableNames = $aNewDropDownListTableNames;
-		$this->aDropDownListValueColumns = $aNewDropDownListValueColumns;
+		$this->aDropDownListValueColumns = $aNewDropDownListValueColumns;		
 		$this->aDropDownListDisplayColumns = $aNewDropDownListDisplayColumns;
 		
 	}
@@ -85,13 +85,13 @@ class PatternCreate {
 					$sToRender .= "<td>" . $this->aDisplayRowNames[$i] . "</td><td><input type=\"checkbox\" name=\"" . $this->sUniqueName . "_" . $i . "_value\" value=\"1\" /></td>\n";
 					break;
 				case 3:
-					//write the type (in this case dropdown)
+					//write the type (in this case dropdown)					
 					$sToRender .= "<input type=\"hidden\" name=\"" . $this->sUniqueName . "_" . $i . "_type\" value=\"3\" />\n";
 					$sDisplayColumn;
 					$sValueColumn;
 					//write the value
-					if (isset($this->sDropDownListValueColumns[$i])) {
-						$sValueColumn = $this->sDropDownListValueColumns[$i];
+					if (isset($this->aDropDownListValueColumns[$i])) {
+						$sValueColumn = $this->aDropDownListValueColumns[$i];
 					} else {
 						$sValueColumn = "id";
 					}
