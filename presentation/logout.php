@@ -1,7 +1,7 @@
 <?php
 
 // main library routines and defaults
-require_once("./config/dmsDefaults.php");
+require_once("../config/dmsDefaults.php");
 
 /**
  * $Id$

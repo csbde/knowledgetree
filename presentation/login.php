@@ -1,7 +1,7 @@
 <?php
 
 // main library routines and defaults
-require_once("./config/dmsDefaults.php");
+require_once("../config/dmsDefaults.php");
 
 /**
  * $Id$
@@ -72,7 +72,7 @@ if ($loginAction == "loginForm") {
                 // else redirect to the dashboard
                 } else {
                     $_SESSION["authorised"] = false;                        
-                    $url = "control.php?action=dashboard";
+                    $url = "/control.php?action=dashboard";
                 }
                 break;
             // login disabled                    
