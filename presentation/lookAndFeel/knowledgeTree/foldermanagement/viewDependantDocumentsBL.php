@@ -47,10 +47,10 @@ if (checkSession()) {
 					$oPatternCustom->setHtml(getViewPage($fFolderCollaborationID, $fFolderID));
 	    			$main->setCentralPayload($oPatternCustom);
 	    	    	$main->setFormAction($_SERVER["PHP_SELF"] . "?fFolderID=$fFolderID&fFolderCollaborationID=$fFolderCollaborationID&fForAdd=1");
-	    	    	$main->setErrorMessage("An error occured attempting to store the depedant document");    		
+	    	    	$main->setErrorMessage("An error occured attempting to store the dependant document");    		
 	    			$main->render();								 
 				} else {				
-					redirect("$default->rootUrl/control.php?action=viewDependantDocument&fFolderID=$fFolderID&fFolderCollaborationID=$fFolderCollaborationID");
+					controllerRedirect("viewDependantDocument", "fFolderID=$fFolderID&fFolderCollaborationID=$fFolderCollaborationID");
 				}			
 			} else if (isset($fForAdd)) {
 				//we are adding a new dependant document
@@ -62,7 +62,7 @@ if (checkSession()) {
 					$oPatternCustom->setHtml(getViewPage($fFolderCollaborationID, $fFolderID));
 	    			$main->setCentralPayload($oPatternCustom);
 		    	    $main->setFormAction($_SERVER["PHP_SELF"] . "?fFolderID=$fFolderID&fFolderCollaborationID=$fFolderCollaborationID&fForAdd=1");
-		    	    $main->setErrorMessage("You cannot add a new depedant document as there is currently a document in this folder undergoing collaboration");    		
+		    	    $main->setErrorMessage("You cannot add a new dependant document as there is currently a document in this folder undergoing collaboration");    		
 	    			$main->render();
 					
 				} else {						
@@ -85,7 +85,7 @@ if (checkSession()) {
 					$oPatternCustom->setHtml(getViewPage($fFolderCollaborationID, $fFolderID));
 	    			$main->setCentralPayload($oPatternCustom);
 		    	    $main->setFormAction($_SERVER["PHP_SELF"] . "?fFolderID=$fFolderID&fFolderCollaborationID=$fFolderCollaborationID&fForUpdate=1");
-		    	    $main->setErrorMessage("You cannot add a new depedant document as there is currently a document in this folder undergoing collaboration");    		
+		    	    $main->setErrorMessage("You cannot add a new dependant document as there is currently a document in this folder undergoing collaboration");    		
 	    			$main->render();
 					
 				} else {						
@@ -127,8 +127,5 @@ if (checkSession()) {
 			redirect($default->root_url . "/control.php");			
 		}
 	}
-	
-
 }
-
 ?>
