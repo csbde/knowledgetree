@@ -22,7 +22,7 @@
  *
  * @version $Revision$
  * @author Mukhtar Dharsey, Jam Warehouse (Pty) Ltd, South Africa
- * @package administration.docfieldmanagement
+ * @package administration.linkmanagement
  */
  
 require_once("../../../../../config/dmsDefaults.php");
