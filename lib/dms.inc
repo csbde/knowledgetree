@@ -11,6 +11,35 @@
  * @package dmslib
  */
  
+/**
+ * Initialises the web application by making current
+ * request parameters global and loading the default language
+ */ 
+// make request parameters global
+if (substr(phpversion(),0,5) >= "4.1.0") {
+    // if supported by the installed version of PHP
+    import_request_variables('pgc');
+} else {
+    // do it manually
+    if (!EMPTY($_POST)) {
+        extract($_POST);
+    } else {
+        extract($HTTP_POST_VARS);
+    }
+    
+    if (!EMPTY($_GET)) {
+        extract($_GET);
+    } else {
+        extract($HTTP_GET_VARS);
+    }
+        
+    if (!EMPTY($_FILE)) {
+        extract($_FILE);
+    } else {
+        extract($HTTP_POST_FILES);
+    }
+}
+ 
 // set default language
 if(isset($default->owl_lang)) {
 
