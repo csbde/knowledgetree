@@ -14,7 +14,7 @@
 */
 
 //require_once ($default->owl_root_fs . "/lib/owl.lib.php");
-require_once("$default->owl_root_url/phpmailer/class.phpmailer.php"); // for emailing
+require_once("$default->owl_fs_root/phpmailer/class.phpmailer.php"); // for emailing
 
 class DocumentManager {
 	
