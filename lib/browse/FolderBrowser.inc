@@ -121,7 +121,7 @@ class FolderBrowser extends Browser {
                         // add documents to array
                         // set file attributes
                         $oDocument = & Document::get($sql->f("id"));
-                        if ($oDocument->getStatusID() == lookupStatusID("Live")) {
+                        if ($oDocument->isLive()) {
                         	$results["documents"][] = $oDocument;
                         } 
                     } else {

@@ -91,7 +91,7 @@ class CategoryBrowser extends Browser {
                 // check permissions
                 if (Permission::userHasDocumentReadPermission($sql->f("document_id"))) {
                 	$oDocument = & Document::get($sql->f("document_id"));
-                    if ($oDocument->getStatusID() == lookupStatusID("Live")) {
+                    if ($oDocument->isLive()) {
                     	$results["documents"][] = $oDocument;
                     } 
                 } else {
