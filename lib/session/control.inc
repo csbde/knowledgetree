@@ -88,9 +88,13 @@ function generateLinkForTemplateDocumentBrowse($sTargetPage, $sQueryString, $sLi
  * @param string additional querystring parameters (optional)
  * @return string the controller url, empty string if no action is supplied
  */
-function generateControllerUrl($sAction, $sQueryString = "") {
+function generateControllerUrl($sAction, $sQueryString = "", $bReturnLink = true) {
     if (strlen($sAction) > 0) {
-        return generateLink("/control.php?action=$sAction", $sQueryString);
+    	if ($bReturnLink) {
+        	return generateLink("/control.php?action=$sAction", $sQueryString);
+    	} else {
+    		return "/control.php?action=$sAction&$sQueryString";
+    	}
     } else {
         return "";
     }
