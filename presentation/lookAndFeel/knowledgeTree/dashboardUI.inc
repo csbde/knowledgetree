@@ -1,6 +1,7 @@
 <?php
 
-require_once("$default->fileSystemRoot/presentation/Html.inc");
+//require_once("$default->fileSystemRoot/presentation/Html.inc");
+require_once("$default->fileSystemRoot/lib/users/User.inc");
 
 /**
  * $Id$
@@ -97,73 +98,100 @@ function getSubscriptionDocuments() {
     return array(new tmpDocument(), new tmpDocument(), new tmpDocument());
 }
 
-function pendingDocumentsHeaders() {
-    return "<th align=\"left\" width=\"33%\" class=\"sectionColumns\">
-            Title
-            </th>
-            <th align=\"left\" width=\"33%\" class=\"sectionColumns\">
-            Status
-            </th>
-            <th align=\"left\" width=\"33%\" class=\"sectionColumns\">
-            Days
-            </th>";
+function renderPendingDocuments($aPendingDocumentList) {
+    $sToRender  = "\t<tr align=\"left\" bgcolor=\"#996600\">\n";
+    $sToRender .= "\t\t<th class=\"sectionHeading\" colspan=\"3\">Pending Documents</th>\n";
+    $sToRender .= "\t</tr>\n";
+    for ($i = 0; $i < count($aPendingDocumentList); $i++) {
+        $sToRender .= "\t<tr>\n";
+        $sToRender .= "<td>" . $aPendingDocumentList[$i]->getTitleLink() . "</td>\n";
+        $sToRender .= "\t</tr>\n";
+    }    
+    return $sToRender;
 }
 
-function checkedOutDocumentsHeaders() {
-    return "<th align=\"left\" width=\"33%\" class=\"sectionColumns\">
-            Title
-            </th>
-            <th align=\"left\" width=\"66%\" class=\"sectionColumns\">
-            Days
-            </th>";
+function renderCheckedOutDocuments($aCheckedOutDocumentList) {
+    $sToRender  = "\t<tr align=\"left\" bgcolor=\"#996600\">\n";    
+    $sToRender .= "\t\t<th class=\"sectionHeading\" colspan=\"3\">Checked Out Documents</th>\n";
+    $sToRender .= "\t</tr>\n";
+    
+	$sToRender .= "\t<tr>\n";    
+    $sToRender .= "<th align=\"left\" width=\"66%\" class=\"sectionColumns\" colspan=\"2\">\n";
+    $sToRender .= "Title\n";
+    $sToRender .= "</th>\n";
+    $sToRender .= "<th align=\"left\" width=\"33%\" class=\"sectionColumns\">\n";
+    $sToRender .= "Days\n";
+    $sToRender .= "</th>";
+    $sToRender .= "\t\t</tr>\n";
+    
+    for ($i = 0; $i < count($aCheckedOutDocumentList); $i++) {
+        $sToRender .= "\t<tr>\n";
+        $sToRender .= "<td colspan=\"2\">" . $aCheckedOutDocumentList[$i]->getTitleLink() . "</td>\n";
+        $sToRender .= "<td>" . $aCheckedOutDocumentList[$i]->getDays() . "</td>\n";
+        $sToRender .= "\t</tr>\n";
+    }      
+    return $sToRender;
 }
 
-function subscriptionDocumentsHeaders() {
-    return "<th align=\"left\" width=\"33%\" class=\"sectionColumns\">
-            Title
-            </th>
-            <th align=\"left\" width=\"33%\" class=\"sectionColumns\">
-            Status
-            </th>
-            <th align=\"left\" width=\"33%\" class=\"sectionColumns\">
-            Days
-            </th>";
+function renderSubscriptionAlerts($aSubscriptionAlertList) {
+    $sToRender  = "\t<tr align=\"left\" bgcolor=\"#996600\">\n";
+    $sToRender .= "\t\t<th class=\"sectionHeading\" colspan=\"3\">Subscription Alerts</th>\n";
+    $sToRender .= "\t</tr>\n";
+    for ($i = 0; $i < count($aSubscriptionAlertList); $i++) {
+        $sToRender .= "\t<tr>\n";
+        $sToRender .= "<td colspan=\"3\">" . $aSubscriptionAlertList[$i]->getAlertLink() . "</td>\n";
+        $sToRender .= "\t</tr>\n";
+    }    
+    return $sToRender;
 }
 
-function getPage() {
-   $sToRender = renderDocumentPath($oDocument) . "\n<br>\n";
-    $sToRender .= "<table border = 0>\n";
-    $sToRender .= "<tr>\n";
-    $sToRender .= "<td>\n";
-    $sToRender .= "\t<table border = 0 width = 280>\n";
-    $sToRender .= "\t<tr width>\n";
-    $sToRender .= "\t\t<td>" . wrapInTable(renderDocumentData($oDocument)) . "</td>\n";
-    //$sToRender .= "\t\t<td>" . renderGenericDocumentMetaData($oDocument) . "</td>\n";
+function quickLinkHeaders() {
+}
+
+/**
+ * Renders the dashboard
+ *
+ * @param array pending collaboration documents for this user
+ * @param array checked out documents for this user
+ * @param array subscription alerts for this user
+ */
+function renderPage($aPendingDocumentList, $aCheckedOutDocumentList, $aSubscriptionAlertList) {
+    global $default;
+    
+    $sToRender  = "<table border=\"0\" width=\"600\" >\n";
+	$sToRender .= "\t<tr>\n";
+    $sToRender .= "\t\t<td><img src=\"$default->graphicsUrl/welcome.gif\"/></td>\n";
+    
+    // some arb welcoming text goes here
+    $oUser = User::get($_SESSION["userID"]);    
+    $sToRender .= "\t\t<td>Hi" . (strlen($oUser->getName()) > 0 ? " " . $oUser->getName() : "") . ", welcome back to the MRC DMS, part of the Knowledge Tree.</td>\n";
+    $sToRender .= "\t</tr>\n";
+    
+    // dashboard alerts
+    $sToRender .= "\t<tr>\n";
+    $sToRender .= "\t\t<td width=\"50%\">\n";
+    $sToRender .= "\t\t\t<table width=\"100%\">\n";
+    $sToRender .= renderPendingDocuments($aPendingDocumentList);
+    $sToRender .= renderCheckedOutDocuments($aCheckedOutDocumentList) . "\n";
+    $sToRender .= renderSubscriptionAlerts($aSubscriptionAlertList) . "\n";
+    $sToRender .= "\t\t\t</table>\n";
+    $sToRender .= "\t\t</td>\n";
+    
+    // quick links
+    $sToRender .= "\t\t<td width=\"50%\" valign=top>\n";
+    $sToRender .= "\t\t\t<table width=\"100%\">\n";
+    $sToRender .= "\t<tr align=\"left\" bgcolor=\"#996600\">\n";
+    $sToRender .= "\t\t<th class=\"sectionHeading\">Quick Links</th>\n";
     $sToRender .= "\t</tr>\n";
     $sToRender .= "\t<tr>\n";
-    $sToRender .= "\t<td>" . wrapInTable(renderGenericMetaData($oDocument)) . "</td>\n";
-    $sToRender .= "\t<tr>\n";
-    $sToRender .= "\t<tr>\n";
-    $sToRender .= "\t\t<td>" . wrapInTable(renderTypeSpecificMetaData($oDocument)) . "</td>\n";
-    //$sToRender .= "\t\t<td>" . renderTypeSpecificMetaData($oDocument) . "</td>\n";
+    $sToRender .= quickLinkHeaders();
+    $sToRender .= "\t</tr>\n";    
+    $sToRender .= "\t\t\t</table>\n";
+    
+    $sToRender .= "\t\t</td>\n";
     $sToRender .= "\t</tr>\n";
-    $sToRender .= "\t</table>\n";
-    $sToRender .= "</td>\n";
-    $sToRender .= "<td valign=top>\n";
-    $sToRender .= "\t<table border = 0, width = 230>\n";
-    $sToRender .= "\t<tr>\n";
-    $sToRender .= "\t\t<td>" . wrapInTable(renderNonEditableDocumentRouting($oDocument)) . "</td>\n";
-    //$sToRender .= "\t\t<td>" . renderDocumentRouting($oDocument) . "</td>\n";
-    $sToRender .= "\t</tr>";
-    $sToRender .= "\t</table>";
-    $sToRender .= "</td>\n";
-    $sToRender .= "</tr>\n";
-    $sToRender .= "</table>";
-    $sToRender .= "<table>\n";
-    $sToRender .= "<tr>\n";
-    $sToRender .= "<td><a href=\"" . $_SERVER["PHP_SELF"] . "?fDocumentID=" . $oDocument->getID() . "&fForDownload=1\"><img src=\"$default->graphicsUrl/widgets/download.gif\" border=\"0\" /></a></td>\n";
-    $sToRender .= "<td><a href=\"" . generateControllerLink("emailDocument", "fDocumentID=" . $oDocument->getID()) . "\"><img src=\"$default->graphicsUrl/widgets/email.gif\" border=\"0\" /></a></td>\n";
-    $sToRender .= "</tr>\n";
-    $sToRender .= "</table>\n";    
+    $sToRender .= "</table>\n";  
+    
+    return $sToRender;
 }
 ?>
