@@ -207,13 +207,20 @@ function renderEditableDocumentRouting($oDocument) {
     $sToRender .= "\t\t<td>" . $oPatternTableSqlQuery->render() . "</td>\n";
     $sToRender .= "\t</tr>";            
     $sToRender .= "\t<tr>\n";    
-    // FIXME display messages instead of just not displaying button
-    // collaboration cannot be started or approved/rejected unless the document is not checked out    
-	if (!$oDocument->getIsCheckedOut() && $oDocument->hasCollaboration() && (!DocumentCollaboration::documentCollaborationStarted($oDocument->getID())) && ($_SESSION["userID"] == $oDocument->getCreatorID())) {
+    // display the begin collaboration button if:
+    // collaboration cannot be started or approved/rejected unless the document is not checked out
+    // the document has collaboration
+    // collaboration hasn't started
+    // the current user created the document, or is a system adminstrator    
+	if (!$oDocument->getIsCheckedOut() && 
+		$oDocument->hasCollaboration() && 
+		(!DocumentCollaboration::documentCollaborationStarted($oDocument->getID())) && 
+		( ($_SESSION["userID"] == $oDocument->getCreatorID())  || Permission::userIsSystemAdministrator() ) ) {
 		//if not all collaboration steps have been set, then you cannot start the collaboration process
 		//only the creator of the document can start the collaboration process		
 		$sToRender .= "\t\t<td><a href=" . $_SERVER['PHP_SELF'] . "?fDocumentID=" . $oDocument->getID() . "&fBeginCollaboration=1><img src=\"$default->graphicsUrl/widgets/begin.gif\" border=\"0\"/></a>";
 		$sToRender .= "</td>\n";
+	// else if collboration has started and the current user has been assigned this step, display the approve/reject buttons
 	} else if (DocumentCollaboration::userIsPerformingCurrentCollaborationStep($oDocument->getID())) {
 		//if the current user is responsible for an active step in the collaboration process		
 		$sToRender .= "\t\t<td><table border=\"0\"><tr>\n";
@@ -224,18 +231,19 @@ function renderEditableDocumentRouting($oDocument) {
 			$sToRender .= "\t\t<td align=\"center\"><a href=\"$default->rootUrl/control.php?action=collaborationStepReject&fDocumentID=" . $oDocument->getID() . "\"><img src=\"$default->graphicsUrl/widgets/reject.gif\" border=\"0\"/></a></td>\n";
 		}	
 		$sToRender .= "\t\t</tr></table></td>\n";
-	}    
-    if (!DocumentCollaboration::documentIsPendingWebPublishing($oDocument->getID())) {
-        // only display for unpublished documents        
+	}
+
+    // only display the publish button for unpublished documents	
+    if (!DocumentCollaboration::documentIsPendingWebPublishing($oDocument->getID())) {      
         // if there is collaboration
         if ($oDocument->hasCollaboration()) {
-            // only display publish button if collaboration is complete and you're the last user in the collaboration process
-            if (DocumentCollaboration::documentCollaborationDone($oDocument->getID()) && ($_SESSION["userID"] == DocumentCollaboration::getLastCollaboratorID($oDocument->getID()))) {
+            // only display publish button if collaboration is complete and you're the last user in the collaboration process (or a sysadmin)
+            if (DocumentCollaboration::documentCollaborationDone($oDocument->getID()) && 
+               ( ($_SESSION["userID"] == DocumentCollaboration::getLastCollaboratorID($oDocument->getID())) || Permission::userIsSystemAdministrator() ) ) {
                 $sToRender .= "<td><a href=" . $_SERVER['PHP_SELF'] . "?fDocumentID=" . $oDocument->getID() . "&fForPublish=1><img src=\"$default->graphicsUrl/widgets/publish.gif\" border=\"0\"/></a></td>\n";
             }
-        } else if ($_SESSION["userID"] == $oDocument->getCreatorID()) {
-            // no collaboration for this folder, so only the creator can request publication
-            // ??: or an administrator?
+        } else if ( ($_SESSION["userID"] == $oDocument->getCreatorID()) || Permission::userIsSystemAdministrator() ) {
+            // no collaboration for this folder, so only the creator (or an administrator) can request publication
             $sToRender .= "<td><a href=" . $_SERVER['PHP_SELF'] . "?fDocumentID=" . $oDocument->getID() . "&fForPublish=1><img src=\"$default->graphicsUrl/widgets/publish.gif\" border=\"0\"/></a></td>\n";
         }
     }
