@@ -52,7 +52,7 @@ if (checkSession()) {
 			    		if ($oDashboardNews->create()) {
 			    			$default->log->info("addNewsBL.php successfully created dashboard news id=" . $oDashboardNews->getID());
 			    			// redirect to view page
-			    			redirect("$default->rootUrl/control.php?action=viewNews");
+			    			redirect("$default->rootUrl/control.php?action=listNews");
 			    		} else {
 			    			// insert failed
 			    			$default->log->error("addNewsBL.php DB error inserting dashboard news ($fSynopsis, $fBody, $fRank, with image)");
@@ -72,7 +72,7 @@ if (checkSession()) {
 					// insert worked
 					$default->log->info("addNewsBL.php successfully created dashboard news id=" . $oDashboardNews->getID());
 	    			// redirect to view page
-	    			redirect("$default->rootUrl/control.php?action=viewNews");
+	    			redirect("$default->rootUrl/control.php?action=listNews");
 				} else {					
 					// insert failed
 	    			$default->log->error("addNewsBL.php DB error inserting dashboard news ($fSynopsis, $fBody, $fRank, no image)");

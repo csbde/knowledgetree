@@ -69,7 +69,8 @@ function renderNewsItem($oDashboardNews) {
 	$sToRender .= "<tr><td>Synopsis:</td><td>" . $oDashboardNews->getSynopsis() . "</td></tr>";
 	$sToRender .= "<tr><td>Body:</td><td>" . $oDashboardNews->getBody() . "</td></tr>";
 	$sToRender .= "<tr><td>Rank:</td><td>" . $oDashboardNews->getRank() . "</td></tr>";	
-	$sToRender .= "<tr><td colspan=\"2\"><img src=\"$default->rootUrl/" . $default->siteMap->getPage("viewNewsImage") . "?fNewsID=" . $oDashboardNews->getID() . "\" border=\"0\"></td></tr>";	
+	$sToRender .= "<tr><td colspan=\"2\">" . $oDashboardNews->getImageLink() . "</td></tr>";	
+		
 	$sToRender .= "<input type=\"hidden\" name=\"fNewsID\" value=\"" . $oDashboardNews->getID() . "\">";
     return $sToRender;
 }
@@ -97,7 +98,7 @@ function renderEditAddNewsForm($oDashboardNews, $bUpdate) {
 	}	
 			
 	$sToRender .= "<tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/submit.gif\" border=\"0\">\n";
-	$sToRender .= "<a href=\"$default->rootUrl/control.php?action=viewNews\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></a></td></tr>\n";    
+	$sToRender .= "<a href=\"$default->rootUrl/control.php?action=listNews\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></a></td></tr>\n";    
 	$sToRender .= "</table>";
 	
 	$sToRender .= "\n\n<script language=\"javascript\">\n<!--\n";
@@ -167,7 +168,7 @@ function renderPreviewNewsPage($oDashboardNews) {
 	$sToRender .= "<table width=\"600\">" . renderHeading("Preview Dashboard News") . "</table>";
     $sToRender .= "<table>\n";	
 	$sToRender .= renderNewsItem($oDashboardNews);		
-	$sToRender .= "<tr><td><a href=\"$default->rootUrl/control.php?action=viewNews\"><img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\"></a></td></tr>\n";    	
+	$sToRender .= "<tr><td><a href=\"$default->rootUrl/control.php?action=listNews\"><img src=\"$default->graphicsUrl/widgets/back.gif\" border=\"0\"></a></td></tr>\n";    	
 	$sToRender .= "</table>\n";
 	return $sToRender;		
 } 
@@ -186,9 +187,23 @@ function renderDeleteNewsConfirmationPage($oDashboardNews) {
 	
 	$sToRender .= "<input type=\"hidden\" name=\"fDeleteConfirmed\" value=\"1\">";	
 	$sToRender .= "<tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/delete.gif\" border=\"0\">\n";
-	$sToRender .= "<a href=\"$default->rootUrl/control.php?action=viewNews\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></a></td></tr>\n";    
+	$sToRender .= "<a href=\"$default->rootUrl/control.php?action=listNews\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></a></td></tr>\n";    
 	
 	$sToRender .= "</table>\n";
 	return $sToRender;	
 }
+
+/**
+ * Displays a news item.
+ */
+function renderNewsItemPage($oDashboardNews) {
+	global $default;
+	
+    $sToRender .= "<table>\n";	
+	$sToRender .= renderNewsItem($oDashboardNews);		
+	//$sToRender .= "<tr><td><a href=\"javascript:window.close()"><img src=\"$default->graphicsUrl/widgets/close.gif\" border=\"0\"></a></td></tr>\n";    	
+	$sToRender .= "<tr><td><a href=\"javascript:window.close()\">close</a></td></tr>\n";
+	$sToRender .= "</table>\n";
+	return $sToRender;		
+} 
 ?>
