@@ -48,7 +48,7 @@ function renderEditableGenericMetaData($oDocument) {
 	$aColumnDatabaseTypes = array(0,0,1);
 	
 	
-	$oPatternTableSqlQuery = & new PatternEditableTableSqlQuery($sQuery, "document_fields_links", $aStoreColumnNames, $aDisplayColumnNames, $aColumnsEditable, $aColumnsVisible, $aColumnDisplayTypes, $aColumnDatabaseTypes);
+	$oPatternTableSqlQuery = & new PatternEditableTableSqlQuery($sQuery, "document_fields_link", $aStoreColumnNames, $aDisplayColumnNames, $aColumnsEditable, $aColumnsVisible, $aColumnDisplayTypes, $aColumnDatabaseTypes);
 	$oPatternTableSqlQuery->setTableCaption("Generic Meta Data");
 	$oPatternTableSqlQuery->setUniqueName("gmd");
 	return $oPatternTableSqlQuery->render();
@@ -57,7 +57,7 @@ function renderEditableGenericMetaData($oDocument) {
 
 function renderEditableTypeSpecificMetaData($oDocument) {
 	global $default;
-	$sQuery = "SELECT COALESCE(DFL.id, -1) AS id, " . $oDocument->getID() . " AS document_id, DTFL.document_type_id AS document_type_id, DTL.name AS document_type_name, DTFL.field_id, DF.name AS field_name, DFL.value AS field_value, DTFL.is_mandatory AS is_mandatory " .
+	$sQuery = "SELECT COALESCE(DFL.id, -1) AS id, " . $oDocument->getID() . " AS document_id, DTFL.document_type_id AS document_type_id, DTL.name AS document_type_name, DTFL.field_id AS document_field_id, DF.name AS field_name, DFL.value AS value, DTFL.is_mandatory AS is_mandatory " .
 			"FROM $default->owl_document_type_fields_table AS DTFL INNER JOIN $default->owl_folders_table AS F ON F.document_type_id = DTFL.document_type_id " .
 			"INNER JOIN $default->owl_documents_table AS D ON D.folder_id = F.id " .
 			"INNER JOIN $default->owl_document_types_table AS DTL ON DTL.id = DTFL.document_type_id " .
@@ -66,14 +66,14 @@ function renderEditableTypeSpecificMetaData($oDocument) {
 			"WHERE D.id =  " . $oDocument->getID() . " " .
 			"AND DF.is_generic = 0 ";
 			
-	$aStoreColumnNames = array("document_id", "field_id", "field_value");
-	$aDisplayColumnNames = array("document_id", "field_name", "field_value");
+	$aStoreColumnNames = array("document_id", "document_field_id", "value");
+	$aDisplayColumnNames = array("document_id", "field_name", "value");
 	$aColumnsEditable = array(0,0,1);
 	$aColumnsVisible = array(0,1,1);
 	$aColumnDisplayTypes = array(1,1,1);
 	$aColumnDatabaseTypes = array(0,0,1);
 	
-	$oPatternTableSqlQuery = & new PatternEditableTableSqlQuery($sQuery, "document_fields_links", $aStoreColumnNames, $aDisplayColumnNames, $aColumnsEditable, $aColumnsVisible, $aColumnDisplayTypes, $aColumnDatabaseTypes);																
+	$oPatternTableSqlQuery = & new PatternEditableTableSqlQuery($sQuery, "document_fields_link", $aStoreColumnNames, $aDisplayColumnNames, $aColumnsEditable, $aColumnsVisible, $aColumnDisplayTypes, $aColumnDatabaseTypes);																
 	$oPatternTableSqlQuery->setTableCaption("Type specific meta data");
 	$oPatternTableSqlQuery->setUniqueName("tsmd");
 	return $oPatternTableSqlQuery->render();
