@@ -62,6 +62,8 @@ class PatternMainPage {
 	var $sHelpContext = "browse";
 	/** javascript to execute on body load **/	
 	var $onLoadJavaScript;
+	/** more javascript */
+	var $additionalJavaScript;
 	/** whether or not to use dhtml scrolling **/
 	var $bScroll = true;
 	
@@ -131,6 +133,9 @@ class PatternMainPage {
 	function setOnLoadJavaScript($sJavaScript) {
 		$this->onLoadJavaScript = $sJavaScript;
 	}
+	function getOnLoadJavaScript() {
+		return $this->onLoadJavaScript;
+	}	
 
 	function setDHTMLScrolling($sNewValue) {
 		$this->bScroll = $sNewValue;
@@ -234,10 +239,11 @@ class PatternMainPage {
             $sJavaScript = "<script type=\"text/javascript\" src=\"$sUrl/js/scroll.js\"></script>\n";
         }
         $sJavaScript .= "<script type=\"text/javascript\" src=\"$sUrl/js/datePicker.js\"></script>\n";            
-		$sJavaScript .= "<script type=\"text/javascript\" src=\"$sUrl/js/misc.js\"></script>";
-		$sJavaScript .= "<script type=\"text/javascript\" src=\"$sUrl/js/divSwitch.js\"></script>";            	    
+		$sJavaScript .= "<script type=\"text/javascript\" src=\"$sUrl/js/misc.js\"></script>\n";
+		$sJavaScript .= "<script type=\"text/javascript\" src=\"$sUrl/js/divSwitch.js\"></script>\n";            	    
+		$sJavaScript .= "<script type=\"text/javascript\" src=\"$sUrl/js/OptionTransfer.js\"></script>\n";
 		$sJavaScript .= $this->getHelpJavaScript();
-
+		$sJavaScript .= $this->getAdditionalJavaScript();
 		return $sJavaScript;       
 	}
 	
@@ -252,5 +258,12 @@ class PatternMainPage {
 		"//-->\n" .
 		"</SCRIPT>\n\n";
 	}
+	
+	function setAdditionalJavaScript($sJavaScript) {
+		$this->additionalJavaScript = $sJavaScript;
+	} 
+	function getAdditionalJavaScript() {
+		return $this->additionalJavaScript;
+	}	
 }
 ?>
