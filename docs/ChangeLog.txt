@@ -1,3 +1,280 @@
+Version 1.2.4 (2004/10/04)
+
+Features
+========
+* Significant increase in translation support
+
+Bug Fixes
+=========
+* Properly deal with the rootUrl in some less-travelled cases.
+
+Detailed ChangeLog
+==================
+
+2004-10-04 04:39  nbm
+
+        * lib/session/control.inc:
+
+        In the !bReturnLink case, prepend the rootUrl to the quickly-generated
+        URL.  This fixes the document move and related problems.
+
+2004-09-28 05:12  nbm
+
+        * tests/documentmanagement/viewUI.inc:
+
+        Might as well mark up this test too.
+
+2004-09-28 04:57  nbm
+
+        * i18n/knowledgeTree.po,
+          presentation/lookAndFeel/knowledgeTree/administration/doccheckoutmanagement/editDocCheckoutUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/doccheckoutmanagement/listDocumentsBL.php,
+          presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/addDocFieldSuccess.php,
+          presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/addDocFieldUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/editDocFieldLookupsUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/editDocFieldUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/listDocFieldsUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/removeDocFieldUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/metadatamanagement/addMetaDataUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/metadatamanagement/editMetaDataUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/metadatamanagement/removeMetaDataUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/addDocTypeFieldsLinkUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/addDocTypeSuccess.php,
+          presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/addDocTypeUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/editDocTypeFieldsUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/editDocTypeUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/listDocTypesUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/removeDocTypeUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/documentmanagement/archivedDocumentsUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/documentmanagement/expungeDeletedDocumentsUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/documentmanagement/listDeletedDocumentsUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/documentmanagement/restoreDeletedDocumentsUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/addGroupUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/assignGroupToUnitUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/editGroupSuccess.php,
+          presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/editGroupUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/editGroupUnitBL.php,
+          presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/editGroupUnitUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/listGroupsUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/removeGroupFromUnitUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/removeGroupUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/linkmanagement/addLinkSuccess.php,
+          presentation/lookAndFeel/knowledgeTree/administration/linkmanagement/addLinkUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/linkmanagement/editLinkUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/linkmanagement/listLinksUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/linkmanagement/removeLinkUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/news/newsUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/orgmanagement/addOrgSuccess.php,
+          presentation/lookAndFeel/knowledgeTree/administration/orgmanagement/addOrgUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/orgmanagement/editOrgUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/orgmanagement/listOrgUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/orgmanagement/removeOrgUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/rolemanagement/addRoleUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/rolemanagement/editRoleSuccess.php,
+          presentation/lookAndFeel/knowledgeTree/administration/rolemanagement/editRoleUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/rolemanagement/listRolesUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/rolemanagement/removeRoleUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/systemsettings/systemSettingsUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/addUnitToOrgBL.php,
+          presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/addUnitToOrgUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/addUnitUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/editUnitOrgBL.php,
+          presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/editUnitOrgUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/editUnitUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/listUnitsUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/removeUnitFromOrgUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/removeUnitUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/usermanagement/addUserToGroupUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/usermanagement/addUserUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/usermanagement/editUserGroupsUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/usermanagement/editUserUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/usermanagement/listUsersUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/usermanagement/passwordManagementUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/usermanagement/removeUserFromGroupUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/usermanagement/removeUserUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/websitemanagement/addWebsiteSuccess.php,
+          presentation/lookAndFeel/knowledgeTree/administration/websitemanagement/addWebsiteUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/websitemanagement/editWebsiteUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/websitemanagement/listWebsitesUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/websitemanagement/removeWebsiteUI.inc,
+          presentation/lookAndFeel/knowledgeTree/discussions/viewDiscussionBL.php,
+          presentation/lookAndFeel/knowledgeTree/discussions/viewDiscussionUI.inc,
+          presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentLinkUI.inc,
+          presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentUI.inc,
+          presentation/lookAndFeel/knowledgeTree/documentmanagement/checkInDocumentUI.inc,
+          presentation/lookAndFeel/knowledgeTree/documentmanagement/checkOutDocumentUI.inc,
+          presentation/lookAndFeel/knowledgeTree/documentmanagement/collaborationUI.inc,
+          presentation/lookAndFeel/knowledgeTree/documentmanagement/createDependantDocumentUI.inc,
+          presentation/lookAndFeel/knowledgeTree/documentmanagement/deleteDocumentUI.inc,
+          presentation/lookAndFeel/knowledgeTree/documentmanagement/emailUI.inc,
+          presentation/lookAndFeel/knowledgeTree/documentmanagement/escalateDependantDocumentUI.inc,
+          presentation/lookAndFeel/knowledgeTree/documentmanagement/modifyGenericMetaDataUI.inc,
+          presentation/lookAndFeel/knowledgeTree/documentmanagement/modifySpecificMetaDataUI.inc,
+          presentation/lookAndFeel/knowledgeTree/documentmanagement/modifyUI.inc,
+          presentation/lookAndFeel/knowledgeTree/documentmanagement/moveDocumentUI.inc,
+          presentation/lookAndFeel/knowledgeTree/documentmanagement/removeDocumentLinkUI.inc,
+          presentation/lookAndFeel/knowledgeTree/documentmanagement/templateDocumentBrowseUI.inc,
+          presentation/lookAndFeel/knowledgeTree/documentmanagement/viewHistoryUI.inc,
+          presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc,
+          presentation/lookAndFeel/knowledgeTree/documentmanagement/webDocumentUI.inc,
+          presentation/lookAndFeel/knowledgeTree/documentmanagement/archiving/archiveSettingsUI.inc,
+          presentation/lookAndFeel/knowledgeTree/documentmanagement/archiving/restoreArchivedDocumentUI.inc,
+          presentation/lookAndFeel/knowledgeTree/foldermanagement/addFolderCollaborationUI.inc,
+          presentation/lookAndFeel/knowledgeTree/foldermanagement/addFolderDocTypeUI.inc,
+          presentation/lookAndFeel/knowledgeTree/foldermanagement/collaborationUI.inc,
+          presentation/lookAndFeel/knowledgeTree/foldermanagement/deleteDependantDocumentUI.inc,
+          presentation/lookAndFeel/knowledgeTree/foldermanagement/deleteFolderCollaborationUI.inc,
+          presentation/lookAndFeel/knowledgeTree/foldermanagement/deleteFolderUI.inc,
+          presentation/lookAndFeel/knowledgeTree/foldermanagement/editUI.inc,
+          presentation/lookAndFeel/knowledgeTree/foldermanagement/groupFolderLinkUI.inc,
+          presentation/lookAndFeel/knowledgeTree/foldermanagement/modifyFolderDataUI.inc,
+          presentation/lookAndFeel/knowledgeTree/foldermanagement/viewDependantDocumentsUI.inc,
+          presentation/lookAndFeel/knowledgeTree/preferences/passwordManagementUI.inc,
+          presentation/lookAndFeel/knowledgeTree/search/advancedSearchUI.inc,
+          presentation/lookAndFeel/knowledgeTree/search/standardSearchUI.inc,
+          presentation/lookAndFeel/knowledgeTree/subscriptions/subscriptionUI.inc:
+
+        More hooks for translations.
+
+2004-09-28 04:56  nbm
+
+        * tests/authentication/ldap.php:
+
+        Make this at least compile...
+
+2004-09-28 04:24  nbm
+
+        * docs/i18n.txt:
+
+        Add more 'text inside images' information.
+
+2004-09-28 04:24  nbm
+
+        * sql/mysql/install/user.sql:
+
+        Don't hardcode that we're using the 'dms' database.  Use whatever
+        database the installer sets on the command line.
+
+2004-09-21 05:22  nbm
+
+        * docs/i18n.txt:
+
+        Add a list of images that contain English strings, and those strings, to
+        aid translation of KnowledgeTree.
+
+2004-09-21 05:21  nbm
+
+        *
+          presentation/lookAndFeel/knowledgeTree/preferences/editUserPrefsUI.inc,
+          i18n/knowledgeTree.po:
+
+        Add some more translateable strings.
+
+2004-09-21 05:19  nbm
+
+        * lib/visualpatterns/PatternMainPage.inc, presentation/login.php:
+
+        Change our character set to UTF8 (for the time being).
+
+2004-09-20 02:57  nbm
+
+        * lib/security/Permission.inc,
+          presentation/lookAndFeel/knowledgeTree/documentmanagement/createDependantDocumentUI.inc,
+          presentation/lookAndFeel/knowledgeTree/foldermanagement/viewDependantDocumentsUI.inc:
+
+        Remove hardcoded users_groups_link and groups_folders_link table names.
+
+        Submitted by:   Marcel Berteler
+        SF Bug:         1021345
+
+2004-09-16 07:45  nbm
+
+        * docs/INSTALL.txt:
+
+        Provide the required versions of the dependent software.
+
+2004-09-16 06:49  nbm
+
+        * config/dmsDefaults.php, config/siteMap.inc, docs/i18n.txt,
+          i18n/knowledgeTree.po, presentation/login.php,
+          presentation/lookAndFeel/knowledgeTree/administration/admin.php,
+          presentation/lookAndFeel/knowledgeTree/administration/doccheckoutmanagement/editDocCheckoutUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/doccheckoutmanagement/listDocumentsBL.php,
+          presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/addDocFieldSuccess.php,
+          presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/editDocFieldLookupsUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/editDocFieldUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/listDocFieldsUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/removeDocFieldBL.php,
+          presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/removeDocFieldUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/metadatamanagement/addMetaDataUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/metadatamanagement/editMetaDataUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/metadatamanagement/removeMetaDataUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/addDocTypeFieldsLinkUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/addDocTypeSuccess.php,
+          presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/editDocTypeFieldsBL.php,
+          presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/editDocTypeFieldsUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/editDocTypeUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/listDocTypesUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/removeDocTypeUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/documentmanagement/archivedDocumentsUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/documentmanagement/expungeDeletedDocumentsUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/documentmanagement/listDeletedDocumentsUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/documentmanagement/manageArchivedDocumentsBL.php,
+          presentation/lookAndFeel/knowledgeTree/administration/documentmanagement/restoreDeletedDocumentBL.php,
+          presentation/lookAndFeel/knowledgeTree/administration/documentmanagement/restoreDeletedDocumentsUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/addGroupUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/assignGroupToUnitUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/editGroupFail.php,
+          presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/editGroupSuccess.php,
+          presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/editGroupUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/editGroupUnitUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/listGroupsUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/removeGroupBL.php,
+          presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/removeGroupFail.php,
+          presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/removeGroupFromUnitUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/removeGroupSuccess.php,
+          presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/removeGroupUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/linkmanagement/addLinkSuccess.php,
+          presentation/lookAndFeel/knowledgeTree/administration/linkmanagement/addLinkUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/linkmanagement/editLinkUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/linkmanagement/listLinksUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/linkmanagement/removeLinkUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/news/addNewsBL.php,
+          presentation/lookAndFeel/knowledgeTree/administration/news/editNewsBL.php,
+          presentation/lookAndFeel/knowledgeTree/administration/news/newsUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/news/removeNewsBL.php,
+          presentation/lookAndFeel/knowledgeTree/administration/orgmanagement/addOrgSuccess.php,
+          presentation/lookAndFeel/knowledgeTree/administration/orgmanagement/addOrgUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/orgmanagement/editOrgUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/orgmanagement/listOrgUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/orgmanagement/removeOrgUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/rolemanagement/editRoleSuccess.php,
+          presentation/lookAndFeel/knowledgeTree/administration/rolemanagement/editRoleUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/rolemanagement/listRolesUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/rolemanagement/removeRoleUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/addUnitBL.php,
+          presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/addUnitToOrgBL.php,
+          presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/addUnitToOrgUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/addUnitUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/editUnitOrgUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/editUnitUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/listUnitsUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/removeUnitBL.php,
+          presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/removeUnitFromOrgBL.php,
+          presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/removeUnitFromOrgUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/removeUnitUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/usermanagement/addUserToGroupUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/usermanagement/addUserUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/usermanagement/editUserGroupsUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/usermanagement/editUserUI.inc,
+          presentation/lookAndFeel/knowledgeTree/administration/usermanagement/listUsersUI.inc:
+
+        Mark up the rest of KnowledgeTree for translation.
+
+        Thanks to Andrea Toneguzzi for assistance in identifying many phrases to
+        mark up!
+
+
 Version 1.2.3 (2004/09/09)
 
 Features
