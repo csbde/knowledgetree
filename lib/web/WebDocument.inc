@@ -1,4 +1,9 @@
 <?php
+
+DEFINE("PENDING",1);
+DEFINE("PUBLISHED", 2);
+DEFINE("NOT_PUBLISHED",3);
+
 /**
 * 
 * Class Web Documents
