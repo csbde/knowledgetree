@@ -25,39 +25,48 @@ if (checkSession()) {
 	
 	
 	$oPatternCustom = & new PatternCustom();
-		
-	if(!isset($fUserSet)){
-		// build first page
-		
-		$oPatternCustom->setHtml(getPage(null,null));
-		$main->setFormAction($_SERVER["PHP_SELF"] . "?fUserSet=1");
 	
-	}else{
+		
+	if(isset($fUserSet)){
+		
 		// do a check to see both drop downs selected
 		if($fUserID == -1){
 			$oPatternCustom->setHtml(getPageNotSelected());
 					
-		}else{ 		$fGroupID = GroupUserLink::getGroups($fUserID);	
-				echo "GroupID:" . $fGroupID[1];
-				echo "GroupID:" . $fGroupID[2];
-				echo "GroupID:" . $fGroupID[3];
-				
-				$oPatternCustom->setHtml(getPage($fUserID,$fGroupID));
-				$main->setFormAction($_SERVER["PHP_SELF"] . "?fUserSet=1&fDeleteConfirmed=1");
+		}else{ 		$faGroupID = GroupUserLink::getGroups($fUserID);	
+							
+				$oPatternCustom->setHtml(getGroupPage($fUserID,$faGroupID));
+				$main->setFormAction($_SERVER["PHP_SELF"] . "?fUserSet=1&fGroupSet=1");
 		}
+	
+	}else{
+		
+		// build first page
+		
+		$oPatternCustom->setHtml(getPage(null,null));
+		$main->setFormAction($_SERVER["PHP_SELF"] . "?fUserSet=1");
 		
 	}
 	
+	if(isset($fGroupSet))
+	{	
+		$oPatternCustom->setHtml(getDeleteConfirmedPage($fUserID,$fGroupID));
+		$main->setFormAction($_SERVER["PHP_SELF"] . "?fDeleteConfirmed=1&fGroupID=$fGroupID");
+	}
 		
 	if (isset($fDeleteConfirmed)){
-				
+		
 		// else add to db and then goto page succes
 		$oUserGroup = new GroupUserLink($fGroupID, $fUserID);
 				
-		$oUserGroup->setUserGroupID($fUserID);
+		$oUserGroup->setUserGroupID($fGroupID,$fUserID);
 				
-		$oUserGroup->delete();
-		$oPatternCustom->setHtml(getPageSuccess());
+		if($oUserGroup->delete()){
+			$oPatternCustom->setHtml(getPageSuccess());
+		}else{
+			$oPatternCustom->setHtml(getPageFail());
+		}
+		
 		
 	}
 	
