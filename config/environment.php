@@ -32,9 +32,10 @@ $default->owl_root_url		= "/dms";
 $default->owl_fs_root		= "/usr/local/www/owl/dms";
 // Directory where The Documents Directory is On Disc
 $default->owl_FileDir           =  "/usr/local/www/owl/dms/Documents";
-
 // url of graphics dir
 $default->owl_graphics_url	= $default->owl_root_url . "/graphics";
+// file creation umask
+$default->uMask = 0700;
 
 require_once("$default->owl_fs_root/lib/Log.inc");
 $default->log = new Log($default->owl_fs_root . "/log.txt", DEBUG);
