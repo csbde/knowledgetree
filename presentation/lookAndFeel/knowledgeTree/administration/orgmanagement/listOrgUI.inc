@@ -31,7 +31,7 @@ function getPage() {
 	$sToRender .= renderHeading("Organisation Management");
 
 	// add user link
-	$sToRender .= getAddLink("addOrg", "Add A Organisation");
+	$sToRender .= getAddLink("addOrg", "Add An Organisation");
 	$sToRender .= getOrganisations();
 	return $sToRender;
 }
