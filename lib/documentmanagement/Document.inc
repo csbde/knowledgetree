@@ -286,7 +286,7 @@ class Document {
 		//if the folder is not the root folder 
 		if ($iFolderID != 0) {
 			$sql = $default->db;
-			$sql->query("SELECT parent_id FROM $default->folders_table WHERE ID = $iFolderID");
+			$sql->query("SELECT parent_id FROM $default->folders_table WHERE ID = " . quote($iFolderID));
 			$sql->next_record();
 			return $this->generateParentFolderIDS($sql->f("parent_id")) . ",$iFolderID";
 		}
@@ -314,7 +314,7 @@ class Document {
 		//if the folder is not the root folder 
 		if ($iFolderID != 0) {
 			$sql = $default->db;
-			$sql->query("SELECT name, parent_id FROM $default->folders_table WHERE ID = $iFolderID");
+			$sql->query("SELECT name, parent_id FROM $default->folders_table WHERE ID = " . quote($iFolderID));
 			$sql->next_record();			
 			return $this->generateFullFolderPath($sql->f("parent_id")) . "/" . $sql->f("name");
 		}
@@ -336,7 +336,7 @@ class Document {
     /**
     * Insert the current document into the database
     *
-    * @return boolean true on successful insert, false otherwise and set $_SESSION["errorMessage"]
+    * @return boolean true on successful insert, false otherwise
     */
     function create() {
         global $default, $lang_err_doc_exist, $lang_err_database;
@@ -346,7 +346,22 @@ class Document {
 			$this->sFullPath = $this->generateFolderPath($this->iFolderID); 
 			$this->sParentFolderIDs = $this->generateFolderIDs($this->iFolderID);
             $result = $sql->query("INSERT INTO " . $default->documents_table . " (document_type_id, name, filename, size, creator_id, modified, description, mime_id, folder_id, major_version, minor_version, is_checked_out, checked_out_user_id, parent_folder_ids, full_path, status_id) " .
-                                  "VALUES ($this->iDocumentTypeID, '$this->sName', '$this->sFileName', $this->iSize, $this->iCreatorID, '" . getCurrentDateTime() . "', '$this->sDescription', $this->iMimeTypeID, $this->iFolderID, $this->iMajorVersion, $this->iMinorVersion, " . ($this->bIsCheckedOut ? 1 : 0) . ", $this->iCheckedOutUserID, '$this->sParentFolderIDs','$this->sFullPath', $this->iStatusID)");
+                                  "VALUES (" . quote($this->iDocumentTypeID) . ", " . 
+                                               quote($this->sName) . ", " . 
+                                               quote($this->sFileName) . ", " . 
+                                               quote($this->iSize) . ", " . 
+                                               quote($this->iCreatorID) . ", " . 
+                                               quote(getCurrentDateTime()) . ", " . 
+                                               quote($this->sDescription) . ", " . 
+                                               quote($this->iMimeTypeID) . ", " . 
+                                               quote($this->iFolderID) . ", " . 
+                                               quote($this->iMajorVersion) . ", " . 
+                                               quote($this->iMinorVersion) . ", " . 
+                                               quote($this->bIsCheckedOut) . ", " . 
+                                               quote($this->iCheckedOutUserID) . ", " . 
+                                               quote($this->sParentFolderIDs) . ", " . 
+                                               quote($this->sFullPath) . ", " . 
+                                               quote($this->iStatusID) . ")");
             if ($result) {
                 //set the current documents primary key
                 $this->iId = $sql->insert_id();
@@ -354,10 +369,8 @@ class Document {
 				$this->insertDocumentPermissions();
                 return true;
             }
-            $_SESSION["errorMessage"] = $lang_err_database;
             return false;
         }
-        $_SESSION["errorMessage"] = $lang_err_object_exists . "id = " . $this->iId . " table = documents";
         return false;
 
     }
@@ -373,7 +386,7 @@ class Document {
 				       "FROM $default->documents_table AS D INNER JOIN folders AS F ON D.folder_id = F.id " .
 				       "INNER JOIN $default->groups_folders_table AS GFL ON GFL.folder_id = F.id " .
 				       "INNER JOIN $default->users_groups_table AS UGL ON UGL.group_id = GFL.group_id " .
-				       "WHERE D.id=$this->iId";
+				       "WHERE D.id=" . quote($this->iId);
 		$default->log->debug("addDocument groupPerms=$sGroupPerms");
 		if ($sql->query($sGroupPerms)) {
 			$default->log->debug("groupPerms succeeded");
@@ -384,7 +397,7 @@ class Document {
 	    $sRolePerms = "INSERT INTO $default->search_permissions_table (user_id, document_id) " .
 				      "SELECT user_id, document_id " .
 				      "FROM $default->folders_user_roles_table " .
-				      "WHERE document_id=$this->iId";
+				      "WHERE document_id=" . quote($this->iId);
 		$default->log->info("addDocument rolePerms=$sRolePerms");
 		if ($sql->query($sRolePerms)) {
 			$default->log->debug("rolePerms succeeded");
@@ -397,7 +410,7 @@ class Document {
                 			  "SELECT U.id, D.id " . 
                 			  "FROM $default->users_table AS U, $default->documents_table AS D INNER JOIN $default->folders_table AS F ON D.folder_id = F.id " .
 							  "WHERE F.is_public = 1 " .
-							  "AND D.id=$this->iId";
+							  "AND D.id=" . quote($this->iId);
 		$default->log->debug("addDocument publicFolder=$sPublicFolderPerms");
 		if ($sql->query($sPublicFolderPerms)) {
 			$default->log->debug("publicFolder succeeded");
@@ -409,7 +422,7 @@ class Document {
 		$sCreatorPerms = "INSERT INTO $default->search_permissions_table (user_id, document_id) " .
 						 "SELECT creator_id, id " .
 						 "FROM $default->documents_table " .
-						 "WHERE id=$this->iId";
+						 "WHERE id=" . quote($this->iId);
 		$default->log->debug("addDocument creatorPerms=$sCreatorPerms");
 		if ($sql->query($sCreatorPerms)) {
 			$default->log->debug("creatorPerms succeeded");
@@ -421,68 +434,65 @@ class Document {
     /**
     * Update the documents current values in the database
     *
-    * @return boolean true on successful update, false otherwise and set $_SESSION["errorMessage"]
+    * @return boolean true on successful update, false otherwise
     */
     function update($aForMove = false) {
         global $default, $lang_err_database, $lang_err_object_key;
         if ($this->iId >= 0) {			
             $sql = $default->db;
 			$sQuery = "UPDATE " . $default->documents_table . " SET " .
-                                  "document_type_id = $this->iDocumentTypeID, " .
-								  "name = '$this->sName', " .
-                                  "filename = '$this->sFileName', " .
-                                  "size = $this->iSize, " .
-                                  "creator_id = $this->iCreatorID, " .
-                                  "modified = '" . getCurrentDateTime() . "', " .
-                                  "description = '$this->sDescription', " .
-                                  "mime_id = $this->iMimeTypeID, " .
-                                  "folder_id = $this->iFolderID, " .
-                                  "major_version = $this->iMajorVersion, " .
-                                  "minor_version = $this->iMinorVersion, ";
+                      "document_type_id = " . quote($this->iDocumentTypeID) . ", " .
+                      "name = " . quote($this->sName) . ", " .
+                      "filename = " . quote($this->sFileName) . ", " .
+                      "size = " . quote($this->iSize) . ", " .
+                      "creator_id = " . quote($this->iCreatorID) . ", " .
+                      "modified = " . quote(getCurrentDateTime()) . ", " .
+                      "description = " . quote($this->sDescription) . ", " .
+                      "mime_id = " . quote($this->iMimeTypeID) . ", " .
+                      "folder_id = " . quote($this->iFolderID) . ", " .
+                      "major_version = " . quote($this->iMajorVersion) . ", " .
+                      "minor_version = " . quote($this->iMinorVersion) . ", ";
 			if ($aForMove) {
 				//only update these if the document is being moved
 				$this->sFullPath = $this->generateFolderPath($this->iFolderID); 
 				$this->sParentFolderIDs = $this->generateFolderIDs($this->iFolderID);
 	
-				$sQuery .= "parent_folder_ids = '$this->sParentFolderIDs'," .
-						   "full_path = '$this->sFullPath', ";
+				$sQuery .= "parent_folder_ids = " . quote($this->sParentFolderIDs) . ", " .
+						   "full_path = " . quote($this->sFullPath) . ", ";
 			}					
-            $sQuery .= "is_checked_out = " . ($this->bIsCheckedOut ? "1" : "0") . ", " .
-                       "checked_out_user_id = $this->iCheckedOutUserID, " .
-                       "status_id = $this->iStatusID " .
-            			 "WHERE id = $this->iId";
+            $sQuery .= "is_checked_out = " . quote($this->bIsCheckedOut) . ", " .
+                       "checked_out_user_id = " . quote($this->iCheckedOutUserID) . ", " .
+                       "status_id = " . quote($this->iStatusID) . " " .
+                       "WHERE id = " . quote($this->iId);
             $result = $sql->query($sQuery);
             if ($result) {
                 return true;
+            } else {
+                return false;
             }
-            $_SESSION["errorMessage"] = $lang_err_database;
-            return false;
         }
-        $_SESSION["errorMessage"] = $lang_err_object_key;
         return false;
-
     }
 
     /**
     * Delete the current document from the database.  Set the primary key to -1 
     * on successful deletion
     *
-    * @return boolean true and reset id to -1 on successful deletion, false otherwise and set $_SESSION["errorMessage"]
+    * @return boolean true and reset id to -1 on successful deletion, false otherwise
     */
     function delete() {
         global $default, $lang_err_database, $lang_err_object_key;
         if ($this->iId >= 0) {
             $sql = $default->db;
-            $result = $sql->query("DELETE FROM  " . $default->documents_table . "  WHERE id = $this->iId");
+            $result = $sql->query("DELETE FROM  " . $default->documents_table . " " . 
+                                  "WHERE id = " . quote($this->iId));
             if ($result) {
                 $this->iId = -1;
                 // clean up for this deleted document
                 return true;
             }
-            $_SESSION["errorMessage"] = $lang_err_database;
             return false;
         }
-        $_SESSION["errorMessage"] = $lang_err_object_key;
         return false;
     }
 	
@@ -495,9 +505,10 @@ class Document {
 		global $default;
 		//get the steps in this document's collaboration process
 		$sQuery = "SELECT FURL.id, GFAL.precedence " .
-				"FROM $default->folders_user_roles_table AS FURL INNER JOIN $default->groups_folders_approval_table AS GFAL ON FURL.group_folder_approval_id = GFAL.id " .
-				"WHERE document_id = " . $this->iId . " " .
-				"ORDER BY GFAL.precedence ASC";
+				  "FROM $default->folders_user_roles_table AS FURL " .
+                  "INNER JOIN $default->groups_folders_approval_table AS GFAL ON FURL.group_folder_approval_id = GFAL.id " .
+				  "WHERE document_id = " . quote($this->iId) . " " .
+				  "ORDER BY GFAL.precedence ASC";
 		$sql = $default->db;
 		$sql->query($sQuery);
 		if  ($sql->next_record()) {
@@ -511,12 +522,11 @@ class Document {
 			$oRole = Role::get($oFolderCollaboration->getRoleID());
 			//get the user to email
 			$oUser = User::get($oFolderUserRole->getUserID());
-			
+			// FIXME: delegate this to message templating handling messaging layer
+            // construct and send the mail
 			$sBody = $oUser->getUserName() . ", your role of '" . $oRole->getName() . "' in the document, '" . $this->sName . "' collaboration process is now active. " .
                                         "Click " . generateLink("/presentation/lookAndFeel/knowledgeTree/documentmanagement/viewBL.php", "fDocumentID=" . $this->iId, "here") . " to access " .
 										"the document";
-										
-			
 			$oEmail = & new Email();
 			$oEmail->send($oUser->getEmail(), "Document collaboration role active", $sBody);
 			DocumentCollaboration::createDependantDocuments($oFolderUserRole);
@@ -532,11 +542,11 @@ class Document {
 					$oRole = Role::get($oFolderCollaboration->getRoleID());
 					//get the user to email
 					$oUser = User::get($oFolderUserRole->getUserID());
-			
+                    // FIXME: delegate this to message templating handling messaging layer
+                    // construct and send the mail			
 					$sBody = $oUser->getUserName() . ", your role of '" . $oRole->getName() . "' in the document, '" . $this->sName . "' collaboration process is now active. " .
                                             "Click " . generateLink("/presentation/lookAndFeel/knowledgeTree/documentmanagement/viewBL.php", "fDocumentID=" . $this->iId, "here") . " to access " .
 											"the document";
-			
 					$oEmail = & new Email();
 					$oEmail->send($oUser->getEmail(), "Document collaboration role active", $sBody);
 					DocumentCollaboration::createDependantDocuments($oFolderUserRole);
@@ -554,8 +564,9 @@ class Document {
 		//if the user is assinged to two or more roles, make sure we get the current
 		//one by ordering by precedence
 		$sql->query("SELECT FURL.id AS id, GFAT.precedence " .
-					"FROM $default->groups_folders_approval_table AS GFAT INNER JOIN $default->folders_user_roles_table AS FURL ON GFAT.id = FURL.group_folder_approval_id " .
-					"WHERE document_id = $this->iId AND FURL.user_id = " . $_SESSION["userID"] . "  " . 
+					"FROM $default->groups_folders_approval_table AS GFAT " . 
+                    "INNER JOIN $default->folders_user_roles_table AS FURL ON GFAT.id = FURL.group_folder_approval_id " .
+					"WHERE document_id = $this->iId AND FURL.user_id = " . quote($_SESSION["userID"]) . "  " . 
 					"AND done = 0 " . 
 					"ORDER BY precedence ASC");
 		if ($sql->next_record()) {
@@ -575,14 +586,13 @@ class Document {
     * a document object and populate it with the corresponding
     * database values
     *
-    * @return Document populated Document object on success, false otherwise and set $_SESSION["errorMessage"]
+    * @return Document populated Document object on success, false otherwise.
     */
     function & get($iDocumentID) {
         global $default, $lang_err_doc_not_exist;
         if (strlen($iDocumentID) > 0) {
 	        $sql = $default->db;
-	        // TODO: join on sys_deleted
-	        $sql->query("SELECT * FROM $default->documents_table WHERE id = $iDocumentID");
+	        $sql->query("SELECT * FROM $default->documents_table WHERE id = " . quote($iDocumentID));
 	        if ($sql->next_record()) {			
 	            $oDocument = & new Document($sql->f("name"), $sql->f("filename"), $sql->f("size"), $sql->f("creator_id"), $sql->f("mime_id"), $sql->f("folder_id"), $sql->f("description"));
 	            $oDocument->setDocumentTypeID($sql->f("document_type_id"));
@@ -598,10 +608,8 @@ class Document {
 	            $oDocument->iId = $iDocumentID;
 	            return $oDocument;
 	        }
-	        $_SESSION["errorMessage"] = $lang_err_object_not_exist . "id = " . $iDocumentID . " table = documents";
 	        return false;
         } else {
-        	$_SESSION["errorMessage"] = "Document ID not set.  Cannot retrieve document with no id";
         	return false;
         }
     }
@@ -612,14 +620,15 @@ class Document {
     *
     * @param  String  Where clause (not required)
     *
-    * @return Array array of Documents objects, false otherwise and set $_SESSION["errorMessage"]
+    * @return Array array of Documents objects, false otherwise.
     */
     function getList($sWhereClause = null) {
         global $default, $lang_err_database;
         $aDocumentArray;
         settype($aDocumentArray, "array");
         $sql = $default->db;
-        $result = $sql->query("SELECT * FROM " . $default->documents_table  . (isset($sWhereClause) ? " WHERE " . $sWhereClause : ""));
+        $result = $sql->query("SELECT * FROM " . $default->documents_table  . 
+                              (isset($sWhereClause) ? " WHERE " . $sWhereClause : ""));
         if ($result) {
             $iCount = 0;
             while ($sql->next_record()) {
@@ -629,7 +638,6 @@ class Document {
             }
             return $aDocumentArray;
         }
-        $_SESSION["errorMessage"] = $lang_err_database;
         return false;
     }
 
@@ -640,13 +648,17 @@ class Document {
     * @param  Document type primary key
     * @param  Get only the mandatory fields
     *
-    * @return array array of document field objects, false otherwise and $_SESSION["errorMessage"]
+    * @return array array of document field objects, false otherwise
     */
     function getDocumentFieldsForDocumentType($iDocumentTypeID, $bMandatoryOnly = false) {
         $aDocumentFieldArray;
         settype($aDocumentFieldArray,"array");
         $sql = $default->db;
-        $result = $sql->query("SELECT DF.id AS id, DF.name AS name, DF.data_type AS data_type FROM document_fields AS DF INNER JOIN document_type_fields_link AS DTFL ON DF.id = DTFL.field_id WHERE DTFL.document_type_id = $iDocumentTypeID " . ($bMandatoryOnly ? "AND DFTL.is_mandatory = 1 " : " ") . "ORDER BY DF.name ASC");
+        $result = $sql->query("SELECT DF.id AS id, DF.name AS name, DF.data_type AS data_type " .
+                              "FROM $default->document_fields_table AS DF " .
+                              "INNER JOIN $default->document_type_fields_table AS DTFL ON DF.id = DTFL.field_id " . 
+                              "WHERE DTFL.document_type_id = " . quote($iDocumentTypeID) . ($bMandatoryOnly ? "AND DFTL.is_mandatory = 1 " : " ") . 
+                              "ORDER BY DF.name ASC");
         if ($result) {
             $iCount = 0;
             while ($sql->next_record()) {
@@ -658,7 +670,6 @@ class Document {
             }
             return $aDocumentFieldArray;
         }
-        $_SESSION["errorMessage"] = $lang_err_database;
         return false;
 
     }
@@ -671,10 +682,11 @@ class Document {
     */
     function getDocumentHistory() {
         global $default, $lang_err_database;
-        $aDocumentHistory;
-        settype($aDocumentHistory, "array");
+        $aDocumentHistory = array();
         $sql = $default->db;
-        $result = $sql->query("SELECT * FROM  " . $default->document_transactions_table . " WHERE document_id = $this->iId ORDER BY datetime DESC");
+        $result = $sql->query("SELECT * FROM  " . $default->document_transactions_table . " " .
+                              "WHERE document_id = " . quote($this->iId) . " " .
+                              "ORDER BY datetime DESC");
         if ($result) {
             $iCount = 0;
             while($sql->next_record()) {
@@ -684,9 +696,7 @@ class Document {
             }
             return $history;
         }
-        $_SESSION["errorMessage"] = $lang_err_database;
         return false;
-
     }
 
     /**
@@ -745,15 +755,15 @@ class Document {
     * @param String  File name of document
     * @param int  Primary key of folder to which document is assigned
     *
-    * @return boolean true if document exists, false otherwise and set $_SESSION["errorMessage"]
+    * @return boolean true if document exists, false otherwise.
     */
     function documentExists($sFileName, $iFolderID) {
         global $default;
         $sql = $default->db;
         $sQuery = "SELECT * FROM $default->documents_table " .
-        		  "WHERE filename = '$sFileName' " . 
-        		  "AND folder_id = $iFolderID " .
-        		  "AND status_id = " . LIVE;
+        		  "WHERE filename = " . quote($sFileName)  . 
+        		  " AND folder_id = " . quote($iFolderID)  .
+        		  " AND status_id = " . LIVE;
         $sql->query($sQuery);
         if ($sql->next_record()) {
             return true;
@@ -765,20 +775,17 @@ class Document {
     * Lookup the document name for the document
     *
     * @param int the ID of the document to lookup the document name for
-    * @return string the name of the document on success, false otherwise and set $_SESSION["errorMessage"]
+    * @return string the name of the document on success, false otherwise.
     */
     function getDocumentName($iDocumentID) {
         global $default, $lang_err_database, $lang_err_doc_not_exist;
         $sql = $default->db;
 
-        if ($sql->query("SELECT name FROM " . $default->documents_table . " WHERE id = $iDocumentID")) {
+        if ($sql->query("SELECT name FROM $default->documents_table " .
+                        "WHERE id = " . quote($iDocumentID))) {
             if ($sql->next_record()) {
                 return $sql->f("name");
-            } else {
-                $_SESSION["errorMessage"] = $lang_err_doc_not_exist;
-            }
-        } else {
-            $_SESSION["errorMessage"] = $lang_err_database;
+            } 
         }
         return false;
     }
@@ -807,8 +814,8 @@ class Document {
 		$sql->query("SELECT * " . 
 					"FROM $default->folder_doctypes_table AS FDL " .
 					"INNER JOIN $default->documents_table AS D ON D.document_type_id = FDL.document_type_id " .
-					"WHERE FDL.id = $iFolderDocTypeID " .
-					"AND D.folder_id = $iFolderID");
+					"WHERE FDL.id = " . quote($iFolderDocTypeID) . " " .
+					"AND D.folder_id = " . quote($iFolderID));
 		if ($sql->next_record()) {
 			return true;
 		}
@@ -822,9 +829,9 @@ class Document {
 	function removeInvalidDocumentTypeEntries() {
 		global $default;
 		$sQuery = "SELECT field_id FROM $default->document_type_fields_table DTFL " .
-					"INNER JOIN $default->document_fields_table AS DF ON DF.id = DTFL.field_id " .
-					"WHERE DTFL.document_type_id = $this->iDocumentTypeID " .
-					"AND DF.is_generic = 0";
+                  "INNER JOIN $default->document_fields_table AS DF ON DF.id = DTFL.field_id " .
+                  "WHERE DTFL.document_type_id = " . quote($this->iDocumentTypeID) . " " .
+                  "AND DF.is_generic = 0";
 		$sql = $default->db;
 		$sql->query($sQuery);
 		$aFieldIDs = array();
@@ -834,7 +841,9 @@ class Document {
 		}
 		if (count($aFieldIDs) > 0) {
 			//delete the entries
-			$sQuery = "DELETE FROM $default->document_fields_link_table WHERE document_id = $this->iId AND document_field_id IN (" . implode(",",$aFieldIDs) . ")";
+			$sQuery = "DELETE FROM $default->document_fields_link_table " . 
+                      "WHERE document_id = " . quote($this->iId) . "
+                       AND document_field_id IN (" . implode(",",$aFieldIDs) . ")";
 			if ($sql->query($sQuery)) {
 				return true;
 			}
