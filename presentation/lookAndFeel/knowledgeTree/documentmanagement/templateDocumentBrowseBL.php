@@ -77,7 +77,7 @@ if (checkSession()) {
     
     require_once("../../../webpageTemplate.inc");    
 	// display the browse results
-    $oContent->addHtml(renderPage($aResults, $fBrowseType, $fSortBy, $fSortDirection));
+    $oContent->addHtml(renderPage($aResults, $fBrowseType, $fSortBy, $fSortDirection, true));
     
     $sToRender = "<html>\n";
 	$sToRender .= "<head>\n";
