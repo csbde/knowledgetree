@@ -85,6 +85,29 @@ function renderModifyAddNewsForm($oDashboardNews = null) {
 } 
 
 /**
+ * Prompts for confirmation when deleting a news item
+ */
+function renderDeleteNewsConfirmationPage($oDashboardNews) {
+	global $default;
+	
+	$sToRender .= "<table width=\"600\">" . renderHeading("Delete Dashboard News") . "</table>";
+    $sToRender .= "<table>\n";
+	$sToRender .= "<tr><td>Are you sure you wish to delete this news item?</td></tr>";
+	
+	$sToRender .= "<tr><td>Synopsis</td><td>" . $oDashboardNews->getSynopsis() . "</td></tr>";
+	$sToRender .= "<tr><td>Body</td><td>" . $oDashboardNews->getBody() . "</td></tr>";
+	$sToRender .= "<tr><td>Rank</td><td>" . $oDashboardNews->getRank() . "</td></tr>";	
+	$sToRender .= "<tr><td colspan=\"2\"><img src=\"$default->rootUrl/" . $default->siteMap->getPage("viewNewsImage") . "?fNewsID=" . $oDashboardNews->getID() . "\" border=\"0\"></td></tr>";
+	$sToRender .= "<input type=\"hidden\" name=\"fNewsID\" value=\"" . $oDashboardNews->getID() . "\">";
+	$sToRender .= "<input type=\"hidden\" name=\"fDeleteConfirmed\" value=\"1\">";	
+	$sToRender .= "<tr><td><input type=\"image\" src=\"$default->graphicsUrl/widgets/delete.gif\" border=\"0\">\n";
+	$sToRender .= "<a href=\"$default->rootUrl/control.php?action=viewNews\"><img src=\"$default->graphicsUrl/widgets/cancel.gif\" border=\"0\"></a></td></tr>\n";    
+	
+	$sToRender .= "</table>\n";
+	return $sToRender;	
+}
+
+/**
  * Displays the edit news page
  */
 function renderEditNewsPage($oDashboardNews) {
