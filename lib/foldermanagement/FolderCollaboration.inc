@@ -145,9 +145,9 @@ class FolderCollaboration {
 	function hasDocumentInProcess() {
 		global $default;
 		$sQuery = "SELECT FURL.id " .
-					"FROM groups_folders_approval_link AS GFAL INNER JOIN documents AS D ON GFAL.folder_id = D.folder_id " .
-					"INNER JOIN folders_users_roles_link AS FURL ON FURL.document_id = D.id " .
-					"WHERE GFAL.id = " . $this->iId; 
+				  "FROM $default->owl_groups_folders_approval_table AS GFAL INNER JOIN documents AS D ON GFAL.folder_id = D.folder_id " .
+                  "INNER JOIN $default->owl_folders_user_roles_table AS FURL ON FURL.document_id = D.id " .
+                  "WHERE GFAL.id = " . $this->iId; 
 		$sql = $default->db;
 		$sql->query($sQuery);
 		return $sql->next_record();
