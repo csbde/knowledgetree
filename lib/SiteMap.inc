@@ -59,7 +59,7 @@ class SiteMap {
             $default->log->debug("Sitemap::getPage section=$section");
             // for each group, page array combination
             foreach ($valArr as $requiredGroup => $pageArr) {
-                $reqGrpID = lookupID($default->owl_groups_table, "name", $requiredGroup);
+                $reqGrpID = lookupID($default->owl_groups_table, "name", "'$requiredGroup'");
                 $default->log->debug("Sitemap::getPage requiredGroup=$requiredGroup; reqGrpID=$reqGrpID");
                 // now loop through pages until we find the right one
                 foreach ($pageArr as $ackshin => $page) {
@@ -72,6 +72,7 @@ class SiteMap {
                         // we're assuming that the default groups will be created in the right
                         // order, so that groups with sys and unit access have lower ids than
                         // the required ones!
+                        $default->log->debug("Sitemap::getPage groupid array length=" . count($groupIDs));
                         for ($i = 0; $i<count($groupIDs); $i++) {
                             $default->log->debug("Sitemap::getPage current groupid=" . $groupIDs[$i] . "; reqGrpID=$reqGrpID"); 
                             if ($groupIDs[$i] <= $reqGrpID) {
