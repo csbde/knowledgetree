@@ -958,3 +958,8 @@ INSERT INTO help VALUES (34,'editDocType','editDocTypeHelp.html');
 INSERT INTO help VALUES (35,'removeDocType','removeDocTypeHelp.html');
 INSERT INTO help VALUES (36,'addDocType','addDocTypeHelp.html');
 INSERT INTO help VALUES (37,'addDocTypeSuccess','addDocTypeHelp.html');
+INSERT INTO help VALUES (38,'manageSubscriptions','manageSubscriptionsHelp.html');
+INSERT INTO help VALUES (39,'addSubscription','addSubscriptionHelp.html');
+INSERT INTO help VALUES (40,'removeSubscription','removeSubscriptionHelp.html');
+INSERT INTO help VALUES (41,'preferences','preferencesHelp.html');
+INSERT INTO help VALUES (42,'editPrefsSuccess','preferencesHelp.html');
