@@ -27,6 +27,51 @@ class DocumentLib {
 		return false;
 	}
 	
+	/**
+	* Check if a document already exists
+	*
+	* @param $sName			Name of document
+	* @param $sFolderID		Primary key of folder to which document is assigned
+	*
+	* @return boolean true if document exists, false otherwise and set $_SESSION["errorMessage"]
+	*/	
+	function documentExists($sName, $iFolderID) {
+		global $default, $lang_err_doc_not_exist;
+		$sql = new Owl_DB();
+		$sql->query("SELECT * FROM " . $default->owl_documents_table . " WHERE name = '" . $sName "' AND folder_id = " . $iFolderID);
+		if ($sql->next_record()) {
+			return true;
+		}
+		$_SESSION["errorMessage"] = $lang_err_doc_not_exist . "name = " . $sName . " folder_id = " . $iFolderID;
+		return false;
+	}
+	
+	/** 
+	* Create a new document type
+	* 
+	* @param $sName		Name of new document type
+	*
+	* @return boolean true on successful creation, false otherwise and set $default->errorMessage 
+	*/
+	function createDocumentType($sName) {
+		//escape all the necessary characters that may affect db query
+		$sName = addslashes($sName);
+		//Get hold of the global error string
+		global $default;
+		//if the document type doesn't exist
+		if (!(DocumentManager::documentTypeExists($sName))) {
+			$sql = new Owl_DB();
+			$result = $sql->query("INSERT INTO  " . $default->owl_document_types_table . "  (name) values ('" . $sName . "')");			
+			if (!$result) {
+				$_SESSION["errorMessage"] = "Database Error. Failed to insert document type " . $sName;
+				return false;
+			}
+			return true;
+		}
+		$_SESSION["errorMessage"] = "A document type with this name already exists";
+		return false;
+	}
+	
 	
 }
 
