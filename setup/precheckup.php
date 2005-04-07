@@ -149,12 +149,31 @@ $phpversion4 = phpversion() < '4' ? '<b><font color="red">No</font></b> <small>(
 $phpversion43 = phpversion() < '4.3' ? '<b><font color="orange">No</font></b> <small>(PHP 4.3 is recommended)</small>' : '<b><font color="green">Yes</font></b>';
 $phpversion5 = phpversion() >= '5' ? '<b><font color="red">No</font></b> <small>(KnowledgeTree does not yet work with PHP5)</small>' : '<b><font color="green">Yes</font></b>';
 
+function running_user() {
+    if (substr(PHP_OS, 0, 3) == "WIN") {
+        return null;
+    }
+    if (extension_loaded("posix")) {
+        $uid = posix_getuid();
+        $userdetails = posix_getpwuid($uid);
+        return $userdetails['name'];
+    }
+    if (file_exists('/usr/bin/whoami')) {
+        return exec('/usr/bin/whoami');
+    }
+    if (file_exists('/usr/bin/id')) {
+        return exec('/usr/bin/id -nu');
+    }
+    return null;
+}
+
 ?>
 <html>
   <head>
     <title>KnowledgeTree Checkup</title>
     <style>
 th { text-align: left; }
+td { vertical-align: top; }
     </style>
   </head>
 
@@ -283,6 +302,18 @@ PHP you are running, and which modules are available.</p>
 <table width="50%">
   <tbody>
 <?=writablePath('Log directory', 'log')?>
+<?php
+$username = running_user();
+if (is_null($username)) {
+    $message = "You are on a system that does not make user details available, and so no advice is possible on the correct ownership of the <b>log</b> and <b>Documents</b> directories.";
+} else {
+    $message = 'KnowledgeTree will be run as the <b><font color="orange">' . $username . '</font></b> system user, and must be able to write to the <b>log</b> and <b>Documents</b> directories.';
+}
+?>
+<tr>
+<td width="33%">General</td>
+<td><?=$message?></td>
+</tr>
   </tbody>
 </table>
 
