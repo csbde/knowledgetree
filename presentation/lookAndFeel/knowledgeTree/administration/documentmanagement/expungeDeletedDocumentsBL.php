@@ -60,6 +60,11 @@ if (checkSession()) {
 			// delete the specified documents
 			for ($i=0; $i<count($aDocuments); $i++) {
 				if (PhysicalDocumentManager::expunge($aDocuments[$i])) {
+
+					// store an expunge transaction
+                       $oDocumentTransaction = & new DocumentTransaction($fDocumentIDs[$i], "Document expunged", EXPUNGE);
+                       $oDocumentTransaction->create();
+
 					// delete this from the db now
 					if ($aDocuments[$i]->delete()) {
 						// removed succesfully
@@ -72,10 +77,6 @@ if (checkSession()) {
                         $oWebDocument = WebDocument::get(lookupID($default->web_documents_table, "document_id", $fDocumentIDs[$i]));
                         $oWebDocument->delete();
 												
-						// store an expunge transaction
-                        $oDocumentTransaction = & new DocumentTransaction($fDocumentIDs[$i], "Document expunged", EXPUNGE);
-                        $oDocumentTransaction->create();
-                        
 					} else {
 						$default->log->error("expungeDeletedDocumentsBL.php couldn't rm docID=" . $fDocumentIDs[$i] . " from the db");
 						$aErrorDocuments[] = $aDocuments[$i]->getDisplayPath();
