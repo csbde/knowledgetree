@@ -1,9 +1,4 @@
 <?php
-require_once("$default->fileSystemRoot/lib/browse/Browser.inc");
-require_once("$default->fileSystemRoot/lib/security/Permission.inc");
-require_once("$default->fileSystemRoot/lib/users/User.inc");
-require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
-require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
 /**
  * $Id$
  *
@@ -29,6 +24,14 @@ require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
  * @author Michael Joseph <michael@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
  * @package lib.browse
  */
+
+require_once("$default->fileSystemRoot/lib/browse/Browser.inc");
+require_once("$default->fileSystemRoot/lib/browse/Criteria.inc");
+require_once("$default->fileSystemRoot/lib/security/Permission.inc");
+require_once("$default->fileSystemRoot/lib/users/User.inc");
+require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
+require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
+
 class FolderBrowser extends Browser {
 
     /**
@@ -114,7 +117,19 @@ class FolderBrowser extends Browser {
             // now find all the child folders relative to this one
             // FIXME: in the same unit?
 
-            $oSortCriterion = $this->aSortCriteria[$this->sSortField];
+            $oSortCriterion = KTUtil::arrayGet($this->aSortCriteria, $this->sSortField);
+
+            // Something fishy is up with the sort field given, default
+            // to sorting by name, but name might not even be in the
+            // Sort Criteria set up for browsing, so use Criteria
+            // directly to get it.
+            if (is_null($oSortCriterion)) {
+                $oSortCriterion = Criteria::getCriterionByNumber(-1);
+
+                // If our sort field was broken, override the given sort
+                // direction.
+                $this->sSortDirection = 'asc';
+            }
             $aLookupCriteria = $oSortCriterion->getLookup();
 
             $aQuery = $oSortCriterion->folderQuery($iFolderID, $this->sSortDirection);
