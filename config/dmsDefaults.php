@@ -85,8 +85,11 @@ class KTInit {
 
         require_once("Log.php");
         $default->phpErrorLog =& Log::factory('composite');
-        $fileLog =& Log::factory('file', $default->fileSystemRoot . "/log/php_error_log", 'BLAH');
-        $default->phpErrorLog->addChild($fileLog);
+
+        if ($default->phpErrorLogFile) {
+            $fileLog =& Log::factory('file', $default->fileSystemRoot . "/log/php_error_log", 'BLAH');
+            $default->phpErrorLog->addChild($fileLog);
+        }
 
         if ($default->developmentWindowLog) {
             $windowLog =& Log::factory('win', 'LogWindow', 'BLAH');
@@ -296,6 +299,7 @@ $default->logLevel = 'INFO';
 
 $default->useDatabaseConfiguration = false;
 $default->developmentWindowLog = false;
+$default->phpErrorLogFile = false;
 $default->genericMetaDataRequired = true;
 
 $default->sslEnabled = false;
