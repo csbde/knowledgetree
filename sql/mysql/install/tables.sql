@@ -1733,7 +1733,7 @@ INSERT INTO status_lookup VALUES (4, 'Archived');
 -- 
 
 INSERT INTO system_settings VALUES (1, 'lastIndexUpdate', '0');
-INSERT INTO system_settings VALUES (2, 'knowledgeTreeVersion', '2.0.0');
+INSERT INTO system_settings VALUES (2, 'knowledgeTreeVersion', '2.0.2');
 
 -- 
 -- Dumping data for table `time_period`
