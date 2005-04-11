@@ -129,9 +129,9 @@ class AuthLdap {
     function connect() {
         foreach ($this->server as $key => $host) {
             $this->connection = ldap_connect( $host);
-                       if ( $this->serverType == "OpenLDAP2" ) {
-                               ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3);
-                               }
+            if ( $this->serverType == "OpenLDAP2" ) {
+                ldap_set_option($this->connection, LDAP_OPT_PROTOCOL_VERSION, 3);
+            }
             if ( $this->connection) {
                 if (($this->serverType == "ActiveDirectory") ||
                                   (($this->serverType == "OpenLDAP2") &&
