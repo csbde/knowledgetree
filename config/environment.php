@@ -96,6 +96,10 @@ $default->scrollingNews = false;
 // filled in, then set $default->genericMetaDataRequired = false;
 $default->genericMetaDataRequired = true;
 
+// If you want to enable PHP error logging to the log/php_error_log
+// file, uncomment the next line:
+// $default->phpErrorLogFile = true;
+
 // ----------------------------------------------------------------
 // WARNING: Settings below here may be overridden if using database
 // configuration
