@@ -92,22 +92,24 @@ class PhysicalDocumentManager {
 	* @todo investigate possible problem in MSIE 5.5 concerning Content-Disposition header
 	*/
 	function downloadPhysicalDocument($iDocumentID) {
-		//get the document
-		$oDocument = & Document::get($iDocumentID);
-		//get the path to the document on the server
-        $sDocumentFileSystemPath = $oDocument->getPath();
-        if (file_exists($sDocumentFileSystemPath)) {
-			//set the correct headers
-	        Header("Content-Type: " . PhysicalDocumentManager::getMimeTypeName($oDocument->getMimeTypeID()));
-			Header("Content-Length: ". $oDocument->getFileSize());
-			Header("Content-Disposition: attachment; filename=\"" . $oDocument->getFileName() . "\"");        
-	        Header("Pragma: no-cache");
-	        Header("Cache-Control: no-cache");
-	        Header("Expires: 0");
-			readfile($sDocumentFileSystemPath);
-        } else {
+            //get the document
+            $oDocument = & Document::get($iDocumentID);
+            //get the path to the document on the server
+            $sDocumentFileSystemPath = $oDocument->getPath();
+            if (file_exists($sDocumentFileSystemPath)) {
+                //set the correct headers
+                header("Content-Type: application/octet-stream");
+                header("Content-Length: ". $oDocument->getFileSize());
+                header("Content-Disposition: attachment; filename=\"" . $oDocument->getFileName() . "\"");
+                header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
+                header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
+                header("Cache-Control: must-revalidate");
+                header("Content-Location: ".$oDocument->getFileName());
+
+                readfile($sDocumentFileSystemPath);
+            } else {
         	return false;
-        }
+            }
 	}
     
     /**
@@ -118,24 +120,25 @@ class PhysicalDocumentManager {
 	 * @return int number of bytes read from file on success or false otherwise;
  	 */
 	function downloadVersionedPhysicalDocument($iDocumentID, $sVersion) {
-		//get the document
-		$oDocument = & Document::get($iDocumentID);
-		//get the path to the document on the server
-        $sDocumentFileSystemPath = $oDocument->getPath() . "-$sVersion";
-        if (file_exists($sDocumentFileSystemPath)) {
-			//set the correct headers
-	        Header("Content-Type: " . PhysicalDocumentManager::getMimeTypeName($oDocument->getMimeTypeID()));
-			header("Content-Length: ". $oDocument->getFileSize());
-			// prefix the filename presented to the browser to preserve the document extension
-			header("Content-Disposition: attachment; filename=" . "$sVersion-" . $oDocument->getFileName());
-	        Header("Pragma: no-cache");
-	        Header("Cache-Control: no-cache");
-	        header("Expires: 0");
-			readfile($sDocumentFileSystemPath);
-        } else {
-        	return false;
+            //get the document
+            $oDocument = & Document::get($iDocumentID);
+            //get the path to the document on the server
+            $sDocumentFileSystemPath = $oDocument->getPath() . "-$sVersion";
+            if (file_exists($sDocumentFileSystemPath)) {
+                //set the correct headers
+                header("Content-Type: application/octet-stream");
+                header("Content-Length: ". $oDocument->getFileSize());
+                // prefix the filename presented to the browser to preserve the document extension
+                header('Content-Disposition: attachment; filename="' . "$sVersion-" . $oDocument->getFileName() . '"');
+                header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
+                header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
+                header("Cache-Control: must-revalidate");
+                header("Content-Location: ".$oDocument->getFileName());
+                readfile($sDocumentFileSystemPath);
+            } else {
+                return false;
+            }
         }
-    }
     
 	/**
  	 * Move a document to a new folder
@@ -378,23 +381,24 @@ class PhysicalDocumentManager {
 	* @todo investigate possible problem in MSIE 5.5 concerning Content-Disposition header
 	*/
 	function inlineViewPhysicalDocument($iDocumentID) {
-		//get the document
-		$oDocument = & Document::get($iDocumentID);		
-		//get the path to the document on the server
-        $sDocumentFileSystemPath = $oDocument->getPath();
-        if (file_exists($sDocumentFileSystemPath)) {
-	        Header("Content-Type: " . PhysicalDocumentManager::getMimeTypeName($oDocument->getMimeTypeID()));
-			Header("Content-Length: " . $oDocument->getFileSize());
-			Header("Content-Disposition: inline; filename=" . $oDocument->getFileName());
-	        Header("Pragma: no-cache");
-	        Header("Cache-Control: no-cache");
-			return readfile($sDocumentFileSystemPath);
-        } else {
-        	return false;
-        }
+            //get the document
+            $oDocument = & Document::get($iDocumentID);		
+            //get the path to the document on the server
+            $sDocumentFileSystemPath = $oDocument->getPath();
+            if (file_exists($sDocumentFileSystemPath)) {
+                header("Content-Type: application/octet-stream");
+                header("Content-Length: ". $oDocument->getFileSize());
+                // prefix the filename presented to the browser to preserve the document extension
+                header('Content-Disposition: inline; filename="' . $oDocument->getFileName() . '"');
+                header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
+                header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
+                header("Cache-Control: must-revalidate");
+                header("Content-Location: ".$oDocument->getFileName());
+                return readfile($sDocumentFileSystemPath);
+            } else {
+                return false;
+            }
 	}
-	
-	
 	
 	/**
 	* Get the uploaded file information and place it into a document object
