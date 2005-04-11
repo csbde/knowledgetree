@@ -1,3 +1,120 @@
+Version 2.0.2 (2005/04/11)
+
+New Features
+============
+* What user needs to own certain files is mentioned in setup
+* Configurable logging of PHP errors to file
+
+Bug Fixes
+=========
+* Work around Microsoft IE KB812935 issue with Cache-Control headers (1179269)
+* Fix corruption on smaller, previous versions of documents (1176116)
+* Deal with bogus sort ordering (1164118)
+* Set LDAP v3 option on proper connection (1164118)
+* Add the Expunge document transaction before deleting the document (1165117)
+* Handle errors in updates properly (1151601)
+* Handle special characters in login name (1123057)
+
+Detailed ChangeLog
+==================
+
+2005-04-11 13:44  nbm
+
+	* sql/mysql/: install/tables.sql, upgrade/2.0.0-to-2.0.1.sql,
+	  upgrade/2.0.1-to-2.0.2.sql:
+
+	Version number changes for 2.0.2
+
+2005-04-11 09:19  nbm
+
+	* lib/database/lookup.inc:
+
+	Use parameterised queries here too.
+
+	Submitted by:	Stefano Ciancio (sciancio)
+	SF Tracker:	1123057
+
+2005-04-11 09:14  nbm
+
+	* lib/ktentity.inc:
+
+	Return false on update if there is a problem making the change as
+	requested.
+
+	Submitted by:	Stefano Ciancio (sciancio)
+	SF Tracker:	1151601
+
+2005-04-11 08:33  nbm
+
+	* config/environment.php:
+
+	Put an example into environment.php for the new phpErrorLogFile option.
+
+2005-04-11 08:32  nbm
+
+	* config/dmsDefaults.php:
+
+	Only log to php_error_log if requested to do so with phpErrorLogFile
+
+2005-04-11 03:52  nbm
+
+	* presentation/lookAndFeel/knowledgeTree/administration/documentmanagement/expungeDeletedDocumentsBL.php:
+
+	Add the Expunge document transaction before deleting the document.
+
+	Submitted by:	freboulet
+	SF Tracker:	1165117
+
+2005-04-11 03:45  nbm
+
+	* lib/authentication/class.AuthLdap.php:
+
+	Correctly set the LDAP Protocol Version in the OpenLDAP2 case.
+
+	Reported by:	Landon Fuller (landonf)
+	SF Tracker:	1159535
+
+2005-04-11 03:41  nbm
+
+	* lib/browse/FolderBrowser.inc:
+
+	Deal with the case where the browser's Sort Field might be broken and
+	returning a null oSortCriterion.  Default to a NameCriterion instance if
+	we can't use the given name to look one up.
+
+	Reported by:	Trevor Campbell (trevorcampbell)
+	SF Tracker:	1164118
+
+2005-04-11 03:20  nbm
+
+	* lib/documentmanagement/PhysicalDocumentManager.inc:
+
+	Don't use the latest copy's file size for previous versions of a
+	document.
+
+	Reported by:	Trevor Campbell (trevorcampbell)
+	SF Tracker:	1176116
+
+2005-04-11 02:40  nbm
+
+	* lib/documentmanagement/PhysicalDocumentManager.inc:
+
+	Work around Microsoft IE KB812935 issue with Cache-Control headers (used
+	to prevent using cached versions) by setting Last-Modified and using
+	must-revalidate instead.
+
+	Submitted by:	freboulet
+	SF Tracker:	1179269
+	SF Tracker:	1165451
+
+2005-04-07 04:04  nbm
+
+	* setup/precheckup.php:
+
+	Make it clear which user needs to own/write to the log and Documents
+	directory.
+
+
 Version 2.0.1 (2005/03/11)
 
 New Features
