@@ -82,9 +82,11 @@ function lookupGroupIDs($userID) {
 function lookupField($tableName, $selectFieldName, $whereFieldName, $whereFieldValue) {
     global $default;
     $sql = $default->db;
-    $query = "select $selectFieldName from $tableName where $whereFieldName = '". $whereFieldValue . "'" ;
+    $query = "select $selectFieldName from $tableName where $whereFieldName = ?" ;
+
+    $aParams = array($whereFieldValue);
  
-    if ($sql->query($query)) {
+    if ($sql->query(array($query, $aParams))) {
         if ($sql->next_record()) {
             return $sql->f($selectFieldName);
         } else {
