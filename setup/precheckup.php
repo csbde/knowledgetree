@@ -197,8 +197,12 @@ PHP you are running, and which modules are available.</p>
 <table width="100%">
   <tbody>
     <tr>
-      <th>PHP version 4.3 or above</th>
+      <th>PHP version 4.0 or above</th>
       <td><?=$phpversion4?></td>
+    </tr>
+    <tr>
+      <th>PHP version 4.3 or above</th>
+      <td><?=$phpversion43?></td>
     </tr>
     <tr>
       <th>PHP version below 5</th>
