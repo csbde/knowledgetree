@@ -1,0 +1,45 @@
+# This file sets up the necessary PHP settings to run KnowledgeTree
+# optimally.
+#
+# It is best that KnowledgeTree be allowed to manage its PHP and access
+# permissions using these .htaccess files.  This prevents direct access
+# to libraries, scripts, and documents that should not be available via
+# the web.
+#
+# By default, to facilitate quick testing of functionality,
+# KnowledgeTree places the Documents directory within the KnowledgeTree
+# web root.  This, by default, would allow people to browse the
+# documents in the DMS, bypassing the security permissions.  The
+# default .htaccess settings would prevent this.
+#
+# KnowledgeTree itself is able to deal with most PHP configurations,
+# excepting "safe mode" currently, but is unable to handle certain
+# inherent configuration options (for example, setting the upload size
+# very low).  Check the setup checklists (as described in the
+# documentation) to see how your configuration is handled.
+#
+# The default .htaccess settings ensure that no workarounds occur in the
+# PHP code, leading to better performance and robustness.
+#
+<IfModule mod_php4.c>
+php_value upload_max_filesize 8M
+php_value post_max_size 8M
+php_value memory_limit 8M
+php_value max_input_time -1
+php_value max_execution_time 60
+php_value default_mimetype text/html
+php_value auto_prepend_file none
+php_value auto_append_file none
+php_flag display_startup_errors ON
+php_flag display_errors ON
+php_flag file_uploads ON
+php_flag magic_quotes_gpc OFF
+php_flag magic_quotes_runtime OFF
+php_flag register_globals OFF
+php_flag output_buffering OFF
+php_flag session.auto_start OFF
+</IfModule>
+<IfModule mod_env.c>
+SetEnv kt_htaccess_worked yes
+</IfModule>
+LimitRequestBody 0
