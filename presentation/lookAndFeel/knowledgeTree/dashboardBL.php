@@ -2,6 +2,7 @@
 
 // main library routines and defaults
 require_once("../../../config/dmsDefaults.php");
+require_once("$default->fileSystemRoot/lib/unitmanagement/Unit.inc");
 require_once("$default->fileSystemRoot/lib/dashboard/Dashboard.inc");
 require_once("$default->fileSystemRoot/lib/dashboard/DashboardNews.inc");
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
@@ -64,8 +65,14 @@ if (checkSession()) {
     // retrieve archive restoration requests
     $aRestorationRequests = $oDashboard->getArchiveRestorationRequestDocuments();
     
-    // generate the html
-    $oContent->setHtml(renderPage($aPendingDocumentList, $aCheckedOutDocumentList, $aSubscriptionAlertList, $aQuickLinks, $aPendingWebDocuments, $aDependantDocuments, $aRestorationRequests));
+	// retrieve public folders
+	$aPublicFolders = $oDashboard->getPublicFolders();
+
+	// retrieve browseable folders
+	$aBrowseableFolders = $oDashboard->getBrowseableFolders();		
+
+	// generate the html
+    $oContent->setHtml(renderPage($aPendingDocumentList, $aCheckedOutDocumentList, $aSubscriptionAlertList, $aQuickLinks, $aPendingWebDocuments, $aDependantDocuments, $aRestorationRequests, $aBrowseableFolders, $aPublicFolders));
     
     // display
     $main->setCentralPayload($oContent);
