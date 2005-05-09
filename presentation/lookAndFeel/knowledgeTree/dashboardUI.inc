@@ -263,6 +263,66 @@ function renderDashboardNews() {
 	return $sToRender;
 }
 
+
+function renderPublicFolders($aPublicFolders) {
+	global $default;
+    if (count($aPublicFolders) > 0) {
+        $sBgColor = "#9D9D7F";
+    } else {
+        $sBgColor = "#CECEBF";
+    }    
+    $sToRender  = "\t\t\t<tr align=\"left\" bgcolor=\"$sBgColor\">\n";
+    $sToRender .= "\t\t\t\t<th class=\"sectionHeading\" colspan=\"2\"> <img src=$default->graphicsUrl/widgets/dfolder.gif> <font color=\"ffffff\">" . _("Public Folders") . "</font></th>\n";
+    $sToRender .= "\t\t\t</tr>\n";
+    for ($i = 0; $i < count($aPublicFolders); $i++) {
+        $sToRender .= "\t\t\t<tr>\n";
+        
+        $sToRender .= "\t\t\t\t<td colspan=\"2\">";
+        $sToRender .= "<a href='$default->rootUrl/control.php?action=browse&fFolderID=". $aPublicFolders[$i]->getID()."'>";
+        
+        $oUnit = Unit::get($aPublicFolders[$i]->getUnitID());        
+        if ($oUnit) {
+        	$sToRender .= $aPublicFolders[$i]->getName() . " (<i>Unit: ";
+	        $sToRender .= $oUnit->getName() . "</i>)</a></td>\n";
+        } else {
+        	$sToRender .= $aPublicFolders[$i]->getName() . " (<i>No Unit</i>)</a></td>\n";        	
+        }
+        
+        $sToRender .= "\t\t\t</tr>\n";
+    }    
+    return $sToRender;
+}
+
+function renderBrowseableFolders($aBrowseableFolders) {
+	global $default;
+    if (count($aBrowseableFolders) > 0) {
+        $sBgColor = "#9D9D7F";
+    } else {
+        $sBgColor = "#CECEBF";
+    }    
+    $sToRender  = "\t\t\t<tr align=\"left\" bgcolor=\"$sBgColor\">\n";
+    $sToRender .= "\t\t\t\t<th class=\"sectionHeading\" colspan=\"2\"> <img src=$default->graphicsUrl/widgets/dfolder.gif> <font color=\"ffffff\">" . _("Browseable Folders") . "</font></th>\n";
+    $sToRender .= "\t\t\t</tr>\n";
+    for ($i = 0; $i < count($aBrowseableFolders); $i++) {
+        $sToRender .= "\t\t\t<tr>\n";
+        
+        $sToRender .= "\t\t\t\t<td colspan=\"2\">";
+        $sToRender .= "<a href='$default->rootUrl/control.php?action=browse&fFolderID=". $aBrowseableFolders[$i]->getID()."'>";
+
+        $oUnit = Unit::get($aBrowseableFolders[$i]->getUnitID());        
+        if ($oUnit) {
+        	$sToRender .= $aBrowseableFolders[$i]->getName() . " (<i>Unit: ";
+	        $sToRender .= $oUnit->getName() . "</i>)</a></td>\n";
+        } else {
+        	$sToRender .= $aBrowseableFolders[$i]->getName() . " (<i>No Unit</i>)</a></td>\n";        	
+        }
+
+        $sToRender .= "\t\t\t</tr>\n";
+    }    
+    return $sToRender;
+}
+
+
 /**
  * Renders the dashboard
  *
@@ -270,7 +330,7 @@ function renderDashboardNews() {
  * @param array checked out documents for this user
  * @param array subscription alerts for this user
  */
-function renderPage($aPendingDocumentList, $aCheckedOutDocumentList, $aSubscriptionAlertList, $aQuickLinks, $aWebDocuments, $aDependantDocuments, $aRestorationRequests) {
+function renderPage($aPendingDocumentList, $aCheckedOutDocumentList, $aSubscriptionAlertList, $aQuickLinks, $aWebDocuments, $aDependantDocuments, $aRestorationRequests, $aBrowseableFolders, $aPublicFolders) {
     global $default;
     
     $sToRender  = "<table border=\"0\" width=\"600\" >\n";
@@ -300,6 +360,9 @@ function renderPage($aPendingDocumentList, $aCheckedOutDocumentList, $aSubscript
     $sToRender .= renderCheckedOutDocuments($aCheckedOutDocumentList) . "\n";
     $sToRender .= renderSubscriptionAlerts($aSubscriptionAlertList) . "\n";
     $sToRender .= renderDependantDocuments($aDependantDocuments) . "\n";
+    $sToRender .= "<td><br></td>\n";
+    $sToRender .= renderBrowseableFolders($aBrowseableFolders) . "\n";
+    $sToRender .= renderPublicFolders($aPublicFolders) . "\n";
     $sToRender .= "\t\t\t</table>\n";
     $sToRender .= "\t\t</td>\n";
     
@@ -307,6 +370,7 @@ function renderPage($aPendingDocumentList, $aCheckedOutDocumentList, $aSubscript
     $sToRender .= "\t\t<td width=\"50%\" valign=top>\n";
     $sToRender .= "\t\t\t<table width=\"100%\">\n";
     $sToRender .= renderQuickLinks($aQuickLinks);
+    $sToRender .= "</td>\n";
     $sToRender .= "\t\t\t</table>\n";
     
         

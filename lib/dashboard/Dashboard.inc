@@ -130,4 +130,44 @@ class Dashboard {
 		}
 		return $aDocumentList;	
 	}	
+	
+
+	/**
+	 * Retrieves Public Folders
+	 */
+	function getPublicFolders() {
+		global $default;
+		$sQuery = array("SELECT id FROM $default->folders_table WHERE is_public = 1");
+		$aFolderList = array();
+		$sql = $default->db;
+		$sql->query($sQuery);
+		while ($sql->next_record()) {
+			$aFolderList[] = & Folder::get($sql->f("id"));
+		}
+		return $aFolderList;
+	}
+	
+	/**
+	 * Retrieves Browseable Folders for this user
+	 */
+	function getBrowseableFolders() {
+		global $default;
+		$sQuery = array("SELECT DISTINCT F.id as folderid, F.parent_id as parentfolderid " .
+				"FROM $default->folders_table F, $default->groups_folders_table GFL, $default->users_groups_table UGL " .
+				"WHERE UGL.user_id=? AND UGL.group_id=GFL.group_id AND GFL.folder_id = F.id AND " .
+				"F.id=F.permission_folder_id AND F.id \!= 1 ORDER BY F.id", $this->iUserID);
+		$aBrowseableList = array();
+		$aShowedFolderList = array();
+		$sql = $default->db;
+		$sql->query($sQuery);
+		while ($sql->next_record()) {
+			
+			if (!$aShowedFolderList[$sql->f("parentfolderid")]) {	
+				$aBrowseableList[] = & Folder::get($sql->f("folderid"));
+			}
+			$aShowedFolderList[$sql->f("folderid")] = 1;	// check the showed folder
+		}
+		return $aBrowseableList;		
+	}
+
 }
