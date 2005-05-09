@@ -127,6 +127,7 @@ function bigEnough($name, $setting, $preferred, $bytes = false, $red = true) {
 }
 
 function must_extension_loaded($ext, $message = "") {
+    @dl($ext);
     if (extension_loaded($ext)) {
         return '<b><font color="green">Available</font></b>';
     }
@@ -167,6 +168,13 @@ function running_user() {
     return null;
 }
 
+function htaccess() {
+    if (array_key_exists('kt_htaccess_worked', $_SERVER)) {
+        return '<p><strong><font color="green">Your web server is set up to use the .htaccess files.</font></strong></p>';
+    }
+    return '<p><strong><font color="red">Your web server is NOT set up to use the .htaccess files.</font></strong></p>';
+}
+
 ?>
 <html>
   <head>
@@ -188,6 +196,16 @@ you may not be having the ultimate experience unless the support is
 added.  Green items means you're ready to go in this area.  You can
 check back here to see if anything has changed in your environment if
 you have any problems.</p>
+
+<h2>.htaccess file</h2>
+
+<p>You can let KnowledgeTree manage the PHP settings that apply to the
+KnowledgeTree application (it won't affect your other applications) by
+configuring your web server to use the .htaccess files that come with
+KnowledgeTree.  This will ensure that the settings for KnowledgeTree
+(detailed below) are set up for optimal, reliable performance.</p>
+
+<?=htaccess()?>
 
 <h2>PHP version and extensions</h2>
 
@@ -222,7 +240,7 @@ PHP you are running, and which modules are available.</p>
     </tr>
     <tr>
       <th>Fileinfo support</th>
-      <td><?=can_extension_loaded('fileinfo', "Provides better file identification support - not necessary if you use file entensions");?></td>
+      <td><?=can_extension_loaded('fileinfo', "Provides better file identification support - not necessary if you use file extensions");?></td>
     </tr>
   </tbody>
 </table>
