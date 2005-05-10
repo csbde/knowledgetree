@@ -141,7 +141,10 @@ class PatternBrowseableSearchResults {
 			// display the number of results
 			$iEndIndex = $this->iStartIndex+$this->iResultsToDisplay-1 < $iTotalResults ? $this->iStartIndex+$this->iResultsToDisplay-1 : $iTotalResults;
 			
-			$sToRender .= "<tr><td colspan=\"3\">Searched the KnowledgeTree for '$this->sSearchText'.</td></tr>";
+			if ($this->sSearchText) {
+                            $sToRender .= "<tr><td colspan=\"3\">Searched the KnowledgeTree for '$this->sSearchText'.</td></tr>";
+                        }
+
 			$sToRender .= "<tr><td colspan=\"3\" align=\"right\">Displaying results $this->iStartIndex - $iEndIndex of $iTotalResults</td></tr>\n";
 					
 			$sToRender .= "<tr>\n";		
