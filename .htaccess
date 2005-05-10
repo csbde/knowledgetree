@@ -22,11 +22,6 @@
 # PHP code, leading to better performance and robustness.
 #
 <IfModule mod_php4.c>
-php_value upload_max_filesize 8M
-php_value post_max_size 8M
-php_value memory_limit 8M
-php_value max_input_time -1
-php_value max_execution_time 60
 php_value default_mimetype text/html
 php_value auto_prepend_file none
 php_value auto_append_file none
@@ -43,3 +38,19 @@ php_flag session.auto_start OFF
 SetEnv kt_htaccess_worked yes
 </IfModule>
 LimitRequestBody 0
+DirectoryIndex index.html index.php
+Options none
+
+#
+# If you are having uploading larger documents, adjust the 16M examples
+# below to increase the maximum file size.  This is set to a reasonable
+# size for testing and most usage patterns, as increased sizes may allow
+# malicious users to use up resources.
+#
+<IfModule mod_php4.c>
+php_value upload_max_filesize 16M
+php_value post_max_size 16M
+php_value memory_limit 16M
+php_value max_input_time -1
+php_value max_execution_time 60
+</IfModule>
