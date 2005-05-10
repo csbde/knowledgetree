@@ -130,6 +130,13 @@ function haveExtension($ext) {
     if (extension_loaded($ext)) {
         return true;
     }
+
+    // According to PEAR.php:
+    // if either returns true dl() will produce a FATAL error, stop that
+    if ((ini_get('enable_dl') != 1) || (ini_get('safe_mode') == 1)) {
+        return false;
+    }
+
     $libfileext = '.so';
     $libraryprefix = '';
     if (substr(PHP_OS, 0, 3) == "WIN") {
