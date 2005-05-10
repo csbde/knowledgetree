@@ -44,6 +44,9 @@ function criteriaNumber ($var) {
 
 function getAdvancedSearchResults($aOrigReq, $iStartIndex) {
     global $default;
+
+    $sRefreshMessage = "<table><tr><td align=\"center\">" . _("If your browser displays a 'Warning: Page has Expired' message when you attempt to return to these search results, please click your browser's 'Refresh' button") . "</td></tr></table>";
+
     $aReq = array();
     foreach ($aOrigReq as $k => $v) {
         if (searchCriteria($k) === 1) {
@@ -57,6 +60,7 @@ function getAdvancedSearchResults($aOrigReq, $iStartIndex) {
             $aReq[$k] = $v;
         }
     }
+
     $aIDs = array_unique(array_map("criteriaNumber", array_keys($aReq)));
     $aSQL = array();
     foreach ($aIDs as $iID) {
@@ -76,6 +80,11 @@ function getAdvancedSearchResults($aOrigReq, $iStartIndex) {
             $aCritQueries[] = $sSQL;
         }
     }
+
+    if (count($aCritQueries) == 0) {
+        return "No search criteria were specified";
+    }
+
     $sSQLSearchString = join(" AND ", $aCritQueries);
 
     $sQuery = DBUtil::compactQuery("
@@ -116,8 +125,7 @@ ORDER BY doc_count DESC");
     $oPatternBrowse->setSearchText("");
     $oPatternBrowse->setRememberValues($aReq);
 
-    $sRefreshMessage = "<table><tr><td align=\"center\">" . _("If your browser displays a 'Warning: Page has Expired' message when you attempt to return to these search results, please click your browser's 'Refresh' button") . "</td></tr></table>";
-    return renderHeading(_("Advanced Search")) . $oPatternBrowse->render() . $sRefreshMessage . getSearchVariablesHtml($sSearchString, $sStatus, $sMetaTagIDs);
+    return renderHeading(_("Advanced Search")) . $oPatternBrowse->render() . $sRefreshMessage;
 }
 
 function dealWithAdvancedSearch($aReq, $iStartIndex) {
@@ -150,7 +158,7 @@ if (checkSession()) {
 	} else {	
 		//display search criteria
 		$oPatternCustom = & new PatternCustom();
-		$oPatternCustom->setHtml(getSearchPage($fSearchString));
+		$oPatternCustom->setHtml(getSearchPage());
 		$main->setHasRequiredFields(true);
 		$main->setCentralPayload($oPatternCustom);                                
 		$main->setFormAction($_SERVER["PHP_SELF"] . "?fForSearch=1");                                
