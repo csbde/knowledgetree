@@ -126,9 +126,23 @@ function bigEnough($name, $setting, $preferred, $bytes = false, $red = true) {
     return $ret;
 }
 
-function must_extension_loaded($ext, $message = "") {
-    @dl($ext);
+function haveExtension($ext) {
     if (extension_loaded($ext)) {
+        return true;
+    }
+    $libfileext = '.so';
+    $libraryprefix = '';
+    if (substr(PHP_OS, 0, 3) == "WIN") {
+        $libfileext = '.dll';
+        $libraryprefix = 'php_';
+    }
+    @dl(sprintf("%s%s%s", $libraryprefix, $ext, $libfileext));
+    return extension_loaded($ext);
+}
+
+
+function must_extension_loaded($ext, $message = "") {
+    if (haveExtension($ext)) {
         return '<b><font color="green">Available</font></b>';
     }
     if ($message) {
@@ -137,7 +151,7 @@ function must_extension_loaded($ext, $message = "") {
     return '<b><font color="red">Unavailable</font></b>';
 }
 function can_extension_loaded($ext, $message = "") {
-    if (extension_loaded($ext)) {
+    if (haveExtension($ext)) {
         return '<b><font color="green">Available</font></b>';
     }
     if ($message) {
