@@ -435,8 +435,14 @@ class PhysicalDocumentManager {
     function getMimeTypeID($sMimeType, $sFileName) {
         global $default;
         $sql = $default->db;
+        $bOfficeDocument = false;
+
+        // application/msword seems to be set by all Office documents
+        if ($sMimeType == "application/msword") {
+            $bOfficeDocument = true;
+        }
         
-        if (!$sMimeType) {
+        if ($bOfficeDocument || (!$sMimeType)) {
           // check by file extension
           $sExtension = PhysicalDocumentManager::stripAllButExtension($sFileName);
           $sql->query(array("SELECT id FROM " . $default->mimetypes_table . " WHERE LOWER(filetypes) = ?", $sExtension));/*ok*/
