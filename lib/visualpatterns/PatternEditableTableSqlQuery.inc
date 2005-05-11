@@ -129,6 +129,9 @@ class PatternEditableTableSqlQuery {
 				$sToRender .= "<th align=left>" . $this->aColumnHeaderNames[$i] . "</th>\n";
 			}
 		}
+        
+        $this->sUniqueName .= KTUtil::randomString();
+        
 		$sql = $default->db;
 		$sql->query($this->sQuery);
 		if ($sql->num_rows() == 0) {
