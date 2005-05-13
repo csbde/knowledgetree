@@ -360,6 +360,7 @@ if ($i18nLoaded === false) {
 }
 
 $default->systemVersion = file_get_contents(KT_DIR . '/docs/VERSION.txt');
+$default->lastDatebaseVersion = '2.0.2';
 
 KTInit::cleanGlobals();
 KTInit::cleanMagicQuotes();
