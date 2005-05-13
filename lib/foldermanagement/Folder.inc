@@ -25,6 +25,7 @@
  * @package lib.foldermanagement 
  */
 require_once("$default->fileSystemRoot/lib/foldermanagement/PhysicalFolderManagement.inc");
+require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
 
 class Folder extends KTEntity {
 	
@@ -314,7 +315,9 @@ class Folder extends KTEntity {
         $res = parent::update();
         if ($res === true) {
             if ($bPathChange) {				
-                $this->updateChildPaths($this->iId, $sql);
+                // XXX: TransactionCheckPoint
+                $this->updateChildPaths($this->iId);
+                $this->updateDocumentPaths($this->iId);
             }
         }
         return $res;
@@ -329,7 +332,7 @@ class Folder extends KTEntity {
 	* the paths of the children in the database
 	* 
 	*/
-	function updateChildPaths($iID, $sql) {
+	function updateChildPaths($iID) {
 		global $default;
 		//get the direct children
         $sql = $default->db;
@@ -342,6 +345,28 @@ class Folder extends KTEntity {
 		}
 		return;
 	}
+
+    /**
+     * When a folder's path changes, we must update the paths in the
+     * documents in that folder.  Sub-folders are handled elsewhere in
+     * update().
+     */
+
+    function updateDocumentPaths($iID) {
+        $aDocuments = Document::getList(array('folder_id = ?', $iID));
+        if (PEAR::isError($aDocuments)) {
+            return $aDocuments;
+        }
+        foreach ($aDocuments as $oDocument) {
+            // Document->update() automatically adjusts the path.
+            $oDocument->update();
+            // XXX: Should handle failure here somehow, but rather get
+            // most working than just the first two.  Must find a sane
+            // way to handle transactions.
+            // TransactionCheckPoint
+        }
+        return true;
+    }
 	
 	/**
 	* Get a folder's sub-folders
