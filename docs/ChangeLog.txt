@@ -1,3 +1,214 @@
+Version 2.0.3 (2005/05/13)
+
+New Features
+============
+* Distribute .htaccess files that set up best behaviour of KnowledgeTree.
+* In checkup, test if Documents directory is readable from the web.
+* browseToRoot allows you to set users to the root folder when browsing.
+* Otherwise unreachable folders appear in dashboard (1182191)
+
+Bug Fixes
+=========
+* Update document paths when moving folders (1199699)
+* Add files to empty directories so they remain when extracted
+* Make each document detail edit unique so can happen concurrently (1198396)
+* Before saying a module doesn't exist, try to load it.
+* Correct MIME type on MS Office documents (1143885) (1179256)
+* If no search parameters, give an error message and exit.
+* If no search text, don't show "Searching for ..."
+* Order news by rank (1181469)
+* Check and display PHP > 4.0 and PHP > 4.3 in checkup separately.
+
+Detailed ChangeLog
+==================
+
+2005-05-13 05:12  nbm
+
+	* config/environment.php:
+
+	Document browseToRoot in the environment.php file.
+
+2005-05-13 05:11  nbm
+
+	* config/dmsDefaults.php:
+
+	Default browseToRoot to false, to match previous behaviour.
+
+2005-05-13 05:10  nbm
+
+	* presentation/lookAndFeel/knowledgeTree/documentmanagement/browseBL.php:
+
+	If $default->browseToRoot is set, go to the root of the tree, rather
+	than the user's unit.
+
+2005-05-13 04:29  nbm
+
+	* presentation/login.php:
+
+	Don't show ordinary users that database version.
+
+2005-05-13 04:28  nbm
+
+	* config/dmsDefaults.php:
+
+	Record the expected database version in the distribution.
+
+2005-05-13 04:14  nbm
+
+	* presentation/login.php:
+
+	Show both the system and database version.
+
+2005-05-13 04:13  nbm
+
+	* config/dmsDefaults.php:
+
+	Grab the system (code) version from docs/VERSION.txt
+
+2005-05-13 04:13  nbm
+
+	* docs/VERSION.txt:
+
+	Put the system (code) version in a file distributed with the software.
+
+	As opposed to the database version that the system is running.
+
+2005-05-13 04:06  nbm
+
+	* lib/foldermanagement/Folder.inc:
+
+	Update document paths when renaming folders.
+
+	Submitted by:	Nicolas Quienot (nquienot)
+	SF Tracker:	1199699
+
+2005-05-13 04:01  nbm
+
+	* Documents/Root Folder/: .empty, Default Unit/.empty:
+
+	Add some empty files so that some ZIP programs don't ignore these
+	directories.
+
+2005-05-13 03:58  nbm
+
+	* setup/index.php:
+
+	Put a number of lines of comments to help people who don't even have PHP
+	installed to realise that this is the problem.
+
+2005-05-13 03:57  nbm
+
+	* setup/index.html:
+
+	Put an index.html that redirects to index.php, testing that PHP is even
+	installed into the web server.
+
+2005-05-11 10:59  nbm
+
+	* lib/visualpatterns/PatternEditableTableSqlQuery.inc:
+
+	Make each edit unique, so concurrent edits don't overwrite one of the
+	other.
+
+	SF tracker:	1198396
+	Submitted by:	Nicolas Quienot (nquienot)
+
+2005-05-10 07:33  nbm
+
+	* .htaccess:
+
+	Group together upload size stuff, and an explanation of why it doesn't
+	default to unlimited.
+
+	Also remove all Options from directories below.
+
+2005-05-10 04:58  nbm
+
+	* setup/precheckup.php:
+
+	According to PEAR.php, enable_dl being disabled or safe_mode being
+	enabled will make extension loading a fatal error, which would not be a
+	good thing for us.  Simply return false if the above scenario is
+	fulfilled.
+
+2005-05-10 02:08  nbm
+
+	* lib/documentmanagement/PhysicalDocumentManager.inc:
+
+	Fix MIME type of MS Office Documents that sometimes get sent as
+	application/msword even if they are of other document types.
+
+	Submitted by:	Nicolas Quienot (nquienot) (Bug report)
+	SF Tracker:	1143885 (Bug Report)
+	Submitted by:	freboulet (Patch)
+	SF Tracker:	1179256 (Patch)
+
+2005-05-10 01:38  nbm
+
+	* setup/precheckup.php:
+
+	Fix up extension checking for people who have extensions but they aren't
+	loaded by default.
+
+2005-05-10 00:38  nbm
+
+	* presentation/lookAndFeel/knowledgeTree/search/advancedSearchBL.php:
+
+	If no parameters were made to the search, say so, and don't do a search.
+
+2005-05-10 00:37  nbm
+
+	* lib/visualpatterns/PatternBrowsableSearchResults.inc:
+
+	Only show "Searched for foo" if foo is some text.
+
+2005-05-09 14:31  nbm
+
+	* presentation/lookAndFeel/knowledgeTree/dashboardUI.inc:
+
+	Order News by rank.
+
+	Submitted by:	Stefano Ciancio (sciancio)
+	SF Tracker:	1181469
+
+2005-05-09 14:27  nbm
+
+	* lib/dashboard/Dashboard.inc,
+	  presentation/lookAndFeel/knowledgeTree/dashboardBL.php,
+	  presentation/lookAndFeel/knowledgeTree/dashboardUI.inc:
+
+	Put "Browseable Folders" and "Public Folders" on the dashboard, so that
+	users can access all parts of the tree they should be able to.
+
+	Submitted by:	Stefano Ciancio (sciancio)
+	SF Tracker:	1182191
+
+2005-05-09 14:13  nbm
+
+	* setup/: postcheckup.php, precheckup.php:
+
+	Mention .htaccess, and test that .htaccess is working.
+
+	Also, perform a through-the-web test of the Documents directory to make
+	sure it isn't left accessible via the web.
+
+2005-05-09 14:11  nbm
+
+	* .htaccess, bin/.htaccess, Documents/.htaccess, config/.htaccess,
+	  docs/.htaccess, etc/.htaccess, lib/.htaccess, log/.htaccess,
+	  pear/.htaccess, phpSniff/.htaccess, phpmailer/.htaccess,
+	  sql/.htaccess, sync/.htaccess, tests/.htaccess:
+
+	Add .htaccess files with proper PHP settings, and preventing access to
+	non-web directories via the web.
+
+2005-04-28 01:29  nbm
+
+	* setup/precheckup.php:
+
+	Give both PHP > 4.0 and PHP > 4.3 accurately.  Previously gave PHP > 4.0
+	in > 4.3 section.
+
 Version 2.0.2 (2005/04/11)
 
 New Features
