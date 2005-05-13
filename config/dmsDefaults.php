@@ -301,6 +301,7 @@ $default->useDatabaseConfiguration = false;
 $default->developmentWindowLog = false;
 $default->phpErrorLogFile = false;
 $default->genericMetaDataRequired = true;
+$default->browseToRoot = false;
 
 $default->sslEnabled = false;
 if (array_key_exists('HTTPS', $_SERVER)) {
