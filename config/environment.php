@@ -100,6 +100,10 @@ $default->genericMetaDataRequired = true;
 // file, uncomment the next line:
 // $default->phpErrorLogFile = true;
 
+// If you want your users to go to the root folder rather than their
+// unit folder, uncomment the next line:
+// $default->browseToRoot = true;
+
 // ----------------------------------------------------------------
 // WARNING: Settings below here may be overridden if using database
 // configuration
