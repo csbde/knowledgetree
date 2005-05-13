@@ -83,7 +83,8 @@ if ($_REQUEST['loginAction'] == "loginForm") {
     <input type=\"hidden\" name=\"redirect\" value=\"$redirect\"/>
     <input type=\"hidden\" name=\"loginAction\" value=\"login\">\n
     <tr align=\"right\"><td><input type=\"image\" src=\"" . KTHtml::getLoginButton() . "\" border=\"0\"></td></tr>\n
-    <tr><td><font size=\"1\">" . _("Version") . ": " . $default->system->get("knowledgeTreeVersion") . "</font></td></tr>
+    <tr><td><font size=\"1\">" . _("Database Version") . ": " . $default->system->get("knowledgeTreeVersion") . "</font></td></tr>
+    <tr><td><font size=\"1\">" . _("System Version") . ": " . $default->systemVersion . "</font></td></tr>
     </table>
     </center>
     </body>
