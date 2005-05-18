@@ -63,7 +63,7 @@ if ($_REQUEST['loginAction'] == "loginForm") {
 		}
 	}
 	//-->
-	</SCRIPT
+	</SCRIPT>
     
     </head>
     <body onload=\"javascript:document.loginForm.fUserName.focus()\">
