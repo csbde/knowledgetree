@@ -329,7 +329,7 @@ class DocumentCollaboration {
 			//get the previous sequence number
 			$sQuery = "SELECT COALESCE(MAX(precedence), -1) AS precedence " ./*ok*/
 						"FROM $default->groups_folders_approval_table AS GFAT " .
-						"WHERE precedence < ?";
+						"WHERE precedence < ?" .
 						"AND folder_id = ?";			
             $aParams = array($iCurrentSequenceNumber, $iFolderID);
 			$sql->query(array($sQuery, $aParams));
