@@ -120,7 +120,7 @@ function sendEmail($sDestEmailAddress, $sDestUserName, $fDocumentID, $sDocumentN
 		$sMessage .= "<br><br>Comments:<br>$sComment";
 	}
 	$sMessage .= "</font>";
-	$sTitle = "Link: " . $sDocumentName . " from " . $sSendingUserName;
+	$sTitle = "Link: " . $sDocumentName . " from " . $oSendingUserName->getName();
 	//email the hyperlink
 	$oEmail = new Email();
 	if ($oEmail->send($sDestEmailAddress, $sTitle, $sMessage)) {
