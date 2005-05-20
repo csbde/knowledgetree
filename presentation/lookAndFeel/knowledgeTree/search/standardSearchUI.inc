@@ -44,7 +44,7 @@ function getSearchResultsByCategory($iFolderID, $sKeywords, $iStartIndex, $sCate
 				"INNER JOIN $default->folders_table AS F on F.ID = D.folder_id " .
 				"INNER JOIN $default->search_permissions_table AS SDUL ON SDUL.document_id = D.id " .
 				"WHERE MATCH(DT.document_text) AGAINST (?) " .
-				"AND SDUL.user_id = ? " .
+				"AND (F.is_public OR SDUL.user_id = ?) " .
 				"AND SL.name='Live' ";
     $aParams = array($sKeywords, $sKeywords, $_SESSION["userID"]);
 	//only check in the parent_folder_ids if we're not searching from the
@@ -81,7 +81,7 @@ function getSearchResultsByDocumentType($iFolderID, $sKeywords, $iStartIndex, $i
 				"INNER JOIN $default->folders_table AS F on F.ID = D.folder_id " .
 				"INNER JOIN $default->search_permissions_table AS SDUL ON SDUL.document_id = D.id " .
 				"WHERE MATCH(DT.document_text) AGAINST (?) " .
-				"AND SDUL.user_id = ? ";
+				"AND (F.is_public OR SDUL.user_id = ?) ";
     $aParams = array($sKeywords, $sKeywords, $_SESSION["userID"]);
 	if (isset($iDocTypeID)) {
 		$sQuery .= "AND D.document_type_id = ? ";
@@ -118,7 +118,7 @@ function getSeachResultsByFolder($iFolderID, $iStartIndex, $sKeywords) {
 				"INNER JOIN $default->folders_table AS F on F.ID = D.folder_id " .
 				"INNER JOIN $default->search_permissions_table AS SDUL ON SDUL.document_id = D.id " .
 				"WHERE MATCH(DT.document_text) AGAINST (?) " .
-				"AND SDUL.user_id = ? " .
+				"AND (F.is_public OR SDUL.user_id = ?) " .
 				"AND SL.name='Live' "; 
     $aParams = array($sKeywords, $sKeywords, $_SESSION["userID"]);
 	//only check in the parent_folder_ids if we're not searching from the

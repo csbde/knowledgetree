@@ -118,7 +118,8 @@ function getSearchResults($sMetaTagIDs, $sSQLSearchString, $iStartIndex, $sSearc
 			"INNER JOIN $default->status_table AS SL on D.status_id=SL.id " .						
 			"WHERE DF.ID IN ($sQms) " .
 			"AND (" . $sSQLSearchString . ") " .
-			"AND SDUL.user_id = ? " .
+			"AND (F.is_public " .
+			"OR SDUL.user_id = ?) " .
 			"AND SL.name = ? " .
 			"GROUP BY D.id " .
 			"ORDER BY doc_count DESC ";

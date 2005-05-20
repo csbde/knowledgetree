@@ -531,19 +531,7 @@ class Permission {
 		} else {
 			$default->log->error("rolePerms failed");
 		}
-										            
-		// public folders
-		$sPublicFolderPerms = array("INSERT INTO $default->search_permissions_table (user_id, document_id) " . 
-                			  "SELECT U.id, D.id " . /*ok*/
-                			  "FROM $default->users_table AS U, $default->documents_table AS D INNER JOIN $default->folders_table AS F ON D.folder_id = F.id " .
-							  "WHERE F.is_public = 1 " .
-							  "AND D.id = ?", $iDocumentID);
-		$default->log->debug("addDocument publicFolder=$sPublicFolderPerms");
-		if ($sql->query($sPublicFolderPerms)) {
-			$default->log->debug("publicFolder succeeded");
-		} else {
-			$default->log->error("publicFolder failed");
-		}
+
 							
 		// creator permissions
 		$sCreatorPerms = array("INSERT INTO $default->search_permissions_table (user_id, document_id) " .
@@ -593,19 +581,7 @@ class Permission {
 		} else {
 			$default->log->error("rolePerms failed");
 		}
-										            
-		// public folders
-		$sPublicFolderPerms = array("INSERT INTO $default->search_permissions_table (user_id, document_id) " . 
-                			  "SELECT U.id, D.id " . /*ok*/
-                			  "FROM $default->users_table AS U, $default->documents_table AS D INNER JOIN $default->folders_table AS F ON D.folder_id = F.id " .
-							  "WHERE F.is_public = 1 " .
-							  "AND U.id = ?", $iUserID);
-		$default->log->debug("addDocument publicFolder=$sPublicFolderPerms");
-		if ($sql->query($sPublicFolderPerms)) {
-			$default->log->debug("publicFolder succeeded");
-		} else {
-			$default->log->error("publicFolder failed");
-		}
+
 							
 		// creator permissions
 		$sCreatorPerms = array("INSERT INTO $default->search_permissions_table (user_id, document_id) " .
