@@ -99,7 +99,8 @@ FROM
     INNER JOIN $default->search_permissions_table AS SDUL ON SDUL.document_id = D.id
     INNER JOIN $default->status_table AS SL on D.status_id=SL.id
 WHERE
-    SDUL.user_id = ?
+	(F.is_public OR
+    SDUL.user_id = ?)
     AND SL.name = ?
     AND ($sSQLSearchString)
 GROUP BY D.id
