@@ -41,7 +41,11 @@ function getUnitDisplay($iUnitID) {
     }
 }
 
-function getGroups($aUnitIDs) {
+function getNameDisplay($sName) {
+       return "<table><tr><td><b>" . _("Filter By Name") . "</b></td><td><input type=\"text\" size=\"20\" name=\"fName\" value=\"$sName\" /> <input type=\"button\" value=\"Go\" onCLick=\"document.MainForm.submit()\"></td></tr></table>";
+}
+
+function getGroups($aUnitIDs, $sName) {
 	global $default;
 	/*ok*/ $sQuery = "SELECT GL.id AS groupID, UL.name AS UnitNameB4, GL.name AS name, 'Edit' , 'Delete', 'Edit Unit', 'Edit Users', " .
 				"CASE WHEN UL.name IS NULL THEN '<font color=darkgrey>No Unit Assigned</font>' ELSE UL.name END AS UnitName " . 
@@ -53,6 +57,11 @@ function getGroups($aUnitIDs) {
     $sUnitIDs = implode(",", $aUnitIDs);
 	if ($sUnitIDs <> "") {
 		$sWhereClause = "WHERE GUL.unit_id IN (" . $sUnitIDs . ") ";
+	}
+
+	// filter by name
+	if ($sName) {
+		$sWhereClause = "WHERE GL.name like '%$sName%' ";
 	}
 	// #2978 don't display sys admin groups if you're not a sysadmin	
 	if (!Permission::userIsSystemAdministrator()) {
@@ -83,13 +92,14 @@ function getGroups($aUnitIDs) {
     return $oSearchResults->render() ;	
 }
 
-function getPage($aUnitIDs) {
+function getPage($aUnitIDs, $sName) {
 	global $default;
 	$sToRender .= renderHeading(_("Group Management"));
 
 	$sToRender .= getAddLink("addGroup", _("Add A Group"));
 	$sToRender .= getUnitDisplay($aUnitIDs[0]);
-	$sToRender .= getGroups($aUnitIDs);
+	$sToRender .= getNameDisplay($sName);
+	$sToRender .= getGroups($aUnitIDs, $sName);
 	return $sToRender;
 }
 ?>

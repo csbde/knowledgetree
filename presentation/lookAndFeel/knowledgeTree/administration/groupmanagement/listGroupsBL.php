@@ -27,7 +27,7 @@
  
 require_once("../../../../../config/dmsDefaults.php");
 
-KTUtil::extractGPC('fUnitID');
+KTUtil::extractGPC('fUnitID', 'fName');
 
 require_once("$default->fileSystemRoot/lib/users/User.inc");    
 require_once("$default->fileSystemRoot/lib/security/Permission.inc");
@@ -43,9 +43,9 @@ if (checkSession()) {
     // #3519 unit administrators only see their units.
 	if (Permission::userIsUnitAdministrator()) {
         $aUnitIDs = User::getUnitIDs($_SESSION["userID"]);
-        $oPatternCustom->setHtml(getPage($aUnitIDs));
+        $oPatternCustom->setHtml(getPage($aUnitIDs, $fName));
 	} else {
-    	$oPatternCustom->setHtml(getPage(array($fUnitID)));
+    	$oPatternCustom->setHtml(getPage(array($fUnitID), $fName));
 	}
 	require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 	$main->setCentralPayload($oPatternCustom);
