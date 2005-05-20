@@ -46,15 +46,17 @@ if (checkSession()) {
 	require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
     $oPatternCustom = & new PatternCustom();
 
-    if (isset($fForStore)) {
-        if($fUnitName != "" and $fOrgID != "") {
+	if (isset($fFolderID)) {
+
+		if (isset($fForStore)) {
+			if($fUnitName != "" and $fOrgID != "" and $fFolderID != "") {
         	// #2944 a folder will be created for this unit, so check if there is already a folder with the name
         	// of the unit before creating the unit
-        	$oFolder = new Folder($fUnitName, $fUnitName . " " . _("Unit Root Folder"), 1, $_SESSION["userID"], 0);
+        	$oFolder = new Folder($fUnitName, $fUnitName . " " . _("Unit Root Folder"), $fFolderID, $_SESSION["userID"], 0);
 			if (!$oFolder->exists()) {
                     	
-	            $oUnit = new Unit($fUnitName);
-	
+				$oUnit = new Unit($fUnitName, $fFolderID);
+
 	            // if creation is successfull..get the unit id
 	            if ($oUnit->create()) {
 	                $unitID = $oUnit->getID();
@@ -82,11 +84,13 @@ if (checkSession()) {
     } else {
 		// display add unit page
         $oPatternCustom->setHtml(getAddPage());
+        $oPatternCustom->addHtml(renderBrowsePage($fFolderID));
         $main->setHasRequiredFields(true);
-        $main->setFormAction($_SERVER["PHP_SELF"]. "?fForStore=1");
+        $main->setFormAction($_SERVER["PHP_SELF"]. "?fForStore=1&fFolderID=$fFolderID");
 
     }
     $main->setCentralPayload($oPatternCustom);
     $main->render();
+	}
 }
 ?>
