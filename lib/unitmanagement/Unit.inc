@@ -30,12 +30,14 @@ class Unit extends KTEntity {
     var $iId;
     /** unit's name */
     var $sName;
+	/** folder's id */
+	var $iFolderID;
 
-
-    function Unit($sNewName) {
+    function Unit($sNewName, $iNewFolderID=1) {
         //object has not been created in database yet
         $this->iId = -1;
         $this->sName = $sNewName;
+		$this->iFolderID = $iNewFolderID;
     }
 
     /**
@@ -93,7 +95,7 @@ class Unit extends KTEntity {
 
         // create a new unit root folder
         // FIXME: lookup the organisation for this unit and use the appropriate folder id for the org root folder
-        $oFolder = new Folder($this->sName, $this->sName . " Unit Root Folder", 1, $_SESSION["userID"], $this->iId);
+        $oFolder = new Folder($this->sName, $this->sName . " Unit Root Folder", $this->iFolderID, $_SESSION["userID"], $this->iId);
         if (!$oFolder->exists()) {
             if ($oFolder->create()) {
                 if (PhysicalFolderManagement::createFolder(Folder::getFolderPath($oFolder->getID()))) {

@@ -86,7 +86,7 @@ function getAddPageFail($sMessage) {
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr></tr>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=addUnit\"><img src =\"" . KTHtml::getBackButton() . "\" border = \"0\" /></a></td>\n";
+	$sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=addUnit&fFolderID=1\"><img src =\"" . KTHtml::getBackButton() . "\" border = \"0\" /></a></td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "</table>\n";
 	
@@ -144,4 +144,23 @@ function getOrgDisplay() {
 //	$oPatternListBox = & new PatternListBox($default->organisations_table, "name", "id", "fOrgID");
 //	return $oPatternListBox->render();
 }
+
+
+function renderBrowsePage($fFolderID) {
+    global $default;
+    $sToRender = "<table border=\"0\">\n";
+    $sToRender .= "<tr>\n";
+    $sToRender .= "\t<td>" . renderFolderPath($fFolderID, generateControllerUrl("addUnit", "", false)) . "</td>\n";
+    $sToRender .= "</tr>\n";
+    $sToRender .= "</table>\n";
+    $sToRender .= "<table border=\"0\">\n";
+    $sToRender .= "<tr>\n";
+    $sToRender .= "\t<td>" . renderFolderList($fFolderID, generateControllerUrl("addUnit", "", false)) . "<td>\n";
+
+    $sToRender .= "</tr>\n";
+    $sToRender .= "</table><br>\n";
+
+    return $sToRender;
+}
+
 ?>

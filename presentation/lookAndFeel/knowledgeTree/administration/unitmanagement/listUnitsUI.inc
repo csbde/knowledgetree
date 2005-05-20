@@ -69,7 +69,8 @@ function getPage($iOrganisationID) {
 	global $default;
 	$sToRender .= renderHeading(_("Unit Management"));
 
-	$sToRender .= getAddLink("addUnit", _("Add A Unit"));
+	$sToRender .= getAddLink("addUnit&fFolderID=1", _("Add A Unit"));
+
 	//$sToRender .= getOrganisationDisplay($iOrganisationID);
 	$sToRender .= getUnits($iOrganisationID);
 	return $sToRender;
