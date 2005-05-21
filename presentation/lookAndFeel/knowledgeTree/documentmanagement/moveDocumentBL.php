@@ -86,7 +86,7 @@ if (checkSession()) {
 	                        $default->log->info("moveDocumentBL.php fired $count subscription alerts for moved document " . $oDocument->getName());
 	                        
 	                        // fire folder subscriptions for the destination folder
-		  $count = SubscriptionEngine::fireSubscription($fDocumentIDs[$i], SubscriptionConstants::subscriptionAlertType("MovedDocument"),
+		  $count = SubscriptionEngine::fireSubscription($fFolderID, SubscriptionConstants::subscriptionAlertType("MovedDocument"),
 	                                 SubscriptionConstants::subscriptionType("FolderSubscription"),
 								array( "folderID" => $iOldFolderID,
 									   "modifiedDocumentName" => $oDocument->getName(),
