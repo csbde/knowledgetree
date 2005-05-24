@@ -172,6 +172,10 @@ class BrowseCriterion {
             return array($this->getSearchTable() . "." . $this->getSearchField() . " = ?", array($aRequest[$this->getWidgetBase()]));
         }
     }
+
+    function searchJoinSQL () {
+        return null;
+    }
 }
 
 class NameCriterion extends BrowseCriterion {
@@ -337,12 +341,12 @@ class GenericMetadataCriterion extends BrowseCriterion {
         "joinColumn" => "document_id",
     );
     var $bString = true;
-    var $sSearchTable = "DFL";
 
     function GenericMetadataCriterion ($sDisplay, $sDocumentField, $sSortField, $iID) {
         $this->BrowseCriterion($sDisplay, $sDocumentField, $sSortField, $iID);
         $this->aLookup['whereClause'] = 'document_field_id = ' .  $iID;
         $this->oField =& DocumentField::get($iID);
+        $this->sSearchTable = "DFL" . $iID;
     }
 
     function documentDisplay ($oDocument) {
@@ -386,6 +390,11 @@ class GenericMetadataCriterion extends BrowseCriterion {
         }
         $sRet .= "</select>\n";
         return $sRet;
+    }
+
+    function searchJoinSQL () {
+        global $default;
+        return "LEFT JOIN $default->document_fields_link_table AS $this->sSearchTable ON $this->sSearchTable.document_id = D.id";
     }
 }
 
