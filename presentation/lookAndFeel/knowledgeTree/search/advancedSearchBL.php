@@ -63,11 +63,16 @@ function getAdvancedSearchResults($aOrigReq, $iStartIndex) {
 
     $aIDs = array_unique(array_map("criteriaNumber", array_keys($aReq)));
     $aSQL = array();
+    $aJoinSQL = array();
     foreach ($aIDs as $iID) {
         $oCriterion =& Criteria::getCriterionByNumber($iID);
         $res = $oCriterion->searchSQL($aReq);
         if (!is_null($res)) {
             $aSQL[] = $res;
+        }
+        $res = $oCriterion->searchJoinSQL();
+        if (!is_null($res)) {
+            $aJoinSQL[] = $res;
         }
     }
     $aCritParams = array();
@@ -86,6 +91,7 @@ function getAdvancedSearchResults($aOrigReq, $iStartIndex) {
     }
 
     $sSQLSearchString = join(" AND ", $aCritQueries);
+    $sJoinSQL = join(" ", $aJoinSQL);
 
     $sQuery = DBUtil::compactQuery("
 SELECT
@@ -94,8 +100,7 @@ SELECT
 FROM
     $default->documents_table AS D
     INNER JOIN $default->folders_table AS F ON D.folder_id = F.id
-    LEFT JOIN $default->document_fields_link_table AS DFL ON DFL.document_id = D.id
-    LEFT JOIN $default->document_fields_table AS DF ON DF.id = DFL.document_field_id
+    $sJoinSQL
     INNER JOIN $default->search_permissions_table AS SDUL ON SDUL.document_id = D.id
     INNER JOIN $default->status_table AS SL on D.status_id=SL.id
 WHERE
