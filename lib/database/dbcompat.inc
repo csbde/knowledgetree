@@ -14,7 +14,9 @@ class DBCompat {
             $default->log->error($this->lastResult->toString());
         } else {
             $this->lastInsertID = mysql_insert_id($default->_db->connection);
-            $this->lastResult->autofree = true;
+            if (is_object($this->lastResult)) {
+                $this->lastResult->autofree = true;
+            }
         }
         return $this->lastResult;
     }
