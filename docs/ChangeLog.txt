@@ -1,3 +1,174 @@
+Version 2.0.4 (2005/05/24)
+
+New Features
+============
+- Add a "filter by" to the group list
+- Allow units to have their home folders anywhere in the hierarchy
+- Preliminary support for PHP5
+
+Bug Fixes
+=========
+- Fix browsing with Lynx
+- Provide meaningful email notification subject
+- Rejecting approval now resets owner to previous step
+- Use IN BOOLEAN MODE for searches, which doesn't require certain volumes for searches to work
+- Fix folder subscription notification
+- Allow multiple document fields to be used in advanced search
+
+Detailed ChangeLog
+==================
+
+2005-05-24 14:40  nbm
+
+	* docs/VERSION.txt:
+
+	Version 2.0.4 going live
+
+2005-05-24 14:40  nbm
+
+	* docs/UPGRADE.txt:
+
+	Note that database upgrades don't happen with _every_ release.
+
+2005-05-24 14:32  nbm
+
+	* Documents/.htaccess:
+
+	Disable any further overrides in this path (prevents .htaccess files
+	from being uploaded and potentially changing these settings)
+
+2005-05-24 14:30  nbm
+
+	* log/.cvsignore:
+
+	Ignore log files in CVS operations
+
+2005-05-24 14:25  nbm
+
+	* lib/browse/Criteria.inc:
+
+	Restrict document field value search to the document field id being
+	requested.  Otherwise _any_ of the document fields' values would be
+	acceptable.
+
+2005-05-24 13:51  nbm
+
+	* presentation/lookAndFeel/knowledgeTree/search/advancedSearchBL.php:
+
+	Deal with searches criteria potentially adding joins to the advanced
+	search query.
+
+2005-05-24 13:49  nbm
+
+	* lib/browse/Criteria.inc:
+
+	Add searchJoinSQL method, which adds joins to the advanced search query.
+
+	Also differentiate joins and searches for each metadata criterion
+	involved in the search, so one can search for more than one metadata
+	criterion at a time.
+
+2005-05-24 13:31  nbm
+
+	* lib/browse/Browser.inc:
+
+	Default aOptions attribute to an empty array.
+
+2005-05-24 13:28  nbm
+
+	* lib/database/dbcompat.inc:
+
+	Only try assign autofree to resultsets.
+
+2005-05-24 13:27  nbm
+
+	* config/dmsDefaults.php:
+
+	Use KTInit as an object rather than a utility class.
+
+2005-05-21 12:42  nbm
+
+	* presentation/lookAndFeel/knowledgeTree/documentmanagement/moveDocumentBL.php:
+
+	Fix folder subscription notification; folder subscriptions were run
+	using the external ID from the document, not the folder.
+
+	Submitted by:	Ken Smith (cscribe)
+	SF Tracker:	1189656
+
+2005-05-20 16:45  nbm
+
+	* presentation/lookAndFeel/knowledgeTree/search/standardSearchUI.inc:
+
+	Use IN BOOLEAN MODE for the search, allowing us to overcome some issues
+	on low document volumes for searching.
+
+2005-05-20 13:53  nbm
+
+	* lib/unitmanagement/Unit.inc,
+	  presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/addUnitBL.php,
+	  presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/addUnitUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/listUnitsUI.inc:
+
+	Allow Units to be created with their homes anywhere in the folder
+	hierarchy.
+
+	Submitted by:	Stefano Ciancio (sciancio)
+	SF Tracker:	1182024
+
+2005-05-20 13:22  nbm
+
+	* presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/:
+	  listGroupsBL.php, listGroupsUI.inc:
+
+	Add a "filter by" to the group list.
+
+	Submitted by:	Stefano Ciancio (sciancio)
+	SF Tracker:	1119211
+
+2005-05-20 13:13  nbm
+
+	* lib/security/Permission.inc,
+	  presentation/lookAndFeel/knowledgeTree/search/advancedSearchBL.php,
+	  presentation/lookAndFeel/knowledgeTree/search/advancedSearchUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/search/standardSearchUI.inc:
+
+	Save table size by checking public folders at search-time, rather than
+	table-generation time.
+
+	Submitted by:	Stefano Ciancio (sciancio)
+	SF Tracker:	1199729
+
+2005-05-18 15:06  nbm
+
+	* presentation/login.php:
+
+	Fix lynx browsing by fixing unclosed tag
+
+	Submitted by:	zkrih
+	SF Tracker:	1202485
+
+2005-05-18 15:02  nbm
+
+	* presentation/lookAndFeel/knowledgeTree/documentmanagement/emailBL.php:
+
+	Fix email subject line.
+
+	SF Tracker:	1204328
+	Submitted by:	anthrocode
+
+2005-05-18 14:56  nbm
+
+	* lib/documentmanagement/DocumentCollaboration.inc:
+
+	Previously, rejecting documents didn't re-assign ownership to the
+	previous person in the routing.  This change fixes a typo that caused
+	this.
+
+	SF Tracker:	1183752
+	Submitted by:	fmasselink
+	Tested by:	Paul Gier (gier21)
+
 Version 2.0.3 (2005/05/13)
 
 New Features
