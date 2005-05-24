@@ -64,21 +64,21 @@ class KTInit {
         $default->log = new KTLegacyLog($default->fileSystemRoot . "/log", $default->logLevel);
         $res = $default->log->initialiseLogFile();
         if (PEAR::isError($res)) {
-            KTInit::handleInitError($res);
+            $this->handleInitError($res);
             // returns only in checkup
             return $res;
         }
         $default->queryLog = new KTLegacyLog($default->fileSystemRoot . "/log", $default->logLevel, "query");
         $res = $default->queryLog->initialiseLogFile();
         if (PEAR::isError($res)) {
-            KTInit::handleInitError($res);
+            $this->handleInitError($res);
             // returns only in checkup
             return $res;
         }
         $default->timerLog = new KTLegacyLog($default->fileSystemRoot . "/log", $default->logLevel, "timer");
         $res = $default->timerLog->initialiseLogFile();
         if (PEAR::isError($res)) {
-            KTInit::handleInitError($res);
+            $this->handleInitError($res);
             // returns only in checkup
             return $res;
         }
@@ -159,7 +159,7 @@ class KTInit {
 
         $default->_db = &DB::connect($dsn, $options);
         if (PEAR::isError($default->_db)) {
-            KTInit::handleInitError($default->_db);
+            $this->handleInitError($default->_db);
             // returns only in checkup
             return $default->_db;
         }
@@ -192,7 +192,7 @@ class KTInit {
     function cleanMagicQuotesItem (&$var) {
         if (is_array($var)) {
             foreach ($var as $key => $val) {
-                KTInit::cleanMagicQuotesItem($var[$key]);
+                $this->cleanMagicQuotesItem($var[$key]);
             }
         } else {
             // XXX: Make it look pretty
@@ -204,10 +204,10 @@ class KTInit {
     // {{{ cleanMagicQuotes()
     function cleanMagicQuotes () {
         if (get_magic_quotes_gpc()) {
-            KTInit::cleanMagicQuotesItem($_GET);
-            KTInit::cleanMagicQuotesItem($_POST);
-            KTInit::cleanMagicQuotesItem($_REQUEST);
-            KTInit::cleanMagicQuotesItem($_COOKIE);
+            $this->cleanMagicQuotesItem($_GET);
+            $this->cleanMagicQuotesItem($_POST);
+            $this->cleanMagicQuotesItem($_REQUEST);
+            $this->cleanMagicQuotesItem($_COOKIE);
         }
     }
     // }}}
@@ -286,6 +286,8 @@ class KTInit {
 }
 // }}}
 
+$KTInit = new KTInit();
+
 // Application defaults
 //
 // Overridden in environment.php
@@ -310,17 +312,17 @@ if (array_key_exists('HTTPS', $_SERVER)) {
     }
 }
 
-$default->rootUrl = KTInit::guessRootUrl();
+$default->rootUrl = $KTInit->guessRootUrl();
 
 // include the environment settings
 require_once("environment.php");
 
 
-KTInit::prependPath(KT_DIR . '/pear');
+$KTInit->prependPath(KT_DIR . '/pear');
 require_once('PEAR.php');
 
 // instantiate log
-$loggingSupport = KTInit::setupLogging();
+$loggingSupport = $KTInit->setupLogging();
 
 // Send all PHP errors to a file (and maybe a window)
 set_error_handler(array('KTInit', 'handlePHPError'));
@@ -331,8 +333,8 @@ require_once(KT_LIB_DIR . '/util/legacy.inc');
 // Give everyone access to KTUtil utility functions
 require_once(KT_LIB_DIR . '/util/ktutil.inc');
 
-$dbSupport = KTInit::setupDB();
-KTInit::setupRandomSeed();
+$dbSupport = $KTInit->setupDB();
+$KTInit->setupRandomSeed();
 
 require_once("$default->fileSystemRoot/lib/authentication/$default->authenticationClass.inc");
 
@@ -352,7 +354,7 @@ if ($default->useDatabaseConfiguration && $default->system->initialised()) {
 // table mapping entries
 include("tableMappings.inc");
 
-$i18nLoaded = KTInit::setupI18n();
+$i18nLoaded = $KTInit->setupI18n();
 if ($i18nLoaded === false) {
     // define a dummy _ function so gettext is not -required-
     function _($sString) {
@@ -363,8 +365,8 @@ if ($i18nLoaded === false) {
 $default->systemVersion = file_get_contents(KT_DIR . '/docs/VERSION.txt');
 $default->lastDatebaseVersion = '2.0.2';
 
-KTInit::cleanGlobals();
-KTInit::cleanMagicQuotes();
+$KTInit->cleanGlobals();
+$KTInit->cleanMagicQuotes();
 
 // site map definition
 include("siteMap.inc");
