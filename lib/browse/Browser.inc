@@ -51,7 +51,7 @@ class Browser {
      */
     var $sSortDirection;
 
-    var $aOptions;
+    var $aOptions = array();
     
     /**
      * Constructs a new Browser instance
