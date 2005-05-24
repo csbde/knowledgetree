@@ -343,6 +343,7 @@ class GenericMetadataCriterion extends BrowseCriterion {
     var $bString = true;
 
     function GenericMetadataCriterion ($sDisplay, $sDocumentField, $sSortField, $iID) {
+        $this->iID = $iID;
         $this->BrowseCriterion($sDisplay, $sDocumentField, $sSortField, $iID);
         $this->aLookup['whereClause'] = 'document_field_id = ' .  $iID;
         $this->oField =& DocumentField::get($iID);
@@ -390,6 +391,13 @@ class GenericMetadataCriterion extends BrowseCriterion {
         }
         $sRet .= "</select>\n";
         return $sRet;
+    }
+
+    function searchSQL ($aRequest) {
+        $p = parent::searchSQL($aRequest);
+        $p[0] = join(' AND ', array($p[0], "$this->sSearchTable.document_field_id = ?"));
+        $p[1] = array_merge($p[1], array($this->iID));
+        return $p;
     }
 
     function searchJoinSQL () {
