@@ -12,6 +12,9 @@ In order to upgrade your KnowledgeTree installation, perform the following tasks
   - sql/mysql/upgrade/1.2.3-to-1.2.4.sql
   - sql/mysql/upgrade/1.2.4-to-2.0.0.sql
 
+  It may be that there are no changes to the database format between
+  versions, and no upgrade script will be available.
+
 - Upgrade your application code, by unpacking the latest download into your webroot directory.
 
 - Copy over the changes you made to the configuration to the configuration
