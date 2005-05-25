@@ -1,0 +1,6 @@
+PostgreSQL is not officially supported at this time, and only those
+familiar with PostgreSQL should attempt to do so, and should expect
+problems until this file changes or disappears.
+
+Please put patches on the patch tracker on the KnowledgeTree project
+page, and send an email to kt-dms-developers@lists.sourceforge.net
