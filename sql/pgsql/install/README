@@ -4,3 +4,19 @@ problems until this file changes or disappears.
 
 Please put patches on the patch tracker on the KnowledgeTree project
 page, and send an email to kt-dms-developers@lists.sourceforge.net
+
+Starting steps:
+
+createdb dms
+psql dms < tables.sql
+psql dms < user.sql
+psql dms < functions.sql
+
+You might need to use a specific username when interacting with
+PostgreSQL tools, such as the "postgres" or "pgsql" user.  This can be
+done by passing the "-U postgres" option (for example) to the tool.  So:
+
+createdb -U postgres dms
+psql -U postgres dms < tables.sql
+psql -U postgres dms < user.sql
+psql -U postgres dms < functions.sql
