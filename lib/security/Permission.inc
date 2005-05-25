@@ -168,8 +168,8 @@ class Permission {
                         "FROM $default->groups_folders_table AS GFL INNER JOIN $default->users_groups_table AS UGL ON GFL.group_id = UGL.group_id " .
                         "WHERE UGL.user_id = ? " .
                         "AND GFL.folder_id = ? " .
-                        "AND GFL.can_write = 1 ";
-        $aParams = array($_SESSION["userID"], $oFolder->getPermissionFolderID());
+                        "AND GFL.can_write = ? ";
+        $aParams = array($_SESSION["userID"], $oFolder->getPermissionFolderID(), true);
 
         $res = DBUtil::runQuery(array($sQuery, $aParams));
         
@@ -230,8 +230,8 @@ class Permission {
                   "FROM $default->groups_folders_table AS GFL INNER JOIN $default->users_groups_table AS UGL ON GFL.group_id = UGL.group_id " .
                   "WHERE UGL.user_id = ? " .
                   "AND GFL.folder_id = ? " .
-                  "AND GFL.can_read = 1 ";
-        $aParams = array($_SESSION["userID"], $oFolder->getPermissionFolderID());
+                  "AND GFL.can_read = ? ";
+        $aParams = array($_SESSION["userID"], $oFolder->getPermissionFolderID(), true);
         
         //$sql->query(array($sQuery, $aParams));
         $res = DBUtil::runQuery(array($sQuery, $aParams));
@@ -306,9 +306,9 @@ class Permission {
                     "INNER JOIN $default->roles_table AS R ON GFAL.role_id = R.id " .                   
                     "WHERE FURL.user_id = ? " .
                     "AND FURL.document_id = ? " .
-                    "AND R.can_write = 1 " . 
-                    "AND R.active = 1";
-        $aParams = array($_SESSION["userID"], $oDocument->getID());
+                    "AND R.can_write = ? " . 
+                    "AND R.active = ?";
+        $aParams = array($_SESSION["userID"], $oDocument->getID(), true, true);
         $sql->query(array($sQuery, $aParams));
         if ($sql->next_record()) {
             return true;
@@ -331,8 +331,8 @@ class Permission {
                     "INNER JOIN $default->roles_table AS R ON GFAL.role_id = R.id " .                   
                     "WHERE FURL.user_id = ? " .
                     "AND FURL.document_id = ? " .
-                    "AND R.can_read = 1";
-        $aParams = array($_SESSION["userID"], $oDocument->getID());
+                    "AND R.can_read = ?";
+        $aParams = array($_SESSION["userID"], $oDocument->getID(), true);
         $sql->query(array($sQuery, $aParams));
         if ($sql->next_record()) {
             return true;

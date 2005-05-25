@@ -34,8 +34,8 @@ class DocumentCollaboration {
 	function documentCollaborationStarted($iDocumentID) {
 		global $default;
 		$sql = $default->db;
-        $sQuery = "SELECT id FROM $default->folders_user_roles_table WHERE document_id = ? AND (active = 1 OR done = 1)";/*ok*/
-        $aParams = array($iDocumentID);
+        $sQuery = "SELECT id FROM $default->folders_user_roles_table WHERE document_id = ? AND (active = ? OR done = ?)";/*ok*/
+        $aParams = array($iDocumentID, true, true);
 		$sql->query(array($sQuery, $aParams));
 		if ($sql->next_record()) {
 			return true;
@@ -46,8 +46,8 @@ class DocumentCollaboration {
     function documentCollaborationDone($iDocumentID) {
 		global $default;
 		$sql = $default->db;
-        $sQuery = "SELECT id FROM $default->folders_user_roles_table WHERE document_id = ? AND done = 0";/*ok*/
-        $aParams = array($iDocumentID);
+        $sQuery = "SELECT id FROM $default->folders_user_roles_table WHERE document_id = ? AND done = ?";/*ok*/
+        $aParams = array($iDocumentID, false);
 		$sql->query(array($sQuery, $aParams));
 		if ($sql->num_rows() > 0) {
 			return false;
@@ -64,8 +64,8 @@ class DocumentCollaboration {
 	function userIsPerformingCurrentCollaborationStep($iDocumentID) {
 		global $default;
 		$sql = $default->db;
-        $sQuery = "SELECT id FROM $default->folders_user_roles_table WHERE document_id = ? AND active = 1 AND user_id = ?";/*ok*/
-        $aParams = array($iDocumentID, $_SESSION["userID"]);
+        $sQuery = "SELECT id FROM $default->folders_user_roles_table WHERE document_id = ? AND active = ? AND user_id = ?";/*ok*/
+        $aParams = array($iDocumentID, true, $_SESSION["userID"]);
 		$sql->query(array($sQuery, $aParams));
 		if ($sql->next_record()) {
 			return true;
@@ -274,9 +274,9 @@ class DocumentCollaboration {
 				"INNER JOIN $default->groups_folders_approval_table AS GFAT ON FURL.group_folder_approval_id = GFAT.id " .
 				"WHERE FURL.document_id = ? " .
 				"AND FURL.user_id = ? " .
-				"AND FURL.active = 1 " .
+				"AND FURL.active = ? " .
 				"ORDER BY GFAT.precedence ASC";
-        $aParams = array($iDocumentID, $_SESSION["userID"]);
+        $aParams = array($iDocumentID, $_SESSION["userID"], true);
 				
 		$sql = $default->db;
 		$sql->query(array($sQuery, $aParams));

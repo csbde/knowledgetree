@@ -125,7 +125,7 @@ function getFailurePage($sMessage, $iDocTypeID) {
 
 function getGenericFieldsList() {
     global $default;
-    $aGenericDocumentFields = DocumentField::getList("is_generic=1");/*ok*/
+    $aGenericDocumentFields = DocumentField::getList(array("is_generic=?"), array(true)));/*ok*/
     for($i = 0; $i < count($aGenericDocumentFields); $i++) {
         $sToRender .= "<li>" . $aGenericDocumentFields[$i]->getName() . "</li>\n";
     }
