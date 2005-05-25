@@ -160,8 +160,8 @@ CREATE TABLE document_fields (
   id INT4 NOT NULL DEFAULT '0',
   name char(255) NOT NULL DEFAULT '',
   data_type char(100) NOT NULL DEFAULT '',
-  is_generic INT2 DEFAULT NULL,
-  has_lookup INT2 DEFAULT NULL
+  is_generic boolean DEFAULT NULL,
+  has_lookup boolean DEFAULT NULL
 );
 
 -- --------------------------------------------------------
@@ -199,7 +199,7 @@ CREATE TABLE document_subscriptions (
   id INT4 NOT NULL DEFAULT '0',
   user_id INT4 NOT NULL DEFAULT '0',
   document_id INT4 NOT NULL DEFAULT '0',
-  is_alerted INT2 DEFAULT NULL
+  is_alerted boolean DEFAULT NULL
 );
 
 -- --------------------------------------------------------
@@ -252,7 +252,7 @@ CREATE TABLE document_type_fields_link (
   id INT4 NOT NULL DEFAULT '0',
   document_type_id INT4 NOT NULL DEFAULT '0',
   field_id INT4 NOT NULL DEFAULT '0',
-  is_mandatory INT2 NOT NULL DEFAULT '0'
+  is_mandatory boolean NOT NULL DEFAULT '0'
 );
 
 -- --------------------------------------------------------
@@ -286,7 +286,7 @@ CREATE TABLE documents (
   folder_id INT4 NOT NULL DEFAULT '0',
   major_version INT4 NOT NULL DEFAULT '0',
   minor_version INT4 NOT NULL DEFAULT '0',
-  is_checked_out INT2 NOT NULL DEFAULT '0',
+  is_checked_out boolean NOT NULL DEFAULT '0',
   parent_folder_ids text,
   full_path text,
   checked_out_user_id INT4 DEFAULT NULL,
@@ -316,7 +316,7 @@ CREATE TABLE folder_subscriptions (
   id INT4 NOT NULL DEFAULT '0',
   user_id INT4 NOT NULL DEFAULT '0',
   folder_id INT4 NOT NULL DEFAULT '0',
-  is_alerted INT2 DEFAULT NULL
+  is_alerted boolean DEFAULT NULL
 );
 
 -- --------------------------------------------------------
@@ -332,7 +332,7 @@ CREATE TABLE folders (
   parent_id INT4 DEFAULT NULL,
   creator_id INT4 DEFAULT NULL,
   unit_id INT4 DEFAULT NULL,
-  is_public INT2 NOT NULL DEFAULT '0',
+  is_public boolean NOT NULL DEFAULT '0',
   parent_folder_ids text,
   full_path text,
   inherit_parent_folder_permission INT4 DEFAULT NULL,
@@ -351,9 +351,9 @@ CREATE TABLE folders_users_roles_link (
   user_id INT4 NOT NULL DEFAULT '0',
   document_id INT4 NOT NULL DEFAULT '0',
   datetime TIMESTAMP DEFAULT NULL,
-  done INT2 DEFAULT NULL,
-  active INT2 DEFAULT NULL,
-  dependant_documents_created INT2 DEFAULT NULL
+  done boolean DEFAULT NULL,
+  active boolean DEFAULT NULL,
+  dependant_documents_created boolean DEFAULT NULL
 );
 
 -- --------------------------------------------------------
@@ -381,8 +381,8 @@ CREATE TABLE groups_folders_link (
   id INT4 NOT NULL DEFAULT '0',
   group_id INT4 NOT NULL DEFAULT '0',
   folder_id INT4 NOT NULL DEFAULT '0',
-  can_read INT2 NOT NULL DEFAULT '0',
-  can_write INT2 NOT NULL DEFAULT '0'
+  can_read boolean NOT NULL DEFAULT '0',
+  can_write boolean NOT NULL DEFAULT '0'
 );
 
 -- --------------------------------------------------------
@@ -394,8 +394,8 @@ CREATE TABLE groups_folders_link (
 CREATE TABLE groups_lookup (
   id INT4 NOT NULL DEFAULT '0',
   name char(100) NOT NULL DEFAULT '',
-  is_sys_admin INT2 NOT NULL DEFAULT '0',
-  is_unit_admin INT2 NOT NULL DEFAULT '0'
+  is_sys_admin boolean NOT NULL DEFAULT '0',
+  is_unit_admin boolean NOT NULL DEFAULT '0'
 );
 
 -- --------------------------------------------------------
@@ -474,7 +474,7 @@ CREATE TABLE news (
   image text,
   image_size INT4 DEFAULT NULL,
   image_mime_type_id INT4 DEFAULT NULL,
-  active INT2 DEFAULT NULL
+  active boolean DEFAULT NULL
 );
 
 -- --------------------------------------------------------
@@ -497,9 +497,9 @@ CREATE TABLE organisations_lookup (
 CREATE TABLE roles (
   id INT4 NOT NULL DEFAULT '0',
   name char(255) NOT NULL DEFAULT '',
-  active INT2 NOT NULL DEFAULT '0',
-  can_read INT2 NOT NULL DEFAULT '0',
-  can_write INT2 NOT NULL DEFAULT '0'
+  active boolean NOT NULL DEFAULT '0',
+  can_read boolean NOT NULL DEFAULT '0',
+  can_write boolean NOT NULL DEFAULT '0'
 );
 
 -- --------------------------------------------------------
@@ -597,8 +597,8 @@ CREATE TABLE users (
   quota_current INT4 NOT NULL DEFAULT '0',
   email char(255) DEFAULT NULL,
   mobile char(255) DEFAULT NULL,
-  email_notification INT2 NOT NULL DEFAULT '0',
-  sms_notification INT2 NOT NULL DEFAULT '0',
+  email_notification boolean NOT NULL DEFAULT '0',
+  sms_notification boolean NOT NULL DEFAULT '0',
   ldap_dn char(255) DEFAULT NULL,
   max_sessions INT4 DEFAULT NULL,
   language_id INT4 DEFAULT NULL
@@ -725,7 +725,7 @@ INSERT INTO data_types VALUES (5, 'FLOAT');
 -- Dumping data for table `document_fields`
 -- 
 
-INSERT INTO document_fields VALUES (1, 'Category', 'STRING', 1, NULL);
+INSERT INTO document_fields VALUES (1, 'Category', 'STRING', TRUE, NULL);
 
 -- 
 -- Dumping data for table `document_fields_link`
@@ -802,8 +802,8 @@ INSERT INTO folder_doctypes_link VALUES (1, 2, 1);
 -- Dumping data for table `folders`
 -- 
 
-INSERT INTO folders VALUES (1, 'Root Folder', 'Root Document Folder', 0, 1, 0, 0, NULL, NULL, NULL, 1);
-INSERT INTO folders VALUES (2, 'Default Unit', 'Default Unit Root Folder', 1, 1, 1, 0, '1', 'Root Folder', NULL, 1);
+INSERT INTO folders VALUES (1, 'Root Folder', 'Root Document Folder', 0, 1, 0, FALSE, NULL, NULL, NULL, 1);
+INSERT INTO folders VALUES (2, 'Default Unit', 'Default Unit Root Folder', 1, 1, 1, FALSE, '1', 'Root Folder', NULL, 1);
 
 -- 
 -- Dumping data for table `folders_users_roles_link`
@@ -824,9 +824,9 @@ INSERT INTO folders VALUES (2, 'Default Unit', 'Default Unit Root Folder', 1, 1,
 -- Dumping data for table `groups_lookup`
 -- 
 
-INSERT INTO groups_lookup VALUES (1, 'System Administrators', 1, 0);
-INSERT INTO groups_lookup VALUES (2, 'Unit Administrators', 0, 1);
-INSERT INTO groups_lookup VALUES (3, 'Anonymous', 0, 0);
+INSERT INTO groups_lookup VALUES (1, 'System Administrators', TRUE, FALSE);
+INSERT INTO groups_lookup VALUES (2, 'Unit Administrators', FALSE, TRUE);
+INSERT INTO groups_lookup VALUES (3, 'Anonymous', FALSE, FALSE);
 
 -- 
 -- Dumping data for table `groups_units_link`
@@ -1157,9 +1157,9 @@ INSERT INTO units_organisations_link VALUES (1, 1, 1);
 -- Dumping data for table `users`
 -- 
 
-INSERT INTO users VALUES (1, 'admin', 'Administrator', '21232f297a57a5a743894a0e4a801fc3', 0, 0, '', '', 1, 1, '', 1, 1);
-INSERT INTO users VALUES (2, 'unitAdmin', 'Unit Administrator', '21232f297a57a5a743894a0e4a801fc3', 0, 0, '', '', 1, 1, '', 1, 1);
-INSERT INTO users VALUES (3, 'guest', 'Anonymous', '084e0343a0486ff05530df6c705c8bb4', 0, 0, '', '', 0, 0, '', 19, 1);
+INSERT INTO users VALUES (1, 'admin', 'Administrator', '21232f297a57a5a743894a0e4a801fc3', 0, 0, '', '', TRUE, TRUE, '', 1, 1);
+INSERT INTO users VALUES (2, 'unitAdmin', 'Unit Administrator', '21232f297a57a5a743894a0e4a801fc3', 0, 0, '', '', TRUE, TRUE, '', 1, 1);
+INSERT INTO users VALUES (3, 'guest', 'Anonymous', '084e0343a0486ff05530df6c705c8bb4', 0, 0, '', '', FALSE, FALSE, '', 19, 1);
 
 -- 
 -- Dumping data for table `users_groups_link`
