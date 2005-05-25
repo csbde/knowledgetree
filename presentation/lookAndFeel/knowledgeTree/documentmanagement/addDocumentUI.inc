@@ -73,9 +73,9 @@ function getUploadDocument() {
  */
 function getGenericMetaDataForm() {
     global $default;
-    /*ok*/ $sQuery = "SELECT DISTINCT -1 AS document_id, DF.id AS document_field_id, DF.name AS field_name, -1 AS id " .
+    /*ok*/ $sQuery = array("SELECT DISTINCT -1 AS document_id, DF.id AS document_field_id, DF.name AS field_name, -1 AS id " .
 			  "FROM document_fields AS DF LEFT OUTER JOIN document_fields_link AS DFL ON DF.id = DFL.document_field_id " .				
-			  "WHERE DF.is_generic = 1 ";
+			  "WHERE DF.is_generic = ? ", array(true));
 
     $aStoreColumnNames = array("document_id", "document_field_id", "value");
     $aDisplayColumnNames = array("document_id", "field_name", "value");
@@ -105,8 +105,8 @@ function getTypeSpecificMetaDataForm($iFolderID, $iDocumentTypeID) {
 	/*ok*/ $sQuery = array("SELECT DISTINCT -1 AS document_id, DF.id AS document_field_id, DF.name AS field_name, DTFL.is_mandatory AS is_mandatory, -1 AS id " .
 			  "FROM document_type_fields_link AS DTFL INNER JOIN document_fields AS DF ON DTFL.field_id = DF.id " .
 			  "LEFT OUTER JOIN document_fields_link AS DFL ON DFL.document_field_id = DTFL.field_id " .
-			  "WHERE DF.is_generic = 0 " .
-			  "AND DTFL.document_type_id = ?", $iDocumentTypeID);
+			  "WHERE DF.is_generic = ? " .
+			  "AND DTFL.document_type_id = ?", array(false, $iDocumentTypeID));
 			  
 	$aStoreColumnNames = array("document_id", "document_field_id", "value");
     $aDisplayColumnNames = array("document_id", "field_name", "value");

@@ -709,8 +709,9 @@ class Folder extends KTEntity {
             $aDocumentIDs = split(',', $sDocumentIDs);
             $sQms = DBUtil::paramArray($aDocumentIDs);
 
-            $sQuery = "SELECT * FROM folders_users_roles_link WHERE document_id in ($sQms) AND (active = 1)";/*ok*/
+            $sQuery = "SELECT * FROM folders_users_roles_link WHERE document_id in ($sQms) AND (active = ?)";/*ok*/
             $aParams = $aDocumentIDs;
+            $aParams[] = true;
             $sql = $default->db;
             $sql->query(array($sQuery, $aParams));
             if ($sql->next_record()) {

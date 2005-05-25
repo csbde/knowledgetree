@@ -713,7 +713,7 @@ class Document extends KTEntity {
 		$sQuery = array("SELECT field_id FROM $default->document_type_fields_table DTFL " . /*ok*/
                   "INNER JOIN $default->document_fields_table AS DF ON DF.id = DTFL.field_id " .
                   "WHERE DTFL.document_type_id = ? " .
-                  "AND DF.is_generic = 0", $this->iDocumentTypeID);
+                  "AND DF.is_generic = ?", array($this->iDocumentTypeID, false));
 		$sql = $default->db;
 		$sql->query($sQuery);
 		$aFieldIDs = array();
