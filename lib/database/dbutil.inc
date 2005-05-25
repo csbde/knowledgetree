@@ -130,7 +130,11 @@ class DBUtil {
         // $default->log->debug('AutoInsert called for table ' . $sTable);
         $db =& DBUtil::getDB();
         if (!array_key_exists('id', $aFieldValues)) {
-            $aFieldValues['id'] = DBUtil::nextId($sTable, null, $db);
+            $res = DBUtil::nextId($sTable, null, $db);
+            if (PEAR::isError($res)) {
+                return $res;
+            }
+            $aFieldValues['id'] = $res;
         }
         $res = $db->autoExecute($sTable, $aFieldValues);
         $default->queryLog->debug('Query: ' . DBUtil::lastQuery($db));
