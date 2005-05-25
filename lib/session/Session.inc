@@ -129,7 +129,7 @@ class Session {
                     $iUserID = $sql->f("user_id");
                     $ip = $this->getClientIP();
                     // check that ip matches
-                    if ($ip == $sql->f("ip")) {
+                    if ($ip == trim($sql->f("ip"))) {
                         // now check if the timeout has been exceeded
                         $lastused = $sql->f("lastused");
                         $diff = time() - strtotime($lastused);
@@ -181,7 +181,7 @@ class Session {
         
         // remove old sessions
         Session::removeStaleSessions();
-                
+
         // return the status
         return $sessionStatus;
     }
