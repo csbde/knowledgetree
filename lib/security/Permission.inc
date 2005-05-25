@@ -428,7 +428,7 @@ class Permission {
         $sql->query(array("SELECT UGL.group_id " . /*ok*/
                     "FROM $default->users_groups_table AS UGL INNER JOIN $default->groups_table AS GL ON UGL.group_id = GL.id " .
                     "WHERE UGL.user_id = ? " .
-                    "AND is_sys_admin = 1", $iUserID));
+                    "AND is_sys_admin = ?", array($iUserID, true)));
         if ($sql->next_record()) {
             return true;
         }
