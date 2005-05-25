@@ -186,7 +186,7 @@ class SubscriptionManager {
         $sql = $default->db;
         if ($sql->query(array("SELECT id FROM " . Subscription::getTableName($iSubscriptionType) .  " " ./*ok*/
                         "WHERE user_id = ? " .
-                        "AND is_alerted = 1", $iUserID))) {
+                        "AND is_alerted = ?", array($iUserID, true)))) {
             $aSubscriptions = array();
             while ($sql->next_record()) {
                 $aSubscriptions[] = & Subscription::get($sql->f("id"), $iSubscriptionType);
