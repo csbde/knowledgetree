@@ -78,7 +78,7 @@ class Dashboard {
 	function getPendingCollaborationDocuments(){
 	    global $default;
 	    
-	    $sQuery = array("SELECT document_id FROM $default->folders_user_roles_table WHERE active=1 AND user_id = ?", $this->iUserID);/*ok*/
+	    $sQuery = array("SELECT document_id FROM $default->folders_user_roles_table WHERE active = ? AND user_id = ?", array(true, $this->iUserID));/*ok*/
 	    $aDocumentList = array();
 	    $sql = $default->db;
 	    if ($sql->query($sQuery)) {
@@ -137,7 +137,7 @@ class Dashboard {
 	 */
 	function getPublicFolders() {
 		global $default;
-		$sQuery = array("SELECT id FROM $default->folders_table WHERE is_public = 1");
+		$sQuery = array("SELECT id FROM $default->folders_table WHERE is_public = ?", array(true));
 		$aFolderList = array();
 		$sql = $default->db;
 		$sql->query($sQuery);
