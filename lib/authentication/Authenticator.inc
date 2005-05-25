@@ -40,7 +40,9 @@ class Authenticator {
         $aUserDetails = array();
 
         // retrieve the userID
-        $iUserID = lookupID($default->users_table, "BINARY username", "$sUserName");
+        $sSQL = "SELECT id FROM $default->users_table WHERE username = ?";
+        $aParams = array($sUserName);
+        $iUserID = DBUtil::getOneResultKey(array($sSQL, $aParams), 'id');
         if ($iUserID) {
             $oUser = & User::get($iUserID);
 
