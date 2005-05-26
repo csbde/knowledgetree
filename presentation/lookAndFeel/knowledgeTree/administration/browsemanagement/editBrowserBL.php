@@ -28,6 +28,16 @@ require_once("../../../../../config/dmsDefaults.php");
 
 KTUtil::extractGPC('fAssign', 'fGroupID', 'browseNewLeft');
 
+class Verify_Error extends PEAR_Error {
+}
+
+function verifyBrowse($aIDs) {
+    if (!in_array('-1', $aIDs)) {
+        return new Verify_Error("Browser must include Name column");    
+    }
+    return true;
+}
+
 /*
  * Update all Users/Group association
  * Return 1 if success
@@ -71,12 +81,18 @@ if (checkSession()) {
     if (isset($fAssign)) {
         $aIDs = explode(",", $browseNewLeft);
 
-        // Add/Remove new users to group
-        $res = updateBrowse($aIDs);
-        if (($res === false) || (PEAR::isError($res))) {
-            $main->setErrorMessage("Some problems in updating browse settings.  Please contact your administrator");
+        // Verify that the browse list makes at least some sense
+        $res = verifyBrowse($aIDs);
+        if (PEAR::isError($res)) {
+            $main->setErrorMessage($res->getMessage());
         } else {
-            redirect($_SERVER["PHP_SELF"]);
+            // Add/Remove new users to group
+            $res = updateBrowse($aIDs);
+            if (($res === false) || (PEAR::isError($res))) {
+                $main->setErrorMessage("Some problems in updating browse settings.  Please contact your administrator");
+            } else {
+                redirect($_SERVER["PHP_SELF"]);
+            }
         }
     }
 
