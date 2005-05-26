@@ -110,7 +110,8 @@ function getDetailsLDAPPage($sUserName, $aAttributes, $sUserIdentifier) {
         $sToRender .= "<td>" . _("Name") . ": </td><td><input size = \"40\" type=\"text\" name=\"fName\" value = \"" . $aUserAttributes["givenname"] ." " . $aUserAttributes["sn"] ."\"> </td>\n";
         $sToRender .= "</tr>\n";
         $sToRender .= "<tr>\n";
-        $sToRender .= "<td>" . _("Email Address") . ": </td><td><input size = \"40\" type=\"text\" name=\"fEmail\" value = \"" . $aUserAttributes["userPrincipalName"] ."\"> </td>\n";
+        $sDefaultEmail = KTUtil::arrayGet($aUserAttributes, "mail", KTUtil::arrayGet($aUserAttributes, "userPrincipalName", ""));
+        $sToRender .= "<td>" . _("Email Address") . ": </td><td><input size = \"40\" type=\"text\" name=\"fEmail\" value = \"" . $sDefaultEmail ."\"> </td>\n";
         $sToRender .= "</tr>\n";
         $sToRender .= "<tr>\n";
         $sToRender .= "<td>" . _("Mobile Number") . ": </td><td><input size = \"40\" type=\"text\" name=\"fMobile\" value = \"" . $aUserAttributes["mobile"] ."\"> </td>\n";
