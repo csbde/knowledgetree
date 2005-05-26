@@ -101,6 +101,19 @@ $sectionName = $oBrowser->getSectionName();
 // instantiate my content pattern
 $oContent = new PatternCustom();	
 $aResults = $oBrowser->browse();
+
+require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");    
+
+if (PEAR::isError($aResults)) {
+    $oContent->setHtml("<a href=\"javascript:history.go(-1)\"><img src=\"" . KTHtml::getBackButton() . "\" border=\"0\" /></a>\n");
+    $main->setErrorMessage($aResults->getMessage());
+    $main->setCentralPayload($oContent);
+    $main->setFormAction($_SERVER["PHP_SELF"]);
+    $main->setSubmitMethod("GET");    
+    $main->render();    
+    exit(0);
+}
+
 if (($fBrowseType == "folder") && (!isset($fFolderID))) {
     // FIXME: check that the first folder in the array exists, no permission otherwise
     if ($default->browseToRoot) {
@@ -110,7 +123,6 @@ if (($fBrowseType == "folder") && (!isset($fFolderID))) {
     }
 }
 
-require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");    
 // display the browse results
 $oContent->addHtml(renderPage($aResults, $fBrowseType, $fSortBy, $fSortDirection));
 $main->setCentralPayload($oContent);

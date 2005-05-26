@@ -108,6 +108,10 @@ class FolderBrowser extends Browser {
 
         $default->log->debug("FolderBrowser::browseByFolder: folderID=" . $iFolderID);
 
+        if (!Folder::folderExistsID($iFolderID)) {
+            return new PEAR_Error(_("This folder does not exist"));
+        }
+
         // get the folder
         $rootFolder = Folder::get($iFolderID);
         // FIXME: check permissions for the current folder before getting children
