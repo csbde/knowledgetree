@@ -55,7 +55,7 @@ function getUsers($iGroupID, $sName) {
 	global $default;
 	// changed from inner to outer joins to include users that aren't in any groups (Stefano Ciancio [s.ciancio@pisa.iol.it]) 
     $aParam = array();
-	/*ok*/ $sQuery = 	"SELECT DISTINCT U.id as userID, U.name as name, U.username, " . 
+	/*ok*/ $sQuery = 	"SELECT DISTINCT U.id as userid, U.name as name, U.username, " . 
 				"'Edit' AS \"Edit\", 'Delete' AS \"Delete\", 'Edit Groups' AS \"Edit Groups\" " .
 				"FROM $default->users_table U " . 
 				"LEFT OUTER JOIN $default->users_groups_table UGL ON U.id = UGL.user_id " .
@@ -83,7 +83,7 @@ function getUsers($iGroupID, $sName) {
     $aColumns = array("name", "username", "Edit", "Delete", "Edit Groups");
     $aColumnNames = array(_("Name"), _("Username"), _("Edit"), _("Delete"), _("Edit Groups"));
     $aColumnTypes = array(1,1,3,3,3);
-    $aDBColumnArray = array("userID");
+    $aDBColumnArray = array("userid");
     $aQueryStringVariableNames = array("fUserID");
     	    
     $aHyperLinkURL = array(	2=> "$default->rootUrl/control.php?action=editUser",                       			
