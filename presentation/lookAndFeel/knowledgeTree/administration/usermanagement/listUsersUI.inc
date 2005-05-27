@@ -31,7 +31,7 @@ function getGroupDisplay($iGroupID) {
 	    $oPatternListBox = & new PatternListBox($default->groups_table, "name", "id", "fGroupID");
 	    $oPatternListBox->setFromClause("LEFT OUTER JOIN groups_units_link GUL on ST.id=GUL.group_id " .
 	                                    "LEFT OUTER JOIN units_lookup UL on GUL.unit_id=UL.id");
-	    $oPatternListBox->setCompositeDisplayName("DISTINCT COALESCE(CONCAT(CONCAT(UL.name, '-'),ST.name),ST.name)");
+	    $oPatternListBox->setCompositeDisplayName("COALESCE(CONCAT(CONCAT(UL.name, '-'),ST.name),ST.name)");
 	} else if (Permission::userIsUnitAdministrator()) {
 	    // else if this is a unit administrator, only display the groups in your unit
 	    $oPatternListBox = & new PatternListBox($default->groups_table, "name", "id", "fGroupID");
@@ -56,7 +56,7 @@ function getUsers($iGroupID, $sName) {
 	// changed from inner to outer joins to include users that aren't in any groups (Stefano Ciancio [s.ciancio@pisa.iol.it]) 
     $aParam = array();
 	/*ok*/ $sQuery = 	"SELECT DISTINCT U.id as userID, U.name as name, U.username, " . 
-				"'Edit', 'Delete', 'Edit Groups' " .
+				"'Edit' AS \"Edit\", 'Delete' AS \"Delete\", 'Edit Groups' AS \"Edit Groups\" " .
 				"FROM $default->users_table U " . 
 				"LEFT OUTER JOIN $default->users_groups_table UGL ON U.id = UGL.user_id " .
 				"LEFT OUTER JOIN $default->groups_table GL ON UGL.group_id = GL.id ";
