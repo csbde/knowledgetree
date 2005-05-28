@@ -37,6 +37,8 @@ $errorMessage = $_REQUEST['errorMessage'];
 
 if ($_REQUEST['loginAction'] == "loginForm") {
     // TODO: build login form using PatternMainPage
+    $cookietest = KTUtil::randomString();
+    setcookie("CookieTestCookie", $cookietest, false);
     print "<html>
     <head>
     <link rel=\"stylesheet\" href=\"$default->uiUrl/stylesheet.php\">
@@ -82,6 +84,7 @@ if ($_REQUEST['loginAction'] == "loginForm") {
     </td></tr>
     <input type=\"hidden\" name=\"redirect\" value=\"$redirect\"/>
     <input type=\"hidden\" name=\"loginAction\" value=\"login\">\n
+    <input type=\"hidden\" name=\"cookietestinput\" value=\"$cookietest\">\n
     <tr align=\"right\"><td><input type=\"image\" src=\"" . KTHtml::getLoginButton() . "\" border=\"0\"></td></tr>\n
     <tr><td><font size=\"1\">" . _("System Version") . ": " . $default->systemVersion . "</font></td></tr>
     </table>
@@ -93,6 +96,12 @@ if ($_REQUEST['loginAction'] == "loginForm") {
     // set default url for login failure
     // with redirect appended if set
     $url = $url . "login.php?loginAction=loginForm" . (isset($redirect) ? "&redirect=" . urlencode($redirect) : "");
+    $cookieTest = KTUtil::arrayGet($_COOKIE, "CookieTestCookie", null);
+    if (is_null($cookieTest) || $cookieTest != KTUtil::arrayGet($_REQUEST, "cookietestinput")) {
+        $url .= "&errorMessage=" . urlencode(_("KnowledgeTree requires cookies to work"));
+        redirect($url);
+        exit(0);
+    }
     
     // if requirements are met and we have a username and password to authenticate
     if (isset($_REQUEST['fUserName']) && isset($_REQUEST['fPassword']) ) {
@@ -164,6 +173,7 @@ if ($_REQUEST['loginAction'] == "loginForm") {
     redirect($url);
 } else {
 	// redirect to root
-	redirect($default->rootUrl);
+    $url = generateLink("", "");
+	redirect($url);
 }
 ?>
