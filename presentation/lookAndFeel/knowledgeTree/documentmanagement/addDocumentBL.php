@@ -32,7 +32,6 @@
 require_once("../../../../config/dmsDefaults.php");
 
 KTUtil::extractGPC('fFolderID', 'fStore', 'fDocumentTypeID', 'fName', 'fDependantDocumentID');
-
 if (!checkSession()) {
     exit(0);
 }
@@ -53,6 +52,20 @@ require_once("$default->fileSystemRoot/presentation/Html.inc");
 require_once("$default->fileSystemRoot/lib/subscriptions/SubscriptionEngine.inc");
 require_once("addDocumentUI.inc");
 require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/store.inc");
+
+$postExpected = KTUtil::arrayGet($_REQUEST, "postExpected");
+$postReceived = KTUtil::arrayGet($_REQUEST, "postReceived");
+if (!is_null($postExpected) && is_null($postReceived)) {
+    // A post was to be initiated by the client, but none was received.
+    // This means post_max_size was violated.
+    require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
+    $oPatternCustom = & new PatternCustom();
+    $errorMessage = _("You tried to upload a file that is larger than the PHP post_max_size setting.");
+    $oPatternCustom->setHtml(getStatusPage($fFolderID, $errorMessage . "</td><td><a href=\"$default->rootUrl/control.php?action=browse&fFolderID=$fFolderID\"><img src=\"" . KTHtml::getCancelButton() . "\" border=\"0\"></a>")); 
+    $main->setCentralPayload($oPatternCustom);
+    $main->render();
+    exit(0);
+}
 
 if (!isset($fFolderID)) {
     //no folder id was set when coming to this page,
@@ -84,7 +97,7 @@ if (!isset($fStore)) {
     $oPatternCustom = & new PatternCustom();
     $oPatternCustom->setHtml(getPage($fFolderID, $fDocumentTypeID, $fDependantDocumentID));
     $main->setCentralPayload($oPatternCustom);
-    $main->setFormAction($_SERVER["PHP_SELF"] . "?fFolderID=$fFolderID" . 
+    $main->setFormAction($_SERVER["PHP_SELF"] . "?fFolderID=$fFolderID&postExpected=1" . 
                          (isset($fDependantDocumentID) ? "&fDependantDocumentID=$fDependantDocumentID" : "") . 
                          (isset($fDocumentTypeID) ? "&fDocumentTypeID=$fDocumentTypeID" : ""));
     $main->setFormEncType("multipart/form-data");
@@ -110,7 +123,17 @@ if (!((strlen($_FILES['fFile']['name']) > 0) && $_FILES['fFile']['size'] > 0)) {
     // no uploaded file
     require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
     $oPatternCustom = & new PatternCustom();
-    $oPatternCustom->setHtml(getStatusPage($fFolderID, _("You did not select a valid document to upload") . "</td><td><a href=\"$default->rootUrl/control.php?action=addDocument&fFolderID=$fFolderID&fDocumentTypeID=$fDocumentTypeID\"><img src=\"" . KTHtml::getBackButton() . "\" border=\"0\"></a>"));                        
+    $message = _("You did not select a valid document to upload");
+
+    $errors = array(
+       1 => _("The uploaded file is larger than the PHP upload_max_filesize setting"),
+       2 => _("The uploaded file is larger than the MAX_FILE_SIZE directive that was specified in the HTML form"),
+       3 => _("The uploaded file was not fully uploaded to KnowledgeTree"),
+       4 => _("No file was selected to be uploaded to KnowledgeTree"),
+       6 => _("An internal error occurred receiving the uploaded document"),
+    );
+    $message = KTUtil::arrayGet($errors, $_FILES['fFile']['error'], $message);
+    $oPatternCustom->setHtml(getStatusPage($fFolderID, $message . "</td><td><a href=\"$default->rootUrl/control.php?action=addDocument&fFolderID=$fFolderID&fDocumentTypeID=$fDocumentTypeID\"><img src=\"" . KTHtml::getBackButton() . "\" border=\"0\"></a>"));                        
     $main->setCentralPayload($oPatternCustom);
     $main->render();
     exit(0);
