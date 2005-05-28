@@ -178,6 +178,7 @@ function getPage($iFolderID, $iDocumentTypeID, $iDependantDocumentID = null, $sM
 		$sToRender .= getMetaDataForm($iFolderID, $iDocumentTypeID);
 		$sActionButtons = "<input type=\"image\" src=\"" . KTHtml::getAddButton() . "\" border=\"0\"/>";
 		$sToRender .= "<input type=\"hidden\" name=\"fStore\" value=\"1\">";
+		$sToRender .= "<input type=\"hidden\" name=\"postReceived\" value=\"1\">";
 		$sActionButtons .= generateControllerLink("addDocument", $sQueryString , "<img src=\"" . KTHtml::getBackButton() . "\" border=\"0\"/>") .
 						   generateControllerLink("browse", "fFolderID=$iFolderID", "<img src=\"" . KTHtml::getCancelButton() . "\" border=\"0\"/>");
 
@@ -192,6 +193,7 @@ function getPage($iFolderID, $iDocumentTypeID, $iDependantDocumentID = null, $sM
 			$sToRender .= getDocumentType($iFolderID, $iDocumentTypeID, $iDependantDocumentID);
 			$sActionButtons .= generateControllerLink("browse", "fFolderID=$iFolderID", "<img src=\"" . KTHtml::getCancelButton() . "\" border=\"0\"/>");
 			$sActionButtons .= "<input type=\"image\" src=\"" . KTHtml::getNextButton() . "\" border=\"0\"/>";			
+            $sToRender .= "<input type=\"hidden\" name=\"postReceived\" value=\"1\">";
 
 			$sToRender .= "<table border=\"0\" width=\"100%\" >\n";
 			$sToRender .= "<tr><td>$sActionButtons</td></tr>";
