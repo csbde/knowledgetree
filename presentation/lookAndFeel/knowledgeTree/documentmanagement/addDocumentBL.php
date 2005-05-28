@@ -133,6 +133,11 @@ if (!((strlen($_FILES['fFile']['name']) > 0) && $_FILES['fFile']['size'] > 0)) {
        6 => _("An internal error occurred receiving the uploaded document"),
     );
     $message = KTUtil::arrayGet($errors, $_FILES['fFile']['error'], $message);
+
+    if (@ini_get("file_uploads") == false) {
+        $message = _("File uploads are disabled in your PHP configuration");
+    }
+    
     $oPatternCustom->setHtml(getStatusPage($fFolderID, $message . "</td><td><a href=\"$default->rootUrl/control.php?action=addDocument&fFolderID=$fFolderID&fDocumentTypeID=$fDocumentTypeID\"><img src=\"" . KTHtml::getBackButton() . "\" border=\"0\"></a>"));                        
     $main->setCentralPayload($oPatternCustom);
     $main->render();
