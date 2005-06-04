@@ -1,3 +1,228 @@
+Verison 2.0.5 (2005/06/04)
+
+New Features
+============
+- Detect if cookies are available
+- Give accurate upload error messages
+- Support 'default.htm' as well as 'index.html' for some web servers
+
+Bug Fixes
+=========
+- Don't set boolean SQL values to integers
+- Don't allow the Name column to be removed from the browser
+- Give an error message if a non-existent folderId is given from the browser
+- Fix sending of documents via email
+
+Ongoing developments
+====================
+- Add very preliminary support for PostgreSQL (not yet usable)
+
+Detailed ChangeLog
+==================
+
+2005-06-04 03:41  nbm
+
+	* docs/VERSION.txt:
+
+	Version 2.0.5 coming up.
+
+2005-06-04 03:11  nbm
+
+	* lib/: security/Permission.inc, session/SiteMap.inc:
+
+	Don't set boolean values directly (to integers), use the abstraction
+	layer.
+
+2005-06-04 02:54  nbm
+
+	* lib/database/dbcompat.inc:
+
+	Remove last vestiges of last_insert_id.
+
+2005-06-04 02:53  nbm
+
+	
+	* lib/documentmanagement/Document.inc:
+
+	Don't set boolean SQL values to '1' directly, use abstraction layer
+	instead.
+
+2005-06-04 02:44  nbm
+
+	* config/dmsDefaults.php:
+
+	Trim the version from docs/VERSION.txt
+
+2005-06-02 08:11  nbm
+
+	* presentation/lookAndFeel/knowledgeTree/documentmanagement/bulkUploadBL.php:
+
+	Put proper error messages into the Bulk Upload system.
+
+	Submitted by:	aledain
+	SF Tracker:	1118334
+
+2005-05-31 01:21  nbm
+
+	* default.htm, setup/default.htm:
+
+	Add default.htm files for IIS to use.
+
+2005-05-31 01:19  nbm
+
+	* i18n/knowledgeTree.po:
+
+	Updated i18n template file
+
+	Submitted by:	Yunus KALDIRIM (colderthanice)
+	SF Tracker:	1208535
+
+2005-05-28 04:43  nbm
+
+	* presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentBL.php:
+
+	Handle the case where file_uploads are disabled in PHP as well.
+
+2005-05-28 04:30  nbm
+
+	* presentation/lookAndFeel/knowledgeTree/documentmanagement/:
+	  addDocumentBL.php, addDocumentUI.inc:
+
+	Give better error messages when uploads fail - detect if post_max_size
+	or upload_max_filesize have been violated.
+
+2005-05-28 03:14  nbm
+
+	* presentation/login.php:
+
+	Detect if cookies are enabled at login-time.  If not, print a message
+	explaining what is wrong.
+
+	Submitted by:	zkrih
+	SF Tracker:	1202501
+
+2005-05-28 02:46  nbm
+
+	* presentation/lookAndFeel/knowledgeTree/documentmanagement/emailBL.php:
+
+	Fix typo oSendingUserName -> oSendingUser
+
+	Submitted by:	olivierde
+	SF tracker:	1210188
+
+2005-05-27 06:01  nbm
+
+	* presentation/lookAndFeel/knowledgeTree/administration/usermanagement/listUsersUI.inc:
+
+	PostgreSQL likes to return lower-case column names.
+
+2005-05-27 05:59  nbm
+
+	* presentation/lookAndFeel/knowledgeTree/administration/usermanagement/listUsersUI.inc:
+
+	Database portability fixes
+
+2005-05-26 06:43  nbm
+
+	* presentation/lookAndFeel/knowledgeTree/documentmanagement/browseBL.php,
+	  lib/browse/FolderBrowser.inc:
+
+	Give an error message if a non-existent folderId is given.
+
+	Submitted by:	Nicolas Quienot (nquienot)
+	SF Tracker:	1119196
+
+2005-05-26 06:05  nbm
+
+	* presentation/lookAndFeel/knowledgeTree/administration/browsemanagement/editBrowserBL.php:
+
+	Don't allow the Name column to be removed from the browser.
+
+	Submitted by:	1119191
+	SF Tracker:	Nicolas Quienot (nquienot)
+
+2005-05-26 03:43  nbm
+
+	* presentation/lookAndFeel/knowledgeTree/administration/usermanagement/addUserUI.inc:
+
+	Use either mail or principalUser, as either could be there.
+
+	SF Tracker:	996172
+	Submitted by:	peckman10
+
+2005-05-25 14:23  nbm
+
+	* sql/pgsql/install/README:
+
+	Add some starting steps for using PostgreSQL.
+
+2005-05-25 14:22  nbm
+
+	* sql/pgsql/install/functions.sql:
+
+	Functions used by the KnowledgeTree for SQL (MySQL compatibility of
+	sorts).
+
+2005-05-25 14:13  nbm
+
+	* lib/documentmanagement/Document.inc,
+	  lib/documentmanagement/DocumentCollaboration.inc,
+	  lib/foldermanagement/Folder.inc, lib/security/Permission.inc,
+	  presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/editDocTypeFieldsUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentUI.inc:
+
+	Make PEAR DB decide on whether the backend wants TRUE or 1 for booleans.
+
+2005-05-25 13:57  nbm
+
+	* lib/subscriptions/SubscriptionManager.inc,
+	  presentation/lookAndFeel/knowledgeTree/dashboardUI.inc:
+
+	Make PEAR DB decide whether the backend wants TRUE or 1 for boolean fields.
+
+2005-05-25 13:55  nbm
+
+	* sql/pgsql/install/tables.sql:
+
+	Use boolean types for boolean values, since we have the type available.
+
+2005-05-25 13:55  nbm
+
+	* lib/session/Session.inc:
+
+	Trim the IP from the database, as some databases will return the full
+	size of the CHAR(30).
+
+2005-05-25 13:54  nbm
+
+	* lib/security/Permission.inc:
+
+	Make PEAR DB decide on whether my backend database wants TRUE or 1.
+
+2005-05-25 13:53  nbm
+
+	* lib/database/dbutil.inc:
+
+	Deal with errors that might occur with nextID function from the database.
+
+2005-05-25 13:53  nbm
+
+	* lib/dashboard/Dashboard.inc:
+
+	Make PEAR DB decide if a want TRUE or 1 in my database for portability.
+
+2005-05-25 13:52  nbm
+
+	* lib/authentication/Authenticator.inc:
+
+	Use DBUtil for this query, it was not database-portable previously.
+
+2005-05-25 13:20  nbm
+
+	* sql/pgsql/install/: README, tables.sql, user.sql:
+
+	Add very preliminary PostgreSQL initalisation dumps.
+
 Version 2.0.4 (2005/05/24)
 
 New Features
