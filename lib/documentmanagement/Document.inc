@@ -535,11 +535,18 @@ class Document extends KTEntity {
         $aDocumentFieldArray;
         settype($aDocumentFieldArray,"array");
         $sql = $default->db;
-        $result = $sql->query(array("SELECT DF.id AS id, DF.name AS name, DF.data_type AS data_type " ./*ok*/
-                              "FROM $default->document_fields_table AS DF " .
-                              "INNER JOIN $default->document_type_fields_table AS DTFL ON DF.id = DTFL.field_id " . 
-                              "WHERE DTFL.document_type_id = ? " . ($bMandatoryOnly ? "AND DFTL.is_mandatory = 1 " : " ") . 
-                              "ORDER BY DF.name ASC", $iDocumentTypeID));
+        $sQuery = "SELECT DF.id AS id, DF.name AS name, DF.data_type AS data_type " ./*ok*/
+            "FROM $default->document_fields_table AS DF " .
+            "INNER JOIN $default->document_type_fields_table AS DTFL ON DF.id = DTFL.field_id " .
+             "WHERE DTFL.document_type_id = ? ";
+        $aParams = array($iDocumentTypeID);
+        if ($bMandatoryOnly) {
+            $sQuery .= "AND DFTL.is_mandatory = ? ";
+            $aParams[] = true;
+        }
+        $sQuery .= "ORDER BY DF.name ASC";
+        $result = $sql->query(array($sQuery, $aParams));
+
         if ($result) {
             $iCount = 0;
             while ($sql->next_record()) {
