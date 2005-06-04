@@ -222,11 +222,11 @@ class SiteMap {
             $results = array("descriptions" => array(), "links" => array());
 
             $sQuery = "SELECT link_text, action, access_id FROM $default->sitemap_table WHERE " ./*ok*/
-                "section_id = ? AND is_enabled=1 AND is_default=0";
+                "section_id = ? AND is_enabled = ? AND is_default=0";
             if ($bSortLinks) {
                 $sQuery .= " ORDER BY link_text ASC";
             }
-            $aParams = array($sectionID);
+            $aParams = array($sectionID, true);
 
             if ($sql->query(array($sQuery, $aParams))) {
                 while ($sql->next_record()) {
@@ -508,8 +508,8 @@ class SiteMap {
         $sectionID = lookupID($default->site_sections_table, "name", $sSectionName);
         if ($sectionID) {
             // lookup the default action for the specified section
-            $sQuery = "SELECT action FROM $default->sitemap_table WHERE section_id = ? AND is_default=1 AND is_enabled=1";/*ok*/
-            $aParams = array($sectionID);
+            $sQuery = "SELECT action FROM $default->sitemap_table WHERE section_id = ? AND is_default = ? AND is_enabled = ?";/*ok*/
+            $aParams = array($sectionID, true, true);
             if ($sql->query(array($sQuery, $aParams))) {
                 if ($sql->next_record()) {
                     // return the section name

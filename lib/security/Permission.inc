@@ -450,7 +450,7 @@ class Permission {
             "FROM $default->users_groups_table AS UGL INNER JOIN $default->groups_units_table AS GUL ON GUL.group_id = UGL.group_id " .
             "INNER JOIN $default->groups_table AS GL ON GL.id = UGL.group_id " .
             "WHERE UGL.user_id = ? " .
-            "AND GL.is_unit_admin = 1", $iUserID));
+            "AND GL.is_unit_admin = ?", array($iUserID, true)));
         return $sql->next_record();
     }
     
@@ -468,10 +468,10 @@ class Permission {
                 "INNER JOIN $default->groups_units_table AS GUL ON GUL.unit_id = F.unit_id " .
                 "INNER JOIN $default->groups_table AS GL ON GUL.group_id = GL.id " .
                 "INNER JOIN $default->users_groups_table AS UGL ON UGL.group_id = GL.id " .
-                "WHERE GL.is_unit_admin = 1 "  .
+                "WHERE GL.is_unit_admin = ? "  .
                 "AND GFL.folder_id = ? " .
                 "AND UGL.user_id = ?";
-        $aParams = array($oFolder->getID(), $_SESSION["userID"]);
+        $aParams = array(true, $oFolder->getID(), $_SESSION["userID"]);
         $sql->query(array($sQuery, $aParams));
         return $sql->next_record();
     }
