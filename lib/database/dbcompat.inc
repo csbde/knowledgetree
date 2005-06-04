@@ -13,7 +13,6 @@ class DBCompat {
             $default->log->error("Error running query: " .  DBUtil::lastQuery());
             $default->log->error($this->lastResult->toString());
         } else {
-            $this->lastInsertID = mysql_insert_id($default->_db->connection);
             if (is_object($this->lastResult)) {
                 $this->lastResult->autofree = true;
             }
@@ -49,10 +48,6 @@ class DBCompat {
         $value = $this->lastRow[$field];
         // $default->log->debug("Yielding value $value");
         return $value;
-    }
-
-    function insert_id () {
-        return $this->lastInsertID;
     }
 }
 
