@@ -48,6 +48,7 @@ class Email {
         $this->oMailer->FromName = (strlen($sFromName) == 0) ? $default->emailFromName : $sFromName;
         $this->oMailer->WordWrap = 100;
         $this->oMailer->IsHTML(true);
+        $this->oMailer->SetLanguage('en', KT_DIR .  '/phpmailer/language/');
     }
 	
     /**
@@ -102,14 +103,14 @@ class Email {
 	        //send the email
 	        if(!$this->oMailer->Send()) {
 	            $default->log->error("Error sending mail to $mToEmail; mailer error code=" . $this->oMailer->ErrorInfo);
-	            return false;
+	            return PEAR::raiseError("Error sending mail to $mToEmail; mailer error code=" .  $this->oMailer->ErrorInfo);
 	        } else {
 	        	$default->log->info("Successfully sent mail to $mToEmail");
 	        }
 	        return true;
         } else {
         	// no valid email addresses supplied
-        	return false;
+        	return PEAR::raiseError("No valid email addresses supplied");
         }
     }
 
