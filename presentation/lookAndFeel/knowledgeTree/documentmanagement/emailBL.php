@@ -107,6 +107,7 @@ function sendUserEmails($aUserIDs, $oDocument, $sComment = "") {
  */
 function sendEmail($sDestEmailAddress, $sDestUserName, $fDocumentID, $sDocumentName, $sComment) {
     global $default;
+    global $emailerrors;
     $oSendingUser = User::get($_SESSION["userID"]);
     
 	$sMessage = "<font face=\"arial\" size=\"2\">";
@@ -123,10 +124,17 @@ function sendEmail($sDestEmailAddress, $sDestUserName, $fDocumentID, $sDocumentN
 	$sTitle = "Link: " . $sDocumentName . " from " . $oSendingUser->getName();
 	//email the hyperlink
 	$oEmail = new Email();
-	if ($oEmail->send($sDestEmailAddress, $sTitle, $sMessage)) {
-		$default->log->info("Send email ($sTitle) to $sDestEmailAddress");
-	} else {
+    $res = $oEmail->send($sDestEmailAddress, $sTitle, $sMessage);
+    if (PEAR::isError($res)) {
+        $default->log->error($res->getMessage());
+        $emailerrors[] = $res->getMessage();
+        return $res;
+    } else if ($res === false) {
 		$default->log->error("Error sending email ($sTitle) to $sDestEmailAddress");		
+		$emailerrors[] = "Error sending email ($sTitle) to $sDestEmailAddress");
+        return PEAR::raiseError("Error sending email ($sTitle) to $sDestEmailAddress");
+    } else {
+		$default->log->info("Send email ($sTitle) to $sDestEmailAddress");
 	}
 	  
 	// emailed link transaction
@@ -137,6 +145,8 @@ function sendEmail($sDestEmailAddress, $sDestUserName, $fDocumentID, $sDocumentN
 		$default->log->error("emailBL.php couldn't create email link document transaction for document ID=$fDocumentID");
 	}
 }
+
+$emailerrors = array();
 
 if (checkSession()) {
     if (isset($fDocumentID)) {
@@ -157,6 +167,10 @@ if (checkSession()) {
 	            	sendGroupEmails($aGroupIDs, $oDocument, $fComment);
 	            	// send user emails
 	            	sendUserEmails($aUserIDs, $oDocument, $fComment);
+
+                    if (count($emailerrors)) {
+                        $_SESSION['errorMessage'] = join("<br />\n", $emailerrors);
+                    }
 	                    
                     //go back to the document view page
                     redirect("$default->rootUrl/control.php?action=viewDocument&fDocumentID=$fDocumentID");
