@@ -27,7 +27,7 @@
 
 require_once("../../../../config/dmsDefaults.php");
 
-KTUtil::extractGPC('fAttachDocument', 'fComment', 'fDocumentID', 'fSendEmail', 'groupNewRight', 'userNewRight');
+KTUtil::extractGPC('fAttachDocument', 'fComment', 'fDocumentID', 'fEmailAddresses', 'fSendEmail', 'groupNewRight', 'userNewRight');
 
 require_once("$default->fileSystemRoot/lib/security/Permission.inc");
 require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
@@ -99,6 +99,21 @@ function sendUserEmails($aUserIDs, $oDocument, $sComment = "", $bAttachDocument)
     	} else {
     		$default->log->info("filtered user id=" . $aUserIDs[$i]);
     	}			
+    }  	
+}
+
+/**
+ * Sends emails to the manually entered email addresses
+ */
+function sendManualEmails($aEmailAddresses, $oDocument, $sComment = "", $bAttachDocument) {
+	global $default;
+	
+    // loop through users
+    foreach ($aEmailAddresses as $sEmailAddress) {
+        $default->log->info("sendingEmail to address " .  $sEmailAddress);
+        if (validateEmailAddress($sEmailAddress)) {	    
+            sendEmail($sEmailAddress, $sEmailAddress, $oDocument->getID(), $oDocument->getName(), $sComment, $bAttachDocument);
+        }
     }  	
 }
 
@@ -206,14 +221,17 @@ if (checkSession()) {
 	          	// explode group and user ids
 	          	$aGroupIDs = explode(",", $groupNewRight);
 	          	$aUserIDs = explode(",", $userNewRight);
-	          	$default->log->info("Sending email to groups=$groupNewRight; users=$userNewRight");
+	          	$aEmailAddresses = explode(" ", $fEmailAddresses);
+	          	$default->log->info("Sending email to groups=$groupNewRight; users=$userNewRight; manual=$fEmailAddresses");
 	          	
                 //if we're going to send a mail, first make there is someone to send it to
-                if ((count($aGroupIDs) > 1) || (count($aUserIDs) > 1)) {
+                if ((count($aGroupIDs) > 1) || (count($aUserIDs) > 1) || (count($aEmailAddresses) != 0)) {
 	            	// send group emails
 	            	sendGroupEmails($aGroupIDs, $oDocument, $fComment, (boolean)$fAttachDocument);
 	            	// send user emails
 	            	sendUserEmails($aUserIDs, $oDocument, $fComment, (boolean)$fAttachDocument);
+                    // send manual email addresses
+	            	sendManualEmails($aEmailAddresses, $oDocument, $fComment, (boolean)$fAttachDocument);
 
                     if (count($emailerrors)) {
                         $_SESSION['errorMessage'] = join("<br />\n", $emailerrors);
