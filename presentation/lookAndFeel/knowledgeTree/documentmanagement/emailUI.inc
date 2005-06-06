@@ -91,6 +91,7 @@ function getDocumentEmailPage($oDocument) {
 	$sToRender .= renderUserPicker();	
 	$sToRender .= "</table></td></tr>";
 	$sToRender .= "<tr><td><table>\n";
+	$sToRender .= "<tr><td valign=\"top\">" . _("Attach Document") . "</td><td><input type=\"checkbox\" name=\"fAttachDocument\" /></td></tr>";//</tr>\n";
 	$sToRender .= "<tr><td valign=\"top\">" . _("Comment") . "</td><td><textarea rows=\"5\" cols=\"30\" name=\"fComment\"></textarea></td>";//</tr>\n";
 	$sToRender .= "<td valign=\"bottom\"><table><tr><td><input type=\"image\" src=\"" . KTHtml::getEmailButton() . "\" border=\"0\" /></td><td><a href=\"$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $oDocument->getID() . "\"><img src=\"" . KTHtml::getCancelButton() . "\" border=\"0\"/></a></td></tr></table></td></tr>\n";
 	$sToRender .= "</table></td></tr>\n";

@@ -62,7 +62,7 @@ class Email {
      * @return boolean true on email successfully sent, false otherwise and set $_SESSION["errorMessage"]
      */
     function send($mToEmail, $sSubject, $sBody, $sFromEmail = "", $sFromName = "") {
-        global $default, $lang_err_email;
+        global $default;
         
         // set defaults for optional params
         $sFromEmail = ((strlen($sFromEmail) == 0) || ($sFromEmail == "")) ? $default->system->get("emailFrom") : $sFromEmail;
@@ -99,6 +99,70 @@ class Email {
 
 	        $this->oMailer->Subject = stripslashes($sSubject);
 	        $this->oMailer->Body = stripslashes($sBody);
+	
+	        //send the email
+	        if(!$this->oMailer->Send()) {
+	            $default->log->error("Error sending mail to $mToEmail; mailer error code=" . $this->oMailer->ErrorInfo);
+	            return PEAR::raiseError("Error sending mail to $mToEmail; mailer error code=" .  $this->oMailer->ErrorInfo);
+	        } else {
+	        	$default->log->info("Successfully sent mail to $mToEmail");
+	        }
+	        return true;
+        } else {
+        	// no valid email addresses supplied
+        	return PEAR::raiseError("No valid email addresses supplied");
+        }
+    }
+
+    /**
+     * Sends an email to a specified recipient.
+     *
+     * @param string the recipients email address
+     * @param string the subject of the email
+     * @param string the body of the email
+     * @param string the path to the document to attach
+     * @param string the name to the document to attach
+     * @return boolean true on email successfully sent, false otherwise and set $_SESSION["errorMessage"]
+     */
+    function sendAttachment($mToEmail, $sSubject, $sBody, $sDocumentPath, $sDocumentName) {
+        global $default;
+        
+        // set defaults for optional params
+        $sFromEmail = $default->system->get("emailFrom");
+        $sFromName = $default->system->get("emailFromName");
+
+        // set optional params
+        if ((strlen($sFromEmail) > 0) && ($sFromEmail != "")) {
+            $this->oMailer->From = $sFromEmail;
+        }
+        if ((strlen($sFromName) > 0) && ($sFromName != "")) {
+            $this->oMailer->FromName = $sFromName;
+        }
+              
+        if ( (is_string($mToEmail) && (strlen($mToEmail) > 0)) || 
+        	 (is_array($mToEmail) && (count($mToEmail) > 0)) ) {        
+
+	        // just one email address, add it
+	        if (is_string($mToEmail) && (strpos($mToEmail, ";") === false)) {
+	            $this->oMailer->AddAddress($mToEmail);
+	        } else {
+                $aEmailAddresses = array();
+	        	// if we're passed an array, then use it
+	        	if (is_array($mToEmail)) {
+	        		$aEmailAddresses = $mToEmail;
+	        	// if there are multiple addresses (; separated), explode it	        	
+	        	} elseif (strpos($mToEmail, ";") > 0) {
+		            $aEmailAddresses = explode(";", $mToEmail);
+	        	}
+	            for ($i=0; $i<count($aEmailAddresses); $i++) {
+	                $this->oMailer->AddAddress($aEmailAddresses[$i]);
+	                $default->log->debug("Email.inc adding " . $aEmailAddresses[$i]);
+	            }
+	        }
+
+	        $this->oMailer->Subject = stripslashes($sSubject);
+	        $this->oMailer->Body = stripslashes($sBody);
+	        $this->oMailer->AddAttachment($sDocumentPath, $sDocumentName);
 	
 	        //send the email
 	        if(!$this->oMailer->Send()) {

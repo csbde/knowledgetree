@@ -27,7 +27,7 @@
 
 require_once("../../../../config/dmsDefaults.php");
 
-KTUtil::extractGPC('fComment', 'fDocumentID', 'fSendEmail', 'groupNewRight', 'userNewRight');
+KTUtil::extractGPC('fAttachDocument', 'fComment', 'fDocumentID', 'fSendEmail', 'groupNewRight', 'userNewRight');
 
 require_once("$default->fileSystemRoot/lib/security/Permission.inc");
 require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
@@ -44,7 +44,7 @@ require_once("emailUI.inc");
 /**
  * Sends emails to the selected groups
  */
-function sendGroupEmails($aGroupIDs, $oDocument, $sComment = "") {
+function sendGroupEmails($aGroupIDs, $oDocument, $sComment = "", $bAttachDocument) {
 	global $default;
 	
     // loop through groups
@@ -62,7 +62,7 @@ function sendGroupEmails($aGroupIDs, $oDocument, $sComment = "") {
 				if (strlen($aUsers[$j]->getEmail())>0 && $aUsers[$j]->getEmailNotification()) {
 					//if the to address is valid, send the mail
 					if (validateEmailAddress($aUsers[$j]->getEmail())) {	    
-						sendEmail($aUsers[$j]->getEmail(), $aUsers[$j]->getName(), $oDocument->getID(), $oDocument->getName(), $sComment);
+						sendEmail($aUsers[$j]->getEmail(), $aUsers[$j]->getName(), $oDocument->getID(), $oDocument->getName(), $sComment, $bAttachDocument);
 					} else {
 						$default->log->error("email validation failed for " . $aUsers[$j]->getEmail());
 					}
@@ -79,7 +79,7 @@ function sendGroupEmails($aGroupIDs, $oDocument, $sComment = "") {
 /**
  * Sends emails to the selected users
  */
-function sendUserEmails($aUserIDs, $oDocument, $sComment = "") {
+function sendUserEmails($aUserIDs, $oDocument, $sComment = "", $bAttachDocument) {
 	global $default;
 	
     // loop through users
@@ -91,7 +91,7 @@ function sendUserEmails($aUserIDs, $oDocument, $sComment = "") {
 			if (strlen($oDestUser->getEmail())>0 && $oDestUser->getEmailNotification()) {
 				//if the to address is valid, send the mail
 				if (validateEmailAddress($oDestUser->getEmail())) {	    
-					sendEmail($oDestUser->getEmail(), $oDestUser->getName(), $oDocument->getID(), $oDocument->getName(), $sComment);
+					sendEmail($oDestUser->getEmail(), $oDestUser->getName(), $oDocument->getID(), $oDocument->getName(), $sComment, $bAttachDocument);
 				}
 			} else {
 				$default->log->info("either " . $oDestUser->getUserName() . " has no email address, or notification is not enabled");
@@ -105,17 +105,64 @@ function sendUserEmails($aUserIDs, $oDocument, $sComment = "") {
 /**
  * Constructs the email message text and sends the message
  */
-function sendEmail($sDestEmailAddress, $sDestUserName, $fDocumentID, $sDocumentName, $sComment) {
+function sendEmail($sDestEmailAddress, $sDestUserName, $iDocumentID, $sDocumentName, $sComment, $bAttachDocument = false) {
+    if ($bAttachDocument !== true) {
+        return sendEmailHyperlink($sDestEmailAddress, $sDestUserName, $iDocumentID, $sDocumentName, $sComment);
+    } else {
+        return sendEmailDocument($sDestEmailAddress, $sDestUserName, $iDocumentID, $sDocumentName, $sComment);
+    }
+}
+
+function sendEmailDocument($sDestEmailAddress, $sDestUserName, $iDocumentID, $sDocumentName, $sComment) {
+    global $default;
+    global $emailerrors;
+    $oSendingUser = User::get($_SESSION["userID"]);
+
+    $sMessage = 'Your colleague, ' . $oSendingUser->getName() . ', wishes you to view the attached document entitled "' .  $sDocumentName . '".';
+    $sMessage .= "\n\n";
+	if (strlen($sComment) > 0) {
+		$sMessage .= "<br><br>Comments:<br>$sComment";
+	}
+    $sTitle = "Document: " . $sDocumentName . " from " .  $oSendingUser->getName();
+    $oEmail = new Email();
+    $oDocument = Document::get($iDocumentID);
+    $sDocumentPath = $oDocument->getPath();
+    $sDocumentFileName = $oDocument->getFileName();
+    $res = $oEmail->sendAttachment($sDestEmailAddress, $sTitle, $sMessage, $sDocumentPath, $sDocumentFileName);
+    if (PEAR::isError($res)) {
+        $default->log->error($res->getMessage());
+        $emailerrors[] = $res->getMessage();
+        return $res;
+    } else if ($res === false) {
+        $default->log->error("Error sending email ($sTitle) to $sDestEmailAddress");
+        $emailerrors[] = "Error sending email ($sTitle) to $sDestEmailAddress";
+        return PEAR::raiseError("Error sending email ($sTitle) to $sDestEmailAddress");
+    } else {
+        $default->log->info("Send email ($sTitle) to $sDestEmailAddress");
+    }
+
+    // emailed link transaction
+    $oDocumentTransaction = & new DocumentTransaction($iDocumentID, "Document link emailed to $sDestEmailAddress", EMAIL_ATTACH);
+    if ($oDocumentTransaction->create()) {
+        $default->log->debug("emailBL.php created email link document transaction for document ID=$iDocumentID");
+    } else {
+        $default->log->error("emailBL.php couldn't create email link document transaction for document ID=$iDocumentID");
+    }
+}
+
+function sendEmailHyperlink($sDestEmailAddress, $sDestUserName, $iDocumentID, $sDocumentName, $sComment) {
     global $default;
     global $emailerrors;
     $oSendingUser = User::get($_SESSION["userID"]);
     
 	$sMessage = "<font face=\"arial\" size=\"2\">";
-	$sMessage .= $sDestUserName . ",<br><br>";
+    if ($sDestUserName) {
+        $sMessage .= $sDestUserName . ",<br><br>";
+    }
 	$sMessage .= "Your colleague, " . $oSendingUser->getName() . ", wishes you to view the document entitled '" . $sDocumentName . "'.\n  ";
 	$sMessage .= "Click on the hyperlink below to view it.";
 	// add the link to the document to the mail
-	$sMessage .= "<br>" . generateControllerLink("viewDocument", "fDocumentID=$fDocumentID", $sDocumentName);
+	$sMessage .= "<br>" . generateControllerLink("viewDocument", "fDocumentID=$iDocumentID", $sDocumentName);
 	// add optional comment
 	if (strlen($sComment) > 0) {
 		$sMessage .= "<br><br>Comments:<br>$sComment";
@@ -131,18 +178,18 @@ function sendEmail($sDestEmailAddress, $sDestUserName, $fDocumentID, $sDocumentN
         return $res;
     } else if ($res === false) {
 		$default->log->error("Error sending email ($sTitle) to $sDestEmailAddress");		
-		$emailerrors[] = "Error sending email ($sTitle) to $sDestEmailAddress");
+		$emailerrors[] = "Error sending email ($sTitle) to $sDestEmailAddress";
         return PEAR::raiseError("Error sending email ($sTitle) to $sDestEmailAddress");
     } else {
 		$default->log->info("Send email ($sTitle) to $sDestEmailAddress");
 	}
 	  
 	// emailed link transaction
-	$oDocumentTransaction = & new DocumentTransaction($fDocumentID, "Document link emailed to $sDestEmailAddress", EMAIL_LINK);
+	$oDocumentTransaction = & new DocumentTransaction($iDocumentID, "Document link emailed to $sDestEmailAddress", EMAIL_LINK);
 	if ($oDocumentTransaction->create()) {
-		$default->log->debug("emailBL.php created email link document transaction for document ID=$fDocumentID");                                    	
+		$default->log->debug("emailBL.php created email link document transaction for document ID=$iDocumentID");                                    	
 	} else {
-		$default->log->error("emailBL.php couldn't create email link document transaction for document ID=$fDocumentID");
+		$default->log->error("emailBL.php couldn't create email link document transaction for document ID=$iDocumentID");
 	}
 }
 
@@ -164,9 +211,9 @@ if (checkSession()) {
                 //if we're going to send a mail, first make there is someone to send it to
                 if ((count($aGroupIDs) > 1) || (count($aUserIDs) > 1)) {
 	            	// send group emails
-	            	sendGroupEmails($aGroupIDs, $oDocument, $fComment);
+	            	sendGroupEmails($aGroupIDs, $oDocument, $fComment, (boolean)$fAttachDocument);
 	            	// send user emails
-	            	sendUserEmails($aUserIDs, $oDocument, $fComment);
+	            	sendUserEmails($aUserIDs, $oDocument, $fComment, (boolean)$fAttachDocument);
 
                     if (count($emailerrors)) {
                         $_SESSION['errorMessage'] = join("<br />\n", $emailerrors);
