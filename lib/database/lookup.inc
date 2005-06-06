@@ -90,7 +90,6 @@ function lookupField($tableName, $selectFieldName, $whereFieldName, $whereFieldV
         if ($sql->next_record()) {
             return $sql->f($selectFieldName);
         } else {
-            $_SESSION["errorMessage"] = "$selectFieldName field lookup retrieval failed ($query).";
             return false;
         }
     } else {
