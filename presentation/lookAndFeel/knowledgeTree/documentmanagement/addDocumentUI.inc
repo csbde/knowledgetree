@@ -130,7 +130,8 @@ function getMetaDataForm($iFolderID, $iDocumentTypeID) {
 	$oTypeSpecificPattern = getTypeSpecificMetaDataForm($iFolderID, $iDocumentTypeID);
 	$sToRender .= "<table border=\"0\" width=\"100%\">\n";
 	$sToRender .= "<tr><td><b>" . _("Document Meta Data") . "<b></td></tr>\n";	
-	$sToRender .= "<tr><td valign=\"top\">" . $oGenericPattern->render() . "</td><td valign=\"top\">" . $oTypeSpecificPattern->render() . "</td></tr>";
+	$sToRender .= "<tr><td valign=\"top\">" . $oGenericPattern->render() . "</td></tr>";
+    $sToRender .= "<tr><td valign=\"top\">" . $oTypeSpecificPattern->render() . "</td></tr>";
 	$sToRender .= "</table>";
 
 	// validation starts
