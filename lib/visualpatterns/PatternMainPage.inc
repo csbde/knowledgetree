@@ -57,7 +57,7 @@ class PatternMainPage {
 	/** whether the form has fields that require javascript checking */
 	var $bHasRequiredFields = false;
 	/** default page error message */
-	var $sErrorMessage;
+	var $sErrorMessage = array();
 	
 	var $sHelpContext = "browse";
 	/** javascript to execute on body load **/	
@@ -115,7 +115,7 @@ class PatternMainPage {
 	}	
 	
 	function setErrorMessage($sNewValue) {
-		$this->sErrorMessage = $sNewValue;
+		$this->sErrorMessage[] = $sNewValue;
 	}
 	
 	function setFormEncType($sNewValue) {
@@ -203,9 +203,14 @@ class PatternMainPage {
                                                 $sToRender .= "\t<div id=\"divScrollTextCont\">\n
                                                                \t\t<div id=\"divText\">\n";												
                                             }                                          
-											if (isset($this->sErrorMessage)) {
-												$sToRender .= "<table border=\"0\"><tr><td><p class=\"errorText\">$this->sErrorMessage</p></td></tr></table>\n ";
+											foreach ($this->sErrorMessage as $sErrorMessage) {
+												$sToRender .= "<table border=\"0\"><tr><td><p class=\"errorText\">$sErrorMessage</p></td></tr></table>\n ";
 											}
+                                            if ($_SESSION['errorMessage']) {
+                                                $sErrorMessage = $_SESSION['errorMessage'];
+												$sToRender .= "<table border=\"0\"><tr><td><p class=\"errorText\">$sErrorMessage</p></td></tr></table>\n ";
+                                                unset($_SESSION['errorMessage']);
+                                            }
 											$sToRender = $sToRender . "\n" . $this->oCentralPayload->render() . "\n";
 										} else {											
 											$sToRender = $sToRender . "\nCentral payload not set\n";
