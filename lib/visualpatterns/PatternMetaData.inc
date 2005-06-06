@@ -44,7 +44,7 @@ class PatternMetaData {
 	
 	function render() {
 		global $default;
-		$sQuery = "SELECT has_lookup FROM $default->document_fields_table WHERE name LIKE '" . DBUtil::escapeSimple($this->sMetaDataField) . "'";/*ok*/
+		$sQuery = "SELECT has_lookup, data_type FROM $default->document_fields_table WHERE name LIKE '" . DBUtil::escapeSimple($this->sMetaDataField) . "'";/*ok*/
 
 		$sql = $default->db;
 		$sql->query($sQuery);
@@ -61,12 +61,20 @@ class PatternMetaData {
                 $oPatternListBox->setWhereClause($sWhereClause);				
 				return $oPatternListBox->render();
 			} else {
-                $sToRender = "<input type=\"text\" name=\"" . $this->sFormName . "\" ";                
-				if ($this->sValue != null) {
-					$sToRender .= "value=\"" . $this->sValue . "\" ";
-				}
-				$sToRender .= " />";
-				return $sToRender;
+                $textboxlength = null;
+                switch($sql->f("data_type")) {
+                    case "TEXT":
+                        $sToRender = '<textarea name="%s" rows="5" cols="44">%s</textarea>';
+                        break;
+                    case "INT":
+                    case "FLOAT":
+                        $sToRender = '<input type="text" size="30" name="%s" value="%s" />';
+                        break;
+                    case "STRING":
+                    default:
+                        $sToRender = '<input type="text" size="60" name="%s" value="%s" />';
+                }
+                return sprintf($sToRender, $this->sFormName, $this->sValue);
 			}
 		} else {
 			return "Error in PatternMetaData";
