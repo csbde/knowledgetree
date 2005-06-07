@@ -157,6 +157,7 @@ function getPage($iFolderID, $iDocumentTypeID) {
 
     $sToRender .= "<input type=\"hidden\" name=\"fDocumentTypeID\" value=\"$iDocumentTypeID\">";
     $sToRender .= "<input type=\"hidden\" name=\"fStore\" value=\"1\">";
+    $sToRender .= "<input type=\"hidden\" name=\"postReceived\" value=\"1\">";
     $sToRender .= "<table>\n";
     $sToRender .= "<tr>\n";
     $sToRender .= "<td colspan=\"2\"><b>" . _("Bulk Upload Zipfile") . ": <b></td>\n";
