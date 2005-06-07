@@ -66,6 +66,20 @@ if (!BulkUploadManager::isBulkUploadCapable()) {
     exit(0);
 }
 
+$postExpected = KTUtil::arrayGet($_REQUEST, "postExpected");
+$postReceived = KTUtil::arrayGet($_REQUEST, "postReceived");
+if (!is_null($postExpected) && is_null($postReceived)) {
+    // A post was to be initiated by the client, but none was received.
+    // This means post_max_size was violated.
+    require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
+    $oPatternCustom = & new PatternCustom();
+    $errorMessage = _("You tried to upload a file that is larger than the PHP post_max_size setting.");
+    $oPatternCustom->setHtml("<font color=\"red\">" . $errorMessage . "</font><br /><a href=\"$default->rootUrl/control.php?action=browse&fFolderID=$fFolderID\"><img src=\"" . KTHtml::getCancelButton() . "\" border=\"0\"></a>");
+    $main->setCentralPayload($oPatternCustom);
+    $main->render();
+    exit(0);
+}
+
 /* CHECK: folder ID passed in */
 if (isset($fFolderID)) {
     $oFolder = Folder::get($fFolderID);
@@ -105,7 +119,7 @@ if (!$fDocumentTypeID) {
 if (!$fStore) {
     // show upload/metatdata form
     $oPatternCustom->setHtml(getPage($fFolderID, $fDocumentTypeID));
-    $main->setFormAction($_SERVER["PHP_SELF"]);
+    $main->setFormAction($_SERVER["PHP_SELF"] .  "?postExpected=1&fFolderID=$fFolderID");
     $main->setFormEncType("multipart/form-data");
     $main->setHasRequiredFields(true);
     $main->setErrorMessage($sErrorMessage);
