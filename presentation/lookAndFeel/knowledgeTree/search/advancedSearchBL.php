@@ -130,8 +130,9 @@ ORDER BY doc_count DESC");
     $oPatternBrowse->setStartIndex($iStartIndex);
     $oPatternBrowse->setSearchText("");
     $oPatternBrowse->setRememberValues($aReq);
+    $sForSearch = "<input type=\"hidden\" name=\"fForSearch\" value=\"1\" />";
 
-    return renderHeading(_("Advanced Search")) . $oPatternBrowse->render() . $sRefreshMessage;
+    return renderHeading(_("Advanced Search")) . $oPatternBrowse->render() . $sForSearch . $sRefreshMessage;
 }
 
 function dealWithAdvancedSearch($aReq, $iStartIndex) {
