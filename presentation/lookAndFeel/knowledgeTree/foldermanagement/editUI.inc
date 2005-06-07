@@ -48,7 +48,7 @@ function getFolderData($iFolderID, $sDivName, $sStatusMessage = "") {
 	$aColumnTypes = array(1,1,2);
 	
 	$oPatternListFromQuery = & new PatternListFromQuery($sQuery, $aColumns, $aColumnHeaders, $aColumnTypes);
-	$oPatternListFromQuery->setTableHeading("Folder Data");
+	$oPatternListFromQuery->setTableHeading(_("Folder Data"));
 	$oPatternListFromQuery->setTableWidth("610");
 	
 	$sToRender .= "<table>";
@@ -85,7 +85,7 @@ function getFolderRouting($iFolderID, $sDivName, $bCollaboration) {
 	$aLinkURLs = array(4=>"$default->rootUrl/control.php?action=modifyFolderCollaboration",5=>"$default->rootUrl/control.php?action=deleteFolderCollaboration", 6=>"$default->rootUrl/control.php?action=viewDependantDocument");
 	
 	$oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaders, "610", $aLinkURLs, $aDBColumnArray,$aQueryStringVariableNames);
-	$oPatternTableSqlQuery->setTableHeading("Document Routing");
+	$oPatternTableSqlQuery->setTableHeading(_("Document Routing"));
 	$oPatternTableSqlQuery->setDisplayColumnHeadings(true);
 	
 	$sToRender .= "<table>";
@@ -119,7 +119,7 @@ function getFolderDocTypes($iFolderID, $sDivName) {
 	$aLinkURLs = array(1=>"$default->rootUrl/control.php?action=deleteFolderDocType");
 	
 	$oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaders, "610", $aLinkURLs, $aDBColumnArray,$aQueryStringVariableNames);
-	$oPatternTableSqlQuery->setTableHeading("Document Types");
+	$oPatternTableSqlQuery->setTableHeading(_("Document Types"));
 	$oPatternTableSqlQuery->setDisplayColumnHeadings(true);
 	
 	$sToRender .= "<table>";
@@ -166,11 +166,11 @@ function getFolderGroupAccess($iFolderID, $sDivName) {
 	$aLinkURLs = array(3=>"$default->rootUrl/control.php?action=modifyGroupFolderLink",4=>"$default->rootUrl/control.php?action=deleteGroupFolderLink");
 	
 	$oPatternTableSqlQuery = & new PatternTableSqlQuery(array($sQuery, $iInheritedFolderID), $aColumns, $aColumnTypes, $aColumnHeaders, "610", $aLinkURLs, $aDBColumnArray,$aQueryStringVariableNames);
-	$oPatternTableSqlQuery->setTableHeading("Folder Permissions");
+	$oPatternTableSqlQuery->setTableHeading(_("Folder Permissions"));
 	$oPatternTableSqlQuery->setDisplayColumnHeadings(true);
         if ($bInherited === true) {
             $oPatternTableSqlQuery->setDisabled(true);
-            $oPatternTableSqlQuery->setTableHeading("Folder Permissions (inherited)");
+            $oPatternTableSqlQuery->setTableHeading(_("Folder Permissions") . "(" . _("inherited") . ")");
         }
 	$sToRender .= "<table>";
 	$sToRender .= "<tr><td>" . $oPatternTableSqlQuery->render() . "</td></tr>";

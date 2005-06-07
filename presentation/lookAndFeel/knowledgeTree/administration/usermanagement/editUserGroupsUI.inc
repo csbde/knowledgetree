@@ -46,9 +46,9 @@ function renderGroupPicker($iUserID){
 
 	// Headings
 	$sToRender .= "<tr>";
-	$sToRender .= "<td ><strong>Assigned User to</strong></td>";
+	$sToRender .= "<td ><strong>" . _("Assigned Groups") . "</strong></td>";
 	$sToRender .= "<td></td>";
- 	$sToRender .= "<td ><strong>Available Groups</strong></td>";
+ 	$sToRender .= "<td ><strong>" . _("Available Groups") . "</strong></td>";
 	$sToRender .= "</tr>";
 
 	// Initialise structure
@@ -78,9 +78,9 @@ function renderGroupPicker($iUserID){
 
 	// Filter Button
 	$sToRender .= "<tr>";	
-	$sToRender .= "<td>Filter <BR><input type=\"text\" name=\"filterUG\" onkeyup=\"optGroup.sortSelectMatch(groupSelect, this.value)\" onchange=\"optGroup.sortSelectMatch(groupSelect, this.value)\"></td>";
+	$sToRender .= "<td>" . _("Filter") . " <BR><input type=\"text\" name=\"filterUG\" onkeyup=\"optGroup.sortSelectMatch(groupSelect, this.value)\" onchange=\"optGroup.sortSelectMatch(groupSelect, this.value)\"></td>";
 	$sToRender .= "<td></td>";
-	$sToRender .= "<td>Filter <BR><input type=\"text\" name=\"filterOG\" onkeyup=\"optGroup.sortSelectMatch(chosenGroups, this.value)\" onchange=\"optGroup.sortSelectMatch(chosenGroups, this.value)\"></td>";
+	$sToRender .= "<td>" . _("Filter") . " <BR><input type=\"text\" name=\"filterOG\" onkeyup=\"optGroup.sortSelectMatch(chosenGroups, this.value)\" onchange=\"optGroup.sortSelectMatch(chosenGroups, this.value)\"></td>";
 	$sToRender .= "</tr>";
 
 	// Assign/Cancel button

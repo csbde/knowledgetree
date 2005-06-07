@@ -152,7 +152,7 @@ if (checkSession()) {
 					   
                 	if (Folder::folderIsUnitRootFolder($fFolderID) && $bUnitHasGroups) {
 						// you can't delete a unit root folder
-						$oPatternCustom->setHtml(statusPage("Delete Folder", "", "You can't delete this folder because it is a Unit Root Folder and in use.", "browse", "fFolderID=" . $iFolderID));
+						$oPatternCustom->setHtml(statusPage("Delete Folder", "", _("You can't delete this folder because it is a Unit Root Folder and in use") . ".", "browse", "fFolderID=" . $iFolderID));
 
                 	} else {
 	                    // get confirmation first

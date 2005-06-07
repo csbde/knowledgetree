@@ -233,7 +233,7 @@ class Email {
         $this->oMailer->FromName = $FromName;
         $this->oMailer->AddAddress($ToEmail);
         $this->oMailer->Subject = stripslashes($Subj)  . ' ' . $hyperlink; //only difference from above
-        $this->oMailer->Body = stripslashes($EmailBody) . " <br>This bug can be found on this page: " . "<a href = ". $hyperlink .">". $hyperlink ."</a>";
+        $this->oMailer->Body = stripslashes($EmailBody) . " <br>" . _("This bug can be found on this page") . ": " . "<a href = ". $hyperlink .">". $hyperlink ."</a>";
 
         //send the email
         if(!$this->oMailer->Send()) {

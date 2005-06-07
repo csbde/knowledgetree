@@ -139,7 +139,9 @@ class PatternEditableTableSqlQuery {
 			if (isset($this->sEmptyTableMessage)) {
 				$sToRender .= "<td colspan=" . count($this->aStoreColumnNames) . ">$this->sEmptyTableMessage</td>\n";
 			} else {
-				$sToRender .= "<td colspan=" . count($this->aStoreColumnNames) . ">No " . (isset($this->sTableCaption) ? $this->sTableCaption : "") . " data</td>\n";
+				$sToRender .= "<td colspan=" . count($this->aStoreColumnNames) . ">" .
+                    sprintf(_("No %s data"), (isset($this->sTableCaption) ? $this->sTableCaption : "")) .
+                    "</td>\n";
 			}
 			$sToRender .= "</tr>\n";		
 		} else {
@@ -203,7 +205,7 @@ class PatternEditableTableSqlQuery {
 							}							
 							break;
 						case 3:
-							$sToRender .= "<b>The column type for drop downs is not implemented yet</b>\n";
+							$sToRender .= "<b>" . _("The column type for drop downs is not implemented yet") . "</b>\n";
 							break;
 						case 4:
 							//meta data
@@ -227,7 +229,10 @@ class PatternEditableTableSqlQuery {
 							
 							break;
 						default:							
-							$sToRender .= "<b>You are attempting to render an unknown column type " . ($this->aColumnTypes[$i]) . " in PatternEditableTableSqlQuery</b>\n";
+							$sToRender .= "<b>" .
+                                sprintf(_("You are attempting to render an unknown column type %s in PatternEditableTableSqlQuery"),
+                                    ($this->aColumnTypes[$i])) .
+                                "</b>\n";
 							break;
 					}
 

@@ -98,7 +98,7 @@ if (checkSession()) {
 						// Redirect edit groups page
 						redirect($_SERVER["PHP_SELF"] . "?fUserID=$fUserID");
 					} else {
-						$main->setErrorMessage("Some problems in updating groups. Please contact your administrator");
+						$main->setErrorMessage(_("Some problems in updating groups") . ".  " .  _("Please contact your administrator") . ".");
 					}
 				}
 		}

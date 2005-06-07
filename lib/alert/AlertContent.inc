@@ -49,83 +49,71 @@ class AlertContent {
      * @return string the alert content
      */
     function getSubscriptionAlert($iSubscriptionAlertType, $aValues) {
-        $sSubject = "DMS Subscription Alert- ";
-        $aAlertSubject = array(SubscriptionConstants::subscriptionAlertType("AddFolder") => $sSubject . "New Folder",
-                               SubscriptionConstants::subscriptionAlertType("RemoveSubscribedFolder") => $sSubject . "Removed Folder",
-                               SubscriptionConstants::subscriptionAlertType("RemoveChildFolder") => $sSubject . "Removed Folder",
-                               SubscriptionConstants::subscriptionAlertType("AddDocument") => $sSubject . "New Document",
-                               SubscriptionConstants::subscriptionAlertType("RemoveSubscribedDocument") => $sSubject . "Removed Document",
-                               SubscriptionConstants::subscriptionAlertType("RemoveChildDocument") => $sSubject . "Removed Document",
-                               SubscriptionConstants::subscriptionAlertType("ModifyDocument") => $sSubject . "Modified Document",
-                               SubscriptionConstants::subscriptionAlertType("CheckInDocument") => $sSubject . "Checked In Document",
-                               SubscriptionConstants::subscriptionAlertType("CheckOutDocument") => $sSubject . "Checked Out Document",
-                               SubscriptionConstants::subscriptionAlertType("MovedDocument") => $sSubject . "Moved Document",
-                               SubscriptionConstants::subscriptionAlertType("ArchivedDocument") => $sSubject . "Archived Document",
-                               SubscriptionConstants::subscriptionAlertType("RestoredArchivedDocument") => $sSubject . "Restored Document");
+        $sSubject = _("DMS Subscription Alert") . " - ";
+        $aAlertSubject = array(SubscriptionConstants::subscriptionAlertType("AddFolder") => $sSubject . _("New Folder"),
+                               SubscriptionConstants::subscriptionAlertType("RemoveSubscribedFolder") => $sSubject . _("Removed Folder"),
+                               SubscriptionConstants::subscriptionAlertType("RemoveChildFolder") => $sSubject . _("Removed Folder"),
+                               SubscriptionConstants::subscriptionAlertType("AddDocument") => $sSubject . _("New Document"),
+                               SubscriptionConstants::subscriptionAlertType("RemoveSubscribedDocument") => $sSubject . _("Removed Document"),
+                               SubscriptionConstants::subscriptionAlertType("RemoveChildDocument") => $sSubject . _("Removed Document"),
+                               SubscriptionConstants::subscriptionAlertType("ModifyDocument") => $sSubject . _("Modified Document"),
+                               SubscriptionConstants::subscriptionAlertType("CheckInDocument") => $sSubject . _("Checked In Document"),
+                               SubscriptionConstants::subscriptionAlertType("CheckOutDocument") => $sSubject . _("Checked Out Document"),
+                               SubscriptionConstants::subscriptionAlertType("MovedDocument") => $sSubject . _("Moved Document"),
+                               SubscriptionConstants::subscriptionAlertType("ArchivedDocument") => $sSubject . _("Archived Document"),
+                               SubscriptionConstants::subscriptionAlertType("RestoredArchivedDocument") => $sSubject . _("Restored Document"));
 
         $sViewAlertParams = "fSubscriptionID=" . $aValues["subscriptionID"] . "&fSubscriptionType=" . $aValues["subscriptionType"];
         $oUser = User::get($_SESSION["userID"]);
         $sAttribution = $oUser ? " by " . $oUser->getName() : "";
         $aAlertContent = array(SubscriptionConstants::subscriptionAlertType("AddFolder") =>
-                               "A new folder '" . $aValues["newFolderName"] . "' has been added to folder '" . $aValues["parentFolderName"] . "'$sAttribution.<br>" .
-                               "Please clear this subscription alert by clicking on the following link: " .
-                               generateControllerLink("viewAlert", $sViewAlertParams, $aValues["parentFolderName"]),
+                               			sprintf(_("A new folder ' %s ' has been added to folder ' %s '%s.<br>Please clear this subscription alert by clicking on the following link: %s"), $aValues["newFolderName"], $aValues["parentFolderName"],$sAttribution,  
+                               			generateControllerLink("viewAlert", $sViewAlertParams, $aValues["parentFolderName"])),
 
                                SubscriptionConstants::subscriptionAlertType("RemoveSubscribedFolder") =>
-                                       "The folder '" . $aValues["removedFolderName"] . "' has been removed from folder '" . $aValues["parentFolderName"] . "'$sAttribution.<br>" .
-                                       "Your subscription to this folder has been removed also.",
+                                       sprintf(_("The folder '%s' has been removed from folder '%s'%s.<br>Your subscription to this folder has been removed also."),$aValues["removedFolderName"],$aValues["parentFolderName"], $sAttribution),
                                        
                                SubscriptionConstants::subscriptionAlertType("RemoveChildFolder") =>
-                                       "The folder '" . $aValues["removedFolderName"] . "' has been removed from folder '" . $aValues["parentFolderName"] . "'$sAttribution.<br>" .
-                                       "Please clear this subscription alert by clicking on the following link: " .
+                                       sprintf(_("The folder '%s' has been removed from folder '%s'%s.<br>Please clear this subscription alert by clicking on the following link: "), $aValues["removedFolderName"], $aValues["parentFolderName"], $sAttribution) .
                                        generateControllerLink("viewAlert", $sViewAlertParams, $aValues["parentFolderName"]),
 
                                SubscriptionConstants::subscriptionAlertType("AddDocument") =>
-                                       "A new document '" . $aValues["newDocumentName"] . "' has been added to folder '" . $aValues["folderName"] . "'$sAttribution.<br>" .
-                                       "Please clear this subscription alert by clicking on the following link: " .
+                                       sprintf(_("A new document '%s' has been added to folder '%s'%s.<br>Please clear this subscription alert by clicking on the following link: "), $aValues["newDocumentName"], $aValues["folderName"], $sAttribution) .
                                        generateControllerLink("viewAlert", $sViewAlertParams, $aValues["newDocumentName"]),
 
                                SubscriptionConstants::subscriptionAlertType("RemoveChildDocument") =>
-                                       "The document '" . $aValues["removedDocumentName"] . "' has been removed from folder '" . $aValues["folderName"] . "'$sAttribution.<br>" .
-                                       "Please clear this subscription alert by clicking on the following link: " .
+                                       sprintf(_("The document '%s' has been removed from folder '%s'.<br>Please clear this subscription alert by clicking on the following link: "), $aValues["removedDocumentName"], $aValues["folderName"], $sAttribution) .
                                        generateControllerLink("viewAlert", $sViewAlertParams, $aValues["removedDocumentName"]),
                                        
                                SubscriptionConstants::subscriptionAlertType("RemoveSubscribedDocument") =>
-                                       "The document '" . $aValues["removedDocumentName"] . "' has been removed from folder '" . $aValues["folderName"] . "'$sAttribution.<br>" .
-                                       "Your subscription to this document has been removed also.",
+                                       sprintf(_("The document '%s' has been removed from folder '%s'%s.<br>Your subscription to this document has been removed also."), $aValues["removedDocumentName"], $aValues["folderName"], $sAttribution),
 
                                SubscriptionConstants::subscriptionAlertType("ModifyDocument") =>
-                                       "The document '" . $aValues["modifiedDocumentName"] . "' has been modified$sAttribution.<br>" .
-                                       "Please clear this subscription alert by clicking on the following link: " .
+                                       sprintf(_("The document '%s' has been modified%s.<br>Please clear this subscription alert by clicking on the following link: "), $aValues["modifiedDocumentName"], $sAttribution) .
                                        generateControllerLink("viewAlert", $sViewAlertParams, $aValues["modifiedDocumentName"]),
 
                                SubscriptionConstants::subscriptionAlertType("CheckInDocument") =>
-                                       "The document '" . $aValues["modifiedDocumentName"] . "' has been checked in$sAttribution.<br>" .
-                                       "Please clear this subscription alert by clicking on the following link: " .
+                                       sprintf(_("The document '%s' has been checked in%s.<br>Please clear this subscription alert by clicking on the following link: "), $aValues["modifiedDocumentName"], $sAttribution) .
                                        generateControllerLink("viewAlert", $sViewAlertParams, $aValues["modifiedDocumentName"]),
                                        
                                SubscriptionConstants::subscriptionAlertType("CheckOutDocument") =>
-                                       "The document '" . $aValues["modifiedDocumentName"] . "' has been checked out$sAttribution.<br>" .
-                                       "Please clear this subscription alert by clicking on the following link: " .
+                                       sprintf(_("The document '%s' has been checked out%s.<br>Please clear this subscription alert by clicking on the following link: "), $aValues["modifiedDocumentName"], $sAttribution) .
                                        generateControllerLink("viewAlert", $sViewAlertParams, $aValues["modifiedDocumentName"]),
                                        
                                SubscriptionConstants::subscriptionAlertType("MovedDocument") =>
-                                       "The document '" . $aValues["modifiedDocumentName"] . "' has been moved from folder '" . $aValues["oldFolderName"] . "' to folder '" . $aValues["newFolderName"] . "'$sAttribution.<br>" .
-                                       "Please clear this subscription alert by clicking on the following link: " .
+                                       sprintf(_("The document '%s' has been moved from folder '%s' to folder '%s'%s.<br>Please clear this subscription alert by clicking on the following link: "), $aValues["modifiedDocumentName"], $aValues["oldFolderName"], $aValues["newFolderName"], $sAttribution) .
                                        generateControllerLink("viewAlert", $sViewAlertParams, $aValues["modifiedDocumentName"]),
 
                                SubscriptionConstants::subscriptionAlertType("ArchivedDocument") =>
-                                       "The document '" . $aValues["modifiedDocumentName"] . "' has been archived$sAttribution.<br>" .
-                                       "Please clear this subscription alert by clicking on the following link: " .
+                                       sprintf(_("The document '%s' has been archived%s.<br>Please clear this subscription alert by clicking on the following link: "), $aValues["modifiedDocumentName"], $sAttribution) .
                                        generateControllerLink("viewAlert", $sViewAlertParams, $aValues["modifiedDocumentName"]),
                                                                               
                                SubscriptionConstants::subscriptionAlertType("RestoredArchivedDocument") =>
-                                       "The document '" . $aValues["modifiedDocumentName"] . "' has been restored from the archive$sAttribution.<br>" .
-                                       "Please clear this subscription alert by clicking on the following link: " .
+                                       sprintf(_("The document '%s' has been restored from the archive%s.<br>Please clear this subscription alert by clicking on the following link: "), $aValues["modifiedDocumentName"], $sAttribution) .
                                        generateControllerLink("viewAlert", $sViewAlertParams, $aValues["modifiedDocumentName"]));
 
         return array ("subject" => $aAlertSubject[$iSubscriptionAlertType],
-                      "text" => "Hello " . $aValues["subscriberName"] . ",<br><br>" . $aAlertContent[$iSubscriptionAlertType]);
+                      "text" => sprintf(_("Hello %s"), $aValues["subscriberName"]) . ",<br><br>" . $aAlertContent[$iSubscriptionAlertType]);
     }
 }
 ?>

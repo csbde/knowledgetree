@@ -112,7 +112,9 @@ class PatternListFromQuery {
 			if (isset($this->sEmptyTableMessage)) {
 				$sToRender .= "<td colspan=" . count($this->aColumns) . ">$this->sEmptyTableMessage</td>\n";
 			} else {
-				$sToRender .= "<td colspan=" . count($this->aColumns) . ">No " . (isset($this->sTableHeading) ? "$this->sTableHeading" : "") . " data</td>\n";
+				$sToRender .= "<td colspan=" . count($this->aColumns) . ">" .
+                    sprintf(_("No %s data"), (isset($this->sTableHeading) ? "$this->sTableHeading" : "")) .
+                    "</td>\n";
 			}
 			$sToRender .= "</tr>\n";
 		} else {

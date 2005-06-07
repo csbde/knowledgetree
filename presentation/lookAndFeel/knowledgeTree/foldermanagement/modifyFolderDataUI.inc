@@ -41,7 +41,7 @@ function getFolderData($iFolderID, $sStatusMessage = "") {
 	$sToRender .= "<table>";
 	$sToRender .= "<tr><td>";
 	$sToRender .= "<table cellpadding=\"5\" border=\"0\" width=\"610\">\n";
-	$sToRender .= "<caption><strong>Folder Data</strong></caption>";
+	$sToRender .= "<caption><strong>" . _("Folder Data") . "</strong></caption>";
 	if ($sql->next_record()) {
 		$sToRender .= "<tr>\n";
 		$sToRender .= "<td bgcolor=\"" . $sTDBGColour . "\">Name</td>\n";

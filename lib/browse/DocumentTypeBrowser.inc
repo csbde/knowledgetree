@@ -117,6 +117,6 @@ class DocumentTypeBrowser extends Browser {
     }
     
     function getSectionName() {
-    	return "Manage Document Types";
+    	return _("Manage Document Types");
     }    
 }

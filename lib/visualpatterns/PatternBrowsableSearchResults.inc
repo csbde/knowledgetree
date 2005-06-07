@@ -131,7 +131,7 @@ class PatternBrowseableSearchResults {
 			//no results
 			$sToRender .= "<table width=\"100%\" height=\"80%\">\n";		
 			$sToRender .= "<tr>\n";		
-			$sToRender .= "<td><p class=\"errorText\">No results matched your criteria</p></td>\n";
+			$sToRender .= "<td><p class=\"errorText\">" . _("No results matched your criteria") . "</p></td>\n";
 			$sToRender .= "</tr>\n";
 			$sToRender .= "</table>\n";
 		} else {
@@ -142,10 +142,10 @@ class PatternBrowseableSearchResults {
 			$iEndIndex = $this->iStartIndex+$this->iResultsToDisplay-1 < $iTotalResults ? $this->iStartIndex+$this->iResultsToDisplay-1 : $iTotalResults;
 			
 			if ($this->sSearchText) {
-                            $sToRender .= "<tr><td colspan=\"3\">Searched the KnowledgeTree for '$this->sSearchText'.</td></tr>";
-                        }
+                $sToRender .= "<tr><td colspan=\"3\">" . sprintf(_("Searched the KnowledgeTree for '%s'."), $this->sSearchText) . "</td></tr>";
+            }
 
-			$sToRender .= "<tr><td colspan=\"3\" align=\"right\">Displaying results $this->iStartIndex - $iEndIndex of $iTotalResults</td></tr>\n";
+			$sToRender .= "<tr><td colspan=\"3\" align=\"right\">" . sprintf(_("Displaying results %s - %s of %s"), $this->iStartIndex, $iEndIndex, $iTotalResults) . "</td></tr>\n";
 					
 			$sToRender .= "<tr>\n";		
 			for ($i = 0; $i < count($this->aColumnHeadings); $i++) {

@@ -35,7 +35,7 @@ function getConfirmationPage($iFolderID, $iDocumentIDs) {
 
 	  $oDocument = & Document::get($iDocumentIDs[$i]);
 	
-	  $sToRender .= "<tr><td><strong>" . $oDocument->getDisplayPath() . "</strong> <td>&nbsp;to&nbsp;</td> </td>\n";
+	  $sToRender .= "<tr><td><strong>" . $oDocument->getDisplayPath() . "</strong> <td>&nbsp;" . _("to") . "&nbsp;</td> </td>\n";
 	  $sToRender .= "<td><strong>" . Folder::getFolderDisplayPath($iFolderID) . " > " . $oDocument->getFileName() . "</strong></td>\n";
 	  $sQueryString .= "fDocumentIDs[]=$iDocumentIDs[$i]&";
 	}
@@ -85,7 +85,7 @@ function getPage($iFolderID, $iDocumentIDs, $sErrorMessage = "") {
 function renderErrorPage($sErrorMessage, $iDocumentID = "") {
   global $default;
   if ($iDocumentID) {
-    return statusPage("Delete Document", "", $sErrorMessage, "viewDocument", "fDocumentID=$iDocumentID");
+    return statusPage(_("Delete Document"), "", $sErrorMessage, "viewDocument", "fDocumentID=$iDocumentID");
   } else {
     $sToRender  = renderHeading(_("Delete Document"));
     $sToRender .= "<table>\n";

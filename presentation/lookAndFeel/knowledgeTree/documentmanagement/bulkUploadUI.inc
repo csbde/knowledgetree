@@ -109,7 +109,7 @@ function getDocumentType($iFolderID) {
     $oPatternListBox = & new PatternListBox("$default->document_types_table", "name", "id", "fDocumentTypeID",$sWhereClause);
     $oPatternListBox->setIncludeDefaultValue(false);
     $oPatternListBox->setFromClause("INNER JOIN $default->folder_doctypes_table AS FDL ON ST.id = FDL.document_type_id");
-    $oPatternListBox->setEmptyErrorMessage("No document types defined! Please contact an Administrator");
+    $oPatternListBox->setEmptyErrorMessage(_("No document types defined") . "!  " . _("Please contact an Administrator"));
 
     $sHeading = "Please select the document type:";
 
@@ -159,13 +159,13 @@ function getPage($iFolderID, $iDocumentTypeID) {
     $sToRender .= "<input type=\"hidden\" name=\"fStore\" value=\"1\">";
     $sToRender .= "<table>\n";
     $sToRender .= "<tr>\n";
-    $sToRender .= "<td colspan=\"2\"><b>Bulk Upload Zipfile: <b></td>\n";
+    $sToRender .= "<td colspan=\"2\"><b>" . _("Bulk Upload Zipfile") . ": <b></td>\n";
     $sToRender .= "</tr>\n";
     $sToRender .= "<tr><td>File: </td><td><input type=\"file\" name=\"fFile\"></td></tr>\n";
-    $sToRender .= "<tr><td colspan=\"2\">(Note: file should be a ZIP file without subdirectories. Details entered below apply to ALL documents to be added.)</td></tr>\n";
+    $sToRender .= "<tr><td colspan=\"2\">(" . _("Note: file should be a ZIP file without subdirectories. Details entered below apply to ALL documents to be added.") . ")</td></tr>\n";
     $sToRender .= "</table>\n";
 
-    $sToRender .= "<table><tr><td><b>Document Type<b></td></tr><tr><td>" . lookupName($default->document_types_table, $iDocumentTypeID) . "</td></tr></table>";
+    $sToRender .= "<table><tr><td><b>" . _("Document Type") . "<b></td></tr><tr><td>" . lookupName($default->document_types_table, $iDocumentTypeID) . "</td></tr></table>";
     $sToRender .= getMetaDataForm($iFolderID, $iDocumentTypeID);
 
     // create "BACK" button (to go back to choose document type id)
@@ -184,13 +184,13 @@ function getPage($iFolderID, $iDocumentTypeID) {
 function getStatusPage ($iFolderID, $aFileStatus) {
     global $default;
 
-    $sToRender .= "Bulk Upload completed for ".count($aFileStatus)." documents. <br/>\n";
+    $sToRender = sprintf(_("Bulk Upload completed for %s documents.  <br/>"), count($aFileStatus));
     if ($aFileStatus) {
         $sToRender .= "<table>\n";
         $sToRender .= "<tr>\n";
-        $sToRender .= "<th> Document </th>\n";
+        $sToRender .= "<th> " . _("Document") . " </th>\n";
         $sToRender .= "<th> &nbsp; </th>\n";
-        $sToRender .= "<th> Status </th>\n";
+        $sToRender .= "<th> " . _("Status") . " </th>\n";
         $sToRender .= "</tr>\n";
         foreach ($aFileStatus as $sDocumentName => $sUploadStatus) {
             $sToRender .= "<tr>\n";
@@ -209,8 +209,8 @@ function getStatusPage ($iFolderID, $aFileStatus) {
 }
 
 function getInvalidBulkUploadErrorMsg() {
-    return "You did not select a valid document to upload. <br />\n"
-           ."Bulk upload currently only supports .ZIP files without subdirectories.<br />\n";
+    return _("You did not select a valid document to upload") . ". <br />\n" .
+           _("Bulk upload currently only supports .ZIP files without subdirectories") . ".<br />\n";
 }
 
 // image link ... BACK (try bulk upload again)
