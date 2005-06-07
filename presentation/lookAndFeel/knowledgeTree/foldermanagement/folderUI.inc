@@ -65,9 +65,13 @@ function displayFolderLink($oFolder, $sLinkPage = "") {
         $sLinkPage = $_SERVER["PHP_SELF"];
     }
 
-    $sFolderIconPath = (Folder::folderIsUnitRootFolder($oFolder->getID())) ?
-      generateImage($default->graphicsUrl . "/widgets/dfolder_unit.gif") :
-      generateImage($default->graphicsUrl . "/widgets/dfolder.gif");
+	if (Folder::folderIsUnitRootFolder($oFolder->getID())) {
+		$sFolderIconPath = generateImage($default->graphicsUrl . "/widgets/dfolder_unit.gif");
+	} elseif ($oFolder->getIsPublic()) {
+		$sFolderIconPath = generateImage($default->graphicsUrl . "/widgets/dfolder_public.gif");
+	} else {
+		$sFolderIconPath = generateImage($default->graphicsUrl . "/widgets/dfolder.gif");
+	}
 
     return generateLink($sLinkPage,
                         "fBrowseType=folder&fFolderID=" . $oFolder->getID(),
