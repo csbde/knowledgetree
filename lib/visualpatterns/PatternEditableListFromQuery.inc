@@ -178,7 +178,9 @@ class PatternEditableListFromQuery {
 			$sToRender .= "</table>\n";
 		} else {			
 			$sToRender .= "<tr>\n";					
-			$sToRender .= "<td colspan=" . count($this->aDisplayColumns) . ">No " . (isset($this->sTableHeading) ? "$this->sTableHeading" : "") . " data</td>\n";
+			$sToRender .= "<td colspan=" . count($this->aDisplayColumns) . ">" .
+                sprintf(_("No %s data"), (isset($this->sTableHeading) ? "$this->sTableHeading" : "")) .
+                "</td>\n";
 			$sToRender .= "</tr>\n";			
 		}
 		

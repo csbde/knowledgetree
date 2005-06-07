@@ -57,8 +57,8 @@ $oPatternCustom = & new PatternCustom();
 /* CHECK: system has required features to handle bulk upload */
 if (!BulkUploadManager::isBulkUploadCapable()) {
     // can't do bulk uploading
-    $sErrorMessage = "This system is not capable of handling bulk uploads. <br/>\n"
-        . "Please contact your system administrator.<br />\n"
+    $sErrorMessage = _("This system is not capable of handling bulk uploads") . ". <br/>\n"
+        . _("Please contact your system administrator") . "<br />\n"
         . getCancelButton($fFolderID);
     $main->setErrorMessage($sErrorMessage);
     $main->setCentralPayload($oPatternCustom);
@@ -72,7 +72,7 @@ if (isset($fFolderID)) {
 } else {
     // no folder id was set when coming to this page,
     // so display an error message
-    $sErrorMessage = "You haven't selected a folder to bulk upload to.";
+    $sErrorMessage = _("You haven't selected a folder to bulk upload to") . ".";
     $main->setErrorMessage($sErrorMessage);
     $main->setCentralPayload($oPatternCustom);
     $main->render();
@@ -83,7 +83,7 @@ if (isset($fFolderID)) {
 if (!Permission::userHasFolderWritePermission($oFolder)) {
     // user does not have write permission for this folder
     $sErrorMessage = getCancelButton($fFolderID)
-        . "You do not have permission to add a document to this folder.";
+        . _("You do not have permission to add a document to this folder") . ".";
     $main->setErrorMessage($sErrorMessage);
     $main->setCentralPayload($oPatternCustom);
     $main->render();
@@ -192,7 +192,7 @@ while ($aIndividualFiles) {
     $oDocument->setDocumentTypeID($fDocumentTypeID);
 
     if (Document::documentExists($oDocument->getFileName(), $oDocument->getFolderID())) {
-        $aFileStatus[$sBasename] = "A document with this file name already exists in this folder.";
+        $aFileStatus[$sBasename] = _("A document with this file name already exists in this folder") . ".";
         continue;
     }
 
@@ -200,14 +200,14 @@ while ($aIndividualFiles) {
 
     if (!$oDocument->create()) {
         $default->log->error("bulkUploadBL.php DB error storing document in folder $sFolderPath id=$fFolderID");
-        $aFileStatus[$sBasename] = "An error occured while storing the document in the database, please try again. Error code 0127.";
+        $aFileStatus[$sBasename] = _("An error occured while storing the document in the database, please try again") . ".";
         continue;
     }
 
     // if the document was successfully created in the db, store it on the file system
     if (!PhysicalDocumentManager::uploadPhysicalDocument($oDocument, $fFolderID, "None", $oFile->sFilename)) {
         $default->log->error("bulkUploadBL.php DB error storing document in folder $sFolderPath id=$fFolderID");
-        $aFileStatus[$sBasename] = "An error occured while storing the document in the database, please try again. Error code 0128.";
+        $aFileStatus[$sBasename] = _("An error occured while storing the document in the database, please try again") . ".";
         continue;
     }
 
@@ -248,7 +248,7 @@ while ($aIndividualFiles) {
     /* display a status page with per-file results for bulk upload */
     $default->log->info("bulkUploadBL.php successfully added document " . $oDocument->getFileName() . " to folder $sFolderPath id=$fFolderID");
     /* store status for this document for later display */ 
-    $aFileStatus[$oDocument->getName()] = "Successfully added document";
+    $aFileStatus[$oDocument->getName()] = _("Successfully added document");
 }
 $oPatternCustom->setHtml(getStatusPage($fFolderID, $aFileStatus));
 
