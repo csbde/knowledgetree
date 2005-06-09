@@ -98,7 +98,8 @@ class PhysicalDocumentManager {
             $sDocumentFileSystemPath = $oDocument->getPath();
             if (file_exists($sDocumentFileSystemPath)) {
                 //set the correct headers
-                header("Content-Type: application/octet-stream");
+                header("Content-Type: " .
+                        PhysicalDocumentManager::getMimeTypeName($oDocument->getMimeTypeID()));
                 header("Content-Length: ". $oDocument->getFileSize());
                 header("Content-Disposition: attachment; filename=\"" . $oDocument->getFileName() . "\"");
                 header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
@@ -126,7 +127,8 @@ class PhysicalDocumentManager {
             $sDocumentFileSystemPath = $oDocument->getPath() . "-$sVersion";
             if (file_exists($sDocumentFileSystemPath)) {
                 //set the correct headers
-                header("Content-Type: application/octet-stream");
+                header("Content-Type: " .
+                        PhysicalDocumentManager::getMimeTypeName($oDocument->getMimeTypeID()));
                 header("Content-Length: ".  filesize($sDocumentFileSystemPath));
                 // prefix the filename presented to the browser to preserve the document extension
                 header('Content-Disposition: attachment; filename="' . "$sVersion-" . $oDocument->getFileName() . '"');
