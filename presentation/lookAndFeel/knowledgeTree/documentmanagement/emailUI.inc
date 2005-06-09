@@ -62,7 +62,7 @@ function renderUserPicker() {
 	$sToRender .= "<tr><td><select name=\"userSelect\" size=\"4\" multiple>\n";
 	$oUserArray = User::getList("ORDER BY name");/*ok*/
 	for ($i = 0; $i < count($oUserArray); $i++) {
-		if(strlen($oUserArray[$i]->getEmail())>0){ // if an email address exists			
+		if ((strlen($oUserArray[$i]->getEmail())>0) && $oUserArray[$i]->getEmailNotification()) {
 			$sToRender .= "<OPTION value=\"" . $oUserArray[$i]->getID() . "\" onDblClick=\"optUser.transferRight()\">\n";
 			$sToRender .= $oUserArray[$i]->getName();
 			$sToRender .= "</OPTION>\n";
