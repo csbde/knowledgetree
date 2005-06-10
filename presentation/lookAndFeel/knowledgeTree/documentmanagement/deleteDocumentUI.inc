@@ -44,7 +44,17 @@ function getPage($aDocumentIDs) {
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>&nbsp</td>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td><table><tr><td><a href=\"" . $_SERVER["PHP_SELF"] . "?$sQueryString&fDeleteConfirmed=1\"><img src=\"" . KTHtml::getDeleteButton() . "\" border=\"0\"></a></td> <td><a href=\"javascript:history.go(-1)\"><img src=\"" . KTHtml::getCancelButton() . "\" border=\"0\"></a></td></tr></table></td>";	
+	$sToRender .= "<td><table><tr><td>";
+    $sToRender .= "<a href=\"" . $_SERVER["PHP_SELF"] . "?$sQueryString&fDeleteConfirmed=1\"><img src=\"" . KTHtml::getDeleteButton() . "\" border=\"0\"></a>";
+    $sToRender .= "</td> <td>";
+    if (KTUtil::arrayGet($_REQUEST, "fReturnFolderID")) {
+        $sToRender .= generateControllerLink("browse", "fFolderID=" . $_REQUEST['fReturnFolderID'], "<img src=\"" . KTHtml::getCancelButton() . "\" border=\"0\"></a>");
+    } else if (KTUtil::arrayGet($_REQUEST, "fReturnDocumentID")) {
+        $sToRender .= generateControllerLink("viewDocument", "fDocumentID=" . $_REQUEST['fReturnDocumentID'], "<img src=\"" . KTHtml::getCancelButton() . "\" border=\"0\"></a>");
+    } else {
+        $sToRender .= "<a href=\"javascript:history.go(-1)\"><img src=\"" . KTHtml::getCancelButton() . "\" border=\"0\"></a>";
+    }
+    $sToRender .= "</td></tr></table></td>";	
 	$sToRender .= "</tr>";
 	$sToRender .= "</table>\n";
 	
