@@ -93,10 +93,12 @@ function getAdvancedSearchResults($aOrigReq, $iStartIndex) {
     $sSQLSearchString = join(" AND ", $aCritQueries);
     $sJoinSQL = join(" ", $aJoinSQL);
 
+    $sToSearch = KTUtil::arrayGet($aOrigReq, 'fToSearch', 'Live');
+
     $sQuery = DBUtil::compactQuery("
 SELECT
     F.name AS folder_name, F.id AS folder_id, D.id AS document_id,
-    D.name AS document_name, COUNT(D.id) AS doc_count
+    D.name AS document_name, D.filename AS file_name, COUNT(D.id) AS doc_count, 'View' AS view
 FROM
     $default->documents_table AS D
     INNER JOIN $default->folders_table AS F ON D.folder_id = F.id
@@ -113,16 +115,16 @@ ORDER BY doc_count DESC");
 
     $aParams = array();
     $aParams[] = $_SESSION["userID"];
-    $aParams[] = "Live";
+    $aParams[] = $sToSearch;
     $aParams = array_merge($aParams, $aCritParams);
 
     //var_dump(DBUtil::getResultArray(array($sQuery, $aParams)));
     //exit(0);
 
-    $aColumns = array("folder_name", "document_name", "doc_count");
-    $aColumnTypes = array(3,3,1);
-    $aColumnHeaders = array("<font color=\"ffffff\"><img src=$default->graphicsUrl/widgets/dfolder.gif>" . _("Folder") . "</font>","<font color=\"ffffff\">" . _("Document") . "</font>", "<font color=\"ffffff\">" . _("Matches") . "</font>");
-    $aLinkURLs = array("$default->rootUrl/control.php?action=browse","$default->rootUrl/control.php?action=viewDocument");
+    $aColumns = array("folder_name", "file_name", "document_name", "doc_count", "view");
+    $aColumnTypes = array(3,3,3,1,3);
+    $aColumnHeaders = array("<font color=\"ffffff\"><img src=$default->graphicsUrl/widgets/dfolder.gif>" . _("Folder") . "</font>", "<font color=\"ffffff\">" . _("Name") . "</font>", "<font color=\"ffffff\">" . _("Title") . "</font>", "<font color=\"ffffff\">" . _("Matches") . "</font>", "<font color=\"ffffff\">" . _("View") . "</font>");
+    $aLinkURLs = array("$default->rootUrl/control.php?action=browse","$default->rootUrl/control.php?action=viewDocument", "$default->rootUrl/control.php?action=viewDocument", null, "$default->rootUrl/control.php?action=downloadDocument");
     $aDBQueryStringColumns = array("document_id","folder_id");
     $aQueryStringVariableNames = array("fDocumentID", "fFolderID");
 
