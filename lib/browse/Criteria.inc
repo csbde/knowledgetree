@@ -268,7 +268,7 @@ class DateCreatedCriterion extends BrowseCriterion {
         return $oDocument->getCreatedDateTime();
     }
     function getName() {
-        return "datecreated";
+        return "created";
     }
     function searchWidget ($aRequest) {
         global $default;
