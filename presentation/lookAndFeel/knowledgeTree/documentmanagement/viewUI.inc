@@ -481,6 +481,7 @@ function displayEmailButton($oDocument) {
 function displayDeleteButton($oDocument, $bEdit) {
     if ($bEdit) {
     	$sQueryString = "fDocumentIDs[]=" . $oDocument->getID();
+        $sQueryString .= "&fReturnDocumentID=" . $oDocument->getID();
     	if ($oDocument->getIsCheckedOut()) {
     		$sDisabledText = _("This document can't be deleted because its checked out");
     	}

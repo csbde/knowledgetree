@@ -64,15 +64,18 @@ if (isset($fActions)) {
             $sQueryString .= "fDocumentIDs[]=$fDocumentID&";
         }
     }
+    $sQueryString .= "fReturnFolderID=$fFolderID&";
 
     switch ($fActions) {
     case "delete":
         // delete all selected docs
         controllerRedirect("deleteDocument", $sQueryString);
+        exit(0);
         break;
     case "move":
         // Move selected docs to root folder
         controllerRedirect("moveDocument", $sQueryString . "fFolderID=1");
+        exit(0);
         break;
     }
 }
