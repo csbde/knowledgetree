@@ -318,7 +318,8 @@ $default->rootUrl = $KTInit->guessRootUrl();
 require_once("environment.php");
 
 
-$KTInit->prependPath(KT_DIR . '/pear');
+$KTInit->prependPath(KT_DIR . '/thirdparty/pear');
+$KTInit->prependPath(KT_DIR . '/thirdparty/Smarty');
 require_once('PEAR.php');
 
 // instantiate log
