@@ -132,6 +132,8 @@ $default->siteMap->addPage("systemAdministration", "/presentation/lookAndFeel/kn
 
 $default->siteMap->addPage("browseAdministration", "/presentation/lookAndFeel/knowledgeTree/administration/browsemanagement/editBrowserBL.php", "Administration", SysAdmin, _("Browse Management"), true, 15);
 
+$default->siteMap->addPage("docLinkManagement", "/presentation/lookAndFeel/knowledgeTree/administration/doclinkmanagement/listLinkTypesBL.php", "Administration", SysAdmin, _("Link Type Management"), true, 16);
+
 $default->siteMap->addSectionColour("Administration", "th", "056DCE");
 $default->siteMap->addSectionColour("Administration", "td", "6699FF");
 
@@ -260,4 +262,12 @@ $default->siteMap->addDefaultPage("addComment", "/presentation/lookAndFeel/knowl
 
 $default->siteMap->addSectionColour("Discussion Threads", "td", "BDDFE0");
 $default->siteMap->addSectionColour("Discussion Threads", "th", "57AFAE");
+
+// Document link management
+$default->siteMap->addPage("listLinkTypes", "/presentation/lookAndFeel/knowledgeTree/administration/doclinkmanagement/listLinkTypesBL.php", "Administration", SysAdmin, "List Link Types", false);
+$default->siteMap->addPage("addLinkType", "/presentation/lookAndFeel/knowledgeTree/administration/doclinkmanagement/addLinkTypeBL.php", "Administration", SysAdmin, "Add A Link Type", false);
+$default->siteMap->addPage("addLinkTypeSuccess", "/presentation/lookAndFeel/knowledgeTree/administration/doclinkmanagement/addLinkTypeSuccess.php", "Administration", SysAdmin, "Add A Link Type Success ", false);
+$default->siteMap->addDefaultPage("editLinkType", "/presentation/lookAndFeel/knowledgeTree/administration/doclinkmanagement/editLinkTypeBL.php", "Administration", SysAdmin, _("Edit Link Type Properties"), false);
+$default->siteMap->addDefaultPage("removeLinkType", "/presentation/lookAndFeel/knowledgeTree/administration/doclinkmanagement/removeLinkTypeBL.php", "Administration", SysAdmin, _("Remove a Link Type"), false);
+
 ?>

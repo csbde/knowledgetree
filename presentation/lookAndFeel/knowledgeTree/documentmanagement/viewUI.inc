@@ -297,16 +297,18 @@ function renderNonEditableDocumentRouting($oDocument) {
 function renderEditableLinkedDocuments($oDocument) {
 	global $default;
 	
-	/*ok*/ $sQuery = array("SELECT D.id AS child_document_id, D.name, DL.id as document_link_id, DL.parent_document_id AS parent_document_id, 'Unlink' AS unlink " .
+	/*ok*/ $sQuery = array("SELECT D.id AS child_document_id, D.name, DL.id as document_link_id, " .
+            "DL.parent_document_id AS parent_document_id, DLT.name AS link_type, 'Unlink' AS unlink " .
 			  "FROM $default->documents_table AS D INNER JOIN $default->document_link_table AS DL ON D.id = DL.child_document_id " .
+              "INNER JOIN $default->document_link_types_table AS DLT ON DL.link_type_id = DLT.id " .
 			  "WHERE DL.parent_document_id = ?", $oDocument->getID());
 	
-	$aColumns = array("name", "unlink");
-    $aColumnHeaders = array(_("Document"));
-    $aColumnTypes = array(3,3);
+	$aColumns = array("name", "link_type", "unlink");
+    $aColumnHeaders = array(_("Document"), _("Document Link Type"));
+    $aColumnTypes = array(3,3,3);
     $aDBColumnArray = array("parent_document_id", "child_document_id","document_link_id", "child_document_id");
     $aQueryStringVariableNames = array("fParentDocumentID","fChildDocumentID", "fDocumentLinkID", "fDocumentID");
-    $aLinkURLs = array(0=>"$default->rootUrl/control.php?action=viewDocument", 1=>"$default->rootUrl/control.php?action=removeDocumentLink");
+    $aLinkURLs = array(0=>"$default->rootUrl/control.php?action=viewDocument", 2=>"$default->rootUrl/control.php?action=removeDocumentLink");
 
     $oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaders, "500", $aLinkURLs, $aDBColumnArray, $aQueryStringVariableNames);
     $oPatternTableSqlQuery->setTableHeading(_("Linked documents"));

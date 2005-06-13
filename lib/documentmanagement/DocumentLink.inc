@@ -34,7 +34,8 @@ class DocumentLink extends KTEntity {
 	var $iParentDocumentID;
 	/** document title name */	
 	var $iChildDocumentID;
-	
+    /** type of link */
+    var $iLinkTypeID;
 
 	/**
 	* Default constructor
@@ -43,12 +44,13 @@ class DocumentLink extends KTEntity {
 	* @param 	Child document primary key
 	*
 	*/
-	function DocumentLink($iNewParentDocumentID, $iNewChildDocumentID) {
+	function DocumentLink($iNewParentDocumentID, $iNewChildDocumentID, $iLinkTypeID) {
 		//object not created yet
 		global $default;
 		$this->iId = -1;
 		$this->iParentDocumentID = $iNewParentDocumentID;
 		$this->iChildDocumentID = $iNewChildDocumentID;
+		$this->iLinkTypeID = $iLinkTypeID;
 	}
 
 	/**
@@ -98,10 +100,25 @@ class DocumentLink extends KTEntity {
 		$this->iChildDocumentID = $iNewValue;
 	}
 
+	/**
+	* Get the primary key of the link type
+	*/
+	function getLinkTypeID() {
+		return $this->iLinkTypeID;
+	}
+
+	/**
+	* Set the primary key of the link type
+	*/
+	function setLinkTypeID($iNewValue) {
+		$this->iLinkTypeID = $iNewValue;
+	}
+
     function _fieldValues () {
         return array(
             'parent_document_id' => $this->iParentDocumentID,
             'child_document_id' => $this->iChildDocumentID,
+            'link_type_id' => $this->iLinkTypeID,
         );
     }
 

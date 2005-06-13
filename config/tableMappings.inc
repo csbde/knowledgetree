@@ -111,4 +111,6 @@ $default->time_unit_lookup_table = "time_unit_lookup";
 $default->archive_restoration_table = "archive_restoration_request";
 $default->status_table = "status_lookup";
 $default->search_permissions_table = "search_document_user_link";
+$default->document_link_types_table = "document_link_types";
+$default->upgrades_table = "upgrades";
 ?>

@@ -41,6 +41,10 @@ function getPage($iDocumentID) {
 		//for netscape 4.7 do this
 		$sToRender .= "<td>" . _("Document to link") . "</td><td><input type=\"text\"  value=\"\" name=\"fTargetDocument\" onblur=\"disable(document.MainForm.fTargetDocument);\" /><input type=\"button\" value=\"Browse\" onClick=\"disable(document.MainForm.fTargetDocument);newWindow('" . generateControllerUrl("templateBrowse") . "','window2')\"></td>\n";
 	}		
+    $sToRender .= "<tr>";
+    $sToRender .= "<td>Link Type</td><td>".getLinkTypesList($name="fLinkTypeID")."</td>\n";
+    $sToRender .= "</tr>\n";
+
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";	
 	$sToRender .= "<td><table><tr><td><input type=\"image\" src=\"" . KTHtml::getUpdateButton() . "\" border=\"0\"/></td><td><a href=\"" . $default->rootUrl . "/control.php?action=viewDocument&fDocumentID=$iDocumentID\"><img src=\"" . KTHtml::getCancelButton() . "\" border=\"0\"/></a></td></tr></table>\n";	
@@ -70,4 +74,20 @@ function getBrowseJavaScript() {
     $sToRender .= "//--></script>\n";	
     return $sToRender;
 }
+
+function getLinkTypesList($name="", $selected="") {
+    $sToRender = "\n<select name=\"$name\">";
+    $objects = LinkType::getList();
+    for ($x=0; $x<count($objects); $x++){
+        $sToRender .="<option value=\"";
+        $sToRender .= $objects[$x]->iId;
+        $sToRender .="\">";
+        $sToRender .= $objects[$x]->sName;
+        $sToRender .="</option>";
+    }
+
+    $sToRender .= "</select>";
+    return $sToRender;
+}
+
 ?>
