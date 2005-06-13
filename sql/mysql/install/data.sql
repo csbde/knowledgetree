@@ -97,6 +97,7 @@ INSERT INTO document_fields VALUES (1, 'Category', 'STRING', 1, NULL);
 -- Dumping data for table `document_link_types`
 -- 
 
+INSERT INTO document_link_types VALUES (0, 'Default', 'Default link type');
 
 -- 
 -- Dumping data for table `document_subscriptions`
@@ -644,6 +645,7 @@ INSERT INTO zseq_document_link VALUES (1);
 -- Dumping data for table `zseq_document_link_types`
 -- 
 
+INSERT INTO zseq_document_link_types VALUES(2);
 
 -- 
 -- Dumping data for table `zseq_document_subscriptions`

@@ -211,7 +211,7 @@ CREATE TABLE document_link (
   id int(11) NOT NULL default '0',
   parent_document_id int(11) NOT NULL default '0',
   child_document_id int(11) NOT NULL default '0',
-  link_type_id int(11) default NULL,
+  link_type_id int(11) NOT NULL default '0',
   UNIQUE KEY id (id)
 ) TYPE=InnoDB;
 

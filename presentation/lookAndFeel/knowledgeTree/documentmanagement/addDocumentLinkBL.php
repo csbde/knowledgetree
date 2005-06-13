@@ -31,13 +31,14 @@
 
 require_once("../../../../config/dmsDefaults.php");
 
-KTUtil::extractGPC('fDocumentID', 'fForStore', 'fTargetDocumentID');
+KTUtil::extractGPC('fDocumentID', 'fForStore', 'fTargetDocumentID', 'fLinkTypeID');
 
 if (checkSession()) {
 	require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
 	require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentLink.inc");
 	require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
 	require_once("$default->fileSystemRoot/lib/security/Permission.inc");
+    require_once("$default->fileSystemRoot/lib/linktypes/LinkType.inc");
 	require_once("$default->fileSystemRoot/presentation/Html.inc");
 	require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
 	require_once("documentUI.inc");
@@ -48,7 +49,7 @@ if (checkSession()) {
 		//user has permission to link this document to another
 		if (isset($fForStore)) {
 			//create a new document link
-			$oDocumentLink = & new DocumentLink($fDocumentID, $fTargetDocumentID);			
+			$oDocumentLink = & new DocumentLink($fDocumentID, $fTargetDocumentID, $fLinkTypeID);
 			if ($oDocumentLink->create()) {
 				controllerRedirect("viewDocument", "fDocumentID=$fDocumentID&fShowSection=linkedDocuments");
 			} else {
