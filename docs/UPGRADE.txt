@@ -1,8 +1,47 @@
 KnowledgeTree Upgrade instructions
 ==================================
 
-Basic upgrade
--------------
+Before you upgrade
+------------------
+
+Before you upgrade, ensure that your data (KnowledgeTree, Documents, and
+database) is backed up safely.  An upgrade may fail to accurately change
+the data to the format required by the next version of KnowledgeTree,
+and a backup will allow you to return to the original version of
+KnowledgeTree.  Please report failed upgrades to the KnowledgeTree
+developers.
+
+Automated upgrade
+-----------------
+
+The automated upgrade may be used from the command line or through a web
+page.  The web page is preferable, as it provides better error
+reporting.  The automated upgrade works between any version of
+KnowledgeTree to the current version.  The automated upgrade remembers
+which upgrades it has performed, and will not perform them again, unless
+forced to do so.  Using the automated upgrade will create an upgrade
+history that can be reviewed via the KnowledgeTree administrators
+interface.
+
+Command line:
+
+- Run bin/automated-upgrade.php
+- Any errors will be reported.
+
+Web page:
+
+- If your KnowledgeTree installation is at http://example.org/kt/,
+  visit:
+
+  http://example.org/kt/setup/upgrade.php
+
+- Review the upgrades available to you, and select the button to perform
+  the upgrade.
+
+- Review the results of the upgrade.
+
+Manual upgrade
+--------------
 
 In order to upgrade your KnowledgeTree installation, perform the following tasks:
 - Run the appropriate database upgrade scripts against your database.  If you are upgrading more than one version, multiple
@@ -15,7 +54,26 @@ In order to upgrade your KnowledgeTree installation, perform the following tasks
   It may be that there are no changes to the database format between
   versions, and no upgrade script will be available.
 
+  From version 2.0.6, there may be multiple upgrade scripts for a
+  version, contained in a subdirectory with the version name.
+
+  For example, these are the scripts necessary to upgrade to 2.0.6:
+
+  - sql/mysql/upgrade/2.0.6/add_email_attachment_transaction_type.sql
+  - sql/mysql/upgrade/2.0.6/create_upgrade_table.sql
+  - sql/mysql/upgrade/2.0.6/1-update_database_version.sql
+
 - Upgrade your application code, by unpacking the latest download into your webroot directory.
+
+- Run any applicable upgrade scripts in the bin/upgrade directory.
+  eg. If you are upgrading from version 2.0.5 to version 2.0.6, you
+  should run:
+
+  - bin/upgrade/upgrade-to-2.0.6.php
+
+  Note: You will need to run each intermediate version's upgrade scripts
+        manually.  In other words, from 2.0.5 to 2.0.7, you will need to
+        run both upgrade-to-2.0.6.php and upgrade-to-2.0.7.php.
 
 - Copy over the changes you made to the configuration to the configuration
   file.
