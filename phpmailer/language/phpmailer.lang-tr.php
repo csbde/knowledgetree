@@ -2,7 +2,7 @@
 /**
  * PHPMailer dil dosyasý.
  * Türkçe Versiyonu
- */ÝZYAZILIM - Elçin Özel - Can Yýlmaz - Mehmet Benlioðlu
+ */
 
 $PHPMAILER_LANG = array();
 
