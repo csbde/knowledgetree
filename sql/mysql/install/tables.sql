@@ -1372,6 +1372,7 @@ INSERT INTO document_transaction_types_lookup VALUES (11, 'Expunge');
 INSERT INTO document_transaction_types_lookup VALUES (12, 'Force CheckIn');
 INSERT INTO document_transaction_types_lookup VALUES (13, 'Email Link');
 INSERT INTO document_transaction_types_lookup VALUES (14, 'Collaboration Step Approve');
+INSERT INTO document_transaction_types_lookup VALUES (15, 'Email Attachment');
 
 -- 
 -- Dumping data for table `document_transactions`
@@ -1697,6 +1698,8 @@ INSERT INTO mime_types VALUES (136, 'sxi', 'application/vnd.sun.xml.impress', 'i
 INSERT INTO mime_types VALUES (137, 'sti', 'application/vnd.sun.xml.impress.template', 'icons/ooimpress.gif');
 INSERT INTO mime_types VALUES (138, 'sxg', 'application/vnd.sun.xml.writer.global', NULL);
 INSERT INTO mime_types VALUES (139, 'sxm', 'application/vnd.sun.xml.math', NULL);
+INSERT INTO mime_types VALUES (140, 'xlt', 'application/vnd.ms-excel', 'icons/excel.gif');
+INSERT INTO mime_types VALUES (141, 'dot', 'application/msword', 'icons/word.gif');
 
 -- 
 -- Dumping data for table `news`
@@ -1984,7 +1987,7 @@ INSERT INTO zseq_metadata_lookup VALUES (1);
 -- Dumping data for table `zseq_mime_types`
 -- 
 
-INSERT INTO zseq_mime_types VALUES (139);
+INSERT INTO zseq_mime_types VALUES (141);
 
 -- 
 -- Dumping data for table `zseq_news`
