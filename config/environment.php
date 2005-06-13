@@ -23,7 +23,8 @@
 
 // ----------------------------------------------------------------
 // The options in this section should automatically be detected by
-// KnowledgeTree.  
+// KnowledgeTree.  Please DO NOT set these manually if you do not
+// need to, as you may introduce errors in your system.
 // ----------------------------------------------------------------
 
 // install path (file path)
@@ -56,15 +57,15 @@
 // section.
 // ----------------------------------------------------------------
 
-// Change this to reflect the database you are using
-// currently mysql is the only supported type
+// The Database Engine to use.  Currently mysql is the only
+// supported type.
 $default->dbType = "mysql";
 
-// Database info
+// Database login details
 $default->dbHost           = "localhost";
 $default->dbName           = "dms";
 $default->dbUser           = "dms";
-$default->dbPass           = "pass";
+$default->dbPass           = "djw9281js";
 
 // ----------------------------------------------------------------
 // This section is for more esoteric settings.
@@ -74,10 +75,10 @@ $default->dbPass           = "pass";
 // valid choices are: DBAuthenticator, LDAPAuthenticator
 $default->authenticationClass = "DBAuthenticator";
 
-// enable folder hiding flag
+// Enable hiding of folders that are not accessible
 $default->folderHidingFlag = 1;
 
-// default language
+// Default language for the interface
 $default->defaultLanguage = "en";
 $default->useAcceptLanguageHeader = true;
 
@@ -124,10 +125,10 @@ $default->ldapSearchUser = "searchUser@domain.com";
 $default->ldapSearchPassword = "pwd";
     
 // email settings
-$default->emailServer = "mail.domain.com";
-$default->emailFrom = "kt@domain.com";
+$default->emailServer = "localhost";
+$default->emailFrom = "kt@" . $default->serverName;
 $default->emaiFromName = "KnowledgeTree Document Management System";
-$default->emailAdmin = "kt@jamwarehouse.com";
+$default->emailAdmin = "kt@" . $default->serverName;
 $default->emailAdminName = "DMS Administrator";
     
 // directories
