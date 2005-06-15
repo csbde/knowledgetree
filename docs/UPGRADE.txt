@@ -23,6 +23,9 @@ forced to do so.  Using the automated upgrade will create an upgrade
 history that can be reviewed via the KnowledgeTree administrators
 interface.
 
+If you are upgrading KnowledgeTree from versions prior to 2.0.6, see the
+section at the bottom of this document to set up automated upgrades.
+
 Command line:
 
 - Run bin/automated-upgrade.php
@@ -40,13 +43,25 @@ Web page:
 
 - Review the results of the upgrade.
 
+
+
 Manual upgrade
 --------------
 
-In order to upgrade your KnowledgeTree installation, perform the following tasks:
-- Run the appropriate database upgrade scripts against your database.  If you are upgrading more than one version, multiple
-  upgrade scripts will need to be executed.
-  eg. if you're upgrading from version 1.2.2 to version 2.0.0, the following upgrade scripts need to be executed:
+In order to upgrade your KnowledgeTree installation, perform the
+following tasks:
+
+- Upgrade your application code, by unpacking the latest download into
+  your webroot directory.
+
+- Run the appropriate database upgrade scripts against your database.
+
+  If you are upgrading more than one version, multiple upgrade scripts
+  will need to be executed.
+
+  eg. if you're upgrading from version 1.2.2 to version 2.0.0, the
+  following upgrade scripts need to be executed:
+
   - sql/mysql/upgrade/1.2.2-to-1.2.3.sql
   - sql/mysql/upgrade/1.2.3-to-1.2.4.sql
   - sql/mysql/upgrade/1.2.4-to-2.0.0.sql
@@ -63,8 +78,6 @@ In order to upgrade your KnowledgeTree installation, perform the following tasks
   - sql/mysql/upgrade/2.0.6/create_upgrade_table.sql
   - sql/mysql/upgrade/2.0.6/1-update_database_version.sql
 
-- Upgrade your application code, by unpacking the latest download into your webroot directory.
-
 - Run any applicable upgrade scripts in the bin/upgrade directory.
   eg. If you are upgrading from version 2.0.5 to version 2.0.6, you
   should run:
@@ -72,11 +85,15 @@ In order to upgrade your KnowledgeTree installation, perform the following tasks
   - bin/upgrade/upgrade-to-2.0.6.php
 
   Note: You will need to run each intermediate version's upgrade scripts
-        manually.  In other words, from 2.0.5 to 2.0.7, you will need to
+        manually.  In other words, from 2.0.5 to 2.0.7, you may need to
         run both upgrade-to-2.0.6.php and upgrade-to-2.0.7.php.
 
 - Copy over the changes you made to the configuration to the configuration
   file.
+
+
+==========================================================================
+
 
 Additional steps
 ----------------
@@ -84,8 +101,8 @@ Additional steps
 KnowledgeTree 2.0.0
 -------------------
 
-When upgrading to KnowledgeTree 2.0.0, run the following commands from the
-KnowledgeTree root directory (not the Root Folder):
+When upgrading manually to KnowledgeTree 2.0.0, run the following
+commands from the KnowledgeTree root directory (not the Root Folder):
 
 	php bin/setPermissionFolder.php
 	php bin/rebuildSearchPermissions.php
@@ -100,6 +117,31 @@ install is at http://example.org/kt/, then go to:
 	http://example.org/kt/bin/rebuildSearchPermissions.php
 
 Only errors will be displayed.
+
+
+---------------------------------------------------------------------------
+
+
+KnowledgeTree 2.0.6
+-------------------
+
+The automated upgrade requires that you set up a database administrator
+user (name configurable in config/environment.php, defaults to
+'dmsadmin') for the upgrade process to function.  You need to run this
+command on your database (say, 'dms') from the MySQL command prompt:
+
+mysql> use dms;
+mysql> GRANT ALL PRIVILEGES ON * TO dmsadmin@localhost IDENTIFIED BY 'js9281djw';
+
+In config/environment.php, you should add:
+
+$default->dbAdminUser      = "dmsadmin";
+$default->dbAdminPass      = "js9281djw";
+
+You should now be able to use the automated upgrade.
+
+
+---------------------------------------------------------------------------
 
 
 Jam Warehouse � Smart Business Innovation
