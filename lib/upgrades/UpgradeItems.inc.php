@@ -329,7 +329,9 @@ class RecordUpgradeItem extends UpgradeItem {
         $this->name = 'upgrade' . $version;
     }
     function _performUpgrade() {
-        return true;
+        $query = "UPDATE system_settings SET value=? WHERE name = ?";
+        $aParams = array($this->version, "knowledgeTreeVersion");
+        return DBUtil::runQuery(array($query, $aParams));
     }
 }
 
