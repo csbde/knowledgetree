@@ -67,6 +67,9 @@ $default->dbName           = "dms";
 $default->dbUser           = "dms";
 $default->dbPass           = "djw9281js";
 
+$default->dbAdminUser      = "dmsadmin";
+$default->dbAdminPass      = "js9281djw";
+
 // ----------------------------------------------------------------
 // This section is for more esoteric settings.
 // ----------------------------------------------------------------
