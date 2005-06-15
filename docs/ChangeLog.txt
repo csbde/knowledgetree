@@ -1,4 +1,522 @@
-Verison 2.0.5 (2005/06/04)
+Version 2.0.6 (2005/06/16)
+
+New Features
+============
+- New automated upgrade system (/setup/upgrade.php)
+- Documents can be sent via email as attachments
+- Documents can be sent to external email addresses
+- Document links can be given types ("refers to", "includes")
+- Documents can be viewed directly from search results
+
+Improvements
+============
+- Give accurate upload error messages for bulk uploads
+- Show errors when sending email 
+- Provide appropriate sizes for metadata entry by type
+- Distinguish Public Folders with a specific icon
+- Only show users to email to if they can be emailed
+- Use content type from the document mime type for view/checkout
+- Better default settings in environment.php
+
+Bug Fixes
+=========
+- Fix editing document fields problem
+- Fix "Next" in Advanced Search problem
+- Fix "Sort by Created Date" non-folder problem
+- Fix "javascript:go(-1)" back problem in document deletion
+- Fix "Archived Documents" search
+- Fix "Large numbers of documents to delete" problem
+
+Detailed ChangeLog
+==================
+
+2005-06-15 15:46  nbm
+
+	* sql/mysql/install/data.sql:
+
+	Regenerate data.sql for 2.0.6
+
+2005-06-15 15:46  nbm
+
+	* lib/upgrades/UpgradeItems.inc.php:
+
+	Actually update the knowledgeTreeVersion value in the database
+
+2005-06-15 15:33  nbm
+
+	* sql/mysql/: install/structure.sql,
+	  upgrade/2.0.6/create_upgrade_table.sql:
+
+	Ensure parent can handle descriptors, and update the structure.sql for
+	first installs.
+
+2005-06-15 14:53  nbm
+
+	* lib/visualpatterns/PatternMainPage.inc,
+	  presentation/lookAndFeel/knowledgeTree/documentmanagement/emailBL.php,
+	  lib/session/Session.inc:
+
+	Don't reuse mis-used $_SESSION["errorMessage"], and instead make our own
+	$_SESSION["KTErrorMessage"], which is an array of errors that errors can
+	be pushed upon, and automatically be displayed in the Main Page the next
+	time a page is seen.
+
+2005-06-15 14:37  nbm
+
+	* docs/VERSION.txt:
+
+	Getting close to 2.0.6 release
+
+2005-06-15 14:36  nbm
+
+	* lib/documentmanagement/Document.inc:
+
+	Make setFileName take a parameter
+
+	SF Tracker:	1220462
+
+2005-06-15 14:34  nbm
+
+	* log/.cvsignore:
+
+	Make CVS ignore all files in this directory
+
+2005-06-15 14:29  nbm
+
+	* bin/automated_upgrade.php:
+
+	Add a CLI script to automatically perform the upgrades to the current
+	version of KnowledgeTree.
+
+2005-06-15 14:29  nbm
+
+	* sql/mysql/upgrade/2.0.6/create_upgrade_table.sql:
+
+	Ensure the descriptors aren't shortened by the length of the descriptor
+	field.
+
+2005-06-15 14:28  nbm
+
+	* setup/upgrade.php:
+
+	Handle the final upgrade API.
+
+2005-06-15 14:28  nbm
+
+	* lib/upgrades/UpgradeItems.inc.php:
+
+	Check whether the upgrade table exists before checking if an upgrade has
+	been installed.
+
+	Run SQL queries using the admin db connection set up in upgrades.inc.php
+
+2005-06-15 14:27  nbm
+
+	* lib/upgrades/upgrade.inc.php:
+
+	Setup a special admin database connection, and ensure the upgrade table
+	is the first upgrade performed during upgrades.
+
+2005-06-15 14:26  nbm
+
+	* docs/UPGRADE.txt:
+
+	Explain how to add a dmsadmin account for use with the automated
+	upgrade.
+
+2005-06-15 13:43  nbm
+
+	* sql/mysql/install/user.sql:
+
+	Add dmsadmin user which has all privileges on the KT database for
+	upgrade purposes.
+
+2005-06-15 13:40  nbm
+
+	* config/environment.php:
+
+	Add dbAdminUser and dbAdminPass settings for administrator access to the
+	dms database for the upgrade scripts.
+
+2005-06-15 12:54  nbm
+
+	* presentation/lookAndFeel/knowledgeTree/documentmanagement/:
+	  browseBL.php, browseUI.inc, deleteDocumentBL.php,
+	  deleteDocumentUI.inc:
+
+	Allow large numbers of documents to be deleted or moved by using POST
+	for the initial submission, and then forwarding a unique identifier as a
+	key to a list of documents to delete in the session.
+
+	Reported by:	Ray Booysen (twyford)
+	SF Tracker:	1221326
+
+2005-06-13 14:41  nbm
+
+	* Documents/Root Folder/Default Unit/.cvsignore:
+
+	Make CVS ignore any files in this directory
+
+2005-06-13 14:39  nbm
+
+	* sql/mysql/upgrade/2.0.6/create_link_type_table.sql:
+
+	Add link type for document links to describe the relationship
+
+	Submitted by:   Marcel Berteler (pluk77)
+	SF Tracker:     1013935
+	SF Tracker:     971712
+
+2005-06-13 14:31  nbm
+
+	* config/siteMap.inc, config/tableMappings.inc,
+	  lib/documentmanagement/DocumentLink.inc,
+	  lib/documentmanagement/LinkType.inc,
+	  presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentLinkBL.php,
+	  presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentLinkUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/documentmanagement/viewUI.inc,
+	  sql/mysql/install/data.sql, sql/mysql/install/structure.sql,
+	  presentation/lookAndFeel/knowledgeTree/administration/doclinkmanagement/addLinkTypeBL.php,
+	  presentation/lookAndFeel/knowledgeTree/administration/doclinkmanagement/addLinkTypeSuccess.php,
+	  presentation/lookAndFeel/knowledgeTree/administration/doclinkmanagement/addLinkTypeUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/administration/doclinkmanagement/editLinkTypeBL.php,
+	  presentation/lookAndFeel/knowledgeTree/administration/doclinkmanagement/editLinkTypeUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/administration/doclinkmanagement/listLinkTypesBL.php,
+	  presentation/lookAndFeel/knowledgeTree/administration/doclinkmanagement/listLinkTypesUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/administration/doclinkmanagement/removeLinkTypeBL.php,
+	  presentation/lookAndFeel/knowledgeTree/administration/doclinkmanagement/removeLinkTypeUI.inc:
+
+	Add link type for document links to describe the relationship
+
+	Submitted by:	Marcel Berteler (pluk77)
+	SF Tracker:	1013935
+	SF Tracker:	971712
+
+2005-06-13 14:07  nbm
+
+	* phpmailer/language/phpmailer.lang-tr.php:
+
+	Fix mis-commented section (breaks php code validation)
+
+2005-06-13 13:17  nbm
+
+	* sql/mysql/install/: data.sql, structure.sql, tables.sql:
+
+	Convert from a single tables.sql with both structure and data, now have
+	separate structure and data sql statements.
+
+2005-06-13 10:11  nbm
+
+	* config/environment.php:
+
+	Default database password to that in user.sql.  Default mail server to
+	localhost.  Default mail addresses to kt@$servername.  Expand warning
+	about not setting things manually.  Rewrite some descriptive comments.
+
+2005-06-13 04:33  nbm
+
+	* sql/mysql/install/tables.sql:
+
+	Add .dot and .xlt file types.
+
+	SF Tracker:	1179273
+	Submitted by:	freboulet
+
+2005-06-13 04:32  nbm
+
+	* bin/upgrade/upgrade-to-2.0.6.php:
+
+	Upgrade script to upgrade to 2.0.6.
+
+2005-06-13 04:25  nbm
+
+	* docs/UPGRADE.txt:
+
+	Describe the new upgrade processes:
+
+	. Note the bin/upgrade/upgrade-to-*.php files for manual upgrade.
+	. Detail the new automated upgrade procedure, both command line and
+	  web-based.
+
+2005-06-13 03:58  nbm
+
+	* sql/mysql/upgrade/2.0.6/: 1-update_database_version.sql,
+	  add_email_attachment_transaction_type.sql,
+	  create_upgrade_table.sql:
+
+	SQL scripts necessary to upgrade to 2.0.6
+
+2005-06-13 03:43  nbm
+
+	* sql/mysql/upgrade/2.0.6/email_attachment_transaction_type.sql:
+
+	Renamed to add_email_attachment_transaction_type.sql.
+
+2005-06-13 03:17  nbm
+
+	* setup/upgrade.php:
+
+	Show the available upgrades, and allow them to be performed.
+
+2005-06-13 03:17  nbm
+
+	* tests/upgrades/test_upgrade.php:
+
+	Test which upgrades are detected, and the order they will be performed.
+
+2005-06-13 03:15  nbm
+
+	* lib/upgrades/: UpgradeFunctions.inc.php, UpgradeItems.inc.php,
+	  upgrade.inc.php:
+
+	Upgrade functionality for KnowledgeTree - allows automated upgrades from
+	one version of KnowledgeTree to another.
+
+2005-06-13 03:02  nbm
+
+	* tests/: lookup.php, system.php:
+
+	Remove these tests too.
+
+2005-06-11 15:28  nbm
+
+	* config/dmsDefaults.php:
+
+	PEAR was moved to thirdparty/pear
+
+2005-06-11 15:15  nbm
+
+	* thirdparty/.htaccess:
+
+	Protect third-party libraries from prying eyes
+
+2005-06-11 15:14  nbm
+
+	* thirdparty/pear/: DB.php, Log.php, PEAR.php, DB/common.php,
+	  DB/dbase.php, DB/fbsql.php, DB/ibase.php, DB/ifx.php,
+	  DB/msql.php, DB/mssql.php, DB/mysql.php, DB/mysqli.php,
+	  DB/oci8.php, DB/odbc.php, DB/pgsql.php, DB/sqlite.php,
+	  DB/storage.php, DB/sybase.php, Log/composite.php,
+	  Log/console.php, Log/daemon.php, Log/display.php,
+	  Log/error_log.php, Log/file.php, Log/mail.php, Log/mcal.php,
+	  Log/null.php, Log/observer.php, Log/sql.php, Log/sqlite.php,
+	  Log/syslog.php, Log/win.php:
+
+	Moved PEAR from pear to thirdparty/pear
+
+2005-06-11 14:47  nbm
+
+	* tests/SQLFile/: test_sqlfile.php, test_sqlfile.sql:
+
+	Test cases for the SQLFile functionality
+
+2005-06-11 14:43  nbm
+
+	* lib/database/sqlfile.inc.php:
+
+	Import SQL commands from a file, splitting into separate SQL statements.
+
+2005-06-10 16:18  nbm
+
+	* presentation/lookAndFeel/knowledgeTree/:
+	  administration/documentmanagement/manageArchivedDocumentsBL.php,
+	  search/advancedSearchBL.php, search/advancedSearchUtil.inc:
+
+	Share search code with archive search via advancedSearchUtil, and update
+	and simplify the restoration code.
+
+2005-06-10 13:00  nbm
+
+	* presentation/lookAndFeel/knowledgeTree/search/:
+	  advancedSearchBL.php, advancedSearchUI.inc:
+
+	Fix archive search, and display more information on results, and a view
+	button for direct download.
+
+2005-06-10 12:03  nbm
+
+	* presentation/lookAndFeel/knowledgeTree/documentmanagement/:
+	  browseBL.php, deleteDocumentUI.inc, viewUI.inc:
+
+	Avoid using javascript:go(-1), instead pass returning IDs.
+
+2005-06-10 10:30  nbm
+
+	* lib/browse/Criteria.inc:
+
+	Fix "Sort by Created Date", which only worked in folder mode before
+
+	Reported by:	customcomputing
+	SF Tracker:	1180763
+
+2005-06-09 14:02  nbm
+
+	* lib/documentmanagement/PhysicalDocumentManager.inc:
+
+	Use the content type from the document type for the view/checkout.
+
+	Submitted by:	zkrih
+	SF Tracker:	1213186
+
+2005-06-09 13:56  nbm
+
+	* presentation/lookAndFeel/knowledgeTree/documentmanagement/emailUI.inc:
+
+	Don't put users we won't send email to anyway in the list to be chosen.
+
+	Submitted by:	Stefano Ciancio (sciancio)
+	SF Tracker:	1217458
+
+2005-06-08 03:17  nbm
+
+	* lib/browse/DocumentTypeBrowser.inc:
+
+	Back out incorrect translatability of the section name
+
+	Submitted by:	Nicolas Quienot (nquienot)
+
+2005-06-07 14:16  nbm
+
+	* presentation/lookAndFeel/knowledgeTree/search/advancedSearchBL.php:
+
+	Fix "Next".
+
+	SF Tracker:	1216704
+
+2005-06-07 14:06  nbm
+
+	* presentation/lookAndFeel/knowledgeTree/documentmanagement/:
+	  bulkUploadBL.php, bulkUploadUI.inc:
+
+	Give an accurate error message when upload_max_size is exceeded.
+
+2005-06-07 13:38  nbm
+
+	* lib/alert/AlertContent.inc, lib/browse/DocumentTypeBrowser.inc,
+	  lib/email/Email.inc,
+	  lib/visualpatterns/PatternBrowsableSearchResults.inc,
+	  lib/visualpatterns/PatternEditableListFromQuery.inc,
+	  lib/visualpatterns/PatternEditableTableSqlQuery.inc,
+	  lib/visualpatterns/PatternListFromQuery.inc,
+	  lib/visualpatterns/PatternTableGeneric.inc,
+	  presentation/lookAndFeel/knowledgeTree/administration/usermanagement/editUserGroupsBL.php,
+	  presentation/lookAndFeel/knowledgeTree/administration/usermanagement/editUserGroupsUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/administration/usermanagement/passwordManagementUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/documentmanagement/bulkUploadBL.php,
+	  presentation/lookAndFeel/knowledgeTree/documentmanagement/bulkUploadUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/documentmanagement/moveDocumentUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/foldermanagement/deleteFolderBL.php,
+	  presentation/lookAndFeel/knowledgeTree/foldermanagement/editUI.inc,
+	  presentation/lookAndFeel/knowledgeTree/foldermanagement/modifyFolderDataUI.inc:
+
+	More translation support
+
+	Submitted by:	freboulet
+	SF Tracker:	1117965
+
+2005-06-07 11:23  nbm
+
+	* presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc:
+
+	Display a different folder icon for public folders
+
+	Submitted by:	Stefano Ciancio (sciancio)
+	SF Tracker:	1216219
+
+2005-06-07 11:20  nbm
+
+	* graphics/widgets/dfolder_public.gif:
+
+	Add a public folder icon
+
+2005-06-06 15:21  nbm
+
+	* presentation/lookAndFeel/knowledgeTree/documentmanagement/:
+	  emailBL.php, emailUI.inc:
+
+	Allow email addresses to be added free-form to the list of people to
+	send the document link/attachment to.
+
+2005-06-06 15:02  nbm
+
+	* lib/documentmanagement/DocumentTransaction.inc,
+	  lib/email/Email.inc,
+	  presentation/lookAndFeel/knowledgeTree/documentmanagement/emailBL.php,
+	  presentation/lookAndFeel/knowledgeTree/documentmanagement/emailUI.inc,
+	  sql/mysql/upgrade/2.0.6/email_attachment_transaction_type.sql:
+
+	Allow emails to be sent with documents as attachments.
+
+2005-06-06 13:48  nbm
+
+	* lib/visualpatterns/PatternMetaData.inc:
+
+	Provide some more appropriate sizes for data entry (especially "TEXT").
+
+	Submitted by:	Marcel Berteler (pluk77)
+	SF Tracker:	1013920
+
+2005-06-06 13:27  nbm
+
+	* presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentUI.inc:
+
+	Rather don't put Generic and Type-Specific Metadata side-by-side, so
+	that field size increases can be handled better.
+
+2005-06-06 12:02  nbm
+
+	* presentation/lookAndFeel/knowledgeTree/documentmanagement/emailBL.php:
+
+	Show errors in sending email on the next page.
+
+2005-06-06 12:01  nbm
+
+	* lib/visualpatterns/PatternMainPage.inc:
+
+	Handle multiple error messages, as well as errors via $_SESSION
+
+2005-06-06 12:00  nbm
+
+	* lib/email/Email.inc:
+
+	Set phpmailer language (to English, for now), and return PEAR Error
+	instances instead of false.
+
+2005-06-06 11:57  nbm
+
+	* lib/database/lookup.inc:
+
+	Don't set an error message for a common case - not getting results.
+
+2005-06-06 11:56  nbm
+
+	* phpmailer/language/: phpmailer.lang-br.php,
+	  phpmailer.lang-cz.php, phpmailer.lang-de.php,
+	  phpmailer.lang-en.php, phpmailer.lang-es.php,
+	  phpmailer.lang-fr.php, phpmailer.lang-it.php,
+	  phpmailer.lang-nl.php, phpmailer.lang-no.php,
+	  phpmailer.lang-se.php, phpmailer.lang-tr.php:
+
+	Upgrade to phpmailer 1.7.2
+
+2005-06-06 11:52  nbm
+
+	* phpmailer/: ChangeLog.txt, README, class.phpmailer.php,
+	  class.smtp.php:
+
+	Upgrade to phpmailer 1.7.2
+
+2005-06-06 03:14  nbm
+
+	* presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/editDocTypeFieldsUI.inc:
+
+	Fix parse error due to typo
+
+	Submitted by:	mehdi-dz
+	SF Tracker:	1215583
+
+
+Version 2.0.5 (2005/06/04)
 
 New Features
 ============
