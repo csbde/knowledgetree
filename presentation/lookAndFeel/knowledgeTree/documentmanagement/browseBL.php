@@ -58,12 +58,9 @@ if (!checkSession()) {
 
 if (isset($fActions)) {
     // tack on POSTed document ids and redirect to the expunge deleted documents page
-    $sQueryString = "";
-    if (isset($fDocumentIDs) ) {
-        foreach ($fDocumentIDs as $fDocumentID) {
-            $sQueryString .= "fDocumentIDs[]=$fDocumentID&";
-        }
-    }
+    $sUniqueID = KTUtil::randomString();
+    $_SESSION["documents"][$sUniqueID] = $fDocumentIDs;
+    $sQueryString = "fRememberDocumentID=$sUniqueID&";
     $sQueryString .= "fReturnFolderID=$fFolderID&";
 
     switch ($fActions) {
@@ -130,7 +127,7 @@ if (($fBrowseType == "folder") && (!isset($fFolderID))) {
 $oContent->addHtml(renderPage($aResults, $fBrowseType, $fSortBy, $fSortDirection));
 $main->setCentralPayload($oContent);
 $main->setFormAction($_SERVER["PHP_SELF"]);
-$main->setSubmitMethod("GET");    
+$main->setSubmitMethod("GET");
 $main->render();    
 
 ?>
