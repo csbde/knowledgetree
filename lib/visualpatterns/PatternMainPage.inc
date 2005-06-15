@@ -206,10 +206,11 @@ class PatternMainPage {
 											foreach ($this->sErrorMessage as $sErrorMessage) {
 												$sToRender .= "<table border=\"0\"><tr><td><p class=\"errorText\">$sErrorMessage</p></td></tr></table>\n ";
 											}
-                                            if ($_SESSION['errorMessage']) {
-                                                $sErrorMessage = $_SESSION['errorMessage'];
-												$sToRender .= "<table border=\"0\"><tr><td><p class=\"errorText\">$sErrorMessage</p></td></tr></table>\n ";
-                                                unset($_SESSION['errorMessage']);
+                                            if (count($_SESSION['KTErrorMessage'])) {
+                                                foreach ($_SESSION['KTErrorMessage'] as $sErrorMessage) {
+                                                    $sToRender .= "<table border=\"0\"><tr><td><p class=\"errorText\">$sErrorMessage</p></td></tr></table>\n ";
+                                                }
+                                                $_SESSION['KTErrorMessage'] = array();
                                             }
 											$sToRender = $sToRender . "\n" . $this->oCentralPayload->render() . "\n";
 										} else {											

@@ -39,6 +39,7 @@ class Session {
         
         // bind user id to session
         $_SESSION["userID"] = $iUserID;
+        $_SESSION["KTErrorMessage"] = array();
         
         // use the PHP generated session id
         $sessionID = session_id();

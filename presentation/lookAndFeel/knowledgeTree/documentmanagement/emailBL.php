@@ -234,7 +234,7 @@ if (checkSession()) {
 	            	sendManualEmails($aEmailAddresses, $oDocument, $fComment, (boolean)$fAttachDocument);
 
                     if (count($emailerrors)) {
-                        $_SESSION['errorMessage'] = join("<br />\n", $emailerrors);
+                        $_SESSION['KTErrorMessage'][] = join("<br />\n", $emailerrors);
                     }
 	                    
                     //go back to the document view page
