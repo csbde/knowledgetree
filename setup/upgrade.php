@@ -26,7 +26,16 @@ function generateUpgradeTable () {
 
 function showResult($res) {
     if (PEAR::isError($res)) {
+        if (is_a($res, 'Upgrade_Already_Applied')) {
+            return "Already applied";
+        }
         return $res->toString();
+    }
+    if ($res === true) {
+        return "Success";
+    }
+    if ($res === false) {
+        return "Failure";
     }
     return $res;
 }
@@ -37,21 +46,26 @@ function performAllUpgrades () {
     $lastVersion = DBUtil::getOneResultKey($query, 'value');
     $currentVersion = $default->systemVersion;
 
-    $upgrades = performUpgrade($lastVersion, $currentVersion);
+    $upgrades = describeUpgrade($lastVersion, $currentVersion);
 
-    $ret = "<table>\n";
-    $ret .= "<tr><th>Code</th><th>Description<th></tr>\n";
+    $ret = "<table width=\"100%\">\n";
+    $ret .= "<tr><th>Description</th><th>Result</th></tr>\n";
     foreach ($upgrades as $upgrade) {
-        $ret .= sprintf('<tr><td>%s</td><td>%s</td><td>%s</td></tr>',
-            htmlspecialchars($upgrade->getDescriptor()),
+        $res = $upgrade->performUpgrade();
+        $ret .= sprintf('<tr><td>%s</td><td>%s</td></tr>',
             htmlspecialchars($upgrade->getDescription()),
-            htmlspecialchars(showResult($upgrade->getResult())));
+            htmlspecialchars(showResult($res)));
     }
     $ret .= '</table>';
     return $ret;
 }
 
-$upgradeTable = generateUpgradeTable();
+if ($_REQUEST["go"] === "Upgrade") {
+    $performingUpgrade = true;
+    $upgradeTable = performAllUpgrades();
+} else {
+    $upgradeTable = generateUpgradeTable();
+}
 ?>
 <html>
   <head>
@@ -68,15 +82,26 @@ td { vertical-align: top; }
 <?php
 
 if ($upgradeTable) {
-    print "
-    <p>The table below describes the upgrades that need to occur to
-    upgrade your KnowledgeTree installation to <strong>$default->systemVersion</strong>.
-    Click on the button below the table to perform the upgrades.</p>
-    ";
+    if (!$performingUpgrade) {
+        print "
+        <p>The table below describes the upgrades that need to occur to
+        upgrade your KnowledgeTree installation to <strong>$default->systemVersion</strong>.
+        Click on the button below the table to perform the upgrades.</p>
+        ";
+    } else {
+        print "
+        <p>The table below describes the upgrades that have occurred to
+        upgrade your KnowledgeTree installation to <strong>$default->systemVersion</strong>.
+        ";
+    }
 
     print $upgradeTable;
 
-    print '<form><input type="submit" name="go" value="Upgrade" /></form>';
+    if (!$performingUpgrade) {
+        print '<form><input type="submit" name="go" value="Upgrade" /></form>';
+    } else {
+        print '<form><input type="submit" name="go" value="ShowUpgrades" /></form>';
+    }
 } else {
     
 }
