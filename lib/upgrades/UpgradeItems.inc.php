@@ -72,7 +72,19 @@ class UpgradeItem {
         return $this->type;
     }
 
+    function _upgradeTableInstalled() {
+        $query = "SELECT COUNT(id) FROM upgrades";
+        $res = DBUtil::getOneResult($query);
+        if (PEAR::isError($res)) {
+            return false;
+        }
+        return true;
+    }
+
     function isAlreadyApplied() {
+        if (!$this->_upgradeTableInstalled()) {
+            return false;
+        }
         $query = "SELECT id FROM upgrades WHERE descriptor = ? AND result = ?";
         $params = array($this->getDescriptor(), true);
         $res = DBUtil::getOneResultKey(array($query, $params), 'id');
@@ -87,11 +99,14 @@ class UpgradeItem {
 
     function performUpgrade($force = false) {
         $res = $this->isAlreadyApplied();
-        if ($res === true || PEAR::isError($res)) {
+        if ($res === true) {
             if ($force !== true) {
                 // PHP5: Exception
                 return new Upgrade_Already_Applied($this);
             }
+        }
+        if (PEAR::isError($res)) {
+            return $res;
         }
         $res = $this->_performUpgrade();
         if (PEAR::isError($res)) {
@@ -259,8 +274,7 @@ class SQLUpgradeItem extends UpgradeItem {
         global $default;
         $sqlupgradedir = KT_DIR . '/sql/' . $default->dbType . '/upgrade/';
         $queries = SQLFile::sqlFromFile($sqlupgradedir . $this->name);
-        var_dump($queries);
-        //return DBUtil::runQueries($queries);
+        return DBUtil::runQueries($queries, $default->_admindb);
     }
 }
 
