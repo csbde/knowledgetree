@@ -130,7 +130,7 @@ class Document extends KTEntity {
     }
 
     /** set the document path on the file system */
-    function setFileName() {
+    function setFileName($sNewValue) {
         $this->sFileName = $sNewValue;
     }
 
