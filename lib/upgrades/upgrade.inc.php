@@ -29,6 +29,33 @@
 
 require_once(KT_LIB_DIR . '/upgrades/UpgradeItems.inc.php');
 
+function setupAdminDatabase() {
+    global $default;
+    $dsn = array(
+        'phptype'  => $default->dbType,
+        'username' => $default->dbAdminUser,
+        'password' => $default->dbAdminPass,
+        'hostspec' => $default->dbHost,
+        'database' => $default->dbName,
+    );
+
+    $options = array(
+        'debug'       => 2,
+        'portability' => DB_PORTABILITY_ERRORS,
+        'seqname_format' => 'zseq_%s',
+    );
+
+    $default->_admindb = &DB::connect($dsn, $options);
+    if (PEAR::isError($default->_admindb)) {
+        handleInitError($default->_admindb);
+        // returns only in checkup
+        return $default->_admindb;
+    }
+    $default->_admindb->setFetchMode(DB_FETCHMODE_ASSOC);
+    return; 
+}
+setupAdminDatabase();
+
 // {{{ Format of the descriptor
 /**
  * Format of the descriptor
@@ -88,6 +115,13 @@ function &describeUpgrade ($origVersion, $currVersion) {
 
 // {{{ step_sort_func
 function step_sort_func ($obj1, $obj2) {
+    // Ugly hack to ensure that upgrade table is made first...
+    if ($obj1->name === "2.0.6/create_upgrade_table.sql") {
+        return -1;
+    }
+    if ($obj2->name === "2.0.6/create_upgrade_table.sql") {
+        return 1;
+    }
     $res = compare_version($obj1->getVersion(), $obj2->getVersion());
     if ($res !== 0) {
         return $res;
