@@ -24,8 +24,9 @@
  * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
  * @package documentmanagement
  */
-function getPage($aDocumentIDs) {
+function getPage($sRememberDocumentID) {
 	global $default;
+    $aDocumentIDs = $_SESSION['documents'][$sRememberDocumentID];
     $sToRender  = renderHeading(_("Delete Document"));
 	$sToRender .= "<table border=\"0\">\n";
 	$sToRender .= "<tr>\n";
@@ -35,8 +36,8 @@ function getPage($aDocumentIDs) {
 	  $oDocument = Document::get($aDocumentIDs[$i]);
 	$sToRender .= "<tr>\n";
 	  $sToRender .= "<td>&nbsp;&nbsp;'" .  $oDocument->getDisplayPath() . "'</td>\n";
-	  $sQueryString .= "fDocumentIDs[]=$aDocumentIDs[$i]&";
 	}
+    $sQueryString = "fRememberDocumentID=$sRememberDocumentID&";
 	$sToRender .= "<tr><tr><tr><tr>\n";
 
 	$sToRender .= "<td>" . _("Select 'Delete' to confirm the deletion, or 'Cancel' to cancel it") . "</td>\n";

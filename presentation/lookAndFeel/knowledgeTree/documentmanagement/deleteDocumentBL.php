@@ -28,7 +28,7 @@
 
 require_once("../../../../config/dmsDefaults.php");
 
-KTUtil::extractGPC('fDeleteConfirmed', 'fDocumentIDs');
+KTUtil::extractGPC('fDeleteConfirmed', 'fDocumentIDs', 'fRememberDocumentID');
 
 require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
 require_once("$default->fileSystemRoot/lib/foldermanagement/FolderUserRole.inc");
@@ -48,6 +48,14 @@ require_once("deleteDocumentUI.inc");
 $aNondeletedDocs = array();
 
 if (checkSession()) {
+
+  if (isset($fRememberDocumentID)) {
+      $fDocumentIDs = $_SESSION['documents'][$fRememberDocumentID];
+  } else {
+      $sUniqueID = KTUtil::randomString();
+      $_SESSION["documents"][$sUniqueID] = $fDocumentIDs;
+      $fRememberDocumentID = $sUniqueID;
+  }
 	
   if (isset($fDocumentIDs)) {
     
@@ -212,7 +220,7 @@ if (checkSession()) {
       //get confirmation first				
 			require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");			
 			$oPatternCustom = & new PatternCustom();							
-      $oPatternCustom->addHtml(getPage($fDocumentIDs));
+          $oPatternCustom->addHtml(getPage($fRememberDocumentID));
 			$main->setCentralPayload($oPatternCustom);
 			$main->render();
 		}
