@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Jun 13, 2005 at 10:13 PM
+-- Generation Time: Jun 16, 2005 at 12:35 AM
 -- Server version: 4.0.23
 -- PHP Version: 4.3.10-10ubuntu4
 -- 
@@ -491,7 +491,8 @@ INSERT INTO status_lookup VALUES (4, 'Archived');
 -- 
 
 INSERT INTO system_settings VALUES (1, 'lastIndexUpdate', '0');
-INSERT INTO system_settings VALUES (2, 'knowledgeTreeVersion', '2.0.2');
+INSERT INTO system_settings VALUES (2, 'knowledgeTreeVersion', '2.0.6');
+INSERT INTO system_settings VALUES (3, 'databaseVersion', '2.0.6');
 
 -- 
 -- Dumping data for table `time_period`
@@ -522,6 +523,12 @@ INSERT INTO units_organisations_link VALUES (1, 1, 1);
 -- Dumping data for table `upgrades`
 -- 
 
+INSERT INTO upgrades VALUES (1, 'sql*2.0.6*0*2.0.6/create_upgrade_table.sql', 'Database upgrade to version 2.0.6: Create upgrade table', '2005-06-16 00:30:06', 1, 'upgrade*2.0.6*0*upgrade2.0.6');
+INSERT INTO upgrades VALUES (2, 'upgrade*2.0.6*0*upgrade2.0.6', 'Upgrade from version 2.0.2 to 2.0.6', '2005-06-16 00:30:06', 1, 'upgrade*2.0.6*0*upgrade2.0.6');
+INSERT INTO upgrades VALUES (3, 'func*2.0.6*0*addTemplateMimeTypes', 'Add MIME types for Excel and Word templates', '2005-06-16 00:30:06', 1, 'upgrade*2.0.6*0*upgrade2.0.6');
+INSERT INTO upgrades VALUES (4, 'sql*2.0.6*0*2.0.6/add_email_attachment_transaction_type.sql', 'Database upgrade to version 2.0.6: Add email attachment transaction type', '2005-06-16 00:30:06', 1, 'upgrade*2.0.6*0*upgrade2.0.6');
+INSERT INTO upgrades VALUES (5, 'sql*2.0.6*0*2.0.6/create_link_type_table.sql', 'Database upgrade to version 2.0.6: Create link type table', '2005-06-16 00:30:06', 1, 'upgrade*2.0.6*0*upgrade2.0.6');
+INSERT INTO upgrades VALUES (6, 'sql*2.0.6*1*2.0.6/1-update_database_version.sql', 'Database upgrade to version 2.0.6: Update database version', '2005-06-16 00:30:06', 1, 'upgrade*2.0.6*0*upgrade2.0.6');
 
 -- 
 -- Dumping data for table `users`
@@ -645,7 +652,7 @@ INSERT INTO zseq_document_link VALUES (1);
 -- Dumping data for table `zseq_document_link_types`
 -- 
 
-INSERT INTO zseq_document_link_types VALUES(2);
+INSERT INTO zseq_document_link_types VALUES (2);
 
 -- 
 -- Dumping data for table `zseq_document_subscriptions`
@@ -789,7 +796,7 @@ INSERT INTO zseq_status_lookup VALUES (4);
 -- Dumping data for table `zseq_system_settings`
 -- 
 
-INSERT INTO zseq_system_settings VALUES (2);
+INSERT INTO zseq_system_settings VALUES (3);
 
 -- 
 -- Dumping data for table `zseq_time_period`
@@ -819,6 +826,7 @@ INSERT INTO zseq_units_organisations_link VALUES (1);
 -- Dumping data for table `zseq_upgrades`
 -- 
 
+INSERT INTO zseq_upgrades VALUES (6);
 
 -- 
 -- Dumping data for table `zseq_users`
