@@ -17,38 +17,53 @@ KnowledgeTree Installation Notes
 
        http://localhost/setup/
 
+*  Set up the database
+   - Create a database:
+     $ mysqladmin -p create dms
 
-*  Create a database:
-   $ mysqladmin -p create dms
+   - Create and populate the tables:
+     $ mysql -p dms < sql/mysql/install/structure.sql
+     $ mysql -p dms < sql/mysql/install/data.sql
+
+   - Create the database perfor
+     $ mysql -p dms < sql/mysql/install/user.sql
 
 
-*  Create and populate the tables:
-   $ mysql -p dms < sql/mysql/install/tables.sql
-
-
-*  Configure your installation by changing the following attributes in config/environment.php:
-   - Set the database properties to point to your MySQL installation
-        $default->dbUser           = "root";
-        $default->dbPass           = "pass123";
+*  Configure your installation in config/environment.php:
+   - The default configuration will determine many settings on your
+     installation automatically, and this is the preferred method of
+     running KnowledgeTree.  Please do not manually set these settings
+     unless you know what you are doing.
+   - The default configuration uses the database username and password
+     in the user.sql file mentioned above, use the local host for the
+     database, and use the database named 'dms'.  If you follow the
+     examples above in setting up the database, this means KnowledgeTree
+     should be fully configured to start working.
+   - However, you should change this once you've performed your initial
+     evalution of KnowledgeTree for the security of your documents.
+   - The following settings in config/environment.php control the
+     database connectivity, and can be set as shown:
+        $default->dbUser           = "myuser";
+        $default->dbPass           = "mypassword";
         $default->dbHost           = "localhost";
-        $default->dbName           = "release112";
+        $default->dbName           = "release206";
 
 
-*  Check permissions on the Documents folder
-   - The "/Documents" folder MUST be able to be written to by your web server.
-     If your web server is running as user "nobody" and group "nobody" (apache default)
+*  Check permissions on the folders
+   - The "Documents" folder in the root of the KnowledgeTree
+     installation MUST be able to be written to by your web server.
+   - The "log" folder in the root of the KnowledgeTree installation MUST
+     be able to be written to by your web server.
+   - The pre-configuration checkup will display the user which must be
+     able to write to these folders.
+   - The remaining folders should preferably not be able to be written
+     to by your web server.
+
+   - eg.
+     If your web server is running as user "nobody" and group "nogroup"
      then cd to the files directory and type:
 
-     *nix: 'chown -R nobody.nobody Documents'
-     Windows: Check the permissions and security tabs
-
-
-*  Check permissions on the log folder
-   - The "/log" folder MUST be able to be written to by your web server.
-     If your web server is running as user "nobody" and group "nobody" (apache default)
-     then cd to the files directory and type:
-
-     *nix: 'chown -R nobody.nobody log'
+     *nix: 'chown -R nobody.nogroup Documents log'
      Windows: Check the permissions and security tabs
 
 
@@ -62,25 +77,19 @@ KnowledgeTree Installation Notes
 
 
 *  Login:
-   - in a web browser goto http://$default->serverName/$default->rootUrl/
+   - in a web browser go to your KnowledgeTree installation via the web
    - default user is "admin" with password "admin"
 
 
-*  Setting System Settings:
-   - Click on 'Admin'.
-   - Select System Settings.
-   - Check that the values are the same as the ones in your environment.php
-     (Note: If you are not using LDAP you can leave these settings as is)
-   - Click 'Update' to save these settings.
-
-   
 Troubleshooting
 ---------------
 
-Make sure you pre- and post-installation checkups aren't highlighting problems
-first:
+Please make sure that your KnowledgeTree installation passes all the
+pre- and post-installation checkups first.
 
 Refer to docs/FAQ.txt.
+
+Ask on the KnowledgeTree forums.
 
 
 Upgrading
