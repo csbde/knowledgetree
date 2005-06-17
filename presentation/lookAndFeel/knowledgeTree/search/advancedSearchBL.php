@@ -40,7 +40,6 @@ if (checkSession()) {
 	require_once("$default->fileSystemRoot/lib/security/Permission.inc");
 	require_once("$default->fileSystemRoot/presentation/Html.inc");
 	require_once("advancedSearchUI.inc");
-	require_once("advancedSearchUtil.inc");	
 	
 	require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 
