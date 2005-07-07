@@ -65,7 +65,7 @@ class LinkType extends KTEntity {
     }
 	
     function getList($sWhereClause = null) {
-            return KTEntityUtil::getList(Link::_table(), 'LinkType', $sWhereClause);
+            return KTEntityUtil::getList(LinkType::_table(), 'LinkType', $sWhereClause);
     }
 
     function &get($id) {
