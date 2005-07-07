@@ -686,10 +686,11 @@ class Folder extends KTEntity {
 	*/
 	function folderIsUnitRootFolder($iFolderID) {
 		global $default;
-		$sQuery = "SELECT F.id FROM $default->folders_table AS F " ./*ok*/
-		          "INNER JOIN $default->units_table AS U ON F.name LIKE U.name " .
+		$sQuery = "SELECT F.id FROM $default->folders_table AS F " .
+				  "INNER JOIN $default->folders_table AS P ON F.parent_id=P.id " .
+		          "INNER JOIN $default->units_table AS U ON F.unit_id=U.id " .
 		          "WHERE F.id = ? " .
-		          "AND F.description LIKE '%Unit Root Folder'";	
+		          " AND P.unit_id<>F.unit_id ";	
         $aParams = array($iFolderID);
 		$sql = $default->db;
 		$sql->query(array($sQuery, $aParams));
