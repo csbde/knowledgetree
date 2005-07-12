@@ -77,11 +77,15 @@ function getBrowseJavaScript() {
 
 function getLinkTypesList($name="", $selected="") {
     $sToRender = "\n<select name=\"$name\">";
-    $objects = LinkType::getList();
+    $objects = LinkType::getList("id != -1");
     for ($x=0; $x<count($objects); $x++){
         $sToRender .="<option value=\"";
         $sToRender .= $objects[$x]->iId;
-        $sToRender .="\">";
+        $sToRender .="\""; 
+        if ($objects[$x]->iId == 0) {
+            $sToRender .= " SELECTED";
+        }
+        $sToRender .= ">";
         $sToRender .= $objects[$x]->sName;
         $sToRender .="</option>";
     }
