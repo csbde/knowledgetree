@@ -210,7 +210,7 @@ if ($oDocumentTransaction->create()) {
 //document and must be linked to that document
 if (isset($fDependantDocumentID)) {
     $oDependantDocument = DependantDocumentInstance::get($fDependantDocumentID);
-    $oDocumentLink = & new DocumentLink($oDependantDocument->getParentDocumentID(), $oDocument->getID());
+    $oDocumentLink = & new DocumentLink($oDependantDocument->getParentDocumentID(), $oDocument->getID(), -1); // XXX: KT_LINK_DEPENDENT
     if ($oDocumentLink->create()) {
         //no longer a dependant document, but a linked document
         $oDependantDocument->delete();                         
