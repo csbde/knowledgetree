@@ -4,7 +4,10 @@ DEFINE("LIVE", 1);
 DEFINE("PUBLISHED", 2);
 DEFINE("DELETED", 3);
 DEFINE("ARCHIVED", 4);
-require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
+DEFINE("STATUS_INCOMPLETE", 5);
+
+require_once(KT_LIB_DIR . "/foldermanagement/Folder.inc");
+
 /**
  * $Id$
  *
@@ -31,6 +34,7 @@ require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
  * @package lib.documentmanagement
  * @todo add in document change transaction functionality
  */ 
+
 class Document extends KTEntity {
     /** primary key */
     var $iId;

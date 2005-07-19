@@ -24,8 +24,8 @@
  * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
  * @package lib.foldermanagement 
  */
-require_once("$default->fileSystemRoot/lib/foldermanagement/PhysicalFolderManagement.inc");
-require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
+require_once(KT_LIB_DIR . "/foldermanagement/PhysicalFolderManagement.inc");
+require_once(KT_LIB_DIR . "/lib/documentmanagement/Document.inc");
 
 class Folder extends KTEntity {
 	
