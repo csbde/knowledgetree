@@ -3,7 +3,7 @@
 require_once('../config/dmsDefaults.php');
 require_once(KT_LIB_DIR . '/foldermanagement/Folder.inc');
 
-$sQuery = "SELECT id FROM $default->folders_table WHERE permission_folder_id = NULL";
+$sQuery = "SELECT id FROM $default->folders_table WHERE permission_folder_id IS NULL";
 
 $aIDs = DBUtil::getResultArrayKey($sQuery, 'id');
 
