@@ -11,6 +11,7 @@ class UpgradeFunctions {
         "addTemplateMimeTypes" => "Add MIME types for Excel and Word templates",
     );
     function setPermissionFolder() {
+        global $default;
         require_once(KT_LIB_DIR . '/foldermanagement/Folder.inc');
 
         $sQuery = "SELECT id FROM $default->folders_table WHERE permission_folder_id = NULL";
