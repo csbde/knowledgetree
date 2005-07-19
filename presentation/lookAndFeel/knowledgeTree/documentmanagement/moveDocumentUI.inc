@@ -25,8 +25,10 @@
  * @package documentmanagement
  */
  
-function getConfirmationPage($iFolderID, $iDocumentIDs) {
+function getConfirmationPage($iFolderID, $sRememberDocumentID) {
 	global $default;
+	$iDocumentIDs = $_SESSION['documents'][$sRememberDocumentID];
+
     $sToRender = renderHeading(_("Move Document"));
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr>\n<td>" . _("Are you sure you want to move") . ": </td></tr>";
@@ -37,8 +39,8 @@ function getConfirmationPage($iFolderID, $iDocumentIDs) {
 	
 	  $sToRender .= "<tr><td><strong>" . $oDocument->getDisplayPath() . "</strong> <td>&nbsp;" . _("to") . "&nbsp;</td> </td>\n";
 	  $sToRender .= "<td><strong>" . Folder::getFolderDisplayPath($iFolderID) . " > " . $oDocument->getFileName() . "</strong></td>\n";
-	  $sQueryString .= "fDocumentIDs[]=$iDocumentIDs[$i]&";
 	}
+    $sQueryString .= "fRememberDocumentID=$sRememberDocumentID&";
 
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr><td><a href=\"$default->rootUrl/control.php?action=moveDocument&" . $sQueryString . 
@@ -53,8 +55,10 @@ function getConfirmationPage($iFolderID, $iDocumentIDs) {
 }
 
 
-function getPage($iFolderID, $iDocumentIDs, $sErrorMessage = "") {
+function getPage($iFolderID, $sRememberDocumentID, $sErrorMessage = "") {
 	global $default;
+	$iDocumentIDs = $_SESSION['documents'][$sRememberDocumentID];
+
     $sToRender = renderHeading(_("Move Document"));
 	$sToRender .= "<table>\n";
 	if ($sErrorMessage) {
@@ -65,8 +69,8 @@ function getPage($iFolderID, $iDocumentIDs, $sErrorMessage = "") {
   for ($i = 0; $i < count($iDocumentIDs); $i++) {
     $sToRender .= "<tr>\n";
     $sToRender .= "<td>&nbsp;&nbsp;'" . Document::getDocumentDisplayPath($iDocumentIDs[$i]) . "'</td>\n";
-    $sQueryString .= "fDocumentIDs[]=$iDocumentIDs[$i]&";
   }
+    $sQueryString .= "fRememberDocumentID=$sRememberDocumentID&";
 
   $sToRender .= "<tr><td>" . _("To Folder") . ":</td></tr>";
 	$sToRender .= "<tr>\n";
