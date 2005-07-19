@@ -27,7 +27,7 @@
  
 require_once("../../../../config/dmsDefaults.php");
 
-KTUtil::extractGPC('fConfirmed', 'fDocumentIDs', 'fFolderID', 'fForMove');
+KTUtil::extractGPC('fConfirmed', 'fDocumentIDs', 'fFolderID', 'fForMove', 'fRememberDocumentID');
 
 require_once("$default->fileSystemRoot/lib/security/Permission.inc");
 
@@ -50,6 +50,15 @@ require_once("$default->fileSystemRoot/presentation/Html.inc");
 $aUnmovedDocs = array();
 
 if (checkSession()) {
+
+    if (isset($fRememberDocumentID)) {
+        $fDocumentIDs = $_SESSION['documents'][$fRememberDocumentID];
+    } else {
+        $sUniqueID = KTUtil::randomString();
+        $_SESSION["documents"][$sUniqueID] = $fDocumentIDs;
+        $fRememberDocumentID = $sUniqueID;
+    }
+
 	
   if (isset($fDocumentIDs) && isset($fFolderID)) {
 		if (isset($fForMove)) {
@@ -167,28 +176,28 @@ if (checkSession()) {
 					$sNewDocumentFileSystemPath = Folder::getFolderPath($fFolderID) . $oDocument->getFileName();
 					if (!file_exists($sNewDocumentFileSystemPath)) {
 						// display confirmation page
-	      $oPatternCustom->setHtml(getConfirmationPage($fFolderID, $fDocumentIDs));
+	      $oPatternCustom->setHtml(getConfirmationPage($fFolderID, $fRememberDocumentID));
 					} else {
 						// filename collision
-	      $oPatternCustom->setHtml(getPage($fFolderID, $fDocumentIDs, _("This folder already contains a document of the same name.") . "  " . _("Please choose another directory")));
+	      $oPatternCustom->setHtml(getPage($fFolderID, $fRememberDocumentID, _("This folder already contains a document of the same name.") . "  " . _("Please choose another directory")));
 	      break;
 					}
 				} else {
 					// the right document type isn't mapped
-	    $oPatternCustom->setHtml(getPage($fFolderID, $fDocumentIDs, _("You can't move the document to this folder because it cannot store the document type of your document.") . "  " . _("Please choose another directory")));
+	    $oPatternCustom->setHtml(getPage($fFolderID, $fRememberDocumentID, _("You can't move the document to this folder because it cannot store the document type of your document.") . "  " . _("Please choose another directory")));
 	    break;
 	  }
 				}
-				$main->setFormAction($_SERVER["PHP_SELF"] . "?fForMove=1&fDocumentID=$fDocumentID&fFolderID=$fFolderID");				
+				$main->setFormAction($_SERVER["PHP_SELF"] . "?fForMove=1&fRememberDocumentID=$fRememberDocumentID&fFolderID=$fFolderID");				
 				$main->setCentralPayload($oPatternCustom);
 				$main->render();				
 			}			
     } else {  // (isset($fForMove))
 			require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 			$oPatternCustom = & new PatternCustom();
-      $oPatternCustom->setHtml(getPage($fFolderID, $fDocumentIDs));
+      $oPatternCustom->setHtml(getPage($fFolderID, $fRememberDocumentID));
 			$main->setCentralPayload($oPatternCustom);   
-			$main->setFormAction($_SERVER["PHP_SELF"] . "?fForMove=1&fDocumentID=$fDocumentID&fFolderID=$fFolderID");
+			$main->setFormAction($_SERVER["PHP_SELF"] . "?fForMove=1&fRememberDocumentID=$fRememberDocumentID&fFolderID=$fFolderID");
 			$main->render();
 		}
   } else {  // (isset($fDocumentIDs) && isset($fFolderID))
