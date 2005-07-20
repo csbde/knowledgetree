@@ -101,7 +101,33 @@ class KTUtil {
     function requestValue($sKey, $mDefault = null) {
         return KTUtil::arrayGet($_REQUEST, $sKey, $mDefault);
     }
-    
+
+    // {{{ whereToString
+    /**
+     * Convert an array of parameterised strings to a single
+     * parameterised string.
+     *
+     * Return null in case of an empty array.
+     */
+    function whereToString($aWhere) {
+        $aStrings = array();
+        $aParams = array();
+        foreach ($aWhere as $oSomething) {
+            if (is_string($oSomething)) {
+                $aStrings[] = $oSomething;
+            } else if (is_array($oSomething)) {
+                $aStrings[] = $oSomething[0];
+                $aParams = array_merge($aParams, $oSomething[1]); 
+            } else {
+                return PEAR::raiseError("Weird WhereClause passed");
+            }
+        }
+        if (count($aStrings) === 0) {
+            return null;
+        }
+        return array(join(" AND ", $aStrings), $aParams);
+    }
+    // }}}
 }
 // }}}
 
