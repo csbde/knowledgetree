@@ -25,7 +25,7 @@
  * @package lib.foldermanagement 
  */
 require_once(KT_LIB_DIR . "/foldermanagement/PhysicalFolderManagement.inc");
-require_once(KT_LIB_DIR . "/lib/documentmanagement/Document.inc");
+require_once(KT_LIB_DIR . "/documentmanagement/Document.inc");
 
 class Folder extends KTEntity {
 	
