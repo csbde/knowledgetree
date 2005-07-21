@@ -4,7 +4,7 @@
  *
  * Represents a Group as per the database table groups.
  *
- * Copyright (c) 2003 Jam Warehouse http://www.jamwarehouse.com
+ * Copyright (c) 2003, 2005 Jam Warehouse http://www.jamwarehouse.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,40 +42,41 @@ class Group extends KTEntity {
 		$this->bIsUnitAdmin = $bNewIsUnitAdmin;
 		$this->bIsSysAdmin = $bNewIsSysAdmin;
 	}
-	
-	function getUnitAdmin() {
-		return $this->bIsUnitAdmin;
-	}
-	
-	function setUnitAdmin($bNewValue) {
-		$this->bIsUnitAdmin = $bNewValue;
-	}
-	
-	function setID($iNewValue) {
-		$this->iId = $iNewValue;
-	}
-	
-	function getID() {
-		return $this->iId;
-	}
-	
-	function getSysAdmin() {
-		return $this->bIsSysAdmin;
-	}
-	
-	function setSysAdmin($bNewValue) {
-		$this->bIsSysAdmin = $bNewValue;
-	}
-	
-	function getName() {
-		return $this->sName;
-	}
-	
-	function setName($sNewValue) {
-		$this->sName = $sNewValue;
-	}
-	
 
+    // {{{ ktentity requirements
+    // ---------------------
+    // KTEntity requirements
+    // ---------------------
+    function _fieldValues () {
+        return array(
+            'name' => $this->sName,
+            'is_sys_admin' => KTUtil::anyToBool($this->bIsSysAdmin),
+            'is_unit_admin' => KTUtil::anyToBool($this->bIsUnitAdmin),
+        );
+    }
+
+    function _table () {
+        global $default;
+        return $default->groups_table;
+    }
+    // }}}
+
+    // {{{ getters/setters
+    // ---------------
+    // Getters/setters
+    // ---------------
+
+    function getUnitAdmin() { return $this->bIsUnitAdmin; }
+    function setUnitAdmin($bNewValue) { $this->bIsUnitAdmin = $bNewValue; }
+    function setID($iNewValue) { $this->iId = $iNewValue; }
+    function getID() { return $this->iId; }
+    function getSysAdmin() { return $this->bIsSysAdmin; }
+    function setSysAdmin($bNewValue) { $this->bIsSysAdmin = $bNewValue; }
+    function getName() { return $this->sName; }
+    function setName($sNewValue) { $this->sName = $sNewValue; }
+    // }}}
+
+		
 	/**
 	 * Checks if this group has users mapped to it or not
 	 */
@@ -92,7 +93,7 @@ class Group extends KTEntity {
 	}
 
 	/**
-	 * Checks if this group has users mapped to it or not
+	 * Checks if this Group is in a Unit
 	 */	
 	function hasUnit() {
 		global $default;
@@ -110,7 +111,8 @@ class Group extends KTEntity {
 	}
 	
 	/**
-	 * Checks if this group has users mapped to it or not
+	 * Checks if this group has outstanding approval process
+     * requirements
 	 */	
 	function hasRoutingSteps() {
 		global $default;
@@ -127,19 +129,6 @@ class Group extends KTEntity {
 		}
 	}
 
-    function _fieldValues () {
-        return array(
-            'name' => $this->sName,
-            'is_sys_admin' => KTUtil::anyToBool($this->bIsSysAdmin),
-            'is_unit_admin' => KTUtil::anyToBool($this->bIsUnitAdmin),
-        );
-    }
-
-    function _table () {
-        global $default;
-        return $default->groups_table;
-    }
-		
 	/**
 	* Static function.
 	* Given a groups primary key it will create a 
@@ -195,30 +184,17 @@ class Group extends KTEntity {
 		return $aUsers;		
 	}
 	
-    /**
-     * static function
-     *
-     * gets the name of a unit using their id
-     *
-     * @param   String
-     *   The name
-     *   
-     */
-	function getGroupName($id) {
-        global $default;
-        $sName = lookupField("$default->groups_table", "name", "id", $id );
-        return $sName;
-	}
-
     function &getMembers() {
-        require_once(KT_LIB_DIR . '/groups/GroupUserLink.inc');
+        global $default;
         require_once(KT_LIB_DIR . '/users/User.inc');
-        $aLinks = GroupUserLink::getList(array('group_id = ?', $this->getID()));
+        $sQuery = "SELECT user_id FROM $default->users_groups_table WHERE group_id = ?";
+        $aParams = array($this->getID());
+        $aUserIDs = DBUtil::getResultArrayKey(array($sQuery, $aParams), "user_id");
         $aMembers = array();
-        foreach ($aLinks as $oLink) {
-            $oUser = User::get($oLink->getUserID());
+        foreach ($aUserIDs as $iUserID) {
+            $oUser = User::get($iUserID);
             if ($oUser !== false) {
-                $aMembers[] =& $oUser;
+                $aMembers[] = $oUser;
             }
         }
         return $aMembers;
@@ -241,28 +217,6 @@ class Group extends KTEntity {
         return parent::delete();
     }
 }
-
-
-/*
-     * static function
-     *
-     * gets the name of a unit using their id
-     *
-     * @param   String
-     *   The name
-     *   
-     */
-     
-	function getUnitName($id)
-	 {
-	       global $default;
-	
-	        $name = lookupField("$default->groups_table", "name", "id", $id );
-	        
-	        $this->sName= $name;
-	}
-
-
 
 /**
 * Static function
