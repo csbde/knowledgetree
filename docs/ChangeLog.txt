@@ -19,6 +19,30 @@ Bug Fixes
 Detailed ChangeLog
 ==================
 
+2005-07-21 13:42  nbm
+
+	* lib/upgrades/upgrade.inc.php:
+
+	Die if there's a problem connecting using the admin credentials
+
+2005-07-21 13:39  nbm
+
+	* sql/mysql/install/data.sql:
+
+	Data for 2.0.7
+
+2005-07-21 13:35  nbm
+
+	* docs/VERSION.txt:
+
+	Make ready for 2.0.7
+
+2005-07-21 13:19  nbm
+
+	* docs/ChangeLog.txt:
+
+	ChangeLog for 2.0.7
+
 2005-07-21 12:13  nbm
 
 	* presentation/lookAndFeel/knowledgeTree/administration/:
