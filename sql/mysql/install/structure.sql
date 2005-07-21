@@ -224,6 +224,7 @@ CREATE TABLE document_link (
 CREATE TABLE document_link_types (
   id int(11) NOT NULL default '0',
   name char(100) NOT NULL default '',
+  reverse_name char(100) NOT NULL default '',
   description char(255) NOT NULL default '',
   UNIQUE KEY id (id)
 ) TYPE=InnoDB;
