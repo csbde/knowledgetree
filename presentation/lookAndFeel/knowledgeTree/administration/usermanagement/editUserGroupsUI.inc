@@ -127,7 +127,12 @@ function InitGroups($iUserID) {
 	$aUserGroupIDs = array();
 	$aManageableGroupIDs = array();
 	
-	$aUserGroupIDs = GroupUserLink::getGroups($iUserID);
+    $oUser = User::get($iUserID);
+	$aGroups = GroupUtil::listGroupsForUser($oUser);
+    $aGroupIDs = array();
+    foreach ($aGroups as $oGroup) {
+        $aGroupIDs[] = $oGroup->getID();
+    }
 	
 	if (Permission::userIsUnitAdministrator()) {
 		/*ok*/ $sQuery = array("SELECT ST.id FROM " . $default->groups_table . " ST " .
@@ -141,7 +146,7 @@ function InitGroups($iUserID) {
 		}		
 	}
 
-	return array($aUserGroupIDs, $aManageableGroupIDs);
+    return array($aGroupIDs, $aManageableGroupIDs);
 }
 
 
