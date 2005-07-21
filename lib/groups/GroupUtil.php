@@ -193,6 +193,26 @@ class GroupUtil {
     }
     // }}}
 
+    // {{{ listGroupsForUser
+    function listGroupsForUser ($oUser) {
+        global $default;
+        $sQuery = "SELECT group_id FROM $default->users_groups_table WHERE user_id = ?";
+        $aParams = array($oUser->getID());
+        $aGroupIDs = DBUtil::getResultArrayKey(array($sQuery, $aParams), "group_id");
+        $aGroups = array();
+        foreach ($aGroupIDs as $iGroupID) {
+            $oGroup = Group::get($iGroupID);
+            if (PEAR::isError($oGroup)) {
+                continue;
+            }
+            if ($oGroup === false) {
+                continue;
+            }
+            $aGroups[] = $oGroup;
+        }
+        return $aGroups;
+    }
+    // }}}
 }
 // }}}
 
