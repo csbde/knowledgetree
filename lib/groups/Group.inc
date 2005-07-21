@@ -201,20 +201,33 @@ class Group extends KTEntity {
     }
 
     function delete() {
-        require_once(KT_LIB_DIR . '/groups/GroupUserLink.inc');
-        require_once(KT_LIB_DIR . '/groups/GroupUnitLink.inc');
+        global $default;
 
-        // XXX: Urg, should I just DELETE instead?
-        $aLinks = GroupUserLink::getList(array('group_id = ?', $this->getID()));
-        foreach ($aLinks as $oLink) {
-            $oLink->delete();
-        }
+        $sQuery = "DELETE FROM $default->users_groups_table WHERE group_id = ?";
+        $aParams = array($this->getID());
+        DBUtil::runQuery(array($sQuery, $aParams));
 
-        $aLinks = GroupUnitLink::getList(array('group_id = ?', $this->getID()));
-        foreach ($aLinks as $oLink) {
-            $oLink->delete();
-        }
+        $sQuery = "DELETE FROM $default->groups_units_table WHERE group_id = ?";
+        $aParams = array($this->getID());
+        DBUtil::runQuery(array($sQuery, $aParams));
+
         return parent::delete();
+    }
+
+    function hasMember($oUser) {
+        global $default;
+
+        $sQuery = "SELECT COUNT(*) AS number_of_entries FROM $default->users_groups_table
+            WHERE group_id = ? AND user_id = ?";
+        $aParams = array($this->getID(), $oUser->getID());
+        $res = (int)DBUtil::getOneResultKey(array($sQuery, $aParams), "number_of_entries");
+        if (PEAR::isError($res)) {
+            return $res;
+        }
+        if ($res === 1) {
+            return true;
+        }
+        return false;
     }
 }
 
