@@ -201,6 +201,20 @@ class DBUtil {
         return DBUtil::runQuery(array($sQuery, $aParams), $db);
     }
 
+    function &whereDelete($sTable, $aWhereFieldValues, $db = null) {
+        global $default;
+        $db =& DBUtil::getDB();
+        $aWhereFields = array();
+        foreach (array_keys($aWhereFieldValues) as $k) {
+            $aWhereFields[] = $k . ' = ?';
+        }
+        $sWhere = join(' AND ', $aWhereFields);
+        $aValues = array_values($aWhereFieldValues);
+
+        $sQuery = "DELETE FROM " . $sTable . " WHERE $sWhere";
+        return DBUtil::runQuery(array($sQuery, $aValues), $db);
+    }
+
     function &paramArray($aArray) {
         $iNumIds = count($aArray);
         return join(",", array_fill(0, $iNumIds, '?'));
