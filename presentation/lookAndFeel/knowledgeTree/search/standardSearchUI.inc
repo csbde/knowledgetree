@@ -36,16 +36,25 @@ function getMessage() {
 function getSearchResultsByCategory($iFolderID, $sKeywords, $iStartIndex, $sCategory) {
 	global $default;
 
+    // XXX: Icky MySQL-specific stuff.
+    $sVersion = DBUtil::getOneResultKey("SHOW VARIABLES LIKE 'version'", "Value");
+    if ((int)substr($sVersion, 0, 1) >= 4) {
+        $boolean_mode = "IN BOOLEAN MODE";
+    } else {
+        $boolean_mode = "";
+    }
+
+
 	/*ok*/ $sQuery = "SELECT DISTINCT '" . "$default->graphicsUrl/widgets/dfolder.gif" . "' AS folder_image_url, " .
                 "F.id AS folder_id, D.id AS document_id, D.name AS document_name, " .
-                "ROUND(MATCH(DT.document_text) AGAINST (? IN BOOLEAN MODE) OR 1, 3) AS score " . 
+                "ROUND(MATCH(DT.document_text) AGAINST (? $boolean_mode) OR 1, 3) AS score " . 
 				"FROM $default->documents_table AS D INNER JOIN $default->document_text_table AS DT ON D.id = DT.document_id " .
 				"INNER JOIN $default->document_fields_link_table AS DFL ON DT.document_id=DFL.document_id " .								
 				"INNER JOIN $default->document_fields_table AS DF ON DF.id = DFL.document_field_id " .
 				"INNER JOIN $default->status_table AS SL ON D.status_id = SL.id " .
 				"INNER JOIN $default->folders_table AS F on F.ID = D.folder_id " .
 				"INNER JOIN $default->search_permissions_table AS SDUL ON SDUL.document_id = D.id " .
-				"WHERE MATCH(DT.document_text) AGAINST (? IN BOOLEAN MODE) " .
+				"WHERE MATCH(DT.document_text) AGAINST (? $boolean_mode) " .
 				"AND (F.is_public OR SDUL.user_id = ?) " .
 				"AND SL.name='Live' ";
     $aParams = array($sKeywords, $sKeywords, $_SESSION["userID"]);
@@ -77,14 +86,23 @@ function getSearchResultsByCategory($iFolderID, $sKeywords, $iStartIndex, $sCate
 
 function getSearchResultsByDocumentType($iFolderID, $sKeywords, $iStartIndex, $iDocTypeID) {
 	global $default;
+
+    // XXX: Icky MySQL-specific stuff.
+    $sVersion = DBUtil::getOneResultKey("SHOW VARIABLES LIKE 'version'", "Value");
+    if ((int)substr($sVersion, 0, 1) >= 4) {
+        $boolean_mode = "IN BOOLEAN MODE";
+    } else {
+        $boolean_mode = "";
+    }
+
 	/*ok*/ $sQuery = "SELECT DISTINCT '" . "$default->graphicsUrl/widgets/dfolder.gif" . "' AS folder_image_url, " . 
                 "F.id AS folder_id, D.id AS document_id, D.name AS document_name, " .
-                "ROUND(MATCH(DT.document_text) AGAINST (? IN BOOLEAN MODE),3) AS score " . 
+                "ROUND(MATCH(DT.document_text) AGAINST (? $boolean_mode),3) AS score " . 
 				"FROM $default->documents_table AS D INNER JOIN $default->document_text_table AS DT ON D.id = DT.document_id " .								 
 				"INNER JOIN $default->status_table AS SL ON D.status_id = SL.id " .
 				"INNER JOIN $default->folders_table AS F on F.ID = D.folder_id " .
 				"INNER JOIN $default->search_permissions_table AS SDUL ON SDUL.document_id = D.id " .
-				"WHERE MATCH(DT.document_text) AGAINST (? IN BOOLEAN MODE) " .
+				"WHERE MATCH(DT.document_text) AGAINST (? $boolean_mode) " .
 				"AND (F.is_public OR SDUL.user_id = ?) ";
     $aParams = array($sKeywords, $sKeywords, $_SESSION["userID"]);
 	if (isset($iDocTypeID)) {
@@ -116,14 +134,23 @@ function getSearchResultsByDocumentType($iFolderID, $sKeywords, $iStartIndex, $i
 
 function getSeachResultsByFolder($iFolderID, $iStartIndex, $sKeywords) {
 	global $default;
+
+    // XXX: Icky MySQL-specific stuff.
+    $sVersion = DBUtil::getOneResultKey("SHOW VARIABLES LIKE 'version'", "Value");
+    if ((int)substr($sVersion, 0, 1) >= 4) {
+        $boolean_mode = "IN BOOLEAN MODE";
+    } else {
+        $boolean_mode = "";
+    }
+
 	/*ok*/ $sQuery = "SELECT DISTINCT '" . "$default->graphicsUrl/widgets/dfolder.gif" . "' AS folder_image_url, " .
                 "F.id AS folder_id, D.id AS document_id, D.name AS document_name, " .
-                "ROUND(MATCH(DT.document_text) AGAINST (? IN BOOLEAN MODE),3) AS score " . 
+                "ROUND(MATCH(DT.document_text) AGAINST (? $boolean_mode),3) AS score " . 
 				"FROM $default->documents_table AS D INNER JOIN $default->document_text_table AS DT ON D.id = DT.document_id " .				
 				"INNER JOIN $default->status_table AS SL ON D.status_id = SL.id " .
 				"INNER JOIN $default->folders_table AS F on F.ID = D.folder_id " .
 				"INNER JOIN $default->search_permissions_table AS SDUL ON SDUL.document_id = D.id " .
-				"WHERE MATCH(DT.document_text) AGAINST (? IN BOOLEAN MODE) " .
+				"WHERE MATCH(DT.document_text) AGAINST (? $boolean_mode) " .
 				"AND (F.is_public OR SDUL.user_id = ?) " .
 				"AND SL.name='Live' "; 
     $aParams = array($sKeywords, $sKeywords, $_SESSION["userID"]);
