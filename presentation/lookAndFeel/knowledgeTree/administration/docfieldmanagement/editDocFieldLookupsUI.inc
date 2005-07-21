@@ -4,7 +4,7 @@
  *
  * Edit document field lookups UI functions
  *
- * Copyright (c) 2003 Jam Warehouse http://www.jamwarehouse.com
+ * Copyright (c) 2003, 2005 Jam Warehouse http://www.jamwarehouse.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,68 +24,18 @@
  * @author Mukhtar Dharsey, Jam Warehouse (Pty) Ltd, South Africa
  * @package administration.docfieldmanagement
  */
+
+require_once("$default->fileSystemRoot/presentation/Html.inc");
  
-function getLookupNotSet() {
+function getPage($oDocField) {
     global $default;
 
-	$sToRender .= renderHeading(_("Edit User Groups"));
-    $sToRender .= "<table>\n";    
-    $sToRender .= "<tr>\n";
-    $sToRender .= "<td>\n";
-    $sToRender .= _("Document Field is not Lookup enabled.");
-    $sToRender .= "</td>\n";
-    $sToRender .= "</tr>\n";
-    $sToRender .= "<td></td>\n";
-    $sToRender .= "<td>\n";   
-    $sToRender .= "<a href=\"$default->rootUrl/control.php?action=listDocFields\"><img src =\"" . KTHtml::getBackButton() . "\" border = \"0\" /></a>";
-    $sToRender .= "</td>\n";
-    $sToRender .= "</table>\n";
+    $iDocFieldID = $oDocField->getID();
     
-    return $sToRender ;
-}
-
-// get page for removal
-function getPage($iUserID) {
-    global $default;
-    $oUser = null;
-    $oGroup = null;
-
-    // change headings if User selected
-    if (isset($iUserID)) {
-        $oUser = User::get($iUserID);
-    } else {
-        $heading = "<tr><td>" . _("Please select a User") . ":</td></tr>\n";
-    }
-
-    $sToRender .= renderHeading(_("Edit User Groups"));
-    $sToRender .= "<table>\n";
-    $sToRender .= $heading;
-    $sToRender .= "<tr>\n";
-    $sToRender .= "</tr>\n";
-    $sToRender .= "<td>" . _("User Name") . ": " . getUserDisplay($oUser) . "</td>\n";
-    $sToRender .= "<tr>\n";
-    $sToRender .= "</tr>\n";
-    $sToRender .= "<tr>\n";
-    $sToRender .= "</tr>\n";
-    $sToRender .= "<tr>\n";
-    $sToRender .= "</tr>\n";    
-    $sToRender .= "</td></table>\n";
-   
-    return $sToRender;
-}
-
-
-
-// get page for removal
-function getGroupPage($iDocFieldID) {
-    global $default;
-    
-    $oDocField = DocumentField::get($iDocFieldID);    
-           
     $LookupDisplay .= "<b>" . _("Current Lookups") . "</b><br>\n";	
-	$sQuery = 	" Select * " .	
-				" From " . $default->metadata_table .
-				" WHERE document_field_id=" . $iDocFieldID;        
+	$sQuery = array("SELECT * FROM " . $default->metadata_table .
+				" WHERE document_field_id = ?",
+                array($iDocFieldID));
 
  	$aColumns = array("name");
     $aColumnNames = array(_("Lookup name"));
@@ -146,175 +96,5 @@ function getGroupPage($iDocFieldID) {
 
     return $sToRender;
 }
-
-// get page for removal
-function getDeleteConfirmedPage($iUserID,$iGroupID) {
-    global $default;
-    $oUser = null;
-    $oGroup = null;
-
-    // change headings if User selected
-    if (isset($iUserID)) {
-        $oUser = User::get($iUserID);
-        $heading = "<tr><td>" . _("Are you sure you wish to remove this user from the Group?") . "</td></tr>";
-    }
-
-    // change headings if User selected
-    if (isset($iGroupID)) {
-        $oGroup = Group::get($iGroupID);
-        $Groupdisplay = "<td>" . _("Group Name") . ": " . $oGroup->getName() . "</td>\n";
-    }
-
-    $sToRender .= "<table width=\"600\">" . renderHeading(_("Edit User Groups")) . "</table>";
-    $sToRender .= "<table>\n";
-    $sToRender .= "<tr>\n";
-    $sToRender .= $heading;
-    $sToRender .= "</tr>\n";
-    $sToRender .= "<td>". _("User Name") . ": " . getUserDisplay($oUser) . "</td>\n";
-    $sToRender .= "<tr>\n";
-    $sToRender .= "</tr>\n";
-    $sToRender .= "<tr>\n";
-    $sToRender .= $Groupdisplay;
-    $sToRender .= "</tr>\n";
-    $sToRender .= "<tr>\n";
-    $sToRender .= "</tr>\n";
-    $sToRender .= "<tr>\n";
-    $sToRender .= "</tr>\n";
-    $sToRender .= "<td></td><td>" . getDeleteButton($oUser);
-    $sToRender .= "<td></td><td>" . getCancelButton($oUser);
-    $sToRender .= "</td></table>\n";
-
-
-    return $sToRender;
-}
-
-// show paig if deletion fails
-function getPageFail() {
-    global $default;
-
-    $sToRender .= "<table width=\"600\">" . renderHeading(_("Edit User Groups")) . "</table>";
-    $sToRender .= "<table>\n";
-    $sToRender .= "<tr><td><b>" . _("Sorry, Removal Failed") . "</b></td></tr>\n";
-    $sToRender .= "<tr></tr>\n";
-    $sToRender .= "</tr>\n";
-    $sToRender .= "<tr>\n";
-    $sToRender .= "</tr>\n";
-    $sToRender .= "<tr>\n";
-    $sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=removeUserFromGroup\"><img src =\"" . KTHtml::getBackButton() . "\" border = \"0\" /></a></td>\n";
-    $sToRender .= "</tr>\n";
-
-    $sToRender .= "</table>\n";
-
-
-    return $sToRender;
-}
-
-// show success page if removed from Group successfully
-function getPageSuccess() {
-    global $default;
-
-    $sToRender .= "<table width=\"600\">" . renderHeading(_("Edit User Groups")) . "</table>";
-    $sToRender .= "<table>\n";
-    $sToRender .= "<tr><td><b>" . _("Success") . "!</b></td></tr>\n";
-    $sToRender .= "<tr></tr>\n";
-    $sToRender .= "<tr><td>" . _("The User was successfully removed from the Group") . "</td></tr>\n";
-    $sToRender .= "<tr></tr>\n";
-    $sToRender .= "<tr></tr>\n";
-    $sToRender .= "<tr>\n";
-    $sToRender .= "<td></td><td align = right><a href=\"$default->rootUrl/control.php?action=listUsers\"><img src =\"" . KTHtml::getBackButton() . "\" border = \"0\" /></a></td>\n";
-    $sToRender .= "</tr>\n";
-    $sToRender .= "</table>\n";
-
-
-    return $sToRender;
-}
-// show listbox of Users belonging to Users_Groups_link table
-function getUserDisplay($oUser) {
-    global $default;
-    if (!isset($oUser)) {
-        $oPatternListBox = & new PatternListBox($default->users_table, "username", "id", "fUserID");
-        if (Permission::userIsUnitAdministrator()) {
-            $oPatternListBox->setFromClause("INNER JOIN $default->users_groups_table UGL on ST.id=UGL.user_id " .
-                                            "INNER JOIN $default->groups_units_table GUL on UGL.group_id=GUL.group_id");
-            $oPatternListBox->setWhereClause("GUL.unit_id=" . User::getUnitID($_SESSION["userID"]));
-        }
-        $oPatternListBox->setPostBackOnChange(true);
-        return $oPatternListBox->render();
-    } else {
-        return "<input type=\"hidden\" name=\"fUserID\" value=\"" . $oUser->iId . "\">\n" .
-               $oUser->getUserName();
-    }
-}
-
-// display the listbox initially ..then just display the text
-function getOtherGroupDisplay($oGroup) {
-	global $default;
-	if (!isset($oGroup)) {
-        if (Permission::userIsSystemAdministrator()) {
-            // if this is the system administrator, prepend group names with unit name
-            $oPatternListBox = & new PatternListBox($default->groups_table, "name", "id", "fOtherGroupID");
-            $oPatternListBox->setFromClause("LEFT OUTER JOIN groups_units_link GUL on ST.id=GUL.group_id " .
-                                            "LEFT OUTER JOIN units_lookup UL on GUL.unit_id=UL.id");
-            $oPatternListBox->setCompositeDisplayName("DISTINCT COALESCE(CONCAT(CONCAT(UL.name, '-'),ST.name),ST.name)");
-        } else if (Permission::userIsUnitAdministrator()) {
-            // else if this is a unit administrator, only display the groups in your unit
-            $oPatternListBox = & new PatternListBox($default->groups_table, "name", "id", "fOtherGroupID");
-            $oPatternListBox->setFromClause("INNER JOIN $default->groups_units_table GUL on ST.id=GUL.group_id");
-            $oPatternListBox->setWhereClause("GUL.unit_id=" . User::getUnitID($_SESSION["userID"]));
-        }
-        return $oPatternListBox->render();
-	} else {
-		return "<input type=\"hidden\" name=\"fOtherGroupID\" value=\"" . $oGroup->iId . "\">\n" .
-		$oGroup->getName();
-	}
-}
-// show Group details on confirm deletion page
-function getGroupDisplay($aGroup) {
-    global $default;
-	
-	$sBgColor = "#F5F6EE";
-    $oGroup= null;
-    $sGroup = "<table cellspacing=1 border=0>";
-    for ($i=0;$i < count($aGroup);$i++) {
-        $oGroup= Group::get($aGroup[$i]);
-        $Options .=  "<tr><td>" . ($i+1) . "</td><td bgcolor=$sBgColor>". $oGroup->getName() ."</td></tr>\n";
-    }
-    $sGroup .= $Options . "</table>";
-    return $sGroup; 
-   
-}
-
-
-// show delete button or select button
-function getDeleteButton($oUser) {
-    global $default;
-    if (!isset($oUser)) {
-        return "<td align = right><input type=\"image\" src =\"" . KTHtml::getSelectButton() . "\" value=\"submit\" border=\"0\"/></td>\n";
-    } else {
-        return "<td align = right><input type=\"image\" src =\"" . KTHtml::getDeleteButton() . "\" value=\"submit\" border=\"0\"/></td>\n";
-    }
-}
-
-
-// show delete button or select button
-function getSelectButton($oUser) {
-    global $default;
-    if (!isset($oUser)) {
-        return "<input type=\"image\" src =\"" . KTHtml::getSelectButton() . "\" value=\"submit\" border=\"0\"/>\n";
-    } else {
-        return "<input type=\"image\" src =\"" . KTHtml::getSelectButton() . "\" value=\"submit\" border=\"0\"/>\n";
-    }
-}
-// show cancel button
-function getCancelButton($oUser) {
-    global $default;
-    if (!isset($oUser)) {
-        //return "<td align = right><a href=\"$default->rootUrl/control.php?action=UserManagement\"><img src =\"" . KTHtml::getCancelButton() . "\" value=\"cancel\" /></a></td>\n";
-    }
-    else {
-        return "<a href=\"$default->rootUrl/control.php?action=listUsers\"><img src =\"" . KTHtml::getCancelButton() . "\" border = \"0\" /></a>\n";
-    }
-}
-
 
 ?>
