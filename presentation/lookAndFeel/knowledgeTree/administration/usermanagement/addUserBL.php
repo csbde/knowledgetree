@@ -35,7 +35,6 @@ require_once("$default->fileSystemRoot/lib/visualpatterns/PatternListBox.inc");
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCreate.inc");
 require_once("$default->fileSystemRoot/lib/users/User.inc");
 require_once("$default->fileSystemRoot/lib/groups/Group.inc");
-require_once("$default->fileSystemRoot/lib/groups/GroupUserLink.inc");    
 require_once("$default->fileSystemRoot/lib/security/Permission.inc");
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
 require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
