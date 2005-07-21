@@ -138,7 +138,7 @@ class GroupUtil {
     // }}}
 
     // {{{ addGroup
-    function add($aGroupDetails) {
+    function addGroup($aGroupDetails) {
         $aDefaultDetails = array(
             "is_unit_admin" => false,
             "is_system_admin" => false,
@@ -160,7 +160,7 @@ class GroupUtil {
         if ($ret !== true) {
             return PEAR::raiseError("Non-true and non-error return value");
         }
-        return true;
+        return $oGroup;
     }
     // }}}
 
