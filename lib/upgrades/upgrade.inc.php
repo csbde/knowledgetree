@@ -47,9 +47,7 @@ function setupAdminDatabase() {
 
     $default->_admindb = &DB::connect($dsn, $options);
     if (PEAR::isError($default->_admindb)) {
-        handleInitError($default->_admindb);
-        // returns only in checkup
-        return $default->_admindb;
+        die($default->_admindb->toString());
     }
     $default->_admindb->setFetchMode(DB_FETCHMODE_ASSOC);
     return; 
