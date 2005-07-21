@@ -34,35 +34,38 @@ KTUtil::extractGPC('fAssign', 'fGroupID', 'userAddedLeft', 'userAddedRight', 'us
  *        0 if fail
  */
 function updateUsers($iGroupID, $aToAddIDs, $aToRemoveIDs) {
+    $oGroup = Group::get($iGroupID);
+    if (PEAR::isError($oGroup)) {
+        return false;
+    }
 
-	// Add Users
-	foreach ($aToAddIDs as $iUserID ) {
-		if ($iUserID > 0) {
-			$oUserGroup = new GroupUserLink($iGroupID, $iUserID);
-			if($oUserGroup->create()) {
-   	    		// update user group search permissions
-       			$oUserGroup->updateSearchPermissions();
-			} else {
-           		return false;
-       		}
-		}
-	}
+    if ($oGroup === false) {
+        return false;
+    }
 
-	// Remove Users
-	foreach ($aToRemoveIDs as $iUserID ) {
-		if ($iUserID > 0) {
-			$oUserGroup = new GroupUserLink($iGroupID, $iUserID);
-			$oUserGroup->setUserGroupID($iGroupID,$iUserID);
-        	if($oUserGroup->delete()) {
-			   	// update group search permissions
-       			$oUserGroup->updateSearchPermissions();
-			} else {
-	            return false;
-   		    }
-		}
-	}
+    // Add Users
+    foreach ($aToAddIDs as $iUserID ) {
+        if ($iUserID > 0) {
+            $oUser = User::get($iUserID);
+            $res = $oGroup->addMember($oUser);
+            if (PEAR::isError($res)) {
+                $_SESSION["KTErrorMessage"][] = "Failed to add " . $oUser->getName() . " to " . $oGroup->getName();
+            }
+        }
+    }
 
-	return true;
+    // Remove Users
+    foreach ($aToRemoveIDs as $iUserID ) {
+        if ($iUserID > 0) {
+            $oUser = User::get($iUserID);
+            $res = $oGroup->removeMember($oUser);
+            if (PEAR::isError($res)) {
+                $_SESSION["KTErrorMessage"][] = "Failed to remove " . $oUser->getName() . " from " . $oGroup->getName();
+            }
+        }
+    }
+
+    return true;
 }
 
 if (checkSession()) {
