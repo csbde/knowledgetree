@@ -36,24 +36,20 @@ KTUtil::extractGPC('fAssign', 'fUserID', 'fUserSet', 'groupAddedLeft', 'groupAdd
  */
 function updateGroups($iUserID, $aToAddIDs, $aToRemoveIDs) {
 
-	// Add groups
+    $oUser = User::get($iUserID);
+
 	foreach ($aToAddIDs as $iGroupID ) {
 		if ($iGroupID > 0) {
-			$oUserGroup = new GroupUserLink($iGroupID, $iUserID);
-			if (!$oUserGroup->create()) {
-           		return false;
-       		}
+            $oGroup = Group::get($iGroupID);
+            $oGroup->addMember($oUser);
 		}
 	}
 
 	// Remove groups
 	foreach ($aToRemoveIDs as $iGroupID ) {
 		if ($iGroupID > 0) {
-			$oUserGroup = new GroupUserLink($iGroupID, $iUserID);
-			$oUserGroup->setUserGroupID($iGroupID,$iUserID);
-        	if(!$oUserGroup->delete()) {
-	            return false;
-   		    }
+            $oGroup = Group::get($iGroupID);
+            $oGroup->removeMember($oUser);
 		}
 	}
 
