@@ -40,7 +40,7 @@ function getDeletePage($oGroupFolderLink, $iFolderID) {
     $sToRender .= getFolderPath($iFolderID);    
 	$sToRender .= "<table>\n";
 	$sToRender .= "<tr>\n";
-	$sToRender .= "<td>" . _("Group") . "</td><td>" . Group::getGroupName($oGroupFolderLink->getGroupID()) . "</td>\n";
+	$sToRender .= "<td>" . _("Group") . "</td><td>" . GroupUtil::getNameForID($oGroupFolderLink->getGroupID()) . "</td>\n";
 	$sToRender .= "</tr>\n";
 	$sToRender .= "<tr>\n";
 	$sToRender .= "<td>" . _("Access Rights") . "</td><td>" . getAccessCheckBoxes(true, $oGroupFolderLink->getCanRead(), $oGroupFolderLink->getCanWrite()) . "</td>\n";
