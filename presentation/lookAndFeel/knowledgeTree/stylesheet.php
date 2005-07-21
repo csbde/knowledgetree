@@ -106,7 +106,7 @@ TH.sectionColumns {
 
 .errorText {
 	color : #FF0000;
-	font-size : 8pt;
+	font-size : 16pt;
 	text-align : center;
 	font-family : Verdana,sans-serif;
 }
