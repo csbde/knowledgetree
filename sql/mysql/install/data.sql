@@ -97,7 +97,8 @@ INSERT INTO document_fields VALUES (1, 'Category', 'STRING', 1, NULL);
 -- Dumping data for table `document_link_types`
 -- 
 
-INSERT INTO document_link_types VALUES (0, 'Default', 'Default link type');
+INSERT INTO document_link_types VALUES (-1, 'depended on', 'was depended on by', 'Depends relationship whereby one documents depends on another''s creation to go through approval');
+INSERT INTO document_link_types VALUES (0, 'Default', 'Default (reverse)', 'Default link type');
 
 -- 
 -- Dumping data for table `document_subscriptions`
@@ -491,8 +492,8 @@ INSERT INTO status_lookup VALUES (4, 'Archived');
 -- 
 
 INSERT INTO system_settings VALUES (1, 'lastIndexUpdate', '0');
-INSERT INTO system_settings VALUES (2, 'knowledgeTreeVersion', '2.0.6');
-INSERT INTO system_settings VALUES (3, 'databaseVersion', '2.0.6');
+INSERT INTO system_settings VALUES (2, 'knowledgeTreeVersion', '2.0.7');
+INSERT INTO system_settings VALUES (3, 'databaseVersion', '2.0.7');
 
 -- 
 -- Dumping data for table `time_period`
@@ -529,6 +530,8 @@ INSERT INTO upgrades VALUES (3, 'func*2.0.6*0*addTemplateMimeTypes', 'Add MIME t
 INSERT INTO upgrades VALUES (4, 'sql*2.0.6*0*2.0.6/add_email_attachment_transaction_type.sql', 'Database upgrade to version 2.0.6: Add email attachment transaction type', '2005-06-16 00:30:06', 1, 'upgrade*2.0.6*0*upgrade2.0.6');
 INSERT INTO upgrades VALUES (5, 'sql*2.0.6*0*2.0.6/create_link_type_table.sql', 'Database upgrade to version 2.0.6: Create link type table', '2005-06-16 00:30:06', 1, 'upgrade*2.0.6*0*upgrade2.0.6');
 INSERT INTO upgrades VALUES (6, 'sql*2.0.6*1*2.0.6/1-update_database_version.sql', 'Database upgrade to version 2.0.6: Update database version', '2005-06-16 00:30:06', 1, 'upgrade*2.0.6*0*upgrade2.0.6');
+INSERT INTO upgrades VALUES (7, 'upgrade*2.0.7*0*upgrade2.0.7', 'Upgrade from version 2.0.7 to 2.0.7', '2005-07-21 22:35:15', 1, 'upgrade*2.0.7*0*upgrade2.0.7');
+INSERT INTO upgrades VALUES (8, 'sql*2.0.7*0*2.0.7/document_link_update.sql', 'Database upgrade to version 2.0.7: Document link update', '2005-07-21 22:35:16', 1, 'upgrade*2.0.7*0*upgrade2.0.7');
 
 -- 
 -- Dumping data for table `users`
@@ -826,7 +829,7 @@ INSERT INTO zseq_units_organisations_link VALUES (1);
 -- Dumping data for table `zseq_upgrades`
 -- 
 
-INSERT INTO zseq_upgrades VALUES (6);
+INSERT INTO zseq_upgrades VALUES (8);
 
 -- 
 -- Dumping data for table `zseq_users`
