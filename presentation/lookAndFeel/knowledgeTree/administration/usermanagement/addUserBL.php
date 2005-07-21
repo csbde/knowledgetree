@@ -125,14 +125,18 @@ if (checkSession()) {
         if($oUser->create()) {
         	// now add the user to the initial group
         	$default->log->info("adding user id " . $oUser->getID() . " to group id $fGroupID"); 
-        	$oUserGroup = new GroupUserLink($fGroupID,$oUser->getID());
-        	if ($oUserGroup->create()) {
-        		// FIXME: update search permissions for the group
-        		// redirect to list page
-        		controllerRedirect("listUsers");
-        	} else {
+            $oGroup = Group::get($fGroupID);
+            if (!PEAR::isError($oGroup)) {
+                if ($oGroup->addMember($oUser)) {
+                    // FIXME: update search permissions for the group
+                    // redirect to list page
+                    exit(controllerRedirect("listUsers"));
+                } else {
+                    $oPatternCustom->setHtml(getPageGroupFail());
+                }
+            } else {
         		$oPatternCustom->setHtml(getPageGroupFail());
-        	}
+            }
         } else {
             $oPatternCustom->setHtml(getPageFail());
         }
