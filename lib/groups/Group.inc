@@ -214,6 +214,7 @@ class Group extends KTEntity {
         return parent::delete();
     }
 
+    // {{{ hasMember
     function hasMember($oUser) {
         global $default;
 
@@ -229,6 +230,46 @@ class Group extends KTEntity {
         }
         return false;
     }
+    // }}}
+
+    // {{{ addMember
+    function addMember($oUser) {
+        global $default;
+        if ($this->hasMember($oUser)) {
+            return true;
+        }
+        $aParams = array(
+            "user_id" => $oUser->getID(),
+            "group_id" => $this->getID(),
+        );
+        $res = DBUtil::autoInsert($default->users_groups_table, $aParams);
+        if (PEAR::isError($res)) {
+            return $res;
+        }
+        return true;
+    }
+    // }}}
+
+    // {{{ removeMember
+    function removeMember($oUser) {
+        global $default;
+        if (!$this->hasMember($oUser)) {
+            return true;
+        }
+        $aParams = array(
+            "user_id" => $oUser->getID(),
+            "group_id" => $this->getID(),
+        );
+        $res = DBUtil::whereDelete($default->users_groups_table, $aParams);
+        if (PEAR::isError($res)) {
+            return $res;
+        }
+        if ($this->hasMember($oUser)) {
+            return PEAR::raiseError("Tried to remove member from database, apparently successfully, but hasMember thinks they're still members?");
+        }
+        return true;
+    }
+    // }}}
 }
 
 /**
