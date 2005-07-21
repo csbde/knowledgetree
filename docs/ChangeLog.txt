@@ -1,3 +1,313 @@
+Version 2.0.7 (2005/07/21)
+
+Improvements
+============
+- Link types now allow descriptions of the reverse relationship
+- Standard search now works on MySQL 3.23 again
+- Removed extraneous code from several admin pages
+- Improved/simplified Group API
+- Simplified parameterised query generation from arrays (whereToString)
+- autoInsert-like delete API (whereDelete)
+
+Bug Fixes
+=========
+- Unit Folders now show if you change their description
+- Dependent document works again (broken in 2.0.6)
+- Adding links works again (broken in 2.0.6)
+- Multiple document moves works again (broken in 2.0.6)
+
+Detailed ChangeLog
+==================
+
+2005-07-21 12:13  nbm
+
+	* presentation/lookAndFeel/knowledgeTree/administration/:
+	  groupmanagement/editGroupUsersBL.php,
+	  usermanagement/addUserBL.php:
+
+	Remove GroupUserLink include
+
+2005-07-21 12:12  nbm
+
+	* lib/groups/Group.inc:
+
+	Update permissions when group membership changes.
+
+2005-07-21 12:03  nbm
+
+	* presentation/lookAndFeel/knowledgeTree/search/standardSearchUI.inc:
+
+	Only use IN BOOLEAN MODE on MySQL 4 and above.
+
+2005-07-21 09:01  nbm
+
+	* lib/groups/GroupUserLink.inc:
+
+	Remove GroupUserLink - rather use hasMember/addMember/removeMember, &c.
+
+2005-07-21 08:59  nbm
+
+	* presentation/lookAndFeel/knowledgeTree/administration/usermanagement/:
+	  editUserGroupsBL.php, editUserGroupsUI.inc:
+
+	User GroupUtil::listGroupsForUser instead of playing with Link objects.
+
+2005-07-21 08:37  nbm
+
+	* tests/groups/basics/listGroupsForUser.php:
+
+	Quick test for GroupUtil::listGroupsForUser
+
+2005-07-21 08:36  nbm
+
+	* lib/groups/GroupUtil.php:
+
+	Add listGroupsForUsers, giving a list of Group objects for a given User
+	object.
+
+2005-07-21 08:26  nbm
+
+	* presentation/lookAndFeel/knowledgeTree/administration/usermanagement/editUserGroupsBL.php:
+
+	Use Group addMember and removeMember rather than mess directly with link
+	objects.
+
+2005-07-21 08:22  nbm
+
+	* presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/editUnitOrgBL.php:
+
+	Remove unused code from file that's unused itself...
+
+2005-07-21 08:19  nbm
+
+	* presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/editGroupUsersBL.php:
+
+	Use Group's addMember and removeMember instead of fiddling with link
+	objects.
+
+2005-07-21 08:07  nbm
+
+	* presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/editGroupUnitBL.php:
+
+	Get rid of unused copied-and-pasted code.
+
+2005-07-21 08:04  nbm
+
+	* presentation/lookAndFeel/knowledgeTree/administration/usermanagement/addUserBL.php:
+
+	Use Group->addMember instead of creating GroupUserLink object.
+
+2005-07-21 08:01  nbm
+
+	* presentation/lookAndFeel/knowledgeTree/foldermanagement/groupFolderLinkUI.inc:
+
+	Use GroupUtil::getNameForID instead of Group::getGroupName
+
+2005-07-21 07:59  nbm
+
+	* presentation/lookAndFeel/knowledgeTree/stylesheet.php:
+
+	Make error text a big bigger.
+
+2005-07-21 07:59  nbm
+
+	* lib/foldermanagement/Folder.inc:
+
+	Correct path to include
+
+2005-07-21 07:51  nbm
+
+	* tests/groups/basics/: addMember.php, removeMember.php:
+
+	Quick tests for Group addMember and removeMember methods.
+
+2005-07-21 07:51  nbm
+
+	* lib/groups/Group.inc:
+
+	Add addMember and removeMember methods to Group, taking User objects,
+	doing the expected things.
+
+2005-07-21 07:49  nbm
+
+	* lib/database/dbutil.inc:
+
+	Add whereDelete, which works similarly to whereUpdate.  Delete anything
+	in this table matching a where clause of the sort used in the
+	autoInsert/autoUpdate/whereUpdate.
+
+2005-07-21 07:19  nbm
+
+	* lib/groups/GroupUtil.php:
+
+	Change _back_ to addGroup from add.  Return the just-created group.
+
+2005-07-21 07:01  nbm
+
+	* tests/groups/basics/hasMember.php:
+
+	Test for Group hasMember method.
+
+2005-07-21 07:00  nbm
+
+	* lib/groups/Group.inc:
+
+	Add hasMember method to Group objects, and refactor delete to not use
+	Link objects.
+
+2005-07-21 03:59  nbm
+
+	* tests/groups/basics/: addGroup.php, listGroups.php:
+
+	Quick tests that addGroup and listGroups in GroupUtil are working.
+
+2005-07-21 03:58  nbm
+
+	* lib/groups/GroupUtil.php:
+
+	GroupUtil provides high-level Group functions, as well as providing for
+	other common Group-related needs.
+
+2005-07-21 03:57  nbm
+
+	* tests/groups/basics/listMembers.php:
+
+	Quick test to see if getMembers is behaving properly.
+
+2005-07-21 03:56  nbm
+
+	* lib/groups/Group.inc:
+
+	Simplify and organise, and remove unused functionality.
+
+2005-07-21 01:18  nbm
+
+	* presentation/lookAndFeel/knowledgeTree/administration/usermanagement/removeUserBL.php:
+
+	Remove extraneous includes.
+
+2005-07-21 01:14  nbm
+
+	* presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/:
+	  editDocFieldLookupsBL.php, editDocFieldLookupsUI.inc:
+
+	Remove extraneous copy-and-paste stuff about users and groups from here,
+	and reduce includes to only the required ones.
+
+2005-07-20 11:20  nbm
+
+	* tests/util/ktutil/: testWhereToString.php,
+	  testWhereToStringEmpty.php:
+
+	Tests for KTUtil::whereToString.
+
+2005-07-20 11:20  nbm
+
+	* lib/util/ktutil.inc:
+
+	Add whereToString, converting an array of parameterised strings to a
+	single parameterised string.
+
+2005-07-20 09:41  nbm
+
+	* config/environment.php:
+
+	Explain how to specify paths in KnowledgeTree here too.
+
+	Don't put a license on a configuration file.
+
+2005-07-19 12:29  nbm
+
+	* bin/setPermissionFolder.php,
+	  lib/upgrades/UpgradeFunctions.inc.php:
+
+	Use IS NULL and not = NULL in SQL statements.
+
+	Submitted by:	William Hawkins (williamhawkins)
+	SF Tracker:	1230602
+
+2005-07-19 12:22  nbm
+
+	* presentation/lookAndFeel/knowledgeTree/documentmanagement/:
+	  moveDocumentBL.php, moveDocumentUI.inc:
+
+	Fix the multi-document move functionality.
+
+	Submitted by:	William Hawkins (williamhawkins)
+	SF Tracker:	1230598
+
+2005-07-19 12:04  nbm
+
+	* lib/: documentmanagement/Document.inc,
+	  foldermanagement/Folder.inc, upgrades/UpgradeFunctions.inc.php:
+
+	Don't use $default without declaration, or use KT_LIB_DIR for requires.
+
+2005-07-12 07:36  nbm
+
+	* presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentLinkUI.inc:
+
+	Don't show the dependent document link type when choosing the type of
+	link.
+
+2005-07-12 07:35  nbm
+
+	* presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentBL.php:
+
+	When adding a dependent document, use the dependent document link type
+	(-1).
+
+2005-07-12 07:34  nbm
+
+	* sql/mysql/upgrade/2.0.7/document_link_update.sql:
+
+	Document links are directional, but viewing the reverse is useful too,
+	so provide a descriptive name for the reverse link.
+
+	(True bi-directional links would require two separate entries in the
+	links.)
+
+	Also, add the dependent document link, using the reserved negative
+	number range.
+
+2005-07-07 07:00  nbm
+
+	* lib/documentmanagement/DocumentLink.inc:
+
+	Grab Link Type ID from database.
+
+	Actually grab Child ID from database for object, not the parent ID
+	again...
+
+2005-07-07 05:29  nbm
+
+	* lib/foldermanagement/Folder.inc:
+
+	Fix "Unit folder are not shows as Unit if Description is modified"
+	problem.
+
+	SF Tracker:	1224874
+	Submitted by:	Nicolas Quienot (nquienot)
+
+2005-07-07 02:17  nbm
+
+	* lib/documentmanagement/LinkType.inc:
+
+	Get list of link types from LinkType::_table()
+
+2005-07-07 02:16  nbm
+
+	* presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentLinkBL.php:
+
+	Correct path to LinkType.inc
+
+2005-06-17 01:39  nbm
+
+	* presentation/lookAndFeel/knowledgeTree/search/advancedSearchBL.php:
+
+	Remove additional non-absolute-path include of advancedSearchUtil.inc
+
+
 Version 2.0.6 (2005/06/16)
 
 New Features
