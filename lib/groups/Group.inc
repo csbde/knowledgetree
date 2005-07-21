@@ -246,6 +246,7 @@ class Group extends KTEntity {
         if (PEAR::isError($res)) {
             return $res;
         }
+        Permission::updateSearchPermissionsForUser($oUser->getID());
         return true;
     }
     // }}}
@@ -267,6 +268,7 @@ class Group extends KTEntity {
         if ($this->hasMember($oUser)) {
             return PEAR::raiseError("Tried to remove member from database, apparently successfully, but hasMember thinks they're still members?");
         }
+        Permission::updateSearchPermissionsForUser($oUser->getID());
         return true;
     }
     // }}}
