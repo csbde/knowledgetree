@@ -27,7 +27,7 @@
 
 require_once("../../../../../config/dmsDefaults.php");
 
-KTUtil::extractGPC('fDeleteConfirmed', 'fGroupID', 'fOtherGroupID', 'fUnitSet', 'fUserID', 'fUserSet');
+KTUtil::extractGPC('fDeleteConfirmed', 'fGroupID', 'fOtherGroupID', 'fUnitSet', 'fUnitID', 'fUserSet');
 
 if (checkSession()) {
     require_once("$default->fileSystemRoot/lib/visualpatterns/PatternListBox.inc");
@@ -58,26 +58,6 @@ if (checkSession()) {
         // build first page
         $oPatternCustom->setHtml(getPage(null,null));
         $main->setFormAction($_SERVER["PHP_SELF"] . "?fUserSet=1");
-    }
-
-    if(isset($fUnitSet)) {
-        if($fOtherGroupID) {
-        	$oPatternCustom->setHtml("Add");
-        } else {	                
-	        $oPatternCustom->setHtml("Delete");
-	        $main->setFormAction($_SERVER["PHP_SELF"] . "?fDeleteConfirmed=1&fGroupID=$fGroupID"); 		   
-        }        
-    }
-
-    if (isset($fDeleteConfirmed)) {
-        // else add to db and then goto page succes
-        $oUserGroup = new GroupUserLink($fGroupID, $fUserID);
-        $oUserGroup->setUserGroupID($fGroupID,$fUserID);
-        if($oUserGroup->delete()) {
-            $oPatternCustom->setHtml(getPageSuccess());
-        } else {
-            $oPatternCustom->setHtml(getPageFail());
-        }
     }
 
     // render page
