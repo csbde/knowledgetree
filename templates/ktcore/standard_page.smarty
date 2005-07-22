@@ -14,10 +14,10 @@
 		{ assign var="onloadjavascript" value="onload=\"$onloadjavascript\"" }
   { /if }
 	<body marginleft="0" marginheight="0" {$onloadjavascript}>
-    { if $formenctype }
-			{ assign var="formenctype" value="enctype=\"$formenctype\"" }
-    { /if }
     { if ! $formdisabled }
+      { if $formenctype }
+        { assign var="formenctype" value="enctype=\"$formenctype\"" }
+      { /if }
       { if $hasrequiredfields }
         { assign var="onsubmit" value="onsubmit=\"return validateForm(this)\"" }
       { /if }
