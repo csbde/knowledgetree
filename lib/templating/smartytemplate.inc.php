@@ -38,6 +38,7 @@ class KTSmartyTemplate extends KTTemplate {
         foreach ($aDict as $k => $v) {
             $smarty->assign($k, $v);
         }
+        $smarty->caching = false;
         return $smarty->fetch($this->sPath);
     }
 }
