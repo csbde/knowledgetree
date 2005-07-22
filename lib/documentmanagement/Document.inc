@@ -1,4 +1,4 @@
-<?php
+<?php /* vim: set expandtab softtabstop=4 shiftwidth=4 foldmethod=marker: */
 /**
  * $Id$
  *
@@ -23,7 +23,7 @@
  * @version $Revision$
  * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
  * @package lib.documentmanagement
- */ 
+ */
 
 // document statuses
 DEFINE("LIVE", 1);
@@ -66,7 +66,7 @@ class Document extends KTEntity {
     /** document status **/
     var $iStatusID;
     /** the user that currently has the document checked out */
-    var $iCheckedOutUserID;    
+    var $iCheckedOutUserID;
     /** comma delimited string of folder hierarch this document falls under */
     var $sParentFolderIDs;
     /** forward slash deliminated path from file system root */
@@ -75,17 +75,18 @@ class Document extends KTEntity {
     var $dCreated;
     // }}}
 
+    // {{{ constructor
     /**
-    * Document class constructor
-    *
-    * @param $sName    File Name 
-    * @param $iSize    File size in bytes
-    * @param $iCreatorID  Primary key of user who created document
-    * @param $sDescription  Description
-    * @param $iMimeID   Primary key of file mime type
-    * @param $iFolderID   Primary key of folder to which document belongs 
-    * 
-    */
+     * Document class constructor
+     *
+     * @param $sName    File Name
+     * @param $iSize    File size in bytes
+     * @param $iCreatorID  Primary key of user who created document
+     * @param $sDescription  Description
+     * @param $iMimeID   Primary key of file mime type
+     * @param $iFolderID   Primary key of folder to which document belongs
+     *
+     */
     function Document($sNewName, $sNewFileName, $iNewSize, $iNewCreatorID, $iNewMimeID, $iNewFolderID, $sNewDescription = "None") {
         $this->iId = -1; //primary key not set as document is not stored yet
         $this->sName = $sNewName;
@@ -103,6 +104,7 @@ class Document extends KTEntity {
         // FIXME: statuses
         $this->iStatusID = LIVE;
     }
+    // }}}
 
     // {{{ getters/setters
     function getID() { return $this->iId; }
@@ -137,23 +139,28 @@ class Document extends KTEntity {
     function setStatusID($iNewValue) { $this->iStatusID = $iNewValue; }
     // }}}
 
-    // {{{ compound getters
-
+    // {{{ getVersion
     /** returns the complete version number as a string */
     function getVersion() {
         return $this->iMajorVersion . "." . $this->iMinorVersion;
     }
+    // }}}
 
-    /** * Returns the live status of the document */
+    // {{{ isLive
+    /** Returns the live status of the document */
     function isLive() {
         return $this->getStatusID() == LIVE;
     }
-    
-    /** * Get status ID wrapper for archived status */
+    // }}}
+
+    // {{{ isArchived
+    /** Get status ID wrapper for archived status */
     function isArchived() {
         return $this->getStatusID() == ARCHIVED;
     }
-    
+    // }}}
+
+    // {{{ getDaysSinceLastModified
     /** returns the number of days since this document has been last modified **/
     function getDaysSinceLastModified() {
         // convert to epoch
@@ -171,7 +178,7 @@ class Document extends KTEntity {
 
     // {{{ ktentity requirements
     function _fieldValues () {
-        $this->sFullPath = $this->_generateFolderPath($this->iFolderID); 
+        $this->sFullPath = $this->_generateFolderPath($this->iFolderID);
         $this->sParentFolderIDs = $this->_generateFolderIDs($this->iFolderID);
         return array(
             'document_type_id' => $this->iDocumentTypeID,
@@ -202,12 +209,12 @@ class Document extends KTEntity {
     /**
      * Recursive function to generate a comma delimited string containing
      * the parent folder ids
-     * 
+     *
      * @return String	comma delimited string containing the parent folder ids
      */
     function _generateParentFolderIDS($iFolderID) {
         global $default;
-        //if the folder is not the root folder 
+        //if the folder is not the root folder
         if ($iFolderID != 0) {
             $sql = $default->db;
             $sql->query(array("SELECT parent_id FROM $default->folders_table WHERE ID = ?", $iFolderID));/*ok*/
@@ -219,7 +226,7 @@ class Document extends KTEntity {
 
     /**
      * Returns a comma delimited string containing the parent folder ids, strips leading /
-     * 
+     *
      * @return String	comma delimited string containing the parent folder ids
      */
     function _generateFolderIDs($iFolderID) {
@@ -233,7 +240,7 @@ class Document extends KTEntity {
      */
     function _generateFullFolderPath($iFolderID) {
         global $default;
-        //if the folder is not the root folder 
+        //if the folder is not the root folder
         if ($iFolderID != 0) {
             $sql = $default->db;
             $sql->query(array("SELECT name, parent_id FROM $default->folders_table WHERE ID = ?", $iFolderID));/*ok*/
@@ -255,11 +262,12 @@ class Document extends KTEntity {
     }
     // }}}
 
+    // {{{ create
     /**
-    * Insert the current document into the database
-    *
-    * @return boolean true on successful insert, false otherwise
-    */
+     * Insert the current document into the database
+     *
+     * @return boolean true on successful insert, false otherwise
+     */
     function create() {
         $this->dCreated = getCurrentDateTime();
         $res = parent::create();
@@ -270,7 +278,9 @@ class Document extends KTEntity {
 
         return $res;
     }
+    // }}}
 
+    // {{{ update
     function update($bPathMove = false) {
         $res = parent::update();
         if (($res === true) && ($bPathMove === true)) {
@@ -278,7 +288,11 @@ class Document extends KTEntity {
         }
         return $res;
     }
-    
+    // }}}
+
+    // {{{ collaboration/approval
+
+    // {{{ beginCollaborationProcess
     /**
      * Begin the current document's collaboration process
      *
@@ -312,7 +326,7 @@ class Document extends KTEntity {
             $oEmail = & new Email();
             $oEmail->send($oUser->getEmail(), "Document collaboration role active", $sBody);
             DocumentCollaboration::createDependantDocuments($oFolderUserRole);
-        
+
             //check if there are any other parallel steps that have to be started
             while ($sql->next_record()) {
                 if ($sql->f("precedence") == $iMinimumSequenceNumber) {
@@ -338,7 +352,9 @@ class Document extends KTEntity {
             }
         }
     }
+    // }}}
 
+    // {{{ endCollaborationProcess
     function endCollaborationProcess() {
         global $default;
         $sql = $default->db;
@@ -346,10 +362,10 @@ class Document extends KTEntity {
         //if the user is assinged to two or more roles, make sure we get the current
         //one by ordering by precedence
         $sql->query(array("SELECT FURL.id AS id, GFAT.precedence " ./*ok*/
-            "FROM $default->groups_folders_approval_table AS GFAT " . 
+            "FROM $default->groups_folders_approval_table AS GFAT " .
             "INNER JOIN $default->folders_user_roles_table AS FURL ON GFAT.id = FURL.group_folder_approval_id " .
-            "WHERE document_id = ? AND FURL.user_id = ? " . 
-            "AND done = 0 " . 
+            "WHERE document_id = ? AND FURL.user_id = ? " .
+            "AND done = 0 " .
             "ORDER BY precedence ASC", array($this->iId, $_SESSION["userID"])));
         if ($sql->next_record()) {
             //set it as done
@@ -361,15 +377,36 @@ class Document extends KTEntity {
         }
         return false;
     }
-    
+    // }}}
+
+    // {{{ hasCollaboration
     /**
-    *
-    * Static function.  Given a document primary key will create
-    * a document object and populate it with the corresponding
-    * database values
-    *
-    * @return Document populated Document object on success, false otherwise.
-    */
+     * Checks if there is collaboration for this document
+     *
+     * @param integer the id of the document
+     */
+    function hasCollaboration() {
+        global $default;
+        $sql = $default->db;
+        $sql->query(array("SELECT id AS count from $default->groups_folders_approval_table WHERE folder_id = ?", $this->iFolderID));/*ok*/
+        if ($sql->next_record()) {
+            return true;
+        }
+        return false;
+    }
+    // }}}
+
+    // }}}
+
+    // {{{ get
+    /**
+     *
+     * Static function.  Given a document primary key will create
+     * a document object and populate it with the corresponding
+     * database values
+     *
+     * @return Document populated Document object on success, false otherwise.
+     */
     function & get($iDocumentID) {
         global $default, $lang_err_doc_not_exist;
         if (strlen($iDocumentID) > 0) {
@@ -396,28 +433,32 @@ class Document extends KTEntity {
             return false;
         }
     }
+    // }}}
 
+    // {{{ getList
     /**
-    * Static function
-    * Get a list of Documents
-    *
-    * @param  String  Where clause (not required)
-    *
-    * @return Array array of Documents objects, false otherwise.
-    */
+     * Static function
+     * Get a list of Documents
+     *
+     * @param  String  Where clause (not required)
+     *
+     * @return Array array of Documents objects, false otherwise.
+     */
     function getList($sWhereClause = null) {
         return KTEntityUtil::getList(Document::_table(), 'Document', $sWhereClause);
     }
+    // }}}
 
+    // {{{ getDocumentFieldsForDocumentType
     /**
-    * Static function.
-    * Get all the document field's associated with a document type
-    *
-    * @param  Document type primary key
-    * @param  Get only the mandatory fields
-    *
-    * @return array array of document field objects, false otherwise
-    */
+     * Static function.
+     * Get all the document field's associated with a document type
+     *
+     * @param  Document type primary key
+     * @param  Get only the mandatory fields
+     *
+     * @return array array of document field objects, false otherwise
+     */
     function getDocumentFieldsForDocumentType($iDocumentTypeID, $bMandatoryOnly = false) {
         $aDocumentFieldArray;
         settype($aDocumentFieldArray,"array");
@@ -448,13 +489,15 @@ class Document extends KTEntity {
         return false;
 
     }
+    // }}}
 
+    // {{{ getDocumentHistory
     /**
-    * Get a document's transaction history
-    *
-    * @return Array array of DocumentTransaction objects
-    *
-    */
+     * Get a document's transaction history
+     *
+     * @return Array array of DocumentTransaction objects
+     *
+     */
     function getDocumentHistory() {
         global $default, $lang_err_database;
         $aDocumentHistory = array();
@@ -473,7 +516,9 @@ class Document extends KTEntity {
         }
         return false;
     }
+    // }}}
 
+    // {{{ getMimeTypeIconUrl
     /**
      * Returns the url to the file type icon associated with this document
      *
@@ -493,15 +538,19 @@ class Document extends KTEntity {
             return false;
         }
     }
+    // }}}
 
+    // {{{ getIcon
     /**
      * Returns the html to display the document icon image
      */
     function getIcon() {
         global $default;
         return generateImage($this->getMimeTypeIconUrl() ? $this->getMimeTypeIconUrl() : "$default->graphicsUrl/unknown.gif");
-    } 
-    
+    }
+    // }}}
+
+    // {{{ getPath
     /**
      * Get the full path for a document
      *
@@ -510,34 +559,38 @@ class Document extends KTEntity {
     function getPath() {
         return Folder::getFolderPath($this->iFolderID) . $this->sFileName;
     }
-    
+    // }}}
+
+    // {{{
     /**
-    * Get the path for a document that will be displayed to the user
-    * 
-    * @return string full path to document
-    */
+     * Get the path for a document that will be displayed to the user
+     *
+     * @return string full path to document
+     */
     function getDisplayPath($bDisplayIcon = false) {
         $sFolderPath = Folder::getFolderDisplayPath($this->iFolderID);
         // #3425 for consistency
-        return ($bDisplayIcon ? $this->getIcon() : "") . 
+        return ($bDisplayIcon ? $this->getIcon() : "") .
            ($sFolderPath == "" ? "Deleted Folder" : $sFolderPath) . " > " . $this->sFileName;
     }
-    
+    // }}}
+
+    // {{{ documentExists
     /**
-    * Static function.
-    * Check if a document already exists
-    *
-    * @param String  File name of document
-    * @param int  Primary key of folder to which document is assigned
-    *
-    * @return boolean true if document exists, false otherwise.
-    */
+     * Static function.
+     * Check if a document already exists
+     *
+     * @param String  File name of document
+     * @param int  Primary key of folder to which document is assigned
+     *
+     * @return boolean true if document exists, false otherwise.
+     */
     function documentExists($sFileName, $iFolderID) {
         global $default;
         $sql = $default->db;
         $sQuery = "SELECT * FROM $default->documents_table " ./*ok*/
               "WHERE filename = ? " .
-              " AND folder_id = ?" . 
+              " AND folder_id = ?" .
               " AND status_id = ?";
         $aParams = array($sFileName, $iFolderID, LIVE);
         $sql->query(array($sQuery, $aParams));
@@ -546,13 +599,15 @@ class Document extends KTEntity {
         }
         return false;
     }
+    // }}}
 
+    // {{{ getDocumentName
     /**
-    * Lookup the document name for the document
-    *
-    * @param int the ID of the document to lookup the document name for
-    * @return string the name of the document on success, false otherwise.
-    */
+     * Lookup the document name for the document
+     *
+     * @param int the ID of the document to lookup the document name for
+     * @return string the name of the document on success, false otherwise.
+     */
     function getDocumentName($iDocumentID) {
         global $default, $lang_err_database, $lang_err_doc_not_exist;
         $sql = $default->db;
@@ -561,28 +616,32 @@ class Document extends KTEntity {
                         "WHERE id = ?", $iDocumentID))) {
             if ($sql->next_record()) {
                 return $sql->f("name");
-            } 
+            }
         }
         return false;
     }
+    // }}}
 
+    // {{{ getDocumentDisplayPath
     /**
-    * Static function.
-    * Get the path for a document that will be displayed to the user
-    * 
-    * @param integer primary key of document to generate path for 
-    * @return string full path to document
-    */
+     * Static function.
+     * Get the path for a document that will be displayed to the user
+     *
+     * @param integer primary key of document to generate path for
+     * @return string full path to document
+     */
     function getDocumentDisplayPath($iDocumentID) {
         global $default;
         $oDocument = & Document::get($iDocumentID);
         return $oDocument->getDisplayPath();
     }
+    // }}}
 
+    // {{{ documentIsAssignedDocTypeInFolder
     /**
      * Check if any documents are assigned the given
      * document type in a specified folder
-     * 
+     *
      */
     function documentIsAssignedDocTypeInFolder($iFolderID, $iFolderDocTypeID) {
         global $default;
@@ -597,7 +656,9 @@ class Document extends KTEntity {
         }
         return false;
     }
+    // }}}
 
+    // {{{ removeInvalidDocumentTypeEntries
     /**
      * On a document type change, delete all document field entries for the
      * old document type
@@ -617,7 +678,7 @@ class Document extends KTEntity {
         }
         if (count($aFieldIDs) > 0) {
             //delete the entries
-            $sQuery = "DELETE FROM $default->document_fields_link_table " . 
+            $sQuery = "DELETE FROM $default->document_fields_link_table " .
                       "WHERE document_id = " . quote($this->iId) . "
                        AND document_field_id IN (" . implode(",",$aFieldIDs) . ")";
             if ($sql->query($sQuery)) {
@@ -628,22 +689,9 @@ class Document extends KTEntity {
         //none to remove if we get here
         return true;
     }
+    // }}}
 
-    /**
-     * Checks if there is collaboration for this document
-     *
-     * @param integer the id of the document
-     */
-    function hasCollaboration() {
-        global $default;
-        $sql = $default->db;
-        $sql->query(array("SELECT id AS count from $default->groups_folders_approval_table WHERE folder_id = ?", $this->iFolderID));/*ok*/
-        if ($sql->next_record()) {
-            return true;
-        }
-        return false;
-    }    
-
+    // {{{ cleanupDocumentData
     /**
      * Deletes content from document data tables
      */
@@ -655,5 +703,6 @@ class Document extends KTEntity {
                   $sql->query("DELETE FROM $default->document_fields_link_table WHERE document_id = $iDocumentID");
         return $result;
     }
+    // }}}
 }
 ?>
