@@ -69,37 +69,14 @@ class PatternTableLinks {
 	function & render() {
 		global $default;
 
-		$iArraySize = count($this->aLinks);
-		$iArrayCount = 0;		 
-		$sToRender = "<table border=0 width=\"100%\" cellspacing = \"0\">\n";		
-		
-		//build the table
-		for ($i = 0; $i < ($this->iRows > $iArraySize ? $this->iRows : $iArraySize); $i++) {			
-			$sToRender .= "<tr>\n";
-			$sLink = "";
-			for ($j = 0; $j < $this->iColumns; $j++) {
-				if ($iArrayCount <= $iArraySize) {
-					if (strlen($this->aLinks[$iArrayCount]) > 0) {
-	                    $sLink = "<a href=\"" . $this->aLinks[$iArrayCount] . "\">";
-	                    if ($this->iLinkType == TEXT) {
-	                        $sLink .= $this->aLinksText[$iArrayCount];
-	                    } else if ($this->iLinkType == IMAGE) {
-	                        $oImage = new PatternImage($this->aLinkImages[$iArrayCount]);
-	                        $sLink .= $oImage->render();
-	                    }
-	                    $sLink .= "</a>";
-					}
-					$iArrayCount++;
-				}
-				
-				if (strlen($sLink) > 0) {
-					$sToRender .= "<td cellspacing=\"20\" width=\"100%\">$sLink</td>";
-					$sToRender .= "</tr><tr></tr><tr/><tr/><tr/><tr><td></td>\n";					
-				}
-			}
-			$sToRender .= "</tr>\n";
-		}		
-		$sToRender .= "</table>\n";				 
+        $oTemplating = KTTemplating::getSingleton();
+        $oTemplate = $oTemplating->loadTemplate("ktcore/standard_links");
+        $aTemplateData = array(
+            "array_size" => count($this->aLinks),
+            "links" => array_combine($this->aLinksText, $this->aLinks),
+        );
+        $sToRender = $oTemplate->render($aTemplateData);
+
 		return $sToRender;		
 	}
 }
