@@ -152,91 +152,43 @@ class PatternMainPage {
 	*/
 	function render() {
         global $default;
-		$sToRender  = 	"<html>\n";
-		$sToRender .= 	"<head>\n";
-		$sToRender .=   "<title>The KnowledgeTree</title>";
-       	$sToRender .= 	"<meta http-equiv=\"refresh\" content=\"" . ($default->sessionTimeout+3) . ($bNN4 ? ";" : "") . "\">\n" .
-                            "<link rel=\"SHORTCUT ICON\" href=\"$default->graphicsUrl/tree.ico\">\n" .
-                            "<link rel=\"stylesheet\" href=\"$default->uiUrl/stylesheet.php\">\n".                            
-							PatternMainPage::getJavaScript() . "\n" .							
-							"</head>\n" .
-							"<body marginleft=\"0\" marginheight=\"0\" " . (isset($this->onLoadJavaScript) ? "onload=\"$this->onLoadJavaScript\"" : "") . ">\n";							
-        // hack to circumvent the crapness of ns 4.79
-        if (!$default->bNN4 && $this->bScroll) {
-            $sToRender .=       "<div id=\"divUp\">\n" .
-                                "\t<a href=\"#\" onmouseover=\"scroll(-7)\" onmouseout=\"noScroll()\"><img src=\"" . $default->graphicsUrl . "/down.gif\" width=\"18\" height=\"9\" alt=\"up\" border=\"0\"></a>\n" .
-                                "</div>\n" .
-                                "<div id=\"divDown\">\n" .
-                                "\t<a href=\"#\" onmouseover=\"scroll(7)\" onmouseout=\"noScroll()\"><img src=\"" . $default->graphicsUrl . "/up.gif\" width=\"18\" height=\"9\" alt=\"down\" border=\"0\"></a>\n" .
-                                "</div>\n";
-        }
+        require_once(KT_LIB_DIR . "/templating/templating.inc.php");
 
-        if ($this->bFormDisabled === false) {
-            $sToRender .= "<form name=\"MainForm\" " . (isset($this->sFormEncType) ? "enctype=\"$this->sFormEncType\" " : " ") . " action=\"".$this->sFormAction."\" method=\"$this->sSubmitMethod\" " . (($this->bHasRequiredFields) ? "onsubmit=\"return validateForm(this)\" " : " ") . ">\n";
-        }
-        $sToRender .= "<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"700\" height=\"$default->pageHeight\">\n " .
-									"<tr>\n".
-										"<td height=\"0\" valign=\"top\" " . (isset($this->sNorthWestPayloadBackGroundColour) ? " bgcolor=\"" . $this->sNorthWestPayloadBackGroundColour . "\"" : "") . ">\n";
-										if (isset($this->oNorthWestPayload)) {											
-											$sToRender = $sToRender . "\n" . $this->oNorthWestPayload->render() . "\n";
-										} else {
-											$sToRender = $sToRender . "\nNorthwest payload not set\n";
-										}
-										$sToRender = $sToRender . "</td>\n
-										<td valign=\"top\" align=\"left\" " . (isset($this->sNorthPayloadBackGroundColour) ? " bgcolor=\"" . $this->sNorthPayloadBackGroundColour . "\"" : "") . ">\n";										
-										if (isset($this->oNorthPayload)) {
-											$sToRender = $sToRender . "\n" . $this->oNorthPayload->render() . "\n";
-										} else {
-											$sToRender = $sToRender . "\nNorth payload not set\n";
-										}
-										$sToRender = $sToRender . "</td>\n
-									</tr>\n
-									<tr>\n										
-										<td height=\"100%\" valign=\"top\"" . (isset($this->sWestPayloadBackGroundColour) ? " bgcolor=\"" . $this->sWestPayloadBackGroundColour . "\"" : "") . ">";
-										if (isset($this->oWestPayload)) {											
-											$sToRender = $sToRender . "\n" . $this->oWestPayload->render() . "\n";											
-										} else {
-											$sToRender = $sToRender . "\nWest payload not set\n";
-										}
-										$sToRender = $sToRender . "</td>\n
-										<td valign=\"top\"" . (isset($this->sCentralPayloadBackGroundColour) ? " bgcolor=\"" . $this->sCentralPayloadBackGroundColour . "\"" : "") . ">\n";
-                                        
-										if (isset($this->oCentralPayload)) {
-                                            // hack to circumvent the crapness of ns 4.79
-                                            if (!$default->bNN4 && $this->bScroll) {
-                                                $sToRender .= "\t<div id=\"divScrollTextCont\">\n
-                                                               \t\t<div id=\"divText\">\n";												
-                                            }                                          
-											foreach ($this->sErrorMessage as $sErrorMessage) {
-												$sToRender .= "<table border=\"0\"><tr><td><p class=\"errorText\">$sErrorMessage</p></td></tr></table>\n ";
-											}
-                                            if (count($_SESSION['KTErrorMessage'])) {
-                                                foreach ($_SESSION['KTErrorMessage'] as $sErrorMessage) {
-                                                    $sToRender .= "<table border=\"0\"><tr><td><p class=\"errorText\">$sErrorMessage</p></td></tr></table>\n ";
-                                                }
-                                                $_SESSION['KTErrorMessage'] = array();
-                                            }
-                                            if (is_string($this->oCentralPayload)) {
-                                                $sToRender = $sToRender . "\n" . $this->oCentralPayload . "\n";
-                                            } else {
-                                                $sToRender = $sToRender . "\n" . $this->oCentralPayload->render() . "\n";
-                                            }
-										} else {											
-											$sToRender = $sToRender . "\nCentral payload not set\n";
-										}
-                                        // hack to circumvent the crapness of ns 4.79
-                                        if (!$default->bNN4 && $this->bScroll) {
-                                            $sToRender = $sToRender . "</div></div>\n";
-                                        }
-                                        $sToRender = $sToRender . "</td>\n" .
-									"</tr>\n" .								
-								"</table>\n";
+        $oTemplating = new KTTemplating;
+        $oTemplate = $oTemplating->loadTemplate("ktcore/standard_page");
 
-        if ($this->bFormDisabled === false) {
-            $sToRender .= "</form>\n";
-        }
-        $sToRender .= "</body>\n" .
-						"</html>\n";
+        $aTemplateData = array(
+            "sessiontimeout" => $default->sessionTimeout+3,
+            "javascript" => PatternMainPage::getJavaScript(),
+            "treeicon" => "$default->graphicsUrl/tree.ico",
+            "jsfiles" => array(
+                "$default->uiUrl/js/datePicker.js",
+                "$default->uiUrl/js/misc.js",
+                "$default->uiUrl/js/divSwitch.js",
+                "$default->uiUrl/js/OptionTransfer.js",
+            ),
+            "stylesheet" => "$default->uiUrl/stylesheet.php",
+            "onloadjavascript" => $this->onLoadJavaScript,
+            "formdisabled" => $this->bFormDisabled,
+            "formaction" => $this->sFormAction,
+            "formenctype" => $this->sFormEncType,
+            "formsubmitmethod" => $this->sSubmitMethod,
+            "hasrequiredfields" => $this->bHasRequiredFields,
+            "pageheight" => $default->pageHeight,
+            "nwbgcolour" => $this->sNorthWestPayloadBackGroundColour,
+            "nwpayload" => $this->oNorthWestPayload,
+            "nbgcolour" => $this->sNorthPayloadBackGroundColour,
+            "npayload" => $this->oNorthPayload,
+            "wbgcolour" => $this->sWestPayloadBackGroundColour,
+            "wpayload" => $this->oWestPayload,
+            "cbgcolour" => $this->sCentralPayloadBackGroundColour,
+            "cpayload" => $this->oCentralPayload,
+            "errormessages" => $this->sErrorMessage,
+            "kterrormessages" => $_SESSION['KTErrorMessage'],
+        );
+        $_SESSION['KTErrorMessage'] = array();
+
+        $sToRender = $oTemplate->render($aTemplateData);
 		echo $sToRender;
 	}
 	
@@ -250,15 +202,6 @@ class PatternMainPage {
 	function getJavaScript() {
         global $default;
         $sUrl = $default->uiUrl;
-        // hack to circumvent the crapness of ns 4.79
- 
-        if (!$default->bNN4 && $this->bScroll) {
-            $sJavaScript = "<script type=\"text/javascript\" src=\"$sUrl/js/scroll.js\"></script>\n";
-        }
-        $sJavaScript .= "<script type=\"text/javascript\" src=\"$sUrl/js/datePicker.js\"></script>\n";            
-		$sJavaScript .= "<script type=\"text/javascript\" src=\"$sUrl/js/misc.js\"></script>\n";
-		$sJavaScript .= "<script type=\"text/javascript\" src=\"$sUrl/js/divSwitch.js\"></script>\n";            	    
-		$sJavaScript .= "<script type=\"text/javascript\" src=\"$sUrl/js/OptionTransfer.js\"></script>\n";
 		$sJavaScript .= $this->getHelpJavaScript();
 		$sJavaScript .= $this->getAdditionalJavaScript();
 		return $sJavaScript;       
