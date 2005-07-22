@@ -1,0 +1,86 @@
+<html>
+	<head>
+		<title>The KnowledgeTree</title>
+		<meta http-equiv="refresh" content="{$sessiontimeout};">
+		<link rel="SHORTCUT ICON" href="{$treeicon}">
+		<link rel="stylesheet" href="{$stylesheet}">
+
+		{ foreach from="$jsfiles" item="jsfile" }
+		  <script type="text/javascript" src="{$jsfile}"></script>
+		{ /foreach }
+		{$javascript}
+	</head>
+  { if $onloadjavascript }
+		{ assign var="onloadjavascript" value="onload=\"$onloadjavascript\"" }
+  { /if }
+	<body marginleft="0" marginheight="0" {$onloadjavascript}>
+    { if $formenctype }
+			{ assign var="formenctype" value="enctype=\"$formenctype\"" }
+    { /if }
+    { if ! $formdisabled }
+      { if $hasrequiredfields }
+        { assign var="onsubmit" value="onsubmit=\"return validateForm(this)\"" }
+      { /if }
+		<form name="MainForm" {$formenctype} action="{$formaction}" method="{$formsubmitmethod}" {$onsubmit}>
+    { /if }
+
+		<table cellpadding="0" cellspacing="0" border="0" width="700" height="{$pageheight}">
+      <tr>
+			  { if $nwbgcolour }
+				  { assign var="nwbgcolour" value="bgcolor=\"$nwbgcolour\"" }
+				{ /if }
+				<td height="0" valign="top" {$nwbgcolour}>
+					{ if $nwpayload }
+						{ $nwpayload->render() }
+					{ else }
+						Northwest payload not set
+					{ /if }
+				</td>
+
+			  { if $nbgcolour }
+				  { assign var="nbgcolour" value="bgcolor=\"$nbgcolour\"" }
+				{ /if }
+				<td valign="top" align="left" {$nbgcolour}>
+					{ if $npayload }
+						{ $npayload->render() }
+					{ else }
+						North payload not set
+					{ /if }
+				</td>
+			</tr>
+
+			<tr>
+			  { if $wbgcolour }
+				  { assign var="wbgcolour" value="bgcolor=\"$wbgcolour\"" }
+				{ /if }
+			  <td height="100%" valign="top" {$wbgcolour}>
+					{ if $wpayload }
+						{ $wpayload->render() }
+					{ else }
+						West payload not set
+					{ /if }
+				</td>
+
+			  { if $cbgcolour }
+				  { assign var="cbgcolour" value="bgcolor=\"$cbgcolour\"" }
+				{ /if }
+				<td valign="top" {$cbgcolour}>
+				  { foreach item=errorMessage from=$errormessages }
+						<table border="0"><tr><td><p class="errorText">{$errorMessage}</p></td></tr></table>
+					{ /foreach }
+				  { foreach item=errorMessage from=$kterrormessages }
+						<table border="0"><tr><td><p class="errorText">{$errorMessage}</p></td></tr></table>
+					{ /foreach }
+					{ if $cpayload }
+						{ $cpayload->render() }
+					{ else }
+						Central payload not set
+					{ /if }
+				</td>
+			</tr>
+		</table>
+    { if ! $formdisabled }
+		</form>
+    { /if }
+	</body>
+</html>
