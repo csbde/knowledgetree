@@ -66,6 +66,8 @@ class PatternMainPage {
 	var $additionalJavaScript;
 	/** whether or not to use dhtml scrolling **/
 	var $bScroll;
+
+    var $bFormDisabled = false;
 	
 	
 	function PatternMainPage() {
@@ -169,8 +171,10 @@ class PatternMainPage {
                                 "</div>\n";
         }
 
-		$sToRender .= 		    "<form name=\"MainForm\" " . (isset($this->sFormEncType) ? "enctype=\"$this->sFormEncType\" " : " ") . " action=\"".$this->sFormAction."\" method=\"$this->sSubmitMethod\" " . (($this->bHasRequiredFields) ? "onsubmit=\"return validateForm(this)\" " : " ") . ">\n" .		
-								"<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"700\" height=\"$default->pageHeight\">\n " .
+        if ($this->bFormDisabled === false) {
+            $sToRender .= "<form name=\"MainForm\" " . (isset($this->sFormEncType) ? "enctype=\"$this->sFormEncType\" " : " ") . " action=\"".$this->sFormAction."\" method=\"$this->sSubmitMethod\" " . (($this->bHasRequiredFields) ? "onsubmit=\"return validateForm(this)\" " : " ") . ">\n";
+        }
+        $sToRender .= "<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"700\" height=\"$default->pageHeight\">\n " .
 									"<tr>\n".
 										"<td height=\"0\" valign=\"top\" " . (isset($this->sNorthWestPayloadBackGroundColour) ? " bgcolor=\"" . $this->sNorthWestPayloadBackGroundColour . "\"" : "") . ">\n";
 										if (isset($this->oNorthWestPayload)) {											
@@ -212,7 +216,11 @@ class PatternMainPage {
                                                 }
                                                 $_SESSION['KTErrorMessage'] = array();
                                             }
-											$sToRender = $sToRender . "\n" . $this->oCentralPayload->render() . "\n";
+                                            if (is_string($this->oCentralPayload)) {
+                                                $sToRender = $sToRender . "\n" . $this->oCentralPayload . "\n";
+                                            } else {
+                                                $sToRender = $sToRender . "\n" . $this->oCentralPayload->render() . "\n";
+                                            }
 										} else {											
 											$sToRender = $sToRender . "\nCentral payload not set\n";
 										}
@@ -222,9 +230,12 @@ class PatternMainPage {
                                         }
                                         $sToRender = $sToRender . "</td>\n" .
 									"</tr>\n" .								
-								"</table>\n" .
-								"</form>\n" .
-							"</body>\n" .
+								"</table>\n";
+
+        if ($this->bFormDisabled === false) {
+            $sToRender .= "</form>\n";
+        }
+        $sToRender .= "</body>\n" .
 						"</html>\n";
 		echo $sToRender;
 	}
