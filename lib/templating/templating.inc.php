@@ -97,6 +97,20 @@ class KTTemplating {
         return new $sClass($sTemplatePath);
     }
     // }}}
+
+    // {{{ addLocation
+    function addLocation ($descr, $loc) {
+        $this->aLocationRegistry[$descr] = $loc;
+    }
+    // }}}
+
+    // {{{ getSingleton
+    function &getSingleton () {
+        global $oKTTemplating;
+        return $oKTTemplating;
+    }
+    // }}}
 }
+$oKTTemplating =& new KTTemplating;
 
 ?>
