@@ -26,6 +26,8 @@
  * @package foldermanagement
  */
 
+require_once(KT_LIB_DIR . "/groups/GroupUtil.php");
+
 function getFolderPath($iFolderID) {
 	global $default;
 	$sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
