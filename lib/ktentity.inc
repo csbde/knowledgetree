@@ -27,6 +27,7 @@
  */
 
 class KTEntity {
+    var $_bUsePearError = false;
     /** object primary key */
     var $iId;
 
@@ -40,8 +41,12 @@ class KTEntity {
         if ($this->iId < 0) {
             $id = DBUtil::autoInsert($this->_table(), $this->_fieldValues());
             if (PEAR::isError($id)) {
-                $_SESSION["errorMessage"] = $id->toString();
-                return false;
+                if ($this->_bUsePearError === false) {
+                    $_SESSION["errorMessage"] = $id->toString();
+                    return false;
+                } else {
+                    return $id;
+                }
             }
             $this->iId = $id;
             return true;
@@ -87,6 +92,131 @@ class KTEntity {
         $_SESSION["errorMessage"] = "Can't delete an object that isn't in the database";;
         return false;
     }
+
+    function _getSqlSelection() {
+        $aRet = array();
+        foreach ($this->_aFieldToSelect as $k => $v) {
+            $aRet[] = $v;
+        }
+        return join(", ", $aRet);
+    }
+
+    function load($iId = null) {
+        if (is_null($iId)) {
+            if (is_null($this->iId)) {
+                return PEAR::raiseError("No ID given");
+            }
+            $iId = $this->iId;
+        }
+        $table = $this->_table();
+        $select = $this->_getSqlSelection();
+        $sQuery = "SELECT $select FROM $table WHERE id = ?";
+        $aParams = array($iId);
+
+        $res = DBUtil::getResultArray(array($sQuery, $aParams));
+
+        if (PEAR::isError($res)) {
+            return $res;
+        }
+        if (count($res) === 0) {
+            return PEAR::raiseError("No such ID");
+        }
+        if (count($res) > 1) {
+            return PEAR::raiseError("Multiple matches for ID");
+        }
+        $vk = array_flip($this->_aFieldToSelect);
+        $aLoadInfo = array();
+        foreach ($res[0] as $k => $v) {
+            $aLoadInfo[$vk[$k]] = $v;
+        }
+        $res = $this->loadFromArray($aLoadInfo);
+        if (PEAR::isError($res)) {
+            return $res;
+        }
+    }
+
+    function loadFromArray ($aOptions) {
+        if (!is_array($aOptions)) {
+            return PEAR::raiseError("Expected an array!");
+        }
+
+        foreach ($aOptions as $sField => $sValue) {
+            $sElement = $this->_getElementFromMethod($sField);
+            if ($sElement === false) {
+                return PEAR::raiseError('Setting a non-existent field: ' . $sField);
+            }
+            if (PEAR::isError($sElement)) {
+                return $sElement;
+            }
+            $ret = $this->_set($sElement, $sValue);
+            if (PEAR::isError($ret)) {
+                return $ret;
+            }
+        }
+        return true;
+    }
+
+    function &_set (&$element, &$params) {
+        $this->$element = $params;
+        return array(true, true);
+    }
+
+    function &_getElementFromMethod ($sElement) {
+        // The element is probably lower-case, for various reasons.  Get
+        // the correct case from the aFieldToSelect dictionary's keys.
+        //
+        // If the element isn't in the case array, the method doesn't
+        // exist.
+
+        $array = array_keys($this->_aFieldToSelect);
+
+        foreach($array as $k) {
+            $case[strtolower($k)] = $k;
+        }
+
+        $sElement = strtolower($sElement);
+
+        if (array_key_exists($sElement, $case)) {
+            return $case[strtolower($sElement)];
+        }
+
+        foreach($array as $k) {
+            $case[substr(strtolower($k), 1)] = $k;
+        }
+
+        if (array_key_exists($sElement, $case)) {
+            return $case[strtolower($sElement)];
+        }
+        return PEAR::raiseError("No such element");
+    }
+
+    function _fieldValues () {
+        $aRet = array();
+
+        foreach ($this->_aFieldToSelect as $k => $v) {
+            if ($k === 'iId') {
+                continue;
+            }
+            $aRet[$v] = $this->$k;
+        }
+        return $aRet;
+    }
+
+    function updateFromArray ($aOptions) {
+        $ret = $this->load();
+        if (PEAR::isError($ret)) {
+            return $ret;
+        }
+        $ret = $this->loadFromArray($aOptions);
+        if (PEAR::isError($ret)) {
+            return $ret;
+        }
+        $ret = $this->update();
+        if (PEAR::isError($ret)) {
+            return $ret;
+        }
+        return true;
+    }
 }
 
 class KTEntityUtil {
@@ -119,6 +249,45 @@ class KTEntityUtil {
             $aRet[] =& call_user_func(array($sClassName, 'get'), $iID);
         }
         return $aRet;
+    }
+
+    function createFromArray ($sClassName, $aOptions) {
+        $oObject = new $sClassName;
+        $ret = $oObject->loadFromArray($aOptions);
+        if (PEAR::isError($ret)) {
+            return $ret;
+        }
+        $ret = $oObject->create();
+        if (PEAR::isError($ret)) {
+            return $ret;
+        }
+        return true;
+    }
+
+    function updateFromArray ($sClassName, $iId, $aOptions) {
+        $oObject = new $ClassName;
+        $ret = $oObject->load($iId);
+        if (PEAR::isError($ret)) {
+            return $ret;
+        }
+        $ret = $this->loadFromArray($aOptions);
+        if (PEAR::isError($ret)) {
+            return $ret;
+        }
+        $ret = $this->update();
+        if (PEAR::isError($ret)) {
+            return $ret;
+        }
+        return true;
+    }
+
+    function &get($sClassName, $iId) {
+        $oObject =& new $sClassName;
+        $res = $oObject->load($iId);
+        if (PEAR::isError($res)) {
+            return $res;
+        }
+        return $oObject;
     }
 }
 
