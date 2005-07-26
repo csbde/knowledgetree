@@ -72,7 +72,11 @@
 						<table border="0"><tr><td><p class="errorText">{$errorMessage}</p></td></tr></table>
 					{ /foreach }
 					{ if $cpayload }
-						{ $cpayload->render() }
+						{ if $cpayload|is_string }
+							{ $cpayload }
+						{ else }
+							{ $cpayload->render() }
+						{ /if }
 					{ else }
 						Central payload not set
 					{ /if }
