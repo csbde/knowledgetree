@@ -40,16 +40,6 @@ $headingBar .= "\t</tr>\n";
 $headingBar .= "</table>\n";
 echo $headingBar;
 
-//Query the database for the helpURL based on the current action
-/*ok*/ $sQuery = array("SELECT HLP.help_info as helpinfo ".
-		"FROM $default->help_table AS HLP WHERE HLP.fSection = ?", $_REQUEST['fAction']);
-		
-$sql = $default->db;
-$sql->query($sQuery);
-
-if ($sql->next_record()) {
-	require_once("$default->uiDirectory/help/" . $sql->f("helpinfo"));
-} else {
-	echo "No help available for " . $_REQUEST['fAction'];
-}
+require_once(KT_LIB_DIR . '/help/help.inc.php');
+print KTHelp::getHelpStringForSection($_REQUEST['fAction']);
 ?>

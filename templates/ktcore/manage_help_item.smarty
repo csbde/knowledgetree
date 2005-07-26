@@ -1,0 +1,16 @@
+<script language="javascript" type="text/javascript" src="/tinymce/jscripts/tiny_mce/tiny_mce.js"></script>
+<script language="javascript" type="text/javascript">
+{literal}
+tinyMCE.init({
+		mode : "textareas",
+		theme : "simple",
+});
+{/literal}
+</script>
+
+<form method="POST" action="{$smarty.server.PHP_SELF}">
+<input type="hidden" name="id" value="{$help->iId}">
+<input type="hidden" name="action" value="update">
+<textarea cols="60" rows="20" name="description">{$help->sDescription|escape}</textarea>
+<input type="submit" name="submit" value="Update">
+</form>
