@@ -38,6 +38,8 @@ class KTSmartyTemplate extends KTTemplate {
         foreach ($aDict as $k => $v) {
             $smarty->assign($k, $v);
         }
+        $KTConfig =& KTConfig::getSingleton();
+        $smarty->assign("config", $KTConfig);
         $smarty->caching = false;
         return $smarty->fetch($this->sPath);
     }
