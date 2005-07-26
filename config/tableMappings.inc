@@ -113,4 +113,5 @@ $default->status_table = "status_lookup";
 $default->search_permissions_table = "search_document_user_link";
 $default->document_link_types_table = "document_link_types";
 $default->upgrades_table = "upgrades";
+$default->help_replacement_table = "help_replacement";
 ?>
