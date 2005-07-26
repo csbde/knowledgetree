@@ -283,44 +283,57 @@ class KTInit {
         return "";
     }
     // }}}
+    // {{{ readConfig
+    function readConfig () {
+        global $default;
+        global $KTConfig;
+        $KTConfig->loadFile(KT_DIR . "/config/config.ini");
+        foreach (array_keys($KTConfig->flat) as $k) {
+            $v = $KTConfig->get($k);
+            if ($v === "default") {
+                continue;
+            }
+            if ($v === "false") {
+                $v = false;
+            }
+            if ($v === "true") {
+                $v = true;
+            }
+            $default->$k = $v;
+        }
+    }
+    // }}}
 }
 // }}}
 
 $KTInit = new KTInit();
 
-// Application defaults
-//
-// Overridden in environment.php
-
-$default->fileSystemRoot = KT_DIR;
-$default->serverName = $_SERVER['HTTP_HOST'];
-
-$default->execSearchPath = $_SERVER['PATH'];
-$default->unzipCommand = "unzip";
-$default->logLevel = 'INFO';
-
-$default->useDatabaseConfiguration = false;
-$default->developmentWindowLog = false;
-$default->phpErrorLogFile = false;
-$default->genericMetaDataRequired = true;
-$default->browseToRoot = false;
-
-$default->sslEnabled = false;
-if (array_key_exists('HTTPS', $_SERVER)) {
-    if (strtolower($_SERVER['HTTPS']) === 'on') {
-        $default->sslEnabled = true;
-    }
-}
-
-$default->rootUrl = $KTInit->guessRootUrl();
-
-// include the environment settings
-require_once("environment.php");
-
-
 $KTInit->prependPath(KT_DIR . '/thirdparty/pear');
 $KTInit->prependPath(KT_DIR . '/thirdparty/Smarty');
 require_once('PEAR.php');
+
+require_once(KT_LIB_DIR . "/config/config.inc.php");
+
+$KTConfig->setdefaultns("KnowledgeTree", "fileSystemRoot", KT_DIR);
+$KTConfig->setdefaultns("KnowledgeTree", "serverName", $_SERVER['HTTP_HOST']);
+$KTConfig->setdefaultns("KnowledgeTree", "sslEnabled", false);
+if (array_key_exists('HTTPS', $_SERVER)) {
+    if (strtolower($_SERVER['HTTPS']) === 'on') {
+        $KTConfig->setdefaultns("KnowledgeTree", "sslEnabled", true);
+    }
+}
+$KTConfig->setdefaultns("KnowledgeTree", "rootUrl", $KTInit->guessRootUrl());
+$KTConfig->setdefaultns("config", "useDatabaseConfiguration", false);
+$KTConfig->setdefaultns("tweaks", "browseToRoot", false);
+$KTConfig->setdefaultns("tweaks", "genericMetaDataRequired", true);
+$KTConfig->setdefaultns("tweaks", "phpErrorLogFile", false);
+$KTConfig->setdefaultns("tweaks", "developmentWindowLog", false);
+
+$KTConfig->setdefaultns(null, "logLevel", 'INFO');
+$KTConfig->setdefaultns(null, "unzipCommand", 'unzip');
+$KTConfig->setdefaultns(null, "execSearchPath", $_SERVER['PATH']);
+
+$KTInit->readConfig();
 
 // instantiate log
 $loggingSupport = $KTInit->setupLogging();
@@ -376,9 +389,5 @@ require_once(KT_DIR . '/phpmailer/class.phpmailer.php');
 require_once(KT_LIB_DIR . '/session/Session.inc');
 require_once(KT_LIB_DIR . '/session/control.inc');
 require_once(KT_DIR . '/presentation/Html.inc');
-// browser settings
-require_once(KT_DIR . '/phpSniff/phpSniff.class.php');
-require_once('browsers.inc');
-
 
 ?>
