@@ -27,6 +27,9 @@ define("IMAGE", 2);
  * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
  * @package lib.visualpatterns
  */
+
+require_once(KT_LIB_DIR . '/templating/templating.inc.php');
+
 class PatternTableLinks {
 	
 	/** Array of link URLS to display in tables */
