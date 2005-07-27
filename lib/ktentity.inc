@@ -261,7 +261,7 @@ class KTEntityUtil {
         if (PEAR::isError($ret)) {
             return $ret;
         }
-        return true;
+        return $oObject;
     }
 
     function updateFromArray ($sClassName, $iId, $aOptions) {
