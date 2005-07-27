@@ -44,6 +44,10 @@ class KTHelpReplacement extends KTEntity {
         global $default;
         return KTEntityUtil::getList($default->help_replacement_table, 'KTHelpReplacement', $sWhereClause);
     }
+
+    function &getByName($sName) {
+        return KTEntityUtil::getBy('KTHelpReplacement', 'name', $sName);
+    }
 }
 
 ?>
