@@ -1,5 +1,3 @@
-<h2>Existing permissions</h2>
-
 {literal}
 <style>
 table.pretty {
@@ -57,18 +55,52 @@ table.pretty > tbody > tr > td {
 </style>
 {/literal}
 
+<h2>Current help assignments</h2>
+
 <table class="pretty" cellspacing="0" cellpadding="0" border="0">
 <thead>
 <tr>
-<th>Name</th>
+<th>Section</th>
+<th>Filename</th>
+<th>Customise</th>
 </tr>
 </thead>
-{ foreach item=oHelpReplacement from=$helps }
+{foreach item=oHelpEntity from=$helps }
 <tr class="{cycle values="odd,even"}">
+<td> { $oHelpEntity->sSection } </td>
+<td> { $oHelpEntity->sFilename } </td>
 <td>
-<a href="{$smarty.server.PHP_SELF}?id={$oHelpReplacement->iId}">{ $oHelpReplacement->sName }</a>
+{ assign var="replacement" value=$oHelpEntity->checkReplacement() }
+{ if $replacement }
+<a href="{$smarty.server.PHP_SELF}?action=editReplacement&id={$replacement->getId()}">Edit</a>
+{ else }
+<a href="{$smarty.server.PHP_SELF}?action=customise&name={$oHelpEntity->getFilename()}">Customise</a>
+{ /if }
 </td>
 </tr>
 { /foreach }
 </table>
+
+{ if $helpreplacements }
+<h2>Existing customised help pages</h2>
+
+<table class="pretty" cellspacing="0" cellpadding="0" border="0">
+<thead>
+<tr>
+<th>Name</th>
+<th>Actions</th>
+</tr>
+</thead>
+{ foreach item=oHelpReplacement from=$helpreplacements }
+<tr class="{cycle values="odd,even"}">
+<td>
+<a href="{$smarty.server.PHP_SELF}?action=editReplacement&id={$oHelpReplacement->iId}">{ $oHelpReplacement->sName }</a>
+</td>
+<td>
+<a href="{$smarty.server.PHP_SELF}?action=deleteReplacement&id={$oHelpReplacement->iId}">Delete</a>
+</td>
+</tr>
+{ /foreach }
+</table>
+{ /if }
 
