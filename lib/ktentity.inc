@@ -289,6 +289,22 @@ class KTEntityUtil {
         }
         return $oObject;
     }
+
+    function &getBy($sClassName, $sField, $mValue) {
+        $sTable = call_user_func(array($sClassName, "_table"));
+        $sWhereClause = array("$sField = ?", array($mValue));
+        $aObjects =& KTEntityUtil::getList($sTable, $sClassName, $sWhereClause);
+        if (PEAR::isError($aObjects)) {
+            return $aObjects;
+        }
+        if (count($aObjects) === 0) {
+            return PEAR::raiseError("No objects returned");
+        }
+        if (count($aObjects) > 1) {
+            return PEAR::raiseError("Multiple objects returned");
+        }
+        return $aObjects[0];
+    }
 }
 
 ?>
