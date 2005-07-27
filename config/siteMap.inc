@@ -134,7 +134,7 @@ $default->siteMap->addPage("browseAdministration", "/presentation/lookAndFeel/kn
 
 $default->siteMap->addPage("docLinkManagement", "/presentation/lookAndFeel/knowledgeTree/administration/doclinkmanagement/listLinkTypesBL.php", "Administration", SysAdmin, _("Link Type Management"), true, 16);
 
-$default->siteMap->addPage("helpAdmin", "/presentation/lookAndFeel/knowledgeTree/administration/help/manageHelp.php", "Administration", SysAdmin, _("Help Administration"), true, 17);
+$default->siteMap->addPage("manageHelp", "/presentation/lookAndFeel/knowledgeTree/administration/help/manageHelp.php", "Administration", SysAdmin, _("Help Administration"), true, 17);
 
 $default->siteMap->addSectionColour("Administration", "th", "056DCE");
 $default->siteMap->addSectionColour("Administration", "td", "6699FF");
