@@ -24,6 +24,11 @@ class KTHelp {
         }
         return file_get_contents("$default->uiDirectory/help/" .  $sHelpFile);
     }
+
+    function getHelpFromFile($sHelpFile) {
+        global $default;
+        return file_get_contents("$default->uiDirectory/help/" .  $sHelpFile);
+    }
 }
 
 ?>
