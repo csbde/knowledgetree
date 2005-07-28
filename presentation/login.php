@@ -3,7 +3,7 @@
 // main library routines and defaults
 require_once("../config/dmsDefaults.php");
 require_once("../lib/util/sanitize.inc");
-require_once("Html.inc");
+require_once(KT_DIR . "/presentation/Html.inc");
 /**
  * $Id$
  *  
