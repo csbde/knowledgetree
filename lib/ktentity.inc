@@ -220,6 +220,11 @@ class KTEntity {
 }
 
 class KTEntityUtil {
+    function &getList2($sClassName, $sWhereClause = null) {
+        $sTable = call_user_func(array($sClassName, "_table"));
+        return KTEntityUtil::getList($sTable, $sClassName, $sWhereClause);
+    }
+
     function &getList($sTable, $sClassName, $sWhereClause = null) {
         $sQuery = "SELECT id FROM " . $sTable;/*ok*/
         $aParams = array();
@@ -290,20 +295,36 @@ class KTEntityUtil {
         return $oObject;
     }
 
-    function &getBy($sClassName, $sField, $mValue) {
-        $sTable = call_user_func(array($sClassName, "_table"));
-        $sWhereClause = array("$sField = ?", array($mValue));
-        $aObjects =& KTEntityUtil::getList($sTable, $sClassName, $sWhereClause);
+    function &getBy($sClassName, $aField, $mValue, $bMulti = false) {
+        if (is_string($aField)) {
+            $sWhereClause = array("$aField = ?", array($mValue));
+        } else {
+            $aWhere = array();
+            foreach ($aField as $k => $sField) {
+                $aWhere[] = array("$sField = ?", array($mValue[$k]));
+            }
+            $sWhereClause = KTUtil::whereToString($aWhere);
+        }
+        $aObjects =& KTEntityUtil::getList2($sClassName, $sWhereClause);
         if (PEAR::isError($aObjects)) {
             return $aObjects;
         }
-        if (count($aObjects) === 0) {
-            return PEAR::raiseError("No objects returned");
+        if ($bMulti === false) {
+            if (count($aObjects) === 0) {
+                return PEAR::raiseError("No objects returned");
+            }
+            if (count($aObjects) > 1) {
+                return PEAR::raiseError("Multiple objects returned");
+            }
+            return $aObjects[0];
+        } else {
+            return $aObjects;
         }
-        if (count($aObjects) > 1) {
-            return PEAR::raiseError("Multiple objects returned");
-        }
-        return $aObjects[0];
+    }
+
+    function &getByDict($sClassName, $aDict, $bMulti = false) {
+        return KTEntityUtil::getBy($sClassName, array_keys($aDict), array_values($aDict), $bMulti);
+        
     }
 }
 
