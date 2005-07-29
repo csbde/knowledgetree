@@ -11,17 +11,7 @@ if (!function_exists('array_fill')) {
     }
 }
 
-if(!function_exists('array_combine')) {
-    function array_combine($a, $b) {
-        $c = array();
-        $at = array_values($a);
-        $bt = array_values($b);
-        foreach ($at as $key=>$aval) {
-            $c[$aval] = $bt[$key];
-        }
-        return $c;
-    }
-}
-
+require_once('PHP/Compat.php');
+PHP_Compat::loadVersion();
  
 ?>
