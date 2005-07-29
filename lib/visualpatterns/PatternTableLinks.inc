@@ -74,9 +74,14 @@ class PatternTableLinks {
 
         $oTemplating = KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("ktcore/standard_links");
+        if (count($this->aLinksText)) {
+            $aMyLinks = array_combine($this->aLinksText, $this->aLinks);
+        } else {
+            $aMyLinks = array();
+        }
         $aTemplateData = array(
             "array_size" => count($this->aLinks),
-            "links" => array_combine($this->aLinksText, $this->aLinks),
+            "links" => $aMyLinks,
         );
         $sToRender = $oTemplate->render($aTemplateData);
 
