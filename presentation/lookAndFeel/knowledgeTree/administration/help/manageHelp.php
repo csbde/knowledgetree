@@ -13,8 +13,6 @@ require_once(KT_LIB_DIR . "/dispatcher.inc.php");
 $sectionName = "Administration";
 require_once(KT_DIR . "/presentation/webpageTemplate.inc");
 
-// require_once(KT_DIR . "/FCKeditor/fckeditor.php");
-
 class ManageHelpDispatcher extends KTAdminDispatcher {
     function do_main() {
         return $this->getData();
@@ -108,47 +106,6 @@ class ManageHelpDispatcher extends KTAdminDispatcher {
         return $this->redirectTo('editReplacement', 'id=' .  $oHelpReplacement->getId());
     }
 }
-
-/*
-$id = KTUtil::arrayGet($_REQUEST, 'id');
-if ($id) {
-    $action = KTUtil::arrayGet($_REQUEST, 'action');
-    if ($action === "updateReplacement") {
-        $oHelpReplacement =& KTHelpReplacement::get($id);
-        if (PEAR::isError($oHelpReplacement)) {
-            $_SESSION['KTErrorMessage'][] = "Help for that item not found";
-            exit(controllerRedirect('manageHelp'));
-        }
-        $description = KTUtil::arrayGet($_REQUEST, 'description');
-        if ($description) {
-            $oHelpReplacement->setDescription($description);
-            $res = $oHelpReplacement->update();
-            if (PEAR::isError($res)) {
-                $_SESSION['KTErrorMessage'][] = "Error updating
-                    object";
-                $data = getReplacementItemData($id);
-            } else {
-                $_SESSION['KTErrorMessage'][] = "Updated";
-                exit(controllerRedirect('manageHelp'));
-            }
-        } else {
-            $_SESSION['KTErrorMessage'][] = "No description given";
-            $data = getReplacementItemData($id);
-        }
-    } else {
-        $data = getReplacementItemData($id);
-    }
-} else {
-    $data = getData();
-}
-
-// $sectionName = "Administration";
-
-// require_once(KT_DIR . "/presentation/webpageTemplate.inc");
-// $main->bFormDisabled = true;
-// $main->setCentralPayload($data);
-// $main->render();
-*/
 
 $oDispatcher = new ManageHelpDispatcher();
 $oDispatcher->dispatch();
