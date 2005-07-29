@@ -88,7 +88,7 @@ if (PEAR::isError($dbSupport)) {
 $selectPriv = DBUtil::runQuery('SELECT COUNT(id) FROM ' .  $default->documents_table);
 if (PEAR::isError($selectPriv)) {
     print '<p><font color="red">Unable to do a basic database query.
-    Error is: ' . htmlentities($selectPrive->toString()) .
+    Error is: ' . htmlentities($selectPriv->toString()) .
     '</font></p>';
 } else {
     print '<p>Basic database query successful.</p>';
