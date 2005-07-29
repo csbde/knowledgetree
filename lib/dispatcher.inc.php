@@ -16,22 +16,37 @@ class KTDispatcher {
         $this->handleOutput($ret);
     }
 
-    function errorRedirectTo($event, $error_message) {
+    function errorRedirectTo($event, $error_message, $sQuery = "") {
         /* $method = 'do_main';
         if (method_exists($this, 'do_' . $event)) {
             $method = 'do_' . $event;
         }*/
         $_SESSION['KTErrorMessage'][] = $error_message;
-        exit(redirect($_SERVER["PHP_SELF"] . '?action=' . $event));
+        //exit(redirect($_SERVER["PHP_SELF"] . '?action=' . $event));
+        exit($this->redirectTo($event, $sQuery));
         //return $this->$method();
     }
 
-    function redirectTo($event, $sQuery) {
-        exit(redirect($_SERVER["PHP_SELF"] . '?action=' . $event . "&" . $sQuery));
+    function redirectTo($event, $sQuery = "") {
+        if (is_array($sQuery)) {
+            $sQuery['action'] = $event;
+            $aQueryStrings = array();
+            foreach ($sQuery as $k => $v) {
+                $aQueryStrings[] = urlencode($k) . "=" . urlencode($v);
+            }
+            $sQuery = "?" . join('&', $aQueryStrings);
+        } else {
+            if (!empty($sQuery)) {
+                $sQuery = '?action=' . $event . '&' . $sQuery;
+            } else {
+                $sQuery = '?action=' . $event;
+            }
+        }
+        exit(redirect($_SERVER["PHP_SELF"] . $sQuery));
     }
 
-    function errorRedirectToMain($error_message) {
-        return $this->errorRedirectTo('main', $error_message);
+    function errorRedirectToMain($error_message, $sQuery = "") {
+        return $this->errorRedirectTo('main', $error_message, $sQuery);
     }
 
     function handleOutput($sOutput) {
