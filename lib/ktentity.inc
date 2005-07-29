@@ -220,13 +220,19 @@ class KTEntity {
 }
 
 class KTEntityUtil {
-    function &getList2($sClassName, $sWhereClause = null) {
+    function &getList2($sClassName, $sWhereClause = null, $aOptions = null) {
         $sTable = call_user_func(array($sClassName, "_table"));
-        return KTEntityUtil::getList($sTable, $sClassName, $sWhereClause);
+        return KTEntityUtil::getList($sTable, $sClassName, $sWhereClause, $aOptions);
     }
 
-    function &getList($sTable, $sClassName, $sWhereClause = null) {
-        $sQuery = "SELECT id FROM " . $sTable;/*ok*/
+    function &getList($sTable, $sClassName, $sWhereClause = null, $aOptions = null) {
+        $bIDs = false;
+        $sIDField = 'id';
+        if (is_array($aOptions)) {
+            $bIDs = KTUtil::arrayGet($aOptions, "ids", false);
+            $sIDField = KTUtil::arrayGet($aOptions, "idfield", 'id');
+        }
+        $sQuery = "SELECT $sIDField FROM " . $sTable;/*ok*/
         $aParams = array();
         if (!is_null($sWhereClause)) {
             if (is_string($sWhereClause)) {
@@ -248,7 +254,12 @@ class KTEntityUtil {
                 return new PEAR_Error('Weird WhereClause passed');
             }
         }
-        $aIDs = DBUtil::getResultArrayKey(array($sQuery, $aParams), 'id');
+        $aIDs = DBUtil::getResultArrayKey(array($sQuery, $aParams), $sIDField);
+
+        if ($bIDs === true) {
+            return $aIDs;
+        }
+
         $aRet = array();
         foreach ($aIDs as $iID) {
             $aRet[] =& call_user_func(array($sClassName, 'get'), $iID);
@@ -295,7 +306,11 @@ class KTEntityUtil {
         return $oObject;
     }
 
-    function &getBy($sClassName, $aField, $mValue, $bMulti = false) {
+    function &getBy($sClassName, $aField, $mValue, $aOptions = null) {
+        $bMulti = false;
+        if (is_array($aOptions)) {
+            $bMulti = KTUtil::arrayGet($aOptions, 'multi', false);
+        }
         if (is_string($aField)) {
             $sWhereClause = array("$aField = ?", array($mValue));
         } else {
@@ -305,7 +320,7 @@ class KTEntityUtil {
             }
             $sWhereClause = KTUtil::whereToString($aWhere);
         }
-        $aObjects =& KTEntityUtil::getList2($sClassName, $sWhereClause);
+        $aObjects =& KTEntityUtil::getList2($sClassName, $sWhereClause, $aOptions);
         if (PEAR::isError($aObjects)) {
             return $aObjects;
         }
@@ -322,9 +337,8 @@ class KTEntityUtil {
         }
     }
 
-    function &getByDict($sClassName, $aDict, $bMulti = false) {
-        return KTEntityUtil::getBy($sClassName, array_keys($aDict), array_values($aDict), $bMulti);
-        
+    function &getByDict($sClassName, $aDict, $aOptions = null) {
+        return KTEntityUtil::getBy($sClassName, array_keys($aDict), array_values($aDict), $aOptions);
     }
 }
 
