@@ -277,7 +277,7 @@ class SiteMap {
             	//$default->log->info("SECTION:$sSectionName; access=" . arrayToString($requiredAccess) . ";pages=" . arrayToString($pages));
             	$default->log->info("SiteMap:: getSectionLinksArray calling hasPermission with requiredAccess:  " . $requiredAccess);
                 if ($this->hasPermission($requiredAccess)) {
-                	
+
                     foreach ($pages as $action => $pageDetail) {
                         // add this array to the resultset array if there is link text and it is enabled
                         // but not if it is the default page
