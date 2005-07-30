@@ -291,3 +291,56 @@ td.colour_logout {
     width: 100%;
     background-color: #CE0505;
 }
+
+table.pretty {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-top: 1px solid #cccccc;
+    border-left: 1px solid #cccccc;
+}
+
+table.pretty > thead > tr {
+    border: 0;
+    margin: 0;
+    padding: 0;
+    background-color: #feeeee;
+}
+
+table.pretty > thead > tr > th {
+    border-right: 1px solid #cccccc;
+    border-bottom: 2px solid #000000;
+    border-left: 0;
+    border-right: 0;
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+}
+
+table.pretty > tbody > tr {
+    border: 0;
+    margin: 0;
+    padding: 0;
+    background-color: #eeeefe;
+}
+
+table.pretty > tbody > tr.odd {
+    background-color: #eeeefe;
+}
+table.pretty > tbody > tr.odd {
+    background-color: #fafafe;
+}
+
+table.pretty > tbody > tr > td {
+    border: 0;
+    border-right: 1px solid #cccccc;
+    border-bottom: 1px solid #cccccc;
+    margin: 0;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    padding-left: 3px;
+    padding-right: 3px;
+}
+
+
