@@ -47,10 +47,10 @@ class Folder extends KTEntity {
 	var $sParentFolderIDs;
 	/** forward slash deliminated path from file system root */
 	var $sFullPath;
-	/** whether to inherit parent permissions or not */
-	var $bInheritParentPermission;
-    /** which folder I get permissions from (eases search lookups) */
-    var $iPermissionFolderID;
+    /** which permission object I get permissions from */
+    var $iPermissionObjectID;
+    /** lookup accelerator id */
+    var $iPermissionLookupID;
 	
 	/**
 	* Folder class constructor
@@ -72,162 +72,40 @@ class Folder extends KTEntity {
 		$this->iCreatorID = $iNewCreatorID;		
 		$this->iUnitID = $iNewUnitID;
 		$this->bIsPublic = $bNewIsPublic;
-		$this->bInheritParentPermissions = true;
 	}
 	
-    /**
-	* Get the primary key of the current folder object
-	*
-	* @return integer primary key of folder
-	*
-	*/
-	function getID() {
-		return $this->iId;
-	}
-	
-	/** 
-	* Get the folder name 
-	*
-	* @return String folder name
-	*/
-	function getName() {
-		return $this->sName;
-	}
-	
-	/** 
-	* Set the folder name 
-	*
-	* @param $sNewValue		New folder name
-	*/
-	function setName($sNewValue) {
-		$this->sName = $sNewValue;
-	}
-	
-	/**
-	* Get the folder description
-	*
-	* @return String folder description
-	*/
-	function getDescription() {
-		return $this->sDescription;
-	}
-	
-	/**
-	* Set the folder description
-	*
-	* @param $sNewValue		New folder description
-	*
-	*/
-	function setDescription($sNewValue) {
-		$this->sDescription = $sNewValue;
-	}
-	
-	/**
-	* Get the parent folder primary key
-	*
-	* @return integer parent folder primary key
-	*
-	*/
-	function getParentID() {
-		return $this->iParentID;
-	}
-	
-	/**
-	* Set the parent folder primary key
-	*
-	* @param $iNewValue		New parent folder primary key
-	*
-	*/
-	function setParentID($iNewValue) {
-		$this->iParentID = $iNewValue;
-	}
-	
-	/**
-	* Get the creator user id
-	*
-	* @return integer creator user id
-	*
-	*/
-	function getCreatorID() {
-		return $this->iCreatorID;
-	}
-	
-	/**
-	* Set the creator user id
-	*
-	* @param $iNewValue	New creator user id
-	*
-	*/
-	function setCreatorID($iNewValue) {
-		$this->iCreatorID = $iNewValue;
-	}
-		
-	/**
-	* Get the unit primary key
-	*
-	* @return integer primary key of unit to which the folder belongs
-	*
-	*/
-	function getUnitID() {
-		return $this->iUnitID;
-	}
-	
-	/**
-	* Set the unit prinary key 
-	*
-	* @param $iNewValue		New primary key of unit to which folder belongs
-	*
-	*/
-	function setUnitID($iNewValue) {
-		$this->iUnitID = $iNewValue;
-	}
-		
-	/**
-	* Get the folder public status
-	*
-	* @return boolean true if folder is public, false if folder is not
-	*
-	*/
-	function getIsPublic() {
-		return $this->bIsPublic;
-	}
-	
-	/**
-	* Set the folder public status
-	*
-	* @param $bNewValue 	New folder public status
-	*
-	*/
-	function setIsPublic($bNewValue) {
-		$this->bIsPublic = $bNewValue;
-	}
-	
-	function getFullPath() {
-		return $this->sFullPath;
-	}
-	
-	function getParentFolderIDs() {
-		return $this->sParentFolderIDs;
-	}
-	
-	function getInheritParentPermission() {
-		return $this->bInheritParentPermissions;
-	}
-	
-	function setInheritParentPermission($bNewValue) {
-		$this->bInheritParentPermissions = $bNewValue;
-	}
+	function getID() { return $this->iId; }
+	function getName() { return $this->sName; }
+	function setName($sNewValue) { $this->sName = $sNewValue; }
+	function getDescription() { return $this->sDescription; } 
+	function setDescription($sNewValue) { $this->sDescription = $sNewValue; } 
+	function getParentID() { return $this->iParentID; }
+	function setParentID($iNewValue) { $this->iParentID = $iNewValue; }
+	function getCreatorID() { return $this->iCreatorID; }
+	function setCreatorID($iNewValue) { $this->iCreatorID = $iNewValue; }
+	function getUnitID() { return $this->iUnitID; }
+	function setUnitID($iNewValue) { $this->iUnitID = $iNewValue; }
+	function getIsPublic() { return $this->bIsPublic; }
+	function setIsPublic($bNewValue) { $this->bIsPublic = $bNewValue; }
+	function getFullPath() { return $this->sFullPath; }
+	function getParentFolderIDs() { return $this->sParentFolderIDs; }
 
-	/**
-	* Get the permission folder id
-	*
-	* @return integer permission folder id
-	*
-	*/
-	function getPermissionFolderID() {
-		return $this->iPermissionFolderID;
-	}
-	
+	function getPermissionObjectID() { return $this->iPermissionObjectID; }
+	function setPermissionObjectID($iPermissionObjectID) { $this->iPermissionObjectID = $iPermissionObjectID; }
+	function getPermissionLookupID() { return $this->iPermissionLookupID; }
+	function setPermissionLookupID($iPermissionLookupID) { $this->iPermissionLookupID = $iPermissionLookupID; }
+
+    // {{{ create()
+    function create () {
+        $oParentFolder = Folder::get($this->iParentID);
+        $this->iPermissionObjectID = $oParentFolder->getPermissionObjectID();
+        $res = parent::create();
+        if ($res === true) {
+            KTPermissionUtil::updatePermissionLookup($this);
+        }
+        return $res;
+    }
+    // }}}
 	/**
 	 * Recursive function to generate a comma delimited string containing
 	 * the parent folder ids
@@ -241,7 +119,7 @@ class Folder extends KTEntity {
 			$sql = $default->db;
 			$sql->query(array("SELECT parent_id FROM $default->folders_table WHERE ID = ?", $iFolderID));/*ok*/
 			$sql->next_record();
-			return $this->generateParentFolderIDS($sql->f("parent_id")) . ",$iFolderID";
+			return Folder::generateParentFolderIDS($sql->f("parent_id")) . ",$iFolderID";
 		}
 		return;
 		
@@ -253,7 +131,7 @@ class Folder extends KTEntity {
 	 * @return String	comma delimited string containing the parent folder ids
 	 */	
 	function generateFolderIDs($iFolderID) {
-		$sFolderIDs = $this->generateParentFolderIDS($iFolderID);
+		$sFolderIDs = Folder::generateParentFolderIDS($iFolderID);
 		return substr($sFolderIDs, 1, strlen($sFolderIDs));
 	}
 	
@@ -296,8 +174,8 @@ class Folder extends KTEntity {
             'is_public' => KTUtil::anyToBool($this->bIsPublic),
             'full_path' => $this->sFullPath,
             'parent_folder_ids' => $this->sParentFolderIDs,
-            'inherit_parent_folder_permission' => $this->bInheritParentPermissions,
-            'permission_folder_id' => $this->iPermissionFolderID,
+            'permission_object_id' => $this->iPermissionObjectID,
+            'permission_lookup_id' => $this->iPermissionLookupID,
         );
     }
 
@@ -418,7 +296,8 @@ class Folder extends KTEntity {
             $oFolder->iId = $iFolderID;
 			$oFolder->sFullPath = $sql->f("full_path");
 			$oFolder->sParentFolderIDs = $sql->f("parent_folder_ids");
-			$oFolder->iPermissionFolderID = $sql->f("permission_folder_id");
+			$oFolder->iPermissionObjectID = $sql->f("permission_object_id");
+			$oFolder->iPermissionLookupID = $sql->f("permission_lookup_id");
 			return $oFolder;
 		} 
  		$_SESSION["errorMessage"] = $lang_err_object_not_exist . "id = " . $iFolderID . " table = folders";
@@ -724,150 +603,6 @@ class Folder extends KTEntity {
             return false;
         }
     }
-
-    function calculatePermissionFolder() {
-        global $default;
-        $oInheritedFolder = $this;
-        while ($bFoundPermissions !== true) {
-            /*ok*/$aCheckQuery = array('SELECT id FROM groups_folders_link WHERE folder_id = ? LIMIT 1', $oInheritedFolder->getID());
-            if (count(DBUtil::getResultArrayKey($aCheckQuery, 'id')) == 0) {
-                $default->log->debug('No direct permissions on folder ' . $oInheritedFolder->getID());
-                $bInherited = true;
-                $oInheritedFolder =& Folder::get($oInheritedFolder->getParentID());
-                if ($oInheritedFolder === false) {
-                    break;
-                }
-                // if our parent knows the permission folder, use that.
-                if ($oInheritedFolder->getPermissionFolderID()) {
-                    $this->iPermissionFolderID = $oInheritedFolder->getPermissionFolderID();
-                }
-                $default->log->debug('... trying parent: ' . $oInheritedFolder->getID());
-            } else {
-                $default->log->debug('Found direct permissions on folder ' . $oInheritedFolder->getID());
-                $this->iPermissionFolderID = $oInheritedFolder->getID();
-                return;
-            }
-        }
-
-        $default->log->error('No permissions whatsoever for folder ' . $this->getID());
-        // 0, which can never exist, for non-existent.  null for not set yet (database upgrade).
-        $this->iPermissionFolderID = 0;
-    }
-    
-    // {{{ copyPermissionsFromFolder()
-    function copyPermissionsFromFolder ($oFolder) {
-        $sQuery = DBUtil::compactQuery("
-        SELECT
-            GFL.group_id AS group_id,
-            GFL.can_read AS can_read,
-            GFL.can_write AS can_write
-        FROM
-            $default->groups_folders_table AS GFL
-        WHERE GFL.folder_id = ?");
-        $aParams = array($oFolder->getID());
-        $aPermissions = DBUtil::getResultArray(array($sQuery, $aParams));
-
-        if (PEAR::isError($aPermissions)) {
-            return $aPermissions;
-        }
-
-        foreach ($aPermissions as $aRow) {
-            $aRow['folder_id'] = $this->getID();
-            $res = DBUtil::autoInsert($default->groups_folders_table, $aRow);
-            if (PEAR::isError($res)) {
-                return $res;
-            }
-        }
-
-        $this->updatePermissions();
-    }
-    // }}}
-
-    // {{{ create()
-    function create () {
-        $this->calculatePermissionFolder();
-        return parent::create();
-    }
-    // }}}
-
-    // {{{ updatePermissions()
-    function updatePermissions () {
-        // Update PermissionFolderIDs on folder and all folders in this
-        // branch.
-        $this->updatePermissionFolders();
-
-        // Now, we need to redo the permissions for all documents that
-        // share are in this branch of the tree that are in folders that
-        // share our PermissionFolderID.
-
-        // First, we update the documents in this folder
-        $sQuery = "SELECT D.id AS id FROM documents AS D WHERE D.folder_id = ?";
-        $aParams = array($this->getID());
-        $aDocumentIDs = DBUtil::getResultArrayKey(array($sQuery, $aParams), 'id');
-        // OPT: We could just do the work for the first, and copy it to
-        // the others...
-        foreach ($aDocumentIDs as $iDocumentID) {
-            Permission::updateSearchPermissionsForDocument($iDocumentID);
-        }
-        
-        // Then, we update the documents in our subfolders
-        $sFolderIDs = $this->generateFolderIDs($this->getID());
-        $sFolderIDs .= '%';
-        $sQuery = "SELECT D.id AS id FROM documents AS D INNER JOIN folders AS F on D.folder_id = F.id WHERE F.parent_folder_ids LIKE ?";
-        $aParams = array($sFolderIDs);
-        $aDocumentIDs = DBUtil::getResultArrayKey(array($sQuery, $aParams), 'id');
-
-        // OPT: We could just do the work for the first, and copy it to
-        // the others...
-        foreach ($aDocumentIDs as $iDocumentID) {
-            Permission::updateSearchPermissionsForDocument($iDocumentID);
-        }
-    }
-    // }}}
-
-    // {{{ updatePermissionFolders()
-	/**
-     * Update the PermissionFolderID on this folder and all folders on
-     * this branch.
-	 *
-	 */
-    function updatePermissionFolders() {
-        $iOldPermissionFolderID = $this->iPermissionFolderID;
-        $this->calculatePermissionFolder();
-        $iNewPermissionFolderID = $this->iPermissionFolderID;
-
-        // If our permission folder hasn't changed, our children's won't
-        // have.
-        if ($iOldPermissionFolderID === $iNewPermissionFolderID) {
-            return;
-        }
-
-        // XXX: Non-explicit update... Have to update, or the children
-        // wouldn't have access to it for the shortcut...
-        $this->update();
-        $aChildren = Folder::getList(array('parent_id = ?', $this->getID()));
-        foreach ($aChildren as $oChild) {
-            $oChild->updatePermissionFolders();
-        }
-    }
-    // }}}
-
-    function addPermission ($oGroup, $bCanRead, $bCanWrite) {
-        $oGroupFolderLink = & new GroupFolderLink($this->getID(), $oGroup->getID(), $bCanRead, $bCanWrite);
-
-        if ($oGroupFolderLink->exists()) {
-            return new PEAR_Error(_("A folder access entry for the selected folder and group already exists."));
-        }
-
-        if (!$oGroupFolderLink->create()) {
-            //otherwise display an error message
-            return new PEAR_Error(_("A folder access entry for the selected folder and group already exists."));
-        }
-
-        $this->updatePermissions();
-        return true;
-    }
-
 }
 
 ?>
