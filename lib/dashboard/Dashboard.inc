@@ -151,6 +151,9 @@ class Dashboard {
 	 * Retrieves Browseable Folders for this user
 	 */
 	function getBrowseableFolders() {
+        return;
+
+        /*
 		global $default;
 		$sQuery = array("SELECT DISTINCT F.id as folderid, F.parent_id as parentfolderid " .
 				"FROM $default->folders_table F, $default->groups_folders_table GFL, $default->users_groups_table UGL " .
@@ -168,6 +171,7 @@ class Dashboard {
 			$aShowedFolderList[$sql->f("folderid")] = 1;	// check the showed folder
 		}
 		return $aBrowseableList;		
+        */
 	}
 
 }
