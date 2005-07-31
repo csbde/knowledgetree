@@ -129,68 +129,6 @@ function getFolderDocTypes($iFolderID, $sDivName) {
     return renderSectionDiv($sDivName, $sToRender);	
 }
 
-function getFolderGroupAccess($iFolderID, $sDivName) {
-	global $default;
-	/*ok*/ $sQuery = "SELECT GFL.id as id, GFL.group_id AS group_id, GFL.folder_id AS folder_id, GFL.can_read AS can_read, GFL.can_write AS can_write, GL.name AS group_name, 'Edit' as edit, 'Delete' as del " .	
-			  "FROM $default->groups_folders_table AS GFL " .
-              "INNER JOIN $default->groups_table AS GL ON GFL.group_id = GL.id " .
-			  "WHERE GFL.folder_id = ?";
-
-        $iInheritedFolderID = $iFolderID;
-        $bFoundPermissions = false;
-        $bInherited = false;
-        $oInheritedFolder = Folder::get($iInheritedFolderID);
-        while ($bFoundPermissions !== true) {
-            /*ok*/$aCheckQuery = array('SELECT id FROM groups_folders_link WHERE folder_id = ? LIMIT 1', $iInheritedFolderID);
-            if (count(DBUtil::getResultArrayKey($aCheckQuery, 'id')) == 0) {
-                $default->log->info('No direct permissions on folder ' . $iInheritedFolderID);
-                $bInherited = true;
-                $iInheritedFolderID = $oInheritedFolder->getParentID();
-                $oInheritedFolder = Folder::get($iInheritedFolderID);
-                if ($oInheritedFolder === false) {
-                    $iInheritedFolderID = false;
-                    break;
-                }
-                $default->log->info('... trying parent: ' . $iInheritedFolderID);
-            } else {
-                $default->log->info('Found direct permissions on folder ' . $iInheritedFolderID);
-                break;
-            }
-        }
-	
-	$aColumns = array("group_name", "can_read", "can_write", "edit", "del");
-	$aColumnHeaders = array(_("Group"), _("Read"), _("Write"), "", "");
-	$aColumnTypes = array(1,2,2,3,3);
-	$aDBColumnArray = array("id","folder_id");
-	$aQueryStringVariableNames = array("fGroupFolderLinkID", "fFolderID");
-	$aLinkURLs = array(3=>"$default->rootUrl/control.php?action=modifyGroupFolderLink",4=>"$default->rootUrl/control.php?action=deleteGroupFolderLink");
-	
-	$oPatternTableSqlQuery = & new PatternTableSqlQuery(array($sQuery, $iInheritedFolderID), $aColumns, $aColumnTypes, $aColumnHeaders, "610", $aLinkURLs, $aDBColumnArray,$aQueryStringVariableNames);
-	$oPatternTableSqlQuery->setTableHeading(_("Folder Permissions"));
-	$oPatternTableSqlQuery->setDisplayColumnHeadings(true);
-        if ($bInherited === true) {
-            $oPatternTableSqlQuery->setDisabled(true);
-            $oPatternTableSqlQuery->setTableHeading(_("Folder Permissions") . "(" . _("inherited") . ")");
-        }
-	$sToRender .= "<table>";
-	$sToRender .= "<tr><td>" . $oPatternTableSqlQuery->render() . "</td></tr>";
-        if (($bInherited === true) && ($iInheritedFolderID !== false)) {
-            $sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
-            $sTDBGColour = $default->siteMap->getSectionColour($sSectionName, "td");
-            $sToRender .= '<tr><td>Inherited from: <span style="background-color: ' . $sTDBGColour . ';">';
-
-            $sToRender .= displayFolderPathLink(Folder::getFolderPathAsArray($iInheritedFolderID), Folder::getFolderPathNamesAsArray($iInheritedFolderID), "$default->rootUrl/control.php?action=editFolder");
-            $sToRender .= "</span>";
-            $sToRender .= " (" . generateLink("/control.php", "action=copyFolderPermissions&fFolderID=$iFolderID&fInheritedFolderID=$iInheritedFolderID", _("Copy")) . ")";
-            $sToRender .= "</td></tr>";
-        } else {
-            $sToRender .= "<tr><td><a href=\"$default->rootUrl/control.php?action=addGroupFolderLink&fFolderID=$iFolderID\"><img src=\"" . KTHtml::getAddButton() . "\" border=\"0\" /></a></td></tr>";
-        }
-    $sToRender .= "</table>";		
-    return renderSectionDiv($sDivName, $sToRender);		 	
-}
-
-
 function renderSectionDiv($sDivName, $sHtml) {
 	global $default;
 	if ($default->bNN4) {	
@@ -226,7 +164,6 @@ function getPage($iFolderID, $sStatusMessage, $bCollaboration = false) {
 	$sToRender .= renderFolderSection("folderData", _("Folder Data"), $bDisplayLink, $iFolderID);
 	$sToRender .= renderFolderSection("folderRouting", _("Document Routing"), $bDisplayLink, $iFolderID);
 	$sToRender .= renderFolderSection("documentTypes", _("Document Types"), $bDisplayLink, $iFolderID);
-	$sToRender .= renderFolderSection("folderPermissions", _("Folder Permissions"), $bDisplayLink, $iFolderID);
 	$sToRender .= "</table>";
 	$sToRender .= "</td><td><table border=1>";
 	$sToRender .= "</table></td></tr></table>";		
@@ -239,7 +176,6 @@ function getPage($iFolderID, $sStatusMessage, $bCollaboration = false) {
 	$sToRender .= getFolderData($iFolderID, "folderData");
 	$sToRender .= getFolderRouting($iFolderID, "folderRouting", $bCollaboration);
 	$sToRender .= getFolderDocTypes($iFolderID, "documentTypes");
-	$sToRender .= getFolderGroupAccess($iFolderID, "folderPermissions");
 	if (!$default->bNN4) {
 		$sToRender .= "</div>";
 	}    
