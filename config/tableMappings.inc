@@ -114,4 +114,11 @@ $default->search_permissions_table = "search_document_user_link";
 $default->document_link_types_table = "document_link_types";
 $default->upgrades_table = "upgrades";
 $default->help_replacement_table = "help_replacement";
+$default->permissions_table = "permissions";
+$default->permission_objects_table = "permission_objects";
+$default->permission_descriptors_table = "permission_descriptors";
+$default->permission_assignments_table = "permission_assignments";
+$default->permission_descriptor_groups_table = "permission_descriptor_groups";
+$default->permission_lookups_table = "permission_lookups";
+$default->permission_lookup_assignments_table = "permission_lookup_assignments";
 ?>
