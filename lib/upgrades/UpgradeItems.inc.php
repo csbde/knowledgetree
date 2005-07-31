@@ -304,7 +304,8 @@ class FunctionUpgradeItem extends UpgradeItem {
                 continue;
             }
             foreach ($funcs as $func) {
-                $ret[] = new FunctionUpgradeItem($func, $version, $aUpgradeFunctions->descriptions[$func], 0);
+                $iPhase = KTUtil::arrayGet($aUpgradeFunctions->phases, $func, 0);
+                $ret[] = new FunctionUpgradeItem($func, $version, $aUpgradeFunctions->descriptions[$func], $iPhase);
             }
         }
         return $ret;
