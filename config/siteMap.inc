@@ -60,6 +60,7 @@ $default->siteMap->addPage("addFolder", "/presentation/lookAndFeel/knowledgeTree
 $default->siteMap->addPage("addFolderDocType", "/presentation/lookAndFeel/knowledgeTree/foldermanagement/addFolderDocTypeBL.php", "Manage Documents", User, "");
 $default->siteMap->addPage("deleteFolderDocType", "/presentation/lookAndFeel/knowledgeTree/foldermanagement/deleteFolderDocTypeBL.php", "Manage Documents", User, "");
 $default->siteMap->addPage("editFolder", "/presentation/lookAndFeel/knowledgeTree/foldermanagement/editBL.php", "Manage Documents", User, _("Modify Folder Properties"));
+$default->siteMap->addPage("editFolderPermissions", "/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderPermissions.php", "Manage Documents", User, _("Folder Permissions"));
 $default->siteMap->addPage("copyFolderPermissions", "/presentation/lookAndFeel/knowledgeTree/foldermanagement/copyInheritedPermissionsBL.php", "Manage Documents", User, _("Copy Inherited Folder Permissions"), false);
 $default->siteMap->addPage("modifyFolderData", "/presentation/lookAndFeel/knowledgeTree/foldermanagement/modifyFolderDataBL.php", "Manage Documents", User, "Modify Folder Data", false);
 $default->siteMap->addPage("deleteFolder", "/presentation/lookAndFeel/knowledgeTree/foldermanagement/deleteFolderBL.php", "Manage Documents", User, _("Delete Current Folder"));
@@ -135,6 +136,8 @@ $default->siteMap->addPage("browseAdministration", "/presentation/lookAndFeel/kn
 $default->siteMap->addPage("docLinkManagement", "/presentation/lookAndFeel/knowledgeTree/administration/doclinkmanagement/listLinkTypesBL.php", "Administration", SysAdmin, _("Link Type Management"), true, 16);
 
 $default->siteMap->addPage("manageHelp", "/presentation/lookAndFeel/knowledgeTree/administration/help/manageHelp.php", "Administration", SysAdmin, _("Help Administration"), true, 17);
+
+$default->siteMap->addPage("managePermissions", "/presentation/lookAndFeel/knowledgeTree/administration/permissions/managePermissions.php", "Administration", SysAdmin, _("Permissions Administration"), true, 18);
 
 $default->siteMap->addSectionColour("Administration", "th", "056DCE");
 $default->siteMap->addSectionColour("Administration", "td", "6699FF");
