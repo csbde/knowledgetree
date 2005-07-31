@@ -38,41 +38,65 @@ class Document extends KTEntity {
     // {{{ attributes
     /** primary key */
     var $iId;
+    
     /** document type primary key */
     var $iDocumentTypeID;
+
     /** document name */
     var $sName;
+
     /** document file name (path to document on file system) */
     var $sFileName;
+
     /** document file size */
     var $iSize;
+
     /** primary key of user who created document */
     var $iCreatorID;
+
     /** date the document was last modified */
     var $dModified;
+
     /** file description */
     var $sDescription;
+
     /** primary key of file mime type */
     var $iMimeTypeID;
+
     /** primary key of folder under which document is stored */
     var $iFolderID;
+
     /** major revision number */
     var $iMajorVersion;
+    
     /** minor revision number */
     var $iMinorVersion;
+   
     /** document checked out status */
     var $bIsCheckedOut;
     //?? make checked out a status?
+   
     /** document status **/
     var $iStatusID;
+   
     /** the user that currently has the document checked out */
     var $iCheckedOutUserID;
+   
     /** comma delimited string of folder hierarch this document falls under */
     var $sParentFolderIDs;
+   
     /** forward slash deliminated path from file system root */
     var $sFullPath;
+   
     /** date the document was created */
     var $dCreated;
+
+    /** object which controls (read/write) permissions on this document */
+    var $iPermissionObjectID;
+   
+    /** object which has quick lookups (read-only) on permissions on this document */
+    var $iPermissionLookupID;
+   
     // }}}
 
     // {{{ constructor
@@ -137,6 +161,20 @@ class Document extends KTEntity {
     function setCheckedOutUserID($iNewValue) { $this->iCheckedOutUserID = $iNewValue; }
     function getStatusID() { return $this->iStatusID; }
     function setStatusID($iNewValue) { $this->iStatusID = $iNewValue; }
+    function getPermissionObjectID() { return $this->iPermissionObjectID; }
+    function setPermissionObjectID($iNewValue) { $this->iPermissionObjectID = $iNewValue; }
+    function getPermissionLookupID() { return $this->iPermissionLookupID; }
+    function setPermissionLookupID($iNewValue) { $this->iPermissionLookupID = $iNewValue; }
+    // }}}
+
+    // {{{ getParentID
+    /**
+     * Allows documents to be treated like folders in terms of finding
+     * their parent objects.
+     */
+    function getParentID() {
+        return $this->getFolderID();
+    }
     // }}}
 
     // {{{ getVersion
@@ -198,6 +236,8 @@ class Document extends KTEntity {
             'full_path' => $this->sFullPath,
             'status_id' => $this->iStatusID,
             'created' => $this->dCreated,
+            'permission_object_id' => $this->iPermissionObjectID,
+            'permission_lookup_id' => $this->iPermissionLookupID,
         );
     }
 
@@ -219,7 +259,7 @@ class Document extends KTEntity {
             $sql = $default->db;
             $sql->query(array("SELECT parent_id FROM $default->folders_table WHERE ID = ?", $iFolderID));/*ok*/
             $sql->next_record();
-            return $this->generateParentFolderIDS($sql->f("parent_id")) . ",$iFolderID";
+            return $this->_generateParentFolderIDS($sql->f("parent_id")) . ",$iFolderID";
         }
         return;
     }
@@ -230,7 +270,7 @@ class Document extends KTEntity {
      * @return String	comma delimited string containing the parent folder ids
      */
     function _generateFolderIDs($iFolderID) {
-        $sFolderIDs = $this->generateParentFolderIDS($iFolderID);
+        $sFolderIDs = $this->_generateParentFolderIDS($iFolderID);
         return substr($sFolderIDs, 1, strlen($sFolderIDs));
     }
 
@@ -270,10 +310,12 @@ class Document extends KTEntity {
      */
     function create() {
         $this->dCreated = getCurrentDateTime();
+        $oFolder = Folder::get($this->getFolderID());
+        $this->iPermissionObjectID = $oFolder->getPermissionObjectID();
         $res = parent::create();
 
         if ($res === true) {
-            Permission::updateSearchPermissionsForDocument($this->getID());
+            KTPermissionUtil::updatePermissionLookup($this);
         }
 
         return $res;
@@ -284,7 +326,7 @@ class Document extends KTEntity {
     function update($bPathMove = false) {
         $res = parent::update();
         if (($res === true) && ($bPathMove === true)) {
-            Permission::updateSearchPermissionsForDocument($this->getID());
+            KTPermissionUtil::updatePermissionLookup($this);
         }
         return $res;
     }
@@ -426,6 +468,8 @@ class Document extends KTEntity {
                 // FIXME: nasty hack- paying the penalty for adding status_id late in phase 2
                 $oDocument->setStatusID( ($sql->f("status_id") == "" ? LIVE : $sql->f("status_id")) );
                 $oDocument->iId = $iDocumentID;
+                $oDocument->setPermissionObjectID($sql->f("permission_object_id"));
+                $oDocument->setPermissionLookupID($sql->f("permission_lookup_id"));
                 return $oDocument;
             }
             return false;
