@@ -65,7 +65,14 @@ require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/fo
 require_once("$default->fileSystemRoot/presentation/Html.inc");
 require_once("addFolderUI.inc");
 
-if (!Permission::userHasFolderWritePermission($oFolder)) {
+require_once(KT_LIB_DIR . '/permissions/permission.inc.php');
+require_once(KT_LIB_DIR . '/permissions/permissionutil.inc.php');
+
+// if (!Permission::userHasFolderWritePermission($oFolder)) {
+$oPermission = KTPermission::getByName('ktcore.permissions.addFolder');
+$oUser =& User::get($_SESSION['userID']);
+KTPermissionUtil::userHasPermissionOnItem($oUser, $oPermission, $oFolder);
+if (KTPermissionUtil::userHasPermissionOnItem($oUser, $oPermission, $oFolder) !== true) {
     //if the user doesn't have write permission for this folder,
     //give them only browse facilities
     require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
@@ -76,7 +83,6 @@ if (!Permission::userHasFolderWritePermission($oFolder)) {
     $main->render();
     exit(0);
 }
-
 
 if (!isset($fFolderName)) {
     require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
