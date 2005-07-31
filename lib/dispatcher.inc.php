@@ -54,7 +54,7 @@ class KTDispatcher {
     }
 }
 
-class KTAdminDispatcher extends KTDispatcher {
+class KTStandardDispatcher extends KTDispatcher {
     function permissionDenied () {
         print "Permission denied";
     }
@@ -65,6 +65,9 @@ class KTAdminDispatcher extends KTDispatcher {
         }
         return parent::dispatch();
     }
+}
+
+class KTAdminDispatcher extends KTStandardDispatcher {
 }
 
 ?>
