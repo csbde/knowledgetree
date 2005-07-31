@@ -1,0 +1,72 @@
+KnowledgeTree Permission System
+===============================
+
+Permission Object
+-----------------
+Permissions on items in the DMS are handled via a Permission Object.
+This permission object is where the permissions for the object are kept.
+Previously, a permission folder was used, but this was changed to an
+autonomous permission object to allow greater flexibility - such as
+allowing documents to have their own permissions in future.
+
+Permission Assignments
+----------------------
+This permission object links the item with a number of permission
+assignments - one permission assignment per permission.  A permission
+assignment is uniquely specified by a permission object and a
+permission.  The final component is a permission descriptor, which
+describes the groups, users, or roles that have that permission on that
+permission object.
+
+Permission Descriptor
+---------------------
+The permission descriptor is an indirection to reduce the number of rows
+to describe which groups, users, and roles that have permissions on each
+permission object.  It allows assignments that cover the same groups,
+users, and roles to be described textually and looked up quickly by a 32
+character hash.  A particular collection of groups, users, and roles
+will always be described by a unique descriptor.
+
+Permission Lookup
+-----------------
+Permission Lookup objects describe the collections of groups and users
+that have each permission on the item in the repository.  It is an
+expanded form of the permission object - if an owner role has a
+permission in terms of the permission object, the exact user with that
+role on that object will be mentioned in the permission lookup.
+
+Permission lookups exist mostly for restricting a search for items in
+the repository to those items for whom a particular user has a given
+permission.  The most obvious users of this are the content and metadata
+searches, which need to restrict results to documents readable by the
+current user.  Other users may be the list of documents in a folder
+readable by the current user, or the list of folders in the repository
+that the user can add documents to.
+
+Managing Permissions
+--------------------
+
+Permission lookups use descriptors that never expand groups.  Changes in
+membership of a group don't require permission lookups.  When looking up
+using permission lookups, the descriptors that the user has access to
+are looked up at run-time first, and these are used to limit the
+searches.
+
+On creation, folders and documents inherit the permission object of
+their parent.  They then update their own permission lookups.
+(Document::create, Folder::create)
+
+When folders change their permission object (become their own master,
+start using their parent again, are moved), they update all ancestor
+folders and documents that had the old permission object to the new one.
+Those changed then have their permission lookups updated.
+(KTPermissionUtil::copyPermissionObject,
+KTPermissionUtil::inheritPermissionObject)
+
+When documents change their permission object (become their own master,
+start using their parent again, are moved), they update their own
+permission lookups.
+(KTPermissionUtil::copyPermissionObject,
+KTPermissionUtil::inheritPermissionObject)
+
+
