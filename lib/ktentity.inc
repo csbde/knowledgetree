@@ -226,6 +226,9 @@ class KTEntityUtil {
     }
 
     function &getList($sTable, $sClassName, $sWhereClause = null, $aOptions = null) {
+        if (is_null($aOptions)) {
+            $aOptions = array();
+        }
         $bIDs = false;
         $sIDField = 'id';
         if (is_array($aOptions)) {
@@ -253,6 +256,10 @@ class KTEntityUtil {
             } else {
                 return new PEAR_Error('Weird WhereClause passed');
             }
+        }
+        $sOrderBy = KTUtil::arrayGet($aOptions, 'orderby');
+        if (!empty($sOrderBy)) {
+            $sQuery .= "ORDER BY " . $sOrderBy;
         }
         $aIDs = DBUtil::getResultArrayKey(array($sQuery, $aParams), $sIDField);
 
