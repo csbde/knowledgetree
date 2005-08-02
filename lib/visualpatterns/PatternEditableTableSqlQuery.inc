@@ -68,6 +68,8 @@ class PatternEditableTableSqlQuery {
 	var $aRequiredColumnNames;
 	var $aRequiredFieldNames;
 	var $aMetaDataFields;	
+
+    var $sPreCode;
 	
 	function PatternEditableTableSqlQuery($sTmpQuery, $sTmpTableName, $aTmpStoreColumnNames, $aTmpDisplayColumnNames, $aTmpColumnsEditable, $aTmpColumnsVisible, $aTmpColumnDisplayTypes, $aTmpColumnDatabaseTypes) {
 		$this->sQuery = $sTmpQuery;
@@ -81,41 +83,16 @@ class PatternEditableTableSqlQuery {
 		$this->aColumnDatabaseTypes = $aTmpColumnDatabaseTypes;
 	}
 	
-	function setUniqueName($sNewValue) {
-		$this->sUniqueName = $sNewValue;
-	}
-	
-	function setMetaDataFields($aNewValue) {		
-		$this->aMetaDataFields = $aNewValue;
-	}
-	
-	function setDisplayColumnHeadings($bNewValue) {
-		$this->bDisplayColumnHeadings = $bNewValue;	
-	}
-	
-	function setTableCaption($sNewValue) {
-		$this->sTableCaption = $sNewValue;
-	}
-	
-	function setColumnHeaderNames($aNewValue) {
-		$this->aColumnHeaderNames = $aNewValue;
-	}
-	
-	/*function getRequiredVariableNames() {
-		return $this->aRequiredVariableNames;
-	}*/
-	
-	function setRequiredColumnNames($aNewValue) {
-		$this->aRequiredColumnNames = $aNewValue;
-	}
-	
-	function setEmptyTableMessage($sNewValue) {
-		$this->sEmptyTableMessage = $sNewValue;
-	}
-	
-	function setRenderJavascriptValidation($bNewValue) {
-		$this->bRenderJavascriptValidation = $bNewValue;
-	}
+	function setUniqueName($sNewValue) { $this->sUniqueName = $sNewValue; }
+	function setMetaDataFields($aNewValue) { $this->aMetaDataFields = $aNewValue; }
+	function setDisplayColumnHeadings($bNewValue) { $this->bDisplayColumnHeadings = $bNewValue;	}
+	function setTableCaption($sNewValue) { $this->sTableCaption = $sNewValue; }
+	function setColumnHeaderNames($aNewValue) { $this->aColumnHeaderNames = $aNewValue; }
+	function setRequiredColumnNames($aNewValue) { $this->aRequiredColumnNames = $aNewValue; }
+	function setEmptyTableMessage($sNewValue) { $this->sEmptyTableMessage = $sNewValue; }
+	function setRenderJavascriptValidation($bNewValue) { $this->bRenderJavascriptValidation = $bNewValue; }
+	function setPreCode($sNewValue) { $this->sPreCode = $sNewValue; }
+	function setPostCode($sNewValue) { $this->sPostCode = $sNewValue; }
 	
 	function & render() {
         global $default;
@@ -150,6 +127,8 @@ class PatternEditableTableSqlQuery {
 			while ($sql->next_record()) {				
 				$sToRender .= "<tr>\n";
                 $_SESSION["pelfq_" . $this->sUniqueName . $iRowCount . "_id"] = $sql->f("id");
+                $_SESSION["pelfq_" . $this->sUniqueName . $iRowCount . "_code_pre"] = $this->sPreCode;
+                $_SESSION["pelfq_" . $this->sUniqueName . $iRowCount . "_code_post"] = $this->sPostCode;
                 $_SESSION["pelfq_" . $this->sUniqueName . $iRowCount . "_tn"] = $this->sTableName;
                 $_SESSION["pelfq_" . $this->sUniqueName . $iRowCount . "_columns"] = $this->aStoreColumnNames;
 				$sToRender .= "<input type=\"hidden\" name=\"unique_start_" . $this->sUniqueName . $iRowCount . "\" value=\"\" />\n";
