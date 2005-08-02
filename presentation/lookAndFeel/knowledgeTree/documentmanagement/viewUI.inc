@@ -43,19 +43,21 @@ function renderDocumentPath($oDocument, $bDisplayActions = false) {
 
 function renderDocumentData($oDocument, $bEditable, $sStatusMessage = "") {
     global $default;
-    /*ok*/ $sQuery = array("SELECT D.id, D.name, D.modified, DTT.datetime AS created, D.size, U.name AS initiator, CONCAT(CONCAT(D.major_version, '.'), D.minor_version) AS version, WDSL.name AS status, DTL.name AS document_type, D.is_checked_out,  COALESCE(U2.name, '') AS c_user " .
-              "FROM $default->documents_table AS D INNER JOIN $default->web_documents_table AS WD ON WD.document_id = D.ID " .
-              "INNER JOIN $default->web_documents_status_table AS WDSL ON WD.status_id = WDSL.id " .
+    $iVersionID = KTUtil::arrayGet($_REQUEST, 'fVersionID');
+    $aDocuments = array($oDocument->getID());
+    if (!empty($iVersionID)) {
+        $aDocuments[] = $iVersionID;
+    }
+    $sWhere = DBUtil::paramArray($aDocuments);
+    /*ok*/ $sQuery = array("SELECT D.id, D.name, D.modified, D.created, D.size, U.name AS initiator, D.metadata_version, CONCAT(CONCAT(D.major_version, '.'), D.minor_version) AS version, DTL.name AS document_type, D.is_checked_out,  COALESCE(U2.name, '') AS c_user " .
+              "FROM $default->documents_table AS D " .
               "LEFT JOIN $default->users_table AS U ON U.id = D.creator_id " .
-              "INNER JOIN $default->document_transactions_table AS DTT ON DTT.document_id = D.id " .
-              "INNER JOIN $default->transaction_types_table AS TT ON DTT.transaction_id = TT.id " .
 			  "INNER JOIN $default->document_types_table AS DTL ON DTL.id = D.document_type_id " .
               "LEFT OUTER JOIN $default->users_table AS U2 ON U2.id = D.checked_out_user_id " .
-              "WHERE D.id = ? " .
-              "AND TT.name LIKE 'Create'", $oDocument->getID());
+              "WHERE D.id IN ($sWhere) ", $aDocuments);
 
-    $aColumns = array("id", "name", "modified", "created", "size", "initiator", "document_type", "version", "status", "c_user");
-    $aColumnNames = array(_("ID"), _("Document title"), _("Last updated"), _("Created"), _("File Size"), _("Document initiator"), _("Document Type"), _("Version"), _("Status"), _("Checked out by"));
+    $aColumns = array("metadata_version", "name", "modified", "created", "size", "initiator", "document_type", "c_user", "id", "version");
+    $aColumnNames = array(_("Metadata Version"), _("Document title"), _("Last updated"), _("Created"), _("File Size"), _("Document initiator"), _("Document Type"), _("Checked out by"), _("ID"), _("Document Version"),);
     $aColumnTypes = array(1,1,1,1,1,1,1,1,1,1);
     $oPatternListFromQuery = & new PatternListFromQuery($sQuery, $aColumns, $aColumnNames, $aColumnTypes);
     $oPatternListFromQuery->setTableHeading(_("Document Data"));
@@ -82,60 +84,107 @@ function renderDocumentData($oDocument, $bEditable, $sStatusMessage = "") {
 
 function renderGenericMetaData($oDocument, $bEditable) {
     global $default;
-    /*ok*/ $sQuery = array("SELECT DF.name AS name, DFL.value as value " .
+    $iVersionID = KTUtil::arrayGet($_REQUEST, 'fVersionID');
+    $aDocuments = array($oDocument->getID());
+    if (!empty($iVersionID)) {
+        $aDocuments[] = $iVersionID;
+    }
+    /*ok*/ $sQuery = "SELECT DF.name AS name, DFL.value as value " .
               "FROM $default->documents_table AS D INNER JOIN $default->document_fields_link_table AS DFL ON D.id = DFL.document_id " .
               "INNER JOIN $default->document_fields_table AS DF ON DF.id = DFL.document_field_id " .
               "WHERE document_id = ? " .
-              "AND DF.is_generic = 1", $oDocument->getID());
-    $aColumns = array("name", "value");
-    $aColumnHeaders = array("Tag", "Value");
-    $aColumnTypes = array(1,1);
-    $oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaders, "500");
-    $oPatternTableSqlQuery->setTableHeading(_("Generic Meta Data"));
-    $oPatternTableSqlQuery->setEmptyTableMessage(_("No Generic Meta Data"));
-    
-    $sToRender .= "\t<table cellspacing=\"0\" cellpadding=\"0\" border=\"0\" width=\"100%\">\n";    	
-    $sToRender .= "\t<tr>\n";
-    $sToRender .= "\t<td>" . $oPatternTableSqlQuery->render() . "</td>\n";
-    $sToRender .= "\t</tr>\n";
-    if ($bEditable) {
-		$sToRender .= "\t<tr>\n";
-	    $sToRender .= "<td><a href=\"$default->rootUrl/control.php?action=modifyDocumentGenericMetaData&fDocumentID=" . $oDocument->getID() . "\"><img src=\"" . KTHtml::getEditButton() . "\" border=\"0\"></a></td>\n";    
-		$sToRender .= "\t</tr>\n";
+              "AND DF.is_generic = 1";
+
+
+    $iDocumentsLen = count($aDocuments);
+    $map = array();
+    $iDocumentCount = 0;
+    foreach ($aDocuments as $iDocumentID) {
+        $map['Metadata Version'] = KTUtil::arrayGet($map, 'Metadata Version', array_fill(0, $iDocumentsLen, null));
+        $oThisDocument =& Document::get($iDocumentID);
+        if (PEAR::isError($oThisDocument)) {
+            continue;
+        }
+        if ($oThisDocument === false) {
+            continue;
+        }
+        $map['Metadata Version'][$iDocumentCount] = $oThisDocument->getMetadataVersion();
+        $aTDRows = DBUtil::getResultArray(array($sQuery, array($iDocumentID)));
+        foreach ($aTDRows as $aRow) {
+            $newarray = KTUtil::arrayGet($map, $aRow['name'], array_fill(0, $iDocumentsLen, null));
+            $newarray[$iDocumentCount] = $aRow['value'];
+            $map[$aRow['name']] = $newarray;
+        }
+        $iDocumentCount++;
     }
-	$sToRender .= "\t</table>\n";
+
+    $oTemplating =& KTTemplating::getSingleton();
+    $oTemplate = $oTemplating->loadTemplate('ktcore/document_generic_metadata');
+    if ($bEditable) {
+        $editable = "<a href=\"$default->rootUrl/control.php?action=modifyDocumentGenericMetaData&fDocumentID=" . $oDocument->getID() . "\"><img src=\"" . KTHtml::getEditButton() . "\" border=\"0\"></a>";
+    } else {
+        $editable = "";
+    }
+    $sToRender .= $oTemplate->render(array(
+        'map' => $map,
+        'editable' => $editable,
+    ));
     
     return $sToRender;
 }
 
 function renderTypeSpecificMetaData($oDocument, $bEditable) {
 	global $default;
+    $iVersionID = KTUtil::arrayGet($_REQUEST, 'fVersionID');
+    $aDocuments = array($oDocument->getID());
+    if (!empty($iVersionID)) {
+        $aDocuments[] = $iVersionID;
+    }
 	
-    /*ok*/ $sQuery = array("SELECT DF.name AS name, DFL.value AS value " .
+    /*ok*/ $sQuery = "SELECT DF.name AS name, DFL.value AS value " .
               "FROM $default->documents_table AS D INNER JOIN document_fields_link AS DFL ON D.id = DFL.document_id " .
               "INNER JOIN $default->document_fields_table AS DF ON DF.ID = DFL.document_field_id " .
               "WHERE D.id = ? " .
               "AND DF.name NOT LIKE 'Category' " .
-              "AND DF.is_generic = 0", $oDocument->getID());
-    $aColumns = array("name", "value");
-    $aColumnHeaders = array("Tag", "Value");
-    $aColumnTypes = array(1,1);
-    $oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaders, "500");
-    $oPatternTableSqlQuery->setTableHeading(_("Type Specific Meta Data"));
-	$oPatternTableSqlQuery->setEmptyTableMessage(_("No Type Specific Meta Data"));
-    
-    $sToRender .= "\t<table cellspacing=\"0\" cellpadding=\"0\" border=\"0\" width=\"100%\">\n";	
-    $sToRender .= "\t<tr>\n";
-    $sToRender .= "\t\t<td>" . $oPatternTableSqlQuery->render() . "</td>\n";    
-    $sToRender .= "\t</tr>\n";
-    if ($bEditable) {
-		$sToRender .= "\t<tr>\n";
-	    $sToRender .= "<td><a href=\"$default->rootUrl/control.php?action=modifyDocumentTypeMetaData&fDocumentID=" . $oDocument->getID() . "\"><img src=\"" . KTHtml::getEditButton() . "\" border=\"0\"></a></td>\n";
-		$sToRender .= "\t</tr>\n";
+              "AND DF.is_generic = 0";
+
+    $iDocumentsLen = count($aDocuments);
+    $map = array();
+    $iDocumentCount = 0;
+    foreach ($aDocuments as $iDocumentID) {
+        $map['Metadata Version'] = KTUtil::arrayGet($map, 'Metadata Version', array_fill(0, $iDocumentsLen, null));
+        $oThisDocument =& Document::get($iDocumentID);
+        if (PEAR::isError($oThisDocument)) {
+            continue;
+        }
+        if ($oThisDocument === false) {
+            continue;
+        }
+        $map['Metadata Version'][$iDocumentCount] = $oThisDocument->getMetadataVersion();
+        $aTDRows = DBUtil::getResultArray(array($sQuery, array($iDocumentID)));
+        foreach ($aTDRows as $aRow) {
+            $newarray = KTUtil::arrayGet($map, $aRow['name'], array_fill(0, $iDocumentsLen, null));
+            $newarray[$iDocumentCount] = $aRow['value'];
+            $map[$aRow['name']] = $newarray;
+        }
+        $iDocumentCount++;
     }
-    $sToRender .= "\t</table>\n";
-    return $sToRender;    
+
+    $oTemplating =& KTTemplating::getSingleton();
+    $oTemplate = $oTemplating->loadTemplate('ktcore/document_specific_metadata');
+    if ($bEditable) {
+        $editable = "<a href=\"$default->rootUrl/control.php?action=modifyDocumentTypeMetaData&fDocumentID=" . $oDocument->getID() . "\"><img src=\"" . KTHtml::getEditButton() . "\" border=\"0\"></a>";
+    } else {
+        $editable = "";
+    }
+    $sToRender = $oTemplate->render(array(
+        'map' => $map,
+        'editable' => $editable,
+    ));
+
+    return $sToRender;
 }
+
 function renderDocumentArchiveSettingsDetails($oDocument, $bEditable) {
 	global $default;
 	
@@ -379,6 +428,35 @@ function renderDependantDocuments($oDocument, $bEdit) {
     $sToRender .= "<td><a href=\"$default->rootUrl/control.php?action=createDependantDocument&fDocumentID=" . $oDocument->getID() ."\"><img src=\"" . KTHtml::getAddButton() . "\" border=\"0\"/></a></td>\n";
     $sToRender .= "\t</tr>";     
 	$sToRender .= "\t</table>\n";
+    return $sToRender;
+}
+
+function renderDocumentVersions ($oDocument) {
+    $aVersions = Document::getByLiveDocument($oDocument);
+    $sToRender = "<table class=\"pretty\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">\n";
+    $sToRender .= "<thead><tr><th>Metadata Version</th><th>Modified date</th><th>Document Version</th></tr></thead>\n";
+    $sToRender .= "<tbody>\n";
+    $iDocumentID = $oDocument->getID();
+    $sLink = generateControllerLink('viewDocument', "fDocumentID=$iDocumentID");
+    $sDocumentLink = generateControllerLink("downloadDocument", "fDocumentID=$iDocumentID");
+    $sToRender .= sprintf('<tr><td><a href="%s">%s</a> (Live)</td><td>%s</td><td><a href="%s">%s</a></tr>%s', $sLink, $oDocument->getMetadataVersion(), $oDocument->getLastModifiedDate(), $sDocumentLink, $oDocument->getVersion(), "\n");
+    foreach ($aVersions as $oVersion) {
+        $iDocumentVersionID = $oVersion->getVersion();
+        if ($iDocumentVersionID == $oDocument->getVersion()) {
+            $sDocumentLink = generateControllerLink("downloadDocument", "fDocumentID=$iDocumentID");
+        } else {
+            $sDocumentLink = generateControllerLink("downloadDocument", "fDocumentID=$iDocumentID&fVersion=$iDocumentVersionID");
+        }
+        $sToRender .= "<tr>\n";
+        $iVersionID = $oVersion->getID();
+        $sLink = generateControllerLink('viewDocument', "fDocumentID=$iDocumentID&fVersionID=$iVersionID");
+        $sToRender .= sprintf('<td><a href="%s">%s</a></td>%s', $sLink, $oVersion->getMetadataVersion(), "\n");
+        $sToRender .= sprintf('<td>%s</td>%s', $oVersion->getLastModifiedDate(), "\n");
+        $sToRender .= sprintf('<td><a href="%s">%s</td>%s', $sDocumentLink, $oVersion->getVersion(), "\n");
+        $sToRender .= "</tr>\n";
+    }
+    $sToRender .= "</tbody>\n";
+    $sToRender .= "</table>\n";
     return $sToRender;
 }
 
@@ -640,6 +718,7 @@ function getPage($oDocument, $bEdit, $sStatusMessage = "") {
 	$sToRender .= renderDocumentSection("archiveSettings", _("Archive Settings"), $bDisplayLink, $oDocument->getID());
 	$sToRender .= renderDocumentSection("documentRouting", _("Document Routing"), $bDisplayLink, $oDocument->getID());
 	$sToRender .= renderDocumentSection("linkedDocuments", _("Linked Documents"), $bDisplayLink, $oDocument->getID());
+	$sToRender .= renderDocumentSection("metadataVersions", _("Metadata Versions"), $bDisplayLink, $oDocument->getID());
 
 	$sToRender .= "</td></tr>";
         $sToRender .= "</table>";
@@ -663,6 +742,8 @@ function getPage($oDocument, $bEdit, $sStatusMessage = "") {
     	$sToRender .= renderSectionDiv("documentRouting", renderNonEditableDocumentRouting($oDocument));
     	$sToRender .= renderSectionDiv("linkedDocuments", renderNonEditableLinkedDocuments($oDocument, $bEdit) . renderDependantDocuments($oDocument, $bEdit));
     }
+    $sToRender .= renderSectionDiv("metadataVersions", renderDocumentVersions($oDocument));
+
         $sToRender .= "<br />";
         $sToRender .= "<br />";
         $sToRender .= "<br />";
@@ -701,6 +782,7 @@ function getStatusPage($oDocument, $sStatusMessage) {
 	$sToRender .= renderDocumentSection("archiveSettings", _("Archive Settings"), $bDisplayLink, $oDocument->getID());
 	$sToRender .= renderDocumentSection("documentRouting", _("Document Routing"), $bDisplayLink, $oDocument->getID());
 	$sToRender .= renderDocumentSection("linkedDocuments", _("Linked Documents"), $bDisplayLink, $oDocument->getID());
+	$sToRender .= renderDocumentSection("metadataVersions", _("Document Versions"), $bDisplayLink, $oDocument->getID());
 	$sToRender .= "</table>";
     $sToRender .= "</div>";
 	$sToRender .= renderDocumentData($oDocument, false, $sStatusMessage);
