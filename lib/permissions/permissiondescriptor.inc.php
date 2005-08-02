@@ -90,6 +90,9 @@ class KTPermissionDescriptor extends KTEntity {
 
     function hasGroups($aGroups) {
         global $default;
+        if (count($aGroups) === 0) {
+            return false;
+        }
         $aGroupIDs = array();
         foreach ($aGroups as $oGroup) {
             $aGroupIDs[] = $oGroup->getID();
