@@ -343,4 +343,40 @@ table.pretty > tbody > tr > td {
     padding-right: 3px;
 }
 
+table.prettysw {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-top: 1px solid #cccccc;
+    border-left: 1px solid #cccccc;
+}
+
+table.prettysw > tbody > tr > th {
+    border: 0;
+    border-right: 2px solid #000000;
+    margin: 0;
+    padding: 0;
+    background-color: #feeeee;
+}
+
+table.prettysw > tbody > tr > td {
+    border: 0;
+    border-bottom: 1px solid #cccccc;
+    margin: 0;
+    padding: 0;
+    background-color: #eeeefe;
+    padding-right: 1em;
+    text-align: right;
+    padding-bottom: 3px;
+    padding-top: 3px;
+}
+
+table.prettysw > tbody > tr > td.odd {
+    background-color: #fafafe;
+}
+
+table.prettysw > tbody > tr > td.compare {
+    color: red;
+}
+
 
