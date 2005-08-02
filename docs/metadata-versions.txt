@@ -1,0 +1,28 @@
+Metadata versions
+=================
+
+KnowledgeTree can keep a historic view of both the physical document and
+the associated metadata.
+
+Version creation
+----------------
+Metadata versions need to occur when:
+- A new physical document is added
+- Metadata is changed
+
+Database effects
+----------------
+Metadata versions are stored in the standard documents table, with the
+document status set to STATUS_HISTORY (6).  Metadata versions are copies
+of the document table currently, and all associated generic and
+type-specific metadata.  Each metadata version has its own metadata
+version number (metadata_version, getMetadataVersion()).
+
+This configuration makes searches much easier.
+
+Interface changes
+-----------------
+Metadata versions are listed in the document detail view under "Metadata
+Versions".  When selected, the document detail view is updated to place
+the metadata version on the right-hand side of the view, allowing
+comparison.
