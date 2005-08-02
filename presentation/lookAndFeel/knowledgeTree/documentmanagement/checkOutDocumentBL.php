@@ -78,8 +78,6 @@ if (checkSession()) {
                         $oDocument->setIsCheckedOut(true);
                         // set the user checking the document out
                         $oDocument->setCheckedOutUserID($_SESSION["userID"]);
-                        // update modification time
-                        $oDocument->setLastModifiedDate(getCurrentDateTime());
                         // update it
                         if ($oDocument->update()) {
                             
