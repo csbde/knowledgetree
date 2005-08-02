@@ -45,6 +45,8 @@ function getEditableGenericMetaData($iDocumentID, $iDocumentTypeID) {
 	$oPatternTableSqlQuery->setRequiredColumnNames(array("value"));
 	$oPatternTableSqlQuery->setMetaDataFields($aMetaDataColumnNames);
 	$oPatternTableSqlQuery->setEmptyTableMessage(_("No Generic Meta Data"));
+	$oPatternTableSqlQuery->setPreCode(sprintf('require_once(KT_LIB_DIR .  "/documentmanagement/documentutil.inc.php"); KTDocumentUtil::createMetadataVersion(%d);', (int)$iDocumentID));
+	$oPatternTableSqlQuery->setPostCode(sprintf('require_once(KT_LIB_DIR .  "/documentmanagement/documentutil.inc.php"); KTDocumentUtil::bumpVersion(%d); KTDocumentUtil::setModifiedDate(%d);', (int)$iDocumentID, (int)$iDocumentID));
     return $oPatternTableSqlQuery->render();
 
 }
