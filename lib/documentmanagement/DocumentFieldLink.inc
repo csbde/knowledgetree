@@ -155,5 +155,16 @@ class DocumentFieldLink extends KTEntity {
 		$_SESSION["errorMessage"] = $lang_err_object_not_exist . "id = " . $iDocumentID . " table = $default->document_fields_link_table";
 		return false;		
 	}
+
+    function &getList($sWhereClause = null) {
+        return KTEntityUtil::getList2('DocumentFieldLink', $sWhereClause);
+    }
+
+
+    function &getByDocument($oDocument) {
+        return KTEntityUtil::getByDict('DocumentFieldLink', array(
+            'document_id' => $oDocument->getID(),
+        ), array('multi' => true));
+    }
 }
 ?>
