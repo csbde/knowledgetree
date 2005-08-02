@@ -116,55 +116,61 @@ class PatternListFromQuery {
                     "</td>\n";
 			}
 			$sToRender .= "</tr>\n";
-		} else {
-			$iColour = 0;
-            foreach ($aRows as $aRow) {
-				$sToRender .= "<tr><td>\n";
-				for ($i = 0; $i < count($this->aColumns); $i++) {		
-					$sToRender .= "<tr>\n";				
-					switch ($this->aColumnTypes[$i]) {						
-						//plain text field
-						case 1:
-												
-							$sToRender .= "<td nowrap bgcolor=\"$sTDBGColour\">" . $this->aColumnNames[$i] . "</td><td width=\"100%\" bgcolor=\"" . getColour($iColour) ."\">";
-                            $value = $aRow[$this->aColumns[$i]];
-							if (!empty($value)) {
-								$sToRender .= $value;
-							} else {
-								$sToRender .= "&nbsp;";
-							}
-                            $sToRender .= "</td>\n";
-								
-							break;
-						case 2:
-							//boolean
-							$sToRender .= "<td nowrap bgcolor=\"$sTDBGColour\">" . $this->aColumnNames[$i] . "</td><td width=\"100%\" bgcolor=\"" . getColour($iColour) ."\">";
-                            $value = $aRow[$this->aColumns[$i]];
-							if (!empty($value)) {
-								if ($value) { 
-									$sToRender .= "<img src=\"$default->graphicsUrl/" . $this->sChkPicPath . "\">";
-								} else {
-									$sToRender .= "<img src=\"$default->graphicsUrl/" . $this->sUnChkPicPath . "\">";
-								}
-								$sToRender .= "&nbsp;</td>";	
-							} else {
-								$sToRender .= "&nbsp;</td>";
-							}							
-
-							break;						
-						case 3:
-                            $value = $aRow[$this->aColumns[$i]];
-							$sToRender .= "<td bgcolor=\"$sTDBGColour\">" . $this->aColumnNames[$i] . "</b></td><td bgcolor=\"" . getColour($iColour) ."\"><a href=\"" . $this->aHyperLinkURL[$i] . "?" . $this->replaceValues($this->aQueryStringText[$i], "") . "\">" . $values . "</a></td>\n";
-							break;
-						default:
-							break;
-					}				
-					$sToRender .= "</tr>\n";
-					$iColour++;
-				}
-			}
+            $sToRender .= "</table>\n";		
+            return $sToRender;
 		}
-		$sToRender .= "</table>\n";		
+
+        $map = array();
+        foreach ($this->aColumns as $sColumn) {
+            $map[$sColumn] = array();
+        }
+
+        $iColour = 0;
+        foreach ($aRows as $aRow) {
+            $i = 0;
+            foreach ($this->aColumns as $sColumn) {
+                switch ($this->aColumnTypes[$i]) {						
+                    //plain text field
+                    case 1:
+                        $value = $aRow[$this->aColumns[$i]];
+                        break;
+                    case 2:
+                        $value = $aRow[$this->aColumns[$i]];
+                        if (!empty($value)) {
+                            if ($value) { 
+                                $value = "<img src=\"$default->graphicsUrl/" . $this->sChkPicPath . "\">";
+                            } else {
+                                $value = "<img src=\"$default->graphicsUrl/" . $this->sUnChkPicPath . "\">";
+                            }
+                            $value .= "&nbsp;";	
+                        }
+                        break;						
+                    case 3:
+                        $value = $aRow[$this->aColumns[$i]];
+                        $value = sprintf('<a href="%s?%s">%s</a>',
+                            $this->aHyperLinkURL[$i],
+                            $this->replaceValues($this->aQueryStringText[$i], ""),
+                            $value);
+                        break;
+                    default:
+                        break;
+                }				
+
+                $map[$sColumn][] = $value;
+                $i++;
+            }
+        }
+        $oTemplating =& KTTemplating::getSingleton();
+		$oTemplate = $oTemplating->loadTemplate('ktcore/document_data');
+        $aColumnNames = array();
+        $iLen = count($this->aColumnNames);
+        for ($c = 0; $c < $iLen; $c++) {
+            $aColumnNames[$this->aColumns[$c]] = $this->aColumnNames[$c];
+        }
+        $sToRender = $oTemplate->render(array(
+            'map' => $map,
+            'cnames' => $aColumnNames,
+        ));
 		return $sToRender;
 	}
 	
