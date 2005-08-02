@@ -200,6 +200,22 @@ class Group extends KTEntity {
         return $aMembers;
     }
 
+    function &getMemberGroups() {
+        global $default;
+        $sQuery = "SELECT member_group_id FROM $default->groups_groups_table WHERE parent_group_id = ?";
+        $aParams = array($this->getID());
+        $aGroupIDs = DBUtil::getResultArrayKey(array($sQuery, $aParams), "member_group_id");
+        $aMembers = array();
+        foreach ($aGroupIDs as $iGroupID) {
+            $oGroup = Group::get($iGroupID);
+            if ($oGroup !== false) {
+                $aMembers[] = $oGroup;
+            }
+        }
+        return $aMembers;
+    }
+
+
     function delete() {
         global $default;
 
@@ -268,6 +284,63 @@ class Group extends KTEntity {
             return PEAR::raiseError("Tried to remove member from database, apparently successfully, but hasMember thinks they're still members?");
         }
         return true;
+    }
+    // }}}
+
+    // {{{ addMemberGroup
+    function addMemberGroup($oGroup) {
+        global $default;
+        if ($this->hasMemberGroup($oGroup)) {
+            return true;
+        }
+        $aParams = array(
+            "parent_group_id" => $this->getID(),
+            "member_group_id" => $oGroup->getID(),
+        );
+        $res = DBUtil::autoInsert($default->groups_groups_table, $aParams);
+        if (PEAR::isError($res)) {
+            return $res;
+        }
+        return true;
+    }
+    // }}}
+    //
+    // {{{ removeMemberGroup
+    function removeMemberGroup($oGroup) {
+        global $default;
+        if (!$this->hasMemberGroup($oGroup)) {
+            return true;
+        }
+        $aParams = array(
+            "parent_group_id" => $this->getID(),
+            "member_group_id" => $oGroup->getID(),
+        );
+        $res = DBUtil::whereDelete($default->groups_groups_table, $aParams);
+        if (PEAR::isError($res)) {
+            return $res;
+        }
+        if ($this->hasMember($oGroup)) {
+            return PEAR::raiseError("Tried to remove member from database, apparently successfully, but hasMember thinks they're still members?");
+        }
+        return true;
+    }
+    // }}}
+
+    // {{{ hasMemberGroup
+    function hasMemberGroup($oGroup) {
+        global $default;
+
+        $sQuery = "SELECT COUNT(*) AS number_of_entries FROM $default->groups_groups_table
+            WHERE parent_group_id = ? AND member_group_id = ?";
+        $aParams = array($this->getID(), $oGroup->getID());
+        $res = (int)DBUtil::getOneResultKey(array($sQuery, $aParams), "number_of_entries");
+        if (PEAR::isError($res)) {
+            return $res;
+        }
+        if ($res === 1) {
+            return true;
+        }
+        return false;
     }
     // }}}
 }
