@@ -163,7 +163,7 @@ class KTPermissionUtil {
             return false;
         }
         $oPD = KTPermissionDescriptor::get($oPLA->getPermissionDescriptorID());
-        $aGroups = GroupUtil::listGroupsForUser($oUser);
+        $aGroups = GroupUtil::listGroupsForUserExpand($oUser);
         return $oPD->hasGroups($aGroups);
     }
 
