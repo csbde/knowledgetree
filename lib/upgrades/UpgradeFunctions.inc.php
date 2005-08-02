@@ -114,7 +114,6 @@ class UpgradeFunctions {
 
     function _setRead($iID, $oPO) {
         global $default;
-        print "setRead for $iID<br />\n";
         $oPermission = KTPermission::getByName('ktcore.permissions.read');
         $query = "SELECT group_id FROM $default->groups_folders_table WHERE folder_id = ? AND (can_read = ? OR can_write = ?)";
         $aParams = array($iID, true, true);
@@ -124,7 +123,6 @@ class UpgradeFunctions {
     }
 
     function _setWrite($iID, $oPO) {
-        print "setWrite for $iID<br />\n";
         global $default;
         $oPermission = KTPermission::getByName('ktcore.permissions.write');
         $query = "SELECT group_id FROM $default->groups_folders_table WHERE folder_id = ? AND can_write = ?";
@@ -135,7 +133,6 @@ class UpgradeFunctions {
     }
 
     function _setAddFolder($iID, $oPO) {
-        print "setAddFolder for $iID<br />\n";
         global $default;
         $oPermission = KTPermission::getByName('ktcore.permissions.addFolder');
         $query = "SELECT group_id FROM $default->groups_folders_table WHERE folder_id = ? AND can_write = ?";
@@ -155,7 +152,6 @@ class UpgradeFunctions {
         $query = "SELECT id FROM $default->folders_table WHERE permission_folder_id = id AND permission_object_id IS NULL";
         $aIDs = DBUtil::getResultArrayKey($query, 'id');
         foreach ($aIDs as $iID) {
-            print "Setting permission on Folder $iID<br />\n";
             $oFolder =& Folder::get($iID);
             if (PEAR::isError($oFolder)) {
                 var_dump($oFolder);
