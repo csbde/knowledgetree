@@ -1,13 +1,13 @@
 -- phpMyAdmin SQL Dump
--- version 2.6.1-rc1
+-- version 2.6.2
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Jun 16, 2005 at 12:35 AM
--- Server version: 4.0.23
--- PHP Version: 4.3.10-10ubuntu4
+-- Generation Time: Aug 02, 2005 at 04:04 PM
+-- Server version: 4.0.24
+-- PHP Version: 4.3.10-15ubuntu2
 -- 
--- Database: `pristine`
+-- Database: `kttest`
 -- 
 
 -- 
@@ -155,7 +155,8 @@ INSERT INTO document_types_lookup VALUES (1, 'Default');
 -- Dumping data for table `folder_doctypes_link`
 -- 
 
-INSERT INTO folder_doctypes_link VALUES (1, 2, 1);
+INSERT INTO folder_doctypes_link VALUES (1, 1, 1);
+INSERT INTO folder_doctypes_link VALUES (2, 2, 1);
 
 -- 
 -- Dumping data for table `folder_subscriptions`
@@ -166,8 +167,8 @@ INSERT INTO folder_doctypes_link VALUES (1, 2, 1);
 -- Dumping data for table `folders`
 -- 
 
-INSERT INTO folders VALUES (1, 'Root Folder', 'Root Document Folder', 0, 1, 0, 0, NULL, NULL, NULL, 1);
-INSERT INTO folders VALUES (2, 'Default Unit', 'Default Unit Root Folder', 1, 1, 1, 0, '1', 'Root Folder', NULL, 1);
+INSERT INTO folders VALUES (1, 'Root Folder', 'Root Document Folder', 0, 1, 0, 0, '0', '', 1, 2);
+INSERT INTO folders VALUES (2, 'Default Unit', 'Default Unit Root Folder', 1, 1, 1, 0, '1', 'Root Folder', 1, 2);
 
 -- 
 -- Dumping data for table `folders_users_roles_link`
@@ -181,6 +182,11 @@ INSERT INTO folders VALUES (2, 'Default Unit', 'Default Unit Root Folder', 1, 1,
 
 -- 
 -- Dumping data for table `groups_folders_link`
+-- 
+
+
+-- 
+-- Dumping data for table `groups_groups_link`
 -- 
 
 
@@ -300,6 +306,11 @@ INSERT INTO help VALUES (95, 'addUnitToOrg', 'addUnitToOrgHelp.html');
 INSERT INTO help VALUES (96, 'listUsers', 'listUsersHelp.html');
 INSERT INTO help VALUES (97, 'editUserGroups', 'editUserGroupsHelp.html');
 INSERT INTO help VALUES (98, 'listWebsites', 'listWebsitesHelp.html');
+
+-- 
+-- Dumping data for table `help_replacement`
+-- 
+
 
 -- 
 -- Dumping data for table `links`
@@ -469,6 +480,59 @@ INSERT INTO mime_types VALUES (141, 'dot', 'application/msword', 'icons/word.gif
 INSERT INTO organisations_lookup VALUES (1, 'Default Organisation');
 
 -- 
+-- Dumping data for table `permission_assignments`
+-- 
+
+INSERT INTO permission_assignments VALUES (1, 1, 1, 2);
+INSERT INTO permission_assignments VALUES (2, 2, 1, 2);
+INSERT INTO permission_assignments VALUES (3, 3, 1, 2);
+
+-- 
+-- Dumping data for table `permission_descriptor_groups`
+-- 
+
+INSERT INTO permission_descriptor_groups VALUES (2, 1);
+
+-- 
+-- Dumping data for table `permission_descriptors`
+-- 
+
+INSERT INTO permission_descriptors VALUES (1, 'd41d8cd98f00b204e9800998ecf8427e', '');
+INSERT INTO permission_descriptors VALUES (2, 'a689e7c4dc953de8d93b1ed4843b2dfe', 'group(1)');
+
+-- 
+-- Dumping data for table `permission_lookup_assignments`
+-- 
+
+INSERT INTO permission_lookup_assignments VALUES (1, 1, 1, 1);
+INSERT INTO permission_lookup_assignments VALUES (2, 2, 1, 1);
+INSERT INTO permission_lookup_assignments VALUES (3, 3, 1, 1);
+INSERT INTO permission_lookup_assignments VALUES (4, 1, 2, 2);
+INSERT INTO permission_lookup_assignments VALUES (5, 2, 2, 2);
+INSERT INTO permission_lookup_assignments VALUES (6, 3, 2, 2);
+
+-- 
+-- Dumping data for table `permission_lookups`
+-- 
+
+INSERT INTO permission_lookups VALUES (1);
+INSERT INTO permission_lookups VALUES (2);
+
+-- 
+-- Dumping data for table `permission_objects`
+-- 
+
+INSERT INTO permission_objects VALUES (1);
+
+-- 
+-- Dumping data for table `permissions`
+-- 
+
+INSERT INTO permissions VALUES (1, 'ktcore.permissions.read', 'Core: Read', 1);
+INSERT INTO permissions VALUES (2, 'ktcore.permissions.write', 'Core: Write', 1);
+INSERT INTO permissions VALUES (3, 'ktcore.permissions.addFolder', 'Core: Add Folder', 1);
+
+-- 
 -- Dumping data for table `roles`
 -- 
 
@@ -532,6 +596,13 @@ INSERT INTO upgrades VALUES (5, 'sql*2.0.6*0*2.0.6/create_link_type_table.sql', 
 INSERT INTO upgrades VALUES (6, 'sql*2.0.6*1*2.0.6/1-update_database_version.sql', 'Database upgrade to version 2.0.6: Update database version', '2005-06-16 00:30:06', 1, 'upgrade*2.0.6*0*upgrade2.0.6');
 INSERT INTO upgrades VALUES (7, 'upgrade*2.0.7*0*upgrade2.0.7', 'Upgrade from version 2.0.7 to 2.0.7', '2005-07-21 22:35:15', 1, 'upgrade*2.0.7*0*upgrade2.0.7');
 INSERT INTO upgrades VALUES (8, 'sql*2.0.7*0*2.0.7/document_link_update.sql', 'Database upgrade to version 2.0.7: Document link update', '2005-07-21 22:35:16', 1, 'upgrade*2.0.7*0*upgrade2.0.7');
+INSERT INTO upgrades VALUES (9, 'sql*2.0.8*0*2.0.8/nestedgroups.sql', 'Database upgrade to version 2.0.8: Nestedgroups', '2005-08-02 16:02:06', 1, 'upgrade*2.0.8*0*upgrade2.0.8');
+INSERT INTO upgrades VALUES (10, 'sql*2.0.8*0*2.0.8/help_replacement.sql', 'Database upgrade to version 2.0.8: Help replacement', '2005-08-02 16:02:06', 1, 'upgrade*2.0.8*0*upgrade2.0.8');
+INSERT INTO upgrades VALUES (11, 'upgrade*2.0.8*0*upgrade2.0.8', 'Upgrade from version 2.0.7 to 2.0.8', '2005-08-02 16:02:06', 1, 'upgrade*2.0.8*0*upgrade2.0.8');
+INSERT INTO upgrades VALUES (12, 'sql*2.0.8*0*2.0.8/permissions.sql', 'Database upgrade to version 2.0.8: Permissions', '2005-08-02 16:02:07', 1, 'upgrade*2.0.8*0*upgrade2.0.8');
+INSERT INTO upgrades VALUES (13, 'func*2.0.8*1*setPermissionObject', 'Set the permission object in charge of a document or folder', '2005-08-02 16:02:07', 1, 'upgrade*2.0.8*0*upgrade2.0.8');
+INSERT INTO upgrades VALUES (14, 'sql*2.0.8*1*2.0.8/1-metadata_versions.sql', 'Database upgrade to version 2.0.8: Metadata versions', '2005-08-02 16:02:07', 1, 'upgrade*2.0.8*0*upgrade2.0.8');
+INSERT INTO upgrades VALUES (15, 'sql*2.0.8*2*2.0.8/2-permissions.sql', 'Database upgrade to version 2.0.8: Permissions', '2005-08-02 16:02:07', 1, 'upgrade*2.0.8*0*upgrade2.0.8');
 
 -- 
 -- Dumping data for table `users`
@@ -697,7 +768,7 @@ INSERT INTO zseq_documents VALUES (1);
 -- Dumping data for table `zseq_folder_doctypes_link`
 -- 
 
-INSERT INTO zseq_folder_doctypes_link VALUES (1);
+INSERT INTO zseq_folder_doctypes_link VALUES (2);
 
 -- 
 -- Dumping data for table `zseq_folder_subscriptions`
@@ -730,6 +801,11 @@ INSERT INTO zseq_groups_folders_approval_link VALUES (1);
 INSERT INTO zseq_groups_folders_link VALUES (1);
 
 -- 
+-- Dumping data for table `zseq_groups_groups_link`
+-- 
+
+
+-- 
 -- Dumping data for table `zseq_groups_lookup`
 -- 
 
@@ -746,6 +822,11 @@ INSERT INTO zseq_groups_units_link VALUES (1);
 -- 
 
 INSERT INTO zseq_help VALUES (98);
+
+-- 
+-- Dumping data for table `zseq_help_replacement`
+-- 
+
 
 -- 
 -- Dumping data for table `zseq_links`
@@ -776,6 +857,42 @@ INSERT INTO zseq_news VALUES (1);
 -- 
 
 INSERT INTO zseq_organisations_lookup VALUES (1);
+
+-- 
+-- Dumping data for table `zseq_permission_assignments`
+-- 
+
+INSERT INTO zseq_permission_assignments VALUES (3);
+
+-- 
+-- Dumping data for table `zseq_permission_descriptors`
+-- 
+
+INSERT INTO zseq_permission_descriptors VALUES (2);
+
+-- 
+-- Dumping data for table `zseq_permission_lookup_assignments`
+-- 
+
+INSERT INTO zseq_permission_lookup_assignments VALUES (6);
+
+-- 
+-- Dumping data for table `zseq_permission_lookups`
+-- 
+
+INSERT INTO zseq_permission_lookups VALUES (2);
+
+-- 
+-- Dumping data for table `zseq_permission_objects`
+-- 
+
+INSERT INTO zseq_permission_objects VALUES (1);
+
+-- 
+-- Dumping data for table `zseq_permissions`
+-- 
+
+INSERT INTO zseq_permissions VALUES (3);
 
 -- 
 -- Dumping data for table `zseq_roles`
@@ -829,7 +946,7 @@ INSERT INTO zseq_units_organisations_link VALUES (1);
 -- Dumping data for table `zseq_upgrades`
 -- 
 
-INSERT INTO zseq_upgrades VALUES (8);
+INSERT INTO zseq_upgrades VALUES (15);
 
 -- 
 -- Dumping data for table `zseq_users`
