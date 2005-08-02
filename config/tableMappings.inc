@@ -121,4 +121,5 @@ $default->permission_assignments_table = "permission_assignments";
 $default->permission_descriptor_groups_table = "permission_descriptor_groups";
 $default->permission_lookups_table = "permission_lookups";
 $default->permission_lookup_assignments_table = "permission_lookup_assignments";
+$default->groups_groups_table = "groups_groups_link";
 ?>
