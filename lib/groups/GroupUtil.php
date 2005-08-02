@@ -213,6 +213,103 @@ class GroupUtil {
         return $aGroups;
     }
     // }}}
+
+    function _invertGroupArray($aGroupArray) {
+        $aRet = array();
+        foreach ($aGroupArray as $k => $aArray) {
+            foreach ($aArray as $v) {
+                $aRet[$v] = KTUtil::arrayGet($aRet, $v, array());
+                $aRet[$v][] = $k;
+            }
+        }
+        return $aRet;
+    }
+
+    // {{{ _listGroupsIDsForUserExpand
+    function _listGroupIDsForUserExpand ($oUser) {
+        global $default;
+        $aGroupArray = GroupUtil::_invertGroupArray(GroupUtil::buildGroupArray());
+        $aDirectGroups = GroupUtil::listGroupsForUser($oUser);
+        $sQuery = "SELECT group_id FROM $default->users_groups_table WHERE user_id = ?";
+        $aParams = array($oUser->getID());
+        $aGroupIDs = DBUtil::getResultArrayKey(array($sQuery, $aParams), "group_id");
+        foreach ($aGroupIDs as $iGroupID) {
+            $aGroupIDs = array_merge($aGroupIDs, KTUtil::arrayGet($aGroupArray, $iGroupID));
+        }
+        $aGroupIDs = array_unique($aGroupIDs);
+        sort($aGroupIDs);
+        return $aGroupIDs;
+    }
+    // }}}
+
+    // {{{ listGroupsForUserExpand
+    function listGroupsForUserExpand ($oUser) {
+        $aGroupIDs = GroupUtil::_listGroupIDsForUserExpand($oUser);
+        foreach ($aGroupIDs as $iGroupID) {
+            $oGroup = Group::get($iGroupID);
+            if (PEAR::isError($oGroup)) {
+                continue;
+            }
+            if ($oGroup === false) {
+                continue;
+            }
+            $aGroups[] = $oGroup;
+        }
+        return $aGroups;
+    }
+    // }}}
+
+    // {{{
+    function buildGroupArray() {
+        global $default;
+        $aDirectGroups = array();
+        $aGroupMemberships = DBUtil::getResultArray("SELECT parent_group_id, member_group_id FROM $default->groups_groups_table");
+        $aGroups =& Group::getList();
+        foreach ($aGroups as $oGroup) {
+            $aDirectGroups[$oGroup->getID()] = array();
+        }
+        foreach ($aGroupMemberships as $aRow) {
+            $aList = KTUtil::arrayGet($aDirectGroups, $aRow['parent_group_id'], array());
+            $aList[] = $aRow['member_group_id'];
+            $aDirectGroups[$aRow['parent_group_id']] = $aList;
+        }
+
+        return GroupUtil::expandGroupArray($aDirectGroups);
+    }
+    // }}}
+
+    // {{{ expandGroupArray
+    function expandGroupArray($aDirectGroups) {
+        // XXX: PHP5 clone
+        $aExpandedGroups = $aDirectGroups;
+        $iNum = 0;
+        foreach ($aExpandedGroups as $k => $v) {
+            $iNum += count($v);
+        }
+        $iLastNum = 0;
+        while ($iNum !== $iLastNum) {
+            $iLastNum = $iNum;
+
+            foreach ($aExpandedGroups as $k => $v) {
+                foreach ($v as $iGroupID) {
+                    $aStuff = KTUtil::arrayGet($aExpandedGroups, $iGroupID, null);
+                    if (is_null($aStuff)) {
+                        continue;
+                    }
+                    $v = array_unique(array_merge($v, $aStuff));
+                    sort($v);
+                }
+                $aExpandedGroups[$k] = $v;
+            }
+            
+            $iNum = 0;
+            foreach ($aExpandedGroups as $k => $v) {
+                $iNum += count($v);
+            }
+        }
+        return $aExpandedGroups;
+    }
+    // }}}
 }
 // }}}
 
