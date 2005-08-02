@@ -49,6 +49,10 @@ class KTDispatcher {
         return $this->errorRedirectTo('main', $error_message, $sQuery);
     }
 
+    function redirectToMain($sQuery = "") {
+        return $this->redirectTo('main', $sQuery);
+    }
+
     function handleOutput($sOutput) {
         print $sOutput;
     }
