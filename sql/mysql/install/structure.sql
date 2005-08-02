@@ -1,13 +1,13 @@
 -- phpMyAdmin SQL Dump
--- version 2.6.1-rc1
+-- version 2.6.2
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Jun 13, 2005 at 10:13 PM
--- Server version: 4.0.23
--- PHP Version: 4.3.10-10ubuntu4
+-- Generation Time: Aug 02, 2005 at 04:03 PM
+-- Server version: 4.0.24
+-- PHP Version: 4.3.10-15ubuntu2
 -- 
--- Database: `pristine`
+-- Database: `kttest`
 -- 
 
 -- --------------------------------------------------------
@@ -343,13 +343,20 @@ CREATE TABLE documents (
   checked_out_user_id int(11) default NULL,
   status_id int(11) default NULL,
   created datetime NOT NULL default '0000-00-00 00:00:00',
+  permission_object_id int(11) default NULL,
+  permission_lookup_id int(11) default NULL,
+  live_document_id int(11) default NULL,
+  metadata_version int(11) NOT NULL default '0',
   UNIQUE KEY id (id),
   KEY fk_document_type_id (document_type_id),
   KEY fk_creator_id (creator_id),
   KEY fk_folder_id (folder_id),
   KEY fk_checked_out_user_id (checked_out_user_id),
   KEY fk_status_id (status_id),
-  KEY created (created)
+  KEY created (created),
+  KEY permission_object_id (permission_object_id),
+  KEY permission_lookup_id (permission_lookup_id),
+  KEY live_document_id (live_document_id)
 ) TYPE=InnoDB;
 
 -- --------------------------------------------------------
@@ -397,13 +404,14 @@ CREATE TABLE folders (
   is_public tinyint(1) NOT NULL default '0',
   parent_folder_ids text,
   full_path text,
-  inherit_parent_folder_permission int(11) default NULL,
-  permission_folder_id int(11) default NULL,
+  permission_object_id int(11) default NULL,
+  permission_lookup_id int(11) default NULL,
   UNIQUE KEY id (id),
   KEY fk_parent_id (parent_id),
   KEY fk_creator_id (creator_id),
   KEY fk_unit_id (unit_id),
-  KEY permission_folder_id (permission_folder_id)
+  KEY permission_object_id (permission_object_id),
+  KEY permission_lookup_id (permission_lookup_id)
 ) TYPE=InnoDB;
 
 -- --------------------------------------------------------
@@ -460,6 +468,19 @@ CREATE TABLE groups_folders_link (
 -- --------------------------------------------------------
 
 -- 
+-- Table structure for table `groups_groups_link`
+-- 
+
+CREATE TABLE groups_groups_link (
+  id int(11) NOT NULL default '0',
+  parent_group_id int(11) NOT NULL default '0',
+  member_group_id int(11) NOT NULL default '0',
+  PRIMARY KEY  (id)
+) TYPE=InnoDB;
+
+-- --------------------------------------------------------
+
+-- 
 -- Table structure for table `groups_lookup`
 -- 
 
@@ -498,6 +519,19 @@ CREATE TABLE help (
   fSection varchar(100) NOT NULL default '',
   help_info text NOT NULL,
   UNIQUE KEY id (id)
+) TYPE=InnoDB;
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `help_replacement`
+-- 
+
+CREATE TABLE help_replacement (
+  id int(11) NOT NULL default '0',
+  name varchar(100) NOT NULL default '',
+  description text NOT NULL,
+  PRIMARY KEY  (id)
 ) TYPE=InnoDB;
 
 -- --------------------------------------------------------
@@ -569,6 +603,106 @@ CREATE TABLE organisations_lookup (
   id int(11) NOT NULL default '0',
   name char(100) NOT NULL default '',
   UNIQUE KEY id (id),
+  UNIQUE KEY name (name)
+) TYPE=InnoDB;
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `permission_assignments`
+-- 
+
+CREATE TABLE permission_assignments (
+  id int(11) NOT NULL default '0',
+  permission_id int(11) NOT NULL default '0',
+  permission_object_id int(11) NOT NULL default '0',
+  permission_descriptor_id int(11) default NULL,
+  PRIMARY KEY  (id),
+  UNIQUE KEY permission_and_object (permission_id,permission_object_id),
+  KEY permission_id (permission_id),
+  KEY permission_object_id (permission_object_id)
+) TYPE=InnoDB;
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `permission_descriptor_groups`
+-- 
+
+CREATE TABLE permission_descriptor_groups (
+  descriptor_id int(11) NOT NULL default '0',
+  group_id int(11) NOT NULL default '0',
+  UNIQUE KEY descriptor_id (descriptor_id,group_id),
+  KEY descriptor_id_2 (descriptor_id),
+  KEY group_id (group_id)
+) TYPE=InnoDB;
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `permission_descriptors`
+-- 
+
+CREATE TABLE permission_descriptors (
+  id int(11) NOT NULL default '0',
+  descriptor varchar(32) NOT NULL default '',
+  descriptor_text text NOT NULL,
+  PRIMARY KEY  (id),
+  UNIQUE KEY descriptor_2 (descriptor),
+  KEY descriptor (descriptor)
+) TYPE=InnoDB;
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `permission_lookup_assignments`
+-- 
+
+CREATE TABLE permission_lookup_assignments (
+  id int(11) NOT NULL default '0',
+  permission_id int(11) NOT NULL default '0',
+  permission_lookup_id int(11) NOT NULL default '0',
+  permission_descriptor_id int(11) default NULL,
+  PRIMARY KEY  (id),
+  UNIQUE KEY permission_and_lookup (permission_id,permission_lookup_id),
+  KEY permission_id (permission_id),
+  KEY permission_lookup_id (permission_lookup_id)
+) TYPE=InnoDB;
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `permission_lookups`
+-- 
+
+CREATE TABLE permission_lookups (
+  id int(11) NOT NULL default '0',
+  PRIMARY KEY  (id)
+) TYPE=InnoDB;
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `permission_objects`
+-- 
+
+CREATE TABLE permission_objects (
+  id int(11) NOT NULL default '0',
+  PRIMARY KEY  (id)
+) TYPE=InnoDB;
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `permissions`
+-- 
+
+CREATE TABLE permissions (
+  id int(11) NOT NULL default '0',
+  name char(100) NOT NULL default '',
+  human_name char(100) NOT NULL default '',
+  built_in tinyint(4) NOT NULL default '0',
+  PRIMARY KEY  (id),
   UNIQUE KEY name (name)
 ) TYPE=InnoDB;
 
@@ -691,7 +825,7 @@ CREATE TABLE upgrades (
   description char(255) NOT NULL default '',
   date_performed datetime NOT NULL default '0000-00-00 00:00:00',
   result tinyint(4) NOT NULL default '0',
-  parent char(100) default NULL,
+  parent char(40) default NULL,
   PRIMARY KEY  (id),
   KEY descriptor (descriptor),
   KEY parent (parent)
@@ -1078,6 +1212,17 @@ CREATE TABLE zseq_groups_folders_link (
 -- --------------------------------------------------------
 
 -- 
+-- Table structure for table `zseq_groups_groups_link`
+-- 
+
+CREATE TABLE zseq_groups_groups_link (
+  id int(10) unsigned NOT NULL auto_increment,
+  PRIMARY KEY  (id)
+) TYPE=InnoDB;
+
+-- --------------------------------------------------------
+
+-- 
 -- Table structure for table `zseq_groups_lookup`
 -- 
 
@@ -1104,6 +1249,17 @@ CREATE TABLE zseq_groups_units_link (
 -- 
 
 CREATE TABLE zseq_help (
+  id int(10) unsigned NOT NULL auto_increment,
+  PRIMARY KEY  (id)
+) TYPE=InnoDB;
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `zseq_help_replacement`
+-- 
+
+CREATE TABLE zseq_help_replacement (
   id int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (id)
 ) TYPE=InnoDB;
@@ -1159,6 +1315,72 @@ CREATE TABLE zseq_news (
 -- 
 
 CREATE TABLE zseq_organisations_lookup (
+  id int(10) unsigned NOT NULL auto_increment,
+  PRIMARY KEY  (id)
+) TYPE=InnoDB;
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `zseq_permission_assignments`
+-- 
+
+CREATE TABLE zseq_permission_assignments (
+  id int(10) unsigned NOT NULL auto_increment,
+  PRIMARY KEY  (id)
+) TYPE=InnoDB;
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `zseq_permission_descriptors`
+-- 
+
+CREATE TABLE zseq_permission_descriptors (
+  id int(10) unsigned NOT NULL auto_increment,
+  PRIMARY KEY  (id)
+) TYPE=InnoDB;
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `zseq_permission_lookup_assignments`
+-- 
+
+CREATE TABLE zseq_permission_lookup_assignments (
+  id int(10) unsigned NOT NULL auto_increment,
+  PRIMARY KEY  (id)
+) TYPE=InnoDB;
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `zseq_permission_lookups`
+-- 
+
+CREATE TABLE zseq_permission_lookups (
+  id int(10) unsigned NOT NULL auto_increment,
+  PRIMARY KEY  (id)
+) TYPE=InnoDB;
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `zseq_permission_objects`
+-- 
+
+CREATE TABLE zseq_permission_objects (
+  id int(10) unsigned NOT NULL auto_increment,
+  PRIMARY KEY  (id)
+) TYPE=InnoDB;
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `zseq_permissions`
+-- 
+
+CREATE TABLE zseq_permissions (
   id int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (id)
 ) TYPE=InnoDB;
