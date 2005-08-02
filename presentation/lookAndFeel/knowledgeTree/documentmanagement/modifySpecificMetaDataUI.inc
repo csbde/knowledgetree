@@ -46,6 +46,8 @@ function getEditableTypeSpecificMetaData($iDocumentID, $iDocumentTypeID) {
     $oPatternTableSqlQuery->setEmptyTableMessage(_("No Type Specific Meta Data"));
     $oPatternTableSqlQuery->setUniqueName("tsmd");
 	$oPatternTableSqlQuery->setMetaDataFields($aMetaDataColumnNames);	
+    $oPatternTableSqlQuery->setPreCode(sprintf('require_once(KT_LIB_DIR .  "/documentmanagement/documentutil.inc.php"); KTDocumentUtil::createMetadataVersion(%d);', (int)$iDocumentID));
+    $oPatternTableSqlQuery->setPostCode(sprintf('require_once(KT_LIB_DIR .  "/documentmanagement/documentutil.inc.php"); KTDocumentUtil::bumpVersion(%d); KTDocumentUtil::setModifiedDate(%d);', (int)$iDocumentID, (int)$iDocumentID));
     return $oPatternTableSqlQuery->render();
 }
 
