@@ -390,4 +390,7 @@ require_once(KT_LIB_DIR . '/session/Session.inc');
 require_once(KT_LIB_DIR . '/session/control.inc');
 require_once(KT_DIR . '/presentation/Html.inc');
 
+require_once(KT_LIB_DIR . '/templating/templating.inc.php');
+$oTemplating =& KTTemplating::getSingleton();
+
 ?>
