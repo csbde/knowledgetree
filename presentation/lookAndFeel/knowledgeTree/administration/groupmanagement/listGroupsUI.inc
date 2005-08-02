@@ -47,7 +47,8 @@ function getNameDisplay($sName) {
 
 function getGroups($aUnitIDs, $sName) {
 	global $default;
-	/*ok*/ $sQuery = "SELECT GL.id AS groupID, UL.name AS UnitNameB4, GL.name AS name, 'Edit' , 'Delete', 'Edit Unit', 'Edit Users', " .
+	/*ok*/ $sQuery = "SELECT GL.id AS \"groupID\", UL.name AS UnitNameB4, GL.name AS name, 'Edit' AS \"Edit\", 'Delete' AS \"Delete\", " .
+                "'Edit Unit' AS \"Edit Unit\", 'Edit Users' AS \"Edit Users\", 'Edit Member Groups' AS \"Edit Member Groups\", " .
 				"CASE WHEN UL.name IS NULL THEN '<font color=darkgrey>No Unit Assigned</font>' ELSE UL.name END AS UnitName " . 
 				"FROM ($default->groups_table GL LEFT JOIN $default->groups_units_table GUL ON GL.id = GUL.group_id) " . 
 				"LEFT JOIN $default->units_table UL ON UL.id = GUL.unit_id ";
@@ -76,16 +77,17 @@ function getGroups($aUnitIDs, $sName) {
 	$sQuery .= $sWhereClause . "ORDER BY GL.name";
 	$default->log->info("groupQuery: $sQuery");	
 				
-    $aColumns = array("name", "UnitName", "Edit", "Delete", "Edit Unit", "Edit Users");
-    $aColumnNames = array(_("Name"), _("Unit Name"), _("Edit"), _("Delete"), _("Edit Unit"), _("Edit Users"));
-    $aColumnTypes = array(1,1,3,3,3,3);
+    $aColumns = array("name", "UnitName", "Edit", "Delete", "Edit Unit", "Edit Users", "Edit Member Groups");
+    $aColumnNames = array(_("Name"), _("Unit Name"), _("Edit"), _("Delete"), _("Edit Unit"), _("Edit Users"), _("Edit Member Groups"));
+    $aColumnTypes = array(1,1,3,3,3,3, 3);
     $aDBColumnArray = array("groupID");
     $aQueryStringVariableNames = array("fGroupID");
     	    
     $aHyperLinkURL = array(	2=> "$default->rootUrl/control.php?action=editGroup",                       			
                      		3=> "$default->rootUrl/control.php?action=removeGroup",
                      		4=> "$default->rootUrl/control.php?action=editGroupUnit", 
-                     		5=> "$default->rootUrl/control.php?action=editGroupUsers"); 
+                     		5=> "$default->rootUrl/control.php?action=editGroupUsers",
+                     		6=> "$default->rootUrl/control.php?action=editGroupGroups"); 
     	    
     $oSearchResults = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnNames, "100%", $aHyperLinkURL,$aDBColumnArray,$aQueryStringVariableNames);
 	$oSearchResults->setDisplayColumnHeadings(true);	
