@@ -31,6 +31,7 @@ DEFINE("PUBLISHED", 2);
 DEFINE("DELETED", 3);
 DEFINE("ARCHIVED", 4);
 DEFINE("STATUS_INCOMPLETE", 5);
+DEFINE("STATUS_VERSION", 6);
 
 require_once(KT_LIB_DIR . "/foldermanagement/Folder.inc");
 
@@ -96,6 +97,12 @@ class Document extends KTEntity {
    
     /** object which has quick lookups (read-only) on permissions on this document */
     var $iPermissionLookupID;
+
+    /** if this is a historic version, a pointer to the live document */
+    var $iLiveDocumentID = null;
+
+    /** metadata revision number */
+    var $iMetadataVersion;
    
     // }}}
 
@@ -122,6 +129,7 @@ class Document extends KTEntity {
         $this->iFolderID = $iNewFolderID;
         $this->iDocumentTypeID = Folder::getDefaultFolderDocumentType($this->iFolderID);
         $this->iMajorVersion = 0;
+        $this->iMetadataVersion = 0;
         $this->iMinorVersion = 1;
         $this->bIsCheckedOut = false;
         $this->iCheckedOutUserID = -1;
@@ -165,6 +173,10 @@ class Document extends KTEntity {
     function setPermissionObjectID($iNewValue) { $this->iPermissionObjectID = $iNewValue; }
     function getPermissionLookupID() { return $this->iPermissionLookupID; }
     function setPermissionLookupID($iNewValue) { $this->iPermissionLookupID = $iNewValue; }
+    function getLiveDocumentID() { return $this->iLiveDocumentID; }
+    function setLiveDocumentID($iNewValue) { $this->iLiveDocumentID = $iNewValue; }
+    function getMetadataVersion() { return $this->iMetadataVersion; }
+    function setMetadataVersion($iNewValue) { $this->iMetadataVersion = $iNewValue; }
     // }}}
 
     // {{{ getParentID
@@ -224,7 +236,7 @@ class Document extends KTEntity {
             'filename' => $this->sFileName,
             'size' => $this->iSize,
             'creator_id' => $this->iCreatorID,
-            'modified' => getCurrentDateTime(),
+            'modified' => $this->dModified,
             'description' => $this->sDescription,
             'mime_id' => $this->iMimeTypeID,
             'folder_id' => $this->iFolderID,
@@ -238,6 +250,8 @@ class Document extends KTEntity {
             'created' => $this->dCreated,
             'permission_object_id' => $this->iPermissionObjectID,
             'permission_lookup_id' => $this->iPermissionLookupID,
+            'live_document_id' => $this->iLiveDocumentID,
+            'metadata_version' => $this->iMetadataVersion,
         );
     }
 
@@ -309,7 +323,12 @@ class Document extends KTEntity {
      * @return boolean true on successful insert, false otherwise
      */
     function create() {
-        $this->dCreated = getCurrentDateTime();
+        if (empty($this->dCreated)) {
+            $this->dCreated = getCurrentDateTime();
+        }
+        if (empty($this->dModified)) {
+            $this->dModified = getCurrentDateTime();
+        }
         $oFolder = Folder::get($this->getFolderID());
         $this->iPermissionObjectID = $oFolder->getPermissionObjectID();
         $res = parent::create();
@@ -470,6 +489,8 @@ class Document extends KTEntity {
                 $oDocument->iId = $iDocumentID;
                 $oDocument->setPermissionObjectID($sql->f("permission_object_id"));
                 $oDocument->setPermissionLookupID($sql->f("permission_lookup_id"));
+                $oDocument->setLiveDocumentID($sql->f("live_document_id"));
+                $oDocument->setMetadataVersion($sql->f("metadata_version"));
                 return $oDocument;
             }
             return false;
@@ -748,5 +769,11 @@ class Document extends KTEntity {
         return $result;
     }
     // }}}
+
+    function &getByLiveDocument($oDocument) {
+        return KTEntityUtil::getByDict('Document', array(
+            'live_document_id' => $oDocument->getID(),
+        ), array('multi' => true, 'orderby' => 'modified DESC'));
+    }
 }
 ?>
