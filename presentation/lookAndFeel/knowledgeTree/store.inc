@@ -26,6 +26,7 @@
 
 function constructQuery($aKeys, $aSuppliedValues = null) {
     $aQuery = array();
+    $first = true;
     for ($i = 0; $i < count($aKeys); $i++) {
         $sRowStart = $aKeys[$i];
         $pos = strncasecmp("unique_start", $sRowStart, 12);
@@ -57,6 +58,12 @@ function constructQuery($aKeys, $aSuppliedValues = null) {
 
             $i++;
             $iColumnCount = 0;
+
+            if ($first === true) {
+                $sPreCode = $_SESSION["pelfq_" . $sRandomString .  "_code_pre"];
+                eval($sPreCode);
+                $first = false;
+            }
 
             //get all the values for the table
             while ((strncasecmp("unique_end", $sRowStart, 10) != 0) && ($i <= count($aKeys)))  {
@@ -107,6 +114,8 @@ function constructQuery($aKeys, $aSuppliedValues = null) {
             }
         }
     }
+    $sPostCode = $_SESSION["pelfq_" . $sRandomString .  "_code_post"];
+    eval($sPostCode);
     return $aQuery;
 }
 ?>
