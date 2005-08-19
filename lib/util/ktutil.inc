@@ -128,6 +128,27 @@ class KTUtil {
         return array(join(" AND ", $aStrings), $aParams);
     }
     // }}}
+
+    // function safeShellString
+    function safeShellString () {
+        $aArgs = func_get_args();
+        $aSafeArgs = array();
+        if (is_array($aArgs[0])) {
+            $aArgs = $aArgs[0];
+        }
+        $aSafeArgs[] = escapeshellarg(array_shift($aArgs));
+        if (is_array($aArgs[0])) {
+            $aArgs = $aArgs;
+        }
+        foreach ($aArgs as $sArg) {
+            if (empty($sArg)) {
+                $aSafeArgs[] = "''";
+            } else {
+                $aSafeArgs[] = escapeshellarg($sArg);
+            }
+        }
+        return join(" ", $aSafeArgs);
+    }
 }
 // }}}
 
