@@ -106,11 +106,12 @@ class KTTemplating {
 
     // {{{ getSingleton
     function &getSingleton () {
-        global $oKTTemplating;
-        return $oKTTemplating;
+        if (!KTUtil::arrayGet($GLOBALS, 'oKTTemplating')) {
+            $GLOBALS['oKTTemplating'] = new KTTemplating;
+        }
+        return $GLOBALS['oKTTemplating'];
     }
     // }}}
 }
-$oKTTemplating =& new KTTemplating;
 
 ?>
