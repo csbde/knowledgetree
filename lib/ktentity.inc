@@ -323,7 +323,12 @@ class KTEntityUtil {
         } else {
             $aWhere = array();
             foreach ($aField as $k => $sField) {
-                $aWhere[] = array("$sField = ?", array($mValue[$k]));
+                if (is_array($mValue[$k])) {
+                    $sParam = DBUtil::paramArray($mValue[$k]);
+                    $aWhere[] = array("$sField IN ($sParam)", array($mValue[$k]));
+                } else {
+                    $aWhere[] = array("$sField = ?", array($mValue[$k]));
+                }
             }
             $sWhereClause = KTUtil::whereToString($aWhere);
         }
