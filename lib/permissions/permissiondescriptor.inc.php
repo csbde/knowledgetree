@@ -131,11 +131,19 @@ class KTPermissionDescriptor extends KTEntity {
         return $aRet;
     }
 
-    function &getByGroups($aGroups) {
+    function &getByGroups($aGroups, $aOptions = null) {
         global $default;
+        if (is_null($aOptions)) {
+            $aOptions = array();
+        }
+        $ids = KTUtil::arrayGet($aOptions, 'ids');
         $aGroupIDs = array();
         foreach ($aGroups as $oGroup) {
-            $aGroupIDs[] = $oGroup->getID();
+            if (is_numeric($oGroup)) {
+                $aGroupIDs[] = $oGroup;
+            } else {
+                $aGroupIDs[] = $oGroup->getID();
+            }
         }
         $sGroupIDs = DBUtil::paramArray($aGroupIDs);
         $sQuery = "SELECT DISTINCT descriptor_id FROM $default->permission_descriptor_groups_table WHERE group_id IN ( $sGroupIDs )";
@@ -143,7 +151,11 @@ class KTPermissionDescriptor extends KTEntity {
         $aIDs = DBUtil::getResultArrayKey(array($sQuery, $aParams), 'descriptor_id');
         $aRet = array();
         foreach ($aIDs as $iID) {
-            $aRet[] =& KTPermissionDescriptor::get($iID);
+            if ($ids === true) {
+                $aRet[] = $iID;
+            } else {
+                $aRet[] =& KTPermissionDescriptor::get($iID);
+            }
         }
         return $aRet;
     }
