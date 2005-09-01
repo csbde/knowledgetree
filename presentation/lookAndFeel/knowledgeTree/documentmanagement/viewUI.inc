@@ -519,168 +519,28 @@ function displayButton($sAction, $sQueryString, $sImageName, $sDisabledText = ""
 	}
 }
 
-function displayViewButton($oDocument, $bEdit) {
-    $sQueryString = "fDocumentID=" . $oDocument->getID();
-	$sViewAlert = _("This will download a copy of the document and is not the same as Checking Out a document.  Changes to this downloaded file will not be managed in the DMS.");
-    $sJS = "onClick=\"alert('$sViewAlert '); return true;\"";
-    return displayButton("downloadDocument", $sQueryString, "view", $sDisabledText, $sJS);
-
-}
-
-function displayCheckInOutButton($oDocument, $bEdit) {
-
-	$sQueryString = "fDocumentID=" . $oDocument->getID();
-	// display the check in button if the document is checked out and you checked the document out
-	if ($oDocument->getIsCheckedOut()) {
-  		$sAction = "checkInDocument";
-  		$sImageName = "checkin";		
-		if ($oDocument->getCheckedOutUserID() <> $_SESSION["userID"]) {
-	  		$oUser = User::get($oDocument->getCheckedOutUserID());
-	  		$sDisabledText = sprintf(_("The document can only be checked back in by %s"), $oUser->getName());
-	  	} 
-	// otherwise display the check out button
-	} else {
-	  	$sAction = "checkOutDocument";
-	  	$sImageName = "checkout";
-    	// #3481 if the document is published don't allow checkout
-    	if (DocumentCollaboration::documentIsPublished($oDocument->getID())) {
-    		$sDisabledText = _("This document has been published and cannot be checked out");
-    	}	  	
-	}
-    if (!$bEdit) {
-    	$sDisabledText = _("You do not have write access to this document");
-    }
-    return displayButton($sAction, $sQueryString, $sImageName, $sDisabledText);
-}
-
-function displayEmailButton($oDocument) {
-	global $default;
-	return displayButton("emailDocument", "fDocumentID=" . $oDocument->getID(), "email");
-}
-
-function displayDeleteButton($oDocument, $bEdit) {
-    if ($bEdit) {
-    	$sQueryString = "fDocumentIDs[]=" . $oDocument->getID();
-        $sQueryString .= "&fReturnDocumentID=" . $oDocument->getID();
-    	if ($oDocument->getIsCheckedOut()) {
-    		$sDisabledText = _("This document can't be deleted because its checked out");
-    	}
-    } else {
-    	$sDisabledText = _("You do not have write access to this document");
-    }
-	return displayButton("deleteDocument", $sQueryString, "delete", $sDisabledText);
-}
-
-function displayHistoryButton($oDocument) {
-	global $default;
-	return displayButton("viewHistory", "fDocumentID=" . $oDocument->getID(), "history");
-}	
-function displayMoveButton($oDocument, $bEdit) {
-    if ($bEdit) {
-    	$sQueryString = "fFolderID=" . $oDocument->getFolderID() . "&fDocumentIDs[]=" . $oDocument->getID();
-    	// documents in collaboration and checked out documents can't be moved
-		if ($oDocument->getIsCheckedOut()) {
-			$sDisabledText = _("The document is checked out and cannot be moved.");
-		}
-		if (DocumentCollaboration::documentCollaborationStarted($oDocument->getID()) &&
-		    !DocumentCollaboration::documentCollaborationDone($oDocument->getID())) {
-			$sDisabledText = _("The document is in collaboration and cannot be moved.");
-		}
-    } else {
-     	$sDisabledText = _("You do not have write access to this document");
-    }
-	return displayButton("moveDocument", $sQueryString, "move", $sDisabledText);
-}
-
-function displaySubscriptionButton($oDocument) {
-    // display the unsubscribe button if the user is subscribed to the document
-    if (Subscription::exists($_SESSION["userID"], $oDocument->getID(), SubscriptionConstants::subscriptionType("DocumentSubscription"))) {
-    	$sAction = "removeSubscription";
-    	$sImageName = "unsubscribe";
-    // otherwise display the subscribe button
-    } else {
-		$sAction = "addSubscription";
-		$sImageName = "subscribe";    	
-    }
-	return displayButton($sAction, "fDocumentID=" . $oDocument->getID(), $sImageName);
-}
-
-function displayDiscussionButton($oDocument, $bEdit) {
-	global $default;
-    return displayButton("viewDiscussion", "fDocumentID=" . $oDocument->getID() . "&fForDiscussion=1", "discussion");
-}
-	
-function displayArchiveButton($oDocument, $bEdit) {
-    // only display the archive button for available documents
-    // if the document is not checked out
-    // and if the document is not in collaboration
-    if ($bEdit) {
-	    if (!$oDocument->getIsCheckedOut()) {
-	    	if ($oDocument->hasCollaboration() && 
-	    		DocumentCollaboration::documentCollaborationStarted($oDocument->getID()) &&
-	    		!DocumentCollaboration::documentCollaborationDone($oDocument->getID())) {
-	    		$sDisabledText = _("This document is in collaboration and cannot be archived");
-	    	}
-	    } else {
-	    	$sDisabledText = _("This document is checked out and cannot be archived.");
-	    }
-    } else {
-     	$sDisabledText = _("You do not have write access to this document");
-    }
-	return displayButton("archiveDocument", "fDocumentID=" . $oDocument->getID(), "archive", $sDisabledText);
-}
-
-function displayDependantDocumentButton($oDocument, $bEdit) {
-	global $default;
-	return displayButton("createDependantDocument", "fDocumentID=" . $oDocument->getID(), "dependentdoc");
-}
-
-function displayPublishButton($oDocument, $bEdit) {
-    // only display the publish button for unpublished documents	
-    if (!DocumentCollaboration::documentIsPublished($oDocument->getID()) && 
-    	!DocumentCollaboration::documentIsPendingWebPublishing($oDocument->getID())) {      
-        // if there is collaboration
-        if ($oDocument->hasCollaboration()) {
-            // only display publish button if collaboration is complete and you're the last user in the collaboration process (or a sysadmin)
-            if (DocumentCollaboration::documentCollaborationDone($oDocument->getID())) { 
-                if ( !($_SESSION["userID"] == DocumentCollaboration::getLastCollaboratorID($oDocument->getID())) && !Permission::userIsSystemAdministrator() ) {
-                	$sDisabledText = _("You are not the last collaborator and hence cannot publish this document");
-                }
-            } else {
-            	$sDisabledText = _("You cannot publish this document until collaboration is complete");
-            }
-        } else {
-        	// no collaboration, check the user permissions
-        	if ( !($_SESSION["userID"] == $oDocument->getCreatorID()) && !Permission::userIsSystemAdministrator() ) {
-        		$sDisabledText = _("You do not have permission to publish this document.");
-        	}
-        }
-    } else {
-    	if (DocumentCollaboration::documentIsPublished($oDocument->getID())) {
-    		$sDisabledText = _("This document is already published.");
-    	} else if (DocumentCollaboration::documentIsPendingWebPublishing($oDocument->getID())) {
-    		$sDisabledText = _("This document has been marked as pending publishing and the web publisher has been notified.");
-    	}
-    }
-	return displayButton("viewDocument", "fDocumentID=" . $oDocument->getID() . "&fForPublish=1", "publish", $sDisabledText);
-}
-
 /**
  * Displays document action buttons
  */
+
 function displayActionButtons($oDocument, $bEdit) {
-    $sToRender .= displayViewButton($oDocument, $bEdit);
-    $sToRender .= displayEmailButton($oDocument);
-    $sToRender .= displayCheckInOutButton($oDocument, $bEdit);
-    $sToRender .= displayDeleteButton($oDocument, $bEdit);
-    $sToRender .= displayHistoryButton($oDocument);
-	$sToRender .= displayMoveButton($oDocument, $bEdit);    	
-	$sToRender .= displaySubscriptionButton($oDocument);
-	$sToRender .= displayDiscussionButton($oDocument, $bEdit);
-    $sToRender .= displayArchiveButton($oDocument, $bEdit);
-	$sToRender .= displayDependantDocumentButton($oDocument, $bEdit);
-	$sToRender .= displayPublishButton($oDocument, $bEdit);
-	
+    require_once(KT_LIB_DIR . '/actions/documentaction.inc.php');
+    $oTemplating =& KTTemplating::getSingleton();
+    $oTemplate = $oTemplating->loadTemplate('ktcore/document_action');
+
+    $sToRender = "";
+
+    // XXX: Anonymous/Guest interaction
+    $oUser =& User::get($_SESSION["userID"]);
+
+    foreach (KTDocumentActionUtil::getDocumentActionsForDocument($oDocument, $oUser) as $oAction) {
+        $aInfo = $oAction->getInfo();
+        if (is_null($aInfo)) {
+            continue;
+        }
+        $sToRender .= $oTemplate->render($aInfo);
+    }
+
     return $sToRender;
 }
 
