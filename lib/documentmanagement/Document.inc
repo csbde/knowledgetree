@@ -775,5 +775,14 @@ class Document extends KTEntity {
             'live_document_id' => $oDocument->getID(),
         ), array('multi' => true, 'orderby' => 'modified DESC'));
     }
+
+    function getByFolderIDAndLookupID($iParentID, $iLookupID, $aOptions = null) {
+        return KTEntityUtil::getByDict('Document', array(
+            'folder_id' => $iParentID,
+            'permission_lookup_id' => $iLookupID,
+            'status_id' => LIVE,
+        ), array('multi' => true));
+    }
+
 }
 ?>
