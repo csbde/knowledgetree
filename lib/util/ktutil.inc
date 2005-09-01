@@ -117,7 +117,15 @@ class KTUtil {
                 $aStrings[] = $oSomething;
             } else if (is_array($oSomething)) {
                 $aStrings[] = $oSomething[0];
-                $aParams = array_merge($aParams, $oSomething[1]); 
+                $aNewParams = array();
+                foreach ($oSomething[1] as $oParam) {
+                    if (is_array($oParam)) {
+                        $aNewParams = array_merge($aNewParams, $oParam);
+                    } else {
+                        $aNewParams[] = $oParam;
+                    }
+                }
+                $aParams = array_merge($aParams, $aNewParams); 
             } else {
                 return PEAR::raiseError("Weird WhereClause passed");
             }
