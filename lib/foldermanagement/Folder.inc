@@ -603,6 +603,13 @@ class Folder extends KTEntity {
             return false;
         }
     }
+
+    function getByParentIDAndLookupID($iParentID, $iLookupID) {
+        return KTEntityUtil::getByDict('Folder', array(
+            'parent_id' => $iParentID,
+            'permission_lookup_id' => $iLookupID,
+        ), array('multi' => true));
+    }
 }
 
 ?>
