@@ -234,7 +234,10 @@ class GroupUtil {
         $aParams = array($oUser->getID());
         $aGroupIDs = DBUtil::getResultArrayKey(array($sQuery, $aParams), "group_id");
         foreach ($aGroupIDs as $iGroupID) {
-            $aGroupIDs = array_merge($aGroupIDs, KTUtil::arrayGet($aGroupArray, $iGroupID));
+            $aExtraIDs = KTUtil::arrayGet($aGroupArray, $iGroupID);
+            if (is_array($aExtraIDs)) {
+                $aGroupIDs = array_merge($aGroupIDs, $aExtraIDs);
+            }
         }
         $aGroupIDs = array_unique($aGroupIDs);
         sort($aGroupIDs);
