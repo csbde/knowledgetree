@@ -105,6 +105,33 @@ class Document extends KTEntity {
     var $iMetadataVersion;
    
     // }}}
+    
+    // {{{ KTEntity stuff
+    var $_aFieldToSelect = array(
+        "iId" => "id",
+        "iDocumentTypeID" => 'document_type_id',
+        "sName" => 'name',
+        "sFileName" => 'filename',
+        "iSize" => 'size',
+        "iCreatorID" => 'creator_id',
+        "dModified" => 'modified',
+        "sDescription" => 'description',
+        "iMimeTypeID" => 'mime_id',
+        "iFolderID" => 'folder_id',
+        "iMajorVersion" => 'major_version',
+        "iMinorVersion" => 'minor_version',
+        "bIsCheckedOut" => 'is_checked_out',
+        "iCheckedOutUserID" => 'checked_out_user_id',
+        "sParentFolderIDs" => 'parent_folder_ids',
+        "sFullPath" => 'full_path',
+        "iStatusID" => 'status_id',
+        "dCreated" => 'created',
+        "iPermissionObjectID" => 'permission_object_id',
+        "iPermissionLookupID" => 'permission_lookup_id',
+        "iLiveDocumentID" => 'live_document_id',
+        "iMetadataVersion" => 'metadata_version',
+    );
+    // }}}
 
     // {{{ constructor
     /**
@@ -118,7 +145,7 @@ class Document extends KTEntity {
      * @param $iFolderID   Primary key of folder to which document belongs
      *
      */
-    function Document($sNewName, $sNewFileName, $iNewSize, $iNewCreatorID, $iNewMimeID, $iNewFolderID, $sNewDescription = "None") {
+    function Document($sNewName = null, $sNewFileName = null, $iNewSize = null, $iNewCreatorID = null, $iNewMimeID = null, $iNewFolderID = null, $sNewDescription = "None") {
         $this->iId = -1; //primary key not set as document is not stored yet
         $this->sName = $sNewName;
         $this->iSize = $iNewSize;
@@ -457,46 +484,9 @@ class Document extends KTEntity {
     }
     // }}}
 
-    // }}}
-
     // {{{ get
-    /**
-     *
-     * Static function.  Given a document primary key will create
-     * a document object and populate it with the corresponding
-     * database values
-     *
-     * @return Document populated Document object on success, false otherwise.
-     */
-    function & get($iDocumentID) {
-        global $default, $lang_err_doc_not_exist;
-        if (strlen($iDocumentID) > 0) {
-            $sql = $default->db;
-            $sql->query(array("SELECT * FROM $default->documents_table WHERE id = ?", $iDocumentID));/*ok*/
-            if ($sql->next_record()) {
-                $oDocument = & new Document($sql->f("name"), $sql->f("filename"), $sql->f("size"), $sql->f("creator_id"), $sql->f("mime_id"), $sql->f("folder_id"), $sql->f("description"));
-                $oDocument->setDocumentTypeID($sql->f("document_type_id"));
-                $oDocument->setMajorVersionNumber($sql->f("major_version"));
-                $oDocument->setMinorVersionNumber($sql->f("minor_version"));
-                $oDocument->setIsCheckedOut($sql->f("is_checked_out"));
-                $oDocument->setLastModifiedDate($sql->f("modified"));
-                $oDocument->dCreated = $sql->f("created");
-                $oDocument->sParentFolderIDs = $sql->f("parent_folder_ids");
-                $oDocument->sFullPath = $sql->f("full_path");
-                $oDocument->setCheckedOutUserID($sql->f("checked_out_user_id"));
-                // FIXME: nasty hack- paying the penalty for adding status_id late in phase 2
-                $oDocument->setStatusID( ($sql->f("status_id") == "" ? LIVE : $sql->f("status_id")) );
-                $oDocument->iId = $iDocumentID;
-                $oDocument->setPermissionObjectID($sql->f("permission_object_id"));
-                $oDocument->setPermissionLookupID($sql->f("permission_lookup_id"));
-                $oDocument->setLiveDocumentID($sql->f("live_document_id"));
-                $oDocument->setMetadataVersion($sql->f("metadata_version"));
-                return $oDocument;
-            }
-            return false;
-        } else {
-            return false;
-        }
+    function &get($iId) {
+        return KTEntityUtil::get('Document', $iId);
     }
     // }}}
 
