@@ -96,8 +96,6 @@ class KTPermissionLookupAssignment extends KTEntity {
         $res = KTPermissionLookup::get($aPLIDs[0]);
         return $res;
     }
-        
-
 }
 
 ?>
