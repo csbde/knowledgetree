@@ -53,6 +53,10 @@ require_once("$default->fileSystemRoot/lib/subscriptions/SubscriptionEngine.inc"
 require_once("addDocumentUI.inc");
 require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/store.inc");
 
+require_once(KT_LIB_DIR . '/storage/storagemanager.inc.php');
+
+$oStorage =& KTStorageManagerUtil::getSingleton();
+
 $postExpected = KTUtil::arrayGet($_REQUEST, "postExpected");
 $postReceived = KTUtil::arrayGet($_REQUEST, "postReceived");
 if (!is_null($postExpected) && is_null($postReceived)) {
@@ -175,7 +179,7 @@ if (!$oDocument->create()) {
 }
 
 //if the document was successfully created in the db, then store it on the file system
-if (!PhysicalDocumentManager::uploadPhysicalDocument($oDocument, $fFolderID, "None", $_FILES['fFile']['tmp_name'])) {
+if (!$oStorage->upload($oDocument, $_FILES['fFile']['tmp_name'])) {
     // couldn't store document on filesystem
     $default->log->error("addDocumentBL.php Filesystem error attempting to store document " . $oDocument->getFileName() . " in folder " . Folder::getFolderPath($fFolderID) . "; id=$fFolderID");                                	
     require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
@@ -189,6 +193,8 @@ if (!PhysicalDocumentManager::uploadPhysicalDocument($oDocument, $fFolderID, "No
 }
 
 // ALL SYSTEMS GO!
+
+$oDocument->update();
 
 
 //create the web document link
