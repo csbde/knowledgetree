@@ -1,0 +1,16 @@
+{if $disabled}
+<span class="disabledbutton"
+{if $disabled_text}
+title="{$disabled_text}
+onClick="alert('{$disabled_text}');"
+{/if}
+>{$name|strtoupper}</span>
+{else}
+<a href="{$url}"><span
+class="button"
+{if $alert}
+onClick="alert('{$alert}'); return true;"
+{/if}
+onMouseOver="javascript:this.style.backgroundColor='#EEEEEE';"
+onMouseOut="javascript:this.style.backgroundColor='#FFFFFF';">{$name|strtoupper}</span></a>
+{/if}
