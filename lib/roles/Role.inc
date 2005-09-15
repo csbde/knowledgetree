@@ -136,7 +136,7 @@ class Role extends KTEntity {
 	* Roles object and populate it with the 
 	* corresponding database values
 	*
-	* @return WebDocument populated WebDocument object on successful query, false otherwise and set $_SESSION["errorMessage"]
+	* @return Role populated Role object on successful query, false otherwise and set $_SESSION["errorMessage"]
 	*/
 	function & get($iRoleID) {
 		global $default;
@@ -162,7 +162,7 @@ class Role extends KTEntity {
 	*
 	* @param 	String		Where clause (not required)
 	*
-	* @return Array array of WebDocument objects, false otherwise and set $_SESSION["errorMessage"]
+	* @return Array array of Role objects, false otherwise and set $_SESSION["errorMessage"]
 	*/
 	function getList($sWhereClause = null) {
             return KTEntityUtil::getList(Role::_table(), 'Role', $sWhereClause);
