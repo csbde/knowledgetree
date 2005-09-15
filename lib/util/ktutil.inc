@@ -25,7 +25,6 @@
  * @author Neil Blakey-Milner <nbm@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
  */
 
-// {{{ KTUtil
 class KTUtil {
     function extractGPC () {
         foreach (func_get_args() as $var) {
@@ -137,7 +136,7 @@ class KTUtil {
     }
     // }}}
 
-    // function safeShellString
+    // {{{ safeShellString
     function safeShellString () {
         $aArgs = func_get_args();
         $aSafeArgs = array();
@@ -157,7 +156,110 @@ class KTUtil {
         }
         return join(" ", $aSafeArgs);
     }
+    // }}}
+
+    // {{{
+    function copyDirectory($sSrc, $sDst, $bMove = false) {
+        if (file_exists($sDst)) {
+            return PEAR::raiseError("Destination directory already exists.");
+        }
+        if (OS_UNIX) {
+            if ($bMove && file_exists('/bin/mv')) {
+                system(KTUtil::safeShellString(array('/bin/mv', $sSrc, $sDst)));
+                return;
+            }
+            if (!$bMove && file_exists('/bin/cp')) {
+                system(KTUtil::safeShellString(array('/bin/cp', '-R', $sSrc, $sDst)));
+                return;
+            }
+        }
+
+        if (substr($sDst, 0, strlen($sSrc)) === $sSrc) {
+            return PEAR::raiseError("Destination of move is within source");
+        }
+
+        $hSrc = @opendir($sSrc);
+        if ($hSrc === false) {
+            return PEAR::raiseError("Could not open source directory: $sSrc");
+        }
+
+        if (@mkdir($sDst, 0777) === false) {
+            return PEAR::raiseError("Could not create destination directory: $sDst");
+        }
+
+        while (($sFilename = readdir($hSrc)) !== false) {
+            if (in_array($sFilename, array('.', '..'))) {
+                continue;
+            }
+            $sOldFile = sprintf("%s/%s", $sSrc, $sFilename);
+            $sNewFile = sprintf("%s/%s", $sDst, $sFilename);
+
+            if (is_dir($sOldFile)) {
+                KTUtil::copyDirectory($sOldFile, $sNewFile, $bMove);
+                continue;
+            }
+
+            if ($bMove) {
+                KTUtil::moveFile($sOldFile, $sNewFile);
+            } else {
+                copy($sOldFile, $sNewFile);
+            }
+        }
+        if ($bMove) {
+            rmdir($sSrc);
+        }
+    }
+    // }}}
+
+    // {{{ moveDirectory
+    function moveDirectory($sSrc, $sDst) {
+        return KTUtil::copyDirectory($sSrc, $sDst, true);
+    }
+    // }}}
+    
+    // {{{ moveFile
+    function moveFile ($sSrc, $sDst) {
+        // Only 4.3.3 and above allow us to use rename across partitions
+        // on Unix-like systems.
+        if (OS_UNIX) {
+            // If /bin/mv exists, just use it.
+            if (file_exists('/bin/mv')) {
+                system(KTUtil::safeShellString(array('/bin/mv', $sSrc, $sDst)));
+                return;
+            }
+
+            $aSrcStat = stat($sSrc);
+            if ($aSrcStat === false) {
+                return PEAR::raiseError("Couldn't stat source file: $sSrc");
+            }
+            $aDstStat = stat(dirname($sDst));
+            if ($aDstStat === false) {
+                return PEAR::raiseError("Couldn't stat destination location: $sDst");
+            }
+            if ($aSrcStat["dev"] === $aDstStat["dev"]) {
+                $res = @rename($sSrc, $sDst);
+                if ($res === false) {
+                    return PEAR::raiseError("Couldn't move file to destination: $sDst");
+                }
+                return;
+            }
+
+            $res = @copy($sSrc, $sDst);
+            if ($res === false) {
+                return PEAR::raiseError("Could not copy to destination: $sDst");
+            }
+            $res = @unlink($sSrc);
+            if ($res === false) {
+                return PEAR::raiseError("Could not remove source: $sSrc");
+            }
+        } else {
+            $res = @rename($sSrc, $sDst);
+            if ($res === false) {
+                return PEAR::raiseError("Could not move to destination: $sDst");
+            }
+        }
+    }
+    // }}}
 }
-// }}}
 
 ?>
