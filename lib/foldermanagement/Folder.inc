@@ -51,6 +51,22 @@ class Folder extends KTEntity {
     var $iPermissionObjectID;
     /** lookup accelerator id */
     var $iPermissionLookupID;
+
+    // {{{ KTEntity stuff
+    var $_aFieldToSelect = array(
+        'iID' => 'id',
+        'sName' => 'name',
+        'sDescription' => 'description',
+        'iParentID' => 'parent_id',
+        'iCreatorID' => 'creator_id',
+        'iUnitID' => 'unit_id',
+        'bIsPublic' => 'is_public',
+        'sFullPath' => 'full_path',
+        'sParentFolderIDs' => 'parent_folder_ids',
+        'iPermissionObjectID' => 'permission_object_id',
+        'iPermissionLookupID' => 'permission_lookup_id',
+    );
+    // }}}
 	
 	/**
 	* Folder class constructor
@@ -63,7 +79,7 @@ class Folder extends KTEntity {
 	* @param $iNewUnitID			Primary key of unit to which folder belongs
 	* @param $bNewIsPublic			Folder public status (is the folder public or not?)
 	*/
-	function Folder($sNewName, $sNewDescription, $iNewParentID, $iNewCreatorID, $iNewUnitID, $bNewIsPublic = false) {
+	function Folder($sNewName = null, $sNewDescription = null, $iNewParentID = null, $iNewCreatorID = null, $iNewUnitID = null, $bNewIsPublic = false) {
 		//id of -1 means that the object has not yet been stored in the database
 		$this->iId = -1;
 		$this->sName = $sNewName;
@@ -97,7 +113,7 @@ class Folder extends KTEntity {
 
     // {{{ create()
     function create () {
-        $oParentFolder = Folder::get($this->iParentID);
+        $oParentFolder =& Folder::get($this->iParentID);
         $this->iPermissionObjectID = $oParentFolder->getPermissionObjectID();
         $res = parent::create();
         if ($res === true) {
@@ -610,6 +626,12 @@ class Folder extends KTEntity {
             'permission_lookup_id' => $iLookupID,
         ), array('multi' => true));
     }
+
+    // STATIC
+    function &createFromArray($aOptions) {
+        return KTEntityUtil::createFromArray('Folder', $aOptions);
+    }
+
 }
 
 ?>
