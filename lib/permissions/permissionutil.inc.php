@@ -102,7 +102,7 @@ class KTPermissionUtil {
      *
      * To be used any time a folder permission object is changed.
      */
-    function updatePermissionLookupRecursive($oDocumentOrFolder) {
+    function updatePermissionLookupRecursive(&$oDocumentOrFolder) {
         if (is_a($oDocumentOrFolder, 'Document')) {
             // XXX: metadata versions may need attention here
             KTPermissionUtil::updatePermissionLookup($oDocumentOrFolder);
@@ -133,7 +133,7 @@ class KTPermissionUtil {
      * Update's the permission lookup on one folder or document,
      * non-recursively.
      */
-    function updatePermissionLookup($oFolderOrDocument) {
+    function updatePermissionLookup(&$oFolderOrDocument) {
         $oPO = KTPermissionObject::get($oFolderOrDocument->getPermissionObjectID());
         $aPAs = KTPermissionAssignment::getByObjectMulti($oPO);
         $aMapPermDesc = array();
