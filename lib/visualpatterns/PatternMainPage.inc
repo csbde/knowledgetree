@@ -154,7 +154,7 @@ class PatternMainPage {
         global $default;
         require_once(KT_LIB_DIR . "/templating/templating.inc.php");
 
-        $oTemplating = new KTTemplating;
+        $oTemplating = KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("ktcore/standard_page");
 
         $aTemplateData = array(
@@ -186,6 +186,25 @@ class PatternMainPage {
             "errormessages" => $this->sErrorMessage,
             "kterrormessages" => $_SESSION['KTErrorMessage'],
         );
+
+        $aTopMenuWords = array(
+            _("Dashboard"),
+            _("Browse Collections"),
+            _("Advanced Search"),
+            _("Admin"),
+            _("Preferences"),
+            _("Logout"),
+        );
+
+        $aTopMenuLinks = array(generateControllerUrl("dashboard"),
+                               generateControllerUrl($default->siteMap->getDefaultAction("Manage Documents")),
+                               generateControllerUrl($default->siteMap->getDefaultAction("Advanced Search")),
+                               generateControllerUrl($default->siteMap->getDefaultAction("Administration")),
+                               generateControllerUrl($default->siteMap->getDefaultAction("Preferences")),
+                               generateControllerUrl($default->siteMap->getDefaultAction("Logout")));
+
+        $aTemplateData["navbar"] = array_combine($aTopMenuWords, $aTopMenuLinks);
+
         $_SESSION['KTErrorMessage'] = array();
 
         $sToRender = $oTemplate->render($aTemplateData);
