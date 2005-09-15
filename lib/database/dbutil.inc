@@ -37,7 +37,7 @@ class DBUtil {
         return $db;
     }
 
-    function runQuery($query, $db = null) {
+    function &runQuery($query, $db = null) {
         global $default;
         $aParams = null;
 
@@ -192,7 +192,7 @@ class DBUtil {
         return $db->last_query;
     }
 
-    function &autoDelete($sTable, $iId, $db = null) {
+    function autoDelete($sTable, $iId, $db = null) {
         global $default;
         // $default->log->debug('AutoDelete called for table ' . $sTable . ' with id ' . $iId);
         $db =& DBUtil::getDB();
@@ -227,6 +227,16 @@ class DBUtil {
 
     function compactQuery($sQuery) {
         return str_replace("\n", " ", $sQuery);
+    }
+
+    function startTransaction() {
+        DBUtil::runQuery("START TRANSACTION");
+    }
+    function rollback() {
+        DBUtil::runQuery("ROLLBACK");
+    }
+    function commit() {
+        DBUtil::runQuery("COMMIT");
     }
 
 }
