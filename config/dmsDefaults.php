@@ -286,10 +286,10 @@ class KTInit {
     // {{{ readConfig
     function readConfig () {
         global $default;
-        global $KTConfig;
-        $KTConfig->loadFile(KT_DIR . "/config/config.ini");
-        foreach (array_keys($KTConfig->flat) as $k) {
-            $v = $KTConfig->get($k);
+        $oKTConfig =& KTConfig::getSingleton();
+        $oKTConfig->loadFile(KT_DIR . "/config/config.ini");
+        foreach (array_keys($oKTConfig->flat) as $k) {
+            $v = $oKTConfig->get($k);
             if ($v === "default") {
                 continue;
             }
@@ -312,26 +312,34 @@ $KTInit->prependPath(KT_DIR . '/thirdparty/pear');
 $KTInit->prependPath(KT_DIR . '/thirdparty/Smarty');
 require_once('PEAR.php');
 
+// Give everyone access to legacy PHP functions
+require_once(KT_LIB_DIR . '/util/legacy.inc');
+
+// Give everyone access to KTUtil utility functions
+require_once(KT_LIB_DIR . '/util/ktutil.inc');
+
 require_once(KT_LIB_DIR . "/config/config.inc.php");
 
-$KTConfig->setdefaultns("KnowledgeTree", "fileSystemRoot", KT_DIR);
-$KTConfig->setdefaultns("KnowledgeTree", "serverName", $_SERVER['HTTP_HOST']);
-$KTConfig->setdefaultns("KnowledgeTree", "sslEnabled", false);
+$oKTConfig =& KTConfig::getSingleton();
+
+$oKTConfig->setdefaultns("KnowledgeTree", "fileSystemRoot", KT_DIR);
+$oKTConfig->setdefaultns("KnowledgeTree", "serverName", $_SERVER['HTTP_HOST']);
+$oKTConfig->setdefaultns("KnowledgeTree", "sslEnabled", false);
 if (array_key_exists('HTTPS', $_SERVER)) {
     if (strtolower($_SERVER['HTTPS']) === 'on') {
-        $KTConfig->setdefaultns("KnowledgeTree", "sslEnabled", true);
+        $oKTConfig->setdefaultns("KnowledgeTree", "sslEnabled", true);
     }
 }
-$KTConfig->setdefaultns("KnowledgeTree", "rootUrl", $KTInit->guessRootUrl());
-$KTConfig->setdefaultns("config", "useDatabaseConfiguration", false);
-$KTConfig->setdefaultns("tweaks", "browseToRoot", false);
-$KTConfig->setdefaultns("tweaks", "genericMetaDataRequired", true);
-$KTConfig->setdefaultns("tweaks", "phpErrorLogFile", false);
-$KTConfig->setdefaultns("tweaks", "developmentWindowLog", false);
+$oKTConfig->setdefaultns("KnowledgeTree", "rootUrl", $KTInit->guessRootUrl());
+$oKTConfig->setdefaultns("config", "useDatabaseConfiguration", false);
+$oKTConfig->setdefaultns("tweaks", "browseToRoot", false);
+$oKTConfig->setdefaultns("tweaks", "genericMetaDataRequired", true);
+$oKTConfig->setdefaultns("tweaks", "phpErrorLogFile", false);
+$oKTConfig->setdefaultns("tweaks", "developmentWindowLog", false);
 
-$KTConfig->setdefaultns(null, "logLevel", 'INFO');
-$KTConfig->setdefaultns(null, "unzipCommand", 'unzip');
-$KTConfig->setdefaultns(null, "execSearchPath", $_SERVER['PATH']);
+$oKTConfig->setdefaultns(null, "logLevel", 'INFO');
+$oKTConfig->setdefaultns(null, "unzipCommand", 'unzip');
+$oKTConfig->setdefaultns(null, "execSearchPath", $_SERVER['PATH']);
 
 $KTInit->readConfig();
 
@@ -340,12 +348,6 @@ $loggingSupport = $KTInit->setupLogging();
 
 // Send all PHP errors to a file (and maybe a window)
 set_error_handler(array('KTInit', 'handlePHPError'));
-
-// Give everyone access to legacy PHP functions
-require_once(KT_LIB_DIR . '/util/legacy.inc');
-
-// Give everyone access to KTUtil utility functions
-require_once(KT_LIB_DIR . '/util/ktutil.inc');
 
 $dbSupport = $KTInit->setupDB();
 $KTInit->setupRandomSeed();
