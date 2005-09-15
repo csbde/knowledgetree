@@ -52,6 +52,11 @@ require_once("$default->fileSystemRoot/presentation/Html.inc");
 require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 require_once("bulkUploadUI.inc");
 
+require_once(KT_LIB_DIR . '/storage/storagemanager.inc.php');
+require_once(KT_LIB_DIR . '/mime.inc.php');
+
+$oStorage =& KTStorageManagerUtil::getSingleton();
+
 $oPatternCustom = & new PatternCustom();
 
 /* CHECK: system has required features to handle bulk upload */
@@ -192,7 +197,7 @@ while ($aIndividualFiles) {
     $sBasename = basename($oFile->sFilename);
     $aFileFake = array(
         'name' => $sBasename,
-        'type' => PhysicalDocumentManager::getMimeTypeFromFile($oFile->sFilename),
+        'type' => KTMime::getMimeTypeFromFile($oFile->sFilename),
         'tmp_name' => $oFile->sFilename,
         'error' => 0,
         'size' => $oFile->iSize,
@@ -219,11 +224,13 @@ while ($aIndividualFiles) {
     }
 
     // if the document was successfully created in the db, store it on the file system
-    if (!PhysicalDocumentManager::uploadPhysicalDocument($oDocument, $fFolderID, "None", $oFile->sFilename)) {
+    if (!$oStorage->upload($oDocument, $oFile->sFilename)) {
         $default->log->error("bulkUploadBL.php DB error storing document in folder $sFolderPath id=$fFolderID");
         $aFileStatus[$sBasename] = _("An error occured while storing the document in the database, please try again") . ".";
         continue;
     }
+
+    $oDocument->update();
 
     // create the web document link
     $oWebDocument = & new WebDocument($oDocument->getID(), -1, 1, NOT_PUBLISHED, getCurrentDateTime());
