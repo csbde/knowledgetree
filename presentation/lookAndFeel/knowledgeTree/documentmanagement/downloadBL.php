@@ -38,56 +38,66 @@ require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentTransactio
 require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
 
+require_once(KT_LIB_DIR . '/storage/storagemanager.inc.php');
+$oStorage =& KTStorageManagerUtil::getSingleton();
+
 // start the session for a download- workaround for the IE SSL bug
-if (checkSession(true)) {
-    if (isset($fDocumentID)) {
-    	$oDocument = Document::get($fDocumentID);
-    	if (Permission::userHasDocumentReadPermission($oDocument)) {
-	        if (isset($fForInlineView)) {
-				$oDocumentTransaction = & new DocumentTransaction($fDocumentID, "Inline view", VIEW);
-	            $oDocumentTransaction->create();
-	            PhysicalDocumentManager::inlineViewPhysicalDocument($fDocumentID);			
-			} else {
-	            //if the user has document read permission, perform the download
-	            if (isset($fVersion)) {
-	                // we're downloading an old version of the document
-	                $oDocumentTransaction = & new DocumentTransaction($fDocumentID, "Document version $fVersion downloaded", DOWNLOAD);
-	                $oDocumentTransaction->create();
-	                
-		        	// if the document is currently checked out, and we're the version we're downloading
-		        	// is the same as the current version, then download the current version of the document	                
-	                if ($oDocument->getIsCheckedOut() && ($fVersion == $oDocument->getVersion())) {
-						PhysicalDocumentManager::downloadPhysicalDocument($fDocumentID);	                	
-	                } else {
-	                	PhysicalDocumentManager::downloadVersionedPhysicalDocument($fDocumentID, $fVersion);
-	                }
-	            } else {
-	                // download the current version
-	                $oDocumentTransaction = & new DocumentTransaction($fDocumentID, "Document downloaded", DOWNLOAD);
-	                $oDocumentTransaction->create();
-	                PhysicalDocumentManager::downloadPhysicalDocument($fDocumentID);
-	            }
-				exit;
-	        }
-    	} else {
-	        require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
-	        $oPatternCustom = new PatternCustom();    		
-        	if ($oDocument) {
-            	$oPatternCustom->setHtml("<a href=\"" . generateControllerLink("browse", "fFolderID=" . $oDocument->getFolderID()) . "\"><img src=\"" . KTHtml::getBackButton() . "\" border=\"0\" /></a>\n");
-        	} else {
-        		$oPatternCustom->setHtml("<a href=\"javascript:history.go(-1)\"><img src=\"" . KTHtml::getBackButton() . "\" border=\"0\" /></a>\n");
-        	}
-            $main->setErrorMessage(_("Either you do not have permission to view this document, or the document you have chosen no longer exists on the file system."));
-            $main->setCentralPayload($oPatternCustom);            
-			$main->render();
-    	}
+if (!checkSession(true)) {
+    exit(0);
+}
+
+if (!isset($fDocumentID)) {
+    require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
+    $oPatternCustom = new PatternCustom();
+    $oPatternCustom->setHtml("<a href=\"javascript:history.go(-1)\"><img src=\"" . KTHtml::getBackButton() . "\" border=\"0\" /></a>\n");
+    $main->setErrorMessage(_("You have not chosen a document to view"));
+    $main->setCentralPayload($oPatternCustom);            
+    $main->render();
+    exit(0);
+}
+
+$oDocument = Document::get($fDocumentID);
+if (!Permission::userHasDocumentReadPermission($oDocument)) {
+    require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
+    $oPatternCustom = new PatternCustom();    		
+    if ($oDocument) {
+        $oPatternCustom->setHtml("<a href=\"" . generateControllerLink("browse", "fFolderID=" . $oDocument->getFolderID()) . "\"><img src=\"" . KTHtml::getBackButton() . "\" border=\"0\" /></a>\n");
     } else {
-        require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
-        $oPatternCustom = new PatternCustom();
         $oPatternCustom->setHtml("<a href=\"javascript:history.go(-1)\"><img src=\"" . KTHtml::getBackButton() . "\" border=\"0\" /></a>\n");
-        $main->setErrorMessage(_("You have not chosen a document to view"));
-        $main->setCentralPayload($oPatternCustom);            
-		$main->render();
     }
-}         
+    $main->setErrorMessage(_("Either you do not have permission to view this document, or the document you have chosen no longer exists on the file system."));
+    $main->setCentralPayload($oPatternCustom);            
+    $main->render();
+    exit(0);
+}
+
+if (isset($fForInlineView)) {
+    $oDocumentTransaction = & new DocumentTransaction($fDocumentID, "Inline view", VIEW);
+    $oDocumentTransaction->create();
+    PhysicalDocumentManager::inlineViewPhysicalDocument($fDocumentID);			
+    exit(0);
+}
+
+//if the user has document read permission, perform the download
+if (isset($fVersion)) {
+    // we're downloading an old version of the document
+    $oDocumentTransaction = & new DocumentTransaction($fDocumentID, "Document version $fVersion downloaded", DOWNLOAD);
+    $oDocumentTransaction->create();
+    
+    // if the document is currently checked out, and we're the version we're downloading
+    // is the same as the current version, then download the current version of the document	                
+    if ($oDocument->getIsCheckedOut() && ($fVersion == $oDocument->getVersion())) {
+        $oStorage->download($oDocument);	                	
+    } else {
+        PhysicalDocumentManager::downloadVersionedPhysicalDocument($fDocumentID, $fVersion);
+    }
+    exit(0);
+}
+
+// download the current version
+$oDocumentTransaction = & new DocumentTransaction($fDocumentID, "Document downloaded", DOWNLOAD);
+$oDocumentTransaction->create();
+$oStorage->download($oDocument);
+exit(0);
+
 ?>
