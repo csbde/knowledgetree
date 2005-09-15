@@ -31,57 +31,9 @@ if (!extension_loaded('fileinfo')) {
     @dl('fileinfo.' . PHP_SHLIB_SUFFIX);
 }
 
+require_once(KT_LIB_DIR . '/mime.inc.php');
+
 class PhysicalDocumentManager {
-	
-	/**
-	* Upload and store a new document
-	*	
-	* @param 	The document object being uploaded
-	* @param 	Primary key of folder in which document will be stored
-	* @param 	Document description (should be passed through as a form variable)
-	* @param	Temporary path of file on server (get from $aFileArray['fFile']['tmp_name'])
-	*
-	* @return boolean true on successful upload and storage, false otherwise and set $_SESSION["errorMessage"]
-	*
-	* @todo add URL functionality
-	*/
-	function uploadPhysicalDocument($oDocument, $iFolderID, $sDescription, $sTmpFilePath) {
-		global $lang_fileexists, $lang_err_upload, $lang_err_database;				
-		//find the path on the system where the document should be stored
-        $sDocumentFileSystemPath = $oDocument->getPath();		
-		//copy the file accross
-		if (copy($sTmpFilePath, $sDocumentFileSystemPath)) {						
-			//remove the temporary file
-			unlink($sTmpFilePath);
-			if (file_exists($sDocumentFileSystemPath)) {
-				return true;
-			} else {
-				return false;
-			}		
-		} else {
-			$_SESSION["errorMessage"] = $lang_err_upload;
-			return false;
-		}
-	}
-    
-    /**
-     * Renames a document on the filesystem
-     *
-     * @param object the document to rename
-     * @param string the new document filename
-     * @return true on success, false on failure
-     */
-    function renamePhysicalDocument($oDocument, $sNewFileName) {
-        global $default;
-      
-        // create new and old paths
-        $sDocumentFileSystemPath = $oDocument->getPath();
-        $sNewDocumentFileSystemPath = Folder::getFolderPath($oDocument->getFolderID()) . "/" . $sNewFileName;
-        $default->log->debug("renaming $sDocumentFileSystemPath to $sNewDocumentFileSystemPath");
-        // move it
-        return rename($sDocumentFileSystemPath, $sNewDocumentFileSystemPath);
-    }
-    
 	/**
 	* Stream a document to a client over http
 	*
@@ -99,7 +51,7 @@ class PhysicalDocumentManager {
             if (file_exists($sDocumentFileSystemPath)) {
                 //set the correct headers
                 header("Content-Type: " .
-                        PhysicalDocumentManager::getMimeTypeName($oDocument->getMimeTypeID()));
+                        KTMime::getMimeTypeName($oDocument->getMimeTypeID()));
                 header("Content-Length: ". $oDocument->getFileSize());
                 header("Content-Disposition: attachment; filename=\"" . $oDocument->getFileName() . "\"");
                 header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
@@ -117,7 +69,7 @@ class PhysicalDocumentManager {
 	 * Stream a particular version of a document to a client over http
 	 *
 	 * @param 	Primary key of document to stream
-	 * @param 	Primary key of document to stream
+     * @param 	Primary key of document to stream
 	 * @return int number of bytes read from file on success or false otherwise;
  	 */
 	function downloadVersionedPhysicalDocument($iDocumentID, $sVersion) {
@@ -128,7 +80,7 @@ class PhysicalDocumentManager {
             if (file_exists($sDocumentFileSystemPath)) {
                 //set the correct headers
                 header("Content-Type: " .
-                        PhysicalDocumentManager::getMimeTypeName($oDocument->getMimeTypeID()));
+                        KTMime::getMimeTypeName($oDocument->getMimeTypeID()));
                 header("Content-Length: ".  filesize($sDocumentFileSystemPath));
                 // prefix the filename presented to the browser to preserve the document extension
                 header('Content-Disposition: attachment; filename="' . "$sVersion-" . $oDocument->getFileName() . '"');
@@ -412,108 +364,9 @@ class PhysicalDocumentManager {
 	*/
 	function & createDocumentFromUploadedFile($aFileArray, $iFolderID) {
 		//get the uploaded document information and put it into a document object		
-		$oDocument = & new Document($aFileArray['name'], $aFileArray['name'], $aFileArray['size'], $_SESSION["userID"], PhysicalDocumentManager::getMimeTypeID($aFileArray['type'], $aFileArray['name']), $iFolderID);
+		$oDocument = & new Document($aFileArray['name'], $aFileArray['name'], $aFileArray['size'], $_SESSION["userID"], KTMime::getMimeTypeID($aFileArray['type'], $aFileArray['name']), $iFolderID);
 		return $oDocument;	
 	}
-
-    /**
-    * Strip all but the extension from a file. For instance, input of
-    * 'foo.tif' would return 'tif'.
-    *
-    * @param string filename
-    * @return string extension for given file, without filename itself
-    */
-    function stripAllButExtension($sFileName) {
-        return strtolower(substr($sFileName, strpos($sFileName, ".")+1, strlen($sFileName) - strpos($sFileName, ".")));
-    }
-
-    /**
-    * Get the mime type primary key for a specific mime type
-    *
-    * @param string detected mime type
-    * @param string filename
-    * @return int mime type primary key if found, else default mime type primary key (text/plain)
-    */
-    function getMimeTypeID($sMimeType, $sFileName) {
-        global $default;
-        $sql = $default->db;
-        $bOfficeDocument = false;
-
-        // application/msword seems to be set by all Office documents
-        if ($sMimeType == "application/msword") {
-            $bOfficeDocument = true;
-        }
-        
-        if ($bOfficeDocument || (!$sMimeType)) {
-          // check by file extension
-          $sExtension = PhysicalDocumentManager::stripAllButExtension($sFileName);
-          $sql->query(array("SELECT id FROM " . $default->mimetypes_table . " WHERE LOWER(filetypes) = ?", $sExtension));/*ok*/
-          if ($sql->next_record()) {
-              return $sql->f("id");
-          }
-        }
-        
-        // get the mime type id
-        if (isset($sMimeType)) {
-            $sql->query(array("SELECT id FROM " . $default->mimetypes_table . " WHERE mimetypes = ?", $sMimeType));/*ok*/
-            if ($sql->next_record()) {
-                return $sql->f("id");
-            }
-        }
-
-        //otherwise return the default mime type
-        return PhysicalDocumentManager::getDefaultMimeTypeID();
-    }
-
-	/**
-	* Get the default mime type, which is text/plain
-	*
-	* @return int default mime type
-	*
-	*/
-	function getDefaultMimeTypeID() {
-		global $default;
-		$sql = $default->db;		
-		$sql->query("SELECT id FROM " . $default->mimetypes_table . " WHERE mimetypes = 'text/plain'");/*ok*/
-		$sql->next_record();
-		//get the mime type id
-		return $sql->f("id");
-	}
-
-	function getMimeTypeName($iMimeTypeID) {
-		global $default;
-		$sql = $default->db;
-		$sql->query(array("SELECT mimetypes FROM " . $default->mimetypes_table . " WHERE id = ?", $iMimeTypeID));/*ok*/
-		if ($sql->next_record()) {
-			return $sql->f("mimetypes");			
-		}
-		return "application/octet-stream";
-	}
-
-    /**
-    * Try well-defined methods for getting the MIME type for a file on disk.
-    * First try PECL's Fileinfo library, then try mime_content_type() builtin.
-    * If neither are available, returns NULL.
-    *
-    * @param string file on disk
-    * @return string mime time for given filename, or NULL
-    */
-    function getMimeTypeFromFile($sFileName) {
-        if (extension_loaded('fileinfo')) {
-            $res = finfo_open(FILEINFO_MIME);
-            $sType = finfo_file($res, $sFileName);
-        }
-
-        if (!$sType && function_exists('mime_content_type')) {
-            $sType = @mime_content_type($sFileName);
-        }
-
-        if ($sType) {
-            return preg_replace('/;.*$/', '', $sType);
-        }
-
-        return NULL;
-    }
 }
 
 ?>
