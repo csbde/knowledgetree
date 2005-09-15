@@ -52,7 +52,7 @@ function renderDocumentData($oDocument, $bEditable, $sStatusMessage = "") {
     /*ok*/ $sQuery = array("SELECT D.id, D.name, D.modified, D.created, D.size, U.name AS initiator, D.metadata_version, CONCAT(CONCAT(D.major_version, '.'), D.minor_version) AS version, DTL.name AS document_type, D.is_checked_out,  COALESCE(U2.name, '') AS c_user " .
               "FROM $default->documents_table AS D " .
               "LEFT JOIN $default->users_table AS U ON U.id = D.creator_id " .
-			  "INNER JOIN $default->document_types_table AS DTL ON DTL.id = D.document_type_id " .
+			  "LEFT OUTER JOIN $default->document_types_table AS DTL ON DTL.id = D.document_type_id " .
               "LEFT OUTER JOIN $default->users_table AS U2 ON U2.id = D.checked_out_user_id " .
               "WHERE D.id IN ($sWhere) ", $aDocuments);
 
