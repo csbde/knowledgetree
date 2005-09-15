@@ -1,8 +1,6 @@
 <?php
 
 require_once(KT_LIB_DIR . '/actions/documentaction.inc.php');
-require_once(KT_LIB_DIR . '/permissions/permission.inc.php');
-require_once(KT_LIB_DIR . '/permissions/permissionutil.inc.php');
 
 $oKTActionRegistry =& KTActionRegistry::getSingleton();
 
@@ -15,13 +13,13 @@ class KTDocumentViewAction extends KTBuiltInDocumentAction {
         return $aInfo;
     }
 }
-$oKTActionRegistry->registerAction('documentaction', 'KTDocumentViewAction', 'ktcore.view');
+$oKTActionRegistry->registerAction('documentaction', 'KTDocumentViewAction', 'ktcore.actions.document.view');
 
 class KTDocumentEmailAction extends KTBuiltInDocumentAction {
     var $sBuiltInAction = 'emailDocument';
     var $sDisplayName = 'Email';
 }
-$oKTActionRegistry->registerAction('documentaction', 'KTDocumentEmailAction', 'ktcore.email');
+$oKTActionRegistry->registerAction('documentaction', 'KTDocumentEmailAction', 'ktcore.actions.document.email');
 
 class KTDocumentCheckInOutAction extends KTBuiltInDocumentAction {
     var $sBuiltInAction = 'emailDocument';
@@ -44,7 +42,7 @@ class KTDocumentCheckInOutAction extends KTBuiltInDocumentAction {
         return parent::getInfo();
     }
 }
-$oKTActionRegistry->registerAction('documentaction', 'KTDocumentCheckInOutAction', 'ktcore.checkinout');
+$oKTActionRegistry->registerAction('documentaction', 'KTDocumentCheckInOutAction', 'ktcore.actions.document.checkinout');
 
 class KTDocumentDeleteAction extends KTBuiltInDocumentActionSingle {
     var $sBuiltInAction = 'deleteDocument';
@@ -60,7 +58,7 @@ class KTDocumentDeleteAction extends KTBuiltInDocumentActionSingle {
          return parent::_disable();
     }
 }
-$oKTActionRegistry->registerAction('documentaction', 'KTDocumentDeleteAction', 'ktcore.delete');
+$oKTActionRegistry->registerAction('documentaction', 'KTDocumentDeleteAction', 'ktcore.actions.document.delete');
 
 class KTDocumentMoveAction extends KTBuiltInDocumentActionSingle {
     var $sBuiltInAction = 'moveDocument';
@@ -76,13 +74,13 @@ class KTDocumentMoveAction extends KTBuiltInDocumentActionSingle {
          return parent::_disable();
     }
 }
-$oKTActionRegistry->registerAction('documentaction', 'KTDocumentMoveAction', 'ktcore.move');
+$oKTActionRegistry->registerAction('documentaction', 'KTDocumentMoveAction', 'ktcore.actions.document.move');
 
 class KTDocumentHistoryAction extends KTBuiltInDocumentAction {
     var $sBuiltInAction = 'viewHistory';
     var $sDisplayName = 'History';
 }
-$oKTActionRegistry->registerAction('documentaction', 'KTDocumentHistoryAction', 'ktcore.history');
+$oKTActionRegistry->registerAction('documentaction', 'KTDocumentHistoryAction', 'ktcore.actions.document.history');
 
 class KTDocumentSubscriptionAction extends KTBuiltInDocumentAction {
     function getInfo() {
@@ -96,13 +94,13 @@ class KTDocumentSubscriptionAction extends KTBuiltInDocumentAction {
         return parent::getInfo();
     }
 }
-$oKTActionRegistry->registerAction('documentaction', 'KTDocumentSubscriptionAction', 'ktcore.subscription');
+$oKTActionRegistry->registerAction('documentaction', 'KTDocumentSubscriptionAction', 'ktcore.actions.document.subscription');
 
 class KTDocumentDiscussionAction extends KTBuiltInDocumentAction {
     var $sBuiltInAction = 'viewDiscussion';
     var $sDisplayName = 'Discussion';
 }
-$oKTActionRegistry->registerAction('documentaction', 'KTDocumentDiscussionAction', 'ktcore.discussion');
+$oKTActionRegistry->registerAction('documentaction', 'KTDocumentDiscussionAction', 'ktcore.actions.document.discussion');
 
 class KTDocumentArchiveAction extends KTBuiltInDocumentAction {
     var $_sDisablePermission = "ktcore.permissions.write";
@@ -123,13 +121,13 @@ class KTDocumentArchiveAction extends KTBuiltInDocumentAction {
         return parent::_disable();
     }
 }
-$oKTActionRegistry->registerAction('documentaction', 'KTDocumentArchiveAction', 'ktcore.archive');
+$oKTActionRegistry->registerAction('documentaction', 'KTDocumentArchiveAction', 'ktcore.actions.document.archive');
 
 class KTDocumentDependentAction extends KTBuiltInDocumentAction {
     var $sBuiltInAction = 'createDependantDocument';
     var $sDisplayName = 'Link New Doc';
 }
-$oKTActionRegistry->registerAction('documentaction', 'KTDocumentDependentAction', 'ktcore.dependent');
+$oKTActionRegistry->registerAction('documentaction', 'KTDocumentDependentAction', 'ktcore.actions.document.dependent');
 
 
 class KTDocumentPublishAction extends KTDocumentAction {
@@ -164,6 +162,6 @@ class KTDocumentPublishAction extends KTDocumentAction {
     }
 
 }
-$oKTActionRegistry->registerAction('documentaction', 'KTDocumentPublishAction', 'ktcore.publish');
+$oKTActionRegistry->registerAction('documentaction', 'KTDocumentPublishAction', 'ktcore.actions.document.publish');
 
 ?>
