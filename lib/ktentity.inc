@@ -156,7 +156,7 @@ class KTEntity {
         return true;
     }
 
-    function &_set (&$element, &$params) {
+    function _set (&$element, &$params) {
         $this->$element = $params;
         return array(true, true);
     }
@@ -259,7 +259,7 @@ class KTEntityUtil {
         }
         $sOrderBy = KTUtil::arrayGet($aOptions, 'orderby');
         if (!empty($sOrderBy)) {
-            $sQuery .= "ORDER BY " . $sOrderBy;
+            $sQuery .= " ORDER BY " . $sOrderBy;
         }
         $aIDs = DBUtil::getResultArrayKey(array($sQuery, $aParams), $sIDField);
 
@@ -274,7 +274,7 @@ class KTEntityUtil {
         return $aRet;
     }
 
-    function createFromArray ($sClassName, $aOptions) {
+    function &createFromArray ($sClassName, $aOptions) {
         $oObject = new $sClassName;
         $ret = $oObject->loadFromArray($aOptions);
         if (PEAR::isError($ret)) {
