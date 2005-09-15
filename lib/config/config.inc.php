@@ -2,7 +2,7 @@
 
 require_once("Config.php");
 
-define("KT_CONFIG_DEFAULT", true);
+require_once(KT_LIB_DIR . '/util/ktutil.inc');
 
 class KTConfig {
     var $conf = array();
@@ -67,22 +67,23 @@ class KTConfig {
         return $v;
     }
 
-    function get($var) {
+    function get($var, $oDefault = null) {
         if (array_key_exists($var, $this->flatns)) {
             return $this->expand($this->flatns[$var]);
         }
         if (array_key_exists($var, $this->flat)) {
             return $this->expand($this->flat[$var]);
         }
-        return null;
+        return $oDefault;;
     }
 
     function &getSingleton() {
-        global $KTConfig;
-        return $KTConfig;
+        if (!KTUtil::arrayGet($GLOBALS, 'KTConfig')) {
+            $GLOBALS['KTConfig'] =& new KTConfig;
+        }
+        return $GLOBALS['KTConfig'];
     }
 }
 
-$KTConfig =& new KTConfig;
 
 ?>
