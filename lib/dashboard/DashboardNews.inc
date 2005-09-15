@@ -1,5 +1,5 @@
 <?php
-require_once("$default->fileSystemRoot/lib/documentmanagement/PhysicalDocumentManager.inc");
+require_once("$default->fileSystemRoot/lib/mime.inc.php");
 /**
  * $Id$
  *
@@ -274,7 +274,7 @@ class DashboardNews extends KTEntity {
 	 * Displays the news item image
 	 */
 	function displayImage(){
-        header("Content-Type: " . PhysicalDocumentManager::getMimeTypeName($this->iImageMimeTypeID));
+        header("Content-Type: " . KTMime::getMimeTypeName($this->iImageMimeTypeID));
 		header("Content-Length: " . $this->iImageSize);		
 		echo $this->sImage;
 	}
@@ -360,7 +360,7 @@ class DashboardNews extends KTEntity {
 			$sImageString = fread($fd, filesize($sImagePath));
 			fclose($fd);
 			// return the string
-			return array("image" => $sImageString, "filesize" => filesize($sImagePath), "mimetypeid" => PhysicalDocumentManager::getMimeTypeID(null, $sImagePath));   			
+			return array("image" => $sImageString, "filesize" => filesize($sImagePath), "mimetypeid" => KTMime::getMimeTypeID(null, $sImagePath));   			
    		} else {
    			return false;
    		}   		
