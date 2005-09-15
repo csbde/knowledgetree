@@ -36,6 +36,8 @@ DEFINE("STATUS_VERSION", 6);
 require_once(KT_LIB_DIR . "/foldermanagement/Folder.inc");
 
 class Document extends KTEntity {
+    var $_bUsePearError = true;
+    
     // {{{ attributes
     /** primary key */
     var $iId;
@@ -86,7 +88,7 @@ class Document extends KTEntity {
     /** comma delimited string of folder hierarch this document falls under */
     var $sParentFolderIDs;
    
-    /** forward slash deliminated path from file system root */
+    /** forward slash deliminated path from repository root */
     var $sFullPath;
    
     /** date the document was created */
@@ -103,6 +105,9 @@ class Document extends KTEntity {
 
     /** metadata revision number */
     var $iMetadataVersion;
+
+    /** storage path to the file from the repository root */
+    var $sStoragePath;
    
     // }}}
     
@@ -130,6 +135,7 @@ class Document extends KTEntity {
         "iPermissionLookupID" => 'permission_lookup_id',
         "iLiveDocumentID" => 'live_document_id',
         "iMetadataVersion" => 'metadata_version',
+        "sStoragePath" => 'storage_path',
     );
     // }}}
 
@@ -177,6 +183,8 @@ class Document extends KTEntity {
     function setFolderID($iNewValue) { $this->iFolderID = $iNewValue; }
     function getFileSize() { return $this->iSize; }
     function setFileSize($iNewValue) { $this->iSize = $iNewValue; }
+    function getSize() { return $this->iSize; }
+    function setSize($iNewValue) { $this->iSize = $iNewValue; }
     function getCreatorID() { return $this->iCreatorID; }
     function setCreatorID($iNewValue) { $this->iCreatorID = $iNewValue; }
     function getLastModifiedDate() { return $this->dModified; }
@@ -204,6 +212,8 @@ class Document extends KTEntity {
     function setLiveDocumentID($iNewValue) { $this->iLiveDocumentID = $iNewValue; }
     function getMetadataVersion() { return $this->iMetadataVersion; }
     function setMetadataVersion($iNewValue) { $this->iMetadataVersion = $iNewValue; }
+    function getStoragePath() { return $this->sStoragePath; }
+    function setStoragePath($sNewValue) { $this->sStoragePath = $sNewValue; }
     // }}}
 
     // {{{ getParentID
@@ -279,6 +289,7 @@ class Document extends KTEntity {
             'permission_lookup_id' => $this->iPermissionLookupID,
             'live_document_id' => $this->iLiveDocumentID,
             'metadata_version' => $this->iMetadataVersion,
+            'storage_path' => $this->sStoragePath,
         );
     }
 
@@ -483,6 +494,7 @@ class Document extends KTEntity {
         return false;
     }
     // }}}
+    // }}}
 
     // {{{ get
     function &get($iId) {
@@ -616,7 +628,7 @@ class Document extends KTEntity {
     }
     // }}}
 
-    // {{{
+    // {{{ getDisplayPath
     /**
      * Get the path for a document that will be displayed to the user
      *
@@ -760,18 +772,33 @@ class Document extends KTEntity {
     }
     // }}}
 
+    // {{{ getByLiveDocument
     function &getByLiveDocument($oDocument) {
         return KTEntityUtil::getByDict('Document', array(
             'live_document_id' => $oDocument->getID(),
         ), array('multi' => true, 'orderby' => 'modified DESC'));
     }
+    // }}}
 
-    function getByFolderIDAndLookupID($iParentID, $iLookupID, $aOptions = null) {
+    // {{{ getByFolderIDAndLookupID
+    function &getByFolderIDAndLookupID($iParentID, $iLookupID, $aOptions = null) {
         return KTEntityUtil::getByDict('Document', array(
             'folder_id' => $iParentID,
             'permission_lookup_id' => $iLookupID,
             'status_id' => LIVE,
         ), array('multi' => true));
+    }
+    // }}}
+
+    // STATIC
+    function &createFromArray($aOptions) {
+        if (KTUtil::arrayGet($aOptions, "size") === null) {
+            $aOptions['size'] = 0;
+        }
+        if (KTUtil::arrayGet($aOptions, "mimetypeid") === null) {
+            $aOptions['mimetypeid'] = 0;
+        }
+        return KTEntityUtil::createFromArray('Document', $aOptions);
     }
 
 }
