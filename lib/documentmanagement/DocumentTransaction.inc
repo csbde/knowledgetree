@@ -71,7 +71,10 @@ class DocumentTransaction {
 	* @param 	Primary key of transaction type
 	*	
 	*/
-	function DocumentTransaction($iNewDocumentID, $sNewComment, $iNewTransactionID) {
+	function DocumentTransaction($iNewDocumentID, $sNewComment, $iNewTransactionID, $aOptions = null) {
+        if (is_null($aOptions)) {
+            $aOptions = array();
+        }
 		//object not stored yet, id = -1
 		$this->iId = -1;
 		$this->iDocumentID = $iNewDocumentID;
@@ -84,8 +87,12 @@ class DocumentTransaction {
 			$this->sFileName = addslashes($oFolder->sFullPath . "/" . $oFolder->getName() . "/" . $oDocument->getName());			
 		}
 		$this->iUserID = $_SESSION["userID"];
+        $oUser = KTUtil::arrayGet($aOptions, 'user');
+        if ($oUser) {
+            $this->iUserID = $oUser->getID();
+        }
 		$this->dDateTime = getCurrentDateTime();		
-		$this->sIP = $_SERVER["REMOTE_ADDR"];
+		$this->sIP = KTUtil::arrayGet($_SERVER, "REMOTE_ADDR", '0.0.0.0');
 	}
 	
 	/**
