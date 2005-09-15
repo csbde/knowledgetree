@@ -28,6 +28,9 @@
  */
 
 require_once(KT_LIB_DIR . '/documentmanagement/DocumentFieldLink.inc');
+require_once(KT_LIB_DIR . '/storage/storagemanager.inc.php');
+require_once(KT_LIB_DIR . '/documentmanagement/DocumentTransaction.inc');
+require_once(KT_LIB_DIR . '/web/WebDocument.inc');
 
 class KTDocumentUtil {
     function createMetadataVersion($oDocument) {
@@ -99,17 +102,18 @@ class KTDocumentUtil {
             return $oVersionedDocument;
         }
 
-        if (!PhysicalDocumentManager::uploadPhysicalDocument($oDocument, $oDocument->getFolderID(), "", $sFilename)) {
+        $oStorage =& KTStorageManagerUtil::getSingleton();
+
+        if (!$oStorage->upload($oDocument, $sFilename)) {
             // reinstate the backup
             copy($sBackupPath, $oDocument->getPath());
             // remove the backup
             unlink($sBackupPath);
-            return PEAR::raiseError(_("An error occurred while storing the new file on the filesystem"));
+            return PEAR::raiseError(_("An error occurred while storing the new file"));
         }
 
         $oDocument->setMetadataVersion($oDocument->getMetadataVersion()+1);
 
-        $oDocument->setFileSize($_FILES['fFile']['size']);
         $oDocument->setLastModifiedDate(getCurrentDateTime());
         $oDocument->setIsCheckedOut(false);
         $oDocument->setCheckedOutUserID(-1);
@@ -121,6 +125,7 @@ class KTDocumentUtil {
         } else if ($sCheckInType == "minor") {
             $oDocument->setMinorVersionNumber($oDocument->getMinorVersionNumber()+1);
         }
+        $oDocument->setFileSize($_FILES['fFile']['size']);
 
         $bSuccess = $oDocument->update();
         if ($bSuccess !== true) {
@@ -132,7 +137,6 @@ class KTDocumentUtil {
 
         // create the document transaction record
         $oDocumentTransaction = & new DocumentTransaction($oDocument->getID(), $sCheckInComment, CHECKIN);
-        // TODO: check transaction creation status?
         $oDocumentTransaction->create();
 
         // fire subscription alerts for the checked in document
@@ -144,6 +148,221 @@ class KTDocumentUtil {
         $default->log->info("checkInDocumentBL.php fired $count subscription alerts for checked out document " . $oDocument->getName());
         return true;
     }
+
+    function &_add($oFolder, $sFilename, $oUser, $aOptions) {
+        $oContents = KTUtil::arrayGet($aOptions, 'contents');
+        $aMetadata = KTUtil::arrayGet($aOptions, 'metadata');
+        $oDocumentType = KTUtil::arrayGet($aOptions, 'documenttype');
+        $oDocument =& Document::createFromArray(array(
+            'name' => $sFilename,
+            'description' => $sFilename,
+            'filename' => $sFilename,
+            'folderid' => $oFolder->getID(),
+            'creatorid' => $oUser->getID(),
+        ));
+        if (PEAR::isError($oDocument)) {
+            return $oDocument;
+        }
+
+        if (!is_null($oDocumentType)) {
+            $oDocument->setDocumentTypeID($oDocumentType->getID());
+        } else {
+            // XXX: Ug...
+            $oDocument->setDocumentTypeID(1);
+        }
+
+        if (is_null($oContents)) {
+            $res = KTDocumentUtil::setIncomplete($oDocument, "contents");
+            if (PEAR::isError($res)) {
+                $oDocument->delete();
+                return $res;
+            }
+        } else {
+            $res = KTDocumentUtil::storeContents($oDocument, $oContents, $aOptions);
+            if (PEAR::isError($res)) {
+                $oDocument->delete();
+                return $res;
+            }
+        }
+
+        if (is_null($aMetadata)) {
+            $res = KTDocumentUtil::setIncomplete($oDocument, "metadata");
+            if (PEAR::isError($res)) {
+                $oDocument->delete();
+                return $res;
+            }
+        } else {
+            $res = KTDocumentUtil::saveMetadata($oDocument, $aMetadata);
+            if (PEAR::isError($res)) {
+                $oDocument->delete();
+                return $res;
+            }
+        }
+
+        // setIncomplete and storeContents may change the document's status or
+        // storage_path, so now is the time to update
+        $oDocument->update();
+        return $oDocument;
+    }
+
+    // {{{ validateMetadata
+    function validateMetadata(&$oDocument, $aMetadata) {
+        return $aMetadata;
+    }
+    // }}}
+
+    // {{{ saveMetadata
+    function saveMetadata(&$oDocument, $aMetadata) {
+        $table = "document_fields_link";
+        $res = KTDocumentUtil::validateMetadata($oDocument, $aMetadata);
+        if (PEAR::isError($res)) {
+            return $res;
+        }
+        $aMetadata = $res;
+
+        $res = DBUtil::runQuery(array("DELETE FROM $table WHERE document_id = ?", array($oDocument->getID())));
+        if (PEAR::isError($res)) {
+            return $res;
+        }
+        // XXX: Metadata refactor
+        foreach ($aMetadata as $oMetadata => $sValue) {
+            $res = DBUtil::autoInsert($table, array(
+                "document_id" => $oDocument->getID(),
+                "document_field_id" => $oMetadata->getID(),
+                "value" => $sValue,
+            ));
+            if (PEAR::isError($res)) {
+                return $res;
+            }
+        }
+        KTDocumentUtil::setComplete($oDocument, "metadata");
+        return true;
+    }
+    // }}}
+
+    // {{{ setIncomplete
+    function setIncomplete(&$oDocument, $reason) {
+        $oDocument->setStatusID(STATUS_INCOMPLETE);
+        $table = "document_incomplete";
+        $iId = $oDocument->getID();
+        $aIncomplete = DBUtil::getOneResult(array("SELECT * FROM $table WHERE id = ?", array($iId)));
+        if (PEAR::isError($aIncomplete)) {
+            return $aIncomplete;
+        }
+        if (is_null($aIncomplete)) {
+            $aIncomplete = array("id" => $iId);
+        }
+        $aIncomplete[$reason] = true;
+        $res = DBUtil::autoDelete($table, $iId);
+        if (PEAR::isError($res)) {
+            return $res;
+        }
+        $res = DBUtil::autoInsert($table, $aIncomplete);
+        if (PEAR::isError($res)) {
+            return $res;
+        }
+        return true;
+    }
+    // }}}
+
+    // {{{ setComplete
+    function setComplete(&$oDocument, $reason) {
+        $table = "document_incomplete";
+        $iId = $oDocument->getID();
+        $aIncomplete = DBUtil::getOneResult(array("SELECT * FROM $table WHERE id = ?", array($iId)));
+        if (PEAR::isError($aIncomplete)) {
+            return $aIncomplete;
+        }
+
+        if (is_null($aIncomplete)) {
+            $oDocument->setStatusID(LIVE);
+            return true;
+        }
+
+        $aIncomplete[$reason] = false;
+
+        $bIncomplete = false;
+
+        foreach ($aIncomplete as $k => $v) {
+            if ($k === "id") { continue; }
+
+            if ($v) {
+                $bIncomplete = true;
+            }
+        }
+
+        if ($bIncomplete === false) {
+            DBUtil::autoDelete($table, $iId);
+            $oDocument->setStatusID(LIVE);
+            return true;
+        }
+
+        $res = DBUtil::autoDelete($table, $iId);
+        if (PEAR::isError($res)) {
+            return $res;
+        }
+        $res = DBUtil::autoInsert($table, $aIncomplete);
+        if (PEAR::isError($res)) {
+            return $res;
+        }
+    }
+    // }}}
+
+    // {{{ add
+    function &add($oFolder, $sFilename, $oUser, $aOptions) {
+        if (KTDocumentUtil::exists($oFolder, $sFilename)) {
+            return PEAR::raiseError("File already exists");
+        }
+        $oDocument =& KTDocumentUtil::_add($oFolder, $sFilename, $oUser, $aOptions);
+
+        //create the web document link
+        $oWebDocument = & new WebDocument($oDocument->getID(), -1, 1, NOT_PUBLISHED, getCurrentDateTime());
+        $res = $oWebDocument->create();
+        if (PEAR::isError($res)) {
+            $oDocument->delete();
+            return $res;
+        }
+
+        $aOptions = array('user' => $oUser);
+        //create the document transaction record
+        $oDocumentTransaction = & new DocumentTransaction($oDocument->getID(), "Document created", CREATE, $aOptions);
+        $res = $oDocumentTransaction->create();
+        if (PEAR::isError($res)) {
+            $oDocument->delete();
+            $oWebDocument->delete();
+            return $res;
+        }
+
+        return $oDocument;
+    }
+    // }}}
+
+    // {{{ exists
+    function exists($oFolder, $sFilename) {
+        return Document::documentExists($sFilename, $oFolder->getID());
+    }
+    // }}}
+
+    // {{{ storeContents
+    /**
+     * Stores contents (filelike) from source into the document storage
+     */
+    function storeContents(&$oDocument, $oContents, $aOptions = null) {
+        if (is_null($aOptions)) {
+            $aOptions = array();
+        }
+        $bCanMove = KTUtil::arrayGet($aOptions, 'move');
+        $oStorage =& KTStorageManagerUtil::getSingleton();
+        $sFilename = tempnam('/tmp', 'kt_storecontents');
+        $oOutputFile = new KTFSFileLike($sFilename);
+        $res = KTFileLikeUtil::copy_contents($oContents, $oOutputFile);
+        if (!$oStorage->upload($oDocument, $sFilename)) {
+            return PEAR::raiseError("Couldn't store contents");
+        }
+        KTDocumentUtil::setComplete($oDocument, "contents");
+        return true;
+    }
+    // }}}
 }
 
 ?>
