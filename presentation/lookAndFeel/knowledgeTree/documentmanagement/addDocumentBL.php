@@ -148,24 +148,34 @@ if (!((strlen($_FILES['fFile']['name']) > 0) && $_FILES['fFile']['size'] > 0)) {
     exit(0);
 }
 
-$aOptions = array(
-    'contents' => new KTFSFileLike($_FILES['fFile']['tmp_name']),
-    'documenttype' => DocumentType::get($fDocumentTypeID),
-);
-
 function localRenderError($oDocument) {
     print $oDocument->toString();
     return;
 }
 
 DBUtil::startTransaction();
+
+$matches = array();
+$aFields = array();
+foreach ($_REQUEST as $k => $v) {
+    if (preg_match('/^emd(\d+)$/', $k, $matches)) {
+        $aFields[] = array(DocumentField::get($matches[1]), $v);
+    }
+}
+
+$aOptions = array(
+    'contents' => new KTFSFileLike($_FILES['fFile']['tmp_name']),
+    'documenttype' => DocumentType::get($fDocumentTypeID),
+    'metadata' => $aFields,
+    'description' => $fName,
+);
+
 $oUser =& User::get($_SESSION["userID"]);
 $oDocument =& KTDocumentUtil::add($oFolder, basename($_FILES['fFile']['name']), $oUser, $aOptions);
 if (PEAR::isError($oDocument)) {
     localRenderError($oDocument);
     exit(0);
 }
-$oDocument->update();
 
 //the document was created/uploaded due to a collaboration step in another
 //document and must be linked to that document
@@ -195,20 +205,6 @@ if (isset($fDependantDocumentID)) {
         $oDependantDocument->delete();                                    				
     }
 }
-
-// now handle meta data, pass new document id to queries
-$aQueries = constructQuery(array_keys($_POST), array("document_id" =>$oDocument->getID()));
-for ($i=0; $i<count($aQueries); $i++) {
-    $sql = $default->db;
-    if ($sql->query($aQueries[$i])) {
-        $default->log->info("addDocumentBL.php query succeeded=" . $aQueries[$i]);
-    } else {
-        $default->log->error("addDocumentBL.php query failed=" . $aQueries[$i]);
-    }										
-}
-                                    
-KTDocumentUtil::setComplete($oDocument, 'metadata');
-$oDocument->update();
 
 DBUtil::commit();
 //redirect to the document details page
