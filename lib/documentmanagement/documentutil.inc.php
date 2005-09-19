@@ -27,10 +27,14 @@
  * @author Neil Blakey-Milner, Jam Warehouse (Pty) Ltd, South Africa
  */
 
+// LEGACY PATHS
 require_once(KT_LIB_DIR . '/documentmanagement/DocumentFieldLink.inc');
-require_once(KT_LIB_DIR . '/storage/storagemanager.inc.php');
 require_once(KT_LIB_DIR . '/documentmanagement/DocumentTransaction.inc');
 require_once(KT_LIB_DIR . '/web/WebDocument.inc');
+
+// NEW PATHS
+require_once(KT_LIB_DIR . '/storage/storagemanager.inc.php');
+require_once(KT_LIB_DIR . '/filelike/filelikeutil.inc.php');
 
 class KTDocumentUtil {
     function createMetadataVersion($oDocument) {
