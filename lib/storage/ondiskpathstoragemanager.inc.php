@@ -48,8 +48,6 @@ class KTOnDiskPathStorageManager extends KTStorageManager {
         $oDocument->setFileSize(filesize($sTmpFilePath));
         $sDocumentFileSystemPath = sprintf("%s/%s", $oConfig->get('urls/documentRoot'), $this->getPath($oDocument));
         //copy the file accross
-        var_dump($sTmpFilePath);
-        var_dump($sDocumentFileSystemPath);
         if (copy($sTmpFilePath, $sDocumentFileSystemPath)) {
             //remove the temporary file
             unlink($sTmpFilePath);
