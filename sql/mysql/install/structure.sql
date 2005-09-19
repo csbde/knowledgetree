@@ -3,9 +3,9 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Aug 02, 2005 at 04:03 PM
+-- Generation Time: Sep 19, 2005 at 01:13 PM
 -- Server version: 4.0.24
--- PHP Version: 4.3.10-15ubuntu2
+-- PHP Version: 4.4.0-2
 -- 
 -- Database: `kttest`
 -- 
@@ -204,6 +204,19 @@ CREATE TABLE document_fields_link (
 -- --------------------------------------------------------
 
 -- 
+-- Table structure for table `document_incomplete`
+-- 
+
+CREATE TABLE document_incomplete (
+  id int(10) unsigned NOT NULL default '0',
+  contents tinyint(1) unsigned NOT NULL default '0',
+  metadata tinyint(1) unsigned NOT NULL default '0',
+  PRIMARY KEY  (id)
+) TYPE=InnoDB;
+
+-- --------------------------------------------------------
+
+-- 
 -- Table structure for table `document_link`
 -- 
 
@@ -347,6 +360,7 @@ CREATE TABLE documents (
   permission_lookup_id int(11) default NULL,
   live_document_id int(11) default NULL,
   metadata_version int(11) NOT NULL default '0',
+  storage_path varchar(250) default NULL,
   UNIQUE KEY id (id),
   KEY fk_document_type_id (document_type_id),
   KEY fk_creator_id (creator_id),
@@ -356,7 +370,8 @@ CREATE TABLE documents (
   KEY created (created),
   KEY permission_object_id (permission_object_id),
   KEY permission_lookup_id (permission_lookup_id),
-  KEY live_document_id (live_document_id)
+  KEY live_document_id (live_document_id),
+  KEY storage_path (storage_path)
 ) TYPE=InnoDB;
 
 -- --------------------------------------------------------
@@ -921,7 +936,7 @@ CREATE TABLE web_sites (
 CREATE TABLE zseq_active_sessions (
   id int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (id)
-) TYPE=InnoDB;
+) TYPE=MyISAM;
 
 -- --------------------------------------------------------
 
@@ -932,7 +947,7 @@ CREATE TABLE zseq_active_sessions (
 CREATE TABLE zseq_archive_restoration_request (
   id int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (id)
-) TYPE=InnoDB;
+) TYPE=MyISAM;
 
 -- --------------------------------------------------------
 
@@ -943,7 +958,7 @@ CREATE TABLE zseq_archive_restoration_request (
 CREATE TABLE zseq_archiving_settings (
   id int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (id)
-) TYPE=InnoDB;
+) TYPE=MyISAM;
 
 -- --------------------------------------------------------
 
@@ -954,7 +969,7 @@ CREATE TABLE zseq_archiving_settings (
 CREATE TABLE zseq_archiving_type_lookup (
   id int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (id)
-) TYPE=InnoDB;
+) TYPE=MyISAM;
 
 -- --------------------------------------------------------
 
@@ -965,7 +980,7 @@ CREATE TABLE zseq_archiving_type_lookup (
 CREATE TABLE zseq_browse_criteria (
   id int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (id)
-) TYPE=InnoDB;
+) TYPE=MyISAM;
 
 -- --------------------------------------------------------
 
@@ -976,7 +991,7 @@ CREATE TABLE zseq_browse_criteria (
 CREATE TABLE zseq_data_types (
   id int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (id)
-) TYPE=InnoDB;
+) TYPE=MyISAM;
 
 -- --------------------------------------------------------
 
@@ -987,7 +1002,7 @@ CREATE TABLE zseq_data_types (
 CREATE TABLE zseq_dependant_document_instance (
   id int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (id)
-) TYPE=InnoDB;
+) TYPE=MyISAM;
 
 -- --------------------------------------------------------
 
@@ -998,7 +1013,7 @@ CREATE TABLE zseq_dependant_document_instance (
 CREATE TABLE zseq_dependant_document_template (
   id int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (id)
-) TYPE=InnoDB;
+) TYPE=MyISAM;
 
 -- --------------------------------------------------------
 
@@ -1009,7 +1024,7 @@ CREATE TABLE zseq_dependant_document_template (
 CREATE TABLE zseq_discussion_comments (
   id int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (id)
-) TYPE=InnoDB;
+) TYPE=MyISAM;
 
 -- --------------------------------------------------------
 
@@ -1020,7 +1035,7 @@ CREATE TABLE zseq_discussion_comments (
 CREATE TABLE zseq_discussion_threads (
   id int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (id)
-) TYPE=InnoDB;
+) TYPE=MyISAM;
 
 -- --------------------------------------------------------
 
@@ -1031,7 +1046,7 @@ CREATE TABLE zseq_discussion_threads (
 CREATE TABLE zseq_document_archiving_link (
   id int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (id)
-) TYPE=InnoDB;
+) TYPE=MyISAM;
 
 -- --------------------------------------------------------
 
@@ -1042,7 +1057,7 @@ CREATE TABLE zseq_document_archiving_link (
 CREATE TABLE zseq_document_fields (
   id int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (id)
-) TYPE=InnoDB;
+) TYPE=MyISAM;
 
 -- --------------------------------------------------------
 
@@ -1053,7 +1068,7 @@ CREATE TABLE zseq_document_fields (
 CREATE TABLE zseq_document_fields_link (
   id int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (id)
-) TYPE=InnoDB;
+) TYPE=MyISAM;
 
 -- --------------------------------------------------------
 
@@ -1064,7 +1079,7 @@ CREATE TABLE zseq_document_fields_link (
 CREATE TABLE zseq_document_link (
   id int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (id)
-) TYPE=InnoDB;
+) TYPE=MyISAM;
 
 -- --------------------------------------------------------
 
@@ -1075,7 +1090,7 @@ CREATE TABLE zseq_document_link (
 CREATE TABLE zseq_document_link_types (
   id int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (id)
-) TYPE=InnoDB;
+) TYPE=MyISAM;
 
 -- --------------------------------------------------------
 
@@ -1086,7 +1101,7 @@ CREATE TABLE zseq_document_link_types (
 CREATE TABLE zseq_document_subscriptions (
   id int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (id)
-) TYPE=InnoDB;
+) TYPE=MyISAM;
 
 -- --------------------------------------------------------
 
@@ -1097,7 +1112,7 @@ CREATE TABLE zseq_document_subscriptions (
 CREATE TABLE zseq_document_transaction_types_lookup (
   id int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (id)
-) TYPE=InnoDB;
+) TYPE=MyISAM;
 
 -- --------------------------------------------------------
 
@@ -1108,7 +1123,7 @@ CREATE TABLE zseq_document_transaction_types_lookup (
 CREATE TABLE zseq_document_transactions (
   id int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (id)
-) TYPE=InnoDB;
+) TYPE=MyISAM;
 
 -- --------------------------------------------------------
 
@@ -1119,7 +1134,7 @@ CREATE TABLE zseq_document_transactions (
 CREATE TABLE zseq_document_type_fields_link (
   id int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (id)
-) TYPE=InnoDB;
+) TYPE=MyISAM;
 
 -- --------------------------------------------------------
 
@@ -1130,7 +1145,7 @@ CREATE TABLE zseq_document_type_fields_link (
 CREATE TABLE zseq_document_types_lookup (
   id int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (id)
-) TYPE=InnoDB;
+) TYPE=MyISAM;
 
 -- --------------------------------------------------------
 
@@ -1141,7 +1156,7 @@ CREATE TABLE zseq_document_types_lookup (
 CREATE TABLE zseq_documents (
   id int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (id)
-) TYPE=InnoDB;
+) TYPE=MyISAM;
 
 -- --------------------------------------------------------
 
@@ -1152,7 +1167,7 @@ CREATE TABLE zseq_documents (
 CREATE TABLE zseq_folder_doctypes_link (
   id int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (id)
-) TYPE=InnoDB;
+) TYPE=MyISAM;
 
 -- --------------------------------------------------------
 
@@ -1163,7 +1178,7 @@ CREATE TABLE zseq_folder_doctypes_link (
 CREATE TABLE zseq_folder_subscriptions (
   id int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (id)
-) TYPE=InnoDB;
+) TYPE=MyISAM;
 
 -- --------------------------------------------------------
 
@@ -1174,7 +1189,7 @@ CREATE TABLE zseq_folder_subscriptions (
 CREATE TABLE zseq_folders (
   id int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (id)
-) TYPE=InnoDB;
+) TYPE=MyISAM;
 
 -- --------------------------------------------------------
 
@@ -1185,7 +1200,7 @@ CREATE TABLE zseq_folders (
 CREATE TABLE zseq_folders_users_roles_link (
   id int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (id)
-) TYPE=InnoDB;
+) TYPE=MyISAM;
 
 -- --------------------------------------------------------
 
@@ -1196,7 +1211,7 @@ CREATE TABLE zseq_folders_users_roles_link (
 CREATE TABLE zseq_groups_folders_approval_link (
   id int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (id)
-) TYPE=InnoDB;
+) TYPE=MyISAM;
 
 -- --------------------------------------------------------
 
@@ -1207,7 +1222,7 @@ CREATE TABLE zseq_groups_folders_approval_link (
 CREATE TABLE zseq_groups_folders_link (
   id int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (id)
-) TYPE=InnoDB;
+) TYPE=MyISAM;
 
 -- --------------------------------------------------------
 
@@ -1218,7 +1233,7 @@ CREATE TABLE zseq_groups_folders_link (
 CREATE TABLE zseq_groups_groups_link (
   id int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (id)
-) TYPE=InnoDB;
+) TYPE=MyISAM;
 
 -- --------------------------------------------------------
 
@@ -1229,7 +1244,7 @@ CREATE TABLE zseq_groups_groups_link (
 CREATE TABLE zseq_groups_lookup (
   id int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (id)
-) TYPE=InnoDB;
+) TYPE=MyISAM;
 
 -- --------------------------------------------------------
 
@@ -1240,7 +1255,7 @@ CREATE TABLE zseq_groups_lookup (
 CREATE TABLE zseq_groups_units_link (
   id int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (id)
-) TYPE=InnoDB;
+) TYPE=MyISAM;
 
 -- --------------------------------------------------------
 
@@ -1251,7 +1266,7 @@ CREATE TABLE zseq_groups_units_link (
 CREATE TABLE zseq_help (
   id int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (id)
-) TYPE=InnoDB;
+) TYPE=MyISAM;
 
 -- --------------------------------------------------------
 
@@ -1262,7 +1277,7 @@ CREATE TABLE zseq_help (
 CREATE TABLE zseq_help_replacement (
   id int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (id)
-) TYPE=InnoDB;
+) TYPE=MyISAM;
 
 -- --------------------------------------------------------
 
@@ -1273,7 +1288,7 @@ CREATE TABLE zseq_help_replacement (
 CREATE TABLE zseq_links (
   id int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (id)
-) TYPE=InnoDB;
+) TYPE=MyISAM;
 
 -- --------------------------------------------------------
 
@@ -1284,7 +1299,7 @@ CREATE TABLE zseq_links (
 CREATE TABLE zseq_metadata_lookup (
   id int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (id)
-) TYPE=InnoDB;
+) TYPE=MyISAM;
 
 -- --------------------------------------------------------
 
@@ -1295,7 +1310,7 @@ CREATE TABLE zseq_metadata_lookup (
 CREATE TABLE zseq_mime_types (
   id int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (id)
-) TYPE=InnoDB;
+) TYPE=MyISAM;
 
 -- --------------------------------------------------------
 
@@ -1306,7 +1321,7 @@ CREATE TABLE zseq_mime_types (
 CREATE TABLE zseq_news (
   id int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (id)
-) TYPE=InnoDB;
+) TYPE=MyISAM;
 
 -- --------------------------------------------------------
 
@@ -1317,7 +1332,7 @@ CREATE TABLE zseq_news (
 CREATE TABLE zseq_organisations_lookup (
   id int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (id)
-) TYPE=InnoDB;
+) TYPE=MyISAM;
 
 -- --------------------------------------------------------
 
@@ -1328,7 +1343,7 @@ CREATE TABLE zseq_organisations_lookup (
 CREATE TABLE zseq_permission_assignments (
   id int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (id)
-) TYPE=InnoDB;
+) TYPE=MyISAM;
 
 -- --------------------------------------------------------
 
@@ -1339,7 +1354,7 @@ CREATE TABLE zseq_permission_assignments (
 CREATE TABLE zseq_permission_descriptors (
   id int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (id)
-) TYPE=InnoDB;
+) TYPE=MyISAM;
 
 -- --------------------------------------------------------
 
@@ -1350,7 +1365,7 @@ CREATE TABLE zseq_permission_descriptors (
 CREATE TABLE zseq_permission_lookup_assignments (
   id int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (id)
-) TYPE=InnoDB;
+) TYPE=MyISAM;
 
 -- --------------------------------------------------------
 
@@ -1361,7 +1376,7 @@ CREATE TABLE zseq_permission_lookup_assignments (
 CREATE TABLE zseq_permission_lookups (
   id int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (id)
-) TYPE=InnoDB;
+) TYPE=MyISAM;
 
 -- --------------------------------------------------------
 
@@ -1372,7 +1387,7 @@ CREATE TABLE zseq_permission_lookups (
 CREATE TABLE zseq_permission_objects (
   id int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (id)
-) TYPE=InnoDB;
+) TYPE=MyISAM;
 
 -- --------------------------------------------------------
 
@@ -1383,7 +1398,7 @@ CREATE TABLE zseq_permission_objects (
 CREATE TABLE zseq_permissions (
   id int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (id)
-) TYPE=InnoDB;
+) TYPE=MyISAM;
 
 -- --------------------------------------------------------
 
@@ -1394,7 +1409,7 @@ CREATE TABLE zseq_permissions (
 CREATE TABLE zseq_roles (
   id int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (id)
-) TYPE=InnoDB;
+) TYPE=MyISAM;
 
 -- --------------------------------------------------------
 
@@ -1405,7 +1420,7 @@ CREATE TABLE zseq_roles (
 CREATE TABLE zseq_search_document_user_link (
   id int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (id)
-) TYPE=InnoDB;
+) TYPE=MyISAM;
 
 -- --------------------------------------------------------
 
@@ -1416,7 +1431,7 @@ CREATE TABLE zseq_search_document_user_link (
 CREATE TABLE zseq_status_lookup (
   id int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (id)
-) TYPE=InnoDB;
+) TYPE=MyISAM;
 
 -- --------------------------------------------------------
 
@@ -1427,7 +1442,7 @@ CREATE TABLE zseq_status_lookup (
 CREATE TABLE zseq_system_settings (
   id int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (id)
-) TYPE=InnoDB;
+) TYPE=MyISAM;
 
 -- --------------------------------------------------------
 
@@ -1438,7 +1453,7 @@ CREATE TABLE zseq_system_settings (
 CREATE TABLE zseq_time_period (
   id int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (id)
-) TYPE=InnoDB;
+) TYPE=MyISAM;
 
 -- --------------------------------------------------------
 
@@ -1449,7 +1464,7 @@ CREATE TABLE zseq_time_period (
 CREATE TABLE zseq_time_unit_lookup (
   id int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (id)
-) TYPE=InnoDB;
+) TYPE=MyISAM;
 
 -- --------------------------------------------------------
 
@@ -1460,7 +1475,7 @@ CREATE TABLE zseq_time_unit_lookup (
 CREATE TABLE zseq_units_lookup (
   id int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (id)
-) TYPE=InnoDB;
+) TYPE=MyISAM;
 
 -- --------------------------------------------------------
 
@@ -1471,7 +1486,7 @@ CREATE TABLE zseq_units_lookup (
 CREATE TABLE zseq_units_organisations_link (
   id int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (id)
-) TYPE=InnoDB;
+) TYPE=MyISAM;
 
 -- --------------------------------------------------------
 
@@ -1482,7 +1497,7 @@ CREATE TABLE zseq_units_organisations_link (
 CREATE TABLE zseq_upgrades (
   id int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (id)
-) TYPE=InnoDB;
+) TYPE=MyISAM;
 
 -- --------------------------------------------------------
 
@@ -1493,7 +1508,7 @@ CREATE TABLE zseq_upgrades (
 CREATE TABLE zseq_users (
   id int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (id)
-) TYPE=InnoDB;
+) TYPE=MyISAM;
 
 -- --------------------------------------------------------
 
@@ -1504,7 +1519,7 @@ CREATE TABLE zseq_users (
 CREATE TABLE zseq_users_groups_link (
   id int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (id)
-) TYPE=InnoDB;
+) TYPE=MyISAM;
 
 -- --------------------------------------------------------
 
@@ -1515,7 +1530,7 @@ CREATE TABLE zseq_users_groups_link (
 CREATE TABLE zseq_web_documents (
   id int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (id)
-) TYPE=InnoDB;
+) TYPE=MyISAM;
 
 -- --------------------------------------------------------
 
@@ -1526,7 +1541,7 @@ CREATE TABLE zseq_web_documents (
 CREATE TABLE zseq_web_documents_status_lookup (
   id int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (id)
-) TYPE=InnoDB;
+) TYPE=MyISAM;
 
 -- --------------------------------------------------------
 
@@ -1537,4 +1552,4 @@ CREATE TABLE zseq_web_documents_status_lookup (
 CREATE TABLE zseq_web_sites (
   id int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (id)
-) TYPE=InnoDB;
+) TYPE=MyISAM;
