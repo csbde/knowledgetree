@@ -119,10 +119,10 @@ class KTEntity {
             return $res;
         }
         if (count($res) === 0) {
-            return PEAR::raiseError("No such ID");
+            return PEAR::raiseError("No such ID: $iId");
         }
         if (count($res) > 1) {
-            return PEAR::raiseError("Multiple matches for ID");
+            return PEAR::raiseError("Multiple matches for ID: $iID");
         }
         $vk = array_flip($this->_aFieldToSelect);
         $aLoadInfo = array();
@@ -262,6 +262,9 @@ class KTEntityUtil {
             $sQuery .= " ORDER BY " . $sOrderBy;
         }
         $aIDs = DBUtil::getResultArrayKey(array($sQuery, $aParams), $sIDField);
+        if (PEAR::isError($aIDs)) {
+            return $aIDs;
+        }
 
         if ($bIDs === true) {
             return $aIDs;
