@@ -157,9 +157,10 @@ class KTDocumentUtil {
         $oContents = KTUtil::arrayGet($aOptions, 'contents');
         $aMetadata = KTUtil::arrayGet($aOptions, 'metadata');
         $oDocumentType = KTUtil::arrayGet($aOptions, 'documenttype');
+        $sDescription = KTUtil::arrayGet($aOptions, 'description', $sFilename);
         $oDocument =& Document::createFromArray(array(
             'name' => $sFilename,
-            'description' => $sFilename,
+            'description' => $sDescription,
             'filename' => $sFilename,
             'folderid' => $oFolder->getID(),
             'creatorid' => $oUser->getID(),
@@ -229,7 +230,8 @@ class KTDocumentUtil {
             return $res;
         }
         // XXX: Metadata refactor
-        foreach ($aMetadata as $oMetadata => $sValue) {
+        foreach ($aMetadata as $aInfo) {
+            list($oMetadata, $sValue) = $aInfo;
             $res = DBUtil::autoInsert($table, array(
                 "document_id" => $oDocument->getID(),
                 "document_field_id" => $oMetadata->getID(),
