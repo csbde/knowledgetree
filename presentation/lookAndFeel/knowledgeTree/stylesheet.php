@@ -356,16 +356,19 @@ table.prettysw > tbody > tr > th {
     border-right: 2px solid #000000;
     margin: 0;
     padding: 0;
+    padding-right: 1em;
     background-color: #feeeee;
 }
 
 table.prettysw > tbody > tr > td {
     border: 0;
     border-bottom: 1px solid #cccccc;
+    border-right: 1px solid #cccccc;
     margin: 0;
     padding: 0;
     background-color: #eeeefe;
     padding-right: 1em;
+    padding-left: 0.5em;
     text-align: right;
     padding-bottom: 3px;
     padding-top: 3px;
