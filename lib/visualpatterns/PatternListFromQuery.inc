@@ -26,6 +26,9 @@
  * @package lib.visualpatterns
  * @todo implement HyperLinkURL option 
  */
+
+require_once(KT_LIB_DIR . '/templating/templating.inc.php');
+
 class PatternListFromQuery {
 	
 	/** SQL query to execute */
