@@ -3,9 +3,9 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Aug 02, 2005 at 04:04 PM
+-- Generation Time: Sep 19, 2005 at 01:14 PM
 -- Server version: 4.0.24
--- PHP Version: 4.3.10-15ubuntu2
+-- PHP Version: 4.4.0-2
 -- 
 -- Database: `kttest`
 -- 
@@ -85,6 +85,11 @@ INSERT INTO document_fields VALUES (1, 'Category', 'STRING', 1, NULL);
 
 -- 
 -- Dumping data for table `document_fields_link`
+-- 
+
+
+-- 
+-- Dumping data for table `document_incomplete`
 -- 
 
 
