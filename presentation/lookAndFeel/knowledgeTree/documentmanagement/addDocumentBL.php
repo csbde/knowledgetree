@@ -36,11 +36,8 @@ if (!checkSession()) {
     exit(0);
 }
 
-require_once("$default->fileSystemRoot/lib/visualpatterns/PatternTableSqlQuery.inc");
-require_once("$default->fileSystemRoot/lib/visualpatterns/PatternMetaData.inc");
-require_once("$default->fileSystemRoot/lib/visualpatterns/PatternEditableTableSqlQuery.inc");
-require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
-require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
+require_once(KT_LIB_DIR . '/visualpatterns/PatternCustom.inc');
+require_once(KT_LIB_DIR . '/foldermanagement/Folder.inc');
 require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
 require_once("$default->fileSystemRoot/lib/documentmanagement/DependantDocumentInstance.inc");
 require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentLink.inc");
@@ -54,6 +51,9 @@ require_once("addDocumentUI.inc");
 require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/store.inc");
 
 require_once(KT_LIB_DIR . '/storage/storagemanager.inc.php');
+require_once(KT_LIB_DIR . '/filelike/fsfilelike.inc.php');
+require_once(KT_LIB_DIR . '/documentmanagement/DocumentType.inc');
+require_once(KT_LIB_DIR . '/documentmanagement/documentutil.inc.php');
 
 $oStorage =& KTStorageManagerUtil::getSingleton();
 
@@ -148,69 +148,24 @@ if (!((strlen($_FILES['fFile']['name']) > 0) && $_FILES['fFile']['size'] > 0)) {
     exit(0);
 }
 
-//if the user selected a file to upload
-//create the document in the database
-$oDocument = & PhysicalDocumentManager::createDocumentFromUploadedFile($_FILES['fFile'], $fFolderID);
-// set the document title
-$oDocument->setName($fName);
-// set the document type id
-$oDocument->setDocumentTypeID($fDocumentTypeID);
+$aOptions = array(
+    'contents' => new KTFSFileLike($_FILES['fFile']['tmp_name']),
+    'documenttype' => DocumentType::get($fDocumentTypeID),
+);
 
-if (Document::documentExists($oDocument->getFileName(), $oDocument->getFolderID())) {
-    // document already exists in folder
-    $default->log->error("addDocumentBL.php Document exists with name " . $oDocument->getFileName() . " in folder " . Folder::getFolderPath($fFolderID) . " id=$fFolderID");                        	
-    require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
-    $oPatternCustom = & new PatternCustom();
-    $oPatternCustom->setHtml(getStatusPage($fFolderID, _("A document with this file name already exists in this folder") . "</td><td><a href=\"$default->rootUrl/control.php?action=addDocument&fFolderID=$fFolderID&fDocumentTypeID=$fDocumentTypeID\"><img src=\"" . KTHtml::getBackButton() . "\" border=\"0\"></a>"));                            
-    $main->setCentralPayload($oPatternCustom);
-    $main->render();
-    exit(0);
+function localRenderError($oDocument) {
+    print $oDocument->toString();
+    return;
 }
 
-if (!$oDocument->create()) {
-    // couldn't store document on fs
-    $default->log->error("addDocumentBL.php DB error storing document in folder " . Folder::getFolderPath($fFolderID) . " id=$fFolderID");                            	
-    require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
-    $oPatternCustom = & new PatternCustom();
-    $oPatternCustom->setHtml(getStatusPage($fFolderID, _("An error occured while storing the document in the database, please try again.") . "</td><td><a href=\"$default->rootUrl/control.php?action=addDocument&fFolderID=$fFolderID&fDocumentTypeID=$fDocumentTypeID\"><img src=\"" . KTHtml::getBackButton() . "\" border=\"0\"></a>"));                                
-    $main->setCentralPayload($oPatternCustom);
-    $main->render();
+DBUtil::startTransaction();
+$oUser =& User::get($_SESSION["userID"]);
+$oDocument =& KTDocumentUtil::add($oFolder, basename($_FILES['fFile']['name']), $oUser, $aOptions);
+if (PEAR::isError($oDocument)) {
+    localRenderError($oDocument);
     exit(0);
 }
-
-//if the document was successfully created in the db, then store it on the file system
-if (!$oStorage->upload($oDocument, $_FILES['fFile']['tmp_name'])) {
-    // couldn't store document on filesystem
-    $default->log->error("addDocumentBL.php Filesystem error attempting to store document " . $oDocument->getFileName() . " in folder " . Folder::getFolderPath($fFolderID) . "; id=$fFolderID");                                	
-    require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
-    // delete the document from the database
-    $oDocument->delete();
-    $oPatternCustom = & new PatternCustom();
-    $oPatternCustom->setHtml(getStatusPage($fFolderID, _("An error occured while storing the document on the file system, please try again.") . "</td><td><a href=\"$default->rootUrl/control.php?action=browse&fFolderID=$fFolderID\"><img src=\"" . KTHtml::getCancelButton() . "\" border=\"0\"></a>"));                                    
-    $main->setCentralPayload($oPatternCustom);
-    $main->render();
-    exit(0);
-}
-
-// ALL SYSTEMS GO!
-
 $oDocument->update();
-
-
-//create the web document link
-$oWebDocument = & new WebDocument($oDocument->getID(), -1, 1, NOT_PUBLISHED, getCurrentDateTime());
-if ($oWebDocument->create()) {
-    $default->log->error("addDocumentBL.php created web document for document ID=" . $oDocument->getID());                                    	
-} else {
-    $default->log->error("addDocumentBL.php couldn't create web document for document ID=" . $oDocument->getID());
-}
-//create the document transaction record
-$oDocumentTransaction = & new DocumentTransaction($oDocument->getID(), "Document created", CREATE);
-if ($oDocumentTransaction->create()) {
-    $default->log->debug("addDocumentBL.php created create document transaction for document ID=" . $oDocument->getID());                                    	
-} else {
-    $default->log->error("addDocumentBL.php couldn't create create document transaction for document ID=" . $oDocument->getID());
-}                                    
 
 //the document was created/uploaded due to a collaboration step in another
 //document and must be linked to that document
@@ -252,14 +207,10 @@ for ($i=0; $i<count($aQueries); $i++) {
     }										
 }
                                     
-// fire subscription alerts for the new document
-$count = SubscriptionEngine::fireSubscription($fFolderID, SubscriptionConstants::subscriptionAlertType("AddDocument"),
-         SubscriptionConstants::subscriptionType("FolderSubscription"),
-         array( "newDocumentName" => $oDocument->getName(),
-                "folderName" => Folder::getFolderName($fFolderID)));
-$default->log->info("addDocumentBL.php fired $count subscription alerts for new document " . $oDocument->getName());
+KTDocumentUtil::setComplete($oDocument, 'metadata');
+$oDocument->update();
 
-$default->log->info("addDocumentBL.php successfully added document " . $oDocument->getFileName() . " to folder " . Folder::getFolderPath($fFolderID) . " id=$fFolderID");                                    
+DBUtil::commit();
 //redirect to the document details page
 controllerRedirect("viewDocument", "fDocumentID=" . $oDocument->getID());
 
