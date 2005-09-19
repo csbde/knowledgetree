@@ -25,6 +25,12 @@
  * @package documentmanagement
  */
 
+require_once(KT_LIB_DIR . '/visualpatterns/PatternTableSqlQuery.inc');
+require_once(KT_LIB_DIR . '/visualpatterns/PatternMetaData.inc');
+require_once(KT_LIB_DIR . '/visualpatterns/PatternEditableTableSqlQuery.inc');
+
+require_once(KT_LIB_DIR . '/documentmanagement/DocumentField.inc');
+
 function getDocumentType($iFolderID, $iDocumentTypeID, $iDependantDocumentID = null) {
 	global $default;
 	
@@ -72,29 +78,14 @@ function getUploadDocument() {
  * Displays the generic meta data fields form
  */
 function getGenericMetaDataForm() {
-    global $default;
-    /*ok*/ $sQuery = array("SELECT DISTINCT -1 AS document_id, DF.id AS document_field_id, DF.name AS field_name, -1 AS id " .
-			  "FROM document_fields AS DF LEFT OUTER JOIN document_fields_link AS DFL ON DF.id = DFL.document_field_id " .				
-			  "WHERE DF.is_generic = ? ", array(true));
-
-    $aStoreColumnNames = array("document_id", "document_field_id", "value");
-    $aDisplayColumnNames = array("document_id", "field_name", "value");
-    $aMetaDataColumnNames = array(2=>"field_name");
-    $aColumnsEditable = array(0,0,1);
-    $aColumnsVisible = array(0,1,1);
-    $aColumnDisplayTypes = array(1,1,4);
-    $aColumnDatabaseTypes = array(4,0,1);
-    
-    $oPatternTableSqlQuery = & new PatternEditableTableSqlQuery($sQuery, "document_fields_link", $aStoreColumnNames, $aDisplayColumnNames, $aColumnsEditable, $aColumnsVisible, $aColumnDisplayTypes, $aColumnDatabaseTypes);
-    $oPatternTableSqlQuery->setTableCaption(_("Generic Meta Data"));
-    $oPatternTableSqlQuery->setUniqueName("gmd");
-        if ($default->genericMetaDataRequired === true) {
-            $oPatternTableSqlQuery->setRequiredColumnNames(array("value"));
-        }
-	$oPatternTableSqlQuery->setMetaDataFields($aMetaDataColumnNames);
-	$oPatternTableSqlQuery->setEmptyTableMessage(_("No Generic Meta Data"));
-	$oPatternTableSqlQuery->setRenderJavascriptValidation(false);
-    return $oPatternTableSqlQuery;
+    $oTemplating = KTTemplating::getSingleton();
+    $oTemplate = $oTemplating->loadTemplate("ktcore/metadata_fields/editable_metadata_fields");
+    $aTemplateData = array(
+        'caption' => _('Generic meta data'),
+        'empty_message' => _("No Generic Meta Data"),
+        'fields' => DocumentField::getList(array('is_generic = ?', array(true))),
+    );
+    return $oTemplate->render($aTemplateData);
 }
 
 /**
@@ -102,27 +93,25 @@ function getGenericMetaDataForm() {
  */
 function getTypeSpecificMetaDataForm($iFolderID, $iDocumentTypeID) {
     global $default;
-	/*ok*/ $sQuery = array("SELECT DISTINCT -1 AS document_id, DF.id AS document_field_id, DF.name AS field_name, DTFL.is_mandatory AS is_mandatory, -1 AS id " .
-			  "FROM document_type_fields_link AS DTFL INNER JOIN document_fields AS DF ON DTFL.field_id = DF.id " .
-			  "LEFT OUTER JOIN document_fields_link AS DFL ON DFL.document_field_id = DTFL.field_id " .
+	/*ok*/ $sQuery = array("SELECT DF.id AS id " .
+			  "FROM document_fields AS DF LEFT JOIN document_type_fields_link AS DTFL ON DTFL.field_id = DF.id " .
 			  "WHERE DF.is_generic = ? " .
 			  "AND DTFL.document_type_id = ?", array(false, $iDocumentTypeID));
-			  
-	$aStoreColumnNames = array("document_id", "document_field_id", "value");
-    $aDisplayColumnNames = array("document_id", "field_name", "value");
-    $aColumnsEditable = array(0,0,1);
-    $aColumnsVisible = array(0,1,1);
-    $aColumnDisplayTypes = array(1,1,4);
-    $aColumnDatabaseTypes = array(4,0,1);
-	$aMetaDataColumnNames = array(2=>"field_name");
 
-    $oPatternTableSqlQuery = & new PatternEditableTableSqlQuery($sQuery, "document_fields_link", $aStoreColumnNames, $aDisplayColumnNames, $aColumnsEditable, $aColumnsVisible, $aColumnDisplayTypes, $aColumnDatabaseTypes);
-    $oPatternTableSqlQuery->setTableCaption(_("Type specific meta data"));
-    $oPatternTableSqlQuery->setEmptyTableMessage(_("No Type Specific Meta Data"));
-    $oPatternTableSqlQuery->setUniqueName("tsmd");
-	$oPatternTableSqlQuery->setMetaDataFields($aMetaDataColumnNames);	
-	$oPatternTableSqlQuery->setRenderJavascriptValidation(false);
-    return $oPatternTableSqlQuery;
+    $aIDs = DBUtil::getResultArray($sQuery);
+
+    $aFields = array();
+    foreach ($aIDs as $iID) {
+        $aFields[] =& call_user_func(array('DocumentField', 'get'), $iID);
+    }
+    $aTemplateData = array(
+        'caption' => _('Type specific meta data'),
+        'empty_message' => _("No Type Specific Meta Data"),
+        'fields' => $aFields,
+    );
+    $oTemplating = KTTemplating::getSingleton();
+    $oTemplate = $oTemplating->loadTemplate("ktcore/metadata_fields/editable_metadata_fields");
+    return $oTemplate->render($aTemplateData);
 }
 
 function getMetaDataForm($iFolderID, $iDocumentTypeID) {
@@ -130,8 +119,8 @@ function getMetaDataForm($iFolderID, $iDocumentTypeID) {
 	$oTypeSpecificPattern = getTypeSpecificMetaDataForm($iFolderID, $iDocumentTypeID);
 	$sToRender .= "<table border=\"0\" width=\"100%\">\n";
 	$sToRender .= "<tr><td><b>" . _("Document Meta Data") . "<b></td></tr>\n";	
-	$sToRender .= "<tr><td valign=\"top\">" . $oGenericPattern->render() . "</td></tr>";
-    $sToRender .= "<tr><td valign=\"top\">" . $oTypeSpecificPattern->render() . "</td></tr>";
+	$sToRender .= "<tr><td valign=\"top\">" . $oGenericPattern . "</td></tr>";
+    $sToRender .= "<tr><td valign=\"top\">" . $oTypeSpecificPattern . "</td></tr>";
 	$sToRender .= "</table>";
 
 	// validation starts
@@ -143,9 +132,6 @@ function getMetaDataForm($iFolderID, $iDocumentTypeID) {
 	// filename
     $sToRender .= "\tif (!(validRequired(theForm.fFile, 'Document Filename'))) {\n";
     $sToRender .= "\t\treturn false;\n\t}\n";
-	// metadata
-	$sToRender .= $oGenericPattern->getValidationJavascript();
-	$sToRender .= $oTypeSpecificPattern->getValidationJavascript();
 	$sToRender .= "return true;\n}\n";
 	$sToRender .= "//-->\n</script>\n\n";	
 
