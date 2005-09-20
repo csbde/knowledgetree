@@ -27,35 +27,62 @@
 
 require_once("../../../../config/dmsDefaults.php");
 
-KTUtil::extractGPC('fDocumentID', 'fFirstEdit');
+KTUtil::extractGPC('fDocumentID', 'fFirstEdit', 'fForStore');
 
-if (checkSession()) {	
-	require_once("$default->fileSystemRoot/lib/security/Permission.inc");
-	require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
-	require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
-	require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");	
-	require_once("$default->fileSystemRoot/lib/visualpatterns/PatternEditableTableSqlQuery.inc");
-	require_once("$default->fileSystemRoot/lib/visualpatterns/PatternMetaData.inc");					
-	require_once("$default->fileSystemRoot/presentation/Html.inc");
-	require_once("documentUI.inc");
-	require_once("modifySpecificMetaDataUI.inc");
-	
-	$oDocument = Document::get($fDocumentID);
-	if (Permission::userHasDocumentWritePermission($oDocument)) {
-		
-		require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
-		$oPatternCustom = & new PatternCustom();
-		$oPatternCustom->setHtml(getPage($fDocumentID, $oDocument->getDocumentTypeID(), $fFirstEdit));
-		$main->setCentralPayload($oPatternCustom);
-        if (isset($fFirstEdit)) {
-            $_SESSION["pageAccess"][$default->rootUrl . '/presentation/lookAndFeel/knowledgeTree/store.php'] = true;
-            $main->setFormAction("$default->rootUrl/presentation/lookAndFeel/knowledgeTree/store.php?fReturnURL=" . urlencode("$default->rootUrl/control.php?action=viewDocument&fDocumentID=$fDocumentID"));            
-        } else {
-            $_SESSION["pageAccess"][$default->rootUrl . '/presentation/lookAndFeel/knowledgeTree/store.php'] = true;
-            $main->setFormAction("$default->rootUrl/presentation/lookAndFeel/knowledgeTree/store.php?fReturnURL=" . urlencode("$default->rootUrl/control.php?action=viewDocument&fDocumentID=$fDocumentID&fShowSection=typeSpecificMetaData"));
-        }					
-        $main->setHasRequiredFields(true);		
-		$main->render();
-	}
+if (!checkSession()) {	
+    die();
 }
+
+require_once("$default->fileSystemRoot/lib/security/Permission.inc");
+require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
+require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
+require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");	
+require_once("$default->fileSystemRoot/lib/visualpatterns/PatternEditableTableSqlQuery.inc");
+require_once("$default->fileSystemRoot/lib/visualpatterns/PatternMetaData.inc");					
+require_once("$default->fileSystemRoot/presentation/Html.inc");
+require_once("documentUI.inc");
+require_once("modifySpecificMetaDataUI.inc");
+
+require_once(KT_LIB_DIR . '/documentmanagement/documentutil.inc.php');
+
+$oDocument = Document::get($fDocumentID);
+if (!Permission::userHasDocumentWritePermission($oDocument)) {
+    die();
+}
+    
+if (empty($fForStore)) {
+    require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
+    $oPatternCustom = & new PatternCustom();
+    $oPatternCustom->setHtml(getPage($fDocumentID, $oDocument->getDocumentTypeID(), $fFirstEdit));
+    $main->setCentralPayload($oPatternCustom);
+    $main->setFormAction($_SERVER["PHP_SELF"] . "?fForStore=1");
+    $main->setHasRequiredFields(true);		
+    $main->render();
+    exit(0);
+}
+
+$matches = array();
+$aFields = array();
+foreach ($_REQUEST as $k => $v) {
+    if (preg_match('/^emd(\d+)$/', $k, $matches)) {
+        $aFields[] = array(DocumentField::get($matches[1]), $v);
+    }
+}
+
+DBUtil::startTransaction();
+$res = KTDocumentUtil::saveMetadata($oDocument, $aFields);
+if (PEAR::isError($res)) {
+    DBUtil::rollback();
+    $_SESSION['KTErrorMessages'][] = $res->getMessage();
+    controllerRedirect('modifyDocumentTypeMetaData', "fDocumentID=$fDocumentID");
+    exit(0);
+}
+DBUtil::commit();
+
+if (isset($fFirstEdit)) {
+    controllerRedirect('viewDocument', "fDocumentID=$fDocumentID");
+} else {
+    controllerRedirect('viewDocument', "fDocumentID=$fDocumentID&fShowSection=typeSpecificMetaData");
+}
+
 ?>
