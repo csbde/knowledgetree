@@ -43,11 +43,13 @@ class KTBulkImportManager {
     }
 
     function import() {
+        $this->oStorage->init();
         $res = $this->_importfolder($this->oFolder, "/");
         if (PEAR::isError($res)) {
-            DBUtil::rollback();
+            $this->oStorage->cleanup();
             return $res;
         }
+        $this->oStorage->cleanup();
         return;
     }
 
