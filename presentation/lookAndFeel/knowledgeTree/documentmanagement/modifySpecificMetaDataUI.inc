@@ -25,30 +25,30 @@
  * @package documentmanagement
  */
 
+require_once(KT_LIB_DIR . '/templating/templating.inc.php');
+require_once(KT_LIB_DIR . '/documentmanagement/DocumentField.inc');
+
 function getEditableTypeSpecificMetaData($iDocumentID, $iDocumentTypeID) {
-    global $default;    
-	/*ok*/ $sQuery = array("SELECT DISTINCT $iDocumentID AS document_id, COALESCE(DFL.id, -1) AS id, DF.id AS document_field_id, DFL.value AS value, DF.name AS field_name, DTFL.is_mandatory AS is_mandatory " .
-				"FROM document_type_fields_link AS DTFL INNER JOIN document_fields AS DF ON DTFL.field_id = DF.id " .
-				"LEFT OUTER JOIN document_fields_link AS DFL ON DFL.document_field_id = DTFL.field_id AND DFL.document_id = ? " .
-				"WHERE DF.is_generic = 0 " .
-				"AND DTFL.document_type_id = ?", array($iDocumentID, $iDocumentTypeID));
+    global $default;
+    /*ok*/ $sQuery = array("SELECT DF.id AS id " .
+              "FROM document_fields AS DF LEFT JOIN document_type_fields_link AS DTFL ON DTFL.field_id = DF.id " .
+              "WHERE DF.is_generic = ? " .
+              "AND DTFL.document_type_id = ?", array(false, $iDocumentTypeID));
 
-	$aStoreColumnNames = array("document_id", "document_field_id", "value");
-    $aDisplayColumnNames = array("document_id", "field_name", "value");
-    $aColumnsEditable = array(0,0,1);
-    $aColumnsVisible = array(0,1,1);
-    $aColumnDisplayTypes = array(1,1,4);
-    $aColumnDatabaseTypes = array(0,0,1);
-	$aMetaDataColumnNames = array(2=>"field_name");
+    $aIDs = DBUtil::getResultArray($sQuery);
 
-    $oPatternTableSqlQuery = & new PatternEditableTableSqlQuery($sQuery, "document_fields_link", $aStoreColumnNames, $aDisplayColumnNames, $aColumnsEditable, $aColumnsVisible, $aColumnDisplayTypes, $aColumnDatabaseTypes);
-    $oPatternTableSqlQuery->setTableCaption(_("Type specific meta data"));
-    $oPatternTableSqlQuery->setEmptyTableMessage(_("No Type Specific Meta Data"));
-    $oPatternTableSqlQuery->setUniqueName("tsmd");
-	$oPatternTableSqlQuery->setMetaDataFields($aMetaDataColumnNames);	
-    $oPatternTableSqlQuery->setPreCode(sprintf('require_once(KT_LIB_DIR .  "/documentmanagement/documentutil.inc.php"); KTDocumentUtil::createMetadataVersion(%d);', (int)$iDocumentID));
-    $oPatternTableSqlQuery->setPostCode(sprintf('require_once(KT_LIB_DIR .  "/documentmanagement/documentutil.inc.php"); KTDocumentUtil::bumpVersion(%d); KTDocumentUtil::setModifiedDate(%d);', (int)$iDocumentID, (int)$iDocumentID));
-    return $oPatternTableSqlQuery->render();
+    $aFields = array();
+    foreach ($aIDs as $iID) {
+        $aFields[] =& call_user_func(array('DocumentField', 'get'), $iID);
+    }
+    $aTemplateData = array(
+        'caption' => _('Type specific meta data'),
+        'empty_message' => _("No Type Specific Meta Data"),
+        'fields' => $aFields,
+    );
+    $oTemplating = KTTemplating::getSingleton();
+    $oTemplate = $oTemplating->loadTemplate("ktcore/metadata_fields/editable_metadata_fields");
+    return $oTemplate->render($aTemplateData);
 }
 
 function getPage($iDocumentID, $iDocumentTypeID, $bFirstEdit) {
