@@ -70,7 +70,7 @@ class KTOnDiskPathStorageManager extends KTStorageManager {
     }
 
     function generateStoragePath(&$oDocument) {
-        $sStoragePath = sprintf("%s/%s", $oDocument->_generateFolderPath($oDocument->getFolderID()), $oDocument->getFileName());
+        $sStoragePath = sprintf("%s/%s", Document::_generateFolderPath($oDocument->getFolderID()), $oDocument->getFileName());
         return $sStoragePath;
     }
     
@@ -130,18 +130,24 @@ class KTOnDiskPathStorageManager extends KTStorageManager {
     
 	/**
  	 * Move a document to a new folder
+     *
+     * By the time we are called, the document believes it is in the new
+     * location in terms of its folder_id and paths.  Just in case, we
+     * avoid using generateStoragePath and rely on the folder objects
+     * for our paths.
+     *
+     * We have to use the folders for our source and destination paths,
+     * and then set storage_path.
 	 *
 	 * return boolean true on successful move, false otherwhise
 	 */
-	function moveDocument($sOldDocumentPath, $oDocument, $oFolder) {
+	function moveDocument(&$oDocument, $oSourceFolder, $oDestinationFolder) {
 		global $default;
 		
-		// current document path
-		$sCurrentPath = $sOldDocumentPath;
+        $oConfig =& KTConfig::getSingleton();
+        $sCurrentPath = sprintf("%s/%s/%s", $oConfig->get('urls/documentRoot'), Document::_generateFolderPath($oSourceFolder->getID()), $oDocument->getFileName());
+        $sDestinationPath = sprintf("%s/%s/%s", $oConfig->get('urls/documentRoot'), Document::_generateFolderPath($oDestinationFolder->getID()), $oDocument->getFileName());
 		
-		// the destination path
-		$sDestinationFolderPath = Folder::getFolderPath($oFolder->getID()) . $oDocument->getFileName();
-
 		// find all the previous versions of this document and move them
 		// ie. interrogate transaction history for all CHECKIN transactions and retrieve the versions
 		// FIXME: refactor array getOldVersionPaths($iDocumentID)??
@@ -158,7 +164,7 @@ class KTOnDiskPathStorageManager extends KTStorageManager {
             $sVersion = $sql->f("version");
             if ($sVersion <> $oDocument->getVersion()) {
                 $sSourcePath = $sCurrentPath . "-" . $sVersion;
-                $sDestinationPath = $sDestinationFolderPath . "-" . $sVersion;
+                $sDestinationPath = $sDestinationPath . "-" . $sVersion;
                 // move it to the new folder
                 $default->log->info("KTOnDiskPathStorageManager->moveDocument moving $sSourcePath to $sDestinationPath");
                 $res = KTUtil::moveFile($sSourcePath, $sDestinationPath);
@@ -170,11 +176,13 @@ class KTOnDiskPathStorageManager extends KTStorageManager {
         }
 
 		// now move the current version		
-        $res = KTUtil::moveFile($sCurrentPath, $sDestinationFolderPath);
+        $res = KTUtil::moveFile($sCurrentPath, $sDestinationPath);
 		if (PEAR::isError($res)) {
-			$default->log->error("KTOnDiskPathStorageManager->moveDocument couldn't move $sCurrentPath to $sDestinationFolderPath, documentID=" . $oDocument->getID());
+			$default->log->error("KTOnDiskPathStorageManager->moveDocument couldn't move $sCurrentPath to $sDestinationPath, documentID=" . $oDocument->getID());
             return $res;
         }
+        $sStoragePath = sprintf("%s/%s", Document::_generateFolderPath($oDestinationFolder->getID()), $oDocument->getFileName());
+        $this->setPath($oDocument, $sStoragePath);
         return true;
 	}
 	
