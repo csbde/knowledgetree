@@ -39,7 +39,6 @@ require_once("$default->fileSystemRoot/lib/database/datetime.inc");
 require_once("$default->fileSystemRoot/lib/documentmanagement/BulkUploadManager.inc");
 require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
 require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentTransaction.inc");
-require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
 require_once("$default->fileSystemRoot/lib/security/Permission.inc");
 require_once("$default->fileSystemRoot/lib/subscriptions/SubscriptionEngine.inc");
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
@@ -52,14 +51,16 @@ require_once("$default->fileSystemRoot/presentation/Html.inc");
 require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 require_once("bulkUploadUI.inc");
 
-require_once(KT_LIB_DIR . '/storage/storagemanager.inc.php');
-require_once(KT_LIB_DIR . '/mime.inc.php');
+require_once(KT_LIB_DIR . '/foldermanagement/Folder.inc');
+require_once(KT_LIB_DIR . '/users/User.inc');
 
-$oStorage =& KTStorageManagerUtil::getSingleton();
+require_once(KT_LIB_DIR . '/import/bulkimport.inc.php');
+require_once(KT_LIB_DIR . '/import/zipimportstorage.inc.php');
 
 $oPatternCustom = & new PatternCustom();
 
 /* CHECK: system has required features to handle bulk upload */
+/*
 if (!BulkUploadManager::isBulkUploadCapable()) {
     // can't do bulk uploading
     $sErrorMessage = _("This system is not capable of handling bulk uploads") . ". <br/>\n"
@@ -70,6 +71,7 @@ if (!BulkUploadManager::isBulkUploadCapable()) {
     $main->render();
     exit(0);
 }
+*/
 
 $postExpected = KTUtil::arrayGet($_REQUEST, "postExpected");
 $postReceived = KTUtil::arrayGet($_REQUEST, "postReceived");
@@ -164,6 +166,15 @@ if (!((strlen($_FILES['fFile']['name']) > 0) && $_FILES['fFile']['size'] > 0)) {
     exit(0);
 }
 
+// if changing this function, also change related error message
+function isValidBulkUpload() {
+    return (strlen($_FILES['fFile']['name']) > 0)
+      && file_exists($_FILES['fFile']['tmp_name'])
+      && $_FILES['fFile']['size'] > 0
+      && (!$_FILES['fFile']['error'])
+      && preg_match('/\.zip/i', $_FILES['fFile']['name']);
+}
+
 /* CHECK: bulk upload is valid */
 if (!isValidBulkUpload()) {
     $sErrorMessage = getInvalidBulkUploadErrorMsg() . getRetryUploadButton($fFolderID, $fDocumentTypeID);
@@ -177,117 +188,30 @@ if (!isValidBulkUpload()) {
     exit(0);
 }
 
-/* create temp dir, extract contents of .zip file to temp dir */
-// pass path of ZIP file to bulk upload manager to get names, paths of uploaded files
-// manager returns an array of ZipFile objects
-$aIndividualFiles = BulkUploadManager::unzipToTempDir($_FILES['fFile']['tmp_name'], $_FILES['fFile']['name']);
+$matches = array();
+$aFields = array();
+foreach ($_REQUEST as $k => $v) {
+    if (preg_match('/^emd(\d+)$/', $k, $matches)) {
+        $aFields[] = array(DocumentField::get($matches[1]), $v);
+    }
+}
+$aOptions = array(
+    'metadata' => $aFields,
+);
 
-/* CHECK: found good stuff in ZIP file */
-$aFileStatus = array();
-if (!$aIndividualFiles) {
-    // error extracting from ZIP file
-    $sErrorMessage = getInvalidBulkUploadErrorMsg() . getRetryUploadButton($fFolderID, $fDocumentTypeID);
+$fs =& new KTZipImportStorage($_FILES['fFile']['tmp_name']);
+$oUser =& User::get($_SESSION['userID']);
+$bm =& new KTBulkImportManager($oFolder, $fs, $oUser, $aOptions);
+
+DBUtil::startTransaction();
+$res = $bm->import();
+if (PEAR::isError($res)) {
+    DBUtil::rollback();
+    $_SESSION["KTErrorMessage"][] = _("Bulk import failed") . ": " . $res->getMessage();
+} else {
+    DBUtil::commit();
 }
 
-while ($aIndividualFiles) {
-    /* perform uploading logic as in addDocumentBL.php for each ZipFile */
-    // DON'T die if uploading a particular file fails, keep errors for displaying later
-    $oFile = array_pop($aIndividualFiles);
-
-    $sBasename = basename($oFile->sFilename);
-    $aFileFake = array(
-        'name' => $sBasename,
-        'type' => KTMime::getMimeTypeFromFile($oFile->sFilename),
-        'tmp_name' => $oFile->sFilename,
-        'error' => 0,
-        'size' => $oFile->iSize,
-    );
-
-    // create the document in the database
-    $oDocument = & PhysicalDocumentManager::createDocumentFromUploadedFile($aFileFake, $fFolderID);
-    // set the document title
-    $oDocument->setName($sBasename);
-    // set the document type
-    $oDocument->setDocumentTypeID($fDocumentTypeID);
-
-    if (Document::documentExists($oDocument->getFileName(), $oDocument->getFolderID())) {
-        $aFileStatus[$sBasename] = _("A document with this file name already exists in this folder") . ".";
-        continue;
-    }
-
-    $sFolderPath = Folder::getFolderPath($fFolderID);
-
-    if (!$oDocument->create()) {
-        $default->log->error("bulkUploadBL.php DB error storing document in folder $sFolderPath id=$fFolderID");
-        $aFileStatus[$sBasename] = _("An error occured while storing the document in the database, please try again") . ".";
-        continue;
-    }
-
-    // if the document was successfully created in the db, store it on the file system
-    if (!$oStorage->upload($oDocument, $oFile->sFilename)) {
-        $default->log->error("bulkUploadBL.php DB error storing document in folder $sFolderPath id=$fFolderID");
-        $aFileStatus[$sBasename] = _("An error occured while storing the document in the database, please try again") . ".";
-        continue;
-    }
-
-    $oDocument->update();
-
-    // create the web document link
-    $oWebDocument = & new WebDocument($oDocument->getID(), -1, 1, NOT_PUBLISHED, getCurrentDateTime());
-    if ($oWebDocument->create()) {
-        $default->log->info("bulkUploadBL.php created web document for document ID=" . $oDocument->getID());
-    } else {
-        $default->log->error("bulkUploadBL.php couldn't create web document for document ID=" . $oDocument->getID());
-    }
-
-    // create the document transaction record
-    $oDocumentTransaction = & new DocumentTransaction($oDocument->getID(), "Document created", CREATE);
-    if ($oDocumentTransaction->create()) {
-        $default->log->debug("bulkUploadBL.php created create document transaction for document ID=" . $oDocument->getID());
-    } else {
-        $default->log->error("bulkUploadBL.php couldn't create create document transaction for document ID=" . $oDocument->getID());
-    }
-
-    // now handle meta data, pass new document id to queries
-    $aQueries = constructQuery(array_keys($_POST), array("document_id" =>$oDocument->getID()));
-    for ($i=0; $i<count($aQueries); $i++) {
-        $sql = $default->db;
-        if ($sql->query($aQueries[$i])) {
-            $default->log->info("bulkUploadBL.php query succeeded=" . $aQueries[$i]);
-        } else {
-            $default->log->error("bulkUploadBL.php query failed=" . $aQueries[$i]);
-        }
-    }
-
-    // fire subscription alerts for the new document
-    $count = SubscriptionEngine::fireSubscription($fFolderID, SubscriptionConstants::subscriptionAlertType("AddDocument"),
-             SubscriptionConstants::subscriptionType("FolderSubscription"),
-             array( "newDocumentName" => $oDocument->getName(),
-                    "folderName" => Folder::getFolderName($fFolderID)));
-    $default->log->info("bulkUploadBL.php fired $count subscription alerts for new document " . $oDocument->getName());
-
-    /* display a status page with per-file results for bulk upload */
-    $default->log->info("bulkUploadBL.php successfully added document " . $oDocument->getFileName() . " to folder $sFolderPath id=$fFolderID");
-    /* store status for this document for later display */ 
-    $aFileStatus[$oDocument->getName()] = _("Successfully added document");
-}
-$oPatternCustom->setHtml(getStatusPage($fFolderID, $aFileStatus));
-
-if ($sErrorMessage) {
-    $main->setErrorMessage($sErrorMessage);
-}
-
-// render main page
-$main->setCentralPayload($oPatternCustom);
-$main->render();
-
-// if changing this function, also change related error message
-function isValidBulkUpload() {
-    return (strlen($_FILES['fFile']['name']) > 0)
-      && file_exists($_FILES['fFile']['tmp_name'])
-      && $_FILES['fFile']['size'] > 0
-      && (!$_FILES['fFile']['error'])
-      && preg_match('/\.zip/i', $_FILES['fFile']['name']);
-}
+controllerRedirect("browse", 'fFolderID=' . $oFolder->getID());
 
 ?>
