@@ -1,0 +1,30 @@
+<html>
+<head><title>Conditional Metadata Test</title>
+</head>
+<body>
+    <p>This is test of the various configurations for the conditional metadata backend.  Please press submit.  Your current form
+       will be deleted, and the backend will present new fields for you to fill in.</p>
+    <form>
+        
+        
+
+            <input type="hidden" name="fieldset_id" value="{$fieldset}" />
+
+            {foreach item=oldFieldVal key=oldFieldId from=$oldfields}
+                <input type="hidden" name="fields[]" value="{$oldFieldId}" />
+                <input type="hidden" name="conditional_field_{$oldFieldId}" value="{$oldFieldVal}" />
+            {/foreach}
+        {foreach item=fieldOutput key=field_id from=$fieldsToRender}
+            <input type="hidden" name="fields[]" value="{$field_id}" />
+            <select name="conditional_field_{$field_id}">
+                {foreach item=metadata from=$fieldOutput}
+                    <option value="{$metadata.val}">{$metadata.name}</option>
+                {/foreach}
+            </select>
+        {/foreach}
+        
+
+        <input type="submit" />
+    </form>
+</body>
+</html>

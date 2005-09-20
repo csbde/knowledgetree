@@ -184,6 +184,25 @@ CREATE TABLE document_fields (
   data_type char(100) NOT NULL default '',
   is_generic tinyint(1) default NULL,
   has_lookup tinyint(1) default NULL,
+  has_lookuptree tinyint(1) default NULL,
+  parent_fieldset int(11) default NULL,
+  UNIQUE KEY id (id)
+) TYPE=InnoDB;
+
+-- --------------------------------------------------------
+
+
+-- 
+-- Table structure for table `document_fieldsets`
+-- 
+
+CREATE TABLE document_fieldsets (
+  id int(11) NOT NULL default '0',
+  name char(255) NOT NULL default '',
+  namespace char(255) NOT NULL default '',
+  mandatory tinyint(4) NOT NULL default '0',
+  is_conditional tinyint(1) NOT NULL default '0',   -- is this a conditional set?
+  master_field int(11) default NULL,                -- if this is a conditional set, what is the MASTER FIELD.
   UNIQUE KEY id (id)
 ) TYPE=InnoDB;
 
@@ -309,10 +328,26 @@ CREATE TABLE document_transactions (
 -- Table structure for table `document_type_fields_link`
 -- 
 
+-- FIXME:  we need to deprecate this.
+
 CREATE TABLE document_type_fields_link (
   id int(11) NOT NULL default '0',
   document_type_id int(11) NOT NULL default '0',
   field_id int(11) NOT NULL default '0',
+  is_mandatory tinyint(1) NOT NULL default '0',
+  UNIQUE KEY id (id)
+) TYPE=InnoDB;
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `document_type_fieldsets_link`
+-- 
+
+CREATE TABLE document_type_fieldsets_link (
+  id int(11) NOT NULL default '0',
+  document_type_id int(11) NOT NULL default '0',
+  fieldset_id int(11) NOT NULL default '0',
   is_mandatory tinyint(1) NOT NULL default '0',
   UNIQUE KEY id (id)
 ) TYPE=InnoDB;
@@ -360,7 +395,7 @@ CREATE TABLE documents (
   permission_lookup_id int(11) default NULL,
   live_document_id int(11) default NULL,
   metadata_version int(11) NOT NULL default '0',
-  storage_path varchar(250) default NULL,
+    storage_path varchar(250) default NULL,
   UNIQUE KEY id (id),
   KEY fk_document_type_id (document_type_id),
   KEY fk_creator_id (creator_id),
@@ -573,6 +608,42 @@ CREATE TABLE metadata_lookup (
   id int(11) NOT NULL default '0',
   document_field_id int(11) NOT NULL default '0',
   name char(255) default NULL,
+  treeorg_parent int(11) default NULL,
+  UNIQUE KEY id (id)
+) TYPE=InnoDB;
+
+
+-- 
+-- Table structure for table `metadata_lookup_tree`
+-- 
+
+CREATE TABLE metadata_lookup_tree (
+  id int(11) NOT NULL default '0',
+  document_field_id int(11) NOT NULL default '0',
+  name char(255) default NULL,
+  metadata_lookup_tree_parent int(11) default NULL, -- parent id of the parent within this tree. NULL indicates attachment to root.
+  UNIQUE KEY id (id),
+  INDEX (metadata_lookup_tree_parent),
+  INDEX (document_field_id)
+) TYPE=InnoDB;
+
+-- 
+-- Table structure for table `metadata_lookup_tree`
+-- 
+
+CREATE TABLE metadata_lookup_condition (
+  id int(11) NOT NULL default '0',
+  document_field_id int(11) NOT NULL default '0',
+  metadata_lookup_id int(11) NOT NULL default '0', -- probably inherently broken if its NULL.
+  name char(255) default NULL, -- allows us to give human-names to various different subrules, and also check for non-trivial rules.
+  UNIQUE KEY id (id)
+) TYPE=InnoDB;
+
+
+CREATE TABLE metadata_lookup_condition_chain (
+  id int(11) NOT NULL default '0',
+  parent_condition int(11) default NULL, -- null indicates "no parent".
+  child_condition int(11) NOT NULL default '0', 
   UNIQUE KEY id (id)
 ) TYPE=InnoDB;
 
@@ -1059,6 +1130,19 @@ CREATE TABLE zseq_document_fields (
   PRIMARY KEY  (id)
 ) TYPE=MyISAM;
 
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `zseq_document_fields`
+-- 
+
+CREATE TABLE zseq_document_fieldsets (
+  id int(10) unsigned NOT NULL auto_increment,
+  PRIMARY KEY  (id)
+) TYPE=InnoDB;
+
+
 -- --------------------------------------------------------
 
 -- 
@@ -1300,6 +1384,26 @@ CREATE TABLE zseq_metadata_lookup (
   id int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (id)
 ) TYPE=MyISAM;
+
+-- 
+-- Table structure for table `zseq_metadata_lookup`
+-- 
+
+CREATE TABLE zseq_metadata_lookup_tree (
+  id int(10) unsigned NOT NULL auto_increment,
+  PRIMARY KEY  (id)
+) TYPE=InnoDB;
+
+CREATE TABLE zseq_metadata_lookup_condition (
+  id int(10) unsigned NOT NULL auto_increment,
+  PRIMARY KEY  (id)
+) TYPE=InnoDB;
+
+CREATE TABLE zseq_metadata_lookup_condition_chain (
+  id int(10) unsigned NOT NULL auto_increment,
+  PRIMARY KEY  (id)
+) TYPE=InnoDB;
+
 
 -- --------------------------------------------------------
 
