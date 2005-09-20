@@ -43,7 +43,6 @@ require_once("$default->fileSystemRoot/lib/documentmanagement/DependantDocumentI
 require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentLink.inc");
 require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentTransaction.inc");
 require_once("$default->fileSystemRoot/lib/web/WebDocument.inc");
-require_once("$default->fileSystemRoot/lib/documentmanagement/PhysicalDocumentManager.inc");
 require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
 require_once("$default->fileSystemRoot/presentation/Html.inc");
 require_once("$default->fileSystemRoot/lib/subscriptions/SubscriptionEngine.inc");
