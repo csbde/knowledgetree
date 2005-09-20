@@ -81,7 +81,7 @@ INSERT INTO data_types VALUES (5, 'FLOAT');
 -- Dumping data for table `document_fields`
 -- 
 
-INSERT INTO document_fields VALUES (1, 'Category', 'STRING', 1, NULL, NULL);
+INSERT INTO document_fields VALUES (1, 'Category', 'STRING', 1, NULL, NULL, NULL);
 
 -- 
 -- Dumping data for table `document_fields_link`
