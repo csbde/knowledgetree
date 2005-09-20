@@ -119,8 +119,10 @@ for ($i = 0; $i < count($fDocumentIDs); $i++) {
 
     //we're trying to move a document
     $oDocument = & Document::get($fDocumentIDs[$i]);
-    $oFolder = & Folder::get($fFolderID);
+    $oNewFolder = & Folder::get($fFolderID);
     $iOldFolderID = $oDocument->getFolderID();
+
+    $oOldFolder =& Folder::get($iOldFolderID);
 
     // check that there is no filename collision in the destination directory				
     $sNewDocumentFileSystemPath = Folder::getFolderPath($fFolderID) . $oDocument->getFileName();
@@ -131,7 +133,7 @@ for ($i = 0; $i < count($fDocumentIDs); $i++) {
         continue;
     }
 
-    if (!Permission::userHasDocumentWritePermission($oDocument) || !Permission::userHasFolderWritePermission($oFolder)) {
+    if (!Permission::userHasDocumentWritePermission($oDocument) || !Permission::userHasFolderWritePermission($oNewFolder)) {
         array_push($aUnmovedDocs, array($oDocument, _("You do not have rights to move this document")));
         continue;
     }
@@ -150,7 +152,7 @@ for ($i = 0; $i < count($fDocumentIDs); $i++) {
     //get the old document path
     $sOldDocumentFileSystemPath = Folder::getFolderPath($iOldFolderID) . $oDocument->getFileName();
     //move the document on the file system
-    if (!$oStorage->moveDocument($sOldDocumentFileSystemPath, $oDocument, $oFolder)) {							
+    if (!$oStorage->moveDocument($oDocument, $oOldFolder, $oNewFolder)) {
         $oDocument->setFolderID($iOldFolderID);
         $oDocument->update(true);
 
@@ -158,6 +160,7 @@ for ($i = 0; $i < count($fDocumentIDs); $i++) {
         array_push($aUnmovedDocs, array($oDocument, _("Could not move document on file system")));
         continue;
     }
+    $oDocument->update();
 
     // fire subscription alerts for the moved document (and the folder its in)
     $count = SubscriptionEngine::fireSubscription($fDocumentIDs[$i], SubscriptionConstants::subscriptionAlertType("MovedDocument"),
