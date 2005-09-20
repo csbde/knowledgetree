@@ -24,7 +24,6 @@
  */ 
 
 require_once("$default->fileSystemRoot/lib/documentmanagement/File.inc");
-require_once("$default->fileSystemRoot/lib/documentmanagement/PhysicalDocumentManager.inc");
 
 /* try to load the PECL zip extension, available here: http://pecl.php.net/package/zip */
 if (!extension_loaded('zip')) {
