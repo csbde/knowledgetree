@@ -265,8 +265,8 @@ class Document extends KTEntity {
 
     // {{{ ktentity requirements
     function _fieldValues () {
-        $this->sFullPath = $this->_generateFolderPath($this->iFolderID);
-        $this->sParentFolderIDs = $this->_generateFolderIDs($this->iFolderID);
+        $this->sFullPath = Document::_generateFolderPath($this->iFolderID);
+        $this->sParentFolderIDs = Document::_generateFolderIDs($this->iFolderID);
         return array(
             'document_type_id' => $this->iDocumentTypeID,
             'name' => $this->sName,
@@ -311,7 +311,7 @@ class Document extends KTEntity {
             $sql = $default->db;
             $sql->query(array("SELECT parent_id FROM $default->folders_table WHERE ID = ?", $iFolderID));/*ok*/
             $sql->next_record();
-            return $this->_generateParentFolderIDS($sql->f("parent_id")) . ",$iFolderID";
+            return Document::_generateParentFolderIDS($sql->f("parent_id")) . ",$iFolderID";
         }
         return;
     }
@@ -322,7 +322,7 @@ class Document extends KTEntity {
      * @return String	comma delimited string containing the parent folder ids
      */
     function _generateFolderIDs($iFolderID) {
-        $sFolderIDs = $this->_generateParentFolderIDS($iFolderID);
+        $sFolderIDs = Document::_generateParentFolderIDS($iFolderID);
         return substr($sFolderIDs, 1, strlen($sFolderIDs));
     }
 
@@ -337,7 +337,7 @@ class Document extends KTEntity {
             $sql = $default->db;
             $sql->query(array("SELECT name, parent_id FROM $default->folders_table WHERE ID = ?", $iFolderID));/*ok*/
             $sql->next_record();
-            return $this->_generateFullFolderPath($sql->f("parent_id")) . "/" . $sql->f("name");
+            return Document::_generateFullFolderPath($sql->f("parent_id")) . "/" . $sql->f("name");
         }
         return;
     }
@@ -347,7 +347,7 @@ class Document extends KTEntity {
      */
     function _generateFolderPath($iFolderID) {
         global $default;
-        $sPath = $this->_generateFullFolderPath($iFolderID);
+        $sPath = Document::_generateFullFolderPath($iFolderID);
         $sPath = substr($sPath, 1, strlen($sPath));
         $sPath = addslashes($sPath);
         return $sPath;
