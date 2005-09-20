@@ -150,31 +150,32 @@ class KTOnDiskPathStorageManager extends KTStorageManager {
         $sQuery = "SELECT DISTINCT version FROM $default->document_transactions_table WHERE document_id = ? AND transaction_id = ?";/*ok*/
         $aParams = array($oDocument->getID(), CHECKOUT);
 		$result = $sql->query(array($sQuery, $aParams));
-        if ($result) {
-            while ($sql->next_record()) {
-            	$sVersion = $sql->f("version");
-            	if ($sVersion <> $oDocument->getVersion()) {
-					$sSourcePath = $sCurrentPath . "-" . $sVersion;
-					$sDestinationPath = $sDestinationFolderPath . "-" . $sVersion;
-					// move it to the new folder
-					$default->log->info("PhysicalDocumentManager::moveDocument moving $sSourcePath to $sDestinationPath");
-					if (!PhysicalDocumentManager::move($sSourcePath, $sDestinationPath)) {
-						// FIXME: can't bail now since we don't have transactions- so we doggedly continue deleting and logging errors					
-						$default->log->error("PhysicalDocumentManager::moveDocument error moving $sSourcePath to $sDestinationPath; documentID=" . $oDocument->getID() . "; folderID=" . $oFolder->getID());
-					}
-            	}
-            }
-        } else {
-        	$default->log->error("PhysicalDocumentManager::moveDocument error looking up document versions, id=" . $oDocument->getID());
+        if (!$result) {
+        	$default->log->error("KTOnDiskPathStorageManager->moveDocument error looking up document versions, id=" . $oDocument->getID());
         }	
 
+        while ($sql->next_record()) {
+            $sVersion = $sql->f("version");
+            if ($sVersion <> $oDocument->getVersion()) {
+                $sSourcePath = $sCurrentPath . "-" . $sVersion;
+                $sDestinationPath = $sDestinationFolderPath . "-" . $sVersion;
+                // move it to the new folder
+                $default->log->info("KTOnDiskPathStorageManager->moveDocument moving $sSourcePath to $sDestinationPath");
+                $res = KTUtil::moveFile($sSourcePath, $sDestinationPath);
+                if (PEAR::isError($res)) {
+                    // FIXME: can't bail now since we don't have transactions- so we doggedly continue deleting and logging errors
+                    $default->log->error("KTOnDiskPathStorageManager->moveDocument error moving $sSourcePath to $sDestinationPath; documentID=" . $oDocument->getID() . "; folderID=" . $oFolder->getID());
+                }
+            }
+        }
+
 		// now move the current version		
-		if (PhysicalDocumentManager::move($sCurrentPath, $sDestinationFolderPath)) {
-			return true;
-		} else {
-			$default->log->error("PhysicalDocumentManager::moveDocument couldn't move $sCurrentPath to $sDestinationFolderPath, documentID=" . $oDocument->getID());
-			return false;
-		}
+        $res = KTUtil::moveFile($sCurrentPath, $sDestinationFolderPath);
+		if (PEAR::isError($res)) {
+			$default->log->error("KTOnDiskPathStorageManager->moveDocument couldn't move $sCurrentPath to $sDestinationFolderPath, documentID=" . $oDocument->getID());
+            return $res;
+        }
+        return true;
 	}
 	
 	/**
