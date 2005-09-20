@@ -28,6 +28,8 @@ $default->sessions_table = "active_sessions";
 $default->data_types_table ="data_types";
 // document type fields
 $default->document_fields_table = "document_fields";
+// document type fields
+$default->document_fieldset_table = "document_fieldsets";
 // links document
 $default->document_fields_link_table = "document_fields_link";
 // document subscriptions
@@ -38,6 +40,8 @@ $default->transaction_types_table = "document_transaction_types_lookup";
 $default->document_transactions_table = "document_transactions";
 // links document types to document type fields
 $default->document_type_fields_table = "document_type_fields_link";
+// links document types to document type fields
+$default->document_type_fieldsets_table = "document_type_fieldsets_link";
 // document type information
 $default->document_types_table = "document_types_lookup";
 // stores documents
@@ -122,4 +126,8 @@ $default->permission_descriptor_groups_table = "permission_descriptor_groups";
 $default->permission_lookups_table = "permission_lookups";
 $default->permission_lookup_assignments_table = "permission_lookup_assignments";
 $default->groups_groups_table = "groups_groups_link";
+$default->metadata_treenode_table = "metadata_lookup_tree";
+$default->metadata_condition_table = "metadata_lookup_condition";
+$default->md_condition_table = "metadata_lookup_condition";
+$default->md_condition_chain_table = "metadata_lookup_condition_chain";
 ?>
