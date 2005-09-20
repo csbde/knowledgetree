@@ -53,8 +53,8 @@ if (checkSession()) {
             $default->log->info("set group (id=" . $oGroup->getID() . ") to unit id=$fUnitID"); 
             $oGroupUnit = new GroupUnitLink($oGroup->getID(), $fUnitID);
             if ($oGroupUnit->create()) {
-                // redirect to list page
-                controllerRedirect("listGroups");
+                // redirect to group users page
+                controllerRedirect("editGroupUsers", "fGroupID=" . $oGroup->getID());
             } else {
                 $oPatternCustom->setHtml(statusPage(_("Add A New Group"), _("Addition Unsuccessful") . "!", _("There was an error associating the new group with the specified unit."), "addGroup"));
             }
