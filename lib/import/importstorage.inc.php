@@ -37,6 +37,14 @@ class KTImportStorage {
     function getDocumentInfo($sDocumentPath) {
         return PEAR::raiseError('Not implemented');
     }
+
+    function init() {
+        return true;
+    }
+
+    function cleanup() {
+        return true;
+    }
 }
 
 class KTImportStorageInfo {
