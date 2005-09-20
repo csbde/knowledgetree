@@ -1140,7 +1140,7 @@ CREATE TABLE zseq_document_fields (
 CREATE TABLE zseq_document_fieldsets (
   id int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (id)
-) TYPE=InnoDB;
+) TYPE=MyISAM;
 
 
 -- --------------------------------------------------------
@@ -1392,17 +1392,17 @@ CREATE TABLE zseq_metadata_lookup (
 CREATE TABLE zseq_metadata_lookup_tree (
   id int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (id)
-) TYPE=InnoDB;
+) TYPE=MyISAM;
 
 CREATE TABLE zseq_metadata_lookup_condition (
   id int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (id)
-) TYPE=InnoDB;
+) TYPE=MyISAM;
 
 CREATE TABLE zseq_metadata_lookup_condition_chain (
   id int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (id)
-) TYPE=InnoDB;
+) TYPE=MyISAM;
 
 
 -- --------------------------------------------------------
