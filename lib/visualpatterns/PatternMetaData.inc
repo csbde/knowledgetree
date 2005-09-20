@@ -1,6 +1,8 @@
 <?php
 
 require_once("PatternListBox.inc");
+require_once(KT_LIB_DIR . "/documentmanagement/MDTree.inc");
+
 /**
  * $Id$
  *
@@ -44,12 +46,12 @@ class PatternMetaData {
 	
 	function render() {
 		global $default;
-		$sQuery = "SELECT has_lookup, data_type FROM $default->document_fields_table WHERE name LIKE '" . DBUtil::escapeSimple($this->sMetaDataField) . "'";/*ok*/
+		$sQuery = "SELECT has_lookup, data_type, has_lookuptree, id FROM $default->document_fields_table WHERE name LIKE '" . DBUtil::escapeSimple($this->sMetaDataField) . "'";/*ok*/
 
 		$sql = $default->db;
 		$sql->query($sQuery);
 		if ($sql->next_record()) {			
-			if ($sql->f("has_lookup")) {
+			if ($sql->f("has_lookup") and (!$sql->f("has_lookuptree"))) {
 				//is a lookup, so display a drop down list
 				$sWhereClause = "DF.name LIKE '" . $this->sMetaDataField . "'";
 				$sFromClause = "INNER JOIN $default->document_fields_table AS DF ON ST.document_field_id = DF.id";
@@ -60,6 +62,10 @@ class PatternMetaData {
 				$oPatternListBox->setFromClause($sFromClause);
                 $oPatternListBox->setWhereClause($sWhereClause);				
 				return $oPatternListBox->render();
+			} else if ($sql->f("has_lookup") and ($sql->f("has_lookuptree"))) {
+		        $fieldTree = new MDTree();
+                $fieldTree->buildForField($sql->f("id"));
+				return $fieldTree->_evilTreeRenderer($fieldTree, $this->sFormName);
 			} else {
                 $textboxlength = null;
                 switch($sql->f("data_type")) {

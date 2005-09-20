@@ -27,11 +27,13 @@
 class MetaData extends KTEntity {
 	
 	/** primary key value */
-	var $iId;
+	var $iId = -1;
 	//document field id
 	var $iDocFieldId;
 	/** MetaData name */
 	var $sName;
+    /** _if_ this field is a tree, which node in said tree is this one's parent. */
+    var $iTreeParent;
 	
 	/**
 	* Default constructor
@@ -40,68 +42,28 @@ class MetaData extends KTEntity {
 	* @param 	MetaData data type
 	*
 	*/
-	function MetaData($iNewDocFieldID,$sNewName) {
+	function MetaData($iNewDocFieldID = null,$sNewName = null, $iNewParent = null) {
 		//object not created yet
 		$this->iId = -1;
 		$this->iDocFieldID = $iNewDocFieldID;
 		$this->sName = $sNewName;
-		
+		$this->iTreeParent = $iNewParent;
 	}
 	
-	/**
-	* Get the MetaData's primary key value
-	*
-	* @return int MetaData's primary key value
-	*
-	*/
-	function getID() {
-		return $this->iId;
-	}
-	
-	/**
-	* Get the MetaData's name
-	*
-	* @return String MetaData's name
-	*
-	*/
-	function getName() {
-		return $this->sName;
-	}
-	
-	
-	/**
-	* Set the MetaData's name
-	*
-	* @param 	MetaData's new name
-	*
-	*/
-	function setName($sNewValue) {
-		$this->sName = $sNewValue;
-	}
-	/**
-	* Set the MetaData's docField
-	*
-	* @param 	MetaData's new name
-	*
-	*/
-	function setDocFieldID($sNewValue) {
-		$this->iDocFieldID = $sNewValue;
-	}
-	
-	/**
-	* Get the MetaData's docfield
-	*
-	* @return String MetaData's name
-	*
-	*/
-	function getDocFieldID() {
-		return $this->iDocFieldID;
-	}
+	function getID() { return $this->iId; }
+	function getName() { return $this->sName; }
+	function setName($sNewValue) { $this->sName = $sNewValue; }
+	function getDocFieldID() { return $this->iDocFieldID; }
+	function setDocFieldID($iNewValue) { $this->iDocFieldID = $iNewValue; }
+    function getTreeParent() { return $this->iTreeParent; }
+    function setTreeParent($iNewValue) { $this->iTreeParent = $iNewValue; }
+
 
     function _fieldValues () {
         return array(
             'document_field_id' => $this->iDocFieldID,
             'name' => $this->sName,
+            'treeorg_parent' => $this->iTreeParent,
         );
     }
 
@@ -152,6 +114,7 @@ class MetaData extends KTEntity {
 			if ($sql->next_record()) {
 				$oDocumentType = & new MetaData($sql->f("document_field_id"),$sql->f("name"));
 				$oDocumentType->iId = $sql->f("id");
+				$oDocumentType->iTreeParent = $sql->f("treeorg_parent");
 				return $oDocumentType;
 			}
 			$_SESSION["errorMessage"] = $lang_err_object_not_exist . "id = " . $iDocumentID . " table = document_types";

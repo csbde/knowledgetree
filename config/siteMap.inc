@@ -138,6 +138,8 @@ $default->siteMap->addPage("docLinkManagement", "/presentation/lookAndFeel/knowl
 $default->siteMap->addPage("manageHelp", "/presentation/lookAndFeel/knowledgeTree/administration/help/manageHelp.php", "Administration", SysAdmin, _("Help Administration"), true, 17);
 
 $default->siteMap->addPage("managePermissions", "/presentation/lookAndFeel/knowledgeTree/administration/permissions/managePermissions.php", "Administration", SysAdmin, _("Permissions Administration"), true, 18);
+$default->siteMap->addPage("manageFieldsets", "/presentation/lookAndFeel/knowledgeTree/administration/fieldsetmanagement/manageFieldsets.php", "Administration", SysAdmin, _("Fieldsets Administration"), true, 19);
+$default->siteMap->addPage("manageLookupTrees", "/presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/manageLookupTrees.php", "Administration", SysAdmin, _("Lookup Tree Administration"), true, 20);
 
 $default->siteMap->addSectionColour("Administration", "th", "056DCE");
 $default->siteMap->addSectionColour("Administration", "td", "6699FF");
