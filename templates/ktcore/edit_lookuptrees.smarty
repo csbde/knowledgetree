@@ -1,0 +1,104 @@
+{literal}
+<style>
+
+.kt_treenodes {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+.leafnode {font-weight: bold; }
+
+.kt_treenodes ul {
+    list-style: none;
+}
+.kt_treenodes li.treenode > a.pathnode {
+   background: transparent url(/graphics/plus.png) center left no-repeat;
+   padding-left: 15px;
+}
+
+.kt_treenodes li.treenode.active > a.pathnode {
+   background: transparent url(/graphics/minus.png) center left no-repeat;
+}
+
+.kt_treenodes li.active > ul {
+    display: block;
+}
+
+.kt_treenodes li ul {
+    display: none;
+}
+
+</style>
+{/literal}
+
+<script language="javascript" src="/thirdpartyjs/MochiKit/Base.js">
+<script language="javascript" src="/thirdpartyjs/MochiKit/Iter.js">
+<script language="javascript" src="/thirdpartyjs/MochiKit/DOM.js">
+
+<h1>Edit Lookup Tree: {$field->getName()}</h1>
+
+<fieldset>
+<legend>Editing Category: 
+{if ($currentNode == 0)}
+Root
+{else}
+{$tree->mapnodes[$currentNode]->getName()}
+{/if}
+</legend>
+
+<form>
+<fieldset>
+  <legend>Add New Subcategory</legend>
+  <input type="hidden" name="field_id" value="{$field->getId()}" />
+  <input type="hidden" name="action" value="editTree" /> 
+  <input type="hidden" name="subaction" value="addCategory" />
+  <input type="hidden" name="current_node" value="{$currentNode}" />
+
+<input type="text" name="category_name"/>
+
+<div class="formControls">
+  <input type="submit" name="submit" value="Add Category" />
+</div>
+</fieldset>
+</form>
+{if ($currentNode != 0)}
+{if (empty($freechildren))}
+<p>No free keywords.  Use the "unlink" action on a keyword to 
+make it available.</p>
+{else}
+<form>
+<fieldset>
+  <legend>Link free keywords.</legend>
+  <input type="hidden" name="field_id" value="{$field->getId()}" />
+  <input type="hidden" name="action" value="editTree" /> 
+  <input type="hidden" name="subaction" value="linkKeywords" />
+  <input type="hidden" name="current_node" value="{$currentNode}" />
+
+
+
+<select multiple="1" name="keywordsToAdd[]">
+    {foreach item=oKeyword from=$freechildren}
+       <option value="{$oKeyword->getId()}">{$oKeyword->getName()}</option>
+    {/foreach}
+</select>
+
+<div class="formControls">
+  <input type="submit" name="submit" value="Add Category" />
+</div>
+</fieldset>
+</form>
+{/if}
+{/if}
+</fieldset>
+
+
+
+<h2>Preview</h2>
+<div class="helpText">
+    Use the +/- arrows to open or close the tree.  Bold items are metadata keywords.
+    To edit a category (including adding or removing keywords) click on the "edit" link.
+</div>
+
+{$renderedTree}

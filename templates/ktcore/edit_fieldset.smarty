@@ -1,0 +1,81 @@
+<h2>Edit Fieldset</h2>
+
+<form>
+<fieldset>
+<legend>Current Fields in Set</legend>
+<p>Fields which are currently not included in any set can be added to this set.</p>
+
+<input type="hidden" name="id" value="{$setId}" />
+<input type="hidden" name="action" value="removeFromFieldset" />
+{if (empty($children))}
+<p>No fields associated with this fieldset.</p>
+{else}
+{foreach item=oField from=$children}
+    <input type="checkbox" name="fieldsToRemove[]" value="{$oField->getId()}">{$oField->getName()}</input>
+{/foreach}
+{/if}
+<div>
+<input type="submit" name="submit" value="Remove">
+</div>
+</fieldset>
+</form>
+
+
+
+<fieldset>
+<legend>Add Field to set</legend>
+<p>Fields which are currently not included in any set can be added to this set.</p>
+<form>
+<input type="hidden" name="id" value="{$setId}" />
+<input type="hidden" name="action" value="addToFieldset">
+
+{if (empty($freefields))}
+<p>No free fields.</p>
+{else}
+<select name="fieldsToAdd[]" multiple="true">
+{foreach item=oField from=$freefields}
+    <option value="{$oField->getId()}">{$oField->getName()}</option>
+{/foreach}
+</select>
+{/if}
+<div>
+<input type="submit" name="submit" value="Add to Fieldset">
+</div>
+</form>
+</fieldset>
+
+
+{if ($fieldSet->canBeMadeConditional() === true)}
+<fieldset>
+<legend>Make this fieldset conditional</legend>
+
+<form>
+<input type="hidden" name="id" value="{$setId}" />
+<input type="hidden" name="action" value="makeConditionalSet">
+
+{if (empty($freefields))}
+<p>No free fields.</p>
+{else}
+<select name="fieldsToAdd" multiple="true">
+{foreach item=oField from=$freefields}
+    <option value="{$oField->getId()}">{$oField->getName()}</option>
+{/foreach}
+</select>
+{/if}
+<div>
+<input type="submit" name="submit" value="Add to Fieldset">
+</div>
+</form>
+</fieldset>
+
+{else}
+{if ($fieldSet->getIsConditional())}
+Field has conditions attached to it..  
+<ul>
+  <li>Manage conditions.</li>
+  <li>Test conditions</li>
+</ul>
+{else}
+<p>Fieldset cannot be made conditional. One of the fields must not be a lookup.</p>
+{/if}
+{/if}
