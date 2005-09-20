@@ -33,7 +33,6 @@ require_once("$default->fileSystemRoot/lib/security/Permission.inc");
 require_once("$default->fileSystemRoot/lib/users/User.inc");
 require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentTransaction.inc");
 require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
-require_once("$default->fileSystemRoot/lib/documentmanagement/PhysicalDocumentManager.inc");
 require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
 
 require_once("$default->fileSystemRoot/lib/subscriptions/SubscriptionEngine.inc");
@@ -44,6 +43,8 @@ require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
 require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/documentmanagement/moveDocumentUI.inc");
 require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
 require_once("$default->fileSystemRoot/presentation/Html.inc");
+
+require_once(KT_LIB_DIR . '/storage/storagemanager.inc.php');
  
 $aUnmovedDocs = array();
 
@@ -60,7 +61,7 @@ if (isset($fRememberDocumentID)) {
 }
 
 
-/* if (!isset($fDocumentIDs) || !isset($fFolderID)) {
+if (!isset($fDocumentIDs) || !isset($fFolderID)) {
     require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
     $oPatternCustom = & new PatternCustom();
     $oPatternCustom->setHtml("");
@@ -68,7 +69,7 @@ if (isset($fRememberDocumentID)) {
     $main->setErrorMessage(_("No document/folder selected"));
     $main->render();
     exit(0);
-} */
+}
 
 if (!isset($fForMove)) {
     require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
@@ -110,7 +111,9 @@ if (!$fConfirmed) {
     $main->setCentralPayload($oPatternCustom);
     $main->render();				
     exit(0);
-}			
+}
+
+$oStorage =& KTStorageManagerUtil::getSingleton();
 
 for ($i = 0; $i < count($fDocumentIDs); $i++) {
 
@@ -147,9 +150,9 @@ for ($i = 0; $i < count($fDocumentIDs); $i++) {
     //get the old document path
     $sOldDocumentFileSystemPath = Folder::getFolderPath($iOldFolderID) . $oDocument->getFileName();
     //move the document on the file system
-    if (!PhysicalDocumentManager::moveDocument($sOldDocumentFileSystemPath, $oDocument, $oFolder)) {							
+    if (!$oStorage->moveDocument($sOldDocumentFileSystemPath, $oDocument, $oFolder)) {							
         $oDocument->setFolderID($iOldFolderID);
-        $oDocument->update();						
+        $oDocument->update(true);
 
         // Store the doc with problem
         array_push($aUnmovedDocs, array($oDocument, _("Could not move document on file system")));
