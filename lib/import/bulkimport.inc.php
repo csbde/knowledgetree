@@ -43,7 +43,11 @@ class KTBulkImportManager {
     }
 
     function import() {
-        $this->oStorage->init();
+        $res = $this->oStorage->init();
+        if (PEAR::isError($res)) {
+            $this->oStorage->cleanup();
+            return $res;
+        }
         $res = $this->_importfolder($this->oFolder, "/");
         if (PEAR::isError($res)) {
             $this->oStorage->cleanup();
