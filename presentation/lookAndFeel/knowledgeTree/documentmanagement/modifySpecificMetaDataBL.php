@@ -70,6 +70,7 @@ foreach ($_REQUEST as $k => $v) {
 }
 
 DBUtil::startTransaction();
+KTDocumentUtil::createMetadataVersion($oDocument->getID());
 $res = KTDocumentUtil::saveMetadata($oDocument, $aFields);
 if (PEAR::isError($res)) {
     DBUtil::rollback();
@@ -77,6 +78,8 @@ if (PEAR::isError($res)) {
     controllerRedirect('modifyDocumentTypeMetaData', "fDocumentID=$fDocumentID");
     exit(0);
 }
+KTDocumentUtil::bumpVersion($oDocument->getID());
+KTDocumentUtil::setModifiedDate($oDocument->getID());
 DBUtil::commit();
 
 if (isset($fFirstEdit)) {
