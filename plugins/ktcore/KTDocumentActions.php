@@ -73,6 +73,10 @@ class KTDocumentMoveAction extends KTBuiltInDocumentActionSingle {
          }
          return parent::_disable();
     }
+
+    function getURL() {
+        return sprintf("/control.php?action=%s&fDocumentIDs[]=%d&fReturnDocumentID=%d&fFolderID=%d", $this->sBuiltInAction, $this->oDocument->getID(), $this->oDocument->getID(), $this->oDocument->getFolderID());
+    }
 }
 $oKTActionRegistry->registerAction('documentaction', 'KTDocumentMoveAction', 'ktcore.actions.document.move');
 
