@@ -182,9 +182,15 @@ class KTPermissionUtil {
          */
         $sQuery = "SELECT id FROM $default->folders_table WHERE permission_object_id = ? ORDER BY LENGTH(parent_folder_ids) LIMIT 1";
         $aParams = array($oPO->getID());
-        $res = DBUtil::getResultArrayKey(array($sQuery, $aParams), 'id');
-        if (is_array($res)) {
-            return Folder::get($res[0]);
+        $res = DBUtil::getOneResultKey(array($sQuery, $aParams), 'id');
+        if (!is_null($res)) {
+            return Folder::get($res);
+        }
+        $sQuery = "SELECT id FROM $default->documents_table WHERE permission_object_id = ? LIMIT 1";
+        $aParams = array($oPO->getID());
+        $res = DBUtil::getOneResultKey(array($sQuery, $aParams), 'id');
+        if (!is_null($res)) {
+            return Document::get($res);
         }
         return false;
     }
