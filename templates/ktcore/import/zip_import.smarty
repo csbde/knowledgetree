@@ -1,0 +1,24 @@
+<input type="hidden" name="fDocumentTypeID" value="1">
+<input type="hidden" name="fStore" value="1">
+<input type="hidden" name="postReceived" value="1">
+
+<table>
+  <tr>
+    <td colspan="2"><b>Bulk Upload Zipfile: <b></td>
+  </tr>
+  <tr>
+    <td>File: </td><td><input type="file" name="fFile"></td>
+  </tr>
+
+  <tr>
+    <td colspan="2">(Note: file should be a ZIP file without subdirectories. Details entered below apply to ALL documents to be added.)</td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <td><b>Document Type<b></td></tr><tr><td>Default</td>
+  </tr>
+</table>
+
+{$metadata_fields}
