@@ -55,7 +55,9 @@
 {php}
 $oField = $this->_tpl_vars['oField'];
 $sPrefix = $this->_tpl_vars['metadata_prefix'];
-$this->assign('pattern', new PatternMetadata($oField->getName(), $sPrefix .  $oField->getID()));
+$sValue = $this->_tpl_vars['values'][$oField->getID()];
+$this->assign('pattern',
+	new PatternMetadata($oField->getName(), $sPrefix .  $oField->getID(), $sValue));
 {/php}
 {$pattern->render()}
 </td>
