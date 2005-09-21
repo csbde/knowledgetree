@@ -55,6 +55,8 @@ class MDTree {
     var $root = null;
     var $field_id;
     var $lookups;
+    var $activenodes = array();
+    var $activevalue = null;
 
     function getRoot() { return $this->root; }
     function getMapping() { return $this->mapnodes; }
@@ -208,8 +210,11 @@ class MDTree {
         }
         $oKeyword->setTreeParent($new_home);
         // don't assume we're reparenting from 0.
-        $KWIndex = array_search($lookup_id, $this->contents[$oldParent]["leaves"]);
-        unset($this->contents[$oldParent]["leaves"][$KWIndex]);
+        if (!empty($this->contents[$oldparent])) {
+             $KWIndex = array_search($lookup_id, $this->contents[$oldParent]["leaves"]);
+             unset($this->contents[$oldParent]["leaves"][$KWIndex]);
+            
+        }
         $this->contents[$new_home]["leaves"][] = $oKeyword->getId();
         $oKeyword->update();
     }   
@@ -234,7 +239,11 @@ class MDTree {
         foreach ($treeToRender->contents[$subnode] as $subnode_id => $subnode_val)
         {
             if ($subnode_id !== "leaves") {
-                $treeStr .= '<li class="treenode">' . $treeToRender->mapnodes[$subnode_val]->getName();
+                $extraclass = '';
+                if (array_key_exists($subnode_val, $this->activenodes)) {
+                    $extraclass = ' active';
+                }
+                $treeStr .= '<li class="treenode' . $extraclass . '"><a class="pathnode" onclick="toggleElementClass(\'active\', this.parentNode);">' . $treeToRender->mapnodes[$subnode_val]->getName() . 'Root</a>';
                 $treeStr .= $this->_evilTreeRecursion($subnode_val, $treeToRender, $inputname);
                 $treeStr .= '</li>';
             }
@@ -242,8 +251,11 @@ class MDTree {
             {
                 foreach ($subnode_val as $leaf)
                 {
-                    $treeStr .= '<li class="leafnode"><input type="radio" name="'.$inputname.'" value="'.$treeToRender->lookups[$leaf]->getName().'">' . $treeToRender->lookups[$leaf]->getName() .'</input>';
-
+                    $is_selected = '';
+                    if ($leaf === $this->activevalue) {
+                       $is_selected=' checked="checked"';
+                    }
+                    $treeStr .= '<li class="leafnode"><input type="radio" name="'.$inputname.'" value="'.$treeToRender->lookups[$leaf]->getName().'" '.$is_selected.'>' . $treeToRender->lookups[$leaf]->getName() .'</input>';
                     $treeStr .=  '</li>';            }
                 }
         }
@@ -260,9 +272,9 @@ class MDTree {
         $stack = array();
         $exitstack = array();
 
-        // since the root is virtual, we need to fake it here.
+        // $treeStr .= print_r($this->activenodes,true);
         // the inner section is generised.
-        $treeStr .= '<ul class="kt_treenodes"><li class="treenode"><a class="pathnode"  onclick="toggleElementClass(\'active\', this.parentNode);">Root</a>';
+        $treeStr .= '<ul class="kt_treenodes"><li class="treenode active"><a class="pathnode"  onclick="toggleElementClass(\'active\', this.parentNode);">Root</a>';
         $treeStr .= '<ul>';
         //$default->log->debug("EVILRENDER: " . print_r($treeToRender, true));
         foreach ($treeToRender->getRoot() as $node_id => $subtree_nodes)
@@ -270,8 +282,11 @@ class MDTree {
             //$default->log->debug("EVILRENDER: ".$node_id." => ".$subtree_nodes." (".($node_id === "leaves").")");
             // leaves are handled differently.
             if ($node_id !== "leaves") {
-                // $default->log->debug("EVILRENDER: " . print_r($subtree_nodes, true));
-                $treeStr .= '<li class="treenode"><a class="pathnode"  onclick="toggleElementClass(\'active\', this.parentNode);">' . $treeToRender->mapnodes[$subtree_nodes]->getName().'</a>';
+                $extraclass = '';
+                if (array_key_exists($subtree_nodes, $this->activenodes)) {
+                    $extraclass = ' active';
+                }
+                $treeStr .= '<li class="treenode' . $extraclass . '"><a class="pathnode"  onclick="toggleElementClass(\'active\', this.parentNode);">' . $treeToRender->mapnodes[$subtree_nodes]->getName().'</a>';
                 $treeStr .= $this->_evilTreeRecursion($subtree_nodes, $treeToRender, $inputname);
                 $treeStr .= '</li>';
             }
@@ -279,7 +294,11 @@ class MDTree {
             {
                 foreach ($subtree_nodes as $leaf)
                 {
-                    $treeStr .= '<li class="leafnode"><input type="radio" name="'.$inputname.'" value="'.$treeToRender->lookups[$leaf]->getName().'">' . $treeToRender->lookups[$leaf]->getName() .'</input>';
+                    $is_selected = '';
+                    if ($leaf === $this->activevalue) {
+                       $is_selected=' checked="checked"';
+                    }
+                    $treeStr .= '<li class="leafnode"><input type="radio" name="'.$inputname.'" value="'.$treeToRender->lookups[$leaf]->getName().'" '.$is_selected.'>' . $treeToRender->lookups[$leaf]->getName() .'</input>';
                     $treeStr .=  '</li>';
                 }
             }
@@ -289,6 +308,32 @@ class MDTree {
 
         return $treeStr;
     
+    }
+    
+    // again, not pretty.  set a particular item as "active"
+    function setActiveItem($sMetadataMatch) {
+        // also need to:
+        //  (a) find the parent and mark it "live".
+        //  (b) repeat until we hit parent == 0.
+        //
+        // we need the md-item, then.
+        $md_node = null;
+        foreach ($this->lookups as $lookup) {
+            if ($sMetadataMatch == $lookup->getName()) {
+                $md_node = $lookup;
+            }
+        }
+        if ($md_node === null) {
+            return ;
+        } else {
+            $this->activevalue = $md_node->getId();
+            $current_node = $md_node->getTreeParent();
+            $this->activenodes[0] = true; // ALWAYS the case, since we have a node.
+            while ($current_node != 0) {
+                $this->activenodes[$current_node] = true;
+                $current_node = $this->mapnodes[$current_node]->getParentNode();
+            }
+        }
     }
 }
 
