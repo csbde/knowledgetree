@@ -91,7 +91,7 @@ function getGenericMetaDataForm() {
 /**
  * Displays the type specific meta data fields form
  */
-function getTypeSpecificMetaDataForm($iFolderID, $iDocumentTypeID) {
+function getTypeSpecificMetaDataForm($iDocumentTypeID) {
     global $default;
 	/*ok*/ $sQuery = array("SELECT DF.id AS id " .
 			  "FROM document_fields AS DF LEFT JOIN document_type_fields_link AS DTFL ON DTFL.field_id = DF.id " .
@@ -116,7 +116,7 @@ function getTypeSpecificMetaDataForm($iFolderID, $iDocumentTypeID) {
 
 function getMetaDataForm($iFolderID, $iDocumentTypeID) {
 	$oGenericPattern = getGenericMetaDataForm();
-	$oTypeSpecificPattern = getTypeSpecificMetaDataForm($iFolderID, $iDocumentTypeID);
+	$oTypeSpecificPattern = getTypeSpecificMetaDataForm($iDocumentTypeID);
 	$sToRender .= "<table border=\"0\" width=\"100%\">\n";
 	$sToRender .= "<tr><td><b>" . _("Document Meta Data") . "<b></td></tr>\n";	
 	$sToRender .= "<tr><td valign=\"top\">" . $oGenericPattern . "</td></tr>";
