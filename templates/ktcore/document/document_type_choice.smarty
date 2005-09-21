@@ -1,0 +1,8 @@
+<select name="{$name|default:"fDocumentTypeID"}"
+{if $onchange }
+onChange="{$onchange}">
+{/if}
+{ foreach item=oDocumentType from=$document_types }
+<option value="{$oDocumentType->getID()}"> { $oDocumentType->getName() }</option>
+{ /foreach }
+</select>
