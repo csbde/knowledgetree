@@ -168,4 +168,9 @@ class KTDocumentPublishAction extends KTDocumentAction {
 }
 $oKTActionRegistry->registerAction('documentaction', 'KTDocumentPublishAction', 'ktcore.actions.document.publish');
 
+class KTDocumentPermissionsAction extends KTBuiltInDocumentAction {
+    var $sBuiltInAction = 'editDocumentPermissions';
+    var $sDisplayName = 'Permissions';
+}
+$oKTActionRegistry->registerAction('documentaction', 'KTDocumentPermissionsAction', 'ktcore.actions.document.permissions');
 ?>
