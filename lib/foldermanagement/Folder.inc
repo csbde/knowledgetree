@@ -389,6 +389,12 @@ class Folder extends KTEntity {
 		}
 		return $aPathArray;
     }
+
+    // {{{
+    function getPathArray() {
+        return Folder::getFolderPathNamesAsArray($this->getID());
+    }
+    // }}}
 	
 	/**
      * Static function.
