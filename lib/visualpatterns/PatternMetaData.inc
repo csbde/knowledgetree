@@ -65,6 +65,7 @@ class PatternMetaData {
 			} else if ($sql->f("has_lookup") and ($sql->f("has_lookuptree"))) {
 		        $fieldTree = new MDTree();
                 $fieldTree->buildForField($sql->f("id"));
+                $fieldTree->setActiveItem($this->sValue);
 				return $fieldTree->_evilTreeRenderer($fieldTree, $this->sFormName);
 			} else {
                 $textboxlength = null;
