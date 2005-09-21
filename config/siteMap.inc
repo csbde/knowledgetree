@@ -54,6 +54,7 @@ $default->siteMap->addPage("requestDocumentRestore", "/presentation/lookAndFeel/
 
 $default->siteMap->addPage("addDocument", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentBL.php", "Manage Documents", User, _("Add A Document"));
 $default->siteMap->addPage("bulkUpload", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/bulkUploadBL.php", "Manage Documents", User, _("Bulk Upload"));
+$default->siteMap->addPage("bulkImport", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/bulkImport.php", "Manage Documents", User, _("Bulk Import"));
 
 // folder management
 $default->siteMap->addPage("addFolder", "/presentation/lookAndFeel/knowledgeTree/foldermanagement/addFolderBL.php", "Manage Documents", User, _("Add A Folder"));
@@ -91,6 +92,8 @@ $default->siteMap->addPage("removeSubscription", "/presentation/lookAndFeel/know
 // check in / check out
 $default->siteMap->addPage("checkOutDocument", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/checkOutDocumentBL.php", "Manage Documents", User, "Check Out Document", false);
 $default->siteMap->addPage("checkInDocument", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/checkInDocumentBL.php", "Manage Documents", User, "Check In Document", false);
+
+$default->siteMap->addPage("editDocumentPermissions", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/documentPermissions.php", "Manage Documents", User, _("Document Permissions"));
 
 $default->siteMap->addSectionColour("Manage Documents", "td", "BDDFE0");
 $default->siteMap->addSectionColour("Manage Documents", "th", "57AFAE");
