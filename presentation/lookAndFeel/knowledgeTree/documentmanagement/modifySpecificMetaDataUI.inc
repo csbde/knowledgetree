@@ -35,16 +35,22 @@ function getEditableTypeSpecificMetaData($iDocumentID, $iDocumentTypeID) {
               "WHERE DF.is_generic = ? " .
               "AND DTFL.document_type_id = ?", array(false, $iDocumentTypeID));
 
-    $aIDs = DBUtil::getResultArray($sQuery);
+    $aIDs = DBUtil::getResultArrayKey($sQuery, 'id');
 
     $aFields = array();
+    $aValues = array();
     foreach ($aIDs as $iID) {
         $aFields[] =& call_user_func(array('DocumentField', 'get'), $iID);
+        $aValues[$iID] = DBUtil::getOneResultKey(array(
+            "SELECT value FROM document_fields_link WHERE document_id = ? AND document_field_id = ?",
+            array($iDocumentID, $iID),
+        ), 'value');
     }
     $aTemplateData = array(
         'caption' => _('Type specific meta data'),
         'empty_message' => _("No Type Specific Meta Data"),
         'fields' => $aFields,
+        'values' => $aValues,
     );
     $oTemplating = KTTemplating::getSingleton();
     $oTemplate = $oTemplating->loadTemplate("ktcore/metadata_fields/editable_metadata_fields");
