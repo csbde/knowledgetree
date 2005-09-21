@@ -152,7 +152,7 @@ class ManageLookupTreeDispatcher extends KTAdminDispatcher {
         foreach ($treeToRender->contents[$subnode] as $subnode_id => $subnode_val)
         {
             if ($subnode_id !== "leaves") {
-                $treeStr .= '<li class="treenode">' . $treeToRender->mapnodes[$subnode_val]->getName();
+                $treeStr .= '<li class="treenode"><a class="pathnode"  onclick="toggleElementClass(\'active\', this.parentNode);">' . $treeToRender->mapnodes[$subnode_val]->getName() . '</a>';
                 $treeStr .= $this->_evilActionHelper($treeToRender->field_id, false, $subnode_val);
                 $treeStr .= $this->_evilTreeRecursion($subnode_val, $treeToRender);
                 $treeStr .= '</li>';
