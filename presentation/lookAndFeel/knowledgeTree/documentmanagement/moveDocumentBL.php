@@ -119,10 +119,9 @@ for ($i = 0; $i < count($fDocumentIDs); $i++) {
 
     //we're trying to move a document
     $oDocument = & Document::get($fDocumentIDs[$i]);
-    $oNewFolder = & Folder::get($fFolderID);
     $iOldFolderID = $oDocument->getFolderID();
-
     $oOldFolder =& Folder::get($iOldFolderID);
+    $oNewFolder = & Folder::get($fFolderID);
 
     // check that there is no filename collision in the destination directory				
     $sNewDocumentFileSystemPath = Folder::getFolderPath($fFolderID) . $oDocument->getFileName();
@@ -138,9 +137,6 @@ for ($i = 0; $i < count($fDocumentIDs); $i++) {
         continue;
     }
 
-    //get the old document path
-    $sOldDocumentFileSystemPath = Folder::getFolderPath($iOldFolderID) . $oDocument->getFileName();
-
     //put the document in the new folder
     $oDocument->setFolderID($fFolderID);
     if (!$oDocument->update(true)) {
@@ -149,8 +145,6 @@ for ($i = 0; $i < count($fDocumentIDs); $i++) {
         continue;
     }
 
-    //get the old document path
-    $sOldDocumentFileSystemPath = Folder::getFolderPath($iOldFolderID) . $oDocument->getFileName();
     //move the document on the file system
     if (!$oStorage->moveDocument($oDocument, $oOldFolder, $oNewFolder)) {
         $oDocument->setFolderID($iOldFolderID);
@@ -161,6 +155,16 @@ for ($i = 0; $i < count($fDocumentIDs); $i++) {
         continue;
     }
     $oDocument->update();
+
+    $sMoveMessage = sprintf("Moved from %s/%s to %s/%s",
+        $oOldFolder->getFullPath(),
+        $oOldFolder->getName(),
+        $oNewFolder->getFullPath(),
+        $oNewFolder->getName());
+
+    // create the document transaction record
+    $oDocumentTransaction = & new DocumentTransaction($oDocument->getID(), $sMoveMessage, MOVE);
+    $oDocumentTransaction->create();
 
     // fire subscription alerts for the moved document (and the folder its in)
     $count = SubscriptionEngine::fireSubscription($fDocumentIDs[$i], SubscriptionConstants::subscriptionAlertType("MovedDocument"),
