@@ -55,8 +55,14 @@ class KTFSImportStorage extends KTImportStorage {
             return PEAR::raiseError('Failed to open folder');
         }
         while (($sFilename = readdir($rDir)) !== false) {
+            if (in_array($sFilename, array(".", ".."))) {
+                continue;
+            }
             $sThisPath = sprintf("%s/%s", $sFullPath, $sFilename);
-            if (is_file($sThisPath)) {
+            if (!file_exists($sThisPath)) {
+                return PEAR::raiseError('Could not read file: ' . $sThisPath);
+            }
+            if (@is_file($sThisPath)) {
                 if (empty($sFolderPath)) {
                     $ret[] = $sFilename;
                 } else {
@@ -86,7 +92,10 @@ class KTFSImportStorage extends KTImportStorage {
                 continue;
             }
             $sThisPath = sprintf("%s/%s", $sFullPath, $sFilename);
-            if (is_dir($sThisPath)) {
+            if (!file_exists($sThisPath)) {
+                return PEAR::raiseError('Could not read file: ' . $sThisPath);
+            }
+            if (@is_dir($sThisPath)) {
                 if (empty($sFolderPath)) {
                     $ret[] = $sFilename;
                 } else {
