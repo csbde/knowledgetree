@@ -99,6 +99,7 @@ class KTBulkImportDispatcher extends KTStandardDispatcher {
         }
 
         controllerRedirect("browse", 'fFolderID=' . $oFolder->getID());
+        exit(0);
     }
 
     function handleOutput($data) {
