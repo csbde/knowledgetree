@@ -59,6 +59,9 @@ class KTBulkImportManager {
 
     function _importfolder($oFolder, $sPath) {
         $aDocPaths = $this->oStorage->listDocuments($sPath);
+        if (PEAR::isError($aDocPaths)) {
+            return $aDocPaths;
+        }
         foreach ($aDocPaths as $sDocumentPath) {
             $res = $this->_importdocument($oFolder, $sDocumentPath);
             if (PEAR::isError($res)) {
@@ -66,6 +69,9 @@ class KTBulkImportManager {
             }
         }
         $aFolderPaths = $this->oStorage->listFolders($sPath);
+        if (PEAR::isError($aFolderPaths)) {
+            return $aFolderPaths;
+        }
         foreach ($aFolderPaths as $sFolderPath) {
             $oThisFolder = KTFolderUtil::add($oFolder, basename($sFolderPath), $this->oUser);
             if (PEAR::isError($oThisFolder)) {
