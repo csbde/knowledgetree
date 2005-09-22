@@ -320,6 +320,9 @@ class KTDocumentUtil {
             return PEAR::raiseError("File already exists");
         }
         $oDocument =& KTDocumentUtil::_add($oFolder, $sFilename, $oUser, $aOptions);
+        if (PEAR::isError($oDocument)) {
+            return $oDocument;
+        }
 
         //create the web document link
         $oWebDocument = & new WebDocument($oDocument->getID(), -1, 1, NOT_PUBLISHED, getCurrentDateTime());
