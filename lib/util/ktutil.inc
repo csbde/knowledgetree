@@ -158,7 +158,7 @@ class KTUtil {
     }
     // }}}
 
-    // {{{
+    // {{{ copyDirectory
     function copyDirectory($sSrc, $sDst, $bMove = false) {
         if (file_exists($sDst)) {
             return PEAR::raiseError("Destination directory already exists.");
@@ -258,6 +258,20 @@ class KTUtil {
                 return PEAR::raiseError("Could not move to destination: $sDst");
             }
         }
+    }
+    // }}}
+
+    // {{{ getTableName
+    /**
+     * The one true way to get the correct name for a table whilst
+     * respecting the administrator's choice of table naming.
+     */
+    function getTableName($sTable) {
+        $sTable = $sTable . "_table";
+        if (isset($GLOBALS['default']->$sTable)) {
+            return $GLOBALS['default']->$sTable;
+        }
+        return PEAR::raiseError('Could not find table: ' . $sTable);
     }
     // }}}
 }
