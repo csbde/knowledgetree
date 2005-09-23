@@ -1,12 +1,12 @@
-/*
+/***
 
-MochiKit.DOM 0.5
+MochiKit.DOM 0.80
 
 See <http://mochikit.com/> for documentation, downloads, license, etc.
 
 (c) 2005 Bob Ippolito.  All rights Reserved.
 
-*/
+***/
 
 if (typeof(dojo) != 'undefined') {
     dojo.provide("MochiKit.DOM");
@@ -29,7 +29,7 @@ if (typeof(MochiKit.DOM) == 'undefined') {
 }
 
 MochiKit.DOM.NAME = "MochiKit.DOM";
-MochiKit.DOM.VERSION = "0.5";
+MochiKit.DOM.VERSION = "0.80";
 MochiKit.DOM.__repr__ = function () {
     return "[" + this.NAME + " " + this.VERSION + "]";
 }
@@ -42,9 +42,16 @@ MochiKit.DOM.EXPORT = [
     "coerceToDOM",
     "createDOM",
     "createDOMFunc",
+    "updateNodeAttributes",
+    "appendChildNodes",
+    "replaceChildNodes",
     "swapDOM",
+    "UL",
+    "OL",
+    "LI",
     "TD",
     "TR",
+    "THEAD",
     "TBODY",
     "TFOOT",
     "TABLE",
@@ -156,140 +163,58 @@ MochiKit.DOM.coerceToDOM = function (node, ctx) {
     }
 };
     
-MochiKit.DOM.createDOM = function (name, attrs/*, nodes... */) {
-    /***
-
-        Create a DOM fragment in a really convenient manner, much like
-        Nevow's <http://nevow.com> stan.
-
-        Partially applied versions of this function for common tags are
-        available as aliases:
-
-            TABLE
-            TR
-            TD
-            TH
-            TBODY
-            TFOOT
-            THEAD
-            SPAN
-            INPUT
-            A
-            DIV
-
-        Usage:
-
-            var rows = [
-                ["dataA1", "dataA2", "dataA3"],
-                ["dataB1", "dataB2", "dataB3"]
-            ];
-            row_display = function (row) {
-                return TR(null, map(partial(TD, null), row));
-            }
-            var newTable = TABLE({'class': 'prettytable'}
-                THEAD(null,
-                    row_display(["head1", "head2", "head3"])),
-                TFOOT(null,
-                    row_display(["foot1", "foot2", "foot3"])),
-                TBODY(null,
-                    map(row_display, rows)));
-                
-
-        This will create a table with the following visual layout (if it
-        were inserted into the document DOM):
-
-            +--------+--------+--------+
-            | head1  | head2  | head3  |
-            +========+========+========+
-            | dataA1 | dataA2 | dataA3 |
-            +--------+--------+--------+
-            | dataB1 | dataB2 | dataB3 |
-            +--------+--------+--------+
-            | foot1  | foot2  | foot3  |
-            +--------+--------+--------+
-
-        Corresponding to the following HTML:
-
-            <table>
-                <thead>
-                    <tr>
-                        <td>head1</td>
-                        <td>head2</td>
-                        <td>head3</td>
-                    </tr>
-                </thead>
-                <tfoot>
-                    <tr>
-                        <td>foot1</td>
-                        <td>foot2</td>
-                        <td>foot3</td>
-                    </tr>
-                </tfoot>
-                <tbody>
-                    <tr>
-                        <td>dataA1</td>
-                        <td>dataA2</td>
-                        <td>dataA3</td>
-                    </tr>
-                    <tr>
-                        <td>dataB1</td>
-                        <td>dataB2</td>
-                        <td>dataB3</td>
-                    </tr>
-                </tbody>
-            </table>
-
-        @param name: The kind of fragment to create (e.g. 'span').
-
-        @param attrs: A mapping of attributes or null, 
-                      (e.g. {'style': 'display:block'}).
-
-                      Note that it will do the right thing for IE, so don't do
-                      the class -> className hack yourself.
-
-        @param *nodes: All additional parameters will be coerced into DOM
-                       nodes that are appended as children using the
-                       following rules:
-                    
-                       1. Functions are called with a "this" of the parent
-                          node and their return value is subject to the
-                          following rules (even this one)
-                       2. undefined and null are ignored.
-                       3. Iterables are flattened (as if they were passed
-                          in-line as nodes) and each return value is
-                          subject to all of these rules.
-                       4. Values that look like DOM nodes (objects with a
-                          nodeType > 0) are appendChild'ed to the created
-                          DOM fragment.
-                       5. Strings are converted to textNodes.
-                       6. Objects that are not strings are converted to
-                          objects known to these rules using a
-                          "registerDOMConverter" adapter if one exists.
-                       7. If no adapter is available, toString() is used to
-                          create a textNode.
-        
-        @rtype: A DOM fragment
-
-    ***/
-
-    var elem = document.createElement(name);
+MochiKit.DOM.updateNodeAttributes = function (node, attrs) {
+    var elem = node;
+    if (typeof(node) == 'string') {
+        elem = MochiKit.DOM.getElement(node);
+    }
     if (attrs) {
         if (MochiKit.DOM.attributeArray.compliant) {
             // not IE, good.
             for (var k in attrs) {
-                elem.setAttribute(k, attrs[k]);
+                var v = attrs[k];
+                if (k.substring(0, 2) == "on") {
+                    if (typeof(v) == "string") {
+                        v = new Function(v);
+                    }
+                    elem[k] = v;
+                } else {
+                    elem.setAttribute(k, attrs[k]);
+                }
             }
         } else {
             // IE is insane in the membrane
+            var IE_IS_REALLY_AWFUL_AND_SHOULD_DIE = {
+                "class": "className",
+                "checked": "defaultChecked"
+            };
             for (var k in attrs) {
-                elem.setAttribute((k == "class" ? "className" : k), attrs[k]);
+                var v = attrs[k];
+                var renamed = IE_IS_REALLY_AWFUL_AND_SHOULD_DIE[k];
+                if (typeof(renamed) == "string") {
+                    elem[renamed] = v;
+                } else if (k.substring(0, 2) == "on") {
+                    if (typeof(v) == "string") {
+                        v = new Function(v);
+                    }
+                    elem[k] = v;
+                } else {
+                    elem.setAttribute(k, v);
+                }
             }
         }
     }
+    return elem;
+};
 
-    nodeStack = [
+MochiKit.DOM.appendChildNodes = function (node/*, nodes...*/) {
+    var elem = node;
+    if (typeof(node) == 'string') {
+        elem = MochiKit.DOM.getElement(node);
+    }
+    var nodeStack = [
         MochiKit.DOM.coerceToDOM(
-            MochiKit.Base.extend(null, arguments, 2),
+            MochiKit.Base.extend(null, arguments, 1),
             elem
         )
     ];
@@ -305,6 +230,48 @@ MochiKit.DOM.createDOM = function (name, attrs/*, nodes... */) {
         }
     }
     return elem;
+};
+
+MochiKit.DOM.replaceChildNodes = function (node/*, nodes...*/) {
+    var elem = node;
+    if (typeof(node) == 'string') {
+        elem = MochiKit.DOM.getElement(node);
+        arguments[0] = elem;
+    }
+    var child;
+    while ((child = elem.firstChild)) {
+        elem.removeChild(child);
+    }
+    if (arguments.length < 2) {
+        return elem;
+    } else {
+        return MochiKit.DOM.appendChildNodes.apply(this, arguments);
+    }
+};
+
+MochiKit.DOM.createDOM = function (name, attrs/*, nodes... */) {
+    /*
+
+        Create a DOM fragment in a really convenient manner, much like
+        Nevow's <http://nevow.com> stan.
+
+    */
+
+    var elem;
+    if (typeof(name) == 'string') {
+        elem = document.createElement(name);
+    } else {
+        elem = name;
+    }
+    if (attrs) {
+        MochiKit.DOM.updateNodeAttributes(elem, attrs);
+    }
+    if (arguments.length <= 2) {
+        return elem;
+    } else {
+        var args = MochiKit.Base.extend([elem], arguments, 2);
+        return MochiKit.DOM.appendChildNodes.apply(this, args);
+    }
 };
 
 MochiKit.DOM.createDOMFunc = function (/* tag, attrs, *nodes */) {
@@ -335,15 +302,19 @@ MochiKit.DOM.swapDOM = function (dest, src) {
         @param dest: a DOM element to be replaced
 
         @param src: the DOM element to replace it with
+                    or null if the DOM element should be removed
 
         @rtype: a DOM element (src)
 
     ***/
     dest = MochiKit.DOM.getElement(dest);
-    src = MochiKit.DOM.getElement(src);
     var parent = dest.parentNode;
-    parent.insertBefore(src, dest);
-    parent.removeChild(dest);
+    if (src) {
+        src = MochiKit.DOM.getElement(src);
+        parent.replaceChild(src, dest);
+    } else {
+        parent.removeChild(dest);
+    }
     return src;
 };
 
@@ -366,17 +337,20 @@ MochiKit.DOM.getElement = function (id) {
     }
 };
 
-MochiKit.DOM.getElementsByTagAndClassName = function (tagName, className) {
+MochiKit.DOM.getElementsByTagAndClassName = function (tagName, className, /* optional */parent) {
     if (typeof(tagName) == 'undefined' || tagName == null) {
         tagName = '*';
     }
-    var children = document.getElementsByTagName(tagName) || document.all;
-    var elements = [];
-
+    if (typeof(parent) == 'undefined' || parent == null) {
+        parent = document;
+    }
+    parent = MochiKit.DOM.getElement(parent);
+    var children = parent.getElementsByTagName(tagName) || document.all;
     if (typeof(className) == 'undefined' || className == null) {
         return children;
     }
 
+    var elements = [];
     for (var i = 0; i < children.length; i++) {
         var child = children[i];
         var classNames = child.className.split(' ');
@@ -543,10 +517,11 @@ MochiKit.DOM.swapElementClass = function (element, fromClass, toClass) {
 
     ***/
     var obj = MochiKit.DOM.getElement(element);
-    if (MochiKit.DOM.removeElementClass(obj, fromClass)) {
-        return MochiKit.DOM.addElementClass(obj, toClass);
+    var res = MochiKit.DOM.removeElementClass(obj, fromClass);
+    if (res) {
+        MochiKit.DOM.addElementClass(obj, toClass);
     }
-    return false;
+    return res;
 };
 
 MochiKit.DOM.hasElementClass = function (element, className/*...*/) {
@@ -685,10 +660,11 @@ MochiKit.DOM.setDisplayForElement = function (display, element/*, ...*/) {
     );
 };
 
-MochiKit.DOM.scrapeText = function (node) {
+MochiKit.DOM.scrapeText = function (node, /* optional */asArray) {
     /***
     
-        Walk a DOM tree and scrape all of the text out of it as an Array.
+        Walk a DOM tree and scrape all of the text out of it as a string
+        or an Array
 
     ***/
     var rval = [];
@@ -699,7 +675,11 @@ MochiKit.DOM.scrapeText = function (node) {
         }
         return node.childNodes;
     });
-    return rval;
+    if (asArray) {
+        return rval;
+    } else {
+        return rval.join("");
+    }
 };
 
 
@@ -741,9 +721,13 @@ MochiKit.DOM.__new__ = function () {
 
     // shorthand for createDOM syntax
     var createDOMFunc = this.createDOMFunc;
+    this.UL = createDOMFunc("ul");
+    this.OL = createDOMFunc("ol");
+    this.LI = createDOMFunc("li");
     this.TD = createDOMFunc("td");
     this.TR = createDOMFunc("tr");
     this.TBODY = createDOMFunc("tbody");
+    this.THEAD = createDOMFunc("thead");
     this.TFOOT = createDOMFunc("tfoot");
     this.TABLE = createDOMFunc("table");
     this.TH = createDOMFunc("th");
@@ -779,7 +763,7 @@ MochiKit.DOM.__new__ = function () {
 MochiKit.DOM.__new__();
 
 if ((typeof(JSAN) == 'undefined' && typeof(dojo) == 'undefined')
-    || (typeof(__MochiKit_Compat__) == 'boolean' && __MochiKit_Compat__)) {
+    || (typeof(MochiKit.__compat__) == 'boolean' && MochiKit.__compat__)) {
     (function (self) {
             var all = self.EXPORT_TAGS[":all"];
             for (var i = 0; i < all.length; i++) {
