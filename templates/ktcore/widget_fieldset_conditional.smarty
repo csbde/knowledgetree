@@ -1,0 +1,156 @@
+<!-- we REALLY NEED that new ui component. -->
+
+<script language="javascript" src="/thirdpartyjs/MochiKit/Base.js"> </script>
+<script language="javascript" src="/thirdpartyjs/MochiKit/Iter.js"> </script>
+<script language="javascript" src="/thirdpartyjs/MochiKit/DOM.js"> </script>
+<script language="javascript" src="/thirdpartyjs/MochiKit/Async.js"> </script>
+{literal}
+<script language="javascript"> 
+
+var baseUrl = "/presentation/lookAndFeel/knowledgeTree/ajaxConditional.php";
+var undoStack = Array();
+
+/*  handle the conditional field changes.
+ *  
+ */
+function conditionalFieldChanged(select_input) {
+   conditional_val = select_input.value;
+   conditional_label = scrapeText(select_input.options[select_input.selectedIndex]);
+   var newNode = DIV({'class':'resolved_div'},
+      INPUT({'type':'hidden', 'value':conditional_val, 'name':select_input.name,'class':'resolved_conditional'}),
+      SPAN({'class':'resolved_conditional'},conditional_label)
+   );
+   swapDOM(select_input.parentNode, newNode); // FIXME: this assumes that the parentNode is the appropriate div.
+   undoStack.push(newNode);
+   triggerUpdate('conditional_field');
+}
+
+/** VERY simple xml -> html converter ... assumes that xml is html ;) 
+ * 
+ * FIXME we probably want a slightly more generic set of adapter / converters.
+ *
+ * takes a xml:Select node and turns it into html:select
+ */
+ 
+/** handle the XML return, and resolve. */
+function reworkForm (form, request) {
+    // FIXME recognise empty response.
+    // find all class="unresolved_conditional" elements in the current environment.
+    // find all class="unresolved_conditional" elements in the response.
+    // _replace_ overridden ones with the appropriate select.
+    // _remove_ ones that are only in the current object.
+    var reqXML = request.responseXML;
+    // only look for select items, since XML is much stricter in the DOM.
+    var incomingOptions = getElementsByTagAndClassName('div',null,reqXML); // grab the DIV elements within.
+    var existingOptions = getElementsByTagAndClassName('div','unresolved_div',form); // we contain "open" vals with this.
+    
+    // first delete all unresolved divs.
+    // FIXME find the nearest parent with class unresolved_div instead.
+    for (index in existingOptions) {
+        var obj = existingOptions[index];
+        obj.parentNode.removeChild(obj);
+    }
+    
+    for (index in incomingOptions) {
+        var repl = DIV(null);
+        var replaceFinal = DIV({'class':'unresolved_div'});
+        
+        repl.innerHTML = toHTML(incomingOptions[index]);
+        if (repl.hasChildNodes()) {
+            // we know that the child is a div so ...
+            try {
+                
+                var children = repl.childNodes[0].childNodes;
+                for (i in children) {
+                    if ((typeof(children[i]) == typeof(repl)) && (children[i].nodeType == children[i].ELEMENT_NODE)) { // must be an Object (not a number, id, function...)
+                        var child = children[i];                        
+                        appendChildNodes(replaceFinal, child);
+                        // FIXME move the js registration out.
+                    }
+                }
+                appendChildNodes(form, replaceFinal);
+            } catch (Exception) {
+                alert('catastrophic error merging fields: '+Exception);
+            }
+        }
+    }
+    
+    
+    
+}
+
+function doConditionalUndo() {
+    // fixme.  we currently use an ID, which breaks ... need to partial() this function somehow.
+    if (undoStack.length == 0) {
+        return ; // no items in the stack.
+    }
+    form = getElement('conditional_field');
+    last_item = undoStack.pop();
+    last_item.parentNode.removeChild(last_item);
+    
+    triggerUpdate('conditional_field');
+}
+
+function errorForm (request) {
+    alert('failed to update.'+request);
+}
+
+/* extract all the form fields and values
+ * within the specified field.
+ */
+function triggerUpdate(formname) {
+   var form = getElement(formname);
+   var fields = getElementsByTagAndClassName('input','resolved_conditional',form);
+   var fieldvals = Array();
+   var fieldnames = Array();
+   for (var i=0; i<fields.length; i++) {
+      var fieldName = fields[i].name; 
+      var fieldValue = fields[i].value;
+      fieldnames.push(fieldName);
+      fieldvals.push(fieldValue);
+   }
+   fieldnames.push('action');
+   fieldvals.push('verifyAndUpdate');
+   var formHandler = partial(reworkForm, form);
+   var req = doSimpleXMLHttpRequest(baseUrl+'?'+queryString(fieldnames, fieldvals));
+   req.addCallback(formHandler);
+   req.addErrback(errorForm);
+}
+
+
+
+</script>
+{/literal}
+<!-- do we need to have more than one set of these on a page? -->
+<form >
+<input type="hidden" name="action" value="submitConditionalSet" />
+<input type="hidden" name="fieldset_id" class="resolved_conditional" value="{$fieldset_id}" />
+<!-- add items to handle save here. -->
+
+<input type="button" value="Undo change" onclick="doConditionalUndo(); return false;"/>
+
+<fieldset id="conditional_field">
+<legend>Project Details</legend>
+<p>Please be aware that - depending on your selections - new values may become available.</p>
+
+<div > 
+<!-- how do we add these after-the-fact, especially given that we need to add columns later? -->
+<select name="fields[0]" class="unresolved_conditional" onchange="conditionalFieldChanged(this)">
+    <option value="1">Value 1</option>
+    <option value="2">Value 2</option>
+    <option value="3">Value 3</option>
+    <option value="4">Value 4</option>
+    <option value="5">Value 5</option>
+    <option value="6">Value 6</option>
+    <option value="7">Value 7</option>
+    <option value="8">Value 8</option>
+</select>
+
+</div>
+
+</fieldset>
+
+<input type="submit" value="save" />
+</form>
+
+

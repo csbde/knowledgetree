@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html>
+<body>
+ <div>
+    <fieldset>
+       <legend>Advanced Search</legend>
+       
+       <p>Find items matching <select><option>all conditions</option><option>any conditions</option></select></p>
+       
+       <table>
+       
+<tr>
+          <td colspan="2">
+             <fieldset>
+       <legend>Sub Search</legend>
+       
+       <p>Find items matching <select><option>all conditions</option><option>any conditions</option></select></p>
+         
+       <table>
+         <tr>
+           <td>Document Type is</td>
+           <td><select><option>Document Type 1</option><option>Document Type 2</option><option>Document Type 3</option></select></td>
+           <td><input type="button" value="remove"/></td>
+         </tr>
+         <tr>
+           <td><select><option>Document Type is</option><option>Contains Text</option></select></td>
+           <td>Choose a type of query first</td>
+           <td><input type="button" value="remove"/></td>
+         </tr>
+         <tr>
+           <td> </td>
+           <td> </td>
+           <td><input type="button" value="add condition"/><input type="button" value="add subsearch"/></td>
+         </tr>
+         
+       </table>
+       </fieldset>
+         </td>
+       <td><input type="button" value="remove"/></td>
+       </tr>
+       
+<tr>
+          <td colspan="2">
+             <fieldset>
+       <legend>Sub Search</legend>
+       
+       <p>Find items matching <select><option>all conditions</option><option>any conditions</option><option>all subsearches</option><option>any subsearch</option></select></p>
+         
+       <table>
+         <tr>
+           <td>Document Type is</td>
+           <td><select><option>Document Type 1</option><option>Document Type 2</option><option>Document Type 3</option></select></td>
+           <td><input type="button" value="remove"/></td>
+         </tr>
+         <tr>
+           <td><select><option>Document Type is</option><option>Contains Text</option></select></td>
+           <td>Choose a type of query first</td>
+           <td><input type="button" value="remove"/></td>
+         </tr>
+         <tr>
+           <td> </td>
+           <td> </td>
+           <td><input type="button" value="add subsearch"/></td>
+         </tr>
+         
+       </table>
+       </fieldset>
+         </td>
+       <td><input type="button" value="remove"/></td>
+       </tr>
+    
+
+         
+         <tr>
+           <td> </td>
+           <td> </td>
+           <td><input type="button" value="add subsearch"/></td>
+         </tr>
+         
+       </table>
+       
+    </fieldset>
+    <p><!-- --></p>
+ </div>
+ 
+ 
+</body>
+</html>
