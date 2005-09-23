@@ -1,12 +1,12 @@
-/*
+/***
 
-MochiKit.Async 0.5
+MochiKit.Async 0.80
 
 See <http://mochikit.com/> for documentation, downloads, license, etc.
 
 (c) 2005 Bob Ippolito.  All rights Reserved.
 
-*/
+***/
 
 if (typeof(dojo) != 'undefined') {
     dojo.provide("MochiKit.Async");
@@ -29,7 +29,7 @@ if (typeof(MochiKit.Async) == 'undefined') {
 }
 
 MochiKit.Async.NAME = "MochiKit.Async";
-MochiKit.Async.VERSION = "0.5";
+MochiKit.Async.VERSION = "0.80";
 MochiKit.Async.__repr__ = function () {
     return "[" + this.NAME + " " + this.VERSION + "]";
 }
@@ -518,16 +518,16 @@ MochiKit.Async.sendXMLHttpRequest = function (req, /* optional */ sendContent) {
             var status = null;
             try {
                 status = req.status;
-                if (typeof(status) == 'undefined' && MochiKit.Base.isNotEmpty(req.responseText)) {
-                    // XXX: Safari heisenbug workaround
-                    // MochiKit.Logging.logDebug('Fixing up status due to Safari heisenbug');
-                    status = 200;
+                if (!status && MochiKit.Base.isNotEmpty(req.responseText)) {
+                    // 0 or undefined seems to mean cached or local
+                    status = 304;
                 }
             } catch (e) {
                 // pass
                 // MochiKit.Logging.logDebug('error getting status?', repr(items(e)));
             }
-            if (status == 200) { // OK
+            //  200 is OK, 304 is NOT_MODIFIED
+            if (status == 200 || status == 304) { // OK
                 d.callback(req);
             } else {
                 var err = new MochiKit.Async.XMLHttpRequestError(req, "Request failed");
@@ -612,7 +612,8 @@ MochiKit.Async.EXPORT = [
     "doSimpleXMLHttpRequest",
     "loadJSONDoc",
     "wait",
-    "callLater"
+    "callLater",
+    "sendXMLHttpRequest"
 ];
     
 MochiKit.Async.EXPORT_OK = [
@@ -633,7 +634,7 @@ MochiKit.Async.__new__ = function () {
 MochiKit.Async.__new__();
 
 if ((typeof(JSAN) == 'undefined' && typeof(dojo) == 'undefined')
-    || (typeof(__MochiKit_Compat__) == 'boolean' && __MochiKit_Compat__)) {
+    || (typeof(MochiKit.__compat__) == 'boolean' && MochiKit.__compat__)) {
     (function (self) {
             var all = self.EXPORT_TAGS[":all"];
             for (var i = 0; i < all.length; i++) {

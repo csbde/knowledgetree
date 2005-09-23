@@ -1,12 +1,12 @@
-/*
+/***
 
-MochiKit.Logging 0.5
+MochiKit.Logging 0.80
 
 See <http://mochikit.com/> for documentation, downloads, license, etc.
 
 (c) 2005 Bob Ippolito.  All rights Reserved.
 
-*/
+***/
 if (typeof(dojo) != 'undefined') {
     dojo.provide('MochiKit.Logging');
     dojo.require('MochiKit.Base');
@@ -29,7 +29,7 @@ if (typeof(MochiKit.Logging) == 'undefined') {
 }
 
 MochiKit.Logging.NAME = "MochiKit.Logging";
-MochiKit.Logging.VERSION = "0.5";
+MochiKit.Logging.VERSION = "0.80";
 MochiKit.Logging.__repr__ = function () {
     return "[" + this.NAME + " " + this.VERSION + "]";
 };
@@ -335,15 +335,20 @@ MochiKit.Logging.__new__ = function () {
     Logger.prototype.fatal = partial(Logger.prototype.baseLog, 'FATAL');
     Logger.prototype.warning = partial(Logger.prototype.baseLog, 'WARNING');
 
-    var bind = MochiKit.Base.bind;
+    // indirectly find logger so it can be replaced
+    var self = this;
+    var connectLog = function (name) {
+        return function () {
+            self.logger[name].apply(self.logger, arguments);
+        }
+    };
 
-    var logger = new Logger();
-    this.log = bind(logger.log, logger);
-    this.logError = bind(logger.error, logger);
-    this.logDebug = bind(logger.debug, logger);
-    this.logFatal = bind(logger.fatal, logger);
-    this.logWarning = bind(logger.warning, logger);
-    this.logger = logger;
+    this.log = connectLog('log');
+    this.logError = connectLog('error');
+    this.logDebug = connectLog('debug');
+    this.logFatal = connectLog('fatal');
+    this.logWarning = connectLog('warning');
+    this.logger = new Logger();
 
     this.EXPORT_TAGS = {
         ":common": this.EXPORT,
@@ -357,7 +362,7 @@ MochiKit.Logging.__new__ = function () {
 MochiKit.Logging.__new__();
 
 if ((typeof(JSAN) == 'undefined' && typeof(dojo) == 'undefined')
-    || (typeof(__MochiKit_Compat__) == 'boolean' && __MochiKit_Compat__)) {
+    || (typeof(MochiKit.__compat__) == 'boolean' && MochiKit.__compat__)) {
     (function (self) {
             var all = self.EXPORT_TAGS[":all"];
             for (var i = 0; i < all.length; i++) {

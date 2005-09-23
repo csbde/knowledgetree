@@ -1,12 +1,12 @@
-/*
+/***
 
-MochiKit.Format 0.5
+MochiKit.Format 0.80
 
 See <http://mochikit.com/> for documentation, downloads, license, etc.
 
 (c) 2005 Bob Ippolito.  All rights Reserved.
 
-*/
+***/
 
 if (typeof(dojo) != 'undefined') {
     dojo.provide('MochiKit.Format');
@@ -21,7 +21,7 @@ if (typeof(MochiKit.Format) == 'undefined') {
 }
 
 MochiKit.Format.NAME = "MochiKit.Format";
-MochiKit.Format.VERSION = "0.5";
+MochiKit.Format.VERSION = "0.80";
 MochiKit.Format.__repr__ = function () {
     return "[" + this.NAME + " " + this.VERSION + "]";
 }
@@ -75,6 +75,27 @@ MochiKit.Format.twoDigitFloat = function (someFloat) {
     }
 };
 
+MochiKit.Format.lstrip = function (str, /* optional */chars) {
+    if (!chars) {
+        return str.replace(/^\s+/, "");
+    } else {
+        return str.replace(new RegExp("^[" + chars + "]+"), "");
+    }
+};
+
+MochiKit.Format.rstrip = function (str, /* optional */chars) {
+    if (!chars) {
+        return str.replace(/\s+$/, "");
+    } else {
+        return str.replace(new RegExp("[" + chars + "]+$"), "");
+    }
+};
+
+MochiKit.Format.strip = function (str, /* optional */chars) {
+    var self = MochiKit.Format;
+    return self.rstrip(self.lstrip(str, chars), chars);
+};
+
 MochiKit.Format.percentFormat = function (someFloat) {
     /***
 
@@ -87,7 +108,10 @@ MochiKit.Format.percentFormat = function (someFloat) {
 MochiKit.Format.EXPORT = [
     "twoDigitAverage",
     "twoDigitFloat",
-    "percentFormat"
+    "percentFormat",
+    "lstrip",
+    "rstrip",
+    "strip"
 ];
 
 MochiKit.Format.EXPORT_OK = [];
@@ -114,7 +138,7 @@ MochiKit.Format.__new__ = function () {
 MochiKit.Format.__new__();
 
 if ((typeof(JSAN) == 'undefined' && typeof(dojo) == 'undefined')
-    || (typeof(__MochiKit_Compat__) == 'boolean' && __MochiKit_Compat__)) {
+    || (typeof(MochiKit.__compat__) == 'boolean' && MochiKit.__compat__)) {
     (function (self) {
             var all = self.EXPORT_TAGS[":all"];
             for (var i = 0; i < all.length; i++) {

@@ -1,12 +1,12 @@
-/*
+/***
 
-MochiKit.Iter 0.5
+MochiKit.Iter 0.80
 
 See <http://mochikit.com/> for documentation, downloads, license, etc.
 
 (c) 2005 Bob Ippolito.  All rights Reserved.
 
-*/
+***/
 if (typeof(dojo) != 'undefined') {
     dojo.provide('MochiKit.Iter');
     dojo.require('MochiKit.Base');
@@ -29,7 +29,7 @@ if (typeof(MochiKit.Iter) == 'undefined') {
 }           
         
 MochiKit.Iter.NAME = "MochiKit.Iter";
-MochiKit.Iter.VERSION = "0.5";
+MochiKit.Iter.VERSION = "0.80";
 MochiKit.Iter.__repr__ = function () {
     return "[" + this.NAME + " " + this.VERSION + "]";
 }
@@ -319,6 +319,7 @@ MochiKit.Iter.imap = function (fun, p, q/*, ...*/) {
     ***/
     var map = MochiKit.Base.map;
     var iterables = map(MochiKit.Iter.iter, MochiKit.Base.extend(null, arguments, 1));
+    var next = MochiKit.Iter.next;
     return {
         "repr": function () { return "imap(...)"; },
         "toString": MochiKit.Base.forward("repr"),
@@ -741,14 +742,21 @@ MochiKit.Iter.iextend = function (lst, iterable) {
     
     ***/
     
-    iterable = MochiKit.Iter.iter(iterable);
-    try {
-        while (true) {
-            lst.push(iterable.next());
+    if (MochiKit.Base.isArrayLike(iterable)) {
+        // fast-path for array-like
+        for (var i = 0; i < iterable.length; i++) {
+            lst.push(iterable[i]);
         }
-    } catch (e) {
-        if (e != MochiKit.Iter.StopIteration) {
-            throw e;
+    } else {
+        iterable = MochiKit.Iter.iter(iterable);
+        try {
+            while (true) {
+                lst.push(iterable.next());
+            }
+        } catch (e) {
+            if (e != MochiKit.Iter.StopIteration) {
+                throw e;
+            }
         }
     }
     return lst;
@@ -833,7 +841,7 @@ MochiKit.Iter.__new__();
 reduce = MochiKit.Iter.reduce;
 
 if ((typeof(JSAN) == 'undefined' && typeof(dojo) == 'undefined')
-    || (typeof(__MochiKit_Compat__) == 'boolean' && __MochiKit_Compat__)) {
+    || (typeof(MochiKit.__compat__) == 'boolean' && MochiKit.__compat__)) {
     (function (self) {
             var all = self.EXPORT_TAGS[":all"];
             for (var i = 0; i < all.length; i++) {

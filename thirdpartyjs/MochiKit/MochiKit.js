@@ -1,12 +1,12 @@
-/*
+/***
 
-MochiKit.MochiKit 0.5
+MochiKit.MochiKit 0.80
 
 See <http://mochikit.com/> for documentation, downloads, license, etc.
 
 (c) 2005 Bob Ippolito.  All rights Reserved.
 
-*/
+***/
 
 if (typeof(MochiKit) == 'undefined') {
     MochiKit = {};
@@ -17,7 +17,7 @@ if (typeof(MochiKit.MochiKit) == 'undefined') {
 }
 
 MochiKit.MochiKit.NAME = "MochiKit.MochiKit";
-MochiKit.MochiKit.VERSION = "0.5";
+MochiKit.MochiKit.VERSION = "0.80";
 MochiKit.MochiKit.__repr__ = function () {
     return "[" + this.NAME + " " + this.VERSION + "]";
 };
@@ -82,7 +82,9 @@ if (typeof(JSAN) != 'undefined' || typeof(dojo) != 'undefined') {
     }());
     
 } else {
-    __MochiKit_Compat__ = true;
+    if (typeof(MochiKit.__compat__) == 'undefined') {
+        MochiKit.__compat__ = true;
+    }
     (function () {
         var scripts = document.getElementsByTagName("script");
         var base = null;
@@ -100,19 +102,24 @@ if (typeof(JSAN) != 'undefined' || typeof(dojo) != 'undefined') {
             return;
         }
         var modules = MochiKit.MochiKit.SUBMODULES;
+        modules.unshift("Compat");
         for (var i = 0; i < modules.length; i++) {
+            if (MochiKit[modules[i]]) {
+                continue;
+            }
             var uri = base + modules[i] + '.js';
             if (uri in allScripts) {
                 continue;
             }
-            var tag = '<' + 'script src="' + uri + '" type="text/javascript"' + '>' + '<' + '/script' + '>';
-            document.write(tag);
-            // the following doesn't work in Safari
             if (false) {
+                // doesn't work in Safari
                 var s = document.createElement('script');
                 s.setAttribute("src", uri);
                 s.setAttribute("type", "text/javascript");
                 baseElem.parentNode.appendChild(s);
+            } else {
+                var tag = '<' + 'script src="' + uri + '" type="text/javascript"' + '>' + '<' + '/script' + '>';
+                document.write(tag);
             }
         }
     })();

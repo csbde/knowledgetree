@@ -1,12 +1,12 @@
-/*
+/***
 
-MochiKit.Base 0.5
+MochiKit.Base 0.80
 
 See <http://mochikit.com/> for documentation, downloads, license, etc.
 
 (c) 2005 Bob Ippolito.  All rights Reserved.
 
-*/
+***/
 
 if (typeof(dojo) != 'undefined') {
     dojo.provide("MochiKit.Base");
@@ -19,7 +19,7 @@ if (typeof(MochiKit.Base) == 'undefined') {
     MochiKit.Base = {};
 }
 
-MochiKit.Base.VERSION = "0.5";
+MochiKit.Base.VERSION = "0.80";
 MochiKit.Base.NAME = "MochiKit.Base"
 MochiKit.Base.__repr__ = function () {
     return "[" + this.NAME + " " + this.VERSION + "]";
@@ -411,8 +411,8 @@ MochiKit.Base.map = function (fn, lst/*, lst... */) {
         if (fn == null) {
             return MochiKit.Base.extend(null, lst);
         }
-        // fast path for map(fn, lst)
-        if (typeof(Array.prototype.map) == 'function') {
+        // disabled fast path for map(fn, lst)
+        if (false && typeof(Array.prototype.map) == 'function') {
             // Mozilla fast-path
             return Array.prototype.map.call(lst, fn);
         }
@@ -776,8 +776,12 @@ MochiKit.Base.reprArrayLike = function (o) {
 };
 
 MochiKit.Base.reprString = function (o) { 
+    /* XXX: this is not perfect */
     o = '"' + o.replace(/(["\\])/g, '\\$1') + '"';
-    return o.replace(/(\n)/g, "\\n");
+    o = o.replace(/(\n)/g, "\\n");
+    o = o.replace(/(\t)/g, "\\t");
+    o = o.replace(/(\r)/g, "\\r");
+    return o;
 };
 
 MochiKit.Base.reprNumber = function (o) {
@@ -974,7 +978,64 @@ MochiKit.Base.nameFunctions = function (namespace) {
             }
         }
     }
-}
+};
+
+
+MochiKit.Base.urlEncode = function (unencoded) {
+    var rval = escape(unencoded).replace(/\+/g, '%2B').replace(/\"/g,'%22');
+    return rval.replace(/\'/g, '%27');
+};
+
+
+MochiKit.Base.queryString = function (names, values) {
+    if (arguments.length == 1) {
+        var o = names;
+        names = [];
+        values = [];
+        for (var k in o) {
+            var v = o[k];
+            if (typeof(v) != "function") {
+                names.push(k);
+                values.push(v);
+            }
+        }
+    }
+    var rval = [];
+    var len = Math.min(names.length, values.length);
+    var urlEncode = MochiKit.Base.urlEncode;
+    for (var i = 0; i < len; i++) {
+        var v = values[i];
+        if (typeof(v) != 'undefined' && v != null) {
+            rval.push(urlEncode(names[i]) + "=" + urlEncode(v));
+        }
+    }
+    return rval.join("&");
+};
+
+
+MochiKit.Base.parseQueryString = function (encodedString, useArrays) {
+    var pairs = encodedString.replace(/\+/g, "%20").split("&");
+    var o = {};
+    if (useArrays) {
+        for (var i = 0; i < pairs.length; i++) {
+            var pair = pairs[i].split("=");
+            var name = unescape(pair[0]);
+            var arr = o[name];
+            if (!(arr instanceof Array)) {
+                arr = [];
+                o[name] = arr;
+            }
+            arr.push(unescape(pair[1]));
+        }
+    } else {
+        for (var i = 0; i < pairs.length; i++) {
+            var pair = pairs[i].split("=");
+            o[unescape(pair[0])] = unescape(pair[1]);
+        }
+    }
+    return o;
+};
+    
 
 MochiKit.Base.EXPORT = [
     "clone",
@@ -1020,7 +1081,10 @@ MochiKit.Base.EXPORT = [
     "objMax",
     "objMin",
     "nodeWalk",
-    "zip"
+    "zip",
+    "urlEncode",
+    "queryString",
+    "parseQueryString"
 ];
 
 MochiKit.Base.EXPORT_OK = [
@@ -1078,7 +1142,7 @@ compare = MochiKit.Base.compare;
 
 
 if ((typeof(JSAN) == 'undefined' && typeof(dojo) == 'undefined')
-    || (typeof(__MochiKit_Compat__) == 'boolean' && __MochiKit_Compat__)) {
+    || (typeof(MochiKit.__compat__) == 'boolean' && MochiKit.__compat__)) {
         (function (self) {
             var all = self.EXPORT_TAGS[":all"];
             for (var i = 0; i < all.length; i++) {

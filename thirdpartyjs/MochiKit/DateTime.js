@@ -1,12 +1,12 @@
-/*
+/***
 
-MochiKit.DateTime 0.5
+MochiKit.DateTime 0.80
 
 See <http://mochikit.com/> for documentation, downloads, license, etc.
 
 (c) 2005 Bob Ippolito.  All rights Reserved.
 
-*/
+***/
 
 if (typeof(dojo) != 'undefined') {
     dojo.provide('MochiKit.DateTime');
@@ -21,7 +21,7 @@ if (typeof(MochiKit.DateTime) == 'undefined') {
 }
 
 MochiKit.DateTime.NAME = "MochiKit.DateTime";
-MochiKit.DateTime.VERSION = "0.5";
+MochiKit.DateTime.VERSION = "0.80";
 MochiKit.DateTime.__repr__ = function () {
     return "[" + this.NAME + " " + this.VERSION + "]";
 }
@@ -174,7 +174,7 @@ MochiKit.DateTime.__new__ = function () {
 MochiKit.DateTime.__new__();
 
 if ((typeof(JSAN) == 'undefined' && typeof(dojo) == 'undefined')
-    || (typeof(__MochiKit_Compat__) == 'boolean' && __MochiKit_Compat__)) {
+    || (typeof(MochiKit.__compat__) == 'boolean' && MochiKit.__compat__)) {
     (function (self) {
             var all = self.EXPORT_TAGS[":all"];
             for (var i = 0; i < all.length; i++) {
