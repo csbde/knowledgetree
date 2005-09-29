@@ -1,0 +1,47 @@
+<h1>Document Fields</h1>
+
+{ if $fieldsets}
+<h2>Existing generic document fields</h2>
+
+<table class="pretty" cellspacing="0" cellpadding="0">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Generic</th>
+      <th>Fields</th>
+    </tr>
+  </thead>
+  <tbody>
+{foreach from=$fieldsets item=oFieldset}
+    <tr>
+      <td>
+        <a href="?action=edit&fFieldsetId={$oFieldset->getId()}"> { $oFieldset->getName() }
+        </a>
+      </td>
+      <td>
+{if $oFieldset->getIsGeneric()}
+	Yes
+{else}
+	No
+{/if}
+      </td>
+      <td>
+<ul>
+{foreach from=$oFieldset->getFields() item=oField}
+  <li>{$oField->getName()}</li>
+{/foreach}
+</ul>
+      </td>
+    </tr>
+  </tbody>
+{/foreach}
+</table>
+{/if}
+
+<h2>Create a new document field set</h2>
+
+<form method="POST">
+<input type="hidden" name="action" value="new">
+<input type="textbox" name="name">
+<input type="submit" name="submit" value="Create">
+</form>
