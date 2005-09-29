@@ -52,14 +52,13 @@ $default->siteMap->addPage("addDocumentArchiveSettings", "/presentation/lookAndF
 $default->siteMap->addPage("modifyDocumentArchiveSettings", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/archiving/modifyArchiveSettingsBL.php", "Manage Documents", User, "Modify Document Archive Settings", false);
 $default->siteMap->addPage("requestDocumentRestore", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/archiving/requestDocumentRestoreBL.php", "Manage Documents", User, "Request Document Restoration", false);
 
-$default->siteMap->addPage("addDocument", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocumentBL.php", "Manage Documents", User, _("Add A Document"));
+$default->siteMap->addPage("addDocument", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/addDocument.php", "Manage Documents", User, _("Add A Document"));
 $default->siteMap->addPage("bulkUpload", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/bulkUploadBL.php", "Manage Documents", User, _("Bulk Upload"));
 $default->siteMap->addPage("bulkImport", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/bulkImport.php", "Manage Documents", User, _("Bulk Import"));
 
 // folder management
 $default->siteMap->addPage("addFolder", "/presentation/lookAndFeel/knowledgeTree/foldermanagement/addFolderBL.php", "Manage Documents", User, _("Add A Folder"));
-$default->siteMap->addPage("addFolderDocType", "/presentation/lookAndFeel/knowledgeTree/foldermanagement/addFolderDocTypeBL.php", "Manage Documents", User, "");
-$default->siteMap->addPage("deleteFolderDocType", "/presentation/lookAndFeel/knowledgeTree/foldermanagement/deleteFolderDocTypeBL.php", "Manage Documents", User, "");
+$default->siteMap->addPage("editFolderDocType", "/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderDocumentTypes.php", "Manage Documents", User, "");
 $default->siteMap->addPage("editFolder", "/presentation/lookAndFeel/knowledgeTree/foldermanagement/editBL.php", "Manage Documents", User, _("Modify Folder Properties"));
 $default->siteMap->addPage("editFolderPermissions", "/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderPermissions.php", "Manage Documents", User, _("Folder Permissions"));
 $default->siteMap->addPage("copyFolderPermissions", "/presentation/lookAndFeel/knowledgeTree/foldermanagement/copyInheritedPermissionsBL.php", "Manage Documents", User, _("Copy Inherited Folder Permissions"), false);
@@ -119,7 +118,7 @@ $default->siteMap->addPage("groupManagement", "/presentation/lookAndFeel/knowled
 $default->siteMap->addPage("unitManagement", "/presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/listUnitsBL.php", "Administration", SysAdmin, _("Unit Management"), true, 3);
 $default->siteMap->addPage("orgManagement", "/presentation/lookAndFeel/knowledgeTree/administration/orgmanagement/listOrgBL.php", "Administration", SysAdmin, _("Organisation Management"), true, 4);
 
-$default->siteMap->addPage("doctype", "/presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/listDocTypesBL.php", "Administration", SysAdmin, _("Document Type Management"), true, 5);
+$default->siteMap->addPage("doctype", "presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/documentTypes.php", "Administration", SysAdmin, _("Document Type Management"), true, 5);
 $default->siteMap->addPage("docfield", "/presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/listDocFieldsBL.php", "Administration", SysAdmin, _("Document Field Management"), true, 6);
 
 $default->siteMap->addPage("archivedDocuments", "/presentation/lookAndFeel/knowledgeTree/administration/documentmanagement/manageArchivedDocumentsBL.php", "Administration", UnitAdmin, _("Restore Archived Documents"), true, 7);
@@ -182,15 +181,6 @@ $default->siteMap->addPage("addOrg", "/presentation/lookAndFeel/knowledgeTree/ad
 $default->siteMap->addDefaultPage("editOrg", "/presentation/lookAndFeel/knowledgeTree/administration/orgmanagement/editOrgBL.php", "Administration", SysAdmin, "Edit Organisation Properties", false);
 $default->siteMap->addPage("addOrgSuccess", "/presentation/lookAndFeel/knowledgeTree/administration/orgmanagement/addOrgSuccess.php", "Administration", SysAdmin, "Organisation added Successfully", false);
 $default->siteMap->addDefaultPage("removeOrg", "/presentation/lookAndFeel/knowledgeTree/administration/orgmanagement/removeOrgBL.php", "Administration", SysAdmin, "Remove an Organisation", false);
-
-// document type stuff
-$default->siteMap->addDefaultPage("addDocTypeFieldsLink", "/presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/addDocTypeFieldsLinkBL.php", "Administration", SysAdmin, "Add a Document Type to Fields Link", false);
-$default->siteMap->addPage("addDocType", "/presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/addDocTypeBL.php", "Administration", SysAdmin, "Add a Document Type", false);
-$default->siteMap->addPage("addDocTypeSuccess", "/presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/addDocTypeSuccess.php", "Administration", SysAdmin, "Add a Document Type success", false);
-$default->siteMap->addDefaultPage("editDocType", "/presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/editDocTypeBL.php", "Administration", SysAdmin, "Edit a Document Type", false);
-$default->siteMap->addDefaultPage("editDocTypeFields", "/presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/editDocTypeFieldsBL.php", "Administration", SysAdmin, "Edit Document Type Fields", false);
-$default->siteMap->addPage("listDocTypes", "/presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/listDocTypesBL.php", "Administration", SysAdmin, "List Document Types", false);
-$default->siteMap->addDefaultPage("removeDocType", "/presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/removeDocTypeBL.php", "Administration", SysAdmin, "Remove a Document Type", false);
 
 // doc field stuff
 $default->siteMap->addPage("listDocFields", "/presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/listDocFieldsBL.php", "Administration", SysAdmin, "List Document Fields", false);
