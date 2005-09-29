@@ -47,6 +47,10 @@ $oStorage =& KTStorageManagerUtil::getSingleton();
 
 class KTAddDocumentDispatcher extends KTStandardDispatcher {
     function check() {
+        if ($_REQUEST['fFolderID']) {
+            $_REQUEST['fFolderId'] = $_REQUEST['fFolderID'];
+            unset($_REQUEST['fFolderID']);
+        }
         $this->validateFolder($_REQUEST['fFolderId']);
         $this->validatePermission('ktcore.permissions.write');
         $this->validateFolderPermission();
