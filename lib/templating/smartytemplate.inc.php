@@ -32,16 +32,75 @@ class KTSmartyTemplate extends KTTemplate {
         $this->KTTemplate($sPath);
     }
 
-    function render($aDict) {
+    function render($aDict = null) {
         $smarty = new Smarty;
         $smarty->compile_dir = "/tmp";
-        foreach ($aDict as $k => $v) {
-            $smarty->assign($k, $v);
+        if (is_array($aDict)) {
+            foreach ($aDict as $k => $v) {
+                $smarty->assign($k, $v);
+            }
+        }
+        if (is_array($this->aDict)) {
+            foreach ($this->aDict as $k => $v) {
+                $smarty->assign($k, $v);
+            }
         }
         $KTConfig =& KTConfig::getSingleton();
         $smarty->assign("config", $KTConfig);
         $smarty->caching = false;
+        $smarty->register_function('entity_select', array('KTSmartyTemplate', 'entity_select'));
+        $smarty->register_function('boolean_checkbox', array('KTSmartyTemplate', 'boolean_checkbox'));
         return $smarty->fetch($this->sPath);
+    }
+
+    function entity_select ($params, &$smarty) {
+        require_once $smarty->_get_plugin_filepath('function', 'html_options');
+
+        $entities = KTUtil::arrayGet($params, 'entities');
+        if (empty($entities)) {
+            $smarty->trigger_error("assign: missing 'entities' parameter");
+            return;
+        }
+
+        $method = KTUtil::arrayGet($params, 'method', 'getName');
+
+        $params['values'] = array();
+        $params['output'] = array();
+        foreach ($entities as $oEntity) {
+            $params['values'][] = $oEntity->getId();
+            $params['output'][] = call_user_func(array(&$oEntity, $method));
+        }
+        unset($params['entities']);
+
+        return smarty_function_html_options($params, $smarty);
+    }
+
+    function boolean_checkbox ($params, &$smarty) {
+        $name = KTUtil::arrayGet($params, 'name');
+        if (empty($name)) {
+            $smarty->trigger_error("assign: missing 'name' parameter");
+            return;
+        }
+        $bool = KTUtil::arrayGet($params, 'bool');
+        if (is_null($bool)) {
+            $smarty->trigger_error("assign: missing 'bool' parameter");
+            return;
+        }
+        $value = KTUtil::arrayGet($params, 'value', 1);
+
+        $label = KTUtil::arrayGet($params, 'label');
+
+        if ($bool) {
+            $checked = ' checked="checked"';
+        } else {
+            $checked = '';
+        }
+
+        $ret = sprintf('<input type="checkbox" name="%s" value="%s"%s />', $name, $value, $checked);
+        if ($label) {
+            $ret = sprintf('<label>%s%s</label>', $ret, $label);
+        }
+        return $ret;
     }
 }
 
