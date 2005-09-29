@@ -1,0 +1,30 @@
+<h1>Document Types</h1>
+
+<h2>Existing document types</h2>
+
+<table class="pretty" cellspacing="0" cellpadding="0">
+  <thead>
+    <tr><th>Name</th></tr>
+  </thead>
+  <tbody>
+{foreach from=$document_types item=oDocumentType}
+<tr><td>
+{ if $oDocumentType->isUsed() }
+<img border="0" src="{"icons/delete_disabled.png"|imgSrc}" title="This document type is assigned to documents, and thus can not be deleted." />
+{ else }
+<a href="?action=delete&fDocumentTypeId={$oDocumentType->getId()}"><img border="0" src="{"icons/delete.png"|imgSrc}" /></a>
+{/if}
+<a href="?action=edit&fDocumentTypeId={$oDocumentType->getId()}"> { $oDocumentType->getName() }
+</a>
+</td></tr>
+  </tbody>
+{/foreach}
+</table>
+
+<h2>Create a new document type</h2>
+
+<form method="POST">
+<input type="hidden" name="action" value="new">
+<input type="textbox" name="name">
+<input type="submit" name="submit" value="Create">
+</form>
