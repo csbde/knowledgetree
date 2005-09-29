@@ -122,7 +122,7 @@ class KTEntity {
             return PEAR::raiseError("No such ID: $iId");
         }
         if (count($res) > 1) {
-            return PEAR::raiseError("Multiple matches for ID: $iID");
+            return PEAR::raiseError("Multiple matches for ID: $iId");
         }
         $vk = array_flip($this->_aFieldToSelect);
         $aLoadInfo = array();
@@ -271,8 +271,8 @@ class KTEntityUtil {
         }
 
         $aRet = array();
-        foreach ($aIDs as $iID) {
-            $aRet[] =& call_user_func(array($sClassName, 'get'), $iID);
+        foreach ($aIDs as $iId) {
+            $aRet[] =& call_user_func(array($sClassName, 'get'), $iId);
         }
         return $aRet;
     }
