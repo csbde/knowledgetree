@@ -1,0 +1,20 @@
+<h1>Document types</h1>
+
+<p>Select document types allowed in folder:</p>
+
+<form action="{$smarty.server.PHP_SELF}" method="POST">
+<input type="hidden" name="action" value="assign">
+<input type="hidden" name="fFolderId" value="{$oFolder->getId()}">
+<table class="prettysw" cellspacing="0" cellpadding="0">
+<tr><th>Folder</th><td>{$oFolder->getName()}</td></tr>
+<tr><th>Restrict document types</th><td>{boolean_checkbox name="restricted" bool=$oFolder->getRestrictDocumentTypes() }</td></tr>
+<tr><th>Document Types</th><td>
+{entity_select entities=$document_types selected=$selected_types name="document_types[]" multiple="yes"}
+</td></tr>
+</table>
+
+<input type="submit" name="submit" value="Assign">
+</form>
+
+{assign var="iFolderId" value=$oFolder->getId()}
+<a href="{"editFolder"|generateControllerUrl:"fFolderID=$iFolderId"}">Back to folder</a>
