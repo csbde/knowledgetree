@@ -59,19 +59,53 @@ class KTDispatcher {
 }
 
 class KTStandardDispatcher extends KTDispatcher {
+    var $bLogonRequired = true;
+    var $bAdminRequired = false;
+
     function permissionDenied () {
         print "Permission denied";
     }
 
     function dispatch () {
-        if (!checkSession()) {
-            exit($this->permissionDenied());
+        $session = new Session();
+        $sessionStatus = $session->verify($bDownload);
+
+        if ($bLogonRequired !== false) {
+            if (empty($_SESSION['userID'])) {
+                $this->permissionDenied();
+                exit(0);
+            }
         }
+
+        if ($bAdminRequired !== false) {
+            if (!Permission::userIsSystemAdministrator($_SESSION['userID'])) {
+                $this->permissionDenied();
+                exit(0);
+            }
+        }
+
+        if ($this->check() !== true) {
+            $this->permissionDenied();
+            exit(0);
+        }
+
         return parent::dispatch();
+    }
+
+    function check() {
+        return true;
+    }
+
+    function handleOutput($data) {
+        global $main;
+        $main->bFormDisabled = true;
+        $main->setCentralPayload($data);
+        $main->render();
     }
 }
 
 class KTAdminDispatcher extends KTStandardDispatcher {
+    var $bAdminRequired = true;
 }
 
 ?>
