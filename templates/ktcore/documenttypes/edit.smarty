@@ -1,0 +1,43 @@
+<h1>Document Type: { $oDocumentType->getName() }</h1>
+
+<form method="POST" action="{$smarty.server.PHP_SELF}">
+<input type="hidden" name="action" value="editobject">
+<input type="hidden" name="fDocumentTypeId" value="{$oDocumentType->getId()}">
+<input type="textbox" name="name" value="{$oDocumentType->getName()|escape}">
+<input type="submit" name="submit" value="Change">
+</form>
+
+<h2>Type-specific field sets</h2>
+
+<h3>Existing field sets</h3>
+
+{ if $aCurrentFieldsets }
+<form method="POST" action="{$smarty.server.PHP_SELF}">
+  <input type="hidden" name="action" value="removefieldsets">
+  <input type="hidden" name="fDocumentTypeId" value="{$oDocumentType->getId()}">
+
+  <ul>
+  {foreach from="$aCurrentFieldsets item=oFieldset}
+    <li><label><input type="checkbox" name="fieldsetid[]" value="{$oFieldset->getId() }" />{$oFieldset->getName() }</label></li>
+  {/foreach}
+  </ul>
+  <input type="submit" name="submit" value="Remove field sets">
+</form>
+{ /if }
+
+{ if $aAvailableFieldsets }
+<h3>Add field sets</h3>
+
+<form method="POST" action="{$smarty.server.PHP_SELF}">
+  <input type="hidden" name="action" value="addfieldsets">
+  <input type="hidden" name="fDocumentTypeId" value="{$oDocumentType->getId()}">
+  <select name="fieldsetid" multiple="true" size="5">
+  {foreach from=$aAvailableFieldsets item=oFieldset}
+    <option value="{$oFieldset->getId()}">{$oFieldset->getName()}</option>
+  {/foreach}
+  </select>
+  <input type="submit" name="submit" value="Add field sets">
+</form>
+{ /if }
+
+<a href="{$smarty.server.PHP_SELF}">Back to document type list</a>
