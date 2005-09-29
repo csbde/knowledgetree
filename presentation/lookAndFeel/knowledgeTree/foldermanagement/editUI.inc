@@ -1,5 +1,4 @@
 <?php
-require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
 /**
  * $Id$
  *
@@ -25,6 +24,9 @@ require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
  * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
  * @package foldermanagement
  */
+
+require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
+require_once(KT_LIB_DIR . '/documentmanagement/DocumentType.inc');
 
 function getFolderPath($iFolderID) {
 	global $default;
@@ -105,27 +107,31 @@ function getFolderRouting($iFolderID, $sDivName, $bCollaboration) {
 }
 
 function getFolderDocTypes($iFolderID, $sDivName) {
-	global $default;
-	/*ok*/ $sQuery = array("SELECT FDL.id, FDL.folder_id, FDL.document_type_id, DTL.name, 'Remove' AS del " .
-				"FROM $default->folder_doctypes_table AS FDL INNER JOIN $default->document_types_table AS DTL ON FDL.document_type_id = DTL.id " .
-				"WHERE FDL.folder_id = ? " .
-				"ORDER BY DTL.name ASC", $iFolderID);
-	
-	$aColumns = array("name", "del");
-	$aColumnHeaders = array("","");
-	$aColumnTypes = array(1,3,3);
-	$aDBColumnArray = array("id","folder_id");
-	$aQueryStringVariableNames = array("fFolderDocTypeID", "fFolderID");
-	$aLinkURLs = array(1=>"$default->rootUrl/control.php?action=deleteFolderDocType");
-	
-	$oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaders, "610", $aLinkURLs, $aDBColumnArray,$aQueryStringVariableNames);
-	$oPatternTableSqlQuery->setTableHeading(_("Document Types"));
-	$oPatternTableSqlQuery->setDisplayColumnHeadings(true);
-	
-	$sToRender .= "<table>";
-	$sToRender .= "<tr><td>" . $oPatternTableSqlQuery->render() . "</td></tr>";	
-	$sToRender .= "<tr><td><a href=\"$default->rootUrl/control.php?action=addFolderDocType&fFolderID=$iFolderID\"><img src=\"" . KTHtml::getAddButton() . "\" border=\"0\" /></a></td></tr>";
-    $sToRender .= "</table>";		
+    $sTable = KTUtil::getTableName('folder_doctypes');
+    $aQuery = array(
+        "SELECT document_type_id FROM $sTable WHERE folder_id = ?",
+        array($iFolderID),
+    );
+    $aSelectedIds = DBUtil::getResultArrayKey($aQuery, 'document_type_id');
+
+    $sToRender  = '<h2>Document Types</h2>';
+
+    $oFolder =& Folder::get($iFolderID);
+    if ($oFolder->getRestrictDocumentTypes()) {
+        $sToRender .= '<h3>Document types are restricted to the following:</h3>';
+        $sToRender .= '<ul>';
+        foreach ($aSelectedIds as $iId) {
+            $oDocumentType =& DocumentType::get($iId);
+            $sToRender .= '<li>' . $oDocumentType->getName() . '</li>';
+        }
+        $sToRender .= '</ul>';
+    } else {
+        $sToRender .= '<h3>Document types are not restricted on this folder</h3>';
+    }
+    $sToRender .= sprintf(
+        '<a href="%s/control.php?action=editFolderDocType&fFolderId=%d"><img src="%s" border="0" /></a>',
+        $default->rootUrl, $iFolderID, KTHtml::getEditButton());
+    
     return renderSectionDiv($sDivName, $sToRender);	
 }
 
