@@ -75,6 +75,11 @@ class KTStandardDispatcher extends KTDispatcher {
                 $this->permissionDenied();
                 exit(0);
             }
+            $this->oUser =& User::get($_SESSION['userID']);
+            if (PEAR::isError($this->oUser) || ($this->oUser === false)) {
+                $this->permissionDenied();
+                exit(0);
+            }
         }
 
         if ($bAdminRequired !== false) {
@@ -101,6 +106,11 @@ class KTStandardDispatcher extends KTDispatcher {
         $main->bFormDisabled = true;
         $main->setCentralPayload($data);
         $main->render();
+    }
+
+    function errorPage($errorMessage) {
+        $this->handleOutput($errorMessage);
+        exit(0);
     }
 }
 
