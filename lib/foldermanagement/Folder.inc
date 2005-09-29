@@ -51,10 +51,12 @@ class Folder extends KTEntity {
     var $iPermissionObjectID;
     /** lookup accelerator id */
     var $iPermissionLookupID;
+    /** whether to restrict to only certain document types */
+    var $bRestrictDocumentTypes;
 
     // {{{ KTEntity stuff
     var $_aFieldToSelect = array(
-        'iID' => 'id',
+        'iId' => 'id',
         'sName' => 'name',
         'sDescription' => 'description',
         'iParentID' => 'parent_id',
@@ -65,6 +67,7 @@ class Folder extends KTEntity {
         'sParentFolderIDs' => 'parent_folder_ids',
         'iPermissionObjectID' => 'permission_object_id',
         'iPermissionLookupID' => 'permission_lookup_id',
+        'bRestrictDocumentTypes' => 'restrict_document_types',
     );
     // }}}
 	
@@ -110,6 +113,9 @@ class Folder extends KTEntity {
 	function setPermissionObjectID($iPermissionObjectID) { $this->iPermissionObjectID = $iPermissionObjectID; }
 	function getPermissionLookupID() { return $this->iPermissionLookupID; }
 	function setPermissionLookupID($iPermissionLookupID) { $this->iPermissionLookupID = $iPermissionLookupID; }
+
+	function getRestrictDocumentTypes() { return $this->bRestrictDocumentTypes; }
+	function setRestrictDocumentTypes($bRestrictDocumentTypes) { $this->bRestrictDocumentTypes = $bRestrictDocumentTypes; }
 
     // {{{ create()
     function create () {
@@ -181,6 +187,7 @@ class Folder extends KTEntity {
     function _fieldValues () {
         $this->sFullPath = $this->generateFolderPath($this->iParentID);
         $this->sParentFolderIDs = $this->generateFolderIDs($this->iParentID);
+        return parent::_fieldValues();
         return array(
             'name' => $this->sName,
             'description' => $this->sDescription,
@@ -226,11 +233,11 @@ class Folder extends KTEntity {
 	* the paths of the children in the database
 	* 
 	*/
-	function updateChildPaths($iID) {
+	function updateChildPaths($iId) {
 		global $default;
 		//get the direct children
         $sql = $default->db;
-		$sql->query(array("SELECT id from $default->folders_table WHERE parent_id = ?", $iID));/*ok*/
+		$sql->query(array("SELECT id from $default->folders_table WHERE parent_id = ?", $iId));/*ok*/
 		while ($sql->next_record()) {
 			//force an update, this will cause this child's children to be updated			
 			$oFolder = Folder::get($sql->f("id"));			
@@ -246,8 +253,8 @@ class Folder extends KTEntity {
      * update().
      */
 
-    function updateDocumentPaths($iID) {
-        $aDocuments = Document::getList(array('folder_id = ?', $iID));
+    function updateDocumentPaths($iId) {
+        $aDocuments = Document::getList(array('folder_id = ?', $iId));
         if (PEAR::isError($aDocuments)) {
             return $aDocuments;
         }
@@ -303,10 +310,11 @@ class Folder extends KTEntity {
 	*
 	* @return Folder folder object on successful retrieval, false otherwise and set $_SESSION["errorMessage"]
 	*/
+    /*
 	function get($iFolderID) {		
 		global $default,  $lang_err_object_not_exist;
 		$sql = $default->db;		
-		$sql->query(array("SELECT * FROM " . $default->folders_table . " WHERE id = ?", $iFolderID));/*ok*/
+		$sql->query(array("SELECT * FROM " . $default->folders_table . " WHERE id = ?", $iFolderID));
 		if ($sql->next_record()) {
 			$oFolder = & new Folder($sql->f("name"), $sql->f("description"), $sql->f("parent_id"), $sql->f("creator_id"), $sql->f("unit_id"), $sql->f("is_public"));
             $oFolder->iId = $iFolderID;
@@ -319,6 +327,10 @@ class Folder extends KTEntity {
  		$_SESSION["errorMessage"] = $lang_err_object_not_exist . "id = " . $iFolderID . " table = folders";
 		return false;
 	}
+    */
+    function &get($iFolderID) {
+        return KTEntityUtil::get('Folder', $iFolderID);
+    }
 
 	/**
 	 * Checks if a folder with the same name and parent exists in the database already
