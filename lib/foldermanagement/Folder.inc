@@ -300,34 +300,6 @@ class Folder extends KTEntity {
 		return substr($sChildString,0, strlen($sChildString)-1);
     }
 	
-	/**
-	* Static function.  
-	* Given a folder primary key will create
-	* a folder object and populate it with the corresponding
-	* database values
-	*
-	* @param $iFolderID		Primary key of folder to get
-	*
-	* @return Folder folder object on successful retrieval, false otherwise and set $_SESSION["errorMessage"]
-	*/
-    /*
-	function get($iFolderID) {		
-		global $default,  $lang_err_object_not_exist;
-		$sql = $default->db;		
-		$sql->query(array("SELECT * FROM " . $default->folders_table . " WHERE id = ?", $iFolderID));
-		if ($sql->next_record()) {
-			$oFolder = & new Folder($sql->f("name"), $sql->f("description"), $sql->f("parent_id"), $sql->f("creator_id"), $sql->f("unit_id"), $sql->f("is_public"));
-            $oFolder->iId = $iFolderID;
-			$oFolder->sFullPath = $sql->f("full_path");
-			$oFolder->sParentFolderIDs = $sql->f("parent_folder_ids");
-			$oFolder->iPermissionObjectID = $sql->f("permission_object_id");
-			$oFolder->iPermissionLookupID = $sql->f("permission_lookup_id");
-			return $oFolder;
-		} 
- 		$_SESSION["errorMessage"] = $lang_err_object_not_exist . "id = " . $iFolderID . " table = folders";
-		return false;
-	}
-    */
     function &get($iFolderID) {
         return KTEntityUtil::get('Folder', $iFolderID);
     }
