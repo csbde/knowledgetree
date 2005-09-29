@@ -26,12 +26,17 @@
 
 class KTTemplate {
     var $sPath;
+    var $aDict;
 
     function KTTemplate ($sPath) {
         $this->sPath = $sPath;
     }
 
-    function render($aDict) {
+    function setData($aDict) {
+        $this->aDict = $aDict;
+    }
+
+    function render($aDict = null) {
         return PEAR::raiseError("Not implemented");
     }
 }
