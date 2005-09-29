@@ -30,6 +30,11 @@ class DocumentType extends KTEntity {
 	var $iId;
 	/** document type name */
 	var $sName;
+
+    var $_aFieldToSelect = array(
+        'iId' => 'id',
+        'sName' => 'name',
+    );
 	
 	/**
 	* Default constructor
@@ -38,11 +43,10 @@ class DocumentType extends KTEntity {
 	* @param 	document type data type
 	*
 	*/
-	function DocumentType($sNewName) {
+	function DocumentType($sNewName = null) {
 		//object not created yet
 		$this->iId = -1;
 		$this->sName = $sNewName;
-		
 	}
 	
 	/**
@@ -93,33 +97,26 @@ class DocumentType extends KTEntity {
 	*
 	*/
 	function delete() {
-		global $default, $lang_err_database, $lang_err_object_key;
-		//only delete the object if it exists in the database
-		if ($this->iId > 0) {
-			//check to see if name exsits
-			$sql = $default->db;
-			$query = array("SELECT folder_id FROM ". $default->folder_doctypes_table ." WHERE document_type_id = ?", $this->iId);/*ok*/
-        		$sql->query($query);
-       			$rows = $sql->num_rows($sql);
-        
-      			 if ($rows > 0){
-            		 	// duplicate username
-           		 	$_SESSION["errorMessage"] = "DocTypes::Assigned to DocFolder name " . $this->iId . " is already exists!";
-           		 	return false;
-           		 
-	       		 }else{
-				$sql = $default->db;
-				$result = $sql->query(array("DELETE FROM " . $default->document_types_table . " WHERE id = ?", $this->iId));/*ok*/
-				if ($result) {
-					return true;
-				}
-				$_SESSION["errorMessage"] = $lang_err_database;
-				return false;
-			}
-		}
-		$_SESSION["errorMessage"] = $lang_err_object_key;
-		return false;
+        if ($this->isUsed()) {
+            return PEAR::raiseError('Document type still in use');
+        }
+        return parent::delete();
 	}
+
+    function isUsed() {
+        $sTable = KTUtil::getTableName('documents');
+        $res = DBUtil::getOneResultKey(array(
+            "SELECT COUNT(id) AS cnt FROM documents WHERE document_type_id = ?",
+            array($this->getId()),
+        ), 'cnt');
+        if (PEAR::isError($res)) {
+            return $res;
+        }
+        if ($res != 0) {
+            return true;
+        }
+        return false;
+    }
 	
 	/**
 	* Delete the current document from the database.  Set the primary key to -1 
@@ -174,9 +171,14 @@ class DocumentType extends KTEntity {
 	 *
 	 * @return Array array of DocumentType objects, false otherwise
 	*/
-	function getList($sWhereClause = null) {
-            return KTEntityUtil::getList(DocumentType::_table(), 'DocumentType', $sWhereClause);
+	function &getList($sWhereClause = null) {
+        return KTEntityUtil::getList2('DocumentType', $sWhereClause);
 	}
+
+    function &createFromArray($aArray) {
+        return KTEntityUtil::createFromArray('DocumentType', $aArray);
+    }
+
 }
 
 
