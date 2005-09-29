@@ -28,8 +28,7 @@ $default->sessions_table = "active_sessions";
 $default->data_types_table ="data_types";
 // document type fields
 $default->document_fields_table = "document_fields";
-// document type fields
-$default->document_fieldset_table = "document_fieldsets";
+$default->fieldsets_table = "fieldsets";
 // links document
 $default->document_fields_link_table = "document_fields_link";
 // document subscriptions
