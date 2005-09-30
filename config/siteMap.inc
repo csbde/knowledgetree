@@ -119,7 +119,7 @@ $default->siteMap->addPage("unitManagement", "/presentation/lookAndFeel/knowledg
 $default->siteMap->addPage("orgManagement", "/presentation/lookAndFeel/knowledgeTree/administration/orgmanagement/listOrgBL.php", "Administration", SysAdmin, _("Organisation Management"), true, 4);
 
 $default->siteMap->addPage("doctype", "presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/documentTypes.php", "Administration", SysAdmin, _("Document Type Management"), true, 5);
-$default->siteMap->addPage("docfield", "/presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/listDocFieldsBL.php", "Administration", SysAdmin, _("Document Field Management"), true, 6);
+$default->siteMap->addPage("docfield", "/presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/documentFields.php", "Administration", SysAdmin, _("Document Field Management"), true, 6);
 
 $default->siteMap->addPage("archivedDocuments", "/presentation/lookAndFeel/knowledgeTree/administration/documentmanagement/manageArchivedDocumentsBL.php", "Administration", UnitAdmin, _("Restore Archived Documents"), true, 7);
 $default->siteMap->addPage("deletedDocuments", "/presentation/lookAndFeel/knowledgeTree/administration/documentmanagement/listDeletedDocumentsBL.php", "Administration", UnitAdmin, _("Deleted Documents"), true, 8);
@@ -140,8 +140,7 @@ $default->siteMap->addPage("docLinkManagement", "/presentation/lookAndFeel/knowl
 $default->siteMap->addPage("manageHelp", "/presentation/lookAndFeel/knowledgeTree/administration/help/manageHelp.php", "Administration", SysAdmin, _("Help Administration"), true, 17);
 
 $default->siteMap->addPage("managePermissions", "/presentation/lookAndFeel/knowledgeTree/administration/permissions/managePermissions.php", "Administration", SysAdmin, _("Permissions Administration"), true, 18);
-$default->siteMap->addPage("manageFieldsets", "/presentation/lookAndFeel/knowledgeTree/administration/fieldsetmanagement/manageFieldsets.php", "Administration", SysAdmin, _("Fieldsets Administration"), true, 19);
-$default->siteMap->addPage("manageLookupTrees", "/presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/manageLookupTrees.php", "Administration", SysAdmin, _("Lookup Tree Administration"), true, 20);
+$default->siteMap->addPage("manageLookupTrees", "/presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/manageLookupTrees.php", "Administration", SysAdmin, _("Lookup Tree Administration"), true, 19);
 
 $default->siteMap->addSectionColour("Administration", "th", "056DCE");
 $default->siteMap->addSectionColour("Administration", "td", "6699FF");
@@ -181,18 +180,6 @@ $default->siteMap->addPage("addOrg", "/presentation/lookAndFeel/knowledgeTree/ad
 $default->siteMap->addDefaultPage("editOrg", "/presentation/lookAndFeel/knowledgeTree/administration/orgmanagement/editOrgBL.php", "Administration", SysAdmin, "Edit Organisation Properties", false);
 $default->siteMap->addPage("addOrgSuccess", "/presentation/lookAndFeel/knowledgeTree/administration/orgmanagement/addOrgSuccess.php", "Administration", SysAdmin, "Organisation added Successfully", false);
 $default->siteMap->addDefaultPage("removeOrg", "/presentation/lookAndFeel/knowledgeTree/administration/orgmanagement/removeOrgBL.php", "Administration", SysAdmin, "Remove an Organisation", false);
-
-// doc field stuff
-$default->siteMap->addPage("listDocFields", "/presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/listDocFieldsBL.php", "Administration", SysAdmin, "List Document Fields", false);
-$default->siteMap->addPage("addDocField", "/presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/addDocFieldBL.php", "Administration", SysAdmin, "Add a Document Field", false);
-$default->siteMap->addPage("addDocFieldSuccess", "/presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/addDocFieldSuccess.php", "Administration", SysAdmin, "Add a Document Field success", false);
-$default->siteMap->addDefaultPage("editDocField", "/presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/editDocFieldBL.php", "Administration", SysAdmin, "Edit a Document Field", false);
-$default->siteMap->addDefaultPage("removeDocField", "/presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/removeDocFieldBL.php", "Administration", SysAdmin, "Remove a Document Field", false);
-$default->siteMap->addDefaultPage("editDocFieldLookups", "/presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/editDocFieldLookupsBL.php", "Administration", SysAdmin, "Edit Document Field Lookups", false);
-//metadata
-$default->siteMap->addDefaultPage("editMetadataForField", "/presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/metadatamanagement/editMetaDataBL.php", "Administration", SysAdmin, "Edit Document Field Lookups", false);
-$default->siteMap->addDefaultPage("addMetaDataForField",  "/presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/metadatamanagement/addMetaDataBL.php", "Administration", SysAdmin, "Add Document Field Lookups", false);
-$default->siteMap->addDefaultPage("removeMetaDataFromField",  "/presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/metadatamanagement/removeMetaDataBL.php", "Administration", SysAdmin, "Remove Document Field Lookups", false);
 
 // deleted documents
 $default->siteMap->addPage("expungeDeletedDocuments", "/presentation/lookAndFeel/knowledgeTree/administration/documentmanagement/expungeDeletedDocumentsBL.php", "Administration", UnitAdmin, "Expunge Deleted Documents", false);
