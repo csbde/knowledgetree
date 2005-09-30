@@ -2,6 +2,8 @@
 
 class KTDispatcher {
     var $event_var = "action";
+    var $bAutomaticTransaction = false;
+    var $bTransactionStarted = false;
 
     function dispatch () {
         $method = 'do_main';
@@ -12,19 +14,50 @@ class KTDispatcher {
             }
         }
 
+        if ($this->bAutomaticTransaction) {
+            $this->startTransaction();
+        }
+
         $ret = $this->$method();
         $this->handleOutput($ret);
+        
+        if ($this->bTransactionStarted) {
+            $this->commitTransaction();
+        }
+    }
+
+    function startTransaction() {
+        DBUtil::startTransaction();
+        $this->bTransactionStarted = true;
+    }
+
+    function commitTransaction() {
+        DBUtil::commit();
+        $this->bTransactionStarted = false;
+    }
+
+    function rollbackTransaction() {
+        DBUtil::rollback();
+        $this->bTransactionStarted = false;
     }
 
     function errorRedirectTo($event, $error_message, $sQuery = "") {
-        /* $method = 'do_main';
-        if (method_exists($this, 'do_' . $event)) {
-            $method = 'do_' . $event;
-        }*/
+        if ($this->bTransactionStarted) {
+            $this->rollbackTransaction();
+        }
+
         $_SESSION['KTErrorMessage'][] = $error_message;
-        //exit(redirect($_SERVER["PHP_SELF"] . '?action=' . $event));
-        exit($this->redirectTo($event, $sQuery));
-        //return $this->$method();
+        $this->redirectTo($event, $sQuery);
+    }
+
+    function successRedirectTo($event, $info_message, $sQuery = "") {
+        if ($this->bTransactionStarted) {
+            $this->commitTransaction();
+        }
+        if (!empty($info_message)) {
+            $_SESSION['KTInfoMessage'][] = $info_message;
+        }
+        $this->redirectTo($event, $sQuery);
     }
 
     function redirectTo($event, $sQuery = "") {
@@ -109,6 +142,9 @@ class KTStandardDispatcher extends KTDispatcher {
     }
 
     function errorPage($errorMessage) {
+        if ($this->bTransactionStarted) {
+            $this->rollbackTransaction();
+        }
         $this->handleOutput($errorMessage);
         exit(0);
     }
