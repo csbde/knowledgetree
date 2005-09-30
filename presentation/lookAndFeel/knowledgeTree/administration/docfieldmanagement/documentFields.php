@@ -12,9 +12,11 @@ $sectionName = "Administration";
 require_once(KT_DIR . "/presentation/webpageTemplate.inc");
 
 class KTDocumentFieldDispatcher extends KTStandardDispatcher {
+    var $bAutomaticTransaction = true;
+
     function do_main () {
         $oTemplating =& KTTemplating::getSingleton();
-        $oTemplate = $oTemplating->loadTemplate('ktcore/fields/list');
+        $oTemplate =& $oTemplating->loadTemplate('ktcore/metadata/listFieldsets');
         $oTemplate->setData(array(
             'fieldsets' => KTFieldset::getList(),
         ));
@@ -23,7 +25,7 @@ class KTDocumentFieldDispatcher extends KTStandardDispatcher {
 
     function do_edit() {
         $oTemplating =& KTTemplating::getSingleton();
-        $oTemplate = $oTemplating->loadTemplate('ktcore/fields/edit');
+        $oTemplate =& $oTemplating->loadTemplate('ktcore/metadata/editFieldset');
         $oFieldset =& KTFieldset::get($_REQUEST['fFieldsetId']);
         $oTemplate->setData(array(
             'oFieldset' => $oFieldset,
@@ -67,6 +69,29 @@ class KTDocumentFieldDispatcher extends KTStandardDispatcher {
             exit(0);
         }
         $this->errorRedirectTo('edit', 'Field created', 'fFieldsetId=' . $oFieldset->getId());
+        exit(0);
+    }
+
+    function do_editField() {
+        $oTemplating =& KTTemplating::getSingleton();
+        $oTemplate =& $oTemplating->loadTemplate('ktcore/metadata/editField');
+        $oFieldset =& KTFieldset::get($_REQUEST['fFieldsetId']);
+        $oField =& DocumentField::get($_REQUEST['fFieldId']);
+        $oTemplate->setData(array(
+            'oFieldset' => $oFieldset,
+            'oField' => $oField,
+        ));
+        return $oTemplate;
+    }
+
+    function do_addLookups() {
+        $oFieldset =& KTFieldset::get($_REQUEST['fFieldsetId']);
+        $oField =& DocumentField::get($_REQUEST['fFieldId']);
+        $oMetaData =& MetaData::createFromArray(array(
+            'name' => $_REQUEST['value'],
+            'docfieldid' => $oField->getId(),
+        ));
+        $this->successRedirectTo('editField', 'Lookup added', 'fFieldsetId=' . $oFieldset->getId() . '&fFieldId=' .  $oField->getId());
         exit(0);
     }
 
