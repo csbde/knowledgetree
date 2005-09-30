@@ -1,0 +1,87 @@
+<!-- NBM: FIX THE TEMPLATING SYSTEM -->
+
+<script language="javascript" src="/thirdpartyjs/MochiKit/Base.js"> </script>
+<script language="javascript" src="/thirdpartyjs/MochiKit/DateTime.js"> </script>
+<script language="javascript" src="/thirdpartyjs/MochiKit/Iter.js"> </script>
+<script language="javascript" src="/thirdpartyjs/MochiKit/DOM.js"> </script>
+<script language="javascript" src="/thirdpartyjs/MochiKit/Async.js"> </script>
+<script language="javascript" src="/presentation/lookAndFeel/knowledgeTree/js/taillog.js"> </script>
+<script language="javascript" src="/presentation/lookAndFeel/knowledgeTree/js/constructed_search.js"> </script>
+
+{literal}
+
+<script type="text/javascript">
+function testStartup() {
+    simpleLog('INFO','Log initialised.');
+}
+
+addLoadEvent(testStartup);
+</script>
+
+<style>
+
+fieldset { border: 1px dotted #999; }
+legend { border: 1px dotted #999;}
+
+.helpText { color: #666; }
+
+/*   logging support */
+#brad-log thead th { border-bottom: 1px solid black; }
+#brad-log {font-size: smaller; }
+#brad-log .severity-INFO { color: blue; font-weight: bold; }
+#brad-log .severity-DEBUG { color: green; font-weight: bold; }
+#brad-log .severity-ERROR { color: red; font-weight: bold; }
+#brad-log .explanation { font-family: monospace; white-space: pre; }
+
+</style>
+
+{/literal}
+
+<!-- this is bad, but we really don't need a roundtrip -->
+<div style="display: none" id="search-criteria-container">
+    <select name="querytype">
+        {foreach item=oCriteria from=$aCriteria}
+        <option value="{$oCriteria->getID()}">{$oCriteria->headerDisplay()}</option>
+        {/foreach}
+    </select>
+</div>
+
+<h2>Advanced Search</h2>
+
+<form>
+    <fieldset>
+        <legend>Hello World.</legend>
+
+        <p class="helpText">Return items which match &nbsp;<select name="boolean_condition"><option value="AND">all</option><option value="OR">any</option></select> of the criteria specified.</p>
+
+        <table id="advanced-search-form">
+            <tbody>
+                <tr>
+                    <td><select name="querytype">
+                         {foreach item=oCriteria from=$aCriteria}
+                             <option value="{$oCriteria->getID()}">{$oCriteria->headerDisplay()}</option>
+                        {/foreach}
+                        </select>
+                        </td>
+                    <td><p class="helpText">first select a type of query</p></td>
+                    <td><input type="button" value="Add" onclick="addNewCriteria(this);" /></td>                    
+                </tr>
+            </tbody>
+        </table>
+
+    </fieldset>
+</form>
+<!--
+<table id="brad-log" width="100%">
+<thead>
+    <tr>
+        <th width="10%">Severity</th>
+        <th width="10%">Time</th>
+        <th>Entry</th>
+    </tr>
+</thead>
+<tbody>
+   
+</tbody>
+</table>
+-->
