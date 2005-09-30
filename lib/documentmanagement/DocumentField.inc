@@ -25,6 +25,9 @@ require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentType.inc")
  * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
  * @package lib.documentmanagement 
  */ 
+
+require_once(KT_LIB_DIR . '/documentmanagement/MetaData.inc');
+
 class DocumentField extends KTEntity {
 	
 	/** primary key value */
@@ -217,6 +220,20 @@ class DocumentField extends KTEntity {
 		}
 		return false;
 	}
+
+    function getType() {
+        if (empty($this->bHasLookup)) {
+            return "Normal";
+        }
+        if (empty($this->bHasLookupTree)) {
+            return "Lookup";
+        }
+        return "Tree";
+    }
+
+    function getValues() {
+        return MetaData::getByDocumentField($this);
+    }
 }
 
 /**
