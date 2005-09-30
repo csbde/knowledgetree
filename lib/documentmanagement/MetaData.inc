@@ -34,6 +34,13 @@ class MetaData extends KTEntity {
 	var $sName;
     /** _if_ this field is a tree, which node in said tree is this one's parent. */
     var $iTreeParent;
+
+    var $_aFieldToSelect = array(
+        'iId' => 'id',
+        'iDocFieldId' => 'document_field_id',
+        'sName' => 'name',
+        'iTreeParent' => 'treeorg_parent',
+    );
 	
 	/**
 	* Default constructor
@@ -44,7 +51,6 @@ class MetaData extends KTEntity {
 	*/
 	function MetaData($iNewDocFieldID = null,$sNewName = null, $iNewParent = null) {
 		//object not created yet
-		$this->iId = -1;
 		$this->iDocFieldID = $iNewDocFieldID;
 		$this->sName = $sNewName;
 		$this->iTreeParent = $iNewParent;
@@ -58,75 +64,15 @@ class MetaData extends KTEntity {
     function getTreeParent() { return $this->iTreeParent; }
     function setTreeParent($iNewValue) { $this->iTreeParent = $iNewValue; }
 
-
-    function _fieldValues () {
-        return array(
-            'document_field_id' => $this->iDocFieldID,
-            'name' => $this->sName,
-            'treeorg_parent' => $this->iTreeParent,
-        );
-    }
-
     function _table () {
         global $default;
         return $default->metadata_table;
     }
 	
-	
-	
-     /**
-	* Store the current object in the database
-	*
-	* @return boolean on successful store, false otherwise and set $_SESSION["errorMessage"]
-	*
-	*/
-	function create() {
-		global $default;
-		if ($this->iId < 0) {
-			//check to see if name exsits
-			$sql = $default->db;
-			$query = "SELECT name FROM ". $default->metadata_table ." WHERE name = ? and document_field_id = ?";/*ok*/
-            $aParams = array($this->sName, $this->iDocFieldID);
-            $sql->query(array($query, $aParams));
-            $rows = $sql->num_rows($sql);
-        
-            if ($rows > 0){
-                $_SESSION["errorMessage"] = "MetaData::TheMetaData name " . $this->sName . " for the specfic field exists already!";
-                return false;
-            }
-        }
-        return parent::create();
+	function & get($iId) {
+        return KTEntityUtil::get('MetaData', $iId);
 	}
 	
-	/**
-	* Static function.
-	* Given a document_fields primary key it will create a 
-	*MetaDatas object and populate it with the 
-	* corresponding database values
-	*
-	* @returnMetaData populatedMetaData object on successful query, false otherwise and set $_SESSION["errorMessage"]
-	*/
-	function & get($iMetaDataID) {
-		global $default;
-		$sql = $default->db;
-		$result = $sql->query(array("SELECT * FROM ". $default->metadata_table." WHERE id = ?", $iMetaDataID));/*ok*/
-		if ($result) {
-			if ($sql->next_record()) {
-				$oDocumentType = & new MetaData($sql->f("document_field_id"),$sql->f("name"));
-				$oDocumentType->iId = $sql->f("id");
-				$oDocumentType->iTreeParent = $sql->f("treeorg_parent");
-				return $oDocumentType;
-			}
-			$_SESSION["errorMessage"] = $lang_err_object_not_exist . "id = " . $iDocumentID . " table = document_types";
-			return false;
-		}
-		$_SESSION["errorMessage"] = $lang_err_database;
-		return false;
-	}
-	
-
-
-
 /*
      * static function
      *
@@ -163,7 +109,24 @@ class MetaData extends KTEntity {
 	}
 
     function getList($sWhereClause = null) {
-        return KTEntityUtil::getList(MetaData::_table(), 'MetaData', $sWhereClause);
+        return KTEntityUtil::getList2('MetaData', $sWhereClause);
+    }
+
+    function getByDocumentField($oDocumentField) {
+        if (is_object($oDocumentField)) {
+            $iDocumentFieldId = $oDocumentField->getId();
+        } else {
+            $iDocumentFieldId = $oDocumentField;
+        }
+        return KTEntityUtil::getByDict('MetaData', array(
+            'document_field_id' => $iDocumentFieldId,
+        ), array(
+            'multi' => 'true'
+        ));
+    }
+
+    function &createFromArray($aData) {
+        return KTEntityUtil::createFromArray('MetaData', $aData);
     }
 
 }
