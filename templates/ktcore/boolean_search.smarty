@@ -49,6 +49,7 @@ legend { border: 1px dotted #999;}
 <h2>Advanced Search</h2>
 
 <form>
+    <input type="hidden" name="action" value="performSearch" />
     <fieldset>
         <legend>Hello World.</legend>
 
@@ -70,6 +71,7 @@ legend { border: 1px dotted #999;}
         </table>
 
     </fieldset>
+    <input type="submit" name="submit" value="performSearch" />
 </form>
 <!--
 <table id="brad-log" width="100%">
