@@ -13,9 +13,20 @@
     <th>Namespace</th>
     <td><input type="textbox" name="namespace" value="{$oFieldset->getNamespace()|escape}"></td>
   </tr>
+
+  <tr>
+    <th>Type</th>
+{if $oFieldset->getIsConditional() }
+    <td>Conditional</td>
+{else}
+    <td>Not conditional</td>
+{/if}
+  </tr>
 </table>
 <input type="submit" name="submit" value="Change">
 </form>
+
+{assign var="aFields" value=$oFieldset->getFields()}
 
 <h2>Fieldset members</h2>
 
@@ -23,9 +34,10 @@
 <h3>Existing members</h3>
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <input type="hidden" name="fFieldsetId" value="{$oFieldset->getId()}">
+<input type="hidden" name="action" value="removefields">
 <ul>
 {foreach from=$oFieldset->getFields() item=oField}
-  <li><input type="checkbox" name="fieldsetids[]"
+  <li><input type="checkbox" name="fields[]"
 value="{$oField->getId()}">
 <a
 href="{$smarty.server.PHP_SELF}?action=editField&fFieldId={$oField->getId()}&fFieldsetId={$oFieldset->getId()}">{$oField->getName()|escape}</a>
@@ -50,7 +62,9 @@ href="{$smarty.server.PHP_SELF}?action=editField&fFieldId={$oField->getId()}&fFi
     <th>Type</th>
     <td>
 <select name="type">
+{if !$oFieldset->getIsConditional() }
 <option value="normal">Normal</option>
+{/if}
 <option value="lookup">Lookup</option>
 <option value="tree">Tree</option>
 </select>
@@ -59,3 +73,39 @@ href="{$smarty.server.PHP_SELF}?action=editField&fFieldId={$oField->getId()}&fFi
 </table>
 <input type="submit" name="submit" value="Add field">
 </form>
+
+<h2>Conditionality</h2>
+
+{if $oFieldset->getIsConditional() }
+
+<form action="{$smarty.server.PHP_SELF}" method="GET">
+<input type="hidden" name="fFieldsetId" value="{$oFieldset->getId()}">
+<input type="hidden" name="action" value="manageConditional">
+<input type="submit" name="submit" value="Manage conditional">
+</form>
+
+<form action="{$smarty.server.PHP_SELF}" method="POST">
+<input type="hidden" name="fFieldsetId" value="{$oFieldset->getId()}">
+<input type="hidden" name="action" value="removeConditional">
+<input type="submit" name="submit" value="Remove conditional">
+</form>
+
+{else}
+
+{assign var="showForm" value=true}
+{foreach from=$aFields item=oField}
+  {if ! $oField->getHasLookup() }
+    {assign var="showForm" value=false}
+  {/if}
+{/foreach}
+
+{if $showForm}
+<form action="{$smarty.server.PHP_SELF}" method="POST">
+<input type="hidden" name="fFieldsetId" value="{$oFieldset->getId()}">
+<input type="hidden" name="action" value="becomeConditional">
+<input type="submit" name="submit" value="Become conditional">
+</form>
+{/if}
+
+{/if}
+
