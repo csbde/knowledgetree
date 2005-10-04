@@ -1,0 +1,19 @@
+<!-- direct values -->
+<div class="formSelection">
+<select multiple="true" name="direct_values_{$field_id}[]">
+ {foreach item=aLookupRow from=$lookups}
+    <option value="{$aLookupRow.lookup_id}">{$aLookupRow.lookup_val}</option>
+ {/foreach}
+</select>
+
+<!-- subtree's selectable for this field -->
+{if (!empty($rulesets))}
+  {foreach item=ruleset from=$rulesets}
+     <input type="checkbox" name="rulesets_to_attach[]" value="{$ruleset.rule_id}">{$ruleset.rule_name}</input><br />
+  {/foreach}
+{else}
+<p>No rulesets for this field.</p>
+{/if}
+
+<p><a href="/presentation/lookAndFeel/knowledgeTree/administration/conditionalmanagement/manageConditionals.php?action=newSubConditionSet&fieldset_id={$fieldset_id}&starting_field={$field_id}">add a ruleset</a>.</p>
+</div>

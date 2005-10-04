@@ -1,0 +1,118 @@
+<!-- we REALLY NEED that new ui component. -->
+
+<script language="javascript" src="/thirdpartyjs/MochiKit/Base.js"> </script>
+<script language="javascript" src="/thirdpartyjs/MochiKit/Iter.js"> </script>
+<script language="javascript" src="/thirdpartyjs/MochiKit/DOM.js"> </script>
+<script language="javascript" src="/thirdpartyjs/MochiKit/Async.js"> </script>
+{literal}
+<script language="javascript"> 
+
+var destination="/presentation/lookAndFeel/knowledgeTree/administration/conditionalmanagement/ajaxConditionals.php";
+
+{/literal}
+var fieldset="{$fieldset_id}";
+{literal}
+
+// try to re-create our url, for the XML HTTPREQ to work.
+function constructURL() {
+{/literal}
+    var https = "{$smarty.server.HTTPS}";
+    var host = "{$smarty.server.HTTP_HOST}";
+{literal}
+    var d = "";
+    if (https == "") { d = "http://"; }
+    else { d =  "https://"; }
+
+    d = d + host + destination;
+    return d;
+}
+
+function swapInMasterColumn(req) {
+    var newinfo = req.responseText;
+    var repl = getElement("master_field_column");
+    repl.innerHTML = newinfo;
+
+}
+
+function xmlFailure(err) {
+    alert('failed to obtain the appropriate data..');
+}
+
+var fetching = null;
+
+function getFieldInfoAndAdd(req) {
+    // find the inner val.
+    var cp = getElement(fetching);
+    //alert(fetching);
+    //alert(cp);
+    cp.innerHTML = req.responseText;
+}
+
+function manageOptions(is_active, parentNode, field_id) {
+    if (!is_active) {
+        // delete any options.
+        //alert(field_id);
+        var targets = getElement("checkpoint"+field_id).childNodes;
+        //alert(parentNode);
+        for (var i=0; i<targets.length; i++)
+            targets[i].parentNode.removeChild(targets[i]);
+
+    } else {
+        // fetch and add to parentNode.
+        fetching = "checkpoint"+field_id;   
+        
+        var masterColumnGet="?action=getFieldFromSet&fieldset_id="+fieldset+"&field_id="+field_id;
+        var fullUrl = constructURL()+masterColumnGet;
+        var deff = doSimpleXMLHttpRequest(fullUrl);
+        deff.addCallback(getFieldInfoAndAdd);
+
+    }
+    
+}
+
+function removeFieldSelection(parentNode) {
+    //alert('toasting...');
+    // remove a formFields element from the set.
+    var selections = getElementsByTagAndClassName('select','formFields',parentNode);
+    for (var i=0; i<selections.length; i++)
+        selections[i].parentNode.removeChild(selections[i]);
+}
+
+function getMasterColumn() {
+    var masterColumnGet="?action=getMasterFieldForSet&fieldset_id="+fieldset;
+    var fullUrl = constructURL()+masterColumnGet;
+    // now 
+    var deff = doSimpleXMLHttpRequest(fullUrl);
+
+    deff.addCallback(swapInMasterColumn);
+    deff.addErrback(xmlFailure);
+}
+
+addLoadEvent(getMasterColumn);
+
+</script>
+{/literal}
+<h1>Impose conditions on Fieldset</h1>
+
+<form>
+<input type="hidden" name="action" value="createMasterChain" />
+<input type="hidden" name="fieldset_id" value="{$fieldset_id}" />
+
+
+<table id="conditional_table">
+<tr valign="top">
+    <td><span id="master_field_column">loading free items</span></td>
+    {foreach item=aFieldRow from=$other_fields}
+    <td>
+        <input type="checkbox" name="fields_to_attach[]" value="{$aFieldRow->getId()}" onchange="manageOptions(this.checked, this.parentNode, this.value);">Control {$aFieldRow->getName()}</input>
+        <div id="checkpoint{$aFieldRow->getId()}">&nbsp;</div>
+    </td>
+    {/foreach}
+</tr>
+</table>
+
+
+<input type="submit" value="save" />
+</form>
+
+

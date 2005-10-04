@@ -1,0 +1,6 @@
+<input type="hidden" name="field_id" value="{$master_field_id}" />
+<select name="lookup_id">
+{foreach item=aLookupRow from=$free_lookups}
+<option value="{$aLookupRow.lookup_id}">{$aLookupRow.lookup_val}</option>
+{/foreach}
+</select>
