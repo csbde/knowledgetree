@@ -125,11 +125,16 @@ class DBUtil {
         return true;
     }
 
-    function &autoInsert($sTable, $aFieldValues, $db = null) {
+    function &autoInsert($sTable, $aFieldValues, $aOptions = null) {
+        if (is_null($aOptions)) {
+            $aOptions = array();
+        }
+
+        $bNoId = KTUtil::arrayGet($aOptions, 'noid', false);
         global $default;
         // $default->log->debug('AutoInsert called for table ' . $sTable);
         $db =& DBUtil::getDB();
-        if (!array_key_exists('id', $aFieldValues)) {
+        if (!array_key_exists('id', $aFieldValues) && ($bNoId === false)) {
             $res = DBUtil::nextId($sTable, null, $db);
             if (PEAR::isError($res)) {
                 return $res;
