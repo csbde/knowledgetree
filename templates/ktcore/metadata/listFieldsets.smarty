@@ -26,11 +26,16 @@
 {/if}
       </td>
       <td>
+{assign var="aFields" value=$oFieldset->getFields()}
+{if $aFields}
 <ul>
-{foreach from=$oFieldset->getFields() item=oField}
+{foreach from=$aFields item=oField}
   <li>{$oField->getName()}</li>
 {/foreach}
 </ul>
+{else}
+&nbsp;
+{/if}
       </td>
     </tr>
   </tbody>
@@ -40,8 +45,12 @@
 
 <h2>Create a new document field set</h2>
 
-<form method="POST">
+<form method="POST" action="{$smarty.server.PHP_SELF}">
 <input type="hidden" name="action" value="new">
-<input type="textbox" name="name">
-<input type="submit" name="submit" value="Create">
+<table class="prettysw" cellpadding="0" cellspacing="0">
+<tr><th>Name</th><td><input type="textbox" name="name" /></td></tr>
+<tr><th>Namespace</th><td><input type="textbox" name="namespace" /></td></tr>
+<tr><th>Generic</th><td><input type="checkbox" name="generic" value="true" /></td></tr>
+</table>
+<input type="submit" name="submit" value="Create" />
 </form>
