@@ -27,6 +27,7 @@ require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentType.inc")
  */ 
 
 require_once(KT_LIB_DIR . '/documentmanagement/MetaData.inc');
+require_once(KT_LIB_DIR . '/metadata/metadatautil.inc.php');
 
 class DocumentField extends KTEntity {
 	
@@ -233,6 +234,18 @@ class DocumentField extends KTEntity {
 
     function getValues() {
         return MetaData::getByDocumentField($this);
+    }
+
+    function getParentFieldId() {
+        return KTMetadataUtil::getParentFieldId($this);
+    }
+
+    function getChildFieldIds() {
+        return KTMetadataUtil::getChildFieldIds($this);
+    }
+
+    function hasChildren() {
+        return (boolean)KTMetadataUtil::getChildFieldIds($this);
     }
 }
 
