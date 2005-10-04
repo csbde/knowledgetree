@@ -129,4 +129,5 @@ $default->metadata_treenode_table = "metadata_lookup_tree";
 $default->metadata_condition_table = "metadata_lookup_condition";
 $default->md_condition_table = "metadata_lookup_condition";
 $default->md_condition_chain_table = "metadata_lookup_condition_chain";
+$default->field_orders_table = 'field_orders';
 ?>
