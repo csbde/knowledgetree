@@ -1,0 +1,38 @@
+<h1>Manage conditional fieldset<h1>
+
+<h2>Field ordering</h2>
+
+{if $aFieldOrders}
+<h3>Existing ordering</h2>
+
+<ul>
+{foreach from=$aFieldOrders item=aRow}
+{php}
+$this->assign("oParentField", DocumentField::get($this->_tpl_vars['aRow']['parent_field_id']));
+$this->assign("oChildField", DocumentField::get($this->_tpl_vars['aRow']['child_field_id']));
+{/php}
+  <li>
+<span title="Field Id {$oParentField->getId()}">Field {$oParentField->getName()|escape}</span>
+affects the values available in
+<span title="Field Id {$oChildField->getId()}">field {$oChildField->getName()|escape}</span>
+</li>
+{/foreach}
+</ul>
+{/if}
+
+<h3>Order fields</h2>
+
+<form action="{$smarty.server.PHP_SELF}" method="POST">
+<input type="hidden" name="fFieldsetId" value="{$oFieldset->getId()}">
+<input type="hidden" name="action" value="orderFields">
+
+The available values of the selected fields:
+<br />
+{entity_select entities=$free_fields name="fFreeFieldIds[]" multiple="yes"}
+<br />
+are conditional on the values of this field:
+<br />
+{entity_select entities=$parent_fields name="fParentFieldId"}
+<br />
+<input type="submit" name="submit" value="Order">
+</form>
