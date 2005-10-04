@@ -274,6 +274,35 @@ class KTUtil {
         return PEAR::raiseError('Could not find table: ' . $sTable);
     }
     // }}}
+
+    // {{{ getId
+    function getId($oEntity) {
+        if (is_object($oEntity)) {
+            if (method_exists($oEntity, 'getId')) {
+                return $oEntity->getId();
+            }
+            return PEAR::raiseError('Non-entity object');
+        }
+
+        if (is_numeric($oEntity)) {
+            return $oEntity;
+        }
+
+        return PEAR::raiseError('Non-entity object');
+    }
+    // }}}
+
+    // {{{ meldOptions
+    function meldOptions($aStartOptions, $aAddOptions) {
+        if (!is_array($aStartOptions)) {
+            $aStartOptions = array();
+        }
+        if (!is_array($aAddOptions)) {
+            $aAddOptions = array();
+        }
+        return array_merge($aStartOptions, $aAddOptions);
+    }
+    // }}}
 }
 
 ?>
