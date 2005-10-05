@@ -38,6 +38,8 @@ class KTWorkflowDispatcher extends KTStandardDispatcher {
             'aStates' => KTWorkflowState::getByWorkflow($oWorkflow),
             'aTransitions' => KTWorkflowTransition::getByWorkflow($oWorkflow),
             'aPermissions' => KTPermission::getList(),
+            'aActions' => KTDocumentActionUtil::getAllDocumentActions(),
+            'aActionsSelected' => KTWorkflowUtil::getControlledActionsForWorkflow($oWorkflow),
         ));
         return $oTemplate;
     }
@@ -48,6 +50,11 @@ class KTWorkflowDispatcher extends KTStandardDispatcher {
         $oWorkflow =& KTDispatcherValidation::validateWorkflow($this, $_REQUEST['fWorkflowId']);
         $oWorkflow->setName($_REQUEST['fName']);
         $oWorkflow->setHumanName($_REQUEST['fName']);
+        if (!empty($_REQUEST['fStartStateId'])) {
+            $oWorkflow->setStartStateId($_REQUEST['fStartStateId']);
+        } else {
+            $oWorkflow->setStartStateId(null);
+        }
         $res = $oWorkflow->update();
         KTDispatcherValidation::notErrorFalse($this, $res, array(
             'redirect_to' => array('editWorkflow', 'fWorkflowId=' . $oWorkflow->getId()),
@@ -69,6 +76,19 @@ class KTWorkflowDispatcher extends KTStandardDispatcher {
             'message' => 'Could not create workflow',
         ));
         $this->successRedirectTo('editWorkflow', 'Workflow created', 'fWorkflowId=' . $res->getId());
+        exit(0);
+    }
+    // }}}
+
+    // {{{ do_setWorkflowActions
+    function do_setWorkflowActions() {
+        $oWorkflow =& KTDispatcherValidation::validateWorkflow($this, $_REQUEST['fWorkflowId']);
+        $res = KTWorkflowUtil::setControlledActionsForWorkflow($oWorkflow, $_REQUEST['fActions']);
+        KTDispatcherValidation::notErrorFalse($this, $res, array(
+            'redirect_to' => array('editWorkflow', 'fWorkflowId=' . $oWorkflow->getId()),
+            'message' => 'Error saving workflow controlled actions',
+        ));
+        $this->successRedirectTo('editWorkflow', 'Changes saved', 'fWorkflowId=' . $oWorkflow->getId());
         exit(0);
     }
     // }}}
@@ -118,6 +138,8 @@ class KTWorkflowDispatcher extends KTStandardDispatcher {
             'aTransitionsTo' => $aTransitionsTo,
             'aTransitions' => $aTransitions,
             'aTransitionsSelected' => $aTransitionsSelected,
+            'aActions' => KTDocumentActionUtil::getDocumentActionsByNames(KTWorkflowUtil::getControlledActionsForWorkflow($oWorkflow)),
+            'aActionsSelected' => KTWorkflowUtil::getEnabledActionsForState($oState),
         ));
         return $oTemplate;
     }
@@ -153,6 +175,19 @@ class KTWorkflowDispatcher extends KTStandardDispatcher {
     }
     // }}}
     
+    // {{{ do_setStateActions
+    function do_setStateActions() {
+        $oWorkflow =& KTDispatcherValidation::validateWorkflow($this, $_REQUEST['fWorkflowId']);
+        $oState =& KTDispatcherValidation::validateWorkflowState($this, $_REQUEST['fStateId']);
+        $res = KTWorkflowUtil::setEnabledActionsForState($oState, $_REQUEST['fActions']);
+        KTDispatcherValidation::notErrorFalse($this, $res, array(
+            'redirect_to' => array('editState', 'fWorkflowId=' . $oWorkflow->getId(), '&fStateId=' .  $oState->getId()),
+            'message' => 'Error saving state enabled actions',
+        ));
+        $this->successRedirectTo('editState', 'Actions set', 'fWorkflowId=' . $oWorkflow->getId() . '&fStateId=' .  $oState->getId());
+        exit(0);
+    }
+    // }}}
     // }}}
 
     // {{{ TRANSITION HANDLING
