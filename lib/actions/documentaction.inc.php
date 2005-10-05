@@ -66,20 +66,65 @@ class KTDocumentAction {
         return $this->customiseInfo($aInfo);
     }
 
+    function getName() {
+        return $this->sName;
+    }
+
+    function getDisplayName() {
+        return $this->sDisplayName;
+    }
+
+    function getDescription() {
+        return $this->sDescription;
+    }
+
     function customiseInfo($aInfo) {
         return $aInfo;
     }
 }
 
 class KTDocumentActionUtil {
-    function getDocumentActions() {
+    function getDocumentActionInfo() {
         $oRegistry =& KTActionRegistry::getSingleton();
         return $oRegistry->getActions('documentaction');
     }
     function &getDocumentActionsForDocument($oDocument, $oUser) {
         $aObjects = array();
-        foreach (KTDocumentActionUtil::getDocumentActions() as $aAction) {
+        foreach (KTDocumentActionUtil::getDocumentActionInfo() as $aAction) {
             list($sClassName, $sPath) = $aAction;
+            if (!empty($sPath)) {
+                // require_once(KT_DIR .
+                // Or something...
+            }
+            $aObjects[] =& new $sClassName($oDocument, $oUser);
+        }
+        return $aObjects;
+    }
+
+    function getAllDocumentActions() {
+        $aObjects = array();
+        $oDocument = null;
+        $oUser = null;
+        foreach (KTDocumentActionUtil::getDocumentActionInfo() as $aAction) {
+            list($sClassName, $sPath, $sName) = $aAction;
+            if (!empty($sPath)) {
+                // require_once(KT_DIR .
+                // Or something...
+            }
+            $aObjects[] =& new $sClassName($oDocument, $oUser);
+        }
+        return $aObjects;
+    }
+
+    function getDocumentActionsByNames($aNames) {
+        $aObjects = array();
+        $oDocument = null;
+        $oUser = null;
+        foreach (KTDocumentActionUtil::getDocumentActionInfo() as $aAction) {
+            list($sClassName, $sPath, $sName) = $aAction;
+            if (!in_array($sName, $aNames)) {
+                continue;
+            }
             if (!empty($sPath)) {
                 // require_once(KT_DIR .
                 // Or something...
