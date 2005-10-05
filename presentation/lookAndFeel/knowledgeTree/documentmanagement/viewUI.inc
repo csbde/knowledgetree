@@ -49,36 +49,57 @@ function renderDocumentData($oDocument, $bEditable, $sStatusMessage = "") {
         $aDocuments[] = $iVersionID;
     }
     $sWhere = DBUtil::paramArray($aDocuments);
-    /*ok*/ $sQuery = array("SELECT D.id, D.name, D.modified, D.created, D.size, U.name AS initiator, D.metadata_version, CONCAT(CONCAT(D.major_version, '.'), D.minor_version) AS version, DTL.name AS document_type, D.is_checked_out,  COALESCE(U2.name, '') AS c_user " .
+    /*ok*/ $sQuery = "SELECT D.id, D.name, D.modified, D.created, D.size, U.name AS initiator, D.metadata_version, CONCAT(CONCAT(D.major_version, '.'), D.minor_version) AS version, DTL.name AS document_type, D.is_checked_out,  COALESCE(U2.name, '') AS c_user " .
               "FROM $default->documents_table AS D " .
               "LEFT JOIN $default->users_table AS U ON U.id = D.creator_id " .
 			  "LEFT OUTER JOIN $default->document_types_table AS DTL ON DTL.id = D.document_type_id " .
               "LEFT OUTER JOIN $default->users_table AS U2 ON U2.id = D.checked_out_user_id " .
-              "WHERE D.id IN ($sWhere) ", $aDocuments);
+              "WHERE D.id = ?";
 
-    $aColumns = array("metadata_version", "name", "modified", "created", "size", "initiator", "document_type", "c_user", "id", "version");
-    $aColumnNames = array(_("Metadata Version"), _("Document title"), _("Last updated"), _("Created"), _("File Size"), _("Document initiator"), _("Document Type"), _("Checked out by"), _("ID"), _("Document Version"),);
-    $aColumnTypes = array(1,1,1,1,1,1,1,1,1,1);
-    $oPatternListFromQuery = & new PatternListFromQuery($sQuery, $aColumns, $aColumnNames, $aColumnTypes);
-    $oPatternListFromQuery->setTableHeading(_("Document Data"));
-    $oPatternListFromQuery->setEmptyTableMessage(_("No Document Data"));
-    $oPatternListFromQuery->setTableWidth("400");
-      
-    $sToRender .= "\t<table cellspacing=\"0\" cellpadding=\"0\" border=\"0\" width=\"100%\">\n";
-	if ($sStatusMessage) {
-		$sToRender .= "<tr><td>&nbsp;</td></tr><tr><td><font color=\"red\">$sStatusMessage</font></td></tr>";
-	}    
-    $sToRender .= "\t<tr>\n";
-    $sToRender .= "\t\t<td>" . $oPatternListFromQuery->render() . "</td>\n";    
-    $sToRender .= "\t</tr>\n";
-    if ($bEditable) {    
-		$sToRender .= "\t<tr>\n";
-	    $sToRender .= "<td colspan=\"2\"><a href=\"$default->rootUrl/control.php?action=modifyDocument&fDocumentID=" . $oDocument->getID() . "\"><img src=\"" . KTHtml::getEditButton() . "\" border=\"0\"></a></td>\n";
-		$sToRender .= "\t</tr>\n";
+    // $aColumns = array("metadata_version", "name", "modified", "created", "size", "initiator", "document_type", "c_user", "id", "version");
+    $aColumns = array(
+        "metadata_version" =>_("Metadata Version"),
+        "name" => _("Document title"),
+        "modified" => _("Last updated"),
+        "created" => _("Created"),
+        "size" => _("File Size"),
+        "initiator" => _("Document initiator"),
+        "document_type" => _("Document Type"),
+        "c_user" => _("Checked out by"),
+        "id" => _("ID"),
+        "document_version" => _("Document Version"),
+    );
+
+    $oTemplating =& KTTemplating::getSingleton();
+    $oTemplate = $oTemplating->loadTemplate('ktcore/document_generic_metadata');
+
+    $iDocumentsLen = count($aDocuments);
+    $map = array();
+    $iDocumentCount = 0;
+    foreach ($aDocuments as $iDocumentID) {
+        $map['Metadata Version'] = KTUtil::arrayGet($map, 'Metadata Version', array_fill(0, $iDocumentsLen, null));
+        $oThisDocument =& Document::get($iDocumentID);
+        if (PEAR::isError($oThisDocument)) {
+            continue;
+        }
+        if ($oThisDocument === false) {
+            continue;
+        }
+        $map['Metadata Version'][$iDocumentCount] = $oThisDocument->getMetadataVersion();
+        $aRow = DBUtil::getOneResult(array($sQuery, array($iDocumentID)));
+        foreach ($aColumns as $dbname => $prettyname) {
+            $newarray = KTUtil::arrayGet($map, $prettyname, array_fill(0, $iDocumentsLen, null));
+            $newarray[$iDocumentCount] = $aRow[$dbname];
+            $map[$prettyname] = $newarray;
+        }
+        $iDocumentCount++;
     }
-	$sToRender .= "\t</table>\n";
 
-    return $sToRender;
+    $oTemplate->setData(array(
+        'map' => $map,
+    ));
+
+    return $oTemplate->render();
 }
 
 
