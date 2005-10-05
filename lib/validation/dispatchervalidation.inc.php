@@ -70,6 +70,30 @@ class KTDispatcherValidation {
         }
         $this->errorPage($sMessage);
     }
+
+    function &validateTemplate($this, $sTemplateName, $aOptions = null) {
+        $oTemplating =& KTTemplating::getSingleton();
+        $oTemplate =& $oTemplating->loadTemplate($sTemplateName);
+        $aOptions['message'] = KTUtil::arrayGet($aOptions, 'message', 'Failed to locate template');
+        KTDispatcherValidation::notError($this, $oTemplate, $aOptions);
+        return $oTemplate;
+    }
+
+    function &validateWorkflow($this, $iId, $aOptions = null) {
+        return KTDispatcherValidation::validateEntity($this, 'KTWorkflow', $iId, $aOptions);
+    }
+
+    function &validateWorkflowState($this, $iId, $aOptions = null) {
+        return KTDispatcherValidation::validateEntity($this, 'KTWorkflowState', $iId, $aOptions);
+    }
+
+    function &validateWorkflowTransition($this, $iId, $aOptions = null) {
+        return KTDispatcherValidation::validateEntity($this, 'KTWorkflowTransition', $iId, $aOptions);
+    }
+
+    function &validatePermission($this, $iId, $aOptions = null) {
+        return KTDispatcherValidation::validateEntity($this, 'KTPermission', $iId, $aOptions);
+    }
 }
 
 ?>
