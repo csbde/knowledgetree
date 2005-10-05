@@ -130,4 +130,8 @@ $default->metadata_condition_table = "metadata_lookup_condition";
 $default->md_condition_table = "metadata_lookup_condition";
 $default->md_condition_chain_table = "metadata_lookup_condition_chain";
 $default->field_orders_table = 'field_orders';
+$default->workflows_table = 'workflows';
+$default->workflow_states_table = 'workflow_states';
+$default->workflow_transitions_table = 'workflow_transitions';
+$default->workflow_state_transitions_table = 'workflow_state_transitions';
 ?>
