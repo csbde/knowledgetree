@@ -1,0 +1,23 @@
+<h1>Transition: {$oTransition->getName()|escape}</h1>
+
+<h2>Edit transition properties</h2>
+
+<form action="{$smarty.server.PHP_SELF}" method="POST">
+<input type="hidden" name="action" value="saveTransition" />
+<input type="hidden" name="fWorkflowId" value="{$oWorkflow->getId()}" />
+<input type="hidden" name="fTransitionId" value="{$oTransition->getId()}" />
+<table class="prettysw" cellpadding="0" cellspacing="0">
+<tr><th>Name</th><td><input type="textbox" name="fName" value="{$oTransition->getName()|escape}" /></td></tr>
+<tr>
+  <th>Target State</th>
+  <td>{entity_select entities=$aStates selected=$oTransition->getTargetStateId() name="fTargetStateId"}</td>
+</tr>
+<tr>
+  <th>Guard Permission</th>
+  <td>{entity_select entities=$aPermissions selected=$oTransition->getGuardPermissionId() name="fPermissionId"}</td>
+</tr>
+
+</table>
+<input type="submit" name="submit" value="Save" />
+</form>
+

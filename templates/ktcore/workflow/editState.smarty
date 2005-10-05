@@ -1,0 +1,34 @@
+<h1>State: {$oState->getName()|escape}</h1>
+
+<h2>Edit state properties</h2>
+
+<form action="{$smarty.server.PHP_SELF}" method="POST">
+<input type="hidden" name="action" value="saveState" />
+<input type="hidden" name="fWorkflowId" value="{$oWorkflow->getId()}" />
+<input type="hidden" name="fStateId" value="{$oState->getId()}" />
+<input type="textbox" name="fName" value="{$oState->getName()|escape}" />
+<input type="submit" name="submit" value="Save" />
+</form>
+
+{if $aTransitionsTo}
+<h2>Transitions to this state</h2>
+
+<ul>
+{foreach from=$aTransitionsTo item=oTransition}
+  <li><a
+href="?action=editTransition&fWorkflowId={$oWorkflow->getId()}&fTransitionId={$oTransition->getId()}"
+title="Transition
+{$oTransition->getId()}">{$oTransition->getName()|escape}</a></li>
+{/foreach}
+</ul>
+
+{/if}
+
+<h2>Transitions</h2>
+<form action="{$smarty.server.PHP_SELF}" method="POST">
+<input type="hidden" name="action" value="saveTransitions" />
+<input type="hidden" name="fWorkflowId" value="{$oWorkflow->getId()}" />
+<input type="hidden" name="fStateId" value="{$oState->getId()}" />
+{entity_checkboxes entities=$aTransitions name="fTransitionIds" multiple="true" selected=$aTransitionsSelected}
+<input type="submit" name="submit" value="Save" />
+</form>
