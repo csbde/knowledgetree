@@ -64,9 +64,14 @@ class KTSmartyTemplate extends KTTemplate {
         }
 
         $method = KTUtil::arrayGet($params, 'method', 'getName');
+        $none = KTUtil::arrayGet($params, 'none');
 
         $params['values'] = array();
         $params['output'] = array();
+        if ($none) {
+            $params['values'][] = '';
+            $params['output'][] = 'None';
+        }
         foreach ($entities as $oEntity) {
             $params['values'][] = $oEntity->getId();
             $params['output'][] = call_user_func(array(&$oEntity, $method));
@@ -113,15 +118,18 @@ class KTSmartyTemplate extends KTTemplate {
             return;
         }
 
+        $idmethod = KTUtil::arrayGet($params, 'idmethod', 'getId');
         $method = KTUtil::arrayGet($params, 'method', 'getName');
 
         $params['values'] = array();
         $params['output'] = array();
         foreach ($entities as $oEntity) {
-            $params['values'][] = $oEntity->getId();
+            $params['values'][] = call_user_func(array(&$oEntity, $idmethod));
             $params['output'][] = call_user_func(array(&$oEntity, $method));
         }
         unset($params['entities']);
+        unset($params['idmethod']);
+        unset($params['method']);
 
         return smarty_function_html_checkboxes($params, $smarty);
     }
