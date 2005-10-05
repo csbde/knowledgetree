@@ -91,6 +91,9 @@ class KTUtil {
     }
 
     function arrayGet($aArray, $sKey, $mDefault = null) {
+        if (empty($aArray)) {
+            return $mDefault;
+        }
         if (array_key_exists($sKey, $aArray)) {
             return $aArray[$sKey];
         }
