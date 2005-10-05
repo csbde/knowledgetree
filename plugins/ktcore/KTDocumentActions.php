@@ -7,6 +7,7 @@ $oKTActionRegistry =& KTActionRegistry::getSingleton();
 class KTDocumentViewAction extends KTBuiltInDocumentAction {
     var $sBuiltInAction = 'downloadDocument';
     var $sDisplayName = 'View';
+    var $sName = 'ktcore.actions.document.view';
 
     function customiseInfo($aInfo) {
         $aInfo['alert'] =  _("This will download a copy of the document and is not the same as Checking Out a document.  Changes to this downloaded file will not be managed in the DMS.");
@@ -18,12 +19,14 @@ $oKTActionRegistry->registerAction('documentaction', 'KTDocumentViewAction', 'kt
 class KTDocumentEmailAction extends KTBuiltInDocumentAction {
     var $sBuiltInAction = 'emailDocument';
     var $sDisplayName = 'Email';
+    var $sName = 'ktcore.actions.document.email';
 }
 $oKTActionRegistry->registerAction('documentaction', 'KTDocumentEmailAction', 'ktcore.actions.document.email');
 
 class KTDocumentCheckInOutAction extends KTBuiltInDocumentAction {
     var $sBuiltInAction = 'emailDocument';
-    var $sDisplayName = 'Email';
+    var $sDisplayName = 'Checkin';
+    var $sName = 'ktcore.actions.document.checkinout';
 
     var $_sDisablePermission = "ktcore.permissions.write";
 
@@ -47,6 +50,7 @@ $oKTActionRegistry->registerAction('documentaction', 'KTDocumentCheckInOutAction
 class KTDocumentDeleteAction extends KTBuiltInDocumentActionSingle {
     var $sBuiltInAction = 'deleteDocument';
     var $sDisplayName = 'Delete';
+    var $sName = 'ktcore.actions.document.delete';
 
     var $_sDisablePermission = "ktcore.permissions.write";
 
@@ -63,6 +67,7 @@ $oKTActionRegistry->registerAction('documentaction', 'KTDocumentDeleteAction', '
 class KTDocumentMoveAction extends KTBuiltInDocumentActionSingle {
     var $sBuiltInAction = 'moveDocument';
     var $sDisplayName = 'Move';
+    var $sName = 'ktcore.actions.document.move';
 
     var $_sDisablePermission = "ktcore.permissions.write";
 
@@ -83,10 +88,13 @@ $oKTActionRegistry->registerAction('documentaction', 'KTDocumentMoveAction', 'kt
 class KTDocumentHistoryAction extends KTBuiltInDocumentAction {
     var $sBuiltInAction = 'viewHistory';
     var $sDisplayName = 'History';
+    var $sName = 'ktcore.actions.document.history';
 }
 $oKTActionRegistry->registerAction('documentaction', 'KTDocumentHistoryAction', 'ktcore.actions.document.history');
 
 class KTDocumentSubscriptionAction extends KTBuiltInDocumentAction {
+    var $sName = 'ktcore.actions.document.subscription';
+    var $sDisplayName = 'Subscribe';
     function getInfo() {
         if (Subscription::exists($this->oUser->getID(), $this->oDocument->getID(), SubscriptionConstants::subscriptionType("DocumentSubscription"))) {
             $this->sBuiltInAction = 'removeSubscription';
@@ -103,6 +111,7 @@ $oKTActionRegistry->registerAction('documentaction', 'KTDocumentSubscriptionActi
 class KTDocumentDiscussionAction extends KTBuiltInDocumentAction {
     var $sBuiltInAction = 'viewDiscussion';
     var $sDisplayName = 'Discussion';
+    var $sName = 'ktcore.actions.document.discussion';
 }
 $oKTActionRegistry->registerAction('documentaction', 'KTDocumentDiscussionAction', 'ktcore.actions.document.discussion');
 
@@ -110,6 +119,7 @@ class KTDocumentArchiveAction extends KTBuiltInDocumentAction {
     var $_sDisablePermission = "ktcore.permissions.write";
     var $sBuiltInAction = 'archiveDocument';
     var $sDisplayName = 'Archive';
+    var $sName = 'ktcore.actions.document.archive';
 
     function _disable() {
         if ($this->oDocument->hasCollaboration() &&
@@ -130,6 +140,7 @@ $oKTActionRegistry->registerAction('documentaction', 'KTDocumentArchiveAction', 
 class KTDocumentDependentAction extends KTBuiltInDocumentAction {
     var $sBuiltInAction = 'createDependantDocument';
     var $sDisplayName = 'Link New Doc';
+    var $sName = 'ktcore.actions.document.dependent';
 }
 $oKTActionRegistry->registerAction('documentaction', 'KTDocumentDependentAction', 'ktcore.actions.document.dependent');
 
@@ -137,6 +148,7 @@ $oKTActionRegistry->registerAction('documentaction', 'KTDocumentDependentAction'
 class KTDocumentPublishAction extends KTDocumentAction {
     var $_sDisablePermission = "ktcore.permissions.write";
     var $sDisplayName = 'Publish';
+    var $sName = 'ktcore.actions.document.publish';
 
     function _disable() {
         $oDocument =& $this->oDocument;
@@ -171,6 +183,7 @@ $oKTActionRegistry->registerAction('documentaction', 'KTDocumentPublishAction', 
 class KTDocumentPermissionsAction extends KTBuiltInDocumentAction {
     var $sBuiltInAction = 'editDocumentPermissions';
     var $sDisplayName = 'Permissions';
+    var $sName = 'ktcore.actions.document.permissions';
 }
 $oKTActionRegistry->registerAction('documentaction', 'KTDocumentPermissionsAction', 'ktcore.actions.document.permissions');
 ?>
