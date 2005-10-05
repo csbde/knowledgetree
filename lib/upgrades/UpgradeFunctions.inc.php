@@ -243,6 +243,7 @@ class UpgradeFunctions {
                 'mandatory' => false,
                 'isconditional' => false,
                 'masterfield' => $iFieldId,
+                'isgeneric' => $oField->getIsGeneric(),
             ));
             $iFieldSetId = $oFieldSet->getId();
             $oField->setParentFieldset($iFieldSetId);
