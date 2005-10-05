@@ -5,15 +5,19 @@ class UpgradeFunctions {
         "2.0.0" => array("setPermissionFolder"),
         "2.0.6" => array("addTemplateMimeTypes"),
         "2.0.8" => array("setPermissionObject"),
+        "2.99.1" => array("createFieldSets"),
     );
+
     var $descriptions = array(
         "rebuildSearchPermissions" => "Rebuild search permissions with updated algorithm",
         "setPermissionFolder" => "Set permission folder for each folder for simplified permissions management",
         "addTemplateMimeTypes" => "Add MIME types for Excel and Word templates",
         "setPermissionObject" => "Set the permission object in charge of a document or folder",
+        "createFieldSets" => "Create a fieldset for each field without one",
     );
     var $phases = array(
         "setPermissionObject" => 1,
+        "createFieldSets" => 1,
     );
 
     // {{{ _setPermissionFolder
@@ -65,6 +69,7 @@ class UpgradeFunctions {
     }
     // }}}
 
+    // {{{ setPermissionFolder
     function setPermissionFolder() {
         global $default;
         require_once(KT_LIB_DIR . '/foldermanagement/Folder.inc');
@@ -78,7 +83,9 @@ class UpgradeFunctions {
             UpgradeFunctions::_setPermissionFolder($oFolder);
         }
     }
+    // }}}
 
+    // {{{ addTemplateMimeTypes
     function addTemplateMimeTypes() {
         global $default;
         $table = $default->mimetypes_table;
@@ -111,7 +118,9 @@ class UpgradeFunctions {
         }
         return true;
     }
+    // }}}
 
+    // {{{ _setRead
     function _setRead($iID, $oPO) {
         global $default;
         $oPermission = KTPermission::getByName('ktcore.permissions.read');
@@ -121,7 +130,9 @@ class UpgradeFunctions {
         $aAllowed = array("group" => $aGroupIDs);
         KTPermissionUtil::setPermissionForID($oPermission, $oPO, $aAllowed);
     }
+    // }}}
 
+    // {{{ _setWrite
     function _setWrite($iID, $oPO) {
         global $default;
         $oPermission = KTPermission::getByName('ktcore.permissions.write');
@@ -131,7 +142,9 @@ class UpgradeFunctions {
         $aAllowed = array("group" => $aGroupIDs);
         KTPermissionUtil::setPermissionForID($oPermission, $oPO, $aAllowed);
     }
-
+    // }}}
+    
+    // {{{ _setAddFolder
     function _setAddFolder($iID, $oPO) {
         global $default;
         $oPermission = KTPermission::getByName('ktcore.permissions.addFolder');
@@ -141,7 +154,9 @@ class UpgradeFunctions {
         $aAllowed = array("group" => $aGroupIDs);
         KTPermissionUtil::setPermissionForID($oPermission, $oPO, $aAllowed);
     }
+    // }}}
 
+    // {{{ setPermissionObject
     function setPermissionObject() {
         global $default;
         require_once(KT_LIB_DIR . '/foldermanagement/Folder.inc');
@@ -210,6 +225,46 @@ class UpgradeFunctions {
             KTPermissionUtil::updatePermissionLookup($oFolder);
         }
     }
+    // }}}
+
+    // {{{ createFieldSets
+    function createFieldSets () {
+        global $default;
+        require_once(KT_LIB_DIR . '/documentmanagement/DocumentField.inc');
+        require_once(KT_LIB_DIR . '/metadata/fieldset.inc');
+        $aFields = DocumentField::getList("parent_fieldset IS NULL");
+        foreach ($aFields as $oField) {
+            $sName = $oField->getName();
+            $sNamespace = 'local.' . str_replace(array(' '), array(), strtolower($sName));
+            $iFieldId = $oField->getId();
+            $oFieldSet = KTFieldset::createFromArray(array(
+                'name' => $sName,
+                'namespace' => $sNamespace,
+                'mandatory' => false,
+                'isconditional' => false,
+                'masterfield' => $iFieldId,
+            ));
+            $iFieldSetId = $oFieldSet->getId();
+            $oField->setParentFieldset($iFieldSetId);
+            $oField->update();
+            $sTable = KTUtil::getTableName('document_type_fields');
+            $aQuery = array(
+                "SELECT document_type_id FROM $sTable WHERE field_id = ?",
+                array($iFieldId)
+            );
+            $aDocumentTypeIds = DBUtil::getResultArrayKey($aQuery, 'document_type_id');
+            var_dump($aDocumentTypeIds);
+            $sTable = KTUtil::getTableName('document_type_fieldsets');
+            foreach ($aDocumentTypeIds as $iDocumentTypeId) {
+                $res = DBUtil::autoInsert($sTable, array(
+                    'document_type_id' => $iDocumentTypeId,
+                    'fieldset_id' => $iFieldSetId,
+                ));
+                var_dump($res);
+            }
+        }
+    }
+    // }}}
 }
 
 ?>
