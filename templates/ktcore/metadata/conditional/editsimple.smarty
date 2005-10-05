@@ -1,23 +1,43 @@
 {literal}
-<style>
+<style type="text/css">
 
-.active { 
-	background: transparent; 
+
+/* inactivity */
+.active .inactivity_message { display: none; }
+
+.save_button,
+.done_button { display: none; }
+
+.active.editing .save_button,
+.active.editing .done_button { display: block; }
+
+.active.editing .edit_button { display: none; }
+
+
+.active { position: relative; }
+
+.inactive { background: #ccc; position: relative; }
+.inactive .fixed_message, 
+.inactive .unassigned_items,
+.inactive .available_behaviours,
+.inactive .behaviour_edit_options 
+{
+   display: none;
 }
 
-.inactive {
-	background: #ccc;
+.inactive .item_list { display: none; }
+
+.helpText {
+   color: #666;
 }
 
-.inactive .fieldselection {
-	display: none;
-}
 
-.currentmaster .editbutton { display: none; }
-.savebutton { display: none; }
-.currentmaster .savebutton { display: block; }
-.active .activity_message { display: none; }
-.inactive .savebutton { display: none; }
+/*   logging support */
+#brad-log .severity-INFO { color: blue; font-weight: bold; }
+#brad-log .severity-DEBUG { color: green; font-weight: bold; }
+#brad-log .severity-ERROR { color: red; font-weight: bold; }
+#brad-log .explanation { font-family: monospace; white-space: pre; }
+
 
 </style>
 
@@ -27,263 +47,17 @@
 <script language="javascript" src="/thirdpartyjs/MochiKit/Async.js"> </script>
 <script language="javascript" src="/thirdpartyjs/MochiKit/DOM.js"> </script>
 
+<script language="javascript" src="/presentation/lookAndFeel/knowledgeTree/js/taillog.js"> </script>
+<script language="javascript" src="/presentation/lookAndFeel/knowledgeTree/js/conditional_simple_edit.js"> </script>
 
 
 
 <!-- custom JS -->
 
 <script language="javascript">
-
-function str_startswith(source, contents) {
-     var clen = contents.length;
-	 if (source.length < clen) { 
-	     return false;
-     } else {
-	     var matcher = source.substr(0, clen);
-		 if (matcher == contents) { 
-		     return true;
-		 } else {
-		     return false;
-		 }
-	 }
-	 
-}
-
-/*
- *  Basic workflow on this page is incredibly simple.
- *  At each stage there is:
- *    1. an "active" set of fields
- *    2. an "inactive" set of fields.
- * 
- *  Essentially, the backend needs to provide a limited set
- *  of operations:
- *    1. Save a selection (active sets)
- *    2. Edit a new "master column".
- */
-
-/*
- * function saveSimpleEditSelection();
- *
- * 1. find all "active" columns, and which field is "master".
- * 2. create the "save" request (question:  how do we build a POST ... the GET is now too long, since IE dies past 1024 chars (or is it 256?)
- * 3. submit.
- */ 
-function saveSimpleEditSelection (save_button) {
-    var formKeys = Array();
-    var formValues = Array();
-	// these need to be "pushed" simultanously.
-	var activeColumns = getElementsByTagAndClassName("td","active");
-	
-	/* the submitted form has a simple set of variables.
-	 *
-     * fields[][] - two-dimensional array:
-	 * [field_id] => [array(active values)].
-     * fieldset_id - integer fieldset id.
-	 *    
-	 * master_field - integer master-field id.
-     */
-	 
-	formKeys.push('action');
-	formValues.push('saveSimpleEdit'); 
-	 for (index in activeColumns) {
-	     var t = DIV(null);
-		 var obj = activeColumns[index];
-		 if (typeof(obj) == typeof(t)) {
-		     var oclass = obj.getAttribute('class');
-			 var oid = obj.getAttribute('id');
-			 
-		     // we can extract the field name from this quite simply
-			 // by removing 
-			 var cs_len = 'contain_select_'.length;
-			 if (str_startswith(oid, 'contain_select_')) {
-				var str_end = oid.substr(cs_len, oid.length);
-				formKeys.push('fields[]');
-				formValues.push(str_end);
-
-				
-				// FIXME handle Trees.
-				
-				// since we are active, we can also get the select.
-				var selection = getElementsByTagAndClassName("select","fieldselection", obj);
-				// MUST be only 1.
-				if (selection.length != 0) {
-				    var selObj = selection[0];
-					var key = 'fields['+str_end+'][]';
-					// there can be multiple matches here.
-					for (selindex in selObj.options) {
-					    var subobj = selObj.options[selindex];
-						if (typeof(subobj) == typeof(t)) {
-						    if (subobj.selected) {
-						        formKeys.push(key);
-								formValues.push(subobj.value);
-							}
-						}
-					}
-				}
-		     // handle the case where this is a buttongroup - find the "master".
-			 } else {
-			    if (hasElementClass(obj, 'currentmaster')) {
-				    var cs_len = 'contain_buttons_'.length;
-				    var str_end = oid.substr(cs_len, oid.length);
-					formKeys.push('master_field');
-					formValues.push(str_end);
-				}
-			 }
-		 }
-	 }
-	 // finally.
-	 var POSTval = queryString(formKeys, formValues);
-	 
-	 var targeturl = 'manageConditionals.php';
-	 var req = getXMLHttpRequest();
-	 req.open("POST", targeturl, true);
-	 req.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
-	 var deferred = sendXMLHttpRequest(req, POSTval);
-	 deferred.addCallback(partial(do_saveSimpleRelation, save_button));
-	 deferred.addErrback(partial(do_handleAjaxError, save_button,
-'save'));
-	 // indicate to the user that we are saved.
-	 save_button.disabled = true;
-	 save_button.value = "saving...";
-}
-
-// intentionally stubbed - we don't actually act here.
-// at most we need a "kill saving".
-function do_saveSimpleRelation(button, req) {
-	//alert('saved '+req.responseText);
-	button.disabled = false;
-	button.value = "save";
-}
-
-function do_handleAjaxError(button, button_val, err) {
-	alert('failed while trying to '+button_val);
-	button.disabled = false;
-	button.value = button_val;
-}
-
-function getSubSelect(obj) {
-   return getElementsByTagAndClassName('select','fieldselection', obj);
-}
-/* 
- * function editNewSimpleSelection(int field_id) 
- *
- * 1. initiate an XMLHTTPRequest to get the "controlled fields".
- * 2. change all to be either "active" or "inactive"
- * 3. add "save" to the appropriate column.
- *
- */
-function editNewSimpleSelection(field_id) {
-   var active_fields = Array();
-   // DEBUG CODE
-   if (field_id == '8') {
-       active_fields.push('8');
-	   active_fields.push('9');
-   } else {
-       active_fields.push('5');
-	   active_fields.push('8');	   
-   }
-   
-   var edit_columns = getElementsByTagAndClassName('td','editable');
-   var button_columns = getElementsByTagAndClassName('td','buttons');
-   
-   for (var i=0; i<edit_columns.length; i++) {
-      var obj = edit_columns[i];
-	  var cs_len = 'contain_select_'.length; // horrid.
-	  var col_num = obj.id.substr(cs_len, obj.id.length);
-	  
-	  setElementClass(obj, 'inactive editable');
-	  // sigh.  we want to know if this is "active" ...
-	  for (var j=0; j<active_fields.length; j++)
-	  {
-          if (col_num == active_fields[j]) {
-		      setElementClass(obj, 'active editable');
-			  // urgh.  we now need to set the master column's select to not be multiple.
-			  var slist = getSubSelect(obj);
-			  for (var k=0; k<slist.length; k++) {
-				 if (col_num == field_id) {
-				     slist[k].multiple = false;
-				 } else {
-				    slist[k].multiple = true;
-				 }
-			  }
-		  } 
-	  }
-   }
-   
-   for (var i=0; i<button_columns.length; i++) {
-      var obj = button_columns[i];
-	  var cs_len = 'contain_buttons_'.length; // horrid.
-	  var col_num = obj.id.substr(cs_len, obj.id.length);
-	  
-	  setElementClass(obj, 'inactive buttons');
-	  // sigh.  we want to know if this is "active" ...
-	  for (var j=0; j<active_fields.length; j++)
-	  {
-          if (col_num == active_fields[j]) {
-		      if (col_num == field_id) {
-		          setElementClass(obj, 'active buttons currentmaster');
-		      } else {
-			     setElementClass(obj, 'active buttons');
-			  }
-		  } 
-	  }
-   }
-}
-
-function getMasterField() {
-    var cols = getElementsByTagAndClassName('td','buttons');
-	var mf = null;
-	for (var i=0; i<cols.length; i++) {
-	    var c = cols[i];
-		if (hasElementClass(c, 'currentmaster')) {
-		    mf = c.id.substr('contain_buttons_'.length,c.id.length);
-		}
-	}
-	return mf;
-}
-
-/* function getExistingFieldsForVal
- *
- * FIXME we need to add XML function here.
- */
-function getExistingFieldsForVal(field_id) {
-    // DEBUG
-	if ((getMasterField() == field_id) && (field_id == "1")) {
-        alert('updating selections');
-	    var preoptions = Array();
-	
-	    // 1 get the value for field field_id.
-	    var f = getElement('sel_'+field_id);
-	    var active_val = f.value; // this is the active value of the field.
-	
-	    // 2 fetch the option-array.  this should be a list of "<opt num="3" active="{1,0}" />
-		// DEBUG HACK.
-		availcols = Array();
-		availcols.push("2");
-		availcols.push("3");
-		preoptions["2"] = Array();
-		preoptions["3"] = Array();
-		preoptions["2"]["4"] = true;
-		preoptions["2"]["5"] = true;		
-		preoptions["2"]["6"] = false;
-		preoptions["3"]["7"] = true;		
-		preoptions["3"]["8"] = false;
-		preoptions["3"]["9"] = true;		
-		
-		// 3 get and update from the preoption array
-		//     to do this, grab the "sel" and walk its options.
-		for (var i=0; i<availcols.length; i++) {
-		   var colid = availcols[i];
-		   var selid = 'sel_'+colid;
-		   var selection = getElement(selid);
-		   for (var k=0; k<selection.options.length; k++) {
-			   selection.options[k].selected = preoptions[colid][selection.options[k].value];
-		   }
-		}
-	}
-	
-}
-
+{/literal}
+addLoadEvent(partial(editSimpleField, {$iMasterFieldId}));
+{literal}
 </script>
 
 {/literal}
@@ -291,60 +65,35 @@ function getExistingFieldsForVal(field_id) {
 
 <h2>Editing Fieldset Rules (Simple)</h2>
 
-<!-- by default, we start by editing the _first_ column.
-  after that, we need to update / get the "active columns" ids. -->
+<form>
+<input type="hidden" name="fieldset_id" id="global-fieldset-id" value="{$iMasterFieldId}" />
 
-<table>
-	<tr>
+<table id="simple_conditional_edit">
+<tr>
+  <th>Column 1</th>
+  <th>Column 2</th>
+  <th>Column 3</th>
+</tr>
+<tr valign="top">
+
 {foreach from=$aFields item=oField}
-		<th><span title="Field {$oField->getId()}">{$oField->getName()}</span></th>
-{/foreach}
-	</tr>
-	<tr valign="top">
-
-{foreach from=$aFields item=oField}
-{assign var=sMultiple value=""}
-{assign var="sActive" value="inactive"}
-{if $oField->getParentFieldId()}
-  {assign var=sMultiple value='multiple="true"'}
-  {if $oField->getParentFieldId() == $iMasterFieldId}
-    {assign var="sActive" value="active"}
-  {/if}
-{else}
-  {assign var="sActive" value="active"}
-{/if}
-		<td class="{$sActive} editable" id="contain_select_{$oField->getId()}">
- 			<p class="activity_message">This field is not controlled by the currently active group.</p>
-			<select name="column_{$oField->getId()}" {$sMultiple} class="fieldselection" id="sel_{$oField->getId()}" onchange="getExistingFieldsForVal({$oField->getId()});">
-
+  <td class="inactive" id="md_{$oField->getId()}">
+     <p class="inactivity_message">This field is not controlled by the currently active group.</p>
+     <div class="lookup_items">
+     <h3>Field: {$oField->getName()}</h3>
+         <select class="item_list">
   {foreach from=$oField->getValues() item=oMetaData}
 				<option value="{$oMetaData->getId()}">{$oMetaData->getName()|escape}</option>
   {/foreach}
-			</select>
-		</td>
+           </select>
+         <div class="buttonset">
+             <input type="button" value="edit" class="edit_button" onclick="editSimpleField({$oField->getId()})" />
+             <input type="button" value="save" class="save_button" onclick="saveSimpleField({$oField->getId()})" />
+             <input type="button" value="done" class="done_button" onclick="finishSimpleField({$oField->getId()})" />
+         </div>
+     </div>
+  </td>
 {/foreach}
-        </tr>	
-	<tr>
-
-{foreach from=$aFields item=oField}
-
-{assign var="sActive" value="inactive"}
-{if $oField->getParentFieldId()}
-  {assign var=sMultiple value='multiple="true"'}
-  {if $oField->getParentFieldId() == $iMasterFieldId}
-    {assign var="sActive" value="active"}
-  {/if}
-{else}
-  {assign var="sActive" value="active currentmaster"}
-{/if}
-
-<td class="{$sActive} buttons" id="contain_buttons_{$oField->getId()}">
-  {if $oField->hasChildren()}
-        <input type="button" onclick="editNewSimpleSelection({$oField->getId()});" value="Edit" class="editbutton" />
-		
-        <input type="button" onclick="saveSimpleEditSelection(this);" value="Save" class="savebutton" />
-  {/if}
-</td>
-{/foreach}
-	</tr>
+  
+</tr>
 </table>
