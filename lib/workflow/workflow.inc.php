@@ -32,11 +32,13 @@ class KTWorkflow extends KTEntity {
     var $iId = -1;
     var $sName;
     var $sHumanName;
+    var $iStartStateId;
 
     var $_aFieldToSelect = array(
         "iId" => "id",
         "sName" => "name",
         "sHumanName" => "human_name",
+        "iStartStateId" => "start_state_id",
     );
 
     var $_bUsePearError = true;
@@ -44,9 +46,11 @@ class KTWorkflow extends KTEntity {
     function getID() { return $this->iId; }
     function getName() { return $this->sName; }
     function getHumanName() { return $this->sHumanName; }
+    function getStartStateId() { return $this->iStartStateId; }
     function setID($iId) { $this->iId = $iId; }
     function setName($sName) { $this->sName = $sName; }
     function setHumanName($sHumanName) { $this->sHumanName = $sHumanName; }
+    function setStartStateId($iStartStateId) { $this->iStartStateId = $iStartStateId; }
 
     function _table () {
         return KTUtil::getTableName('workflows');
@@ -70,6 +74,31 @@ class KTWorkflow extends KTEntity {
     // STATIC
     function &getByName($sName) {
         return KTEntityUtil::getBy('KTWorkflow', 'name', $sName);
+    }
+
+    // STATIC
+    function &getFunctional() {
+        return KTEntityUtil::getList2('KTWorkflow', 'start_state_id IS NOT NULL');
+    }
+
+    function &getByDocument($oDocument) {
+        $iDocumentId = KTUtil::getId($oDocument);
+        $sTable = KTUtil::getTableName('workflow_documents');
+        $iWorkflowId = DBUtil::getOneResultKey(array(
+                "SELECT workflow_id FROM $sTable WHERE document_id = ?",
+                array($iDocumentId),
+            ), 'workflow_id'
+        );
+
+        if (PEAR::isError($iWorkflowId)) {
+            return $iWorkflowId;
+        }
+
+        if (is_null($iWorkflowId)) {
+            return $iWorkflowId;
+        }
+
+        return KTWorkflow::get($iWorkflowId);
     }
 }
 
