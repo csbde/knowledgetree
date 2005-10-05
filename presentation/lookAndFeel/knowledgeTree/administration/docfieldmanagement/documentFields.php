@@ -236,8 +236,7 @@ class KTDocumentFieldDispatcher extends KTStandardDispatcher {
             $this->errorRedirectTo('manageConditional', 'Field cannot be its own parent field', 'fFieldsetId=' . $oFieldset->getId());
         }
         foreach ($aFreeFieldIds as $iChildFieldId) {
-            $res = KTMetadataUtil::addFieldOrder($iParentFieldId, $iChildFieldId);
-            var_dump($res);
+            $res = KTMetadataUtil::addFieldOrder($iParentFieldId, $iChildFieldId, $oFieldset);
             KTDispatcherValidation::notError($this, $res, array(
                 'redirect_to' => array('manageConditional', 'fFieldsetId=' . $oFieldset->getId()),
                 'message' => 'Error adding Fields',
