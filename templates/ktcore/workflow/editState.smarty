@@ -32,3 +32,19 @@ title="Transition
 {entity_checkboxes entities=$aTransitions name="fTransitionIds" multiple="true" selected=$aTransitionsSelected}
 <input type="submit" name="submit" value="Save" />
 </form>
+
+<h2>Actions allowed</h2>
+
+<form action="{$smarty.server.PHP_SELF}" method="POST">
+<input type="hidden" name="action" value="setStateActions" />
+<input type="hidden" name="fWorkflowId" value="{$oWorkflow->getId()}" />
+<input type="hidden" name="fStateId" value="{$oState->getId()}" />
+<ul>
+{entity_checkboxes name="fActions" entities=$aActions idmethod="getName" method="getDisplayName" assign="aCheckboxes" selected="$aActionsSelected"}
+{foreach from=$aCheckboxes item=sCheckbox}
+<li>{$sCheckbox}</li>
+{/foreach}
+</ul>
+<input type="submit" name="submit" value="Set allowed actions" />
+</form>
+
