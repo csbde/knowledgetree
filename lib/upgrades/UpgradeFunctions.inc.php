@@ -231,7 +231,7 @@ class UpgradeFunctions {
     function createFieldSets () {
         global $default;
         require_once(KT_LIB_DIR . '/documentmanagement/DocumentField.inc');
-        require_once(KT_LIB_DIR . '/metadata/fieldset.inc');
+        require_once(KT_LIB_DIR . '/metadata/fieldset.inc.php');
         $aFields = DocumentField::getList("parent_fieldset IS NULL");
         foreach ($aFields as $oField) {
             $sName = $oField->getName();
