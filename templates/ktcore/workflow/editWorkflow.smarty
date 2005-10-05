@@ -5,7 +5,16 @@
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <input type="hidden" name="action" value="saveWorkflow" />
 <input type="hidden" name="fWorkflowId" value="{$oWorkflow->getId()}" />
-<input type="textbox" name="fName" value="{$oWorkflow->getName()|escape}" />
+<table class="prettysw" cellpadding="0" cellspacing="0">
+<tr>
+  <th>Name</th>
+  <td><input type="textbox" name="fName" value="{$oWorkflow->getName()|escape}" /></td>
+</tr>
+<tr>
+  <th>Starting state</th>
+  <td>{ entity_select entities=$aStates name="fStartStateId" none=true selected=$oWorkflow->getStartStateId()}</td>
+</tr>
+</table>
 <input type="submit" name="submit" value="Save" />
 </form>
 
@@ -63,4 +72,18 @@ title="Transition {$oTransition->getId()}">{$oTransition->getName()|escape}</a><
 </tr>
 </table>
 <input type="submit" name="submit" value="Create transition" />
+</form>
+
+<h2>Actions controlled</h2>
+
+<form action="{$smarty.server.PHP_SELF}" method="POST">
+<input type="hidden" name="action" value="setWorkflowActions" />
+<input type="hidden" name="fWorkflowId" value="{$oWorkflow->getId()}" />
+<ul>
+{entity_checkboxes name="fActions" entities=$aActions idmethod="getName" method="getDisplayName" assign="aCheckboxes" selected="$aActionsSelected"}
+{foreach from=$aCheckboxes item=sCheckbox}
+<li>{$sCheckbox}</li>
+{/foreach}
+</ul>
+<input type="submit" name="submit" value="Set controlled actions" />
 </form>
