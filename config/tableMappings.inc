@@ -134,4 +134,7 @@ $default->workflows_table = 'workflows';
 $default->workflow_states_table = 'workflow_states';
 $default->workflow_transitions_table = 'workflow_transitions';
 $default->workflow_state_transitions_table = 'workflow_state_transitions';
+$default->workflow_documents_table = 'workflow_documents';
+$default->workflow_actions_table = 'workflow_actions';
+$default->workflow_state_actions_table = 'workflow_state_actions';
 ?>
