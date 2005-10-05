@@ -50,6 +50,7 @@ class KTSmartyTemplate extends KTTemplate {
         $smarty->caching = false;
         $smarty->register_function('entity_select', array('KTSmartyTemplate', 'entity_select'));
         $smarty->register_function('boolean_checkbox', array('KTSmartyTemplate', 'boolean_checkbox'));
+        $smarty->register_function('entity_checkboxes', array('KTSmartyTemplate', 'entity_checkboxes'));
         return $smarty->fetch($this->sPath);
     }
 
@@ -101,6 +102,28 @@ class KTSmartyTemplate extends KTTemplate {
             $ret = sprintf('<label>%s%s</label>', $ret, $label);
         }
         return $ret;
+    }
+
+    function entity_checkboxes($params, &$smarty) {
+        require_once $smarty->_get_plugin_filepath('function', 'html_checkboxes');
+
+        $entities = KTUtil::arrayGet($params, 'entities');
+        if (is_null($entities)) {
+            $smarty->trigger_error("assign: missing 'entities' parameter");
+            return;
+        }
+
+        $method = KTUtil::arrayGet($params, 'method', 'getName');
+
+        $params['values'] = array();
+        $params['output'] = array();
+        foreach ($entities as $oEntity) {
+            $params['values'][] = $oEntity->getId();
+            $params['output'][] = call_user_func(array(&$oEntity, $method));
+        }
+        unset($params['entities']);
+
+        return smarty_function_html_checkboxes($params, $smarty);
     }
 }
 
