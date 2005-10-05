@@ -1,0 +1,66 @@
+<h1>Workflow: {$oWorkflow->getName()|escape}</h1>
+
+<h2>Edit workflow properties</h2>
+
+<form action="{$smarty.server.PHP_SELF}" method="POST">
+<input type="hidden" name="action" value="saveWorkflow" />
+<input type="hidden" name="fWorkflowId" value="{$oWorkflow->getId()}" />
+<input type="textbox" name="fName" value="{$oWorkflow->getName()|escape}" />
+<input type="submit" name="submit" value="Save" />
+</form>
+
+<h2>States</h2>
+
+{if $aStates}
+<h3>Existing states</h3>
+
+<ul>
+{foreach from=$aStates item=oState}
+  <li><a
+href="?action=editState&fWorkflowId={$oWorkflow->getId()}&fStateId={$oState->getId()}"
+title="State {$oState->getId()}">{$oState->getName()|escape}</a></li>
+{/foreach}
+</ul>
+{/if}
+
+<h3>Create a new state</h3>
+
+<form action="{$smarty.server.PHP_SELF}" method="POST">
+<input type="hidden" name="action" value="newState" />
+<input type="hidden" name="fWorkflowId" value="{$oWorkflow->getId()}" />
+<input type="textbox" name="fName" />
+<input type="submit" name="submit" value="Create state" />
+</form>
+
+<h2>Transitions</h2>
+
+{if $aTransitions}
+<h3>Existing transitions</h3>
+
+<ul>
+{foreach from=$aTransitions item=oTransition}
+  <li><a
+href="?action=editTransition&fWorkflowId={$oWorkflow->getId()}&fTransitionId={$oTransition->getId()}"
+title="Transition {$oTransition->getId()}">{$oTransition->getName()|escape}</a></li>
+{/foreach}
+</ul>
+{/if}
+
+<h3>Create a new transition</h3>
+
+<form action="{$smarty.server.PHP_SELF}" method="POST">
+<input type="hidden" name="action" value="newTransition" />
+<input type="hidden" name="fWorkflowId" value="{$oWorkflow->getId()}" />
+<table class="prettysw" cellpadding="0" cellspacing="0">
+<tr><th>Name</th><td><input type="textbox" name="fName" /></td></tr>
+<tr>
+  <th>Target State</th>
+  <td>{entity_select entities=$aStates name="fTargetStateId"}</td>
+</tr>
+<tr>
+  <th>Guard permission</th>
+  <td>{entity_select entities=$aPermissions name="fPermissionId"}</td>
+</tr>
+</table>
+<input type="submit" name="submit" value="Create transition" />
+</form>
