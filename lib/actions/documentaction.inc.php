@@ -1,6 +1,7 @@
 <?php
 
 require_once(KT_LIB_DIR . '/actions/actionregistry.inc.php');
+require_once(KT_LIB_DIR . '/workflow/workflowutil.inc.php');
 
 class KTDocumentAction {
     var $sName;
@@ -31,6 +32,10 @@ class KTDocumentAction {
 
     function _disable() {
         if ($this->_bDisabled === true) {
+            return true;
+        }
+        if (!KTWorkflowUtil::actionEnabledForDocument($this->oDocument, $this->sName)) {
+            $this->_sDisabledText = "Workflow does not allow this action at this time";
             return true;
         }
         if (is_null($this->_sDisablePermission)) {
