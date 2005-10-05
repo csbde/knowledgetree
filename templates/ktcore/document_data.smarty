@@ -1,7 +1,7 @@
 <table class="prettysw" cellpadding="0" cellspacing="0">
 { foreach key=k item=values from=$map }
 <tr>
-  <th>{$cnames[$k]}</th>
+  <th>$k</th>
   { foreach item=v from=$values }
     { cycle values="odd,compare" name=$k assign="class" }
     <td class="{$class}">{$v|default:"&nbsp;"}</td>
