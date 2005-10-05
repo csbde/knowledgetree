@@ -13,7 +13,7 @@ class KTActionRegistry {
 
     function registerAction($slot, $name, $nsname, $path = "") {
         $this->actions[$slot] = KTUtil::arrayGet($this->actions, $slot, array());
-        $this->actions[$slot][$nsname] = array($name, $path);
+        $this->actions[$slot][$nsname] = array($name, $path, $nsname);
     }
 
     function getActions($slot) {
