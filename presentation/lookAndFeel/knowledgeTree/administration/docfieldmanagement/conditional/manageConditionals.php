@@ -73,7 +73,7 @@ class ManageConditionalDispatcher extends KTStandardDispatcher {
         }
         $oTemplating = new KTTemplating;
 
-        $oTemplate = $oTemplating->loadTemplate("ktcore/metadata/conditional/new_masterset");
+        $oTemplate = $oTemplating->loadTemplate("ktcore/metadata/conditional/editsimple");
         $aTemplateData = array(
             "fieldset_id" => $fieldset_id,
             "other_fields" => $aOtherFields,
