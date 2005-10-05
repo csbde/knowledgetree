@@ -1,5 +1,9 @@
 <?php
 
+require_once(KT_LIB_DIR . '/workflow/workflow.inc.php');
+require_once(KT_LIB_DIR . '/workflow/workflowstate.inc.php');
+require_once(KT_LIB_DIR . '/workflow/workflowtransition.inc.php');
+
 class KTWorkflowUtil {
     function saveTransitionsFrom($oState, $aTransitionIds) {
         $sTable = KTUtil::getTableName('workflow_state_transitions');
@@ -133,6 +137,21 @@ class KTWorkflowUtil {
             array($iStateId),
         );
         return DBUtil::getResultArrayKey($aQuery, 'action_name');
+    }
+
+    function actionEnabledForDocument($oDocument, $sName) {
+        $oWorkflow =& KTWorkflow::getByDocument($oDocument);
+        if (is_null($oWorkflow)) {
+            return true;
+        }
+        if (!in_array($sName, KTWorkflowUtil::getControlledActionsForWorkflow($oWorkflow))) {
+            return true;
+        }
+        $oState =& KTWorkflowState::getByDocument($oDocument);
+        if (!in_array($sName, KTWorkflowUtil::getEnabledActionsForState($oState))) {
+            return false;
+        }
+        return true;
     }
 }
 
