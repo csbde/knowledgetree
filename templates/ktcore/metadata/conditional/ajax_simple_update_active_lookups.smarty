@@ -1,7 +1,10 @@
 <lookupSet>
     <!-- this should only include items which are active - you don't need to pass the whole set, since we already have the full set of items -->
-    <field field_id="3">
-        <lookup lookup_id="1" />
-        <lookup lookup_id="2" />
+    {foreach from=$aFieldLookups key=iFieldId item=aLookups}
+    <field field_id="{$iFieldId}">
+      {foreach from=$aLookups item=iLookupId}
+        <lookup lookup_id="{$iLookupId}" />
+      {/foreach}
     </field>
+    {/foreach}
 </lookupSet>
