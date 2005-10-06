@@ -26,6 +26,8 @@
  */
 
 require_once(KT_LIB_DIR . "/ktentity.inc");
+require_once(KT_LIB_DIR . '/documentmanagement/MetaData.inc');
+require_once(KT_LIB_DIR . '/metadata/valueinstance.inc.php');
 
 class KTMetadataUtil {
     // {{{ getNext
@@ -149,13 +151,74 @@ class KTMetadataUtil {
 
     // {{{ getChildFieldIds
     function getChildFieldIds($oField) {
+        $iFieldId = KTUtil::getId($oField);
         $sTable = KTUtil::getTableName('field_orders');
         $aQuery = array("SELECT child_field_id FROM $sTable WHERE parent_field_id = ?",
-            array($oField->getId()),
+            array($iFieldId),
         );
         return DBUtil::getResultArrayKey($aQuery, 'child_field_id');
     }
     // }}}
+
+    function &getOrCreateValueInstanceForLookup(&$oLookup) {
+        $oLookup =& KTUtil::getObject('MetaData', $oLookup);
+        $oValueInstance =& KTValueInstance::getByLookupSingle($oLookup);
+        if (PEAR::isError($oValueInstance)) {
+            return $oValueInstance;
+        }
+        // If we got a value instance, return it.
+        if (!is_null($oValueInstance)) {
+            return $oValueInstance;
+        }
+        return KTValueInstance::createFromArray(array(
+            'fieldid' => $oLookup->getDocFieldId(),
+            'fieldvalueid' => $oLookup->getId(),
+        ));
+    }
+
+    function getNextValuesForLookup($oLookup) {
+        $oLookup =& KTUtil::getObject('MetaData', $oLookup);
+        $oInstance =& KTValueInstance::getByLookupSingle($oLookup);
+        if (PEAR::isError($oInstance)) {
+            return $oInstance;
+        }
+        if (!is_null($oInstance) && $oInstance->getBehaviourId()) {
+            // if we have an instance, and we have a behaviour, return
+            // the actual values for that behaviour.
+            $oBehaviour =& KTFieldBehaviour::get($oInstance->getBehaviourId());
+            return KTMetadataUtil::getNextValuesForBehaviour($oBehaviour);
+        }
+        // No instance or no behaviour, so send an empty array for each
+        // field that we affect.
+        $aChildFieldIds = KTMetadataUtil::getChildFieldIds($oLookup->getDocFieldId());
+        foreach ($aChildFieldIds as $iFieldId) {
+            $aValues[$iFieldId] = array();
+        }
+        return $aValues;
+    }
+
+    function getNextValuesForBehaviour($oBehaviour) {
+        $oBehaviour =& KTUtil::getObject('KTFieldBehaviour', $oBehaviour);
+        $aValues = array();
+        $sTable = KTUtil::getTableName('field_behaviour_options');
+        $aChildFieldIds = KTMetadataUtil::getChildFieldIds($oBehaviour->getFieldId());
+        foreach ($aChildFieldIds as $iFieldId) {
+            $aValues[$iFieldId] = array();
+        }
+        $aQuery = array(
+            "SELECT field_id, instance_id FROM $sTable WHERE behaviour_id = ?",
+            array($oBehaviour->getId()),
+        );
+        $aRows = DBUtil::getResultArray($aQuery);
+        if (PEAR::isError($aRows)) {
+            return $aRows;
+        }
+        foreach ($aRows as $aRow) {
+            $oInstance =& KTValueInstance::get($aRow['instance_id']);
+            $aValues[$aRow['field_id']][] = $oInstance->getFieldValueId();
+        }
+        return $aValues;
+    }
 }
 
 ?>
