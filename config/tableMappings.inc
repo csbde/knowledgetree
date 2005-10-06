@@ -137,4 +137,7 @@ $default->workflow_state_transitions_table = 'workflow_state_transitions';
 $default->workflow_documents_table = 'workflow_documents';
 $default->workflow_actions_table = 'workflow_actions';
 $default->workflow_state_actions_table = 'workflow_state_actions';
+$default->field_value_instances_table = 'field_value_instances';
+$default->field_behaviours_table = 'field_behaviours';
+$default->field_behaviour_options_table = 'field_behaviour_options';
 ?>
