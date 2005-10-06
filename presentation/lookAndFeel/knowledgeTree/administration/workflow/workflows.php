@@ -31,8 +31,8 @@ class KTWorkflowDispatcher extends KTStandardDispatcher {
     function do_editWorkflow() {
         // $oTemplating =& KTTemplating::getSingleton();
         // $oTemplate =& $oTemplating->loadTemplate('ktcore/workflow/editWorkflow');
-        $oTemplate =& KTDispatcherValidation::validateTemplate($this, 'ktcore/workflow/editWorkflow');
-        $oWorkflow =& KTDispatcherValidation::validateWorkflow($this, $_REQUEST['fWorkflowId']);
+        $oTemplate =& $this->oValidator->validateTemplate('ktcore/workflow/editWorkflow');
+        $oWorkflow =& $this->oValidator->validateWorkflow($_REQUEST['fWorkflowId']);
         $oTemplate->setData(array(
             'oWorkflow' => $oWorkflow,
             'aStates' => KTWorkflowState::getByWorkflow($oWorkflow),
@@ -47,7 +47,7 @@ class KTWorkflowDispatcher extends KTStandardDispatcher {
 
     // {{{ do_saveWorkflow
     function do_saveWorkflow() {
-        $oWorkflow =& KTDispatcherValidation::validateWorkflow($this, $_REQUEST['fWorkflowId']);
+        $oWorkflow =& $this->oValidator->validateWorkflow($_REQUEST['fWorkflowId']);
         $oWorkflow->setName($_REQUEST['fName']);
         $oWorkflow->setHumanName($_REQUEST['fName']);
         if (!empty($_REQUEST['fStartStateId'])) {
@@ -56,7 +56,7 @@ class KTWorkflowDispatcher extends KTStandardDispatcher {
             $oWorkflow->setStartStateId(null);
         }
         $res = $oWorkflow->update();
-        KTDispatcherValidation::notErrorFalse($this, $res, array(
+        $this->oValidator->notErrorFalse($res, array(
             'redirect_to' => array('editWorkflow', 'fWorkflowId=' . $oWorkflow->getId()),
             'message' => 'Error saving workflow',
         ));
@@ -71,7 +71,7 @@ class KTWorkflowDispatcher extends KTStandardDispatcher {
             'name' => $_REQUEST['fName'],
             'humanname' => $_REQUEST['fName'],
         ));
-        KTDispatcherValidation::notError($this, $res, array(
+        $this->oValidator->notError($res, array(
             'redirect_to' => array('main'),
             'message' => 'Could not create workflow',
         ));
@@ -82,9 +82,9 @@ class KTWorkflowDispatcher extends KTStandardDispatcher {
 
     // {{{ do_setWorkflowActions
     function do_setWorkflowActions() {
-        $oWorkflow =& KTDispatcherValidation::validateWorkflow($this, $_REQUEST['fWorkflowId']);
+        $oWorkflow =& $this->oValidator->validateWorkflow($_REQUEST['fWorkflowId']);
         $res = KTWorkflowUtil::setControlledActionsForWorkflow($oWorkflow, $_REQUEST['fActions']);
-        KTDispatcherValidation::notErrorFalse($this, $res, array(
+        $this->oValidator->notErrorFalse($res, array(
             'redirect_to' => array('editWorkflow', 'fWorkflowId=' . $oWorkflow->getId()),
             'message' => 'Error saving workflow controlled actions',
         ));
@@ -99,13 +99,13 @@ class KTWorkflowDispatcher extends KTStandardDispatcher {
     //
     // {{{ do_newState
     function do_newState() {
-        $oWorkflow =& KTDispatcherValidation::validateWorkflow($this, $_REQUEST['fWorkflowId']);
+        $oWorkflow =& $this->oValidator->validateWorkflow($_REQUEST['fWorkflowId']);
         $oState = KTWorkflowState::createFromArray(array(
             'workflowid' => $oWorkflow->getId(),
             'name' => $_REQUEST['fName'],
             'humanname' => $_REQUEST['fName'],
         ));
-        KTDispatcherValidation::notError($this, $oState, array(
+        $this->oValidator->notError($oState, array(
             'redirect_to' => array('editWorkflow', 'fWorkflowId=' .  $oWorkflow->getId()),
             'message' => 'Could not create workflow state',
         ));
@@ -116,9 +116,9 @@ class KTWorkflowDispatcher extends KTStandardDispatcher {
 
     // {{{ do_editState
     function do_editState() {
-        $oTemplate =& KTDispatcherValidation::validateTemplate($this, 'ktcore/workflow/editState');
-        $oWorkflow =& KTDispatcherValidation::validateWorkflow($this, $_REQUEST['fWorkflowId']);
-        $oState =& KTDispatcherValidation::validateWorkflowState($this, $_REQUEST['fStateId']);
+        $oTemplate =& $this->oValidator->validateTemplate('ktcore/workflow/editState');
+        $oWorkflow =& $this->oValidator->validateWorkflow($_REQUEST['fWorkflowId']);
+        $oState =& $this->oValidator->validateWorkflowState($_REQUEST['fStateId']);
         $aTransitionsTo =& KTWorkflowTransition::getByTargetState($oState);
         $aTransitionIdsTo = array();
         foreach ($aTransitionsTo as $oTransition) {
@@ -147,12 +147,12 @@ class KTWorkflowDispatcher extends KTStandardDispatcher {
 
     // {{{ do_saveState
     function do_saveState() {
-        $oWorkflow =& KTDispatcherValidation::validateWorkflow($this, $_REQUEST['fWorkflowId']);
-        $oState =& KTDispatcherValidation::validateWorkflowState($this, $_REQUEST['fStateId']);
+        $oWorkflow =& $this->oValidator->validateWorkflow($_REQUEST['fWorkflowId']);
+        $oState =& $this->oValidator->validateWorkflowState($_REQUEST['fStateId']);
         $oState->setName($_REQUEST['fName']);
         $oState->setHumanName($_REQUEST['fName']);
         $res = $oState->update();
-        KTDispatcherValidation::notErrorFalse($this, $res, array(
+        $this->oValidator->notErrorFalse($res, array(
             'redirect_to' => array('editState', 'fWorkflowId=' . $oWorkflow->getId() . '&fStateId=' . $oState->getId()),
             'message' => 'Error saving state',
         ));
@@ -163,10 +163,10 @@ class KTWorkflowDispatcher extends KTStandardDispatcher {
 
     // {{{ do_saveTransitions
     function do_saveTransitions() {
-        $oWorkflow =& KTDispatcherValidation::validateWorkflow($this, $_REQUEST['fWorkflowId']);
-        $oState =& KTDispatcherValidation::validateWorkflowState($this, $_REQUEST['fStateId']);
+        $oWorkflow =& $this->oValidator->validateWorkflow($_REQUEST['fWorkflowId']);
+        $oState =& $this->oValidator->validateWorkflowState($_REQUEST['fStateId']);
         $res = KTWorkflowUtil::saveTransitionsFrom($oState, $_REQUEST['fTransitionIds']);
-        KTDispatcherValidation::notErrorFalse($this, $res, array(
+        $this->oValidator->notErrorFalse($res, array(
             'redirect_to' => array('editState', 'fWorkflowId=' . $oWorkflow->getId() . '&fStateId=' . $oState->getId()),
             'message' => 'Error saving transitions',
         ));
@@ -177,10 +177,10 @@ class KTWorkflowDispatcher extends KTStandardDispatcher {
     
     // {{{ do_setStateActions
     function do_setStateActions() {
-        $oWorkflow =& KTDispatcherValidation::validateWorkflow($this, $_REQUEST['fWorkflowId']);
-        $oState =& KTDispatcherValidation::validateWorkflowState($this, $_REQUEST['fStateId']);
+        $oWorkflow =& $this->oValidator->validateWorkflow($_REQUEST['fWorkflowId']);
+        $oState =& $this->oValidator->validateWorkflowState($_REQUEST['fStateId']);
         $res = KTWorkflowUtil::setEnabledActionsForState($oState, $_REQUEST['fActions']);
-        KTDispatcherValidation::notErrorFalse($this, $res, array(
+        $this->oValidator->notErrorFalse($res, array(
             'redirect_to' => array('editState', 'fWorkflowId=' . $oWorkflow->getId(), '&fStateId=' .  $oState->getId()),
             'message' => 'Error saving state enabled actions',
         ));
@@ -194,9 +194,9 @@ class KTWorkflowDispatcher extends KTStandardDispatcher {
     //
     // {{{ do_newTransition
     function do_newTransition() {
-        $oWorkflow =& KTDispatcherValidation::validateWorkflow($this, $_REQUEST['fWorkflowId']);
-        $oState =& KTDispatcherValidation::validateWorkflowState($this, $_REQUEST['fTargetStateId']);
-        $oPermission =& KTDispatcherValidation::validatePermission($this, $_REQUEST['fPermissionId']);
+        $oWorkflow =& $this->oValidator->validateWorkflow($_REQUEST['fWorkflowId']);
+        $oState =& $this->oValidator->validateWorkflowState($_REQUEST['fTargetStateId']);
+        $oPermission =& $this->oValidator->validatePermission($_REQUEST['fPermissionId']);
         $res = KTWorkflowTransition::createFromArray(array(
             'workflowid' => $oWorkflow->getId(),
             'name' => $_REQUEST['fName'],
@@ -204,7 +204,7 @@ class KTWorkflowDispatcher extends KTStandardDispatcher {
             'targetstateid' => $oState->getId(),
             'guardpermissionid' => $oPermission->getId(),
         ));
-        KTDispatcherValidation::notError($this, $res, array(
+        $this->oValidator->notError($res, array(
             'redirect_to' => array('editWorkflow', 'fWorkflowId=' .  $oWorkflow->getId()),
             'message' => 'Could not create workflow transition',
         ));
@@ -215,9 +215,9 @@ class KTWorkflowDispatcher extends KTStandardDispatcher {
 
     // {{{ do_editTransition
     function do_editTransition() {
-        $oTemplate =& KTDispatcherValidation::validateTemplate($this, 'ktcore/workflow/editTransition');
-        $oWorkflow =& KTDispatcherValidation::validateWorkflow($this, $_REQUEST['fWorkflowId']);
-        $oTransition =& KTDispatcherValidation::validateWorkflowTransition($this, $_REQUEST['fTransitionId']);
+        $oTemplate =& $this->oValidator->validateTemplate('ktcore/workflow/editTransition');
+        $oWorkflow =& $this->oValidator->validateWorkflow($_REQUEST['fWorkflowId']);
+        $oTransition =& $this->oValidator->validateWorkflowTransition($_REQUEST['fTransitionId']);
         $oTemplate->setData(array(
             'oWorkflow' => $oWorkflow,
             'oTransition' => $oTransition,
@@ -230,10 +230,10 @@ class KTWorkflowDispatcher extends KTStandardDispatcher {
 
     // {{{ do_saveTransition
     function do_saveTransition() {
-        $oWorkflow =& KTDispatcherValidation::validateWorkflow($this, $_REQUEST['fWorkflowId']);
-        $oTransition =& KTDispatcherValidation::validateWorkflowTransition($this, $_REQUEST['fTransitionId']);
-        $oState =& KTDispatcherValidation::validateWorkflowState($this, $_REQUEST['fTargetStateId']);
-        $oPermission =& KTDispatcherValidation::validatePermission($this, $_REQUEST['fPermissionId']);
+        $oWorkflow =& $this->oValidator->validateWorkflow($_REQUEST['fWorkflowId']);
+        $oTransition =& $this->oValidator->validateWorkflowTransition($_REQUEST['fTransitionId']);
+        $oState =& $this->oValidator->validateWorkflowState($_REQUEST['fTargetStateId']);
+        $oPermission =& $this->oValidator->validatePermission($_REQUEST['fPermissionId']);
         $oTransition->updateFromArray(array(
             'workflowid' => $oWorkflow->getId(),
             'name' => $_REQUEST['fName'],
@@ -242,7 +242,7 @@ class KTWorkflowDispatcher extends KTStandardDispatcher {
             'guardpermissionid' => $oPermission->getId(),
         ));
         $res = $oTransition->update();
-        KTDispatcherValidation::notErrorFalse($this, $res, array(
+        $this->oValidator->notErrorFalse($res, array(
             'redirect_to' => array('editTransition', 'fWorkflowId=' . $oWorkflow->getId() . '&fTransitionId=' . $oTransition->getId()),
             'message' => 'Error saving transition',
         ));
