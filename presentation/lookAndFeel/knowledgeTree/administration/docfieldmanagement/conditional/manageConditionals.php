@@ -48,6 +48,29 @@ class ManageConditionalDispatcher extends KTStandardDispatcher {
         );
         return $oTemplate->render($aTemplateData);
     }
+    
+        // FIXME refactor this into do_editSimple(fieldset_id);
+    function do_editComplexFieldset() {
+        $fieldset_id = KTUtil::arrayGet($_REQUEST, "fieldset_id");
+        $oTemplating = new KTTemplating;
+        $oTemplate = $oTemplating->loadTemplate("ktcore/metadata/conditional/editcomplex");
+        /* alright:  to "do" this we need at least:
+         *   1. the list of all the columns (id, name) and their available values.
+         *   2. the fieldset_id.
+         *  we can then render in/out.   Everything "intelligent" happens
+         *  in AJAX (doing it with submits sucks arse.
+         * 
+         *  FIXME we fake it here with nested arrays...
+         */
+        $oFieldset =& KTFieldset::get($fieldset_id);
+        $aFields =& $oFieldset->getFields();
+        $aTemplateData = array(
+            "fieldset_id" => $fieldset_id,
+            "aFields" => $aFields,
+            "iMasterFieldId" => $aFields[0]->getId(),
+        );
+        return $oTemplate->render($aTemplateData);
+    }
 
 
 
