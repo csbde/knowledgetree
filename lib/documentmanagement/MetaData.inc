@@ -51,7 +51,7 @@ class MetaData extends KTEntity {
 	*/
 	function MetaData($iNewDocFieldID = null,$sNewName = null, $iNewParent = null) {
 		//object not created yet
-		$this->iDocFieldID = $iNewDocFieldID;
+		$this->iDocFieldId = $iNewDocFieldID;
 		$this->sName = $sNewName;
 		$this->iTreeParent = $iNewParent;
 	}
@@ -59,8 +59,8 @@ class MetaData extends KTEntity {
 	function getID() { return $this->iId; }
 	function getName() { return $this->sName; }
 	function setName($sNewValue) { $this->sName = $sNewValue; }
-	function getDocFieldID() { return $this->iDocFieldID; }
-	function setDocFieldID($iNewValue) { $this->iDocFieldID = $iNewValue; }
+	function getDocFieldId() { return $this->iDocFieldId; }
+	function setDocFieldId($iNewValue) { $this->iDocFieldId = $iNewValue; }
     function getTreeParent() { return $this->iTreeParent; }
     function setTreeParent($iNewValue) { $this->iTreeParent = $iNewValue; }
 
@@ -83,12 +83,12 @@ class MetaData extends KTEntity {
      *   
      */
      
-	function setMetaDataID($iDocFieldID, $sMetaDataName)
+	function setMetaDataID($iDocFieldId, $sMetaDataName)
 	 {
 	   	global $default;
 		$sql = $default->db;
         $sQuery = "SELECT id FROM $default->metadata_table WHERE document_field_id = ? and name = ?";/*ok*/
-        $aParams = array($iDocFieldID, $sMetaDataName);
+        $aParams = array($iDocFieldId, $sMetaDataName);
 		$result = $sql->query(array($sQuery, $aParams));
 		if ($result) {
 			if ($sql->next_record()) {
