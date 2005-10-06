@@ -1,0 +1,118 @@
+{literal}
+<style type="text/css">
+/* inactivity */
+.active .inactivity_message { display: none; }
+
+/* fixed status */
+.active .fixed_message { display: none; }
+.active.fixed .fixed_message { display: block; }
+.active.fixed .unassigned_items { display: none; }
+
+.inactive { background: #ccc; }
+.inactive .fixed_message, 
+.inactive .unassigned_items,
+.inactive .available_behaviours,
+.inactive .behaviour_edit_options 
+{ display: none; }
+
+.helpText { color: #666; }
+
+</style>
+
+<!-- include the mochikit js -->
+<script language="javascript" src="/thirdpartyjs/MochiKit/Base.js"> </script>
+<script language="javascript" src="/thirdpartyjs/MochiKit/Iter.js"> </script>
+<script language="javascript" src="/thirdpartyjs/MochiKit/DateTime.js"> </script>
+<script language="javascript" src="/thirdpartyjs/MochiKit/Async.js"> </script>
+<script language="javascript" src="/thirdpartyjs/MochiKit/DOM.js"> </script>
+
+<script language="javascript" src="/presentation/lookAndFeel/knowledgeTree/js/taillog.js"> </script>
+<script language="javascript" src="/presentation/lookAndFeel/knowledgeTree/js/conditional_complex_edit.js"> </script>
+
+<script language="javascript"> 
+addLoadEvent(updateActiveFields);
+</script>
+
+{/literal}
+
+<h2>Edit Complex Conditional Metadata</h2>
+<form>
+<input type="hidden" name="fieldset_id" id="global-fieldset-id" value="{$fieldset_id}" />
+
+<table>
+<!--
+<tr>
+  <th>Column 1</th>
+  <th>Column 2</th>
+  <th>Column 3</th>
+  <th>Column 4</th>
+</tr> -->
+<tbody>
+<tr valign="top">
+{foreach from=$aFields item=oField}
+  <td class="inactive" id="md_{$oField->getId()}">
+	<h3>{$oField->getName()}</h3>
+     <p class="inactivity_message">This column is not active.</p>
+     <p class="fixed_message">Editing behaviour <strong>Jack</strong></p>
+     <div class="unassigned_items">
+     <h3>Unassigned/Unavailable</h3>
+         <select class="item_list" multiple="true">
+		  <!--     These are orphaned - we fire a "activate" command on load / available.
+            <option value="-1">Test 1</option>
+            <option value="-2">Test 2</option>
+            <option value="-3">Test 3</option>
+            <option value="-4">Test 4</option>
+		  -->
+         </select>
+     <p><strong>Assign to behaviour</strong></p>
+     <select class="available_behaviours" onchange="assignToBehaviour(this, {$oField->getId()});">
+         <option>Select a behaviour</option>
+	     <!-- ditto 
+		 <option value="1">Behaviour 1</option>
+         <option value="2">Behaviour 2</option>
+         <option value="3">Behaviour 3</option>
+         <option value="4">Behaviour 4</option>
+		 -->
+     </select> <br />
+     <strong>or</strong> to a new behaviour called <br />
+     <input type="text" name="new_behaviour" class="new_behaviour" />
+     <input type="button" value="create behaviour" onclick="assignToNewBehaviour({$oField->getId()});" />
+     </div>
+     <div class="behaviour_edit_options">
+     <h3>Edit Behaviour</h3>
+     <p class="helpText">
+        Select a behaviour from this list to change the
+        items which are available.
+     </p>
+         <select class="edit_behaviours" onchange="editBehaviour(this, {$oField->getId()});">
+         <option>Select a behaviour</option>
+		 <!--
+         <option value="1">Behaviour 1</option>
+         <option value="2">Behaviour 2</option>
+         <option value="3">Behaviour 3</option>
+         <option value="4">Behaviour 4</option>
+		 -->
+         </select>
+     <br />
+     <a href="#" onclick="changeAssignments({$oField->getId()}); return false;">Change Assignments for this field.</a>
+     </div>
+  </td>
+{/foreach}
+</tr>
+</tbody>
+</table>
+
+
+<!--
+<table id="brad-log">
+<tr>
+    <th>Severity</th>
+    <th>Time</th>
+    <th>Entry</th>
+</tr>
+<tbody  >
+
+</tbody>
+</table>
+
+-->
