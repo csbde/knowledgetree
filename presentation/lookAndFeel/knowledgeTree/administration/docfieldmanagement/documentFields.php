@@ -7,7 +7,6 @@ require_once(KT_LIB_DIR . '/templating/templating.inc.php');
 require_once(KT_LIB_DIR . '/documentmanagement/DocumentField.inc');
 require_once(KT_LIB_DIR . '/metadata/fieldset.inc.php');
 require_once(KT_LIB_DIR . '/metadata/metadatautil.inc.php');
-require_once(KT_LIB_DIR . '/validation/dispatchervalidation.inc.php');
 
 $sectionName = "Administration";
 require_once(KT_DIR . "/presentation/webpageTemplate.inc");
@@ -237,7 +236,7 @@ class KTDocumentFieldDispatcher extends KTStandardDispatcher {
         }
         foreach ($aFreeFieldIds as $iChildFieldId) {
             $res = KTMetadataUtil::addFieldOrder($iParentFieldId, $iChildFieldId, $oFieldset);
-            KTDispatcherValidation::notError($this, $res, array(
+            $this->oValidator->notError($this, $res, array(
                 'redirect_to' => array('manageConditional', 'fFieldsetId=' . $oFieldset->getId()),
                 'message' => 'Error adding Fields',
             ));
