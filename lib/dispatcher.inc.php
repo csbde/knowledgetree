@@ -1,9 +1,15 @@
 <?php
 
+require_once(KT_LIB_DIR . '/validation/dispatchervalidation.inc.php');
+
 class KTDispatcher {
     var $event_var = "action";
     var $bAutomaticTransaction = false;
     var $bTransactionStarted = false;
+
+    function KTDispatcher() {
+        $this->oValidator =& new KTDispatcherValidation($this);
+    }
 
     function dispatch () {
         $method = 'do_main';
