@@ -26,6 +26,8 @@
  * @package documentmanagement
  */
 
+require_once(KT_LIB_DIR . '/workflow/workflowstate.inc.php');
+
 function renderDocumentPath($oDocument, $bDisplayActions = false) {
     global $default;
 	$sSectionName = $default->siteMap->getSectionName(substr($_SERVER["PHP_SELF"], strlen($default->rootUrl), strlen($_SERVER["PHP_SELF"])));
@@ -77,7 +79,6 @@ function renderDocumentData($oDocument, $bEditable, $sStatusMessage = "") {
     $map = array();
     $iDocumentCount = 0;
     foreach ($aDocuments as $iDocumentID) {
-        $map['Metadata Version'] = KTUtil::arrayGet($map, 'Metadata Version', array_fill(0, $iDocumentsLen, null));
         $oThisDocument =& Document::get($iDocumentID);
         if (PEAR::isError($oThisDocument)) {
             continue;
@@ -85,12 +86,18 @@ function renderDocumentData($oDocument, $bEditable, $sStatusMessage = "") {
         if ($oThisDocument === false) {
             continue;
         }
-        $map['Metadata Version'][$iDocumentCount] = $oThisDocument->getMetadataVersion();
         $aRow = DBUtil::getOneResult(array($sQuery, array($iDocumentID)));
         foreach ($aColumns as $dbname => $prettyname) {
             $newarray = KTUtil::arrayGet($map, $prettyname, array_fill(0, $iDocumentsLen, null));
             $newarray[$iDocumentCount] = $aRow[$dbname];
             $map[$prettyname] = $newarray;
+        }
+        $oState =& KTWorkflowState::getByDocument($oThisDocument);
+        $map['Workflow state'] = KTUtil::arrayGet($map, 'Metadata Version', array_fill(0, $iDocumentsLen, null));
+        if ($oState) {
+            $map['Workflow state'][$iDocumentCount] = $oState->getHumanName();
+        } else {
+            $map['Workflow state'][$iDocumentCount] = "Not in workflow";
         }
         $iDocumentCount++;
     }
