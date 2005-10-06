@@ -43,14 +43,14 @@ class KTValueInstance extends KTEntity {
 
     var $_bUsePearError = true;
 
-    function getID() { return $this->iId; }
-    function getFieldID() { return $this->iFieldID; }
-    function getFieldValue() { return $this->iFieldValue; }
-    function getBehaviourID() { return $this->iBehaviourID; }
-    function setID($iId) { $this->iId = $iId; }
-    function setFieldID($iFieldID) { $this->iFieldID = $iFieldID; }
-    function setFieldValue($iFieldValue) { $this->iFieldValue = $iFieldValue; }
-    function setBehaviourID($iBehaviourID) { $this->iBehaviourID = $iBehaviourID; }
+    function getId() { return $this->iId; }
+    function getFieldId() { return $this->iFieldId; }
+    function getFieldValueId() { return $this->iFieldValueId; }
+    function getBehaviourId() { return $this->iBehaviourId; }
+    function setId($iId) { $this->iId = $iId; }
+    function setFieldId($iFieldId) { $this->iFieldId = $iFieldId; }
+    function setFieldValueId($iFieldValue) { $this->iFieldValueId = $iFieldValueId; }
+    function setBehaviourId($iBehaviourId) { $this->iBehaviourId = $iBehaviourId; }
 
     function _table () {
         return KTUtil::getTableName('field_value_instances');
@@ -74,12 +74,20 @@ class KTValueInstance extends KTEntity {
 
     // STATIC
     function &getByField($oField) {
-        if (is_object($oField)) {
-            $iFieldID = $oField->getID();
-        } else {
-            $iFieldID = $oField;
-        }
-        return KTEntityUtil::getBy('KTValueInstance', 'fieldid', $iFieldID);
+        $iFieldId = KTUtil::getId($oField);
+        return KTEntityUtil::getBy('KTValueInstance', 'fieldid', $iFieldId);
+    }
+
+    function &getByLookupSingle($oLookup) {
+        $aOptions = array('noneok' => true);
+        $iLookupId = KTUtil::getId($oLookup);
+        return KTEntityUtil::getBy('KTValueInstance', 'field_value_id', $iLookupId, $aOptions);
+    }
+
+    function &getByLookup($oLookup, $aOptions) {
+        $aOptions = array('multi' => true);
+        $iLookupId = KTUtil::getId($oLookup);
+        return KTEntityUtil::getBy('KTValueInstance', 'field_value_id', $iLookupId, $aOptions);
     }
 }
 
