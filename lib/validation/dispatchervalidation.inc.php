@@ -1,58 +1,65 @@
 <?php
 
-
 class KTDispatcherValidation {
-    function &validateFolder (&$this, $iId, $aOptions = null) {
-        return KTDispatcherValidation::validateEntity($this, 'Folder', $iId, $aOptions);
+    function KTDispatcherValidation(&$oDispatcher) {
+        $this->oDispatcher =& $oDispatcher;
     }
 
-    function &validatePermissionByName (&$this, $iId, $aOptions = null) {
-        KTUtil::meldOptions($aOptions, array(
+    function &validateFolder ($iId, $aOptions = null) {
+        return $this->validateEntity('Folder', $iId, $aOptions);
+    }
+
+    function &validateDocument ($iId, $aOptions = null) {
+        return $this->validateEntity('Document', $iId, $aOptions);
+    }
+
+    function &validatePermissionByName ($iId, $aOptions = null) {
+        $aOptions = KTUtil::meldOptions($aOptions, array(
             'method' => 'getByName',
         ));
-        return KTDispatcherValidation::validateEntity($this, 'KTPermission', $iId, $aOptions);
+        return $this->validateEntity('KTPermission', $iId, $aOptions);
     }
 
-    function userHasPermissionOnItem(&$this, $oUser, $oPermission, $oItem, $aOptions) {
+    function userHasPermissionOnItem($oUser, $oPermission, $oItem, $aOptions = null) {
         require_once(KT_LIB_DIR . '/permissions/permissionutil.inc.php');
         if (KTPermissionUtil::userHasPermissionOnItem($oUser, $oPermission, $oItem)) {
             return;
         }
-        $this->errorPage(_("Insufficient permissions to perform action"));
+        $this->oDispatcher->errorPage(_("Insufficient permissions to perform action"));
     }
 
-    function &validateEntity(&$this, $entity_name, $iId, $aOptions = null) {
+    function &validateEntity($entity_name, $iId, $aOptions = null) {
         $aOptions = (array)$aOptions;
 
         $aFunc = array($entity_name, KTUtil::arrayGet($aOptions, 'method', 'get'));
         $oEntity =& call_user_func($aFunc, $iId);
         if (PEAR::isError($oEntity) || ($oEntity === false)) {
-            $this->errorPage(sprintf("Invalid identifier provided for: %s", $entity_name));
+            $this->oDispatcher->errorPage(sprintf("Invalid identifier provided for: %s", $entity_name));
         }
         return $oEntity;
     }
 
-    function notError(&$this, &$res, $aOptions = null) {
+    function notError(&$res, $aOptions = null) {
         $aOptions = (array)$aOptions;
         if (PEAR::isError($res)) {
             $aOptions = KTUTil::meldOptions($aOptions, array(
                 'exception' => $res,
             ));
-            KTDispatcherValidation::handleError($this, $aOptions);
+            $this->handleError($aOptions);
         }
     }
 
-    function notErrorFalse(&$this, &$res, $aOptions = null) {
+    function notErrorFalse(&$res, $aOptions = null) {
         $aOptions = (array)$aOptions;
         if (PEAR::isError($res) || ($res === false)) {
             $aOptions = KTUTil::meldOptions($aOptions, array(
                 'exception' => $res,
             ));
-            KTDispatcherValidation::handleError($this, $aOptions);
+            $this->handleError($aOptions);
         }
     }
 
-    function handleError($this, $aOptions = null) {
+    function handleError($aOptions = null) {
         $aOptions = (array)$aOptions;
         $aRedirectTo = KTUtil::arrayGet($aOptions, 'redirect_to');
         $oException = KTUtil::arrayGet($aOptions, 'exception');
@@ -66,33 +73,38 @@ class KTDispatcherValidation {
         }
         if ($aRedirectTo) {
             $aRealRedirectTo = array($aRedirectTo[0], $sMessage, KTUtil::arrayGet($aRedirectTo, 1));
-            call_user_func_array(array($this, 'errorRedirectTo'), $aRealRedirectTo);
+            call_user_func_array(array($this->oDispatcher, this, 'errorRedirectTo'), $aRealRedirectTo);
         }
-        $this->errorPage($sMessage);
+        $this->oDispatcher->errorPage($sMessage);
     }
 
-    function &validateTemplate($this, $sTemplateName, $aOptions = null) {
+    function &validateTemplate($sTemplateName, $aOptions = null) {
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate =& $oTemplating->loadTemplate($sTemplateName);
         $aOptions['message'] = KTUtil::arrayGet($aOptions, 'message', 'Failed to locate template');
-        KTDispatcherValidation::notError($this, $oTemplate, $aOptions);
+        $this->notError($oTemplate, $aOptions);
         return $oTemplate;
     }
 
-    function &validateWorkflow($this, $iId, $aOptions = null) {
-        return KTDispatcherValidation::validateEntity($this, 'KTWorkflow', $iId, $aOptions);
+    function &validateWorkflow($iId, $aOptions = null) {
+        return $this->validateEntity('KTWorkflow', $iId, $aOptions);
     }
 
-    function &validateWorkflowState($this, $iId, $aOptions = null) {
-        return KTDispatcherValidation::validateEntity($this, 'KTWorkflowState', $iId, $aOptions);
+    function &validateWorkflowState($iId, $aOptions = null) {
+        return $this->validateEntity('KTWorkflowState', $iId, $aOptions);
     }
 
-    function &validateWorkflowTransition($this, $iId, $aOptions = null) {
-        return KTDispatcherValidation::validateEntity($this, 'KTWorkflowTransition', $iId, $aOptions);
+    function &validateWorkflowTransition($iId, $aOptions = null) {
+        return $this->validateEntity('KTWorkflowTransition', $iId, $aOptions);
     }
 
-    function &validatePermission($this, $iId, $aOptions = null) {
-        return KTDispatcherValidation::validateEntity($this, 'KTPermission', $iId, $aOptions);
+    function &validatePermission($iId, $aOptions = null) {
+        return $this->validateEntity('KTPermission', $iId, $aOptions);
+    }
+
+    function &validateLookup($iId, $aOptions = null) {
+        require_once(KT_LIB_DIR .  '/documentmanagement/MetaData.inc');
+        return $this->validateEntity('MetaData', $iId, $aOptions);
     }
 }
 
