@@ -46,7 +46,7 @@ function setActiveLookupsForField(field_id, active_lookups) {
     for (var i=0; i<item_list.options.length; i++) {
         var option = item_list.options[i];
         option.selected = false;
-        if (active_hash[i]) {
+        if (active_hash[option.value]) {
             option.selected = true;
         }
     }
