@@ -43,6 +43,7 @@
 
 <!-- include the mochikit js -->
 <script language="javascript" src="/thirdpartyjs/MochiKit/Base.js"> </script>
+<script language="javascript" src="/thirdpartyjs/MochiKit/DateTime.js"> </script>
 <script language="javascript" src="/thirdpartyjs/MochiKit/Iter.js"> </script>
 <script language="javascript" src="/thirdpartyjs/MochiKit/Async.js"> </script>
 <script language="javascript" src="/thirdpartyjs/MochiKit/DOM.js"> </script>
