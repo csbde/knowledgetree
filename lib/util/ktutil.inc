@@ -295,6 +295,19 @@ class KTUtil {
     }
     // }}}
 
+    // {{{ getObject
+    function getObject($sClassName, &$iId) {
+        if (is_object($iId)) {
+            return $iId;
+        }
+
+        if (is_numeric($iId)) {
+            return call_user_func(array($sClassName, 'get'), $iId);
+        }
+        return PEAR::raiseError('Non-entity object');
+    }
+    // }}}
+
     // {{{ meldOptions
     function meldOptions($aStartOptions, $aAddOptions) {
         if (!is_array($aStartOptions)) {
