@@ -317,10 +317,13 @@ class KTEntityUtil {
     }
 
     function &getBy($sClassName, $aField, $mValue, $aOptions = null) {
-        $bMulti = false;
-        if (is_array($aOptions)) {
-            $bMulti = KTUtil::arrayGet($aOptions, 'multi', false);
+        $bMulti = KTUtil::arrayGet($aOptions, 'multi', false);
+        if ($bMulti) {
+            $bNoneOk = true;
+        } else {
+            $bNoneOk = false;
         }
+        $bNoneOk = KTUtil::arrayGet($aOptions, 'noneok', $bNoneOk);
         if (is_string($aField)) {
             $sWhereClause = array("$aField = ?", array($mValue));
         } else {
@@ -341,6 +344,9 @@ class KTEntityUtil {
         }
         if ($bMulti === false) {
             if (count($aObjects) === 0) {
+                if ($bNoneOk) {
+                    return null;
+                }
                 return PEAR::raiseError("No objects returned");
             }
             if (count($aObjects) > 1) {
