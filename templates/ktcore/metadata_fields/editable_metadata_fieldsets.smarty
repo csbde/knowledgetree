@@ -38,6 +38,9 @@
 <script language="javascript" src="/thirdpartyjs/MochiKit/Base.js" > </script>
 <script language="javascript" src="/thirdpartyjs/MochiKit/Iter.js" > </script>
 <script language="javascript" src="/thirdpartyjs/MochiKit/DOM.js" > </script>
+<script language="javascript" src="/thirdpartyjs/MochiKit/DateTime.js" > </script>
+<script language="javascript" src="/presentation/lookAndFeel/knowledgeTree/js/taillog.js"> </script>
+<script language="javascript" src="/presentation/lookAndFeel/knowledgeTree/js/conditional_usage.js"> </script>
 
 {if !$metadata_prefix}
   {assign var="metadata_prefix" value="emd"}
@@ -48,8 +51,13 @@
 {/if}
 
 {foreach from=$fieldsets item=oFieldset}
+{if $oFieldset->getIsConditional()}
+<fieldset class="conditional_metadata">
+<input type="hidden" class="fixed" name="fieldsets[]" value="{$oFieldset->getId()}" />
+{else}
 <fieldset>
-  <legend>{$oFieldset->getName()}</legend>
+{/if}
+  <legend><span title="Fieldset: {$oFieldset->getId()}">{$oFieldset->getName()}</span></legend>
 
   <table class="prettysw" cellpadding="0" cellspacing="0">
   { foreach item=oField from=$oFieldset->getFields() }
@@ -70,7 +78,11 @@
     </tr>
   { /foreach }
   </table>
-</fieldset}
+</fieldset>
 {foreachelse}
 No fields found
 {/foreach}
+
+<table id="brad-log">
+<tbody><tr><td>asdf</td></tr></tbody>
+</table>
