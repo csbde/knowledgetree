@@ -58,7 +58,7 @@ class KTSmartyTemplate extends KTTemplate {
         require_once $smarty->_get_plugin_filepath('function', 'html_options');
 
         $entities = KTUtil::arrayGet($params, 'entities');
-        if (empty($entities)) {
+        if (is_null($entities)) {
             $smarty->trigger_error("assign: missing 'entities' parameter");
             return;
         }
