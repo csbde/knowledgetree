@@ -1,0 +1,17 @@
+{foreach from=$aFieldValues key=iFieldId item=aFieldInfo }
+{assign var="oField" value=$aFieldInfo.field}
+{assign var="aLookups" value=$aFieldInfo.values}
+<tr class="widget">
+  <th><span title="Field: {$oField->getId()}">{$oField->getName()|escape}</span></th>
+  <td>
+
+<select name="emd{$oField->getId()}">
+  <option value="">Unset</option>
+{foreach from=$aLookups item=oLookup}
+  <option value="{$oLookup->getId()}">{$oLookup->getName()}</option>
+{/foreach}
+</select>
+
+  </td>
+</tr>
+{/foreach}
