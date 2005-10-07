@@ -139,7 +139,7 @@ class KTAddDocumentDispatcher extends KTStandardDispatcher {
 
     function getGenericMetadataFieldsets() {
         $oTemplating = KTTemplating::getSingleton();
-        $oTemplate = $oTemplating->loadTemplate("ktcore/metadata_fields/editable_metadata_fieldsets");
+        $oTemplate = $oTemplating->loadTemplate("ktcore/metadata/editable_metadata_fieldsets");
         $aTemplateData = array(
             'caption' => _('Generic meta data'),
             'empty_message' => _("No Generic Meta Data"),
@@ -155,7 +155,7 @@ class KTAddDocumentDispatcher extends KTStandardDispatcher {
             'fieldsets' => KTFieldset::getForDocumentType($iDocumentTypeID),
         );
         $oTemplating = KTTemplating::getSingleton();
-        $oTemplate = $oTemplating->loadTemplate("ktcore/metadata_fields/editable_metadata_fieldsets");
+        $oTemplate = $oTemplating->loadTemplate("ktcore/metadata/editable_metadata_fieldsets");
         return $oTemplate->render($aTemplateData);
     }
 
