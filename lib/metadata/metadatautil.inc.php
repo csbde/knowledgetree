@@ -28,6 +28,8 @@
 require_once(KT_LIB_DIR . "/ktentity.inc");
 require_once(KT_LIB_DIR . '/documentmanagement/MetaData.inc');
 require_once(KT_LIB_DIR . '/metadata/valueinstance.inc.php');
+require_once(KT_LIB_DIR . '/metadata/fieldset.inc.php');
+require_once(KT_LIB_DIR . '/metadata/fieldbehaviour.inc.php');
 
 class KTMetadataUtil {
     // {{{ getNext
@@ -37,17 +39,42 @@ class KTMetadataUtil {
      * keys set to newly uncovered fields, and the contents an array of
      * the value instances that are available to choose in those fields.
      */
-    function getNext($iFieldSetId, $aCurrentSelections) {
+    function getNext($oFieldset, $aCurrentSelections) {
+        $oFieldset =& KTUtil::getObject('KTFieldset', $oFieldset);
+
         if (empty($aCurrentSelections)) {
-            return array();
+            $oField =& DocumentField::get($oFieldset->getMasterFieldId());
+            return array($oField->getId() => array('field' => $oField, 'values' => $oField->getValues()));
         }
+
+        $aReturn = array();
+
+        foreach ($aCurrentSelections as $iFieldId => $iLookupId) {
+            $aFieldIds = KTMetadataUtil::getNextValuesForLookup($iLookupId);
+            foreach ($aFieldIds as $key => $aValueIds) {
+                if (in_array($key, $aCurrentSelections)) {
+                    continue;
+                }
+                $aValues = array();
+                foreach ($aValueIds as $iLookupId) {
+                    $aValues[] = MetaData::get($iLookupId);
+                }
+                $aReturn[$key] = array(
+                    'field' => DocumentField::get($key),
+                    'values' => $aValues,
+                );
+            }
+        }
+        return $aReturn;
     }
     // }}}
 
     // {{{ getStartFields
-    function getStartFields($iFieldSetId) {
-        return DocumentField::getList();
-
+    function getMasterField($oFieldset) {
+        $oFieldset =& KTUtil::getObject('KTFieldset', $oFieldset);
+        if ($oFieldset->getMasterField()) {
+            return DocumentField::get($oFieldset->getMasterField());
+        }
     }
     // }}}
 
@@ -136,6 +163,18 @@ class KTMetadataUtil {
             'fieldset_id' => $iFieldsetId,
         );
         return DBUtil::autoInsert($sTable, $aValues, $aOptions);
+    }
+    // }}}
+
+    // {{{ removeFieldOrdering
+    function removeFieldOrdering($oFieldset) {
+        $iFieldsetId = KTUtil::getId($oFieldset);
+        $sTable = KTUtil::getTableName('field_orders');
+        $aQuery = array(
+            "DELETE FROM $sTable WHERE fieldset_id = ?",
+            array($iFieldsetId),
+        );
+        return DBUtil::runQuery($aQuery);
     }
     // }}}
 
