@@ -31,7 +31,7 @@ require_once(KT_LIB_DIR . '/documentmanagement/DocumentField.inc');
  */
 function getGenericMetaDataForm() {
     $oTemplating = KTTemplating::getSingleton();
-    $oTemplate = $oTemplating->loadTemplate("ktcore/metadata_fields/editable_metadata_fields");
+    $oTemplate = $oTemplating->loadTemplate("ktcore/metadata/editable_metadata_fields");
     $aTemplateData = array(
         'caption' => _('Generic meta data'),
         'empty_message' => _("No Generic Meta Data"),
@@ -62,7 +62,7 @@ function getTypeSpecificMetaDataForm($iFolderID, $iDocumentTypeID) {
         'fields' => $aFields,
     );
     $oTemplating = KTTemplating::getSingleton();
-    $oTemplate = $oTemplating->loadTemplate("ktcore/metadata_fields/editable_metadata_fields");
+    $oTemplate = $oTemplating->loadTemplate("ktcore/metadata/editable_metadata_fields");
     return $oTemplate->render($aTemplateData);
 }
 

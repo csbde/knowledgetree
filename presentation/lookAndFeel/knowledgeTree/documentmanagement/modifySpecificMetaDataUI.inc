@@ -53,7 +53,7 @@ function getEditableTypeSpecificMetaData($iDocumentID, $iDocumentTypeID) {
         'values' => $aValues,
     );
     $oTemplating = KTTemplating::getSingleton();
-    $oTemplate = $oTemplating->loadTemplate("ktcore/metadata_fields/editable_metadata_fields");
+    $oTemplate = $oTemplating->loadTemplate("ktcore/metadata/editable_metadata_fields");
     return $oTemplate->render($aTemplateData);
 }
 

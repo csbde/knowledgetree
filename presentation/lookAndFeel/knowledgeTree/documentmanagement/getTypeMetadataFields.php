@@ -20,7 +20,7 @@ class GetTypeMetadataFieldsDispatcher extends KTDispatcher {
             'fieldsets' => KTFieldSet::getForDocumentType($iDocumentTypeID),
         );
         $oTemplating = KTTemplating::getSingleton();
-        $oTemplate = $oTemplating->loadTemplate("ktcore/metadata_fields/editable_metadata_fieldsets");
+        $oTemplate = $oTemplating->loadTemplate("ktcore/metadata/editable_metadata_fieldsets");
         return $oTemplate->render($aTemplateData);
     }
 }
