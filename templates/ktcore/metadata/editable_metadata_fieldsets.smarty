@@ -1,0 +1,92 @@
+{literal}
+<style>
+
+.kt_treenodes {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    text-align: left !important;
+}
+
+.leafnode {font-weight: bold; }
+
+.kt_treenodes ul {
+    list-style: none;
+    text-align: left;
+}
+.kt_treenodes li.treenode > a.pathnode {
+   background: transparent url(/graphics/plus.png) center left no-repeat;
+   padding-left: 15px;
+}
+
+.kt_treenodes li.treenode.active > a.pathnode {
+   background: transparent url(/graphics/minus.png) center left no-repeat;
+}
+
+.kt_treenodes li.active > ul {
+    display: block;
+}
+
+.kt_treenodes li ul {
+    display: none;
+}
+
+</style>
+{/literal}
+
+<script language="javascript" src="/thirdpartyjs/MochiKit/Base.js" > </script>
+<script language="javascript" src="/thirdpartyjs/MochiKit/Iter.js" > </script>
+<script language="javascript" src="/thirdpartyjs/MochiKit/DOM.js" > </script>
+<script language="javascript" src="/thirdpartyjs/MochiKit/DateTime.js" > </script>
+<script language="javascript" src="/presentation/lookAndFeel/knowledgeTree/js/taillog.js"> </script>
+<script language="javascript" src="/presentation/lookAndFeel/knowledgeTree/js/conditional_usage.js"> </script>
+
+{if !$metadata_prefix}
+  {assign var="metadata_prefix" value="emd"}
+{/if}
+
+{if $caption}
+  <p>{$caption}</p>
+{/if}
+
+{foreach from=$fieldsets item=oFieldset}
+{if $oFieldset->getIsConditional()}
+<fieldset class="conditional_metadata">
+<input type="hidden" class="fixed" name="fieldsets[]" value="{$oFieldset->getId()}" />
+{else}
+<fieldset>
+{/if}
+  <legend><span title="Fieldset: {$oFieldset->getId()}">{$oFieldset->getName()}</span></legend>
+
+  <table class="prettysw" cellpadding="0" cellspacing="0">
+   <tbody class="conditional_target">
+<!--
+  { foreach item=oField from=$oFieldset->getFields() }
+    <tr>
+      <th>{$oField->getName()}</th>
+      <td>
+
+  {php}
+  $oField = $this->_tpl_vars['oField'];
+  $sPrefix = $this->_tpl_vars['metadata_prefix'];
+  $sValue = $this->_tpl_vars['values'][$oField->getID()];
+  $this->assign('pattern',
+  	new PatternMetadata($oField->getName(), $sPrefix .  $oField->getID(), $sValue));
+  {/php}
+  {$pattern->render()}
+
+      </td>
+    </tr>
+  { /foreach }
+-->
+   </tbody>
+  </table>
+</fieldset>
+{foreachelse}
+No fields found
+{/foreach}
+
+<table id="brad-log">
+<tbody><tr><td>asdf</td></tr></tbody>
+</table>
