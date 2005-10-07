@@ -2,7 +2,7 @@
 require_once("../../../config/dmsDefaults.php");
 require_once(KT_DIR . "/presentation/Html.inc");
 require_once(KT_LIB_DIR . "/templating/templating.inc.php");
-require_once(KT_LIB_DIR . "/documentmanagement/DocumentFieldSet.inc");
+require_once(KT_LIB_DIR . "/metadata/fieldset.inc.php");
 require_once(KT_LIB_DIR . "/documentmanagement/DocumentField.inc");
 require_once(KT_LIB_DIR . "/documentmanagement/MDCondition.inc");
 require_once(KT_LIB_DIR . "/database/dbutil.inc");
@@ -19,18 +19,11 @@ require_once(KT_DIR . "/presentation/webpageTemplate.inc");
 class AjaxConditionalDispatcher extends KTDispatcher {
     
     function do_main() {
-        $oTemplating = new KTTemplating;
-
-        $oTemplate = $oTemplating->loadTemplate("ktcore/widget_fieldset_conditional");
-        $aTemplateData = array(
-            "fieldset_id" => 3,
-        );
-        return $oTemplate->render($aTemplateData);
+        return "AJAX Error";
     }
 
     function handleOutput($data) {
         print $data;
-        
     }
 
     function do_verifyAndUpdate() {
@@ -43,6 +36,25 @@ class AjaxConditionalDispatcher extends KTDispatcher {
         );
         return $oTemplate->render($aTemplateData);
          return ;
+    }
+
+    function do_updateFieldset() {
+        header('Content-Type: application/xml');
+        return '
+<div class="widget">
+<label>
+<select name="test123">
+    <option value="1">Option 1</option>
+    <option value="2">Option 2</option>
+    <option value="3">Option 3</option>
+    <option value="4">Option 4</option>
+    <option value="5">Option 5</option>
+    <option value="6">Option 6</option>
+</select>
+    Test 123.  Was that not nice?
+</label>    
+</div>
+    ';
     }
 
 }
