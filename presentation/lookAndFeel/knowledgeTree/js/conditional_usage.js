@@ -104,7 +104,9 @@ function popStack(fieldset) {
         return ;
     }
     var last_item = undostack.pop();
+    simpleLog('DEBUG','popping item\n'+toHTML(last_item));
     last_item.parentNode.removeChild(last_item);
+    updateFieldset(fieldset);
 }
 
 /** 
@@ -117,7 +119,7 @@ function createFixedWidget(fieldset, widget, i_name, i_value, i_label) {
         TH(null, i_name),
         TD(null, 
             INPUT({'type':'hidden','name':i_name, 'value':i_value,'class':'fixed'}),
-            SPAN(null, i_value)
+            SPAN(null, i_label)
         )
     );
     swapDOM(widget, newWidget);
