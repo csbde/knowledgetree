@@ -19,7 +19,7 @@ class KTFieldset extends KTEntity {
 	/** document fieldset mandatory flag*/
 	var $bMandatory;
 	var $bIsConditional;
-	var $iMasterField;
+	var $iMasterFieldId;
 
     var $bIsGeneric;
 	
@@ -35,8 +35,8 @@ class KTFieldset extends KTEntity {
 	function setMandatory($bNewValue) {	$this->bMandatory = $bNewValue; }	
 	function getIsConditional () { return $this->bIsConditional; }
 	function setIsConditional ($bNewValue) {	$this->bIsConditional = $bNewValue; }	
-	function getMasterField () { return $this->bIsConditional; }
-	function setMasterField ($iNewValue) {	$this->bIsConditional = $iNewValue; }	
+	function getMasterFieldId () { return $this->iMasterFieldId; }
+	function setMasterFieldId ($iNewValue) {	$this->iMasterFieldId = $iNewValue; }	
 	function getIsGeneric () { return $this->bIsGeneric; }
 	function setIsGeneric ($bNewValue) {	$this->bIsGeneric = $bNewValue; }	
 
@@ -46,7 +46,7 @@ class KTFieldset extends KTEntity {
         "sNamespace" => "namespace",
         "bMandatory" => "mandatory",
 		"bIsConditional" => "is_conditional",
-		"iMasterField" => "master_field",
+		"iMasterFieldId" => "master_field",
         "bIsGeneric" => "is_generic",
     );
 	
