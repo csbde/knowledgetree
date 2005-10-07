@@ -106,6 +106,16 @@ class KTDispatcherValidation {
         require_once(KT_LIB_DIR .  '/documentmanagement/MetaData.inc');
         return $this->validateEntity('MetaData', $iId, $aOptions);
     }
+
+    function &validateFieldset($iId, $aOptions = null) {
+        require_once(KT_LIB_DIR .  '/metadata/fieldset.inc.php');
+        return $this->validateEntity('KTFieldset', $iId, $aOptions);
+    }
+
+    function &validateField($iId, $aOptions = null) {
+        require_once(KT_LIB_DIR .  '/documentmanagement/DocumentField.inc');
+        return $this->validateEntity('DocumentField', $iId, $aOptions);
+    }
 }
 
 ?>
