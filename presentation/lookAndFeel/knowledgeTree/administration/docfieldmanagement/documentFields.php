@@ -210,17 +210,48 @@ class KTDocumentFieldDispatcher extends KTStandardDispatcher {
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate =& $oTemplating->loadTemplate('ktcore/metadata/conditional/manageConditional');
         $oFieldset =& KTFieldset::get($_REQUEST['fFieldsetId']);
+        $iMasterFieldId = $oFieldset->getMasterFieldId();
+        if (!empty($iMasterFieldId)) {
+            $oMasterField =& DocumentField::get($iMasterFieldId);
+            if (PEAR::isError($oMasterField)) {
+                $oMasterField = null;
+            }
+        } else {
+            $oMasterField = null;
+        }
         $sTable = KTUtil::getTableName('field_orders');
         $aQuery = array(
             "SELECT parent_field_id, child_field_id FROM $sTable WHERE fieldset_id = ?",
             array($oFieldset->getId())
         );
         $aFieldOrders = DBUtil::getResultArray($aQuery);
+        $aFields = $oFieldset->getFields();
+
+        $aFreeFieldIds = array();
+        foreach ($aFields as $oField) {
+            $aFreeFieldIds[] = $oField->getId();
+        }
+        $aParentFieldIds = array($oMasterField->getId());
+        foreach ($aFieldOrders as $aRow) {
+            $aParentFieldIds[] = $aRow['child_field_id'];
+        }
+        $aParentFields = array();
+        foreach (array_unique($aParentFieldIds) as $iId) {
+            $aParentFields[] =& DocumentField::get($iId);
+        }
+        $aFreeFields = array();
+        foreach ($aFreeFieldIds as $iId) {
+            if (in_array($iId, $aParentFieldIds)) {
+                continue;
+            }
+            $aFreeFields[] =& DocumentField::get($iId);
+        }
         $oTemplate->setData(array(
             'oFieldset' => $oFieldset,
-            'free_fields' => $oFieldset->getFields(),
-            'parent_fields' => $oFieldset->getFields(),
+            'free_fields' => $aFreeFields,
+            'parent_fields' => $aParentFields,
             'aFieldOrders' => $aFieldOrders,
+            'oMasterField' => $oMasterField,
         ));
         return $oTemplate;
     }
@@ -230,18 +261,39 @@ class KTDocumentFieldDispatcher extends KTStandardDispatcher {
     function do_orderFields() {
         $oFieldset =& KTFieldset::get($_REQUEST['fFieldsetId']);
         $aFreeFieldIds = $_REQUEST['fFreeFieldIds'];
+        if (empty($aFreeFieldIds)) {
+            $this->errorRedirectTo('manageConditional', 'No children fields selected', 'fFieldsetId=' . $oFieldset->getId());
+        }
         $iParentFieldId = $_REQUEST['fParentFieldId'];
         if (in_array($aParentFieldId, $aFreeFieldIds)) {
             $this->errorRedirectTo('manageConditional', 'Field cannot be its own parent field', 'fFieldsetId=' . $oFieldset->getId());
         }
         foreach ($aFreeFieldIds as $iChildFieldId) {
             $res = KTMetadataUtil::addFieldOrder($iParentFieldId, $iChildFieldId, $oFieldset);
-            $this->oValidator->notError($this, $res, array(
+            $this->oValidator->notError($res, array(
                 'redirect_to' => array('manageConditional', 'fFieldsetId=' . $oFieldset->getId()),
                 'message' => 'Error adding Fields',
             ));
         }
         $this->successRedirectTo('manageConditional', 'Fields ordered', 'fFieldsetId=' . $oFieldset->getId());
+        exit(0);
+    }
+    // }}}
+
+    // {{{
+    function do_setMasterField() {
+        $oFieldset =& $this->oValidator->validateFieldset($_REQUEST['fFieldsetId']);
+        $oField =& $this->oValidator->validateField($_REQUEST['fFieldId']);
+
+        $res = KTMetadataUtil::removeFieldOrdering($oFieldset);
+        $oFieldset->setMasterFieldId($oField->getId());
+        $res = $oFieldset->update();
+
+        $this->oValidator->notError($res, array(
+            'redirect_to' => array('manageConditional', 'fFieldsetId=' . $oFieldset->getId()),
+            'message' => 'Error setting master field',
+        ));
+        $this->successRedirectTo('manageConditional', 'Master field set', 'fFieldsetId=' . $oFieldset->getId());
         exit(0);
     }
     // }}}
