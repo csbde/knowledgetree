@@ -53,7 +53,7 @@
 {foreach from=$fieldsets item=oFieldset}
 {if $oFieldset->getIsConditional()}
 <fieldset class="conditional_metadata">
-<input type="hidden" class="fixed" name="fieldsets[]" value="{$oFieldset->getId()}" />
+<input type="hidden" class="fixed" name="fieldset" value="{$oFieldset->getId()}" />
 {else}
 <fieldset>
 {/if}
