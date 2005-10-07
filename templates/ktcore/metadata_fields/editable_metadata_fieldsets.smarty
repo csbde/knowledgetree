@@ -60,6 +60,8 @@
   <legend><span title="Fieldset: {$oFieldset->getId()}">{$oFieldset->getName()}</span></legend>
 
   <table class="prettysw" cellpadding="0" cellspacing="0">
+   <tbody class="conditional_target">
+<!--
   { foreach item=oField from=$oFieldset->getFields() }
     <tr>
       <th>{$oField->getName()}</th>
@@ -77,6 +79,8 @@
       </td>
     </tr>
   { /foreach }
+-->
+   </tbody>
   </table>
 </fieldset>
 {foreachelse}
