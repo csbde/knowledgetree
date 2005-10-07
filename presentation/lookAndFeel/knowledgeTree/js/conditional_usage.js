@@ -1,6 +1,11 @@
 // simple event stacking.
 // i don't like Mochikit's one.
 
+function getBindTarget(fieldset) {
+    var possibles = getElementsByTagAndClassName('TBODY','conditional_target', fieldset);
+    return possibles[0];
+}
+
 function attachToElementEvent(elem, event_name, func) {
     // catch IE (grumble)
     if (elem.attachEvent) {
@@ -108,9 +113,12 @@ function popStack(fieldset) {
 */
 
 function createFixedWidget(fieldset, widget, i_name, i_value, i_label) {
-    var newWidget = DIV({'class':'widget fixed'},
-        INPUT({'type':'hidden','name':i_name, 'value':i_value,'class':'fixed'}),
-        SPAN(null, 'The value for field '+i_name+' is '+i_label+' ('+i_value+')')
+    var newWidget = TR({'class':'widget fixed'},
+        TH(null, i_name),
+        TD(null, 
+            INPUT({'type':'hidden','name':i_name, 'value':i_value,'class':'fixed'}),
+            SPAN(null, i_value)
+        )
     );
     swapDOM(widget, newWidget);
     pushStack(fieldset, newWidget);
@@ -221,7 +229,7 @@ function bindToConditionalFieldset(fieldset, widget) {
 } 
 
 function clearUnfixedWidgets(fieldset) {
-    var widgets = getElementsByTagAndClassName('DIV', 'widget', fieldset);
+    var widgets = getElementsByTagAndClassName('TR', 'widget', fieldset);
     for (var i=0; i<widgets.length; i++) {
         var w = widgets[i];
         if (hasElementClass(w, 'fixed')) {
@@ -266,14 +274,22 @@ function do_updateFieldset(fieldset, req) {
    // clear unfixed widgets before we start.
    clearUnfixedWidgets(fieldset);
    // create an unparented div for HTML insertion.
-   var t = DIV(null);
-   t.innerHTML = req.responseText;
-   var new_widgets = getElementsByTagAndClassName('div','widget', t);
+   var tb = TBODY(null);
+   var t = TABLE(null, tb);
+   
+   tb.innerHTML = req.responseText;
+   
+   var new_widgets = getElementsByTagAndClassName('TR','widget', tb);
+   simpleLog('DEBUG','new_widgets.length: ',new_widgets.length);     
+   var target = getBindTarget(fieldset);
+   simpleLog('DEBUG','new_widgets.length: ',new_widgets.length);     
    for (var i=0; i<new_widgets.length; i++) {
        var w = new_widgets[i];
-       fieldset.appendChild(w);
+       simpleLog('DEBUG','binding: '+toHTML(w));     
+       target.appendChild(w);
        bindToConditionalFieldset(fieldset, w);
    }
+   simpleLog('DEBUG','fieldset ends as: \n'+toHTML(fieldset));     
    delete t; // clean this up.
 }
 

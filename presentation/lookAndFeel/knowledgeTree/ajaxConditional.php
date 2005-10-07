@@ -41,8 +41,10 @@ class AjaxConditionalDispatcher extends KTDispatcher {
     function do_updateFieldset() {
         header('Content-Type: application/xml');
         return '
-<div class="widget">
-<label>
+<tr class="widget">
+    <th> Test 123.  Was that not nice?</th>
+    <td>
+
 <select name="test123">
     <option value="1">Option 1</option>
     <option value="2">Option 2</option>
@@ -51,9 +53,9 @@ class AjaxConditionalDispatcher extends KTDispatcher {
     <option value="5">Option 5</option>
     <option value="6">Option 6</option>
 </select>
-    Test 123.  Was that not nice?
-</label>    
-</div>
+   
+      </td>
+</tr>
     ';
     }
 
