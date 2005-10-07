@@ -1,9 +1,9 @@
 -- phpMyAdmin SQL Dump
--- version 2.6.2
+-- version 2.6.4-pl1-Debian-1ubuntu1
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Sep 19, 2005 at 01:14 PM
+-- Generation Time: Oct 07, 2005 at 02:36 PM
 -- Server version: 4.0.24
 -- PHP Version: 4.4.0-2
 -- 
@@ -81,7 +81,7 @@ INSERT INTO data_types VALUES (5, 'FLOAT');
 -- Dumping data for table `document_fields`
 -- 
 
-INSERT INTO document_fields VALUES (1, 'Category', 'STRING', 1, NULL, NULL, NULL);
+INSERT INTO document_fields VALUES (1, 'Category', 'STRING', 1, 0, 0, 1);
 
 -- 
 -- Dumping data for table `document_fields_link`
@@ -146,6 +146,11 @@ INSERT INTO document_transaction_types_lookup VALUES (15, 'Email Attachment');
 
 
 -- 
+-- Dumping data for table `document_type_fieldsets_link`
+-- 
+
+
+-- 
 -- Dumping data for table `document_types_lookup`
 -- 
 
@@ -155,6 +160,32 @@ INSERT INTO document_types_lookup VALUES (1, 'Default');
 -- Dumping data for table `documents`
 -- 
 
+
+-- 
+-- Dumping data for table `field_behaviour_options`
+-- 
+
+
+-- 
+-- Dumping data for table `field_behaviours`
+-- 
+
+
+-- 
+-- Dumping data for table `field_orders`
+-- 
+
+
+-- 
+-- Dumping data for table `field_value_instances`
+-- 
+
+
+-- 
+-- Dumping data for table `fieldsets`
+-- 
+
+INSERT INTO fieldsets VALUES (1, 'Category', 'local.category', 0, 0, 1, 1);
 
 -- 
 -- Dumping data for table `folder_doctypes_link`
@@ -172,8 +203,8 @@ INSERT INTO folder_doctypes_link VALUES (2, 2, 1);
 -- Dumping data for table `folders`
 -- 
 
-INSERT INTO folders VALUES (1, 'Root Folder', 'Root Document Folder', 0, 1, 0, 0, '0', '', 1, 2);
-INSERT INTO folders VALUES (2, 'Default Unit', 'Default Unit Root Folder', 1, 1, 1, 0, '1', 'Root Folder', 1, 2);
+INSERT INTO folders VALUES (1, 'Root Folder', 'Root Document Folder', 0, 1, 0, 0, '0', '', 1, 2, 0);
+INSERT INTO folders VALUES (2, 'Default Unit', 'Default Unit Root Folder', 1, 1, 1, 0, '1', 'Root Folder', 1, 2, 0);
 
 -- 
 -- Dumping data for table `folders_users_roles_link`
@@ -324,6 +355,11 @@ INSERT INTO help VALUES (98, 'listWebsites', 'listWebsitesHelp.html');
 
 -- 
 -- Dumping data for table `metadata_lookup`
+-- 
+
+
+-- 
+-- Dumping data for table `metadata_lookup_tree`
 -- 
 
 
@@ -561,7 +597,7 @@ INSERT INTO status_lookup VALUES (4, 'Archived');
 -- 
 
 INSERT INTO system_settings VALUES (1, 'lastIndexUpdate', '0');
-INSERT INTO system_settings VALUES (2, 'knowledgeTreeVersion', '2.0.8');
+INSERT INTO system_settings VALUES (2, 'knowledgeTreeVersion', '2.99.1');
 INSERT INTO system_settings VALUES (3, 'databaseVersion', '2.0.8');
 
 -- 
@@ -608,6 +644,13 @@ INSERT INTO upgrades VALUES (12, 'sql*2.0.8*0*2.0.8/permissions.sql', 'Database 
 INSERT INTO upgrades VALUES (13, 'func*2.0.8*1*setPermissionObject', 'Set the permission object in charge of a document or folder', '2005-08-02 16:02:07', 1, 'upgrade*2.0.8*0*upgrade2.0.8');
 INSERT INTO upgrades VALUES (14, 'sql*2.0.8*1*2.0.8/1-metadata_versions.sql', 'Database upgrade to version 2.0.8: Metadata versions', '2005-08-02 16:02:07', 1, 'upgrade*2.0.8*0*upgrade2.0.8');
 INSERT INTO upgrades VALUES (15, 'sql*2.0.8*2*2.0.8/2-permissions.sql', 'Database upgrade to version 2.0.8: Permissions', '2005-08-02 16:02:07', 1, 'upgrade*2.0.8*0*upgrade2.0.8');
+INSERT INTO upgrades VALUES (16, 'sql*2.0.9*0*2.0.9/storagemanager.sql', '', '0000-00-00 00:00:00', 1, NULL);
+INSERT INTO upgrades VALUES (17, 'sql*2.0.9*0*2.0.9/metadata_tree.sql', '', '0000-00-00 00:00:00', 1, NULL);
+INSERT INTO upgrades VALUES (18, 'sql*2.0.9*0*2.0.9/document_incomplete.sql', '', '0000-00-00 00:00:00', 1, NULL);
+INSERT INTO upgrades VALUES (20, 'upgrade*2.99.1*0*upgrade2.99.1', 'Upgrade from version 2.0.8 to 2.99.1', '2005-10-07 14:26:15', 1, 'upgrade*2.99.1*0*upgrade2.99.1');
+INSERT INTO upgrades VALUES (21, 'sql*2.99.1*0*2.99.1/workflow.sql', 'Database upgrade to version 2.99.1: Workflow', '2005-10-07 14:26:15', 1, 'upgrade*2.99.1*0*upgrade2.99.1');
+INSERT INTO upgrades VALUES (22, 'sql*2.99.1*0*2.99.1/fieldsets.sql', 'Database upgrade to version 2.99.1: Fieldsets', '2005-10-07 14:26:16', 1, 'upgrade*2.99.1*0*upgrade2.99.1');
+INSERT INTO upgrades VALUES (23, 'func*2.99.1*1*createFieldSets', 'Create a fieldset for each field without one', '2005-10-07 14:26:16', 1, 'upgrade*2.99.1*0*upgrade2.99.1');
 
 -- 
 -- Dumping data for table `users`
@@ -640,6 +683,41 @@ INSERT INTO web_documents_status_lookup VALUES (3, 'Not Published');
 
 -- 
 -- Dumping data for table `web_sites`
+-- 
+
+
+-- 
+-- Dumping data for table `workflow_actions`
+-- 
+
+
+-- 
+-- Dumping data for table `workflow_documents`
+-- 
+
+
+-- 
+-- Dumping data for table `workflow_state_actions`
+-- 
+
+
+-- 
+-- Dumping data for table `workflow_state_transitions`
+-- 
+
+
+-- 
+-- Dumping data for table `workflow_states`
+-- 
+
+
+-- 
+-- Dumping data for table `workflow_transitions`
+-- 
+
+
+-- 
+-- Dumping data for table `workflows`
 -- 
 
 
@@ -758,6 +836,11 @@ INSERT INTO zseq_document_transactions VALUES (1);
 INSERT INTO zseq_document_type_fields_link VALUES (1);
 
 -- 
+-- Dumping data for table `zseq_document_type_fieldsets_link`
+-- 
+
+
+-- 
 -- Dumping data for table `zseq_document_types_lookup`
 -- 
 
@@ -768,6 +851,22 @@ INSERT INTO zseq_document_types_lookup VALUES (1);
 -- 
 
 INSERT INTO zseq_documents VALUES (1);
+
+-- 
+-- Dumping data for table `zseq_field_behaviours`
+-- 
+
+
+-- 
+-- Dumping data for table `zseq_field_value_instances`
+-- 
+
+
+-- 
+-- Dumping data for table `zseq_fieldsets`
+-- 
+
+INSERT INTO zseq_fieldsets VALUES (1);
 
 -- 
 -- Dumping data for table `zseq_folder_doctypes_link`
@@ -844,6 +943,11 @@ INSERT INTO zseq_links VALUES (1);
 -- 
 
 INSERT INTO zseq_metadata_lookup VALUES (1);
+
+-- 
+-- Dumping data for table `zseq_metadata_lookup_tree`
+-- 
+
 
 -- 
 -- Dumping data for table `zseq_mime_types`
@@ -951,7 +1055,7 @@ INSERT INTO zseq_units_organisations_link VALUES (1);
 -- Dumping data for table `zseq_upgrades`
 -- 
 
-INSERT INTO zseq_upgrades VALUES (15);
+INSERT INTO zseq_upgrades VALUES (23);
 
 -- 
 -- Dumping data for table `zseq_users`
@@ -982,3 +1086,18 @@ INSERT INTO zseq_web_documents_status_lookup VALUES (3);
 -- 
 
 INSERT INTO zseq_web_sites VALUES (1);
+
+-- 
+-- Dumping data for table `zseq_workflow_states`
+-- 
+
+
+-- 
+-- Dumping data for table `zseq_workflow_transitions`
+-- 
+
+
+-- 
+-- Dumping data for table `zseq_workflows`
+-- 
+

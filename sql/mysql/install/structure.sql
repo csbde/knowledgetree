@@ -1,9 +1,9 @@
 -- phpMyAdmin SQL Dump
--- version 2.6.2
+-- version 2.6.4-pl1-Debian-1ubuntu1
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Sep 19, 2005 at 01:13 PM
+-- Generation Time: Oct 07, 2005 at 02:34 PM
 -- Server version: 4.0.24
 -- PHP Version: 4.4.0-2
 -- 
@@ -191,23 +191,6 @@ CREATE TABLE document_fields (
 
 -- --------------------------------------------------------
 
-
--- 
--- Table structure for table `document_fieldsets`
--- 
-
-CREATE TABLE document_fieldsets (
-  id int(11) NOT NULL default '0',
-  name char(255) NOT NULL default '',
-  namespace char(255) NOT NULL default '',
-  mandatory tinyint(4) NOT NULL default '0',
-  is_conditional tinyint(1) NOT NULL default '0',   -- is this a conditional set?
-  master_field int(11) default NULL,                -- if this is a conditional set, what is the MASTER FIELD.
-  UNIQUE KEY id (id)
-) TYPE=InnoDB;
-
--- --------------------------------------------------------
-
 -- 
 -- Table structure for table `document_fields_link`
 -- 
@@ -328,8 +311,6 @@ CREATE TABLE document_transactions (
 -- Table structure for table `document_type_fields_link`
 -- 
 
--- FIXME:  we need to deprecate this.
-
 CREATE TABLE document_type_fields_link (
   id int(11) NOT NULL default '0',
   document_type_id int(11) NOT NULL default '0',
@@ -348,7 +329,6 @@ CREATE TABLE document_type_fieldsets_link (
   id int(11) NOT NULL default '0',
   document_type_id int(11) NOT NULL default '0',
   fieldset_id int(11) NOT NULL default '0',
-  is_mandatory tinyint(1) NOT NULL default '0',
   UNIQUE KEY id (id)
 ) TYPE=InnoDB;
 
@@ -395,7 +375,7 @@ CREATE TABLE documents (
   permission_lookup_id int(11) default NULL,
   live_document_id int(11) default NULL,
   metadata_version int(11) NOT NULL default '0',
-    storage_path varchar(250) default NULL,
+  storage_path varchar(250) default NULL,
   UNIQUE KEY id (id),
   KEY fk_document_type_id (document_type_id),
   KEY fk_creator_id (creator_id),
@@ -407,6 +387,87 @@ CREATE TABLE documents (
   KEY permission_lookup_id (permission_lookup_id),
   KEY live_document_id (live_document_id),
   KEY storage_path (storage_path)
+) TYPE=InnoDB;
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `field_behaviour_options`
+-- 
+
+CREATE TABLE field_behaviour_options (
+  behaviour_id int(11) NOT NULL default '0',
+  field_id int(11) NOT NULL default '0',
+  instance_id int(11) NOT NULL default '0',
+  KEY behaviour_id (behaviour_id),
+  KEY field_id (field_id),
+  KEY instance_id (instance_id)
+) TYPE=InnoDB;
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `field_behaviours`
+-- 
+
+CREATE TABLE field_behaviours (
+  id int(11) NOT NULL default '0',
+  name char(255) NOT NULL default '',
+  human_name char(100) NOT NULL default '',
+  field_id int(11) NOT NULL default '0',
+  PRIMARY KEY  (id),
+  KEY field_id (field_id),
+  KEY name (name)
+) TYPE=InnoDB;
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `field_orders`
+-- 
+
+CREATE TABLE field_orders (
+  parent_field_id int(11) NOT NULL default '0',
+  child_field_id int(11) NOT NULL default '0',
+  fieldset_id int(11) NOT NULL default '0',
+  UNIQUE KEY child_field (child_field_id),
+  KEY parent_field (parent_field_id),
+  KEY fieldset_id (fieldset_id)
+) TYPE=InnoDB;
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `field_value_instances`
+-- 
+
+CREATE TABLE field_value_instances (
+  id int(11) NOT NULL default '0',
+  field_id int(11) NOT NULL default '0',
+  field_value_id int(11) NOT NULL default '0',
+  behaviour_id int(11) default '0',
+  PRIMARY KEY  (id),
+  KEY field_id (field_id),
+  KEY field_value_id (field_value_id),
+  KEY behaviour_id (behaviour_id)
+) TYPE=InnoDB;
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `fieldsets`
+-- 
+
+CREATE TABLE fieldsets (
+  id int(11) NOT NULL default '0',
+  name char(255) NOT NULL default '',
+  namespace char(255) NOT NULL default '',
+  mandatory tinyint(4) NOT NULL default '0',
+  is_conditional tinyint(1) NOT NULL default '0',
+  master_field int(11) default NULL,
+  is_generic tinyint(1) NOT NULL default '0',
+  UNIQUE KEY id (id),
+  KEY is_generic (is_generic)
 ) TYPE=InnoDB;
 
 -- --------------------------------------------------------
@@ -456,6 +517,7 @@ CREATE TABLE folders (
   full_path text,
   permission_object_id int(11) default NULL,
   permission_lookup_id int(11) default NULL,
+  restrict_document_types tinyint(1) NOT NULL default '0',
   UNIQUE KEY id (id),
   KEY fk_parent_id (parent_id),
   KEY fk_creator_id (creator_id),
@@ -612,6 +674,7 @@ CREATE TABLE metadata_lookup (
   UNIQUE KEY id (id)
 ) TYPE=InnoDB;
 
+-- --------------------------------------------------------
 
 -- 
 -- Table structure for table `metadata_lookup_tree`
@@ -621,30 +684,10 @@ CREATE TABLE metadata_lookup_tree (
   id int(11) NOT NULL default '0',
   document_field_id int(11) NOT NULL default '0',
   name char(255) default NULL,
-  metadata_lookup_tree_parent int(11) default NULL, -- parent id of the parent within this tree. NULL indicates attachment to root.
+  metadata_lookup_tree_parent int(11) default NULL,
   UNIQUE KEY id (id),
-  INDEX (metadata_lookup_tree_parent),
-  INDEX (document_field_id)
-) TYPE=InnoDB;
-
--- 
--- Table structure for table `metadata_lookup_tree`
--- 
-
-CREATE TABLE metadata_lookup_condition (
-  id int(11) NOT NULL default '0',
-  document_field_id int(11) NOT NULL default '0',
-  metadata_lookup_id int(11) NOT NULL default '0', -- probably inherently broken if its NULL.
-  name char(255) default NULL, -- allows us to give human-names to various different subrules, and also check for non-trivial rules.
-  UNIQUE KEY id (id)
-) TYPE=InnoDB;
-
-
-CREATE TABLE metadata_lookup_condition_chain (
-  id int(11) NOT NULL default '0',
-  parent_condition int(11) default NULL, -- null indicates "no parent".
-  child_condition int(11) NOT NULL default '0', 
-  UNIQUE KEY id (id)
+  KEY metadata_lookup_tree_parent (metadata_lookup_tree_parent),
+  KEY document_field_id (document_field_id)
 ) TYPE=InnoDB;
 
 -- --------------------------------------------------------
@@ -1001,6 +1044,111 @@ CREATE TABLE web_sites (
 -- --------------------------------------------------------
 
 -- 
+-- Table structure for table `workflow_actions`
+-- 
+
+CREATE TABLE workflow_actions (
+  workflow_id int(11) NOT NULL default '0',
+  action_name char(255) NOT NULL default '',
+  KEY workflow_id (workflow_id),
+  KEY action_name (action_name)
+) TYPE=InnoDB;
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `workflow_documents`
+-- 
+
+CREATE TABLE workflow_documents (
+  document_id int(11) NOT NULL default '0',
+  workflow_id int(11) NOT NULL default '0',
+  state_id int(11) NOT NULL default '0',
+  PRIMARY KEY  (document_id),
+  KEY workflow_id (workflow_id),
+  KEY state_id (state_id)
+) TYPE=InnoDB;
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `workflow_state_actions`
+-- 
+
+CREATE TABLE workflow_state_actions (
+  state_id int(11) NOT NULL default '0',
+  action_name char(255) NOT NULL default '0',
+  KEY state_id (state_id),
+  KEY action_name (action_name)
+) TYPE=InnoDB;
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `workflow_state_transitions`
+-- 
+
+CREATE TABLE workflow_state_transitions (
+  state_id int(11) NOT NULL default '0',
+  transition_id int(11) NOT NULL default '0'
+) TYPE=InnoDB;
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `workflow_states`
+-- 
+
+CREATE TABLE workflow_states (
+  id int(11) NOT NULL default '0',
+  workflow_id int(11) NOT NULL default '0',
+  name char(255) NOT NULL default '',
+  human_name char(100) NOT NULL default '',
+  PRIMARY KEY  (id),
+  KEY workflow_id (workflow_id),
+  KEY name (name)
+) TYPE=InnoDB;
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `workflow_transitions`
+-- 
+
+CREATE TABLE workflow_transitions (
+  id int(11) NOT NULL default '0',
+  workflow_id int(11) NOT NULL default '0',
+  name char(255) NOT NULL default '',
+  human_name char(100) NOT NULL default '',
+  target_state_id int(11) NOT NULL default '0',
+  guard_permission_id int(11) NOT NULL default '0',
+  PRIMARY KEY  (id),
+  UNIQUE KEY workflow_id_2 (workflow_id,name),
+  KEY workflow_id (workflow_id),
+  KEY name (name),
+  KEY target_state_id (target_state_id),
+  KEY guard_permission_id (guard_permission_id)
+) TYPE=InnoDB;
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `workflows`
+-- 
+
+CREATE TABLE workflows (
+  id int(11) NOT NULL default '0',
+  name char(250) NOT NULL default '',
+  human_name char(100) NOT NULL default '',
+  start_state_id int(11) default NULL,
+  PRIMARY KEY  (id),
+  UNIQUE KEY name (name),
+  KEY start_state_id (start_state_id)
+) TYPE=InnoDB;
+
+-- --------------------------------------------------------
+
+-- 
 -- Table structure for table `zseq_active_sessions`
 -- 
 
@@ -1130,19 +1278,6 @@ CREATE TABLE zseq_document_fields (
   PRIMARY KEY  (id)
 ) TYPE=MyISAM;
 
-
--- --------------------------------------------------------
-
--- 
--- Table structure for table `zseq_document_fields`
--- 
-
-CREATE TABLE zseq_document_fieldsets (
-  id int(10) unsigned NOT NULL auto_increment,
-  PRIMARY KEY  (id)
-) TYPE=MyISAM;
-
-
 -- --------------------------------------------------------
 
 -- 
@@ -1223,6 +1358,17 @@ CREATE TABLE zseq_document_type_fields_link (
 -- --------------------------------------------------------
 
 -- 
+-- Table structure for table `zseq_document_type_fieldsets_link`
+-- 
+
+CREATE TABLE zseq_document_type_fieldsets_link (
+  id int(10) unsigned NOT NULL auto_increment,
+  PRIMARY KEY  (id)
+) TYPE=MyISAM;
+
+-- --------------------------------------------------------
+
+-- 
 -- Table structure for table `zseq_document_types_lookup`
 -- 
 
@@ -1238,6 +1384,39 @@ CREATE TABLE zseq_document_types_lookup (
 -- 
 
 CREATE TABLE zseq_documents (
+  id int(10) unsigned NOT NULL auto_increment,
+  PRIMARY KEY  (id)
+) TYPE=MyISAM;
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `zseq_field_behaviours`
+-- 
+
+CREATE TABLE zseq_field_behaviours (
+  id int(10) unsigned NOT NULL auto_increment,
+  PRIMARY KEY  (id)
+) TYPE=MyISAM;
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `zseq_field_value_instances`
+-- 
+
+CREATE TABLE zseq_field_value_instances (
+  id int(10) unsigned NOT NULL auto_increment,
+  PRIMARY KEY  (id)
+) TYPE=MyISAM;
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `zseq_fieldsets`
+-- 
+
+CREATE TABLE zseq_fieldsets (
   id int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (id)
 ) TYPE=MyISAM;
@@ -1385,25 +1564,16 @@ CREATE TABLE zseq_metadata_lookup (
   PRIMARY KEY  (id)
 ) TYPE=MyISAM;
 
+-- --------------------------------------------------------
+
 -- 
--- Table structure for table `zseq_metadata_lookup`
+-- Table structure for table `zseq_metadata_lookup_tree`
 -- 
 
 CREATE TABLE zseq_metadata_lookup_tree (
   id int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (id)
 ) TYPE=MyISAM;
-
-CREATE TABLE zseq_metadata_lookup_condition (
-  id int(10) unsigned NOT NULL auto_increment,
-  PRIMARY KEY  (id)
-) TYPE=MyISAM;
-
-CREATE TABLE zseq_metadata_lookup_condition_chain (
-  id int(10) unsigned NOT NULL auto_increment,
-  PRIMARY KEY  (id)
-) TYPE=MyISAM;
-
 
 -- --------------------------------------------------------
 
@@ -1657,3 +1827,74 @@ CREATE TABLE zseq_web_sites (
   id int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (id)
 ) TYPE=MyISAM;
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `zseq_workflow_states`
+-- 
+
+CREATE TABLE zseq_workflow_states (
+  id int(10) unsigned NOT NULL auto_increment,
+  PRIMARY KEY  (id)
+) TYPE=MyISAM;
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `zseq_workflow_transitions`
+-- 
+
+CREATE TABLE zseq_workflow_transitions (
+  id int(10) unsigned NOT NULL auto_increment,
+  PRIMARY KEY  (id)
+) TYPE=MyISAM;
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `zseq_workflows`
+-- 
+
+CREATE TABLE zseq_workflows (
+  id int(10) unsigned NOT NULL auto_increment,
+  PRIMARY KEY  (id)
+) TYPE=MyISAM;
+
+-- 
+-- Constraints for dumped tables
+-- 
+
+-- 
+-- Constraints for table `field_behaviour_options`
+-- 
+ALTER TABLE `field_behaviour_options`
+  ADD CONSTRAINT `field_behaviour_options_ibfk_1` FOREIGN KEY (`behaviour_id`) REFERENCES `field_behaviours` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `field_behaviour_options_ibfk_2` FOREIGN KEY (`field_id`) REFERENCES `document_fields` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `field_behaviour_options_ibfk_3` FOREIGN KEY (`instance_id`) REFERENCES `field_value_instances` (`id`) ON DELETE CASCADE;
+
+-- 
+-- Constraints for table `field_behaviours`
+-- 
+ALTER TABLE `field_behaviours`
+  ADD CONSTRAINT `field_behaviours_ibfk_1` FOREIGN KEY (`field_id`) REFERENCES `document_fields` (`id`);
+
+-- 
+-- Constraints for table `workflow_states`
+-- 
+ALTER TABLE `workflow_states`
+  ADD CONSTRAINT `workflow_states_ibfk_1` FOREIGN KEY (`workflow_id`) REFERENCES `workflows` (`id`);
+
+-- 
+-- Constraints for table `workflow_transitions`
+-- 
+ALTER TABLE `workflow_transitions`
+  ADD CONSTRAINT `workflow_transitions_ibfk_1` FOREIGN KEY (`workflow_id`) REFERENCES `workflows` (`id`),
+  ADD CONSTRAINT `workflow_transitions_ibfk_2` FOREIGN KEY (`target_state_id`) REFERENCES `workflow_states` (`id`),
+  ADD CONSTRAINT `workflow_transitions_ibfk_3` FOREIGN KEY (`guard_permission_id`) REFERENCES `permissions` (`id`);
+
+-- 
+-- Constraints for table `workflows`
+-- 
+ALTER TABLE `workflows`
+  ADD CONSTRAINT `workflows_ibfk_1` FOREIGN KEY (`start_state_id`) REFERENCES `workflow_states` (`id`);
