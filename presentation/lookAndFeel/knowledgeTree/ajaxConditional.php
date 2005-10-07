@@ -4,7 +4,6 @@ require_once(KT_DIR . "/presentation/Html.inc");
 require_once(KT_LIB_DIR . "/templating/templating.inc.php");
 require_once(KT_LIB_DIR . "/metadata/fieldset.inc.php");
 require_once(KT_LIB_DIR . "/documentmanagement/DocumentField.inc");
-require_once(KT_LIB_DIR . "/documentmanagement/MDCondition.inc");
 require_once(KT_LIB_DIR . "/database/dbutil.inc");
 require_once(KT_LIB_DIR . "/util/ktutil.inc");
 require_once(KT_LIB_DIR . "/dispatcher.inc.php");
@@ -16,7 +15,7 @@ require_once(KT_DIR . "/presentation/webpageTemplate.inc");
  * 
  */
 
-class AjaxConditionalDispatcher extends KTDispatcher {
+class AjaxConditionalDispatcher extends KTStandardDispatcher {
     
     function do_main() {
         return "AJAX Error";
@@ -39,7 +38,27 @@ class AjaxConditionalDispatcher extends KTDispatcher {
     }
 
     function do_updateFieldset() {
+        $GLOBALS['default']->log->error(print_r($_REQUEST, true));
         header('Content-Type: application/xml');
+        $oFieldset =& $this->oValidator->validateFieldset($_REQUEST['fieldset']);
+
+        $matches = array();
+        $aFields = array();
+        foreach ($_REQUEST as $k => $v) {
+            if (preg_match('/^emd(\d+)$/', $k, $matches)) {
+                $aValues[$matches[1]] = $v;
+            }
+        }
+
+        $aNextFieldValues =& KTMetadataUtil::getNext($oFieldset, $aValues);
+
+        $oTemplate =& $this->oValidator->validateTemplate('ktcore/metadata/chooseFromMetadataLookup');
+        $oTemplate->setData(array('aFieldValues' => $aNextFieldValues));
+        var_dump($aNextFieldValues);
+        return $oTemplate->render();
+
+        var_dump($aNextFieldValues);
+
         return '
 <tr class="widget">
     <th> Test 123.  Was that not nice?</th>
