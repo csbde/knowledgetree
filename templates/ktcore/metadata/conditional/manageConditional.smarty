@@ -1,5 +1,31 @@
 <h1>Manage conditional fieldset<h1>
 
+<h2>Master field</h2>
+
+{if !$oMasterField}
+No master field is set, please select the master field:
+
+<form action="{$smarty.server.PHP_SELF}" method="POST">
+<input type="hidden" name="action" value="setMasterField">
+<input type="hidden" name="fFieldsetId" value="{$oFieldset->getId()}">
+
+{entity_select entities=$oFieldset->getFields() name="fFieldId"}
+<input type="submit" name="submit" value="Set master field">
+</form>
+
+{else}
+
+<form action="{$smarty.server.PHP_SELF}" method="POST">
+<input type="hidden" name="action" value="setMasterField">
+<input type="hidden" name="fFieldsetId" value="{$oFieldset->getId()}">
+
+{entity_select entities=$oFieldset->getFields() name="fFieldId" selected=$oMasterField->getId()}
+<input type="submit" name="submit" value="Change master field">
+</form>
+
+<p>Changing the master field set will remove all existing field
+ordering!</p>
+
 <h2>Field ordering</h2>
 
 {if $aFieldOrders}
@@ -20,6 +46,7 @@ affects the values available in
 </ul>
 {/if}
 
+{ if $free_fields }
 <h3>Order fields</h2>
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
@@ -36,3 +63,6 @@ are conditional on the values of this field:
 <br />
 <input type="submit" name="submit" value="Order">
 </form>
+{/if}
+
+{/if}
