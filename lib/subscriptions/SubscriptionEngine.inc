@@ -64,7 +64,18 @@ class SubscriptionEngine {
         // for each subscriber, construct an address based on their notification preferences
         for ($i=0; $i<count($aSubscribers); $i++) {
             // lookup the subscription
-            $oSubscription = & Subscription::getByIDs($aSubscribers[$i]->getID(), $iExternalID, $iSubscriptionType);
+            if ($iSubscriptionType == SubscriptionConstants::subscriptionType("FolderSubscription")) {
+                $oSubscription = & Subscription::getByIDs($aSubscribers[$i]->getID(), $oValues['folderID'], $iSubscriptionType);
+                if (empty($oSubscription) || PEAR::isError($oSubscription)) {
+                    $oSubscription =& new Subscription($aSubscribers[$i]->getID(), $aValues["folderID"], $iSubscriptionType);
+                    $res = $oSubscription->create();
+                    if (empty($res) || PEAR::isError($res)) {
+                        continue;
+                    }
+                }
+            } else {
+                $oSubscription = & Subscription::getByIDs($aSubscribers[$i]->getID(), $iExternalID, $iSubscriptionType);
+            }
 
             // update the alerted status
             $oSubscription->setIsAlerted(true);
@@ -109,6 +120,21 @@ class SubscriptionEngine {
                 $default->log->error("SubscriptionEngine::fireSubscription could not update subscription- db error?");
             }
         }
+
+        if ($iSubscriptionType == SubscriptionConstants::subscriptionType("FolderSubscription")) {
+            $oFolder =& Folder::get($iExternalID);
+            if ($oFolder && !PEAR::isError($oFolder)) {
+                $iThisSubscriptionsSent = SubscriptionEngine::fireSubscription($oFolder->getParentId(),
+                    ($iSubscriptionAlertType == SubscriptionConstants::subscriptionAlertType("RemoveSubscribedDocument") ?
+                    SubscriptionConstants::subscriptionAlertType("RemoveChildDocument") :
+                    $iSubscriptionAlertType),
+                    SubscriptionConstants::subscriptionType("FolderSubscription"),
+                    $aValues);
+                $default->log->info("SubscriptionEngine::fireSubscription fired folder subscribers, count=$iThisSubscriptionsSent");
+                $iSubscriptionsSent += $iThisSubscriptionsSent;
+            }
+        }
+
         // return the number of processed subscriptions
         return $iSubscriptionsSent;
     }
@@ -122,6 +148,10 @@ class SubscriptionEngine {
     */
     function retrieveSubscribers($iExternalID, $iSubscriptionType) {
         global $default;
+        global $aAlreadySent;
+        if (!isset($aAlreadySent)) {
+            $aAlreadySent = array();
+        }
 
         $sql = $default->db;
         $aUsers = array();
@@ -131,6 +161,10 @@ class SubscriptionEngine {
         if ($sql->query(array($sQuery, $aParams))) {
             while ($sql->next_record()) {
             	$iUserID = $sql->f("user_id");
+                if (in_array($iUserID, $aAlreadySent)) {
+                    continue;
+                }
+                $aAlreadySent[] = $iUserID;
             	$oUser = & User::get($iUserID );
             	if ($oUser) {
                 	$aUsers[] = $oUser;
