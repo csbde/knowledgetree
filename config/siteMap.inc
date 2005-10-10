@@ -93,6 +93,7 @@ $default->siteMap->addPage("checkOutDocument", "/presentation/lookAndFeel/knowle
 $default->siteMap->addPage("checkInDocument", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/checkInDocumentBL.php", "Manage Documents", User, "Check In Document", false);
 
 $default->siteMap->addPage("editDocumentPermissions", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/documentPermissions.php", "Manage Documents", User, _("Document Permissions"));
+$default->siteMap->addPage("documentWorkflow", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/documentWorkflow.php", "Manage Documents", User, _("Document Workflow"));
 
 $default->siteMap->addSectionColour("Manage Documents", "td", "BDDFE0");
 $default->siteMap->addSectionColour("Manage Documents", "th", "57AFAE");
