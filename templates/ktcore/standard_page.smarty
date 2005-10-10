@@ -65,6 +65,18 @@
 				  { assign var="cbgcolour" value="bgcolor=\"$cbgcolour\"" }
 				{ /if }
 				<td valign="top" {$cbgcolour}>
+				  { if $breadcrumbs}
+				    { foreach name=bc from=$breadcrumbs item=breadcrumb }
+				      { if $smarty.foreach.bc.first }
+				        <a class="primary" href="{$breadcrumb.url}">{$breadcrumb.name}</a>
+				      { else }
+				        <a href="{$breadcrumb.url}">{$breadcrumb.name}</a>
+				      { /if }
+				      { if !$smarty.foreach.bc.last }
+				        &raquo;
+				      { /if }
+				    { /foreach }
+				  { /if }
 				  { foreach item=errorMessage from=$errormessages }
 						<table border="0"><tr><td><p class="errorText">{$errorMessage}</p></td></tr></table>
 					{ /foreach }
