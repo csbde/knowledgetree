@@ -231,20 +231,22 @@ class KTDocumentFieldDispatcher extends KTStandardDispatcher {
         foreach ($aFields as $oField) {
             $aFreeFieldIds[] = $oField->getId();
         }
-        $aParentFieldIds = array($oMasterField->getId());
-        foreach ($aFieldOrders as $aRow) {
-            $aParentFieldIds[] = $aRow['child_field_id'];
-        }
-        $aParentFields = array();
-        foreach (array_unique($aParentFieldIds) as $iId) {
-            $aParentFields[] =& DocumentField::get($iId);
-        }
-        $aFreeFields = array();
-        foreach ($aFreeFieldIds as $iId) {
-            if (in_array($iId, $aParentFieldIds)) {
-                continue;
+        if ($oMasterField) {
+            $aParentFieldIds = array($oMasterField->getId());
+            foreach ($aFieldOrders as $aRow) {
+                $aParentFieldIds[] = $aRow['child_field_id'];
             }
-            $aFreeFields[] =& DocumentField::get($iId);
+            $aParentFields = array();
+            foreach (array_unique($aParentFieldIds) as $iId) {
+                $aParentFields[] =& DocumentField::get($iId);
+            }
+            $aFreeFields = array();
+            foreach ($aFreeFieldIds as $iId) {
+                if (in_array($iId, $aParentFieldIds)) {
+                    continue;
+                }
+                $aFreeFields[] =& DocumentField::get($iId);
+            }
         }
         $oTemplate->setData(array(
             'oFieldset' => $oFieldset,
