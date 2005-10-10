@@ -31,6 +31,8 @@
 require_once(KT_LIB_DIR . '/documentmanagement/DocumentFieldLink.inc');
 require_once(KT_LIB_DIR . '/documentmanagement/DocumentTransaction.inc');
 require_once(KT_LIB_DIR . '/web/WebDocument.inc');
+require_once(KT_LIB_DIR . '/subscriptions/SubscriptionEngine.inc');
+require_once(KT_LIB_DIR . '/subscriptions/SubscriptionConstants.inc');
 
 // NEW PATHS
 require_once(KT_LIB_DIR . '/storage/storagemanager.inc.php');
@@ -341,6 +343,14 @@ class KTDocumentUtil {
             $oWebDocument->delete();
             return $res;
         }
+
+        // fire subscription alerts for the checked in document
+        $count = SubscriptionEngine::fireSubscription($oDocument->getID(), SubscriptionConstants::subscriptionAlertType("AddDocument"),
+                 SubscriptionConstants::subscriptionType("DocumentSubscription"),
+                 array( "folderID" => $oDocument->getFolderID(),
+                        "modifiedDocumentName" => $oDocument->getName() ));
+        global $default;
+        $default->log->info("checkInDocumentBL.php fired $count subscription alerts for checked out document " . $oDocument->getName());
 
         return $oDocument;
     }
