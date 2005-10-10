@@ -3,6 +3,8 @@
  * Perform various and sundry operations on the edit-page. 
  */
 
+var targeturl = 'ajaxComplexConditionals.php';
+
 // returns the td element representing the row, for use as Parent.
 function getColumnForField(field_id) {
     return getElement('md_'+field_id);
@@ -190,7 +192,7 @@ function getPOSTRequest(fullurl) {
 // updates the item list for a given field to the items which are "free".
 function updateItemListForField(field_id) { 
     var action = 'getItemList';
-    var targeturl = 'test_getItemList.xml';
+    
 
     simpleLog('DEBUG','initiating item list update on field '+field_id);
     
@@ -226,7 +228,6 @@ function updateItemListForField(field_id) {
 // updates the available behaviours for a given field.
 function updateBehaviourListsForField(field_id) { 
     var action = 'getBehaviourList';
-    var targeturl = 'test_getBehaviourList.xml';
 
     simpleLog('DEBUG','initiating behaviour list update on field '+field_id);
     
@@ -268,7 +269,7 @@ function updateBehaviourListsForField(field_id) {
 function updateActiveFields() { 
     simpleLog('DEBUG','initiating active field update.');
     var action = 'getActiveFields';
-    var targeturl = 'test_getActiveFields.xml';
+
     
     var formKeys = Array();
     var formValues = Array();
@@ -293,12 +294,13 @@ function updateActiveFields() {
     deferred.addCallback(do_updateActiveFields);
     deferred.addErrback(handleError);
 
+
 }
 
 // creates a new behaviour, and adds the appropriate metadata fields to it. 
 function createBehaviourAndAssign(field_id, values, behaviour_name) { 
     var action = 'createBehaviourAndAssign';
-    var targeturl = 'test_create.xml';
+
 
     simpleLog('DEBUG','initiating behaviour creation on field '+field_id);
     
@@ -340,7 +342,7 @@ function createBehaviourAndAssign(field_id, values, behaviour_name) {
 // variant of createBehaviourAndAssign that uses an existing behaviour.
 function useBehaviourAndAssign(field_id, values, behaviour_id) { 
     var action='useBehaviourAndAssign';
-    var targeturl='test_use.xml';
+
 
     simpleLog('DEBUG','initiating behaviour creation on field '+field_id);
     
@@ -416,9 +418,13 @@ function do_updateActiveFields (req) {
     // so we delete items that match, and when we're done, we set everything else to "inactive".
     var response_active_list = xmldoc.getElementsByTagName('field');
     for (var i=0; i<response_active_list.length; i++) {
-        var td_id = "md_"+response_active_list[i].getAttribute('value');
+        var field_id = response_active_list[i].getAttribute('value');
+        var td_id = "md_"+field_id;
+
         if (potential_fields[td_id]) {
             setElementClass(potential_fields[td_id], 'active');
+            updateBehaviourListsForField(field_id);
+            updateItemListForField(field_id);
             delete potential_fields[td_id];
             simpleLog('DEBUG','activating '+td_id);
         } else {
