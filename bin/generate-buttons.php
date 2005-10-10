@@ -84,13 +84,14 @@ $sLocale = $argv[1];
 
 error_reporting(E_ALL);
 putenv('LANG=' . $sLocale);
+putenv('LANGUAGE=' . $sLocale);
 setlocale(LC_ALL, $sLocale);
 // Set the text domain
 $sDomain = 'knowledgeTree';
-$btd = bindtextdomain($sDomain, "/home/nbm/cvs/knowledgeTree/i18n");
+$btd = bindtextdomain($sDomain, "/home/nbm/KnowledgeTree/cvs/i18n");
 textdomain($sDomain);
 
-$font = "/usr/share/fonts/bitstream-vera/Vera.ttf";
+$font = "/usr/share/fonts/truetype/ttf-bitstream-vera/Vera.ttf";
 $fontsize = 8;
 
 $buttons = getButtons();
