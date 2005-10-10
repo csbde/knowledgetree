@@ -186,4 +186,12 @@ class KTDocumentPermissionsAction extends KTBuiltInDocumentAction {
     var $sName = 'ktcore.actions.document.permissions';
 }
 $oKTActionRegistry->registerAction('documentaction', 'KTDocumentPermissionsAction', 'ktcore.actions.document.permissions');
+
+class KTDocumentWorkflowAction extends KTBuiltInDocumentAction {
+    var $sBuiltInAction = 'documentWorkflow';
+    var $sDisplayName = 'Workflow';
+    var $sName = 'ktcore.actions.document.workflow';
+}
+$oKTActionRegistry->registerAction('documentaction', 'KTDocumentWorkflowAction', 'ktcore.actions.document.workflow');
+
 ?>
