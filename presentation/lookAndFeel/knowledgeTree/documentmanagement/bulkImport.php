@@ -12,26 +12,40 @@ require_once(KT_LIB_DIR . "/visualpatterns/PatternMetaData.inc");
 require_once(KT_LIB_DIR . "/import/fsimportstorage.inc.php");
 require_once(KT_LIB_DIR . "/import/bulkimport.inc.php");
 
+require_once(KT_LIB_DIR . "/validation/dispatchervalidation.inc.php");
+
 class KTBulkImportDispatcher extends KTStandardDispatcher {
+    function check() {
+        if ($_REQUEST['fFolderID']) {
+            $_REQUEST['fFolderId'] = $_REQUEST['fFolderID'];
+            unset($_REQUEST['fFolderID']);
+        }
+        $this->oFolder =& $this->oValidator->validateFolder($_REQUEST['fFolderId']);
+        $this->oPermission =& $this->oValidator->validatePermissionByName('ktcore.permissions.write');
+        $this->oValidator->userHasPermissionOnItem($this->oUser, $this->oPermission, $this->oFolder);
+        return true;
+    }
+
     function do_main() {
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate('ktcore/import/fs_import');
-        $oFolder = Folder::get($_REQUEST['fFolderID']);
+        $aTypes = $this->getDocumentTypes();
+        $iDefaultType = $aTypes[0]->getId();
         $aFields = array(
-            'folder_id' => $oFolder->getID(),
-            'folder_path_array' => $oFolder->getPathArray(),
-            'document_type_choice' => $this->getDocumentTypeChoice('getMetadataForType(this.value);'),
+            'folder_id' => $this->oFolder->getID(),
+            'folder_path_array' => $this->oFolder->getPathArray(),
+            'document_type_choice' => $this->getDocumentTypeChoice($aTypes, 'getMetadataForType(this.value);'),
             'generic_metadata_fields' => $this->getGenericMetadataFields(),
-            'type_metadata_fields' => $this->getTypeMetadataFields(1),
+            'type_metadata_fields' => $this->getTypeMetadataFields($iDefaultType),
         );
         return $oTemplate->render($aFields);
     }
 
-    function getDocumentTypeChoice($onchange = "") {
+    function getDocumentTypeChoice($aTypes, $onchange = "") {
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate('ktcore/document/document_type_choice');
         $aFields = array(
-            'document_types' => DocumentType::getList(),
+            'document_types' => $aTypes,
             'onchange' => $onchange,
         );
         return $oTemplate->render($aFields);
@@ -39,7 +53,7 @@ class KTBulkImportDispatcher extends KTStandardDispatcher {
 
     function getGenericMetadataFields() {
         $oTemplating = KTTemplating::getSingleton();
-        $oTemplate = $oTemplating->loadTemplate("ktcore/metadata_fields/editable_metadata_fields");
+        $oTemplate = $oTemplating->loadTemplate("ktcore/metadata/editable_metadata_fields");
         $aTemplateData = array(
             'caption' => _('Generic meta data'),
             'empty_message' => _("No Generic Meta Data"),
@@ -67,12 +81,25 @@ class KTBulkImportDispatcher extends KTStandardDispatcher {
             'fields' => $aFields,
         );
         $oTemplating = KTTemplating::getSingleton();
-        $oTemplate = $oTemplating->loadTemplate("ktcore/metadata_fields/editable_metadata_fields");
+        $oTemplate = $oTemplating->loadTemplate("ktcore/metadata/editable_metadata_fields");
         return $oTemplate->render($aTemplateData);
     }
 
+    function getDocumentTypes() {
+        $sTable = KTUtil::getTableName('folder_doctypes');
+        $aQuery = array(
+            "SELECT document_type_id FROM $sTable WHERE folder_id = ?",
+            array($this->oFolder->getId()),
+        );
+        $aIds = DBUtil::getResultArrayKey($aQuery, 'document_type_id');
+        $aRet = array();
+        foreach ($aIds as $iId) {
+            $aRet[] = DocumentType::get($iId);
+        }
+        return $aRet;
+    }
+
     function do_import() {
-        $oFolder =& Folder::get($_REQUEST['fFolderID']);
         $matches = array();
         $aFields = array();
         foreach ($_REQUEST as $k => $v) {
@@ -87,8 +114,7 @@ class KTBulkImportDispatcher extends KTStandardDispatcher {
         );
 
         $fs =& new KTFSImportStorage($_REQUEST['fPath']);
-        $oUser =& User::get($_SESSION['userID']);
-        $bm =& new KTBulkImportManager($oFolder, $fs, $oUser, $aOptions);
+        $bm =& new KTBulkImportManager($this->oFolder, $fs, $this->oUser, $aOptions);
         DBUtil::startTransaction();
         $res = $bm->import();
         if (PEAR::isError($res)) {
@@ -98,18 +124,8 @@ class KTBulkImportDispatcher extends KTStandardDispatcher {
             DBUtil::commit();
         }
 
-        controllerRedirect("browse", 'fFolderID=' . $oFolder->getID());
+        controllerRedirect("browse", 'fFolderID=' . $this->oFolder->getID());
         exit(0);
-    }
-
-    function handleOutput($data) {
-        global $main;
-        if (empty($data)) {
-            $data = "";
-        }
-        $main->bFormDisabled = true;
-        $main->setCentralPayload($data);
-        $main->render();
     }
 }
 
