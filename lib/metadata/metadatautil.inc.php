@@ -32,6 +32,40 @@ require_once(KT_LIB_DIR . '/metadata/fieldset.inc.php');
 require_once(KT_LIB_DIR . '/metadata/fieldbehaviour.inc.php');
 
 class KTMetadataUtil {
+
+    function _getNextForBehaviour($oBehaviour, $aCurrentSelections) {
+        $oBehaviour =& KTUtil::getObject('KTFieldBehaviour', $oBehaviour);
+        $GLOBALS['default']->log->debug('KTMetadataUtil::_getNextForBehaviour, behaviour is ' . $oBehaviour->getId());
+
+        $aValues = KTMetadataUtil::getNextValuesForBehaviour($oBehaviour);
+        $iFieldId = $oBehaviour->getFieldId();
+        $aNextFields = KTMetadataUtil::getChildFieldIds($iFieldId);
+        $GLOBALS['default']->log->debug('KTMetadataUtil::_getNextForBehaviour, next fields for ' . $iFieldId . ' are: ' . print_r($aNextFields, true)); 
+
+        foreach ($aNextFields as $iThisFieldId) {
+            if (!in_array($iThisFieldId, array_keys($aCurrentSelections))) {
+                $GLOBALS['default']->log->debug('KTMetadataUtil::_getNextForBehaviour, field ' . $iThisFieldId . ' is not selected');
+
+            } else {
+                $GLOBALS['default']->log->debug('KTMetadataUtil::_getNextForBehaviour, field ' . $iThisFieldId . ' is selected');
+                unset($aValues[$iThisFieldId]);
+
+                $oInstance = KTValueInstance::getByLookupAndParentBehaviour($aCurrentSelections[$iThisFieldId], $oBehaviour);
+                $GLOBALS['default']->log->debug('KTMetadataUtil::_getNextForBehaviour, instance is ' . print_r($oInstance, true));
+                $oChildBehaviour =& KTFieldBehaviour::get($oInstance->getBehaviourId());
+                $GLOBALS['default']->log->debug('KTMetadataUtil::_getNextForBehaviour, field ' . $iThisFieldId . ' is not selected');
+                $aMyValues = KTMetadataUtil::_getNextForBehaviour($oChildBehaviour, $aCurrentSelections);
+                $GLOBALS['default']->log->debug('KTMetadataUtil::_getNextForBehaviour, values are ' . print_r($aMyValues, true));
+                foreach ($aMyValues as $k => $v) {
+                    $aValues[$k] = $v;
+                }
+            }
+        }
+
+        $GLOBALS['default']->log->debug('KTMetadataUtil::_getNextForBehaviour, final values are ' . print_r($aValues, true));
+        return $aValues;
+    }
+    
     // {{{ getNext
     /**
      * Given a set of selected values (aCurrentSelections) for a given
@@ -41,29 +75,29 @@ class KTMetadataUtil {
      */
     function getNext($oFieldset, $aCurrentSelections) {
         $oFieldset =& KTUtil::getObject('KTFieldset', $oFieldset);
+        $GLOBALS['default']->log->debug('KTMetadataUtil::getNext, selections are: ' . print_r($aCurrentSelections, true));
 
         if (empty($aCurrentSelections)) {
             $oField =& DocumentField::get($oFieldset->getMasterFieldId());
             return array($oField->getId() => array('field' => $oField, 'values' => $oField->getValues()));
         }
 
-        $aReturn = array();
+        $oMasterField =& DocumentField::get($oFieldset->getMasterFieldId());
+        $aSelectedFields = array_keys($aCurrentSelections);
+        $oValueInstance = KTValueInstance::getByLookupSingle($aCurrentSelections[$oMasterField->getId()]);
 
-        foreach ($aCurrentSelections as $iFieldId => $iLookupId) {
-            $aFieldIds = KTMetadataUtil::getNextValuesForLookup($iLookupId);
-            foreach ($aFieldIds as $key => $aValueIds) {
-                if (in_array($key, $aCurrentSelections)) {
-                    continue;
-                }
-                $aValues = array();
-                foreach ($aValueIds as $iLookupId) {
-                    $aValues[] = MetaData::get($iLookupId);
-                }
-                $aReturn[$key] = array(
-                    'field' => DocumentField::get($key),
-                    'values' => $aValues,
-                );
+        $aValues = KTMetadataUtil::_getNextForBehaviour($oValueInstance->getBehaviourId(), $aCurrentSelections);
+        $GLOBALS['default']->log->debug('KTMetadataUtil::getNext, values are ' . print_r($aValues, true));
+        $aReturn = array();
+        foreach ($aValues as $iFieldId => $aValueIds) {
+            $aValues = array();
+            foreach ($aValueIds as $iLookupId) {
+                $aValues[] = MetaData::get($iLookupId);
             }
+            $aReturn[$iFieldId] = array(
+                'field' => DocumentField::get($iFieldId),
+                'values' => $aValues,
+            );
         }
         return $aReturn;
     }
@@ -219,17 +253,26 @@ class KTMetadataUtil {
         $oLookup =& KTUtil::getObject('MetaData', $oLookup);
         $oInstance =& KTValueInstance::getByLookupSingle($oLookup);
         if (PEAR::isError($oInstance)) {
+            $GLOBALS['default']->log->error('KTMetadataUtil::getNextValuesForLookup, got dud instance id, returned: ' . print_r($oInstance, true));
             return $oInstance;
         }
         if (!is_null($oInstance) && $oInstance->getBehaviourId()) {
             // if we have an instance, and we have a behaviour, return
             // the actual values for that behaviour.
             $oBehaviour =& KTFieldBehaviour::get($oInstance->getBehaviourId());
+            if (PEAR::isError($oBehaviour)) {
+                $GLOBALS['default']->log->error('KTMetadataUtil::getNextValuesForLookup, got dud behaviour id, returned: ' . print_r($oBehaviour, true));
+                return $res;
+            }
             return KTMetadataUtil::getNextValuesForBehaviour($oBehaviour);
         }
         // No instance or no behaviour, so send an empty array for each
         // field that we affect.
         $aChildFieldIds = KTMetadataUtil::getChildFieldIds($oLookup->getDocFieldId());
+        if (PEAR::isError($aChildFieldIds)) {
+            $GLOBALS['default']->log->error('KTMetadataUtil::getNextValuesForLookup, getChildFieldIds returned: ' . print_r($aChildFieldIds, true));
+            return $res;
+        }
         foreach ($aChildFieldIds as $iFieldId) {
             $aValues[$iFieldId] = array();
         }
