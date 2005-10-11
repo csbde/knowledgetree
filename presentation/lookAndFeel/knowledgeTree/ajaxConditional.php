@@ -54,30 +54,9 @@ class AjaxConditionalDispatcher extends KTStandardDispatcher {
 
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/metadata/chooseFromMetadataLookup');
         $oTemplate->setData(array('aFieldValues' => $aNextFieldValues));
-        var_dump($aNextFieldValues);
+        $GLOBALS['default']->log->debug(print_r($aNextFieldValues, true));
         return $oTemplate->render();
-
-        var_dump($aNextFieldValues);
-
-        return '
-<tr class="widget">
-    <th> Test 123.  Was that not nice?</th>
-    <td>
-
-<select name="test123">
-    <option value="1">Option 1</option>
-    <option value="2">Option 2</option>
-    <option value="3">Option 3</option>
-    <option value="4">Option 4</option>
-    <option value="5">Option 5</option>
-    <option value="6">Option 6</option>
-</select>
-   
-      </td>
-</tr>
-    ';
     }
-
 }
 
 $oDispatcher = new AjaxConditionalDispatcher();
