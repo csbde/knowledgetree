@@ -84,10 +84,28 @@ class KTValueInstance extends KTEntity {
         return KTEntityUtil::getBy('KTValueInstance', 'field_value_id', $iLookupId, $aOptions);
     }
 
-    function &getByLookup($oLookup, $aOptions) {
+    function &getByLookup($oLookup) {
         $aOptions = array('multi' => true);
         $iLookupId = KTUtil::getId($oLookup);
         return KTEntityUtil::getBy('KTValueInstance', 'field_value_id', $iLookupId, $aOptions);
+    }
+
+    function &getByLookupAndParentBehaviour($oLookup, $oBehaviour, $aOptions = null) {
+        $iLookupId = KTUtil::getId($oLookup);
+        $iBehaviourId = KTUtil::getId($oBehaviour);
+        $sInstanceTable = KTUtil::getTableName('field_value_instances');
+        $sBehaviourOptionsTable = KTUtil::getTableName('field_behaviour_options');
+        $aQuery = array(
+            "SELECT instance_id FROM $sBehaviourOptionsTable AS BO INNER JOIN
+            $sInstanceTable AS I ON BO.instance_id = I.id WHERE
+            BO.behaviour_id = ? AND I.field_value_id = ?",
+            array($iBehaviourId, $iLookupId),
+        );
+        $iId = DBUtil::getOneResultKey($aQuery, 'instance_id');
+        if (KTUtil::arrayGet($aOptions, 'ids')) {
+            return $iId;
+        }
+        return KTValueInstance::get($iId);
     }
 }
 
