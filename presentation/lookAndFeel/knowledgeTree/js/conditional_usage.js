@@ -115,8 +115,19 @@ function popStack(fieldset) {
 */
 
 function createFixedWidget(fieldset, widget, i_name, i_value, i_label) {
+    // bad, but there's nothing else we can do in the current design.
+    // we need to walk the TR for the TH (widget.tagName == TR)
+    if (widget.tagName != 'TR')
+    {
+        // alert('Invalid widget in conditional.'+widget);
+        simpleLog('ERROR','invalid widget in conditional.');
+        return false;
+    }
+    var header = widget.getElementsByTagName('TH')[0];  // FIXME _could_ fail if pathalogical.
+    var i_friendly_name = scrapeText(header);
+
     var newWidget = TR({'class':'widget fixed'},
-        TH(null, i_name),
+        TH(null, i_friendly_name),
         TD(null, 
             INPUT({'type':'hidden','name':i_name, 'value':i_value,'class':'fixed'}),
             SPAN(null, i_label)
