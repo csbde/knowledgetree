@@ -76,6 +76,13 @@ class KTFieldBehaviour extends KTEntity {
     function &getByName($sName) {
         return KTEntityUtil::getBy('KTFieldBehaviour', 'name', $sName);
     }
+
+    // STATIC
+    function &getByField($oField) {
+        $iFieldId = KTUtil::getId($oField);
+        $aOptions = array('multi' => true);
+        return KTEntityUtil::getBy('KTFieldBehaviour', 'field_id', $iFieldId, $aOptions);
+    }
 }
 
 ?>
