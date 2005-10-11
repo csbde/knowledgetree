@@ -93,8 +93,10 @@ function pushFixedStack(field_id, value) {
         current_last_field = fixed_field_stack[fixed_field_stack.length-1];
     }
     if ((current_last_field == null) || (current_last_field != field_id)) {
+	simpleLog('DEBUG','pushing onto stack. '+field_id)
         fixed_field_stack.push(field_id);
     }
+    fixed_value = value;
     placeFinishButton();
     updateActiveFields();
 }
@@ -164,6 +166,7 @@ function setFixedValueForField(field_id, value, label) {
     }
     appendChildNodes(column, INPUT({'class':'fixed_value', 'value':value, 'name':'fixed_value','type':'hidden'}));
     pushFixedStack(field_id, value);
+    simpleLog('DEBUG','got to end of setFixed.');
 }
 
 // psuedo static.
