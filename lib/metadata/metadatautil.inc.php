@@ -92,7 +92,7 @@ class KTMetadataUtil {
         foreach ($aValues as $iFieldId => $aValueIds) {
             $aValues = array();
             foreach ($aValueIds as $iLookupId) {
-                $aValues[] = MetaData::get($iLookupId);
+                $aValues[$iLookupId] = MetaData::get($iLookupId);
             }
             $aReturn[$iFieldId] = array(
                 'field' => DocumentField::get($iFieldId),
