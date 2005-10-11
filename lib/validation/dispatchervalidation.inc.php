@@ -116,6 +116,11 @@ class KTDispatcherValidation {
         require_once(KT_LIB_DIR .  '/documentmanagement/DocumentField.inc');
         return $this->validateEntity('DocumentField', $iId, $aOptions);
     }
+
+    function &validateBehaviour($iId, $aOptions = null) {
+        require_once(KT_LIB_DIR .  '/metadata/fieldbehaviour.inc.php');
+        return $this->validateEntity('KTFieldBehaviour', $iId, $aOptions);
+    }
 }
 
 ?>
