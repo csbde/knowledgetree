@@ -1,4 +1,5 @@
 <itemList>
-    <item value="-1" label="Changed 1"/>
-    <item value="-2" label="Changed 2"/>
+{ foreach from=$values key=id item=label }
+    <item value="{$id}" label="{$label}"/>
+{/foreach}
 </itemList>
