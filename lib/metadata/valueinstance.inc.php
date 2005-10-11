@@ -93,6 +93,8 @@ class KTValueInstance extends KTEntity {
     function &getByLookupAndParentBehaviour($oLookup, $oBehaviour, $aOptions = null) {
         $iLookupId = KTUtil::getId($oLookup);
         $iBehaviourId = KTUtil::getId($oBehaviour);
+        $GLOBALS['default']->log->debug('KTValueInstance::getByLookupAndParentBehaviour: lookup id is ' . print_r($iLookupId, true));
+        $GLOBALS['default']->log->debug('KTValueInstance::getByLookupAndParentBehaviour: behaviour id is ' . $iBehaviourId);
         $sInstanceTable = KTUtil::getTableName('field_value_instances');
         $sBehaviourOptionsTable = KTUtil::getTableName('field_behaviour_options');
         $aQuery = array(
@@ -102,6 +104,11 @@ class KTValueInstance extends KTEntity {
             array($iBehaviourId, $iLookupId),
         );
         $iId = DBUtil::getOneResultKey($aQuery, 'instance_id');
+        if (PEAR::isError($iId)) {
+            $GLOBALS['default']->log->error('KTValueInstance::getByLookupAndParentBehaviour: error from db is: ' . print_r($iId, true));
+            return $iId;
+        }
+        $GLOBALS['default']->log->debug('KTValueInstance::getByLookupAndParentBehaviour: id of instance is ' . $iId);
         if (KTUtil::arrayGet($aOptions, 'ids')) {
             return $iId;
         }
