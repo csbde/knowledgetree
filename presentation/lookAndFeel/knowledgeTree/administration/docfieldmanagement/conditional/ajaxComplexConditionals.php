@@ -38,16 +38,22 @@ class AjaxConditionalAdminDispatcher extends KTStandardDispatcher {
         $oTemplating =& KTTemplating::getSingleton();        
         $oTemplate =& $oTemplating->loadTemplate('ktcore/metadata/conditional/ajax_complex_get_item_list');
 
-        $sMetadataTable = KTUtil::getTableName('metadata');
-        $sVITable = KTUtil::getTableName('field_value_instances');
-        $aQuery = array(
-            "SELECT M.id AS id, M.name AS name FROM $sMetadataTable AS M LEFT JOIN $sVITable AS V ON M.id = V.field_value_id WHERE M.document_field_id = ? AND V.id IS NULL",
-            array($field_id),
-        );
-        $aRows = DBUtil::getResultArray($aQuery);
         $aValues = array();
-        foreach ($aRows as $aRow) {
-            $aValues[$aRow['id']] = $aRow['name'];
+        foreach ($oField->getValues() as $oValue) {
+            if (empty($parent_behaviour)) {
+                $oInstance = KTValueInstance::getByLookupSingle($oValue);
+                if (empty($oInstance)) {
+                    $aValues[$oValue->getId()] = $oValue->getName();
+                }
+                // No parent behaviour (thus master column), so any
+                // instance will do to prevent showing this value
+                continue;
+            }
+
+            $iInstanceId = KTValueInstance::getByLookupAndParentBehaviour($oValue, $parent_behaviour, array('ids' => true));
+            if (empty($iInstanceId)) {
+                $aValues[$oValue->getId()] = $oValue->getName();
+            }
         }
         $aData = array(
             'values' => $aValues,
@@ -114,12 +120,27 @@ class AjaxConditionalAdminDispatcher extends KTStandardDispatcher {
             'fieldid' => $field_id,
         ));
 
+        $aValueInstanceIds = array();
         foreach ($lookups_to_assign as $iLookupId) {
             $res = $oValueInstance =& KTValueInstance::createFromArray(array(
                 'fieldid' => $field_id,
                 'behaviourid' => $oBehaviour->getId(),
                 'fieldvalueid' => abs($iLookupId),
             ));
+            $aValueInstanceIds[] = $res->getId();
+        }
+
+        if ($parent_behaviour) {
+            $oParentBehaviour =& $this->oValidator->validateBehaviour($parent_behaviour);
+            $sTable = KTUtil::getTableName('field_behaviour_options');
+            $aOptions = array('noid' => true);
+            foreach ($aValueInstanceIds as $iId) {
+                $res = DBUtil::autoInsert($sTable, array(
+                    'behaviour_id' => $oParentBehaviour->getId(),
+                    'field_id' => $field_id,
+                    'instance_id' => $iId,
+                ), $aOptions);
+            }
         }
 
         header('Content-type: application/xml');
@@ -137,12 +158,27 @@ class AjaxConditionalAdminDispatcher extends KTStandardDispatcher {
 
         $oBehaviour =& $this->oValidator->validateBehaviour($parent_behaviour);
 
+        $aValueInstanceIds = array();
         foreach ($lookups_to_assign as $iLookupId) {
             $res = $oValueInstance =& KTValueInstance::createFromArray(array(
                 'fieldid' => $field_id,
                 'behaviourid' => $oBehaviour->getId(),
                 'fieldvalueid' => abs($iLookupId),
             ));
+            $aValueInstanceIds[] = $res->getId();
+        }
+
+        if ($parent_behaviour) {
+            $oParentBehaviour =& $this->oValidator->validateBehaviour($parent_behaviour);
+            $sTable = KTUtil::getTableName('field_behaviour_options');
+            $aOptions = array('noid' => true);
+            foreach ($aValueInstanceIds as $iId) {
+                $res = DBUtil::autoInsert($sTable, array(
+                    'behaviour_id' => $oParentBehaviour->getId(),
+                    'field_id' => $field_id,
+                    'instance_id' => $iId,
+                ), $aOptions);
+            }
         }
         
         header('Content-type: application/xml');
