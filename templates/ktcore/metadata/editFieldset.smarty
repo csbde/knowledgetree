@@ -1,5 +1,14 @@
 <h1>Fieldset: {$oFieldset->getName()|escape}</h1>
 
+{if $sIncomplete}
+<h2>Incomplete</h2>
+
+<p>This conditional fieldset cannot be used:</p>
+
+<p>{$sIncomplete|escape}</p>
+
+{/if}
+
 <h2>Fieldset properties</h2>
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <input type="hidden" name="fFieldsetId" value="{$oFieldset->getId()}">
