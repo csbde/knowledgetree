@@ -27,6 +27,7 @@
 
 require_once(KT_LIB_DIR . "/ktentity.inc");
 require_once(KT_LIB_DIR . '/documentmanagement/MetaData.inc');
+require_once(KT_LIB_DIR . '/documentmanagement/DocumentField.inc');
 require_once(KT_LIB_DIR . '/metadata/valueinstance.inc.php');
 require_once(KT_LIB_DIR . '/metadata/fieldset.inc.php');
 require_once(KT_LIB_DIR . '/metadata/fieldbehaviour.inc.php');
@@ -90,13 +91,13 @@ class KTMetadataUtil {
         $GLOBALS['default']->log->debug('KTMetadataUtil::getNext, values are ' . print_r($aValues, true));
         $aReturn = array();
         foreach ($aValues as $iFieldId => $aValueIds) {
-            $aValues = array();
+            $aTheseValues = array();
             foreach ($aValueIds as $iLookupId) {
-                $aValues[$iLookupId] = MetaData::get($iLookupId);
+                $aTheseValues[$iLookupId] = MetaData::get($iLookupId);
             }
             $aReturn[$iFieldId] = array(
                 'field' => DocumentField::get($iFieldId),
-                'values' => $aValues,
+                'values' => $aTheseValues,
             );
         }
         return $aReturn;
@@ -301,6 +302,92 @@ class KTMetadataUtil {
         }
         return $aValues;
     }
+
+    // {{{ checkConditionalFieldsetCompleteness
+    /**
+     * Checks whether a conditional fieldset has the necessary
+     * relationships set up to be usable - this means that for each
+     * field, no matter how it is reached, there is at least one option
+     * available to choose.
+     */
+    function checkConditionalFieldsetCompleteness($oFieldset) {
+        $oFieldset =& KTUtil::getObject('KTFieldset', $oFieldset);
+
+        if ($oFieldset->getIsConditional() == false) {
+            // If we're not conditional, we are fine.
+            return true;
+        }
+
+        /*
+         * First, ensure at least one master field item has a behaviour
+         * assigned to it.  That allows at least one item in the master
+         * field to be chosen.
+         */
+
+        $iMasterFieldId = $oFieldset->getMasterFieldId();
+        $sTable = KTUtil::getTableName('field_value_instances');
+        $aQuery = array(
+            "SELECT COUNT(id) AS cnt FROM $sTable WHERE field_id = ?",
+            array($iMasterFieldId),
+        );
+        $iCount = DBUtil::getOneResultKey($aQuery, 'cnt');
+        if (PEAR::isError($iCount)) {
+            return $iCount;
+        }
+        $GLOBALS['default']->log->debug("Number of value instances for master field: $iCount");
+        if ($iCount == 0) {
+            $GLOBALS['default']->log->debug("Number of value instances for master field is zero, failing");
+            return PEAR::raiseError("Master field has no selectable values");
+        }
+        $GLOBALS['default']->log->debug("Number of value instances for master field is positive, continuing");
+
+        /*
+         * Plan: For each behaviour that is assigned on the system,
+         * ensure that it allows at least one value instance in each of
+         * the fields that it needs to affect.
+         */
+
+        $sTable = KTUtil::getTableName('field_value_instances');
+        $sFieldTable = KTUtil::getTableName('document_fields');
+        $aQuery = array(
+            "SELECT DISTINCT FV.behaviour_id AS behaviour_id FROM $sTable AS FV INNER JOIN $sFieldTable AS F ON FV.field_id = F.id WHERE F.parent_fieldset = ? AND FV.behaviour_id IS NOT NULL",
+            array($oFieldset->getId()),
+        );
+        $aBehaviourIds = DBUtil::getResultArrayKey($aQuery, 'behaviour_id');
+        if (PEAR::isError($aBehaviourIds)) {
+            return $aBehaviourIds;
+        }
+
+        foreach ($aBehaviourIds as $iBehaviourId) {
+            $GLOBALS['default']->log->debug("Checking behaviour id: " . $iBehaviourId);
+            $oBehaviour =& KTFieldBehaviour::get($iBehaviourId);
+            $sBehaviourName = $oBehaviour->getName();
+            $iParentFieldId = $oBehaviour->getFieldId();
+            $GLOBALS['default']->log->debug("   field is " .  $iParentFieldId);
+            $aNextFields = KTMetadataUtil::getChildFieldIds($iParentFieldId);
+            $oParentField =& DocumentField::get($iParentFieldId);
+            $sParentFieldName = $oParentField->getName();
+            $GLOBALS['default']->log->debug("   next fields must include " . print_r($aNextFields, true));
+            $sTable = KTUtil::getTableName('field_behaviour_options');
+            $aQuery = array(
+                "SELECT DISTINCT field_id FROM $sTable WHERE behaviour_id = ?",
+                array($iBehaviourId),
+            );
+            $aFields = DBUtil::getResultArrayKey($aQuery, 'field_id');
+            $GLOBALS['default']->log->debug("   actual fields are " . print_r($aNextFields, true));
+            foreach ($aNextFields as $iFieldId) {
+                if (!in_array($iFieldId, $aFields)) {
+                    $GLOBALS['default']->log->debug("   field $iFieldId is not included, failing");
+                    $oChildField =& DocumentField::get($iFieldId);
+                    $sChildFieldName = $oChildField->getName();
+                    return PEAR::raiseError("Child field $sChildFieldName of parent field $sParentFieldName has no selectable values in behaviour $sBehaviourName");
+                }
+            }
+        }
+        $GLOBALS['default']->log->debug("Got through: passed!");
+        return true;
+    }
+    // }}}
 }
 
 ?>
