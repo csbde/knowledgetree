@@ -103,7 +103,6 @@ addLoadEvent(updateActiveFields);
 </table>
 
 
-<!--
 <table id="brad-log">
 <tr>
     <th>Severity</th>
@@ -114,5 +113,3 @@ addLoadEvent(updateActiveFields);
 
 </tbody>
 </table>
-
--->

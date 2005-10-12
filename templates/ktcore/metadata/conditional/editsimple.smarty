@@ -98,3 +98,14 @@ addLoadEvent(partial(editSimpleField, {$iMasterFieldId}));
   
 </tr>
 </table>
+
+<table id="brad-log">
+<tr>
+    <th>Severity</th>
+    <th>Time</th>
+    <th>Entry</th>
+</tr>
+<tbody  >
+
+</tbody>
+</table>
