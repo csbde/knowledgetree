@@ -73,6 +73,8 @@ class DocumentField extends KTEntity {
 	function setHasLookup($iNewValue) {	$this->bHasLookup = $iNewValue; }
     function getParentFieldset() { return $this->iParentFieldset; }
 	function setParentFieldset($iNewValue) { $this->iParentFieldset = $iNewValue; }
+    function getParentFieldsetId() { return $this->iParentFieldset; }
+	function setParentFieldsetId($iNewValue) { $this->iParentFieldset = $iNewValue; }
     function getHasLookupTree() { return $this->bHasLookupTree; }
 	function setHasLookupTree($iNewValue) { $this->bHasLookupTree = KTUtil::anyToBool($iNewValue); }
 
