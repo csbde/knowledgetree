@@ -169,6 +169,7 @@ class KTDocumentFieldDispatcher extends KTStandardDispatcher {
     function do_becomeconditional() {
         $oFieldset =& KTFieldset::get($_REQUEST['fFieldsetId']);
         $oFieldset->setIsConditional(true);
+        $oFieldset->setIsComplete(false);
         $res = $oFieldset->update();
         if (PEAR::isError($res) || ($res === false)) {
             $this->errorRedirectTo('edit', 'Could not become conditional', 'fFieldsetId=' . $oFieldset->getId());
@@ -183,6 +184,7 @@ class KTDocumentFieldDispatcher extends KTStandardDispatcher {
     function do_removeconditional() {
         $oFieldset =& KTFieldset::get($_REQUEST['fFieldsetId']);
         $oFieldset->setIsConditional(false);
+        $oFieldset->setIsComplete(true);
         $res = $oFieldset->update();
         if (PEAR::isError($res) || ($res === false)) {
             $this->errorRedirectTo('edit', 'Could not stop being conditional', 'fFieldsetId=' . $oFieldset->getId());
@@ -248,12 +250,19 @@ class KTDocumentFieldDispatcher extends KTStandardDispatcher {
                 $aFreeFields[] =& DocumentField::get($iId);
             }
         }
+        $res = KTMetadataUtil::checkConditionalFieldsetCompleteness($oFieldset);
+        if (PEAR::isError($res)) {
+            $sIncomplete = $res->getMessage();
+        } else {
+            $sIncomplete = null;
+        }
         $oTemplate->setData(array(
             'oFieldset' => $oFieldset,
             'free_fields' => $aFreeFields,
             'parent_fields' => $aParentFields,
             'aFieldOrders' => $aFieldOrders,
             'oMasterField' => $oMasterField,
+            'sIncomplete' => $sIncomplete,
         ));
         return $oTemplate;
     }
@@ -297,6 +306,29 @@ class KTDocumentFieldDispatcher extends KTStandardDispatcher {
         ));
         $this->successRedirectTo('manageConditional', 'Master field set', 'fFieldsetId=' . $oFieldset->getId());
         exit(0);
+    }
+    // }}}
+
+    // {{{ do_checkComplete
+    /**
+     * Checks whether the fieldset is complete, and if it is, sets it to
+     * be complete in the database.  Otherwise, set it to not be
+     * complete in the database (just in case), and set the error
+     * messages as to why it isn't.
+     */
+    function do_checkComplete() {
+        $oFieldset =& $this->oValidator->validateFieldset($_REQUEST['fFieldsetId']);
+        $res = KTMetadataUtil::checkConditionalFieldsetCompleteness($oFieldset);
+        if ($res === true) {
+            $oFieldset->setIsComplete(true);
+            $oFieldset->update();
+            $this->successRedirectTo('manageConditional', 'Set to complete', 'fFieldsetId=' . $oFieldset->getId());
+        }
+        $oFieldset->setIsComplete(false);
+        $oFieldset->update();
+        // Success, as we want to save the incompleteness to the
+        // database...
+        $this->successRedirectTo('manageConditional', 'Could not to complete', 'fFieldsetId=' . $oFieldset->getId());
     }
     // }}}
 }
