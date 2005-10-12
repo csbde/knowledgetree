@@ -1,5 +1,56 @@
 <h1>Manage conditional fieldset<h1>
 
+{if $sIncomplete || !$oFieldset->getIsComplete()}
+<h2>Incomplete</h2>
+
+<p style="color: red">This conditional fieldset is marked such that it
+cannot be used.  This happens when the fieldset has been edited and has
+not been set to complete.  Setting the fieldset to complete will do a
+check to see if the fieldset is usable by the user.</p>
+
+{if $sIncomplete}
+<p style="color: red">This error prevents this fieldset from being set
+to complete: {$sIncomplete|escape}</p>
+{else}
+
+Try to set to complete:
+<form action="{$smarty.server.PHP_SELF}" method="POST">
+<input type="hidden" name="action" value="checkComplete">
+<input type="hidden" name="fFieldsetId" value="{$oFieldset->getId()}">
+<input type="submit" name="submit" value="Check completeness">
+</form>
+{/if}
+{/if}
+
+<h2>Conditional type</h2>
+
+{if $oFieldset->getIsComplex()}
+Complex: <a
+href="{$config->get("urls/uiUrl")}/administration/docfieldmanagement/conditional/manageConditionals.php?action=editComplexFieldset&fieldset_id={$oFieldset->getId()}">Manage
+complex conditional</a>
+
+<form action="{$smarty.server.PHP_SELF}" method="POST">
+<input type="hidden" name="action" value="changeToSimple">
+<input type="hidden" name="fFieldsetId" value="{$oFieldset->getId()}">
+<input type="submit" name="submit" value="Change to simple">
+</form>
+
+{else}
+
+Simple: <a
+href="{$config->get("urls/uiUrl")}/administration/docfieldmanagement/conditional/manageConditionals.php?action=editFieldset&fieldset_id={$oFieldset->getId()}">Manage simple conditional</a>
+
+<form action="{$smarty.server.PHP_SELF}" method="POST">
+<input type="hidden" name="action" value="changeToComplex">
+<input type="hidden" name="fFieldsetId" value="{$oFieldset->getId()}">
+<input type="submit" name="submit" value="Change to complex">
+</form>
+
+{/if}
+
+<p>Changing the conditional type set will remove all existing field
+ordering!</p>
+
 <h2>Master field</h2>
 
 {if !$oMasterField}
