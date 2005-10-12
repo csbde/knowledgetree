@@ -28,6 +28,7 @@ class AjaxConditionalAdminDispatcher extends KTStandardDispatcher {
         // handle the store, and DON'T give a 500 ;)  does not act on the information.
         global $default;
         $default->log->error(http_build_query($_REQUEST));
+        $iFieldsetId = KTUtil::arrayGet($_REQUEST, 'fieldset_id');
         $parent_field = KTUtil::arrayGet($_REQUEST, 'parent_field');
         $parent_lookup = KTUtil::arrayGet($_REQUEST, 'parent_lookup');
         $child_lookups = KTUtil::arrayGet($_REQUEST, 'child_lookups');
@@ -38,6 +39,10 @@ class AjaxConditionalAdminDispatcher extends KTStandardDispatcher {
         //     field_id:[lookup_id, lookup_id],
         //     field_id:[lookup_id, lookup_id],
         //  }
+
+        $oFieldset =& KTFieldset::get($iFieldsetId);
+        $oFieldset->setIsComplete(false);
+        $oFieldset->update();
 
         $oParentInstance = KTMetadataUtil::getOrCreateValueInstanceForLookup($parent_lookup);
         $iBehaviourId = $oParentInstance->getBehaviourId();
