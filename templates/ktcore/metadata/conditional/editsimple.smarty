@@ -67,7 +67,7 @@ addLoadEvent(partial(editSimpleField, {$iMasterFieldId}));
 <h2>Editing Fieldset Rules (Simple)</h2>
 
 <form>
-<input type="hidden" name="fieldset_id" id="global-fieldset-id" value="{$iMasterFieldId}" />
+<input type="hidden" name="fieldset_id" id="global-fieldset-id" value="{$fieldset_id}" />
 
 <table id="simple_conditional_edit">
 <tr>

@@ -120,6 +120,10 @@ function storeRelationship(selected_lookup, child_lookups) {
   formKeys.push('action');
   formValues.push('storeRelationship');
 
+  var fieldset_id = getElement('global-fieldset-id').value;
+  formKeys.push('fieldset_id');
+  formValues.push(fieldset_id);
+
 
   // which parent_field
   formKeys.push('parent_field');
