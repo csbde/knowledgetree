@@ -26,6 +26,8 @@
  * @package search
  */
 
+require_once(KT_LIB_DIR . '/permissions/permissionutil.inc.php');
+
 function searchCriteria ($var) {
     return preg_match('/^bmd(_?\d+)/', $var);
 }
@@ -91,6 +93,14 @@ function getAdvancedSearchResults($aOrigReq, $iStartIndex) {
 
     $sToSearch = KTUtil::arrayGet($aOrigReq, 'fToSearch', 'Live');
 
+    $oPermission =& KTPermission::getByName('ktcore.permissions.read');
+    $sPermissionLookupsTable = KTUtil::getTableName('permission_lookups');
+    $sPermissionLookupAssignmentsTable = KTUtil::getTableName('permission_lookup_assignments');
+    $sPermissionDescriptorsTable = KTUtil::getTableName('permission_descriptors');
+    $aGroups = GroupUtil::listGroupsForUserExpand($_SESSION['userID']);
+    $aPermissionDescriptors = KTPermissionDescriptor::getByGroups($aGroups, array('ids' => true));
+    $sPermissionDescriptors = DBUtil::paramArray($aPermissionDescriptors);
+
     $sQuery = DBUtil::compactQuery("
 SELECT
     F.name AS folder_name, F.id AS folder_id, D.id AS document_id,
@@ -99,18 +109,19 @@ FROM
     $default->documents_table AS D
     INNER JOIN $default->folders_table AS F ON D.folder_id = F.id
     $sJoinSQL
-    INNER JOIN $default->search_permissions_table AS SDUL ON SDUL.document_id = D.id
-    INNER JOIN $default->status_table AS SL on D.status_id=SL.id
+    INNER JOIN $default->status_table AS SL ON D.status_id=SL.id
+    INNER JOIN $sPermissionLookupsTable AS PL ON D.permission_lookup_id = PL.id
+    INNER JOIN $sPermissionLookupAssignmentsTable AS PLA ON PL.id = PLA.permission_lookup_id AND PLA.permission_id = ?
 WHERE
-	(F.is_public OR
-    SDUL.user_id = ?)
+    PLA.permission_descriptor_id IN ($sPermissionDescriptors)
     AND SL.name = ?
     AND ($sSQLSearchString)
 GROUP BY D.id
 ORDER BY doc_count DESC");
 
     $aParams = array();
-    $aParams[] = $_SESSION["userID"];
+    $aParams[] = $oPermission->getId();
+    $aParams = array_merge($aParams, $aPermissionDescriptors);
     $aParams[] = $sToSearch;
     $aParams = array_merge($aParams, $aCritParams);
 
