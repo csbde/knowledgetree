@@ -42,7 +42,7 @@ class Folder extends KTEntity {
 	/** primary key of unit to which this folder belongs */
 	var $iUnitID;
 	/** public status of folder */
-	var $bIsPublic;
+	var $bIsPublic = false;
 	/** comma deliminated string of parent ids */
 	var $sParentFolderIDs;
 	/** forward slash deliminated path from file system root */
@@ -52,7 +52,7 @@ class Folder extends KTEntity {
     /** lookup accelerator id */
     var $iPermissionLookupID;
     /** whether to restrict to only certain document types */
-    var $bRestrictDocumentTypes;
+    var $bRestrictDocumentTypes = false;
 
     // {{{ KTEntity stuff
     var $_aFieldToSelect = array(
