@@ -194,13 +194,19 @@ class GroupUtil {
     // }}}
 
     // {{{ listGroupsForUser
-    function listGroupsForUser ($oUser) {
+    function listGroupsForUser ($oUser, $aOptions = null) {
         global $default;
+        $iUserId = KTUtil::getId($oUser);
+        $ids = KTUtil::arrayGet($aOptions, 'ids', false);
         $sQuery = "SELECT group_id FROM $default->users_groups_table WHERE user_id = ?";
-        $aParams = array($oUser->getID());
+        $aParams = array($iUserId);
         $aGroupIDs = DBUtil::getResultArrayKey(array($sQuery, $aParams), "group_id");
         $aGroups = array();
         foreach ($aGroupIDs as $iGroupID) {
+            if ($ids) {
+                $aGroups[] = $iGroupID;
+                continue;
+            }
             $oGroup = Group::get($iGroupID);
             if (PEAR::isError($oGroup)) {
                 continue;
@@ -226,12 +232,13 @@ class GroupUtil {
     }
 
     // {{{ _listGroupsIDsForUserExpand
-    function _listGroupIDsForUserExpand ($oUser) {
+    function _listGroupIDsForUserExpand ($oUser, $aOptions = null) {
         global $default;
+        $iUserId = KTUtil::getId($oUser);
         $aGroupArray = GroupUtil::_invertGroupArray(GroupUtil::buildGroupArray());
         $aDirectGroups = GroupUtil::listGroupsForUser($oUser);
         $sQuery = "SELECT group_id FROM $default->users_groups_table WHERE user_id = ?";
-        $aParams = array($oUser->getID());
+        $aParams = array($iUserId);
         $aGroupIDs = DBUtil::getResultArrayKey(array($sQuery, $aParams), "group_id");
         foreach ($aGroupIDs as $iGroupID) {
             $aExtraIDs = KTUtil::arrayGet($aGroupArray, $iGroupID);
@@ -246,9 +253,14 @@ class GroupUtil {
     // }}}
 
     // {{{ listGroupsForUserExpand
-    function listGroupsForUserExpand ($oUser) {
+    function listGroupsForUserExpand ($oUser, $aOptions = null) {
+        $ids = KTUtil::arrayGet($aOptions, 'ids', false);
         $aGroupIDs = GroupUtil::_listGroupIDsForUserExpand($oUser);
+        $aGroups = array();
         foreach ($aGroupIDs as $iGroupID) {
+            if ($ids) {
+                $aGroups[] = $iGroupID;
+            }
             $oGroup = Group::get($iGroupID);
             if (PEAR::isError($oGroup)) {
                 continue;
