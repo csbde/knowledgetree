@@ -11,6 +11,15 @@ require_once(KT_LIB_DIR . "/permissions/permissionobject.inc.php");
 require_once(KT_LIB_DIR . "/groups/GroupUtil.php");
 
 class KTPermissionUtil {
+    // {{{ generateDescriptor
+    /**
+     * Generate a unique textual representation of a specific collection
+     * of users/groups/roles described by a dictionary.
+     *
+     * This function _must_ always generate the same descriptor for a
+     * given collection of users/groups/roles, no matter the order of
+     * the keys or the order of the ids in the values of the collection.
+     */
     function generateDescriptor ($aAllowed) {
         $aAllowedSort = array();
         // PHP5: clone
@@ -30,7 +39,14 @@ class KTPermissionUtil {
 
         return $sOutput;
     }
+    // }}}
 
+    // {{{ getOrCreateDescriptor
+    /**
+     * For a given collection of users/groups/roles, get the permission
+     * descriptor object that describes that exact collection, creating
+     * such an object if it does not already exist.
+     */
     function getOrCreateDescriptor ($aAllowed) {
         $sDescriptor = KTPermissionUtil::generateDescriptor($aAllowed);
         $oDescriptor =& KTPermissionDescriptor::getByDescriptor(md5($sDescriptor));
@@ -42,7 +58,17 @@ class KTPermissionUtil {
         }
         return $oDescriptor;
     }
+    // }}}
 
+    // {{{ getOrCreateAssignment
+    /**
+     * For a given permission object, get the assignment object for the
+     * given permission, or create one if there isn't one already.
+     *
+     * This assignment object describes the group of users/groups/roles
+     * that have the given permission.  If one is created, it is created
+     * empty.
+     */
     function getOrCreateAssignment ($sPermission, $iObjectID) {
         if (is_string($sPermission)) {
             $oPermission =& KTPermission::getByName($sPermission);
@@ -63,13 +89,21 @@ class KTPermissionUtil {
         }
         return $oPA;
     }
+    // }}}
 
+    // {{{ setPermissionForID
+    /**
+     * For a given permission object, set the given group of
+     * users/groups/roles that have a given permission, removing any
+     * previous assignment.
+     */
     function setPermissionForID($sPermission, $iObjectID, $aAllowed) {
         $oPermissionAssignment = KTPermissionUtil::getOrCreateAssignment($sPermission, $iObjectID);
         $oDescriptor = KTPermissionUtil::getOrCreateDescriptor($aAllowed);
         $oPermissionAssignment->setPermissionDescriptorID($oDescriptor->getID());
         $oPermissionAssignment->update();
     }
+    // }}}
 
     // {{{ updatePermissionLookupForPO
     /**
@@ -93,7 +127,6 @@ class KTPermissionUtil {
         }
     }
     // }}}
-
 
     // {{{ updatePermissionLookupRecursive
     /**
@@ -155,6 +188,13 @@ class KTPermissionUtil {
     }
     // }}}
 
+    // {{{ userHasPermissionOnItem
+    /**
+     * Check whether a given user has the given permission on the given
+     * object, by virtue of a direct or indirect assignment due to the
+     * user, its groups, its roles, or the roles assigned to its groups,
+     * and so forth.
+     */
     function userHasPermissionOnItem($oUser, $oPermission, $oFolderOrDocument) {
         $oPL = KTPermissionLookup::get($oFolderOrDocument->getPermissionLookupID());
         $oPLA = KTPermissionLookupAssignment::getByPermissionAndLookup($oPermission, $oPL);
@@ -166,7 +206,15 @@ class KTPermissionUtil {
         $aGroups = GroupUtil::listGroupsForUserExpand($oUser);
         return $oPD->hasGroups($aGroups);
     }
+    // }}}
 
+    // {{{ findRootObjectForPermissionObject
+    /**
+     * Given a specific permission object, find the object (Folder or
+     * Document) that is the root of that permission object - the one
+     * object that has this permission object, but its parent has a
+     * different one.
+     */
     function findRootObjectForPermissionObject($oPO) {
         global $default;
         /*
@@ -194,7 +242,14 @@ class KTPermissionUtil {
         }
         return false;
     }
+    // }}}
 
+    // {{{ copyPermissionObject
+    /**
+     * Copy the object's parents permission object details, in
+     * preparation for the object to have different permissions from its
+     * parent.
+     */
     function copyPermissionObject(&$oDocumentOrFolder) {
         global $default;
         $oOrigPO = KTPermissionObject::get($oDocumentOrFolder->getPermissionObjectID());
@@ -240,7 +295,14 @@ class KTPermissionUtil {
         // lookups updated...
         KTPermissionUtil::updatePermissionLookupForPO($oNewPO);
     }
+    // }}}
 
+    // {{{ isPermissionOwner
+    /**
+     * Verify if the given object is the root of the permission object
+     * it has assigned to it - in other words, if its parent has a
+     * different permission object than it.
+     */
     function isPermissionOwner(&$oDocumentOrFolder) {
         $oPermissionObject = KTPermissionObject::get($oDocumentOrFolder->getPermissionObjectID());
         $oParentObject = KTPermissionUtil::findRootObjectForPermissionObject($oPermissionObject);
@@ -263,7 +325,13 @@ class KTPermissionUtil {
         }
         return false;
     }
+    // }}}
 
+    // {{{ inheritPermissionObject
+    /**
+     * Inherits permission object from parent, throwing away our own
+     * permission object.
+     */
     function inheritPermissionObject(&$oDocumentOrFolder) {
         global $default;
         if (!KTPermissionUtil::isPermissionOwner($oDocumentOrFolder)) {
@@ -303,6 +371,7 @@ class KTPermissionUtil {
 
         KTPermissionUtil::updatePermissionLookupForPO($oNewPO);
     }
+    // }}}
 }
 
 ?>
