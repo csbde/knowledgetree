@@ -24,6 +24,9 @@
  * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
  * @package lib.visualpatterns
  */
+
+require_once(KT_LIB_DIR . '/visualpatterns/PatternTableSqlQuery.inc');
+
 class PatternBrowseableSearchResults {
 	
 	/** query to be executed */
@@ -124,10 +127,14 @@ class PatternBrowseableSearchResults {
         $aParams[] = $this->iStartIndex - 1;
         $aParams[] = $this->iResultsToDisplay;
 
-		$sql = & $default->db;
-		$sql->query(array($sQuery, $aParams));
+        $oResult = DBUtil::runQuery(array($sQuery, $aParams));
+        if (PEAR::isError($oResult)) {
+            $GLOBALS['default']->log->error('PatternBrowsableSearchResults: query returned error: ' . $oResult->getMessage());
+            return $oResult;
+        }
+        $oResultSet = new SqlResultSetAdapter($oResult);
 
-		if ($sql->num_rows() == 0) {
+		if ($oResultSet->isEmpty()) {
 			//no results
 			$sToRender .= "<table width=\"100%\" height=\"80%\">\n";		
 			$sToRender .= "<tr>\n";		
@@ -164,7 +171,7 @@ class PatternBrowseableSearchResults {
 			$iDisplayed = 0;
 		
 			//limit the result set displayed			
-			while($sql->next_record()) {
+			while($oRow = $oResultSet->next()) {
 				$sToRender .= "<tr bgcolor=\"" . getColour($iColour) . "\">";
 				$iColour++; $iDisplayed++;
 				
@@ -172,11 +179,11 @@ class PatternBrowseableSearchResults {
 					switch ($this->aColumnTypes[$i]) {
 						case 1:							
 							//display text
-							$sToRender .= "<td>" . $sql->f($this->aColumns[$i]) . "</td>\n";					
+							$sToRender .= "<td>" . $oRow->get($this->aColumns[$i]) . "</td>\n";					
 						break;
 						case 2:
 							//display a checkbox
-							$sToRender .= "<td>" . ($sql->f($this->aColumns[$i]) ? "Yes" : "No") . "</td>\n";						
+							$sToRender .= "<td>" . ($oRow->get($this->aColumns[$i]) ? "Yes" : "No") . "</td>\n";						
 							break;
 						case 3:					
 							//display a url
@@ -184,13 +191,13 @@ class PatternBrowseableSearchResults {
 							$sURLplusQuery = $this->aLinkURLs[$i];
 							for ($j = 0; $j < count($this->aDBQueryStringColumns); $j++) {
 			  				 	if (strpos($sURLplusQuery, "?") === false) {
-									$sURLplusQuery .= "?" . $this->aQueryStringVariableNames[$j] . "=" . $sql->f($this->aDBQueryStringColumns[$j]);										
+									$sURLplusQuery .= "?" . $this->aQueryStringVariableNames[$j] . "=" . $oRow->get($this->aDBQueryStringColumns[$j]);										
 								} else { 
-									$sURLplusQuery .= "&" . $this->aQueryStringVariableNames[$j] . "=" . $sql->f($this->aDBQueryStringColumns[$j]);
+									$sURLplusQuery .= "&" . $this->aQueryStringVariableNames[$j] . "=" . $oRow->get($this->aDBQueryStringColumns[$j]);
 								}									
 							}
 							$sToRender .= $sURLplusQuery;
-							$sToRender .= "\">" . $sql->f($this->aColumns[$i]) . "</a></td>\n";
+							$sToRender .= "\">" . $oRow->get($this->aColumns[$i]) . "</a></td>\n";
 							
 							break;
 						case 4:
@@ -198,12 +205,12 @@ class PatternBrowseableSearchResults {
 							$sToRender .= "<td><a href=\"" . $this->aLinkURLs[$i];
 							for ($j = 0; $j < count($this->aDBQueryStringColumns); $j++) {
 								if (strpos($sToRender, "?") === false) {
-									$sToRender .= "?" . $this->aQueryStringVariableNames[$j] . "=" . $sql->f($this->aDBQueryStringColumns[$j]);										
+									$sToRender .= "?" . $this->aQueryStringVariableNames[$j] . "=" . $oRow->get($this->aDBQueryStringColumns[$j]);										
 								} else { 
-									$sToRender .= "&" . $this->aQueryStringVariableNames[$j] . "=" . $sql->f($this->aDBQueryStringColumns[$j]);
+									$sToRender .= "&" . $this->aQueryStringVariableNames[$j] . "=" . $oRow->get($this->aDBQueryStringColumns[$j]);
 								}									
 							}						
-							$sToRender .= "\"><img src=\"" . $sql->f($this->aColumns[$i]) . "\" border=\"0\" /></a></td>\n";						
+							$sToRender .= "\"><img src=\"" . $oRow->get($this->aColumns[$i]) . "\" border=\"0\" /></a></td>\n";						
 							break;
 						default:
 							break;
