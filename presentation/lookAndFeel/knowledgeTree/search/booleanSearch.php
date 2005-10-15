@@ -57,19 +57,15 @@ class BooleanSearchDispatcher extends KTStandardDispatcher {
              $this->errorRedirectToMain('You need to specify which kind of search (ALL/ANY) you wish to perform.');
         }
         
-        
         // Step 1:  extract the criteria selection, and create an array of criteria.
         $criteria_set = array();
         foreach ($datavars as $order => $dataset) {
-             
-             $oCriterion =& Criteria::getCriterionByNumber($dataset["type"]);             
-             if (PEAR::isError($oCriterion)) {
-                 $this->errorRedirectToMain('Invalid criteria specified.');
-             }
-             
-             $criteria_set[] = array($oCriterion, $dataset['data']);
+            $oCriterion = Criteria::getCriterionByNumber($dataset["type"]);             
+            if (PEAR::isError($oCriterion)) {
+                $this->errorRedirectToMain('Invalid criteria specified.');
+            }
+            $criteria_set[] = array($oCriterion, $dataset["data"]);
         }
-        
         $res = $this->handleCriteriaSet($criteria_set, $booleanJoinName);
         
         return $res;
@@ -112,6 +108,14 @@ class BooleanSearchDispatcher extends KTStandardDispatcher {
 		$sJoinSQL = join(" ", $aJoinSQL);
 	
 		$sToSearch = KTUtil::arrayGet($aOrigReq, 'fToSearch', 'Live'); // actually never present in this version.
+
+        $oPermission =& KTPermission::getByName('ktcore.permissions.read');
+        $sPermissionLookupsTable = KTUtil::getTableName('permission_lookups');
+        $sPermissionLookupAssignmentsTable = KTUtil::getTableName('permission_lookup_assignments');
+        $sPermissionDescriptorsTable = KTUtil::getTableName('permission_descriptors');
+        $aGroups = GroupUtil::listGroupsForUserExpand($_SESSION['userID']);
+        $aPermissionDescriptors = KTPermissionDescriptor::getByGroups($aGroups, array('ids' => true));
+        $sPermissionDescriptors = DBUtil::paramArray($aPermissionDescriptors);
 	
 		$sQuery = DBUtil::compactQuery("
 	SELECT
@@ -121,24 +125,26 @@ class BooleanSearchDispatcher extends KTStandardDispatcher {
 		$default->documents_table AS D
 		INNER JOIN $default->folders_table AS F ON D.folder_id = F.id
 		$sJoinSQL
-		INNER JOIN $default->search_permissions_table AS SDUL ON SDUL.document_id = D.id
 		INNER JOIN $default->status_table AS SL on D.status_id=SL.id
+        INNER JOIN $sPermissionLookupsTable AS PL ON D.permission_lookup_id = PL.id
+        INNER JOIN $sPermissionLookupAssignmentsTable AS PLA ON PL.id = PLA.permission_lookup_id AND PLA.permission_id = ?
 	WHERE
-		(F.is_public OR
-		SDUL.user_id = ?)
+        PLA.permission_descriptor_id IN ($sPermissionDescriptors)
 		AND SL.name = ?
 		AND ($sSQLSearchString)
 	GROUP BY D.id
 	ORDER BY doc_count DESC");
 	
 		$aParams = array();
-		$aParams[] = $_SESSION["userID"];
+        $aParams[] = $oPermission->getId();
+        $aParams = array_merge($aParams, $aPermissionDescriptors);
 		$aParams[] = $sToSearch;
 		$aParams = array_merge($aParams, $aCritParams);
 	
 		//'<pre>'.var_dump(DBUtil::getResultArray(array($sQuery, $aParams)));
 		//exit(0);
 		//return '<pre>'.print_r(DBUtil::getResultArray(array($sQuery, $aParams)), true).'</pre>';
+        $iStartIndex = 1;
 	
 		$aColumns = array("folder_name", "file_name", "document_name", "doc_count", "view");
 		$aColumnTypes = array(3,3,3,1,3);
@@ -150,12 +156,9 @@ class BooleanSearchDispatcher extends KTStandardDispatcher {
 		$oPatternBrowse = & new PatternBrowseableSearchResults(array($sQuery, $aParams), 10, $aColumns, $aColumnTypes, $aColumnHeaders, $aLinkURLs, $aDBQueryStringColumns, $aQueryStringVariableNames);
 		$oPatternBrowse->setStartIndex($iStartIndex);
 		$oPatternBrowse->setSearchText("");
-		$oPatternBrowse->setRememberValues($aReq);
 		$sForSearch = "<input type=\"hidden\" name=\"fForSearch\" value=\"1\" />";
 	
 		return renderHeading(_("Advanced Search")) . $oPatternBrowse->render() . $sForSearch . $sRefreshMessage;
-
-        //return '<pre>'.$sSQLSearchString.'</pre>';
     }
 }
 
