@@ -427,6 +427,35 @@ class SizeCriterion extends BrowseCriterion {
     }
 }
 
+class ContentCriterion extends BrowseCriterion {
+    function documentDisplay ($oDocument) {
+        return "Content";
+    }
+    function getName() {
+        return "content";
+    }
+
+    function searchSQL ($aRequest) {
+        // XXX: Icky MySQL-specific stuff.
+        $sVersion = DBUtil::getOneResultKey("SHOW VARIABLES LIKE 'version'", "Value");
+        if ((int)substr($sVersion, 0, 1) >= 4) {
+            $boolean_mode = "IN BOOLEAN MODE";
+        } else {
+            $boolean_mode = "";
+        }
+
+        $p = array();
+        $p[0] = "MATCH(DT.document_text) AGAINST (? $boolean_mode)";
+        $p[1] = $aRequest[$this->getWidgetBase()];
+        return $p;
+    }
+
+    function searchJoinSQL () {
+        global $default;
+        return "INNER JOIN $default->document_text_table AS DT ON D.id = DT.document_id";
+    }
+}
+
 class Criteria {
     function &_getBaseCriterionByNumber($iID) {
         global $default;
@@ -455,6 +484,9 @@ class Criteria {
             case -8:
                 $oCriterion =& new SizeCriterion(_("File Size"), 'size', 'size', -8);
                 break;
+            case -9:
+                $oCriterion =& new ContentCriterion(_("Document Contents"), 'content', 'content', -9);
+                break;
         }
         return $oCriterion;
     }
@@ -465,7 +497,7 @@ class Criteria {
             return;
         }
         $aBaseCriteria = array();
-        $aIDs = range(-1, -8); 
+        $aIDs = range(-1, -9); 
         foreach ($aIDs as $iID) {
             $oCriterion =& Criteria::_getBaseCriterionByNumber($iID);
             $aBaseCriteria[$iID] =& $oCriterion;
