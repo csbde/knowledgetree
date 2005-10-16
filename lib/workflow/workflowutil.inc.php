@@ -28,7 +28,7 @@ class KTWorkflowUtil {
         return;
     }
 
-    function getTransitionsFrom($oState, $aOptions) {
+    function getTransitionsFrom($oState, $aOptions = null) {
         $bIds = KTUtil::arrayGet($aOptions, 'ids');
         $sTable = KTUtil::getTableName('workflow_state_transitions');
         $aQuery = array(
@@ -152,6 +152,56 @@ class KTWorkflowUtil {
             return false;
         }
         return true;
+    }
+
+    function getWorkflowForDocument ($oDocument, $aOptions = null) {
+        $ids = KTUtil::arrayGet($aOptions, 'ids', false);
+        $iDocumentId = KTUtil::getId($oDocument);
+        $sTable = KTUtil::getTableName('workflow_documents');
+        $aQuery = array(
+            "SELECT workflow_id FROM $sTable WHERE document_id = ?",
+            array($iDocumentId),
+        );
+        $iWorkflowId = DBUtil::getOneResultKey($aQuery, 'workflow_id');
+        if (is_null($iWorkflowId)) {
+            return $iWorkflowId;
+        }
+        if (PEAR::isError($iWorkflowId)) {
+            return $iWorkflowId;
+        }
+        if ($ids) {
+            return $iWorkflowId;
+        }
+        return KTWorkflow::get($iWorkflowId);
+    }
+
+    function getWorkflowStateForDocument ($oDocument, $aOptions = null) {
+        $ids = KTUtil::arrayGet($aOptions, 'ids', false);
+        $iDocumentId = KTUtil::getId($oDocument);
+        $sTable = KTUtil::getTableName('workflow_documents');
+        $aQuery = array(
+            "SELECT state_id FROM $sTable WHERE document_id = ?",
+            array($iDocumentId),
+        );
+        $iWorkflowStateId = DBUtil::getOneResultKey($aQuery, 'state_id');
+        if (is_null($iWorkflowStateId)) {
+            return $iWorkflowStateId;
+        }
+        if (PEAR::isError($iWorkflowStateId)) {
+            return $iWorkflowStateId;
+        }
+        if ($ids) {
+            return $iWorkflowStateId;
+        }
+        return KTWorkflowState::get($iWorkflowStateId);
+    }
+
+    function getTransitionsForDocumentUser($oDocument, $oUser) {
+        $oState = KTWorkflowUtil::getWorkflowStateForDocument($oDocument);
+        if (is_null($oState) || PEAR::isError($oState)) {
+            return $oState;
+        }
+        return KTWorkflowUtil::getTransitionsFrom($oState);
     }
 }
 
