@@ -13,6 +13,9 @@ require_once(KT_DIR . "/presentation/webpageTemplate.inc");
 require_once(KT_LIB_DIR . "/dispatcher.inc.php");
 require_once(KT_LIB_DIR . "/validation/dispatchervalidation.inc.php");
 
+require_once(KT_LIB_DIR . '/workflow/workflow.inc.php');
+require_once(KT_LIB_DIR . '/workflow/workflowutil.inc.php');
+
 function displayFolderPathLink($aPathArray, $aPathNameArray, $sLinkPage = "") {
     global $default;
     if (strlen($sLinkPage) == 0) {
@@ -35,101 +38,39 @@ function displayFolderPathLink($aPathArray, $aPathNameArray, $sLinkPage = "") {
 
 
 class DocumentWorkflowDispatcher extends KTStandardDispatcher {
-    function do_main() {
-        $oTemplating = new KTTemplating;
-        $oTemplate = $oTemplating->loadTemplate("ktcore/document/document_workflow");
-        $oDocument =& $this->oValidator->validateDocument($_REQUEST['fDocumentID']);
-        $oPO = KTPermissionObject::get($oDocument->getPermissionObjectID());
-        $aPermissions = KTPermission::getList();
-        $aMapPermissionGroup = array();
-        foreach ($aPermissions as $oPermission) {
-            $oPA = KTPermissionAssignment::getByPermissionAndObject($oPermission, $oPO);
-            if (PEAR::isError($oPA)) {
-                continue;
-            }
-            $oDescriptor = KTPermissionDescriptor::get($oPA->getPermissionDescriptorID());
-            $iPermissionID = $oPermission->getID();
-            $aIDs = $oDescriptor->getGroups();
-            $aMapPermissionGroup[$iPermissionID] = array();
-            foreach ($aIDs as $iID) {
-                $aMapPermissionGroup[$iPermissionID][$iID] = true;
-            }
-        }
-        $aMapPermissionUser = array();
-        $aUsers = User::getList();
-        foreach ($aPermissions as $oPermission) {
-            $iPermissionID = $oPermission->getID();
-            foreach ($aUsers as $oUser) {
-                if (KTPermissionUtil::userHasPermissionOnItem($oUser, $oPermission, $oDocument)) {
-                    $aMapPermissionUser[$iPermissionID][$oUser->getID()] = true;
-                }
-            }
-        }
+    var $bAutomaticTransaction = true;
 
-        $oInherited = KTPermissionUtil::findRootObjectForPermissionObject($oPO);
-        if ($oInherited === $oDocument) {
-            $bEdit = true;
-        } else {
-            $iInheritedFolderID = $oInherited->getID();
-            $sInherited = displayFolderPathLink(Folder::getFolderPathAsArray($iInheritedFolderID),
-                        Folder::getFolderPathNamesAsArray($iInheritedFolderID),
-                        "$default->rootUrl/control.php?action=editFolderPermissions");
-            $bEdit = false;
-        }
+    function do_main() {
+        $oTemplate =& $this->oValidator->validateTemplate("ktcore/workflow/documentWorkflow");
+        $oDocument =& $this->oValidator->validateDocument($_REQUEST['fDocumentID']);
+
+        $oWorkflow = KTWorkflowUtil::getWorkflowForDocument($oDocument);
+        $oWorkflowState = KTWorkflowUtil::getWorkflowStateForDocument($oDocument);
+
+        $aTransitions = KTWorkflowUtil::getTransitionsForDocumentUser($oDocument, $oUser);
+        $aWorkflows = KTWorkflow::getList();
 
         $aTemplateData = array(
-            "permissions" => $aPermissions,
-            "groups" => Group::getList(),
-            "iDocumentID" => $_REQUEST['fDocumentID'],
-            "aMapPermissionGroup" => $aMapPermissionGroup,
-            "users" => $aUsers,
-            "aMapPermissionUser" => $aMapPermissionUser,
-            "edit" => $bEdit,
-            "inherited" => $sInherited,
+            'oDocument' => $oDocument,
+            'oWorkflow' => $oWorkflow,
+            'oState' => $oWorkflowState,
+            'aTransitions' => $aTransitions,
+            'aWorkflows' => $aWorkflows,
         );
         return $oTemplate->render($aTemplateData);
     }
 
-    function handleOutput($data) {
-        global $main;
-        $main->bFormDisabled = true;
-        $main->setCentralPayload($data);
-        $main->render();
-    }
-
-    function do_update() {
-        $oDocument = Document::get($_REQUEST['fDocumentID']);
-        $oPO = KTPermissionObject::get($oDocument->getPermissionObjectID());
-        $aFoo = $_REQUEST['foo'];
-        $aPermissions = KTPermission::getList();
-        foreach ($aPermissions as $oPermission) {
-            $iPermID = $oPermission->getID();
-            $aAllowed = KTUtil::arrayGet($aFoo, $iPermID, array());
-            KTPermissionUtil::setPermissionForID($oPermission, $oPO, $aAllowed);
-        }
-        KTPermissionUtil::updatePermissionLookupForPO($oPO);
-        return $this->errorRedirectToMain('Permissions updated',
+    function do_startWorkflow() {
+        $oDocument =& $this->oValidator->validateDocument($_REQUEST['fDocumentId']);
+        $oWorkflow =& $this->oValidator->validateWorkflow($_REQUEST['fWorkflowId']);
+        $res = KTWorkflowUtil::startWorkflowOnDocument($oWorkflow, $oDocument);
+        $this->successRedirectToMain('Workflow started',
                 array('fDocumentID' => $oDocument->getID()));
+        exit(0);
     }
-
-    function do_copyPermissions() {
-        $oDocument = Document::get($_REQUEST['fDocumentID']);
-        KTPermissionUtil::copyPermissionObject($oDocument);
-        return $this->errorRedirectToMain('Permissions updated',
-                array('fDocumentID' => $oDocument->getID()));
-    }
-
-    function do_inheritPermissions() {
-        $oDocument = Document::get($_REQUEST['fDocumentID']);
-        KTPermissionUtil::inheritPermissionObject($oDocument);
-        return $this->errorRedirectToMain('Permissions updated',
-                array('fDocumentID' => $oDocument->getID()));
-    }
-
-    
 }
 
-$oDispatcher = new DocumentPermissionsDispatcher;
+$oDispatcher = new DocumentWorkflowDispatcher;
 $oDispatcher->dispatch();
 
 ?>
