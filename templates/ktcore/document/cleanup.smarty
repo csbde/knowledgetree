@@ -1,0 +1,44 @@
+{if $aFoldersToRemove}
+<p>Would remove these folders (and all their contents):</p>
+<ul>
+{foreach from=$aFoldersToRemove item=sFolder}
+<li>{$sFolder|escape}</li>
+{/foreach}
+</ul>
+{/if}
+
+{if $aFilesToRemove}
+<p>Would remove these files:</p>
+<ul>
+{foreach from=$aFoldersToRemove item=sFile}
+<li>{$sFile|escape}</li>
+{/foreach}
+</ul>
+{/if}
+
+{if $aRepoFolderProblems}
+<p>These folders are not on the filesystem</p>
+<ul>
+{foreach from=$aRepoFolderProblems item=sFolder}
+<li>{$sFolder|escape}</li>
+{/foreach}
+</ul>
+{/if}
+
+{if $aRepoDocumentProblems}
+<p>These documents are not on the filesystem</p>
+<ul>
+{foreach from=$aRepoDocumentProblems item=sDocument}
+<li>{$sDocument|escape}</li>
+{/foreach}
+</ul>
+{/if}
+
+{if $aRepoVersionProblems}
+<p>These documents have versions not on the filesystem</p>
+<ul>
+{foreach from=$aRepoVersionProblems item=aSomething}
+<li>{$aSomething[0]|escape} - version {$aSomething[1]|escape}</li>
+{/foreach}
+</ul>
+{/if}

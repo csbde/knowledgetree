@@ -143,6 +143,7 @@ $default->siteMap->addPage("manageHelp", "/presentation/lookAndFeel/knowledgeTre
 $default->siteMap->addPage("managePermissions", "/presentation/lookAndFeel/knowledgeTree/administration/permissions/managePermissions.php", "Administration", SysAdmin, _("Permissions Administration"), true, 18);
 $default->siteMap->addPage("manageLookupTrees", "/presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/manageLookupTrees.php", "Administration", SysAdmin, _("Lookup Tree Administration"), true, 19);
 $default->siteMap->addPage("manageWorkflows", "/presentation/lookAndFeel/knowledgeTree/administration/workflow/workflows.php", "Administration", SysAdmin, _("Workflow Management"), true, 20);
+$default->siteMap->addPage("manageCleanup", "/presentation/lookAndFeel/knowledgeTree/administration/documentmanagement/manageCleanup.php", "Administration", SysAdmin, _("Repository Cleanup"), true, 21);
 
 $default->siteMap->addSectionColour("Administration", "th", "056DCE");
 $default->siteMap->addSectionColour("Administration", "td", "6699FF");
