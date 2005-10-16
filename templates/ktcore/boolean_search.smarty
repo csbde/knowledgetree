@@ -46,17 +46,22 @@ legend { border: 1px dotted #999;}
     </select>
 </div>
 
-<h2>Advanced Search</h2>
+<h2>Boolean Search</h2>
 
 <form>
     <input type="hidden" name="action" value="performSearch" />
     <fieldset>
-        <legend>Hello World.</legend>
+        <legend>Boolean Search.</legend>
 
         <p class="helpText">Return items which match &nbsp;<select name="boolean_condition"><option value="AND">all</option><option value="OR">any</option></select> of the criteria specified.</p>
 
         <table id="advanced-search-form">
             <tbody>
+                <tr>
+                <th>Criteria</th>
+                <th>Values</th>
+                <th>&nbsp;</th>
+                </tr>
                 <tr>
                     <td><select name="querytype">
                          {foreach item=oCriteria from=$aCriteria}
