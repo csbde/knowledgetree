@@ -88,6 +88,10 @@ class KTDispatcher {
         return $this->errorRedirectTo('main', $error_message, $sQuery);
     }
 
+    function successRedirectToMain($error_message, $sQuery = "") {
+        return $this->successRedirectTo('main', $error_message, $sQuery);
+    }
+
     function redirectToMain($sQuery = "") {
         return $this->redirectTo('main', $sQuery);
     }
