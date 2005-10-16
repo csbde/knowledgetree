@@ -74,6 +74,9 @@ function getSearchPage($sSearchString = "", $aMetaTagIDs = array(), $sHeading = 
 
     $sToRender  = renderHeading($sHeading);	
 
+    $sToRender .= sprintf('<p class="helpText">Want to use AND or OR?  Use the
+        <a href="%s">Boolean Search</a></p>', 'booleanSearch.php');
+
     $sToRender .= "<form name=\"advancedSearch\" method=\"POST\">";
 
     $sToRender .= "<table width=\"100%\">\n";
