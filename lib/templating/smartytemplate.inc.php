@@ -51,6 +51,7 @@ class KTSmartyTemplate extends KTTemplate {
         $smarty->register_function('entity_select', array('KTSmartyTemplate', 'entity_select'));
         $smarty->register_function('boolean_checkbox', array('KTSmartyTemplate', 'boolean_checkbox'));
         $smarty->register_function('entity_checkboxes', array('KTSmartyTemplate', 'entity_checkboxes'));
+        $smarty->register_function('entity_radios', array('KTSmartyTemplate', 'entity_radios'));
         return $smarty->fetch($this->sPath);
     }
 
@@ -132,6 +133,31 @@ class KTSmartyTemplate extends KTTemplate {
         unset($params['method']);
 
         return smarty_function_html_checkboxes($params, $smarty);
+    }
+
+    function entity_radios($params, &$smarty) {
+        require_once $smarty->_get_plugin_filepath('function', 'html_radios');
+
+        $entities = KTUtil::arrayGet($params, 'entities');
+        if (is_null($entities)) {
+            $smarty->trigger_error("assign: missing 'entities' parameter");
+            return;
+        }
+
+        $idmethod = KTUtil::arrayGet($params, 'idmethod', 'getId');
+        $method = KTUtil::arrayGet($params, 'method', 'getName');
+
+        $params['values'] = array();
+        $params['output'] = array();
+        foreach ($entities as $oEntity) {
+            $params['values'][] = call_user_func(array(&$oEntity, $idmethod));
+            $params['output'][] = call_user_func(array(&$oEntity, $method));
+        }
+        unset($params['entities']);
+        unset($params['idmethod']);
+        unset($params['method']);
+
+        return smarty_function_html_radios($params, $smarty);
     }
 }
 
