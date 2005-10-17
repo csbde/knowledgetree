@@ -1,3 +1,4 @@
+SET FOREIGN_KEY_CHECKS=0;
 -- phpMyAdmin SQL Dump
 -- version 2.6.4-pl1-Debian-1ubuntu1
 -- http://www.phpmyadmin.net
@@ -1100,4 +1101,4 @@ INSERT INTO zseq_web_sites VALUES (1);
 -- 
 -- Dumping data for table `zseq_workflows`
 -- 
-
+SET FOREIGN_KEY_CHECKS=1;
