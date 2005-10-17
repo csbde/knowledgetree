@@ -47,6 +47,7 @@ class DocumentWorkflowDispatcher extends KTStandardDispatcher {
         $oWorkflow = KTWorkflowUtil::getWorkflowForDocument($oDocument);
         $oWorkflowState = KTWorkflowUtil::getWorkflowStateForDocument($oDocument);
 
+        $oUser =& User::get($_SESSION['userID']);
         $aTransitions = KTWorkflowUtil::getTransitionsForDocumentUser($oDocument, $oUser);
         $aWorkflows = KTWorkflow::getList();
 
@@ -67,6 +68,16 @@ class DocumentWorkflowDispatcher extends KTStandardDispatcher {
         $this->successRedirectToMain('Workflow started',
                 array('fDocumentID' => $oDocument->getID()));
         exit(0);
+    }
+
+    function do_performTransition() {
+        $oDocument =& $this->oValidator->validateDocument($_REQUEST['fDocumentId']);
+        $oTransition =& $this->oValidator->validateWorkflowTransition($_REQUEST['fTransitionId']);
+        $sComments =& $this->oValidator->notEmpty($_REQUEST['fComments']);
+        $oUser =& User::get($_SESSION['userID']);
+        $res = KTWorkflowUtil::performTransitionOnDocument($oTransition, $oDocument, $oUser, $sComments);
+        $this->successRedirectToMain('Transition performed',
+                array('fDocumentID' => $oDocument->getID()));
     }
 }
 
