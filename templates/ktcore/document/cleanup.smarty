@@ -10,7 +10,7 @@
 {if $aFilesToRemove}
 <p>Would remove these files:</p>
 <ul>
-{foreach from=$aFoldersToRemove item=sFile}
+{foreach from=$aFilesToRemove item=sFile}
 <li>{$sFile|escape}</li>
 {/foreach}
 </ul>
