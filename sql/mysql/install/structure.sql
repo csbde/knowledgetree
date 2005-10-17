@@ -3,11 +3,11 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Oct 07, 2005 at 02:34 PM
+-- Generation Time: Oct 17, 2005 at 11:07 AM
 -- Server version: 4.0.24
--- PHP Version: 4.4.0-2
+-- PHP Version: 4.4.0-3
 -- 
--- Database: `kttest`
+-- Database: `ktpristine`
 -- 
 
 -- --------------------------------------------------------
@@ -186,7 +186,8 @@ CREATE TABLE document_fields (
   has_lookup tinyint(1) default NULL,
   has_lookuptree tinyint(1) default NULL,
   parent_fieldset int(11) default NULL,
-  UNIQUE KEY id (id)
+  UNIQUE KEY id (id),
+  KEY parent_fieldset (parent_fieldset)
 ) TYPE=InnoDB;
 
 -- --------------------------------------------------------
@@ -466,8 +467,11 @@ CREATE TABLE fieldsets (
   is_conditional tinyint(1) NOT NULL default '0',
   master_field int(11) default NULL,
   is_generic tinyint(1) NOT NULL default '0',
+  is_complex tinyint(1) NOT NULL default '0',
+  is_complete tinyint(1) NOT NULL default '1',
   UNIQUE KEY id (id),
-  KEY is_generic (is_generic)
+  KEY is_generic (is_generic),
+  KEY is_complete (is_complete)
 ) TYPE=InnoDB;
 
 -- --------------------------------------------------------
@@ -1864,6 +1868,12 @@ CREATE TABLE zseq_workflows (
 -- 
 -- Constraints for dumped tables
 -- 
+
+-- 
+-- Constraints for table `document_fields`
+-- 
+ALTER TABLE `document_fields`
+  ADD CONSTRAINT `document_fields_ibfk_1` FOREIGN KEY (`parent_fieldset`) REFERENCES `fieldsets` (`id`) ON DELETE CASCADE;
 
 -- 
 -- Constraints for table `field_behaviour_options`

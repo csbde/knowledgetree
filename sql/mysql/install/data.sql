@@ -3,11 +3,11 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Oct 07, 2005 at 02:36 PM
+-- Generation Time: Oct 17, 2005 at 11:15 AM
 -- Server version: 4.0.24
--- PHP Version: 4.4.0-2
+-- PHP Version: 4.4.0-3
 -- 
--- Database: `kttest`
+-- Database: `ktpristine`
 -- 
 
 -- 
@@ -185,7 +185,7 @@ INSERT INTO document_types_lookup VALUES (1, 'Default');
 -- Dumping data for table `fieldsets`
 -- 
 
-INSERT INTO fieldsets VALUES (1, 'Category', 'local.category', 0, 0, 1, 1);
+INSERT INTO fieldsets VALUES (1, 'Category', 'local.category', 0, 0, 1, 1, 0, 1);
 
 -- 
 -- Dumping data for table `folder_doctypes_link`
