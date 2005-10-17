@@ -1,4 +1,5 @@
 <?php
+global $default;
 require_once("$default->fileSystemRoot/lib/users/User.inc");
 require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
 require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
