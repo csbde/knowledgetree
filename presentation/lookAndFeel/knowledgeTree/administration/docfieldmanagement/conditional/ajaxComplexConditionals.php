@@ -153,10 +153,10 @@ class AjaxConditionalAdminDispatcher extends KTStandardDispatcher {
         $parent_behaviour = KTUtil::arrayGet($_REQUEST, 'parent_behaviour'); 
         $fieldset_id = KTUtil::arrayGet($_REQUEST, 'fieldset_id'); 
         $field_id = KTUtil::arrayGet($_REQUEST, 'field_id');  
-        $behaviour_name = KTUtil::arrayGet($_REQUEST, 'behaviour_id');  
+        $behaviour_id = KTUtil::arrayGet($_REQUEST, 'behaviour_id');  
         $lookups_to_assign = KTUtil::arrayGet($_REQUEST, 'lookups_to_assign'); // array
 
-        $oBehaviour =& $this->oValidator->validateBehaviour($parent_behaviour);
+        $oBehaviour =& $this->oValidator->validateBehaviour($behaviour_id);
 
         $aValueInstanceIds = array();
         foreach ($lookups_to_assign as $iLookupId) {
