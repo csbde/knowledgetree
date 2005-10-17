@@ -59,6 +59,14 @@ class KTDispatcherValidation {
         }
     }
 
+    function &notEmpty(&$res, $aOptions = null) {
+        $aOptions = (array)$aOptions;
+        if (empty($res) || PEAR::isError($res)) {
+            $this->handleError($aOptions);
+        }
+        return $res;
+    }
+
     function handleError($aOptions = null) {
         $aOptions = (array)$aOptions;
         $aRedirectTo = KTUtil::arrayGet($aOptions, 'redirect_to');
