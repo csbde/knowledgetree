@@ -201,7 +201,34 @@ class KTWorkflowUtil {
         if (is_null($oState) || PEAR::isError($oState)) {
             return $oState;
         }
-        return KTWorkflowUtil::getTransitionsFrom($oState);
+        $aTransitions = KTWorkflowUtil::getTransitionsFrom($oState);
+        $aEnabledTransitions = array();
+        foreach ($aTransitions as $oTransition) {
+            $oPermission =& KTPermission::get($oTransition->getGuardPermissionId());
+            if (!KTPermissionUtil::userHasPermissionOnItem($oUser, $oPermission, $oDocument)) {
+                continue;
+            }
+            $aEnabledTransitions[] = $oTransition;
+        }
+        return $aEnabledTransitions;
+    }
+
+    function performTransitionOnDocument($oTransition, $oDocument, $oUser, $sComments) {
+        $oWorkflow =& KTWorkflow::getByDocument($oDocument);
+        if (empty($oWorkflow)) {
+            return PEAR::raiseError("Document has no workflow");
+        }
+        if (PEAR::isError($oWorkflow)) {
+            return $oWorkflow;
+        }
+        $sTable = KTUtil::getTableName('workflow_documents');
+        $iStateId = $oTransition->getTargetStateId();
+        $iDocumentId = $oDocument->getId();
+        $aQuery = array(
+            "UPDATE $sTable SET state_id = ? WHERE document_id = ?",
+            array($iStateId, $iDocumentId),
+        );
+        return DBUtil::runQuery($aQuery);
     }
 }
 
