@@ -161,7 +161,7 @@ class KTDocumentUtil {
         $oDocumentType = KTUtil::arrayGet($aOptions, 'documenttype');
         $sDescription = KTUtil::arrayGet($aOptions, 'description', $sFilename);
         $oDocument =& Document::createFromArray(array(
-            'name' => $sFilename,
+            'name' => $sDescription,
             'description' => $sDescription,
             'filename' => $sFilename,
             'folderid' => $oFolder->getID(),
