@@ -13,7 +13,12 @@ require_once(KT_DIR . "/presentation/webpageTemplate.inc");
 
 
 
-class ManageConditionalDispatcher extends KTStandardDispatcher {
+class ManageConditionalDispatcher extends KTAdminDispatcher {
+    var $aBreadcrumbs = array(
+        array('action' => 'administration', 'name' => 'Administration'),
+        array('action' => 'docfield', 'name' => 'Document Field Management'),
+    );
+
     function do_main() {
 
         $aFieldsets = KTFieldset::getList("is_conditional = 1");
@@ -41,6 +46,21 @@ class ManageConditionalDispatcher extends KTStandardDispatcher {
          */
         $oFieldset =& KTFieldset::get($fieldset_id);
         $aFields =& $oFieldset->getFields();
+
+        $this->aBreadcrumbs[] = array(
+            'action' => 'docfield',
+            'query' => 'action=edit&fFieldsetId=' . $oFieldset->getId(),
+            'name' => 'Fieldset ' . $oFieldset->getName()
+        );
+        $this->aBreadcrumbs[] = array(
+            'action' => 'docfield',
+            'query' => 'action=manageConditional&fFieldsetId=' . $oFieldset->getId(),
+            'name' => 'Manage conditional field',
+        );
+        $this->aBreadcrumbs[] = array(
+            'name' => 'Manage simple conditional',
+        );
+
         $aTemplateData = array(
             "fieldset_id" => $fieldset_id,
             "aFields" => $aFields,
@@ -64,19 +84,25 @@ class ManageConditionalDispatcher extends KTStandardDispatcher {
          */
         $oFieldset =& KTFieldset::get($fieldset_id);
         $aFields =& $oFieldset->getFields();
+        $this->aBreadcrumbs[] = array(
+            'action' => 'docfield',
+            'query' => 'action=edit&fFieldsetId=' . $oFieldset->getId(),
+            'name' => 'Fieldset ' . $oFieldset->getName()
+        );
+        $this->aBreadcrumbs[] = array(
+            'action' => 'docfield',
+            'query' => 'action=manageConditional&fFieldsetId=' . $oFieldset->getId(),
+            'name' => 'Manage conditional field',
+        );
+        $this->aBreadcrumbs[] = array(
+            'name' => 'Manage complex conditional',
+        );
         $aTemplateData = array(
             "fieldset_id" => $fieldset_id,
             "aFields" => $aFields,
             "iMasterFieldId" => $aFields[0]->getId(),
         );
         return $oTemplate->render($aTemplateData);
-    }
-
-    function handleOutput($data) {
-        global $main;
-        $main->bFormDisabled = true;
-        $main->setCentralPayload($data);
-        $main->render();
     }
 }
 
