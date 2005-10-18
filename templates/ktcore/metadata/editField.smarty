@@ -21,6 +21,10 @@
 {if $oField->getHasLookup() and !$oField->getHasLookupTree()}
 {assign var="aMetadata" value=$oField->getValues()}
 {if $aMetadata}
+
+<h2>Lookup Values</h2>
+
+<h3>Existing values</h3>
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <input type="hidden" name="fFieldsetId" value="{$oFieldset->getId()}">
 <input type="hidden" name="fFieldId" value="{$oField->getId()}">
@@ -34,6 +38,7 @@
 </form>
 {/if}
 
+<h3>Add new values</h3>
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <input type="hidden" name="fFieldsetId" value="{$oFieldset->getId()}">
 <input type="hidden" name="fFieldId" value="{$oField->getId()}">
