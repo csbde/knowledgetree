@@ -104,6 +104,7 @@ class KTDispatcher {
 class KTStandardDispatcher extends KTDispatcher {
     var $bLogonRequired = true;
     var $bAdminRequired = false;
+    var $aBreadcrumbs = array();
 
     function permissionDenied () {
         print "Permission denied";
@@ -146,6 +147,7 @@ class KTStandardDispatcher extends KTDispatcher {
 
     function handleOutput($data) {
         global $main;
+        $main->setBreadcrumbs($this->aBreadcrumbs);
         $main->bFormDisabled = true;
         $main->setCentralPayload($data);
         $main->render();
