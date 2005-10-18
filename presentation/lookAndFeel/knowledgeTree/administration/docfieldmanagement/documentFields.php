@@ -304,7 +304,7 @@ class KTDocumentFieldDispatcher extends KTStandardDispatcher {
     }
     // }}}
 
-    // {{{
+    // {{{ do_orderFields
     function do_orderFields() {
         $oFieldset =& KTFieldset::get($_REQUEST['fFieldsetId']);
         $aFreeFieldIds = $_REQUEST['fFreeFieldIds'];
@@ -327,7 +327,7 @@ class KTDocumentFieldDispatcher extends KTStandardDispatcher {
     }
     // }}}
 
-    // {{{
+    // {{{ do_setMasterField
     function do_setMasterField() {
         $oFieldset =& $this->oValidator->validateFieldset($_REQUEST['fFieldsetId']);
         $oField =& $this->oValidator->validateField($_REQUEST['fFieldId']);
@@ -365,6 +365,32 @@ class KTDocumentFieldDispatcher extends KTStandardDispatcher {
         // Success, as we want to save the incompleteness to the
         // database...
         $this->successRedirectTo('manageConditional', 'Could not to complete', 'fFieldsetId=' . $oFieldset->getId());
+    }
+    // }}}
+
+    // {{{ do_changeToSimple
+    function do_changeToSimple() {
+        $oFieldset =& $this->oValidator->validateFieldset($_REQUEST['fFieldsetId']);
+        $oFieldset->setIsComplex(false);
+        $res = $oFieldset->update();
+        $this->oValidator->notError($res, array(
+            'redirect_to' => array('manageConditional', 'fFieldsetId=' . $oFieldset->getId()),
+            'message' => 'Error changing to simple',
+        ));
+        $this->successRedirectTo('manageConditional', 'Changed to simple', 'fFieldsetId=' . $oFieldset->getId());
+    }
+    // }}}
+
+    // {{{ do_changeToComplex
+    function do_changeToComplex() {
+        $oFieldset =& $this->oValidator->validateFieldset($_REQUEST['fFieldsetId']);
+        $oFieldset->setIsComplex(true);
+        $res = $oFieldset->update();
+        $this->oValidator->notError($res, array(
+            'redirect_to' => array('manageConditional', 'fFieldsetId=' . $oFieldset->getId()),
+            'message' => 'Error changing to complex',
+        ));
+        $this->successRedirectTo('manageConditional', 'Changed to complex', 'fFieldsetId=' . $oFieldset->getId());
     }
     // }}}
 }
