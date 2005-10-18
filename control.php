@@ -49,17 +49,21 @@ if (checkSessionAndRedirect(false)) {
     }
 }
 
-// need to strip query string params from action before attempting to retrieve from sitemap
-$queryString = "";
-// check for the presence of additional params
-if (strstr($_SERVER["QUERY_STRING"], "&")) {
-    // strip and save the querystring
-    $queryString = substr($_SERVER["QUERY_STRING"], strpos($_SERVER["QUERY_STRING"], "&")+1, strlen($_SERVER["QUERY_STRING"]));
-} else if (strstr($_SERVER["QUERY_STRING"], "?")) {
-    // strip and save the querystring
-    $queryString = substr($_SERVER["QUERY_STRING"], strpos($_SERVER["QUERY_STRING"], "?")+1, strlen($_SERVER["QUERY_STRING"]));
-    // update
-    $action = substr($_SERVER["QUERY_STRING"], 0, strpos($_SERVER["QUERY_STRING"], "?"));
+$queryString = KTUtil::arrayGet($_REQUEST, 'qs', '');
+
+if (empty($queryString)) {
+    // need to strip query string params from action before attempting to retrieve from sitemap
+    $queryString = "";
+    // check for the presence of additional params
+    if (strstr($_SERVER["QUERY_STRING"], "&")) {
+        // strip and save the querystring
+        $queryString = substr($_SERVER["QUERY_STRING"], strpos($_SERVER["QUERY_STRING"], "&")+1, strlen($_SERVER["QUERY_STRING"]));
+    } else if (strstr($_SERVER["QUERY_STRING"], "?")) {
+        // strip and save the querystring
+        $queryString = substr($_SERVER["QUERY_STRING"], strpos($_SERVER["QUERY_STRING"], "?")+1, strlen($_SERVER["QUERY_STRING"]));
+        // update
+        $action = substr($_SERVER["QUERY_STRING"], 0, strpos($_SERVER["QUERY_STRING"], "?"));
+    }
 }
 
 // retrieve the page from the sitemap (checks whether this user has access to the requested page)
