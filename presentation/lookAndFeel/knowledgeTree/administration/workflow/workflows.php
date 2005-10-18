@@ -15,6 +15,12 @@ require_once(KT_DIR . "/presentation/webpageTemplate.inc");
 class KTWorkflowDispatcher extends KTStandardDispatcher {
     var $bAutomaticTransaction = true;
 
+    // Breadcrumbs base - added to in methods
+    var $aBreadcrumbs = array(
+        array('action' => 'administration', 'name' => 'Administration'),
+        array('action' => 'manageWorkflows', 'name' => 'Workflow Management'),
+    );
+
     // {{{ WORKFLOW HANDLING
     // {{{ do_main
     function do_main () {
@@ -29,10 +35,13 @@ class KTWorkflowDispatcher extends KTStandardDispatcher {
 
     // {{{ do_editWorkflow
     function do_editWorkflow() {
-        // $oTemplating =& KTTemplating::getSingleton();
-        // $oTemplate =& $oTemplating->loadTemplate('ktcore/workflow/editWorkflow');
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/workflow/editWorkflow');
         $oWorkflow =& $this->oValidator->validateWorkflow($_REQUEST['fWorkflowId']);
+        $this->aBreadcrumbs[] = array(
+            'action' => 'manageWorkflows',
+            'query' => 'action=editWorkflow&fWorkflowId=' . $oWorkflow->getId(),
+            'name' => 'Workflow ' . $oWorkflow->getName(),
+        );
         $oTemplate->setData(array(
             'oWorkflow' => $oWorkflow,
             'aStates' => KTWorkflowState::getByWorkflow($oWorkflow),
@@ -132,6 +141,16 @@ class KTWorkflowDispatcher extends KTStandardDispatcher {
             }
         }
         $aTransitionsSelected = KTWorkflowUtil::getTransitionsFrom($oState, array('ids' => true));
+        $this->aBreadcrumbs[] = array(
+            'action' => 'manageWorkflows',
+            'query' => 'action=editWorkflow&fWorkflowId=' . $oWorkflow->getId(),
+            'name' => 'Workflow ' . $oWorkflow->getName(),
+        );
+        $this->aBreadcrumbs[] = array(
+            'action' => 'manageWorkflows',
+            'query' => 'action=editState&fWorkflowId=' . $oWorkflow->getId() . '&fStateId=' . $oState->getId(),
+            'name' => 'State ' . $oState->getName(),
+        );
         $oTemplate->setData(array(
             'oWorkflow' => $oWorkflow,
             'oState' => $oState,
@@ -218,6 +237,16 @@ class KTWorkflowDispatcher extends KTStandardDispatcher {
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/workflow/editTransition');
         $oWorkflow =& $this->oValidator->validateWorkflow($_REQUEST['fWorkflowId']);
         $oTransition =& $this->oValidator->validateWorkflowTransition($_REQUEST['fTransitionId']);
+        $this->aBreadcrumbs[] = array(
+            'action' => 'manageWorkflows',
+            'query' => 'action=editWorkflow&fWorkflowId=' . $oWorkflow->getId(),
+            'name' => 'Workflow ' . $oWorkflow->getName(),
+        );
+        $this->aBreadcrumbs[] = array(
+            'action' => 'manageWorkflows',
+            'query' => 'action=editTransitionfWorkflowId=' . $oWorkflow->getId() . '&fTransitionId=' . $oTransition->getId(),
+            'name' => 'Transition ' . $oTransition->getName(),
+        );
         $oTemplate->setData(array(
             'oWorkflow' => $oWorkflow,
             'oTransition' => $oTransition,
