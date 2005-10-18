@@ -393,6 +393,18 @@ class KTDocumentFieldDispatcher extends KTStandardDispatcher {
         $this->successRedirectTo('manageConditional', 'Changed to complex', 'fFieldsetId=' . $oFieldset->getId());
     }
     // }}}
+
+    // {{{ do_delete
+    function do_delete() {
+        $oFieldset =& $this->oValidator->validateFieldset($_REQUEST['fFieldsetId']);
+        $res = $oFieldset->delete();
+        $this->oValidator->notErrorFalse($res, array(
+            'redirect_to' => array('main', ''),
+            'message' => 'Could not delete fieldset',
+        ));
+        $this->successRedirectToMain('Fieldset deleted');
+    }
+    // }}}
 }
 
 $d =& new KTDocumentFieldDispatcher;
