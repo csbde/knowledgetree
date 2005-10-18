@@ -87,6 +87,8 @@
 No fields found
 {/foreach}
 
+<!--
 <table id="brad-log">
 <tbody><tr><td>asdf</td></tr></tbody>
 </table>
+-->
