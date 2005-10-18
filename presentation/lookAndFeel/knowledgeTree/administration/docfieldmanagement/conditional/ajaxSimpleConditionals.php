@@ -67,6 +67,12 @@ class AjaxConditionalAdminDispatcher extends KTStandardDispatcher {
         $sTable = KTUtil::getTableName('field_behaviour_options');
         $aOptions = array('noid' => true);
 
+        $aQuery = array(
+            "DELETE FROM $sTable WHERE behaviour_id = ?",
+            array($iBehaviourId),
+        );
+        $res = DBUtil::runQuery($aQuery);
+
         foreach ($child_lookups as $iFieldId => $aLookups) {
             foreach ($aLookups as $iLookupId) {
                 $oValueInstance =& KTMetadataUtil::getOrCreateValueInstanceForLookup($iLookupId);
