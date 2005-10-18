@@ -382,4 +382,9 @@ table.prettysw > tbody > tr > td.compare {
     color: red;
 }
 
+p.breadcrumbs {
+    margin-top: 2px;
+    margin-left: 2px;
+    background-color: #88aacc;
+}
 
