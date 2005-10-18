@@ -39,5 +39,3 @@
   <input type="submit" name="submit" value="Add field sets">
 </form>
 { /if }
-
-<a href="{$smarty.server.PHP_SELF}">Back to document type list</a>
