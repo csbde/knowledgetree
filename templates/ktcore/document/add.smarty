@@ -12,6 +12,7 @@ var fetching = null;
 function swapInItem(req) {
     var cp = getElement(fetching);
     cp.innerHTML = req.responseText;
+    initialiseConditionalFieldsets();
 }
 
 function xmlFailure(err) {
