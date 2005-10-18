@@ -14,6 +14,12 @@ $sectionName = "Administration";
 require_once(KT_DIR . "/presentation/webpageTemplate.inc");
 
 class ManageHelpDispatcher extends KTAdminDispatcher {
+    // Breadcrumbs base - added to in methods
+    var $aBreadcrumbs = array(
+        array('action' => 'administration', 'name' => 'Administration'),
+        array('action' => 'manageHelp', 'name' => 'Help Administration'),
+    );
+
     function do_main() {
         return $this->getData();
     }
@@ -37,14 +43,10 @@ class ManageHelpDispatcher extends KTAdminDispatcher {
         $aTemplateData = array(
             "help" => $oHelpReplacement,
         );
+        $this->aBreadcrumbs[] = array(
+            'name' => 'Edit help item',
+        );
         return $oTemplate->render($aTemplateData);
-    }
-
-    function handleOutput($data) {
-        global $main;
-        $main->bFormDisabled = true;
-        $main->setCentralPayload($data);
-        $main->render();
     }
 
     function do_editReplacement() {
@@ -66,7 +68,7 @@ class ManageHelpDispatcher extends KTAdminDispatcher {
         if (PEAR::isError($res)) {
             return $this->errorRedirectToMain("Could not delete specified item");
         }
-        return $this->errorRedirectToMain("Item deleted");
+        return $this->successRedirectToMain("Item deleted");
     }
     
     function do_updateReplacement() {
@@ -84,7 +86,7 @@ class ManageHelpDispatcher extends KTAdminDispatcher {
         if (PEAR::isError($res)) {
             return $this->errorRedirectToMain("Error updating item");
         }
-        return $this->errorRedirectToMain("Item updated");
+        return $this->successRedirectToMain("Item updated");
     }
 
     function do_customise() {
@@ -103,7 +105,7 @@ class ManageHelpDispatcher extends KTAdminDispatcher {
         if (PEAR::isError($oHelpReplacement)) {
             return $this->errorRedirectToMain("Unable to create replacement");
         }
-        return $this->redirectTo('editReplacement', 'id=' .  $oHelpReplacement->getId());
+        return $this->successRedirectTo('editReplacement', 'id=' .  $oHelpReplacement->getId());
     }
 }
 
