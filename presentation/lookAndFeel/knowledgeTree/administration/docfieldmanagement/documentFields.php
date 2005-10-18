@@ -178,6 +178,10 @@ class KTDocumentFieldDispatcher extends KTStandardDispatcher {
     function do_removeLookups() {
         $oFieldset =& KTFieldset::get($_REQUEST['fFieldsetId']);
         $oField =& DocumentField::get($_REQUEST['fFieldId']);
+        $aMetadata = KTUtil::arrayGet($_REQUEST, 'metadata');
+        if (empty($aMetadata)) {
+            $this->errorRedirectTo('editField', 'No lookups selected', 'fFieldsetId=' . $oFieldset->getId() . '&fFieldId=' .  $oField->getId());
+        }
         foreach ($_REQUEST['metadata'] as $iMetaDataId) {
             $oMetaData =& MetaData::get($iMetaDataId);
             $oMetaData->delete();
@@ -278,6 +282,16 @@ class KTDocumentFieldDispatcher extends KTStandardDispatcher {
         } else {
             $sIncomplete = null;
         }
+        $this->aBreadcrumbs[] = array(
+            'action' => 'docfield',
+            'query' => 'action=edit&fFieldsetId=' . $_REQUEST['fFieldsetId'],
+            'name' => 'Fieldset ' . $oFieldset->getName()
+        );
+        $this->aBreadcrumbs[] = array(
+            'action' => 'docfield',
+            'query' => 'action=manageConditional&fFieldsetId=' . $_REQUEST['fFieldsetId'],
+            'name' => 'Manage conditional field',
+        );
         $oTemplate->setData(array(
             'oFieldset' => $oFieldset,
             'free_fields' => $aFreeFields,
