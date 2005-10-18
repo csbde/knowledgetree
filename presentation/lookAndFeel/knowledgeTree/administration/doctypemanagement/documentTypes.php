@@ -12,6 +12,13 @@ $sectionName = "Administration";
 require_once(KT_DIR . "/presentation/webpageTemplate.inc");
 
 class KTDocumentTypeDispatcher extends KTAdminDispatcher {
+
+   // Breadcrumbs base - added to in methods
+    var $aBreadcrumbs = array(
+        array('action' => 'administration', 'name' => 'Administration'),
+        array('action' => 'doctype', 'name' => 'Document Type Management'),
+    );
+
     function do_main () {
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate('ktcore/documenttypes/list');
@@ -57,6 +64,9 @@ class KTDocumentTypeDispatcher extends KTAdminDispatcher {
         $aCurrentFieldsets =& KTFieldset::getForDocumentType($oDocumentType);
         $aAvailableFieldsets =& KTFieldset::getNonGenericFieldsets();
         $aAvailableFieldsets = array_diff($aAvailableFieldsets, $aCurrentFieldsets);
+        $this->aBreadcrumbs[] = array(
+            'name' => 'Document Type ' . $oDocumentType->getName(),
+        );
         $oTemplate->setData(array(
             'oDocumentType' => $oDocumentType,
             'aCurrentFieldsets' => $aCurrentFieldsets,
@@ -99,13 +109,6 @@ class KTDocumentTypeDispatcher extends KTAdminDispatcher {
         }
         $this->errorRedirectTo('edit', 'Changes saved', 'fDocumentTypeId=' . $oDocumentType->getId());
         exit(0);
-    }
-
-    function handleOutput($data) {
-        global $main;
-        $main->bFormDisabled = true;
-        $main->setCentralPayload($data);
-        $main->render();
     }
 }
 
