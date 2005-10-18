@@ -71,6 +71,19 @@ The system works based on 3 concepts:
 var conditional_usage_undostack = new Array();
 var conditional_usage_keys = new Array();
 
+
+// sorry mom. 
+function checkStackForFieldset(fieldset) {
+    for (var i=0; i<conditional_usage_keys.length; i++) {
+        if (conditional_usage_keys[i] == fieldset) {
+            simpleLog('DEBUG','found undostack at keyindex '+i);
+            return true;
+        }
+    }
+    return false;
+}
+
+
 // grow and go.
 function getStackForFieldset(fieldset) {
     for (var i=0; i<conditional_usage_keys.length; i++) {
@@ -323,12 +336,14 @@ function initialiseConditionalFieldsets() {
     // triggers initial update - since this contains no "fixed" vars, it'll remove "unfixed" widgets 
     // and insert the initial (master) field. 
     for (var i=0; i<fieldsets.length; i++) {
+        if (!checkStackForFieldset(fieldsets[i])) {
         var undo_button = INPUT({'type':'button','value':'undo'},null);
         attachToElementEvent(undo_button,'click',partial(popStack, fieldsets[i]));
         fieldsets[i].appendChild(undo_button);
         // initialise the stack.
         getStackForFieldset(fieldsets[i]);
         updateFieldset(fieldsets[i]);
+	}
     }
 }
 
