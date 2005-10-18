@@ -388,3 +388,7 @@ p.breadcrumbs {
     background-color: #88aacc;
 }
 
+p.breadcrumbs .primary{
+    font-weight: bold;
+}
+
