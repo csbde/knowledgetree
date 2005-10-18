@@ -14,6 +14,12 @@ require_once(KT_DIR . "/presentation/webpageTemplate.inc");
 class KTDocumentFieldDispatcher extends KTStandardDispatcher {
     var $bAutomaticTransaction = true;
 
+    // Breadcrumbs base - added to in methods
+    var $aBreadcrumbs = array(
+        array('action' => 'administration', 'name' => 'Administration'),
+        array('action' => 'docfield', 'name' => 'Document Field Management'),
+    );
+
     // {{{ do_main
     function do_main () {
         $oTemplating =& KTTemplating::getSingleton();
@@ -30,6 +36,11 @@ class KTDocumentFieldDispatcher extends KTStandardDispatcher {
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate =& $oTemplating->loadTemplate('ktcore/metadata/editFieldset');
         $oFieldset =& KTFieldset::get($_REQUEST['fFieldsetId']);
+        $this->aBreadcrumbs[] = array(
+            'action' => 'docfield',
+            'query' => 'action=edit&fFieldsetId=' . $_REQUEST['fFieldsetId'],
+            'name' => 'Fieldset ' . $oFieldset->getName()
+        );
         $oTemplate->setData(array(
             'oFieldset' => $oFieldset,
         ));
@@ -113,6 +124,14 @@ class KTDocumentFieldDispatcher extends KTStandardDispatcher {
         $oTemplate =& $oTemplating->loadTemplate('ktcore/metadata/editField');
         $oFieldset =& KTFieldset::get($_REQUEST['fFieldsetId']);
         $oField =& DocumentField::get($_REQUEST['fFieldId']);
+        $this->aBreadcrumbs[] = array(
+            'action' => 'docfield',
+            'query' => 'action=edit&fFieldsetId=' . $_REQUEST['fFieldsetId'],
+            'name' => 'Fieldset ' . $oFieldset->getName()
+        );
+        $this->aBreadcrumbs[] = array(
+            'name' => 'Field ' . $oField->getName()
+        );
         $oTemplate->setData(array(
             'oFieldset' => $oFieldset,
             'oField' => $oField,
@@ -143,6 +162,9 @@ class KTDocumentFieldDispatcher extends KTStandardDispatcher {
     function do_addLookups() {
         $oFieldset =& KTFieldset::get($_REQUEST['fFieldsetId']);
         $oField =& DocumentField::get($_REQUEST['fFieldId']);
+        if (empty($_REQUEST['value'])) {
+            $this->errorRedirectTo('editField', 'Empty lookup not added', 'fFieldsetId=' . $oFieldset->getId() . '&fFieldId=' .  $oField->getId());
+        }
         $oMetaData =& MetaData::createFromArray(array(
             'name' => $_REQUEST['value'],
             'docfieldid' => $oField->getId(),
