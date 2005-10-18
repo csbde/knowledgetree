@@ -1,7 +1,7 @@
-<h1>Document Fields</h1>
+<h1>Document Fieldsets</h1>
 
 { if $fieldsets}
-<h2>Existing generic document fields</h2>
+<h2>Existing document fieldsets</h2>
 
 <table class="pretty" cellspacing="0" cellpadding="0">
   <thead>
@@ -15,6 +15,8 @@
 {foreach from=$fieldsets item=oFieldset}
     <tr>
       <td>
+	<a href="?action=delete&fFieldsetId={$oFieldset->getId()}"><img
+border="0" src="{"icons/delete.png"|imgSrc}" title="Delete fieldset" /></a>
         <a href="?action=edit&fFieldsetId={$oFieldset->getId()}"> { $oFieldset->getName() }
         </a>
       </td>
@@ -43,7 +45,7 @@
 </table>
 {/if}
 
-<h2>Create a new document field set</h2>
+<h2>Create a new document fieldset</h2>
 
 <form method="POST" action="{$smarty.server.PHP_SELF}">
 <input type="hidden" name="action" value="new">
