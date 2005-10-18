@@ -66,6 +66,7 @@ class PatternMainPage {
 	var $additionalJavaScript;
 	/** whether or not to use dhtml scrolling **/
 	var $bScroll;
+	var $aBreadcrumbs = array();
 
     var $bFormDisabled = false;
 	
@@ -146,6 +147,10 @@ class PatternMainPage {
 	function setSubmitMethod($sNewValue) {
 		$this->sSubmitMethod = $sNewValue;
 	}
+
+    function setBreadcrumbs($aNewValue) {
+		$this->aBreadcrumbs = $aNewValue;
+    }
 	
 	/**
 	* Render the page in HTML
@@ -185,6 +190,7 @@ class PatternMainPage {
             "cpayload" => $this->oCentralPayload,
             "errormessages" => $this->sErrorMessage,
             "kterrormessages" => $_SESSION['KTErrorMessage'],
+            "breadcrumbs" => $this->aBreadcrumbs,
         );
 
         $aTopMenuWords = array(
