@@ -89,7 +89,7 @@ class="intro">You are here: </span> <span class="breadcrumbs">
 				      { if !$smarty.foreach.bc.last }
 				        &raquo;
 				      { /if }
-				    { /foreach } </span>
+				    { /foreach } </span></p>
 				  { /if }
 				  { foreach item=errorMessage from=$errormessages }
 						<table border="0"><tr><td><p class="errorText">{$errorMessage}</p></td></tr></table>
