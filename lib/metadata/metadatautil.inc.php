@@ -362,6 +362,7 @@ class KTMetadataUtil {
             $GLOBALS['default']->log->debug("Checking behaviour id: " . $iBehaviourId);
             $oBehaviour =& KTFieldBehaviour::get($iBehaviourId);
             $sBehaviourName = $oBehaviour->getName();
+            $sBehaviourHumanName = $oBehaviour->getHumanName();
             $iParentFieldId = $oBehaviour->getFieldId();
             $GLOBALS['default']->log->debug("   field is " .  $iParentFieldId);
             $aNextFields = KTMetadataUtil::getChildFieldIds($iParentFieldId);
@@ -380,7 +381,7 @@ class KTMetadataUtil {
                     $GLOBALS['default']->log->debug("   field $iFieldId is not included, failing");
                     $oChildField =& DocumentField::get($iFieldId);
                     $sChildFieldName = $oChildField->getName();
-                    return PEAR::raiseError("Child field $sChildFieldName of parent field $sParentFieldName has no selectable values in behaviour $sBehaviourName");
+                    return PEAR::raiseError("Child field $sChildFieldName of parent field $sParentFieldName has no selectable values in behaviour $sBehaviourHumanName ($sBehaviourName)");
                 }
             }
         }
