@@ -29,7 +29,7 @@ function swapElementFromRequest(elementId, url) {
 
 function getMetadataForType(id) {
     swapElementFromRequest('type_metadata_fields',
-        'http://ktcvs.local/presentation/lookAndFeel/knowledgeTree/documentmanagement/getTypeMetadataFields.php?fDocumentTypeID='
+        'http://{/literal}{$config->get('KnowledgeTree/serverName')}{literal}/presentation/lookAndFeel/knowledgeTree/documentmanagement/getTypeMetadataFields.php?fDocumentTypeID='
         + id);
 }
 
