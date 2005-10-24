@@ -10,8 +10,26 @@
 <input type="submit" name="submit" value="Save" />
 </form>
 
+<h2>Inform</h2>
+
+<p class="helpText">Please select which roles or groups should be
+informed when this state is reached.</p>
+
+<h3>Roles</h3>
+{entity_checkboxes entities=$aRoles name="fRolesIds" multiple="true" selected=$aInformRoles assign=aBoxes}
+{foreach from=$aBoxes item=sBox}
+{$sBox}<br />
+{/foreach}
+
+<h3>Groups</h3>
+{entity_checkboxes entities=$aGroups name="fGroupIds" multiple="true" selected=$aInformGroups assign=aBoxes}
+{foreach from=$aBoxes item=sBox}
+{$sBox}<br />
+{/foreach}
+
+<h2>Transitions</h2>
 {if $aTransitionsTo}
-<h2>Transitions to this state</h2>
+<h3>Transitions to this state</h3>
 
 <ul>
 {foreach from=$aTransitionsTo item=oTransition}
@@ -24,7 +42,7 @@ title="Transition
 
 {/if}
 
-<h2>Transitions</h2>
+<h3>Transitions from this state</h3>
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <input type="hidden" name="action" value="saveTransitions" />
 <input type="hidden" name="fWorkflowId" value="{$oWorkflow->getId()}" />
