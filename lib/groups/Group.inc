@@ -233,10 +233,11 @@ class Group extends KTEntity {
     // {{{ hasMember
     function hasMember($oUser) {
         global $default;
+        $iUserId = KTUtil::getId($oUser);
 
         $sQuery = "SELECT COUNT(*) AS number_of_entries FROM $default->users_groups_table
             WHERE group_id = ? AND user_id = ?";
-        $aParams = array($this->getID(), $oUser->getID());
+        $aParams = array($this->getID(), $iUserId);
         $res = (int)DBUtil::getOneResultKey(array($sQuery, $aParams), "number_of_entries");
         if (PEAR::isError($res)) {
             return $res;
