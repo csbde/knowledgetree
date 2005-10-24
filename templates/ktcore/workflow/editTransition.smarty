@@ -2,6 +2,12 @@
 
 <h2>Edit transition properties</h2>
 
+<p class="helpText">Select the target state of the transition, and
+select the permission, group, and/or role necessary to perform the
+transition.  Selecting more than one of permission, group, or role will
+require that the user wishing to perform the transition fulfil every
+requirement.</p>
+
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <input type="hidden" name="action" value="saveTransition" />
 <input type="hidden" name="fWorkflowId" value="{$oWorkflow->getId()}" />
@@ -14,9 +20,20 @@
 </tr>
 <tr>
   <th>Guard Permission</th>
-  <td>{entity_select entities=$aPermissions selected=$oTransition->getGuardPermissionId() name="fPermissionId"}</td>
+  <td>{entity_select entities=$aPermissions
+selected=$oTransition->getGuardPermissionId() name="fPermissionId"
+none=true}</td>
 </tr>
-
+<tr>
+  <th>Guard Group</th>
+  <td>{entity_select entities=$aGroups
+selected=$oTransition->getGuardGroupId() name="fGroupId" none=true}</td>
+</tr>
+<tr>
+  <th>Guard Role</th>
+  <td>{entity_select entities=$aRoles
+selected=$oTransition->getGuardRoleId() name="fRoleId" none=true}</td>
+</tr>
 </table>
 <input type="submit" name="submit" value="Save" />
 </form>
