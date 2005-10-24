@@ -65,8 +65,11 @@ class KTEntity {
         if ($this->iId > 0) {
             $res = DBUtil::autoUpdate($this->_table(), $this->_fieldValues(), $this->iId);
             if (PEAR::isError($res)) {
-                $_SESSION['errorMessage'] = $res->toString();
-                return false;
+                if ($this->_bUsePearError === false) {
+                    $_SESSION['errorMessage'] = $res->toString();
+                    return false;
+                }
+                return $res;
             }
             return true;
         }
