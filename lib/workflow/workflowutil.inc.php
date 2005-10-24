@@ -4,6 +4,8 @@ require_once(KT_LIB_DIR . '/workflow/workflow.inc.php');
 require_once(KT_LIB_DIR . '/workflow/workflowstate.inc.php');
 require_once(KT_LIB_DIR . '/workflow/workflowtransition.inc.php');
 
+require_once(KT_LIB_DIR . '/groups/GroupUtil.php');
+
 class KTWorkflowUtil {
     function saveTransitionsFrom($oState, $aTransitionIds) {
         $sTable = KTUtil::getTableName('workflow_state_transitions');
@@ -204,9 +206,19 @@ class KTWorkflowUtil {
         $aTransitions = KTWorkflowUtil::getTransitionsFrom($oState);
         $aEnabledTransitions = array();
         foreach ($aTransitions as $oTransition) {
-            $oPermission =& KTPermission::get($oTransition->getGuardPermissionId());
-            if (!KTPermissionUtil::userHasPermissionOnItem($oUser, $oPermission, $oDocument)) {
-                continue;
+            $iPermissionId = $oTransition->getGuardPermissionId();
+            if ($iPermissionId) {
+                $oPermission =& KTPermission::get($iPermissionId);
+                if (!KTPermissionUtil::userHasPermissionOnItem($oUser, $oPermission, $oDocument)) {
+                    continue;
+                }
+            }
+            $iGroupId = $oTransition->getGuardGroupId();
+            if ($iGroupId) {
+                $oGroup =& Group::get($iGroupId);
+                if (!$oGroup->hasMember($oUser)) {
+                    continue;
+                }
             }
             $aEnabledTransitions[] = $oTransition;
         }
