@@ -90,12 +90,16 @@ class KTUtil {
         return $sString;
     }
 
-    function arrayGet($aArray, $sKey, $mDefault = null) {
+    function arrayGet($aArray, $sKey, $mDefault = null, $bDefaultIfEmpty = true) {
         if (empty($aArray)) {
             return $mDefault;
         }
         if (array_key_exists($sKey, $aArray)) {
-            return $aArray[$sKey];
+            $mVal = $aArray[$sKey];
+            if (empty($mVal) && $bDefaultIfEmpty) {
+                return $mDefault;
+            }
+            return $mVal;
         }
         return $mDefault;
     }
