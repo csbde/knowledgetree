@@ -81,7 +81,7 @@ class KTDispatcherValidation {
         }
         if ($aRedirectTo) {
             $aRealRedirectTo = array($aRedirectTo[0], $sMessage, KTUtil::arrayGet($aRedirectTo, 1));
-            call_user_func_array(array($this->oDispatcher, this, 'errorRedirectTo'), $aRealRedirectTo);
+            call_user_func_array(array($this->oDispatcher, 'errorRedirectTo'), $aRealRedirectTo);
         }
         $this->oDispatcher->errorPage($sMessage);
     }
@@ -128,6 +128,78 @@ class KTDispatcherValidation {
     function &validateBehaviour($iId, $aOptions = null) {
         require_once(KT_LIB_DIR .  '/metadata/fieldbehaviour.inc.php');
         return $this->validateEntity('KTFieldBehaviour', $iId, $aOptions);
+    }
+
+    function &validateRole($iId, $aOptions = null) {
+        require_once(KT_LIB_DIR .  '/roles/Role.inc');
+        return $this->validateEntity('Role', $iId, $aOptions);
+    }
+
+    function &validateGroup($iId, $aOptions = null) {
+        require_once(KT_LIB_DIR .  '/groups/Group.inc');
+        return $this->validateEntity('Group', $iId, $aOptions);
+    }
+
+    function validateDict($aDict, $aValidation, $aOptions = null) {
+        foreach ($aValidation as $k => $aValidatorInfo) {
+            $sDictValue = KTUtil::arrayGet($aDict, $k, null);
+            if (empty($sDictValue)) {
+                /*
+                if (strstr($v, '_or_null')) {
+                    $aValidatedDict[$k] = null;
+                }
+                if (strstr($v, '_or_empty')) {
+                    $aValidatedDict[$k] = '';
+                }
+                */
+                $aErrors[$k] = PEAR::raiseError("Required value $k not set");
+                continue;
+            }
+            $sValidationFunction = $this->_generateValidationFunction($aValidatorInfo['type']);
+            if (!method_exists($this, $sValidationFunction)) {
+                $aErrors[$k] = PEAR::raiseError("Unknown validation function for required value $k");
+                continue;
+            }
+            $aKeyInfo = array('var' => $k);
+            $this->$sValidationFunction($aKeyInfo, $sDictValue);
+            $aValidatedDict[$k] = $sDictValue;
+        }
+        if ($aErrors) {
+            $aErrorsString = '';
+            foreach ($aErrors as $k => $v) {
+                $aErrorsString .= $v->getMessage();
+            }
+            $this->oDispatcher->errorPage($aErrorsString);
+        }
+        return $aValidatedDict;
+    }
+
+    function _generateValidationFunction($v) {
+        $iEnd = strstr($v, '_or_');
+        if ($iEnd) {
+            $v = substr($v, 0, $iEnd);
+        }
+        return '_validate' . $v;
+    }
+
+    function _validateworkflow($aKeyInfo, $id) {
+        return $this->_validateentity($aKeyInfo, 'KTWorkflow', $id);
+    }
+
+    function _validateworkflowtransition($aKeyInfo, $id) {
+        return $this->_validateentity($aKeyInfo, 'KTWorkflowTransition', $id);
+    }
+    function _validateworkflowstate($aKeyInfo, $id) {
+        return $this->_validateentity($aKeyInfo, 'KTWorkflowState', $id);
+    }
+
+    function _validateentity($aKeyInfo, $entity_name, $iId, $aOptions = null) {
+        $aFunc = array($entity_name, KTUtil::arrayGet($aOptions, 'method', 'get'));
+        $oEntity =& call_user_func($aFunc, $iId);
+        if (PEAR::isError($oEntity) || ($oEntity === false)) {
+            return PEAR::raiseError(sprintf("Provided variable %s is not a valid %s", $aKeyInfo['var'], $entity_name));
+        }
+        return $oEntity;
     }
 }
 
