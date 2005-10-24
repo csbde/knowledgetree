@@ -43,6 +43,8 @@ class KTWorkflowTransition extends KTEntity {
         "sHumanName" => "human_name",
         "iTargetStateId" => "target_state_id",
         "iGuardPermissionId" => "guard_permission_id",
+        "iGuardGroupId" => "guard_group_id",
+        "iGuardRoleId" => "guard_role_id",
     );
 
     var $_bUsePearError = true;
@@ -53,6 +55,8 @@ class KTWorkflowTransition extends KTEntity {
     function getWorkflowId() { return $this->iWorkflowId; }
     function getTargetStateId() { return $this->iTargetStateId; }
     function getGuardPermissionId() { return $this->iGuardPermissionId; }
+    function getGuardGroupId() { return $this->iGuardGroupId; }
+    function getGuardRoleId() { return $this->iGuardRoleId; }
 
     function setId($iId) { $this->iId = $iId; }
     function setName($sName) { $this->sName = $sName; }
@@ -60,6 +64,8 @@ class KTWorkflowTransition extends KTEntity {
     function setWorkflowId($iWorkflowId) { $this->iWorkflowId = $iWorkflowId; }
     function setTargetStateId($iTargetStateId) { $this->iTargetStateId = $iTargetStateId; }
     function setGuardPermissionId($iGuardPermissionId) { $this->iGuardPermissionId = $iGuardPermissionId; }
+    function setGuardGroupId($iGuardGroupId) { $this->iGuardGroupId = $iGuardGroupId; }
+    function setGuardRoleId($iGuardRoleId) { $this->iGuardRoleId = $iGuardRoleId; }
 
     function _table () {
         return KTUtil::getTableName('workflow_transitions');
