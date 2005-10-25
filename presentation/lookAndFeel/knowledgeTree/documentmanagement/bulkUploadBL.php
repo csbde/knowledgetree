@@ -45,7 +45,6 @@ require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternMetaData.inc");
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternEditableTableSqlQuery.inc");
 require_once("$default->fileSystemRoot/lib/web/WebDocument.inc");
-require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/store.inc");
 require_once("$default->fileSystemRoot/presentation/lookAndFeel/knowledgeTree/foldermanagement/folderUI.inc");
 require_once("$default->fileSystemRoot/presentation/Html.inc");
 require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
