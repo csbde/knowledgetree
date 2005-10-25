@@ -60,6 +60,13 @@ class KTPermissionUtil {
     }
     // }}}
 
+    // {{{ getAllowedForDescriptor
+    function getAllowedForDescriptor($oDescriptor) {
+        $oDescriptor =& KTUtil::getObject('KTPermissionDescriptor', $oDescriptor);
+        return $oDescriptor->getAllowed();
+    }
+    // }}}
+
     // {{{ getOrCreateAssignment
     /**
      * For a given permission object, get the assignment object for the
