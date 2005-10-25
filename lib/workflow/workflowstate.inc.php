@@ -38,6 +38,7 @@ class KTWorkflowState extends KTEntity {
         "iWorkflowId" => "workflow_id",
         "sName" => "name",
         "sHumanName" => "human_name",
+        'iInformDescriptorId' => 'inform_descriptor_id',
     );
 
     var $_bUsePearError = true;
@@ -46,10 +47,12 @@ class KTWorkflowState extends KTEntity {
     function getName() { return $this->sName; }
     function getHumanName() { return $this->sHumanName; }
     function getWorkflowId() { return $this->iWorkflowId; }
+    function getInformDescriptorId() { return $this->iInformDescriptorId; }
     function setId($iId) { $this->iId = $iId; }
     function setName($sName) { $this->sName = $sName; }
     function setHumanName($sHumanName) { $this->sHumanName = $sHumanName; }
     function setWorkflowId($iWorkflowId) { $this->iWorkflowId = $iWorkflowId; }
+    function setInformDescriptorId($iInformDescriptorId) { $this->iInformDescriptorId = $iInformDescriptorId; }
 
     function _table () {
         return KTUtil::getTableName('workflow_states');
