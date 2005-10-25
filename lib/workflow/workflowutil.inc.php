@@ -4,6 +4,7 @@ require_once(KT_LIB_DIR . '/workflow/workflow.inc.php');
 require_once(KT_LIB_DIR . '/workflow/workflowstate.inc.php');
 require_once(KT_LIB_DIR . '/workflow/workflowtransition.inc.php');
 
+require_once(KT_LIB_DIR . '/permissions/permissionutil.inc.php');
 require_once(KT_LIB_DIR . '/groups/GroupUtil.php');
 
 class KTWorkflowUtil {
@@ -242,5 +243,35 @@ class KTWorkflowUtil {
         );
         return DBUtil::runQuery($aQuery);
     }
+
+    // {{{ setInformedForState
+    /**
+     * Sets the users/groups/roles informed when a state is arrived at.
+     */
+    function setInformedForState(&$oState, $aInformed) {
+        $oDescriptor =& KTPermissionUtil::getOrCreateDescriptor($aInformed);
+        if (PEAR::isError($oDescriptor)) {
+            return $oDescriptor;
+        }
+        $iOldDescriptorId = $oState->getInformDescriptorId();
+        $oState->setInformDescriptorId($oDescriptor->getId());
+        $res = $oState->update();
+        if (PEAR::isError($res)) {
+            $oState->setInformDescriptorId($iOldDescriptorId);
+            return $res;
+        }
+        return $res;
+    }
+    // }}}
+
+    // {{{ getInformedForState
+    function getInformedForState($oState) {
+        $iDescriptorId = $oState->getInformDescriptorId();
+        if (empty($iDescriptorId)) {
+            return array();
+        }
+        return KTPermissionUtil::getAllowedForDescriptor($iDescriptorId);
+    }
+    // }}}
 }
 
