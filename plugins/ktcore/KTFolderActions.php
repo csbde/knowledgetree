@@ -10,6 +10,6 @@ class KTFolderAddDocumentAction extends KTBuiltInFolderAction {
     var $sBuiltInAction = 'addDocument';
     var $sDisplayName = 'Add Document';
 }
-$oKTActionRegistry->registerAction('folderaction', 'KTDocumentViewAction', 'ktcore.actions.folder.addDocument');
+$oKTActionRegistry->registerAction('folderaction', 'KTFolderAddDocumentAction', 'ktcore.actions.folder.addDocument');
 
 ?>
