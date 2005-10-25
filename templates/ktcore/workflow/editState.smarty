@@ -15,17 +15,38 @@
 <p class="helpText">Please select which roles or groups should be
 informed when this state is reached.</p>
 
+<form action="{$smarty.server.PHP_SELF}" method="POST">
+<input type="hidden" name="action" value="saveInform" />
+<input type="hidden" name="fWorkflowId" value="{$oWorkflow->getId()}" />
+<input type="hidden" name="fStateId" value="{$oState->getId()}" />
 <h3>Roles</h3>
-{entity_checkboxes entities=$aRoles name="fRolesIds" multiple="true" selected=$aInformRoles assign=aBoxes}
+{entity_checkboxes entities=$aRoles name="fRoleIds" multiple="true" selected=$aInformed.role assign=aBoxes}
 {foreach from=$aBoxes item=sBox}
 {$sBox}<br />
 {/foreach}
 
 <h3>Groups</h3>
-{entity_checkboxes entities=$aGroups name="fGroupIds" multiple="true" selected=$aInformGroups assign=aBoxes}
+{entity_checkboxes entities=$aGroups name="fGroupIds" multiple="true" selected=$aInformed.group assign=aBoxes}
 {foreach from=$aBoxes item=sBox}
 {$sBox}<br />
 {/foreach}
+
+{*
+<h3>Users</h3>
+{entity_checkboxes entities=$aUsers name="fUserIds" multiple="true" selected=$aInformed.user assign=aBoxes}
+{foreach from=$aBoxes item=sBox}
+{$sBox}<br />
+{/foreach}
+<input type="submit" name="submit" value="Save" />
+</form>
+*}
+
+<h2>Permissions</h2>
+
+<p class="helpText">While in this workflow state, additional permissions
+may be given.  This is done either to expose the document to more users
+or to allow a particular role to be fulfilled before a workflow
+transition can be accomplished.</p>
 
 <h2>Transitions</h2>
 {if $aTransitionsTo}
