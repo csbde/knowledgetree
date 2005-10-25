@@ -12,6 +12,10 @@ require_once(KT_LIB_DIR . '/workflow/workflowtransition.inc.php');
 $sectionName = "Administration";
 require_once(KT_DIR . "/presentation/webpageTemplate.inc");
 
+require_once(KT_LIB_DIR . '/permissions/permission.inc.php');
+require_once(KT_LIB_DIR . '/groups/Group.inc');
+require_once(KT_LIB_DIR . '/roles/Role.inc');
+
 class KTWorkflowDispatcher extends KTStandardDispatcher {
     var $bAutomaticTransaction = true;
 
@@ -57,6 +61,9 @@ class KTWorkflowDispatcher extends KTStandardDispatcher {
     // {{{ do_saveWorkflow
     function do_saveWorkflow() {
         $oWorkflow =& $this->oValidator->validateWorkflow($_REQUEST['fWorkflowId']);
+        $aOptions = array(
+            'redirect_to' => array('editWorkflow', 'fWorkflowId=' .  $oWorkflow->getId()),
+        );
         $oWorkflow->setName($_REQUEST['fName']);
         $oWorkflow->setHumanName($_REQUEST['fName']);
         if (!empty($_REQUEST['fStartStateId'])) {
@@ -151,14 +158,20 @@ class KTWorkflowDispatcher extends KTStandardDispatcher {
             'query' => 'action=editState&fWorkflowId=' . $oWorkflow->getId() . '&fStateId=' . $oState->getId(),
             'name' => 'State ' . $oState->getName(),
         );
+        $aInformed = KTWorkflowUtil::getInformedForState($oState);
         $oTemplate->setData(array(
             'oWorkflow' => $oWorkflow,
             'oState' => $oState,
+            'oNotifyRole' => $oRole,
             'aTransitionsTo' => $aTransitionsTo,
             'aTransitions' => $aTransitions,
             'aTransitionsSelected' => $aTransitionsSelected,
             'aActions' => KTDocumentActionUtil::getDocumentActionsByNames(KTWorkflowUtil::getControlledActionsForWorkflow($oWorkflow)),
             'aActionsSelected' => KTWorkflowUtil::getEnabledActionsForState($oState),
+            'aGroups' => Group::getList(),
+            'aRoles' => Role::getList(),
+            'aUsers' => User::getList(),
+            'aInformed' => $aInformed,
         ));
         return $oTemplate;
     }
@@ -207,6 +220,44 @@ class KTWorkflowDispatcher extends KTStandardDispatcher {
         exit(0);
     }
     // }}}
+
+    // {{{ do_saveInform
+    function do_saveInform() {
+        $oWorkflow =& $this->oValidator->validateWorkflow($_REQUEST['fWorkflowId']);
+        $oState =& $this->oValidator->validateWorkflowState($_REQUEST['fStateId']);
+        $sTargetAction = 'editState';
+        $sTargetParams = 'fWorkflowId=' . $oWorkflow->getId() .  '&fStateId=' .  $oState->getId();
+        $aRoleIds = KTUtil::arrayGet($_REQUEST, 'fRoleIds');
+        if (empty($aRoleIds)) {
+            $aRoleIds = array();
+        }
+        if (!is_array($aRoleIds)) {
+            $this->errorRedirectTo($sTargetAction, 'Invalid roles specified', $sTargetParams);
+        }
+        $aGroupIds = KTUtil::arrayGet($_REQUEST, 'fGroupIds');
+        if (empty($aGroupIds)) {
+            $aGroupIds = array();
+        }
+        if (!is_array($aGroupIds)) {
+            $this->errorRedirectTo($sTargetAction, 'Invalid groups specified', $sTargetParams);
+        }
+        $aUserIds = KTUtil::arrayGet($_REQUEST, 'fUserIds');
+        if (empty($aUserIds)) {
+            $aUserIds = array();
+        }
+        if (!is_array($aUserIds)) {
+            $this->errorRedirectTo($sTargetAction, 'Invalid users specified', $sTargetParams);
+        }
+        $aAllowed = array(
+            'role' => $aRoleIds,
+            'group' => $aGroupIds,
+            'user' => $aUserIds,
+        );
+        KTWorkflowUtil::setInformedForState($oState, $aAllowed);
+        $this->successRedirectTo($sTargetAction, 'Changes made', $sTargetParams);
+    }
+    // }}}
+
     // }}}
 
     // {{{ TRANSITION HANDLING
@@ -215,13 +266,26 @@ class KTWorkflowDispatcher extends KTStandardDispatcher {
     function do_newTransition() {
         $oWorkflow =& $this->oValidator->validateWorkflow($_REQUEST['fWorkflowId']);
         $oState =& $this->oValidator->validateWorkflowState($_REQUEST['fTargetStateId']);
-        $oPermission =& $this->oValidator->validatePermission($_REQUEST['fPermissionId']);
+        $iPermissionId = KTUtil::arrayGet($_REQUEST, 'fPermissionId');
+        $iGroupId = KTUtil::arrayGet($_REQUEST, 'fGroupId');
+        $iRoleId = KTUtil::arrayGet($_REQUEST, 'fRoleId');
+        if ($iPermissionId) {
+            $this->oValidator->validatePermission($_REQUEST['fPermissionId']);
+        }
+        if ($iGroupId) {
+            $this->oValidator->validateGroup($_REQUEST['fGroupId']);
+        }
+        if ($iRoleId) {
+            $this->oValidator->validateRole($_REQUEST['fRoleId']);
+        }
         $res = KTWorkflowTransition::createFromArray(array(
             'workflowid' => $oWorkflow->getId(),
             'name' => $_REQUEST['fName'],
             'humanname' => $_REQUEST['fName'],
             'targetstateid' => $oState->getId(),
-            'guardpermissionid' => $oPermission->getId(),
+            'guardpermissionid' => $iPermissionId,
+            'guardgroupid' => $iGroupId,
+            'guardroleid' => $iRoleId,
         ));
         $this->oValidator->notError($res, array(
             'redirect_to' => array('editWorkflow', 'fWorkflowId=' .  $oWorkflow->getId()),
@@ -252,6 +316,8 @@ class KTWorkflowDispatcher extends KTStandardDispatcher {
             'oTransition' => $oTransition,
             'aStates' => KTWorkflowState::getByWorkflow($oWorkflow),
             'aPermissions' => KTPermission::getList(),
+            'aGroups' => Group::getList(),
+            'aRoles' => Role::getList(),
         ));
         return $oTemplate;
     }
@@ -259,16 +325,33 @@ class KTWorkflowDispatcher extends KTStandardDispatcher {
 
     // {{{ do_saveTransition
     function do_saveTransition() {
+        $aRequest = $this->oValidator->validateDict($_REQUEST, array(
+            'fWorkflowId' => array('type' => 'workflow'),
+            'fTransitionId' => array('type' => 'workflowtransition'),
+        ));
         $oWorkflow =& $this->oValidator->validateWorkflow($_REQUEST['fWorkflowId']);
         $oTransition =& $this->oValidator->validateWorkflowTransition($_REQUEST['fTransitionId']);
         $oState =& $this->oValidator->validateWorkflowState($_REQUEST['fTargetStateId']);
-        $oPermission =& $this->oValidator->validatePermission($_REQUEST['fPermissionId']);
+        $iPermissionId = KTUtil::arrayGet($_REQUEST, 'fPermissionId', null);
+        $iGroupId = KTUtil::arrayGet($_REQUEST, 'fGroupId', null);
+        $iRoleId = KTUtil::arrayGet($_REQUEST, 'fRoleId', null);
+        if ($iPermissionId) {
+            $this->oValidator->validatePermission($_REQUEST['fPermissionId']);
+        }
+        if ($iGroupId) {
+            $this->oValidator->validateGroup($_REQUEST['fGroupId']);
+        }
+        if ($iRoleId) {
+            $this->oValidator->validateRole($_REQUEST['fRoleId']);
+        }
         $oTransition->updateFromArray(array(
             'workflowid' => $oWorkflow->getId(),
             'name' => $_REQUEST['fName'],
             'humanname' => $_REQUEST['fName'],
             'targetstateid' => $oState->getId(),
-            'guardpermissionid' => $oPermission->getId(),
+            'guardpermissionid' => $iPermissionId,
+            'guardgroupid' => $iGroupId,
+            'guardroleid' => $iRoleId,
         ));
         $res = $oTransition->update();
         $this->oValidator->notErrorFalse($res, array(
