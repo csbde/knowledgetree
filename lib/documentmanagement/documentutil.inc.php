@@ -37,6 +37,8 @@ require_once(KT_LIB_DIR . '/subscriptions/SubscriptionConstants.inc');
 // NEW PATHS
 require_once(KT_LIB_DIR . '/storage/storagemanager.inc.php');
 require_once(KT_LIB_DIR . '/filelike/filelikeutil.inc.php');
+require_once(KT_LIB_DIR . '/metadata/metadatautil.inc.php');
+require_once(KT_LIB_DIR . '/metadata/fieldset.inc.php');
 
 class KTDocumentUtil {
     function createMetadataVersion($oDocument) {
@@ -214,6 +216,35 @@ class KTDocumentUtil {
 
     // {{{ validateMetadata
     function validateMetadata(&$oDocument, $aMetadata) {
+        $aFieldsets =& KTFieldset::getGenericFieldsets();
+        $aFieldsets =& array_merge($aFieldsets,
+                KTFieldset::getForDocumentType($oDocument->getDocumentTypeId()));
+        $aFailed = array();
+        foreach ($aFieldsets as $oFieldset) {
+            $aFields =& $oFieldset->getFields();
+            $aFieldValues = array();
+            foreach ($aFields as $oField) {
+                $v = KTUtil::arrayGet($aMetadata, $oField->getId());
+                if ($oField->getIsMandatory()) {
+                    if (empty($v)) {
+                        // XXX: What I'd do for a setdefault...
+                        $aFailed["field"][$oField->getId()] = 1;
+                    }
+                }
+                if (!empty($v)) {
+                    $aFieldValues[$oField->getId()] = $v;
+                }
+            }
+            if ($oFieldset->getIsConditional()) {
+                $res = KTMetadataUtil::getNext($oFieldset, $aFieldValues);
+                if ($res) {
+                    $aFailed["fieldset"][$oFieldset->getId()] = 1;
+                }
+            }
+        }
+        if (!empty($aFailed)) {
+            return new KTMetadataValidationError($aFailed);
+        }
         return $aMetadata;
     }
     // }}}
@@ -382,6 +413,14 @@ class KTDocumentUtil {
         return true;
     }
     // }}}
+}
+
+class KTMetadataValidationError extends PEAR_Error {
+    function KTMetadataValidationError ($aFailed) {
+        $this->aFailed = $aFailed;
+        $message = 'Validation Failed';
+        parent::PEAR_Error($message);
+    }
 }
 
 ?>
