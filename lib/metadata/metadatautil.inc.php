@@ -44,6 +44,25 @@ class KTMetadataUtil {
      * parent fields (in combination with _their_ parent fields).
      */
     function _getNextForBehaviour($oBehaviour, $aCurrentSelections) {
+        /*
+         * GENERAL GAME PLAN
+         *
+         * For this behaviour, get the fields that this behaviour
+         * affects.  Also get the values that this behaviour prescribes
+         * for those fields.
+         *
+         * Then, for each of the next fields, check if they are already
+         * filled in.
+         *
+         * If not, leave that field in the set of values that need to be
+         * filled in, and move on to the next field for this behaviour.
+         *
+         * If it is filled in, remove the field from the set of values
+         * to be filled in.  But add the set of fields and values that
+         * the choice of value in this field prescribe (using a
+         * recursive call to this function).
+         */
+
         $oBehaviour =& KTUtil::getObject('KTFieldBehaviour', $oBehaviour);
         $GLOBALS['default']->log->debug('KTMetadataUtil::_getNextForBehaviour, behaviour is ' . $oBehaviour->getId());
 
@@ -83,8 +102,30 @@ class KTMetadataUtil {
      * field set (iFieldSet), returns an array (possibly empty) with the
      * keys set to newly uncovered fields, and the contents an array of
      * the value instances that are available to choose in those fields.
+     *
+     * Return value:
+     *
+     * array(
+     *      array('field' => DocumentField, 'values' => array(Metadata, Metadata)),
+     *      ...
+     * )
+     *
      */
     function getNext($oFieldset, $aCurrentSelections) {
+        /*
+         * GENERAL GAME PLAN
+         *
+         * Firstly, if there are no current selections, return the
+         * master field and all of its values.
+         *
+         * If there are selections, get the behaviour for the selected
+         * value of the master field, and call _getNextForBehaviour on
+         * it, passing in the current selections.  This will return an
+         * array keyed on field id with values of an array of lookup ids
+         * for that field.
+         *
+         * Convert these to objects and the return format.
+         */
         $oFieldset =& KTUtil::getObject('KTFieldset', $oFieldset);
         $GLOBALS['default']->log->debug('KTMetadataUtil::getNext, selections are: ' . print_r($aCurrentSelections, true));
 
@@ -300,6 +341,7 @@ class KTMetadataUtil {
         if (!is_null($oValueInstance)) {
             return $oValueInstance;
         }
+        // Else create one and return it.
         return KTValueInstance::createFromArray(array(
             'fieldid' => $oLookup->getDocFieldId(),
             'fieldvalueid' => $oLookup->getId(),
@@ -312,8 +354,28 @@ class KTMetadataUtil {
      * Used as a helper for simple conditional fieldset administration,
      * this function returns an array of lookup ids (Metadata->id) for
      * each of the columns/fields that this lookup's column affects.
+     *
+     * Return value:
+     *
+     * Associative array keyed by field_id, value is an array of lookup
+     * ids.
+     *
+     * array(
+     *      1 => array(1, 2, 3, 4),
+     *      ...
+     * );
      */
     function getNextValuesForLookup($oLookup) {
+        /* 
+         * GENERAL GAME PLAN
+         *
+         * Get the instance attached to the lookup, and and call
+         * getNextValuesForBehaviour on its behaviour.
+         *
+         * If there's no instance or behaviour, return an empty array
+         * for each field that the lookup's field affects.
+         */
+        
         $oLookup =& KTUtil::getObject('MetaData', $oLookup);
         $oInstance =& KTValueInstance::getByLookupSingle($oLookup);
         if (PEAR::isError($oInstance)) {
@@ -349,6 +411,16 @@ class KTMetadataUtil {
      * Given a behaviour, return an array of lookup ids (Metadata->id)
      * that are available for each of the columns/fields that this
      * behaviour's column affects.
+     *
+     * Return value:
+     *
+     * Associative array keyed by field_id, value is an array of lookup
+     * ids.
+     *
+     * array(
+     *      1 => array(1, 2, 3, 4),
+     *      ...
+     * );
      */
     function getNextValuesForBehaviour($oBehaviour) {
         $oBehaviour =& KTUtil::getObject('KTFieldBehaviour', $oBehaviour);
