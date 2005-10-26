@@ -61,21 +61,22 @@ class KTInit {
     function setupLogging () {
         global $default;
         require_once("$default->fileSystemRoot/lib/Log.inc");
-        $default->log = new KTLegacyLog($default->fileSystemRoot . "/log", $default->logLevel);
+        $oKTConfig =& KTConfig::getSingleton();
+        $default->log = new KTLegacyLog($oKTConfig->get('urls/logDirectory'), $default->logLevel);
         $res = $default->log->initialiseLogFile();
         if (PEAR::isError($res)) {
             $this->handleInitError($res);
             // returns only in checkup
             return $res;
         }
-        $default->queryLog = new KTLegacyLog($default->fileSystemRoot . "/log", $default->logLevel, "query");
+        $default->queryLog = new KTLegacyLog($oKTConfig->get('urls/logDirectory'), $default->logLevel, "query");
         $res = $default->queryLog->initialiseLogFile();
         if (PEAR::isError($res)) {
             $this->handleInitError($res);
             // returns only in checkup
             return $res;
         }
-        $default->timerLog = new KTLegacyLog($default->fileSystemRoot . "/log", $default->logLevel, "timer");
+        $default->timerLog = new KTLegacyLog($oKTConfig->get('urls/logDirectory'), $default->logLevel, "timer");
         $res = $default->timerLog->initialiseLogFile();
         if (PEAR::isError($res)) {
             $this->handleInitError($res);
@@ -87,7 +88,7 @@ class KTInit {
         $default->phpErrorLog =& Log::factory('composite');
 
         if ($default->phpErrorLogFile) {
-            $fileLog =& Log::factory('file', $default->fileSystemRoot . "/log/php_error_log", 'BLAH');
+            $fileLog =& Log::factory('file', $oKTConfig->get('urls/logDirectory') . '/php_error_log', 'KT');
             $default->phpErrorLog->addChild($fileLog);
         }
 
