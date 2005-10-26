@@ -34,6 +34,15 @@ require_once(KT_LIB_DIR . '/metadata/fieldbehaviour.inc.php');
 
 class KTMetadataUtil {
 
+    // {{{ _getNextForBehaviour
+    /**
+     * Recursively traverses a fieldset from the behaviour assigned to
+     * the master field and thereafter subsequent fields uncovering the
+     * fields that should be filled in given the columns/fields that
+     * have already be filled in, and providing the values for them
+     * based on the behaviours specified by the existing values in their
+     * parent fields (in combination with _their_ parent fields).
+     */
     function _getNextForBehaviour($oBehaviour, $aCurrentSelections) {
         $oBehaviour =& KTUtil::getObject('KTFieldBehaviour', $oBehaviour);
         $GLOBALS['default']->log->debug('KTMetadataUtil::_getNextForBehaviour, behaviour is ' . $oBehaviour->getId());
@@ -66,6 +75,7 @@ class KTMetadataUtil {
         $GLOBALS['default']->log->debug('KTMetadataUtil::_getNextForBehaviour, final values are ' . print_r($aValues, true));
         return $aValues;
     }
+    // }}}
     
     // {{{ getNext
     /**
@@ -104,7 +114,12 @@ class KTMetadataUtil {
     }
     // }}}
 
-    // {{{ getStartFields
+    // {{{ getMasterField
+    /**
+     * A conditional fieldset has a single field which is not affected
+     * by other values.  This is the master field.  This function gets
+     * the master field for the fieldset provided.
+     */
     function getMasterField($oFieldset) {
         $oFieldset =& KTUtil::getObject('KTFieldset', $oFieldset);
         if ($oFieldset->getMasterField()) {
@@ -114,6 +129,14 @@ class KTMetadataUtil {
     // }}}
 
     // {{{ removeSetsFromDocumentType
+    /**
+     * Removes a non-generic fieldset from a given document type.
+     *
+     * (Generic fieldsets are made available to and are required for all
+     * (subsequent) documents.  Non-generic fieldsets are made available
+     * to and are required for all (subsequent) documents that have a
+     * particular document type.)
+     */
     function removeSetsFromDocumentType($oDocumentType, $aFieldsets) {
         if (is_object($oDocumentType)) {
             $iDocumentTypeId = $oDocumentType->getId();
@@ -151,6 +174,14 @@ class KTMetadataUtil {
     // }}}
 
     // {{{ addSetsToDocumentType
+    /**
+     * Adds a non-generic fieldset to a given document type.
+     *
+     * (Generic fieldsets are made available to and are required for all
+     * (subsequent) documents.  Non-generic fieldsets are made available
+     * to and are required for all (subsequent) documents that have a
+     * particular document type.)
+     */
     function addSetsToDocumentType($oDocumentType, $aFieldsets) {
         if (is_object($oDocumentType)) {
             $iDocumentTypeId = $oDocumentType->getId();
@@ -185,6 +216,10 @@ class KTMetadataUtil {
     // }}}
 
     // {{{ addFieldOrder
+    /**
+     * Informs the system that the parent field's values in affects the
+     * child field's values in a conditional fieldset.
+     */
     function addFieldOrder($oParentField, $oChildField, $oFieldset) {
         $iParentFieldId = KTUtil::getId($oParentField);
         $iChildFieldId = KTUtil::getId($oChildField);
@@ -202,6 +237,9 @@ class KTMetadataUtil {
     // }}}
 
     // {{{ removeFieldOrdering
+    /**
+     * Removes all field ordering for the given fieldset.
+     */
     function removeFieldOrdering($oFieldset) {
         $iFieldsetId = KTUtil::getId($oFieldset);
         $sTable = KTUtil::getTableName('field_orders');
@@ -214,6 +252,12 @@ class KTMetadataUtil {
     // }}}
 
     // {{{ getParentFieldId
+    /**
+     * In a conditional fieldset, a field's values is affected by a
+     * single parent field's values in an ordered fashion (unless it is
+     * the root/master field).  This function gets the field id for the
+     * field that this field is affected by.
+     */
     function getParentFieldId($oField) {
         $sTable = KTUtil::getTableName('field_orders');
         $aQuery = array("SELECT parent_field_id FROM $sTable WHERE child_field_id = ?",
@@ -224,6 +268,11 @@ class KTMetadataUtil {
     // }}}
 
     // {{{ getChildFieldIds
+    /**
+     * In a conditional fieldset, a field's values affect other fields'
+     * values in an ordered fashion.  This function gets the field ids
+     * for the fields that this field affects.
+     */
     function getChildFieldIds($oField) {
         $iFieldId = KTUtil::getId($oField);
         $sTable = KTUtil::getTableName('field_orders');
@@ -234,6 +283,13 @@ class KTMetadataUtil {
     }
     // }}}
 
+    // {{{ getOrCreateValueInstanceForLookup
+    /**
+     * Used as a helper function in simple conditional fieldset
+     * administration, this function either returns the existing value
+     * instance for a lookup, or creates a new value instance and
+     * returns that.
+     */
     function &getOrCreateValueInstanceForLookup(&$oLookup) {
         $oLookup =& KTUtil::getObject('MetaData', $oLookup);
         $oValueInstance =& KTValueInstance::getByLookupSingle($oLookup);
@@ -249,7 +305,14 @@ class KTMetadataUtil {
             'fieldvalueid' => $oLookup->getId(),
         ));
     }
+    // }}}
 
+    // {{{ getNextValuesForLookup
+    /**
+     * Used as a helper for simple conditional fieldset administration,
+     * this function returns an array of lookup ids (Metadata->id) for
+     * each of the columns/fields that this lookup's column affects.
+     */
     function getNextValuesForLookup($oLookup) {
         $oLookup =& KTUtil::getObject('MetaData', $oLookup);
         $oInstance =& KTValueInstance::getByLookupSingle($oLookup);
@@ -279,7 +342,14 @@ class KTMetadataUtil {
         }
         return $aValues;
     }
+    // }}}
 
+    // {{{ getNextValuesForBehaviour
+    /**
+     * Given a behaviour, return an array of lookup ids (Metadata->id)
+     * that are available for each of the columns/fields that this
+     * behaviour's column affects.
+     */
     function getNextValuesForBehaviour($oBehaviour) {
         $oBehaviour =& KTUtil::getObject('KTFieldBehaviour', $oBehaviour);
         $aValues = array();
@@ -302,6 +372,7 @@ class KTMetadataUtil {
         }
         return $aValues;
     }
+    // }}}
 
     // {{{ checkConditionalFieldsetCompleteness
     /**
