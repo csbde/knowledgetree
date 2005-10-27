@@ -24,9 +24,9 @@ ALTER TABLE `workflow_states` ADD INDEX `inform_descriptor_id` (`inform_descript
 ALTER TABLE `workflow_states` ADD CONSTRAINT `workflow_states_ibfk_2` FOREIGN KEY (`inform_descriptor_id`) REFERENCES `permission_descriptors` (`id`) ON DELETE SET NULL;
 ALTER TABLE `workflow_transitions` ADD INDEX `guard_group_id` (`guard_group_id`);
 ALTER TABLE `workflow_transitions` ADD INDEX `guard_role_id` (`guard_role_id`);
-ALTER TABLE `workflow_transitions` DROP CONSTRAINT `workflow_transitions_ibfk_2`; # was FOREIGN KEY (`target_state_id`) REFERENCES `workflow_states` (`id`)
-ALTER TABLE `workflow_transitions` DROP CONSTRAINT `workflow_transitions_ibfk_3`; # was FOREIGN KEY (`guard_permission_id`) REFERENCES `permissions` (`id`)
-ALTER TABLE `workflow_transitions` DROP CONSTRAINT `workflow_transitions_ibfk_1`; # was FOREIGN KEY (`workflow_id`) REFERENCES `workflows` (`id`)
+ALTER TABLE `workflow_transitions` DROP FOREIGN KEY `workflow_transitions_ibfk_2`; # was FOREIGN KEY (`target_state_id`) REFERENCES `workflow_states` (`id`)
+ALTER TABLE `workflow_transitions` DROP FOREIGN KEY `workflow_transitions_ibfk_3`; # was FOREIGN KEY (`guard_permission_id`) REFERENCES `permissions` (`id`)
+ALTER TABLE `workflow_transitions` DROP FOREIGN KEY `workflow_transitions_ibfk_1`; # was FOREIGN KEY (`workflow_id`) REFERENCES `workflows` (`id`)
 ALTER TABLE `workflow_transitions` ADD CONSTRAINT `workflow_transitions_ibfk_27` FOREIGN KEY (`guard_role_id`) REFERENCES `roles` (`id`) ON DELETE SET NULL;
 ALTER TABLE `workflow_transitions` ADD CONSTRAINT `workflow_transitions_ibfk_24` FOREIGN KEY (`target_state_id`) REFERENCES `workflow_states` (`id`) ON DELETE CASCADE;
 ALTER TABLE `workflow_transitions` ADD CONSTRAINT `workflow_transitions_ibfk_25` FOREIGN KEY (`guard_permission_id`) REFERENCES `permissions` (`id`) ON DELETE SET NULL;
