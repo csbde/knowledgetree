@@ -219,12 +219,17 @@ class KTDocumentUtil {
         $aFieldsets =& KTFieldset::getGenericFieldsets();
         $aFieldsets =& array_merge($aFieldsets,
                 KTFieldset::getForDocumentType($oDocument->getDocumentTypeId()));
+        $aSimpleMetadata = array();
+        foreach ($aMetadata as $aSingleMetadatum) {
+            list($oField, $sValue) = $aSingleMetadatum;
+            $aSimpleMetadata[$oField->getId()] = $sValue;
+        }
         $aFailed = array();
         foreach ($aFieldsets as $oFieldset) {
             $aFields =& $oFieldset->getFields();
             $aFieldValues = array();
             foreach ($aFields as $oField) {
-                $v = KTUtil::arrayGet($aMetadata, $oField->getId());
+                $v = KTUtil::arrayGet($aSimpleMetadata, $oField->getId());
                 if ($oField->getIsMandatory()) {
                     if (empty($v)) {
                         // XXX: What I'd do for a setdefault...
