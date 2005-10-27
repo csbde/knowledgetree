@@ -108,20 +108,34 @@ class KTStandardDispatcher extends KTDispatcher {
 
     function permissionDenied () {
         print "Permission denied";
+        exit(0);
+    }
+
+    function loginRequired() {
+        $url = generateControllerUrl("loginForm");
+        $redirect = urlencode($_SERVER['REQUEST_URI']);
+        if ((strlen($redirect) > 1)) {
+            $url = $url . "&redirect=" . $redirect;
+        }
+        redirect($url);
+        exit(0);
     }
 
     function dispatch () {
         $session = new Session();
         $sessionStatus = $session->verify($bDownload);
+        if ($sessionStatus === false) {
+            $this->loginRequired();
+        }
 
         if ($bLogonRequired !== false) {
             if (empty($_SESSION['userID'])) {
-                $this->permissionDenied();
+                $this->loginRequired();
                 exit(0);
             }
             $this->oUser =& User::get($_SESSION['userID']);
             if (PEAR::isError($this->oUser) || ($this->oUser === false)) {
-                $this->permissionDenied();
+                $this->loginRequired();
                 exit(0);
             }
         }
