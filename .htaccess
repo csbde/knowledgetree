@@ -54,3 +54,21 @@ php_value memory_limit 16M
 php_value max_input_time -1
 php_value max_execution_time 60
 </IfModule>
+
+#<IfModule mod_negotiation.c>
+#Options +MultiViews
+#<IfModule mod_env.c>
+#SetEnv kt_no_extensions yes
+#</IfModule>
+#</IfModule>
+#<IfModule !mod_negotiation.c>
+#<IfModule mod_rewrite.c>
+#RewriteEngine On
+#RewriteCond %{REQUEST_FILENAME} !-f
+#RewriteCond %{REQUEST_FILENAME}.php -f
+#RewriteRule ^(.*)$ $1.php
+#<IfModule mod_env.c>
+#SetEnv kt_no_extensions yes
+#</IfModule>
+#</IfModule>
+#</IfModule>
