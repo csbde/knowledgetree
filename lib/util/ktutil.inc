@@ -323,6 +323,34 @@ class KTUtil {
         return array_merge($aStartOptions, $aAddOptions);
     }
     // }}}
+
+    // {{{ getRequestScriptName
+    function getRequestScriptName($server) {
+        $request_uri = $server['REQUEST_URI'];
+        $script_name = $server['SCRIPT_NAME'];
+
+        /*
+         * Until script_name is fully inside request_uri, strip off bits
+         * of script_name.
+         */
+
+        //print "Checking if $script_name is in $request_uri\n";
+        while ($script_name && strpos($request_uri, $script_name) === false) {
+            //print "No it isn't.\n";
+            $lastslash = strrpos($script_name, '/');
+            $lastdot = strrpos($script_name, '.');
+            //print "Last slash is at: $lastslash\n";
+            //print "Last dot is at: $lastdot\n";
+            if ($lastslash > $lastdot) {
+                $script_name = substr($script_name, 0, $lastslash);
+            } else {
+                $script_name = substr($script_name, 0, $lastdot);
+            }
+            //print "Checking is $script_name is in $request_uri\n";
+        }
+        return $script_name;
+    }
+    // }}}
 }
 
 ?>
