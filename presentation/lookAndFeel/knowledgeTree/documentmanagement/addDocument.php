@@ -46,32 +46,18 @@ require_once(KT_DIR . '/presentation/webpageTemplate.inc');
 $oStorage =& KTStorageManagerUtil::getSingleton();
 
 class KTAddDocumentDispatcher extends KTStandardDispatcher {
+    var $bAutomaticTransaction = true;
+
     function check() {
         if ($_REQUEST['fFolderID']) {
             $_REQUEST['fFolderId'] = $_REQUEST['fFolderID'];
             unset($_REQUEST['fFolderID']);
         }
-        $this->validateFolder($_REQUEST['fFolderId']);
-        $this->validatePermission('ktcore.permissions.write');
+        $this->oFolder =& $this->oValidator->validateFolder($_REQUEST['fFolderId']);
+        $this->oPermission =& $this->oValidator->validatePermissionByName('ktcore.permissions.write');
         $this->validateFolderPermission();
         $this->validatePost();
         return true;
-    }
-
-    function validateFolder($iFolderId) {
-        $this->oFolder =& Folder::get($iFolderId);
-        if (PEAR::isError($this->oFolder) || ($this->oFolder === false)) {
-            $this->errorPage(_("Invalid folder given"));
-            exit(0);
-        }
-    }
-
-    function validatePermission($sPermission) {
-        $this->oPermission =& KTPermission::getByName($sPermission);
-        if (PEAR::isError($this->oPermission) || ($this->oPermission === false)) {
-            $this->errorPage(_("Permission not found"));
-            exit(0);
-        }
     }
 
     function validateDocumentType($iId) {
@@ -196,11 +182,9 @@ class KTAddDocumentDispatcher extends KTStandardDispatcher {
                 $message = _("File uploads are disabled in your PHP configuration");
             }
     
-            $this->errorPage($message);
+            $this->errorRedirectToMain($message, 'fFolderId=' . $this->oFolder->getId());
             exit(0);
         }
-
-        DBUtil::startTransaction();
 
         $matches = array();
         $aFields = array();
@@ -222,7 +206,8 @@ class KTAddDocumentDispatcher extends KTStandardDispatcher {
         $oUser =& User::get($_SESSION["userID"]);
         $oDocument =& KTDocumentUtil::add($this->oFolder, basename($_FILES['fFile']['name']), $oUser, $aOptions);
         if (PEAR::isError($oDocument)) {
-            localRenderError($oDocument);
+            $message = $oDocument->getMessage();
+            $this->errorRedirectToMain($message, 'fFolderId=' . $this->oFolder->getId());
             exit(0);
         }
 
@@ -255,7 +240,7 @@ class KTAddDocumentDispatcher extends KTStandardDispatcher {
             }
         }
 
-        DBUtil::commit();
+        $this->commitTransaction();
         //redirect to the document details page
         controllerRedirect("viewDocument", "fDocumentID=" . $oDocument->getID());
     }
