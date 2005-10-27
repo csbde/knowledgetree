@@ -408,6 +408,9 @@ class SiteMap {
                     if ($ackshin == $action) {
                         $default->log->debug("Sitemap::getPageArray calling hasPermission current requiredAccess=$requiredAccess, action=$ackshin");
                         if ($this->hasPermission($requiredAccess)) {
+                            if (KTUtil::arrayGet($_SERVER, 'kt_no_extensions')) {
+                                return str_replace('.php', '', $page["page"]);
+                            }
                             return $page["page"];
                         }
                     }
@@ -611,6 +614,9 @@ class SiteMap {
         global $default;
        // $default->log->debug("Sitemap::getActionFromPage: page=$sPage");
         // for each section
+        if (!strpos($sPage, '.php')) {
+            $sPage .= '.php';
+        }
         foreach ($this->aSiteMap as $section => $valArr) {
             //$default->log->debug("Sitemap::getActionFromPage section=$section");
             // for each group, page array combination
