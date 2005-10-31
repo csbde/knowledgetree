@@ -48,7 +48,7 @@ class BooleanSearchDispatcher extends KTStandardDispatcher {
         // TODO finally return via PatternBrowseableSearchResults (urgh.)
         
         $datavars = KTUtil::arrayGet($_REQUEST, 'boolean_search');
-        $booleanJoinName = KTUtil::arrayGet($_REQUEST, 'boolean_condition');
+        $booleanJoinName = KTUtil::arrayGet($_REQUEST, 'outer_boolean_condition');
         
         if (empty($datavars)) {
             $this->errorRedirectToMain('You need to have at least 1 condition.');
@@ -59,23 +59,24 @@ class BooleanSearchDispatcher extends KTStandardDispatcher {
         
         // Step 1:  extract the criteria selection, and create an array of criteria.
         $criteria_set = array();
-        foreach ($datavars as $order => $dataset) {
-            $oCriterion = Criteria::getCriterionByNumber($dataset["type"]);             
-            if (PEAR::isError($oCriterion)) {
-                $this->errorRedirectToMain('Invalid criteria specified.');
+        foreach (array_keys($datavars) as $k) {
+            foreach ($datavars[$k] as $order => $dataset) {
+                $oCriterion = Criteria::getCriterionByNumber($dataset["type"]);             
+                if (PEAR::isError($oCriterion)) {
+                    $this->errorRedirectToMain('Invalid criteria specified.');
+                }
+                $criteria_set[$k][] = array($oCriterion, $dataset["data"]);
             }
-            $criteria_set[] = array($oCriterion, $dataset["data"]);
         }
-        $res = $this->handleCriteriaSet($criteria_set, $booleanJoinName);
+        $res = $this->handleCriteriaSet($criteria_set, $booleanJoinName, $_REQUEST['boolean_condition']);
         
         return $res;
     }
-    
-    function handleCriteriaSet($aCriteriaSet, $mergeType='AND') {
-		global $default;
-		$aSQL = array();
-		$aJoinSQL = array();
-		foreach ($aCriteriaSet as $oCriterionPair) {
+
+    function _oneCriteriaSetToSQL($aOneCriteriaSet) {
+        $aSQL = array();
+        $aJoinSQL = array();
+		foreach ($aOneCriteriaSet as $oCriterionPair) {
 		    $oCriterion = $oCriterionPair[0];
 			$aReq = $oCriterionPair[1];
 			$res = $oCriterion->searchSQL($aReq);
@@ -104,8 +105,27 @@ class BooleanSearchDispatcher extends KTStandardDispatcher {
 			exit(0);
 		}
 	
-		$sSQLSearchString = join("\n ".$mergeType." ", $aCritQueries);
+        return array($aCritQueries, $aCritParams, $aJoinSQL);
+    }
+
+    function criteriaSetToSQL($aCriteriaSet, $mergeType='AND', $innerMergeTypes = null) {
+        $aJoinSQL = array();
+        $aSearchStrings = array();
+        $aParams = array();
+        foreach ($aCriteriaSet as $k => $aOneCriteriaSet) {
+            list($aThisCritQueries, $aThisParams, $aThisJoinSQL) = $this->_oneCriteriaSetToSQL($aOneCriteriaSet);
+            $aJoinSQL = array_merge($aJoinSQL, $aThisJoinSQL);
+            $aParams = array_merge($aParams, $aThisParams);
+            $aSearchStrings[] = "\n\t\t(\n\t\t\t" . join("\n " . KTUtil::arrayGet($innerMergeTypes, $k, "AND") . " ", $aThisCritQueries) . "\n\t\t)";
+        }
 		$sJoinSQL = join(" ", $aJoinSQL);
+		$sSearchString = "\n\t(" . join("\n\t\t" . $mergeType . " ", $aSearchStrings) .  "\n\t)";
+        return array($sSearchString, $aParams, $sJoinSQL);
+    }
+    
+    function handleCriteriaSet($aCriteriaSet, $mergeType='AND', $innerMergeTypes = null) {
+		global $default;
+        list($sSQLSearchString, $aCritParams, $sJoinSQL) = $this->criteriaSetToSQL($aCriteriaSet, $mergeType);
 	
 		$sToSearch = KTUtil::arrayGet($aOrigReq, 'fToSearch', 'Live'); // actually never present in this version.
 
@@ -141,7 +161,7 @@ class BooleanSearchDispatcher extends KTStandardDispatcher {
 		$aParams[] = $sToSearch;
 		$aParams = array_merge($aParams, $aCritParams);
 	
-		//'<pre>'.var_dump(DBUtil::getResultArray(array($sQuery, $aParams)));
+		//print '<pre>';var_dump(DBUtil::getResultArray(array($sQuery, $aParams)));
 		//exit(0);
 		//return '<pre>'.print_r(DBUtil::getResultArray(array($sQuery, $aParams)), true).'</pre>';
         $iStartIndex = 1;
