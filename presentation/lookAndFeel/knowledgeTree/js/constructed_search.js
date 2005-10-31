@@ -19,6 +19,22 @@ function removeFromElementEvent(elem, event_name, func) {
     }
 }
 
+var booleanGroups = Array();
+
+function getBooleanGroupId(table) {
+    for (var i=0; i<booleanGroups.length; i++) {
+        if (booleanGroups[i] == table) {
+            return i;
+        }
+    }
+    // nothing found.
+    simpleLog('DEBUG','no entry found for table.');
+    booleanGroups.push(table);
+    simpleLog('DEBUG','added entry at '+(booleanGroups.length-1));    
+    return booleanGroups.length-1; // int loc.
+}
+
+
 // quick and dirty helper - find the nearest parent item matching tagName. 
 // FIXME steal the klass or tagName logic from MochiK.
 function breadcrumbFind(elem, tagName) {
@@ -41,7 +57,9 @@ var autoIndexCriteria = Array();
 // initiate the criteria creation process.
 function addNewCriteria(add_button) {
     var parent_row = breadcrumbFind(add_button, 'TR');
+    var parent_table = breadcrumbFind(parent_row, 'TABLE');
     simpleLog('DEBUG','addNewCriteria found parent row: '+parent_row);
+    simpleLog('DEBUG','addNewCriteria found parent table: '+parent_table);
     var select_source = parent_row.getElementsByTagName('select');
     if (select_source.length == 0) {
         simpleLog('ERROR','addNewCriteria found no criteria specification source.: '+parent_row);
@@ -59,12 +77,15 @@ function addNewCriteria(add_button) {
     // make this one identifiable.
     autoIndexCriteria.push(0);
     var critId = autoIndexCriteria.length;
+    
+    var tableId = getBooleanGroupId(parent_table);
+    simpleLog('DEBUG','got boolean group id'+tableId);
 
     // ok, warn the user that we're loading the item.
     replaceChildNodes(notify_message, 'loading...');
     var newCriteriaText = scrapeText(select.options[select.selectedIndex])+' '; // FIXME insert the "input" here.
-    replaceChildNodes(select.parentNode, newCriteriaText, INPUT({'type':'hidden', 'name':'boolean_search['+critId+'][type]','value':select.value}));           // works thanks to DOM co-ercion.
-    createAdditionalCriteriaOption();
+    replaceChildNodes(select.parentNode, newCriteriaText, INPUT({'type':'hidden', 'name':'boolean_search['+tableId+']['+critId+'][type]','value':select.value}));           // works thanks to DOM co-ercion.
+    createAdditionalCriteriaOption(parent_table);
     var removeButton = INPUT({'type':'button', 'value':'Remove'});
     attachToElementEvent(removeButton, 'click', partial(removeCriteria, removeButton));
     add_button.parentNode.replaceChild(removeButton, add_button);
@@ -76,7 +97,7 @@ function addNewCriteria(add_button) {
     simpleLog('DEBUG','addNewCriteria initiating request to: '+targeturl);
     
     var deferred = doSimpleXMLHttpRequest(targeturl); 
-    deferred.addCallbacks(partial(do_addNewCriteria, dest_cell, critId), handleAjaxError);
+    deferred.addCallbacks(partial(do_addNewCriteria, dest_cell, critId, tableId), handleAjaxError);
 }
 
 
@@ -84,7 +105,7 @@ function addNewCriteria(add_button) {
 //          - check for the presence of [ or ].  if so, use everything before [ as
 //            the key, and append everything after [.
 // actually replace the contents of the specified td with the responseText.
-function do_addNewCriteria(destination_cell, crit_id, req) { 
+function do_addNewCriteria(destination_cell, crit_id, table_id, req) { 
     simpleLog('DEBUG','replacing content of cell with: \n'+req.responseText);
     destination_cell.innerHTML = req.responseText; 
     // whatever was passed in almost certainly has the wrong name, but that's what
@@ -96,11 +117,11 @@ function do_addNewCriteria(destination_cell, crit_id, req) {
 
     for (var i=0; i<inputs.length; i++) {
         var obj = inputs[i];
-        obj.name = "boolean_search["+crit_id+"][data]["+obj.name+"]";
+        obj.name = "boolean_search["+table_id+"]["+crit_id+"][data]["+obj.name+"]";
     }
     for (var i=0; i<selects.length; i++) {
         var obj = selects[i];
-        obj.name = "boolean_search["+crit_id+"][data]["+obj.name+"]";
+        obj.name = "boolean_search["+table_id+"]["+crit_id+"][data]["+obj.name+"]";
     }
     simpleLog('DEBUG','criteria addition complete.');
 }
@@ -119,8 +140,8 @@ function removeCriteria(removeButton) {
     simpleLog('DEBUG','criteria removed.');
 }
 
-function createAdditionalCriteriaOption() {
-    var tbody = getSearchContainer();
+function createAdditionalCriteriaOption(parent_table) {
+    var tbody = getSearchContainer(parent_table);
     if (tbody == null) {
         simpleLog('ERROR','createAdditionalCriteriaOption: No criteria table found.');
         return null;        
@@ -144,8 +165,8 @@ function createAdditionalCriteriaOption() {
     tbody.appendChild(TR(null, select_entry, notification_entry, add_entry));
 }
 
-function getSearchContainer() {
-    var container = getElement('advanced-search-form');
+function getSearchContainer(parent_table) {
+    var container = parent_table;
     if (container == null) {
         simpleLog('ERROR','No criteria table found.');
         return null;
@@ -163,3 +184,48 @@ function getSearchContainer() {
     return container;
 }
 
+// uses addbutton to insertBefore
+function addBooleanGroup(addbutton) {
+    bodyObj = addbutton.parentNode;
+    simpleLog('DEBUG','adding boolean group to '+bodyObj);
+
+    // i hate me.  i also want sane multiline
+    sourceString = ' <fieldset> <legend>Criteria Group</legend> <table class="advanced-search-form"> <tbody> <tr> <th>Criteria</th> <th>Values</th> </tr></tbody></table> </fieldset>';
+
+    
+    // add the fieldset
+    var t = DIV(null);
+    t.innerHTML = sourceString; // urgh.
+    var fieldsetObj = t.getElementsByTagName('FIELDSET')[0];
+    bodyObj.insertBefore(fieldsetObj, addbutton);
+    tableObj = fieldsetObj.getElementsByTagName('TABLE')[0];
+    // get an id for the table.
+    var table_id = getBooleanGroupId(tableObj);
+    // add the grouping string
+    groupingString = '<p class="helpText">Return items which match &nbsp;<select name="boolean_condition['+table_id+']"><option value="AND">all</option><option value="OR">any</option></select> of the criteria specified.</p>';    
+    t = DIV(null);
+    t.innerHTML = groupingString;
+    var paraObj = t.getElementsByTagName('P')[0];
+    fieldsetObj.insertBefore(paraObj, tableObj);
+    
+    // add a basic item to the table.
+    createAdditionalCriteriaOption(tableObj);
+    // done.
+    simpleLog('DEBUG','done adding boolean group.');
+}
+
+// FIXME do we want a "remove boolean group" setting?
+// FIXME yes, and its easy (find parent, find ITS parent, toast.)
+function initialiseChecks() {
+   
+    var initialTables = getElementsByTagAndClassName('TABLE','advanced-search-form');
+    simpleLog('DEBUG','initialising '+initialTables.length+' criteria groups.');
+    var t = TABLE(null);
+    for (var i=0; i<initialTables.length; i++) {
+        if (typeof(initialTables[i]) == typeof(t)) {
+            getBooleanGroupId(initialTables[i]);
+        }
+    } 
+}
+
+addLoadEvent(initialiseChecks);

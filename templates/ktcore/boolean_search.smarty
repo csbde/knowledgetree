@@ -50,12 +50,15 @@ legend { border: 1px dotted #999;}
 
 <form>
     <input type="hidden" name="action" value="performSearch" />
+    
+   <p class="helpText">Return items which match &nbsp;<select name="outer_boolean_condition"><option value="AND">all</option><option value="OR">any</option></select> of the <strong>criteria groups</strong> specified.</p>    
+    
     <fieldset>
-        <legend>Boolean Search.</legend>
+        <legend>Criteria Group</legend>
 
-        <p class="helpText">Return items which match &nbsp;<select name="boolean_condition"><option value="AND">all</option><option value="OR">any</option></select> of the criteria specified.</p>
+        <p class="helpText">Return items which match &nbsp;<select name="boolean_condition[0]"><option value="AND">all</option><option value="OR">any</option></select> of the criteria specified.</p>
 
-        <table id="advanced-search-form">
+        <table class="advanced-search-form">
             <tbody>
                 <tr>
                 <th>Criteria</th>
@@ -76,8 +79,13 @@ legend { border: 1px dotted #999;}
         </table>
 
     </fieldset>
-    <input type="submit" name="submit" value="performSearch" />
+    
+    <input type="button" value="add another set of criteria" onclick="addBooleanGroup(this)"/>
+    
+    
+    <input type="submit" name="submit" value="Search" />
 </form>
+
 <!--
 <table id="brad-log" width="100%">
 <thead>
@@ -88,7 +96,8 @@ legend { border: 1px dotted #999;}
     </tr>
 </thead>
 <tbody>
+-->
    
 </tbody>
 </table>
--->
+
