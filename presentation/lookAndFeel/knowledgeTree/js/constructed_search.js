@@ -84,7 +84,7 @@ function addNewCriteria(add_button) {
     // ok, warn the user that we're loading the item.
     replaceChildNodes(notify_message, 'loading...');
     var newCriteriaText = scrapeText(select.options[select.selectedIndex])+' '; // FIXME insert the "input" here.
-    replaceChildNodes(select.parentNode, newCriteriaText, INPUT({'type':'hidden', 'name':'boolean_search['+tableId+'][values]['+critId+'][type]','value':select.value}));           // works thanks to DOM co-ercion.
+    replaceChildNodes(select.parentNode, newCriteriaText, INPUT({'type':'hidden', 'name':'boolean_search[subgroup]['+tableId+'][values]['+critId+'][type]','value':select.value}));           // works thanks to DOM co-ercion.
     createAdditionalCriteriaOption(parent_table);
     var removeButton = INPUT({'type':'button', 'value':'Remove'});
     attachToElementEvent(removeButton, 'click', partial(removeCriteria, removeButton));
@@ -117,11 +117,11 @@ function do_addNewCriteria(destination_cell, crit_id, table_id, req) {
 
     for (var i=0; i<inputs.length; i++) {
         var obj = inputs[i];
-        obj.name = "boolean_search["+table_id+"][values]["+crit_id+"][data]["+obj.name+"]";
+        obj.name = "boolean_search[subgroup]["+table_id+"][values]["+crit_id+"][data]["+obj.name+"]";
     }
     for (var i=0; i<selects.length; i++) {
         var obj = selects[i];
-        obj.name = "boolean_search["+table_id+"][values]["+crit_id+"][data]["+obj.name+"]";
+        obj.name = "boolean_search[subgroup]["+table_id+"][values]["+crit_id+"][data]["+obj.name+"]";
     }
     simpleLog('DEBUG','criteria addition complete.');
 }
