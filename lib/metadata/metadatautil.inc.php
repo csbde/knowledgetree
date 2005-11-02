@@ -532,6 +532,49 @@ class KTMetadataUtil {
         return true;
     }
     // }}}
+    
+    // {{{ synchroniseMetadata
+    /**
+     * This function takes a list of metadata values and synchronises
+     * those values into the values that already exist for the field by
+     * adding new values and disabling values that aren't in the new
+     * list.
+     *
+     * XXX: Scalability: This function 
+     */
+    function synchroniseMetadata($oField, $aNewMetadata) {
+        $iFieldId = KTUtil::getId($oField);
+
+        $aCurrentAllValues = Metadata::getValuesByDocumentField($iFieldId);
+        $aCurrentEnabledValues = Metadata::getEnabledValuesByDocumentField($iFieldId);
+        $aCurrentDisabledValues = Metadata::getDisabledValuesByDocumentField($iFieldId);
+
+        $aToBeAddedValues = array_diff($aNewMetadata, $aCurrentAllValues);
+        $aToBeDisabledValues = array_diff($aCurrentEnabledValues, $aNewMetadata);
+        $aToBeEnabledValues = array_intersect($aCurrentDisabledValues, $aNewMetadata);
+
+        foreach ($aToBeAddedValues as $sValue) {
+            $oMetadata =& Metadata::createFromArray(array(
+                'name' => $sValue,
+                'docfieldid' => $iFieldId,
+            ));
+        }
+
+        foreach ($aToBeDisabledValues as $sValue) {
+            $oMetadata =& Metadata::getByValueAndDocumentField($sValue, $iFieldId);
+            $oMetadata->updateFromArray(array(
+                'disabled' => true,
+            ));
+        }
+
+        foreach ($aToBeEnabledValues as $sValue) {
+            $oMetadata =& Metadata::getByValueAndDocumentField($sValue, $iFieldId);
+            $oMetadata->updateFromArray(array(
+                'disabled' => false,
+            ));
+        }
+    }
+    // }}}
 }
 
 ?>
