@@ -34,12 +34,15 @@ class MetaData extends KTEntity {
 	var $sName;
     /** _if_ this field is a tree, which node in said tree is this one's parent. */
     var $iTreeParent;
+    var $bDisabled = false;
 
+    var $_bUsePearError = true;
     var $_aFieldToSelect = array(
         'iId' => 'id',
         'iDocFieldId' => 'document_field_id',
         'sName' => 'name',
         'iTreeParent' => 'treeorg_parent',
+        'bDisabled' => 'disabled',
     );
 	
 	/**
@@ -63,6 +66,8 @@ class MetaData extends KTEntity {
 	function setDocFieldId($iNewValue) { $this->iDocFieldId = $iNewValue; }
     function getTreeParent() { return $this->iTreeParent; }
     function setTreeParent($iNewValue) { $this->iTreeParent = $iNewValue; }
+    function getDisabled() { return $this->bDisabled; }
+    function setDisabled($bNewValue) { $this->bDisabled = $bNewValue; }
 
     function _table () {
         global $default;
@@ -122,6 +127,77 @@ class MetaData extends KTEntity {
             'document_field_id' => $iDocumentFieldId,
         ), array(
             'multi' => 'true'
+        ));
+    }
+
+    function getValuesByDocumentField($oDocumentField) {
+        if (is_object($oDocumentField)) {
+            $iDocumentFieldId = $oDocumentField->getId();
+        } else {
+            $iDocumentFieldId = $oDocumentField;
+        }
+        return KTEntityUtil::getByDict('MetaData', array(
+            'document_field_id' => $iDocumentFieldId,
+        ), array(
+            'multi' => 'true',
+            'ids' => true,
+            'idfield' => 'name',
+        ));
+    }
+
+    function getEnabledByDocumentField($oDocumentField) {
+        if (is_object($oDocumentField)) {
+            $iDocumentFieldId = $oDocumentField->getId();
+        } else {
+            $iDocumentFieldId = $oDocumentField;
+        }
+        return KTEntityUtil::getByDict('MetaData', array(
+            'document_field_id' => $iDocumentFieldId,
+            'disabled' => false,
+        ), array(
+            'multi' => 'true'
+        ));
+    }
+
+    function getDisabledByDocumentField($oDocumentField) {
+        $iDocumentFieldId = KTUtil::getId($oDocumentField);
+        return KTEntityUtil::getByDict('MetaData', array(
+            'document_field_id' => $iDocumentFieldId,
+            'disabled' => true,
+        ), array(
+            'multi' => true,
+        ));
+    }
+
+    function getEnabledValuesByDocumentField($oDocumentField) {
+        $iDocumentFieldId = KTUtil::getId($oDocumentField);
+        return KTEntityUtil::getByDict('MetaData', array(
+            'document_field_id' => $iDocumentFieldId,
+            'disabled' => false,
+        ), array(
+            'multi' => 'true',
+            'ids' => true,
+            'idfield' => 'name',
+        ));
+    }
+
+    function getDisabledValuesByDocumentField($oDocumentField) {
+        $iDocumentFieldId = KTUtil::getId($oDocumentField);
+        return KTEntityUtil::getByDict('MetaData', array(
+            'document_field_id' => $iDocumentFieldId,
+            'disabled' => true,
+        ), array(
+            'multi' => 'true',
+            'ids' => true,
+            'idfield' => 'name',
+        ));
+    }
+
+    function getByValueAndDocumentField($sValue, $oDocumentField) {
+        $iDocumentFieldId = KTUtil::getId($oDocumentField);
+        return KTEntityUtil::getByDict('MetaData', array(
+            'document_field_id' => $iDocumentFieldId,
+            'name' => $sValue,
         ));
     }
 
