@@ -48,15 +48,16 @@ legend { border: 1px dotted #999;}
 
 <h2>Boolean Search</h2>
 
-<form>
+<form method="POST">
     <input type="hidden" name="action" value="performSearch" />
     
-   <p class="helpText">Return items which match &nbsp;<select name="outer_boolean_condition"><option value="AND">all</option><option value="OR">any</option></select> of the <strong>criteria groups</strong> specified.</p>    
+   <p class="helpText">Return items which match &nbsp;<select
+name="boolean_search[join]"><option value="AND">all</option><option value="OR">any</option></select> of the <strong>criteria groups</strong> specified.</p>    
     
     <fieldset>
         <legend>Criteria Group</legend>
 
-        <p class="helpText">Return items which match &nbsp;<select name="boolean_search[0][join]"><option value="AND">all</option><option value="OR">any</option></select> of the criteria specified.</p>
+        <p class="helpText">Return items which match &nbsp;<select name="boolean_search[subgroup][0][join]"><option value="AND">all</option><option value="OR">any</option></select> of the criteria specified.</p>
 
         <table class="advanced-search-form">
             <tbody>

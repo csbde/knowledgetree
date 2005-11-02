@@ -48,27 +48,15 @@ class BooleanSearchDispatcher extends KTStandardDispatcher {
         // TODO finally return via PatternBrowseableSearchResults (urgh.)
         
         $datavars = KTUtil::arrayGet($_REQUEST, 'boolean_search');
-        $booleanJoinName = KTUtil::arrayGet($_REQUEST, 'outer_boolean_condition');
+        if (!is_array($datavars)) {
+            $datavars = unserialize($datavars);
+        }
         
         if (empty($datavars)) {
             $this->errorRedirectToMain('You need to have at least 1 condition.');
         }
-        if (empty($booleanJoinName)) {
-             $this->errorRedirectToMain('You need to specify which kind of search (ALL/ANY) you wish to perform.');
-        }
         
-        // Step 1:  extract the criteria selection, and create an array of criteria.
-        $criteria_set = array();
-        foreach (array_keys($datavars) as $k) {
-            foreach ($datavars[$k] as $order => $dataset) {
-                $oCriterion = Criteria::getCriterionByNumber($dataset["type"]);             
-                if (PEAR::isError($oCriterion)) {
-                    $this->errorRedirectToMain('Invalid criteria specified.');
-                }
-                $criteria_set[$k][] = array($oCriterion, $dataset["data"]);
-            }
-        }
-        $res = $this->handleCriteriaSet($datavars, $booleanJoinName);
+        $res = $this->handleCriteriaSet($datavars, KTUtil::arrayGet($_REQUEST, 'fStartIndex', 1));
         
         return $res;
     }
@@ -116,11 +104,11 @@ class BooleanSearchDispatcher extends KTStandardDispatcher {
         return array($aCritQueries, $aCritParams, $aJoinSQL);
     }
 
-    function criteriaSetToSQL($aCriteriaSet, $sMergeType = "AND") {
+    function criteriaSetToSQL($aCriteriaSet) {
         $aJoinSQL = array();
         $aSearchStrings = array();
         $aParams = array();
-        foreach ($aCriteriaSet as $k => $aOneCriteriaSet) {
+        foreach ($aCriteriaSet["subgroup"] as $k => $aOneCriteriaSet) {
             if (is_null($aOneCriteriaSet["values"])) {
                 continue;
             }
@@ -130,13 +118,13 @@ class BooleanSearchDispatcher extends KTStandardDispatcher {
             $aSearchStrings[] = "\n\t\t(\n\t\t\t" . join("\n " . KTUtil::arrayGet($aOneCriteriaSet, 'join', "AND") . " ", $aThisCritQueries) . "\n\t\t)";
         }
 		$sJoinSQL = join(" ", $aJoinSQL);
-		$sSearchString = "\n\t(" . join("\n\t\t" . $sMergeType . " ", $aSearchStrings) .  "\n\t)";
+		$sSearchString = "\n\t(" . join("\n\t\t" . $aCriteriaSet['join'] . " ", $aSearchStrings) .  "\n\t)";
         return array($sSearchString, $aParams, $sJoinSQL);
     }
     
-    function handleCriteriaSet($aCriteriaSet, $sMergeType = "AND") {
+    function handleCriteriaSet($aCriteriaSet, $iStartIndex) {
 		global $default;
-        list($sSQLSearchString, $aCritParams, $sJoinSQL) = $this->criteriaSetToSQL($aCriteriaSet, $sMergeType);
+        list($sSQLSearchString, $aCritParams, $sJoinSQL) = $this->criteriaSetToSQL($aCriteriaSet);
 	
 		$sToSearch = KTUtil::arrayGet($aOrigReq, 'fToSearch', 'Live'); // actually never present in this version.
 
@@ -175,8 +163,6 @@ class BooleanSearchDispatcher extends KTStandardDispatcher {
 		//print '<pre>';var_dump(DBUtil::getResultArray(array($sQuery, $aParams)));
 		//exit(0);
 		//return '<pre>'.print_r(DBUtil::getResultArray(array($sQuery, $aParams)), true).'</pre>';
-        $iStartIndex = 1;
-	
 		$aColumns = array("folder_name", "file_name", "document_name", "doc_count", "view");
 		$aColumnTypes = array(3,3,3,1,3);
 		$aColumnHeaders = array("<font color=\"ffffff\"><img src=$default->graphicsUrl/widgets/dfolder.gif>" . _("Folder") . "</font>", "<font color=\"ffffff\">" . _("Name") . "</font>", "<font color=\"ffffff\">" . _("Title") . "</font>", "<font color=\"ffffff\">" . _("Matches") . "</font>", "<font color=\"ffffff\">" . _("View") . "</font>");
@@ -187,9 +173,12 @@ class BooleanSearchDispatcher extends KTStandardDispatcher {
 		$oPatternBrowse = & new PatternBrowseableSearchResults(array($sQuery, $aParams), 10, $aColumns, $aColumnTypes, $aColumnHeaders, $aLinkURLs, $aDBQueryStringColumns, $aQueryStringVariableNames);
 		$oPatternBrowse->setStartIndex($iStartIndex);
 		$oPatternBrowse->setSearchText("");
-		$sForSearch = "<input type=\"hidden\" name=\"fForSearch\" value=\"1\" />";
-	
-		return renderHeading(_("Advanced Search")) . $oPatternBrowse->render() . $sForSearch . $sRefreshMessage;
+        $sFormStart = '<form method="POST" name="MainForm">';
+
+		$sFormEnd = '<input type="hidden" name="boolean_search" value="'. htmlentities(serialize($aCriteriaSet)) . '" />';
+		$sFormEnd .= '<input type="hidden" name="action" value="performSearch" />';
+
+		return renderHeading(_("Advanced Search")) . $sFormStart . $oPatternBrowse->render() . $sFormEnd . $sRefreshMessage;
     }
 }
 
