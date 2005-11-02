@@ -56,7 +56,7 @@ legend { border: 1px dotted #999;}
     <fieldset>
         <legend>Criteria Group</legend>
 
-        <p class="helpText">Return items which match &nbsp;<select name="boolean_condition[0]"><option value="AND">all</option><option value="OR">any</option></select> of the criteria specified.</p>
+        <p class="helpText">Return items which match &nbsp;<select name="boolean_search[0][join]"><option value="AND">all</option><option value="OR">any</option></select> of the criteria specified.</p>
 
         <table class="advanced-search-form">
             <tbody>
