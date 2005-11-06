@@ -362,12 +362,34 @@ class KTDocumentUtil {
             return $oDocument;
         }
 
+        $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
+        $aTriggers = $oKTTriggerRegistry->getTriggers('content', 'scan');
+        foreach ($aTriggers as $aTrigger) {
+            $sTrigger = $aTrigger[0];
+            $oTrigger = new $sTrigger;
+            $oTrigger->setDocument($oDocument);
+            $ret = $oTrigger->scan();
+            if (PEAR::isError($ret)) {
+                $oDocument->delete();
+                return $ret;
+            }
+        }
+
         //create the web document link
         $oWebDocument = & new WebDocument($oDocument->getID(), -1, 1, NOT_PUBLISHED, getCurrentDateTime());
         $res = $oWebDocument->create();
         if (PEAR::isError($res)) {
             $oDocument->delete();
             return $res;
+        }
+
+        $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
+        $aTriggers = $oKTTriggerRegistry->getTriggers('content', 'transform');
+        foreach ($aTriggers as $aTrigger) {
+            $sTrigger = $aTrigger[0];
+            $oTrigger = new $sTrigger;
+            $oTrigger->setDocument($oDocument);
+            $oTrigger->transform();
         }
 
         $aOptions = array('user' => $oUser);
