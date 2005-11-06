@@ -119,6 +119,14 @@ class DocumentField extends KTEntity {
             'multi' => true,
         ));
     }
+
+    function &getByFieldsetAndName($oFieldset, $sName) {
+        $iFieldsetId = KTUtil::getId($oFieldset);
+        return KTEntityUtil::getByDict('DocumentField', array(
+            'parent_fieldset' => $iFieldsetId,
+            'name' => $sName,
+        ));
+    }
 	
     function &get($iId) {
         return KTEntityUtil::get('DocumentField', $iId);
