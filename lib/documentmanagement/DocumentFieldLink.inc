@@ -160,8 +160,9 @@ class DocumentFieldLink extends KTEntity {
 
 
     function &getByDocument($oDocument) {
+        $iDocumentId = KTUtil::getId($oDocument);
         return KTEntityUtil::getByDict('DocumentFieldLink', array(
-            'document_id' => $oDocument->getId(),
+            'document_id' => $iDocumentId,
         ), array('multi' => true));
     }
 
