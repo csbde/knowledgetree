@@ -495,6 +495,64 @@ class WorkflowStateCriterion extends BrowseCriterion {
     }
 }
 
+class TransactionTextCriterion extends BrowseCriterion {
+    function documentDisplay ($oDocument) {
+        return "Transaction text";
+    }
+    function getName() {
+        return "transactiontext";
+    }
+
+    function searchSQL ($aRequest) {
+        // XXX: Icky MySQL-specific stuff.
+        $sVersion = DBUtil::getOneResultKey("SHOW VARIABLES LIKE 'version'", "Value");
+        if ((int)substr($sVersion, 0, 1) >= 4) {
+            $boolean_mode = "IN BOOLEAN MODE";
+        } else {
+            $boolean_mode = "";
+        }
+
+        $p = array();
+        $p[0] = "MATCH(DTT.document_text) AGAINST (? $boolean_mode)";
+        $p[1] = $aRequest[$this->getWidgetBase()];
+        return $p;
+    }
+
+    function searchJoinSQL () {
+        global $default;
+        return "INNER JOIN $default->document_transaction_text_table AS DTT ON D.id = DTT.document_id";
+    }
+}
+
+class SearchableTextCriterion extends BrowseCriterion {
+    function documentDisplay ($oDocument) {
+        return "Searchable text";
+    }
+    function getName() {
+        return "searchabletext";
+    }
+
+    function searchSQL ($aRequest) {
+        // XXX: Icky MySQL-specific stuff.
+        $sVersion = DBUtil::getOneResultKey("SHOW VARIABLES LIKE 'version'", "Value");
+        if ((int)substr($sVersion, 0, 1) >= 4) {
+            $boolean_mode = "IN BOOLEAN MODE";
+        } else {
+            $boolean_mode = "";
+        }
+
+        $p = array();
+        $p[0] = "MATCH(DST.document_text) AGAINST (? $boolean_mode)";
+        $p[1] = $aRequest[$this->getWidgetBase()];
+        return $p;
+    }
+
+    function searchJoinSQL () {
+        global $default;
+        return "INNER JOIN $default->document_searchable_text_table AS DST ON D.id = DST.document_id";
+    }
+}
+
 class Criteria {
     function &_getBaseCriterionByNumber($iID) {
         global $default;
@@ -529,6 +587,12 @@ class Criteria {
             case -10:
                 $oCriterion =& new WorkflowStateCriterion(_("Workflow state"), 'state', 'state', -10);
                 break;
+            case -11:
+                $oCriterion =& new TransactionTextCriterion(_("Transaction Text"), 'transactiontext', 'transactiontext', -11);
+                break;
+            case -12:
+                $oCriterion =& new SearchableTextCriterion(_("Searchable Text"), 'searchabletext', 'searchabletext', -12);
+                break;
         }
         return $oCriterion;
     }
@@ -539,7 +603,7 @@ class Criteria {
             return;
         }
         $aBaseCriteria = array();
-        $aIDs = range(-1, -10); 
+        $aIDs = range(-1, -12); 
         foreach ($aIDs as $iID) {
             $oCriterion =& Criteria::_getBaseCriterionByNumber($iID);
             $aBaseCriteria[$iID] =& $oCriterion;
