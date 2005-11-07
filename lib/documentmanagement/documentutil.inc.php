@@ -440,6 +440,28 @@ class KTDocumentUtil {
         return true;
     }
     // }}}
+
+    // {{{ updateTransactionText
+    function updateTransactionText($oDocument) {
+        $iDocumentId = KTUtil::getId($oDocument);
+        $aTransactions = DocumentTransaction::getByDocument($iDocumentId);
+        foreach ($aTransactions as $oTransaction) {
+            $aComments[] = $oTransaction->getComment();
+        }
+        $sAllComments = join("\n\n", $aComments);
+        $sTable = KTUtil::getTableName('document_transaction_text');
+        $aQuery = array("DELETE FROM $sTable WHERE document_id = ?", array($iDocumentId));
+        $res = DBUtil::runQuery($aQuery);
+        if (PEAR::isError($res)) {
+            return $res;
+        }
+        $aInsert = array(
+            "document_id" => $iDocumentId,
+            "document_text" => $sAllComments,
+        );
+        return DBUtil::autoInsert($sTable, $aInsert, array('noid' => true));
+    }
+    // }}}
 }
 
 class KTMetadataValidationError extends PEAR_Error {
