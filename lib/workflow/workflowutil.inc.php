@@ -6,8 +6,18 @@ require_once(KT_LIB_DIR . '/workflow/workflowtransition.inc.php');
 
 require_once(KT_LIB_DIR . '/permissions/permissionutil.inc.php');
 require_once(KT_LIB_DIR . '/groups/GroupUtil.php');
+require_once(KT_LIB_DIR . '/documentmanagement/DocumentTransaction.inc');
 
 class KTWorkflowUtil {
+    // {{{ saveTransitionsFrom
+    /**
+     * Saves which workflow transitions are available to be chosen from
+     * this workflow state.
+     *
+     * Workflow transitions have only destination workflow states, and
+     * it is up to the workflow state to decide which workflow
+     * transitions it wants to allow to leave its state.
+     */
     function saveTransitionsFrom($oState, $aTransitionIds) {
         $sTable = KTUtil::getTableName('workflow_state_transitions');
         $aQuery = array(
@@ -30,7 +40,20 @@ class KTWorkflowUtil {
         }
         return;
     }
+    // }}}
 
+    // {{{ getTransitionsFrom
+    /**
+     * Gets which workflow transitions are available to be chosen from
+     * this workflow state.
+     *
+     * Workflow transitions have only destination workflow states, and
+     * it is up to the workflow state to decide which workflow
+     * transitions it wants to allow to leave its state.
+     *
+     * This function optionally will return the database id numbers of
+     * the workflow transitions using the 'ids' option.
+     */
     function getTransitionsFrom($oState, $aOptions = null) {
         $bIds = KTUtil::arrayGet($aOptions, 'ids');
         $sTable = KTUtil::getTableName('workflow_state_transitions');
@@ -51,7 +74,13 @@ class KTWorkflowUtil {
         }
         return $aRet;
     }
+    // }}}
 
+    // {{{ startWorkflowOnDocument
+    /**
+     * Starts the workflow process on a document, placing it into the
+     * starting workflow state for the given workflow.
+     */
     function startWorkflowOnDocument ($oWorkflow, $oDocument) {
         $iDocumentId = KTUtil::getId($oDocument);
         $iWorkflowId = KTUtil::getId($oWorkflow);
@@ -69,7 +98,18 @@ class KTWorkflowUtil {
         $sTable = KTUtil::getTableName('workflow_documents');
         return DBUtil::autoInsert($sTable, $aValues, $aOptions);
     }
+    // }}}
 
+    // {{{ getControlledActionsForWorkflow
+    /**
+     * Gets the actions that are controlled by a workflow.
+     *
+     * A controlled action is one that can be enabled or disabled by a
+     * workflow state attached to this workflow.  This allows for
+     * actions such as "Delete" to not be allowed to occur during the
+     * workflow, or for special actions such as "Publish" to only occur
+     * when a particular workflow state is reached.
+     */
     function getControlledActionsForWorkflow($oWorkflow) {
         $iWorkflowId = KTUtil::getId($oWorkflow);
         $sTable = KTUtil::getTableName('workflow_actions');
@@ -80,7 +120,18 @@ class KTWorkflowUtil {
         );
         return DBUtil::getResultArrayKey($aQuery, 'action_name');
     }
+    // }}}
 
+    // {{{ setControlledActionsForWorkflow
+    /**
+     * Sets the actions that are controlled by a workflow.
+     *
+     * A controlled action is one that can be enabled or disabled by a
+     * workflow state attached to this workflow.  This allows for
+     * actions such as "Delete" to not be allowed to occur during the
+     * workflow, or for special actions such as "Publish" to only occur
+     * when a particular workflow state is reached.
+     */
     function setControlledActionsForWorkflow($oWorkflow, $aActions) {
         $iWorkflowId = KTUtil::getId($oWorkflow);
         $sTable = KTUtil::getTableName('workflow_actions');
@@ -105,7 +156,21 @@ class KTWorkflowUtil {
         }
         return;
     }
+    // }}}
 
+    // {{{ setEnabledActionsForState
+    /**
+     * Sets the actions that are enabled by this workflow state.
+     *
+     * A controlled action is one that can be enabled or disabled by a
+     * workflow state attached to this workflow.  This allows for
+     * actions such as "Delete" to not be allowed to occur during the
+     * workflow, or for special actions such as "Publish" to only occur
+     * when a particular workflow state is reached.
+     *
+     * Only the enabled actions are tracked.  Any actions controlled by
+     * the workflow but not explicitly enabled are disabled.
+     */
     function setEnabledActionsForState($oState, $aActions) {
         $iStateId = KTUtil::getId($oState);
         $sTable = KTUtil::getTableName('workflow_state_actions');
@@ -130,7 +195,21 @@ class KTWorkflowUtil {
         }
         return;
     }
+    // }}}
 
+    // {{{ getEnabledActionsForState
+    /**
+     * Gets the actions that are enabled by this workflow state.
+     *
+     * A controlled action is one that can be enabled or disabled by a
+     * workflow state attached to this workflow.  This allows for
+     * actions such as "Delete" to not be allowed to occur during the
+     * workflow, or for special actions such as "Publish" to only occur
+     * when a particular workflow state is reached.
+     *
+     * Only the enabled actions are tracked.  Any actions controlled by
+     * the workflow but not explicitly enabled are disabled.
+     */
     function getEnabledActionsForState($oState) {
         $iStateId = KTUtil::getId($oState);
         $sTable = KTUtil::getTableName('workflow_state_actions');
@@ -141,7 +220,22 @@ class KTWorkflowUtil {
         );
         return DBUtil::getResultArrayKey($aQuery, 'action_name');
     }
+    // }}}
 
+    // {{{ actionEnabledForDocument
+    /**
+     * Checks if a particular action is enabled to occur on a document
+     * by virtue of its workflow and workflow state.
+     *
+     * A controlled action is one that can be enabled or disabled by a
+     * workflow state attached to this workflow.  This allows for
+     * actions such as "Delete" to not be allowed to occur during the
+     * workflow, or for special actions such as "Publish" to only occur
+     * when a particular workflow state is reached.
+     *
+     * Only the enabled actions are tracked.  Any actions controlled by
+     * the workflow but not explicitly enabled are disabled.
+     */
     function actionEnabledForDocument($oDocument, $sName) {
         $oWorkflow =& KTWorkflow::getByDocument($oDocument);
         if (is_null($oWorkflow)) {
@@ -156,7 +250,13 @@ class KTWorkflowUtil {
         }
         return true;
     }
+    // }}}
 
+    // {{{ getWorkflowForDocument
+    /**
+     * Gets the workflow that applies to the given document, returning
+     * null if there is no workflow assigned.
+     */
     function getWorkflowForDocument ($oDocument, $aOptions = null) {
         $ids = KTUtil::arrayGet($aOptions, 'ids', false);
         $iDocumentId = KTUtil::getId($oDocument);
@@ -177,7 +277,13 @@ class KTWorkflowUtil {
         }
         return KTWorkflow::get($iWorkflowId);
     }
+    // }}}
 
+    // {{{ getWorkflowStateForDocument
+    /**
+     * Gets the workflow state that applies to the given document,
+     * returning null if there is no workflow assigned.
+     */
     function getWorkflowStateForDocument ($oDocument, $aOptions = null) {
         $ids = KTUtil::arrayGet($aOptions, 'ids', false);
         $iDocumentId = KTUtil::getId($oDocument);
@@ -198,7 +304,17 @@ class KTWorkflowUtil {
         }
         return KTWorkflowState::get($iWorkflowStateId);
     }
+    // }}}
 
+    // {{{ getTransitionsForDocumentUser
+    /**
+     * Gets the transitions that are available for a document by virtue
+     * of its workflow state, and also by virtue of the user that wishes
+     * to perform the transition.
+     *
+     * In other words, ensures that the guard permission, role, group,
+     * and/or user are met for the given user.
+     */
     function getTransitionsForDocumentUser($oDocument, $oUser) {
         $oState = KTWorkflowUtil::getWorkflowStateForDocument($oDocument);
         if (is_null($oState) || PEAR::isError($oState)) {
@@ -225,7 +341,18 @@ class KTWorkflowUtil {
         }
         return $aEnabledTransitions;
     }
+    // }}}
 
+    // {{{ performTransitionOnDocument
+    /**
+     * Performs a workflow transition on a document, changing it from
+     * one workflow state to another, with potential side effects (user
+     * scripts, and so forth).
+     *
+     * This function currently assumes that the user in question is
+     * allowed to perform the transition and that all the guard
+     * functionality on the transition has passed.
+     */
     function performTransitionOnDocument($oTransition, $oDocument, $oUser, $sComments) {
         $oWorkflow =& KTWorkflow::getByDocument($oDocument);
         if (empty($oWorkflow)) {
@@ -234,6 +361,8 @@ class KTWorkflowUtil {
         if (PEAR::isError($oWorkflow)) {
             return $oWorkflow;
         }
+        $oSourceState =& KTWorkflowUtil::getWorkflowStateForDocument($oDocument);
+
         $sTable = KTUtil::getTableName('workflow_documents');
         $iStateId = $oTransition->getTargetStateId();
         $iDocumentId = $oDocument->getId();
@@ -241,12 +370,31 @@ class KTWorkflowUtil {
             "UPDATE $sTable SET state_id = ? WHERE document_id = ?",
             array($iStateId, $iDocumentId),
         );
-        return DBUtil::runQuery($aQuery);
+        $res = DBUtil::runQuery($aQuery);
+        if (PEAR::isError($res)) {
+            return $res;
+        }
+
+        $oTargetState =& KTWorkflowState::get($iStateId);
+        $sSourceState = $oSourceState->getName();
+        $sTargetState = $oTargetState->getName();
+
+        // create the document transaction record
+        $sTransactionComments = "Workflow state changed from $sSourceState to $sTargetState";
+        if ($sComments) {
+            $sTransactionComments .= "; Reason given was: " . $sComments;
+        }
+        $oDocumentTransaction = & new DocumentTransaction($oDocument->getID(), $sTransactionComments, WORKFLOW_TRANSITION);
+        $oDocumentTransaction->create();
+
+        return true;
     }
+    // }}}
 
     // {{{ setInformedForState
     /**
-     * Sets the users/groups/roles informed when a state is arrived at.
+     * Sets which users/groups/roles are to be informed when a state is
+     * arrived at.
      */
     function setInformedForState(&$oState, $aInformed) {
         $oDescriptor =& KTPermissionUtil::getOrCreateDescriptor($aInformed);
@@ -265,6 +413,10 @@ class KTWorkflowUtil {
     // }}}
 
     // {{{ getInformedForState
+    /**
+     * Gets which users/groups/roles are to be informed when a state is
+     * arrived at.
+     */
     function getInformedForState($oState) {
         $iDescriptorId = $oState->getInformDescriptorId();
         if (empty($iDescriptorId)) {
