@@ -462,6 +462,32 @@ class KTDocumentUtil {
         return DBUtil::autoInsert($sTable, $aInsert, array('noid' => true));
     }
     // }}}
+    //
+    // {{{ updateSearchableText
+    function updateSearchableText($oDocument) {
+        $iDocumentId = KTUtil::getId($oDocument);
+        $sTable = KTUtil::getTableName('document_transaction_text');
+        $aQuery = array("SELECT document_text FROM $sTable WHERE
+                document_id = ?", array($iDocumentId));
+        $sAllComments = DBUtil::getOneResultKey($aQuery, 'document_text');
+        $sTable = KTUtil::getTableName('document_text');
+        $aQuery = array("SELECT document_text FROM $sTable WHERE
+                document_id = ?", array($iDocumentId));
+        $sAllDocumentText = DBUtil::getOneResultKey($aQuery, 'document_text');
+        $aFieldLinks = DocumentFieldLink::getByDocument($iDocumentId);
+        $aFieldValues = array();
+        foreach ($aFieldLinks as $oFieldLink) {
+            $aFieldValues[] = $oFieldLink->getValue();
+        }
+        $sAllFieldText = join(" ", $aFieldValues);
+        $sSearchableText = $sAllDocumentText . " " . $sAllFieldText . " " . $sAllComments;
+        $sTable = KTUtil::getTableName('document_searchable_text');
+        $aInsert = array(
+            "document_id" => $iDocumentId,
+            "document_text" => $sSearchableText,
+        );
+        return DBUtil::autoInsert($sTable, $aInsert, array('noid' => true));
+    }
 }
 
 class KTMetadataValidationError extends PEAR_Error {
