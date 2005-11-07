@@ -1,17 +1,19 @@
-<table class="prettysw" cellpadding="0" cellspacing="0">
-<caption colspan="{$map|count}"><b>Type Specific Meta Data</b></caption>
-{ foreach key=k item=values from=$map }
-<tr>
-  <th>{$k}</th>
-  { foreach item=v from=$values }
-    { cycle values="odd,compare" name=$k assign="class" }
-    <td class="{$class}" style="width: 10em">{$v|default:"&nbsp;"}</td>
-  { /foreach }
-</tr>
-{ /foreach }
-</table>
+{foreach key=fieldset_id item=fieldset_info from=$map}
+  {assign var=fieldset value=$fieldset_info.fieldset}
+  <fieldset>
+    <legend>{$fieldset->getName()}</legend>
 
-{ if $editable }
-{$editable}
-{ /if }
-
+    <table class="prettysw" cellpadding="0" cellspacing="0">
+  {foreach key=field_id item=field_info from=$fieldset_info.fields}
+      <tr>
+    {assign var=field value=$field_info.field}
+        <th>{$field->getName()}</th>
+    {assign var=values value=$field_info.values}
+    {foreach item=iDocumentId from=$aDocumentIds}
+        <td>{$values.$iDocumentId}</td>
+    {/foreach}
+      </tr>
+  {/foreach}
+    </table>
+  </fieldset>
+{/foreach}
