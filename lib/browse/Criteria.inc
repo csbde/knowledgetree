@@ -456,6 +456,45 @@ class ContentCriterion extends BrowseCriterion {
     }
 }
 
+class WorkflowStateCriterion extends BrowseCriterion {
+    function documentDisplay ($oDocument) {
+        $oState =& KTWorkflowState::getByDocument($oDocument);
+        if ($oState) {
+            $oWorkflow = KTWorkflow::get($oState->getWorkflowId());
+            return $oWorkflow->getName() . " - " . $oState->getName();
+        }
+        return "Not in workflow";
+    }
+
+    function getName() {
+        return "state";
+    }
+
+    function searchSQL ($aRequest) {
+        $p = array();
+        $p[0] = "WD.state_id = ?";
+        $p[1] = $aRequest[$this->getWidgetBase()];
+        return $p;
+    }
+
+    function searchJoinSQL () {
+        global $default;
+        return "INNER JOIN $default->workflow_documents_table AS WD ON D.id = WD.document_id";
+    }
+
+    function searchWidget ($aRequest) {
+        $sRet = "<select size=\"1\" name=\"" . $this->getWidgetBase() . "\">\n";
+        $aStates = KTWorkflowState::getList("ORDER BY workflow_id");
+        $sRet .= "<option value=\"-1\">None</option>\n";
+        foreach ($aStates as $oState) {
+            $oWorkflow =& KTWorkflow::get($oState->getWorkflowId());
+            $sRet .= "<option value=\"" . $oState->getId() . "\">" . $oWorkflow->getName() . " - " . $oState->getName() . "</option>\n";
+        }
+        $sRet .= "</select>\n";
+        return $sRet;
+    }
+}
+
 class Criteria {
     function &_getBaseCriterionByNumber($iID) {
         global $default;
@@ -487,6 +526,9 @@ class Criteria {
             case -9:
                 $oCriterion =& new ContentCriterion(_("Document Contents"), 'content', 'content', -9);
                 break;
+            case -10:
+                $oCriterion =& new WorkflowStateCriterion(_("Workflow state"), 'state', 'state', -10);
+                break;
         }
         return $oCriterion;
     }
@@ -497,7 +539,7 @@ class Criteria {
             return;
         }
         $aBaseCriteria = array();
-        $aIDs = range(-1, -9); 
+        $aIDs = range(-1, -10); 
         foreach ($aIDs as $iID) {
             $oCriterion =& Criteria::_getBaseCriterionByNumber($iID);
             $aBaseCriteria[$iID] =& $oCriterion;
