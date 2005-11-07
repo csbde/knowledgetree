@@ -169,34 +169,58 @@ function renderTypeSpecificMetaData($oDocument, $bEditable) {
         $aDocuments[] = $iVersionID;
     }
 	
-    /*ok*/ $sQuery = "SELECT DF.name AS name, DFL.value AS value " .
+    $sParam = DBUtil::paramArray($aDocuments);
+    $sQuery = "SELECT D.id AS document_id, DF.id AS field_id, DFL.value AS value, F.id AS fieldset_id " .
               "FROM $default->documents_table AS D INNER JOIN document_fields_link AS DFL ON D.id = DFL.document_id " .
               "INNER JOIN $default->document_fields_table AS DF ON DF.ID = DFL.document_field_id " .
-              "WHERE D.id = ? " .
+              "INNER JOIN $default->fieldsets_table AS F ON F.id = DF.parent_fieldset " .
+              "WHERE D.id IN ($sParam) " .
               "AND DF.name NOT LIKE 'Category' " .
               "AND DF.is_generic = 0";
+    $aParam = $aDocuments;
 
-    $iDocumentsLen = count($aDocuments);
-    $map = array();
-    $iDocumentCount = 0;
-    foreach ($aDocuments as $iDocumentID) {
-        $map['Metadata Version'] = KTUtil::arrayGet($map, 'Metadata Version', array_fill(0, $iDocumentsLen, null));
-        $oThisDocument =& Document::get($iDocumentID);
-        if (PEAR::isError($oThisDocument)) {
-            continue;
+    $aResults = DBUtil::getResultArray(array($sQuery, $aParam));
+
+    $aMap = array();
+    foreach ($aResults as $aResult) {
+        $fieldset_id = $aResult['fieldset_id'];
+        $field_id = $aResult['field_id'];
+        $document_id = $aResult['document_id'];
+        $aMyFieldset = KTUtil::arrayGet($aMap, $fieldset_id);
+        if (empty($aMyFieldset)) {
+            $aMap[$fieldset_id]["fieldset"] = KTFieldset::get($fieldset_id);
+            $aMap[$fieldset_id]["fields"] = array();
         }
-        if ($oThisDocument === false) {
-            continue;
+        $aMyField = KTUtil::arrayGet($aMap[$fieldset_id]['fields'], $field_id);
+        if (empty($aMyField)) {
+            $aMap[$fieldset_id]['fields'][$field_id] = array();
+            $aMap[$fieldset_id]['fields'][$field_id]['field'] = DocumentField::get($field_id);
+            $aMap[$fieldset_id]['fields'][$field_id]['values'] = array();
         }
-        $map['Metadata Version'][$iDocumentCount] = $oThisDocument->getMetadataVersion();
-        $aTDRows = DBUtil::getResultArray(array($sQuery, array($iDocumentID)));
-        foreach ($aTDRows as $aRow) {
-            $newarray = KTUtil::arrayGet($map, $aRow['name'], array_fill(0, $iDocumentsLen, null));
-            $newarray[$iDocumentCount] = $aRow['value'];
-            $map[$aRow['name']] = $newarray;
-        }
-        $iDocumentCount++;
+        $aMap[$fieldset_id]['fields'][$field_id]['values'][$document_id] = $aResult['value'];
     }
+    $oTemplating =& KTTemplating::getSingleton();
+    $oTemplate = $oTemplating->loadTemplate('ktcore/document_specific_metadata');
+    $sToRender = $oTemplate->render(array(
+        'aDocumentIds' => $aDocuments,
+        'map' => $aMap,
+    ));
+    return $sToRender;
+
+    print "<pre>";
+    foreach ($aMap as $k => $v) {
+        print $v['fieldset']->getName() . "\n";
+        foreach ($v['fields'] as $k => $aField) {
+            print $aField['field']->getName() . ": ";
+            foreach ($aField['values'] as $document_id => $sValue) {
+                print "$document_id => $sValue";
+            }
+            print "\n";
+        }
+        print "\n\n";
+    }
+    exit(0);
+
 
     $oTemplating =& KTTemplating::getSingleton();
     $oTemplate = $oTemplating->loadTemplate('ktcore/document_specific_metadata');
