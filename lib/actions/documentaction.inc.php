@@ -2,8 +2,9 @@
 
 require_once(KT_LIB_DIR . '/actions/actionregistry.inc.php');
 require_once(KT_LIB_DIR . '/workflow/workflowutil.inc.php');
+require_once(KT_LIB_DIR . '/dispatcher.inc.php');
 
-class KTDocumentAction {
+class KTDocumentAction extends KTStandardDispatcher {
     var $sName;
     var $sDescription;
     var $sDisplayName;
@@ -14,9 +15,18 @@ class KTDocumentAction {
     var $_bDisabled;
     var $_sDisabledText = null;
 
-    function KTDocumentAction($oDocument, $oUser) {
-        $this->oDocument = $oDocument;
-        $this->oUser = $oUser;
+    function KTDocumentAction($oDocument = null, $oUser = null) {
+        $this->oDocument =& $oDocument;
+        $this->oUser =& $oUser;
+        parent::KTStandardDispatcher();
+    }
+
+    function setDocument(&$oDocument) {
+        $this->oDocument =& $oDocument;
+    }
+
+    function setUser(&$oUser) {
+        $this->oUser =& $oUser;
     }
 
     function _show() {
@@ -53,7 +63,7 @@ class KTDocumentAction {
     }
 
     function getURL() {
-        return sprintf("/plugin.php/%s?fDocumentID=%d", $this->sName, $this->oDocument->getID());
+        return sprintf("/action.php/%s?fDocumentId=%d", $this->sName, $this->oDocument->getID());
     }
 
     function getInfo() {
@@ -85,6 +95,15 @@ class KTDocumentAction {
 
     function customiseInfo($aInfo) {
         return $aInfo;
+    }
+
+    function check() {
+        $this->oDocument =& $this->oValidator->validateDocument($_REQUEST['fDocumentId']);
+        return true;
+    }
+
+    function do_main() {
+        return "Dispatcher component of action not implemented.";
     }
 }
 
