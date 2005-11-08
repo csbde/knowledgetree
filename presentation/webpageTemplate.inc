@@ -24,15 +24,16 @@
  * @version $Revision$
  * @author Mukhtar Dharsey, Jam Warehouse (Pty) Ltd, South Africa
  */
+global $default;
 
 KTUtil::extractGPC('fBrowseType', 'fFolderID', 'fDocumentID', 'fCategoryName', 'fDocumentTypeID');
 
-require_once("$default->fileSystemRoot/lib/users/User.inc");
-require_once("$default->fileSystemRoot/lib/visualpatterns/PatternMainPage.inc");
-require_once("$default->fileSystemRoot/lib/visualpatterns/PatternImage.inc");
-require_once("$default->fileSystemRoot/lib/visualpatterns/PatternTableLinks.inc");
-require_once("$default->fileSystemRoot/lib/visualpatterns/PatternTableSqlQuery.inc");
-require_once("$default->fileSystemRoot/lib/visualpatterns/NavBar.inc");
+require_once(KT_LIB_DIR . "/users/User.inc");
+require_once(KT_LIB_DIR . "/visualpatterns/PatternMainPage.inc");
+require_once(KT_LIB_DIR . "/visualpatterns/PatternImage.inc");
+require_once(KT_LIB_DIR . "/visualpatterns/PatternTableLinks.inc");
+require_once(KT_LIB_DIR . "/visualpatterns/PatternTableSqlQuery.inc");
+require_once(KT_LIB_DIR . "/visualpatterns/NavBar.inc");
 
 // create the navbar and north payload
 $navbar = & new NavBar($fBrowseType, $fFolderID, $fDocumentID, $fCategoryName, $fDocumentTypeID);
@@ -93,6 +94,7 @@ $westLoad = "<table cellspacing=\"0\" cellpadding=\"2\" border=\"0\" width=\"100
 $westPayLoad = new PatternCustom;
 $westPayLoad->setHtml($westLoad);
 
+global $main;
 $main = new PatternMainPage();
 $main->setNorthPayload($navbar);
 $main->setNorthWestPayload($nwPayLoad);
