@@ -1,5 +1,6 @@
 <?php
 
+require_once(KT_DIR . '/presentation/webpageTemplate.inc');
 require_once(KT_LIB_DIR . '/validation/dispatchervalidation.inc.php');
 
 class KTDispatcher {
