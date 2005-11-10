@@ -351,6 +351,20 @@ class KTUtil {
         return $script_name;
     }
     // }}}
+
+    // {{{ nameToLocalNamespace
+    function nameToLocalNamespace ($sSection, $sName) {
+        $sBase = generateLink("");
+        $sName = trim($sName);
+        $sName = strtolower($sName);
+        $sName = str_replace(array("'", "/",'"', " "), array(), $sName);
+        $sSection = trim($sSection);
+        $sSection = strtolower($sSection);
+        $sSection = str_replace(array("'", "/",'"', " "), array(),
+                $sSection);
+        return $sBase . 'local' . '/' . $sSection . '/' . $sName;
+    }
+    // }}}
 }
 
 ?>
