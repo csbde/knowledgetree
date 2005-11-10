@@ -378,7 +378,7 @@ class GenericMetadataCriterion extends BrowseCriterion {
 
     function searchWidget ($aRequest) {
         // If there's no lookup, just use the standard text input
-        if ($this->oField->getHasLookup() === false) {
+        if ($this->oField->getHasLookup() == false) {
             return parent::searchWidget($aRequest);
         }
 
