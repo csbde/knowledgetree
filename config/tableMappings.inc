@@ -144,4 +144,5 @@ $default->field_behaviours_table = 'field_behaviours';
 $default->field_behaviour_options_table = 'field_behaviour_options';
 $default->document_transaction_text_table = 'document_transaction_text';
 $default->document_searchable_text_table = 'document_searchable_text';
+$default->saved_searches_table = 'saved_searches';
 ?>
