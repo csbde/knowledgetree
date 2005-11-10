@@ -32,3 +32,5 @@ ALTER TABLE `workflow_transitions` ADD CONSTRAINT `workflow_transitions_ibfk_24`
 ALTER TABLE `workflow_transitions` ADD CONSTRAINT `workflow_transitions_ibfk_25` FOREIGN KEY (`guard_permission_id`) REFERENCES `permissions` (`id`) ON DELETE SET NULL;
 ALTER TABLE `workflow_transitions` ADD CONSTRAINT `workflow_transitions_ibfk_23` FOREIGN KEY (`workflow_id`) REFERENCES `workflows` (`id`) ON DELETE CASCADE;
 ALTER TABLE `workflow_transitions` ADD CONSTRAINT `workflow_transitions_ibfk_26` FOREIGN KEY (`guard_group_id`) REFERENCES `groups_lookup` (`id`) ON DELETE SET NULL;
+ALTER TABLE `field_behaviours` DROP FOREIGN KEY `field_behaviours_ibfk_1`;
+ALTER TABLE `field_behaviours` ADD CONSTRAINT `field_behaviours_ibfk_1` FOREIGN KEY (`field_id`) REFERENCES `document_fields` (`id`) ON DELETE CASCADE;
