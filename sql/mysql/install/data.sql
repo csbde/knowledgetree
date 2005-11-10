@@ -1,12 +1,14 @@
-SET FOREIGN_KEY_CHECKS=0;
 -- phpMyAdmin SQL Dump
--- version 2.6.4-pl1-Debian-1ubuntu1
+-- version 2.6.4-pl1-Debian-1ubuntu1.1
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Oct 17, 2005 at 11:15 AM
+-- Generation Time: Nov 10, 2005 at 11:59 AM
 -- Server version: 4.0.24
 -- PHP Version: 4.4.0-3
+
+SET FOREIGN_KEY_CHECKS=0;
+
 -- 
 -- Database: `ktpristine`
 -- 
@@ -82,7 +84,7 @@ INSERT INTO data_types VALUES (5, 'FLOAT');
 -- Dumping data for table `document_fields`
 -- 
 
-INSERT INTO document_fields VALUES (1, 'Category', 'STRING', 1, 0, 0, 1);
+INSERT INTO document_fields VALUES (1, 'Category', 'STRING', 1, 0, 0, 1, 0);
 
 -- 
 -- Dumping data for table `document_fields_link`
@@ -107,12 +109,22 @@ INSERT INTO document_link_types VALUES (-1, 'depended on', 'was depended on by',
 INSERT INTO document_link_types VALUES (0, 'Default', 'Default (reverse)', 'Default link type');
 
 -- 
+-- Dumping data for table `document_searchable_text`
+-- 
+
+
+-- 
 -- Dumping data for table `document_subscriptions`
 -- 
 
 
 -- 
 -- Dumping data for table `document_text`
+-- 
+
+
+-- 
+-- Dumping data for table `document_transaction_text`
 -- 
 
 
@@ -534,6 +546,16 @@ INSERT INTO permission_assignments VALUES (3, 3, 1, 2);
 -- 
 
 INSERT INTO permission_descriptor_groups VALUES (2, 1);
+
+-- 
+-- Dumping data for table `permission_descriptor_roles`
+-- 
+
+
+-- 
+-- Dumping data for table `permission_descriptor_users`
+-- 
+
 
 -- 
 -- Dumping data for table `permission_descriptors`
@@ -1101,4 +1123,6 @@ INSERT INTO zseq_web_sites VALUES (1);
 -- 
 -- Dumping data for table `zseq_workflows`
 -- 
+
+
 SET FOREIGN_KEY_CHECKS=1;
