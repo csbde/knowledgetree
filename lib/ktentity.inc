@@ -29,7 +29,7 @@
 class KTEntity {
     var $_bUsePearError = false;
     /** object primary key */
-    var $iId;
+    var $iId = -1;
 
     /**
      * Create the current object in the database
