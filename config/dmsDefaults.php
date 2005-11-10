@@ -324,7 +324,7 @@ require_once(KT_LIB_DIR . "/config/config.inc.php");
 $oKTConfig =& KTConfig::getSingleton();
 
 $oKTConfig->setdefaultns("KnowledgeTree", "fileSystemRoot", KT_DIR);
-$oKTConfig->setdefaultns("KnowledgeTree", "serverName", $_SERVER['HTTP_HOST']);
+$oKTConfig->setdefaultns("KnowledgeTree", "serverName", KTUtil::arrayGet($_SERVER, 'HTTP_HOST', 'localhost'));
 $oKTConfig->setdefaultns("KnowledgeTree", "sslEnabled", false);
 if (array_key_exists('HTTPS', $_SERVER)) {
     if (strtolower($_SERVER['HTTPS']) === 'on') {
