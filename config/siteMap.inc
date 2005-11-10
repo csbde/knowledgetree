@@ -229,6 +229,7 @@ $default->siteMap->addSectionColour("Subscriptions", "th", "FFC602");
 // pages for advanced search section
 $default->siteMap->addDefaultPage("advancedSearch", "/presentation/lookAndFeel/knowledgeTree/search/advancedSearchBL.php", "Advanced Search", Guest, _("Advanced Search"), true);
 $default->siteMap->addPage("standardSearch", "/presentation/lookAndFeel/knowledgeTree/search/standardSearchBL.php", "Standard Search", Guest, _("Standard Search"), false);
+$default->siteMap->addPage("booleanSearch", "/presentation/lookAndFeel/knowledgeTree/search/booleanSearch.php", "Boolean Search", Guest, _("Boolean Search"), false);
 
 $default->siteMap->addSectionColour("Advanced Search", "th", "A1571B");
 $default->siteMap->addSectionColour("Standard Search", "th", "A1571B");
