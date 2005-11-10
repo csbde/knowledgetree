@@ -1,9 +1,9 @@
 -- phpMyAdmin SQL Dump
--- version 2.6.4-pl1-Debian-1ubuntu1
+-- version 2.6.4-pl1-Debian-1ubuntu1.1
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Oct 17, 2005 at 11:07 AM
+-- Generation Time: Nov 10, 2005 at 11:58 AM
 -- Server version: 4.0.24
 -- PHP Version: 4.4.0-3
 -- 
@@ -186,6 +186,7 @@ CREATE TABLE document_fields (
   has_lookup tinyint(1) default NULL,
   has_lookuptree tinyint(1) default NULL,
   parent_fieldset int(11) default NULL,
+  is_mandatory tinyint(4) NOT NULL default '0',
   UNIQUE KEY id (id),
   KEY parent_fieldset (parent_fieldset)
 ) TYPE=InnoDB;
@@ -248,6 +249,19 @@ CREATE TABLE document_link_types (
 -- --------------------------------------------------------
 
 -- 
+-- Table structure for table `document_searchable_text`
+-- 
+
+CREATE TABLE document_searchable_text (
+  document_id int(11) default NULL,
+  document_text mediumtext,
+  KEY document_text_document_id_indx (document_id),
+  FULLTEXT KEY document_text (document_text)
+) TYPE=MyISAM;
+
+-- --------------------------------------------------------
+
+-- 
 -- Table structure for table `document_subscriptions`
 -- 
 
@@ -266,6 +280,19 @@ CREATE TABLE document_subscriptions (
 -- 
 
 CREATE TABLE document_text (
+  document_id int(11) default NULL,
+  document_text mediumtext,
+  KEY document_text_document_id_indx (document_id),
+  FULLTEXT KEY document_text (document_text)
+) TYPE=MyISAM;
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `document_transaction_text`
+-- 
+
+CREATE TABLE document_transaction_text (
   document_id int(11) default NULL,
   document_text mediumtext,
   KEY document_text_document_id_indx (document_id),
@@ -330,7 +357,9 @@ CREATE TABLE document_type_fieldsets_link (
   id int(11) NOT NULL default '0',
   document_type_id int(11) NOT NULL default '0',
   fieldset_id int(11) NOT NULL default '0',
-  UNIQUE KEY id (id)
+  UNIQUE KEY id (id),
+  KEY document_type_id (document_type_id),
+  KEY fieldset_id (fieldset_id)
 ) TYPE=InnoDB;
 
 -- --------------------------------------------------------
@@ -471,7 +500,8 @@ CREATE TABLE fieldsets (
   is_complete tinyint(1) NOT NULL default '1',
   UNIQUE KEY id (id),
   KEY is_generic (is_generic),
-  KEY is_complete (is_complete)
+  KEY is_complete (is_complete),
+  KEY master_field (master_field)
 ) TYPE=InnoDB;
 
 -- --------------------------------------------------------
@@ -675,7 +705,9 @@ CREATE TABLE metadata_lookup (
   document_field_id int(11) NOT NULL default '0',
   name char(255) default NULL,
   treeorg_parent int(11) default NULL,
-  UNIQUE KEY id (id)
+  disabled tinyint(3) unsigned NOT NULL default '0',
+  UNIQUE KEY id (id),
+  KEY disabled (disabled)
 ) TYPE=InnoDB;
 
 -- --------------------------------------------------------
@@ -753,7 +785,8 @@ CREATE TABLE permission_assignments (
   PRIMARY KEY  (id),
   UNIQUE KEY permission_and_object (permission_id,permission_object_id),
   KEY permission_id (permission_id),
-  KEY permission_object_id (permission_object_id)
+  KEY permission_object_id (permission_object_id),
+  KEY permission_descriptor_id (permission_descriptor_id)
 ) TYPE=InnoDB;
 
 -- --------------------------------------------------------
@@ -768,6 +801,34 @@ CREATE TABLE permission_descriptor_groups (
   UNIQUE KEY descriptor_id (descriptor_id,group_id),
   KEY descriptor_id_2 (descriptor_id),
   KEY group_id (group_id)
+) TYPE=InnoDB;
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `permission_descriptor_roles`
+-- 
+
+CREATE TABLE permission_descriptor_roles (
+  descriptor_id int(11) NOT NULL default '0',
+  role_id int(11) NOT NULL default '0',
+  UNIQUE KEY descriptor_id (descriptor_id,role_id),
+  KEY descriptor_id_2 (descriptor_id),
+  KEY role_id (role_id)
+) TYPE=InnoDB;
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `permission_descriptor_users`
+-- 
+
+CREATE TABLE permission_descriptor_users (
+  descriptor_id int(11) NOT NULL default '0',
+  user_id int(11) NOT NULL default '0',
+  UNIQUE KEY descriptor_id (descriptor_id,user_id),
+  KEY descriptor_id_2 (descriptor_id),
+  KEY user_id (user_id)
 ) TYPE=InnoDB;
 
 -- --------------------------------------------------------
@@ -799,7 +860,8 @@ CREATE TABLE permission_lookup_assignments (
   PRIMARY KEY  (id),
   UNIQUE KEY permission_and_lookup (permission_id,permission_lookup_id),
   KEY permission_id (permission_id),
-  KEY permission_lookup_id (permission_lookup_id)
+  KEY permission_lookup_id (permission_lookup_id),
+  KEY permission_descriptor_id (permission_descriptor_id)
 ) TYPE=InnoDB;
 
 -- --------------------------------------------------------
@@ -1108,9 +1170,11 @@ CREATE TABLE workflow_states (
   workflow_id int(11) NOT NULL default '0',
   name char(255) NOT NULL default '',
   human_name char(100) NOT NULL default '',
+  inform_descriptor_id int(11) default NULL,
   PRIMARY KEY  (id),
   KEY workflow_id (workflow_id),
-  KEY name (name)
+  KEY name (name),
+  KEY inform_descriptor_id (inform_descriptor_id)
 ) TYPE=InnoDB;
 
 -- --------------------------------------------------------
@@ -1125,13 +1189,17 @@ CREATE TABLE workflow_transitions (
   name char(255) NOT NULL default '',
   human_name char(100) NOT NULL default '',
   target_state_id int(11) NOT NULL default '0',
-  guard_permission_id int(11) NOT NULL default '0',
+  guard_permission_id int(11) default '0',
+  guard_group_id int(11) default '0',
+  guard_role_id int(11) default '0',
   PRIMARY KEY  (id),
   UNIQUE KEY workflow_id_2 (workflow_id,name),
   KEY workflow_id (workflow_id),
   KEY name (name),
   KEY target_state_id (target_state_id),
-  KEY guard_permission_id (guard_permission_id)
+  KEY guard_permission_id (guard_permission_id),
+  KEY guard_group_id (guard_group_id),
+  KEY guard_role_id (guard_role_id)
 ) TYPE=InnoDB;
 
 -- --------------------------------------------------------
@@ -1876,6 +1944,13 @@ ALTER TABLE `document_fields`
   ADD CONSTRAINT `document_fields_ibfk_1` FOREIGN KEY (`parent_fieldset`) REFERENCES `fieldsets` (`id`) ON DELETE CASCADE;
 
 -- 
+-- Constraints for table `document_type_fieldsets_link`
+-- 
+ALTER TABLE `document_type_fieldsets_link`
+  ADD CONSTRAINT `document_type_fieldsets_link_ibfk_2` FOREIGN KEY (`fieldset_id`) REFERENCES `fieldsets` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `document_type_fieldsets_link_ibfk_1` FOREIGN KEY (`document_type_id`) REFERENCES `document_types_lookup` (`id`) ON DELETE CASCADE;
+
+-- 
 -- Constraints for table `field_behaviour_options`
 -- 
 ALTER TABLE `field_behaviour_options`
@@ -1887,21 +1962,83 @@ ALTER TABLE `field_behaviour_options`
 -- Constraints for table `field_behaviours`
 -- 
 ALTER TABLE `field_behaviours`
-  ADD CONSTRAINT `field_behaviours_ibfk_1` FOREIGN KEY (`field_id`) REFERENCES `document_fields` (`id`);
+  ADD CONSTRAINT `field_behaviours_ibfk_1` FOREIGN KEY (`field_id`) REFERENCES `document_fields` (`id`) ON DELETE CASCADE;
+
+-- 
+-- Constraints for table `field_orders`
+-- 
+ALTER TABLE `field_orders`
+  ADD CONSTRAINT `field_orders_ibfk_3` FOREIGN KEY (`fieldset_id`) REFERENCES `fieldsets` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `field_orders_ibfk_1` FOREIGN KEY (`parent_field_id`) REFERENCES `document_fields` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `field_orders_ibfk_2` FOREIGN KEY (`child_field_id`) REFERENCES `document_fields` (`id`) ON DELETE CASCADE;
+
+-- 
+-- Constraints for table `field_value_instances`
+-- 
+ALTER TABLE `field_value_instances`
+  ADD CONSTRAINT `field_value_instances_ibfk_1` FOREIGN KEY (`field_id`) REFERENCES `document_fields` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `field_value_instances_ibfk_2` FOREIGN KEY (`field_value_id`) REFERENCES `metadata_lookup` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `field_value_instances_ibfk_3` FOREIGN KEY (`behaviour_id`) REFERENCES `field_behaviours` (`id`) ON DELETE CASCADE;
+
+-- 
+-- Constraints for table `fieldsets`
+-- 
+ALTER TABLE `fieldsets`
+  ADD CONSTRAINT `fieldsets_ibfk_1` FOREIGN KEY (`master_field`) REFERENCES `document_fields` (`id`) ON DELETE SET NULL;
+
+-- 
+-- Constraints for table `permission_assignments`
+-- 
+ALTER TABLE `permission_assignments`
+  ADD CONSTRAINT `permission_assignments_ibfk_2` FOREIGN KEY (`permission_object_id`) REFERENCES `permission_objects` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `permission_assignments_ibfk_1` FOREIGN KEY (`permission_id`) REFERENCES `permissions` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `permission_assignments_ibfk_3` FOREIGN KEY (`permission_descriptor_id`) REFERENCES `permission_descriptors` (`id`) ON DELETE CASCADE;
+
+-- 
+-- Constraints for table `permission_descriptor_groups`
+-- 
+ALTER TABLE `permission_descriptor_groups`
+  ADD CONSTRAINT `permission_descriptor_groups_ibfk_2` FOREIGN KEY (`group_id`) REFERENCES `groups_lookup` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `permission_descriptor_groups_ibfk_1` FOREIGN KEY (`descriptor_id`) REFERENCES `permission_descriptors` (`id`) ON DELETE CASCADE;
+
+-- 
+-- Constraints for table `permission_descriptor_roles`
+-- 
+ALTER TABLE `permission_descriptor_roles`
+  ADD CONSTRAINT `permission_descriptor_roles_ibfk_1` FOREIGN KEY (`descriptor_id`) REFERENCES `permission_descriptors` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `permission_descriptor_roles_ibfk_2` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`) ON DELETE CASCADE;
+
+-- 
+-- Constraints for table `permission_descriptor_users`
+-- 
+ALTER TABLE `permission_descriptor_users`
+  ADD CONSTRAINT `permission_descriptor_users_ibfk_1` FOREIGN KEY (`descriptor_id`) REFERENCES `permission_descriptors` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `permission_descriptor_users_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+
+-- 
+-- Constraints for table `permission_lookup_assignments`
+-- 
+ALTER TABLE `permission_lookup_assignments`
+  ADD CONSTRAINT `permission_lookup_assignments_ibfk_2` FOREIGN KEY (`permission_lookup_id`) REFERENCES `permission_lookups` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `permission_lookup_assignments_ibfk_1` FOREIGN KEY (`permission_id`) REFERENCES `permissions` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `permission_lookup_assignments_ibfk_3` FOREIGN KEY (`permission_descriptor_id`) REFERENCES `permission_descriptors` (`id`) ON DELETE CASCADE;
 
 -- 
 -- Constraints for table `workflow_states`
 -- 
 ALTER TABLE `workflow_states`
+  ADD CONSTRAINT `workflow_states_ibfk_2` FOREIGN KEY (`inform_descriptor_id`) REFERENCES `permission_descriptors` (`id`) ON DELETE SET NULL,
   ADD CONSTRAINT `workflow_states_ibfk_1` FOREIGN KEY (`workflow_id`) REFERENCES `workflows` (`id`);
 
 -- 
 -- Constraints for table `workflow_transitions`
 -- 
 ALTER TABLE `workflow_transitions`
-  ADD CONSTRAINT `workflow_transitions_ibfk_1` FOREIGN KEY (`workflow_id`) REFERENCES `workflows` (`id`),
-  ADD CONSTRAINT `workflow_transitions_ibfk_2` FOREIGN KEY (`target_state_id`) REFERENCES `workflow_states` (`id`),
-  ADD CONSTRAINT `workflow_transitions_ibfk_3` FOREIGN KEY (`guard_permission_id`) REFERENCES `permissions` (`id`);
+  ADD CONSTRAINT `workflow_transitions_ibfk_26` FOREIGN KEY (`guard_group_id`) REFERENCES `groups_lookup` (`id`) ON DELETE SET NULL,
+  ADD CONSTRAINT `workflow_transitions_ibfk_23` FOREIGN KEY (`workflow_id`) REFERENCES `workflows` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `workflow_transitions_ibfk_24` FOREIGN KEY (`target_state_id`) REFERENCES `workflow_states` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `workflow_transitions_ibfk_25` FOREIGN KEY (`guard_permission_id`) REFERENCES `permissions` (`id`) ON DELETE SET NULL,
+  ADD CONSTRAINT `workflow_transitions_ibfk_27` FOREIGN KEY (`guard_role_id`) REFERENCES `roles` (`id`) ON DELETE SET NULL;
 
 -- 
 -- Constraints for table `workflows`
