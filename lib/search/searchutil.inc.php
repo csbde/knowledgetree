@@ -1,5 +1,7 @@
 <?php
 
+require_once(KT_LIB_DIR . '/browse/Criteria.inc');
+
 class KTSearchUtil {
     function _oneCriteriaSetToSQL($aOneCriteriaSet) {
         $aSQL = array();
@@ -83,6 +85,9 @@ class KTSearchUtil {
     }
 
     function permissionToSQL($oUser, $sPermissionName) {
+        if (is_null($oUser)) {
+            return array("", array(), "");
+        }
         $oPermission =& KTPermission::getByName('ktcore.permissions.read');
         $sPermissionLookupsTable = KTUtil::getTableName('permission_lookups');
         $sPermissionLookupAssignmentsTable = KTUtil::getTableName('permission_lookup_assignments');
@@ -100,30 +105,54 @@ class KTSearchUtil {
         return array($sSQLString, $aParams, $sJoinSQL);
     }
 
-    function criteriaToQuery($aCriteriaSet, $oUser, $sPermissionName) {
+    function criteriaToLegacyQuery($aCriteriaSet, $oUser, $sPermissionName) {
         global $default;
-        list($sSQLSearchString, $aCritParams, $sJoinSQL) = KTSearchUtil::criteriaSetToSQL($aCriteriaSet);
+        $aOptions = array(
+            'select' => "F.name AS folder_name, F.id AS folder_id, D.id AS document_id, D.name AS document_name, D.filename AS file_name, 'View' AS view",
+            'join' => "INNER JOIN $default->folders_table AS F ON D.folder_id = F.id",
+        );
+        return KTSearchUtil::criteriaToQuery($aCriteriaSet, $oUser, $sPermissionName, $aOptions);
+    }
+
+    function criteriaToQuery($aCriteriaSet, $oUser, $sPermissionName, $aOptions = null) {
+        global $default;
+        $sSelect = KTUtil::arrayGet($aOptions, 'select', 'D.id AS document_id');
+        $sInitialJoin = KTUtil::arrayGet($aOptions, 'join', '');
+
+        list($sSQLSearchString, $aCritParams, $sCritJoinSQL) = KTSearchUtil::criteriaSetToSQL($aCriteriaSet);
 
         $sToSearch = KTUtil::arrayGet($aOrigReq, 'fToSearch', 'Live'); // actually never present in this version.
 
         list ($sPermissionString, $aPermissionParams, $sPermissionJoin) = KTSearchUtil::permissionToSQL($oUser, $sPermissionName);
         //$sQuery = DBUtil::compactQuery("
+
+        $aPotentialWhere = array($sPermissionString, 'SL.name = ?', "($sSQLSearchString)");
+        $aWhere = array();
+        foreach ($aPotentialWhere as $sWhere) {
+            if (empty($sWhere)) {
+                continue;
+            }
+            if ($sWhere == "()") {
+                continue;
+            }
+            $aWhere[] = $sWhere;
+        }
+        $sWhere = "";
+        if ($aWhere) {
+            $sWhere = "\tWHERE " . join(" AND ", $aWhere);
+        }       
+
         $sQuery = ("
     SELECT
-        F.name AS folder_name, F.id AS folder_id, D.id AS document_id,
-        D.name AS document_name, D.filename AS file_name, COUNT(D.id) AS doc_count, 'View' AS view
+        $sSelect
     FROM
         $default->documents_table AS D
-        INNER JOIN $default->folders_table AS F ON D.folder_id = F.id
-        $sJoinSQL
         INNER JOIN $default->status_table AS SL on D.status_id=SL.id
+        $sInitialJoin
+        $sCritJoinSQL
         $sPermissionJoin
-    WHERE
-        $sPermissionString
-        AND SL.name = ?
-        AND ($sSQLSearchString)
-    GROUP BY D.id
-    ORDER BY doc_count DESC");
+    $sWhere");
+    // GROUP BY D.id
 
         $aParams = array();
         $aParams = array_merge($aParams, $aPermissionParams);
@@ -131,6 +160,39 @@ class KTSearchUtil {
         $aParams = array_merge($aParams, $aCritParams);
 
         return array($sQuery, $aParams);
+    }
+
+    function testConditionOnDocument($oSearch, $oDocument) {
+        $oSearch =& KTUtil::getObject('KTSavedSearch', $oSearch);
+        $iDocumentId = KTUtil::getId($oDocument);
+
+        $aCriteriaSet = array(
+            "join" => "AND",
+            "subgroup" => array(
+                $oSearch->getSearch(),
+                array(
+                    "join" => "AND",
+                    "values" => array(
+                        array(
+                            "sql" => array("D.id = ?", array($iDocumentId)),
+                        ),
+                    ),
+                ),
+            ),
+        );
+        $aOptions = array('select' => 'COUNT(DISTINCT(D.id)) AS cnt');
+        $aQuery = KTSearchUtil::criteriaToQuery($aCriteriaSet, null, null, $aOptions);
+        $cnt = DBUtil::getOneResultKey($aQuery, 'cnt');
+        if (PEAR::isError($cnt)) {
+            return $cnt;
+        }
+        if (is_null($cnt)) {
+            return false;
+        }
+        if (!is_numeric($cnt)) {
+            return PEAR::raiseError("Non-integer returned when looking for count");
+        }
+        return $cnt > 0;
     }
 }
 
