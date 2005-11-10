@@ -15,6 +15,13 @@ class KTSearchUtil {
         $aSQL = array();
         $aJoinSQL = array();
         $criteria_set = array();
+        
+        /*
+         * First phase: get criterion object for search or the direct
+         * SQL to use.
+         *
+         * XXX: Why is there $order there? 
+         */
         foreach ($aOneCriteriaSet as $order => $dataset) {
             $type = KTUtil::arrayGet($dataset, "type");
             $sql = KTUtil::arrayGet($dataset, "sql");
@@ -30,6 +37,10 @@ class KTSearchUtil {
                 return PEAR::raiseError('Invalid criteria specified.');
             }
         }
+
+        /*
+         * Second phase: Create an individual SQL query per criteria.
+         */
         foreach ($criteria_set as $oCriterionPair) {
             $oCriterion = $oCriterionPair[0];
             $aReq = $oCriterionPair[1];
@@ -47,6 +58,10 @@ class KTSearchUtil {
             }
         }
 
+        /*
+         * Third phase: build up $aCritQueries and $aCritParams, and put
+         * parentheses around them.
+         */
         $aCritParams = array();
         $aCritQueries = array();
         foreach ($aSQL as $sSQL) {
@@ -85,7 +100,16 @@ class KTSearchUtil {
         $aJoinSQL = array();
         $aSearchStrings = array();
         $aParams = array();
+        /*
+         * XXX: We unnecessarily force the base criteria to have
+         * subgroups at the top level, even though we most often only
+         * have a single "subgroup".
+         */
         foreach ($aCriteriaSet["subgroup"] as $k => $aOneCriteriaSet) {
+            /*
+             * Each subgroup will either have values or it will have
+             * subgroups.  They can't be mixed.
+             */
             $aValues = KTUtil::arrayGet($aOneCriteriaSet, "values");
             $aSubgroup = KTUtil::arrayGet($aOneCriteriaSet, "subgroup");
             if (!empty($aValues)) {
@@ -95,6 +119,11 @@ class KTSearchUtil {
                 $tabs = str_repeat("\t", ($iRecurseLevel + 2));
                 $aSearchStrings[] = "\n$tabs(\n$tabs\t" . join("\n " . KTUtil::arrayGet($aOneCriteriaSet, 'join', "AND") . " ", $aThisCritQueries) . "\n$tabs)";
             } else if (!empty($aSubgroup)) {
+                /*
+                 * Recurse if we have a criteria set with subgroups.
+                 * Recurselevel makes the tabs increase as we recurse so
+                 * that the SQL statement is somewhat understandable.
+                 */
                 list($sThisSearchString, $aThisParams, $sThisJoinSQL) =
                     KTSearchUtil::criteriaSetToSQL($aOneCriteriaSet, $iRecurseLevel + 1);
                 $aJoinSQL[] = $sThisJoinSQL;
@@ -190,8 +219,12 @@ class KTSearchUtil {
         $sToSearch = KTUtil::arrayGet($aOrigReq, 'fToSearch', 'Live'); // actually never present in this version.
 
         list ($sPermissionString, $aPermissionParams, $sPermissionJoin) = KTSearchUtil::permissionToSQL($oUser, $sPermissionName);
-        //$sQuery = DBUtil::compactQuery("
 
+        /*
+         * This is to overcome the problem where $sPermissionString (or
+         * even $sSQLSearchString) is empty, leading to leading or
+         * trailing ANDs.
+         */
         $aPotentialWhere = array($sPermissionString, 'SL.name = ?', "($sSQLSearchString)");
         $aWhere = array();
         foreach ($aPotentialWhere as $sWhere) {
@@ -208,6 +241,7 @@ class KTSearchUtil {
             $sWhere = "\tWHERE " . join(" AND ", $aWhere);
         }       
 
+        //$sQuery = DBUtil::compactQuery("
         $sQuery = ("
     SELECT
         $sSelect
@@ -243,6 +277,11 @@ class KTSearchUtil {
         $oSearch =& KTUtil::getObject('KTSavedSearch', $oSearch);
         $iDocumentId = KTUtil::getId($oDocument);
 
+        /*
+         * Make a new criteria set, an AND of the existing criteria set
+         * and the sql statement requiring that D.id be the document id
+         * given to us.
+         */
         $aCriteriaSet = array(
             "join" => "AND",
             "subgroup" => array(
