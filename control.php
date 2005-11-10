@@ -50,6 +50,13 @@ if (checkSessionAndRedirect(false)) {
 }
 
 $queryString = KTUtil::arrayGet($_REQUEST, 'qs', '');
+if (is_array($queryString)) {
+    $aStrings = array();
+    foreach ($queryString as $k => $v) {
+        $aStrings[] = $k . '=' . $v;
+    }
+    $queryString = join('&', $aStrings);
+}
 
 if (empty($queryString)) {
     // need to strip query string params from action before attempting to retrieve from sitemap
