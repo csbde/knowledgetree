@@ -1,0 +1,31 @@
+<h1>Saved searches</h1>
+
+<h2>Create a new saved search</h2>
+<form>
+<input type="hidden" name="action" value="new" />
+<input type="submit" name="submit" value="New" />
+</form>
+
+{if $saved_searches}
+<h2>Edit existing saved searches</h2>
+<form>
+<input type="hidden" name="action" value="edit" />
+{entity_radios entities=$saved_searches name="fSavedSearchId" assign=aRadios}
+{foreach from=$aRadios item=sRadio}
+{$sRadio}<br />
+{/foreach}
+<input type="submit" name="submit" value="Edit" />
+</form>
+
+<h2>Run a saved search</h2>
+<form action="{"booleanSearch"|generateControllerUrl}" method="GET">
+<input type="hidden" name="action" value="booleanSearch" />
+<input type="hidden" name="qs[action]" value="performSearch" />
+{entity_radios entities=$saved_searches name="qs[fSavedSearchId]" assign=aRadios}
+{foreach from=$aRadios item=sRadio}
+{$sRadio}<br />
+{/foreach}
+<input type="submit" name="submit" value="Run" />
+</form>
+{/if}
+
