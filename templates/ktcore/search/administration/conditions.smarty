@@ -1,0 +1,20 @@
+<h1>Conditions</h1>
+
+<h2>Create a new condition</h2>
+<form>
+<input type="hidden" name="action" value="new" />
+<input type="submit" name="submit" value="New" />
+</form>
+
+{if $conditions}
+<h2>Edit existing conditions</h2>
+<form>
+<input type="hidden" name="action" value="edit" />
+{entity_radios entities=$conditions name="fSavedSearchId" assign=aRadios}
+{foreach from=$aRadios item=sRadio}
+{$sRadio}<br />
+{/foreach}
+<input type="submit" name="submit" value="Edit" />
+</form>
+{/if}
+
