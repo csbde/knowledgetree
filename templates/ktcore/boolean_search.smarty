@@ -46,10 +46,13 @@ legend { border: 1px dotted #999;}
     </select>
 </div>
 
-<h2>Boolean Search</h2>
+<h2>{$title|default:"Boolean Search"}</h2>
 
 <form method="POST">
     <input type="hidden" name="action" value="performSearch" />
+{if $sNameTitle}
+    {$sNameTitle}: <input type="text" name="name" value="" /> <br />
+{/if}
     
    <p class="helpText">Return items which match &nbsp;<select
 name="boolean_search[join]"><option value="AND">all</option><option value="OR">any</option></select> of the <strong>criteria groups</strong> specified.</p>    
@@ -84,7 +87,7 @@ name="boolean_search[join]"><option value="AND">all</option><option value="OR">a
     <input type="button" value="add another set of criteria" onclick="addBooleanGroup(this)"/>
     
     
-    <input type="submit" name="submit" value="Search" />
+    <input type="submit" name="submit" value="{$searchButton|default:"Search"}" />
 </form>
 
 <!--
