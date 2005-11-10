@@ -69,21 +69,6 @@ class BooleanSearchDispatcher extends KTStandardDispatcher {
     }
     
     function handleCriteriaSet($aCriteriaSet, $iStartIndex) {
-        $aOrigCriteriaSet = $aCriteriaSet;
-        $aCriteriaSet = array(
-            "join" => "AND",
-            "subgroup" => array(
-                $aOrigCriteriaSet,
-                array(
-                    "join" => "AND",
-                    "values" => array(
-                        array(
-                            "sql" => array("D.id = ?", array(7)),
-                        ),
-                    ),
-                ),
-            ),
-        );
         $aQuery = KTSearchUtil::criteriaToQuery($aCriteriaSet, $_SESSION['userID'], 'ktcore.permissions.read');
 		$aColumns = array("folder_name", "file_name", "document_name", "doc_count", "view");
 		$aColumnTypes = array(3,3,3,1,3);
