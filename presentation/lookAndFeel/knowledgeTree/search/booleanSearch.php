@@ -69,11 +69,12 @@ class BooleanSearchDispatcher extends KTStandardDispatcher {
     }
     
     function handleCriteriaSet($aCriteriaSet, $iStartIndex) {
-        $aQuery = KTSearchUtil::criteriaToQuery($aCriteriaSet, $_SESSION['userID'], 'ktcore.permissions.read');
-		$aColumns = array("folder_name", "file_name", "document_name", "doc_count", "view");
-		$aColumnTypes = array(3,3,3,1,3);
-		$aColumnHeaders = array("<font color=\"ffffff\"><img src=$default->graphicsUrl/widgets/dfolder.gif>" . _("Folder") . "</font>", "<font color=\"ffffff\">" . _("Name") . "</font>", "<font color=\"ffffff\">" . _("Title") . "</font>", "<font color=\"ffffff\">" . _("Matches") . "</font>", "<font color=\"ffffff\">" . _("View") . "</font>");
-		$aLinkURLs = array("$default->rootUrl/control.php?action=browse","$default->rootUrl/control.php?action=viewDocument", "$default->rootUrl/control.php?action=viewDocument", null, "$default->rootUrl/control.php?action=downloadDocument");
+        global $default;
+        $aQuery = KTSearchUtil::criteriaToLegacyQuery($aCriteriaSet, $_SESSION['userID'], 'ktcore.permissions.read');
+		$aColumns = array("folder_name", "file_name", "document_name", "view");
+		$aColumnTypes = array(3,3,3,3);
+		$aColumnHeaders = array("<font color=\"ffffff\"><img src=\"$default->graphicsUrl/widgets/dfolder.gif\" />" . _("Folder") . "</font>", "<font color=\"ffffff\">" . _("Name") . "</font>", "<font color=\"ffffff\">" . _("Title") . "</font>", "<font color=\"ffffff\">" . _("View") . "</font>");
+		$aLinkURLs = array("$default->rootUrl/control.php?action=browse","$default->rootUrl/control.php?action=viewDocument", "$default->rootUrl/control.php?action=viewDocument", "$default->rootUrl/control.php?action=downloadDocument");
 		$aDBQueryStringColumns = array("document_id","folder_id");
 		$aQueryStringVariableNames = array("fDocumentID", "fFolderID");
 	
