@@ -74,7 +74,7 @@ class KTConfig {
         if (array_key_exists($var, $this->flat)) {
             return $this->expand($this->flat[$var]);
         }
-        return $oDefault;;
+        return $oDefault;
     }
 
     function &getSingleton() {
