@@ -462,7 +462,7 @@ class KTDocumentUtil {
         return DBUtil::autoInsert($sTable, $aInsert, array('noid' => true));
     }
     // }}}
-    //
+
     // {{{ updateSearchableText
     function updateSearchableText($oDocument) {
         $iDocumentId = KTUtil::getId($oDocument);
@@ -488,6 +488,7 @@ class KTDocumentUtil {
         );
         return DBUtil::autoInsert($sTable, $aInsert, array('noid' => true));
     }
+    // }}}
 }
 
 class KTMetadataValidationError extends PEAR_Error {
