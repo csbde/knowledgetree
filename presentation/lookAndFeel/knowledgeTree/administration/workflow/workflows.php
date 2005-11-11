@@ -15,6 +15,7 @@ require_once(KT_DIR . "/presentation/webpageTemplate.inc");
 require_once(KT_LIB_DIR . '/permissions/permission.inc.php');
 require_once(KT_LIB_DIR . '/groups/Group.inc');
 require_once(KT_LIB_DIR . '/roles/Role.inc');
+require_once(KT_LIB_DIR . '/search/savedsearch.inc.php');
 
 class KTWorkflowDispatcher extends KTStandardDispatcher {
     var $bAutomaticTransaction = true;
@@ -318,6 +319,7 @@ class KTWorkflowDispatcher extends KTStandardDispatcher {
             'aPermissions' => KTPermission::getList(),
             'aGroups' => Group::getList(),
             'aRoles' => Role::getList(),
+            'aConditions' => KTSavedSearch::getConditions(),
         ));
         return $oTemplate;
     }
@@ -335,6 +337,7 @@ class KTWorkflowDispatcher extends KTStandardDispatcher {
         $iPermissionId = KTUtil::arrayGet($_REQUEST, 'fPermissionId', null);
         $iGroupId = KTUtil::arrayGet($_REQUEST, 'fGroupId', null);
         $iRoleId = KTUtil::arrayGet($_REQUEST, 'fRoleId', null);
+        $iConditionId = KTUtil::arrayGet($_REQUEST, 'fConditionId', null);
         if ($iPermissionId) {
             $this->oValidator->validatePermission($_REQUEST['fPermissionId']);
         }
@@ -344,6 +347,9 @@ class KTWorkflowDispatcher extends KTStandardDispatcher {
         if ($iRoleId) {
             $this->oValidator->validateRole($_REQUEST['fRoleId']);
         }
+        if ($iConditionId) {
+            $this->oValidator->validateCondition($_REQUEST['fConditionId']);
+        }
         $oTransition->updateFromArray(array(
             'workflowid' => $oWorkflow->getId(),
             'name' => $_REQUEST['fName'],
@@ -352,6 +358,7 @@ class KTWorkflowDispatcher extends KTStandardDispatcher {
             'guardpermissionid' => $iPermissionId,
             'guardgroupid' => $iGroupId,
             'guardroleid' => $iRoleId,
+            'guardconditionid' => $iConditionId,
         ));
         $res = $oTransition->update();
         $this->oValidator->notErrorFalse($res, array(
