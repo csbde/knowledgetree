@@ -29,11 +29,20 @@ none=true}</td>
   <td>{entity_select entities=$aGroups
 selected=$oTransition->getGuardGroupId() name="fGroupId" none=true}</td>
 </tr>
+{if $aRoles}
 <tr>
   <th>Guard Role</th>
   <td>{entity_select entities=$aRoles
 selected=$oTransition->getGuardRoleId() name="fRoleId" none=true}</td>
 </tr>
+{/if}
+{if $aConditions}
+<tr>
+  <th>Guard Condition</th>
+  <td>{entity_select entities=$aConditions
+selected=$oTransition->getGuardConditionId() name="fConditionId" none=true}</td>
+</tr>
+{/if}
 </table>
 <input type="submit" name="submit" value="Save" />
 </form>
