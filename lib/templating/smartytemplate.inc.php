@@ -58,11 +58,13 @@ class KTSmartyTemplate extends KTTemplate {
     function entity_select ($params, &$smarty) {
         require_once $smarty->_get_plugin_filepath('function', 'html_options');
 
-        $entities = KTUtil::arrayGet($params, 'entities');
+        $entities = KTUtil::arrayGet($params, 'entities', array());
+        /*
         if (is_null($entities)) {
             $smarty->trigger_error("assign: missing 'entities' parameter");
             return;
         }
+        */
 
         $method = KTUtil::arrayGet($params, 'method', 'getName');
         $none = KTUtil::arrayGet($params, 'none');
@@ -126,7 +128,11 @@ class KTSmartyTemplate extends KTTemplate {
         $params['output'] = array();
         foreach ($entities as $oEntity) {
             $params['values'][] = call_user_func(array(&$oEntity, $idmethod));
-            $params['output'][] = call_user_func(array(&$oEntity, $method));
+            if ($method != "none") {
+                $params['output'][] = call_user_func(array(&$oEntity, $method));
+            } else {
+                $params['output'][] = null;
+            }
         }
         unset($params['entities']);
         unset($params['idmethod']);
