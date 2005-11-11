@@ -8,6 +8,7 @@ require_once(KT_LIB_DIR . "/permissions/permissiondescriptor.inc.php");
 require_once(KT_LIB_DIR . "/permissions/permissionlookup.inc.php");
 require_once(KT_LIB_DIR . "/permissions/permissionlookupassignment.inc.php");
 require_once(KT_LIB_DIR . "/permissions/permissionobject.inc.php");
+require_once(KT_LIB_DIR . "/permissions/permissiondynamiccondition.inc.php");
 require_once(KT_LIB_DIR . "/groups/GroupUtil.php");
 
 class KTPermissionUtil {
@@ -176,7 +177,7 @@ class KTPermissionUtil {
     function updatePermissionLookup(&$oFolderOrDocument) {
         $oPO = KTPermissionObject::get($oFolderOrDocument->getPermissionObjectID());
         $aPAs = KTPermissionAssignment::getByObjectMulti($oPO);
-        $aMapPermDesc = array();
+        $aMapPermAllowed = array();
         foreach ($aPAs as $oPA) {
             $oPD = KTPermissionDescriptor::get($oPA->getPermissionDescriptorID());
             $aGroupIDs = $oPD->getGroups();
@@ -185,8 +186,29 @@ class KTPermissionUtil {
                 "group" => $aGroupIDs,
                 "user" => $aUserIDs,
             );
+            $aMapPermAllowed[$oPA->getPermissionID()] = $aAllowed;
+        }
+
+        if (!is_a($oFolderOrDocument, 'Folder')) {
+            $aDynamicConditions = KTPermissionDynamicCondition::getByPermissionObject($oPO);
+            foreach ($aDynamicConditions as $oDynamicCondition) {
+                $iConditionId = $oDynamicCondition->getConditionId();
+                if (KTSearchUtil::testConditionOnDocument($iConditionId, $oFolderOrDocument)) {
+                    $iGroupId = $oDynamicCondition->getGroupId();
+                    $aPermissionIds = $oDynamicCondition->getAssignment();
+                    foreach ($aPermissionIds as $iPermissionId) {
+                        $aCurrentAllowed = KTUtil::arrayGet($aMapPermAllowed, $iPermissionId, array());
+                        $aCurrentAllowed["group"][] = $iGroupId;
+                        $aMapPermAllowed[$iPermissionId] = $aCurrentAllowed;
+                    }
+                }
+            }
+        }
+
+        $aMapPermDesc = array();
+        foreach ($aMapPermAllowed as $iPermissionId => $aAllowed) {
             $oLookupPD = KTPermissionUtil::getOrCreateDescriptor($aAllowed);
-            $aMapPermDesc[$oPA->getPermissionID()] = $oLookupPD->getID();
+            $aMapPermDesc[$iPermissionId] = $oLookupPD->getID();
         }
 
         $oPL = KTPermissionLookupAssignment::findOrCreateLookupByPermissionDescriptorMap($aMapPermDesc);
