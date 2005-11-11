@@ -145,4 +145,6 @@ $default->field_behaviour_options_table = 'field_behaviour_options';
 $default->document_transaction_text_table = 'document_transaction_text';
 $default->document_searchable_text_table = 'document_searchable_text';
 $default->saved_searches_table = 'saved_searches';
+$default->permission_dynamic_conditions_table = 'permission_dynamic_conditions';
+$default->permission_dynamic_assignments_table = 'permission_dynamic_assignments';
 ?>
