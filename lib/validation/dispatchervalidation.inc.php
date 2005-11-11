@@ -140,6 +140,18 @@ class KTDispatcherValidation {
         return $this->validateEntity('Group', $iId, $aOptions);
     }
 
+    function &validateCondition($iId, $aOptions = null) {
+        require_once(KT_LIB_DIR .  '/search/savedsearch.inc.php');
+        $oSearch = $this->validateEntity('KTSavedSearch', $iId, $aOptions);
+        if ($oSearch->getIsCondition()) {
+            return $oSearch;
+        }
+        $aOptions = KTUTil::meldOptions($aOptions, array(
+            'message' => "Condition is a saved search, but not a condition",
+        ));
+        $this->handleError($aOptions);
+    }
+
     function validateDict($aDict, $aValidation, $aOptions = null) {
         foreach ($aValidation as $k => $aValidatorInfo) {
             $sDictValue = KTUtil::arrayGet($aDict, $k, null);
