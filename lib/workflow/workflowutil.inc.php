@@ -7,6 +7,7 @@ require_once(KT_LIB_DIR . '/workflow/workflowtransition.inc.php');
 require_once(KT_LIB_DIR . '/permissions/permissionutil.inc.php');
 require_once(KT_LIB_DIR . '/groups/GroupUtil.php');
 require_once(KT_LIB_DIR . '/documentmanagement/DocumentTransaction.inc');
+require_once(KT_LIB_DIR . '/search/searchutil.inc.php');
 
 class KTWorkflowUtil {
     // {{{ saveTransitionsFrom
@@ -334,6 +335,13 @@ class KTWorkflowUtil {
             if ($iGroupId) {
                 $oGroup =& Group::get($iGroupId);
                 if (!$oGroup->hasMember($oUser)) {
+                    continue;
+                }
+            }
+
+            $iConditionId = $oTransition->getGuardConditionId();
+            if ($iConditionId) {
+                if (!KTSearchUtil::testConditionOnDocument($iConditionId, $oDocument)) {
                     continue;
                 }
             }
