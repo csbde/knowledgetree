@@ -1,0 +1,215 @@
+{literal}
+<style>
+td.true { background-color: #aaffaa; text-align: centre }
+td.false { background-color: #ffaaaa; text-align: centre }
+.edit { display: none; }
+.view { display: block; }
+
+.tablebutton {
+    margin: 0em;
+    margin-right: 1em;
+    border: 1px solid #cccccc;
+}
+.activebutton {
+    background-color: #eeeeff;
+}
+.inactivebutton {
+    background-color: #ffeeee;
+}
+</style>
+{/literal}
+<script language="javascript" src="/thirdpartyjs/MochiKit/Base.js">
+<script language="javascript" src="/thirdpartyjs/MochiKit/Iter.js">
+<script language="javascript" src="/thirdpartyjs/MochiKit/DOM.js">
+<h2>Folder permissions</h2>
+
+{ if $edit }
+<div style="text-align: right">
+<span class="tablebutton activebutton">
+<a href="javascript:MochiKit.DOM.showElement('view'); MochiKit.DOM.hideElement('edit');">View</a>
+</span>
+<span class="tablebutton inactivebutton">
+<a href="javascript:MochiKit.DOM.showElement('edit'); MochiKit.DOM.hideElement('view');">Edit</a>
+</span>
+</div>
+{ /if }
+<div class="view" id="view">
+<table class="pretty" cellspacing="0" cellpadding="0" border="0" width="100%">
+<thead>
+<tr>
+<th>Group</th>
+{ foreach item=oPerm from=$permissions }
+<th title="{$oPerm->sName}">{$oPerm->sHumanName}</th>
+{ /foreach }
+</tr>
+</thead>
+<tbody>
+{ foreach item=oGroup from=$groups }
+<td>{$oGroup->getId()} / {$oGroup->getName()}</td>
+  { assign var=iGroupId value=$oGroup->getId() }
+  { foreach item=oPerm from=$permissions }
+    { assign var=iPermId value=$oPerm->getId() }
+    { assign var=bHasPerm value=$aMapPermissionGroup[$iPermId][$iGroupId] }
+{ if $bHasPerm }
+<td class="true">True</td>
+{ else }
+<td class="false">False</td>
+{ /if }
+  { /foreach }
+</tr>
+{ /foreach }
+</tbody>
+</table>
+
+<div style="text-align: center; padding-top: 2px">
+<span style="border: 1px solid #cccccc; background-color: #ffeeee;
+padding: 2px; padding-right: 1em; padding-left: 1em">
+{ if $inherited }
+Inherited from {$inherited}
+[<a
+href="{$smarty.server.PHP_SELF}?action=copyPermissions&fFolderId={$iFolderId}">Copy</a>]
+{ else }
+[<a
+href="{$smarty.server.PHP_SELF}?action=inheritPermissions&fFolderId={$iFolderId}">Use
+parent's permissions</a>]
+{ /if }
+</span>
+</div>
+</div>
+
+{ if $edit }
+<div class="edit" id="edit">
+<form method="POST">
+<input type="hidden" name="action" value="update">
+<input type="hidden" name="fFolderId" value="{$iFolderId}">
+<table class="pretty" cellspacing="0" cellpadding="0" border="0" width="100%">
+<thead>
+<tr>
+<th>Group</th>
+{ foreach item=oPerm from=$permissions }
+<th title="{$oPerm->sName}">{$oPerm->sHumanName}</th>
+{ /foreach }
+</tr>
+</thead>
+<tbody>
+{ foreach item=oGroup from=$groups }
+<td>{$oGroup->getId()} / {$oGroup->getName()}</td>
+  { assign var=iGroupId value=$oGroup->getId() }
+  { foreach item=oPerm from=$permissions }
+    { assign var=iPermId value=$oPerm->getId() }
+    { assign var=bHasPerm value=$aMapPermissionGroup[$iPermId][$iGroupId] }
+{ if $bHasPerm }
+<td class="true"><input type="checkbox" name="foo[{$iPermId}][group][]"
+value="{$iGroupId}" checked="true"></td>
+{ else }
+<td class="false"><input type="checkbox" name="foo[{$iPermId}][group][]"
+value="{$iGroupId}"></td>
+{ /if }
+  { /foreach }
+</tr>
+{ /foreach }
+</tbody>
+</table>
+
+<input type="submit" name="submit" value="Update">
+</form>
+</div>
+{ /if }
+
+<h2>Dynamic permissions</h2>
+
+{ if $dynamic_conditions }
+<table class="pretty" cellpadding="0" cellspacing="0">
+  <thead>
+    <tr>
+      <th>Group</th>
+      <th>Condition</th>
+{foreach from=$permissions item=oPerm}
+      <th title="{$oPerm->sName}">{$oPerm->sHumanName}</th>
+{/foreach}
+    </tr>
+  </thead>
+  <tbody>
+{ foreach from=$dynamic_conditions item=oDynamicCondition }
+    <tr>
+{php}
+$this->assign("oGroup", Group::get($this->_tpl_vars['oDynamicCondition']->getGroupId()));
+$this->assign("oCondition", KTSavedSearch::get($this->_tpl_vars['oDynamicCondition']->getConditionId()));
+$this->assign("aPermissions", $this->_tpl_vars['oDynamicCondition']->getAssignment());
+{/php}
+    <td>{$oGroup->getName()}</td>
+    <td>{$oCondition->getName()}</td>
+{foreach from=$permissions item=oPerm}
+  {assign var=bHasPerm value=$oPerm->getId()|in_array:$aPermissions}
+  { if $bHasPerm }
+    <td class="true">True</td>
+  { else }
+    <td class="false">False</td>
+  { /if }
+{/foreach}
+    </tr>
+{ /foreach }
+  </tbody>
+</table>
+{ /if }
+
+{ if $edit }
+<h3>Add a new dynamic permission</h3>
+<form>
+<table class="pretty" cellpadding="0" cellspacing="0">
+<input type="hidden" name="action" value="newDynamicPermission" />
+<input type="hidden" name="fFolderId" value="{$iFolderId}" />
+<thead>
+<tr>
+  <th>Group</th>
+  <th>Condition</th>
+{foreach from=$permissions item=oPerm}
+  <th title="{$oPerm->sName}">{$oPerm->sHumanName}</th>
+{/foreach}
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>{entity_select entities=$groups name=fGroupId none=true}</td>
+  <td>{entity_select entities=$conditions name=fConditionId none=true}</td>
+{entity_checkboxes entities=$permissions name=fPermissionIds assign=aPermissionCheckboxes method="none"}
+{foreach from=$aPermissionCheckboxes item=sCheckbox}
+  <td>{$sCheckbox}</td>
+{/foreach}
+</tr>
+</tbody>
+</table>
+<input type="submit" name="submit" value="Add" />
+</form>
+{ /if }
+
+<h2>User permissions</h2>
+
+<div>
+<table class="pretty" cellspacing="0" cellpadding="0" border="0" width="100%">
+<thead>
+<tr>
+<th>User</th>
+{ foreach item=oPerm from=$permissions }
+<th title="{$oPerm->sName}">{$oPerm->sHumanName}</th>
+{ /foreach }
+</tr>
+</thead>
+<tbody>
+{ foreach item=oUser from=$users }
+<td>{$oUser->getId()} / {$oUser->getName()}</td>
+  { assign var=iUserId value=$oUser->getId() }
+  { foreach item=oPerm from=$permissions }
+    { assign var=iPermId value=$oPerm->getId() }
+    { assign var=bHasPerm value=$aMapPermissionUser[$iPermId][$iUserId] }
+{ if $bHasPerm }
+<td class="true">True</td>
+{ else }
+<td class="false">False</td>
+{ /if }
+  { /foreach }
+</tr>
+{ /foreach }
+</tbody>
+</table>
+</div>
