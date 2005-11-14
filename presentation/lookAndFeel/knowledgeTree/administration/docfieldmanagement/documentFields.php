@@ -8,9 +8,6 @@ require_once(KT_LIB_DIR . '/documentmanagement/DocumentField.inc');
 require_once(KT_LIB_DIR . '/metadata/fieldset.inc.php');
 require_once(KT_LIB_DIR . '/metadata/metadatautil.inc.php');
 
-$sectionName = "Administration";
-require_once(KT_DIR . "/presentation/webpageTemplate.inc");
-
 class KTDocumentFieldDispatcher extends KTStandardDispatcher {
     var $bAutomaticTransaction = true;
 
