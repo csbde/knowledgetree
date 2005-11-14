@@ -6,8 +6,6 @@ require_once(KT_LIB_DIR . "/documentmanagement/DocumentField.inc");
 require_once(KT_LIB_DIR . "/documentmanagement/MetaData.inc");
 require_once(KT_LIB_DIR . "/documentmanagement/MDTree.inc");
 require_once(KT_LIB_DIR . "/dispatcher.inc.php");
-$sectionName = "Administration";
-require_once(KT_DIR . "/presentation/webpageTemplate.inc");
 
 class ManageLookupTreeDispatcher extends KTAdminDispatcher {
     function do_main() {
