@@ -386,7 +386,7 @@ $KTInit->cleanGlobals();
 $KTInit->cleanMagicQuotes();
 
 // site map definition
-include("siteMap.inc");
+require_once(KT_DIR . "/config/siteMap.inc");
 
 require_once(KT_DIR . '/phpmailer/class.phpmailer.php');
 require_once(KT_LIB_DIR . '/session/Session.inc');
