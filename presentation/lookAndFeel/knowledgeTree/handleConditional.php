@@ -4,7 +4,6 @@ require_once(KT_DIR . "/presentation/Html.inc");
 require_once(KT_LIB_DIR . "/templating/templating.inc.php");
 require_once(KT_LIB_DIR . "/documentmanagement/DocumentFieldSet.inc");
 require_once(KT_LIB_DIR . "/documentmanagement/DocumentField.inc");
-require_once(KT_LIB_DIR . "/documentmanagement/MDCondition.inc");
 require_once(KT_LIB_DIR . "/database/dbutil.inc");
 require_once(KT_LIB_DIR . "/util/ktutil.inc");
 require_once(KT_LIB_DIR . "/dispatcher.inc.php");
