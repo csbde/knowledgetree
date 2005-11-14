@@ -30,7 +30,6 @@ KTUtil::extractGPC('fBrowseType', 'fFolderID', 'fDocumentID', 'fCategoryName', '
 
 require_once(KT_LIB_DIR . "/users/User.inc");
 require_once(KT_LIB_DIR . "/visualpatterns/PatternMainPage.inc");
-require_once(KT_LIB_DIR . "/visualpatterns/PatternImage.inc");
 require_once(KT_LIB_DIR . "/visualpatterns/PatternTableLinks.inc");
 require_once(KT_LIB_DIR . "/visualpatterns/PatternTableSqlQuery.inc");
 require_once(KT_LIB_DIR . "/visualpatterns/NavBar.inc");
