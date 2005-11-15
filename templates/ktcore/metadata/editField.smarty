@@ -18,7 +18,7 @@
 <input type="submit" name="submit" value="Change">
 </form>
 
-{if $oField->getHasLookup() and !$oField->getHasLookupTree()}
+{if $oField->getHasLookup()}
 {assign var="aMetadata" value=$oField->getValues()}
 {if $aMetadata}
 
@@ -49,5 +49,8 @@
 {/if}
 
 {if $oField->getHasLookup() and $oField->getHasLookupTree()}
-Tree
+{assign var=iFieldId value=$oField->getId()}
+<a
+href="{"manageLookupTrees"|generateControllerUrl:"action=editTree&field_id=$iFieldId"}">Manage
+lookup tree</a>
 {/if}
