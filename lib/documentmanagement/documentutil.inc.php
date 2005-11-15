@@ -40,6 +40,8 @@ require_once(KT_LIB_DIR . '/filelike/filelikeutil.inc.php');
 require_once(KT_LIB_DIR . '/metadata/metadatautil.inc.php');
 require_once(KT_LIB_DIR . '/metadata/fieldset.inc.php');
 
+require_once(KT_LIB_DIR . '/triggers/triggerregistry.inc.php');
+
 class KTDocumentUtil {
     function createMetadataVersion($oDocument) {
         if (is_numeric($oDocument)) {
