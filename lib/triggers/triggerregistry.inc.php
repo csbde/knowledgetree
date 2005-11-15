@@ -25,7 +25,16 @@ class KTTriggerRegistry {
 
     // {{{ getTriggers
     function getTriggers($action, $slot) {
-        return $this->triggers[$action][$slot];
+        $ret = array();
+        if (array_key_exists($action, $this->triggers)) {
+            if (array_key_exists($slot, $this->triggers[$action])) {
+                $ret = $this->triggers[$action][$slot];
+            }
+        }
+        if (empty($ret)) {
+            return array();
+        }
+        return $ret;
     }
     // }}}
 }
