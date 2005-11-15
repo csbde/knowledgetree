@@ -122,11 +122,13 @@ class KTDocumentArchiveAction extends KTBuiltInDocumentAction {
     var $sName = 'ktcore.actions.document.archive';
 
     function _disable() {
+        /*
         if ($this->oDocument->hasCollaboration() &&
             DocumentCollaboration::documentCollaborationStarted($this->oDocument->getID()) &&
             !DocumentCollaboration::documentCollaborationDone($this->oDocument->getID())) {
             $sDisabledText = _("This document is in collaboration and cannot be archived");
         }
+        */
 
         if ($this->oDocument->getIsCheckedOut()) {
             $this->_sDisabledText = _("This document is checked out and cannot be archived.");
@@ -156,6 +158,7 @@ class KTDocumentPublishAction extends KTDocumentAction {
             $this->_sDisabledText = _("This document is checked out and cannot be archived.");
             return true;
         }
+        /*
         if (DocumentCollaboration::documentIsPublished($oDocument->getID())) {
             $this->_sDisabledText = _("This document is already published.");
             return true;
@@ -170,6 +173,7 @@ class KTDocumentPublishAction extends KTDocumentAction {
                 return true;
             }
         }
+        */
         return parent::_disable();
     }
 
