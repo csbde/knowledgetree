@@ -27,10 +27,11 @@ ALTER TABLE `workflow_transitions` ADD INDEX `guard_role_id` (`guard_role_id`);
 ALTER TABLE `workflow_transitions` DROP FOREIGN KEY `workflow_transitions_ibfk_2`; # was FOREIGN KEY (`target_state_id`) REFERENCES `workflow_states` (`id`)
 ALTER TABLE `workflow_transitions` DROP FOREIGN KEY `workflow_transitions_ibfk_3`; # was FOREIGN KEY (`guard_permission_id`) REFERENCES `permissions` (`id`)
 ALTER TABLE `workflow_transitions` DROP FOREIGN KEY `workflow_transitions_ibfk_1`; # was FOREIGN KEY (`workflow_id`) REFERENCES `workflows` (`id`)
-ALTER TABLE `workflow_transitions` ADD CONSTRAINT `workflow_transitions_ibfk_27` FOREIGN KEY (`guard_role_id`) REFERENCES `roles` (`id`) ON DELETE SET NULL;
-ALTER TABLE `workflow_transitions` ADD CONSTRAINT `workflow_transitions_ibfk_24` FOREIGN KEY (`target_state_id`) REFERENCES `workflow_states` (`id`) ON DELETE CASCADE;
-ALTER TABLE `workflow_transitions` ADD CONSTRAINT `workflow_transitions_ibfk_25` FOREIGN KEY (`guard_permission_id`) REFERENCES `permissions` (`id`) ON DELETE SET NULL;
-ALTER TABLE `workflow_transitions` ADD CONSTRAINT `workflow_transitions_ibfk_23` FOREIGN KEY (`workflow_id`) REFERENCES `workflows` (`id`) ON DELETE CASCADE;
-ALTER TABLE `workflow_transitions` ADD CONSTRAINT `workflow_transitions_ibfk_26` FOREIGN KEY (`guard_group_id`) REFERENCES `groups_lookup` (`id`) ON DELETE SET NULL;
 ALTER TABLE `field_behaviours` DROP FOREIGN KEY `field_behaviours_ibfk_1`;
 ALTER TABLE `field_behaviours` ADD CONSTRAINT `field_behaviours_ibfk_1` FOREIGN KEY (`field_id`) REFERENCES `document_fields` (`id`) ON DELETE CASCADE;
+ALTER TABLE `workflow_transitions` ADD CONSTRAINT `workflow_transitions_ibfk_48` FOREIGN KEY (`guard_group_id`) REFERENCES `groups_lookup` (`id`) ON DELETE SET NULL;
+ALTER TABLE `workflow_transitions` ADD CONSTRAINT `workflow_transitions_ibfk_50` FOREIGN KEY (`guard_condition_id`) REFERENCES `saved_searches` (`id`) ON DELETE SET NULL;
+ALTER TABLE `workflow_transitions` ADD CONSTRAINT `workflow_transitions_ibfk_46` FOREIGN KEY (`target_state_id`) REFERENCES `workflow_states` (`id`) ON DELETE CASCADE;
+ALTER TABLE `workflow_transitions` ADD CONSTRAINT `workflow_transitions_ibfk_47` FOREIGN KEY (`guard_permission_id`) REFERENCES `permissions` (`id`) ON DELETE SET NULL;
+ALTER TABLE `workflow_transitions` ADD CONSTRAINT `workflow_transitions_ibfk_49` FOREIGN KEY (`guard_role_id`) REFERENCES `roles` (`id`) ON DELETE SET NULL;
+ALTER TABLE `workflow_transitions` ADD CONSTRAINT `workflow_transitions_ibfk_45` FOREIGN KEY (`workflow_id`) REFERENCES `workflows` (`id`) ON DELETE CASCADE;
