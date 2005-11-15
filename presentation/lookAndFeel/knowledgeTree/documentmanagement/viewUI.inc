@@ -301,100 +301,6 @@ function renderDocumentArchiveSettings($oDocument, $bEditable) {
     return $sToRender;
 }
 
-function renderEditableDocumentRouting($oDocument) {
-    global $default;
-    /*ok*/ $sQuery = array("SELECT D.id as document_id, GFAL.id as id, R.name AS role_name, COALESCE(U.name, U2.name) AS name, GFAL.precedence AS precedence, COALESCE(FURL.active,0) AS active, COALESCE(FURL.done, 0) AS done, 'Edit User' as edit " .
-              "FROM $default->documents_table AS D INNER JOIN $default->groups_folders_approval_table AS GFAL ON D.folder_id = GFAL.folder_id " .
-              "INNER JOIN $default->roles_table AS R ON GFAL.role_id = R.id " .
-              "LEFT OUTER JOIN $default->folders_user_roles_table AS FURL ON FURL.group_folder_approval_id = GFAL.id AND FURL.document_id = D.id " .
-              "LEFT OUTER JOIN $default->users_table AS U ON FURL.user_id = U.id " .
-              "LEFT OUTER JOIN $default->users_table AS U2 ON GFAL.user_id = U2.id " .              
-              "WHERE D.id = ? " .
-              "ORDER BY GFAL.precedence, role_name ASC", $oDocument->getID());
-    $aColumns = array("role_name", "name", "precedence", "active", "done", "edit");
-    $aColumnHeaders = array(_("Role"), _("User"), _("Seq"), _("Active"), _("Done"), _("Edit"));
-    $aColumnTypes = array(1,1,1,2,2,3);
-    $aDBColumnArray = array("id","document_id","active","done");
-    $aQueryStringVariableNames = array("fFolderCollaborationID", "fDocumentID","fIsActive","fIsDone");
-    $aLinkURLs = array(5=>"$default->rootUrl/control.php?action=modifyDocumentRouting");
-
-    $oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaders, "500", $aLinkURLs,$aDBColumnArray,$aQueryStringVariableNames);
-    $oPatternTableSqlQuery->setTableHeading(_("Document Routing"));
-    $oPatternTableSqlQuery->setDisplayColumnHeadings(true);
-    
-    $sToRender .= "\t<table cellspacing=\"0\" cellpadding=\"0\" border=\"0\" width=\"100%\">\n";
-    $sToRender .= "\t<tr>\n";
-    $sToRender .= "\t\t<td>" . $oPatternTableSqlQuery->render() . "</td>\n";
-    $sToRender .= "\t</tr>";            
-    $sToRender .= "\t<tr>\n";    
-    // display the begin collaboration button if:
-    // collaboration cannot be started or approved/rejected unless the document is not checked out
-    // the document has collaboration
-    // collaboration hasn't started
-    // the current user created the document, or is a system adminstrator    
-	if (!$oDocument->getIsCheckedOut() && 
-		$oDocument->hasCollaboration() && 
-		(!DocumentCollaboration::documentCollaborationStarted($oDocument->getID())) && 
-		( ($_SESSION["userID"] == $oDocument->getCreatorID())  || Permission::userIsSystemAdministrator() ) ) {
-		//if not all collaboration steps have been set, then you cannot start the collaboration process
-		//only the creator of the document can start the collaboration process		
-		$sToRender .= "\t\t<td><a href=" . $_SERVER['PHP_SELF'] . "?fDocumentID=" . $oDocument->getID() . "&fBeginCollaboration=1><img src=\"" . KTHtml::getBeginButton() . "\" border=\"0\"/></a>";
-		$sToRender .= "</td>\n";
-	// else if collboration has started and the current user has been assigned this step, display the approve/reject buttons
-	} else if (DocumentCollaboration::userIsPerformingCurrentCollaborationStep($oDocument->getID())) {
-		//if the current user is responsible for an active step in the collaboration process		
-		$sToRender .= "\t\t<td><table border=\"0\"><tr>\n";
-		$sToRender .= "\t\t<td><b>" . _("You currently have an active role in the collaboration process") . "</b></td>\n";
-		// collaboration cannot be started or approved/rejected if the document is checked out
-		if (!$oDocument->getIsCheckedOut()) {				
-			$sToRender .= "\t\t<td align=\"center\"><a onClick=\"return confirm('" . _("Are you sure you want to approve?  You will not have access to this document until the collaboration process is complete (unless the document is rejected in a subsequent step)") . "');\" href=" . $_SERVER['PHP_SELF'] . "?fDocumentID=" . $oDocument->getID() . "&fCollaborationStepComplete=1><img src=\"" . KTHtml::getApproveButton() . "\" border=\"0\"/></a></td>\n";
-			$sToRender .= "\t\t<td align=\"center\"><a href=\"$default->rootUrl/control.php?action=collaborationStepReject&fDocumentID=" . $oDocument->getID() . "\"><img src=\"" . KTHtml::getRejectButton() . "\" border=\"0\"/></a></td>\n";
-		}	
-		$sToRender .= "\t\t</tr></table></td>\n";
-	}
-
-    $sToRender .= "\t</tr>";
-	$sToRender .= "\t</table>\n";
-	
-    return $sToRender;    
-}
-
-function renderNonEditableDocumentRouting($oDocument) {
-    global $default;
-    /*ok*/ $sQuery = array("SELECT D.id as document_id, GFAL.id as id, R.name AS role_name, COALESCE(U.Name, 'Not assigned') AS name, GFAL.precedence AS precedence, COALESCE(FURL.active,0) AS active, COALESCE(FURL.done, 0) AS done " .
-              "FROM $default->documents_table AS D INNER JOIN $default->groups_folders_approval_table AS GFAL ON D.folder_id = GFAL.folder_id " .
-              "INNER JOIN $default->roles_table AS R ON GFAL.role_id = R.id " .
-              "LEFT OUTER JOIN $default->folders_user_roles_table AS FURL ON FURL.group_folder_approval_id = GFAL.id AND FURL.document_id = D.id " .
-              "LEFT OUTER JOIN $default->users_table AS U ON FURL.user_id = U.id " .
-              "WHERE D.id = ? " .
-              "ORDER BY GFAL.precedence, role_name ASC", $oDocument->getID());
-
-    $aColumns = array("role_name", "name", "precedence", "active", "done");
-    $aColumnHeaders = array(_("Role"), _("User"), _("Seq"), _("Active"), _("Done"));
-    $aColumnTypes = array(1,1,1,2,2);
-    $oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaders, "500", "$default->rootUrl/control.php?action=modifyDocumentRouting",$aDBColumnArray,$aQueryStringVariableNames);
-    $oPatternTableSqlQuery->setTableHeading(_("Document Routing"));
-    $oPatternTableSqlQuery->setDisplayColumnHeadings(true);
-
-   	$sToRender .= "\t<table cellspacing=\"0\" cellpadding=\"0\" border=\"0\" width=\"100%\">\n";
-    $sToRender .= "\t<tr>\n";
-    $sToRender .= "\t\t<td>" . $oPatternTableSqlQuery->render() . "</td>\n";
-    $sToRender .= "\t</tr>";
-    
-	if (DocumentCollaboration::userIsPerformingCurrentCollaborationStep($oDocument->getID())) {
-		//if the current user is responsible for an active step in the collaboration process		
-		$sToRender .= "\t\t<tr><td><table border=\"0\"><tr>\n";
-		$sToRender .= "\t\t<td><b>" . _("You currently have an active role in the collaboration process") . "</b></td>\n";				
-		$sToRender .= "\t\t<td align=\"center\"><a href=" . $_SERVER['PHP_SELF'] . "?fDocumentID=" . $oDocument->getID() . "&fCollaborationStepComplete=1><img src=\"" . KTHtml::getApproveButton() . "\" border=\"0\"/></a></td>\n";
-		$sToRender .= "\t\t<td align=\"center\"><a href=\"$default->rootUrl/control.php?action=collaborationStepReject&fDocumentID=" . $oDocument->getID() . "\"><img src=\"" . KTHtml::getRejectButton() . "\" border=\"0\"/></a></td>\n";
-		$sToRender .= "\t\t</tr></table></td></tr>\n";
-	}
-	    
-	$sToRender .= "\t</table>\n";
-	
-    return $sToRender;
-}
-
 function renderEditableLinkedDocuments($oDocument) {
 	global $default;
 	
@@ -628,7 +534,6 @@ function getPage($oDocument, $bEdit, $sStatusMessage = "") {
 	$sToRender .= renderDocumentSection("genericMetaData", _("Generic Meta Data"), $bDisplayLink, $oDocument->getID());
 	$sToRender .= renderDocumentSection("typeSpecificMetaData", _("Type Specific Meta Data"), $bDisplayLink, $oDocument->getID());
 	$sToRender .= renderDocumentSection("archiveSettings", _("Archive Settings"), $bDisplayLink, $oDocument->getID());
-	$sToRender .= renderDocumentSection("documentRouting", _("Document Routing"), $bDisplayLink, $oDocument->getID());
 	$sToRender .= renderDocumentSection("linkedDocuments", _("Linked Documents"), $bDisplayLink, $oDocument->getID());
 	$sToRender .= renderDocumentSection("metadataVersions", _("Metadata Versions"), $bDisplayLink, $oDocument->getID());
 
@@ -648,10 +553,8 @@ function getPage($oDocument, $bEdit, $sStatusMessage = "") {
    	$sToRender .= renderSectionDiv("typeSpecificMetaData", renderTypeSpecificMetaData($oDocument, $bEdit));
     $sToRender .= renderSectionDiv("archiveSettings", renderDocumentArchiveSettings($oDocument, $bEdit));
     if ($bEdit) {       
-    	$sToRender .= renderSectionDiv("documentRouting", renderEditableDocumentRouting($oDocument));
     	$sToRender .= renderSectionDiv("linkedDocuments", renderEditableLinkedDocuments($oDocument) . renderDependantDocuments($oDocument, $bEdit));
     } else {
-    	$sToRender .= renderSectionDiv("documentRouting", renderNonEditableDocumentRouting($oDocument));
     	$sToRender .= renderSectionDiv("linkedDocuments", renderNonEditableLinkedDocuments($oDocument, $bEdit) . renderDependantDocuments($oDocument, $bEdit));
     }
     $sToRender .= renderSectionDiv("metadataVersions", renderDocumentVersions($oDocument));
@@ -692,7 +595,6 @@ function getStatusPage($oDocument, $sStatusMessage) {
 	$sToRender .= renderDocumentSection("genericMetaData", _("Generic Meta Data"), $bDisplayLink, $oDocument->getID());
 	$sToRender .= renderDocumentSection("typeSpecificMetaData", _("Type Specific Meta Data"), $bDisplayLink, $oDocument->getID());
 	$sToRender .= renderDocumentSection("archiveSettings", _("Archive Settings"), $bDisplayLink, $oDocument->getID());
-	$sToRender .= renderDocumentSection("documentRouting", _("Document Routing"), $bDisplayLink, $oDocument->getID());
 	$sToRender .= renderDocumentSection("linkedDocuments", _("Linked Documents"), $bDisplayLink, $oDocument->getID());
 	$sToRender .= renderDocumentSection("metadataVersions", _("Document Versions"), $bDisplayLink, $oDocument->getID());
 	$sToRender .= "</table>";
