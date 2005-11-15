@@ -1,16 +1,15 @@
 -- phpMyAdmin SQL Dump
--- version 2.6.4-pl1-Debian-1ubuntu1.1
+-- version 2.6.4-pl3-Debian-1
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Nov 10, 2005 at 11:59 AM
+-- Generation Time: Nov 15, 2005 at 04:31 PM
 -- Server version: 4.0.24
 -- PHP Version: 4.4.0-3
 
 SET FOREIGN_KEY_CHECKS=0;
-
 -- 
--- Database: `ktpristine`
+-- Database: `kt2991`
 -- 
 
 -- 
@@ -198,7 +197,7 @@ INSERT INTO document_types_lookup VALUES (1, 'Default');
 -- Dumping data for table `fieldsets`
 -- 
 
-INSERT INTO fieldsets VALUES (1, 'Category', 'local.category', 0, 0, 1, 1, 0, 1);
+INSERT INTO fieldsets VALUES (1, 'Category', 'local.category', 0, 0, 1, 1, 0, 1, 0);
 
 -- 
 -- Dumping data for table `folder_doctypes_link`
@@ -565,6 +564,16 @@ INSERT INTO permission_descriptors VALUES (1, 'd41d8cd98f00b204e9800998ecf8427e'
 INSERT INTO permission_descriptors VALUES (2, 'a689e7c4dc953de8d93b1ed4843b2dfe', 'group(1)');
 
 -- 
+-- Dumping data for table `permission_dynamic_assignments`
+-- 
+
+
+-- 
+-- Dumping data for table `permission_dynamic_conditions`
+-- 
+
+
+-- 
 -- Dumping data for table `permission_lookup_assignments`
 -- 
 
@@ -598,6 +607,11 @@ INSERT INTO permissions VALUES (3, 'ktcore.permissions.addFolder', 'Core: Add Fo
 
 -- 
 -- Dumping data for table `roles`
+-- 
+
+
+-- 
+-- Dumping data for table `saved_searches`
 -- 
 
 
@@ -1003,6 +1017,11 @@ INSERT INTO zseq_permission_assignments VALUES (3);
 INSERT INTO zseq_permission_descriptors VALUES (2);
 
 -- 
+-- Dumping data for table `zseq_permission_dynamic_conditions`
+-- 
+
+
+-- 
 -- Dumping data for table `zseq_permission_lookup_assignments`
 -- 
 
@@ -1031,6 +1050,11 @@ INSERT INTO zseq_permissions VALUES (3);
 -- 
 
 INSERT INTO zseq_roles VALUES (1);
+
+-- 
+-- Dumping data for table `zseq_saved_searches`
+-- 
+
 
 -- 
 -- Dumping data for table `zseq_search_document_user_link`
