@@ -51,8 +51,25 @@ border="0" src="{"icons/delete.png"|imgSrc}" title="Delete fieldset" /></a>
 <input type="hidden" name="action" value="new">
 <table class="prettysw" cellpadding="0" cellspacing="0">
 <tr><th>Name</th><td><input type="textbox" name="name" /></td></tr>
-<tr><th>Namespace</th><td><input type="textbox" name="namespace" /></td></tr>
-<tr><th>Generic</th><td><input type="checkbox" name="generic" value="true" /></td></tr>
+<tr>
+  <th>Generic</th>
+  <td style="text-align: left">
+    <input type="checkbox" name="generic" value="true" /><br />
+    <p class="helpText">A generic fieldset is one that
+    is available for every document by default.  These fieldsets
+    will be available for users to edit and add for every document in
+    the document management system.</p>
+  </td>
+</tr>
+<tr>
+  <th>System</th>
+  <td>
+    <input type="checkbox" name="system" value="true" /><br />
+    <p class="helpText">A system fieldset is one that
+    is never displayed to a user, and is used only by the document
+    management system.</p>
+  </td>
+</tr>
 </table>
 <input type="submit" name="submit" value="Create" />
 </form>
