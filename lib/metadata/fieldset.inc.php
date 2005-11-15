@@ -16,16 +16,21 @@ class KTFieldset extends KTEntity {
 	var $sName;
 	/** document fieldset namespace */
 	var $sNamespace;
-	/** document fieldset mandatory flag*/
+	/** document fieldset mandatory flag */
 	var $bMandatory = false;
-	var $bIsConditional = false;
 	var $iMasterFieldId;
 
     var $bIsGeneric = false;
     // By default, we're complete.  When we become conditional, then we
     // become incomplete until made complete.
     var $bIsComplete = true;
+	var $bIsConditional = false;
     var $bIsComplex = false;
+    /**
+     * A System fieldset is one that is never displayed to a user, and
+     * is used only by the document management system.
+     */
+    var $bIsSystem = false;
 	
     var $_bUsePearError = true;
 	
@@ -47,6 +52,8 @@ class KTFieldset extends KTEntity {
 	function setIsComplete ($bNewValue) {	$this->bIsComplete = $bNewValue; }	
 	function getIsComplex () { return $this->bIsComplex; }
 	function setIsComplex ($bNewValue) {	$this->bIsComplex = $bNewValue; }	
+	function getIsSystem () { return $this->bIsSystem; }
+	function setIsSystem ($bNewValue) {	$this->bIsSystem = $bNewValue; }	
 
     var $_aFieldToSelect = array(
         "iId" => "id",
@@ -58,6 +65,7 @@ class KTFieldset extends KTEntity {
         "bIsGeneric" => "is_generic",
         "bIsComplete" => "is_complete",
         "bIsComplex" => "is_complex",
+        "bIsSystem" => "is_system",
     );
 	
 	// returns TRUE if all children are lookup enabled, false otherwise.
