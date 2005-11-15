@@ -38,7 +38,7 @@
 
 require_once("../../../../config/dmsDefaults.php");
 
-KTUtil::extractGPC('fBeginCollaboration', 'fCheckedOut', 'fCollaborationEdit', 'fCollaborationStepComplete', 'fComment', 'fDocumentID', 'fFireSubscription', 'fFolderName', 'fForPublish', 'fShowSection', 'fSubmit', 'fWebSiteID');
+KTUtil::extractGPC('fCheckedOut', 'fComment', 'fDocumentID', 'fFireSubscription', 'fFolderName', 'fForPublish', 'fShowSection', 'fSubmit', 'fWebSiteID');
 
 require_once("$default->fileSystemRoot/lib/security/Permission.inc");
 
@@ -50,13 +50,11 @@ require_once("$default->fileSystemRoot/lib/documentmanagement/PhysicalDocumentMa
 require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentTransaction.inc");
 require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
 require_once("$default->fileSystemRoot/lib/documentmanagement/DependantDocumentInstance.inc");
-require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentCollaboration.inc");
 
 require_once("$default->fileSystemRoot/lib/archiving/ArchivingSettings.inc");
 require_once("$default->fileSystemRoot/lib/archiving/DocumentArchiving.inc");
 require_once("$default->fileSystemRoot/lib/archiving/TimePeriod.inc");
 
-require_once("$default->fileSystemRoot/lib/foldermanagement/FolderCollaboration.inc");
 require_once("$default->fileSystemRoot/lib/foldermanagement/FolderUserRole.inc");
 require_once("$default->fileSystemRoot/lib/roles/Role.inc");
 require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
