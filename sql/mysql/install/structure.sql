@@ -1,13 +1,15 @@
 -- phpMyAdmin SQL Dump
--- version 2.6.4-pl1-Debian-1ubuntu1.1
+-- version 2.6.4-pl3-Debian-1
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Nov 10, 2005 at 11:58 AM
+-- Generation Time: Nov 15, 2005 at 04:33 PM
 -- Server version: 4.0.24
 -- PHP Version: 4.4.0-3
+
+SET FOREIGN_KEY_CHECKS=0;
 -- 
--- Database: `ktpristine`
+-- Database: `kt2991`
 -- 
 
 -- --------------------------------------------------------
@@ -498,9 +500,11 @@ CREATE TABLE fieldsets (
   is_generic tinyint(1) NOT NULL default '0',
   is_complex tinyint(1) NOT NULL default '0',
   is_complete tinyint(1) NOT NULL default '1',
+  is_system tinyint(1) unsigned NOT NULL default '0',
   UNIQUE KEY id (id),
   KEY is_generic (is_generic),
   KEY is_complete (is_complete),
+  KEY is_system (is_system),
   KEY master_field (master_field)
 ) TYPE=InnoDB;
 
@@ -849,6 +853,36 @@ CREATE TABLE permission_descriptors (
 -- --------------------------------------------------------
 
 -- 
+-- Table structure for table `permission_dynamic_assignments`
+-- 
+
+CREATE TABLE permission_dynamic_assignments (
+  dynamic_condition_id int(11) NOT NULL default '0',
+  permission_id int(11) NOT NULL default '0',
+  KEY dynamic_conditiond_id (dynamic_condition_id),
+  KEY permission_id (permission_id)
+) TYPE=InnoDB;
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `permission_dynamic_conditions`
+-- 
+
+CREATE TABLE permission_dynamic_conditions (
+  id int(11) NOT NULL default '0',
+  permission_object_id int(11) NOT NULL default '0',
+  group_id int(11) NOT NULL default '0',
+  condition_id int(11) NOT NULL default '0',
+  PRIMARY KEY  (id),
+  KEY permission_object_id (permission_object_id),
+  KEY group_id (group_id),
+  KEY condition_id (condition_id)
+) TYPE=InnoDB;
+
+-- --------------------------------------------------------
+
+-- 
 -- Table structure for table `permission_lookup_assignments`
 -- 
 
@@ -915,6 +949,27 @@ CREATE TABLE roles (
   can_write tinyint(1) NOT NULL default '0',
   UNIQUE KEY id (id),
   UNIQUE KEY name (name)
+) TYPE=InnoDB;
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `saved_searches`
+-- 
+
+CREATE TABLE saved_searches (
+  id int(11) NOT NULL default '0',
+  name varchar(50) NOT NULL default '',
+  namespace varchar(250) NOT NULL default '',
+  is_condition tinyint(1) NOT NULL default '0',
+  is_complete tinyint(1) NOT NULL default '0',
+  user_id int(10) default NULL,
+  search text NOT NULL,
+  PRIMARY KEY  (id),
+  KEY namespace (namespace),
+  KEY is_condition (is_condition),
+  KEY is_complete (is_complete),
+  KEY user_id (user_id)
 ) TYPE=InnoDB;
 
 -- --------------------------------------------------------
@@ -1192,12 +1247,14 @@ CREATE TABLE workflow_transitions (
   guard_permission_id int(11) default '0',
   guard_group_id int(11) default '0',
   guard_role_id int(11) default '0',
+  guard_condition_id int(11) default NULL,
   PRIMARY KEY  (id),
   UNIQUE KEY workflow_id_2 (workflow_id,name),
   KEY workflow_id (workflow_id),
   KEY name (name),
   KEY target_state_id (target_state_id),
   KEY guard_permission_id (guard_permission_id),
+  KEY guard_condition (guard_condition_id),
   KEY guard_group_id (guard_group_id),
   KEY guard_role_id (guard_role_id)
 ) TYPE=InnoDB;
@@ -1705,6 +1762,17 @@ CREATE TABLE zseq_permission_descriptors (
 -- --------------------------------------------------------
 
 -- 
+-- Table structure for table `zseq_permission_dynamic_conditions`
+-- 
+
+CREATE TABLE zseq_permission_dynamic_conditions (
+  id int(10) unsigned NOT NULL auto_increment,
+  PRIMARY KEY  (id)
+) TYPE=MyISAM;
+
+-- --------------------------------------------------------
+
+-- 
 -- Table structure for table `zseq_permission_lookup_assignments`
 -- 
 
@@ -1753,6 +1821,17 @@ CREATE TABLE zseq_permissions (
 -- 
 
 CREATE TABLE zseq_roles (
+  id int(10) unsigned NOT NULL auto_increment,
+  PRIMARY KEY  (id)
+) TYPE=MyISAM;
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `zseq_saved_searches`
+-- 
+
+CREATE TABLE zseq_saved_searches (
   id int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (id)
 ) TYPE=MyISAM;
@@ -2016,12 +2095,33 @@ ALTER TABLE `permission_descriptor_users`
   ADD CONSTRAINT `permission_descriptor_users_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 -- 
+-- Constraints for table `permission_dynamic_assignments`
+-- 
+ALTER TABLE `permission_dynamic_assignments`
+  ADD CONSTRAINT `permission_dynamic_assignments_ibfk_2` FOREIGN KEY (`dynamic_condition_id`) REFERENCES `permission_dynamic_conditions` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `permission_dynamic_assignments_ibfk_3` FOREIGN KEY (`permission_id`) REFERENCES `permissions` (`id`) ON DELETE CASCADE;
+
+-- 
+-- Constraints for table `permission_dynamic_conditions`
+-- 
+ALTER TABLE `permission_dynamic_conditions`
+  ADD CONSTRAINT `permission_dynamic_conditions_ibfk_1` FOREIGN KEY (`permission_object_id`) REFERENCES `permission_objects` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `permission_dynamic_conditions_ibfk_2` FOREIGN KEY (`group_id`) REFERENCES `groups_lookup` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `permission_dynamic_conditions_ibfk_3` FOREIGN KEY (`condition_id`) REFERENCES `saved_searches` (`id`) ON DELETE CASCADE;
+
+-- 
 -- Constraints for table `permission_lookup_assignments`
 -- 
 ALTER TABLE `permission_lookup_assignments`
   ADD CONSTRAINT `permission_lookup_assignments_ibfk_2` FOREIGN KEY (`permission_lookup_id`) REFERENCES `permission_lookups` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `permission_lookup_assignments_ibfk_1` FOREIGN KEY (`permission_id`) REFERENCES `permissions` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `permission_lookup_assignments_ibfk_3` FOREIGN KEY (`permission_descriptor_id`) REFERENCES `permission_descriptors` (`id`) ON DELETE CASCADE;
+
+-- 
+-- Constraints for table `saved_searches`
+-- 
+ALTER TABLE `saved_searches`
+  ADD CONSTRAINT `saved_searches_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- 
 -- Constraints for table `workflow_states`
@@ -2034,14 +2134,17 @@ ALTER TABLE `workflow_states`
 -- Constraints for table `workflow_transitions`
 -- 
 ALTER TABLE `workflow_transitions`
-  ADD CONSTRAINT `workflow_transitions_ibfk_26` FOREIGN KEY (`guard_group_id`) REFERENCES `groups_lookup` (`id`) ON DELETE SET NULL,
-  ADD CONSTRAINT `workflow_transitions_ibfk_23` FOREIGN KEY (`workflow_id`) REFERENCES `workflows` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `workflow_transitions_ibfk_24` FOREIGN KEY (`target_state_id`) REFERENCES `workflow_states` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `workflow_transitions_ibfk_25` FOREIGN KEY (`guard_permission_id`) REFERENCES `permissions` (`id`) ON DELETE SET NULL,
-  ADD CONSTRAINT `workflow_transitions_ibfk_27` FOREIGN KEY (`guard_role_id`) REFERENCES `roles` (`id`) ON DELETE SET NULL;
+  ADD CONSTRAINT `workflow_transitions_ibfk_45` FOREIGN KEY (`workflow_id`) REFERENCES `workflows` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `workflow_transitions_ibfk_46` FOREIGN KEY (`target_state_id`) REFERENCES `workflow_states` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `workflow_transitions_ibfk_47` FOREIGN KEY (`guard_permission_id`) REFERENCES `permissions` (`id`) ON DELETE SET NULL,
+  ADD CONSTRAINT `workflow_transitions_ibfk_48` FOREIGN KEY (`guard_group_id`) REFERENCES `groups_lookup` (`id`) ON DELETE SET NULL,
+  ADD CONSTRAINT `workflow_transitions_ibfk_49` FOREIGN KEY (`guard_role_id`) REFERENCES `roles` (`id`) ON DELETE SET NULL,
+  ADD CONSTRAINT `workflow_transitions_ibfk_50` FOREIGN KEY (`guard_condition_id`) REFERENCES `saved_searches` (`id`) ON DELETE SET NULL;
 
 -- 
 -- Constraints for table `workflows`
 -- 
 ALTER TABLE `workflows`
   ADD CONSTRAINT `workflows_ibfk_1` FOREIGN KEY (`start_state_id`) REFERENCES `workflow_states` (`id`);
+
+SET FOREIGN_KEY_CHECKS=1;
