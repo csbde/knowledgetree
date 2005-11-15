@@ -62,17 +62,31 @@ class KTDocumentFieldDispatcher extends KTStandardDispatcher {
 
     // {{{ do_new
     function do_new() {
+        $bIsGeneric = false;
+        $bIsSystem = false;
+
         if (KTUtil::arrayGet($_REQUEST, 'generic')) {
-            $generic = true;
-        } else {
-            $generic = false;
+            $bIsGeneric = true;
+        }
+
+        if (KTUtil::arrayGet($_REQUEST, 'system')) {
+            $bIsSystem = true;
+            // Can't be a system fieldset and a generic fieldset...
+            $bIsGeneric = false;
+        }
+        $sName = KTUtil::arrayGet($_REQUEST, 'name');
+        $sName = $this->oValidator->notEmpty($sName);
+        $sNamespace = KTUtil::arrayGet($_REQUEST, 'namespace');
+        if (empty($sNamespace)) {
+            $sNamespace = KTUtil::nameToLocalNamespace('fieldsets', $sName);
         }
         $res = KTFieldset::createFromArray(array(
-            'name' => $_REQUEST['name'],
-            'namespace' => $_REQUEST['namespace'],
+            'name' => $sName,
+            'namespace' => $sNamespace,
             'mandatory' => false,
             'isconditional' => false,
-            'isgeneric' => $generic,
+            'isgeneric' => $bIsGeneric,
+            'issystem' => $bIsSystem,
         ));
         if (PEAR::isError($res) || ($res === false)) {
             $this->errorRedirectToMain('Could not create fieldset');
