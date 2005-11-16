@@ -15,7 +15,6 @@ DEFINE("FORCE_CHECKIN", 12);
 DEFINE("EMAIL_LINK", 13);
 DEFINE("COLLAB_ACCEPT", 14);
 DEFINE("EMAIL_ATTACH", 15);
-DEFINE("WORKFLOW_TRANSITION", 16);
 /**
  * $Id$
  *
@@ -101,10 +100,6 @@ class DocumentTransaction {
 	 */
 	function getVersion() {
 		return $this->sVersion;
-	}
-
-	function getComment() {
-		return $this->sComment;
 	}
 
         function _table() {
@@ -202,12 +197,7 @@ class DocumentTransaction {
      * @return Array array of DocumentTransaction objects, false otherwise and set $_SESSION["errorMessage"]
      */
     function getList($sWhereClause = null) {
-        return KTEntityUtil::getList2('DocumentTransaction', $sWhereClause);
-    }
-
-    function getByDocument($oDocument) {
-        $iDocumentId = KTUtil::getId($oDocument);
-        return DocumentTransaction::getList(array('document_id = ?', array($iDocumentId)));
+        return KTEntityUtil::getList(DocumentTransaction::_table(), 'DocumentTransaction', $sWhereClause);
     }
 }
 ?>

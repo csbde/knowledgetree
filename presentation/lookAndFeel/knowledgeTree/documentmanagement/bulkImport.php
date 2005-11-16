@@ -20,6 +20,7 @@ class KTBulkImportDispatcher extends KTStandardDispatcher {
             $_REQUEST['fFolderId'] = $_REQUEST['fFolderID'];
             unset($_REQUEST['fFolderID']);
         }
+        
         $this->oFolder =& $this->oValidator->validateFolder($_REQUEST['fFolderId']);
         $this->oPermission =& $this->oValidator->validatePermissionByName('ktcore.permissions.write');
         $this->oValidator->userHasPermissionOnItem($this->oUser, $this->oPermission, $this->oFolder);

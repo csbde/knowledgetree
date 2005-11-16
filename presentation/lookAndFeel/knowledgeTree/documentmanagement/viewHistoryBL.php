@@ -56,7 +56,6 @@ if (checkSession()) {
     if (isset($fDocumentID)) {		
     	$oDocument = & Document::get($fDocumentID);
 		if (Permission::userHasDocumentReadPermission($oDocument)) {			
-			
 			$oPatternCustom = & new PatternCustom();
 			$oPatternCustom->setHtml(getPage($oDocument->getID(), $oDocument->getFolderID(), $oDocument->getName()));
 			$main->setCentralPayload($oPatternCustom);   

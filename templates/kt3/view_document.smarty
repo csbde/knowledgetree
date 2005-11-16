@@ -1,0 +1,6 @@
+<h2>{$document->getName()}</h2>
+<p class="descriptiveText">showing information for <strong>version {$document->getMajorVersionNumber()}.{$document->getMinorVersionNumber()}</strong> </p>
+    
+{foreach item=oFieldset from=$fieldsets}
+{$oFieldset->render($document_data)}
+{/foreach}

@@ -133,12 +133,6 @@ class KTFieldset extends KTEntity {
         $iFieldsetId = $oField->getParentFieldsetId();
         return KTFieldset::get($iFieldsetId);
     }
-
-    function &getByNamespace($sNamespace) {
-        return KTEntityUtil::getByDict('KTFieldset', array(
-            'namespace' => $sNamespace,
-        ));
-    }
 }
 
 ?>

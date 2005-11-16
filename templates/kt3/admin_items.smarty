@@ -1,0 +1,12 @@
+<h2>{$category.title}</h2>
+
+{if ($items === null)}
+<p class="descriptiveText">No items in the category.</p>
+{else}
+<dl class="panel_menu">
+   {foreach item=aItem from=$items}
+   <dt><a href="{$smarty.server.PHP_SELF}/{$aItem.name}">{$aItem.title}</a></dt>
+   <dd class="descriptiveText">{$aItem.description}</dd>
+   {/foreach}
+</dl>
+{/if}

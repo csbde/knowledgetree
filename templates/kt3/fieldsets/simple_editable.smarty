@@ -1,0 +1,10 @@
+<fieldset>
+    <legend>{$title}</legend>
+    <p class="descriptiveText">
+        {$description}
+    </p>
+    
+    {foreach item=oField from=$fields}
+     {$oField->render()}
+    {/foreach}
+</fieldset>

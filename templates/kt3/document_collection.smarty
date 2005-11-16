@@ -1,0 +1,68 @@
+    <table class="kt_collection" cellspacing="0">
+        <thead>
+            <tr>
+              {foreach item=oColumn from=$context->columns}
+                
+                {if $oColumn->getSortedOn() }
+                  <th class="sort_on sort_{$oColumn->getSortDirection()}">
+                {else}
+                  <th>
+                {/if}
+                
+                {$oColumn->renderHeader($context->returnURL)}</th>
+              {/foreach}
+            </tr>
+        </thead>
+        <tbody>
+          {if ($context->itemCount != 0)}
+            {foreach item=folder_row_id from=$context->activeset.folders name=rowiter}
+            <tr class="{cycle name=rows values=",odd"}">
+              {foreach item=oColumn from=$context->columns name=coliter}
+                <td class="browse_column {$oColumn->name} {if $oColumn->getSortedOn()}sort_on{/if}">
+                   {$oColumn->renderData($context->getFolderInfo($folder_row_id.id))} 
+                </td>
+              {/foreach}
+            </tr>
+            {/foreach}
+            
+            {foreach item=document_row_id from=$context->activeset.documents name=rowiter}
+            <tr class="{cycle name=rows values=",odd"}">
+              {foreach item=oColumn from=$context->columns name=coliter}
+                <td class="browse_column {$oColumn->name} {if $oColumn->getSortedOn()}sort_on{/if}">
+                   {$oColumn->renderData($context->getDocumentInfo($document_row_id.id))}
+                </td>
+              {/foreach}
+            </tr>
+            {/foreach}
+          {else}
+            <tr><td colspan="{$columncount}">No documents or folders available in this location.</td></tr>
+          {/if}
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="{$columncount}"><span class="descriptiveText">{$context->itemCount} items, {$context->batchSize} per page</span>
+                {if ($pagecount > 1)}
+                  {if ($currentpage == 0)}
+                    <span class="notactive">&laquo; prev</a> 
+                  {else}
+                    <a href="{$context->pageLink($currentpage-1)}">&laquo; prev</a> 
+                  {/if}
+                    &middot; 
+                  {if ($currentpage == $pagecount-1)}
+                    <span class="notactive">next &raquo;</a> 
+                  {else}
+                    <a href="{$context->pageLink($currentpage+1)}">next &raquo;</a> 
+                  {/if}
+                  {foreach item=showPage from=1|range:$pagecount}
+                    &middot; 
+                    {if ($showPage-1 != $currentpage)}
+                    <a href="{$context->pageLink($showPage-1)}">{$showPage}</a>
+                    {else}
+                    <span class="batchCurrent">{$showPage}</span>
+                    {/if}
+                  {/foreach}
+                {/if} 
+                </td>
+            </tr>
+        </tfoot>
+    </table>

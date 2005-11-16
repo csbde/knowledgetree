@@ -1,0 +1,560 @@
+/* ------------------ generic ------------------ */
+
+body
+{
+    padding: 1em ; border: 0; margin: 0;
+    font-size: smaller; 
+    font-family: sans-serif;
+}
+
+.floatClear
+{
+    clear: both;
+    height: 1px;
+}
+
+#kt-wrapper
+{
+    position: relative;
+}
+
+.copyright {
+    margin-top: 1em;
+    color: #888;
+    font-size: smaller;
+    border-top: 1px solid #ccc;
+    clear: both;
+}
+
+/* ------------------ logobar ------------------ */
+
+#logobar
+{
+    position: relative;
+    width: 100%;
+    margin: 0.5em 0 0.5em 0;
+}
+
+#logobar .secondary
+{
+    float: right;
+    border: 0;
+}
+
+#logobar .primary
+{
+    float: left;
+    border: 0;
+}
+
+/* ------------------ navbar ------------------- */
+
+#navbar
+{
+    position: relative;
+    width: auto;
+    background: #a6c367 url(/resources/graphics/menubg.png) top left repeat-x;
+    border: 1px solid #6c8c2f;
+    padding: 0em 1em;
+    margin-bottom: 1em;
+    height: 2.25em;
+    overflow: hidden;
+
+}
+
+#navbar ul
+{
+    list-style: none;
+    display: block;
+    margin: 0;
+    padding: 0;
+    border: 0;
+
+}
+
+#navbar ul li
+{
+    margin-right: .75em;
+    padding: .5em .75em;
+    display: block;
+    float: left;
+    color: white;
+}
+
+#navbar ul li.pref
+{
+    float: right;
+}
+
+#navbar ul li.active {
+    background: #6c8c2f url(/resources/graphics/menubg-active.png) top left repeat-x;
+    height: 100px;
+}
+
+#navbar ul li a 
+{
+    color: white;
+    text-decoration: none;
+    border-bottom: 1px transparent;
+}
+
+#navbar ul li a:hover 
+{
+    border-bottom: 1px solid white;
+}
+/*
+a.main_nav_item {
+    background: transparent url(/resources/graphics/home-navbar.gif) center left no-repeat;
+    padding-left: 1.5em;
+}
+*/
+#navbar ul li.active a:hover:visited,
+#navbar ul li.active a:visited,
+#navbar ul li.active a:hover,
+#navbar ul li.active a
+{
+    font-weight: bold;
+
+}
+
+/* ------------------ breadcrumbs -------------- */
+
+#breadcrumbs 
+{
+    margin-top: 0em;
+    margin-bottom: 1em;
+    margin-left: 0.5em;
+    color: #333;
+    text-transform: lowercase;
+}
+
+#breadcrumbs .primary 
+{
+    font-weight: bold;
+}
+
+#breadcrumbs .additional
+{
+    color: #888;
+}
+
+#breadcrumbs a
+{
+    color: #344a6a;
+    text-decoration: none;
+    border-bottom: 1px solid #344a6a;
+
+}
+
+#breadcrumbs a:visited:hover,
+#breadcrumbs a:hover
+{
+    color: #9d0a0a;
+    text-decoration: none;
+    border-bottom: 1px solid #9d0a0a;
+}
+
+#breadcrumbs a:visited 
+{
+    color: #6b0763;
+    text-decoration: none;
+    border-bottom: 1px solid #6b0763;
+}
+    
+/* ------------------ portlets ----------------- */
+
+#portletbar
+{
+    position: absolute;
+    width: 14em;
+    left: 0;
+    top: 0;
+    background: transparent;
+    margin: 0 10px 0 0 ;
+    border: 0;
+    padding: 0;
+}
+
+#portletbar .portlet
+{
+    margin: 0 0 1.5em 0;
+    border: 0;
+    padding: 0;
+    border: 1px solid #888;
+    background: #f3f3f3;
+}
+
+#portletbar .portlet h4
+{
+    margin: 0;
+    border: 0;
+    background: #a8a8a8; /* url(/resources/graphics/portlet-bg.png) center right no-repeat; */
+    padding-top: 0.25em;
+    padding-bottom: 0.25em;
+    padding-left: 0.5em;
+    text-align: left;
+    color: white;
+    font-size: small;
+}
+
+#portletbar .portlet .actionlist
+{
+    list-style: none;
+    padding: 0; margin: 0; border: 0;
+    font-size: small;
+}
+
+#portletbar .portlet .actionlist li
+{
+    display: block;
+    padding: 0; 
+    margin: 0.15em 0.5em 0.15em 0; 
+    text-align: right;
+    border: 0;
+}
+
+/* ------------------ content ------------------ */
+
+#content
+{
+    position: absolute;
+    left: 15em;
+    top: 0;
+    right: 0;
+}
+
+
+#content h1
+{
+    margin: 0 0 0.5em 0;
+    border: 1px solid #565963;
+    padding: 0.25em;
+    background: #a0a9b8;
+    color: white;
+}
+
+#content 
+{
+    line-height: 1.6em;
+}
+
+
+
+#content a
+{
+    color: #344a6a;
+    text-decoration: none;
+    border-bottom: 1px solid #344a6a;
+
+}
+
+#content a:visited:hover,
+#content a:hover
+{
+    color: #9d0a0a;
+    text-decoration: none;
+    border-bottom: 1px solid #9d0a0a;
+}
+
+#content a:visited 
+{
+    color: #6b0763;
+    text-decoration: none;
+    border-bottom: 1px solid #6b0763;
+}
+
+#content .descriptiveText 
+{
+    color: #666;
+}
+
+
+
+
+/* --------------------- control panels -------------------- */
+.panel_menu dt
+{
+    border-bottom: 1px solid #eee;
+    font-weight: normal;
+}
+
+
+.panel_menu dd
+{
+    margin-bottom: 1em;
+}
+
+
+
+
+
+
+/* ----------------------- forms ---------------------------- */
+
+#content fieldset
+{
+    border: 1px solid #ccc;
+    padding: 1em;
+}
+
+#content fieldset legend
+{
+    font-weight: normal;
+    padding: 0 1em;
+}
+
+#content input {
+    border: 1px solid #888;
+}
+
+#content .form_actions input
+{
+    border: 1px solid #888;
+    background: #eee;
+    color: black;
+    font-weight: normal;
+}
+
+#content .field
+{
+    margin-bottom: 1.5em;
+}
+
+#content .field.error
+{
+    padding: 0.5em 1em;
+    border: 1px solid #ffc21e;
+    background: #ffdd80;
+}
+#content .field.error .errorMessage
+{
+    display: block;
+}
+
+#content .field.error label .required
+{
+    color: #ffdd80;
+}
+
+#content .field label 
+{
+    display: block;
+    font-weight: bold;
+}
+
+#content .field .descriptiveText
+{
+    margin: 0;
+    line-height: 1.2em;
+    margin-bottom: 0.5em;
+}
+
+#content .field label .required
+{
+    margin-left: 0.5em;
+    padding-left: 10px;
+    color: white;
+    background: transparent url(/resources/graphics/required.png) center left no-repeat;
+}
+
+.errorMessage 
+{
+    font-weight: bold;
+}
+
+#content .field .errorMessage
+{
+    display: none;
+}
+
+#content .form_actions {
+    margin-top: 0.5em;
+    padding-top: 0.5em;
+    border-top: 1px solid #efefef;
+}
+
+#content .form_actions input.destructive
+{
+    border: 1px solid #ffc21e;
+    background: #ffdd80;
+}
+
+#content h2
+{
+    font-family: "Lucida Grande", "Bitstream Vera Sans", Tahoma, sans-serif;
+    border-width: 0 0 1px 0;
+    border-style: solid;
+    border-color: #eee;
+    font-size: large;
+    color: #333;
+}
+
+#content .actionitem {
+    margin-top: 1em;
+    font-weight: bold;
+}
+
+#content .actionmessage 
+{
+    padding-bottom: 0.5em;
+    border-bottom: 1px dashed #ccc;
+    margin-left: 0;
+    padding-left: 2em;
+}
+
+/* ---------------------- detail view ---------------------------------- */
+
+/* metadata display */
+.metadata dt
+{
+    font-weight: bold;
+    clear: left;
+}
+
+.metadata.versioned dd div {
+    padding: 0.2em 0.5em;
+    border-style: solid;
+    border-color: #ccc;
+    border-width: 1px 1px 1px 0;
+}
+
+.metadata.versioned dd .previous {
+    width: 35%;
+    float: left;
+    display: block;
+    background: #eee;
+}
+.metadata.versioned dd .current {
+    width: 35%;
+    float: left;
+    display: block;
+    border-width: 1px;
+}
+
+.document_details .document_history thead th {
+    text-align: left;
+    border-bottom: 1px solid #666;
+}
+
+.document_history {
+    width: 100%;
+}
+
+.document_history th {
+    text-align: left;
+}
+
+.document_history td {
+    text-align: left;
+    border-bottom: 1px solid #ccc;
+}
+
+.document_history tbody .username,
+.document_history tbody .date
+{
+    white-space: nowrap;
+    padding-right: 1em;
+}
+
+.document_history tbody .action
+{
+    white-space: nowrap;
+    padding-right: 1em;
+    font-weight: bold;
+}
+
+.document_history tbody tr.odd td
+{
+    background-color: #fafafa;
+}
+
+.detail_fieldset
+{
+    display: block;
+    clear: both;
+
+    overflow: hidden;
+}
+
+.detail_fieldset h3
+{
+    margin: 2em 0 0.25em 0;
+}
+
+
+/* ----------------------- collection view ----------------------------- */
+
+.kt_collection
+{
+    width: 100%;
+}
+
+.kt_collection thead th {
+    border-bottom: 1px solid #888;
+    text-align: left;
+}
+
+.kt_collection th.sort_on.sort_asc {
+    border-left: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+
+    background: transparent url(/resources/graphics/sort_asc.png) center right no-repeat;
+}
+
+.kt_collection th.sort_on.sort_desc {
+    border-left: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+
+    background: transparent url(/resources/graphics/sort_desc.png) center right no-repeat;
+}
+
+.kt_collection th,
+.kt_collection td {
+    padding: 0.25em 0.5em;
+}
+
+.kt_collection td.sort_on {
+    border-left: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+    background-color: #fafafa;
+}
+
+.kt_collection .odd td 
+{
+    background-color: #fafafa;
+}
+
+.kt_collection .odd td.sort_on {
+    background-color: #f0f0f0;
+}
+
+.kt_collection tfoot td {
+    border-top: 1px solid #ccc;
+}
+
+.ktInlineError {
+    color: #db9d09;
+}
+
+.ktError 
+{
+    padding: 0.5em 1em;
+    border: 1px solid #ffc21e;
+    margin: 0.5em 0;
+    background: #ffdd80;
+}
+
+
+/** portlet stuff. */
+#portlet-search-text {
+    border: 1px solid black;
+    background: white url(/resources/graphics/search-button.png) center left no-repeat;
+    margin: 0.5em;
+    padding: 3px;
+    padding-left: 17px;
+}
+
+.searchbutton {
+    border: 1px solid black;
+    margin: 0.5em;
+}

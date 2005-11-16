@@ -1,0 +1,24 @@
+<div class="detail_fieldset">
+    <h3>Generic Information</h3>
+    <p class="descriptiveText">
+        The information in this section is stored by the KnowledgeTree&trade; for every
+        document.
+    </p>
+    <dl class="metadata">
+        <dt>File is a </dt>
+        <dd>{$context->_mimeHelper($document->getMimeTypeID())} ({$context->_sizeHelper($document->getSize())})</dd>
+
+        <dt>Created by</dt>
+        <dd>{$creator} ({$creation_date})</dd>
+
+        <dt>Last update by</dt>
+        <dd>{$last_modified_by} ({$last_modified_date})</dd>
+
+        <dt>Document Type</dt>
+        <dd>{$document_type}</dd>
+
+        <dt>Status</dt>
+        <dd>{$workflow_state} (<a href="workflow_state.php?wf_id={$workflow_id}">see workflow</a>)</dd>
+    </dl>
+    <div class="floatClear"><!-- --> </div>
+</div>

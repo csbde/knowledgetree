@@ -8,7 +8,7 @@ require_once(KT_LIB_DIR . "/util/ktutil.inc");
 require_once(KT_LIB_DIR . "/dispatcher.inc.php");
 require_once(KT_LIB_DIR . "/metadata/fieldset.inc.php");
 $sectionName = "Administration";
-require_once(KT_DIR . "/presentation/webpageTemplate.inc");
+require_once(KT_LIB_DIR . "/templating/kt3template.inc.php");
 
 
 

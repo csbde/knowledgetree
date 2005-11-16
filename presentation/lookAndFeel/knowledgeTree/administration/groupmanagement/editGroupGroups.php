@@ -9,8 +9,7 @@ require_once(KT_LIB_DIR . "/groups/Group.inc");
 require_once(KT_LIB_DIR . "/groups/GroupUtil.php");
 
 require_once(KT_LIB_DIR . "/dispatcher.inc.php");
-$sectionName = "Administration";
-require_once(KT_DIR . "/presentation/webpageTemplate.inc");
+require_once(KT_LIB_DIR . "/templating/kt3template.inc.php");
 
 class EditGroupsGroups extends KTAdminDispatcher {
     function do_main() {

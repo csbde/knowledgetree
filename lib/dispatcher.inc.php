@@ -1,11 +1,14 @@
 <?php
 
 require_once(KT_LIB_DIR . '/validation/dispatchervalidation.inc.php');
+require_once(KT_LIB_DIR . "/widgets/portlet.inc.php");
+
 
 class KTDispatcher {
     var $event_var = "action";
     var $bAutomaticTransaction = false;
     var $bTransactionStarted = false;
+	var $oValidator = null;
 
     function KTDispatcher() {
         $this->oValidator =& new KTDispatcherValidation($this);
@@ -106,6 +109,14 @@ class KTStandardDispatcher extends KTDispatcher {
     var $bLogonRequired = true;
     var $bAdminRequired = false;
     var $aBreadcrumbs = array();
+    var $sSection = false;
+    var $oPage = false;
+    
+    function KTStandardDispatcher() {
+        global $main;
+        $this->oPage = $main;
+		parent::KTDispatcher();
+    }
 
     function permissionDenied () {
         print "Permission denied";
@@ -161,11 +172,17 @@ class KTStandardDispatcher extends KTDispatcher {
     }
 
     function handleOutput($data) {
-        global $main;
-        $main->setBreadcrumbs($this->aBreadcrumbs);
-        $main->bFormDisabled = true;
-        $main->setCentralPayload($data);
-        $main->render();
+	    global $default;
+		global $sectionName;
+        $this->oPage->setSection($this->sSection);
+        $this->oPage->setBreadcrumbs($this->aBreadcrumbs);
+        $this->oPage->setPageContents($data);
+        $this->oPage->setUser($this->oUser);
+		
+		
+		// add last, standard portlets
+		$this->oPage->addPortlet(new KTSearchPortlet());
+        $this->oPage->render();
     }
 
     function errorPage($errorMessage) {
@@ -180,5 +197,6 @@ class KTStandardDispatcher extends KTDispatcher {
 class KTAdminDispatcher extends KTStandardDispatcher {
     var $bAdminRequired = true;
 }
+
 
 ?>

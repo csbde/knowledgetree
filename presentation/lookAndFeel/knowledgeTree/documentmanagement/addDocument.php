@@ -103,6 +103,7 @@ class KTAddDocumentDispatcher extends KTStandardDispatcher {
         $aTypes = $this->getDocumentTypes();
         $iDefaultType = $aTypes[0]->getId();
         $aTemplateData = array(
+            'context' => $this,
             'folder_id' => $this->oFolder->getID(),
             'folder_path_array' => $this->oFolder->getPathArray(),
             'document_type_choice' => $this->getDocumentTypeChoice($aTypes, 'getMetadataForType(this.value);'),
@@ -127,19 +128,23 @@ class KTAddDocumentDispatcher extends KTStandardDispatcher {
         $oTemplating = KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("ktcore/metadata/editable_metadata_fieldsets");
         $aTemplateData = array(
+            
             'caption' => _('Generic meta data'),
             'empty_message' => _("No Generic Meta Data"),
             'fieldsets' => KTFieldset::getGenericFieldsets(),
         );
+        $aTemplateData['context'] =& $this;
         return $oTemplate->render($aTemplateData);
     }
 
     function getTypeMetadataFieldsets($iDocumentTypeID) {
         $aTemplateData = array(
+        
             'caption' => _('Type specific meta data'),
             'empty_message' => _("No Type Specific Meta Data"),
             'fieldsets' => KTFieldset::getForDocumentType($iDocumentTypeID),
         );
+        $aTemplateData['context'] =& $this;
         $oTemplating = KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("ktcore/metadata/editable_metadata_fieldsets");
         return $oTemplate->render($aTemplateData);
@@ -229,7 +234,7 @@ class KTAddDocumentDispatcher extends KTStandardDispatcher {
                         $oDocument->getName() . "' to the document, '" . $oParentDocument->getName() . "'.  These two documents " .
                         " are meant to be linked for collaboration purposes.  As creator of the document, ' " . $oParentDocument->getName() . "', you are requested to " .
                         "please link them manually by browsing to the parent document, " .
-                        generateControllerLink("viewDocument","fDocumentID=" . $oParentDocument->getID(), $oParentDocument->getName()) . 
+                        generateControllerLink("viewDocument","fDocumentId=" . $oParentDocument->getID(), $oParentDocument->getName()) . 
                         "  and selecting the link button.  " . $oDocument->getName() . " can be found at " . $oDocument->getDisplayPath();
                 
                 $oEmail = & new Email();
@@ -242,7 +247,7 @@ class KTAddDocumentDispatcher extends KTStandardDispatcher {
 
         $this->commitTransaction();
         //redirect to the document details page
-        controllerRedirect("viewDocument", "fDocumentID=" . $oDocument->getID());
+        controllerRedirect("viewDocument", "fDocumentId=" . $oDocument->getID());
     }
 }
 $d =& new KTAddDocumentDispatcher;

@@ -1,0 +1,5 @@
+<dt class="actionitem subscription">Subscription Alert: {$context->getLabel()}</dt>
+<dd class="actionmessage">
+    This document was updated in the folder "{$context->getStrData1()}", to which you are subscribed.
+    <div class="actionoptions"><a href="#">Read Document</a> | <a href="#">Clear Alert</a></div>
+</dd>

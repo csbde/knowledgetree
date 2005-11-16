@@ -8,8 +8,7 @@ require_once(KT_LIB_DIR . '/documentmanagement/DocumentType.inc');
 require_once(KT_LIB_DIR . '/metadata/fieldset.inc.php');
 require_once(KT_LIB_DIR . '/metadata/metadatautil.inc.php');
 
-$sectionName = "Administration";
-require_once(KT_DIR . "/presentation/webpageTemplate.inc");
+require_once(KT_LIB_DIR . "/templating/kt3template.inc.php");
 
 class KTDocumentTypeDispatcher extends KTAdminDispatcher {
 

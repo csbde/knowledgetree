@@ -1,0 +1,7 @@
+<ul class="actionlist">
+{foreach item=action from=$context->actions }
+<li>{if ($action.url)}<a href="{$action.url}"
+{if $action.description}title="{$action.description}"{/if}
+     >{$action.name}</a>{else}{$action.name}{/if}</li>
+{/foreach}
+</ul>

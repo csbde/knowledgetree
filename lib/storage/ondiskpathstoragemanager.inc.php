@@ -73,15 +73,6 @@ class KTOnDiskPathStorageManager extends KTStorageManager {
         $sStoragePath = sprintf("%s/%s", Document::_generateFolderPath($oDocument->getFolderID()), $oDocument->getFileName());
         return $sStoragePath;
     }
-
-    function temporaryFile(&$oDocument) {
-        $oConfig =& KTConfig::getSingleton();
-        return sprintf("%s/%s", $oConfig->get('urls/documentRoot'), $this->getPath($oDocument));
-    }
-
-    function freeTemporaryFile($sPath) {
-        return;
-    }
     
     function download($oDocument) {
         //get the path to the document on the server

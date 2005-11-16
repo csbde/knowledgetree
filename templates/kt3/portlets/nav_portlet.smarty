@@ -1,0 +1,5 @@
+<ul class="actionlist">
+{foreach item=navLink from=$context->navItems }
+<li><a href="{$navLink.url}">{$navLink.label}</a></li>
+{/foreach}
+</ul>
