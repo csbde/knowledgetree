@@ -1,5 +1,5 @@
 <?php
-require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
+require_once(KT_LIB_DIR . "/visualpatterns/PatternCustom.inc");
 /**
  * $Id$
  *
