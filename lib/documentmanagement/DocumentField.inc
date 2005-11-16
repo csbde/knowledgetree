@@ -226,6 +226,14 @@ class DocumentField extends KTEntity {
         return MetaData::getByDocumentField($this);
     }
 
+    function getEnabledValues() {
+        return MetaData::getEnabledByDocumentField($this);
+    }
+
+    function getDisabledValues() {
+        return MetaData::getDisabledByDocumentField($this);
+    }
+
     function getParentFieldId() {
         return KTMetadataUtil::getParentFieldId($this);
     }
