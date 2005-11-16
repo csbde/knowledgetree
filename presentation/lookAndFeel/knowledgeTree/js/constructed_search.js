@@ -81,7 +81,7 @@ function addNewCriteria(add_button) {
     var tableId = getBooleanGroupId(parent_table);
     simpleLog('DEBUG','got boolean group id'+tableId);
 
-    // ok, warn the user that we're loading the item.
+    // ok, warn the user that we\'re loading the item.
     replaceChildNodes(notify_message, 'loading...');
     var newCriteriaText = scrapeText(select.options[select.selectedIndex])+' '; // FIXME insert the "input" here.
     replaceChildNodes(select.parentNode, newCriteriaText, INPUT({'type':'hidden', 'name':'boolean_search[subgroup]['+tableId+'][values]['+critId+'][type]','value':select.value}));           // works thanks to DOM co-ercion.
@@ -93,7 +93,8 @@ function addNewCriteria(add_button) {
     
     // fetch.
     var dest_cell = notify_message.parentNode;
-    var targeturl='ajaxBooleanSearch.php?action=getNewCriteria&type='+select.value+'&critId='+critId;
+    var baseUrl = getElement('kt-core-baseurl').value;
+    var targeturl = baseUrl + '/presentation/lookAndFeel/knowledgeTree/search/ajaxBooleanSearch.php?action=getNewCriteria&type='+select.value+'&critId='+critId;
     simpleLog('DEBUG','addNewCriteria initiating request to: '+targeturl);
     
     var deferred = doSimpleXMLHttpRequest(targeturl); 
