@@ -562,16 +562,20 @@ class KTMetadataUtil {
 
         foreach ($aToBeDisabledValues as $sValue) {
             $oMetadata =& Metadata::getByValueAndDocumentField($sValue, $iFieldId);
-            $oMetadata->updateFromArray(array(
-                'disabled' => true,
-            ));
+            if (!$oMetadata->getIsStuck()) {
+                $oMetadata->updateFromArray(array(
+                    'disabled' => true,
+                ));
+            }
         }
 
         foreach ($aToBeEnabledValues as $sValue) {
             $oMetadata =& Metadata::getByValueAndDocumentField($sValue, $iFieldId);
-            $oMetadata->updateFromArray(array(
-                'disabled' => false,
-            ));
+            if (!$oMetadata->getIsStuck()) {
+                $oMetadata->updateFromArray(array(
+                    'disabled' => false,
+                ));
+            }
         }
     }
     // }}}
