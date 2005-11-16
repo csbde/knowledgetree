@@ -146,6 +146,9 @@ class GenericFieldsetDisplay extends KTFieldsetDisplay {
         
         // document type // FIXME move this to view.php
         $document_type = $aDocumentData["document_type"]->getName();
+
+        $oWorkflow = KTWorkflowUtil::getWorkflowForDocument($document);
+        $oState = KTWorkflowUtil::getWorkflowStateForDocument($document);
         
         
         $oTemplating = new KTTemplating;        
@@ -163,8 +166,8 @@ class GenericFieldsetDisplay extends KTFieldsetDisplay {
             
             "document_type" => $document_type,
             
-            "workflow_state" => "<span class='ktInlineError'><strong>fixme</strong> identify the workflow state.</span>",
-            "workflow_id" => -1,
+            "workflow_state" => $oState,
+            "workflow" => $oWorkflow,
         );
 
         return $oTemplate->render($aTemplateData);        
