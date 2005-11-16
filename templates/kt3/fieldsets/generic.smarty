@@ -17,8 +17,15 @@
         <dt>Document Type</dt>
         <dd>{$document_type}</dd>
 
-        <dt>Status</dt>
-        <dd>{$workflow_state} (<a href="workflow_state.php?wf_id={$workflow_id}">see workflow</a>)</dd>
+        <dt>Workflow status</dt>
+        <dd>
+{if $workflow_state}
+{$workflow_state->getName()}
+{else}
+No workflow
+{/if}
+(<a href="documentWorkflow.php?fDocumentId={$document->getId()}">manage workflow</a>)
+</dd>
     </dl>
     <div class="floatClear"><!-- --> </div>
 </div>
