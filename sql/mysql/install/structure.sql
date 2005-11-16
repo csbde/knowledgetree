@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Nov 15, 2005 at 04:33 PM
+-- Generation Time: Nov 16, 2005 at 04:51 PM
 -- Server version: 4.0.24
 -- PHP Version: 4.4.0-3
 
@@ -309,8 +309,10 @@ CREATE TABLE document_transaction_text (
 
 CREATE TABLE document_transaction_types_lookup (
   id int(11) NOT NULL default '0',
-  name char(100) NOT NULL default '',
-  UNIQUE KEY id (id)
+  name varchar(100) NOT NULL default '',
+  namespace varchar(250) NOT NULL default '',
+  UNIQUE KEY id (id),
+  KEY namespace (namespace)
 ) TYPE=InnoDB;
 
 -- --------------------------------------------------------
@@ -710,8 +712,10 @@ CREATE TABLE metadata_lookup (
   name char(255) default NULL,
   treeorg_parent int(11) default NULL,
   disabled tinyint(3) unsigned NOT NULL default '0',
+  is_stuck tinyint(1) NOT NULL default '0',
   UNIQUE KEY id (id),
-  KEY disabled (disabled)
+  KEY disabled (disabled),
+  KEY is_stuck (is_stuck)
 ) TYPE=InnoDB;
 
 -- --------------------------------------------------------
