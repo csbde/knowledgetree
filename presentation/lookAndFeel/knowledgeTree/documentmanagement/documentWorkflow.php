@@ -16,33 +16,12 @@ require_once(KT_LIB_DIR . "/validation/dispatchervalidation.inc.php");
 require_once(KT_LIB_DIR . '/workflow/workflow.inc.php');
 require_once(KT_LIB_DIR . '/workflow/workflowutil.inc.php');
 
-function displayFolderPathLink($aPathArray, $aPathNameArray, $sLinkPage = "") {
-    global $default;
-    if (strlen($sLinkPage) == 0) {
-        $sLinkPage = $_SERVER["PHP_SELF"];
-    }
-    $default->log->debug("displayFolderPathLink: slinkPage=$sLinkPage");
-    // display a separate link to each folder in the path
-    for ($i=0; $i<count($aPathArray); $i++) {
-        $iFolderID = $aPathArray[$i];
-        // retrieve the folder name for this folder
-        $sFolderName = $aPathNameArray[$i];
-        // generate a link back to this page setting fFolderID
-        $sLink = generateLink($sLinkPage,
-                              "fBrowseType=folder&fFolderID=$iFolderID",
-                              $sFolderName);
-        $sPathLinks = (strlen($sPathLinks) > 0) ? $sPathLinks . " > " . $sLink : $sLink;
-    }
-    return $sPathLinks;
-}
-
-
 class DocumentWorkflowDispatcher extends KTStandardDispatcher {
     var $bAutomaticTransaction = true;
 
     function do_main() {
         $oTemplate =& $this->oValidator->validateTemplate("ktcore/workflow/documentWorkflow");
-        $oDocument =& $this->oValidator->validateDocument($_REQUEST['fDocumentID']);
+        $oDocument =& $this->oValidator->validateDocument($_REQUEST['fDocumentId']);
 
         $oWorkflow = KTWorkflowUtil::getWorkflowForDocument($oDocument);
         $oWorkflowState = KTWorkflowUtil::getWorkflowStateForDocument($oDocument);
@@ -66,7 +45,7 @@ class DocumentWorkflowDispatcher extends KTStandardDispatcher {
         $oWorkflow =& $this->oValidator->validateWorkflow($_REQUEST['fWorkflowId']);
         $res = KTWorkflowUtil::startWorkflowOnDocument($oWorkflow, $oDocument);
         $this->successRedirectToMain('Workflow started',
-                array('fDocumentID' => $oDocument->getID()));
+                array('fDocumentId' => $oDocument->getId()));
         exit(0);
     }
 
@@ -77,7 +56,7 @@ class DocumentWorkflowDispatcher extends KTStandardDispatcher {
         $oUser =& User::get($_SESSION['userID']);
         $res = KTWorkflowUtil::performTransitionOnDocument($oTransition, $oDocument, $oUser, $sComments);
         $this->successRedirectToMain('Transition performed',
-                array('fDocumentID' => $oDocument->getID()));
+                array('fDocumentId' => $oDocument->getId()));
     }
 }
 
