@@ -185,9 +185,23 @@ class KTDocumentFieldDispatcher extends KTStandardDispatcher {
     }
     // }}}
 
-    // {{{ do_removeLookups
-    function do_removeLookups() {
-        $oFieldset =& KTFieldset::get($_REQUEST['fFieldsetId']);
+    // {{{ do_metadataMultiAction
+    function do_metadataMultiAction() {
+        $subaction = array_keys(KTUtil::arrayGet($_REQUEST, 'submit', array()));
+        $this->oValidator->notEmpty($subaction, array("message" => "No action specified"));
+        $subaction = $subaction[0];
+        $method = null;
+        if (method_exists($this, 'lookup_' . $subaction)) {
+            $method = 'lookup_' . $subaction;
+        }
+        $this->oValidator->notEmpty($method, array("message" => "Unknown action specified"));
+        return $this->$method();
+    }
+    // }}}
+    
+    // {{{ lookup_remove
+    function lookup_remove() {
+        $oFieldset =& $this->oValidator->validateFieldset($_REQUEST['fFieldsetId']);
         $oField =& DocumentField::get($_REQUEST['fFieldId']);
         $aMetadata = KTUtil::arrayGet($_REQUEST, 'metadata');
         if (empty($aMetadata)) {
@@ -198,6 +212,61 @@ class KTDocumentFieldDispatcher extends KTStandardDispatcher {
             $oMetaData->delete();
         }
         $this->successRedirectTo('editField', 'Lookups removed', 'fFieldsetId=' . $oFieldset->getId() . '&fFieldId=' .  $oField->getId());
+        exit(0);
+    }
+    // }}}
+
+    // {{{ lookup_disable
+    function lookup_disable() {
+        $oFieldset =& $this->oValidator->validateFieldset($_REQUEST['fFieldsetId']);
+        $oField =& DocumentField::get($_REQUEST['fFieldId']);
+        $aMetadata = KTUtil::arrayGet($_REQUEST, 'metadata');
+        if (empty($aMetadata)) {
+            $this->errorRedirectTo('editField', 'No lookups selected', 'fFieldsetId=' . $oFieldset->getId() . '&fFieldId=' .  $oField->getId());
+        }
+        foreach ($_REQUEST['metadata'] as $iMetaDataId) {
+            $oMetaData =& MetaData::get($iMetaDataId);
+            $oMetaData->setDisabled(true);
+            $oMetaData->update();
+        }
+        $this->successRedirectTo('editField', 'Lookups disabled', 'fFieldsetId=' . $oFieldset->getId() . '&fFieldId=' .  $oField->getId());
+        exit(0);
+    }
+    // }}}
+
+    // {{{ lookup_enable
+    function lookup_enable() {
+        $oFieldset =& $this->oValidator->validateFieldset($_REQUEST['fFieldsetId']);
+        $oField =& DocumentField::get($_REQUEST['fFieldId']);
+        $aMetadata = KTUtil::arrayGet($_REQUEST, 'metadata');
+        if (empty($aMetadata)) {
+            $this->errorRedirectTo('editField', 'No lookups selected', 'fFieldsetId=' . $oFieldset->getId() . '&fFieldId=' .  $oField->getId());
+        }
+        foreach ($_REQUEST['metadata'] as $iMetaDataId) {
+            $oMetaData =& MetaData::get($iMetaDataId);
+            $oMetaData->setDisabled(false);
+            $oMetaData->update();
+        }
+        $this->successRedirectTo('editField', 'Lookups enabled', 'fFieldsetId=' . $oFieldset->getId() . '&fFieldId=' .  $oField->getId());
+        exit(0);
+    }
+    // }}}
+
+    // {{{ lookup_togglestickiness
+    function lookup_togglestickiness() {
+        $oFieldset =& $this->oValidator->validateFieldset($_REQUEST['fFieldsetId']);
+        $oField =& DocumentField::get($_REQUEST['fFieldId']);
+        $aMetadata = KTUtil::arrayGet($_REQUEST, 'metadata');
+        if (empty($aMetadata)) {
+            $this->errorRedirectTo('editField', 'No lookups selected', 'fFieldsetId=' . $oFieldset->getId() . '&fFieldId=' .  $oField->getId());
+        }
+        foreach ($_REQUEST['metadata'] as $iMetaDataId) {
+            $oMetaData =& MetaData::get($iMetaDataId);
+            $bStuck = (boolean)$oMetaData->getIsStuck();
+            $oMetaData->setIsStuck(!$bStuck);
+            $oMetaData->update();
+        }
+        $this->successRedirectTo('editField', 'Lookup stickiness toggled', 'fFieldsetId=' . $oFieldset->getId() . '&fFieldId=' .  $oField->getId());
         exit(0);
     }
     // }}}
