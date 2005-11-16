@@ -14,6 +14,9 @@
 		{ assign var="onloadjavascript" value="onload=\"$onloadjavascript\"" }
   { /if }
 	<body marginleft="0" marginheight="0" {$onloadjavascript}>
+
+    <input type="hidden" name="kt-core-baseurl" id="kt-core-baseurl" value="{$config->get("KnowledgeTree/rootUrl")}" />
+
     { if ! $formdisabled }
       { if $formenctype }
         { assign var="formenctype" value="enctype=\"$formenctype\"" }
