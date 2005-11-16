@@ -87,23 +87,26 @@ class KTFieldset extends KTEntity {
 	function &getList($sWhereClause = null) { return KTEntityUtil::getList2('KTFieldset', $sWhereClause);	}	
     function &createFromArray($aOptions) { return KTEntityUtil::createFromArray('KTFieldset', $aOptions); }
 
-	function &getNonGenericFieldsets() {
+	function &getNonGenericFieldsets($aOptions = null) {
+        $aOptions = KTUtil::meldOptions($aOptions, array(
+            'multi' => true,
+        ));
         return KTEntityUtil::getByDict('KTFieldset', array(
             'is_generic' => false,
-        ), array(
-            'multi' => true,
-        ));
+        ), $aOptions);
     }	
 
-	function &getGenericFieldsets() {
+	function &getGenericFieldsets($aOptions = null) {
+        $aOptions = KTUtil::meldOptions($aOptions, array(
+            'multi' => true,
+        ));
         return KTEntityUtil::getByDict('KTFieldset', array(
             'is_generic' => true,
-        ), array(
-            'multi' => true,
-        ));
+        ), $aOptions);
     }	
 
-    function &getForDocumentType($oDocumentType) {
+    function &getForDocumentType($oDocumentType, $aOptions = null) {
+        $bIds = KTUtil::arrayGet($aOptions, 'ids');
         if (is_object($oDocumentType)) {
             $iDocumentTypeId = $oDocumentType->getId();
         } else {
@@ -116,6 +119,10 @@ class KTFieldset extends KTEntity {
             array($iDocumentTypeId),
         );
         $aIds = DBUtil::getResultArrayKey($aQuery, 'fieldset_id');
+
+        if ($bIds) {
+            return $aIds;
+        }
 
         $aRet = array();
         foreach ($aIds as $iID) {
