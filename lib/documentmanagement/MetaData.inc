@@ -35,6 +35,11 @@ class MetaData extends KTEntity {
     /** _if_ this field is a tree, which node in said tree is this one's parent. */
     var $iTreeParent;
     var $bDisabled = false;
+    /**
+     * If the metadata is permanent, it will never be automatically
+     * changed from enabled to disabled or vice versa
+     */
+    var $bIsStuck = false;
 
     var $_bUsePearError = true;
     var $_aFieldToSelect = array(
@@ -43,6 +48,7 @@ class MetaData extends KTEntity {
         'sName' => 'name',
         'iTreeParent' => 'treeorg_parent',
         'bDisabled' => 'disabled',
+        'bIsStuck' => 'is_stuck',
     );
 	
 	/**
@@ -68,6 +74,8 @@ class MetaData extends KTEntity {
     function setTreeParent($iNewValue) { $this->iTreeParent = $iNewValue; }
     function getDisabled() { return $this->bDisabled; }
     function setDisabled($bNewValue) { $this->bDisabled = $bNewValue; }
+    function getIsStuck() { return $this->bIsStuck; }
+    function setIsStuck($bNewValue) { $this->bIsStuck = $bNewValue; }
 
     function _table () {
         global $default;
