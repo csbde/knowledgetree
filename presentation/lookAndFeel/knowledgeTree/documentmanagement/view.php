@@ -141,28 +141,12 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 		// we always have a generic.
 		array_push($fieldsets, new GenericFieldsetDisplay());
 		
-		// FIXME can we key this on fieldset namespace?  or can we have duplicates?
-		// now we get the other fieldsets, IF there is a valid doctype.
-		if ($is_valid_doctype) {
-		    // these are the _actual_ fieldsets.
-			$fieldsetDisplayReg =& KTFieldsetDisplayRegistry::getSingleton();
-			// and the generics			
-			$activesets = KTFieldset::getGenericFieldsets();
-			foreach ($activesets as $oFieldset) {
-			    $displayClass = $fieldsetDisplayReg->getHandler($oFieldset->getNamespace());
-				array_push($fieldsets, new $displayClass($oFieldset));
-			}
-			
-		    $activesets = KTFieldset::getForDocumentType($oDocument->getDocumentTypeID()); 
-		    foreach ($activesets as $oFieldset) {
-			    $displayClass = $fieldsetDisplayReg->getHandler($oFieldset->getNamespace());
-				array_push($fieldsets, new $displayClass($oFieldset));
-			}
-			
-			
-		}
-		
-		// FIXME handle ad-hoc fieldsets.
+        $fieldsetDisplayReg =& KTFieldsetDisplayRegistry::getSingleton();
+
+        foreach (KTMetadataUtil::fieldsetsForDocument($oDocument) as $oFieldset) {
+            $displayClass = $fieldsetDisplayReg->getHandler($oFieldset->getNamespace());
+            array_push($fieldsets, new $displayClass($oFieldset));
+        }
 		
         $oTemplating = new KTTemplating;
 		$oTemplate = $oTemplating->loadTemplate("kt3/view_document");
