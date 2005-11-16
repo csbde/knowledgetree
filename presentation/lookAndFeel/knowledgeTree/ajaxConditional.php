@@ -34,7 +34,7 @@ class AjaxConditionalDispatcher extends KTStandardDispatcher {
             
         );
         return $oTemplate->render($aTemplateData);
-         return ;
+ 
     }
 
     function do_updateFieldset() {

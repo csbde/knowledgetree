@@ -1,0 +1,40 @@
+<div class="detail_fieldset">
+    <h3>Generic Information</h3>
+    <p class="descriptiveText">
+        The information in this section is stored by the KnowledgeTree&trade; for every
+        document.
+    </p>
+    <dl class="metadata versioned">
+        <dt>File is a </dt>
+        <dd>
+            <div class="current">{$context->_mimeHelper($document->getMimeTypeID())} ({$context->_sizeHelper($document->getSize())})</div>
+            <div class="previous">{$context->_mimeHelper($comparison_document->getMimeTypeID())} ({$context->_sizeHelper($comparison_document->getSize())})</div>
+        </dd>
+
+        <dt>Created by</dt>
+        <dd>
+            {$creator} ({$creation_date}) <span class="descriptiveText">(this cannot not change between versions)</span>
+        </dd>
+
+        <dt>Last update by</dt>
+        <dd>
+            <div class="current">{$last_modified_by} ({$last_modified_date})</div>
+            <div class="previous">{$last_modified_by} ({$comparison_last_modified_date})</div>
+        </dd>
+
+
+        <dt>Document Type</dt>
+        <dd>
+            <div class="current">{$document_type}</div>
+            <div class="previous">{$comparison_document_type}</div>
+        </dd>
+
+        <dt>Status</dt>
+        <dd>
+            <div class="current">{$workflow_state} (<a href="workflow_state.php?wf_id={$workflow_id}">see workflow</a>)</div>
+            <div class="previous">{$comparison_workflow_state}</div>
+        </dd>
+            
+    </dl>
+    <div class="floatClear"><!-- --> </div>
+</div>

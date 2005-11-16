@@ -2,16 +2,14 @@
 
 require_once("../../../../../config/dmsDefaults.php");
 
-require_once(KT_DIR . "/presentation/Html.inc");
-
 require_once(KT_LIB_DIR . "/templating/templating.inc.php");
 require_once(KT_LIB_DIR . "/help/helpreplacement.inc.php");
 require_once(KT_LIB_DIR . "/help/helpentity.inc.php");
 require_once(KT_LIB_DIR . "/help/help.inc.php");
 
 require_once(KT_LIB_DIR . "/dispatcher.inc.php");
-$sectionName = "Administration";
-require_once(KT_DIR . "/presentation/webpageTemplate.inc");
+
+require_once(KT_LIB_DIR . "/templating/kt3template.inc.php");
 
 class ManageHelpDispatcher extends KTAdminDispatcher {
     // Breadcrumbs base - added to in methods

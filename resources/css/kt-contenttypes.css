@@ -1,0 +1,21 @@
+/* 
+    Getting Mime-type CSS right is a bit tricky here.
+    the idea is that you apply these to a span, as follows:
+    
+    <span class="contenttype presentation">My Filename</span>
+*/
+.contenttype {
+    background-position: center left;
+    background-repeat: no-repeat;
+    padding-left: 25px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.contenttype.ms-presentation { background-image: url(/resources/mimetypes/powerp.gif); }
+.contenttype.ms-word { background-image: url(/resources/mimetypes/word.gif); }
+.contenttype.ms-excel { background-image: url(/thirdparty/icon-theme/16x16/mimetypes/x-office-spreadsheet.png); }
+.contenttype.oo-impress { background-image: url(/resources/mimetypes/ooimpress.gif); }
+
+.contenttype.unspecified_type { background-image: url(/thirdparty/icon-theme/16x16/mimetypes/text-x-generic.png); }
+.contenttype.folder { background-image: url(/thirdparty/icon-theme/16x16/mimetypes/x-directory-normal.png); }

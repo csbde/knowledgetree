@@ -1,0 +1,6 @@
+<dl class="panel_menu">
+   {foreach item=aCategory from=$categories}
+   <dt><a href="{$smarty.server.PHP_SELF}?action=viewCategory&fCategory={$aCategory.name}">{$aCategory.title}</a></dt>
+   <dd class="descriptiveText">{$aCategory.description}</dd>
+   {/foreach}
+</dl>

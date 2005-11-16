@@ -1,16 +1,18 @@
-<h1>Manage conditional fieldset<h1>
+<h2>Manage conditional fieldset<h2>
 
 {if $sIncomplete || !$oFieldset->getIsComplete()}
-<h2>Incomplete</h2>
-
-<p style="color: red">This conditional fieldset is marked such that it
+<div class="ktError">
+<p>This conditional fieldset is marked such that it
 cannot be used.  This happens when the fieldset has been edited and has
 not been set to complete.  Setting the fieldset to complete will do a
 check to see if the fieldset is usable by the user.</p>
+</div>
 
 {if $sIncomplete}
-<p style="color: red">This error prevents this fieldset from being set
+<div class="ktError">
+<p>This error prevents this fieldset from being set
 to complete: {$sIncomplete|escape}</p>
+</div>
 {else}
 
 Try to set to complete:

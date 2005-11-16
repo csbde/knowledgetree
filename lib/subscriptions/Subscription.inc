@@ -1,7 +1,7 @@
 <?php
-require_once("$default->fileSystemRoot/lib/subscriptions/SubscriptionConstants.inc");
-require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
-require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
+require_once(KT_LIB_DIR . "/subscriptions/SubscriptionConstants.inc");
+require_once(KT_LIB_DIR . "/foldermanagement/Folder.inc");
+require_once(KT_LIB_DIR . "/documentmanagement/Document.inc");
 /**
  * $Id$
  *

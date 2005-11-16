@@ -1,9 +1,9 @@
 <?php
-require_once("$default->fileSystemRoot/lib/subscriptions/SubscriptionManager.inc");
-require_once("$default->fileSystemRoot/lib/web/WebDocument.inc");
-require_once("$default->fileSystemRoot/lib/links/Link.inc");
-require_once("$default->fileSystemRoot/lib/documentmanagement/DependantDocumentInstance.inc");
-require_once("$default->fileSystemRoot/lib/archiving/ArchiveRestorationRequest.inc");
+require_once(KT_LIB_DIR . "/subscriptions/SubscriptionManager.inc");
+require_once(KT_LIB_DIR . "/web/WebDocument.inc");
+require_once(KT_LIB_DIR . "/links/Link.inc");
+require_once(KT_LIB_DIR . "/documentmanagement/DependantDocumentInstance.inc");
+require_once(KT_LIB_DIR . "/archiving/ArchiveRestorationRequest.inc");
 /**
  * $Id$
  *
@@ -51,7 +51,8 @@ class Dashboard {
 	    global $default;
 	    $sQuery = "SELECT wd.id FROM web_documents wd " . /*ok*/
 	              "INNER JOIN web_sites ws ON wd.web_site_id = ws.id " .
-	              "WHERE ws.web_master_id = ? AND wd.status_id = 1";
+	              "WHERE ws.web_master_id = ? AND wd.status_id = 1" .
+				  "ORDER BY ws.datetime DESC";
         $aParams = array($this->iUserID);
 	    $aDocumentList = array();
 	    $sql = $default->db;

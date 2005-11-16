@@ -36,17 +36,24 @@ class KTSmartyTemplate extends KTTemplate {
         $smarty = new Smarty;
         $smarty->compile_dir = "/tmp";
         if (is_array($aDict)) {
-            foreach ($aDict as $k => $v) {
-                $smarty->assign($k, $v);
+            $iLen = count($aDict);
+            $aKeys = array_keys($aDict);
+            for ($i = 0; $i < $iLen; $i++) {
+                $sKey = $aKeys[$i];
+                $smarty->assign_by_ref($sKey, $aDict[$sKey]);
             }
         }
         if (is_array($this->aDict)) {
-            foreach ($this->aDict as $k => $v) {
-                $smarty->assign($k, $v);
-            }
+            $iLen = count($this->aDict);
+            $aKeys = array_keys($this->aDict);
+            for ($i = 0; $i < $iLen; $i++) {
+                $sKey = $aKeys[$i];
+                $smarty->assign_by_ref($sKey, $this->aDict[$sKey]);
+            }            
         }
         $KTConfig =& KTConfig::getSingleton();
         $smarty->assign("config", $KTConfig);
+        $smarty->assign("rootUrl", $KTConfig->get("KnowledgeTree/rootUrl"));
         $smarty->caching = false;
         $smarty->register_function('entity_select', array('KTSmartyTemplate', 'entity_select'));
         $smarty->register_function('boolean_checkbox', array('KTSmartyTemplate', 'boolean_checkbox'));

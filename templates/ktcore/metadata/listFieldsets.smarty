@@ -1,7 +1,7 @@
-<h1>Document Fieldsets</h1>
+<h2>Document Fieldsets</h2>
 
 { if $fieldsets}
-<h2>Existing document fieldsets</h2>
+<h3>Existing document fieldsets</h3>
 
 <table class="pretty" cellspacing="0" cellpadding="0">
   <thead>
@@ -45,7 +45,7 @@ border="0" src="{"icons/delete.png"|imgSrc}" title="Delete fieldset" /></a>
 </table>
 {/if}
 
-<h2>Create a new document fieldset</h2>
+<h3>Create a new document fieldset</h3>
 
 <form method="POST" action="{$smarty.server.PHP_SELF}">
 <input type="hidden" name="action" value="new">

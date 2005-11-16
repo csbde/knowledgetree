@@ -1,6 +1,8 @@
 <?php
 
 require_once(KT_LIB_DIR . '/actions/documentaction.inc.php');
+require_once(KT_LIB_DIR . '/subscriptions/Subscription.inc');
+require_once(KT_LIB_DIR . '/documentmanagement/DocumentCollaboration.inc');
 
 $oKTActionRegistry =& KTActionRegistry::getSingleton();
 

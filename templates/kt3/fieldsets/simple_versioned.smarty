@@ -1,0 +1,22 @@
+<div class="detail_fieldset">
+    <h3>{$fieldset->getName()}</h3>
+    <p class="descriptiveText">
+        This is the data assigned to the <strong>{$fieldset->getName()}</strong> aspect of this document.
+    </p>
+    
+    <dl class="metadata versioned">
+      {foreach item=aFieldPair from=$fieldset_values}
+        <dt>{$aFieldPair.field->getName()}</dt>
+        <dd><div class="current">
+            {if ($aFieldPair.current_value !== null)}{$aFieldPair.current_value}
+            {else}<span class="ktInlineError">no value in this version</span>{/if}
+            </div><div class="previous">
+            {if ($aFieldPair.previous_value !== null)}{$aFieldPair.previous_value}
+            {else}<span class="ktInlineError">no value in this version</span>{/if}
+            </div>
+        </dd>
+      {/foreach}
+    </dl>
+    
+    <div class="floatClear"><!-- --> </div>
+</div>

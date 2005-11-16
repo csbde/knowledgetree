@@ -1,15 +1,10 @@
 <?php
 require_once("../../../../../config/dmsDefaults.php");
 
-require_once(KT_DIR . "/presentation/Html.inc");
-
 require_once(KT_LIB_DIR . "/templating/templating.inc.php");
-
 require_once(KT_LIB_DIR . "/permissions/permission.inc.php");
-
 require_once(KT_LIB_DIR . "/dispatcher.inc.php");
-$sectionName = "Administration";
-require_once(KT_DIR . "/presentation/webpageTemplate.inc");
+require_once(KT_LIB_DIR . "/templating/kt3template.inc.php");
 
 class ManagePermissionsDispatcher extends KTAdminDispatcher {
     function do_main() {
@@ -20,13 +15,6 @@ class ManagePermissionsDispatcher extends KTAdminDispatcher {
             "permissions" => $aPermissions,
         );
         return $oTemplate->render($aTemplateData);
-    }
-
-    function handleOutput($data) {
-        global $main;
-        $main->bFormDisabled = true;
-        $main->setCentralPayload($data);
-        $main->render();
     }
 
     function do_newPermission() {

@@ -1,3 +1,10 @@
+{$context->oPage->requireJSResource("thirdpartyjs/MochiKit/Base.js")}
+{$context->oPage->requireJSResource("thirdpartyjs/MochiKit/Iter.js")}
+{$context->oPage->requireJSResource("thirdpartyjs/MochiKit/DOM.js")}
+{$context->oPage->requireJSResource("thirdpartyjs/MochiKit/DateTime.js")}
+{$context->oPage->requireJSResource("resources/js/taillog.js")}
+{$context->oPage->requireJSResource("resources/js/conditional_usage.js")}
+
 {literal}
 <style>
 
@@ -34,13 +41,6 @@
 
 </style>
 {/literal}
-
-<script language="javascript" src="/thirdpartyjs/MochiKit/Base.js" > </script>
-<script language="javascript" src="/thirdpartyjs/MochiKit/Iter.js" > </script>
-<script language="javascript" src="/thirdpartyjs/MochiKit/DOM.js" > </script>
-<script language="javascript" src="/thirdpartyjs/MochiKit/DateTime.js" > </script>
-<script language="javascript" src="/presentation/lookAndFeel/knowledgeTree/js/taillog.js"> </script>
-<script language="javascript" src="/presentation/lookAndFeel/knowledgeTree/js/conditional_usage.js"> </script>
 
 {if !$metadata_prefix}
   {assign var="metadata_prefix" value="emd"}

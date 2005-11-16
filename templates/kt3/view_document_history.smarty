@@ -1,0 +1,32 @@
+<h2>Document History: {$document->getName()}</h2>
+
+<p class="descriptiveText">This allows you to have a brief overview of the history of the document.</p>
+
+
+    <table class="document_history" summary="Document History for KnowledgeTree New UI Presentation" cellspacing="0">
+
+        <thead>
+            <tr>
+                <th class="username">User</th>
+                <th class="action">Action</th>
+                <th class="date">Date</th>
+                <th class="contentversion">Content version</th>
+                <th class="comment" colspan="2">Comment</th>
+            </tr>
+        </thead>
+        <tbody>
+          {foreach item=aTransactionRow from=$transactions}
+            <tr class="{cycle options=even,odd}">
+                <td class="username">{$aTransactionRow.user_name}</td>
+                <td class="action">{$aTransactionRow.transaction_name}</td>
+                <td class="date">{$aTransactionRow.datetime}</td>
+                <td class="contentversion">{$aTransactionRow.version}</td>                
+                <td class="comment">{$aTransactionRow.comment}</td>
+                <td class="compare">
+                    <a href="?action=viewComparison&fDocumentId={$document_id}&fComparisonVersion={$aTransactionRow.version}">Compare with current version</a>
+                </td>
+            </tr>
+            {/foreach}
+        </tbody>
+        
+    </table>

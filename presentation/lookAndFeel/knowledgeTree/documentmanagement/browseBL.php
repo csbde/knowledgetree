@@ -4,11 +4,11 @@ require_once("../../../../config/dmsDefaults.php");
 
 KTUtil::extractGPC('fActions', 'fBrowseType', 'fDocumentIDs', 'fFolderID', 'fSortBy', 'fSortDirection');
 
-require_once("$default->fileSystemRoot/lib/browse/BrowserFactory.inc");
-require_once("$default->fileSystemRoot/lib/browse/Browser.inc");
-require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentType.inc");
-require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentTransaction.inc");
-require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
+require_once(KT_LIB_DIR . "/browse/BrowserFactory.inc");
+require_once(KT_LIB_DIR . "/browse/Browser.inc");
+require_once(KT_LIB_DIR . "/documentmanagement/DocumentType.inc");
+require_once(KT_LIB_DIR . "/documentmanagement/DocumentTransaction.inc");
+require_once(KT_LIB_DIR . "/visualpatterns/PatternCustom.inc");
 require_once("$default->uiDirectory/documentmanagement/browseUI.inc");
 require_once("$default->fileSystemRoot/presentation/Html.inc");
 /**

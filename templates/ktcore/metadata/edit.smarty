@@ -1,6 +1,6 @@
-<h1>Fieldset: {$oFieldset->getName()|escape}</h1>
+<h2>Fieldset: {$oFieldset->getName()|escape}</h2>
 
-<h2>Fieldset properties</h2>
+<h3>Fieldset properties</h3>
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <input type="hidden" name="fFieldsetId" value="{$oFieldset->getId()}">
 <input type="hidden" name="action" value="editobject">
@@ -17,10 +17,10 @@
 <input type="submit" name="submit" value="Change">
 </form>
 
-<h2>Fieldset members</h2>
+<h3>Fieldset members</h3>
 
 {if $oFieldset->getFields() }
-<h3>Existing members</h3>
+<h4>Existing members</h4>
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <input type="hidden" name="fFieldsetId" value="{$oFieldset->getId()}">
 <ul>
@@ -34,7 +34,7 @@ value="{$oField->getId()}">{$oField->getName()|escape}</label></li>
 </form>
 {/if}
 
-<h3>Add a new field</h3>
+<h4>Add a new field</h4>
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <input type="hidden" name="fFieldsetId" value="{$oFieldset->getId()}">

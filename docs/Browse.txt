@@ -1,0 +1,40 @@
+KT3 Browse System
+=================
+
+KnowledgeTree's browse view has been a serious bottleneck in terms of 
+performance, and makes extending the system in useful ways (and re-using items)
+unnecessarily hard.
+
+To understand this code, you'll need to look at:
+
+ - lib/browse/DocumentCollection.inc.php
+ - lib/browse/BrowseColumns.inc.php
+ - presentation/.../browse.php
+ 
+Objectives of the refactor:
+
+ - improve code-reuse 
+ - make more advanced document-sets possible
+ - unify all document-collection logic (where possible).
+ 
+BROWSE VIEW GENERATION
+----------------------
+
+Generating a browse view is now done as follows:
+
+ - create a DocumentCollection object
+ - add "BrowseColumns" to it.
+ - specify (on the collection) which column to sort on.
+ - specify any batching that may be required (count, start).
+ - execute the query (using generateCollection).
+      returns a set of document ids, in order (more info cached internally).
+ - for each row, use "getInfo(docid)" to extract the information from the database.
+      returns an array with info (more later), and caches this internally.
+ - at render-time, call "renderRow(docid)".
+ 
+Internally this does a fair bit more work.  Particularly:
+
+ - each Column can contribute JOINs, WHERE clauses.  _if_ its the sort column,
+   it gets asked for an ORDER clause.
+ - the system fetches a LOT of information about each batched item - don't do too much.
+ 

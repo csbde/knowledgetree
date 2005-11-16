@@ -1,7 +1,7 @@
-<h1>Fieldset: {$oFieldset->getName()|escape}</h1>
+<h2>Fieldset: {$oFieldset->getName()|escape}</h2>
 
 {if $sIncomplete}
-<h2>Incomplete</h2>
+<h3>Incomplete</h3>
 
 <p>This conditional fieldset cannot be used:</p>
 
@@ -9,7 +9,7 @@
 
 {/if}
 
-<h2>Fieldset properties</h2>
+<h3>Fieldset properties</h3>
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <input type="hidden" name="fFieldsetId" value="{$oFieldset->getId()}">
 <input type="hidden" name="action" value="editobject">
@@ -37,7 +37,7 @@
 
 {assign var="aFields" value=$oFieldset->getFields()}
 
-<h2>Fieldset members</h2>
+<h3>Fieldset members</h3>
 
 {if $oFieldset->getFields() }
 <h3>Existing members</h3>
@@ -57,7 +57,7 @@ href="{$smarty.server.PHP_SELF}?action=editField&fFieldId={$oField->getId()}&fFi
 </form>
 {/if}
 
-<h3>Add a new field</h3>
+<h4>Add a new field</h4>
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <input type="hidden" name="fFieldsetId" value="{$oFieldset->getId()}">
@@ -83,7 +83,7 @@ href="{$smarty.server.PHP_SELF}?action=editField&fFieldId={$oField->getId()}&fFi
 <input type="submit" name="submit" value="Add field">
 </form>
 
-<h2>Conditionality</h2>
+<h3>Conditionality</h3>
 
 {if $oFieldset->getIsConditional() }
 

@@ -1,0 +1,16 @@
+    <div class="field {if ($has_errors)}error{/if}">
+      <label for="{$name}">{$label}{if ($required === true)}<span class="required">(Required)</span>{/if}</label>
+      <p class="descriptiveText">{$description}</p>
+      {if ($has_errors)}
+      {foreach item=sError from=$errors}
+      <p class="errorMessage">
+         {$sError}
+      </p>
+      {/foreach}
+      {else}
+      <p class="errorMessage"></p>
+      {/if}
+      
+      <textarea name="{$name}" {if $has_id}id="{$id}"{/if}>{if $has_value}{$value}{/if}</textarea>
+      <input type="hidden" name="kt_core_fieldsets_expect[{$name}]" value ="1"  />
+     </div>

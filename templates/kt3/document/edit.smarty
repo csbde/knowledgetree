@@ -1,0 +1,16 @@
+<h2>Editing: {$document->getName()}</h2>
+<p class="descriptiveText"><strong>FIXME</strong>:  do we need assisting text here?</p>
+  
+<form method="POST">
+  
+<input type="hidden" name="fDocumentId" value="{$document->getId()}" />
+<input type="hidden" name="action" value="update" />
+
+{foreach item=oFieldset from=$fieldsets}
+    {$oFieldset->renderEdit($document_data)}
+{/foreach}
+
+
+<div class="form_actions">
+    <input class="save" type="submit" value="Save Changes" />
+</div>

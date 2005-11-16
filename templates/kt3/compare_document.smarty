@@ -1,0 +1,25 @@
+<h2>Version Comparison: {$document->getName()}</h2>
+<p class="descriptiveText">showing comparison between versions <strong>{$document->getMajorVersionNumber()}.{$document->getMinorVersionNumber()}</strong> 
+and <strong>{$comparison_document->getMajorVersionNumber()}.{$comparison_document->getMinorVersionNumber()} ({$comparison_document->getMetadataVersion()})</strong></p>
+
+<!-- 
+  its possible that one of the versions isn't "real" 
+  and it isn't entirely clear how to show that to the
+  user in the best possible way.
+-->
+
+{if ($document_data.is_manufactured)}
+<p class="descriptiveText"><strong class="ktInlineError">Please note:</strong> the information for version
+{$document->getMajorVersionNumber()}.{$document->getMinorVersionNumber()} ({$document->getMetadataVersion()})
+comes from an older version of KnowledgeTree, and may be incorrect.
+{/if}
+
+{if ($comparison_data.is_manufactured)}
+<p class="descriptiveText"><strong class="ktInlineError">Please note:</strong> the information for version
+{$comparison_document->getMajorVersionNumber()}.{$comparison_document->getMinorVersionNumber()} ({$comparison_document->getMetadataVersion()})
+comes from an older version of KnowledgeTree, and may be incorrect.
+{/if}
+  
+{foreach item=oFieldset from=$fieldsets}
+{$oFieldset->renderComparison($document_data, $comparison_data)}
+{/foreach}
