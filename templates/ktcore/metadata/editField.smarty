@@ -19,24 +19,10 @@
 </form>
 
 {if $oField->getHasLookup()}
-{assign var="aMetadata" value=$oField->getValues()}
-{if $aMetadata}
+{assign var="aEnabledMetadata" value=$oField->getEnabledValues()}
+{assign var="aDisabledMetadata" value=$oField->getDisabledValues()}
 
 <h2>Lookup Values</h2>
-
-<h3>Existing values</h3>
-<form action="{$smarty.server.PHP_SELF}" method="POST">
-<input type="hidden" name="fFieldsetId" value="{$oFieldset->getId()}">
-<input type="hidden" name="fFieldId" value="{$oField->getId()}">
-<input type="hidden" name="action" value="removeLookups">
-<ul>
-{foreach from=$aMetadata item=oMetaData}
-  <li><label><input type="checkbox" name="metadata[]" value="{$oMetaData->getId()}">{$oMetaData->getName()|escape}</label>
-{/foreach}
-</ul>
-<input type="submit" name="submit" value="Remove">
-</form>
-{/if}
 
 <h3>Add new values</h3>
 <form action="{$smarty.server.PHP_SELF}" method="POST">
@@ -46,11 +32,58 @@
 <input type="textbox" name="value">
 <input type="submit" name="submit" value="Add">
 </form>
-{/if}
 
 {if $oField->getHasLookup() and $oField->getHasLookupTree()}
 {assign var=iFieldId value=$oField->getId()}
 <a
 href="{"manageLookupTrees"|generateControllerUrl:"action=editTree&field_id=$iFieldId"}">Manage
 lookup tree</a>
+{/if}
+
+{if $aEnabledMetadata}
+<h3>Existing values</h3>
+
+<form action="{$smarty.server.PHP_SELF}" method="POST">
+<input type="hidden" name="fFieldsetId" value="{$oFieldset->getId()}">
+<input type="hidden" name="fFieldId" value="{$oField->getId()}">
+<input type="hidden" name="action" value="metadataMultiAction">
+<ul>
+{foreach from=$aEnabledMetadata item=oMetaData}
+  <li><label><input type="checkbox" name="metadata[]"
+value="{$oMetaData->getId()}">{$oMetaData->getName()|escape} 
+{ if $oMetaData->getIsStuck() }
+<span class="helpText">(stuck, will never be disabled when synchronising
+from another source)</span>
+{ /if }</label>
+{/foreach}
+</ul>
+<input type="submit" name="submit[disable]" value="Disable">
+<input type="submit" name="submit[togglestickiness]" value="Toggle stickiness">
+<input type="submit" name="submit[remove]" value="Remove">
+</form>
+{/if}
+
+{if $aDisabledMetadata}
+<h3>Disabled values</h3>
+
+<form action="{$smarty.server.PHP_SELF}" method="POST">
+<input type="hidden" name="fFieldsetId" value="{$oFieldset->getId()}">
+<input type="hidden" name="fFieldId" value="{$oField->getId()}">
+<input type="hidden" name="action" value="metadataMultiAction">
+<ul>
+{foreach from=$aDisabledMetadata item=oMetaData}
+  <li><label><input type="checkbox" name="metadata[]"
+value="{$oMetaData->getId()}">{$oMetaData->getName()|escape} 
+{ if $oMetaData->getIsStuck() }
+<span class="helpText">(stuck, will never be enabled when synchronising
+from another source)</span>
+{ /if }</label>
+{/foreach}
+</ul>
+<input type="submit" name="submit[enable]" value="Enable">
+<input type="submit" name="submit[togglestickiness]" value="Toggle stickiness">
+<input type="submit" name="submit[remove]" value="Remove">
+</form>
+{/if}
+
 {/if}
