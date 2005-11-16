@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Nov 15, 2005 at 04:31 PM
+-- Generation Time: Nov 16, 2005 at 04:52 PM
 -- Server version: 4.0.24
 -- PHP Version: 4.4.0-3
 
@@ -131,21 +131,22 @@ INSERT INTO document_link_types VALUES (0, 'Default', 'Default (reverse)', 'Defa
 -- Dumping data for table `document_transaction_types_lookup`
 -- 
 
-INSERT INTO document_transaction_types_lookup VALUES (1, 'Create');
-INSERT INTO document_transaction_types_lookup VALUES (2, 'Update');
-INSERT INTO document_transaction_types_lookup VALUES (3, 'Delete');
-INSERT INTO document_transaction_types_lookup VALUES (4, 'Rename');
-INSERT INTO document_transaction_types_lookup VALUES (5, 'Move');
-INSERT INTO document_transaction_types_lookup VALUES (6, 'Download');
-INSERT INTO document_transaction_types_lookup VALUES (7, 'Check In');
-INSERT INTO document_transaction_types_lookup VALUES (8, 'Check Out');
-INSERT INTO document_transaction_types_lookup VALUES (9, 'Collaboration Step Rollback');
-INSERT INTO document_transaction_types_lookup VALUES (10, 'View');
-INSERT INTO document_transaction_types_lookup VALUES (11, 'Expunge');
-INSERT INTO document_transaction_types_lookup VALUES (12, 'Force CheckIn');
-INSERT INTO document_transaction_types_lookup VALUES (13, 'Email Link');
-INSERT INTO document_transaction_types_lookup VALUES (14, 'Collaboration Step Approve');
-INSERT INTO document_transaction_types_lookup VALUES (15, 'Email Attachment');
+INSERT INTO document_transaction_types_lookup VALUES (1, 'Create', 'ktcore.transactions.create');
+INSERT INTO document_transaction_types_lookup VALUES (2, 'Update', 'ktcore.transactions.update');
+INSERT INTO document_transaction_types_lookup VALUES (3, 'Delete', 'ktcore.transactions.delete');
+INSERT INTO document_transaction_types_lookup VALUES (4, 'Rename', 'ktcore.transactions.rename');
+INSERT INTO document_transaction_types_lookup VALUES (5, 'Move', 'ktcore.transactions.move');
+INSERT INTO document_transaction_types_lookup VALUES (6, 'Download', 'ktcore.transactions.download');
+INSERT INTO document_transaction_types_lookup VALUES (7, 'Check In', 'ktcore.transactions.check_in');
+INSERT INTO document_transaction_types_lookup VALUES (8, 'Check Out', 'ktcore.transactions.check_out');
+INSERT INTO document_transaction_types_lookup VALUES (9, 'Collaboration Step Rollback', 'ktcore.transactions.collaboration_step_rollback');
+INSERT INTO document_transaction_types_lookup VALUES (10, 'View', 'ktcore.transactions.view');
+INSERT INTO document_transaction_types_lookup VALUES (11, 'Expunge', 'ktcore.transactions.expunge');
+INSERT INTO document_transaction_types_lookup VALUES (12, 'Force CheckIn', 'ktcore.transactions.force_checkin');
+INSERT INTO document_transaction_types_lookup VALUES (13, 'Email Link', 'ktcore.transactions.email_link');
+INSERT INTO document_transaction_types_lookup VALUES (14, 'Collaboration Step Approve', 'ktcore.transactions.collaboration_step_approve');
+INSERT INTO document_transaction_types_lookup VALUES (15, 'Email Attachment', 'ktcore.transactions.email_attachment');
+INSERT INTO document_transaction_types_lookup VALUES (16, 'Workflow state transition', 'ktcore.transactions.workflow_state_transition');
 
 -- 
 -- Dumping data for table `document_transactions`
@@ -858,7 +859,7 @@ INSERT INTO zseq_document_subscriptions VALUES (1);
 -- Dumping data for table `zseq_document_transaction_types_lookup`
 -- 
 
-INSERT INTO zseq_document_transaction_types_lookup VALUES (14);
+INSERT INTO zseq_document_transaction_types_lookup VALUES (16);
 
 -- 
 -- Dumping data for table `zseq_document_transactions`
