@@ -191,15 +191,17 @@ class KTPermissionUtil {
 
         if (!is_a($oFolderOrDocument, 'Folder')) {
             $aDynamicConditions = KTPermissionDynamicCondition::getByPermissionObject($oPO);
-            foreach ($aDynamicConditions as $oDynamicCondition) {
-                $iConditionId = $oDynamicCondition->getConditionId();
-                if (KTSearchUtil::testConditionOnDocument($iConditionId, $oFolderOrDocument)) {
-                    $iGroupId = $oDynamicCondition->getGroupId();
-                    $aPermissionIds = $oDynamicCondition->getAssignment();
-                    foreach ($aPermissionIds as $iPermissionId) {
-                        $aCurrentAllowed = KTUtil::arrayGet($aMapPermAllowed, $iPermissionId, array());
-                        $aCurrentAllowed["group"][] = $iGroupId;
-                        $aMapPermAllowed[$iPermissionId] = $aCurrentAllowed;
+            if (!PEAR::isError($aDynamicConditions)) {
+                foreach ($aDynamicConditions as $oDynamicCondition) {
+                    $iConditionId = $oDynamicCondition->getConditionId();
+                    if (KTSearchUtil::testConditionOnDocument($iConditionId, $oFolderOrDocument)) {
+                        $iGroupId = $oDynamicCondition->getGroupId();
+                        $aPermissionIds = $oDynamicCondition->getAssignment();
+                        foreach ($aPermissionIds as $iPermissionId) {
+                            $aCurrentAllowed = KTUtil::arrayGet($aMapPermAllowed, $iPermissionId, array());
+                            $aCurrentAllowed["group"][] = $iGroupId;
+                            $aMapPermAllowed[$iPermissionId] = $aCurrentAllowed;
+                        }
                     }
                 }
             }
