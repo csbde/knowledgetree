@@ -1,7 +1,9 @@
-<h1>Field: {$oField->getName()|escape}</h1>
+<h2>Edit Field: {$oField->getName()|escape}</h2>
 
-<h2>Field properties</h2>
+
 <form action="{$smarty.server.PHP_SELF}" method="POST">
+<fieldset>
+<legend>Field properties</legend>
 <input type="hidden" name="fFieldsetId" value="{$oFieldset->getId()}">
 <input type="hidden" name="fFieldId" value="{$oField->getId()}">
 <input type="hidden" name="action" value="editfieldobject">
@@ -15,7 +17,11 @@
     <td>{$oField->getType()|escape}</td>
   </tr>
 </table>
+
+<div class="form_actions">
 <input type="submit" name="submit" value="Change">
+</div>
+</fieldset>
 </form>
 
 {if $oField->getHasLookup()}
@@ -24,13 +30,19 @@
 
 <h2>Lookup Values</h2>
 
-<h3>Add new values</h3>
 <form action="{$smarty.server.PHP_SELF}" method="POST">
-<input type="hidden" name="fFieldsetId" value="{$oFieldset->getId()}">
-<input type="hidden" name="fFieldId" value="{$oField->getId()}">
-<input type="hidden" name="action" value="addLookups">
-<input type="textbox" name="value">
-<input type="submit" name="submit" value="Add">
+
+<fieldset>
+<legend>Add new values</legend>
+
+<input type="hidden" name="fFieldsetId" value="{$oFieldset->getId()}" />
+<input type="hidden" name="fFieldId" value="{$oField->getId()}" />
+<input type="hidden" name="action" value="addLookups" />
+
+<input type="textbox" name="value" />
+<input type="submit" name="submit" value="Add" />
+
+</fieldset>
 </form>
 
 {if $oField->getHasLookup() and $oField->getHasLookupTree()}
@@ -41,9 +53,11 @@ lookup tree</a>
 {/if}
 
 {if $aEnabledMetadata}
-<h3>Existing values</h3>
+
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
+<fieldset>
+<legend>Existing values</legend>
 <input type="hidden" name="fFieldsetId" value="{$oFieldset->getId()}">
 <input type="hidden" name="fFieldId" value="{$oField->getId()}">
 <input type="hidden" name="action" value="metadataMultiAction">
@@ -57,16 +71,21 @@ from another source)</span>
 { /if }</label>
 {/foreach}
 </ul>
+<div class="form_actions">
 <input type="submit" name="submit[disable]" value="Disable">
 <input type="submit" name="submit[togglestickiness]" value="Toggle stickiness">
 <input type="submit" name="submit[remove]" value="Remove">
+</div>
+</fieldset>
 </form>
 {/if}
 
 {if $aDisabledMetadata}
-<h3>Disabled values</h3>
+
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
+<fieldset>
+<legend>Disabled values</legend>
 <input type="hidden" name="fFieldsetId" value="{$oFieldset->getId()}">
 <input type="hidden" name="fFieldId" value="{$oField->getId()}">
 <input type="hidden" name="action" value="metadataMultiAction">
@@ -80,9 +99,12 @@ from another source)</span>
 { /if }</label>
 {/foreach}
 </ul>
+<div class="form_actions">
 <input type="submit" name="submit[enable]" value="Enable">
 <input type="submit" name="submit[togglestickiness]" value="Toggle stickiness">
 <input type="submit" name="submit[remove]" value="Remove">
+</div>
+</fieldset>
 </form>
 {/if}
 

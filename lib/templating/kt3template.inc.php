@@ -82,6 +82,7 @@ class KTPage {
 	}
 	
 	
+	function setTitle($sTitle) { $this->title = $sTitle; }
     
     /* javascript handling */    
     // require that the specified JS file is referenced.

@@ -1,7 +1,12 @@
 <?php
+
 require_once("../../../../../config/dmsDefaults.php");
-require_once(KT_DIR . "/presentation/Html.inc");
+
+
+
 require_once(KT_LIB_DIR . "/templating/templating.inc.php");
+require_once(KT_LIB_DIR . "/templating/kt3template.inc.php");
+
 require_once(KT_LIB_DIR . "/documentmanagement/DocumentField.inc");
 require_once(KT_LIB_DIR . "/documentmanagement/MetaData.inc");
 require_once(KT_LIB_DIR . "/documentmanagement/MDTree.inc");
@@ -18,13 +23,6 @@ class ManageLookupTreeDispatcher extends KTAdminDispatcher {
              "lookupfields" => $aLookupFields,
         );
         return $oTemplate->render($aTemplateData);
-    }
-
-    function handleOutput($data) {
-        global $main;
-        $main->bFormDisabled = true;
-        $main->setCentralPayload($data);
-        $main->render();
     }
 
     function do_createTree() {
@@ -58,29 +56,38 @@ class ManageLookupTreeDispatcher extends KTAdminDispatcher {
 
         // under here we do the subaction rendering.
         // we do this so we don't have to do _very_ strange things with multiple actions.
-        $default->log->debug("Subaction: " . $subaction);
+        //$default->log->debug("Subaction: " . $subaction);
         $fieldTree =& new MDTree();
         $fieldTree->buildForField($oField->getId());
 
         if ($subaction !== null) {
+            $target = 'editTree';
+            $msg = 'Changes saved.';
             if ($subaction === "addCategory") {
                 $new_category = KTUtil::arrayGet($_REQUEST, 'category_name');
                 if (empty($new_category)) { return $this->errorRedirectTo("editTree", "Must enter a name for the new category.", array("field_id" => $field_id)); }
                 else { $this->subact_addCategory($field_id, $current_node, $new_category, $fieldTree);}                
+                $msg = 'Category added: ' . $new_category;
             }       
             if ($subaction === "deleteCategory") {
                 $this->subact_deleteCategory($fieldTree, $current_node);
                 $current_node = 0;      // clear out, and don't try and render the newly deleted category.                 
+                $msg = 'Category removed.';
             }       
             if ($subaction === "linkKeywords") {
                 $keywords = KTUtil::arrayGet($_REQUEST, 'keywordsToAdd');
                 $this->subact_linkKeywords($fieldTree, $current_node, $keywords);
                 $current_node = 0;      // clear out, and don't try and render the newly deleted category.                 
+                $msg = 'Keywords added to category.';
             }       
             if ($subaction === "unlinkKeyword") {
                 $keyword = KTUtil::arrayGet($_REQUEST, 'keyword_id');
                 $this->subact_unlinkKeyword($fieldTree, $keyword);
-            }       
+                $msg = 'Keyword moved to base of tree.';
+            }
+            // now redirect
+            $query = 'field_id=' . $field_id;
+            return $this->successRedirectTo($target, $msg, $query);
         }
 
         if ($fieldTree->root === null) { 
@@ -94,12 +101,18 @@ class ManageLookupTreeDispatcher extends KTAdminDispatcher {
         $oTemplating = new KTTemplating;
         $oTemplate = $oTemplating->loadTemplate("ktcore/edit_lookuptrees");
         $renderedTree = $this->_evilTreeRenderer($fieldTree);
+        
+        $this->oPage->setTitle('Edit Lookup Tree');
+        
+        //$this->oPage->requireJSResource('thirdparty/js/MochiKit/Base.js');
+        
         $aTemplateData = array(
             "field" => $oField,
             "tree" => $fieldTree,
             "renderedTree" => $renderedTree,
             "currentNode" => $current_node,
             "freechildren" => $free_metadata,
+            "context" => $this,
         );
         return $oTemplate->render($aTemplateData);
     }

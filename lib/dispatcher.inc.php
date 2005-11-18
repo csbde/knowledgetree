@@ -190,6 +190,7 @@ class KTStandardDispatcher extends KTDispatcher {
 
 		// handle notices that were set using KTInfoMessage.
 		$info = KTUtil::arrayGet($_SESSION, 'KTInfoMessage', array());
+		
 		if (!empty($info)) {
             foreach ($info as $sInfo) {
 		        $this->oPage->addInfo($sInfo);

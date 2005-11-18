@@ -33,24 +33,19 @@
 </style>
 {/literal}
 
-<script language="javascript" src="/thirdpartyjs/MochiKit/Base.js">
-<script language="javascript" src="/thirdpartyjs/MochiKit/Iter.js">
-<script language="javascript" src="/thirdpartyjs/MochiKit/DOM.js">
+{$context->oPage->requireJSResource('thirdpartyjs/MochiKit/Base.js')}
+{$context->oPage->requireJSResource("thirdpartyjs/MochiKit/Iter.js")}
+{$context->oPage->requireJSResource("thirdpartyjs/MochiKit/DOM.js")}
 
-<h1>Edit Lookup Tree: {$field->getName()}</h1>
+<h2>Edit Lookup Tree: {$field->getName()}</h2>
 
-<fieldset>
-<legend>Editing Category: 
-{if ($currentNode == 0)}
-Root
-{else}
-{$tree->mapnodes[$currentNode]->getName()}
-{/if}
-</legend>
 
 <form>
 <fieldset>
   <legend>Add New Subcategory</legend>
+  
+  
+  
   <input type="hidden" name="field_id" value="{$field->getId()}" />
   <input type="hidden" name="action" value="editTree" /> 
   <input type="hidden" name="subaction" value="addCategory" />
@@ -58,8 +53,8 @@ Root
 
 <input type="text" name="category_name"/>
 
-<div class="formControls">
-  <input type="submit" name="submit" value="Add Category" />
+<div class="form_actions">
+  <input type="submit" name="submit" value="add new category" />
 </div>
 </fieldset>
 </form>
@@ -71,6 +66,13 @@ make it available.</p>
 <form>
 <fieldset>
   <legend>Link free keywords.</legend>
+  
+<p>Category: <strong>{if ($currentNode == 0)}
+Root
+{else}
+{$tree->mapnodes[$currentNode]->getName()}
+{/if}</strong></p>  
+  
   <input type="hidden" name="field_id" value="{$field->getId()}" />
   <input type="hidden" name="action" value="editTree" /> 
   <input type="hidden" name="subaction" value="linkKeywords" />
@@ -84,15 +86,13 @@ make it available.</p>
     {/foreach}
 </select>
 
-<div class="formControls">
-  <input type="submit" name="submit" value="Add Category" />
+<div class="form_actions">
+  <input type="submit" name="submit" value="Add to category" />
 </div>
 </fieldset>
 </form>
 {/if}
 {/if}
-</fieldset>
-
 
 
 <h2>Preview</h2>

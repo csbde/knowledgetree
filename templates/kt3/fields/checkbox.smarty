@@ -10,11 +10,6 @@
       {else}
       <p class="errorMessage"></p>
       {/if}
-      
-      <select name="{$name}" {if $has_id}id="{$id}"{/if}>
-      {foreach item=lookup key=lookup_key from=$options.vocab}
-           <option value="{$lookup_key}" {if ($value === $lookup_key)}selected="selected"{/if}>{$lookup}</option>
-      {/foreach}
-      </select>
-      <input type="hidden" name="kt_core_fieldsets_expect[{$name}]" value ="1" />
+
+      <input type="checkbox" name="{$name}" {if $has_id}id="{$id}"{/if} {if ($has_value && ($value == true))}checked="checked"{/if}/><input type="hidden" name="kt_core_fieldsets_expect[{$name}]" value ="1"  />
      </div>
