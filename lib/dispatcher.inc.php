@@ -179,6 +179,23 @@ class KTStandardDispatcher extends KTDispatcher {
         $this->oPage->setPageContents($data);
         $this->oPage->setUser($this->oUser);
 		
+		// handle errors that were set using KTErrorMessage.
+		$errors = KTUtil::arrayGet($_SESSION, 'KTErrorMessage', array());
+		if (!empty($errors)) {
+            foreach ($errors as $sError) {
+		        $this->oPage->addError($sError);
+			}
+			$_SESSION['KTErrorMessage'] = array(); // clean it out.
+		}
+
+		// handle notices that were set using KTInfoMessage.
+		$info = KTUtil::arrayGet($_SESSION, 'KTInfoMessage', array());
+		if (!empty($info)) {
+            foreach ($info as $sInfo) {
+		        $this->oPage->addInfo($sInfo);
+			}
+			$_SESSION['KTInfoMessage'] = array(); // clean it out.
+		}
 		
 		// add last, standard portlets
 		$this->oPage->addPortlet(new KTSearchPortlet());

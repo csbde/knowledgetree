@@ -6,7 +6,7 @@
 <table class="pretty" cellspacing="0" cellpadding="0">
   <thead>
     <tr>
-      <th>Name</th>
+      <th colspan="2">Name</th>
       <th>Generic</th>
       <th>Fields</th>
     </tr>
@@ -14,8 +14,13 @@
   <tbody>
 {foreach from=$fieldsets item=oFieldset}
     <tr>
+	  <td>
+        <a href="?action=edit&fFieldsetId={$oFieldset->getId()}" class="ktAction ktDelete">Delete</a> 	  
+	  </td>
       <td>
-        <a href="?action=edit&fFieldsetId={$oFieldset->getId()}"> { $oFieldset->getName() }
+        
+		<a href="?action=edit&fFieldsetId={$oFieldset->getId()}">
+		   { $oFieldset->getName() }
         </a>
       </td>
       <td>

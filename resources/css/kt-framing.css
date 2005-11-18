@@ -536,12 +536,32 @@ a.main_nav_item {
     color: #db9d09;
 }
 
+/* block level. */
 .ktError 
 {
-    padding: 0.5em 1em;
+    padding: 0 1em;
     border: 1px solid #ffc21e;
     margin: 0.5em 0;
     background: #ffdd80;
+}
+
+.ktError p {
+    padding-left: 25px;
+    background: transparent  url(/thirdparty/icon-theme/16x16/status/dialog-warning.png) center left no-repeat;
+}
+
+/* block level. */
+.ktInfo
+{
+    padding: 0 1em;
+    border: 1px solid #ffc21e;
+    margin: 0.5em 0;
+    background: #ffdd80;
+}
+
+.ktInfo p {
+    padding-left: 25px;
+    background: transparent  url(/thirdparty/icon-theme/16x16/status/dialog-information.png) center left no-repeat;
 }
 
 
@@ -558,3 +578,45 @@ a.main_nav_item {
     border: 1px solid black;
     margin: 0.5em;
 }
+
+
+/* ========== kt actions 
+
+These are used to mark up various different "actions" (e.g. cut, copy, delete).
+Use them as follows:
+
+<a class="ktAction ktDelete">Delete</a>
+
+The text will be hidden for screen view.  The generic fahrner-ish approach comes from Plone
+
+ */
+
+
+.ktAction { 
+    display: block;
+    text-decoration: none;
+    overflow: hidden;
+    border: 0 !important;
+    margin: 0;
+    padding: 0;
+    padding-top: 16px;
+    height: 0px !important;
+    height /**/: 16px;
+    width: 16px;
+    cursor: pointer;
+}
+ 
+/* FIXME when available icon-naming-conformant sets have better coverage, make these more accurate. */
+.ktAction.ktDelete { background: transparent url(/thirdparty/icon-theme/16x16/mimetypes/x-directory-trash.png) top left no-repeat; }
+
+/* =========== standard listings. */
+
+.listing td {
+   padding: 0.5em;
+}
+
+.listing thead th {
+   border-bottom: 1px solid #888;
+   text-align: left;
+}
+

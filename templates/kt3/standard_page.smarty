@@ -103,11 +103,21 @@
 <h1 class="{$page->componentClass}"><span class="fahrner">{$page->componentLabel}</span></h1>
 
 <!-- any status / error messages get added here. -->
-
+{if (!empty($page->errStack))}
+<div class="ktError">
 {foreach item=sError from=$page->errStack}
- <div class="ktError">{$sError}</div>
+ <p>{$sError}</p>
 {/foreach}
+</div>
+{/if}
 
+{if (!empty($page->errStack))}
+<div class="ktInfo">
+  {foreach item=sInfo from=$page->infoStack}
+    <p>{$sInfo}</p>
+  {/foreach}
+</div>
+{/if}
 <!-- and finally, the content. -->
 
 {$page->contents}

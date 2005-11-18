@@ -531,7 +531,7 @@ class Document extends KTEntity {
         $sFolderPath = Folder::getFolderDisplayPath($this->iFolderID);
         // #3425 for consistency
         return ($bDisplayIcon ? $this->getIcon() : "") .
-           ($sFolderPath == "" ? "Deleted Folder" : $sFolderPath) . " > " . $this->sFileName;
+           ($sFolderPath == "" ? "Deleted Folder" : $sFolderPath) . " &raquo; " . $this->sFileName;
     }
     // }}}
 

@@ -1,24 +1,29 @@
 <?php
 
-require_once('../../../../../config/dmsDefaults.php');
+//require_once('../../../../../config/dmsDefaults.php');
 require_once(KT_LIB_DIR . '/dispatcher.inc.php');
 require_once(KT_LIB_DIR . '/templating/templating.inc.php');
+require_once(KT_LIB_DIR . '/templating/kt3template.inc.php');
 
 require_once(KT_LIB_DIR . '/documentmanagement/DocumentField.inc');
 require_once(KT_LIB_DIR . '/metadata/fieldset.inc.php');
 require_once(KT_LIB_DIR . '/metadata/metadatautil.inc.php');
 
+
+// FIXME shouldn't this inherit from AdminDispatcher?
 class KTDocumentFieldDispatcher extends KTStandardDispatcher {
     var $bAutomaticTransaction = true;
 
     // Breadcrumbs base - added to in methods
     var $aBreadcrumbs = array(
         array('action' => 'administration', 'name' => 'Administration'),
-        array('action' => 'docfield', 'name' => 'Document Field Management'),
     );
 
     // {{{ do_main
     function do_main () {
+        $this->aBreadcrumbs[] = array('action' => 'docfield', 'name' => 'Document Field Management');
+        $this->oPage->setBreadcrumbDetails("view fieldsets");
+    
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate =& $oTemplating->loadTemplate('ktcore/metadata/listFieldsets');
         $oTemplate->setData(array(
@@ -487,7 +492,8 @@ class KTDocumentFieldDispatcher extends KTStandardDispatcher {
     // }}}
 }
 
-$d =& new KTDocumentFieldDispatcher;
-$d->dispatch();
+// use the admin dispatch mechanisms.
+//$d =& new KTDocumentFieldDispatcher;
+//$d->dispatch();
 
 ?>

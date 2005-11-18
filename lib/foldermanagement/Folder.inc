@@ -421,7 +421,7 @@ class Folder extends KTEntity {
 		global $default;
         $aPathNamesArray = Folder::getFolderPathNamesAsArray($iFolderID);
         if (count($aPathNamesArray) > 0) {
-        	return implode(" > ", $aPathNamesArray);
+        	return implode(" &raquo; ", $aPathNamesArray);
         } else {
         	return "";
         }
