@@ -92,6 +92,7 @@ if (!isset($fDeleteConfirmed)) {
     $oPatternCustom->addHtml(getPage($fRememberDocumentID));
     $main->setCentralPayload($oPatternCustom);
     $main->render();
+    exit(0);
 }
 
     /* Delete all files
@@ -107,7 +108,7 @@ if (!isset($fDeleteConfirmed)) {
     
 for ($i = 0; $i < count($fDocumentIDs); $i++) {
     $oDocument = Document::get($fDocumentIDs[$i]);
-    if (isset($oDocument)) {
+    if (!isset($oDocument)) {
         // Store the doc with problem
         array_push($aNondeletedDocs, array($oDocument, _("Could not load document in database")));
     }
@@ -121,7 +122,7 @@ for ($i = 0; $i < count($fDocumentIDs); $i++) {
     $oDocument->setStatusID(DELETED);
 
     // store
-    if ($oDocument->update()) {
+    if (!$oDocument->update()) {
         //could not update the documents status in the db
         $default->log->error("deleteDocumentBL.php DB error deleting document " .
             $oDocument->getFileName() . " from folder " .
