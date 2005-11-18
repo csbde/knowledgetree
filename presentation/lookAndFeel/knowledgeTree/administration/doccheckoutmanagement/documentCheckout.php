@@ -1,0 +1,133 @@
+<?php
+
+/*
+ * Document Checkout Administration
+ *
+ * Copyright (c) 2003 Jam Warehouse http://www.jamwarehouse.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ * @version $Revision$
+ * @author Brad Shuttleworth <brad@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
+ * @package documentmanagement
+ */
+
+/* boilerplate */
+
+
+require_once(KT_LIB_DIR . '/dispatcher.inc.php');
+require_once(KT_LIB_DIR . '/templating/kt3template.inc.php');
+
+
+class KTCheckoutAdminDispatcher extends KTAdminDispatcher {
+
+   // Breadcrumbs base - added to in methods
+    var $aBreadcrumbs = array(
+        array('action' => 'administration', 'name' => 'Administration'),
+    );
+
+    function check() {
+        return true;
+    }
+
+    function do_main() {
+        $this->aBreadcrumbs[] = array('name' => 'Document Checkout');
+        $this->oPage->setBreadcrumbDetails("list checked out documents");
+        
+        $aDocuments = Document::getList("is_checked_out = 1");
+    
+        $oTemplating =& KTTemplating::getSingleton();
+        $oTemplate = $oTemplating->loadTemplate('ktcore/document/admin/checkoutlisting');       
+        $oTemplate->setData(array(
+            "context" => $this,
+            "documents" => $aDocuments,
+        ));
+        return $oTemplate;        
+    }
+    
+
+    function do_confirm() {
+        $this->aBreadcrumbs[] = array('name' => 'Document Checkout');
+        $this->oPage->setBreadcrumbDetails("confirm forced check-in");
+        
+        $document_id = KTUtil::arrayGet($_REQUEST, 'fDocumentId');
+        if (empty($document_id)) {
+            return $this->errorRedirectToMain('You must select a document to check in first.');
+        }
+    
+        $oDocument = Document::get($document_id);
+        if (PEAR::isError($oDocument)) {
+            return $this->errorRedirectToMain('The document you specified appears to be invalid.');
+        }
+        
+        $oUser = User::get($oDocument->getCheckedOutUserID());
+        // unusually, we could well have an error here:  the user may have checked out and then
+        // been deleted.
+        if (PEAR::isError($oUser) || ($oUser === false)) { 
+            $oUser = null; 
+        }
+        
+        $oTemplating =& KTTemplating::getSingleton();
+        $oTemplate = $oTemplating->loadTemplate('ktcore/document/admin/force_checkin_confirm');       
+        $oTemplate->setData(array(
+            "context" => $this,
+            "document" => $oDocument,
+            "checkout_user" => $oUser,
+        ));
+        return $oTemplate;                
+        
+    }	
+
+    function do_checkin() {
+        global $default;
+        
+        $document_id = KTUtil::arrayGet($_REQUEST, 'fDocumentId');
+        if (empty($document_id)) {
+            return $this->errorRedirectToMain('You must select a document to check in first.');
+        }
+    
+        $oDocument = Document::get($document_id);
+        if (PEAR::isError($oDocument)) {
+            return $this->errorRedirectToMain('The document you specified appears to be invalid.');
+        }
+        
+        $this->startTransaction();
+        // actually do the checkin.
+        $oDocument->setIsCheckedOut(0);
+        $oDocument->setCheckedOutUserID(-1);
+        if (!$oDocument->update()) {
+            $this->rollbackTransaction();
+            return $this->errorRedirectToMain('Failed to force the document\'s checkin.');
+        }
+        
+        // checkout cancelled transaction
+        $oDocumentTransaction = & new DocumentTransaction($oDocument->getID(), "Document checked out cancelled", FORCE_CHECKIN);
+        if ($oDocumentTransaction->create()) {
+            $default->log->debug("editDocCheckoutBL.php created forced checkin document transaction for document ID=" . $oDocument->getID());                                    	
+        } else {
+            $default->log->error("editDocCheckoutBL.php couldn't create create document transaction for document ID=" . $oDocument->getID());
+        }                                    		
+        $this->commitTransaction(); // FIXME do we want to do this if we can't created the document-transaction?
+        return $this->successRedirectToMain('Successfully forced "'. $oDocument->getName() .'" to be checked in.');
+    }
+
+
+}
+
+// use the new admin framework.
+//$d = new KTCheckoutAdminDispatcher();
+//$d->dispatch();
+
+?>

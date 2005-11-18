@@ -105,7 +105,7 @@ $default->siteMap->addPage("unitManagement", "/presentation/lookAndFeel/knowledg
 $default->siteMap->addPage("orgManagement", "/presentation/lookAndFeel/knowledgeTree/administration/orgmanagement/listOrgBL.php", "Administration", SysAdmin, _("Organisation Management"), true, 4);
 
 $default->siteMap->addPage("doctype", "presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/documentTypes.php", "Administration", SysAdmin, _("Document Type Management"), true, 5);
-$default->siteMap->addPage("docfield", "/presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/documentFields.php", "Administration", SysAdmin, _("Document Field Management"), true, 6);
+$default->siteMap->addPage("docfield", "/presentation/lookAndFeel/knowledgeTree/administration/admin.php/documents/fieldmanagement", "Administration", SysAdmin, _("Document Field Management"), true, 6);
 
 $default->siteMap->addPage("archivedDocuments", "/presentation/lookAndFeel/knowledgeTree/administration/documentmanagement/manageArchivedDocumentsBL.php", "Administration", UnitAdmin, _("Restore Archived Documents"), true, 7);
 $default->siteMap->addPage("deletedDocuments", "/presentation/lookAndFeel/knowledgeTree/administration/documentmanagement/listDeletedDocumentsBL.php", "Administration", UnitAdmin, _("Deleted Documents"), true, 8);

@@ -21,6 +21,7 @@ class KTPage {
 	
 	/** context-relevant information */
 	var $errStack = Array();
+    var $infoStack = Array();
 	var $portlets = Array();
     
     /** miscellaneous items */
@@ -167,6 +168,7 @@ class KTPage {
 	}
 
 	function addError($sError) { array_push($this->errStack, $sError); }
+	function addInfo($sInfo) { array_push($this->infoStack, $sInfo); }
 	
 	/** no-one cares what a portlet is, but it should be renderable, and have its ->title member set. */
 	function addPortlet($oPortlet) {

@@ -5,7 +5,7 @@
 {else}
 <dl class="panel_menu">
    {foreach item=aItem from=$items}
-   <dt><a href="{$smarty.server.PHP_SELF}/{$aItem.name}">{$aItem.title}</a></dt>
+   <dt><a href="{$baseurl}/{$aItem.fullname}">{$aItem.title}</a></dt>
    <dd class="descriptiveText">{$aItem.description}</dd>
    {/foreach}
 </dl>

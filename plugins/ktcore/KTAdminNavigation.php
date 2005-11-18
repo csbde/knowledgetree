@@ -18,14 +18,16 @@ class KTAdminNavigationRegistry {
     // namespace, class, category, title, description
     // if category is specified, it looks for an item with THAT NAME for its details.
     function registerLocation($sName, $sClass, $sCategory, $sTitle, $sDescription, $sDispatcherFilePath = null, $sURL = null) {
+        $sFullname = $sCategory . '/' . $sName;
         $aInfo = array(
             "name" => $sName,
             "class" => $sClass,
             "title" => $sTitle,
             "description"=> $sDescription, 
             "filepath" => $sDispatcherFilePath, 
-            "url" => $sURL);     
-        $this->aResources[$sName] = $aInfo;
+            "url" => $sURL,
+            "fullname" => $sFullname);     
+        $this->aResources[$sFullname] = $aInfo;
         // is this a toplevel item?
         if ($sCategory != null) {
             if (!array_key_exists($sCategory, $this->aCategories)) { 
