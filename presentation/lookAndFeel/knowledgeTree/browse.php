@@ -56,7 +56,23 @@ class BrowseDispatcher extends KTStandardDispatcher {
 	var $sSection = "browse";
 	var $browseType;
 	
-	
+    function check() {
+        // which folder.
+        $in_folder_id = KTUtil::arrayGet($_REQUEST, "fFolderId", 1);
+        $folder_id = (int) $in_folder_id; // conveniently, will be 0 if not possible.
+        if ($folder_id == 0) {
+            $folder_id = 1;
+        }
+
+        // here we need the folder object to do the breadcrumbs.
+        $this->oFolder =& Folder::get($folder_id);
+        if (PEAR::isError($this->oFolder)) {
+           $this->oPage->addError("invalid folder");
+           $folder_id = 1;
+           $this->oFolder =& Folder::get($folder_id);
+        }
+        return true;
+    }
 
     function do_main() {
 		$collection = new DocumentCollection;
@@ -69,24 +85,11 @@ class BrowseDispatcher extends KTStandardDispatcher {
 		$collection->addColumn(new BrowseColumn("Test 3","test3"));
 		$collection->addColumn(new BrowseColumn("Test 4","test4"));
 		
-		// which folder.
-		$in_folder_id = KTUtil::arrayGet($_REQUEST, "fFolderId", 1);
-        $folder_id = (int) $in_folder_id; // conveniently, will be 0 if not possible.
-		if ($folder_id == 0) { $folder_id = 1; }
-		
-		// here we need the folder object to do the breadcrumbs.
-		$oFolder =& Folder::get($folder_id);
-		if (PEAR::isError($oFolder)) {
-		   $this->oPage->addError("invalid folder");
-		   $folder_id = 1;
-		   $oFolder =& Folder::get($folder_id);
-		}
-		
 		// do the breadcrumbs.
 
 		// skip root.
-		$folder_path_names = array_slice($oFolder->getPathArray(), 1);
-		$folder_path_ids = array_slice(explode(',', $oFolder->getParentFolderIds()), 1);
+		$folder_path_names = array_slice($this->oFolder->getPathArray(), 1);
+		$folder_path_ids = array_slice(explode(',', $this->oFolder->getParentFolderIds()), 1);
 		
 		$parents = count($folder_path_ids);
 		
@@ -97,8 +100,8 @@ class BrowseDispatcher extends KTStandardDispatcher {
         }
 		
 		// now add this folder, _if we aren't in 1_.
-		if ($folder_id != 1) {
-		    $this->aBreadcrumbs[] = array("name" => $oFolder->getName());
+		if ($this->oFolder->getId() != 1) {
+		    $this->aBreadcrumbs[] = array("name" => $this->oFolder->getName());
 		}
 		
 		// setup the folderside add actions
@@ -108,7 +111,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 		
 		// FIXME make a FolderActionUtil ... is it necessary?
 		
-		$aActions = KTFolderActionUtil::getFolderActionsForFolder($oFolder, $$this->oUser);
+		$aActions = KTFolderActionUtil::getFolderActionsForFolder($this->oFolder, $$this->oUser);
 		
 		$portlet->setActions($aActions,null);
 		
@@ -117,7 +120,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 		$batchPage = (int) KTUtil::arrayGet($_REQUEST, "page", 0);
 		$batchSize = 20;
 		
-		$resultURL = "?fFolderId=" . $folder_id;
+		$resultURL = "?fFolderId=" . $this->oFolder->getId();
 		$collection->setBatching($resultURL, $batchPage, $batchSize); 
 		
 		
@@ -130,7 +133,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 		$collection->setSorting($displayControl, $displayOrder);
 		
 		// add in the query object.
-		$qObj = new BrowseQuery($folder_id);
+		$qObj = new BrowseQuery($this->oFolder->getId());
 		$collection->setQueryObject($qObj);
 		
 		// breadcrumbs
