@@ -9,6 +9,8 @@ require_once(KT_LIB_DIR . '/documentmanagement/DocumentField.inc');
 require_once(KT_LIB_DIR . '/metadata/fieldset.inc.php');
 require_once(KT_LIB_DIR . '/metadata/metadatautil.inc.php');
 
+require_once(KT_LIB_DIR . '/widgets/fieldWidgets.php');
+
 
 // FIXME shouldn't this inherit from AdminDispatcher?
 class KTDocumentFieldDispatcher extends KTStandardDispatcher {
@@ -23,11 +25,25 @@ class KTDocumentFieldDispatcher extends KTStandardDispatcher {
     function do_main () {
         $this->aBreadcrumbs[] = array('action' => 'docfield', 'name' => 'Document Field Management');
         $this->oPage->setBreadcrumbDetails("view fieldsets");
+        
+        // function KTBaseWidget($sLabel, $sDescription, $sName, $value, $oPage, $bRequired = false, $sId = null, $aErrors = null, $aOptions = null) {
+        // use widgets for the create form.
+        $createFields = array();
+        $createFields[] = new KTStringWidget('Name','A human-readable name, used in add and edit forms.', 'name', null, $this->oPage, true);
+        $createFields[] = new KTCheckboxWidget('Generic','A generic fieldset is one that ' .
+           'is available for every document by default.  These fieldsets ' .
+           'will be available for users to edit and add for every document in ' .
+           'the document management system.', 'generic', false, $this->oPage, false);
+        $createFields[] = new KTCheckboxWidget('System',
+           'A system fieldset is one that is never displayed to a user, and is '.
+           'used only by the document management system.', 'generic', false, $this->oPage, false);
+        
     
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate =& $oTemplating->loadTemplate('ktcore/metadata/listFieldsets');
         $oTemplate->setData(array(
             'fieldsets' => KTFieldset::getList(),
+            'creation_fields' => $createFields,
         ));
         return $oTemplate;
     }
@@ -35,9 +51,33 @@ class KTDocumentFieldDispatcher extends KTStandardDispatcher {
 
     // {{{ do_edit
     function do_edit() {
+        $this->oPage->setBreadcrumbDetails("edit");    
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate =& $oTemplating->loadTemplate('ktcore/metadata/editFieldset');
         $oFieldset =& KTFieldset::get($_REQUEST['fFieldsetId']);
+        
+        $editFieldset = array();
+        $editFieldset[] = new KTStringWidget('Name','A human-readable name, used in add and edit forms.', 'name',$oFieldset->getName(), $this->oPage, true);
+        $editFieldset[] = new KTStringWidget('Namespace','Every fieldset needs to have a system name (used by <strong>KnowledgeTree</strong>&trade;.  ' .
+        'For fieldsets which you create, this is automatically created by the system, but for '.
+        'fieldsets created by plugins, this controls how the fieldset works.', 
+        'namespace', $oFieldset->getNamespace(), $this->oPage, true);
+                
+        $createFields = array();
+        $createFields[] = new KTStringWidget('Name','A human-readable name, used in add and edit forms.', 'name',null, $this->oPage, true);
+        
+        // type is a little more complex.
+        $vocab = array();
+        if (!$oFieldset->getIsConditional()) {
+           $vocab["normal"] = 'Normal';
+        }
+        $vocab['lookup'] = 'Lookup';
+        $vocab['tree'] = 'Tree';
+        $typeOptions = array("vocab" => $vocab);
+        $createFields[] =& new KTLookupWidget('Type','Different field types can have different properties.', 
+        'type', null, $this->oPage, true, null,  null, $typeOptions);
+        
+        
         $this->aBreadcrumbs[] = array(
             'action' => 'docfield',
             'query' => 'action=edit&fFieldsetId=' . $_REQUEST['fFieldsetId'],
@@ -45,6 +85,8 @@ class KTDocumentFieldDispatcher extends KTStandardDispatcher {
         );
         $oTemplate->setData(array(
             'oFieldset' => $oFieldset,
+            'edit_fieldset_fields' => $editFieldset,
+            'create_field_fields' => $createFields,
         ));
         return $oTemplate;
     }
@@ -52,6 +94,7 @@ class KTDocumentFieldDispatcher extends KTStandardDispatcher {
 
     // {{{ edit_object
     function do_editobject() {
+        
         $oFieldset =& KTFieldset::get($_REQUEST['fFieldsetId']);
         $oFieldset->setName($_REQUEST['name']);
         $oFieldset->setNamespace($_REQUEST['namespace']);
@@ -97,7 +140,7 @@ class KTDocumentFieldDispatcher extends KTStandardDispatcher {
             $this->errorRedirectToMain('Could not create fieldset');
             exit(0);
         }
-        $this->successRedirectTo('edit', 'Fieldset created', 'fFieldsetId=' . $res->getId());
+        $this->successRedirectTo('edit', 'Fieldset created: '.$sName, 'fFieldsetId=' . $res->getId());
         exit(0);
     }
     // }}}
@@ -122,13 +165,13 @@ class KTDocumentFieldDispatcher extends KTStandardDispatcher {
             'parentfieldset' => $oFieldset->getId(),
         ));
         if (PEAR::isError($res) || ($res === false)) {
-            $this->errorRedirectTo('edit', 'Could not create field', 'fFieldsetId=' . $oFieldset->getId());
+            $this->errorRedirectTo('edit', 'Could not create field: '.$_REQUEST['name'], 'fFieldsetId=' . $oFieldset->getId());
             exit(0);
         }
         if ($is_lookup) {
-            $this->successRedirectTo('editField', 'Field created', 'fFieldsetId=' . $oFieldset->getId() . '&fFieldId=' . $oField->getId());
+            $this->successRedirectTo('editField', 'Field created: '.$_REQUEST['name'], 'fFieldsetId=' . $oFieldset->getId() . '&fFieldId=' . $oField->getId());
         } else {
-            $this->successRedirectTo('edit', 'Field created', 'fFieldsetId=' . $oFieldset->getId());
+            $this->successRedirectTo('edit', 'Field created: ' . $_REQUEST['name'], 'fFieldsetId=' . $oFieldset->getId());
         }
         exit(0);
     }
@@ -136,6 +179,7 @@ class KTDocumentFieldDispatcher extends KTStandardDispatcher {
 
     // {{{ do_editField
     function do_editField() {
+        $this->oPage->setBreadcrumbDetails("edit field");    
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate =& $oTemplating->loadTemplate('ktcore/metadata/editField');
         $oFieldset =& KTFieldset::get($_REQUEST['fFieldsetId']);

@@ -111,7 +111,7 @@
 </div>
 {/if}
 
-{if (!empty($page->errStack))}
+{if (!empty($page->infoStack))}
 <div class="ktInfo">
   {foreach item=sInfo from=$page->infoStack}
     <p>{$sInfo}</p>

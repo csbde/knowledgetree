@@ -1,89 +1,71 @@
 <h2>Fieldset: {$oFieldset->getName()|escape}</h2>
 
 {if $sIncomplete}
-<h3>Incomplete</h3>
-
-<p>This conditional fieldset cannot be used:</p>
-
-<p>{$sIncomplete|escape}</p>
-
+<div class="ktError">
+<p><strong>Incomplete</strong>This conditional fieldset cannot be used: <br />
+{$sIncomplete|escape}</p>
+</div>
 {/if}
 
-<h3>Fieldset properties</h3>
 <form action="{$smarty.server.PHP_SELF}" method="POST">
+
+<fieldset>
+<legend>Fieldset properties</legend>
+
+<p class="descriptiveText">
+  <strong>FIXME</strong> add help text for fieldset editing.
+</p>
+
 <input type="hidden" name="fFieldsetId" value="{$oFieldset->getId()}">
 <input type="hidden" name="action" value="editobject">
-<table class="prettysw" cellpadding="0" cellspacing="0">
-  <tr>
-    <th>Name</th>
-    <td><input type="textbox" name="name" value="{$oFieldset->getName()|escape}"></td>
-  </tr>
-  <tr>
-    <th>Namespace</th>
-    <td><input type="textbox" name="namespace" value="{$oFieldset->getNamespace()|escape}"></td>
-  </tr>
 
-  <tr>
-    <th>Type</th>
+
+
+{foreach item=oWidget from=$edit_fieldset_fields}
+  {$oWidget->render()}
+{/foreach}
+
+<!-- FIXME it appears we need non-editable edit widgets.  yay. -->
+<div class="field">
+<label>Conditional</label>
+<p class="descriptiveText">
+A <strong>conditional</strong> fieldset contains only lookup fields.  The values for each
+field can depend on the user's selections for the others.
+</p>
 {if $oFieldset->getIsConditional() }
-    <td>Conditional</td>
+    Yes
 {else}
-    <td>Not conditional</td>
+    No
 {/if}
-  </tr>
-</table>
+</div>
+
+
+<div class="form_actions">
 <input type="submit" name="submit" value="Change">
+</div>
+</fieldset>
 </form>
 
 {assign var="aFields" value=$oFieldset->getFields()}
 
-<h3>Fieldset members</h3>
 
-{if $oFieldset->getFields() }
-<h3>Existing members</h3>
-<form action="{$smarty.server.PHP_SELF}" method="POST">
-<input type="hidden" name="fFieldsetId" value="{$oFieldset->getId()}">
-<input type="hidden" name="action" value="removefields">
-<ul>
-{foreach from=$oFieldset->getFields() item=oField}
-  <li><input type="checkbox" name="fields[]"
-value="{$oField->getId()}">
-<a
-href="{$smarty.server.PHP_SELF}?action=editField&fFieldId={$oField->getId()}&fFieldsetId={$oFieldset->getId()}">{$oField->getName()|escape}</a>
-</li>
+{assign var="showForm" value=true}
+{foreach from=$aFields item=oField}
+  {if ! $oField->getHasLookup() }
+    {assign var="showForm" value=false}
+  {/if}
 {/foreach}
-</ul>
-<input type="submit" name="submit" value="Remove fields">
-</form>
-{/if}
 
-<h4>Add a new field</h4>
+{if ($oFieldset->getIsConditional() || $showForm)}
+<fieldset>
+<legend>Conditionality</legend>
 
-<form action="{$smarty.server.PHP_SELF}" method="POST">
-<input type="hidden" name="fFieldsetId" value="{$oFieldset->getId()}">
-<input type="hidden" name="action" value="newfield">
-<table class="prettysw" cellpadding="0" cellspacing="0">
-  <tr>
-    <th>Name</th>
-    <td><input type="textbox" name="name" />
-  </tr>
-  <tr>
-    <th>Type</th>
-    <td>
-<select name="type">
-{if !$oFieldset->getIsConditional() }
-<option value="normal">Normal</option>
-{/if}
-<option value="lookup">Lookup</option>
-<option value="tree">Tree</option>
-</select>
-    </td>
-  </tr>
-</table>
-<input type="submit" name="submit" value="Add field">
-</form>
+<p class="descriptiveText">
+A <strong>conditional</strong> fieldset contains only lookup fields.  The values for each
+field can depend on the user's selections for the others.
+</p>
 
-<h3>Conditionality</h3>
+
 
 {if $oFieldset->getIsConditional() }
 
@@ -116,5 +98,66 @@ href="{$smarty.server.PHP_SELF}?action=editField&fFieldId={$oField->getId()}&fFi
 </form>
 {/if}
 
+
+
 {/if}
+
+</fieldset>
+{else}
+<div class="ktInfo"><p>This fieldset cannot be made conditional, since it contains fields which are not lookup types.</p></div>
+{/if}
+
+<h3>Fieldset members</h3>
+
+<p class="descriptiveText">
+  <strong>FIXME</strong> add help text for fieldset members.
+</p>
+
+
+{if $oFieldset->getFields() }
+<form action="{$smarty.server.PHP_SELF}" method="POST">
+<fieldset>
+<legend>Existing members</legend>
+
+<input type="hidden" name="fFieldsetId" value="{$oFieldset->getId()}">
+<input type="hidden" name="action" value="removefields">
+<ul>
+{foreach from=$oFieldset->getFields() item=oField}
+  <li><input type="checkbox" name="fields[]"
+value="{$oField->getId()}">
+{$oField->getName()|escape}
+(<a
+href="{$smarty.server.PHP_SELF}?action=editField&fFieldId={$oField->getId()}&fFieldsetId={$oFieldset->getId()}">edit</a>)
+</li>
+{/foreach}
+</ul>
+<div class="form_actions">
+  <input type="submit" name="submit" value="Remove fields">
+</div>
+</fieldset>
+</form>
+{/if}
+
+
+<form action="{$smarty.server.PHP_SELF}" method="POST">
+
+<fieldset>
+<legend>Add a new field</legend>
+
+<p class="descriptiveText"><strong>FIXME</strong> add help text for field creation.</p>
+
+<input type="hidden" name="fFieldsetId" value="{$oFieldset->getId()}">
+<input type="hidden" name="action" value="newfield">
+
+
+
+{foreach item=oWidget from=$create_field_fields}
+  {$oWidget->render()}
+{/foreach}
+
+<div class="form_actions">
+  <input type="submit" name="submit" value="Add field">
+</div>
+</fieldset>
+</form>
 
