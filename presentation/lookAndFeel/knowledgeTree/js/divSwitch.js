@@ -6,8 +6,8 @@
 function switchDiv(div_id, object)
 {
   var aDocumentDivs = new Array("documentData", "genericMetaData", "typeSpecificMetaData", 
-                                "archiveSettings", "documentRouting", "linkedDocuments");
-  var aFolderDivs = new Array("folderData", "folderRouting", "documentTypes", "folderPermissions");
+                                "archiveSettings", "linkedDocuments", "metadataVersions");
+  var aFolderDivs = new Array("folderData", "documentTypes", "folderPermissions");
   var aSearchDivs = new Array("searchLess", "searchMore");
                                 
   var style_sheet = getStyleObject(div_id);

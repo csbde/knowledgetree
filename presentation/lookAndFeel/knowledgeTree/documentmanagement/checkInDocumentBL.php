@@ -44,10 +44,7 @@ require_once("$default->fileSystemRoot/lib/users/User.inc");
 require_once("$default->fileSystemRoot/lib/documentmanagement/PhysicalDocumentManager.inc");
 require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentTransaction.inc");
 require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
-require_once("$default->fileSystemRoot/lib/documentmanagement/DocumentCollaboration.inc");    
 
-require_once("$default->fileSystemRoot/lib/foldermanagement/FolderCollaboration.inc");
-require_once("$default->fileSystemRoot/lib/foldermanagement/FolderUserRole.inc");
 require_once("$default->fileSystemRoot/lib/roles/Role.inc");
 require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
 

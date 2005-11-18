@@ -31,7 +31,6 @@ require_once("../../../../config/dmsDefaults.php");
 KTUtil::extractGPC('fDeleteConfirmed', 'fFolderID'); 
 
 require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
-require_once("$default->fileSystemRoot/lib/foldermanagement/FolderCollaboration.inc");
 require_once("$default->fileSystemRoot/lib/foldermanagement/FolderDocTypeLink.inc");
 require_once("$default->fileSystemRoot/lib/foldermanagement/PhysicalFolderManagement.inc");
 require_once("$default->fileSystemRoot/lib/groups/GroupUnitLink.inc");
@@ -62,12 +61,6 @@ if (checkSession()) {
 						if (PhysicalFolderManagement::deleteFolder($sFolderPath)) {
 							// successfully deleted the folder from the file system
 							$default->log->info("deleteFolderBL.php successfully deleted folder " . $oFolder->getName() . " from parent folder " . Folder::getFolderPath($oFolder->getParentID()) . " id=" . $oFolder->getParentID());
-                            
-                            // delete folder collaboration entries
-                            $aFolderCollaboration = FolderCollaboration::getList(array("folder_id = ?", $fFolderID));/*ok*/
-                            for ($i=0; $i<count($aFolderCollaboration); $i++) {
-                                $aFolderCollaboration[$i]->delete();
-                            }
                             
                             // delete folder document types link
                             $aFolderDocTypeLink = FolderDocTypeLink::getList(array("folder_id = ?", $fFolderID));/*ok*/

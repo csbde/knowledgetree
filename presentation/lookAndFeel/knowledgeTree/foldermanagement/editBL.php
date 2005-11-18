@@ -30,7 +30,7 @@
  
 require_once("../../../../config/dmsDefaults.php");
 
-KTUtil::extractGPC('fCollaborationDelete', 'fCollaborationEdit', 'fFolderID', 'fShowSection');
+KTUtil::extractGPC('fFolderID', 'fShowSection');
 
 if (!checkSession()) {
     exit(0);
@@ -80,33 +80,6 @@ if (!Permission::userHasFolderWritePermission($oFolder)) {
     $main->setCentralPayload($oPatternCustom);						
     $main->render();
     exit(0);
-}
-
-if (isset($fCollaborationEdit)) {
-    //user attempted to edit the folder collaboration process but could not because there is
-    //a document currently in this process
-    $oPatternCustom->setHtml(getStatusPage($fFolderID, _("You cannot edit this folder collaboration process as a document is currently undergoing this collaboration process")));
-    
-    $main->setHasRequiredFields(true);
-    $_SESSION["pageAccess"][$default->rootUrl .  '/presentation/lookAndFeel/knowledgeTree/store.php'] = true;
-    $main->setFormAction("$default->rootUrl/presentation/lookAndFeel/knowledgeTree/store.php?fReturnURL=" . urlencode("$default->rootUrl/control.php?action=browse&fFolderID=$fFolderID"));
-} else if (isset($fCollaborationDelete)) {
-    //user attempted to delete the folder collaboration process but could not because there is
-    //a document currently in this process
-    $oPatternCustom->setHtml(getStatusPage($fFolderID, _("You cannot delete this folder collaboration process as a document is currently undergoing this collaboration process")));
-    $main->setHasRequiredFields(true);
-    $_SESSION["pageAccess"][$default->rootUrl . '/presentation/lookAndFeel/knowledgeTree/store.php'] = true;
-    $main->setFormAction("$default->rootUrl/presentation/lookAndFeel/knowledgeTree/store.php?fReturnURL=" . urlencode("$default->rootUrl/control.php?action=browse&fFolderID=$fFolderID"));
-} else {
-    // does this folder have a document in it that has started collaboration?
-    $bCollaboration = Folder::hasDocumentInCollaboration($fFolderID);
-    $main->setDHTMLScrolling(false);
-    $main->setOnLoadJavaScript("switchDiv('" . (isset($fShowSection) ? $fShowSection : "folderData") . "', 'folder')");
-            
-    $oPatternCustom->setHtml(getPage($fFolderID, "", $bCollaboration));
-    $main->setHasRequiredFields(true);
-    $_SESSION["pageAccess"][$default->rootUrl . '/presentation/lookAndFeel/knowledgeTree/store.php'] = true;
-    $main->setFormAction("$default->rootUrl/presentation/lookAndFeel/knowledgeTree/store.php?fReturnURL=" . urlencode("$default->rootUrl/control.php?action=browse&fFolderID=$fFolderID"));
 }
 
 $main->setCentralPayload($oPatternCustom);						

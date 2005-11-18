@@ -584,31 +584,6 @@ class Folder extends KTEntity {
 		}
 		return false;
 	}
-    
-    /**
-     * Returns whether this folder has any documents currently in collaboration
-     */
-    function hasDocumentInCollaboration($iFolderID) {
-        global $default;
-        $sDocumentIDs = Folder::getDocumentIDs($iFolderID);
-        if (strlen($sDocumentIDs) > 0) {
-            $aDocumentIDs = split(',', $sDocumentIDs);
-            $sQms = DBUtil::paramArray($aDocumentIDs);
-
-            $sQuery = "SELECT * FROM folders_users_roles_link WHERE document_id in ($sQms) AND (active = ?)";/*ok*/
-            $aParams = $aDocumentIDs;
-            $aParams[] = true;
-            $sql = $default->db;
-            $sql->query(array($sQuery, $aParams));
-            if ($sql->next_record()) {
-                return true;
-            }
-            return false;
-        } else {
-            // no documents
-            return false;
-        }
-    }
 
     function getByParentIDAndLookupID($iParentID, $iLookupID) {
         return KTEntityUtil::getByDict('Folder', array(
