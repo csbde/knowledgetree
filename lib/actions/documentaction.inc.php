@@ -9,7 +9,7 @@ class KTDocumentAction extends KTStandardDispatcher {
     var $sDescription;
     var $sDisplayName;
 
-    var $_sShowPermission;
+    var $_sShowPermission = "ktcore.permissions.read";
     var $_sDisablePermission;
 
     var $_bDisabled;
@@ -99,6 +99,9 @@ class KTDocumentAction extends KTStandardDispatcher {
 
     function check() {
         $this->oDocument =& $this->oValidator->validateDocument($_REQUEST['fDocumentId']);
+        if ($this->_show() === false) {
+            return false;
+        }
         return true;
     }
 
