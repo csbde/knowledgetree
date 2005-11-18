@@ -24,6 +24,10 @@ class KTPortlet {
     function render() {
         return '<p class="ktError">Warning:  Abstract Portlet created.</p>';
     }
+
+    function setDispatcher(&$oDispatcher) {
+        $this->oDispatcher =& $oDispatcher; 
+    }
 }
 
 
@@ -82,22 +86,6 @@ class KTActionPortlet extends KTPortlet {
     function render() {
         $oTemplating = new KTTemplating;        
         $oTemplate = $oTemplating->loadTemplate("kt3/portlets/actions_portlet");
-        $aTemplateData = array(
-            "context" => $this,
-        );
-
-        return $oTemplate->render($aTemplateData);     
-    }
-}
-
-class KTSearchPortlet extends KTPortlet {
-    
-    function KTSearchPortlet() {
-        parent::KTPortlet("Search");
-    }
-    function render() {
-        $oTemplating = new KTTemplating;        
-        $oTemplate = $oTemplating->loadTemplate("kt3/portlets/search_portlet");
         $aTemplateData = array(
             "context" => $this,
         );
