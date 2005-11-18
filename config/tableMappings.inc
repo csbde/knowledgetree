@@ -51,12 +51,6 @@ $default->folder_doctypes_table = "folder_doctypes_link";
 $default->folder_subscriptions_table = "folder_subscriptions";
 // stores folders
 $default->folders_table = "folders";
-// links folders to users (and roles) for approval collaboration
-$default->folders_user_roles_table = "folders_users_roles_link";
-// stores approval collaboration information- approval roles mapped to folders with order
-$default->groups_folders_approval_table = "groups_folders_approval_link";
-// links groups to folders
-$default->groups_folders_table = "groups_folders_link";
 // stores group information
 $default->groups_table = "groups_lookup";
 // links groups to units
@@ -102,8 +96,6 @@ $default->web_sites_table = "web_sites";
 //stores help text
 $default->help_table = "help";
 $default->document_text_table = "document_text";
-$default->dependant_document_template_table = "dependant_document_template";
-$default->dependant_document_instance_table = "dependant_document_instance";
 $default->document_link_table = "document_link";
 // archive settings
 $default->document_archiving_table = "document_archiving_link";

@@ -68,44 +68,6 @@ function getFolderData($iFolderID, $sDivName, $sStatusMessage = "") {
 	}
 }
 
-function getFolderRouting($iFolderID, $sDivName, $bCollaboration) {
-	global $default;
-	//had to use coalesce and left outer join for user_id because this column was a new addition
-	//and the user_ids for existing documents before this change will be null
-	/*ok*/ $sQuery = array("SELECT GFAL.id as id, GFAL.folder_id AS folder_id, COALESCE(G.name, 'Not Assigned') AS group_name, G.id AS group_id, GFAL.role_id AS role_id, R.name AS role_name, GFAL.precedence AS precedence, COALESCE(U.id, -1) AS user_id, COALESCE(U.name, 'Not Assigned') AS user_name, 'Edit' as edit, 'Delete' as del, 'Dependant docs' as depn " .
-			  "FROM $default->groups_folders_approval_table AS GFAL INNER JOIN roles AS R ON GFAL.role_id = R.id " .
-			  "LEFT OUTER JOIN $default->groups_table AS G ON G.id = GFAL.group_id " .
-			  "LEFT OUTER JOIN $default->users_table AS U ON U.id = GFAL.user_id " .				 
-			  "WHERE GFAL.folder_id = ? " .
-			  "ORDER BY GFAL.precedence, role_name ASC", $iFolderID);
-	
-	$aColumns = array("group_name", "role_name", "precedence", "user_name", "edit", "del", "depn");
-	$aColumnHeaders = array(_("Group"), _("Role"), _("Seq"), _("User"), "", "");
-	$aColumnTypes = array(1,1,1,1,3,3,3);
-	$aDBColumnArray = array("id","folder_id","group_id","user_id","precedence","role_id");
-	$aQueryStringVariableNames = array("fFolderCollaborationID", "fFolderID", "fGroupID","fUserID","fSequenceNumber","fRoleID");
-	$aLinkURLs = array(4=>"$default->rootUrl/control.php?action=modifyFolderCollaboration",5=>"$default->rootUrl/control.php?action=deleteFolderCollaboration", 6=>"$default->rootUrl/control.php?action=viewDependantDocument");
-	
-	$oPatternTableSqlQuery = & new PatternTableSqlQuery($sQuery, $aColumns, $aColumnTypes, $aColumnHeaders, "610", $aLinkURLs, $aDBColumnArray,$aQueryStringVariableNames);
-	$oPatternTableSqlQuery->setTableHeading(_("Document Routing"));
-	$oPatternTableSqlQuery->setDisplayColumnHeadings(true);
-	
-	$sToRender .= "<table>";
-	if ($bCollaboration) {
-		$sToRender .= "<tr><td><font color=\"red\">" . _("Documents in this folder are currently undergoing this collaboration process, so these steps can't be altered") . "</font></td></tr>";
-	}
-	$sToRender .= "<tr><td>" . $oPatternTableSqlQuery->render() . "</td></tr>";
-    if (!$bCollaboration) {
-        $sToRender .= "<tr>\n";
-        $sToRender .= "<td>\n";
-        $sToRender .=  "<a href=\"$default->rootUrl/control.php?action=addFolderCollaboration&fFolderID=$iFolderID\"><img src=\"" . KTHtml::getAddButton() . "\" border=\"0\" /></a>\n";
-        $sToRender .= "</td>\n";
-        $sToRender .= "</tr>\n";
-    }
-    $sToRender .= "</table>";	
-    return renderSectionDiv($sDivName, $sToRender);	
-}
-
 function getFolderDocTypes($iFolderID, $sDivName) {
     $sTable = KTUtil::getTableName('folder_doctypes');
     $aQuery = array(
@@ -153,7 +115,7 @@ function renderFolderSection($sSectionName, $sHeadingText, $bDisplayLink, $iFold
 	return "<tr bgcolor=\"" . getColour($iColour) . "\"><td width=\"100%\">$sLink</td></tr>\n";
 }
 
-function getPage($iFolderID, $sStatusMessage, $bCollaboration = false) {
+function getPage($iFolderID, $sStatusMessage) {
     global $default;
    	  		
 	$sToRender = "<div id=\"headings\" style=\"position:relative;visibility:visible;top:2px;left:2px;\">";
@@ -168,7 +130,6 @@ function getPage($iFolderID, $sStatusMessage, $bCollaboration = false) {
 	$bDisplayLink = ($sStatusMessage) ? true : false;
 
 	$sToRender .= renderFolderSection("folderData", _("Folder Data"), $bDisplayLink, $iFolderID);
-	$sToRender .= renderFolderSection("folderRouting", _("Document Routing"), $bDisplayLink, $iFolderID);
 	$sToRender .= renderFolderSection("documentTypes", _("Document Types"), $bDisplayLink, $iFolderID);
 	$sToRender .= "</table>";
 	$sToRender .= "</td><td><table border=1>";
@@ -180,7 +141,6 @@ function getPage($iFolderID, $sStatusMessage, $bCollaboration = false) {
 		$sToRender .= "<div id=\"contentDiv\" style=\"position:relative;visibility:hidden;width:500px;\">";
 	}
 	$sToRender .= getFolderData($iFolderID, "folderData");
-	$sToRender .= getFolderRouting($iFolderID, "folderRouting", $bCollaboration);
 	$sToRender .= getFolderDocTypes($iFolderID, "documentTypes");
 	if (!$default->bNN4) {
 		$sToRender .= "</div>";
@@ -202,7 +162,6 @@ function getStatusPage($iFolderID, $sStatusMessage) {
 	$bDisplayLink = ($sStatusMessage) ? true : false;
 
 	$sToRender .= renderFolderSection("folderData", _("Folder Data"), $bDisplayLink, $iFolderID);
-	$sToRender .= renderFolderSection("folderRouting", _("Document Routing"), $bDisplayLink, $iFolderID);
 	$sToRender .= renderFolderSection("documentTypes", _("Document Types"), $bDisplayLink, $iFolderID);
 	$sToRender .= renderFolderSection("folderPermissions", _("Folder Permissions"), $bDisplayLink, $iFolderID);
 

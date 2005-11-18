@@ -2,7 +2,6 @@
 require_once(KT_LIB_DIR . "/subscriptions/SubscriptionManager.inc");
 require_once(KT_LIB_DIR . "/web/WebDocument.inc");
 require_once(KT_LIB_DIR . "/links/Link.inc");
-require_once(KT_LIB_DIR . "/documentmanagement/DependantDocumentInstance.inc");
 require_once(KT_LIB_DIR . "/archiving/ArchiveRestorationRequest.inc");
 /**
  * $Id$
@@ -72,25 +71,6 @@ class Dashboard {
 	}
 
 	/**
-	 * Retrieves the collaboration documents that the current user has pending
-	 *
-	 * @param integer the user to retrieve pending collaboration documents for
-	 */
-	function getPendingCollaborationDocuments(){
-	    global $default;
-	    
-	    $sQuery = array("SELECT document_id FROM $default->folders_user_roles_table WHERE active = ? AND user_id = ?", array(true, $this->iUserID));/*ok*/
-	    $aDocumentList = array();
-	    $sql = $default->db;
-	    if ($sql->query($sQuery)) {
-	        while ($sql->next_record()) {
-	            $aDocumentList[] = & Document::get($sql->f("document_id"));
-	        }
-	    }
-	    return $aDocumentList;
-	}
-
-	/**
 	 * Retrieve checked out documents for this user
 	 *
 	 * @return array of documents
@@ -117,22 +97,6 @@ class Dashboard {
 		return Link::getList("ORDER BY rank");/*ok*/
 	}
 		
-	/**
-	 * Retrieves details of supporting documents that the current user must create
-	 */
-	function getDependantDocuments() {
-		global $default;
-		$sQuery = array("SELECT id FROM $default->dependant_document_instance_table WHERE user_id = ?", $this->iUserID);/*ok*/
-		$aDocumentList = array();
-		$sql = $default->db;
-		$sql->query($sQuery);
-		while ($sql->next_record()) {
-			$aDocumentList[] = & DependantDocumentInstance::get($sql->f("id"));
-		}
-		return $aDocumentList;	
-	}	
-	
-
 	/**
 	 * Retrieves Public Folders
 	 */

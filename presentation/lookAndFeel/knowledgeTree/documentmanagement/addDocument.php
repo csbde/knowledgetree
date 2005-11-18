@@ -27,11 +27,9 @@
 require_once("../../../../config/dmsDefaults.php");
 require_once(KT_LIB_DIR . '/dispatcher.inc.php');
 
-// KTUtil::extractGPC('fFolderID', 'fStore', 'fDocumentTypeID', 'fName', 'fDependantDocumentID');
 
 require_once(KT_LIB_DIR . '/documentmanagement/Document.inc');
 require_once(KT_LIB_DIR . '/foldermanagement/Folder.inc');
-require_once(KT_LIB_DIR . '/documentmanagement/DependantDocumentInstance.inc');
 require_once(KT_LIB_DIR . '/documentmanagement/DocumentLink.inc');
 
 require_once(KT_LIB_DIR . '/storage/storagemanager.inc.php');
@@ -214,35 +212,6 @@ class KTAddDocumentDispatcher extends KTStandardDispatcher {
             $message = $oDocument->getMessage();
             $this->errorRedirectToMain($message, 'fFolderId=' . $this->oFolder->getId());
             exit(0);
-        }
-
-        //the document was created/uploaded due to a collaboration step in another
-        //document and must be linked to that document
-        if (isset($fDependantDocumentID)) {
-            $oDependantDocument = DependantDocumentInstance::get($fDependantDocumentID);
-            $oDocumentLink = & new DocumentLink($oDependantDocument->getParentDocumentID(), $oDocument->getID(), -1); // XXX: KT_LINK_DEPENDENT
-            if ($oDocumentLink->create()) {
-                //no longer a dependant document, but a linked document
-                $oDependantDocument->delete();                         
-            } else {
-                //an error occured whilst trying to link the two documents automatically.  Email the parent document
-                //original to inform him/her that the two documents must be linked manually
-                $oParentDocument = Document::get($oDependantDocument->getParentDocumentID());
-                $oUserDocCreator = User::get($oParentDocument->getCreatorID());
-                
-                $sBody = $oUserDocCreator->getName() . ", an error occured whilst attempting to automatically link the document, '" .
-                        $oDocument->getName() . "' to the document, '" . $oParentDocument->getName() . "'.  These two documents " .
-                        " are meant to be linked for collaboration purposes.  As creator of the document, ' " . $oParentDocument->getName() . "', you are requested to " .
-                        "please link them manually by browsing to the parent document, " .
-                        generateControllerLink("viewDocument","fDocumentId=" . $oParentDocument->getID(), $oParentDocument->getName()) . 
-                        "  and selecting the link button.  " . $oDocument->getName() . " can be found at " . $oDocument->getDisplayPath();
-                
-                $oEmail = & new Email();
-                $oEmail->send($oUserDocCreator->getEmail(), "Automatic document linking failed", $sBody);
-                
-                //document no longer dependant document, but must be linked manually
-                $oDependantDocument->delete();                                    				
-            }
         }
 
         $this->commitTransaction();

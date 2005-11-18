@@ -11,7 +11,6 @@ require_once(KT_LIB_DIR . '/dispatcher.inc.php');
 
 require_once(KT_LIB_DIR . '/documentmanagement/Document.inc');
 require_once(KT_LIB_DIR . '/foldermanagement/Folder.inc');
-require_once(KT_LIB_DIR . '/documentmanagement/DependantDocumentInstance.inc');
 require_once(KT_LIB_DIR . '/documentmanagement/DocumentLink.inc');
 
 require_once(KT_LIB_DIR . '/documentmanagement/documentutil.inc.php');

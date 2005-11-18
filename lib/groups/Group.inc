@@ -111,25 +111,6 @@ class Group extends KTEntity {
 	}
 	
 	/**
-	 * Checks if this group has outstanding approval process
-     * requirements
-	 */	
-	function hasRoutingSteps() {
-		global $default;
-
-		$sql = $default->db;
-		$query = "SELECT id FROM $default->groups_folders_approval_table WHERE group_id = ?";/*ok*/
-        $aParams = array($this->iId);
-	    $sql->query(array($query, $aParams));
-	   	$rows = $sql->num_rows();
-		if ($rows > 0){
-	    	return true;
-		} else {
-			return false;
-		}
-	}
-
-	/**
 	* Static function.
 	* Given a groups primary key it will create a 
 	* Group object and populate it with the 
