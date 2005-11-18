@@ -5,7 +5,7 @@ require_once(KT_LIB_DIR . '/subscriptions/Subscription.inc');
 
 $oKTActionRegistry =& KTActionRegistry::getSingleton();
 
-class KTDocumentViewAction extends KTBuiltInDocumentAction {
+class KTDocumentViewAction extends KTDocumentAction {
     var $sBuiltInAction = 'downloadDocument';
     var $sDisplayName = 'View';
     var $sName = 'ktcore.actions.document.view';
@@ -14,15 +14,16 @@ class KTDocumentViewAction extends KTBuiltInDocumentAction {
         $aInfo['alert'] =  _("This will download a copy of the document and is not the same as Checking Out a document.  Changes to this downloaded file will not be managed in the DMS.");
         return $aInfo;
     }
+
+    function do_main() {
+        $oStorage =& KTStorageManagerUtil::getSingleton();
+        $oDocumentTransaction = & new DocumentTransaction($this->oDocument->getId(), "Document downloaded", DOWNLOAD);
+        $oDocumentTransaction->create();
+        $oStorage->download($this->oDocument);
+        exit(0);
+    }
 }
 $oKTActionRegistry->registerAction('documentaction', 'KTDocumentViewAction', 'ktcore.actions.document.view');
-
-class KTDocumentEmailAction extends KTBuiltInDocumentAction {
-    var $sBuiltInAction = 'emailDocument';
-    var $sDisplayName = 'Email';
-    var $sName = 'ktcore.actions.document.email';
-}
-$oKTActionRegistry->registerAction('documentaction', 'KTDocumentEmailAction', 'ktcore.actions.document.email');
 
 class KTDocumentCheckInOutAction extends KTBuiltInDocumentAction {
     var $sBuiltInAction = 'emailDocument';
@@ -92,22 +93,6 @@ class KTDocumentHistoryAction extends KTBuiltInDocumentAction {
     var $sName = 'ktcore.actions.document.history';
 }
 $oKTActionRegistry->registerAction('documentaction', 'KTDocumentHistoryAction', 'ktcore.actions.document.history');
-
-class KTDocumentSubscriptionAction extends KTBuiltInDocumentAction {
-    var $sName = 'ktcore.actions.document.subscription';
-    var $sDisplayName = 'Subscribe';
-    function getInfo() {
-        if (Subscription::exists($this->oUser->getID(), $this->oDocument->getID(), SubscriptionConstants::subscriptionType("DocumentSubscription"))) {
-            $this->sBuiltInAction = 'removeSubscription';
-            $this->sDisplayName = 'Unsubscribe';
-        } else {
-            $this->sBuiltInAction = 'addSubscription';
-            $this->sDisplayName = 'Subscribe';
-        }
-        return parent::getInfo();
-    }
-}
-$oKTActionRegistry->registerAction('documentaction', 'KTDocumentSubscriptionAction', 'ktcore.actions.document.subscription');
 
 class KTDocumentDiscussionAction extends KTBuiltInDocumentAction {
     var $sBuiltInAction = 'viewDiscussion';
