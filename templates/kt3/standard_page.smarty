@@ -90,10 +90,13 @@
 <div id="portletbar">
 
 {foreach item=oPortlet from=$page->portlets}
+{assign var=portlet_output value=$oPortlet->render() }
+{if $portlet_output}
 <div class="portlet">
 <h4>{$oPortlet->getTitle()}</h4>
-{$oPortlet->render()}
+{$portlet_output}
 </div>
+{/if}
 {/foreach}
 
 
