@@ -1,6 +1,7 @@
 <?php
 
 require_once(KT_LIB_DIR . '/validation/dispatchervalidation.inc.php');
+require_once(KT_LIB_DIR . '/actions/portletregistry.inc.php');
 require_once(KT_LIB_DIR . "/widgets/portlet.inc.php");
 
 
@@ -197,9 +198,15 @@ class KTStandardDispatcher extends KTDispatcher {
 			}
 			$_SESSION['KTInfoMessage'] = array(); // clean it out.
 		}
-		
-		// add last, standard portlets
-		$this->oPage->addPortlet(new KTSearchPortlet());
+
+        // Get the portlets to display from the portlet registry
+        $oPRegistry =& KTPortletRegistry::getSingleton();
+        $aPortlets = $oPRegistry->getPortletsForPage($this->aBreadcrumbs);
+        foreach ($aPortlets as $oPortlet) {
+            $oPortlet->setDispatcher($this);
+            $this->oPage->addPortlet($oPortlet);
+        }
+
         $this->oPage->render();
     }
 
