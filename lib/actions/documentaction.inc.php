@@ -3,6 +3,7 @@
 require_once(KT_LIB_DIR . '/actions/actionregistry.inc.php');
 require_once(KT_LIB_DIR . '/workflow/workflowutil.inc.php');
 require_once(KT_LIB_DIR . '/dispatcher.inc.php');
+require_once(KT_LIB_DIR . '/browse/browseutil.inc.php');
 
 class KTDocumentAction extends KTStandardDispatcher {
     var $sName;
@@ -14,6 +15,11 @@ class KTDocumentAction extends KTStandardDispatcher {
 
     var $_bDisabled;
     var $_sDisabledText = null;
+
+    var $sSection = "view_details";
+    var $aBreadcrumbs = array(
+        array('action' => 'browse', 'name' => 'Browse'),
+    );
 
     function KTDocumentAction($oDocument = null, $oUser = null) {
         $this->oDocument =& $oDocument;
@@ -99,9 +105,9 @@ class KTDocumentAction extends KTStandardDispatcher {
 
     function check() {
         $this->oDocument =& $this->oValidator->validateDocument($_REQUEST['fDocumentId']);
-        if ($this->_show() === false) {
-            return false;
-        }
+        $aOptions = array("final" => false);
+        $this->aBreadcrumbs = array_merge($this->aBreadcrumbs,
+            KTBrowseUtil::breadcrumbsForDocument($this->oDocument, $aOptions));
         return true;
     }
 
