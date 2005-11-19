@@ -10,9 +10,14 @@
     {/foreach}
     
     <!-- Javascript Files. -->
-    
     {foreach item=sResourceURL from=$page->getJSResources()}
        <script type="text/javascript" src="{$rootUrl}/{$sResourceURL}"> </script>
+    {/foreach}
+
+    {foreach item=sJavascript from=$page->getJSStandalone()}
+       <script type="text/javascript">
+{$sJavascript}
+       </script>
     {/foreach}
 </head>
 <body>
