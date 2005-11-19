@@ -90,18 +90,14 @@ class KTDocumentUtil {
         return $oDocument->update();
     }
 
-    function setModifiedDate($oDocument) {
-        if (is_numeric($oDocument)) {
-            $oDocument =& Document::get($oDocument);
-            if (PEAR::isError($oDocument)) {
-                return $oDocument;
-            }
-        }
+    function setModified($oDocument, $oUser) {
+        $oDocument =& KTUtil::getObject('Document', $oDocument);
         $oDocument->setLastModifiedDate(getCurrentDateTime());
+        $oDocument->setModifiedUserId(KTUtil::getId($oUser));
         return $oDocument->update();
     }
 
-    function checkin($oDocument, $sFilename, $sCheckInComment, $sCheckInType = "minor") {
+    function checkin($oDocument, $sFilename, $sCheckInComment, $oUser) {
         $sBackupPath = $oDocument->getPath() . "-" .  $oDocument->getMajorVersionNumber() . "." .  $oDocument->getMinorVersionNumber();
         $bSuccess = @copy($oDocument->getPath(), $sBackupPath);
         if ($bSuccess === false) {
@@ -113,6 +109,7 @@ class KTDocumentUtil {
         }
 
         $oStorage =& KTStorageManagerUtil::getSingleton();
+        $iFileSize = filesize($sFilename);
 
         if (!$oStorage->upload($oDocument, $sFilename)) {
             // reinstate the backup
@@ -125,17 +122,11 @@ class KTDocumentUtil {
         $oDocument->setMetadataVersion($oDocument->getMetadataVersion()+1);
 
         $oDocument->setLastModifiedDate(getCurrentDateTime());
+        $oDocument->setModifiedUserId($oUser->getId());
         $oDocument->setIsCheckedOut(false);
         $oDocument->setCheckedOutUserID(-1);
-
-        // bump the version numbers
-        if ($sCheckInType == "major") {
-            $oDocument->setMajorVersionNumber($oDocument->getMajorVersionNumber()+1);
-            $oDocument->setMinorVersionNumber(0);
-        } else if ($sCheckInType == "minor") {
-            $oDocument->setMinorVersionNumber($oDocument->getMinorVersionNumber()+1);
-        }
-        $oDocument->setFileSize($_FILES['fFile']['size']);
+        $oDocument->setMinorVersionNumber($oDocument->getMinorVersionNumber()+1);
+        $oDocument->setFileSize($iFileSize);
 
         $bSuccess = $oDocument->update();
         if ($bSuccess !== true) {
