@@ -3,11 +3,7 @@
 /**
  * $Id$
  *
- * Main dashboard page -- This page is presented to the user after login.
- * It contains a high level overview of the users subscriptions, checked out 
- * document, pending approval routing documents, etc. 
- *
- * Copyright (c) 2003 Jam Warehouse http://www.jamwarehouse.com
+ * Copyright (c) 2005 Jam Warehouse http://www.jamwarehouse.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,7 +20,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * @version $Revision$
- * @author Michael Joseph <michael@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
+ * @author Brad Shuttleworth <brad@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
  */
 
 // main library routines and defaults
@@ -36,6 +32,7 @@ require_once(KT_LIB_DIR . "/util/ktutil.inc");
 require_once(KT_LIB_DIR . "/browse/DocumentCollection.inc.php");
 require_once(KT_LIB_DIR . "/browse/BrowseColumns.inc.php");
 require_once(KT_LIB_DIR . "/browse/PartialQuery.inc.php");
+require_once(KT_LIB_DIR . "/browse/browseutil.inc.php");
 
 require_once(KT_LIB_DIR . "/foldermanagement/Folder.inc");
 
@@ -85,25 +82,8 @@ class BrowseDispatcher extends KTStandardDispatcher {
 		$collection->addColumn(new BrowseColumn("Test 3","test3"));
 		$collection->addColumn(new BrowseColumn("Test 4","test4"));
 		
-		// do the breadcrumbs.
-
-		// skip root.
-		$folder_path_names = array_slice($this->oFolder->getPathArray(), 1);
-		$folder_path_ids = array_slice(explode(',', $this->oFolder->getParentFolderIds()), 1);
-		
-		$parents = count($folder_path_ids);
-		
-		if ($parents != 0) {
-		    foreach (range(0,$parents) as $index) {
-		        $this->aBreadcrumbs[] = array("url" => "?fFolderId=" . $folder_path_ids[$index], "name" => $folder_path_names[$index]);
-            }
-        }
-		
-		// now add this folder, _if we aren't in 1_.
-		if ($this->oFolder->getId() != 1) {
-		    $this->aBreadcrumbs[] = array("name" => $this->oFolder->getName());
-		}
-		
+        $this->aBreadcrumbs = array_merge($this->aBreadcrumbs,
+                KTBrowseUtil::breadcrumbsForFolder($this->oFolder));
 		// setup the folderside add actions
 		// FIXME do we want to use folder actions?
 		$portlet = new KTActionPortlet("Folder Actions");
