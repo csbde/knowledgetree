@@ -105,7 +105,21 @@ class KTDocumentAction extends KTStandardDispatcher {
 
     function check() {
         $this->oDocument =& $this->oValidator->validateDocument($_REQUEST['fDocumentId']);
-        $aOptions = array("final" => false);
+
+        if (!is_null($this->_sShowPermission)) {
+            $oPermission =& KTPermission::getByName($this->_sShowPermission);
+            if (!PEAR::isError($oPermission)) {
+                $res = KTPermissionUtil::userHasPermissionOnItem($this->oUser, $oPermission, $this->oDocument);
+                if (!$res) {
+                    return false;
+                }
+            }
+        }
+        $aOptions = array(
+            "final" => false,
+            "documentaction" => "viewDocument",
+            "folderaction" => "browse",
+        );
         $this->aBreadcrumbs = array_merge($this->aBreadcrumbs,
             KTBrowseUtil::breadcrumbsForDocument($this->oDocument, $aOptions));
         return true;
