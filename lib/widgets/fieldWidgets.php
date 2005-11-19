@@ -74,6 +74,8 @@ class KTTextWidget extends KTBaseWidget { var $sTemplate = "kt3/fields/text"; }
 
 class KTCheckboxWidget extends KTBaseWidget { var $sTemplate = "kt3/fields/checkbox"; }
 
+class KTFileUploadWidget extends KTBaseWidget { var $sTemplate = "kt3/fields/fileupload"; }
+
 /* lookup widget */
 // EXPECTS $aOptions["vocab"] => key, item
 class KTLookupWidget extends KTBaseWidget { var $sTemplate = "kt3/fields/lookup"; }
