@@ -1,7 +1,16 @@
 <?php
 
+require_once(KT_LIB_DIR . '/actions/actionregistry.inc.php');
+require_once(KT_LIB_DIR . '/actions/portletregistry.inc.php');
+require_once(KT_LIB_DIR . '/triggers/triggerregistry.inc.php');
+require_once(KT_LIB_DIR . '/subscriptions/Subscription.inc');
+require_once(KT_LIB_DIR . '/subscriptions/SubscriptionEngine.inc');
+require_once(KT_LIB_DIR . '/subscriptions/SubscriptionConstants.inc');
+require_once(KT_LIB_DIR . '/subscriptions/SubscriptionManager.inc');
+
 $oKTActionRegistry =& KTActionRegistry::getSingleton();
 $oPRegistry =& KTPortletRegistry::getSingleton();
+$oTRegistry =& KTTriggerRegistry::getSingleton();
 
 class KTDocumentSubscriptionAction extends KTDocumentAction {
     var $sName = 'ktcore.actions.document.subscription';
@@ -92,5 +101,24 @@ class KTSubscriptionPortlet extends KTPortlet {
         return $oTemplate->render($aTemplateData);
     }
 }
-
 $oPRegistry->registerPortlet('browse', 'KTSubscriptionPortlet', 'ktcore.portlets.subscription', '/plugins/ktcore/KTPortlets.php');
+
+class KTCheckoutSubscriptionTrigger {
+    var $aInfo = null;
+    function setInfo(&$aInfo) {
+        $this->aInfo =& $aInfo;
+    }
+
+    function postValidate() {
+        global $default;
+        $oDocument =& $this->aInfo["document"];
+        // fire subscription alerts for the checked out document
+        $count = SubscriptionEngine::fireSubscription($oDocument->getId(), SubscriptionConstants::subscriptionAlertType("CheckOutDocument"),
+                 SubscriptionConstants::subscriptionType("DocumentSubscription"),
+                 array( "folderID" => $oDocument->getFolderID(),
+                        "modifiedDocumentName" => $oDocument->getName() ));
+        $default->log->info("checkOutDocumentBL.php fired $count subscription alerts for checked out document " . $oDocument->getName());
+    }
+}
+$oTRegistry->registerTrigger('checkout', 'postValidate', 'KTCheckoutSubscriptionTrigger', 'ktstandard.triggers.subscription.checkout');
+
