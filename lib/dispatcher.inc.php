@@ -3,7 +3,7 @@
 require_once(KT_LIB_DIR . '/validation/dispatchervalidation.inc.php');
 require_once(KT_LIB_DIR . '/actions/portletregistry.inc.php');
 require_once(KT_LIB_DIR . "/widgets/portlet.inc.php");
-
+require_once(KT_LIB_DIR . '/templating/kt3template.inc.php');
 
 class KTDispatcher {
     var $event_var = "action";
