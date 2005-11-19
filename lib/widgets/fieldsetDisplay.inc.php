@@ -139,6 +139,12 @@ class GenericFieldsetDisplay extends KTFieldsetDisplay {
         } else {
            $creator = $creator->getName();
         }
+        $modified_user =& User::get($document->getModifiedUserId());
+        if (PEAR::isError($modified_user)) {
+           $modified_user = "<span class='ktError'>Unable to find the document's creator</span>";
+        } else {
+           $modified_user = $modified_user->getName();
+        }
         $creation_date = $this->_dateHelper($document->getCreatedDateTime());
 
         // last mod
@@ -161,7 +167,7 @@ class GenericFieldsetDisplay extends KTFieldsetDisplay {
             "creator" => $creator,
             "creation_date" => $creation_date,
             
-            "last_modified_by" => "<span class='ktInlineError'><strong>fixme</strong> extract the last participant</span>",
+            "last_modified_by" => $modified_user,
             "last_modified_date" => $last_modified_date,
             
             "document_type" => $document_type,
