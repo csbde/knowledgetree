@@ -162,10 +162,16 @@ class KTBrowseUtil {
         $folder_path_ids = array_slice(explode(',', $oFolder->getParentFolderIds()), 1);
 
         $parents = count($folder_path_ids);
+        $sAction = KTUtil::arrayGet($aOptions, 'folderaction');
 
         if ($parents != 0) {
             foreach (range(0, $parents - 1) as $index) {
-                $aBreadcrumbs[] = array("url" => "?fFolderId=" . $folder_path_ids[$index], "name" => $folder_path_names[$index]);
+                $id = $folder_path_ids[$index];
+                $url = "?fFolderId=" . $id;
+                if (!empty($sAction)) {
+                    $url = generateControllerUrl($sAction, "fFolderId=" . $id);
+                }
+                $aBreadcrumbs[] = array("url" => $url, "name" => $folder_path_names[$index]);
             }
         }
 
@@ -174,7 +180,12 @@ class KTBrowseUtil {
             if ($bFinal) {
                 $aBreadcrumbs[] = array("name" => $oFolder->getName());
             } else {
-                $aBreadcrumbs[] = array("url" => "?fFolderId=" .  $oFolder->getId(), "name" => $oFolder->getName());
+                $id = $oFolder->getId();
+                $url = "?fFolderId=" . $id;
+                if (!empty($sAction)) {
+                    $url = generateControllerUrl($sAction, "fFolderId=" . $id);
+                }
+                $aBreadcrumbs[] = array("url" => $url, "name" => $oFolder->getName());
             }
         }
 
@@ -190,11 +201,16 @@ class KTBrowseUtil {
         ));
         $iFolderId = $oDocument->getFolderId();
         $aBreadcrumbs = KTBrowseUtil::breadcrumbsForFolder($iFolderId, $aOptions);
+        $sAction = KTUtil::arrayGet($aOptions, 'documentaction');
+        $url = "?fDocumentId=" . $oDocument->getId();
+        if (!empty($sAction)) {
+            $url = generateControllerUrl($sAction, "fDocumentId=" .  $oDocument->getId());
+        }
 
         if ($bFinal) {
             $aBreadcrumbs[] = array("name" => $oDocument->getName());
         } else {
-            $aBreadcrumbs[] = array("url" => "?fDocumentId=" . $oDocument->getId(), "name" => $oDocument->getName());
+            $aBreadcrumbs[] = array("url" => $url, "name" => $oDocument->getName());
         }
         return $aBreadcrumbs;
     }
