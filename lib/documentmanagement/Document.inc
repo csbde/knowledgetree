@@ -4,24 +4,8 @@
  *
  * Represents a document as per the documents database table.
  *
- * Copyright (c) 2003, 2005 Jam Warehouse http://www.jamwarehouse.com
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- *
  * @version $Revision$
- * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
+ * @author Neil Blakey-Milner, Jam Warehouse (Pty) Ltd, South Africa
  * @package lib.documentmanagement
  */
 
@@ -136,6 +120,7 @@ class Document extends KTEntity {
         "iLiveDocumentID" => 'live_document_id',
         "iMetadataVersion" => 'metadata_version',
         "sStoragePath" => 'storage_path',
+        "iModifiedUserId" => 'modified_user_id',
     );
     // }}}
 
@@ -214,6 +199,8 @@ class Document extends KTEntity {
     function setMetadataVersion($iNewValue) { $this->iMetadataVersion = $iNewValue; }
     function getStoragePath() { return $this->sStoragePath; }
     function setStoragePath($sNewValue) { $this->sStoragePath = $sNewValue; }
+    function getModifiedUserId() { return $this->iModifiedUserId; }
+    function setModifiedUserId($iNewValue) { $this->iModifiedUserId = $iNewValue; }
     // }}}
 
     // {{{ getParentID
@@ -290,6 +277,7 @@ class Document extends KTEntity {
             'live_document_id' => $this->iLiveDocumentID,
             'metadata_version' => $this->iMetadataVersion,
             'storage_path' => $this->sStoragePath,
+            'modified_user_id' => $this->iModifiedUserId,
         );
     }
 
@@ -366,6 +354,9 @@ class Document extends KTEntity {
         }
         if (empty($this->dModified)) {
             $this->dModified = getCurrentDateTime();
+        }
+        if (empty($this->iModifiedUserId)) {
+            $this->iModifiedUserId = $this->iCreatorID;
         }
         $oFolder = Folder::get($this->getFolderID());
         $this->iPermissionObjectID = $oFolder->getPermissionObjectID();
