@@ -1,43 +1,50 @@
-<h1>Document Workflow</h1>
+<h2>Document Workflow</h2>
+
+<p class="descriptiveText">
+Workflow is a description of a document's lifecycle.  It is made up of
+workflow states, which describe where in the lifecycle the document is,
+and workflow transitions, which describe the next steps within the
+lifecycle of the document.
+</p>
 
 {if !$oWorkflow}
-<h2>No workflow</h2>
+<h3>No workflow</h3>
 
 <p>Document has no assigned workflow.</p>
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
+<fieldset><legend>Start workflow on document</legend>
 <input type="hidden" name="action" value="startWorkflow" />
 <input type="hidden" name="fDocumentId" value="{$oDocument->getId()}" />
 {entity_select entities=$aWorkflows name=fWorkflowId}
+<div class="form_actions">
 <input type="submit" name="submit" value="Start Workflow" />
+</div>
+</fieldset>
 </form>
 
 {else}
 
-<h2>Current workflow settings</h2>
+<h3>Current workflow settings</h3>
 
-<table class="prettysw" cellpadding="0" cellspacing="0">
-<tr><th>Workflow</th><td>{$oWorkflow->getName()}</td></tr>
-<tr><th>State</th><td>{$oState->getName()}</td></tr>
-</table>
+<dl class="metadata">
+<dt>Workflow</dt><dd>{$oWorkflow->getName()}</dd>
+<dt>State</dt><dd>{$oState->getName()}</dd>
+</dl>
 
-<h2>Transition to another workflow state</h2>
-
+{if $aTransitions}
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <input type="hidden" name="action" value="performTransition" />
 <input type="hidden" name="fDocumentId" value="{$oDocument->getId()}" />
-<table class="prettysw" cellpadding="0" cellspacing="0">
-<tr><th>Transition to perform</th><td>
-{entity_radios entities=$aTransitions name=fTransitionId assign=aRadio method=showDescription}
-{foreach from=$aRadio item=sRadio}
-{$sRadio}<br />
+<fieldset><legend>Transition to another workflow state</legend>
+{foreach from=$transition_fields item=oWidget }
+  {$oWidget->render()}
 {/foreach}
-</td></tr>
-<tr><th>Reason for transition</th><td><input type="textbox" name="fComments"
-/></td></tr>
-</table>
+<div class="form_actions">
 <input type="submit" name="submit" value="Perform Transition" />
+</div>
+</fieldset>
 </form>
-
+{/if}
 
 {/if}
