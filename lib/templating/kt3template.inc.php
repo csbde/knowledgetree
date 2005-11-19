@@ -18,6 +18,7 @@ class KTPage {
     /** resources are "filename"->1 to allow subcomponents to require items. */
     var $js_resources = Array();
     var $css_resources = Array();
+    var $js_standalone = Array();
 	
 	/** context-relevant information */
 	var $errStack = Array();
@@ -88,7 +89,6 @@ class KTPage {
     // require that the specified JS file is referenced.
     function requireJSResource($sResourceURL) {
         $this->js_resources[$sResourceURL] = 1; // use the keys to prevent multiple copies.
-		
     }
     
     // require that the specified JS files are referenced.
@@ -101,6 +101,14 @@ class KTPage {
     // list the distinct js resources.
     function getJSResources() {
         return array_keys($this->js_resources);
+    }
+
+    function requireJSStandalone($sJavascript) {
+        $this->js_standalone[$sJavascript] = 1; // use the keys to prevent multiple copies.
+    }
+    // list the distinct js resources.
+    function getJSStandalone() {
+        return array_keys($this->js_standalone);
     }
     
     /* css handling */
@@ -190,6 +198,15 @@ class KTPage {
     
     /* final render call. */
     function render() {
+
+        if (empty($this->contents)) {
+            $this->contents = "";
+        }
+
+        if (is_string($this->contents) && (trim($this->contents) === "")) {
+            $this->addError("This page did not produce any content");
+            $this->contents = "";
+        }
 		
 		if (!is_string($this->contents)) {
 			$this->contents = $this->contents->render();
@@ -224,6 +241,6 @@ class KTPage {
 }
 
 /* set $main - this is used by the rest of the system. */
-$main = new KTPage();
+$GLOBALS['main'] = new KTPage();
 
 ?>
