@@ -1,0 +1,28 @@
+{$context->oPage->requireJSResource('thirdpartyjs/MochiKit/Base.js')}
+{$context->oPage->requireJSResource('thirdpartyjs/MochiKit/Async.js')}
+{$context->oPage->requireJSResource("thirdpartyjs/MochiKit/Iter.js")}
+{$context->oPage->requireJSResource("thirdpartyjs/MochiKit/DOM.js")}
+
+{capture assign=sJavascript}
+function doCheckout () {ldelim}
+	document.location.href = "?action=checkout_final&fDocumentId={$context->oDocument->getId()}&reason={$reason|escape}";
+{rdelim}
+function scheduleCheckout () {ldelim}
+	callLater(2, doCheckout);
+{rdelim}
+addLoadEvent(scheduleCheckout);
+{/capture}
+{$context->oPage->requireJSStandalone($sJavascript)}
+
+<p class="descriptiveText">The document you wish to check out will begin
+to download soon.  If it does not automatically start to download, you
+can use <a
+href="?action=checkout_final&fDocumentId={$context->oDocument->getId()}&reason={$reason|escape}">this link</a>
+to start it yourself.</p>
+
+{assign var=iDocumentId value=$context->oDocument->getId()}
+<p class="descriptiveText">Once the document has been downloaded, you
+should 
+<a
+href="{"viewDocument"|generateControllerUrl:"fDocumentId=$iDocumentId"}">return
+to the document view</a>.</p>

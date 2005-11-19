@@ -1,0 +1,21 @@
+<p class="descriptiveText">Checking in a document updates the document
+and allows others to check out the document.</p>
+
+{assign var=iDocumentId value=$context->oDocument->getId()}
+<p class="descriptiveText">If you do not intend to edit the document, and you
+do not wish to prevent others from changing the document, you should
+<a href="{"viewDocument"|generateControllerUrl:"fDocumentId=$iDocumentId"}">cancel
+this checkout</a>.</p>
+
+<form method="POST" action="{$smarty.server.PHP_SELF}" enctype="multipart/form-data">
+<fieldset><legend>Checkin</legend>
+<input type="hidden" name="action" value="checkin" />
+<input type="hidden" name="fDocumentId" value="{$iDocumentId}" />
+{foreach from=$checkin_fields item=oWidget }
+  {$oWidget->render()}
+{/foreach}
+<div class="form_actions">
+<input type="submit" name="submit" value="Checkin" />
+</div>
+</fieldset>
+</form>
