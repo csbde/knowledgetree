@@ -12,6 +12,7 @@ $oKTActionRegistry =& KTActionRegistry::getSingleton();
 $oPRegistry =& KTPortletRegistry::getSingleton();
 $oTRegistry =& KTTriggerRegistry::getSingleton();
 
+// {{{ KTDocumentSubscriptionAction
 class KTDocumentSubscriptionAction extends KTDocumentAction {
     var $sName = 'ktcore.actions.document.subscription';
     var $sDisplayName = 'Subscribe to document';
@@ -40,7 +41,9 @@ class KTDocumentSubscriptionAction extends KTDocumentAction {
     }
 }
 $oKTActionRegistry->registerAction('subscriptionaction', 'KTDocumentSubscriptionAction', 'ktcore.actions.document.subscription');
+// }}}
 
+// {{{ KTDocumentUnsubscriptionAction
 class KTDocumentUnsubscriptionAction extends KTDocumentAction {
     var $sName = 'ktcore.actions.document.unsubscription';
     var $sDisplayName = 'Unsubscribe from document';
@@ -69,7 +72,9 @@ class KTDocumentUnsubscriptionAction extends KTDocumentAction {
     }
 }
 $oKTActionRegistry->registerAction('subscriptionaction', 'KTDocumentUnsubscriptionAction', 'ktcore.actions.document.unsubscription');
+// }}}
 
+// {{{ KTSubscriptionPortlet
 class KTSubscriptionPortlet extends KTPortlet {
     function KTSubscriptionPortlet() {
         parent::KTPortlet("Subscriptions");
@@ -102,7 +107,9 @@ class KTSubscriptionPortlet extends KTPortlet {
     }
 }
 $oPRegistry->registerPortlet('browse', 'KTSubscriptionPortlet', 'ktcore.portlets.subscription', '/plugins/ktcore/KTPortlets.php');
+// }}}
 
+// {{{ KTCheckoutSubscriptionTrigger
 class KTCheckoutSubscriptionTrigger {
     var $aInfo = null;
     function setInfo(&$aInfo) {
@@ -121,4 +128,37 @@ class KTCheckoutSubscriptionTrigger {
     }
 }
 $oTRegistry->registerTrigger('checkout', 'postValidate', 'KTCheckoutSubscriptionTrigger', 'ktstandard.triggers.subscription.checkout');
+// }}}
 
+// {{{ KTDeleteSubscriptionTrigger
+class KTDeleteSubscriptionTrigger {
+    var $aInfo = null;
+    function setInfo(&$aInfo) {
+        $this->aInfo =& $aInfo;
+    }
+
+    function postValidate() {
+        global $default;
+        $oDocument =& $this->aInfo["document"];
+
+        // fire subscription alerts for the deleted document
+        $count = SubscriptionEngine::fireSubscription($oDocument->getId(),
+            SubscriptionConstants::subscriptionAlertType("RemoveSubscribedDocument"),
+            SubscriptionConstants::subscriptionType("DocumentSubscription"),
+            array(
+                "folderID" => $oDocument->getFolderID(),
+                "removedDocumentName" => $oDocument->getName(),
+                "folderName" => Folder::getFolderDisplayPath($oDocument->getFolderID()),
+            ));
+        $default->log->info("deleteDocumentBL.php fired $count subscription alerts for removed document " . $oDocument->getName());
+
+        // remove all document subscriptions for this document
+        if (SubscriptionManager::removeSubscriptions($oDocument->getId(), SubscriptionConstants::subscriptionType("DocumentSubscription"))) {
+            $default->log->info("deleteDocumentBL.php removed all subscriptions for this document");
+        } else {
+            $default->log->error("deleteDocumentBL.php couldn't remove document subscriptions");
+        }
+    }
+}
+$oTRegistry->registerTrigger('checkout', 'postValidate', 'KTDeleteSubscriptionTrigger', 'ktstandard.triggers.subscription.delete');
+// }}}
