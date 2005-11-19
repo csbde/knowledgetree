@@ -414,10 +414,63 @@ class KTDocumentPermissionsAction extends KTBuiltInDocumentAction {
 }
 $oKTActionRegistry->registerAction('documentaction', 'KTDocumentPermissionsAction', 'ktcore.actions.document.permissions');
 
-class KTDocumentWorkflowAction extends KTBuiltInDocumentAction {
+class KTDocumentWorkflowAction extends KTDocumentAction {
     var $sBuiltInAction = 'documentWorkflow';
     var $sDisplayName = 'Workflow';
     var $sName = 'ktcore.actions.document.workflow';
+    var $_sShowPermission = "ktcore.permissions.write";
+
+    function do_main() {
+        $this->oPage->setBreadcrumbDetails("workflow");
+        $oTemplate =& $this->oValidator->validateTemplate("ktcore/workflow/documentWorkflow");
+        $oDocument =& $this->oValidator->validateDocument($_REQUEST['fDocumentId']);
+
+        $oWorkflow = KTWorkflowUtil::getWorkflowForDocument($oDocument);
+        $oWorkflowState = KTWorkflowUtil::getWorkflowStateForDocument($oDocument);
+
+        $oUser =& User::get($_SESSION['userID']);
+        $aTransitions = KTWorkflowUtil::getTransitionsForDocumentUser($oDocument, $oUser);
+        $aWorkflows = KTWorkflow::getList();
+
+        $fieldErrors = null;
+        
+        $aVocab = array();
+        foreach ($aTransitions as $oTransition) {
+            $aVocab[$oTransition->getId()] = $oTransition->showDescription();
+        }
+        $fieldOptions = array("vocab" => $aVocab);
+        $transition_fields = array();
+        $transition_fields[] = new KTLookupWidget('Transition to perform', 'FIXME', 'fTransitionId', null, $this->oPage, true, null, $fieldErrors, $fieldOptions);
+        $transition_fields[] = new KTStringWidget('Reason for transition', 'Describe the changes made to the document.', 'fComments', "", $this->oPage, true);
+        $aTemplateData = array(
+            'oDocument' => $oDocument,
+            'oWorkflow' => $oWorkflow,
+            'oState' => $oWorkflowState,
+            'aTransitions' => $aTransitions,
+            'aWorkflows' => $aWorkflows,
+            'transition_fields' => $transition_fields,
+        );
+        return $oTemplate->render($aTemplateData);
+    }
+
+    function do_startWorkflow() {
+        $oDocument =& $this->oValidator->validateDocument($_REQUEST['fDocumentId']);
+        $oWorkflow =& $this->oValidator->validateWorkflow($_REQUEST['fWorkflowId']);
+        $res = KTWorkflowUtil::startWorkflowOnDocument($oWorkflow, $oDocument);
+        $this->successRedirectToMain('Workflow started',
+                array('fDocumentId' => $oDocument->getId()));
+        exit(0);
+    }
+
+    function do_performTransition() {
+        $oDocument =& $this->oValidator->validateDocument($_REQUEST['fDocumentId']);
+        $oTransition =& $this->oValidator->validateWorkflowTransition($_REQUEST['fTransitionId']);
+        $sComments =& $this->oValidator->notEmpty($_REQUEST['fComments']);
+        $oUser =& User::get($_SESSION['userID']);
+        $res = KTWorkflowUtil::performTransitionOnDocument($oTransition, $oDocument, $oUser, $sComments);
+        $this->successRedirectToMain('Transition performed',
+                array('fDocumentId' => $oDocument->getId()));
+    }
 }
 $oKTActionRegistry->registerAction('documentaction', 'KTDocumentWorkflowAction', 'ktcore.actions.document.workflow');
 
