@@ -1,0 +1,21 @@
+<p class="descriptiveText">Deleting a document marks it as no longer
+being displayed.  The document management system does not remove the
+document entirely, and it can be restored at a later stage.</p>
+
+{assign var=iDocumentId value=$context->oDocument->getId()}
+<p class="descriptiveText">If you do not intend to delete this document, you should
+<a href="{"viewDocument"|generateControllerUrl:"fDocumentId=$iDocumentId"}">cancel
+the deletion</a>.</p>
+
+<form method="POST" action="{$smarty.server.PHP_SELF}">
+<fieldset><legend>Delete</legend>
+<input type="hidden" name="action" value="delete" />
+<input type="hidden" name="fDocumentId" value="{$iDocumentId}" />
+{foreach from=$delete_fields item=oWidget }
+  {$oWidget->render()}
+{/foreach}
+<div class="form_actions">
+<input type="submit" name="submit" value="Delete" />
+</div>
+</fieldset>
+</form>

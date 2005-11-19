@@ -5,6 +5,7 @@ require_once(KT_LIB_DIR . '/subscriptions/Subscription.inc');
 require_once(KT_LIB_DIR . '/widgets/fieldWidgets.php');
 require_once(KT_LIB_DIR . '/browse/browseutil.inc.php');
 require_once(KT_LIB_DIR . '/documentmanagement/documentutil.inc.php');
+require_once(KT_LIB_DIR . '/documentmanagement/PhysicalDocumentManager.inc');
 
 $oKTActionRegistry =& KTActionRegistry::getSingleton();
 
@@ -123,6 +124,7 @@ class KTDocumentCheckOutAction extends KTDocumentAction {
 $oKTActionRegistry->registerAction('documentaction', 'KTDocumentCheckOutAction', 'ktcore.actions.document.checkout');
 // }}}
 
+// {{{ KTDocumentCheckInAction
 class KTDocumentCheckInAction extends KTDocumentAction {
     var $sBuiltInAction = 'checkInDocument';
     var $sDisplayName = 'Checkin';
@@ -199,23 +201,107 @@ class KTDocumentCheckInAction extends KTDocumentAction {
     }
 }
 $oKTActionRegistry->registerAction('documentaction', 'KTDocumentCheckInAction', 'ktcore.actions.document.checkin');
+// }}}
 
-class KTDocumentDeleteAction extends KTBuiltInDocumentActionSingle {
+// {{{ KTDocumentDeleteAction
+class KTDocumentDeleteAction extends KTDocumentAction {
     var $sBuiltInAction = 'deleteDocument';
     var $sDisplayName = 'Delete';
     var $sName = 'ktcore.actions.document.delete';
 
     var $_sDisablePermission = "ktcore.permissions.write";
 
-    function _disable() {
-         if ($this->oDocument->getIsCheckedOut()) {
-             $this->_sDisabledText = _("This document can't be deleted because its checked out");
-             return true;
-         }
-         return parent::_disable();
+    function getInfo() {
+        if ($this->oDocument->getIsCheckedOut()) {
+            return null;
+        }
+        return parent::getInfo();
+    }
+
+    function check() {
+        $res = parent::check();
+        if ($res !== true) {
+            return $res;
+        }
+        if ($this->oDocument->getIsCheckedOut()) {
+            $_SESSION["KTErrorMessage"][]= _("This document can't be deleted because it is checked out");
+            controllerRedirect('viewDocument', 'fDocumentId=' .  $this->oDocument->getId());
+            exit(0);
+        }
+        return true;
+    }
+    function do_main() {
+        $this->oPage->setBreadcrumbDetails("delete");
+        $oTemplate =& $this->oValidator->validateTemplate('ktcore/action/delete');
+        $delete_fields = array();
+        $delete_fields[] = new KTStringWidget('Reason', 'The reason for this document to be removed.', 'reason', "", $this->oPage, true);
+
+        $oTemplate->setData(array(
+            'context' => &$this,
+            'delete_fields' => $delete_fields,
+        ));
+        return $oTemplate->render();
+    }
+
+    function do_delete() {
+        global $default;
+        $sReason = KTUtil::arrayGet($_REQUEST, 'reason');
+        $this->oValidator->notEmpty($sReason);
+
+        // flip the status id
+        $this->oDocument->setStatusID(DELETED);
+
+        if (!$this->oDocument->update()) {
+            $_SESSION["KTErrorMessage"][]= _("There was a problem deleting the document from the database.");
+            controllerRedirect('viewDocument', 'fDocumentId=' .  $this->oDocument->getId());
+            exit(0);
+        }
+
+        // now move the document to the delete folder
+        if (!PhysicalDocumentManager::delete($this->oDocument)) {
+            //could not delete the document from the file system
+            $default->log->error("deleteDocumentBL.php Filesystem error deleting document " .
+                $this->oDocument->getFileName() . " from folder " .
+                Folder::getFolderPath($this->oDocument->getFolderID()) .
+                " id=" . $this->oDocument->getFolderID());
+            //reverse the document deletion
+            $this->oDocument->setStatusID(LIVE);
+            $this->oDocument->update();
+            //get rid of the document transaction
+            $_SESSION["KTErrorMessage"][]= _("There was a problem deleting the document from storage.");
+            controllerRedirect('viewDocument', 'fDocumentId=' .  $this->oDocument->getId());
+            exit(0);
+        }
+
+        $oDocumentTransaction = & new DocumentTransaction($this->oDocument->getId(), "Document deleted: " . $sReason, DELETE);
+        $oDocumentTransaction->create();
+
+        $this->commitTransaction();
+
+        // At this point, the document is deleted.
+
+        $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
+        $aTriggers = $oKTTriggerRegistry->getTriggers('delete', 'postValidate');
+        foreach ($aTriggers as $aTrigger) {
+            $sTrigger = $aTrigger[0];
+            $oTrigger = new $sTrigger;
+            $aInfo = array(
+                "document" => $this->oDocument,
+            );
+            $oTrigger->setInfo($aInfo);
+            $ret = $oTrigger->postValidate();
+            if (PEAR::isError($ret)) {
+                $this->oDocument->delete();
+                return $ret;
+            }
+        }
+
+        controllerRedirect('viewDocument', 'fDocumentId=' .  $this->oDocument->getId());
+        exit(0);
     }
 }
 $oKTActionRegistry->registerAction('documentaction', 'KTDocumentDeleteAction', 'ktcore.actions.document.delete');
+// }}}
 
 class KTDocumentMoveAction extends KTBuiltInDocumentActionSingle {
     var $sBuiltInAction = 'moveDocument';
