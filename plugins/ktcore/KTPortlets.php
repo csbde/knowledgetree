@@ -21,5 +21,5 @@ class KTSearchPortlet extends KTPortlet {
     }
 }
 
-$oPRegistry->registerPortlet('browse', 'KTSearchPortlet', 'ktcore.portlets.search', '/plugins/ktcore/KTPortlets.php');
+$oPRegistry->registerPortlet(array('browse', 'dashboard'), 'KTSearchPortlet', 'ktcore.portlets.search', '/plugins/ktcore/KTPortlets.php');
 
