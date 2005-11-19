@@ -101,6 +101,6 @@ class KTMime {
     * @return string extension for given file, without filename itself
     */
     function stripAllButExtension($sFileName) {
-        return strtolower(substr($sFileName, strpos($sFileName, ".")+1, strlen($sFileName) - strpos($sFileName, ".")));
+        return strtolower(substr($sFileName, strrpos($sFileName, ".")+1, strlen($sFileName) - strrpos($sFileName, ".")));
     }
 }
