@@ -148,4 +148,55 @@ class KTBrowseUtil {
         return array($iFolderID, (int)$iDocumentID);
     }
     // }}}
+
+    // {{{ breadcrumbsForFolder
+    function breadcrumbsForFolder($oFolder, $aOptions = null) {
+        $oFolder =& KTUtil::getObject('Folder', $oFolder);
+
+        $bFinal = KTUtil::arrayGet($aOptions, 'final', true, false);
+        $bFolderBrowseBase = KTUtil::arrayGet($aOptions, 'folderbase', "");
+        $aBreadcrumbs = array();
+        
+        // skip root.
+        $folder_path_names = array_slice($oFolder->getPathArray(), 1);
+        $folder_path_ids = array_slice(explode(',', $oFolder->getParentFolderIds()), 1);
+
+        $parents = count($folder_path_ids);
+
+        if ($parents != 0) {
+            foreach (range(0, $parents - 1) as $index) {
+                $aBreadcrumbs[] = array("url" => "?fFolderId=" . $folder_path_ids[$index], "name" => $folder_path_names[$index]);
+            }
+        }
+
+        // now add this folder, _if we aren't in 1_.
+        if ($oFolder->getId() != 1) {
+            if ($bFinal) {
+                $aBreadcrumbs[] = array("name" => $oFolder->getName());
+            } else {
+                $aBreadcrumbs[] = array("url" => "?fFolderId=" .  $oFolder->getId(), "name" => $oFolder->getName());
+            }
+        }
+
+        return $aBreadcrumbs;
+    }
+    // }}}
+
+    // {{{ breadcrumbsForDocument
+    function breadcrumbsForDocument($oDocument, $aOptions = null) {
+        $bFinal = KTUtil::arrayGet($aOptions, 'final', true, false);
+        $aOptions = KTUtil::meldOptions($aOptions, array(
+            "final" => false,
+        ));
+        $iFolderId = $oDocument->getFolderId();
+        $aBreadcrumbs = KTBrowseUtil::breadcrumbsForFolder($iFolderId, $aOptions);
+
+        if ($bFinal) {
+            $aBreadcrumbs[] = array("name" => $oDocument->getName());
+        } else {
+            $aBreadcrumbs[] = array("url" => "?fDocumentId=" . $oDocument->getId(), "name" => $oDocument->getName());
+        }
+        return $aBreadcrumbs;
+    }
+    // }}}
 }
