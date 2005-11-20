@@ -2,7 +2,7 @@
 
 require_once(KT_LIB_DIR . '/actions/actionregistry.inc.php');
 
-class KTFolderAction {
+class KTFolderAction extends KTStandardDispatcher {
     var $sName;
     var $sDescription;
     var $sDisplayName;
@@ -13,10 +13,25 @@ class KTFolderAction {
     var $_bDisabled;
     var $_sDisabledText = null;
 
-    function KTFolderAction($oFolder, $oUser) {
+    var $sSection = "view_details";
+    var $aBreadcrumbs = array(
+        array('action' => 'browse', 'name' => 'Browse'),
+    );
+
+    function KTFolderAction($oFolder = null, $oUser = null) {
         $this->oFolder = $oFolder;
         $this->oUser = $oUser;
+        parent::KTStandardDispatcher();
     }
+
+    function setFolder(&$oFolder) {
+        $this->oFolder =& $oFolder;
+    }
+
+    function setUser(&$oUser) {
+        $this->oUser =& $oUser;
+    }
+
 
     function _show() {
         if (is_null($this->_sShowPermission)) {
@@ -48,7 +63,7 @@ class KTFolderAction {
     }
 
     function getURL() {
-        return sprintf("/plugin.php/%s?fFolderID=%d", $this->sName, $this->oFolder->getID());
+        return sprintf("/action.php/%s?fFolderId=%d", $this->sName, $this->oFolder->getID());
     }
 
     function getInfo() {
@@ -66,9 +81,48 @@ class KTFolderAction {
         return $this->customiseInfo($aInfo);
     }
 
+    function getName() {
+        return $this->sName;
+    }
+
+    function getDisplayName() {
+        return $this->sDisplayName;
+    }
+
+    function getDescription() {
+        return $this->sDescription;
+    }
+
     function customiseInfo($aInfo) {
         return $aInfo;
     }
+
+    function check() {
+        $this->oFolder =& $this->oValidator->validateFolder($_REQUEST['fFolderId']);
+
+        if (!is_null($this->_sShowPermission)) {
+            $oPermission =& KTPermission::getByName($this->_sShowPermission);
+            if (!PEAR::isError($oPermission)) {
+                $res = KTPermissionUtil::userHasPermissionOnItem($this->oUser, $oPermission, $this->oFolder);
+                if (!$res) {
+                    return false;
+                }
+            }
+        }
+        $aOptions = array(
+            "final" => false,
+            "documentaction" => "viewDocument",
+            "folderaction" => "browse",
+        );
+        $this->aBreadcrumbs = array_merge($this->aBreadcrumbs,
+            KTBrowseUtil::breadcrumbsForFolder($this->oFolder, $aOptions));
+        return true;
+    }
+
+    function do_main() {
+        return "Dispatcher component of action not implemented.";
+    }
+
 }
 
 class KTFolderActionUtil {
