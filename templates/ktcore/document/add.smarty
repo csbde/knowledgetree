@@ -1,16 +1,12 @@
-<script language="javascript" src="/thirdpartyjs/MochiKit/Base.js">
-</script>
-<script language="javascript" src="/thirdpartyjs/MochiKit/Async.js">
-</script>
-<script language="javascript" src="/thirdpartyjs/MochiKit/DOM.js">
-</script>
+{$context->oPage->requireJSResource('thirdpartyjs/MochiKit/Base.js')}
+{$context->oPage->requireJSResource('thirdpartyjs/MochiKit/Async.js')}
+{$context->oPage->requireJSResource('thirdpartyjs/MochiKit/Iter.js')}
+{$context->oPage->requireJSResource('thirdpartyjs/MochiKit/DOM.js')}
+
+{capture assign=sJavascript}
 {literal}
-<script language="javascript">
-
-var fetching = null;
-
-function swapInItem(req) {
-    var cp = getElement(fetching);
+function swapInItem(elementId, req) {
+    var cp = getElement(elementId);
     cp.innerHTML = req.responseText;
     initialiseConditionalFieldsets();
 }
@@ -21,9 +17,8 @@ function xmlFailure(err) {
 
 function swapElementFromRequest(elementId, url) {
     var deff = doSimpleXMLHttpRequest(url);
-    deff.addCallback(swapInItem);
-    fetching = elementId;
-    var cp = getElement(fetching);
+    deff.addCallback(partial(swapInItem, elementId));
+    var cp = getElement(elementId);
     cp.innerHTML="loading...";
 }
 
@@ -33,41 +28,45 @@ function getMetadataForType(id) {
         + id);
 }
 
-</script>
-{/literal}
+function document_type_changed() {
+    typeselect = getElement('add-document-type');
+    getMetadataForType(typeselect.value);
+}
 
-<h1>Add a document</h1>
+function startupMetadata() {
+    typeselect = getElement('add-document-type');
+    addToCallStack(typeselect, "onchange", document_type_changed, false);
+    document_type_changed();
+}
+
+addLoadEvent(startupMetadata);
+{/literal}
+{/capture}
+{$context->oPage->requireJSStandalone($sJavascript)}
+
+<h2>Add a document</h2>
 
 <form method="POST" action="{$smarty.server.PHP_SELF}" enctype="multipart/form-data">
+<fieldset><legend>Add a document</legend>
 <input type="hidden" name="action" value="upload">
 <input type="hidden" name="postReceived" value="1">
+<input type="hidden" name="fFolderId" value="{$context->oFolder->getId()}">
 
-<table class="prettysw" cellspacing="0" cellpadding="0">
-  <tr>
-    <th>Folder</th>
-    <td><input type="hidden" name="fFolderId" value="{$folder_id}">{" > "|join:$folder_path_array}</td>
-  </tr>
-  <tr>
-    <th>File</th>
-    <td><input type="file" name="fFile"></td>
-  </tr>
-  <tr>
-    <th>Title</th>
-    <td><input type="textbox" name="fName"></td>
-  </tr>
-  <tr>
-    <th>Document Type</th>
-    <td>{$document_type_choice}</td>
-  </tr>
-</table>
+{foreach from=$add_fields item=oWidget }
+  {$oWidget->render()}
+{/foreach}
 
 <div id="generic_metadata_fields">
-{$generic_metadata_fields}
+{foreach item=oFieldset from=$generic_fieldsets}
+    {$oFieldset->renderEdit($document_data)}
+{/foreach}
 </div>
 
 <div id="type_metadata_fields">
 {$type_metadata_fields}
 </div>
 
-<input type="submit" name="submit" value="Import">
+<div class="form_actions">
+  <input type="submit" name="submit" value="Import">
+</div>
 </form>
