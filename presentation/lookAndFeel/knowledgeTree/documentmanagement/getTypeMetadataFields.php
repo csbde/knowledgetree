@@ -8,16 +8,27 @@ require_once(KT_LIB_DIR . '/metadata/fieldset.inc.php');
 
 require_once(KT_LIB_DIR . '/visualpatterns/PatternMetaData.inc');
 
+class KTSimplePage {
+    function requireJSResource() {
+    }
+}
+
 class GetTypeMetadataFieldsDispatcher extends KTDispatcher {
     function do_main() {
+        $this->oPage = new KTSimplePage;
         return $this->getTypeMetadataFieldsets ($_REQUEST['fDocumentTypeID']);
     }
 
     function getTypeMetadataFieldsets ($iDocumentTypeID) {
+        $fieldsets = array();
+        $fieldsetDisplayReg =& KTFieldsetDisplayRegistry::getSingleton();
+        $activesets = KTFieldset::getForDocumentType($iDocumentTypeID);
+        foreach ($activesets as $oFieldset) {
+            $displayClass = $fieldsetDisplayReg->getHandler($oFieldset->getNamespace());
+            array_push($fieldsets, new $displayClass($oFieldset));
+        }
         $aTemplateData = array(
-            'caption' => _('Type specific meta data'),
-            'empty_message' => _("No Type Specific Meta Data"),
-            'fieldsets' => KTFieldSet::getForDocumentType($iDocumentTypeID),
+            'fieldsets' => $fieldsets,
         );
         $oTemplating = KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate("ktcore/metadata/editable_metadata_fieldsets");
