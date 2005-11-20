@@ -434,14 +434,16 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
 
         $fieldErrors = null;
         
-        $aVocab = array();
-        foreach ($aTransitions as $oTransition) {
-            $aVocab[$oTransition->getId()] = $oTransition->showDescription();
-        }
-        $fieldOptions = array("vocab" => $aVocab);
         $transition_fields = array();
-        $transition_fields[] = new KTLookupWidget('Transition to perform', 'FIXME', 'fTransitionId', null, $this->oPage, true, null, $fieldErrors, $fieldOptions);
-        $transition_fields[] = new KTStringWidget('Reason for transition', 'Describe the changes made to the document.', 'fComments', "", $this->oPage, true);
+        if ($aTransitions) {
+            $aVocab = array();
+            foreach ($aTransitions as $oTransition) {
+                $aVocab[$oTransition->getId()] = $oTransition->showDescription();
+            }
+            $fieldOptions = array("vocab" => $aVocab);
+            $transition_fields[] = new KTLookupWidget('Transition to perform', 'FIXME', 'fTransitionId', null, $this->oPage, true, null, $fieldErrors, $fieldOptions);
+            $transition_fields[] = new KTStringWidget('Reason for transition', 'Describe the changes made to the document.', 'fComments', "", $this->oPage, true);
+        }
         $aTemplateData = array(
             'oDocument' => $oDocument,
             'oWorkflow' => $oWorkflow,
