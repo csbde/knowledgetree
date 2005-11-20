@@ -13,6 +13,10 @@ class KTDispatcherValidation {
         return $this->validateEntity('Document', $iId, $aOptions);
     }
 
+    function &validateDocumentType ($iId, $aOptions = null) {
+        return $this->validateEntity('DocumentType', $iId, $aOptions);
+    }
+
     function &validatePermissionByName ($iId, $aOptions = null) {
         $aOptions = KTUtil::meldOptions($aOptions, array(
             'method' => 'getByName',
