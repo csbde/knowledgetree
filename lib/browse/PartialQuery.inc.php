@@ -215,4 +215,14 @@ class SimpleSearchQuery extends PartialQuery {
     }
 }
 
+class FolderBrowseQuery extends BrowseQuery {
+    function getDocumentCount() {
+        return 0;
+    }
+
+    function getDocuments() {
+        return array();
+    }
+}
+
 ?>
