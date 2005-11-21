@@ -1,0 +1,21 @@
+<p class="descriptiveText">FIXME: Descriptive text.</p>
+
+{assign var=iDocumentId value=$context->oDocument->getId()}
+<p class="descriptiveText">If you do not intend to archive this document, you should
+<a href="{"viewDocument"|generateControllerUrl:"fDocumentId=$iDocumentId"}">cancel
+the archive</a>.</p>
+
+<form method="POST" action="{$smarty.server.PHP_SELF}">
+<fieldset><legend>Archive</legend>
+<input type="hidden" name="action" value="move" />
+<input type="hidden" name="fDocumentId" value="{$iDocumentId}" />
+{foreach from=$fields item=oWidget }
+  {$oWidget->render()}
+{/foreach}
+
+<div class="form_actions">
+<input type="submit" name="submit[move]" value="Move" />
+<input type="submit" name="submit[cancel]" value="Cancel" />
+</div>
+</fieldset>
+</form>
