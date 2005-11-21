@@ -230,6 +230,7 @@ class KTDocumentDeleteAction extends KTDocumentAction {
         }
         return true;
     }
+
     function do_main() {
         $this->oPage->setBreadcrumbDetails("delete");
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/action/delete');
@@ -247,6 +248,8 @@ class KTDocumentDeleteAction extends KTDocumentAction {
         global $default;
         $sReason = KTUtil::arrayGet($_REQUEST, 'reason');
         $this->oValidator->notEmpty($sReason);
+
+        $this->startTransaction();
 
         // flip the status id
         $this->oDocument->setStatusID(DELETED);
@@ -303,31 +306,203 @@ class KTDocumentDeleteAction extends KTDocumentAction {
 $oKTActionRegistry->registerAction('documentaction', 'KTDocumentDeleteAction', 'ktcore.actions.document.delete');
 // }}}
 
-class KTDocumentMoveAction extends KTBuiltInDocumentActionSingle {
+require_once(KT_LIB_DIR . "/browse/DocumentCollection.inc.php");
+require_once(KT_LIB_DIR . "/browse/BrowseColumns.inc.php");
+require_once(KT_LIB_DIR . "/browse/PartialQuery.inc.php");
+class KTDocumentMoveColumn extends TitleColumn {
+    function KTDocumentMoveColumn($sLabel, $sName, $oDocument) {
+        $this->oDocument = $oDocument;
+        parent::TitleColumn($sLabel, $sName);
+    }
+    function buildFolderLink($aDataRow) {
+        $baseurl = KTUtil::arrayGet($this->aOptions, "folderurl", "");
+        return sprintf('%s?fDocumentId=%d&fFolderId=%d', $baseurl, $this->oDocument->getId(), $aDataRow["folder"]->getId());
+    }
+}
+
+// {{{ KTDocumentMoveAction
+class KTDocumentMoveAction extends KTDocumentAction {
     var $sBuiltInAction = 'moveDocument';
     var $sDisplayName = 'Move';
     var $sName = 'ktcore.actions.document.move';
 
-    var $_sDisablePermission = "ktcore.permissions.write";
+    var $_sShowPermission = "ktcore.permissions.write";
 
-    function _disable() {
-         if ($this->oDocument->getIsCheckedOut()) {
-             $this->_sDisabledText = _("This document can't be deleted because its checked out");
-             return true;
-         }
-         return parent::_disable();
+    function getInfo() {
+        if ($this->oDocument->getIsCheckedOut()) {
+            return null;
+        }
+        return parent::getInfo();
     }
 
+    function check() {
+        $res = parent::check();
+        if ($res !== true) {
+            return $res;
+        }
+        if ($this->oDocument->getIsCheckedOut()) {
+            $_SESSION["KTErrorMessage"][]= _("This document can't be deleted because it is checked out");
+            controllerRedirect('viewDocument', 'fDocumentId=' .  $this->oDocument->getId());
+            exit(0);
+        }
+        $iFolderId = KTUtil::arrayGet($_REQUEST, 'fFolderId', $this->oDocument->getFolderId());
+        $this->oFolder = $this->oValidator->validateFolder($iFolderId);
+        $this->oDocumentFolder = $this->oValidator->validateFolder($this->oDocument->getFolderId());
+        return true;
+    }
+
+    /*
     function getURL() {
         return sprintf("/control.php?action=%s&fDocumentIDs[]=%d&fReturnDocumentID=%d&fFolderID=%d", $this->sBuiltInAction, $this->oDocument->getID(), $this->oDocument->getID(), $this->oDocument->getFolderID());
     }
+    */
+
+    function do_main() {
+        $this->oPage->setBreadcrumbDetails("move");
+        $oTemplate =& $this->oValidator->validateTemplate('ktcore/action/move');
+        $move_fields = array();
+        $aNames = $this->oDocumentFolder->getPathArray();
+        $aNames[] = $this->oDocument->getName();
+        $sDocumentName = join(" &raquo; ", $aNames);
+        $move_fields[] = new KTStaticTextWidget('Document to move', '', 'fDocumentId', $sDocumentName, $this->oPage, false);
+
+        $collection = new DocumentCollection();
+        $collection->addColumn(new KTDocumentMoveColumn("Test 1 (title)","title", $this->oDocument));
+        $qObj = new FolderBrowseQuery($this->oFolder->getId());
+        $collection->setQueryObject($qObj);
+
+        $batchPage = (int) KTUtil::arrayGet($_REQUEST, "page", 0);
+        $batchSize = 20;
+
+        $resultURL = sprintf("?fDocumentId=%d&fFolderId=%d", $this->oDocument->getId(), $this->oFolder->getId());
+        $collection->setBatching($resultURL, $batchPage, $batchSize);
+
+        // ordering. (direction and column)
+        $displayOrder = KTUtil::arrayGet($_REQUEST, 'sort_order', "asc");
+        if ($displayOrder !== "asc") { $displayOrder = "desc"; }
+        $displayControl = KTUtil::arrayGet($_REQUEST, 'sort_on', "title");
+
+        $collection->setSorting($displayControl, $displayOrder);
+
+        $collection->getResults();
+
+        $aBreadcrumbs = array();
+        $folder_path_names = $this->oFolder->getPathArray();
+        $folder_path_ids = explode(',', $this->oFolder->getParentFolderIds());
+        if ($folder_path_ids[0] == 0) {
+            $folder_path_ids = array();
+        }
+        $folder_path_ids[] = $this->oFolder->getId();
+
+        foreach (range(0, count($folder_path_ids) - 1) as $index) {
+            $id = $folder_path_ids[$index];
+            $url = sprintf("?fDocumentId=%d&fFolderId=%d", $this->oDocument->getId(), $id);
+            $aBreadcrumbs[] = array("url" => $url, "name" => $folder_path_names[$index]);
+        }
+
+        $oTemplate->setData(array(
+            'context' => &$this,
+            'move_fields' => $move_fields,
+            'collection' => $collection,
+            'collection_breadcrumbs' => $aBreadcrumbs,
+        ));
+        return $oTemplate->render();
+    }
+
+    function do_move() {
+        $this->oPage->setBreadcrumbDetails("move");
+        $oTemplate =& $this->oValidator->validateTemplate('ktcore/action/move_final');
+        $sFolderPath = join(" &raquo; ", $this->oFolder->getPathArray());
+        $aNames = $this->oDocumentFolder->getPathArray();
+        $aNames[] = $this->oDocument->getName();
+        $sDocumentName = join(" &raquo; ", $aNames);
+        $move_fields = array();
+        $move_fields[] = new KTStaticTextWidget('Document to move', '', 'fDocumentId', $sDocumentName, $this->oPage, false);
+        $move_fields[] = new KTStaticTextWidget('Target folder', '', 'fFolderId', $sFolderPath, $this->oPage, false);
+        $move_fields[] = new KTStringWidget('Reason', 'The reason for this document to be moved.', 'reason', "", $this->oPage, true);
+
+        $oTemplate->setData(array(
+            'context' => &$this,
+            'move_fields' => $move_fields,
+        ));
+        return $oTemplate->render();
+    }
+
+    function do_move_final() {
+        $sReason = KTUtil::arrayGet($_REQUEST, 'reason');
+        $aOptions = array(
+            'message' => "No reason given",
+            'redirect_to' => array('move', sprintf('fDocumentId=%d&fFolderId=%d', $this->oDocument->getId(), $this->oFolder->getId())),
+        );
+        $this->oValidator->notEmpty($sReason, $aOptions);
+
+        if (!Permission::userHasFolderWritePermission($this->oFolder)) {
+            $this->errorRedirectTo("main", "You do not have permission to move a document to this location", sprintf("fDocumentId=%d&fFolderId=%d", $this->oDocument->getId(), $this->oFolder->getId()));
+            exit(0);
+        }
+
+        $this->startTransaction();
+
+        //put the document in the new folder
+        $this->oDocument->setFolderID($this->oFolder->getId());
+        if (!$this->oDocument->update(true)) {
+            $this->errorRedirectTo("main", "There was a problem updating the document's location in the database", sprintf("fDocumentId=%d&fFolderId=%d", $this->oDocument->getId(), $this->oFolder->getId()));
+        }
+
+        //move the document on the file system
+        $oStorage =& KTStorageManagerUtil::getSingleton();
+        if (!$oStorage->moveDocument($this->oDocument, $this->oDocumentFolder, $this->oFolder)) {
+            $this->oDocument->setFolderID($this->oDocumentFolder->getId());
+            $this->oDocument->update(true);
+            errorRedirectTo("move", "There was a problem updating the document's location in the repository storage", sprintf("fDocumentId=%d&fFolderId=%d", $this->oDocument->getId(), $this->oFolder->getId()));
+        }
+        $this->oDocument->update();
+
+        $sMoveMessage = sprintf("Moved from %s/%s to %s/%s: %s",
+            $this->oDocumentFolder->getFullPath(),
+            $this->oDocumentFolder->getName(),
+            $this->oFolder->getFullPath(),
+            $this->oFolder->getName(),
+            $sReason);
+
+        // create the document transaction record
+        $oDocumentTransaction = & new DocumentTransaction($this->oDocument->getID(), $sMoveMessage, MOVE);
+        $oDocumentTransaction->create();
+
+        $this->commitTransaction();
+
+        $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
+        $aTriggers = $oKTTriggerRegistry->getTriggers('moveDocument', 'postValidate');
+        foreach ($aTriggers as $aTrigger) {
+            $sTrigger = $aTrigger[0];
+            $oTrigger = new $sTrigger;
+            $aInfo = array(
+                "document" => $this->oDocument,
+                "old_folder" => $this->oDocumentFolder,
+                "new_folder" => $this->oFolder,
+            );
+            $oTrigger->setInfo($aInfo);
+            $ret = $oTrigger->postValidate();
+            if (PEAR::isError($ret)) {
+                $this->oDocument->delete();
+                return $ret;
+            }
+        }
+        
+        controllerRedirect('viewDocument', 'fDocumentId=' .  $this->oDocument->getId());
+        exit(0);
+    }
 }
 $oKTActionRegistry->registerAction('documentaction', 'KTDocumentMoveAction', 'ktcore.actions.document.move');
+// }}}
 
-class KTDocumentHistoryAction extends KTBuiltInDocumentAction {
-    var $sBuiltInAction = 'viewHistory';
+class KTDocumentHistoryAction extends KTDocumentAction {
     var $sDisplayName = 'History';
     var $sName = 'ktcore.actions.document.history';
+
+    function getURL() {
+        return generateControllerLink("viewDocument", sprintf("action=history&fDocumentId=%d", $this->oDocument->getID()));
+    }
 }
 $oKTActionRegistry->registerAction('documentaction', 'KTDocumentHistoryAction', 'ktcore.actions.document.history');
 
@@ -376,8 +551,7 @@ class KTDocumentPublishAction extends KTDocumentAction {
     var $sName = 'ktcore.actions.document.publish';
 
     function _disable() {
-        $oDocument =& $this->oDocument;
-        if ($oDocument->getIsCheckedOut()) {
+        if ($this->oDocument->getIsCheckedOut()) {
             $this->_sDisabledText = _("This document is checked out and cannot be archived.");
             return true;
         }
