@@ -203,3 +203,26 @@ class KTDocumentMoveSubscriptionTrigger {
 }
 $oTRegistry->registerTrigger('moveDocument', 'postValidate', 'KTDocumentMoveSubscriptionTrigger', 'ktstandard.triggers.subscription.moveDocument');
 // }}}
+
+// {{{ KTArchiveSubscriptionTrigger
+class KTArchiveSubscriptionTrigger {
+    var $aInfo = null;
+    function setInfo(&$aInfo) {
+        $this->aInfo =& $aInfo;
+    }
+
+    function postValidate() {
+        global $default;
+        $oDocument =& $this->aInfo["document"];
+
+        $count = SubscriptionEngine::fireSubscription($fDocumentID, SubscriptionConstants::subscriptionAlertType("ArchivedDocument"),
+            SubscriptionConstants::subscriptionType("DocumentSubscription"),
+            array(
+                "folderID" => $oDocument->getFolderID(),
+                "modifiedDocumentName" => $oDocument->getName()
+            ));
+        $default->log->info("archiveDocumentBL.php fired $count subscription alerts for archived document " . $oDocument->getName());
+    }
+}
+$oTRegistry->registerTrigger('archive', 'postValidate', 'KTArchiveSubscriptionTrigger', 'ktstandard.triggers.subscription.archive');
+// }}}
