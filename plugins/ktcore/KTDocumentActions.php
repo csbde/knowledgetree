@@ -563,13 +563,6 @@ class KTDocumentArchiveAction extends KTDocumentAction {
 }
 $oKTActionRegistry->registerAction('documentaction', 'KTDocumentArchiveAction', 'ktcore.actions.document.archive');
 
-class KTDocumentDependentAction extends KTBuiltInDocumentAction {
-    var $sBuiltInAction = 'createDependantDocument';
-    var $sDisplayName = 'Link New Doc';
-    var $sName = 'ktcore.actions.document.dependent';
-}
-$oKTActionRegistry->registerAction('documentaction', 'KTDocumentDependentAction', 'ktcore.actions.document.dependent');
-
 class KTDocumentPermissionsAction extends KTBuiltInDocumentAction {
     var $sBuiltInAction = 'editDocumentPermissions';
     var $sDisplayName = 'Permissions';
