@@ -1,6 +1,6 @@
 <?php
 
-require_once("../../../../../config/dmsDefaults.php");
+//require_once("../../../../../config/dmsDefaults.php");
 
 require_once(KT_LIB_DIR . "/templating/templating.inc.php");
 require_once(KT_LIB_DIR . "/help/helpreplacement.inc.php");
@@ -15,7 +15,7 @@ class ManageHelpDispatcher extends KTAdminDispatcher {
     // Breadcrumbs base - added to in methods
     var $aBreadcrumbs = array(
         array('action' => 'administration', 'name' => 'Administration'),
-        array('action' => 'manageHelp', 'name' => 'Help Administration'),
+        
     );
 
     function do_main() {
@@ -23,6 +23,9 @@ class ManageHelpDispatcher extends KTAdminDispatcher {
     }
 
     function getData() {
+        $this->aBreadcrumbs[] = array('action' => 'manageHelp', 'name' => 'Help Administration');
+        $this->oPage->setBreadcrumbDetails('select a section');
+    
         $oTemplating = new KTTemplating;
         $aHelpReplacements =& KTHelpReplacement::getList();
         $aHelps =& KTHelpEntity::getList();
@@ -36,6 +39,7 @@ class ManageHelpDispatcher extends KTAdminDispatcher {
     }
 
     function getReplacementItemData($oHelpReplacement) {
+        $this->aBreadcrumbs[] = array('action' => 'manageHelp', 'name' => 'Help Administration');
         $oTemplating = new KTTemplating;
         $oTemplate = $oTemplating->loadTemplate("ktcore/manage_help_item");
         $aTemplateData = array(
@@ -107,7 +111,7 @@ class ManageHelpDispatcher extends KTAdminDispatcher {
     }
 }
 
-$oDispatcher = new ManageHelpDispatcher();
-$oDispatcher->dispatch();
+//$oDispatcher = new ManageHelpDispatcher();
+//$oDispatcher->dispatch();
 
 ?>

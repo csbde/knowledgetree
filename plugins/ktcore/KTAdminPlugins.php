@@ -10,6 +10,7 @@ $oAdminRegistry->registerCategory("security", "Security Management", " Assign pe
 $oAdminRegistry->registerCategory("storage", "Document Storage", "Manage how and where the actual documents will be stored, work with document archives and deal with other document related problems.");
 $oAdminRegistry->registerCategory("documents", "Document Type Configuration", "Configure the information that needs to be collected about different kinds of documents.");
 $oAdminRegistry->registerCategory("collections", "Collections", "Specify how groups of documents are displayed in browse and search mode.");
+$oAdminRegistry->registerCategory("misc", "Miscellaneous", "Various settings which do not fit into the other categories, including help, etc.");
 
 
 
@@ -36,6 +37,8 @@ $oAdminRegistry->registerLocation("linkmanagement",'KTDocLinkAdminDispatcher','d
 
 // storage
 $oAdminRegistry->registerLocation("checkout",'KTCheckoutAdminDispatcher','storage', 'Checked Out Document Control','Override the checked-out status of documents if a user has failed to do so.', KT_DIR . '/presentation/lookAndFeel/knowledgeTree/administration/doccheckoutmanagement/documentCheckout.php', null);
+
+$oAdminRegistry->registerLocation("helpmanagement",'ManageHelpDispatcher','misc', 'Edit Help files','Change the help files that are displayed to users.', KT_DIR . '/presentation/lookAndFeel/knowledgeTree/administration/help/manageHelp.php', null);
 
 
 ?>

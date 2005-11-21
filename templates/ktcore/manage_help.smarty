@@ -1,6 +1,6 @@
 <h2>Current help assignments</h2>
 
-<table class="pretty" cellspacing="0" cellpadding="0" border="0">
+<table class="listing">
 <thead>
 <tr>
 <th>Section</th>
@@ -11,7 +11,7 @@
 {foreach item=oHelpEntity from=$helps }
 <tr class="{cycle values="odd,even"}">
 <td> { $oHelpEntity->sSection } </td>
-<td> { $oHelpEntity->sFilename } </td>
+<td class="descriptiveText"> { $oHelpEntity->sFilename } </td>
 <td>
 { assign var="replacement" value=$oHelpEntity->checkReplacement() }
 { if $replacement }
