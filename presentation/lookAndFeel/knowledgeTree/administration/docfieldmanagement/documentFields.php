@@ -184,14 +184,17 @@ class KTDocumentFieldDispatcher extends KTStandardDispatcher {
         $oTemplate =& $oTemplating->loadTemplate('ktcore/metadata/editField');
         $oFieldset =& KTFieldset::get($_REQUEST['fFieldsetId']);
         $oField =& DocumentField::get($_REQUEST['fFieldId']);
+        
         $this->aBreadcrumbs[] = array(
             'action' => 'docfield',
             'query' => 'action=edit&fFieldsetId=' . $_REQUEST['fFieldsetId'],
-            'name' => 'Fieldset ' . $oFieldset->getName()
+            'name' => $oFieldset->getName()
         );
         $this->aBreadcrumbs[] = array(
-            'name' => 'Field ' . $oField->getName()
+            'name' => $oField->getName()
         );
+        $this->oPage->setBreadcrumbDetails('edit field');
+        
         $oTemplate->setData(array(
             'oFieldset' => $oFieldset,
             'oField' => $oField,

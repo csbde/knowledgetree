@@ -1,30 +1,51 @@
-<h1>Document Types</h1>
+<h2>Document Types</h2>
 
-<h2>Existing document types</h2>
+<form method="POST">
 
-<table class="pretty" cellspacing="0" cellpadding="0">
+<fieldset>
+<legend>Create a new document type</legend>
+
+<p class="descriptiveText">To start the process of creating a new document type,
+please enter a name for the type below.</p>
+
+{foreach item=oWidget from=$add_fields}
+  {$oWidget->render()}
+{/foreach}
+
+<div class="form_actions">
+<input type="hidden" name="action" value="new">
+<input type="submit" name="submit" value="Create">
+</div>
+</fieldset>
+
+</form>
+
+<fieldset>
+<legend>Existing document types</legend>
+
+<p class="descriptiveText">Select a document type from the list below to change
+its details, or click on the delete button to remove it from the system.</p>
+
+<table class="listing" cellspacing="0" cellpadding="0">
   <thead>
-    <tr><th>Name</th></tr>
+    <tr>
+      <th colspan="2">Document Type</th>
+    </tr>
   </thead>
   <tbody>
 {foreach from=$document_types item=oDocumentType}
 <tr><td>
 { if $oDocumentType->isUsed() }
-<img border="0" src="{"icons/delete_disabled.png"|imgSrc}" title="This document type is assigned to documents, and thus can not be deleted." />
+ &nbsp;
 { else }
-<a href="?action=delete&fDocumentTypeId={$oDocumentType->getId()}"><img border="0" src="{"icons/delete.png"|imgSrc}" /></a>
+<a href="?action=delete&fDocumentTypeId={$oDocumentType->getId()}" class="ktAction ktDelete">Delete Type</a>
 {/if}
+</td>
+<td>
 <a href="?action=edit&fDocumentTypeId={$oDocumentType->getId()}"> { $oDocumentType->getName() }
 </a>
 </td></tr>
   </tbody>
 {/foreach}
 </table>
-
-<h2>Create a new document type</h2>
-
-<form method="POST">
-<input type="hidden" name="action" value="new">
-<input type="textbox" name="name">
-<input type="submit" name="submit" value="Create">
-</form>
+</fieldset>

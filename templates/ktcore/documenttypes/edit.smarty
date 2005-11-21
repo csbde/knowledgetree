@@ -1,4 +1,4 @@
-<h1>Document Type: { $oDocumentType->getName() }</h1>
+<h2>Document Type: { $oDocumentType->getName() }</h2>
 
 <form method="POST" action="{$smarty.server.PHP_SELF}">
 <input type="hidden" name="action" value="editobject">
@@ -9,33 +9,55 @@
 
 <h2>Type-specific field sets</h2>
 
-<h3>Existing field sets</h3>
+<p class="descriptiveText"></p>
 
 { if $aCurrentFieldsets }
 <form method="POST" action="{$smarty.server.PHP_SELF}">
+<fieldset>
+<legend>Linked Fieldsets</legend>
   <input type="hidden" name="action" value="removefieldsets">
   <input type="hidden" name="fDocumentTypeId" value="{$oDocumentType->getId()}">
 
-  <ul>
-  {foreach from="$aCurrentFieldsets item=oFieldset}
-    <li><label><input type="checkbox" name="fieldsetid[]" value="{$oFieldset->getId() }" />{$oFieldset->getName() }</label></li>
-  {/foreach}
-  </ul>
-  <input type="submit" name="submit" value="Remove field sets">
+  <table class="listing">
+  <thead>
+     <tr>
+        <th>Fieldset</th>
+     </tr>
+  </thead>
+  <tbody>
+    {foreach from="$aCurrentFieldsets item=oFieldset}
+      <tr>
+        <td><label><input type="checkbox" name="fieldsetid[]" value="{$oFieldset->getId() }" />{$oFieldset->getName() }</label></td>
+      </tr>
+    {/foreach}
+    
+  </tbody>
+  </table>
+  <div class="form_actions">
+  <input type="submit" name="submit" value="Disassociate Fieldsets">
+  </div>
+</fieldset>
 </form>
+{else}
+<p>No fieldsets are currently associated with this type.</p>
 { /if }
 
 { if $aAvailableFieldsets }
-<h3>Add field sets</h3>
-
 <form method="POST" action="{$smarty.server.PHP_SELF}">
+<fieldset>
+<legend>Associate Fieldsets</legend>
+
   <input type="hidden" name="action" value="addfieldsets">
   <input type="hidden" name="fDocumentTypeId" value="{$oDocumentType->getId()}">
-  <select name="fieldsetid" multiple="true" size="5">
-  {foreach from=$aAvailableFieldsets item=oFieldset}
-    <option value="{$oFieldset->getId()}">{$oFieldset->getName()}</option>
-  {/foreach}
-  </select>
-  <input type="submit" name="submit" value="Add field sets">
+  
+  {$availableWidget->render()}
+  
+  <div class="form_actions">
+    <input type="submit" name="submit" value="Associate Fieldsets">
+  </div>
+</fieldset>
 </form>
+
+{else}
+<p>There are no fieldsets available for adding. <strong>FIXME link to fieldset creation from here.</strong></p>
 { /if }
