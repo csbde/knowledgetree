@@ -506,33 +506,59 @@ class KTDocumentHistoryAction extends KTDocumentAction {
 }
 $oKTActionRegistry->registerAction('documentaction', 'KTDocumentHistoryAction', 'ktcore.actions.document.history');
 
-class KTDocumentDiscussionAction extends KTBuiltInDocumentAction {
-    var $sBuiltInAction = 'viewDiscussion';
-    var $sDisplayName = 'Discussion';
-    var $sName = 'ktcore.actions.document.discussion';
-}
-$oKTActionRegistry->registerAction('documentaction', 'KTDocumentDiscussionAction', 'ktcore.actions.document.discussion');
-
-class KTDocumentArchiveAction extends KTBuiltInDocumentAction {
-    var $_sDisablePermission = "ktcore.permissions.write";
-    var $sBuiltInAction = 'archiveDocument';
+class KTDocumentArchiveAction extends KTDocumentAction {
     var $sDisplayName = 'Archive';
     var $sName = 'ktcore.actions.document.archive';
+    var $_sShowPermission = "ktcore.permissions.write";
 
-    function _disable() {
-        /*
-        if ($this->oDocument->hasCollaboration() &&
-            DocumentCollaboration::documentCollaborationStarted($this->oDocument->getID()) &&
-            !DocumentCollaboration::documentCollaborationDone($this->oDocument->getID())) {
-            $sDisabledText = _("This document is in collaboration and cannot be archived");
-        }
-        */
-
+    function getInfo() {
         if ($this->oDocument->getIsCheckedOut()) {
-            $this->_sDisabledText = _("This document is checked out and cannot be archived.");
-            return true;
+            return null;
         }
-        return parent::_disable();
+        return parent::getInfo();
+    }
+
+    function do_main() {
+        $this->oPage->setBreadcrumbDetails("archiving");
+        $oTemplate =& $this->oValidator->validateTemplate('ktcore/action/archive');
+        $fields = array();
+        $fields[] = new KTStringWidget('Reason', 'The reason for the archiving of this document.  This will be displayed when the archived document is to be displayed.', 'reason', "", $this->oPage, true);
+
+        $oTemplate->setData(array(
+            'context' => &$this,
+            'fields' => $fields,
+        ));
+        return $oTemplate->render();
+    }
+
+    function do_archive() {
+        $this->startTransaction();
+        $this->oDocument->setStatusID(ARCHIVED);
+        if (!$this->oDocument->update()) {
+            $_SESSION['KTErrorMessage'][] = "There was a database error while trying to archive this file";
+            controllerRedirect('viewDocument', 'fDocumentId=' .  $this->oDocument->getId());
+            exit(0);
+        }
+        $this->commitTransaction();
+
+        $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
+        $aTriggers = $oKTTriggerRegistry->getTriggers('archive', 'postValidate');
+        foreach ($aTriggers as $aTrigger) {
+            $sTrigger = $aTrigger[0];
+            $oTrigger = new $sTrigger;
+            $aInfo = array(
+                "document" => $this->oDocument,
+            );
+            $oTrigger->setInfo($aInfo);
+            $ret = $oTrigger->postValidate();
+            if (PEAR::isError($ret)) {
+                $this->oDocument->delete();
+                return $ret;
+            }
+        }
+
+        controllerRedirect('viewDocument', 'fDocumentId=' .  $this->oDocument->getId());
+        exit(0);
     }
 }
 $oKTActionRegistry->registerAction('documentaction', 'KTDocumentArchiveAction', 'ktcore.actions.document.archive');
