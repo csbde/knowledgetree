@@ -87,7 +87,7 @@ class KTFolderAddDocumentAction extends KTFolderAction {
         $this->oValidator->validateDocumentType($_REQUEST['fDocumentTypeId']);
 
         $aOptions = array(
-            'contents' => new KTFSFileLike($_FILES['fFile']['tmp_name']),
+            'contents' => new KTFSFileLike($_FILES['file']['tmp_name']),
             'documenttype' => $this->oDocumentType,
             'metadata' => $aFields,
             'description' => $_REQUEST['fName'],
