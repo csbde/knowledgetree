@@ -1,0 +1,89 @@
+{$context->oPage->requireJSResource('thirdpartyjs/MochiKit/Base.js')}
+{$context->oPage->requireJSResource("thirdpartyjs/MochiKit/Iter.js")}
+{$context->oPage->requireJSResource("thirdpartyjs/MochiKit/DOM.js")}
+{$context->oPage->requireJSResource("presentation/lookAndFeel/knowledgeTree/js/OptionTransfer.js")}
+{capture assign=sJavascript}
+{literal}
+
+    var optGroup = new OptionTransfer("groupSelect","chosenGroups");
+    optGroup.setAutoSort(true);
+    optGroup.setDelimiter(",");
+    optGroup.saveNewLeftOptions("groupNewLeft");
+    optGroup.saveNewRightOptions("groupNewRight");
+    optGroup.saveRemovedLeftOptions("groupRemovedLeft");
+    optGroup.saveRemovedRightOptions("groupRemovedRight");
+    optGroup.saveAddedLeftOptions("groupAddedLeft");
+    optGroup.saveAddedRightOptions("groupAddedRight");
+
+    var optUser = new OptionTransfer("userSelect","chosenUsers");
+    optUser.setAutoSort(true);
+    optUser.setDelimiter(",");
+    optUser.saveNewLeftOptions("userNewLeft");
+    optUser.saveNewRightOptions("userNewRight");
+    optUser.saveRemovedLeftOptions("userRemovedLeft");
+    optUser.saveRemovedRightOptions("userRemovedRight");
+    optUser.saveAddedLeftOptions("userAddedLeft");
+    optUser.saveAddedRightOptions("userAddedRight")
+
+function kt_email_onload() {
+    f = getElement('kt-email-form');
+
+    optGroup.init(f);
+    optUser.init(f);
+}
+
+addLoadEvent(kt_email_onload);
+{/literal}
+{/capture}
+{$context->oPage->requireJSStandalone($sJavascript)}
+
+<h2>Email document</h2>
+
+<form id="kt-email-form" method="POST">
+<input type="hidden" name="action" value="email" />
+<input type="hidden" name="fDocumentId" value="{$context->oDocument->getId()}" />
+
+<table>
+<tr><td valign="top" colspan="3"><strong>Groups</strong></td></tr><tr><td valign="top" width=1%>
+<select name="groupSelect" size="4" multiple>
+<OPTION value="3" onDblClick="optGroup.transferRight()" >
+Anonymous</OPTION>
+<OPTION value="4" onDblClick="optGroup.transferRight()" >
+Stuff</OPTION>
+<OPTION value="1" onDblClick="optGroup.transferRight()" >
+System Administrators</OPTION>
+<OPTION value="2" onDblClick="optGroup.transferRight()" >
+Unit Administrators</OPTION>
+
+</select></td><td width=1%><input TYPE="button" NAME="right" VALUE="&gt;&gt;" ONCLICK="optGroup.transferRight()"><input TYPE="button" NAME="left" VALUE="&lt;&lt;" ONCLICK="optGroup.transferLeft()"></td><td><select name="chosenGroups" size="5" multiple><option>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option></select></td></tr>
+
+<tr><td colspan="3"><strong>Users</strong></td><tr>
+<tr><td><select name="userSelect" size="4" multiple>
+<OPTION value="1" onDblClick="optUser.transferRight()">
+Administrator</OPTION>
+</select></td><td><input TYPE="button" NAME="right" VALUE="&gt;&gt;" ONCLICK="optUser.transferRight()"><input TYPE="button" NAME="left" VALUE="&lt;&lt;" ONCLICK="optUser.transferLeft()"></td><td width="30%"><select name="chosenUsers" size="5" multiple><option>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option></select></td></tr>
+
+</table>
+
+{foreach from=$fields item=oWidget }
+  {$oWidget->render()}
+{/foreach}
+
+<div class="form_actions ">
+  <input type="submit" name="submit" value="Email">
+</div>
+
+<input type="hidden" name="groupNewLeft" />
+<input type="hidden" name="groupNewRight" />
+<input type="hidden" name="groupRemovedLeft" />
+<input type="hidden" name="groupRemovedRight" />
+<input type="hidden" name="groupAddedLeft" />
+<input type="hidden" name="groupAddedRight" />
+<input type="hidden" name="userNewLeft" />
+<input type="hidden" name="userNewRight" />
+<input type="hidden" name="userRemovedLeft" />
+<input type="hidden" name="userRemovedRight" />
+<input type="hidden" name="userAddedLeft" />
+<input type="hidden" name="userAddedRight" />
+
+</form>
