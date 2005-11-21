@@ -50,6 +50,10 @@ class BrowseColumn {
 }
 
 class TitleColumn extends BrowseColumn {
+    var $aOptions = array();
+    function setOptions($aOptions) {
+        $this->aOptions = $aOptions;
+    }
     // unlike others, this DOESN'T give its name.
     function renderHeader($sReturnURL) { 
         $text = "Title";
@@ -59,22 +63,41 @@ class TitleColumn extends BrowseColumn {
         return '<a href="' . $href . '">'.$text.'</a>';
         
     }
+
+    function renderFolderLink($aDataRow) {
+        $outStr = '<a href="' . $this->buildFolderLink($aDataRow) . '">';
+        $outStr .= $aDataRow["folder"]->getName();
+        $outStr .= '</a>';
+        return $outStr;
+    }
+
+    function renderDocumentLink($aDataRow) {
+        $outStr = '<a href="' . $this->buildDocumentLink($aDataRow) . '" title="' . $aDataRow["document"]->getFilename().'">';
+        $outStr .= $aDataRow["document"]->getName();
+        $outStr .= '</a>';
+        return $outStr;
+    }
+
+    function buildDocumentLink($aDataRow) {
+        $baseurl = KTUtil::arrayGet($this->aOptions, "documenturl", "documentmanagement/view.php");
+        return $baseurl . '?fDocumentId=' .  $aDataRow["document"]->getId();
+    }
+
+    function buildFolderLink($aDataRow) {
+        $baseurl = KTUtil::arrayGet($this->aOptions, "folderurl", "");
+        return $baseurl . '?fFolderId='.$aDataRow["folder"]->getId();
+    }
     
     // use inline, since its just too heavy to even _think_ about using smarty.
     function renderData($aDataRow) { 
        $outStr = '';
        if ($aDataRow["type"] == "folder") {
            $outStr .= '<span class="contenttype folder">';
-           $outStr .= '<a href="?fFolderId='.$aDataRow["folder"]->getId().'">';
-           $outStr .= $aDataRow["folder"]->getName();
-           $outStr .= '</a>';
+           $outStr .= $this->renderFolderLink($aDataRow);
            $outStr .= '</span>';           
         } else {
            $outStr .= '<span class="contenttype '.$this->_mimeHelper($aDataRow["document"]->getMimeTypeId()).'">';
-           $outStr .= '<a href="documentmanagement/view.php?fDocumentId='.$aDataRow["document"]->getId().'" title="'.$aDataRow["document"]->getFilename().'">';
-           $outStr .= $aDataRow["document"]->getName();
-           
-           $outStr .= '</a>';
+           $outStr .= $this->renderDocumentLink($aDataRow);
            $outStr .= ' (' . $this->prettySize($aDataRow["document"]->getSize()) . ')';
            $outStr .= '</span>';
         }
