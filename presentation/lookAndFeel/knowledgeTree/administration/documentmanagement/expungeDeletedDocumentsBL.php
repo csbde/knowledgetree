@@ -10,7 +10,6 @@ require_once("$default->fileSystemRoot/lib/documentmanagement/PhysicalDocumentMa
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternMainPage.inc");
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternCustom.inc");
 require_once("$default->fileSystemRoot/lib/visualpatterns/PatternTableSqlQuery.inc");
-require_once("$default->fileSystemRoot/lib/web/WebDocument.inc");
 require_once("$default->uiDirectory/documentmanagement/documentUI.inc");
 require_once("expungeDeletedDocumentsUI.inc");
 require_once("$default->fileSystemRoot/presentation/Html.inc");
@@ -73,10 +72,6 @@ if (checkSession()) {
 						// remove any document data
 						$aDocuments[$i]->cleanupDocumentData($fDocumentIDs[$i]);
 
-                        // delete the corresponding web document entry
-                        $oWebDocument = WebDocument::get(lookupID($default->web_documents_table, "document_id", $fDocumentIDs[$i]));
-                        $oWebDocument->delete();
-												
 					} else {
 						$default->log->error("expungeDeletedDocumentsBL.php couldn't rm docID=" . $fDocumentIDs[$i] . " from the db");
 						$aErrorDocuments[] = $aDocuments[$i]->getDisplayPath();

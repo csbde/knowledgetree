@@ -1,6 +1,5 @@
 <?php
 require_once(KT_LIB_DIR . "/subscriptions/SubscriptionManager.inc");
-require_once(KT_LIB_DIR . "/web/WebDocument.inc");
 require_once(KT_LIB_DIR . "/links/Link.inc");
 require_once(KT_LIB_DIR . "/archiving/ArchiveRestorationRequest.inc");
 /**
@@ -41,26 +40,6 @@ class Dashboard {
 	 */
 	function Dashboard($iUserID){
 		$this->iUserID = $iUserID;
-	}
-	
-	/**
-	 * Retrieves the web documents that the current user has pending
-	 */
-	function getPendingWebDocuments(){
-	    global $default;
-	    $sQuery = "SELECT wd.id FROM web_documents wd " . /*ok*/
-	              "INNER JOIN web_sites ws ON wd.web_site_id = ws.id " .
-	              "WHERE ws.web_master_id = ? AND wd.status_id = 1" .
-				  "ORDER BY ws.datetime DESC";
-        $aParams = array($this->iUserID);
-	    $aDocumentList = array();
-	    $sql = $default->db;
-	    if ($sql->query(array($sQuery, $aParams))) {
-	        while ($sql->next_record()) {
-	            $aDocumentList[] = & WebDocument::get($sql->f("id"));
-	        }
-	    }
-	    return $aDocumentList;
 	}
 	
 	/**
