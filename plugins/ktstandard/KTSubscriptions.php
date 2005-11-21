@@ -160,5 +160,46 @@ class KTDeleteSubscriptionTrigger {
         }
     }
 }
-$oTRegistry->registerTrigger('checkout', 'postValidate', 'KTDeleteSubscriptionTrigger', 'ktstandard.triggers.subscription.delete');
+$oTRegistry->registerTrigger('delete', 'postValidate', 'KTDeleteSubscriptionTrigger', 'ktstandard.triggers.subscription.delete');
+// }}}
+
+// {{{ KTDocumentMoveSubscriptionTrigger
+class KTDocumentMoveSubscriptionTrigger {
+    var $aInfo = null;
+    function setInfo(&$aInfo) {
+        $this->aInfo =& $aInfo;
+    }
+
+    function postValidate() {
+        global $default;
+        $oDocument =& $this->aInfo["document"];
+        $oOldFolder =& $this->aInfo["old_folder"];
+        $oNewFolder =& $this->aInfo["new_folder"];
+
+        // fire subscription alerts for the moved document (and the folder its in)
+        $count = SubscriptionEngine::fireSubscription($oDocument->getId(), SubscriptionConstants::subscriptionAlertType("MovedDocument"),
+            SubscriptionConstants::subscriptionType("DocumentSubscription"),
+            array(
+                "folderID" => $oOldFolder->getId(),
+                "modifiedDocumentName" => $oDocument->getName(),
+                "oldFolderName" => Folder::getFolderName($oOldFolder->getId()),
+                "newFolderName" => Folder::getFolderName($oNewFolder->getID()),
+            )
+        );
+        $default->log->info("moveDocumentBL.php fired $count (folderID=$fFolderID) folder subscription alerts for moved document " . $oDocument->getName());
+
+        // fire folder subscriptions for the destination folder
+        $count = SubscriptionEngine::fireSubscription($oNewFolder->getId(), SubscriptionConstants::subscriptionAlertType("MovedDocument"),
+            SubscriptionConstants::subscriptionType("FolderSubscription"),
+            array(
+                "folderID" => $oOldFolder->getId(),
+                "modifiedDocumentName" => $oDocument->getName(),
+                "oldFolderName" => Folder::getFolderName($oOldFolder->getId()),
+                "newFolderName" => Folder::getFolderName($oNewFolder->getId()),
+            )
+        );
+        $default->log->info("moveDocumentBL.php fired $count (folderID=$fFolderID) folder subscription alerts for moved document " . $oDocument->getName());
+    }
+}
+$oTRegistry->registerTrigger('moveDocument', 'postValidate', 'KTDocumentMoveSubscriptionTrigger', 'ktstandard.triggers.subscription.moveDocument');
 // }}}
