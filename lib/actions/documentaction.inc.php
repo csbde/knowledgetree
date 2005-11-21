@@ -77,11 +77,16 @@ class KTDocumentAction extends KTStandardDispatcher {
             return null;
         }
 
+        $url = $this->getURL();
+        if (substr($url, 0, 1) == '/') {
+            $url = generateLink($url, "");
+        }
+
         $aInfo = array(
             'disabled' => $this->_disable(),
             'description' => $this->sDescription,
             'name' => $this->sDisplayName,
-            'url' => generateLink($this->getURL(), ""),
+            'url' => $url,
             'disabled_text' => $this->_sDisabledText,
         );
         return $this->customiseInfo($aInfo);
