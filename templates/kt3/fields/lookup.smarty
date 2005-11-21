@@ -11,7 +11,7 @@
       <p class="errorMessage"></p>
       {/if}
       
-      <select name="{$name}" {if $has_id}id="{$id}"{/if}>
+      <select name="{$name}" {if $has_id}id="{$id}"{/if} {if $options.multi}multiple="true"{/if} {if $options.size}size="{$options.size}"{/if}>
       {foreach item=lookup key=lookup_key from=$options.vocab}
            <option value="{$lookup_key}" {if ($value === $lookup_key)}selected="selected"{/if}>{$lookup}</option>
       {/foreach}
