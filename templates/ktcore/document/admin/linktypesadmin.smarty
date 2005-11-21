@@ -1,0 +1,92 @@
+<h2>Document Link Type Management</h2>
+
+<p class="descriptiveText">Within the <strong>KnowledgeTree</strong> it is possible for users
+to create links between related documents.  Each of these links has a certain type. 
+<strong>FIXME</strong> this help text is useless.</p>
+
+{if ($add_form)}
+
+<form action="{$smarty.server.PHP_SELF}" method="POST">
+<fieldset>
+<legend>Add a link type</legend>
+<p class="descriptiveText">Specify the details for a new link type below.</p>
+
+{foreach item=oWidget from=$add_form}
+  {$oWidget->render()}
+{/foreach}
+
+<div class="form_actions">
+   <input type="hidden" name="action" value="add" />
+   <input type="submit" value="Add Link Type" />
+</div>
+</fieldset>
+</form>
+
+{/if}
+
+{if ($edit_form)}
+
+<form action="{$smarty.server.PHP_SELF}" method="POST">
+<fieldset>
+<legend>Edit a link type</legend>
+<p class="descriptiveText">Specify the details for the link type below.</p>
+<input type="hidden" name="fLinkTypeId" value="{$old_link->iId}" />
+{foreach item=oWidget from=$edit_form}
+  {$oWidget->render()}
+{/foreach}
+
+<div class="form_actions">
+   <input type="hidden" name="action" value="update" />
+   <input type="submit" value="Change Link Type" />
+</div>
+</fieldset>
+</form>
+
+{/if}
+
+<!-- now the list of existing link types. -->
+
+<form action="{$smarty.server.PHP_SELF}" method="POST">
+<fieldset>
+<legend>Manage Existing Link Types</legend>
+<p class="descriptiveText">From this panel you can edit or delete existing link types.  
+<strong>Note:</strong> deleting a link type will delete <strong>all</strong>
+links of that type within the system.</p>
+
+<input type="hidden" name="action" value="delete" />
+
+{if (!empty($links))}
+<table class="listing">
+<thead>
+  <tr>
+     <th colspan="2">Name</th>
+     <th>Description</th>
+     <th>Edit</th>
+  </tr>
+</thead>
+
+<tbody>
+  {foreach item=oLinkType from=$links}
+  <tr class="{cycle values=even,odd}">
+    <td>
+      <input type="checkbox" name="fLinksToDelete[]" value="{$oLinkType->iId}" />
+    </td>
+    <td>{$oLinkType->getName()}</td>
+    <td class="descriptiveText">{$oLinkType->getDescription()}</td>
+    <td><a href="{$smarty.server.PHP_SELF}?action=edit&fLinkTypeId={$oLinkType->iId}">edit link type</a></td>
+  </tr>
+  {/foreach}
+</tbody>
+</table>
+
+<div class="form_actions">
+  <input type="submit" value="Remove Link Type(s) " />
+</div>
+{else}
+
+<p><strong>No link administrator changeable link types available.</strong>
+
+{/if}
+
+</fieldset>
+</form>
