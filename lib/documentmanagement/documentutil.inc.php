@@ -30,7 +30,6 @@
 // LEGACY PATHS
 require_once(KT_LIB_DIR . '/documentmanagement/DocumentFieldLink.inc');
 require_once(KT_LIB_DIR . '/documentmanagement/DocumentTransaction.inc');
-require_once(KT_LIB_DIR . '/web/WebDocument.inc');
 require_once(KT_LIB_DIR . '/subscriptions/SubscriptionEngine.inc');
 require_once(KT_LIB_DIR . '/subscriptions/SubscriptionConstants.inc');
 
@@ -368,14 +367,6 @@ class KTDocumentUtil {
             }
         }
 
-        //create the web document link
-        $oWebDocument = & new WebDocument($oDocument->getID(), -1, 1, NOT_PUBLISHED, getCurrentDateTime());
-        $res = $oWebDocument->create();
-        if (PEAR::isError($res)) {
-            $oDocument->delete();
-            return $res;
-        }
-
         $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
         $aTriggers = $oKTTriggerRegistry->getTriggers('content', 'transform');
         foreach ($aTriggers as $aTrigger) {
@@ -391,7 +382,6 @@ class KTDocumentUtil {
         $res = $oDocumentTransaction->create();
         if (PEAR::isError($res)) {
             $oDocument->delete();
-            $oWebDocument->delete();
             return $res;
         }
 
