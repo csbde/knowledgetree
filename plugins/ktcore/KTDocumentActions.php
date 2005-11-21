@@ -544,43 +544,6 @@ class KTDocumentDependentAction extends KTBuiltInDocumentAction {
 }
 $oKTActionRegistry->registerAction('documentaction', 'KTDocumentDependentAction', 'ktcore.actions.document.dependent');
 
-
-class KTDocumentPublishAction extends KTDocumentAction {
-    var $_sDisablePermission = "ktcore.permissions.write";
-    var $sDisplayName = 'Publish';
-    var $sName = 'ktcore.actions.document.publish';
-
-    function _disable() {
-        if ($this->oDocument->getIsCheckedOut()) {
-            $this->_sDisabledText = _("This document is checked out and cannot be archived.");
-            return true;
-        }
-        /*
-        if (DocumentCollaboration::documentIsPublished($oDocument->getID())) {
-            $this->_sDisabledText = _("This document is already published.");
-            return true;
-        }
-        if (DocumentCollaboration::documentIsPendingWebPublishing($oDocument->getID())) {
-            $this->_sDisabledText = _("This document has been marked as pending publishing and the web publisher has been notified.");
-            return true;
-        }
-        if ($oDocument->hasCollaboration()) {
-            if (!DocumentCollaboration::documentCollaborationDone($oDocument->getID())) {
-                $this->_sDisabledText = _("You cannot publish this document until collaboration is complete");
-                return true;
-            }
-        }
-        */
-        return parent::_disable();
-    }
-
-    function getURL() {
-        return sprintf("/control.php?action=%s&fDocumentID=%d&fForPublish=1", 'viewDocument', $this->oDocument->getID(), $this->oDocument->getID());
-    }
-
-}
-$oKTActionRegistry->registerAction('documentaction', 'KTDocumentPublishAction', 'ktcore.actions.document.publish');
-
 class KTDocumentPermissionsAction extends KTBuiltInDocumentAction {
     var $sBuiltInAction = 'editDocumentPermissions';
     var $sDisplayName = 'Permissions';
