@@ -83,6 +83,7 @@ class LinkType extends KTEntity {
         $oLinkType->iId = $res['id'];
         return $oLinkType;
     }
+
 }
 
 function &linktypecreateFromArray($aParameters) {

@@ -30,6 +30,7 @@ $oAdminRegistry->registerLocation("admin",null,"principals", "Add/Remove Users",
 
 // documents
 $oAdminRegistry->registerLocation("fieldmanagement",'KTDocumentFieldDispatcher','documents', 'Document Fieldsets','Control which kinds of documents have which sets of information associated with them.', KT_DIR . '/presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/documentFields.php', null);
+$oAdminRegistry->registerLocation("linkmanagement",'KTDocLinkAdminDispatcher','documents', 'Link Type Management','Specify the different "link types" - ways to relate different documents togeter.', KT_DIR . '/presentation/lookAndFeel/knowledgeTree/administration/doclinkmanagement/documentLinks.php', null);
 
 
 // storage
