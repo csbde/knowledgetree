@@ -563,13 +563,6 @@ class KTDocumentArchiveAction extends KTDocumentAction {
 }
 $oKTActionRegistry->registerAction('documentaction', 'KTDocumentArchiveAction', 'ktcore.actions.document.archive');
 
-class KTDocumentPermissionsAction extends KTBuiltInDocumentAction {
-    var $sBuiltInAction = 'editDocumentPermissions';
-    var $sDisplayName = 'Permissions';
-    var $sName = 'ktcore.actions.document.permissions';
-}
-$oKTActionRegistry->registerAction('documentaction', 'KTDocumentPermissionsAction', 'ktcore.actions.document.permissions');
-
 class KTDocumentWorkflowAction extends KTDocumentAction {
     var $sBuiltInAction = 'documentWorkflow';
     var $sDisplayName = 'Workflow';
