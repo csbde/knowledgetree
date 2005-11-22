@@ -19,6 +19,7 @@ class KTPage {
     var $js_resources = Array();
     var $css_resources = Array();
     var $js_standalone = Array();
+    var $css_standalone = Array();
 	
 	/** context-relevant information */
 	var $errStack = Array();
@@ -127,6 +128,14 @@ class KTPage {
     // list the distinct CSS resources.
     function getCSSResources() {
         return array_keys($this->css_resources);
+    }
+
+    function requireCSSStandalone($sCSS) {
+        $this->css_standalone[$sCSS] = 1;
+    }
+
+    function getCSSStandalone() {
+        return array_keys($this->css_standalone);
     }
     
     function setPageContents($contents) { $this->contents = $contents; }
