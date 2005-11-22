@@ -91,7 +91,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 		
 		// FIXME make a FolderActionUtil ... is it necessary?
 		
-		$aActions = KTFolderActionUtil::getFolderActionsForFolder($this->oFolder, $$this->oUser);
+		$aActions = KTFolderActionUtil::getFolderActionsForFolder($this->oFolder, $this->oUser);
 		
 		$portlet->setActions($aActions,null);
 		
