@@ -1,0 +1,35 @@
+{if $threads}
+<h3>Existing threads</h3>
+<table class="listing" cellspacing="0" cellpadding="0">
+  <thead>
+    <tr>
+      <th>Subject</th>
+      <th>Creator</th>
+      <th>Views</th>
+      <th>Replies</th>
+      <th>Last activity</th>
+    </tr>
+  </thead>
+  <tbody>
+    {foreach from=$threads item=thread}
+        {$threadrenderer->render($context, $thread)}
+    {/foreach}
+  </tbody>
+</table>
+{else}
+    <p class="descriptiveText">There are no existing threads for this document</p>
+{/if}
+
+<form method="POST" action="{$smarty.server.PHP_SELF}">
+<input type="hidden" name="action" value="newthread" />
+<input type="hidden" name="fDocumentId" value="{$context->oDocument->getId()}" />
+<fieldset><legend>Create a new thread</legend>
+{foreach from=$fields item=oWidget}
+    {$oWidget->render()}
+{/foreach}
+
+<div class="form_actions ">
+  <input type="submit" name="submit" value="Create a new thread">
+</div>
+</fieldset>
+</form>

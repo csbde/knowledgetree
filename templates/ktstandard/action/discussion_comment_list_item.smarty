@@ -1,0 +1,22 @@
+{capture assign=sCSS}{literal}
+dl.kt-discussion-comment > dt {
+    font-weight: bold;
+}
+
+.kt-discussion-post-link {
+    font-size: smaller;
+}
+{/literal}{/capture}
+{$context->oPage->requireCSSStandalone($sCSS)}
+
+<dl class="kt-discussion-comment">
+  <dt>Posted</dt>
+  <dd>by {$creator->getName()} at {$comment->getDate()}</dd>
+  <dt>Subject</dt>
+  <dd>{$comment->getSubject()}</dd>
+
+  <dt>Body</dt>
+  <dd>{$comment->getBody()}</dd>
+</dl>
+
+<a class="kt-discussion-post-link" href="#kt-discussion-post">Post a reply</a>
