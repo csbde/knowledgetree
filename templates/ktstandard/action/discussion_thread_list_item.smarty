@@ -1,0 +1,7 @@
+<tr>
+  <td><a href="?action=viewThread&fDocumentId={$context->oDocument->getId()}&fThreadId={$thread->getId()}">{$first_comment->getSubject()}</a></td>
+  <td>{$creator->getName()}</td>
+  <td>{$thread->getNumberOfViews()}</td>
+  <td>{$thread->getNumberOfReplies()}</td>
+  <td>{$last_comment->getDate()}</td>
+</tr>

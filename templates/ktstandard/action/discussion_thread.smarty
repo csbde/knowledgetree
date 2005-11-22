@@ -1,0 +1,19 @@
+{foreach from=$thread->getCommentsSortedByDate() item=oComment}
+    {$commentrenderer->render($context, $oComment)}
+{/foreach}
+
+<form method="POST" action="{$smarty.server.PHP_SELF}">
+<input type="hidden" name="action" value="postreply" />
+<input type="hidden" name="fDocumentId" value="{$context->oDocument->getId()}" />
+<input type="hidden" name="fThreadId" value="{$thread->getId()}" />
+<fieldset><legend>Post a reply</legend>
+<a name="kt-discussion-post"></a>
+{foreach from=$fields item=oWidget}
+    {$oWidget->render()}
+{/foreach}
+
+<div class="form_actions ">
+  <input type="submit" name="submit" value="Post a reply" />
+</div>
+</fieldset>
+</form>
