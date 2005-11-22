@@ -38,7 +38,7 @@ class KTEntity {
      *
      */
     function create() {
-        if ($this->iId < 0) {
+        if ($this->iId <= 0) {
             $id = DBUtil::autoInsert($this->_table(), $this->_fieldValues());
             if (PEAR::isError($id)) {
                 if ($this->_bUsePearError === false) {
