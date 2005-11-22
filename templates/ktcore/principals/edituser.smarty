@@ -1,0 +1,20 @@
+<h2>Edit User Details</h2>
+
+<p class="descriptiveText"><a href="?action=setPassword&user_id={$edit_user->getId()}">Change {$edit_user->getName()}'s password</a></p>
+
+<form action="{$smarty.server.PHP_SELF}" method="POST">
+   <input type="hidden" name="action" value="saveUser" />
+   <input type="hidden" name="user_id" value="{$edit_user->getId()}" />
+   <fieldset>
+      <legend>Change User Details</legend>
+      <p class="descriptiveText"><strong>FIXME</strong> brief overview of user editing.</p>
+      {foreach item=oWidget from=$edit_fields}
+      
+        {$oWidget->render()}
+      {/foreach}
+      <div class="form_actions">
+         <input type="submit" value="save changes" />
+         <a href="?action=main" class="ktCancelLink">Cancel</a>
+      </div>
+   </fieldset>
+   </form>

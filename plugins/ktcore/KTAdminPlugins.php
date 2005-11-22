@@ -26,7 +26,7 @@ $oAdminRegistry->registerCategory("misc", "Miscellaneous", "Various settings whi
 // FIXME url traversal DOESN'T WORK
 
 // users and groups
-$oAdminRegistry->registerLocation("admin",null,"principals", "Add/Remove Users","Add or remove users from the system.",null, "/control.php?action=userManagement");
+$oAdminRegistry->registerLocation("users",'KTUserAdminDispatcher',"principals", "Manage Users","Add or remove users from the system.", KT_DIR . '/presentation/lookAndFeel/knowledgeTree/administration/usermanagement/userManagement.php', null);
 
 
 // documents

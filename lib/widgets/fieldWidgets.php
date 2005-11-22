@@ -69,6 +69,7 @@ class KTBaseWidget {
 
 /* Ultra simple items, could be extended later (e.g. JS)*/
 class KTStringWidget extends KTBaseWidget { var $sTemplate = "kt3/fields/base"; }
+class KTPasswordWidget extends KTBaseWidget { var $sTemplate = "kt3/fields/password"; }
 class KTIntegerWidget extends KTBaseWidget { var $sTemplate = "kt3/fields/base"; }
 class KTTextWidget extends KTBaseWidget { var $sTemplate = "kt3/fields/text"; }
 

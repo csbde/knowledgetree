@@ -53,7 +53,7 @@ class User extends KTEntity {
     var $bPasswordChanged;
 
 
-    function User($sNewUserName, $sNewName, $sNewPassword, $iNewQuotaMax, $sNewEmail, $sNewMobile, $bNewEmailNotification, $bNewSmsNotification, $sNewLdapDn, $iNewMaxSessions, $iNewLanguageID) {
+    function User($sNewUserName = null, $sNewName = null, $sNewPassword = null, $iNewQuotaMax = null, $sNewEmail= null, $sNewMobile= null, $bNewEmailNotification= null, $bNewSmsNotification= null, $sNewLdapDn= null, $iNewMaxSessions= null, $iNewLanguageID= null) {
         //object not created in database yet
         $this->iId = -1;
         $this->sUserName = $sNewUserName;
@@ -315,6 +315,22 @@ class User extends KTEntity {
             'language_id' => $this->iLanguageID,
         );
     }
+	
+	var $_aFieldToSelect = array(
+			'iId' => 'id',
+            'sUserName' => 'username',
+            'sName' => 'name',
+            'sPassword' => 'password',
+            'iQuotaMax' => 'quota_max',
+            'iQuotaCurrent' => 'quota_current',
+            'sEmail' => 'email',
+            'sMobile' => 'mobile',
+            'bEmailNotification' => 'email_notification',
+            'bSmsNotification' => 'sms_notification',
+            'sLdapDn' => 'ldap_dn',
+            'iMaxSessions' => 'max_sessions',
+            'iLanguageID' => 'language_id',		
+		);
 
     function _table() {
         global $default;
@@ -509,6 +525,8 @@ class User extends KTEntity {
 	    }
 	    return false;
 	}    
+	
+	function &createFromArray($aOptions) { return KTEntityUtil::createFromArray('User', $aOptions); }
 }
 
 /**
