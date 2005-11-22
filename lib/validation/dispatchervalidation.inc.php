@@ -156,6 +156,16 @@ class KTDispatcherValidation {
         $this->handleError($aOptions);
     }
 
+    function validateString($sString, $aOptions = null) {
+        $sString = trim($sString);
+        if (empty($sString)) {
+            $aOptions['message'] = KTUtil::arrayGet($aOptions,
+                    'message', "An empty string was given");
+            $this->handleError($aOptions);
+        }
+        return $sString;
+    }
+
     function validateDict($aDict, $aValidation, $aOptions = null) {
         foreach ($aValidation as $k => $aValidatorInfo) {
             $sDictValue = KTUtil::arrayGet($aDict, $k, null);
