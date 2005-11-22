@@ -31,6 +31,10 @@ class KTEntity {
     /** object primary key */
     var $iId = -1;
 
+    function getId() {
+        return $this->iId;
+    }
+    
     /**
      * Create the current object in the database
      *
