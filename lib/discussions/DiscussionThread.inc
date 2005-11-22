@@ -25,143 +25,80 @@
  * @package lib.discussions 
  */
 class DiscussionThread extends KTEntity{
+    var $_bUsePearError = true;
 
-    /**
-     * The underlying Discussion Comments class
-     */
-    var $iId;
-	var $iDocumentID;
-	var $iFirstCommentID;
-	var $iLastCommentID;
-	var $iNumberOfViews;
-	var $iNumberOfReplies;
-	var $iCreatorID;
+	var $iDocumentId;
+	var $iFirstCommentId = -1;
+	var $iLastCommentId = -1;
+	var $iNumberOfViews = 0;
+	var $iNumberOfReplies = 0;
+	var $iCreatorId;
 		
+    var $_aFieldToSelect = array(
+        'iId' => 'id',
+        'iDocumentId' => 'document_id',
+        'iFirstCommentId' => 'first_comment_id',
+        'iLastCommentId' => 'last_comment_id',
+        'iNumberOfViews' => 'views',
+        'iNumberOfReplies' => 'replies',
+        'iCreatorId' => 'creator_id',
+    );
 	
     /**
      * DiscussionThread Constructor
      */
-    function DiscussionThread($iNewFirstCommentID, $iNewDocumentID, $iNewCreatorID) {
-        global $default;
-        // create a new Discussion Thread object.        
-        $this->iDocumentID = $iNewDocumentID;
-        $this->iCreatorID = $iNewCreatorID;
-        $this->iId  = -1;
-        $this->iFirstCommentID = $iNewFirstCommentID;
-        $this->iLastCommentID = -1;
-        $this->iNumberOfViews = 0;
-        $this->iNumberOfReplies = 0;        
+    function DiscussionThread($iFirstCommentId = null, $iDocumentId = null, $iCreatorId = null) {
+        if (!empty($iDocumentId)) {
+            $this->iDocumentId = $iDocumentId;
+        }
+        if (!empty($iCreatorId)) {
+            $this->iCreatorId = $iCreatorId;
+        }
+        if (!empty($iFirstCommentId)) {
+            $this->iFirstCommentId = $iFirstCommentId;
+        }
     }
 
-    /**
-   	 * Get the iId for current thread
-   	 */   
-    function getID(){
-    	return $this->iId;	
-    }
-       
-    /**
-   	 * Get document id
-   	 */ 	
-    function getDocumentID(){
-    	return $this->iDocumentID;
-    }
-    
-    /**
-   	 * Get the id of the first comment
-   	 */
-    function getFirstCommentID(){
-    	return $this->iFirstCommentID;
-    }
-    
-    /**
-   	 * Set the First Comment ID
-   	 */
- 	function setFirstCommentID($NewFirstCommentID){
-    	$this->iFirstCommentID = $NewFirstCommentID;
-    }
-    
-    /**
-   	 * get the id of the last comment
-   	 */
-    function getLastCommentID(){
-    	return $this->iLastCommentID;
-    }
-    
-    /**
-   	 * Set the id of the last comment
-   	 */
-    function setLastCommentID($iNewLastComment){
-    	$this->iLastCommentID = $iNewLastComment;
-    }
-    
-    /**
-   	 * Get the total number of time the thread was viewed
-   	 */
-    function getNumberOfViews(){
-    	return $this->iNumberOfViews;
-    }
-    /**
-   	 * Set the total number of times the thread was viewed
-   	 */
-    function setNumberOfViews($iValue) {
-    	$this->iNumberOfViews = $iValue;    	 
-    }
-        
-    /**
-   	 * Increment the total number of times the thread was viewed
-   	 */
-    function incrementNumberOfViews() {
-    	$this->iNumberOfViews += 1;    	 
-    }
-    
-    /**
-   	 * Get the total number of replies(comments) in a thread
-   	 */
-    function getNumberOfReplies(){
-    	return $this->iNumberOfReplies;
-    }
-    
-    /**
-   	 * Increment the total number of replies (comments) in a thread
-   	 */
-    function incrementNumberOfReplies(){
-    	$this->iNumberOfReplies += 1; 
-    }
-    /**
-   	 * Set the total number of number of replies (comments) in a thread
-   	 */    
-    function setNumberOfReplies($iValue){
-    	$this->iNumberOfReplies = $iValue; 
-    }    
+    function getDocumentId(){ return $this->iDocumentId; }
+    function getCreatorId(){ return $this->iCreatorId; }
+    function getFirstCommentId(){ return $this->iFirstCommentId; }
+ 	function setFirstCommentId($NewFirstCommentId){ $this->iFirstCommentId = $NewFirstCommentId; }
+    function getLastCommentId(){ return $this->iLastCommentId; }
+    function setLastCommentId($iNewLastComment){ $this->iLastCommentId = $iNewLastComment; }
+    function getNumberOfViews(){ return $this->iNumberOfViews; }
+    function setNumberOfViews($iValue) { $this->iNumberOfViews = $iValue; }
+    function incrementNumberOfViews() { $this->iNumberOfViews += 1; }
+    function getNumberOfReplies(){ return $this->iNumberOfReplies; }
+    function incrementNumberOfReplies(){ $this->iNumberOfReplies += 1; }
+    function setNumberOfReplies($iValue){ $this->iNumberOfReplies = $iValue; }    
      
     /**
-     * Get a All commentID's seperated by a comma ","
+     * Get a All commentId's seperated by a comma ","
 	 */
-    function getAllCommentID() {
+    function getAllCommentId() {
     	global $default;
     	
     	$sql = $default->db;
         $aQuery = array("SELECT id FROM $default->discussion_threads_table WHERE document_id = ? ORDER BY id",/*ok*/
-            $this->iDocumentID);
+            $this->iDocumentId);
         $result = $sql->query($aQuery);
         if ($result) {
         	$sql->next_record();
-        	$iThreadID = $sql->f("id");
+        	$iThreadId = $sql->f("id");
         
             $aQuery = array("SELECT id FROM $default->discussion_comments_table WHERE thread_id = ? ORDER BY date DESC",/*ok*/
-                $iThreadID);
+                $iThreadId);
 	        $result = $sql->query($aQuery);
 	        
 	        if ($result) {           
 	            while ($sql->next_record()) {
 	                if ($sql->f("id") > 0) {
-	                	$sAllCommentID .= $sql->f("id") . ",";                		
+	                	$sAllCommentId .= $sql->f("id") . ",";                		
 	                } else {
-	                	//ID not valid 
+	                	//Id not valid 
 	                }                
 	            }
-	            return $sAllCommentID ;            
+	            return $sAllCommentId ;            
 	        }
 	        return false;
         } else {
@@ -182,10 +119,10 @@ class DiscussionThread extends KTEntity{
         return KTEntityUtil::getList(DiscussionThread::_table(), 'DiscussionThread', $sWhereClause);
     }
 	     
-    function getThreadIDforDoc($iDocumentID){
+    function getThreadIdforDoc($iDocumentId){
     	global $default;	
 		$sql = $default->db;
-        $result = $sql->query(array("SELECT id FROM $default->discussion_threads_table WHERE document_id = ?", $iDocumentID));/*ok*/
+        $result = $sql->query(array("SELECT id FROM $default->discussion_threads_table WHERE document_id = ?", $iDocumentId));/*ok*/
         if ($result) {        
             if ($sql->next_record()) {
                 if ($sql->f("id") > 0) {
@@ -200,45 +137,8 @@ class DiscussionThread extends KTEntity{
     }
     
     
-    /**
-    * Static function.
-    * Given a web_documents primary key it will create a 
-    * DiscussionThread object and populate it with the 
-    * corresponding database values
-    *
-    * @return Unit populated Unit object on successful query, false otherwise and set $_SESSION["errorMessage"]
-    */
-    function & get($iNewThreadID) {
-        global $default;
-        $sql = $default->db;
-        $result = $sql->query(array("SELECT * FROM $default->discussion_threads_table WHERE id = ?", $iNewThreadID));/*ok*/
-        if ($result) {
-            if ($sql->next_record()) {
-                			
-                $oDiscussionThread = & new DiscussionThread($sql->f("first_comment_id"),
-			                								$sql->f("document_id"),
-			                								$sql->f("creator_id"));
-              	
-                $oDiscussionThread->iId 			 = $iNewThreadID;
-                $oDiscussionThread->iLastCommentID   = $sql->f("last_comment_id");
-                $oDiscussionThread->iNumberOfViews   = $sql->f("views");
-                $oDiscussionThread->iNumberOfReplies = $sql->f("replies");
-                return $oDiscussionThread;
-            }
-            return false;
-        }
-        return false;
-    }
-
-    function _fieldValues () {
-        return array(
-            'document_id' => $this->iDocumentID,
-            'first_comment_id' => $this->iFirstCommentID,
-            'last_comment_id' => $this->iLastCommentID,
-            'views' => $this->iNumberOfViews,
-            'replies' => $this->iNumberOfReplies,
-            'creator_id' => $this->iCreatorID,
-        );
+    function &get($iId) {
+        return KTEntityUtil::get('DiscussionThread', $iId);
     }
 
     function _table () {
@@ -246,36 +146,17 @@ class DiscussionThread extends KTEntity{
         return $default->discussion_threads_table;
     }
 
-    /**
-   	 * Delete a thread in the table
-   	 */
-   	function delete(){
-    	 global $default;
-        
-        //only delete the object if it exists in the database
-        if ($this->iId > 0) {
-            //check to see if group is linked to a unit
-            $sql = $default->db;
-            $query = array("SELECT * FROM ". $default->discussion_threads_table ." WHERE id = ?", $this->iId);/*ok*/
-            $sql->query($query);
-            $rows = $sql->num_rows($sql);
+    function &createFromArray($aArray) {
+        return KTEntityUTil::createFromArray('DiscussionThread', $aArray);
+    }
 
-            if ($rows > 1) {
-                // duplicate Thread exists
-                $_SESSION["errorMessage"] = "Thread::The Thread id " . $this->iId . " has duplicates!";
-                return false;
+    function getComments() {
+        return DiscussionComment::getByThread($this);
+    }
 
-            } else {
-                $sql = $default->db;
-                $result = $sql->query("DELETE FROM $default->discussion_threads_table WHERE id = $this->iId");
-                if ($result) {
-                    return true;
-                }
-                return false;
-            }
-        }
-        return false;
-    }    
+    function getCommentsSortedByDate() {
+        return DiscussionComment::getByThreadSortedByDate($this);
+    }
 }
 
 ?>
