@@ -1,0 +1,19 @@
+<h2>Add a user</h2>
+
+<p class="descriptiveText"><strong>FIXME</strong> brief overview of user management.</p>
+<div class="ktError"><p><strong>FIXME</strong> handle LDAP users and read-only sources 
+correctly in the add section.</p></div>
+
+   <form action="{$smarty.server.PHP_SELF}" method="POST">
+   <input type="hidden" name="action" value="createUser" />
+   <fieldset>
+      <legend>Create a new user</legend>
+      {foreach item=oWidget from=$add_fields}
+        {$oWidget->render()}
+      {/foreach}
+      <div class="form_actions">
+         <input type="submit" value="create user" />
+         <a href="?action=main" class="ktCancelLink">Cancel</a>
+      </div>
+   </fieldset>
+   </form>

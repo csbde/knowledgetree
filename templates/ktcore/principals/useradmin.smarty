@@ -1,0 +1,63 @@
+<h2>User Management</h2>
+
+<p class="descriptiveText"><strong>FIXME</strong> brief overview of user management.</p>
+<div class="ktError"><p>Restrict groups that are editable based on <strong>group_id</strong> if only a unitAdmin</p></div>
+
+<!-- FIXME inline CSS is _very_ bad. -->
+
+<p><a href="?action=addUser" class="ktAction ktAddUser" style="float: left; padding-right: 0.5em;">Add User</a><a href="?action=addUser">Add a new user</a>.</p>
+
+<!-- we roll both in here. -->
+<form action="{$smarty.server.PHP_SELF}" method="GET">
+<fieldset>
+<legend>Search for users</legend>
+<p class="descriptiveText">Since there may be many users in the system, please
+select a group from the list below, or type a few letters from the person's username
+to begin. Alternatively, <a href="?show_all=1">view all users</a> (note that this may be
+very slow if you have many users.</p>
+
+{foreach item=oWidget from=$search_fields}
+  {$oWidget->render()}
+{/foreach}
+
+<div class="form_actions">
+   <input type="submit" value="search for users" />
+</div class="form_actions">
+</fieldset>
+</form>
+
+<table class="listing">
+<thead>
+   <tr>
+      <th>Name</th>
+      <th>Username</th>
+      <th>Edit</th>
+      <th>Delete</th>
+      <th>Group Memberships</th>
+   </tr>
+</thead>
+<tbody>
+   {if (!empty($search_results))}
+   <!-- do we want to batch here? -->
+     {foreach item=oUser from=$search_results}
+     <tr>
+        <td>{$oUser->getName()}</td>
+        <td>{$oUser->getUsername()}</td>
+        <td><a href="?action=editUser&user_id={$oUser->getId()}" class="ktAction ktEdit">Edit</a></td>
+        <td><a href="?action=deleteuser&user_id={$oUser->getId()}" class="ktAction ktDelete">Delete</a></td>
+        <td><a href="?action=editgroups&user_id={$oUser->getId()}">Groups</a></td>  
+     </tr>   
+     {/foreach}
+   {else}  
+   <tr>
+      <td colspan="5" class="ktInfo">
+         <!-- never show a very large set, if you can help it. -->
+         <p>No search specified, or no results for your search.  Please choose some criteria from the list above to find users.</p>
+      </td>
+   </tr>
+   {/if}
+<!--
+   
+-->
+</tbody>
+</table>
