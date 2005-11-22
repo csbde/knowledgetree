@@ -9,11 +9,19 @@
        <link rel="stylesheet" type="text/css" href="{$rootUrl}/{$sResourceURL}" />
     {/foreach}
     
+    <!-- Standalone CSS. -->
+    {foreach item=sCSS from=$page->getCSSStandalone()}
+       <style>
+{$sCSS}
+       </style>
+    {/foreach}
+
     <!-- Javascript Files. -->
     {foreach item=sResourceURL from=$page->getJSResources()}
        <script type="text/javascript" src="{$rootUrl}/{$sResourceURL}"> </script>
     {/foreach}
 
+    <!-- Standalone Javascript. -->
     {foreach item=sJavascript from=$page->getJSStandalone()}
        <script type="text/javascript">
 {$sJavascript}
