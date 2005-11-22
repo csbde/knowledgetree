@@ -145,7 +145,7 @@ class KTFolderActionUtil {
 }
 
 class KTBuiltInFolderAction extends KTFolderAction {
-    var $sBuildInAction;
+    var $sBuiltInAction;
     function getURL() {
         return sprintf("/control.php?action=%s&fFolderID=%d", $this->sBuiltInAction, $this->oFolder->getID());
     }
