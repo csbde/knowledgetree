@@ -138,8 +138,7 @@ class KTFolderActionUtil {
             $oRegistry = KTPluginRegistry::getSingleton();
             $oPlugin =& $oRegistry->getPlugin($sPlugin);
             if (!empty($sPath)) {
-                // require_once(KT_DIR .
-                // Or something...
+                require_once($sPath);
             }
             $aObjects[] =& new $sClassName($oFolder, $oUser, $oPlugin);
         }
