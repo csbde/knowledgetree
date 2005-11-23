@@ -1,18 +1,21 @@
 <?php
 
-require_once(KT_LIB_DIR . '/actions/actionregistry.inc.php');
-require_once(KT_LIB_DIR . '/actions/portletregistry.inc.php');
-require_once(KT_LIB_DIR . '/triggers/triggerregistry.inc.php');
 require_once(KT_LIB_DIR . '/subscriptions/Subscription.inc');
 require_once(KT_LIB_DIR . '/subscriptions/SubscriptionEngine.inc');
 require_once(KT_LIB_DIR . '/subscriptions/SubscriptionConstants.inc');
 require_once(KT_LIB_DIR . '/subscriptions/SubscriptionManager.inc');
 
+require_once(KT_LIB_DIR . '/plugins/pluginregistry.inc.php');
 require_once(KT_LIB_DIR . '/plugins/plugin.inc.php');
+
 class KTSubscriptionPlugin extends KTPlugin {
     var $sNamespace = "ktstandard.subscriptions.plugin";
 }
-$oPlugin = new KTSubscriptionPlugin(__FILE__);
+
+$oPluginRegistry =& KTPluginRegistry::getSingleton();
+$oPluginRegistry->registerPlugin('KTSubscriptionPlugin', 'ktstandard.subscriptions.plugin', __FILE__);
+// $oPlugin = new KTSubscriptionPlugin(__FILE__);
+$oPlugin =& $oPluginRegistry->getPlugin('ktstandard.subscriptions.plugin');
 
 // {{{ KTSubscriptionPortlet
 class KTSubscriptionPortlet extends KTPortlet {
@@ -52,7 +55,7 @@ class KTSubscriptionPortlet extends KTPortlet {
             }
         }
 
-        $this->actions[] = array("name" => "Manage subscriptions", "url" => $this->oPlugin->getPagePath(''));
+        $this->actions[] = array("name" => "Manage subscriptions", "url" => $this->oPlugin->getPagePath('manage'));
 
         $oTemplating = new KTTemplating;
         $oTemplate = $oTemplating->loadTemplate("kt3/portlets/actions_portlet");
