@@ -132,13 +132,13 @@ class KTFolderAddFolderAction extends KTFolderAction {
             'redirect_to' => array('main', sprintf('fFolderId=%d', $this->oFolder->getId())),
         );
         $sFolderName = KTUtil::arrayGet($_REQUEST, 'name');
-        $aErrorOptions['message'] = "No name given";
+        $aErrorOptions['defaultmessage'] = "No name given";
         $sFolderName = $this->oValidator->validateString($sFolderName, $aErrorOptions);
 
         $this->startTransaction();
 
         $res = KTFolderUtil::add($this->oFolder, $sFolderName, $this->oUser);
-        $aErrorOptions['message'] = "Could not create folder in the document management system";
+        $aErrorOptions['defaultmessage'] = "Could not create folder in the document management system";
         $this->oValidator->notError($res, $aErrorOptions);
 
         $this->commitTransaction();
