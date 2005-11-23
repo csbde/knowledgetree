@@ -52,12 +52,15 @@ class KTDispatcher {
         $this->bTransactionStarted = false;
     }
 
-    function errorRedirectTo($event, $error_message, $sQuery = "") {
+    function errorRedirectTo($event, $error_message, $sQuery = "", $oException = null) {
         if ($this->bTransactionStarted) {
             $this->rollbackTransaction();
         }
 
         $_SESSION['KTErrorMessage'][] = $error_message;
+        /* if ($oException) {
+            $_SESSION['Exception'][$error_message] = $oException;
+        }*/
         $this->redirectTo($event, $sQuery);
     }
 
@@ -210,11 +213,13 @@ class KTStandardDispatcher extends KTDispatcher {
         $this->oPage->render();
     }
 
-    function errorPage($errorMessage) {
+    function errorPage($errorMessage, $oException = null) {
         if ($this->bTransactionStarted) {
             $this->rollbackTransaction();
         }
-        $this->handleOutput($errorMessage);
+        $sOutput = $errorMessage;
+        $sOutput .= $oException->getString();
+        $this->handleOutput($sOutput);
         exit(0);
     }
 }
