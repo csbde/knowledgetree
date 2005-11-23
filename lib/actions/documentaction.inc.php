@@ -21,9 +21,10 @@ class KTDocumentAction extends KTStandardDispatcher {
         array('action' => 'browse', 'name' => 'Browse'),
     );
 
-    function KTDocumentAction($oDocument = null, $oUser = null) {
+    function KTDocumentAction($oDocument = null, $oUser = null, $oPlugin = null) {
         $this->oDocument =& $oDocument;
         $this->oUser =& $oUser;
+        $this->oPlugin =& $oPlugin;
         parent::KTStandardDispatcher();
     }
 
@@ -143,12 +144,14 @@ class KTDocumentActionUtil {
     function &getDocumentActionsForDocument($oDocument, $oUser) {
         $aObjects = array();
         foreach (KTDocumentActionUtil::getDocumentActionInfo() as $aAction) {
-            list($sClassName, $sPath) = $aAction;
+            list($sClassName, $sPath, $sPlugin) = $aAction;
+            $oRegistry =& KTPluginRegistry::getSingleton();
+            $oPlugin =& $oRegistry->getPlugin($sPlugin);
             if (!empty($sPath)) {
                 // require_once(KT_DIR .
                 // Or something...
             }
-            $aObjects[] =& new $sClassName($oDocument, $oUser);
+            $aObjects[] =& new $sClassName($oDocument, $oUser, $oPlugin);
         }
         return $aObjects;
     }
@@ -158,12 +161,14 @@ class KTDocumentActionUtil {
         $oDocument = null;
         $oUser = null;
         foreach (KTDocumentActionUtil::getDocumentActionInfo() as $aAction) {
-            list($sClassName, $sPath, $sName) = $aAction;
+            list($sClassName, $sPath, $sName, $sPlugin) = $aAction;
+            $oRegistry =& KTPluginRegistry::getSingleton();
+            $oPlugin =& $oRegistry->getPlugin($sPlugin);
             if (!empty($sPath)) {
                 // require_once(KT_DIR .
                 // Or something...
             }
-            $aObjects[] =& new $sClassName($oDocument, $oUser);
+            $aObjects[] =& new $sClassName($oDocument, $oUser, $oPlugin);
         }
         return $aObjects;
     }
@@ -173,7 +178,9 @@ class KTDocumentActionUtil {
         $oDocument = null;
         $oUser = null;
         foreach (KTDocumentActionUtil::getDocumentActionInfo() as $aAction) {
-            list($sClassName, $sPath, $sName) = $aAction;
+            list($sClassName, $sPath, $sName, $sPlugin) = $aAction;
+            $oRegistry =& KTPluginRegistry::getSingleton();
+            $oPlugin =& $oRegistry->getPlugin($sPlugin);
             if (!in_array($sName, $aNames)) {
                 continue;
             }
@@ -181,7 +188,7 @@ class KTDocumentActionUtil {
                 // require_once(KT_DIR .
                 // Or something...
             }
-            $aObjects[] =& new $sClassName($oDocument, $oUser);
+            $aObjects[] =& new $sClassName($oDocument, $oUser, $oPlugin);
         }
         return $aObjects;
     }

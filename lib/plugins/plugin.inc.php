@@ -18,23 +18,23 @@ class KTPlugin {
 
     function registerPortlet($aLocation, $sPortletClassName, $sPortletNamespace, $sFilename = null) {
         $sFilename = $this->_fixFilename($sFilename);
-        $this->_aPortlets[$sPortletNamespace] = array($aLocation, $sPortletClassName, $sPortletNamespace, $sFilename, &$this);
+        $this->_aPortlets[$sPortletNamespace] = array($aLocation, $sPortletClassName, $sPortletNamespace, $sFilename, $this->sNamespace);
     }
 
     function registerTrigger($sAction, $sStage, $sTriggerClassName, $sTriggerNamespace, $sFilename = null) {
         $sFilename = $this->_fixFilename($sFilename);
-        $this->_aTriggers[$sTriggerNamespace] = array($sAction, $sStage, $sTriggerClassName, $sTriggerNamespace, $sFilename, &$this);
+        $this->_aTriggers[$sTriggerNamespace] = array($sAction, $sStage, $sTriggerClassName, $sTriggerNamespace, $sFilename, $this->sNamespace);
     }
 
     function registerAction($sActionType, $sActionClassName, $sActionNamespace, $sFilename = null) {
         $sFilename = $this->_fixFilename($sFilename);
-        $this->_aActions[$sActionNamespace] = array($sActionType, $sActionClassName, $sActionNamespace, $sFilename, &$this);
+        $this->_aActions[$sActionNamespace] = array($sActionType, $sActionClassName, $sActionNamespace, $sFilename, $this->sNamespace);
     }
 
     function registerPage($sWebPath, $sPageClassName, $sFilename = null) {
         $sFilename = $this->_fixFilename($sFilename);
         $sWebPath = sprintf("%s/%s", $this->sNamespace, $sWebPath);
-        $this->_aPages[$sWebPath] = array($sWebPath, $sPageClassName, $sFilename, &$this);
+        $this->_aPages[$sWebPath] = array($sWebPath, $sPageClassName, $sFilename, $this->sNamespace);
     }
 
     function getPagePath($sPath) {

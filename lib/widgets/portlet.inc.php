@@ -13,9 +13,14 @@ require_once(KT_LIB_DIR . "/templating/templating.inc.php");
 // FIXME need to establish some kind of api to pass in i18n information.
 class KTPortlet {
     var $sTitle;
+    var $oPlugin;
         
     function KTPortlet($title='') {
         $this->sTitle = $title;
+    }
+
+    function setPlugin(&$oPlugin) {
+        $this->oPlugin =& $oPlugin;
     }
     
     // this should multiplex i18n_title
