@@ -24,6 +24,10 @@
  * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
  * @package lib.groups 
  */
+ 
+require_once(KT_LIB_DIR . '/groups/GroupUnitLink.inc'); 
+require_once(KT_LIB_DIR . '/unitmanagement/Unit.inc'); 
+ 
 class Group extends KTEntity {
 	
 	/** primary key of current object */
@@ -114,6 +118,43 @@ class Group extends KTEntity {
 	    	return true;
 		} else {
 			return false;
+		}
+	}
+	
+	function _getUnitLink() {
+		$oldUnitLink = GroupUnitLink::getList('group_id = ' . $this->getID()); 
+		if (count($oldUnitLink) != 0) {
+		    return $oldUnitLink[0];
+		} else {
+		    return null;
+		}
+	}
+	
+	function setUnit($iUnitId) {
+	    if ($this->hasUnit()) { 
+		    $oldUnitLink = $this->_getUnitLink();
+			$oldUnitLink->setUnitID($iUnitId);
+			$oldUnitLink->update();
+		} else {
+			$unitLink = new GroupUnitLink($this->iId, $iUnitId);
+			$unitLink->create();
+		}
+	}
+	
+	function clearUnit() {
+	    $oLink = $this->_getUnitLink();
+		if ($oLink !== null) {
+		    $oLink->delete();
+		}
+	}
+	
+	function getUnit() {
+	    $oLink = $this->_getUnitLink();
+		if ($oLink !== null) {
+		    $oUnit = Unit::get($oLink->getUnitID());
+		    return $oUnit;
+		} else {
+		    return null;
 		}
 	}
 	

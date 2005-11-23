@@ -1,0 +1,44 @@
+<h2>Orgnisation Administration</h2>
+
+<p class="descriptiveText"><strong>FIXME</strong> Overview of Organisations.</p>
+
+{if ($for_edit === true)}
+
+<form action="{$smarty.server.PHP_SELF}" method="GET">
+<fieldset>
+<legend>Change organisation details</legend>
+
+asd
+<input type="hidden" name="action" value="updateOrg" />
+<input type="hidden" name="org_id" value="{$edit_org->getId()}" />
+
+
+{foreach item=oWidget from=$edit_fields}
+  {$oWidget->render()}
+{/foreach}
+
+<div class="form_actions">
+   <input type="submit" value="update organisation information" />
+</div class="form_actions">
+</fieldset>
+</form>
+
+{/if}
+
+<table class="listing">
+<thead>
+   <tr>
+      <th>Organisation Name</th>
+      <th>Edit</th>
+   </tr>
+</thead>
+<tbody>
+     {foreach item=oOrg from=$org_list}
+     <tr>
+        <td>{$oOrg->getName()}</td>
+        <td><a href="?org_id={$oOrg->getId()}" class="ktAction ktEdit">Edit</a></td>
+
+     </tr>   
+     {/foreach}
+</tbody>
+</table>

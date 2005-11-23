@@ -30,7 +30,6 @@ very slow if you have many groups.</p>
       <th>Group Name</th>
       <th>Unit Name</th>
       <th>Edit</th>
-      <th>Change Unit</th>
       <th>Manage Users</th>
       <th>Manage sub-groups</th>
       <th>Delete</th>
@@ -43,10 +42,10 @@ very slow if you have many groups.</p>
      <tr>
         <td>{$oGroup->getName()}</td>
         <td>{if (!$oGroup->hasUnit())}<span class="descriptiveText">not part of a unit</span>{else} 
-            <strong>fixme</strong> unit.
+            {$context->_getUnitName($oGroup)}
+            
         {/if}</td>
         <td><a href="?action=editGroup&group_id={$oGroup->getId()}" class="ktAction ktEdit">Edit</a></td>
-        <td><a href="?action=changeUnit&group_id={$oGroup->getId()}">Change Unit</a></td>
         <td><a href="?action=manageUsers&group_id={$oGroup->getId()}">Manage Users</a></td>  
         <td><a href="?action=manageSubgroups&group_id={$oGroup->getId()}">Manage sub-groups</a></td>
         <td><a href="?action=deleteGroup&group_id={$oGroup->getId()}" class="ktAction ktDelete">Delete</a></td>

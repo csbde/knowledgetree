@@ -5,6 +5,7 @@
 require_once(KT_LIB_DIR . '/users/User.inc');
 require_once(KT_LIB_DIR . '/groups/GroupUtil.php');
 require_once(KT_LIB_DIR . '/groups/Group.inc');
+require_once(KT_LIB_DIR . '/unitmanagement/Unit.inc');
 
 require_once(KT_LIB_DIR . "/templating/templating.inc.php");
 require_once(KT_LIB_DIR . "/dispatcher.inc.php");
@@ -66,6 +67,20 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
 		$edit_fields[] =  new KTStringWidget('Group Name','A short name for the group.  e.g. <strong>administrators</strong>.', 'group_name', $oGroup->getName(), $this->oPage, true);
 		$edit_fields[] =  new KTCheckboxWidget('Unit Administrators','Should all the members of this group be given <strong>unit</strong> administration privilidges?', 'is_unitadmin', $oGroup->getUnitAdmin(), $this->oPage, false);
 		$edit_fields[] =  new KTCheckboxWidget('System Administrators','Should all the members of this group be given <strong>system</strong> administration privilidges?', 'is_sysadmin', $oGroup->getSysAdmin(), $this->oPage, false);
+		
+		// grab all units.
+		$unit = $oGroup->getUnit();
+		if ($unit == null) { $unitId = 0; }
+		else { $unitId = $unit->getID(); }
+		
+		
+		$oUnits = Unit::getList();
+		$vocab = array();
+		$vocab[0] = 'No Unit';
+		foreach ($oUnits as $oUnit) { $vocab[$oUnit->getID()] = $oUnit->getName(); } 
+		$aOptions = array('vocab' => $vocab);
+		
+		$edit_fields[] =  new KTLookupWidget('Unit','Which Unit is this group part of?', 'unit_id', $unitId, $this->oPage, false, null, null, $aOptions);
 			
 		$oTemplating = new KTTemplating;        
 		$oTemplate = $oTemplating->loadTemplate("ktcore/principals/editgroup");
@@ -96,6 +111,12 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
 		$oGroup->setUnitAdmin($is_unitadmin);
 		$oGroup->setSysAdmin($is_sysadmin);
 
+		$unit_id = KTUtil::arrayGet($_REQUEST, 'unit_id', 0);
+		if ($unit_id == 0) { // not set, or set to 0.
+		    $oGroup->clearUnit(); // safe.
+		} else {
+		    $oGroup->setUnit($unit_id);
+		}
 		
 		$res = $oGroup->update();
 		if (($res == false) || (PEAR::isError($res))) { return $this->errorRedirectToMain('Failed to set group details.'); }
@@ -255,6 +276,12 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
         );
         return $oTemplate->render($aTemplateData);        
     }    
+
+	function _getUnitName($oGroup) {
+		$u =  $oGroup->getUnit();
+		
+		return $u->getName();
+	}  
 
 	// FIXME copy-paste ...
     function do_updateGroupMembers() {
