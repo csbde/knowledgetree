@@ -37,6 +37,10 @@ class KTActionDispatcher extends KTStandardDispatcher {
             $this->error = true;
             $this->errorPage("No such action exists in KnowledgeTree");
         }
+        $sFilename = $aActionInfo[1];
+        if (!empty($sFilename)) {
+            require_once($sFilename);
+        }
         $oAction = new $aActionInfo[0];
         $oAction->dispatch();
     }
