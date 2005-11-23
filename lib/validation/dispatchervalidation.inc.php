@@ -1,5 +1,7 @@
 <?php
 
+require_once(KT_LIB_DIR . '/validation/errorviewer.inc.php');
+
 class KTDispatcherValidation {
     function KTDispatcherValidation(&$oDispatcher) {
         $this->oDispatcher =& $oDispatcher;
@@ -76,18 +78,29 @@ class KTDispatcherValidation {
         $aRedirectTo = KTUtil::arrayGet($aOptions, 'redirect_to');
         $oException = KTUtil::arrayGet($aOptions, 'exception');
         $sMessage = KTUtil::arrayGet($aOptions, 'message');
-        if (is_null($sMessage)) {
+        $sDefaultMessage = KTUtil::arrayGet($aOptions, 'defaultmessage');
+        if (empty($sMessage)) {
             if ($oException) {
-                $sMessage = $oException->toString();
+                $oEVRegistry = KTErrorViewerRegistry::getSingleton();
+                $oViewer = $oEVRegistry->getViewer($oException);
+                $sMessage = $oViewer->view();
+            } elseif ($sDefaultMessage) {
+                $sMessage = $sDefaultMessage;
             } else {
                 $sMessage = "An error occurred, and no error message was given";
             }
+        } else {
+            if ($oException) {
+                $sMessage .= ': ' . $oException->getMessage();
+            }
         }
         if ($aRedirectTo) {
-            $aRealRedirectTo = array($aRedirectTo[0], $sMessage, KTUtil::arrayGet($aRedirectTo, 1));
+            $aRedirectParams = KTUtil::arrayGet($aRedirectTo, 1);
+            $aRealRedirectTo = array($aRedirectTo[0], $sMessage, $aRedirectParams);
+            $aRealRedirectTo[] = $oException;
             call_user_func_array(array($this->oDispatcher, 'errorRedirectTo'), $aRealRedirectTo);
         }
-        $this->oDispatcher->errorPage($sMessage);
+        $this->oDispatcher->errorPage($sMessage, $oException);
     }
 
     function &validateTemplate($sTemplateName, $aOptions = null) {
