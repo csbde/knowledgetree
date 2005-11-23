@@ -11,15 +11,15 @@ class KTPortletRegistry {
     }
     // }}}
 
-    function registerPortlet($action, $name, $nsname, $path = "") {
+    function registerPortlet($action, $name, $nsname, $path = "", $sPlugin) {
         if (!is_array($action)) {
             $action = array($action);
         }
         foreach ($action as $slot) {
             $this->portlets[$slot] = KTUtil::arrayGet($this->actions, $slot, array());
-            $this->actions[$slot][$nsname] = array($name, $path, $nsname);
+            $this->actions[$slot][$nsname] = array($name, $path, $nsname, $sPlugin);
         }
-        $this->nsnames[$nsname] = array($name, $path, $nsname);
+        $this->nsnames[$nsname] = array($name, $path, $nsname, $sPlugin);
     }
 
     function getPortletsForPage($aBreadcrumbs) {
@@ -48,7 +48,12 @@ class KTPortletRegistry {
             $aDone[] = $aPortlet;
 
             $sPortletClass = $aPortlet[0];
-            $aReturn[] = new $sPortletClass;
+            $sPluginName = $aPortlet[3];
+            $oRegistry = KTPluginRegistry::getSingleton();
+            $oPlugin =& $oRegistry->getPlugin($sPluginName);
+            $oPortlet =&  new $sPortletClass;
+            $oPortlet->setPlugin($oPlugin);
+            array_push($aReturn, &$oPortlet);
         }
         return $aReturn;
     }

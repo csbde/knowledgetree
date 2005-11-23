@@ -18,9 +18,10 @@ class KTFolderAction extends KTStandardDispatcher {
         array('action' => 'browse', 'name' => 'Browse'),
     );
 
-    function KTFolderAction($oFolder = null, $oUser = null) {
-        $this->oFolder = $oFolder;
-        $this->oUser = $oUser;
+    function KTFolderAction($oFolder = null, $oUser = null, $oPlugin = null) {
+        $this->oFolder =& $oFolder;
+        $this->oUser =& $oUser;
+        $this->oPlugin =& $oPlugin;
         parent::KTStandardDispatcher();
     }
 
@@ -133,12 +134,14 @@ class KTFolderActionUtil {
     function &getFolderActionsForFolder($oFolder, $oUser) {
         $aObjects = array();
         foreach (KTFolderActionUtil::getFolderActions() as $aAction) {
-            list($sClassName, $sPath) = $aAction;
+            list($sClassName, $sPath, $sPlugin) = $aAction;
+            $oRegistry = KTPluginRegistry::getSingleton();
+            $oPlugin =& $oRegistry->getPlugin($sPlugin);
             if (!empty($sPath)) {
                 // require_once(KT_DIR .
                 // Or something...
             }
-            $aObjects[] =& new $sClassName($oFolder, $oUser);
+            $aObjects[] =& new $sClassName($oFolder, $oUser, $oPlugin);
         }
         return $aObjects;
     }
