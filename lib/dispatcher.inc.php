@@ -218,7 +218,9 @@ class KTStandardDispatcher extends KTDispatcher {
             $this->rollbackTransaction();
         }
         $sOutput = $errorMessage;
-        $sOutput .= $oException->getString();
+        if ($oException) {
+            $sOutput .= $oException->getString();
+        }
         $this->handleOutput($sOutput);
         exit(0);
     }
