@@ -496,6 +496,7 @@ class KTDocumentMoveAction extends KTDocumentAction {
 $oKTActionRegistry->registerAction('documentaction', 'KTDocumentMoveAction', 'ktcore.actions.document.move');
 // }}}
 
+// {{{ KTDocumentHistoryAction
 class KTDocumentHistoryAction extends KTDocumentAction {
     var $sDisplayName = 'History';
     var $sName = 'ktcore.actions.document.history';
@@ -505,7 +506,9 @@ class KTDocumentHistoryAction extends KTDocumentAction {
     }
 }
 $oKTActionRegistry->registerAction('documentaction', 'KTDocumentHistoryAction', 'ktcore.actions.document.history');
+// }}}
 
+// {{{ KTDocumentArchiveAction
 class KTDocumentArchiveAction extends KTDocumentAction {
     var $sDisplayName = 'Archive';
     var $sName = 'ktcore.actions.document.archive';
@@ -562,7 +565,9 @@ class KTDocumentArchiveAction extends KTDocumentAction {
     }
 }
 $oKTActionRegistry->registerAction('documentaction', 'KTDocumentArchiveAction', 'ktcore.actions.document.archive');
+// }}}
 
+// {{{ KTDocumentWorkflowAction
 class KTDocumentWorkflowAction extends KTDocumentAction {
     var $sBuiltInAction = 'documentWorkflow';
     var $sDisplayName = 'Workflow';
@@ -624,5 +629,6 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
     }
 }
 $oKTActionRegistry->registerAction('documentaction', 'KTDocumentWorkflowAction', 'ktcore.actions.document.workflow');
+// }}}
 
 ?>
