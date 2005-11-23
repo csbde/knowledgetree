@@ -1,0 +1,35 @@
+{if !$aFolderSubscriptions && !$aDocumentSubscriptions}
+<div class="ktError">
+<p>You have no subscriptions</p>
+</div>
+{else}
+
+<p class="descriptiveText">You are subscribed to the folders listed
+below.  You can remove your subscription by selecting the folders to
+which you no longer wish to subscribe.</p>
+
+<form method="POST" action="{$smarty.server.PHP_SELF}">
+<input type="hidden" name="action" value="removeSubscriptions" />
+<fieldset><legend>Subscriptions</legend>
+
+{if $aFolderSubscriptions}
+{entity_checkboxes name="foldersubscriptions" entities=$aFolderSubscriptions method=getContentLink assign=aCheckboxes}
+{foreach from=$aCheckboxes item=oCheckbox}
+{$oCheckbox}<br />
+{/foreach}
+{/if}
+
+{if $aDocumentSubscriptions}
+{entity_checkboxes name="documentsubscriptions" entities=$aFolderSubscriptions method=getContentLink assign=aCheckboxes}
+{foreach from=$aCheckboxes item=oCheckbox}
+{$oCheckbox}<br />
+{/foreach}
+{/if}
+
+<div class="form_actions ">
+  <input type="submit" name="submit" value="Remove subscription" />
+</div>
+</fieldset>
+</form>
+
+{/if}
