@@ -1,0 +1,71 @@
+<h2>Manage Sub-Groups in {$edit_group->getName()}</h2>
+
+{$context->oPage->requireJSResource('thirdpartyjs/OptionTransfer.js')}
+{$context->oPage->requireJSResource('thirdpartyjs/MochiKit/Base.js')}
+{$context->oPage->requireJSResource('thirdpartyjs/MochiKit/Iter.js')}
+{$context->oPage->requireJSResource('thirdpartyjs/MochiKit/DOM.js')}
+
+<p class="descriptiveText"><strong>FIXME</strong> help text for group-editing.  
+<strong>FIXME</strong> there are potential unexpected
+side-effects to this when used by unitAdmins.</p>
+
+<form action="{$smarty.server.PHP_SELF}" method="GET" id="usergroupform">
+   <input type="hidden" name="action" value="updateGroupMembers" />
+   <input type="hidden" name="group_id" value="{$edit_group->getId()}" />
+   <!-- erk. FIXME clean up and remove OptionTransfer.js. -->
+   
+   <input type="hidden" name="groupAdded" />
+   <input type="hidden" name="groupRemoved" />
+   
+   
+   <fieldset>
+      <legend>Change Sub-Groups in {$edit_group->getName()}</legend>
+      <p class="descriptiveText">Select the groups which should be part of this group. <strong>FIXME</strong> this helptext is v. awkward.</p>
+
+<table border="0" width="600">
+   <thead>
+      <tr>
+         <th>Available Groups</th>
+         <th>&nbsp;</th>
+         <th>Assigned Groups</th>
+      </tr>
+   </thead>
+   <tbody>
+      <tr>
+         <td valign="top" width="1%">
+           <select name="groupSelect" size="10" multiple="multiple">
+               {foreach item=oGroup from=$unused_groups}
+               <option value="{$oGroup->getId()}" ondblclick="optGroup.transferRight()">{$oGroup->getName()}</option>
+               {/foreach}
+           </select>
+         </td>
+         <td align="center">
+            <input name="right" style="width: 60px;" value="&raquo;" onclick="optGroup.transferRight()" type="button"><br /><br />
+            <input name="left" style="width: 60px;" value="&laquo;" onclick="optGroup.transferLeft()" type="button">
+         </td>
+         <td valign="top" width="1%">
+            <select name="chosenGroups" size="10" multiple="multiple">
+               {foreach item=oGroup from=$group_members}
+               <option value="{$oGroup->getId()}" ondblclick="optGroup.transferRight()">{$oGroup->getName()}</option>
+               {/foreach}
+               
+            </select>
+         </td>
+      </tr>
+      <tr>
+         <td><label for="ug-filter">Filter</label>
+            <input name="filterUG" id="ug-filter" onkeyup="optGroup.sortSelectMatch(groupSelect, this.value)" onchange="optGroup.sortSelectMatch(groupSelect, this.value)" type="text">
+         </td>
+         <td>&nbsp;</td>
+         <td><label for="og-filter">Filter</label>
+            <input name="filterOG" id="og-filter" onkeyup="optGroup.sortSelectMatch(chosenGroups, this.value)" onchange="optGroup.sortSelectMatch(chosenGroups, this.value)" type="text">
+         </td>
+      </tr>
+</tbody></table>
+
+      <div class="form_actions">
+         <input type="submit" value="save changes" />
+         <a href="?action=main" class="ktCancelLink">Cancel</a>
+      </div>
+   </fieldset>
+   </form>

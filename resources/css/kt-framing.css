@@ -610,6 +610,7 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
 .ktAction.ktDelete { background: transparent url(/thirdparty/icon-theme/16x16/mimetypes/x-directory-trash.png) top left no-repeat; }
 .ktAction.ktEdit { background: transparent url(/thirdparty/icon-theme/16x16/actions/document-properties.png) top left no-repeat; }
 .ktAction.ktAddUser { background: transparent url(/thirdparty/icon-theme/16x16/actions/contact-new.png) top left no-repeat; }
+.ktAction.ktAddGroup { background: transparent url(/thirdparty/icon-theme/16x16/actions/contact-new.png) top left no-repeat; }
 
 /* =========== standard listings. */
 

@@ -36,7 +36,7 @@ class Group extends KTEntity {
 	var $bIsSysAdmin;
 	
 	
-	function Group($sNewName, $bNewIsUnitAdmin = false, $bNewIsSysAdmin = false) {
+	function Group($sNewName = null, $bNewIsUnitAdmin = false, $bNewIsSysAdmin = false) {
 		$this->iId = -1;
 		$this->sName = $sNewName;
 		$this->bIsUnitAdmin = $bNewIsUnitAdmin;
@@ -54,6 +54,13 @@ class Group extends KTEntity {
             'is_unit_admin' => KTUtil::anyToBool($this->bIsUnitAdmin),
         );
     }
+
+	var $_aFieldToSelect = array(
+			'iId' => 'id',
+            'sName' => 'name',
+            'bIsUnitAdmin' => 'is_unit_admin',
+			'bIsSysAdmin' => 'is_sys_admin',
+		);
 
     function _table () {
         global $default;
@@ -325,6 +332,8 @@ class Group extends KTEntity {
         return false;
     }
     // }}}
+
+	function &createFromArray($aOptions) { return KTEntityUtil::createFromArray('Group', $aOptions); }
 }
 
 /**

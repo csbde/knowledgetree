@@ -1,0 +1,19 @@
+<h2>Create a new Group</h2>
+
+<p class="descriptiveText">Create a new group.</p>
+
+<form action="{$smarty.server.PHP_SELF}" method="POST">
+   <input type="hidden" name="action" value="createGroup" />
+   
+   <fieldset>
+      <legend>Change Group Details</legend>
+      <p class="descriptiveText"><strong>FIXME</strong> brief overview of group editing.</p>
+      {foreach item=oWidget from=$add_fields}
+        {$oWidget->render()}
+      {/foreach}
+      <div class="form_actions">
+         <input type="submit" value="create group" />
+         <a href="?action=main" class="ktCancelLink">Cancel</a>
+      </div>
+   </fieldset>
+   </form>
