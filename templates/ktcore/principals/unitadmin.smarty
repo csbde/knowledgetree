@@ -1,0 +1,62 @@
+<h2>Unit Administration</h2>
+
+<p class="descriptiveText"><strong>FIXME</strong> Overview of units.</p>
+
+{if ($for_edit === false)}
+
+<form action="{$smarty.server.PHP_SELF}" method="GET">
+<fieldset>
+<legend>Add a unit</legend>
+
+<input type="hidden" name="action" value="createUnit" />
+
+{foreach item=oWidget from=$add_fields}
+  {$oWidget->render()}
+{/foreach}
+
+<div class="form_actions">
+   <input type="submit" value="create new unit" />
+</div class="form_actions">
+</fieldset>
+</form>
+
+{else}
+
+<form action="{$smarty.server.PHP_SELF}" method="GET">
+<fieldset>
+<legend>Change a unit's details</legend>
+
+<input type="hidden" name="action" value="updateUnit" />
+<input type="hidden" name="unit_id" value="{$edit_unit->getId()}" />
+
+{foreach item=oWidget from=$edit_fields}
+  {$oWidget->render()}
+{/foreach}
+
+<div class="form_actions">
+   <input type="submit" value="update unit information" />
+</div class="form_actions">
+</fieldset>
+</form>
+
+
+{/if}
+
+<table class="listing">
+<thead>
+   <tr>
+      <th>Unit Name</th>
+      <th>Edit</th>
+      <th>Manage Members</th>
+   </tr>
+</thead>
+<tbody>
+     {foreach item=oUnit from=$unit_list}
+     <tr>
+        <td>{$oUnit->getName()}</td>
+        <td><a href="?action=editGroup&unit_id={$oUnit->getId()}" class="ktAction ktEdit">Edit</a></td>
+        <!-- <td><a href="?action=manageMembers&unit_id={$oUnit->getId()}">Manage Members</a></td> -->
+     </tr>   
+     {/foreach}
+</tbody>
+</table>

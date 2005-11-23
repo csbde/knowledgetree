@@ -28,6 +28,8 @@ $oAdminRegistry->registerCategory("misc", "Miscellaneous", "Various settings whi
 // users and groups
 $oAdminRegistry->registerLocation("users",'KTUserAdminDispatcher',"principals", "Manage Users","Add or remove users from the system.", KT_DIR . '/presentation/lookAndFeel/knowledgeTree/administration/usermanagement/userManagement.php', null);
 $oAdminRegistry->registerLocation("groups",'KTGroupAdminDispatcher',"principals", "Manage Groups","Add or remove groups from the system.", KT_DIR . '/presentation/lookAndFeel/knowledgeTree/administration/groupmanagement/groupManagement.php', null);
+$oAdminRegistry->registerLocation("units",'KTUnitAdminDispatcher',"principals", "Control Units","Specify which organisation units are available.", KT_DIR . '/presentation/lookAndFeel/knowledgeTree/administration/unitmanagement/unitManagement.php', null);
+//$oAdminRegistry->registerLocation("orgs",'KTOrgAdminDispatcher',"principals", "Control Organisations","Specify which organisations are available.", KT_DIR . '/presentation/lookAndFeel/knowledgeTree/administration/orgmanagement/orgManagement.php', null);
 
 // documents
 $oAdminRegistry->registerLocation("typemanagement",'KTDocumentTypeDispatcher','documents', 'Document Types','Manage the different classes of document which can be added to the system.', KT_DIR . '/presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/documentTypes.php', null);
