@@ -1,0 +1,26 @@
+<p class="descriptiveText">Folders are one way of organising documents
+in the document management system.  Folders provide meaning in the
+traditional file storage way - through a path through which one will
+browse that describes the content more specifically as one enters
+folders.</p>
+
+<p class="descriptiveText">FIXME</p>
+
+{assign var=iFolderId value=$context->oFolder->getId()}
+<p class="descriptiveText">If you do not intend to add a folder, you
+should <a href="{"browse"|generateControllerUrl:"fFolderId=$iFolderId"}">cancel
+this action</a>.</p>
+
+<form method="POST" action="{$smarty.server.PHP_SELF}" enctype="multipart/form-data">
+<fieldset><legend>Add folder</legend>
+<input type="hidden" name="action" value="addFolder" />
+<input type="hidden" name="fFolderId" value="{$iFolderId}" />
+{foreach from=$fields item=oWidget }
+  {$oWidget->render()}
+{/foreach}
+
+<div class="form_actions">
+<input type="submit" name="submit" value="Add folder" />
+</div>
+</fieldset>
+</form>

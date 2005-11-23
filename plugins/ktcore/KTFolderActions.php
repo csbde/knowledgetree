@@ -6,11 +6,11 @@ require_once(KT_LIB_DIR . '/permissions/permissionutil.inc.php');
 
 require_once(KT_LIB_DIR . "/widgets/fieldsetDisplay.inc.php");
 require_once(KT_LIB_DIR . "/widgets/FieldsetDisplayRegistry.inc.php");
+require_once(KT_LIB_DIR . "/foldermanagement/folderutil.inc.php");
 
 $oKTActionRegistry =& KTActionRegistry::getSingleton();
 
 class KTFolderAddDocumentAction extends KTFolderAction {
-    var $sBuiltInAction = 'addDocument';
     var $sDisplayName = 'Add Document';
     var $sName = 'ktcore.actions.folder.addDocument';
 
@@ -108,9 +108,52 @@ class KTFolderAddDocumentAction extends KTFolderAction {
 }
 $oKTActionRegistry->registerAction('folderaction', 'KTFolderAddDocumentAction', 'ktcore.actions.folder.addDocument');
 
-class KTFolderAddFolderAction extends KTBuiltInFolderAction {
-    var $sBuiltInAction = 'addFolder';
+class KTFolderAddFolderAction extends KTFolderAction {
     var $sDisplayName = 'Add a Folder';
+    var $sName = 'ktcore.actions.folder.addFolder';
+
+    var $_sShowPermission = "ktcore.permissions.write";
+
+    function do_main() {
+        $this->oPage->setBreadcrumbDetails("add document");
+        $oTemplate =& $this->oValidator->validateTemplate('ktcore/action/addFolder');
+        $fields = array();
+        $fields[] = new KTStringWidget('Folder name', '', 'name', "", $this->oPage, true);
+
+        $oTemplate->setData(array(
+            'context' => &$this,
+            'fields' => $fields,
+        ));
+        return $oTemplate->render();
+    }
+
+    function do_addFolder() {
+        $aErrorOptions = array(
+            'redirect_to' => array('main', sprintf('fFolderId=%d', $this->oFolder->getId())),
+        );
+        $sFolderName = KTUtil::arrayGet($_REQUEST, 'name');
+        $aErrorOptions['message'] = "No name given";
+        $sFolderName = $this->oValidator->validateString($sFolderName, $aErrorOptions);
+
+        $this->startTransaction();
+
+        $res = KTFolderUtil::add($this->oFolder, $sFolderName, $this->oUser);
+        $aErrorOptions['message'] = "Could not create folder in the document management system";
+        $this->oValidator->notError($res, $aErrorOptions);
+
+        $this->commitTransaction();
+        controllerRedirect('browse', sprintf('fFolderId=%d', $this->oFolder->getId()));
+        exit(0);
+    }
 }
 $oKTActionRegistry->registerAction('folderaction', 'KTFolderAddFolderAction', 'ktcore.actions.folder.addFolder');
+
+class KTFolderPermissionsAction extends KTBuiltInFolderAction {
+    var $sDisplayName = 'Permissions';
+    var $sName = 'ktcore.actions.folder.permissions';
+    var $sBuiltInAction = "editFolderPermissions";
+
+    var $_sShowPermission = "ktcore.permissions.write";
+}
+$oKTActionRegistry->registerAction('folderaction', 'KTFolderPermissionsAction', 'ktcore.actions.folder.permissions');
 ?>
