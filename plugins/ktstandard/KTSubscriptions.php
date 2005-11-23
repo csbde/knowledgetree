@@ -8,9 +8,11 @@ require_once(KT_LIB_DIR . '/subscriptions/SubscriptionEngine.inc');
 require_once(KT_LIB_DIR . '/subscriptions/SubscriptionConstants.inc');
 require_once(KT_LIB_DIR . '/subscriptions/SubscriptionManager.inc');
 
-$oKTActionRegistry =& KTActionRegistry::getSingleton();
-$oPRegistry =& KTPortletRegistry::getSingleton();
-$oTRegistry =& KTTriggerRegistry::getSingleton();
+require_once(KT_LIB_DIR . '/plugins/plugin.inc.php');
+class KTSubscriptionPlugin extends KTPlugin {
+    var $sNamespace = "ktstandard.subscriptions.plugin";
+}
+$oPlugin = new KTSubscriptionPlugin(__FILE__);
 
 // {{{ KTSubscriptionPortlet
 class KTSubscriptionPortlet extends KTPortlet {
@@ -50,6 +52,8 @@ class KTSubscriptionPortlet extends KTPortlet {
             }
         }
 
+        $this->actions[] = array("name" => "Manage subscriptions", "url" => $this->oPlugin->getPagePath(''));
+
         $oTemplating = new KTTemplating;
         $oTemplate = $oTemplating->loadTemplate("kt3/portlets/actions_portlet");
         $aTemplateData = array(
@@ -58,7 +62,7 @@ class KTSubscriptionPortlet extends KTPortlet {
         return $oTemplate->render($aTemplateData);
     }
 }
-$oPRegistry->registerPortlet('browse', 'KTSubscriptionPortlet', 'ktcore.portlets.subscription', '/plugins/ktcore/KTPortlets.php');
+$oPlugin->registerPortlet('browse', 'KTSubscriptionPortlet', 'ktcore.portlets.subscription', '/plugins/ktcore/KTPortlets.php');
 // }}}
 
 // {{{ KTDocumentSubscriptionAction
@@ -89,7 +93,7 @@ class KTDocumentSubscriptionAction extends KTDocumentAction {
         exit(0);
     }
 }
-$oKTActionRegistry->registerAction('documentsubscriptionaction', 'KTDocumentSubscriptionAction', 'ktstandard.subscription.documentsubscription');
+$oPlugin->registerAction('documentsubscriptionaction', 'KTDocumentSubscriptionAction', 'ktstandard.subscription.documentsubscription');
 // }}}
 
 // {{{ KTDocumentUnsubscriptionAction
@@ -120,7 +124,7 @@ class KTDocumentUnsubscriptionAction extends KTDocumentAction {
         exit(0);
     }
 }
-$oKTActionRegistry->registerAction('documentsubscriptionaction', 'KTDocumentUnsubscriptionAction', 'ktstandard.subscription.documentunsubscription');
+$oPlugin->registerAction('documentsubscriptionaction', 'KTDocumentUnsubscriptionAction', 'ktstandard.subscription.documentunsubscription');
 // }}}
 
 // {{{ KTCheckoutSubscriptionTrigger
@@ -141,7 +145,7 @@ class KTCheckoutSubscriptionTrigger {
         $default->log->info("checkOutDocumentBL.php fired $count subscription alerts for checked out document " . $oDocument->getName());
     }
 }
-$oTRegistry->registerTrigger('checkout', 'postValidate', 'KTCheckoutSubscriptionTrigger', 'ktstandard.triggers.subscription.checkout');
+$oPlugin->registerTrigger('checkout', 'postValidate', 'KTCheckoutSubscriptionTrigger', 'ktstandard.triggers.subscription.checkout');
 // }}}
 
 // {{{ KTDeleteSubscriptionTrigger
@@ -174,7 +178,7 @@ class KTDeleteSubscriptionTrigger {
         }
     }
 }
-$oTRegistry->registerTrigger('delete', 'postValidate', 'KTDeleteSubscriptionTrigger', 'ktstandard.triggers.subscription.delete');
+$oPlugin->registerTrigger('delete', 'postValidate', 'KTDeleteSubscriptionTrigger', 'ktstandard.triggers.subscription.delete');
 // }}}
 
 // {{{ KTDocumentMoveSubscriptionTrigger
@@ -215,7 +219,7 @@ class KTDocumentMoveSubscriptionTrigger {
         $default->log->info("moveDocumentBL.php fired $count (folderID=$fFolderID) folder subscription alerts for moved document " . $oDocument->getName());
     }
 }
-$oTRegistry->registerTrigger('moveDocument', 'postValidate', 'KTDocumentMoveSubscriptionTrigger', 'ktstandard.triggers.subscription.moveDocument');
+$oPlugin->registerTrigger('moveDocument', 'postValidate', 'KTDocumentMoveSubscriptionTrigger', 'ktstandard.triggers.subscription.moveDocument');
 // }}}
 
 // {{{ KTArchiveSubscriptionTrigger
@@ -238,7 +242,7 @@ class KTArchiveSubscriptionTrigger {
         $default->log->info("archiveDocumentBL.php fired $count subscription alerts for archived document " . $oDocument->getName());
     }
 }
-$oTRegistry->registerTrigger('archive', 'postValidate', 'KTArchiveSubscriptionTrigger', 'ktstandard.triggers.subscription.archive');
+$oPlugin->registerTrigger('archive', 'postValidate', 'KTArchiveSubscriptionTrigger', 'ktstandard.triggers.subscription.archive');
 // }}}
 
 // {{{ KTFolderSubscriptionAction
@@ -270,7 +274,7 @@ class KTFolderSubscriptionAction extends KTFolderAction {
         exit(0);
     }
 }
-$oKTActionRegistry->registerAction('foldersubscriptionaction', 'KTFolderSubscriptionAction', 'ktstandard.subscription.foldersubscription');
+$oPlugin->registerAction('foldersubscriptionaction', 'KTFolderSubscriptionAction', 'ktstandard.subscription.foldersubscription');
 // }}}
 
 // {{{ KTFolderUnsubscriptionAction
@@ -302,5 +306,74 @@ class KTFolderUnsubscriptionAction extends KTFolderAction {
         exit(0);
     }
 }
-$oKTActionRegistry->registerAction('foldersubscriptionaction', 'KTFolderUnsubscriptionAction', 'ktstandard.subscription.folderunsubscription');
+$oPlugin->registerAction('foldersubscriptionaction', 'KTFolderUnsubscriptionAction', 'ktstandard.subscription.folderunsubscription');
 // }}}
+
+// {{{ KTSubscriptionManagePage
+class KTSubscriptionManagePage extends KTStandardDispatcher {
+    function do_main() {
+        $this->aBreadcrumbs[] = array("name" => "Subscription Management");
+        $aFolderSubscriptions = SubscriptionManager::retrieveUserSubscriptions(
+            $this->oUser->getId(), SubscriptionConstants::subscriptionType("FolderSubscription"));
+        $aDocumentSubscriptions = SubscriptionManager::retrieveUserSubscriptions(
+            $this->oUser->getId(), SubscriptionConstants::subscriptionType("DocumentSubscription"));
+        $bNoSubscriptions  = ((count($aFolderSubscriptions) == 0) && (count($aDocumentSubscriptions) == 0)) ? true : false;
+
+        $oTemplate = $this->oValidator->validateTemplate('ktstandard/subscriptions/manage');
+
+        $aTemplateData = array(
+            'aFolderSubscriptions' => $aFolderSubscriptions,
+            'aDocumentSubscriptions' => $aDocumentSubscriptions,
+        );
+
+        return $oTemplate->render($aTemplateData);
+    }
+
+    function do_removeSubscriptions() {
+        $foldersubscriptions = KTUtil::arrayGet($_REQUEST, 'foldersubscriptions');
+        $documentsubscriptions = KTUtil::arrayGet($_REQUEST, 'documentsubscriptions');
+        if (empty($foldersubscriptions) && empty($documentsubscriptions)) {
+            $this->errorRedirectToMain('No subscriptions were chosen');
+        }
+
+        $iSuccesses = 0;
+        $iFailures = 0;
+
+        if (!empty($foldersubscriptions)) {
+            foreach ($foldersubscriptions as $iSubscriptionId) {
+                $oSubscription = Subscription::get($iSubscriptionId, SubscriptionConstants::subscriptionType('FolderSubscription'));
+                if ($oSubscription) {
+                    $oSubscription->delete();
+                    $iSuccesses++;
+                } else {
+                    $iFailures++;
+                }
+            }
+        }
+
+        if (!empty($documentsubscriptions)) {
+            foreach ($documentsubscriptions as $iSubscriptionId) {
+                $oSubscription = Subscription::get($iSubscriptionId, SubscriptionConstants::subscriptionType('DocumentSubscription'));
+                if ($oSubscription) {
+                    $oSubscription->delete();
+                    $iSuccesses++;
+                } else {
+                    $iFailures++;
+                }
+            }
+        }
+
+        $sMessage = "Subscriptions removed: ";
+        if ($iFailures) {
+            $sMessage .= sprintf(_('%d successful, %d failures'), $iSuccesses, $iFailures);
+        } else {
+            $sMessage .= sprintf('%d', $iSuccesses);
+        }
+        $this->successRedirectToMain($sMessage);
+        exit(0);
+    }
+}
+$oPlugin->registerPage('manage', 'KTSubscriptionManagePage', __FILE__);
+// }}}
+
+$oPlugin->register();
