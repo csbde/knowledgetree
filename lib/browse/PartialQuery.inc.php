@@ -65,7 +65,7 @@ class BrowseQuery extends PartialQuery{
     
     function getDocumentCount() { 
         // FIXME add permission checks here
-        $sQuery = "SELECT count(id) AS c FROM " . KTUtil::getTableName("documents") . " WHERE folder_id = ? AND D.status_id = 1 ";
+        $sQuery = "SELECT count(id) AS c FROM " . KTUtil::getTableName("documents") . " AS D WHERE D.folder_id = ? AND D.status_id = 1 ";
         $aParams = array($this->folder_id);
         
         return DBUtil::getOneResultKey(array($sQuery, $aParams), 'c'); // FIXME is this right? 
@@ -104,7 +104,7 @@ class BrowseQuery extends PartialQuery{
         $aParams = array(); // main parameter array.
         $aJoinParams = array($aJoinParams);
         
-        $sQuery = "SELECT id FROM " . KTUtil::getTableName("documents") . " AS D WHERE folder_id = ? AND D.status_id = 1 ";
+        $sQuery = "SELECT id FROM " . KTUtil::getTableName("documents") . " AS D WHERE D.folder_id = ? AND D.status_id = 1 ";
         $aParams = array($this->folder_id);
         
         if ($sJoinClause !== null) {
