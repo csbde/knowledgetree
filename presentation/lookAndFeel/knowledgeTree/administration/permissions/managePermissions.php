@@ -1,5 +1,5 @@
 <?php
-require_once("../../../../../config/dmsDefaults.php");
+//require_once("../../../../../config/dmsDefaults.php");
 
 require_once(KT_LIB_DIR . "/templating/templating.inc.php");
 require_once(KT_LIB_DIR . "/permissions/permission.inc.php");
@@ -7,12 +7,27 @@ require_once(KT_LIB_DIR . "/dispatcher.inc.php");
 require_once(KT_LIB_DIR . "/templating/kt3template.inc.php");
 
 class ManagePermissionsDispatcher extends KTAdminDispatcher {
+
+    var $aBreadcrumbs = array( 
+        array('name' => 'Administration', action => 'administration'),
+    );
+
     function do_main() {
+    
+        $this->oPage->setTitle('Manage Permissions');
+        $this->aBreadcrumbs[] = array('action' => 'managePermissions', 'name' => 'Manage Permissions');
+        
+        $add_fields = array();
+        $add_fields[] = new KTStringWidget('System Name','The internal name used for the permission.  This should never be changed.', 'name', null, $this->oPage, true);
+        $add_fields[] = new KTStringWidget('Human Name','A short name that is shown to users whenever permissions must be assigned.', 'human_name', null, $this->oPage, true);
+    
         $oTemplating = new KTTemplating;
         $aPermissions =& KTPermission::getList();
         $oTemplate = $oTemplating->loadTemplate("ktcore/manage_permissions");
         $aTemplateData = array(
+            'context' => $this,
             "permissions" => $aPermissions,
+            'add_fields' => $add_fields,
         );
         return $oTemplate->render($aTemplateData);
     }
@@ -30,7 +45,7 @@ class ManagePermissionsDispatcher extends KTAdminDispatcher {
         if (PEAR::isError($oPerm)) {
             return $this->errorRedirectToMain("Error creating permission");
         }
-        return $this->errorRedirectToMain("Permission created");
+        return $this->successRedirectToMain("Permission created");
     }
 
     function do_deletePermission() {
@@ -49,11 +64,11 @@ class ManagePermissionsDispatcher extends KTAdminDispatcher {
         if (PEAR::isError($res)) {
             return $this->errorRedirectToMain("Error deleting permission");
         }
-        return $this->errorRedirectToMain("Permission deleted");
+        return $this->successRedirectToMain("Permission deleted");
     }
 }
 
-$oDispatcher = new ManagePermissionsDispatcher();
-$oDispatcher->dispatch();
+//$oDispatcher = new ManagePermissionsDispatcher();
+//$oDispatcher->dispatch();
 
 ?>

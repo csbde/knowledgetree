@@ -1,54 +1,55 @@
 <h2>Existing permissions</h2>
-<table class="pretty" cellspacing="0" cellpadding="0" border="0">
-<thead>
-<tr>
-<th>Permission</th>
-<th>Human Name</th>
-<th colspan="2">Manage</th>
-</tr>
-</thead>
-{ foreach item=oPerm from=$permissions }
-<tr class="{cycle values="odd,even"}">
-<td>
-{ $oPerm->sName }
-</td>
-<td>
-{ $oPerm->sHumanName }
-</td>
-{ if $oPerm->bBuiltIn == true }
-<td colspan="2">
-Built-in
-</td>
-{ else }
-<td>
-Edit
-</td>
-<td>
-<a
-href="{$smarty.server.PHP_SELF}?action=deletePermission&id={$oPerm->getId()}">Delete</a>
-</td>
-{ /if }
-</tr>
-{ /foreach }
-</table>
 
-<h2>Create a new permission</h2>
+<p class="descriptiveText"><strong>FIXME</strong> add a useful explanation about permissions.</p>
 
 <form>
+<fieldset>
+<legend>Create a new permission</legend>
 <input type="hidden" name="action" value="newPermission">
-<table>
-<tr>
-<td>Name:</td>
-<td><input type="text" name="name" value="custom."></td>
-</tr>
-<tr>
-<td>Human name:</td>
-<td><input type="text" name="human_name" value="Custom: "></td>
-</tr>
-<tr>
-<td colspan="2" align="right">
+
+
+
+{foreach item=oWidget from=$add_fields}
+  {$oWidget->render()}
+{/foreach}
+
+<div class="form_actions">
 <input type="submit" name="submit" value="Create">
-</td>
-</tr>
-</table>
+</div>
+</fieldset>
+
 </form>
+
+
+<table class="listing">
+    <thead>
+        <tr>
+            <th>Permission</th>
+            <th>Human Name</th>
+            <th>Delete</th>
+        </tr>
+    </thead>
+    { foreach item=oPerm from=$permissions }
+        <tr class="{cycle values="odd,even"}">
+            <td>
+            { $oPerm->sName }
+            </td>
+            <td>
+            { $oPerm->sHumanName }
+            </td>
+          { if $oPerm->bBuiltIn == true }
+            <td>
+            Built-in
+            </td>
+            { else }
+            <!-- <td>
+                Edit
+            </td> -->
+            <td>
+               <a href="{$smarty.server.PHP_SELF}?action=deletePermission&id={$oPerm->getId()}" class="ktAction ktDelete">Delete Permission</a>
+            </td>
+          { /if }
+        </tr>
+    { /foreach }
+</table>
+
