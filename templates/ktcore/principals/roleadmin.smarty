@@ -1,0 +1,72 @@
+<h2>Role Administration</h2>
+
+<p class="descriptiveText"><strong>FIXME</strong> Overview of roles.</p>
+
+<div class="ktInfo"><p><strong>Note:</strong> Roles are not yet fully functional within
+<strong>KnowledgeTree&trade;</strong> 3.0</p></div>
+
+{if ($for_edit === false)}
+
+<form action="{$smarty.server.PHP_SELF}" method="GET">
+<fieldset>
+   <legend>Add a Role</legend>
+   
+   <input type="hidden" name="action" value="createRole" />
+   
+   {foreach item=oWidget from=$add_fields}
+     {$oWidget->render()}
+   {/foreach}
+
+   <div class="form_actions">
+      <input type="submit" value="create new role" />
+   </div class="form_actions">
+</fieldset>
+</form>
+
+{else}
+
+<form action="{$smarty.server.PHP_SELF}" method="GET">
+<fieldset>
+   <legend>Change a role's details</legend>
+   
+   <input type="hidden" name="action" value="updateRole" />
+   <input type="hidden" name="role_id" value="{$edit_role->getId()}" />
+   
+   {foreach item=oWidget from=$edit_fields}
+     {$oWidget->render()}
+   {/foreach}
+   
+   <div class="form_actions">
+      <input type="submit" value="update role information" />
+      <a href="?action=main" class="ktAction ktCancel">Cancel</a>
+      <a href="?action=main">Cancel</a>
+   </div class="form_actions">
+</fieldset>
+</form>
+
+{/if}
+
+<table class="listing">
+<thead>
+   <tr>
+      <th>Role Name</th>
+      <th>Edit</th>
+      <th>Delete</th>
+   </tr>
+</thead>
+<tbody>
+     {if (count($roles) !== 0)}
+     {foreach item=oRole from=$roles}
+     <tr>
+        <td>{$oRole->getName()}</td>
+        <td><a href="?action=editRole&role_id={$oRole->getId()}" class="ktAction ktEdit">Edit</a></td>
+        <td><a href="?action=deleteRole&role_id={$oRole->getId()}" class="ktAction ktDelete">Delete</a></td>
+     </tr>   
+     {/foreach}
+     {else}
+     <tr>
+        <td class="ktInfo" colspan="3"><p>There are currently no roles created within the system.</td>
+     </tr>   
+     {/if}
+</tbody>
+</table>

@@ -114,7 +114,7 @@ $default->siteMap->addPage("doccheckoutManagement", "/presentation/lookAndFeel/k
 $default->siteMap->addPage("newsManagement", "/presentation/lookAndFeel/knowledgeTree/administration/news/listNewsBL.php", "Administration", SysAdmin, _("Dashboard News Management"), true, 10);
 $default->siteMap->addPage("linkManagement", "/presentation/lookAndFeel/knowledgeTree/administration/linkmanagement/listLinksBL.php", "Administration", SysAdmin, _("QuickLink Management"), true, 11);
 
-$default->siteMap->addPage("roleManagement", "/presentation/lookAndFeel/knowledgeTree/administration/rolemanagement/listRolesBL.php", "Administration", SysAdmin, _("Role Management"), true, 12);
+$default->siteMap->addPage("roleManagement", "/presentation/lookAndFeel/knowledgeTree/administration/admin.php/security/roles", "Administration", SysAdmin, _("Role Management"), true, 12);
 $default->siteMap->addPage("websiteManagement", "/presentation/lookAndFeel/knowledgeTree/administration/websitemanagement/listWebsitesBL.php", "Administration", SysAdmin, _("Website Management"), true, 13);
 
 $default->siteMap->addPage("systemAdministration", "/presentation/lookAndFeel/knowledgeTree/administration/systemsettings/systemSettingsBL.php", "Administration", SysAdmin, _("System Settings"), true, 14);

@@ -47,7 +47,7 @@ class Role extends KTEntity {
 	* @param 	boolean		Role has document write permission
 	*
 	*/
-	function Role($sNewName, $bNewCanRead, $bNewCanWrite) {
+	function Role($sNewName = null, $bNewCanRead = false, $bNewCanWrite = false) {
 		//object not yet created in database
 		$this->iId = -1;
 		$this->sName = $sNewName;
@@ -114,10 +114,11 @@ class Role extends KTEntity {
 	function delete() {
 		global $default, $lang_err_database, $lang_err_object_key;
 		//only delete the object if it exists in the database
+		/*
 		if ($this->iId >= 0) {
-			//check to see if role is linked to a folder
+			
 			$sql = $default->db;
-			$query = "SELECT role_id FROM ". $default->groups_folders_approval_table ." WHERE role_id = ?";/*ok*/
+			$query = "SELECT role_id FROM ". $default->groups_folders_approval_table ." WHERE role_id = ?";
             $aParams = array($this->iId);
             $sql->query(array($query, $aParams));
             $rows = $sql->num_rows($sql);
@@ -127,6 +128,7 @@ class Role extends KTEntity {
                  return false;
              }
         }
+		*/
         return parent::delete();
 	}
 	
