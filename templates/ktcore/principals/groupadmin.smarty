@@ -1,0 +1,63 @@
+<h2>Group Administration</h2>
+
+<p class="descriptiveText"><strong>FIXME</strong> Overview of groups.</p>
+
+
+<p><a href="?action=addGroup" class="ktAction ktAddGroup" style="float: left; padding-right: 0.5em;">Add Group</a><a href="?action=addGroup">Add a new group</a>.</p>
+
+<!-- we roll both in here. -->
+<form action="{$smarty.server.PHP_SELF}" method="GET">
+<fieldset>
+<legend>Search for groups</legend>
+<p class="descriptiveText">Since there may be many groups in the system, please 
+type a few letters from the group's name to begin.
+Alternatively, <a href="?show_all=1">view all groups</a> (note that this may be
+very slow if you have many groups.</p>
+
+{foreach item=oWidget from=$search_fields}
+  {$oWidget->render()}
+{/foreach}
+
+<div class="form_actions">
+   <input type="submit" value="search for groups" />
+</div class="form_actions">
+</fieldset>
+</form>
+
+<table class="listing">
+<thead>
+   <tr>
+      <th>Group Name</th>
+      <th>Unit Name</th>
+      <th>Edit</th>
+      <th>Change Unit</th>
+      <th>Manage Users</th>
+      <th>Manage sub-groups</th>
+      <th>Delete</th>
+   </tr>
+</thead>
+<tbody>
+   {if (!empty($search_results))}
+   <!-- do we want to batch here? -->
+     {foreach item=oGroup from=$search_results}
+     <tr>
+        <td>{$oGroup->getName()}</td>
+        <td>{if (!$oGroup->hasUnit())}<span class="descriptiveText">not part of a unit</span>{else} 
+            <strong>fixme</strong> unit.
+        {/if}</td>
+        <td><a href="?action=editGroup&group_id={$oGroup->getId()}" class="ktAction ktEdit">Edit</a></td>
+        <td><a href="?action=changeUnit&group_id={$oGroup->getId()}">Change Unit</a></td>
+        <td><a href="?action=manageUsers&group_id={$oGroup->getId()}">Manage Users</a></td>  
+        <td><a href="?action=manageSubgroups&group_id={$oGroup->getId()}">Manage sub-groups</a></td>
+        <td><a href="?action=deleteGroup&group_id={$oGroup->getId()}" class="ktAction ktDelete">Delete</a></td>
+     </tr>   
+     {/foreach}
+   {else}  
+   <tr>
+      <td colspan="7" class="ktInfo">
+         <p>No search specified, or no results for your search.</p>
+      </td>
+   </tr>
+   {/if}
+</tbody>
+</table>

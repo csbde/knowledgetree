@@ -1,0 +1,68 @@
+<h2>Manage Users in {$edit_group->getName()}</h2>
+
+{$context->oPage->requireJSResource('thirdpartyjs/OptionTransfer.js')}
+{$context->oPage->requireJSResource('thirdpartyjs/MochiKit/Base.js')}
+{$context->oPage->requireJSResource('thirdpartyjs/MochiKit/Iter.js')}
+{$context->oPage->requireJSResource('thirdpartyjs/MochiKit/DOM.js')}
+
+<p class="descriptiveText"><strong>FIXME</strong> help text for group-editing.  
+
+<form action="{$smarty.server.PHP_SELF}" method="GET" id="usergroupform">
+   <input type="hidden" name="action" value="updateUserMembers" />
+   <input type="hidden" name="group_id" value="{$edit_group->getId()}" />
+   <!-- erk. FIXME clean up and remove OptionTransfer.js. -->
+   
+   <input type="hidden" name="userAdded" />
+   <input type="hidden" name="userRemoved" />
+   
+   
+   <fieldset>
+      <legend>Change Users in {$edit_group->getName()}</legend>
+      <p class="descriptiveText">Select the users which should be part of this group. <strong>FIXME</strong> this helptext is v. awkward.</p>
+
+<table border="0" width="600">
+   <thead>
+      <tr>
+         <th>Available Users</th>
+         <th>&nbsp;</th>
+         <th>Member users</th>
+      </tr>
+   </thead>
+   <tbody>
+      <tr>
+         <td valign="top" width="1%">
+           <select name="userSelect" size="10" multiple="multiple">
+               {foreach item=oUser from=$unused_users}
+               <option value="{$oUser->getId()}" ondblclick="optGroup.transferRight()">{$oUser->getName()}</option>
+               {/foreach}
+           </select>
+         </td>
+         <td align="center">
+            <input name="right" style="width: 60px;" value="&raquo;" onclick="optGroup.transferRight()" type="button"><br /><br />
+            <input name="left" style="width: 60px;" value="&laquo;" onclick="optGroup.transferLeft()" type="button">
+         </td>
+         <td valign="top" width="1%">
+            <select name="chosenUsers" size="10" multiple="multiple">
+               {foreach item=oUser from=$group_users}
+               <option value="{$oUser->getId()}" ondblclick="optGroup.transferRight()">{$oUser->getName()}</option>
+               {/foreach}
+            </select>
+         </td>
+      </tr>
+      <tr>
+         <td><label for="ug-filter">Filter</label>
+            <input name="filterUG" id="ug-filter" onkeyup="optGroup.sortSelectMatch(userSelect, this.value)" onchange="optGroup.sortSelectMatch(groupSelect, this.value)" type="text">
+         </td>
+         <td>&nbsp;</td>
+         <td><label for="og-filter">Filter</label>
+            <input name="filterOG" id="og-filter" onkeyup="optGroup.sortSelectMatch(chosenUsers, this.value)" onchange="optGroup.sortSelectMatch(chosenGroups, this.value)" type="text">
+         </td>
+      </tr>
+</tbody></table>
+
+      <div class="form_actions">
+         <input type="submit" value="save changes" />
+         <a href="?action=main" class="ktCancelLink">Cancel</a>
+      </div>
+   </fieldset>
+   </form>

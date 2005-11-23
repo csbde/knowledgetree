@@ -1,0 +1,19 @@
+<h2>Edit Group Details</h2>
+
+<p class="descriptiveText">Change the system's information about group <strong>{$edit_group->getName()}</strong></p>
+
+<form action="{$smarty.server.PHP_SELF}" method="POST">
+   <input type="hidden" name="action" value="saveGroup" />
+   <input type="hidden" name="group_id" value="{$edit_group->getId()}" />
+   <fieldset>
+      <legend>Change Group Details</legend>
+      <p class="descriptiveText"><strong>FIXME</strong> brief overview of group editing.</p>
+      {foreach item=oWidget from=$edit_fields}
+        {$oWidget->render()}
+      {/foreach}
+      <div class="form_actions">
+         <input type="submit" value="save changes to group" />
+         <a href="?action=main" class="ktCancelLink">Cancel</a>
+      </div>
+   </fieldset>
+   </form>
