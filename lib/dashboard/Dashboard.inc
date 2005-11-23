@@ -1,6 +1,6 @@
 <?php
 require_once(KT_LIB_DIR . "/subscriptions/SubscriptionManager.inc");
-require_once(KT_LIB_DIR . "/links/Link.inc");
+//require_once(KT_LIB_DIR . "/links/Link.inc");
 require_once(KT_LIB_DIR . "/archiving/ArchiveRestorationRequest.inc");
 /**
  * $Id$

@@ -23,7 +23,6 @@ class KTWorkflowDispatcher extends KTStandardDispatcher {
     // Breadcrumbs base - added to in methods
     var $aBreadcrumbs = array(
         array('action' => 'administration', 'name' => 'Administration'),
-        array('action' => 'manageWorkflows', 'name' => 'Workflow Management'),
     );
 
     // {{{ WORKFLOW HANDLING
