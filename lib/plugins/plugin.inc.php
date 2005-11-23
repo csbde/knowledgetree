@@ -7,6 +7,7 @@ class KTPlugin {
     var $_aPortlets = array();
     var $_aTriggers = array();
     var $_aActions = array();
+    var $_aPages = array();
 
     function KTPlugin($sFilename = null) {
         $this->sFilename = $sFilename;
