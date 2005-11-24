@@ -38,41 +38,6 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 		$this->oPage->addPortlet($oPortlet);
 	}
     
-    function addBreadcrumbs() {
-	    $folder_id = $this->oDocument->getFolderId(); // conveniently, will be 0 if not possible.
-		if ($folder_id == 0) { $folder_id = 1; }
-		
-		// here we need the folder object to do the breadcrumbs.
-		$oFolder =& Folder::get($folder_id);
-		if (PEAR::isError($oFolder)) {
-		   $this->oPage->addError("invalid folder");
-		   $folder_id = 1;
-		   $oFolder =& Folder::get($folder_id);
-		}
-		
-		// do the breadcrumbs.
-
-		// skip root.
-		$folder_path_names = array_slice($oFolder->getPathArray(), 1);
-		$folder_path_ids = array_slice(explode(',', $oFolder->getParentFolderIds()), 1);
-		
-		$parents = count($folder_path_ids);
-		
-		if ($parents != 0) {
-		    foreach (range(0,$parents) as $index) {
-		        $this->aBreadcrumbs[] = array("url" => "../browse.php?fFolderId=" . $folder_path_ids[$index], "name" => $folder_path_names[$index]);
-            }
-        }
-		
-		// now add this folder, _if we aren't in 1_.
-		if ($folder_id != 1) {
-		    $this->aBreadcrumbs[] = array("url" => "../browse.php?fFolderId=" . $folder_id, "name" => $oFolder->getName());
-		}
-		
-		// now add the document
-		$this->aBreadcrumbs[] = array("name" => $this->oDocument->getName());
-	}
-
     function do_main() {
 	    // fix legacy, broken items.   
 	    if (KTUtil::arrayGet($_REQUEST, "fDocumentID", true) !== true) {
@@ -101,7 +66,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 		}
 		
 		$this->oDocument =& $oDocument;
-		$this->addBreadcrumbs();
+        $this->aBreadcrumbs += KTBrowseUtil::breadcrumbsForDocument($oDocument);
 		$this->oPage->setBreadcrumbDetails("document details");
 		$this->addPortlets("Document Details");
 		
@@ -179,7 +144,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 		// fixme check perms
 		
 		$this->oDocument =& $oDocument;
-		$this->addBreadcrumbs();
+        $this->aBreadcrumbs += KTBrowseUtil::breadcrumbsForDocument($oDocument);
 		$this->oPage->setBreadcrumbDetails("history");
 		$this->addPortlets("History");
 		
@@ -240,7 +205,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 		    return $this->do_error();
 		}
 		$this->oDocument =& $oDocument;
-		$this->addBreadcrumbs();
+        $this->aBreadcrumbs += KTBrowseUtil::breadcrumbsForDocument($oDocument);
 		$this->oPage->setBreadcrumbDetails("compare versions");
 		
 		$comparison_version = KTUtil::arrayGet($_REQUEST, 'fComparisonVersion');
