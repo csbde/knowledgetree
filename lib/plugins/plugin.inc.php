@@ -8,6 +8,9 @@ class KTPlugin {
     var $_aTriggers = array();
     var $_aActions = array();
     var $_aPages = array();
+    var $_aAuthenticationProviders = array();
+    var $_aAdminCategories = array();
+    var $_aAdminPages = array();
 
     function KTPlugin($sFilename = null) {
         $this->sFilename = $sFilename;
@@ -42,6 +45,22 @@ class KTPlugin {
         return sprintf('/plugin.php/%s/%s', $this->sNamespace, $sPath);
     }
 
+    function registerAuthenticationProvider($sClass, $sNamespace, $sFilename = null) {
+        $sFilename = $this->_fixFilename($sFilename);
+        $this->_aAuthenticationProviders[$sNamespace] = array($sClass, $sNamespace, $sFilename, $this->sNamespace);
+    }
+
+//registerLocation($sName, $sClass, $sCategory, $sTitle, $sDescription, $sDispatcherFilePath = null, $sURL = null)
+    function registerAdminPage($sName, $sClass, $sCategory, $sTitle, $sDescription, $sFilename) {
+        $sFullname = $sCategory . '/' . $sName;
+        $sFilename = $this->_fixFilename($sFilename);
+        $this->_aAdminPages[$sFullname] = array($sName, $sClass, $sCategory, $sTitle, $sDescription, $sFilename, null, $this->sNamespace);
+    }
+
+    function registerAdminCategories($sPath, $sName, $sDescription) {
+        $this->_aAdminCategories[$sPath] = array($sPath, $sName, $sDescription);
+    }
+
     function _fixFilename($sFilename) {
         if (empty($sFilename)) {
             $sFilename = $this->sFilename;
@@ -59,11 +78,15 @@ class KTPlugin {
         require_once(KT_LIB_DIR . '/actions/portletregistry.inc.php');
         require_once(KT_LIB_DIR . '/triggers/triggerregistry.inc.php');
         require_once(KT_LIB_DIR . '/plugins/pageregistry.inc.php');
+        require_once(KT_LIB_DIR .  '/authentication/authenticationproviderregistry.inc.php');
+        require_once(KT_LIB_DIR . "/plugins/KTAdminNavigation.php"); 
 
         $oPRegistry =& KTPortletRegistry::getSingleton();
         $oTRegistry =& KTTriggerRegistry::getSingleton();
         $oARegistry =& KTActionRegistry::getSingleton();
         $oPageRegistry =& KTPageRegistry::getSingleton();
+        $oAPRegistry =& KTAuthenticationProviderRegistry::getSingleton();
+        $oAdminRegistry =& KTAdminNavigationRegistry::getSingleton(); 
 
         foreach ($this->_aPortlets as $k => $v) {
             call_user_func_array(array(&$oPRegistry, 'registerPortlet'), $v);
@@ -79,6 +102,18 @@ class KTPlugin {
 
         foreach ($this->_aPages as $k => $v) {
             call_user_func_array(array(&$oPageRegistry, 'registerPage'), $v);
+        }
+
+        foreach ($this->_aAuthenticationProviders as $k => $v) {
+            call_user_func_array(array(&$oAPRegistry, 'registerAuthenticationProvider'), $v);
+        }
+
+        foreach ($this->_aAdminCategories as $k => $v) {
+            call_user_func_array(array(&$oAdminRegistry, 'registerCategory'), $v);
+        }
+
+        foreach ($this->_aAdminPages as $k => $v) {
+            call_user_func_array(array(&$oAdminRegistry, 'registerLocation'), $v);
         }
     }
 }
