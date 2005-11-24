@@ -1,0 +1,75 @@
+{$context->oPage->requireJSResource('thirdpartyjs/MochiKit/Base.js')}
+{$context->oPage->requireJSResource('thirdpartyjs/MochiKit/Async.js')}
+{$context->oPage->requireJSResource('thirdpartyjs/MochiKit/Iter.js')}
+{$context->oPage->requireJSResource('thirdpartyjs/MochiKit/DOM.js')}
+
+{capture assign=sJavascript}
+{literal}
+function swapInItem(elementId, req) {
+    var cp = getElement(elementId);
+    cp.innerHTML = req.responseText;
+    initialiseConditionalFieldsets();
+}
+
+function xmlFailure(err) {
+    alert('failed');
+}
+
+function swapElementFromRequest(elementId, url) {
+    var deff = doSimpleXMLHttpRequest(url);
+    deff.addCallback(partial(swapInItem, elementId));
+    var cp = getElement(elementId);
+    cp.innerHTML="loading...";
+}
+
+function getMetadataForType(id) {
+    swapElementFromRequest('type_metadata_fields',
+        'http://{/literal}{$config->get('KnowledgeTree/serverName')}{literal}/presentation/lookAndFeel/knowledgeTree/documentmanagement/getTypeMetadataFields.php?fDocumentTypeID='
+        + id);
+}
+
+function document_type_changed() {
+    typeselect = getElement('add-document-type');
+    getMetadataForType(typeselect.value);
+}
+
+function startupMetadata() {
+    typeselect = getElement('add-document-type');
+    addToCallStack(typeselect, "onchange", document_type_changed, false);
+    document_type_changed();
+}
+
+addLoadEvent(startupMetadata);
+{/literal}
+{/capture}
+{$context->oPage->requireJSStandalone($sJavascript)}
+
+<form method="POST" action="{$smarty.server.PHP_SELF}" enctype="multipart/form-data">
+<fieldset><legend>Bulk import</legend>
+<p class="descriptiveText">The bulk upload facility allows for a number
+of documents to be added to the document management system.
+Provide an archive (ZIP) file from your local computer, and all
+documents and folders within that archive will be added to the document
+management system.</p>
+
+<input type="hidden" name="action" value="upload" />
+<input type="hidden" name="fFolderId" value="{$context->oFolder->getId()}" />
+
+{foreach from=$add_fields item=oWidget }
+  {$oWidget->render()}
+{/foreach}
+
+<div id="generic_metadata_fields">
+{foreach item=oFieldset from=$generic_fieldsets}
+    {$oFieldset->renderEdit($document_data)}
+{/foreach}
+</div>
+
+<div id="type_metadata_fields">
+{$type_metadata_fields}
+</div>
+
+<div class="form_actions">
+  <input type="submit" name="submit" value="Upload" />
+</div>
+</form>
