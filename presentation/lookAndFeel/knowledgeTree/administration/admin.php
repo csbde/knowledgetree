@@ -5,9 +5,7 @@ require_once(KT_LIB_DIR . "/templating/kt3template.inc.php");
 require_once(KT_LIB_DIR . "/dispatcher.inc.php");
 require_once(KT_LIB_DIR . "/widgets/portlet.inc.php");
 
-// registry.
-require_once(KT_DIR . "/plugins/ktcore/KTAdminNavigation.php");
-require_once(KT_DIR . "/plugins/ktcore/KTAdminPlugins.php");
+require_once(KT_LIB_DIR . "/plugins/KTAdminNavigation.php");
 
 class AdminSplashDispatcher extends KTAdminDispatcher {
     var $category = '';
