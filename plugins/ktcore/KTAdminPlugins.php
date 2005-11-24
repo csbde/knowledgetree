@@ -1,6 +1,6 @@
 <?php
 
-require_once(KT_DIR . "/plugins/ktcore/KTAdminNavigation.php");
+require_once(KT_LIB_DIR . "/plugins/KTAdminNavigation.php");
 
 $oAdminRegistry =& KTAdminNavigationRegistry::getSingleton();
 
