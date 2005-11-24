@@ -179,6 +179,32 @@ class KTDispatcherValidation {
         return $sString;
     }
 
+    function validateFile($aFile, $aOptions = null) {
+        $bError = false;
+        if (strlen($aFile['name']) == 0) {
+            $bError = true;
+        }
+        if ($bError) {
+            $message = _("You did not select a valid document to upload");
+
+            $errors = array(
+               1 => _("The uploaded file is larger than the PHP upload_max_filesize setting"),
+               2 => _("The uploaded file is larger than the MAX_FILE_SIZE directive that was specified in the HTML form"),
+               3 => _("The uploaded file was not fully uploaded to the document management system"),
+               4 => _("No file was selected to be uploaded to the document management system"),
+               6 => _("An internal error occurred receiving the uploaded document"),
+            );
+            $message = KTUtil::arrayGet($errors, $aFile['error'], $message);
+
+            if (@ini_get("file_uploads") == false) {
+                $message = _("File uploads are disabled in your PHP configuration");
+            }
+            $aOptions['message'] = $message;
+            $this->handleError($aOptions);
+        }
+        return $aFile;
+    }
+
     function validateDict($aDict, $aValidation, $aOptions = null) {
         foreach ($aValidation as $k => $aValidatorInfo) {
             $sDictValue = KTUtil::arrayGet($aDict, $k, null);
