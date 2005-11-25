@@ -1,0 +1,28 @@
+<h2>Authentication Sources</h2>
+
+{if $providers}
+<form method="POST">
+<fieldset><legend>Add an authentication source</legend>
+<input type="hidden" name="action" value="newsource" />
+
+{foreach from=$fields item=oWidget}
+  {$oWidget->render()}
+{/foreach}
+
+<div class="form_actions ">
+  <input type="submit" name="submit" value="Add a new source">
+</div>
+</fieldset>
+</form>
+{/if}
+
+{if $aSources}
+<h3>Existing sources</h3>
+
+<ul>
+{foreach from=$aSources item=oSource}
+  <li>
+{/foreach}
+</ul>
+{/if}
+
