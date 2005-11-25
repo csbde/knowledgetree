@@ -16,12 +16,12 @@
 </form>
 {/if}
 
-{if $aSources}
+{if $sources}
 <h3>Existing sources</h3>
 
 <ul>
-{foreach from=$aSources item=oSource}
-  <li>
+{foreach from=$sources item=oSource}
+  <li><a href="?action=viewsource&source_id={$oSource->getId()}">{$oSource->getName()}</a></li>
 {/foreach}
 </ul>
 {/if}
