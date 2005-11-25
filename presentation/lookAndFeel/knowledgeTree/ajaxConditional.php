@@ -9,6 +9,7 @@ require_once(KT_LIB_DIR . "/util/ktutil.inc");
 require_once(KT_LIB_DIR . "/dispatcher.inc.php");
 $sectionName = "Administration";
 require_once(KT_DIR . "/presentation/webpageTemplate.inc");
+require_once(KT_LIB_DIR . '/widgets/fieldsetDisplay.inc.php');
 
 /*
  * example code - tests the frontend behaviour.  remember to check ajaxConditional.php 
@@ -38,6 +39,7 @@ class AjaxConditionalDispatcher extends KTStandardDispatcher {
     }
 
     function do_updateFieldset() {
+        global $main;
         $GLOBALS['default']->log->error(print_r($_REQUEST, true));
         header('Content-Type: application/xml');
         $oFieldset =& $this->oValidator->validateFieldset($_REQUEST['fieldset']);
@@ -45,17 +47,25 @@ class AjaxConditionalDispatcher extends KTStandardDispatcher {
         $matches = array();
         $aFields = array();
         foreach ($_REQUEST as $k => $v) {
-            if (preg_match('/^emd(\d+)$/', $k, $matches)) {
+            if (preg_match('/^metadata_(\d+)$/', $k, $matches)) {
                 $aValues[$matches[1]] = $v;
             }
         }
 
         $aNextFieldValues =& KTMetadataUtil::getNext($oFieldset, $aValues);
-
-        $oTemplate =& $this->oValidator->validateTemplate('ktcore/metadata/chooseFromMetadataLookup');
-        $oTemplate->setData(array('aFieldValues' => $aNextFieldValues));
-        $GLOBALS['default']->log->debug(print_r($aNextFieldValues, true));
-        return $oTemplate->render();
+        
+        $sWidgets = '';
+        // convert these into widgets using the ever-evil...
+        // function getWidgetForMetadataField($field, $current_value, $page, $errors = null, $vocab = null) 
+        foreach ($aNextFieldValues as $aFieldInfo) {
+            $vocab = array();
+            $vocab[''] = 'Unset';
+            foreach ($aFieldInfo['values'] as $md_v) { $vocab[$md_v->getName()] = $md_v->getName(); }
+            $oWidget = getWidgetForMetadataField($aFieldInfo['field'], null, $main, null, $vocab) ;
+            $sWidgets .= $oWidget->render();
+        }
+        
+        return $sWidgets;
     }
 }
 

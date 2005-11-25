@@ -180,7 +180,7 @@ class SelectionColumn extends BrowseColumn {
     function renderHeader($sReturnURL) { 
         // FIXME clean up access to oPage.
         global $main;
-        $main->requireJSResource("/resources/js/toggleselect.js");
+        $main->requireJSResource("resources/js/toggleselect.js");
         
         return '<input type="checkbox" title="toggle all" onactivate="toggleSelectFor('.$this->name.')">';
         

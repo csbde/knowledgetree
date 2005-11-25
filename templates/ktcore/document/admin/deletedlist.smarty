@@ -1,0 +1,45 @@
+<h2>Deleted Documents</h2>
+
+<p class="descriptiveText">Documents which are deleted by users are hidden from view, 
+but still available for restoration.  Since this consumes system resources, it
+is possible to <strong>expunge</strong> these documents.  Alternatively, you
+can <strong>restore</strong> them as necessary.</p>
+
+<p class="descriptiveText"><strong>FIXME</strong> its probably very useful to add
+more information about the documents below - e.g. when was it deleted (last modified?)</p>
+
+<p class="descriptiveText"><strong>FIXME</strong> Have a "select all" toggler here.</p>
+
+{if (!empty($documents))}
+
+<form action="{$smarty.server.PHP_SELF}" method="POST">
+
+<input type="hidden" name="action" value="confirm_expunge" />
+
+<table class="listing">
+  <thead>
+    <tr>
+      <th>&nbsp;</th>
+      <th>Document Name</th>
+      <th>Location</th>
+    </tr>
+  </thead>
+  <tbody>
+    {foreach item=oDoc from=$documents}
+    <tr>
+      <td><input type="checkbox" name="selected_docs[]" value="{$oDoc->getId()}"/></td>
+      <td>{$oDoc->getName()}</td>
+      <td class="descriptiveText">{$oDoc->getDisplayPath()}</td>
+    </tr>
+    {/foreach}
+  </tbody>
+</table>
+<div class="form_actions">
+   <input type="submit" value="Expunge" />
+   <!-- <input type="submit" value="Restore" /> -->  <!-- how do we want to handle restore in this? major UI issue :( -->
+</div>
+</form>
+
+{else}
+<div class="ktInfo"><p>No documents are marked as deleted.</p></div>
+{/if}

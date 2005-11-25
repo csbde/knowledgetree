@@ -1,28 +1,45 @@
-<h1>Workflow: {$oWorkflow->getName()|escape}</h1>
+<h2>Workflow: {$oWorkflow->getName()|escape}</h2>
 
-<h2>Edit workflow properties</h2>
+
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
+<fieldset>
+<legend>Edit workflow properties</legend>
 <input type="hidden" name="action" value="saveWorkflow" />
 <input type="hidden" name="fWorkflowId" value="{$oWorkflow->getId()}" />
-<table class="prettysw" cellpadding="0" cellspacing="0">
-<tr>
-  <th>Name</th>
-  <td><input type="textbox" name="fName" value="{$oWorkflow->getName()|escape}" /></td>
-</tr>
-<tr>
-  <th>Starting state</th>
-  <td>{ entity_select entities=$aStates name="fStartStateId" none=true selected=$oWorkflow->getStartStateId()}</td>
-</tr>
-</table>
-<input type="submit" name="submit" value="Save" />
+
+{foreach item=oWidget from=$edit_fields}
+  {$oWidget->render()}
+{/foreach}
+
+<div class="form_actions">
+<input type="submit" name="submit" value="Update workflow properties" />
+</div>
+</fieldset>
 </form>
 
-<h2>States</h2>
+<h3>States</h3>
+<p class="descriptiveText"><strong>FIXME</strong> insert intelligent help.</p>
+<form action="{$smarty.server.PHP_SELF}" method="POST">
+<fieldset>
+<legend>Create a new state</legend>
+<input type="hidden" name="action" value="newState" />
+<input type="hidden" name="fWorkflowId" value="{$oWorkflow->getId()}" />
+
+
+{foreach item=oWidget from=$add_state_fields}
+  {$oWidget->render()}
+{/foreach}
+
+<div class="form_actions">
+<input type="submit" name="submit" value="Create state" />
+</div>
+</fieldset>
+</form>
 
 {if $aStates}
-<h3>Existing states</h3>
-
+<h4>Existing states</h4>
+<p class="descriptiveText">Select a state to update its properties.</p>
 <ul>
 {foreach from=$aStates item=oState}
   <li><a
@@ -32,16 +49,31 @@ title="State {$oState->getId()}">{$oState->getName()|escape}</a></li>
 </ul>
 {/if}
 
-<h3>Create a new state</h3>
+
+
+
+
+<h3>Transitions</h3>
+
+<p class="descriptiveText"><strong>FIXME</strong> insert intelligent help.</p>
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
-<input type="hidden" name="action" value="newState" />
+<fieldset>
+<legend>Create a new transition</legend>
+<input type="hidden" name="action" value="newTransition" />
 <input type="hidden" name="fWorkflowId" value="{$oWorkflow->getId()}" />
-<input type="textbox" name="fName" />
-<input type="submit" name="submit" value="Create state" />
+
+
+{foreach item=oWidget from=$add_transition_fields}
+  {$oWidget->render()}
+{/foreach}
+
+<div class="form_actions">
+<input type="submit" name="submit" value="Create transition" />
+</div>
+</fieldset>
 </form>
 
-<h2>Transitions</h2>
 
 {if $aTransitions}
 <h3>Existing transitions</h3>
@@ -55,35 +87,26 @@ title="Transition {$oTransition->getId()}">{$oTransition->getName()|escape}</a><
 </ul>
 {/if}
 
-<h3>Create a new transition</h3>
+
+
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
-<input type="hidden" name="action" value="newTransition" />
-<input type="hidden" name="fWorkflowId" value="{$oWorkflow->getId()}" />
-<table class="prettysw" cellpadding="0" cellspacing="0">
-<tr><th>Name</th><td><input type="textbox" name="fName" /></td></tr>
-<tr>
-  <th>Target State</th>
-  <td>{entity_select entities=$aStates name="fTargetStateId"}</td>
-</tr>
-<tr>
-  <th>Guard permission</th>
-  <td>{entity_select entities=$aPermissions name="fPermissionId"}</td>
-</tr>
-</table>
-<input type="submit" name="submit" value="Create transition" />
-</form>
+<fieldset>
+<legend>Actions controlled</legend>
 
-<h2>Actions controlled</h2>
+<p class="descriptiveText"><strong>FIXME</strong> be helpful</p>
 
-<form action="{$smarty.server.PHP_SELF}" method="POST">
 <input type="hidden" name="action" value="setWorkflowActions" />
 <input type="hidden" name="fWorkflowId" value="{$oWorkflow->getId()}" />
+
 <ul>
 {entity_checkboxes name="fActions" entities=$aActions idmethod="getName" method="getDisplayName" assign="aCheckboxes" selected="$aActionsSelected"}
 {foreach from=$aCheckboxes item=sCheckbox}
 <li>{$sCheckbox}</li>
 {/foreach}
 </ul>
-<input type="submit" name="submit" value="Set controlled actions" />
+<div class="form_actions">
+   <input type="submit" name="submit" value="Set controlled actions" />
+</div>
+</fieldset>
 </form>

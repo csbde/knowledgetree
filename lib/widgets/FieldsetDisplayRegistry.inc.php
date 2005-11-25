@@ -1,5 +1,7 @@
 <?php
 
+require_once(KT_LIB_DIR . '/metadata/fieldset.inc.php');
+
 class KTFieldsetDisplayRegistry {
     
     var $fieldset_types = array();
@@ -24,7 +26,16 @@ class KTFieldsetDisplayRegistry {
     
     function getHandler($nsname) {
         if (!array_key_exists($nsname, $this->fieldset_types)) {
-            return 'SimpleFieldsetDisplay';
+            // unfortunately, we need to do a bit more spelunking here.  
+            // if its conditional, we use a different item.  ns is unsufficient.
+            // 
+            // FIXME this is slightly wasteful from a performance POV, though DB caching should make it OK.
+            $oFieldset =& KTFieldset::getByNamespace ($nsname);
+            if ($oFieldset->getIsConditional()) {
+                return 'ConditionalFieldsetDisplay';
+            } else {
+                return 'SimpleFieldsetDisplay';
+            }
         } else {
             return $this->fieldset_types[$nsname];
         }

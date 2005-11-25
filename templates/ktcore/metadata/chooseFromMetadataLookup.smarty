@@ -1,17 +1,20 @@
 {foreach from=$aFieldValues key=iFieldId item=aFieldInfo }
 {assign var="oField" value=$aFieldInfo.field}
 {assign var="aLookups" value=$aFieldInfo.values}
-<tr class="widget">
-  <th><span title="Field: {$oField->getId()}">{$oField->getName()|escape}</span></th>
-  <td>
 
-<select name="emd{$oField->getId()}">
-  <option value="">Unset</option>
-{foreach from=$aLookups item=oLookup}
-  <option value="{$oLookup->getId()}">{$oLookup->getName()}</option>
-{/foreach}
-</select>
+<div class="field ">
+      <label for="condi-field-{$iFieldId}">{$oField->getName()|escape}</label>
+      <p class="descriptiveText">FIXME</p>
+            <p class="errorMessage"></p>
 
-  </td>
-</tr>
+            
+      <select name="metadata_{$iFieldId}" id="condi-field-{$iFieldId}"  >
+        <option value="">Unset</option>      
+        {foreach from=$aLookups item=oLookup}
+          <option value="{$oLookup->getName()}">{$oLookup->getName()}</option>
+        {/foreach}
+      </select>
+      <input type="hidden" name="kt_core_fieldsets_expect[metadata_{$iFieldId}]" value ="1" />
+</div>
+
 {/foreach}

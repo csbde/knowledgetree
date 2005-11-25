@@ -40,12 +40,16 @@ $oAdminRegistry->registerLocation("roles",'RoleAdminDispatcher',"security", "Rol
 $oAdminRegistry->registerLocation("typemanagement",'KTDocumentTypeDispatcher','documents', 'Document Types','Manage the different classes of document which can be added to the system.', KT_DIR . '/presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/documentTypes.php', null);
 $oAdminRegistry->registerLocation("fieldmanagement",'KTDocumentFieldDispatcher','documents', 'Document Fieldsets','Control which kinds of documents have which sets of information associated with them.', KT_DIR . '/presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/documentFields.php', null);
 $oAdminRegistry->registerLocation("linkmanagement",'KTDocLinkAdminDispatcher','documents', 'Link Type Management','Specify the different "link types" - ways to relate different documents togeter.', KT_DIR . '/presentation/lookAndFeel/knowledgeTree/administration/doclinkmanagement/documentLinks.php', null);
-
+$oAdminRegistry->registerLocation("workflows",'KTWorkflowDispatcher','documents', 'Workflows','Configure the process documents go through..', KT_DIR . '/presentation/lookAndFeel/knowledgeTree/administration/workflow/workflows.php', null);
 
 // storage
 $oAdminRegistry->registerLocation("checkout",'KTCheckoutAdminDispatcher','storage', 'Checked Out Document Control','Override the checked-out status of documents if a user has failed to do so.', KT_DIR . '/presentation/lookAndFeel/knowledgeTree/administration/doccheckoutmanagement/documentCheckout.php', null);
+$oAdminRegistry->registerLocation("archived",'ArchivedDocumentsDispatcher','storage', 'Archived Document Restoration','Restore old (archived) documents, usually at a user\'s request.', KT_DIR . '/presentation/lookAndFeel/knowledgeTree/administration/documentmanagement/archivedDocuments.php', null);
+$oAdminRegistry->registerLocation("expunge",'DeletedDocumentsDispatcher','storage', 'Expunge Deleted Documents','Permanently expunge deleted documents.', KT_DIR . '/presentation/lookAndFeel/knowledgeTree/administration/documentmanagement/deletedDocuments.php', null);
 
+// misc
 $oAdminRegistry->registerLocation("helpmanagement",'ManageHelpDispatcher','misc', 'Edit Help files','Change the help files that are displayed to users.', KT_DIR . '/presentation/lookAndFeel/knowledgeTree/administration/help/manageHelp.php', null);
+
 
 
 ?>

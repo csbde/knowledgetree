@@ -107,8 +107,8 @@ $default->siteMap->addPage("orgManagement", "/presentation/lookAndFeel/knowledge
 $default->siteMap->addPage("doctype", "presentation/lookAndFeel/knowledgeTree/administration/doctypemanagement/documentTypes.php", "Administration", SysAdmin, _("Document Type Management"), true, 5);
 $default->siteMap->addPage("docfield", "/presentation/lookAndFeel/knowledgeTree/administration/admin.php/documents/fieldmanagement", "Administration", SysAdmin, _("Document Field Management"), true, 6);
 
-$default->siteMap->addPage("archivedDocuments", "/presentation/lookAndFeel/knowledgeTree/administration/documentmanagement/manageArchivedDocumentsBL.php", "Administration", UnitAdmin, _("Restore Archived Documents"), true, 7);
-$default->siteMap->addPage("deletedDocuments", "/presentation/lookAndFeel/knowledgeTree/administration/documentmanagement/listDeletedDocumentsBL.php", "Administration", UnitAdmin, _("Deleted Documents"), true, 8);
+$default->siteMap->addPage("archivedDocuments", "/presentation/lookAndFeel/knowledgeTree/administration/admin.php/storage/archived", "Administration", UnitAdmin, _("Restore Archived Documents"), true, 7);
+$default->siteMap->addPage("deletedDocuments", "/presentation/lookAndFeel/knowledgeTree/administration/admin.php/storage/expunge", "Administration", UnitAdmin, _("Deleted Documents"), true, 8);
 $default->siteMap->addPage("doccheckoutManagement", "/presentation/lookAndFeel/knowledgeTree/administration/doccheckoutmanagement/listDocumentsBL.php", "Administration", UnitAdmin, _("Document Checkout Management"), true, 9);
 
 $default->siteMap->addPage("newsManagement", "/presentation/lookAndFeel/knowledgeTree/administration/news/listNewsBL.php", "Administration", SysAdmin, _("Dashboard News Management"), true, 10);
@@ -127,7 +127,7 @@ $default->siteMap->addPage("manageHelp", "/presentation/lookAndFeel/knowledgeTre
 
 $default->siteMap->addPage("managePermissions", "/presentation/lookAndFeel/knowledgeTree/administration/permissions/managePermissions.php", "Administration", SysAdmin, _("Permissions Administration"), true, 18);
 $default->siteMap->addPage("manageLookupTrees", "/presentation/lookAndFeel/knowledgeTree/administration/docfieldmanagement/manageLookupTrees.php", "Administration", SysAdmin, _("Lookup Tree Administration"), true, 19);
-$default->siteMap->addPage("manageWorkflows", "/presentation/lookAndFeel/knowledgeTree/administration/workflow/workflows.php", "Administration", SysAdmin, _("Workflow Management"), true, 20);
+$default->siteMap->addPage("manageWorkflows", "/presentation/lookAndFeel/knowledgeTree/administration/admin.php/documents/workflows", "Administration", SysAdmin, _("Workflow Management"), true, 20);
 $default->siteMap->addPage("manageCleanup", "/presentation/lookAndFeel/knowledgeTree/administration/documentmanagement/manageCleanup.php", "Administration", SysAdmin, _("Repository Cleanup"), true, 21);
 $default->siteMap->addPage("manageSavedSearches", "/presentation/lookAndFeel/knowledgeTree/administration/searches/savedSearch.php", "Administration", SysAdmin, _("Saved Searches"), true, 22);
 $default->siteMap->addPage("manageDocumentConditions", "/presentation/lookAndFeel/knowledgeTree/administration/searches/conditions.php", "Administration", SysAdmin, _("Document Conditions"), true, 23);

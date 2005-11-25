@@ -21,11 +21,14 @@ class KTFolderAddDocumentAction extends KTFolderAction {
 
     function do_main() {
         $this->oPage->setBreadcrumbDetails("add document");
+        $this->oPage->setTitle('Add a document');
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/document/add');
         $add_fields = array();
         $add_fields[] = new KTFileUploadWidget('File', 'The contents of the document to be added to the document management system.', 'file', "", $this->oPage, true);
         $add_fields[] = new KTStringWidget('Title', 'Describe the changes made to the document.', 'title', "", $this->oPage, true);
-
+        
+        
+        
         $aVocab = array();
         foreach (DocumentType::getList() as $oDocumentType) {
             $aVocab[$oDocumentType->getId()] = $oDocumentType->getName();

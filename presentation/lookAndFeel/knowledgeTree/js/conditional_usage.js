@@ -2,7 +2,7 @@
 // i don't like Mochikit's one.
 
 function getBindTarget(fieldset) {
-    var possibles = getElementsByTagAndClassName('TBODY','conditional_target', fieldset);
+    var possibles = getElementsByTagAndClassName('DIV','conditional_target', fieldset);
     return possibles[0];
 }
 
@@ -130,18 +130,18 @@ function popStack(fieldset) {
 function createFixedWidget(fieldset, widget, i_name, i_value, i_label) {
     // bad, but there's nothing else we can do in the current design.
     // we need to walk the TR for the TH (widget.tagName == TR)
-    if (widget.tagName != 'TR')
+    if (widget.tagName != 'DIV')
     {
         // alert('Invalid widget in conditional.'+widget);
         simpleLog('ERROR','invalid widget in conditional.');
         return false;
     }
-    var header = widget.getElementsByTagName('TH')[0];  // FIXME _could_ fail if pathalogical.
+    var header = widget.getElementsByTagName('LABEL')[0];  // FIXME _could_ fail if pathalogical.
     var i_friendly_name = scrapeText(header);
 
-    var newWidget = TR({'class':'widget fixed'},
-        TH(null, i_friendly_name),
-        TD(null, 
+    var newWidget = DIV({'class':'field fixed'},
+        createDOM('LABEL',null, i_friendly_name),
+        DIV(null, 
             INPUT({'type':'hidden','name':i_name, 'value':i_value,'class':'fixed'}),
             SPAN(null, i_label)
         )
@@ -159,7 +159,7 @@ function createFixedWidget(fieldset, widget, i_name, i_value, i_label) {
 */
 
 function handleSelectChange(fieldset, widget, select_object) { 
-    simpleLog('ERROR','call to stub: handleSelectChange on select with name "'+select_object.name+'"'); 
+    simpleLog('DEBUG','handleSelectChange on select with name "'+select_object.name+'"'); 
     var i_name = select_object.name;
     var i_value = select_object.value;
     var i_label = scrapeText(select_object.options[select_object.selectedIndex]);
@@ -300,15 +300,15 @@ function do_updateFieldset(fieldset, req) {
    // clear unfixed widgets before we start.
    clearUnfixedWidgets(fieldset);
    // create an unparented div for HTML insertion.
-   var tb = TBODY(null);
-   var t = TABLE(null, tb);
+   var hold = DIV(null);
    
-   tb.innerHTML = req.responseText;
+   hold.innerHTML = req.responseText;
    
-   var new_widgets = getElementsByTagAndClassName('TR','widget', tb);
-   simpleLog('DEBUG','new_widgets.length: ',new_widgets.length);     
+   var new_widgets = getElementsByTagAndClassName('DIV','field', hold);
+   
+   simpleLog('DEBUG','new_widgets.length: '+new_widgets.length);
    var target = getBindTarget(fieldset);
-   simpleLog('DEBUG','new_widgets.length: ',new_widgets.length);     
+   simpleLog('DEBUG','new_widgets.length: '+new_widgets.length);     
    for (var i=0; i<new_widgets.length; i++) {
        var w = new_widgets[i];
        simpleLog('DEBUG','binding: '+toHTML(w));     

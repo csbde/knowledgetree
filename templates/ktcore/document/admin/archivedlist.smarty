@@ -1,0 +1,46 @@
+<h2>Archived Documents</h2>
+
+<p class="descriptiveText">In order to keep the documents which are visible useful
+to end users, it is possible to <strong>archive</strong> old documents.  Users who
+want to see these old documents need to request their restoration - these requests
+will typically be done within the system, and will generate a notification to you.
+</p>
+
+<div class="ktError"><p><strong>FIXME</strong> this aspect of the UI is unuseable.
+KT 2.x had a full-on search here.  That's probably _also_ unuseable.  Ponder an
+improvement (probably notification driven / basic search driven. Even better:  allow browse
+with LIVE turned off.)</p></div>
+
+{if (!empty($documents))}
+
+<form action="{$smarty.server.PHP_SELF}" method="POST">
+
+<input type="hidden" name="action" value="confirm_restore" />
+
+<table class="listing">
+  <thead>
+    <tr>
+      <th>&nbsp;</th>
+      <th>Document Name</th>
+      <th>Location</th>
+    </tr>
+  </thead>
+  <tbody>
+    {foreach item=oDoc from=$documents}
+    <tr>
+      <td><input type="checkbox" name="selected_docs[]" value="{$oDoc->getId()}"/></td>
+      <td>{$oDoc->getName()}</td>
+      <td class="descriptiveText">{$oDoc->getDisplayPath()}</td>
+    </tr>
+    {/foreach}
+  </tbody>
+</table>
+<div class="form_actions">
+   <input type="submit" value="Expunge" />
+   <!-- <input type="submit" value="Restore" /> -->  <!-- how do we want to handle restore in this? major UI issue :( -->
+</div>
+</form>
+
+{else}
+<div class="ktInfo"><p>No documents are marked as archived.</p></div>
+{/if}

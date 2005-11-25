@@ -1,8 +1,26 @@
-<h1>Workflow</h1>
+<h2>Workflow</h2>
+
+<form action="{$smarty.server.PHP_SELF}" method="POST">
+<fieldset>
+<legend>Create a new workflow</legend>
+
+<input type="hidden" name="action" value="newWorkflow" />
+
+
+{foreach item=oWidget from=$add_fields}
+  {$oWidget->render()}
+{/foreach}
+
+<div class="form_actions">
+  <input type="submit" name="submit" value="Create" />
+</div>
+</fieldset>
+</form>
+
 
 {if $aWorkflow}
-<h2>Existing workflows</h2>
-
+<h3>Existing workflows</h3>
+<p class="descriptiveText">Select a workflow to modify.</p>
 <ul>
 {foreach from=$aWorkflow item=oWorkflow}
   <li><a href="?action=editWorkflow&fWorkflowId={$oWorkflow->getId()}" title="Workflow: {$oWorkflow->getId()}">{$oWorkflow->getName()}</a></li>
@@ -10,10 +28,6 @@
 </ul>
 {/if}
 
-<h2>Create a new workflow</h2>
 
-<form action="{$smarty.server.PHP_SELF}" method="POST">
-<input type="hidden" name="action" value="newWorkflow" />
-<input type="textbox" name="fName" />
-<input type="submit" name="submit" value="Create" />
-</form>
+
+
