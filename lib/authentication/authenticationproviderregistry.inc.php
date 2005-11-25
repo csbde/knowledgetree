@@ -22,6 +22,7 @@
  * KnowledgeTree users table to check the password against.
  */
 class KTAuthenticationProviderRegistry {
+    var $_aAuthenticationProvidersInfo = array();
     var $_aAuthenticationProviders = array();
 
     // {{{ getSingleton
@@ -34,15 +35,31 @@ class KTAuthenticationProviderRegistry {
     // }}}
 
     function registerAuthenticationProvider($name, $class, $nsname, $path = "", $sPlugin = null) {
-        $this->_aAuthenticationProviders[$nsname] = array($name, $class, $path, $nsname, $sPlugin);
+        $this->_aAuthenticationProvidersInfo[$nsname] = array($name, $class, $nsname, $path, $sPlugin);
     }
 
-    function getAuthenticationProvider($nsname) {
-        return $this->_aAuthenticationProviders[$nsname];
+    function getAuthenticationProviderInfo($nsname) {
+        return $this->_aAuthenticationProviderInfo[$nsname];
     }
 
-    function getAuthenticationProviders() {
-        return array_values($this->_aAuthenticationProviders);
+    function &getAuthenticationProvider($nsname) {
+        $oProvider =& KTUtil::arrayGet($this->_aAuthenticationProviders, $nsname);
+        if ($oProvider) {
+            return $oProvider;
+        }
+        $aInfo = $this->_aAuthenticationProvidersInfo[$nsname];
+        $sClass = $aInfo[1];
+        $sPath = $aInfo[3];
+        if ($sPath) {
+            require_once($sPath);
+        }
+        $oProvider =& new $sClass;
+        $this->_aAuthenticationProviders[$nsname] =& $oProvider;
+        return $oProvider;
+    }
+
+    function getAuthenticationProvidersInfo() {
+        return array_values($this->_aAuthenticationProvidersInfo);
     }
 }
 
