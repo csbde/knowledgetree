@@ -2,14 +2,20 @@
 
 require_once(KT_LIB_DIR . '/authentication/authenticationprovider.inc.php');
 require_once(KT_LIB_DIR . '/authentication/Authenticator.inc');
+require_once(KT_LIB_DIR . '/authentication/class.AuthLdap.php');
 
-class KTBuiltinAuthenticationProvider extends KTAuthenticationProvider {
-    var $sName = "Built-in authentication provider";
-    var $sNamespace = "ktstandard..builtin";
+class KTLDAPAuthenticationProvider extends KTAuthenticationProvider {
+    var $sName = "LDAP authentication provider";
+    var $sNamespace = "ktstandard.authentication.ldapprovider";
 
-    function &getAuthenticator() {
-        return new LDAPAuthenticator;
-    }
+    var $aConfigMap = array(
+        'servername' => 'LDAP Server',
+        'basedn' => 'Base DN',
+        'servertype' => 'LDAP Server Type',
+        'domain' => 'LDAP Server Domain',
+        'searchuser' => 'LDAP Search User',
+        'searchpassword' => 'LDAP Search Password',
+    );
 
     function saveConfig(&$oSource, $aRequest) {
         return true;
@@ -18,6 +24,66 @@ class KTBuiltinAuthenticationProvider extends KTAuthenticationProvider {
     function configFields($oSource) {
         return array();
     }
+
+    function showSource($oSource) {
+        $aConfig = unserialize($oSource->getConfig());
+        if (empty($aConfig)) {
+            $aConfig = array();
+        }
+        $sRet = "<dl>\n";
+        foreach ($this->aConfigMap as $sSettingName => $sName) {
+            $sRet .= "  <dt>$sName</dt>\n";
+            $sValue = KTUtil::arrayGet($aConfig, $sSettingName, "Unset");
+            $sRet .= "  <dd>" . $sValue . "</dd>\n";
+        }
+        $sRet .= "</dl>\n";
+        return $sRet;
+    }
+
+    function do_editSourceProvider() {
+        require_once(KT_LIB_DIR . '/widgets/fieldWidgets.php');
+        $this->oPage->setBreadcrumbDetails("editing LDAP settings");
+        $oTemplate = $this->oValidator->validateTemplate('ktstandard/authentication/ldapeditsource');
+        $iSourceId = KTUtil::arrayGet($_REQUEST, 'source_id');
+        $oSource = KTAuthenticationSource::get($iSourceId);
+        $fields = array();
+        $fields[] = new KTStringWidget('Server name', 'The host name or IP address of the LDAP server', 'servername', '', $this->oPage, true);
+        $fields[] = new KTStringWidget('Base DN', 'FIXME', 'basedn', '', $this->oPage, true);
+        $fields[] = new KTStringWidget('Server Type', 'FIXME', 'servertype', '', $this->oPage, true);
+        $fields[] = new KTStringWidget('Domain', 'FIXME', 'domain', '', $this->oPage, true);
+        $fields[] = new KTStringWidget('Search User', 'FIXME', 'searchuser', '', $this->oPage, true);
+        $fields[] = new KTStringWidget('Search Password', 'FIXME', 'searchpassword', '', $this->oPage, true);
+        $aTemplateData = array(
+            'context' => &$this,
+            'fields' => $fields,
+            'source' => $oSource,
+        );
+        return $oTemplate->render($aTemplateData);
+    }
+
+    function do_performEditSourceProvider() {
+        $iSourceId = KTUtil::arrayGet($_REQUEST, 'source_id');
+        $oSource = KTAuthenticationSource::get($iSourceId);
+        $aConfig = array();
+        foreach ($this->aConfigMap as $k => $v) {
+            $sValue = KTUtil::arrayGet($_REQUEST, $k);
+            if ($sValue) {
+                $aConfig[$k] = $sValue;
+            }
+        }
+        $oSource->setConfig(serialize($aConfig));
+        $oSource->update();
+        $this->successRedirectTo('viewsource', "Configuration updated", 'source_id=' . $oSource->getId());
+    }
+
+    function &getAuthenticatorForSource($oSource) {
+        $aConfig = unserialize($oSource->getConfig());
+        return new LDAPAuthenticator($aConfig['servername'],
+                $aConfig['basedn'], $aConfig['servertype'],
+                $aConfig['domain'], $aConfig['searchuser'],
+                $aConfig['searchpassword']);
+    }
+
 }
 
 class LDAPAuthenticator extends Authenticator {
@@ -41,16 +107,19 @@ class LDAPAuthenticator extends Authenticator {
      * @param string the dn branch to perform the authentication against (optional)
      * @param string the ldap server type (optional)
      */
-    function LDAPAuthenticator($sLdapServer = "", $sLdapDN = "", $sServerType = "", $sLdapDomain = "") {
+    function LDAPAuthenticator($sLdapServer = "", $sLdapDN = "", $sServerType = "", $sLdapDomain = "", $sSearchUser = "", $sSearchPassword = "") {
         global $default;
 
         $this->sLdapServer = strlen($sLdapServer) > 0 ? $sLdapServer : $default->ldapServer;
         $this->sBaseDN = strlen($sLdapDN) > 0 ? $sLdapDN : $default->ldapRootDn;
         $this->sServerType = strlen($sServerType) > 0 ? $sServerType : $default->ldapServerType;
         $this->sLdapDomain = strlen($sLdapDomain) > 0 ? $sLdapDomain : $default->ldapDomain;
+        $this->sLdapDomain = strlen($sLdapDomain) > 0 ? $sLdapDomain : $default->ldapDomain;
+        $this->sSearchUser = strlen($sSearchUser) > 0 ? $sSearchUser : $default->ldapSearchUser;
+        $this->sSearchPassword = strlen($sSearchPassword) > 0 ? $sSearchPassword : $default->ldapSearchPassword;
 
         // initialise and setup ldap class
-        $this->oLdap = new AuthLdap($this->sLdapServer, $this->sBaseDN, $this->sServerType, $this->sLdapDomain, $default->ldapSearchUser, $default->ldapSearchPassword);
+        $this->oLdap = new AuthLdap($this->sLdapServer, $this->sBaseDN, $this->sServerType, $this->sLdapDomain, $this->sSearchUser, $this->sSearchPassword);
     }
 
     /**
