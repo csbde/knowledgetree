@@ -3,14 +3,12 @@
 require_once(KT_LIB_DIR . "/ktentity.inc");
 
 class KTAuthenticationSource extends KTEntity {
-    /** primary key */
-    var $iId = -1;
-    /** help file name */
     var $sName;
-    /** help file name */
-    var $sHumanName;
-    /** whether it's built into KT */
-    var $bBuiltIn = false;
+    var $sNamespace;
+    var $sAuthenticationProvider;
+    var $sConfig = "";
+    var $bIsUserSource = false;
+    var $bIsGroupSource = false;
 
     var $_aFieldToSelect = array(
         "iId" => "id",
@@ -34,8 +32,8 @@ class KTAuthenticationSource extends KTEntity {
     function setNamespace($sNamespace) { $this->sNamespace = $sNamespace; }
     function setAuthenticationProvider($sAuthenticationProvider) { $this->sAuthenticationProvider = $sAuthenticationProvider; }
     function setConfig($sConfig) { $this->sConfig = $sConfig; }
-    function getIsUserSource($bIsUserSource) { $this->bIsUserSource = $bIsUserSource; }
-    function getIsGroupSource($bIsGroupSource) { $this->bIsGroupSource = $bIsGroupSource; }
+    function setIsUserSource($bIsUserSource) { $this->bIsUserSource = $bIsUserSource; }
+    function setIsGroupSource($bIsGroupSource) { $this->bIsGroupSource = $bIsGroupSource; }
 
     function _table () {
         global $default;
