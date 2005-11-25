@@ -8,6 +8,9 @@ require_once(KT_LIB_DIR . "/widgets/fieldsetDisplay.inc.php");
 require_once(KT_LIB_DIR . "/widgets/FieldsetDisplayRegistry.inc.php");
 require_once(KT_LIB_DIR . "/foldermanagement/folderutil.inc.php");
 
+require_once(KT_LIB_DIR . '/plugins/plugin.inc.php');
+require_once(KT_LIB_DIR . '/plugins/pluginregistry.inc.php');
+
 $oKTActionRegistry =& KTActionRegistry::getSingleton();
 
 class KTFolderAddDocumentAction extends KTFolderAction {
@@ -260,5 +263,10 @@ class KTFolderPermissionsAction extends KTFolderAction {
     }
 }
 $oKTActionRegistry->registerAction('folderaction', 'KTFolderPermissionsAction', 'ktcore.actions.folder.permissions');
+
+$oRegistry =& KTPluginRegistry::getSingleton();
+$oPlugin =& $oRegistry->getPlugin('ktcore.plugin');
+$oPlugin->registerAction('folderaction', 'KTBulkImportFolderAction', 'ktcore.actions.folder.bulkImport', 'folder/BulkImport.php');
+$oPlugin->registerAction('folderaction', 'KTBulkUploadFolderAction', 'ktcore.actions.folder.bulkUpload', 'folder/BulkUpload.php');
 
 ?>
