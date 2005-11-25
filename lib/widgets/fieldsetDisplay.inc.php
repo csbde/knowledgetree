@@ -16,6 +16,8 @@
 require_once(KT_LIB_DIR . "/templating/templating.inc.php");
 require_once(KT_LIB_DIR . "/database/dbutil.inc");
 
+require_once(KT_LIB_DIR . "/documentmanagement/MDTree.inc"); // :(
+
 
 
 // data acquisition
@@ -26,7 +28,7 @@ require_once(KT_LIB_DIR . "/widgets/fieldWidgets.php");
 
 
 /* it may be useful to move this to a factory, eventually? */
-function getWidgetForMetadataField($field, $current_value, $page, $errors = null) {
+function getWidgetForMetadataField($field, $current_value, $page, $errors = null, $vocab = null) {
     // all fields have these elements.
     $fieldLabel = $field->getName();
     $fieldDescription = '<strong>FIXME</strong> we don\'t handle descriptions for fields, yet.';
@@ -49,13 +51,30 @@ function getWidgetForMetadataField($field, $current_value, $page, $errors = null
     if ($field->getHasLookup()) {
         // could either be normal, or a tree.
         // ignore trees (for now).
-        if (true) {
+        if (!$field->getHasLookupTree()) {
+           // FIXME we need to somehow handle both value-value and id-value here
            // extract the lookup.
-           $lookups = MetaData::getEnabledValuesByDocumentField($field);
-           //var_dump($lookups);
-           
-           $fieldOptions["vocab"] = array(); // FIXME handle lookups
-           $oField = new KTLookupWidget($fieldLabel, $fieldDescription, $fieldName, $fieldValue, $page, $fieldRequired, null, $fieldErrors, $fieldOptions);       
+            if ($vocab === null) { // allow override
+                $lookups = MetaData::getEnabledValuesByDocumentField($field);
+                $fieldOptions["vocab"] = array(); // FIXME handle lookups
+                foreach ($lookups as $md) {
+                    $fieldOptions["vocab"][$md->getName()] = $md->getName();
+                }
+            } else {
+                $fieldOptions["vocab"] = $vocab; 
+            }
+            
+            $oField = new KTLookupWidget($fieldLabel, $fieldDescription, $fieldName, $fieldValue, $page, $fieldRequired, null, $fieldErrors, $fieldOptions);       
+        } else {
+            // FIXME vocab's are _not_ supported for tree-inputs.  this means conditional-tree-widgets are not unsupported.
+            
+            // for trees, we are currently brutal.
+            $fieldTree = new MDTree();
+            $fieldTree->buildForField($field->getId());
+            $fieldTree->setActiveItem($current_value);
+			$fieldOptions['tree'] = $fieldTree->_evilTreeRenderer($fieldTree, $fieldName);
+            
+            $oField = new KTTreeWidget($fieldLabel, $fieldDescription, $fieldName, $fieldValue, $page, $fieldRequired, null, $fieldErrors, $fieldOptions);          
         }
     } else {
         $oField = new KTBaseWidget($fieldLabel, $fieldDescription, $fieldName, $fieldValue, $page, $fieldRequired, null, $fieldErrors, $fieldOptions);       
@@ -350,6 +369,65 @@ class SimpleFieldsetDisplay extends KTFieldsetDisplay {
             "description" => $fieldset_description,
         );
         
+        
+        return $oTemplate->render($aTemplateData);
+    }
+    
+}
+
+
+// Handle the conditional case.
+class ConditionalFieldsetDisplay extends SimpleFieldsetDisplay {
+        
+    function renderEdit($document_data) {
+        global $main; // FIXME remove direct access to $main
+        $oPage =& $main;
+        
+        // FIXME do this from inside the widgetry mojo.
+        $oPage->requireCSSResource('resources/css/kt-treewidget.css');
+        
+        // FIXME this currently doesn't work, since we use NBM's half-baked Ajax on add/bulk ;)
+        $oPage->requireJSResource('presentation/lookAndFeel/knowledgeTree/js/taillog.js');
+        $oPage->requireJSResource('presentation/lookAndFeel/knowledgeTree/js/conditional_usage.js');
+        
+        $aFields = array();        
+        $fields =& $this->fieldset->getFields();
+        $values = array();
+
+        $have_values = false;
+        foreach ($fields as $oField) {
+            $val = KTUtil::arrayGet($document_data["field_values"], $oField->getId(), null);
+            if ($val !== null) {
+                $have_values = true;
+                
+            } 
+            
+            $values[$oField->getId()] =  $val;
+        }   
+        // FIXME handle the editable case _with_ values.
+        
+        if ($have_values) {
+
+            return '<div class="ktError"><p>Do not yet know how to edit conditional fieldsets with values.</p></div>';
+        } // else {
+        
+        // now, we need to do some extra work on conditional widgets.
+        // how?
+        
+        $fieldset_name = $this->fieldset->getName();
+        $fieldset_description = "The information in this section is part of the <strong>" . $fieldset_name . "</strong> of the document.  Note that the options which are available depends on previous choices within this fieldset.";
+        
+        // 
+        
+        $oTemplating = new KTTemplating;        
+        $oTemplate = $oTemplating->loadTemplate("kt3/fieldsets/conditional_editable");
+        $aTemplateData = array(
+            "context" => $this,
+            "field" => $oField, // first field, widget.
+            'fieldset_id' => $this->fieldset->getId(),
+            "title" => $fieldset_name,
+            "description" => $fieldset_description,
+        );
         
         return $oTemplate->render($aTemplateData);
     }

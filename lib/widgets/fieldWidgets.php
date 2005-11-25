@@ -81,8 +81,9 @@ class KTStaticTextWidget extends KTBaseWidget { var $sTemplate = "kt3/fields/sta
 /* lookup widget */
 // EXPECTS $aOptions["vocab"] => key, item
 class KTLookupWidget extends KTBaseWidget { var $sTemplate = "kt3/fields/lookup"; }
+// EXPECTS $aOptions["tree"] => inner widget.
+class KTTreeWidget extends KTBaseWidget { var $sTemplate = "kt3/fields/tree"; }
 
-// TODO KTTreeWidget
 // TODO KTTransferWidget
 // TODO KTDateWidget
 // TODO KTDateRangeWidget

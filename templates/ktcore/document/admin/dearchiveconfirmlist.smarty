@@ -1,0 +1,35 @@
+<h2>Confirm De-archival</h2>
+
+<div class="ktInfo"><p><strong>Note</strong> please confirm that you want to restore these documents from an archived state.</p></div>
+
+{if (!empty($documents))}
+
+<form action="{$smarty.server.PHP_SELF}" method="POST">
+
+<input type="hidden" name="action" value="finish_restore" />
+
+<table class="listing">
+  <thead>
+    <tr>
+
+      <th>Document Name</th>
+      <th>Location</th>
+    </tr>
+  </thead>
+  <tbody>
+    {foreach item=oDoc from=$documents}
+    <tr>
+      <td>{$oDoc->getName()}<input type="hidden" name="selected_docs[]" value="{$oDoc->getId()}" /></td>
+      <td class="descriptiveText">{$oDoc->getDisplayPath()}</td>
+    </tr>
+    {/foreach}
+  </tbody>
+</table>
+<div class="form_actions">
+   <input type="submit" value="Confirm De-archival" />
+</div>
+</form>
+
+{else}
+<div class="ktInfo"><p>No documents were selected.</p></div>
+{/if}

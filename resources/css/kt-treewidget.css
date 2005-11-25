@@ -1,0 +1,32 @@
+/* CSS to handle the trees. */
+.kt_treenodes {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    text-align: left !important;
+}
+
+.leafnode {font-weight: bold; }
+
+.kt_treenodes ul {
+    list-style: none;
+    text-align: left;
+}
+.kt_treenodes li.treenode > a.pathnode {
+   background: transparent url(/graphics/plus.png) center left no-repeat;
+   padding-left: 15px;
+}
+
+.kt_treenodes li.treenode.active > a.pathnode {
+   background: transparent url(/graphics/minus.png) center left no-repeat;
+}
+
+.kt_treenodes li.active > ul {
+    display: block;
+}
+
+.kt_treenodes li ul {
+    display: none;
+}
+
