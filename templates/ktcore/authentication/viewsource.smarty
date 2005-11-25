@@ -1,0 +1,20 @@
+
+<fieldset><legend>Standard configuration</legend>
+<dl>
+  <dt>Name</dt>
+  <dd>{$source->getName()}</dd>
+</dl>
+<dl>
+  <dt>Provider</dt>
+  <dd>{$provider->getName()}</dd>
+</dl>
+<a href="?action=editsource&source_id={$source->getId()}">Edit standard configuration</a>
+</fieldset>
+
+{assign var=provider_stuff value=$provider->showSource($source)}
+{if $provider_stuff}
+<fieldset><legend>Provider configuration</legend>
+{$provider_stuff}
+<a href="?action=editsourceprovider&source_id={$source->getId()}">Edit provider configuration</a>
+</fieldset>
+{/if}
