@@ -45,9 +45,9 @@ class KTPlugin {
         return sprintf('/plugin.php/%s/%s', $this->sNamespace, $sPath);
     }
 
-    function registerAuthenticationProvider($sClass, $sNamespace, $sFilename = null) {
+    function registerAuthenticationProvider($sName, $sClass, $sNamespace, $sFilename = null) {
         $sFilename = $this->_fixFilename($sFilename);
-        $this->_aAuthenticationProviders[$sNamespace] = array($sClass, $sNamespace, $sFilename, $this->sNamespace);
+        $this->_aAuthenticationProviders[$sNamespace] = array($sName, $sClass, $sNamespace, $sFilename, $this->sNamespace);
     }
 
 //registerLocation($sName, $sClass, $sCategory, $sTitle, $sDescription, $sDispatcherFilePath = null, $sURL = null)
