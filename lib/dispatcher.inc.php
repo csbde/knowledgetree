@@ -219,7 +219,7 @@ class KTStandardDispatcher extends KTDispatcher {
         }
         $sOutput = $errorMessage;
         if ($oException) {
-            $sOutput .= $oException->getString();
+            // $sOutput .= $oException->toString();
         }
         $this->handleOutput($sOutput);
         exit(0);
