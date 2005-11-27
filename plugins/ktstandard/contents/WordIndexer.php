@@ -6,6 +6,12 @@ class KTWordIndexerTrigger {
     }
 
     function transform() {
+        $iMimeTypeId = $this->oDocument->getMimeTypeId();
+        $sMimeType = KTMime::getMimeTypeName($iMimeTypeId);
+        if ($sMimeType != "application/msword") {
+            return;
+        }
+
         $oStorage = KTStorageManagerUtil::getSingleton();
         $sFile = $oStorage->temporaryFile($this->oDocument);
 
