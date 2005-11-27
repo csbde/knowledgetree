@@ -272,6 +272,7 @@ class KTDocumentUtil {
             }
         }
         KTDocumentUtil::setComplete($oDocument, "metadata");
+        KTDocumentUtil::updateSearchableText($oDocument);
         return true;
     }
     // }}}
@@ -371,6 +372,9 @@ class KTDocumentUtil {
         $aTriggers = $oKTTriggerRegistry->getTriggers('content', 'transform');
         foreach ($aTriggers as $aTrigger) {
             $sTrigger = $aTrigger[0];
+            if ($aTrigger[1]) {
+                require_once($aTrigger[1]);
+            }
             $oTrigger = new $sTrigger;
             $oTrigger->setDocument($oDocument);
             $oTrigger->transform();
