@@ -44,7 +44,7 @@ class KTMime {
     }
 
     /**
-    * Get the default mime type, which is text/plain
+    * Get the default mime type, which is application/octet-stream
     *
     * @return int default mime type
     *
@@ -52,7 +52,7 @@ class KTMime {
     function getDefaultMimeTypeID() {
         global $default;
         $sql = $default->db;
-        $sql->query("SELECT id FROM " . $default->mimetypes_table . " WHERE mimetypes = 'text/plain'");/*ok*/
+        $sql->query("SELECT id FROM " . $default->mimetypes_table . " WHERE mimetypes = 'application/octet-stream'");
         $sql->next_record();
         //get the mime type id
         return $sql->f("id");
@@ -93,7 +93,7 @@ class KTMime {
             if (file_exists('/usr/bin/file')) {
                 $aCmd = array('/usr/bin/file', '-bi', $sFileName);
                 $sCmd = KTUtil::safeShellString($aCmd);
-                $sPossibleType = system($sCmd);
+                $sPossibleType = @exec($sCmd);
                 if (preg_match('#^[^/]+/[^/*]+$#', $sPossibleType)) {
                     $sType = $sPossibleType;
                 }
