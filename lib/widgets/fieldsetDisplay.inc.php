@@ -112,13 +112,15 @@ class KTFieldsetDisplay {
         // FIXME lazy cache this.
         // FIXME extend mime_types to have something useful to say.
         $sQuery = 'SELECT mimetypes FROM mime_types WHERE id = ?';
-        $res = DBUtil::getOneResult(array($sQuery, array($iMimeTypeId)));
+        $res = DBUtil::getOneResultKey(array($sQuery, array($iMimeTypeId)), 'mimetypes');
         
-        if ($res[0] !== null) {
-           return $res[0];
-        } else {
-           return 'unknown type';
+        if (PEAR::isError($res)) {
+            return 'unknown type';
         }
+        if (empty($res)) {
+            return 'unknown type';
+        }
+        return $res;
     }
     
     
