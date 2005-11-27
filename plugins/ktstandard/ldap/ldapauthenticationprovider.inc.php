@@ -40,6 +40,49 @@ class KTLDAPAuthenticationProvider extends KTAuthenticationProvider {
         return $sRet;
     }
 
+    function showUserSource($oUser, $oSource) {
+        return '<a href="?action=editUserSource&user_id=' . $oUser->getId() .'">Edit LDAP info</a>';
+    }
+
+    function do_editUserSource() {
+        $submit = KTUtil::arrayGet($_REQUEST, 'submit');
+        if (KTUtil::arrayGet($submit, 'save')) {
+            return $this->_do_saveUserSource();
+        }
+
+        $user_id = KTUtil::arrayGet($_REQUEST, 'user_id');
+        $oUser =& $this->oValidator->validateUser($user_id);
+
+        $this->oPage->setBreadcrumbDetails("editing LDAP details");
+        $oTemplate = $this->oValidator->validateTemplate('ktstandard/authentication/ldapedituser');
+
+        $oAuthenticationSource = KTAuthenticationSource::getForUser($oUser);
+
+        $aDetails = unserialize($oUser->getAuthenticationDetails());
+        $dn = KTUtil::arrayGet($aDetails, 'dn', "");
+
+        $fields = array();
+        $fields[] = new KTStringWidget('Distinguished name', 'The location of this user in the LDAP tree', 'dn', $dn, $this->oPage, true);
+
+        $aTemplateData = array(
+            'context' => &$this,
+            'fields' => $fields,
+            'user' => $oUser,
+        );
+        return $oTemplate->render($aTemplateData);
+    }
+
+    function _do_saveUserSource() {
+        $user_id = KTUtil::arrayGet($_REQUEST, 'user_id');
+        $oUser =& $this->oValidator->validateUser($user_id);
+
+        $aDetails['dn'] = KTUtil::arrayGet($_REQUEST, 'dn', "");
+        $oUser->setAuthenticationDetails(serialize($aDetails));
+        $oUser->update();
+        $this->successRedirectTo("editUser", "Details updated",
+            sprintf('user_id=%d', $oUser->getId()));
+    }
+
     function do_editSourceProvider() {
         require_once(KT_LIB_DIR . '/widgets/fieldWidgets.php');
         $this->oPage->setBreadcrumbDetails("editing LDAP settings");
@@ -77,11 +120,7 @@ class KTLDAPAuthenticationProvider extends KTAuthenticationProvider {
     }
 
     function &getAuthenticatorForSource($oSource) {
-        $aConfig = unserialize($oSource->getConfig());
-        return new LDAPAuthenticator($aConfig['servername'],
-                $aConfig['basedn'], $aConfig['servertype'],
-                $aConfig['domain'], $aConfig['searchuser'],
-                $aConfig['searchpassword']);
+        return new LDAPAuthenticator($oSource);
     }
 
 }
@@ -107,16 +146,15 @@ class LDAPAuthenticator extends Authenticator {
      * @param string the dn branch to perform the authentication against (optional)
      * @param string the ldap server type (optional)
      */
-    function LDAPAuthenticator($sLdapServer = "", $sLdapDN = "", $sServerType = "", $sLdapDomain = "", $sSearchUser = "", $sSearchPassword = "") {
-        global $default;
-
-        $this->sLdapServer = strlen($sLdapServer) > 0 ? $sLdapServer : $default->ldapServer;
-        $this->sBaseDN = strlen($sLdapDN) > 0 ? $sLdapDN : $default->ldapRootDn;
-        $this->sServerType = strlen($sServerType) > 0 ? $sServerType : $default->ldapServerType;
-        $this->sLdapDomain = strlen($sLdapDomain) > 0 ? $sLdapDomain : $default->ldapDomain;
-        $this->sLdapDomain = strlen($sLdapDomain) > 0 ? $sLdapDomain : $default->ldapDomain;
-        $this->sSearchUser = strlen($sSearchUser) > 0 ? $sSearchUser : $default->ldapSearchUser;
-        $this->sSearchPassword = strlen($sSearchPassword) > 0 ? $sSearchPassword : $default->ldapSearchPassword;
+    function LDAPAuthenticator($oSource) {
+        $this->oSource =& $oSource;
+        $aConfig = unserialize($oSource->getConfig());
+        $this->sLdapServer = $aConfig['servername'];
+        $this->sBaseDN = $aConfig['basedn'];
+        $this->sServerType = $aConfig['servertype'];
+        $this->sLdapDomain = $aConfig['domain'];
+        $this->sSearchUser = $aConfig['searchuser'];
+        $this->sSearchPassword = $aConfig['searchpassword'];
 
         // initialise and setup ldap class
         $this->oLdap = new AuthLdap($this->sLdapServer, $this->sBaseDN, $this->sServerType, $this->sLdapDomain, $this->sSearchUser, $this->sSearchPassword);
@@ -129,26 +167,18 @@ class LDAPAuthenticator extends Authenticator {
      * @param string the password to check
      * @return boolean true if the password is correct, else false
      */
-    function checkPassword($sUserName, $sPassword) {
-        global $default;
+    function checkPassword($oUser, $sPassword) {
+        $aDetails = unserialize($oUser->getAuthenticationDetails());
         if ($this->oLdap->connect()) {
             // lookup dn from username - must exist in db
-            $sBindDn = lookupField($default->users_table, "ldap_dn", "username", $sUserName);
-            if ($sBindDn && $sPassword) {
-                if ( $this->oLdap->authBind($sBindDn, $sPassword) ) {
-                    return true;
-                } else {
-                    $_SESSION["errorMessage"] = "LDAP error: (" . $this->oLdap->ldapErrorCode . ") " . $this->oLdap->ldapErrorText;
-                    return false;
-                }
+            $sBindDn = $aDetails['dn'];
+            if ($this->oLdap->authBind($sBindDn, $sPassword)) {
+                return true;
             } else {
-                // no ldap_dn for this user, so reject this authentication attempt
-                $_SESSION["errorMessage"] = "Username $sUserName does not not exist in the DMS.  Please contact the System Administrator for assistance.";
-                return false;
+                return PEAR::raiseError("LDAP error: (" . $this->oLdap->ldapErrorCode . ") " . $this->oLdap->ldapErrorText);
             }
         } else {
-            $_SESSION["errorMessage"] = "LDAP error: (" . $this->oLdap->ldapErrorCode . ") " . $this->oLdap->ldapErrorText;
-            return false;
+            return PEAR::raiseError('LDAP server unreachable');
         }
     }
 
