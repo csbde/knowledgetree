@@ -157,6 +157,11 @@ class KTDispatcherValidation {
         return $this->validateEntity('Group', $iId, $aOptions);
     }
 
+    function &validateUser($iId, $aOptions = null) {
+        require_once(KT_LIB_DIR .  '/users/User.inc');
+        return $this->validateEntity('User', $iId, $aOptions);
+    }
+
     function &validateCondition($iId, $aOptions = null) {
         require_once(KT_LIB_DIR .  '/search/savedsearch.inc.php');
         $oSearch = $this->validateEntity('KTSavedSearch', $iId, $aOptions);
