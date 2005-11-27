@@ -24,7 +24,21 @@ class KTAuthenticationProvider extends KTStandardDispatcher {
         return $this;
     }
 
-    function showSource() {
+    /**
+     * Gives the provider a chance to show something about how the
+     * authentication source is set up.  For example, describing the
+     * server settings for an LDAP authentication source.
+     */
+    function showSource($oSource) {
+        return null;
+    }
+
+    /**
+     * Gives the provider a chance to show something about how the
+     * user's authentication works.  For example, providing a link to a
+     * page to allow the admin to change a user's password.
+     */
+    function showUserSource($oUser, $oSource) {
         return null;
     }
 
