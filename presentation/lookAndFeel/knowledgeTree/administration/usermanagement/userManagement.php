@@ -11,10 +11,14 @@ require_once(KT_LIB_DIR . "/dispatcher.inc.php");
 require_once(KT_LIB_DIR . "/templating/kt3template.inc.php");
 require_once(KT_LIB_DIR . "/widgets/fieldWidgets.php");
 
+require_once(KT_LIB_DIR . "/authentication/authenticationsource.inc.php");
+require_once(KT_LIB_DIR . "/authentication/authenticationproviderregistry.inc.php");
+require_once(KT_LIB_DIR . "/authentication/builtinauthenticationprovider.inc.php");
+
 class KTUserAdminDispatcher extends KTAdminDispatcher {
     // Breadcrumbs base - added to in methods
     var $aBreadcrumbs = array(
-    array('action' => 'administration', 'name' => 'Administration'),
+        array('action' => 'administration', 'name' => 'Administration'),
     );
 
     function do_main() {
@@ -71,13 +75,6 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         // nice, easy bits.
         $add_fields[] =  new KTStringWidget('Mobile Number','The mobile phone number of the user.  If the system is configured to send notifications to cellphones, then this number will be SMS\'d with notifications.  e.g. <strong>999 9999 999</strong>', 'mobile_number', null, $this->oPage, false);        
         $add_fields[] =  new KTStringWidget('Maximum Sessions','As a safety precaution, it is useful to limit the number of times a given account can log in, before logging out.  This prevents a single account being used by many different people.', 'max_sessions', '3', $this->oPage, true);        
-        // FIXME handle group search stuff.
-        $search_results = null;
-        if (!empty($name)) {
-            $search_results =& User::getList('WHERE username LIKE "%' . DBUtil::escapeSimple($name) . '%"');
-        } else if ($show_all !== false) {
-            $search_results =& User::getList();
-        }
         
         $oTemplating = new KTTemplating;        
         $oTemplate = $oTemplating->loadTemplate("ktcore/principals/adduser");
@@ -91,50 +88,53 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
 
 
     function do_editUser() {
-    $this->aBreadcrumbs[] = array('action' => 'userManagement', 'name' => 'User Management');
-    $this->oPage->setBreadcrumbDetails('modify user details');
-    $this->oPage->setTitle("Modify User Details");
-    
-    $name = KTUtil::arrayGet($_REQUEST, 'name');
-    $show_all = KTUtil::arrayGet($_REQUEST, 'show_all', false);
-    $add_user = KTUtil::arrayGet($_REQUEST, 'add_user', false);
-    if ($add_user !== false) { $add_user = true; }
-    $edit_user = KTUtil::arrayGet($_REQUEST, 'edit_user', false);
-    $user_id = KTUtil::arrayGet($_REQUEST, 'user_id');
-    
-    $oUser =& User::get($user_id);
-    
-    if (PEAR::isError($oUser) || $oUser == false) {
-        $this->errorRedirectToMain('Please select a user first.');
-        exit(0);
-    }
-    
-    $this->aBreadcrumbs[] = array('name' => $oUser->getName());
-    
-    $edit_fields = array();
-    $edit_fields[] =  new KTStringWidget('Username','The username the user will enter to gain access to the KnowledgeTree.  e.g. <strong>jsmith</strong>', 'username', $oUser->getUsername(), $this->oPage, true);
-    $edit_fields[] =  new KTStringWidget('Name','The full name of the user.  This is shown in reports and listings.  e.g. <strong>John Smith</strong>', 'name', $oUser->getName(), $this->oPage, true);        
-    $edit_fields[] =  new KTStringWidget('Email Address','The email address of the user.  Notifications and alerts are mailed to this address if <strong>email notifications</strong> is set below. e.g. <strong>jsmith@acme.com</strong>', 'email_address', $oUser->getEmail(), $this->oPage, false);        
-    $edit_fields[] =  new KTCheckboxWidget('Email Notifications','If this is specified then the user will have notifications sent to the email address entered above.  If it isn\'t set, then the user will only see notifications on the <strong>Dashboard</strong>', 'email_notifications', $oUser->getEmailNotification(), $this->oPage, false);        
-    $edit_fields[] =  new KTStringWidget('Mobile Number','The mobile phone number of the user.  If the system is configured to send notifications to cellphones, then this number will be SMS\'d with notifications.  e.g. <strong>999 9999 999</strong>', 'mobile_number', $oUser->getMobile(), $this->oPage, false);        
-    $edit_fields[] =  new KTStringWidget('Maximum Sessions','As a safety precaution, it is useful to limit the number of times a given account can log in, before logging out.  This prevents a single account being used by many different people.', 'max_sessions', $oUser->getMaxSessions(), $this->oPage, true);        
-    
-    // FIXME handle group search stuff.
-    $search_results = null;
-    if (!empty($name)) {
-        $search_results =& User::getList('WHERE username LIKE "%' . DBUtil::escapeSimple($name) . '%"');
-    } else if ($show_all !== false) {
-        $search_results =& User::getList();
-    }
-    
-    $oTemplating = new KTTemplating;        
-    $oTemplate = $oTemplating->loadTemplate("ktcore/principals/edituser");
-    $aTemplateData = array(
-        "context" => $this,
-        "edit_fields" => $edit_fields,
-        "edit_user" => $oUser,
-    );
-    return $oTemplate->render($aTemplateData);
+        $this->aBreadcrumbs[] = array('action' => 'userManagement', 'name' => 'User Management');
+        $this->oPage->setBreadcrumbDetails('modify user details');
+        $this->oPage->setTitle("Modify User Details");
+        
+        $name = KTUtil::arrayGet($_REQUEST, 'name');
+        $show_all = KTUtil::arrayGet($_REQUEST, 'show_all', false);
+        $add_user = KTUtil::arrayGet($_REQUEST, 'add_user', false);
+        if ($add_user !== false) { $add_user = true; }
+        $edit_user = KTUtil::arrayGet($_REQUEST, 'edit_user', false);
+        $user_id = KTUtil::arrayGet($_REQUEST, 'user_id');
+        
+        $oUser =& User::get($user_id);
+        
+        if (PEAR::isError($oUser) || $oUser == false) {
+            $this->errorRedirectToMain('Please select a user first.');
+            exit(0);
+        }
+        
+        $this->aBreadcrumbs[] = array('name' => $oUser->getName());
+        
+        $edit_fields = array();
+        $edit_fields[] =  new KTStringWidget('Username','The username the user will enter to gain access to the KnowledgeTree.  e.g. <strong>jsmith</strong>', 'username', $oUser->getUsername(), $this->oPage, true);
+        $edit_fields[] =  new KTStringWidget('Name','The full name of the user.  This is shown in reports and listings.  e.g. <strong>John Smith</strong>', 'name', $oUser->getName(), $this->oPage, true);        
+        $edit_fields[] =  new KTStringWidget('Email Address','The email address of the user.  Notifications and alerts are mailed to this address if <strong>email notifications</strong> is set below. e.g. <strong>jsmith@acme.com</strong>', 'email_address', $oUser->getEmail(), $this->oPage, false);        
+        $edit_fields[] =  new KTCheckboxWidget('Email Notifications','If this is specified then the user will have notifications sent to the email address entered above.  If it isn\'t set, then the user will only see notifications on the <strong>Dashboard</strong>', 'email_notifications', $oUser->getEmailNotification(), $this->oPage, false);        
+        $edit_fields[] =  new KTStringWidget('Mobile Number','The mobile phone number of the user.  If the system is configured to send notifications to cellphones, then this number will be SMS\'d with notifications.  e.g. <strong>999 9999 999</strong>', 'mobile_number', $oUser->getMobile(), $this->oPage, false);        
+        $edit_fields[] =  new KTStringWidget('Maximum Sessions','As a safety precaution, it is useful to limit the number of times a given account can log in, before logging out.  This prevents a single account being used by many different people.', 'max_sessions', $oUser->getMaxSessions(), $this->oPage, true);        
+        
+        $oAuthenticationSource = KTAuthenticationSource::getForUser($oUser);
+        if (is_null($oAuthenticationSource)) {
+            $oProvider =& new KTBuiltinAuthenticationProvider;
+        } else {
+            $sProvider = $oAuthenticationSource->getAuthenticationProvider();
+            $oRegistry =& KTAuthenticationProviderRegistry::getSingleton();
+            $oProvider = $oRegistry->getAuthenticationProvider($sProvider);
+        }
+        
+        $oTemplating = new KTTemplating;        
+        $oTemplate = $oTemplating->loadTemplate("ktcore/principals/edituser");
+        $aTemplateData = array(
+            "context" => $this,
+            "edit_fields" => $edit_fields,
+            "edit_user" => $oUser,
+            "provider" => $oProvider,
+            "source" => $oAuthenticationSource,
+        );
+        return $oTemplate->render($aTemplateData);
     }        
     
     function do_editgroups() {
@@ -292,7 +292,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         $oUser = User::get($user_id);
         if ((PEAR::isError($oUser)) || ($oUser === false)) {
             $this->errorRedirectToMain('Please select a user first.');
-        }	
+        }
         $groupAdded = KTUtil::arrayGet($_REQUEST, 'groupAdded','');
         $groupRemoved = KTUtil::arrayGet($_REQUEST, 'groupRemoved','');
         
@@ -324,7 +324,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
                 $oGroup = Group::get($iGroupID);
                 $res = $oGroup->removeMember($oUser);
                 if (PEAR::isError($res) || $res == false) {
-                    $this->errorRedirectToMain('Unable to remove user from "' . $oGroup->getName() . '"');			
+                    $this->errorRedirectToMain('Unable to remove user from "' . $oGroup->getName() . '"');
                 } else { $groupsRemoved[] = $oGroup->getName(); }
             }
         }        
