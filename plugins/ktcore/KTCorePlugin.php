@@ -18,7 +18,6 @@ require_once('KTPermissions.php');
 require_once('KTAdminPlugins.php');
 
 $oPlugin->registerAdminPage('authentication', 'KTAuthenticationAdminPage', 'principals', 'Authentication', 'FIXME: describe authentication', 'authentication/authenticationadminpage.inc.php');
-$oPlugin->registerAuthenticationProvider('LDAP Authentication', 'KTLDAPAuthenticationProvider', 'ktstandard.authentication.ldapprovider', 'authentication/ldapauthenticationprovider.inc.php');
 
 $oPlugin->register();
 
