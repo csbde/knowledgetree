@@ -92,13 +92,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         $this->oPage->setBreadcrumbDetails('modify user details');
         $this->oPage->setTitle("Modify User Details");
         
-        $name = KTUtil::arrayGet($_REQUEST, 'name');
-        $show_all = KTUtil::arrayGet($_REQUEST, 'show_all', false);
-        $add_user = KTUtil::arrayGet($_REQUEST, 'add_user', false);
-        if ($add_user !== false) { $add_user = true; }
-        $edit_user = KTUtil::arrayGet($_REQUEST, 'edit_user', false);
         $user_id = KTUtil::arrayGet($_REQUEST, 'user_id');
-        
         $oUser =& User::get($user_id);
         
         if (PEAR::isError($oUser) || $oUser == false) {
@@ -135,7 +129,25 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
             "source" => $oAuthenticationSource,
         );
         return $oTemplate->render($aTemplateData);
-    }        
+    }
+
+    function do_editUserSource() {
+        $user_id = KTUtil::arrayGet($_REQUEST, 'user_id');
+        $oUser =& $this->oValidator->validateUser($user_id);
+        $this->aBreadcrumbs[] = array('name' => $oUser->getName());
+
+        $oAuthenticationSource = KTAuthenticationSource::getForUser($oUser);
+        if (is_null($oAuthenticationSource)) {
+            $oProvider =& new KTBuiltinAuthenticationProvider;
+        } else {
+            $sProvider = $oAuthenticationSource->getAuthenticationProvider();
+            $oRegistry =& KTAuthenticationProviderRegistry::getSingleton();
+            $oProvider = $oRegistry->getAuthenticationProvider($sProvider);
+        }
+
+        $oProvider->dispatch();
+        exit();
+    }
     
     function do_editgroups() {
         $user_id = KTUtil::arrayGet($_REQUEST, 'user_id');
