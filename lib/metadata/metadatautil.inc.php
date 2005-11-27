@@ -580,7 +580,7 @@ class KTMetadataUtil {
     }
     // }}}
 
-    // {{{  
+    // {{{ fieldsetsForDocument 
     function fieldsetsForDocument($oDocument) {
         global $default;
         $oDocument = KTUtil::getObject('Document', $oDocument);
