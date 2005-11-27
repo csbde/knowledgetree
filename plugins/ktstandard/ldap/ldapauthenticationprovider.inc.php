@@ -119,7 +119,7 @@ class KTLDAPAuthenticationProvider extends KTAuthenticationProvider {
         $this->successRedirectTo('viewsource', "Configuration updated", 'source_id=' . $oSource->getId());
     }
 
-    function &getAuthenticatorForSource($oSource) {
+    function &getAuthenticator($oSource) {
         return new LDAPAuthenticator($oSource);
     }
 
