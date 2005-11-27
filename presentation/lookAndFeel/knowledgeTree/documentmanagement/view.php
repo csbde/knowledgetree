@@ -64,9 +64,14 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 		    $this->oPage->addError('You are not allowed to view this document');
 		    return $this->do_error();
 		}
+
+        $aOptions = array(
+            "documentaction" => "viewDocument",
+            "folderaction" => "browse",
+        );
 		
 		$this->oDocument =& $oDocument;
-        $this->aBreadcrumbs += KTBrowseUtil::breadcrumbsForDocument($oDocument);
+        $this->aBreadcrumbs = array_merge($this->aBreadcrumbs, KTBrowseUtil::breadcrumbsForDocument($oDocument, $aOptions));
 		$this->oPage->setBreadcrumbDetails("document details");
 		$this->addPortlets("Document Details");
 		
@@ -144,7 +149,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 		// fixme check perms
 		
 		$this->oDocument =& $oDocument;
-        $this->aBreadcrumbs += KTBrowseUtil::breadcrumbsForDocument($oDocument);
+        $this->aBreadcrumbs = array_merge($this->aBreadcrumbs, KTBrowseUtil::breadcrumbsForDocument($oDocument));
 		$this->oPage->setBreadcrumbDetails("history");
 		$this->addPortlets("History");
 		
@@ -205,7 +210,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 		    return $this->do_error();
 		}
 		$this->oDocument =& $oDocument;
-        $this->aBreadcrumbs += KTBrowseUtil::breadcrumbsForDocument($oDocument);
+        $this->aBreadcrumbs = array_merge($this->aBreadcrumbs, KTBrowseUtil::breadcrumbsForDocument($oDocument));
 		$this->oPage->setBreadcrumbDetails("compare versions");
 		
 		$comparison_version = KTUtil::arrayGet($_REQUEST, 'fComparisonVersion');
