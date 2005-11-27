@@ -252,6 +252,6 @@ class KTPage {
 }
 
 /* set $main - this is used by the rest of the system. */
-$GLOBALS['main'] = new KTPage();
+$GLOBALS['main'] =& new KTPage();
 
 ?>
