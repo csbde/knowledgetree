@@ -56,6 +56,29 @@ class User extends KTEntity {
     /** authentication details so that the source knows who this user is */
     var $sAuthenticationDetails = null;
 
+    var $_aFieldToSelect = array(
+        'iId' => 'id',
+        'sUserName' => 'username',
+        'sName' => 'name',
+        'sPassword' => 'password',
+        'iQuotaMax' => 'quota_max',
+        'iQuotaCurrent' => 'quota_current',
+        'sEmail' => 'email',
+        'sMobile' => 'mobile',
+        'bEmailNotification' => 'email_notification',
+        'bSmsNotification' => 'sms_notification',
+        'sLdapDn' => 'ldap_dn',
+        'iMaxSessions' => 'max_sessions',
+        'iLanguageID' => 'language_id',
+        'iAuthenticationSourceId' => 'authentication_source_id',
+        'sAuthenticationDetails' => 'authentication_details',
+    );
+
+    function _table() {
+        global $default;
+        return $default->users_table;
+    }
+
     function User($sNewUserName = null, $sNewName = null, $sNewPassword = null, $iNewQuotaMax = null, $sNewEmail= null, $sNewMobile= null, $bNewEmailNotification= null, $bNewSmsNotification= null, $sNewLdapDn= null, $iNewMaxSessions= null, $iNewLanguageID= null) {
         //object not created in database yet
         $this->iId = -1;
@@ -132,48 +155,6 @@ class User extends KTEntity {
     function setAuthenticationSourceId($iNewValue) { $this->iAuthenticationSourceId = $iNewValue; }
     function getAuthenticationDetails() { return $this->sAuthenticationDetails; }
     function setAuthenticationDetails($sNewValue) { $this->sAuthenticationDetails = $sNewValue; }
-
-    /*
-    function _fieldValues() {
-        return array(
-            'username' => $this->sUserName,
-            'name' => $this->sName,
-            'password' => md5($this->sPassword),
-            'quota_max' => $this->iQuotaMax,
-            'quota_current' => 0,
-            'email' => $this->sEmail,
-            'mobile' => $this->sMobile,
-            'email_notification' => KTUtil::anyToBool($this->bEmailNotification),
-            'sms_notification' => KTUtil::anyToBool($this->bSmsNotification),
-            'ldap_dn' => $this->sLdapDn,
-            'max_sessions' => $this->iMaxSessions,
-            'language_id' => $this->iLanguageID,
-        );
-    }
-    */
-
-    var $_aFieldToSelect = array(
-        'iId' => 'id',
-        'sUserName' => 'username',
-        'sName' => 'name',
-        'sPassword' => 'password',
-        'iQuotaMax' => 'quota_max',
-        'iQuotaCurrent' => 'quota_current',
-        'sEmail' => 'email',
-        'sMobile' => 'mobile',
-        'bEmailNotification' => 'email_notification',
-        'bSmsNotification' => 'sms_notification',
-        'sLdapDn' => 'ldap_dn',
-        'iMaxSessions' => 'max_sessions',
-        'iLanguageID' => 'language_id',
-        'iAuthenticationSourceId' => 'authentication_source_id',
-        'sAuthenticationDetails' => 'authentication_details',
-    );
-
-    function _table() {
-        global $default;
-        return $default->users_table;
-    }
 
 	/**
 	* Delete the current object from the database
