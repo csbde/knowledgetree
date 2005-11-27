@@ -9,11 +9,15 @@ class KTBuiltinAuthenticationProvider extends KTAuthenticationProvider {
     var $sNamespace = "ktcore.authentication.builtin";
 
     function &getAuthenticator() {
-        return new DBAuthenticator;
+        return new BuiltinAuthenticator;
+    }
+    
+    function showUserSource($oUser, $oSource) {
+        return '<p class="descriptiveText"><a href="?action=setPassword&user_id=' . $oUser->getId() . '">Change ' . $oUser->getName() . '\'s password</a></p>';
     }
 }
 
-class DBAuthenticator extends Authenticator {
+class BuiltinAuthenticator extends Authenticator {
     /**
      * Checks the user's password against the database
      *
