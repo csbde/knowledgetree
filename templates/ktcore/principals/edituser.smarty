@@ -1,7 +1,5 @@
 <h2>Edit User Details</h2>
 
-<p class="descriptiveText"><a href="?action=setPassword&user_id={$edit_user->getId()}">Change {$edit_user->getName()}'s password</a></p>
-
 <form action="{$smarty.server.PHP_SELF}" method="POST">
    <input type="hidden" name="action" value="saveUser" />
    <input type="hidden" name="user_id" value="{$edit_user->getId()}" />
@@ -18,3 +16,13 @@
       </div>
    </fieldset>
    </form>
+
+{assign var=provider_stuff value=$provider->showUserSource($edit_user, $source)}
+{if $provider_stuff}
+<fieldset><legend>Authentication</legend>
+<p class="descriptiveText">{$edit_user->getName()}'s authentication is
+handled by the <strong>{$provider->getName()}</strong>.</p>
+{$provider_stuff}
+</fieldset>
+{/if}
+
