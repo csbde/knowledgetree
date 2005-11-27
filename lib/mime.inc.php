@@ -83,14 +83,28 @@ class KTMime {
         }
 
         if (!$sType && function_exists('mime_content_type')) {
-            $sType = @mime_content_type($sFileName);
+            $sFile = ini_get('mime_magic.magicfile');
+            if (file_exists($sFile)) {
+                $sType = mime_content_type($sFileName);
+            }
+        }
+
+        if (!$sType) {
+            if (file_exists('/usr/bin/file')) {
+                $aCmd = array('/usr/bin/file', '-bi', $sFileName);
+                $sCmd = KTUtil::safeShellString($aCmd);
+                $sPossibleType = system($sCmd);
+                if (preg_match('#^[^/]+/[^/*]+$#', $sPossibleType)) {
+                    $sType = $sPossibleType;
+                }
+            }
         }
 
         if ($sType) {
             return preg_replace('/;.*$/', '', $sType);
         }
 
-        return NULL;
+        return null;
     }
 
     /**
