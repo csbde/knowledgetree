@@ -9,4 +9,5 @@ $oPluginRegistry->registerPlugin('KTIndexerPlugin', 'ktstandard.indexer.plugin',
 $oPlugin =& $oPluginRegistry->getPlugin('ktstandard.indexer.plugin');
 
 $oPlugin->registerTrigger('content', 'transform', 'KTWordIndexerTrigger', 'ktstandard.indexer.triggers.word', 'contents/WordIndexer.php');
+$oPlugin->registerTrigger('content', 'transform', 'KTPowerpointIndexerTrigger', 'ktstandard.indexer.triggers.powerpoint', 'contents/PowerpointIndexer.php');
 $oPlugin->register();
