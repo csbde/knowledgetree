@@ -171,7 +171,8 @@ class KTEditDocumentDispatcher extends KTStandardDispatcher {
 
 		// FIXME handle true generic document DATA (e.g. title).
 
-        $activesets = KTFieldset::getGenericFieldsets();
+        // $activesets = KTFieldset::getGenericFieldsets();
+        $activesets =& KTMetadataUtil::fieldsetsForDocument($oDocument);
         foreach ($activesets as $oFieldset) {
             array_push($fieldsets, $oFieldset);
         }
