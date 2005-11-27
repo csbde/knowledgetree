@@ -17,7 +17,7 @@ class KTFolderAddDocumentAction extends KTFolderAction {
     var $sDisplayName = 'Add Document';
     var $sName = 'ktcore.actions.folder.addDocument';
 
-    // var $_sShowPermission = "ktcore.permissions.write";
+    var $_sShowPermission = "ktcore.permissions.write";
 
     function do_main() {
         $this->oPage->setBreadcrumbDetails("add document");
@@ -99,6 +99,7 @@ class KTFolderAddDocumentAction extends KTFolderAction {
             'description' => $_REQUEST['fName'],
         );
 
+        $this->startTransaction();
         $oDocument =& KTDocumentUtil::add($this->oFolder, basename($_FILES['file']['name']), $this->oUser, $aOptions);
         if (PEAR::isError($oDocument)) {
             $message = $oDocument->getMessage();
