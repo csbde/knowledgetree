@@ -13,8 +13,9 @@ class KTAuthenticationProvider extends KTStandardDispatcher {
         $this->aInfo = $aInfo;
     }
 
-    function &getAuthenticator() {
-        return $this;
+    function &getAuthenticator($oSource) {
+        // Not implemented
+        return null;
     }
 
     function &getSource() {
