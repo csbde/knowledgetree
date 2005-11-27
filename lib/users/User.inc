@@ -326,6 +326,9 @@ class User extends KTEntity {
 	}    
 	
 	function &createFromArray($aOptions) { return KTEntityUtil::createFromArray('User', $aOptions); }
+	function &getByUserName($sUserName, $aOptions = null) {
+        return KTEntityUtil::getBy('User', 'username', $sUserName, $aOptions);
+    }
 }
 
 /**
