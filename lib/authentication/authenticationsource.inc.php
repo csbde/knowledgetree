@@ -1,5 +1,6 @@
 <?php
 
+require_once(KT_LIB_DIR . "/users/User.inc");
 require_once(KT_LIB_DIR . "/ktentity.inc");
 
 class KTAuthenticationSource extends KTEntity {
@@ -59,6 +60,15 @@ class KTAuthenticationSource extends KTEntity {
     // STATIC
     function &getByNamespace($sNamespace) {
         return KTEntityUtil::getBy('KTAuthenticationSource', 'namespace', $sNamespace);
+    }
+
+    function &getForUser($oUser) {
+        $oUser =& KTUtil::getObject('User', $oUser);
+        $iAuthenticationSourceId = $oUser->getAuthenticationSourceId();
+        if (empty($iAuthenticationSourceId)) {
+            return null;
+        }
+        return KTAuthenticationSource::get($iAuthenticationSourceId);
     }
 }
 
