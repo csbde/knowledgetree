@@ -139,6 +139,8 @@ class DocumentTransaction {
                 return false;
             }
             $this->iId = $id;
+            KTDocumentUtil::updateTransactionText($this->iDocumentID);
+            KTDocumentUtil::updateSearchableText($this->iDocumentID);
             return true;
 		} else {
 			$_SESSION["errorMessage"] = $lang_err_object_exists;
@@ -157,6 +159,8 @@ class DocumentTransaction {
                 return true;
             }
             $_SESSION["errorMessage"] = $lang_err_database;
+            KTDocumentUtil::updateTransactionText($this->iDocumentID);
+            KTDocumentUtil::updateSearchableText($this->iDocumentID);
             return false;
         }
         $_SESSION["errorMessage"] = $lang_err_object_key;
