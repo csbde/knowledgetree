@@ -8,7 +8,9 @@ class KTBuiltinAuthenticationProvider extends KTAuthenticationProvider {
     var $sName = "Built-in authentication provider";
     var $sNamespace = "ktcore.authentication.builtin";
 
-    function &getAuthenticator() {
+    function &getAuthenticator($oSource) {
+        // $oSource is null, since the built-in authentication provider
+        // only has a single, non-registered, instance.
         return new BuiltinAuthenticator;
     }
     
@@ -25,10 +27,11 @@ class BuiltinAuthenticator extends Authenticator {
      * @param string the password to check
      * @return boolean true if the password is correct, else false
      */
-    function checkPassword($userName, $password) {
+    function checkPassword($oUser, $password) {
         global $default;
 
         $sql = $default->db;
+        $userName = $oUser->getUserName();
         $sQuery = "SELECT * FROM $default->users_table WHERE username = ? AND password = ?";/*ok*/
         $aParams = array($userName, md5($password));
         if ($sql->query(array($sQuery, $aParams))) {
