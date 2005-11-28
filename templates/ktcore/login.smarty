@@ -1,0 +1,36 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+    <title>Login | KnowledgeTree</title>
+    
+    <link rel="stylesheet" href="{$rootUrl}/resources/css/kt-login.css" type="text/css" />
+
+</head>
+<body>
+
+    <div id="loginbox">
+        <form action="{$smarty.server.PHP_SELF}">
+        <input type="hidden" name="action" value="login" />
+        <input type="hidden" name="cookieverify" value="{$cookietest}" />
+            <img src="{$rootUrl}/resources/graphics/ktlogo-topbar-right.png" alt="KnowledgeTree DMS" class="logoimage" width="252" height="50"/><br />
+            {if ($errorMessage == null)}
+            <p class="descriptiveText">Please enter your details below to login.</p>
+            {else}
+            <div class="ktError"><p>{$errorMessage}</p></div>
+            {/if}
+            
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username"/>
+            
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password"/>
+            
+            <div class="form_actions">
+                <input type="submit" value="login" />
+            </div>
+        </form>
+    </div>
+
+</body>
+</html>
