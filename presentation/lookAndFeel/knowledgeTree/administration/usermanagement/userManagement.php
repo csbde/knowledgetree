@@ -2,6 +2,8 @@
 
 //require_once('../../../../../config/dmsDefaults.php');
 
+require_once(KT_LIB_DIR . '/database/dbutil.inc');
+
 require_once(KT_LIB_DIR . '/users/User.inc');
 require_once(KT_LIB_DIR . '/groups/GroupUtil.php');
 require_once(KT_LIB_DIR . '/groups/Group.inc');
@@ -131,6 +133,73 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         return $oTemplate->render($aTemplateData);
     }
 
+
+    function do_setPassword() {
+        $this->aBreadcrumbs[] = array('action' => 'userManagement', 'name' => 'User Management');
+        $this->oPage->setBreadcrumbDetails('change user password');
+        $this->oPage->setTitle("Change User Password");
+        
+        $user_id = KTUtil::arrayGet($_REQUEST, 'user_id');
+        $oUser =& User::get($user_id);
+        
+        if (PEAR::isError($oUser) || $oUser == false) {
+            $this->errorRedirectToMain('Please select a user first.');
+            exit(0);
+        }
+        
+        $this->aBreadcrumbs[] = array('name' => $oUser->getName());
+        
+        $edit_fields = array();
+        $edit_fields[] =  new KTPasswordWidget('Password','Specify an initial password for the user.', 'password', null, $this->oPage, true);        
+        $edit_fields[] =  new KTPasswordWidget('Confirm Password','Confirm the password specified above.', 'confirm_password', null, $this->oPage, true);        
+        
+        $oTemplating = new KTTemplating;        
+        $oTemplate = $oTemplating->loadTemplate("ktcore/principals/updatepassword");
+        $aTemplateData = array(
+            "context" => $this,
+            "edit_fields" => $edit_fields,
+            "edit_user" => $oUser,
+        );
+        return $oTemplate->render($aTemplateData);
+    }
+    
+    function do_updatePassword() {
+        $user_id = KTUtil::arrayGet($_REQUEST, 'user_id');
+        
+        $password = KTUtil::arrayGet($_REQUEST, 'password');
+        $confirm_password = KTUtil::arrayGet($_REQUEST, 'confirm_password');        
+        
+        if (empty($password)) { 
+            $this->errorRedirectToMain("You must specify a password for the user.");
+        } else if ($password !== $confirm_password) {
+            $this->errorRedirectToMain("The passwords you specified do not match.");
+        }
+        // FIXME more validation would be useful.
+        // validated and ready..
+        $this->startTransaction();
+        
+        $oUser =& User::get($user_id);
+        if (PEAR::isError($oUser) || $oUser == false) {
+            $this->errorRedirectToMain("Please select a user to modify first.");
+        }
+        
+        
+        // FIXME this almost certainly has side-effects.  do we _really_ want 
+        $oUser->setPassword(md5($password)); // 
+        
+        $res = $oUser->update(); 
+        //$res = $oUser->doLimitedUpdate(); // ignores a fix blacklist of items.
+        
+        
+        if (PEAR::isError($res) || ($res == false)) {
+            $this->errorRedirectoToMain('Failed to update user.');
+        }
+        
+        $this->commitTransaction();
+        $this->successRedirectToMain('User information updated.');
+        
+    }
+
     function do_editUserSource() {
         $user_id = KTUtil::arrayGet($_REQUEST, 'user_id');
         $oUser =& $this->oValidator->validateUser($user_id);
@@ -230,7 +299,14 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         $oUser->setMobile($mobile_number);
         $oUser->setMaxSessions($max_sessions);
         
-        $res = $oUser->update(); // FIXME res?
+        // old system used the very evil store.php.
+        // here we need to _force_ a limited update of the object, via a db statement.
+        //
+        // $res = $oUser->update(); 
+        $res = $oUser->doLimitedUpdate(); // ignores a fix blacklist of items.
+        
+        
+        
         if (PEAR::isError($res) || ($res == false)) {
             $this->errorRedirectoToMain('Failed to update user.');
         }

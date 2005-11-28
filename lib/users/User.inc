@@ -24,6 +24,9 @@
  * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
  * @package lib.unitmanagement
  */
+ 
+require_once(KT_LIB_DIR . '/database/dbutil.inc'); 
+ 
 class User extends KTEntity {
     /** user's login name */
     var $sUserName;
@@ -181,7 +184,39 @@ class User extends KTEntity {
     function &get($iId) {
         return KTEntityUtil::get('User', $iId);
     }
-
+	
+	/**
+	* update the datastore, without overwriting the password.
+	*
+	* only works for a subset of the db values.
+	*/
+	function doLimitedUpdate() {
+		$sQuery = 'UPDATE ' . $this->_table() . ' SET ';
+		$aParams = array();
+		
+		$blacklist = array(
+			"sPassword" => 1,
+		);
+		
+		$aParts = array(); // quick workaround to make the join less hurtful.
+		
+		foreach ($this->_aFieldToSelect as $attr => $column) {
+			if (!array_key_exists($attr, $blacklist)) {
+				$val = $this->$attr;
+				$aParts[] = $column . ' = ?';
+				$aParams[] = $val;  
+			} 
+		}
+		$sQuery .= join(', ', $aParts);
+		
+		$sQuery .= ' WHERE id = ? ';
+		$aParams[] = $this->getId();
+		
+		$res = DBUtil::runQuery(array($sQuery, $aParams));
+		return $res;
+	}
+	
+	
     /**
     * Static function
     * Get a list of users
