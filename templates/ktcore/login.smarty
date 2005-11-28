@@ -13,6 +13,7 @@
         <form action="{$smarty.server.PHP_SELF}" method="POST">
         <input type="hidden" name="action" value="login" />
         <input type="hidden" name="cookieverify" value="{$cookietest}" />
+        <input type="hidden" name="redirect" value="{$redirect|escape}" />
             <img src="{$rootUrl}/resources/graphics/ktlogo-topbar-right.png" alt="KnowledgeTree DMS" class="logoimage" width="252" height="50"/><br />
             {if ($errorMessage == null)}
             <p class="descriptiveText">Please enter your details below to login.</p>
