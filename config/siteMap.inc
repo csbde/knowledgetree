@@ -222,11 +222,11 @@ $default->siteMap->addSectionColour("Advanced Search", "th", "A1571B");
 $default->siteMap->addSectionColour("Standard Search", "th", "A1571B");
 
 // pages for prefs section
-$default->siteMap->addDefaultPage("preferences", "/presentation/lookAndFeel/knowledgeTree/preferences/editUserPrefsBL.php", "Preferences", User, _("Preferences"));
-$default->siteMap->addPage("editPrefsSuccess", "/presentation/lookAndFeel/knowledgeTree/preferences/editPrefsSuccess.php", "Preferences", User, "Preferences", false);
-$default->siteMap->addPage("changeUserPassword", "/presentation/lookAndFeel/knowledgeTree/preferences/passwordManagementBL.php", "Preferences", User, "Preferences", false);
-$default->siteMap->addSectionColour("Preferences", "th", "F87308");
-$default->siteMap->addSectionColour("Preferences", "td", "FEE3CE");
+$default->siteMap->addDefaultPage("preferences", "/presentation/lookAndFeel/knowledgeTree/preferences/preferences.php", "Preferences", User, _("Preferences"));
+//$default->siteMap->addPage("editPrefsSuccess", "/presentation/lookAndFeel/knowledgeTree/preferences/editPrefsSuccess.php", "Preferences", User, "Preferences", false);
+//$default->siteMap->addPage("changeUserPassword", "/presentation/lookAndFeel/knowledgeTree/preferences/passwordManagementBL.php", "Preferences", User, "Preferences", false);
+//$default->siteMap->addSectionColour("Preferences", "th", "F87308");
+//$default->siteMap->addSectionColour("Preferences", "td", "FEE3CE");
 
 // pages for Help section
 $default->siteMap->addDefaultPage("help", "/presentation/lookAndFeel/knowledgeTree/help.php", "Help", Guest, _("Help"));
