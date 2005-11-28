@@ -10,7 +10,7 @@
 <body>
 
     <div id="loginbox">
-        <form action="{$smarty.server.PHP_SELF}">
+        <form action="{$smarty.server.PHP_SELF}" method="POST">
         <input type="hidden" name="action" value="login" />
         <input type="hidden" name="cookieverify" value="{$cookietest}" />
             <img src="{$rootUrl}/resources/graphics/ktlogo-topbar-right.png" alt="KnowledgeTree DMS" class="logoimage" width="252" height="50"/><br />
