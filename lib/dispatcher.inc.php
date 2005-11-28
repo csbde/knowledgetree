@@ -144,7 +144,7 @@ class KTStandardDispatcher extends KTDispatcher {
             $this->loginRequired();
         }
 
-        if ($bLogonRequired !== false) {
+        if ($this->bLogonRequired !== false) {
             if (empty($_SESSION['userID'])) {
                 $this->loginRequired();
                 exit(0);
@@ -156,7 +156,7 @@ class KTStandardDispatcher extends KTDispatcher {
             }
         }
 
-        if ($bAdminRequired !== false) {
+        if ($this->bAdminRequired !== false) {
             if (!Permission::userIsSystemAdministrator($_SESSION['userID'])) {
                 $this->permissionDenied();
                 exit(0);
