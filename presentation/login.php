@@ -2,8 +2,11 @@
 
 // main library routines and defaults
 require_once("../config/dmsDefaults.php");
-require_once("../lib/util/sanitize.inc");
-require_once(KT_DIR . "/presentation/Html.inc");
+require_once(KT_LIB_DIR . '/templating/templating.inc.php');
+require_once(KT_LIB_DIR . '/session/control.inc');
+require_once(KT_LIB_DIR . '/session/Session.inc');
+require_once(KT_LIB_DIR . '/users/User.inc');
+
 /**
  * $Id$
  *  
@@ -30,101 +33,95 @@ require_once(KT_DIR . "/presentation/Html.inc");
  * @author Michael Joseph <michael@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
  */
 
-global $default;
+class LoginPageDispatcher extends KTDispatcher {
 
-$redirect = $_REQUEST['redirect'];
-$errorMessage = $_REQUEST['errorMessage'];
-
-if ($_REQUEST['loginAction'] == "loginForm") {
-    // TODO: build login form using PatternMainPage
-    $cookietest = KTUtil::randomString();
-    setcookie("CookieTestCookie", $cookietest, false);
-    print "<html>
-    <head>
-    <link rel=\"stylesheet\" href=\"$default->uiUrl/stylesheet.php\">
-    <link rel=\"SHORTCUT ICON\" href=\"$default->graphicsUrl/tree.ico\">
-    <title>The KnowledgeTree</title>
-
-	<SCRIPT TYPE=\"text/javascript\">
-	<!--
-	function submitenter(myfield,e)	{
-		var keycode;
-		if (window.event) { 
-			keycode = window.event.keyCode;
-		} else if (e) {
-			keycode = e.which;
+    function check() {
+        // bounce out immediately.
+		$session = new Session();
+		if ($session->verify() == 1) { // erk.  neil - DOUBLE CHECK THIS PLEASE.
+			exit(redirect(generateControllerLink('dashboard')));
 		} else {
-			return true;
+		    $session->destroy(); // toast it - its probably a hostile session.
+		}
+		return true;
+	}
+
+	function do_main() {
+	    $this->check(); // bounce here, potentially.
+	
+		$cookietest = KTUtil::randomString();
+		setcookie("CookieTestCookie", $cookietest, false);
+		
+		$errorMessage = KTUtil::arrayGet($_REQUEST, 'errorMessage');
+		
+		$oTemplating = new KTTemplating;
+		$oTemplate = $oTemplating->loadTemplate("ktcore/login");
+		$aTemplateData = array(
+              "context" => $this,
+			  'cookietest' => $cookietest,
+			  'errorMessage' => $errorMessage,
+		);
+		return $oTemplate->render($aTemplateData);		
+	}
+	
+	function simpleRedirectToMain($errorMessage, $url, $params) {
+		$params[] = 'errorMessage='. urlencode($errorMessage);
+		$url .= '?' . join('&', $params);
+		redirect($url);
+		exit(0);
+	}
+	
+	function do_login() {
+	    $this->check();
+		global $default;
+		
+		$redirect = KTUtil::arrayGet($_REQUEST, 'redirect');
+		
+		$url = $_SERVER["PHP_SELF"];
+		$queryParams = array();
+		
+		if ($redirect !== null) {
+		    $queryParams[] = 'redirect='. urlencode($redirect);
+		}		
+		
+		
+	    $cookieTest = KTUtil::arrayGet($_COOKIE, "CookieTestCookie", null);
+		$cookieVerify = KTUtil::arrayGet($_REQUEST, 'cookieverify', null);
+		
+		if (($cookieVerify === null) || ($cookieTest !== $cookieVerify)) {
+		    $this->simpleRedirectToMain('You must have cookies enabled to use the KnowledgeTree.', $url, $params);
+		    exit(0);
 		}
 		
-		if (keycode == 13) {
-		   myfield.form.submit();
-		   return false;
-		} else {
-		   return true;
+		$username = KTUtil::arrayGet($_REQUEST,'username');
+		$password = KTUtil::arrayGet($_REQUEST,'password');
+		
+		if (empty($username)) {
+		    $this->simpleRedirectToMain('Please enter your username.', $url, $params);
 		}
-	}
-	//-->
-	</SCRIPT>
-    
-    </head>
-    <body onload=\"javascript:document.loginForm.fUserName.focus()\">
-    <center>
-    <img src=\"$default->graphicsUrl/ktLogin.jpg\">
-    <br><br>
-    <table>\n
-    <form name=\"loginForm\" action=\"" . $_SERVER["PHP_SELF"] . "\" method=\"post\">
-    <tr><td>" . _("Please enter your details below to login") . "</td></tr>
-    <tr><td></td></tr>
-    <tr><td><font color=\"red\">" . sanitize($errorMessage) . "</font><tr><td>
-    \t<tr><td>" . _("Username") . ":</td></tr>
-    \t<tr><td><input type=\"text\" name=\"fUserName\" size=\"35\"></td></tr>
-    \t<tr><td>" . _("Password") . ":</td></tr>
-    <tr><td><input type=\"password\" name=\"fPassword\" size=\"35\" onKeyPress=\"return submitenter(this,event)\">
-    </td></tr>
-    <input type=\"hidden\" name=\"redirect\" value=\"$redirect\"/>
-    <input type=\"hidden\" name=\"loginAction\" value=\"login\">\n
-    <input type=\"hidden\" name=\"cookietestinput\" value=\"$cookietest\">\n
-    <tr align=\"right\"><td><input type=\"image\" src=\"" . KTHtml::getLoginButton() . "\" border=\"0\"></td></tr>\n
-    <tr><td><font size=\"1\">" . _("System Version") . ": " . $default->systemVersion . "</font></td></tr>
-    </table>
-    </center>
-    </body>
-    </html>";
-
-} elseif ($_REQUEST['loginAction'] == "login") {
-    // set default url for login failure
-    // with redirect appended if set
-    $url = $url . "login.php?loginAction=loginForm" . (isset($redirect) ? "&redirect=" . urlencode($redirect) : "");
-    $cookieTest = KTUtil::arrayGet($_COOKIE, "CookieTestCookie", null);
-    if (is_null($cookieTest) || $cookieTest != KTUtil::arrayGet($_REQUEST, "cookietestinput")) {
-        $url .= "&errorMessage=" . urlencode(_("KnowledgeTree requires cookies to work"));
-        redirect($url);
-        exit(0);
-    }
-    
-    // if requirements are met and we have a username and password to authenticate
-    if (isset($_REQUEST['fUserName']) && isset($_REQUEST['fPassword']) ) {
-        // verifies the login and password of the user
-        $dbAuth = new $default->authenticationClass;
-        $userDetails = $dbAuth->login($_REQUEST['fUserName'], $_REQUEST['fPassword']);
-
+		
+		if (empty($password)) {
+		    $this->simpleRedirectToMain('Please enter your username.', $url, $params);
+		}
+		
+        $dbAuth = new $default->authenticationClass; // $default.  urk.
+        $userDetails = $dbAuth->login($username, $password);		
+			
+		
         switch ($userDetails["status"]) {
-            // bad credentials
-        case 0:
-                $url = $url . "&errorMessage=" . urlencode(_("Login failure"));
-            break;
-            // successfully authenticated
-        case 1:
+        case 0: // bad credentials
+            $this->simpleRedirectToMain('Login failed.  Please check your username and password, and try again.', $url, $params);
+			break; 
+        case 1: // successfully authenticated
             // start the session
             $session = new Session();
             $sessionID = $session->create($userDetails["userID"]);
 
-            // initialise page-level authorisation array
-            $_SESSION["pageAccess"] = NULL;
+            // DEPRECATED initialise page-level authorisation array
+            $_SESSION["pageAccess"] = NULL; 
 
             // check for a location to forward to
-            if (isset($redirect) && strlen(trim($redirect))>0) {
+            if ($redirect !== null) {
                 // remove any params from redirect before looking up from sitemap
                 if (strstr($redirect, "?")) {
                     $queryString = substr($redirect, strpos($redirect, "?")+1, strlen($redirect));
@@ -142,38 +139,34 @@ if ($_REQUEST['loginAction'] == "loginForm") {
                     // default to the dashboard
                     $url = generateControllerUrl("dashboard");
                 }
-
             // else redirect to the dashboard if there is none
             } else {
                 $url = generateControllerUrl("dashboard");
             }
+			exit(redirect($url));
             break;
             // login disabled
         case 2:
-            $url = $url . "&errorMessage=" . urlencode(_("Account has been DISABLED, contact the System Adminstrator"));
+            $this->simpleRedirectToMain("Account has been DISABLED, contact the System Adminstrator", $url, $params);
             break;
             // too many sessions
         case 3 :
-            $url = $url . "&errorMessage=" . urlencode(_("Maximum sessions for user reached.<br>Contact the System Administrator"));
+            $this->simpleRedirectToMain(_("Maximum sessions for user reached.<br>Contact the System Administrator"), $url, $params);
             break;
             // not a unit user
         case 4 :
-            $url = $url . "&errorMessage=" . urlencode(_("This user does not belong to a group and is therefore not allowed to log in."));
+            $this->simpleRedirectToMain(_("This user does not belong to a group and is therefore not allowed to log in."), $url, $params);;
             break;            
         default :
-            $url = $url . "&errorMessage=" . urlencode(_("Login failure"));
-        }
-    } else {
-        // didn't receive any login parameters, so redirect login form
-        $default->log->error("login.php no login parameters received");
-    }
-    if (strlen($queryString) > 0) {    	
-        $url .= "&$queryString";
-    }
-    redirect($url);
-} else {
-	// redirect to root
-    $url = generateLink("", "");
-	redirect($url);
+            $this->simpleRedirectToMain(_("Login failure"), $url, $params);
+        }		
+	    // we should not get here.
+	    $this->simpleRedirectToMain(_("Unable to start session.  Please contact the administrator."), $url, $params);
+	}
 }
+
+
+$dispatcher =& new LoginPageDispatcher();
+$dispatcher->dispatch();
+
 ?>
