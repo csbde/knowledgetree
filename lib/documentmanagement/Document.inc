@@ -145,7 +145,9 @@ class Document extends KTEntity {
         $this->sDescription = $sNewDescription;
         $this->iMimeTypeID = $iNewMimeID;
         $this->iFolderID = $iNewFolderID;
-        $this->iDocumentTypeID = Folder::getDefaultFolderDocumentType($this->iFolderID);
+        if (!empty($this->iFolderID)) {
+            $this->iDocumentTypeID = Folder::getDefaultFolderDocumentType($this->iFolderID);
+        }
         $this->iMajorVersion = 0;
         $this->iMetadataVersion = 0;
         $this->iMinorVersion = 1;
