@@ -6,6 +6,7 @@ require_once(KT_LIB_DIR . '/templating/templating.inc.php');
 require_once(KT_LIB_DIR . '/session/control.inc');
 require_once(KT_LIB_DIR . '/session/Session.inc');
 require_once(KT_LIB_DIR . '/users/User.inc');
+require_once(KT_LIB_DIR . '/authentication/authenticationutil.inc.php');
 
 /**
  * $Id$
@@ -53,6 +54,7 @@ class LoginPageDispatcher extends KTDispatcher {
 		setcookie("CookieTestCookie", $cookietest, false);
 		
 		$errorMessage = KTUtil::arrayGet($_REQUEST, 'errorMessage');
+		$redirect = KTUtil::arrayGet($_REQUEST, 'redirect');
 		
 		$oTemplating = new KTTemplating;
 		$oTemplate = $oTemplating->loadTemplate("ktcore/login");
@@ -60,6 +62,7 @@ class LoginPageDispatcher extends KTDispatcher {
               "context" => $this,
 			  'cookietest' => $cookietest,
 			  'errorMessage' => $errorMessage,
+			  'redirect' => $redirect,
 		);
 		return $oTemplate->render($aTemplateData);		
 	}
@@ -82,7 +85,7 @@ class LoginPageDispatcher extends KTDispatcher {
 		
 		if ($redirect !== null) {
 		    $queryParams[] = 'redirect='. urlencode($redirect);
-		}		
+		}
 		
 		
 	    $cookieTest = KTUtil::arrayGet($_COOKIE, "CookieTestCookie", null);
@@ -103,65 +106,40 @@ class LoginPageDispatcher extends KTDispatcher {
 		if (empty($password)) {
 		    $this->simpleRedirectToMain('Please enter your username.', $url, $params);
 		}
-		
-        $dbAuth = new $default->authenticationClass; // $default.  urk.
-        $userDetails = $dbAuth->login($username, $password);		
-			
-		
-        switch ($userDetails["status"]) {
-        case 0: // bad credentials
+
+        $oUser =& User::getByUsername($username);
+        if (PEAR::isError($oUser) || ($oUser === false)) {
             $this->simpleRedirectToMain('Login failed.  Please check your username and password, and try again.', $url, $params);
-			break; 
-        case 1: // successfully authenticated
-            // start the session
-            $session = new Session();
-            $sessionID = $session->create($userDetails["userID"]);
+            exit(0);
+        }
+        $authenticated = KTAuthenticationUtil::checkPassword($oUser, $password);
 
-            // DEPRECATED initialise page-level authorisation array
-            $_SESSION["pageAccess"] = NULL; 
+        if ($authenticated === false) {
+            $this->simpleRedirectToMain('Login failed.  Please check your username and password, and try again.', $url, $params);
+            exit(0);
+        }
 
-            // check for a location to forward to
-            if ($redirect !== null) {
-                // remove any params from redirect before looking up from sitemap
-                if (strstr($redirect, "?")) {
-                    $queryString = substr($redirect, strpos($redirect, "?")+1, strlen($redirect));
-                    $redirect = substr($redirect, 0, strpos($redirect, "?"));
-                }
+        if (PEAR::isError($authenticated)) {
+            print "<pre>";
+            var_dump($authenticated);
+            $this->simpleRedirectToMain('Authentication failure.  Please try again.', $url, $params);
+            exit(0);
+        }
 
-                // need to strip rootUrl off $redirect
-                if (strlen($default->rootUrl) > 0) {
-                    $redirect = substr($redirect, strpos($redirect, $default->rootUrl)+strlen($default->rootUrl), strlen($redirect));
-                }
-                $action = $default->siteMap->getActionFromPage($redirect);
-                if ($action) {
-                    $url = generateControllerUrl($action);
-                } else {
-                    // default to the dashboard
-                    $url = generateControllerUrl("dashboard");
-                }
-            // else redirect to the dashboard if there is none
-            } else {
-                $url = generateControllerUrl("dashboard");
-            }
-			exit(redirect($url));
-            break;
-            // login disabled
-        case 2:
-            $this->simpleRedirectToMain("Account has been DISABLED, contact the System Adminstrator", $url, $params);
-            break;
-            // too many sessions
-        case 3 :
-            $this->simpleRedirectToMain(_("Maximum sessions for user reached.<br>Contact the System Administrator"), $url, $params);
-            break;
-            // not a unit user
-        case 4 :
-            $this->simpleRedirectToMain(_("This user does not belong to a group and is therefore not allowed to log in."), $url, $params);;
-            break;            
-        default :
-            $this->simpleRedirectToMain(_("Login failure"), $url, $params);
-        }		
-	    // we should not get here.
-	    $this->simpleRedirectToMain(_("Unable to start session.  Please contact the administrator."), $url, $params);
+        $session = new Session();
+        $sessionID = $session->create($oUser->getId());
+
+        // DEPRECATED initialise page-level authorisation array
+        $_SESSION["pageAccess"] = NULL; 
+
+        // check for a location to forward to
+        if ($redirect !== null) {
+            $url = $redirect;
+        // else redirect to the dashboard if there is none
+        } else {
+            $url = generateControllerUrl("dashboard");
+        }
+        exit(redirect($url));
 	}
 }
 
