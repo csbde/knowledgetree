@@ -98,7 +98,6 @@ class DocumentCollection {
 	  $this->folderCount = $this->_queryObj->getFolderCount();
 	  
 	  $this->documentCount = $this->_queryObj->getDocumentCount();
-	  $this->documentCount = $this->documentCount[0];
 	  $this->itemCount = $this->documentCount + $this->folderCount;
 	  
 	  // now we need the active set:  this is based on the batchsize,
