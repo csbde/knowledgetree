@@ -165,19 +165,33 @@ class SimpleSearchQuery extends PartialQuery {
         // never any folders, given the current fulltext environ.
         return 0;
     }
-    
-    function getDocumentCount() { 
-        // FIXME add permission checks here
-        // FIXME do not refer directly.
-        // FIXME is this even _vaguely_ portable.
-        $sQuery = "SELECT count(document_id) AS c FROM document_text WHERE MATCH (document_text) AGAINST (?)";
-        $aParams = array($this->searchable_text);
-        
-        return DBUtil::getOneResultKey(array($sQuery, $aParams), 'c'); 
-    }
-    
+
     function getFolders($iBatchSize, $iBatchStart, $sSortColumn, $sSortOrder, $sJoinClause = null, $aJoinParams = null) { 
         return array();
+    }
+
+    function getQuery($aOptions = null) {
+        $aSubgroup = array(
+            'values' => array(
+                array('type' => '-12', 'data' => array('bmd_12' => $this->searchable_text)),
+            ),
+            'join' => 'AND',
+        );
+        $aCriteriaSet = array(
+            'subgroup' => array($aSubgroup),
+            'join' => 'AND',
+        );
+        $oUser = User::get($_SESSION['userID']);
+        return KTSearchUtil::criteriaToQuery($aCriteriaSet, $oUser, 'ktcore.permissions.read', $aOptions);
+    }
+    
+    function getDocumentCount() { 
+        $aOptions = array(
+            'select' => 'count(D.id) AS cnt',
+        );
+        $aQuery = $this->getQuery($aOptions);
+        $iRet = DBUtil::getOneResultKey($aQuery, 'cnt');
+        return $iRet;
     }
     
     
@@ -186,25 +200,14 @@ class SimpleSearchQuery extends PartialQuery {
     //
     // we also leak like ---- here, since getting the score is ... fiddly.  and expensive.
     function getDocuments($iBatchSize, $iBatchStart, $sSortColumn, $sSortOrder, $sJoinClause = null, $aJoinParams = null) { 
-        // FIXME add permission checks here
-        $aParams = array(); // main parameter array.
-        $aJoinParams = array($aJoinParams);
-        
-        $sQuery = "SELECT D.id, MATCH (DT.document_text) AGAINST (?) as score FROM " . KTUtil::getTableName("documents") . " AS D ";
-        $aParams[] = $this->searchable_text;
-        
-        $sQuery .= " LEFT JOIN document_text AS DT ON (DT.document_id = D.id) ";
-        
-        if ($sJoinClause !== null) {
-            $sQuery .= $sJoinClause;
-            foreach ($aJoinParams as $param) { $aParams[] = $param; } // FIXME use merge...
-        }        
-        $sQuery .= " WHERE MATCH(DT.document_text) AGAINST (?) ";
-        $aParams[] = $this->searchable_text;
-        
+        $aOptions = array(
+            'select' => 'D.id AS id',
+        );
+        list($sQuery, $aParams) = $this->getQuery($aOptions);
+
         $sQuery .= " ORDER BY " . $sSortColumn . " " . $sSortOrder . " ";
-        
         $sQuery .= " LIMIT ?, ?";
+
         $aParams[] = $iBatchStart;
         $aParams[] = $iBatchSize;
         
