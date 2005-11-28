@@ -1,5 +1,12 @@
-<dt class="actionitem subscription">Subscription Alert: {$context->getLabel()}</dt>
+<dt class="actionitem subscription">{$info.title}</dt>
 <dd class="actionmessage">
-    This document was updated in the folder "{$context->getStrData1()}", to which you are subscribed.
-    <div class="actionoptions"><a href="#">Read Document</a> | <a href="#">Clear Alert</a></div>
+<!-- could break this up. -->
+{if ($info.event_type == 'AddDocument')}
+    The document "{$info.object_name}" was added{if ($info.location_name !== null)} to "{$info.location_name}"{/if}.
+    <div class="actionoptions">
+    <a href="{$rootUrl}/notify.php?id={$info.notify_id}">Read Document</a> | 
+    <a href="{$rootUrl}/notify.php?id={$info.notify_id}&notify_action=clear">Clear Alert</a>
+    </div>
+{/if}
+    
 </dd>

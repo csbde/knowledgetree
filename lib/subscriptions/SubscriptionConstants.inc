@@ -58,5 +58,22 @@ class SubscriptionConstants {
                              "RestoredArchivedDocument" => 12);
         return $aChangeType[$sType];
     }
+    
+    function subscriptionAlertTypeString($iType) {
+        $aChangeType = array(1 => "AddFolder",
+                             2 => "RemoveSubscribedFolder",
+                             3 => "RemoveChildFolder",
+                             4 => "AddDocument",
+                             5 => "RemoveSubscribedDocument",
+                             6 => "RemoveChildDocument",
+                             7 => "ModifyDocument",
+                             8 => "CheckInDocument",
+                             9 => "CheckOutDocument",
+                             10 => "MovedDocument",
+                             11 => "ArchivedDocument",
+                             12 => "RestoredArchivedDocument",
+                             );
+        return $aChangeType[$iType];
+    }
 }
 ?>
