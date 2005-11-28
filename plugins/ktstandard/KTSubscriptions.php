@@ -240,7 +240,8 @@ class KTArchiveSubscriptionTrigger {
             SubscriptionConstants::subscriptionType("DocumentSubscription"),
             array(
                 "folderID" => $oDocument->getFolderID(),
-                "modifiedDocumentName" => $oDocument->getName()
+                "modifiedDocumentName" => $oDocument->getName(),
+                "folderName" => $oDocument->getFolderName(),
             ));
         $default->log->info("archiveDocumentBL.php fired $count subscription alerts for archived document " . $oDocument->getName());
     }

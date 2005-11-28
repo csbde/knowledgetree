@@ -393,7 +393,7 @@ class KTDocumentUtil {
         $count = SubscriptionEngine::fireSubscription($oDocument->getID(), SubscriptionConstants::subscriptionAlertType("AddDocument"),
                  SubscriptionConstants::subscriptionType("DocumentSubscription"),
                  array( "folderID" => $oDocument->getFolderID(),
-                        "modifiedDocumentName" => $oDocument->getName() ));
+                        "newDocumentName" => $oDocument->getName() ));
         global $default;
         $default->log->info("checkInDocumentBL.php fired $count subscription alerts for checked out document " . $oDocument->getName());
 

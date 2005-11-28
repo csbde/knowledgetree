@@ -1,12 +1,15 @@
 <?php
 global $default;
-require_once("$default->fileSystemRoot/lib/users/User.inc");
-require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
-require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
-require_once("$default->fileSystemRoot/lib/subscriptions/Subscription.inc");
-require_once("$default->fileSystemRoot/lib/alert/AlertContent.inc");
-require_once("$default->fileSystemRoot/lib/alert/delivery/EmailAlert.inc");
-require_once("$default->fileSystemRoot/lib/alert/delivery/SMSAlert.inc");
+require_once(KT_LIB_DIR . "/users/User.inc");
+require_once(KT_LIB_DIR . "/documentmanagement/Document.inc");
+require_once(KT_LIB_DIR . "/foldermanagement/Folder.inc");
+require_once(KT_LIB_DIR . "/subscriptions/Subscription.inc");
+require_once(KT_LIB_DIR . "/alert/AlertContent.inc");
+require_once(KT_LIB_DIR . "/alert/delivery/EmailAlert.inc");
+require_once(KT_LIB_DIR . "/alert/delivery/SMSAlert.inc");
+
+require_once(KT_LIB_DIR . "/dashboard/Notification.inc.php");
+
 /**
  * $Id$
  *
@@ -41,8 +44,9 @@ class SubscriptionEngine {
      * @param int the alert type (document change, new folder, etc.)
      * @param int the subscription content type (folder, document)
      * @param array any dynamic values that should be sent with the alert (eg. document name, path to modified document)
+	 * @param int the original object id (e.g. if fired on a document, and chained to a folder.
      */
-    function fireSubscription($iExternalID, $iSubscriptionAlertType, $iSubscriptionType, $aValues) {
+    function fireSubscription($iExternalID, $iSubscriptionAlertType, $iSubscriptionType, $aValues, $iOriginalId = null) {
         global $default;
         $default->log->info("fireSubscription ($iExternalID, $iSubscriptionAlertType, $iSubscriptionType, values)");
         // get the list of subscriber addresses that we need to alert
@@ -58,7 +62,8 @@ class SubscriptionEngine {
                                   SubscriptionConstants::subscriptionAlertType("RemoveChildDocument") :
                                   $iSubscriptionAlertType),
                                   SubscriptionConstants::subscriptionType("FolderSubscription"),
-                                  $aValues);
+                                  $aValues, 
+								  $iExternalId);
             $default->log->info("SubscriptionEngine::fireSubscription fired folder subscribers, count=$iSubscriptionsSent");
         }
 
@@ -66,7 +71,7 @@ class SubscriptionEngine {
         for ($i=0; $i<count($aSubscribers); $i++) {
             // lookup the subscription
             if ($iSubscriptionType == SubscriptionConstants::subscriptionType("FolderSubscription")) {
-                $oSubscription = & Subscription::getByIDs($aSubscribers[$i]->getID(), $oValues['folderID'], $iSubscriptionType);
+                $oSubscription = & Subscription::getByIDs($aSubscribers[$i]->getID(), $aValues['folderID'], $iSubscriptionType);
                 if (empty($oSubscription) || PEAR::isError($oSubscription)) {
                     $oSubscription =& new Subscription($aSubscribers[$i]->getID(), $aValues["folderID"], $iSubscriptionType);
                     $res = $oSubscription->create();
@@ -96,6 +101,109 @@ class SubscriptionEngine {
                 $sAlertContent = AlertContent::getSubscriptionAlert($iSubscriptionAlertType, $aValues);
 
                 // construct alerts
+				
+				// dashboard notification.
+				$aNotificationOptions = array();
+
+				$aNotificationOptions['target_user'] = $aSubscribers[$i]->getID();
+				$aNotificationOptions['actor_id'] = KTUtil::arrayGet($_SESSION,"userID", null); // _won't_ be null.
+				
+				// location name:  ditto.
+				// target_name: ditto.
+				
+				//$default->log->debug('subscriptionengine: received ' . print_r($aValues, true));
+				
+				// sweet lord this is _hideous_.  Please, oh please kill the subscriptionsconstants
+				if (SubscriptionConstants::subscriptionAlertTypeString($iSubscriptionAlertType) == "AddFolder") {
+				    $aNotificationOptions['target_name'] = $aValues["newFolderName"];
+					$aNotificationOptions['location_name'] = $aValues["parentFolderName"];
+					$aNotificationOptions['object_id'] = $iExternalId;  // parent folder_id, in this case.
+					$aNotificationOptions['event_type'] = "AddFolder";
+				} else if (SubscriptionConstants::subscriptionAlertTypeString($iSubscriptionAlertType) == "RemoveSubscribedFolder") {
+				    $aNotificationOptions['target_name'] = $aValues["removedFolderName"];
+					$aNotificationOptions['location_name'] = $aValues["parentFolderName"];
+					$aNotificationOptions['object_id'] = $iExternalId;  // parent folder_id, in this case.
+					$aNotificationOptions['event_type'] = "RemoveSubscribedFolder";
+				} else if (SubscriptionConstants::subscriptionAlertTypeString($iSubscriptionAlertType) == "RemoveChildFolder") {
+				    $aNotificationOptions['target_name'] = $aValues["removedFolderName"];
+					$aNotificationOptions['location_name'] = $aValues["parentFolderName"];
+					$aNotificationOptions['object_id'] = $iExternalId;  // parent folder_id, in this case, where user is subscribed.
+					$aNotificationOptions['event_type'] = "RemoveChildFolder";
+				} else if (SubscriptionConstants::subscriptionAlertTypeString($iSubscriptionAlertType) == "AddDocument") {
+				    $aNotificationOptions['target_name'] = $aValues["newDocumentName"];
+					$aNotificationOptions['location_name'] = $aValues["parentFolderName"];
+					if ($iOriginalId !== null) {
+					    $aNotificationOptions['object_id'] = $iOriginalId;  // folder subscription, this _was_ the document.
+					} else {
+					    $aNotificationOptions['object_id'] = $iExternalId;  // this path _shouldn't_ be hit since its a new document - user _can't_ be subscribed to it already.
+					}
+					$aNotificationOptions['event_type'] = "AddDocument";
+                } else if (SubscriptionConstants::subscriptionAlertTypeString($iSubscriptionAlertType) == "RemoveChildDocument") {
+				    $aNotificationOptions['target_name'] = $aValues["removedDocumentName"];
+					$aNotificationOptions['location_name'] = $aValues["folderName"];
+					$aNotificationOptions['object_id'] = $iExternalId;  // parent folder_id, in this case, where user is subscribed... is it?
+					$aNotificationOptions['event_type'] = "RemoveChildDocument";				
+				} else if (SubscriptionConstants::subscriptionAlertTypeString($iSubscriptionAlertType) == "RemoveSubscribedDocument") {
+				    $aNotificationOptions['target_name'] = $aValues["removedDocumentName"];
+					$aNotificationOptions['location_name'] = $aValues["folderName"];
+					$aNotificationOptions['object_id'] = $iExternalId;  // not used.
+					$aNotificationOptions['event_type'] = "RemoveSubscribedDocument";				
+				} else if (SubscriptionConstants::subscriptionAlertTypeString($iSubscriptionAlertType) == "ModifyDocument") {
+				    $aNotificationOptions['target_name'] = $aValues["modifiedDocumentName"];
+					$aNotificationOptions['location_name'] = null; // not used... why? don't we have the folder name? why not?
+					if ($iOriginalId !== null) {
+					    $aNotificationOptions['object_id'] = $iOriginalId;  // folder subscription, this _was_ the document.
+					} else {
+					    $aNotificationOptions['object_id'] = $iExternalId;  // this path _shouldn't_ be hit since its a new document - user _can't_ be subscribed to it already.
+					}
+					$aNotificationOptions['event_type'] = "ModifyDocument";				
+				} else if (SubscriptionConstants::subscriptionAlertTypeString($iSubscriptionAlertType) == "CheckInDocument") {
+				    $aNotificationOptions['target_name'] = $aValues["modifiedDocumentName"];
+					$aNotificationOptions['location_name'] = null; // not used... why? don't we have the folder name? why not?
+					if ($iOriginalId !== null) {
+					    $aNotificationOptions['object_id'] = $iOriginalId;  // folder subscription, this _was_ the document.
+					} else {
+					    $aNotificationOptions['object_id'] = $iExternalId;  // this path _shouldn't_ be hit since its a new document - user _can't_ be subscribed to it already.
+					}$aNotificationOptions['event_type'] = "CheckInDocument";				
+				} else if (SubscriptionConstants::subscriptionAlertTypeString($iSubscriptionAlertType) == "CheckOutDocument") {
+				    $aNotificationOptions['target_name'] = $aValues["modifiedDocumentName"];
+					$aNotificationOptions['location_name'] = null; // not used... why? don't we have the folder name? why not?
+					if ($iOriginalId !== null) {
+					    $aNotificationOptions['object_id'] = $iOriginalId;  // folder subscription, this _was_ the document.
+					} else {
+					    $aNotificationOptions['object_id'] = $iExternalId;  // this path _shouldn't_ be hit since its a new document - user _can't_ be subscribed to it already.
+					}$aNotificationOptions['event_type'] = "CheckOutDocument";				
+				} else if (SubscriptionConstants::subscriptionAlertTypeString($iSubscriptionAlertType) == "MovedDocument") {
+				    $aNotificationOptions['target_name'] = $aValues["modifiedDocumentName"];
+					$aNotificationOptions['location_name'] = $aValues["oldFolderName"];
+					if ($iOriginalId !== null) {
+					    $aNotificationOptions['object_id'] = $iOriginalId;  // folder subscription, this _was_ the document.
+					} else {
+					    $aNotificationOptions['object_id'] = $iExternalId;  
+					}$aNotificationOptions['event_type'] = "MovedDocument";				
+				} else if (SubscriptionConstants::subscriptionAlertTypeString($iSubscriptionAlertType) == "ArchivedDocument") {
+				    $aNotificationOptions['target_name'] = $aValues["modifiedDocumentName"];
+					$aNotificationOptions['location_name'] = $aValues["folderName"];
+					if ($iOriginalId !== null) {
+					    $aNotificationOptions['object_id'] = $iOriginalId;  // folder subscription, this _was_ the document.
+					} else {
+					    $aNotificationOptions['object_id'] = $iExternalId;  
+					}
+					$aNotificationOptions['event_type'] = "ArchivedDocument";				
+				} else if (SubscriptionConstants::subscriptionAlertTypeString($iSubscriptionAlertType) == "RestoredArchivedDocument") {
+				    $aNotificationOptions['target_name'] = $aValues["modifiedDocumentName"];
+					$aNotificationOptions['location_name'] = null; // $aValues["folderName"]; // not reachable.
+					if ($iOriginalId !== null) {
+					    $aNotificationOptions['object_id'] = $iOriginalId;  // folder subscription, this _was_ the document.
+					} else {
+					    $aNotificationOptions['object_id'] = $iExternalId;  
+					}
+					$aNotificationOptions['event_type'] = "RestoredArchivedDocument";				
+				}			
+				
+				$oNotification =& KTSubscriptionNotification::generateSubscriptionNotification($aNotificationOptions);
+				
+				// email alert.
                 if ($aSubscribers[$i]->getEmailNotification() && (strlen($aSubscribers[$i]->getEmail()) > 0)) {
 
                     $oEmail = new EmailAlert($aSubscribers[$i]->getEmail(), $sAlertContent["subject"], $sAlertContent["text"]);
@@ -135,7 +243,7 @@ class SubscriptionEngine {
                 $iSubscriptionsSent += $iThisSubscriptionsSent;
             }
         }
-
+		
         // return the number of processed subscriptions
         return $iSubscriptionsSent;
     }
@@ -184,6 +292,7 @@ class SubscriptionEngine {
             $_SESSION["errorMessage"] = $lang_err_database;
             return false;
         }
+		$default->log->debug('retrieveSubscribers found count=' . count($aUsers));
         return $aUsers;
     }
 }
