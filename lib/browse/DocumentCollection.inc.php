@@ -97,8 +97,6 @@ class DocumentCollection {
 	  // we get back strings of numbers.
 	  $this->folderCount = $this->_queryObj->getFolderCount();
 	  
-	  
-	  $this->folderCount = $this->folderCount[0]; // sigh.
 	  $this->documentCount = $this->_queryObj->getDocumentCount();
 	  $this->documentCount = $this->documentCount[0];
 	  $this->itemCount = $this->documentCount + $this->folderCount;
@@ -136,8 +134,7 @@ class DocumentCollection {
 		 }
 		 
 	  }
-	  
-	  
+
 	  $this->activeset = array(
 		 "folders" => $folderSet,
 		 "documents" => $documentSet,
