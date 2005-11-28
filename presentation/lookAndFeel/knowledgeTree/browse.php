@@ -79,8 +79,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
 		$collection->addColumn(new TitleColumn("Test 1 (title)","title"));
 		$collection->addColumn(new DateColumn("Created","created", "getCreatedDateTime"));
 		$collection->addColumn(new DateColumn("Last Modified","modified", "getLastModifiedDate"));
-		$collection->addColumn(new BrowseColumn("Test 3","test3"));
-		$collection->addColumn(new BrowseColumn("Test 4","test4"));
+		$collection->addColumn(new UserColumn('Creator','creator_id','getCreatorID'));
 		
         $this->aBreadcrumbs = array_merge($this->aBreadcrumbs,
                 KTBrowseUtil::breadcrumbsForFolder($this->oFolder));

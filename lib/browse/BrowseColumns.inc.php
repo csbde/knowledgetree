@@ -13,7 +13,7 @@
  */
  
 require_once(KT_LIB_DIR . "/database/dbutil.inc");
-
+require_once(KT_LIB_DIR . '/users/User.inc');
 class BrowseColumn {
     var $label = null;
     var $sort_on = false;
@@ -170,6 +170,50 @@ class DateColumn extends BrowseColumn {
         } else {
            return 'unspecified_type';
         }
+    }
+}
+
+
+class UserColumn extends BrowseColumn {
+    var $field_function;
+    
+    // $sDocumentFieldFunction is _called_ on the document.
+    function UserColumn($sLabel, $sName, $sDocumentFieldFunction) {
+        $this->field_function = $sDocumentFieldFunction;
+        parent::BrowseColumn($sLabel, $sName);
+        
+    }
+    
+    function renderHeader($sReturnURL) { 
+        $text = $this->label;
+        $href = $sReturnURL . "&sort_on=" . $this->name . "&sort_order=";
+        $href .= $this->sort_direction == "asc"? "desc" : "asc" ;
+        
+        return '<a href="' . $href . '">'.$text.'</a>';
+        
+    }
+    
+    // use inline, since its just too heavy to even _think_ about using smarty.
+    function renderData($aDataRow) { 
+        $outStr = '';
+        $fn = $this->field_function;
+        $iUserId = null;
+        if ($aDataRow["type"] == "folder") {
+            if (method_exists($aDataRow['folder'], $fn)) {
+                $iUserId = $aDataRow['folder']->$fn(); // FIXME this should check if the function exists first.
+            }
+        } else {
+            if (true) {//(method_exists($aDataRow['document'], $fn)) {
+                $iUserId = $aDataRow['document']->$fn(); // FIXME this should check if the function exists first.
+            }
+        }
+        $oUser = User::get($iUserId);
+        if (PEAR::isError($oUser) || $oUser == false) {
+            $outStr = '&nbsp;';
+        } else {
+            $outStr = $oUser->getName();
+        }
+        return $outStr;
     }
 }
 
