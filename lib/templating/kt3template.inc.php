@@ -177,10 +177,12 @@ class KTPage {
 		} else if ($sSection == 'search') {
 		    $this->componentLabel = 'Search';
             $this->componentClass = 'search';				
-		} else if ($sSection == 'browse') {
+		} else if ($sSection == 'preferences') {
+		    $this->componentLabel = 'Preferences';
+            $this->componentClass = 'preferences';				
 	    } else {
-			$this->componentLabel = 'DMS Administration';
-			$this->componentClass = 'administration';	    
+			$this->componentLabel = 'Dashboard';
+			$this->componentClass = 'dashboard';	    
 		}
 
 	}
