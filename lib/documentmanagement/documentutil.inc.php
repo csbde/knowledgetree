@@ -154,22 +154,22 @@ class KTDocumentUtil {
         $aMetadata = KTUtil::arrayGet($aOptions, 'metadata');
         $oDocumentType = KTUtil::arrayGet($aOptions, 'documenttype');
         $sDescription = KTUtil::arrayGet($aOptions, 'description', $sFilename);
+
+        if ($oDocumentType) {
+            $iDocumentTypeId = KTUtil::getId($oDocumentType);
+        } else {
+            $iDocumentTypeId = 1;
+        }
         $oDocument =& Document::createFromArray(array(
             'name' => $sDescription,
             'description' => $sDescription,
             'filename' => $sFilename,
             'folderid' => $oFolder->getID(),
             'creatorid' => $oUser->getID(),
+            'documenttypeid' => $iDocumentTypeId,
         ));
         if (PEAR::isError($oDocument)) {
             return $oDocument;
-        }
-
-        if (!is_null($oDocumentType)) {
-            $oDocument->setDocumentTypeID($oDocumentType->getID());
-        } else {
-            // XXX: Ug...
-            $oDocument->setDocumentTypeID(1);
         }
 
         if (is_null($oContents)) {
