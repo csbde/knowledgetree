@@ -1,0 +1,51 @@
+<form method="POST" action="{$smarty.server.PHP_SELF}">
+<p class="descriptiveText">Since there may be many users in the system, please
+provider a few letters from the person's user name to begin.</p>
+
+<input type="hidden" name="action" value="addUserFromSource" />
+<input type="hidden" name="source_id" value="{$source->getId()}" />
+<fieldset><legend>Search for user</legend>
+{foreach from=$fields item=oWidget}
+  {$oWidget->render()}
+{/foreach}
+<div class="form_actions">
+   <input type="submit" value="search for users" />
+</div class="form_actions">
+</fieldset>
+</form>
+
+{if !$search_results}
+      <div class="ktInfo">
+         <!-- never show a very large set, if you can help it. -->
+         <p>No search specified, or no results for your search.  Please choose some criteria from the list above to find users.</p>
+      </div>
+{else}
+<form method="POST" action="{$smarty.server.PHP_SELF}">
+<input type="hidden" name="action" value="addUserFromSource" />
+<input type="hidden" name="source_id" value="{$source->getId()}" />
+<table class="listing">
+<thead>
+   <tr>
+      <th>Name</th>
+      <th>LDAP User Name</th>
+      <th>Distinguished Name (LDAP DN)</th>
+   </tr>
+</thead>
+<tbody>
+   <!-- do we want to batch here? -->
+     {foreach item=potential_user from=$search_results}
+     <tr>
+        <td><input type="radio" name="id"
+value="{$potential_user.$identifier_field}" />{$potential_user.cn}</td>
+        <td>{$potential_user.$identifier_field}</td>
+        <td>{$potential_user.dn}</td>
+     </tr>
+     {/foreach}
+<!--
+
+-->
+</tbody>
+</table>
+<input type="submit" name="submit[chosen]" value="Add" />
+</form>
+{/if}

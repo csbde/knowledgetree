@@ -123,6 +123,125 @@ class KTLDAPAuthenticationProvider extends KTAuthenticationProvider {
         return new LDAPAuthenticator($oSource);
     }
 
+    function _do_editUserFromSource() {
+        $oTemplate = $this->oValidator->validateTemplate('ktstandard/authentication/ldapadduser');
+        $oSource =& KTAuthenticationSource::get($_REQUEST['source_id']);
+        $id = KTUtil::arrayGet($_REQUEST, 'id');
+
+        $aConfig = unserialize($oSource->getConfig());
+        if ($aConfig['servertype'] == "ActiveDirectory") {
+            $aAttributes = array ("dn", "samaccountname", "givenname", "sn", "userPrincipalName", "telephonenumber");
+        } else {
+            $aAttributes = array ("dn", "uid", "givenname", "sn", "mail", "mobile");
+        }
+
+        $oAuthenticator = $this->getAuthenticator($oSource);
+        $aResults = $oAuthenticator->getUser($id, $aAttributes);
+        $aResults = $aResults[$id];
+        
+        $fields = array();
+        $fields[] =  new KTStaticTextWidget('LDAP DN','The location of the user within the LDAP directory.', 'dn', $aResults[$aAttributes[0]], $this->oPage);
+        $fields[] =  new KTStringWidget('Username','The username the user will enter to gain access to the KnowledgeTree.  e.g. <strong>jsmith</strong>', 'ldap_username', $aResults[$aAttributes[1]], $this->oPage, true);
+        $fields[] =  new KTStringWidget('Name','The full name of the user.  This is shown in reports and listings.  e.g. <strong>John Smith</strong>', 'name', join(" ", array($aResults[$aAttributes[2]], $aResults[$aAttributes[3]])), $this->oPage, true);
+        $fields[] =  new KTStringWidget('Email Address','The email address of the user.  Notifications and alerts are mailed to this address if <strong>email notifications</strong> is set below. e.g. <strong>jsmith@acme.com</strong>', 'email_address', $aResults[$aAttributes[4]], $this->oPage, false);
+        $fields[] =  new KTCheckboxWidget('Email Notifications','If this is specified then the user will have notifications sent to the email address entered above.  If it isn\'t set, then the user will only see notifications on the <strong>Dashboard</strong>', 'email_notifications', true, $this->oPage, false);
+        $fields[] =  new KTStringWidget('Mobile Number','The mobile phone number of the user.  If the system is configured to send notifications to cellphones, then this number will be SMS\'d with notifications.  e.g. <strong>999 9999 999</strong>', 'mobile_number', $aResults[$aAttributes[5]], $this->oPage, false);
+        $fields[] =  new KTStringWidget('Maximum Sessions','As a safety precaution, it is useful to limit the number of times a given account can log in, before logging out.  This prevents a single account being used by many different people.', 'max_sessions', '3', $this->oPage, true);
+
+        $aTemplateData = array(
+            'context' => &$this,
+            'fields' => $fields,
+            'source' => $oSource,
+            'search_results' => $aSearchResults,
+            'dn' => $dn,
+        );
+        return $oTemplate->render($aTemplateData);
+    }
+
+    function _do_createUserFromSource() {
+        $oSource =& KTAuthenticationSource::get($_REQUEST['source_id']);
+        $dn = KTUtil::arrayGet($_REQUEST, 'dn');
+        $name = KTUtil::arrayGet($_REQUEST, 'name');
+        if (empty($name)) { $this->errorRedirectToMain('You must specify a name for the user.'); }
+        $username = KTUtil::arrayGet($_REQUEST, 'ldap_username');
+        if (empty($name)) { $this->errorRedirectToMain('You must specify a new username..'); }
+        // FIXME check for non-clashing usernames.
+
+        $email_address = KTUtil::arrayGet($_REQUEST, 'email_address');
+        $email_notifications = KTUtil::arrayGet($_REQUEST, 'email_notifications', false);
+        if ($email_notifications !== false) $email_notifications = true;
+        $mobile_number = KTUtil::arrayGet($_REQUEST, 'mobile_number');
+        $max_sessions = KTUtil::arrayGet($_REQUEST, 'max_sessions', '3');
+        // FIXME check for numeric max_sessions... db-error else?
+
+        $oUser =& User::createFromArray(array(
+            "Username" => $username,
+            "Name" => $name,
+            "Email" => $email_address,
+            "EmailNotification" => $email_notifications,
+            "SmsNotification" => false,   // FIXME do we auto-act if the user has a mobile?
+            "MaxSessions" => $max_sessions,
+            "authenticationsourceid" => $oSource->getId(),
+            "authenticationdetails" => serialize(array('dn' => $dn)),
+            "password" => "",
+        ));
+
+        if (PEAR::isError($oUser) || ($oUser == false)) {
+            $this->errorRedirectToMain("failed to create user.");
+            exit(0);
+        }
+
+        $this->successRedirectToMain('Created new user "' . $oUser->getUsername() . '"');
+        exit(0);
+    }
+
+    function do_addUserFromSource() {
+        $submit = KTUtil::arrayGet($_REQUEST, 'submit');
+        if (!is_array($submit)) {
+            $submit = array();
+        }
+        if (KTUtil::arrayGet($submit, 'chosen')) {
+            $id = KTUtil::arrayGet($_REQUEST, 'id');
+            if (!empty($id)) {
+                return $this->_do_editUserFromSource();
+            } else {
+                $this->oPage->addError("No valid LDAP user chosen");
+            }
+        }
+        if (KTUtil::arrayGet($submit, 'create')) {
+            return $this->_do_createUserFromSource();
+        }
+        $oSource =& KTAuthenticationSource::get($_REQUEST['source_id']);
+        $oTemplate = $this->oValidator->validateTemplate('ktstandard/authentication/ldapsearchuser');
+
+        $fields = array();
+        $fields[] = new KTStringWidget('User\'s name', 'The user\'s name, or part thereof, to find the user that you wish to add', 'name', '', $this->oPage, true);
+
+        $oAuthenticator = $this->getAuthenticator($oSource);
+        $sIdentifierField = $oAuthenticator->oLdap->getUserIdentifier();
+        $name = KTUtil::arrayGet($_REQUEST, 'name');
+        if (!empty($name)) {
+            $oAuthenticator = $this->getAuthenticator($oSource);
+            $aSearchResults = $oAuthenticator->searchUsers($name, array('cn', 'dn', $sIdentifierField));
+        }
+        
+        /*
+        $show_all = KTUtil::arrayGet($_REQUEST, 'show_all');
+        if (!empty($show_all)) {
+            $oAuthenticator = $this->getAuthenticator($oSource);
+            $aSearchResults = $oAuthenticator->searchUsers('', array('cn', 'dn'));
+        }
+        */
+
+        $aTemplateData = array(
+            'context' => &$this,
+            'fields' => $fields,
+            'source' => $oSource,
+            'search_results' => $aSearchResults,
+            'identifier_field' => $sIdentifierField,
+        );
+        return $oTemplate->render($aTemplateData);
+    }
 }
 
 class LDAPAuthenticator extends Authenticator {
