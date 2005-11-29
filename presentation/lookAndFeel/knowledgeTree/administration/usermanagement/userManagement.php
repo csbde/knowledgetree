@@ -77,17 +77,34 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         // nice, easy bits.
         $add_fields[] =  new KTStringWidget('Mobile Number','The mobile phone number of the user.  If the system is configured to send notifications to cellphones, then this number will be SMS\'d with notifications.  e.g. <strong>999 9999 999</strong>', 'mobile_number', null, $this->oPage, false);        
         $add_fields[] =  new KTStringWidget('Maximum Sessions','As a safety precaution, it is useful to limit the number of times a given account can log in, before logging out.  This prevents a single account being used by many different people.', 'max_sessions', '3', $this->oPage, true);        
+
+        $aAuthenticationSources =& KTAuthenticationSource::getList();
         
-        $oTemplating = new KTTemplating;        
+        $oTemplating = new KTTemplating;
         $oTemplate = $oTemplating->loadTemplate("ktcore/principals/adduser");
         $aTemplateData = array(
-            "context" => $this,
+            "context" => &$this,
             "add_fields" => $add_fields,
+            "authentication_sources" => $aAuthenticationSources,
         );
         return $oTemplate->render($aTemplateData);
     }    
     
+    function do_addUserFromSource() {
+        $oSource =& KTAuthenticationSource::get($_REQUEST['source_id']);
+        $sProvider = $oSource->getAuthenticationProvider();
+        $oRegistry =& KTAuthenticationProviderRegistry::getSingleton();
+        $oProvider =& $oRegistry->getAuthenticationProvider($sProvider);
 
+        $this->aBreadcrumbs[] = array('action' => 'userManagement', 'name' => 'User Management');
+        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'] . '?action=addUser', 'name' => 'add a new user');
+        $oProvider->aBreadcrumbs = $this->aBreadcrumbs;
+        $oProvider->oPage->setBreadcrumbDetails($oSource->getName());
+        $oProvider->oPage->setTitle("Modify User Details");
+
+        $oProvider->dispatch();
+        exit(0);
+    }
 
     function do_editUser() {
         $this->aBreadcrumbs[] = array('action' => 'userManagement', 'name' => 'User Management');
