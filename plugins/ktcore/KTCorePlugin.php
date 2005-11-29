@@ -16,6 +16,7 @@ require_once('KTFolderActions.php');
 require_once('KTPortlets.php');
 require_once('KTPermissions.php');
 require_once('KTAdminPlugins.php');
+require_once('KTDashletPlugins.php');
 
 $oPlugin->registerAdminPage('authentication', 'KTAuthenticationAdminPage', 'principals', 'Authentication', 'FIXME: describe authentication', 'authentication/authenticationadminpage.inc.php');
 
