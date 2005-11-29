@@ -1,0 +1,17 @@
+
+   <form action="{$smarty.server.PHP_SELF}" method="POST">
+   <input type="hidden" name="action" value="addUserFromSource" />
+   <input type="hidden" name="source_id" value="{$source->getId()}" />
+   <fieldset>
+      <legend>Create a new user</legend>
+      {foreach item=oWidget from=$fields}
+        {$oWidget->render()}
+      {/foreach}
+      <input type="hidden" name="dn" value="{$dn}" />
+      <div class="form_actions">
+         <input type="submit" name="submit[create]" value="create user" />
+         <a href="?action=main" class="ktCancelLink">Cancel</a>
+      </div>
+   </fieldset>
+   </form>
+
