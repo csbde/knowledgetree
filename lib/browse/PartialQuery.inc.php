@@ -252,6 +252,59 @@ class SimpleSearchQuery extends PartialQuery {
     }
 }
 
+class BooleanSearchQuery extends PartialQuery {  
+    // FIXME cache permission lookups, etc.
+    var $datavars;
+
+    function BooleanSearchQuery($datavars) { $this->datavars = $datavars; }
+    
+    function getFolderCount() { 
+        // never any folders, given the current fulltext environ.
+        return 0;
+    }
+
+    function getFolders($iBatchSize, $iBatchStart, $sSortColumn, $sSortOrder, $sJoinClause = null, $aJoinParams = null) { 
+        return array();
+    }
+
+    function getQuery($aOptions = null) {
+        $oUser = User::get($_SESSION['userID']);
+        return KTSearchUtil::criteriaToQuery($this->datavars, $oUser, 'ktcore.permissions.read', $aOptions);
+    }
+    
+    function getDocumentCount() { 
+        $aOptions = array(
+            'select' => 'count(D.id) AS cnt',
+        );
+        $aQuery = $this->getQuery($aOptions);
+        $iRet = DBUtil::getOneResultKey($aQuery, 'cnt');
+        return $iRet;
+    }
+    
+    
+    // search needs some special stuff... this should probably get folded into a more complex criteria-driven thing
+    // later.
+    //
+    // we also leak like ---- here, since getting the score is ... fiddly.  and expensive.
+    function getDocuments($iBatchSize, $iBatchStart, $sSortColumn, $sSortOrder, $sJoinClause = null, $aJoinParams = null) { 
+        $aOptions = array(
+            'select' => 'D.id AS id',
+        );
+        list($sQuery, $aParams) = $this->getQuery($aOptions);
+
+        $sQuery .= " ORDER BY " . $sSortColumn . " " . $sSortOrder . " ";
+        $sQuery .= " LIMIT ?, ?";
+
+        $aParams[] = $iBatchStart;
+        $aParams[] = $iBatchSize;
+        
+        $q = array($sQuery, $aParams);
+        $res = DBUtil::getResultArray($q); 
+        
+        return $res;
+    }
+}
+
 class FolderBrowseQuery extends BrowseQuery {
     function getDocumentCount() {
         return 0;
