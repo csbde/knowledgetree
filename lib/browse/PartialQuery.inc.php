@@ -51,41 +51,88 @@ class PartialQuery {
 class BrowseQuery extends PartialQuery{
     // FIXME cache permission lookups, etc.
     var $folder_id = -1;
+    var $sPermissionName = "ktcore.permissions.read";
 
     function BrowseQuery($iFolderId) { $this->folder_id = $iFolderId; }
     
+    function _getDocumentQuery($aOptions = null) {
+        $oUser = User::get($_SESSION['userID']);
+        list($sPermissionString, $aPermissionParams, $sPermissionJoin) = KTSearchUtil::permissionToSQL($oUser, $this->sPermissionName);
+
+        $aPotentialWhere = array($sPermissionString, 'D.folder_id = ?', 'D.status_id = 1');
+        $aWhere = array();
+        foreach ($aPotentialWhere as $sWhere) {
+            if (empty($sWhere)) {
+                continue;
+            }
+            if ($sWhere == "()") {
+                continue;
+            }
+            $aWhere[] = $sWhere;
+        }
+        $sWhere = "";
+        if ($aWhere) {
+            $sWhere = "\tWHERE " . join(" AND ", $aWhere);
+        }
+
+        $sSelect = KTUtil::arrayGet($aOptions, 'select', 'D.id');
+
+        $sQuery = "SELECT $sSelect FROM " . KTUtil::getTableName("documents") . " AS D $sPermissionJoin $sWhere ";
+        $aParams = array();
+        $aParams = array_merge($aParams,  $aPermissionParams);
+        $aParams[] = $this->folder_id;
+        return array($sQuery, $aParams);
+    }
+
+    function _getFolderQuery($aOptions = null) {
+        $oUser = User::get($_SESSION['userID']);
+        list($sPermissionString, $aPermissionParams, $sPermissionJoin) = KTSearchUtil::permissionToSQL($oUser, $this->sPermissionName, "F");
+
+        $aPotentialWhere = array($sPermissionString, 'F.parent_id = ?');
+        $aWhere = array();
+        foreach ($aPotentialWhere as $sWhere) {
+            if (empty($sWhere)) {
+                continue;
+            }
+            if ($sWhere == "()") {
+                continue;
+            }
+            $aWhere[] = $sWhere;
+        }
+        $sWhere = "";
+        if ($aWhere) {
+            $sWhere = "\tWHERE " . join(" AND ", $aWhere);
+        }
+
+        $sSelect = KTUtil::arrayGet($aOptions, 'select', 'F.id');
+
+        $sQuery = "SELECT $sSelect FROM " . KTUtil::getTableName("folders") . " AS F $sPermissionJoin $sWhere ";
+        $aParams = array();
+        $aParams = array_merge($aParams,  $aPermissionParams);
+        $aParams[] = $this->folder_id;
+        return array($sQuery, $aParams);
+    }
     
     function getFolderCount() { 
-        // FIXME add permission checks here
-        $sQuery = "SELECT count(id) AS c FROM " . KTUtil::getTableName("folders") . " WHERE parent_id = ? ";
-        $aParams = array($this->folder_id);
-
-        return  DBUtil::getOneResultKey(array($sQuery, $aParams), 'c');
+        $aOptions = array(
+            'select' => 'count(F.id) AS cnt',
+        );
+        $aQuery = $this->_getFolderQuery($aOptions);
+        $iRet = DBUtil::getOneResultKey($aQuery, 'cnt');
+        return $iRet;
     }
     
     function getDocumentCount() { 
-        // FIXME add permission checks here
-        $sQuery = "SELECT count(id) AS c FROM " . KTUtil::getTableName("documents") . " AS D WHERE D.folder_id = ? AND D.status_id = 1 ";
-        $aParams = array($this->folder_id);
-        
-        return DBUtil::getOneResultKey(array($sQuery, $aParams), 'c'); // FIXME is this right? 
+        $aOptions = array(
+            'select' => 'count(D.id) AS cnt',
+        );
+        $aQuery = $this->_getDocumentQuery($aOptions);
+        $iRet = DBUtil::getOneResultKey($aQuery, 'cnt');
+        return $iRet;
     }
     
     function getFolders($iBatchSize, $iBatchStart, $sSortColumn, $sSortOrder, $sJoinClause = null, $aJoinParams = null) { 
-        // FIXME add permission checks here
-        $aParams = array();
-        $aJoinParams = array($aJoinParams);
-        
-        $sQuery = "SELECT id FROM " . KTUtil::getTableName("folders") . " AS F WHERE parent_id = ? ";
-        $aParams[] = $this->folder_id;
-        
-        if ($sJoinClause !== null) {
-            $sQuery .= $sJoinClause;
-            foreach ($aJoinParams as $param) {
-                $aParams[] = $param;
-            } // FIXME use merge...
-        }        
-    
+        list($sQuery, $aParams) = $this->_getFolderQuery();
         $sQuery .= " ORDER BY " . $sSortColumn . " " . $sSortOrder . " ";
 
         $sQuery .= " LIMIT ?, ?";
@@ -100,20 +147,7 @@ class BrowseQuery extends PartialQuery{
     }
     
     function getDocuments($iBatchSize, $iBatchStart, $sSortColumn, $sSortOrder, $sJoinClause = null, $aJoinParams = null) { 
-        // FIXME add permission checks here
-        $aParams = array(); // main parameter array.
-        $aJoinParams = array($aJoinParams);
-        
-        $sQuery = "SELECT id FROM " . KTUtil::getTableName("documents") . " AS D WHERE D.folder_id = ? AND D.status_id = 1 ";
-        $aParams = array($this->folder_id);
-        
-        if ($sJoinClause !== null) {
-            $sQuery .= $sJoinClause;
-            foreach ($aJoinParams as $param) {
-                $aParams[] = $param;
-            } // FIXME use merge...
-        }        
-
+        list($sQuery, $aParams) = $this->_getDocumentQuery();
         $sQuery .= " ORDER BY " . $sSortColumn . " " . $sSortOrder . " ";
         
         $sQuery .= " LIMIT ?, ?";
