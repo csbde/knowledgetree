@@ -20,7 +20,8 @@ class BooleanSearchDispatcher extends KTStandardDispatcher {
     var $sSection = "browse";
 
    function do_main() {
-        $this->oPage->setBreadcrumbDetails('searching');
+        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => "Boolean search");
+        $this->oPage->setBreadcrumbDetails('defining search');
         $oTemplating = new KTTemplating;
         $oTemplate = $oTemplating->loadTemplate("ktcore/boolean_search");
         
@@ -43,6 +44,10 @@ class BooleanSearchDispatcher extends KTStandardDispatcher {
         if (!is_array($datavars)) {
             $datavars = unserialize($datavars);
         }
+        $boolean_search_id = KTUtil::arrayGet($_REQUEST, 'boolean_search_id');
+        if ($boolean_search_id) {
+            $datavars = $_SESSION['boolean_search'][$boolean_search_id];
+        }
         $iSavedSearchId = KTUtil::arrayGet($_REQUEST, 'fSavedSearchId');
         if (!empty($iSavedSearchId)) {
             $oSearch = KTSavedSearch::get($iSavedSearchId);
@@ -52,31 +57,57 @@ class BooleanSearchDispatcher extends KTStandardDispatcher {
         if (empty($datavars)) {
             $this->errorRedirectToMain('You need to have at least 1 condition.');
         }
-        
+
         $res = $this->handleCriteriaSet($datavars, KTUtil::arrayGet($_REQUEST, 'fStartIndex', 1));
         
         return $res;
     }
     
     function handleCriteriaSet($aCriteriaSet, $iStartIndex) {
-        global $default;
-        $aQuery = KTSearchUtil::criteriaToLegacyQuery($aCriteriaSet, $_SESSION['userID'], 'ktcore.permissions.read');
-		$aColumns = array("folder_name", "file_name", "document_name", "view");
-		$aColumnTypes = array(3,3,3,3);
-		$aColumnHeaders = array("<font color=\"ffffff\"><img src=\"$default->graphicsUrl/widgets/dfolder.gif\" />" . _("Folder") . "</font>", "<font color=\"ffffff\">" . _("Name") . "</font>", "<font color=\"ffffff\">" . _("Title") . "</font>", "<font color=\"ffffff\">" . _("View") . "</font>");
-		$aLinkURLs = array("$default->rootUrl/control.php?action=browse","$default->rootUrl/control.php?action=viewDocument", "$default->rootUrl/control.php?action=viewDocument", "$default->rootUrl/control.php?action=downloadDocument");
-		$aDBQueryStringColumns = array("document_id","folder_id");
-		$aQueryStringVariableNames = array("fDocumentID", "fFolderID");
-	
-		$oPatternBrowse = & new PatternBrowseableSearchResults($aQuery, 10, $aColumns, $aColumnTypes, $aColumnHeaders, $aLinkURLs, $aDBQueryStringColumns, $aQueryStringVariableNames);
-		$oPatternBrowse->setStartIndex($iStartIndex);
-		$oPatternBrowse->setSearchText("");
-        $sFormStart = '<form method="POST" name="MainForm">';
+        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => "Boolean search");
+        $this->oPage->setBreadcrumbDetails('searching');
+        $collection = new DocumentCollection;
+        $this->browseType = "Folder";
 
-		$sFormEnd = '<input type="hidden" name="boolean_search" value="'. htmlentities(serialize($aCriteriaSet)) . '" />';
-		$sFormEnd .= '<input type="hidden" name="action" value="performSearch" />';
+        $collection->addColumn(new SelectionColumn("Browse Selection","selection"));
+        $t =& new TitleColumn("Test 1 (title)","title");
+        $t->setOptions(array('documenturl' => '../documentmanagement/view.php'));
+        $collection->addColumn($t);
+        $collection->addColumn(new DateColumn("Created","created", "getCreatedDateTime"));
+        $collection->addColumn(new DateColumn("Last Modified","modified", "getLastModifiedDate"));
+        $collection->addColumn(new DateColumn("Last Modified","modified", "getLastModifiedDate"));
+        $collection->addColumn(new UserColumn('Creator','creator_id','getCreatorID'));
 
-		return renderHeading(_("Advanced Search")) . $sFormStart . $oPatternBrowse->render() . $sFormEnd . $sRefreshMessage;
+        $searchable_text = KTUtil::arrayGet($_REQUEST, "fSearchableText");
+
+        $batchPage = (int) KTUtil::arrayGet($_REQUEST, "page", 0);
+        $batchSize = 20;
+
+        $sSearch = md5(serialize($aCriteriaSet));
+        $_SESSION['boolean_search'][$sSearch] = $aCriteriaSet;
+        $resultURL = "?action=performSearch&boolean_search_id=" . urlencode($sSearch);
+        $collection->setBatching($resultURL, $batchPage, $batchSize);
+
+
+        // ordering. (direction and column)
+        $displayOrder = KTUtil::arrayGet($_REQUEST, 'sort_order', "asc");
+        if ($displayOrder !== "asc") { $displayOrder = "desc"; }
+        $displayControl = KTUtil::arrayGet($_REQUEST, 'sort_on', "title");
+
+        $collection->setSorting($displayControl, $displayOrder);
+
+        // add in the query object.
+        $qObj = new BooleanSearchQuery($aCriteriaSet);
+        $collection->setQueryObject($qObj);
+
+        $collection->getResults();
+        $oTemplating = new KTTemplating;
+        $oTemplate = $oTemplating->loadTemplate("kt3/browse");
+        $aTemplateData = array(
+              "context" => $this,
+              "collection" => $collection,
+        );
+        return $oTemplate->render($aTemplateData);
     }
 }
 
