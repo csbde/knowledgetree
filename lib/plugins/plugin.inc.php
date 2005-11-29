@@ -4,6 +4,7 @@ class KTPlugin {
     var $sNamespace;
     var $sFilename = null;
 
+    
     var $_aPortlets = array();
     var $_aTriggers = array();
     var $_aActions = array();
@@ -11,6 +12,7 @@ class KTPlugin {
     var $_aAuthenticationProviders = array();
     var $_aAdminCategories = array();
     var $_aAdminPages = array();
+    var $_aDashlets = array();
 
     function KTPlugin($sFilename = null) {
         $this->sFilename = $sFilename;
@@ -60,6 +62,11 @@ class KTPlugin {
     function registerAdminCategories($sPath, $sName, $sDescription) {
         $this->_aAdminCategories[$sPath] = array($sPath, $sName, $sDescription);
     }
+    
+    function registerDashlet($sClassName, $sNamespace, $sFilename) {
+        $sFilename = $this->_fixFilename($sFilename);
+        $this->_aDashlets[$sNamespace] = array($sClassName, $sNamespace, $sFilename, $this->sNamespace);
+    }
 
     function _fixFilename($sFilename) {
         if (empty($sFilename)) {
@@ -80,6 +87,7 @@ class KTPlugin {
         require_once(KT_LIB_DIR . '/plugins/pageregistry.inc.php');
         require_once(KT_LIB_DIR .  '/authentication/authenticationproviderregistry.inc.php');
         require_once(KT_LIB_DIR . "/plugins/KTAdminNavigation.php"); 
+        require_once(KT_LIB_DIR . "/dashboard/dashletregistry.inc.php"); 
 
         $oPRegistry =& KTPortletRegistry::getSingleton();
         $oTRegistry =& KTTriggerRegistry::getSingleton();
@@ -87,6 +95,7 @@ class KTPlugin {
         $oPageRegistry =& KTPageRegistry::getSingleton();
         $oAPRegistry =& KTAuthenticationProviderRegistry::getSingleton();
         $oAdminRegistry =& KTAdminNavigationRegistry::getSingleton(); 
+        $oDashletRegistry =& KTDashletRegistry::getSingleton();
 
         foreach ($this->_aPortlets as $k => $v) {
             call_user_func_array(array(&$oPRegistry, 'registerPortlet'), $v);
@@ -114,6 +123,10 @@ class KTPlugin {
 
         foreach ($this->_aAdminPages as $k => $v) {
             call_user_func_array(array(&$oAdminRegistry, 'registerLocation'), $v);
+        }
+        
+        foreach ($this->_aDashlets as $k => $v) {
+            call_user_func_array(array(&$oDashletRegistry, 'registerDashlet'), $v);
         }
     }
 }

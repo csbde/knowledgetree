@@ -30,9 +30,9 @@
 // main library routines and defaults
 require_once("../../../config/dmsDefaults.php");
 require_once(KT_LIB_DIR . "/unitmanagement/Unit.inc");
-require_once(KT_LIB_DIR . "/dashboard/Dashboard.inc");
-//require_once(KT_LIB_DIR . "/dashboard/DashboardNews.inc");
-require_once(KT_LIB_DIR . "/dashboard/Notification.inc.php");
+
+require_once(KT_LIB_DIR . "/dashboard/dashletregistry.inc.php");
+require_once(KT_LIB_DIR . "/dashboard/dashlet.inc.php");
 require_once(KT_LIB_DIR . "/templating/templating.inc.php");
 require_once(KT_LIB_DIR . "/templating/kt3template.inc.php");
 require_once(KT_LIB_DIR . "/dispatcher.inc.php");
@@ -49,28 +49,23 @@ class DashboardDispatcher extends KTStandardDispatcher {
 	var $notifications = array();
 
     function do_main() {
-        // construct the dashboard object
-		$oDashboard = new Dashboard($_SESSION["userID"]);
-		
+	    $this->oPage->setShowPortlets(false);
 		// retrieve action items for the user.
 		// FIXME what is the userid?
-		$this->notifications = KTNotification::getList(array("user_id = ?", $_SESSION["userID"]));
 		
-		// how do we get the notifications?
-	
+		
+		$oDashletRegistry =& KTDashletRegistry::getSingleton();
+		$aDashlets = $oDashletRegistry->getDashlets($this->oUser);
+		
 		$this->sSection = "dashboard";
 		$this->oPage->setBreadcrumbDetails("Home");
 		$this->oPage->title = "Dashboard"; // FIXME should this be a mutator?
-
-		// FIXME PRIO1 replace this with something a little less horrible.
-		
-		
-		// FIXME:  what portlets do we want?  News? Quicklinks? Help / Tutorial?
 	
 		$oTemplating = new KTTemplating;
 		$oTemplate = $oTemplating->loadTemplate("kt3/dashboard");
 		$aTemplateData = array(
               "context" => $this,
+			  "dashlets" => $aDashlets,
 		);
 		return $oTemplate->render($aTemplateData);
 	}   

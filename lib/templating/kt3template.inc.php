@@ -25,6 +25,7 @@ class KTPage {
 	var $errStack = Array();
     var $infoStack = Array();
 	var $portlets = Array();
+	var $show_portlets = true;
     
     /** miscellaneous items */
     var $title = '';
@@ -62,7 +63,7 @@ class KTPage {
         $this->initMenu();
         
         /* portlet initialisation */
-        
+        $this->show_portlets = true;
         /* breadcrumbs */
     }
        
@@ -139,6 +140,7 @@ class KTPage {
     }
     
     function setPageContents($contents) { $this->contents = $contents; }
+	function setShowPortlets($bShow) { $this->show_portlets = $bShow; }
     
     /* set the breadcrumbs.  the first item is the area name.
        the rest are breadcrumbs. */

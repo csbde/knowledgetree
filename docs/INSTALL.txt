@@ -25,7 +25,7 @@ KnowledgeTree Installation Notes
      $ mysql -p dms < sql/mysql/install/structure.sql
      $ mysql -p dms < sql/mysql/install/data.sql
 
-   - Create the database perfor
+   - Create the database users
      $ mysql -p dms < sql/mysql/install/user.sql
 
 
