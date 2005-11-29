@@ -77,26 +77,11 @@ class User extends KTEntity {
         'sAuthenticationDetails' => 'authentication_details',
     );
 
+    var $_bUsePearError = true;
+
     function _table() {
         global $default;
         return $default->users_table;
-    }
-
-    function User($sNewUserName = null, $sNewName = null, $sNewPassword = null, $iNewQuotaMax = null, $sNewEmail= null, $sNewMobile= null, $bNewEmailNotification= null, $bNewSmsNotification= null, $sNewLdapDn= null, $iNewMaxSessions= null, $iNewLanguageID= null) {
-        //object not created in database yet
-        $this->iId = -1;
-        $this->sUserName = $sNewUserName;
-        $this->sName = $sNewName;
-        $this->sPassword = $sNewPassword;
-        $this->iQuotaMax = $iNewQuotaMax;
-        $this->sEmail = $sNewEmail;
-        $this->sMobile = $sNewMobile;
-        $this->bEmailNotification = $bNewEmailNotification;
-        $this->bSmsNotification = $bNewSmsNotification;
-        $this->sLdapDn = $sNewLdapDn;
-        $this->iMaxSessions = $iNewMaxSessions;
-        $this->iLanguageID = $iNewLanguageID;
-        $this->bPasswordChanged = false;
     }
 
     /** Get the user's login name */
@@ -365,19 +350,3 @@ class User extends KTEntity {
         return KTEntityUtil::getBy('User', 'username', $sUserName, $aOptions);
     }
 }
-
-/**
-* Static function
-*
-* Creates a User object from an array
-*
-* @param  Array  Array of parameters.  Must match order of parameters in constructor
-*
-* @return User user object
-*/
-function & userCreateFromArray($aParameters) {
-    $oUser = & new User($aParameters[0], $aParameters[1], $aParameters[2], $aParameters[3], $aParameters[4], $aParameters[5], $aParameters[6], $aParameters[7], $aParameters[8], $aParameters[9], $aParameters[10]);
-    return $oUser;
-}
-
-?>
