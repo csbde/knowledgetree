@@ -12,18 +12,15 @@ require_once(KT_LIB_DIR . "/visualpatterns/PatternBrowsableSearchResults.inc");
 require_once(KT_LIB_DIR . "/search/savedsearch.inc.php");
 require_once(KT_LIB_DIR . '/search/searchutil.inc.php');
 
-// specific includes
-
-$sectionName = "General";
-require_once(KT_DIR . "/presentation/webpageTemplate.inc");
-
-/*
- * example code - tests the frontend behaviour.  remember to check ajaxConditional.php 
- * 
- */
-
 class BooleanSearchDispatcher extends KTStandardDispatcher {
+    // Breadcrumbs base - added to in methods
+    var $aBreadcrumbs = array(
+        array('action' => 'browse', 'name' => 'Browse'),
+    );
+    var $sSection = "browse";
+
    function do_main() {
+        $this->oPage->setBreadcrumbDetails('searching');
         $oTemplating = new KTTemplating;
         $oTemplate = $oTemplating->loadTemplate("ktcore/boolean_search");
         
@@ -35,13 +32,6 @@ class BooleanSearchDispatcher extends KTStandardDispatcher {
         return $oTemplate->render($aTemplateData);
     }
 
-    function handleOutput($data) {
-        global $main;
-        $main->bFormDisabled = true;
-        $main->setCentralPayload($data);
-        $main->render();
-    }
-    
     function do_performSearch() {
         // TODO first extract environ vars
         // TODO second create criterion objects (see getAdvancedSearchResults for this.
