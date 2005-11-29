@@ -1,0 +1,14 @@
+<h2>Your Checked-out Documents</h2>
+<p class="descriptiveText">Since a document
+which is checked out cannot be modified by anyone else,
+it is important to check them back in as soon as you have made
+the apppriate changes.</p>
+{if (!empty($documents))}
+<dl>
+{foreach item=oNotification from=$notifications}
+{$oNotification->render()}
+{/foreach}
+</dl>
+{else}
+<div class="ktInfo"><p>You have no documents which are currently checked out.</p></div>
+{/if}

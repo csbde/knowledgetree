@@ -1,0 +1,10 @@
+<h2>KnowledgeTree administrator's Guide</h2>
+<p class="descriptiveText">If this is your first KnowledgeTree installation,
+or if you've just upgraded from KnowledgeTree 2.x, we've put together some information
+which might help you get to grips with the new system.</p>
+
+<div class="ktError"><p class="descriptiveText"><strong>FIXME</strong> This currently doesn't work.</p></div>
+
+<a href="{$rootUrl}/plugin.php/ktcore.userassistance/admin-quickguide">Read the admin introduction.</a> |
+<a href="{$rootUrl}/plugin.php/ktcore.userassistance/admin-guide-whats-new-in-kt3">Find out what's different in <strong>KT 3</strong>.</a> |
+<a href="#">Don't show me this again.</a>

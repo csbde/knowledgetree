@@ -1,0 +1,13 @@
+<h2>What is a beta?</h2>
+
+<p>Beta software is pre-production quality software. It is released with
+the intention of providing the software's users with insight into where
+the software feature-set is going for a particular release cycle,
+getting as wide a base of testers for the release as possible and
+gauging the uptake of new features. </p>
+
+<p>The software may not be entirely complete yet and may be buggy. We
+highly value your input and urge you to evaluate the software in a test
+environment. We do however strongly suggest you do not to implement this
+version of KnowledgeTree in a production environment as we can't warrant
+it functioning correctly.</p>
