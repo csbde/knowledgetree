@@ -56,23 +56,17 @@ class SimpleSearchDispatcher extends KTStandardDispatcher {
 	
 
     function do_main() {
-	    // There's a fair amount here, so we want to break it down.
-		// we want:
-		//      - folder_id
-		//      - batch info.
-		//      - (browse type)? 
-		
-		
-	    	
 		$collection = new DocumentCollection;
 		$this->browseType = "Folder"; 
 		
 		$collection->addColumn(new SelectionColumn("Browse Selection","selection"));
-		$collection->addColumn(new TitleColumn("Test 1 (title)","title"));
+		$t = new TitleColumn("Test 1 (title)","title");
+        $t->setOptions(array('documenturl' => '../documentmanagement/view.php'));
+		$collection->addColumn($t);
 		$collection->addColumn(new DateColumn("Created","created", "getCreatedDateTime"));
 		$collection->addColumn(new DateColumn("Last Modified","modified", "getLastModifiedDate"));
-		$collection->addColumn(new BrowseColumn("Test 3","test3"));
-		$collection->addColumn(new BrowseColumn("Test 4","test4"));
+		$collection->addColumn(new DateColumn("Last Modified","modified", "getLastModifiedDate"));
+        $collection->addColumn(new UserColumn('Creator','creator_id','getCreatorID'));
 		
 		$searchable_text = KTUtil::arrayGet($_REQUEST, "fSearchableText");
 		
