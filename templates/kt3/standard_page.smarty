@@ -30,6 +30,8 @@
 </head>
 <body {if (!$page->show_portlets)}class="noportlets"{/if}>
 
+<input type="hidden" name="kt-core-baseurl" id="kt-core-baseurl" value="{$rootUrl}" />
+
 <div id="logobar">
     <a href="{$rootUrl}/"><img src="{$config->get("ui/companyLogo")}" height="50px" width="{$config->get("ui/companyLogoWidth")}" alt="{$config->get("ui/companyLogoTitle")}" title="{$config->get("companyLogoTitle")}" class="primary" /></a>
     <a href="{$page->systemURL}"><img src="{$rootUrl}/resources/graphics/ktlogo-topbar-right.png" class="secondary" title="{$page->systemName}"/></a>
