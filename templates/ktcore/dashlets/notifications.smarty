@@ -1,0 +1,10 @@
+<h2>Items that require your attention</h2>
+{if (!empty($notifications))}
+<dl>
+{foreach item=oNotification from=$notifications}
+{$oNotification->render()}
+{/foreach}
+</dl>
+{else}
+<div class="ktInfo"><p>No items require your attention.</p></div>
+{/if}
