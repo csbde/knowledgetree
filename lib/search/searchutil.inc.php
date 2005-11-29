@@ -151,7 +151,7 @@ class KTSearchUtil {
      *      - String with the SQL necessary to join with the tables in the
      *        where clause
      */
-    function permissionToSQL($oUser, $sPermissionName) {
+    function permissionToSQL($oUser, $sPermissionName, $sItemTableName = "D") {
         if (is_null($oUser)) {
             return array("", array(), "");
         }
@@ -160,7 +160,7 @@ class KTSearchUtil {
         $sPermissionLookupAssignmentsTable = KTUtil::getTableName('permission_lookup_assignments');
         $sPermissionDescriptorsTable = KTUtil::getTableName('permission_descriptors');
         $sJoinSQL = "
-            INNER JOIN $sPermissionLookupsTable AS PL ON D.permission_lookup_id = PL.id
+            INNER JOIN $sPermissionLookupsTable AS PL ON $sItemTableName.permission_lookup_id = PL.id
             INNER JOIN $sPermissionLookupAssignmentsTable AS PLA ON PL.id = PLA.permission_lookup_id AND PLA.permission_id = ?
             ";
         $aGroups = GroupUtil::listGroupsForUserExpand($oUser);
