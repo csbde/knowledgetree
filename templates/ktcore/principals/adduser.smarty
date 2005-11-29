@@ -1,8 +1,30 @@
 <h2>Add a user</h2>
 
 <p class="descriptiveText"><strong>FIXME</strong> brief overview of user management.</p>
-<div class="ktError"><p><strong>FIXME</strong> handle LDAP users and read-only sources 
-correctly in the add section.</p></div>
+
+{if $authentication_sources}
+   <form action="{$smarty.server.PHP_SELF}" method="POST">
+   <input type="hidden" name="action" value="addUserFromSource" />
+   <fieldset><legend>Add a user from an authentication source</legend>
+
+<p class="descriptiveText">Instead of manually creating the user within
+the document management system, the user can be found within an
+authentication source (such as an LDAP directory) that has already been
+configured.  This ensures that the user is correctly set up with limited
+intervention from the administrator, and that the user will not need to
+remember an additional password for the document management system.</p>
+
+   {entity_select name="source_id" entities=$authentication_sources}
+   <div class="form_actions ">
+     <input type="submit" name="submit" value="Add from source" />
+   </div>
+   </fieldset>
+   </form>
+</p>
+
+<p class="descriptiveText">Alternatively, you can manually create a user
+within KnowledgeTree below.</p>
+{/if}
 
    <form action="{$smarty.server.PHP_SELF}" method="POST">
    <input type="hidden" name="action" value="createUser" />
