@@ -1,3 +1,6 @@
 <form action="/presentation/lookAndFeel/knowledgeTree/search/simpleSearch.php" method="GET">
-<input type="text" name="fSearchableText" id="portlet-search-text" size="15"/><input type="submit" value="search" class="searchbutton"/>
+<input type="text" name="fSearchableText" id="portlet-search-text" size="15" /><input type="submit" value="search" class="searchbutton" />
 </form>
+<ul class="actionlist">
+<li><a href="{$rootUrl}/presentation/lookAndFeel/knowledgeTree/search/booleanSearch.php">Boolean Search</a></li>
+</ul>
