@@ -120,8 +120,6 @@ class LoginPageDispatcher extends KTDispatcher {
         }
 
         if (PEAR::isError($authenticated)) {
-            print "<pre>";
-            var_dump($authenticated);
             $this->simpleRedirectToMain('Authentication failure.  Please try again.', $url, $params);
             exit(0);
         }
