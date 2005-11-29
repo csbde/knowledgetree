@@ -28,7 +28,7 @@
        </script>
     {/foreach}
 </head>
-<body>
+<body {if (!$page->show_portlets)}class="noportlets"{/if}>
 
 <div id="logobar">
     <a href="{$rootUrl}/"><img src="{$config->get("ui/companyLogo")}" height="50px" width="{$config->get("ui/companyLogoWidth")}" alt="{$config->get("ui/companyLogoTitle")}" title="{$config->get("companyLogoTitle")}" class="primary" /></a>

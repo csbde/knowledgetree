@@ -175,6 +175,9 @@ a.main_nav_item {
     padding: 0;
 }
 
+/* horrible, custom dashboard hack. */
+.noportlets #portletbar { display: none; }
+
 #portletbar .portlet
 {
     margin: 0 0 1.5em 0;
@@ -223,6 +226,9 @@ a.main_nav_item {
     right: 0;
 }
 
+.noportlets #content {
+    left: 0;
+}
 
 #content h1
 {
@@ -624,3 +630,11 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
    padding-right: 2em;
 }
 
+
+/* dashboard blocks. */
+.dashboard_block {
+    float: left;
+    position: relative;
+    width: 48%;
+    padding-right: 1em;
+}

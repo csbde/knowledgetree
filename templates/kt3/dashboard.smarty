@@ -1,11 +1,10 @@
-{if count($context->notifications) != 0}
-
-<h2>Items requiring your attention</h2>
-<dl>
-{foreach item=oNotification from=$context->notifications}
-  {$oNotification->render()}
+{foreach item=oDashlet from=$dashlets}
+<div class="dashboard_block">
+{$oDashlet->render()}
+</div>
 {/foreach}
-</dl>
-{else}
-<p class="ktInfo">No items require your attention</p>
-{/if}
+
+
+
+
+
