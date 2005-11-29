@@ -18,9 +18,11 @@ require_once('KTPermissions.php');
 require_once('KTAdminPlugins.php');
 require_once('KTDashletPlugins.php');
 
-$oPlugin->registerAdminPage('authentication', 'KTAuthenticationAdminPage', 'principals', 'Authentication', 'FIXME: describe authentication', 'authentication/authenticationadminpage.inc.php');
 
+$oPlugin->registerAdminPage('authentication', 'KTAuthenticationAdminPage', 'principals', 'Authentication', 'FIXME: describe authentication', 'authentication/authenticationadminpage.inc.php');
 $oPlugin->register();
+
+require_once('assistance/KTUserAssistance.php');
 
 require_once(KT_LIB_DIR . '/storage/ondiskpathstoragemanager.inc.php');
 

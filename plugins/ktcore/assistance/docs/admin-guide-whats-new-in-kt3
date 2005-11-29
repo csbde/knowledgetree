@@ -1,0 +1,17 @@
+<h2>What's different in KT3</h2>
+
+<p><strong>Almost Everything.</strong> We have rewritten almost all of the KnowledgeTree DMS, and hope that the changes
+will be good.</p>
+
+<p>Things you need to be aware of in terms of major changes for administrators:</p>
+
+
+<ul>
+  <li>Document Indexing is now done from PHP, and uses <strong>catdoc</strong> to do its work.  More about this in the file <kbd>docs/INSTALL.txt</kbd></li>
+  <li>While we ship with a very basic set of icons, far better ones have been produced in the Open Source community.  This means
+  that you can take advantage of <strong>icon themes</strong> which follow the <a href="http://tango-project.org/Standard_Icon_Naming_Specification">Icon Naming Theme Specification</a> from <a href="http://freedesktop.org">freedesktop.org</a>.  
+In particular, the <a href="http://tango-project.org/">Tango Project icons</a> are a superb, Creative Commons licensed set of icons 
+which provide an improved user interface experience. <strong>Note that these icons are transparent PNG files, and as such may not
+appear correctly in Internet Explorer.</strong>  We are exploring various solutions to that issue.
+<p>To take advantage of a theme such as <strong>tango</strong>, copy its contents into the <kbd>thirdparty/icon-theme</kbd> directory.</p></li>
+</ul>
