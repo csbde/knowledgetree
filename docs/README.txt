@@ -1,66 +1,55 @@
 KnowledgeTree Document Management System
 ----------------------------------------
 
-Enterprise Knowledge Management with a Small Price Tag
-A feature-rich document management system built with open source technologies for low total cost of ownership.
+Welcome to the first KnowledgeTree 3 beta.  While it represents a
+significant improvement to the visible and background components of
+KnowledgeTree, it is not yet ready for production use.  It is
+recommended that you ensure you have backups of anything you put into
+the beta repository.
 
-General Features
-o Fully web-based.
-o Powerful document version control
-o Support for common file formats (MS Word, MS Excel, PDF, TXT, HTML)
-o Extensible document meta data
-o Subscription agents with push technology for notification of changes to documents or document directories
-o Archiving according to expiry date, expiry time period or utilisation for enhanced speed
-o Publish documents to websites
-o Document-specific discussion forums
-o Full-text search of common file formats (MS Word, MS Excel, PDF, TXT, HTML)
-o Search in user-defined metadata fields.
-o Access information according to folder structure, category or document type.
-o Personalised dashboard to view subscriptions, pending documents, checked-out documents and quick links.
-o Virtual binders for documents based on certain criteria
+KnowledgeTree 3 is intended to be easier to use for users and
+administrators (including a new user interface) and also easy for
+developers to customise it and make plugins for it.
 
+KnowledgeTree 3 includes a set of core and standard plugins that broadly
+cover the functionality offered by KnowledgeTree 2, although almost all
+code has been rewritten or analysed before reuse.
 
-Workflow Features
-o Improved management control of documents with ability to create a set process for document creation and publishing
-o Flexible document approval routing at the folder level
-o Delegate the creation of new documents within a document approval cycle
-
-
-Security Features
-o Access rights for document protection on a per group, role or organisational unit basis
-o SSL for encrypted and secure connections
-o Authentication integration with common LDAP servers (OpenLDAP, Sun ONE Directory Server and Active Directory)
-o Audit trails of user interaction with system including document changes
-
-
-Directory Structure
--------------------
-
-Here is a description of what each of the top level directories contain:
-
-bin/           This contains helper *nix shell scripts.
-config/        KnowledgeTree configuration files live.
-docs/          Documentation directory.
-Documents/     The physical documents reside here.
-etc/           Contains sample configuration for PHP, MySQL and Apache.
-graphics/      This is where the user interface graphics live.
-lib/           This is where the object model/backend KnowledgeTre classes live.
-locale/        Language specific files.
-log/           The application log files live here
-phpSniff/      phpSniff v 2.1.3
-phplib/        Database handler classes.
-phpmailer/     phpmailer v 1.62
-presentation/  the presentation and business logic scripts
-sql/           Database table creation and population files.
-sync/          Scripts to synchronise the knowledgeTree
-tests/         This is where all of the unit tests live.
+New and extended functionality includes:
+    * Entirely new template-based user interface, allowing for easy changes to
+      the application's look and feel and easy to implement co-branding
+      opportunities.
+    * On-demand indexing of files as opposed to scheduled indexing, ensuring
+      files are searchable immediately after uploading and simplifying the
+      installation of the server.
+    * Secure versioning of document metadata, not just the document itself.
+      This vastly increases the application's applicability in regulatory
+      compliance scenarios.
+    * A new tree document metadata type has been added with the tree being
+      represented graphically on the user interface.
+    * The User/Group schema has been extended to allow groups to be nested,
+      thus providing for the mapping of users in more complex organisations.
+    * The move folder and move file functionality is now transactional and
+      records a history of changes to the folder structure.
+    * Bulk import functionality allows administrators to import large numbers
+      of files from external data sources quickly and easily.
+    * KnowledgeTree administrators may customise and extend the KnowledgeTree
+      online help facilities using a web-based editor.
+    * A powerful plug-in architecture, providing KnowledgeTree developers with
+      the ability to easily create new application functionality, hook into
+      system events and expose the functionality on the user interface.
+    * A revamped permissions system which is easier to use and provides finer
+      grained control over a user's actions than in KnowledgeTree 2.x.  The
+      extended functionality also lets KnowledgeTree community developers
+      create their own permissions on the system, allowing their plug-ins to
+      easily check permissions that they require to function.
 
 For installation instructions please refer to docs/INSTALL.txt
 
-Jam Warehouse – Smart Business Innovation
-Phone: +27 21 4477440
-Fax: +27 21 4477449
-Email: info@jamwarehouse.com
-Web: http://www.jamwarehouse.com/
+KnowledgeTree Document Management System
+Web page: http://www.ktdms.com/
+Wiki: http://support.ktdms.com/confluence/
+Forums: http://forum.ktdms.com/
+Bug reporting: http://support.ktdms.com/
 
 $Id$
