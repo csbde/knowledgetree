@@ -222,6 +222,25 @@ class GenericFieldsetDisplay extends KTFieldsetDisplay {
         $document_type = $aDocumentData["document_type"]->getName();
         $comparison_document_type = $aComparisonData["document_type"]->getName();
         
+        $modified_user =& User::get($document->getModifiedUserId());
+        if (PEAR::isError($modified_user)) {
+           $modified_user = "<span class='ktError'>Unable to find the document's creator</span>";
+        } else {
+           $modified_user = $modified_user->getName();
+        }
+
+        $comparison_modified_user =& User::get($comparison_document->getModifiedUserId());
+        if (PEAR::isError($comparison_modified_user)) {
+           $comparison_modified_user = "<span class='ktError'>Unable to find the document's creator</span>";
+        } else {
+           $comparison_modified_user = $comparison_modified_user->getName();
+        }
+
+        $oWorkflow = KTWorkflowUtil::getWorkflowForDocument($document);
+        $oState = KTWorkflowUtil::getWorkflowStateForDocument($document);
+        $oComparisonWorkflow = KTWorkflowUtil::getWorkflowForDocument($comparison_document);
+        $oComparisonState = KTWorkflowUtil::getWorkflowStateForDocument($comparison_document);
+        
         
         $oTemplating = new KTTemplating;        
         $oTemplate = $oTemplating->loadTemplate("kt3/fieldsets/generic_versioned");
@@ -233,7 +252,7 @@ class GenericFieldsetDisplay extends KTFieldsetDisplay {
             "creator" => $creator,
             "creation_date" => $creation_date,
             
-            "last_modified_by" => "<span class='ktInlineError'><strong>fixme</strong> extract the last participant</span>",
+            "last_modified_by" => $modified_user,
             "last_modified_date" => $last_modified_date,
             
             "comparison_last_modified_by" => "<span class='ktInlineError'><strong>fixme</strong> extract the last participant</span>",
@@ -242,9 +261,10 @@ class GenericFieldsetDisplay extends KTFieldsetDisplay {
             "document_type" => $document_type,
             "comparison_document_type" => $comparison_document_type,
             
-            "workflow_state" => "<span class='ktInlineError'><strong>fixme</strong> identify the workflow state.</span>",
-            "comparison_workflow_state" => "<span class='ktInlineError'><strong>fixme</strong> identify the workflow state.</span>",
-            "workflow_id" => -1,
+            "workflow_state" => $oState,
+            "comparison_workflow_state" => $oComparisonState,
+            "workflow" => $oWorkflow,
+            "comparison_workflow" => $oComparisonWorkflow,
             
             "comparison_document" => $aComparisonData["document"],
         );
