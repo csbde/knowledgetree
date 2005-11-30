@@ -509,15 +509,27 @@ $oKTActionRegistry->registerAction('documentaction', 'KTDocumentMoveAction', 'kt
 // }}}
 
 // {{{ KTDocumentHistoryAction
-class KTDocumentHistoryAction extends KTDocumentAction {
-    var $sDisplayName = 'History';
-    var $sName = 'ktcore.actions.document.history';
+class KTDocumentTransactionHistoryAction extends KTDocumentAction {
+    var $sDisplayName = 'Transaction History';
+    var $sName = 'ktcore.actions.document.transactionhistory';
 
     function getURL() {
         return generateControllerLink("viewDocument", sprintf("action=history&fDocumentId=%d", $this->oDocument->getID()));
     }
 }
-$oKTActionRegistry->registerAction('documentaction', 'KTDocumentHistoryAction', 'ktcore.actions.document.history');
+$oKTActionRegistry->registerAction('documentaction', 'KTDocumentTransactionHistoryAction', 'ktcore.actions.document.transactionhistory');
+// }}}
+
+// {{{ KTDocumentHistoryAction
+class KTDocumentVersionHistoryAction extends KTDocumentAction {
+    var $sDisplayName = 'Version History';
+    var $sName = 'ktcore.actions.document.versionhistory';
+
+    function getURL() {
+        return generateControllerLink("viewDocument", sprintf("action=versionhistory&fDocumentId=%d", $this->oDocument->getID()));
+    }
+}
+$oKTActionRegistry->registerAction('documentaction', 'KTDocumentVersionHistoryAction', 'ktcore.actions.document.versionhistory');
 // }}}
 
 // {{{ KTDocumentArchiveAction
