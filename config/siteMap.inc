@@ -40,6 +40,7 @@ $default->siteMap->addPage("viewNewsImage", "/presentation/lookAndFeel/knowledge
 $default->siteMap->addDefaultPage("browse", "/presentation/lookAndFeel/knowledgeTree/browse.php", "Manage Documents", Guest, _("browse documents"));
 $default->siteMap->addDefaultPage("templateBrowse", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/templateDocumentBrowseBL.php", "Manage Documents", Guest, _("browse documents"));
 $default->siteMap->addPage("viewDocument", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/view.php", "Manage Documents", Guest, _("View Document"), false);
+$default->siteMap->addPage("editDocument", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/editDocument.php", "Manage Documents", Guest, _("Edit Document"), false);
 $default->siteMap->addPage("downloadDocument", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/downloadBL.php", "Manage Documents", Guest, "Download Document", false);
 $default->siteMap->addPage("deleteDocument", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/deleteDocumentBL.php", "Manage Documents", User, "Delete document", false);
 $default->siteMap->addPage("moveDocument", "/presentation/lookAndFeel/knowledgeTree/documentmanagement/moveDocumentBL.php", "Manage Documents", User, "Move document", false);
