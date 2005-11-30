@@ -56,6 +56,12 @@ class SimpleSearchDispatcher extends KTStandardDispatcher {
 	
 
     function do_main() {
+        $aErrorOptions = array(
+            "message" => "Please provide a search term",
+        );
+		$searchable_text = KTUtil::arrayGet($_REQUEST, "fSearchableText");
+        $this->oValidator->notEmpty($searchable_text, $aErrorOptions);
+		
 		$collection = new DocumentCollection;
 		$this->browseType = "Folder"; 
 		
@@ -67,8 +73,6 @@ class SimpleSearchDispatcher extends KTStandardDispatcher {
 		$collection->addColumn(new DateColumn("Last Modified","modified", "getLastModifiedDate"));
 		$collection->addColumn(new DateColumn("Last Modified","modified", "getLastModifiedDate"));
         $collection->addColumn(new UserColumn('Creator','creator_id','getCreatorID'));
-		
-		$searchable_text = KTUtil::arrayGet($_REQUEST, "fSearchableText");
 		
 		$batchPage = (int) KTUtil::arrayGet($_REQUEST, "page", 0);
 		$batchSize = 20;
