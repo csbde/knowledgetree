@@ -66,7 +66,7 @@ class KTWorkflowDispatcher extends KTStandardDispatcher {
             $vocab[$state->getId()] = $state->getName();
         } 
         $aOptions['vocab'] = $vocab;
-        $edit_fields[] = new KTLookupWidget('Starting State','When a document has this workflow applied to it, to which state should it initially be set ', 'fStartingStateId', $oWorkflow->getStartStateId(), $this->oPage, false, null, null, $aOptions);
+        $edit_fields[] = new KTLookupWidget('Starting State','When a document has this workflow applied to it, to which state should it initially be set ', 'fStartStateId', $oWorkflow->getStartStateId(), $this->oPage, false, null, null, $aOptions);
         
         $add_state_fields = array();
         $add_state_fields[] = new KTStringWidget('Name','A human-readable name for the state.', 'fName', null, $this->oPage, true);
