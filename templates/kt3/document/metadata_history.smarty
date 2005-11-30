@@ -8,6 +8,7 @@
         <thead>
             <tr>
                 <th class="username">User</th>
+                <th class="date">Metadata Version</th>
                 <th class="date">Content Version</th>
                 <th class="compare">Compare</th>
 
@@ -16,6 +17,7 @@
         <tbody>
             <tr class="{cycle options=even,odd}">
                 <td class="username">{$context->getUserForId($document->getModifiedUserId())}</td>
+                <td class="date">{$document->getMetadataVersion()}</td>
                 <td class="date">{$document->getMajorVersionNumber()}.{$document->getMinorVersionNumber()}</td>
                 <td class="compare">Current</td>                
             </tr>
@@ -23,6 +25,7 @@
           {foreach item=oVersion from=$versions}
             <tr class="{cycle options=even,odd}">
                 <td class="username">{$context->getUserForId($oVersion->getModifiedUserId())}</td>
+                <td class="date">{$oVersion->getMetadataVersion()}</td>
                 <td class="date">{$oVersion->getMajorVersionNumber()}.{$oVersion->getMinorVersionNumber()}</td>
                 <td class="compare"><a href="{$smarty.server.PHP_SELF}?action=viewComparison&fDocumentId={$document->getId()}&fComparisonVersion={$oVersion->getId()}">compare with current</a></td>                
             </tr>
