@@ -5,10 +5,10 @@ it is important to check them back in as soon as you have made
 the apppriate changes.</p>
 {if (!empty($documents))}
 <dl>
-{foreach item=oNotification from=$notifications}
-{$oNotification->render()}
+{foreach item=oDocument from=$documents}
+  <dt>{$oDocument->getName()} | <a href="{$context->getDocumentLink($oDocument)}">View Document</a></dt>
 {/foreach}
-</dl>
+</ul>
 {else}
 <div class="ktInfo"><p>You have no documents which are currently checked out.</p></div>
 {/if}

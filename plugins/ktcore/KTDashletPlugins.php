@@ -71,6 +71,10 @@ class KTCheckoutDashlet extends KTBaseDashlet {
 		return true;
 	}
 	
+	function getDocumentLink($oDocument) {
+		return generateControllerLink('viewDocument', 'fDocumentId=' . $oDocument->getId());
+	}
+	
     function render() {
 	    
         $checked_out_documents = Document::getList(array("checked_out_user_id = ?", $this->oUser->getId()));
@@ -78,6 +82,7 @@ class KTCheckoutDashlet extends KTBaseDashlet {
 		$oTemplating = new KTTemplating;
 		$oTemplate = $oTemplating->loadTemplate("ktcore/dashlets/checkedout");
 		$aTemplateData = array(
+		    "context" => $this,
 		    "documents" => $checked_out_documents,
 		);
 		return $oTemplate->render($aTemplateData);
