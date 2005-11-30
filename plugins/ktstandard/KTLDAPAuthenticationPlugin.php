@@ -1,5 +1,8 @@
 <?php
 
+require_once(KT_LIB_DIR . '/plugins/plugin.inc.php');
+require_once(KT_LIB_DIR . '/plugins/pluginregistry.inc.php');
+
 class KTLDAPAuthenticationPlugin extends KTPlugin {
     var $sNamespace = "ktstandard.ldapauthentication.plugin";
 }
