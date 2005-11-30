@@ -214,6 +214,9 @@ class KTDocumentUtil {
         $aSimpleMetadata = array();
         foreach ($aMetadata as $aSingleMetadatum) {
             list($oField, $sValue) = $aSingleMetadatum;
+            if (is_null($oField)) {
+                continue;
+            }
             $aSimpleMetadata[$oField->getId()] = $sValue;
         }
         $aFailed = array();
@@ -262,6 +265,9 @@ class KTDocumentUtil {
         // XXX: Metadata refactor
         foreach ($aMetadata as $aInfo) {
             list($oMetadata, $sValue) = $aInfo;
+            if (is_null($oMetadata)) {
+                continue;
+            }
             $res = DBUtil::autoInsert($table, array(
                 "document_id" => $oDocument->getID(),
                 "document_field_id" => $oMetadata->getID(),
