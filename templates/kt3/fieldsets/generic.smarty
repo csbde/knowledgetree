@@ -24,7 +24,7 @@
 {else}
 No workflow
 {/if}
-(<a href="documentWorkflow.php?fDocumentId={$document->getId()}">manage workflow</a>)
+(<a href="{$rootUrl}/action.php/ktcore.actions.document.workflow?fDocumentId={$document->getId()}">manage workflow</a>)
 </dd>
     </dl>
     <div class="floatClear"><!-- --> </div>
