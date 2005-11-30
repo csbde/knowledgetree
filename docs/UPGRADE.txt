@@ -143,11 +143,10 @@ You should now be able to use the automated upgrade.
 
 ---------------------------------------------------------------------------
 
-
-Jam Warehouse � Smart Business Innovation
-Phone: +27 21 4477440
-Fax: +27 21 4477449
-Email: info@jamwarehouse.com
-Web: http://www.jamwarehouse.com/
+KnowledgeTree Document Management System
+Web page: http://www.ktdms.com/
+Wiki: http://support.ktdms.com/confluence/
+Forums: http://forum.ktdms.com/
+Bug reporting: http://support.ktdms.com/
 
 $Id$

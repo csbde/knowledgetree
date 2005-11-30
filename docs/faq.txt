@@ -1,78 +1,54 @@
 KnowledgeTree DMS- Frequently Asked Questions
 
-Question:
-When viewing the index.html of KT through Apache, I am redirected to the control.php, which gives me only
-<html><head></head></html>
+Q: Where do I post questions about installing, configuring or using KnowledgeTree?
 
-In the Apache error_log I see:
-PHP Fatal error:  Call to undefined function:  mysql_pconnect() in /var/www/html/knowledgeTree/phplib/db_mysql.inc on line 73
+A: Our community forums are a good place to ask questions about installing,
+   configuring or using KnowledgeTree. Our developers, along with other members of
+   the open source community and our partner network, will endeavour to answer
+   your questions.
 
-Answer:
-your PHP installation doesn't have MySQL support compiled in.
-To verify this, create a test.php file with the following in it:
-<?php phpinfo(); ?>
+   Click on the link below to access the forums:
+       http://forum.ktdms.com/
 
-In the output, you should see a MySQL section (my phpinfo output is
-attached).
+Q: Where can I discuss document management best practices, change management and training issues?
 
-If you're using a default RedHat rpm installation of PHP- MySQL support is not compiled in.
-There are some helpful user comments at the bottom of this PHP manual page: http://www.php.net/manual/en/faq.databases.php,
-==========================================
-Question:
-the Search/Advanced Search sections seem to not work. Is it due to a
-problem in my configuration or this feature is not yet implemented?
+A: Our community forums are a good place to discuss best practices for document
+   management, software implementation and training with our developers, other
+   members of the open source community and our partner network.
 
-Answer:
-The search option will only work once the indexer has been used to
-index the documents (the file indexer can be downloaded from our website
-as well)
-==========================================
-Question:
-I logged in once using the default admin user/pass and now when I try to log back in I'm getting the message "Maximum sessions for user reached.
-Contact the System Administrator"
-Answer:
-Each user has a maximum number of sessions defined in the database:
-users.max_sessions.  If you close your browser without logging out, the
-system still regards you as logged in until the session times out
-($default->sessionTimeout).  You can increase the max_sessions value for the
-admin user with the following sql:
-UPDATE users SET max_sessions=10 WHERE username='admin';
-Or you can remove the entry from the sessions table and remember to logout:
-DELETE FROM active_sessions;
-==========================================
-Question:
-I get this error:
- Warning: Access denied for user: 'dms@127.0.0.1' (Using password: YES)
- in C:\FoxServ\www\knowledgeTree\phplib\db_mysql.inc on line 73
- Database error: pconnect(localhost, dms, $Password) failed.
- SQL Error: ()
-Answer:
-This is a MySQL user configuration problem- make sure that you can
-login to mysql from the command line using the same user name and password:
-> mysql -udms -p dms
-If you don't get in, then you need to check your PHPMyAdmin settings again,
-or alternatively use the user/password that PHPMyAdmin uses to access MySQL.
-==========================================
-Question:
-KT/control.php  redirects me to http://<myhost>/dms/presentation/login.php?loginAction=loginForm" where I get a 404 file error.
-There is no dms directory in my web root, or even in the Knowledge Tree directory.
-Answer:
-You're being redirected to the wrong webroot because of the following
-misconfigured entry:
-$default->rootUrl (this should = "/knowledgeTree" in your installation instead of the default "/dms")
-==========================================
-Question:
-Why does the search not return words less than 3 characters long?
-Answer:
-The search uses MySQL's fulltext index, which by default has a minimum
-word length of 4 characters.  Read
-http://dev.mysql.com/doc/mysql/en/Fulltext_Fine-tuning.html on how to
-configure your MySQL instance to support this.
+   Click on the link below to access the forums:
 
-Jam Warehouse – Smart Business Innovation
-Phone: +27 21 4477440
-Fax: +27 21 4477449
-Email: info@jamwarehouse.com
-Web: http://www.jamwarehouse.com/
+      http://forum.ktdms.com/
+
+Q: Where can I report bugs in the open source KnowledgeTree server?
+
+A: You can report bugs in the open source KnowledgeTree server software by
+   accessing our online ticketing system. The ticketing system will also provide
+   feedback on the status of the issue. You may view issues reported by other
+   people and search the system to determine if your issue has already been
+   reported.
+
+   Click on the link below to access the ticketing system:
+
+       http://support.ktdms.com/
+
+Q: I want to modify KnowledgeTree or develop new functionality for it.
+   Where do I find more information on how to go about doing this?
+
+A: You can find out more information about modifying the KnowledgeTree
+   server, developing new functionality or translating the software at
+   the development Wiki. The Wiki is constantly under development and
+   even you may add content to it!
+
+   Click on the link below to access the Wiki:
+
+       http://support.ktdms.com/confluence/
+
+
+KnowledgeTree Document Management System
+Web page: http://www.ktdms.com/
+Wiki: http://support.ktdms.com/confluence/
+Forums: http://forum.ktdms.com/
+Bug reporting: http://support.ktdms.com/
 
 $Id$
