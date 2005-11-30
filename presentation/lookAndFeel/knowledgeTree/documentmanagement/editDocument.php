@@ -246,8 +246,26 @@ class KTEditDocumentDispatcher extends KTStandardDispatcher {
 		//return '<pre>' . print_r($field_values, true) . '</pre>';
 		$this->startTransaction();
 		
+		$res = KTDocumentUtil::createMetadataVersion($oDocument);
+		if (PEAR::isError($res)) {
+		     $this->errorRedirectToMain('Unable to create a metadata version of the document.');
+		}
 		
+		$oDocument->setLastModifiedDate(getCurrentDateTime());
+		$oDocument->setModifiedUserId($this->oUser->getId());
+        $oDocumentTransaction = & new DocumentTransaction($oDocument->getID(), 'update metadata.', UPDATE);
+		
+        $res = $oDocumentTransaction->create();
+		if (PEAR::isError($res)) {
+		     $this->errorRedirectToMain('Failed to create transaction.');
+		}
+		
+		$res = $oDocument->update();
+		if (PEAR::isError($res)) {
+		     $this->errorRedirectToMain('Failed to change basic details about the document..');
+		}
 		$res = KTDocumentUtil::saveMetadata($oDocument, $field_values);
+		
 		if (PEAR::isError($res)) {
 		   $this->rollbackTransaction();		
 		   

@@ -11,7 +11,7 @@
                 <th class="action">Action</th>
                 <th class="date">Date</th>
                 <th class="contentversion">Content version</th>
-                <th class="comment" colspan="2">Comment</th>
+                <th class="comment">Comment</th>
             </tr>
         </thead>
         <tbody>
@@ -22,9 +22,6 @@
                 <td class="date">{$aTransactionRow.datetime}</td>
                 <td class="contentversion">{$aTransactionRow.version}</td>                
                 <td class="comment">{$aTransactionRow.comment}</td>
-                <td class="compare">
-                    <a href="?action=viewComparison&fDocumentId={$document_id}&fComparisonVersion={$aTransactionRow.version}">Compare with current version</a>
-                </td>
             </tr>
             {/foreach}
         </tbody>

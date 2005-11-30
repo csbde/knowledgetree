@@ -185,6 +185,45 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 	}
 	
 	
+    function do_versionhistory() {	 
+	    // this is the list of documents past.
+		$document_data = array();
+		$document_id = KTUtil::arrayGet($_REQUEST, 'fDocumentId');
+		if ($document_id === null) { 
+		    $this->oPage->addError('No document was requested.  Please <a href="/presentation/lookAndFeel/knowledgeTree/browse.php">browse</a> for one.');
+			return $this->do_error();
+		}
+		$document_data["document_id"] = $document_id;
+		
+		// try get the document.
+		$oDocument =& Document::get($document_id);
+		if (PEAR::isError($oDocument)) {
+		    $this->oPage->addError('The document you attempted to retrieve is invalid.   Please <a href="/presentation/lookAndFeel/knowledgeTree/browse.php">browse</a> for one.');
+			return $this->do_error();		
+		}
+		// fixme check perms
+		
+		$this->oDocument =& $oDocument;
+        $this->aBreadcrumbs = array_merge($this->aBreadcrumbs, KTBrowseUtil::breadcrumbsForDocument($oDocument));
+		$this->oPage->setBreadcrumbDetails("history");
+		$this->addPortlets("History");
+		
+		$aVersions = Document::getByLiveDocument($oDocument);
+		//var_dump($aVersions);
+		
+		// render pass.
+		$this->oPage->title = "Document History : " . $oDocument->getName();
+        $oTemplating = new KTTemplating;
+		$oTemplate = $oTemplating->loadTemplate("kt3/document/metadata_history");
+		$aTemplateData = array(
+              "context" => $this,
+			  "document_id" => $document_id,
+			  "document" => $oDocument,
+			  "versions" => $aVersions,
+		);
+		return $oTemplate->render($aTemplateData);		
+	}
+	
 	// FIXME refactor out the document-info creation into a single utility function.
 	// this gets in:
 	//   fDocumentId (document to compare against)
@@ -219,17 +258,20 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 			return $this->do_error();
 		}
 		
-		// FIXME when transaction history accurately stores metadata_version, this is no longer required.
-		// FIXME detect that the metadata_version was "manufactured"
-		// <testing>
-		$oComparison =& $oDocument;
-		$comparison_data =& $document_data; // no copy.
-		
-		// </testing>
-		
-		
+		$oComparison =& Document::get($comparison_version);
+		if (PEAR::isError($oComparison)) {
+		    $this->errorRedirectToMain('Invalid document to compare against.');
+		}
+		$comparison_data = array();
+		$comparison_data['document_id'] = $oComparison->getId();
+
 		$document_data["document"] = $oDocument;
+		$comparison_data['document'] = $oComparison;
+		
 		$document_data["document_type"] =& DocumentType::get($oDocument->getDocumentTypeID());
+		$comparison_data["document_type"] =& DocumentType::get($oComparison->getDocumentTypeID());
+		
+		// follow twice:  once for normal, once for comparison.
 		$is_valid_doctype = true;
 		
 		if (PEAR::isError($document_data["document_type"])) {
@@ -247,9 +289,16 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 		
 		$document_data["field_values"] = $field_values;
 		
+		$mdlist =& DocumentFieldLink::getList(array('document_id = ?', array($comparison_version)));
+
+		$field_values = array();
+		foreach ($mdlist as $oFieldLink) {
+            $field_values[$oFieldLink->getDocumentFieldID()] = $oFieldLink->getValue();
+		}
 		
-		// FIXME generate portlets
-		// FIXME generate breadcrumb
+		$comparison_data["field_values"] = $field_values;
+
+		
 		
 		// Fieldset generation.
 		// 
@@ -281,11 +330,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 				array_push($fieldsets, new $displayClass($oFieldset));
 			}
 		}
-		
-		// <testing>
-		$document_data["is_manufactured"] = 1;
-		// </testing>
-		
+			
 		// FIXME handle ad-hoc fieldsets.
 		
         $oTemplating = new KTTemplating;
@@ -308,6 +353,11 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 	    return ''; // allow normal rendering of errors.
 		// FIXME show something useful / generic.
 	}
+	
+	function getUserForId($iUserId) {
+	    $u = User::get($iUserId);
+		return $u->getName();
+	} 
 }
 
 $oDispatcher = new ViewDocumentDispatcher;
