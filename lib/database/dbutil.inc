@@ -222,6 +222,9 @@ class DBUtil {
 
     function &paramArray($aArray) {
         $iNumIds = count($aArray);
+        if (empty($iNumIds)) {
+            return "";
+        }
         return join(",", array_fill(0, $iNumIds, '?'));
     }
 
