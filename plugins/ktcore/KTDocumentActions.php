@@ -203,6 +203,18 @@ class KTDocumentCheckInAction extends KTDocumentAction {
 $oKTActionRegistry->registerAction('documentaction', 'KTDocumentCheckInAction', 'ktcore.actions.document.checkin');
 // }}}
 
+// {{{ KTDocumentEditAction
+class KTDocumentEditAction extends KTDocumentAction {
+    var $sDisplayName = 'Edit metadata';
+    var $sName = 'ktcore.actions.document.edit';
+
+    function getURL() {
+        return generateControllerLink("editDocument", sprintf("fDocumentId=%d", $this->oDocument->getID()));
+    }
+}
+$oKTActionRegistry->registerAction('documentaction', 'KTDocumentEditAction', 'ktcore.actions.document.edit');
+// }}}
+
 // {{{ KTDocumentDeleteAction
 class KTDocumentDeleteAction extends KTDocumentAction {
     var $sBuiltInAction = 'deleteDocument';
