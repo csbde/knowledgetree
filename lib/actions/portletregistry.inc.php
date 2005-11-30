@@ -53,7 +53,7 @@ class KTPortletRegistry {
             $oPlugin =& $oRegistry->getPlugin($sPluginName);
             $oPortlet =&  new $sPortletClass;
             $oPortlet->setPlugin($oPlugin);
-            array_push($aReturn, &$oPortlet);
+            array_push($aReturn, $oPortlet);
         }
         return $aReturn;
     }
