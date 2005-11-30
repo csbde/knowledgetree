@@ -7,6 +7,9 @@
     <a href="{$rootUrl}/notify.php?id={$info.notify_id}">Read Document</a> | 
     <a href="{$rootUrl}/notify.php?id={$info.notify_id}&notify_action=clear">Clear Alert</a>
     </div>
+{else} <!-- fallback. -->
 {/if}
-    
+    <div class="actionoptions">
+    <a href="{$rootUrl}/notify.php?id={$info.notify_id}&notify_action=clear">Clear Alert</a>
+    </div>
 </dd>
