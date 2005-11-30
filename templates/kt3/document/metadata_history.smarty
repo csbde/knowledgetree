@@ -1,0 +1,32 @@
+<h2>Metadata History: {$document->getName()}</h2>
+
+<p class="descriptiveText">This lists the older versions of the document, as the metadata about it has been changed.</p>
+
+
+    <table class="document_history" summary="Document History for KnowledgeTree New UI Presentation" cellspacing="0">
+
+        <thead>
+            <tr>
+                <th class="username">User</th>
+                <th class="date">Content Version</th>
+                <th class="compare">Compare</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="{cycle options=even,odd}">
+                <td class="username">{$context->getUserForId($document->getModifiedUserId())}</td>
+                <td class="date">{$document->getMajorVersionNumber()}.{$document->getMinorVersionNumber()}</td>
+                <td class="compare">Current</td>                
+            </tr>
+
+          {foreach item=oVersion from=$versions}
+            <tr class="{cycle options=even,odd}">
+                <td class="username">{$context->getUserForId($oVersion->getModifiedUserId())}</td>
+                <td class="date">{$oVersion->getMajorVersionNumber()}.{$oVersion->getMinorVersionNumber()}</td>
+                <td class="compare"><a href="{$smarty.server.PHP_SELF}?action=viewComparison&fDocumentId={$document->getId()}&fComparisonVersion={$oVersion->getId()}">compare with current</a></td>                
+            </tr>
+            {/foreach}
+        </tbody>
+        
+    </table>
