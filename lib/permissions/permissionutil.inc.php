@@ -230,7 +230,7 @@ class KTPermissionUtil {
         $oPL = KTPermissionLookup::get($oFolderOrDocument->getPermissionLookupID());
         $oPLA = KTPermissionLookupAssignment::getByPermissionAndLookup($oPermission, $oPL);
         if (PEAR::isError($oPLA)) {
-            print $oPL->getID();
+            //print $oPL->getID();
             return false;
         }
         $oPD = KTPermissionDescriptor::get($oPLA->getPermissionDescriptorID());
