@@ -208,6 +208,7 @@ class SimpleSearchQuery extends PartialQuery {
         $aSubgroup = array(
             'values' => array(
                 array('type' => '-12', 'data' => array('bmd_12' => $this->searchable_text)),
+                array('sql' => array('D.status_id = 1')),
             ),
             'join' => 'AND',
         );
