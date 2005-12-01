@@ -1,36 +1,18 @@
 <?php
 
-class KTExcelIndexerTrigger {
-    function setDocument($oDocument) {
-        $this->oDocument = $oDocument;
-    }
 
-    function transform() {
-        $iMimeTypeId = $this->oDocument->getMimeTypeId();
-        $sMimeType = KTMime::getMimeTypeName($iMimeTypeId);
-        if ($sMimeType != "application/msword") {
-            return;
-        }
+require_once(KT_DIR . '/plugins/ktstandard/contents/BaseIndexer.php');
 
-        $oStorage = KTStorageManagerUtil::getSingleton();
-        $sFile = $oStorage->temporaryFile($this->oDocument);
+class KTExcelIndexerTrigger extends KTBaseIndexerTrigger {
 
-        $cmdline = array("xls2csv", "-q", "0", "-c", " ", $sFile);
-        $myfilename = tempnam("/tmp", "kt.xls2csv");
-        $command = KTUtil::safeShellString($cmdline) . " >> " . $myfilename;
-        system($command);
-        $contents = file_get_contents($myfilename);
-        unlink($myfilename);
-        if (empty($contents)) {
-            return;
-        }
-        $aInsertValues = array(
-            'document_id' => $this->oDocument->getId(),
-            'document_text' => $contents,
-        );
-        $sTable = KTUtil::getTableName('document_text');
-        DBUtil::autoInsert($sTable, $aInsertValues, array('noid' => true));
-    }
+    var $mimetypes = array(
+       'application/msword' => true,
+    );
+    var $command = 'xls2csv';          // could be any application.
+    var $args = array("-q", "0", "-c", " ");
+    var $use_pipes = true;
+    
+    // see BaseIndexer for how the extraction works.
 }
 
 ?>
