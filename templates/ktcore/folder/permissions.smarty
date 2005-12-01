@@ -1,5 +1,5 @@
-{literal}
-<style>
+{capture assign=sCSS}{literal}
+
 td.true { background-color: #aaffaa; text-align: centre }
 td.false { background-color: #ffaaaa; text-align: centre }
 .edit { display: none; }
@@ -17,10 +17,12 @@ td.false { background-color: #ffaaaa; text-align: centre }
     background-color: #ffeeee;
 }
 </style>
-{/literal}
-<script language="javascript" src="/thirdpartyjs/MochiKit/Base.js">
-<script language="javascript" src="/thirdpartyjs/MochiKit/Iter.js">
-<script language="javascript" src="/thirdpartyjs/MochiKit/DOM.js">
+{/literal}{/capture}
+{$context->oPage->requireCSSStandalone($sCSS)}
+{$context->oPage->requireJSResource('thirdpartyjs/MochiKit/Base.js')}
+{$context->oPage->requireJSResource('thirdpartyjs/MochiKit/Iter.js')}
+{$context->oPage->requireJSResource('thirdpartyjs/MochiKit/DOM.js')}
+
 <h2>Folder permissions</h2>
 
 { if $edit }
