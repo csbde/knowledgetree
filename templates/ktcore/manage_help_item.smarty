@@ -1,12 +1,13 @@
-<script language="javascript" type="text/javascript" src="{$config->get("KnowledgeTree/rootUrl")}/thirdpartyjs/tinymce/jscripts/tiny_mce/tiny_mce.js"></script>
-<script language="javascript" type="text/javascript">
+{$context->oPage->requireJSResource("thirdpartyjs/tinymce/jscripts/tiny_mce/tiny_mce.js")}
+{capture assign=sJS}
 {literal}
 tinyMCE.init({
 		mode : "textareas",
 		theme : "simple",
 });
 {/literal}
-</script>
+{/capture}
+{$context->oPage->requireJSStandalone($sJS)}
 
 <form method="POST" action="{$smarty.server.PHP_SELF}">
 <input type="hidden" name="id" value="{$help->iId}">

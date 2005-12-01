@@ -1,12 +1,10 @@
-<!-- we REALLY NEED that new ui component. -->
+{$context->oPage->requireJSResource("thirdpartyjs/MochiKit/Base.js")}
+{$context->oPage->requireJSResource("thirdpartyjs/MochiKit/Iter.js")}
+{$context->oPage->requireJSResource("thirdpartyjs/MochiKit/DOM.js")}
+{$context->oPage->requireJSResource("thirdpartyjs/MochiKit/Async.js")}
 
-<script language="javascript" src="/thirdpartyjs/MochiKit/Base.js"> </script>
-<script language="javascript" src="/thirdpartyjs/MochiKit/Iter.js"> </script>
-<script language="javascript" src="/thirdpartyjs/MochiKit/DOM.js"> </script>
-<script language="javascript" src="/thirdpartyjs/MochiKit/Async.js"> </script>
+{capture assign=sJS}
 {literal}
-<script language="javascript"> 
-
 var baseUrl = "/presentation/lookAndFeel/knowledgeTree/ajaxConditional.php";
 var undoStack = Array();
 
@@ -116,11 +114,10 @@ function triggerUpdate(formname) {
    req.addCallback(formHandler);
    req.addErrback(errorForm);
 }
-
-
-
-</script>
 {/literal}
+{/capture}
+{$context->oPage->requireJSStandalone($sJS)}
+
 <!-- do we need to have more than one set of these on a page? -->
 <form >
 <input type="hidden" name="action" value="submitConditionalSet" />

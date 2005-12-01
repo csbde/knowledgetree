@@ -1,5 +1,5 @@
+{capture assign=sCSS}
 {literal}
-<style type="text/css">
 /* inactivity */
 .active .inactivity_message { display: none; }
 
@@ -16,24 +16,24 @@
 { display: none; }
 
 .helpText { color: #666; }
-
-</style>
+{/literal}
+{/capture}
+{$context->oPage->requireCSSStandalone($sCSS)}
 
 <!-- include the mochikit js -->
-<script language="javascript" src="/thirdpartyjs/MochiKit/Base.js"> </script>
-<script language="javascript" src="/thirdpartyjs/MochiKit/Iter.js"> </script>
-<script language="javascript" src="/thirdpartyjs/MochiKit/DateTime.js"> </script>
-<script language="javascript" src="/thirdpartyjs/MochiKit/Async.js"> </script>
-<script language="javascript" src="/thirdpartyjs/MochiKit/DOM.js"> </script>
+{$context->oPage->requireJSResource("thirdpartyjs/MochiKit/Base.js")}
+{$context->oPage->requireJSResource("thirdpartyjs/MochiKit/Iter.js")}
+{$context->oPage->requireJSResource("thirdpartyjs/MochiKit/DateTime.js")}
+{$context->oPage->requireJSResource("thirdpartyjs/MochiKit/Async.js")}
+{$context->oPage->requireJSResource("thirdpartyjs/MochiKit/DOM.js")}
 
-<script language="javascript" src="/presentation/lookAndFeel/knowledgeTree/js/taillog.js"> </script>
-<script language="javascript" src="/presentation/lookAndFeel/knowledgeTree/js/conditional_complex_edit.js"> </script>
+{$context->oPage->requireJSResource("presentation/lookAndFeel/knowledgeTree/js/taillog.js")}
+{$context->oPage->requireJSResource("presentation/lookAndFeel/knowledgeTree/js/conditional_complex_edit.js")}
 
-<script language="javascript"> 
+{capture assign=sJS}
 addLoadEvent(updateActiveFields);
-</script>
-
-{/literal}
+{/capture}
+{$context->oPage->requireJSStandalone($sJS)}
 
 <h2>Edit Complex Conditional Metadata</h2>
 <form>
