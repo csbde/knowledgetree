@@ -96,8 +96,15 @@ class DocumentCollection {
    function getResults() {
 	  // we get back strings of numbers.
 	  $this->folderCount = $this->_queryObj->getFolderCount();
-	  
+      if (PEAR::isError($this->folderCount)) {
+          $_SESSION['KTErrorMessage'][] = $this->folderCount->toString();
+          $this->folderCount = 0;
+      }
 	  $this->documentCount = $this->_queryObj->getDocumentCount();
+      if (PEAR::isError($this->documentCount)) {
+          $_SESSION['KTErrorMessage'][] = $this->documentCount->toString();
+          $this->documentCount = 0;
+      }
 	  $this->itemCount = $this->documentCount + $this->folderCount;
 	  
 	  // now we need the active set:  this is based on the batchsize,
