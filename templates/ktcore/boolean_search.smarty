@@ -1,25 +1,24 @@
-<!-- NBM: FIX THE TEMPLATING SYSTEM -->
+{$context->oPage->requireJSResource("thirdpartyjs/MochiKit/Base.js")}
+{$context->oPage->requireJSResource("thirdpartyjs/MochiKit/DateTime.js")}
+{$context->oPage->requireJSResource("thirdpartyjs/MochiKit/Iter.js")}
+{$context->oPage->requireJSResource("thirdpartyjs/MochiKit/DOM.js")}
+{$context->oPage->requireJSResource("thirdpartyjs/MochiKit/Async.js")}
+{$context->oPage->requireJSResource("presentation/lookAndFeel/knowledgeTree/js/taillog.js")}
+{$context->oPage->requireJSResource("presentation/lookAndFeel/knowledgeTree/js/constructed_search.js")}
 
-<script language="javascript" src="/thirdpartyjs/MochiKit/Base.js"> </script>
-<script language="javascript" src="/thirdpartyjs/MochiKit/DateTime.js"> </script>
-<script language="javascript" src="/thirdpartyjs/MochiKit/Iter.js"> </script>
-<script language="javascript" src="/thirdpartyjs/MochiKit/DOM.js"> </script>
-<script language="javascript" src="/thirdpartyjs/MochiKit/Async.js"> </script>
-<script language="javascript" src="/presentation/lookAndFeel/knowledgeTree/js/taillog.js"> </script>
-<script language="javascript" src="/presentation/lookAndFeel/knowledgeTree/js/constructed_search.js"> </script>
-
+{capture assign=sJS}
 {literal}
-
-<script type="text/javascript">
 function testStartup() {
     simpleLog('INFO','Log initialised.');
 }
 
 addLoadEvent(testStartup);
-</script>
+{/literal}
+{/capture}
+{$context->oPage->requireJSStandalone($sJS)}
 
-<style>
-
+{capture assign=sCSS}
+{literal}
 fieldset { border: 1px dotted #999; }
 legend { border: 1px dotted #999;}
 
@@ -32,10 +31,9 @@ legend { border: 1px dotted #999;}
 #brad-log .severity-DEBUG { color: green; font-weight: bold; }
 #brad-log .severity-ERROR { color: red; font-weight: bold; }
 #brad-log .explanation { font-family: monospace; white-space: pre; }
-
-</style>
-
 {/literal}
+{/capture}
+{$context->oPage->requireCSSStandalone($sCSS)}
 
 <!-- this is bad, but we really don't need a roundtrip -->
 <div style="display: none" id="search-criteria-container">
