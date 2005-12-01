@@ -138,7 +138,31 @@ class KTDocumentUtil {
         // create the document transaction record
         $oDocumentTransaction = & new DocumentTransaction($oDocument->getID(), $sCheckInComment, CHECKIN);
         $oDocumentTransaction->create();
-
+        
+        $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
+        $aTriggers = $oKTTriggerRegistry->getTriggers('content', 'scan');
+        foreach ($aTriggers as $aTrigger) {
+            $sTrigger = $aTrigger[0];
+            $oTrigger = new $sTrigger;
+            $oTrigger->setDocument($oDocument);
+            $ret = $oTrigger->scan();
+            if (PEAR::isError($ret)) {
+                $oDocument->delete();
+                return $ret;
+            }
+        }
+        
+        $aTriggers = $oKTTriggerRegistry->getTriggers('content', 'transform');
+        foreach ($aTriggers as $aTrigger) {
+            $sTrigger = $aTrigger[0];
+            if ($aTrigger[1]) {
+                require_once($aTrigger[1]);
+            }
+            $oTrigger = new $sTrigger;
+            $oTrigger->setDocument($oDocument);
+            $oTrigger->transform();
+        }
+        
         // fire subscription alerts for the checked in document
         $count = SubscriptionEngine::fireSubscription($oDocument->getID(), SubscriptionConstants::subscriptionAlertType("CheckInDocument"),
                  SubscriptionConstants::subscriptionType("DocumentSubscription"),
