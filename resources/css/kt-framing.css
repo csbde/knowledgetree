@@ -220,7 +220,7 @@ a.main_nav_item {
 
 #content
 {
-    position: absolute;
+    position: relative;
     left: 15em;
     top: 0;
     right: 0;
