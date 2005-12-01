@@ -1,7 +1,5 @@
+{capture assign=sCSS}
 {literal}
-<style type="text/css">
-
-
 /* inactivity */
 .active .inactivity_message { display: none; }
 
@@ -38,30 +36,27 @@
 #brad-log .severity-ERROR { color: red; font-weight: bold; }
 #brad-log .explanation { font-family: monospace; white-space: pre; }
 
-
-</style>
+{/literal}
+{/capture}
+{$context->oPage->requireCSSStandalone($sCSS)}
 
 <!-- include the mochikit js -->
-<script language="javascript" src="/thirdpartyjs/MochiKit/Base.js"> </script>
-<script language="javascript" src="/thirdpartyjs/MochiKit/DateTime.js"> </script>
-<script language="javascript" src="/thirdpartyjs/MochiKit/Iter.js"> </script>
-<script language="javascript" src="/thirdpartyjs/MochiKit/Async.js"> </script>
-<script language="javascript" src="/thirdpartyjs/MochiKit/DOM.js"> </script>
+{$context->oPage->requireJSResource("thirdpartyjs/MochiKit/Base.js")}
+{$context->oPage->requireJSResource("thirdpartyjs/MochiKit/DateTime.js")}
+{$context->oPage->requireJSResource("thirdpartyjs/MochiKit/Iter.js")}
+{$context->oPage->requireJSResource("thirdpartyjs/MochiKit/Async.js")}
+{$context->oPage->requireJSResource("thirdpartyjs/MochiKit/DOM.js")}
 
-<script language="javascript" src="/presentation/lookAndFeel/knowledgeTree/js/taillog.js"> </script>
-<script language="javascript" src="/presentation/lookAndFeel/knowledgeTree/js/conditional_simple_edit.js"> </script>
+{$context->oPage->requireJSResource("presentation/lookAndFeel/knowledgeTree/js/taillog.js")}
+{$context->oPage->requireJSResource("presentation/lookAndFeel/knowledgeTree/js/conditional_simple_edit.js")}
 
 
 
-<!-- custom JS -->
-
-<script language="javascript">
-{/literal}
+{capture assign=sJS}
 addLoadEvent(partial(editSimpleField, {$iMasterFieldId}));
-{literal}
-</script>
+{/capture}
+{$context->oPage->requireJSStandalone($sJS)}
 
-{/literal}
 
 
 <h2>Editing Fieldset Rules (Simple)</h2>
