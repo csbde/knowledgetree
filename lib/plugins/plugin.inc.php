@@ -71,6 +71,10 @@ class KTPlugin {
     function _fixFilename($sFilename) {
         if (empty($sFilename)) {
             $sFilename = $this->sFilename;
+        } else if (OS_WINDOWS && (substr($sFilename, 1, 2) == ':\\')) {
+            $sFilename = $this->sFilename;
+        } else if (OS_WINDOWS && (substr($sFilename, 1, 2) == ':/')) {
+            $sFilename = $this->sFilename;
         } else if (substr($sFilename, 0, 1) != '/') {
             if ($this->sFilename) {
                 $sDirPath = dirname($this->sFilename);
