@@ -16,7 +16,7 @@ td.false { background-color: #ffaaaa; text-align: centre }
 .inactivebutton {
     background-color: #ffeeee;
 }
-</style>
+
 {/literal}{/capture}
 {$context->oPage->requireCSSStandalone($sCSS)}
 {$context->oPage->requireJSResource('thirdpartyjs/MochiKit/Base.js')}

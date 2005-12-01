@@ -61,6 +61,7 @@ class KTDocumentPermissionsAction extends KTDocumentAction {
         }
 
         $aTemplateData = array(
+            "context" => $this,
             "permissions" => $aPermissions,
             "groups" => Group::getList(),
             "iDocumentID" => $_REQUEST['fDocumentID'],
