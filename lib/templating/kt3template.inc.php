@@ -227,6 +227,11 @@ class KTPage {
 			$this->contents = $this->contents->render();
 		}
 		
+		// if we have no portlets, make the ui a tad nicer.
+		if (empty($this->portlets)) {
+		    $this->show_portlets = false;
+		}
+		
         $oTemplating = new KTTemplating;        
         $oTemplate = $oTemplating->loadTemplate("kt3/standard_page");
         $aTemplateData = array(
