@@ -25,6 +25,7 @@ class ManageConditionalDispatcher extends KTAdminDispatcher {
 
         $oTemplate = $oTemplating->loadTemplate("ktcore/metadata/conditional/select_fieldset");
         $aTemplateData = array(
+            "context" => &$this,
             "available_fieldsets" => $aFieldsets,
         );
         return $oTemplate->render($aTemplateData);
@@ -61,6 +62,7 @@ class ManageConditionalDispatcher extends KTAdminDispatcher {
         );
 
         $aTemplateData = array(
+            "context" => &$this,
             "fieldset_id" => $fieldset_id,
             "aFields" => $aFields,
             "iMasterFieldId" => $aFields[0]->getId(),
@@ -97,6 +99,7 @@ class ManageConditionalDispatcher extends KTAdminDispatcher {
             'name' => 'Manage complex conditional',
         );
         $aTemplateData = array(
+            "context" => &$this,
             "fieldset_id" => $fieldset_id,
             "aFields" => $aFields,
             "iMasterFieldId" => $aFields[0]->getId(),
