@@ -28,6 +28,7 @@ class BooleanSearchDispatcher extends KTStandardDispatcher {
         $aCriteria = Criteria::getAllCriteria();
         
         $aTemplateData = array(
+            "context" => &$this,
             "aCriteria" => $aCriteria,
         );
         return $oTemplate->render($aTemplateData);
