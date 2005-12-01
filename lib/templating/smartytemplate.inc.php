@@ -35,6 +35,12 @@ class KTSmartyTemplate extends KTTemplate {
     function render($aDict = null) {
         $smarty = new Smarty;
         $smarty->compile_dir = "/tmp";
+        foreach (array(KT_DIR . '/var/tmp', '/tmp') as $sPath) {
+            if (is_writeable($sPath)) {
+                $smarty->compile_dir = $sPath;
+                break;
+            }
+        }
         if (is_array($aDict)) {
             $iLen = count($aDict);
             $aKeys = array_keys($aDict);
