@@ -58,5 +58,5 @@
 
 .ktError p {
     padding-left: 25px;
-    background: transparent  url(/thirdparty/icon-theme/16x16/status/dialog-warning.png) center left no-repeat;
+    background: transparent  url(../../thirdparty/icon-theme/16x16/status/dialog-warning.png) center left no-repeat;
 }

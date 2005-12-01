@@ -53,7 +53,7 @@ body
 {
     position: relative;
     width: auto;
-    background: #a6c367 url(/resources/graphics/menubg.png) top left repeat-x;
+    background: #a6c367 url(../../resources/graphics/menubg.png) top left repeat-x;
     border: 1px solid #6c8c2f;
     padding: 0em 1em;
     margin-bottom: 1em;
@@ -87,7 +87,7 @@ body
 }
 
 #navbar ul li.active {
-    background: #6c8c2f url(/resources/graphics/menubg-active.png) top left repeat-x;
+    background: #6c8c2f url(../../resources/graphics/menubg-active.png) top left repeat-x;
     height: 100px;
 }
 
@@ -104,7 +104,7 @@ body
 }
 /*
 a.main_nav_item {
-    background: transparent url(/resources/graphics/home-navbar.gif) center left no-repeat;
+    background: transparent url(../../resources/graphics/home-navbar.gif) center left no-repeat;
     padding-left: 1.5em;
 }
 */
@@ -191,7 +191,7 @@ a.main_nav_item {
 {
     margin: 0;
     border: 0;
-    background: #a8a8a8; /* url(/resources/graphics/portlet-bg.png) center right no-repeat; */
+    background: #a8a8a8; /* url(../../resources/graphics/portlet-bg.png) center right no-repeat; */
     padding-top: 0.25em;
     padding-bottom: 0.25em;
     padding-left: 0.5em;
@@ -221,9 +221,7 @@ a.main_nav_item {
 #content
 {
     position: relative;
-    left: 15em;
-    top: 0;
-    right: 0;
+    padding-left: 15em;
 }
 
 .noportlets #content {
@@ -360,7 +358,7 @@ a.main_nav_item {
     margin-left: 0.5em;
     padding-left: 10px;
     color: white;
-    background: transparent url(/resources/graphics/required.png) center left no-repeat;
+    background: transparent url(../../resources/graphics/required.png) center left no-repeat;
 }
 
 .errorMessage 
@@ -504,14 +502,14 @@ a.main_nav_item {
     border-left: 1px solid #ccc;
     border-right: 1px solid #ccc;
 
-    background: transparent url(/resources/graphics/sort_asc.png) center right no-repeat;
+    background: transparent url(../../resources/graphics/sort_asc.png) center right no-repeat;
 }
 
 .kt_collection th.sort_on.sort_desc {
     border-left: 1px solid #ccc;
     border-right: 1px solid #ccc;
 
-    background: transparent url(/resources/graphics/sort_desc.png) center right no-repeat;
+    background: transparent url(../../resources/graphics/sort_desc.png) center right no-repeat;
 }
 
 .kt_collection th,
@@ -553,7 +551,7 @@ a.main_nav_item {
 
 .ktError p {
     padding-left: 25px;
-    background: transparent  url(/thirdparty/icon-theme/16x16/status/dialog-warning.png) center left no-repeat;
+    background: transparent  url(../../thirdparty/icon-theme/16x16/status/dialog-warning.png) center left no-repeat;
 }
 
 /* block level. */
@@ -567,14 +565,14 @@ a.main_nav_item {
 
 .ktInfo p {
     padding-left: 25px;
-    background: transparent  url(/thirdparty/icon-theme/16x16/status/dialog-information.png) center left no-repeat;
+    background: transparent  url(../../thirdparty/icon-theme/16x16/status/dialog-information.png) center left no-repeat;
 }
 
 
 /** portlet stuff. */
 #portlet-search-text {
     border: 1px solid black;
-    background: white url(/resources/graphics/search-button.png) center left no-repeat;
+    background: white url(../../resources/graphics/search-button.png) center left no-repeat;
     margin: 0.5em;
     padding: 3px;
     padding-left: 17px;
@@ -613,10 +611,10 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
 }
  
 /* FIXME when available icon-naming-conformant sets have better coverage, make these more accurate. */
-.ktAction.ktDelete { background: transparent url(/thirdparty/icon-theme/16x16/mimetypes/x-directory-trash.png) top left no-repeat; }
-.ktAction.ktEdit { background: transparent url(/thirdparty/icon-theme/16x16/actions/document-properties.png) top left no-repeat; }
-.ktAction.ktAddUser { background: transparent url(/thirdparty/icon-theme/16x16/actions/contact-new.png) top left no-repeat; }
-.ktAction.ktAddGroup { background: transparent url(/thirdparty/icon-theme/16x16/actions/contact-new.png) top left no-repeat; }
+.ktAction.ktDelete { background: transparent url(../../thirdparty/icon-theme/16x16/mimetypes/x-directory-trash.png) top left no-repeat; }
+.ktAction.ktEdit { background: transparent url(../../thirdparty/icon-theme/16x16/actions/document-properties.png) top left no-repeat; }
+.ktAction.ktAddUser { background: transparent url(../../thirdparty/icon-theme/16x16/actions/contact-new.png) top left no-repeat; }
+.ktAction.ktAddGroup { background: transparent url(../../thirdparty/icon-theme/16x16/actions/contact-new.png) top left no-repeat; }
 
 /* =========== standard listings. */
 
