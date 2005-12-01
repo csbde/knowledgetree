@@ -4,7 +4,7 @@
 #content h1.browse_collections {
     border: 1px solid #565963;
     height: 20px;
-    background: #a0a9b8 url(/resources/graphics/fahrner_browse.png) center left no-repeat;
+    background: #a0a9b8 url(../../resources/graphics/fahrner_browse.png) center left no-repeat;
     padding: 5px;
     color: white;
 }
@@ -15,7 +15,7 @@
 #content h1.preferences {
     border: 1px solid #565963;
     height: 20px;
-    background: #a0a9b8 url(/resources/graphics/fahrner_preferences.png) center left no-repeat;
+    background: #a0a9b8 url(../../resources/graphics/fahrner_preferences.png) center left no-repeat;
     padding: 5px;
     color: white;
 }
@@ -26,7 +26,7 @@
 #content h1.dashboard {
     border: 1px solid #565963;
     height: 40px;
-    background: #a0a9b8 url(/resources/graphics/fahrner_dashboard.png) center left no-repeat;
+    background: #a0a9b8 url(../../resources/graphics/fahrner_dashboard.png) center left no-repeat;
     padding: 5px;
     color: white;
 }
@@ -37,7 +37,7 @@
 #content h1.search {
     border: 1px solid #565963;
     height: 20px;
-    background: #a0a9b8 url(/resources/graphics/fahrner_search.png) center left no-repeat;
+    background: #a0a9b8 url(../../resources/graphics/fahrner_search.png) center left no-repeat;
     padding: 5px;
     color: white;
 }
@@ -47,7 +47,7 @@
 #content h1.preferences {
     border: 1px solid #565963;
     height: 20px;
-    background: #a0a9b8 url(/resources/graphics/fahrner_preferences.png) center left no-repeat;
+    background: #a0a9b8 url(../../resources/graphics/fahrner_preferences.png) center left no-repeat;
     padding: 5px;
     color: white;
 }
@@ -58,7 +58,7 @@
 #content h1.administration {
     border: 1px solid #565963;
     height: 20px;
-    background: #a0a9b8 url(/resources/graphics/fahrner_administration.png) center left no-repeat;
+    background: #a0a9b8 url(../../resources/graphics/fahrner_administration.png) center left no-repeat;
     padding: 5px;
     color: white;
 }
@@ -70,7 +70,7 @@
 #content h1.document_details {
     border: 1px solid #565963;
     height: 20px;
-    background: #a0a9b8 url(/resources/graphics/fahrner_details.png) center left no-repeat;
+    background: #a0a9b8 url(../../resources/graphics/fahrner_details.png) center left no-repeat;
     padding: 5px;
     color: white;
 }
