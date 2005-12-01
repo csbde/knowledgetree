@@ -31,6 +31,7 @@ class ManageHelpDispatcher extends KTAdminDispatcher {
         $aHelps =& KTHelpEntity::getList();
         $oTemplate = $oTemplating->loadTemplate("ktcore/manage_help");
         $aTemplateData = array(
+            "context" => &$this,
             "helps" => $aHelps,
             "helpreplacements" => $aHelpReplacements,
         );
@@ -43,6 +44,7 @@ class ManageHelpDispatcher extends KTAdminDispatcher {
         $oTemplating = new KTTemplating;
         $oTemplate = $oTemplating->loadTemplate("ktcore/manage_help_item");
         $aTemplateData = array(
+            "context" => &$this,
             "help" => $oHelpReplacement,
         );
         $this->aBreadcrumbs[] = array(
