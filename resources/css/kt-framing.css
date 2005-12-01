@@ -173,6 +173,7 @@ a.main_nav_item {
     margin: 0 10px 0 0 ;
     border: 0;
     padding: 0;
+    z-index: 2;  /*  IE layers this below the content bar. */
 }
 
 /* horrible, custom dashboard hack. */
