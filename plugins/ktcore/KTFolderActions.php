@@ -272,5 +272,6 @@ $oRegistry =& KTPluginRegistry::getSingleton();
 $oPlugin =& $oRegistry->getPlugin('ktcore.plugin');
 $oPlugin->registerAction('folderaction', 'KTBulkImportFolderAction', 'ktcore.actions.folder.bulkImport', 'folder/BulkImport.php');
 $oPlugin->registerAction('folderaction', 'KTBulkUploadFolderAction', 'ktcore.actions.folder.bulkUpload', 'folder/BulkUpload.php');
+$oPlugin->register();
 
 ?>
