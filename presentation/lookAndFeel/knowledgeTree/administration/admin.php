@@ -9,6 +9,7 @@ require_once(KT_LIB_DIR . "/plugins/KTAdminNavigation.php");
 
 class AdminSplashDispatcher extends KTAdminDispatcher {
     var $category = '';
+    var $sSection = 'administration';
     
     var $aBreadcrumbs = array(
         array('action' => 'administration', 'name' => 'Administration'),
