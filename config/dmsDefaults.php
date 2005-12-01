@@ -260,7 +260,7 @@ class KTInit {
 
     // {{{ guessRootUrl()
     function guessRootUrl() {
-        $urlpath = $_SERVER['PHP_SELF'];
+        $urlpath = KTUtil::getRequestScriptName($_SERVER);
         $bFound = false;
         $rootUrl = "";
         while ($urlpath) {
