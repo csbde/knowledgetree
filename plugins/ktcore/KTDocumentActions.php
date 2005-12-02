@@ -363,12 +363,6 @@ class KTDocumentMoveAction extends KTDocumentAction {
         return true;
     }
 
-    /*
-    function getURL() {
-        return sprintf("/control.php?action=%s&fDocumentIDs[]=%d&fReturnDocumentID=%d&fFolderID=%d", $this->sBuiltInAction, $this->oDocument->getID(), $this->oDocument->getID(), $this->oDocument->getFolderID());
-    }
-    */
-
     function do_main() {
         $this->oPage->setBreadcrumbDetails("move");
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/action/move');
