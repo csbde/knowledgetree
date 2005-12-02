@@ -114,13 +114,13 @@ class LoginPageDispatcher extends KTDispatcher {
         }
         $authenticated = KTAuthenticationUtil::checkPassword($oUser, $password);
 
-        if ($authenticated === false) {
-            $this->simpleRedirectToMain('Login failed.  Please check your username and password, and try again.', $url, $params);
+        if (PEAR::isError($authenticated)) {
+            $this->simpleRedirectToMain('Authentication failure.  Please try again.', $url, $params);
             exit(0);
         }
 
-        if (PEAR::isError($authenticated)) {
-            $this->simpleRedirectToMain('Authentication failure.  Please try again.', $url, $params);
+        if ($authenticated !== true) {
+            $this->simpleRedirectToMain('Login failed.  Please check your username and password, and try again.', $url, $params);
             exit(0);
         }
 
