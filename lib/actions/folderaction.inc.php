@@ -64,7 +64,7 @@ class KTFolderAction extends KTStandardDispatcher {
     }
 
     function getURL() {
-        return sprintf("/action.php/%s?fFolderId=%d", $this->sName, $this->oFolder->getID());
+        return sprintf("%s/action.php/%s?fFolderId=%d", $GLOBALS['KTRootUrl'], $this->sName, $this->oFolder->getID());
     }
 
     function getInfo() {
@@ -76,7 +76,7 @@ class KTFolderAction extends KTStandardDispatcher {
             'disabled' => $this->_disable(),
             'description' => $this->sDescription,
             'name' => $this->sDisplayName,
-            'url' => generateLink($this->getURL(), ""),
+            'url' => $this->getURL(),
             'disabled_text' => $this->_sDisabledText,
         );
         return $this->customiseInfo($aInfo);
@@ -143,19 +143,6 @@ class KTFolderActionUtil {
             $aObjects[] =& new $sClassName($oFolder, $oUser, $oPlugin);
         }
         return $aObjects;
-    }
-}
-
-class KTBuiltInFolderAction extends KTFolderAction {
-    var $sBuiltInAction;
-    function getURL() {
-        return sprintf("/control.php?action=%s&fFolderID=%d", $this->sBuiltInAction, $this->oFolder->getID());
-    }
-}
-
-class KTBuiltInFolderActionSingle extends KTBuiltInFolderAction {
-    function getURL() {
-        return sprintf("/control.php?action=%s&fFolderIDs[]=%d&fReturnFolderID=%d", $this->sBuiltInAction, $this->oFolder->getID(), $this->oFolder->getID());
     }
 }
 
