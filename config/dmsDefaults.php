@@ -353,6 +353,8 @@ set_error_handler(array('KTInit', 'handlePHPError'));
 $dbSupport = $KTInit->setupDB();
 $KTInit->setupRandomSeed();
 
+$GLOBALS['KTRootUrl'] = $oKTConfig->get('KnowledgeTree/rootUrl');
+
 require_once("$default->fileSystemRoot/lib/authentication/$default->authenticationClass.inc");
 
 // instantiate system settings class
