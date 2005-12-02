@@ -4,8 +4,10 @@
 {$context->oPage->requireJSResource("thirdpartyjs/MochiKit/Async.js")}
 
 {capture assign=sJS}
+var innerUrl = {$rootUrl};
 {literal}
-var baseUrl = "/presentation/lookAndFeel/knowledgeTree/ajaxConditional.php";
+
+var baseUrl = innerUrl + "/presentation/lookAndFeel/knowledgeTree/ajaxConditional.php";
 var undoStack = Array();
 
 /*  handle the conditional field changes.
