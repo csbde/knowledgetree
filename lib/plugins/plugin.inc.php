@@ -89,7 +89,7 @@ class KTPlugin {
         require_once(KT_LIB_DIR . '/actions/portletregistry.inc.php');
         require_once(KT_LIB_DIR . '/triggers/triggerregistry.inc.php');
         require_once(KT_LIB_DIR . '/plugins/pageregistry.inc.php');
-        require_once(KT_LIB_DIR .  '/authentication/authenticationproviderregistry.inc.php');
+        require_once(KT_LIB_DIR . '/authentication/authenticationproviderregistry.inc.php');
         require_once(KT_LIB_DIR . "/plugins/KTAdminNavigation.php"); 
         require_once(KT_LIB_DIR . "/dashboard/dashletregistry.inc.php"); 
 
