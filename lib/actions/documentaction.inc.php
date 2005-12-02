@@ -70,7 +70,7 @@ class KTDocumentAction extends KTStandardDispatcher {
     }
 
     function getURL() {
-        return sprintf("/action.php/%s?fDocumentId=%d", $this->sName, $this->oDocument->getID());
+        return sprintf("%s/action.php/%s?fDocumentId=%d", $GLOBALS['KTRootUrl'], $this->sName, $this->oDocument->getID());
     }
 
     function getInfo() {
@@ -79,9 +79,6 @@ class KTDocumentAction extends KTStandardDispatcher {
         }
 
         $url = $this->getURL();
-        if (substr($url, 0, 1) == '/') {
-            $url = generateLink($url, "");
-        }
 
         $aInfo = array(
             'disabled' => $this->_disable(),
@@ -193,20 +190,5 @@ class KTDocumentActionUtil {
         return $aObjects;
     }
 }
-
-class KTBuiltInDocumentAction extends KTDocumentAction {
-    var $sBuildInAction;
-    function getURL() {
-        return sprintf("/control.php?action=%s&fDocumentID=%d", $this->sBuiltInAction, $this->oDocument->getID());
-    }
-}
-
-class KTBuiltInDocumentActionSingle extends KTBuiltInDocumentAction {
-    function getURL() {
-        return sprintf("/control.php?action=%s&fDocumentIDs[]=%d&fReturnDocumentID=%d", $this->sBuiltInAction, $this->oDocument->getID(), $this->oDocument->getID());
-    }
-}
-
-/* require_once(KT_DIR . '/plugins/ktcore/documentaction.inc.php'); */
 
 ?>
