@@ -290,8 +290,10 @@ class LDAPAuthenticator extends Authenticator {
     function checkPassword($oUser, $sPassword) {
         $aDetails = unserialize($oUser->getAuthenticationDetails());
         if ($this->oLdap->connect()) {
-            // lookup dn from username - must exist in db
             $sBindDn = $aDetails['dn'];
+            if ($this->sServerType == "ActiveDirectory") {
+                $sBindDn = sprintf("%s@%s", $oUser->getUserName(), $this->sLdapDomain);
+            }
             if ($this->oLdap->authBind($sBindDn, $sPassword)) {
                 return true;
             } else {
