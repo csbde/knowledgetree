@@ -44,7 +44,7 @@ class KTPlugin {
     }
 
     function getPagePath($sPath) {
-        return sprintf('/plugin.php/%s/%s', $this->sNamespace, $sPath);
+        return sprintf($GLOBALS['KTRootUrl'] . '/plugin.php/%s/%s', $this->sNamespace, $sPath);
     }
 
     function registerAuthenticationProvider($sName, $sClass, $sNamespace, $sFilename = null) {
