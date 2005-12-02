@@ -360,7 +360,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         $oUser =& User::createFromArray(array(
             "sUsername" => $username,
             "sName" => $name,
-            "sPassword" => $password,
+            "sPassword" => md5($password),
             "iQuotaMax" => 0,
             "iQuotaCurrent" => 0,
             "sEmail" => $email_address,
