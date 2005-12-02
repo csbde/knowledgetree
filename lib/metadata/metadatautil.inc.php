@@ -136,7 +136,14 @@ class KTMetadataUtil {
 
         $oMasterField =& DocumentField::get($oFieldset->getMasterFieldId());
         $aSelectedFields = array_keys($aCurrentSelections);
-        $oValueInstance = KTValueInstance::getByLookupSingle($aCurrentSelections[$oMasterField->getId()]);
+        
+        $field = $oMasterField->getId();
+        $val = $aCurrentSelections[$field];
+        $lookup = MetaData::getByValueAndDocumentField($val, $field);
+        
+        $oValueInstance = KTValueInstance::getByLookupSingle($lookup);
+
+        
 
         $aValues = KTMetadataUtil::_getNextForBehaviour($oValueInstance->getBehaviourId(), $aCurrentSelections);
         $GLOBALS['default']->log->debug('KTMetadataUtil::getNext, values are ' . print_r($aValues, true));

@@ -3,6 +3,7 @@
 
 function getBindTarget(fieldset) {
     var possibles = getElementsByTagAndClassName('DIV','conditional_target', fieldset);
+	
     return possibles[0];
 }
 
@@ -272,7 +273,8 @@ function clearUnfixedWidgets(fieldset) {
  */
 
 function updateFieldset(fieldset) {
-   var targeturl = '/presentation/lookAndFeel/knowledgeTree/ajaxConditional.php'; // test_metadata_update.txt';
+   var baseurl = getElement('kt-core-baseurl').value;
+   var targeturl = baseurl + '/presentation/lookAndFeel/knowledgeTree/ajaxConditional.php'; // test_metadata_update.txt';
    simpleLog('DEBUG','AJAX function called: updateFieldset');
 
    var formdata = parseFieldsetToForm(fieldset);

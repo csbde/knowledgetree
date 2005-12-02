@@ -14,7 +14,9 @@
 {capture assign=sJavascript}
 {literal}
 function swapInItem(elementId, req) {
+    
     var cp = getElement(elementId);
+    
     cp.innerHTML = req.responseText;
     initialiseConditionalFieldsets();
 }
@@ -28,11 +30,12 @@ function swapElementFromRequest(elementId, url) {
     deff.addCallback(partial(swapInItem, elementId));
     var cp = getElement(elementId);
     cp.innerHTML="loading...";
+    
 }
 
 function getMetadataForType(id) {
     swapElementFromRequest('type_metadata_fields',
-        'http://{/literal}{$config->get('KnowledgeTree/serverName')}{literal}/presentation/lookAndFeel/knowledgeTree/documentmanagement/getTypeMetadataFields.php?fDocumentTypeID='
+        '{/literal}{$rootUrl}{literal}/presentation/lookAndFeel/knowledgeTree/documentmanagement/getTypeMetadataFields.php?fDocumentTypeID='
         + id);
 }
 
