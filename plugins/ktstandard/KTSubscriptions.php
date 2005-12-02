@@ -7,6 +7,9 @@ require_once(KT_LIB_DIR . '/subscriptions/SubscriptionManager.inc');
 
 require_once(KT_LIB_DIR . '/plugins/pluginregistry.inc.php');
 require_once(KT_LIB_DIR . '/plugins/plugin.inc.php');
+require_once(KT_LIB_DIR . '/widgets/portlet.inc.php');
+require_once(KT_LIB_DIR . '/actions/documentaction.inc.php');
+require_once(KT_LIB_DIR . '/actions/folderaction.inc.php');
 
 class KTSubscriptionPlugin extends KTPlugin {
     var $sNamespace = "ktstandard.subscriptions.plugin";
