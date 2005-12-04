@@ -311,7 +311,7 @@ class KTDocumentDeleteAction extends KTDocumentAction {
             }
         }
 
-        controllerRedirect('viewDocument', 'fDocumentId=' .  $this->oDocument->getId());
+        controllerRedirect('browse', 'fFolderId=' .  $this->oDocument->getFolderId());
         exit(0);
     }
 }
