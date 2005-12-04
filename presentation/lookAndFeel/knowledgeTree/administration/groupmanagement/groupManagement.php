@@ -378,6 +378,17 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
 		$this->commitTransaction();
 		$this->successRedirectToMain('Group "' . $group_name . '" created.');
 	}
+
+    function do_deleteGroup() {
+        $aErrorOptions = array(
+            'redirect_to' => array('main'),
+        );
+        $oGroup = $this->oValidator->validateGroup($_REQUEST['group_id'], $aErrorOptions);
+        $sGroupName = $oGroup->getName();
+        $res = $oGroup->delete();
+        $this->oValidator->notError($res, $aErrorOptions);
+        $this->successRedirectToMain(sprintf('Group "%s" deleted.', $sGroupName));
+    }
 	
 }
 
