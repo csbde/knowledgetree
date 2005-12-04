@@ -13,7 +13,7 @@ class KTFolderAction extends KTStandardDispatcher {
     var $_bDisabled;
     var $_sDisabledText = null;
 
-    var $sSection = "view_details";
+    var $sSection = "browse";
     var $aBreadcrumbs = array(
         array('action' => 'browse', 'name' => 'Browse'),
     );
