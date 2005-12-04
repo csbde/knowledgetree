@@ -122,7 +122,7 @@ class KTFolderAddFolderAction extends KTFolderAction {
     var $_sShowPermission = "ktcore.permissions.write";
 
     function do_main() {
-        $this->oPage->setBreadcrumbDetails("add document");
+        $this->oPage->setBreadcrumbDetails("add folder");
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/action/addFolder');
         $fields = array();
         $fields[] = new KTStringWidget('Folder name', '', 'name', "", $this->oPage, true);
