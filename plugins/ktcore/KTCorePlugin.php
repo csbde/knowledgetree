@@ -20,9 +20,11 @@ require_once('KTDashletPlugins.php');
 
 
 $oPlugin->registerAdminPage('authentication', 'KTAuthenticationAdminPage', 'principals', 'Authentication', 'FIXME: describe authentication', 'authentication/authenticationadminpage.inc.php');
+$oPlugin->registeri18n('knowledgeTree', KT_DIR . '/i18n');
 $oPlugin->register();
 
 require_once('assistance/KTUserAssistance.php');
 
 require_once(KT_LIB_DIR . '/storage/ondiskpathstoragemanager.inc.php');
 
+require_once(KT_LIB_DIR . '/i18n/i18nregistry.inc.php');
