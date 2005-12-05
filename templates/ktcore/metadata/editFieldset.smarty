@@ -1,8 +1,8 @@
-<h2>Fieldset: {$oFieldset->getName()|escape}</h2>
+<h2>{i18n}Fieldset{/i18n}: {$oFieldset->getName()|escape}</h2>
 
 {if $sIncomplete}
 <div class="ktError">
-<p><strong>Incomplete</strong>This conditional fieldset cannot be used: <br />
+<p><strong>{i18n}Incomplete{/i18n}: </strong>{i18n}This conditional fieldset cannot be used{/i18n}: <br />
 {$sIncomplete|escape}</p>
 </div>
 {/if}
@@ -10,14 +10,14 @@
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 
 <fieldset>
-<legend>Fieldset properties</legend>
+<legend>{i18n}Fieldset properties{/i18n}</legend>
 
 <p class="descriptiveText">
   <strong>FIXME</strong> add help text for fieldset editing.
 </p>
 
-<input type="hidden" name="fFieldsetId" value="{$oFieldset->getId()}">
-<input type="hidden" name="action" value="editobject">
+<input type="hidden" name="fFieldsetId" value="{$oFieldset->getId()}" />
+<input type="hidden" name="action" value="editobject" />
 
 
 
@@ -29,19 +29,19 @@
 <div class="field">
 <label>Conditional</label>
 <p class="descriptiveText">
-A <strong>conditional</strong> fieldset contains only lookup fields.  The values for each
-field can depend on the user's selections for the others.
+{i18n}A <strong>conditional</strong> fieldset contains only lookup fields.  The values for each
+field can depend on the user's selections for the others.{/i18n}
 </p>
 {if $oFieldset->getIsConditional() }
-    Yes
+    {i18n}Yes{/i18n}
 {else}
-    No
+    {i18n}No{/i18n}
 {/if}
 </div>
 
 
 <div class="form_actions">
-<input type="submit" name="submit" value="Change">
+<input type="submit" name="submit" value="{i18n}Change{/i18n}" />
 </div>
 </fieldset>
 </form>
@@ -58,11 +58,11 @@ field can depend on the user's selections for the others.
 
 {if ($oFieldset->getIsConditional() || $showForm)}
 <fieldset>
-<legend>Conditionality</legend>
+<legend>{i18n}Conditionality{/i18n}</legend>
 
 <p class="descriptiveText">
-A <strong>conditional</strong> fieldset contains only lookup fields.  The values for each
-field can depend on the user's selections for the others.
+{i18n}A <strong>conditional</strong> fieldset contains only lookup fields.  The values for each
+field can depend on the user's selections for the others.{/i18n}
 </p>
 
 
@@ -70,15 +70,15 @@ field can depend on the user's selections for the others.
 {if $oFieldset->getIsConditional() }
 
 <form action="{$smarty.server.PHP_SELF}" method="GET">
-<input type="hidden" name="fFieldsetId" value="{$oFieldset->getId()}">
-<input type="hidden" name="action" value="manageConditional">
-<input type="submit" name="submit" value="Manage conditional">
+<input type="hidden" name="fFieldsetId" value="{$oFieldset->getId()}" />
+<input type="hidden" name="action" value="manageConditional" />
+<input type="submit" name="submit" value="{i18n}Manage conditional{/i18n}" />
 </form>
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
-<input type="hidden" name="fFieldsetId" value="{$oFieldset->getId()}">
-<input type="hidden" name="action" value="removeConditional">
-<input type="submit" name="submit" value="Remove conditional">
+<input type="hidden" name="fFieldsetId" value="{$oFieldset->getId()}" />
+<input type="hidden" name="action" value="removeConditional" />
+<input type="submit" name="submit" value="{i18n}Remove conditional{/i18n}" />
 </form>
 
 {else}
@@ -92,9 +92,9 @@ field can depend on the user's selections for the others.
 
 {if $showForm}
 <form action="{$smarty.server.PHP_SELF}" method="POST">
-<input type="hidden" name="fFieldsetId" value="{$oFieldset->getId()}">
-<input type="hidden" name="action" value="becomeConditional">
-<input type="submit" name="submit" value="Become conditional">
+<input type="hidden" name="fFieldsetId" value="{$oFieldset->getId()}" />
+<input type="hidden" name="action" value="becomeConditional" />
+<input type="submit" name="submit" value="{i18n}Become conditional{/i18n}" />
 </form>
 {/if}
 
@@ -104,10 +104,10 @@ field can depend on the user's selections for the others.
 
 </fieldset>
 {else}
-<div class="ktInfo"><p>This fieldset cannot be made conditional, since it contains fields which are not lookup types.</p></div>
+<div class="ktInfo"><p>{i18n}This fieldset cannot be made conditional, since it contains fields which are not lookup types.{/i18n}</p></div>
 {/if}
 
-<h3>Fieldset members</h3>
+<h3>{i18n}Fieldset members{/i18n}</h3>
 
 <p class="descriptiveText">
   <strong>FIXME</strong> add help text for fieldset members.
@@ -117,22 +117,22 @@ field can depend on the user's selections for the others.
 {if $oFieldset->getFields() }
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <fieldset>
-<legend>Existing members</legend>
+<legend>{i18n}Existing members{/i18n}</legend>
 
-<input type="hidden" name="fFieldsetId" value="{$oFieldset->getId()}">
-<input type="hidden" name="action" value="removefields">
+<input type="hidden" name="fFieldsetId" value="{$oFieldset->getId()}" />
+<input type="hidden" name="action" value="removefields" />
 <ul>
 {foreach from=$oFieldset->getFields() item=oField}
   <li><input type="checkbox" name="fields[]"
-value="{$oField->getId()}">
+value="{$oField->getId()}" />
 {$oField->getName()|escape}
 (<a
-href="{$smarty.server.PHP_SELF}?action=editField&fFieldId={$oField->getId()}&fFieldsetId={$oFieldset->getId()}">edit</a>)
+href="{$smarty.server.PHP_SELF}?action=editField&fFieldId={$oField->getId()}&fFieldsetId={$oFieldset->getId()}">{i18n}edit{/i18n}</a>)
 </li>
 {/foreach}
 </ul>
 <div class="form_actions">
-  <input type="submit" name="submit" value="Remove fields">
+  <input type="submit" name="submit" value="{i18n}Remove fields{/i18n}" />
 </div>
 </fieldset>
 </form>
@@ -142,7 +142,7 @@ href="{$smarty.server.PHP_SELF}?action=editField&fFieldId={$oField->getId()}&fFi
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 
 <fieldset>
-<legend>Add a new field</legend>
+<legend>{i18n}Add a new field{/i18n}</legend>
 
 <p class="descriptiveText"><strong>FIXME</strong> add help text for field creation.</p>
 
@@ -156,7 +156,7 @@ href="{$smarty.server.PHP_SELF}?action=editField&fFieldId={$oField->getId()}&fFi
 {/foreach}
 
 <div class="form_actions">
-  <input type="submit" name="submit" value="Add field">
+  <input type="submit" name="submit" value="{i18n}Add field{/i18n}" />
 </div>
 </fieldset>
 </form>

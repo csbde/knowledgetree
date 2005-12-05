@@ -1,20 +1,21 @@
-<h1>Document types</h1>
+<h2>{i18n}Document types{/i18n}</h2>
 
-<p>Select document types allowed in folder:</p>
+<p>{i18n}Select document types allowed in folder{/i18n}:</p>
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <input type="hidden" name="action" value="assign">
 <input type="hidden" name="fFolderId" value="{$oFolder->getId()}">
 <table class="prettysw" cellspacing="0" cellpadding="0">
-<tr><th>Folder</th><td>{$oFolder->getName()}</td></tr>
-<tr><th>Restrict document types</th><td>{boolean_checkbox name="restricted" bool=$oFolder->getRestrictDocumentTypes() }</td></tr>
-<tr><th>Document Types</th><td>
+<tr><th>{i18n}Folder{/i18n}</th><td>{$oFolder->getName()}</td></tr>
+<tr><th>{i18n}Restrict document types{/i18n}</th><td>{boolean_checkbox name="restricted" bool=$oFolder->getRestrictDocumentTypes() }</td></tr>
+<tr><th>{i18n}Document Types{/i18n}</th><td>
 {entity_select entities=$document_types selected=$selected_types name="document_types[]" multiple="yes"}
 </td></tr>
 </table>
 
-<input type="submit" name="submit" value="Assign">
+<input type="submit" name="submit" value="{i18n}Assign{/i18n}" />
 </form>
 
 {assign var="iFolderId" value=$oFolder->getId()}
-<a href="{"editFolder"|generateControllerUrl:"fFolderID=$iFolderId"}">Back to folder</a>
+<a
+href="{"editFolder"|generateControllerUrl:"fFolderID=$iFolderId"}">{i18n}Back to folder{/i18n}</a>

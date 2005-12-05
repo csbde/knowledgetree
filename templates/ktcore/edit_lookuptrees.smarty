@@ -37,12 +37,12 @@
 {$context->oPage->requireJSResource("thirdpartyjs/MochiKit/Iter.js")}
 {$context->oPage->requireJSResource("thirdpartyjs/MochiKit/DOM.js")}
 
-<h2>Edit Lookup Tree: {$field->getName()}</h2>
+<h2>{i18n}Edit Lookup Tree{/i18n}: {$field->getName()}</h2>
 
 
 <form>
 <fieldset>
-  <legend>Add New Subcategory</legend>
+  <legend>{i18n}Add New Subcategory{/i18n}</legend>
   
   
   
@@ -54,20 +54,20 @@
 <input type="text" name="category_name"/>
 
 <div class="form_actions">
-  <input type="submit" name="submit" value="add new category" />
+  <input type="submit" name="submit" value="{i18n}add new category{/i18n}" />
 </div>
 </fieldset>
 </form>
 {if ($currentNode != 0)}
 {if (empty($freechildren))}
-<p>No free keywords.  Use the "unlink" action on a keyword to 
-make it available.</p>
+<p>{i18n}No free keywords.  Use the "unlink" action on a keyword to 
+make it available.{/i18n}</p>
 {else}
 <form>
 <fieldset>
-  <legend>Link free keywords.</legend>
+  <legend>{i18n}Link free keywords.{/i18n}</legend>
   
-<p>Category: <strong>{if ($currentNode == 0)}
+<p>{i18n}Category{/i18n}: <strong>{if ($currentNode == 0)}
 Root
 {else}
 {$tree->mapnodes[$currentNode]->getName()}
@@ -87,7 +87,7 @@ Root
 </select>
 
 <div class="form_actions">
-  <input type="submit" name="submit" value="Add to category" />
+  <input type="submit" name="submit" value="{i18n}Add to category{/i18n}" />
 </div>
 </fieldset>
 </form>
@@ -95,10 +95,10 @@ Root
 {/if}
 
 
-<h2>Preview</h2>
+<h2>{i18n}Preview{/i18n}</h2>
 <div class="helpText">
-    Use the +/- arrows to open or close the tree.  Bold items are metadata keywords.
-    To edit a category (including adding or removing keywords) click on the "edit" link.
+    {i18n}Use the +/- arrows to open or close the tree.  Bold items are metadata keywords.
+    To edit a category (including adding or removing keywords) click on the "edit" link.{/i18n}
 </div>
 
 {$renderedTree}

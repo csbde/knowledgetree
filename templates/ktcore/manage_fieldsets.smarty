@@ -1,10 +1,10 @@
-<h2>Existing Fieldsets</h2>
+<h2>{i18n}Existing Fieldsets{/i18n}</h2>
 <table class="pretty" cellspacing="0" cellpadding="0" border="0">
    <thead>
       <tr>
-        <th>Human Name</th>
-        <th>Namespace</th>
-        <th colspan="2">Manage</th>
+        <th>{i18n}Human Name{/i18n}</th>
+        <th>{i18n}Namespace{/i18n}</th>
+        <th colspan="2">{i18n}Manage{/i18n}</th>
       </tr>
    </thead>
    { foreach item=oFieldSet from=$fieldsets }
@@ -18,14 +18,14 @@
      
      <td>
        <a
-           href="{$smarty.server.PHP_SELF}?action=editFieldset&id={$oFieldSet->getId()}">Edit</a>
+           href="{$smarty.server.PHP_SELF}?action=editFieldset&id={$oFieldSet->getId()}">{i18n}Edit{/i18n}</a>
      </td>
      <td>
        {if $oFieldSet->bMandatory == false}
        <a
-           href="{$smarty.server.PHP_SELF}?action=deleteFieldset&id={$oFieldSet->getId()}">Delete</a>
+           href="{$smarty.server.PHP_SELF}?action=deleteFieldset&id={$oFieldSet->getId()}">{i18n}Delete{/i18n}</a>
        {else}
-       Built-in set.
+       {i18n}Built-in set.{/i18n}
        {/if}
      </td>
     
@@ -33,22 +33,22 @@
    { /foreach }
 </table>
 
-<h2>Create a new Fieldset</h2>
+<h2>{i18n}Create a new Fieldset{/i18n}</h2>
 
 <form>
 <input type="hidden" name="action" value="newFieldset">
 <table>
 <tr>
-<td>Name:</td>
+<td>{i18n}Name{/i18n}:</td>
 <td><input type="text" name="name" value=""></td>
 </tr>
 <tr>
-<td>Namespace:</td>
+<td>{i18n}Namespace{/i18n}:</td>
 <td><input type="text" name="namespace" value="http://knowledgetree.jamwarehouse.com/fieldsets/custom/"></td>
 </tr>
 <tr>
 <td colspan="2" align="right">
-<input type="submit" name="submit" value="Create Fieldset">
+<input type="submit" name="submit" value="{i18n}Create Fieldset{/i18n}">
 </td>
 </tr>
 </table>
