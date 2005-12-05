@@ -65,7 +65,44 @@ class KTSmartyTemplate extends KTTemplate {
         $smarty->register_function('boolean_checkbox', array('KTSmartyTemplate', 'boolean_checkbox'));
         $smarty->register_function('entity_checkboxes', array('KTSmartyTemplate', 'entity_checkboxes'));
         $smarty->register_function('entity_radios', array('KTSmartyTemplate', 'entity_radios'));
+        $smarty->register_block('i18n', array('KTSmartyTemplate', 'i18n_block'), false);
         return $smarty->fetch($this->sPath);
+    }
+
+    function _i18n_get_args($arr, $var) {
+        if (!is_array($arr)) {
+            $arr = array();
+        }
+        if (substr($var[0], 0, 4) == "arg_") {
+            $arr['#' . substr($var[0], 4) . '#'] = $var[1];
+        }
+        return $arr;
+    }
+
+    function i18n_block($params, $content, &$smarty, &$repeat) {
+        if (empty($content)) {
+            return;
+        }
+        if (!empty($params)) {
+            $flattened = array_map(null, array_keys($params), array_values($params));
+            $replacements = array_reduce($flattened, array('KTSmartyTemplate', '_i18n_get_args'));
+        } else {
+            $replacements = array();
+        }
+        $sDomain = KTUtil::arrayGet($params, 'i18n_domain');
+        if (empty($sDomain)) {
+            $sDomain = $smarty->get_template_vars('i18n_domain');
+        }
+        if (empty($sDomain)) {
+            $sDomain = 'knowledgeTree';
+        }
+        putenv("LANG=de_DE");
+        setlocale(LC_ALL, 'de_DE');
+        $oRegistry =& KTi18nRegistry::getSingleton();
+        $oi18n = $oRegistry->geti18n($sDomain);
+        $content = trim($content);
+        $content = $oi18n->gettext($content);
+        return str_replace(array_keys($replacements), array_values($replacements), $content);
     }
 
     function entity_select ($params, &$smarty) {
