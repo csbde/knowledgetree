@@ -46,6 +46,7 @@ if (checkSessionAndRedirect(false)) {
             $url = $url . "&redirect=" . $redirect;
         }
         redirect($url);
+        exit(0);
     }
 }
 
