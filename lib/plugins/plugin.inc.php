@@ -13,6 +13,7 @@ class KTPlugin {
     var $_aAdminCategories = array();
     var $_aAdminPages = array();
     var $_aDashlets = array();
+    var $_ai18n = array();
 
     function KTPlugin($sFilename = null) {
         $this->sFilename = $sFilename;
@@ -68,6 +69,11 @@ class KTPlugin {
         $this->_aDashlets[$sNamespace] = array($sClassName, $sNamespace, $sFilename, $this->sNamespace);
     }
 
+    function registeri18n($sDomain, $sPath) {
+        $sPath = $this->_fixFilename($sPath);
+        $this->_ai18n[$sDomain] = array($sDomain, $sPath);
+    }
+
     function _fixFilename($sFilename) {
         if (empty($sFilename)) {
             $sFilename = $this->sFilename;
@@ -92,6 +98,7 @@ class KTPlugin {
         require_once(KT_LIB_DIR . '/authentication/authenticationproviderregistry.inc.php');
         require_once(KT_LIB_DIR . "/plugins/KTAdminNavigation.php"); 
         require_once(KT_LIB_DIR . "/dashboard/dashletregistry.inc.php"); 
+        require_once(KT_LIB_DIR . "/i18n/i18nregistry.inc.php"); 
 
         $oPRegistry =& KTPortletRegistry::getSingleton();
         $oTRegistry =& KTTriggerRegistry::getSingleton();
@@ -100,6 +107,7 @@ class KTPlugin {
         $oAPRegistry =& KTAuthenticationProviderRegistry::getSingleton();
         $oAdminRegistry =& KTAdminNavigationRegistry::getSingleton(); 
         $oDashletRegistry =& KTDashletRegistry::getSingleton();
+        $oi18nRegistry =& KTi18nRegistry::getSingleton();
 
         foreach ($this->_aPortlets as $k => $v) {
             call_user_func_array(array(&$oPRegistry, 'registerPortlet'), $v);
@@ -131,6 +139,10 @@ class KTPlugin {
         
         foreach ($this->_aDashlets as $k => $v) {
             call_user_func_array(array(&$oDashletRegistry, 'registerDashlet'), $v);
+        }
+
+        foreach ($this->_ai18n as $k => $v) {
+            call_user_func_array(array(&$oi18nRegistry, 'registeri18n'), $v);
         }
     }
 }
