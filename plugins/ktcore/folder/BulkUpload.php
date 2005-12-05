@@ -66,7 +66,7 @@ class KTBulkUploadFolderAction extends KTFolderAction {
             'metadata' => $aFields,
         );
 
-        $fs =& new KTZipImportStorage($aFile['tmp_nam']);
+        $fs =& new KTZipImportStorage($aFile['tmp_name']);
         $bm =& new KTBulkImportManager($this->oFolder, $fs, $this->oUser, $aOptions);
         $this->startTransaction();
         $res = $bm->import();
