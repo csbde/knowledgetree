@@ -1,4 +1,4 @@
-<h2>Group Administration</h2>
+<h2>{i18n}Group Administration{/i18n}</h2>
 
 <p class="descriptiveText"><strong>FIXME</strong> Overview of groups.</p>
 
@@ -8,18 +8,18 @@
 <!-- we roll both in here. -->
 <form action="{$smarty.server.PHP_SELF}" method="GET">
 <fieldset>
-<legend>Search for groups</legend>
-<p class="descriptiveText">Since there may be many groups in the system, please 
-type a few letters from the group's name to begin.
-Alternatively, <a href="?show_all=1">view all groups</a> (note that this may be
-very slow if you have many groups.</p>
+<legend>{i18n}Search for groups{/i18n}</legend>
+<p class="descriptiveText">{i18n}Since there may be many groups in the
+system, please type a few letters from the group's name to begin.
+Alternatively, <a href="?show_all=1">view all groups</a> (note that this
+may be very slow if you have many groups.{/i18n}</p>
 
 {foreach item=oWidget from=$search_fields}
   {$oWidget->render()}
 {/foreach}
 
 <div class="form_actions">
-   <input type="submit" value="search for groups" />
+   <input type="submit" value="{i18n}search for groups{/i18n}" />
 </div class="form_actions">
 </fieldset>
 </form>
@@ -27,12 +27,12 @@ very slow if you have many groups.</p>
 <table class="listing">
 <thead>
    <tr>
-      <th>Group Name</th>
-      <th>Unit Name</th>
-      <th>Edit</th>
-      <th>Manage Users</th>
-      <th>Manage sub-groups</th>
-      <th>Delete</th>
+      <th>{i18n}Group Name{/i18n}</th>
+      <th>{i18n}Unit Name{/i18n}</th>
+      <th>{i18n}Edit{/i18n}</th>
+      <th>{i18n}Manage Users{/i18n}</th>
+      <th>{i18n}Manage sub-groups{/i18n}</th>
+      <th>{i18n}Delete{/i18n}</th>
    </tr>
 </thead>
 <tbody>
@@ -41,20 +41,24 @@ very slow if you have many groups.</p>
      {foreach item=oGroup from=$search_results}
      <tr>
         <td>{$oGroup->getName()}</td>
-        <td>{if (!$oGroup->hasUnit())}<span class="descriptiveText">not part of a unit</span>{else} 
+        <td>{if (!$oGroup->hasUnit())}<span class="descriptiveText">{i18n}not part of a unit{/i18n}</span>{else} 
             {$context->_getUnitName($oGroup)}
             
         {/if}</td>
-        <td><a href="?action=editGroup&group_id={$oGroup->getId()}" class="ktAction ktEdit">Edit</a></td>
-        <td><a href="?action=manageUsers&group_id={$oGroup->getId()}">Manage Users</a></td>  
-        <td><a href="?action=manageSubgroups&group_id={$oGroup->getId()}">Manage sub-groups</a></td>
-        <td><a href="?action=deleteGroup&group_id={$oGroup->getId()}" class="ktAction ktDelete">Delete</a></td>
+        <td><a href="?action=editGroup&group_id={$oGroup->getId()}"
+class="ktAction ktEdit">{i18n}Edit{/i18n}</a></td>
+        <td><a
+href="?action=manageUsers&group_id={$oGroup->getId()}">{i18n}Manage Users{/i18n}</a></td>  
+        <td><a
+href="?action=manageSubgroups&group_id={$oGroup->getId()}">{i18n}Manage sub-groups{/i18n}</a></td>
+        <td><a href="?action=deleteGroup&group_id={$oGroup->getId()}"
+class="ktAction ktDelete">{i18n}Delete{/i18n}</a></td>
      </tr>   
      {/foreach}
    {else}  
    <tr>
       <td colspan="7" class="ktInfo">
-         <p>No search specified, or no results for your search.</p>
+         <p>{i18n}No search specified, or no results for your search.{/i18n}</p>
       </td>
    </tr>
    {/if}

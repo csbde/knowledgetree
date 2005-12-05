@@ -1,19 +1,19 @@
-<h2>Create a new Group</h2>
+<h2>{i18n}Create a new Group{/i18n}</h2>
 
-<p class="descriptiveText">Create a new group.</p>
+<p class="descriptiveText">{i18n}Create a new group.{/i18n}</p>
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
    <input type="hidden" name="action" value="createGroup" />
    
    <fieldset>
-      <legend>Change Group Details</legend>
+      <legend>{i18n}Change Group Details{i18n}</legend>
       <p class="descriptiveText"><strong>FIXME</strong> brief overview of group editing.</p>
       {foreach item=oWidget from=$add_fields}
         {$oWidget->render()}
       {/foreach}
       <div class="form_actions">
-         <input type="submit" value="create group" />
-         <a href="?action=main" class="ktCancelLink">Cancel</a>
+         <input type="submit" value="{i18n}create group{/i18n}" />
+         <a href="?action=main" class="ktCancelLink">{i18n}Cancel{/i18n}</a>
       </div>
    </fieldset>
    </form>

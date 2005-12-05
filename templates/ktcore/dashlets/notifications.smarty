@@ -1,4 +1,4 @@
-<h2>Items that require your attention</h2>
+<h2>{i18n}Items that require your attention{/i18n}</h2>
 {if (!empty($notifications))}
 <dl>
 {foreach item=oNotification from=$notifications}
@@ -6,5 +6,5 @@
 {/foreach}
 </dl>
 {else}
-<div class="ktInfo"><p>No items require your attention.</p></div>
+<div class="ktInfo"><p>{i18n}No items require your attention.{/i18n}</p></div>
 {/if}

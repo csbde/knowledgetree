@@ -1,41 +1,42 @@
-<h2>Add a user</h2>
+<h2>{i18n}Add a user{/i18n}</h2>
 
 <p class="descriptiveText"><strong>FIXME</strong> brief overview of user management.</p>
 
 {if $authentication_sources}
    <form action="{$smarty.server.PHP_SELF}" method="POST">
    <input type="hidden" name="action" value="addUserFromSource" />
-   <fieldset><legend>Add a user from an authentication source</legend>
+   <fieldset><legend>{i18n}Add a user from an authentication source{/i18n}</legend>
 
-<p class="descriptiveText">Instead of manually creating the user within
+<p class="descriptiveText">{i18n}Instead of manually creating the user within
 the document management system, the user can be found within an
 authentication source (such as an LDAP directory) that has already been
 configured.  This ensures that the user is correctly set up with limited
 intervention from the administrator, and that the user will not need to
-remember an additional password for the document management system.</p>
+remember an additional password for the document management
+system.{/i18n}</p>
 
    {entity_select name="source_id" entities=$authentication_sources}
    <div class="form_actions ">
-     <input type="submit" name="submit" value="Add from source" />
+     <input type="submit" name="submit" value="{i18n}Add from source{/i18n}" />
    </div>
    </fieldset>
    </form>
 </p>
 
-<p class="descriptiveText">Alternatively, you can manually create a user
-within KnowledgeTree below.</p>
+<p class="descriptiveText">{i18n}Alternatively, you can manually create a user
+within KnowledgeTree below.{/i18n}</p>
 {/if}
 
    <form action="{$smarty.server.PHP_SELF}" method="POST">
    <input type="hidden" name="action" value="createUser" />
    <fieldset>
-      <legend>Create a new user</legend>
+      <legend>{i18n}Create a new user{/i18n}</legend>
       {foreach item=oWidget from=$add_fields}
         {$oWidget->render()}
       {/foreach}
       <div class="form_actions">
-         <input type="submit" value="create user" />
-         <a href="?action=main" class="ktCancelLink">Cancel</a>
+         <input type="submit" value="{i18n}create user{/i18n}" />
+         <a href="?action=main" class="ktCancelLink">{i18n}Cancel{/i18n}</a>
       </div>
    </fieldset>
    </form>

@@ -1,27 +1,28 @@
-<h2>Edit User Details</h2>
+<h2>{i18n}Edit User Details{/i18n}</h2>
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
    <input type="hidden" name="action" value="saveUser" />
    <input type="hidden" name="user_id" value="{$edit_user->getId()}" />
    <fieldset>
-      <legend>Change User Details</legend>
+      <legend>{i18n}Change User Details{/i18n}</legend>
       <p class="descriptiveText"><strong>FIXME</strong> brief overview of user editing.</p>
       {foreach item=oWidget from=$edit_fields}
       
         {$oWidget->render()}
       {/foreach}
       <div class="form_actions">
-         <input type="submit" value="save changes" />
-         <a href="?action=main" class="ktCancelLink">Cancel</a>
+         <input type="submit" value="{i18n}save changes{/i18n}" />
+         <a href="?action=main" class="ktCancelLink">{i18n}Cancel{/i18n}</a>
       </div>
    </fieldset>
    </form>
 
 {assign var=provider_stuff value=$provider->showUserSource($edit_user, $source)}
 {if $provider_stuff}
-<fieldset><legend>Authentication</legend>
-<p class="descriptiveText">{$edit_user->getName()}'s authentication is
-handled by the <strong>{$provider->getName()}</strong>.</p>
+<fieldset><legend>{i18n}Authentication{/i18n}</legend>
+<p class="descriptiveText">{i18n arg_name=$edit_user->getName()
+arg_provider=$provider->getName()}#name#'s authentication is
+handled by the <strong>#provider#</strong>.{/i18n}</p>
 {$provider_stuff}
 </fieldset>
 {/if}

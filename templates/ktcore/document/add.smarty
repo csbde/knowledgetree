@@ -55,10 +55,10 @@ addLoadEvent(startupMetadata);
 {/capture}
 {$context->oPage->requireJSStandalone($sJavascript)}
 
-<h2>Add a document</h2>
+<h2>{i18n}Add a document{/i18n}</h2>
 
 <form method="POST" action="{$smarty.server.PHP_SELF}" enctype="multipart/form-data">
-<fieldset><legend>Add a document</legend>
+<fieldset><legend>{i18n}Add a document{/i18n}</legend>
 <input type="hidden" name="action" value="upload">
 <input type="hidden" name="postReceived" value="1">
 <input type="hidden" name="fFolderId" value="{$context->oFolder->getId()}">
@@ -78,6 +78,6 @@ addLoadEvent(startupMetadata);
 </div>
 
 <div class="form_actions">
-  <input type="submit" name="submit" value="Import">
+  <input type="submit" name="submit" value="{i18n}Add{/i18n}">
 </div>
 </form>

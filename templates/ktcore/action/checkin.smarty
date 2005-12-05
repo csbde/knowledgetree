@@ -1,21 +1,24 @@
-<p class="descriptiveText">Checking in a document updates the document
-and allows others to check out the document.</p>
+<p class="descriptiveText">{i18n}Checking in a document updates the document
+and allows others to check out the document.{/i18n}</p>
 
 {assign var=iDocumentId value=$context->oDocument->getId()}
-<p class="descriptiveText">If you do not intend to edit the document, and you
-do not wish to prevent others from changing the document, you should
-<a href="{"viewDocument"|generateControllerUrl:"fDocumentId=$iDocumentId"}">cancel
-this checkout</a>.</p>
+{capture assign=cancellink}
+{"viewDocument"|generateControllerUrl:"fDocumentId=$iDocumentId"}
+{/capture}
+<p class="descriptiveText">{i18n arg_link=$cancellink}If you do not
+intend to edit the document, and you do not wish to prevent others from
+changing the document, you should <a href="#link#">cancel
+this checkout</a>.{/i18n}</p>
 
 <form method="POST" action="{$smarty.server.PHP_SELF}" enctype="multipart/form-data">
-<fieldset><legend>Checkin</legend>
+<fieldset><legend>{i18n}Checkin{/i18n}</legend>
 <input type="hidden" name="action" value="checkin" />
 <input type="hidden" name="fDocumentId" value="{$iDocumentId}" />
 {foreach from=$checkin_fields item=oWidget }
   {$oWidget->render()}
 {/foreach}
 <div class="form_actions">
-<input type="submit" name="submit" value="Checkin" />
+<input type="submit" name="submit" value="{i18n}Checkin{/i18n}" />
 </div>
 </fieldset>
 </form>

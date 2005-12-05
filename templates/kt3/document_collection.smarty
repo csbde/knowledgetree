@@ -35,12 +35,13 @@
             </tr>
             {/foreach}
           {else}
-            <tr><td colspan="{$columncount}">No documents or folders available in this location.</td></tr>
+            <tr><td colspan="{$columncount}">{i18n}No documents or folders available in this location.{/i18n}</td></tr>
           {/if}
         </tbody>
         <tfoot>
             <tr>
-                <td colspan="{$columncount}"><span class="descriptiveText">{$context->itemCount} items, {$context->batchSize} per page</span>
+                <td colspan="{$columncount}"><span class="descriptiveText">
+{i18n arg_itemCount=$context->itemCount arg_batchSize=$context->batchSize}#itemCount# items, #batchSize# per page{/i18n}</span>
                 {if ($pagecount > 1)}
                   {if ($currentpage == 0)}
                     <span class="notactive">&laquo; prev</a> 

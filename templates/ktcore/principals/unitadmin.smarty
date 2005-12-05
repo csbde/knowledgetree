@@ -1,4 +1,4 @@
-<h2>Unit Administration</h2>
+<h2>{i18n}Unit Administration{/i18n}</h2>
 
 <p class="descriptiveText"><strong>FIXME</strong> Overview of units.</p>
 
@@ -6,7 +6,7 @@
 
 <form action="{$smarty.server.PHP_SELF}" method="GET">
 <fieldset>
-<legend>Add a unit</legend>
+<legend>{i18n}Add a unit{/i18n}</legend>
 
 <input type="hidden" name="action" value="createUnit" />
 
@@ -15,7 +15,7 @@
 {/foreach}
 
 <div class="form_actions">
-   <input type="submit" value="create new unit" />
+   <input type="submit" value="{i18n}create new unit{/i18n}" />
 </div class="form_actions">
 </fieldset>
 </form>
@@ -24,7 +24,7 @@
 
 <form action="{$smarty.server.PHP_SELF}" method="GET">
 <fieldset>
-<legend>Change a unit's details</legend>
+<legend>{i18n}Change a unit's details{/i18n}</legend>
 
 <input type="hidden" name="action" value="updateUnit" />
 <input type="hidden" name="unit_id" value="{$edit_unit->getId()}" />
@@ -34,7 +34,7 @@
 {/foreach}
 
 <div class="form_actions">
-   <input type="submit" value="update unit information" />
+   <input type="submit" value="{i18n}update unit information{/i18n}" />
 </div class="form_actions">
 </fieldset>
 </form>
@@ -45,17 +45,18 @@
 <table class="listing">
 <thead>
    <tr>
-      <th>Unit Name</th>
-      <th>Edit</th>
-      <th>Manage Members</th>
+      <th>{i18n}Unit Name{/i18n}</th>
+      <th>{i18n}Edit{/i18n}</th>
+      <th>{i18n}Manage Members{/i18n}</th>
    </tr>
 </thead>
 <tbody>
      {foreach item=oUnit from=$unit_list}
      <tr>
         <td>{$oUnit->getName()}</td>
-        <td><a href="?action=editGroup&unit_id={$oUnit->getId()}" class="ktAction ktEdit">Edit</a></td>
-        <!-- <td><a href="?action=manageMembers&unit_id={$oUnit->getId()}">Manage Members</a></td> -->
+        <td><a href="?action=editGroup&unit_id={$oUnit->getId()}" class="ktAction ktEdit">{i18n}Edit{/i18n}</a></td>
+        <!-- <td><a
+href="?action=manageMembers&unit_id={$oUnit->getId()}">{i18n}Manage Members{/i18n}</a></td> -->
      </tr>   
      {/foreach}
 </tbody>

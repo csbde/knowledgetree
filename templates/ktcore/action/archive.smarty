@@ -1,12 +1,16 @@
 <p class="descriptiveText">FIXME: Descriptive text.</p>
 
 {assign var=iDocumentId value=$context->oDocument->getId()}
-<p class="descriptiveText">If you do not intend to archive this document, you should
-<a href="{"viewDocument"|generateControllerUrl:"fDocumentId=$iDocumentId"}">cancel
-the archive</a>.</p>
+{capture assign=link}
+{"viewDocument"|generateControllerUrl:"fDocumentId=$iDocumentId"}
+{/capture}
+
+<p class="descriptiveText">{i18n arg_link=$link}If you do not intend to
+archive this document, you should <a href="#link#">cancel the
+archive</a>.{/i18n}</p>
 
 <form method="POST" action="{$smarty.server.PHP_SELF}">
-<fieldset><legend>Archive</legend>
+<fieldset><legend>{i18n}Archive{/i18n}</legend>
 <input type="hidden" name="action" value="move" />
 <input type="hidden" name="fDocumentId" value="{$iDocumentId}" />
 {foreach from=$fields item=oWidget }
@@ -14,8 +18,8 @@ the archive</a>.</p>
 {/foreach}
 
 <div class="form_actions">
-<input type="submit" name="submit[move]" value="Move" />
-<input type="submit" name="submit[cancel]" value="Cancel" />
+<input type="submit" name="submit[move]" value="{i18n}Move{/i18n}" />
+<input type="submit" name="submit[cancel]" value="{i18n}Cancel{/i18n}" />
 </div>
 </fieldset>
 </form>

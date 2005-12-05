@@ -1,7 +1,7 @@
 <h2>{$category.title}</h2>
 
 {if ($items === null)}
-<p class="descriptiveText">No items in the category.</p>
+<p class="descriptiveText">{i18n}No items in the category.{/i18n}</p>
 {else}
 <dl class="panel_menu">
    {foreach item=aItem from=$items}

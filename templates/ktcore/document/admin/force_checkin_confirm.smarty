@@ -1,23 +1,23 @@
-<h2>Confirm Forced Check-in</h2>
-<p class="descriptiveText">Please confirm that this is the document that you wish to checkin.</p>
+<h2>{i18n}Confirm Forced Check-in{/i18n}</h2>
+<p class="descriptiveText">{i18n}Please confirm that this is the document that you wish to checkin.{/i18n}</p>
 
 <div class="document_details">
 <h3>Document Details</h3>
 <dl class="metadata">
-   <dt>Document Name</dt>
+   <dt>{i18n}Document Name{/i18n}</dt>
    <dd>{$document->getName()}</dd>
    
-   <dt>Location</dt>
+   <dt>{i18n}Location{/i18n}</dt>
    <dd>{$document->getDisplayPath()}</dd>
    
-   <dt>Checked out by</dt>
+   <dt>{i18n}Checked out by{/i18n}</dt>
    {if ($checkout_user !== null)}
    <dd>
       {$checkout_user->getName()}
    </dd>
    {else}
    <dd class="ktError">
-      The user who checked this document out is no longer valid.
+      {i18n}The user who checked this document out is no longer valid.{/i18n}
    </dd>
    {/if}
    </dd>
@@ -28,8 +28,8 @@
   <input type="hidden" name="action" value="checkin">
   <input type="hidden" name="fDocumentId" value="{$document->getId()}">
   <div class="form_actions">
-      <input type="submit" value="Force Checkin" />
+      <input type="submit" value="{i18n}Force Checkin{/i18n}" />
       <!-- FIXME separate this even further. -->
-      <p><a href="?action=main">Cancel</a></p>
+      <p><a href="?action=main">{i18n}Cancel{/i18n}</a></p>
   </div>
 </form>

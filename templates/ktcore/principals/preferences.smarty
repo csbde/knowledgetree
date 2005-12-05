@@ -1,22 +1,22 @@
 <h2>Preferences</h2>
 
-<p class="descriptiveText">From here you can adjust certain basic preferences about
-how you work with KnowledgeTree.</p>
+<p class="descriptiveText">{i18n}From here you can adjust certain basic
+preferences about how you work with KnowledgeTree.{/i18n}</p>
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <input type="hidden" name="action" value="updatePreferences" />
 
 <fieldset>
-    <legend>Your Details</legend>
+    <legend>{i18n}Your Details{/i18n}</legend>
     
     {foreach item=oWidget from=$edit_fields}
        {$oWidget->render()}
     {/foreach}
     
     <div class="form_actions">
-        <input type="submit" value="Update your details" />
+        <input type="submit" value="{i18n}Update your details{/i18n}" />
         <!-- FIXME add CSS for secondary actions. -->
-        <p><a href="?action=setPassword">Change your password.</a></p>
+        <p><a href="?action=setPassword">{i18n}Change your password.{/i18n}</a></p>
     </div>
 </fieldset>
 

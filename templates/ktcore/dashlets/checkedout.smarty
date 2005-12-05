@@ -1,14 +1,14 @@
-<h2>Your Checked-out Documents</h2>
-<p class="descriptiveText">Since a document
+<h2>{i18n}Your Checked-out Documents{/i18n}</h2>
+<p class="descriptiveText">{i18n}Since a document
 which is checked out cannot be modified by anyone else,
 it is important to check them back in as soon as you have made
-the apppriate changes.</p>
+the apppriate changes.{/i18n}</p>
 {if (!empty($documents))}
 <dl>
 {foreach item=oDocument from=$documents}
-  <dt>{$oDocument->getName()} | <a href="{$context->getDocumentLink($oDocument)}">View Document</a></dt>
+  <dt>{$oDocument->getName()} | <a href="{$context->getDocumentLink($oDocument)}">{i18n}View Document{/i18n}</a></dt>
 {/foreach}
 </ul>
 {else}
-<div class="ktInfo"><p>You have no documents which are currently checked out.</p></div>
+<div class="ktInfo"><p>{i18n}You have no documents which are currently checked out.{/i18n}</p></div>
 {/if}
