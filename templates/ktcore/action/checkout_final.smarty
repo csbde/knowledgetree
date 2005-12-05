@@ -14,15 +14,18 @@ addLoadEvent(scheduleCheckout);
 {/capture}
 {$context->oPage->requireJSStandalone($sJavascript)}
 
-<p class="descriptiveText">The document you wish to check out will begin
-to download soon.  If it does not automatically start to download, you
-can use <a
-href="?action=checkout_final&fDocumentId={$context->oDocument->getId()}&reason={$reason|escape}">this link</a>
-to start it yourself.</p>
+{capture assign=link}
+?action=checkout_final&fDocumentId={$context->oDocument->getId()}&reason={$reason|escape}
+{/capture}
+<p class="descriptiveText">{i18n arg_link=$link}The document you wish to
+check out will begin to download soon.  If it does not automatically
+start to download, you can use <a href="#link#">this link</a> to start
+it yourself.{/i18n}</p>
 
+{capture assign=link}
+{"viewDocument"|generateControllerUrl:"fDocumentId=$iDocumentId"}
+{/capture}
 {assign var=iDocumentId value=$context->oDocument->getId()}
-<p class="descriptiveText">Once the document has been downloaded, you
-should 
-<a
-href="{"viewDocument"|generateControllerUrl:"fDocumentId=$iDocumentId"}">return
-to the document view</a>.</p>
+<p class="descriptiveText">{i18n arg_link=$link}Once the document has
+been downloaded, you should <a href="#link#">return to the document
+view</a>.{/i18n}</p>

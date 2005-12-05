@@ -1,4 +1,4 @@
-<h2>Manage Users in {$edit_group->getName()}</h2>
+<h2>{i18n arg_name=$edit_group->getName()}Manage Users in #name#{/i18n}</h2>
 
 {$context->oPage->requireJSResource('thirdpartyjs/OptionTransfer.js')}
 {$context->oPage->requireJSResource('thirdpartyjs/MochiKit/Base.js')}
@@ -17,15 +17,15 @@
    
    
    <fieldset>
-      <legend>Change Users in {$edit_group->getName()}</legend>
-      <p class="descriptiveText">Select the users which should be part of this group. <strong>FIXME</strong> this helptext is v. awkward.</p>
+      <legend>{i18n arg_name=$edit_group->getName()}Manage Users in #name#{/i18n}</legend>
+      <p class="descriptiveText">{i18n}Select the users which should be part of this group.{/i18n} <strong>FIXME</strong> this helptext is v. awkward.</p>
 
 <table border="0" width="600">
    <thead>
       <tr>
-         <th>Available Users</th>
+         <th>{i18n}Available Users{/i18n}</th>
          <th>&nbsp;</th>
-         <th>Member users</th>
+         <th>{i18n}Member users{/i18n}</th>
       </tr>
    </thead>
    <tbody>
@@ -50,19 +50,19 @@
          </td>
       </tr>
       <tr>
-         <td><label for="ug-filter">Filter</label>
+         <td><label for="ug-filter">{i18n}Filter{/i18n}</label>
             <input name="filterUG" id="ug-filter" onkeyup="optGroup.sortSelectMatch(userSelect, this.value)" onchange="optGroup.sortSelectMatch(groupSelect, this.value)" type="text">
          </td>
          <td>&nbsp;</td>
-         <td><label for="og-filter">Filter</label>
+         <td><label for="og-filter">{i18n}Filter{/i18n}</label>
             <input name="filterOG" id="og-filter" onkeyup="optGroup.sortSelectMatch(chosenUsers, this.value)" onchange="optGroup.sortSelectMatch(chosenGroups, this.value)" type="text">
          </td>
       </tr>
 </tbody></table>
 
       <div class="form_actions">
-         <input type="submit" value="save changes" />
-         <a href="?action=main" class="ktCancelLink">Cancel</a>
+         <input type="submit" value="{i18n}save changes{/i18n}" />
+         <a href="?action=main" class="ktCancelLink">{i18n}Cancel{/i18n}</a>
       </div>
    </fieldset>
    </form>

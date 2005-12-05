@@ -23,15 +23,15 @@ td.false { background-color: #ffaaaa; text-align: centre }
 {$context->oPage->requireJSResource('thirdpartyjs/MochiKit/Iter.js')}
 {$context->oPage->requireJSResource('thirdpartyjs/MochiKit/DOM.js')}
 
-<h2>Document permissions</h2>
+<h2>{i18n}Document permissions{/i18n}</h2>
 
 { if $edit }
 <div style="text-align: right">
 <span class="tablebutton activebutton">
-<a href="javascript:MochiKit.DOM.showElement('view'); MochiKit.DOM.hideElement('edit');">View</a>
+<a href="javascript:MochiKit.DOM.showElement('view'); MochiKit.DOM.hideElement('edit');">{i18n}View{/i18n}</a>
 </span>
 <span class="tablebutton inactivebutton">
-<a href="javascript:MochiKit.DOM.showElement('edit'); MochiKit.DOM.hideElement('view');">Edit</a>
+<a href="javascript:MochiKit.DOM.showElement('edit'); MochiKit.DOM.hideElement('view');">{i18n}Edit{/i18n}</a>
 </span>
 </div>
 { /if }
@@ -53,9 +53,9 @@ td.false { background-color: #ffaaaa; text-align: centre }
     { assign var=iPermID value=$oPerm->getID() }
     { assign var=bHasPerm value=$aMapPermissionGroup[$iPermID][$iGroupID] }
 { if $bHasPerm }
-<td class="true">True</td>
+<td class="true">{i18n}True{/i18n}</td>
 { else }
-<td class="false">False</td>
+<td class="false">{i18n}False{/i18n}</td>
 { /if }
   { /foreach }
 </tr>
@@ -67,14 +67,14 @@ td.false { background-color: #ffaaaa; text-align: centre }
 <span style="border: 1px solid #cccccc; background-color: #ffeeee;
 padding: 2px; padding-right: 1em; padding-left: 1em">
 { if $inherited }
-Inherited from {$inherited}
+{i18n}Inherited from{/i18n}: {$inherited}
 {* [<a
-href="{$smarty.server.PHP_SELF}?action=copyPermissions&fDocumentID={$iDocumentID}">Copy</a>]
+href="{$smarty.server.PHP_SELF}?action=copyPermissions&fDocumentID={$iDocumentID}">{i18n}Copy{/i18n}</a>]
 *}
 { else }
 [<a
-href="{$smarty.server.PHP_SELF}?action=inheritPermissions&fDocumentID={$iDocumentID}">Use
-parent's permissions</a>]
+href="{$smarty.server.PHP_SELF}?action=inheritPermissions&fDocumentID={$iDocumentID}">{i18n}Use
+parent's permissions{/i18n}</a>]
 { /if }
 </span>
 </div>
@@ -114,18 +114,18 @@ value="{$iGroupID}"></td>
 </tbody>
 </table>
 
-<input type="submit" name="submit" value="Update">
+<input type="submit" name="submit" value="{i18n}Update{/i18n}">
 </form>
 </div>
 { /if }
 
-<h2>User permissions</h2>
+<h2>{i18n}User permissions{/i18n}</h2>
 
 <div>
 <table class="pretty" cellspacing="0" cellpadding="0" border="0" width="100%">
 <thead>
 <tr>
-<th>User</th>
+<th>{i18n}User{/i18n}</th>
 { foreach item=oPerm from=$permissions }
 <th title="{$oPerm->sName}">{$oPerm->sHumanName}</th>
 { /foreach }
@@ -139,9 +139,9 @@ value="{$iGroupID}"></td>
     { assign var=iPermID value=$oPerm->getID() }
     { assign var=bHasPerm value=$aMapPermissionUser[$iPermID][$iUserID] }
 { if $bHasPerm }
-<td class="true">True</td>
+<td class="true">{i18n}True{/i18n}</td>
 { else }
-<td class="false">False</td>
+<td class="false">{i18n}False{/i18n}</td>
 { /if }
   { /foreach }
 </tr>

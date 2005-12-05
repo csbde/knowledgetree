@@ -45,12 +45,12 @@ addLoadEvent(startupMetadata);
 {$context->oPage->requireJSStandalone($sJavascript)}
 
 <form method="POST" action="{$smarty.server.PHP_SELF}" enctype="multipart/form-data">
-<fieldset><legend>Bulk import</legend>
-<p class="descriptiveText">The bulk import facility allows for a number
+<fieldset><legend>{i18n}Bulk import{/i18n}</legend>
+<p class="descriptiveText">{i18n}The bulk import facility allows for a number
 of documents to be added to the document management system easily.
 Provide a path on the <strong>server</strong>, and all documents and
 folders within that path will be added to the document management
-system.</p>
+system.{/i18n}</p>
 
 <input type="hidden" name="action" value="import">
 <input type="hidden" name="fFolderId" value="{$context->oFolder->getId()}">
@@ -70,6 +70,6 @@ system.</p>
 </div>
 
 <div class="form_actions">
-  <input type="submit" name="submit" value="Import">
+  <input type="submit" name="submit" value="{i18n}Import{/i18n}">
 </div>
 </form>

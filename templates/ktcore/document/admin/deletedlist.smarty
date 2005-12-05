@@ -1,9 +1,9 @@
-<h2>Deleted Documents</h2>
+<h2>{i18n}Deleted Documents{/i18n}</h2>
 
-<p class="descriptiveText">Documents which are deleted by users are hidden from view, 
+<p class="descriptiveText">{i18n}Documents which are deleted by users are hidden from view, 
 but still available for restoration.  Since this consumes system resources, it
 is possible to <strong>expunge</strong> these documents.  Alternatively, you
-can <strong>restore</strong> them as necessary.</p>
+can <strong>restore</strong> them as necessary.{/i18n}</p>
 
 <p class="descriptiveText"><strong>FIXME</strong> its probably very useful to add
 more information about the documents below - e.g. when was it deleted (last modified?)</p>
@@ -20,8 +20,8 @@ more information about the documents below - e.g. when was it deleted (last modi
   <thead>
     <tr>
       <th>&nbsp;</th>
-      <th>Document Name</th>
-      <th>Location</th>
+      <th>{i18n}Document Name{/i18n}</th>
+      <th>{i18n}Location{/i18n}</th>
     </tr>
   </thead>
   <tbody>
@@ -35,11 +35,11 @@ more information about the documents below - e.g. when was it deleted (last modi
   </tbody>
 </table>
 <div class="form_actions">
-   <input type="submit" value="Expunge" />
+   <input type="submit" value="{i18n}Expunge{/i18n}" />
    <!-- <input type="submit" value="Restore" /> -->  <!-- how do we want to handle restore in this? major UI issue :( -->
 </div>
 </form>
 
 {else}
-<div class="ktInfo"><p>No documents are marked as deleted.</p></div>
+<div class="ktInfo"><p>{i18n}No documents are marked as deleted.{/i18n}</p></div>
 {/if}

@@ -5,23 +5,25 @@
 
 <!-- FIXME inline CSS is _very_ bad. -->
 
-<p><a href="?action=addUser" class="ktAction ktAddUser" style="float: left; padding-right: 0.5em;">Add User</a><a href="?action=addUser">Add a new user</a>.</p>
+<p><a href="?action=addUser" class="ktAction ktAddUser" style="float:
+left; padding-right: 0.5em;">Add User</a><a
+href="?action=addUser">{i18n}Add a new user{/i18n}</a>.</p>
 
 <!-- we roll both in here. -->
 <form action="{$smarty.server.PHP_SELF}" method="GET">
 <fieldset>
 <legend>Search for users</legend>
-<p class="descriptiveText">Since there may be many users in the system, please
+<p class="descriptiveText">{i18n}Since there may be many users in the system, please
 select a group from the list below, or type a few letters from the person's username
 to begin. Alternatively, <a href="?show_all=1">view all users</a> (note that this may be
-very slow if you have many users.</p>
+very slow if you have many users.{/i18n}</p>
 
 {foreach item=oWidget from=$search_fields}
   {$oWidget->render()}
 {/foreach}
 
 <div class="form_actions">
-   <input type="submit" value="search for users" />
+   <input type="submit" value="{i18n}search for users{/i18n}" />
 </div class="form_actions">
 </fieldset>
 </form>
@@ -29,11 +31,11 @@ very slow if you have many users.</p>
 <table class="listing">
 <thead>
    <tr>
-      <th>Name</th>
-      <th>Username</th>
-      <th>Edit</th>
-      <th>Delete</th>
-      <th>Group Memberships</th>
+      <th>{i18n}Name{/i18n}</th>
+      <th>{i18n}Username{/i18n}</th>
+      <th>{i18n}Edit{/i18n}</th>
+      <th>{i18n}Delete{/i18n}</th>
+      <th>{i18n}Group Memberships{/i18n}</th>
    </tr>
 </thead>
 <tbody>
@@ -43,16 +45,21 @@ very slow if you have many users.</p>
      <tr>
         <td>{$oUser->getName()}</td>
         <td>{$oUser->getUsername()}</td>
-        <td><a href="?action=editUser&user_id={$oUser->getId()}" class="ktAction ktEdit">Edit</a></td>
-        <td><a href="?action=deleteuser&user_id={$oUser->getId()}" class="ktAction ktDelete">Delete</a></td>
-        <td><a href="?action=editgroups&user_id={$oUser->getId()}">Groups</a></td>  
+        <td><a href="?action=editUser&user_id={$oUser->getId()}" class="ktAction ktEdit">{i18n}Edit{/i18n}</a></td>
+        <td><a href="?action=deleteuser&user_id={$oUser->getId()}" class="ktAction ktDelete">{i18n}Delete{/i18n}</a></td>
+        <td><a href="?action=editgroups&user_id={$oUser->getId()}">{i18n}Groups{/i18n}</a></td>  
      </tr>   
      {/foreach}
    {else}  
    <tr>
       <td colspan="5" class="ktInfo">
          <!-- never show a very large set, if you can help it. -->
-         <p>No search specified, or no results for your search.  Please choose some criteria from the list above to find users.</p>
+         <p>
+{i18n}
+No search specified, or no results for your search.  Please choose some
+criteria from the list above to find users.
+{/i18n}
+</p>
       </td>
    </tr>
    {/if}

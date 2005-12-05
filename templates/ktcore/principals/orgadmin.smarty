@@ -1,4 +1,4 @@
-<h2>Orgnisation Administration</h2>
+<h2>{i18n}Orgnisation Administration{/i18n}</h2>
 
 <p class="descriptiveText"><strong>FIXME</strong> Overview of Organisations.</p>
 
@@ -6,7 +6,7 @@
 
 <form action="{$smarty.server.PHP_SELF}" method="GET">
 <fieldset>
-<legend>Change organisation details</legend>
+<legend>{i18n}Change organisation details{/i18n}</legend>
 
 asd
 <input type="hidden" name="action" value="updateOrg" />
@@ -18,7 +18,7 @@ asd
 {/foreach}
 
 <div class="form_actions">
-   <input type="submit" value="update organisation information" />
+   <input type="submit" value="{i18n}update organisation information{/i18n}" />
 </div class="form_actions">
 </fieldset>
 </form>
@@ -28,15 +28,15 @@ asd
 <table class="listing">
 <thead>
    <tr>
-      <th>Organisation Name</th>
-      <th>Edit</th>
+      <th>{i18n}Organisation Name{/i18n}</th>
+      <th>{i18n}Edit{/i18n}</th>
    </tr>
 </thead>
 <tbody>
      {foreach item=oOrg from=$org_list}
      <tr>
         <td>{$oOrg->getName()}</td>
-        <td><a href="?org_id={$oOrg->getId()}" class="ktAction ktEdit">Edit</a></td>
+        <td><a href="?org_id={$oOrg->getId()}" class="ktAction ktEdit">{i18n}Edit{/i18n}</a></td>
 
      </tr>   
      {/foreach}

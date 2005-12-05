@@ -1,10 +1,10 @@
-<h2>Existing permissions</h2>
+<h2>{i18n}Existing permissions{/i18n}</h2>
 
 <p class="descriptiveText"><strong>FIXME</strong> add a useful explanation about permissions.</p>
 
 <form>
 <fieldset>
-<legend>Create a new permission</legend>
+<legend>{i18n}Create a new permission{/i18n}</legend>
 <input type="hidden" name="action" value="newPermission">
 
 
@@ -14,7 +14,7 @@
 {/foreach}
 
 <div class="form_actions">
-<input type="submit" name="submit" value="Create">
+<input type="submit" name="submit" value="{i18n}Create{/i18n}">
 </div>
 </fieldset>
 
@@ -24,9 +24,9 @@
 <table class="listing">
     <thead>
         <tr>
-            <th>Permission</th>
-            <th>Human Name</th>
-            <th>Delete</th>
+            <th>{i18n}Permission{/i18n}</th>
+            <th>{i18n}Display Name{/i18n}</th>
+            <th>{i18n}Delete{/i18n}</th>
         </tr>
     </thead>
     { foreach item=oPerm from=$permissions }
@@ -39,14 +39,16 @@
             </td>
           { if $oPerm->bBuiltIn == true }
             <td>
-            Built-in
+            {i18n}Built-in{/i18n}
             </td>
             { else }
             <!-- <td>
                 Edit
             </td> -->
             <td>
-               <a href="{$smarty.server.PHP_SELF}?action=deletePermission&id={$oPerm->getId()}" class="ktAction ktDelete">Delete Permission</a>
+               <a
+href="{$smarty.server.PHP_SELF}?action=deletePermission&id={$oPerm->getId()}"
+class="ktAction ktDelete">{$i18n}Delete Permission{/i18n}</a>
             </td>
           { /if }
         </tr>

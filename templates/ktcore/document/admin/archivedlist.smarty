@@ -1,9 +1,10 @@
-<h2>Archived Documents</h2>
+<h2>{i18n}Archived Documents{i18n}</h2>
 
-<p class="descriptiveText">In order to keep the documents which are visible useful
+<p class="descriptiveText">{i18n}In order to keep the documents which are visible useful
 to end users, it is possible to <strong>archive</strong> old documents.  Users who
 want to see these old documents need to request their restoration - these requests
-will typically be done within the system, and will generate a notification to you.
+will typically be done within the system, and will generate a
+notification to you.{/i18n}
 </p>
 
 <div class="ktError"><p><strong>FIXME</strong> this aspect of the UI is unuseable.
@@ -21,8 +22,8 @@ with LIVE turned off.)</p></div>
   <thead>
     <tr>
       <th>&nbsp;</th>
-      <th>Document Name</th>
-      <th>Location</th>
+      <th>{i18n}Document Name{/i18n}</th>
+      <th>{i18n}Location{/i18n}</th>
     </tr>
   </thead>
   <tbody>
@@ -36,11 +37,11 @@ with LIVE turned off.)</p></div>
   </tbody>
 </table>
 <div class="form_actions">
-   <input type="submit" value="Expunge" />
+   <input type="submit" value="{i18n}Expunge{/i18n}" />
    <!-- <input type="submit" value="Restore" /> -->  <!-- how do we want to handle restore in this? major UI issue :( -->
 </div>
 </form>
 
 {else}
-<div class="ktInfo"><p>No documents are marked as archived.</p></div>
+<div class="ktInfo"><p>{i18n}No documents are marked as archived.{/i18n}</p></div>
 {/if}

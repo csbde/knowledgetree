@@ -1,4 +1,4 @@
-<h2>Document Link Type Management</h2>
+<h2>{i18n}Document Link Type Management{/i18n}</h2>
 
 <p class="descriptiveText">Within the <strong>KnowledgeTree</strong> it is possible for users
 to create links between related documents.  Each of these links has a certain type. 
@@ -8,8 +8,9 @@ to create links between related documents.  Each of these links has a certain ty
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <fieldset>
-<legend>Add a link type</legend>
-<p class="descriptiveText">Specify the details for a new link type below.</p>
+<legend>{i18n}Add a link type{/i18n}</legend>
+<p class="descriptiveText">{i18n}Specify the details for a new link type
+below.{/i18n}</p>
 
 {foreach item=oWidget from=$add_form}
   {$oWidget->render()}
@@ -17,7 +18,7 @@ to create links between related documents.  Each of these links has a certain ty
 
 <div class="form_actions">
    <input type="hidden" name="action" value="add" />
-   <input type="submit" value="Add Link Type" />
+   <input type="submit" value="{i18n}Add Link Type{/i18n}" />
 </div>
 </fieldset>
 </form>
@@ -28,8 +29,8 @@ to create links between related documents.  Each of these links has a certain ty
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <fieldset>
-<legend>Edit a link type</legend>
-<p class="descriptiveText">Specify the details for the link type below.</p>
+<legend>{i18n}Edit a link type{/i18n}</legend>
+<p class="descriptiveText">{i18n}Specify the details for the link type below.{/i18n}</p>
 <input type="hidden" name="fLinkTypeId" value="{$old_link->iId}" />
 {foreach item=oWidget from=$edit_form}
   {$oWidget->render()}
@@ -37,7 +38,7 @@ to create links between related documents.  Each of these links has a certain ty
 
 <div class="form_actions">
    <input type="hidden" name="action" value="update" />
-   <input type="submit" value="Change Link Type" />
+   <input type="submit" value="{i18n}Change Link Type{/i18n}" />
 </div>
 </fieldset>
 </form>
@@ -48,10 +49,12 @@ to create links between related documents.  Each of these links has a certain ty
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <fieldset>
-<legend>Manage Existing Link Types</legend>
-<p class="descriptiveText">From this panel you can edit or delete existing link types.  
-<strong>Note:</strong> deleting a link type will delete <strong>all</strong>
-links of that type within the system.</p>
+<legend>{i18n}Manage Existing Link Types{/i18n}</legend>
+<p class="descriptiveText">{i18n}From this panel you can edit or delete
+existing link types.{/i18n}</p>
+
+<p><strong>{i18n}Note{/i18n}:</strong> {i18n}deleting a link type will delete <strong>all</strong>
+links of that type within the system.{/i18n}</p>
 
 <input type="hidden" name="action" value="delete" />
 
@@ -59,9 +62,9 @@ links of that type within the system.</p>
 <table class="listing">
 <thead>
   <tr>
-     <th colspan="2">Name</th>
-     <th>Description</th>
-     <th>Edit</th>
+     <th colspan="2">{i18n}Name{/i18n}</th>
+     <th>{i18n}Description{/i18n}</th>
+     <th>{i18n}Edit{/i18n}</th>
   </tr>
 </thead>
 
@@ -73,18 +76,18 @@ links of that type within the system.</p>
     </td>
     <td>{$oLinkType->getName()}</td>
     <td class="descriptiveText">{$oLinkType->getDescription()}</td>
-    <td><a href="{$smarty.server.PHP_SELF}?action=edit&fLinkTypeId={$oLinkType->iId}">edit link type</a></td>
+    <td><a href="{$smarty.server.PHP_SELF}?action=edit&fLinkTypeId={$oLinkType->iId}">{i18n}edit link type{/i18n}</a></td>
   </tr>
   {/foreach}
 </tbody>
 </table>
 
 <div class="form_actions">
-  <input type="submit" value="Remove Link Type(s) " />
+  <input type="submit" value="{i18n}Remove Link Type(s){/i18n}" />
 </div>
 {else}
 
-<p><strong>No link administrator changeable link types available.</strong>
+<p><strong>{i18n}No link administrator changeable link types available.{/i18n}</strong>
 
 {/if}
 

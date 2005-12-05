@@ -1,4 +1,4 @@
-<h2>Role Administration</h2>
+<h2>{i18n}Role Administration{/i18n}</h2>
 
 <p class="descriptiveText"><strong>FIXME</strong> Overview of roles.</p>
 
@@ -9,7 +9,7 @@
 
 <form action="{$smarty.server.PHP_SELF}" method="GET">
 <fieldset>
-   <legend>Add a Role</legend>
+   <legend>{i18n}Add a Role{/i18n}</legend>
    
    <input type="hidden" name="action" value="createRole" />
    
@@ -18,7 +18,7 @@
    {/foreach}
 
    <div class="form_actions">
-      <input type="submit" value="create new role" />
+      <input type="submit" value="{i18n}create new role{/i18n}" />
    </div class="form_actions">
 </fieldset>
 </form>
@@ -27,7 +27,7 @@
 
 <form action="{$smarty.server.PHP_SELF}" method="GET">
 <fieldset>
-   <legend>Change a role's details</legend>
+   <legend>{i18n}Change a role's details{/i18n}</legend>
    
    <input type="hidden" name="action" value="updateRole" />
    <input type="hidden" name="role_id" value="{$edit_role->getId()}" />
@@ -37,9 +37,8 @@
    {/foreach}
    
    <div class="form_actions">
-      <input type="submit" value="update role information" />
-      <a href="?action=main" class="ktAction ktCancel">Cancel</a>
-      <a href="?action=main">Cancel</a>
+      <input type="submit" value="{i18n}update role information{/i18n}" />
+      <a href="?action=main" class="ktAction ktCancel">{i18n}Cancel{/i18n}</a>
    </div class="form_actions">
 </fieldset>
 </form>
@@ -49,9 +48,9 @@
 <table class="listing">
 <thead>
    <tr>
-      <th>Role Name</th>
-      <th>Edit</th>
-      <th>Delete</th>
+      <th>{i18n}Role Name{/i18n}</th>
+      <th>{i18n}Edit{/i18n}</th>
+      <th>{i18n}Delete{/i18n}</th>
    </tr>
 </thead>
 <tbody>
@@ -59,13 +58,13 @@
      {foreach item=oRole from=$roles}
      <tr>
         <td>{$oRole->getName()}</td>
-        <td><a href="?action=editRole&role_id={$oRole->getId()}" class="ktAction ktEdit">Edit</a></td>
-        <td><a href="?action=deleteRole&role_id={$oRole->getId()}" class="ktAction ktDelete">Delete</a></td>
+        <td><a href="?action=editRole&role_id={$oRole->getId()}" class="ktAction ktEdit">{i18n}Edit{/i18n}</a></td>
+        <td><a href="?action=deleteRole&role_id={$oRole->getId()}" class="ktAction ktDelete">{i18n}Delete{/i18n}</a></td>
      </tr>   
      {/foreach}
      {else}
      <tr>
-        <td class="ktInfo" colspan="3"><p>There are currently no roles created within the system.</td>
+        <td class="ktInfo" colspan="3"><p>{i18n}There are currently no roles created within the system.{/i18n}</td>
      </tr>   
      {/if}
 </tbody>

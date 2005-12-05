@@ -1,6 +1,7 @@
 <h2>Confirm Expunge</h2>
 
-<div class="ktInfo"><p><strong>Note</strong> please confirm that you want to delete these documents.</p></div>
+<div class="ktInfo"><p><strong>{i18n}Note{/i18n}:</strong> {i18n}please
+confirm that you want to delete these documents.{/i18n}</p></div>
 
 {if (!empty($documents))}
 
@@ -12,8 +13,8 @@
   <thead>
     <tr>
 
-      <th>Document Name</th>
-      <th>Location</th>
+      <th>{i18n}Document Name{/i18n}</th>
+      <th>{i18n}Location{/i18n}</th>
     </tr>
   </thead>
   <tbody>
@@ -26,11 +27,11 @@
   </tbody>
 </table>
 <div class="form_actions">
-   <input type="submit" value="Confirm Expunge" />
+   <input type="submit" value="{i18n}Confirm Expunge{/i18n}" />
    <!-- <input type="submit" value="Restore" /> -->  <!-- how do we want to handle restore in this? major UI issue :( -->
 </div>
 </form>
 
 {else}
-<div class="ktInfo"><p>No documents were selected.</p></div>
+<div class="ktInfo"><p>{i18n}No documents were selected.{/i18n}</p></div>
 {/if}

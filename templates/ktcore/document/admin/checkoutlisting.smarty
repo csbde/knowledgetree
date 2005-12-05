@@ -1,15 +1,16 @@
-<h2>Checked Out Documents</h2>
-<p class="descriptiveText">If a checked-out document has been lost, or the user
-who checked a document out has not checked it back in, it may be necessary
-to override the "checked-out" status of a document.  Use the <strong>force checkin</strong>
-action in the listing below to override the checked-out status.</p>
+<h2>{i18n}Checked Out Documents{/i18n}</h2>
+<p class="descriptiveText">{i18n}If a checked-out document has been
+lost, or the user who checked a document out has not checked it back in,
+it may be necessary to override the "checked-out" status of a document.
+Use the <strong>force checkin</strong> action in the listing below to
+override the checked-out status.{/i18n}</p>
 <!-- FIXME set classes here for listing. -->
 {if (count($documents) !== 0)}
 <table class="listing" cellspacing="5px">
     <thead>
         <tr>
-            <th>Document</th>
-            <th>Location</th>
+            <th>{i18n}Document{/i18n}</th>
+            <th>{i18n}Location{/i18n}</th>
             <th>&nbsp;</th>
         </tr>
     </thead>
@@ -19,7 +20,7 @@ action in the listing below to override the checked-out status.</p>
         <tr class="{cycle values=even,odd}">
             <td>{$oDocument->getName()}</td>
             <td class="descriptiveText">{$oDocument->getDisplayPath()}</td>
-            <td><a href="?action=confirm&fDocumentId={$oDocument->getId()}">force checkin</a></td>
+            <td><a href="?action=confirm&fDocumentId={$oDocument->getId()}">{i18n}force checkin{/i18n}</a></td>
         </tr>
       {/foreach}
     </tbody>
@@ -27,6 +28,6 @@ action in the listing below to override the checked-out status.</p>
 </table>
 {else}
    <div class="ktInfo">
-     <p>No documents are currently checked out.</p>
+     <p>{i18n}No documents are currently checked out.{/i18n}</p>
    </div>
 {/if}

@@ -1,18 +1,21 @@
-<p class="descriptiveText">Folders are one way of organising documents
+<p class="descriptiveText">{i18n}Folders are one way of organising documents
 in the document management system.  Folders provide meaning in the
 traditional file storage way - through a path through which one will
 browse that describes the content more specifically as one enters
-folders.</p>
+folders.{/i18n}</p>
 
 <p class="descriptiveText">FIXME</p>
 
 {assign var=iFolderId value=$context->oFolder->getId()}
-<p class="descriptiveText">If you do not intend to add a folder, you
-should <a href="{"browse"|generateControllerUrl:"fFolderId=$iFolderId"}">cancel
-this action</a>.</p>
+{capture assign=link}
+{"browse"|generateControllerUrl:"fFolderId=$iFolderId"}
+{/capture}
+<p class="descriptiveText">{i18n arg_link=$link}If you do not intend to
+add a folder, you should <a href="#link#">cancel this
+action</a>.{/i18n}</p>
 
 <form method="POST" action="{$smarty.server.PHP_SELF}" enctype="multipart/form-data">
-<fieldset><legend>Add folder</legend>
+<fieldset><legend>{i18n}Add folder{/i18n}</legend>
 <input type="hidden" name="action" value="addFolder" />
 <input type="hidden" name="fFolderId" value="{$iFolderId}" />
 {foreach from=$fields item=oWidget }
@@ -20,7 +23,7 @@ this action</a>.</p>
 {/foreach}
 
 <div class="form_actions">
-<input type="submit" name="submit" value="Add folder" />
+<input type="submit" name="submit" value="{i18n}Add folder{/i18n}" />
 </div>
 </fieldset>
 </form>

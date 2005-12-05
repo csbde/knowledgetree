@@ -1,6 +1,12 @@
-<h2>Version Comparison: {$document->getName()}</h2>
-<p class="descriptiveText">showing comparison between versions <strong>{$document->getMajorVersionNumber()}.{$document->getMinorVersionNumber()}</strong> 
-and <strong>{$comparison_document->getMajorVersionNumber()}.{$comparison_document->getMinorVersionNumber()} ({$comparison_document->getMetadataVersion()})</strong></p>
+<h2>{i18n}Version Comparison{/i18n}: {$document->getName()}</h2>
+{capture assign=from}
+<strong>{$document->getMajorVersionNumber()}.{$document->getMinorVersionNumber()}</strong> ({$document->getMetadataVersion()})
+{/capture}
+{capture assign=to}
+<strong>{$comparison_document->getMajorVersionNumber()}.{$comparison_document->getMinorVersionNumber()} ({$comparison_document->getMetadataVersion()})
+{/capture}
+<p class="descriptiveText">
+{i18n arg_from=$from arg_to=$to}showing comparison between versions #from# and #to#{/i18n}</p>
 
 <!-- 
   its possible that one of the versions isn't "real" 
@@ -9,15 +15,17 @@ and <strong>{$comparison_document->getMajorVersionNumber()}.{$comparison_documen
 -->
 
 {if ($document_data.is_manufactured)}
-<p class="descriptiveText"><strong class="ktInlineError">Please note:</strong> the information for version
-{$document->getMajorVersionNumber()}.{$document->getMinorVersionNumber()} ({$document->getMetadataVersion()})
-comes from an older version of KnowledgeTree, and may be incorrect.
+<p class="descriptiveText"><strong class="ktInlineError">{i18n}Please
+note{/i18n}:</strong> {i18n arg_version=$from}the information for version
+#version# comes from an older version of KnowledgeTree, and may be
+incorrect.{/i18n}
 {/if}
 
 {if ($comparison_data.is_manufactured)}
-<p class="descriptiveText"><strong class="ktInlineError">Please note:</strong> the information for version
-{$comparison_document->getMajorVersionNumber()}.{$comparison_document->getMinorVersionNumber()} ({$comparison_document->getMetadataVersion()})
-comes from an older version of KnowledgeTree, and may be incorrect.
+<p class="descriptiveText"><strong class="ktInlineError">{i18n}Please
+note{/i18n}:</strong> {i18n arg_version=$to}the information for version
+#version# comes from an older version of KnowledgeTree, and may be
+incorrect.{/i18n}
 {/if}
   
 {foreach item=oFieldset from=$fieldsets}

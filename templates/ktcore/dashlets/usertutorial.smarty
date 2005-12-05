@@ -1,6 +1,6 @@
-<h2>Crash Course in KnowledgeTree</h2>
-<p class="descriptiveText">New to Document Management, or to 
-KnowledgeTree&trade; 3?  We've written some quick documentation</p>
+<h2>{i18n}Crash Course in KnowledgeTree{/i18n}</h2>
+<p class="descriptiveText">{i18n}New to Document Management, or to 
+KnowledgeTree&trade; 3?  We've written some quick documentation{/i18n}</p>
 
 <div class="ktError"><p class="descriptiveText"><strong>FIXME</strong> This currently doesn't work.</p></div>
 

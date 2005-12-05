@@ -1,6 +1,8 @@
-<h2>Confirm De-archival</h2>
+<h2>{i18n}Confirm De-archival{/i18n}</h2>
 
-<div class="ktInfo"><p><strong>Note</strong> please confirm that you want to restore these documents from an archived state.</p></div>
+<div class="ktInfo"><p><strong>{i18n}Note{/i18n}:</strong> {i18n}please
+confirm that you want to restore these documents from an archived
+state.{/i18n}</p></div>
 
 {if (!empty($documents))}
 
@@ -11,9 +13,8 @@
 <table class="listing">
   <thead>
     <tr>
-
-      <th>Document Name</th>
-      <th>Location</th>
+      <th>{i18n}Document Name{/i18n}</th>
+      <th>{i18n}Location{/i18n}</th>
     </tr>
   </thead>
   <tbody>
@@ -26,10 +27,10 @@
   </tbody>
 </table>
 <div class="form_actions">
-   <input type="submit" value="Confirm De-archival" />
+   <input type="submit" value="{i18n}Confirm De-archival{/i18n}" />
 </div>
 </form>
 
 {else}
-<div class="ktInfo"><p>No documents were selected.</p></div>
+<div class="ktInfo"><p>{i18n}No documents were selected.{/i18n}</p></div>
 {/if}

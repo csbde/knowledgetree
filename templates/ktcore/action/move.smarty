@@ -1,13 +1,16 @@
-<p class="descriptiveText">Moving a document relocates the document
-within the document repository.</p>
+<p class="descriptiveText">{i18n}Moving a document relocates the document
+within the document repository.{/i18n}</p>
 
 {assign var=iDocumentId value=$context->oDocument->getId()}
-<p class="descriptiveText">If you do not intend to move this document, you should
-<a href="{"viewDocument"|generateControllerUrl:"fDocumentId=$iDocumentId"}">cancel
-the move</a>.</p>
+{capture assign=link}
+{"viewDocument"|generateControllerUrl:"fDocumentId=$iDocumentId"}
+{/capture}
+<p class="descriptiveText">{i18n arg_link=$link}If you do not intend to
+move this document, you should <a href="#link#">cancel the
+move</a>.{/i18n}</p>
 
 <form method="POST" action="{$smarty.server.PHP_SELF}">
-<fieldset><legend>Move</legend>
+<fieldset><legend>{i18n}Move{/i18n}</legend>
 <input type="hidden" name="action" value="move" />
 <input type="hidden" name="fDocumentId" value="{$iDocumentId}" />
 {foreach from=$move_fields item=oWidget }
@@ -15,10 +18,10 @@ the move</a>.</p>
 {/foreach}
 
 <div class="field ">
-<label for="fFolderId">Target folder</label>
-<p class="descriptiveText">The folder given below is where the document
+<label for="fFolderId">{i18n}Target folder{/i18n}</label>
+<p class="descriptiveText">{i18n}The folder given below is where the document
 is going to be moved to.  Use the folder collection and path below to
-browse to the folder you wish to move the documents into.</p>
+browse to the folder you wish to move the documents into.{/i18n}</p>
 
 <input type="hidden" name="fFolderId" value="{$context->oFolder->getId()}" />
 {foreach from=$collection_breadcrumbs item=breadcrumb name=bc}
@@ -31,8 +34,8 @@ browse to the folder you wish to move the documents into.</p>
 </div>
 
 <div class="form_actions">
-<input type="submit" name="submit[move]" value="Move" />
-<input type="submit" name="submit[cancel]" value="Cancel" />
+<input type="submit" name="submit[move]" value="{i18n}Move{/i18n}" />
+<input type="submit" name="submit[cancel]" value="{i18n}Cancel{/i18n}" />
 </div>
 </fieldset>
 </form>
