@@ -8,7 +8,6 @@ require_once(KT_LIB_DIR . "/database/dbutil.inc");
 require_once(KT_LIB_DIR . "/util/ktutil.inc");
 require_once(KT_LIB_DIR . "/dispatcher.inc.php");
 require_once(KT_LIB_DIR . "/browse/Criteria.inc");
-require_once(KT_LIB_DIR . "/visualpatterns/PatternBrowsableSearchResults.inc");
 require_once(KT_LIB_DIR . "/search/savedsearch.inc.php");
 require_once(KT_LIB_DIR . '/search/searchutil.inc.php');
 
@@ -35,12 +34,6 @@ class BooleanSearchDispatcher extends KTStandardDispatcher {
     }
 
     function do_performSearch() {
-        // TODO first extract environ vars
-        // TODO second create criterion objects (see getAdvancedSearchResults for this.
-        // TODO third get each one to generate the SQL snippet. (ENSURE that they are wrapped in '('..')' )
-        // TODO fourth array().join(' AND ') where appropriate
-        // TODO finally return via PatternBrowseableSearchResults (urgh.)
-        
         $datavars = KTUtil::arrayGet($_REQUEST, 'boolean_search');
         if (!is_array($datavars)) {
             $datavars = unserialize($datavars);
