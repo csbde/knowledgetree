@@ -1,35 +1,36 @@
-<h2>Document Types</h2>
+<h2>{i18n}Document Types{/i18n}</h2>
 
 <form method="POST">
 
 <fieldset>
-<legend>Create a new document type</legend>
+<legend>{i18n}Create a new document type{/i18n}</legend>
 
-<p class="descriptiveText">To start the process of creating a new document type,
-please enter a name for the type below.</p>
+<p class="descriptiveText">{i18n}To start the process of creating a new document type,
+please enter a name for the type below.{/i18n}</p>
 
 {foreach item=oWidget from=$add_fields}
   {$oWidget->render()}
 {/foreach}
 
 <div class="form_actions">
-<input type="hidden" name="action" value="new">
-<input type="submit" name="submit" value="Create">
+<input type="hidden" name="action" value="{i18n}new{/i18n}">
+<input type="submit" name="submit" value="{i18n}Create{/i18n}">
 </div>
 </fieldset>
 
 </form>
 
 <fieldset>
-<legend>Existing document types</legend>
+<legend>{i18n}Existing document types{/i18n}</legend>
 
-<p class="descriptiveText">Select a document type from the list below to change
-its details, or click on the delete button to remove it from the system.</p>
+<p class="descriptiveText">{i18n}Select a document type from the list below to change
+its details, or click on the delete button to remove it from the
+system.{/i18n}</p>
 
 <table class="listing" cellspacing="0" cellpadding="0">
   <thead>
     <tr>
-      <th colspan="2">Document Type</th>
+      <th colspan="2">{i18n}Document Type{/i18n}</th>
     </tr>
   </thead>
   <tbody>
@@ -38,7 +39,7 @@ its details, or click on the delete button to remove it from the system.</p>
 { if $oDocumentType->isUsed() }
  &nbsp;
 { else }
-<a href="?action=delete&fDocumentTypeId={$oDocumentType->getId()}" class="ktAction ktDelete">Delete Type</a>
+<a href="?action=delete&fDocumentTypeId={$oDocumentType->getId()}" class="ktAction ktDelete">{i18n}Delete Type{/i18n}</a>
 {/if}
 </td>
 <td>

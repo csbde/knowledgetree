@@ -1,4 +1,4 @@
-<h2>Document Type: { $oDocumentType->getName() }</h2>
+<h2>{i18n}Document Type{/i18n}: { $oDocumentType->getName() }</h2>
 
 <form method="POST" action="{$smarty.server.PHP_SELF}">
 <input type="hidden" name="action" value="editobject">
@@ -7,21 +7,21 @@
 <input type="submit" name="submit" value="Change">
 </form>
 
-<h2>Type-specific field sets</h2>
+<h2>{i18n}Type-specific field sets{/i18n}</h2>
 
 <p class="descriptiveText"></p>
 
 { if $aCurrentFieldsets }
 <form method="POST" action="{$smarty.server.PHP_SELF}">
 <fieldset>
-<legend>Linked Fieldsets</legend>
+<legend>{i18n}Linked Fieldsets{/i18n}</legend>
   <input type="hidden" name="action" value="removefieldsets">
   <input type="hidden" name="fDocumentTypeId" value="{$oDocumentType->getId()}">
 
   <table class="listing">
   <thead>
      <tr>
-        <th>Fieldset</th>
+        <th>{i18n}Fieldset{/i18n}</th>
      </tr>
   </thead>
   <tbody>
@@ -34,18 +34,18 @@
   </tbody>
   </table>
   <div class="form_actions">
-  <input type="submit" name="submit" value="Disassociate Fieldsets">
+  <input type="submit" name="submit" value="{i18n}Disassociate Fieldsets{/i18n}">
   </div>
 </fieldset>
 </form>
 {else}
-<p>No fieldsets are currently associated with this type.</p>
+<p>{i18n}No fieldsets are currently associated with this type.{/i18n}</p>
 { /if }
 
 { if $aAvailableFieldsets }
 <form method="POST" action="{$smarty.server.PHP_SELF}">
 <fieldset>
-<legend>Associate Fieldsets</legend>
+<legend>{i18n}Associate Fieldsets{/i18n}</legend>
 
   <input type="hidden" name="action" value="addfieldsets">
   <input type="hidden" name="fDocumentTypeId" value="{$oDocumentType->getId()}">
@@ -53,11 +53,11 @@
   {$availableWidget->render()}
   
   <div class="form_actions">
-    <input type="submit" name="submit" value="Associate Fieldsets">
+    <input type="submit" name="submit" value="{i18n}Associate Fieldsets{/i18n}" />
   </div>
 </fieldset>
 </form>
 
 {else}
-<p>There are no fieldsets available for adding. <strong>FIXME link to fieldset creation from here.</strong></p>
+<p>{i18n}There are no fieldsets available for adding.{/i18n} <strong>FIXME link to fieldset creation from here.</strong></p>
 { /if }

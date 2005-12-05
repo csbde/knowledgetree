@@ -1,26 +1,26 @@
-<h2>Fieldset: {$oFieldset->getName()|escape}</h2>
+<h2>{i18n}Fieldset{/i18n}: {$oFieldset->getName()|escape}</h2>
 
-<h3>Fieldset properties</h3>
+<h3>{i18n}Fieldset properties{/i18n}</h3>
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <input type="hidden" name="fFieldsetId" value="{$oFieldset->getId()}">
 <input type="hidden" name="action" value="editobject">
 <table class="prettysw" cellpadding="0" cellspacing="0">
   <tr>
-    <th>Name</th>
+    <th>{i18n}Name{/i18n}</th>
     <td><input type="textbox" name="name" value="{$oFieldset->getName()|escape}"></td>
   </tr>
   <tr>
-    <th>Namespace</th>
+    <th>{i18n}Namespace{/i18n}</th>
     <td><input type="textbox" name="namespace" value="{$oFieldset->getNamespace()|escape}"></td>
   </tr>
 </table>
-<input type="submit" name="submit" value="Change">
+<input type="submit" name="submit" value="{i18n}Change{/i18n}" />
 </form>
 
-<h3>Fieldset members</h3>
+<h3>{i18n}Fieldset members{/i18n}</h3>
 
 {if $oFieldset->getFields() }
-<h4>Existing members</h4>
+<h4>{i18n}Existing members{/i18n}</h4>
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <input type="hidden" name="fFieldsetId" value="{$oFieldset->getId()}">
 <ul>
@@ -30,30 +30,30 @@ name="fieldsetids[]"
 value="{$oField->getId()}">{$oField->getName()|escape}</label></li>
 {/foreach}
 </ul>
-<input type="submit" name="submit" value="Remove fields">
+<input type="submit" name="submit" value="{i18n}Remove fields{/i18n}" />
 </form>
 {/if}
 
-<h4>Add a new field</h4>
+<h4>{i18n}Add a new field{/i18n}</h4>
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <input type="hidden" name="fFieldsetId" value="{$oFieldset->getId()}">
 <input type="hidden" name="action" value="newfield">
 <table class="prettysw" cellpadding="0" cellspacing="0">
   <tr>
-    <th>Name</th>
+    <th>{i18n}Name{/i18n}</th>
     <td><input type="textbox" name="name" />
   </tr>
   <tr>
-    <th>Type</th>
+    <th>{i18n}Type{/i18n}</th>
     <td>
 <select name="type">
-<option value="normal">Normal</option>
-<option value="lookup">Lookup</option>
-<option value="tree">Tree</option>
+<option value="normal">{i18n}Normal{/i18n}</option>
+<option value="lookup">{i18n}Lookup{/i18n}</option>
+<option value="tree">{i18n}Tree{/i18n}</option>
 </select>
     </td>
   </tr>
 </table>
-<input type="submit" name="submit" value="Add field">
+<input type="submit" name="submit" value="{i18n}Add field{/i18n}" />
 </form>

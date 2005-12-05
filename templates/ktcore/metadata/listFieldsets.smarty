@@ -1,23 +1,23 @@
-<h2>Document Fieldsets</h2>
+<h2>{i18n}Document Fieldsets{/i18n}</h2>
 
 <p class="descriptiveText"><strong>FIXME</strong> add documentation about what fieldsets are, and how to use them.</p>
 
 { if $fieldsets}
-<h3>Existing document fieldsets</h3>
+<h3>{i18n}Existing document fieldsets{/i18n}</h3>
 
 <table class="listing" cellpadding="1.5em" cellspacing="0">
   <thead>
     <tr>
-      <th colspan="2">Name</th>
-      <th>Generic</th>
-      <th>Fields</th>
+      <th colspan="2">{i18n}Name{/i18n}</th>
+      <th>{i18n}Generic{/i18n}</th>
+      <th>{i18n}Fields{/i18n}</th>
     </tr>
   </thead>
   <tbody>
 {foreach from=$fieldsets item=oFieldset}
     <tr>
 	  <td>
-	     <a href="?action=delete&fFieldsetId={$oFieldset->getId()}"class="ktAction ktDelete">Delete</a>
+	     <a href="?action=delete&fFieldsetId={$oFieldset->getId()}"class="ktAction ktDelete">{i18n}Delete{/i18n}</a>
 	  </td>
       <td>
         <a href="?action=edit&fFieldsetId={$oFieldset->getId()}"> { $oFieldset->getName() }
@@ -25,9 +25,9 @@
       </td>
       <td>
 {if $oFieldset->getIsGeneric()}
-	Yes
+	{i18n}Yes{/i18n}
 {else}
-	No
+	{i18n}No{/i18n}
 {/if}
       </td>
       <td>
@@ -51,19 +51,19 @@
 
 
 <form method="POST" action="{$smarty.server.PHP_SELF}">
-<fieldset><legend>Create a new document fieldset</legend>
+<fieldset><legend>{i18n}Create a new document fieldset{/i18n}</legend>
 
 <p class="descriptiveText"><strong>FIXME</strong> add documentation about what fieldsets are, and how to use them.</p>
 
 
-<input type="hidden" name="action" value="new">
+<input type="hidden" name="action" value="new" />
 
 {foreach item=oWidget from=$creation_fields}
   {$oWidget->render()}
 {/foreach}
 
 <div class="form_actions"
-<input type="submit" name="submit" value="Create" />
+<input type="submit" name="submit" value="{i18n}Create{/i18n}" />
 </div>
 </fieldset>
 </form>

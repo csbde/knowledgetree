@@ -1,29 +1,29 @@
-<h1>Manage Lookup Trees</h1>
+<h2>{i18n}Manage Lookup Trees{/i18n}</h1>
 <form>
 <fieldset>
-<legend>Fields that have lookup categories.</legend>
+<legend>{i18n}Fields that have lookup categories.{/i18n}</legend>
 
 <input type="hidden" name="action" value="editTree" />
 {foreach item=oField from=$treefields}
     <input type="radio" name="field_id" value="{$oField->getId()}">{$oField->getName()}</input>
 {/foreach}
 <div class="formControls">
-<input type="submit" name="submit" value="Edit Categorisation">
+<input type="submit" name="submit" value="{i18n}Edit Categorisation{/i18n}" />
 </div>
 </fieldset>
 </form>
 
-<h2>Convert to Trees.</h2>
+<h3>{i18n}Convert to Trees.{/i18n}</h3>
 <form>
 <fieldset>
-<legend>Lookup fields without categories.</legend>
+<legend>{i18n}Lookup fields without categories.{/i18n}</legend>
 
 <input type="hidden" name="action" value="createTree" />
 {foreach item=oField from=$lookupfields}
     <input type="radio" name="field_id" value="{$oField->getId()}">{$oField->getName()}</input>
 {/foreach}
 <div class="formControls">
-<input type="submit" name="submit" value="Convert">
+<input type="submit" name="submit" value="{i18n}Convert{/i18n}" />
 </div>
 </fieldset>
 </form>
