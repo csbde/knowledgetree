@@ -31,10 +31,10 @@ class KTConditionDispatcher extends KTStandardDispatcher {
         $aCriteria = Criteria::getAllCriteria();
         
         $aTemplateData = array(
-            "title" => "Create a new condition",
-            "sNameTitle" => "Name of condition",
+            "title" => _("Create a new condition"),
+            "sNameTitle" => _("Name of condition"),
             "aCriteria" => $aCriteria,
-            "searchButton" => "Save",
+            "searchButton" => _("Save"),
         );
         return $oTemplate->render($aTemplateData);
     }
@@ -43,13 +43,6 @@ class KTConditionDispatcher extends KTStandardDispatcher {
 
     }
 
-    function handleOutput($data) {
-        global $main;
-        $main->bFormDisabled = true;
-        $main->setCentralPayload($data);
-        $main->render();
-    }
-    
     // XXX: Rename to do_save
     function do_performSearch() {
         $datavars = KTUtil::arrayGet($_REQUEST, 'boolean_search');
@@ -58,7 +51,7 @@ class KTConditionDispatcher extends KTStandardDispatcher {
         }
         
         if (empty($datavars)) {
-            $this->errorRedirectToMain('You need to have at least 1 condition.');
+            $this->errorRedirectToMain(_('You need to have at least 1 condition.'));
         }
 
         $sName = $_REQUEST['name'];
@@ -75,9 +68,9 @@ class KTConditionDispatcher extends KTStandardDispatcher {
 
         $this->oValidator->notError($oSearch, array(
             'redirect_to' => 'main',
-            'message' => 'Search not saved',
+            'message' => _('Search not saved'),
         ));
-        $this->successRedirectToMain('Search saved');
+        $this->successRedirectToMain(_('Search saved'));
     }
 }
 

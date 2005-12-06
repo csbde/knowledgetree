@@ -12,29 +12,30 @@ require_once(KT_LIB_DIR . '/widgets/fieldWidgets.php');
 
 
 
-class DashboardDispatcher extends KTStandardDispatcher {
+class PreferencesDispatcher extends KTStandardDispatcher {
     var $sSection = 'preferences';
-    // Breadcrumbs base - added to in methods
-    var $aBreadcrumbs = array(
-        array('action' => 'preferences', 'name' => 'Preferences'),
-    );
+
+    function PreferencesDispatcher() {
+        $this->aBreadcrumbs = array(
+            array('action' => 'preferences', 'name' => _('Preferences')),
+        );
+        return parent::KTStandardDispatcher();
+    }
 
     function do_main() {
-		$this->oPage->setBreadcrumbDetails("Your Preferences");
-		$this->oPage->title = "Dashboard"; // FIXME should this be a mutator?
+		$this->oPage->setBreadcrumbDetails(_("Your Preferences"));
+		$this->oPage->title = _("Dashboard");
 		
 		
 		$oUser =& $this->oUser;
 		
 		
 		$edit_fields = array();
-        $edit_fields[] =  new KTStringWidget('Name','Your full name.  This is shown in reports and listings.  e.g. <strong>John Smith</strong>', 'name', $oUser->getName(), $this->oPage, true);        
-        $edit_fields[] =  new KTStringWidget('Email Address','Your email address.  Notifications and alerts are mailed to this address if <strong>email notifications</strong> is set below. e.g. <strong>jsmith@acme.com</strong>', 'email_address', $oUser->getEmail(), $this->oPage, false);        
-        $edit_fields[] =  new KTCheckboxWidget('Email Notifications','If this is specified then the you will receive certain notifications.  If it isn\'t set, then you will only see notifications on the <strong>Dashboard</strong>', 'email_notifications', $oUser->getEmailNotification(), $this->oPage, false);        
-        $edit_fields[] =  new KTStringWidget('Mobile Number','Your mobile phone number.  If the system is configured to send notifications to cellphones, then this number will be SMS\'d with notifications.  e.g. <strong>+27 99 999 9999</strong>', 'mobile_number', $oUser->getMobile(), $this->oPage, false);        
+        $edit_fields[] =  new KTStringWidget(_('Name'),_('Your full name.  This is shown in reports and listings.  e.g. <strong>John Smith</strong>'), 'name', $oUser->getName(), $this->oPage, true);        
+        $edit_fields[] =  new KTStringWidget(_('Email Address'),_('Your email address.  Notifications and alerts are mailed to this address if <strong>email notifications</strong> is set below. e.g. <strong>jsmith@acme.com</strong>'), 'email_address', $oUser->getEmail(), $this->oPage, false);        
+        $edit_fields[] =  new KTCheckboxWidget(_('Email Notifications'),_('If this is specified then the you will receive certain notifications.  If it is not set, then you will only see notifications on the <strong>Dashboard</strong>'), 'email_notifications', $oUser->getEmailNotification(), $this->oPage, false);        
+        $edit_fields[] =  new KTStringWidget(_('Mobile Number'), _('Your mobile phone number.  If the system is configured to send notifications to cellphones, then this number will be sent an SMS with notifications.  e.g. <strong>+27 99 999 9999</strong>'), 'mobile_number', $oUser->getMobile(), $this->oPage, false);        
 		
-		
-	
 		$oTemplating = new KTTemplating;
 		$oTemplate = $oTemplating->loadTemplate("ktcore/principals/preferences");
 		$aTemplateData = array(
@@ -45,15 +46,15 @@ class DashboardDispatcher extends KTStandardDispatcher {
     }
 
     function do_setPassword() {
-		$this->oPage->setBreadcrumbDetails("Your Password");
-		$this->oPage->title = "Dashboard"; // FIXME should this be a mutator?
+		$this->oPage->setBreadcrumbDetails(_("Your Password"));
+		$this->oPage->title = _("Dashboard");
 		
 		
 		$oUser =& $this->oUser;
 		
 		$edit_fields = array();
-        $edit_fields[] =  new KTPasswordWidget('Password','Specify your new password..', 'password', null, $this->oPage, true);        
-        $edit_fields[] =  new KTPasswordWidget('Confirm Password','Confirm the password specified above.', 'confirm_password', null, $this->oPage, true);        
+        $edit_fields[] =  new KTPasswordWidget(_('Password'), _('Specify your new password.'), 'password', null, $this->oPage, true);        
+        $edit_fields[] =  new KTPasswordWidget(_('Confirm Password'), _('Confirm the password specified above.'), 'confirm_password', null, $this->oPage, true);        
 		
 	
 		$oTemplating = new KTTemplating;
@@ -73,9 +74,9 @@ class DashboardDispatcher extends KTStandardDispatcher {
         $confirm_password = KTUtil::arrayGet($_REQUEST, 'confirm_password');        
         
         if (empty($password)) { 
-            $this->errorRedirectToMain("You must specify a password for the user.");
+            $this->errorRedirectToMain(_("You must specify a password for the user."));
         } else if ($password !== $confirm_password) {
-            $this->errorRedirectToMain("The passwords you specified do not match.");
+            $this->errorRedirectToMain(_("The passwords you specified do not match."));
         }
         // FIXME more validation would be useful.
         // validated and ready..
@@ -92,11 +93,11 @@ class DashboardDispatcher extends KTStandardDispatcher {
         
         
         if (PEAR::isError($res) || ($res == false)) {
-            $this->errorRedirectoToMain('Failed to update user.');
+            $this->errorRedirectoToMain(_('Failed to update user.'));
         }
         
         $this->commitTransaction();
-        $this->successRedirectToMain('Your password has been changed.');
+        $this->successRedirectToMain(_('Your password has been changed.'));
         
     }
 
@@ -106,7 +107,7 @@ class DashboardDispatcher extends KTStandardDispatcher {
         
         $name = KTUtil::arrayGet($_REQUEST, 'name');
 		if (empty($name)) {
-		     $this->errorRedirectToMain('You must specify your name.');
+		     $this->errorRedirectToMain(_('You must specify your name.'));
 		}
         
         $email_address = KTUtil::arrayGet($_REQUEST, 'email_address');
@@ -130,18 +131,18 @@ class DashboardDispatcher extends KTStandardDispatcher {
         $res = $oUser->doLimitedUpdate(); // ignores a fix blacklist of items.
         
         if (PEAR::isError($res) || ($res == false)) {
-            $this->errorRedirectoToMain('Failed to update your details.');
+            $this->errorRedirectoToMain(_('Failed to update your details.'));
         }
         
         $this->commitTransaction();
-        $this->successRedirectToMain('Your details have been updated.');
+        $this->successRedirectToMain(_('Your details have been updated.'));
         
     }
 
 
 }
 
-$oDispatcher = new DashboardDispatcher();
+$oDispatcher = new PreferencesDispatcher();
 $oDispatcher->dispatch();
 
 ?>

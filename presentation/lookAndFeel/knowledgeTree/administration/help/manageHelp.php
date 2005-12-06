@@ -12,19 +12,13 @@ require_once(KT_LIB_DIR . "/dispatcher.inc.php");
 require_once(KT_LIB_DIR . "/templating/kt3template.inc.php");
 
 class ManageHelpDispatcher extends KTAdminDispatcher {
-    // Breadcrumbs base - added to in methods
-    var $aBreadcrumbs = array(
-        array('action' => 'administration', 'name' => 'Administration'),
-        
-    );
-
     function do_main() {
         return $this->getData();
     }
 
     function getData() {
-        $this->aBreadcrumbs[] = array('action' => 'manageHelp', 'name' => 'Help Administration');
-        $this->oPage->setBreadcrumbDetails('select a section');
+        $this->aBreadcrumbs[] = array('action' => 'manageHelp', 'name' => _('Help Administration'));
+        $this->oPage->setBreadcrumbDetails(_('select a section'));
     
         $oTemplating = new KTTemplating;
         $aHelpReplacements =& KTHelpReplacement::getList();
@@ -40,7 +34,7 @@ class ManageHelpDispatcher extends KTAdminDispatcher {
     }
 
     function getReplacementItemData($oHelpReplacement) {
-        $this->aBreadcrumbs[] = array('action' => 'manageHelp', 'name' => 'Help Administration');
+        $this->aBreadcrumbs[] = array('action' => 'manageHelp', 'name' => _('Help Administration'));
         $oTemplating = new KTTemplating;
         $oTemplate = $oTemplating->loadTemplate("ktcore/manage_help_item");
         $aTemplateData = array(
@@ -48,7 +42,7 @@ class ManageHelpDispatcher extends KTAdminDispatcher {
             "help" => $oHelpReplacement,
         );
         $this->aBreadcrumbs[] = array(
-            'name' => 'Edit help item',
+            'name' => _('Edit help item'),
         );
         return $oTemplate->render($aTemplateData);
     }
@@ -57,7 +51,7 @@ class ManageHelpDispatcher extends KTAdminDispatcher {
         $id = KTUtil::arrayGet($_REQUEST, 'id');
         $oHelpReplacement = KTHelpReplacement::get($id);
         if (PEAR::isError($oHelpReplacement)) {
-            return $this->errorRedirectToMain("Could not find specified item");
+            return $this->errorRedirectToMain(_("Could not find specified item"));
         }
         return $this->getReplacementItemData($oHelpReplacement);
     }
@@ -66,31 +60,31 @@ class ManageHelpDispatcher extends KTAdminDispatcher {
         $id = KTUtil::arrayGet($_REQUEST, 'id');
         $oHelpReplacement = KTHelpReplacement::get($id);
         if (PEAR::isError($oHelpReplacement)) {
-            return $this->errorRedirectToMain("Could not find specified item");
+            return $this->errorRedirectToMain(_("Could not find specified item"));
         }
         $res = $oHelpReplacement->delete();
         if (PEAR::isError($res)) {
-            return $this->errorRedirectToMain("Could not delete specified item");
+            return $this->errorRedirectToMain(_("Could not delete specified item"));
         }
-        return $this->successRedirectToMain("Item deleted");
+        return $this->successRedirectToMain(_("Item deleted"));
     }
     
     function do_updateReplacement() {
         $id = KTUtil::arrayGet($_REQUEST, 'id');
         $oHelpReplacement = KTHelpReplacement::get($id);
         if (PEAR::isError($oHelpReplacement)) {
-            return $this->errorRedirectToMain("Could not find specified item");
+            return $this->errorRedirectToMain(_("Could not find specified item"));
         }
         $description = KTUtil::arrayGet($_REQUEST, 'description');
         if (empty($description)) {
-            return $this->errorRedirectToMain("No description given");
+            return $this->errorRedirectToMain(_("No description given"));
         }
         $oHelpReplacement->setDescription($description);
         $res = $oHelpReplacement->update();
         if (PEAR::isError($res)) {
-            return $this->errorRedirectToMain("Error updating item");
+            return $this->errorRedirectToMain(_("Error updating item"));
         }
-        return $this->successRedirectToMain("Item updated");
+        return $this->successRedirectToMain(_("Item updated"));
     }
 
     function do_customise() {
@@ -107,7 +101,7 @@ class ManageHelpDispatcher extends KTAdminDispatcher {
             'description' => $description,
         ));
         if (PEAR::isError($oHelpReplacement)) {
-            return $this->errorRedirectToMain("Unable to create replacement");
+            return $this->errorRedirectToMain(_("Unable to create replacement"));
         }
         return $this->successRedirectTo('editReplacement', 'id=' .  $oHelpReplacement->getId());
     }

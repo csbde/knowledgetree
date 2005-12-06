@@ -30,14 +30,14 @@ class ManageLookupTreeDispatcher extends KTAdminDispatcher {
         $field_id = KTUtil::arrayGet($_REQUEST, 'field_id');
 
         // validate
-        if (empty($field_id)) { return $this->errorRedirectToMain("Must select a field to convert."); }
+        if (empty($field_id)) { return $this->errorRedirectToMain(_("Must select a field to convert.")); }
         $oField =& DocumentField::get($field_id);
-        if (PEAR::isError($oField)) { return $this->errorRedirectToMain("Invalid field."); }
+        if (PEAR::isError($oField)) { return $this->errorRedirectToMain(_("Invalid field.")); }
 
         // set as a metadata tree.
         $oField->setHasLookupTree(1);
         $oField->update();
-        $this->errorRedirectToMain("Converted ".$oField->getName()." to a tree.");
+        $this->errorRedirectToMain(sprintf(_("Converted %s to a tree."), $oField->getName()));
     }
 
 
@@ -50,9 +50,9 @@ class ManageLookupTreeDispatcher extends KTAdminDispatcher {
         $subaction = KTUtil::arrayGet($_REQUEST, 'subaction');
 
         // validate
-        if (empty($field_id)) { return $this->errorRedirectToMain("Must select a field to edit."); }
+        if (empty($field_id)) { return $this->errorRedirectToMain(_("Must select a field to edit.")); }
         $oField =& DocumentField::get($field_id);
-        if (PEAR::isError($oField)) { return $this->errorRedirectToMain("Invalid field."); }
+        if (PEAR::isError($oField)) { return $this->errorRedirectToMain(_("Invalid field.")); }
 
         // under here we do the subaction rendering.
         // we do this so we don't have to do _very_ strange things with multiple actions.
@@ -62,28 +62,28 @@ class ManageLookupTreeDispatcher extends KTAdminDispatcher {
 
         if ($subaction !== null) {
             $target = 'editTree';
-            $msg = 'Changes saved.';
+            $msg = _('Changes saved.');
             if ($subaction === "addCategory") {
                 $new_category = KTUtil::arrayGet($_REQUEST, 'category_name');
-                if (empty($new_category)) { return $this->errorRedirectTo("editTree", "Must enter a name for the new category.", array("field_id" => $field_id)); }
+                if (empty($new_category)) { return $this->errorRedirectTo("editTree", _("Must enter a name for the new category."), array("field_id" => $field_id)); }
                 else { $this->subact_addCategory($field_id, $current_node, $new_category, $fieldTree);}                
-                $msg = 'Category added: ' . $new_category;
+                $msg = _('Category added'). ': ' . $new_category;
             }       
             if ($subaction === "deleteCategory") {
                 $this->subact_deleteCategory($fieldTree, $current_node);
                 $current_node = 0;      // clear out, and don't try and render the newly deleted category.                 
-                $msg = 'Category removed.';
+                $msg = _('Category removed.');
             }       
             if ($subaction === "linkKeywords") {
                 $keywords = KTUtil::arrayGet($_REQUEST, 'keywordsToAdd');
                 $this->subact_linkKeywords($fieldTree, $current_node, $keywords);
                 $current_node = 0;      // clear out, and don't try and render the newly deleted category.                 
-                $msg = 'Keywords added to category.';
+                $msg = _('Keywords added to category.');
             }       
             if ($subaction === "unlinkKeyword") {
                 $keyword = KTUtil::arrayGet($_REQUEST, 'keyword_id');
                 $this->subact_unlinkKeyword($fieldTree, $keyword);
-                $msg = 'Keyword moved to base of tree.';
+                $msg = _('Keyword moved to base of tree.');
             }
             // now redirect
             $query = 'field_id=' . $field_id;
@@ -91,7 +91,7 @@ class ManageLookupTreeDispatcher extends KTAdminDispatcher {
         }
 
         if ($fieldTree->root === null) { 
-            return $this->errorRedirectToMain("Error building tree. Is this a valid tree-lookup field?"); 
+            return $this->errorRedirectToMain(_("Error building tree. Is this a valid tree-lookup field?"));
         } 
 
         // FIXME extract this from MDTree (helper method?)
@@ -102,7 +102,7 @@ class ManageLookupTreeDispatcher extends KTAdminDispatcher {
         $oTemplate = $oTemplating->loadTemplate("ktcore/edit_lookuptrees");
         $renderedTree = $this->_evilTreeRenderer($fieldTree);
         
-        $this->oPage->setTitle('Edit Lookup Tree');
+        $this->oPage->setTitle(_('Edit Lookup Tree'));
         
         //$this->oPage->requireJSResource('thirdparty/js/MochiKit/Base.js');
         

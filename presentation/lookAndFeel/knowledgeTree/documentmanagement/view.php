@@ -25,15 +25,19 @@ require_once(KT_LIB_DIR . "/actions/documentaction.inc.php");
 class ViewDocumentDispatcher extends KTStandardDispatcher {
 
     var $sSection = "view_details";
-    // Breadcrumbs base - added to in methods
-    var $aBreadcrumbs = array(
-        array('action' => 'browse', 'name' => 'Browse'),
-    );
+
+    function ViewDocumentDispatcher() {
+        $this->aBreadcrumbs = array(
+            array('action' => 'browse', 'name' => _('Browse')),
+        );
+
+        parent::KTStandardDispatcher();
+    }
     
     // FIXME identify the current location somehow.
     function addPortlets($currentaction = null) {
 	    $actions = KTDocumentActionUtil::getDocumentActionsForDocument($this->oDocument, $this->oUser);
-		$oPortlet = new KTActionPortlet("Document Actions"); // FIXME i18n
+		$oPortlet = new KTActionPortlet(_("Document Actions"));
 		$oPortlet->setActions($actions, $currentaction);
 		$this->oPage->addPortlet($oPortlet);
 	}
@@ -61,8 +65,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 			return $this->do_error();		
 		}
 		if (!Permission::userHasDocumentReadPermission($oDocument)) {
-		    // FIXME inconsistent.
-		    $this->oPage->addError('You are not allowed to view this document');
+		    $this->oPage->addError(_('You are not allowed to view this document'));
 		    return $this->do_error();
 		}
 
@@ -73,7 +76,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 		
 		$this->oDocument =& $oDocument;
         $this->aBreadcrumbs = array_merge($this->aBreadcrumbs, KTBrowseUtil::breadcrumbsForDocument($oDocument, $aOptions));
-		$this->oPage->setBreadcrumbDetails("document details");
+		$this->oPage->setBreadcrumbDetails(_("document details"));
 		$this->addPortlets("Document Details");
 		
 		$document_data["document"] = $oDocument;
@@ -151,7 +154,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 		
 		$this->oDocument =& $oDocument;
         $this->aBreadcrumbs = array_merge($this->aBreadcrumbs, KTBrowseUtil::breadcrumbsForDocument($oDocument));
-		$this->oPage->setBreadcrumbDetails("history");
+		$this->oPage->setBreadcrumbDetails(_("history"));
 		$this->addPortlets("History");
 		
 		$aTransactions = array();
@@ -173,7 +176,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 		
 		
 		// render pass.
-		$this->oPage->title = "Document History : " . $oDocument->getName();
+		$this->oPage->title = _("Document History") . " : " . $oDocument->getName();
         $oTemplating = new KTTemplating;
 		$oTemplate = $oTemplating->loadTemplate("kt3/view_document_history");
 		$aTemplateData = array(
@@ -206,14 +209,14 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 		
 		$this->oDocument =& $oDocument;
         $this->aBreadcrumbs = array_merge($this->aBreadcrumbs, KTBrowseUtil::breadcrumbsForDocument($oDocument));
-		$this->oPage->setBreadcrumbDetails("history");
+		$this->oPage->setBreadcrumbDetails(_("history"));
 		$this->addPortlets("History");
 		
 		$aVersions = Document::getByLiveDocument($oDocument);
 		//var_dump($aVersions);
 		
 		// render pass.
-		$this->oPage->title = "Document History : " . $oDocument->getName();
+		$this->oPage->title = _("Document History") . " : " . $oDocument->getName();
         $oTemplating = new KTTemplating;
 		$oTemplate = $oTemplating->loadTemplate("kt3/document/metadata_history");
 		$aTemplateData = array(
@@ -246,12 +249,12 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 		}
 		if (!Permission::userHasDocumentReadPermission($oDocument)) {
 		    // FIXME inconsistent.
-		    $this->oPage->addError('You are not allowed to view this document');
+		    $this->oPage->addError(_('You are not allowed to view this document'));
 		    return $this->do_error();
 		}
 		$this->oDocument =& $oDocument;
         $this->aBreadcrumbs = array_merge($this->aBreadcrumbs, KTBrowseUtil::breadcrumbsForDocument($oDocument));
-		$this->oPage->setBreadcrumbDetails("compare versions");
+		$this->oPage->setBreadcrumbDetails(_("compare versions"));
 		
 		$comparison_version = KTUtil::arrayGet($_REQUEST, 'fComparisonVersion');
 		if ($comparison_version=== null) { 
@@ -261,7 +264,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 		
 		$oComparison =& Document::get($comparison_version);
 		if (PEAR::isError($oComparison)) {
-		    $this->errorRedirectToMain('Invalid document to compare against.');
+		    $this->errorRedirectToMain(_('Invalid document to compare against.'));
 		}
 		$comparison_data = array();
 		$comparison_data['document_id'] = $oComparison->getId();

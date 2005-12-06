@@ -24,9 +24,6 @@
  * @package documentmanagement
  */
 
-/* boilerplate */
-//require_once('../../../../../config/dmsDefaults.php');
-
 require_once(KT_LIB_DIR . '/dispatcher.inc.php');
 require_once(KT_LIB_DIR . '/templating/kt3template.inc.php');
 
@@ -34,20 +31,14 @@ require_once(KT_LIB_DIR . '/widgets/fieldWidgets.php');
 require_once(KT_LIB_DIR . "/roles/Role.inc");
 
 class RoleAdminDispatcher extends KTAdminDispatcher {
-
-   // Breadcrumbs base - added to in methods
-    var $aBreadcrumbs = array(
-        array('action' => 'administration', 'name' => 'Administration'),
-    );
-
     function check() {
         return true;
     }
 
     function do_main() {
-        $this->aBreadcrumbs[] = array('action' => 'roleManagement', 'name' => 'Role Management');
+        $this->aBreadcrumbs[] = array('action' => 'roleManagement', 'name' => _('Role Management'));
         
-        $this->oPage->setTitle('Role Management');
+        $this->oPage->setTitle(_('Role Management'));
         
         $edit_fields = array();
         $role_id = KTUtil::arrayGet($_REQUEST, 'role_id', null);
@@ -55,13 +46,13 @@ class RoleAdminDispatcher extends KTAdminDispatcher {
         if (PEAR::isError($oRole) || ($oRole == false)) { $for_edit = false; }
         else {
             $for_edit = true;
-            $edit_fields[] = new KTStringWidget('Name','A short, human-readable name for the role.', 'name', $oRole->getName(), $this->oPage, true);        
+            $edit_fields[] = new KTStringWidget(_('Name'),_('A short, human-readable name for the role.'), 'name', $oRole->getName(), $this->oPage, true);        
         }
         
         $aRoles =& Role::getList('id > 0');
         
         $add_fields = array();
-        $add_fields[] = new KTStringWidget('Name','A short, human-readable name for the role.', 'name', null, $this->oPage, true);        
+        $add_fields[] = new KTStringWidget(_('Name'),_('A short, human-readable name for the role.'), 'name', null, $this->oPage, true);        
         
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate('ktcore/principals/roleadmin');       
@@ -79,56 +70,56 @@ class RoleAdminDispatcher extends KTAdminDispatcher {
     function do_createRole() {
         $name = KTUtil::arrayGet($_REQUEST, 'name', null);
         if ($name === null) {
-            $this->errorRedirectToMain('Please give the role a name.');
+            $this->errorRedirectToMain(_('Please give the role a name.'));
         }
         
         $this->startTransaction();
         $oRole = new Role($name);
         $res = $oRole->create();
         if (PEAR::isError($res) || ($res == false)) {
-            $this->errorRedirectToMain('Unable to create role.');
+            $this->errorRedirectToMain(_('Unable to create role.'));
         }
         
-        $this->successRedirectToMain('Role "' . $name . '" created.');
+        $this->successRedirectToMain(sprintf(_('Role "%s" created.'), $name));
     }
 
     function do_updateRole() {
         $role_id = KTUtil::arrayGet($_REQUEST, 'role_id');
         $oRole = Role::get($role_id);
         if (PEAR::isError($oRole) || ($oRole == false)) {
-            $this->errorRedirectToMain('Please select a valid role first.');
+            $this->errorRedirectToMain(_('Please select a valid role first.'));
         }
         
         $name = KTUtil::arrayGet($_REQUEST, 'name', null);
         if ($name === null) {
-            $this->errorRedirectToMain('Please give the role a name.');
+            $this->errorRedirectToMain(_('Please give the role a name.'));
         }
         
         $this->startTransaction();
         $oRole->setName($name);
         $res = $oRole->update();
         if (PEAR::isError($res) || ($res == false)) {
-            $this->errorRedirectToMain('Unable to update role.');
+            $this->errorRedirectToMain(_('Unable to update role.'));
         }
         
-        $this->successRedirectToMain('Role "' . $name . '" updated.');
+        $this->successRedirectToMain(sprintf(_('Role "%s" updated.'), $name));
     }
 
     function do_deleteRole() {
         $role_id = KTUtil::arrayGet($_REQUEST, 'role_id');
         $oRole = Role::get($role_id);
         if (PEAR::isError($oRole) || ($oRole == false)) {
-            $this->errorRedirectToMain('Please select a valid role first.');
+            $this->errorRedirectToMain(_('Please select a valid role first.'));
         }
         $name = $oRole->getName();
         
         $this->startTransaction();  
         $res = $oRole->delete();
         if (PEAR::isError($res) || ($res == false)) { 
-            $this->errorRedirectToMain('Unable to delete the role.  Possible cause: ' . $_SESSION['errorMessage']); 
+            $this->errorRedirectToMain(_('Unable to delete the role.') . '  ' . _('Possible cause') . ': ' . $_SESSION['errorMessage']); 
         }
             
-        $this->successRedirectToMain('Role "' . $name . '" deleted. ');
+        $this->successRedirectToMain(sprintf(_('Role "%s" deleted. '), $name));
     }
 
 }

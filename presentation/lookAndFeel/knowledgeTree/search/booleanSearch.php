@@ -12,15 +12,18 @@ require_once(KT_LIB_DIR . "/search/savedsearch.inc.php");
 require_once(KT_LIB_DIR . '/search/searchutil.inc.php');
 
 class BooleanSearchDispatcher extends KTStandardDispatcher {
-    // Breadcrumbs base - added to in methods
-    var $aBreadcrumbs = array(
-        array('action' => 'browse', 'name' => 'Browse'),
-    );
     var $sSection = "browse";
 
+    function BooleanSearchDispatcher() {
+        $this->aBreadcrumbs = array(
+            array('action' => 'browse', 'name' => _('Browse')),
+        );
+        return parent::KTStandardDispatcher();
+    }
+
    function do_main() {
-        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => "Boolean search");
-        $this->oPage->setBreadcrumbDetails('defining search');
+        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _("Boolean search"));
+        $this->oPage->setBreadcrumbDetails(_('defining search'));
         $oTemplating = new KTTemplating;
         $oTemplate = $oTemplating->loadTemplate("ktcore/boolean_search");
         
@@ -49,7 +52,7 @@ class BooleanSearchDispatcher extends KTStandardDispatcher {
         }
         
         if (empty($datavars)) {
-            $this->errorRedirectToMain('You need to have at least 1 condition.');
+            $this->errorRedirectToMain(_('You need to have at least 1 condition.'));
         }
 
         $res = $this->handleCriteriaSet($datavars, KTUtil::arrayGet($_REQUEST, 'fStartIndex', 1));
@@ -58,8 +61,8 @@ class BooleanSearchDispatcher extends KTStandardDispatcher {
     }
     
     function handleCriteriaSet($aCriteriaSet, $iStartIndex) {
-        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => "Boolean search");
-        $this->oPage->setBreadcrumbDetails('searching');
+        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _("Boolean search"));
+        $this->oPage->setBreadcrumbDetails(_('searching'));
         $collection = new DocumentCollection;
         $this->browseType = "Folder";
 
@@ -67,10 +70,10 @@ class BooleanSearchDispatcher extends KTStandardDispatcher {
         $t =& new TitleColumn("Test 1 (title)","title");
         $t->setOptions(array('documenturl' => '../documentmanagement/view.php'));
         $collection->addColumn($t);
-        $collection->addColumn(new DateColumn("Created","created", "getCreatedDateTime"));
-        $collection->addColumn(new DateColumn("Last Modified","modified", "getLastModifiedDate"));
-        $collection->addColumn(new DateColumn("Last Modified","modified", "getLastModifiedDate"));
-        $collection->addColumn(new UserColumn('Creator','creator_id','getCreatorID'));
+        $collection->addColumn(new DateColumn(_("Created"),"created", "getCreatedDateTime"));
+        $collection->addColumn(new DateColumn(_("Last Modified"),"modified", "getLastModifiedDate"));
+        $collection->addColumn(new DateColumn(_("Last Modified"),"modified", "getLastModifiedDate"));
+        $collection->addColumn(new UserColumn(_('Creator'),'creator_id','getCreatorID'));
 
         $searchable_text = KTUtil::arrayGet($_REQUEST, "fSearchableText");
 

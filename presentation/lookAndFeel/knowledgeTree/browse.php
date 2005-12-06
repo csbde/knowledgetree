@@ -46,12 +46,15 @@ $sectionName = "browse";
 class BrowseDispatcher extends KTStandardDispatcher {
 
     
-    // Breadcrumbs base - added to in methods
-    var $aBreadcrumbs = array(
-        array('action' => 'browse', 'name' => 'Browse'),
-    );
 	var $sSection = "browse";
 	var $browseType;
+
+    function BrowseDispatcher() {
+        $this->aBreadcrumbs = array(
+            array('action' => 'browse', 'name' => _('Browse')),
+        );
+        return parent::KTStandardDispatcher();
+    }
 	
     function check() {
         // which folder.
@@ -64,7 +67,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
         // here we need the folder object to do the breadcrumbs.
         $this->oFolder =& Folder::get($folder_id);
         if (PEAR::isError($this->oFolder)) {
-           $this->oPage->addError("invalid folder");
+           $this->oPage->addError(_("invalid folder"));
            $folder_id = 1;
            $this->oFolder =& Folder::get($folder_id);
         }
@@ -77,15 +80,15 @@ class BrowseDispatcher extends KTStandardDispatcher {
 		
 		$collection->addColumn(new SelectionColumn("Browse Selection","selection"));
 		$collection->addColumn(new TitleColumn("Test 1 (title)","title"));
-		$collection->addColumn(new DateColumn("Created","created", "getCreatedDateTime"));
-		$collection->addColumn(new DateColumn("Last Modified","modified", "getLastModifiedDate"));
-		$collection->addColumn(new UserColumn('Creator','creator_id','getCreatorID'));
+		$collection->addColumn(new DateColumn(_("Created"),"created", "getCreatedDateTime"));
+		$collection->addColumn(new DateColumn(_("Last Modified"),"modified", "getLastModifiedDate"));
+		$collection->addColumn(new UserColumn(_('Creator'),'creator_id','getCreatorID'));
 		
         $this->aBreadcrumbs = array_merge($this->aBreadcrumbs,
                 KTBrowseUtil::breadcrumbsForFolder($this->oFolder));
 		// setup the folderside add actions
 		// FIXME do we want to use folder actions?
-		$portlet = new KTActionPortlet("Folder Actions");
+		$portlet = new KTActionPortlet(_("Folder Actions"));
 		
 		
 		// FIXME make a FolderActionUtil ... is it necessary?

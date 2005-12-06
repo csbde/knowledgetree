@@ -35,15 +35,17 @@ class KTEditDocumentDispatcher extends KTStandardDispatcher {
     var $oFolder = null;
     
     var $sSection = "view_details";
-    // Breadcrumbs base - added to in methods
-    var $aBreadcrumbs = array(
-        array('action' => 'browse', 'name' => 'Browse'),
-    );
+
+    function KTEditDocumentDispatcher() {
+        $this->aBreadcrumbs = array(
+            array('action' => 'browse', 'name' => 'Browse'),
+        );
+    }
     
     // FIXME identify the current location somehow.
     function addPortlets($currentaction = null) {
         $actions = KTDocumentActionUtil::getDocumentActionsForDocument($this->oDocument, $this->oUser);
-        $oPortlet = new KTActionPortlet("Document Actions"); // FIXME i18n
+        $oPortlet = new KTActionPortlet(_("Document Actions"));
         $oPortlet->setActions($actions, $currentaction);
         $this->oPage->addPortlet($oPortlet);
     }
@@ -55,7 +57,7 @@ class KTEditDocumentDispatcher extends KTStandardDispatcher {
         // here we need the folder object to do the breadcrumbs.
         $oFolder =& Folder::get($folder_id);
         if (PEAR::isError($oFolder)) {
-           $this->oPage->addError("invalid folder");
+           $this->oPage->addError(_("invalid folder"));
            $folder_id = 1;
            $oFolder =& Folder::get($folder_id);
         }
@@ -93,11 +95,11 @@ class KTEditDocumentDispatcher extends KTStandardDispatcher {
     function do_main() {
         $document_id = KTUtil::arrayGet($_REQUEST, 'fDocumentId');
         if (empty($document_id)) {
-            $this->errorPage("No document specified for editing.");
+            $this->errorPage(_("No document specified for editing."));
         }
         $oDocument = Document::get($document_id);
         if (PEAR::isError($oDocument)) {
-            $this->errorPage("Invalid Document.");
+            $this->errorPage(_("Invalid Document."));
         }
         
         $this->oDocument = $oDocument;
@@ -155,11 +157,11 @@ class KTEditDocumentDispatcher extends KTStandardDispatcher {
 	function do_update() {
         $document_id = KTUtil::arrayGet($_REQUEST, 'fDocumentId');
         if (empty($document_id)) {
-            $this->errorPage("No document specified for editing.");
+            $this->errorPage(_("No document specified for editing."));
         }
         $oDocument = Document::get($document_id);
         if (PEAR::isError($oDocument)) {
-            $this->errorPage("Invalid Document.");
+            $this->errorPage(_("Invalid Document."));
         }
         
         $this->oDocument = $oDocument;

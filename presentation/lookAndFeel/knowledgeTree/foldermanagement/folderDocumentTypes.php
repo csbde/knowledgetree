@@ -5,9 +5,6 @@ require_once(KT_LIB_DIR . '/dispatcher.inc.php');
 require_once(KT_LIB_DIR . '/documentmanagement/DocumentType.inc');
 require_once(KT_LIB_DIR . '/foldermanagement/FolderDocTypeLink.inc');
 
-$sectionName = "Administration";
-require_once(KT_DIR . "/presentation/webpageTemplate.inc");
-
 class KTFolderDocumentTypeDispatcher extends KTStandardDispatcher {
     function check () {
         if (empty($_REQUEST['fFolderId'])) {
@@ -60,7 +57,7 @@ class KTFolderDocumentTypeDispatcher extends KTStandardDispatcher {
             $oLink->create();
         }
         $this->oFolder->update();
-        $this->errorRedirectToMain('Changes made', 'fFolderId=' .
+        $this->errorRedirectToMain(_('Changes made'), 'fFolderId=' .
                 $this->oFolder->getId());
         exit(0);
     }

@@ -21,21 +21,16 @@ require_once(KT_LIB_DIR . '/search/savedsearch.inc.php');
 class KTWorkflowDispatcher extends KTStandardDispatcher {
     var $bAutomaticTransaction = true;
 
-    // Breadcrumbs base - added to in methods
-    var $aBreadcrumbs = array(
-        array('action' => 'administration', 'name' => 'Administration'),
-    );
-
     // {{{ WORKFLOW HANDLING
     // {{{ do_main
     function do_main () {
         $this->aBreadcrumbs[] = array(
             'action' => 'manageWorkflows',
-            'name' => 'Workflows',
+            'name' => _('Workflows'),
         );
         
         $add_fields = array();
-        $add_fields[] = new KTStringWidget('Name','A human-readable name for the workflow.', 'fName', null, $this->oPage, true);
+        $add_fields[] = new KTStringWidget(_('Name'),_('A human-readable name for the workflow.'), 'fName', null, $this->oPage, true);
         
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate =& $oTemplating->loadTemplate('ktcore/workflow/listWorkflows');
@@ -58,7 +53,7 @@ class KTWorkflowDispatcher extends KTStandardDispatcher {
         $aPermissions = KTPermission::getList();
         
         $edit_fields = array();
-        $edit_fields[] = new KTStringWidget('Name','A human-readable name for the workflow.', 'fName', $oWorkflow->getName(), $this->oPage, true);
+        $edit_fields[] = new KTStringWidget(_('Name'), _('A human-readable name for the workflow.'), 'fName', $oWorkflow->getName(), $this->oPage, true);
         $aOptions = array();
         $vocab = array();
         $vocab[0] = 'None';
@@ -66,32 +61,32 @@ class KTWorkflowDispatcher extends KTStandardDispatcher {
             $vocab[$state->getId()] = $state->getName();
         } 
         $aOptions['vocab'] = $vocab;
-        $edit_fields[] = new KTLookupWidget('Starting State','When a document has this workflow applied to it, to which state should it initially be set ', 'fStartStateId', $oWorkflow->getStartStateId(), $this->oPage, false, null, null, $aOptions);
+        $edit_fields[] = new KTLookupWidget(_('Starting State'), _('When a document has this workflow applied to it, to which state should it initially be set'), 'fStartStateId', $oWorkflow->getStartStateId(), $this->oPage, false, null, null, $aOptions);
         
         $add_state_fields = array();
-        $add_state_fields[] = new KTStringWidget('Name','A human-readable name for the state.', 'fName', null, $this->oPage, true);
+        $add_state_fields[] = new KTStringWidget(_('Name'), _('A human-readable name for the state.'), 'fName', null, $this->oPage, true);
 
         
         $add_transition_fields = array();
-        $add_transition_fields[] = new KTStringWidget('Name','A human-readable name for the state.', 'fName', null, $this->oPage, true);
+        $add_transition_fields[] = new KTStringWidget(_('Name'), _('A human-readable name for the state.'), 'fName', null, $this->oPage, true);
         $aOptions = array();
         $vocab = array();
         foreach($aStates as $state) {
             $vocab[$state->getId()] = $state->getName();
         } 
         $aOptions['vocab'] = $vocab;
-        $add_transition_fields[] = new KTLookupWidget('Destination State','Once this transition is complete, which state should the document be in?', 'fTargetStateId', $oWorkflow->getStartStateId(), $this->oPage, true, null, null, $aOptions);
+        $add_transition_fields[] = new KTLookupWidget(_('Destination State'), _('Once this transition is complete, which state should the document be in?'), 'fTargetStateId', $oWorkflow->getStartStateId(), $this->oPage, true, null, null, $aOptions);
         $aOptions = array();
         $vocab = array();
         foreach($aPermissions as $permission) {
             $vocab[$permission->getId()] = $permission->getHumanName();
         } 
         $aOptions['vocab'] = $vocab;
-        $add_transition_fields[] = new KTLookupWidget('Guard Permission.','Which permission must the user have in order to follow this transition?', 'fPermissionId', $oWorkflow->getStartStateId(), $this->oPage, true, null, null, $aOptions);
+        $add_transition_fields[] = new KTLookupWidget(_('Guard Permission.'), _('Which permission must the user have in order to follow this transition?'), 'fPermissionId', $oWorkflow->getStartStateId(), $this->oPage, true, null, null, $aOptions);
         
         $this->aBreadcrumbs[] = array(
             'action' => 'manageWorkflows',
-            'name' => 'Workflows',
+            'name' => _('Workflows'),
         );
         $this->aBreadcrumbs[] = array(
             'action' => 'manageWorkflows',
@@ -131,9 +126,9 @@ class KTWorkflowDispatcher extends KTStandardDispatcher {
         $res = $oWorkflow->update();
         $this->oValidator->notErrorFalse($res, array(
             'redirect_to' => array('editWorkflow', 'fWorkflowId=' . $oWorkflow->getId()),
-            'message' => 'Error saving workflow',
+            'message' => _('Error saving workflow'),
         ));
-        $this->successRedirectTo('editWorkflow', 'Changes saved', 'fWorkflowId=' . $oWorkflow->getId());
+        $this->successRedirectTo('editWorkflow', _('Changes saved'), 'fWorkflowId=' . $oWorkflow->getId());
         exit(0);
     }
     // }}}
@@ -146,9 +141,9 @@ class KTWorkflowDispatcher extends KTStandardDispatcher {
         ));
         $this->oValidator->notError($res, array(
             'redirect_to' => array('main'),
-            'message' => 'Could not create workflow',
+            'message' => _('Could not create workflow'),
         ));
-        $this->successRedirectTo('editWorkflow', 'Workflow created', 'fWorkflowId=' . $res->getId());
+        $this->successRedirectTo('editWorkflow', _('Workflow created'), 'fWorkflowId=' . $res->getId());
         exit(0);
     }
     // }}}
@@ -159,9 +154,9 @@ class KTWorkflowDispatcher extends KTStandardDispatcher {
         $res = KTWorkflowUtil::setControlledActionsForWorkflow($oWorkflow, $_REQUEST['fActions']);
         $this->oValidator->notErrorFalse($res, array(
             'redirect_to' => array('editWorkflow', 'fWorkflowId=' . $oWorkflow->getId()),
-            'message' => 'Error saving workflow controlled actions',
+            'message' => _('Error saving workflow controlled actions'),
         ));
-        $this->successRedirectTo('editWorkflow', 'Changes saved', 'fWorkflowId=' . $oWorkflow->getId());
+        $this->successRedirectTo('editWorkflow', _('Changes saved'), 'fWorkflowId=' . $oWorkflow->getId());
         exit(0);
     }
     // }}}
@@ -180,9 +175,9 @@ class KTWorkflowDispatcher extends KTStandardDispatcher {
         ));
         $this->oValidator->notError($oState, array(
             'redirect_to' => array('editWorkflow', 'fWorkflowId=' .  $oWorkflow->getId()),
-            'message' => 'Could not create workflow state',
+            'message' => _('Could not create workflow state'),
         ));
-        $this->successRedirectTo('editState', 'Workflow state created', 'fWorkflowId=' . $oWorkflow->getId() . '&fStateId=' .  $oState->getId());
+        $this->successRedirectTo('editState', _('Workflow state created'), 'fWorkflowId=' . $oWorkflow->getId() . '&fStateId=' .  $oState->getId());
         exit(0);
     }
     // }}}
@@ -207,14 +202,14 @@ class KTWorkflowDispatcher extends KTStandardDispatcher {
         $aTransitionsSelected = KTWorkflowUtil::getTransitionsFrom($oState, array('ids' => true));
         $this->aBreadcrumbs[] = array(
             'action' => 'manageWorkflows',
-            'name' => 'Workflows',
+            'name' => _('Workflows'),
         );
         $this->aBreadcrumbs[] = array(
             'action' => 'manageWorkflows',
             'query' => 'action=editWorkflow&fWorkflowId=' . $oWorkflow->getId(),
             'name' => $oWorkflow->getName(),
         );
-        $this->oPage->setBreadcrumbDetails('state: ' . $oState->getName());
+        $this->oPage->setBreadcrumbDetails(_('state') . ': ' . $oState->getName());
         
         $aInformed = KTWorkflowUtil::getInformedForState($oState);
         $oTemplate->setData(array(
@@ -244,9 +239,9 @@ class KTWorkflowDispatcher extends KTStandardDispatcher {
         $res = $oState->update();
         $this->oValidator->notErrorFalse($res, array(
             'redirect_to' => array('editState', 'fWorkflowId=' . $oWorkflow->getId() . '&fStateId=' . $oState->getId()),
-            'message' => 'Error saving state',
+            'message' => _('Error saving state'),
         ));
-        $this->successRedirectTo('editState', 'Changes saved', 'fWorkflowId=' . $oWorkflow->getId() . '&fStateId=' .  $oState->getId());
+        $this->successRedirectTo('editState', _('Changes saved'), 'fWorkflowId=' . $oWorkflow->getId() . '&fStateId=' .  $oState->getId());
         exit(0);
     }
     // }}}
@@ -258,9 +253,9 @@ class KTWorkflowDispatcher extends KTStandardDispatcher {
         $res = KTWorkflowUtil::saveTransitionsFrom($oState, $_REQUEST['fTransitionIds']);
         $this->oValidator->notErrorFalse($res, array(
             'redirect_to' => array('editState', 'fWorkflowId=' . $oWorkflow->getId() . '&fStateId=' . $oState->getId()),
-            'message' => 'Error saving transitions',
+            'message' => _('Error saving transitions'),
         ));
-        $this->successRedirectTo('editState', 'Changes saved', 'fWorkflowId=' . $oWorkflow->getId() . '&fStateId=' .  $oState->getId());
+        $this->successRedirectTo('editState', _('Changes saved'), 'fWorkflowId=' . $oWorkflow->getId() . '&fStateId=' .  $oState->getId());
         exit(0);
     }
     // }}}
@@ -272,9 +267,9 @@ class KTWorkflowDispatcher extends KTStandardDispatcher {
         $res = KTWorkflowUtil::setEnabledActionsForState($oState, $_REQUEST['fActions']);
         $this->oValidator->notErrorFalse($res, array(
             'redirect_to' => array('editState', 'fWorkflowId=' . $oWorkflow->getId(), '&fStateId=' .  $oState->getId()),
-            'message' => 'Error saving state enabled actions',
+            'message' => _('Error saving state enabled actions'),
         ));
-        $this->successRedirectTo('editState', 'Actions set', 'fWorkflowId=' . $oWorkflow->getId() . '&fStateId=' .  $oState->getId());
+        $this->successRedirectTo('editState', _('Actions set'), 'fWorkflowId=' . $oWorkflow->getId() . '&fStateId=' .  $oState->getId());
         exit(0);
     }
     // }}}
@@ -290,21 +285,21 @@ class KTWorkflowDispatcher extends KTStandardDispatcher {
             $aRoleIds = array();
         }
         if (!is_array($aRoleIds)) {
-            $this->errorRedirectTo($sTargetAction, 'Invalid roles specified', $sTargetParams);
+            $this->errorRedirectTo($sTargetAction, _('Invalid roles specified'), $sTargetParams);
         }
         $aGroupIds = KTUtil::arrayGet($_REQUEST, 'fGroupIds');
         if (empty($aGroupIds)) {
             $aGroupIds = array();
         }
         if (!is_array($aGroupIds)) {
-            $this->errorRedirectTo($sTargetAction, 'Invalid groups specified', $sTargetParams);
+            $this->errorRedirectTo($sTargetAction, _('Invalid groups specified'), $sTargetParams);
         }
         $aUserIds = KTUtil::arrayGet($_REQUEST, 'fUserIds');
         if (empty($aUserIds)) {
             $aUserIds = array();
         }
         if (!is_array($aUserIds)) {
-            $this->errorRedirectTo($sTargetAction, 'Invalid users specified', $sTargetParams);
+            $this->errorRedirectTo($sTargetAction, _('Invalid users specified'), $sTargetParams);
         }
         $aAllowed = array(
             'role' => $aRoleIds,
@@ -312,7 +307,7 @@ class KTWorkflowDispatcher extends KTStandardDispatcher {
             'user' => $aUserIds,
         );
         KTWorkflowUtil::setInformedForState($oState, $aAllowed);
-        $this->successRedirectTo($sTargetAction, 'Changes made', $sTargetParams);
+        $this->successRedirectTo($sTargetAction, _('Changes saved'), $sTargetParams);
     }
     // }}}
 
@@ -347,9 +342,9 @@ class KTWorkflowDispatcher extends KTStandardDispatcher {
         ));
         $this->oValidator->notError($res, array(
             'redirect_to' => array('editWorkflow', 'fWorkflowId=' .  $oWorkflow->getId()),
-            'message' => 'Could not create workflow transition',
+            'message' => _('Could not create workflow transition'),
         ));
-        $this->successRedirectTo('editWorkflow', 'Workflow transition created', 'fWorkflowId=' . $oWorkflow->getId());
+        $this->successRedirectTo('editWorkflow', _('Workflow transition created'), 'fWorkflowId=' . $oWorkflow->getId());
         exit(0);
     }
     // }}}
@@ -367,14 +362,14 @@ class KTWorkflowDispatcher extends KTStandardDispatcher {
         $aConditions = KTSavedSearch::getConditions();
         
         $edit_fields = array();
-        $edit_fields[] = new KTStringWidget('Name','A human-readable name for the state.', 'fName', $oTransition->getName(), $this->oPage, true);
+        $edit_fields[] = new KTStringWidget(_('Name'), _('A human-readable name for the state.'), 'fName', $oTransition->getName(), $this->oPage, true);
         $aOptions = array();
         $vocab = array();
         foreach($aStates as $state) {
             $vocab[$state->getId()] = $state->getName();
         } 
         $aOptions['vocab'] = $vocab;
-        $edit_fields[] = new KTLookupWidget('Destination State','Once this transition is complete, which state should the document be in?', 'fTargetStateId', $oTransition->getTargetStateId(), $this->oPage, true, null, null, $aOptions);
+        $edit_fields[] = new KTLookupWidget(_('Destination State'), _('Once this transition is complete, which state should the document be in?'), 'fTargetStateId', $oTransition->getTargetStateId(), $this->oPage, true, null, null, $aOptions);
         $aOptions = array();
         $vocab = array();
         $vocab[0] = 'None';
@@ -382,7 +377,7 @@ class KTWorkflowDispatcher extends KTStandardDispatcher {
             $vocab[$permission->getId()] = $permission->getHumanName();
         } 
         $aOptions['vocab'] = $vocab;
-        $edit_fields[] = new KTLookupWidget('Guard Permission.','Which permission must the user have in order to follow this transition?', 'fPermissionId', $oTransition->getGuardPermissionId(), $this->oPage, true, null, null, $aOptions);
+        $edit_fields[] = new KTLookupWidget(_('Guard Permission.'), _('Which permission must the user have in order to follow this transition?'), 'fPermissionId', $oTransition->getGuardPermissionId(), $this->oPage, true, null, null, $aOptions);
         $aOptions = array();
         $vocab = array();
         $vocab[0] = 'None';
@@ -390,7 +385,7 @@ class KTWorkflowDispatcher extends KTStandardDispatcher {
             $vocab[$group->getId()] = $group->getName();
         } 
         $aOptions['vocab'] = $vocab;
-        $edit_fields[] = new KTLookupWidget('Guard Group.','Which group must the user belong to in order to follow this transition?', 'fGroupId', $oTransition->getGuardGroupId(), $this->oPage, false, null, null, $aOptions);
+        $edit_fields[] = new KTLookupWidget(_('Guard Group.'), _('Which group must the user belong to in order to follow this transition?'), 'fGroupId', $oTransition->getGuardGroupId(), $this->oPage, false, null, null, $aOptions);
         $aOptions = array();
         $vocab = array();
         $vocab[0] = 'None';
@@ -398,7 +393,7 @@ class KTWorkflowDispatcher extends KTStandardDispatcher {
             $vocab[$role->getId()] = $role->getName();
         } 
         $aOptions['vocab'] = $vocab;
-        $edit_fields[] = new KTLookupWidget('Guard Role.','Which role must the user have in order to follow this transition?', 'fRoleId', $oTransition->getGuardRoleId(), $this->oPage, false, null, null, $aOptions);
+        $edit_fields[] = new KTLookupWidget(_('Guard Role.'), _('Which role must the user have in order to follow this transition?'), 'fRoleId', $oTransition->getGuardRoleId(), $this->oPage, false, null, null, $aOptions);
         
         if (!empty($aConditions)) {
             $aOptions = array();
@@ -408,12 +403,12 @@ class KTWorkflowDispatcher extends KTStandardDispatcher {
                 $vocab[$condition->getId()] = $condition->getName();
             } 
             $aOptions['vocab'] = $vocab;
-            $edit_fields[] = new KTLookupWidget('Guard Condition.','Which condition (stored search) must be satisfied before the transition can take place?', 'fConditionId', $oTransition->getGuardConditionId(), $this->oPage, false, null, null, $aOptions);
+            $edit_fields[] = new KTLookupWidget(_('Guard Condition.'), _('Which condition (stored search) must be satisfied before the transition can take place?'), 'fConditionId', $oTransition->getGuardConditionId(), $this->oPage, false, null, null, $aOptions);
         }
         
         $this->aBreadcrumbs[] = array(
             'action' => 'manageWorkflows',
-            'name' => 'Workflows',
+            'name' => _('Workflows'),
         );
         $this->aBreadcrumbs[] = array(
             'action' => 'manageWorkflows',
@@ -480,9 +475,9 @@ class KTWorkflowDispatcher extends KTStandardDispatcher {
         $res = $oTransition->update();
         $this->oValidator->notErrorFalse($res, array(
             'redirect_to' => array('editTransition', 'fWorkflowId=' . $oWorkflow->getId() . '&fTransitionId=' . $oTransition->getId()),
-            'message' => 'Error saving transition',
+            'message' => _('Error saving transition'),
         ));
-        $this->successRedirectTo('editTransition', 'Changes saved', 'fWorkflowId=' . $oWorkflow->getId() . '&fTransitionId=' .  $oTransition->getId());
+        $this->successRedirectTo('editTransition', _('Changes saved'), 'fWorkflowId=' . $oWorkflow->getId() . '&fTransitionId=' .  $oTransition->getId());
         exit(0);
     }
     // }}}

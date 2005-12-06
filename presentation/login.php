@@ -92,7 +92,7 @@ class LoginPageDispatcher extends KTDispatcher {
 		$cookieVerify = KTUtil::arrayGet($_REQUEST, 'cookieverify', null);
 		
 		if (($cookieVerify === null) || ($cookieTest !== $cookieVerify)) {
-		    $this->simpleRedirectToMain('You must have cookies enabled to use the KnowledgeTree.', $url, $params);
+		    $this->simpleRedirectToMain(_('You must have cookies enabled to use the document management system.'), $url, $params);
 		    exit(0);
 		}
 		
@@ -100,27 +100,27 @@ class LoginPageDispatcher extends KTDispatcher {
 		$password = KTUtil::arrayGet($_REQUEST,'password');
 		
 		if (empty($username)) {
-		    $this->simpleRedirectToMain('Please enter your username.', $url, $params);
+		    $this->simpleRedirectToMain(_('Please enter your username.'), $url, $params);
 		}
 		
 		if (empty($password)) {
-		    $this->simpleRedirectToMain('Please enter your username.', $url, $params);
+		    $this->simpleRedirectToMain(_('Please enter your password.'), $url, $params);
 		}
 
         $oUser =& User::getByUsername($username);
         if (PEAR::isError($oUser) || ($oUser === false)) {
-            $this->simpleRedirectToMain('Login failed.  Please check your username and password, and try again.', $url, $params);
+            $this->simpleRedirectToMain(_('Login failed.  Please check your username and password, and try again.'), $url, $params);
             exit(0);
         }
         $authenticated = KTAuthenticationUtil::checkPassword($oUser, $password);
 
         if (PEAR::isError($authenticated)) {
-            $this->simpleRedirectToMain('Authentication failure.  Please try again.', $url, $params);
+            $this->simpleRedirectToMain(_('Authentication failure.  Please try again.'), $url, $params);
             exit(0);
         }
 
         if ($authenticated !== true) {
-            $this->simpleRedirectToMain('Login failed.  Please check your username and password, and try again.', $url, $params);
+            $this->simpleRedirectToMain(_('Login failed.  Please check your username and password, and try again.'), $url, $params);
             exit(0);
         }
 
