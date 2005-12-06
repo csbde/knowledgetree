@@ -11,11 +11,11 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
     var $category = '';
     var $sSection = 'administration';
     
-    var $aBreadcrumbs = array(
-        array('action' => 'administration', 'name' => 'Administration'),
-    );
-    
     function AdminSplashDispatcher() {
+        $this->aBreadcrumbs = array(
+            array('action' => 'administration', 'name' => 'Administration'),
+        );
+    
         parent::KTAdminDispatcher();
     }
 
@@ -31,7 +31,7 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
         
         // we need to investigate sub_url solutions.
         
-        $this->oPage->title = "DMS Administration: ";
+        $this->oPage->title = _("DMS Administration") . ": ";
         $oTemplating = new KTTemplating;
         $oTemplate = $oTemplating->loadTemplate("kt3/admin_categories");
         $aTemplateData = array(
@@ -54,7 +54,7 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
         $this->aBreadcrumbs[] = array("name" => $aCategory["title"]);
 
         
-        $this->oPage->title = "DMS Administration: " . $aCategory["title"];
+        $this->oPage->title = _("DMS Administration") . ": " . $aCategory["title"];
         $oTemplating = new KTTemplating;
         $oTemplate = $oTemplating->loadTemplate("kt3/admin_items");
         $aTemplateData = array(

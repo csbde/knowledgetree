@@ -40,24 +40,22 @@ require_once(KT_LIB_DIR . "/browse/PartialQuery.inc.php");
 
 require_once(KT_LIB_DIR . "/foldermanagement/Folder.inc");
 
-$sectionName = "search";
-
 class SimpleSearchDispatcher extends KTStandardDispatcher {
-
-    
-    // Breadcrumbs base - added to in methods
-    var $aBreadcrumbs = array(
-        array('action' => 'browse', 'name' => 'Browse'),
-		array('name' => 'Simple Search')
-    );
 	var $sSection = "search";
 	var $browseType;
 	
+    function SimpleSearchDispatcher() {
+        $this->aBreadcrumbs = array(
+            array('action' => 'browse', 'name' => _('Browse')),
+            array('name' => _('Simple Search'))
+        );
+        return parent::KTStandardDispatcher();
+    }
 	
 
     function do_main() {
         $aErrorOptions = array(
-            "message" => "Please provide a search term",
+            "message" => _("Please provide a search term"),
         );
 		$searchable_text = KTUtil::arrayGet($_REQUEST, "fSearchableText");
         $this->oValidator->notEmpty($searchable_text, $aErrorOptions);
@@ -69,10 +67,10 @@ class SimpleSearchDispatcher extends KTStandardDispatcher {
 		$t = new TitleColumn("Test 1 (title)","title");
         $t->setOptions(array('documenturl' => '../documentmanagement/view.php'));
 		$collection->addColumn($t);
-		$collection->addColumn(new DateColumn("Created","created", "getCreatedDateTime"));
-		$collection->addColumn(new DateColumn("Last Modified","modified", "getLastModifiedDate"));
-		$collection->addColumn(new DateColumn("Last Modified","modified", "getLastModifiedDate"));
-        $collection->addColumn(new UserColumn('Creator','creator_id','getCreatorID'));
+		$collection->addColumn(new DateColumn(_("Created"),"created", "getCreatedDateTime"));
+		$collection->addColumn(new DateColumn(_("Last Modified"),"modified", "getLastModifiedDate"));
+		$collection->addColumn(new DateColumn(_("Last Modified"),"modified", "getLastModifiedDate"));
+        $collection->addColumn(new UserColumn(_('Creator'),'creator_id','getCreatorID'));
 		
 		$batchPage = (int) KTUtil::arrayGet($_REQUEST, "page", 0);
 		$batchSize = 20;

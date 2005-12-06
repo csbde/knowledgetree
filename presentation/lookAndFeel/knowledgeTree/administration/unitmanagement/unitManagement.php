@@ -12,15 +12,10 @@ require_once(KT_LIB_DIR . "/templating/kt3template.inc.php");
 require_once(KT_LIB_DIR . "/widgets/fieldWidgets.php");
 
 class KTUnitAdminDispatcher extends KTAdminDispatcher {
-    // Breadcrumbs base - added to in methods
-    var $aBreadcrumbs = array(
-    array('action' => 'administration', 'name' => 'Administration'),
-    );
-
     function do_main() {
-		$this->aBreadcrumbs[] = array('action' => 'unitManagement', 'name' => 'Unit Management');
-		$this->oPage->setBreadcrumbDetails('select a unit');
-		$this->oPage->setTitle("Unit Management");
+		$this->aBreadcrumbs[] = array('action' => 'unitManagement', 'name' => _('Unit Management'));
+		$this->oPage->setBreadcrumbDetails(_('select a unit'));
+		$this->oPage->setTitle(_("Unit Management"));
 
 		$unit_id= KTUtil::arrayGet($_REQUEST, 'unit_id', null);
 		if ($unit_id === null) { $for_edit = false; }
@@ -28,7 +23,7 @@ class KTUnitAdminDispatcher extends KTAdminDispatcher {
 	
 		
 		$add_fields = array();
-		$add_fields[] =  new KTStringWidget('Unit Name','The unit\'s visible name.  e.g. <strong>Tech Support</strong>', 'name', null, $this->oPage, true);
+		$add_fields[] =  new KTStringWidget(_('Unit Name'),_("The unit's visible name.  e.g. <strong>Tech Support</strong>"), 'name', null, $this->oPage, true);
 
 		$unit_list =& Unit::getList();
 		
@@ -36,7 +31,7 @@ class KTUnitAdminDispatcher extends KTAdminDispatcher {
 		$edit_unit = null;
 		if ($for_edit === true) {
 		    $oUnit = Unit::get($unit_id);
-		    $edit_fields[] =  new KTStringWidget('Unit Name','The unit\'s visible name.  e.g. <strong>Tech Support</strong>', 'name', $oUnit->getName(), $this->oPage, true);
+		    $edit_fields[] =  new KTStringWidget(_('Unit Name'),_("The unit's visible name.  e.g. <strong>Tech Support</strong>"), 'name', $oUnit->getName(), $this->oPage, true);
         }
 			
 		$oTemplating = new KTTemplating;        
@@ -56,13 +51,13 @@ class KTUnitAdminDispatcher extends KTAdminDispatcher {
 	    $unit_id = KTUtil::arrayGet($_REQUEST, 'unit_id');
 		$oUnit = Unit::get($unit_id);
 		if (PEAR::isError($oUnit) || ($oUnit == false)) {
-		    $this->errorRedirectToMain('Please specify a unit.');
+		    $this->errorRedirectToMain(_('Please specify a unit.'));
 			exit(0);
 		}
 		
 		$unit_name = KTUtil::arrayGet($_REQUEST, 'name', null);
 		if (empty($unit_name)) {
-		    $this->errorRedirectToMain('Please specify a unit name.');
+		    $this->errorRedirectToMain(_('Please specify a unit name.'));
 			exit(0);
 		}
 		
@@ -70,12 +65,12 @@ class KTUnitAdminDispatcher extends KTAdminDispatcher {
 		$oUnit->setName($unit_name);
 		$res = $oUnit->update();
 		if (PEAR::isError($res)) {
-		    $this->errorRedirectToMain('Failed to update unit name.');
+		    $this->errorRedirectToMain(_('Failed to update unit name.'));
 			exit(0);
 		}
 		
 		$this->commitTransaction();
-		$this->successRedirectToMain('Unit name changed to "' . $unit_name . '"');
+		$this->successRedirectToMain(sprintf(_('Unit name changed to "%s"'), $unit_name));
 	}
 	
 }

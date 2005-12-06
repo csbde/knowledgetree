@@ -40,14 +40,15 @@ require_once(KT_LIB_DIR . "/dispatcher.inc.php");
 $sectionName = "dashboard";
 
 class DashboardDispatcher extends KTStandardDispatcher {
-
-    // Breadcrumbs base - added to in methods
-    var $aBreadcrumbs = array(
-        array('action' => 'dashboard', 'name' => 'Dashboard'),
-    );
 	
 	var $notifications = array();
 
+    function DashboardDispatcher() {
+        $this->aBreadcrumbs = array(
+            array('action' => 'dashboard', 'name' => 'Dashboard'),
+        );
+        return parent::KTStandardDispatcher();
+    }
     function do_main() {
 	    $this->oPage->setShowPortlets(false);
 		// retrieve action items for the user.
@@ -58,8 +59,8 @@ class DashboardDispatcher extends KTStandardDispatcher {
 		$aDashlets = $oDashletRegistry->getDashlets($this->oUser);
 		
 		$this->sSection = "dashboard";
-		$this->oPage->setBreadcrumbDetails("Home");
-		$this->oPage->title = "Dashboard"; // FIXME should this be a mutator?
+		$this->oPage->setBreadcrumbDetails(_("Home"));
+		$this->oPage->title = _("Dashboard");
 	
 		$oTemplating = new KTTemplating;
 		$oTemplate = $oTemplating->loadTemplate("kt3/dashboard");

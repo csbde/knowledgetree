@@ -13,10 +13,12 @@ require_once(KT_LIB_DIR . "/templating/kt3template.inc.php");
 
 
 class ManageConditionalDispatcher extends KTAdminDispatcher {
-    var $aBreadcrumbs = array(
-        array('action' => 'administration', 'name' => 'Administration'),
-        array('action' => 'docfield', 'name' => 'Document Field Management'),
-    );
+    function ManageConditionalDispatcher() {
+        parent::KTAdminDispatcher();
+        $this->aBreadcrumbs[] = array('action' => 'docfield', 'name' => _('Document Field Management'));
+
+
+    }
 
     function do_main() {
 
@@ -50,15 +52,15 @@ class ManageConditionalDispatcher extends KTAdminDispatcher {
         $this->aBreadcrumbs[] = array(
             'action' => 'docfield',
             'query' => 'action=edit&fFieldsetId=' . $oFieldset->getId(),
-            'name' => 'Fieldset ' . $oFieldset->getName()
+            'name' => $oFieldset->getName()
         );
         $this->aBreadcrumbs[] = array(
             'action' => 'docfield',
             'query' => 'action=manageConditional&fFieldsetId=' . $oFieldset->getId(),
-            'name' => 'Manage conditional field',
+            'name' => _('Manage conditional fieldset'),
         );
         $this->aBreadcrumbs[] = array(
-            'name' => 'Manage simple conditional',
+            'name' => _('Manage simple conditional'),
         );
 
         $aTemplateData = array(
@@ -88,15 +90,15 @@ class ManageConditionalDispatcher extends KTAdminDispatcher {
         $this->aBreadcrumbs[] = array(
             'action' => 'docfield',
             'query' => 'action=edit&fFieldsetId=' . $oFieldset->getId(),
-            'name' => 'Fieldset ' . $oFieldset->getName()
+            'name' => $oFieldset->getName()
         );
         $this->aBreadcrumbs[] = array(
             'action' => 'docfield',
             'query' => 'action=manageConditional&fFieldsetId=' . $oFieldset->getId(),
-            'name' => 'Manage conditional field',
+            'name' => _('Manage conditional fieldset'),
         );
         $this->aBreadcrumbs[] = array(
-            'name' => 'Manage complex conditional',
+            'name' => _('Manage complex conditional'),
         );
         $aTemplateData = array(
             "context" => &$this,

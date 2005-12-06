@@ -11,16 +11,10 @@ require_once(KT_LIB_DIR . "/widgets/fieldWidgets.php");
 require_once(KT_LIB_DIR . "/templating/kt3template.inc.php");
 
 class DeletedDocumentsDispatcher extends KTAdminDispatcher {
-
-   // Breadcrumbs base - added to in methods
-    var $aBreadcrumbs = array(
-        array('action' => 'administration', 'name' => 'Administration'),
-    );
-
     function do_main () {
-        $this->aBreadcrumbs[] = array('action' => 'deletedDocuments', 'name' => 'Deleted Documents');
+        $this->aBreadcrumbs[] = array('action' => 'deletedDocuments', 'name' => _('Deleted Documents'));
         
-        $this->oPage->setBreadcrumbDetails('view');
+        $this->oPage->setBreadcrumbDetails(_('view'));
     
         $aDocuments =& Document::getList("status_id=" . DELETED);
         
@@ -35,21 +29,21 @@ class DeletedDocumentsDispatcher extends KTAdminDispatcher {
     }
     
     function do_confirm_expunge() {
-        $this->aBreadcrumbs[] = array('action' => 'deletedDocuments', 'name' => 'Deleted Documents');
+        $this->aBreadcrumbs[] = array('action' => 'deletedDocuments', 'name' => _('Deleted Documents'));
         
         $selected_docs = KTUtil::arrayGet($_REQUEST, 'selected_docs', array()); 
         
-        $this->oPage->setTitle('Confirm Expunge of ' . count($selected_docs) . ' documents');
+        $this->oPage->setTitle(sprintf(_('Confirm Expunge of %d documents'), count($selected_docs)));
         
-        $this->oPage->setBreadcrumbDetails('confirm expunge of ' . count($selected_docs) . ' documents');
+        $this->oPage->setBreadcrumbDetails(sprintf(_('confirm expunge of %d documents'), count($selected_docs)));
     
         $aDocuments = array();
         foreach ($selected_docs as $doc_id) {
             $oDoc =& Document::get($doc_id);
             if (PEAR::isError($oDoc) || ($oDoc === false)) { 
-                $this->errorRedirectToMain('Invalid document id specified. Aborting expunge');
+                $this->errorRedirectToMain(_('Invalid document id specified. Aborting expunge'));
             } else if ($oDoc->getStatusId() != DELETED) {
-                $this->errorRedirectToMain($oDoc->getName() . ' is not a deleted document. Aborting expunge');
+                $this->errorRedirectToMain(sprintf(_('%s is not a deleted document. Aborting expunge'), $oDoc->getName()));
             }
             $aDocuments[] = $oDoc;
         }
@@ -73,9 +67,9 @@ class DeletedDocumentsDispatcher extends KTAdminDispatcher {
         foreach ($selected_docs as $doc_id) {
             $oDoc =& Document::get($doc_id);
             if (PEAR::isError($oDoc) || ($oDoc === false)) { 
-                $this->errorRedirectToMain('Invalid document id specified. Aborting expunge');
+                $this->errorRedirectToMain(_('Invalid document id specified. Aborting expunge'));
             } else if ($oDoc->getStatusId() != DELETED) {
-                $this->errorRedirectToMain($oDoc->getName() . ' is not a deleted document. Aborting expunge');
+                $this->errorRedirectToMain(sprintf(_('%s is not a deleted document. Aborting expunge'), $oDoc->getName()));
             }
             $aDocuments[] = $oDoc;
         }
@@ -102,8 +96,8 @@ class DeletedDocumentsDispatcher extends KTAdminDispatcher {
             }
         }
         $this->commitTransaction();
-        $msg = count($aSuccessDocuments) . ' documents expunged.';
-        if (count($aErrorDocuments) != 0) { $msg .= 'Failed to expunge: ' . join(', ', $aErrorDocuments); }
+        $msg = sprintf(_('%d documents expunged.'), count($aSuccessDocuments));
+        if (count($aErrorDocuments) != 0) { $msg .= _('Failed to expunge') . ': ' . join(', ', $aErrorDocuments); }
         $this->successRedirectToMain($msg);
     }
 }

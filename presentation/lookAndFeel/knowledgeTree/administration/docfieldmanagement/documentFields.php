@@ -16,27 +16,18 @@ require_once(KT_LIB_DIR . '/widgets/fieldWidgets.php');
 class KTDocumentFieldDispatcher extends KTStandardDispatcher {
     var $bAutomaticTransaction = true;
 
-    // Breadcrumbs base - added to in methods
-    var $aBreadcrumbs = array(
-        array('action' => 'administration', 'name' => 'Administration'),
-    );
-
     // {{{ do_main
     function do_main () {
-        $this->aBreadcrumbs[] = array('action' => 'docfield', 'name' => 'Document Field Management');
-        $this->oPage->setBreadcrumbDetails("view fieldsets");
+        $this->aBreadcrumbs[] = array('action' => 'docfield', 'name' => _('Document Field Management'));
+        $this->oPage->setBreadcrumbDetails(_("view fieldsets"));
         
         // function KTBaseWidget($sLabel, $sDescription, $sName, $value, $oPage, $bRequired = false, $sId = null, $aErrors = null, $aOptions = null) {
         // use widgets for the create form.
         $createFields = array();
-        $createFields[] = new KTStringWidget('Name','A human-readable name, used in add and edit forms.', 'name', null, $this->oPage, true);
-        $createFields[] = new KTCheckboxWidget('Generic','A generic fieldset is one that ' .
-           'is available for every document by default.  These fieldsets ' .
-           'will be available for users to edit and add for every document in ' .
-           'the document management system.', 'generic', false, $this->oPage, false);
+        $createFields[] = new KTStringWidget('Name', _('A human-readable name, used in add and edit forms.'), 'name', null, $this->oPage, true);
+        $createFields[] = new KTCheckboxWidget('Generic', _('A generic fieldset is one that is available for every document by default.  These fieldsets will be available for users to edit and add for every document in the document management system.'), 'generic', false, $this->oPage, false);
         $createFields[] = new KTCheckboxWidget('System',
-           'A system fieldset is one that is never displayed to a user, and is '.
-           'used only by the document management system.', 'generic', false, $this->oPage, false);
+            _('A system fieldset is one that is never displayed to a user, and is used only by the document management system.'), 'generic', false, $this->oPage, false);
         
     
         $oTemplating =& KTTemplating::getSingleton();
@@ -57,14 +48,11 @@ class KTDocumentFieldDispatcher extends KTStandardDispatcher {
         $oFieldset =& KTFieldset::get($_REQUEST['fFieldsetId']);
         
         $editFieldset = array();
-        $editFieldset[] = new KTStringWidget('Name','A human-readable name, used in add and edit forms.', 'name',$oFieldset->getName(), $this->oPage, true);
-        $editFieldset[] = new KTStringWidget('Namespace','Every fieldset needs to have a system name (used by <strong>KnowledgeTree</strong>&trade;.  ' .
-        'For fieldsets which you create, this is automatically created by the system, but for '.
-        'fieldsets created by plugins, this controls how the fieldset works.', 
-        'namespace', $oFieldset->getNamespace(), $this->oPage, true);
+        $editFieldset[] = new KTStringWidget('Name', _('A human-readable name, used in add and edit forms.'), 'name',$oFieldset->getName(), $this->oPage, true);
+        $editFieldset[] = new KTStringWidget('Namespace',_('Every fieldset needs to have a system name (used internally by the document management system).  For fieldsets which you create, this is automatically created by the system, but for fieldsets created by plugins, this controls how the fieldset works.'), 'namespace', $oFieldset->getNamespace(), $this->oPage, true);
                 
         $createFields = array();
-        $createFields[] = new KTStringWidget('Name','A human-readable name, used in add and edit forms.', 'name',null, $this->oPage, true);
+        $createFields[] = new KTStringWidget('Name', _('A human-readable name, used in add and edit forms.'), 'name',null, $this->oPage, true);
         
         // type is a little more complex.
         $vocab = array();
@@ -74,7 +62,7 @@ class KTDocumentFieldDispatcher extends KTStandardDispatcher {
         $vocab['lookup'] = 'Lookup';
         $vocab['tree'] = 'Tree';
         $typeOptions = array("vocab" => $vocab);
-        $createFields[] =& new KTLookupWidget('Type','Different field types can have different properties.', 
+        $createFields[] =& new KTLookupWidget('Type',_('Different field types can have different properties.'), 
         'type', null, $this->oPage, true, null,  null, $typeOptions);
         
         
@@ -100,10 +88,10 @@ class KTDocumentFieldDispatcher extends KTStandardDispatcher {
         $oFieldset->setNamespace($_REQUEST['namespace']);
         $res = $oFieldset->update();
         if (PEAR::isError($res) || ($res === false)) {
-            $this->errorRedirectTo('edit', 'Could not save fieldset changes', 'fFieldsetId=' . $oFieldset->getId());
+            $this->errorRedirectTo('edit', _('Could not save fieldset changes'), 'fFieldsetId=' . $oFieldset->getId());
             exit(0);
         }
-        $this->successRedirectTo('edit', 'Changes saved', 'fFieldsetId=' . $oFieldset->getId());
+        $this->successRedirectTo('edit', _('Changes saved'), 'fFieldsetId=' . $oFieldset->getId());
         exit(0);
     }
     // }}}
@@ -140,7 +128,7 @@ class KTDocumentFieldDispatcher extends KTStandardDispatcher {
             $this->errorRedirectToMain('Could not create fieldset');
             exit(0);
         }
-        $this->successRedirectTo('edit', 'Fieldset created: '.$sName, 'fFieldsetId=' . $res->getId());
+        $this->successRedirectTo('edit', _('Fieldset created') . ': '.$sName, 'fFieldsetId=' . $res->getId());
         exit(0);
     }
     // }}}
@@ -165,13 +153,13 @@ class KTDocumentFieldDispatcher extends KTStandardDispatcher {
             'parentfieldset' => $oFieldset->getId(),
         ));
         if (PEAR::isError($res) || ($res === false)) {
-            $this->errorRedirectTo('edit', 'Could not create field: '.$_REQUEST['name'], 'fFieldsetId=' . $oFieldset->getId());
+            $this->errorRedirectTo('edit', _('Could not create field') . ': '.$_REQUEST['name'], 'fFieldsetId=' . $oFieldset->getId());
             exit(0);
         }
         if ($is_lookup) {
-            $this->successRedirectTo('editField', 'Field created: '.$_REQUEST['name'], 'fFieldsetId=' . $oFieldset->getId() . '&fFieldId=' . $oField->getId());
+            $this->successRedirectTo('editField', _('Field created') . ': '.$_REQUEST['name'], 'fFieldsetId=' . $oFieldset->getId() . '&fFieldId=' . $oField->getId());
         } else {
-            $this->successRedirectTo('edit', 'Field created: ' . $_REQUEST['name'], 'fFieldsetId=' . $oFieldset->getId());
+            $this->successRedirectTo('edit', _('Field created') . ': ' . $_REQUEST['name'], 'fFieldsetId=' . $oFieldset->getId());
         }
         exit(0);
     }
@@ -179,7 +167,7 @@ class KTDocumentFieldDispatcher extends KTStandardDispatcher {
 
     // {{{ do_editField
     function do_editField() {
-        $this->oPage->setBreadcrumbDetails("edit field");    
+        $this->oPage->setBreadcrumbDetails(_("edit field"));
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate =& $oTemplating->loadTemplate('ktcore/metadata/editField');
         $oFieldset =& KTFieldset::get($_REQUEST['fFieldsetId']);
@@ -193,7 +181,7 @@ class KTDocumentFieldDispatcher extends KTStandardDispatcher {
         $this->aBreadcrumbs[] = array(
             'name' => $oField->getName()
         );
-        $this->oPage->setBreadcrumbDetails('edit field');
+        $this->oPage->setBreadcrumbDetails(_('edit field'));
         
         $oTemplate->setData(array(
             'oFieldset' => $oFieldset,
@@ -213,10 +201,10 @@ class KTDocumentFieldDispatcher extends KTStandardDispatcher {
         $oField->setName($_REQUEST['name']);
         $res = $oField->update();
         if (PEAR::isError($res) || ($res === false)) {
-            $this->errorRedirectTo('editField', 'Could not save field changes', 'fFieldsetId=' . $oFieldset->getId() . '&fFieldId=' . $oField->getId());
+            $this->errorRedirectTo('editField', _('Could not save field changes'), 'fFieldsetId=' . $oFieldset->getId() . '&fFieldId=' . $oField->getId());
             exit(0);
         }
-        $this->successRedirectTo('editField', 'Changes saved', 'fFieldsetId=' . $oFieldset->getId() . '&fFieldId=' . $oField->getId());
+        $this->successRedirectTo('editField', _('Changes saved'), 'fFieldsetId=' . $oFieldset->getId() . '&fFieldId=' . $oField->getId());
         exit(0);
     }
     // }}}
@@ -226,13 +214,13 @@ class KTDocumentFieldDispatcher extends KTStandardDispatcher {
         $oFieldset =& KTFieldset::get($_REQUEST['fFieldsetId']);
         $oField =& DocumentField::get($_REQUEST['fFieldId']);
         if (empty($_REQUEST['value'])) {
-            $this->errorRedirectTo('editField', 'Empty lookup not added', 'fFieldsetId=' . $oFieldset->getId() . '&fFieldId=' .  $oField->getId());
+            $this->errorRedirectTo('editField', _('Empty lookup not added'), 'fFieldsetId=' . $oFieldset->getId() . '&fFieldId=' .  $oField->getId());
         }
         $oMetaData =& MetaData::createFromArray(array(
             'name' => $_REQUEST['value'],
             'docfieldid' => $oField->getId(),
         ));
-        $this->successRedirectTo('editField', 'Lookup added', 'fFieldsetId=' . $oFieldset->getId() . '&fFieldId=' .  $oField->getId());
+        $this->successRedirectTo('editField', _('Lookup added'), 'fFieldsetId=' . $oFieldset->getId() . '&fFieldId=' .  $oField->getId());
         exit(0);
     }
     // }}}
@@ -240,13 +228,13 @@ class KTDocumentFieldDispatcher extends KTStandardDispatcher {
     // {{{ do_metadataMultiAction
     function do_metadataMultiAction() {
         $subaction = array_keys(KTUtil::arrayGet($_REQUEST, 'submit', array()));
-        $this->oValidator->notEmpty($subaction, array("message" => "No action specified"));
+        $this->oValidator->notEmpty($subaction, array("message" => _("No action specified")));
         $subaction = $subaction[0];
         $method = null;
         if (method_exists($this, 'lookup_' . $subaction)) {
             $method = 'lookup_' . $subaction;
         }
-        $this->oValidator->notEmpty($method, array("message" => "Unknown action specified"));
+        $this->oValidator->notEmpty($method, array("message" => _("Unknown action specified")));
         return $this->$method();
     }
     // }}}
@@ -257,13 +245,13 @@ class KTDocumentFieldDispatcher extends KTStandardDispatcher {
         $oField =& DocumentField::get($_REQUEST['fFieldId']);
         $aMetadata = KTUtil::arrayGet($_REQUEST, 'metadata');
         if (empty($aMetadata)) {
-            $this->errorRedirectTo('editField', 'No lookups selected', 'fFieldsetId=' . $oFieldset->getId() . '&fFieldId=' .  $oField->getId());
+            $this->errorRedirectTo('editField', _('No lookups selected'), 'fFieldsetId=' . $oFieldset->getId() . '&fFieldId=' .  $oField->getId());
         }
         foreach ($_REQUEST['metadata'] as $iMetaDataId) {
             $oMetaData =& MetaData::get($iMetaDataId);
             $oMetaData->delete();
         }
-        $this->successRedirectTo('editField', 'Lookups removed', 'fFieldsetId=' . $oFieldset->getId() . '&fFieldId=' .  $oField->getId());
+        $this->successRedirectTo('editField', _('Lookups removed'), 'fFieldsetId=' . $oFieldset->getId() . '&fFieldId=' .  $oField->getId());
         exit(0);
     }
     // }}}
@@ -274,14 +262,14 @@ class KTDocumentFieldDispatcher extends KTStandardDispatcher {
         $oField =& DocumentField::get($_REQUEST['fFieldId']);
         $aMetadata = KTUtil::arrayGet($_REQUEST, 'metadata');
         if (empty($aMetadata)) {
-            $this->errorRedirectTo('editField', 'No lookups selected', 'fFieldsetId=' . $oFieldset->getId() . '&fFieldId=' .  $oField->getId());
+            $this->errorRedirectTo('editField', _('No lookups selected'), 'fFieldsetId=' . $oFieldset->getId() . '&fFieldId=' .  $oField->getId());
         }
         foreach ($_REQUEST['metadata'] as $iMetaDataId) {
             $oMetaData =& MetaData::get($iMetaDataId);
             $oMetaData->setDisabled(true);
             $oMetaData->update();
         }
-        $this->successRedirectTo('editField', 'Lookups disabled', 'fFieldsetId=' . $oFieldset->getId() . '&fFieldId=' .  $oField->getId());
+        $this->successRedirectTo('editField', _('Lookups disabled'), 'fFieldsetId=' . $oFieldset->getId() . '&fFieldId=' .  $oField->getId());
         exit(0);
     }
     // }}}
@@ -292,14 +280,14 @@ class KTDocumentFieldDispatcher extends KTStandardDispatcher {
         $oField =& DocumentField::get($_REQUEST['fFieldId']);
         $aMetadata = KTUtil::arrayGet($_REQUEST, 'metadata');
         if (empty($aMetadata)) {
-            $this->errorRedirectTo('editField', 'No lookups selected', 'fFieldsetId=' . $oFieldset->getId() . '&fFieldId=' .  $oField->getId());
+            $this->errorRedirectTo('editField', _('No lookups selected'), 'fFieldsetId=' . $oFieldset->getId() . '&fFieldId=' .  $oField->getId());
         }
         foreach ($_REQUEST['metadata'] as $iMetaDataId) {
             $oMetaData =& MetaData::get($iMetaDataId);
             $oMetaData->setDisabled(false);
             $oMetaData->update();
         }
-        $this->successRedirectTo('editField', 'Lookups enabled', 'fFieldsetId=' . $oFieldset->getId() . '&fFieldId=' .  $oField->getId());
+        $this->successRedirectTo('editField', _('Lookups enabled'), 'fFieldsetId=' . $oFieldset->getId() . '&fFieldId=' .  $oField->getId());
         exit(0);
     }
     // }}}
@@ -310,7 +298,7 @@ class KTDocumentFieldDispatcher extends KTStandardDispatcher {
         $oField =& DocumentField::get($_REQUEST['fFieldId']);
         $aMetadata = KTUtil::arrayGet($_REQUEST, 'metadata');
         if (empty($aMetadata)) {
-            $this->errorRedirectTo('editField', 'No lookups selected', 'fFieldsetId=' . $oFieldset->getId() . '&fFieldId=' .  $oField->getId());
+            $this->errorRedirectTo('editField', _('No lookups selected'), 'fFieldsetId=' . $oFieldset->getId() . '&fFieldId=' .  $oField->getId());
         }
         foreach ($_REQUEST['metadata'] as $iMetaDataId) {
             $oMetaData =& MetaData::get($iMetaDataId);
@@ -318,7 +306,7 @@ class KTDocumentFieldDispatcher extends KTStandardDispatcher {
             $oMetaData->setIsStuck(!$bStuck);
             $oMetaData->update();
         }
-        $this->successRedirectTo('editField', 'Lookup stickiness toggled', 'fFieldsetId=' . $oFieldset->getId() . '&fFieldId=' .  $oField->getId());
+        $this->successRedirectTo('editField', _('Lookup stickiness toggled'), 'fFieldsetId=' . $oFieldset->getId() . '&fFieldId=' .  $oField->getId());
         exit(0);
     }
     // }}}
@@ -330,10 +318,10 @@ class KTDocumentFieldDispatcher extends KTStandardDispatcher {
         $oFieldset->setIsComplete(false);
         $res = $oFieldset->update();
         if (PEAR::isError($res) || ($res === false)) {
-            $this->errorRedirectTo('edit', 'Could not become conditional', 'fFieldsetId=' . $oFieldset->getId());
+            $this->errorRedirectTo('edit', _('Could not become conditional'), 'fFieldsetId=' . $oFieldset->getId());
             exit(0);
         }
-        $this->successRedirectTo('edit', 'Became conditional', 'fFieldsetId=' . $oFieldset->getId());
+        $this->successRedirectTo('edit', _('Became conditional'), 'fFieldsetId=' . $oFieldset->getId());
         exit(0);
     }
     // }}}
@@ -345,10 +333,10 @@ class KTDocumentFieldDispatcher extends KTStandardDispatcher {
         $oFieldset->setIsComplete(true);
         $res = $oFieldset->update();
         if (PEAR::isError($res) || ($res === false)) {
-            $this->errorRedirectTo('edit', 'Could not stop being conditional', 'fFieldsetId=' . $oFieldset->getId());
+            $this->errorRedirectTo('edit', _('Could not stop being conditional'), 'fFieldsetId=' . $oFieldset->getId());
             exit(0);
         }
-        $this->successRedirectTo('edit', 'Became no longer conditional', 'fFieldsetId=' . $oFieldset->getId());
+        $this->successRedirectTo('edit', _('Became no longer conditional'), 'fFieldsetId=' . $oFieldset->getId());
         exit(0);
     }
     // }}}
@@ -360,7 +348,7 @@ class KTDocumentFieldDispatcher extends KTStandardDispatcher {
             $oField =& DocumentField::get($iFieldId);
             $oField->delete();
         }
-        $this->successRedirectTo('edit', 'Fields removed', 'fFieldsetId=' . $oFieldset->getId());
+        $this->successRedirectTo('edit', _('Fields removed'), 'fFieldsetId=' . $oFieldset->getId());
         exit(0);
     }
     // }}}
@@ -417,12 +405,12 @@ class KTDocumentFieldDispatcher extends KTStandardDispatcher {
         $this->aBreadcrumbs[] = array(
             'action' => 'docfield',
             'query' => 'action=edit&fFieldsetId=' . $_REQUEST['fFieldsetId'],
-            'name' => 'Fieldset ' . $oFieldset->getName()
+            'name' => $oFieldset->getName()
         );
         $this->aBreadcrumbs[] = array(
             'action' => 'docfield',
             'query' => 'action=manageConditional&fFieldsetId=' . $_REQUEST['fFieldsetId'],
-            'name' => 'Manage conditional field',
+            'name' => _('Manage conditional field'),
         );
         $oTemplate->setData(array(
             'oFieldset' => $oFieldset,
@@ -445,16 +433,16 @@ class KTDocumentFieldDispatcher extends KTStandardDispatcher {
         }
         $iParentFieldId = $_REQUEST['fParentFieldId'];
         if (in_array($aParentFieldId, $aFreeFieldIds)) {
-            $this->errorRedirectTo('manageConditional', 'Field cannot be its own parent field', 'fFieldsetId=' . $oFieldset->getId());
+            $this->errorRedirectTo('manageConditional', _('Field cannot be its own parent field'), 'fFieldsetId=' . $oFieldset->getId());
         }
         foreach ($aFreeFieldIds as $iChildFieldId) {
             $res = KTMetadataUtil::addFieldOrder($iParentFieldId, $iChildFieldId, $oFieldset);
             $this->oValidator->notError($res, array(
                 'redirect_to' => array('manageConditional', 'fFieldsetId=' . $oFieldset->getId()),
-                'message' => 'Error adding Fields',
+                'message' => _('Error adding Fields'),
             ));
         }
-        $this->successRedirectTo('manageConditional', 'Fields ordered', 'fFieldsetId=' . $oFieldset->getId());
+        $this->successRedirectTo('manageConditional', _('Fields ordered'), 'fFieldsetId=' . $oFieldset->getId());
         exit(0);
     }
     // }}}
@@ -470,9 +458,9 @@ class KTDocumentFieldDispatcher extends KTStandardDispatcher {
 
         $this->oValidator->notError($res, array(
             'redirect_to' => array('manageConditional', 'fFieldsetId=' . $oFieldset->getId()),
-            'message' => 'Error setting master field',
+            'message' => _('Error setting master field'),
         ));
-        $this->successRedirectTo('manageConditional', 'Master field set', 'fFieldsetId=' . $oFieldset->getId());
+        $this->successRedirectTo('manageConditional', _('Master field set'), 'fFieldsetId=' . $oFieldset->getId());
         exit(0);
     }
     // }}}
@@ -490,13 +478,13 @@ class KTDocumentFieldDispatcher extends KTStandardDispatcher {
         if ($res === true) {
             $oFieldset->setIsComplete(true);
             $oFieldset->update();
-            $this->successRedirectTo('manageConditional', 'Set to complete', 'fFieldsetId=' . $oFieldset->getId());
+            $this->successRedirectTo('manageConditional', _('Set to complete'), 'fFieldsetId=' . $oFieldset->getId());
         }
         $oFieldset->setIsComplete(false);
         $oFieldset->update();
         // Success, as we want to save the incompleteness to the
         // database...
-        $this->successRedirectTo('manageConditional', 'Could not to complete', 'fFieldsetId=' . $oFieldset->getId());
+        $this->successRedirectTo('manageConditional', _('Could not to complete'), 'fFieldsetId=' . $oFieldset->getId());
     }
     // }}}
 
@@ -507,9 +495,9 @@ class KTDocumentFieldDispatcher extends KTStandardDispatcher {
         $res = $oFieldset->update();
         $this->oValidator->notError($res, array(
             'redirect_to' => array('manageConditional', 'fFieldsetId=' . $oFieldset->getId()),
-            'message' => 'Error changing to simple',
+            'message' => _('Error changing to simple'),
         ));
-        $this->successRedirectTo('manageConditional', 'Changed to simple', 'fFieldsetId=' . $oFieldset->getId());
+        $this->successRedirectTo('manageConditional', _('Changed to simple'), 'fFieldsetId=' . $oFieldset->getId());
     }
     // }}}
 
@@ -520,9 +508,9 @@ class KTDocumentFieldDispatcher extends KTStandardDispatcher {
         $res = $oFieldset->update();
         $this->oValidator->notError($res, array(
             'redirect_to' => array('manageConditional', 'fFieldsetId=' . $oFieldset->getId()),
-            'message' => 'Error changing to complex',
+            'message' => _('Error changing to complex'),
         ));
-        $this->successRedirectTo('manageConditional', 'Changed to complex', 'fFieldsetId=' . $oFieldset->getId());
+        $this->successRedirectTo('manageConditional', _('Changed to complex'), 'fFieldsetId=' . $oFieldset->getId());
     }
     // }}}
 
@@ -532,9 +520,9 @@ class KTDocumentFieldDispatcher extends KTStandardDispatcher {
         $res = $oFieldset->delete();
         $this->oValidator->notErrorFalse($res, array(
             'redirect_to' => array('main', ''),
-            'message' => 'Could not delete fieldset',
+            'message' => _('Could not delete fieldset'),
         ));
-        $this->successRedirectToMain('Fieldset deleted');
+        $this->successRedirectToMain(_('Fieldset deleted'));
     }
     // }}}
 }
