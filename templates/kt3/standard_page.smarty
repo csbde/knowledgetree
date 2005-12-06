@@ -73,7 +73,7 @@
 </div>
 
 <div id="breadcrumbs">
-<span class="additional">You are here: </span>
+<span class="additional">{i18n}You are here{/i18n}: </span>
 {if ($page->breadcrumbSection !== false)}
    {if ($page->breadcrumbSection.url) }
         <a href="{$page->breadcrumbSection.url}" class="primary">{$page->breadcrumbSection.label}</a> 

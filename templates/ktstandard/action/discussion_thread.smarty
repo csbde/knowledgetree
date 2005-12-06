@@ -6,14 +6,14 @@
 <input type="hidden" name="action" value="postreply" />
 <input type="hidden" name="fDocumentId" value="{$context->oDocument->getId()}" />
 <input type="hidden" name="fThreadId" value="{$thread->getId()}" />
-<fieldset><legend>Post a reply</legend>
+<fieldset><legend>{i18n}Post a reply{/i18n}</legend>
 <a name="kt-discussion-post"></a>
 {foreach from=$fields item=oWidget}
     {$oWidget->render()}
 {/foreach}
 
 <div class="form_actions ">
-  <input type="submit" name="submit" value="Post a reply" />
+  <input type="submit" name="submit" value="{i18n}Post a reply{/i18n}" />
 </div>
 </fieldset>
 </form>

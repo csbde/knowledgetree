@@ -2,7 +2,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
 <head>
-    <title>Login | KnowledgeTree</title>
+    <title>{i18n}Login{/i18n} | KnowledgeTree</title>
     
     <link rel="stylesheet" href="{$rootUrl}/resources/css/kt-login.css" type="text/css" />
 
@@ -16,19 +16,19 @@
         <input type="hidden" name="redirect" value="{$redirect|escape}" />
             <img src="{$rootUrl}/resources/graphics/ktlogo-topbar-right.png" alt="KnowledgeTree DMS" class="logoimage" width="252" height="50"/><br />
             {if ($errorMessage == null)}
-            <p class="descriptiveText">Please enter your details below to login.</p>
+            <p class="descriptiveText">{i18n}Please enter your details below to login.{/i18n}</p>
             {else}
             <div class="ktError"><p>{$errorMessage}</p></div>
             {/if}
             
-            <label for="username">Username</label>
+            <label for="username">{i18n}Username{/i18n}</label>
             <input type="text" id="username" name="username"/>
             
-            <label for="password">Password</label>
+            <label for="password">{i18n}Password{/i18n}</label>
             <input type="password" id="password" name="password"/>
             
             <div class="form_actions">
-                <input type="submit" value="login" />
+                <input type="submit" value="{i18n}login{/i18n}" />
             </div>
         </form>
     </div>

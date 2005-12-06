@@ -1,88 +1,88 @@
-<h2>Manage conditional fieldset<h2>
+<h2>{i18n}Manage conditional fieldset{/i18n}<h2>
 
 {if $sIncomplete || !$oFieldset->getIsComplete()}
 <div class="ktError">
-<p>This conditional fieldset is marked such that it
+<p>{i18n}This conditional fieldset is marked such that it
 cannot be used.  This happens when the fieldset has been edited and has
 not been set to complete.  Setting the fieldset to complete will do a
-check to see if the fieldset is usable by the user.</p>
+check to see if the fieldset is usable by the user.{/i18n}</p>
 </div>
 
 {if $sIncomplete}
 <div class="ktError">
-<p>This error prevents this fieldset from being set
-to complete: {$sIncomplete|escape}</p>
+<p>{i18n}This error prevents this fieldset from being set
+to complete{/i18n}: {$sIncomplete|escape}</p>
 </div>
 {else}
 
-Try to set to complete:
+{i18n}Try to set to complete{/i18n}:
 <form action="{$smarty.server.PHP_SELF}" method="POST">
-<input type="hidden" name="action" value="checkComplete">
-<input type="hidden" name="fFieldsetId" value="{$oFieldset->getId()}">
-<input type="submit" name="submit" value="Check completeness">
+<input type="hidden" name="action" value="checkComplete" />
+<input type="hidden" name="fFieldsetId" value="{$oFieldset->getId()}" />
+<input type="submit" name="submit" value="{i18n}Check completeness{/i18n}" />
 </form>
 {/if}
 {/if}
 
-<h2>Conditional type</h2>
+<h2>{i18n}Conditional type{/i18n}</h2>
 
 {if $oFieldset->getIsComplex()}
-Complex: <a
-href="{$config->get("urls/uiUrl")}/administration/docfieldmanagement/conditional/manageConditionals.php?action=editComplexFieldset&fieldset_id={$oFieldset->getId()}">Manage
-complex conditional</a>
+{i18n}Complex{/i18n}: <a
+href="{$config->get("urls/uiUrl")}/administration/docfieldmanagement/conditional/manageConditionals.php?action=editComplexFieldset&fieldset_id={$oFieldset->getId()}">{i18n}Manage
+complex conditional{/i18n}</a>
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
-<input type="hidden" name="action" value="changeToSimple">
-<input type="hidden" name="fFieldsetId" value="{$oFieldset->getId()}">
-<input type="submit" name="submit" value="Change to simple">
+<input type="hidden" name="action" value="changeToSimple" />
+<input type="hidden" name="fFieldsetId" value="{$oFieldset->getId()}" />
+<input type="submit" name="submit" value="{i18n}Change to simple{/i18n}" />
 </form>
 
 {else}
 
-Simple: <a
-href="{$config->get("urls/uiUrl")}/administration/docfieldmanagement/conditional/manageConditionals.php?action=editFieldset&fieldset_id={$oFieldset->getId()}">Manage simple conditional</a>
+{i18n}Simple{/i18n}: <a
+href="{$config->get("urls/uiUrl")}/administration/docfieldmanagement/conditional/manageConditionals.php?action=editFieldset&fieldset_id={$oFieldset->getId()}">{i18n}Manage simple conditional{/i18n}</a>
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
-<input type="hidden" name="action" value="changeToComplex">
-<input type="hidden" name="fFieldsetId" value="{$oFieldset->getId()}">
-<input type="submit" name="submit" value="Change to complex">
+<input type="hidden" name="action" value="changeToComplex" />
+<input type="hidden" name="fFieldsetId" value="{$oFieldset->getId()}" />
+<input type="submit" name="submit" value="{i18n}Change to complex{/i18n}" />
 </form>
 
 {/if}
 
-<p>Changing the conditional type set will remove all existing field
-ordering!</p>
+<p>{i18n}Changing the conditional type set will remove all existing field
+ordering!{/i18n}</p>
 
 <h2>Master field</h2>
 
 {if !$oMasterField}
-No master field is set, please select the master field:
+{i18n}No master field is set, please select the master field{/i18n}:
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
-<input type="hidden" name="action" value="setMasterField">
-<input type="hidden" name="fFieldsetId" value="{$oFieldset->getId()}">
+<input type="hidden" name="action" value="setMasterField" />
+<input type="hidden" name="fFieldsetId" value="{$oFieldset->getId()}" />
 
 {entity_select entities=$oFieldset->getFields() name="fFieldId"}
-<input type="submit" name="submit" value="Set master field">
+<input type="submit" name="submit" value="{i18n}Set master field{/i18n}" />
 </form>
 
 {else}
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
-<input type="hidden" name="action" value="setMasterField">
-<input type="hidden" name="fFieldsetId" value="{$oFieldset->getId()}">
+<input type="hidden" name="action" value="setMasterField" />
+<input type="hidden" name="fFieldsetId" value="{$oFieldset->getId()}" />
 
 {entity_select entities=$oFieldset->getFields() name="fFieldId" selected=$oMasterField->getId()}
-<input type="submit" name="submit" value="Change master field">
+<input type="submit" name="submit" value="{i18n}Change master field{/i18n}" />
 </form>
 
-<p>Changing the master field set will remove all existing field
-ordering!</p>
+<p>{i18n}Changing the master field set will remove all existing field
+ordering!{/i18n}</p>
 
-<h2>Field ordering</h2>
+<h2>{i18n}Field ordering{/i18n}</h2>
 
 {if $aFieldOrders}
-<h3>Existing ordering</h2>
+<h3>{i18n}Existing ordering{/i18n}</h2>
 
 <ul>
 {foreach from=$aFieldOrders item=aRow}
@@ -100,11 +100,11 @@ affects the values available in
 {/if}
 
 { if $free_fields }
-<h3>Order fields</h2>
+<h3>{i18n}Order fields{/i18n}</h2>
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
-<input type="hidden" name="fFieldsetId" value="{$oFieldset->getId()}">
-<input type="hidden" name="action" value="orderFields">
+<input type="hidden" name="fFieldsetId" value="{$oFieldset->getId()}" />
+<input type="hidden" name="action" value="orderFields" />
 
 The available values of the selected fields:
 <br />
@@ -114,7 +114,7 @@ are conditional on the values of this field:
 <br />
 {entity_select entities=$parent_fields name="fParentFieldId"}
 <br />
-<input type="submit" name="submit" value="Order">
+<input type="submit" name="submit" value="{i18n}Order{/i18n}" />
 </form>
 {/if}
 

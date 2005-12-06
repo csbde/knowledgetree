@@ -6,7 +6,7 @@
     </p>
     
     <div class="conditional_target">
-    conditional data.
+    {i18n}conditional data.{/i18n}
     </div>
     
 </fieldset>

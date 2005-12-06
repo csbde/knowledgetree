@@ -1,47 +1,47 @@
-<h2>Document Workflow</h2>
+<h2>{i18n}Document Workflow{/i18n}</h2>
 
 <p class="descriptiveText">
-Workflow is a description of a document's lifecycle.  It is made up of
+{i18n}Workflow is a description of a document's lifecycle.  It is made up of
 workflow states, which describe where in the lifecycle the document is,
 and workflow transitions, which describe the next steps within the
-lifecycle of the document.
+lifecycle of the document.{/i18n}
 </p>
 
 {if !$oWorkflow}
-<h3>No workflow</h3>
+<h3>{i18n}No workflow{/i18n}</h3>
 
-<p>Document has no assigned workflow.</p>
+<p>{i18n}Document has no assigned workflow.{/i18n}</p>
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
-<fieldset><legend>Start workflow on document</legend>
+<fieldset><legend>{i18n}Start workflow on document{/i18n}</legend>
 <input type="hidden" name="action" value="startWorkflow" />
 <input type="hidden" name="fDocumentId" value="{$oDocument->getId()}" />
 {entity_select entities=$aWorkflows name=fWorkflowId}
 <div class="form_actions">
-<input type="submit" name="submit" value="Start Workflow" />
+<input type="submit" name="submit" value="{i18n}Start Workflow{/i18n}" />
 </div>
 </fieldset>
 </form>
 
 {else}
 
-<h3>Current workflow settings</h3>
+<h3>{i18n}Current workflow settings{/i18n}</h3>
 
 <dl class="metadata">
-<dt>Workflow</dt><dd>{$oWorkflow->getName()}</dd>
-<dt>State</dt><dd>{$oState->getName()}</dd>
+<dt>{i18n}Workflow{/i18n}</dt><dd>{$oWorkflow->getName()}</dd>
+<dt>{i18n}State{/i18n}</dt><dd>{$oState->getName()}</dd>
 </dl>
 
 {if $aTransitions}
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <input type="hidden" name="action" value="performTransition" />
 <input type="hidden" name="fDocumentId" value="{$oDocument->getId()}" />
-<fieldset><legend>Transition to another workflow state</legend>
+<fieldset><legend>{i18n}Transition to another workflow state{/i18n}</legend>
 {foreach from=$transition_fields item=oWidget }
   {$oWidget->render()}
 {/foreach}
 <div class="form_actions">
-<input type="submit" name="submit" value="Perform Transition" />
+<input type="submit" name="submit" value="{i18n}Perform Transition{/i18n}" />
 </div>
 </fieldset>
 </form>

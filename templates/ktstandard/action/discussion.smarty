@@ -1,13 +1,13 @@
 {if $threads}
-<h3>Existing threads</h3>
+<h3>{i18n}Existing threads{/i18n}</h3>
 <table class="listing" cellspacing="0" cellpadding="0">
   <thead>
     <tr>
-      <th>Subject</th>
-      <th>Creator</th>
-      <th>Views</th>
-      <th>Replies</th>
-      <th>Last activity</th>
+      <th>{i18n}Subject{/i18n}</th>
+      <th>{i18n}Creator{/i18n}</th>
+      <th>{i18n}Views{/i18n}</th>
+      <th>{i18n}Replies{/i18n}</th>
+      <th>{i18n}Last activity{/i18n}</th>
     </tr>
   </thead>
   <tbody>
@@ -17,19 +17,19 @@
   </tbody>
 </table>
 {else}
-    <p class="descriptiveText">There are no existing threads for this document</p>
+    <p class="descriptiveText">{i18n}There are no existing threads for this document{/i18n}</p>
 {/if}
 
 <form method="POST" action="{$smarty.server.PHP_SELF}">
 <input type="hidden" name="action" value="newthread" />
 <input type="hidden" name="fDocumentId" value="{$context->oDocument->getId()}" />
-<fieldset><legend>Create a new thread</legend>
+<fieldset><legend>{i18n}Create a new thread{/i18n}</legend>
 {foreach from=$fields item=oWidget}
     {$oWidget->render()}
 {/foreach}
 
 <div class="form_actions ">
-  <input type="submit" name="submit" value="Create a new thread">
+  <input type="submit" name="submit" value="{i18n}Create a new thread{/i18n}" />
 </div>
 </fieldset>
 </form>

@@ -1,6 +1,7 @@
 <form method="POST" action="{$smarty.server.PHP_SELF}">
-<p class="descriptiveText">Since there may be many users in the system, please
-provider a few letters from the person's user name to begin.</p>
+<p class="descriptiveText">{i18n}Since there may be many users in the
+system, please provider a few letters from the person's user name to
+begin.{/i18n}</p>
 
 <input type="hidden" name="action" value="addUserFromSource" />
 <input type="hidden" name="source_id" value="{$source->getId()}" />
@@ -9,15 +10,15 @@ provider a few letters from the person's user name to begin.</p>
   {$oWidget->render()}
 {/foreach}
 <div class="form_actions">
-   <input type="submit" value="search for users" />
-</div class="form_actions">
+   <input type="submit" value="{i18n}search for users{/i18n}" />
+</div>
 </fieldset>
 </form>
 
 {if !$search_results}
       <div class="ktInfo">
          <!-- never show a very large set, if you can help it. -->
-         <p>No search specified, or no results for your search.  Please choose some criteria from the list above to find users.</p>
+         <p>{i18n}No search specified, or no results for your search.  Please choose some criteria from the list above to find users.{/i18n}</p>
       </div>
 {else}
 <form method="POST" action="{$smarty.server.PHP_SELF}">
@@ -26,9 +27,9 @@ provider a few letters from the person's user name to begin.</p>
 <table class="listing">
 <thead>
    <tr>
-      <th>Name</th>
-      <th>LDAP User Name</th>
-      <th>Distinguished Name (LDAP DN)</th>
+      <th>{i18n}Name{/i18n}</th>
+      <th>{i18n}LDAP User Name{/i18n}</th>
+      <th>{i18n}Distinguished Name (LDAP DN){/i18n}</th>
    </tr>
 </thead>
 <tbody>
@@ -46,6 +47,6 @@ value="{$potential_user.$identifier_field}" />{$potential_user.cn}</td>
 -->
 </tbody>
 </table>
-<input type="submit" name="submit[chosen]" value="Add" />
+<input type="submit" name="submit[chosen]" value="{i18n}Add{/i18n}" />
 </form>
 {/if}

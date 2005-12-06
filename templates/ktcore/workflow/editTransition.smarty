@@ -1,15 +1,15 @@
-<h2>Transition: {$oTransition->getName()|escape}</h2>
+<h2>{i18n}Transition{/i18n}: {$oTransition->getName()|escape}</h2>
 
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <fieldset>
-<legend>Edit transition properties</legend>
+<legend>{i18n}Edit transition properties{/i18n}</legend>
 
-<p class="helpText">Select the target state of the transition, and
+<p class="helpText">{i18n}Select the target state of the transition, and
 select the permission, group, and/or role necessary to perform the
 transition.  Selecting more than one of permission, group, or role will
 require that the user wishing to perform the transition fulfil every
-requirement.</p>
+requirement.{/i18n}</p>
 
 <input type="hidden" name="action" value="saveTransition" />
 <input type="hidden" name="fWorkflowId" value="{$oWorkflow->getId()}" />
@@ -20,7 +20,7 @@ requirement.</p>
 {/foreach}
 
 <div class="form_actions">
-<input type="submit" name="submit" value="Save" />
+<input type="submit" name="submit" value="{i18n}Save{/i18n}" />
 </div>
 </fieldset>
 </form>

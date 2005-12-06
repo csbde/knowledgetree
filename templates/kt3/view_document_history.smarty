@@ -1,17 +1,18 @@
-<h2>Document History: {$document->getName()}</h2>
+<h2>{i18n}Document History{/i18n}: {$document->getName()}</h2>
 
-<p class="descriptiveText">This allows you to have a brief overview of the history of the document.</p>
+<p class="descriptiveText">{i18n}This allows you to have a brief
+overview of the history of the document.{/i18n}</p>
 
 
-    <table class="document_history" summary="Document History for KnowledgeTree New UI Presentation" cellspacing="0">
+    <table class="document_history" summary="{i18n}Document History for KnowledgeTree New UI Presentation{/i18n}" cellspacing="0">
 
         <thead>
             <tr>
-                <th class="username">User</th>
-                <th class="action">Action</th>
-                <th class="date">Date</th>
-                <th class="contentversion">Content version</th>
-                <th class="comment">Comment</th>
+                <th class="username">{i18n}User{/i18n}</th>
+                <th class="action">{i18n}Action{/i18n}</th>
+                <th class="date">{i18n}Date{/i18n}</th>
+                <th class="contentversion">{i18n}Content version{/i18n}</th>
+                <th class="comment">{i18n}Comment{/i18n}</th>
             </tr>
         </thead>
         <tbody>

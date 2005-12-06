@@ -1,9 +1,9 @@
-<h2>Select Fieldset</h2>
+<h2>{i18n}Select Fieldset{/i18n}</h2>
 
 <form>
 <fieldset>
-<legend>Current Conditional Fieldsets</legend>
-<p>Fieldsets that are marked as conditional.</p>
+<legend>{i18n}Current Conditional Fieldsets{/i18n}</legend>
+<p>{i18n}Fieldsets that are marked as conditional.{/i18n}</p>
 
 <input type="hidden" name="action" value="editFieldset" />
 
@@ -12,7 +12,7 @@
 {/foreach}
 
 <div>
-<input type="submit" name="submit" value="Edit">
+<input type="submit" name="submit" value="{i18n}Edit{/i18n}" />
 </div>
 </fieldset>
 </form>

@@ -1,10 +1,10 @@
-<h2>Workflow: {$oWorkflow->getName()|escape}</h2>
+<h2>{i18n}Workflow{/i18n}: {$oWorkflow->getName()|escape}</h2>
 
 
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <fieldset>
-<legend>Edit workflow properties</legend>
+<legend>{i18n}Edit workflow properties{/i18n}</legend>
 <input type="hidden" name="action" value="saveWorkflow" />
 <input type="hidden" name="fWorkflowId" value="{$oWorkflow->getId()}" />
 
@@ -13,7 +13,7 @@
 {/foreach}
 
 <div class="form_actions">
-<input type="submit" name="submit" value="Update workflow properties" />
+<input type="submit" name="submit" value="{i18n}Update workflow properties{/i18n}" />
 </div>
 </fieldset>
 </form>
@@ -22,7 +22,7 @@
 <p class="descriptiveText"><strong>FIXME</strong> insert intelligent help.</p>
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <fieldset>
-<legend>Create a new state</legend>
+<legend>{i18n}Create a new state{/i18n}</legend>
 <input type="hidden" name="action" value="newState" />
 <input type="hidden" name="fWorkflowId" value="{$oWorkflow->getId()}" />
 
@@ -32,14 +32,14 @@
 {/foreach}
 
 <div class="form_actions">
-<input type="submit" name="submit" value="Create state" />
+<input type="submit" name="submit" value="{i18n}Create state{/i18n}" />
 </div>
 </fieldset>
 </form>
 
 {if $aStates}
-<h4>Existing states</h4>
-<p class="descriptiveText">Select a state to update its properties.</p>
+<h4>{i18n}Existing states{/i18n}</h4>
+<p class="descriptiveText">{i18n}Select a state to update its properties.{/i18n}</p>
 <ul>
 {foreach from=$aStates item=oState}
   <li><a
@@ -53,13 +53,13 @@ title="State {$oState->getId()}">{$oState->getName()|escape}</a></li>
 
 
 
-<h3>Transitions</h3>
+<h3>{i18n}Transitions{/i18n}</h3>
 
 <p class="descriptiveText"><strong>FIXME</strong> insert intelligent help.</p>
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <fieldset>
-<legend>Create a new transition</legend>
+<legend>{i18n}Create a new transition{/i18n}</legend>
 <input type="hidden" name="action" value="newTransition" />
 <input type="hidden" name="fWorkflowId" value="{$oWorkflow->getId()}" />
 
@@ -69,14 +69,14 @@ title="State {$oState->getId()}">{$oState->getName()|escape}</a></li>
 {/foreach}
 
 <div class="form_actions">
-<input type="submit" name="submit" value="Create transition" />
+<input type="submit" name="submit" value="{i18n}Create transition{/i18n}" />
 </div>
 </fieldset>
 </form>
 
 
 {if $aTransitions}
-<h3>Existing transitions</h3>
+<h3>{i18n}Existing transitions{/i18n}</h3>
 
 <ul>
 {foreach from=$aTransitions item=oTransition}
@@ -92,7 +92,7 @@ title="Transition {$oTransition->getId()}">{$oTransition->getName()|escape}</a><
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <fieldset>
-<legend>Actions controlled</legend>
+<legend>{i18n}Actions controlled{/i18n}</legend>
 
 <p class="descriptiveText"><strong>FIXME</strong> be helpful</p>
 
@@ -106,7 +106,7 @@ title="Transition {$oTransition->getId()}">{$oTransition->getName()|escape}</a><
 {/foreach}
 </ul>
 <div class="form_actions">
-   <input type="submit" name="submit" value="Set controlled actions" />
+   <input type="submit" name="submit" value="{i18n}Set controlled actions{/i18n}" />
 </div>
 </fieldset>
 </form>

@@ -1,14 +1,17 @@
 <div class="detail_fieldset">
     <h3>{$fieldset->getName()}</h3>
     <p class="descriptiveText">
-        This is the data assigned to the <strong>{$fieldset->getName()}</strong> aspect of this document.
+{capture assign=name}
+{$fieldset->getName()}
+{/capture}
+        {i18n arg_name=$name}This is the data assigned to the <strong>#name#</strong> aspect of this document.{/i18n}
     </p>
     
     <dl class="metadata">
       {foreach item=aFieldPair from=$fieldset_values}
         <dt>{$aFieldPair.field->getName()}</dt>
         <dd>{if ($aFieldPair.value !== null)}{$aFieldPair.value}
-            {else}<span class="descriptiveText">no value</span>{/if}</dd>
+            {else}<span class="descriptiveText">{i18n}no value{/i18n}</span>{/if}</dd>
       {/foreach}
     </dl>
     
