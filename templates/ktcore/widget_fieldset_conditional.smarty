@@ -126,11 +126,11 @@ function triggerUpdate(formname) {
 <input type="hidden" name="fieldset_id" class="resolved_conditional" value="{$fieldset_id}" />
 <!-- add items to handle save here. -->
 
-<input type="button" value="Undo change" onclick="doConditionalUndo(); return false;"/>
+<input type="button" value="{i18n}Undo change{/i18n}" onclick="doConditionalUndo(); return false;" />
 
 <fieldset id="conditional_field">
-<legend>Project Details</legend>
-<p>Please be aware that - depending on your selections - new values may become available.</p>
+<legend>{i18n}Project Details{/i18n}</legend>
+<p>{i18n}Please be aware that - depending on your selections - new values may become available.{/i18n}</p>
 
 <div > 
 <!-- how do we add these after-the-fact, especially given that we need to add columns later? -->
@@ -149,7 +149,7 @@ function triggerUpdate(formname) {
 
 </fieldset>
 
-<input type="submit" value="save" />
+<input type="submit" value="{i18n}save{/i18n}" />
 </form>
 
 

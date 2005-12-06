@@ -1,6 +1,6 @@
 <form action="{$rootUrl}/presentation/lookAndFeel/knowledgeTree/search/simpleSearch.php" method="GET">
-<input type="text" name="fSearchableText" id="portlet-search-text" size="15" /><input type="submit" value="search" class="searchbutton" />
+<input type="text" name="fSearchableText" id="portlet-search-text" size="15" /><input type="submit" value="{i18n}search{/i18n}" class="searchbutton" />
 </form>
 <ul class="actionlist">
-<li><a href="{$rootUrl}/presentation/lookAndFeel/knowledgeTree/search/booleanSearch.php">Boolean Search</a></li>
+<li><a href="{$rootUrl}/presentation/lookAndFeel/knowledgeTree/search/booleanSearch.php">{i18n}Boolean Search{/i18n}</a></li>
 </ul>

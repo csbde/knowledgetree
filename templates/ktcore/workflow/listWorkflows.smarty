@@ -1,8 +1,8 @@
-<h2>Workflow</h2>
+<h2>{i18n}Workflow{/i18n}</h2>
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <fieldset>
-<legend>Create a new workflow</legend>
+<legend>{i18n}Create a new workflow{/i18n}</legend>
 
 <input type="hidden" name="action" value="newWorkflow" />
 
@@ -12,15 +12,15 @@
 {/foreach}
 
 <div class="form_actions">
-  <input type="submit" name="submit" value="Create" />
+  <input type="submit" name="submit" value="{i18n}Create{/i18n}" />
 </div>
 </fieldset>
 </form>
 
 
 {if $aWorkflow}
-<h3>Existing workflows</h3>
-<p class="descriptiveText">Select a workflow to modify.</p>
+<h3>{i18n}Existing workflows{/i18n}</h3>
+<p class="descriptiveText">{i18n}Select a workflow to modify.{/i18n}</p>
 <ul>
 {foreach from=$aWorkflow item=oWorkflow}
   <li><a href="?action=editWorkflow&fWorkflowId={$oWorkflow->getId()}" title="Workflow: {$oWorkflow->getId()}">{$oWorkflow->getName()}</a></li>

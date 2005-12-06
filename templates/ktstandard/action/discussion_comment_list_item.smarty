@@ -10,8 +10,14 @@ dl.kt-discussion-comment > dt {
 {$context->oPage->requireCSSStandalone($sCSS)}
 
 <dl class="kt-discussion-comment">
-  <dt>Posted</dt>
-  <dd>by {$creator->getName()} at {$comment->getDate()}</dd>
+  <dt>{i18n}Posted{/i18n}</dt>
+  {capture name=$name}
+  {$creator->getName()}
+  {/capture}
+  {capture name=$date}
+  {$comment->getDate()}
+  {/capture}
+  <dd>{i18n arg_name=$name arg_date=$date}by #name# at #date#{/i18n}</dd>
   <dt>Subject</dt>
   <dd>{$comment->getSubject()}</dd>
 
@@ -19,4 +25,4 @@ dl.kt-discussion-comment > dt {
   <dd>{$comment->getBody()}</dd>
 </dl>
 
-<a class="kt-discussion-post-link" href="#kt-discussion-post">Post a reply</a>
+<a class="kt-discussion-post-link" href="#kt-discussion-post">{i18n}Post a reply{/i18n}</a>

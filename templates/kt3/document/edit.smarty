@@ -11,7 +11,7 @@
 
 {$context->oPage->requireCSSResource('resources/css/kt-treewidget.css')}
 
-<h2>Editing: {$document->getName()}</h2>
+<h2>{i18n}Editing{/i18n}: {$document->getName()}</h2>
 <p class="descriptiveText"><strong>FIXME</strong>:  do we need assisting text here?</p>
   
 <form method="POST">
@@ -25,5 +25,5 @@
 
 
 <div class="form_actions">
-    <input class="save" type="submit" value="Save Changes" />
+    <input class="save" type="submit" value="{i18n}Save Changes{/i18n}" />
 </div>

@@ -1,14 +1,14 @@
-<h2>State: {$oState->getName()|escape}</h2>
+<h2>{i18n}State{/i18n}: {$oState->getName()|escape}</h2>
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <fieldset>
-<legend>Edit state properties</legend>
+<legend>{i18n}Edit state properties{/i18n}</legend>
 <input type="hidden" name="action" value="saveState" />
 <input type="hidden" name="fWorkflowId" value="{$oWorkflow->getId()}" />
 <input type="hidden" name="fStateId" value="{$oState->getId()}" />
 <input type="textbox" name="fName" value="{$oState->getName()|escape}" />
 <div class="form_actions">
-    <input type="submit" name="submit" value="Save" />
+    <input type="submit" name="submit" value="{i18n}Save{/i18n}" />
 </div>
 </fieldset>
 </form>
@@ -19,30 +19,30 @@
 <input type="hidden" name="fStateId" value="{$oState->getId()}" />
 
 <fieldset>
-<legend>Inform Which Users?</legend>
-<p class="descriptiveText">Please select which roles or groups should be
-informed when this state is reached.</p>
+<legend>{i18n}Inform Which Users?{/i18n}</legend>
+<p class="descriptiveText">{i18n}Please select which roles or groups should be
+informed when this state is reached.{/i18n}</p>
 
 
-<h3>Roles</h3>
+<h3>{i18n}Roles{/i18n}</h3>
 {entity_checkboxes entities=$aRoles name="fRoleIds" multiple="true" selected=$aInformed.role assign=aBoxes}
 {foreach from=$aBoxes item=sBox}
 {$sBox}<br />
 {/foreach}
 
-<h3>Groups</h3>
+<h3>{i18n}Groups{/i18n}</h3>
 {entity_checkboxes entities=$aGroups name="fGroupIds" multiple="true" selected=$aInformed.group assign=aBoxes}
 {foreach from=$aBoxes item=sBox}
 {$sBox}<br />
 {/foreach}
 
 {*
-<h3>Users</h3>
+<h3>{i18n}Users{/i18n}</h3>
 {entity_checkboxes entities=$aUsers name="fUserIds" multiple="true" selected=$aInformed.user assign=aBoxes}
 {foreach from=$aBoxes item=sBox}
 {$sBox}<br />
 {/foreach}
-<input type="submit" name="submit" value="Save" />
+<input type="submit" name="submit" value="{i18n}Save{/i18n}" />
 
 </form>
 *}
@@ -50,19 +50,19 @@ informed when this state is reached.</p>
 </fieldset>
 
 
-<h3>Assigned Permissions</h3>
-<p class="descriptiveText">While in this workflow state, additional permissions
+<h3>{i18n}Assigned Permissions{/i18n}</h3>
+<p class="descriptiveText">{i18n}While in this workflow state, additional permissions
 may be given.  This is done either to expose the document to more users
 or to allow a particular role to be fulfilled before a workflow
-transition can be accomplished.</p>
+transition can be accomplished.{/i18n}</p>
 
 
 <fieldset>
-<legend>Transitions</legend>
+<legend>{i18n}Transitions{/i18n}</legend>
 {if $aTransitionsTo}
 
 
-<h3>Transitions to this state</h3>
+<h3>{i18n}Transitions to this state{/i18n}</h3>
 {if (!empty($aTransitionsTo))}
 <ul>
 {foreach from=$aTransitionsTo item=oTransition}
@@ -73,12 +73,12 @@ title="Transition
 {/foreach}
 </ul>
 {else}
-No transitions lead to this state.
+{i18n}No transitions lead to this state.{/i18n}
 {/if}
 
 {/if}
 
-<h3>Transitions from this state</h3>
+<h3>{i18n}Transitions from this state{/i18n}</h3>
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <input type="hidden" name="action" value="saveTransitions" />
 <input type="hidden" name="fWorkflowId" value="{$oWorkflow->getId()}" />
@@ -87,10 +87,10 @@ No transitions lead to this state.
 {if (!empty($aTransitions))}
 {entity_checkboxes entities=$aTransitions name="fTransitionIds" multiple="true" selected=$aTransitionsSelected}
 <div class="form_actions">
-<input type="submit" name="submit" value="Save" />
+<input type="submit" name="submit" value="{i18n}Save{/i18n}" />
 </div>
 {else}
-No transitions defined.
+{i18n}No transitions defined.{/i18n}
 {/if}
 </form>
 </fieldset>

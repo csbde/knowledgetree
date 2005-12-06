@@ -1,21 +1,21 @@
-<h1>Document Fields</h1>
+<h1>{i18n}Document Fields{/i18n}</h1>
 
 { if $fieldsets}
-<h2>Existing generic document fields</h2>
+<h2>{i18n}Existing generic document fields{/i18n}</h2>
 
 <table class="pretty" cellspacing="0" cellpadding="0">
   <thead>
     <tr>
-      <th colspan="2">Name</th>
-      <th>Generic</th>
-      <th>Fields</th>
+      <th colspan="2">{i18n}Name{/i18n}</th>
+      <th>{i18n}Generic{/i18n}</th>
+      <th>{i18n}Fields{/i18n}</th>
     </tr>
   </thead>
   <tbody>
 {foreach from=$fieldsets item=oFieldset}
     <tr>
 	  <td>
-        <a href="?action=edit&fFieldsetId={$oFieldset->getId()}" class="ktAction ktDelete">Delete</a> 	  
+        <a href="?action=edit&fFieldsetId={$oFieldset->getId()}" class="ktAction ktDelete">{i18n}Delete{/i18n}</a> 	  
 	  </td>
       <td>
         
@@ -25,9 +25,9 @@
       </td>
       <td>
 {if $oFieldset->getIsGeneric()}
-	Yes
+	{i18n}Yes{/i18n}
 {else}
-	No
+	{i18n}No{/i18n}
 {/if}
       </td>
       <td>
@@ -43,10 +43,10 @@
 </table>
 {/if}
 
-<h2>Create a new document field set</h2>
+<h2>{i18n}Create a new document field set{/i18n}</h2>
 
 <form method="POST">
-<input type="hidden" name="action" value="new">
-<input type="textbox" name="name">
-<input type="submit" name="submit" value="Create">
+<input type="hidden" name="action" value="new" />
+<input type="textbox" name="name" />
+<input type="submit" name="submit" value="{i18n}Create{/i18n}" />
 </form>

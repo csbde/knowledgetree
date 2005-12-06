@@ -1,8 +1,8 @@
-<h2>Authentication Sources</h2>
+<h2>{i18n}Authentication Sources{/i18n}</h2>
 
 {if $providers}
 <form method="POST">
-<fieldset><legend>Add an authentication source</legend>
+<fieldset><legend>{i18n}Add an authentication source{/i18n}</legend>
 <input type="hidden" name="action" value="newsource" />
 
 {foreach from=$fields item=oWidget}
@@ -10,14 +10,14 @@
 {/foreach}
 
 <div class="form_actions ">
-  <input type="submit" name="submit" value="Add a new source">
+  <input type="submit" name="submit" value="{i18n}Add a new source{/i18n}" />
 </div>
 </fieldset>
 </form>
 {/if}
 
 {if $sources}
-<h3>Existing sources</h3>
+<h3>{i18n}Existing sources{/i18n}</h3>
 
 <ul>
 {foreach from=$sources item=oSource}

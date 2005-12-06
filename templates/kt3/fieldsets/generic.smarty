@@ -1,30 +1,31 @@
 <div class="detail_fieldset">
-    <h3>Generic Information</h3>
+    <h3>{i18n}Generic Information{/i18n}</h3>
     <p class="descriptiveText">
-        The information in this section is stored by the KnowledgeTree&trade; for every
-        document.
+        {i18n}The information in this section is stored by the KnowledgeTree&trade; for every
+        document.{/i18n}
     </p>
     <dl class="metadata">
-        <dt>File is a </dt>
+        <dt>{i18n}File is a{/i18n} </dt>
         <dd>{$context->_mimeHelper($document->getMimeTypeID())} ({$context->_sizeHelper($document->getSize())})</dd>
 
-        <dt>Created by</dt>
+        <dt>{i18n}Created by{/i18n}</dt>
         <dd>{$creator} ({$creation_date})</dd>
 
-        <dt>Last update by</dt>
+        <dt>{i18n}Last update by{/i18n}</dt>
         <dd>{$last_modified_by} ({$last_modified_date})</dd>
 
-        <dt>Document Type</dt>
+        <dt>{i18n}Document Type{/i18n}</dt>
         <dd>{$document_type}</dd>
 
-        <dt>Workflow status</dt>
+        <dt>{i18n}Workflow status{/i18n}</dt>
         <dd>
 {if $workflow_state}
 {$workflow_state->getName()}
 {else}
-No workflow
+{i18n}No workflow{/i18n}
 {/if}
-(<a href="{$rootUrl}/action.php/ktcore.actions.document.workflow?fDocumentId={$document->getId()}">manage workflow</a>)
+(<a
+href="{$rootUrl}/action.php/ktcore.actions.document.workflow?fDocumentId={$document->getId()}">{i18n}manage workflow{/i18n}</a>)
 </dd>
     </dl>
     <div class="floatClear"><!-- --> </div>

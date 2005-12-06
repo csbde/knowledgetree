@@ -59,7 +59,7 @@ addLoadEvent(partial(editSimpleField, {$iMasterFieldId}));
 
 
 
-<h2>Editing Fieldset Rules (Simple)</h2>
+<h2>{i18n}Editing Fieldset Rules (Simple){/i18n}</h2>
 
 <form>
 <input type="hidden" name="fieldset_id" id="global-fieldset-id" value="{$fieldset_id}" />
@@ -74,7 +74,7 @@ addLoadEvent(partial(editSimpleField, {$iMasterFieldId}));
 
 {foreach from=$aFields item=oField}
   <td class="inactive" id="md_{$oField->getId()}">
-     <p class="inactivity_message">This field is not controlled by the currently active group.</p>
+     <p class="inactivity_message">{i18n}This field is not controlled by the currently active group.{/i18n}</p>
      <div class="lookup_items">
      <h3>Field: {$oField->getName()}</h3>
          <select class="item_list">
@@ -83,9 +83,9 @@ addLoadEvent(partial(editSimpleField, {$iMasterFieldId}));
   {/foreach}
            </select>
          <div class="buttonset">
-             <input type="button" value="edit" class="edit_button" onclick="editSimpleField({$oField->getId()})" />
-             <input type="button" value="save" class="save_button" onclick="saveSimpleField({$oField->getId()})" />
-             <input type="button" value="done" class="done_button" onclick="finishSimpleField({$oField->getId()})" />
+             <input type="button" value="{i18n}edit{/i18n}" class="edit_button" onclick="editSimpleField({$oField->getId()})" />
+             <input type="button" value="{i18n}save{/i18n}" class="save_button" onclick="saveSimpleField({$oField->getId()})" />
+             <input type="button" value="{i18n}done{/i18n}" class="done_button" onclick="finishSimpleField({$oField->getId()})" />
          </div>
      </div>
   </td>

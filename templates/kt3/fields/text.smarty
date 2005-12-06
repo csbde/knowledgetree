@@ -1,5 +1,5 @@
     <div class="field {if ($has_errors)}error{/if}">
-      <label for="{$name}">{$label}{if ($required === true)}<span class="required">(Required)</span>{/if}</label>
+      <label for="{$name}">{$label}{if ($required === true)}<span class="required">({i18n}Required{/i18n})</span>{/if}</label>
       <p class="descriptiveText">{$description}</p>
       {if ($has_errors)}
       {foreach item=sError from=$errors}

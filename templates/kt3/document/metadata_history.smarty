@@ -1,16 +1,16 @@
-<h2>Metadata History: {$document->getName()}</h2>
+<h2>{i18n}Metadata History{/i18n}: {$document->getName()}</h2>
 
-<p class="descriptiveText">This lists the older versions of the document, as the metadata about it has been changed.</p>
+<p class="descriptiveText">{i18n}This lists the older versions of the document, as the metadata about it has been changed.{/i18n}</p>
 
 
-    <table class="document_history" summary="Document History for KnowledgeTree New UI Presentation" cellspacing="0">
+    <table class="document_history" summary="{i18n}Document History for KnowledgeTree New UI Presentation{/i18n}" cellspacing="0">
 
         <thead>
             <tr>
-                <th class="username">User</th>
-                <th class="date">Metadata Version</th>
-                <th class="date">Content Version</th>
-                <th class="compare">Compare</th>
+                <th class="username">{i18n}User{/i18n}</th>
+                <th class="date">{i18n}Metadata Version{/i18n}</th>
+                <th class="date">{i18n}Content Version{/i18n}</th>
+                <th class="compare">{i18n}Compare{/i18n}</th>
 
             </tr>
         </thead>
@@ -19,7 +19,7 @@
                 <td class="username">{$context->getUserForId($document->getModifiedUserId())}</td>
                 <td class="date">{$document->getMetadataVersion()}</td>
                 <td class="date">{$document->getMajorVersionNumber()}.{$document->getMinorVersionNumber()}</td>
-                <td class="compare">Current</td>                
+                <td class="compare">{i18n}Current{/i18n}</td>                
             </tr>
 
           {foreach item=oVersion from=$versions}
@@ -27,7 +27,7 @@
                 <td class="username">{$context->getUserForId($oVersion->getModifiedUserId())}</td>
                 <td class="date">{$oVersion->getMetadataVersion()}</td>
                 <td class="date">{$oVersion->getMajorVersionNumber()}.{$oVersion->getMinorVersionNumber()}</td>
-                <td class="compare"><a href="{$smarty.server.PHP_SELF}?action=viewComparison&fDocumentId={$document->getId()}&fComparisonVersion={$oVersion->getId()}">compare with current</a></td>                
+                <td class="compare"><a href="{$smarty.server.PHP_SELF}?action=viewComparison&fDocumentId={$document->getId()}&fComparisonVersion={$oVersion->getId()}">{i18n}compare with current{/i18n}</a></td>                
             </tr>
             {/foreach}
         </tbody>

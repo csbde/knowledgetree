@@ -35,7 +35,7 @@ addLoadEvent(updateActiveFields);
 {/capture}
 {$context->oPage->requireJSStandalone($sJS)}
 
-<h2>Edit Complex Conditional Metadata</h2>
+<h2>{i18n}Edit Complex Conditional Metadata{/i18n}</h2>
 <form>
 <input type="hidden" name="fieldset_id" id="global-fieldset-id" value="{$fieldset_id}" />
 
@@ -52,10 +52,10 @@ addLoadEvent(updateActiveFields);
 {foreach from=$aFields item=oField}
   <td class="inactive" id="md_{$oField->getId()}">
 	<h3>{$oField->getName()}</h3>
-     <p class="inactivity_message">This column is not active.</p>
-     <p class="fixed_message">Editing behaviour <strong>Jack</strong></p>
+     <p class="inactivity_message">{i18n}This column is not active.{/i18n}</p>
+     <p class="fixed_message">{i18n}Editing behaviour <strong>Jack</strong>{/i18n}</p>
      <div class="unassigned_items">
-     <h3>Unassigned/Unavailable</h3>
+     <h3>{i18n}Unassigned/Unavailable{/i18n}</h3>
          <select class="item_list" multiple="true">
 		  <!--     These are orphaned - we fire a "activate" command on load / available.
             <option value="-1">Test 1</option>
@@ -64,7 +64,7 @@ addLoadEvent(updateActiveFields);
             <option value="-4">Test 4</option>
 		  -->
          </select>
-     <p><strong>Assign to behaviour</strong></p>
+     <p><strong>{i18n}Assign to behaviour{/i18n}</strong></p>
      <select class="available_behaviours" onchange="assignToBehaviour(this, {$oField->getId()});">
          <option>Select a behaviour</option>
 	     <!-- ditto 
@@ -74,15 +74,15 @@ addLoadEvent(updateActiveFields);
          <option value="4">Behaviour 4</option>
 		 -->
      </select> <br />
-     <strong>or</strong> to a new behaviour called <br />
+     {i18n}<strong>or</strong> to a new behaviour called{/i18n} <br />
      <input type="text" name="new_behaviour" class="new_behaviour" />
-     <input type="button" value="create behaviour" onclick="assignToNewBehaviour({$oField->getId()});" />
+     <input type="button" value="{i18n}create behaviour{/i18n}" onclick="assignToNewBehaviour({$oField->getId()});" />
      </div>
      <div class="behaviour_edit_options">
-     <h3>Edit Behaviour</h3>
+     <h3>{i18n}Edit Behaviour{/i18n}</h3>
      <p class="helpText">
-        Select a behaviour from this list to change the
-        items which are available.
+        {i18n}Select a behaviour from this list to change the
+        items which are available.{/i18n}
      </p>
          <select class="edit_behaviours" onchange="editBehaviour(this, {$oField->getId()});">
          <option>Select a behaviour</option>
@@ -94,7 +94,8 @@ addLoadEvent(updateActiveFields);
 		 -->
          </select>
      <br />
-     <a href="#" onclick="changeAssignments({$oField->getId()}); return false;">Change Assignments for this field.</a>
+     <a href="#" onclick="changeAssignments({$oField->getId()}); return
+false;">{i18n}Change Assignments for this field.{/i18n}</a>
      </div>
   </td>
 {/foreach}

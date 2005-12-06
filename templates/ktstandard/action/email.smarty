@@ -37,7 +37,7 @@ addLoadEvent(kt_email_onload);
 {/capture}
 {$context->oPage->requireJSStandalone($sJavascript)}
 
-<h2>Email document</h2>
+<h2>{i18n}Email document{/i18n}</h2>
 
 <form id="kt-email-form" method="POST">
 <input type="hidden" name="action" value="email" />
@@ -70,7 +70,7 @@ Administrator</OPTION>
 {/foreach}
 
 <div class="form_actions ">
-  <input type="submit" name="submit" value="Email">
+  <input type="submit" name="submit" value="{i18n}Email{/i18n}" />
 </div>
 
 <input type="hidden" name="groupNewLeft" />

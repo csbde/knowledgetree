@@ -44,27 +44,36 @@ legend { border: 1px dotted #999;}
     </select>
 </div>
 
-<h2>{$title|default:"Boolean Search"}</h2>
+{capture assign=defaulttitle}
+{i18n}Boolean Search{/i18n}
+{/capture}
+<h2>{$title|default:$defaulttitle}</h2>
 
 <form method="POST">
     <input type="hidden" name="action" value="performSearch" />
 {if $sNameTitle}
     {$sNameTitle}: <input type="text" name="name" value="" /> <br />
 {/if}
-    
-   <p class="helpText">Return items which match &nbsp;<select
-name="boolean_search[join]"><option value="AND">all</option><option value="OR">any</option></select> of the <strong>criteria groups</strong> specified.</p>    
+
+{capture assign=options}
+<select name="boolean_search[join]"><option value="AND">all</option><option value="OR">any</option></select>
+{/capture}
+
+   <p class="helpText">{i18n arg_options=$options}Return items which match &nbsp;#options# of the <strong>criteria groups</strong> specified.{/i18n}</p>    
     
     <fieldset>
-        <legend>Criteria Group</legend>
+        <legend>{i18n}Criteria Group{/i18n}</legend>
 
-        <p class="helpText">Return items which match &nbsp;<select name="boolean_search[subgroup][0][join]"><option value="AND">all</option><option value="OR">any</option></select> of the criteria specified.</p>
+	{capture assign=options}
+	<select name="boolean_search[subgroup][0][join]"><option value="AND">all</option><option value="OR">any</option></select>
+	{/capture}
+        <p class="helpText">{i18n arg_options=$options}Return items which match &nbsp;#options# of the criteria specified.{/i18n}</p>
 
         <table class="advanced-search-form">
             <tbody>
                 <tr>
-                <th>Criteria</th>
-                <th>Values</th>
+                <th>{i18n}Criteria{/i18n}</th>
+                <th>{i18n}Values{/i18n}</th>
                 <th>&nbsp;</th>
                 </tr>
                 <tr>
@@ -74,18 +83,21 @@ name="boolean_search[join]"><option value="AND">all</option><option value="OR">a
                         {/foreach}
                         </select>
                         </td>
-                    <td><p class="helpText">first select a type of query</p></td>
-                    <td><input type="button" value="Add" onclick="addNewCriteria(this);" /></td>                    
+                    <td><p class="helpText">{i18n}first select a type of query{/i18n}</p></td>
+                    <td><input type="button" value="{i18n}Add{/i18n}" onclick="addNewCriteria(this);" /></td>                    
                 </tr>
             </tbody>
         </table>
 
     </fieldset>
     
-    <input type="button" value="add another set of criteria" onclick="addBooleanGroup(this)"/>
+    <input type="button" value="{i18n}add another set of criteria{/i18n}" onclick="addBooleanGroup(this)" />
     
     
-    <input type="submit" name="submit" value="{$searchButton|default:"Search"}" />
+{capture assign=defaultsubmit}
+{i18n}Search{/i18n}
+{/capture}
+    <input type="submit" name="submit" value="{$searchButton|default:$defaultsubmit}" />
 </form>
 
 <!--
