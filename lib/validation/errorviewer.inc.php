@@ -46,6 +46,11 @@ class KTErrorViewerRegistry {
             }
         }
 
+        // Just in case we have an unhandled i18n-friendly error
+        if (method_exists($oError, 'geti18nMessage')) {
+            return new KTStringErrorViewer($oError->getMessage());
+        }
+
         // PEAR_Error should have caught things above, but just in case,
         // check if getMessage is there, and use that:
         if (method_exists($oError, 'getMessage')) {
@@ -58,7 +63,7 @@ class KTErrorViewerRegistry {
         }
 
         // Give up.
-        return new KTStringErrorViewer("Unknown error");
+        return new KTStringErrorViewer(_("Unknown error"));
     }
 }
 
@@ -79,7 +84,7 @@ $oEVRegistry->register("KTErrorViewer", "PEAR_Error");
 
 class KTDBErrorViewer extends KTErrorViewer {
     function view() {
-        return "Database error: " . $this->oError->errorMessage();
+        return _("Database error:") . " " . $this->oError->errorMessage();
     }
 }
 $oEVRegistry->register("KTDBErrorViewer", "DB_Error");

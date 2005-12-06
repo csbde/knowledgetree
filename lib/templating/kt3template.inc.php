@@ -165,25 +165,25 @@ class KTPage {
     // assume this is admin for now.
     function setSection($sSection) {
 	    if ($sSection == 'administration') {
-			$this->componentLabel = 'DMS Administration';
+			$this->componentLabel = _('DMS Administration');
 			$this->componentClass = 'administration';	    
 		} else if ($sSection == 'dashboard') {
-		    $this->componentLabel = 'Dashboard';
+		    $this->componentLabel = _('Dashboard');
             $this->componentClass = 'dashboard';	    
 		} else if ($sSection == 'browse') {
-		    $this->componentLabel = 'Browse Documents';
+		    $this->componentLabel = _('Browse Documents');
             $this->componentClass = 'browse_collections';	  						
 		} else if ($sSection == 'view_details') {
-		    $this->componentLabel = 'Document Details';
+		    $this->componentLabel = _('Document Details');
             $this->componentClass = 'document_details';	    
 		} else if ($sSection == 'search') {
-		    $this->componentLabel = 'Search';
+		    $this->componentLabel = _('Search');
             $this->componentClass = 'search';				
 		} else if ($sSection == 'preferences') {
-		    $this->componentLabel = 'Preferences';
+		    $this->componentLabel = _('Preferences');
             $this->componentClass = 'preferences';				
 	    } else {
-			$this->componentLabel = 'Dashboard';
+			$this->componentLabel = _('Dashboard');
 			$this->componentClass = 'dashboard';	    
 		}
 
@@ -219,7 +219,7 @@ class KTPage {
         }
 
         if (is_string($this->contents) && (trim($this->contents) === "")) {
-            $this->addError("This page did not produce any content");
+            $this->addError(_("This page did not produce any content"));
             $this->contents = "";
         }
 		

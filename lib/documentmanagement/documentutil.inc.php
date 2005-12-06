@@ -514,7 +514,7 @@ class KTDocumentUtil {
 class KTMetadataValidationError extends PEAR_Error {
     function KTMetadataValidationError ($aFailed) {
         $this->aFailed = $aFailed;
-        $message = 'Validation Failed';
+        $message = _('Validation Failed');
         parent::PEAR_Error($message);
     }
 }

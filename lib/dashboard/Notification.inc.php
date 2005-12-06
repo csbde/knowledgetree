@@ -108,7 +108,7 @@ class KTNotificationHandler {
 	
 	// called to resolve the notification (typically from /notify.php?id=xxxxx
 	function resolveNotification($oKTNotification) {
-	    $_SESSION['KTErrorMessage'][] = 'This notification handler does not support publication.';
+	    $_SESSION['KTErrorMessage'][] = _("This notification handler does not support publication.");
 	    exit(redirect(generateControllerLink('dashboard')));
 	}
 }
@@ -148,21 +148,24 @@ class KTSubscriptionNotification extends KTNotificationHandler {
         "MovedDocument" => 'document',
         "ArchivedDocument" => 'document', // can go through and request un-archival (?)
         "RestoredArchivedDocument" => 'document');	
-		
-	var $_eventTypeNames = array(
-		"AddFolder" => 'Folder added',
-        "RemoveSubscribedFolder" => 'Folder removed', // nothing. your subscription is now gone.
-        "RemoveChildFolder" => 'Folder removed',
-        "AddDocument" => 'Document added',
-        "RemoveSubscribedDocument" => 'Document removed', // nothing. your subscription is now gone.
-        "RemoveChildDocument" => 'Document removed',
-        "ModifyDocument" => 'Document modified',
-        "CheckInDocument" => 'Document checked in',
-        "CheckOutDocument" => 'Document checked out',
-        "MovedDocument" => 'Document moved',
-        "ArchivedDocument" => 'Document archived', // can go through and request un-archival (?)
-        "RestoredArchivedDocument" => 'Document restored');			
 
+    function KTSubscriptionNotification() {
+        $this->_eventTypeNames = array(
+            "AddFolder" => _('Folder added'),
+            "RemoveSubscribedFolder" => _('Folder removed'), // nothing. your subscription is now gone.
+            "RemoveChildFolder" => _('Folder removed'),
+            "AddDocument" => _('Document added'),
+            "RemoveSubscribedDocument" => _('Document removed'), // nothing. your subscription is now gone.
+            "RemoveChildDocument" => _('Document removed'),
+            "ModifyDocument" => _('Document modified'),
+            "CheckInDocument" => _('Document checked in'),
+            "CheckOutDocument" => _('Document checked out'),
+            "MovedDocument" => _('Document moved'),
+            "ArchivedDocument" => _('Document archived'), // can go through and request un-archival (?)
+            "RestoredArchivedDocument" => _('Document restored')
+        );
+        parent::KTNotificationHandler();
+    }
 	// helper method to extract / set the various pieces of information
 	function _getSubscriptionData($oKTNotification) {
 		$info = array(

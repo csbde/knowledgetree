@@ -26,7 +26,7 @@ class BrowseColumn {
     }
     // FIXME is it _really_ worth using a template here?
     function renderHeader($sReturnURL) { 
-        $text = "Abstract: " . $this->label; 
+        $text = _("Abstract") . ": " . $this->label; 
         $href = $sReturnURL . "&sort_on=" . $this->name . "&sort_order=";
         $href .= $this->sort_direction == "asc"? "desc" : "asc" ;
         
@@ -56,7 +56,7 @@ class TitleColumn extends BrowseColumn {
     }
     // unlike others, this DOESN'T give its name.
     function renderHeader($sReturnURL) { 
-        $text = "Title";
+        $text = _("Title");
         $href = $sReturnURL . "&sort_on=" . $this->name . "&sort_order=";
         $href .= $this->sort_direction == "asc"? "desc" : "asc" ;
         
