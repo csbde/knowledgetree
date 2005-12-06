@@ -197,9 +197,9 @@ class KTDocumentEmailAction extends KTDocumentAction {
     function do_main() {
         $oTemplate =& $this->oValidator->validateTemplate('ktstandard/action/email');
         $fields = array();
-        $fields[] = new KTCheckboxWidget("Attach document", "By default, documents are sent as links into the document management system.  Select this option if you want the document contents to be sent as an attachment in the email.", 'fAttachDocument', null, $this->oPage);
-        $fields[] = new KTTextWidget("Email addresses", "FIXME: Add extra email addresses here", 'fEmailAddresses', "", $this->oPage);
-        $fields[] = new KTTextWidget("Comment", "FIXME", 'fComment', "", $this->oPage, true);
+        $fields[] = new KTCheckboxWidget(_("Attach document"), _("By default, documents are sent as links into the document management system.  Select this option if you want the document contents to be sent as an attachment in the email."), 'fAttachDocument', null, $this->oPage);
+        $fields[] = new KTTextWidget(_("Email addresses"), _("Add extra email addresses here"), 'fEmailAddresses', "", $this->oPage);
+        $fields[] = new KTTextWidget(_("Comment"), _("A message for those who receive the document"), 'fComment', "", $this->oPage, true);
         $aTemplateData = array(
             'context' => &$this,
             'fields' => $fields,
@@ -230,7 +230,7 @@ class KTDocumentEmailAction extends KTDocumentAction {
 
         //if we're going to send a mail, first make there is someone to send it to
         if ((count($aGroupIDs) == 0) && (count($aUserIDs) == 0) && (count($aEmailAddresses) == 0)) {
-            $this->errorRedirectToMain('No recipients set', sprintf('fDocumentId=%d', $this->oDocument->getId()));
+            $this->errorRedirectToMain(_('No recipients set'), sprintf('fDocumentId=%d', $this->oDocument->getId()));
             exit(0);
         }
 
@@ -247,7 +247,7 @@ class KTDocumentEmailAction extends KTDocumentAction {
             $_SESSION['KTErrorMessage'][] = join("<br />\n", $aEmailErrors);
         }
 
-        $_SESSION['KTInfoMessage'][] = "Email sent";
+        $_SESSION['KTInfoMessage'][] = _("Email sent");
         //go back to the document view page
         controllerRedirect("viewDocument", sprintf("fDocumentId=%d", $this->oDocument->getId()));
     }

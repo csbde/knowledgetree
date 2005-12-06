@@ -8,7 +8,7 @@ $oPRegistry =& KTPortletRegistry::getSingleton();
 class KTSearchPortlet extends KTPortlet {
 
     function KTSearchPortlet() {
-        parent::KTPortlet("Search");
+        parent::KTPortlet(_("Search"));
     }
     function render() {
         $oTemplating = new KTTemplating;

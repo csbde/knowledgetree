@@ -5,16 +5,12 @@ require_once(KT_LIB_DIR . '/authentication/authenticationproviderregistry.inc.ph
 require_once(KT_LIB_DIR . '/authentication/authenticationsource.inc.php');
 
 class KTAuthenticationAdminPage extends KTAdminDispatcher {
-    var $aBreadcrumbs = array(
-        array('action' => 'administration', 'name' => 'Administration'),
-    );
-
     function do_main() {
-        $this->aBreadcrumbs[] = array('name' => 'Authentication', 'url' => $_SERVER['PHP_SELF']);
+        $this->aBreadcrumbs[] = array('name' => _('Authentication'), 'url' => $_SERVER['PHP_SELF']);
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/authentication/manage');
         $fields = array();
 
-        $fields[] = new KTStringWidget('Name', 'FIXME', 'name', "", $this->oPage, true);
+        $fields[] = new KTStringWidget(_('Name'), 'FIXME', 'name', "", $this->oPage, true);
 
         $aVocab = array();
         $oRegistry =& KTAuthenticationProviderRegistry::getSingleton();
@@ -23,7 +19,7 @@ class KTAuthenticationAdminPage extends KTAdminDispatcher {
             $aVocab[$aProvider[2]] = $aProvider[0];
         }
         $fieldOptions = array("vocab" => $aVocab);
-        $fields[] = new KTLookupWidget('Authentication provider', 'FIXME', 'authentication_provider', null, $this->oPage, true, null, $fieldErrors, $fieldOptions);
+        $fields[] = new KTLookupWidget(_('Authentication provider'), 'FIXME', 'authentication_provider', null, $this->oPage, true, null, $fieldErrors, $fieldOptions);
 
         $aSources = KTAuthenticationSource::getList();
 
@@ -37,7 +33,7 @@ class KTAuthenticationAdminPage extends KTAdminDispatcher {
     }
 
     function do_viewsource() {
-        $this->aBreadcrumbs[] = array('name' => 'Authentication', 'url' => $_SERVER['PHP_SELF']);
+        $this->aBreadcrumbs[] = array('name' => _('Authentication'), 'url' => $_SERVER['PHP_SELF']);
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/authentication/viewsource');
         $oSource =& KTAuthenticationSource::get($_REQUEST['source_id']);
         $this->aBreadcrumbs[] = array('name' => $oSource->getName(), 'url' => $_SERVER['PHP_SELF'] . "?source_id=" . $oSource->getId());
@@ -58,11 +54,11 @@ class KTAuthenticationAdminPage extends KTAdminDispatcher {
         $aErrorOptions = array(
             'redirect_to' => array('main'),
         );
-        $aErrorOptions['message'] = "No name provided";
+        $aErrorOptions['message'] = _("No name provided");
         $sName = KTUtil::arrayGet($_REQUEST, 'name');
         $sName = $this->oValidator->validateString($sName, $aErrorOptions);
 
-        $aErrorOptions['message'] = "No authentication provider chosen";
+        $aErrorOptions['message'] = _("No authentication provider chosen");
         $sProvider = KTUtil::arrayGet($_REQUEST, 'authentication_provider');
         $sProvider = $this->oValidator->validateString($sProvider, $aErrorOptions);
 
@@ -70,7 +66,7 @@ class KTAuthenticationAdminPage extends KTAdminDispatcher {
         $oProvider =& $oRegistry->getAuthenticationProvider($sProvider);
 
         if (method_exists($oProvider, 'do_newsource')) {
-            $this->aBreadcrumbs[] = array('name' => 'Authentication', 'url' => $_SERVER['PHP_SELF']);
+            $this->aBreadcrumbs[] = array('name' => _('Authentication'), 'url' => $_SERVER['PHP_SELF']);
             $oProvider->aBreadcrumbs = $this->aBreadcrumbs;
 
             return $oProvider->dispatch();
@@ -83,11 +79,11 @@ class KTAuthenticationAdminPage extends KTAdminDispatcher {
         $aErrorOptions = array(
             'redirect_to' => array('main'),
         );
-        $aErrorOptions['message'] = "No name provided";
+        $aErrorOptions['message'] = _("No name provided");
         $sName = KTUtil::arrayGet($_REQUEST, 'name');
         $sName = $this->oValidator->validateString($sName, $aErrorOptions);
 
-        $aErrorOptions['message'] = "No authentication provider chosen";
+        $aErrorOptions['message'] = _("No authentication provider chosen");
         $sProvider = KTUtil::arrayGet($_REQUEST, 'authentication_provider');
         $sProvider = $this->oValidator->validateString($sProvider, $aErrorOptions);
 
@@ -100,7 +96,7 @@ class KTAuthenticationAdminPage extends KTAdminDispatcher {
             'authenticationprovider' => $sProvider,
         ));
         $this->oValidator->notError($oSource);
-        $this->successRedirectToMain("Source created");
+        $this->successRedirectToMain(_("Source created"));
         exit(0);
     }
 
@@ -110,7 +106,7 @@ class KTAuthenticationAdminPage extends KTAdminDispatcher {
         $oRegistry =& KTAuthenticationProviderRegistry::getSingleton();
         $oProvider =& $oRegistry->getAuthenticationProvider($sProvider);
 
-        $this->aBreadcrumbs[] = array('name' => 'Authentication', 'url' => $_SERVER['PHP_SELF']);
+        $this->aBreadcrumbs[] = array('name' => _('Authentication'), 'url' => $_SERVER['PHP_SELF']);
         $this->aBreadcrumbs[] = array('name' => $oSource->getName(), 'url' => $_SERVER['PHP_SELF'] . "?source_id=" . $oSource->getId());
         $oProvider->aBreadcrumbs = $this->aBreadcrumbs;
 
@@ -124,7 +120,7 @@ class KTAuthenticationAdminPage extends KTAdminDispatcher {
         $oRegistry =& KTAuthenticationProviderRegistry::getSingleton();
         $oProvider =& $oRegistry->getAuthenticationProvider($sProvider);
 
-        $this->aBreadcrumbs[] = array('name' => 'Authentication', 'url' => $_SERVER['PHP_SELF']);
+        $this->aBreadcrumbs[] = array('name' => _('Authentication'), 'url' => $_SERVER['PHP_SELF']);
         $this->aBreadcrumbs[] = array('name' => $oSource->getName(), 'url' => $_SERVER['PHP_SELF'] . "?source_id=" . $oSource->getId());
         $oProvider->aBreadcrumbs = $this->aBreadcrumbs;
 

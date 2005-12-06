@@ -14,17 +14,17 @@ class KTBulkUploadFolderAction extends KTFolderAction {
     var $bAutomaticTransaction = true;
 
     function do_main() {
-        $this->oPage->setBreadcrumbDetails("bulk upload");
+        $this->oPage->setBreadcrumbDetails(_("bulk upload"));
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/folder/bulkUpload');
         $add_fields = array();
-        $add_fields[] = new KTFileUploadWidget('Archive file', 'The archive file containing the documents you wish to add to the document management system.', 'file', "", $this->oPage, true);
+        $add_fields[] = new KTFileUploadWidget(_('Archive file'), _('The archive file containing the documents you wish to add to the document management system.'), 'file', "", $this->oPage, true);
 
         $aVocab = array();
         foreach (DocumentType::getList() as $oDocumentType) {
             $aVocab[$oDocumentType->getId()] = $oDocumentType->getName();
         }
         $fieldOptions = array("vocab" => $aVocab);
-        $add_fields[] = new KTLookupWidget('Document Type', 'FIXME', 'fDocumentTypeId', null, $this->oPage, true, "add-document-type", $fieldErrors, $fieldOptions);
+        $add_fields[] = new KTLookupWidget(_('Document Type'), 'FIXME', 'fDocumentTypeId', null, $this->oPage, true, "add-document-type", $fieldErrors, $fieldOptions);
 
         $fieldsets = array();
         $fieldsetDisplayReg =& KTFieldsetDisplayRegistry::getSingleton();
@@ -47,7 +47,7 @@ class KTBulkUploadFolderAction extends KTFolderAction {
             'redirect_to' => array('main', sprintf('fFolderId=%d', $this->oFolder->getId())),
         );
 
-        $aErrorOptions['message'] = 'Invalid document type provided';
+        $aErrorOptions['message'] = _('Invalid document type provided');
         $oDocumentType = $this->oValidator->validateDocumentType($_REQUEST['fDocumentTypeId'], $aErrorOptions);
 
         unset($aErrorOptions['message']);
@@ -70,7 +70,7 @@ class KTBulkUploadFolderAction extends KTFolderAction {
         $bm =& new KTBulkImportManager($this->oFolder, $fs, $this->oUser, $aOptions);
         $this->startTransaction();
         $res = $bm->import();
-        $aErrorOptions['message'] = "Bulk import failed";
+        $aErrorOptions['message'] = _("Bulk import failed");
         $this->oValidator->notError($res, $aErrorOptions);
 
         $this->commitTransaction();
