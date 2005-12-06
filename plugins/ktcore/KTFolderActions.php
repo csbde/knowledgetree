@@ -20,12 +20,12 @@ class KTFolderAddDocumentAction extends KTFolderAction {
     var $_sShowPermission = "ktcore.permissions.write";
 
     function do_main() {
-        $this->oPage->setBreadcrumbDetails("add document");
-        $this->oPage->setTitle('Add a document');
+        $this->oPage->setBreadcrumbDetails(_("add document"));
+        $this->oPage->setTitle(_('Add a document'));
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/document/add');
         $add_fields = array();
-        $add_fields[] = new KTFileUploadWidget('File', 'The contents of the document to be added to the document management system.', 'file', "", $this->oPage, true);
-        $add_fields[] = new KTStringWidget('Title', 'Describe the changes made to the document.', 'title', "", $this->oPage, true);
+        $add_fields[] = new KTFileUploadWidget(_('File'), _('The contents of the document to be added to the document management system.'), 'file', "", $this->oPage, true);
+        $add_fields[] = new KTStringWidget(_('Title'), _('Describe the changes made to the document.'), 'title', "", $this->oPage, true);
         
         
         
@@ -34,7 +34,7 @@ class KTFolderAddDocumentAction extends KTFolderAction {
             $aVocab[$oDocumentType->getId()] = $oDocumentType->getName();
         }
         $fieldOptions = array("vocab" => $aVocab);
-        $add_fields[] = new KTLookupWidget('Document Type', 'FIXME', 'fDocumentTypeId', null, $this->oPage, true, "add-document-type", $fieldErrors, $fieldOptions);
+        $add_fields[] = new KTLookupWidget(_('Document Type'), 'FIXME', 'fDocumentTypeId', null, $this->oPage, true, "add-document-type", $fieldErrors, $fieldOptions);
 
         $fieldsets = array();
         $fieldsetDisplayReg =& KTFieldsetDisplayRegistry::getSingleton();
@@ -122,10 +122,10 @@ class KTFolderAddFolderAction extends KTFolderAction {
     var $_sShowPermission = "ktcore.permissions.write";
 
     function do_main() {
-        $this->oPage->setBreadcrumbDetails("add folder");
+        $this->oPage->setBreadcrumbDetails(_("add folder"));
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/action/addFolder');
         $fields = array();
-        $fields[] = new KTStringWidget('Folder name', '', 'name', "", $this->oPage, true);
+        $fields[] = new KTStringWidget(_('Folder name'), _('The name for the new folder.'), 'name', "", $this->oPage, true);
 
         $oTemplate->setData(array(
             'context' => &$this,
@@ -139,13 +139,13 @@ class KTFolderAddFolderAction extends KTFolderAction {
             'redirect_to' => array('main', sprintf('fFolderId=%d', $this->oFolder->getId())),
         );
         $sFolderName = KTUtil::arrayGet($_REQUEST, 'name');
-        $aErrorOptions['defaultmessage'] = "No name given";
+        $aErrorOptions['defaultmessage'] = _("No name given");
         $sFolderName = $this->oValidator->validateString($sFolderName, $aErrorOptions);
 
         $this->startTransaction();
 
         $res = KTFolderUtil::add($this->oFolder, $sFolderName, $this->oUser);
-        $aErrorOptions['defaultmessage'] = "Could not create folder in the document management system";
+        $aErrorOptions['defaultmessage'] = _("Could not create folder in the document management system");
         $this->oValidator->notError($res, $aErrorOptions);
 
         $this->commitTransaction();
@@ -163,7 +163,7 @@ class KTFolderPermissionsAction extends KTFolderAction {
     var $bAutomaticTransaction = true;
 
     function do_main() {
-        $this->oPage->setBreadcrumbDetails("viewing permissions");
+        $this->oPage->setBreadcrumbDetails(_("viewing permissions"));
         $oTemplating = new KTTemplating;
         $oTemplate = $oTemplating->loadTemplate("ktcore/folder/permissions");
         $oPO = KTPermissionObject::get($this->oFolder->getPermissionObjectId());
@@ -230,19 +230,19 @@ class KTFolderPermissionsAction extends KTFolderAction {
             KTPermissionUtil::setPermissionForId($oPermission, $oPO, $aAllowed);
         }
         KTPermissionUtil::updatePermissionLookupForPO($oPO);
-        return $this->successRedirectToMain('Permissions updated',
+        return $this->successRedirectToMain(_('Permissions updated'),
                 array('fFolderId' => $this->oFolder->getId()));
     }
 
     function do_copyPermissions() {
         KTPermissionUtil::copyPermissionObject($this->oFolder);
-        return $this->successRedirectToMain('Permissions updated',
+        return $this->successRedirectToMain(_('Permissions updated'),
                 array('fFolderId' => $this->oFolder->getId()));
     }
 
     function do_inheritPermissions() {
         KTPermissionUtil::inheritPermissionObject($this->oFolder);
-        return $this->successRedirectToMain('Permissions updated',
+        return $this->successRedirectToMain(_('Permissions updated'),
                 array('fFolderId' => $this->oFolder->getId()));
     }
 
@@ -263,7 +263,7 @@ class KTFolderPermissionsAction extends KTFolderAction {
         $this->oValidator->notError($oDynamicCondition, $aOptions);
         $res = $oDynamicCondition->saveAssignment($aPermissionIds);
         $this->oValidator->notError($res, $aOptions);
-        $this->successRedirectToMain("Dynamic permission added", "fFolderId=" . $this->oFolder->getId());
+        $this->successRedirectToMain(_("Dynamic permission added"), "fFolderId=" . $this->oFolder->getId());
     }
 }
 $oKTActionRegistry->registerAction('folderaction', 'KTFolderPermissionsAction', 'ktcore.actions.folder.permissions');

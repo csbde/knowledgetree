@@ -50,13 +50,13 @@ class KTDocumentDiscussionAction extends KTDocumentAction {
     var $sName = 'ktcore.actions.document.discussion';
 
     function do_main() {
-        $this->oPage->setBreadcrumbDetails("discussion");
+        $this->oPage->setBreadcrumbDetails(_("discussion"));
         $oTemplate =& $this->oValidator->validateTemplate('ktstandard/action/discussion');
 
         // Fields for new thread creation
         $fields = array();
-        $fields[] = new KTStringWidget("Subject", "The topic of discussion in this thread", "subject", "", $this->oPage, true);
-        $fields[] = new KTTextWidget("Body", "Your contribution to the discussion in this thread", "body", "", $this->oPage, true, null, null, array("cols" => 50, "rows" => 10));
+        $fields[] = new KTStringWidget(_("Subject"), _("The topic of discussion in this thread"), "subject", "", $this->oPage, true);
+        $fields[] = new KTTextWidget(_("Body"), _("Your contribution to the discussion in this thread"), "body", "", $this->oPage, true, null, null, array("cols" => 50, "rows" => 10));
 
         $threads = DiscussionThread::getList();
 
@@ -74,11 +74,11 @@ class KTDocumentDiscussionAction extends KTDocumentAction {
             'redirect_to' => array('main', sprintf('fDocumentId=%d', $this->oDocument->getId())),
         );
 
-        $aErrorOptions['message'] = "No subject provided";
+        $aErrorOptions['message'] = _("No subject provided");
         $sSubject = KTUtil::arrayGet($_REQUEST, 'subject');
         $sSubject = $this->oValidator->validateString($sSubject, $aErrorOptions);
 
-        $aErrorOptions['message'] = "No body provided";
+        $aErrorOptions['message'] = _("No body provided");
         $sBody = KTUtil::arrayGet($_REQUEST, 'body');
         $sBody = $this->oValidator->validateString($sBody, $aErrorOptions);
 
@@ -89,8 +89,8 @@ class KTDocumentDiscussionAction extends KTDocumentAction {
             'documentid' => $this->oDocument->getId(),
             'creatorid' => $this->oUser->getId(),
         ));
-        $aErrorOptions['message'] = "There was an error creating a new thread";
-        $this->oValidator->notError($oThread);
+        $aErrorOptions['message'] = _("There was an error creating a new thread");
+        $this->oValidator->notError($oThread, $aErrorOptions);
 
         $oComment = DiscussionComment::createFromArray(array(
             'threadid' => $oThread->getId(),
@@ -98,19 +98,19 @@ class KTDocumentDiscussionAction extends KTDocumentAction {
             'subject' => $sSubject,
             'body' => $sBody,
         ));
-        $aErrorOptions['message'] = "There was an error adding the comment to the thread";
-        $this->oValidator->notError($oComment);
+        $aErrorOptions['message'] = _("There was an error adding the comment to the thread");
+        $this->oValidator->notError($oComment, $aErrorOptions);
 
         $oThread->setFirstCommentId($oComment->getId());
         $oThread->setLastCommentId($oComment->getId());
         $res = $oThread->update();
-        $aErrorOptions['message'] = "There was an error updating the thread with the new comment";
-        $this->oValidator->notError($res);
+        $aErrorOptions['message'] = _("There was an error updating the thread with the new comment");
+        $this->oValidator->notError($res, $aErrorOptions);
 
         // Thread and comment created correctly, commit to database
         $this->commitTransaction();
 
-        $this->successRedirectToMain("New thread created", sprintf('fDocumentId=%d', $this->oDocument->getId()));
+        $this->successRedirectToMain(_("New thread created"), sprintf('fDocumentId=%d', $this->oDocument->getId()));
         exit(0);
     }
 
@@ -122,18 +122,18 @@ class KTDocumentDiscussionAction extends KTDocumentAction {
         $oComment = DiscussionComment::get($iCommentId);
 
         $this->aBreadcrumbs[] = array(
-            'name' => 'discussion',
+            'name' => _('discussion'),
             'url' => $_SERVER['PHP_SELF'] . sprintf('?fDocumentId=%d', $this->oDocument->getId()),
         );
         $this->aBreadcrumbs[] = array(
             'name' => $oComment->getSubject(),
         );
-        $this->oPage->setBreadcrumbDetails("viewing comments");
+        $this->oPage->setBreadcrumbDetails(_("viewing comments"));
         $oTemplate =& $this->oValidator->validateTemplate('ktstandard/action/discussion_thread');
         // Fields for new thread creation
         $fields = array();
-        $fields[] = new KTStringWidget("Subject", "The topic of discussion in this thread", "subject", "", $this->oPage, true);
-        $fields[] = new KTTextWidget("Body", "Your contribution to the discussion in this thread", "body", "", $this->oPage, true, null, null, array("cols" => 50, "rows" => 10));
+        $fields[] = new KTStringWidget(_("Subject"), _("The topic of discussion in this thread"), "subject", "", $this->oPage, true);
+        $fields[] = new KTTextWidget(_("Body"), _("Your contribution to the discussion in this thread"), "body", "", $this->oPage, true, null, null, array("cols" => 50, "rows" => 10));
 
         $aTemplateData = array(
             'context' => &$this,
@@ -158,11 +158,11 @@ class KTDocumentDiscussionAction extends KTDocumentAction {
         );
 
 
-        $aErrorOptions['message'] = "No subject provided";
+        $aErrorOptions['message'] = _("No subject provided");
         $sSubject = KTUtil::arrayGet($_REQUEST, 'subject');
         $sSubject = $this->oValidator->validateString($sSubject, $aErrorOptions);
 
-        $aErrorOptions['message'] = "No body provided";
+        $aErrorOptions['message'] = _("No body provided");
         $sBody = KTUtil::arrayGet($_REQUEST, 'body');
         $sBody = $this->oValidator->validateString($sBody, $aErrorOptions);
 
@@ -175,18 +175,18 @@ class KTDocumentDiscussionAction extends KTDocumentAction {
             'subject' => $sSubject,
             'body' => $sBody,
         ));
-        $aErrorOptions['message'] = "There was an error adding the comment to the thread";
+        $aErrorOptions['message'] = _("There was an error adding the comment to the thread");
         $this->oValidator->notError($oComment, $aErrorOptions);
 
         $oThread->setLastCommentId($oComment->getId());
         $res = $oThread->update();
-        $aErrorOptions['message'] = "There was an error updating the thread with the new comment";
+        $aErrorOptions['message'] = _("There was an error updating the thread with the new comment");
         $this->oValidator->notError($res, $aErrorOptions);
 
         // Thread and comment created correctly, commit to database
         $this->commitTransaction();
 
-        $this->successRedirectTo('viewThread', "Reply posted", sprintf('fDocumentId=%d&fThreadId=%d', $this->oDocument->getId(), $oThread->getId()));
+        $this->successRedirectTo('viewThread', _("Reply posted"), sprintf('fDocumentId=%d&fThreadId=%d', $this->oDocument->getId(), $oThread->getId()));
         exit(0);
     }
 }
