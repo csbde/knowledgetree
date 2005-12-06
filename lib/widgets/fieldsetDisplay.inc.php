@@ -115,10 +115,10 @@ class KTFieldsetDisplay {
         $res = DBUtil::getOneResultKey(array($sQuery, array($iMimeTypeId)), 'mimetypes');
         
         if (PEAR::isError($res)) {
-            return 'unknown type';
+            return _('unknown type');
         }
         if (empty($res)) {
-            return 'unknown type';
+            return _('unknown type');
         }
         return $res;
     }
@@ -156,13 +156,13 @@ class GenericFieldsetDisplay extends KTFieldsetDisplay {
         // creation
         $creator =& User::get($document->getCreatorId());
         if (PEAR::isError($creator)) {
-           $creator = "<span class='ktError'>Unable to find the document's creator</span>";
+           $creator = "<span class='ktError'>" . _("Unable to find the document's creator") . "</span>";
         } else {
            $creator = $creator->getName();
         }
         $modified_user =& User::get($document->getModifiedUserId());
         if (PEAR::isError($modified_user)) {
-           $modified_user = "<span class='ktError'>Unable to find the document's creator</span>";
+           $modified_user = "<span class='ktError'>" . _("Unable to find the document's creator") . "</span>";
         } else {
            $modified_user = $modified_user->getName();
         }
@@ -208,7 +208,7 @@ class GenericFieldsetDisplay extends KTFieldsetDisplay {
         // creation
         $creator =& User::get($document->getCreatorId());
         if (PEAR::isError($creator)) {
-           $creator = "<span class='ktError'>Unable to find the document's creator</span>";
+           $creator = "<span class='ktError'>" . _("Unable to find the document's creator") . "</span>";
         } else {
            $creator = $creator->getName();
         }
@@ -224,14 +224,14 @@ class GenericFieldsetDisplay extends KTFieldsetDisplay {
         
         $modified_user =& User::get($document->getModifiedUserId());
         if (PEAR::isError($modified_user)) {
-           $modified_user = "<span class='ktError'>Unable to find the document's creator</span>";
+           $modified_user = "<span class='ktError'>" . _("Unable to find the document's creator") . "</span>";
         } else {
            $modified_user = $modified_user->getName();
         }
 
         $comparison_modified_user =& User::get($comparison_document->getModifiedUserId());
         if (PEAR::isError($comparison_modified_user)) {
-           $comparison_modified_user = "<span class='ktError'>Unable to find the document's creator</span>";
+           $comparison_modified_user = "<span class='ktError'>" . _("Unable to find the document's creator") . "</span>";
         } else {
            $comparison_modified_user = $comparison_modified_user->getName();
         }
@@ -275,7 +275,7 @@ class GenericFieldsetDisplay extends KTFieldsetDisplay {
     function renderEdit($document_data) {
         global $main; // FIXME remove direct access to $main
         $oField = new KTBaseWidget("Document Title",
-            "The document title is used as the main name of a document through the KnowledgeTree.",
+            _("The document title is used as the main name of a document through the KnowledgeTree."),
             "generic_title", $document_data["document"]->getName(), $main, true, null, array());
         $aFields = array($oField); // its the only one editable from the basic set (currently).
         
@@ -285,7 +285,7 @@ class GenericFieldsetDisplay extends KTFieldsetDisplay {
             "context" => $this,
             "fields" => $aFields,
             "title" => "Generic Document Information",
-            "description" => "The information in this section is stored by the KnowledgeTree&trade; for every document.",
+            "description" => _("The information in this section is stored by the KnowledgeTree&trade; for every document."),
         );
         return $oTemplate->render($aTemplateData);
     }
@@ -373,7 +373,7 @@ class SimpleFieldsetDisplay extends KTFieldsetDisplay {
             $has_errors = KTUtil::arrayGet($document_data['errors'], $oField->getId(),false);
             if ($has_errors !== false) {
                 // FIXME when the actual errors (meaningful) are passed out, fix this.
-                $errors = array('The system rejected your value for this field.');
+                $errors = array(_('The system rejected your value for this field.'));
             } else { 
                 $errors = null;
             }
@@ -381,7 +381,7 @@ class SimpleFieldsetDisplay extends KTFieldsetDisplay {
             $aFields[] = getWidgetForMetadataField($oField, $val, $main, $errors); // FIXME handle errors
         }
         $fieldset_name = $this->fieldset->getName();
-        $fieldset_description = "The information in this section is part of the <strong>" . $fieldset_name . "</strong> of the document.";
+        $fieldset_description = sprintf(_("The information in this section is part of the <strong>%s</strong> of the document."), $fieldset_name);
         $oTemplating = new KTTemplating;        
         $oTemplate = $oTemplating->loadTemplate("kt3/fieldsets/simple_editable");
         $aTemplateData = array(
@@ -437,7 +437,7 @@ class ConditionalFieldsetDisplay extends SimpleFieldsetDisplay {
         // how?
         
         $fieldset_name = $this->fieldset->getName();
-        $fieldset_description = "The information in this section is part of the <strong>" . $fieldset_name . "</strong> of the document.  Note that the options which are available depends on previous choices within this fieldset.";
+        $fieldset_description = sprintf(_("The information in this section is part of the <strong>%s</strong> of the document.  Note that the options which are available depends on previous choices within this fieldset."), $fieldset_name);
         
         // 
         

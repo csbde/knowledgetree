@@ -40,7 +40,7 @@ class KTDispatcherValidation {
         $aFunc = array($entity_name, KTUtil::arrayGet($aOptions, 'method', 'get'));
         $oEntity =& call_user_func($aFunc, $iId);
         if (PEAR::isError($oEntity) || ($oEntity === false)) {
-            $this->oDispatcher->errorPage(sprintf("Invalid identifier provided for: %s", $entity_name));
+            $this->oDispatcher->errorPage(sprintf(_("Invalid identifier provided for: %s"), $entity_name));
         }
         return $oEntity;
     }
@@ -87,7 +87,7 @@ class KTDispatcherValidation {
             } elseif ($sDefaultMessage) {
                 $sMessage = $sDefaultMessage;
             } else {
-                $sMessage = "An error occurred, and no error message was given";
+                $sMessage = _("An error occurred, and no error message was given");
             }
         } else {
             if ($oException) {
@@ -106,7 +106,7 @@ class KTDispatcherValidation {
     function &validateTemplate($sTemplateName, $aOptions = null) {
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate =& $oTemplating->loadTemplate($sTemplateName);
-        $aOptions['message'] = KTUtil::arrayGet($aOptions, 'message', 'Failed to locate template');
+        $aOptions['message'] = KTUtil::arrayGet($aOptions, 'message', _('Failed to locate template'));
         $this->notError($oTemplate, $aOptions);
         return $oTemplate;
     }
@@ -169,7 +169,7 @@ class KTDispatcherValidation {
             return $oSearch;
         }
         $aOptions = KTUTil::meldOptions($aOptions, array(
-            'message' => "Condition is a saved search, but not a condition",
+            'message' => _("Condition is a saved search, but not a condition"),
         ));
         $this->handleError($aOptions);
     }
@@ -178,7 +178,7 @@ class KTDispatcherValidation {
         $sString = trim($sString);
         if (empty($sString)) {
             $aOptions['message'] = KTUtil::arrayGet($aOptions,
-                    'message', "An empty string was given");
+                    'message', _("An empty string was given"));
             $this->handleError($aOptions);
         }
         return $sString;
@@ -222,12 +222,12 @@ class KTDispatcherValidation {
                     $aValidatedDict[$k] = '';
                 }
                 */
-                $aErrors[$k] = PEAR::raiseError("Required value $k not set");
+                $aErrors[$k] = PEAR::raiseError(sprintf(_("Required value %s not set"), $k));
                 continue;
             }
             $sValidationFunction = $this->_generateValidationFunction($aValidatorInfo['type']);
             if (!method_exists($this, $sValidationFunction)) {
-                $aErrors[$k] = PEAR::raiseError("Unknown validation function for required value $k");
+                $aErrors[$k] = PEAR::raiseError(sprintf(_("Unknown validation function for required value %s"), $k));
                 continue;
             }
             $aKeyInfo = array('var' => $k);
@@ -267,7 +267,7 @@ class KTDispatcherValidation {
         $aFunc = array($entity_name, KTUtil::arrayGet($aOptions, 'method', 'get'));
         $oEntity =& call_user_func($aFunc, $iId);
         if (PEAR::isError($oEntity) || ($oEntity === false)) {
-            return PEAR::raiseError(sprintf("Provided variable %s is not a valid %s", $aKeyInfo['var'], $entity_name));
+            return PEAR::raiseError(sprintf(_("Provided variable %s is not a valid %s"), $aKeyInfo['var'], $entity_name));
         }
         return $oEntity;
     }

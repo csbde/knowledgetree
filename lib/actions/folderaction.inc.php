@@ -121,7 +121,7 @@ class KTFolderAction extends KTStandardDispatcher {
     }
 
     function do_main() {
-        return "Dispatcher component of action not implemented.";
+        return _("Dispatcher component of action not implemented.");
     }
 
 }

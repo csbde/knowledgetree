@@ -15,7 +15,7 @@ class KTBuiltinAuthenticationProvider extends KTAuthenticationProvider {
     }
     
     function showUserSource($oUser, $oSource) {
-        return '<p class="descriptiveText"><a href="?action=setPassword&user_id=' . $oUser->getId() . '">Change ' . $oUser->getName() . '\'s password</a></p>';
+        return '<p class="descriptiveText"><a href="?action=setPassword&user_id=' . $oUser->getId() . '">' . sprintf(_("Change %s's password"), $oUser->getName()) . '</a></p>';
     }
 }
 
