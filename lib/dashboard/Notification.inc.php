@@ -164,7 +164,7 @@ class KTSubscriptionNotification extends KTNotificationHandler {
             "ArchivedDocument" => _('Document archived'), // can go through and request un-archival (?)
             "RestoredArchivedDocument" => _('Document restored')
         );
-        parent::KTNotificationHandler();
+        //parent::KTNotificationHandler();
     }
 	// helper method to extract / set the various pieces of information
 	function _getSubscriptionData($oKTNotification) {
@@ -219,13 +219,8 @@ class KTSubscriptionNotification extends KTNotificationHandler {
 	}
 
     function handleNotification($oKTNotification) {
-		$oTemplating = new KTTemplating;
-		$oTemplate = $oTemplating->loadTemplate("kt3/notifications/subscriptions");
-		$aTemplateData = array(
-              "context" => $oKTNotification,
-			  "info" => $this->_getSubscriptionData($oKTNotification),
-		);
-		return $oTemplate->render($aTemplateData);
+		$oSubscriptionContent = new SubscriptionContent();
+		return $oSubscriptionContent->getNotificationAlertContent($oKTNotification);
     }
 
 	// helper to _create_ a notification, in a way that is slightly less opaque.

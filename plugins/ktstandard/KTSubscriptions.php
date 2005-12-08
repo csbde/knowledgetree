@@ -1,9 +1,10 @@
 <?php
 
 require_once(KT_LIB_DIR . '/subscriptions/Subscription.inc');
-require_once(KT_LIB_DIR . '/subscriptions/SubscriptionEngine.inc');
-require_once(KT_LIB_DIR . '/subscriptions/SubscriptionConstants.inc');
+
+
 require_once(KT_LIB_DIR . '/subscriptions/SubscriptionManager.inc');
+require_once(KT_LIB_DIR . "/subscriptions/subscriptions.inc.php");
 
 require_once(KT_LIB_DIR . '/plugins/pluginregistry.inc.php');
 require_once(KT_LIB_DIR . '/plugins/plugin.inc.php');
@@ -75,14 +76,14 @@ class KTDocumentSubscriptionAction extends KTDocumentAction {
     var $sName = 'ktstandard.subscription.documentsubscription';
     var $sDisplayName = 'Subscribe to document';
     function getInfo() {
-        if (Subscription::exists($this->oUser->getID(), $this->oDocument->getID(), SubscriptionConstants::subscriptionType("DocumentSubscription"))) {
+        if (Subscription::exists($this->oUser->getID(), $this->oDocument->getID(), SubscriptionEvent::subTypes('Document'))) {
             return null;
         }
         return parent::getInfo();
     }
 
     function do_main() {
-        $iSubscriptionType = SubscriptionConstants::subscriptionType("DocumentSubscription");
+        $iSubscriptionType = SubscriptionEvent::subTypes('Document');
         if (Subscription::exists($this->oUser->getId(), $this->oDocument->getId(), $iSubscriptionType)) {
             $_SESSION['KTErrorMessage'][] = _("You are already subscribed to that document");
         } else {
@@ -106,14 +107,14 @@ class KTDocumentUnsubscriptionAction extends KTDocumentAction {
     var $sName = 'ktstandard.subscription.documentunsubscription';
     var $sDisplayName = 'Unsubscribe from document';
     function getInfo() {
-        if (Subscription::exists($this->oUser->getID(), $this->oDocument->getID(), SubscriptionConstants::subscriptionType("DocumentSubscription"))) {
+        if (Subscription::exists($this->oUser->getID(), $this->oDocument->getID(), SubscriptionEvent::subTypes('Document'))) {
             return parent::getInfo();
         }
         return null;
     }
 
     function do_main() {
-        $iSubscriptionType = SubscriptionConstants::subscriptionType("DocumentSubscription");
+        $iSubscriptionType = SubscriptionEvent::subTypes('Document');
         if (!Subscription::exists($this->oUser->getId(), $this->oDocument->getId(), $iSubscriptionType)) {
             $_SESSION['KTErrorMessage'][] = _("You were not subscribed to that document");
         } else {
@@ -143,11 +144,12 @@ class KTCheckoutSubscriptionTrigger {
         global $default;
         $oDocument =& $this->aInfo["document"];
         // fire subscription alerts for the checked out document
-        $count = SubscriptionEngine::fireSubscription($oDocument->getId(), SubscriptionConstants::subscriptionAlertType("CheckOutDocument"),
-                 SubscriptionConstants::subscriptionType("DocumentSubscription"),
-                 array( "folderID" => $oDocument->getFolderID(),
-                        "modifiedDocumentName" => $oDocument->getName() ));
-        $default->log->info("checkOutDocumentBL.php fired $count subscription alerts for checked out document " . $oDocument->getName());
+
+        // fire subscription alerts for the checked in document
+        $oSubscriptionEvent = new SubscriptionEvent();
+        $oFolder = Folder::get($oDocument->getFolderID());
+        $oSubscriptionEvent->CheckoutDocument($oDocument, $oFolder);
+
     }
 }
 $oPlugin->registerTrigger('checkout', 'postValidate', 'KTCheckoutSubscriptionTrigger', 'ktstandard.triggers.subscription.checkout');
@@ -165,22 +167,11 @@ class KTDeleteSubscriptionTrigger {
         $oDocument =& $this->aInfo["document"];
 
         // fire subscription alerts for the deleted document
-        $count = SubscriptionEngine::fireSubscription($oDocument->getId(),
-            SubscriptionConstants::subscriptionAlertType("RemoveSubscribedDocument"),
-            SubscriptionConstants::subscriptionType("DocumentSubscription"),
-            array(
-                "folderID" => $oDocument->getFolderID(),
-                "removedDocumentName" => $oDocument->getName(),
-                "folderName" => Folder::getFolderDisplayPath($oDocument->getFolderID()),
-            ));
-        $default->log->info("deleteDocumentBL.php fired $count subscription alerts for removed document " . $oDocument->getName());
-
-        // remove all document subscriptions for this document
-        if (SubscriptionManager::removeSubscriptions($oDocument->getId(), SubscriptionConstants::subscriptionType("DocumentSubscription"))) {
-            $default->log->info("deleteDocumentBL.php removed all subscriptions for this document");
-        } else {
-            $default->log->error("deleteDocumentBL.php couldn't remove document subscriptions");
-        }
+        
+        // fire subscription alerts for the checked in document
+        $oSubscriptionEvent = new SubscriptionEvent();
+        $oFolder = Folder::get($oDocument->getFolderID());
+        $oSubscriptionEvent->RemoveDocument($oDocument, $oFolder);
     }
 }
 $oPlugin->registerTrigger('delete', 'postValidate', 'KTDeleteSubscriptionTrigger', 'ktstandard.triggers.subscription.delete');
@@ -199,29 +190,10 @@ class KTDocumentMoveSubscriptionTrigger {
         $oOldFolder =& $this->aInfo["old_folder"];
         $oNewFolder =& $this->aInfo["new_folder"];
 
-        // fire subscription alerts for the moved document (and the folder its in)
-        $count = SubscriptionEngine::fireSubscription($oDocument->getId(), SubscriptionConstants::subscriptionAlertType("MovedDocument"),
-            SubscriptionConstants::subscriptionType("DocumentSubscription"),
-            array(
-                "folderID" => $oOldFolder->getId(),
-                "modifiedDocumentName" => $oDocument->getName(),
-                "oldFolderName" => Folder::getFolderName($oOldFolder->getId()),
-                "newFolderName" => Folder::getFolderName($oNewFolder->getID()),
-            )
-        );
-        $default->log->info("moveDocumentBL.php fired $count (folderID=$fFolderID) folder subscription alerts for moved document " . $oDocument->getName());
-
-        // fire folder subscriptions for the destination folder
-        $count = SubscriptionEngine::fireSubscription($oNewFolder->getId(), SubscriptionConstants::subscriptionAlertType("MovedDocument"),
-            SubscriptionConstants::subscriptionType("FolderSubscription"),
-            array(
-                "folderID" => $oOldFolder->getId(),
-                "modifiedDocumentName" => $oDocument->getName(),
-                "oldFolderName" => Folder::getFolderName($oOldFolder->getId()),
-                "newFolderName" => Folder::getFolderName($oNewFolder->getId()),
-            )
-        );
-        $default->log->info("moveDocumentBL.php fired $count (folderID=$fFolderID) folder subscription alerts for moved document " . $oDocument->getName());
+        
+        // fire subscription alerts for the checked in document
+        $oSubscriptionEvent = new SubscriptionEvent();
+        $oSubscriptionEvent->MoveDocument($oDocument, $oNewFolder, $oNewFolder);
     }
 }
 $oPlugin->registerTrigger('moveDocument', 'postValidate', 'KTDocumentMoveSubscriptionTrigger', 'ktstandard.triggers.subscription.moveDocument');
@@ -238,14 +210,10 @@ class KTArchiveSubscriptionTrigger {
         global $default;
         $oDocument =& $this->aInfo["document"];
 
-        $count = SubscriptionEngine::fireSubscription($fDocumentID, SubscriptionConstants::subscriptionAlertType("ArchivedDocument"),
-            SubscriptionConstants::subscriptionType("DocumentSubscription"),
-            array(
-                "folderID" => $oDocument->getFolderID(),
-                "modifiedDocumentName" => $oDocument->getName(),
-                "folderName" => $oDocument->getFolderName(),
-            ));
-        $default->log->info("archiveDocumentBL.php fired $count subscription alerts for archived document " . $oDocument->getName());
+        // fire subscription alerts for the checked in document
+        $oSubscriptionEvent = new SubscriptionEvent();
+        $oFolder = Folder::get($oDocument->getFolderID());
+        $oSubscriptionEvent->ArchiveDocument($oDocument, $oFolder);
     }
 }
 $oPlugin->registerTrigger('archive', 'postValidate', 'KTArchiveSubscriptionTrigger', 'ktstandard.triggers.subscription.archive');
@@ -256,7 +224,7 @@ class KTFolderSubscriptionAction extends KTFolderAction {
     var $sName = 'ktstandard.subscription.foldersubscription';
     var $sDisplayName = 'Subscribe to folder';
     function getInfo() {
-        if (Subscription::exists($this->oUser->getID(), $this->oFolder->getID(), SubscriptionConstants::subscriptionType("FolderSubscription"))) {
+        if (Subscription::exists($this->oUser->getID(), $this->oFolder->getID(), SubscriptionEvent::subTypes('Folder'))) {
             // KTFolderUnsubscriptionAction will display instead.
             return null;
         }
@@ -264,7 +232,7 @@ class KTFolderSubscriptionAction extends KTFolderAction {
     }
 
     function do_main() {
-        $iSubscriptionType = SubscriptionConstants::subscriptionType("FolderSubscription");
+        $iSubscriptionType = SubscriptionEvent::subTypes('Folder');
         if (Subscription::exists($this->oUser->getId(), $this->oFolder->getId(), $iSubscriptionType)) {
             $_SESSION['KTErrorMessage'][] = _("You are already subscribed to that document");
         } else {
@@ -289,14 +257,14 @@ class KTFolderUnsubscriptionAction extends KTFolderAction {
     var $sDisplayName = 'Unsubscribe from folder';
 
     function getInfo() {
-        if (Subscription::exists($this->oUser->getID(), $this->oFolder->getID(), SubscriptionConstants::subscriptionType("FolderSubscription"))) {
+        if (Subscription::exists($this->oUser->getID(), $this->oFolder->getID(), SubscriptionEvent::subTypes('Folder'))) {
             return parent::getInfo();
         }
         return null;
     }
 
     function do_main() {
-        $iSubscriptionType = SubscriptionConstants::subscriptionType("FolderSubscription");
+        $iSubscriptionType = SubscriptionEvent::subTypes('Folder');
         if (!Subscription::exists($this->oUser->getId(), $this->oFolder->getId(), $iSubscriptionType)) {
             $_SESSION['KTErrorMessage'][] = _("You were not subscribed to that folder");
         } else {
@@ -320,9 +288,9 @@ class KTSubscriptionManagePage extends KTStandardDispatcher {
     function do_main() {
         $this->aBreadcrumbs[] = array("name" => _("Subscription Management"));
         $aFolderSubscriptions = SubscriptionManager::retrieveUserSubscriptions(
-            $this->oUser->getId(), SubscriptionConstants::subscriptionType("FolderSubscription"));
+            $this->oUser->getId(), SubscriptionEvent::subTypes('Folder'));
         $aDocumentSubscriptions = SubscriptionManager::retrieveUserSubscriptions(
-            $this->oUser->getId(), SubscriptionConstants::subscriptionType("DocumentSubscription"));
+            $this->oUser->getId(), SubscriptionEvent::subTypes('Document'));
         $bNoSubscriptions  = ((count($aFolderSubscriptions) == 0) && (count($aDocumentSubscriptions) == 0)) ? true : false;
 
         $oTemplate = $this->oValidator->validateTemplate('ktstandard/subscriptions/manage');
@@ -347,7 +315,7 @@ class KTSubscriptionManagePage extends KTStandardDispatcher {
 
         if (!empty($foldersubscriptions)) {
             foreach ($foldersubscriptions as $iSubscriptionId) {
-                $oSubscription = Subscription::get($iSubscriptionId, SubscriptionConstants::subscriptionType('FolderSubscription'));
+                $oSubscription = Subscription::get($iSubscriptionId, SubscriptionEvent::subTypes('Folder'));
                 if ($oSubscription) {
                     $oSubscription->delete();
                     $iSuccesses++;
@@ -359,7 +327,7 @@ class KTSubscriptionManagePage extends KTStandardDispatcher {
 
         if (!empty($documentsubscriptions)) {
             foreach ($documentsubscriptions as $iSubscriptionId) {
-                $oSubscription = Subscription::get($iSubscriptionId, SubscriptionConstants::subscriptionType('DocumentSubscription'));
+                $oSubscription = Subscription::get($iSubscriptionId, SubscriptionEvent::subTypes('Document'));
                 if ($oSubscription) {
                     $oSubscription->delete();
                     $iSuccesses++;

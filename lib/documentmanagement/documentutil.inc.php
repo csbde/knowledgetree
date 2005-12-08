@@ -30,16 +30,15 @@
 // LEGACY PATHS
 require_once(KT_LIB_DIR . '/documentmanagement/DocumentFieldLink.inc');
 require_once(KT_LIB_DIR . '/documentmanagement/DocumentTransaction.inc');
-require_once(KT_LIB_DIR . '/subscriptions/SubscriptionEngine.inc');
-require_once(KT_LIB_DIR . '/subscriptions/SubscriptionConstants.inc');
 
 // NEW PATHS
 require_once(KT_LIB_DIR . '/storage/storagemanager.inc.php');
 require_once(KT_LIB_DIR . '/filelike/filelikeutil.inc.php');
 require_once(KT_LIB_DIR . '/metadata/metadatautil.inc.php');
 require_once(KT_LIB_DIR . '/metadata/fieldset.inc.php');
-
+require_once(KT_LIB_DIR . "/subscriptions/subscriptions.inc.php"); 
 require_once(KT_LIB_DIR . '/triggers/triggerregistry.inc.php');
+require_once(KT_LIB_DIR . "/foldermanagement/Folder.inc");
 
 class KTDocumentUtil {
     function createMetadataVersion($oDocument) {
@@ -164,12 +163,10 @@ class KTDocumentUtil {
         }
         
         // fire subscription alerts for the checked in document
-        $count = SubscriptionEngine::fireSubscription($oDocument->getID(), SubscriptionConstants::subscriptionAlertType("CheckInDocument"),
-                 SubscriptionConstants::subscriptionType("DocumentSubscription"),
-                 array( "folderID" => $oDocument->getFolderID(),
-                        "modifiedDocumentName" => $oDocument->getName() ));
-        global $default;
-        $default->log->info("checkInDocumentBL.php fired $count subscription alerts for checked out document " . $oDocument->getName());
+        $oSubscriptionEvent = new SubscriptionEvent();
+        $oFolder = Folder::get($oDocument->getFolderID());
+        $oSubscriptionEvent->CheckinDocument($oDocument, $oFolder);
+        
         return true;
     }
 
@@ -420,12 +417,9 @@ class KTDocumentUtil {
         }
 
         // fire subscription alerts for the checked in document
-        $count = SubscriptionEngine::fireSubscription($oDocument->getID(), SubscriptionConstants::subscriptionAlertType("AddDocument"),
-                 SubscriptionConstants::subscriptionType("DocumentSubscription"),
-                 array( "folderID" => $oDocument->getFolderID(),
-                        "newDocumentName" => $oDocument->getName() ));
-        global $default;
-        $default->log->info("checkInDocumentBL.php fired $count subscription alerts for checked out document " . $oDocument->getName());
+        $oSubscriptionEvent = new SubscriptionEvent();
+        $oFolder = Folder::get($oDocument->getFolderID());
+        $oSubscriptionEvent->AddDocument($oDocument, $oFolder);
 
         return $oDocument;
     }

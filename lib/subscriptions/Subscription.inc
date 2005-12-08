@@ -2,6 +2,7 @@
 require_once(KT_LIB_DIR . "/subscriptions/SubscriptionConstants.inc");
 require_once(KT_LIB_DIR . "/foldermanagement/Folder.inc");
 require_once(KT_LIB_DIR . "/documentmanagement/Document.inc");
+require_once(KT_LIB_DIR . "/subscriptions/subscriptions.inc.php");
 /**
  * $Id$
  *
@@ -318,9 +319,9 @@ class Subscription extends KTEntity {
      * @return string the subscription id field name to use
      */
     function getIdFieldName($iSubscriptionType) {
-        if ($iSubscriptionType == SubscriptionConstants::subscriptionType("DocumentSubscription")) {
+        if ($iSubscriptionType == SubscriptionEvent::subTypes("Document")) {
             return "document_id";
-        } else if($iSubscriptionType == SubscriptionConstants::subscriptionType("FolderSubscription")) {
+        } else if($iSubscriptionType == SubscriptionEvent::subTypes("Folder")) {
             return "folder_id";
         }
 
