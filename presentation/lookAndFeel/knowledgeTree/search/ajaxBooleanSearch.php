@@ -6,9 +6,6 @@ require_once(KT_LIB_DIR . "/templating/templating.inc.php");
 require_once(KT_LIB_DIR . "/database/dbutil.inc");
 require_once(KT_LIB_DIR . "/util/ktutil.inc");
 require_once(KT_LIB_DIR . "/dispatcher.inc.php");
-$sectionName = "General";
-require_once(KT_DIR . "/presentation/webpageTemplate.inc");
-
 require_once(KT_LIB_DIR . "/browse/Criteria.inc");
 
 /*
