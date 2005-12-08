@@ -3,8 +3,8 @@
 {$context->oPage->requireJSResource("thirdpartyjs/MochiKit/Iter.js")}
 {$context->oPage->requireJSResource("thirdpartyjs/MochiKit/DOM.js")}
 {$context->oPage->requireJSResource("thirdpartyjs/MochiKit/Async.js")}
-{$context->oPage->requireJSResource("presentation/lookAndFeel/knowledgeTree/js/taillog.js")}
-{$context->oPage->requireJSResource("presentation/lookAndFeel/knowledgeTree/js/constructed_search.js")}
+{$context->oPage->requireJSResource("resources/js/taillog.js")}
+{$context->oPage->requireJSResource("resources/js/constructed_search.js")}
 
 {capture assign=sJS}
 {literal}

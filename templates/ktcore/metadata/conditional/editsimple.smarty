@@ -47,8 +47,8 @@
 {$context->oPage->requireJSResource("thirdpartyjs/MochiKit/Async.js")}
 {$context->oPage->requireJSResource("thirdpartyjs/MochiKit/DOM.js")}
 
-{$context->oPage->requireJSResource("presentation/lookAndFeel/knowledgeTree/js/taillog.js")}
-{$context->oPage->requireJSResource("presentation/lookAndFeel/knowledgeTree/js/conditional_simple_edit.js")}
+{$context->oPage->requireJSResource("resources/js/taillog.js")}
+{$context->oPage->requireJSResource("resources/js/conditional_simple_edit.js")}
 
 
 
