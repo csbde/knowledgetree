@@ -187,8 +187,6 @@ function validateEmailAddress($sEmailAddress) {
     return $bToReturn;
 }
 
-$oKTActionRegistry =& KTActionRegistry::getSingleton();
-
 class KTDocumentEmailAction extends KTDocumentAction {
     var $sBuiltInAction = 'emailDocument';
     var $sDisplayName = 'Email';
@@ -252,5 +250,14 @@ class KTDocumentEmailAction extends KTDocumentAction {
         controllerRedirect("viewDocument", sprintf("fDocumentId=%d", $this->oDocument->getId()));
     }
 }
-$oKTActionRegistry->registerAction('documentaction', 'KTDocumentEmailAction', 'ktcore.actions.document.email');
+
+class KTEmailPlugin extends KTPlugin {
+    var $sNamespace = "ktstandard.email.plugin";
+}
+
+$oRegistry =& KTPluginRegistry::getSingleton();
+$oRegistry->registerPlugin('KTEmailPlugin', 'ktstandard.email.plugin', __FILE__);
+$oPlugin =& $oRegistry->getPlugin('ktstandard.email.plugin');
+
+$oPlugin->registerAction('documentaction', 'KTDocumentEmailAction', 'ktcore.actions.document.email');
 
