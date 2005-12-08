@@ -102,7 +102,7 @@ class PreferencesDispatcher extends KTStandardDispatcher {
     }
 
 
-    function do_saveUser() {
+    function do_updatePreferences() {
         $oUser =& $this->oUser;
         
         $name = KTUtil::arrayGet($_REQUEST, 'name');
