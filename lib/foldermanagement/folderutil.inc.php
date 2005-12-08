@@ -25,6 +25,7 @@
  */
 
 require_once(KT_LIB_DIR . '/storage/storagemanager.inc.php');
+require_once(KT_LIB_DIR . "/subscriptions/subscriptions.inc.php"); 
 
 class KTFolderUtil {
     function _add ($oParentFolder, $sFolderName, $oUser) {
@@ -54,14 +55,8 @@ class KTFolderUtil {
         }
 
         // fire subscription alerts for the new folder
-        /* $count = SubscriptionEngine::fireSubscription(
-            $oParentFolder->getID(), SubscriptionConstants::subscriptionAlertType("AddFolder"),
-            SubscriptionConstants::subscriptionType("FolderSubscription"),
-            array(
-                "newFolderName" => $sFolderName,
-                "parentFolderName" => $oParentFolder->getName(),
-            )
-        );*/
+        $oSubscriptionEvent = new SubscriptionEvent();
+        $oSubscriptionEvent->AddFolder($oFolder, $oParentFolder);
         return $oFolder;
     }
 
