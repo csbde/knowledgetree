@@ -12,7 +12,8 @@ require_once(KT_LIB_DIR . "/permissions/permissionassignment.inc.php");
 require_once(KT_LIB_DIR . "/permissions/permissiondescriptor.inc.php");
 require_once(KT_LIB_DIR . "/permissions/permissionutil.inc.php");
 
-$oKTActionRegistry =& KTActionRegistry::getSingleton();
+$oRegistry =& KTPluginRegistry::getSingleton();
+$oPlugin =& $oRegistry->getPlugin('ktcore.plugin');
 
 class KTDocumentPermissionsAction extends KTDocumentAction {
     var $sBuiltInAction = 'editDocumentPermissions';
@@ -74,5 +75,5 @@ class KTDocumentPermissionsAction extends KTDocumentAction {
         return $oTemplate->render($aTemplateData);
     }
 }
-$oKTActionRegistry->registerAction('documentaction', 'KTDocumentPermissionsAction', 'ktcore.actions.document.permissions');
+$oPlugin->registerAction('documentaction', 'KTDocumentPermissionsAction', 'ktcore.actions.document.permissions');
 
