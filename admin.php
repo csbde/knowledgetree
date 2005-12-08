@@ -1,5 +1,5 @@
 <?php
-require_once("../../../../config/dmsDefaults.php");
+require_once("config/dmsDefaults.php");
 
 require_once(KT_LIB_DIR . "/templating/kt3template.inc.php");
 require_once(KT_LIB_DIR . "/dispatcher.inc.php");
