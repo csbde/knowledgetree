@@ -228,6 +228,7 @@ class KTStandardDispatcher extends KTDispatcher {
 
 class KTAdminDispatcher extends KTStandardDispatcher {
     var $bAdminRequired = true;
+    var $sSection = 'administration';
 
     function KTAdminDispatcher() {
         $this->aBreadcrumbs = array(
