@@ -11,13 +11,6 @@ require_once(KT_LIB_DIR . "/security/Permission.inc");
 $oRegistry =& KTPluginRegistry::getSingleton();
 $oPlugin =& $oRegistry->getPlugin('ktcore.plugin');
 
-/* 
-* The registration hooks. 
-* 
-* Since this is too small to _actually_ need a full plugin object, we go:
-*
-*/
-
 // ultra simple skeleton for the admin tutorial
 class KTBeta1InfoDashlet extends KTBaseDashlet {
 	function is_active($oUser) {
