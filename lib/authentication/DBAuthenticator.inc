@@ -1,5 +1,5 @@
 <?php
-require_once("$default->fileSystemRoot/lib/authentication/Authenticator.inc");
+require_once(KT_LIB_DIR . "/authentication/Authenticator.inc");
 /**
  * $Id$
  *

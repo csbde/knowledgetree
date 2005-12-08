@@ -1,5 +1,5 @@
 <?php
-require_once("$default->fileSystemRoot/lib/users/User.inc");
+require_once(KT_LIB_DIR . '/users/User.inc');
 /**
  * $Id$
  *
