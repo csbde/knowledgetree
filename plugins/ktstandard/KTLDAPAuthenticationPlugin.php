@@ -12,5 +12,3 @@ $oPluginRegistry->registerPlugin('KTLDAPAuthenticationPlugin', 'ktstandard.ldapa
 $oPlugin =& $oPluginRegistry->getPlugin('ktstandard.ldapauthentication.plugin');
 
 $oPlugin->registerAuthenticationProvider('LDAP Authentication', 'KTLDAPAuthenticationProvider', 'ktstandard.authentication.ldapprovider', 'ldap/ldapauthenticationprovider.inc.php');
-
-$oPlugin->register();
