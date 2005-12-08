@@ -16,9 +16,8 @@ class KTPluginRegistry {
     }
 
     function &getPlugin($sNamespace) {
-        $oPlugin =& KTUtil::arrayGet($this->_aPlugins, $sNamespace);
-        if (!empty($oPlugin)) {
-            return $oPlugin;
+        if (array_key_exists($sNamespace, $this->_aPlugins)) {
+            return $this->_aPlugins[$sNamespace];
         }
         $aDetails = KTUtil::arrayGet($this->_aPluginDetails, $sNamespace);
         if (empty($aDetails)) {
@@ -29,7 +28,17 @@ class KTPluginRegistry {
             require_once($sFilename);
         }
         $sClassName = $aDetails[0];
-        return new $sClassName($sFilename);
+        $oPlugin =& new $sClassName($sFilename);
+        $this->_aPlugins[$sNamespace] =& $oPlugin;
+        return $oPlugin;
+    }
+
+    function &getPlugins() {
+        $aRet = array();
+        foreach (array_keys($this->_aPluginDetails) as $sPluginName) {
+            $aRet[] =& $this->getPlugin($sPluginName);
+        }
+        return $aRet;
     }
 }
 
