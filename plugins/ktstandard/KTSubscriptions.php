@@ -15,10 +15,9 @@ class KTSubscriptionPlugin extends KTPlugin {
     var $sNamespace = "ktstandard.subscriptions.plugin";
 }
 
-$oPluginRegistry =& KTPluginRegistry::getSingleton();
-$oPluginRegistry->registerPlugin('KTSubscriptionPlugin', 'ktstandard.subscriptions.plugin', __FILE__);
-// $oPlugin = new KTSubscriptionPlugin(__FILE__);
-$oPlugin =& $oPluginRegistry->getPlugin('ktstandard.subscriptions.plugin');
+$oRegistry =& KTPluginRegistry::getSingleton();
+$oRegistry->registerPlugin('KTSubscriptionPlugin', 'ktstandard.subscriptions.plugin', __FILE__);
+$oPlugin =& $oRegistry->getPlugin('ktstandard.subscriptions.plugin');
 
 // {{{ KTSubscriptionPortlet
 class KTSubscriptionPortlet extends KTPortlet {
@@ -382,5 +381,3 @@ class KTSubscriptionManagePage extends KTStandardDispatcher {
 }
 $oPlugin->registerPage('manage', 'KTSubscriptionManagePage', __FILE__);
 // }}}
-
-$oPlugin->register();
