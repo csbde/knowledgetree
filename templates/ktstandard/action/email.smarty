@@ -1,7 +1,7 @@
 {$context->oPage->requireJSResource('thirdpartyjs/MochiKit/Base.js')}
 {$context->oPage->requireJSResource("thirdpartyjs/MochiKit/Iter.js")}
 {$context->oPage->requireJSResource("thirdpartyjs/MochiKit/DOM.js")}
-{$context->oPage->requireJSResource("presentation/lookAndFeel/knowledgeTree/js/OptionTransfer.js")}
+{$context->oPage->requireJSResource("thirdpartyjs/OptionTransfer.js")}
 {capture assign=sJavascript}
 {literal}
 
