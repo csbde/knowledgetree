@@ -97,7 +97,7 @@ $default->siteMap->addSectionColour("Manage Document Types", "td", "BDDFE0");
 $default->siteMap->addSectionColour("Manage Document Types", "th", "57AFAE");
 
 // pages for administration section
-$default->siteMap->addDefaultPage("administration", "/presentation/lookAndFeel/knowledgeTree/administration/admin.php", "Administration", UnitAdmin, _("Administration"));
+$default->siteMap->addDefaultPage("administration", "/admin.php", "Administration", UnitAdmin, _("Administration"));
 
 $default->siteMap->addPage("userManagement", "/presentation/lookAndFeel/knowledgeTree/administration/admin.php/principals/users", "Administration", UnitAdmin, _("User Management"), true, 1);
 $default->siteMap->addPage("userPasswordManagement", "/presentation/lookAndFeel/knowledgeTree/administration/usermanagement/passwordManagementBL.php", "Administration", SysAdmin, _("User Management"), false, 1);
@@ -216,7 +216,6 @@ $default->siteMap->addSectionColour("Subscriptions", "th", "FFC602");
 
 // pages for advanced search section
 $default->siteMap->addDefaultPage("advancedSearch", "/presentation/lookAndFeel/knowledgeTree/search/advancedSearchBL.php", "Advanced Search", Guest, _("Advanced Search"), true);
-$default->siteMap->addPage("standardSearch", "/presentation/lookAndFeel/knowledgeTree/search/standardSearchBL.php", "Standard Search", Guest, _("Standard Search"), false);
 $default->siteMap->addPage("booleanSearch", "/presentation/lookAndFeel/knowledgeTree/search/booleanSearch.php", "Boolean Search", Guest, _("Boolean Search"), false);
 
 $default->siteMap->addSectionColour("Advanced Search", "th", "A1571B");
