@@ -7,7 +7,8 @@ require_once(KT_LIB_DIR . '/browse/browseutil.inc.php');
 require_once(KT_LIB_DIR . '/documentmanagement/documentutil.inc.php');
 require_once(KT_LIB_DIR . '/documentmanagement/PhysicalDocumentManager.inc');
 
-$oKTActionRegistry =& KTActionRegistry::getSingleton();
+$oRegistry =& KTPluginRegistry::getSingleton();
+$oPlugin =& $oRegistry->getPlugin('ktcore.plugin');
 
 // {{{ KTDocumentViewAction
 class KTDocumentViewAction extends KTDocumentAction {
@@ -28,7 +29,7 @@ class KTDocumentViewAction extends KTDocumentAction {
         exit(0);
     }
 }
-$oKTActionRegistry->registerAction('documentaction', 'KTDocumentViewAction', 'ktcore.actions.document.view');
+$oPlugin->registerAction('documentaction', 'KTDocumentViewAction', 'ktcore.actions.document.view');
 // }}}
 
 // {{{ KTDocumentCheckOutAction
@@ -121,7 +122,7 @@ class KTDocumentCheckOutAction extends KTDocumentAction {
         exit(0);
     }
 }
-$oKTActionRegistry->registerAction('documentaction', 'KTDocumentCheckOutAction', 'ktcore.actions.document.checkout');
+$oPlugin->registerAction('documentaction', 'KTDocumentCheckOutAction', 'ktcore.actions.document.checkout');
 // }}}
 
 // {{{ KTDocumentCheckInAction
@@ -200,7 +201,7 @@ class KTDocumentCheckInAction extends KTDocumentAction {
         redirect("$default->rootUrl/control.php?action=viewDocument&fDocumentID=" . $this->oDocument->getID());
     }
 }
-$oKTActionRegistry->registerAction('documentaction', 'KTDocumentCheckInAction', 'ktcore.actions.document.checkin');
+$oPlugin->registerAction('documentaction', 'KTDocumentCheckInAction', 'ktcore.actions.document.checkin');
 // }}}
 
 // {{{ KTDocumentEditAction
@@ -212,7 +213,7 @@ class KTDocumentEditAction extends KTDocumentAction {
         return generateControllerLink("editDocument", sprintf("fDocumentId=%d", $this->oDocument->getID()));
     }
 }
-$oKTActionRegistry->registerAction('documentaction', 'KTDocumentEditAction', 'ktcore.actions.document.edit');
+$oPlugin->registerAction('documentaction', 'KTDocumentEditAction', 'ktcore.actions.document.edit');
 // }}}
 
 // {{{ KTDocumentDeleteAction
@@ -315,7 +316,7 @@ class KTDocumentDeleteAction extends KTDocumentAction {
         exit(0);
     }
 }
-$oKTActionRegistry->registerAction('documentaction', 'KTDocumentDeleteAction', 'ktcore.actions.document.delete');
+$oPlugin->registerAction('documentaction', 'KTDocumentDeleteAction', 'ktcore.actions.document.delete');
 // }}}
 
 require_once(KT_LIB_DIR . "/browse/DocumentCollection.inc.php");
@@ -499,7 +500,7 @@ class KTDocumentMoveAction extends KTDocumentAction {
         exit(0);
     }
 }
-$oKTActionRegistry->registerAction('documentaction', 'KTDocumentMoveAction', 'ktcore.actions.document.move');
+$oPlugin->registerAction('documentaction', 'KTDocumentMoveAction', 'ktcore.actions.document.move');
 // }}}
 
 // {{{ KTDocumentHistoryAction
@@ -511,7 +512,7 @@ class KTDocumentTransactionHistoryAction extends KTDocumentAction {
         return generateControllerLink("viewDocument", sprintf("action=history&fDocumentId=%d", $this->oDocument->getID()));
     }
 }
-$oKTActionRegistry->registerAction('documentaction', 'KTDocumentTransactionHistoryAction', 'ktcore.actions.document.transactionhistory');
+$oPlugin->registerAction('documentaction', 'KTDocumentTransactionHistoryAction', 'ktcore.actions.document.transactionhistory');
 // }}}
 
 // {{{ KTDocumentHistoryAction
@@ -523,7 +524,7 @@ class KTDocumentVersionHistoryAction extends KTDocumentAction {
         return generateControllerLink("viewDocument", sprintf("action=versionhistory&fDocumentId=%d", $this->oDocument->getID()));
     }
 }
-$oKTActionRegistry->registerAction('documentaction', 'KTDocumentVersionHistoryAction', 'ktcore.actions.document.versionhistory');
+$oPlugin->registerAction('documentaction', 'KTDocumentVersionHistoryAction', 'ktcore.actions.document.versionhistory');
 // }}}
 
 // {{{ KTDocumentArchiveAction
@@ -582,7 +583,7 @@ class KTDocumentArchiveAction extends KTDocumentAction {
         exit(0);
     }
 }
-$oKTActionRegistry->registerAction('documentaction', 'KTDocumentArchiveAction', 'ktcore.actions.document.archive');
+$oPlugin->registerAction('documentaction', 'KTDocumentArchiveAction', 'ktcore.actions.document.archive');
 // }}}
 
 // {{{ KTDocumentWorkflowAction
@@ -646,7 +647,7 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
                 array('fDocumentId' => $oDocument->getId()));
     }
 }
-$oKTActionRegistry->registerAction('documentaction', 'KTDocumentWorkflowAction', 'ktcore.actions.document.workflow');
+$oPlugin->registerAction('documentaction', 'KTDocumentWorkflowAction', 'ktcore.actions.document.workflow');
 // }}}
 
 ?>
