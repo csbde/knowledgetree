@@ -1,10 +1,15 @@
 <?php
 
-require_once(KT_LIB_DIR . '/actions/actionregistry.inc.php');
 require_once(KT_LIB_DIR . '/discussions/DiscussionThread.inc');
 require_once(KT_LIB_DIR . '/discussions/DiscussionComment.inc');
 
-$oKTActionRegistry =& KTActionRegistry::getSingleton();
+class KTDiscussionPlugin extends KTPlugin {
+        var $sNamespace = "ktstandard.discussion.plugin";
+}
+
+$oRegistry =& KTPluginRegistry::getSingleton();
+$oRegistry->registerPlugin('KTDiscussionPlugin', 'ktstandard.discussion.plugin', __FILE__);
+$oPlugin =& $oRegistry->getPlugin('ktstandard.discussion.plugin');
 
 class KTDiscussionThreadListRenderer {
     function render($context, $oThread) {
@@ -190,5 +195,5 @@ class KTDocumentDiscussionAction extends KTDocumentAction {
         exit(0);
     }
 }
-$oKTActionRegistry->registerAction('documentaction', 'KTDocumentDiscussionAction', 'ktcore.actions.document.discussion');
+$oPlugin->registerAction('documentaction', 'KTDocumentDiscussionAction', 'ktcore.actions.document.discussion');
 
