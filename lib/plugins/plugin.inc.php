@@ -60,7 +60,7 @@ class KTPlugin {
         $this->_aAdminPages[$sFullname] = array($sName, $sClass, $sCategory, $sTitle, $sDescription, $sFilename, null, $this->sNamespace);
     }
 
-    function registerAdminCategories($sPath, $sName, $sDescription) {
+    function registerAdminCategory($sPath, $sName, $sDescription) {
         $this->_aAdminCategories[$sPath] = array($sPath, $sName, $sDescription);
     }
     
