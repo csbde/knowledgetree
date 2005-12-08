@@ -108,10 +108,11 @@ class KTInit {
         global $default;
         if (in_array("gettext", get_loaded_extensions()) && function_exists('gettext') && function_exists('_')) {
             require_once("$default->fileSystemRoot/lib/i18n/languageFunctions.inc");
-            require_once("$default->fileSystemRoot/lib/i18n/accept-to-gettext.inc");
+            // require_once("$default->fileSystemRoot/lib/i18n/accept-to-gettext.inc");
             if ($default->useAcceptLanguageHeader) {
                 $aInstalledLocales = getInstalledLocales();
-                $sLocale=al2gt($aInstalledLocales, 'text/html');
+                //$sLocale=al2gt($aInstalledLocales, 'text/html');
+                $sLocale = 'en_ZA';
                 $default->defaultLanguage = $sLocale;
             }
             putenv('LANG=' . $default->defaultLanguage);
@@ -355,20 +356,8 @@ $KTInit->setupRandomSeed();
 
 $GLOBALS['KTRootUrl'] = $oKTConfig->get('KnowledgeTree/rootUrl');
 
-require_once("$default->fileSystemRoot/lib/authentication/$default->authenticationClass.inc");
-
 // instantiate system settings class
 require_once("$default->fileSystemRoot/lib/database/lookup.inc");
-require_once("$default->fileSystemRoot/lib/System.inc");
-$default->system = new System();
-
-if ($default->useDatabaseConfiguration && $default->system->initialised()) {
-    $aSettings = $default->system->aSettings;
-
-    for ($i=0; $i<count($aSettings); $i++) {
-        $default->$aSettings[$i] = $default->system->get($aSettings[$i]);
-    }
-}
 
 // table mapping entries
 include("tableMappings.inc");
