@@ -1,5 +1,7 @@
 <?php
 
+require_once(KT_LIB_DIR . '/plugins/pluginregistry.inc.php');
+
 class KTPluginResourceRegistry {
     var $aResources = array();
 
@@ -35,6 +37,10 @@ class KTPluginUtil {
             if (substr($sFile, -strlen($plugin_ending)) === $plugin_ending) {
                 require_once($sFile);
             }
+        }
+        $oRegistry = KTPluginRegistry::getSingleton();
+        foreach ($oRegistry->getPlugins() as $oPlugin) {
+            $oPlugin->register();
         }
     }
 
