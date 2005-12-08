@@ -58,8 +58,18 @@ class KTSmartyTemplate extends KTTemplate {
             }            
         }
         $KTConfig =& KTConfig::getSingleton();
+        
+        // needed for a very, very few places.
+        $isSSL = $KTConfig->get("KnowledgeTree/sslEnabled");
+        $hostname = $KTConfig->get("KnowledgeTree/serverName");
+        $absroot = 'http';
+        $absroot .= ($isSSL) ? 's://' : '://';
+        $absroot .= $hostname;
+        $absroot .= $KTConfig->get("KnowledgeTree/rootUrl");
+        
         $smarty->assign("config", $KTConfig);
         $smarty->assign("rootUrl", $KTConfig->get("KnowledgeTree/rootUrl"));
+        $smarty->assign("absoluteRootUrl", $absroot);
         $smarty->caching = false;
         $smarty->register_function('entity_select', array('KTSmartyTemplate', 'entity_select'));
         $smarty->register_function('boolean_checkbox', array('KTSmartyTemplate', 'boolean_checkbox'));
