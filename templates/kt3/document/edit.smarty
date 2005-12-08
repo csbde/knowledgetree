@@ -6,8 +6,8 @@
 
 <!-- unforunate, but (currently) necessary -->
 
-{$context->oPage->requireJSResource('presentation/lookAndFeel/knowledgeTree/js/taillog.js')}
-{$context->oPage->requireJSResource('presentation/lookAndFeel/knowledgeTree/js/conditional_usage.js')}
+{$context->oPage->requireJSResource('resources/js/taillog.js')}
+{$context->oPage->requireJSResource('resources/js/conditional_usage.js')}
 
 {$context->oPage->requireCSSResource('resources/css/kt-treewidget.css')}
 

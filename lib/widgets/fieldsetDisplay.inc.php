@@ -409,8 +409,8 @@ class ConditionalFieldsetDisplay extends SimpleFieldsetDisplay {
         $oPage->requireCSSResource('resources/css/kt-treewidget.css');
         
         // FIXME this currently doesn't work, since we use NBM's half-baked Ajax on add/bulk ;)
-        $oPage->requireJSResource('presentation/lookAndFeel/knowledgeTree/js/taillog.js');
-        $oPage->requireJSResource('presentation/lookAndFeel/knowledgeTree/js/conditional_usage.js');
+        $oPage->requireJSResource('resources/js/taillog.js');
+        $oPage->requireJSResource('resources/js/conditional_usage.js');
         
         $aFields = array();        
         $fields =& $this->fieldset->getFields();
