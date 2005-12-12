@@ -35,6 +35,7 @@ class DocumentField extends KTEntity {
 	var $iId = -1;
 	var $sName;
 	var $sDataType;
+	var $sDescription;
 	var $bIsGeneric;
 	var $bHasLookup;
     var $iParentFieldset;
@@ -44,6 +45,7 @@ class DocumentField extends KTEntity {
     var $_aFieldToSelect = array(
         'iId' => 'id',
         'sName' => 'name',
+		'sDescription' => 'description',
         'sDataType' => 'data_type',
         'bIsGeneric' => 'is_generic',
         'bHasLookup' => 'has_lookup',
@@ -67,6 +69,8 @@ class DocumentField extends KTEntity {
 	function getID() { return $this->iId; }
 	function getName() { return $this->sName; }
 	function setName($sNewValue) { $this->sName = $sNewValue; }
+	function setDescription($sNewValue) { $this->sDescription = $sNewValue; }
+	function getDescription() { return $this->sDescription; }	
 	function getDataType() { return $this->sDataType; }
     function setDataType($sNewValue) { $this->sDataType = $sNewValue; }
 	function getIsGeneric() { return $this->bIsGeneric; }
@@ -85,6 +89,7 @@ class DocumentField extends KTEntity {
     function _fieldValues () {
         return array(
             'name' => $this->sName,
+			'description' => $this->sDescription,
             'data_type' => $this->sDataType,
             'is_generic' => KTUtil::anyToBool($this->bIsGeneric),
             'has_lookup' => KTUtil::anyToBool($this->bHasLookup),

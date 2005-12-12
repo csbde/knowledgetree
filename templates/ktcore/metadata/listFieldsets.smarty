@@ -17,17 +17,17 @@
 {foreach from=$fieldsets item=oFieldset}
     <tr>
 	  <td>
-	     <a href="?action=delete&fFieldsetId={$oFieldset->getId()}"class="ktAction ktDelete">{i18n}Delete{/i18n}</a>
+	     <a href="?action=delete&fFieldsetId={$oFieldset->getId()}" class="ktAction ktDelete">{i18n}Delete{/i18n}</a>
 	  </td>
       <td>
         <a href="?action=edit&fFieldsetId={$oFieldset->getId()}"> { $oFieldset->getName() }
         </a>
       </td>
       <td>
-{if $oFieldset->getIsGeneric()}
-	{i18n}Yes{/i18n}
+{if ($oFieldset->getIsGeneric())}
+	{i18n}Yes{/i18n} 
 {else}
-	{i18n}No{/i18n}
+	{i18n}No{/i18n} 
 {/if}
       </td>
       <td>

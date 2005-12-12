@@ -25,6 +25,7 @@ class KTDocumentFieldDispatcher extends KTStandardDispatcher {
         // use widgets for the create form.
         $createFields = array();
         $createFields[] = new KTStringWidget('Name', _('A human-readable name, used in add and edit forms.'), 'name', null, $this->oPage, true);
+        $createFields[] = new KTTextWidget('Description', _('A brief description of the information stored in this fieldset.'), 'description', null, $this->oPage, true);
         $createFields[] = new KTCheckboxWidget('Generic', _('A generic fieldset is one that is available for every document by default.  These fieldsets will be available for users to edit and add for every document in the document management system.'), 'generic', false, $this->oPage, false);
         $createFields[] = new KTCheckboxWidget('System',
             _('A system fieldset is one that is never displayed to a user, and is used only by the document management system.'), 'generic', false, $this->oPage, false);
@@ -50,7 +51,7 @@ class KTDocumentFieldDispatcher extends KTStandardDispatcher {
         $editFieldset = array();
         $editFieldset[] = new KTStringWidget('Name', _('A human-readable name, used in add and edit forms.'), 'name',$oFieldset->getName(), $this->oPage, true);
         $editFieldset[] = new KTStringWidget('Namespace',_('Every fieldset needs to have a system name (used internally by the document management system).  For fieldsets which you create, this is automatically created by the system, but for fieldsets created by plugins, this controls how the fieldset works.'), 'namespace', $oFieldset->getNamespace(), $this->oPage, true);
-                
+        $editFieldset[] = new KTTextWidget('Description', _('A brief description of the information stored in this fieldset.'), 'description', $oFieldset->getDescription(), $this->oPage, true);                
         $createFields = array();
         $createFields[] = new KTStringWidget('Name', _('A human-readable name, used in add and edit forms.'), 'name',null, $this->oPage, true);
         
@@ -86,6 +87,7 @@ class KTDocumentFieldDispatcher extends KTStandardDispatcher {
         $oFieldset =& KTFieldset::get($_REQUEST['fFieldsetId']);
         $oFieldset->setName($_REQUEST['name']);
         $oFieldset->setNamespace($_REQUEST['namespace']);
+        $oFieldset->setDescription($_REQUEST['description']);        
         $res = $oFieldset->update();
         if (PEAR::isError($res) || ($res === false)) {
             $this->errorRedirectTo('edit', _('Could not save fieldset changes'), 'fFieldsetId=' . $oFieldset->getId());
@@ -199,6 +201,7 @@ class KTDocumentFieldDispatcher extends KTStandardDispatcher {
         $oField =& DocumentField::get($_REQUEST['fFieldId']);
 
         $oField->setName($_REQUEST['name']);
+        $oField->setDescription($_REQUEST['description']);
         $res = $oField->update();
         if (PEAR::isError($res) || ($res === false)) {
             $this->errorRedirectTo('editField', _('Could not save field changes'), 'fFieldsetId=' . $oFieldset->getId() . '&fFieldId=' . $oField->getId());

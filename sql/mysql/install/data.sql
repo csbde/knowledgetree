@@ -88,7 +88,7 @@ INSERT INTO `data_types` VALUES (5, 'FLOAT');
 -- Dumping data for table `document_fields`
 -- 
 
-INSERT INTO `document_fields` VALUES (1, 'Category', 'STRING', 1, 0, 0, 1, 0);
+INSERT INTO `document_fields` VALUES (1, 'Category', 'The category to which the document belongs.', 'STRING', 1, 0, 0, 1, 0);
 
 -- 
 -- Dumping data for table `document_fields_link`
@@ -203,7 +203,7 @@ INSERT INTO `document_types_lookup` VALUES (1, 'Default');
 -- Dumping data for table `fieldsets`
 -- 
 
-INSERT INTO `fieldsets` VALUES (1, 'Category', 'local.category', 0, 0, 1, 1, 0, 1, 0);
+INSERT INTO `fieldsets` VALUES (1, 'Category', 'The category to which the document belongs.', 'local.category', 0, 0, 1, 1, 0, 1, 0);
 
 -- 
 -- Dumping data for table `folder_doctypes_link`
