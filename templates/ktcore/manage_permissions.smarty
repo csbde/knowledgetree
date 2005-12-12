@@ -2,7 +2,7 @@
 
 <p class="descriptiveText"><strong>FIXME</strong> add a useful explanation about permissions.</p>
 
-<form>
+<form method="POST" action="{$smarty.server.PHP_SELF}">
 <fieldset>
 <legend>{i18n}Create a new permission{/i18n}</legend>
 <input type="hidden" name="action" value="newPermission">

@@ -4,7 +4,7 @@
 
 {if ($for_edit === true)}
 
-<form action="{$smarty.server.PHP_SELF}" method="GET">
+<form action="{$smarty.server.PHP_SELF}" method="POST">
 <fieldset>
 <legend>{i18n}Change organisation details{/i18n}</legend>
 

@@ -40,7 +40,7 @@
 <h2>{i18n}Edit Lookup Tree{/i18n}: {$field->getName()}</h2>
 
 
-<form>
+<form action="{$smarty.server.PHP_SELF}" method="POST">
 <fieldset>
   <legend>{i18n}Add New Subcategory{/i18n}</legend>
   
@@ -63,7 +63,7 @@
 <p>{i18n}No free keywords.  Use the "unlink" action on a keyword to 
 make it available.{/i18n}</p>
 {else}
-<form>
+<form action="{$smarty.server.PHP_SELF}" method="POST">
 <fieldset>
   <legend>{i18n}Link free keywords.{/i18n}</legend>
   

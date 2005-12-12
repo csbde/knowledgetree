@@ -69,7 +69,7 @@ field can depend on the user's selections for the others.{/i18n}
 
 {if $oFieldset->getIsConditional() }
 
-<form action="{$smarty.server.PHP_SELF}" method="GET">
+<form action="{$smarty.server.PHP_SELF}" method="POST">
 <input type="hidden" name="fFieldsetId" value="{$oFieldset->getId()}" />
 <input type="hidden" name="action" value="manageConditional" />
 <input type="submit" name="submit" value="{i18n}Manage conditional{/i18n}" />

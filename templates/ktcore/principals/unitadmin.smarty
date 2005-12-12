@@ -4,7 +4,7 @@
 
 {if ($for_edit === false)}
 
-<form action="{$smarty.server.PHP_SELF}" method="GET">
+<form action="{$smarty.server.PHP_SELF}" method="POST">
 <fieldset>
 <legend>{i18n}Add a unit{/i18n}</legend>
 
@@ -22,7 +22,7 @@
 
 {else}
 
-<form action="{$smarty.server.PHP_SELF}" method="GET">
+<form action="{$smarty.server.PHP_SELF}" method="POST">
 <fieldset>
 <legend>{i18n}Change a unit's details{/i18n}</legend>
 

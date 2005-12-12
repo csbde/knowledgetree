@@ -36,7 +36,7 @@ addLoadEvent(updateActiveFields);
 {$context->oPage->requireJSStandalone($sJS)}
 
 <h2>{i18n}Edit Complex Conditional Metadata{/i18n}</h2>
-<form>
+<form method="POST" action="{$smarty.server.PHP_SELF}">
 <input type="hidden" name="fieldset_id" id="global-fieldset-id" value="{$fieldset_id}" />
 
 <table>

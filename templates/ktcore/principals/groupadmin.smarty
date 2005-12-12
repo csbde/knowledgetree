@@ -6,7 +6,7 @@
 <p><a href="?action=addGroup" class="ktAction ktAddGroup" style="float: left; padding-right: 0.5em;">Add Group</a><a href="?action=addGroup">Add a new group</a>.</p>
 
 <!-- we roll both in here. -->
-<form action="{$smarty.server.PHP_SELF}" method="GET">
+<form action="{$smarty.server.PHP_SELF}" method="POST">
 <fieldset>
 <legend>{i18n}Search for groups{/i18n}</legend>
 <p class="descriptiveText">{i18n}Since there may be many groups in the

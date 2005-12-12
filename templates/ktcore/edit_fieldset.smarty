@@ -1,6 +1,6 @@
 <h2>{i18n}Edit Fieldset{/i18n}</h2>
 
-<form>
+<form action="{$smarty.server.PHP_SELF}" method="POST">
 <fieldset>
 <legend>{i18n}Current Fields in Set{/i18n}</legend>
 <p>{i18n}Fields which are currently not included in any set can be added to this set.{/i18n}</p>
@@ -23,7 +23,7 @@
 <fieldset>
 <legend>{i18n}Add Field to set{/i18n}</legend>
 <p>{i18n}Fields which are currently not included in any set can be added to this set.{/i18n}</p>
-<form>
+<form action="{$smarty.server.PHP_SELF}" method="POST">
 <input type="hidden" name="id" value="{$setId}" />
 <input type="hidden" name="action" value="addToFieldset">
 
@@ -47,7 +47,7 @@
 <fieldset>
 <legend>{i18n}Make this fieldset conditional{/i18n}</legend>
 
-<form>
+<form action="{$smarty.server.PHP_SELF}" method="POST">
 <input type="hidden" name="id" value="{$setId}" />
 <input type="hidden" name="action" value="makeConditionalSet">
 

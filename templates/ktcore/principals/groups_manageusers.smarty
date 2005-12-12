@@ -7,7 +7,7 @@
 
 <p class="descriptiveText"><strong>FIXME</strong> help text for group-editing.  
 
-<form action="{$smarty.server.PHP_SELF}" method="GET" id="usergroupform">
+<form action="{$smarty.server.PHP_SELF}" method="POST" id="usergroupform">
    <input type="hidden" name="action" value="updateUserMembers" />
    <input type="hidden" name="group_id" value="{$edit_group->getId()}" />
    <!-- erk. FIXME clean up and remove OptionTransfer.js. -->
