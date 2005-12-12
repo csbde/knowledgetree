@@ -20,14 +20,6 @@ class KTLDAPAuthenticationProvider extends KTAuthenticationProvider {
         return parent::KTAuthenticationProvider();
     }
 
-    function saveConfig(&$oSource, $aRequest) {
-        return true;
-    }
-
-    function configFields($oSource) {
-        return array();
-    }
-
     function showSource($oSource) {
         $aConfig = unserialize($oSource->getConfig());
         if (empty($aConfig)) {
