@@ -1,0 +1,9 @@
+<ul>
+{foreach item=sModeName key=sModeKey from=$modes}
+   <li>{if ($sModeKey == $current_action)}
+      <strong>{$sModeName.name}</strong>
+   {else}
+      <a href="{$smarty.server.PHP_SELF}{if ($sModeName.target != null)}?action={$sModeName.target}{/if}">{$sModeName.name}</a>
+   {/if}
+{/foreach}
+</ul>

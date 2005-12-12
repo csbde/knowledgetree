@@ -1,0 +1,11 @@
+<h2>Select a document type</h2>
+
+<p class="descriptiveText">{i18n}In some circumstances it is useful to view all
+the different documents of a given <strong>document type</strong>. Select a type 
+to view all documents of that type.{/i18n}</p>
+
+<ul>
+{foreach item=oType from=$document_types}
+  <li><a href="{$smarty.server.PHP_SELF}?action=main&fType={$oType->getId()}&fBrowseMode=document_type">{$oType->getName()}</a></li>
+{/foreach}
+</ul>

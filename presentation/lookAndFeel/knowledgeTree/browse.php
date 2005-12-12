@@ -35,6 +35,7 @@ require_once(KT_LIB_DIR . "/browse/PartialQuery.inc.php");
 require_once(KT_LIB_DIR . "/browse/browseutil.inc.php");
 
 require_once(KT_LIB_DIR . "/foldermanagement/Folder.inc");
+require_once(KT_LIB_DIR . "/documentmanagement/DocumentType.inc");
 
 require_once(KT_LIB_DIR . "/widgets/portlet.inc.php");
 require_once(KT_LIB_DIR . '/actions/folderaction.inc.php');
@@ -46,8 +47,10 @@ $sectionName = "browse";
 class BrowseDispatcher extends KTStandardDispatcher {
 
     
-	var $sSection = "browse";
-	var $browseType;
+    var $sSection = "browse";
+    var $browse_mode = null;
+    var $query = null;
+    var $resultURL;
 
     function BrowseDispatcher() {
         $this->aBreadcrumbs = array(
@@ -55,81 +58,148 @@ class BrowseDispatcher extends KTStandardDispatcher {
         );
         return parent::KTStandardDispatcher();
     }
-	
+    
     function check() {
-        // which folder.
-        $in_folder_id = KTUtil::arrayGet($_REQUEST, "fFolderId", 1);
-        $folder_id = (int) $in_folder_id; // conveniently, will be 0 if not possible.
-        if ($folder_id == 0) {
-            $folder_id = 1;
+        $this->browse_mode = KTUtil::arrayGet($_REQUEST, 'fBrowseMode', "folder"); 
+        $action = KTUtil::arrayGet($_REQUEST, $this->event_var, 'main');
+        
+        // catch the alternative actions.
+        if ($action != 'main') {
+            return true;
+        } 
+        
+        // if we're going to main ...
+        if ($this->browse_mode == 'folder') {
+            // which folder.
+            $in_folder_id = KTUtil::arrayGet($_REQUEST, "fFolderId", 1);
+            $folder_id = (int) $in_folder_id; // conveniently, will be 0 if not possible.
+            if ($folder_id == 0) {
+                $folder_id = 1;
+            }
+
+            // here we need the folder object to do the breadcrumbs.
+            $oFolder =& Folder::get($folder_id);
+            if (PEAR::isError($oFolder)) {
+                $this->oPage->addError(_("invalid folder"));
+                $folder_id = 1;
+                $oFolder =& Folder::get($folder_id);
+            }
+            
+            // we now have a folder, and need to create the query.
+            $this->oQuery =  new BrowseQuery($oFolder->getId());
+            
+            $this->aBreadcrumbs = array_merge($this->aBreadcrumbs,
+                KTBrowseUtil::breadcrumbsForFolder($oFolder));
+
+            $portlet = new KTActionPortlet(_("Folder Actions"));
+            $aActions = KTFolderActionUtil::getFolderActionsForFolder($oFolder, $this->oUser);        
+            $portlet->setActions($aActions,null);
+            $this->oPage->addPortlet($portlet);
+            $this->resultURL = "?fFolderId=" . $oFolder->getId();        
+            
+        } else if ($this->browse_mode == 'category') {
+            return false;
+        } else if ($this->browse_mode == 'document_type') {
+            // FIXME implement document_type browsing.
+            $doctype = KTUtil::arrayGet($_REQUEST, 'fType',null);
+            $oDocType = DocumentType::get($doctype);
+            if (PEAR::isError($oDocType) || ($oDocType == false)) {
+                $this->errorRedirectToMain('No Document Type selected.');
+                exit(0);
+            }
+            
+            $this->oQuery =  new TypeBrowseQuery($oDocType);
+            
+            // FIXME probably want to redirect to self + action=selectType
+            $this->aBreadcrumbs[] = array('name' => _('Document Types')); 
+            
+            $this->resultURL = "?fType=" . $doctype . "&fBrowseMode=document_type";        
+            
+            
+            
+        } else {
+            // FIXME what should we do if we can't initiate the browse?  we "pretend" to have no perms.
+            return false;
         }
 
-        // here we need the folder object to do the breadcrumbs.
-        $this->oFolder =& Folder::get($folder_id);
-        if (PEAR::isError($this->oFolder)) {
-           $this->oPage->addError(_("invalid folder"));
-           $folder_id = 1;
-           $this->oFolder =& Folder::get($folder_id);
-        }
         return true;
     }
 
     function do_main() {
-		$collection = new DocumentCollection;
-		$this->browseType = "Folder"; 
-		
-		$collection->addColumn(new SelectionColumn("Browse Selection","selection"));
-		$collection->addColumn(new TitleColumn("Test 1 (title)","title"));
-		$collection->addColumn(new DateColumn(_("Created"),"created", "getCreatedDateTime"));
-		$collection->addColumn(new DateColumn(_("Last Modified"),"modified", "getLastModifiedDate"));
-		$collection->addColumn(new UserColumn(_('Creator'),'creator_id','getCreatorID'));
-		
-        $this->aBreadcrumbs = array_merge($this->aBreadcrumbs,
-                KTBrowseUtil::breadcrumbsForFolder($this->oFolder));
-		// setup the folderside add actions
-		// FIXME do we want to use folder actions?
-		$portlet = new KTActionPortlet(_("Folder Actions"));
-		
-		
-		// FIXME make a FolderActionUtil ... is it necessary?
-		
-		$aActions = KTFolderActionUtil::getFolderActionsForFolder($this->oFolder, $this->oUser);
-		
-		$portlet->setActions($aActions,null);
-		
-		$this->oPage->addPortlet($portlet);
-		
-		$batchPage = (int) KTUtil::arrayGet($_REQUEST, "page", 0);
-		$batchSize = 20;
-		
-		$resultURL = "?fFolderId=" . $this->oFolder->getId();
-		$collection->setBatching($resultURL, $batchPage, $batchSize); 
-		
-		
-		// ordering. (direction and column)
-		$displayOrder = KTUtil::arrayGet($_REQUEST, 'sort_order', "asc");		
-		if ($displayOrder !== "asc") { $displayOrder = "desc"; }
-		$displayControl = KTUtil::arrayGet($_REQUEST, 'sort_on', "title");		
-		
-		
-		$collection->setSorting($displayControl, $displayOrder);
-		
-		// add in the query object.
-		$qObj = new BrowseQuery($this->oFolder->getId());
-		$collection->setQueryObject($qObj);
-		
-		// breadcrumbs
-		// FIXME handle breadcrumbs
-		$collection->getResults();
-		
-		$oTemplating = new KTTemplating;
-		$oTemplate = $oTemplating->loadTemplate("kt3/browse");
-		$aTemplateData = array(
+        $collection = new DocumentCollection;
+        
+        
+        $collection->addColumn(new SelectionColumn("Browse Selection","selection"));
+        $collection->addColumn(new TitleColumn("Test 1 (title)","title"));
+        $collection->addColumn(new DateColumn(_("Created"),"created", "getCreatedDateTime"));
+        $collection->addColumn(new DateColumn(_("Last Modified"),"modified", "getLastModifiedDate"));
+        $collection->addColumn(new UserColumn(_('Creator'),'creator_id','getCreatorID'));
+        
+        
+        // setup the folderside add actions
+        // FIXME do we want to use folder actions?
+        
+        $batchPage = (int) KTUtil::arrayGet($_REQUEST, "page", 0);
+        $batchSize = 20;
+        
+        
+        $collection->setBatching($resultURL, $batchPage, $batchSize); 
+        
+        
+        // ordering. (direction and column)
+        $displayOrder = KTUtil::arrayGet($_REQUEST, 'sort_order', "asc");		
+        if ($displayOrder !== "asc") { $displayOrder = "desc"; }
+        $displayControl = KTUtil::arrayGet($_REQUEST, 'sort_on', "title");		
+        
+        
+        $collection->setSorting($displayControl, $displayOrder);
+        
+        // add in the query object.
+        $qObj = $this->oQuery;
+        $collection->setQueryObject($qObj);
+        
+        // breadcrumbs
+        // FIXME handle breadcrumbs
+        $collection->getResults();
+        
+        $oTemplating = new KTTemplating;
+        $oTemplate = $oTemplating->loadTemplate("kt3/browse");
+        $aTemplateData = array(
               "context" => $this,
-			  "collection" => $collection,
-		);
-		return $oTemplate->render($aTemplateData);
-	}   
+              "collection" => $collection,
+              'browse_mode' => $this->browse_mode,
+        );
+        return $oTemplate->render($aTemplateData);
+    }   
+    
+    function do_selectCategory() {
+        $this->errorRedirectToMain('category browsing is not yet implemented.');
+            
+        $oTemplating = new KTTemplating;
+        $oTemplate = $oTemplating->loadTemplate("kt3/browse_category");
+        $aTemplateData = array(
+              "context" => $this,
+        );
+        return $oTemplate->render($aTemplateData);
+    }
+    
+    function do_selectType() {
+        $aTypes = DocumentType::getList();
+        // FIXME what is the error message?
+        
+        if (empty($aTypes)) {
+            $this->errorRedirectToMain('No document types available.');
+            exit(0);
+        } 
+        
+        $oTemplating = new KTTemplating;
+        $oTemplate = $oTemplating->loadTemplate("kt3/browse_types");
+        $aTemplateData = array(
+              "context" => $this,
+              "document_types" => $aTypes,
+        );
+        return $oTemplate->render($aTemplateData);
+    }
 }
 
 $oDispatcher = new BrowseDispatcher();

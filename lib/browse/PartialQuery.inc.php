@@ -253,6 +253,30 @@ class SimpleSearchQuery extends PartialQuery {
     }
 }
 
+class TypeBrowseQuery extends SimpleSearchQuery {
+    var $iDocType;
+    
+    function TypeBrowseQuery($oDocType) {
+        $this->iDocType = $oDocType->getId();
+    }
+
+    function getQuery($aOptions = null) {
+        $aSubgroup = array(
+            'values' => array(
+                array('type' => '-5', 'data' => array('bmd_5' => $this->iDocType)),
+                array('sql' => array('D.status_id = 1')),
+            ),
+            'join' => 'AND',
+        );
+        $aCriteriaSet = array(
+            'subgroup' => array($aSubgroup),
+            'join' => 'AND',
+        );
+        $oUser = User::get($_SESSION['userID']);
+        return KTSearchUtil::criteriaToQuery($aCriteriaSet, $oUser, 'ktcore.permissions.read', $aOptions);
+    }
+}
+
 class BooleanSearchQuery extends PartialQuery {  
     // FIXME cache permission lookups, etc.
     var $datavars;
