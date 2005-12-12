@@ -399,7 +399,7 @@ class SubscriptionEvent {
     function MoveDocument($oMovedDocument, $oToFolder, $oFromFolder)  { 
         $content = new SubscriptionContent(); // needed for i18n	
 	    // OK:  two actions:  document registrants, folder registrants.
-        $aUsers = $this->_getSubscribers($oModifiedDocument->getId(), $this->subscriptionTypes["Document"]);
+        $aUsers = $this->_getSubscribers($oMovedDocument->getId(), $this->subscriptionTypes["Document"]);
 		$aUsers = $this->_pruneAlertedUsers($aUsers); // setup the alerted users.  _might_ be a singleton.
 		foreach ($aUsers as $oSubscriber) {
 		
@@ -407,7 +407,7 @@ class SubscriptionEvent {
 			$aNotificationOptions = array();
 			$aNotificationOptions['target_user'] = $oSubscriber->getID();
 		    $aNotificationOptions['actor_id'] = KTUtil::arrayGet($_SESSION,"userID", null); // _won't_ be null.
-		    $aNotificationOptions['target_name'] = $oModifiedDocument->getName();
+		    $aNotificationOptions['target_name'] = $oMovedDocument->getName();
 		    $aNotificationOptions['location_name'] = $oToFolder->getName();
 		    $aNotificationOptions['object_id'] = $oToFolder->getId();  // parent folder_id, in this case.
 		    $aNotificationOptions['event_type'] = "MovedDocument";		
@@ -432,7 +432,7 @@ class SubscriptionEvent {
 			$aNotificationOptions = array();
 			$aNotificationOptions['target_user'] = $oSubscriber->getID();
 		    $aNotificationOptions['actor_id'] = KTUtil::arrayGet($_SESSION,"userID", null); // _won't_ be null.
-		    $aNotificationOptions['target_name'] = $oModifiedDocument->getName();
+		    $aNotificationOptions['target_name'] = $oMovedDocument->getName();
 		    $aNotificationOptions['location_name'] = $oToFolder->getName();
 		    $aNotificationOptions['object_id'] = $oToFolder->getId();  // parent folder_id, in this case.
 		    $aNotificationOptions['event_type'] = "MovedDocument";		
@@ -456,7 +456,7 @@ class SubscriptionEvent {
 			$aNotificationOptions = array();
 			$aNotificationOptions['target_user'] = $oSubscriber->getID();
 		    $aNotificationOptions['actor_id'] = KTUtil::arrayGet($_SESSION,"userID", null); // _won't_ be null.
-		    $aNotificationOptions['target_name'] = $oModifiedDocument->getName();
+		    $aNotificationOptions['target_name'] = $oMovedDocument->getName();
 		    $aNotificationOptions['location_name'] = $oToFolder->getName();
 		    $aNotificationOptions['object_id'] = $oToFolder->getId();  // parent folder_id, in this case.
 		    $aNotificationOptions['event_type'] = "MovedDocument";		
