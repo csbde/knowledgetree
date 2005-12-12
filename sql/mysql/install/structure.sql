@@ -118,6 +118,22 @@ CREATE TABLE `data_types` (
 -- --------------------------------------------------------
 
 -- 
+-- Table structure for table `dashlet_disables`
+-- 
+
+CREATE TABLE `dashlet_disables` (
+  `id` int(11) NOT NULL default '0',
+  `user_id` int(11) NOT NULL default '',
+  `dashlet_namespace` varchar(255) NOT NULL default '',
+  UNIQUE KEY `id` (`id`),
+  INDEX (`user_id`),
+  INDEX (`dashlet_namespace`)
+) ENGINE=InnoDB ;
+
+-- --------------------------------------------------------
+
+
+-- 
 -- Table structure for table `dependant_document_instance`
 -- 
 
@@ -2080,6 +2096,18 @@ CREATE TABLE `zseq_workflow_transitions` (
 -- 
 
 CREATE TABLE `zseq_workflows` (
+  `id` int(10) unsigned NOT NULL auto_increment,
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM ;
+
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `zseq_dashlet_disables`
+-- 
+
+CREATE TABLE `zseq_dashlet_disables` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM ;
