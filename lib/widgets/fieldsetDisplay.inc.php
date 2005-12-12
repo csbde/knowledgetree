@@ -381,7 +381,7 @@ class SimpleFieldsetDisplay extends KTFieldsetDisplay {
             $aFields[] = getWidgetForMetadataField($oField, $val, $main, $errors); // FIXME handle errors
         }
         $fieldset_name = $this->fieldset->getName();
-        $fieldset_description = _($this->fieldset->getDescription());
+        $fieldset_description = $this->fieldset->getDescription();
         $oTemplating = new KTTemplating;        
         $oTemplate = $oTemplating->loadTemplate("kt3/fieldsets/simple_editable");
         $aTemplateData = array(
