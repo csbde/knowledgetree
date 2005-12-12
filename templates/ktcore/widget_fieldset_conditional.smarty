@@ -121,7 +121,7 @@ function triggerUpdate(formname) {
 {$context->oPage->requireJSStandalone($sJS)}
 
 <!-- do we need to have more than one set of these on a page? -->
-<form >
+<form method="POST" action="{$smarty.server.PHP_SELF}">
 <input type="hidden" name="action" value="submitConditionalSet" />
 <input type="hidden" name="fieldset_id" class="resolved_conditional" value="{$fieldset_id}" />
 <!-- add items to handle save here. -->

@@ -61,7 +61,7 @@ addLoadEvent(partial(editSimpleField, {$iMasterFieldId}));
 
 <h2>{i18n}Editing Fieldset Rules (Simple){/i18n}</h2>
 
-<form>
+<form method="POST" action="{$smarty.server.PHP_SELF}">
 <input type="hidden" name="fieldset_id" id="global-fieldset-id" value="{$fieldset_id}" />
 
 <table id="simple_conditional_edit">

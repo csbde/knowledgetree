@@ -35,7 +35,7 @@
 
 <h2>{i18n}Create a new Fieldset{/i18n}</h2>
 
-<form>
+<form action="{$smarty.server.PHP_SELF}" method="POST">
 <input type="hidden" name="action" value="newFieldset">
 <table>
 <tr>

@@ -9,7 +9,7 @@
 <strong>FIXME</strong> there are potential unexpected
 side-effects to this when used by unitAdmins.</p>
 
-<form action="{$smarty.server.PHP_SELF}" method="GET" id="usergroupform">
+<form action="{$smarty.server.PHP_SELF}" method="POST" id="usergroupform">
    <input type="hidden" name="action" value="updateGroups" />
    <input type="hidden" name="user_id" value="{$edit_user->getId()}" />
    <!-- erk. FIXME clean up and remove OptionTransfer.js. -->

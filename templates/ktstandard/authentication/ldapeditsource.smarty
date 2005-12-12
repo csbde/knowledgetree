@@ -1,4 +1,4 @@
-<form action="{$smarty.server.PHP_SELF}">
+<form action="{$smarty.server.PHP_SELF}" method="POST">
 <input type="hidden" name="action" value="performEditSourceProvider" />
 <input type="hidden" name="source_id" value="{$source->getId()}" />
 {foreach from=$fields item=oWidget}

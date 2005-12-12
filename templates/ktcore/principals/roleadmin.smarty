@@ -7,7 +7,7 @@
 
 {if ($for_edit === false)}
 
-<form action="{$smarty.server.PHP_SELF}" method="GET">
+<form action="{$smarty.server.PHP_SELF}" method="POST">
 <fieldset>
    <legend>{i18n}Add a Role{/i18n}</legend>
    
@@ -25,7 +25,7 @@
 
 {else}
 
-<form action="{$smarty.server.PHP_SELF}" method="GET">
+<form action="{$smarty.server.PHP_SELF}" method="POST">
 <fieldset>
    <legend>{i18n}Change a role's details{/i18n}</legend>
    

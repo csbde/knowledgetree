@@ -1,5 +1,5 @@
 <h2>{i18n}Manage Lookup Trees{/i18n}</h1>
-<form>
+<form method="POST" action="{$smarty.server.PHP_SELF}">
 <fieldset>
 <legend>{i18n}Fields that have lookup categories.{/i18n}</legend>
 
@@ -14,7 +14,7 @@
 </form>
 
 <h3>{i18n}Convert to Trees.{/i18n}</h3>
-<form>
+<form method="POST" action="{$smarty.server.PHP_SELF}">
 <fieldset>
 <legend>{i18n}Lookup fields without categories.{/i18n}</legend>
 

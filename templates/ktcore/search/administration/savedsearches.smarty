@@ -1,14 +1,14 @@
 <h1>{i18n}Saved searches{/i18n}</h1>
 
 <h2>{i18n}Create a new saved search{/i18n}</h2>
-<form>
+<form action="{$smarty.server.PHP_SELF}" method="POST">
 <input type="hidden" name="action" value="new" />
 <input type="submit" name="submit" value="{i18n}New{/i18n}" />
 </form>
 
 {if $saved_searches}
 <h2>{i18n}Edit existing saved searches{/i18n}</h2>
-<form>
+<form action="{$smarty.server.PHP_SELF}" method="POST">
 <input type="hidden" name="action" value="edit" />
 {entity_radios entities=$saved_searches name="fSavedSearchId" assign=aRadios}
 {foreach from=$aRadios item=sRadio}
