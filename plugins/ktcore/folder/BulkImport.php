@@ -3,6 +3,7 @@
 require_once(KT_LIB_DIR . "/actions/folderaction.inc.php");
 require_once(KT_LIB_DIR . "/import/fsimportstorage.inc.php");
 require_once(KT_LIB_DIR . "/import/bulkimport.inc.php");
+require_once(KT_LIB_DIR . "/documentmanagement/observers.inc.php");
 
 require_once(KT_LIB_DIR . "/validation/dispatchervalidation.inc.php");
 
@@ -66,6 +67,11 @@ class KTBulkImportFolderAction extends KTFolderAction {
             'metadata' => $aFields,
         );
 
+        $po =& new JavascriptObserver(&$this);
+        $po->start();
+        $oUploadChannel =& KTUploadChannel::getSingleton();
+        $oUploadChannel->addObserver($po);
+
         $fs =& new KTFSImportStorage($sPath);
         $bm =& new KTBulkImportManager($this->oFolder, $fs, $this->oUser, $aOptions);
         DBUtil::startTransaction();
@@ -77,7 +83,7 @@ class KTBulkImportFolderAction extends KTFolderAction {
             DBUtil::commit();
         }
 
-        controllerRedirect("browse", 'fFolderId=' . $this->oFolder->getID());
+        $po->redirectToFolder($this->oFolder->getId());
         exit(0);
     }
 }
