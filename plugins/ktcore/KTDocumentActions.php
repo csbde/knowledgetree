@@ -329,7 +329,12 @@ class KTDocumentMoveColumn extends TitleColumn {
     }
     function buildFolderLink($aDataRow) {
         $baseurl = KTUtil::arrayGet($this->aOptions, "folderurl", "");
-        return sprintf('%s?fDocumentId=%d&fFolderId=%d', $baseurl, $this->oDocument->getId(), $aDataRow["folder"]->getId());
+        $kt_path_info = KTUtil::arrayGet($_REQUEST, 'kt_path_info');
+        if (empty($kt_path_info)) {
+            return sprintf('%s?fDocumentId=%d&fFolderId=%d', $baseurl, $this->oDocument->getId(), $aDataRow["folder"]->getId());
+        } else {
+            return sprintf('%s?kt_path_info=%s&fDocumentId=%d&fFolderId=%d', $baseurl, $kt_path_info, $this->oDocument->getId(), $aDataRow["folder"]->getId());
+        }
     }
 }
 
