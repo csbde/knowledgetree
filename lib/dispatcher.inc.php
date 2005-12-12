@@ -5,6 +5,12 @@ require_once(KT_LIB_DIR . '/actions/portletregistry.inc.php');
 require_once(KT_LIB_DIR . "/widgets/portlet.inc.php");
 require_once(KT_LIB_DIR . '/templating/kt3template.inc.php');
 
+class KTDispatchStandardRedirector {
+    function redirect($url) {
+        redirect($url);
+    }
+}
+
 class KTDispatcher {
     var $event_var = "action";
     var $bAutomaticTransaction = false;
@@ -13,6 +19,7 @@ class KTDispatcher {
 
     function KTDispatcher() {
         $this->oValidator =& new KTDispatcherValidation($this);
+        $this->oRedirector =& new KTDispatchStandardRedirector($this);
     }
 
     function dispatch () {
@@ -89,7 +96,8 @@ class KTDispatcher {
                 $sQuery = '?action=' . $event;
             }
         }
-        exit(redirect($_SERVER["PHP_SELF"] . $sQuery));
+        $this->oRedirector->redirect($_SERVER["PHP_SELF"] . $sQuery);
+        exit(0);
     }
 
     function errorRedirectToMain($error_message, $sQuery = "") {
