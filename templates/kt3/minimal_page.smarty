@@ -1,0 +1,105 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+    <title>{$page->title} | {$page->systemName}</title>
+    
+    <!-- CSS Files. -->
+    {foreach item=sResourceURL from=$page->getCSSResources()}
+       <link rel="stylesheet" type="text/css" href="{$rootUrl}/{$sResourceURL}" />
+    {/foreach}
+    
+    <!-- Standalone CSS. -->
+    {foreach item=sCSS from=$page->getCSSStandalone()}
+       <style>
+{$sCSS}
+       </style>
+    {/foreach}
+
+    <!-- Javascript Files. -->
+    {foreach item=sResourceURL from=$page->getJSResources()}
+       <script type="text/javascript" src="{$rootUrl}/{$sResourceURL}"> </script>
+    {/foreach}
+
+    <!-- Standalone Javascript. -->
+    {foreach item=sJavascript from=$page->getJSStandalone()}
+       <script type="text/javascript">
+{$sJavascript}
+       </script>
+    {/foreach}
+</head>
+<body class="noportlets">
+
+<input type="hidden" name="kt-core-baseurl" id="kt-core-baseurl" value="{$rootUrl}" />
+
+<div id="logobar">
+    <a href="{$rootUrl}/"><img src="{$config->get("ui/companyLogo")}" height="50px" width="{$config->get("ui/companyLogoWidth")}" alt="{$config->get("ui/companyLogoTitle")}" title="{$config->get("companyLogoTitle")}" class="primary" /></a>
+    <a href="{$page->systemURL}"><img src="{$rootUrl}/resources/graphics/ktlogo-topbar-right.png" class="secondary" title="{$page->systemName}"/></a>
+    <div class="floatClear"></div>
+</div>
+
+<div id="navbar">
+    <ul>
+      <!-- area menu -->
+      {foreach item=aMenuItem from=$page->menu}
+        {if ($aMenuItem.active == 1)}
+        <li class="active"><a href="{$aMenuItem.url}">{$aMenuItem.label}</a></li>
+        {else}
+        <li><a href="{$aMenuItem.url}">{$aMenuItem.label}</a></li>
+        {/if}
+      {/foreach}
+
+      <!-- user menu -->
+      <li class="pref">{if ($page->user)}
+        Logged in as <strong>{$page->user->getName()}</strong>
+        {else}
+        FIXME:  page does not set user.
+        {/if}
+        &middot;
+        
+
+        {foreach item=aMenuItem from=$page->userMenu name=prefmenu}
+         {if ($aMenuItem.active == 1)}
+         <a href="{$aMenuItem.url}">{$aMenuItem.label}</a>
+         {else}
+         <a href="{$aMenuItem.url}">{$aMenuItem.label}</a>
+         {/if}
+         {if !$smarty.foreach.prefmenu.last}
+         &middot;
+         {/if}
+        {/foreach}
+      </li>
+    </ul>
+</div>
+
+<div id="breadcrumbs">
+<span class="additional">{i18n}You are here{/i18n}: </span>
+{if ($page->breadcrumbSection !== false)}
+   {if ($page->breadcrumbSection.url) }
+        <a href="{$page->breadcrumbSection.url}" class="primary">{$page->breadcrumbSection.label}</a> 
+   {else}
+        <span  class="primary">{$page->breadcrumbSection.label}</span> 
+   {/if}
+{/if}
+{if (($page->breadcrumbSection !== false) && ($page->breadcrumbs !== false))}
+&raquo; 
+{/if}
+{if ($page->breadcrumbs !== false)}
+  {foreach item=aCrumb from=$page->breadcrumbs name=bc}
+     {if ($aCrumb.url) }
+        <a href="{$aCrumb.url}">{$aCrumb.label}</a> 
+     {else}
+        <span>{$aCrumb.label}</span> 
+     {/if}
+     {if (!$smarty.foreach.bc.last)}
+        &raquo;
+     {/if}
+  {/foreach}
+{/if}
+{if ($page->breadcrumbDetails !== false)}
+<span class="additional">({$page->breadcrumbDetails})</span> 
+{/if}
+</div>
+
+<div id="kt-wrapper">
+<div id="content">
