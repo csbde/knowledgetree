@@ -143,7 +143,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
         $batchSize = 20;
         
         
-        $collection->setBatching($resultURL, $batchPage, $batchSize); 
+        $collection->setBatching($this->resultURL, $batchPage, $batchSize); 
         
         
         // ordering. (direction and column)
