@@ -43,6 +43,8 @@ class KTPage {
     
     /** $contents is the center of the page.  In KT < 3, this was CentralPayload. */
     var $contents = '';
+
+    var $template = "kt3/standard_page";
     
     /* further initialisation */
     function KTPage() {
@@ -233,7 +235,7 @@ class KTPage {
 		}
 		
         $oTemplating = new KTTemplating;        
-        $oTemplate = $oTemplating->loadTemplate("kt3/standard_page");
+        $oTemplate = $oTemplating->loadTemplate($this->template);
         $aTemplateData = array(
             "page" => $this,
         );
