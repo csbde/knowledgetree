@@ -5,6 +5,7 @@
 require_once(KT_LIB_DIR . '/plugins/pluginregistry.inc.php');
 require_once(KT_LIB_DIR . '/plugins/plugin.inc.php');
 require_once(KT_LIB_DIR . '/dashboard/dashlet.inc.php');
+require_once(KT_LIB_DIR . '/dashboard/DashletDisables.inc.php');
 require_once(KT_LIB_DIR . "/templating/templating.inc.php");
 require_once(KT_LIB_DIR . "/dashboard/Notification.inc.php");
 require_once(KT_LIB_DIR . "/security/Permission.inc");
@@ -25,10 +26,17 @@ $oRegistry->registerPlugin('KTUserAssistance', 'ktcore.userassistance', __FILE__
 $oPlugin =& $oRegistry->getPlugin('ktcore.userassistance');
 
 // ultra simple skeleton for the user tutorial
+// FIXME do we want to store the namespace inside the dashlet?
 class KTUserTutorialDashlet extends KTBaseDashlet {
 	function is_active($oUser) {
-	    // FIXME check if the user has "turned this off" for themselves.
-		return true;
+	    $namespace = 'ktcore.dashlet.usertutorial';
+		$disables = KTDashletDisable::getForUserAndDashlet($oUser->getId(), $namespace);
+		
+		if (!empty($disables)) { 
+		    return false;
+		} else {
+		    return true;
+		}
 	}
 	
     function render() {
@@ -45,9 +53,19 @@ $oPlugin->registerDashlet('KTUserTutorialDashlet', 'ktcore.dashlet.usertutorial'
 // ultra simple skeleton for the admin tutorial
 class KTAdminTutorialDashlet extends KTBaseDashlet {
 	function is_active($oUser) {
-	    // FIXME check if the user has "turned this off" for themselves.
-		return Permission::userIsSystemAdministrator($oUser->getId());
-		return true;
+	 
+	    $namespace = 'ktcore.dashlet.admintutorial';
+
+		if (!Permission::userIsSystemAdministrator($oUser->getId())) {
+		    return false; // quickest disable.
+		}
+		
+		$disables = KTDashletDisable::getForUserAndDashlet($oUser->getId(), $namespace);		
+		if (!empty($disables)) { 
+		    return false;
+		} else {
+		    return true;
+		}
 	}
 	
     function render() {
@@ -78,6 +96,8 @@ class KTUserAssistBasePage extends KTStandardDispatcher {
 		$this->oPage->setShowPortlets(false);
 		return $contents;
 	}
+	
+	// hide the dashlet from the user (e.g. don't show it again) and redirect back to the dashboard.
 }
 
 class KTUserAssistB1WhatIs extends KTUserAssistBasePage { var $pagefile = 'kt3b1-what-is-a-beta'; var $title = 'What is a Beta?'; }

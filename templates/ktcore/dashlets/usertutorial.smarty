@@ -6,4 +6,4 @@ KnowledgeTree&trade; 3?  We've written some quick documentation{/i18n}</p>
 
 <a href="#">Take the crash course.</a> |
 <a href="#">Learn about KnowledgeTree 3.</a> |
-<a href="#">Don't show me this again.</a>
+<a href="?action=disableDashlet&fNamespace=ktcore.dashlet.usertutorial">{i18n}Don't show me this again.{/i18n}</a>

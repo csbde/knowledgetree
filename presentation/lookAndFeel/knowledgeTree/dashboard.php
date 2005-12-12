@@ -37,11 +37,13 @@ require_once(KT_LIB_DIR . "/templating/templating.inc.php");
 require_once(KT_LIB_DIR . "/templating/kt3template.inc.php");
 require_once(KT_LIB_DIR . "/dispatcher.inc.php");
 
+require_once(KT_LIB_DIR . "/dashboard/DashletDisables.inc.php");
+
 $sectionName = "dashboard";
 
 class DashboardDispatcher extends KTStandardDispatcher {
-	
-	var $notifications = array();
+    
+    var $notifications = array();
 
     function DashboardDispatcher() {
         $this->aBreadcrumbs = array(
@@ -50,26 +52,50 @@ class DashboardDispatcher extends KTStandardDispatcher {
         return parent::KTStandardDispatcher();
     }
     function do_main() {
-	    $this->oPage->setShowPortlets(false);
-		// retrieve action items for the user.
-		// FIXME what is the userid?
-		
-		
-		$oDashletRegistry =& KTDashletRegistry::getSingleton();
-		$aDashlets = $oDashletRegistry->getDashlets($this->oUser);
-		
-		$this->sSection = "dashboard";
-		$this->oPage->setBreadcrumbDetails(_("Home"));
-		$this->oPage->title = _("Dashboard");
-	
-		$oTemplating = new KTTemplating;
-		$oTemplate = $oTemplating->loadTemplate("kt3/dashboard");
-		$aTemplateData = array(
+        $this->oPage->setShowPortlets(false);
+        // retrieve action items for the user.
+        // FIXME what is the userid?
+        
+        
+        $oDashletRegistry =& KTDashletRegistry::getSingleton();
+        $aDashlets = $oDashletRegistry->getDashlets($this->oUser);
+        
+        $this->sSection = "dashboard";
+        $this->oPage->setBreadcrumbDetails(_("Home"));
+        $this->oPage->title = _("Dashboard");
+    
+        $oTemplating = new KTTemplating;
+        $oTemplate = $oTemplating->loadTemplate("kt3/dashboard");
+        $aTemplateData = array(
               "context" => $this,
-			  "dashlets" => $aDashlets,
-		);
-		return $oTemplate->render($aTemplateData);
-	}   
+              "dashlets" => $aDashlets,
+        );
+        return $oTemplate->render($aTemplateData);
+    }
+    
+    // disable a dashlet.  
+    // FIXME this very slightly violates the separation of concerns, but its not that flagrant.
+    function do_disableDashlet() {
+        $sNamespace = KTUtil::arrayGet($_REQUEST, 'fNamespace');
+        $iUserId = $this->oUser->getId();
+        
+        if (empty($sNamespace)) {
+            $this->errorRedirectToMain('No dashlet specified.');
+            exit(0);
+        }
+    
+        // do the "delete"
+        
+        $this->startTransaction();
+        $aParams = array('sNamespace' => $sNamespace, 'iUserId' => $iUserId);
+        $oDD = KTDashletDisable::createFromArray($aParams);
+        if (PEAR::isError($oDD)) {
+            $this->errorRedirectToMain('Failed to disable the dashlet.');
+        }
+    
+        $this->commitTransaction();
+        $this->successRedirectToMain('Dashlet disabled.');
+    }
 }
 
 $oDispatcher = new DashboardDispatcher();
