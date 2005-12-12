@@ -176,11 +176,14 @@ class KTDocumentUtil {
         $oDocumentType = KTUtil::arrayGet($aOptions, 'documenttype');
         $sDescription = KTUtil::arrayGet($aOptions, 'description', $sFilename);
 
+        $oUploadChannel =& KTUploadChannel::getSingleton();
+
         if ($oDocumentType) {
             $iDocumentTypeId = KTUtil::getId($oDocumentType);
         } else {
             $iDocumentTypeId = 1;
         }
+        $oUploadChannel->sendMessage(new KTUploadGenericMessage(_("Creating database entry")));
         $oDocument =& Document::createFromArray(array(
             'name' => $sDescription,
             'description' => $sDescription,
@@ -200,6 +203,7 @@ class KTDocumentUtil {
                 return $res;
             }
         } else {
+            $oUploadChannel->sendMessage(new KTUploadGenericMessage(_("Storing contents")));
             $res = KTDocumentUtil::storeContents($oDocument, $oContents, $aOptions);
             if (PEAR::isError($res)) {
                 $oDocument->delete();
@@ -214,6 +218,7 @@ class KTDocumentUtil {
                 return $res;
             }
         } else {
+            $oUploadChannel->sendMessage(new KTUploadGenericMessage(_("Saving metadata")));
             $res = KTDocumentUtil::saveMetadata($oDocument, $aMetadata);
             if (PEAR::isError($res)) {
                 $oDocument->delete();
@@ -377,17 +382,23 @@ class KTDocumentUtil {
         if (KTDocumentUtil::exists($oFolder, $sFilename)) {
             return PEAR::raiseError("File already exists");
         }
+        $oUploadChannel =& KTUploadChannel::getSingleton();
+        $oUploadChannel->sendMessage(new KTUploadNewFile($sFilename));
         $oDocument =& KTDocumentUtil::_add($oFolder, $sFilename, $oUser, $aOptions);
+        $oUploadChannel->sendMessage(new KTUploadGenericMessage(_("Document created")));
         if (PEAR::isError($oDocument)) {
             return $oDocument;
         }
 
+        $oUploadChannel->sendMessage(new KTUploadGenericMessage(_("Scanning file")));
         $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
         $aTriggers = $oKTTriggerRegistry->getTriggers('content', 'scan');
+        $iTrigger = 0;
         foreach ($aTriggers as $aTrigger) {
             $sTrigger = $aTrigger[0];
             $oTrigger = new $sTrigger;
             $oTrigger->setDocument($oDocument);
+            $oUploadChannel->sendMessage(new KTUploadGenericMessage(sprintf(_("    (trigger %s)"), $sTrigger)));
             $ret = $oTrigger->scan();
             if (PEAR::isError($ret)) {
                 $oDocument->delete();
@@ -395,6 +406,7 @@ class KTDocumentUtil {
             }
         }
 
+        $oUploadChannel->sendMessage(new KTUploadGenericMessage(_("Transforming file")));
         $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
         $aTriggers = $oKTTriggerRegistry->getTriggers('content', 'transform');
         foreach ($aTriggers as $aTrigger) {
@@ -404,9 +416,11 @@ class KTDocumentUtil {
             }
             $oTrigger = new $sTrigger;
             $oTrigger->setDocument($oDocument);
+            $oUploadChannel->sendMessage(new KTUploadGenericMessage(sprintf(_("    (trigger %s)"), $sTrigger)));
             $oTrigger->transform();
         }
 
+        $oUploadChannel->sendMessage(new KTUploadGenericMessage(_("Creating transaction")));
         $aOptions = array('user' => $oUser);
         //create the document transaction record
         $oDocumentTransaction = & new DocumentTransaction($oDocument->getID(), "Document created", CREATE, $aOptions);
@@ -416,10 +430,13 @@ class KTDocumentUtil {
             return $res;
         }
 
+        $oUploadChannel->sendMessage(new KTUploadGenericMessage(_("Sending subscriptions")));
         // fire subscription alerts for the checked in document
         $oSubscriptionEvent = new SubscriptionEvent();
         $oFolder = Folder::get($oDocument->getFolderID());
         $oSubscriptionEvent->AddDocument($oDocument, $oFolder);
+
+        $oUploadChannel->sendMessage(new KTUploadGenericMessage(_("All done...")));
 
         return $oDocument;
     }
@@ -510,6 +527,47 @@ class KTMetadataValidationError extends PEAR_Error {
         $this->aFailed = $aFailed;
         $message = _('Validation Failed');
         parent::PEAR_Error($message);
+    }
+}
+
+class KTUploadChannel {
+    var $observers = array();
+
+    function &getSingleton() {
+        if (!KTUtil::arrayGet($GLOBALS, 'KT_UploadChannel')) {
+            $GLOBALS['KT_UploadChannel'] = new KTUploadChannel;
+        }
+        return $GLOBALS['KT_UploadChannel'];
+    }
+
+    function sendMessage(&$msg) {
+        foreach ($this->observers as $oObserver) {
+            $oObserver->receiveMessage($msg);
+        }
+    }
+
+    function addObserver(&$obs) {
+        array_push($this->observers, $obs);
+    }
+}
+
+class KTUploadGenericMessage {
+    function KTUploadGenericMessage($sMessage) {
+        $this->sMessage = $sMessage;
+    }
+
+    function getString() {
+        return $this->sMessage;
+    }
+}
+
+class KTUploadNewFile {
+    function KTUploadNewFile($sFilename) {
+        $this->sFilename = $sFilename;
+    }
+
+    function getString() {
+        return $this->sFilename;
     }
 }
 
