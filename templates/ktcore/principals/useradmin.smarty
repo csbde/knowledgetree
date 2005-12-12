@@ -10,7 +10,7 @@ left; padding-right: 0.5em;">Add User</a><a
 href="?action=addUser">{i18n}Add a new user{/i18n}</a>.</p>
 
 <!-- we roll both in here. -->
-<form action="{$smarty.server.PHP_SELF}" method="GET">
+<form action="{$smarty.server.PHP_SELF}" method="POST">
 <fieldset>
 <legend>Search for users</legend>
 <p class="descriptiveText">{i18n}Since there may be many users in the system, please
