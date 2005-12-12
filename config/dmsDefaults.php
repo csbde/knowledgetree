@@ -214,6 +214,16 @@ class KTInit {
     }
     // }}}
 
+    // {{{ setupPathInfo
+    function setupPathInfo() {
+        $kt_path_info = KTUtil::arrayGet($_REQUEST, 'kt_path_info');
+        if (!empty($kt_path_info)) {
+            $_SERVER["PHP_SELF"] .= "?kt_path_info=" . $kt_path_info;
+            $_SERVER["PATH_INFO"] = $kt_path_info;
+        }
+    }
+    // }}}
+
     // {{{ setupRandomSeed()
     function setupRandomSeed () {
         mt_srand(hexdec(substr(md5(microtime()), -8)) & 0x7fffffff);
@@ -375,6 +385,7 @@ $default->lastDatebaseVersion = '2.0.2';
 
 $KTInit->cleanGlobals();
 $KTInit->cleanMagicQuotes();
+$KTInit->setupPathInfo();
 
 // site map definition
 require_once(KT_DIR . "/config/siteMap.inc");
