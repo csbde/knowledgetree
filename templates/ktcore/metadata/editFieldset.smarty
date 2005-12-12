@@ -33,9 +33,9 @@
 field can depend on the user's selections for the others.{/i18n}
 </p>
 {if $oFieldset->getIsConditional() }
-    {i18n}Yes{/i18n}
+    {i18n}Yes{/i18n} 
 {else}
-    {i18n}No{/i18n}
+    {i18n}No{/i18n} 
 {/if}
 </div>
 

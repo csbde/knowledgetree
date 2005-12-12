@@ -13,6 +13,10 @@
     <td><input type="textbox" name="name" value="{$oField->getName()|escape}"></td>
   </tr>
   <tr>
+    <th>{i18n}Description{/i18n}</th>
+    <td><textarea name="description">{$oField->getDescription()|escape}</textarea></td>
+  </tr>  
+  <tr>
     <th>{i18n}Type{/i18n}</th>
     <td>{$oField->getType()|escape}</td>
   </tr>

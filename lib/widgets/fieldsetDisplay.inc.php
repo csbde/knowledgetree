@@ -31,7 +31,7 @@ require_once(KT_LIB_DIR . "/widgets/fieldWidgets.php");
 function getWidgetForMetadataField($field, $current_value, $page, $errors = null, $vocab = null) {
     // all fields have these elements.
     $fieldLabel = $field->getName();
-    $fieldDescription = '<strong>FIXME</strong> we don\'t handle descriptions for fields, yet.';
+    $fieldDescription = $field->getDescription();
     $fieldValue = $current_value;
     $fieldErrors = $errors; // array of strings
     $fieldName = 'metadata_' . $field->getID();
@@ -381,7 +381,7 @@ class SimpleFieldsetDisplay extends KTFieldsetDisplay {
             $aFields[] = getWidgetForMetadataField($oField, $val, $main, $errors); // FIXME handle errors
         }
         $fieldset_name = $this->fieldset->getName();
-        $fieldset_description = sprintf(_("The information in this section is part of the <strong>%s</strong> of the document."), $fieldset_name);
+        $fieldset_description = _($this->fieldset->getDescription());
         $oTemplating = new KTTemplating;        
         $oTemplate = $oTemplating->loadTemplate("kt3/fieldsets/simple_editable");
         $aTemplateData = array(
@@ -437,7 +437,8 @@ class ConditionalFieldsetDisplay extends SimpleFieldsetDisplay {
         // how?
         
         $fieldset_name = $this->fieldset->getName();
-        $fieldset_description = sprintf(_("The information in this section is part of the <strong>%s</strong> of the document.  Note that the options which are available depends on previous choices within this fieldset."), $fieldset_name);
+		$fieldset_description = _($this->fieldset->getDescription()); // need a better approach.  how do we handle database-resident translations?
+        $fieldset_description .= _("Note that the options which are available depends on previous choices within this fieldset.");
         
         // 
         

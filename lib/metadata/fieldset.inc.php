@@ -14,8 +14,11 @@ class KTFieldset extends KTEntity {
 	var $iId = -1;
 	/** document fieldset name */
 	var $sName;
+	/** document fieldset description. */
+	var $sDescription;
 	/** document fieldset namespace */
 	var $sNamespace;
+	
 	/** document fieldset mandatory flag */
 	var $bMandatory = false;
 	var $iMasterFieldId;
@@ -36,7 +39,8 @@ class KTFieldset extends KTEntity {
 	
 	function getId() { return $this->iId; }
 	function getName() { return $this->sName; }
-	
+	function setDescription($sNewValue) { $this->sDescription = $sNewValue; }
+	function getDescription() { return $this->sDescription; }
 	function setName($sNewValue) { $this->sName = $sNewValue; }
 	function getNamespace() { return $this->sNamespace; }
     function setNamespace($sNewValue) {	$this->sNamespace = $sNewValue; }
@@ -58,6 +62,7 @@ class KTFieldset extends KTEntity {
     var $_aFieldToSelect = array(
         "iId" => "id",
         "sName" => "name",
+		"sDescription" => "description",
         "sNamespace" => "namespace",
         "bMandatory" => "mandatory",
 		"bIsConditional" => "is_conditional",

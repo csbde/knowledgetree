@@ -217,6 +217,7 @@ CREATE TABLE `document_archiving_link` (
 CREATE TABLE `document_fields` (
   `id` int(11) NOT NULL default '0',
   `name` char(255) NOT NULL default '',
+  `description` TEXT NOT NULL default '',
   `data_type` char(100) NOT NULL default '',
   `is_generic` tinyint(1) default NULL,
   `has_lookup` tinyint(1) default NULL,
@@ -533,6 +534,7 @@ CREATE TABLE `field_value_instances` (
 CREATE TABLE `fieldsets` (
   `id` int(11) NOT NULL default '0',
   `name` char(255) NOT NULL default '',
+  `description` TEXT NOT NULL default '',
   `namespace` char(255) NOT NULL default '',
   `mandatory` tinyint(4) NOT NULL default '0',
   `is_conditional` tinyint(1) NOT NULL default '0',
