@@ -33,10 +33,14 @@ class KTEditDocumentDispatcher extends KTStandardDispatcher {
     var $bAutomaticTransaction = true;
     var $oDocument = null;
     var $oFolder = null;
-    var $aBreadcrumbs = array(
-            array('action' => 'browse', 'name' => 'Browse'),
-        );
     var $sSection = "view_details";
+
+    function KTEditDocumentDispatcher() {
+        $this->aBreadcrumbs = array(
+            array('action' => 'browse', 'name' => _('Browse')),
+        );
+        return parent::KTStandardDispatcher();
+    }
     
     // FIXME identify the current location somehow.
     function addPortlets($currentaction = null) {
