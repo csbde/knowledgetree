@@ -31,7 +31,7 @@ class KTMultipartPageObserver {
 
 class JavascriptObserver {
     function JavascriptObserver(&$context) {
-        $this->context = $context;
+        $this->context =& $context;
     }
 
     function start() {
