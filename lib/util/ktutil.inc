@@ -165,6 +165,19 @@ class KTUtil {
     }
     // }}}
 
+    // {{{ pexec
+    /**
+     * Portably execute a command on any of the supported platforms.
+     */
+    function pexec($aCmd) {
+        $sCmd = KTUtil::safeShellString($aCmd);
+        if (OS_WINDOWS) {
+            $sCmd = "start /b " . $sCmd;
+        }
+        return exec($sCmd);
+    }
+    // }}}
+
     // {{{ copyDirectory
     function copyDirectory($sSrc, $sDst, $bMove = false) {
         if (file_exists($sDst)) {
@@ -224,6 +237,36 @@ class KTUtil {
     }
     // }}}
     
+    // {{{ deleteDirectory
+    function deleteDirectory($sPath) {
+        if (OS_UNIX) {
+            if (file_exists('/bin/rm')) {
+                KTUtil::pexec(array('/bin/rm', '-rf', $sPath));
+                return;
+            }
+        }
+        if (OS_WINDOWS) {
+            // Potentially kills off all the files in the path, speeding
+            // things up a bit
+            KTUtil::pexec(array("del", "/q", "/s", $sPath));
+        }
+        $hPath = @opendir($sPath);
+        while (($sFilename = readdir($hPath)) !== false) {
+            if (in_array($sFilename, array('.', '..'))) {
+                continue;
+            }
+            $sFullFilename = sprintf("%s/%s", $sPath, $sFilename);
+            if (is_dir($sFullFilename)) {
+                KTUtil::deleteDirectory($sFullFilename);
+                continue;
+            }
+            unlink($sFullFilename);
+        }
+        closedir($hPath);
+        rmdir($sPath);
+    }
+    // }}}
+
     // {{{ moveFile
     function moveFile ($sSrc, $sDst) {
         // Only 4.3.3 and above allow us to use rename across partitions
