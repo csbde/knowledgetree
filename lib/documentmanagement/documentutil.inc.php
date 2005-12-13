@@ -462,7 +462,7 @@ class KTDocumentUtil {
         $oOutputFile = new KTFSFileLike($sFilename);
         $res = KTFileLikeUtil::copy_contents($oContents, $oOutputFile);
         $sType = KTMime::getMimeTypeFromFile($sFilename);
-        $iMimeTypeId = KTMime::getMimeTypeID($sType, $sFilename);
+        $iMimeTypeId = KTMime::getMimeTypeID($sType, $oDocument->getFileName());
         $oDocument->setMimeTypeId($iMimeTypeId);
         if (!$oStorage->upload($oDocument, $sFilename)) {
             return PEAR::raiseError("Couldn't store contents");
