@@ -6,6 +6,7 @@ require_once(KT_LIB_DIR . "/email/Email.inc");
 require_once(KT_LIB_DIR . "/users/User.inc");
 require_once(KT_LIB_DIR . "/groups/Group.inc");
 require_once(KT_LIB_DIR . "/documentmanagement/DocumentTransaction.inc");
+require_once(KT_LIB_DIR . "/documentmanagement/Document.inc");
 
 /**
  * Sends emails to the selected groups
@@ -122,7 +123,7 @@ function sendEmailDocument($sDestEmailAddress, $sDestUserName, $iDocumentID, $sD
     }
 
     // emailed link transaction
-    $oDocumentTransaction = & new DocumentTransaction($iDocumentID, "Document link emailed to $sDestEmailAddress", EMAIL_ATTACH);
+    $oDocumentTransaction = & new DocumentTransaction($oDocument, "Document link emailed to " . $sDestEmailAddress, 'ktcore.transactions.email_attachment');
     if ($oDocumentTransaction->create()) {
         $default->log->debug("emailBL.php created email link document transaction for document ID=$iDocumentID");
     } else {
@@ -164,7 +165,10 @@ function sendEmailHyperlink($sDestEmailAddress, $sDestUserName, $iDocumentID, $s
 	}
 	  
 	// emailed link transaction
-	$oDocumentTransaction = & new DocumentTransaction($iDocumentID, "Document link emailed to $sDestEmailAddress", EMAIL_LINK);
+	// need a document to do this.
+	$oDocument =& Document::get($iDocumentID);
+	
+	$oDocumentTransaction = & new DocumentTransaction($oDocument, "Document link emailed to " . $sDestEmailAddress, 'ktcore.transactions.email_link');
 	if ($oDocumentTransaction->create()) {
 		$default->log->debug("emailBL.php created email link document transaction for document ID=$iDocumentID");                                    	
 	} else {

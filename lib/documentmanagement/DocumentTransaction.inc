@@ -1,21 +1,5 @@
 <?php
 
-DEFINE("CREATE", 1);
-DEFINE("UPDATE", 2);
-DEFINE("DELETE", 3);
-DEFINE("RENAME", 4);
-DEFINE("MOVE", 5);
-DEFINE("DOWNLOAD", 6);
-DEFINE("CHECKIN", 7);
-DEFINE("CHECKOUT", 8);
-DEFINE("COLLAB_ROLLBACK",9);
-DEFINE("VIEW", 10);
-DEFINE("EXPUNGE", 11);
-DEFINE("FORCE_CHECKIN", 12);
-DEFINE("EMAIL_LINK", 13);
-DEFINE("COLLAB_ACCEPT", 14);
-DEFINE("EMAIL_ATTACH", 15);
-DEFINE("WORKFLOW_TRANSITION", 16);
 /**
  * $Id$
  *
@@ -46,23 +30,15 @@ DEFINE("WORKFLOW_TRANSITION", 16);
 class DocumentTransaction {
 	
 	/** primary key of document transaction */
-	var $iId;
-	/** primary key of document on which transaction occured */
+	var $iId = -1;
 	var $iDocumentID;
-	/** version of document on which transaction occurs */
 	var $sVersion;
-	/** primary key of user who performed transaction */
 	var $iUserID;
-	/** time of transaction */
 	var $dDateTime;
-	/** IP address of computer that user was logged onto */
 	var $sIP;
-	/** path to documet on file system on which transaction was performed */
 	var $sFilename;
-	/** user comment associated with transaction */
 	var $sComment;
-	/** primary key of transaction type */
-	var $iTransactionID;
+	var $sTransactionNS;
 	
 	/**
 	* Constructor
@@ -72,45 +48,33 @@ class DocumentTransaction {
 	* @param 	Primary key of transaction type
 	*	
 	*/
-	function DocumentTransaction($iNewDocumentID, $sNewComment, $iNewTransactionID, $aOptions = null) {
+	function DocumentTransaction($oDocument, $sNewComment, $sTransactionNS, $aOptions = null) {
         if (is_null($aOptions)) {
             $aOptions = array();
         }
 		//object not stored yet, id = -1
 		$this->iId = -1;
-		$this->iDocumentID = $iNewDocumentID;
+		
+		$this->iDocumentID = $oDocument->getID();
 		$this->sComment = $sNewComment;
-		$this->iTransactionID = $iNewTransactionID;
-		$oDocument = & Document::get($iNewDocumentID);
-		if ($oDocument) {
-			$this->sVersion = $oDocument->getMajorVersionNumber() . "." . $oDocument->getMinorVersionNumber();
-			$oFolder = Folder::get($oDocument->iFolderID);
-			$this->sFileName = addslashes($oFolder->sFullPath . "/" . $oFolder->getName() . "/" . $oDocument->getName());			
-		}
+		$this->sTransactionNS = $sTransactionNS;
+		$this->sVersion = $oDocument->getMajorVersionNumber() . "." . $oDocument->getMinorVersionNumber();
+		$oFolder = Folder::get($oDocument->iFolderID);
+		$this->sFileName = addslashes($oFolder->sFullPath . "/" . $oFolder->getName() . "/" . $oDocument->getName());			
+		
 		$this->iUserID = $_SESSION["userID"];
         $oUser = KTUtil::arrayGet($aOptions, 'user');
-        if ($oUser) {
+		
+        if (!(PEAR::isError($oUser) || ($oUser == false))) {
             $this->iUserID = $oUser->getID();
         }
 		$this->dDateTime = getCurrentDateTime();		
 		$this->sIP = KTUtil::arrayGet($_SERVER, "REMOTE_ADDR", '0.0.0.0');
 	}
 	
-	/**
-	 * Returns the current version
-	 */
-	function getVersion() {
-		return $this->sVersion;
-	}
-
-	function getComment() {
-		return $this->sComment;
-	}
-
-        function _table() {
-            global $default;
-            return $default->document_transactions_table;
-        }
+	function getVersion() {	return $this->sVersion;	}
+	function getComment() {	return $this->sComment;	}
+    function _table() { return KTUtil::getTableName('document_transactions'); }
 	
 	/**
 	* Create the document transaction in the database
@@ -130,7 +94,7 @@ class DocumentTransaction {
                 'ip' => $this->sIP,
                 'filename' => $this->sFileName,
                 'comment' => $this->sComment,
-                'transaction_id' => $this->iTransactionID,
+                'transaction_namespace' => $this->sTransactionNS,
             );
             $id =& DBUtil::autoInsert($this->_table(), $aFieldValues);
 
@@ -180,7 +144,7 @@ class DocumentTransaction {
 	        $sql = $default->db;
 	        $sql->query(array("SELECT * FROM $default->document_transactions_table WHERE id = ?", $iDocumentTransactionID));/*ok*/
 	        if ($sql->next_record()) {			
-	            $oDocumentTransaction = & new DocumentTransaction($sql->f("document_id"), $sql->f("comment"), $sql->f("transaction_id"));
+	            $oDocumentTransaction = & new DocumentTransaction(Document::get($sql->f("document_id")), $sql->f("comment"), $sql->f("transaction_namespace"));
 	            $oDocumentTransaction->iId = $sql->f("id");	
 				$oDocumentTransaction->sVersion = $sql->f("version");
 				$oDocumentTransaction->iUserID = $sql->f("user_id");
