@@ -1,14 +1,13 @@
 <?php
 
 require_once(KT_LIB_DIR . "/ktentity.inc");
+require_once(KT_LIB_DIR . "/util/ktutil.inc"); 
 
 class KTDocumentTransactionType extends KTEntity {
     /** primary key */
     var $iId = -1;
-    /** help file name */
     var $sName;
-    /** help file name */
-    var $sName;
+    var $sNamespace;
 
     var $_aFieldToSelect = array(
         "iId" => "id",
@@ -26,30 +25,13 @@ class KTDocumentTransactionType extends KTEntity {
     function setNamespace($sNamespace) { $this->sNamespace = $sNamespace; }
 
     function _table () {
-        global $default;
-        return $default->transaction_types_table;
+        return KTUtil::getTableName('transaction_types');
     }
 
-    // STATIC
-    function &get($iId) {
-        return KTEntityUtil::get('KTDocumentTransactionType', $iId);
-    }
-
-    // STATIC
-    function &createFromArray($aOptions) {
-        return KTEntityUtil::createFromArray('KTDocumentTransactionType', $aOptions);
-    }
-
-    // STATIC
-    function &getList($sWhereClause = null) {
-        global $default;
-        return KTEntityUtil::getList($default->permissions_table, 'KTDocumentTransactionType', $sWhereClause);
-    }
-
-    // STATIC
-    function &getByNamespace($sNamespace) {
-        return KTEntityUtil::getBy('KTDocumentTransactionType', 'namespace', $sNamespace);
-    }
+    function &get($iId) { return KTEntityUtil::get('KTDocumentTransactionType', $iId); }
+    function &createFromArray($aOptions) { return KTEntityUtil::createFromArray('KTDocumentTransactionType', $aOptions); }
+    function &getList($sWhereClause = null) { return KTEntityUtil::getList2('KTDocumentTransactionType', $sWhereClause); }
+    function &getByNamespace($sNamespace) { return KTEntityUtil::getBy('KTDocumentTransactionType', 'namespace', $sNamespace); }
 }
 
 ?>

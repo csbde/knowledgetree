@@ -162,7 +162,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 		// FIXME do we really need to use a raw db-access here?  probably...
 		$sQuery = "SELECT DTT.name AS transaction_name, U.name AS user_name, DT.version AS version, DT.comment AS comment, DT.datetime AS datetime " .
 			"FROM " . KTUtil::getTableName("document_transactions") . " AS DT INNER JOIN " . KTUtil::getTableName("users") . " AS U ON DT.user_id = U.id " .
-			"INNER JOIN " . KTUtil::getTableName("transaction_types") . " AS DTT ON DTT.id = DT.transaction_id " . 
+			"INNER JOIN " . KTUtil::getTableName("transaction_types") . " AS DTT ON DTT.namespace = DT.transaction_namespace " . 
 			"WHERE DT.document_id = ? ORDER BY DT.datetime DESC";
         $aParams = array($document_id);
 		$res = DBUtil::getResultArray(array($sQuery, $aParams));

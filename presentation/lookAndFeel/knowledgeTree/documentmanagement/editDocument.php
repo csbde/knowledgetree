@@ -257,7 +257,7 @@ class KTEditDocumentDispatcher extends KTStandardDispatcher {
 		$oDocument->setLastModifiedDate(getCurrentDateTime());
 		$oDocument->setModifiedUserId($this->oUser->getId());
 		$oDocument->setMetadataVersion($oDocument->getMetadataVersion() + 1);
-        $oDocumentTransaction = & new DocumentTransaction($oDocument->getID(), 'update metadata.', UPDATE);
+        $oDocumentTransaction = & new DocumentTransaction($oDocument, 'update metadata.', 'ktcore.transactions.update');
 		
         $res = $oDocumentTransaction->create();
 		if (PEAR::isError($res)) {

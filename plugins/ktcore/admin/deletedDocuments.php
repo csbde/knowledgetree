@@ -81,7 +81,7 @@ class DeletedDocumentsDispatcher extends KTAdminDispatcher {
         foreach ($aDocuments as $oDoc) {
             if (!PhysicalDocumentManager::expunge($oDoc)) { $aErrorDocuments[] = $oDoc->getDisplayPath(); }
             else {
-                $oDocumentTransaction = & new DocumentTransaction($oDoc->getId(), "Document expunged", EXPUNGE);
+                $oDocumentTransaction = & new DocumentTransaction($oDoc, "Document expunged", 'ktcore.transactions.expunge');
                 $oDocumentTransaction->create();
     
                 // delete this from the db now

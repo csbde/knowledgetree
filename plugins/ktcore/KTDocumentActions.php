@@ -23,7 +23,7 @@ class KTDocumentViewAction extends KTDocumentAction {
 
     function do_main() {
         $oStorage =& KTStorageManagerUtil::getSingleton();
-        $oDocumentTransaction = & new DocumentTransaction($this->oDocument->getId(), "Document downloaded", DOWNLOAD);
+        $oDocumentTransaction = & new DocumentTransaction($this->oDocument, "Document downloaded", 'ktcore.transactions.download');
         $oDocumentTransaction->create();
         $oStorage->download($this->oDocument);
         exit(0);
@@ -114,7 +114,7 @@ class KTDocumentCheckOutAction extends KTDocumentAction {
             }
         }
 
-        $oDocumentTransaction = & new DocumentTransaction($this->oDocument->getID(), $sReason, CHECKOUT);
+        $oDocumentTransaction = & new DocumentTransaction($this->oDocument, $sReason, 'ktcore.transactions.check_out');
         $oDocumentTransaction->create();
         
         $oStorage =& KTStorageManagerUtil::getSingleton();
@@ -289,7 +289,7 @@ class KTDocumentDeleteAction extends KTDocumentAction {
             exit(0);
         }
 
-        $oDocumentTransaction = & new DocumentTransaction($this->oDocument->getId(), "Document deleted: " . $sReason, DELETE);
+        $oDocumentTransaction = & new DocumentTransaction($this->oDocument, "Document deleted: " . $sReason, 'ktcore.transactions.delete');
         $oDocumentTransaction->create();
 
         $this->commitTransaction();
@@ -478,7 +478,8 @@ class KTDocumentMoveAction extends KTDocumentAction {
             $sReason);
 
         // create the document transaction record
-        $oDocumentTransaction = & new DocumentTransaction($this->oDocument->getID(), $sMoveMessage, MOVE);
+        
+        $oDocumentTransaction = & new DocumentTransaction($this->oDocument, $sMoveMessage, 'ktcore.transactions.move');
         $oDocumentTransaction->create();
 
         $this->commitTransaction();

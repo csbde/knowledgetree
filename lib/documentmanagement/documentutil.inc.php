@@ -135,7 +135,7 @@ class KTDocumentUtil {
         }
 
         // create the document transaction record
-        $oDocumentTransaction = & new DocumentTransaction($oDocument->getID(), $sCheckInComment, CHECKIN);
+        $oDocumentTransaction = & new DocumentTransaction($oDocument, $sCheckInComment, 'ktcore.transactions.check_in');
         $oDocumentTransaction->create();
         
         $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
@@ -423,7 +423,7 @@ class KTDocumentUtil {
         $oUploadChannel->sendMessage(new KTUploadGenericMessage(_("Creating transaction")));
         $aOptions = array('user' => $oUser);
         //create the document transaction record
-        $oDocumentTransaction = & new DocumentTransaction($oDocument->getID(), "Document created", CREATE, $aOptions);
+        $oDocumentTransaction = & new DocumentTransaction($oDocument, "Document created", 'ktcore.transactions.create', $aOptions);
         $res = $oDocumentTransaction->create();
         if (PEAR::isError($res)) {
             $oDocument->delete();

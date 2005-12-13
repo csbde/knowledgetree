@@ -392,7 +392,7 @@ class KTWorkflowUtil {
         if ($sComments) {
             $sTransactionComments .= "; Reason given was: " . $sComments;
         }
-        $oDocumentTransaction = & new DocumentTransaction($oDocument->getID(), $sTransactionComments, WORKFLOW_TRANSITION);
+        $oDocumentTransaction = & new DocumentTransaction($oDocument, $sTransactionComments, 'ktcore.transactions.workflow_state_transition');
         $oDocumentTransaction->create();
 
         return true;

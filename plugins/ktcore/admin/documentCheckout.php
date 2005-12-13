@@ -108,7 +108,7 @@ class KTCheckoutAdminDispatcher extends KTAdminDispatcher {
         }
         
         // checkout cancelled transaction
-        $oDocumentTransaction = & new DocumentTransaction($oDocument->getID(), "Document checked out cancelled", FORCE_CHECKIN);
+        $oDocumentTransaction = & new DocumentTransaction($oDocument, "Document checked out cancelled", 'ktcore.transactions.force_checkin');
         if ($oDocumentTransaction->create()) {
             $default->log->debug("editDocCheckoutBL.php created forced checkin document transaction for document ID=" . $oDocument->getID());                                    	
         } else {

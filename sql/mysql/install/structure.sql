@@ -367,11 +367,10 @@ CREATE TABLE `document_transactions` (
   `ip` char(30) default NULL,
   `filename` char(255) NOT NULL default '',
   `comment` char(255) NOT NULL default '',
-  `transaction_id` int(11) default NULL,
+  `transaction_namespace` char(255) NOT NULL default 'ktcore.transactions.event',
   UNIQUE KEY `id` (`id`),
   KEY `fk_document_id` (`document_id`),
   KEY `fk_user_id` (`user_id`),
-  KEY `fk_transaction_id` (`transaction_id`)
 ) ENGINE=InnoDB ;
 
 -- --------------------------------------------------------
