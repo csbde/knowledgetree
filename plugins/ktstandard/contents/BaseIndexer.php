@@ -78,6 +78,9 @@ class KTBaseIndexerTrigger {
     // handles certain, _very_ simple reader types.
     function extract_contents($sFilename, $sTempFilename) {
         $sCommand = KTUtil::findCommand($this->commandconfig, $this->command);
+        if (empty($sCommand)) {
+            return false;
+        }
 
         $cmdline = array($sCommand);
         $cmdline = array_merge($cmdline, $this->args);
