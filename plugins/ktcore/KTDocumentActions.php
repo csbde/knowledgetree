@@ -25,7 +25,12 @@ class KTDocumentViewAction extends KTDocumentAction {
         $oStorage =& KTStorageManagerUtil::getSingleton();
         $oDocumentTransaction = & new DocumentTransaction($this->oDocument, "Document downloaded", 'ktcore.transactions.download');
         $oDocumentTransaction->create();
-        $oStorage->download($this->oDocument);
+        $sVersion = KTUtil::arrayGet($_REQUEST, 'version');
+        if ($sVersion) {
+            $oStorage->downloadVersion($this->oDocument, $sVersion);
+        } else {
+            $oStorage->download($this->oDocument);
+        }
         exit(0);
     }
 }
