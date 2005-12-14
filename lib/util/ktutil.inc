@@ -185,11 +185,11 @@ class KTUtil {
         }
         if (OS_UNIX) {
             if ($bMove && file_exists('/bin/mv')) {
-                system(KTUtil::safeShellString(array('/bin/mv', $sSrc, $sDst)));
+                KTUtil::pexec(array('/bin/mv', $sSrc, $sDst));
                 return;
             }
             if (!$bMove && file_exists('/bin/cp')) {
-                system(KTUtil::safeShellString(array('/bin/cp', '-R', $sSrc, $sDst)));
+                KTUtil::pexec(array('/bin/cp', '-R', $sSrc, $sDst));
                 return;
             }
         }
@@ -274,7 +274,7 @@ class KTUtil {
         if (OS_UNIX) {
             // If /bin/mv exists, just use it.
             if (file_exists('/bin/mv')) {
-                system(KTUtil::safeShellString(array('/bin/mv', $sSrc, $sDst)));
+                KTUtil::pexec(array('/bin/mv', $sSrc, $sDst));
                 return;
             }
 
