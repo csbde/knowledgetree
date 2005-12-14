@@ -57,6 +57,8 @@ class KTDocumentFieldDispatcher extends KTStandardDispatcher {
         $editFieldset[] = new KTTextWidget('Description', _('A brief description of the information stored in this fieldset.'), 'description', $oFieldset->getDescription(), $this->oPage, true);                
         $createFields = array();
         $createFields[] = new KTStringWidget('Name', _('A human-readable name, used in add and edit forms.'), 'name',null, $this->oPage, true);
+        $createFields[] = new KTTextWidget('Description', _('A brief description of the information stored in this field.'), 'description', null, $this->oPage, true);                
+ 
         
         // type is a little more complex.
         $vocab = array();
@@ -118,12 +120,15 @@ class KTDocumentFieldDispatcher extends KTStandardDispatcher {
         $sName = KTUtil::arrayGet($_REQUEST, 'name');
         $sName = $this->oValidator->notEmpty($sName);
         $sNamespace = KTUtil::arrayGet($_REQUEST, 'namespace');
+	$sDescription = KTUtil::arrayGet($_REQUEST, 'description'); 
+        $sDescription = $this->oValidator->notEmpty($sDescription);
         if (empty($sNamespace)) {
             $sNamespace = KTUtil::nameToLocalNamespace('fieldsets', $sName);
         }
         $res = KTFieldset::createFromArray(array(
             'name' => $sName,
             'namespace' => $sNamespace,
+            'description' => $sDescription,
             'mandatory' => false,
             'isconditional' => false,
             'isgeneric' => $bIsGeneric,
@@ -153,6 +158,7 @@ class KTDocumentFieldDispatcher extends KTStandardDispatcher {
         $oField =& DocumentField::createFromArray(array(
             'name' => $_REQUEST['name'],
             'datatype' => 'STRING',
+	    'description' => $_REQUEST['description'],
             'haslookup' => $is_lookup,
             'haslookuptree' => $is_tree,
             'parentfieldset' => $oFieldset->getId(),

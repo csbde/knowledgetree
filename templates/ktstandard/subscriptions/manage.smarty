@@ -21,7 +21,7 @@ subscribe.{/i18n}</p>
 {/if}
 
 {if $aDocumentSubscriptions}
-{entity_checkboxes name="documentsubscriptions" entities=$aFolderSubscriptions method=getContentLink assign=aCheckboxes}
+{entity_checkboxes name="documentsubscriptions" entities=$aDocumentSubscriptions method=getContentLink assign=aCheckboxes}
 {foreach from=$aCheckboxes item=oCheckbox}
 {$oCheckbox}<br />
 {/foreach}
