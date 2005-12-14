@@ -408,6 +408,27 @@ class KTUtil {
         return $sBase . 'local' . '/' . $sSection . '/' . $sName;
     }
     // }}}
+
+    // {{{ findCommand
+    function findCommand($sConfigVar, $sDefault = null) {
+        $oKTConfig =& KTConfig::getSingleton();
+        $sCommand = $oKTConfig->get($sConfigVar, $sDefault);
+        if (empty($sCommand)) {
+            return false;
+        }
+        if (file_exists($sCommand)) {
+            return $sCommand;
+        }
+        $sExecSearchPath = $oKTConfig->get("KnowledgeTree/execSearchPath");
+        $paths = split(PATH_SEPARATOR, $sExecSearchPath);
+        foreach ($paths as $path) {
+            if (file_exists($path . '/' . $sCommand)) {
+                return $path . '/' . $sCommand;
+            }
+        }
+        return false;
+    }
+    // }}}
 }
 
 ?>
