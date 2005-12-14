@@ -43,22 +43,25 @@ class KTZipImportStorage extends KTFSImportStorage {
         unlink($sTmpPath);
         mkdir($sTmpPath, 0700);
         $this->sBasePath = $sTmpPath;
+        $sUnzipCommand = KTUtil::findCommand("import/unzip", "unzip");
+        if (empty($sUnzipCommand)) {
+            return PEAR::raiseError("unzip command not found on system");
+        }
         $aArgs = array(
-            "unzip",
+            $sUnzipCommand,
             "-q", "-n",
             "-d", $sTmpPath,
             $this->sZipPath,
         );
-        $sCommand = KTUtil::safeShellString($aArgs);
-        $res = system($sCommand);
+        $res = KTUtil::pexec($aArgs);
         if ($res === false) {
             return PEAR::raiseError("Could not retrieve contents from zip storage");
         }
     }
+
     function cleanup() {
         if ($this->sBasePath && file_exists($this->sBasePath)) {
-            // XXX: Only works on Unix-like systems for now.
-            system(KTUtil::safeShellString(array('/bin/rm', '-rf', $this->sBasePath)));
+            KTUtil::deleteDirectory($this->sBasePath);
             $this->sBasePath = null;
         }
     }
