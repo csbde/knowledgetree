@@ -117,7 +117,7 @@ class KTOnDiskPathStorageManager extends KTStorageManager {
         return true;
     }
     
-    function downloadVersion($oDocumentID, $sVersion) {
+    function downloadVersion($oDocument, $sVersion) {
         //get the document
         $sDocumentFileSystemPath = $oDocument->getPath() . "-$sVersion";
         if (file_exists($sDocumentFileSystemPath)) {
