@@ -3,7 +3,7 @@
 <strong>{$document->getMajorVersionNumber()}.{$document->getMinorVersionNumber()}</strong> ({$document->getMetadataVersion()})
 {/capture}
 {capture assign=to}
-<strong>{$comparison_document->getMajorVersionNumber()}.{$comparison_document->getMinorVersionNumber()} ({$comparison_document->getMetadataVersion()})
+<strong>{$comparison_document->getMajorVersionNumber()}.{$comparison_document->getMinorVersionNumber()}</strong> ({$comparison_document->getMetadataVersion()})
 {/capture}
 <p class="descriptiveText">
 {i18n arg_from=$from arg_to=$to}showing comparison between versions #from# and #to#{/i18n}</p>
