@@ -13,7 +13,7 @@ class AdminSplashDispatcher extends KTAdminDispatcher {
     
     function AdminSplashDispatcher() {
         $this->aBreadcrumbs = array(
-            array('action' => 'administration', 'name' => 'Administration'),
+            array('url' => KTUtil::getRequestScriptName($_SERVER), 'name' => 'Administration'),
         );
     
         parent::KTAdminDispatcher();
@@ -83,6 +83,8 @@ if (empty($sub_url)) {
        $oRegistry =& KTAdminNavigationRegistry::getSingleton();
        $aCategory = $oRegistry->getCategory($aParts[0]);			   
        
+       $oDispatcher->aBreadcrumbs = array();
+       $oDispatcher->aBreadcrumbs[] = array('url' => KTUtil::getRequestScriptName($_SERVER), 'name' => 'Administration');
        $oDispatcher->aBreadcrumbs[] = array("name" => $aCategory['title'], "url" => KTUtil::getRequestScriptName($_SERVER) . '/' . $aParts[0]);
     } else {
        // FIXME (minor) redirect to no-suburl?
