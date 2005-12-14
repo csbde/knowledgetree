@@ -36,7 +36,7 @@ class RoleAdminDispatcher extends KTAdminDispatcher {
     }
 
     function do_main() {
-        $this->aBreadcrumbs[] = array('action' => 'roleManagement', 'name' => _('Role Management'));
+        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _('Role Management'));
         
         $this->oPage->setTitle(_('Role Management'));
         

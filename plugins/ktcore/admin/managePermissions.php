@@ -1,5 +1,4 @@
 <?php
-//require_once("../../../../../config/dmsDefaults.php");
 
 require_once(KT_LIB_DIR . "/templating/templating.inc.php");
 require_once(KT_LIB_DIR . "/permissions/permission.inc.php");
@@ -9,7 +8,7 @@ require_once(KT_LIB_DIR . "/templating/kt3template.inc.php");
 class ManagePermissionsDispatcher extends KTAdminDispatcher {
     function do_main() {
         $this->oPage->setTitle(_('Manage Permissions'));
-        $this->aBreadcrumbs[] = array('action' => 'managePermissions', 'name' => _('Manage Permissions'));
+        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _('Manage Permissions'));
         
         $add_fields = array();
         $add_fields[] = new KTStringWidget(_('System Name'),_('The internal name used for the permission.  This should never be changed.'), 'name', null, $this->oPage, true);
@@ -61,8 +60,5 @@ class ManagePermissionsDispatcher extends KTAdminDispatcher {
         return $this->successRedirectToMain(_("Permission deleted"));
     }
 }
-
-//$oDispatcher = new ManagePermissionsDispatcher();
-//$oDispatcher->dispatch();
 
 ?>

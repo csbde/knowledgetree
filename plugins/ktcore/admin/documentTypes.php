@@ -1,6 +1,5 @@
 <?php
 
-//require_once('../../../../../config/dmsDefaults.php');
 require_once(KT_LIB_DIR . '/dispatcher.inc.php');
 require_once(KT_LIB_DIR . '/templating/templating.inc.php');
 
@@ -16,7 +15,7 @@ class KTDocumentTypeDispatcher extends KTAdminDispatcher {
    // Breadcrumbs base - added to in methods
     function do_main () {
 
-        $this->aBreadcrumbs[] = array('action' => 'doctype', 'name' => _('Document Type Management'));
+        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _('Document Type Management'));
         
         $this->oPage->setBreadcrumbDetails('view types');
     
@@ -66,7 +65,7 @@ class KTDocumentTypeDispatcher extends KTAdminDispatcher {
 
     function do_edit() {
         
-        $this->aBreadcrumbs[] = array('action' => 'doctype', 'name' => _('Document Type Management'));
+        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _('Document Type Management'));
         
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate('ktcore/documenttypes/edit');
@@ -139,8 +138,5 @@ class KTDocumentTypeDispatcher extends KTAdminDispatcher {
         exit(0);
     }
 }
-
-//$d =& new KTDocumentTypeDispatcher;
-//$d->dispatch();
 
 ?>

@@ -1,7 +1,5 @@
 <?php
 
-//require_once('../../../../../config/dmsDefaults.php');
-
 require_once(KT_LIB_DIR . '/unitmanagement/Unit.inc');
 require_once(KT_LIB_DIR . '/unitmanagement/UnitOrganisationLink.inc');
 require_once(KT_LIB_DIR . '/orgmanagement/Organisation.inc');
@@ -13,7 +11,7 @@ require_once(KT_LIB_DIR . "/widgets/fieldWidgets.php");
 
 class KTUnitAdminDispatcher extends KTAdminDispatcher {
     function do_main() {
-		$this->aBreadcrumbs[] = array('action' => 'unitManagement', 'name' => _('Unit Management'));
+		$this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _('Unit Management'));
 		$this->oPage->setBreadcrumbDetails(_('select a unit'));
 		$this->oPage->setTitle(_("Unit Management"));
 
@@ -74,6 +72,5 @@ class KTUnitAdminDispatcher extends KTAdminDispatcher {
 	}
 	
 }
-
 
 ?>

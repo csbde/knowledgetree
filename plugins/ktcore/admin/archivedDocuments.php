@@ -1,6 +1,5 @@
 <?php
 
-//require_once('../../../../../config/dmsDefaults.php');
 require_once(KT_LIB_DIR . '/dispatcher.inc.php');
 require_once(KT_LIB_DIR . '/templating/templating.inc.php');
 
@@ -15,7 +14,7 @@ require_once(KT_LIB_DIR . "/templating/kt3template.inc.php");
 class ArchivedDocumentsDispatcher extends KTAdminDispatcher {
 
     function do_main () {
-        $this->aBreadcrumbs[] = array('action' => 'archivedDocuments', 'name' => _('Archived Documents'));
+        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _('Archived Documents'));
         
         $this->oPage->setBreadcrumbDetails(_('list'));
         
@@ -32,7 +31,7 @@ class ArchivedDocumentsDispatcher extends KTAdminDispatcher {
     }
     
     function do_confirm_restore() {
-        $this->aBreadcrumbs[] = array('action' => 'archivedDocuments', 'name' => _('Archived Documents'));
+        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _('Archived Documents'));
         
         $selected_docs = KTUtil::arrayGet($_REQUEST, 'selected_docs', array()); 
         
@@ -94,8 +93,5 @@ class ArchivedDocumentsDispatcher extends KTAdminDispatcher {
         $this->successRedirectToMain($msg);
     }
 }
-
-//$d =& new DeletedDocumentsDispatcher;
-//$d->dispatch();
 
 ?>

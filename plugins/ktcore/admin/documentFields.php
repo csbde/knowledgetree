@@ -1,6 +1,5 @@
 <?php
 
-//require_once('../../../../../config/dmsDefaults.php');
 require_once(KT_LIB_DIR . '/dispatcher.inc.php');
 require_once(KT_LIB_DIR . '/templating/templating.inc.php');
 require_once(KT_LIB_DIR . '/templating/kt3template.inc.php');
@@ -16,9 +15,13 @@ require_once(KT_LIB_DIR . '/widgets/fieldWidgets.php');
 class KTDocumentFieldDispatcher extends KTStandardDispatcher {
     var $bAutomaticTransaction = true;
 
+    function check() {
+        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _('Document Field Management'));
+        return true;
+    }
+
     // {{{ do_main
     function do_main () {
-        $this->aBreadcrumbs[] = array('action' => 'docfield', 'name' => _('Document Field Management'));
         $this->oPage->setBreadcrumbDetails(_("view fieldsets"));
         
         // function KTBaseWidget($sLabel, $sDescription, $sName, $value, $oPage, $bRequired = false, $sId = null, $aErrors = null, $aOptions = null) {
@@ -68,7 +71,7 @@ class KTDocumentFieldDispatcher extends KTStandardDispatcher {
         
         
         $this->aBreadcrumbs[] = array(
-            'action' => 'docfield',
+            'url' => $_SERVER['PHP_SELF'],
             'query' => 'action=edit&fFieldsetId=' . $_REQUEST['fFieldsetId'],
             'name' => 'Fieldset ' . $oFieldset->getName()
         );
@@ -176,7 +179,7 @@ class KTDocumentFieldDispatcher extends KTStandardDispatcher {
         $oField =& DocumentField::get($_REQUEST['fFieldId']);
         
         $this->aBreadcrumbs[] = array(
-            'action' => 'docfield',
+            'url' => $_SERVER['PHP_SELF'],
             'query' => 'action=edit&fFieldsetId=' . $_REQUEST['fFieldsetId'],
             'name' => $oFieldset->getName()
         );
@@ -406,12 +409,12 @@ class KTDocumentFieldDispatcher extends KTStandardDispatcher {
             $sIncomplete = null;
         }
         $this->aBreadcrumbs[] = array(
-            'action' => 'docfield',
+            'url' => $_SERVER['PHP_SELF'],
             'query' => 'action=edit&fFieldsetId=' . $_REQUEST['fFieldsetId'],
             'name' => $oFieldset->getName()
         );
         $this->aBreadcrumbs[] = array(
-            'action' => 'docfield',
+            'url' => $_SERVER['PHP_SELF'],
             'query' => 'action=manageConditional&fFieldsetId=' . $_REQUEST['fFieldsetId'],
             'name' => _('Manage conditional field'),
         );
@@ -529,9 +532,5 @@ class KTDocumentFieldDispatcher extends KTStandardDispatcher {
     }
     // }}}
 }
-
-// use the admin dispatch mechanisms.
-//$d =& new KTDocumentFieldDispatcher;
-//$d->dispatch();
 
 ?>
