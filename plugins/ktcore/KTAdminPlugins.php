@@ -36,6 +36,7 @@ $oPlugin->registerAdminPage("units",'KTUnitAdminDispatcher',"principals", _("Con
 // security
 $oPlugin->registerAdminPage("permissions",'ManagePermissionsDispatcher',"security", _("Permissions"), _("Create or Delete permissions."), 'admin/managePermissions.php', null);
 $oPlugin->registerAdminPage("roles",'RoleAdminDispatcher',"security", _("Roles"), _("Create or Delete roles") . " (incomplete).", 'admin/roleManagement.php', null);
+$oPlugin->registerAdminPage("conditions",'KTConditionDispatcher',"security", _("Conditions"), _("Manage document conditions, which can be used to control whether certain actions are permitted or not."), 'admin/conditions.php', null);
 
 // documents
 $oPlugin->registerAdminPage("typemanagement",'KTDocumentTypeDispatcher','documents', _('Document Types'), _('Manage the different classes of document which can be added to the system.'), 'admin/documentTypes.php', null);
@@ -50,5 +51,6 @@ $oPlugin->registerAdminPage("expunge",'DeletedDocumentsDispatcher','storage', _(
 
 // misc
 $oPlugin->registerAdminPage("helpmanagement",'ManageHelpDispatcher','misc', _('Edit Help files'), _('Change the help files that are displayed to users.'), 'admin/manageHelp.php', null);
+$oPlugin->registerAdminPage("savedsearch",'KTSavedSearchDispatcher','misc', _('Saved searches'), _('Manage saved searches - searches available by default to all users.'), 'admin/manageHelp.php', null);
 
 ?>
