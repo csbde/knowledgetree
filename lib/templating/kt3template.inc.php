@@ -252,7 +252,12 @@ class KTPage {
         if ($aActionTuple["action"]) {        
            $aTuple["url"] = generateControllerLink($aActionTuple["action"], $aActionTuple["query"]);
         } else if ($aActionTuple["url"]) {
-		   $aTuple["url"] = $aActionTuple["url"];
+           $sUrl = $aActionTuple["url"];
+           $sQuery = KTUtil::arrayGet($aActionTuple, 'query');
+           if ($sQuery) {
+               $sUrl = KTUtil::addQueryString($sUrl, $sQuery);
+           }
+		   $aTuple["url"] = $sUrl;
 		} else {
 		   $aTuple["url"] = false;
 		}
