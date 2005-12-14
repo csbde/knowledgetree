@@ -1,7 +1,5 @@
 <?php
 
-//require_once('../../../../../config/dmsDefaults.php');
-
 require_once(KT_LIB_DIR . '/orgmanagement/Organisation.inc');
 
 require_once(KT_LIB_DIR . "/templating/templating.inc.php");
@@ -11,7 +9,7 @@ require_once(KT_LIB_DIR . "/widgets/fieldWidgets.php");
 
 class KTOrgAdminDispatcher extends KTAdminDispatcher {
     function do_main() {
-		$this->aBreadcrumbs[] = array('action' => 'orgManagement', 'name' => _('Organisation Management'));
+		$this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _('Organisation Management'));
 		$this->oPage->setBreadcrumbDetails(_('select a organisation'));
 		$this->oPage->setTitle(_("Organisation Management"));
 
@@ -68,6 +66,5 @@ class KTOrgAdminDispatcher extends KTAdminDispatcher {
 	}
 	
 }
-
 
 ?>

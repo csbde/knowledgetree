@@ -1,7 +1,5 @@
 <?php
 
-//require_once('../../../../../config/dmsDefaults.php');
-
 require_once(KT_LIB_DIR . '/users/User.inc');
 require_once(KT_LIB_DIR . '/groups/GroupUtil.php');
 require_once(KT_LIB_DIR . '/groups/Group.inc');
@@ -14,7 +12,7 @@ require_once(KT_LIB_DIR . "/widgets/fieldWidgets.php");
 
 class KTGroupAdminDispatcher extends KTAdminDispatcher {
     function do_main() {
-		$this->aBreadcrumbs[] = array('action' => 'groupManagement', 'name' => _('Group Management'));
+		$this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _('Group Management'));
 		$this->oPage->setBreadcrumbDetails(_('select a group'));
 		$this->oPage->setTitle(_("Group Management"));
 		
@@ -47,7 +45,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
 
 
     function do_editGroup() {
-		$this->aBreadcrumbs[] = array('action' => 'groupManagement', 'name' => _('Group Management'));
+		$this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _('Group Management'));
 		$this->oPage->setBreadcrumbDetails(_('edit group'));
 		
 		$group_id = KTUtil::arrayGet($_REQUEST, 'group_id');
@@ -331,7 +329,7 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
 	
 	
     function do_addGroup() {
-		$this->aBreadcrumbs[] = array('action' => 'groupManagement', 'name' => _('Group Management'));
+		$this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _('Group Management'));
 		$this->oPage->setBreadcrumbDetails(_('create new group'));
 		
 	

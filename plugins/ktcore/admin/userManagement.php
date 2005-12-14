@@ -1,7 +1,5 @@
 <?php
 
-//require_once('../../../../../config/dmsDefaults.php');
-
 require_once(KT_LIB_DIR . '/database/dbutil.inc');
 
 require_once(KT_LIB_DIR . '/users/User.inc');
@@ -19,7 +17,7 @@ require_once(KT_LIB_DIR . "/authentication/builtinauthenticationprovider.inc.php
 
 class KTUserAdminDispatcher extends KTAdminDispatcher {
     function do_main() {
-        $this->aBreadcrumbs[] = array('action' => 'userManagement', 'name' => _('User Management'));
+        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _('User Management'));
         $this->oPage->setBreadcrumbDetails(_('select a user'));
         $this->oPage->setTitle(_("User Management"));
         
@@ -51,7 +49,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
 
 
     function do_addUser() {
-        $this->aBreadcrumbs[] = array('action' => 'userManagement', 'name' => _('User Management'));
+        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _('User Management'));
         $this->oPage->setBreadcrumbDetails(_('add a new user'));
         $this->oPage->setTitle(_("Modify User Details"));
         
@@ -91,7 +89,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         $oRegistry =& KTAuthenticationProviderRegistry::getSingleton();
         $oProvider =& $oRegistry->getAuthenticationProvider($sProvider);
 
-        $this->aBreadcrumbs[] = array('action' => 'userManagement', 'name' => _('User Management'));
+        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _('User Management'));
         $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'] . '?action=addUser', 'name' => _('add a new user'));
         $oProvider->aBreadcrumbs = $this->aBreadcrumbs;
         $oProvider->oPage->setBreadcrumbDetails($oSource->getName());
@@ -102,7 +100,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
     }
 
     function do_editUser() {
-        $this->aBreadcrumbs[] = array('action' => 'userManagement', 'name' => _('User Management'));
+        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _('User Management'));
         $this->oPage->setBreadcrumbDetails(_('modify user details'));
         $this->oPage->setTitle(_("Modify User Details"));
         
@@ -147,7 +145,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
 
 
     function do_setPassword() {
-        $this->aBreadcrumbs[] = array('action' => 'userManagement', 'name' => _('User Management'));
+        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _('User Management'));
         $this->oPage->setBreadcrumbDetails(_('change user password'));
         $this->oPage->setTitle(_("Change User Password"));
         
@@ -435,8 +433,5 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
     }
 
 }
-
-//$oDispatcher = new KTUserAdminDispatcher ();
-//$oDispatcher->dispatch();
 
 ?>

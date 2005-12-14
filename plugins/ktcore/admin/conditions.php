@@ -1,17 +1,9 @@
 <?php
 
-// boilerplate includes
-require_once("../../../../../config/dmsDefaults.php");
-require_once(KT_DIR . "/presentation/Html.inc");
 require_once(KT_LIB_DIR . "/templating/templating.inc.php");
 require_once(KT_LIB_DIR . "/dispatcher.inc.php");
 require_once(KT_LIB_DIR . "/browse/Criteria.inc");
 require_once(KT_LIB_DIR . "/search/savedsearch.inc.php");
-
-// specific includes
-
-$sectionName = "General";
-require_once(KT_DIR . "/presentation/webpageTemplate.inc");
 
 class KTConditionDispatcher extends KTStandardDispatcher {
     var $bAutomaticTransaction = true;
@@ -73,8 +65,5 @@ class KTConditionDispatcher extends KTStandardDispatcher {
         $this->successRedirectToMain(_('Search saved'));
     }
 }
-
-$oDispatcher = new KTConditionDispatcher();
-$oDispatcher->dispatch();
 
 ?>

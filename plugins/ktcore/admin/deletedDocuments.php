@@ -1,6 +1,5 @@
 <?php
 
-//require_once('../../../../../config/dmsDefaults.php');
 require_once(KT_LIB_DIR . '/dispatcher.inc.php');
 require_once(KT_LIB_DIR . '/templating/templating.inc.php');
 
@@ -12,7 +11,7 @@ require_once(KT_LIB_DIR . "/templating/kt3template.inc.php");
 
 class DeletedDocumentsDispatcher extends KTAdminDispatcher {
     function do_main () {
-        $this->aBreadcrumbs[] = array('action' => 'deletedDocuments', 'name' => _('Deleted Documents'));
+        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _('Deleted Documents'));
         
         $this->oPage->setBreadcrumbDetails(_('view'));
     
@@ -29,7 +28,7 @@ class DeletedDocumentsDispatcher extends KTAdminDispatcher {
     }
     
     function do_confirm_expunge() {
-        $this->aBreadcrumbs[] = array('action' => 'deletedDocuments', 'name' => _('Deleted Documents'));
+        $this->aBreadcrumbs[] = array('url' =>  $_SERVER['PHP_SELF'], 'name' => _('Deleted Documents'));
         
         $selected_docs = KTUtil::arrayGet($_REQUEST, 'selected_docs', array()); 
         
@@ -101,8 +100,5 @@ class DeletedDocumentsDispatcher extends KTAdminDispatcher {
         $this->successRedirectToMain($msg);
     }
 }
-
-//$d =& new DeletedDocumentsDispatcher;
-//$d->dispatch();
 
 ?>

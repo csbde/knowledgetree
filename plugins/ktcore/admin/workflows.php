@@ -1,6 +1,5 @@
 <?php
 
-//require_once('../../../../../config/dmsDefaults.php');
 require_once(KT_LIB_DIR . '/dispatcher.inc.php');
 require_once(KT_LIB_DIR . '/validation/dispatchervalidation.inc.php');
 require_once(KT_LIB_DIR . '/templating/templating.inc.php');
@@ -8,8 +7,6 @@ require_once(KT_LIB_DIR . '/templating/templating.inc.php');
 require_once(KT_LIB_DIR . '/workflow/workflow.inc.php');
 require_once(KT_LIB_DIR . '/workflow/workflowstate.inc.php');
 require_once(KT_LIB_DIR . '/workflow/workflowtransition.inc.php');
-
-$sectionName = "Administration";
 
 require_once(KT_LIB_DIR . "/templating/kt3template.inc.php");
 
@@ -25,7 +22,7 @@ class KTWorkflowDispatcher extends KTStandardDispatcher {
     // {{{ do_main
     function do_main () {
         $this->aBreadcrumbs[] = array(
-            'action' => 'manageWorkflows',
+            'url' => $_SERVER['PHP_SELF'],
             'name' => _('Workflows'),
         );
         
@@ -85,7 +82,7 @@ class KTWorkflowDispatcher extends KTStandardDispatcher {
         $add_transition_fields[] = new KTLookupWidget(_('Guard Permission.'), _('Which permission must the user have in order to follow this transition?'), 'fPermissionId', $oWorkflow->getStartStateId(), $this->oPage, true, null, null, $aOptions);
         
         $this->aBreadcrumbs[] = array(
-            'action' => 'manageWorkflows',
+            'url' => $_SERVER['PHP_SELF'],
             'name' => _('Workflows'),
         );
         $this->aBreadcrumbs[] = array(
@@ -201,7 +198,7 @@ class KTWorkflowDispatcher extends KTStandardDispatcher {
         }
         $aTransitionsSelected = KTWorkflowUtil::getTransitionsFrom($oState, array('ids' => true));
         $this->aBreadcrumbs[] = array(
-            'action' => 'manageWorkflows',
+            'url' => $_SERVER['PHP_SELF'],
             'name' => _('Workflows'),
         );
         $this->aBreadcrumbs[] = array(
@@ -407,7 +404,7 @@ class KTWorkflowDispatcher extends KTStandardDispatcher {
         }
         
         $this->aBreadcrumbs[] = array(
-            'action' => 'manageWorkflows',
+            'url' => $_SERVER['PHP_SELF'],
             'name' => _('Workflows'),
         );
         $this->aBreadcrumbs[] = array(
@@ -485,8 +482,5 @@ class KTWorkflowDispatcher extends KTStandardDispatcher {
     // }}}
 
 }
-
-//$d =& new KTWorkflowDispatcher;
-//$d->dispatch();
 
 ?>
