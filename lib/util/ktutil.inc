@@ -437,6 +437,18 @@ class KTUtil {
         return false;
     }
     // }}}
+
+    // {{{ addQueryString 
+    function addQueryString($url, $qs) {
+        require_once(KT_DIR . '/thirdparty/pear/Net/URL.php');
+        $oUrl = new Net_URL($url);
+        $aQs = $oUrl->_parseRawQuerystring($qs);
+        foreach ($aQs as $k => $v) {
+            $oUrl->addQueryString($k, $v);
+        }
+        return $oUrl->getUrl();
+    }
+    // }}}
 }
 
 ?>
