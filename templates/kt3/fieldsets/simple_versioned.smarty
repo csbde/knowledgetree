@@ -3,7 +3,7 @@
     <p class="descriptiveText">
 	{capture assign=name}
 	{$fieldset->getName()}
-	{/capture
+	{/capture}
         {i18n arg_name=$name}This is the data assigned to the
 <strong>#name#</strong> aspect of this document.{/i18n}
     </p>
