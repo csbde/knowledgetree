@@ -5,7 +5,7 @@
  *
  * Small non-domain-specific utility functions
  *
- * Copyright (c) 2004 Jam Warehouse http://www.jamwarehouse.com
+ * Copyright (c) 2004, 2005 Jam Warehouse http://www.jamwarehouse.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -169,8 +169,16 @@ class KTUtil {
     /**
      * Portably execute a command on any of the supported platforms.
      */
-    function pexec($aCmd) {
-        $sCmd = KTUtil::safeShellString($aCmd);
+    function pexec($aCmd, $aOptions = null) {
+        if (is_array($aCmd)) {
+            $sCmd = KTUtil::safeShellString($aCmd);
+        } else {
+            $sCmd = $aCmd;
+        }
+        $sAppend = KTUtil::arrayGet($aOptions, 'append');
+        if ($sAppend) {
+            $sCmd .= " >> " . escapeshellarg($sAppend);
+        }
         if (OS_WINDOWS) {
             $sCmd = "start /b " . $sCmd;
         }
