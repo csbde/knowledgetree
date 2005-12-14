@@ -48,7 +48,7 @@
             <td>
                <a
 href="{$smarty.server.PHP_SELF}?action=deletePermission&id={$oPerm->getId()}"
-class="ktAction ktDelete">{$i18n}Delete Permission{/i18n}</a>
+class="ktAction ktDelete">{i18n}Delete Permission{/i18n}</a>
             </td>
           { /if }
         </tr>
