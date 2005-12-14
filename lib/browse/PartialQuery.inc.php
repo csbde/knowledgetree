@@ -222,7 +222,7 @@ class SimpleSearchQuery extends PartialQuery {
     
     function getDocumentCount() { 
         $aOptions = array(
-            'select' => 'count(D.id) AS cnt',
+            'select' => 'count(DISTINCT D.id) AS cnt',
         );
         $aQuery = $this->getQuery($aOptions);
         $iRet = DBUtil::getOneResultKey($aQuery, 'cnt');
@@ -236,7 +236,7 @@ class SimpleSearchQuery extends PartialQuery {
     // we also leak like ---- here, since getting the score is ... fiddly.  and expensive.
     function getDocuments($iBatchSize, $iBatchStart, $sSortColumn, $sSortOrder, $sJoinClause = null, $aJoinParams = null) { 
         $aOptions = array(
-            'select' => 'D.id AS id',
+            'select' => 'DISTINCT D.id AS id',
         );
         list($sQuery, $aParams) = $this->getQuery($aOptions);
 
@@ -299,7 +299,7 @@ class BooleanSearchQuery extends PartialQuery {
     
     function getDocumentCount() { 
         $aOptions = array(
-            'select' => 'count(D.id) AS cnt',
+            'select' => 'count(DISTINCT D.id) AS cnt',
         );
         $aQuery = $this->getQuery($aOptions);
         $iRet = DBUtil::getOneResultKey($aQuery, 'cnt');
@@ -313,7 +313,7 @@ class BooleanSearchQuery extends PartialQuery {
     // we also leak like ---- here, since getting the score is ... fiddly.  and expensive.
     function getDocuments($iBatchSize, $iBatchStart, $sSortColumn, $sSortOrder, $sJoinClause = null, $aJoinParams = null) { 
         $aOptions = array(
-            'select' => 'D.id AS id',
+            'select' => 'DISTINCT D.id AS id',
         );
         list($sQuery, $aParams) = $this->getQuery($aOptions);
 
