@@ -1,11 +1,40 @@
 <?php
 
 class KTBaseIndexerTrigger { 
+    /**
+     * Which MIME types that this indexer acts upon.
+     */
     var $mimetypes = array(
-       'text/plain' => true,
+       // 'text/plain' => true,
     );
-    var $command = 'catdoc';          // could be any application.
-    var $args = array("-w");
+
+    /**
+     * commandconfig is where to find the command to use in the
+     * KnowledgeTree configuration.  For example, it may be
+     * "indexing/catdoc", which would correspond to the "indexing"
+     * section of config.ini, item "catdoc".
+     */
+    var $commandconfig = '';    // Something like "indexing/catdoc"
+
+    /**
+     * In the absence of the command in the configuration, what command
+     * to use directly.
+     */
+    var $command = '';          // Something like "catdoc"
+
+
+    /**
+     * Any options to send to the command before the input file.
+     */
+    var $args = array();
+
+    /**
+     * Setting use_pipes to true will cause the output of the command to
+     * be sent to a temporary file created and chosen by the system.
+     *
+     * If it is false, the temporary file will be sent as the last
+     * parameter.
+     */
     var $use_pipes = true;
 
     function setDocument($oDocument) {
@@ -48,19 +77,19 @@ class KTBaseIndexerTrigger {
     
     // handles certain, _very_ simple reader types.
     function extract_contents($sFilename, $sTempFilename) {
-        $cmdline = array($this->command);
+        $sCommand = KTUtil::findCommand($this->commandconfig, $this->command);
+
+        $cmdline = array($sCommand);
         $cmdline = array_merge($cmdline, $this->args);
         $cmdline[] = $sFilename;
         
+        $aOptions = array();
         if ($this->use_pipes) {
-            $command = KTUtil::safeShellString($cmdline) . " >> " . $sTempFilename;
+            $aOptions["append"] = $sTempFilename;
         } else {
             $cmdline[] = $sTempFilename;
-            
-            $command = KTUtil::safeShellString($cmdline);
-        
         }
-        system($command);
+        KTUtil::pexec($cmdline, $aOptions);
         $contents = file_get_contents($sTempFilename);
         
         return $contents;
