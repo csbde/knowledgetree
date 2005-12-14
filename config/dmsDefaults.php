@@ -343,6 +343,7 @@ if (array_key_exists('HTTPS', $_SERVER)) {
     }
 }
 $oKTConfig->setdefaultns("KnowledgeTree", "rootUrl", $KTInit->guessRootUrl());
+$oKTConfig->setdefaultns("KnowledgeTree", "execSearchPath", $_SERVER['PATH']);
 $oKTConfig->setdefaultns("KnowledgeTree", "pathInfoSupport", true);
 $oKTConfig->setdefaultns("config", "useDatabaseConfiguration", false);
 $oKTConfig->setdefaultns("tweaks", "browseToRoot", false);
@@ -351,8 +352,7 @@ $oKTConfig->setdefaultns("tweaks", "phpErrorLogFile", false);
 $oKTConfig->setdefaultns("tweaks", "developmentWindowLog", false);
 
 $oKTConfig->setdefaultns(null, "logLevel", 'INFO');
-$oKTConfig->setdefaultns(null, "unzipCommand", 'unzip');
-$oKTConfig->setdefaultns(null, "execSearchPath", $_SERVER['PATH']);
+$oKTConfig->setdefaultns("import", "unzip", 'unzip');
 
 $KTInit->readConfig();
 
