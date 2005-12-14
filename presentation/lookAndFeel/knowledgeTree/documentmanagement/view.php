@@ -153,7 +153,8 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 		// fixme check perms
 		
 		$this->oDocument =& $oDocument;
-        $this->aBreadcrumbs = array_merge($this->aBreadcrumbs, KTBrowseUtil::breadcrumbsForDocument($oDocument));
+        $aOptions = array("final" => false);
+        $this->aBreadcrumbs = array_merge($this->aBreadcrumbs, KTBrowseUtil::breadcrumbsForDocument($oDocument, $aOptions));
 		$this->oPage->setBreadcrumbDetails(_("history"));
 		$this->addPortlets("History");
 		
@@ -219,11 +220,17 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 		$this->oPage->title = _("Document History") . " : " . $oDocument->getName();
         $oTemplating = new KTTemplating;
 		$oTemplate = $oTemplating->loadTemplate("kt3/document/metadata_history");
+
+        $aActions = KTDocumentActionUtil::getDocumentActionsByNames(array('ktcore.actions.document.view'));
+        $oAction = $aActions[0];
+        $oAction->setDocument($this->oDocument);
+        
 		$aTemplateData = array(
               "context" => $this,
 			  "document_id" => $document_id,
 			  "document" => $oDocument,
 			  "versions" => $aVersions,
+              'downloadaction' => $oAction,
 		);
 		return $oTemplate->render($aTemplateData);		
 	}
@@ -253,7 +260,8 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 		    return $this->do_error();
 		}
 		$this->oDocument =& $oDocument;
-        $this->aBreadcrumbs = array_merge($this->aBreadcrumbs, KTBrowseUtil::breadcrumbsForDocument($oDocument));
+        $aOptions = array("final" => false);
+        $this->aBreadcrumbs = array_merge($this->aBreadcrumbs, KTBrowseUtil::breadcrumbsForDocument($oDocument, $aOptions));
 		$this->oPage->setBreadcrumbDetails(_("compare versions"));
 		
 		$comparison_version = KTUtil::arrayGet($_REQUEST, 'fComparisonVersion');
