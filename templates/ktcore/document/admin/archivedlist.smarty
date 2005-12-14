@@ -1,4 +1,4 @@
-<h2>{i18n}Archived Documents{i18n}</h2>
+<h2>{i18n}Archived Documents{/i18n}</h2>
 
 <p class="descriptiveText">{i18n}In order to keep the documents which are visible useful
 to end users, it is possible to <strong>archive</strong> old documents.  Users who
