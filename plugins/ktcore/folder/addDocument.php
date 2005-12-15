@@ -95,7 +95,7 @@ class KTFolderAddDocumentAction extends KTFolderAction {
             'contents' => new KTFSFileLike($_FILES['file']['tmp_name']),
             'documenttype' => $this->oDocumentType,
             'metadata' => $aFields,
-            'description' => $_REQUEST['fName'],
+            'description' => $_REQUEST['title'],
         );
 
         $mpo->start();
