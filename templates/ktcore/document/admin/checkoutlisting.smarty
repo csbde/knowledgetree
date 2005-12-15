@@ -10,6 +10,7 @@ override the checked-out status.{/i18n}</p>
     <thead>
         <tr>
             <th>{i18n}Document{/i18n}</th>
+            <th>{i18n}Checked out by{/i18n}</th>
             <th>{i18n}Location{/i18n}</th>
             <th>&nbsp;</th>
         </tr>
@@ -19,6 +20,10 @@ override the checked-out status.{/i18n}</p>
       {foreach item=oDocument from=$documents}
         <tr class="{cycle values=even,odd}">
             <td>{$oDocument->getName()}</td>
+            <td>{assign var=iUserId
+value=$oDocument->getCheckedOutUserId()}{php}$oUser =
+User::get($this->_tpl_vars['iUserId']);  if ($oUser) { print
+$oUser->getName(); }{/php}</td>
             <td class="descriptiveText">{$oDocument->getDisplayPath()}</td>
             <td><a href="?action=confirm&fDocumentId={$oDocument->getId()}">{i18n}force checkin{/i18n}</a></td>
         </tr>
