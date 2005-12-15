@@ -168,6 +168,7 @@ value="{$iRoleId}"></td>
 
 
 
+{if $iFolderId != 1}
 <div style="text-align: center; padding-top: 2px">
 <span style="border: 1px solid #cccccc; background-color: #ffeeee;
 padding: 2px; padding-right: 1em; padding-left: 1em">
@@ -182,6 +183,7 @@ parent's permissions{/i18n}</a>]
 { /if }
 </span>
 </div>
+{ /if }
 
 <h2>Dynamic permissions</h2>
 
