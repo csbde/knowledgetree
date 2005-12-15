@@ -104,7 +104,7 @@ if (!function_exists('version_compare')) {
             }
             if ($i2 == '#') {
                 $i2 = '';
-            } elseif (is_numeric($i2])) {
+            } elseif (is_numeric($i2)) {
                 $i2 = '#';
             }
             if (isset($versions[$i1]) && isset($versions[$i2])) {
