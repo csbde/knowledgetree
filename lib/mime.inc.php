@@ -82,13 +82,6 @@ class KTMime {
             $sType = finfo_file($res, $sFileName);
         }
 
-        if (!$sType && function_exists('mime_content_type')) {
-            $sFile = ini_get('mime_magic.magicfile');
-            if (file_exists($sFile)) {
-                $sType = mime_content_type($sFileName);
-            }
-        }
-
         if (!$sType) {
             if (file_exists('/usr/bin/file')) {
                 $aCmd = array('/usr/bin/file', '-bi', $sFileName);
