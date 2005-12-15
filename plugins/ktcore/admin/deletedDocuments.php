@@ -165,7 +165,7 @@ class DeletedDocumentsDispatcher extends KTAdminDispatcher {
                 $oDoc->setStatusId(LIVE);
                 $res = $oDoc->update();
                 if (PEAR::isError($res) || ($res == false)) {
-                    PhysicalDocumentManager::delete($oDoc)
+                    PhysicalDocumentManager::delete($oDoc);
                     $aErrorDocuments[] = $oDoc->getName;
                     continue; // skip transactions, etc.
                 }
