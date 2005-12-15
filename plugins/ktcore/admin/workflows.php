@@ -132,9 +132,16 @@ class KTWorkflowDispatcher extends KTStandardDispatcher {
 
     // {{{ do_newWorkflow
     function do_newWorkflow() {
+        $aErrorOptions = array(
+            'redirect_to' => array('main'),
+            'message' => 'No name given',
+        );
+        $sName = KTUtil::arrayGet($_REQUEST, 'fName');
+        $sName = $this->oValidator->validateString($sName,
+                $aErrorOptions);
         $res = KTWorkflow::createFromArray(array(
-            'name' => $_REQUEST['fName'],
-            'humanname' => $_REQUEST['fName'],
+            'name' => $sName,
+            'humanname' => $sName,
         ));
         $this->oValidator->notError($res, array(
             'redirect_to' => array('main'),
