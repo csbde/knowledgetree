@@ -106,8 +106,6 @@ class KTSmartyTemplate extends KTTemplate {
         if (empty($sDomain)) {
             $sDomain = 'knowledgeTree';
         }
-        putenv("LANG=de_DE");
-        setlocale(LC_ALL, 'de_DE');
         $oRegistry =& KTi18nRegistry::getSingleton();
         $oi18n = $oRegistry->geti18n($sDomain);
         $content = trim($content);
