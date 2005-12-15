@@ -2,7 +2,7 @@
 
 class KTPowerpointIndexerTrigger extends KTBaseIndexerTrigger {
     var $mimetypes = array(
-       'application/msword' => true,
+       'application/vnd.ms-powerpoint' => true,
     );
     var $command = 'catppt';          // could be any application.
     var $commandconfig = 'indexer/catppt';          // could be any application.
