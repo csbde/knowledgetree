@@ -17,9 +17,11 @@ class KTi18nRegistry {
         if (empty($sDirectory)) {
             $sDirectory = KT_DIR . '/i18n';
         }
-        $this->_ai18nDetails[$sDomain] = array($sDomain, $sDirectory);
-        bindtextdomain($sDomain, $sDirectory);
-        bind_textdomain_codeset($sDomain, 'UTF-8');
+        if (in_array("gettext", get_loaded_extensions())) {
+            $this->_ai18nDetails[$sDomain] = array($sDomain, $sDirectory);
+            bindtextdomain($sDomain, $sDirectory);
+            bind_textdomain_codeset($sDomain, 'UTF-8');
+        }
     }
 
     function &geti18n($sDomain) {
