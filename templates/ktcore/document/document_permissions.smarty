@@ -37,6 +37,7 @@ td.false { background-color: #ffaaaa; text-align: centre }
 { /if }
 <div class="view" id="view">
 <table class="pretty" cellspacing="0" cellpadding="0" border="0" width="100%">
+
 <thead>
 <tr>
 <th>Group</th>
@@ -56,6 +57,34 @@ td.false { background-color: #ffaaaa; text-align: centre }
 <td class="true">{i18n}True{/i18n}</td>
 { else }
 <td class="false">{i18n}False{/i18n}</td>
+{ /if }
+  { /foreach }
+</tr>
+{ /foreach }
+</tbody>
+</table>
+
+
+<table class="pretty" cellspacing="0" cellpadding="0" border="0" width="100%">
+<thead>
+<tr>
+<th>Role</th>
+{ foreach item=oPerm from=$permissions }
+<th title="{$oPerm->sName}">{$oPerm->sHumanName}</th>
+{ /foreach }
+</tr>
+</thead>
+<tbody>
+{ foreach item=oRole from=$roles }
+<td>{$oRole->getId()} / {$oRole->getName()}</td>
+  { assign var=iRoleId value=$oRole->getId() }
+  { foreach item=oPerm from=$permissions }
+    { assign var=iPermId value=$oPerm->getId() }
+    { assign var=bHasPerm value=$aMapPermissionRole[$iPermId][$iRoleId] }
+{ if $bHasPerm }
+<td class="true">True</td>
+{ else }
+<td class="false">False</td>
 { /if }
   { /foreach }
 </tr>
@@ -114,38 +143,40 @@ value="{$iGroupID}"></td>
 </tbody>
 </table>
 
-<input type="submit" name="submit" value="{i18n}Update{/i18n}">
-</form>
-</div>
-{ /if }
 
-<h2>{i18n}User permissions{/i18n}</h2>
-
-<div>
 <table class="pretty" cellspacing="0" cellpadding="0" border="0" width="100%">
 <thead>
 <tr>
-<th>{i18n}User{/i18n}</th>
+<th>Role</th>
 { foreach item=oPerm from=$permissions }
 <th title="{$oPerm->sName}">{$oPerm->sHumanName}</th>
 { /foreach }
 </tr>
 </thead>
+
 <tbody>
-{ foreach item=oUser from=$users }
-<td>{$oUser->getID()} / {$oUser->getName()}</td>
-  { assign var=iUserID value=$oUser->getID() }
+{ foreach item=oRole from=$roles }
+<td>{$oRole->getId()} / {$oRole->getName()}</td>
+  { assign var=iRoleId value=$oRole->getId() }
   { foreach item=oPerm from=$permissions }
-    { assign var=iPermID value=$oPerm->getID() }
-    { assign var=bHasPerm value=$aMapPermissionUser[$iPermID][$iUserID] }
+    { assign var=iPermId value=$oPerm->getId() }
+    { assign var=bHasPerm value=$aMapPermissionRole[$iPermId][$iRoleId] }
+
 { if $bHasPerm }
-<td class="true">{i18n}True{/i18n}</td>
+<td class="true"><input type="checkbox" name="foo[{$iPermId}][role][]"
+value="{$iRoleId}" checked="true"></td>
 { else }
-<td class="false">{i18n}False{/i18n}</td>
+<td class="false"><input type="checkbox" name="foo[{$iPermId}][role][]"
+value="{$iRoleId}"></td>
 { /if }
   { /foreach }
 </tr>
 { /foreach }
 </tbody>
 </table>
+
+
+<input type="submit" name="submit" value="{i18n}Update{/i18n}">
+</form>
 </div>
+{ /if }

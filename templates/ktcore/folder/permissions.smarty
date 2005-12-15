@@ -65,21 +65,35 @@ MochiKit.DOM.hideElement('view');">{i18n}Edit{/i18n}</a>
 </tbody>
 </table>
 
-<div style="text-align: center; padding-top: 2px">
-<span style="border: 1px solid #cccccc; background-color: #ffeeee;
-padding: 2px; padding-right: 1em; padding-left: 1em">
-{ if $inherited }
-{i18n}Inherited from:{/i18n} {$inherited}
-[<a
-href="{$smarty.server.PHP_SELF}?action=copyPermissions&fFolderId={$iFolderId}">{i18n}Copy{/i18n}</a>]
+<table class="pretty" cellspacing="0" cellpadding="0" border="0" width="100%">
+<thead>
+<tr>
+<th>Role</th>
+{ foreach item=oPerm from=$permissions }
+<th title="{$oPerm->sName}">{$oPerm->sHumanName}</th>
+{ /foreach }
+</tr>
+</thead>
+<tbody>
+{ foreach item=oRole from=$roles }
+<td>{$oRole->getId()} / {$oRole->getName()}</td>
+  { assign var=iRoleId value=$oRole->getId() }
+  { foreach item=oPerm from=$permissions }
+    { assign var=iPermId value=$oPerm->getId() }
+    { assign var=bHasPerm value=$aMapPermissionRole[$iPermId][$iRoleId] }
+{ if $bHasPerm }
+<td class="true">True</td>
 { else }
-[<a
-href="{$smarty.server.PHP_SELF}?action=inheritPermissions&fFolderId={$iFolderId}">{i18n}Use
-parent's permissions{/i18n}</a>]
+<td class="false">False</td>
 { /if }
-</span>
+  { /foreach }
+</tr>
+{ /foreach }
+</tbody>
+</table>
+
 </div>
-</div>
+
 
 { if $edit }
 <div class="edit" id="edit">
@@ -115,10 +129,59 @@ value="{$iGroupId}"></td>
 </tbody>
 </table>
 
+<table class="pretty" cellspacing="0" cellpadding="0" border="0" width="100%">
+<thead>
+<tr>
+<th>Role</th>
+{ foreach item=oPerm from=$permissions }
+<th title="{$oPerm->sName}">{$oPerm->sHumanName}</th>
+{ /foreach }
+</tr>
+</thead>
+
+<tbody>
+{ foreach item=oRole from=$roles }
+<td>{$oRole->getId()} / {$oRole->getName()}</td>
+  { assign var=iRoleId value=$oRole->getId() }
+  { foreach item=oPerm from=$permissions }
+    { assign var=iPermId value=$oPerm->getId() }
+    { assign var=bHasPerm value=$aMapPermissionRole[$iPermId][$iRoleId] }
+
+{ if $bHasPerm }
+<td class="true"><input type="checkbox" name="foo[{$iPermId}][role][]"
+value="{$iRoleId}" checked="true"></td>
+{ else }
+<td class="false"><input type="checkbox" name="foo[{$iPermId}][role][]"
+value="{$iRoleId}"></td>
+{ /if }
+  { /foreach }
+</tr>
+{ /foreach }
+</tbody>
+</table>
+
 <input type="submit" name="submit" value="{i18n}Update{/i18n}">
 </form>
+
 </div>
 { /if }
+
+
+
+<div style="text-align: center; padding-top: 2px">
+<span style="border: 1px solid #cccccc; background-color: #ffeeee;
+padding: 2px; padding-right: 1em; padding-left: 1em">
+{ if $inherited }
+{i18n}Inherited from:{/i18n} {$inherited}
+[<a
+href="{$smarty.server.PHP_SELF}?action=copyPermissions&fFolderId={$iFolderId}">{i18n}Copy{/i18n}</a>]
+{ else }
+[<a
+href="{$smarty.server.PHP_SELF}?action=inheritPermissions&fFolderId={$iFolderId}">{i18n}Use
+parent's permissions{/i18n}</a>]
+{ /if }
+</span>
+</div>
 
 <h2>Dynamic permissions</h2>
 
@@ -186,34 +249,3 @@ $this->assign("aPermissions", $this->_tpl_vars['oDynamicCondition']->getAssignme
 <input type="submit" name="submit" value="{i18n}Add{/i18n}" />
 </form>
 { /if }
-
-<h2>User permissions</h2>
-
-<div>
-<table class="pretty" cellspacing="0" cellpadding="0" border="0" width="100%">
-<thead>
-<tr>
-<th>{i18n}User{/i18n}</th>
-{ foreach item=oPerm from=$permissions }
-<th title="{$oPerm->sName}">{$oPerm->sHumanName}</th>
-{ /foreach }
-</tr>
-</thead>
-<tbody>
-{ foreach item=oUser from=$users }
-<td>{$oUser->getId()} / {$oUser->getName()}</td>
-  { assign var=iUserId value=$oUser->getId() }
-  { foreach item=oPerm from=$permissions }
-    { assign var=iPermId value=$oPerm->getId() }
-    { assign var=bHasPerm value=$aMapPermissionUser[$iPermId][$iUserId] }
-{ if $bHasPerm }
-<td class="true">{i18n}True{/i18n}</td>
-{ else }
-<td class="false">{i18n}False{/i18n}</td>
-{ /if }
-  { /foreach }
-</tr>
-{ /foreach }
-</tbody>
-</table>
-</div>

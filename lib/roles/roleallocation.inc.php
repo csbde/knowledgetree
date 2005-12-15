@@ -151,6 +151,34 @@ class RoleAllocation extends KTEntity {
 		return $aFullGroups;
 	}
 	
+	function getUserIds() {
+	    $oDescriptor = $this->getPermissionDescriptor();
+		$aUsers = array();
+		if (PEAR::isError($oDescriptor) || ($oDescriptor == false)) {
+		     return $aUsers;
+		}
+		$aAllowed = $oDescriptor->getAllowed();
+		if ($aAllowed['user'] !== null) {
+		    $aUsers = $aAllowed['user'];
+		} 
+		
+		return $aUsers;
+	}
+	
+	function getGroupIds() {
+	    $oDescriptor = $this->getPermissionDescriptor();
+		$aGroups = array();
+		if (PEAR::isError($oDescriptor) || ($oDescriptor == false)) {
+		     return $aGroups;
+		}
+		$aAllowed = $oDescriptor->getAllowed();
+		if ($aAllowed['group'] !== null) {
+		    $aGroups = $aAllowed['group'];
+		} 
+		
+		return $aGroups;
+	}	
+	
 	// utility function to establish user membership in this allocation.
 	// FIXME nbm:  is there are more coherent way to do this ITO your PD infrastructure?
 	function hasMember($oUser) {
