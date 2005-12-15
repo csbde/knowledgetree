@@ -4,7 +4,7 @@ require_once(KT_DIR . '/plugins/ktstandard/contents/BaseIndexer.php');
 
 class KTPostscriptIndexerTrigger extends KTBaseIndexerTrigger {
     var $mimetypes = array(
-       'application/pdf' => true,
+       'application/postscript' => true,
     );
     var $command = 'pstotext';          // could be any application.
     var $commandconfig = 'indexer/pstotext';          // could be any application.
