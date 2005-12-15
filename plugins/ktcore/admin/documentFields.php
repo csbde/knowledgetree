@@ -662,7 +662,7 @@ class KTDocumentFieldDispatcher extends KTStandardDispatcher {
         foreach ($treeToRender->contents[$subnode] as $subnode_id => $subnode_val)
         {
             if ($subnode_id !== "leaves") {
-                $treeStr .= '<li class="treenode"><a class="pathnode"  onclick="toggleElementClass(\'active\', this.parentNode);">' . $treeToRender->mapnodes[$subnode_val]->getName() . '</a>';
+                $treeStr .= '<li class="treenode active"><a class="pathnode"  onclick="toggleElementClass(\'active\', this.parentNode);">' . $treeToRender->mapnodes[$subnode_val]->getName() . '</a>';
                 $treeStr .= $this->_evilActionHelper($treeToRender->field_id, false, $subnode_val);
                 $treeStr .= $this->_evilTreeRecursion($subnode_val, $treeToRender);
                 $treeStr .= '</li>';
@@ -691,7 +691,7 @@ class KTDocumentFieldDispatcher extends KTStandardDispatcher {
 
         // since the root is virtual, we need to fake it here.
         // the inner section is generised.
-        $treeStr .= '<ul class="kt_treenodes"><li class="treenode"><a class="pathnode"  onclick="toggleElementClass(\'active\', this.parentNode);">Root</a>';
+        $treeStr .= '<ul class="kt_treenodes"><li class="treenode active"><a class="pathnode"  onclick="toggleElementClass(\'active\', this.parentNode);">Root</a>';
         $treeStr .= ' (<a href="?action=editTree&field_id='.$treeToRender->field_id.'&current_node=0">edit</a>)';
         $treeStr .= '<ul>';
         //$default->log->debug("EVILRENDER: " . print_r($treeToRender, true));
@@ -701,7 +701,7 @@ class KTDocumentFieldDispatcher extends KTStandardDispatcher {
             // leaves are handled differently.
             if ($node_id !== "leaves") {
                 // $default->log->debug("EVILRENDER: " . print_r($subtree_nodes, true));
-                $treeStr .= '<li class="treenode"><a class="pathnode" onclick="toggleElementClass(\'active\', this.parentNode);">' . $treeToRender->mapnodes[$subtree_nodes]->getName() . '</a>';
+                $treeStr .= '<li class="treenode active"><a class="pathnode" onclick="toggleElementClass(\'active\', this.parentNode);">' . $treeToRender->mapnodes[$subtree_nodes]->getName() . '</a>';
                 $treeStr .= $this->_evilActionHelper($treeToRender->field_id, false, $subtree_nodes);
                 $treeStr .= $this->_evilTreeRecursion($subtree_nodes, $treeToRender);
                 $treeStr .= '</li>';
