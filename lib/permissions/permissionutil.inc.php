@@ -10,6 +10,7 @@ require_once(KT_LIB_DIR . "/permissions/permissionlookupassignment.inc.php");
 require_once(KT_LIB_DIR . "/permissions/permissionobject.inc.php");
 require_once(KT_LIB_DIR . "/permissions/permissiondynamiccondition.inc.php");
 require_once(KT_LIB_DIR . "/groups/GroupUtil.php");
+require_once(KT_LIB_DIR . "/roles/roleallocation.inc.php");
 
 class KTPermissionUtil {
     // {{{ generateDescriptor
@@ -182,9 +183,11 @@ class KTPermissionUtil {
             $oPD = KTPermissionDescriptor::get($oPA->getPermissionDescriptorID());
             $aGroupIDs = $oPD->getGroups();
             $aUserIDs = array();
+            $aRoleIDs = $oPD->getRoles();
             $aAllowed = array(
                 "group" => $aGroupIDs,
                 "user" => $aUserIDs,
+                "role" => $aRoleIDs,
             );
             $aMapPermAllowed[$oPA->getPermissionID()] = $aAllowed;
         }
@@ -202,6 +205,31 @@ class KTPermissionUtil {
                             $aCurrentAllowed["group"][] = $iGroupId;
                             $aMapPermAllowed[$iPermissionId] = $aCurrentAllowed;
                         }
+                    }
+                }
+            }
+        }
+
+        // if we have roles:  nearest folder.
+        $iRoleSourceFolder = null;
+        if (is_a($oFolderOrDocument, 'Document')) { $iRoleSourceFolder = $oFolderOrDocument->getFolderID(); }
+        else { $iRoleSourceFolder = $oFolderOrDocument->getId(); }
+            
+        // very minor perf win:  map role_id (in context) to PD.
+        $_roleCache = array(); 
+            
+        foreach ($aMapPermAllowed as $iPermissionId => $aAllowed) {
+            if (array_key_exists('role', $aAllowed)) {
+                foreach ($aAllowed['role'] as $iRoleId) {
+                    // store the PD <-> RoleId map
+                    if (!array_key_exists($iRoleId, $_roleCache)) {
+                        $oRoleAllocation =& RoleAllocation::getAllocationsForFolderAndRole($iRoleSourceFolder, $iRoleId);
+                        $_roleCache[$iRoleId] = $oRoleAllocation;
+                    }
+                    // roles are _not_ always assigned (can be null at root)
+                    if ($_roleCache[$iRoleId] != null) {
+                        $aAllowed['user'] = array_merge($aAllowed['user'], $_roleCache[$iRoleId]->getUsers());
+                        $aAllowed['group'] = array_merge($aAllowed['group'], $_roleCache[$iRoleId]->getGroups());
                     }
                 }
             }

@@ -46,7 +46,7 @@ $sectionName = "browse";
 
 class BrowseDispatcher extends KTStandardDispatcher {
 
-    var $oFolder = null;    
+    var $oFolder = null;
     var $sSection = "browse";
     var $browse_mode = null;
     var $query = null;
@@ -79,12 +79,12 @@ class BrowseDispatcher extends KTStandardDispatcher {
 
             // here we need the folder object to do the breadcrumbs.
             $oFolder =& Folder::get($folder_id);
+            $this->oFolder =& $oFolder;
             if (PEAR::isError($oFolder)) {
                 $this->oPage->addError(_("invalid folder"));
                 $folder_id = 1;
                 $oFolder =& Folder::get($folder_id);
             }
-	    $this->oFolder =& $oFolder;
             
             // we now have a folder, and need to create the query.
             $this->oQuery =  new BrowseQuery($oFolder->getId());

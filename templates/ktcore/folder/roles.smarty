@@ -1,0 +1,47 @@
+<h2>{i18n}Allocate Roles{/i18n}</h2>
+
+<p class="descriptiveText">{i18n}
+    In many cases, workflow actions will be assigned to certain <strong>roles</strong>
+    (e.g. Manager, Interviewer, Researcher, Journalist).  You can assign these roles
+    to specific groups in particular areas of the document management system.
+{/i18n}</p>
+
+<div class='ktInfo'><p><strong>{i18n}Warning:{/i18n}</strong>{i18n} Please note that changing
+role allocations can take very long time, depending on the number of folders below this one.{/i18n}</p></div>
+
+<table class="listing">
+<thead>
+    <tr>
+        <th>{i18n}Role{/i18n}</th>
+        <th>{i18n}Allocated users{/i18n}</th>
+        <th>{i18n}Edit Users{/i18n}</th>
+        <th>{i18n}Edit Groups{/i18n}</th>
+        <th>{i18n}Use Parent{/i18n}</th>
+    </tr>
+</thead>
+<tbody>
+{foreach item=aRole key=role_id from=$roles}
+    <tr class="{cycle values=odd,even}">
+        <td>{$aRole.name}</td>
+        <td>
+           {if ($aRole.allocation_id === null)}
+              <strong>{i18n}inherited from parent folder.{/i18n}</strong><br />
+              <span class="descriptiveText">
+           {/if}
+           {if ($aRole.users != null)}<strong>{i18n}Users:{/i18n}</strong> {$aRole.users}<br />{/if}
+           {if ($aRole.groups != null)}<strong>{i18n}Groups:{/i18n}</strong> {$aRole.groups}{/if}
+           {if ($aRole.allocation_id === null)}
+              </span class="descriptiveText">
+           {/if}
+        </td>
+        {if ($aRole.allocation_id === null)}
+        <td colspan="3"><a href="{$smarty.server.PHP_SELF}?action=overrideParent&role_id={$role_id}&fFolderId={$context->oFolder->getId()}">{i18n}Override Parent Allocation{/i18n}</a></td>
+        {else}
+        <td><a href="{$smarty.server.PHP_SELF}?action=editRoleUsers&alloc_id={$aRole.allocation_id}&fFolderId={$context->oFolder->getId()}" class="ktAction ktEdit" title="{i18n}Edit{/i18n}">Edit</a></td>
+        <td><a href="{$smarty.server.PHP_SELF}?action=editRoleGroups&alloc_id={$aRole.allocation_id}&fFolderId={$context->oFolder->getId()}" class="ktAction ktEdit" title="{i18n}Edit{/i18n}">Edit</a></td>
+        <td><a href="{$smarty.server.PHP_SELF}?action=useParent&role_id={$role_id}&fFolderId={$context->oFolder->getId()}" class="ktAction ktDelete" title="{i18n}Use parent's allocation{/i18n}">{i18n}Use parent's allocation{/i18n}</a></td>
+        {/if}
+    </tr>
+{/foreach}
+</tbody>
+</table>

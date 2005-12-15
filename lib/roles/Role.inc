@@ -21,170 +21,43 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * @version $Revision$
- * @author Rob Cherry, Jam Warehouse (Pty) Ltd, South Africa
+ * @author Brad Shuttleworth, Jam Warehouse (Pty) Ltd, South Africa
  * @package lib.roles
  */
+ 
+require_once(KT_LIB_DIR . "/ktentity.inc"); 
+require_once(KT_LIB_DIR . "/util/ktutil.inc"); 
+ 
 class Role extends KTEntity {
 	
 	/** role object primary key */
 	var $iId;
-	/** role name */
 	var $sName;
-	/** is an active user*/
-	var $bActive;
-	/** role has document read permission */
-	var $bCanRead;
-	/** role has document write */
-	var $bCanWrite;
 	
+	var $_aFieldToSelect = array(
+	    'iId' => 'id',
+		'sName' => 'name',
+	);
 	
-	
-	/**
-	* Default constructor
-	*
-	* @param 	String		Role name
-	* @param 	boolean		Role has document read permission
-	* @param 	boolean		Role has document write permission
-	*
-	*/
-	function Role($sNewName = null, $bNewCanRead = false, $bNewCanWrite = false) {
+	function Role($sNewName = null, $x=null, $y=null) {
 		//object not yet created in database
 		$this->iId = -1;
 		$this->sName = $sNewName;
-		$this->bCanRead = $bNewCanRead;
-		$this->bCanWrite = $bNewCanWrite;
-	}
-	
-	function getName() {
-		return $this->sName;
-	}
-	
-	function getID() {
-		return $this->iId;
-	}
-	
-	function getActive() {
-		return $this->bActive;
-	}
-	
-	function setActive($bNewValue) {
-		$this->bActive = $bNewValue;
-	}
-	
-	function getReadable() {
-		return $this->bCanRead;
-	}
-	
-	function setReadable($bNewValue) {
-		$this->bCanRead = $bNewValue;
-	}
-	
-	function getWriteable() {
-		return $this->bCanWrite;
-	}
-	
-	function setWriteable($bNewValue) {
-		$this->bCanWrite = $bNewValue;
-	}
-	
-	function setName($bNewValue) {
-		$this->sName = $bNewValue;
 	}
 
-    function _fieldValues () {
-        return array(
+	function getName() { return $this->sName; }	
+	function setName($sNewValue) { $this->sName = $sNewValue; }
+	
+    function _fieldValues () { return array(
+		    'id' => $this->iId,
             'name' => $this->sName,
-            'active' => KTUtil::anyToBool($this->bActive),
-            'can_read' => KTUtil::anyToBool($this->bCanRead),
-            'can_write' => KTUtil::anyToBool($this->bCanWrite),
         );
     }
 
-    function _table () {
-        global $default;
-        return $default->roles_table;
-    }
-	
-	/**
-	* Delete the current object from the database
-	*
-	* @return boolean true on successful deletion, false otherwise and set $_SESSION["errorMessage"]
-	*
-	*/
-	function delete() {
-		global $default, $lang_err_database, $lang_err_object_key;
-		//only delete the object if it exists in the database
-		/*
-		if ($this->iId >= 0) {
-			
-			$sql = $default->db;
-			$query = "SELECT role_id FROM ". $default->groups_folders_approval_table ." WHERE role_id = ?";
-            $aParams = array($this->iId);
-            $sql->query(array($query, $aParams));
-            $rows = $sql->num_rows($sql);
-        
-             if ($rows > 0){
-                 $_SESSION["errorMessage"] = "Role::The Role " . $this->sName . " is Assigned to a folder!";
-                 return false;
-             }
-        }
-		*/
-        return parent::delete();
-	}
-	
-	/**
-	* Static function.
-	* Given a roles primary key it will create a 
-	* Roles object and populate it with the 
-	* corresponding database values
-	*
-	* @return Role populated Role object on successful query, false otherwise and set $_SESSION["errorMessage"]
-	*/
-	function & get($iRoleID) {
-		global $default;
-		$sql = $default->db;
-		$result = $sql->query(array("SELECT * FROM $default->roles_table WHERE id = ?", $iRoleID));/*ok*/
-		if ($result) {
-			if ($sql->next_record()) {
-				$oRole = & new Role($sql->f("name"), $sql->f("can_read"), $sql->f("can_write"));
-				$oRole->iId = $iRoleID;
-				$oRole->bActive = $sql->f("active");
-				return $oRole;
-			}
-			$_SESSION["errorMessage"] = $lang_err_object_not_exist . "id = " . $iRoleID . " table = $default->roles_table";
-			return false;
-		}
-		$_SESSION["errorMessage"] = $lang_err_database;
-		return false;
-	}
-
-/**
-	* Static function
-	* Get a list of web documents
-	*
-	* @param 	String		Where clause (not required)
-	*
-	* @return Array array of Role objects, false otherwise and set $_SESSION["errorMessage"]
-	*/
-	function getList($sWhereClause = null) {
-            return KTEntityUtil::getList(Role::_table(), 'Role', $sWhereClause);
-	}
-}
-
-
-
-/**
-* Static function
-*
-* Creates a roles object from an array
-*
-* @param 	Array		Array of parameters.  Must match order of parameters in constructor
-*
-* @return User user object
-*/
-function & roleCreateFromArray($aParameters) {
-	$oRole = & new Role($aParameters[0], $aParameters[1], $aParameters[2], $aParameters[3], $aParameters[4], $aParameters[5], $aParameters[6], $aParameters[7], $aParameters[8], $aParameters[9], $aParameters[10]);
-	return $oRole;
+    function _table () { return KTUtil::getTableName('roles'); }
+    function & get($iRoleId) { return KTEntityUtil::get('Role', $iRoleId); }
+	function & getList($sWhereClause = null) { return KTEntityUtil::getList2('Role', $sWhereClause); }
+	function & createFromArray($aOptions) { return KTEntityUtil::createFromArray('Role', $aOptions); }
 }
 
 ?>
