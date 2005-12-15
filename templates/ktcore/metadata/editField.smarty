@@ -52,7 +52,7 @@
 {if $oField->getHasLookup() and $oField->getHasLookupTree()}
 {assign var=iFieldId value=$oField->getId()}
 <a
-href="{"manageLookupTrees"|generateControllerUrl:"action=editTree&field_id=$iFieldId"}">{i18n}Manage
+href="?action=editTree&field_id={$iFieldId}">{i18n}Manage
 lookup tree{/i18n}</a>
 {/if}
 

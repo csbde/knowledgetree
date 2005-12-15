@@ -537,6 +537,206 @@ class KTDocumentFieldDispatcher extends KTStandardDispatcher {
         $this->successRedirectToMain(_('Fieldset deleted'));
     }
     // }}}
+
+
+// {{{ TREE
+    // create and display the tree editing form.
+    function do_editTree() {
+        global $default;
+        // extract.
+        $field_id = KTUtil::arrayGet($_REQUEST, 'field_id');
+        $current_node = KTUtil::arrayGet($_REQUEST, 'current_node', 0);
+        $subaction = KTUtil::arrayGet($_REQUEST, 'subaction');
+
+        // validate
+        if (empty($field_id)) { return $this->errorRedirectToMain(_("Must select a field to edit.")); }
+        $oField =& DocumentField::get($field_id);
+        if (PEAR::isError($oField)) { return $this->errorRedirectToMain(_("Invalid field.")); }
+
+        // under here we do the subaction rendering.
+        // we do this so we don't have to do _very_ strange things with multiple actions.
+        //$default->log->debug("Subaction: " . $subaction);
+        $fieldTree =& new MDTree();
+        $fieldTree->buildForField($oField->getId());
+
+        if ($subaction !== null) {
+            $target = 'editTree';
+            $msg = _('Changes saved.');
+            if ($subaction === "addCategory") {
+                $new_category = KTUtil::arrayGet($_REQUEST, 'category_name');
+                if (empty($new_category)) { return $this->errorRedirectTo("editTree", _("Must enter a name for the new category."), array("field_id" => $field_id)); }
+                else { $this->subact_addCategory($field_id, $current_node, $new_category, $fieldTree);}
+                $msg = _('Category added'). ': ' . $new_category;
+            }
+            if ($subaction === "deleteCategory") {
+                $this->subact_deleteCategory($fieldTree, $current_node);
+                $current_node = 0;      // clear out, and don't try and render the newly deleted category.
+                $msg = _('Category removed.');
+            }
+            if ($subaction === "linkKeywords") {
+                $keywords = KTUtil::arrayGet($_REQUEST, 'keywordsToAdd');
+                $this->subact_linkKeywords($fieldTree, $current_node, $keywords);
+                $current_node = 0;      // clear out, and don't try and render the newly deleted category.
+                $msg = _('Keywords added to category.');
+            }
+            if ($subaction === "unlinkKeyword") {
+                $keyword = KTUtil::arrayGet($_REQUEST, 'keyword_id');
+                $this->subact_unlinkKeyword($fieldTree, $keyword);
+                $msg = _('Keyword moved to base of tree.');
+            }
+            // now redirect
+            $query = 'field_id=' . $field_id;
+            return $this->successRedirectTo($target, $msg, $query);
+        }
+
+        if ($fieldTree->root === null) {
+            return $this->errorRedirectToMain(_("Error building tree. Is this a valid tree-lookup field?"));
+        }
+
+        // FIXME extract this from MDTree (helper method?)
+        $free_metadata = MetaData::getList('document_field_id = '.$oField->getId().' AND (treeorg_parent = 0 OR treeorg_parent IS NULL)');
+
+        // render edit template.
+        $oTemplating = new KTTemplating;
+        $oTemplate = $oTemplating->loadTemplate("ktcore/edit_lookuptrees");
+        $renderedTree = $this->_evilTreeRenderer($fieldTree);
+
+        $this->oPage->setTitle(_('Edit Lookup Tree'));
+
+        //$this->oPage->requireJSResource('thirdparty/js/MochiKit/Base.js');
+
+        $aTemplateData = array(
+            "field" => $oField,
+            "tree" => $fieldTree,
+            "renderedTree" => $renderedTree,
+            "currentNode" => $current_node,
+            "freechildren" => $free_metadata,
+            "context" => $this,
+        );
+        return $oTemplate->render($aTemplateData);
+    }
+
+    function subact_addCategory($field_id, $current_node, $new_category, &$constructedTree) {
+        $newCategory = MDTreeNode::createFromArray(array (
+             "iFieldId" => $field_id,
+             "sName" => $new_category,
+             "iParentNode" => $current_node,
+        ));
+        if (PEAR::isError($newCategory))
+        {
+            return false;
+        }
+        $constructedTree->addNode($newCategory);
+        return true;
+    }
+
+    function subact_deleteCategory(&$constructedTree, $current_node) {
+        $constructedTree->deleteNode($current_node);
+        return true;
+    }
+
+    function subact_unlinkKeyword(&$constructedTree, $keyword) {
+        $oKW = MetaData::get($keyword);
+        $constructedTree->reparentKeyword($oKW->getId(), 0);
+        return true;
+    }
+
+
+    function subact_linkKeywords(&$constructedTree, $current_node, $keywords) {
+        foreach ($keywords as $md_id)
+        {
+            $constructedTree->reparentKeyword($md_id, $current_node);
+        }
+        return true;
+    }
+
+    /* ----------------------- EVIL HACK --------------------------
+     *
+     *  This whole thing needs to replaced, as soon as I work out how
+     *  to non-sucking Smarty recursion.
+     */
+
+    function _evilTreeRecursion($subnode, $treeToRender)
+    {
+        $treeStr = "<ul>";
+        foreach ($treeToRender->contents[$subnode] as $subnode_id => $subnode_val)
+        {
+            if ($subnode_id !== "leaves") {
+                $treeStr .= '<li class="treenode"><a class="pathnode"  onclick="toggleElementClass(\'active\', this.parentNode);">' . $treeToRender->mapnodes[$subnode_val]->getName() . '</a>';
+                $treeStr .= $this->_evilActionHelper($treeToRender->field_id, false, $subnode_val);
+                $treeStr .= $this->_evilTreeRecursion($subnode_val, $treeToRender);
+                $treeStr .= '</li>';
+            }
+            else
+            {
+                foreach ($subnode_val as $leaf)
+                {
+                    $treeStr .= '<li class="leafnode">' . $treeToRender->lookups[$leaf]->getName();
+                    $treeStr .= $this->_evilActionHelper($treeToRender->field_id, true, $leaf);
+                    $treeStr .=  '</li>';            }
+                }
+        }
+        $treeStr .= '</ul>';
+        return $treeStr;
+
+    }
+
+    // I can't seem to do recursion in smarty, and recursive templates seems a bad solution.
+    // Come up with a better way to do this (? NBM)
+    function _evilTreeRenderer($treeToRender) {
+        //global $default;
+        $treeStr = "<!-- this is rendered with an unholy hack. sorry. -->";
+        $stack = array();
+        $exitstack = array();
+
+        // since the root is virtual, we need to fake it here.
+        // the inner section is generised.
+        $treeStr .= '<ul class="kt_treenodes"><li class="treenode"><a class="pathnode"  onclick="toggleElementClass(\'active\', this.parentNode);">Root</a>';
+        $treeStr .= ' (<a href="?action=editTree&field_id='.$treeToRender->field_id.'&current_node=0">edit</a>)';
+        $treeStr .= '<ul>';
+        //$default->log->debug("EVILRENDER: " . print_r($treeToRender, true));
+        foreach ($treeToRender->getRoot() as $node_id => $subtree_nodes)
+        {
+            //$default->log->debug("EVILRENDER: ".$node_id." => ".$subtree_nodes." (".($node_id === "leaves").")");
+            // leaves are handled differently.
+            if ($node_id !== "leaves") {
+                // $default->log->debug("EVILRENDER: " . print_r($subtree_nodes, true));
+                $treeStr .= '<li class="treenode"><a class="pathnode" onclick="toggleElementClass(\'active\', this.parentNode);">' . $treeToRender->mapnodes[$subtree_nodes]->getName() . '</a>';
+                $treeStr .= $this->_evilActionHelper($treeToRender->field_id, false, $subtree_nodes);
+                $treeStr .= $this->_evilTreeRecursion($subtree_nodes, $treeToRender);
+                $treeStr .= '</li>';
+            }
+            else
+            {
+                foreach ($subtree_nodes as $leaf)
+                {
+                    $treeStr .= '<li class="leafnode">' . $treeToRender->lookups[$leaf]->getName();
+                    $treeStr .= $this->_evilActionHelper($treeToRender->field_id, true, $leaf);
+                    $treeStr .=  '</li>';
+                }
+            }
+        }
+        $treeStr .= '</ul></li>';
+        $treeStr .= '</ul>';
+
+        return $treeStr;
+    }
+
+    // don't hate me.
+    function _evilActionHelper($iFieldId, $bIsKeyword, $current_node) {
+        $actionStr = " (";
+        if ($bIsKeyword === true) {
+           $actionStr .= '<a href="?action=editTree&field_id='.$iFieldId.'&keyword_id='.$current_node.'&subaction=unlinkKeyword">unlink</a>';
+        }
+        else
+        {
+           $actionStr .= '<a href="?action=editTree&field_id='.$iFieldId.'&current_node='.$current_node.'">add items</a> ';
+           $actionStr .= '| <a href="?action=editTree&field_id='.$iFieldId.'&current_node='.$current_node.'&subaction=deleteCategory">delete</a>';
+        }
+        $actionStr .= ")";
+        return $actionStr;
+    }
+// }}}
 }
 
 ?>
