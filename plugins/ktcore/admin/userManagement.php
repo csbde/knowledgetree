@@ -368,7 +368,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         
         $oUser->create();
         
-        $this->successRedirectToMain(_('Created new user') . ': "' . $oUser->getUsername() . '"');
+        $this->successRedirectToMain(_('Created new user') . ': "' . $oUser->getUsername() . '"', 'name=' . $oUser->getUsername());
     }
     
     function do_deleteUser() {
