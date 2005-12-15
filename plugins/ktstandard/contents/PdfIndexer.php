@@ -7,6 +7,7 @@ class KTPdfIndexerTrigger extends KTBaseIndexerTrigger {
        'application/pdf' => true,
     );
     var $command = 'pdftotext';          // could be any application.
+    var $commandconfig = 'indexer/pdftotext';          // could be any application.
     var $args = array("-nopgbrk");
     var $use_pipes = false;
     

@@ -5,6 +5,7 @@ class KTPowerpointIndexerTrigger extends KTBaseIndexerTrigger {
        'application/msword' => true,
     );
     var $command = 'catppt';          // could be any application.
+    var $commandconfig = 'indexer/catppt';          // could be any application.
     var $args = array();
     var $use_pipes = true;
     
