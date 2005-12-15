@@ -24,11 +24,13 @@
 informed when this state is reached.{/i18n}</p>
 
 
+{if $aRoles}
 <h3>{i18n}Roles{/i18n}</h3>
 {entity_checkboxes entities=$aRoles name="fRoleIds" multiple="true" selected=$aInformed.role assign=aBoxes}
 {foreach from=$aBoxes item=sBox}
 {$sBox}<br />
 {/foreach}
+{/if}
 
 <h3>{i18n}Groups{/i18n}</h3>
 {entity_checkboxes entities=$aGroups name="fGroupIds" multiple="true" selected=$aInformed.group assign=aBoxes}
@@ -50,11 +52,13 @@ informed when this state is reached.{/i18n}</p>
 </fieldset>
 
 
+{*
 <h3>{i18n}Assigned Permissions{/i18n}</h3>
 <p class="descriptiveText">{i18n}While in this workflow state, additional permissions
 may be given.  This is done either to expose the document to more users
 or to allow a particular role to be fulfilled before a workflow
 transition can be accomplished.{/i18n}</p>
+*}
 
 
 <fieldset>
