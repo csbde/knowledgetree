@@ -164,6 +164,14 @@ class KTEditDocumentDispatcher extends KTStandardDispatcher {
         if (PEAR::isError($oDocument)) {
             $this->errorPage(_("Invalid Document."));
         }
+
+        $aErrorOptions = array(
+            'redirect_to' => array('main', sprintf('fDocumentId=%d', $oDocument->getId())),
+            'message' => 'No name given',
+        );
+        $title = KTUtil::arrayGet($_REQUEST, 'generic_title');
+        $title = $this->oValidator->validateString($title,
+                $aErrorOptions);
         
         $this->oDocument = $oDocument;
         $this->oFolder = Folder::get($oDocument->getFolderId()); // FIXME do we need to check that this is valid?
@@ -254,6 +262,7 @@ class KTEditDocumentDispatcher extends KTStandardDispatcher {
 		     $this->errorRedirectToMain('Unable to create a metadata version of the document.');
 		}
 		
+		$oDocument->setName($title);
 		$oDocument->setLastModifiedDate(getCurrentDateTime());
 		$oDocument->setModifiedUserId($this->oUser->getId());
 		$oDocument->setMetadataVersion($oDocument->getMetadataVersion() + 1);
