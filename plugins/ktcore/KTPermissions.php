@@ -30,6 +30,7 @@ class KTDocumentPermissionsAction extends KTDocumentAction {
         $oPO = KTPermissionObject::get($this->oDocument->getPermissionObjectID());
         $aPermissions = KTPermission::getList();
         $aMapPermissionGroup = array();
+        $aMapPermissionRole = array();		
         foreach ($aPermissions as $oPermission) {
             $oPA = KTPermissionAssignment::getByPermissionAndObject($oPermission, $oPO);
             if (PEAR::isError($oPA)) {
@@ -42,16 +43,11 @@ class KTDocumentPermissionsAction extends KTDocumentAction {
             foreach ($aIDs as $iID) {
                 $aMapPermissionGroup[$iPermissionID][$iID] = true;
             }
-        }
-        $aMapPermissionUser = array();
-        $aUsers = User::getList();
-        foreach ($aPermissions as $oPermission) {
-            $iPermissionID = $oPermission->getID();
-            foreach ($aUsers as $oUser) {
-                if (KTPermissionUtil::userHasPermissionOnItem($oUser, $oPermission, $this->oDocument)) {
-                    $aMapPermissionUser[$iPermissionID][$oUser->getID()] = true;
-                }
-            }
+            $aIds = $oDescriptor->getRoles();
+            $aMapPermissionRole[$iPermissionID] = array();
+            foreach ($aIds as $iId) {
+                $aMapPermissionRole[$iPermissionID][$iId] = true;
+            }		
         }
 
         $oInherited = KTPermissionUtil::findRootObjectForPermissionObject($oPO);
@@ -70,10 +66,10 @@ class KTDocumentPermissionsAction extends KTDocumentAction {
             "context" => $this,
             "permissions" => $aPermissions,
             "groups" => Group::getList(),
+            "roles" => Role::getList(),			
             "iDocumentID" => $_REQUEST['fDocumentID'],
             "aMapPermissionGroup" => $aMapPermissionGroup,
-            "users" => $aUsers,
-            "aMapPermissionUser" => $aMapPermissionUser,
+            "aMapPermissionRole" => $aMapPermissionRole,			
             "edit" => $bEdit,
             "inherited" => $sInherited,
         );
@@ -158,6 +154,7 @@ class KTRoleAllocationPlugin extends KTFolderAction {
         
         // map to users, groups.
         foreach ($aRoles as $key => $role) {
+		    /*
             $_users = array();
             foreach ($aRoles[$key]['users'] as $iUserId) {
                 $oUser = User::get($iUserId);
@@ -170,6 +167,7 @@ class KTRoleAllocationPlugin extends KTFolderAction {
 			} else {
                 $aRoles[$key]['users'] = join(', ',$_users);
 			}
+			*/
             
             $_groups = array();
             foreach ($aRoles[$key]['groups'] as $iGroupId) {

@@ -228,12 +228,23 @@ class KTPermissionUtil {
                     }
                     // roles are _not_ always assigned (can be null at root)
                     if ($_roleCache[$iRoleId] != null) {
-                        $aAllowed['user'] = array_merge($aAllowed['user'], $_roleCache[$iRoleId]->getUsers());
-                        $aAllowed['group'] = array_merge($aAllowed['group'], $_roleCache[$iRoleId]->getGroups());
+                        $aMapPermAllowed[$iPermissionId]['user'] = array_merge($aAllowed['user'], $_roleCache[$iRoleId]->getUserIds());
+                        $aMapPermAllowed[$iPermissionId]['group'] = array_merge($aAllowed['group'], $_roleCache[$iRoleId]->getGroupIds());
                     }
                 }
+                
             }
+            unset($aMapPermAllowed[$iPermissionId]['role']);            
         }
+        
+        /*
+        print '<pre>';
+        print '=======' . $oFolderOrDocument->getName();
+        print '<br />';
+        var_dump($aMapPermAllowed);
+        print '</pre>';
+        */
+        
 
         $aMapPermDesc = array();
         foreach ($aMapPermAllowed as $iPermissionId => $aAllowed) {

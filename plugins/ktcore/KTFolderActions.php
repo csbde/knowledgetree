@@ -70,6 +70,7 @@ class KTFolderPermissionsAction extends KTFolderAction {
         $oPO = KTPermissionObject::get($this->oFolder->getPermissionObjectId());
         $aPermissions = KTPermission::getList();
         $aMapPermissionGroup = array();
+        $aMapPermissionRole = array();
         foreach ($aPermissions as $oPermission) {
             $oPA = KTPermissionAssignment::getByPermissionAndObject($oPermission, $oPO);
             if (PEAR::isError($oPA)) {
@@ -82,15 +83,10 @@ class KTFolderPermissionsAction extends KTFolderAction {
             foreach ($aIds as $iId) {
                 $aMapPermissionGroup[$iPermissionId][$iId] = true;
             }
-        }
-        $aMapPermissionUser = array();
-        $aUsers = User::getList();
-        foreach ($aPermissions as $oPermission) {
-            $iPermissionId = $oPermission->getId();
-            foreach ($aUsers as $oUser) {
-                if (KTPermissionUtil::userHasPermissionOnItem($oUser, $oPermission, $this->oFolder)) {
-                    $aMapPermissionUser[$iPermissionId][$oUser->getId()] = true;
-                }
+            $aIds = $oDescriptor->getRoles();
+            $aMapPermissionRole[$iPermissionId] = array();
+            foreach ($aIds as $iId) {
+                $aMapPermissionRole[$iPermissionId][$iId] = true;
             }
         }
 
@@ -108,10 +104,10 @@ class KTFolderPermissionsAction extends KTFolderAction {
         $aTemplateData = array(
             "permissions" => $aPermissions,
             "groups" => Group::getList(),
+            "roles" => Role::getList(),
             "iFolderId" => $this->oFolder->getId(),
             "aMapPermissionGroup" => $aMapPermissionGroup,
-            "users" => $aUsers,
-            "aMapPermissionUser" => $aMapPermissionUser,
+            "aMapPermissionRole" => $aMapPermissionRole,
             "edit" => $bEdit,
             "inherited" => $sInherited,
             "conditions" => KTSavedSearch::getConditions(),
@@ -167,6 +163,7 @@ class KTFolderPermissionsAction extends KTFolderAction {
         $this->successRedirectToMain(_("Dynamic permission added"), "fFolderId=" . $this->oFolder->getId());
     }
 }
+
 $oPlugin->registerAction('folderaction', 'KTFolderPermissionsAction', 'ktcore.actions.folder.permissions');
 $oPlugin->registerAction('folderaction', 'KTBulkImportFolderAction', 'ktcore.actions.folder.bulkImport', 'folder/BulkImport.php');
 $oPlugin->registerAction('folderaction', 'KTBulkUploadFolderAction', 'ktcore.actions.folder.bulkUpload', 'folder/BulkUpload.php');
