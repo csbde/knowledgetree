@@ -180,7 +180,7 @@ class KTUtil {
             $sCmd .= " >> " . escapeshellarg($sAppend);
         }
         if (OS_WINDOWS) {
-            $sCmd = "start /b " . $sCmd;
+            $sCmd = "start /b \"kt\" " . $sCmd;
         }
         return exec($sCmd);
     }
@@ -256,7 +256,7 @@ class KTUtil {
         if (OS_WINDOWS) {
             // Potentially kills off all the files in the path, speeding
             // things up a bit
-            KTUtil::pexec(array("del", "/q", "/s", $sPath));
+            exec("del /q /s " . escapeshellarg($sPath));
         }
         $hPath = @opendir($sPath);
         while (($sFilename = readdir($hPath)) !== false) {
