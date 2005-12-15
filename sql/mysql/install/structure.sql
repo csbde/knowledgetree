@@ -1008,14 +1008,27 @@ CREATE TABLE `permissions` (
 CREATE TABLE `roles` (
   `id` int(11) NOT NULL default '0',
   `name` char(255) NOT NULL default '',
-  `active` tinyint(1) NOT NULL default '0',
-  `can_read` tinyint(1) NOT NULL default '0',
-  `can_write` tinyint(1) NOT NULL default '0',
   UNIQUE KEY `id` (`id`),
   UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB ;
 
 -- --------------------------------------------------------
+
+-- 
+-- Table structure for table `role_allocations`
+-- 
+
+CREATE TABLE `role_allocations` (
+  `id` int(11) NOT NULL default '0',
+  `folder_id` int(11) NOT NULL default '0',
+  `role_id` int(11) NOT NULL default '0',
+  `permission_descriptor_id` int(11) NOT NULL default '0',
+  UNIQUE KEY `id` (`id`),
+  KEY `folder_id` (`folder_id`)
+) ENGINE=InnoDB ;
+
+-- --------------------------------------------------------
+
 
 -- 
 -- Table structure for table `saved_searches`
@@ -1915,6 +1928,19 @@ CREATE TABLE `zseq_roles` (
 ) ENGINE=MyISAM ;
 
 -- --------------------------------------------------------
+
+
+-- 
+-- Table structure for table `zseq_role_allocations`
+-- 
+
+CREATE TABLE `zseq_role_allocations` (
+  `id` int(10) unsigned NOT NULL auto_increment,
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM ;
+
+-- --------------------------------------------------------
+
 
 -- 
 -- Table structure for table `zseq_saved_searches`

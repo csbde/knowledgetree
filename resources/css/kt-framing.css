@@ -622,6 +622,7 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
 
 .listing td {
    padding: 0.5em;
+   vertical-align: top;
 }
 
 .listing thead th {

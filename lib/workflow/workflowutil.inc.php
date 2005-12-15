@@ -8,6 +8,7 @@ require_once(KT_LIB_DIR . '/permissions/permissionutil.inc.php');
 require_once(KT_LIB_DIR . '/groups/GroupUtil.php');
 require_once(KT_LIB_DIR . '/documentmanagement/DocumentTransaction.inc');
 require_once(KT_LIB_DIR . '/search/searchutil.inc.php');
+require_once(KT_LIB_DIR . '/roles/roleallocation.inc.php');
 
 class KTWorkflowUtil {
     // {{{ saveTransitionsFrom
@@ -335,6 +336,18 @@ class KTWorkflowUtil {
             if ($iGroupId) {
                 $oGroup =& Group::get($iGroupId);
                 if (!$oGroup->hasMember($oUser)) {
+                    continue;
+                }
+            }
+            $iRoleId = $oTransition->getGuardRoleId();
+            if ($iRoleId) {
+                $oRoleAllocation = RoleAllocation::getAllocationsForFolderAndRole($oDocument->getFolderID(), $iRoleId);
+                
+                if ($oRoleAllocation == null) {   // no role allocation, no fulfillment.
+                    continue;
+                }
+                
+                if (!$oRoleAllocation->hasMember($oUser)) {
                     continue;
                 }
             }

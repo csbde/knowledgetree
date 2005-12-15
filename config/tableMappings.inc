@@ -142,4 +142,5 @@ $default->permission_dynamic_assignments_table = 'permission_dynamic_assignments
 $default->notifications_table = "notifications";
 $default->authentication_sources_table = "authentication_sources";
 $default->dashlet_disable_table = "dashlet_disables";
+$default->role_allocations_table = "role_allocations";
 ?>
