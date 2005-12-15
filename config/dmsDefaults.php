@@ -105,14 +105,13 @@ class KTInit {
      *
      */
     function setupI18n () {
+        require_once(KT_LIB_DIR . '/i18n/i18nutil.inc.php');
+        require_once("HTTP.php");
         global $default;
         if (in_array("gettext", get_loaded_extensions()) && function_exists('gettext') && function_exists('_')) {
-            require_once("$default->fileSystemRoot/lib/i18n/languageFunctions.inc");
-            // require_once("$default->fileSystemRoot/lib/i18n/accept-to-gettext.inc");
             if ($default->useAcceptLanguageHeader) {
-                $aInstalledLocales = getInstalledLocales();
-                //$sLocale=al2gt($aInstalledLocales, 'text/html');
-                $sLocale = 'en_ZA';
+                $aInstalledLocales = KTi18nUtil::getInstalledLocales();
+                $sLocale = $aInstalledLocales[HTTP::negotiateLanguage($aInstalledLocales)];
                 $default->defaultLanguage = $sLocale;
             }
             putenv('LANG=' . $default->defaultLanguage);
