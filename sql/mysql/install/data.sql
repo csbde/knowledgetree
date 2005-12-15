@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Nov 28, 2005 at 12:50 AM
+-- Generation Time: Dec 15, 2005 at 06:22 PM
 -- Server version: 4.1.15
 -- PHP Version: 4.4.0-3
 
@@ -50,6 +50,11 @@ INSERT INTO `browse_criteria` VALUES (4, -4, 3);
 INSERT INTO `browse_criteria` VALUES (5, -5, 4);
 
 -- 
+-- Dumping data for table `dashlet_disables`
+-- 
+
+
+-- 
 -- Dumping data for table `data_types`
 -- 
 
@@ -88,7 +93,7 @@ INSERT INTO `data_types` VALUES (5, 'FLOAT');
 -- Dumping data for table `document_fields`
 -- 
 
-INSERT INTO `document_fields` VALUES (1, 'Category', 'The category to which the document belongs.', 'STRING', 1, 0, 0, 1, 0);
+INSERT INTO `document_fields` VALUES (1, 'Category', 'STRING', 1, 0, 0, 1, 0, 'The category to which the document belongs.');
 
 -- 
 -- Dumping data for table `document_fields_link`
@@ -203,7 +208,7 @@ INSERT INTO `document_types_lookup` VALUES (1, 'Default');
 -- Dumping data for table `fieldsets`
 -- 
 
-INSERT INTO `fieldsets` VALUES (1, 'Category', 'The category to which the document belongs.', 'local.category', 0, 0, 1, 1, 0, 1, 0);
+INSERT INTO `fieldsets` VALUES (1, 'Category', 'local.category', 0, 0, 1, 1, 0, 1, 0, 'The category to which the document belongs.');
 
 -- 
 -- Dumping data for table `folder_doctypes_link`
@@ -617,6 +622,11 @@ INSERT INTO `permissions` VALUES (2, 'ktcore.permissions.write', 'Core: Write', 
 INSERT INTO `permissions` VALUES (3, 'ktcore.permissions.addFolder', 'Core: Add Folder', 1);
 
 -- 
+-- Dumping data for table `role_allocations`
+-- 
+
+
+-- 
 -- Dumping data for table `roles`
 -- 
 
@@ -645,8 +655,8 @@ INSERT INTO `status_lookup` VALUES (4, 'Archived');
 -- 
 
 INSERT INTO `system_settings` VALUES (1, 'lastIndexUpdate', '0');
-INSERT INTO `system_settings` VALUES (2, 'knowledgeTreeVersion', '2.99.1');
-INSERT INTO `system_settings` VALUES (3, 'databaseVersion', '2.0.8');
+INSERT INTO `system_settings` VALUES (2, 'knowledgeTreeVersion', '2.99.5');
+INSERT INTO `system_settings` VALUES (3, 'databaseVersion', '2.99.5');
 
 -- 
 -- Dumping data for table `time_period`
@@ -803,6 +813,11 @@ INSERT INTO `zseq_archiving_type_lookup` VALUES (2);
 -- 
 
 INSERT INTO `zseq_browse_criteria` VALUES (5);
+
+-- 
+-- Dumping data for table `zseq_dashlet_disables`
+-- 
+
 
 -- 
 -- Dumping data for table `zseq_data_types`
@@ -1065,6 +1080,11 @@ INSERT INTO `zseq_permission_objects` VALUES (1);
 -- 
 
 INSERT INTO `zseq_permissions` VALUES (3);
+
+-- 
+-- Dumping data for table `zseq_role_allocations`
+-- 
+
 
 -- 
 -- Dumping data for table `zseq_roles`
