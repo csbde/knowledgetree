@@ -14,7 +14,7 @@ more information about the documents below - e.g. when was it deleted (last modi
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 
-<input type="hidden" name="action" value="confirm_expunge" />
+<input type="hidden" name="action" value="branchConfirm" />
 
 <table class="listing">
   <thead>
@@ -35,8 +35,8 @@ more information about the documents below - e.g. when was it deleted (last modi
   </tbody>
 </table>
 <div class="form_actions">
-   <input type="submit" value="{i18n}Expunge{/i18n}" />
-   <!-- <input type="submit" value="Restore" /> -->  <!-- how do we want to handle restore in this? major UI issue :( -->
+   <input type="submit" name="submit[expunge]" value="{i18n}Expunge{/i18n}" />
+   <input type="submit" name="submit[restore]" value="{i18n}Restore{/i18n}" />
 </div>
 </form>
 

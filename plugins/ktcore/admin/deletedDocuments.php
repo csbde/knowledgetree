@@ -27,6 +27,17 @@ class DeletedDocumentsDispatcher extends KTAdminDispatcher {
         return $oTemplate;
     }
     
+    function do_branchConfirm() {
+        $submit = KTUtil::arrayGet($_REQUEST, 'submit' , array());
+        if (array_key_exists('expunge',$submit)) {
+            return $this->do_confirm_expunge();
+        }
+        if (array_key_exists('restore', $submit)) {
+            return $this->do_confirm_restore();
+        }
+        $this->errorRedirectToMain(_('No action specified.'));
+    }
+    
     function do_confirm_expunge() {
         $this->aBreadcrumbs[] = array('url' =>  $_SERVER['PHP_SELF'], 'name' => _('Deleted Documents'));
         
@@ -99,6 +110,82 @@ class DeletedDocumentsDispatcher extends KTAdminDispatcher {
         if (count($aErrorDocuments) != 0) { $msg .= _('Failed to expunge') . ': ' . join(', ', $aErrorDocuments); }
         $this->successRedirectToMain($msg);
     }
+    
+
+    function do_confirm_restore() {
+        $this->aBreadcrumbs[] = array('url' =>  $_SERVER['PHP_SELF'], 'name' => _('Deleted Documents'));
+        
+        $selected_docs = KTUtil::arrayGet($_REQUEST, 'selected_docs', array()); 
+        
+        $this->oPage->setTitle(sprintf(_('Confirm Restore of %d documents'), count($selected_docs)));
+        
+        $this->oPage->setBreadcrumbDetails(sprintf(_('Confirm Restore of %d documents'), count($selected_docs)));
+    
+        $aDocuments = array();
+        foreach ($selected_docs as $doc_id) {
+            $oDoc =& Document::get($doc_id);
+            if (PEAR::isError($oDoc) || ($oDoc === false)) { 
+                $this->errorRedirectToMain(_('Invalid document id specified. Aborting expunge'));
+            } else if ($oDoc->getStatusId() != DELETED) {
+                $this->errorRedirectToMain(sprintf(_('%s is not a deleted document. Aborting expunge'), $oDoc->getName()));
+            }
+            $aDocuments[] = $oDoc;
+        }
+        
+        
+        $oTemplating =& KTTemplating::getSingleton();
+        $oTemplate = $oTemplating->loadTemplate('ktcore/document/admin/restoreconfirmlist');
+        $oTemplate->setData(array(
+            'context' => $this,
+            'documents' => $aDocuments,
+        ));
+        return $oTemplate;
+    }
+
+    function do_finish_restore() {        
+        $selected_docs = KTUtil::arrayGet($_REQUEST, 'selected_docs', array()); 
+    
+        $aDocuments = array();
+        foreach ($selected_docs as $doc_id) {
+            $oDoc =& Document::get($doc_id);
+            if (PEAR::isError($oDoc) || ($oDoc === false)) { 
+                $this->errorRedirectToMain(_('Invalid document id specified. Aborting restore'));
+            } else if ($oDoc->getStatusId() != DELETED) {
+                $this->errorRedirectToMain(sprintf(_('%s is not a deleted document. Aborting restore'), $oDoc->getName()));
+            }
+            $aDocuments[] = $oDoc;
+        }
+     
+        $this->startTransaction();
+        $aErrorDocuments = array();
+        $aSuccessDocuments = array();			
+
+        foreach ($aDocuments as $oDoc) {
+            if (PhysicalDocumentManager::restore($oDoc)) {
+                $oDoc->setStatusId(LIVE);
+                $res = $oDoc->update();
+                if (PEAR::isError($res) || ($res == false)) {
+                    PhysicalDocumentManager::delete($oDoc)
+                    $aErrorDocuments[] = $oDoc->getName;
+                    continue; // skip transactions, etc.
+                }
+                // create a doc-transaction.
+                // FIXME does this warrant a transaction-type?
+                $oTransaction = new DocumentTransaction($oDoc, 'Restored from deleted state by ' . $this->oUser->getName(), 'ktcore.transactions.update');
+                if (!$oTransaction->create()) {
+                    ; // do nothing?  the state of physicaldocumentmanager...
+                }
+                $aSuccessDocuments[] = $oDoc->getName();
+            } else {
+                $aErrorDocuments[] = $oDoc->getName();
+            }
+        }
+        $this->commitTransaction();
+        $msg = sprintf(_('%d documents restored.'), count($aSuccessDocuments));
+        if (count($aErrorDocuments) != 0) { $msg .= _('Failed to restore') . ': ' . join(', ', $aErrorDocuments); }
+        $this->successRedirectToMain($msg);
+    }    
+    
 }
 
 ?>
