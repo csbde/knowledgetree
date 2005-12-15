@@ -7,6 +7,7 @@ class KTPostscriptIndexerTrigger extends KTBaseIndexerTrigger {
        'application/pdf' => true,
     );
     var $command = 'pstotext';          // could be any application.
+    var $commandconfig = 'indexer/pstotext';          // could be any application.
     var $args = array();
     var $use_pipes = true;
     

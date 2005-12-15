@@ -7,10 +7,18 @@ class KTWordIndexerTrigger extends KTBaseIndexerTrigger {
        'application/msword' => true,
     );
     var $command = 'catdoc';          // could be any application.
+    var $commandconfig = 'indexer/catdoc';          // could be any application.
     var $args = array("-w");
     var $use_pipes = true;
     
-    // see BaseIndexer for how the extraction works.
+    function extract_contents($sFilename, $sTempFilename) {
+        if (OS_WINDOWS) {
+            $this->command = 'c:\antiword\antiword.exe';
+            $this->commandconfig = 'indexer/antiword';
+            $this->args = array();
+        }
+        return parent::extract_contents($sFilename, $sTempFilename);
+    }
 }
 
 ?>
