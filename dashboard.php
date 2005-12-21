@@ -28,7 +28,7 @@
  */
 
 // main library routines and defaults
-require_once("../../../config/dmsDefaults.php");
+require_once("config/dmsDefaults.php");
 require_once(KT_LIB_DIR . "/unitmanagement/Unit.inc");
 
 require_once(KT_LIB_DIR . "/dashboard/dashletregistry.inc.php");
