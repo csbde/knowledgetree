@@ -73,13 +73,13 @@ class KTEditDocumentDispatcher extends KTStandardDispatcher {
         
         if ($parents != 0) {
             foreach (range(0,$parents) as $index) {
-                $this->aBreadcrumbs[] = array("url" => "../browse.php?fFolderId=" . $folder_path_ids[$index], "name" => $folder_path_names[$index]);
+                $this->aBreadcrumbs[] = array("url" => $GLOBALS['KTRootUrl'] . "/browse.php?fFolderId=" . $folder_path_ids[$index], "name" => $folder_path_names[$index]);
             }
         }
         
         // now add this folder, _if we aren't in 1_.
         if ($folder_id != 1) {
-            $this->aBreadcrumbs[] = array("url" => "../browse.php?fFolderId=" . $folder_id, "name" => $oFolder->getName());
+            $this->aBreadcrumbs[] = array("url" => $GLOBALS['KTRootUrl'] . "/browse.php?fFolderId=" . $folder_id, "name" => $oFolder->getName());
         }
         
         // now add the document
