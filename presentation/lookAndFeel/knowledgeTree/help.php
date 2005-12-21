@@ -26,7 +26,6 @@
  
 require_once("../../../config/dmsDefaults.php");
 
-require_once("$default->fileSystemRoot/presentation/Html.inc");
 global $default;
 $heading = "$default->graphicsUrl/heading.gif";
 $hStretched = "$default->graphicsUrl/hrepeat.gif";
