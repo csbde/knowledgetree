@@ -21,7 +21,6 @@ $oRegistry =& KTPluginRegistry::getSingleton();
 $oPlugin =& $oRegistry->getPlugin('ktcore.plugin');
 
 class KTDocumentPermissionsAction extends KTDocumentAction {
-    var $sBuiltInAction = 'editDocumentPermissions';
     var $sDisplayName = 'Permissions';
     var $sName = 'ktcore.actions.document.permissions';
 
