@@ -27,6 +27,7 @@ class KTConditionDispatcher extends KTStandardDispatcher {
             "sNameTitle" => _("Name of condition"),
             "aCriteria" => $aCriteria,
             "searchButton" => _("Save"),
+            "context" => &$this,
         );
         return $oTemplate->render($aTemplateData);
     }
