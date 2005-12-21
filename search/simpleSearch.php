@@ -3,11 +3,7 @@
 /**
  * $Id$
  *
- * Main dashboard page -- This page is presented to the user after login.
- * It contains a high level overview of the users subscriptions, checked out 
- * document, pending approval routing documents, etc. 
- *
- * Copyright (c) 2003 Jam Warehouse http://www.jamwarehouse.com
+ * Copyright (c) 2005 Jam Warehouse http://www.jamwarehouse.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,11 +20,12 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * @version $Revision$
- * @author Michael Joseph <michael@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
+ * @author Brad Shuttleworth <brad@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
+ * @author Neil Blakey-Milner <nbm@jamwarehouse.com>, Jam Warehouse (Pty) Ltd, South Africa
  */
 
 // main library routines and defaults
-require_once("../../../../config/dmsDefaults.php");
+require_once("../config/dmsDefaults.php");
 require_once(KT_LIB_DIR . "/templating/templating.inc.php");
 require_once(KT_LIB_DIR . "/templating/kt3template.inc.php");
 require_once(KT_LIB_DIR . "/dispatcher.inc.php");
