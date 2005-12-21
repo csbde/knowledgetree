@@ -1,6 +1,5 @@
 <?php
 require_once("../../../../../../config/dmsDefaults.php");
-require_once(KT_DIR . "/presentation/Html.inc");
 require_once(KT_LIB_DIR . "/templating/templating.inc.php");
 require_once(KT_LIB_DIR . "/documentmanagement/DocumentField.inc");
 require_once(KT_LIB_DIR . "/database/dbutil.inc");
@@ -15,7 +14,7 @@ require_once(KT_LIB_DIR . "/templating/kt3template.inc.php");
 class ManageConditionalDispatcher extends KTAdminDispatcher {
     function ManageConditionalDispatcher() {
         parent::KTAdminDispatcher();
-        $this->aBreadcrumbs[] = array('action' => 'docfield', 'name' => _('Document Field Management'));
+        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _('Document Field Management'));
 
 
     }
@@ -50,12 +49,12 @@ class ManageConditionalDispatcher extends KTAdminDispatcher {
         $aFields =& $oFieldset->getFields();
 
         $this->aBreadcrumbs[] = array(
-            'action' => 'docfield',
+            'url' => $_SERVER['PHP_SELF'],
             'query' => 'action=edit&fFieldsetId=' . $oFieldset->getId(),
             'name' => $oFieldset->getName()
         );
         $this->aBreadcrumbs[] = array(
-            'action' => 'docfield',
+            'url' => $_SERVER['PHP_SELF'],
             'query' => 'action=manageConditional&fFieldsetId=' . $oFieldset->getId(),
             'name' => _('Manage conditional fieldset'),
         );
@@ -88,12 +87,12 @@ class ManageConditionalDispatcher extends KTAdminDispatcher {
         $oFieldset =& KTFieldset::get($fieldset_id);
         $aFields =& $oFieldset->getFields();
         $this->aBreadcrumbs[] = array(
-            'action' => 'docfield',
+            'url' => $_SERVER['PHP_SELF'],
             'query' => 'action=edit&fFieldsetId=' . $oFieldset->getId(),
             'name' => $oFieldset->getName()
         );
         $this->aBreadcrumbs[] = array(
-            'action' => 'docfield',
+            'url' => $_SERVER['PHP_SELF'],
             'query' => 'action=manageConditional&fFieldsetId=' . $oFieldset->getId(),
             'name' => _('Manage conditional fieldset'),
         );
