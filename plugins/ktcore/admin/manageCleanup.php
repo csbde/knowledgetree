@@ -1,7 +1,5 @@
 <?php
 
-require_once(KT_DIR . "/presentation/Html.inc");
-
 require_once(KT_LIB_DIR . "/templating/templating.inc.php");
 require_once(KT_LIB_DIR . "/help/helpreplacement.inc.php");
 require_once(KT_LIB_DIR . "/help/helpentity.inc.php");
