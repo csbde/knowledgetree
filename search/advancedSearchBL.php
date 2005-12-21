@@ -26,8 +26,8 @@
  * @package search
  */
 
-require_once("../../../../config/dmsDefaults.php");
-require_once(KT_DIR .  '/presentation/lookAndFeel/knowledgeTree/search/advancedSearchUtil.inc');
+require_once("../config/dmsDefaults.php");
+require_once(KT_DIR .  '/search/advancedSearchUtil.inc');
 
 KTUtil::extractGPC('fForSearch', 'fSearchString', 'fShowSection', 'fStartIndex', 'fToSearch');
 
