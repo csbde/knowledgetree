@@ -1,7 +1,7 @@
 <?php
 
 // boilerplate.
-require_once("../../../../config/dmsDefaults.php");
+require_once("config/dmsDefaults.php");
 require_once(KT_LIB_DIR . "/templating/templating.inc.php");
 require_once(KT_LIB_DIR . "/templating/kt3template.inc.php");
 require_once(KT_LIB_DIR . "/dispatcher.inc.php");
@@ -51,9 +51,8 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 	    
 		$document_data = array();
 		$document_id = KTUtil::arrayGet($_REQUEST, 'fDocumentId');
-        $oKTConfig = KTConfig::getSingleton();
 		if ($document_id === null) { 
-		    $this->oPage->addError('No document was requested.  Please <a href="' . $oKTConfig->get('KnowledgeTree/rootUrl') . '/presentation/lookAndFeel/knowledgeTree/browse.php">browse</a> for one.');
+		    $this->oPage->addError('No document was requested.  Please <a href="' . $GLOBALS['KTRootUrl'] . '/browse.php">browse</a> for one.');
 			return $this->do_error();
 		}
 		$document_data["document_id"] = $document_id;
@@ -61,7 +60,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 		// try get the document.
 		$oDocument =& Document::get($document_id);
 		if (PEAR::isError($oDocument)) {
-		    $this->oPage->addError('The document you attempted to retrieve is invalid.   Please <a href="' . $oKTConfig->get('KnowledgeTree/rootUrl') . '/presentation/lookAndFeel/knowledgeTree/browse.php">browse</a> for one.');
+		    $this->oPage->addError('The document you attempted to retrieve is invalid.   Please <a href="' . $GLOBALS['KTRootUrl'] . '/browse.php">browse</a> for one.');
 			return $this->do_error();		
 		}
 		if (!Permission::userHasDocumentReadPermission($oDocument)) {
@@ -139,7 +138,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 		$document_data = array();
 		$document_id = KTUtil::arrayGet($_REQUEST, 'fDocumentId');
 		if ($document_id === null) { 
-		    $this->oPage->addError('No document was requested.  Please <a href="' . $oKTConfig->get('KnowledgeTree/rootUrl') . '/presentation/lookAndFeel/knowledgeTree/browse.php">browse</a> for one.');
+		    $this->oPage->addError('No document was requested.  Please <a href="' . $GLOBALS['KTRootUrl'] . '/browse.php">browse</a> for one.');
 			return $this->do_error();
 		}
 		$document_data["document_id"] = $document_id;
@@ -147,7 +146,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 		// try get the document.
 		$oDocument =& Document::get($document_id);
 		if (PEAR::isError($oDocument)) {
-		    $this->oPage->addError('The document you attempted to retrieve is invalid.   Please <a href="' . $oKTConfig->get('KnowledgeTree/rootUrl') . '/presentation/lookAndFeel/knowledgeTree/browse.php">browse</a> for one.');
+		    $this->oPage->addError('The document you attempted to retrieve is invalid.   Please <a href="' . $GLOBALS['KTRootUrl'] . '/browse.php">browse</a> for one.');
 			return $this->do_error();		
 		}
 		// fixme check perms
@@ -195,7 +194,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 		$document_data = array();
 		$document_id = KTUtil::arrayGet($_REQUEST, 'fDocumentId');
 		if ($document_id === null) { 
-		    $this->oPage->addError('No document was requested.  Please <a href="' . $oKTConfig->get('KnowledgeTree/rootUrl') . '/presentation/lookAndFeel/knowledgeTree/browse.php">browse</a> for one.');
+		    $this->oPage->addError('No document was requested.  Please <a href="' . $GLOBALS['KTRootUrl'] . '/browse.php">browse</a> for one.');
 			return $this->do_error();
 		}
 		$document_data["document_id"] = $document_id;
@@ -203,7 +202,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 		// try get the document.
 		$oDocument =& Document::get($document_id);
 		if (PEAR::isError($oDocument)) {
-		    $this->oPage->addError('The document you attempted to retrieve is invalid.   Please <a href="' . $oKTConfig->get('KnowledgeTree/rootUrl') . '/presentation/lookAndFeel/knowledgeTree/browse.php">browse</a> for one.');
+		    $this->oPage->addError('The document you attempted to retrieve is invalid.   Please <a href="' . $GLOBALS['KTRootUrl'] . '/browse.php">browse</a> for one.');
 			return $this->do_error();		
 		}
 		// fixme check perms
@@ -243,7 +242,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 		$document_data = array();
 		$document_id = KTUtil::arrayGet($_REQUEST, 'fDocumentId');
 		if ($document_id === null) { 
-		    $this->oPage->addError('No document was requested.  Please <a href="' . $oKTConfig->get('KnowledgeTree/rootUrl') . '/presentation/lookAndFeel/knowledgeTree/browse.php">browse</a> for one.');
+		    $this->oPage->addError('No document was requested.  Please <a href="' . $GLOBALS['KTRootUrl'] . '/browse.php">browse</a> for one.');
 			return $this->do_error();
 		}
 		$document_data["document_id"] = $document_id;
@@ -251,7 +250,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 		// try get the document.
 		$oDocument =& Document::get($document_id);
 		if (PEAR::isError($oDocument)) {
-		    $this->oPage->addError('The document you attempted to retrieve is invalid.   Please <a href="' . $oKTConfig->get('KnowledgeTree/rootUrl') . '/presentation/lookAndFeel/knowledgeTree/browse.php">browse</a> for one.');
+		    $this->oPage->addError('The document you attempted to retrieve is invalid.   Please <a href="' . $GLOBALS['KTRootUrl'] . '/browse.php">browse</a> for one.');
 			return $this->do_error();		
 		}
 		if (!Permission::userHasDocumentReadPermission($oDocument)) {
