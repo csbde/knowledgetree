@@ -65,7 +65,7 @@ class SimpleSearchDispatcher extends KTStandardDispatcher {
 		
 		$collection->addColumn(new SelectionColumn("Browse Selection","selection"));
 		$t = new TitleColumn("Test 1 (title)","title");
-        $t->setOptions(array('documenturl' => '../documentmanagement/view.php'));
+        $t->setOptions(array('documenturl' => $GLOBALS['KTRootUrl'] . '/view.php'));
 		$collection->addColumn($t);
 		$collection->addColumn(new DateColumn(_("Created"),"created", "getCreatedDateTime"));
 		$collection->addColumn(new DateColumn(_("Last Modified"),"modified", "getLastModifiedDate"));
