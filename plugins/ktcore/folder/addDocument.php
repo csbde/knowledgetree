@@ -47,7 +47,7 @@ class KTFolderAddDocumentAction extends KTFolderAction {
     function do_upload() {
         $this->oPage->setBreadcrumbDetails(_("add document"));
         $this->oPage->setTitle(_('Add a document'));
-        $mpo =& new JavascriptObserver(&$this);
+        $mpo =& new JavascriptObserver($this);
         // $mpo =& new KTSinglePageObserver(&$this);
         $oUploadChannel =& KTUploadChannel::getSingleton();
         $oUploadChannel->addObserver($mpo);
