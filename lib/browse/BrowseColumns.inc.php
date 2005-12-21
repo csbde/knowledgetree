@@ -79,7 +79,7 @@ class TitleColumn extends BrowseColumn {
     }
 
     function buildDocumentLink($aDataRow) {
-        $baseurl = KTUtil::arrayGet($this->aOptions, "documenturl", "documentmanagement/view.php");
+        $baseurl = KTUtil::arrayGet($this->aOptions, "documenturl", $GLOBALS['KTRootUrl'] . '/view.php');
         return $baseurl . '?fDocumentId=' .  $aDataRow["document"]->getId();
     }
 
