@@ -23,7 +23,6 @@ class KTDispatcher {
     }
 
     function dispatch () {
-        require_once(KT_DIR . '/presentation/webpageTemplate.inc');
         $method = 'do_main';
         if (array_key_exists($this->event_var, $_REQUEST)) {
             $event = $_REQUEST[$this->event_var];
