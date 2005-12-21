@@ -38,10 +38,7 @@ if (checkSession()) {
 	require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
 	require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
 	require_once("$default->fileSystemRoot/lib/security/Permission.inc");
-	require_once("$default->fileSystemRoot/presentation/Html.inc");
 	require_once("advancedSearchUI.inc");
-	
-	require_once("$default->fileSystemRoot/presentation/webpageTemplate.inc");
 
     if (!isset($fStartIndex)) {
         $fStartIndex = 1;

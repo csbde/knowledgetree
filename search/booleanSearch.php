@@ -2,7 +2,6 @@
 
 // boilerplate includes
 require_once("../../../../config/dmsDefaults.php");
-require_once(KT_DIR . "/presentation/Html.inc");
 require_once(KT_LIB_DIR . "/templating/templating.inc.php");
 require_once(KT_LIB_DIR . "/database/dbutil.inc");
 require_once(KT_LIB_DIR . "/util/ktutil.inc");
@@ -68,7 +67,7 @@ class BooleanSearchDispatcher extends KTStandardDispatcher {
 
         $collection->addColumn(new SelectionColumn("Browse Selection","selection"));
         $t =& new TitleColumn("Test 1 (title)","title");
-        $t->setOptions(array('documenturl' => '../documentmanagement/view.php'));
+        $t->setOptions(array('documenturl' => $GLOBALS['KTRootUrl'] . '/view.php'));
         $collection->addColumn($t);
         $collection->addColumn(new DateColumn(_("Created"),"created", "getCreatedDateTime"));
         $collection->addColumn(new DateColumn(_("Last Modified"),"modified", "getLastModifiedDate"));
