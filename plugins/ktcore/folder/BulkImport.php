@@ -67,7 +67,7 @@ class KTBulkImportFolderAction extends KTFolderAction {
             'metadata' => $aFields,
         );
 
-        $po =& new JavascriptObserver(&$this);
+        $po =& new JavascriptObserver($this);
         $po->start();
         $oUploadChannel =& KTUploadChannel::getSingleton();
         $oUploadChannel->addObserver($po);
