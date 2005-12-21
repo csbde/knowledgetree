@@ -50,7 +50,6 @@ class KTCommentListRenderer {
 }
 
 class KTDocumentDiscussionAction extends KTDocumentAction {
-    var $sBuiltInAction = 'viewDiscussion';
     var $sDisplayName = 'Discussion';
     var $sName = 'ktcore.actions.document.discussion';
 

@@ -192,7 +192,6 @@ function validateEmailAddress($sEmailAddress) {
 }
 
 class KTDocumentEmailAction extends KTDocumentAction {
-    var $sBuiltInAction = 'emailDocument';
     var $sDisplayName = 'Email';
     var $sName = 'ktcore.actions.document.email';
 
