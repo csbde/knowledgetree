@@ -94,7 +94,7 @@ function addNewCriteria(add_button) {
     // fetch.
     var dest_cell = notify_message.parentNode;
     var baseUrl = getElement('kt-core-baseurl').value;
-    var targeturl = baseUrl + '/presentation/lookAndFeel/knowledgeTree/search/ajaxBooleanSearch.php?action=getNewCriteria&type='+select.value+'&critId='+critId;
+    var targeturl = baseUrl + '/search/ajaxBooleanSearch.php?action=getNewCriteria&type='+select.value+'&critId='+critId;
     simpleLog('DEBUG','addNewCriteria initiating request to: '+targeturl);
     
     var deferred = doSimpleXMLHttpRequest(targeturl); 
