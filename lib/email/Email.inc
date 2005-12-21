@@ -41,6 +41,7 @@ class Email {
     function Email($sFromEmail = "", $sFromName = "") {
         global $default;
         // create a new phpmailer object.
+        require_once(KT_DIR .  '/thirdparty/phpmailer/class.phpmailer.php');
         $this->oMailer = new phpmailer();
         $this->oMailer->isSMTP();
         $this->oMailer->Host = $default->emailServer;
