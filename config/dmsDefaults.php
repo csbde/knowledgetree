@@ -390,10 +390,8 @@ $KTInit->setupPathInfo();
 // site map definition
 require_once(KT_DIR . "/config/siteMap.inc");
 
-require_once(KT_DIR . '/phpmailer/class.phpmailer.php');
 require_once(KT_LIB_DIR . '/session/Session.inc');
 require_once(KT_LIB_DIR . '/session/control.inc');
-require_once(KT_DIR . '/presentation/Html.inc');
 
 require_once(KT_LIB_DIR . '/plugins/pluginutil.inc.php');
 KTPluginUtil::loadPlugins();
