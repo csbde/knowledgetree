@@ -12,7 +12,6 @@ $oPlugin =& $oRegistry->getPlugin('ktcore.plugin');
 
 // {{{ KTDocumentViewAction
 class KTDocumentViewAction extends KTDocumentAction {
-    var $sBuiltInAction = 'downloadDocument';
     var $sDisplayName = 'Download';
     var $sName = 'ktcore.actions.document.view';
 
@@ -39,7 +38,6 @@ $oPlugin->registerAction('documentaction', 'KTDocumentViewAction', 'ktcore.actio
 
 // {{{ KTDocumentCheckOutAction
 class KTDocumentCheckOutAction extends KTDocumentAction {
-    var $sBuiltInAction = 'checkOutDocument';
     var $sDisplayName = 'Checkout';
     var $sName = 'ktcore.actions.document.checkout';
 
@@ -132,7 +130,6 @@ $oPlugin->registerAction('documentaction', 'KTDocumentCheckOutAction', 'ktcore.a
 
 // {{{ KTDocumentCheckInAction
 class KTDocumentCheckInAction extends KTDocumentAction {
-    var $sBuiltInAction = 'checkInDocument';
     var $sDisplayName = 'Checkin';
     var $sName = 'ktcore.actions.document.checkin';
 
@@ -223,7 +220,6 @@ $oPlugin->registerAction('documentaction', 'KTDocumentEditAction', 'ktcore.actio
 
 // {{{ KTDocumentDeleteAction
 class KTDocumentDeleteAction extends KTDocumentAction {
-    var $sBuiltInAction = 'deleteDocument';
     var $sDisplayName = 'Delete';
     var $sName = 'ktcore.actions.document.delete';
 
@@ -345,7 +341,6 @@ class KTDocumentMoveColumn extends TitleColumn {
 
 // {{{ KTDocumentMoveAction
 class KTDocumentMoveAction extends KTDocumentAction {
-    var $sBuiltInAction = 'moveDocument';
     var $sDisplayName = 'Move';
     var $sName = 'ktcore.actions.document.move';
 
@@ -599,7 +594,6 @@ $oPlugin->registerAction('documentaction', 'KTDocumentArchiveAction', 'ktcore.ac
 
 // {{{ KTDocumentWorkflowAction
 class KTDocumentWorkflowAction extends KTDocumentAction {
-    var $sBuiltInAction = 'documentWorkflow';
     var $sDisplayName = 'Workflow';
     var $sName = 'ktcore.actions.document.workflow';
     var $_sShowPermission = "ktcore.permissions.write";
