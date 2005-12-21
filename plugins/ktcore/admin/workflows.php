@@ -86,7 +86,7 @@ class KTWorkflowDispatcher extends KTStandardDispatcher {
             'name' => _('Workflows'),
         );
         $this->aBreadcrumbs[] = array(
-            'action' => 'manageWorkflows',
+            'url' => $_SERVER['PHP_SELF'],
             'query' => 'action=editWorkflow&fWorkflowId=' . $oWorkflow->getId(),
             'name' => $oWorkflow->getName(),
         );
@@ -209,7 +209,7 @@ class KTWorkflowDispatcher extends KTStandardDispatcher {
             'name' => _('Workflows'),
         );
         $this->aBreadcrumbs[] = array(
-            'action' => 'manageWorkflows',
+            'url' => $_SERVER['PHP_SELF'],
             'query' => 'action=editWorkflow&fWorkflowId=' . $oWorkflow->getId(),
             'name' => $oWorkflow->getName(),
         );
@@ -415,12 +415,12 @@ class KTWorkflowDispatcher extends KTStandardDispatcher {
             'name' => _('Workflows'),
         );
         $this->aBreadcrumbs[] = array(
-            'action' => 'manageWorkflows',
+            'url' => $_SERVER['PHP_SELF'],
             'query' => 'action=editWorkflow&fWorkflowId=' . $oWorkflow->getId(),
             'name' => $oWorkflow->getName(),
         );
         $this->aBreadcrumbs[] = array(
-            'action' => 'manageWorkflows',
+            'url' => $_SERVER['PHP_SELF'],
             'query' => 'action=editTransition&fWorkflowId=' . $oWorkflow->getId() . '&fTransitionId=' . $oTransition->getId(),
             'name' => $oTransition->getName(),
         );
