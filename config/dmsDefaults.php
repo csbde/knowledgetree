@@ -213,8 +213,12 @@ class KTInit {
     }
     // }}}
 
-    // {{{ setupPathInfo
-    function setupPathInfo() {
+    // {{{ setupServerVariables
+    function setupServerVariables() {
+        $request_uri = KTUtil::arrayGet($_SERVER, 'REQUEST_URI');
+        if (empty($request_uri)) {
+            $_SERVER['REQUEST_URI'] = $_SERVER['SCRIPT_NAME'];
+        }
         $kt_path_info = KTUtil::arrayGet($_REQUEST, 'kt_path_info');
         if (!empty($kt_path_info)) {
             $_SERVER["PHP_SELF"] .= "?kt_path_info=" . $kt_path_info;
@@ -331,6 +335,8 @@ require_once(KT_LIB_DIR . '/util/ktutil.inc');
 
 require_once(KT_LIB_DIR . "/config/config.inc.php");
 
+$KTInit->setupServerVariables();
+
 $oKTConfig =& KTConfig::getSingleton();
 
 $oKTConfig->setdefaultns("KnowledgeTree", "fileSystemRoot", KT_DIR);
@@ -385,7 +391,6 @@ $default->lastDatebaseVersion = '2.0.2';
 
 $KTInit->cleanGlobals();
 $KTInit->cleanMagicQuotes();
-$KTInit->setupPathInfo();
 
 // site map definition
 require_once(KT_DIR . "/config/siteMap.inc");
