@@ -18,7 +18,6 @@ require_once(KT_LIB_DIR . '/documentmanagement/documentutil.inc.php');
 require_once(KT_LIB_DIR . '/documentmanagement/DocumentType.inc');
 require_once(KT_LIB_DIR . '/metadata/fieldset.inc.php');
 require_once(KT_LIB_DIR . '/documentmanagement/documentutil.inc.php');
-require_once(KT_LIB_DIR . '/visualpatterns/PatternMetaData.inc');
 
 require_once(KT_LIB_DIR . "/templating/kt3template.inc.php");
 
