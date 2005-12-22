@@ -64,7 +64,16 @@ class KTFolderAction extends KTStandardDispatcher {
     }
 
     function getURL() {
-        return sprintf("%s/action.php/%s?fFolderId=%d", $GLOBALS['KTRootUrl'], $this->sName, $this->oFolder->getID());
+        $oKTConfig =& KTConfig::getSingleton();
+        $sExt = ".php";
+        if (KTUtil::arrayGet($_SERVER, 'kt_no_extensions')) {
+            $sExt = "";
+        }
+        if ($oKTConfig->get("KnowledgeTree/pathInfoSupport")) {
+            return sprintf("%s/action%s/%s?fFolderId=%d", $GLOBALS['KTRootUrl'], $sExt, $this->sName, $this->oFolder->getID());
+        } else {
+            return sprintf("%s/action%s/?kt_path_info=%s&fFolderId=%d", $GLOBALS['KTRootUrl'], $sExt, $this->sName, $this->oFolder->getID());
+        }
     }
 
     function getInfo() {
