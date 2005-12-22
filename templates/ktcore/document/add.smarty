@@ -60,7 +60,6 @@ addLoadEvent(startupMetadata);
 <form method="POST" action="{$smarty.server.PHP_SELF|addQueryString:"postExpected=1&fFolderId="}{$context->oFolder->getId()}" enctype="multipart/form-data">
 <fieldset><legend>{i18n}Add a document{/i18n}</legend>
 <input type="hidden" name="action" value="upload">
-<input type="hidden" name="postReceived" value="1">
 <input type="hidden" name="fFolderId" value="{$context->oFolder->getId()}">
 
 {foreach from=$add_fields item=oWidget }
@@ -78,6 +77,7 @@ addLoadEvent(startupMetadata);
 </div>
 
 <div class="form_actions">
-  <input type="submit" name="submit" value="{i18n}Add{/i18n}">
+  <input type="submit" name="submit" value="{i18n}Add{/i18n}" />
 </div>
+<input type="hidden" name="postReceived" value="1" />
 </form>
