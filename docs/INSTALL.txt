@@ -25,6 +25,9 @@ KnowledgeTree Installation Notes
        http://localhost/setup/
 
 *  Set up the database
+   
+   On a Unix-like system, the command line tools can generally be used:
+
    - Create a database:
      $ mysqladmin -p create dms
 
@@ -35,6 +38,12 @@ KnowledgeTree Installation Notes
    - Create the database users
      $ mysql -p dms < sql/mysql/install/user.sql
 
+   These tools may requite the setting of the user (-u username) and of
+   a password (-p, and you will be asked for the password).
+
+   Using other tools is beyond the scope of this document.  Consult the
+   KnowledgeTree Wiki at http://support.ktdms.com/confluence/ to see how
+   others have approached this on your platform.
 
 *  Configure your installation in config/config.ini:
    - The default configuration will determine many settings on your
@@ -55,7 +64,7 @@ KnowledgeTree Installation Notes
      database connectivity, and can be set as shown:
         [db]
         dbHost           = localhost
-        dbName           = release206
+        dbName           = dms
         dbUser           = myuser
         dbPass           = mypassword
 
@@ -97,12 +106,11 @@ File Indexing
 The file indexing facilities of KnowledgeTree make use of external
 programs to perform their jobs.
 
-At the moment, the "catdoc" package
-(http://www.45.free.net/~vitus/ice/catdoc/) contains all the external
-programs you need.  Installing this package is beyond the scope of this
-document - please consult the KnowledgeTree Wiki at
-http://support.ktdms.com/confluence/ to see how others have approached
-this on your platform. 
+At the moment, the "catdoc" (http://www.45.free.net/~vitus/ice/catdoc/)
+and "xpdf" packages contains all the external programs you need.
+Installing this package is beyond the scope of this document - please
+consult the KnowledgeTree Wiki at http://support.ktdms.com/confluence/
+to see how others have approached this on your platform. 
 
 Troubleshooting
 ---------------
