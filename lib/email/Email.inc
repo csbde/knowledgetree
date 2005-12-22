@@ -62,21 +62,9 @@ class Email {
      * @param string the sender's name (optional)     
      * @return boolean true on email successfully sent, false otherwise and set $_SESSION["errorMessage"]
      */
-    function send($mToEmail, $sSubject, $sBody, $sFromEmail = "", $sFromName = "") {
+    function send($mToEmail, $sSubject, $sBody) {
         global $default;
         
-        // set defaults for optional params
-        $sFromEmail = ((strlen($sFromEmail) == 0) || ($sFromEmail == "")) ? $default->system->get("emailFrom") : $sFromEmail;
-        $sFromName = ((strlen($sFromName) == 0) || ($sFromName == "")) ? $default->system->get("emailFromName") : $sFromName;
-
-        // set optional params
-        if ((strlen($sFromEmail) > 0) && ($sFromEmail != "")) {
-            $this->oMailer->From = $sFromEmail;
-        }
-        if ((strlen($sFromName) > 0) && ($sFromName != "")) {
-            $this->oMailer->FromName = $sFromName;
-        }
-              
         if ( (is_string($mToEmail) && (strlen($mToEmail) > 0)) || 
         	 (is_array($mToEmail) && (count($mToEmail) > 0)) ) {        
 
@@ -128,18 +116,6 @@ class Email {
     function sendAttachment($mToEmail, $sSubject, $sBody, $sDocumentPath, $sDocumentName) {
         global $default;
         
-        // set defaults for optional params
-        $sFromEmail = $default->system->get("emailFrom");
-        $sFromName = $default->system->get("emailFromName");
-
-        // set optional params
-        if ((strlen($sFromEmail) > 0) && ($sFromEmail != "")) {
-            $this->oMailer->From = $sFromEmail;
-        }
-        if ((strlen($sFromName) > 0) && ($sFromName != "")) {
-            $this->oMailer->FromName = $sFromName;
-        }
-              
         if ( (is_string($mToEmail) && (strlen($mToEmail) > 0)) || 
         	 (is_array($mToEmail) && (count($mToEmail) > 0)) ) {        
 
