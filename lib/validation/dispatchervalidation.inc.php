@@ -188,6 +188,8 @@ class KTDispatcherValidation {
         $bError = false;
         if (strlen($aFile['name']) == 0) {
             $bError = true;
+        } else {
+            $bError = KTUtil::arrayGet($aFile, 'error');
         }
         if ($bError) {
             $message = _("You did not select a valid document to upload");
