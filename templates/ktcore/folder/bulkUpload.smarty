@@ -44,7 +44,7 @@ addLoadEvent(startupMetadata);
 {/capture}
 {$context->oPage->requireJSStandalone($sJavascript)}
 
-<form method="POST" action="{$smarty.server.PHP_SELF}" enctype="multipart/form-data">
+<form method="POST" action="{$smarty.server.PHP_SELF|addQueryString:"postExpected=1&fFolderId="}{$context->oFolder->getId()}" enctype="multipart/form-data">
 <fieldset><legend>{i18n}Bulk import{/i18n}</legend>
 <p class="descriptiveText">{i18n}The bulk upload facility allows for a number
 of documents to be added to the document management system.
@@ -72,4 +72,5 @@ management system.{/i18n}</p>
 <div class="form_actions">
   <input type="submit" name="submit" value="{i18n}Upload{/i18n}" />
 </div>
+<input type="hidden" name="postReceived" value="1" />
 </form>
