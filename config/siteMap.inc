@@ -27,8 +27,7 @@ $default->siteMap = new SiteMap(false);
 // action, page, section, group with access, link text
 
 // general pages
-$default->siteMap->addPage("login", "/presentation/login.php?loginAction=login", "General", None, "");
-$default->siteMap->addPage("loginForm", "/presentation/login.php?loginAction=loginForm", "General", None, "login");
+$default->siteMap->addPage("login", "/login.php", "General", None, "");
 
 // dashboard
 $default->siteMap->addPage("dashboard", "/dashboard.php", "General", Guest, "dashboard");
