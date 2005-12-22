@@ -132,6 +132,7 @@ class KTSearchUtil {
                 $aSearchStrings[] = $sThisSearchString;
             }
         }
+        $aJoinSQL = array_unique($aJoinSQL);
         $sJoinSQL = join(" ", $aJoinSQL);
         $tabs = str_repeat("\t", $iRecurseLevel + 1);
         $sSearchString = "\n$tabs(" . join("\n$tabs\t" . $aCriteriaSet['join'] . " ", $aSearchStrings) .  "\n$tabs)";
