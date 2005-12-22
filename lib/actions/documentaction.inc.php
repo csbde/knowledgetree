@@ -78,7 +78,7 @@ class KTDocumentAction extends KTStandardDispatcher {
         if ($oKTConfig->get("KnowledgeTree/pathInfoSupport")) {
             return sprintf("%s/action%s/%s?fDocumentId=%d", $GLOBALS['KTRootUrl'], $sExt, $this->sName, $this->oDocument->getID());
         } else {
-            return sprintf("%s/action%s/?kt_path_info=%s&fDocumentId=%d", $GLOBALS['KTRootUrl'], $sExt, $this->sName, $this->oDocument->getID());
+            return sprintf("%s/action%s?kt_path_info=%s&fDocumentId=%d", $GLOBALS['KTRootUrl'], $sExt, $this->sName, $this->oDocument->getID());
         }
     }
 
