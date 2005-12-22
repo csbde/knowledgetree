@@ -215,10 +215,22 @@ class KTInit {
 
     // {{{ setupServerVariables
     function setupServerVariables() {
+        // KTS-21: Some environments (FastCGI only?) don't set PATH_INFO
+        // correctly, but do set ORIG_PATH_INFO.
+        $path_info = KTUtil::arrayGet($_SERVER, 'PATH_INFO');
+        $orig_path_info = KTUtil::arrayGet($_SERVER, 'ORIG_PATH_INFO');
+        if (empty($path_info) && !empty($orig_path_info)) {
+            $_SERVER['PATH_INFO'] = $_SERVER['ORIG_PATH_INFO'];
+            $_SERVER["PHP_SELF"] .= $_SERVER['PATH_INFO'];
+        }
+
+        // KTS-50: IIS (and probably most non-Apache web servers) don't
+        // set REQUEST_URI.  Fake it.
         $request_uri = KTUtil::arrayGet($_SERVER, 'REQUEST_URI');
         if (empty($request_uri)) {
-            $_SERVER['REQUEST_URI'] = $_SERVER['SCRIPT_NAME'];
+            $_SERVER['REQUEST_URI'] = KTUtil::addQueryString($_SERVER['PHP_SELF'], $_SERVER['QUERY_STRING']);
         }
+
         $kt_path_info = KTUtil::arrayGet($_REQUEST, 'kt_path_info');
         if (!empty($kt_path_info)) {
             $_SERVER["PHP_SELF"] .= "?kt_path_info=" . $kt_path_info;
@@ -274,7 +286,7 @@ class KTInit {
 
     // {{{ guessRootUrl()
     function guessRootUrl() {
-        $urlpath = KTUtil::getRequestScriptName($_SERVER);
+        $urlpath = $_SERVER['SCRIPT_NAME'];
         $bFound = false;
         $rootUrl = "";
         while ($urlpath) {
