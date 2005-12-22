@@ -215,4 +215,46 @@ class KTBrowseUtil {
         return $aBreadcrumbs;
     }
     // }}}
+
+    // {{{ getUrlForFolder
+    function getUrlForFolder($oFolder) {
+        $iFolderId = KTUtil::getId($oFolder);
+        $sExt = ".php";
+        if (KTUtil::arrayGet($_SERVER, 'kt_no_extensions')) {
+            $sExt = "";
+        }
+        return sprintf("%s/browse%s?fFolderId=%d", $GLOBALS['KTRootUrl'], $sExt, $iFolderId);
+    }
+    // }}}
+
+    // {{{ getUrlForDocument
+    function getUrlForDocument($oDocument) {
+        $iDocumentId = KTUtil::getId($oDocument);
+        $sExt = ".php";
+        if (KTUtil::arrayGet($_SERVER, 'kt_no_extensions')) {
+            $sExt = "";
+        }
+        return sprintf("%s/view%s?fDocumentId=%d", $GLOBALS['KTRootUrl'], $sExt, $iDocumentId);
+    }
+    // }}}
+
+    // {{{ getBrowseBaseUrl
+    function getBrowseBaseUrl() {
+        $sExt = ".php";
+        if (KTUtil::arrayGet($_SERVER, 'kt_no_extensions')) {
+            $sExt = "";
+        }
+        return sprintf("%s/browse%s", $GLOBALS['KTRootUrl'], $sExt);
+    }
+    // }}}
+
+    // {{{ getViewBaseUrl
+    function getViewBaseUrl() {
+        $sExt = ".php";
+        if (KTUtil::arrayGet($_SERVER, 'kt_no_extensions')) {
+            $sExt = "";
+        }
+        return sprintf("%s/view%s", $GLOBALS['KTRootUrl'], $sExt);
+    }
+    // }}}
 }
