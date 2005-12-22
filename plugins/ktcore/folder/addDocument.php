@@ -13,6 +13,23 @@ class KTFolderAddDocumentAction extends KTFolderAction {
 
     var $_sShowPermission = "ktcore.permissions.write";
 
+    function check() {
+        $res = parent::check();
+        if (empty($res)) {
+            return $res;
+        }
+        $postExpected = KTUtil::arrayGet($_REQUEST, "postExpected");
+        $postReceived = KTUtil::arrayGet($_REQUEST, "postReceived");
+        if (!empty($postExpected)) {
+            $aErrorOptions = array(
+                'redirect_to' => array('main', sprintf('fFolderId=%d', $this->oFolder->getId())),
+                'message' => 'Upload larger than maximum POST size (max_post_size variable in .htaccess or php.ini)',
+            );
+            $this->oValidator->notEmpty($postReceived, $aErrorOptions);
+        }
+        return true;
+    }
+
     function do_main() {
         $this->oPage->setBreadcrumbDetails(_("add document"));
         $this->oPage->setTitle(_('Add a document'));
@@ -58,28 +75,10 @@ class KTFolderAddDocumentAction extends KTFolderAction {
         require_once(KT_LIB_DIR . '/metadata/fieldset.inc.php');
         require_once(KT_LIB_DIR . '/documentmanagement/documentutil.inc.php');
 
-        // make sure the user actually selected a file first
-        // and that something was uploaded
-        if (!((strlen($_FILES['file']['name']) > 0) && $_FILES['file']['size'] > 0)) {
-            // no uploaded file
-            $message = _("You did not select a valid document to upload");
-
-            $errors = array(
-               1 => _("The uploaded file is larger than the PHP upload_max_filesize setting"),
-               2 => _("The uploaded file is larger than the MAX_FILE_SIZE directive that was specified in the HTML form"),
-               3 => _("The uploaded file was not fully uploaded to KnowledgeTree"),
-               4 => _("No file was selected to be uploaded to KnowledgeTree"),
-               6 => _("An internal error occurred receiving the uploaded document"),
-            );
-            $message = KTUtil::arrayGet($errors, $_FILES['file']['error'], $message);
-
-            if (@ini_get("file_uploads") == false) {
-                $message = _("File uploads are disabled in your PHP configuration");
-            }
-
-            $this->errorRedirectToMain($message, 'fFolderId=' . $this->oFolder->getId());
-            exit(0);
-        }
+        $aErrorOptions = array(
+            'redirect_to' => array('main', sprintf('fFolderId=%d', $this->oFolder->getId())),
+        );
+        $aFile = $this->oValidator->validateFile($_FILES['file'], $aErrorOptions);
 
         $matches = array();
         $aFields = array();
@@ -92,7 +91,7 @@ class KTFolderAddDocumentAction extends KTFolderAction {
         $this->oValidator->validateDocumentType($_REQUEST['fDocumentTypeId']);
 
         $aOptions = array(
-            'contents' => new KTFSFileLike($_FILES['file']['tmp_name']),
+            'contents' => new KTFSFileLike($aFile['tmp_name']),
             'documenttype' => $this->oDocumentType,
             'metadata' => $aFields,
             'description' => $_REQUEST['title'],
@@ -100,7 +99,7 @@ class KTFolderAddDocumentAction extends KTFolderAction {
 
         $mpo->start();
         $this->startTransaction();
-        $oDocument =& KTDocumentUtil::add($this->oFolder, basename($_FILES['file']['name']), $this->oUser, $aOptions);
+        $oDocument =& KTDocumentUtil::add($this->oFolder, basename($aFile['name']), $this->oUser, $aOptions);
         if (PEAR::isError($oDocument)) {
             $message = $oDocument->getMessage();
             $this->errorRedirectToMain($message, 'fFolderId=' . $this->oFolder->getId());
