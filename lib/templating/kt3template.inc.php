@@ -9,9 +9,6 @@
  */
  
 require_once(KT_LIB_DIR . "/templating/templating.inc.php");
-require_once(KT_LIB_DIR . "/session/control.inc");
-
-
 
 class KTPage {
 
