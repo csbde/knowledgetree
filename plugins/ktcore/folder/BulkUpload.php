@@ -13,6 +13,23 @@ class KTBulkUploadFolderAction extends KTFolderAction {
     var $_sShowPermission = "ktcore.permissions.write";
     var $bAutomaticTransaction = true;
 
+    function check() {
+        $res = parent::check();
+        if (empty($res)) {
+            return $res;
+        }
+        $postExpected = KTUtil::arrayGet($_REQUEST, "postExpected");
+        $postReceived = KTUtil::arrayGet($_REQUEST, "postReceived");
+        if (!empty($postExpected)) {
+            $aErrorOptions = array(
+                'redirect_to' => array('main', sprintf('fFolderId=%d', $this->oFolder->getId())),
+                'message' => 'Upload larger than maximum POST size (max_post_size variable in .htaccess or php.ini)',
+            );
+            $this->oValidator->notEmpty($postReceived, $aErrorOptions);
+        }
+        return true;
+    }
+
     function do_main() {
         $this->oPage->setBreadcrumbDetails(_("bulk upload"));
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/folder/bulkUpload');
