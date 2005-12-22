@@ -20,6 +20,7 @@ require_once(KT_LIB_DIR . "/widgets/portlet.inc.php");
 require_once(KT_LIB_DIR . "/widgets/fieldsetDisplay.inc.php");
 require_once(KT_LIB_DIR . "/widgets/FieldsetDisplayRegistry.inc.php");
 require_once(KT_LIB_DIR . "/actions/documentaction.inc.php");
+require_once(KT_LIB_DIR . "/browse/browseutil.inc.php");
 
 
 class ViewDocumentDispatcher extends KTStandardDispatcher {
@@ -52,7 +53,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 		$document_data = array();
 		$document_id = KTUtil::arrayGet($_REQUEST, 'fDocumentId');
 		if ($document_id === null) { 
-		    $this->oPage->addError('No document was requested.  Please <a href="' . $GLOBALS['KTRootUrl'] . '/browse.php">browse</a> for one.');
+		    $this->oPage->addError('No document was requested.  Please <a href="' . KTBrowseUtil::getBrowseBaseUrl() . '">browse</a> for one.');
 			return $this->do_error();
 		}
 		$document_data["document_id"] = $document_id;
@@ -60,7 +61,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 		// try get the document.
 		$oDocument =& Document::get($document_id);
 		if (PEAR::isError($oDocument)) {
-		    $this->oPage->addError('The document you attempted to retrieve is invalid.   Please <a href="' . $GLOBALS['KTRootUrl'] . '/browse.php">browse</a> for one.');
+		    $this->oPage->addError('The document you attempted to retrieve is invalid.   Please <a href="' . KTBrowseUtil::getBrowseBaseUrl() . '">browse</a> for one.');
 			return $this->do_error();		
 		}
 		if (!Permission::userHasDocumentReadPermission($oDocument)) {
@@ -138,7 +139,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 		$document_data = array();
 		$document_id = KTUtil::arrayGet($_REQUEST, 'fDocumentId');
 		if ($document_id === null) { 
-		    $this->oPage->addError('No document was requested.  Please <a href="' . $GLOBALS['KTRootUrl'] . '/browse.php">browse</a> for one.');
+		    $this->oPage->addError('No document was requested.  Please <a href="' . KTBrowseUtil::getBrowseBaseUrl() . '">browse</a> for one.');
 			return $this->do_error();
 		}
 		$document_data["document_id"] = $document_id;
@@ -146,7 +147,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 		// try get the document.
 		$oDocument =& Document::get($document_id);
 		if (PEAR::isError($oDocument)) {
-		    $this->oPage->addError('The document you attempted to retrieve is invalid.   Please <a href="' . $GLOBALS['KTRootUrl'] . '/browse.php">browse</a> for one.');
+		    $this->oPage->addError('The document you attempted to retrieve is invalid.   Please <a href="' . KTBrowseUtil::getBrowseBaseUrl() . '">browse</a> for one.');
 			return $this->do_error();		
 		}
 		// fixme check perms
@@ -194,7 +195,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 		$document_data = array();
 		$document_id = KTUtil::arrayGet($_REQUEST, 'fDocumentId');
 		if ($document_id === null) { 
-		    $this->oPage->addError('No document was requested.  Please <a href="' . $GLOBALS['KTRootUrl'] . '/browse.php">browse</a> for one.');
+		    $this->oPage->addError('No document was requested.  Please <a href="' . KTBrowseUtil::getBrowseBaseUrl() . '">browse</a> for one.');
 			return $this->do_error();
 		}
 		$document_data["document_id"] = $document_id;
@@ -202,7 +203,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 		// try get the document.
 		$oDocument =& Document::get($document_id);
 		if (PEAR::isError($oDocument)) {
-		    $this->oPage->addError('The document you attempted to retrieve is invalid.   Please <a href="' . $GLOBALS['KTRootUrl'] . '/browse.php">browse</a> for one.');
+		    $this->oPage->addError('The document you attempted to retrieve is invalid.   Please <a href="' . KTBrowseUtil::getBrowseBaseUrl() . '">browse</a> for one.');
 			return $this->do_error();		
 		}
 		// fixme check perms
@@ -242,7 +243,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 		$document_data = array();
 		$document_id = KTUtil::arrayGet($_REQUEST, 'fDocumentId');
 		if ($document_id === null) { 
-		    $this->oPage->addError('No document was requested.  Please <a href="' . $GLOBALS['KTRootUrl'] . '/browse.php">browse</a> for one.');
+		    $this->oPage->addError('No document was requested.  Please <a href="' . KTBrowseUtil::getBrowseBaseUrl() . '">browse</a> for one.');
 			return $this->do_error();
 		}
 		$document_data["document_id"] = $document_id;
@@ -250,7 +251,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 		// try get the document.
 		$oDocument =& Document::get($document_id);
 		if (PEAR::isError($oDocument)) {
-		    $this->oPage->addError('The document you attempted to retrieve is invalid.   Please <a href="' . $GLOBALS['KTRootUrl'] . '/browse.php">browse</a> for one.');
+		    $this->oPage->addError('The document you attempted to retrieve is invalid.   Please <a href="' . KTBrowseUtil::getBrowseBaseUrl() . '">browse</a> for one.');
 			return $this->do_error();		
 		}
 		if (!Permission::userHasDocumentReadPermission($oDocument)) {
