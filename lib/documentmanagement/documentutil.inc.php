@@ -496,7 +496,8 @@ class KTDocumentUtil {
 
     // {{{ updateSearchableText
     function updateSearchableText($oDocument) {
-        $iDocumentId = KTUtil::getId($oDocument);
+        $oDocument = KTUtil::getObject('Document', $oDocument);
+        $iDocumentId = $oDocument->getId();
         $sTable = KTUtil::getTableName('document_transaction_text');
         $aQuery = array("SELECT document_text FROM $sTable WHERE
                 document_id = ?", array($iDocumentId));
