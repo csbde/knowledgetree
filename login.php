@@ -1,7 +1,7 @@
 <?php
 
 // main library routines and defaults
-require_once("../config/dmsDefaults.php");
+require_once("config/dmsDefaults.php");
 require_once(KT_LIB_DIR . '/templating/templating.inc.php');
 require_once(KT_LIB_DIR . '/session/control.inc');
 require_once(KT_LIB_DIR . '/session/Session.inc');
