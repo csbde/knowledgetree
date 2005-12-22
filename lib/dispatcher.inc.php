@@ -135,7 +135,7 @@ class KTStandardDispatcher extends KTDispatcher {
     }
 
     function loginRequired() {
-        $url = generateControllerUrl("loginForm");
+        $url = generateControllerUrl("login");
         $redirect = urlencode($_SERVER['REQUEST_URI']);
         if ((strlen($redirect) > 1)) {
             $url = $url . "&redirect=" . $redirect;
