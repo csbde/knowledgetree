@@ -28,7 +28,7 @@ class BrowseColumn {
     function renderHeader($sReturnURL) { 
         $text = _("Abstract") . ": " . $this->label; 
         $href = $sReturnURL . "&sort_on=" . $this->name . "&sort_order=";
-        $href .= $this->sort_direction == "asc"? "desc" : "asc" ;
+        $href .= $this->sort_direction == "asc" ? "desc" : "asc" ;
         
         return '<a href="' . $href . '">'.$text.'</a>';
         
@@ -58,7 +58,7 @@ class TitleColumn extends BrowseColumn {
     function renderHeader($sReturnURL) { 
         $text = _("Title");
         $href = $sReturnURL . "&sort_on=" . $this->name . "&sort_order=";
-        $href .= $this->sort_direction == "asc"? "desc" : "asc" ;
+        $href .= $this->sort_direction == "asc" ? "desc" : "asc" ;
         
         return '<a href="' . $href . '">'.$text.'</a>';
         
@@ -139,7 +139,7 @@ class DateColumn extends BrowseColumn {
     function renderHeader($sReturnURL) { 
         $text = $this->label;
         $href = $sReturnURL . "&sort_on=" . $this->name . "&sort_order=";
-        $href .= $this->sort_direction == "asc"? "desc" : "asc" ;
+        $href .= $this->sort_direction == "asc" ? "desc" : "asc" ;
         
         return '<a href="' . $href . '">'.$text.'</a>';
         
@@ -187,7 +187,7 @@ class UserColumn extends BrowseColumn {
     function renderHeader($sReturnURL) { 
         $text = $this->label;
         $href = $sReturnURL . "&sort_on=" . $this->name . "&sort_order=";
-        $href .= $this->sort_direction == "asc"? "desc" : "asc" ;
+        $href .= $this->sort_direction == "asc" ? "desc" : "asc" ;
         
         return '<a href="' . $href . '">'.$text.'</a>';
         
