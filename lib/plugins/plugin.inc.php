@@ -45,7 +45,16 @@ class KTPlugin {
     }
 
     function getPagePath($sPath) {
-        return sprintf($GLOBALS['KTRootUrl'] . '/plugin.php/%s/%s', $this->sNamespace, $sPath);
+        $sExt = ".php";
+        if (KTUtil::arrayGet($_SERVER, 'kt_no_extensions')) {
+            $sExt = "";
+        }
+        $oKTConfig =& KTConfig::getSingleton();
+        if ($oKTConfig->get("KnowledgeTree/pathInfoSupport")) {
+            return sprintf('%s/plugin%s/%s/%s', $GLOBALS['KTRootUrl'], $sExt, $this->sNamespace, $sPath);
+        } else {
+            return sprintf('%s/plugin%s?kt_path_info=%s/%s', $GLOBALS['KTRootUrl'], $sExt, $this->sNamespace, $sPath);
+        }
     }
 
     function registerAuthenticationProvider($sName, $sClass, $sNamespace, $sFilename = null) {
