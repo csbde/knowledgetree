@@ -87,15 +87,16 @@ class KTDispatcher {
             foreach ($sQuery as $k => $v) {
                 $aQueryStrings[] = urlencode($k) . "=" . urlencode($v);
             }
-            $sQuery = "?" . join('&', $aQueryStrings);
+            $sQuery = join('&', $aQueryStrings);
         } else {
             if (!empty($sQuery)) {
-                $sQuery = '?action=' . $event . '&' . $sQuery;
+                $sQuery = 'action=' . $event . '&' . $sQuery;
             } else {
-                $sQuery = '?action=' . $event;
+                $sQuery = 'action=' . $event;
             }
         }
-        $this->oRedirector->redirect($_SERVER["PHP_SELF"] . $sQuery);
+        $sRedirect = KTUtil::addQueryString($_SERVER['PHP_SELF'], $sQuery);
+        $this->oRedirector->redirect($sRedirect);
         exit(0);
     }
 
