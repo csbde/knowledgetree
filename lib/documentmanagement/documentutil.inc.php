@@ -511,7 +511,9 @@ class KTDocumentUtil {
             $aFieldValues[] = $oFieldLink->getValue();
         }
         $sAllFieldText = join(" ", $aFieldValues);
-        $sSearchableText = $sAllDocumentText . " " . $sAllFieldText . " " . $sAllComments;
+        $sDocumentFilename = $oDocument->getFilename();
+        $sDocumentTitle = $oDocument->getName();
+        $sSearchableText = $sAllDocumentText . " " . $sAllFieldText . " " . $sAllComments . " " . $sDocumentFilename . " " . $sDocumentTitle;
         $sTable = KTUtil::getTableName('document_searchable_text');
         $aInsert = array(
             "document_id" => $iDocumentId,
