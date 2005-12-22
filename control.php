@@ -36,11 +36,11 @@ if (checkSessionAndRedirect(false)) {
 } else {
     // session check fails, so default action should be the login form if no action was specified
     if (!isset($action)) {
-        $action = "loginForm";
-    } elseif ($action <> "loginForm") {
+        $action = "login";
+    } elseif ($action <> "login") {
         // we have a controller link and auth has failed, so redirect to the login page
         // with the controller link as the redirect
-        $url = generateControllerUrl("loginForm");
+        $url = generateControllerUrl("login");
         $redirect = urlencode($_SERVER[PHP_SELF] . "?" . $_SERVER['QUERY_STRING']);
         if ((strlen($redirect) > 1)) {
             $url = $url . "&redirect=" . $redirect;
