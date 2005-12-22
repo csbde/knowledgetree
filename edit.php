@@ -6,7 +6,7 @@
  * @author Brad Shuttleworth, Jam Warehouse (Pty) Ltd, South Africa
  */
 
-require_once("../../../../config/dmsDefaults.php");
+require_once("config/dmsDefaults.php");
 require_once(KT_LIB_DIR . '/dispatcher.inc.php');
 
 require_once(KT_LIB_DIR . '/documentmanagement/Document.inc');
@@ -27,6 +27,7 @@ require_once(KT_LIB_DIR . "/widgets/portlet.inc.php");
 require_once(KT_LIB_DIR . "/widgets/fieldsetDisplay.inc.php");
 require_once(KT_LIB_DIR . "/widgets/FieldsetDisplayRegistry.inc.php");
 require_once(KT_LIB_DIR . "/actions/documentaction.inc.php");
+require_once(KT_LIB_DIR . "/browse/browseutil.inc.php");
 
 
 class KTEditDocumentDispatcher extends KTStandardDispatcher {
@@ -73,13 +74,13 @@ class KTEditDocumentDispatcher extends KTStandardDispatcher {
         
         if ($parents != 0) {
             foreach (range(0,$parents) as $index) {
-                $this->aBreadcrumbs[] = array("url" => $GLOBALS['KTRootUrl'] . "/browse.php?fFolderId=" . $folder_path_ids[$index], "name" => $folder_path_names[$index]);
+                $this->aBreadcrumbs[] = array("url" => KTBrowseUtil::getUrlForFolder($folder_path_ids[$index]), "name" => $folder_path_names[$index]);
             }
         }
         
         // now add this folder, _if we aren't in 1_.
         if ($folder_id != 1) {
-            $this->aBreadcrumbs[] = array("url" => $GLOBALS['KTRootUrl'] . "/browse.php?fFolderId=" . $folder_id, "name" => $oFolder->getName());
+            $this->aBreadcrumbs[] = array("url" => KTBrowseUtil::getUrlForFolder($folder_id), "name" => $oFolder->getName());
         }
         
         // now add the document
@@ -330,7 +331,7 @@ class KTEditDocumentDispatcher extends KTStandardDispatcher {
 		   // this involves a redirect to view, with a message.
 		   // FIXME do not hard-code URLs
 		   
-		   redirect('view.php?fDocumentId=' . $document_id);
+		   redirect(KTBrowseUtil::getUrlForDocument($document_id));
 		}
 		
 		
