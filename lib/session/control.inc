@@ -158,9 +158,9 @@ function checkSessionAndRedirect($bRedirect, $bDownload = false) {
             // redirect to login with error message
             if ($sessionStatus == 2) {
             	// session timed out
-            	$url = generateControllerUrl("loginForm", "errorMessage=" . urlencode("Session timed out"));
+            	$url = generateControllerUrl("login", "errorMessage=" . urlencode("Session timed out"));
             } else {
-            	$url = generateControllerUrl("loginForm");
+            	$url = generateControllerUrl("login");
             }
             $redirect = urlencode($_SERVER["PHP_SELF"] . "?" . $_SERVER["QUERY_STRING"]);
             if ((strlen($redirect) > 1)) {
