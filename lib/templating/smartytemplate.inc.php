@@ -76,6 +76,7 @@ class KTSmartyTemplate extends KTTemplate {
         $smarty->register_function('entity_checkboxes', array('KTSmartyTemplate', 'entity_checkboxes'));
         $smarty->register_function('entity_radios', array('KTSmartyTemplate', 'entity_radios'));
         $smarty->register_block('i18n', array('KTSmartyTemplate', 'i18n_block'), false);
+        $smarty->register_modifier('addQueryString', array('KTSmartyTemplate', 'addQueryString'));
         return $smarty->fetch($this->sPath);
     }
 
@@ -222,6 +223,10 @@ class KTSmartyTemplate extends KTTemplate {
         unset($params['method']);
 
         return smarty_function_html_radios($params, $smarty);
+    }
+
+    function addQueryString($url, $qs) {
+        return KTUtil::addQueryString($url, $qs);
     }
 }
 

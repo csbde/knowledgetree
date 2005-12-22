@@ -57,7 +57,7 @@ addLoadEvent(startupMetadata);
 
 <h2>{i18n}Add a document{/i18n}</h2>
 
-<form method="POST" action="{$smarty.server.PHP_SELF}" enctype="multipart/form-data">
+<form method="POST" action="{$smarty.server.PHP_SELF|addQueryString:"postExpected=1&fFolderId="}{$context->oFolder->getId()}" enctype="multipart/form-data">
 <fieldset><legend>{i18n}Add a document{/i18n}</legend>
 <input type="hidden" name="action" value="upload">
 <input type="hidden" name="postReceived" value="1">

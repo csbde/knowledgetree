@@ -61,38 +61,15 @@ function controllerRedirect($sAction, $sQueryString = "") {
 function generateLink($sTargetPage, $sQueryString = "", $sLinkText = "") {
     global $default;
 
-    $sQueryStringDelimiter = strlen($sQueryString) > 0 ? (strstr($sTargetPage, "?") ? "&" : "?") : "";
-
     $sLink = "http" . ($default->sslEnabled ? "s" : "") . "://" . $default->serverName . 
              ((substr($sTargetPage, 0, strlen($default->rootUrl)) != $default->rootUrl) ? $default->rootUrl : "") .
              (substr($sTargetPage, 0, 1) == "/" ? "" : "/") . 
-             $sTargetPage . $sQueryStringDelimiter . $sQueryString;
+             $sTargetPage;
+    
+    $sLink = KTUtil::addQueryString($sLink, $sQueryString);
 
     return (strlen($sLinkText) > 0) ? "<a href=\"$sLink\">$sLinkText</a>" : $sLink;
 }
-
-/**
- * Generates a link used when setting up template documents for document linking in folder
- * collaboration.  Formatted to send document name and id back to parent window 
- *
- * @param string the url to link to
- * @param string the querystring
- * @param string the link text (optional)
- * @return string the html link if the link text is specified, otherwise just the url
- */
-function generateLinkForTemplateDocumentBrowse($sTargetPage, $sQueryString, $sLinkText = "", $sDocumentName, $iDocumentID) {
-    global $default;
-
-    if (strlen($sQueryString) > 0) {
-        $sQueryStringDelimiter = (strstr($sTargetPage, "?") ? "&" : "?");
-    }
-    $sLink = "http" . ($default->sslEnabled ? "s" : "") . "://" . $default->serverName . 
-             ((substr($sTargetPage, 0, strlen($default->rootUrl)) != $default->rootUrl) ? $default->rootUrl : "") . 
-             $sTargetPage . $sQueryStringDelimiter . $sQueryString;
-
-    return (strlen($sLinkText) > 0) ? "<a href=\"$sLink\" onClick=\"load('$sDocumentName', $iDocumentID, top.opener);\">$sLinkText</a>" : $sLink;
-}
-
 
 /**
  * Returns a controller url.
