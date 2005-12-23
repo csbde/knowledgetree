@@ -1,5 +1,5 @@
 <?php
-require_once("$default->fileSystemRoot/lib/security/Permission.inc");
+require_once(KT_LIB_DIR . '/security/Permission.inc');
 // define access constants
 define("None", 1);
 define("Guest", 2);

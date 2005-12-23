@@ -60,7 +60,7 @@ class KTInit {
     // {{{ setupLogging()
     function setupLogging () {
         global $default;
-        require_once("$default->fileSystemRoot/lib/Log.inc");
+        require_once(KT_LIB_DIR . '/Log.inc');
         $oKTConfig =& KTConfig::getSingleton();
         $default->log = new KTLegacyLog($oKTConfig->get('urls/logDirectory'), $default->logLevel);
         $res = $default->log->initialiseLogFile();
@@ -384,8 +384,7 @@ $KTInit->setupRandomSeed();
 
 $GLOBALS['KTRootUrl'] = $oKTConfig->get('KnowledgeTree/rootUrl');
 
-// instantiate system settings class
-require_once("$default->fileSystemRoot/lib/database/lookup.inc");
+require_once(KT_LIB_DIR . '/database/lookup.inc');
 
 // table mapping entries
 include("tableMappings.inc");

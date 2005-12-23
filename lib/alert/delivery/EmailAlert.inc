@@ -1,5 +1,5 @@
 <?php
-require_once("$default->fileSystemRoot/lib/email/Email.inc");
+require_once(KT_LIB_DIR . '/email/Email.inc');
 /**
  * $Id$
  *
