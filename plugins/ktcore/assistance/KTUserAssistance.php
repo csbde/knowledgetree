@@ -112,7 +112,4 @@ $oPlugin->registerPage('admin-quickguide', 'KTUserAssistAdminQuickguide', __FILE
 class KTUserAssistAdminGuideWhatsNew extends KTUserAssistBasePage { var $pagefile = 'admin-guide-whats-new-in-kt3'; var $title = 'What\'s new in KT3 for Administrators'; }
 $oPlugin->registerPage('admin-guide-whats-new-in-kt3', 'KTUserAssistAdminGuideWhatsNew', __FILE__);
 
-
-$oPlugin->register();
-
 ?>
