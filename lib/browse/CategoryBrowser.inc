@@ -1,9 +1,9 @@
 <?php
 
-require_once("$default->fileSystemRoot/lib/security/Permission.inc");
-require_once("$default->fileSystemRoot/lib/users/User.inc");
-require_once("$default->fileSystemRoot/lib/documentmanagement/Document.inc");
-require_once("$default->fileSystemRoot/lib/foldermanagement/Folder.inc");
+require_once(KT_LIB_DIR . '/security/Permission.inc');
+require_once(KT_LIB_DIR . '/users/User.inc');
+require_once(KT_LIB_DIR . '/documentmanagement/Document.inc');
+require_once(KT_LIB_DIR . '/foldermanagement/Folder.inc');
 /**
  * $Id$
  *

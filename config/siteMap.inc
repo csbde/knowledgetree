@@ -21,7 +21,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */ 
  
-require_once("$default->fileSystemRoot/lib/session/SiteMap.inc");
+require_once(KT_LIB_DIR . '/session/SiteMap.inc');
 $default->siteMap = new SiteMap(false);
 
 // action, page, section, group with access, link text

@@ -1,7 +1,7 @@
 <?php
-require_once("$default->fileSystemRoot/lib/archiving/DocumentArchiving.inc");
-require_once("$default->fileSystemRoot/lib/archiving/ArchivingSettings.inc");
-require_once("$default->fileSystemRoot/lib/archiving/TimePeriod.inc");
+require_once(KT_LIB_DIR . '/archiving/DocumentArchiving.inc');
+require_once(KT_LIB_DIR . '/archiving/ArchivingSettings.inc');
+require_once(KT_LIB_DIR . '/archiving/TimePeriod.inc');
 /**
  * $Id$
  *

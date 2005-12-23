@@ -1,9 +1,9 @@
 <?php
 
-require_once("$default->fileSystemRoot/lib/browse/Browser.inc");
-require_once("$default->fileSystemRoot/lib/browse/FolderBrowser.inc");
-require_once("$default->fileSystemRoot/lib/browse/CategoryBrowser.inc");
-require_once("$default->fileSystemRoot/lib/browse/DocumentTypeBrowser.inc");
+require_once(KT_LIB_DIR . '/browse/Browser.inc');
+require_once(KT_LIB_DIR . '/browse/FolderBrowser.inc');
+require_once(KT_LIB_DIR . '/browse/CategoryBrowser.inc');
+require_once(KT_LIB_DIR . '/browse/DocumentTypeBrowser.inc');
 /**
  * $Id$
  *

@@ -1,5 +1,5 @@
 <?php
-require_once("$default->fileSystemRoot/lib/database/datetime.inc");
+require_once(KT_LIB_DIR . '/database/datetime.inc');
 // define error levels
 define("DEBUG", 0);
 define("INFO", 1);
