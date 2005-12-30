@@ -122,9 +122,11 @@ class UpgradeFunctions {
 
     // {{{ _setRead
     function _setRead($iID, $oPO) {
-        global $default;
+        require_once(KT_LIB_DIR . '/permissions/permission.inc.php');
+        require_once(KT_LIB_DIR . '/permissions/permissionutil.inc.php');
+        $sTable = 'groups_folders_link';
         $oPermission = KTPermission::getByName('ktcore.permissions.read');
-        $query = "SELECT group_id FROM $default->groups_folders_table WHERE folder_id = ? AND (can_read = ? OR can_write = ?)";
+        $query = "SELECT group_id FROM $sTable WHERE folder_id = ? AND (can_read = ? OR can_write = ?)";
         $aParams = array($iID, true, true);
         $aGroupIDs = DBUtil::getResultArrayKey(array($query, $aParams), 'group_id');
         $aAllowed = array("group" => $aGroupIDs);
@@ -134,9 +136,11 @@ class UpgradeFunctions {
 
     // {{{ _setWrite
     function _setWrite($iID, $oPO) {
-        global $default;
+        require_once(KT_LIB_DIR . '/permissions/permission.inc.php');
+        require_once(KT_LIB_DIR . '/permissions/permissionutil.inc.php');
+        $sTable = 'groups_folders_link';
         $oPermission = KTPermission::getByName('ktcore.permissions.write');
-        $query = "SELECT group_id FROM $default->groups_folders_table WHERE folder_id = ? AND can_write = ?";
+        $query = "SELECT group_id FROM $sTable WHERE folder_id = ? AND can_write = ?";
         $aParams = array($iID, true);
         $aGroupIDs = DBUtil::getResultArrayKey(array($query, $aParams), 'group_id');
         $aAllowed = array("group" => $aGroupIDs);
@@ -146,9 +150,11 @@ class UpgradeFunctions {
     
     // {{{ _setAddFolder
     function _setAddFolder($iID, $oPO) {
-        global $default;
+        require_once(KT_LIB_DIR . '/permissions/permission.inc.php');
+        require_once(KT_LIB_DIR . '/permissions/permissionutil.inc.php');
+        $sTable = 'groups_folders_link';
         $oPermission = KTPermission::getByName('ktcore.permissions.addFolder');
-        $query = "SELECT group_id FROM $default->groups_folders_table WHERE folder_id = ? AND can_write = ?";
+        $query = "SELECT group_id FROM $sTable WHERE folder_id = ? AND can_write = ?";
         $aParams = array($iID, true);
         $aGroupIDs = DBUtil::getResultArrayKey(array($query, $aParams), 'group_id');
         $aAllowed = array("group" => $aGroupIDs);
@@ -159,109 +165,102 @@ class UpgradeFunctions {
     // {{{ setPermissionObject
     function setPermissionObject() {
         global $default;
-        require_once(KT_LIB_DIR . '/foldermanagement/Folder.inc');
-        require_once(KT_LIB_DIR . '/documentmanagement/Document.inc');
         require_once(KT_LIB_DIR . '/permissions/permissionobject.inc.php');
-        require_once(KT_LIB_DIR . '/permissions/permissionutil.inc.php');
-        require_once(KT_LIB_DIR . '/permissions/permission.inc.php');
+
+
+        // First, set permission object on all folders that were
+        // "permission folders".
         $query = "SELECT id FROM $default->folders_table WHERE permission_folder_id = id AND permission_object_id IS NULL";
         $aIDs = DBUtil::getResultArrayKey($query, 'id');
         foreach ($aIDs as $iID) {
-            $oFolder =& Folder::get($iID);
-            if (PEAR::isError($oFolder)) {
-                var_dump($oFolder);
-                exit(0);
-            }
-            if ($oFolder === false) {
-                print "Could not find folder...\n";
-                exit(0);
-            }
             $oPO =& KTPermissionObject::createFromArray(array());
-            if (PEAR::isError($oFolder)) {
+            if (PEAR::isError($oPO)) {
                 var_dump($oPO);
                 exit(0);
             }
-            $oFolder->setPermissionObjectID($oPO->getId());
-            $oFolder->update();
+            $sTableName = KTUtil::getTableName('folders');
+            $query = sprintf("UPDATE %s SET permission_object_id = %d WHERE id = %d", $sTableName, $oPO->getId(), $iID);
+            $res = DBUtil::runQuery($query);
 
             UpgradeFunctions::_setRead($iID, $oPO);
             UpgradeFunctions::_setWrite($iID, $oPO);
             UpgradeFunctions::_setAddFolder($iID, $oPO);
         }
+
+        // Next, set permission object on all folders that weren't
+        // "permission folders" by using the permission object on their
+        // permission folders.
         $query = "SELECT id FROM $default->folders_table WHERE permission_object_id IS NULL";
         $aIDs = DBUtil::getResultArrayKey($query, 'id');
         foreach ($aIDs as $iID) {
-            $oFolder =& Folder::get($iID);
-            $query = "SELECT permission_folder_id FROM $default->folders_table WHERE id = ?";
+            $sTableName = KTUtil::getTableName('folders');
+            $query = sprintf("SELECT F2.permission_object_id AS poi FROM %s AS F LEFT JOIN %s AS F2 WHERE F2.id = F.permission_folder_id WHERE id = ?", $sTableName, $sTableName);
             $aParams = array($iID);
-            $iPermissionFolderID = DBUtil::getOneResultKey(array($query, $aParams), 'permission_folder_id');
-            $oPermissionFolder =& Folder::get($iPermissionFolderID);
-            $oFolder->setPermissionObjectID($oPermissionFolder->getPermissionObjectId());
-            $oFolder->update();
-        }
-        $query = "SELECT id FROM $default->documents_table WHERE permission_object_id IS NULL";
-        $aIDs = DBUtil::getResultArrayKey($query, 'id');
-        foreach ($aIDs as $iID) {
-            $oDocument =& Document::get($iID);
-            $oFolder =& Folder::get($oDocument->getFolderID());
-            if ($oFolder === false) {
-                continue;
-            }
-            $oDocument->setPermissionObjectID($oFolder->getPermissionObjectID());
-            $oDocument->update();
+            $iPermissionObjectId = DBUtil::getOneResultKey(array($query, $aParams), 'poi');
+
+            $sTableName = KTUtil::getTableName('folders');
+            $query = sprintf("UPDATE %s SET permission_object_id = %d WHERE id = %d", $sTableName, $iPermissionObjectId, $iID);
+            DBUtil::runQuery($query);
         }
 
-        $query = "SELECT id FROM $default->documents_table WHERE permission_lookup_id IS NULL AND permission_object_id IS NOT NULL";
-        $aIDs = DBUtil::getResultArrayKey($query, 'id');
-        foreach ($aIDs as $iID) {
-            $oDocument =& Document::get($iID);
-            KTPermissionUtil::updatePermissionLookup($oDocument);
-        }
 
-        $query = "SELECT id FROM $default->folders_table WHERE permission_lookup_id IS NULL";
-        $aIDs = DBUtil::getResultArrayKey($query, 'id');
-        foreach ($aIDs as $iID) {
-            $oFolder =& Folder::get($iID);
-            KTPermissionUtil::updatePermissionLookup($oFolder);
-        }
+        $sDocumentsTable = KTUtil::getTableName('documents');
+        $sFoldersTable = KTUtil::getTableName('folders');
+
+        $query = sprintf("UPDATE %s AS D, %s AS F SET D.permission_object_id = F.permission_object_id WHERE D.folder_id = F.id AND D.permission_object_id IS NULL", $sDocumentsTable, $sFoldersTable);
+        DBUtil::runQuery($query);
     }
     // }}}
 
     // {{{ createFieldSets
     function createFieldSets () {
         global $default;
-        require_once(KT_LIB_DIR . '/documentmanagement/DocumentField.inc');
         require_once(KT_LIB_DIR . '/metadata/fieldset.inc.php');
-        $aFields = DocumentField::getList("parent_fieldset IS NULL");
-        foreach ($aFields as $oField) {
-            $sName = $oField->getName();
+
+        $sFieldsTable = KTUtil::getTableName('document_fields');
+        $sQuery = sprintf("SELECT id, name, is_generic FROM %s", $sFieldsTable);
+        $aFields = DBUtil::getResultArray($sQuery);
+
+        foreach ($aFields as $aField) {
+            $sName = $aField['name'];
             $sNamespace = 'local.' . str_replace(array(' '), array(), strtolower($sName));
-            $iFieldId = $oField->getId();
-            $oFieldSet = KTFieldset::createFromArray(array(
+            $iFieldId = $aField['id'];
+            $bIsGeneric = $aField['is_generic'];
+            $sFieldsetsTable = KTUtil::getTableName('fieldsets');
+            $iFieldsetId = DBUtil::autoInsert($sFieldsetsTable, array(
                 'name' => $sName,
                 'namespace' => $sNamespace,
                 'mandatory' => false,
-                'isconditional' => false,
-                'masterfield' => $iFieldId,
-                'isgeneric' => $oField->getIsGeneric(),
+                'is_conditional' => false,
+                'master_field' => $iFieldId,
+                'is_generic' => $bIsGeneric,
             ));
-            $iFieldSetId = $oFieldSet->getId();
-            $oField->setParentFieldset($iFieldSetId);
-            $oField->update();
+            if (PEAR::isError($iFieldsetId)) {
+                return $iFieldsetId;
+            }
+
+            $sQuery = sprintf("UPDATE %s SET parent_fieldset = ? WHERE id = ?", $sFieldsTable);
+            $aParams = array($iFieldsetId, $iFieldId);
+            $res = DBUtil::runQuery(array($sQuery, $aParams));
+            if (PEAR::isError($res)) {
+                return $res;
+            }
+
             $sTable = KTUtil::getTableName('document_type_fields');
             $aQuery = array(
                 "SELECT document_type_id FROM $sTable WHERE field_id = ?",
                 array($iFieldId)
             );
             $aDocumentTypeIds = DBUtil::getResultArrayKey($aQuery, 'document_type_id');
-            var_dump($aDocumentTypeIds);
             $sTable = KTUtil::getTableName('document_type_fieldsets');
             foreach ($aDocumentTypeIds as $iDocumentTypeId) {
                 $res = DBUtil::autoInsert($sTable, array(
                     'document_type_id' => $iDocumentTypeId,
-                    'fieldset_id' => $iFieldSetId,
+                    'fieldset_id' => $iFieldsetId,
                 ));
-                var_dump($res);
+                if (PEAR::isError($res)) {
+                    return $res;
+                }
             }
         }
     }
