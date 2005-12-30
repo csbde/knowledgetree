@@ -325,12 +325,14 @@ class RecordUpgradeItem extends UpgradeItem {
         } else {
             $this->description = "Upgrade from version $oldversion to $version";
         }
-        $this->phase = 0;
+        $this->phase = 99;
         $this->version = $version;
         $this->name = 'upgrade' . $version;
     }
     function _performUpgrade() {
-        $query = "UPDATE system_settings SET value=? WHERE name = ?";
+        require_once(KT_LIB_DIR .  '/permissions/permissionutil.inc.php');
+        KTPermissionUtil::rebuildPermissionLookups(true);
+        $query = "UPDATE system_settings SET value = ? WHERE name = ?";
         $aParams = array($this->version, "knowledgeTreeVersion");
         return DBUtil::runQuery(array($query, $aParams));
     }
