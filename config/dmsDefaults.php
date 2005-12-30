@@ -278,7 +278,9 @@ class KTInit {
             $priotity = PEAR_LOG_INFO;
         }
 
-        $default->phpErrorLog->log($message . ' in ' . $file . ' at line ' . $line, $priority);
+        if (!empty($default->phpErrorLog)) {
+            $default->phpErrorLog->log($message . ' in ' . $file . ' at line ' . $line, $priority);
+        }
         return false;
     }
     // }}}
