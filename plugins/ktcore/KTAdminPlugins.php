@@ -10,7 +10,6 @@ $oPlugin->registerAdminCategory("principals", _("Users and Groups"), _("Control 
 $oPlugin->registerAdminCategory("security", _("Security Management"), _("Assign permissions to users and groups, and specify which permissions are required to interact with various parts of the Document Management System."));
 $oPlugin->registerAdminCategory("storage", _("Document Storage"), _("Manage how and where the actual documents will be stored, work with document archives and deal with other document related problems."));
 $oPlugin->registerAdminCategory("documents", _("Document Type Configuration"), _("Configure the information that needs to be collected about different kinds of documents."));
-$oPlugin->registerAdminCategory("collections", _("Collections"), _("Specify how groups of documents are displayed in browse and search mode."));
 $oPlugin->registerAdminCategory("misc", _("Miscellaneous"), _("Various settings which do not fit into the other categories, including help, etc."));
 
 
