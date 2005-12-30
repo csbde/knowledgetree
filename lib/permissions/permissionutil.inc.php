@@ -110,7 +110,8 @@ class KTPermissionUtil {
         $oPermissionAssignment = KTPermissionUtil::getOrCreateAssignment($sPermission, $iObjectID);
         $oDescriptor = KTPermissionUtil::getOrCreateDescriptor($aAllowed);
         $oPermissionAssignment->setPermissionDescriptorID($oDescriptor->getID());
-        $oPermissionAssignment->update();
+        $res = $oPermissionAssignment->update();
+        return $res;
     }
     // }}}
 
@@ -440,6 +441,37 @@ class KTPermissionUtil {
         DBUtil::runQuery(array($sQuery, $aParams));
 
         KTPermissionUtil::updatePermissionLookupForPO($oNewPO);
+    }
+    // }}}
+
+    // {{{ rebuildPermissionLookups
+    function rebuildPermissionLookups($bEmptyOnly = false) {
+        if (empty($bEmptyOnly)) {
+            $sTable = KTUtil::getTableName('folders');
+            $sQuery = sprintf("SELECT id FROM %s WHERE permission_lookup_id IS NULL AND permission_object_id IS NOT NULL", $sTable);
+        } else {
+            $sTable = KTUtil::getTableName('folders');
+            $sQuery = sprintf("SELECT id FROM %s WHERE permission_object_id IS NOT NULL", $sTable);
+        }
+        $aIds = DBUtil::getResultArrayKey($sQuery, 'id');
+        foreach ($aIds as $iId) {
+            $oFolder =& Folder::get($iId);
+            KTPermissionUtil::updatePermissionLookup($oFolder);
+        }
+
+        if (empty($bEmptyOnly)) {
+            $sTable = KTUtil::getTableName('documents');
+            $sQuery = sprintf("SELECT id FROM %s WHERE permission_lookup_id IS NULL", $sTable);
+        } else {
+            $sTable = KTUtil::getTableName('documents');
+            $sQuery = sprintf("SELECT id FROM %s", $sTable);
+        }
+        $aIds = DBUtil::getResultArrayKey($sQuery, 'id');
+        foreach ($aIds as $iId) {
+            $oDocument =& Document::get($iId);
+            KTPermissionUtil::updatePermissionLookup($oDocument);
+        }
+
     }
     // }}}
 }
