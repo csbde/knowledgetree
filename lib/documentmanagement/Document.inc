@@ -236,22 +236,6 @@ class Document extends KTEntity {
     }
     // }}}
 
-    // {{{ getDaysSinceLastModified
-    /** returns the number of days since this document has been last modified **/
-    function getDaysSinceLastModified() {
-        // convert to epoch
-        $iLastModified = strtotime($this->dModified);
-        $iCurrentDateTime = time();
-        // calculate the difference
-        $iDiff = $iCurrentDateTime - $iLastModified;
-        // how many days is that?
-        $iMinutes = $iDiff / 60;
-        $iHours = $iMinutes / 60;
-        $iDays = $iHours / 24;
-        return floor($iDays);
-    }
-    // }}}
-
     // {{{ ktentity requirements
     function _fieldValues () {
         $this->sFullPath = Document::_generateFolderPath($this->iFolderID);
@@ -402,107 +386,6 @@ class Document extends KTEntity {
     }
     // }}}
 
-    // {{{ getDocumentFieldsForDocumentType
-    /**
-     * Static function.
-     * Get all the document field's associated with a document type
-     *
-     * @param  Document type primary key
-     * @param  Get only the mandatory fields
-     *
-     * @return array array of document field objects, false otherwise
-     */
-    function getDocumentFieldsForDocumentType($iDocumentTypeID, $bMandatoryOnly = false) {
-        $aDocumentFieldArray;
-        settype($aDocumentFieldArray,"array");
-        $sql = $default->db;
-        $sQuery = "SELECT DF.id AS id, DF.name AS name, DF.data_type AS data_type " ./*ok*/
-            "FROM $default->document_fields_table AS DF " .
-            "INNER JOIN $default->document_type_fields_table AS DTFL ON DF.id = DTFL.field_id " .
-             "WHERE DTFL.document_type_id = ? ";
-        $aParams = array($iDocumentTypeID);
-        if ($bMandatoryOnly) {
-            $sQuery .= "AND DFTL.is_mandatory = ? ";
-            $aParams[] = true;
-        }
-        $sQuery .= "ORDER BY DF.name ASC";
-        $result = $sql->query(array($sQuery, $aParams));
-
-        if ($result) {
-            $iCount = 0;
-            while ($sql->next_record()) {
-                $oDocumentField = DocumentField::get($sql->f("id"));
-                if (!($oDocumentField === false)) {
-                    $aDocumentFieldArray[$iCount] = $oDocumentField;
-                    $iCount++;
-                }
-            }
-            return $aDocumentFieldArray;
-        }
-        return false;
-
-    }
-    // }}}
-
-    // {{{ getDocumentHistory
-    /**
-     * Get a document's transaction history
-     *
-     * @return Array array of DocumentTransaction objects
-     *
-     */
-    function getDocumentHistory() {
-        global $default, $lang_err_database;
-        $aDocumentHistory = array();
-        $sql = $default->db;
-        $result = $sql->query(array("SELECT * FROM  " . $default->document_transactions_table . " " ./*ok*/
-                              "WHERE document_id = ? " .
-                              "ORDER BY datetime DESC", $this->iId));
-        if ($result) {
-            $iCount = 0;
-            while($sql->next_record()) {
-                $oDocumentTransaction = DocumentTransaction::get($sql->f("id"));
-                $aDocumentHistory[$iCount] = $oDocumentTransaction;
-                $iCount++;
-            }
-            return $history;
-        }
-        return false;
-    }
-    // }}}
-
-    // {{{ getMimeTypeIconUrl
-    /**
-     * Returns the url to the file type icon associated with this document
-     *
-     * @return string the url to the relevant file icon, false if there is none
-     */
-    function getMimeTypeIconUrl() {
-        global $default;
-        if ($this->iMimeTypeID) {
-            // lookup the icon from the table
-            $sIconPath = lookupField($default->mimetypes_table, "icon_path", "id", $this->iMimeTypeID);
-            if (strlen($sIconPath) > 0) {
-                return $default->graphicsUrl . "/" . $sIconPath;
-            } else {
-                return false;
-            }
-        } else {
-            return false;
-        }
-    }
-    // }}}
-
-    // {{{ getIcon
-    /**
-     * Returns the html to display the document icon image
-     */
-    function getIcon() {
-        global $default;
-        return generateImage($this->getMimeTypeIconUrl() ? $this->getMimeTypeIconUrl() : "$default->graphicsUrl/unknown.gif");
-    }
-    // }}}
-
     // {{{ getPath
     /**
      * Get the full path for a document
@@ -554,27 +437,6 @@ class Document extends KTEntity {
     }
     // }}}
 
-    // {{{ getDocumentName
-    /**
-     * Lookup the document name for the document
-     *
-     * @param int the ID of the document to lookup the document name for
-     * @return string the name of the document on success, false otherwise.
-     */
-    function getDocumentName($iDocumentID) {
-        global $default, $lang_err_database, $lang_err_doc_not_exist;
-        $sql = $default->db;
-
-        if ($sql->query(array("SELECT name FROM $default->documents_table " ./*ok*/
-                        "WHERE id = ?", $iDocumentID))) {
-            if ($sql->next_record()) {
-                return $sql->f("name");
-            }
-        }
-        return false;
-    }
-    // }}}
-
     // {{{ getDocumentDisplayPath
     /**
      * Static function.
@@ -587,60 +449,6 @@ class Document extends KTEntity {
         global $default;
         $oDocument = & Document::get($iDocumentID);
         return $oDocument->getDisplayPath();
-    }
-    // }}}
-
-    // {{{ documentIsAssignedDocTypeInFolder
-    /**
-     * Check if any documents are assigned the given
-     * document type in a specified folder
-     *
-     */
-    function documentIsAssignedDocTypeInFolder($iFolderID, $iFolderDocTypeID) {
-        global $default;
-        $sql = $default->db;
-        $sql->query(array("SELECT * " . /*ok*/
-                    "FROM $default->folder_doctypes_table AS FDL " .
-                    "INNER JOIN $default->documents_table AS D ON D.document_type_id = FDL.document_type_id " .
-                    "WHERE FDL.id = ? " .
-                    "AND D.folder_id = ?", array($iFolderDocTypeID, $iFolderID)));
-        if ($sql->next_record()) {
-            return true;
-        }
-        return false;
-    }
-    // }}}
-
-    // {{{ removeInvalidDocumentTypeEntries
-    /**
-     * On a document type change, delete all document field entries for the
-     * old document type
-     */
-    function removeInvalidDocumentTypeEntries() {
-        global $default;
-        $sQuery = array("SELECT field_id FROM $default->document_type_fields_table DTFL " . /*ok*/
-              "INNER JOIN $default->document_fields_table AS DF ON DF.id = DTFL.field_id " .
-              "WHERE DTFL.document_type_id = ? " .
-              "AND DF.is_generic = ?", array($this->iDocumentTypeID, false));
-        $sql = $default->db;
-        $sql->query($sQuery);
-        $aFieldIDs = array();
-        //get all the fields from the old document type
-        while ($sql->next_record()) {
-            $aFieldIDs[count($aFieldIDs)] = $sql->f("field_id");
-        }
-        if (count($aFieldIDs) > 0) {
-            //delete the entries
-            $sQuery = "DELETE FROM $default->document_fields_link_table " .
-                      "WHERE document_id = " . quote($this->iId) . "
-                       AND document_field_id IN (" . implode(",",$aFieldIDs) . ")";
-            if ($sql->query($sQuery)) {
-                return true;
-            }
-            return false;
-        }
-        //none to remove if we get here
-        return true;
     }
     // }}}
 
