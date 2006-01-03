@@ -1,5 +1,6 @@
 <?php
 
+require_once(KT_LIB_DIR . '/dispatcher.inc.php');
 require_once(KT_LIB_DIR . '/actions/actionregistry.inc.php');
 
 class KTFolderAction extends KTStandardDispatcher {
@@ -144,7 +145,7 @@ class KTFolderActionUtil {
         $aObjects = array();
         foreach (KTFolderActionUtil::getFolderActions() as $aAction) {
             list($sClassName, $sPath, $sPlugin) = $aAction;
-            $oRegistry = KTPluginRegistry::getSingleton();
+            $oRegistry =& KTPluginRegistry::getSingleton();
             $oPlugin =& $oRegistry->getPlugin($sPlugin);
             if (!empty($sPath)) {
                 require_once($sPath);
