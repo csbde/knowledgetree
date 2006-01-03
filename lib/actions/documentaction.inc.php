@@ -154,8 +154,7 @@ class KTDocumentActionUtil {
             $oRegistry =& KTPluginRegistry::getSingleton();
             $oPlugin =& $oRegistry->getPlugin($sPlugin);
             if (!empty($sPath)) {
-                // require_once(KT_DIR .
-                // Or something...
+                require_once($sPath);
             }
             $aObjects[] =& new $sClassName($oDocument, $oUser, $oPlugin);
         }
@@ -171,8 +170,7 @@ class KTDocumentActionUtil {
             $oRegistry =& KTPluginRegistry::getSingleton();
             $oPlugin =& $oRegistry->getPlugin($sPlugin);
             if (!empty($sPath)) {
-                // require_once(KT_DIR .
-                // Or something...
+                require_once($sPath);
             }
             $aObjects[] =& new $sClassName($oDocument, $oUser, $oPlugin);
         }
@@ -191,8 +189,7 @@ class KTDocumentActionUtil {
                 continue;
             }
             if (!empty($sPath)) {
-                // require_once(KT_DIR .
-                // Or something...
+                require_once($sPath);
             }
             $aObjects[] =& new $sClassName($oDocument, $oUser, $oPlugin);
         }
