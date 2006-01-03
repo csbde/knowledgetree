@@ -1,0 +1,26 @@
+<h2>Plugins</h2>
+
+{if $plugins}
+<form action="{$smarty.server.PHP_SELF}" method="POST">
+<input type="hidden" name="action" value="update" />
+{entity_checkboxes entities=$plugins selected=$enabled_plugins
+method=getNamespace assign=boxes name="pluginids"}
+{foreach from=$boxes item=box}
+{$box} <br />
+{/foreach}
+
+<input type="submit" name="submit" value="Update" />
+</form>
+{/if}
+
+<h3>Read plugins from filesystem</h3>
+
+<p class="descriptiveText">If you have moved your document management
+system on the filesystem, or installed or removed plugins, the plugins
+must be re-read from the filesystem</p>
+
+<form action="{$smarty.server.PHP_SELF}" method="POST">
+<input type="hidden" name="action" value="reread" />
+<input type="submit" name="submit" value="Reread plugins" />
+</form>
+
