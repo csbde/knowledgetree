@@ -11,11 +11,6 @@ require_once(KT_LIB_DIR . "/foldermanagement/folderutil.inc.php");
 require_once(KT_LIB_DIR . '/plugins/plugin.inc.php');
 require_once(KT_LIB_DIR . '/plugins/pluginregistry.inc.php');
 
-$oRegistry =& KTPluginRegistry::getSingleton();
-$oPlugin =& $oRegistry->getPlugin('ktcore.plugin');
-
-$oPlugin->registerAction('folderaction', 'KTFolderAddDocumentAction', 'ktcore.actions.folder.addDocument', 'folder/addDocument.php');
-
 class KTFolderAddFolderAction extends KTFolderAction {
     var $sDisplayName = 'Add a Folder';
     var $sName = 'ktcore.actions.folder.addFolder';
@@ -54,7 +49,6 @@ class KTFolderAddFolderAction extends KTFolderAction {
         exit(0);
     }
 }
-$oPlugin->registerAction('folderaction', 'KTFolderAddFolderAction', 'ktcore.actions.folder.addFolder');
 
 class KTFolderPermissionsAction extends KTFolderAction {
     var $sDisplayName = 'Permissions';
@@ -163,9 +157,5 @@ class KTFolderPermissionsAction extends KTFolderAction {
         $this->successRedirectToMain(_("Dynamic permission added"), "fFolderId=" . $this->oFolder->getId());
     }
 }
-
-$oPlugin->registerAction('folderaction', 'KTFolderPermissionsAction', 'ktcore.actions.folder.permissions');
-$oPlugin->registerAction('folderaction', 'KTBulkImportFolderAction', 'ktcore.actions.folder.bulkImport', 'folder/BulkImport.php');
-$oPlugin->registerAction('folderaction', 'KTBulkUploadFolderAction', 'ktcore.actions.folder.bulkUpload', 'folder/BulkUpload.php');
 
 ?>

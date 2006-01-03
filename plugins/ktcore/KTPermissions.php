@@ -17,9 +17,6 @@ require_once(KT_LIB_DIR . "/permissions/permissionassignment.inc.php");
 require_once(KT_LIB_DIR . "/permissions/permissiondescriptor.inc.php");
 require_once(KT_LIB_DIR . "/permissions/permissionutil.inc.php");
 
-$oRegistry =& KTPluginRegistry::getSingleton();
-$oPlugin =& $oRegistry->getPlugin('ktcore.plugin');
-
 class KTDocumentPermissionsAction extends KTDocumentAction {
     var $sDisplayName = 'Permissions';
     var $sName = 'ktcore.actions.document.permissions';
@@ -75,8 +72,6 @@ class KTDocumentPermissionsAction extends KTDocumentAction {
         return $oTemplate->render($aTemplateData);
     }
 }
-$oPlugin->registerAction('documentaction', 'KTDocumentPermissionsAction', 'ktcore.actions.document.permissions');
-
 
 class KTRoleAllocationPlugin extends KTFolderAction {
     var $sDisplayName = 'Allocate Roles';
@@ -488,4 +483,3 @@ class KTRoleAllocationPlugin extends KTFolderAction {
 		}
 	}
 }
-$oPlugin->registerAction('folderaction', 'KTRoleAllocationPlugin', 'ktcore.actions.folder.roles');

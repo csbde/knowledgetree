@@ -14,11 +14,32 @@ require_once(KT_LIB_DIR . '/actions/folderaction.inc.php');
 
 class KTSubscriptionPlugin extends KTPlugin {
     var $sNamespace = "ktstandard.subscriptions.plugin";
+
+    function setup() {
+        $this->registerPortlet('browse', 'KTSubscriptionPortlet',
+            'ktcore.portlets.subscription', '/plugins/ktcore/KTPortlets.php');
+        $this->registerAction('documentsubscriptionaction', 'KTDocumentSubscriptionAction',
+            'ktstandard.subscription.documentsubscription');
+        $this->registerAction('documentsubscriptionaction', 'KTDocumentUnsubscriptionAction',
+            'ktstandard.subscription.documentunsubscription');
+        $this->registerTrigger('checkout', 'postValidate', 'KTCheckoutSubscriptionTrigger',
+            'ktstandard.triggers.subscription.checkout');
+        $this->registerTrigger('delete', 'postValidate', 'KTDeleteSubscriptionTrigger',
+            'ktstandard.triggers.subscription.delete');
+        $this->registerTrigger('moveDocument', 'postValidate', 'KTDocumentMoveSubscriptionTrigger',
+            'ktstandard.triggers.subscription.moveDocument');
+        $this->registerTrigger('archive', 'postValidate', 'KTArchiveSubscriptionTrigger',
+            'ktstandard.triggers.subscription.archive');
+        $this->registerAction('foldersubscriptionaction', 'KTFolderSubscriptionAction',
+            'ktstandard.subscription.foldersubscription');
+        $this->registerAction('foldersubscriptionaction', 'KTFolderUnsubscriptionAction',
+            'ktstandard.subscription.folderunsubscription');
+        $this->registerPage('manage', 'KTSubscriptionManagePage');
+    }
 }
 
 $oRegistry =& KTPluginRegistry::getSingleton();
 $oRegistry->registerPlugin('KTSubscriptionPlugin', 'ktstandard.subscriptions.plugin', __FILE__);
-$oPlugin =& $oRegistry->getPlugin('ktstandard.subscriptions.plugin');
 
 // {{{ KTSubscriptionPortlet
 class KTSubscriptionPortlet extends KTPortlet {
@@ -68,7 +89,6 @@ class KTSubscriptionPortlet extends KTPortlet {
         return $oTemplate->render($aTemplateData);
     }
 }
-$oPlugin->registerPortlet('browse', 'KTSubscriptionPortlet', 'ktcore.portlets.subscription', '/plugins/ktcore/KTPortlets.php');
 // }}}
 
 // {{{ KTDocumentSubscriptionAction
@@ -99,7 +119,6 @@ class KTDocumentSubscriptionAction extends KTDocumentAction {
         exit(0);
     }
 }
-$oPlugin->registerAction('documentsubscriptionaction', 'KTDocumentSubscriptionAction', 'ktstandard.subscription.documentsubscription');
 // }}}
 
 // {{{ KTDocumentUnsubscriptionAction
@@ -130,7 +149,6 @@ class KTDocumentUnsubscriptionAction extends KTDocumentAction {
         exit(0);
     }
 }
-$oPlugin->registerAction('documentsubscriptionaction', 'KTDocumentUnsubscriptionAction', 'ktstandard.subscription.documentunsubscription');
 // }}}
 
 // {{{ KTCheckoutSubscriptionTrigger
@@ -152,7 +170,6 @@ class KTCheckoutSubscriptionTrigger {
 
     }
 }
-$oPlugin->registerTrigger('checkout', 'postValidate', 'KTCheckoutSubscriptionTrigger', 'ktstandard.triggers.subscription.checkout');
 // }}}
 
 // {{{ KTDeleteSubscriptionTrigger
@@ -174,7 +191,6 @@ class KTDeleteSubscriptionTrigger {
         $oSubscriptionEvent->RemoveDocument($oDocument, $oFolder);
     }
 }
-$oPlugin->registerTrigger('delete', 'postValidate', 'KTDeleteSubscriptionTrigger', 'ktstandard.triggers.subscription.delete');
 // }}}
 
 // {{{ KTDocumentMoveSubscriptionTrigger
@@ -196,7 +212,6 @@ class KTDocumentMoveSubscriptionTrigger {
         $oSubscriptionEvent->MoveDocument($oDocument, $oNewFolder, $oNewFolder);
     }
 }
-$oPlugin->registerTrigger('moveDocument', 'postValidate', 'KTDocumentMoveSubscriptionTrigger', 'ktstandard.triggers.subscription.moveDocument');
 // }}}
 
 // {{{ KTArchiveSubscriptionTrigger
@@ -216,7 +231,6 @@ class KTArchiveSubscriptionTrigger {
         $oSubscriptionEvent->ArchiveDocument($oDocument, $oFolder);
     }
 }
-$oPlugin->registerTrigger('archive', 'postValidate', 'KTArchiveSubscriptionTrigger', 'ktstandard.triggers.subscription.archive');
 // }}}
 
 // {{{ KTFolderSubscriptionAction
@@ -248,7 +262,6 @@ class KTFolderSubscriptionAction extends KTFolderAction {
         exit(0);
     }
 }
-$oPlugin->registerAction('foldersubscriptionaction', 'KTFolderSubscriptionAction', 'ktstandard.subscription.foldersubscription');
 // }}}
 
 // {{{ KTFolderUnsubscriptionAction
@@ -280,7 +293,6 @@ class KTFolderUnsubscriptionAction extends KTFolderAction {
         exit(0);
     }
 }
-$oPlugin->registerAction('foldersubscriptionaction', 'KTFolderUnsubscriptionAction', 'ktstandard.subscription.folderunsubscription');
 // }}}
 
 // {{{ KTSubscriptionManagePage
@@ -347,5 +359,4 @@ class KTSubscriptionManagePage extends KTStandardDispatcher {
         exit(0);
     }
 }
-$oPlugin->registerPage('manage', 'KTSubscriptionManagePage', __FILE__);
 // }}}
