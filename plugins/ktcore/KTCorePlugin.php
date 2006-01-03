@@ -4,6 +4,9 @@ require_once(KT_LIB_DIR . '/plugins/pluginregistry.inc.php');
 require_once(KT_LIB_DIR . '/plugins/plugin.inc.php');
 
 class KTCorePlugin extends KTPlugin {
+    var $bAlwaysInclude = true;
+    var $sNamespace = "ktcore.plugin";
+
     function setup() {
         $this->registerAction('documentaction', 'KTDocumentViewAction', 'ktcore.actions.document.view', 'KTDocumentActions.php');
         $this->registerAction('documentaction', 'KTDocumentCheckOutAction', 'ktcore.actions.document.checkout', 'KTDocumentActions.php');
@@ -32,6 +35,13 @@ class KTCorePlugin extends KTPlugin {
         $this->registerAdminPage('authentication', 'KTAuthenticationAdminPage', 'principals', 'Authentication', 'FIXME: describe authentication', 'authentication/authenticationadminpage.inc.php');
         $this->registeri18n('knowledgeTree', KT_DIR . '/i18n');
 
+        $this->registerPortlet(array('browse', 'dashboard'),
+                'KTSearchPortlet', 'ktcore.portlets.search',
+                'KTPortlets.php');
+        $this->registerPortlet(array('browse'),
+                'KTBrowseModePortlet', 'ktcore.portlets.browsemodes',
+                'KTPortlets.php');
+
         $this->setupAdmin();
     }
 
@@ -39,6 +49,8 @@ class KTCorePlugin extends KTPlugin {
         // set up the categories.
         $this->registerAdminCategory("principals", _("Users and Groups"),
             _("Control which users can log in, and are part of which groups and organisational units from these management panels."));
+        $this->registerAdminCategory("plugins", _("Plugin Management"),
+            _("Control which plugins are loaded, register new plugins, and configure individual plugins."));
         $this->registerAdminCategory("security", _("Security Management"),
             _("Assign permissions to users and groups, and specify which permissions are required to interact with various parts of the Document Management System."));
         $this->registerAdminCategory("storage", _("Document Storage"),
@@ -110,18 +122,15 @@ class KTCorePlugin extends KTPlugin {
             _('Manage saved searches - searches available by default to all users.'),
             'admin/manageHelp.php', null);
 
-        $this->registerPortlet(array('browse', 'dashboard'),
-                'KTSearchPortlet', 'ktcore.portlets.search',
-                'KTPortlets.php');
-        $this->registerPortlet(array('browse'),
-                'KTBrowseModePortlet', 'ktcore.portlets.browsemodes',
-                'KTPortlets.php');
+        // plugins
+        $this->registerAdminPage("plugins", 'KTPluginDispatcher', 'plugins',
+            _('Manage plugins'), _('Register new plugins, disable plugins, and so forth'),
+            'admin/plugins.php', null);
     }
 }
 
 $oRegistry =& KTPluginRegistry::getSingleton();
 $oRegistry->registerPlugin('KTCorePlugin', 'ktcore.plugin', __FILE__);
-$oPlugin =& $oRegistry->getPlugin('ktcore.plugin');
 
 require_once('KTPortlets.php');
 
