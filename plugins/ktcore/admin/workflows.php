@@ -15,7 +15,7 @@ require_once(KT_LIB_DIR . '/groups/Group.inc');
 require_once(KT_LIB_DIR . '/roles/Role.inc');
 require_once(KT_LIB_DIR . '/search/savedsearch.inc.php');
 
-class KTWorkflowDispatcher extends KTStandardDispatcher {
+class KTWorkflowDispatcher extends KTAdminDispatcher {
     var $bAutomaticTransaction = true;
 
     // {{{ WORKFLOW HANDLING
