@@ -5,7 +5,7 @@ class KTPortletRegistry {
     // {{{ getSingleton
     function &getSingleton () {
         if (!KTUtil::arrayGet($GLOBALS, 'oKTPortletRegistry')) {
-            $GLOBALS['oKTPortletRegistry'] = new KTPortletRegistry;
+            $GLOBALS['oKTPortletRegistry'] =& new KTPortletRegistry;
         }
         return $GLOBALS['oKTPortletRegistry'];
     }
@@ -49,7 +49,7 @@ class KTPortletRegistry {
 
             $sPortletClass = $aPortlet[0];
             $sPluginName = $aPortlet[3];
-            $oRegistry = KTPluginRegistry::getSingleton();
+            $oRegistry =& KTPluginRegistry::getSingleton();
             $oPlugin =& $oRegistry->getPlugin($sPluginName);
             $oPortlet =&  new $sPortletClass;
             $oPortlet->setPlugin($oPlugin);

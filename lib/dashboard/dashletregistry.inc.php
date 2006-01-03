@@ -21,7 +21,7 @@ class KTDashletRegistry {
     // FIXME we might want to do the pruning now, but I'm unsure how to handle the preconditions.
     function getDashlets($oUser) {
         $aDashlets = array();
-        $oRegistry = KTPluginRegistry::getSingleton();        
+        $oRegistry =& KTPluginRegistry::getSingleton();        
         // probably not the _best_ way to do things.
         foreach ($this->nsnames as $aPortlet) {
             $name = $aPortlet[0];
