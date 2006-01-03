@@ -100,6 +100,8 @@ class KTPlugin {
     }
 
     function register() {
+        $this->setup();
+
         require_once(KT_LIB_DIR . '/actions/actionregistry.inc.php');
         require_once(KT_LIB_DIR . '/actions/portletregistry.inc.php');
         require_once(KT_LIB_DIR . '/triggers/triggerregistry.inc.php');
@@ -153,6 +155,10 @@ class KTPlugin {
         foreach ($this->_ai18n as $k => $v) {
             call_user_func_array(array(&$oi18nRegistry, 'registeri18n'), $v);
         }
+    }
+
+    function setup() {
+        return;
     }
 }
 
