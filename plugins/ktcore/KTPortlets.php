@@ -3,8 +3,6 @@
 require_once(KT_LIB_DIR . '/actions/portletregistry.inc.php');
 require_once(KT_LIB_DIR . '/widgets/portlet.inc.php');
 
-$oPRegistry =& KTPortletRegistry::getSingleton();
-
 class KTSearchPortlet extends KTPortlet {
 
     function KTSearchPortlet() {
@@ -21,7 +19,6 @@ class KTSearchPortlet extends KTPortlet {
     }
 }
 
-$oPRegistry->registerPortlet(array('browse', 'dashboard'), 'KTSearchPortlet', 'ktcore.portlets.search', '/plugins/ktcore/KTPortlets.php');
 
 
 class KTBrowseModePortlet extends KTPortlet {
@@ -54,6 +51,5 @@ class KTBrowseModePortlet extends KTPortlet {
         return $oTemplate->render($aTemplateData);        
     }
 }
-$oPRegistry->registerPortlet(array('browse'), 'KTBrowseModePortlet', 'ktcore.portlets.browsemodes', '/plugins/ktcore/KTPortlets.php');
 
 

@@ -256,11 +256,12 @@ class KTDocumentEmailAction extends KTDocumentAction {
 
 class KTEmailPlugin extends KTPlugin {
     var $sNamespace = "ktstandard.email.plugin";
+
+    function setup() {
+        $this->registerAction('documentaction', 'KTDocumentEmailAction', 'ktcore.actions.document.email');
+    }
 }
 
 $oRegistry =& KTPluginRegistry::getSingleton();
 $oRegistry->registerPlugin('KTEmailPlugin', 'ktstandard.email.plugin', __FILE__);
-$oPlugin =& $oRegistry->getPlugin('ktstandard.email.plugin');
-
-$oPlugin->registerAction('documentaction', 'KTDocumentEmailAction', 'ktcore.actions.document.email');
 
