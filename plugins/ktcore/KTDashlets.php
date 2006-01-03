@@ -1,15 +1,9 @@
 <?php
 
-require_once(KT_LIB_DIR . '/plugins/pluginregistry.inc.php');
-require_once(KT_LIB_DIR . '/plugins/plugin.inc.php');
 require_once(KT_LIB_DIR . '/dashboard/dashlet.inc.php');
 require_once(KT_LIB_DIR . "/templating/templating.inc.php");
 require_once(KT_LIB_DIR . "/dashboard/Notification.inc.php");
 require_once(KT_LIB_DIR . "/security/Permission.inc");
-
-
-$oRegistry =& KTPluginRegistry::getSingleton();
-$oPlugin =& $oRegistry->getPlugin('ktcore.plugin');
 
 // ultra simple skeleton for the admin tutorial
 class KTBeta1InfoDashlet extends KTBaseDashlet {
@@ -26,7 +20,6 @@ class KTBeta1InfoDashlet extends KTBaseDashlet {
     }
 }
 
-$oPlugin->registerDashlet('KTBeta1InfoDashlet', 'ktcore.dashlet.beta1info', __FILE__);
 
 class KTNotificationDashlet extends KTBaseDashlet {
 
@@ -52,7 +45,6 @@ class KTNotificationDashlet extends KTBaseDashlet {
 }
 
 
-$oPlugin->registerDashlet('KTNotificationDashlet', 'ktcore.dashlet.notifications', __FILE__);
 
 // replace the old checked-out docs.
 class KTCheckoutDashlet extends KTBaseDashlet {
@@ -82,7 +74,6 @@ class KTCheckoutDashlet extends KTBaseDashlet {
     }
 }
 
-$oPlugin->registerDashlet('KTCheckoutDashlet', 'ktcore.dashlet.checkout', __FILE__);
 
 
 ?>
