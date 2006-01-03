@@ -1,8 +1,8 @@
 -- Drop unused tables
-DROP TABLE `metadata_lookup_condition`;
-DROP TABLE `metadata_lookup_condition_chain`;
-DROP TABLE `zseq_metadata_lookup_condition`;
-DROP TABLE `zseq_metadata_lookup_condition_chain`;
+DROP TABLE IF EXISTS `metadata_lookup_condition`;
+DROP TABLE IF EXISTS `metadata_lookup_condition_chain`;
+DROP TABLE IF EXISTS `zseq_metadata_lookup_condition`;
+DROP TABLE IF EXISTS `zseq_metadata_lookup_condition_chain`;
 
 -- Make sure sequence tables are MyISAM to avoid transaction-safety.
 ALTER TABLE `zseq_active_sessions` ENGINE=MyISAM;
