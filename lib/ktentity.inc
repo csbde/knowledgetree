@@ -358,7 +358,7 @@ class KTEntityUtil {
                 if ($bNoneOk) {
                     return null;
                 }
-                return PEAR::raiseError("No objects returned");
+                return new KTEntityNoObjects();
             }
             if (count($aObjects) > 1) {
                 return PEAR::raiseError("Multiple objects returned");
@@ -372,6 +372,9 @@ class KTEntityUtil {
     function &getByDict($sClassName, $aDict, $aOptions = null) {
         return KTEntityUtil::getBy($sClassName, array_keys($aDict), array_values($aDict), $aOptions);
     }
+}
+
+class KTEntityNoObjects extends PEAR_Error {
 }
 
 ?>
