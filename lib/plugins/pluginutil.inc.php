@@ -38,7 +38,7 @@ class KTPluginUtil {
                 require_once($sFile);
             }
         }
-        $oRegistry = KTPluginRegistry::getSingleton();
+        $oRegistry =& KTPluginRegistry::getSingleton();
         foreach ($oRegistry->getPlugins() as $oPlugin) {
             $oPlugin->register();
         }
