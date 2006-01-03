@@ -1,5 +1,6 @@
 <?php
 
+require_once(KT_LIB_DIR . '/plugins/pluginentity.inc.php');
 require_once(KT_LIB_DIR . '/plugins/pluginregistry.inc.php');
 
 class KTPluginResourceRegistry {
@@ -30,6 +31,24 @@ class KTPluginResourceRegistry {
 
 class KTPluginUtil {
     function loadPlugins () {
+        $oPlugins = KTPluginEntity::getList();
+        $aPaths = array(KT_DIR . '/plugins/ktcore/KTCorePlugin.php');
+        foreach ($oPlugins as $oPlugin) {
+            $aPaths[] = $oPlugin->getPath();
+        }
+        $aPaths = array_unique($aPaths);
+        foreach ($aPaths as $sPath) {
+            if (file_exists($sPath)) {
+                require_once($sPath);
+            }
+        }
+        $oRegistry =& KTPluginRegistry::getSingleton();
+        foreach ($oRegistry->getPlugins() as $oPlugin) {
+            $oPlugin->load();
+        }
+    }
+
+    function registerPlugins () {
         $files = array();
         KTPluginUtil::_walk(KT_DIR . '/plugins', $files);
         foreach ($files as $sFile) {
@@ -40,7 +59,10 @@ class KTPluginUtil {
         }
         $oRegistry =& KTPluginRegistry::getSingleton();
         foreach ($oRegistry->getPlugins() as $oPlugin) {
-            $oPlugin->register();
+            $res = $oPlugin->register();
+            if (PEAR::isError($res)) {
+                var_dump($res);
+            }
         }
     }
 
