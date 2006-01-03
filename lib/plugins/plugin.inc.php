@@ -3,7 +3,8 @@
 class KTPlugin {
     var $sNamespace;
     var $sFilename = null;
-
+    var $bAlwaysInclude = false;
+    var $iVersion = 0;
     
     var $_aPortlets = array();
     var $_aTriggers = array();
@@ -99,7 +100,33 @@ class KTPlugin {
         return $sFilename;
     }
 
-    function register() {
+    function isRegistered() {
+        if ($this->bAlwaysInclude) {
+            return true;
+        }
+
+        require_once(KT_LIB_DIR . '/plugins/pluginentity.inc.php');
+        $oEntity = KTPluginEntity::getByNamespace($this->sNamespace);
+        if (PEAR::isError($oEntity)) {
+            if (is_a($oEntity, 'KTEntityNoObjects')) {
+                // plugin not registered in database
+
+                // XXX: nbm: Show an error on the page that a plugin
+                // isn't registered or something, perhaps.
+                return false;
+            }
+            return false;
+        }
+        if ($oEntity->getDisabled()) {
+            return false;
+        }
+        return true;
+    }
+
+    function load() {
+        if (!$this->isRegistered()) {
+            return;
+        }
         $this->setup();
 
         require_once(KT_LIB_DIR . '/actions/actionregistry.inc.php');
@@ -159,6 +186,27 @@ class KTPlugin {
 
     function setup() {
         return;
+    }
+
+    function register() {
+        $oEntity = KTPluginEntity::getByNamespace($this->sNamespace);
+        if (!PEAR::isError($oEntity)) {
+            $oEntity->updateFromArray(array(
+                'path' => $this->sFilename,
+                'version' => $this->iVersion,
+            ));
+            return $oEntity;
+        }
+
+        $oEntity = KTPluginEntity::createFromArray(array(
+            'namespace' => $this->sNamespace,
+            'path' => $this->sFilename,
+            'version' => $this->iVersion,
+        ));
+        if (PEAR::isError($oEntity)) {
+            return $oEntity;
+        }
+        return true;
     }
 }
 
