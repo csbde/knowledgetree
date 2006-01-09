@@ -3,6 +3,7 @@
 require_once(KT_LIB_DIR . '/dispatcher.inc.php');
 require_once(KT_LIB_DIR . '/validation/dispatchervalidation.inc.php');
 require_once(KT_LIB_DIR . '/templating/templating.inc.php');
+require_once(KT_LIB_DIR . '/widgets/fieldWidgets.php');
 
 require_once(KT_LIB_DIR . '/workflow/workflow.inc.php');
 require_once(KT_LIB_DIR . '/workflow/workflowstate.inc.php');
@@ -14,6 +15,8 @@ require_once(KT_LIB_DIR . '/permissions/permission.inc.php');
 require_once(KT_LIB_DIR . '/groups/Group.inc');
 require_once(KT_LIB_DIR . '/roles/Role.inc');
 require_once(KT_LIB_DIR . '/search/savedsearch.inc.php');
+
+require_once(KT_LIB_DIR . '/actions/documentaction.inc.php');
 
 class KTWorkflowDispatcher extends KTAdminDispatcher {
     var $bAutomaticTransaction = true;

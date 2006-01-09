@@ -1,5 +1,7 @@
 <?php
 
+require_once(KT_LIB_DIR . "/dispatcher.inc.php");
+
 class KTAuthenticationProvider extends KTStandardDispatcher {
     var $sName;
     var $sNamespace;
