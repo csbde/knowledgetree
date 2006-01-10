@@ -50,6 +50,7 @@ if (checkSessionAndRedirect(false)) {
     }
 }
 
+// we appear to have some encoding/decoding issues, so we need to force-check for %30 type situations
 $queryString = KTUtil::arrayGet($_REQUEST, 'qs', '');
 if (is_array($queryString)) {
     $aStrings = array();
@@ -57,6 +58,8 @@ if (is_array($queryString)) {
         $aStrings[] = $k . '=' . $v;
     }
     $queryString = join('&', $aStrings);
+} elseif (count(preg_match('#\%#', $queryString) != 0)) {
+    $queryString = urldecode($queryString);
 }
 
 if (empty($queryString)) {
