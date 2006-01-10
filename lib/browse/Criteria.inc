@@ -6,6 +6,10 @@ require_once(KT_LIB_DIR . '/documentmanagement/DocumentField.inc');
 require_once(KT_LIB_DIR . '/documentmanagement/DocumentType.inc');
 require_once(KT_LIB_DIR . '/documentmanagement/MetaData.inc');
 require_once(KT_LIB_DIR . '/foldermanagement/Folder.inc');
+
+require_once(KT_LIB_DIR . '/workflow/workflowstate.inc.php');
+require_once(KT_LIB_DIR . '/workflow/workflow.inc.php');
+
 /**
  * $Id$
  *
