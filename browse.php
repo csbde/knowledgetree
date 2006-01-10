@@ -51,6 +51,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
     var $browse_mode = null;
     var $query = null;
     var $resultURL;
+    var $sHelpPage = 'ktcore/browse/browse.html';
 
     function BrowseDispatcher() {
         $this->aBreadcrumbs = array(

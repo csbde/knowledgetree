@@ -33,6 +33,7 @@ class KTPage {
     var $breadcrumbSection = false;
 	var $menu = null;
 	var $userMenu = null;
+	var $helpPage = null;
     
     /** the "component".  Used to set the page header (see documentation for explanation). */
     var $componentLabel = 'Browse Collections';
@@ -262,6 +263,17 @@ class KTPage {
 		return $aTuple;
     }
     
+    function setHelp($sHelpPage) {
+		$this->helpPage = $sHelpPage;
+	}
+	
+	function getHelpURL() {
+	    if (empty($this->helpPage)) { 
+		    return null;
+		}
+		
+		return '/help.php/' . $this->helpPage; // FIXME handle auto-url
+	}
 }
 
 /* set $main - this is used by the rest of the system. */

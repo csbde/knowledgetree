@@ -123,6 +123,7 @@ class KTStandardDispatcher extends KTDispatcher {
     var $aBreadcrumbs = array();
     var $sSection = false;
     var $oPage = false;
+	var $sHelpPage = null;
     
     function KTStandardDispatcher() {
         global $main;
@@ -190,6 +191,7 @@ class KTStandardDispatcher extends KTDispatcher {
         $this->oPage->setBreadcrumbs($this->aBreadcrumbs);
         $this->oPage->setPageContents($data);
         $this->oPage->setUser($this->oUser);
+		$this->oPage->setHelp($this->sHelpPage);
 		
 		// handle errors that were set using KTErrorMessage.
 		$errors = KTUtil::arrayGet($_SESSION, 'KTErrorMessage', array());

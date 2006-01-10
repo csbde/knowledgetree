@@ -1,0 +1,6 @@
+<p><a href="{$rootUrl}/admin.php/misc/helpmanagement?action=customise&name={$target_name}">Edit this help page.</a></p>
+{if (!$help_body)}
+<div class="ktError"><p>No content specified for this help file yet. <strong>Edit it first.</strong></p></div>
+{else}
+{$help_body}
+{/if}

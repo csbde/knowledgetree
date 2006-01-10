@@ -719,7 +719,8 @@ CREATE TABLE `help` (
 
 CREATE TABLE `help_replacement` (
   `id` int(11) NOT NULL default '0',
-  `name` varchar(100) NOT NULL default '',
+  `name` varchar(255) NOT NULL default '',
+  `title` varchar(255) NOT NULL default '',
   `description` text NOT NULL,
   PRIMARY KEY  (`id`)
 ) TYPE=InnoDB ;

@@ -1,28 +1,7 @@
 <h2>Current help assignments</h2>
 
-<table class="listing">
-<thead>
-<tr>
-<th>Section</th>
-<th>Filename</th>
-<th>Customise</th>
-</tr>
-</thead>
-{foreach item=oHelpEntity from=$helps }
-<tr class="{cycle values="odd,even"}">
-<td> { $oHelpEntity->sSection } </td>
-<td class="descriptiveText"> { $oHelpEntity->sFilename } </td>
-<td>
-{ assign var="replacement" value=$oHelpEntity->checkReplacement() }
-{ if $replacement }
-<a href="{$smarty.server.PHP_SELF}?action=editReplacement&id={$replacement->getId()}">Edit</a>
-{ else }
-<a href="{$smarty.server.PHP_SELF}?action=customise&name={$oHelpEntity->getFilename()}">Customise</a>
-{ /if }
-</td>
-</tr>
-{ /foreach }
-</table>
+<p class="descriptiveText">{i18n}To customise a help file, please visit that file 
+via the help system, and click on <strong>customise this help file</strong>.{/i18n}</p>
 
 { if $helpreplacements }
 <h2>Existing customised help pages</h2>
@@ -45,5 +24,9 @@
 </tr>
 { /foreach }
 </table>
+
+{else}
+<div class="ktInfo"><p>No Help files have to customised.</p></div>
+
 { /if }
 
