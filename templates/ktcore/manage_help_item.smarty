@@ -12,6 +12,7 @@ tinyMCE.init({
 <form method="POST" action="{$smarty.server.PHP_SELF}">
 <input type="hidden" name="id" value="{$help->iId}">
 <input type="hidden" name="action" value="updateReplacement">
+<input type="text" name="title" value="{$help->sTitle|escape}" /><br /><br />
 <textarea cols="60" rows="20" name="description">{$help->sDescription|escape}</textarea>
 <input type="submit" name="submit" value="Update">
 </form>

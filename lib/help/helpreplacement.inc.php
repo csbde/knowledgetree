@@ -9,11 +9,13 @@ class KTHelpReplacement extends KTEntity {
     var $sName;
     /** replacement string */
     var $sDescription;
+    var $sTitle;
 
     var $_aFieldToSelect = array(
         "iId" => "id",
         "sName" => "name",
         "sDescription" => "description",
+        "sTitle" => 'title',
     );
 
     var $_bUsePearError = true;
@@ -21,9 +23,11 @@ class KTHelpReplacement extends KTEntity {
     function getID() { return $this->iId; }
     function getName() { return $this->sName; }
     function getDescription() { return $this->sDescription; }
+    function getTitle() { return $this->sTitle; }
     function setID($iId) { $this->iId = $iId; }
     function setName($sName) { $this->sName = $sName; }
     function setDescription($sDescription) { $this->sDescription = $sDescription; }
+    function setTitle($sTitle) { $this->sTitle= $sTitle; }
 
     function _table () {
         global $default;
