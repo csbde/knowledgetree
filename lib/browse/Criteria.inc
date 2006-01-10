@@ -272,12 +272,24 @@ class DateCreatedCriterion extends BrowseCriterion {
     }
     function searchWidget ($aRequest) {
         global $default;
+        
+        //  this is not ideal, but we don't actually have access to the 
+        // dispatcher's oPage object.
+        
+        // even worse, we may _not_ have the items we want.
+        
+        global $main;
+        
         $sStartWidget = $this->getWidgetBase() . "_start";
         $sEndWidget = $this->getWidgetBase() . "_end";
+        /* // legacy code.
         $sToRender = "After date: <input type=\"text\" size=\"10\" name=\"" . $sStartWidget . "\" />";
         $sToRender .= "&nbsp;&nbsp;<a href=\"javascript:show_calendar('MainForm." . $sStartWidget . "',null,null,'YYYY-MM-DD', false);\" onmouseover=\"window.status='Date Picker';return true;\" onmouseout=\"window.status='';return true;\"><img src=\"$default->graphicsUrl/calendar/calendar.gif\" name=\"imgCalendar\" width=\"34\" height=\"21\" border=\"0\" alt=\"\"></a>";
         $sToRender .= " &nbsp; Before date: <input type=\"text\" size=\"10\" name=\"" . $sEndWidget . "\" />";
         $sToRender .= "&nbsp;&nbsp;<a href=\"javascript:show_calendar('MainForm." . $sEndWidget . "',null,null,'YYYY-MM-DD', false);\" onmouseover=\"window.status='Date Picker';return true;\" onmouseout=\"window.status='';return true;\"><img src=\"$default->graphicsUrl/calendar/calendar.gif\" name=\"imgCalendar\" width=\"34\" height=\"21\" border=\"0\" alt=\"\"></a>";
+        */
+        $sToRender = 'After Date: <span class="kt_calendar_holder"><strong class="kt_calendar_datetext">No Date Selected</strong><input type="hidden" name="' . $sStartWidget . '" class="kt_calendar_value" /> <input type="button" onclick="init_kt_calendar(this);" value="select"></span> &mdash; ';
+        $sToRender .= 'Before Date: <span class="kt_calendar_holder"><strong class="kt_calendar_datetext">No Date Selected</strong><input type="hidden" name="' . $sEndWidget . '" class="kt_calendar_value" /> <input type="button" onclick="init_kt_calendar(this);" value="select"></span><br />';
         return $sToRender;
     }
     function searchSQL ($aRequest) {
