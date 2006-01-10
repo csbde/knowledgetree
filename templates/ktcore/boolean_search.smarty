@@ -6,6 +6,12 @@
 {$context->oPage->requireJSResource("resources/js/taillog.js")}
 {$context->oPage->requireJSResource("resources/js/constructed_search.js")}
 
+{$context->oPage->requireJSResource("resources/js/kt3calendar.js")}
+{$context->oPage->requireJSResource("thirdpartyjs/jscalendar-1.0/calendar.js")}
+{$context->oPage->requireJSResource("thirdpartyjs/jscalendar-1.0/lang/calendar-en.js")}
+{$context->oPage->requireJSResource("thirdpartyjs/jscalendar-1.0/calendar-setup.js")}
+{$context->oPage->requireCSSResource("thirdpartyjs/jscalendar-1.0/calendar-system.css")}
+
 {capture assign=sJS}
 {literal}
 function testStartup() {
