@@ -3,6 +3,7 @@
 require_once(KT_LIB_DIR . '/actions/folderaction.inc.php');
 require_once(KT_LIB_DIR . '/permissions/permission.inc.php');
 require_once(KT_LIB_DIR . '/permissions/permissionutil.inc.php');
+require_once(KT_LIB_DIR . '/browse/browseutil.inc.php');
 
 require_once(KT_LIB_DIR . "/widgets/fieldsetDisplay.inc.php");
 require_once(KT_LIB_DIR . "/widgets/FieldsetDisplayRegistry.inc.php");
