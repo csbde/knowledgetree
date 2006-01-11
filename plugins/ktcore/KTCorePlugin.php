@@ -120,7 +120,7 @@ class KTCorePlugin extends KTPlugin {
         $this->registerAdminPage("savedsearch", 'KTSavedSearchDispatcher', 'misc',
             _('Saved searches'),
             _('Manage saved searches - searches available by default to all users.'),
-            'admin/manageHelp.php', null);
+            'admin/savedSearch.php', null);
 
         // plugins
         $this->registerAdminPage("plugins", 'KTPluginDispatcher', 'plugins',

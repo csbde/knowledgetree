@@ -1,0 +1,152 @@
+{$context->oPage->requireJSResource("thirdpartyjs/MochiKit/Base.js")}
+{$context->oPage->requireJSResource("thirdpartyjs/MochiKit/DateTime.js")}
+{$context->oPage->requireJSResource("thirdpartyjs/MochiKit/Iter.js")}
+{$context->oPage->requireJSResource("thirdpartyjs/MochiKit/DOM.js")}
+{$context->oPage->requireJSResource("thirdpartyjs/MochiKit/Async.js")}
+{$context->oPage->requireJSResource("resources/js/taillog.js")}
+{$context->oPage->requireJSResource("resources/js/constructed_search.js")}
+{$context->oPage->requireJSResource("resources/js/constructed_search_postprocess.js")}
+
+{$context->oPage->requireJSResource("resources/js/kt3calendar.js")}
+{$context->oPage->requireJSResource("thirdpartyjs/jscalendar-1.0/calendar.js")}
+{$context->oPage->requireJSResource("thirdpartyjs/jscalendar-1.0/lang/calendar-en.js")}
+{$context->oPage->requireJSResource("thirdpartyjs/jscalendar-1.0/calendar-setup.js")}
+
+{$context->oPage->requireCSSResource("thirdpartyjs/jscalendar-1.0/calendar-system.css")}
+
+{capture assign=sJS}
+{literal}
+function testStartup() {
+    simpleLog('INFO','Log initialised.');
+}
+
+addLoadEvent(testStartup);
+{/literal}
+{/capture}
+{$context->oPage->requireJSStandalone($sJS)}
+
+{capture assign=sCSS}
+{literal}
+fieldset { border: 1px dotted #999; }
+legend { border: 1px dotted #999;}
+
+.helpText { color: #666; }
+
+/*   logging support */
+#brad-log thead th { border-bottom: 1px solid black; }
+#brad-log {font-size: smaller; }
+#brad-log .severity-INFO { color: blue; font-weight: bold; }
+#brad-log .severity-DEBUG { color: green; font-weight: bold; }
+#brad-log .severity-ERROR { color: red; font-weight: bold; }
+#brad-log .explanation { font-family: monospace; white-space: pre; }
+{/literal}
+{/capture}
+{$context->oPage->requireCSSStandalone($sCSS)}
+
+<!-- this is bad, but we really don't need a roundtrip -->
+<div style="display: none" id="search-criteria-container">
+    <select name="querytype">
+        {foreach item=oCriteria from=$aCriteria}
+        <option value="{$oCriteria->getID()}">{$oCriteria->headerDisplay()}</option>
+        {/foreach}
+    </select>
+</div>
+
+{capture assign=defaulttitle}
+{i18n}Boolean Search{/i18n}
+{/capture}
+<h2>{$title|default:$defaulttitle}</h2>
+
+<form method="POST">
+    <input type="hidden" name="action" value="updateSearch" />
+	<input type="hidden" name="fSavedSearchId" value="{$iSearchId}" />
+{if $sNameTitle}
+    {$sNameTitle}: <input type="text" name="name" value="{$old_name}" /> <br />
+{/if}
+
+{capture assign=options}
+<select name="boolean_search[join]"><option value="AND" {if ($aSearch.join == 'AND')} selected="true"{/if}>all</option><option value="OR" {if ($aSearch.join == 'OR')} selected="true"{/if}>any</option></select>
+{/capture}
+
+   <p class="helpText">{i18n arg_options=$options}Return items which match &nbsp;#options# of the <strong>criteria groups</strong> specified.{/i18n}</p>    
+    
+   {foreach item=aSubgroup from=$aSearch.subgroup}
+    
+    <fieldset>
+        <legend>{i18n}Criteria Group{/i18n}</legend>
+
+	{capture assign=options}
+	<select name="boolean_search[subgroup][0][join]"><option value="AND"{if ($aSubgroup.join == 'AND')} selected="true"{/if}>all</option><option value="OR"{if ($aSubgroup.join == 'OR')} selected="true"{/if}>any</option></select>
+	{/capture}
+
+        <p class="helpText">{i18n arg_options=$options}Return items which match &nbsp;#options# of the criteria specified.{/i18n}</p>
+
+        <table class="advanced-search-form">
+		    <thead>
+                <tr>
+                <th>{i18n}Criteria{/i18n}</th>
+                <th>{i18n}Values{/i18n}</th>
+                <th>&nbsp;</th>
+                </tr>			
+			</thead>
+			
+            <tbody>
+			
+			    {foreach item=oSearchCriteria from=$aSubgroup.values}
+				<tr>
+					<td>
+						{$oSearchCriteria.typename} <input type="hidden" name="" value="{$oSearchCriteria.type}"/>
+					</td>
+					<td>
+					    {$oSearchCriteria.widgetval}
+					</td>
+					<td>
+					    <input type="button" value="Remove" onclick="removeCriteria(this)"/>
+					</td>
+				</tr>
+				{/foreach}
+			
+                <tr>
+                    <td><select name="querytype">
+                         {foreach item=oCriteria from=$aCriteria}
+                             <option value="{$oCriteria->getID()}">{$oCriteria->headerDisplay()}</option>
+                        {/foreach}
+                        </select>
+                        </td>
+                    <td><p class="helpText">{i18n}first select a type of query{/i18n}</p></td>
+                    <td><input type="button" value="{i18n}Add{/i18n}" onclick="addNewCriteria(this);" /></td>                    
+                </tr>
+            </tbody>
+        </table>
+
+    </fieldset>
+    
+    {/foreach}
+    
+    <div class="form_actions">
+    
+    <input type="button" value="{i18n}add another set of criteria{/i18n}" onclick="addBooleanGroup(this)" />
+    
+    
+{capture assign=defaultsubmit}
+{i18n}Search{/i18n}
+{/capture}
+    <input type="submit" name="submit" value="{$searchButton|default:$defaultsubmit}" />
+	</div>
+</form>
+
+<!--
+<table id="brad-log" width="100%">
+<thead>
+    <tr>
+        <th width="10%">Severity</th>
+        <th width="10%">Time</th>
+        <th>Entry</th>
+    </tr>
+</thead>
+<tbody>
+   
+</tbody>
+</table>
+-->
+
