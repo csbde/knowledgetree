@@ -157,8 +157,16 @@ class BrowseCriterion {
         return "<tr><td>" . $this->headerDisplay() . ": </td><td>" . $this->searchWidget($aRequest) . "</td></tr>\n";
     }
 
-    function searchWidget ($aRequest) {
-        return "<input type=\"text\" size=\"50\" name=\"" . $this->getWidgetBase() . "\" />";
+    function searchWidget ($aRequest, $aPreValue = null) {
+        if ($aPreValue != null) {
+            // !#@&)*( (*&!@# *(&@!(*&!@#
+            $k = array_keys($aPreValue);
+            $k = $k[0];
+            $preval = $aPreValue[$k];
+            return "<input type=\"text\" size=\"50\" name=\"" . $this->getWidgetBase() . "\" value=\"" . $preval . "\"/>";
+        } else {
+            return "<input type=\"text\" size=\"50\" name=\"" . $this->getWidgetBase() . "\" />";
+        }
     }
 
     function getWidgetBase () {
@@ -255,12 +263,21 @@ class CreatorCriterion extends BrowseCriterion {
     function folderDisplay($oFolder) {
         return $this->documentDisplay($oFolder);
     }
-    function searchWidget ($aRequest) {
+    function searchWidget ($aRequest, $aPreValue = null) {
+        $preval = null;
+        if ($aPreValue != null) {
+            // !#@&)*( (*&!@# *(&@!(*&!@#
+            $k = array_keys($aPreValue);
+            $k = $k[0];
+            $preval = $aPreValue[$k];
+        }
         $sRet = "<select size=\"1\" name=\"" . $this->getWidgetBase() . "\">\n";
         $aUsers = User::getList();/*ok*/
         $sRet .= "<option value=\"-1\">None</option>\n";
         foreach ($aUsers as $oUser) {
-            $sRet .= "<option value=\"" . $oUser->getID() . "\">" . $oUser->getName() . "</option>\n";
+            $sSelStr = '';
+            if ($preval == $oUser->getId()) { $sSelStr = ' selected="true"'; }
+            $sRet .= "<option value=\"" . $oUser->getID() . "\"" . $sSelStr . ">" . $oUser->getName() . "</option>\n";
         }
         $sRet .= "</select>\n";
         return $sRet;
@@ -274,15 +291,10 @@ class DateCreatedCriterion extends BrowseCriterion {
     function getName() {
         return "created";
     }
-    function searchWidget ($aRequest) {
+    function searchWidget ($aRequest, $aPreValue = null) {
         global $default;
         
-        //  this is not ideal, but we don't actually have access to the 
-        // dispatcher's oPage object.
-        
-        // even worse, we may _not_ have the items we want.
-        
-        global $main;
+        // IMPORTANT:  this requires the presence of kt3-calendar.js
         
         $sStartWidget = $this->getWidgetBase() . "_start";
         $sEndWidget = $this->getWidgetBase() . "_end";
@@ -292,8 +304,8 @@ class DateCreatedCriterion extends BrowseCriterion {
         $sToRender .= " &nbsp; Before date: <input type=\"text\" size=\"10\" name=\"" . $sEndWidget . "\" />";
         $sToRender .= "&nbsp;&nbsp;<a href=\"javascript:show_calendar('MainForm." . $sEndWidget . "',null,null,'YYYY-MM-DD', false);\" onmouseover=\"window.status='Date Picker';return true;\" onmouseout=\"window.status='';return true;\"><img src=\"$default->graphicsUrl/calendar/calendar.gif\" name=\"imgCalendar\" width=\"34\" height=\"21\" border=\"0\" alt=\"\"></a>";
         */
-        $sToRender = 'After Date: <span class="kt_calendar_holder"><strong class="kt_calendar_datetext">No Date Selected</strong><input type="hidden" name="' . $sStartWidget . '" class="kt_calendar_value" /> <input type="button" onclick="init_kt_calendar(this);" value="select"></span> &mdash; ';
-        $sToRender .= 'Before Date: <span class="kt_calendar_holder"><strong class="kt_calendar_datetext">No Date Selected</strong><input type="hidden" name="' . $sEndWidget . '" class="kt_calendar_value" /> <input type="button" onclick="init_kt_calendar(this);" value="select"></span><br />';
+        $sToRender = 'After Date: <span class="kt_calendar_holder"><strong class="kt_calendar_datetext">' . $aPreValue[$sStartWidget] . '</strong><input type="hidden" name="' . $sStartWidget . '" class="kt_calendar_value" value="' . $aPreValue[$sStartWidget] . '"/> <input type="button" onclick="init_kt_calendar(this);" value="select"></span> &mdash; ';
+        $sToRender .= 'Before Date: <span class="kt_calendar_holder"><strong class="kt_calendar_datetext">' . $aPreValue[$sStartWidget] . '</strong><input type="hidden" name="' . $sEndWidget . '" class="kt_calendar_value" value="' . $aPreValue[$sEndWidget] . '"/> <input type="button" onclick="init_kt_calendar(this);" value="select"></span><br />';
         return $sToRender;
     }
     function searchSQL ($aRequest) {
@@ -338,12 +350,21 @@ class DocumentTypeCriterion extends BrowseCriterion {
         }
         return "&nbsp;";
     }
-    function searchWidget ($aRequest) {
+    function searchWidget ($aRequest, $aPreValue = null) {
+        $preval = null;
+        if ($aPreValue != null) {
+            // !#@&)*( (*&!@# *(&@!(*&!@#
+            $k = array_keys($aPreValue);
+            $k = $k[0];
+            $preval = $aPreValue[$k];
+        }
         $sRet = "<select size=\"1\" name=\"" . $this->getWidgetBase() . "\">\n";
         $aUsers = DocumentType::getList();/*ok*/
         $sRet .= "<option value=\"-1\">None</option>\n";
         foreach ($aUsers as $oUser) {
-            $sRet .= "<option value=\"" . $oUser->getID() . "\">" . $oUser->getName() . "</option>\n";
+            $sSelStr = '';
+            if ($preval == $oUser->getId()) { $sSelStr = ' selected="true"'; }
+            $sRet .= "<option value=\"" . $oUser->getID() . "\"" . $sSelStr . ">" . $oUser->getName() . "</option>\n";
         }
         $sRet .= "</select>\n";
         return $sRet;
@@ -392,10 +413,17 @@ class GenericMetadataCriterion extends BrowseCriterion {
         return $this->aLookup['field'];
     }
 
-    function searchWidget ($aRequest) {
+    function searchWidget ($aRequest, $aPreValue = null) {
+        $preval = null;
+        if ($aPreValue != null) {
+            // !#@&)*( (*&!@# *(&@!(*&!@#
+            $k = array_keys($aPreValue);
+            $k = $k[0];
+            $preval = $aPreValue[$k];
+        }
         // If there's no lookup, just use the standard text input
         if ($this->oField->getHasLookup() == false) {
-            return parent::searchWidget($aRequest);
+            return parent::searchWidget($aRequest, $aPreValue);
         }
 
         $sRet = "<select size=\"1\" name=\"" . $this->getWidgetBase() . "\">\n";
@@ -403,7 +431,9 @@ class GenericMetadataCriterion extends BrowseCriterion {
         $aMetaData = MetaData::getList($aSearch);/*ok*/
         $sRet .= "<option value=\"-1\">None</option>\n";
         foreach ($aMetaData as $oMetaData) {
-            $sRet .= "<option value=\"" . $oMetaData->getName() . "\">" . $oMetaData->getName() . "</option>\n";
+            $sSelStr = '';
+            if ($preval == $oMetaData->getName()) { $sSelStr = ' selected="true"'; }
+            $sRet .= "<option value=\"" . $oMetaData->getName() . "\" " . $sSelStr . ">" . $oMetaData->getName() . "</option>\n";
         }
         $sRet .= "</select>\n";
         return $sRet;
@@ -498,13 +528,23 @@ class WorkflowStateCriterion extends BrowseCriterion {
         return "INNER JOIN $default->workflow_documents_table AS WD ON D.id = WD.document_id";
     }
 
-    function searchWidget ($aRequest) {
+    function searchWidget ($aRequest, $aPreValue = null) {
+        $preval = null;
+        if ($aPreValue != null) {
+            // !#@&)*( (*&!@# *(&@!(*&!@#
+            $k = array_keys($aPreValue);
+            $k = $k[0];
+            $preval = $aPreValue[$k];
+        }
+        
         $sRet = "<select size=\"1\" name=\"" . $this->getWidgetBase() . "\">\n";
         $aStates = KTWorkflowState::getList("ORDER BY workflow_id");
         $sRet .= "<option value=\"-1\">None</option>\n";
         foreach ($aStates as $oState) {
             $oWorkflow =& KTWorkflow::get($oState->getWorkflowId());
-            $sRet .= "<option value=\"" . $oState->getId() . "\">" . $oWorkflow->getName() . " - " . $oState->getName() . "</option>\n";
+            $sSelStr = '';
+            if ($preval == $oState->getId()) { $sSelStr = ' selected="true"'; }            
+            $sRet .= "<option value=\"" . $oState->getId() . "\"" . $sSelStr . ">" . $oWorkflow->getName() . " - " . $oState->getName() . "</option>\n";
         }
         $sRet .= "</select>\n";
         return $sRet;
