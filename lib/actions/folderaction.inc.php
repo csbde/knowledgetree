@@ -2,6 +2,7 @@
 
 require_once(KT_LIB_DIR . '/dispatcher.inc.php');
 require_once(KT_LIB_DIR . '/actions/actionregistry.inc.php');
+require_once(KT_LIB_DIR . '/browse/browseutil.inc.php');
 
 class KTFolderAction extends KTStandardDispatcher {
     var $sName;
