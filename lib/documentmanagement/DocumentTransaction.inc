@@ -1,5 +1,7 @@
 <?php
 
+require_once(KT_LIB_DIR . "/documentmanagement/documentutil.inc.php");
+
 /**
  * $Id$
  *
