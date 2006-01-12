@@ -202,6 +202,7 @@ class KTPlugin {
             'namespace' => $this->sNamespace,
             'path' => $this->sFilename,
             'version' => $this->iVersion,
+            'disabled' => 1,
         ));
         if (PEAR::isError($oEntity)) {
             return $oEntity;
