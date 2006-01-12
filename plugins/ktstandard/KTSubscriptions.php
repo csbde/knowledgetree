@@ -228,7 +228,7 @@ class KTArchiveSubscriptionTrigger {
         // fire subscription alerts for the checked in document
         $oSubscriptionEvent = new SubscriptionEvent();
         $oFolder = Folder::get($oDocument->getFolderID());
-        $oSubscriptionEvent->ArchiveDocument($oDocument, $oFolder);
+        $oSubscriptionEvent->ArchivedDocument($oDocument, $oFolder);
     }
 }
 // }}}

@@ -11,14 +11,14 @@ archive</a>.{/i18n}</p>
 
 <form method="POST" action="{$smarty.server.PHP_SELF}">
 <fieldset><legend>{i18n}Archive{/i18n}</legend>
-<input type="hidden" name="action" value="move" />
+<input type="hidden" name="action" value="archive" />
 <input type="hidden" name="fDocumentId" value="{$iDocumentId}" />
 {foreach from=$fields item=oWidget }
   {$oWidget->render()}
 {/foreach}
 
 <div class="form_actions">
-<input type="submit" name="submit[move]" value="{i18n}Move{/i18n}" />
+<input type="submit" name="submit[archive]" value="{i18n}Archive{/i18n}" />
 <input type="submit" name="submit[cancel]" value="{i18n}Cancel{/i18n}" />
 </div>
 </fieldset>
