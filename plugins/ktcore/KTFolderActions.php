@@ -12,6 +12,8 @@ require_once(KT_LIB_DIR . "/foldermanagement/folderutil.inc.php");
 require_once(KT_LIB_DIR . '/plugins/plugin.inc.php');
 require_once(KT_LIB_DIR . '/plugins/pluginregistry.inc.php');
 
+require_once(KT_LIB_DIR . '/roles/Role.inc');
+
 class KTFolderAddFolderAction extends KTFolderAction {
     var $sDisplayName = 'Add a Folder';
     var $sName = 'ktcore.actions.folder.addFolder';
