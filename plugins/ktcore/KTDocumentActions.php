@@ -574,7 +574,8 @@ class KTDocumentArchiveAction extends KTDocumentAction {
             }
         }
 
-        controllerRedirect('viewDocument', 'fDocumentId=' .  $this->oDocument->getId());
+        $_SESSION['KTInfoMessage'][] = _("Document archived.");
+        controllerRedirect('browse', 'fFolderId=' .  $this->oDocument->getFolderID());
         exit(0);
     }
 }
