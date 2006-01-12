@@ -6,6 +6,8 @@ require_once(KT_LIB_DIR . '/dispatcher.inc.php');
 require_once(KT_LIB_DIR . '/templating/templating.inc.php');
 require_once(KT_LIB_DIR . '/metadata/fieldset.inc.php');
 
+require_once(KT_LIB_DIR . '/widgets/fieldsetDisplay.inc.php');
+
 class KTSimplePage {
     function requireJSResource() {
     }
