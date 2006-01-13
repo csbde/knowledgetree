@@ -48,6 +48,8 @@ class LoginPageDispatcher extends KTDispatcher {
 	}
 
 	function do_main() {
+	    global $default;
+	
 	    $this->check(); // bounce here, potentially.
 	
 		$cookietest = KTUtil::randomString();
@@ -63,6 +65,7 @@ class LoginPageDispatcher extends KTDispatcher {
 			  'cookietest' => $cookietest,
 			  'errorMessage' => $errorMessage,
 			  'redirect' => $redirect,
+			  'systemVersion' => $default->systemVersion,
 		);
 		return $oTemplate->render($aTemplateData);		
 	}
