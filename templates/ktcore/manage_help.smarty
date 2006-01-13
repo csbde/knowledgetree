@@ -1,7 +1,7 @@
 <h2>Current help assignments</h2>
 
 <p class="descriptiveText">{i18n}To customise a help file, please visit that file 
-via the help system, and click on <strong>customise this help file</strong>.{/i18n}</p>
+via the help system and click on <strong>customise this help file</strong>.{/i18n}</p>
 
 { if $helpreplacements }
 <h2>Existing customised help pages</h2>

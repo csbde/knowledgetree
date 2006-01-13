@@ -1,6 +1,6 @@
 <h2>{i18n}Metadata History{/i18n}: {$document->getName()}</h2>
 
-<p class="descriptiveText">{i18n}This lists the older versions of the document, as the metadata about it has been changed.{/i18n}</p>
+<p class="descriptiveText">{i18n}This page lists versions of document metadata and allows you to compare a metadata version with the current metadata content.{/i18n}</p>
 
 
     <table class="document_history" summary="{i18n}Document History for KnowledgeTree New UI Presentation{/i18n}" cellspacing="0">

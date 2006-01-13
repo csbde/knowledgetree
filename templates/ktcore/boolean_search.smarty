@@ -73,7 +73,7 @@ legend { border: 1px dotted #999;}
 	{capture assign=options}
 	<select name="boolean_search[subgroup][0][join]"><option value="AND">all</option><option value="OR">any</option></select>
 	{/capture}
-        <p class="helpText">{i18n arg_options=$options}Return items which match &nbsp;#options# of the criteria specified.{/i18n}</p>
+        <p class="helpText">{i18n arg_options=$options}Return items which match &nbsp;#options# of the criteria specified below.{/i18n}</p>
 
         <table class="advanced-search-form">
             <tbody>
@@ -97,7 +97,7 @@ legend { border: 1px dotted #999;}
 
     </fieldset>
     
-    <input type="button" value="{i18n}add another set of criteria{/i18n}" onclick="addBooleanGroup(this)" />
+    <input type="button" value="{i18n}Add another set of criteria{/i18n}" onclick="addBooleanGroup(this)" />
     
     
 {capture assign=defaultsubmit}

@@ -1,7 +1,6 @@
 <h2>{i18n}Document History{/i18n}: {$document->getName()}</h2>
 
-<p class="descriptiveText">{i18n}This allows you to have a brief
-overview of the history of the document.{/i18n}</p>
+<p class="descriptiveText">{i18n}This page provides details of all activities that have been carried out on the document.{/i18n}</p>
 
 
     <table class="document_history" summary="{i18n}Document History for KnowledgeTree New UI Presentation{/i18n}" cellspacing="0">
