@@ -15,8 +15,7 @@ method=getNamespace assign=boxes name="pluginids"}
 
 <h3>Read plugins from filesystem</h3>
 
-<p class="descriptiveText">If you have moved your document management
-system on the filesystem, or installed or removed plugins, the plugins
+<p class="descriptiveText">If you have moved the location of KnowledgeTree on your server filesystem, or installed or removed plugins, the plugins
 must be re-read from the filesystem</p>
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">

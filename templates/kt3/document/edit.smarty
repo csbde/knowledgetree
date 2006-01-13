@@ -12,7 +12,7 @@
 {$context->oPage->requireCSSResource('resources/css/kt-treewidget.css')}
 
 <h2>{i18n}Editing{/i18n}: {$document->getName()}</h2>
-<p class="descriptiveText"><strong>FIXME</strong>:  do we need assisting text here?</p>
+<p class="descriptiveText">The following document metadata is available for editing.</p>
   
 <form method="POST">
   
