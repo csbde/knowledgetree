@@ -17,7 +17,7 @@ class KTBuiltinAuthenticationProvider extends KTAuthenticationProvider {
     function showUserSource($oUser, $oSource) {
         $sQuery = sprintf('action=setPassword&user_id=%d', $oUser->getId());
         $sUrl = KTUtil::addQueryString($_SERVER['PHP_SELF'], $sQuery);
-        return '<p class="descriptiveText"><a href="' . urlencode($sUrl) . '">' . sprintf(_("Change %s's password"), $oUser->getName()) . '</a></p>';
+        return '<p class="descriptiveText"><a href="' . $sUrl . '">' . sprintf(_("Change %s's password"), $oUser->getName()) . '</a></p>';
     }
 }
 
