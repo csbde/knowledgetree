@@ -8,7 +8,11 @@ require_once(KT_LIB_DIR . "/util/ktutil.inc");
 require_once(KT_LIB_DIR . "/dispatcher.inc.php");
 require_once(KT_LIB_DIR . "/browse/Criteria.inc");
 require_once(KT_LIB_DIR . "/search/savedsearch.inc.php");
-require_once(KT_LIB_DIR . '/search/searchutil.inc.php');
+require_once(KT_LIB_DIR . "/search/searchutil.inc.php");
+
+require_once(KT_LIB_DIR . "/browse/DocumentCollection.inc.php");
+require_once(KT_LIB_DIR . "/browse/BrowseColumns.inc.php");
+require_once(KT_LIB_DIR . "/browse/PartialQuery.inc.php");
 
 class BooleanSearchDispatcher extends KTStandardDispatcher {
     var $sSection = "browse";
