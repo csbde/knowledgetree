@@ -14,6 +14,9 @@ class KTFolderAddDocumentAction extends KTFolderAction {
     var $sName = 'ktcore.actions.folder.addDocument';
 
     var $_sShowPermission = "ktcore.permissions.write";
+    
+    
+    var $oDocumentType = null;
 
     function check() {
         $res = parent::check();
@@ -90,7 +93,7 @@ class KTFolderAddDocumentAction extends KTFolderAction {
             }
         }
 
-        $this->oValidator->validateDocumentType($_REQUEST['fDocumentTypeId']);
+        $this->oDocumentType = $this->oValidator->validateDocumentType($_REQUEST['fDocumentTypeId']);
 
         $aOptions = array(
             'contents' => new KTFSFileLike($aFile['tmp_name']),
