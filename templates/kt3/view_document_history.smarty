@@ -1,4 +1,4 @@
-<h2>{i18n}Document History{/i18n}: {$document->getName()}</h2>
+<h2>{i18n}Transaction History{/i18n}: {$document->getName()}</h2>
 
 <p class="descriptiveText">{i18n}This page provides details of all activities that have been carried out on the document.{/i18n}</p>
 
