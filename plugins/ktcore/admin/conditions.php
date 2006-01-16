@@ -35,6 +35,82 @@ class KTConditionDispatcher extends KTStandardDispatcher {
     function do_view() {
 
     }
+    
+    function do_edit() {
+        $id = KTUtil::arrayGet($_REQUEST, 'fSavedSearchId');
+        $oSearch = KTSavedSearch::get($id);
+        
+        if (PEAR::isError($oSearch) || ($oSearch == false)) {
+            $this->errorRedirectToMain('No Such search');
+        }
+        
+        $aSearch = $oSearch->getSearch();
+        
+        
+        $oTemplating = new KTTemplating;
+        $oTemplate = $oTemplating->loadTemplate("ktcore/boolean_search_edit");
+        
+        $aCriteria = Criteria::getAllCriteria();
+        
+        // we need to help out here, since it gets unpleasant inside the template.
+        foreach ($aSearch['subgroup'] as $isg => $as) {
+            $aSubgroup =& $aSearch['subgroup'][$isg];
+            foreach ($aSubgroup['values'] as $iv => $t) {
+                $datavars =& $aSubgroup['values'][$iv];
+                $datavars['typename'] = $aCriteria[$datavars['type']]->sDisplay;
+                $datavars['widgetval'] = $aCriteria[$datavars['type']]->searchWidget(null, $datavars['data']);
+            }
+        }
+        
+        
+        $aTemplateData = array(
+            "title" => _("Edit an existing condition"),
+            "aCriteria" => $aCriteria,
+            "searchButton" => _("Update Saved Search"),
+            'aSearch' => $aSearch,
+            'context' => $this,
+            'iSearchId' => $oSearch->getId(),
+            'old_name' => $oSearch->getName(),
+            'sNameTitle' => _('Edit Search'),
+        );
+        return $oTemplate->render($aTemplateData);        
+    }
+    
+
+    // XXX: Rename to do_save
+    function do_updateSearch() {
+        $id = KTUtil::arrayGet($_REQUEST, 'fSavedSearchId');
+        $sName = KTUtil::arrayGet($_REQUEST, 'name');
+        $oSearch = KTSavedSearch::get($id);
+        
+        if (PEAR::isError($oSearch) || ($oSearch == false)) {
+            $this->errorRedirectToMain('No Such search');
+        }
+        
+        
+        $datavars = KTUtil::arrayGet($_REQUEST, 'boolean_search');
+        if (!is_array($datavars)) {
+            $datavars = unserialize($datavars);
+        }
+        
+        if (empty($datavars)) {
+            $this->errorRedirectToMain(_('You need to have at least 1 condition.'));
+        }
+
+        //$sName = "Neil's saved search";
+        if (!empty($sName)) {
+            $oSearch->setName($sName);
+        }
+        
+        $oSearch->setSearch($datavars);
+        $res = $oSearch->update();
+        
+        $this->oValidator->notError($res, array(
+            'redirect_to' => 'main',
+            'message' => _('Search not saved'),
+        ));
+        $this->successRedirectToMain(_('Search saved'));
+    }    
 
     // XXX: Rename to do_save
     function do_performSearch() {
