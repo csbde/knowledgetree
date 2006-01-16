@@ -1,13 +1,13 @@
-<h1>{i18n}Conditions{/i18n}</h1>
+<h2>{i18n}Conditions{/i18n}</h2>
 
-<h2>{i18n}Create a new condition{/i18n}</h2>
+<h3>{i18n}Create a new condition{/i18n}</h3>
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <input type="hidden" name="action" value="new" />
 <input type="submit" name="submit" value="{i18n}New{/i18n}" />
 </form>
 
 {if $conditions}
-<h2>{i18n}Edit existing conditions{/i18n}</h2>
+<h3>{i18n}Edit existing conditions{/i18n}</h3>
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <input type="hidden" name="action" value="edit" />
 {entity_radios entities=$conditions name="fSavedSearchId" assign=aRadios}
