@@ -1,7 +1,7 @@
 <h2>{i18n}Deleted Documents{/i18n}</h2>
 
-<p class="descriptiveText">{i18n}Documents which are deleted by users are hidden from view, 
-but still available for restoration.  Since this consumes system resources, it
+<p class="descriptiveText">{i18n}Documents which are deleted by users are hidden from view 
+but still available for restoration.  Since "soft deletes" consume system resources, it
 is possible to <strong>expunge</strong> these documents.  Alternatively, you
 can <strong>restore</strong> them as necessary.{/i18n}</p>
 

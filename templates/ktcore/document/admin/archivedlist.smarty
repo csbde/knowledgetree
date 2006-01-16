@@ -1,9 +1,9 @@
 <h2>{i18n}Archived Documents{/i18n}</h2>
 
 <p class="descriptiveText">{i18n}In order to keep the documents which are visible useful
-to end users, it is possible to <strong>archive</strong> old documents.  Users who
-want to see these old documents need to request their restoration - these requests
-will typically be done within the system, and will generate a
+to end users it is possible to <strong>archive</strong> old documents.  Users who
+want to see these old documents need to request their restoration. These requests
+will typically be done within the system and will generate a
 notification to you.{/i18n}
 </p>
 

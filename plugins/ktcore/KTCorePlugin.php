@@ -48,17 +48,17 @@ class KTCorePlugin extends KTPlugin {
     function setupAdmin() {
         // set up the categories.
         $this->registerAdminCategory("principals", _("Users and Groups"),
-            _("Control which users can log in, and are part of which groups and organisational units from these management panels."));
-        $this->registerAdminCategory("plugins", _("Plugin Management"),
-            _("Control which plugins are loaded, register new plugins, and configure individual plugins."));
+            _("Control which users can log in, and are part of which groups and organisational units, from these management panels."));
         $this->registerAdminCategory("security", _("Security Management"),
             _("Assign permissions to users and groups, and specify which permissions are required to interact with various parts of the Document Management System."));
+        $this->registerAdminCategory("plugins", _("Plugin Management"),
+            _("Control which plugins are loaded, register new plugins and configure individual plugins."));
         $this->registerAdminCategory("storage", _("Document Storage"),
-            _("Manage how and where the actual documents will be stored, work with document archives and deal with other document related problems."));
-        $this->registerAdminCategory("documents", _("Document Type Configuration"),
-            _("Configure the information that needs to be collected about different kinds of documents."));
+            _("Manage checked-out, archived and deleted documents."));
+        $this->registerAdminCategory("documents", _("Document Metadata and Workflow Configuration"),
+            _("Configure the document metadata: Document Types, Document Fieldsets, Link Types and Workflows."));
         $this->registerAdminCategory("misc", _("Miscellaneous"),
-            _("Various settings which do not fit into the other categories, including help, etc."));
+            _("Various settings which do not fit into the other categories, including managing help and saved searches."));
 
         // users and groups
         $this->registerAdminPage("users", 'KTUserAdminDispatcher', "principals",
@@ -75,13 +75,13 @@ class KTCorePlugin extends KTPlugin {
 
         // security
         $this->registerAdminPage("permissions", 'ManagePermissionsDispatcher', "security",
-            _("Permissions"), _("Create or Delete permissions."), 'admin/managePermissions.php', null);
+            _("Permissions"), _("Create or delete permissions."), 'admin/managePermissions.php', null);
         $this->registerAdminPage("roles", 'RoleAdminDispatcher', "security",
-            _("Roles"), _("Create or Delete roles"),
+            _("Roles"), _("Create or delete roles"),
             'admin/roleManagement.php', null);
         $this->registerAdminPage("conditions", 'KTConditionDispatcher', "security",
             _("Conditions"),
-            _("Manage document conditions, which can be used to control whether certain actions are permitted or not."),
+            _("Manage criteria which determine whether a user is permitted to perform a system action."),
             'admin/conditions.php', null);
 
         // documents
@@ -91,11 +91,11 @@ class KTCorePlugin extends KTPlugin {
             'admin/documentTypes.php', null);
         $this->registerAdminPage("fieldmanagement", 'KTDocumentFieldDispatcher', 'documents',
              _('Document Fieldsets'),
-            _('Control which kinds of documents have which sets of information associated with them.'),
+            _('Manage the different types of information that can be associated with classes of documents.'),
             'admin/documentFields.php', null);
         $this->registerAdminPage("linkmanagement", 'KTDocLinkAdminDispatcher', 'documents',
             _('Link Type Management'),
-            _('Specify the different "link types" - ways to relate different documents togeter.'),
+            _('Manage the different ways documents can be associated with one another.'),
             'admin/documentLinks.php', null);
         $this->registerAdminPage("workflows", 'KTWorkflowDispatcher', 'documents',
             _('Workflows'), _('Configure the process documents go through.'),

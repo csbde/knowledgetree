@@ -1,5 +1,5 @@
 <h2>{i18n}Confirm Forced Check-in{/i18n}</h2>
-<p class="descriptiveText">{i18n}Please confirm that this is the document that you wish to checkin.{/i18n}</p>
+<p class="descriptiveText">{i18n}Please confirm that this is the document that you wish to check-in.{/i18n}</p>
 
 <div class="document_details">
 <h3>Document Details</h3>

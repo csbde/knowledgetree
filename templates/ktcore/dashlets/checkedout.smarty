@@ -1,8 +1,5 @@
 <h2>{i18n}Your Checked-out Documents{/i18n}</h2>
-<p class="descriptiveText">{i18n}Since a document
-which is checked out cannot be modified by anyone else,
-it is important to check them back in as soon as you have made
-the apppriate changes.{/i18n}</p>
+<p class="descriptiveText">{i18n}A checked-out document may not be modified by others. Please ensure that you check-in your documents to the repository as soon as you have finished working with them.{/i18n}</p>
 {if (!empty($documents))}
 <dl>
 {foreach item=oDocument from=$documents}
