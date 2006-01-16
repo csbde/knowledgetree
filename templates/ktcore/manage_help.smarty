@@ -6,7 +6,7 @@ via the help system and click on <strong>customise this help file</strong>.{/i18
 { if $helpreplacements }
 <h2>Existing customised help pages</h2>
 
-<table class="pretty" cellspacing="0" cellpadding="0" border="0">
+<table class="listing" cellspacing="0" cellpadding="0" border="0">
 <thead>
 <tr>
 <th>Name</th>
