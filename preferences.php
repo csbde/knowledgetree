@@ -78,6 +78,14 @@ class PreferencesDispatcher extends KTStandardDispatcher {
         } else if ($password !== $confirm_password) {
             $this->errorRedirectToMain(_("The passwords you specified do not match."));
         }
+		
+		$KTConfig =& KTConfig::getSingleton();
+		$minLength = ((int) $KTConfig->get('user_prefs/passwordLength', 6));
+		
+		if (strlen($password) < $minLength) {
+            $this->errorRedirectToMain(sprintf(_("Your password is too short - passwords must be at least %d characters long."), $minLength));		
+		}
+		
         // FIXME more validation would be useful.
         // validated and ready..
         $this->startTransaction();
