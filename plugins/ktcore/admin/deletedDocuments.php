@@ -9,6 +9,8 @@ require_once(KT_LIB_DIR . '/documentmanagement/DocumentTransaction.inc');
 require_once(KT_LIB_DIR . "/widgets/fieldWidgets.php");
 require_once(KT_LIB_DIR . "/templating/kt3template.inc.php");
 
+require_once(KT_LIB_DIR . "/documentmanagement/PhysicalDocumentManager.inc");
+
 class DeletedDocumentsDispatcher extends KTAdminDispatcher {
     function do_main () {
         $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _('Deleted Documents'));

@@ -37,7 +37,7 @@ with LIVE turned off.)</p></div>
   </tbody>
 </table>
 <div class="form_actions">
-   <input type="submit" value="{i18n}Expunge{/i18n}" />
+   <input type="submit" value="{i18n}Restore from Archive{/i18n}" />
    <!-- <input type="submit" value="Restore" /> -->  <!-- how do we want to handle restore in this? major UI issue :( -->
 </div>
 </form>
