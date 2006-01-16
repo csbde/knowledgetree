@@ -1,7 +1,9 @@
 <h2>{i18n}Checked Out Documents{/i18n}</h2>
-<p class="descriptiveText">{i18n}If a checked-out document has been
-lost, or the user who checked a document out has not checked it back in,
-it may be necessary to override the "checked-out" status of a document.
+<p class="descriptiveText">{i18n}It may be necessary to override the <strong>checked-out</strong> status of a document if:
+<ul>
+<li>the local copy of the checked-out document has been lost;</li>
+<li>the user who did the check-out is not currently available to check it back in.</li>
+</ul>
 Use the <strong>force checkin</strong> action in the listing below to
 override the checked-out status.{/i18n}</p>
 <!-- FIXME set classes here for listing. -->
