@@ -147,13 +147,15 @@ class KTWorkflowUtil {
             return $res;
         }
         $aOptions = array('noid' => true);
-        foreach ($aActions as $sAction) {
-            $res = DBUtil::autoInsert($sTable, array(
-                'workflow_id' => $iWorkflowId,
-                'action_name' => $sAction,
-            ), $aOptions);
-            if (PEAR::isError($res)) {
-                return $res;
+        if (!empty($aActions)) {
+            foreach ($aActions as $sAction) {
+                $res = DBUtil::autoInsert($sTable, array(
+                    'workflow_id' => $iWorkflowId,
+                    'action_name' => $sAction,
+                ), $aOptions);
+                if (PEAR::isError($res)) {
+                   return $res;
+                }
             }
         }
         return;

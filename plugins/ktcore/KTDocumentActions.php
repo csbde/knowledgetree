@@ -626,6 +626,9 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
         $oDocument =& $this->oValidator->validateDocument($_REQUEST['fDocumentId']);
         $oWorkflow =& $this->oValidator->validateWorkflow($_REQUEST['fWorkflowId']);
         $res = KTWorkflowUtil::startWorkflowOnDocument($oWorkflow, $oDocument);
+        if (PEAR::isError($res)) {
+            $this->errorRedirectToMain($res->message, sprintf('fDocumentId=%s',$oDocument->getId()));
+        }
         $this->successRedirectToMain(_('Workflow started'),
                 array('fDocumentId' => $oDocument->getId()));
         exit(0);

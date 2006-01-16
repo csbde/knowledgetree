@@ -20,6 +20,7 @@ role allocations can take very long time, depending on the number of folders bel
     </tr>
 </thead>
 <tbody>
+{if (count($roles) > 0)}
 {foreach item=aRole key=role_id from=$roles}
     <tr class="{cycle values=odd,even}">
         <td>{$aRole.name}</td>
@@ -43,5 +44,8 @@ role allocations can take very long time, depending on the number of folders bel
         {/if}
     </tr>
 {/foreach}
+{else}
+<tr><td colspan="4" class="ktInfo"><p>{i18n}No roles defined in the Role Administration area.{/i18n}</p></td></tr>
+{/if}
 </tbody>
 </table>

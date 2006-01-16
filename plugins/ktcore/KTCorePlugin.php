@@ -110,7 +110,7 @@ class KTCorePlugin extends KTPlugin {
             _('Archived Document Restoration'), _("Restore old (archived) documents, usually at a user's request."),
             'admin/archivedDocuments.php', null);
         $this->registerAdminPage("expunge", 'DeletedDocumentsDispatcher', 'storage',
-            _('Expunge Deleted Documents'), _('Permanently expunge deleted documents.'),
+            _('Restore or Expunge Deleted Documents'), _('Restore previously deleted documents, or permanently expunge them.'),
             'admin/deletedDocuments.php', null);
 
         // misc
