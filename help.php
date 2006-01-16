@@ -34,9 +34,18 @@ class HelpDispatcher extends KTStandardDispatcher {
     var $sSection = "dashboard";
     var $bIsReplacement = false;
 
+    function HelpDispatcher() {
+        $this->aBreadcrumbs[] = array('action' => 'dashboard', 'name' => _('Dashboard'));
+        $this->aBreadcrumbs[] = array('name' => _('Help'));
+        parent::KTStandardDispatcher();
+    }
+
     function is_replacement() { return $this->bIsReplacement; }
 
     function do_main() {
+    
+        
+    
         $pathinfo = KTUtil::arrayGet($_SERVER, 'PATH_INFO');
         if (empty($pathinfo)) {
             $this->oPage->setTitle(_('No help page specified.'));
@@ -87,6 +96,7 @@ class HelpDispatcher extends KTStandardDispatcher {
         // we now _can_ edit.
         
         $this->oPage->setTitle($aHelpInfo['title']);
+        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => $aHelpInfo['title']);
         
         $oTemplating = new KTTemplating;
         $oTemplate = $oTemplating->loadTemplate("ktcore/help_with_edit");
