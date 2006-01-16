@@ -186,11 +186,13 @@ class KTDispatcherValidation {
 
     function validateFile($aFile, $aOptions = null) {
         $bError = false;
-        if (strlen($aFile['name']) == 0) {
+        
+        if (strlen(trim($aFile['name'])) == 0) {
             $bError = true;
         } else {
             $bError = KTUtil::arrayGet($aFile, 'error');
         }
+        
         if ($bError) {
             $message = _("You did not select a valid document to upload");
 
@@ -273,6 +275,24 @@ class KTDispatcherValidation {
         }
         return $oEntity;
     }
+    
+    
+    
+    
+    
+    /* unlike the KTEmail version, this only handles ONE email address */
+    function validateEmailAddress($sEmailAddress, $aOptions = null) {
+        $sEmailAddress = trim($sEmailAddress);
+        
+        if (!ereg ("^[^@ ]+@[^@ ]+\.[^@ \.]+$", $sEmailAddress )) {
+            $aOptions['message'] = KTUtil::arrayGet($aOptions,
+                                                    'message', 
+                                                    _("An invalid email address was given"));
+            $this->handleError($aOptions);
+        }
+        return $sEmailAddress;
+    }
+
 }
 
 ?>

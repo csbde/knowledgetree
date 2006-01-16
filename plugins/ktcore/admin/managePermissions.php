@@ -4,6 +4,7 @@ require_once(KT_LIB_DIR . "/templating/templating.inc.php");
 require_once(KT_LIB_DIR . "/permissions/permission.inc.php");
 require_once(KT_LIB_DIR . "/dispatcher.inc.php");
 require_once(KT_LIB_DIR . "/templating/kt3template.inc.php");
+require_once(KT_LIB_DIR . "/widgets/fieldWidgets.php");
 
 class ManagePermissionsDispatcher extends KTAdminDispatcher {
     function do_main() {

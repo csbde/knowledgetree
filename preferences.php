@@ -10,8 +10,6 @@ require_once(KT_LIB_DIR . "/dispatcher.inc.php");
 
 require_once(KT_LIB_DIR . '/widgets/fieldWidgets.php');
 
-
-
 class PreferencesDispatcher extends KTStandardDispatcher {
     var $sSection = 'preferences';
 
@@ -111,14 +109,18 @@ class PreferencesDispatcher extends KTStandardDispatcher {
 
 
     function do_updatePreferences() {
+        $aErrorOptions = array(
+            'redirect_to' => array('main'),
+        );
+	
         $oUser =& $this->oUser;
         
-        $name = KTUtil::arrayGet($_REQUEST, 'name');
-		if (empty($name)) {
-		     $this->errorRedirectToMain(_('You must specify your name.'));
-		}
+        $name = $this->oValidator->validateString(KTUtil::arrayGet($_REQUEST, 'name'),
+												  KTUtil::meldOptions($aErrorOptions, array('message' => _('You must specify your name.'))));
         
-        $email_address = KTUtil::arrayGet($_REQUEST, 'email_address');
+        $email_address = $this->oValidator->validateEmailAddress(KTUtil::arrayGet($_REQUEST, 'email_address'),
+																 $aErrorOptions);
+		
         $email_notifications = KTUtil::arrayGet($_REQUEST, 'email_notifications', false);
         if ($email_notifications !== false) $email_notifications = true;
         $mobile_number = KTUtil::arrayGet($_REQUEST, 'mobile_number');

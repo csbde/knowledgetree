@@ -42,6 +42,7 @@ class KTFolderAddDocumentAction extends KTFolderAction {
         $add_fields = array();
         $add_fields[] = new KTFileUploadWidget(_('File'), _('The contents of the document to be added to the document management system.'), 'file', "", $this->oPage, true);
         $add_fields[] = new KTStringWidget(_('Title'), _('The document title is used as the main name of a document through the KnowledgeTree.'), 'title', "", $this->oPage, true);
+
         
         $aVocab = array();
         foreach (DocumentType::getList() as $oDocumentType) {
@@ -83,7 +84,9 @@ class KTFolderAddDocumentAction extends KTFolderAction {
         $aErrorOptions = array(
             'redirect_to' => array('main', sprintf('fFolderId=%d', $this->oFolder->getId())),
         );
+        
         $aFile = $this->oValidator->validateFile($_FILES['file'], $aErrorOptions);
+        $sTitle = $this->oValidator->validateString($_REQUEST['title'], $aErrorOptions);
 
         $matches = array();
         $aFields = array();
@@ -99,7 +102,7 @@ class KTFolderAddDocumentAction extends KTFolderAction {
             'contents' => new KTFSFileLike($aFile['tmp_name']),
             'documenttype' => $this->oDocumentType,
             'metadata' => $aFields,
-            'description' => $_REQUEST['title'],
+            'description' => $sTitle,
         );
 
         $mpo->start();
