@@ -654,3 +654,12 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
     width: 48%;
     padding-right: 1em;
 }
+
+
+#copyrightbar {
+    clear: both;
+    margin-top: 2em;
+    border-top: 1px solid #eee;
+    color: #999;
+    font-size: small;
+}
