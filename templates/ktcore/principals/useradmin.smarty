@@ -1,7 +1,5 @@
 <h2>User Management</h2>
 
-<p class="descriptiveText"><strong>FIXME</strong> brief overview of user management.</p>
-<div class="ktError"><p>Restrict groups that are editable based on <strong>group_id</strong> if only a unitAdmin</p></div>
 
 <!-- FIXME inline CSS is _very_ bad. -->
 

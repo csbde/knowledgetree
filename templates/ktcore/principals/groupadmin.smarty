@@ -1,8 +1,5 @@
 <h2>{i18n}Group Administration{/i18n}</h2>
 
-<p class="descriptiveText"><strong>FIXME</strong> Overview of groups.</p>
-
-
 <p><a href="?action=addGroup" class="ktAction ktAddGroup" style="float: left; padding-right: 0.5em;">Add Group</a><a href="?action=addGroup">Add a new group</a>.</p>
 
 <!-- we roll both in here. -->

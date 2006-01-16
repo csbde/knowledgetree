@@ -330,10 +330,10 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
 	
     function do_addGroup() {
 		$this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _('Group Management'));
-		$this->oPage->setBreadcrumbDetails(_('create new group'));
+		$this->oPage->setBreadcrumbDetails(_('Add a new group'));
 		
 	
-		$this->oPage->setTitle(_("Create New Group"));
+		$this->oPage->setTitle(_("Add a new group"));
 		
 		$edit_fields = array();
 		$add_fields[] =  new KTStringWidget(_('Group Name'),_('A short name for the group.  e.g. <strong>administrators</strong>.'), 'group_name', null, $this->oPage, true);

@@ -40,7 +40,7 @@ complex conditional{/i18n}</a>
 {else}
 
 {i18n}Simple{/i18n}: <a
-href="{$config->get("urls/uiUrl")}/administration/docfieldmanagement/conditional/manageConditionals.php?action=editFieldset&fieldset_id={$oFieldset->getId()}">{i18n}Manage simple conditional{/i18n}</a>
+href="{$rootUrl}/plugins/ktcore/admin/manageConditionals.php?action=editFieldset&fieldset_id={$oFieldset->getId()}">{i18n}Manage simple conditional{/i18n}</a>
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <input type="hidden" name="action" value="changeToComplex" />

@@ -1,12 +1,12 @@
-<h2>{i18n}Create a new Group{/i18n}</h2>
+<h2>{i18n}Add a new group{/i18n}</h2>
 
-<p class="descriptiveText">{i18n}Create a new group.{/i18n}</p>
+<p class="descriptiveText">{i18n}Add a new group{/i18n}</p>
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
    <input type="hidden" name="action" value="createGroup" />
    
    <fieldset>
-      <legend>{i18n}Change Group Details{/i18n}</legend>
+      <legend>{i18n}Specify group details{/i18n}</legend>
       <p class="descriptiveText"><strong>FIXME</strong> brief overview of group editing.</p>
       {foreach item=oWidget from=$add_fields}
         {$oWidget->render()}
