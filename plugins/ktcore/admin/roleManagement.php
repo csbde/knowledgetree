@@ -37,12 +37,12 @@ class RoleAdminDispatcher extends KTAdminDispatcher {
 
     function do_main() {
         $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _('Role Management'));
-        
         $this->oPage->setTitle(_('Role Management'));
         
         $edit_fields = array();
         $role_id = KTUtil::arrayGet($_REQUEST, 'role_id', null);
         $oRole = Role::get($role_id);
+        
         if (PEAR::isError($oRole) || ($oRole == false)) { $for_edit = false; }
         else {
             $for_edit = true;
@@ -74,9 +74,9 @@ class RoleAdminDispatcher extends KTAdminDispatcher {
         }
         
         $this->startTransaction();
-        $oRole = new Role($name);
-        $res = $oRole->create();
-        if (PEAR::isError($res) || ($res == false)) {
+        $oRole = Role::createFromArray(array('name' => $name));        
+        
+        if (PEAR::isError($oRole) || ($oRole == false)) {
             $this->errorRedirectToMain(_('Unable to create role.'));
         }
         
