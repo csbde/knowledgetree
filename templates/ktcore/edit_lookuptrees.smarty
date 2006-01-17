@@ -1,38 +1,4 @@
-{literal}
-<style>
-
-.kt_treenodes {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    border: 0;
-}
-
-.leafnode {font-weight: bold; }
-
-.kt_treenodes ul {
-    list-style: none;
-}
-.kt_treenodes li.treenode > a.pathnode {
-   background: transparent url(/resources/graphics/plus.png) center left no-repeat;
-   padding-left: 15px;
-}
-
-.kt_treenodes li.treenode.active > a.pathnode {
-   background: transparent url(/resources/graphics/minus.png) center left no-repeat;
-}
-
-.kt_treenodes li.active > ul {
-    display: block;
-}
-
-.kt_treenodes li ul {
-    display: none;
-}
-
-</style>
-{/literal}
-
+{$context->oPage->requireCSSResource('resources/css/kt-treewidget.css')}
 {$context->oPage->requireJSResource('thirdpartyjs/MochiKit/Base.js')}
 {$context->oPage->requireJSResource("thirdpartyjs/MochiKit/Iter.js")}
 {$context->oPage->requireJSResource("thirdpartyjs/MochiKit/DOM.js")}

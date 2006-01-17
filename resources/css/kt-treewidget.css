@@ -14,12 +14,12 @@
     text-align: left;
 }
 .kt_treenodes li.treenode > a.pathnode {
-   background: transparent url(../../graphics/plus.png) center left no-repeat;
+   background: transparent url(../graphics/plus.png) center left no-repeat;
    padding-left: 15px;
 }
 
 .kt_treenodes li.treenode.active > a.pathnode {
-   background: transparent url(../../graphics/minus.png) center left no-repeat;
+   background: transparent url(../graphics/minus.png) center left no-repeat;
 }
 
 .kt_treenodes li.active > ul {
