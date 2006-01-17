@@ -9,6 +9,7 @@ require_once(KT_LIB_DIR . '/metadata/fieldset.inc.php');
 require_once(KT_LIB_DIR . '/metadata/metadatautil.inc.php');
 
 require_once(KT_LIB_DIR . '/widgets/fieldWidgets.php');
+require_once(KT_LIB_DIR . '/documentmanagement/MDTree.inc');
 
 
 // FIXME shouldn't this inherit from AdminDispatcher?
