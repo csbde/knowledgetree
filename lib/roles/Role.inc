@@ -31,7 +31,6 @@ require_once(KT_LIB_DIR . "/util/ktutil.inc");
 class Role extends KTEntity {
 	
 	/** role object primary key */
-	var $iId;
 	var $sName;
 	
 	var $_aFieldToSelect = array(
@@ -41,21 +40,22 @@ class Role extends KTEntity {
 	
 	function Role($sNewName = null, $x=null, $y=null) {
 		//object not yet created in database
-		$this->iId = -1;
 		$this->sName = $sNewName;
 	}
 
+    var $_bUsePearError = true;
+
+	function getId() { return $this->iId; }
 	function getName() { return $this->sName; }	
 	function setName($sNewValue) { $this->sName = $sNewValue; }
 	
     function _fieldValues () { return array(
-		    'id' => $this->iId,
-            'name' => $this->sName,
+		'name' => $this->sName,
         );
     }
 
     function _table () { return KTUtil::getTableName('roles'); }
-    function & get($iRoleId) { return KTEntityUtil::get('Role', $iRoleId); }
+    function get($iRoleId) { return KTEntityUtil::get('Role', $iRoleId); }
 	function & getList($sWhereClause = null) { return KTEntityUtil::getList2('Role', $sWhereClause); }
 	function & createFromArray($aOptions) { return KTEntityUtil::createFromArray('Role', $aOptions); }
 }
