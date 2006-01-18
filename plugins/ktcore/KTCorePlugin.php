@@ -8,6 +8,7 @@ class KTCorePlugin extends KTPlugin {
     var $sNamespace = "ktcore.plugin";
 
     function setup() {
+        $this->registerAction('documentaction', 'KTDocumentDetailsAction', 'ktcore.actions.document.displaydetails', 'KTDocumentActions.php');
         $this->registerAction('documentaction', 'KTDocumentViewAction', 'ktcore.actions.document.view', 'KTDocumentActions.php');
         $this->registerAction('documentaction', 'KTDocumentCheckOutAction', 'ktcore.actions.document.checkout', 'KTDocumentActions.php');
         $this->registerAction('documentaction', 'KTDocumentCheckInAction', 'ktcore.actions.document.checkin', 'KTDocumentActions.php');
@@ -51,8 +52,8 @@ class KTCorePlugin extends KTPlugin {
             _("Control which users can log in, and are part of which groups and organisational units, from these management panels."));
         $this->registerAdminCategory("security", _("Security Management"),
             _("Assign permissions to users and groups, and specify which permissions are required to interact with various parts of the Document Management System."));
-        $this->registerAdminCategory("plugins", _("Plugin Management"),
-            _("Control which plugins are loaded, register new plugins and configure individual plugins."));
+        //$this->registerAdminCategory("plugins", _("Plugin Management"),
+        //    _("Control which plugins are loaded, register new plugins and configure individual plugins."));
         $this->registerAdminCategory("storage", _("Document Storage"),
             _("Manage checked-out, archived and deleted documents."));
         $this->registerAdminCategory("documents", _("Document Metadata and Workflow Configuration"),
@@ -121,11 +122,12 @@ class KTCorePlugin extends KTPlugin {
             _('Saved searches'),
             _('Manage saved searches - searches available by default to all users.'),
             'admin/savedSearch.php', null);
-
-        // plugins
-        $this->registerAdminPage("plugins", 'KTPluginDispatcher', 'plugins',
+        $this->registerAdminPage("plugins", 'KTPluginDispatcher', 'misc',
             _('Manage plugins'), _('Register new plugins, disable plugins, and so forth'),
             'admin/plugins.php', null);
+        
+        // plugins
+
     }
 }
 
