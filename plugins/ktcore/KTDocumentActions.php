@@ -7,6 +7,22 @@ require_once(KT_LIB_DIR . '/browse/browseutil.inc.php');
 require_once(KT_LIB_DIR . '/documentmanagement/documentutil.inc.php');
 require_once(KT_LIB_DIR . '/documentmanagement/PhysicalDocumentManager.inc');
 
+require_once(KT_LIB_DIR . "/browse/DocumentCollection.inc.php");
+require_once(KT_LIB_DIR . "/browse/BrowseColumns.inc.php");
+require_once(KT_LIB_DIR . "/browse/PartialQuery.inc.php");
+
+// {{{ KTDocumentDetailsAction 
+class KTDocumentDetailsAction extends KTDocumentAction {
+    var $sDisplayName = 'Display Details';
+    var $sName = 'ktcore.actions.document.displaydetails';
+
+    function do_main() {
+        redirect(generateControllerLink('viewDocument',sprintf(_('fDocumentId=%d'),$this->oDocument->getId())));
+        exit(0);
+    }
+}
+// }}}
+
 // {{{ KTDocumentViewAction
 class KTDocumentViewAction extends KTDocumentAction {
     var $sDisplayName = 'Download';
@@ -312,9 +328,7 @@ class KTDocumentDeleteAction extends KTDocumentAction {
 }
 // }}}
 
-require_once(KT_LIB_DIR . "/browse/DocumentCollection.inc.php");
-require_once(KT_LIB_DIR . "/browse/BrowseColumns.inc.php");
-require_once(KT_LIB_DIR . "/browse/PartialQuery.inc.php");
+
 class KTDocumentMoveColumn extends TitleColumn {
     function KTDocumentMoveColumn($sLabel, $sName, $oDocument) {
         $this->oDocument = $oDocument;
