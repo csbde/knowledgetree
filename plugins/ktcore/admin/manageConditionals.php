@@ -12,8 +12,14 @@ require_once(KT_LIB_DIR . "/templating/kt3template.inc.php");
 
 
 class ManageConditionalDispatcher extends KTAdminDispatcher {
+    var $ru;
+
     function ManageConditionalDispatcher() {
         parent::KTAdminDispatcher();
+        global $default;
+        $this->ru = $default->rootUrl;
+        // this is not useful:  we _still_ don't chain through the right dispatcher (!)
+        $this->aBreadcrumbs[] = array('url' => $default->rootUrl . '/admin.php/documents', 'name' => _('Document Metadata and Workflow Configuration'));
         $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _('Document Field Management'));
 
 
@@ -47,14 +53,13 @@ class ManageConditionalDispatcher extends KTAdminDispatcher {
          */
         $oFieldset =& KTFieldset::get($fieldset_id);
         $aFields =& $oFieldset->getFields();
-
         $this->aBreadcrumbs[] = array(
-            'url' => $_SERVER['PHP_SELF'],
+            'url' => $this->ru . '/admin.php/documents/fieldmanagement',
             'query' => 'action=edit&fFieldsetId=' . $oFieldset->getId(),
             'name' => $oFieldset->getName()
         );
         $this->aBreadcrumbs[] = array(
-            'url' => $_SERVER['PHP_SELF'],
+            'url' => $this->ru . '/admin.php/documents/fieldmanagement',
             'query' => 'action=manageConditional&fFieldsetId=' . $oFieldset->getId(),
             'name' => _('Manage conditional fieldset'),
         );
@@ -87,12 +92,12 @@ class ManageConditionalDispatcher extends KTAdminDispatcher {
         $oFieldset =& KTFieldset::get($fieldset_id);
         $aFields =& $oFieldset->getFields();
         $this->aBreadcrumbs[] = array(
-            'url' => $_SERVER['PHP_SELF'],
+            'url' => $this->ru . '/admin.php/documents/fieldmanagement',
             'query' => 'action=edit&fFieldsetId=' . $oFieldset->getId(),
             'name' => $oFieldset->getName()
         );
         $this->aBreadcrumbs[] = array(
-            'url' => $_SERVER['PHP_SELF'],
+            'url' => $this->ru . '/admin.php/documents/fieldmanagement',
             'query' => 'action=manageConditional&fFieldsetId=' . $oFieldset->getId(),
             'name' => _('Manage conditional fieldset'),
         );
