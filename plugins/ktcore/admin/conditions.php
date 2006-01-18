@@ -8,6 +8,11 @@ require_once(KT_LIB_DIR . "/search/savedsearch.inc.php");
 class KTConditionDispatcher extends KTStandardDispatcher {
     var $bAutomaticTransaction = true;
 
+    function check() {
+        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _('Conditions Management'));
+        return true;
+    }
+
     function do_main() {
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/search/administration/conditions');
         $oTemplate->setData(array(
@@ -17,6 +22,9 @@ class KTConditionDispatcher extends KTStandardDispatcher {
     }
 
     function do_new() {
+        $this->oPage->setBreadcrumbDetails(_('Create a new condition'));
+        $this->oPage->setTitle(_('Create a new condition'));
+    
         $oTemplating = new KTTemplating;
         $oTemplate = $oTemplating->loadTemplate("ktcore/boolean_search");
         
