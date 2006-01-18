@@ -149,10 +149,29 @@ function storeRelationship(selected_lookup, child_lookups) {
   req.open('POST', target_url, true);
   req.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
   var deferred = sendXMLHttpRequest(req, POSTval);
+
+  // inform the user that something has happened.
+  // FIXME this isn't i18n friendly.
+  addInformationNote('Values updated at ' + new Date());
+  
   deferred.addCallback(do_updateActiveLookups);
   deferred.addErrback(partial(do_handleAjaxError, 'storeRelationship'));
 }
 
+function addInformationNote(message) {
+  // this is _NOT_ the best way to handle this ...
+  var dynamicMessage = getElement('condy-simple-notice');
+  if (dynamicMessage == null) {
+    dynamicMessage = DIV({'id':'condy-simple-notice','class':'ktInfo'},null);
+    var contentBox = getElement('content');
+    var secondHeaders = contentBox.getElementsByTagName('h2'); // should only be one.
+    var sH = secondHeaders[0];
+    contentBox.insertBefore(dynamicMessage, sH);
+  }
+  
+  var newStr = createDOM('P',null,message);
+  replaceChildNodes(dynamicMessage, newStr);
+}
 
 // receives a very simple list of fields.
 function do_updateActiveFields(req) {
