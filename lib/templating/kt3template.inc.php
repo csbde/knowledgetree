@@ -232,6 +232,19 @@ class KTPage {
 		    $this->show_portlets = false;
 		}
 		
+		if (empty($this->title)) {
+		    if (!empty($this->breadcrumbDetails)) {
+				$this->title = $this->breadcrumbDetails;
+			} else if (!empty($this->breadcrumbs)) {
+				$this->title = array_slice($this->breadcrumbs, -1);
+				$this->title = $this->title[0]['label'];
+			} else if (!empty($this->breadcrumbSection)) {
+				$this->title = $this->breadcrumbSection['label'];
+			} else {
+			    $this->title = $this->componentLabel;
+			}
+		}
+		
         $oTemplating = new KTTemplating;        
         $oTemplate = $oTemplating->loadTemplate($this->template);
         $aTemplateData = array(
