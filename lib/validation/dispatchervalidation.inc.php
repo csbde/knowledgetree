@@ -292,6 +292,29 @@ class KTDispatcherValidation {
         }
         return $sEmailAddress;
     }
+    
+    
+    /* assuming something has a 'getList' static method, this may work */
+    function validateDuplicateName($sEntityTypeName, $sHumanEntityTypeName, $sName, $aOptions) {
+        $aMethod = array($sEntityTypeName, 'getList');
+
+        $aList =& call_user_func($aMethod, "name = '$sName'");
+        if(count($aList)) {
+            $aOptions['message'] = KTUtil::arrayGet($aOptions, 'message', _("A $sHumanEntityTypeName with that name already exists"));
+            $this->handleError($aOptions);
+        }
+        return $sName;
+    }
+    
+    /* just does an empty string validation with an appropriate message, and then a duplicate name validation */
+    function validateEntityName($sEntityTypeName, $sHumanEntityTypeName, $sName, $aOptions) {
+        $aNewOptions = $aOptions;
+        $aNewOptions['message'] = KTUtil::arrayGet($aOptions, 'message', _("No name was given for the $sHumanEntityTypeName"));
+        
+        $this->validateString($sName, $aNewOptions);
+        $this->validateDuplicateName($sEntityTypeName, $sHumanEntityTypeName, $sName, $aOptions);
+    }
+            
 
 }
 

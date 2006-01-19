@@ -32,13 +32,12 @@ class KTDocumentTypeDispatcher extends KTAdminDispatcher {
     }
 
     function do_new() {
+        $sName = $this->oValidator->validateEntityName('DocumentType', 'document type', $_REQUEST['name'], array("redirect_to" => array("main")));
         
-        
-    
-        $sName = $_REQUEST['name'];
         $oDocumentType =& DocumentType::createFromArray(array(
             'name' => $sName,
         ));
+        
         if (PEAR::isError($oDocumentType)) {
             $this->errorRedirectToMain(_('Could not create document type'));
             exit(0);
@@ -85,7 +84,7 @@ class KTDocumentTypeDispatcher extends KTAdminDispatcher {
         $aOptions['vocab'] = $vocab;
         $aOptions['multi'] = true;
         $aOptions['size'] = 5;
-        $availableTypesWidget =& new KTLookupWidget(_('Available Fieldsets'),_('Select the fieldsets which you wish to associate with this document type'), 'fieldsetid', null, $this->oPage, true,
+        $availableTypesWidget =& new KTLookupWidget(_('Available Fieldsets'),_('Select the fieldsets which you wish to associate with this document type'), 'fieldsetid[]', null, $this->oPage, true,
             null, null, $aOptions);
         
         $this->aBreadcrumbs[] = array(
@@ -102,9 +101,16 @@ class KTDocumentTypeDispatcher extends KTAdminDispatcher {
         return $oTemplate;
     }
 
-    function do_editobject() {
-        $oDocumentType =& DocumentType::get($_REQUEST['fDocumentTypeId']);
-        $oDocumentType->setName($_REQUEST['name']);
+    function do_editobject() {    
+        $iDocumentTypeId = (int)$_REQUEST['fDocumentTypeId'];
+        $oDocumentType =& DocumentType::get($iDocumentTypeId);        
+
+        $aErrorOptions = array(
+            'redirect_to' => array('edit', sprintf('fDocumentTypeId=%d', $iDocumentTypeId)),
+        );
+
+        $sName = $this->oValidator->validateEntityName('DocumentType', 'document type', $_REQUEST['name'], $aErrorOptions);
+
         $res = $oDocumentType->update();
         if (PEAR::isError($res) || ($res === false)) {
             $this->errorRedirectTo('edit', _('Could not save document type changes'), 'fDocumentTypeId=' . $oDocumentType->getId());
@@ -128,7 +134,14 @@ class KTDocumentTypeDispatcher extends KTAdminDispatcher {
 
     function do_addfieldsets() {
         $oDocumentType =& DocumentType::get($_REQUEST['fDocumentTypeId']);
-        $res = KTMetadataUtil::addSetsToDocumentType($oDocumentType, $_REQUEST['fieldsetid']);
+        $aFieldsetId = $_REQUEST['fieldsetid'];
+        
+        if(!count($aFieldsetId)) {
+            $this->errorRedirectTo('edit', _('You must select at least one fieldset'), 'fDocumentTypeId=' . $oDocumentType->getId());
+            exit(0);
+        }
+        
+        $res = KTMetadataUtil::addSetsToDocumentType($oDocumentType, $aFieldsetId);
         if (PEAR::isError($res)) {
             var_dump($res);
             $this->errorRedirectTo('edit', _('Changes not saved'), 'fDocumentTypeId=' . $oDocumentType->getId());

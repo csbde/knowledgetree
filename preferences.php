@@ -72,9 +72,9 @@ class PreferencesDispatcher extends KTStandardDispatcher {
         $confirm_password = KTUtil::arrayGet($_REQUEST, 'confirm_password');        
         
         if (empty($password)) { 
-            $this->errorRedirectToMain(_("You must specify a password for the user."));
+            $this->errorRedirect("setPassword", _("You must specify a password."));
         } else if ($password !== $confirm_password) {
-            $this->errorRedirectToMain(_("The passwords you specified do not match."));
+            $this->errorRedirect("setPassword", _("The passwords you specified do not match."));
         }
 		
 		$KTConfig =& KTConfig::getSingleton();
