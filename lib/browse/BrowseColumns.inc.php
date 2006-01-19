@@ -226,17 +226,17 @@ class SelectionColumn extends BrowseColumn {
         global $main;
         $main->requireJSResource("resources/js/toggleselect.js");
         
-        return '<input type="checkbox" title="toggle all" onactivate="toggleSelectFor('.$this->name.')">';
+        return '<input type="checkbox" title="toggle all" onclick="toggleSelectFor(this, \''.$this->name.'\')">';
         
     }
     
     // use inline, since its just too heavy to even _think_ about using smarty.
     function renderData($aDataRow) { 
-        $localname = $this->name . '_';
-        if ($aDataRow["type"] === "folder") { $localname .= "f_". $aDataRow["folderid"]; }
-        else { $localname .= "d_" . $aDataRow["docid"]; }
+        $localname = $this->name;
+        if ($aDataRow["type"] === "folder") { $localname .= "_f[]"; $v = $aDataRow["folderid"]; }
+        else { $localname .= "_d[]"; $v = $aDataRow["docid"]; }
         
-        return '<input type="checkbox" name="'.$localname.'" onactivate="activateRow(this)">';
+        return '<input type="checkbox" name="' . $localname . '" onactivate="activateRow(this)" value="' . $v . '"/>';
     }
     
     function _mimeHelper($iMimeTypeId) {

@@ -36,6 +36,7 @@ require_once(KT_LIB_DIR . "/browse/browseutil.inc.php");
 
 require_once(KT_LIB_DIR . "/foldermanagement/Folder.inc");
 require_once(KT_LIB_DIR . "/documentmanagement/DocumentType.inc");
+require_once(KT_LIB_DIR . "/documentmanagement/Document.inc");
 
 require_once(KT_LIB_DIR . "/widgets/portlet.inc.php");
 require_once(KT_LIB_DIR . '/actions/folderaction.inc.php');
@@ -201,6 +202,75 @@ class BrowseDispatcher extends KTStandardDispatcher {
               "document_types" => $aTypes,
         );
         return $oTemplate->render($aTemplateData);
+    }
+    
+    function do_startDelete() {
+        $this->oPage->setTitle('Delete Files and Folders');
+        $this->oPage->setBreadcrumbDetails('Delete Files and Folders');
+    
+        $aFolderSelection = KTUtil::arrayGet($_REQUEST, 'selection_f' , array());
+        $aDocumentSelection = KTUtil::arrayGet($_REQUEST, 'selection_d' , array());
+        
+        $aFields = array();
+        $aFields[] = new KTStringWidget(_('Reason'), _('The reason for the deletion of these documents and folders for historical purposes.'), 'sReason', "", $this->oPage, true);
+        
+        $oTemplating = new KTTemplating;
+        $oTemplate = $oTemplating->loadTemplate("ktcore/folder/mass_delete");
+        $aTemplateData = array(
+              "context" => $this,
+              'form_fields' => $aFields,
+              'folders' => $aFolderSelection,
+              'documents' => $aDocumentSelection,
+        );
+        return $oTemplate->render($aTemplateData);        
+    }
+
+    function do_doDelete() {
+        $aFolderSelection = KTUtil::arrayGet($_REQUEST, 'selection_f' , array());
+        $aDocumentSelection = KTUtil::arrayGet($_REQUEST, 'selection_d' , array());
+        
+        $aErrorOptions = array('message' => _('You must supply a reason'));
+        
+        $res = KTUtil::arrayGet($_REQUEST,'sReason');
+        $sReason = $this->oValidator->notEmpty($res, $aErrorOptions);
+        
+        // FIXME we need to sort out the (inconsistent) use of transactions here.
+        $aFolders = array();
+        $aDocuments = array();
+        foreach ($aFolderSelection as $id) {
+            $oF = Folder::get($id);
+            if (PEAR::isError($oF) || ($oF == false)) {
+                return $this->errorRedirectToMain(_('Invalid Folder selected.'));
+            } else {
+                $aFolders[] = $oF;
+            }
+        }
+        foreach ($aDocumentSelection as $id) {
+            $oD = Document::get($id);
+            if (PEAR::isError($oD) || ($oD == false)) {
+                return $this->errorRedirectToMain(_('Invalid Document selected.'));
+            } else {
+                $aDocuments[] = $oD;
+            }
+        }
+        
+        foreach ($aFolders as $oFolder) {
+            $res = KTFolderUtil::delete($oFolder, $this->oUser, $sReason);
+            if (PEAR::isError($res)) {
+                return $this->errorRedirectToMain($res->getMessage());
+            }
+        }
+        foreach ($aDocuments as $oDocument) {
+            $res = KTDocumentUtil::delete($oDocument, $sReason);
+            if (PEAR::isError($res)) {
+                return $this->errorRedirectToMain($res->getMessage());
+            }
+        }
+        
+        if ($this->oFolder == null) {
+            $oFI = 1;
+        } else { $oFI = $this->oFolder->getId(); }
+        $this->successRedirectToMain('Folders and Documents Deleted.',sprintf('fFolderId=%d', $oFI));
     }
 }
 

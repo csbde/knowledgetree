@@ -27,6 +27,12 @@
 require_once(KT_LIB_DIR . '/storage/storagemanager.inc.php');
 require_once(KT_LIB_DIR . "/subscriptions/subscriptions.inc.php"); 
 
+require_once(KT_LIB_DIR . '/permissions/permission.inc.php');
+require_once(KT_LIB_DIR . '/permissions/permissionutil.inc.php');
+require_once(KT_LIB_DIR . '/users/User.inc');
+
+require_once(KT_LIB_DIR . '/database/dbutil.inc');
+
 class KTFolderUtil {
     function _add ($oParentFolder, $sFolderName, $oUser) {
         $oStorage =& KTStorageManagerUtil::getSingleton();
@@ -116,6 +122,98 @@ class KTFolderUtil {
 
     function exists($oParentFolder, $sName) {
         return Folder::folderExistsName($sName, $oParentFolder->getID());
+    }
+    
+    /* folderUtil::delete
+     *
+     * this function is _much_ more complex than it might seem.
+     * we need to:
+     *   - recursively identify children
+     *   - validate that permissions are allocated correctly.
+     *   - step-by-step delete.
+     */
+    
+    function delete($oStartFolder, $oUser, $sReason) {
+        // FIXME: we need to work out if "write" is the right perm.
+        $oPerm = KTPermission::getByName('ktcore.permissions.write');
+        
+        $aFolderIds = array(); // of oFolder
+        $aDocuments = array(); // of oDocument
+        $aFailedDocuments = array(); // of String
+        $aFailedFolders = array(); // of String
+        
+        $aRemainingFolders = array($oStartFolder->getId());
+        
+        DBUtil::startTransaction();
+        
+        while (!empty($aRemainingFolders)) {
+            $iFolderId = array_pop($aRemainingFolders);
+            $oFolder = Folder::get($iFolderId);
+            if (PEAR::isError($oFolder) || ($oFolder == false)) {
+                DBUtil::rollback();
+                return PEAR::raiseError(sprintf('Failure resolving child folder with id = %d.', $iFolderId));
+            }
+            
+            // don't just stop ... plough on.
+            if (KTPermissionUtil::userHasPermissionOnItem($oUser, $oPerm, $oFolder)) {
+                $aFolderIds[] = $iFolderId;
+            } else {
+                $aFailedFolders[] = $oFolder->getName();
+            }
+            
+            // child documents
+            $aChildDocs = Document::getList(array('folder_id = ?',array($iFolderId)));
+            foreach ($aChildDocs as $oDoc) {
+                if (KTPermissionUtil::userHasPermissionOnItem($oUser, $oPerm, $oFolder)) {
+                    $aDocuments[] = $oDoc;
+                } else {
+                    $aFailedDocuments[] = $oDoc->getName();
+                }
+            }
+            
+            // child folders.
+            $aCFIds = Folder::getList(array('parent_id = ?', array($iFolderId)), array('ids' => true));
+            $aRemainingFolders = array_merge($aRemainingFolders, $aCFIds);
+        }
+        
+        // FIXME we could subdivide this to provide a per-item display (viz. bulk upload, etc.)
+        
+        if ((!empty($aFailedDocuments) || (!empty($aFailedFolders)))) {
+            $sFD = '';
+            $sFF = '';
+            if (!empty($aFailedDocuments)) {
+                $sFD = _('Documents: ') . array_join(', ', $aFailedDocuments) . '. ';
+            }
+            if (!empty($aFailedFolders)) {
+                $sFF = _('Folders: ') . array_join(', ', $aFailedFolders) . '.';
+            }
+            return PEAR::raiseError(_('You do not have permission to delete these items. ') . $sFD . $sFF);
+        }
+        
+        // now we can go ahead.
+        foreach ($aDocuments as $oDocument) {
+            $res = KTDocumentUtil::delete($oDocument, $sReason);
+            if (PEAR::isError($res)) {
+                DBUtil::rollback();
+                return PEAR::raiseError(_('Delete Aborted. Unexpected failure to delete document: ') . $oDocument->getName() . $res->getMessage());
+            }
+        }
+        
+        // documents all cleared.
+        $sQuery = 'DELETE FROM ' . KTUtil::getTableName('folders') . ' WHERE id IN (' . DBUtil::paramArray($aFolderIds) . ')';
+        $aParams = $aFolderIds;
+        
+        $res = DBUtil::runQuery(array($sQuery, $aParams));
+
+        if (PEAR::isError($res)) {
+            DBUtil::rollback();
+            return PEAR::raiseError(_('Failure deleting folders.'));
+        }
+        
+        // and store
+        DBUtil::commit();
+        
+        return true;
     }
 }
 

@@ -30,6 +30,9 @@
 // LEGACY PATHS
 require_once(KT_LIB_DIR . '/documentmanagement/DocumentFieldLink.inc');
 require_once(KT_LIB_DIR . '/documentmanagement/DocumentTransaction.inc');
+require_once(KT_LIB_DIR . '/documentmanagement/Document.inc');
+
+require_once(KT_LIB_DIR . '/storage/storagemanager.inc.php');
 
 // NEW PATHS
 require_once(KT_LIB_DIR . '/storage/storagemanager.inc.php');
@@ -521,6 +524,84 @@ class KTDocumentUtil {
             "document_text" => $sSearchableText,
         );
         return DBUtil::autoInsert($sTable, $aInsert, array('noid' => true));
+    }
+    // }}}
+    
+    // {{{ delete
+    function delete($oDocument, $sReason) {
+        
+        $oStorageManager =& KTStorageManagerUtil::getSingleton();
+        
+        global $default;
+        
+        if (count(trim($sReason)) == 0) { 
+            return PEAR::raiseError('Deletion requires a reason'); 
+        }
+        if (PEAR::isError($oDocument) || ($oDocument == false)) { return PEAR::raiseError('Invalid document object.'); }
+        
+        // IF we're deleted ...
+        if ($oDocument->getStatusID() == DELETED) { return true; }
+        
+        DBUtil::startTransaction();
+        
+                // flip the status id
+        $oDocument->setStatusID(DELETED);
+        
+        
+        $res = $oDocument->update();
+        if (PEAR::isError($res) || ($res == false)) {
+            DBUtil::rollback();
+            return PEAR::raiseError(_("There was a problem deleting the document from the database."));
+        }
+
+        // now move the document to the delete folder
+        $res = $oStorageManager->delete($oDocument);
+        if (PEAR::isError($res) || ($res == false)) {
+            //could not delete the document from the file system
+            $default->log->error("Deletion: Filesystem error deleting document " .
+                $oDocument->getFileName() . " from folder " .
+                Folder::getFolderPath($oDocument->getFolderID()) .
+                " id=" . $oDocument->getFolderID());
+            
+            // we use a _real_ transaction here ...
+            
+            DBUtil::rollback();
+            
+            /*
+            //reverse the document deletion
+            $oDocument->setStatusID(LIVE);
+            $oDocument->update();
+            */
+            
+            return PEAR::raiseError(_("There was a problem deleting the document from storage."));
+        }
+        
+        $oDocumentTransaction = & new DocumentTransaction($oDocument, "Document deleted: " . $sReason, 'ktcore.transactions.delete');
+        $oDocumentTransaction->create();
+        
+        $oDocument->setFolderID(1);
+        
+        DBUtil::commit();
+        
+        // document is now deleted:  triggers are best-effort.
+        
+        $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
+        $aTriggers = $oKTTriggerRegistry->getTriggers('delete', 'postValidate');
+        foreach ($aTriggers as $aTrigger) {
+            $sTrigger = $aTrigger[0];
+            $oTrigger = new $sTrigger;
+            $aInfo = array(
+                "document" => $oDocument,
+            );
+            $oTrigger->setInfo($aInfo);
+            $ret = $oTrigger->postValidate();
+            if (PEAR::isError($ret)) {
+                $oDocument->delete();          // FIXME nbm: review that on-fail => delete is correct ?!
+                return $ret;
+            }
+        }
+        
+        
     }
     // }}}
 }

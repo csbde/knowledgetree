@@ -20,6 +20,7 @@ class DeletedDocumentsDispatcher extends KTAdminDispatcher {
         $aDocuments =& Document::getList("status_id=" . DELETED);
         
         
+        
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate = $oTemplating->loadTemplate('ktcore/document/admin/deletedlist');
         $oTemplate->setData(array(
@@ -163,6 +164,7 @@ class DeletedDocumentsDispatcher extends KTAdminDispatcher {
         $aSuccessDocuments = array();			
 
         foreach ($aDocuments as $oDoc) {
+            $oDoc->setFolderID(1);
             if (PhysicalDocumentManager::restore($oDoc)) {
                 $oDoc->setStatusId(LIVE);
                 $res = $oDoc->update();

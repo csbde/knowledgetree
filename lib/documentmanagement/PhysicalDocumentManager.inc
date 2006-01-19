@@ -189,9 +189,10 @@ class PhysicalDocumentManager {
 		// ie. interrogate transaction history for all CHECKIN transactions and retrieve the versions
 		// FIXME: refactor
 		$sql = $default->db;
-        $sQuery = "SELECT DISTINCT version FROM $default->document_transactions_table WHERE document_id = ? AND transaction_id = ?";/*ok*/
-        $aParams = array($oDocument->getID(), CHECKOUT);
-		$result = $sql->query(array($sQuery, $aParams));
+        $sQuery = "SELECT DISTINCT version FROM $default->document_transactions_table WHERE document_id = ? AND transaction_namespace = ?";/*ok*/
+        $aParams = array($oDocument->getID(), 'ktcore.transactions.check_out');
+		$result = $sql->query(array($sQuery, $aParams));		
+		
         if ($result) {
             while ($sql->next_record()) {
             	$sVersion = $sql->f("version");
@@ -209,7 +210,9 @@ class PhysicalDocumentManager {
         } else {
         	$default->log->error("PhysicalDocumentManager::delete error looking up document versions, id=" . $oDocument->getID());
         }	
+		
 
+		
 		// now move the current version		
 		if (PhysicalDocumentManager::move($sCurrentPath, $sDeletedPrefix)) {
 			return true;
@@ -287,9 +290,13 @@ class PhysicalDocumentManager {
 		// deleted document path (includes previous versions)
 		$sDeletedPath = $default->documentRoot . "/Deleted/" . $oDocument->getID() . "-" . $oDocument->getFileName();
 				
-		// build the path to the new folder
+		// NEW FOLDER REALLY NEEDS TO BE /
+		if (is_null($oDocument->getFolderID())) { 
+		    $oDocument->setFolderID(1);
+		}
+		//var_dump($oDocument->getFolderID());
 		$sRestorePath = Folder::getFolderPath($oDocument->getFolderID()) . "/" . $oDocument->getFileName();
-				
+		
 		// find all the previous versions of this document and move them
 		// ie. interrogate transaction history for all CHECKIN transactions and retrieve the versions
 		// FIXME: refactor
