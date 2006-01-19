@@ -34,6 +34,7 @@
 
 require_once(KT_LIB_DIR . '/storage/storagemanager.inc.php');
 require_once(KT_LIB_DIR . '/mime.inc.php');
+require_once(KT_LIB_DIR . '/documentmanagement/PhysicalDocumentManager.inc');
 
 // used for well-known MIME deterministic techniques
 if (!extension_loaded('fileinfo')) {
@@ -269,8 +270,8 @@ class KTOnDiskPathStorageManager extends KTStorageManager {
 		// ie. interrogate transaction history for all CHECKIN transactions and retrieve the versions
 		// FIXME: refactor
 		$sql = $default->db;
-        $sQuery = "SELECT DISTINCT version FROM $default->document_transactions_table WHERE document_id = ? AND transaction_id = ?";/*ok*/
-        $aParams = array($oDocument->getID(), CHECKOUT);
+        $sQuery = "SELECT DISTINCT version FROM $default->document_transactions_table WHERE document_id = ? AND transaction_namespace = ?";/*ok*/
+        $aParams = array($oDocument->getID(), 'ktcore.transactions.check_out');
 		$result = $sql->query(array($sQuery, $aParams));
         if ($result) {
             while ($sql->next_record()) {
@@ -291,10 +292,11 @@ class KTOnDiskPathStorageManager extends KTStorageManager {
         }	
 
 		// now move the current version		
+
 		if (PhysicalDocumentManager::move($sCurrentPath, $sDeletedPrefix)) {
 			return true;
 		} else {
-			$default->log->error("PhysicalDocumentManager::delete couldn't move $sCurrentPath to $sDeletedPath, documentID=" . $oDocument->getID());
+			$default->log->error("in OnDiskStorage, PhysicalDocumentManager::delete couldn't move $sCurrentPath to $sDeletedPrefix, documentID=" . $oDocument->getID());
 			return false;
 		}
 	}

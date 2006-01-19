@@ -1,1 +1,15 @@
+{$context->oPage->requireJSResource('thirdpartyjs/MochiKit/Base.js')}
+{$context->oPage->requireJSResource('thirdpartyjs/MochiKit/Iter.js')}
+{$context->oPage->requireJSResource('thirdpartyjs/MochiKit/DOM.js')}
+
+{$context->oPage->requireJSResource('resources/js/toggleselect.js')}
+
+<form action="{$smarty.server.PHP_SELF}" METHOD="POST">
+<input type="hidden" name="action" value="startDelete" />
+<input type="hidden" name="fFolderid" value="{$context->oFolder->getId()}" />
 {$collection->render()}
+<div class="form_actions">
+  <input type="submit" name="submit[delete]" value="{i18n}Delete{/i18n}" />
+</div>
+</form>
+{* we break encapsulation pretty badly here. *}

@@ -276,57 +276,17 @@ class KTDocumentDeleteAction extends KTDocumentAction {
         global $default;
         $sReason = KTUtil::arrayGet($_REQUEST, 'reason');
         $this->oValidator->notEmpty($sReason);
-
-        $this->startTransaction();
-
-        // flip the status id
-        $this->oDocument->setStatusID(DELETED);
-
-        if (!$this->oDocument->update()) {
-            $_SESSION["KTErrorMessage"][]= _("There was a problem deleting the document from the database.");
-            controllerRedirect('viewDocument', 'fDocumentId=' .  $this->oDocument->getId());
-            exit(0);
+        
+        
+        $res = KTDocumentUtil::delete($this->oDocument, $sReason);
+        if (PEAR::isError($res)) {
+            $_SESSION['KTErrorMessage'][] = $res->getMessage();
+            controllerRedirect('viewDocument',sprintf('fDocumentId=%d', $this->oDocument->getId()));
+        } else {
+            $_SESSION['KTInfoMessage'][] = sprintf(_('Document "%s" Deleted.'),$this->oDocument->getName());
         }
-
-        // now move the document to the delete folder
-        if (!PhysicalDocumentManager::delete($this->oDocument)) {
-            //could not delete the document from the file system
-            $default->log->error("deleteDocumentBL.php Filesystem error deleting document " .
-                $this->oDocument->getFileName() . " from folder " .
-                Folder::getFolderPath($this->oDocument->getFolderID()) .
-                " id=" . $this->oDocument->getFolderID());
-            //reverse the document deletion
-            $this->oDocument->setStatusID(LIVE);
-            $this->oDocument->update();
-            //get rid of the document transaction
-            $_SESSION["KTErrorMessage"][]= _("There was a problem deleting the document from storage.");
-            controllerRedirect('viewDocument', 'fDocumentId=' .  $this->oDocument->getId());
-            exit(0);
-        }
-
-        $oDocumentTransaction = & new DocumentTransaction($this->oDocument, "Document deleted: " . $sReason, 'ktcore.transactions.delete');
-        $oDocumentTransaction->create();
-
-        $this->commitTransaction();
-
-        // At this point, the document is deleted.
-
-        $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
-        $aTriggers = $oKTTriggerRegistry->getTriggers('delete', 'postValidate');
-        foreach ($aTriggers as $aTrigger) {
-            $sTrigger = $aTrigger[0];
-            $oTrigger = new $sTrigger;
-            $aInfo = array(
-                "document" => $this->oDocument,
-            );
-            $oTrigger->setInfo($aInfo);
-            $ret = $oTrigger->postValidate();
-            if (PEAR::isError($ret)) {
-                $this->oDocument->delete();
-                return $ret;
-            }
-        }
-
+        
+        
         controllerRedirect('browse', 'fFolderId=' .  $this->oDocument->getFolderId());
         exit(0);
     }

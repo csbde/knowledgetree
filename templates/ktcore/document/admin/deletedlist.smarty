@@ -21,7 +21,6 @@ more information about the documents below - e.g. when was it deleted (last modi
     <tr>
       <th>&nbsp;</th>
       <th>{i18n}Document Name{/i18n}</th>
-      <th>{i18n}Location{/i18n}</th>
     </tr>
   </thead>
   <tbody>
@@ -29,7 +28,6 @@ more information about the documents below - e.g. when was it deleted (last modi
     <tr>
       <td><input type="checkbox" name="selected_docs[]" value="{$oDoc->getId()}"/></td>
       <td>{$oDoc->getName()}</td>
-      <td class="descriptiveText">{$oDoc->getDisplayPath()}</td>
     </tr>
     {/foreach}
   </tbody>
