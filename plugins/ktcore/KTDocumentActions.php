@@ -89,9 +89,14 @@ class KTDocumentCheckOutAction extends KTDocumentAction {
     }
 
     function do_checkout() {
-        $sReason = KTUtil::arrayGet($_REQUEST, 'reason');
-        $this->oValidator->notEmpty($sReason);
+        $aErrorOptions = array(
+            'redirect_to' => array('','fDocumentId=' . $this->oDocument->getId()),
+            'message' => "You must provide a reason"
+        );
+        
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/action/checkout_final');
+        $sReason = $this->oValidator->validateString(KTUtil::arrayGet($_REQUEST, 'reason'), $aErrorOptions);
+
         $oTemplate->setData(array(
             'context' => &$this,
             'reason' => $sReason,
@@ -623,7 +628,11 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
             }
             $fieldOptions = array("vocab" => $aVocab);
             $transition_fields[] = new KTLookupWidget(_('Transition to perform'), 'FIXME', 'fTransitionId', null, $this->oPage, true, null, $fieldErrors, $fieldOptions);
-            $transition_fields[] = new KTStringWidget(_('Reason for transition'), _('Describe the changes made to the document.'), 'fComments', "", $this->oPage, true);
+            $transition_fields[] = new KTTextWidget(
+                _('Reason for transition'), _('Describe the changes made to the document.'), 
+                'fComments', "", 
+                $this->oPage, true, null, null,
+                array('cols' => 80, 'rows' => 4));
         }
         $aTemplateData = array(
             'oDocument' => $oDocument,
@@ -650,8 +659,15 @@ class KTDocumentWorkflowAction extends KTDocumentAction {
 
     function do_performTransition() {
         $oDocument =& $this->oValidator->validateDocument($_REQUEST['fDocumentId']);
-        $oTransition =& $this->oValidator->validateWorkflowTransition($_REQUEST['fTransitionId']);
-        $sComments =& $this->oValidator->notEmpty($_REQUEST['fComments']);
+        $oTransition =& $this->oValidator->validateWorkflowTransition($_REQUEST['fTransitionId']);        
+
+        $aErrorOptions = array(
+            'redirect_to' => array('main', sprintf('fDocumentId=%d', $_REQUEST['fDocumentId'])),
+            'message' => 'You must provide a reason for the transition'
+        );
+
+        $sComments =& $this->oValidator->validateString($_REQUEST['fComments'], $aErrorOptions);
+        
         $oUser =& User::get($_SESSION['userID']);
         $res = KTWorkflowUtil::performTransitionOnDocument($oTransition, $oDocument, $oUser, $sComments);
         $this->successRedirectToMain(_('Transition performed'),

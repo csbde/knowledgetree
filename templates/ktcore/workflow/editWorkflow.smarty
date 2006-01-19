@@ -52,6 +52,8 @@ title="State {$oState->getId()}">{$oState->getName()|escape}</a></li>
 
 
 
+{* check that there are states, and, if not, don't show transitions *}
+{if $aStates}
 
 <h3>{i18n}Transitions{/i18n}</h3>
 
@@ -87,6 +89,7 @@ title="Transition {$oTransition->getId()}">{$oTransition->getName()|escape}</a><
 </ul>
 {/if}
 
+{/if}
 
 
 

@@ -68,7 +68,7 @@ class KTWorkflowDispatcher extends KTAdminDispatcher {
 
         
         $add_transition_fields = array();
-        $add_transition_fields[] = new KTStringWidget(_('Name'), _('A human-readable name for the state.'), 'fName', null, $this->oPage, true);
+        $add_transition_fields[] = new KTStringWidget(_('Name'), _('A human-readable name for the transition.'), 'fName', null, $this->oPage, true);
         $aOptions = array();
         $vocab = array();
         foreach($aStates as $state) {
@@ -113,21 +113,29 @@ class KTWorkflowDispatcher extends KTAdminDispatcher {
     // {{{ do_saveWorkflow
     function do_saveWorkflow() {
         $oWorkflow =& $this->oValidator->validateWorkflow($_REQUEST['fWorkflowId']);
+        
         $aOptions = array(
             'redirect_to' => array('editWorkflow', 'fWorkflowId=' .  $oWorkflow->getId()),
         );
-        $oWorkflow->setName($_REQUEST['fName']);
-        $oWorkflow->setHumanName($_REQUEST['fName']);
+        
+        $sName = $this->oValidator->validateString($_REQUEST['fName'], $aOptions);
+        
+        $oWorkflow->setName($sName);
+        $oWorkflow->setHumanName($sName);
+        
         if (!empty($_REQUEST['fStartStateId'])) {
             $oWorkflow->setStartStateId($_REQUEST['fStartStateId']);
         } else {
             $oWorkflow->setStartStateId(null);
         }
+        
         $res = $oWorkflow->update();
+        
         $this->oValidator->notErrorFalse($res, array(
             'redirect_to' => array('editWorkflow', 'fWorkflowId=' . $oWorkflow->getId()),
             'message' => _('Error saving workflow'),
         ));
+        
         $this->successRedirectTo('editWorkflow', _('Changes saved'), 'fWorkflowId=' . $oWorkflow->getId());
         exit(0);
     }
@@ -137,11 +145,16 @@ class KTWorkflowDispatcher extends KTAdminDispatcher {
     function do_newWorkflow() {
         $aErrorOptions = array(
             'redirect_to' => array('main'),
-            'message' => 'No name given',
         );
+        
         $sName = KTUtil::arrayGet($_REQUEST, 'fName');
-        $sName = $this->oValidator->validateString($sName,
-                $aErrorOptions);
+        $sName = $this->oValidator->validateEntityName('KTWorkflow', 'workflow', $sName, $aErrorOptions);
+            
+
+/*        if(!PEAR::isError(KTWorkflow::getByName($sName))) {
+            $this->errorRedirectToMain(_("A state with that name already exists"));
+        }*/
+            
         $res = KTWorkflow::createFromArray(array(
             'name' => $sName,
             'humanname' => $sName,
@@ -174,16 +187,34 @@ class KTWorkflowDispatcher extends KTAdminDispatcher {
     //
     // {{{ do_newState
     function do_newState() {
-        $oWorkflow =& $this->oValidator->validateWorkflow($_REQUEST['fWorkflowId']);
+        $iWorkflowId = (int) $_REQUEST['fWorkflowId'];
+        
+        $aErrorOptions = array(
+            'redirect_to' => array('editWorkflow', sprintf('fWorkflowId=%d', $iWorkflowId)),
+        );
+
+        $oWorkflow =& $this->oValidator->validateWorkflow($iWorkflowId);
+        
+        // validate name
+        $sName = $this->oValidator->validateString($_REQUEST['fName'], $aErrorOptions);
+        
+        // check there are no other states by that name in this workflow
+        $aStates = KTWorkflowState::getList(sprintf("workflow_id = %d and name = '%s'", $iWorkflowId, $sName));
+        if(count($aStates)) {
+            $this->errorRedirectTo(implode('&', $aErrorOptions['redirect_to']), _("A state by that name already exists"));
+        }
+        
         $oState = KTWorkflowState::createFromArray(array(
             'workflowid' => $oWorkflow->getId(),
-            'name' => $_REQUEST['fName'],
-            'humanname' => $_REQUEST['fName'],
+            'name' => $sName,
+            'humanname' => $sName,
         ));
+        
         $this->oValidator->notError($oState, array(
             'redirect_to' => array('editWorkflow', 'fWorkflowId=' .  $oWorkflow->getId()),
             'message' => _('Could not create workflow state'),
         ));
+        
         $this->successRedirectTo('editState', _('Workflow state created'), 'fWorkflowId=' . $oWorkflow->getId() . '&fStateId=' .  $oState->getId());
         exit(0);
     }
@@ -326,9 +357,28 @@ class KTWorkflowDispatcher extends KTAdminDispatcher {
     function do_newTransition() {
         $oWorkflow =& $this->oValidator->validateWorkflow($_REQUEST['fWorkflowId']);
         $oState =& $this->oValidator->validateWorkflowState($_REQUEST['fTargetStateId']);
+        
+        // setup error options for later
+        $aErrorOptions = array(
+            'redirect_to' => array('editWorkflow', sprintf('fWorkflowId=%d', $oWorkflow->getId())),
+        );
+
         $iPermissionId = KTUtil::arrayGet($_REQUEST, 'fPermissionId');
         $iGroupId = KTUtil::arrayGet($_REQUEST, 'fGroupId');
         $iRoleId = KTUtil::arrayGet($_REQUEST, 'fRoleId');
+
+        // validate name
+        $sName = $this->oValidator->validateString(KTUtil::arrayGet($_REQUEST, 'fName'), $aErrorOptions);
+        
+
+        // check there are no other transitions by that name in this workflow
+        $aTransitions = KTWorkflowTransition::getList(sprintf("workflow_id = %d and name = '%s'", $oWorkflow->getId(), $sName));
+        if(count($aTransitions)) {
+            $this->errorRedirectTo(implode('&', $aErrorOptions['redirect_to']), _("A transition by that name already exists"));
+        }
+
+
+        // validate permissions, roles, and group
         if ($iPermissionId) {
             $this->oValidator->validatePermission($_REQUEST['fPermissionId']);
         }
@@ -338,6 +388,7 @@ class KTWorkflowDispatcher extends KTAdminDispatcher {
         if ($iRoleId) {
             $this->oValidator->validateRole($_REQUEST['fRoleId']);
         }
+        
         $res = KTWorkflowTransition::createFromArray(array(
             'workflowid' => $oWorkflow->getId(),
             'name' => $_REQUEST['fName'],

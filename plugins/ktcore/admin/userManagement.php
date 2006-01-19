@@ -285,14 +285,33 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
     
     function do_saveUser() {
         $user_id = KTUtil::arrayGet($_REQUEST, 'user_id');
+
+        $aErrorOptions = array(
+                'redirect_to' => array('editUser', sprintf('user_id=%d', $user_id))
+        );
         
-        $name = KTUtil::arrayGet($_REQUEST, 'name');
-        $username = KTUtil::arrayGet($_REQUEST, 'username');
+        $name = $this->oValidator->validateString(
+                KTUtil::arrayGet($_REQUEST, 'name'),
+                KTUtil::meldOptions($aErrorOptions, array('message' => _("You must provide a name")))
+        );
+        
+        $username = $this->oValidator->validateString(
+                KTUtil::arrayGet($_REQUEST, 'username'),
+                KTUtil::meldOptions($aErrorOptions, array('message' => _("You must provide a username")))
+        );
+        
         $email_address = KTUtil::arrayGet($_REQUEST, 'email_address');
+        if(strlen(trim($email_address))) {
+                $email_address = $this->oValidator->validateEmailAddress($email_address, $aErrorOptions);
+        }
+        
         $email_notifications = KTUtil::arrayGet($_REQUEST, 'email_notifications', false);
         if ($email_notifications !== false) $email_notifications = true;
+        
         $mobile_number = KTUtil::arrayGet($_REQUEST, 'mobile_number');
+        
         $max_sessions = KTUtil::arrayGet($_REQUEST, 'max_sessions', '3');
+        
         // FIXME more validation would be useful.
         // validated and ready..
         $this->startTransaction();

@@ -106,6 +106,10 @@ class KTDocumentFieldDispatcher extends KTStandardDispatcher {
 
     // {{{ do_new
     function do_new() {
+		$aErrorOptions = array(
+			'redirect_to' => array('main'),
+		);
+	
         $bIsGeneric = false;
         $bIsSystem = false;
 
@@ -118,14 +122,19 @@ class KTDocumentFieldDispatcher extends KTStandardDispatcher {
             // Can't be a system fieldset and a generic fieldset...
             $bIsGeneric = false;
         }
-        $sName = KTUtil::arrayGet($_REQUEST, 'name');
-        $sName = $this->oValidator->notEmpty($sName);
+		
+		// basic validation
+        $sName = $this->oValidator->validateEntityName("KTFieldset", "fieldset", KTUtil::arrayGet($_REQUEST, 'name'), $aErrorOptions);
+			
+		$sDescription = $this->oValidator->validateString(KTUtil::arrayGet($_REQUEST, 'description'), 
+			KTUtil::meldOptions($aErrorOptions, array('message' => "You must provide a description")));
+				
         $sNamespace = KTUtil::arrayGet($_REQUEST, 'namespace');
-	$sDescription = KTUtil::arrayGet($_REQUEST, 'description'); 
-        $sDescription = $this->oValidator->notEmpty($sDescription);
+		
         if (empty($sNamespace)) {
             $sNamespace = KTUtil::nameToLocalNamespace('fieldsets', $sName);
         }
+		
         $res = KTFieldset::createFromArray(array(
             'name' => $sName,
             'namespace' => $sNamespace,
@@ -207,6 +216,7 @@ class KTDocumentFieldDispatcher extends KTStandardDispatcher {
     function do_editFieldObject() {
         $oTemplating =& KTTemplating::getSingleton();
         $oTemplate =& $oTemplating->loadTemplate('ktcore/metadata/editField');
+		
         $oFieldset =& KTFieldset::get($_REQUEST['fFieldsetId']);
         $oField =& DocumentField::get($_REQUEST['fFieldId']);
 
