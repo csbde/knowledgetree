@@ -2,9 +2,6 @@
 
 <p class="descriptiveText"><strong>FIXME</strong> Overview of roles.</p>
 
-<div class="ktInfo"><p><strong>Note:</strong> Roles are not yet fully functional within
-<strong>KnowledgeTree&trade;</strong> 3.0</p></div>
-
 {if ($for_edit === false)}
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
