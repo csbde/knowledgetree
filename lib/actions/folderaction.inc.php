@@ -11,6 +11,8 @@ class KTFolderAction extends KTStandardDispatcher {
 
     var $_sShowPermission;
     var $_sDisablePermission;
+    
+    var $_adminAlwaysAvailable = false;
 
     var $_bDisabled;
     var $_sDisabledText = null;
@@ -44,7 +46,7 @@ class KTFolderAction extends KTStandardDispatcher {
         if (PEAR::isError($oPermission)) {
             return true;
         }
-        return KTPermissionUtil::userHasPermissionOnItem($this->oUser, $oPermission, $this->oFolder);
+        return (KTPermissionUtil::userHasPermissionOnItem($this->oUser, $oPermission, $this->oFolder) || (($this->_adminAlwaysAvailable) && (Permission::userIsSystemAdministrator($this->oUser->getId()))));
     }
 
     function _disable() {
@@ -115,7 +117,7 @@ class KTFolderAction extends KTStandardDispatcher {
         if (!is_null($this->_sShowPermission)) {
             $oPermission =& KTPermission::getByName($this->_sShowPermission);
             if (!PEAR::isError($oPermission)) {
-                $res = KTPermissionUtil::userHasPermissionOnItem($this->oUser, $oPermission, $this->oFolder);
+                $res = (KTPermissionUtil::userHasPermissionOnItem($this->oUser, $oPermission, $this->oFolder) || (($this->_adminAlwaysAvailable) && (Permission::userIsSystemAdministrator($this->oUser->getId()))));
                 if (!$res) {
                     return false;
                 }

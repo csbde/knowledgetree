@@ -311,8 +311,9 @@ class KTDispatcherValidation {
         $aNewOptions = $aOptions;
         $aNewOptions['message'] = KTUtil::arrayGet($aOptions, 'message', _("No name was given for the $sHumanEntityTypeName"));
         
+        // FIXME BD:  don't you mean $sName = $this->validateString ...
         $this->validateString($sName, $aNewOptions);
-        $this->validateDuplicateName($sEntityTypeName, $sHumanEntityTypeName, $sName, $aOptions);
+        return $this->validateDuplicateName($sEntityTypeName, $sHumanEntityTypeName, $sName, $aOptions);
     }
             
 

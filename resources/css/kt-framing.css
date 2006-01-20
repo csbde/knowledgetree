@@ -432,6 +432,7 @@ a.main_nav_item {
 }
 
 .metadata.versioned dd div {
+    
     padding: 0.2em 0.5em;
     border-style: solid;
     border-color: #ccc;
@@ -507,11 +508,13 @@ a.main_nav_item {
 .kt_collection
 {
     width: 100%;
+    white-space: nowrap !important;
 }
 
 .kt_collection thead th {
     border-bottom: 1px solid #888;
     text-align: left;
+    white-space: nowrap !important;
 }
 
 .kt_collection th.sort_on.sort_asc {
@@ -531,6 +534,8 @@ a.main_nav_item {
 .kt_collection th,
 .kt_collection td {
     padding: 0.25em 0.5em;
+    white-space: nowrap !important;
+    overflow: hidden;
 }
 
 .kt_collection td.sort_on {

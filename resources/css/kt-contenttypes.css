@@ -10,6 +10,7 @@
     padding-left: 25px;
     padding-top: 5px;
     padding-bottom: 5px;
+    margin-right: 25px;
 }
 
 .contenttype.ms-presentation { background-image: url(../../resources/mimetypes/powerp.gif); }

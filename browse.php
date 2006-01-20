@@ -137,6 +137,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
         $collection->addColumn(new DateColumn(_("Created"),"created", "getCreatedDateTime"));
         $collection->addColumn(new DateColumn(_("Last Modified"),"modified", "getLastModifiedDate"));
         $collection->addColumn(new UserColumn(_('Creator'),'creator_id','getCreatorID'));
+        $collection->addColumn(new WorkflowColumn(_('Workflow State'),'workflow_state'));
         
         
         // setup the folderside add actions
