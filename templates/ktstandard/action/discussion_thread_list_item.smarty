@@ -4,4 +4,5 @@
   <td>{$thread->getNumberOfViews()}</td>
   <td>{$thread->getNumberOfReplies()}</td>
   <td>{$last_comment->getDate()}</td>
+  <td>{if $thread->getState()}Closed at metadata version {$thread->getCloseMetadataVersion()}{else}Open{/if}</td>
 </tr>

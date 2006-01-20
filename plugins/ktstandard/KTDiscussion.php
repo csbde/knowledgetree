@@ -40,12 +40,13 @@ class KTDiscussionThreadListRenderer {
 }
 
 class KTCommentListRenderer {
-    function render($context, $oComment) {
+    function render($context, $oComment, $oThread) {
         $this->oComment = $oComment;
         $oTemplate = $context->oValidator->validateTemplate('ktstandard/action/discussion_comment_list_item');
         $oCreator = User::get($oComment->getUserId());
         $oTemplate->setData(array(
             'comment' => $oComment,
+            'state'   => $oThread->getState(),
             'creator' => $oCreator,
             'context' => $context,
         ));
@@ -138,17 +139,29 @@ class KTDocumentDiscussionAction extends KTDocumentAction {
         );
         $this->oPage->setBreadcrumbDetails(_("viewing comments"));
         $oTemplate =& $this->oValidator->validateTemplate('ktstandard/action/discussion_thread');
+        
         // Fields for new thread creation
-        $fields = array();
-        $fields[] = new KTStringWidget(_("Subject"), _("The topic of discussion in this thread"), "subject", "", $this->oPage, true);
-        $fields[] = new KTTextWidget(_("Body"), _("Your contribution to the discussion in this thread"), "body", "", $this->oPage, true, null, null, array("cols" => 50, "rows" => 10));
+        $replyFields = array();
+        $replyFields[] = new KTStringWidget(_("Subject"), _("The topic of discussion in this thread"), "subject", "", $this->oPage, true);
+        $replyFields[] = new KTTextWidget(_("Body"), _("Your contribution to the discussion in this thread"), "body", "", $this->oPage, true, null, null, array("cols" => 50, "rows" => 10));
+
+        // Fields for closing thread (if user has write permission)
+        $closeFields = array();
+
+        $oPermission =& KTPermission::getByName('ktcore.permissions.write');
+        if (PEAR::isError($oPermission) || 
+            KTPermissionUtil::userHasPermissionOnItem($this->oUser, $oPermission, $this->oDocument)) {
+            $closeFields[] = new KTTextWidget(_("Reason"), _("Describe the reason for closing this thread"), "reason", "", $this->oPage, true, null, null, array("cols" => 50, "rows" => 5));
+        }
 
         $aTemplateData = array(
             'context' => &$this,
-            'fields' => $fields,
+            'replyfields' => $replyFields,
+            'closefields' => $closeFields,
             'thread' => $oThread,
             'commentrenderer' => new KTCommentListRenderer(),
         );
+        
         return $oTemplate->render($aTemplateData);
     }
 
@@ -197,4 +210,50 @@ class KTDocumentDiscussionAction extends KTDocumentAction {
         $this->successRedirectTo('viewThread', _("Reply posted"), sprintf('fDocumentId=%d&fThreadId=%d', $this->oDocument->getId(), $oThread->getId()));
         exit(0);
     }
+
+    function do_closethread() {
+        $aErrorOptions = array(
+            'redirect_to' => array('main', sprintf('fDocumentId=%d', $this->oDocument->getId())),
+        );
+        
+        $iThreadId = KTUtil::arrayGet($_REQUEST, 'fThreadId');
+        $oThread = DiscussionThread::get($iThreadId);
+
+        $this->oValidator->notError($oThread, $aErrorOptions);
+
+        $aErrorOptions = array(
+            'redirect_to' => array('viewthread', sprintf('fDocumentId=%d&fThreadId=%d', $this->oDocument->getId(), $oThread->getId())),
+        );
+
+        $oPermission =& KTPermission::getByName('ktcore.permissions.write');
+        
+        if (PEAR::isError($oPermission)) {
+            $this->errorRedirectTo(implode('&', $aErrorOptions['redirect_to']), _("Error getting permission"));
+        }
+        if (!KTPermissionUtil::userHasPermissionOnItem($this->oUser, $oPermission, $this->oDocument)) {
+            $this->errorRedirectTo(implode('&', $aErrorOptions['redirect_to']), _("You do not have permission to close this thread"));
+        }
+
+        $aErrorOptions['message'] = _("No reason provided");
+        $sReason = KTUtil::arrayGet($_REQUEST, 'reason');
+        $sReason = $this->oValidator->validateString($sReason, $aErrorOptions);
+
+        // Start the transaction comment creation
+        $this->startTransaction();
+
+        $oThread->setState(1);
+        $oThread->setCloseMetadataVersion($this->oDocument->getMetadataVersion());
+        $oThread->setCloseReason($sReason);
+        $res = $oThread->update();
+        
+        $aErrorOptions['message'] = _("There was an error updating the thread with the new comment");
+        $this->oValidator->notError($res, $aErrorOptions);
+
+        // Thread closed correctly, so commit
+        $this->commitTransaction();
+
+        $this->successRedirectTo('viewThread', _("Thread closed"), sprintf('fDocumentId=%d&fThreadId=%d', $this->oDocument->getId(), $oThread->getId()));
+        exit(0);
+    }
+
 }

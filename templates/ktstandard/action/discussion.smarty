@@ -8,6 +8,7 @@
       <th>{i18n}Views{/i18n}</th>
       <th>{i18n}Replies{/i18n}</th>
       <th>{i18n}Last activity{/i18n}</th>
+      <th>{i18n}State{/i18n}</th>
     </tr>
   </thead>
   <tbody>

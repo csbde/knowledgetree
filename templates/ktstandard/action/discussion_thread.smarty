@@ -1,14 +1,15 @@
 {foreach from=$thread->getCommentsSortedByDate() item=oComment}
-    {$commentrenderer->render($context, $oComment)}
+    {$commentrenderer->render($context, $oComment, $thread)}
 {/foreach}
 
+{if not $thread->getState()}
 <form method="POST" action="{$smarty.server.PHP_SELF}">
 <input type="hidden" name="action" value="postreply" />
 <input type="hidden" name="fDocumentId" value="{$context->oDocument->getId()}" />
 <input type="hidden" name="fThreadId" value="{$thread->getId()}" />
 <fieldset><legend>{i18n}Post a reply{/i18n}</legend>
 <a name="kt-discussion-post"></a>
-{foreach from=$fields item=oWidget}
+{foreach from=$replyfields item=oWidget}
     {$oWidget->render()}
 {/foreach}
 
@@ -17,3 +18,31 @@
 </div>
 </fieldset>
 </form>
+
+
+{if $closefields}
+
+<form method="POST" action="{$smarty.server.PHP_SELF}">
+<input type="hidden" name="action" value="closethread" />
+<input type="hidden" name="fDocumentId" value="{$context->oDocument->getId()}" />
+<input type="hidden" name="fThreadId" value="{$thread->getId()}" />
+<fieldset><legend>{i18n}Close this thread{/i18n}</legend>
+{foreach from=$closefields item=oWidget}
+    {$oWidget->render()}
+{/foreach}
+
+<div class="form_actions ">
+  <input type="submit" name="submit" value="{i18n}Close this thread{/i18n}" />
+</div>
+</fieldset>
+</form>
+
+{/if}
+
+{else}
+
+<div>
+    Thread closed ({$thread->getCloseReason()})
+</div>
+
+{/if}

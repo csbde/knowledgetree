@@ -32,6 +32,9 @@ class DiscussionThread extends KTEntity{
 	var $iLastCommentId = -1;
 	var $iNumberOfViews = 0;
 	var $iNumberOfReplies = 0;
+	var $iState = 0;
+	var $iCloseMetadataVersion = 0;
+	var $sCloseReason = "";
 	var $iCreatorId;
 		
     var $_aFieldToSelect = array(
@@ -41,6 +44,9 @@ class DiscussionThread extends KTEntity{
         'iLastCommentId' => 'last_comment_id',
         'iNumberOfViews' => 'views',
         'iNumberOfReplies' => 'replies',
+		'iState' => 'state',
+		'iCloseMetadataVersion' => 'close_metadata_version',
+		'sCloseReason' => 'close_reason',
         'iCreatorId' => 'creator_id',
     );
 	
@@ -71,7 +77,14 @@ class DiscussionThread extends KTEntity{
     function getNumberOfReplies(){ return $this->iNumberOfReplies; }
     function incrementNumberOfReplies(){ $this->iNumberOfReplies += 1; }
     function setNumberOfReplies($iValue){ $this->iNumberOfReplies = $iValue; }    
-     
+	function getState(){ return $this->iState; }
+	function setState($iValue){ $this->iState = $iValue; }
+	function getCloseMetadataVersion(){ return $this->iCloseMetadataVersion; }
+	function setCloseMetadataVersion($iValue){ $this->iCloseMetadataVersion = $iValue; }
+	function getCloseReason(){ return $this->sCloseReason; }
+	function setCloseReason($sValue){ $this->sCloseReason = $sValue; }
+	
+	
     /**
      * Get a All commentId's seperated by a comma ","
 	 */
