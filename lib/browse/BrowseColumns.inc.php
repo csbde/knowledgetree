@@ -14,6 +14,10 @@
  
 require_once(KT_LIB_DIR . "/database/dbutil.inc");
 require_once(KT_LIB_DIR . '/users/User.inc');
+
+require_once(KT_LIB_DIR . '/workflow/workflowutil.inc.php');
+
+
 class BrowseColumn {
     var $label = null;
     var $sort_on = false;
@@ -248,6 +252,37 @@ class SelectionColumn extends BrowseColumn {
            return $res[0];
         } else {
            return 'unspecified_type';
+        }
+    }
+}
+
+
+class WorkflowColumn extends BrowseColumn {
+
+    function renderHeader($sReturnURL) {         
+        $text = $this->label; 
+        $href = $sReturnURL . "&sort_on=" . $this->name . "&sort_order=";
+        $href .= $this->sort_direction == "asc" ? "desc" : "asc" ;
+        
+        return '<a href="' . $href . '">'.$text.'</a>';
+    }
+    
+    // use inline, since its just too heavy to even _think_ about using smarty.
+    function renderData($aDataRow) { 
+        $localname = $this->name;
+
+        
+        // only _ever_ show this folder documents.
+        if ($aDataRow["type"] === "folder") { 
+            return '&nbsp;';
+        }
+        
+        $oWorkflow = KTWorkflowUtil::getWorkflowForDocument($aDataRow['document']);
+        $oState = KTWorkflowUtil::getWorkflowStateForDocument($aDataRow['document']);
+        if (($oState == null) || ($oWorkflow == null)) {
+            return '&mdash;';
+        } else {
+            return $oState->getName() . ' <span class="descriptiveText">(' . $oWorkflow->getName() . ')</span>';
         }
     }
 }

@@ -41,7 +41,7 @@ class KTFolderAddDocumentAction extends KTFolderAction {
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/document/add');
         $add_fields = array();
         $add_fields[] = new KTFileUploadWidget(_('File'), _('The contents of the document to be added to the document management system.'), 'file', "", $this->oPage, true);
-        $add_fields[] = new KTStringWidget(_('Title'), _('The document title is used as the main name of a document through the KnowledgeTree.'), 'title', "", $this->oPage, true);
+        $add_fields[] = new KTStringWidget(_('Title'), _('The document title is used as the main name of a document throughout KnowledgeTree.'), 'title', "", $this->oPage, true);
 
         
         $aVocab = array();

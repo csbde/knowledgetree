@@ -25,7 +25,7 @@ class BooleanSearchDispatcher extends KTStandardDispatcher {
     }
 
    function do_main() {
-        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _("Boolean search"));
+        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _("Advanced Search"));
         $this->oPage->setBreadcrumbDetails(_('defining search'));
         $oTemplating = new KTTemplating;
         $oTemplate = $oTemplating->loadTemplate("ktcore/boolean_search");
@@ -40,7 +40,7 @@ class BooleanSearchDispatcher extends KTStandardDispatcher {
     }
 
     function do_performSearch() {
-        $title = _('Advanced Search Results');
+        $title = null;
         $datavars = KTUtil::arrayGet($_REQUEST, 'boolean_search');
         if (!is_array($datavars)) {
             $datavars = unserialize($datavars);
@@ -53,7 +53,7 @@ class BooleanSearchDispatcher extends KTStandardDispatcher {
         if (!empty($iSavedSearchId)) {
             $oSearch = KTSavedSearch::get($iSavedSearchId);
             $datavars = $oSearch->getSearch();
-            $title = _('Saved Search: ') . $oSearch->getName();
+            $title = $oSearch->getName();
         }
         
         if (empty($datavars)) {
@@ -66,12 +66,16 @@ class BooleanSearchDispatcher extends KTStandardDispatcher {
     }
     
     function handleCriteriaSet($aCriteriaSet, $iStartIndex, $sTitle=null) {
-        $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _("Boolean search"));
+        
         if ($sTitle == null) {
-            $this->oPage->setBreadcrumbDetails(_('searching'));
+            $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _('Advanced Search'));
+            $sTitle =  _('Search Results');
         } else {
-            $this->oPage->setBreadcrumbDetails($sTitle);
+           $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _('Saved Search'));
+            $this->oPage->setTitle(_('Saved Search: ') . $sTitle);
         }
+        $this->oPage->setBreadcrumbDetails($sTitle);
+        
         $collection = new DocumentCollection;
         $this->browseType = "Folder";
 

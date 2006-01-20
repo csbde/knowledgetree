@@ -1,0 +1,29 @@
+<h2>{i18n}Delete Files and Folders{/i18n}</h2>
+
+<form action="{$smarty.server.PHP_SELF}" method="POST">
+<fieldset>
+<legend>{i18n}Specify Reason for Delete{/i18n}</legend>
+<p class="descriptiveText">{i18n}Please give a reason for deleting these files.  This 
+will be recorded in the documents' "Transaction History"{/i18n}</p>
+<input type="hidden" name="action" value="doDelete" />
+
+{* Include the document/folder ids *}
+
+{foreach item=iDocId from=$documents}
+<input type="hidden" name="selection_d[]" value="{$iDocId}" />
+{/foreach}
+
+{foreach item=iFolderId from=$folders}
+<input type="hidden" name="selection_f[]" value="{$iFolderId}" />
+{/foreach}
+
+{foreach item=oWidget from=$form_fields}
+{$oWidget->render()}
+{/foreach}
+
+<div class="form_actions">
+    <input type="submit" value="Delete" />
+</div>
+
+</fieldset>
+</form>

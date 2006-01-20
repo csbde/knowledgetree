@@ -155,6 +155,10 @@ class KTDocumentFieldDispatcher extends KTStandardDispatcher {
 
     // {{{ do_newfield
     function do_newfield() {
+        $aErrorOptions = array(
+			'redirect_to' => array('edit','fFieldsetId=' . $_REQUEST['fFieldsetId']),
+		);	
+	
         $is_lookup = false;
         $is_tree = false;
         if ($_REQUEST['type'] === "lookup") {
@@ -164,11 +168,18 @@ class KTDocumentFieldDispatcher extends KTStandardDispatcher {
             $is_lookup = true;
             $is_tree = true;
         }
+		
+		$sName = $this->oValidator->validateEntityName("DocumentField", "field", KTUtil::arrayGet($_REQUEST, 'name'), $aErrorOptions);
+		
+		$sDescription = $this->oValidator->validateString(KTUtil::arrayGet($_REQUEST, 'description'), 
+			KTUtil::meldOptions($aErrorOptions, array('message' => "You must provide a description")));
+		
+		
         $oFieldset = KTFieldset::get($_REQUEST['fFieldsetId']);
         $oField =& DocumentField::createFromArray(array(
             'name' => $_REQUEST['name'],
             'datatype' => 'STRING',
-	    'description' => $_REQUEST['description'],
+	        'description' => $sDescription,
             'haslookup' => $is_lookup,
             'haslookuptree' => $is_tree,
             'parentfieldset' => $oFieldset->getId(),
