@@ -50,7 +50,9 @@ class DBUtil {
             $sQuery = $query;
         }
         $res = $db->query($sQuery, $aParams);
-        $default->queryLog->debug('Query: ' . DBUtil::lastQuery($db));
+        if ($default->queryLog) {
+            $default->queryLog->debug('Query: ' . DBUtil::lastQuery($db));
+        }
         return $res;
     }
 

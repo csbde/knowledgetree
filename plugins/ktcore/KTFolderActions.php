@@ -116,6 +116,7 @@ class KTFolderPermissionsAction extends KTFolderAction {
     }
 
     function do_update() {
+        require_once(KT_LIB_DIR . "/documentmanagement/observers.inc.php");
         $oPO = KTPermissionObject::get($this->oFolder->getPermissionObjectId());
         $aFoo = $_REQUEST['foo'];
         $aPermissions = KTPermission::getList();
@@ -124,9 +125,17 @@ class KTFolderPermissionsAction extends KTFolderAction {
             $aAllowed = KTUtil::arrayGet($aFoo, $iPermId, array());
             KTPermissionUtil::setPermissionForId($oPermission, $oPO, $aAllowed);
         }
+
+        $po =& new JavascriptObserver($this);
+        $po->start();
+        $oChannel =& KTPermissionChannel::getSingleton();
+        $oChannel->addObserver($po);
+
         KTPermissionUtil::updatePermissionLookupForPO($oPO);
-        return $this->successRedirectToMain(_('Permissions updated'),
-                array('fFolderId' => $this->oFolder->getId()));
+
+        $this->commitTransaction();
+
+        $po->redirect(KTUtil::addQueryString($_SERVER['PHP_SELF'], "fFolderId=" . $this->oFolder->getId()));
     }
 
     function do_copyPermissions() {

@@ -61,7 +61,7 @@ class DocumentTransaction {
 		$this->sComment = $sNewComment;
 		$this->sTransactionNS = $sTransactionNS;
 		$this->sVersion = $oDocument->getMajorVersionNumber() . "." . $oDocument->getMinorVersionNumber();
-		$oFolder = Folder::get($oDocument->iFolderID);
+		$oFolder = Folder::get($oDocument->getFolderId());
 		$this->sFileName = addslashes($oFolder->sFullPath . "/" . $oFolder->getName() . "/" . $oDocument->getName());			
 		
 		$this->iUserID = $_SESSION["userID"];

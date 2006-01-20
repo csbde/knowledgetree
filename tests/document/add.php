@@ -13,7 +13,6 @@ $sLocalname = KT_DIR .  "/tests/document/dataset1/critique-of-pure-reason.txt";
 $sFilename = tempnam("/tmp", "kt_tests_document_add");
 copy($sLocalname, $sFilename);
 
-/*
 $oDocument =& KTDocumentUtil::add($oFolder, "testquickupload.txt", $oUser, array(
     'contents' => new KTFSFileLike($sFilename), 
 ));
@@ -23,7 +22,6 @@ if (PEAR::isError($oDocument)) {
     var_dump($oDocument);
     exit(0);
 }
-*/
 
 if (!file_exists($sFilename)) {
     copy($sLocalname, $sFilename);
@@ -35,11 +33,10 @@ if (PEAR::isError($oDocument)) {
     var_dump($oDocument);
 }
 
-/*
-
 $res = KTDocumentUtil::storeContents($oDocument, new KTFSFileLike($sFilename));
 var_dump($res);
 
+/*
 if (file_exists($sFilename)) {
     unlink($sFilename);
 }

@@ -591,15 +591,15 @@ class KTMetadataUtil {
     function fieldsetsForDocument($oDocument) {
         global $default;
         $oDocument = KTUtil::getObject('Document', $oDocument);
-        $iDocumentId = $oDocument->getId();
+        $iMetadataVersionId = $oDocument->getMetadataVersionId();
         $iDocumentTypeId = $oDocument->getDocumentTypeId();
 
         $sQuery = "SELECT DISTINCT F.id AS fieldset_id " .
-            "FROM $default->documents_table AS D INNER JOIN document_fields_link AS DFL ON D.id = DFL.document_id " .
+            "FROM $default->document_metadata_version_table AS DM INNER JOIN document_fields_link AS DFL ON DM.id = DFL.metadata_version_id " .
             "INNER JOIN $default->document_fields_table AS DF ON DF.ID = DFL.document_field_id " .
             "INNER JOIN $default->fieldsets_table AS F ON F.id = DF.parent_fieldset " .
-            "WHERE D.id = ?";
-        $aParam = array($iDocumentId);
+            "WHERE DM.id = ?";
+        $aParam = array($iMetadataVersionId);
         $aDocumentFieldsetIds = DBUtil::getResultArrayKey(array($sQuery, $aParam), 'fieldset_id');
 
         $aGenericFieldsetIds = KTFieldset::getGenericFieldsets(array('ids' => true));

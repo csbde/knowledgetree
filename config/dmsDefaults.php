@@ -412,6 +412,9 @@ require_once(KT_LIB_DIR . '/session/Session.inc');
 require_once(KT_LIB_DIR . '/session/control.inc');
 
 require_once(KT_LIB_DIR . '/plugins/pluginutil.inc.php');
-KTPluginUtil::loadPlugins();
+
+if ($checkup !== true) {
+    KTPluginUtil::loadPlugins();
+}
 
 ?>

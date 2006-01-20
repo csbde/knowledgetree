@@ -29,7 +29,7 @@ class DocumentFieldLink extends KTEntity {
 	/** document field link primary key */
 	var $iId;
 	/** primary key of document to which field is linked */
-	var $iDocumentId;
+	var $iMetadataVersionId;
 	/** primary key of field to which document is linked */
 	var $iDocumentFieldId;
 	/** field value */
@@ -37,7 +37,7 @@ class DocumentFieldLink extends KTEntity {
 
     var $_aFieldToSelect = array(
         'iId' => 'id',
-        'iDocumentId' => 'document_id',
+        'iMetadataVersionId' => 'metadata_version_id',
         'iDocumentFieldId' => 'document_field_id',
         'sValue' => 'value',
     );
@@ -74,8 +74,8 @@ class DocumentFieldLink extends KTEntity {
 	* @return int document primary key to which the field is linked
 	*
 	*/
-	function getDocumentId() {
-		return $this->iDocumentId;
+	function getMetadataVersionId() {
+		return $this->iMetadataVersionId;
 	}
 	
 	/**
@@ -84,8 +84,8 @@ class DocumentFieldLink extends KTEntity {
 	* @param 	Document primary key to which field is linked
 	*
 	*/
-	function setDocumentId($iNewValue) {
-		$this->iDocumentId = $iNewValue;
+	function setMetadataVersionId($iNewValue) {
+		$this->iMetadataVersionId = $iNewValue;
 	}
 	
 	/**
@@ -141,17 +141,8 @@ class DocumentFieldLink extends KTEntity {
 	*
 	* @return DocumentFieldLink populated DocumentFieldLink object on success, false otherwise and set $_SESSION["errorMessage"]
 	*/
-	function & get($iDocumentFieldLinkId) {
-		global $default, $lang_err_doc_not_exist;
-		$sql = $default->db;
-		$sql->query(array("SELECT * FROM " . $default->document_fields_link_table . " WHERE id = ?", $iDocumentFieldLinkId));/*ok*/
-		if ($sql->next_record()) {			
-			$oDocumentFieldLink = & new DocumentFieldLink($sql->f("document_id"), $sql->f("document_field_id"), $sql->f("value"));		
-			$oDocumentFieldLink->iId = $iDocumentFieldLinkId;
-			return $oDocumentFieldLink;
-		}
-		$_SESSION["errorMessage"] = $lang_err_object_not_exist . "id = " . $iDocumentId . " table = $default->document_fields_link_table";
-		return false;		
+	function &get($iId) {
+        return KTEntityUtil::get('DocumentFieldLink', $iId);
 	}
 
     function &getList($sWhereClause = null) {
@@ -160,15 +151,18 @@ class DocumentFieldLink extends KTEntity {
 
 
     function &getByDocument($oDocument) {
-        $iDocumentId = KTUtil::getId($oDocument);
+        $oDocument =& KTUtil::getObject('Document', $oDocument);
+        $iMetadataVersionId = $oDocument->getMetadataVersionId();
         return KTEntityUtil::getByDict('DocumentFieldLink', array(
-            'document_id' => $iDocumentId,
+            'metadata_version_id' => $iMetadataVersionId,
         ), array('multi' => true));
     }
 
     function &getByDocumentAndField($oDocument, $oField) {
+        $oDocument =& KTUtil::getObject('Document', $oDocument);
+        $iMetadataVersionId = $oDocument->getMetadataVersionId();
         return KTEntityUtil::getByDict('DocumentFieldLink', array(
-            'document_id' => KTUtil::getId($oDocument),
+            'metadata_version_id' => $iMetadataVersionId,
             'document_field_id' => KTUtil::getId($oDocument),
         ));
     }

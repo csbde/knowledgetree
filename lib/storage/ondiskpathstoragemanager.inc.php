@@ -71,7 +71,7 @@ class KTOnDiskPathStorageManager extends KTStorageManager {
     }
 
     function generateStoragePath(&$oDocument) {
-        $sStoragePath = sprintf("%s/%s", Document::_generateFolderPath($oDocument->getFolderID()), $oDocument->getFileName());
+        $sStoragePath = sprintf("%s/%s-%s", KTDocumentCore::_generateFolderPath($oDocument->getFolderID()), $oDocument->getContentVersionId(), $oDocument->getFileName());
         return $sStoragePath;
     }
 
@@ -155,8 +155,8 @@ class KTOnDiskPathStorageManager extends KTStorageManager {
 		global $default;
 		
         $oConfig =& KTConfig::getSingleton();
-        $sCurrentPath = sprintf("%s/%s/%s", $oConfig->get('urls/documentRoot'), Document::_generateFolderPath($oSourceFolder->getID()), $oDocument->getFileName());
-        $sDestinationPath = sprintf("%s/%s/%s", $oConfig->get('urls/documentRoot'), Document::_generateFolderPath($oDestinationFolder->getID()), $oDocument->getFileName());
+        $sCurrentPath = sprintf("%s/%s/%s", $oConfig->get('urls/documentRoot'), KTDocumentCore::_generateFolderPath($oSourceFolder->getID()), $oDocument->getFileName());
+        $sDestinationPath = sprintf("%s/%s/%s", $oConfig->get('urls/documentRoot'), KTDocumentCore::_generateFolderPath($oDestinationFolder->getID()), $oDocument->getFileName());
 		
 		// find all the previous versions of this document and move them
 		// ie. interrogate transaction history for all CHECKIN transactions and retrieve the versions
@@ -191,7 +191,7 @@ class KTOnDiskPathStorageManager extends KTStorageManager {
 			$default->log->error("KTOnDiskPathStorageManager->moveDocument couldn't move $sCurrentPath to $sDestinationPath, documentID=" . $oDocument->getID());
             return $res;
         }
-        $sStoragePath = sprintf("%s/%s", Document::_generateFolderPath($oDestinationFolder->getID()), $oDocument->getFileName());
+        $sStoragePath = sprintf("%s/%s", KTDocumentCore::_generateFolderPath($oDestinationFolder->getID()), $oDocument->getFileName());
         $this->setPath($oDocument, $sStoragePath);
         return true;
 	}

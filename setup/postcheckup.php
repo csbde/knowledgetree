@@ -64,8 +64,8 @@ if ($handle !== false) {
 
 <?php
 if (PEAR::isError($loggingSupport)) {
-    print "<p>Logging support is not currently working.  Error is: " .
-        htmlentities($loggingSupport->toString()) . "</p>";
+    print '<p><font color="red">Logging support is not currently working.  Error is: ' .
+        htmlentities($loggingSupport->toString()) . '</font></p>';
 } else {
 ?>
 <p>Logging support is operational.</p>

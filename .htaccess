@@ -48,11 +48,11 @@ Options none
 # malicious users to use up resources.
 #
 <IfModule mod_php4.c>
-php_value upload_max_filesize 16M
-php_value post_max_size 16M
-php_value memory_limit 16M
+php_value upload_max_filesize 32M
+php_value post_max_size 32M
+php_value memory_limit 32M
 php_value max_input_time -1
-php_value max_execution_time 60
+php_value max_execution_time 90
 </IfModule>
 
 #<IfModule mod_negotiation.c>

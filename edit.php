@@ -133,7 +133,7 @@ class KTEditDocumentDispatcher extends KTStandardDispatcher {
 		$document_data["document"] =& $this->oDocument;
         
         // we want to grab all the md for this doc, since its faster that way.
-		$mdlist =& DocumentFieldLink::getList(array('document_id = ?', array($document_id)));
+		$mdlist =& DocumentFieldLink::getByDocument($document_id);
 
 		$field_values = array();
 		foreach ($mdlist as $oFieldLink) {
@@ -199,7 +199,7 @@ class KTEditDocumentDispatcher extends KTStandardDispatcher {
         // erk.  we need all the items that the document _does_ need, _and_ what they have,
 		// _and_ what they don't ...
         // we want to grab all the md for this doc, since its faster that way.
-		$current_md =& DocumentFieldLink::getList(array('document_id = ?', array($document_id)));
+		$current_md =& DocumentFieldLink::getByDocument($document_id);
 		
 		// to get all fields, we merge repeatedly from KTFieldset::get
 		
@@ -257,7 +257,7 @@ class KTEditDocumentDispatcher extends KTStandardDispatcher {
 		//return '<pre>' . print_r($field_values, true) . '</pre>';
 		$this->startTransaction();
 		
-		$res = KTDocumentUtil::createMetadataVersion($oDocument);
+		$oDocument->startNewMetadataVersion();
 		if (PEAR::isError($res)) {
 		     $this->errorRedirectToMain('Unable to create a metadata version of the document.');
 		}
@@ -265,7 +265,6 @@ class KTEditDocumentDispatcher extends KTStandardDispatcher {
 		$oDocument->setName($title);
 		$oDocument->setLastModifiedDate(getCurrentDateTime());
 		$oDocument->setModifiedUserId($this->oUser->getId());
-		$oDocument->setMetadataVersion($oDocument->getMetadataVersion() + 1);
         $oDocumentTransaction = & new DocumentTransaction($oDocument, 'update metadata.', 'ktcore.transactions.update');
 		
         $res = $oDocumentTransaction->create();
@@ -280,6 +279,8 @@ class KTEditDocumentDispatcher extends KTStandardDispatcher {
 		$res = KTDocumentUtil::saveMetadata($oDocument, $field_values);
 		
 		if (PEAR::isError($res)) {
+            var_dump($res);
+            exit(0);
 		   $this->rollbackTransaction();		
 		   
 		   // right.  we're rolled out.  now we want to regenerate the page, + errors.

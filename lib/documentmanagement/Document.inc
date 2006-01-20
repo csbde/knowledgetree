@@ -19,190 +19,98 @@ DEFINE("STATUS_VERSION", 6);
 
 require_once(KT_LIB_DIR . "/foldermanagement/Folder.inc");
 
-class Document extends KTEntity {
-    var $_bUsePearError = true;
-    
-    // {{{ attributes
-    /** primary key */
+require_once(KT_LIB_DIR . '/documentmanagement/documentcontentversion.inc.php');
+require_once(KT_LIB_DIR . '/documentmanagement/documentcore.inc.php');
+require_once(KT_LIB_DIR . '/documentmanagement/documentmetadataversion.inc.php');
+
+class Document {
     var $iId;
     
-    /** document type primary key */
-    var $iDocumentTypeID;
-
-    /** document name */
-    var $sName;
-
-    /** document file name (path to document on file system) */
-    var $sFileName;
-
-    /** document file size */
-    var $iSize;
-
-    /** primary key of user who created document */
-    var $iCreatorID;
-
-    /** date the document was last modified */
-    var $dModified;
-
-    /** file description */
-    var $sDescription;
-
-    /** primary key of file mime type */
-    var $iMimeTypeID;
-
-    /** primary key of folder under which document is stored */
-    var $iFolderID;
-
-    /** major revision number */
-    var $iMajorVersion;
+    var $_oDocumentCore = null;
+    var $_oDocumentContentVersion = null;
+    var $_oDocumentMetadataVersion = null;
     
-    /** minor revision number */
-    var $iMinorVersion;
-   
-    /** document checked out status */
-    var $bIsCheckedOut;
-    //?? make checked out a status?
-   
-    /** document status **/
-    var $iStatusID;
-   
-    /** the user that currently has the document checked out */
-    var $iCheckedOutUserID;
-   
-    /** comma delimited string of folder hierarch this document falls under */
-    var $sParentFolderIDs;
-   
-    /** forward slash deliminated path from repository root */
-    var $sFullPath;
-   
-    /** date the document was created */
-    var $dCreated;
-
-    /** object which controls (read/write) permissions on this document */
-    var $iPermissionObjectID;
-   
-    /** object which has quick lookups (read-only) on permissions on this document */
-    var $iPermissionLookupID;
-
-    /** if this is a historic version, a pointer to the live document */
-    var $iLiveDocumentID = null;
-
-    /** metadata revision number */
-    var $iMetadataVersion;
-
-    /** storage path to the file from the repository root */
-    var $sStoragePath;
-   
-    // }}}
-    
-    // {{{ KTEntity stuff
-    var $_aFieldToSelect = array(
-        "iId" => "id",
-        "iDocumentTypeID" => 'document_type_id',
-        "sName" => 'name',
-        "sFileName" => 'filename',
-        "iSize" => 'size',
-        "iCreatorID" => 'creator_id',
-        "dModified" => 'modified',
-        "sDescription" => 'description',
-        "iMimeTypeID" => 'mime_id',
-        "iFolderID" => 'folder_id',
-        "iMajorVersion" => 'major_version',
-        "iMinorVersion" => 'minor_version',
-        "bIsCheckedOut" => 'is_checked_out',
-        "iCheckedOutUserID" => 'checked_out_user_id',
-        "sParentFolderIDs" => 'parent_folder_ids',
-        "sFullPath" => 'full_path',
-        "iStatusID" => 'status_id',
-        "dCreated" => 'created',
-        "iPermissionObjectID" => 'permission_object_id',
-        "iPermissionLookupID" => 'permission_lookup_id',
-        "iLiveDocumentID" => 'live_document_id',
-        "iMetadataVersion" => 'metadata_version',
-        "sStoragePath" => 'storage_path',
-        "iModifiedUserId" => 'modified_user_id',
-    );
-    // }}}
-
-    // {{{ constructor
-    /**
-     * Document class constructor
-     *
-     * @param $sName    File Name
-     * @param $iSize    File size in bytes
-     * @param $iCreatorID  Primary key of user who created document
-     * @param $sDescription  Description
-     * @param $iMimeID   Primary key of file mime type
-     * @param $iFolderID   Primary key of folder to which document belongs
-     *
-     */
-    function Document($sNewName = null, $sNewFileName = null, $iNewSize = null, $iNewCreatorID = null, $iNewMimeID = null, $iNewFolderID = null, $sNewDescription = "None") {
-        $this->iId = -1; //primary key not set as document is not stored yet
-        $this->sName = $sNewName;
-        $this->iSize = $iNewSize;
-        $this->iCreatorID = $iNewCreatorID;
-        $this->sFileName = $sNewFileName;
-        $this->sDescription = $sNewDescription;
-        $this->iMimeTypeID = $iNewMimeID;
-        $this->iFolderID = $iNewFolderID;
-        if (!empty($this->iFolderID)) {
-            $this->iDocumentTypeID = Folder::getDefaultFolderDocumentType($this->iFolderID);
-        }
-        $this->iMajorVersion = 0;
-        $this->iMetadataVersion = 0;
-        $this->iMinorVersion = 1;
-        $this->bIsCheckedOut = false;
-        $this->iCheckedOutUserID = -1;
-        // FIXME: statuses
-        $this->iStatusID = LIVE;
-    }
-    // }}}
 
     // {{{ getters/setters
-    function getID() { return $this->iId; }
-    function getDocumentTypeID() { return $this->iDocumentTypeID; }
-    function setDocumentTypeID($sNewValue) { $this->iDocumentTypeID = $sNewValue; }
-    function getName() { return $this->sName; }
-    function setName($sNewValue) { $this->sName = $sNewValue; }
-    function getFileName() { return $this->sFileName; }
-    function setFileName($sNewValue) { $this->sFileName = $sNewValue; }
-    function getFolderID() { return $this->iFolderID; }
-    function setFolderID($iNewValue) { $this->iFolderID = $iNewValue; }
-    function getFileSize() { return $this->iSize; }
-    function setFileSize($iNewValue) { $this->iSize = $iNewValue; }
-    function getSize() { return $this->iSize; }
-    function setSize($iNewValue) { $this->iSize = $iNewValue; }
-    function getCreatorID() { return $this->iCreatorID; }
-    function setCreatorID($iNewValue) { $this->iCreatorID = $iNewValue; }
-    function getLastModifiedDate() { return $this->dModified; }
-    function setLastModifiedDate($dNewValue) { $this->dModified = $dNewValue; }
-    function getCreatedDateTime() { return $this->dCreated; }
-    function getDescription() { return $this->sDescription; }
-    function setDescription($sNewValue) { $this->sDescription = $sNewValue; }
-    function getMimeTypeID() { return $this->iMimeTypeID; }
-    function setMimeTypeID($iNewValue) { $this->iMimeTypeID = $iNewValue; }
-    function getMajorVersionNumber() { return $this->iMajorVersion; }
-    function setMajorVersionNumber($iNewValue) { $this->iMajorVersion = $iNewValue; }
-    function getMinorVersionNumber() { return $this->iMinorVersion; }
-    function setMinorVersionNumber($iNewValue) { $this->iMinorVersion = $iNewValue; }
-    function getIsCheckedOut() { return $this->bIsCheckedOut; }
-    function setIsCheckedOut($bNewValue) { $this->bIsCheckedOut = KTUtil::anyToBool($bNewValue); }
-    function getCheckedOutUserID() { return $this->iCheckedOutUserID; }
-    function setCheckedOutUserID($iNewValue) { $this->iCheckedOutUserID = $iNewValue; }
-    function getStatusID() { return $this->iStatusID; }
-    function setStatusID($iNewValue) { $this->iStatusID = $iNewValue; }
-    function getPermissionObjectID() { return $this->iPermissionObjectID; }
-    function setPermissionObjectID($iNewValue) { $this->iPermissionObjectID = $iNewValue; }
-    function getPermissionLookupID() { return $this->iPermissionLookupID; }
-    function setPermissionLookupID($iNewValue) { $this->iPermissionLookupID = $iNewValue; }
-    function getLiveDocumentID() { return $this->iLiveDocumentID; }
-    function setLiveDocumentID($iNewValue) { $this->iLiveDocumentID = $iNewValue; }
-    function getMetadataVersion() { return $this->iMetadataVersion; }
-    function setMetadataVersion($iNewValue) { $this->iMetadataVersion = $iNewValue; }
-    function getStoragePath() { return $this->sStoragePath; }
-    function setStoragePath($sNewValue) { $this->sStoragePath = $sNewValue; }
-    function getModifiedUserId() { return $this->iModifiedUserId; }
-    function setModifiedUserId($iNewValue) { $this->iModifiedUserId = $iNewValue; }
+
+    // locally stored info.
+    
+    function getId() { return $this->iId; }
+    
+    // Document Core
+    
+    function getFolderID() { return $this->_oDocumentCore->getFolderId(); }
+    function setFolderID($iNewValue) { $this->_oDocumentCore->setFolderId($iNewValue); }
+    
+    function getCreatorID() { return $this->_oDocumentCore->getCreatorId(); }
+    function setCreatorID($iNewValue) { $this->_oDocumentCore->setCreatorId($iNewValue); }
+    
+    function getLastModifiedDate() { return $this->_oDocumentCore->getLastModifiedDate(); }
+    function setLastModifiedDate($dNewValue) { $this->_oDocumentCore->setLastModifiedDate($dNewValue); }
+    
+    function getCreatedDateTime() { return $this->_oDocumentCore->getCreatedDateTime(); }
+    
+    function getIsCheckedOut() { return $this->_oDocumentCore->getIsCheckedOut(); }
+    function setIsCheckedOut($bNewValue) { $this->_oDocumentCore->setIsCheckedOut(KTUtil::anyToBool($bNewValue)); }
+    
+    function getCheckedOutUserID() { return $this->_oDocumentCore->getCheckedOutUserId(); }
+    function setCheckedOutUserID($iNewValue) { $this->_oDocumentCore->setCheckedOutUserId($iNewValue); }
+    
+    function getPermissionObjectID() { return $this->_oDocumentCore->getPermissionObjectId(); }
+    function setPermissionObjectID($iNewValue) { $this->_oDocumentCore->setPermissionObjectId($iNewValue); }
+    
+    function getPermissionLookupID() { return $this->_oDocumentCore->getPermissionLookupId(); }
+    function setPermissionLookupID($iNewValue) { $this->_oDocumentCore->setPermissionLookupId($iNewValue); }
+        
+    function getModifiedUserId() { return $this->_oDocumentCore->getModifiedUserId(); }
+    function setModifiedUserId($iNewValue) { $this->_oDocumentCore->setModifiedUserId($iNewValue); }
+    
+    // Document Metadata Items
+    
+    function getDocumentTypeID() { return $this->_oDocumentMetadataVersion->getDocumentTypeId(); }
+    function setDocumentTypeID($sNewValue) { $this->_oDocumentMetadataVersion->setDocumentTypeId($sNewValue); }
+    
+    function getName() { return $this->_oDocumentMetadataVersion->getName(); }
+    function setName($sNewValue) { $this->_oDocumentMetadataVersion->setName($sNewValue); }
+
+    function getDescription() { return $this->_oDocumentMetadataVersion->getDescription(); }
+    function setDescription($sNewValue) { $this->_oDocumentMetadataVersion->setDescription($sNewValue); }
+    
+    function getStatusID() { return $this->_oDocumentCore->getStatusId(); }
+    function setStatusID($iNewValue) { $this->_oDocumentMetadataVersion->setStatusId($iNewValue); $this->_oDocumentCore->setStatusId($iNewValue); }
+    
+    function getMetadataVersion() { return $this->_oDocumentMetadataVersion->getMetadataVersion(); }
+    function setMetadataVersion($iNewValue) { $this->_oDocumentMetadataVersion->getMetadataVersion($iNewValue); }
+
+    function getMetadataVersionId() { return $this->_oDocumentCore->getMetadataVersionId(); }
+    function setMetadataVersionId($iNewValue) { $this->_oDocumentCore->setMetadataVersionId($iNewValue); }
+
+    function getContentVersionId() { return $this->_oDocumentMetadataVersion->getContentVersionId(); }
+    function setContentVersionId($iNewValue) { $this->_oDocumentMetadataVersion->setContentVersionId($iNewValue); }
+    
+    // Document Content Version   
+    
+    function getFileName() { return $this->_oDocumentContentVersion->getFileName(); }
+    function setFileName($sNewValue) { $this->_oDocumentContentVersion->setFileName($sNewValue); }
+    
+    function getFileSize() { return $this->_oDocumentContentVersion->getSize(); }
+    function setFileSize($iNewValue) { $this->_oDocumentContentVersion->setSize($iNewValue); }
+    
+    function getSize() { return $this->_oDocumentContentVersion->getSize(); }
+    function setSize($iNewValue) { $this->_oDocumentContentVersion->setSize($iNewValue); }
+    
+    function getMimeTypeID() { return $this->_oDocumentContentVersion->getMimeTypeId(); }
+    function setMimeTypeID($iNewValue) { $this->_oDocumentContentVersion->setMimeTypeId($iNewValue); }
+    
+    function getMajorVersionNumber() { return $this->_oDocumentContentVersion->getMajorVersionNumber(); }
+    function setMajorVersionNumber($iNewValue) { $this->_oDocumentContentVersion->setMajorVersionNumber($iNewValue); }
+    
+    function getMinorVersionNumber() { return $this->_oDocumentContentVersion->getMinorVersionNumber(); }
+    function setMinorVersionNumber($iNewValue) { $this->_oDocumentContentVersion->setMinorVersionNumber($iNewValue); }
+
+    function getStoragePath() { return $this->_oDocumentContentVersion->getStoragePath(); }
+    function setStoragePath($sNewValue) { $this->_oDocumentContentVersion->setStoragePath($sNewValue); }
+    
     // }}}
 
     // {{{ getParentID
@@ -218,7 +126,7 @@ class Document extends KTEntity {
     // {{{ getVersion
     /** returns the complete version number as a string */
     function getVersion() {
-        return $this->iMajorVersion . "." . $this->iMinorVersion;
+        return $this->getMajorVersion() . "." . $this->getMinorVersion();
     }
     // }}}
 
@@ -236,164 +144,69 @@ class Document extends KTEntity {
     }
     // }}}
 
-    // {{{ ktentity requirements
-    function _fieldValues () {
-        $this->sFullPath = Document::_generateFolderPath($this->iFolderID);
-        $this->sParentFolderIDs = Document::_generateFolderIDs($this->iFolderID);
-        return array(
-            'document_type_id' => $this->iDocumentTypeID,
-            'name' => $this->sName,
-            'filename' => $this->sFileName,
-            'size' => $this->iSize,
-            'creator_id' => $this->iCreatorID,
-            'modified' => $this->dModified,
-            'description' => $this->sDescription,
-            'mime_id' => $this->iMimeTypeID,
-            'folder_id' => $this->iFolderID,
-            'major_version' => $this->iMajorVersion,
-            'minor_version' => $this->iMinorVersion,
-            'is_checked_out' => KTUtil::anyToBool($this->bIsCheckedOut),
-            'checked_out_user_id' => $this->iCheckedOutUserID,
-            'parent_folder_ids' => $this->sParentFolderIDs,
-            'full_path' => $this->sFullPath,
-            'status_id' => $this->iStatusID,
-            'created' => $this->dCreated,
-            'permission_object_id' => $this->iPermissionObjectID,
-            'permission_lookup_id' => $this->iPermissionLookupID,
-            'live_document_id' => $this->iLiveDocumentID,
-            'metadata_version' => $this->iMetadataVersion,
-            'storage_path' => $this->sStoragePath,
-            'modified_user_id' => $this->iModifiedUserId,
-        );
-    }
-
-    function _table () {
-        global $default;
-        return $default->documents_table;
-    }
-
-    /**
-     * Recursive function to generate a comma delimited string containing
-     * the parent folder ids
-     *
-     * @return String	comma delimited string containing the parent folder ids
-     */
-    function _generateParentFolderIDS($iFolderID) {
-        global $default;
-        //if the folder is not the root folder
-        if ($iFolderID != 0) {
-            $sql = $default->db;
-            $sql->query(array("SELECT parent_id FROM $default->folders_table WHERE ID = ?", $iFolderID));/*ok*/
-            $sql->next_record();
-            return Document::_generateParentFolderIDS($sql->f("parent_id")) . ",$iFolderID";
-        }
-        return;
-    }
-
-    /**
-     * Returns a comma delimited string containing the parent folder ids, strips leading /
-     *
-     * @return String	comma delimited string containing the parent folder ids
-     */
-    function _generateFolderIDs($iFolderID) {
-        $sFolderIDs = Document::_generateParentFolderIDS($iFolderID);
-        return substr($sFolderIDs, 1, strlen($sFolderIDs));
-    }
-
-    /**
-     * Recursively generates forward slash deliminated string giving full path of document
-     * from file system root url
-     */
-    function _generateFullFolderPath($iFolderID) {
-        global $default;
-        //if the folder is not the root folder
-        if ($iFolderID != 0) {
-            $sql = $default->db;
-            $sql->query(array("SELECT name, parent_id FROM $default->folders_table WHERE ID = ?", $iFolderID));/*ok*/
-            $sql->next_record();
-            return Document::_generateFullFolderPath($sql->f("parent_id")) . "/" . $sql->f("name");
-        }
-        return;
-    }
-
-    /**
-     * Returns a forward slash deliminated string giving full path of document, strips leading /
-     */
-    function _generateFolderPath($iFolderID) {
-        global $default;
-        $sPath = Document::_generateFullFolderPath($iFolderID);
-        $sPath = substr($sPath, 1, strlen($sPath));
-        $sPath = addslashes($sPath);
-        return $sPath;
-    }
-    // }}}
-
-    // {{{ create
-    /**
-     * Insert the current document into the database
-     *
-     * @return boolean true on successful insert, false otherwise
-     */
-    function create() {
-        if (empty($this->dCreated)) {
-            $this->dCreated = getCurrentDateTime();
-        }
-        if (empty($this->dModified)) {
-            $this->dModified = getCurrentDateTime();
-        }
-        if (empty($this->iModifiedUserId)) {
-            $this->iModifiedUserId = $this->iCreatorID;
-        }
-        $oFolder = Folder::get($this->getFolderID());
-        $this->iPermissionObjectID = $oFolder->getPermissionObjectID();
-        $res = parent::create();
-
-        if ($res === true) {
-            KTPermissionUtil::updatePermissionLookup($this);
-        }
-
-        return $res;
-    }
-    // }}}
 
     // {{{ update
     function update($bPathMove = false) {
-        $res = parent::update();
-        if (($res === true) && ($bPathMove === true)) {
-            KTPermissionUtil::updatePermissionLookup($this);
-        }
+        $res = $this->_oDocumentCore->update();
+        if (PEAR::isError($res)) { var_dump($res); return $res; }
+        
+        $res = $this->_oDocumentContentVersion->update();
+        if (PEAR::isError($res)) { var_dump($res); return $res; }
+        
+        $res = $this->_oDocumentMetadataVersion->update();
+        if (PEAR::isError($res)) { var_dump($res); return $res; }
+
         return $res;
     }
     // }}}
 
     // {{{ get
-    function &get($iId) {
-        return KTEntityUtil::get('Document', $iId);
+    function &get($iId, $iMetadataVersion=null) {
+        $oDocument = new Document();
+        if (!is_numeric($iId)) { print "<pre>Document.inc: 162: "; var_dump($iId); print "</pre>"; }
+        $res = $oDocument->load($iId, $iMetadataVersion);
+        if (PEAR::isError($res)) { 
+            return $res;
+        }
+        return $oDocument;
     }
     // }}}
+
+    function load($iId, $iMetadataVersionId = null) {
+        $this->iId = $iId;
+        $this->_oDocumentCore = KTDocumentCore::get($iId);
+        if (PEAR::isError($this->_oDocumentCore)) { return $this->_oDocumentCore; }
+        
+        // FIXME add error $res if MDV > $_oDC->getMDV
+        if (is_null($iMetadataVersionId)) { 
+            $this->_oDocumentMetadataVersion = KTDocumentMetadataVersion::get($this->_oDocumentCore->getMetadataVersionId()); 
+        } else {
+            $this->_oDocumentMetadataVersion = KTDocumentMetadataVersion::get($iMetadataVersionId);
+        }
+        if (PEAR::isError($this->_oDocumentMetadataVersion)) { var_dump($this->_oDocumentMetadataVersion); return $this->_oDocumentMetadataVersion; }
+        
+        $this->_oDocumentContentVersion = KTDocumentContentVersion::get($this->_oDocumentMetadataVersion->getContentVersionId());
+        if (PEAR::isError($this->_oDocumentContentVersion)) { return $this->_oDocumentContentVersion; }
+    }
 
     // {{{ getList
     /**
      * Static function
-     * Get a list of Documents
+     * Get a list of Documents - CAN ONLY USE KTDOCUMENTCORE QUERIES
      *
      * @param  String  Where clause (not required)
      *
      * @return Array array of Documents objects, false otherwise.
      */
     function getList($sWhereClause = null) {
-        return KTEntityUtil::getList(Document::_table(), 'Document', $sWhereClause);
-    }
-    // }}}
+        $aOptions = array('ids' => true);
+        $aIds = KTDocumentCore::getList($sWhereClause, $aOptions);
+        $aList = array();
+        foreach($aIds as $iId) {
+            $aList[] = Document::get($iId);
+        };
+        return $aList;
 
-    // {{{ getPath
-    /**
-     * Get the full path for a document
-     *
-     * @return string full path of document
-     */
-    function getPath() {
-        return Folder::getFolderPath($this->iFolderID) . $this->sFileName;
     }
     // }}}
 
@@ -404,10 +217,10 @@ class Document extends KTEntity {
      * @return string full path to document
      */
     function getDisplayPath($bDisplayIcon = false) {
-        $sFolderPath = Folder::getFolderDisplayPath($this->iFolderID);
+        $sFolderPath = Folder::getFolderDisplayPath($this->getFolderID());
         // #3425 for consistency
         return ($bDisplayIcon ? $this->getIcon() : "") .
-           ($sFolderPath == "" ? "Deleted Folder" : $sFolderPath) . " &raquo; " . $this->sFileName;
+           ($sFolderPath == "" ? "Deleted Folder" : $sFolderPath) . " &raquo; " . $this->getName();
     }
     // }}}
 
@@ -422,6 +235,9 @@ class Document extends KTEntity {
      * @return boolean true if document exists, false otherwise.
      */
     function documentExists($sFileName, $iFolderID) {
+        return false;
+    
+    
         global $default;
         $sql = $default->db;
         $sQuery = "SELECT * FROM $default->documents_table " ./*ok*/
@@ -446,7 +262,6 @@ class Document extends KTEntity {
      * @return string full path to document
      */
     function getDocumentDisplayPath($iDocumentID) {
-        global $default;
         $oDocument = & Document::get($iDocumentID);
         return $oDocument->getDisplayPath();
     }
@@ -466,21 +281,18 @@ class Document extends KTEntity {
     }
     // }}}
 
-    // {{{ getByLiveDocument
-    function &getByLiveDocument($oDocument) {
-        return KTEntityUtil::getByDict('Document', array(
-            'live_document_id' => $oDocument->getID(),
-        ), array('multi' => true, 'orderby' => 'modified DESC'));
-    }
-    // }}}
-
     // {{{ getByFolderIDAndLookupID
     function &getByFolderIDAndLookupID($iParentID, $iLookupID, $aOptions = null) {
-        return KTEntityUtil::getByDict('Document', array(
+        $aIds = KTEntityUtil::getByDict('KTDocumentCore', array(
             'folder_id' => $iParentID,
             'permission_lookup_id' => $iLookupID,
             'status_id' => LIVE,
-        ), array('multi' => true));
+        ), array('multi' => true, 'ids' => true));
+        
+        $aList = array();
+        foreach ($aIds as $iId) {
+            $aList[] = Document::get($iId);
+        }
     }
     // }}}
 
@@ -492,8 +304,112 @@ class Document extends KTEntity {
         if (KTUtil::arrayGet($aOptions, "mimetypeid") === null) {
             $aOptions['mimetypeid'] = 0;
         }
-        return KTEntityUtil::createFromArray('Document', $aOptions);
+        $oDocument = new Document();
+        $aOptions = array_change_key_case($aOptions);
+        
+        $aCoreKeys = array(
+            "CreatorId",
+            "Created",
+            "ModifiedUserId",
+            "Modified",
+            "FolderId", 
+            "StatusId",
+        );
+        
+        $aCore = array();
+        foreach ($aCoreKeys as $sKey) {
+            $sKey = strtolower($sKey);
+            $sValue = KTUtil::arrayGet($aOptions, $sKey);
+            if (!is_null($sValue)) {
+                $aCore[$sKey] = $sValue;
+            }
+        }
+        
+        $aMetadataVersionKeys = array(
+            "MetadataVersion",
+            "ContentVersionId",
+            "DocumentTypeId",
+            "Name",
+            "Description",
+            "StatusId",
+            "VersionCreated",
+            "VersionCreatorId",
+        );
+        
+        $aMetadataVersion = array();
+        foreach ($aMetadataVersionKeys as $sKey) {
+            $sKey = strtolower($sKey);
+            $sValue = KTUtil::arrayGet($aOptions, $sKey);
+            if (!is_null($sValue)) {
+                $aMetadataVersion[$sKey] = $sValue;
+            }
+        }
+        $aMetadataVersion['VersionCreatorId'] = $aCore['creatorid'];
+        
+        $aContentKeys = array(
+            "Filename",
+            "Size",
+            "MimeId",
+            "MajorVersion",
+            "MinorVersion",
+            "StoragePath",
+        );
+        
+        $aContentVersion = array();
+        foreach ($aContentKeys as $sKey) {
+            $sKey = strtolower($sKey);
+            $sValue = KTUtil::arrayGet($aOptions, $sKey);
+            if (!is_null($sValue)) {
+                $aContentVersion[$sKey] = $sValue;
+            }
+        }        
+        
+        $oDocument->_oDocumentCore = KTDocumentCore::createFromArray($aCore);
+        if (PEAR::isError($oDocument->_oDocumentCore)) {
+            return $oDocument->_oDocumentCore;
+        }
+        $iId = $oDocument->_oDocumentCore->getId();
+        $aContentVersion["documentid"] = $iId;
+        $oDocument->_oDocumentContentVersion = KTDocumentContentVersion::createFromArray($aContentVersion);
+        if (PEAR::isError($oDocument->_oDocumentContentVersion)) { return $oDocument->_oDocumentContentVersion; }
+        $aMetadataVersion["documentid"] = $iId;
+        $aMetadataVersion["contentversionid"] = $oDocument->_oDocumentContentVersion->getId();
+        $oDocument->_oDocumentMetadataVersion = KTDocumentMetadataVersion::createFromArray($aMetadataVersion);
+        if (PEAR::isError($oDocument->_oDocumentMetadataVersion)) { return $oDocument->_oDocumentMetadataVersion; }
+        $oDocument->_oDocumentCore->setMetadataVersionId($oDocument->_oDocumentMetadataVersion->getId());
+        $res = $oDocument->_oDocumentCore->update();
+        if (PEAR::isError($res)) {
+            return $res;
+        }
+        $oDocument->iId = $iId;
+        return $oDocument;
     }
 
+    function startNewMetadataVersion() {
+        $this->_oDocumentMetadataVersion->iId = -1;
+        $this->_oDocumentMetadataVersion->iMetadataVersion++;
+        $this->_oDocumentMetadataVersion->create();
+        $this->_oDocumentCore->iMetadataVersion = $this->_oDocumentMetadataVersion->iMetadataVersion;
+        $this->_oDocumentCore->iMetadataVersionId = $this->_oDocumentMetadataVersion->iId;
+    }
+
+    function startNewContentVersion() {
+        $this->_oDocumentContentVersion->iId = -1;
+        $res = $this->_oDocumentContentVersion->create();
+        if (PEAR::isError($res)) {
+            var_dump($res);
+            return $res;
+        }
+        $this->_oDocumentMetadataVersion->iId = -1;
+        $this->_oDocumentMetadataVersion->iMetadataVersion++;
+        $this->_oDocumentMetadataVersion->iContentVersionId = $this->_oDocumentContentVersion->getId();
+        $res = $this->_oDocumentMetadataVersion->create();
+        if (PEAR::isError($res)) {
+            var_dump($res);
+            return $res;
+        }
+        $this->_oDocumentCore->iMetadataVersion = $this->_oDocumentMetadataVersion->iMetadataVersion;
+        $this->_oDocumentCore->iMetadataVersionId = $this->_oDocumentMetadataVersion->iId;
+    }
 }
 ?>
