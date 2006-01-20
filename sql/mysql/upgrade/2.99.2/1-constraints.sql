@@ -1,3 +1,4 @@
+SET FOREIGN_KEY_CHECKS=0;
 ALTER TABLE `document_type_fieldsets_link` ADD INDEX `document_type_id` (`document_type_id`);
 ALTER TABLE `document_type_fieldsets_link` ADD INDEX `fieldset_id` (`fieldset_id`);
 ALTER TABLE `document_type_fieldsets_link` ADD CONSTRAINT `document_type_fieldsets_link_ibfk_1` FOREIGN KEY (`document_type_id`) REFERENCES `document_types_lookup` (`id`) ON DELETE CASCADE;
@@ -35,3 +36,4 @@ ALTER TABLE `workflow_transitions` ADD CONSTRAINT `workflow_transitions_ibfk_46`
 ALTER TABLE `workflow_transitions` ADD CONSTRAINT `workflow_transitions_ibfk_47` FOREIGN KEY (`guard_permission_id`) REFERENCES `permissions` (`id`) ON DELETE SET NULL;
 ALTER TABLE `workflow_transitions` ADD CONSTRAINT `workflow_transitions_ibfk_49` FOREIGN KEY (`guard_role_id`) REFERENCES `roles` (`id`) ON DELETE SET NULL;
 ALTER TABLE `workflow_transitions` ADD CONSTRAINT `workflow_transitions_ibfk_45` FOREIGN KEY (`workflow_id`) REFERENCES `workflows` (`id`) ON DELETE CASCADE;
+SET FOREIGN_KEY_CHECKS=1;

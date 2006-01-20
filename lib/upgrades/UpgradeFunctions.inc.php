@@ -6,6 +6,7 @@ class UpgradeFunctions {
         "2.0.6" => array("addTemplateMimeTypes"),
         "2.0.8" => array("setPermissionObject"),
         "2.99.1" => array("createFieldSets"),
+        "2.99.7" => array("normaliseDocuments"), #, "createLdapAuthenticationProvider"),
     );
 
     var $descriptions = array(
@@ -14,10 +15,12 @@ class UpgradeFunctions {
         "addTemplateMimeTypes" => "Add MIME types for Excel and Word templates",
         "setPermissionObject" => "Set the permission object in charge of a document or folder",
         "createFieldSets" => "Create a fieldset for each field without one",
+        "normaliseDocuments" => "Normalise the documents table",
     );
     var $phases = array(
         "setPermissionObject" => 1,
         "createFieldSets" => 1,
+        "normaliseDocuments" => 1,
     );
 
     // {{{ _setPermissionFolder
@@ -262,6 +265,60 @@ class UpgradeFunctions {
                     return $res;
                 }
             }
+        }
+    }
+    // }}}
+
+    // {{{ normaliseDocuments
+    function normaliseDocuments() {
+        $sTable = KTUtil::getTableName('documents');
+        DBUtil::runQuery("SET FOREIGN_KEY_CHECKS=0");
+        $aDocuments = DBUtil::getResultArray("SELECT * FROM $sTable WHERE metadata_version_id IS NULL");
+        foreach ($aDocuments as $aRow) {
+            print "Document ID: " . $aRow['id'];
+            $aContentInfo = array(
+                'document_id' => $aRow['id'],
+                'filename' => $aRow['filename'],
+                'size' => $aRow['size'],
+                'mime_id' => $aRow['mime_id'],
+                'major_version' => $aRow['major_version'],
+                'minor_version' => $aRow['minor_version'],
+                'storage_path' => $aRow['storage_path'],
+            );
+            $iContentId = DBUtil::autoInsert(KTUtil::getTableName('document_content_version'), $aContentInfo);
+            print "Content ID: " . $iContentId;
+            $aMetadataInfo = array(
+                'document_id' => $aRow['id'],
+                'content_version_id' => $iContentId,
+                'document_type_id' => $aRow['document_type_id'],
+                'name' => $aRow['name'],
+                'description' => $aRow['description'],
+                'status_id' => $aRow['status_id'],
+                'metadata_version' => $aRow['metadata_version'],
+                'version_created' => $aRow['created'],
+                'version_creator_id' => $aRow['creator_id'],
+            );
+            $iMetadataId = DBUtil::autoInsert(KTUtil::getTableName('document_metadata_version'), $aMetadataInfo);
+            print "Metadata ID: " . $iMetadataId;
+            if (PEAR::isError($iMetadataId)) {
+                var_dump($iMetadataId);
+            }
+            DBUtil::runQuery(array("UPDATE $sTable SET metadata_version_id = ?  WHERE id = ?", array($iMetadataId, $aRow['id'])));
+            print "\n";
+        }
+        DBUtil::runQuery("SET FOREIGN_KEY_CHECKS=1");
+        
+        $aDocumentMap = array();
+        $sTable = KTUtil::getTableName('document_fields_link');
+        $sDocumentsTable = KTUtil::getTableName('documents');
+        $aInfo = DBUtil::getResultArray("SELECT id, document_id, document_field_id, value FROM $sTable WHERE metadata_version_id IS NULL");
+        foreach ($aInfo as $aRow) {
+            $iMetadataVersionId = KTUtil::arrayGet($aDocumentMap, $aRow['document_id']);
+            if (empty($iMetadataVersionId)) {
+                $iMetadataVersionId = DBUtil::getOneResultKey(array("SELECT metadata_version_id FROM $sDocumentsTable WHERE id = ?", array($aRow['document_id'])), 'metadata_version_id');
+                $aDocumentMap[$aRow['document_id']] = $iMetadataVersionId;
+            }
+            DBUtil::runQuery(array("UPDATE $sTable SET metadata_version_id = ? WHERE id = ?", array($iMetadataVersionId, $aRow['id'])));
         }
     }
     // }}}

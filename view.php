@@ -89,7 +89,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 		}
 		
 		// we want to grab all the md for this doc, since its faster that way.
-		$mdlist =& DocumentFieldLink::getList(array('document_id = ?', array($document_id)));
+		$mdlist =& DocumentFieldLink::getByDocument($oDocument);
 
 		$field_values = array();
 		foreach ($mdlist as $oFieldLink) {

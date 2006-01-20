@@ -2,6 +2,7 @@
 
 require_once("../../config/dmsDefaults.php");
 require_once(KT_LIB_DIR . '/foldermanagement/Folder.inc');
+require_once(KT_LIB_DIR . '/documentmanagement/Document.inc');
 require_once(KT_LIB_DIR . '/permissions/permissionutil.inc.php');
 
 error_reporting(E_ALL);
@@ -16,7 +17,7 @@ foreach ($aDocuments as $oDocument) {
     KTPermissionUtil::updatePermissionLookup($oDocument);
 }
 */
-$oFolder = Folder::get(18);
-KTPermissionUtil::updatePermissionLookup($oFolder);
+$oDocument = Document::get(447);
+KTPermissionUtil::updatePermissionLookup($oDocument);
 
 ?>

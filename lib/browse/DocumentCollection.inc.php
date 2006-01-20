@@ -57,7 +57,7 @@ class DocumentCollection {
       // FIXME affect the column based on this.
 	  
 	  // defaults
-	  $this->_sDocumentSortField = "D.name";
+	  $this->_sDocumentSortField = "DM.name";
 	  $this->_sFolderSortField = "F.name";
 	  
 	  // then we start.
@@ -145,9 +145,7 @@ class DocumentCollection {
 	  $this->activeset = array(
 		 "folders" => $folderSet,
 		 "documents" => $documentSet,
-	  );	  
-	  
-	  
+	  );
    }
 
    // stub:  fetch all relevant information about a document (that will reasonably be fetched).  

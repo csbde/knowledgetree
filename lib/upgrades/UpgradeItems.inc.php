@@ -256,7 +256,7 @@ class SQLUpgradeItem extends UpgradeItem {
             $phase = 0;
             return array($fromVersion, $toVersion, $description, $phase);
         }
-        $matched = preg_match('#^([\d.]*)/(?:(\d)-)?(.*)\.sql$#', $path, $matches);
+        $matched = preg_match('#^([\d.]*)/(?:(\d*)-)?(.*)\.sql$#', $path, $matches);
         if ($matched != 0) {
             $fromVersion = $matches[1];
             $toVersion = $matches[1];

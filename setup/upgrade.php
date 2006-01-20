@@ -1,5 +1,7 @@
 <?php
 
+$GLOBALS["checkup"] = true;
+
 require_once('../config/dmsDefaults.php');
 require_once(KT_LIB_DIR . '/upgrades/upgrade.inc.php');
 
@@ -48,21 +50,20 @@ function performAllUpgrades () {
 
     $upgrades = describeUpgrade($lastVersion, $currentVersion);
 
-    $ret = "<table width=\"100%\">\n";
-    $ret .= "<tr><th>Description</th><th>Result</th></tr>\n";
+    print "<table width=\"100%\">\n";
+    print "<tr><th>Description</th><th>Result</th></tr>\n";
     foreach ($upgrades as $upgrade) {
         $res = $upgrade->performUpgrade();
-        $ret .= sprintf('<tr><td>%s</td><td>%s</td></tr>',
+         printf("<tr><td>%s</td><td>%s</td></tr>\n",
             htmlspecialchars($upgrade->getDescription()),
             htmlspecialchars(showResult($res)));
     }
-    $ret .= '</table>';
+    print '</table>';
     return $ret;
 }
 
 if ($_REQUEST["go"] === "Upgrade") {
     $performingUpgrade = true;
-    $upgradeTable = performAllUpgrades();
 } else {
     $upgradeTable = generateUpgradeTable();
 }
@@ -81,7 +82,6 @@ td { vertical-align: top; }
 
 <?php
 
-if ($upgradeTable) {
     if (!$performingUpgrade) {
         print "
         <p>The table below describes the upgrades that need to occur to
@@ -93,6 +93,8 @@ if ($upgradeTable) {
         <p>The table below describes the upgrades that have occurred to
         upgrade your KnowledgeTree installation to <strong>$default->systemVersion</strong>.
         ";
+
+        $upgradeTable = performAllUpgrades();
     }
 
     print $upgradeTable;
@@ -102,9 +104,6 @@ if ($upgradeTable) {
     } else {
         print '<form><input type="submit" name="go" value="ShowUpgrades" /></form>';
     }
-} else {
-    
-}
 ?>
   </body>
 </html>

@@ -177,7 +177,32 @@ class KTPermissionUtil {
      * non-recursively.
      */
     function updatePermissionLookup(&$oFolderOrDocument) {
-        $oPO = KTPermissionObject::get($oFolderOrDocument->getPermissionObjectID());
+        if (!is_a($oFolderOrDocument, 'Folder')) {
+            if (!is_a($oFolderOrDocument, 'Document')) {
+                if (!is_a($oFolderOrDocument, 'KTDocumentCore')) {
+                    echo "<pre>";
+                    var_dump($oFolderOrDocument);
+                    echo "</pre>";
+                }
+            }
+        }
+        $oChannel =& KTPermissionChannel::getSingleton();
+        if (is_a($oFolderOrDocument, 'Folder')) {
+            $msg = sprintf("Updating folder %s", join("/", $oFolderOrDocument->getPathArray()));
+        } else {
+            if (is_a($oFolderOrDocument, 'Document')) {
+                $msg = sprintf("Updating document %s", $oFolderOrDocument->getName());
+            } else {
+                $msg = sprintf("Updating document %d", $oFolderOrDocument->getId());
+            }
+        }
+        $oChannel->sendMessage(new KTPermissionGenericMessage($msg));
+                    
+        $iPermissionObjectId = $oFolderOrDocument->getPermissionObjectID();
+        if (empty($iPermissionObjectId)) {
+            return;
+        }
+        $oPO = KTPermissionObject::get($iPermissionObjectId);
         $aPAs = KTPermissionAssignment::getByObjectMulti($oPO);
         $aMapPermAllowed = array();
         foreach ($aPAs as $oPA) {
@@ -475,5 +500,38 @@ class KTPermissionUtil {
     }
     // }}}
 }
+
+class KTPermissionChannel {
+    var $observers = array();
+
+    function &getSingleton() {
+        if (!KTUtil::arrayGet($GLOBALS, 'KT_PermissionChannel')) {
+            $GLOBALS['KT_PermissionChannel'] = new KTPermissionChannel;
+        }
+        return $GLOBALS['KT_PermissionChannel'];
+    }
+
+    function sendMessage(&$msg) {
+        foreach ($this->observers as $oObserver) {
+            $oObserver->receiveMessage($msg);
+        }
+    }
+
+    function addObserver(&$obs) {
+        array_push($this->observers, $obs);
+    }
+}
+
+class KTPermissionGenericMessage {
+    function KTPermissionGenericMessage($sMessage) {
+        $this->sMessage = $sMessage;
+    }
+
+    function getString() {
+        return $this->sMessage;
+    }
+}
+
+
 
 ?>

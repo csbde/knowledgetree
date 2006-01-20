@@ -1,3 +1,7 @@
+SET FOREIGN_KEY_CHECKS=0;
+ALTER TABLE `document_fields_link` ADD COLUMN `metadata_version_id` int(11) default NULL;
+ALTER TABLE `document_fields_link` ADD INDEX `metadata_version_id` (`metadata_version_id`);
+
 CREATE TABLE `document_content_version` (
   `id` int(11) NOT NULL default '0',
   `document_id` int(11) NOT NULL default '0',
@@ -10,7 +14,7 @@ CREATE TABLE `document_content_version` (
   UNIQUE KEY `id` (`id`),
   KEY `storage_path` (`storage_path`),
   KEY `document_id` (`document_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB;
 
 CREATE TABLE `document_metadata_version` (
   `id` int(11) NOT NULL default '0',
@@ -34,4 +38,18 @@ CREATE TABLE `document_metadata_version` (
   CONSTRAINT `document_metadata_version_ibfk_5` FOREIGN KEY (`document_type_id`) REFERENCES `document_types_lookup` (`id`),
   CONSTRAINT `document_metadata_version_ibfk_6` FOREIGN KEY (`status_id`) REFERENCES `status_lookup` (`id`),
   CONSTRAINT `document_metadata_version_ibfk_7` FOREIGN KEY (`version_creator_id`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB;
+
+ALTER TABLE `documents` ADD metadata_version_id int(11) default NULL;
+ALTER TABLE `documents` ADD INDEX `metadata_version_id` (`metadata_version_id`);
+
+CREATE TABLE `zseq_document_content_version` (
+  `id` int(10) unsigned NOT NULL auto_increment,
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM;
+
+CREATE TABLE `zseq_document_metadata_version` (
+  `id` int(10) unsigned NOT NULL auto_increment,
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM;
+SET FOREIGN_KEY_CHECKS=1;

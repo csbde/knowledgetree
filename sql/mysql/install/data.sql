@@ -1,9 +1,9 @@
 -- phpMyAdmin SQL Dump
--- version 2.6.4-pl4-Debian-1
+-- version 2.7.0-pl2-Debian-1
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Dec 15, 2005 at 06:22 PM
+-- Generation Time: Jan 20, 2006 at 05:07 PM
 -- Server version: 4.1.15
 -- PHP Version: 4.4.0-3
 
@@ -40,16 +40,6 @@ INSERT INTO `archiving_type_lookup` VALUES (2, 'Utilisation');
 
 
 -- 
--- Dumping data for table `browse_criteria`
--- 
-
-INSERT INTO `browse_criteria` VALUES (1, -1, 0);
-INSERT INTO `browse_criteria` VALUES (2, -2, 1);
-INSERT INTO `browse_criteria` VALUES (3, -3, 2);
-INSERT INTO `browse_criteria` VALUES (4, -4, 3);
-INSERT INTO `browse_criteria` VALUES (5, -5, 4);
-
--- 
 -- Dumping data for table `dashlet_disables`
 -- 
 
@@ -65,16 +55,6 @@ INSERT INTO `data_types` VALUES (4, 'INT');
 INSERT INTO `data_types` VALUES (5, 'FLOAT');
 
 -- 
--- Dumping data for table `dependant_document_instance`
--- 
-
-
--- 
--- Dumping data for table `dependant_document_template`
--- 
-
-
--- 
 -- Dumping data for table `discussion_comments`
 -- 
 
@@ -86,6 +66,11 @@ INSERT INTO `data_types` VALUES (5, 'FLOAT');
 
 -- 
 -- Dumping data for table `document_archiving_link`
+-- 
+
+
+-- 
+-- Dumping data for table `document_content_version`
 -- 
 
 
@@ -116,6 +101,11 @@ INSERT INTO `document_fields` VALUES (1, 'Category', 'STRING', 1, 0, 0, 1, 0, 'T
 
 INSERT INTO `document_link_types` VALUES (-1, 'depended on', 'was depended on by', 'Depends relationship whereby one documents depends on another''s creation to go through approval');
 INSERT INTO `document_link_types` VALUES (0, 'Default', 'Default (reverse)', 'Default link type');
+
+-- 
+-- Dumping data for table `document_metadata_version`
+-- 
+
 
 -- 
 -- Dumping data for table `document_searchable_text`
@@ -231,16 +221,6 @@ INSERT INTO `folders` VALUES (2, 'Default Unit', 'Default Unit Root Folder', 1, 
 
 -- 
 -- Dumping data for table `folders_users_roles_link`
--- 
-
-
--- 
--- Dumping data for table `groups_folders_approval_link`
--- 
-
-
--- 
--- Dumping data for table `groups_folders_link`
 -- 
 
 
@@ -622,6 +602,11 @@ INSERT INTO `permissions` VALUES (2, 'ktcore.permissions.write', 'Core: Write', 
 INSERT INTO `permissions` VALUES (3, 'ktcore.permissions.addFolder', 'Core: Add Folder', 1);
 
 -- 
+-- Dumping data for table `plugins`
+-- 
+
+
+-- 
 -- Dumping data for table `role_allocations`
 -- 
 
@@ -655,7 +640,7 @@ INSERT INTO `status_lookup` VALUES (4, 'Archived');
 -- 
 
 INSERT INTO `system_settings` VALUES (1, 'lastIndexUpdate', '0');
-INSERT INTO `system_settings` VALUES (2, 'knowledgeTreeVersion', '2.99.5');
+INSERT INTO `system_settings` VALUES (2, 'knowledgeTreeVersion', '2.99.7');
 INSERT INTO `system_settings` VALUES (3, 'databaseVersion', '2.99.5');
 
 -- 
@@ -709,6 +694,33 @@ INSERT INTO `upgrades` VALUES (20, 'upgrade*2.99.1*0*upgrade2.99.1', 'Upgrade fr
 INSERT INTO `upgrades` VALUES (21, 'sql*2.99.1*0*2.99.1/workflow.sql', 'Database upgrade to version 2.99.1: Workflow', '2005-10-07 14:26:15', 1, 'upgrade*2.99.1*0*upgrade2.99.1');
 INSERT INTO `upgrades` VALUES (22, 'sql*2.99.1*0*2.99.1/fieldsets.sql', 'Database upgrade to version 2.99.1: Fieldsets', '2005-10-07 14:26:16', 1, 'upgrade*2.99.1*0*upgrade2.99.1');
 INSERT INTO `upgrades` VALUES (23, 'func*2.99.1*1*createFieldSets', 'Create a fieldset for each field without one', '2005-10-07 14:26:16', 1, 'upgrade*2.99.1*0*upgrade2.99.1');
+INSERT INTO `upgrades` VALUES (24, 'sql*2.99.2*0*2.99.2/saved_searches.sql', '', '0000-00-00 00:00:00', 1, NULL);
+INSERT INTO `upgrades` VALUES (25, 'sql*2.99.2*0*2.99.2/transactions.sql', '', '0000-00-00 00:00:00', 1, NULL);
+INSERT INTO `upgrades` VALUES (26, 'sql*2.99.2*0*2.99.2/field_mandatory.sql', '', '0000-00-00 00:00:00', 1, NULL);
+INSERT INTO `upgrades` VALUES (27, 'sql*2.99.2*0*2.99.2/fieldsets_system.sql', '', '0000-00-00 00:00:00', 1, NULL);
+INSERT INTO `upgrades` VALUES (28, 'sql*2.99.2*0*2.99.2/permission_by_user_and_roles.sql', '', '0000-00-00 00:00:00', 1, NULL);
+INSERT INTO `upgrades` VALUES (29, 'sql*2.99.2*0*2.99.2/disabled_metadata.sql', '', '0000-00-00 00:00:00', 1, NULL);
+INSERT INTO `upgrades` VALUES (30, 'sql*2.99.2*0*2.99.2/searchable_text.sql', '', '0000-00-00 00:00:00', 1, NULL);
+INSERT INTO `upgrades` VALUES (31, 'sql*2.99.2*0*2.99.2/workflow.sql', '', '0000-00-00 00:00:00', 1, NULL);
+INSERT INTO `upgrades` VALUES (32, 'sql*2.99.2*1*2.99.2/1-constraints.sql', '', '0000-00-00 00:00:00', 1, NULL);
+INSERT INTO `upgrades` VALUES (33, 'sql*2.99.3*0*2.99.3/notifications.sql', '', '0000-00-00 00:00:00', 1, NULL);
+INSERT INTO `upgrades` VALUES (34, 'sql*2.99.3*0*2.99.3/last_modified_user.sql', '', '0000-00-00 00:00:00', 1, NULL);
+INSERT INTO `upgrades` VALUES (35, 'sql*2.99.3*0*2.99.3/authentication_sources.sql', '', '0000-00-00 00:00:00', 1, NULL);
+INSERT INTO `upgrades` VALUES (36, 'sql*2.99.3*0*2.99.3/document_fields_constraints.sql', '', '0000-00-00 00:00:00', 1, NULL);
+INSERT INTO `upgrades` VALUES (37, 'sql*2.99.5*0*2.99.5/dashlet_disabling.sql', '', '0000-00-00 00:00:00', 1, NULL);
+INSERT INTO `upgrades` VALUES (38, 'sql*2.99.5*0*2.99.5/role_allocations.sql', '', '0000-00-00 00:00:00', 1, NULL);
+INSERT INTO `upgrades` VALUES (39, 'sql*2.99.5*0*2.99.5/transaction_namespaces.sql', '', '0000-00-00 00:00:00', 1, NULL);
+INSERT INTO `upgrades` VALUES (40, 'sql*2.99.5*0*2.99.5/fieldset_field_descriptions.sql', '', '0000-00-00 00:00:00', 1, NULL);
+INSERT INTO `upgrades` VALUES (41, 'sql*2.99.5*0*2.99.5/role_changes.sql', '', '0000-00-00 00:00:00', 1, NULL);
+INSERT INTO `upgrades` VALUES (42, 'sql*2.99.6*0*2.99.6/table_cleanup.sql', 'Database upgrade to version 2.99.6: Table cleanup', '2006-01-20 17:04:05', 1, 'upgrade*2.99.7*99*upgrade2.99.7');
+INSERT INTO `upgrades` VALUES (43, 'sql*2.99.6*0*2.99.6/plugin-registration.sql', 'Database upgrade to version 2.99.6: Plugin-registration', '2006-01-20 17:04:05', 1, 'upgrade*2.99.7*99*upgrade2.99.7');
+INSERT INTO `upgrades` VALUES (44, 'sql*2.99.7*0*2.99.7/documents_normalisation.sql', 'Database upgrade to version 2.99.7: Documents normalisation', '2006-01-20 17:04:05', 1, 'upgrade*2.99.7*99*upgrade2.99.7');
+INSERT INTO `upgrades` VALUES (45, 'sql*2.99.7*0*2.99.7/help_replacement.sql', 'Database upgrade to version 2.99.7: Help replacement', '2006-01-20 17:04:05', 1, 'upgrade*2.99.7*99*upgrade2.99.7');
+INSERT INTO `upgrades` VALUES (46, 'sql*2.99.7*0*2.99.7/table_cleanup.sql', 'Database upgrade to version 2.99.7: Table cleanup', '2006-01-20 17:04:07', 1, 'upgrade*2.99.7*99*upgrade2.99.7');
+INSERT INTO `upgrades` VALUES (47, 'func*2.99.7*1*normaliseDocuments', 'Normalise the documents table', '2006-01-20 17:04:07', 1, 'upgrade*2.99.7*99*upgrade2.99.7');
+INSERT INTO `upgrades` VALUES (48, 'sql*2.99.7*10*2.99.7/10-documents_normalisation.sql', 'Database upgrade to version 2.99.7: Documents normalisation', '2006-01-20 17:04:07', 1, 'upgrade*2.99.7*99*upgrade2.99.7');
+INSERT INTO `upgrades` VALUES (49, 'sql*2.99.7*20*2.99.7/20-fields.sql', 'Database upgrade to version 2.99.7: Fields', '2006-01-20 17:04:07', 1, 'upgrade*2.99.7*99*upgrade2.99.7');
+INSERT INTO `upgrades` VALUES (50, 'upgrade*2.99.7*99*upgrade2.99.7', 'Upgrade from version 2.99.5 to 2.99.7', '2006-01-20 17:04:07', 1, 'upgrade*2.99.7*99*upgrade2.99.7');
 
 -- 
 -- Dumping data for table `users`
@@ -725,24 +737,6 @@ INSERT INTO `users` VALUES (3, 'guest', 'Anonymous', '084e0343a0486ff05530df6c70
 INSERT INTO `users_groups_link` VALUES (1, 1, 1);
 INSERT INTO `users_groups_link` VALUES (2, 2, 2);
 INSERT INTO `users_groups_link` VALUES (3, 3, 3);
-
--- 
--- Dumping data for table `web_documents`
--- 
-
-
--- 
--- Dumping data for table `web_documents_status_lookup`
--- 
-
-INSERT INTO `web_documents_status_lookup` VALUES (1, 'Pending');
-INSERT INTO `web_documents_status_lookup` VALUES (2, 'Published');
-INSERT INTO `web_documents_status_lookup` VALUES (3, 'Not Published');
-
--- 
--- Dumping data for table `web_sites`
--- 
-
 
 -- 
 -- Dumping data for table `workflow_actions`
@@ -807,6 +801,7 @@ INSERT INTO `zseq_archiving_type_lookup` VALUES (2);
 -- Dumping data for table `zseq_authentication_sources`
 -- 
 
+INSERT INTO `zseq_authentication_sources` VALUES (1);
 
 -- 
 -- Dumping data for table `zseq_browse_criteria`
@@ -818,6 +813,7 @@ INSERT INTO `zseq_browse_criteria` VALUES (5);
 -- Dumping data for table `zseq_dashlet_disables`
 -- 
 
+INSERT INTO `zseq_dashlet_disables` VALUES (1);
 
 -- 
 -- Dumping data for table `zseq_data_types`
@@ -856,6 +852,12 @@ INSERT INTO `zseq_discussion_threads` VALUES (1);
 INSERT INTO `zseq_document_archiving_link` VALUES (1);
 
 -- 
+-- Dumping data for table `zseq_document_content_version`
+-- 
+
+INSERT INTO `zseq_document_content_version` VALUES (1);
+
+-- 
 -- Dumping data for table `zseq_document_fields`
 -- 
 
@@ -878,6 +880,12 @@ INSERT INTO `zseq_document_link` VALUES (1);
 -- 
 
 INSERT INTO `zseq_document_link_types` VALUES (2);
+
+-- 
+-- Dumping data for table `zseq_document_metadata_version`
+-- 
+
+INSERT INTO `zseq_document_metadata_version` VALUES (1);
 
 -- 
 -- Dumping data for table `zseq_document_subscriptions`
@@ -907,6 +915,7 @@ INSERT INTO `zseq_document_type_fields_link` VALUES (1);
 -- Dumping data for table `zseq_document_type_fieldsets_link`
 -- 
 
+INSERT INTO `zseq_document_type_fieldsets_link` VALUES (1);
 
 -- 
 -- Dumping data for table `zseq_document_types_lookup`
@@ -924,11 +933,13 @@ INSERT INTO `zseq_documents` VALUES (1);
 -- Dumping data for table `zseq_field_behaviours`
 -- 
 
+INSERT INTO `zseq_field_behaviours` VALUES (1);
 
 -- 
 -- Dumping data for table `zseq_field_value_instances`
 -- 
 
+INSERT INTO `zseq_field_value_instances` VALUES (1);
 
 -- 
 -- Dumping data for table `zseq_fieldsets`
@@ -961,21 +972,10 @@ INSERT INTO `zseq_folders` VALUES (2);
 INSERT INTO `zseq_folders_users_roles_link` VALUES (1);
 
 -- 
--- Dumping data for table `zseq_groups_folders_approval_link`
--- 
-
-INSERT INTO `zseq_groups_folders_approval_link` VALUES (1);
-
--- 
--- Dumping data for table `zseq_groups_folders_link`
--- 
-
-INSERT INTO `zseq_groups_folders_link` VALUES (1);
-
--- 
 -- Dumping data for table `zseq_groups_groups_link`
 -- 
 
+INSERT INTO `zseq_groups_groups_link` VALUES (1);
 
 -- 
 -- Dumping data for table `zseq_groups_lookup`
@@ -999,6 +999,7 @@ INSERT INTO `zseq_help` VALUES (98);
 -- Dumping data for table `zseq_help_replacement`
 -- 
 
+INSERT INTO `zseq_help_replacement` VALUES (1);
 
 -- 
 -- Dumping data for table `zseq_links`
@@ -1016,6 +1017,7 @@ INSERT INTO `zseq_metadata_lookup` VALUES (1);
 -- Dumping data for table `zseq_metadata_lookup_tree`
 -- 
 
+INSERT INTO `zseq_metadata_lookup_tree` VALUES (1);
 
 -- 
 -- Dumping data for table `zseq_mime_types`
@@ -1033,6 +1035,7 @@ INSERT INTO `zseq_news` VALUES (1);
 -- Dumping data for table `zseq_notifications`
 -- 
 
+INSERT INTO `zseq_notifications` VALUES (1);
 
 -- 
 -- Dumping data for table `zseq_organisations_lookup`
@@ -1056,6 +1059,7 @@ INSERT INTO `zseq_permission_descriptors` VALUES (2);
 -- Dumping data for table `zseq_permission_dynamic_conditions`
 -- 
 
+INSERT INTO `zseq_permission_dynamic_conditions` VALUES (1);
 
 -- 
 -- Dumping data for table `zseq_permission_lookup_assignments`
@@ -1082,9 +1086,16 @@ INSERT INTO `zseq_permission_objects` VALUES (1);
 INSERT INTO `zseq_permissions` VALUES (3);
 
 -- 
+-- Dumping data for table `zseq_plugins`
+-- 
+
+INSERT INTO `zseq_plugins` VALUES (1);
+
+-- 
 -- Dumping data for table `zseq_role_allocations`
 -- 
 
+INSERT INTO `zseq_role_allocations` VALUES (1);
 
 -- 
 -- Dumping data for table `zseq_roles`
@@ -1096,12 +1107,7 @@ INSERT INTO `zseq_roles` VALUES (1);
 -- Dumping data for table `zseq_saved_searches`
 -- 
 
-
--- 
--- Dumping data for table `zseq_search_document_user_link`
--- 
-
-INSERT INTO `zseq_search_document_user_link` VALUES (1);
+INSERT INTO `zseq_saved_searches` VALUES (1);
 
 -- 
 -- Dumping data for table `zseq_status_lookup`
@@ -1143,7 +1149,7 @@ INSERT INTO `zseq_units_organisations_link` VALUES (1);
 -- Dumping data for table `zseq_upgrades`
 -- 
 
-INSERT INTO `zseq_upgrades` VALUES (23);
+INSERT INTO `zseq_upgrades` VALUES (50);
 
 -- 
 -- Dumping data for table `zseq_users`
@@ -1158,36 +1164,21 @@ INSERT INTO `zseq_users` VALUES (3);
 INSERT INTO `zseq_users_groups_link` VALUES (3);
 
 -- 
--- Dumping data for table `zseq_web_documents`
--- 
-
-INSERT INTO `zseq_web_documents` VALUES (1);
-
--- 
--- Dumping data for table `zseq_web_documents_status_lookup`
--- 
-
-INSERT INTO `zseq_web_documents_status_lookup` VALUES (3);
-
--- 
--- Dumping data for table `zseq_web_sites`
--- 
-
-INSERT INTO `zseq_web_sites` VALUES (1);
-
--- 
 -- Dumping data for table `zseq_workflow_states`
 -- 
 
+INSERT INTO `zseq_workflow_states` VALUES (1);
 
 -- 
 -- Dumping data for table `zseq_workflow_transitions`
 -- 
 
+INSERT INTO `zseq_workflow_transitions` VALUES (1);
 
 -- 
 -- Dumping data for table `zseq_workflows`
 -- 
 
+INSERT INTO `zseq_workflows` VALUES (1);
 
 SET FOREIGN_KEY_CHECKS=1;

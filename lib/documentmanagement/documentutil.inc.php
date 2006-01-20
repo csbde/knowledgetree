@@ -99,18 +99,14 @@ class KTDocumentUtil {
     }
 
     function checkin($oDocument, $sFilename, $sCheckInComment, $oUser) {
-        $sBackupPath = $oDocument->getPath() . "-" .  $oDocument->getMajorVersionNumber() . "." .  $oDocument->getMinorVersionNumber();
-        $bSuccess = @copy($oDocument->getPath(), $sBackupPath);
-        if ($bSuccess === false) {
-            return PEAR::raiseError(_("Unable to backup document prior to upload"));
-        }
-        $oVersionedDocument = KTDocumentUtil::createMetadataVersion($oDocument);
-        if (PEAR::isError($oVersionedDocument)) {
-            return $oVersionedDocument;
-        }
-
         $oStorage =& KTStorageManagerUtil::getSingleton();
         $iFileSize = filesize($sFilename);
+
+        $iPreviousMetadataVersion = $oDocument->getMetadataVersionId();
+
+        $oDocument->startNewContentVersion();
+
+        KTDocumentUtil::copyMetadata($oDocument, $iPreviousMetadataVersion);
 
         if (!$oStorage->upload($oDocument, $sFilename)) {
             // reinstate the backup
@@ -119,8 +115,6 @@ class KTDocumentUtil {
             unlink($sBackupPath);
             return PEAR::raiseError(_("An error occurred while storing the new file"));
         }
-
-        $oDocument->setMetadataVersion($oDocument->getMetadataVersion()+1);
 
         $oDocument->setLastModifiedDate(getCurrentDateTime());
         $oDocument->setModifiedUserId($oUser->getId());
@@ -201,6 +195,7 @@ class KTDocumentUtil {
 
         if (is_null($oContents)) {
             $res = KTDocumentUtil::setIncomplete($oDocument, "contents");
+            var_dump($res);
             if (PEAR::isError($res)) {
                 $oDocument->delete();
                 return $res;
@@ -287,7 +282,8 @@ class KTDocumentUtil {
         }
         $aMetadata = $res;
 
-        $res = DBUtil::runQuery(array("DELETE FROM $table WHERE document_id = ?", array($oDocument->getID())));
+        $iMetadataVersionId = $oDocument->getMetadataVersionId();
+        $res = DBUtil::runQuery(array("DELETE FROM $table WHERE metadata_version_id = ?", array($iMetadataVersionId)));
         if (PEAR::isError($res)) {
             return $res;
         }
@@ -298,7 +294,7 @@ class KTDocumentUtil {
                 continue;
             }
             $res = DBUtil::autoInsert($table, array(
-                "document_id" => $oDocument->getID(),
+                "metadata_version_id" => $iMetadataVersionId,
                 "document_field_id" => $oMetadata->getID(),
                 "value" => $sValue,
             ));
@@ -312,11 +308,22 @@ class KTDocumentUtil {
     }
     // }}}
 
+    function copyMetadata($oDocument, $iPreviousMetadataVersionId) {
+        $iNewMetadataVersion = $oDocument->getMetadataVersionId();
+        $sTable = KTUtil::getTableName('document_fields_link');
+        $aFields = DBUtil::getResultArray(array("SELECT * FROM $sTable WHERE metadata_version_id = ?", array($iPreviousMetadataVersionId)));
+        foreach ($aFields as $aRow) {
+            unset($aRow['id']);
+            $aRow['metadata_version_id'] = $iNewMetadataVersion;
+            DBUtil::autoInsert($sTable, $aRow);
+        }
+    }
+
     // {{{ setIncomplete
     function setIncomplete(&$oDocument, $reason) {
         $oDocument->setStatusID(STATUS_INCOMPLETE);
         $table = "document_incomplete";
-        $iId = $oDocument->getID();
+        $iId = $oDocument->getId();
         $aIncomplete = DBUtil::getOneResult(array("SELECT * FROM $table WHERE id = ?", array($iId)));
         if (PEAR::isError($aIncomplete)) {
             return $aIncomplete;

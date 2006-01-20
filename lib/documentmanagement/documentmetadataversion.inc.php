@@ -58,19 +58,43 @@ class KTDocumentMetadataVersion extends KTEntity {
     function setDocumentId($iNewValue) { $this->iDocumentId = $iNewValue; }
     function getMetadataVersion() { return $this->iMetadataVersion; }
     function setMetadataVersion($iNewValue) { $this->iMetadataVersion = $iNewValue; }
+    function getContentVersionId() { return $this->iContentVersionId; }
+    function setContentVersion($iNewValue) { $this->iContentVersion = $iNewValue; }
     function getDocumentTypeId() { return $this->iDocumentTypeId; }
     function setDocumentTypeId($iNewValue) { $this->iDocumentTypeId = $iNewValue; }
     function getName() { return $this->sName; }
     function setName($sNewValue) { $this->sName = $sNewValue; }
     function getDescription() { return $this->sDescription; }
     function setDescription($sNewValue) { $this->sDescription = $sNewValue; }
-    function getStatusId() { return $this->sStatusId; }
-    function setStatusId($iNewValue) { $this->sStatusId = $iNewValue; }
+    function getStatusId() { return $this->iStatusId; }
+    function setStatusId($iNewValue) { $this->iStatusId = $iNewValue; }
     function getVersionCreated() { return $this->dVersionCreated; }
     function setVersionCreated($dNewValue) { $this->dVersionCreated = $dNewValue; }
     function getVersionCreatorId() { return $this->iVersionCreatorId; }
     function setVersionCreatorId($iNewValue) { $this->iVersionCreatorId = $iNewValue; }
     // }}}
+
+    function &createFromArray($aOptions) {
+        return KTEntityUtil::createFromArray('KTDocumentMetadataVersion', $aOptions);
+    }
+
+    function _table() {
+        return KTUtil::getTableName('document_metadata_version');
+    }
+
+    function create() {
+        if (is_null($this->iMetadataVersion)) {
+            $this->iMetadataVersion = 0;
+        }
+        if (is_null($this->dVersionCreated)) {
+            $this->dVersionCreated = getCurrentDateTime();
+        }
+        return parent::create();
+    }
+
+    function &get($iId) {
+        return KTEntityUtil::get('KTDocumentMetadataVersion', $iId);
+    }
 }
 
 ?>

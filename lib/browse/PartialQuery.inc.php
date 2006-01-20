@@ -11,6 +11,7 @@
 
 require_once(KT_LIB_DIR . "/util/ktutil.inc");
 require_once(KT_LIB_DIR . "/database/dbutil.inc");
+require_once(KT_LIB_DIR . "/search/searchutil.inc.php");
  
 // Abstract base class.
 class PartialQuery {
@@ -80,7 +81,14 @@ class BrowseQuery extends PartialQuery{
 
         $sSelect = KTUtil::arrayGet($aOptions, 'select', 'D.id');
 
-        $sQuery = "SELECT $sSelect FROM " . KTUtil::getTableName("documents") . " AS D $sPermissionJoin $sWhere ";
+        $sQuery = sprintf("SELECT %s FROM %s AS D
+                LEFT JOIN %s AS DM ON D.metadata_version_id = DM.id
+                LEFT JOIN %s AS DC ON DM.content_version_id = DC.id
+                %s %s",
+                $sSelect, KTUtil::getTableName("documents"),
+                KTUtil::getTableName("document_metadata_version"),
+                KTUtil::getTableName("document_content_version"),
+                $sPermissionJoin, $sWhere);
         $aParams = array();
         $aParams = array_merge($aParams,  $aPermissionParams);
         $aParams[] = $this->folder_id;
