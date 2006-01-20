@@ -3,6 +3,8 @@
 require_once(KT_LIB_DIR . '/actions/portletregistry.inc.php');
 require_once(KT_LIB_DIR . '/widgets/portlet.inc.php');
 
+require_once(KT_LIB_DIR . '/search/savedsearch.inc.php');
+
 class KTSearchPortlet extends KTPortlet {
 
     function KTSearchPortlet() {
@@ -11,8 +13,16 @@ class KTSearchPortlet extends KTPortlet {
     function render() {
         $oTemplating = new KTTemplating;
         $oTemplate = $oTemplating->loadTemplate("kt3/portlets/search_portlet");
+        
+        $aSearches = KTSavedSearch::getList();
+        // empty on error.
+        if (PEAR::isError($aSearches)) { 
+            $aSearches = array(); 
+        }
+        
         $aTemplateData = array(
             "context" => $this,
+            "saved_searches" => $aSearches,
         );
 
         return $oTemplate->render($aTemplateData);

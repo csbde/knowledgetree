@@ -40,6 +40,7 @@ class BooleanSearchDispatcher extends KTStandardDispatcher {
     }
 
     function do_performSearch() {
+        $title = _('Advanced Search Results');
         $datavars = KTUtil::arrayGet($_REQUEST, 'boolean_search');
         if (!is_array($datavars)) {
             $datavars = unserialize($datavars);
@@ -52,20 +53,25 @@ class BooleanSearchDispatcher extends KTStandardDispatcher {
         if (!empty($iSavedSearchId)) {
             $oSearch = KTSavedSearch::get($iSavedSearchId);
             $datavars = $oSearch->getSearch();
+            $title = _('Saved Search: ') . $oSearch->getName();
         }
         
         if (empty($datavars)) {
             $this->errorRedirectToMain(_('You need to have at least 1 condition.'));
         }
-
-        $res = $this->handleCriteriaSet($datavars, KTUtil::arrayGet($_REQUEST, 'fStartIndex', 1));
+        
+        $res = $this->handleCriteriaSet($datavars, KTUtil::arrayGet($_REQUEST, 'fStartIndex', 1), $title);
         
         return $res;
     }
     
-    function handleCriteriaSet($aCriteriaSet, $iStartIndex) {
+    function handleCriteriaSet($aCriteriaSet, $iStartIndex, $sTitle=null) {
         $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _("Boolean search"));
-        $this->oPage->setBreadcrumbDetails(_('searching'));
+        if ($sTitle == null) {
+            $this->oPage->setBreadcrumbDetails(_('searching'));
+        } else {
+            $this->oPage->setBreadcrumbDetails($sTitle);
+        }
         $collection = new DocumentCollection;
         $this->browseType = "Folder";
 
@@ -106,6 +112,7 @@ class BooleanSearchDispatcher extends KTStandardDispatcher {
         $aTemplateData = array(
               "context" => $this,
               "collection" => $collection,
+              "custom_title" => $sTitle,
         );
         return $oTemplate->render($aTemplateData);
     }

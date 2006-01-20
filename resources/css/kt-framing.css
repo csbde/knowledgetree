@@ -183,9 +183,23 @@ a.main_nav_item {
 {
     margin: 0 0 1.5em 0;
     border: 0;
-    padding: 0;
+    padding: 0 0 0.5em;
     border: 1px solid #888;
     background: #f3f3f3;
+}
+
+#portletbar .portlet a {
+    text-decoration: none;
+    border-bottom: 1px solid blue;
+}
+
+#portletbar .portlet a:visited {
+    border-bottom: 1px solid purple;
+}
+
+#portletbar .portlet a:hover {
+    color: red;
+    border-bottom: 1px solid red;
 }
 
 #portletbar .portlet h4
@@ -212,7 +226,7 @@ a.main_nav_item {
 {
     display: block;
     padding: 0; 
-    margin: 0.15em 0.5em 0.15em 0; 
+    margin: 0.5em 0.5em 0.15em 0; 
     text-align: right;
     border: 0;
 }
@@ -662,4 +676,10 @@ The text will be hidden for screen view.  The generic fahrner-ish approach comes
     border-top: 1px solid #eee;
     color: #999;
     font-size: small;
+}
+
+hr {
+    border-width: 1px 0 0 0;
+    border-style: solid;
+    border-color: #888;
 }

@@ -189,6 +189,7 @@ class KTPermissionDescriptor extends KTEntity {
         if (is_null($aOptions)) {
             $aOptions = array();
         }
+        if (count($aGroups) === 0) { return array(); }
         $ids = KTUtil::arrayGet($aOptions, 'ids');
         $aGroupIDs = array();
         foreach ($aGroups as $oGroup) {
@@ -291,6 +292,7 @@ class KTPermissionDescriptor extends KTEntity {
         if (is_null($aOptions)) {
             $aOptions = array();
         }
+        if (count($aRoles) === 0) { return array(); }
         $ids = KTUtil::arrayGet($aOptions, 'ids');
         $aRoleIDs = array();
         foreach ($aRoles as $oRole) {
@@ -393,6 +395,7 @@ class KTPermissionDescriptor extends KTEntity {
         if (is_null($aOptions)) {
             $aOptions = array();
         }
+        if (count($aUsers) === 0) { return array(); }
         $ids = KTUtil::arrayGet($aOptions, 'ids');
         $aUserIDs = array();
         foreach ($aUsers as $oUser) {

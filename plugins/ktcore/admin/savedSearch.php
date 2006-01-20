@@ -10,7 +10,10 @@ class KTSavedSearchDispatcher extends KTStandardDispatcher {
     var $bAutomaticTransaction = true;
 
     function check() {
-        $this->oPage->setTitle(_('Manage Saved Searches'));
+        $this->aBreadcrumbs[] = array(
+            'url' => $_SERVER['PHP_SELF'],
+            'name' => _('Saved Searches'),
+        );
         return true;
     }
 
@@ -34,9 +37,25 @@ class KTSavedSearchDispatcher extends KTStandardDispatcher {
             "aCriteria" => $aCriteria,
             "searchButton" => _("Save"),
             'context' => $this,
-            "sNameTitle" => _('New Stored Search'),
+            "sNameTitle" => _('New Saved Search'),
         );
         return $oTemplate->render($aTemplateData);
+    }
+    
+    function do_delete() {
+        $id = KTUtil::arrayGet($_REQUEST, 'fSavedSearchId');
+        $oSearch = KTSavedSearch::get($id);
+        
+        if (PEAR::isError($oSearch) || ($oSearch == false)) {
+            $this->errorRedirectToMain(_('No Such search'));
+        }
+        
+        $res = $oSearch->delete();
+        if (PEAR::isError($res) || ($res == false)) {
+            return $this->errorRedirectToMain(_('Failed to delete search'));
+        }
+        
+        $this->successRedirectToMain(_('Search Deleted'));
     }
 
     function do_view() {

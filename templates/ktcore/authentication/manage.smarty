@@ -1,5 +1,12 @@
 <h2>{i18n}Authentication Sources{/i18n}</h2>
 
+<p class="descriptiveText">{i18n}By default, KnowledgeTree controls its
+own users and groups and stores all information about them inside the database.
+In many situations, an organisation will already have a list of users and groups,
+and needs to use that existing information to allow access to the DMS.  
+These <strong>Authentication Sources</strong> allow the system administrator to 
+specify additional sources of authentication data.{/i18n}</p>
+
 {if $providers}
 <form method="POST">
 <fieldset><legend>{i18n}Add an authentication source{/i18n}</legend>
@@ -14,6 +21,10 @@
 </div>
 </fieldset>
 </form>
+{else}
+<div class="ktInfo"><p>{i18n}Only the standard database authentication is currently available.
+If you need to use a different authentication type (e.g. LDAP) you will need to 
+ensure that the Plugin is enabled.{/i18n}<p></div>
 {/if}
 
 {if $sources}
@@ -24,5 +35,7 @@
   <li><a href="?action=viewsource&source_id={$oSource->getId()}">{$oSource->getName()}</a></li>
 {/foreach}
 </ul>
+{else}
+<div class="ktInfo"><p>{i18n}No additional authentication sources have been defined.{/i18n}</p></div>
 {/if}
 

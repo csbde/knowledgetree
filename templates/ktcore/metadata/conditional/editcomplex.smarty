@@ -103,14 +103,17 @@ false;">{i18n}Change Assignments for this field.{/i18n}</a>
 </tbody>
 </table>
 
-
+<!--
 <table id="brad-log">
+<thead>
 <tr>
     <th>Severity</th>
     <th>Time</th>
     <th>Entry</th>
 </tr>
+</thead>
 <tbody  >
 
 </tbody>
 </table>
+-->

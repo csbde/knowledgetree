@@ -57,8 +57,11 @@ class BrowseQuery extends PartialQuery{
     
     function _getDocumentQuery($aOptions = null) {
         $oUser = User::get($_SESSION['userID']);
-        list($sPermissionString, $aPermissionParams, $sPermissionJoin) = KTSearchUtil::permissionToSQL($oUser, $this->sPermissionName);
-
+        $res = KTSearchUtil::permissionToSQL($oUser, $this->sPermissionName);
+        if (PEAR::isError($res)) {
+            return $res;
+        }
+        list($sPermissionString, $aPermissionParams, $sPermissionJoin) = $res;
         $aPotentialWhere = array($sPermissionString, 'D.folder_id = ?', 'D.status_id = 1');
         $aWhere = array();
         foreach ($aPotentialWhere as $sWhere) {
@@ -86,7 +89,11 @@ class BrowseQuery extends PartialQuery{
 
     function _getFolderQuery($aOptions = null) {
         $oUser = User::get($_SESSION['userID']);
-        list($sPermissionString, $aPermissionParams, $sPermissionJoin) = KTSearchUtil::permissionToSQL($oUser, $this->sPermissionName, "F");
+        $res = KTSearchUtil::permissionToSQL($oUser, $this->sPermissionName, "F");
+        if (PEAR::isError($res)) {
+           return $res;
+        }
+        list($sPermissionString, $aPermissionParams, $sPermissionJoin) = $res;
 
         $aPotentialWhere = array($sPermissionString, 'F.parent_id = ?');
         $aWhere = array();
@@ -118,6 +125,7 @@ class BrowseQuery extends PartialQuery{
             'select' => 'count(F.id) AS cnt',
         );
         $aQuery = $this->_getFolderQuery($aOptions);
+        if (PEAR::isError($aQuery)) { return 0; }
         $iRet = DBUtil::getOneResultKey($aQuery, 'cnt');
         return $iRet;
     }
@@ -127,12 +135,15 @@ class BrowseQuery extends PartialQuery{
             'select' => 'count(D.id) AS cnt',
         );
         $aQuery = $this->_getDocumentQuery($aOptions);
+        if (PEAR::isError($aQuery)) { return 0; }
         $iRet = DBUtil::getOneResultKey($aQuery, 'cnt');
         return $iRet;
     }
     
     function getFolders($iBatchSize, $iBatchStart, $sSortColumn, $sSortOrder, $sJoinClause = null, $aJoinParams = null) { 
-        list($sQuery, $aParams) = $this->_getFolderQuery();
+        $res = $this->_getFolderQuery();
+        if (PEAR::isError($res)) { return array(); }
+        list($sQuery, $aParams) = $res;
         $sQuery .= " ORDER BY " . $sSortColumn . " " . $sSortOrder . " ";
 
         $sQuery .= " LIMIT ?, ?";
@@ -147,7 +158,9 @@ class BrowseQuery extends PartialQuery{
     }
     
     function getDocuments($iBatchSize, $iBatchStart, $sSortColumn, $sSortOrder, $sJoinClause = null, $aJoinParams = null) { 
-        list($sQuery, $aParams) = $this->_getDocumentQuery();
+        $res = $this->_getDocumentQuery();
+        if (PEAR::isError($res)) { return array(); } // no permissions 
+        list($sQuery, $aParams) = $res;
         $sQuery .= " ORDER BY " . $sSortColumn . " " . $sSortOrder . " ";
         
         $sQuery .= " LIMIT ?, ?";
@@ -225,6 +238,7 @@ class SimpleSearchQuery extends PartialQuery {
             'select' => 'count(DISTINCT D.id) AS cnt',
         );
         $aQuery = $this->getQuery($aOptions);
+        if (PEAR::isError($aQuery)) { return 0; }
         $iRet = DBUtil::getOneResultKey($aQuery, 'cnt');
         return $iRet;
     }
@@ -238,8 +252,9 @@ class SimpleSearchQuery extends PartialQuery {
         $aOptions = array(
             'select' => 'DISTINCT D.id AS id',
         );
-        list($sQuery, $aParams) = $this->getQuery($aOptions);
-
+        $res = $this->getQuery($aOptions);
+        if (PEAR::isError($res)) { return array(); }
+        list($sQuery, $aParams) = $res;
         $sQuery .= " ORDER BY " . $sSortColumn . " " . $sSortOrder . " ";
         $sQuery .= " LIMIT ?, ?";
 
@@ -302,6 +317,7 @@ class BooleanSearchQuery extends PartialQuery {
             'select' => 'count(DISTINCT D.id) AS cnt',
         );
         $aQuery = $this->getQuery($aOptions);
+        if (PEAR::isError($aQuery)) { return 0; }
         $iRet = DBUtil::getOneResultKey($aQuery, 'cnt');
         return $iRet;
     }
@@ -315,8 +331,9 @@ class BooleanSearchQuery extends PartialQuery {
         $aOptions = array(
             'select' => 'DISTINCT D.id AS id',
         );
-        list($sQuery, $aParams) = $this->getQuery($aOptions);
-
+        $res = $this->getQuery($aOptions);
+        if (PEAR::isError($res)) { return array(); }
+        list($sQuery, $aParams) = $res;
         $sQuery .= " ORDER BY " . $sSortColumn . " " . $sSortOrder . " ";
         $sQuery .= " LIMIT ?, ?";
 

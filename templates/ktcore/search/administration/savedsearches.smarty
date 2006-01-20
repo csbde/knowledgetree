@@ -1,31 +1,43 @@
-<h1>{i18n}Saved searches{/i18n}</h1>
+<h2>{i18n}Saved searches{/i18n}</h2>
 
-<h2>{i18n}Create a new saved search{/i18n}</h2>
+<p class="descriptiveText">{i18n}Saved searches are searches which are particular to your location
+For example, you could define a search which returns all documents in a particular workflow state,
+or all documents which are considered "common" within your organisation (leave policy,
+newsletters, etc.) based on a category or fieldset value.{/i18n}</p>
+
 <form action="{$smarty.server.PHP_SELF}" method="POST">
+<fieldset>
+<legend>{i18n}Create a new saved search{/i18n}</legend>
+<div class="form_actions">
 <input type="hidden" name="action" value="new" />
 <input type="submit" name="submit" value="{i18n}New{/i18n}" />
+</div>
+</fieldset>
 </form>
 
 {if $saved_searches}
-<h2>{i18n}Edit existing saved searches{/i18n}</h2>
-<form action="{$smarty.server.PHP_SELF}" method="POST">
-<input type="hidden" name="action" value="edit" />
-{entity_radios entities=$saved_searches name="fSavedSearchId" assign=aRadios}
-{foreach from=$aRadios item=sRadio}
-{$sRadio}<br />
-{/foreach}
-<input type="submit" name="submit" value="{i18n}Edit{/i18n}" />
-</form>
+<h2>{i18n}Existing Searches{/i18n}</h2>
 
-<h2>{i18n}Run a saved search{/i18n}</h2>
-<form action="{"booleanSearch"|generateControllerUrl}" method="GET">
-<input type="hidden" name="action" value="booleanSearch" />
-<input type="hidden" name="qs[action]" value="performSearch" />
-{entity_radios entities=$saved_searches name="qs[fSavedSearchId]" assign=aRadios}
-{foreach from=$aRadios item=sRadio}
-{$sRadio}<br />
+<table class="listing">
+<thead>
+    <tr>
+        <th>{i18n}Search Name{/i18n}</th>
+        <th>{i18n}Edit{/i18n}</th>
+        <th>{i18n}Delete{/i18n}</th>
+        <th>{i18n}View Results{/i18n}</th>
+    </tr>
+</thead>
+<tbody>
+{foreach item=oSearch from=$saved_searches}
+    <tr>
+        <td>{$oSearch->getName()}</td>
+        <td><a href="{$smarty.server.PHP_SELF}?action=edit&fSavedSearchId={$oSearch->getId()}" class="ktAction ktEdit">Edit</a></td>
+        <td><a href="{$smarty.server.PHP_SELF}?action=delete&fSavedSearchId={$oSearch->getId()}" class="ktAction ktDelete">Edit</a></td>
+        <td><a href="{"booleanSearch"|generateControllerUrl}&qs[action]=performSearch&qs[fSavedSearchId]={$oSearch->getId()}">Run Search</a></td>
+    </tr>
 {/foreach}
-<input type="submit" name="submit" value="{i18n}Run{/i18n}" />
-</form>
+</tbody>
+</table>
+{else}
+<div class="ktInfo"><p>{i18n}No Saved Searches have been defined.{/i18n}</p></div>
 {/if}
-

@@ -63,9 +63,7 @@ class ManageConditionalDispatcher extends KTAdminDispatcher {
             'query' => 'action=manageConditional&fFieldsetId=' . $oFieldset->getId(),
             'name' => _('Manage conditional fieldset'),
         );
-        $this->aBreadcrumbs[] = array(
-            'name' => _('Manage simple conditional'),
-        );
+        $this->oPage->setBreadcrumbDetails(_('Manage simple conditional'));
 
         $aTemplateData = array(
             "context" => &$this,
@@ -101,9 +99,7 @@ class ManageConditionalDispatcher extends KTAdminDispatcher {
             'query' => 'action=manageConditional&fFieldsetId=' . $oFieldset->getId(),
             'name' => _('Manage conditional fieldset'),
         );
-        $this->aBreadcrumbs[] = array(
-            'name' => _('Manage complex conditional'),
-        );
+        $this->oPage->setBreadcrumbDetails(_('Manage complex conditional'));
         $aTemplateData = array(
             "context" => &$this,
             "fieldset_id" => $fieldset_id,
