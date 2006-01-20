@@ -28,7 +28,7 @@ to complete{/i18n}: {$sIncomplete|escape}</p>
 
 {if $oFieldset->getIsComplex()}
 {i18n}Complex{/i18n}: <a
-href="{$config->get("urls/uiUrl")}/administration/docfieldmanagement/conditional/manageConditionals.php?action=editComplexFieldset&fieldset_id={$oFieldset->getId()}">{i18n}Manage
+href="{$rootUrl}/plugins/ktcore/admin/manageConditionals.php?action=editComplexFieldset&fieldset_id={$oFieldset->getId()}">{i18n}Manage
 complex conditional{/i18n}</a>
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
