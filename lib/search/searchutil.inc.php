@@ -166,6 +166,9 @@ class KTSearchUtil {
             ";
         $aGroups = GroupUtil::listGroupsForUserExpand($oUser);
         $aPermissionDescriptors = KTPermissionDescriptor::getByGroups($aGroups, array('ids' => true));
+        if (count($aPermissionDescriptors) === 0) {
+            return PEAR::raiseError('You have no permissions');
+        }
         $sPermissionDescriptors = DBUtil::paramArray($aPermissionDescriptors);
         $sSQLString = "PLA.permission_descriptor_id IN ($sPermissionDescriptors)";
         $aParams = array($oPermission->getId());
@@ -220,8 +223,13 @@ class KTSearchUtil {
 
         $sToSearch = KTUtil::arrayGet($aOrigReq, 'fToSearch', 'Live'); // actually never present in this version.
 
-        list ($sPermissionString, $aPermissionParams, $sPermissionJoin) = KTSearchUtil::permissionToSQL($oUser, $sPermissionName);
-
+        $res = KTSearchUtil::permissionToSQL($oUser, $sPermissionName);
+        if (PEAR::isError($res)) {        // only occurs if the group has no permissions.
+            return $res;
+        } else {
+            list ($sPermissionString, $aPermissionParams, $sPermissionJoin) = $res;
+        }
+        
         /*
          * This is to overcome the problem where $sPermissionString (or
          * even $sSQLSearchString) is empty, leading to leading or
@@ -300,6 +308,9 @@ class KTSearchUtil {
         );
         $aOptions = array('select' => 'COUNT(DISTINCT(D.id)) AS cnt');
         $aQuery = KTSearchUtil::criteriaToQuery($aCriteriaSet, null, null, $aOptions);
+        if (PEAR::isError($aQuery)) {          // caused by no permissions being set.
+            return false; 
+        }
         $cnt = DBUtil::getOneResultKey($aQuery, 'cnt');
         if (PEAR::isError($cnt)) {
             return $cnt;

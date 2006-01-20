@@ -171,6 +171,7 @@ class BrowseDispatcher extends KTStandardDispatcher {
               "context" => $this,
               "collection" => $collection,
               'browse_mode' => $this->browse_mode,
+              'isEditable' => true,
         );
         return $oTemplate->render($aTemplateData);
     }   

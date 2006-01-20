@@ -11,5 +11,5 @@
       <p class="errorMessage"></p>
       {/if}
 
-      <input type="text" name="{$name}" {if $has_id}id="{$id}"{/if} {if $has_value}value="{$value}"{/if}/><input type="hidden" name="kt_core_fieldsets_expect[{$name}]" value ="1"  />
+      <input type="text" name="{$name}" {if $has_id}id="{$id}"{/if} {if $has_value}value="{$value}"{/if}{if ($options.autocomplete === false)}autocomplete="off"{/if}/><input type="hidden" name="kt_core_fieldsets_expect[{$name}]" value ="1"  />
      </div>

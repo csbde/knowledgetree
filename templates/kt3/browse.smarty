@@ -4,12 +4,20 @@
 
 {$context->oPage->requireJSResource('resources/js/toggleselect.js')}
 
+{if ($custom_title != null)}
+<h2>{$custom_title}</h2>
+{/if}
+
 <form action="{$smarty.server.PHP_SELF}" METHOD="POST">
 <input type="hidden" name="action" value="startDelete" />
+{if ($isEditable)}
 <input type="hidden" name="fFolderid" value="{$context->oFolder->getId()}" />
+{/if}
 {$collection->render()}
+{if ($isEditable)}
 <div class="form_actions">
   <input type="submit" name="submit[delete]" value="{i18n}Delete{/i18n}" />
 </div>
+{/if}
 </form>
 {* we break encapsulation pretty badly here. *}

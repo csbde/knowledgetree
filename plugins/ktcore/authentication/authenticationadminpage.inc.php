@@ -4,13 +4,15 @@ require_once(KT_LIB_DIR . '/dispatcher.inc.php');
 require_once(KT_LIB_DIR . '/authentication/authenticationproviderregistry.inc.php');
 require_once(KT_LIB_DIR . '/authentication/authenticationsource.inc.php');
 
+require_once(KT_LIB_DIR . '/widgets/fieldWidgets.php');
+
 class KTAuthenticationAdminPage extends KTAdminDispatcher {
     function do_main() {
         $this->aBreadcrumbs[] = array('name' => _('Authentication'), 'url' => $_SERVER['PHP_SELF']);
         $oTemplate =& $this->oValidator->validateTemplate('ktcore/authentication/manage');
         $fields = array();
 
-        $fields[] = new KTStringWidget(_('Name'), 'FIXME', 'name', "", $this->oPage, true);
+        $fields[] = new KTStringWidget(_('Name'), _('A short name which helps identify this source of authentication data.'), 'name', "", $this->oPage, true);
 
         $aVocab = array();
         $oRegistry =& KTAuthenticationProviderRegistry::getSingleton();
@@ -19,7 +21,7 @@ class KTAuthenticationAdminPage extends KTAdminDispatcher {
             $aVocab[$aProvider[2]] = $aProvider[0];
         }
         $fieldOptions = array("vocab" => $aVocab);
-        $fields[] = new KTLookupWidget(_('Authentication provider'), 'FIXME', 'authentication_provider', null, $this->oPage, true, null, $fieldErrors, $fieldOptions);
+        $fields[] = new KTLookupWidget(_('Authentication provider'), _('The type of source (e.g. <strong>LDAP</strong>)'), 'authentication_provider', null, $this->oPage, true, null, $fieldErrors, $fieldOptions);
 
         $aSources = KTAuthenticationSource::getList();
 
