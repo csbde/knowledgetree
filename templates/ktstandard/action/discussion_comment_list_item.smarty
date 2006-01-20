@@ -25,4 +25,7 @@ dl.kt-discussion-comment > dt {
   <dd>{$comment->getBody()}</dd>
 </dl>
 
+{if not $state}
 <a class="kt-discussion-post-link" href="#kt-discussion-post">{i18n}Post a reply{/i18n}</a>
+{/if}
+

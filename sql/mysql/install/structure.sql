@@ -190,6 +190,9 @@ CREATE TABLE `discussion_threads` (
   `last_comment_id` int(11) NOT NULL default '0',
   `views` int(11) NOT NULL default '0',
   `replies` int(11) NOT NULL default '0',
+  `state` int(1) NOT NULL default '0',
+  `close_metadata_version` int(11) NOT NULL default '0',
+  `close_reason` text NOT NULL default '',
   `creator_id` int(11) NOT NULL default '0',
   UNIQUE KEY `id` (`id`)
 ) TYPE=InnoDB ;
@@ -431,7 +434,7 @@ CREATE TABLE `documents` (
   `description` varchar(200) NOT NULL default '',
   `security` int(11) NOT NULL default '0',
   `mime_id` int(11) NOT NULL default '0',
-  `folder_id` int(11) NOT NULL default '0',
+  `folder_id` int(11) default '1',
   `major_version` int(11) NOT NULL default '0',
   `minor_version` int(11) NOT NULL default '0',
   `is_checked_out` tinyint(1) NOT NULL default '0',
@@ -840,6 +843,18 @@ CREATE TABLE `organisations_lookup` (
 ) TYPE=InnoDB ;
 
 -- --------------------------------------------------------
+
+CREATE TABLE `plugins` (
+  `id` int(11) NOT NULL default '0',
+  `namespace` varchar(255) NOT NULL default '',
+  `path` varchar(255) NOT NULL default '',
+  `version` int(11) NOT NULL default '0',
+  `disabled` tinyint(1) NOT NULL default '0',
+  `data` text,
+  PRIMARY KEY  (`id`),
+  KEY `name` (`namespace`)
+) ENGINE=InnoDB;
+
 
 -- 
 -- Table structure for table `permission_assignments`
@@ -2134,6 +2149,15 @@ CREATE TABLE `zseq_workflows` (
   `id` int(10) unsigned NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
 ) TYPE=MyISAM ;
+
+
+CREATE TABLE `zseq_plugins` (
+  `id` int(10) unsigned NOT NULL auto_increment,
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM;
+
+
+
 
 -- 
 -- Constraints for dumped tables
