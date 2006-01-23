@@ -187,6 +187,9 @@ class KTWorkflowUtil {
         if (PEAR::isError($res)) {
             return $res;
         }
+
+        if(!is_array($aActions)) return;
+        
         $aOptions = array('noid' => true);
         foreach ($aActions as $sAction) {
             $res = DBUtil::autoInsert($sTable, array(
