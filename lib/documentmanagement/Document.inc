@@ -89,6 +89,9 @@ class Document {
     function getContentVersionId() { return $this->_oDocumentMetadataVersion->getContentVersionId(); }
     function setContentVersionId($iNewValue) { $this->_oDocumentMetadataVersion->setContentVersionId($iNewValue); }
     
+    function getVersionCreated() { return $this->_oDocumentMetadataVersion->getVersionCreated(); }
+    function getVersionCreatorId() { return $this->_oDocumentMetadataVersion->getVersionCreatorId(); }
+
     // Document Content Version   
     
     function getFileName() { return $this->_oDocumentContentVersion->getFileName(); }
