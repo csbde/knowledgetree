@@ -18,7 +18,7 @@
    
    <fieldset>
       <legend>{i18n}Allocate Groups to Role{/i18n}</legend>
-      <p class="descriptiveText">{i18n}Select the groups which should be part of this role.{/i18n} <strong>FIXME</strong> this helptext is v. awkward.</p>
+      <p class="descriptiveText">{i18n}Select the groups which should be part of this role.{/i18n}</p>
 
 <table border="0" width="600">
    <thead>

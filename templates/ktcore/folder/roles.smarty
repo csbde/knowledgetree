@@ -7,7 +7,7 @@
 {/i18n}</p>
 
 <div class='ktInfo'><p><strong>{i18n}Warning:{/i18n}</strong>{i18n} Please note that changing
-role allocations can take very long time, depending on the number of folders below this one.{/i18n}</p></div>
+role allocations may take a some time, depending on the number of folders below this one.{/i18n}</p></div>
 
 <table class="listing">
 <thead>

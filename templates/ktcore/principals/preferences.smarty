@@ -1,7 +1,6 @@
 <h2>Preferences</h2>
 
-<p class="descriptiveText">{i18n}From here you can adjust certain basic
-preferences about how you work with KnowledgeTree.{/i18n}</p>
+<p class="descriptiveText">{i18n}You may change details about yourself by editing the entries below. Once you have completed the form, click on <strong>Update your details</strong>.{/i18n}</p>
 
 <form action="{$smarty.server.PHP_SELF}" method="POST">
 <input type="hidden" name="action" value="updatePreferences" />

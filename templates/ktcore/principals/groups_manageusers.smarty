@@ -5,7 +5,7 @@
 {$context->oPage->requireJSResource('thirdpartyjs/MochiKit/Iter.js')}
 {$context->oPage->requireJSResource('thirdpartyjs/MochiKit/DOM.js')}
 
-<p class="descriptiveText"><strong>FIXME</strong> help text for group-editing.  
+<p class="descriptiveText">{i18n}Users may be associated with Groups which are then used to grant these users security privileges.{/i18n}</p>  
 
 <form action="{$smarty.server.PHP_SELF}" method="POST" id="usergroupform">
    <input type="hidden" name="action" value="updateUserMembers" />
@@ -18,7 +18,7 @@
    
    <fieldset>
       <legend>{i18n arg_name=$edit_group->getName()}Manage Users in #name#{/i18n}</legend>
-      <p class="descriptiveText">{i18n}Select the users which should be part of this group.{/i18n} <strong>FIXME</strong> this helptext is v. awkward.</p>
+      <p class="descriptiveText">{i18n}Select the users which should be part of this group from the left-hand list and then click the <strong>right pointing arrows</strong>. Once you have added all the users that you require, press <strong>save changes</strong>.{/i18n}</p>
 
 <table border="0" width="600">
    <thead>

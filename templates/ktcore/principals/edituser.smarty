@@ -5,7 +5,7 @@
    <input type="hidden" name="user_id" value="{$edit_user->getId()}" />
    <fieldset>
       <legend>{i18n}Change User Details{/i18n}</legend>
-      <p class="descriptiveText"><strong>FIXME</strong> brief overview of user editing.</p>
+<p class="descriptiveText">{i18n}Please complete the form below to edit the user. Fields marked with a red square are required. By default, users are created using KnowledgeTree's builtin authentication provider. Should you wish to use an external authentication provider such as LDAP, please ensure that the provider's plugin is registered and enabled.{/i18n}</p>
       {foreach item=oWidget from=$edit_fields}
       
         {$oWidget->render()}

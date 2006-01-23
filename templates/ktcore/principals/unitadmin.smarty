@@ -1,6 +1,6 @@
 <h2>{i18n}Unit Administration{/i18n}</h2>
 
-<p class="descriptiveText"><strong>FIXME</strong> Overview of units.</p>
+<p class="descriptiveText">{i18n}KnowledgeTree allows administrators the ability to create <strong>Units</strong> that model the organisation's business units. Units may have their own administrators and users and groups may be assigned to these units.{/i18n}</p>
 
 {if ($for_edit === false)}
 

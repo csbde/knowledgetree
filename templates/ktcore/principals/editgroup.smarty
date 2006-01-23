@@ -8,7 +8,7 @@ the system's information about group <strong>#name</strong>{/i18n}</p>
    <input type="hidden" name="group_id" value="{$edit_group->getId()}" />
    <fieldset>
       <legend>{i18n}Change Group Details{/i18n}</legend>
-      <p class="descriptiveText"><strong>FIXME</strong> brief overview of group editing.</p>
+      <p class="descriptiveText">{i18n}Users may be classed together as Groups and these groups may be used to set security privileges throughout the document management system.{/i18n}</p>
       {foreach item=oWidget from=$edit_fields}
         {$oWidget->render()}
       {/foreach}

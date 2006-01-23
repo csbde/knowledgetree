@@ -5,9 +5,7 @@
 {$context->oPage->requireJSResource('thirdpartyjs/MochiKit/Iter.js')}
 {$context->oPage->requireJSResource('thirdpartyjs/MochiKit/DOM.js')}
 
-<p class="descriptiveText"><strong>FIXME</strong> help text for group-editing.  
-<strong>FIXME</strong> there are potential unexpected
-side-effects to this when used by unitAdmins.</p>
+<p class="descriptiveText">{i18n}Groups may contain other groups, allowing for a convenient way to build tree's of users and efficiently assign security privileges.{/i18n}</p>
 
 <form action="{$smarty.server.PHP_SELF}" method="POST" id="usergroupform">
    <input type="hidden" name="action" value="updateGroupMembers" />
@@ -20,7 +18,7 @@ side-effects to this when used by unitAdmins.</p>
    
    <fieldset>
       <legend>{i18n arg_name=$edit_group->getName()}Change Sub-Groups in #name#{/i18n}</legend>
-      <p class="descriptiveText">{i18n}Select the groups which should be part of this group.{/i18n} <strong>FIXME</strong> this helptext is v. awkward.</p>
+      <p class="descriptiveText">{i18n}Select the groups from the left-hand list that you would like to add to this group and then click the <strong>right pointing arrows</strong>. Once you have added all the groups that you require, press <strong>save changes</strong>. Only groups that are logically capable of being included in this group will be available to be added.{/i18n}</p>
 
 <table border="0" width="600">
    <thead>
