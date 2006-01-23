@@ -254,18 +254,23 @@ class KTSearchUtil {
         //$sQuery = DBUtil::compactQuery("
         $sQuery = sprintf("
     SELECT
-        $sSelect
+        %s
     FROM
         %s AS D
         LEFT JOIN %s AS DM ON D.metadata_version_id = DM.id
         LEFT JOIN %s AS DC ON DM.content_version_id = DC.id
         INNER JOIN $default->status_table AS SL on D.status_id=SL.id
-        $sInitialJoin
-        $sCritJoinSQL
-        $sPermissionJoin
-    $sWhere", KTUtil::getTableName('documents'),
+        %s
+        %s
+        %s
+        %s", $sSelect, KTUtil::getTableName('documents'),
         KTUtil::getTableName('document_metadata_version'),
-        KTUtil::getTableName('document_content_version'));
+        KTUtil::getTableName('document_content_version'),
+        $sInitialJoin,
+        $sCritJoinSQL,
+        $sPermissionJoin,
+        $sWhere
+        );
     // GROUP BY D.id
 
         $aParams = array();
