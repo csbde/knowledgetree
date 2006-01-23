@@ -22,10 +22,10 @@ check out will begin to download soon.  If it does not automatically
 start to download, you can use <a href="#link#">this link</a> to start
 it yourself.{/i18n}</p>
 
+{assign var=iDocumentId value=$context->oDocument->getId()}
 {capture assign=link}
 {"viewDocument"|generateControllerUrl:"fDocumentId=$iDocumentId"}
 {/capture}
-{assign var=iDocumentId value=$context->oDocument->getId()}
 <p class="descriptiveText">{i18n arg_link=$link}Once the document has
 been downloaded, you should <a href="#link#">return to the document
 view</a>.{/i18n}</p>
