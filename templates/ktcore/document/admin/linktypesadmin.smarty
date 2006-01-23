@@ -62,21 +62,20 @@ links of that type within the system.{/i18n}</p>
 <table class="listing">
 <thead>
   <tr>
-     <th colspan="2">{i18n}Name{/i18n}</th>
+     <th>{i18n}Name{/i18n}</th>
      <th>{i18n}Description{/i18n}</th>
      <th>{i18n}Edit{/i18n}</th>
+     <th>{i18n}Delete{/i18n}</th>
   </tr>
 </thead>
 
 <tbody>
   {foreach item=oLinkType from=$links}
   <tr class="{cycle values=even,odd}">
-    <td>
-      <input type="checkbox" name="fLinksToDelete[]" value="{$oLinkType->iId}" />
-    </td>
     <td>{$oLinkType->getName()}</td>
     <td class="descriptiveText">{$oLinkType->getDescription()}</td>
     <td><a href="{$smarty.server.PHP_SELF}?action=edit&fLinkTypeId={$oLinkType->iId}" class="ktAction ktEdit">{i18n}edit link type{/i18n}</a></td>
+    <td><a href="{$smarty.server.PHP_SELF}?action=delete&fLinksToDelete[]={$oLinkType->iId}" class="ktAction ktDelete">{i18n}edit link type{/i18n}</a></td>
   </tr>
   {/foreach}
 </tbody>
