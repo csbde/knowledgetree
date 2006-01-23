@@ -9,8 +9,6 @@ require_once(KT_LIB_DIR . '/documentmanagement/DocumentTransaction.inc');
 require_once(KT_LIB_DIR . "/widgets/fieldWidgets.php");
 require_once(KT_LIB_DIR . "/templating/kt3template.inc.php");
 
-require_once(KT_LIB_DIR . "/documentmanagement/PhysicalDocumentManager.inc");
-
 class DeletedDocumentsDispatcher extends KTAdminDispatcher {
     function do_main () {
         $this->aBreadcrumbs[] = array('url' => $_SERVER['PHP_SELF'], 'name' => _('Deleted Documents'));
@@ -91,8 +89,10 @@ class DeletedDocumentsDispatcher extends KTAdminDispatcher {
         $aErrorDocuments = array();
         $aSuccessDocuments = array();			
 
+        $oStorage =& KTStorageManagerUtil::getSingleton();
+
         foreach ($aDocuments as $oDoc) {
-            if (!PhysicalDocumentManager::expunge($oDoc)) { $aErrorDocuments[] = $oDoc->getDisplayPath(); }
+            if (!$oStorage->expunge($oDoc)) { $aErrorDocuments[] = $oDoc->getDisplayPath(); }
             else {
                 $oDocumentTransaction = & new DocumentTransaction($oDoc, "Document expunged", 'ktcore.transactions.expunge');
                 $oDocumentTransaction->create();
@@ -163,13 +163,15 @@ class DeletedDocumentsDispatcher extends KTAdminDispatcher {
         $aErrorDocuments = array();
         $aSuccessDocuments = array();			
 
+        $oStorage =& KTStorageManagerUtil::getSingleton();
+
         foreach ($aDocuments as $oDoc) {
             $oDoc->setFolderID(1);
-            if (PhysicalDocumentManager::restore($oDoc)) {
+            if ($oStorage->restore($oDoc)) {
                 $oDoc->setStatusId(LIVE);
                 $res = $oDoc->update();
                 if (PEAR::isError($res) || ($res == false)) {
-                    PhysicalDocumentManager::delete($oDoc);
+                    $oStorage->delete($oDoc);
                     $aErrorDocuments[] = $oDoc->getName;
                     continue; // skip transactions, etc.
                 }
