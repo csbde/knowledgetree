@@ -12,17 +12,20 @@
 {$context->oPage->requireCSSResource('resources/css/kt-treewidget.css')}
 
 <h2>{i18n}Editing{/i18n}: {$document->getName()}</h2>
-<p class="descriptiveText">The following document metadata is available for editing.</p>
-  
+
+<p class="descriptiveText">{i18n}Change the <strong><a href="{$smarty.server.PHP_SELF}?action=selectType&fDocumentId={$document->getId()}">document type</a></strong>{/i18n}</p>
+
+<p class="descriptiveText">{i18n}The following document metadata is available for editing.{/i18n}</p>
+
 <form method="POST">
   
 <input type="hidden" name="fDocumentId" value="{$document->getId()}" />
 <input type="hidden" name="action" value="update" />
+<input type="hidden" name="newType" value="{$newType}" />
 
 {foreach item=oFieldset from=$fieldsets}
     {$oFieldset->renderEdit($document_data)}
 {/foreach}
-
 
 <div class="form_actions">
     <input class="save" type="submit" value="{i18n}Save Changes{/i18n}" />

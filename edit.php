@@ -10,6 +10,7 @@ require_once("config/dmsDefaults.php");
 require_once(KT_LIB_DIR . '/dispatcher.inc.php');
 
 require_once(KT_LIB_DIR . '/documentmanagement/Document.inc');
+require_once(KT_LIB_DIR . '/documentmanagement/DocumentType.inc');
 require_once(KT_LIB_DIR . '/foldermanagement/Folder.inc');
 require_once(KT_LIB_DIR . '/documentmanagement/DocumentLink.inc');
 
@@ -91,9 +92,56 @@ class KTEditDocumentDispatcher extends KTStandardDispatcher {
         exit(0);
     }
 
-	// FIXME move the render-setup to be a helper, to avoid the current  two-location-copy-paste in do_main and do_update.
+	function do_selectType() {
+	    $document_id = KTUtil::arrayGet($_REQUEST, 'fDocumentId');
+        if (empty($document_id)) {
+            $this->errorPage(_("No document specified for editing."));
+        }
+        $oDocument = Document::get($document_id);
+        if (PEAR::isError($oDocument)) {
+            $this->errorPage(_("Invalid Document."));
+        }
+		
+	    $oDocumentType = DocumentType::get($oDocument->getDocumentTypeID());
+		$aDocTypes = DocumentType::getList();
+	
+	    $oTemplating =& KTTemplating::getSingleton();
+        $oTemplate =& $oTemplating->loadTemplate("ktcore/document/change_type");       
+        $aTemplateData = array(
+            'context' => $this,
+            'document' => $oDocument,
+			'document_type' => $oDocumentType,
+			'doctypes' => $aDocTypes,
+        );
+        $oTemplate->setData($aTemplateData);
+        return $oTemplate->render();
+	}
 
-    function do_main() {
+	function do_changeType() {
+		// FIXME this could do with more postTriggers, etc.
+		
+		/* The basic procedure is:
+		 *
+		 *   1. find out what fieldsets we _have_
+		 *   2. find out what fieldsets we _should_ have.
+		 *   3. actively delete fieldsets we need to lose.
+		 *   4. run the edit script.
+		 */
+		$newType = KTUtil::arrayGet($_REQUEST, 'fDocType');
+		$oType = DocumentType::get($newType);
+		if (PEAR::isError($oType) || ($oType == false)) {
+		    $this->errorRedirectToMain(_("Invalid type selected."));
+		}
+		
+		$_SESSION['KTInfoMessage'][] = _('Document Type Changed.  Please review the information below, and update as appropriate.');
+		
+		$_REQUEST['setType'] = $newType;
+		
+		return $this->do_main($newType);
+	}
+
+	// "standard document editing"
+    function do_main($newType=false) {
         $document_id = KTUtil::arrayGet($_REQUEST, 'fDocumentId');
         if (empty($document_id)) {
             $this->errorPage(_("No document specified for editing."));
@@ -122,12 +170,18 @@ class KTEditDocumentDispatcher extends KTStandardDispatcher {
         
         // FIXME can we key this on fieldset namespace?  or can we have duplicates?
         // now we get the other fieldsets, IF there is a valid doctype.
-        $activesets = KTFieldset::getForDocumentType($oDocument->getDocumentTypeID()); 
+		
+		// quick solution to the change issue...
+		
+		if ($newType !== false) {
+            $activesets = KTFieldset::getForDocumentType($newType); 
+		} else {
+		    $activesets = KTFieldset::getForDocumentType($oDocument->getDocumentTypeID()); 
+		}
         foreach ($activesets as $oFieldset) {
             $displayClass = $fieldsetDisplayReg->getHandler($oFieldset->getNamespace());
             array_push($fieldsets, new $displayClass($oFieldset));		
         }
-        
         
         $document_data = array();
 		$document_data["document"] =& $this->oDocument;
@@ -150,6 +204,7 @@ class KTEditDocumentDispatcher extends KTStandardDispatcher {
             'document_data' => $document_data, // FIXME what do we need here?
             'fieldsets' => $fieldsets,
 		    'has_error' => false,
+			'newType' => $newType,
         );
         $oTemplate->setData($aTemplateData);
         return $oTemplate->render();
@@ -167,11 +222,21 @@ class KTEditDocumentDispatcher extends KTStandardDispatcher {
 
         $aErrorOptions = array(
             'redirect_to' => array('main', sprintf('fDocumentId=%d', $oDocument->getId())),
-            'message' => 'No name given',
+            'message' => _('No name given'),
         );
         $title = KTUtil::arrayGet($_REQUEST, 'generic_title');
         $title = $this->oValidator->validateString($title,
                 $aErrorOptions);
+        
+		$newType = KTUtil::arrayGet($_REQUEST, 'newType');
+		if ($newType !== null) {
+		    $oDT = DocumentType::get($newType);
+			if (PEAR::isError($oDT) || ($oDT == false)) {
+				$this->errorRedirectToMain(_('Invalid document type specified for change.'));
+			}
+		} else {
+		    $oDT = null;
+		}
         
         $this->oDocument = $oDocument;
         $this->oFolder = Folder::get($oDocument->getFolderId()); // FIXME do we need to check that this is valid?
@@ -188,7 +253,11 @@ class KTEditDocumentDispatcher extends KTStandardDispatcher {
             array_push($fieldsets, $oFieldset);
         }
         
-        $activesets = KTFieldset::getForDocumentType($oDocument->getDocumentTypeID()); 
+        if ($newType == null) {
+            $activesets = KTFieldset::getForDocumentType($oDocument->getDocumentTypeID()); 
+		} else {
+		    $activesets = KTFieldset::getForDocumentType($newType); 
+		}
         
         
         // FIXME use array_merge
@@ -265,6 +334,47 @@ class KTEditDocumentDispatcher extends KTStandardDispatcher {
 		$oDocument->setName($title);
 		$oDocument->setLastModifiedDate(getCurrentDateTime());
 		$oDocument->setModifiedUserId($this->oUser->getId());
+
+		// FIXME refactor this into documentutil.
+		// document type changing semantics
+		if ($newType != null) {
+		    $oldType = DocumentType::get($oDocument->getDocumentTypeID());
+		    $oDocument->setDocumentTypeID($newType);
+			
+			// we need to find fieldsets that _were_ in the old one, and _delete_ those.
+			$for_delete = array();
+			
+			$oldFieldsets = KTFieldset::getForDocumentType($oldType);
+			$newFieldsets = KTFieldset::getForDocumentType($newType);
+			
+			// prune from MDPack.
+			foreach ($oldFieldsets as $oFieldset) {
+				$old_fields = $oFieldset->getFields();
+				foreach ($old_fields as $oField) {
+					$for_delete[$oField->getId()] = 1;
+				}
+			}
+			
+			foreach ($newFieldsets as $oFieldset) {
+			    $new_fields = $oFieldset->getFields();
+				foreach ($new_fields as $oField) {
+				    unset($for_delete[$oField->getId()]);
+				}
+			}
+			
+			$newPack = array();
+			foreach ($field_values as $MDPack) {
+				if (!array_key_exists($MDPack[0]->getId(), $for_delete)) {
+					$newPack[] = $MDPack;
+				}
+			}
+			$field_values = $newPack;
+			
+			
+			//var_dump($field_values);
+			//exit(0);
+		}
+		
         $oDocumentTransaction = & new DocumentTransaction($oDocument, 'update metadata.', 'ktcore.transactions.update');
 		
         $res = $oDocumentTransaction->create();
