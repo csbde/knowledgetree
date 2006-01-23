@@ -193,6 +193,7 @@ class BrowseCriterion {
 class NameCriterion extends BrowseCriterion {
     var $bFolderCriterion = true;
     var $bString = true;
+    var $sSearchTable = "DC";
     function documentDisplay ($oDocument) {
         $aOptions = $this->aOptions;
         if (array_key_exists('displayFullPath', $aOptions)) {
@@ -235,6 +236,7 @@ class IDCriterion extends BrowseCriterion {
 class TitleCriterion extends BrowseCriterion {
     var $bFolderCriterion = true;
     var $bString = true;
+    var $sSearchTable = "DM";
     function documentDisplay ($oDocument) {
         return $oDocument->getName();
     }
@@ -248,6 +250,7 @@ class TitleCriterion extends BrowseCriterion {
 }
 
 class CreatorCriterion extends BrowseCriterion {
+    var $sSearchTable = "D";
     var $bFolderCriterion = true;
     var $aLookup = array(
         "table" => "users",
@@ -285,6 +288,7 @@ class CreatorCriterion extends BrowseCriterion {
 }
 
 class DateCreatedCriterion extends BrowseCriterion {
+    var $sSearchTable = "D";
     function documentDisplay ($oDocument) {
         return $oDocument->getCreatedDateTime();
     }
@@ -338,6 +342,7 @@ class DateCreatedCriterion extends BrowseCriterion {
 }
 
 class DocumentTypeCriterion extends BrowseCriterion {
+    var $sSearchTable = "DM";
     var $aLookup = array(
         "table" => "document_types_lookup",
         "field" => "name"
@@ -462,6 +467,7 @@ class DateModifiedCriterion extends DateCreatedCriterion {
 }
 
 class SizeCriterion extends BrowseCriterion {
+    var $sSearchTable = "DC";
     function documentDisplay ($oDocument) {
         return $oDocument->getFileSize();
     }
@@ -503,6 +509,7 @@ class ContentCriterion extends BrowseCriterion {
 }
 
 class WorkflowStateCriterion extends BrowseCriterion {
+    var $sSearchTable = "DM";
     function documentDisplay ($oDocument) {
         $oState =& KTWorkflowState::getByDocument($oDocument);
         if ($oState) {
