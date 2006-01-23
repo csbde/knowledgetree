@@ -58,8 +58,8 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
 		
 		$edit_fields = array();
 		$edit_fields[] =  new KTStringWidget(_('Group Name'),_('A short name for the group.  e.g. <strong>administrators</strong>.'), 'group_name', $oGroup->getName(), $this->oPage, true);
-		$edit_fields[] =  new KTCheckboxWidget(_('Unit Administrators'),_('Should all the members of this group be given <strong>unit</strong> administration privilidges?'), 'is_unitadmin', $oGroup->getUnitAdmin(), $this->oPage, false);
-		$edit_fields[] =  new KTCheckboxWidget(_('System Administrators'),_('Should all the members of this group be given <strong>system</strong> administration privilidges?'), 'is_sysadmin', $oGroup->getSysAdmin(), $this->oPage, false);
+		$edit_fields[] =  new KTCheckboxWidget(_('Unit Administrators'),_('Should all the members of this group be given <strong>unit</strong> administration privileges?'), 'is_unitadmin', $oGroup->getUnitAdmin(), $this->oPage, false);
+		$edit_fields[] =  new KTCheckboxWidget(_('System Administrators'),_('Should all the members of this group be given <strong>system</strong> administration privileges?'), 'is_sysadmin', $oGroup->getSysAdmin(), $this->oPage, false);
 		
 		// grab all units.
 		$unit = $oGroup->getUnit();
@@ -337,8 +337,8 @@ class KTGroupAdminDispatcher extends KTAdminDispatcher {
 		
 		$edit_fields = array();
 		$add_fields[] =  new KTStringWidget(_('Group Name'),_('A short name for the group.  e.g. <strong>administrators</strong>.'), 'group_name', null, $this->oPage, true);
-		$add_fields[] =  new KTCheckboxWidget(_('Unit Administrators'),_('Should all the members of this group be given <strong>unit</strong> administration privilidges?'), 'is_unitadmin', false, $this->oPage, false);
-		$add_fields[] =  new KTCheckboxWidget(_('System Administrators'),_('Should all the members of this group be given <strong>system</strong> administration privilidges?'), 'is_sysadmin', false, $this->oPage, false);
+		$add_fields[] =  new KTCheckboxWidget(_('Unit Administrators'),_('Should all the members of this group be given <strong>unit</strong> administration privileges?'), 'is_unitadmin', false, $this->oPage, false);
+		$add_fields[] =  new KTCheckboxWidget(_('System Administrators'),_('Should all the members of this group be given <strong>system</strong> administration privileges?'), 'is_sysadmin', false, $this->oPage, false);
 			
 		$oTemplating = new KTTemplating;        
 		$oTemplate = $oTemplating->loadTemplate("ktcore/principals/addgroup");

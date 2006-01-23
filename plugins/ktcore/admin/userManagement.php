@@ -244,7 +244,7 @@ class KTUserAdminDispatcher extends KTAdminDispatcher {
         
         /* FIXME there is a nasty side-effect:  if a user cannot assign a group
         * to a user, and that user _had_ that group pre-edit, 
-        * then their privilidges are revoked.
+        * then their privileges are revoked.
         * is there _any_ way to fix that?
         */
         
