@@ -227,109 +227,50 @@ class KTOnDiskPathStorageManager extends KTStorageManager {
 	 * return boolean true on successful move, false otherwhise
 	 */
 	function delete($oDocument) {
-		global $default;
-		// current document path
-		$sCurrentPath = $oDocument->getPath();
+        $oConfig =& KTConfig::getSingleton();
+		$sCurrentPath = $this->getPath($oDocument);
 		
 		// check if the deleted folder exists and create it if not
-		$sDeletedPrefix = $default->documentRoot . "/Deleted";
+        $sDeletedPrefix = sprintf("%s/Deleted", $oConfig->get('urls/documentRoot'));
 		if (!file_exists($sDeletedPrefix)) {
             mkdir($sDeletedPrefix, 0755);
         }
-		
-		// move the file to the deleted folder, prefixed by its document id
-		$sDeletedPrefix = $default->documentRoot . "/Deleted/" . $oDocument->getID() . "-" . $oDocument->getFileName();
 
-		// find all the previous versions of this document and move them
-		// ie. interrogate transaction history for all CHECKIN transactions and retrieve the versions
-		// FIXME: refactor
-		$sql = $default->db;
-        $sQuery = "SELECT DISTINCT version FROM $default->document_transactions_table WHERE document_id = ? AND transaction_namespace = ?";/*ok*/
-        $aParams = array($oDocument->getID(), 'ktcore.transactions.check_out');
-		$result = $sql->query(array($sQuery, $aParams));
-        if ($result) {
-            while ($sql->next_record()) {
-            	$sVersion = $sql->f("version");
-            	if ($sVersion <> $oDocument->getVersion()) {
-					$sVersionedPath = $sCurrentPath . "-" . $sVersion;
-					$sDeletedPath = $sDeletedPrefix . "-" . $sVersion;
-					// move it to the deleted folder
-					$default->log->info("PhysicalDocumentManager::delete moving $sVersionedPath to $sDeletedPath");
-					if (!PhysicalDocumentManager::move($sVersionedPath, $sDeletedPath)) {
-						$default->log->error("PhysicalDocumentManager::delete error moving $sVersionedPath to $sDeletedPath; documentID=" . $oDocument->getID());
-						// FIXME: can't bail now since we don't have transactions- so we doggedly continue deleting and logging errors
-					}
-            	}
-            }
-        } else {
-        	$default->log->error("PhysicalDocumentManager::delete error looking up document versions, id=" . $oDocument->getID());
-        }	
+        $sDocumentRoot = $oConfig->get('urls/documentRoot');
 
-		// now move the current version		
-
-		if (PhysicalDocumentManager::move($sCurrentPath, $sDeletedPrefix)) {
-			return true;
-		} else {
-			$default->log->error("in OnDiskStorage, PhysicalDocumentManager::delete couldn't move $sCurrentPath to $sDeletedPrefix, documentID=" . $oDocument->getID());
-			return false;
-		}
+        $aVersions = KTDocumentContentVersion::getByDocument($oDocument);
+        foreach ($aVersions as $oVersion) {
+            $sOldPath = $oVersion->getStoragePath();
+            $sNewPath = sprintf("Deleted/%s-%s", $oVersion->getId(), $oVersion->getFileName());
+            $sFullOldPath = sprintf("%s/%s", $sDocumentRoot, $sOldPath);
+            $sFullNewPath = sprintf("%s/%s", $sDocumentRoot, $sNewPath);
+            KTUtil::moveFile($sFullOldPath, $sFullNewPath);
+        }
+        return true;
 	}
 
 	/**
 	 * Completely remove a document from the Deleted/ folder
 	 *
-	 * return boolean true on successful move, false otherwhise
+	 * return boolean true on successful expunge
 	 */	
 	function expunge($oDocument) {
-		global $default;
-		// deleted document path
-		$sDeletedPrefix = $default->documentRoot . "/Deleted/" . $oDocument->getID() . "-" . $oDocument->getFileName();
+        $oConfig =& KTConfig::getSingleton();
+		$sCurrentPath = $this->getPath($oDocument);
 		
-		// find all the previous versions of this document and delete them
-		// ie. interrogate transaction history for all CHECKIN transactions and retrieve the versions
-		// FIXME: refactor
-		$sql = $default->db;
-        $sQuery = "SELECT DISTINCT version FROM $default->document_transactions_table WHERE document_id = ? AND transaction_id = ?";/*ok*/
-        $aParams = array($oDocument->getID(), CHECKOUT);
-		$result = $sql->query(array($sQuery, $aParams));
-        if ($result) {
-            while ($sql->next_record()) {
-            	$sVersion = $sql->f("version");
-            	if ($sVersion <> $oDocument->getVersion()) {
-					$sExpungePath = $sDeletedPrefix . "-" . $sVersion;
-					// zap it
-					$default->log->info("PhysicalDocumentManager::expunge rm'ing $sExpungePath");
-					if (file_exists($sExpungePath)) {
-						if (!unlink($sExpungePath)) {
-							$default->log->error("PhysicalDocumentManager::expunge error deleting $sExpungePath; documentID=" . $oDocument->getID());
-							// FIXME: can't bail now since we don't have transactions- so we doggedly continue deleting and logging errors
-						}
-					} else {
-						$default->log->error("PhysicalDocumentManager::expunge can't rm $sExpungePath because it doesn't exist");
-					}
-            	}
-            }
-        } else {
-        	$default->log->error("PhysicalDocumentManager::expunge error looking up document versions, id=" . $oDocument->getID());
-        }	
+		// check if the deleted folder exists and create it if not
+        $sDeletedPrefix = sprintf("%s/Deleted", $oConfig->get('urls/documentRoot'));
+        $sDocumentRoot = $oConfig->get('urls/documentRoot');
 
-		if (file_exists($sDeletedPrefix)) {
-			// now delete the current version
-			if (unlink($sDeletedPrefix)) {
-				$default->log->info("PhysicalDocumentManager::expunge  unlinkied $sDeletedPrefix");			
-				return true;
-			} else {
-				$default->log->info("PhysicalDocumentManager::expunge couldn't unlink $sDeletedPrefix");
-				if (file_exists($sDeletedPrefix)) {
-					return false;
-				} else {
-					return true;
-				}
-			}
-		} else {
-			$default->log->info("PhysicalDocumentManager::expunge can't rm $sDeletedPrefix because it doesn't exist");
-			return true;
-		}
+        $aVersions = KTDocumentContentVersion::getByDocument($oDocument);
+        foreach ($aVersions as $oVersion) {
+            $sPath = sprintf("Deleted/%s-%s", $oVersion->getId(), $oVersion->getFileName());
+            $sFullPath = sprintf("%s/%s", $sDocumentRoot, $sPath);
+            if (file_exists($sFullPath)) {
+                unlink($sFullPath);
+            }
+        }
+        return true;
 	}
 	
 	/**
@@ -338,46 +279,22 @@ class KTOnDiskPathStorageManager extends KTStorageManager {
 	 * return boolean true on successful move, false otherwhise
 	 */	
 	function restore($oDocument) {
-		global $default;
+        $oConfig =& KTConfig::getSingleton();
+		$sCurrentPath = $this->getPath($oDocument);
 		
-		// deleted document path (includes previous versions)
-		$sDeletedPath = $default->documentRoot . "/Deleted/" . $oDocument->getID() . "-" . $oDocument->getFileName();
-				
-		// build the path to the new folder
-		$sRestorePath = Folder::getFolderPath($oDocument->getFolderID()) . "/" . $oDocument->getFileName();
-				
-		// find all the previous versions of this document and move them
-		// ie. interrogate transaction history for all CHECKIN transactions and retrieve the versions
-		// FIXME: refactor
-		$sql = $default->db;
-        $sQuery = "SELECT DISTINCT version FROM $default->document_transactions_table WHERE document_id = ? AND transaction_id = ?";/*ok*/
-        $aParams = array($oDocument->getID(), CHECKOUT);
-		$result = $sql->query(array($sQuery, $aParams));
-        if ($result) {
-            while ($sql->next_record()) {
-            	$sVersion = $sql->f("version");
-            	if ($sVersion <> $oDocument->getVersion()) {
-					$sVersionedDeletedPath = $sDeletedPath . "-" . $sVersion;
-					$sVersionedRestorePath = $sRestorePath . "-" . $sVersion;
-					// move it to the new folder
-					$default->log->info("PhysicalDocumentManager::restore moving $sVersionedDeletedPath to $sVersionedRestorePath");
-					if (!PhysicalDocumentManager::move($sVersionedDeletedPath, $sVersionedRestorePath)) {
-						$default->log->error("PhysicalDocumentManager::restore error moving $sVersionedDeletedPath to $sVersionedRestorePath; documentID=" . $oDocument->getID());
-						// FIXME: can't bail now since we don't have transactions- so we doggedly continue restoring and logging errors
-					}
-            	}
-            }
-        } else {
-        	$default->log->error("PhysicalDocumentManager::expunge error looking up document versions, id=" . $oDocument->getID());
+		// check if the deleted folder exists and create it if not
+        $sDeletedPrefix = sprintf("%s/Deleted", $oConfig->get('urls/documentRoot'));
+        $sDocumentRoot = $oConfig->get('urls/documentRoot');
+
+        $aVersions = KTDocumentContentVersion::getByDocument($oDocument);
+        foreach ($aVersions as $oVersion) {
+            $sNewPath = $oVersion->getStoragePath();
+            $sOldPath = sprintf("Deleted/%s-%s", $oVersion->getId(), $oVersion->getFileName());
+            $sFullNewPath = sprintf("%s/%s", $sDocumentRoot, $sNewPath);
+            $sFullOldPath = sprintf("%s/%s", $sDocumentRoot, $sOldPath);
+            KTUtil::moveFile($sFullOldPath, $sFullNewPath);
         }
-		
-		// now move the current version		
-		if (PhysicalDocumentManager::move($sDeletedPath, $sRestorePath)) {
-			return true;
-		} else {
-			$default->log->error("PhysicalDocumentManager::restore couldn't move $sDeletedPath to $sRestorePath, documentID=" . $oDocument->getID());
-			return false;
-		}		
+        return true;
 	}
 	
 	
