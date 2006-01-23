@@ -84,6 +84,15 @@ class KTDocumentContentVersion extends KTEntity {
     function &get($iId) {
         return KTEntityUtil::get('KTDocumentContentVersion', $iId);
     }
+
+    function &getByDocument($oDocument) {
+        $iDocumentId = KTUtil::getId($oDocument);
+        return KTEntityUtil::getByDict('KTDocumentContentVersion', array(
+            'document_id' => $iDocumentId,
+        ), array(
+            'multi' => true,
+        ));
+    }
 }
 
 ?>

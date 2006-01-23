@@ -437,9 +437,8 @@ class KTDocumentMoveAction extends KTDocumentAction {
         if (!$oStorage->moveDocument($this->oDocument, $this->oDocumentFolder, $this->oFolder)) {
             $this->oDocument->setFolderID($this->oDocumentFolder->getId());
             $this->oDocument->update(true);
-            errorRedirectTo("move", _("There was a problem updating the document's location in the repository storage"), sprintf("fDocumentId=%d&fFolderId=%d", $this->oDocument->getId(), $this->oFolder->getId()));
+            $this->errorRedirectTo("move", _("There was a problem updating the document's location in the repository storage"), sprintf("fDocumentId=%d&fFolderId=%d", $this->oDocument->getId(), $this->oFolder->getId()));
         }
-        $this->oDocument->update();
 
         $sMoveMessage = sprintf("Moved from %s/%s to %s/%s: %s",
             $this->oDocumentFolder->getFullPath(),
