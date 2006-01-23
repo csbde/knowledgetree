@@ -213,7 +213,8 @@ class KTDocumentEmailAction extends KTDocumentAction {
         $userNewRight = trim($_REQUEST['userNewRight'], chr(160));
         $fEmailAddresses = trim($_REQUEST['fEmailAddresses']);
         $fAttachDocument = $_REQUEST['fAttachDocument'];
-        $fComment = $_REQUEST['fComment'];
+        $fComment = $this->oValidator->validateString($_REQUEST['fComment'],
+			array('redirect_to'=>array('', sprintf('fDocumentId=%d', $this->oDocument->getId()))));
 
         // explode group and user ids
         $aGroupIDs = array();
