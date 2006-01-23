@@ -1,12 +1,20 @@
 {$context->oPage->requireJSResource('thirdpartyjs/MochiKit/Base.js')}
 {$context->oPage->requireJSResource('thirdpartyjs/MochiKit/Async.js')}
 {$context->oPage->requireJSResource('thirdpartyjs/MochiKit/Iter.js')}
+{$context->oPage->requireJSResource('thirdpartyjs/MochiKit/DateTime.js')}
 {$context->oPage->requireJSResource('thirdpartyjs/MochiKit/DOM.js')}
+
+{$context->oPage->requireJSResource('resources/js/taillog.js')}
+{$context->oPage->requireJSResource('resources/js/conditional_usage.js')}
+
+{$context->oPage->requireCSSResource('resources/css/kt-treewidget.css')}
 
 {capture assign=sJavascript}
 {literal}
 function swapInItem(elementId, req) {
+    
     var cp = getElement(elementId);
+    
     cp.innerHTML = req.responseText;
     initialiseConditionalFieldsets();
 }
@@ -20,11 +28,12 @@ function swapElementFromRequest(elementId, url) {
     deff.addCallback(partial(swapInItem, elementId));
     var cp = getElement(elementId);
     cp.innerHTML="loading...";
+    
 }
 
 function getMetadataForType(id) {
     swapElementFromRequest('type_metadata_fields',
-        'http://{/literal}{$config->get('KnowledgeTree/serverName')}{literal}/presentation/lookAndFeel/knowledgeTree/documentmanagement/getTypeMetadataFields.php?fDocumentTypeID='
+        '{/literal}{$rootUrl}{literal}/presentation/lookAndFeel/knowledgeTree/documentmanagement/getTypeMetadataFields.php?fDocumentTypeID='
         + id);
 }
 
