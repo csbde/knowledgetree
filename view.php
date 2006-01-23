@@ -12,6 +12,8 @@ require_once(KT_LIB_DIR . "/database/dbutil.inc");
 require_once(KT_LIB_DIR . "/documentmanagement/Document.inc");
 require_once(KT_LIB_DIR . "/documentmanagement/DocumentType.inc");
 require_once(KT_LIB_DIR . "/documentmanagement/DocumentFieldLink.inc");
+require_once(KT_LIB_DIR . "/documentmanagement/documentmetadataversion.inc.php");
+require_once(KT_LIB_DIR . "/documentmanagement/documentcontentversion.inc.php");
 require_once(KT_LIB_DIR . "/metadata/fieldset.inc.php");
 require_once(KT_LIB_DIR . "/security/Permission.inc");
 
@@ -213,8 +215,11 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 		$this->oPage->setBreadcrumbDetails(_("history"));
 		$this->addPortlets("History");
 		
-		$aVersions = Document::getByLiveDocument($oDocument);
-		//var_dump($aVersions);
+		$aMetadataVersions = KTDocumentMetadataVersion::getByDocument($oDocument);
+        $aVersions = array();
+        foreach ($aMetadataVersions as $oVersion) {
+            $aVersions[] = Document::get($oDocument->getId(), $oVersion->getId());
+        }
 		
 		// render pass.
 		$this->oPage->title = _("Document History") . " : " . $oDocument->getName();
@@ -270,7 +275,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 			return $this->do_error();
 		}
 		
-		$oComparison =& Document::get($comparison_version);
+		$oComparison =& Document::get($oDocument->getId(), $comparison_version);
 		if (PEAR::isError($oComparison)) {
 		    $this->errorRedirectToMain(_('Invalid document to compare against.'));
 		}
@@ -290,9 +295,9 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 			$this->oPage->addError('The document you requested has an invalid <strong>document type</strong>.  Unfortunately, this means that we cannot effectively display it.');
 			$is_valid_doctype = false;
 		}
-		
+
 		// we want to grab all the md for this doc, since its faster that way.
-		$mdlist =& DocumentFieldLink::getList(array('document_id = ?', array($document_id)));
+		$mdlist =& DocumentFieldLink::getList(array('metadata_version_id = ?', array($oDocument->getMetadataVersionId())));
 
 		$field_values = array();
 		foreach ($mdlist as $oFieldLink) {
@@ -301,7 +306,7 @@ class ViewDocumentDispatcher extends KTStandardDispatcher {
 		
 		$document_data["field_values"] = $field_values;
 		
-		$mdlist =& DocumentFieldLink::getList(array('document_id = ?', array($comparison_version)));
+		$mdlist =& DocumentFieldLink::getList(array('metadata_version_id = ?', array($comparison_version)));
 
 		$field_values = array();
 		foreach ($mdlist as $oFieldLink) {

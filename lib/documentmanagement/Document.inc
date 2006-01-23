@@ -30,6 +30,7 @@ class Document {
     var $_oDocumentContentVersion = null;
     var $_oDocumentMetadataVersion = null;
     
+    var $iCurrentMetadataVersionId = null;
 
     // {{{ getters/setters
 
@@ -180,13 +181,19 @@ class Document {
         // FIXME add error $res if MDV > $_oDC->getMDV
         if (is_null($iMetadataVersionId)) { 
             $this->_oDocumentMetadataVersion = KTDocumentMetadataVersion::get($this->_oDocumentCore->getMetadataVersionId()); 
+            $this->iCurrentMetadataVersionId = $this->_oDocumentCore->getMetadataVersionId();
         } else {
             $this->_oDocumentMetadataVersion = KTDocumentMetadataVersion::get($iMetadataVersionId);
+            $this->iCurrentMetadataVersionId = $iMetadataVersionId;
         }
         if (PEAR::isError($this->_oDocumentMetadataVersion)) { var_dump($this->_oDocumentMetadataVersion); return $this->_oDocumentMetadataVersion; }
         
         $this->_oDocumentContentVersion = KTDocumentContentVersion::get($this->_oDocumentMetadataVersion->getContentVersionId());
         if (PEAR::isError($this->_oDocumentContentVersion)) { return $this->_oDocumentContentVersion; }
+    }
+
+    function getCurrentMetadataVersionId() {
+        return $this->iCurrentMetadataVersionId;
     }
 
     // {{{ getList
