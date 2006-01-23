@@ -9,14 +9,15 @@
 {/if}
 
 <form action="{$smarty.server.PHP_SELF}" METHOD="POST">
-<input type="hidden" name="action" value="startDelete" />
+<input type="hidden" name="action" value="massaction" />
 {if ($isEditable)}
-<input type="hidden" name="fFolderid" value="{$context->oFolder->getId()}" />
+<input type="hidden" name="fFolderId" value="{$context->oFolder->getId()}" />
 {/if}
 {$collection->render()}
 {if ($isEditable)}
 <div class="form_actions">
   <input type="submit" name="submit[delete]" value="{i18n}Delete{/i18n}" />
+  <input type="submit" name="submit[move]" value="{i18n}Move{/i18n}" />
 </div>
 {/if}
 </form>

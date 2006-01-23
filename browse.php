@@ -43,6 +43,30 @@ require_once(KT_LIB_DIR . '/actions/folderaction.inc.php');
 require_once(KT_DIR . '/plugins/ktcore/KTFolderActions.php');
 
 
+/******* NBM's FAMOUS MOVECOLUMN HACK
+ *
+ * Also in /plugins/ktcore/KTDocumentActions.php
+ */
+
+class KTMassMoveColumn extends TitleColumn {
+    var $sMoveCode;
+
+    function KTMassMoveColumn($sLabel, $sName, $sMoveCode) {
+        $this->sMoveCode = $sMoveCode;
+        parent::TitleColumn($sLabel, $sName);
+    }
+    
+    function buildFolderLink($aDataRow) {
+        $baseurl = KTUtil::arrayGet($this->aOptions, "folderurl", "");
+        $kt_path_info = KTUtil::arrayGet($_REQUEST, 'kt_path_info');
+        if (empty($kt_path_info)) {
+            return sprintf('%s?fMoveCode=%s&fFolderId=%d&action=startMove', $baseurl, $this->sMoveCode, $aDataRow["folder"]->getId());
+        } else {
+            return sprintf('%s?kt_path_info=%s&fMoveCode=%s&fFolderId=%d&action=startMove', $baseurl, $kt_path_info, $this->sMoveCode, $aDataRow["folder"]->getId());
+        }
+    }
+}
+
 $sectionName = "browse";
 
 class BrowseDispatcher extends KTStandardDispatcher {
@@ -206,6 +230,238 @@ class BrowseDispatcher extends KTStandardDispatcher {
         return $oTemplate->render($aTemplateData);
     }
     
+    function do_massaction() {
+        // FIXME replace this by using real actions.
+        $act = (array) KTUtil::arrayGet($_REQUEST, 'submit',null);
+        
+        $targets = array_keys($act);
+        if (!empty($targets)) {
+            $target = $targets[0];
+        } else {
+            $this->errorRedirectToMain(_('No action selected.'));
+            exit(0);
+        }
+        
+        if ($target == 'delete') {
+            return $this->do_startDelete();
+        } else if ($target == 'move') {
+            return $this->do_startMove();
+        } else {
+            $this->errorRedirectToMain(_('No such action.'));
+            exit(0);
+        }
+        
+        return $target;
+    }
+    
+    function do_startMove() {
+        $this->oPage->setTitle('Move Files and Folders');
+        $this->oPage->setBreadcrumbDetails('Move Files and Folders');
+    
+        // FIXME double-check that the movecode actually exists...
+    
+        $sMoveCode = KTUtil::arrayGet($_REQUEST, 'fMoveCode', null);
+        if ($sMoveCode == null) {
+            $aFolderSelection = KTUtil::arrayGet($_REQUEST, 'selection_f' , array());
+            $aDocumentSelection = KTUtil::arrayGet($_REQUEST, 'selection_d' , array());
+            
+            $sMoveCode = KTUtil::randomString();
+            $aMoveData = array('folders' => $aFolderSelection, 'documents' => $aDocumentSelection);
+            
+            $moves = KTUtil::arrayGet($_SESSION, 'moves', array());
+            $moves = (array) $moves; // ?
+            $moves[$sMoveCode] = $aMoveData;
+            $_SESSION['moves'] = $moves; // ...
+        }
+
+        $oFolder = Folder::get(KTUtil::arrayGet($_REQUEST, 'fFolderId', 1));
+        if (PEAR::isError($oFolder)) { 
+            $this->errorRedirectToMain(_('Invalid folder selected.'));
+            exit(0);
+        }
+        
+        // Setup the collection for move display.
+        
+        $collection = new DocumentCollection();
+        $collection->addColumn(new KTMassMoveColumn("Test 1 (title)","title", $sMoveCode));
+        $qObj = new FolderBrowseQuery($oFolder->getId());
+        $collection->setQueryObject($qObj);
+
+        $batchPage = (int) KTUtil::arrayGet($_REQUEST, "page", 0);
+        $batchSize = 20;
+
+        $resultURL = sprintf("?fMoveCode=%s&fFolderId=%d&action=startMove", $sMoveCode, $oFolder->getId());
+        $collection->setBatching($resultURL, $batchPage, $batchSize);
+
+        // ordering. (direction and column)
+        $displayOrder = KTUtil::arrayGet($_REQUEST, 'sort_order', "asc");
+        if ($displayOrder !== "asc") { $displayOrder = "desc"; }
+        $displayControl = KTUtil::arrayGet($_REQUEST, 'sort_on', "title");
+
+        $collection->setSorting($displayControl, $displayOrder);
+
+        $collection->getResults();
+
+        $aBreadcrumbs = array();
+        $folder_path_names = $oFolder->getPathArray();
+        $folder_path_ids = explode(',', $oFolder->getParentFolderIds());
+        if ($folder_path_ids[0] == 0) {
+            $folder_path_ids = array();
+        }
+        $folder_path_ids[] = $oFolder->getId();
+
+        foreach (range(0, count($folder_path_ids) - 1) as $index) {
+            $id = $folder_path_ids[$index];
+            $url = sprintf("?fMoveCode=%s&fFolderId=%d&action=startMove", $sMoveCode, $id);
+            $aBreadcrumbs[] = array("url" => $url, "name" => $folder_path_names[$index]);
+        }
+        
+        $oTemplating = new KTTemplating;
+        $oTemplate = $oTemplating->loadTemplate("ktcore/action/mass_move");
+        $aTemplateData = array(
+              "context" => $this,
+              'folder' => $oFolder,
+              'move_code' => $sMoveCode,
+              'collection' => $collection,
+              'collection_breadcrumbs' => $aBreadcrumbs,
+        );
+        
+        return $oTemplate->render($aTemplateData);       
+    }
+    
+    function do_finaliseMove() {
+        // FIXME this is a PITA.    
+        
+        $action_a = (array) KTUtil::arrayGet($_REQUEST, 'submit', null);
+        $actions = array_keys($action_a);
+        if (empty($actions)) { 
+            $this->errorRedirectToMain(_('No action selected.'));
+        } else {
+            $action = $actions[0];
+        }
+        if ($action != 'move') {
+            $this->successRedirectToMain(_('Move cancelled.'));
+        }
+        
+        $target_folder = KTUtil::arrayGet($_REQUEST, 'fFolderId');
+        if ($target_folder == null ) { $this->errorRedirectToMain(_('No folder selected.')); }
+        
+        $move_code = KTUtil::arrayGet($_REQUEST, 'fMoveCode');
+        
+        $aFields = array();
+        $aFields[] = new KTStaticTextWidget(_('Destination folder'), _('The folder which will contain the previously selected files and folders.'), 'fDocumentId', Folder::getFolderDisplayPath($target_folder), $this->oPage, false);
+        $aFields[] = new KTStringWidget(_('Reason'), _('The reason for moving these documents and folders, for historical purposes.'), 'sReason', "", $this->oPage, true); 
+        
+        
+        $oTemplating = new KTTemplating;
+        $oTemplate = $oTemplating->loadTemplate("ktcore/action/finalise_mass_move");
+        $aTemplateData = array(
+              "context" => $this,
+              'form_fields' => $aFields,
+              'folder' => $target_folder,
+              'move_code' => $move_code,
+        );
+        return $oTemplate->render($aTemplateData);        
+    }
+    
+    function do_move() {
+        $move_code = KTUtil::arrayGet($_REQUEST, 'fMoveCode');
+        $target_folder = KTUtil::arrayGet($_REQUEST, 'fFolderId');
+        $reason = KTUtil::arrayGet($_REQUEST, 'sReason');
+        
+        // FIXME check perms?  or will that happen "lower" in the stack.
+        
+        $aMoveStack = $_SESSION['moves'][$move_code];
+        
+        $oTargetFolder = Folder::get($target_folder);
+        
+        if (PEAR::isError($oTargetFolder)) {
+            return print_r($oTargetFolder, true);
+        }
+        
+        if (!Permission::userHasFolderWritePermission($oTargetFolder)) {
+            $this->errorRedirectTo("main", _("You do not have permission to move items to this location"), sprintf("fDocumentId=%d&fFolderId=%d", $this->oDocument->getId(), $this->oFolder->getId()));
+            exit(0);
+        }
+        
+        
+        
+        $oStorage =& KTStorageManagerUtil::getSingleton();
+        // FIXME refactor this IMMEDIATELY into documentutil::
+        foreach ($aMoveStack['documents'] as $iDocId) {
+            $this->startTransaction();
+            
+            $oDoc = Document::Get($iDocId);
+            if (PEAR::isError($oDoc)) { 
+                $this->errorRedirectToMain(_('Invalid document.'));
+            }
+            $oDocumentFolder = Folder::get($oDoc->getFolderID());
+            $oDoc->setFolderID($target_folder);
+            if (!$oDoc->update(true)) {
+                $this->errorRedirectTo("main", _("There was a problem updating the document's location in the database"), sprintf("fDocumentId=%d&fFolderId=%d", $this->oDocument->getId(), $this->oFolder->getId()));
+            }
+            
+            if (!$oStorage->moveDocument($oDoc, $oDocumentFolder, $oTargetFolder)) {
+                $oDoc->setFolderID($oDocumentFolder->getId());
+                $oDoc->update(true);
+                errorRedirectTo("move", _("There was a problem updating the document's location in the repository storage"), sprintf("fDocumentId=%d&fFolderId=%d", $this->oDocument->getId(), $this->oFolder->getId()));
+            }
+            $oDoc->update();
+    
+            $sMoveMessage = sprintf("Moved from %s/%s to %s/%s: %s",
+                $oDocumentFolder->getFullPath(),
+                $oDocumentFolder->getName(),
+                $oTargetFolder->getFullPath(),
+                $oTargetFolder->getName(),
+                $sReason);
+    
+            // create the document transaction record
+            
+            $oDocumentTransaction = & new DocumentTransaction($oDoc, $sMoveMessage, 'ktcore.transactions.move');
+            $oDocumentTransaction->create();            
+        
+        
+            $this->commitTransaction();
+            
+            $oKTTriggerRegistry = KTTriggerRegistry::getSingleton();
+            $aTriggers = $oKTTriggerRegistry->getTriggers('moveDocument', 'postValidate');
+            foreach ($aTriggers as $aTrigger) {
+                $sTrigger = $aTrigger[0];
+                $oTrigger = new $sTrigger;
+                $aInfo = array(
+                    "document" => $oDoc,
+                    "old_folder" => $oDocumentFolder,
+                    "new_folder" => $oTargetFolder,
+                );
+                $oTrigger->setInfo($aInfo);
+                $ret = $oTrigger->postValidate();
+                if (PEAR::isError($ret)) {
+                    $oDoc->delete();
+                    return $ret;
+                }
+            }
+        }
+        
+        
+        // now folders ... these are easier.
+        $this->startTransaction();
+        
+        foreach ($aMoveStack['folders'] as $iFolderId) {
+            $oFolder = Folder::get($iFolderId);
+            if (PEAR::isError($oFolder)) { $this->errorRedirectToMain(_('Invalid folder.')); }
+            
+            $res = KTFolderUtil::move($oFolder, $oTargetFolder, $this->oUser);
+            if (PEAR::isError($res)) {
+                $this->errorRedirectToMain(_('Failed to move the folder: ') . $res->getMessage());
+            }
+        }
+        $this->commitTransaction();
+        
+        
+        $this->successRedirectToMain(_('Move completed.'), sprintf('fFolderId=%d', $target_folder));
+    }
+    
+   
     function do_startDelete() {
         $this->oPage->setTitle('Delete Files and Folders');
         $this->oPage->setBreadcrumbDetails('Delete Files and Folders');

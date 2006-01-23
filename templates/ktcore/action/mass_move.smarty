@@ -1,0 +1,29 @@
+<p class="descriptiveText">{i18n}Move Files and Folders{/i18n}</p>
+
+
+<form method="POST" action="{$smarty.server.PHP_SELF}">
+<fieldset><legend>{i18n}Move{/i18n}</legend>
+<input type="hidden" name="action" value="finaliseMove" />
+<input type="hidden" name="fMoveCode" value="{$move_code}" />
+
+<div class="field ">
+<label for="fFolderId">{i18n}Target folder{/i18n}</label>
+<p class="descriptiveText">{i18n}Use the folder collection and path below to
+browse to the folder you wish to move the documents into.{/i18n}</p>
+
+<input type="hidden" name="fFolderId" value="{$folder->getId()}" />
+{foreach from=$collection_breadcrumbs item=breadcrumb name=bc}
+<a href="{$breadcrumb.url}">{$breadcrumb.name}</a>
+{if !$smarty.foreach.bc.last}
+&raquo;
+{/if}
+{/foreach}
+{$collection->render()}
+</div>
+
+<div class="form_actions">
+<input type="submit" name="submit[move]" value="{i18n}Move{/i18n}" />
+<input type="submit" name="submit[cancel]" value="{i18n}Cancel{/i18n}" />
+</div>
+</fieldset>
+</form>

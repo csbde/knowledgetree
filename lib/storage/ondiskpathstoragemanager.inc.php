@@ -193,7 +193,7 @@ class KTOnDiskPathStorageManager extends KTStorageManager {
 	}
 
     function moveFolder($oFolder, $oDestFolder) {
-        $table = "documents";
+        $table = "document_content_version";
         $sQuery = "UPDATE $table SET storage_path = CONCAT(?, SUBSTRING(storage_path FROM ?)) WHERE storage_path LIKE ?";
         $aParams = array(
             sprintf("%s/%s", $oDestFolder->getFullPath(), $oDestFolder->getName()),
