@@ -536,6 +536,7 @@ class KTDocumentUtil {
     
     // {{{ delete
     function delete($oDocument, $sReason) {
+        $oDocument =& KTUtil::getObject('Document', $oDocument);
         
         $oStorageManager =& KTStorageManagerUtil::getSingleton();
         
