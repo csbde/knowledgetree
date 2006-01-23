@@ -256,7 +256,7 @@ function bindToConditionalFieldset(fieldset, widget) {
 } 
 
 function clearUnfixedWidgets(fieldset) {
-    var widgets = getElementsByTagAndClassName('TR', 'widget', fieldset);
+    var widgets = getElementsByTagAndClassName('DIV', 'field', fieldset);
     for (var i=0; i<widgets.length; i++) {
         var w = widgets[i];
         if (hasElementClass(w, 'fixed')) {
