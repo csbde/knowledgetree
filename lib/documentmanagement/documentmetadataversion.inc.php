@@ -95,6 +95,16 @@ class KTDocumentMetadataVersion extends KTEntity {
     function &get($iId) {
         return KTEntityUtil::get('KTDocumentMetadataVersion', $iId);
     }
+
+    function &getByDocument($oDocument) {
+        $iDocumentId = KTUtil::getId($oDocument);
+        return KTEntityUtil::getByDict('KTDocumentMetadataVersion', array(
+            'document_id' => $iDocumentId,
+        ), array(
+            'multi' => true,
+            'orderby' => 'version_created DESC',
+        ));
+    }
 }
 
 ?>
